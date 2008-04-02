@@ -47,7 +47,6 @@ class nsITheme;
 #define NS_STATE_IS_ROOT        0x01000000
 #define NS_STATE_SET_TO_DEBUG   0x04000000
 #define NS_STATE_DEBUG_WAS_SET  0x08000000
-#define NS_STATE_STYLE_CHANGE   0x20000000
 
 class nsBox : public nsIFrame {
 
@@ -57,20 +56,18 @@ public:
 
   static void Shutdown();
 
-  NS_IMETHOD GetPrefSize(nsBoxLayoutState& aBoxLayoutState, nsSize& aSize);
-  NS_IMETHOD GetMinSize(nsBoxLayoutState& aBoxLayoutState, nsSize& aSize);
-  NS_IMETHOD GetMaxSize(nsBoxLayoutState& aBoxLayoutState, nsSize& aSize);
-  NS_IMETHOD GetFlex(nsBoxLayoutState& aBoxLayoutState, nscoord& aFlex);
-  NS_IMETHOD GetAscent(nsBoxLayoutState& aBoxLayoutState, nscoord& aAscent);
+  virtual nsSize GetPrefSize(nsBoxLayoutState& aBoxLayoutState);
+  virtual nsSize GetMinSize(nsBoxLayoutState& aBoxLayoutState);
+  virtual nsSize GetMaxSize(nsBoxLayoutState& aBoxLayoutState);
+  virtual nscoord GetFlex(nsBoxLayoutState& aBoxLayoutState);
+  virtual nscoord GetBoxAscent(nsBoxLayoutState& aBoxLayoutState);
 
   virtual nsSize GetMinSizeForScrollArea(nsBoxLayoutState& aBoxLayoutState);
 
-  NS_IMETHOD IsCollapsed(nsBoxLayoutState& aBoxLayoutState, PRBool& aCollapsed);
+  virtual PRBool IsCollapsed(nsBoxLayoutState& aBoxLayoutState);
 
-  NS_IMETHOD SetBounds(nsBoxLayoutState& aBoxLayoutState, const nsRect& aRect,
-                       PRBool aRemoveOverflowArea = PR_FALSE);
-
-  NS_IMETHOD MarkDirty(nsBoxLayoutState& aState);
+  virtual void SetBounds(nsBoxLayoutState& aBoxLayoutState, const nsRect& aRect,
+                         PRBool aRemoveOverflowArea = PR_FALSE);
 
   NS_IMETHOD GetBorder(nsMargin& aBorderAndPadding);
   NS_IMETHOD GetPadding(nsMargin& aBorderAndPadding);
@@ -79,20 +76,15 @@ public:
   NS_IMETHOD SetLayoutManager(nsIBoxLayout* aLayout);
   NS_IMETHOD GetLayoutManager(nsIBoxLayout** aLayout);
 
-  NS_IMETHOD GetVAlign(Valignment& aAlign);
-  NS_IMETHOD GetHAlign(Halignment& aAlign);
+  virtual Valignment GetVAlign() const { return vAlign_Top; }
+  virtual Halignment GetHAlign() const { return hAlign_Left; }
 
 
-  NS_IMETHOD NeedsRecalc();
-  NS_IMETHOD RelayoutDirtyChild(nsBoxLayoutState& aState, nsIBox* aChild);
   NS_IMETHOD RelayoutChildAtOrdinal(nsBoxLayoutState& aState, nsIBox* aChild);
 
-  NS_IMETHOD GetMouseThrough(PRBool& aMouseThrough);
+  virtual PRBool GetMouseThrough() const;
 
-  NS_IMETHOD MarkChildrenStyleChange();
-  NS_IMETHOD MarkStyleChange(nsBoxLayoutState& aState);
 #ifdef DEBUG_LAYOUT
-  NS_IMETHOD GetInset(nsMargin& aInset);
   NS_IMETHOD GetDebugBoxAt(const nsPoint& aPoint, nsIBox** aBox);
   NS_IMETHOD GetDebug(PRBool& aDebug);
   NS_IMETHOD SetDebug(nsBoxLayoutState& aState, PRBool aDebug);
@@ -100,8 +92,6 @@ public:
   NS_IMETHOD DumpBox(FILE* out);
   NS_HIDDEN_(void) PropagateDebug(nsBoxLayoutState& aState);
 #endif
-  NS_IMETHOD ChildrenMustHaveWidgets(PRBool& aMust) const;
-  NS_IMETHOD GetIndexOf(nsIBox* aChild, PRInt32* aIndex);
 
   nsBox();
   virtual ~nsBox();
@@ -121,21 +111,15 @@ rollbox.
   void CoordNeedsRecalc(nscoord& aCoord);
 
   void AddBorderAndPadding(nsSize& aSize);
-  void AddInset(nsSize& aSize) { AddInset(this, aSize); }
   void AddMargin(nsSize& aSize);
 
   static void AddBorderAndPadding(nsIBox* aBox, nsSize& aSize);
-#ifdef DEBUG_LAYOUT
-  static void AddInset(nsIBox* aBox, nsSize& aSize);
-#else
-  static void AddInset(nsIBox* aBox, nsSize& aSize) {}
-#endif
   static void AddMargin(nsIBox* aChild, nsSize& aSize);
   static void AddMargin(nsSize& aSize, const nsMargin& aMargin);
 
-  static void BoundsCheckMinMax(nsSize& aMinSize, nsSize& aMaxSize);
-  static void BoundsCheck(nsSize& aMinSize, nsSize& aPrefSize, nsSize& aMaxSize);
-  static void BoundsCheck(nscoord& aMinSize, nscoord& aPrefSize, nscoord& aMaxSize);
+  static nsSize BoundsCheckMinMax(const nsSize& aMinSize, const nsSize& aMaxSize);
+  static nsSize BoundsCheck(const nsSize& aMinSize, const nsSize& aPrefSize, const nsSize& aMaxSize);
+  static nscoord BoundsCheck(nscoord aMinSize, nscoord aPrefSize, nscoord aMaxSize);
 
 protected:
 
@@ -145,9 +129,6 @@ protected:
   virtual void ListBox(nsAutoString& aResult);
 #endif
   
-  virtual PRBool HasStyleChange();
-  virtual void SetStyleChangeFlag(PRBool aDirty);
-
   virtual PRBool GetWasCollapsed(nsBoxLayoutState& aState);
   virtual void SetWasCollapsed(nsBoxLayoutState& aState, PRBool aWas);
   virtual PRBool GetDefaultFlex(PRInt32& aFlex);

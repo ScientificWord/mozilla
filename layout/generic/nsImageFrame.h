@@ -20,6 +20,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
+ *   L. David Baron <dbaron@dbaron.org>, Mozilla Corporation
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -105,14 +106,14 @@ public:
   NS_IMETHOD BuildDisplayList(nsDisplayListBuilder*   aBuilder,
                               const nsRect&           aDirtyRect,
                               const nsDisplayListSet& aLists);
+  virtual nscoord GetMinWidth(nsIRenderingContext *aRenderingContext);
+  virtual nscoord GetPrefWidth(nsIRenderingContext *aRenderingContext);
+  virtual nsSize GetIntrinsicRatio();
   NS_IMETHOD Reflow(nsPresContext*          aPresContext,
                     nsHTMLReflowMetrics&     aDesiredSize,
                     const nsHTMLReflowState& aReflowState,
                     nsReflowStatus&          aStatus);
   
-  NS_IMETHOD CanContinueTextRun(PRBool& aContinueTextRun) const;
-
-
   NS_IMETHOD  GetContentForEvent(nsPresContext* aPresContext,
                                  nsEvent* aEvent,
                                  nsIContent** aContent);
@@ -130,10 +131,18 @@ public:
 #endif
 
   virtual nsIAtom* GetType() const;
+
+  virtual PRBool IsFrameOfType(PRUint32 aFlags) const
+  {
+    return ImageFrameSuper::IsFrameOfType(aFlags & ~(nsIFrame::eReplaced));
+  }
+
 #ifdef DEBUG
   NS_IMETHOD GetFrameName(nsAString& aResult) const;
   NS_IMETHOD List(FILE* out, PRInt32 aIndent) const;
 #endif
+
+  virtual PRIntn GetSkipSides() const;
 
   NS_IMETHOD GetImageMap(nsPresContext *aPresContext, nsIImageMap **aImageMap);
 
@@ -156,12 +165,16 @@ public:
                                           nsStyleContext* aStyleContext);
   
   void DisplayAltFeedback(nsIRenderingContext& aRenderingContext,
+                          const nsRect&        aDirtyRect,
                           imgIRequest*         aRequest,
                           nsPoint              aPt);
 
   nsRect GetInnerArea() const;
 
   nsImageMap* GetImageMap(nsPresContext* aPresContext);
+
+  virtual void AddInlineMinWidth(nsIRenderingContext *aRenderingContext,
+                                 InlineMinWidthData *aData);
 
 protected:
   // nsISupports
@@ -170,29 +183,34 @@ protected:
 
   virtual ~nsImageFrame();
 
-  virtual void GetDesiredSize(nsPresContext* aPresContext,
-                              const nsHTMLReflowState& aReflowState,
-                              nsHTMLReflowMetrics& aDesiredSize);
+  void EnsureIntrinsicSize(nsPresContext* aPresContext);
 
-  void TriggerLink(nsPresContext* aPresContext,
-                   nsIURI* aURI,
-                   const nsString& aTargetSpec,
-                   nsINode* aTriggerNode,
-                   PRBool aClick);
+  virtual nsSize ComputeSize(nsIRenderingContext *aRenderingContext,
+                             nsSize aCBSize, nscoord aAvailableWidth,
+                             nsSize aMargin, nsSize aBorder, nsSize aPadding,
+                             PRBool aShrinkWrap);
 
   PRBool IsServerImageMap();
 
   void TranslateEventCoords(const nsPoint& aPoint,
-                            nsPoint& aResult);
+                            nsIntPoint& aResult);
 
   PRBool GetAnchorHREFTargetAndNode(nsIURI** aHref, nsString& aTarget,
-                                    nsINode** aNode);
-
-  void MeasureString(const PRUnichar*     aString,
-                     PRInt32              aLength,
-                     nscoord              aMaxWidth,
-                     PRUint32&            aMaxFit,
-                     nsIRenderingContext& aContext);
+                                    nsIContent** aNode);
+  /**
+   * Computes the width of the string that fits into the available space
+   *
+   * @param in aLength total length of the string in PRUnichars
+   * @param in aMaxWidth width not to be exceeded
+   * @param out aMaxFit length of the string that fits within aMaxWidth
+   *            in PRUnichars
+   * @return width of the string that fits within aMaxWidth
+   */
+  nscoord MeasureString(const PRUnichar*     aString,
+                        PRInt32              aLength,
+                        nscoord              aMaxWidth,
+                        PRUint32&            aMaxFit,
+                        nsIRenderingContext& aContext);
 
   void DisplayAltText(nsPresContext*      aPresContext,
                       nsIRenderingContext& aRenderingContext,
@@ -222,19 +240,21 @@ private:
 
   inline void GetLoadGroup(nsPresContext *aPresContext,
                            nsILoadGroup **aLoadGroup);
-  nscoord GetContinuationOffset(nscoord* aWidth = 0) const;
+  nscoord GetContinuationOffset() const;
   void GetDocumentCharacterSet(nsACString& aCharset) const;
 
   /**
-   * This function will recalculate mTransform.  If a non-null image
-   * is passed in, mIntrinsicSize will be recalculated from the image
-   * size.  Otherwise, mIntrinsicSize will not be touched.
+   * Recalculate mIntrinsicSize from the image.
    *
-   * @return PR_TRUE if aImage is non-null and its size did _not_
+   * @return whether aImage's size did _not_
    *         match our previous intrinsic size
-   * @return PR_FALSE otherwise
    */
-  PRBool RecalculateTransform(imgIContainer* aImage);
+  PRBool UpdateIntrinsicSize(imgIContainer* aImage);
+
+  /**
+   * This function will recalculate mTransform.
+   */
+  void RecalculateTransform();
 
   /**
    * Helper functions to check whether the request or image container
@@ -258,8 +278,6 @@ private:
   nsSize mIntrinsicSize;
   nsTransform2D mTransform;
   
-  nsMargin            mBorderPadding;
-
   static nsIIOService* sIOService;
 
   /* loading / broken image icon support */

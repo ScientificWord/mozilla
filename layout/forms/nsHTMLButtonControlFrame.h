@@ -71,6 +71,10 @@ public:
                               const nsRect&           aDirtyRect,
                               const nsDisplayListSet& aLists);
 
+  virtual nscoord GetMinWidth(nsIRenderingContext *aRenderingContext);
+
+  virtual nscoord GetPrefWidth(nsIRenderingContext *aRenderingContext);
+
   NS_IMETHOD Reflow(nsPresContext*          aPresContext,
                     nsHTMLReflowMetrics&     aDesiredSize,
                     const nsHTMLReflowState& aReflowState,
@@ -122,6 +126,12 @@ public:
     return GetFirstChild(nsnull)->GetContentInsertionFrame();
   }
 
+  virtual PRBool IsFrameOfType(PRUint32 aFlags) const
+  {
+    return nsHTMLContainerFrame::IsFrameOfType(aFlags &
+      ~(nsIFrame::eReplaced | nsIFrame::eReplacedContainsBlock));
+  }
+
 protected:
   virtual PRBool IsReset(PRInt32 type);
   virtual PRBool IsSubmit(PRInt32 type);
@@ -129,8 +139,6 @@ protected:
                             nsHTMLReflowMetrics& aDesiredSize,
                             const nsHTMLReflowState& aReflowState,
                             nsIFrame* aFirstKid,
-                            const nsSize& aAvailSize,
-                            nsReflowReason aReason,
                             nsMargin aFocusPadding,
                             nsReflowStatus& aStatus);
 
@@ -139,11 +147,6 @@ protected:
 
   PRIntn GetSkipSides() const;
   nsButtonFrameRenderer mRenderer;
-
-  //Resize Reflow OpitmizationSize;
-  nsSize                mCacheSize;
-  nscoord               mCachedAscent;
-  nscoord               mCachedMaxElementWidth;
 };
 
 #endif

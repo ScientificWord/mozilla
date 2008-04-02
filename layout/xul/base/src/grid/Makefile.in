@@ -49,11 +49,14 @@ REQUIRES	= xpcom \
 		  string \
 		  content \
 		  gfx \
+		  thebes \
 		  widget \
 		  locale \
 		  view \
 		  necko \
 		  dom \
+		  unicharutil \
+		  webshell \
 		  $(NULL)
 
 CPPSRCS	= \

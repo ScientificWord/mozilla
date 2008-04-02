@@ -1,3 +1,4 @@
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -46,8 +47,6 @@
 #include "nsAreaFrame.h"
 #include "nsLineLayout.h"
 #include "nsPresContext.h"
-#include "nsHTMLAtoms.h"
-#include "nsUnitConversion.h"
 #include "nsStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIRenderingContext.h"
@@ -80,7 +79,7 @@ nsMathMLForeignFrameWrapper::Reflow(nsPresContext*          aPresContext,
   // just make-up a bounding metrics
   mBoundingMetrics.Clear();
   mBoundingMetrics.ascent = aDesiredSize.ascent;
-  mBoundingMetrics.descent = aDesiredSize.descent;
+  mBoundingMetrics.descent = aDesiredSize.height - aDesiredSize.ascent;
   mBoundingMetrics.width = aDesiredSize.width;
   mBoundingMetrics.leftBearing = 0;
   mBoundingMetrics.rightBearing = aDesiredSize.width;

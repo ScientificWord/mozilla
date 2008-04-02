@@ -47,7 +47,6 @@
 #include "nsIURL.h"
 
 #include "nsCSSRule.h"
-#include "nsLayoutAtoms.h"
 #include "nsICSSStyleSheet.h"
 
 #include "nsCOMPtr.h"
@@ -67,7 +66,6 @@
 #include "nsContentUtils.h"
 #include "nsStyleConsts.h"
 #include "nsDOMError.h"
-#include "nsIEnumerator.h"
 
 #define IMPL_STYLE_RULE_INHERIT(_class, super) \
 NS_IMETHODIMP _class::GetStyleSheet(nsIStyleSheet*& aSheet) const { return super::GetStyleSheet(aSheet); }  \
@@ -517,8 +515,7 @@ CSSImportRuleImpl::SetSheet(nsICSSStyleSheet* aSheet)
   nsCOMPtr<nsIDOMMediaList> mediaList;
   rv = sheet->GetMedia(getter_AddRefs(mediaList));
   NS_ENSURE_SUCCESS(rv, rv);
-  mMedia = NS_STATIC_CAST(nsMediaList*,
-           NS_STATIC_CAST(nsIDOMMediaList*, mediaList.get()));
+  mMedia = static_cast<nsMediaList*>(mediaList.get());
   
   return NS_OK;
 }
@@ -636,7 +633,7 @@ CloneRuleInto(nsICSSRule* aRule, void* aArray)
   nsICSSRule* clone = nsnull;
   aRule->Clone(clone);
   if (clone) {
-    NS_STATIC_CAST(nsCOMArray<nsICSSRule>*, aArray)->AppendObject(clone);
+    static_cast<nsCOMArray<nsICSSRule>*>(aArray)->AppendObject(clone);
     NS_RELEASE(clone);
   }
   return PR_TRUE;
@@ -645,7 +642,7 @@ CloneRuleInto(nsICSSRule* aRule, void* aArray)
 static PRBool
 SetParentRuleReference(nsICSSRule* aRule, void* aParentRule)
 {
-  nsCSSGroupRule* parentRule = NS_STATIC_CAST(nsCSSGroupRule*, aParentRule);
+  nsCSSGroupRule* parentRule = static_cast<nsCSSGroupRule*>(aParentRule);
   aRule->SetParentRule(parentRule);
   return PR_TRUE;
 }
@@ -654,7 +651,7 @@ nsCSSGroupRule::nsCSSGroupRule(const nsCSSGroupRule& aCopy)
   : nsCSSRule(aCopy)
   , mRuleCollection(nsnull) // lazily constructed
 {
-  NS_CONST_CAST(nsCSSGroupRule&, aCopy).mRules.EnumerateForwards(CloneRuleInto, &mRules);
+  const_cast<nsCSSGroupRule&>(aCopy).mRules.EnumerateForwards(CloneRuleInto, &mRules);
   mRules.EnumerateForwards(SetParentRuleReference, this);
 }
 
@@ -731,10 +728,11 @@ nsCSSGroupRule::GetStyleRuleAt(PRInt32 aIndex, nsICSSRule*& aRule) const
   return NS_OK;
 }
 
-NS_IMETHODIMP
+NS_IMETHODIMP_(PRBool)
 nsCSSGroupRule::EnumerateRulesForwards(RuleEnumFunc aFunc, void * aData) const
 {
-  return NS_CONST_CAST(nsCSSGroupRule*, this)->mRules.EnumerateForwards(aFunc, aData) ? NS_OK : NS_ENUMERATOR_FALSE;
+  return
+    const_cast<nsCSSGroupRule*>(this)->mRules.EnumerateForwards(aFunc, aData);
 }
 
 /*

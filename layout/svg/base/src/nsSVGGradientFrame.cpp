@@ -40,15 +40,31 @@
 #include "nsIDOMSVGAnimatedNumber.h"
 #include "nsIDOMSVGAnimatedString.h"
 #include "nsIDOMSVGAnimTransformList.h"
-#include "nsIDOMSVGTransformList.h"
+#include "nsSVGTransformList.h"
 #include "nsSVGMatrix.h"
 #include "nsIDOMSVGStopElement.h"
 #include "nsSVGGradientElement.h"
 #include "nsSVGGeometryFrame.h"
 #include "nsSVGGradientFrame.h"
+#include "gfxContext.h"
+#include "nsIDOMSVGRect.h"
+#include "gfxPattern.h"
 
 //----------------------------------------------------------------------
 // Implementation
+
+nsSVGGradientFrame::nsSVGGradientFrame(nsStyleContext* aContext,
+                                       nsIDOMSVGURIReference *aRef) :
+  nsSVGGradientFrameBase(aContext),
+  mNextGrad(nsnull), 
+  mLoopFlag(PR_FALSE),
+  mInitialized(PR_FALSE) 
+{
+  if (aRef) {
+    // Get the href
+    aRef->GetHref(getter_AddRefs(mHref));
+  }
+}
 
 nsSVGGradientFrame::~nsSVGGradientFrame()
 {
@@ -132,15 +148,15 @@ nsSVGGradientFrame::RemoveFrame(nsIAtom*        aListName,
                                 nsIFrame*       aOldFrame)
 {
   WillModify();
-  PRBool result = mFrames.DestroyFrame(aOldFrame);
   DidModify();
+  PRBool result = mFrames.DestroyFrame(aOldFrame);
   return result ? NS_OK : NS_ERROR_FAILURE;
 }
 
 nsIAtom*
 nsSVGGradientFrame::GetType() const
 {
-  return nsLayoutAtoms::svgGradientFrame;
+  return nsGkAtoms::svgGradientFrame;
 }
 
 NS_IMETHODIMP
@@ -181,11 +197,13 @@ nsSVGGradientFrame::GetStopCount()
 
 void
 nsSVGGradientFrame::GetStopInformation(PRInt32 aIndex,
-                                       float *aOffset, nscolor *aColor, float *aOpacity)
+                                       float *aOffset,
+                                       nscolor *aStopColor,
+                                       float *aStopOpacity)
 {
   *aOffset = 0.0f;
-  *aColor = 0;
-  *aOpacity = 1.0f;
+  *aStopColor = NS_RGBA(0, 0, 0, 0);
+  *aStopOpacity = 1.0f;
 
   nsIFrame *stopFrame = nsnull;
   GetStopFrame(aIndex, &stopFrame);
@@ -204,8 +222,8 @@ nsSVGGradientFrame::GetStopInformation(PRInt32 aIndex,
   }
 
   if (stopFrame) {
-    *aColor   = stopFrame->GetStyleSVGReset()->mStopColor.mPaint.mColor;
-    *aOpacity = stopFrame->GetStyleSVGReset()->mStopOpacity;
+    *aStopColor   = stopFrame->GetStyleSVGReset()->mStopColor;
+    *aStopOpacity = stopFrame->GetStyleSVGReset()->mStopOpacity;
   }
 #ifdef DEBUG
   // One way or another we have an implementation problem if we get here
@@ -219,41 +237,48 @@ nsSVGGradientFrame::GetStopInformation(PRInt32 aIndex,
 #endif
 }
 
-nsresult
-nsSVGGradientFrame::GetGradientTransform(nsIDOMSVGMatrix **aGradientTransform,
-                                         nsSVGGeometryFrame *aSource)
+gfxMatrix
+nsSVGGradientFrame::GetGradientTransform(nsSVGGeometryFrame *aSource)
 {
-  *aGradientTransform = nsnull;
+  gfxMatrix bboxMatrix;
 
-  nsCOMPtr<nsIDOMSVGMatrix> bboxTransform;
   PRUint16 gradientUnits = GetGradientUnits();
-  if (gradientUnits == nsIDOMSVGGradientElement::SVG_GRUNITS_USERSPACEONUSE) {
+  nsIAtom *callerType = aSource->GetType();
+  if (gradientUnits == nsIDOMSVGUnitTypes::SVG_UNIT_TYPE_USERSPACEONUSE) {
     // If this gradient is applied to text, our caller
     // will be the glyph, which is not a container, so we
     // need to get the parent
-    nsIAtom *callerType = aSource->GetType();
     if (callerType ==  nsGkAtoms::svgGlyphFrame)
-      mSourceContent = NS_STATIC_CAST(nsSVGElement*,
-                                      aSource->GetContent()->GetParent());
+      mSourceContent = static_cast<nsSVGElement*>
+                                  (aSource->GetContent()->GetParent());
     else
-      mSourceContent = NS_STATIC_CAST(nsSVGElement*, aSource->GetContent());
+      mSourceContent = static_cast<nsSVGElement*>(aSource->GetContent());
     NS_ASSERTION(mSourceContent, "Can't get content for gradient");
   }
   else {
-    NS_ASSERTION(gradientUnits == nsIDOMSVGGradientElement::SVG_GRUNITS_OBJECTBOUNDINGBOX,
+    NS_ASSERTION(gradientUnits == nsIDOMSVGUnitTypes::SVG_UNIT_TYPE_OBJECTBOUNDINGBOX,
                  "Unknown gradientUnits type");
     // objectBoundingBox is the default anyway
 
     nsISVGChildFrame *frame = nsnull;
-    if (aSource)
-      CallQueryInterface(aSource, &frame);
+    if (aSource) {
+      if (callerType == nsGkAtoms::svgGlyphFrame)
+        CallQueryInterface(aSource->GetParent(), &frame);
+      else
+        CallQueryInterface(aSource, &frame);
+    }
     nsCOMPtr<nsIDOMSVGRect> rect;
     if (frame) {
+      nsCOMPtr<nsIDOMSVGMatrix> matrix = frame->GetOverrideCTM();
       frame->SetMatrixPropagation(PR_FALSE);
-      frame->NotifyCanvasTMChanged(PR_TRUE);
+      frame->SetOverrideCTM(nsnull);
+      frame->NotifySVGChanged(nsISVGChildFrame::SUPPRESS_INVALIDATION |
+                              nsISVGChildFrame::TRANSFORM_CHANGED);
       frame->GetBBox(getter_AddRefs(rect));
       frame->SetMatrixPropagation(PR_TRUE);
-      frame->NotifyCanvasTMChanged(PR_TRUE);
+      frame->SetOverrideCTM(matrix);
+      frame->NotifySVGChanged(nsISVGChildFrame::SUPPRESS_INVALIDATION |
+                              nsISVGChildFrame::TRANSFORM_CHANGED);
     }
     if (rect) {
       float x, y, width, height;
@@ -261,33 +286,25 @@ nsSVGGradientFrame::GetGradientTransform(nsIDOMSVGMatrix **aGradientTransform,
       rect->GetY(&y);
       rect->GetWidth(&width);
       rect->GetHeight(&height);
-      NS_NewSVGMatrix(getter_AddRefs(bboxTransform),
-                      width, 0, 0, height, x, y);
+      bboxMatrix = gfxMatrix(width, 0, 0, height, x, y);
     }
   }
-
-  if (!bboxTransform)
-    NS_NewSVGMatrix(getter_AddRefs(bboxTransform));
 
   nsIContent *gradient = GetGradientWithAttr(nsGkAtoms::gradientTransform);
   if (!gradient)
     gradient = mContent;  // use our gradient to get the correct default value
 
-  nsCOMPtr<nsIDOMSVGGradientElement> gradElement = do_QueryInterface(gradient);
-  nsCOMPtr<nsIDOMSVGAnimatedTransformList> animTrans;
-  gradElement->GetGradientTransform(getter_AddRefs(animTrans));
+  nsSVGGradientElement *gradElement = static_cast<nsSVGGradientElement*>
+                                                 (gradient);
   nsCOMPtr<nsIDOMSVGTransformList> trans;
-  animTrans->GetAnimVal(getter_AddRefs(trans));
-  nsCOMPtr<nsIDOMSVGMatrix> gradientTransform;
-  trans->GetConsolidationMatrix(getter_AddRefs(gradientTransform));
+  gradElement->mGradientTransform->GetAnimVal(getter_AddRefs(trans));
+  nsCOMPtr<nsIDOMSVGMatrix> gradientTransform =
+    nsSVGTransformList::GetConsolidationMatrix(trans);
 
-  if (!gradientTransform) {
-    *aGradientTransform = bboxTransform;
-    NS_ADDREF(*aGradientTransform);
-    return NS_OK;
-  }
+  if (!gradientTransform)
+    return bboxMatrix;
 
-  return bboxTransform->Multiply(gradientTransform, aGradientTransform);
+  return nsSVGUtils::ConvertSVGMatrixToThebes(gradientTransform) * bboxMatrix;
 }
 
 PRUint16
@@ -297,84 +314,76 @@ nsSVGGradientFrame::GetSpreadMethod()
   if (!gradient)
     gradient = mContent;  // use our gradient to get the correct default value
 
-  nsCOMPtr<nsIDOMSVGGradientElement> gradElement = do_QueryInterface(gradient);
-  nsCOMPtr<nsIDOMSVGAnimatedEnumeration> method;
-  gradElement->GetSpreadMethod(getter_AddRefs(method));
+  nsSVGGradientElement *gradElement = static_cast<nsSVGGradientElement*>
+                                                 (gradient);
 
-  PRUint16 val;
-  method->GetAnimVal(&val);
-  return val;
+  return gradElement->mEnumAttributes[nsSVGGradientElement::SPREADMETHOD].GetAnimValue();
 }
 
 //----------------------------------------------------------------------
 // nsSVGPaintServerFrame methods:
 
-nsresult
-nsSVGGradientFrame::SetupPaintServer(nsISVGRendererCanvas *aCanvas,
-                                     cairo_t *aCtx,
+PRBool
+nsSVGGradientFrame::SetupPaintServer(gfxContext *aContext,
                                      nsSVGGeometryFrame *aSource,
-                                     float aOpacity,
-                                     void **aClosure)
+                                     float aGraphicOpacity)
 {
-  *aClosure = nsnull;
-
   // Get the transform list (if there is one)
-  nsCOMPtr<nsIDOMSVGMatrix> svgMatrix;
-  GetGradientTransform(getter_AddRefs(svgMatrix), aSource);
-  if (!svgMatrix)
-    return NS_ERROR_FAILURE;
+  gfxMatrix patternMatrix = GetGradientTransform(aSource);
 
-  cairo_matrix_t patternMatrix = NS_ConvertSVGMatrixToCairo(svgMatrix);
-  if (cairo_matrix_invert(&patternMatrix))
-    return NS_ERROR_FAILURE;
+  if (patternMatrix.IsSingular())
+    return PR_FALSE;
 
-  cairo_pattern_t *gradient = CreateGradient();
+  PRUint32 nStops = GetStopCount();
+
+  // SVG specification says that no stops should be treated like
+  // the corresponding fill or stroke had "none" specified.
+  if (nStops == 0) {
+    aContext->SetColor(gfxRGBA(0, 0, 0, 0));
+    return PR_TRUE;
+  }
+
+  patternMatrix.Invert();
+
+  nsRefPtr<gfxPattern> gradient = CreateGradient();
   if (!gradient)
-    return NS_ERROR_FAILURE;
+    return PR_FALSE;
 
   PRUint16 aSpread = GetSpreadMethod();
   if (aSpread == nsIDOMSVGGradientElement::SVG_SPREADMETHOD_PAD)
-    cairo_pattern_set_extend(gradient, CAIRO_EXTEND_PAD);
+    gradient->SetExtend(gfxPattern::EXTEND_PAD);
   else if (aSpread == nsIDOMSVGGradientElement::SVG_SPREADMETHOD_REFLECT)
-    cairo_pattern_set_extend(gradient, CAIRO_EXTEND_REFLECT);
+    gradient->SetExtend(gfxPattern::EXTEND_REFLECT);
   else if (aSpread == nsIDOMSVGGradientElement::SVG_SPREADMETHOD_REPEAT)
-    cairo_pattern_set_extend(gradient, CAIRO_EXTEND_REPEAT);
-  
-  cairo_pattern_set_matrix(gradient, &patternMatrix);
+    gradient->SetExtend(gfxPattern::EXTEND_REPEAT);
+
+  gradient->SetMatrix(patternMatrix);
 
   // setup stops
-  PRUint32 nStops = GetStopCount();
   float lastOffset = 0.0f;
 
   for (PRUint32 i = 0; i < nStops; i++) {
-    float offset, opacity;
-    nscolor rgba;
+    float offset, stopOpacity;
+    nscolor stopColor;
 
-    GetStopInformation(i, &offset, &rgba, &opacity);
+    GetStopInformation(i, &offset, &stopColor, &stopOpacity);
 
     if (offset < lastOffset)
       offset = lastOffset;
     else
       lastOffset = offset;
 
-    cairo_pattern_add_color_stop_rgba(gradient, offset,
-                                      NS_GET_R(rgba)/255.0,
-                                      NS_GET_G(rgba)/255.0,
-                                      NS_GET_B(rgba)/255.0,
-                                      opacity * aOpacity);
+    gradient->AddColorStop(offset,
+                           gfxRGBA(NS_GET_R(stopColor)/255.0,
+                                   NS_GET_G(stopColor)/255.0,
+                                   NS_GET_B(stopColor)/255.0,
+                                   NS_GET_A(stopColor)/255.0 *
+                                     stopOpacity * aGraphicOpacity));
   }
 
-  cairo_set_source(aCtx, gradient);
+  aContext->SetPattern(gradient);
 
-  *aClosure = gradient;
-  return NS_OK;
-}
-
-void
-nsSVGGradientFrame::CleanupPaintServer(cairo_t *aCtx, void *aClosure)
-{
-  cairo_pattern_t *gradient = NS_STATIC_CAST(cairo_pattern_t*, aClosure);
-  cairo_pattern_destroy(gradient);
+  return PR_TRUE;
 }
 
 // Private (helper) methods
@@ -403,13 +412,13 @@ nsSVGGradientFrame::GetRefedGradientFromHref()
   // going to have to get the PresShell in each call
   nsIFrame *nextGrad;
   if (NS_SUCCEEDED(nsSVGUtils::GetReferencedFrame(&nextGrad, targetURI, mContent,
-                                                  GetPresContext()->PresShell()))) {
+                                                  PresContext()->PresShell()))) {
     nsIAtom* frameType = nextGrad->GetType();
     if (frameType != nsGkAtoms::svgLinearGradientFrame && 
         frameType != nsGkAtoms::svgRadialGradientFrame)
       return;
 
-    mNextGrad = NS_REINTERPRET_CAST(nsSVGGradientFrame*, nextGrad);
+    mNextGrad = reinterpret_cast<nsSVGGradientFrame*>(nextGrad);
 
     // Add ourselves to the observer list
     if (mNextGrad) {
@@ -524,12 +533,10 @@ nsSVGGradientFrame::GetGradientUnits()
   if (!gradient)
     gradient = mContent;  // use our gradient to get the correct default value
 
-  nsCOMPtr<nsIDOMSVGGradientElement> gradElement = do_QueryInterface(gradient);
-  nsCOMPtr<nsIDOMSVGAnimatedEnumeration> animUnits;
-  gradElement->GetGradientUnits(getter_AddRefs(animUnits));
-  PRUint16 units;
-  animUnits->GetAnimVal(&units);
-  return units;
+  nsSVGGradientElement *gradElement = static_cast<nsSVGGradientElement*>
+                                                 (gradient);
+
+  return gradElement->mEnumAttributes[nsSVGGradientElement::GRADIENTUNITS].GetAnimValue();
 }
 
 // -------------------------------------------------------------------------
@@ -539,7 +546,7 @@ nsSVGGradientFrame::GetGradientUnits()
 nsIAtom*
 nsSVGLinearGradientFrame::GetType() const
 {
-  return nsLayoutAtoms::svgLinearGradientFrame;
+  return nsGkAtoms::svgLinearGradientFrame;
 }
 
 NS_IMETHODIMP
@@ -572,26 +579,26 @@ nsSVGLinearGradientFrame::GradientLookupAttribute(nsIAtom *aAtomName,
     gradient = mContent;  // use our gradient to get the correct default value
 
   nsSVGLinearGradientElement *element =
-    NS_STATIC_CAST(nsSVGLinearGradientElement*, gradient);
+    static_cast<nsSVGLinearGradientElement*>(gradient);
 
   // Object bounding box units are handled by setting the appropriate
-  // transform in GetGradientTransfrom, but we need to handle user
+  // transform in GetGradientTransform, but we need to handle user
   // space units as part of the individual Get* routines.  Fixes 323669.
 
   PRUint16 gradientUnits = GetGradientUnits();
-  if (gradientUnits == nsIDOMSVGGradientElement::SVG_GRUNITS_USERSPACEONUSE) {
+  if (gradientUnits == nsIDOMSVGUnitTypes::SVG_UNIT_TYPE_USERSPACEONUSE) {
     return nsSVGUtils::UserSpace(mSourceContent,
                                  &element->mLengthAttributes[aEnumName]);
   }
 
-  NS_ASSERTION(gradientUnits == nsIDOMSVGGradientElement::SVG_GRUNITS_OBJECTBOUNDINGBOX,
+  NS_ASSERTION(gradientUnits == nsIDOMSVGUnitTypes::SVG_UNIT_TYPE_OBJECTBOUNDINGBOX,
                "Unknown gradientUnits type");
 
   return element->mLengthAttributes[aEnumName].
-    GetAnimValue(NS_STATIC_CAST(nsSVGCoordCtxProvider*, nsnull));
+    GetAnimValue(static_cast<nsSVGSVGElement*>(nsnull));
 }
 
-cairo_pattern_t *
+already_AddRefed<gfxPattern>
 nsSVGLinearGradientFrame::CreateGradient()
 {
   float x1, y1, x2, y2;
@@ -601,7 +608,9 @@ nsSVGLinearGradientFrame::CreateGradient()
   x2 = GradientLookupAttribute(nsGkAtoms::x2, nsSVGLinearGradientElement::X2);
   y2 = GradientLookupAttribute(nsGkAtoms::y2, nsSVGLinearGradientElement::Y2);
 
-  return cairo_pattern_create_linear(x1, y1, x2, y2);
+  gfxPattern *pattern = new gfxPattern(x1, y1, x2, y2);
+  NS_IF_ADDREF(pattern);
+  return pattern;
 }
 
 // -------------------------------------------------------------------------
@@ -611,7 +620,7 @@ nsSVGLinearGradientFrame::CreateGradient()
 nsIAtom*
 nsSVGRadialGradientFrame::GetType() const
 {
-  return nsLayoutAtoms::svgRadialGradientFrame;
+  return nsGkAtoms::svgRadialGradientFrame;
 }
 
 NS_IMETHODIMP
@@ -652,26 +661,26 @@ nsSVGRadialGradientFrame::GradientLookupAttribute(nsIAtom *aAtomName,
   }
 
   nsSVGRadialGradientElement *element =
-    NS_STATIC_CAST(nsSVGRadialGradientElement*, gradient);
+    static_cast<nsSVGRadialGradientElement*>(gradient);
 
   // Object bounding box units are handled by setting the appropriate
-  // transform in GetGradientTransfrom, but we need to handle user
+  // transform in GetGradientTransform, but we need to handle user
   // space units as part of the individual Get* routines.  Fixes 323669.
 
   PRUint16 gradientUnits = GetGradientUnits();
-  if (gradientUnits == nsIDOMSVGGradientElement::SVG_GRUNITS_USERSPACEONUSE) {
+  if (gradientUnits == nsIDOMSVGUnitTypes::SVG_UNIT_TYPE_USERSPACEONUSE) {
     return nsSVGUtils::UserSpace(mSourceContent,
                                  &element->mLengthAttributes[aEnumName]);
   }
 
-  NS_ASSERTION(gradientUnits == nsIDOMSVGGradientElement::SVG_GRUNITS_OBJECTBOUNDINGBOX,
+  NS_ASSERTION(gradientUnits == nsIDOMSVGUnitTypes::SVG_UNIT_TYPE_OBJECTBOUNDINGBOX,
                "Unknown gradientUnits type");
 
   return element->mLengthAttributes[aEnumName].
-    GetAnimValue(NS_STATIC_CAST(nsSVGCoordCtxProvider*, nsnull));
+    GetAnimValue(static_cast<nsSVGSVGElement*>(nsnull));
 }
 
-cairo_pattern_t *
+already_AddRefed<gfxPattern>
 nsSVGRadialGradientFrame::CreateGradient()
 {
   float cx, cy, r, fx, fy;
@@ -711,7 +720,9 @@ nsSVGRadialGradientFrame::CreateGradient()
     }
   }
 
-  return cairo_pattern_create_radial(fx, fy, 0, cx, cy, r);
+  gfxPattern *pattern = new gfxPattern(fx, fy, 0, cx, cy, r);
+  NS_IF_ADDREF(pattern);
+  return pattern;
 }
 
 // -------------------------------------------------------------------------
@@ -724,24 +735,15 @@ NS_NewSVGLinearGradientFrame(nsIPresShell*   aPresShell,
                              nsStyleContext* aContext)
 {
   nsCOMPtr<nsIDOMSVGLinearGradientElement> grad = do_QueryInterface(aContent);
-  NS_ASSERTION(grad, "NS_NewSVGLinearGradientFrame -- Content doesn't support nsIDOMSVGLinearGradient");
-  if (!grad)
+  if (!grad) {
+    NS_ERROR("Can't create frame! Content is not an SVG linearGradient");
     return nsnull;
+  }
   
-  nsSVGLinearGradientFrame* it = new (aPresShell) nsSVGLinearGradientFrame(aContext);
-  if (nsnull == it)
-    return nsnull;
-
   nsCOMPtr<nsIDOMSVGURIReference> aRef = do_QueryInterface(aContent);
   NS_ASSERTION(aRef, "NS_NewSVGLinearGradientFrame -- Content doesn't support nsIDOMSVGURIReference");
-  if (aRef) {
-    // Get the href
-    aRef->GetHref(getter_AddRefs(it->mHref));
-  }
-  it->mNextGrad = nsnull;
-  it->mLoopFlag = PR_FALSE;
-  it->mInitialized = PR_FALSE;
-  return it;
+
+  return new (aPresShell) nsSVGLinearGradientFrame(aContext, aRef);
 }
 
 nsIFrame*
@@ -750,22 +752,13 @@ NS_NewSVGRadialGradientFrame(nsIPresShell*   aPresShell,
                              nsStyleContext* aContext)
 {
   nsCOMPtr<nsIDOMSVGRadialGradientElement> grad = do_QueryInterface(aContent);
-  NS_ASSERTION(grad, "NS_NewSVGRadialGradientFrame -- Content doesn't support nsIDOMSVGRadialGradient");
-  if (!grad)
+  if (!grad) {
+    NS_ERROR("Can't create frame! Content is not an SVG radialGradient");
     return nsnull;
+  }
   
-  nsSVGRadialGradientFrame* it = new (aPresShell) nsSVGRadialGradientFrame(aContext);
-  if (nsnull == it)
-    return nsnull;
-
   nsCOMPtr<nsIDOMSVGURIReference> aRef = do_QueryInterface(aContent);
   NS_ASSERTION(aRef, "NS_NewSVGRadialGradientFrame -- Content doesn't support nsIDOMSVGURIReference");
-  if (aRef) {
-    // Get the href
-    aRef->GetHref(getter_AddRefs(it->mHref));
-  }
-  it->mNextGrad = nsnull;
-  it->mLoopFlag = PR_FALSE;
-  it->mInitialized = PR_FALSE;
-  return it;
+
+  return new (aPresShell) nsSVGRadialGradientFrame(aContext, aRef);
 }

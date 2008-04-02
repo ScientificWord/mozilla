@@ -46,13 +46,13 @@
 #include "nsIContent.h"
 #include "nsIDOMElement.h"
 #include "nsITimer.h"
-#include "nsIRootBox.h"
 #include "nsCOMPtr.h"
 #include "nsString.h"
 #ifdef MOZ_XUL
 #include "nsITreeBoxObject.h"
 #include "nsITreeColumns.h"
 #endif
+#include "nsWeakPtr.h"
 
 class nsXULTooltipListener : public nsIDOMMouseListener,
                              public nsIDOMMouseMotionListener,
@@ -60,52 +60,56 @@ class nsXULTooltipListener : public nsIDOMMouseListener,
                              public nsIDOMXULListener
 {
 public:
-
-  nsXULTooltipListener();
-  virtual ~nsXULTooltipListener();
-
-  // nsISupports
   NS_DECL_ISUPPORTS
 
   // nsIDOMMouseListener
   NS_IMETHOD MouseDown(nsIDOMEvent* aMouseEvent);
   NS_IMETHOD MouseUp(nsIDOMEvent* aMouseEvent);
-  NS_IMETHOD MouseClick(nsIDOMEvent* aMouseEvent) { return NS_OK; };
-  NS_IMETHOD MouseDblClick(nsIDOMEvent* aMouseEvent) { return NS_OK; };
-  NS_IMETHOD MouseOver(nsIDOMEvent* aMouseEvent) { return NS_OK; };
+  NS_IMETHOD MouseClick(nsIDOMEvent* aMouseEvent) { return NS_OK; }
+  NS_IMETHOD MouseDblClick(nsIDOMEvent* aMouseEvent) { return NS_OK; }
+  NS_IMETHOD MouseOver(nsIDOMEvent* aMouseEvent) { return NS_OK; }
   NS_IMETHOD MouseOut(nsIDOMEvent* aMouseEvent);
 
   // nsIDOMMouseMotionListener
-  NS_IMETHOD DragMove(nsIDOMEvent* aMouseEvent) { return NS_OK; };
+  NS_IMETHOD DragMove(nsIDOMEvent* aMouseEvent) { return NS_OK; }
   NS_IMETHOD MouseMove(nsIDOMEvent* aMouseEvent);
 
   // nsIDOMKeyListener
   NS_IMETHOD KeyDown(nsIDOMEvent* aKeyEvent);
-  NS_IMETHOD KeyUp(nsIDOMEvent* aKeyEvent) { return NS_OK; };
-  NS_IMETHOD KeyPress(nsIDOMEvent* aKeyEvent) { return NS_OK; };
+  NS_IMETHOD KeyUp(nsIDOMEvent* aKeyEvent) { return NS_OK; }
+  NS_IMETHOD KeyPress(nsIDOMEvent* aKeyEvent) { return NS_OK; }
 
   // nsIDOMXULListener
-  NS_IMETHOD PopupShowing(nsIDOMEvent* aEvent) { return NS_OK; };
-  NS_IMETHOD PopupShown(nsIDOMEvent* aEvent) { return NS_OK; };
+  NS_IMETHOD PopupShowing(nsIDOMEvent* aEvent) { return NS_OK; }
+  NS_IMETHOD PopupShown(nsIDOMEvent* aEvent) { return NS_OK; }
   NS_IMETHOD PopupHiding(nsIDOMEvent* aEvent);
-  NS_IMETHOD PopupHidden(nsIDOMEvent* aEvent) { return NS_OK; };
-  NS_IMETHOD Close(nsIDOMEvent* aEvent) { return NS_OK; };
-  NS_IMETHOD Command(nsIDOMEvent* aEvent) { return NS_OK; };
-  NS_IMETHOD Broadcast(nsIDOMEvent* aEvent) { return NS_OK; };
-  NS_IMETHOD CommandUpdate(nsIDOMEvent* aEvent) { return NS_OK; };
+  NS_IMETHOD PopupHidden(nsIDOMEvent* aEvent) { return NS_OK; }
+  NS_IMETHOD Close(nsIDOMEvent* aEvent) { return NS_OK; }
+  NS_IMETHOD Command(nsIDOMEvent* aEvent) { return NS_OK; }
+  NS_IMETHOD Broadcast(nsIDOMEvent* aEvent) { return NS_OK; }
+  NS_IMETHOD CommandUpdate(nsIDOMEvent* aEvent) { return NS_OK; }
 
   // nsIDOMEventListener
   NS_IMETHOD HandleEvent(nsIDOMEvent* aEvent);
 
-  nsresult Init(nsIContent* aSourceNode, nsIRootBox* aRootBox);
   nsresult AddTooltipSupport(nsIContent* aNode);
   nsresult RemoveTooltipSupport(nsIContent* aNode);
+  static nsXULTooltipListener* GetInstance() {
+    if (!mInstance)
+      mInstance = new nsXULTooltipListener();
+    return mInstance;
+  }
+  static void ClearTooltipCache() { mInstance = nsnull; }
 
 protected:
+
+  nsXULTooltipListener();
+  ~nsXULTooltipListener();
 
   // pref callback for when the "show tooltips" pref changes
   static int sTooltipPrefChanged (const char* aPref, void* aData);
   static PRBool sShowTooltips;
+  static PRUint32 sTooltipListenerCount;
 
   void KillTooltipTimer();
   void CreateAutoHideTimer();
@@ -116,22 +120,32 @@ protected:
 #endif
 
   nsresult ShowTooltip();
-  nsresult LaunchTooltip(nsIContent* aTarget, PRInt32 aX, PRInt32 aY);
+  void LaunchTooltip();
   nsresult HideTooltip();
   nsresult DestroyTooltip();
+  // This method tries to find a tooltip for aTarget.
+  nsresult FindTooltip(nsIContent* aTarget, nsIContent** aTooltip);
+  // This method calls FindTooltip and checks that the tooltip
+  // can be really used (i.e. tooltip is not a menu).
   nsresult GetTooltipFor(nsIContent* aTarget, nsIContent** aTooltip);
 
+  static nsXULTooltipListener* mInstance;
   static int ToolbarTipsPrefChanged(const char *aPref, void *aClosure);
 
-  nsIRootBox* mRootBox;
-  nsIContent* mSourceNode;
-  nsCOMPtr<nsIContent> mTargetNode;
-  nsCOMPtr<nsIContent> mCurrentTooltip;
+  nsWeakPtr mSourceNode;
+  nsWeakPtr mTargetNode;
+  nsWeakPtr mCurrentTooltip;
 
   // a timer for showing the tooltip
   nsCOMPtr<nsITimer> mTooltipTimer;
   static void sTooltipCallback (nsITimer* aTimer, void* aListener);
-  PRInt32 mMouseClientX, mMouseClientY;
+
+  // screen coordinates of the last mousemove event, stored so that the
+  // tooltip can be opened at this location.
+  PRInt32 mMouseScreenX, mMouseScreenY;
+
+  // last cached mouse event
+  nsCOMPtr<nsIDOMEvent> mCachedMouseEvent;
 
   // a timer for auto-hiding the tooltip after a certain delay
   nsCOMPtr<nsITimer> mAutoHideTimer;

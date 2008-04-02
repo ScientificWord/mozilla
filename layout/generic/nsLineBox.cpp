@@ -45,8 +45,7 @@
 #include "nsLineLayout.h"
 #include "prprf.h"
 #include "nsBlockFrame.h"
-#include "nsITextContent.h"
-#include "nsLayoutAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsFrameManager.h"
 #ifdef IBMBIDI
 #include "nsBidiPresUtils.h"
@@ -60,8 +59,6 @@ PRInt32 nsLineBox::GetCtorCount() { return ctorCount; }
 nsLineBox::nsLineBox(nsIFrame* aFrame, PRInt32 aCount, PRBool aIsBlock)
   : mFirstChild(aFrame),
     mBounds(0, 0, 0, 0),
-    mMaxElementWidth(0),
-    mMaximumWidth(-1),
     mData(nsnull)
 {
   MOZ_COUNT_CTOR(nsLineBox);
@@ -70,7 +67,7 @@ nsLineBox::nsLineBox(nsIFrame* aFrame, PRInt32 aCount, PRBool aIsBlock)
   NS_ASSERTION(!aIsBlock || aCount == 1, "Blocks must have exactly one child");
   nsIFrame* f = aFrame;
   for (PRInt32 n = aCount; n > 0; f = f->GetNextSibling(), --n) {
-    NS_ASSERTION(aIsBlock == f->GetStyleDisplay()->IsBlockLevel(),
+    NS_ASSERTION(aIsBlock == f->GetStyleDisplay()->IsBlockOutside(),
                  "wrong kind of child frame");
   }
 #endif
@@ -145,10 +142,10 @@ ListFloats(FILE* out, PRInt32 aIndent, const nsFloatCacheList& aFloats)
   while (fc) {
     nsFrame::IndentBy(out, aIndent);
     nsPlaceholderFrame* ph = fc->mPlaceholder;
-    if (nsnull != ph) {
-      fprintf(out, "placeholder@%p ", NS_STATIC_CAST(void*, ph));
+    if (ph) {
+      fprintf(out, "placeholder@%p ", static_cast<void*>(ph));
       nsIFrame* frame = ph->GetOutOfFlowFrame();
-      if (nsnull != frame) {
+      if (frame) {
         nsIFrameDebug*  frameDebug;
 
         if (NS_SUCCEEDED(frame->QueryInterface(NS_GET_IID(nsIFrameDebug), (void**)&frameDebug))) {
@@ -156,13 +153,13 @@ ListFloats(FILE* out, PRInt32 aIndent, const nsFloatCacheList& aFloats)
           fputs(NS_LossyConvertUTF16toASCII(frameName).get(), out);
         }
       }
-      fprintf(out, " %s region={%d,%d,%d,%d} combinedArea={%d,%d,%d,%d}",
-              fc->mIsCurrentLineFloat ? "cl" : "bcl",
+      fprintf(out, " region={%d,%d,%d,%d}",
               fc->mRegion.x, fc->mRegion.y,
-              fc->mRegion.width, fc->mRegion.height,
-              fc->mCombinedArea.x, fc->mCombinedArea.y,
-              fc->mCombinedArea.width, fc->mCombinedArea.height);
+              fc->mRegion.width, fc->mRegion.height);
 
+      if (!frame) {
+        fputs("\n###!!! NULL out-of-flow frame", out);
+      }
       fprintf(out, "\n");
     }
     fc = fc->Next();
@@ -212,13 +209,10 @@ nsLineBox::List(FILE* out, PRInt32 aIndent) const
   for (i = aIndent; --i >= 0; ) fputs("  ", out);
   char cbuf[100];
   fprintf(out, "line %p: count=%d state=%s ",
-          NS_STATIC_CAST(const void*, this), GetChildCount(),
+          static_cast<const void*>(this), GetChildCount(),
           StateToString(cbuf, sizeof(cbuf)));
   if (IsBlock() && !GetCarriedOutBottomMargin().IsZero()) {
     fprintf(out, "bm=%d ", GetCarriedOutBottomMargin().get());
-  }
-  if (0 != mMaxElementWidth) {
-    fprintf(out, "mew=%d ", mMaxElementWidth);
   }
   fprintf(out, "{%d,%d,%d,%d} ",
           mBounds.x, mBounds.y, mBounds.width, mBounds.height);
@@ -280,29 +274,6 @@ nsLineBox::IndexOf(nsIFrame* aFrame) const
     frame = frame->GetNextSibling();
   }
   return -1;
-}
-
-PRBool
-nsLineBox::ContainsAfter(nsIFrame* aFrameInLine,
-                         nsIFrame* aFrameToFind,
-                         nsLineList::iterator aLineIter,
-                         const nsLineList::iterator& aEndLines) const
-{
-  nsIFrame* firstFrameOnNextLine = nsnull;
-  ++aLineIter;
-  if (aLineIter != aEndLines)
-    firstFrameOnNextLine = aLineIter->mFirstChild;
-
-  nsIFrame* frame = aFrameInLine;
-  if (!frame)
-    frame = mFirstChild;
-
-  while (frame && frame != firstFrameOnNextLine) {
-    if (frame == aFrameToFind)
-      return PR_TRUE;
-    frame = frame->GetNextSibling();
-  }
-  return PR_FALSE;
 }
 
 PRBool
@@ -525,34 +496,6 @@ nsLineBox::RemoveFloat(nsIFrame* aFrame)
 }
 
 void
-nsLineBox::RemovePlaceholderDescendantsOf(nsIFrame* aFrame)
-{
-  if (IsInline() && mInlineData) {
-    nsFloatCache* fc = mInlineData->mFloats.Head();
-    while (fc) {
-      nsIFrame* frame = fc->mPlaceholder;
-      while (frame && frame != aFrame) {
-        if (frame->IsFloatContainingBlock()) {
-          frame = nsnull;
-          break;
-        }
-        frame = frame->GetParent();
-      }
-      if (NS_UNLIKELY(frame != nsnull)) {
-        nsFloatCache* next = fc->Next();
-        mInlineData->mFloats.Remove(fc);
-        delete fc;
-        MaybeFreeData();
-        fc = next;
-      }
-      else {
-        fc = fc->Next();
-      }
-    }
-  }
-}
-
-void
 nsLineBox::SetCombinedArea(const nsRect& aCombinedArea)
 {  
   NS_ASSERTION(aCombinedArea.width >= 0, "illegal width for combined area");
@@ -742,10 +685,12 @@ nsLineIterator::CheckLineOrder(PRInt32                  aLine,
 
   if (!line->mFirstChild) { // empty line
     *aIsReordered = PR_FALSE;
+    *aFirstVisual = nsnull;
+    *aLastVisual = nsnull;
     return NS_OK;
   }
   
-  nsPresContext* presContext = line->mFirstChild->GetPresContext();
+  nsPresContext* presContext = line->mFirstChild->PresContext();
 
   nsBidiPresUtils* bidiUtils = presContext->GetBidiUtils();
 
@@ -920,8 +865,6 @@ nsFloatCacheList::Find(nsIFrame* aOutOfFlowFrame)
 nsFloatCache*
 nsFloatCacheList::RemoveAndReturnPrev(nsFloatCache* aElement)
 {
-  NS_ASSERTION(!aElement->mNext, "Can only remove a singleton element");
-
   nsFloatCache* fc = mHead;
   nsFloatCache* prev = nsnull;
   while (fc) {
@@ -936,6 +879,7 @@ nsFloatCacheList::RemoveAndReturnPrev(nsFloatCache* aElement)
     prev = fc;
     fc = fc->mNext;
   }
+  return nsnull;
 }
 
 //----------------------------------------------------------------------
@@ -1025,10 +969,6 @@ nsFloatCacheFreeList::Append(nsFloatCache* aFloat)
 
 nsFloatCache::nsFloatCache()
   : mPlaceholder(nsnull),
-    mIsCurrentLineFloat(PR_TRUE),
-    mMargins(0, 0, 0, 0),
-    mOffsets(0, 0, 0, 0),
-    mCombinedArea(0, 0, 0, 0),
     mNext(nsnull)
 {
   MOZ_COUNT_CTOR(nsFloatCache);

@@ -39,12 +39,11 @@
 #include "nsStyleUtil.h"
 #include "nsCRT.h"
 #include "nsStyleConsts.h"
-#include "nsUnitConversion.h"
 
-#include "nsHTMLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsILinkHandler.h"
 #include "nsILink.h"
-#include "nsIXMLContent.h"
+#include "nsIContent.h"
 #include "nsIDocument.h"
 #include "nsINameSpaceManager.h"
 #include "nsIURI.h"
@@ -220,20 +219,16 @@ nsStyleUtil::CalcFontPointSize(PRInt32 aHTMLSize, PRInt32 aBasePointSize,
   }
 
   // Make special call specifically for fonts (needed PrintPreview)
-  PRInt32 fontSize = NSTwipsToIntPixels(aBasePointSize,
-                                        aPresContext->TwipsToPixelsForFonts());
+  PRInt32 fontSize = nsPresContext::AppUnitsToIntCSSPixels(aBasePointSize);
 
   if ((fontSize >= sFontSizeTableMin) && (fontSize <= sFontSizeTableMax))
   {
-    float p2t;
-    p2t = aPresContext->PixelsToTwips();
-
     PRInt32 row = fontSize - sFontSizeTableMin;
 
 	  if (aPresContext->CompatibilityMode() == eCompatibility_NavQuirks) {
-	    dFontSize = NSIntPixelsToTwips(sQuirksFontSizeTable[row][column[aHTMLSize]], p2t);
+	    dFontSize = nsPresContext::CSSPixelsToAppUnits(sQuirksFontSizeTable[row][column[aHTMLSize]]);
 	  } else {
-	    dFontSize = NSIntPixelsToTwips(sStrictFontSizeTable[row][column[aHTMLSize]], p2t);
+	    dFontSize = nsPresContext::CSSPixelsToAppUnits(sStrictFontSizeTable[row][column[aHTMLSize]]);
 	  }
   }
   else
@@ -269,12 +264,9 @@ nscoord nsStyleUtil::FindNextSmallerFontSize(nscoord aFontSize, PRInt32 aBasePoi
   nscoord largestIndexFontSize;
   nscoord smallerIndexFontSize;
   nscoord largerIndexFontSize;
-  float p2t;
-  nscoord onePx;
-  
-  p2t = aPresContext->PixelsToTwips();
-  onePx = NSToCoordRound(p2t);
-    
+
+  nscoord onePx = nsPresContext::CSSPixelsToAppUnits(1);
+
 	if (aFontSizeType == eFontSize_HTML) {
 		indexMin = 1;
 		indexMax = 7;
@@ -337,12 +329,9 @@ nscoord nsStyleUtil::FindNextLargerFontSize(nscoord aFontSize, PRInt32 aBasePoin
   nscoord largestIndexFontSize;
   nscoord smallerIndexFontSize;
   nscoord largerIndexFontSize;
-  float p2t;
-  nscoord onePx;
-  
-  p2t = aPresContext->PixelsToTwips();
-  onePx = NSToCoordRound(p2t);
-    
+
+  nscoord onePx = nsPresContext::CSSPixelsToAppUnits(1);
+
 	if (aFontSizeType == eFontSize_HTML) {
 		indexMin = 1;
 		indexMax = 7;
@@ -382,9 +371,7 @@ nscoord nsStyleUtil::FindNextLargerFontSize(nscoord aFontSize, PRInt32 aBasePoin
     }
   }
   else { // smaller than HTML table, increase by 1px
-    float p2t;
-    p2t = aPresContext->PixelsToTwips();
-    largerSize = aFontSize + NSToCoordRound(p2t); 
+    largerSize = aFontSize + onePx; 
   }
   return largerSize;
 }
@@ -428,9 +415,9 @@ PRBool nsStyleUtil::IsHTMLLink(nsIContent *aContent, nsIAtom *aTag, nsPresContex
 
   PRBool result = PR_FALSE;
 
-  if ((aTag == nsHTMLAtoms::a) ||
-      (aTag == nsHTMLAtoms::link) ||
-      (aTag == nsHTMLAtoms::area)) {
+  if ((aTag == nsGkAtoms::a) ||
+      (aTag == nsGkAtoms::link) ||
+      (aTag == nsGkAtoms::area)) {
 
     nsCOMPtr<nsILink> link( do_QueryInterface(aContent) );
     // In XML documents, this can be null.
@@ -473,34 +460,33 @@ PRBool nsStyleUtil::IsHTMLLink(nsIContent *aContent, nsIAtom *aTag, nsPresContex
   return result;
 }
 
-/*static*/ 
-PRBool nsStyleUtil::IsSimpleXlink(nsIContent *aContent, nsPresContext *aPresContext, nsLinkState *aState)
+/*static*/
+PRBool nsStyleUtil::IsLink(nsIContent    *aContent,
+                           nsPresContext *aPresContext,
+                           nsLinkState   *aState)
 {
   // XXX PERF This function will cause serious performance problems on
   // pages with lots of XLinks.  We should be caching the visited
   // state of the XLinks.  Where???
 
-  NS_ASSERTION(aContent && aState, "invalid call to IsXlink with null content");
+  NS_ASSERTION(aContent && aState, "invalid call to IsLink with null content");
 
   PRBool rv = PR_FALSE;
 
   if (aContent && aState) {
-    // first see if we have an XML element
-    nsCOMPtr<nsIXMLContent> xml(do_QueryInterface(aContent));
-    if (xml) {
-      nsCOMPtr<nsIURI> absURI = nsContentUtils::GetXLinkURI(aContent);
-      if (absURI) {
-        nsILinkHandler *linkHandler = aPresContext->GetLinkHandler();
-        if (linkHandler) {
-          linkHandler->GetLinkState(absURI, *aState);
-        }
-        else {
-          // no link handler?  then all links are unvisited
-          *aState = eLinkState_Unvisited;
-        }
-        aPresContext->Document()->AddStyleRelevantLink(aContent, absURI);
-        rv = PR_TRUE;
+    nsCOMPtr<nsIURI> absURI;
+    if (aContent->IsLink(getter_AddRefs(absURI))) {
+      nsILinkHandler *linkHandler = aPresContext->GetLinkHandler();
+      if (linkHandler) {
+        linkHandler->GetLinkState(absURI, *aState);
       }
+      else {
+        // no link handler?  then all links are unvisited
+        *aState = eLinkState_Unvisited;
+      }
+      aPresContext->Document()->AddStyleRelevantLink(aContent, absURI);
+
+      rv = PR_TRUE;
     }
   }
   return rv;
@@ -567,3 +553,38 @@ void nsStyleUtil::EscapeCSSString(const nsString& aString, nsAString& aReturn)
     }
   }
 }
+
+/* static */ float
+nsStyleUtil::ColorComponentToFloat(PRUint8 aAlpha)
+{
+  // Alpha values are expressed as decimals, so we should convert
+  // back, using as few decimal places as possible for
+  // round-tripping.
+  // First try two decimal places:
+  float rounded = NS_roundf(float(aAlpha) * 100.0f / 255.0f) / 100.0f;
+  if (FloatToColorComponent(rounded) != aAlpha) {
+    // Use three decimal places.
+    rounded = NS_roundf(float(aAlpha) * 1000.0f / 255.0f) / 1000.0f;
+  }
+  return rounded;
+}
+
+/* static */ PRBool
+nsStyleUtil::IsSignificantChild(nsIContent* aChild, PRBool aTextIsSignificant,
+                                PRBool aWhitespaceIsSignificant)
+{
+  NS_ASSERTION(!aWhitespaceIsSignificant || aTextIsSignificant,
+               "Nonsensical arguments");
+
+  PRBool isText = aChild->IsNodeOfType(nsINode::eTEXT);
+
+  if (!isText && !aChild->IsNodeOfType(nsINode::eCOMMENT) &&
+      !aChild->IsNodeOfType(nsINode::ePROCESSING_INSTRUCTION)) {
+    return PR_TRUE;
+  }
+
+  return aTextIsSignificant && isText && aChild->TextLength() != 0 &&
+         (aWhitespaceIsSignificant ||
+          !aChild->TextIsOnlyWhitespace());
+}
+

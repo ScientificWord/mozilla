@@ -88,6 +88,16 @@ CSS_PSEUDO_CLASS(mozTypeUnsupported, ":-moz-type-unsupported")
 
 CSS_PSEUDO_CLASS(mozHasHandlerRef, ":-moz-has-handlerref")
 
+// Match nodes that are HTML but not XHTML
+CSS_PSEUDO_CLASS(mozIsHTML, ":-moz-is-html")
+
+// Matches anything when the specified look-and-feel metric is set
+CSS_PSEUDO_CLASS(mozSystemMetric, ":-moz-system-metric")
+
+#ifdef MOZ_MATHML
+CSS_PSEUDO_CLASS(mozMathIncrementScriptLevel, ":-moz-math-increment-script-level")
+#endif
+
 // CSS 3 UI
 // http://www.w3.org/TR/2004/CR-css3-ui-20040511/#pseudo-classes
 CSS_PSEUDO_CLASS(required, ":required")
@@ -96,5 +106,6 @@ CSS_PSEUDO_CLASS(valid, ":valid")
 CSS_PSEUDO_CLASS(invalid, ":invalid")
 CSS_PSEUDO_CLASS(inRange, ":in-range")
 CSS_PSEUDO_CLASS(outOfRange, ":out-of-range")
+CSS_PSEUDO_CLASS(defaultPseudo, ":default")
 CSS_PSEUDO_CLASS(mozReadOnly, ":-moz-read-only")
 CSS_PSEUDO_CLASS(mozReadWrite, ":-moz-read-write")

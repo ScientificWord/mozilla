@@ -39,22 +39,16 @@
 #ifndef NSSVGFOREIGNOBJECTFRAME_H__
 #define NSSVGFOREIGNOBJECTFRAME_H__
 
-#include "nsBlockFrame.h"
+#include "nsContainerFrame.h"
 #include "nsISVGChildFrame.h"
-#include "nsISVGValueObserver.h"
-#include "nsWeakReference.h"
 #include "nsIDOMSVGMatrix.h"
-#include "nsIDOMSVGLength.h"
 #include "nsRegion.h"
+#include "nsIPresShell.h"
 
 typedef nsContainerFrame nsSVGForeignObjectFrameBase;
 
-class nsISVGFilterFrame;
-
 class nsSVGForeignObjectFrame : public nsSVGForeignObjectFrameBase,
-                                public nsISVGChildFrame,
-                                public nsISVGValueObserver,
-                                public nsSupportsWeakReference
+                                public nsISVGChildFrame
 {
   friend nsIFrame*
   NS_NewSVGForeignObjectFrame(nsIPresShell* aPresShell, nsIContent* aContent, nsStyleContext* aContext);
@@ -64,10 +58,15 @@ protected:
   // nsISupports interface:
   NS_IMETHOD QueryInterface(const nsIID& aIID, void** aInstancePtr);
 private:
-  NS_IMETHOD_(nsrefcnt) AddRef() { return NS_OK; }
-  NS_IMETHOD_(nsrefcnt) Release() { return NS_OK; }  
+  NS_IMETHOD_(nsrefcnt) AddRef() { return 1; }
+  NS_IMETHOD_(nsrefcnt) Release() { return 1; }
+
 public:
   // nsIFrame:  
+  NS_IMETHOD  Init(nsIContent* aContent,
+                   nsIFrame*   aParent,
+                   nsIFrame*   aPrevInFlow);
+  virtual void Destroy();
   NS_IMETHOD  AttributeChanged(PRInt32         aNameSpaceID,
                                nsIAtom*        aAttribute,
                                PRInt32         aModType);
@@ -78,13 +77,23 @@ public:
 
   NS_IMETHOD DidSetStyleContext();
 
+  NS_IMETHOD Reflow(nsPresContext*           aPresContext,
+                    nsHTMLReflowMetrics&     aDesiredSize,
+                    const nsHTMLReflowState& aReflowState,
+                    nsReflowStatus&          aStatus);
+
   /**
    * Get the "type" of the frame
    *
-   * @see nsLayoutAtoms::svgForeignObjectFrame
+   * @see nsGkAtoms::svgForeignObjectFrame
    */
   virtual nsIAtom* GetType() const;
-  virtual PRBool IsFrameOfType(PRUint32 aFlags) const;
+
+  virtual PRBool IsFrameOfType(PRUint32 aFlags) const
+  {
+    return nsSVGForeignObjectFrameBase::IsFrameOfType(aFlags &
+      ~(nsIFrame::eSVG | nsIFrame::eSVGForeignObject));
+  }
 
   virtual void InvalidateInternal(const nsRect& aDamageRect,
                                   nscoord aX, nscoord aY, nsIFrame* aForChild,
@@ -97,26 +106,18 @@ public:
   }
 #endif
 
-  // nsISVGValueObserver
-  NS_IMETHOD WillModifySVGObservable(nsISVGValue* observable,
-                                     nsISVGValue::modificationType aModType);
-  NS_IMETHOD DidModifySVGObservable (nsISVGValue* observable,
-                                     nsISVGValue::modificationType aModType);
-
-  // nsISupportsWeakReference
-  // implementation inherited from nsSupportsWeakReference
-  
   // nsISVGChildFrame interface:
-  NS_IMETHOD PaintSVG(nsISVGRendererCanvas* canvas, nsRect *aDirtyRect);
+  NS_IMETHOD PaintSVG(nsSVGRenderState *aContext, nsRect *aDirtyRect);
   NS_IMETHOD GetFrameForPointSVG(float x, float y, nsIFrame** hit);  
   NS_IMETHOD_(nsRect) GetCoveredRegion();
   NS_IMETHOD UpdateCoveredRegion();
   NS_IMETHOD InitialUpdate();
-  NS_IMETHOD NotifyCanvasTMChanged(PRBool suppressInvalidation);
+  virtual void NotifySVGChanged(PRUint32 aFlags);
   NS_IMETHOD NotifyRedrawSuspended();
   NS_IMETHOD NotifyRedrawUnsuspended();
   NS_IMETHOD SetMatrixPropagation(PRBool aPropagate);
   NS_IMETHOD SetOverrideCTM(nsIDOMSVGMatrix *aCTM);
+  virtual already_AddRefed<nsIDOMSVGMatrix> GetOverrideCTM();
   NS_IMETHOD GetBBox(nsIDOMSVGRect **_retval);
   NS_IMETHOD_(PRBool) IsDisplayContainer() { return PR_TRUE; }
   NS_IMETHOD_(PRBool) HasValidCoveredRect() { return PR_FALSE; }
@@ -129,19 +130,21 @@ public:
   nsPoint TransformPointFromOuter(nsPoint aPt);
 
   already_AddRefed<nsIDOMSVGMatrix> GetCanvasTM();
-  
+
+  // This method allows our nsSVGOuterSVGFrame to reflow us as necessary.
+  void MaybeReflowFromOuterSVGFrame();
+
 protected:
   // implementation helpers:
   void DoReflow();
-  void PostReflowCommand();
+  void RequestReflow(nsIPresShell::IntrinsicDirty aType);
   void UpdateGraphic();
-  float GetPxPerTwips();
-  float GetTwipsPerPx();
-  // Get the bounding box relative to the outer SVG element, in user units
-  void GetBBoxInternal(float* aX, float *aY, float* aWidth, float *aHeight);
   already_AddRefed<nsIDOMSVGMatrix> GetTMIncludingOffset();
   nsresult TransformPointFromOuterPx(float aX, float aY, nsPoint* aOut);
   void FlushDirtyRegion();
+
+  // If width or height is less than or equal to zero we must disable rendering
+  PRBool IsDisabled() const { return mRect.width <= 0 || mRect.height <= 0; }
 
   nsCOMPtr<nsIDOMSVGMatrix> mCanvasTM;
   nsCOMPtr<nsIDOMSVGMatrix> mOverrideCTM;

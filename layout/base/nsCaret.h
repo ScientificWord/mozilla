@@ -45,9 +45,6 @@
 #include "nsITimer.h"
 #include "nsICaret.h"
 #include "nsWeakPtr.h"
-#ifdef IBMBIDI
-#include "nsIBidiKeyboard.h"
-#endif
 
 class nsIView;
 
@@ -110,6 +107,8 @@ class nsCaret : public nsICaret,
                          const nsPoint &aOffset,
                          nscolor aColor);
 
+    void SetIgnoreUserModify(PRBool aIgnoreUserModify);
+
     //nsISelectionListener interface
     NS_DECL_NSISELECTIONLISTENER
 
@@ -156,6 +155,8 @@ class nsCaret : public nsICaret,
     }
     void          ToggleDrawnStatus() { mDrawn = !mDrawn; }
 
+    already_AddRefed<nsFrameSelection> GetFrameSelection();
+
 protected:
 
     nsWeakPtr             mPresShell;
@@ -166,11 +167,13 @@ protected:
 
     PRUint32              mBlinkRate;         // time for one cyle (off then on), in milliseconds
 
-    nscoord               mCaretTwipsWidth;   // caret width in twips. this gets calculated laziiy
-    nscoord               mBidiIndicatorTwipsSize;   // width and height of bidi indicator
+    nscoord               mCaretWidth;   // caret width. this gets calculated laziiy
+    nscoord               mBidiIndicatorSize;   // width and height of bidi indicator
 
     PRPackedBool          mVisible;           // is the caret blinking
-    PRPackedBool          mDrawn;             // this should be mutable
+
+    PRPackedBool          mDrawn;             // Denotes when the caret is physically drawn on the screen.
+
     PRPackedBool          mReadOnly;          // it the caret in readonly state (draws differently)      
     PRPackedBool          mShowDuringSelection; // show when text is selected
 
@@ -185,9 +188,10 @@ protected:
     nsFrameSelection::HINT mLastHint;        // the hint associated with the last request, see also
                                               // mLastBidiLevel below
 
+    PRPackedBool          mIgnoreUserModify;
+
 #ifdef IBMBIDI
     nsRect                mHookRect;          // directional hook on the caret
-    nsCOMPtr<nsIBidiKeyboard> mBidiKeyboard;  // Bidi keyboard object to set and query keyboard language
     PRUint8               mLastBidiLevel;     // saved bidi level of the last draw request, to use when we erase
     PRPackedBool          mKeyboardRTL;       // is the keyboard language right-to-left
 #endif

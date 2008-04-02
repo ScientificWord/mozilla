@@ -44,46 +44,34 @@
 #include "nsWeakReference.h"
 #include "nsIDOMSVGAnimatedString.h"
 #include "nsSVGElement.h"
-#include "cairo.h"
+#include "gfxPattern.h"
 
 class nsIDOMSVGStopElement;
 
 typedef nsSVGPaintServerFrame  nsSVGGradientFrameBase;
 
 class nsSVGGradientFrame : public nsSVGGradientFrameBase,
-                           public nsISVGValueObserver,
-                           public nsSupportsWeakReference
+                           public nsISVGValueObserver
 {
+protected:
+  nsSVGGradientFrame(nsStyleContext* aContext,
+                     nsIDOMSVGURIReference *aRef);
+
+  virtual ~nsSVGGradientFrame();
+
 public:
-  friend nsIFrame* NS_NewSVGLinearGradientFrame(nsIPresShell* aPresShell, 
-                                                nsIContent*   aContent,
-                                                nsStyleContext* aContext);
-
-  friend nsIFrame* NS_NewSVGRadialGradientFrame(nsIPresShell* aPresShell, 
-                                                nsIContent*   aContent,
-                                                nsStyleContext* aContext);
-
-  friend nsIFrame* NS_NewSVGStopFrame(nsIPresShell* aPresShell, 
-                                      nsIContent*   aContent, 
-                                      nsIFrame*     aParentFrame,
-                                      nsStyleContext* aContext);
-
-  nsSVGGradientFrame(nsStyleContext* aContext) :
-    nsSVGGradientFrameBase(aContext) {}
-
   // nsSVGPaintServerFrame methods:
-  virtual nsresult SetupPaintServer(nsISVGRendererCanvas *aCanvas,
-                                    cairo_t *aCtx,
-                                    nsSVGGeometryFrame *aSource,
-                                    float aOpacity,
-                                    void **aClosure);
-  virtual void CleanupPaintServer(cairo_t *aCtx, void *aClosure);
+  virtual PRBool SetupPaintServer(gfxContext *aContext,
+                                  nsSVGGeometryFrame *aSource,
+                                  float aGraphicOpacity);
 
   // nsISupports interface:
   NS_IMETHOD QueryInterface(const nsIID& aIID, void** aInstancePtr);
-  NS_IMETHOD_(nsrefcnt) AddRef() { return NS_OK; }
-  NS_IMETHOD_(nsrefcnt) Release() { return NS_OK; }
+private:
+  NS_IMETHOD_(nsrefcnt) AddRef() { return 1; }
+  NS_IMETHOD_(nsrefcnt) Release() { return 1; }
 
+public:
   // nsISVGValueObserver interface:
   NS_IMETHOD WillModifySVGObservable(nsISVGValue* observable, 
                                      nsISVGValue::modificationType aModType);
@@ -110,7 +98,7 @@ public:
 #endif // DEBUG
 
   // nsISVGChildFrame interface:
-  NS_IMETHOD PaintSVG(nsISVGRendererCanvas* canvas)
+  NS_IMETHOD PaintSVG(gfxContext* aContext)
   {
     return NS_OK;  // override - our frames don't directly render
   }
@@ -141,13 +129,11 @@ private:
   PRUint16 GetSpreadMethod();
   PRUint32 GetStopCount();
   void GetStopInformation(PRInt32 aIndex,
-                          float *aOffset, nscolor *aColor, float *aOpacity);
-  nsresult GetGradientTransform(nsIDOMSVGMatrix **retval,
-                                nsSVGGeometryFrame *aSource);
+                          float *aOffset, nscolor *aColor, float *aStopOpacity);
+  gfxMatrix GetGradientTransform(nsSVGGeometryFrame *aSource);
 
 protected:
-
-  virtual cairo_pattern_t *CreateGradient() = 0;
+  virtual already_AddRefed<gfxPattern> CreateGradient() = 0;
 
   // Use these inline methods instead of GetGradientWithAttr(..., aGradType)
   nsIContent* GetLinearGradientWithAttr(nsIAtom *aAttrName)
@@ -177,13 +163,10 @@ protected:
   // Get the value of our gradientUnits attribute
   PRUint16 GetGradientUnits();
 
-  virtual ~nsSVGGradientFrame();
-
   // The graphic element our gradient is (currently) being applied to
   nsRefPtr<nsSVGElement>                 mSourceContent;
 
 private:
-
   // href of the other gradient we reference (if any)
   nsCOMPtr<nsIDOMSVGAnimatedString>      mHref;
 
@@ -212,10 +195,15 @@ typedef nsSVGGradientFrame nsSVGLinearGradientFrameBase;
 
 class nsSVGLinearGradientFrame : public nsSVGLinearGradientFrameBase
 {
-public:
-  nsSVGLinearGradientFrame(nsStyleContext* aContext) :
-    nsSVGLinearGradientFrameBase(aContext) {}
+  friend nsIFrame* NS_NewSVGLinearGradientFrame(nsIPresShell* aPresShell, 
+                                                nsIContent*   aContent,
+                                                nsStyleContext* aContext);
+protected:
+  nsSVGLinearGradientFrame(nsStyleContext* aContext,
+                           nsIDOMSVGURIReference *aRef) :
+    nsSVGLinearGradientFrameBase(aContext, aRef) {}
 
+public:
   // nsIFrame interface:
   virtual nsIAtom* GetType() const;  // frame type: nsGkAtoms::svgLinearGradientFrame
 
@@ -233,7 +221,7 @@ public:
 
 protected:
   float GradientLookupAttribute(nsIAtom *aAtomName, PRUint16 aEnumName);
-  virtual cairo_pattern_t *CreateGradient();
+  virtual already_AddRefed<gfxPattern> CreateGradient();
 };
 
 // -------------------------------------------------------------------------
@@ -244,10 +232,15 @@ typedef nsSVGGradientFrame nsSVGRadialGradientFrameBase;
 
 class nsSVGRadialGradientFrame : public nsSVGRadialGradientFrameBase
 {
-public:
-  nsSVGRadialGradientFrame(nsStyleContext* aContext) :
-    nsSVGRadialGradientFrameBase(aContext) {}
+  friend nsIFrame* NS_NewSVGRadialGradientFrame(nsIPresShell* aPresShell, 
+                                                nsIContent*   aContent,
+                                                nsStyleContext* aContext);
+protected:
+  nsSVGRadialGradientFrame(nsStyleContext* aContext,
+                           nsIDOMSVGURIReference *aRef) :
+    nsSVGRadialGradientFrameBase(aContext, aRef) {}
 
+public:
   // nsIFrame interface:
   virtual nsIAtom* GetType() const;  // frame type: nsGkAtoms::svgRadialGradientFrame
 
@@ -266,16 +259,8 @@ public:
 protected:
   float GradientLookupAttribute(nsIAtom *aAtomName, PRUint16 aEnumName,
                                 nsIContent *aElement = nsnull);
-  virtual cairo_pattern_t *CreateGradient();
+  virtual already_AddRefed<gfxPattern> CreateGradient();
 };
 
-
-nsIFrame* NS_NewSVGLinearGradientFrame(nsIPresShell*   aPresShell,
-                                       nsIContent*     aContent,
-                                       nsStyleContext* aContext);
-
-nsIFrame* NS_NewSVGRadialGradientFrame(nsIPresShell*   aPresShell,
-                                       nsIContent*     aContent,
-                                       nsStyleContext* aContext);
 #endif // __NS_SVGGRADIENTFRAME_H__
 

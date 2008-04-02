@@ -1,3 +1,4 @@
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -51,7 +52,7 @@ class nsMathMLmoFrame : public nsMathMLTokenFrame {
 public:
   friend nsIFrame* NS_NewMathMLmoFrame(nsIPresShell* aPresShell, nsStyleContext* aContext);
 
-  virtual nsIAtom* GetType() const;
+  virtual eMathMLFrameType GetMathMLFrameType();
 
   virtual void
   SetAdditionalStyleContext(PRInt32          aIndex, 
@@ -75,9 +76,10 @@ public:
          const nsHTMLReflowState& aReflowState,
          nsReflowStatus&          aStatus);
 
-  NS_IMETHOD
-  ReflowDirtyChild(nsIPresShell* aPresShell,
-                   nsIFrame*     aChild);
+  virtual void MarkIntrinsicWidthsDirty();
+
+  virtual nscoord
+  GetIntrinsicWidth(nsIRenderingContext *aRenderingContext);
 
   NS_IMETHOD
   AttributeChanged(PRInt32         aNameSpaceID,
@@ -104,8 +106,7 @@ protected:
   float            mMaxSize;
 
   // overload the base method so that we can setup our nsMathMLChar
-  virtual void
-  ProcessTextData(nsPresContext* aPresContext);
+  virtual void ProcessTextData();
 
   // helper to get our 'form' and lookup in the Operator Dictionary to fetch 
   // our default data that may come from there, and to complete the setup

@@ -50,17 +50,18 @@ class nsICSSParser;
 class nsICSSStyleSheet;
 class nsPresContext;
 class nsIContent;
-class nsIParser;
 class nsIDocument;
 class nsIUnicharInputStream;
 class nsICSSLoaderObserver;
 class nsMediaList;
 class nsICSSImportRule;
+class nsIPrincipal;
 
 // IID for the nsICSSLoader interface
-// ff43802a-b355-41f2-919d-5c7ab3dbfb91
+// 0c6d7e76-dddc-4727-b557-7ef531127e11
 #define NS_ICSS_LOADER_IID     \
-{0x8e8deacc, 0xdfe5, 0x4c61, {0x90, 0x14, 0x65, 0x2b, 0xa7, 0xe9, 0x7f, 0x2c}}
+{ 0x0c6d7e76, 0xdddc, 0x4727, \
+ { 0xb5, 0x57, 0x7e, 0xf5, 0x31, 0x12, 0x7e, 0x11 } }
 
 typedef void (*nsCSSLoaderCallbackFunc)(nsICSSStyleSheet* aSheet, void *aData, PRBool aDidNotify);
 
@@ -97,9 +98,6 @@ public:
    * @param aLineNumber the line number at which the stylesheet data started.
    * @param aTitle the title of the sheet.
    * @param aMedia the media string for the sheet.
-   * @param aParserToUnblock the parser to unblock when the load completes.
-   *        Only loads that returned false for both aIsAlternate and
-   *        aCompleted will unblock the parser.
    * @param aObserver the observer to notify when the load completes.
    *        May be null.
    * @param [out] aCompleted whether parsing of the sheet completed.
@@ -111,7 +109,6 @@ public:
                              PRUint32 aLineNumber,
                              const nsSubstring& aTitle,
                              const nsSubstring& aMedia,
-                             nsIParser* aParserToUnblock,
                              nsICSSLoaderObserver* aObserver,
                              PRBool* aCompleted,
                              PRBool* aIsAlternate) = 0;
@@ -129,9 +126,6 @@ public:
    * @param aMedia the media string for the sheet.
    * @param aHasAlternateRel whether the rel for this link included
    *        "alternate".
-   * @param aParserToUnblock the parser to unblock when the load completes.
-   *        Only loads that returned false for aIsAlternate will unblock
-   *        the parser.
    * @param aObserver the observer to notify when the load completes.
    *                  May be null.
    * @param [out] aIsAlternate whether the stylesheet actually ended up beinga
@@ -143,7 +137,6 @@ public:
                            const nsSubstring& aTitle,
                            const nsSubstring& aMedia,
                            PRBool aHasAlternateRel,
-                           nsIParser* aParserToUnblock,
                            nsICSSLoaderObserver* aObserver,
                            PRBool* aIsAlternate) = 0;
 
@@ -210,10 +203,26 @@ public:
    * sheets not associated with a document.
    *
    * @param aURL the URL of the sheet to load
+   * @param aOriginPrincipal the principal to use for security checks.  This
+   *                         can be null to indicate that these checks should
+   *                         be skipped.
    * @param aObserver the observer to notify when the load completes.
    *                  Must not be null.
+   * @param [out] aSheet the sheet to load. Note that the sheet may well
+   *              not be loaded by the time this method returns.
    */
-  NS_IMETHOD LoadSheet(nsIURI* aURL, nsICSSLoaderObserver* aObserver) = 0;
+  NS_IMETHOD LoadSheet(nsIURI* aURL,
+                       nsIPrincipal* aOriginPrincipal,
+                       nsICSSLoaderObserver* aObserver,
+                       nsICSSStyleSheet** aSheet) = 0;
+
+  /**
+   * Same as above, to be used when the caller doesn't care about the
+   * not-yet-loaded sheet.
+   */
+  NS_IMETHOD LoadSheet(nsIURI* aURL,
+                       nsIPrincipal* aOriginPrincipal,
+                       nsICSSLoaderObserver* aObserver) = 0;
 
   /**
    * Stop loading all sheets.  All nsICSSLoaderObservers involved will be
@@ -236,6 +245,34 @@ public:
    */
   NS_IMETHOD GetEnabled(PRBool *aEnabled) = 0;
   NS_IMETHOD SetEnabled(PRBool aEnabled) = 0;
+
+  /**
+   * Return true if this nsICSSLoader has pending loads (ones that would send
+   * notifications to an nsICSSLoaderObserver attached to this nsICSSLoader).
+   * If called from inside nsICSSLoaderObserver::StyleSheetLoaded, this will
+   * return PR_FALSE if and only if that is the last StyleSheetLoaded
+   * notification the CSSLoader knows it's going to send.  In other words, if
+   * two sheets load at once (via load coalescing, e.g.), HasPendingLoads()
+   * will return PR_TRUE during notification for the first one, and PR_FALSE
+   * during notification for the second one.
+   */
+  NS_IMETHOD_(PRBool) HasPendingLoads() = 0;
+
+  /**
+   * Add an observer to this nsICSSLoader.  The observer will be notified for
+   * all loads that would have notified their own observers (even if those
+   * loads don't have observers attached to them).  Load-specific observers
+   * will be notified before generic observers.  The CSSLoader holds a
+   * reference to the observer.
+   *
+   * aObserver must not be null.
+   */
+  NS_IMETHOD AddObserver(nsICSSLoaderObserver* aObserver) = 0;
+
+  /**
+   * Remove an observer added via AddObserver.
+   */
+  NS_IMETHOD_(void) RemoveObserver(nsICSSLoaderObserver* aObserver) = 0;
 };
 
 NS_DEFINE_STATIC_IID_ACCESSOR(nsICSSLoader, NS_ICSS_LOADER_IID)

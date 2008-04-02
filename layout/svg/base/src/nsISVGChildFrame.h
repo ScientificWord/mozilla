@@ -43,14 +43,16 @@
 #include "nsISupports.h"
 #include "nsCOMPtr.h"
 
-class nsISVGRendererCanvas;
+class gfxContext;
 class nsPresContext;
 class nsIDOMSVGRect;
 class nsIDOMSVGMatrix;
+class nsSVGRenderState;
 struct nsRect;
 
 #define NS_ISVGCHILDFRAME_IID \
-{ 0xa365580d, 0x9d14, 0x4e33, { 0x99, 0xfa, 0x81, 0x07, 0x0d, 0xa0, 0xfe, 0xa6 } }
+{ 0x667e8781, 0x72bd, 0x4344, \
+ { 0x95, 0x8c, 0x69, 0xa5, 0x70, 0xc4, 0xcc, 0xb3 } }
 
 class nsISVGChildFrame : public nsISupports {
 public:
@@ -59,7 +61,7 @@ public:
 
   // Paint this frame - aDirtyRect is the area being redrawn, in frame
   // offset pixel coordinates
-  NS_IMETHOD PaintSVG(nsISVGRendererCanvas* canvas, nsRect *aDirtyRect)=0;
+  NS_IMETHOD PaintSVG(nsSVGRenderState* aContext, nsRect *aDirtyRect)=0;
 
   // Check if this frame or children contain the given point,
   // specified in device pixels relative to the origin of the outer
@@ -72,10 +74,29 @@ public:
   // See bug 290852 for foreignObject complications.
   NS_IMETHOD GetFrameForPointSVG(float x, float y, nsIFrame** hit)=0;
 
+  // Get bounds in our gfxContext's coordinates space (in device pixels)
   NS_IMETHOD_(nsRect) GetCoveredRegion()=0;
   NS_IMETHOD UpdateCoveredRegion()=0;
+
+  // Called once on SVG child frames except descendants of <defs>, either
+  // when their nsSVGOuterSVGFrame receives its initial reflow (i.e. once
+  // the SVG viewport dimensions are known), or else when they're inserted
+  // into the frame tree (if they're inserted after the initial reflow).
   NS_IMETHOD InitialUpdate()=0;
-  NS_IMETHOD NotifyCanvasTMChanged(PRBool suppressInvalidation)=0;
+
+  // Flags to pass to NotifySVGChange:
+  //
+  // SUPPRESS_INVALIDATION - do not invalidate rendered areas (only to be
+  //                           used in conjunction with TRANSFORM_CHANGED)
+  // TRANSFORM_CHANGED     - the current transform matrix for this frame has changed
+  // COORD_CONTEXT_CHANGED - the dimensions of this frame's coordinate context has
+  //                           changed (percentage lengths must be reevaluated)
+  enum SVGChangedFlags {
+    SUPPRESS_INVALIDATION = 0x01,
+    TRANSFORM_CHANGED     = 0x02,
+    COORD_CONTEXT_CHANGED = 0x04
+  };
+  virtual void NotifySVGChanged(PRUint32 aFlags)=0;
   NS_IMETHOD NotifyRedrawSuspended()=0;
   NS_IMETHOD NotifyRedrawUnsuspended()=0;
 
@@ -84,9 +105,10 @@ public:
   NS_IMETHOD SetMatrixPropagation(PRBool aPropagate)=0;
 
   // Set the current transformation matrix to a particular matrix.
-  // Value is only used if matrix propogation is prevented
+  // Value is only used if matrix propagation is prevented
   // (SetMatrixPropagation()).  nsnull aCTM means identity transform.
   NS_IMETHOD SetOverrideCTM(nsIDOMSVGMatrix *aCTM)=0;
+  virtual already_AddRefed<nsIDOMSVGMatrix> GetOverrideCTM()=0;
 
   // XXX move this function into interface nsISVGLocatableMetrics
   NS_IMETHOD GetBBox(nsIDOMSVGRect **_retval)=0; // bbox in local coords

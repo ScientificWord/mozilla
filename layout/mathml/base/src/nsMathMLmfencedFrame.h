@@ -1,3 +1,4 @@
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -93,7 +94,7 @@ public:
            const nsHTMLReflowState& aReflowState,
            nsHTMLReflowMetrics&     aDesiredSize,
            nsReflowStatus&          aStatus,
-           nsIFrame*                aForFrame,
+           nsMathMLContainerFrame*  aForFrame,
            nsMathMLChar*            aOpenChar,
            nsMathMLChar*            aCloseChar,
            nsMathMLChar*            aSeparatorsChar,
@@ -110,7 +111,8 @@ public:
              nscoord              leading,
              nscoord              em,
              nsBoundingMetrics&   aContainerSize,
-             nsHTMLReflowMetrics& aDesiredSize);
+             nscoord&             aAscent,
+             nscoord&             aDescent);
 
   static void
   PlaceChar(nsMathMLChar*      aMathMLChar,

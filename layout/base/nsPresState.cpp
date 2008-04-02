@@ -49,7 +49,6 @@
 #include "nsLayoutErrors.h"
 #include "nsPresState.h"
 #include "nsString.h"
-
 // Implementation /////////////////////////////////////////////////////////////////
 
 nsresult
@@ -76,6 +75,7 @@ nsPresState::GetStateProperty(const nsAString& aName, nsAString& aResult)
     supportsStr->GetData(data);
 
     CopyUTF8toUTF16(data, aResult);
+    aResult.SetIsVoid(data.IsVoid());
     rv = NS_STATE_PROPERTY_EXISTS;
   }
 
@@ -88,8 +88,9 @@ nsPresState::SetStateProperty(const nsAString& aName, const nsAString& aValue)
   // Add to hashtable
   nsCOMPtr<nsISupportsCString> supportsStr(do_CreateInstance(NS_SUPPORTS_CSTRING_CONTRACTID));
   NS_ENSURE_TRUE(supportsStr, NS_ERROR_OUT_OF_MEMORY);
-
-  supportsStr->SetData(NS_ConvertUTF16toUTF8(aValue));
+  NS_ConvertUTF16toUTF8 data(aValue);
+  data.SetIsVoid(aValue.IsVoid());
+  supportsStr->SetData(data);
 
   mPropertyTable.Put(aName, supportsStr);
   return NS_OK;
@@ -119,6 +120,29 @@ nsPresState::SetStatePropertyAsSupports(const nsAString& aName,
   return NS_OK;
 }
 
+nsresult
+nsPresState::SetScrollState(const nsRect& aRect)
+{
+  if (!mScrollState) {
+    mScrollState = new nsRect();
+    if (!mScrollState)
+      return NS_ERROR_OUT_OF_MEMORY;
+  }
+
+  *mScrollState = aRect;
+  return NS_OK;
+}
+
+nsRect
+nsPresState::GetScrollState()
+{
+  if (!mScrollState) {
+    nsRect empty(0,0,0,0);
+    return empty;  
+  }
+
+  return *mScrollState;
+}
 
 nsresult
 NS_NewPresState(nsPresState** aState)

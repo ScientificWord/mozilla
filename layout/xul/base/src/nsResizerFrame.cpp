@@ -42,7 +42,7 @@
 #include "nsIDocument.h"
 #include "nsIDOMXULDocument.h"
 #include "nsIDOMNodeList.h"
-#include "nsHTMLAtoms.h"
+#include "nsGkAtoms.h"
 #include "nsINameSpaceManager.h"
 
 #include "nsIWidget.h"
@@ -52,8 +52,6 @@
 #include "nsIDocShellTreeOwner.h"
 #include "nsIBaseWindow.h"
 #include "nsPIDOMWindow.h"
-#include "nsIViewManager.h"
-#include "nsXULAtoms.h"
 #include "nsGUIEvent.h"
 #include "nsEventDispatcher.h"
 
@@ -92,32 +90,59 @@ nsResizerFrame::HandleEvent(nsPresContext* aPresContext,
                             nsGUIEvent* aEvent,
                             nsEventStatus* aEventStatus)
 {
+  nsWeakFrame weakFrame(this);
   PRBool doDefault = PR_TRUE;
 
   switch (aEvent->message) {
 
-   case NS_MOUSE_LEFT_BUTTON_DOWN: {
+   case NS_MOUSE_BUTTON_DOWN: {
+       if (aEvent->eventStructType == NS_MOUSE_EVENT &&
+           static_cast<nsMouseEvent*>(aEvent)->button ==
+             nsMouseEvent::eLeftButton)
+       {
 
-       // we're tracking.
-       mTrackingMouseMove = PR_TRUE;
+         nsresult rv = NS_OK;
 
-       // start capture.
-       aEvent->widget->CaptureMouse(PR_TRUE);
-       CaptureMouseEvents(aPresContext,PR_TRUE);
+         // what direction should we go in? 
+         // convert eDirection to horizontal and vertical directions
+         static const PRInt8 directions[][2] = {
+           {-1, -1}, {0, -1}, {1, -1},
+           {-1,  0},          {1,  0},
+           {-1,  1}, {0,  1}, {1,  1}
+         };
 
-       // remember current mouse coordinates.
-       mLastPoint = aEvent->refPoint;
-       aEvent->widget->GetScreenBounds(mWidgetRect);
+         // ask the widget implementation to begin a resize drag if it can
+         rv = aEvent->widget->BeginResizeDrag(aEvent, 
+             directions[mDirection][0], directions[mDirection][1]);
 
-       *aEventStatus = nsEventStatus_eConsumeNoDefault;
-       doDefault = PR_FALSE;
+         if (rv == NS_ERROR_NOT_IMPLEMENTED) {
+           // there's no native resize support, 
+           // we need to window resizing ourselves
+
+           // we're tracking.
+           mTrackingMouseMove = PR_TRUE;
+
+           // start capture.
+           aEvent->widget->CaptureMouse(PR_TRUE);
+           CaptureMouseEvents(aPresContext,PR_TRUE);
+
+           // remember current mouse coordinates.
+           mLastPoint = aEvent->refPoint;
+           aEvent->widget->GetScreenBounds(mWidgetRect);
+         }
+
+         *aEventStatus = nsEventStatus_eConsumeNoDefault;
+         doDefault = PR_FALSE;
+       }
      }
      break;
 
 
-   case NS_MOUSE_LEFT_BUTTON_UP: {
+   case NS_MOUSE_BUTTON_UP: {
 
-       if(mTrackingMouseMove)
+       if(mTrackingMouseMove && aEvent->eventStructType == NS_MOUSE_EVENT &&
+          static_cast<nsMouseEvent*>(aEvent)->button ==
+            nsMouseEvent::eLeftButton)
        {
          // we're done tracking.
          mTrackingMouseMove = PR_FALSE;
@@ -226,12 +251,15 @@ nsResizerFrame::HandleEvent(nsPresContext* aPresContext,
 
 
 
-    case NS_MOUSE_LEFT_CLICK:
-      MouseClicked(aPresContext, aEvent);
+    case NS_MOUSE_CLICK:
+      if (NS_IS_MOUSE_LEFT_CLICK(aEvent))
+      {
+        MouseClicked(aPresContext, aEvent);
+      }
       break;
   }
 
-  if ( doDefault )
+  if (doDefault && weakFrame.IsAlive())
     return nsTitleBarFrame::HandleEvent(aPresContext, aEvent, aEventStatus);
   else
     return NS_OK;
@@ -295,13 +323,10 @@ nsResizerFrame::GetInitialDirection(eDirection& aDirection)
  // see what kind of resizer we are.
   nsAutoString value;
 
-  nsCOMPtr<nsIContent> content;
-  GetContentOf(getter_AddRefs(content));
-
-  if (!content)
+  if (!GetContent())
      return PR_FALSE;
 
-  if (content->GetAttr(kNameSpaceID_None, nsXULAtoms::dir, value)) {
+  if (GetContent()->GetAttr(kNameSpaceID_None, nsGkAtoms::dir, value)) {
      return EvalDirection(value,aDirection);
   }
 
@@ -317,7 +342,7 @@ nsResizerFrame::AttributeChanged(PRInt32 aNameSpaceID,
   nsresult rv = nsTitleBarFrame::AttributeChanged(aNameSpaceID, aAttribute,
                                                   aModType);
 
-  if (aAttribute == nsXULAtoms::dir) {
+  if (aAttribute == nsGkAtoms::dir) {
     GetInitialDirection(mDirection);
   }
 

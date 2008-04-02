@@ -52,18 +52,37 @@ public:
   NS_IMETHOD_(nsrefcnt) AddRef(void);
   NS_IMETHOD_(nsrefcnt) Release(void);
 
-  NS_IMETHOD GetPrefSize(nsBoxLayoutState& aState, nsSize& aSize);
-  NS_IMETHOD GetMinSize(nsBoxLayoutState& aState, nsSize& aSize);
-  NS_IMETHOD GetMaxSize(nsBoxLayoutState& aState, nsSize& aSize);
-  NS_IMETHOD GetFlex(nsBoxLayoutState& aState, nscoord& aFlex);
-  NS_IMETHOD GetAscent(nsBoxLayoutState& aState, nscoord& aAscent);
-  NS_IMETHOD NeedsRecalc();
+  virtual nsSize GetPrefSize(nsBoxLayoutState& aState);
+  virtual nsSize GetMinSize(nsBoxLayoutState& aState);
+  virtual nsSize GetMaxSize(nsBoxLayoutState& aState);
+  virtual nscoord GetFlex(nsBoxLayoutState& aState);
+  virtual nscoord GetBoxAscent(nsBoxLayoutState& aState);
+
+  virtual nsIAtom* GetType() const;
+  virtual PRBool IsFrameOfType(PRUint32 aFlags) const
+  {
+    // This is bogus, but it's what we've always done.
+    // Note that nsLeafFrame is also eReplacedContainsBlock.
+    return nsLeafFrame::IsFrameOfType(aFlags &
+      ~(nsIFrame::eReplaced | nsIFrame::eReplacedContainsBlock | nsIFrame::eXULBox));
+  }
 
 #ifdef DEBUG
   NS_IMETHOD GetFrameName(nsAString& aResult) const;
 #endif
 
   // nsIHTMLReflow overrides
+
+  virtual void MarkIntrinsicWidthsDirty();
+  virtual nscoord GetMinWidth(nsIRenderingContext *aRenderingContext);
+  virtual nscoord GetPrefWidth(nsIRenderingContext *aRenderingContext);
+
+  // Our auto size is that provided by nsFrame, not nsLeafFrame
+  virtual nsSize ComputeAutoSize(nsIRenderingContext *aRenderingContext,
+                                 nsSize aCBSize, nscoord aAvailableWidth,
+                                 nsSize aMargin, nsSize aBorder,
+                                 nsSize aPadding, PRBool aShrinkWrap);
+
   NS_IMETHOD Reflow(nsPresContext*          aPresContext,
                     nsHTMLReflowMetrics&     aDesiredSize,
                     const nsHTMLReflowState& aReflowState,
@@ -72,10 +91,6 @@ public:
   NS_IMETHOD CharacterDataChanged(nsPresContext* aPresContext,
                                   nsIContent*     aChild,
                                   PRBool          aAppend);
-
-  NS_IMETHOD DidReflow(nsPresContext*           aPresContext,
-                       const nsHTMLReflowState*  aReflowState,
-                       nsDidReflowStatus         aStatus);
 
   NS_IMETHOD  Init(
                nsIContent*      aContent,
@@ -90,13 +105,10 @@ public:
                               nsIAtom* aAttribute,
                               PRInt32 aModType);
 
-  NS_IMETHOD GetMouseThrough(PRBool& aMouseThrough);
+  virtual PRBool GetMouseThrough() const;
   virtual PRBool ComputesOwnOverflowArea() { return PR_FALSE; }
 
 protected:
-
-  virtual PRBool HasStyleChange();
-  virtual void SetStyleChangeFlag(PRBool aDirty);
 
   virtual PRBool GetWasCollapsed(nsBoxLayoutState& aState);
   virtual void SetWasCollapsed(nsBoxLayoutState& aState, PRBool aWas);
@@ -107,9 +119,7 @@ protected:
   virtual void GetBoxName(nsAutoString& aName);
 #endif
 
-  virtual void GetDesiredSize(nsPresContext* aPresContext,
-                              const nsHTMLReflowState& aReflowState,
-                              nsHTMLReflowMetrics& aDesiredSize) {}
+  virtual nscoord GetIntrinsicWidth();
 
  nsLeafBoxFrame(nsIPresShell* aShell, nsStyleContext* aContext);
 

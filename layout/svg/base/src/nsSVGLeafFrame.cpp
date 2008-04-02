@@ -35,11 +35,19 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsFrame.h"
-#include "nsLayoutAtoms.h"
 
 class nsSVGLeafFrame : public nsFrame
 {
-  virtual PRBool IsFrameOfType(PRUint32 aFlags) const;
+  friend nsIFrame*
+  NS_NewSVGLeafFrame(nsIPresShell* aPresShell, nsStyleContext* aContext);
+protected:
+  nsSVGLeafFrame(nsStyleContext* aContext) : nsFrame(aContext) {}
+
+public:
+  virtual PRBool IsFrameOfType(PRUint32 aFlags) const
+  {
+    return nsFrame::IsFrameOfType(aFlags & ~(nsIFrame::eSVG));
+  }
 
 #ifdef DEBUG
   NS_IMETHOD GetFrameName(nsAString& aResult) const
@@ -48,18 +56,10 @@ class nsSVGLeafFrame : public nsFrame
   }
 #endif
 
-public:
-  nsSVGLeafFrame(nsStyleContext* aContext) : nsFrame(aContext) {}
 };
 
 nsIFrame*
 NS_NewSVGLeafFrame(nsIPresShell* aPresShell, nsStyleContext* aContext)
 {
   return new (aPresShell) nsSVGLeafFrame(aContext);
-}
-
-PRBool
-nsSVGLeafFrame::IsFrameOfType(PRUint32 aFlags) const
-{
-  return !(aFlags & ~nsIFrame::eSVG);
 }

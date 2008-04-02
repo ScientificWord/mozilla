@@ -44,31 +44,6 @@
 class nsVoidArray;
 class nsTableCellFrame;
 
-// this is used to index arrays of widths in nsColFrame and to group important widths
-// for calculations. It is important that the order: min, desired, fixed be maintained
-// for each category (con, adj).
-#define WIDTH_NOT_SET   -1
-#define NUM_WIDTHS      10
-#define NUM_MAJOR_WIDTHS 3 // MIN, DES, FIX
-#define MIN_CON          0 // minimum width required of the content + padding
-#define DES_CON          1 // desired width of the content + padding
-#define FIX              2 // fixed width either from the content or cell, col, etc. + padding
-#define MIN_ADJ          3 // minimum width + padding due to col spans
-#define DES_ADJ          4 // desired width + padding due to col spans
-#define FIX_ADJ          5 // fixed width + padding due to col spans
-#define PCT              6 // percent width of cell or col 
-#define PCT_ADJ          7 // percent width of cell or col from percent colspan
-#define MIN_PRO          8 // desired width due to proportional <col>s or cols attribute
-#define FINAL            9 // width after the table has been balanced, considering all of the others
-
-enum nsColConstraint {
-  eNoConstraint          = 0,
-  ePixelConstraint       = 1,      // pixel width 
-  ePercentConstraint     = 2,      // percent width
-  eProportionConstraint  = 3,      // 1*, 2*, etc. cols attribute assigns 1*
-  e0ProportionConstraint = 4       // 0*, means to force to min width
-};
-
 enum nsTableColType {
   eColContent            = 0, // there is real col content associated   
   eColAnonymousCol       = 1, // the result of a span on a col
@@ -76,7 +51,7 @@ enum nsTableColType {
   eColAnonymousCell      = 3  // the result of a cell alone
 };
 
-class nsTableColFrame : public nsFrame {
+class nsTableColFrame : public nsSplittableFrame {
 public:
 
   enum {eWIDTH_SOURCE_NONE          =0,   // no cell has contributed to the width style
@@ -92,9 +67,8 @@ public:
     *
     * @return           the frame that was created
     */
-  friend nsIFrame* NS_NewTableColFrame(nsIPresShell* aPresShell, nsStyleContext*  aContext);
-
-  nsStyleCoord GetStyleWidth() const;
+  friend nsTableColFrame* NS_NewTableColFrame(nsIPresShell* aPresShell,
+                                              nsStyleContext*  aContext);
 
   PRInt32 GetColIndex() const;
   
@@ -121,7 +95,7 @@ public:
   /**
    * Get the "type" of the frame
    *
-   * @see nsLayoutAtoms::tableColFrame
+   * @see nsGkAtoms::tableColFrame
    */
   virtual nsIAtom* GetType() const;
   
@@ -129,31 +103,20 @@ public:
   NS_IMETHOD GetFrameName(nsAString& aResult) const;
 #endif
 
-  /** return the number of the columns the col represents.  always >= 0 */
-  virtual PRInt32 GetSpan ();
+  virtual nsSplittableType GetSplittableType() const;
+
+  /** return the number of the columns the col represents.  always >= 1 */
+  PRInt32 GetSpan();
 
   /** convenience method, calls into cellmap */
   nsVoidArray * GetCells();
 
-  nscoord GetWidth(PRUint32 aWidthType);
-  void    SetWidth(PRUint32 aWidthType,
-                   nscoord  aWidth);
-  nscoord GetMinWidth();
-  nscoord GetDesWidth();
-  nscoord GetFixWidth();
-  nscoord GetPctWidth();
-
-  void            SetConstraint(nsColConstraint aConstraint);
-  nsColConstraint GetConstraint() const;
-
   /** convenience method, calls into cellmap */
   PRInt32 Count() const;
 
-  void ResetSizingInfo();
-
-  nscoord GetLeftBorderWidth(float* aPixelsToTwips = nsnull);
+  nscoord GetLeftBorderWidth();
   void    SetLeftBorderWidth(BCPixelSize aWidth);
-  nscoord GetRightBorderWidth(float* aPixelsToTwips = nsnull);
+  nscoord GetRightBorderWidth();
   void    SetRightBorderWidth(BCPixelSize aWidth);
 
   /**
@@ -164,8 +127,7 @@ public:
    *
    * @return outer right border width (left inner for next column)
    */
-  nscoord GetContinuousBCBorderWidth(float     aPixelsToTwips,
-                                     nsMargin& aBorder);
+  nscoord GetContinuousBCBorderWidth(nsMargin& aBorder);
   /**
    * Set full border widths before collapsing with cell borders
    * @param aForSide - side to set; only valid for top, right, and bottom
@@ -175,6 +137,167 @@ public:
 #ifdef DEBUG
   void Dump(PRInt32 aIndent);
 #endif
+
+  /**
+   * Restore the default values of the intrinsic widths, so that we can
+   * re-accumulate intrinsic widths from the cells in the column.
+   */
+  void ResetIntrinsics() {
+    mMinCoord = 0;
+    mPrefCoord = 0;
+    mPrefPercent = 0.0f;
+    mHasSpecifiedCoord = PR_FALSE;
+  }
+
+  /**
+   * Restore the default value of the preferred percentage width (the
+   * only intrinsic width used by FixedTableLayoutStrategy.
+   */
+  void ResetPrefPercent() {
+    mPrefPercent = 0.0f;
+  }
+
+  /**
+   * Restore the default values of the temporary buffer for
+   * spanning-cell intrinsic widths (as we process spanning cells).
+   */
+  void ResetSpanIntrinsics() {
+    mSpanMinCoord = 0;
+    mSpanPrefCoord = 0;
+    mSpanPrefPercent = 0.0f;
+  }
+
+  /**
+   * Add the widths for a cell or column element, or the contribution of
+   * the widths from a column-spanning cell:
+   * @param aMinCoord The minimum intrinsic width
+   * @param aPrefCoord The preferred intrinsic width or, if there is a
+   *   specified non-percentage width, max(specified width, minimum intrinsic
+   *   width).
+   * @param aHasSpecifiedCoord Whether there is a specified
+   *   non-percentage width.
+   *
+   * Note that the implementation of this functions is a bit tricky
+   * since mPrefCoord means different things depending on
+   * whether mHasSpecifiedCoord is true (and likewise for aPrefCoord and
+   * aHasSpecifiedCoord).  If mHasSpecifiedCoord is false, then
+   * all widths added had aHasSpecifiedCoord false and mPrefCoord is the
+   * largest of the pref widths.  But if mHasSpecifiedCoord is true,
+   * then mPrefCoord is the largest of (1) the pref widths for cells
+   * with aHasSpecifiedCoord true and (2) the min widths for cells with
+   * aHasSpecifiedCoord false.
+   */
+  void AddCoords(nscoord aMinCoord, nscoord aPrefCoord,
+                 PRBool aHasSpecifiedCoord) {
+    NS_ASSERTION(aMinCoord <= aPrefCoord, "intrinsic widths out of order");
+
+    if (aHasSpecifiedCoord && !mHasSpecifiedCoord) {
+      mPrefCoord = mMinCoord;
+      mHasSpecifiedCoord = PR_TRUE;
+    }
+    if (!aHasSpecifiedCoord && mHasSpecifiedCoord) {
+      aPrefCoord = aMinCoord; // NOTE: modifying argument
+    }
+
+    if (aMinCoord > mMinCoord)
+      mMinCoord = aMinCoord;
+    if (aPrefCoord > mPrefCoord)
+      mPrefCoord = aPrefCoord;
+
+    NS_ASSERTION(mMinCoord <= mPrefCoord, "min larger than pref");
+  }
+
+  /**
+   * Add a percentage width specified on a cell or column element or the
+   * contribution to this column of a percentage width specified on a
+   * column-spanning cell.
+   */
+  void AddPrefPercent(float aPrefPercent) {
+    if (aPrefPercent > mPrefPercent)
+      mPrefPercent = aPrefPercent;
+  }
+
+  /**
+   * Get the largest minimum intrinsic width for this column.
+   */
+  nscoord GetMinCoord() const { return mMinCoord; }
+  /**
+   * Get the largest preferred width for this column, or, if there were
+   * any specified non-percentage widths (see GetHasSpecifiedCoord), the
+   * largest minimum intrinsic width or specified width.
+   */
+  nscoord GetPrefCoord() const { return mPrefCoord; }
+  /**
+   * Get whether there were any specified widths contributing to this
+   * column.
+   */
+  PRBool GetHasSpecifiedCoord() const { return mHasSpecifiedCoord; }
+
+  /**
+   * Get the largest specified percentage width contributing to this
+   * column (returns 0 if there were none).
+   */
+  float GetPrefPercent() const { return mPrefPercent; }
+
+  /**
+   * Like AddCoords, but into a temporary buffer used for groups of
+   * column-spanning cells.
+   */
+  void AddSpanCoords(nscoord aSpanMinCoord, nscoord aSpanPrefCoord,
+                     PRBool aSpanHasSpecifiedCoord) {
+    NS_ASSERTION(aSpanMinCoord <= aSpanPrefCoord,
+                 "intrinsic widths out of order");
+
+    if (!aSpanHasSpecifiedCoord && mHasSpecifiedCoord) {
+      aSpanPrefCoord = aSpanMinCoord; // NOTE: modifying argument
+    }
+
+    if (aSpanMinCoord > mSpanMinCoord)
+      mSpanMinCoord = aSpanMinCoord;
+    if (aSpanPrefCoord > mSpanPrefCoord)
+      mSpanPrefCoord = aSpanPrefCoord;
+
+    NS_ASSERTION(mSpanMinCoord <= mSpanPrefCoord, "min larger than pref");
+  }
+
+  /*
+   * Accumulate percentage widths on column spanning cells into
+   * temporary variables.
+   */
+  void AddSpanPrefPercent(float aSpanPrefPercent) {
+    if (aSpanPrefPercent > mSpanPrefPercent)
+      mSpanPrefPercent = aSpanPrefPercent;
+  }
+
+  /*
+   * Accumulate the temporary variables for column spanning cells into
+   * the primary variables.
+   */
+  void AccumulateSpanIntrinsics() {
+    AddCoords(mSpanMinCoord, mSpanPrefCoord, mHasSpecifiedCoord);
+    AddPrefPercent(mSpanPrefPercent);
+  }
+
+  // Used to adjust a column's pref percent so that the table's total
+  // never exceeeds 100% (by only allowing percentages to be used,
+  // starting at the first column, until they reach 100%).
+  void AdjustPrefPercent(float *aTableTotalPercent) {
+    float allowed = 1.0f - *aTableTotalPercent;
+    if (mPrefPercent > allowed)
+      mPrefPercent = allowed;
+    *aTableTotalPercent += mPrefPercent;
+  }
+
+  // The final width of the column.
+  void ResetFinalWidth() {
+    mFinalWidth = nscoord_MIN; // so we detect that it changed
+  }
+  void SetFinalWidth(nscoord aFinalWidth) {
+    mFinalWidth = aFinalWidth;
+  }
+  nscoord GetFinalWidth() {
+    return mFinalWidth;
+  }
 
 protected:
 
@@ -192,10 +315,19 @@ protected:
   BCPixelSize mTopContBorderWidth;
   BCPixelSize mRightContBorderWidth;
   BCPixelSize mBottomContBorderWidth;
-  // Widths including MIN_CON, DES_CON, FIX_CON, MIN_ADJ, DES_ADJ, FIX_ADJ, PCT, PCT_ADJ, MIN_PRO, FINAL
-  // Widths including MIN_CON, DES_CON, FIX_CON, MIN_ADJ, DES_ADJ, FIX_ADJ, PCT, PCT_ADJ, MIN_PRO, FINAL
-  // XXX these could be stored as pixels and converted to twips for a savings of 10 x 2 bytes.
-  nscoord           mWidths[NUM_WIDTHS];
+
+  PRPackedBool mHasSpecifiedCoord;
+  nscoord mMinCoord;
+  nscoord mPrefCoord;
+  nscoord mSpanMinCoord; // XXX...
+  nscoord mSpanPrefCoord; // XXX...
+  float mPrefPercent;
+  float mSpanPrefPercent; // XXX...
+  // ...XXX the four members marked above could be allocated as part of
+  // a separate array allocated only during
+  // BasicTableLayoutStrategy::ComputeColumnIntrinsicWidths (and only
+  // when colspans were present).
+  nscoord mFinalWidth;
 };
 
 inline PRInt32 nsTableColFrame::GetColIndex() const
@@ -208,10 +340,9 @@ inline void nsTableColFrame::SetColIndex (PRInt32 aColIndex)
   mColIndex = aColIndex; 
 }
 
-inline nscoord nsTableColFrame::GetLeftBorderWidth(float*  aPixelsToTwips)
+inline nscoord nsTableColFrame::GetLeftBorderWidth()
 {
-  nscoord width = (aPixelsToTwips) ? NSToCoordRound(*aPixelsToTwips * mLeftBorderWidth) : mLeftBorderWidth;
-  return width;
+  return mLeftBorderWidth;
 }
 
 inline void nsTableColFrame::SetLeftBorderWidth(BCPixelSize aWidth)
@@ -219,10 +350,9 @@ inline void nsTableColFrame::SetLeftBorderWidth(BCPixelSize aWidth)
   mLeftBorderWidth = aWidth;
 }
 
-inline nscoord nsTableColFrame::GetRightBorderWidth(float*  aPixelsToTwips)
+inline nscoord nsTableColFrame::GetRightBorderWidth()
 {
-  nscoord width = (aPixelsToTwips) ? NSToCoordRound(*aPixelsToTwips * mRightBorderWidth) : mRightBorderWidth;
-  return width;
+  return mRightBorderWidth;
 }
 
 inline void nsTableColFrame::SetRightBorderWidth(BCPixelSize aWidth)
@@ -231,9 +361,9 @@ inline void nsTableColFrame::SetRightBorderWidth(BCPixelSize aWidth)
 }
 
 inline nscoord
-nsTableColFrame::GetContinuousBCBorderWidth(float     aPixelsToTwips,
-                                            nsMargin& aBorder)
+nsTableColFrame::GetContinuousBCBorderWidth(nsMargin& aBorder)
 {
+  PRInt32 aPixelsToTwips = nsPresContext::AppUnitsPerCSSPixel();
   aBorder.top = BC_BORDER_BOTTOM_HALF_COORD(aPixelsToTwips,
                                             mTopContBorderWidth);
   aBorder.right = BC_BORDER_LEFT_HALF_COORD(aPixelsToTwips,
