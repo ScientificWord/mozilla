@@ -922,3 +922,38 @@ function switchFocus(elem)
     switchwindow.focus();
   }
 }
+const nsIWindowMediator = Components.interfaces.nsIWindowMediator;
+
+function toOpenWindow( aWindow )
+{
+  try {
+    // Try to focus the previously focused window e.g. message compose body
+    aWindow.document.commandDispatcher.focusedWindow.focus();
+  } catch (e) {
+    // e.g. full-page plugin or non-XUL document; just raise the top window
+    aWindow.focus();
+  }
+}
+
+function toOpenWindowByType( inType, uri )
+{
+  // Recently opened one.
+  if (uri in window)
+    return;
+
+  var windowManager = Components.classes['@mozilla.org/appshell/window-mediator;1'].getService(nsIWindowMediator);
+
+  var topWindow = windowManager.getMostRecentWindow( inType );
+
+  if ( topWindow )
+    toOpenWindow( topWindow );
+  else
+  {
+    function newWindowLoaded(event) {
+      delete window[uri];
+    }
+    window[uri] = window.openDialog(uri, "", "all,dialog=no");
+    window[uri].addEventListener("load", newWindowLoaded, false);
+  }
+}
+
