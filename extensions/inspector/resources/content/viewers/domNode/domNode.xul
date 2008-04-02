@@ -39,23 +39,29 @@
  
   <deck id="dkContent" flex="1">
     <vbox id="bxElement">
-      <grid>
+      <grid id="olNodeInfo">
         <columns>
           <column/>
           <column flex="1"/>
         </columns>
         <rows>
           <row>
-            <label value="&nodeName.label;" />
-            <textbox id="tx_nodeName" readonly="true"/>
+            <label value="&localName.label;"
+                   control="tx_localName"
+                   class="olNodeInfoLabel"/>
+            <textbox id="tx_localName" readonly="true" class="plain"/>
           </row>
           <row>
-            <label value="&namespaceURI.label;" />
-            <textbox id="tx_namespace" readonly="true"/>
+            <label value="&namespaceURI.label;"
+                   control="tx_namespace"
+                   class="olNodeInfoLabel"/>
+            <textbox id="tx_namespace" readonly="true" class="plain"/>
           </row>
           <row>
-            <label value="&nodeType.label;" />
-            <textbox id="tx_nodeType" readonly="true"/>
+            <label value="&nodeType.label;"
+                   control="tx_nodeType"
+                   class="olNodeInfoLabel"/>
+            <textbox id="tx_nodeType" readonly="true" class="plain"/>
           </row>
         </rows>
       </grid>
@@ -67,10 +73,35 @@
             contextmenu="ppAttrContext"
             onselect="viewer.pane.panelset.updateAllCommands()">
         <treecols>
-          <!-- These labels don't need to be localized since they are defined by DOM APIs -->
-          <treecol id="colNodeName" label="nodeName" persist="width,hidden,ordinal" flex="1"/>
+          <!-- These labels don't need to be localized since they are defined
+                 by DOM APIs -->
+          <treecol id="colNodeName"
+                   label="nodeName"
+                   persist="width,hidden,ordinal"
+                   flex="1"/>
           <splitter class="tree-splitter"/>
-          <treecol id="colNodeValue" label="nodeValue" persist="width,hidden,ordinal" flex="1"/>
+          <treecol id="colLocalName"
+                   hidden="true"
+                   label="localName"
+                   persist="width,hidden,ordinal"
+                   flex="1"/>
+          <splitter class="tree-splitter"/>
+          <treecol id="colPrefix"
+                   hidden="true"
+                   label="prefix"
+                   persist="width,hidden,ordinal"
+                   flex="1"/>
+          <splitter class="tree-splitter"/>
+          <treecol id="colNamespaceURI"
+                   hidden="true"
+                   label="namespaceURI"
+                   persist="width,hidden,ordinal"
+                   flex="1"/>
+          <splitter class="tree-splitter"/>
+          <treecol id="colNodeValue"
+                   label="nodeValue"
+                   persist="width,hidden,ordinal"
+                   flex="1"/>
         </treecols>
         <treechildren id="olAttrBody"
                       alternatingbackground="true"
