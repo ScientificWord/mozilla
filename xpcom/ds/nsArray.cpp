@@ -50,14 +50,28 @@ struct findIndexOfClosure
 
 PR_STATIC_CALLBACK(PRBool) FindElementCallback(void* aElement, void* aClosure);
 
-
-NS_IMPL_ISUPPORTS2(nsArray, nsIArray, nsIMutableArray)
+NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(nsArray)
+  NS_INTERFACE_MAP_ENTRY(nsIArray)
+  NS_INTERFACE_MAP_ENTRY(nsIMutableArray)
+  NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIMutableArray)
+NS_INTERFACE_MAP_END
 
 nsArray::~nsArray()
 {
     Clear();
 }
-    
+
+NS_IMPL_CYCLE_COLLECTING_ADDREF(nsArray)
+NS_IMPL_CYCLE_COLLECTING_RELEASE(nsArray)
+
+NS_IMPL_CYCLE_COLLECTION_CLASS(nsArray)
+NS_IMPL_CYCLE_COLLECTION_UNLINK_BEGIN(nsArray)
+    tmp->Clear();
+NS_IMPL_CYCLE_COLLECTION_UNLINK_END
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_BEGIN(nsArray)
+    NS_IMPL_CYCLE_COLLECTION_TRAVERSE_NSCOMARRAY(mArray)
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_END
+
 NS_IMETHODIMP
 nsArray::GetLength(PRUint32* aLength)
 {
@@ -70,11 +84,11 @@ nsArray::QueryElementAt(PRUint32 aIndex,
                         const nsIID& aIID,
                         void ** aResult)
 {
-    nsISupports * obj = mArray.ObjectAt(aIndex);
-    if (!obj) return NS_ERROR_UNEXPECTED;
+    nsISupports * obj = mArray.SafeObjectAt(aIndex);
+    if (!obj) return NS_ERROR_ILLEGAL_VALUE;
 
-    // no need to worry about a leak here, because ObjectAt() doesn't
-    // addref its result
+    // no need to worry about a leak here, because SafeObjectAt() 
+    // doesn't addref its result
     return obj->QueryInterface(aIID, aResult);
 }
 
@@ -102,7 +116,7 @@ nsArray::IndexOf(PRUint32 aStartIndex, nsISupports* aElement,
 NS_IMETHODIMP
 nsArray::Enumerate(nsISimpleEnumerator **aResult)
 {
-    return NS_NewArrayEnumerator(aResult, NS_STATIC_CAST(nsIArray*, this));
+    return NS_NewArrayEnumerator(aResult, static_cast<nsIArray*>(this));
 }
 
 // nsIMutableArray implementation
@@ -113,8 +127,8 @@ nsArray::AppendElement(nsISupports* aElement, PRBool aWeak)
     PRBool result;
     if (aWeak) {
         nsCOMPtr<nsISupports> elementRef =
-            getter_AddRefs(NS_STATIC_CAST(nsISupports*,
-                                          NS_GetWeakReference(aElement)));
+            getter_AddRefs(static_cast<nsISupports*>
+                                      (NS_GetWeakReference(aElement)));
         NS_ASSERTION(elementRef, "AppendElement: Trying to use weak references on an object that doesn't support it");
         if (!elementRef)
             return NS_ERROR_FAILURE;
@@ -141,8 +155,8 @@ nsArray::InsertElementAt(nsISupports* aElement, PRUint32 aIndex, PRBool aWeak)
     nsCOMPtr<nsISupports> elementRef;
     if (aWeak) {
         elementRef =
-            getter_AddRefs(NS_STATIC_CAST(nsISupports*,
-                                          NS_GetWeakReference(aElement)));
+            getter_AddRefs(static_cast<nsISupports*>
+                                      (NS_GetWeakReference(aElement)));
         NS_ASSERTION(elementRef, "InsertElementAt: Trying to use weak references on an object that doesn't support it");
         if (!elementRef)
             return NS_ERROR_FAILURE;
@@ -159,8 +173,8 @@ nsArray::ReplaceElementAt(nsISupports* aElement, PRUint32 aIndex, PRBool aWeak)
     nsCOMPtr<nsISupports> elementRef;
     if (aWeak) {
         elementRef =
-            getter_AddRefs(NS_STATIC_CAST(nsISupports*,
-                                          NS_GetWeakReference(aElement)));
+            getter_AddRefs(static_cast<nsISupports*>
+                                      (NS_GetWeakReference(aElement)));
         NS_ASSERTION(elementRef, "ReplaceElementAt: Trying to use weak references on an object that doesn't support it");
         if (!elementRef)
             return NS_ERROR_FAILURE;
@@ -185,10 +199,10 @@ PRBool
 FindElementCallback(void *aElement, void* aClosure)
 {
     findIndexOfClosure* closure =
-        NS_STATIC_CAST(findIndexOfClosure*, aClosure);
+        static_cast<findIndexOfClosure*>(aClosure);
 
     nsISupports* element =
-        NS_STATIC_CAST(nsISupports*, aElement);
+        static_cast<nsISupports*>(aElement);
     
     // don't start searching until we're past the startIndex
     if (closure->resultIndex >= closure->startIndex &&

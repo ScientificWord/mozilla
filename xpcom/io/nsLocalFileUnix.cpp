@@ -82,7 +82,12 @@
 #include "nsISimpleEnumerator.h"
 #include "nsITimelineService.h"
 
+#ifdef MOZ_WIDGET_GTK2
+#include "nsIGnomeVFSService.h"
+#endif
+
 #include "nsNativeCharsetUtils.h"
+#include "nsTraceRefcntImpl.h"
 
 // On some platforms file/directory name comparisons need to
 // be case-blind.
@@ -671,10 +676,10 @@ nsLocalFile::CopyDirectoryTo(nsIFile *newParent)
     
     if (NS_FAILED(rv = newParent->Exists(&dirCheck))) 
         return rv;
+    // get the dirs old permissions
+    if (NS_FAILED(rv = GetPermissions(&oldPerms)))
+        return rv;
     if (!dirCheck) {
-        // get the dirs old permissions
-        if (NS_FAILED(rv = GetPermissions(&oldPerms)))
-            return rv;
         if (NS_FAILED(rv = newParent->Create(DIRECTORY_TYPE, oldPerms)))
             return rv;
     } else {    // dir exists lets try to use leaf
@@ -1248,9 +1253,11 @@ nsLocalFile::GetParent(nsIFile **aParent)
  */
 
 
-#ifdef XP_BEOS
+#if defined(XP_BEOS) || defined(SOLARIS)
 // access() is buggy in BeOS POSIX implementation, at least for BFS, using stat() instead
 // see bug 169506, https://bugzilla.mozilla.org/show_bug.cgi?id=169506
+// access() problem also exists in Solaris POSIX implementation
+// see bug 351595, https://bugzilla.mozilla.org/show_bug.cgi?id=351595
 NS_IMETHODIMP
 nsLocalFile::Exists(PRBool *_retval)
 {
@@ -1586,7 +1593,15 @@ nsLocalFile::Load(PRLibrary **_retval)
 
     NS_TIMELINE_START_TIMER("PR_LoadLibrary");
 
+#ifdef NS_BUILD_REFCNT_LOGGING
+    nsTraceRefcntImpl::SetActivityIsLegal(PR_FALSE);
+#endif
+
     *_retval = PR_LoadLibrary(mPath.get());
+
+#ifdef NS_BUILD_REFCNT_LOGGING
+    nsTraceRefcntImpl::SetActivityIsLegal(PR_TRUE);
+#endif
 
     NS_TIMELINE_STOP_TIMER("PR_LoadLibrary");
     NS_TIMELINE_MARK_TIMER1("PR_LoadLibrary", mPath.get());
@@ -1641,13 +1656,44 @@ nsLocalFile::Launch()
 NS_IMETHODIMP
 nsLocalFile::Reveal()
 {
+#ifdef MOZ_WIDGET_GTK2
+    nsCOMPtr<nsIGnomeVFSService> vfs = do_GetService(NS_GNOMEVFSSERVICE_CONTRACTID);
+    if (!vfs)
+        return NS_ERROR_FAILURE;
+
+    PRBool isDirectory;
+    if (NS_FAILED(IsDirectory(&isDirectory)))
+        return NS_ERROR_FAILURE;
+
+    if (isDirectory) {
+        return vfs->ShowURIForInput(mPath);
+    } else {
+        nsCOMPtr<nsIFile> parentDir;
+        nsCAutoString dirPath;
+        if (NS_FAILED(GetParent(getter_AddRefs(parentDir))))
+            return NS_ERROR_FAILURE;
+        if (NS_FAILED(parentDir->GetNativePath(dirPath)))
+            return NS_ERROR_FAILURE;
+
+        return vfs->ShowURIForInput(dirPath);
+    }
+#else
     return NS_ERROR_FAILURE;
+#endif
 }
 
 NS_IMETHODIMP
 nsLocalFile::Launch()
 {
+#ifdef MOZ_WIDGET_GTK2
+    nsCOMPtr<nsIGnomeVFSService> vfs = do_GetService(NS_GNOMEVFSSERVICE_CONTRACTID);
+    if (!vfs)
+        return NS_ERROR_FAILURE;
+
+    return vfs->ShowURIForInput(mPath);
+#else
     return NS_ERROR_FAILURE;
+#endif
 }
 #endif
 

@@ -20,7 +20,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- * Benjamin Smedberg <benjamin@smedbergs.us>
+ *   Benjamin Smedberg <benjamin@smedbergs.us>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -58,7 +58,7 @@ NS_ProxyRelease
 {
    T* raw = nsnull;
    doomed.swap(raw);
-   return NS_ProxyRelease(target, doomed, alwaysProxy);
+   return NS_ProxyRelease(target, raw, alwaysProxy);
 }
 
 /**

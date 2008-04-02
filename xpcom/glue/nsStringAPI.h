@@ -21,6 +21,7 @@
  * Contributor(s):
  *   Darin Fisher <darin@meer.net>
  *   Benjamin Smedberg <benjamin@smedbergs.us>
+ *   Ben Turner <mozilla@songbirdnest.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -49,6 +50,8 @@
 #define nsStringAPI_h__
 
 #include "nsXPCOMStrings.h"
+#include "nsISupportsImpl.h"
+#include "prlog.h"
 
 class nsAString
 {
@@ -67,6 +70,20 @@ public:
   NS_HIDDEN_(const char_type*) BeginReading() const;
   NS_HIDDEN_(const char_type*) EndReading() const;
 
+  NS_HIDDEN_(char_type) CharAt(PRUint32 aPos) const
+  {
+    NS_ASSERTION(aPos < Length(), "Out of bounds");
+    return BeginReading()[aPos];
+  }
+  NS_HIDDEN_(char_type) operator [](PRUint32 aPos) const
+  {
+    return CharAt(aPos);
+  }
+  NS_HIDDEN_(char_type) First() const
+  {
+    return CharAt(0);
+  }
+
   /**
    * Get the length, begin writing, and optionally set the length of a
    * string all in one operation.
@@ -79,7 +96,7 @@ public:
                                     char_type **end = nsnull,
                                     PRUint32 newSize = PR_UINT32_MAX);
 
-  NS_HIDDEN_(char_type*) BeginWriting();
+  NS_HIDDEN_(char_type*) BeginWriting(PRUint32 = PR_UINT32_MAX);
   NS_HIDDEN_(char_type*) EndWriting();
 
   NS_HIDDEN_(PRBool) SetLength(PRUint32 aLen);
@@ -95,6 +112,15 @@ public:
     return Length() == 0;
   }
 
+  NS_HIDDEN_(void) SetIsVoid(PRBool val)
+  {
+    NS_StringSetIsVoid(*this, val);
+  }
+  NS_HIDDEN_(PRBool) IsVoid() const
+  {
+    return NS_StringGetIsVoid(*this);
+  }
+
   NS_HIDDEN_(void) Assign(const self_type& aString)
   {
     NS_StringCopy(*this, aString);
@@ -107,6 +133,8 @@ public:
   {
     NS_StringSetData(*this, &aChar, 1);
   }
+
+  NS_HIDDEN_(void) AssignLiteral(const char *aStr);
 
   NS_HIDDEN_(self_type&) operator=(const self_type& aString) { Assign(aString);   return *this; }
   NS_HIDDEN_(self_type&) operator=(const char_type* aPtr)    { Assign(aPtr);      return *this; }
@@ -130,6 +158,7 @@ public:
   NS_HIDDEN_(void) Append( char_type c )                                                              { Replace(size_type(-1), 0, c); }
   NS_HIDDEN_(void) Append( const char_type* data, size_type length = size_type(-1) )                  { Replace(size_type(-1), 0, data, length); }
   NS_HIDDEN_(void) Append( const self_type& readable )                                                { Replace(size_type(-1), 0, readable); }
+  NS_HIDDEN_(void) AppendLiteral( const char *aASCIIStr );
 
   NS_HIDDEN_(self_type&) operator+=( char_type c )                                                    { Append(c);        return *this; }
   NS_HIDDEN_(self_type&) operator+=( const char_type* data )                                          { Append(data);     return *this; }
@@ -167,11 +196,73 @@ public:
                                                const char_type *b,
                                                PRUint32 length);
 
+  NS_HIDDEN_(PRInt32) Compare( const char_type *other,
+                               ComparatorFunc c = DefaultComparator ) const;
+
+  NS_HIDDEN_(PRInt32) Compare( const self_type &other,
+                               ComparatorFunc c = DefaultComparator ) const;
+
   NS_HIDDEN_(PRBool) Equals( const char_type *other,
                              ComparatorFunc c = DefaultComparator ) const;
 
   NS_HIDDEN_(PRBool) Equals( const self_type &other,
                              ComparatorFunc c = DefaultComparator ) const;
+
+  NS_HIDDEN_(PRBool) operator < (const self_type &other) const
+  {
+    return Compare(other) < 0;
+  }
+  NS_HIDDEN_(PRBool) operator < (const char_type *other) const
+  {
+    return Compare(other) < 0;
+  }
+
+  NS_HIDDEN_(PRBool) operator <= (const self_type &other) const
+  {
+    return Compare(other) <= 0;
+  }
+  NS_HIDDEN_(PRBool) operator <= (const char_type *other) const
+  {
+    return Compare(other) <= 0;
+  }
+
+  NS_HIDDEN_(PRBool) operator == (const self_type &other) const
+  {
+    return Equals(other);
+  }
+  NS_HIDDEN_(PRBool) operator == (const char_type *other) const
+  {
+    return Equals(other);
+  }
+
+  NS_HIDDEN_(PRBool) operator >= (const self_type &other) const
+  {
+    return Compare(other) >= 0;
+  }
+  NS_HIDDEN_(PRBool) operator >= (const char_type *other) const
+  {
+    return Compare(other) >= 0;
+  }
+
+  NS_HIDDEN_(PRBool) operator > (const self_type &other) const
+  {
+    return Compare(other) > 0;
+  }
+  NS_HIDDEN_(PRBool) operator > (const char_type *other) const
+  {
+    return Compare(other) > 0;
+  }
+
+  NS_HIDDEN_(PRBool) operator != (const self_type &other) const
+  {
+    return !Equals(other);
+  }
+  NS_HIDDEN_(PRBool) operator != (const char_type *other) const
+  {
+    return !Equals(other);
+  }
+
+  NS_HIDDEN_(PRBool) EqualsLiteral(const char *aASCIIString) const;
 
   /**
    * Case-insensitive match this string to a lowercase ASCII string.
@@ -184,15 +275,37 @@ public:
    * @return the offset of aStr, or -1 if not found
    */
   NS_HIDDEN_(PRInt32) Find(const self_type& aStr,
-                           ComparatorFunc c = DefaultComparator) const;
+                           ComparatorFunc c = DefaultComparator) const
+  { return Find(aStr, 0, c); }
 
+  /**
+   * Find the first occurence of aStr in this string, beginning at aOffset.
+   *
+   * @return the offset of aStr, or -1 if not found
+   */
+  NS_HIDDEN_(PRInt32) Find(const self_type& aStr, PRUint32 aOffset,
+                           ComparatorFunc c = DefaultComparator) const;
 
   /**
    * Find an ASCII string within this string.
    *
    * @return the offset of aStr, or -1 if not found.
    */
-  NS_HIDDEN_(PRInt32) Find(const char *aStr, PRBool aIgnoreCase = PR_FALSE) const;
+  NS_HIDDEN_(PRInt32) Find(const char *aStr, PRBool aIgnoreCase = PR_FALSE) const
+  { return Find(aStr, 0, aIgnoreCase); }
+
+  NS_HIDDEN_(PRInt32) Find(const char *aStr, PRUint32 aOffset, PRBool aIgnoreCase = PR_FALSE) const;
+
+  /**
+   * Search for the offset of the first occurrence of a character in a
+   * string.
+   *
+   * @param aOffset the offset from the beginning of the string to begin
+   *        searching
+   * @return The offset of the character from the beginning of the string,
+   *         or -1 if not found.
+   */
+  NS_HIDDEN_(PRInt32) FindChar(char_type aChar, PRUint32 aOffset = 0) const;
 
   /**
    * Search for the offset of the last occurrence of a character in a
@@ -207,6 +320,17 @@ public:
    * Append a string representation of a number.
    */
   NS_HIDDEN_(void) AppendInt(int aInt, PRInt32 aRadix = 10);
+
+#ifndef XPCOM_GLUE_AVOID_NSPR
+  /**
+   * Convert this string to an integer.
+   *
+   * @param aErrorCode pointer to contain result code.
+   * @param aRadix must be 10 or 16
+   */
+  NS_HIDDEN_(PRInt32) ToInteger(nsresult* aErrorCode,
+                                PRUint32 aRadix = 10) const;
+#endif // XPCOM_GLUE_AVOID_NSPR
 
 protected:
   // Prevent people from allocating a nsAString directly.
@@ -230,6 +354,20 @@ public:
   NS_HIDDEN_(const char_type*) BeginReading() const;
   NS_HIDDEN_(const char_type*) EndReading() const;
 
+  NS_HIDDEN_(char_type) CharAt(PRUint32 aPos) const
+  {
+    NS_ASSERTION(aPos < Length(), "Out of bounds");
+    return BeginReading()[aPos];
+  }
+  NS_HIDDEN_(char_type) operator [](PRUint32 aPos) const
+  {
+    return CharAt(aPos);
+  }
+  NS_HIDDEN_(char_type) First() const
+  {
+    return CharAt(0);
+  }
+
   /**
    * Get the length, begin writing, and optionally set the length of a
    * string all in one operation.
@@ -242,7 +380,7 @@ public:
                                     char_type **end = nsnull,
                                     PRUint32 newSize = PR_UINT32_MAX);
 
-  NS_HIDDEN_(char_type*) BeginWriting();
+  NS_HIDDEN_(char_type*) BeginWriting(PRUint32 aLen = PR_UINT32_MAX);
   NS_HIDDEN_(char_type*) EndWriting();
 
   NS_HIDDEN_(PRBool) SetLength(PRUint32 aLen);
@@ -258,6 +396,15 @@ public:
     return Length() == 0;
   }
 
+  NS_HIDDEN_(void) SetIsVoid(PRBool val)
+  {
+    NS_CStringSetIsVoid(*this, val);
+  }
+  NS_HIDDEN_(PRBool) IsVoid() const
+  {
+    return NS_CStringGetIsVoid(*this);
+  }
+
   NS_HIDDEN_(void) Assign(const self_type& aString)
   {
     NS_CStringCopy(*this, aString);
@@ -269,6 +416,10 @@ public:
   NS_HIDDEN_(void) Assign(char_type aChar)
   {
     NS_CStringSetData(*this, &aChar, 1);
+  }
+  NS_HIDDEN_(void) AssignLiteral(const char_type *aData)
+  {
+    Assign(aData);
   }
 
   NS_HIDDEN_(self_type&) operator=(const self_type& aString) { Assign(aString);   return *this; }
@@ -293,6 +444,7 @@ public:
   NS_HIDDEN_(void) Append( char_type c )                                                              { Replace(size_type(-1), 0, c); }
   NS_HIDDEN_(void) Append( const char_type* data, size_type length = size_type(-1) )                  { Replace(size_type(-1), 0, data, length); }
   NS_HIDDEN_(void) Append( const self_type& readable )                                                { Replace(size_type(-1), 0, readable); }
+  NS_HIDDEN_(void) AppendLiteral( const char *aASCIIStr )                                             { Append(aASCIIStr); }
 
   NS_HIDDEN_(self_type&) operator+=( char_type c )                                                    { Append(c);        return *this; }
   NS_HIDDEN_(self_type&) operator+=( const char_type* data )                                          { Append(data);     return *this; }
@@ -330,11 +482,76 @@ public:
                                                const char_type *b,
                                                PRUint32 length);
 
+  NS_HIDDEN_(PRInt32) Compare( const char_type *other,
+                               ComparatorFunc c = DefaultComparator ) const;
+
+  NS_HIDDEN_(PRInt32) Compare( const self_type &other,
+                               ComparatorFunc c = DefaultComparator ) const;
+
   NS_HIDDEN_(PRBool) Equals( const char_type *other,
                              ComparatorFunc c = DefaultComparator ) const;
 
   NS_HIDDEN_(PRBool) Equals( const self_type &other,
                              ComparatorFunc c = DefaultComparator ) const;
+
+  NS_HIDDEN_(PRBool) operator < (const self_type &other) const
+  {
+    return Compare(other) < 0;
+  }
+  NS_HIDDEN_(PRBool) operator < (const char_type *other) const
+  {
+    return Compare(other) < 0;
+  }
+
+  NS_HIDDEN_(PRBool) operator <= (const self_type &other) const
+  {
+    return Compare(other) <= 0;
+  }
+  NS_HIDDEN_(PRBool) operator <= (const char_type *other) const
+  {
+    return Compare(other) <= 0;
+  }
+
+  NS_HIDDEN_(PRBool) operator == (const self_type &other) const
+  {
+    return Equals(other);
+  }
+  NS_HIDDEN_(PRBool) operator == (const char_type *other) const
+  {
+    return Equals(other);
+  }
+
+  NS_HIDDEN_(PRBool) operator >= (const self_type &other) const
+  {
+    return Compare(other) >= 0;
+  }
+  NS_HIDDEN_(PRBool) operator >= (const char_type *other) const
+  {
+    return Compare(other) >= 0;
+  }
+
+  NS_HIDDEN_(PRBool) operator > (const self_type &other) const
+  {
+    return Compare(other) > 0;
+  }
+  NS_HIDDEN_(PRBool) operator > (const char_type *other) const
+  {
+    return Compare(other) > 0;
+  }
+
+  NS_HIDDEN_(PRBool) operator != (const self_type &other) const
+  {
+    return !Equals(other);
+  }
+  NS_HIDDEN_(PRBool) operator != (const char_type *other) const
+  {
+    return !Equals(other);
+  }
+
+  NS_HIDDEN_(PRBool) EqualsLiteral( const char_type *other ) const
+  {
+    return Equals(other);
+  }
 
   /**
    * Find the first occurence of aStr in this string.
@@ -342,6 +559,15 @@ public:
    * @return the offset of aStr, or -1 if not found
    */
   NS_HIDDEN_(PRInt32) Find(const self_type& aStr,
+                           ComparatorFunc c = DefaultComparator) const
+  { return Find(aStr, 0, c); }
+
+  /**
+   * Find the first occurence of aStr in this string, beginning at aOffset.
+   *
+   * @return the offset of aStr, or -1 if not found
+   */
+  NS_HIDDEN_(PRInt32) Find(const self_type& aStr, PRUint32 aOffset,
                            ComparatorFunc c = DefaultComparator) const;
 
   /**
@@ -356,6 +582,17 @@ public:
                            ComparatorFunc c = DefaultComparator) const;
 
   /**
+   * Search for the offset of the first occurrence of a character in a
+   * string.
+   *
+   * @param aOffset the offset from the beginning of the string to begin
+   *        searching
+   * @return The offset of the character from the beginning of the string,
+   *         or -1 if not found.
+   */
+  NS_HIDDEN_(PRInt32) FindChar(char_type aChar, PRUint32 aOffset = 0) const;
+
+  /**
    * Search for the offset of the last occurrence of a character in a
    * string.
    *
@@ -368,6 +605,17 @@ public:
    * Append a string representation of a number.
    */
   NS_HIDDEN_(void) AppendInt(int aInt, PRInt32 aRadix = 10);
+
+#ifndef XPCOM_GLUE_AVOID_NSPR
+  /**
+   * Convert this string to an integer.
+   *
+   * @param aErrorCode pointer to contain result code.
+   * @param aRadix must be 10 or 16
+   */
+  NS_HIDDEN_(PRInt32) ToInteger(nsresult* aErrorCode,
+                                PRUint32 aRadix = 10) const;
+#endif // XPCOM_GLUE_AVOID_NSPR
 
 protected:
   // Prevent people from allocating a nsAString directly.
@@ -720,10 +968,11 @@ private:
  */
 
 #ifdef HAVE_CPP_2BYTE_WCHAR_T
+  PR_STATIC_ASSERT(sizeof(wchar_t) == 2);
   #define NS_LL(s)                                L##s
-  #define NS_MULTILINE_LITERAL_STRING(s)          nsDependentString(NS_REINTERPRET_CAST(const nsAString::char_type*, s), PRUint32((sizeof(s)/sizeof(wchar_t))-1))
-  #define NS_MULTILINE_LITERAL_STRING_INIT(n,s)   n(NS_REINTERPRET_CAST(const nsAString::char_type*, s), PRUint32((sizeof(s)/sizeof(wchar_t))-1))
-  #define NS_NAMED_MULTILINE_LITERAL_STRING(n,s)  const nsDependentString n(NS_REINTERPRET_CAST(const nsAString::char_type*, s), PRUint32((sizeof(s)/sizeof(wchar_t))-1))
+  #define NS_MULTILINE_LITERAL_STRING(s)          nsDependentString(reinterpret_cast<const nsAString::char_type*>(s), PRUint32((sizeof(s)/sizeof(wchar_t))-1))
+  #define NS_MULTILINE_LITERAL_STRING_INIT(n,s)   n(reinterpret_cast<const nsAString::char_type*>(s), PRUint32((sizeof(s)/sizeof(wchar_t))-1))
+  #define NS_NAMED_MULTILINE_LITERAL_STRING(n,s)  const nsDependentString n(reinterpret_cast<const nsAString::char_type*>(s), PRUint32((sizeof(s)/sizeof(wchar_t))-1))
   typedef nsDependentString nsLiteralString;
 #else
   #define NS_LL(s)                                s
@@ -732,6 +981,9 @@ private:
   #define NS_NAMED_MULTILINE_LITERAL_STRING(n,s)  const NS_ConvertASCIItoUTF16 n(s, PRUint32(sizeof(s)-1))
   typedef NS_ConvertASCIItoUTF16 nsLiteralString;
 #endif
+
+/* Check that PRUnichar is unsigned */
+PR_STATIC_ASSERT(PRUnichar(-1) > PRUnichar(0));
 
 /*
  * Macro arguments used in concatenation or stringification won't be expanded.
@@ -744,11 +996,11 @@ private:
 
 #define NS_L(s)                                   NS_LL(s)
 
-#define NS_LITERAL_STRING(s)                      NS_STATIC_CAST(const nsString&, NS_MULTILINE_LITERAL_STRING(NS_LL(s)))
+#define NS_LITERAL_STRING(s)                      static_cast<const nsString&>(NS_MULTILINE_LITERAL_STRING(NS_LL(s)))
 #define NS_LITERAL_STRING_INIT(n,s)               NS_MULTILINE_LITERAL_STRING_INIT(n, NS_LL(s))
 #define NS_NAMED_LITERAL_STRING(n,s)              NS_NAMED_MULTILINE_LITERAL_STRING(n, NS_LL(s))
 
-#define NS_LITERAL_CSTRING(s)                     NS_STATIC_CAST(const nsDependentCString&, nsDependentCString(s, PRUint32(sizeof(s)-1)))
+#define NS_LITERAL_CSTRING(s)                     static_cast<const nsDependentCString&>(nsDependentCString(s, PRUint32(sizeof(s)-1)))
 #define NS_LITERAL_CSTRING_INIT(n,s)              n(s, PRUint32(sizeof(s)-1))
 #define NS_NAMED_LITERAL_CSTRING(n,s)             const nsDependentCString n(s, PRUint32(sizeof(s)-1))
 
@@ -999,32 +1251,32 @@ inline PRBool
 StringBeginsWith(const nsAString& aSource, const nsAString& aSubstring,
                  nsAString::ComparatorFunc aComparator = nsAString::DefaultComparator)
 {
-  return StringHead(aSource, aSubstring.Length()).
-    Equals(aSubstring, aComparator);
+  return aSubstring.Length() <= aSource.Length() &&
+      StringHead(aSource, aSubstring.Length()).Equals(aSubstring, aComparator);
 }
 
 inline PRBool
 StringEndsWith(const nsAString& aSource, const nsAString& aSubstring,
                nsAString::ComparatorFunc aComparator = nsAString::DefaultComparator)
 {
-  return StringTail(aSource, aSubstring.Length()).
-    Equals(aSubstring, aComparator);
+  return aSubstring.Length() <= aSource.Length() &&
+      StringTail(aSource, aSubstring.Length()).Equals(aSubstring, aComparator);
 }
 
 inline PRBool
 StringBeginsWith(const nsACString& aSource, const nsACString& aSubstring,
                  nsACString::ComparatorFunc aComparator = nsACString::DefaultComparator)
 {
-  return StringHead(aSource, aSubstring.Length()).
-    Equals(aSubstring, aComparator);
+  return aSubstring.Length() <= aSource.Length() &&
+      StringHead(aSource, aSubstring.Length()).Equals(aSubstring, aComparator);
 }
 
 inline PRBool
 StringEndsWith(const nsACString& aSource, const nsACString& aSubstring,
                nsACString::ComparatorFunc aComparator = nsACString::DefaultComparator)
 {
-  return StringTail(aSource, aSubstring.Length()).
-    Equals(aSubstring, aComparator);
+  return aSubstring.Length() <= aSource.Length() &&
+      StringTail(aSource, aSubstring.Length()).Equals(aSubstring, aComparator);
 }
 
 /**

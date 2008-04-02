@@ -141,7 +141,8 @@ typedef PRUint32 NSFastLoadOID;         // nsFastLoadFooter::mObjectMap index
 
 #define MFL_FILE_VERSION_0      0
 #define MFL_FILE_VERSION_1      1000
-#define MFL_FILE_VERSION        4       // fix to note singletons in object map
+#define MFL_FILE_VERSION        5       // rev'ed to defend against unversioned
+                                        // XPCOM JS component fastload files
 
 /**
  * Compute Fletcher's 16-bit checksum over aLength bytes starting at aBuffer,
@@ -162,7 +163,7 @@ typedef PRUint32 NSFastLoadOID;         // nsFastLoadFooter::mObjectMap index
  *  while (NS_SUCCEEDED(rv = Read(buf + rem, sizeof buf - rem, &len)) && len) {
  *      len += rem;
  *      rem = NS_AccumulateFastLoadChecksum(&checksum,
- *                                          NS_REINTERPRET_CAST(PRUint8*, buf),
+ *                                          reinterpret_cast<PRUint8*>(buf),
  *                                          len,
  *                                          PR_FALSE);
  *      if (rem)
@@ -171,7 +172,7 @@ typedef PRUint32 NSFastLoadOID;         // nsFastLoadFooter::mObjectMap index
  *
  *  if (rem) {
  *      NS_AccumulateFastLoadChecksum(&checksum,
- *                                    NS_REINTERPRET_CAST(PRUint8*, buf),
+ *                                    reinterpret_cast<PRUint8*>(buf),
  *                                    rem,
  *                                    PR_TRUE);
  *  }

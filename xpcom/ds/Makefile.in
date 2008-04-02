@@ -50,6 +50,7 @@ MOZILLA_INTERNAL_API = 1
 
 REQUIRES	= \
 		  string \
+		  xpcom \
 		  $(NULL)
 
 CPPSRCS		= \
@@ -58,9 +59,6 @@ CPPSRCS		= \
 		nsByteBuffer.cpp \
 		nsCheapSets.cpp \
 		nsCRT.cpp \
-		nsDeque.cpp \
-		nsEmptyEnumerator.cpp \
-		nsEnumeratorUtils.cpp \
 		nsFixedSizeAllocator.cpp \
 		nsHashSets.cpp \
 		nsHashtable.cpp \
@@ -77,11 +75,8 @@ CPPSRCS		= \
 		nsSupportsPrimitives.cpp \
 		nsUnicharBuffer.cpp \
 		nsVariant.cpp \
-		nsTextFormatter.cpp \
 		nsTimelineService.cpp \
-		nsValueArray.cpp \
 		nsArray.cpp \
-		nsArrayEnumerator.cpp \
 		nsHashPropertyBag.cpp \
 		$(NULL)
 
@@ -90,15 +85,15 @@ EXPORTS		= \
 		nsCheapSets.h \
 		nsCppSharedAllocator.h \
 		nsCRT.h \
-		nsDeque.h \
 		nsDoubleHashtable.h \
-		nsEnumeratorUtils.h \
+		nsExpirationTracker.h \
 		nsFixedSizeAllocator.h \
 		nsHashSets.h \
 		nsHashtable.h \
 		nsIByteBuffer.h \
 		nsIUnicharBuffer.h \
 		nsInt64.h \
+		nsMathUtils.h \
 		nsObserverService.h \
 		nsRecyclingAllocator.h \
 		nsStaticNameTable.h \
@@ -106,14 +101,10 @@ EXPORTS		= \
 		nsSupportsArray.h \
 		nsSupportsPrimitives.h \
 		nsTime.h \
-		nsUnitConversion.h \
 		nsVariant.h \
-		nsTextFormatter.h \
-		nsValueArray.h \
-		nsArrayEnumerator.h \
 		nsStringEnumerator.h \
-		nsAutoBuffer.h \
 		nsHashPropertyBag.h \
+		nsWhitespaceTokenizer.h \
 		$(NULL)			
 
 XPIDLSRCS	= \
@@ -121,7 +112,6 @@ XPIDLSRCS	= \
 		nsIAtomService.idl \
 		nsICollection.idl \
 		nsIEnumerator.idl \
-		nsIHashable.idl \
 		nsIINIParser.idl \
 		nsIPersistentProperties2.idl \
 		nsIProperty.idl \
@@ -140,6 +130,7 @@ XPIDLSRCS	= \
 
 SDK_XPIDLSRCS   = \
 		nsIArray.idl               \
+		nsIHashable.idl            \
 		nsIMutableArray.idl        \
 		nsIObserverService.idl	   \
 		nsIObserver.idl		   \
@@ -164,5 +155,6 @@ FORCE_USE_PIC	= 1
 
 include $(topsrcdir)/config/rules.mk
 
+LOCAL_INCLUDES += -I$(srcdir)/../io	 
 
 DEFINES		+= -D_IMPL_NS_COM

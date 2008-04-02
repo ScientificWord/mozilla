@@ -44,7 +44,6 @@
 #include "nsXPCOMGlue.h"
 #include "nsVoidArray.h"
 #include "nsTArray.h"
-#include "nsValueArray.h"
 #include "nsIAtom.h"
 #include "nsFixedSizeAllocator.h"
 #include "nsRecyclingAllocator.h"
@@ -80,7 +79,7 @@
 #include "nsStringEnumerator.h"
 #include "nsIInputStreamTee.h"
 #include "nsCheapSets.h"
-#ifdef DEBUG
+#if defined(DEBUG) && !defined(XP_OS2)
 #include "pure.h"
 #endif
 #include "nsHashKeys.h"
@@ -95,7 +94,10 @@
 #include "nsXPCOMStrings.h"
 #include "nsStringBuffer.h"
 #include "nsCategoryCache.h"
+#include "nsCycleCollectionParticipant.h"
+#include "nsCycleCollector.h"
 #include "nsThreadUtils.h"
+#include "nsTObserverArray.h"
 
 #if !defined(WINCE) && !defined(XP_OS2)
 #include "nsWindowsRegKey.h"
@@ -121,13 +123,19 @@ void XXXNeverCalled()
       array2.InsertElementAt(c, 0);
       array1.AppendElements(array2);
     }
+    {
+      nsTObserverArray<PRBool> dummyObserverArray;
+      PRBool a = PR_FALSE;
+      dummyObserverArray.AppendElement(a);
+      dummyObserverArray.RemoveElement(a);
+      dummyObserverArray.Clear();
+    }
     nsStringHashSet();
     nsCStringHashSet();
     nsInt32HashSet();
     nsVoidHashSet();
     nsCheapStringSet();
     nsCheapInt32Set();
-    nsValueArray(0);
     nsSupportsArray();
     NS_GetNumberOfAtoms();
     NS_NewPipe(nsnull, nsnull, 0, 0, PR_FALSE, PR_FALSE, nsnull);
@@ -160,7 +168,6 @@ void XXXNeverCalled()
     nsTraceRefcnt::LogAddCOMPtr(nsnull, nsnull);
     nsTraceRefcntImpl::DumpStatistics();
     NS_NewEmptyEnumerator(nsnull);
-    new nsArrayEnumerator(nsnull);
     NS_QuickSort(nsnull, 0, 0, nsnull, nsnull);
     nsString();
     NS_ProxyRelease(nsnull, nsnull, PR_FALSE);
@@ -169,9 +176,7 @@ void XXXNeverCalled()
 #if defined (DEBUG) && !defined (WINCE) && !defined(XP_OS2)
     PurePrintf(0);
 #endif
-    XPTC_InvokeByIndex(nsnull, 0, 0, nsnull);
-    xptc_dummy();
-    xptc_dummy2();
+    NS_InvokeByIndex(nsnull, 0, 0, nsnull);
     NS_NewGenericFactory(nsnull, nsnull);
     NS_NewGenericModule2(nsnull, nsnull);
     NS_GetWeakReference(nsnull);
@@ -272,6 +277,9 @@ void XXXNeverCalled()
       b.ToString(0, x);
       b.ToString(0, y);
     }
+
+    nsXPCOMCycleCollectionParticipant();
+    nsCycleCollector_collect();
 
 #if !defined(WINCE) && !defined(XP_OS2)
     NS_NewWindowsRegKey(nsnull);

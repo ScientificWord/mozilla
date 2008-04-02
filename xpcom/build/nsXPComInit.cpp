@@ -91,8 +91,6 @@
 #include "nsEnvironment.h"
 #include "nsVersionComparatorImpl.h"
 
-#include "nsEmptyEnumerator.h"
-
 #include "nsILocalFile.h"
 #include "nsLocalFile.h"
 #if defined(XP_UNIX) || defined(XP_OS2)
@@ -117,6 +115,7 @@ NS_DECL_CLASSINFO(nsStringInputStream)
 
 #include "nsHashPropertyBag.h"
 
+#include "nsUnicharInputStream.h"
 #include "nsVariant.h"
 
 #include "nsUUIDGenerator.h"
@@ -155,6 +154,7 @@ extern void _FreeAutoLockStatics();
 static NS_DEFINE_CID(kComponentManagerCID, NS_COMPONENTMANAGER_CID);
 static NS_DEFINE_CID(kMemoryCID, NS_MEMORY_CID);
 static NS_DEFINE_CID(kINIParserFactoryCID, NS_INIPARSERFACTORY_CID);
+static NS_DEFINE_CID(kSimpleUnicharStreamFactoryCID, NS_SIMPLE_UNICHAR_STREAM_FACTORY_CID);
 
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsProcess)
 
@@ -578,7 +578,7 @@ NS_InitXPCOM3(nsIServiceManager* *result,
 
     if (result) {
         nsIServiceManager *serviceManager =
-            NS_STATIC_CAST(nsIServiceManager*, compMgr);
+            static_cast<nsIServiceManager*>(compMgr);
 
         NS_ADDREF(*result = serviceManager);
     }
@@ -588,13 +588,16 @@ NS_InitXPCOM3(nsIServiceManager* *result,
     rv = compMgr->RegisterService(kMemoryCID, memory);
     if (NS_FAILED(rv)) return rv;
 
-    rv = compMgr->RegisterService(kComponentManagerCID, NS_STATIC_CAST(nsIComponentManager*, compMgr));
+    rv = compMgr->RegisterService(kComponentManagerCID, static_cast<nsIComponentManager*>(compMgr));
     if (NS_FAILED(rv)) return rv;
 
 #ifdef GC_LEAK_DETECTOR
-  rv = NS_InitLeakDetector();
+    rv = NS_InitLeakDetector();
     if (NS_FAILED(rv)) return rv;
 #endif
+
+    rv = nsCycleCollector_startup();
+    if (NS_FAILED(rv)) return rv;
 
     // 2. Register the global services with the component manager so that
     //    clients can create new objects.
@@ -616,7 +619,7 @@ NS_InitXPCOM3(nsIServiceManager* *result,
     }
 
     nsCOMPtr<nsIComponentRegistrar> registrar = do_QueryInterface(
-        NS_STATIC_CAST(nsIComponentManager*,compMgr), &rv);
+        static_cast<nsIComponentManager*>(compMgr), &rv);
     if (registrar) {
         for (int i = 0; i < components_length; i++)
             RegisterGenericFactory(registrar, &components[i]);
@@ -627,6 +630,12 @@ NS_InitXPCOM3(nsIServiceManager* *result,
                                        "nsINIParserFactory",
                                        NS_INIPARSERFACTORY_CONTRACTID, 
                                        iniParserFactory);
+
+        registrar->
+          RegisterFactory(kSimpleUnicharStreamFactoryCID,
+                          "nsSimpleUnicharStreamFactory",
+                          NS_SIMPLE_UNICHAR_STREAM_FACTORY_CONTRACTID,
+                          nsSimpleUnicharStreamFactory::GetInstance());
     }
 
     // Pay the cost at startup time of starting this singleton.
@@ -766,6 +775,8 @@ NS_ShutdownXPCOM(nsIServiceManager* servMgr)
     // Release the directory service
     NS_IF_RELEASE(nsDirectoryService::gService);
 
+    nsCycleCollector_shutdown();
+
     if (moduleLoaders) {
         PRBool more;
         nsCOMPtr<nsISupports> el;
@@ -821,8 +832,6 @@ NS_ShutdownXPCOM(nsIServiceManager* servMgr)
 #endif
 
     ShutdownSpecialSystemDirectory();
-
-    EmptyEnumeratorImpl::Shutdown();
 
     NS_PurgeAtomTable();
 

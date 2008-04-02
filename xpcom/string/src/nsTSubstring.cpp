@@ -36,6 +36,23 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+nsTSubstring_CharT::nsTSubstring_CharT( char_type *data, size_type length,
+                                        PRUint32 flags)
+#ifdef MOZ_V1_STRING_ABI
+  : abstract_string_type(data, length, flags)
+#else
+  : mData(data),
+    mLength(length),
+    mFlags(flags)
+#endif
+  {
+    if (flags & F_OWNED) {
+      STRING_STAT_INCREMENT(Adopt);
+#ifdef NS_BUILD_REFCNT_LOGGING
+      NS_LogCtor(mData, "StringAdopt", 1);
+#endif
+    }
+  }
 
   /**
    * helper function for down-casting a nsTSubstring to a nsTFixedString.
@@ -43,7 +60,7 @@
 inline const nsTFixedString_CharT*
 AsFixedString( const nsTSubstring_CharT* s )
   {
-    return NS_STATIC_CAST(const nsTFixedString_CharT*, s);
+    return static_cast<const nsTFixedString_CharT*>(s);
   }
 
 
@@ -544,7 +561,7 @@ nsTSubstring_CharT::SetCapacity( size_type capacity )
     if (capacity == 0)
       {
         ::ReleaseData(mData, mFlags);
-        mData = NS_CONST_CAST(char_type*, char_traits::sEmptyBuffer);
+        mData = const_cast<char_type*>(char_traits::sEmptyBuffer);
         mLength = 0;
         SetDataFlags(F_TERMINATED);
       }

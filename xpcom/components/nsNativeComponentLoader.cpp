@@ -134,15 +134,8 @@ nsNativeModuleLoader::LoadModule(nsILocalFile* aFile, nsIModule* *aResult)
     }
 
     // We haven't loaded this module before
-#ifdef NS_BUILD_REFCNT_LOGGING
-    nsTraceRefcntImpl::SetActivityIsLegal(PR_FALSE);
-#endif
 
     rv = aFile->Load(&data.library);
-
-#ifdef NS_BUILD_REFCNT_LOGGING
-    nsTraceRefcntImpl::SetActivityIsLegal(PR_TRUE);
-#endif
 
     if (NS_FAILED(rv)) {
         char errorMsg[1024] = "<unknown; can't get error from NSPR>";
@@ -164,12 +157,6 @@ nsNativeModuleLoader::LoadModule(nsILocalFile* aFile, nsIModule* *aResult)
 
         return rv;
     }
-
-#ifdef NS_BUILD_REFCNT_LOGGING
-    // Inform refcnt tracer of new library so that calls through the
-    // new library can be traced.
-    nsTraceRefcntImpl::LoadLibrarySymbols(filePath.get(), data.library);
-#endif
 
 #ifdef IMPLEMENT_BREAK_AFTER_LOAD
     nsCAutoString leafName;
