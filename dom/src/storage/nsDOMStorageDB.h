@@ -12,6 +12,8 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
+ * The Original Code is mozilla.org code.
+ *
  * The Initial Developer of the Original Code is
  * Mozilla Corporation.
  * Portions created by the Initial Developer are Copyright (C) 2006
@@ -48,8 +50,8 @@ class nsSessionStorageEntry;
 class nsDOMStorageDB
 {
 public:
-  nsDOMStorageDB() {};
-  ~nsDOMStorageDB() {};
+  nsDOMStorageDB() {}
+  ~nsDOMStorageDB() {}
 
   nsresult
   Init();
@@ -71,7 +73,8 @@ public:
   GetKeyValue(const nsAString& aDomain,
               const nsAString& aKey,
               nsAString& aValue,
-              PRBool* aSecure);
+              PRBool* aSecure,
+              nsAString& aOwner);
 
   /**
    * Set the value and secure flag for a key in storage.
@@ -80,7 +83,10 @@ public:
   SetKey(const nsAString& aDomain,
          const nsAString& aKey,
          const nsAString& aValue,
-         PRBool aSecure);
+         PRBool aSecure,
+         const nsAString& aOwner,
+         PRInt32 aQuota,
+         PRInt32* aNewUsage);
 
   /**
    * Set the secure flag for a key in storage. Does nothing if the key was
@@ -96,7 +102,30 @@ public:
    */
   nsresult
   RemoveKey(const nsAString& aDomain,
-            const nsAString& aKey);
+            const nsAString& aKey,
+            const nsAString& aOwner,
+            PRInt32 aKeyUsage);
+
+  /**
+   * Removes all keys added by a given domain.
+   */
+  nsresult
+  RemoveOwner(const nsAString& aOwner);
+
+  /**
+   * Removes keys owned by domains that either match or don't match the
+   * list.
+   */
+  nsresult
+  RemoveOwners(const nsStringArray& aOwners, PRBool aMatch);
+
+  /**
+   * Removes all keys from storage. Used when clearing storage.
+   */
+  nsresult
+  RemoveAll();
+
+  nsresult GetUsage(const nsAString &aOwner, PRInt32 *aUsage);
 
 protected:
 
@@ -108,6 +137,12 @@ protected:
   nsCOMPtr<mozIStorageStatement> mUpdateKeyStatement;
   nsCOMPtr<mozIStorageStatement> mSetSecureStatement;
   nsCOMPtr<mozIStorageStatement> mRemoveKeyStatement;
+  nsCOMPtr<mozIStorageStatement> mRemoveOwnerStatement;
+  nsCOMPtr<mozIStorageStatement> mRemoveAllStatement;
+  nsCOMPtr<mozIStorageStatement> mGetUsageStatement;
+
+  nsAutoString mCachedOwner;
+  PRInt32 mCachedUsage;
 };
 
 #endif /* nsDOMStorageDB_h___ */

@@ -41,20 +41,23 @@
 #define nsPIWindowRoot_h__
 
 #include "nsISupports.h"
-#include "nsIDOMGCParticipant.h"
+#include "nsPIDOMEventTarget.h"
 
+class nsIDOMWindow;
 class nsIFocusController;
 
-// a22236a5-db06-4653-94b6-c4b6068e053c
+// 440f8d32-818d-468a-ac75-5916fa1ea198
 #define NS_IWINDOWROOT_IID \
-{ 0xa22236a5, 0xdb06, 0x4653, \
-  { 0x94, 0xb6, 0xc4, 0xb6, 0x06, 0x8e, 0x05, 0x3c } }
+{ 0x440f8d32, 0x818d, 0x468a, \
+  { 0xac, 0x75, 0x59, 0x16, 0xfa, 0x1e, 0xa1, 0x98 } }
 
-class nsPIWindowRoot : public nsIDOMGCParticipant {
+class nsPIWindowRoot : public nsPIDOMEventTarget {
 public:
   NS_DECLARE_STATIC_IID_ACCESSOR(NS_IWINDOWROOT_IID)
 
   NS_IMETHOD GetFocusController(nsIFocusController** aResult)=0;
+
+  virtual nsIDOMWindow* GetWindow()=0;
 };
 
 NS_DEFINE_STATIC_IID_ACCESSOR(nsPIWindowRoot, NS_IWINDOWROOT_IID)

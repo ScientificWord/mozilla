@@ -1,5 +1,5 @@
-/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
-/* vim: set ts=2 sw=4 et tw=80: */
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/* vim: set ts=4 sw=4 et tw=78: */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -61,7 +61,6 @@
 #include "nsIWindowMediator.h"
 #include "nsPIDOMWindow.h"
 #include "nsIDOMDocument.h"
-#include "nsIJSConsoleService.h"
 #include "nsIConsoleService.h"
 #include "nsXPIDLString.h"
 #include "prprf.h"
@@ -69,7 +68,13 @@
 #include "nsIWebNavigation.h"
 #include "nsIDocShell.h"
 #include "nsIContentViewer.h"
-
+#include "nsIXPConnect.h"
+#include "nsContentUtils.h"
+#include "nsJSUtils.h"
+#include "nsThreadUtils.h"
+#include "nsIJSContextStack.h"
+#include "nsIScriptChannel.h"
+#include "nsIDocument.h"
 
 class nsJSThunk : public nsIInputStream
 {
@@ -80,8 +85,10 @@ public:
     NS_FORWARD_SAFE_NSIINPUTSTREAM(mInnerStream)
 
     nsresult Init(nsIURI* uri);
-    nsresult EvaluateScript(nsIChannel *aChannel);
-    nsresult BringUpConsole(nsIDOMWindow *aDomWindow);
+    nsresult EvaluateScript(nsIChannel *aChannel,
+                            PopupControlState aPopupState,
+                            PRUint32 aExecutionPolicy,
+                            nsPIDOMWindow *aOriginalInnerWindow);
 
 protected:
     virtual ~nsJSThunk();
@@ -112,25 +119,29 @@ nsresult nsJSThunk::Init(nsIURI* uri)
     return NS_OK;
 }
 
-nsresult nsJSThunk::EvaluateScript(nsIChannel *aChannel)
+static PRBool
+IsISO88591(const nsString& aString)
 {
-    nsresult rv;
+    for (nsString::const_char_iterator c = aString.BeginReading(),
+                                   c_end = aString.EndReading();
+         c < c_end; ++c) {
+        if (*c > 255)
+            return PR_FALSE;
+    }
+    return PR_TRUE;
+}
 
-    NS_ENSURE_ARG_POINTER(aChannel);
-
-    // Get the script string to evaluate...
-    nsCAutoString script;
-    rv = mURI->GetPath(script);
-    if (NS_FAILED(rv)) return rv;
-
-    // The the global object owner from the channel
+static
+nsIScriptGlobalObject* GetGlobalObject(nsIChannel* aChannel)
+{
+    // Get the global object owner from the channel
     nsCOMPtr<nsIScriptGlobalObjectOwner> globalOwner;
     NS_QueryNotificationCallbacks(aChannel, globalOwner);
     NS_ASSERTION(globalOwner, 
                  "Unable to get an nsIScriptGlobalObjectOwner from the "
                  "channel!");
     if (!globalOwner) {
-        return NS_ERROR_FAILURE;
+        return nsnull;
     }
 
     // So far so good: get the script context from its owner.
@@ -139,17 +150,52 @@ nsresult nsJSThunk::EvaluateScript(nsIChannel *aChannel)
     NS_ASSERTION(global,
                  "Unable to get an nsIScriptGlobalObject from the "
                  "ScriptGlobalObjectOwner!");
+    return global;
+}
+
+nsresult nsJSThunk::EvaluateScript(nsIChannel *aChannel,
+                                   PopupControlState aPopupState,
+                                   PRUint32 aExecutionPolicy,
+                                   nsPIDOMWindow *aOriginalInnerWindow)
+{
+    if (aExecutionPolicy == nsIScriptChannel::NO_EXECUTION) {
+        // Nothing to do here.
+        return NS_ERROR_DOM_RETVAL_UNDEFINED;
+    }
+    
+    NS_ENSURE_ARG_POINTER(aChannel);
+
+    // Get principal of code for execution
+    nsCOMPtr<nsISupports> owner;
+    aChannel->GetOwner(getter_AddRefs(owner));
+    nsCOMPtr<nsIPrincipal> principal = do_QueryInterface(owner);
+    if (!principal) {
+        // No execution without a principal!
+        NS_ASSERTION(!owner, "Non-principal owner?");
+        NS_WARNING("No principal to execute JS with");
+        return NS_ERROR_DOM_RETVAL_UNDEFINED;
+    }
+
+    // Get the script string to evaluate...
+    nsCAutoString script;
+    nsresult rv = mURI->GetPath(script);
+    if (NS_FAILED(rv)) return rv;
+
+    // Get the global object we should be running on.
+    nsIScriptGlobalObject* global = GetGlobalObject(aChannel);
     if (!global) {
         return NS_ERROR_FAILURE;
     }
 
     nsCOMPtr<nsPIDOMWindow> win(do_QueryInterface(global));
 
-    // Make sure we create a new inner window if one doesn't already exist (see
-    // bug 306630).
-    nsPIDOMWindow *innerWin = win->EnsureInnerWindow();
+    // Push our popup control state
+    nsAutoPopupStatePusher popupStatePusher(win, aPopupState);
 
-    if (!innerWin) {
+    // Make sure we still have the same inner window as we used to.
+    nsPIDOMWindow *innerWin = win->GetCurrentInnerWindow();
+
+    if (innerWin != aOriginalInnerWindow) {
         return NS_ERROR_UNEXPECTED;
     }
 
@@ -162,14 +208,7 @@ nsresult nsJSThunk::EvaluateScript(nsIChannel *aChannel)
         return NS_ERROR_FAILURE;
     }
 
-    // If mURI is just "javascript:", we bring up the Error console
-    // and return NS_ERROR_DOM_RETVAL_UNDEFINED.
-    if (script.IsEmpty()) {
-        rv = BringUpConsole(domWindow);
-        if (NS_FAILED(rv)) return NS_ERROR_FAILURE;
-        return NS_ERROR_DOM_RETVAL_UNDEFINED;
-    }
-
+    // So far so good: get the script context from its owner.
     nsCOMPtr<nsIScriptContext> scriptContext = global->GetContext();
     if (!scriptContext)
         return NS_ERROR_FAILURE;
@@ -182,157 +221,168 @@ nsresult nsJSThunk::EvaluateScript(nsIChannel *aChannel)
     rv = mURI->GetSpec(url);
     if (NS_FAILED(rv)) return rv;
 
-    // Get principal of code for execution
-    nsCOMPtr<nsISupports> owner;
-    rv = aChannel->GetOwner(getter_AddRefs(owner));
-    nsCOMPtr<nsIPrincipal> principal;
-    if (NS_FAILED(rv))
-        return rv;
-
     nsCOMPtr<nsIScriptSecurityManager> securityManager;
     securityManager = do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv);
     if (NS_FAILED(rv))
         return rv;
 
-    if (owner) {
-        principal = do_QueryInterface(owner, &rv);
-        NS_ASSERTION(principal, "Channel's owner is not a principal");
-        if (!principal)
-            return NS_ERROR_FAILURE;
+    PRBool useSandbox =
+        (aExecutionPolicy == nsIScriptChannel::EXECUTE_IN_SANDBOX);
 
-        //-- Don't run if the script principal is different from the
-        //   principal of the context, with two exceptions: we allow
-        //   the script to run if the script has the system principal
-        //   or the context is about:blank.
+    if (!useSandbox) {
+        //-- Don't outside a sandbox unless the script principal subsumes the
+        //   principal of the context.
         nsCOMPtr<nsIPrincipal> objectPrincipal;
-        rv = securityManager->GetObjectPrincipal(
-                                (JSContext*)scriptContext->GetNativeContext(),
-                                globalJSObject,
-                                getter_AddRefs(objectPrincipal));
+        rv = securityManager->
+            GetObjectPrincipal((JSContext*)scriptContext->GetNativeContext(),
+                               globalJSObject,
+                               getter_AddRefs(objectPrincipal));
         if (NS_FAILED(rv))
             return rv;
 
-        nsCOMPtr<nsIPrincipal> systemPrincipal;
-        securityManager->GetSystemPrincipal(getter_AddRefs(systemPrincipal));
-        if (principal != systemPrincipal) {
-            rv = securityManager->CheckSameOriginPrincipal(principal,
-                                                           objectPrincipal);
-            if (NS_FAILED(rv)) {
-                nsCOMPtr<nsIConsoleService> console =
-                    do_GetService("@mozilla.org/consoleservice;1");
-                if (console) {
-                    // XXX Localize me!
-                    console->LogStringMessage(
-                        NS_LITERAL_STRING("Attempt to load a javascript: URL from one host\nin a window displaying content from another host\nwas blocked by the security manager.").get());
-                }
+        PRBool subsumes;
+        rv = principal->Subsumes(objectPrincipal, &subsumes);
+        if (NS_FAILED(rv))
+            return rv;
 
-                return NS_ERROR_DOM_RETVAL_UNDEFINED;
-            }
-        }
+        useSandbox = !subsumes;
     }
-    else {
-        // No owner from channel, use the object principals.
-        rv = securityManager->GetObjectPrincipal(
-                                (JSContext*)scriptContext->GetNativeContext(),
-                                globalJSObject,
-                                getter_AddRefs(principal));
 
-        // Paranoia check: If we don't have an owner, make sure that we're
-        // not giving this javascript URL the principals of some other
-        // random page, so if the principals aren't for about:blank, don't use
-        // them.
-        // XXX We can't just create new about:blank principals since caps
-        // refuses to treat two about:blank principals as equal.
-        if (principal) {
-            nsCOMPtr<nsIURI> uri;
-            rv = principal->GetURI(getter_AddRefs(uri));
-            if (!uri) {
-                rv = NS_ERROR_NOT_AVAILABLE;
-            }
-            
-            if (NS_SUCCEEDED(rv)) {
-                nsCAutoString spec;
-                uri->GetSpec(spec);
-                if (!spec.EqualsLiteral("about:blank")) {
-                    rv = NS_ERROR_FAILURE;
-                }
-            }
-        }
-
-        if (NS_FAILED(rv) || !principal) {
-            // If all else fails, use a null principal
-            principal = do_CreateInstance("@mozilla.org/nullprincipal;1", &rv);
-        }
-
-        if (NS_FAILED(rv) || !principal) {
-            return NS_ERROR_FAILURE;
-        }
-    }
+    nsString result;
+    PRBool isUndefined;
 
     // Finally, we have everything needed to evaluate the expression.
-    nsString result;
-    PRBool bIsUndefined;
 
-    rv = scriptContext->EvaluateString(NS_ConvertUTF8toUTF16(script),
-                                       globalJSObject, // obj
-                                       principal,
-                                       url.get(),      // url
-                                       1,              // line no
-                                       nsnull,
-                                       &result,
-                                       &bIsUndefined);
+    if (useSandbox) {
+        // We were asked to use a sandbox, or the channel owner isn't allowed
+        // to execute in this context.  Evaluate the javascript URL in a
+        // sandbox to prevent it from accessing data it doesn't have
+        // permissions to access.
 
+        // First check to make sure it's OK to evaluate this script to
+        // start with.  For example, script could be disabled.
+        JSContext *cx = (JSContext*)scriptContext->GetNativeContext();
+        JSAutoRequest ar(cx);
+
+        PRBool ok;
+        rv = securityManager->CanExecuteScripts(cx, principal, &ok);
+        if (NS_FAILED(rv)) {
+            return rv;
+        }
+
+        if (!ok) {
+            // Treat this as returning undefined from the script.  That's what
+            // nsJSContext does.
+            return NS_ERROR_DOM_RETVAL_UNDEFINED;
+        }
+
+        nsIXPConnect *xpc = nsContentUtils::XPConnect();
+
+        nsCOMPtr<nsIXPConnectJSObjectHolder> sandbox;
+        rv = xpc->CreateSandbox(cx, principal, getter_AddRefs(sandbox));
+        NS_ENSURE_SUCCESS(rv, rv);
+
+        jsval rval = JSVAL_VOID;
+        nsAutoGCRoot root(&rval, &rv);
+        if (NS_FAILED(rv)) {
+            return rv;
+        }
+
+        // Push our JSContext on the context stack so the JS_ValueToString call (and
+        // JS_ReportPendingException, if relevant) will use the principal of cx.
+        // Note that we do this as late as possible to make popping simpler.
+        nsCOMPtr<nsIJSContextStack> stack =
+            do_GetService("@mozilla.org/js/xpc/ContextStack;1", &rv);
+        if (NS_SUCCEEDED(rv)) {
+            rv = stack->Push(cx);
+        }
+        if (NS_FAILED(rv)) {
+            return rv;
+        }
+
+        rv = xpc->EvalInSandboxObject(NS_ConvertUTF8toUTF16(script), cx,
+                                      sandbox, PR_TRUE, &rval);
+
+        // Propagate and report exceptions that happened in the
+        // sandbox.
+        if (JS_IsExceptionPending(cx)) {
+            JS_ReportPendingException(cx);
+            isUndefined = PR_TRUE;
+        } else {
+            isUndefined = rval == JSVAL_VOID;
+        }
+
+        if (!isUndefined && NS_SUCCEEDED(rv)) {
+            NS_ASSERTION(JSVAL_IS_STRING(rval), "evalInSandbox is broken");
+            result = nsDependentJSString(JSVAL_TO_STRING(rval));
+        }
+
+        stack->Pop(nsnull);
+    } else {
+        // No need to use the sandbox, evaluate the script directly in
+        // the given scope.
+        rv = scriptContext->EvaluateString(NS_ConvertUTF8toUTF16(script),
+                                           globalJSObject, // obj
+                                           principal,
+                                           url.get(),      // url
+                                           1,              // line no
+                                           nsnull,
+                                           &result,
+                                           &isUndefined);
+
+        // If there's an error on cx as a result of that call, report
+        // it now -- either we're just running under the event loop,
+        // so we shouldn't propagate JS exceptions out of here, or we
+        // can't be sure that our caller is JS (and if it's not we'll
+        // lose the error), or it might be JS that then proceeds to
+        // cause an error of its own (which will also make us lose
+        // this error).
+        JSContext *cx = (JSContext*)scriptContext->GetNativeContext();
+        JSAutoRequest ar(cx);
+        ::JS_ReportPendingException(cx);
+    }
+    
     if (NS_FAILED(rv)) {
         rv = NS_ERROR_MALFORMED_URI;
     }
-    else if (bIsUndefined) {
+    else if (isUndefined) {
         rv = NS_ERROR_DOM_RETVAL_UNDEFINED;
     }
     else {
-        PRUint32 resultUTF8len;
-        char *resultUTF8 = ToNewUTF8String(result, &resultUTF8len);
-        if (resultUTF8)
+        char *bytes;
+        PRUint32 bytesLen;
+        NS_NAMED_LITERAL_CSTRING(isoCharset, "ISO-8859-1");
+        NS_NAMED_LITERAL_CSTRING(utf8Charset, "UTF-8");
+        const nsCString *charset;
+        if (IsISO88591(result)) {
+            // For compatibility, if the result is ISO-8859-1, we use
+            // ISO-8859-1, so that people can compatibly create images
+            // using javascript: URLs.
+            bytes = ToNewCString(result);
+            bytesLen = result.Length();
+            charset = &isoCharset;
+        }
+        else {
+            bytes = ToNewUTF8String(result, &bytesLen);
+            charset = &utf8Charset;
+        }
+        aChannel->SetContentCharset(*charset);
+        if (bytes)
             rv = NS_NewByteInputStream(getter_AddRefs(mInnerStream),
-                                       resultUTF8, resultUTF8len,
+                                       bytes, bytesLen,
                                        NS_ASSIGNMENT_ADOPT);
         else
             rv = NS_ERROR_OUT_OF_MEMORY;
     }
-    return rv;
-}
 
-nsresult nsJSThunk::BringUpConsole(nsIDOMWindow *aDomWindow)
-{
-    nsresult rv;
-
-    // First, get the Window Mediator service.
-    nsCOMPtr<nsIWindowMediator> windowMediator =
-        do_GetService(NS_WINDOWMEDIATOR_CONTRACTID, &rv);
-
-    if (NS_FAILED(rv)) return rv;
-
-    // Next, find out whether there's a console already open.
-    nsCOMPtr<nsIDOMWindowInternal> console;
-    rv = windowMediator->GetMostRecentWindow(NS_LITERAL_STRING("global:console").get(),
-                                             getter_AddRefs(console));
-    if (NS_FAILED(rv)) return rv;
-
-    if (console) {
-        // If the console is already open, bring it to the top.
-        rv = console->Focus();
-    } else {
-        nsCOMPtr<nsIJSConsoleService> jsconsole;
-
-        jsconsole = do_GetService("@mozilla.org/embedcomp/jsconsole-service;1", &rv);
-        if (NS_FAILED(rv) || !jsconsole) return rv;
-        jsconsole->Open(aDomWindow);
-    }
     return rv;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class nsJSChannel : public nsIChannel
+class nsJSChannel : public nsIChannel,
+                    public nsIStreamListener,
+                    public nsIScriptChannel
 {
 public:
     nsJSChannel();
@@ -340,31 +390,56 @@ public:
     NS_DECL_ISUPPORTS
     NS_DECL_NSIREQUEST
     NS_DECL_NSICHANNEL
+    NS_DECL_NSIREQUESTOBSERVER
+    NS_DECL_NSISTREAMLISTENER
+    NS_DECL_NSISCRIPTCHANNEL
 
     nsresult Init(nsIURI *aURI);
 
+    // Actually evaluate the script.
+    void EvaluateScript();
+    
 protected:
     virtual ~nsJSChannel();
 
     nsresult StopAll();
 
-    nsresult InternalOpen(PRBool aIsAsync, nsIStreamListener *aListener,
-                          nsISupports *aContext, nsIInputStream **aResult);
+    void NotifyListener();
 
+    void CleanupStrongRefs();
+    
 protected:
     nsCOMPtr<nsIChannel>    mStreamChannel;
+    nsCOMPtr<nsIStreamListener> mListener;  // Our final listener
+    nsCOMPtr<nsISupports> mContext; // The context passed to AsyncOpen
+    nsCOMPtr<nsPIDOMWindow> mOriginalInnerWindow;  // The inner window our load
+                                                   // started against.
+    // If we blocked onload on a document in AsyncOpen, this is the document we
+    // did it on.
+    nsCOMPtr<nsIDocument>   mDocumentOnloadBlockedOn;
+
+    nsresult mStatus; // Our status
 
     nsLoadFlags             mLoadFlags;
+    nsLoadFlags             mActualLoadFlags; // See AsyncOpen
 
     nsRefPtr<nsJSThunk>     mIOThunk;
+    PopupControlState       mPopupState;
+    PRUint32                mExecutionPolicy;
+    PRPackedBool            mIsAsync;
     PRPackedBool            mIsActive;
-    PRPackedBool            mWasCanceled;
+    PRPackedBool            mOpenedStreamChannel;
 };
 
 nsJSChannel::nsJSChannel() :
+    mStatus(NS_OK),
     mLoadFlags(LOAD_NORMAL),
+    mActualLoadFlags(LOAD_NORMAL),
+    mPopupState(openOverridden),
+    mExecutionPolicy(EXECUTE_IN_SANDBOX),
+    mIsAsync(PR_TRUE),
     mIsActive(PR_FALSE),
-    mWasCanceled(PR_FALSE)
+    mOpenedStreamChannel(PR_FALSE)
 {
 }
 
@@ -403,8 +478,7 @@ nsresult nsJSChannel::Init(nsIURI *aURI)
     // If the resultant script evaluation actually does return a value, we
     // treat it as html.
     rv = NS_NewInputStreamChannel(getter_AddRefs(channel), aURI, mIOThunk,
-                                  NS_LITERAL_CSTRING("text/html"),
-                                  NS_LITERAL_CSTRING("UTF-8"));
+                                  NS_LITERAL_CSTRING("text/html"));
     if (NS_FAILED(rv)) return rv;
 
     rv = mIOThunk->Init(aURI);
@@ -426,6 +500,9 @@ NS_INTERFACE_MAP_BEGIN(nsJSChannel)
     NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIChannel)
     NS_INTERFACE_MAP_ENTRY(nsIRequest)
     NS_INTERFACE_MAP_ENTRY(nsIChannel)
+    NS_INTERFACE_MAP_ENTRY(nsIRequestObserver)
+    NS_INTERFACE_MAP_ENTRY(nsIStreamListener)
+    NS_INTERFACE_MAP_ENTRY(nsIScriptChannel)
 NS_INTERFACE_MAP_END
 
 //
@@ -448,22 +525,24 @@ nsJSChannel::IsPending(PRBool *aResult)
 NS_IMETHODIMP
 nsJSChannel::GetStatus(nsresult *aResult)
 {
-    // We're always ok. Our status is independent of our underlying
-    // stream's status.
-    *aResult = NS_OK;
+    if (NS_SUCCEEDED(mStatus) && mOpenedStreamChannel) {
+        return mStreamChannel->GetStatus(aResult);
+    }
+    
+    *aResult = mStatus;
+        
     return NS_OK;
 }
 
 NS_IMETHODIMP
 nsJSChannel::Cancel(nsresult aStatus)
 {
-    // If we're canceled just record the fact that we were canceled,
-    // the underlying stream will be canceled later, if needed. And we
-    // don't care about the reason for the canceling, i.e. ignore
-    // aStatus.
+    mStatus = aStatus;
 
-    mWasCanceled = PR_TRUE;
-
+    if (mOpenedStreamChannel) {
+        mStreamChannel->Cancel(aStatus);
+    }
+    
     return NS_OK;
 }
 
@@ -504,110 +583,259 @@ nsJSChannel::GetURI(nsIURI * *aURI)
 NS_IMETHODIMP
 nsJSChannel::Open(nsIInputStream **aResult)
 {
-    return InternalOpen(PR_FALSE, nsnull, nsnull, aResult);
+    nsresult rv = mIOThunk->EvaluateScript(mStreamChannel, mPopupState,
+                                           mExecutionPolicy,
+                                           mOriginalInnerWindow);
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    return mStreamChannel->Open(aResult);
 }
 
 NS_IMETHODIMP
 nsJSChannel::AsyncOpen(nsIStreamListener *aListener, nsISupports *aContext)
 {
-    return InternalOpen(PR_TRUE, aListener, aContext, nsnull);
-}
+    NS_ENSURE_ARG(aListener);
 
-nsresult
-nsJSChannel::InternalOpen(PRBool aIsAsync, nsIStreamListener *aListener,
-                          nsISupports *aContext, nsIInputStream **aResult)
-{
-    nsCOMPtr<nsILoadGroup> loadGroup;
+    // First make sure that we have a usable inner window; we'll want to make
+    // sure that we execute against that inner and no other.
+    nsIScriptGlobalObject* global = GetGlobalObject(this);
+    if (!global) {
+        return NS_ERROR_NOT_AVAILABLE;
+    }
+
+    nsCOMPtr<nsPIDOMWindow> win(do_QueryInterface(global));
+    NS_ASSERTION(win, "Our global is not a window??");
+
+    // Make sure we create a new inner window if one doesn't already exist (see
+    // bug 306630).
+    mOriginalInnerWindow = win->EnsureInnerWindow();
+    if (!mOriginalInnerWindow) {
+        return NS_ERROR_NOT_AVAILABLE;
+    }
+    
+    mListener = aListener;
+    mContext = aContext;
+
+    mIsActive = PR_TRUE;
 
     // Temporarily set the LOAD_BACKGROUND flag to suppress load group observer
     // notifications (and hence nsIWebProgressListener notifications) from
     // being dispatched.  This is required since we suppress LOAD_DOCUMENT_URI,
     // which means that the DocLoader would not generate document start and
     // stop notifications (see bug 257875).
-    PRUint32 oldLoadFlags = mLoadFlags;
+    mActualLoadFlags = mLoadFlags;
     mLoadFlags |= LOAD_BACKGROUND;
 
     // Add the javascript channel to its loadgroup so that we know if
     // network loads were canceled or not...
+    nsCOMPtr<nsILoadGroup> loadGroup;
     mStreamChannel->GetLoadGroup(getter_AddRefs(loadGroup));
     if (loadGroup) {
-        loadGroup->AddRequest(this, aContext);
+        nsresult rv = loadGroup->AddRequest(this, nsnull);
+        if (NS_FAILED(rv)) {
+            mIsActive = PR_FALSE;
+            CleanupStrongRefs();
+            return rv;
+        }
     }
 
+    mDocumentOnloadBlockedOn =
+        do_QueryInterface(mOriginalInnerWindow->GetExtantDocument());
+    if (mDocumentOnloadBlockedOn) {
+        // If we're a document channel, we need to actually block onload on our
+        // _parent_ document.  This is because we don't actually set our
+        // LOAD_DOCUMENT_URI flag, so a docloader we're loading in as the
+        // document channel will claim to not be busy, and our parent's onload
+        // could fire too early.
+        nsLoadFlags loadFlags;
+        mStreamChannel->GetLoadFlags(&loadFlags);
+        if (loadFlags & LOAD_DOCUMENT_URI) {
+            mDocumentOnloadBlockedOn =
+                mDocumentOnloadBlockedOn->GetParentDocument();
+        }
+    }
+    if (mDocumentOnloadBlockedOn) {
+        mDocumentOnloadBlockedOn->BlockOnload();
+    }
+
+
+    mPopupState = win->GetPopupControlState();
+
+    nsRunnableMethod<nsJSChannel>::Method method;
+    if (mIsAsync) {
+        // post an event to do the rest
+        method = &nsJSChannel::EvaluateScript;
+    } else {   
+        EvaluateScript();
+        if (mOpenedStreamChannel) {
+            // That will handle notifying things
+            return NS_OK;
+        }
+
+        NS_ASSERTION(NS_FAILED(mStatus), "We should have failed _somehow_");
+
+        // mStatus is going to be NS_ERROR_DOM_RETVAL_UNDEFINED if we didn't
+        // have any content resulting from the execution and NS_BINDING_ABORTED
+        // if something we did causes our own load to be stopped.  Return
+        // success in those cases, and error out in all others.
+        if (mStatus != NS_ERROR_DOM_RETVAL_UNDEFINED &&
+            mStatus != NS_BINDING_ABORTED) {
+            // Note that calling EvaluateScript() handled removing us from the
+            // loadgroup and marking us as not active anymore.
+            CleanupStrongRefs();
+            return mStatus;
+        }
+
+        // We're returning success from asyncOpen(), but we didn't open a
+        // stream channel.  We'll have to notify ourselves, but make sure to do
+        // it asynchronously.
+        method = &nsJSChannel::NotifyListener;            
+    }
+
+    nsCOMPtr<nsIRunnable> ev = new nsRunnableMethod<nsJSChannel>(this, method);
+    nsresult rv = NS_DispatchToCurrentThread(ev);
+
+    if (NS_FAILED(rv)) {
+        loadGroup->RemoveRequest(this, nsnull, rv);
+        mIsActive = PR_FALSE;
+        CleanupStrongRefs();
+    }
+    return rv;
+}
+
+void
+nsJSChannel::EvaluateScript()
+{
     // Synchronously execute the script...
     // mIsActive is used to indicate the the request is 'busy' during the
     // the script evaluation phase.  This means that IsPending() will 
     // indicate the the request is busy while the script is executing...
-    mIsActive = PR_TRUE;
-    nsresult rv = mIOThunk->EvaluateScript(mStreamChannel);
 
+    // Note that we want to be in the loadgroup and pending while we evaluate
+    // the script, so that we find out if the loadgroup gets canceled by the
+    // script execution (in which case we shouldn't pump out data even if the
+    // script returns it).
+    
+    if (NS_SUCCEEDED(mStatus)) {
+        nsresult rv = mIOThunk->EvaluateScript(mStreamChannel, mPopupState,
+                                               mExecutionPolicy,
+                                               mOriginalInnerWindow);
+
+        // Note that evaluation may have canceled us, so recheck mStatus again
+        if (NS_FAILED(rv) && NS_SUCCEEDED(mStatus)) {
+            mStatus = rv;
+        }
+    }
+    
     // Remove the javascript channel from its loadgroup...
+    nsCOMPtr<nsILoadGroup> loadGroup;
+    mStreamChannel->GetLoadGroup(getter_AddRefs(loadGroup));
     if (loadGroup) {
-        loadGroup->RemoveRequest(this, aContext, rv);
+        loadGroup->RemoveRequest(this, nsnull, mStatus);
     }
 
     // Reset load flags to their original value...
-    mLoadFlags = oldLoadFlags;
+    mLoadFlags = mActualLoadFlags;
 
     // We're no longer active, it's now up to the stream channel to do
     // the loading, if needed.
     mIsActive = PR_FALSE;
 
-    if (NS_SUCCEEDED(rv) && !mWasCanceled) {
-        // EvaluateScript() succeeded, and we were not canceled, that
-        // means there's data to parse as a result of evaluating the
-        // script.
+    if (NS_FAILED(mStatus)) {
+        if (mIsAsync) {
+            NotifyListener();
+        }
+        return;
+    }
+    
+    // EvaluateScript() succeeded, and we were not canceled, that
+    // means there's data to parse as a result of evaluating the
+    // script.
 
-        // Get the stream channels load flags (!= mLoadFlags).
-        nsLoadFlags loadFlags;
-        mStreamChannel->GetLoadFlags(&loadFlags);
+    // Get the stream channels load flags (!= mLoadFlags).
+    nsLoadFlags loadFlags;
+    mStreamChannel->GetLoadFlags(&loadFlags);
 
-        if (loadFlags & LOAD_DOCUMENT_URI) {
-            // We're loaded as the document channel. If we go on,
-            // we'll blow away the current document. Make sure that's
-            // ok. If so, stop all pending network loads.
+    if (loadFlags & LOAD_DOCUMENT_URI) {
+        // We're loaded as the document channel. If we go on,
+        // we'll blow away the current document. Make sure that's
+        // ok. If so, stop all pending network loads.
 
-            nsCOMPtr<nsIDocShell> docShell;
-            NS_QueryNotificationCallbacks(mStreamChannel, docShell);
-            if (docShell) {
-                nsCOMPtr<nsIContentViewer> cv;
-                docShell->GetContentViewer(getter_AddRefs(cv));
+        nsCOMPtr<nsIDocShell> docShell;
+        NS_QueryNotificationCallbacks(mStreamChannel, docShell);
+        if (docShell) {
+            nsCOMPtr<nsIContentViewer> cv;
+            docShell->GetContentViewer(getter_AddRefs(cv));
 
-                if (cv) {
-                    PRBool okToUnload;
+            if (cv) {
+                PRBool okToUnload;
 
-                    if (NS_SUCCEEDED(cv->PermitUnload(&okToUnload)) &&
-                        !okToUnload) {
-                        // The user didn't want to unload the current
-                        // page, translate this into an undefined
-                        // return from the javascript: URL...
-                        rv = NS_ERROR_DOM_RETVAL_UNDEFINED;
-                    }
+                if (NS_SUCCEEDED(cv->PermitUnload(&okToUnload)) &&
+                    !okToUnload) {
+                    // The user didn't want to unload the current
+                    // page, translate this into an undefined
+                    // return from the javascript: URL...
+                    mStatus = NS_ERROR_DOM_RETVAL_UNDEFINED;
                 }
             }
-
-            if (NS_SUCCEEDED(rv)) {
-                rv = StopAll();
-            }
         }
 
-        if (NS_SUCCEEDED(rv)) {
-            // This will add mStreamChannel to the load group.
-
-            if (aIsAsync) {
-                rv = mStreamChannel->AsyncOpen(aListener, aContext);
-            } else {
-                rv = mStreamChannel->Open(aResult);
-            }
+        if (NS_SUCCEEDED(mStatus)) {
+            mStatus = StopAll();
         }
     }
 
-    if (NS_FAILED(rv)) {
-        // Propagate the failure down to the underlying channel...
-        mStreamChannel->Cancel(rv);
+    if (NS_FAILED(mStatus)) {
+        if (mIsAsync) {
+            NotifyListener();
+        }
+        return;
+    }
+    
+    mStatus = mStreamChannel->AsyncOpen(this, mContext);
+    if (NS_SUCCEEDED(mStatus)) {
+        // mStreamChannel will call OnStartRequest and OnStopRequest on
+        // us, so we'll be sure to call them on our listener.
+        mOpenedStreamChannel = PR_TRUE;
+
+        // Now readd ourselves to the loadgroup so we can receive
+        // cancellation notifications.
+        mIsActive = PR_TRUE;
+        if (loadGroup) {
+            mStatus = loadGroup->AddRequest(this, nsnull);
+
+            // If AddRequest failed, that's OK.  The key is to make sure we get
+            // cancelled if needed, and that call just canceled us if it
+            // failed.  We'll still get notified by the stream channel when it
+            // finishes.
+        }
+        
+    } else if (mIsAsync) {
+        NotifyListener();
     }
 
-    return rv;
+    return;
+}
+
+void
+nsJSChannel::NotifyListener()
+{
+    mListener->OnStartRequest(this, mContext);
+    mListener->OnStopRequest(this, mContext, mStatus);
+
+    CleanupStrongRefs();
+}
+
+void
+nsJSChannel::CleanupStrongRefs()
+{
+    mListener = nsnull;
+    mContext = nsnull;
+    mOriginalInnerWindow = nsnull;
+    if (mDocumentOnloadBlockedOn) {
+        mDocumentOnloadBlockedOn->UnblockOnload(PR_FALSE);
+        mDocumentOnloadBlockedOn = nsnull;
+    }
 }
 
 NS_IMETHODIMP
@@ -627,6 +855,9 @@ nsJSChannel::SetLoadFlags(nsLoadFlags aLoadFlags)
     // 'document channels' in the loadgroup if a javascript: URL is
     // loaded while a document is being loaded in the same window.
 
+    // XXXbz this, and a whole lot of other hackery, could go away if we'd just
+    // cancel the current document load on javascript: load start like IE does.
+    
     mLoadFlags = aLoadFlags & ~LOAD_DOCUMENT_URI;
 
     // ... but the underlying stream channel should get this bit, if
@@ -645,6 +876,28 @@ nsJSChannel::GetLoadGroup(nsILoadGroup* *aLoadGroup)
 NS_IMETHODIMP
 nsJSChannel::SetLoadGroup(nsILoadGroup* aLoadGroup)
 {
+    if (aLoadGroup) {
+        PRBool streamPending;
+        nsresult rv = mStreamChannel->IsPending(&streamPending);
+        NS_ENSURE_SUCCESS(rv, rv);
+
+        if (streamPending) {
+            nsCOMPtr<nsILoadGroup> curLoadGroup;
+            mStreamChannel->GetLoadGroup(getter_AddRefs(curLoadGroup));
+
+            if (aLoadGroup != curLoadGroup) {
+                // Move the stream channel to our new loadgroup.  Make sure to
+                // add it before removing it, so that we don't trigger onload
+                // by accident.
+                aLoadGroup->AddRequest(mStreamChannel, nsnull);
+                if (curLoadGroup) {
+                    curLoadGroup->RemoveRequest(mStreamChannel, nsnull,
+                                                NS_BINDING_RETARGETED);
+                }
+            }
+        }
+    }
+    
     return mStreamChannel->SetLoadGroup(aLoadGroup);
 }
 
@@ -714,6 +967,91 @@ nsJSChannel::SetContentLength(PRInt32 aContentLength)
     return mStreamChannel->SetContentLength(aContentLength);
 }
 
+NS_IMETHODIMP
+nsJSChannel::OnStartRequest(nsIRequest* aRequest,
+                            nsISupports* aContext)
+{
+    NS_ENSURE_TRUE(aRequest == mStreamChannel, NS_ERROR_UNEXPECTED);
+
+    return mListener->OnStartRequest(this, aContext);    
+}
+
+NS_IMETHODIMP
+nsJSChannel::OnDataAvailable(nsIRequest* aRequest,
+                             nsISupports* aContext, 
+                             nsIInputStream* aInputStream,
+                             PRUint32 aOffset,
+                             PRUint32 aCount)
+{
+    NS_ENSURE_TRUE(aRequest == mStreamChannel, NS_ERROR_UNEXPECTED);
+
+    return mListener->OnDataAvailable(this, aContext, aInputStream, aOffset,
+                                      aCount);
+}
+
+NS_IMETHODIMP
+nsJSChannel::OnStopRequest(nsIRequest* aRequest,
+                           nsISupports* aContext,
+                           nsresult aStatus)
+{
+    NS_ENSURE_TRUE(aRequest == mStreamChannel, NS_ERROR_UNEXPECTED);
+
+    nsCOMPtr<nsIStreamListener> listener = mListener;
+
+    CleanupStrongRefs();
+
+    // Make sure aStatus matches what GetStatus() returns
+    if (NS_FAILED(mStatus)) {
+        aStatus = mStatus;
+    }
+    
+    nsresult rv = listener->OnStopRequest(this, aContext, aStatus);
+
+    nsCOMPtr<nsILoadGroup> loadGroup;
+    mStreamChannel->GetLoadGroup(getter_AddRefs(loadGroup));
+    if (loadGroup) {
+        loadGroup->RemoveRequest(this, nsnull, mStatus);
+    }
+
+    mIsActive = PR_FALSE;
+
+    return rv;
+}
+
+NS_IMETHODIMP
+nsJSChannel::SetExecutionPolicy(PRUint32 aPolicy)
+{
+    NS_ENSURE_ARG(aPolicy <= EXECUTE_NORMAL);
+    
+    mExecutionPolicy = aPolicy;
+    return NS_OK;
+}
+
+NS_IMETHODIMP
+nsJSChannel::GetExecutionPolicy(PRUint32* aPolicy)
+{
+    *aPolicy = mExecutionPolicy;
+    return NS_OK;
+}
+
+NS_IMETHODIMP
+nsJSChannel::SetExecuteAsync(PRBool aIsAsync)
+{
+    if (!mIsActive) {
+        mIsAsync = aIsAsync;
+    }
+    // else ignore this call
+    NS_WARN_IF_FALSE(!mIsActive, "Calling SetExecuteAsync on active channel?");
+
+    return NS_OK;
+}
+
+NS_IMETHODIMP
+nsJSChannel::GetExecuteAsync(PRBool* aIsAsync)
+{
+    *aIsAsync = mIsAsync;
+    return NS_OK;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -793,7 +1131,8 @@ nsJSProtocolHandler::GetDefaultPort(PRInt32 *result)
 NS_IMETHODIMP
 nsJSProtocolHandler::GetProtocolFlags(PRUint32 *result)
 {
-    *result = URI_NORELATIVE | URI_NOAUTH | URI_HAS_NO_SECURITY_CONTEXT;
+    *result = URI_NORELATIVE | URI_NOAUTH | URI_INHERITS_SECURITY_CONTEXT |
+        URI_LOADABLE_BY_ANYONE | URI_NON_PERSISTABLE;
     return NS_OK;
 }
 

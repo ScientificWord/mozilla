@@ -82,10 +82,11 @@ public:
                                 PRUint32 *aLanguageID);
 
   NS_IMETHOD NewScriptGlobalObject(PRBool aIsChrome,
+                                   PRBool aIsModalContentWindow,
                                    nsIScriptGlobalObject **aGlobal);
 
-  NS_IMETHOD_(nsISupports *)GetClassInfoInstance(nsDOMClassInfoID aID);
-  NS_IMETHOD_(nsISupports *)GetExternalClassInfoInstance(const nsAString& aName);
+  NS_IMETHOD_(nsISupports *) GetClassInfoInstance(nsDOMClassInfoID aID);
+  NS_IMETHOD_(nsISupports *) GetExternalClassInfoInstance(const nsAString& aName);
 
   NS_IMETHOD RegisterDOMClassInfo(const char *aName,
                                   nsDOMClassInfoExternalConstructorFnc aConstructorFptr,
