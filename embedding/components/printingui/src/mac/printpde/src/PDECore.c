@@ -2,8 +2,8 @@
 ********************************************************************************
 
     $Log$
-    Revision 1.1  2006/07/15 05:00:18  Steve
-    Initial revision
+    Revision 1.2  2008/04/02 00:56:01  MSI\barry
+    Checking in the merge with Gecko 1.9b4
 
     Revision 1.2  2003/04/03 19:20:04  ccarlen%netscape.com
     Bug 188508 - Upgrade print dialog PDE. r=pinkerton/sr=sfraser

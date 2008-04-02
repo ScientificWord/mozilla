@@ -66,6 +66,7 @@ components/dom_core.xpt
 components/dom_css.xpt
 components/dom_events.xpt
 components/dom_html.xpt
+components/dom_offline.xpt
 components/dom_range.xpt
 components/dom_stylesheets.xpt
 components/dom_traversal.xpt
@@ -87,9 +88,10 @@ components/windowwatcher.xpt
 components/txtsvc.xpt
 
 ; gfx
-components/libgfx_mac.dylib                     
+components/libgkgfxthebes.dylib                     
 components/gfx.xpt 
 libgkgfx.dylib 
+libthebes.dylib 
 
 ; jar
 components/libjar50.dylib
@@ -160,6 +162,7 @@ components/pipnss.xpt
 chrome/pipnss.jar
 defaults/pref/security-prefs.js
 libnss3.dylib
+libnssutil3.dylib
 libsmime3.dylib
 libsoftokn3.chk
 libsoftokn3.dylib
@@ -177,13 +180,14 @@ components/shistory.xpt
 
 ; optional typeaheadfind 
 ; (docs at http://www.mozilla.org/projects/ui/accessibility/typeaheadfind.html)
-;components/typeaheadfind.shlb
-;components/typeaheadfind.xpt
+;components/suitetypeaheadfind.shlb
+;components/suitetypeaheadfind.xpt
 
 ; required l10n libraries
 
 components/libuconv.dylib
 components/libi18n.dylib
+components/libchardet.dylib
 components/uconv.xpt
 components/unicharutil.xpt
 components/intl.xpt
@@ -235,6 +239,8 @@ res/viewsource.css
 res/hiddenWindow.html
 res/ua.css
 res/forms.css
+res/contenteditable.css
+res/designmode.css
 res/arrow.gif
 res/arrowd.gif
 res/loading-image.gif
@@ -244,7 +250,6 @@ res/entityTables/htmlEntityVersions.properties
 res/entityTables/html40Latin1.properties
 res/entityTables/html40Symbols.properties
 res/entityTables/transliterate.properties
-res/fonts/fontEncoding.properties
 
 ;
 ; Optional for MathML
@@ -263,11 +268,6 @@ res/fonts/mathfontPUA.properties
 res/fonts/mathfontSymbol.properties
 components/libucvmath.dylib
 
-; p3p
-components/libp3p.dylib
-components/p3p.xpt
-
 ; svg
 components/dom_svg.xpt
-components/gksvgrenderer.xpt
 res/svg.css
