@@ -61,14 +61,14 @@ JS_BEGIN_EXTERN_C
  * Label        Variant     Members
  * -----        -------     -------
  * <Definitions>
- * TOK_FUNCTION func        pn_funAtom: atom holding function object containing
- *                            arg and var properties.  We create the function
- *                            object at parse (not emit) time to specialize arg
- *                            and var bytecodes early.
+ * TOK_FUNCTION func        pn_funpob: JSParsedObjectBox holding function
+ *                            object containing arg and var properties.  We
+ *                            create the function object at parse (not emit)
+ *                            time to specialize arg and var bytecodes early.
  *                          pn_body: TOK_LC node for function body statements
  *                          pn_flags: TCF_FUN_* flags (see jsemit.h) collected
  *                            while parsing the function's body
- *                          pn_tryCount: of try statements in function
+ *                          pn_sclen: maximum lexical scope chain length
  *
  * <Statements>
  * TOK_LC       list        pn_head: list of pn_count statements
@@ -82,7 +82,10 @@ JS_BEGIN_EXTERN_C
  * TOK_IF       ternary     pn_kid1: cond, pn_kid2: then, pn_kid3: else or null
  * TOK_SWITCH   binary      pn_left: discriminant
  *                          pn_right: list of TOK_CASE nodes, with at most one
- *                            TOK_DEFAULT node
+ *                            TOK_DEFAULT node, or if there are let bindings
+ *                            in the top level of the switch body's cases, a
+ *                            TOK_LEXICALSCOPE node that contains the list of
+ *                            TOK_CASE nodes.
  * TOK_CASE,    binary      pn_left: case expr or null if TOK_DEFAULT
  * TOK_DEFAULT              pn_right: TOK_LC node for this case's statements
  *                          pn_val: constant value if lookup or table switch
@@ -102,11 +105,13 @@ JS_BEGIN_EXTERN_C
  *                          pn_right: body
  * TOK_THROW    unary       pn_op: JSOP_THROW, pn_kid: exception
  * TOK_TRY      ternary     pn_kid1: try block
- *                          pn_kid2: catch blocks or null
- *                          pn_kid3: finally block or null
- * TOK_CATCH    ternary     pn_kid1: PN_NAME node for catch var (with pn_expr
- *                                   null or the catch guard expression)
- *                          pn_kid2: more catch blocks or null
+ *                          pn_kid2: null or TOK_RESERVED list of
+ *                          TOK_LEXICALSCOPE nodes, each with pn_expr pointing
+ *                          to a TOK_CATCH node
+ *                          pn_kid3: null or finally block
+ * TOK_CATCH    ternary     pn_kid1: TOK_NAME, TOK_RB, or TOK_RC catch var node
+ *                                   (TOK_RB or TOK_RC if destructuring)
+ *                          pn_kid2: null or the catch guard expression
  *                          pn_kid3: catch block statements
  * TOK_BREAK    name        pn_atom: label or null
  * TOK_CONTINUE name        pn_atom: label or null
@@ -132,7 +137,8 @@ JS_BEGIN_EXTERN_C
  * TOK_BITXOR   binary      pn_left: left-assoc ^ expr, pn_right: & expr
  * TOK_BITAND   binary      pn_left: left-assoc & expr, pn_right: EQ expr
  * TOK_EQOP     binary      pn_left: left-assoc EQ expr, pn_right: REL expr
- *                          pn_op: JSOP_EQ, JSOP_NE, JSOP_NEW_EQ, JSOP_NEW_NE
+ *                          pn_op: JSOP_EQ, JSOP_NE,
+ *                                 JSOP_STRICTEQ, JSOP_STRICTNE
  * TOK_RELOP    binary      pn_left: left-assoc REL expr, pn_right: SH expr
  *                          pn_op: JSOP_LT, JSOP_LE, JSOP_GT, JSOP_GE
  * TOK_SHOP     binary      pn_left: left-assoc SH expr, pn_right: ADD expr
@@ -171,6 +177,9 @@ JS_BEGIN_EXTERN_C
  * TOK_RC       list        pn_head: list of pn_count TOK_COLON nodes where
  *                          each has pn_left: property id, pn_right: value
  *                          #n={...} produces TOK_DEFSHARP at head of list
+ *                          var {x} = object destructuring shorthand shares
+ *                          PN_NAME node for x on left and right of TOK_COLON
+ *                          node in TOK_RC's list, has PNX_SHORTHAND flag
  * TOK_DEFSHARP unary       pn_num: jsint value of n in #n=
  *                          pn_kid: null for #n=[...] and #n={...}, primary
  *                          if #n=primary for function, paren, name, object
@@ -180,8 +189,8 @@ JS_BEGIN_EXTERN_C
  * TOK_NAME,    name        pn_atom: name, string, or object atom
  * TOK_STRING,              pn_op: JSOP_NAME, JSOP_STRING, or JSOP_OBJECT, or
  *                                 JSOP_REGEXP
- * TOK_OBJECT               If JSOP_NAME, pn_op may be JSOP_*ARG or JSOP_*VAR
- *                          with pn_slot >= 0 and pn_attrs telling const-ness
+ * TOK_REGEXP               If JSOP_NAME, pn_op may be JSOP_*ARG or JSOP_*VAR
+ *                          with pn_slot >= 0 and pn_const telling const-ness
  * TOK_NUMBER   dval        pn_dval: double value of numeric literal
  * TOK_PRIMARY  nullary     pn_op: JSOp bytecode
  *
@@ -243,7 +252,8 @@ JS_BEGIN_EXTERN_C
  *
  * Label              Variant   Members
  * -----              -------   -------
- * TOK_LEXICALSCOPE   name      pn_atom: block object
+ * TOK_LEXICALSCOPE   name      pn_op: JSOP_LEAVEBLOCK or JSOP_LEAVEBLOCKEXPR
+ *                              pn_pob: block object
  *                              pn_expr: block body
  * TOK_ARRAYCOMP      list      pn_head: list of pn_count (1 or 2) elements
  *                              if pn_count is 2, first element is #n=[...]
@@ -252,7 +262,6 @@ JS_BEGIN_EXTERN_C
  *                              pn_extra: stack slot, used during code gen
  * TOK_ARRAYPUSH      unary     pn_op: JSOP_ARRAYCOMP
  *                              pn_kid: array comprehension expression
- *                              pn_array: link to TOK_ARRAYCOMP
  */
 typedef enum JSParseNodeArity {
     PN_FUNC     = -3,
@@ -272,16 +281,17 @@ struct JSParseNode {
     ptrdiff_t           pn_offset;      /* first generated bytecode offset */
     union {
         struct {                        /* TOK_FUNCTION node */
-            JSAtom      *funAtom;       /* atomized function object */
+            JSParsedObjectBox *funpob;  /* function object */
             JSParseNode *body;          /* TOK_LC list of statements */
-            uint32      flags;          /* accumulated tree context flags */
-            uint32      tryCount;       /* count of try statements in body */
+            uint16      flags;          /* accumulated tree context flags */
+            uint16      sclen;          /* maximum scope chain length */
+            uint32      index;          /* emitter's index */
         } func;
         struct {                        /* list of next-linked nodes */
             JSParseNode *head;          /* first node in list */
             JSParseNode **tail;         /* ptr to ptr to last node in list */
             uint32      count;          /* number of nodes in list */
-            uint32      extra;          /* extra comma flag for [1,2,,] */
+            uint32      extra;          /* extra flags, see below */
         } list;
         struct {                        /* ternary: if, for(;;), ?: */
             JSParseNode *kid1;          /* condition, discriminant, etc. */
@@ -296,30 +306,36 @@ struct JSParseNode {
         struct {                        /* one kid if unary */
             JSParseNode *kid;
             jsint       num;            /* -1 or sharp variable number */
-            JSParseNode *array;         /* cyclic link to array comprehension */
+            JSBool      hidden;         /* hidden genexp-induced JSOP_YIELD */
         } unary;
         struct {                        /* name, labeled statement, etc. */
             JSAtom      *atom;          /* name or label atom, null if slot */
             JSParseNode *expr;          /* object or initializer */
             jsint       slot;           /* -1 or arg or local var slot */
-            uintN       attrs;          /* attributes if local var or const */
+            JSBool      isconst;        /* true for const names */
         } name;
+        struct {                        /* lexical scope. */
+            JSParsedObjectBox *pob;     /* block object */
+            JSParseNode *expr;          /* object or initializer */
+            jsint       slot;           /* -1 or arg or local var slot */
+        } lexical;
         struct {
             JSAtom      *atom;          /* first atom in pair */
             JSAtom      *atom2;         /* second atom in pair or null */
         } apair;
+        struct {                        /* object literal */
+            JSParsedObjectBox *pob;
+        } object;
         jsdouble        dval;           /* aligned numeric literal value */
     } pn_u;
     JSParseNode         *pn_next;       /* to align dval and pn_u on RISCs */
-#if JS_HAS_XML_SUPPORT
-    JSTokenStream       *pn_ts;         /* token stream for XML error reports */
-#endif
 };
 
-#define pn_funAtom      pn_u.func.funAtom
+#define pn_funpob       pn_u.func.funpob
 #define pn_body         pn_u.func.body
 #define pn_flags        pn_u.func.flags
-#define pn_tryCount     pn_u.func.tryCount
+#define pn_sclen        pn_u.func.sclen
+#define pn_index        pn_u.func.index
 #define pn_head         pn_u.list.head
 #define pn_tail         pn_u.list.tail
 #define pn_count        pn_u.list.count
@@ -332,13 +348,14 @@ struct JSParseNode {
 #define pn_val          pn_u.binary.val
 #define pn_kid          pn_u.unary.kid
 #define pn_num          pn_u.unary.num
-#define pn_array        pn_u.unary.array
+#define pn_hidden       pn_u.unary.hidden
 #define pn_atom         pn_u.name.atom
 #define pn_expr         pn_u.name.expr
 #define pn_slot         pn_u.name.slot
-#define pn_attrs        pn_u.name.attrs
+#define pn_const        pn_u.name.isconst
 #define pn_dval         pn_u.dval
 #define pn_atom2        pn_u.apair.atom2
+#define pn_pob          pn_u.object.pob
 
 /* PN_LIST pn_extra flags. */
 #define PNX_STRCAT      0x01            /* TOK_PLUS list has string term */
@@ -348,8 +365,12 @@ struct JSParseNode {
                                            which is left kid of TOK_FOR */
 #define PNX_ENDCOMMA    0x10            /* array literal has comma at end */
 #define PNX_XMLROOT     0x20            /* top-most node in XML literal tree */
-#define PNX_BLOCKEXPR   0x40            /* this block is an expression */
-#define PNX_GROUPINIT   0x80            /* var [a, b] = [c, d]; unit list */
+#define PNX_GROUPINIT   0x40            /* var [a, b] = [c, d]; unit list */
+#define PNX_NEEDBRACES  0x80            /* braces necessary due to closure */
+#define PNX_FUNCDEFS   0x100            /* contains top-level function
+                                           statements */
+#define PNX_SHORTHAND  0x200            /* shorthand syntax used, at present
+                                           object destructuring ({x,y}) only */
 
 /*
  * Move pn2 into pn, preserving pn->pn_pos and pn->pn_offset and handing off
@@ -376,6 +397,9 @@ struct JSParseNode {
     ((pn)->pn_type == TOK_NUMBER ||                                           \
      (pn)->pn_type == TOK_STRING ||                                           \
      ((pn)->pn_type == TOK_PRIMARY && (pn)->pn_op != JSOP_THIS))
+
+#define PN_OP(pn)    ((JSOp)(pn)->pn_op)
+#define PN_TYPE(pn)  ((JSTokenType)(pn)->pn_type)
 
 /*
  * Compute a pointer to the last JSParseNode element in a singly-linked list.
@@ -406,30 +430,81 @@ struct JSParseNode {
         (list)->pn_count++;                                                   \
     JS_END_MACRO
 
+struct JSParsedObjectBox {
+    JSParsedObjectBox   *traceLink;
+    JSParsedObjectBox   *emitLink;
+    JSObject            *object;
+};
+
+struct JSParseContext {
+    JSTokenStream       tokenStream;
+    void                *tempPoolMark;  /* initial JSContext.tempPool mark */
+    JSPrincipals        *principals;    /* principals associated with source */
+    JSParseNode         *nodeList;      /* list of recyclable parse-node
+                                           structs */
+    JSParsedObjectBox   *traceListHead; /* list of parsed object for GC
+                                           tracing */
+    JSTempValueRooter   tempRoot;       /* root to trace traceListHead */
+};
+
+/*
+ * Convenience macro to access JSParseContext.tokenStream as a pointer.
+ */
+#define TS(pc) (&(pc)->tokenStream)
+
 /*
  * Parse a top-level JS script.
- *
- * The caller must prevent the GC from running while this function is active,
- * because atoms and function newborns are not rooted yet.
  */
-extern JS_FRIEND_API(JSParseNode *)
-js_ParseTokenStream(JSContext *cx, JSObject *chain, JSTokenStream *ts);
+extern JSParseNode *
+js_ParseScript(JSContext *cx, JSObject *chain, JSParseContext *pc);
 
-extern JS_FRIEND_API(JSBool)
-js_CompileTokenStream(JSContext *cx, JSObject *chain, JSTokenStream *ts,
-                      JSCodeGenerator *cg);
+extern JSScript *
+js_CompileScript(JSContext *cx, JSObject *obj, JSPrincipals *principals,
+                 uint32 tcflags, const jschar *chars, size_t length,
+                 FILE *file, const char *filename, uintN lineno);
 
 extern JSBool
-js_CompileFunctionBody(JSContext *cx, JSTokenStream *ts, JSFunction *fun);
+js_CompileFunctionBody(JSContext *cx, JSFunction *fun, JSPrincipals *principals,
+                       const jschar *chars, size_t length,
+                       const char *filename, uintN lineno);
 
 extern JSBool
 js_FoldConstants(JSContext *cx, JSParseNode *pn, JSTreeContext *tc);
 
 #if JS_HAS_XML_SUPPORT
 JS_FRIEND_API(JSParseNode *)
-js_ParseXMLTokenStream(JSContext *cx, JSObject *chain, JSTokenStream *ts,
-                       JSBool allowList);
+js_ParseXMLText(JSContext *cx, JSObject *chain, JSParseContext *pc,
+                JSBool allowList);
 #endif
+
+/*
+ * Initialize a parse context. All parameters after pc are passed to
+ * js_InitTokenStream.
+ *
+ * The parse context owns the arena pool "tops-of-stack" space above the
+ * current JSContext.tempPool mark. This means you cannot allocate from
+ * tempPool and save the pointer beyond the next js_FinishParseContext.
+ */
+extern JSBool
+js_InitParseContext(JSContext *cx, JSParseContext *pc, JSPrincipals *principals,
+                    const jschar *base, size_t length, FILE *fp,
+                    const char *filename, uintN lineno);
+
+extern void
+js_FinishParseContext(JSContext *cx, JSParseContext *pc);
+
+extern void
+js_InitCompilePrincipals(JSContext *cx, JSParseContext *pc,
+                         JSPrincipals *principals);
+
+/*
+ * Allocate a new parseed object node from cx->tempPool.
+ */
+extern JSParsedObjectBox *
+js_NewParsedObjectBox(JSContext *cx, JSParseContext *pc, JSObject *obj);
+
+extern void
+js_TraceParseContext(JSTracer *trc, JSParseContext *pc);
 
 JS_END_EXTERN_C
 

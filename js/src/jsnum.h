@@ -46,27 +46,24 @@
  * but floating point literals, results that overflow 31 bits, and division and
  * modulus operands and results require a 64-bit IEEE double.  These are GC'ed
  * and pointed to by 32-bit jsvals on the stack and in object properties.
- *
- * When a JS number is treated as an object (followed by . or []), the runtime
- * wraps it with a JSObject whose valueOf method returns the unwrapped number.
  */
 
 JS_BEGIN_EXTERN_C
 
 /*
- * Stefan Hanske <sh990154@mail.uni-greifswald.de> reports:
- *  ARM is a little endian architecture but 64 bit double words are stored
- * differently: the 32 bit words are in little endian byte order, the two words
- * are stored in big endian`s way.
+ * The ARM architecture supports two floating point models: VFP and FPA. When
+ * targetting FPA, doubles are mixed-endian on little endian ARMs (meaning that
+ * the high and low words are in big endian order).
  */
-
 #if defined(__arm) || defined(__arm32__) || defined(__arm26__) || defined(__arm__)
-#define CPU_IS_ARM
+#if !defined(__VFP_FP__)
+#define FPU_IS_ARM_FPA
+#endif
 #endif
 
 typedef union jsdpun {
     struct {
-#if defined(IS_LITTLE_ENDIAN) && !defined(CPU_IS_ARM)
+#if defined(IS_LITTLE_ENDIAN) && !defined(FPU_IS_ARM_FPA)
         uint32 lo, hi;
 #else
         uint32 hi, lo;
@@ -95,7 +92,7 @@ typedef union jsdpun {
  * so this code should work.
  */
 
-#if defined(IS_LITTLE_ENDIAN) && !defined(CPU_IS_ARM)
+#if defined(IS_LITTLE_ENDIAN) && !defined(FPU_IS_ARM_FPA)
 #define JSDOUBLE_HI32(x)        (((uint32 *)&(x))[1])
 #define JSDOUBLE_LO32(x)        (((uint32 *)&(x))[0])
 #else
@@ -150,6 +147,9 @@ extern JSBool
 js_InitRuntimeNumberState(JSContext *cx);
 
 extern void
+js_TraceRuntimeNumberState(JSTracer *trc);
+
+extern void
 js_FinishRuntimeNumberState(JSContext *cx);
 
 /* Initialize the Number class, returning its prototype object. */
@@ -170,10 +170,7 @@ extern const char js_parseInt_str[];
 
 /* GC-allocate a new JS number. */
 extern jsdouble *
-js_NewDouble(JSContext *cx, jsdouble d, uintN gcflag);
-
-extern void
-js_FinalizeDouble(JSContext *cx, jsdouble *dp);
+js_NewDouble(JSContext *cx, jsdouble d);
 
 extern JSBool
 js_NewDoubleValue(JSContext *cx, jsdouble d, jsval *rval);
@@ -181,13 +178,23 @@ js_NewDoubleValue(JSContext *cx, jsdouble d, jsval *rval);
 extern JSBool
 js_NewNumberValue(JSContext *cx, jsdouble d, jsval *rval);
 
-/* Construct a Number instance that wraps around d. */
-extern JSObject *
-js_NumberToObject(JSContext *cx, jsdouble d);
-
 /* Convert a number to a GC'ed string. */
 extern JSString *
 js_NumberToString(JSContext *cx, jsdouble d);
+
+/*
+ * Convert int to C string. The buf must be big enough for MIN_INT to fit
+ * including '-' and '\0'.
+ */
+char *
+js_IntToCString(jsint i, char *buf, size_t bufSize);
+
+/*
+ * Convert a number to C string. The buf must be at least
+ * DTOSTR_STANDARD_BUFFER_SIZE.
+ */
+char *
+js_NumberToCString(JSContext *cx, jsdouble d, char *buf, size_t bufSize);
 
 /*
  * Convert a value to a number, returning false after reporting any error,
@@ -203,8 +210,8 @@ js_ValueToNumber(JSContext *cx, jsval v, jsdouble *dp);
 extern JSBool
 js_ValueToECMAInt32(JSContext *cx, jsval v, int32 *ip);
 
-extern JSBool
-js_DoubleToECMAInt32(JSContext *cx, jsdouble d, int32 *ip);
+extern int32
+js_DoubleToECMAInt32(jsdouble d);
 
 /*
  * Convert a value or a double to a uint32, according to the ECMA rules
@@ -213,8 +220,8 @@ js_DoubleToECMAInt32(JSContext *cx, jsdouble d, int32 *ip);
 extern JSBool
 js_ValueToECMAUint32(JSContext *cx, jsval v, uint32 *ip);
 
-extern JSBool
-js_DoubleToECMAUint32(JSContext *cx, jsdouble d, uint32 *ip);
+extern uint32
+js_DoubleToECMAUint32(jsdouble d);
 
 /*
  * Convert a value to a number, then to an int32 if it fits by rounding to
@@ -249,7 +256,8 @@ js_DoubleToInteger(jsdouble d);
  * Return false if out of memory.
  */
 extern JSBool
-js_strtod(JSContext *cx, const jschar *s, const jschar **ep, jsdouble *dp);
+js_strtod(JSContext *cx, const jschar *s, const jschar *send,
+          const jschar **ep, jsdouble *dp);
 
 /*
  * Similar to strtol except that it handles integers of arbitrary size.
@@ -261,7 +269,8 @@ js_strtod(JSContext *cx, const jschar *s, const jschar **ep, jsdouble *dp);
  * Return false if out of memory.
  */
 extern JSBool
-js_strtointeger(JSContext *cx, const jschar *s, const jschar **ep, jsint radix, jsdouble *dp);
+js_strtointeger(JSContext *cx, const jschar *s, const jschar *send,
+                const jschar **ep, jsint radix, jsdouble *dp);
 
 JS_END_EXTERN_C
 
