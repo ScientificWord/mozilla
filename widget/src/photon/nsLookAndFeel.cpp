@@ -140,10 +140,12 @@ nsresult nsLookAndFeel::NativeGetColor(const nsColorID aID, nscolor &aColor)
 		aColor = PH_TO_NS_RGB(Pg_DGREY);
 		break;
 	  case eColor_highlight:
+	  case eColor__moz_html_cellhighlight:
 	  case eColor__moz_menuhover:
 		aColor = PH_TO_NS_RGB(0x9ba9c9); // bill blue
 		break;
 	  case eColor_highlighttext:
+	  case eColor__moz_html_cellhighlighttext:
 	  case eColor__moz_menuhovertext:
 		aColor = PH_TO_NS_RGB(Pg_BLACK);
 		break;
@@ -361,6 +363,14 @@ NS_IMETHODIMP nsLookAndFeel::GetMetric(const nsMetricID aID, PRInt32 & aMetric)
     break;
   case eMetric_TreeScrollLinesMax:
     aMetric = 3;
+    break;
+  case eMetric_IMERawInputUnderlineStyle:
+  case eMetric_IMEConvertedTextUnderlineStyle:
+    aMetric = NS_UNDERLINE_STYLE_SOLID;
+    break;
+  case eMetric_IMESelectedRawTextUnderlineStyle:
+  case eMetric_IMESelectedConvertedTextUnderline:
+    aMetric = NS_UNDERLINE_STYLE_NONE;
     break;
 
   default:

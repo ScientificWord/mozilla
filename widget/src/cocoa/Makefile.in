@@ -56,92 +56,70 @@ REQUIRES = xpcom \
 		  string \
 		  uconv \
 		  dom \
-		  webshell \
-		  docshell \
 		  plugin \
 		  content \
 		  layout \
 		  view \
-		  xul \
 		  necko \
-		  nkcache \
 		  locale \
 		  pref \
 		  intl \
-		  mimetype \
-		  unicharutil \
 		  exthandler \
 		  appshell \
+		  thebes \
+		  js \
+		  xpconnect \
+		  imglib2 \
 		  $(NULL)
-
-ifdef MOZ_ENABLE_CAIRO_GFX
-REQUIRES += thebes cairo
 
 ifdef MOZ_ENABLE_GLITZ
 REQUIRES += glitz glitzagl
 endif
+
+ifdef ACCESSIBILITY
+REQUIRES += accessibility
 endif
 
 EXPORTS = \
 		mozView.h \
-		$(NULL)
-
-MAC_LCPPSRCS = \
-		nsBidiKeyboard.cpp \
-		nsClipboard.cpp \
-		nsDragService.cpp \
-		nsDragHelperService.cpp \
-		nsLookAndFeel.cpp \
-		nsMacNativeUnicodeConverter.cpp \
-		nsMacResources.cpp \
-		nsMimeMapper.cpp \
-		nsStylClipboardUtils.cpp \
-		nsToolkitBase.cpp \
-		nsScreenMac.cpp \
-		nsScreenManagerMac.cpp \
-		nsDeviceContextSpecFactoryM.cpp \
-		nsDeviceContextSpecX.cpp \
-		nsPrintOptionsX.cpp \
-		nsPrintSettingsX.cpp \
-		nsPrintSessionX.cpp \
-		$(NULL)
-
-
-ifndef MOZ_ENABLE_CAIRO_GFX
-MAC_LCPPSRCS +=	nsNativeThemeMac.cpp \
-		nsSound.cpp \
-		$(NULL)
-endif
-
-CPPSRCS =  \
-		$(MAC_LCPPSRCS) \
+		nsChangeObserver.h \
+		nsIMenu.h \
+		nsIMenuItem.h \
 		$(NULL)
 
 CMMSRCS = \
+		nsBidiKeyboard.mm \
+		nsClipboard.mm \
 		nsMenuX.mm \
 		nsMenuBarX.mm \
 		nsMenuItemX.mm \
+		nsMenuItemIconX.mm \
 		nsFilePicker.mm \
+		nsDragService.mm \
 		nsToolkit.mm \
 		nsAppShell.mm \
+		nsCocoaUtils.mm \
 		nsCocoaWindow.mm \
 		nsChildView.mm \
 		nsWindowMap.mm \
 		nsWidgetFactory.mm \
-		nsNativeScrollbar.mm \
 		nsCursorManager.mm \
 		nsMacCursor.mm \
+		nsScreenCocoa.mm \
+		nsScreenManagerCocoa.mm \
+		nsSound.mm \
+		nsLookAndFeel.mm \
+		nsNativeThemeCocoa.mm \
+		nsDeviceContextSpecX.mm \
+		nsPrintOptionsX.mm \
+		nsPrintSettingsX.mm \
+		nsPrintSessionX.mm \
+		nsIdleServiceX.mm \
 		$(NULL)
 
 XPIDLSRCS	+= \
-		nsIChangeManager.idl \
-		nsIMenuCommandDispatcher.idl \
-		nsIDragHelperService.idl \
 		nsPIWidgetCocoa.idl \
 		$(NULL)
-
-GFX_CPPSRCS     := $(addprefix $(topsrcdir)/gfx/src/mac/,$(GFX_LCPPSRCS))
-MAC_CPP_CSRCS   := $(addprefix $(srcdir)/../mac/,$(MAC_LCPPSRCS))
 
 SHARED_LIBRARY_LIBS = ../xpwidgets/libxpwidgets_s.a
 
@@ -150,13 +128,9 @@ EXTRA_DSO_LDOPTS += \
 		$(TK_LIBS) \
 		$(call EXPAND_LIBNAME_PATH,gkgfx,$(DEPTH)/gfx/src) \
 		$(MOZ_COMPONENT_LIBS) \
+		-lthebes \
+		$(LCMS_LIBS) \
 		$(NULL)
-
-ifdef MOZ_ENABLE_CAIRO_GFX
-EXTRA_DSO_LDOPTS += -lthebes
-endif
-
-GARBAGE		+= $(GFX_LCPPSRCS) $(MAC_LCPPSRCS)
 
 include $(topsrcdir)/config/rules.mk
 
@@ -176,10 +150,6 @@ $(NIB_DEST)/%: $(srcdir)/resources/MainMenu.nib/% $(NIB_DEST)
 	$(INSTALL) $< $(NIB_DEST)
 
 RESOURCE = libwidget.rsrc
-RES_SRC = nsMacWidget.r
-
-export:: $(GFX_CPPSRCS) $(MAC_CPP_CSRCS) $(srcdir)/../mac/$(RES_SRC)
-	$(INSTALL) $^ .
 
 # for objdir builds, symlink the cursors dir
 ABS_topsrcdir   := $(shell cd $(topsrcdir); pwd)
@@ -188,8 +158,13 @@ export::
 	ln -fs $(srcdir)/cursors
 endif
 
-$(RESOURCE): $(RES_SRC)
+export::
+	$(INSTALL) $(srcdir)/cursors $(DIST)/bin/res
+
+$(RESOURCE): nsMacWidget.r
 	/Developer/Tools/Rez -i /Developer/Headers/FlatCarbon -useDF $< -o $@
+
+GARBAGE += $(RESOURCE)
 
 libs:: $(RESOURCE)
 	$(INSTALL) $(IFLAGS1) $^ $(DIST)/bin
@@ -197,18 +172,9 @@ libs:: $(RESOURCE)
 LOCAL_INCLUDES	= \
 	$(TK_CFLAGS) \
 	-I$(srcdir)/../xpwidgets \
-	-I$(srcdir)/../mac \
-	-I/System/Library/Frameworks/Carbon.Framework/Headers \
-	-I/System/Library/Frameworks/Cocoa.Framework/Headers \
 	$(NULL)
 
 LDFLAGS	+= \
 	-framework QuickTime \
 	-framework IOKit \
-	-framework Cocoa \
 	$(NULL)
-
-CXXFLAGS += \
-  -DUSE_COCOA \
-  $(NULL)
-
