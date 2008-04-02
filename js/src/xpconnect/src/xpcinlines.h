@@ -44,6 +44,25 @@
 #define xpcinlines_h___
 
 /***************************************************************************/
+inline void
+XPCJSRuntime::AddVariantRoot(XPCTraceableVariant* variant)
+{
+    variant->AddToRootSet(GetJSRuntime(), &mVariantRoots);
+}
+
+inline void
+XPCJSRuntime::AddWrappedJSRoot(nsXPCWrappedJS* wrappedJS)
+{
+    wrappedJS->AddToRootSet(GetJSRuntime(), &mWrappedJSRoots);
+}
+
+inline void
+XPCJSRuntime::AddObjectHolderRoot(XPCJSObjectHolder* holder)
+{
+    holder->AddToRootSet(GetJSRuntime(), &mObjectHolderRoots);
+}
+
+/***************************************************************************/
 
 inline JSBool
 XPCCallContext::IsValid() const
@@ -376,7 +395,7 @@ XPCNativeInterface::FindMember(jsval name) const
     const XPCNativeMember* member = mMembers;
     for(int i = (int) mMemberCount; i > 0; i--, member++)
         if(member->GetName() == name)
-            return NS_CONST_CAST(XPCNativeMember*, member);
+            return const_cast<XPCNativeMember*>(member);
     return nsnull;
 }
 
@@ -625,8 +644,8 @@ XPCWrappedNativeTearOff::GetIDispatchInfo() const
 {
     NS_ASSERTION((jsword)mJSObject & 2, "XPCWrappedNativeTearOff::GetIDispatchInfo "
                                 "called on a non IDispatch interface");
-    return NS_REINTERPRET_CAST(XPCDispInterface*,
-                               (((jsword)mJSObject) & ~JSOBJECT_MASK));
+    return reinterpret_cast<XPCDispInterface*>
+                           ((((jsword)mJSObject) & ~JSOBJECT_MASK));
 }
 
 inline JSBool
@@ -706,6 +725,25 @@ xpc_ForcePropertyResolve(JSContext* cx, JSObject* obj, jsval idval)
     if(prop)
         OBJ_DROP_PROPERTY(cx, obj2, prop);
     return JS_TRUE;
+}
+
+inline JSObject*
+xpc_NewSystemInheritingJSObject(JSContext *cx, JSClass *clasp, JSObject *proto,
+                                JSObject *parent)
+{
+    return JS_NewSystemObject(cx, clasp, proto, parent,
+                              JS_IsSystemObject(cx, parent));
+}
+
+inline jsval
+GetRTStringByIndex(JSContext *cx, uintN index)
+{
+  XPCJSRuntime *rt = nsXPConnect::GetRuntime();
+
+  if (!rt)
+    return JSVAL_VOID;
+
+  return ID_TO_VALUE(rt->GetStringID(index));
 }
 
 inline

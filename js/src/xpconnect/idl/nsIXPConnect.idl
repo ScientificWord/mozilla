@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
+/* -*- Mode: IDL; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  *
  * ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
@@ -50,11 +50,11 @@
 #include "nsIInterfaceInfoManager.idl"
 #include "nsIExceptionService.idl"
 #include "nsIVariant.idl"
-#include "nsIWeakReference.idl"
 
 %{ C++
 #include "jspubtd.h"
 #include "xptinfo.h"
+#include "nsAXPCNativeCallContext.h"
 %}
 
 /***************************************************************************/
@@ -63,8 +63,13 @@
 [ptr] native JSObjectPtr(JSObject);
 [ptr] native JSValPtr(jsval);
       native JSVal(jsval);
+[ptr] native JSClassConstPtr(const JSClass);
+      native JSGetObjectOps(JSGetObjectOps);
       native JSID(jsid);
 [ptr] native voidPtrPtr(void*);
+[ptr] native nsScriptObjectTracerPtr(nsScriptObjectTracer);
+[ref] native nsCCTraversalCallbackRef(nsCycleCollectionTraversalCallback);
+[ptr] native nsAXPCNativeCallContextPtr(nsAXPCNativeCallContext);
 
 /***************************************************************************/
 
@@ -147,11 +152,11 @@ interface nsIXPConnect;
 interface nsIXPConnectWrappedNative;
 interface nsIInterfaceInfo;
 interface nsIXPCSecurityManager;
+interface nsIPrincipal;
 
 %{C++
-#ifndef XPCONNECT_STANDALONE
-class nsIPrincipal;
-#endif
+class nsCycleCollectionTraversalCallback;
+class nsScriptObjectTracer;
 %}
 
 /***************************************************************************/
@@ -205,7 +210,7 @@ interface nsIXPConnectWrappedNative : nsIXPConnectJSObjectHolder
      * here does NOT indicate system principal or no principals at all, just
      * that this wrapper doesn't have an intrinsic one.
      */
-    virtual nsIPrincipal* GetObjectPrincipal() const = 0;   
+    virtual nsIPrincipal* GetObjectPrincipal() const = 0;
 #endif
     
 protected:
@@ -215,6 +220,8 @@ public:
 };
 
 %{C++
+#include "nsCOMPtr.h"
+
 inline
 const nsQueryInterface
 do_QueryWrappedNative(nsIXPConnectWrappedNative *aWrappedNative)
@@ -233,7 +240,7 @@ do_QueryWrappedNative(nsIXPConnectWrappedNative *aWrappedNative,
 
 %}
 
-[uuid(a052e197-7ba4-494e-b735-8786ac091164)]
+[uuid(BED52030-BCA6-11d2-BA79-00805F8A5DD7)]
 interface nsIXPConnectWrappedJS : nsIXPConnectJSObjectHolder
 {
     /* attribute 'JSObject' inherited from nsIXPConnectJSObjectHolder */
@@ -245,70 +252,6 @@ interface nsIXPConnectWrappedJS : nsIXPConnectJSObjectHolder
     void aggregatedQueryInterface(in nsIIDRef uuid,
                                   [iid_is(uuid),retval] out nsQIResult result);
 
-    /* This method has the same signature and the same semantics as the
-     * one method on nsISupportsWeakReference.  However, it exists here
-     * so that callers who need to manage JS garbage collection for
-     * wrapped objects themselves can get a weak reference to the
-     * wrapped JS object:  in other words, it's for callers who know
-     * that they're dealing with a wrapper, and want a weak reference to
-     * the wrapper rather than the wrapped object.
-     */
-    nsIWeakReference GetWeakReference();
-};
-
-/**
- * This interface is a complete hack.  It is used by the DOM code to
- * call QueryReferent on a weak reference to a wrapped JS object without
- * causing reference counting, which would add and remove GC roots
- * (which can't be done in the middle of GC).
- */
-[uuid(3f32871c-d014-4f91-b358-3ece74cbebaa)]
-interface nsWeakRefToIXPConnectWrappedJS : nsIXPConnectWrappedJS
-{
-};
-
-/***************************************************************************/
-
-/**
-* This is a somewhat special interface. It is available from the global
-* nsIXPConnect object when native methods have been called. It is only relevant
-* to the currently called native method on the given JSContext/thread. Holding
-* a reference past that time (or while other native methods are being called)
-* will not assure access to this data.
-*/
-
-[uuid(0FA68A60-8289-11d3-BB1A-00805F8A5DD7)]
-interface nsIXPCNativeCallContext : nsISupports
-{
-
-    readonly attribute nsISupports                  Callee;
-    readonly attribute PRUint16                     CalleeMethodIndex;
-    readonly attribute nsIXPConnectWrappedNative    CalleeWrapper;
-    readonly attribute JSContextPtr                 JSContext;
-    readonly attribute PRUint32                     Argc;
-    readonly attribute JSValPtr                     ArgvPtr;
-    /**
-    * This may be NULL if the JS caller is ignoring the result of the call.
-    */
-    readonly attribute JSValPtr                     RetValPtr;
-    /**
-    * Set this if JS_SetPendingException has been called. Return NS_OK or
-    * else this will be ignored and the native method's nsresult will be
-    * converted into an exception and thrown into JS as is the normal case.
-    */
-    attribute PRBool                                ExceptionWasThrown;
-
-    /**
-    * Set this to indicate that the callee has directly set the return value
-    * (using RetValPtr and the JSAPI). If set then xpconnect will not attempt
-    * to overwrite it with the converted retval from the C++ callee.
-    */
-    attribute PRBool                                ReturnValueWasSet;
-
-    // Methods added since mozilla 0.6....
-
-    readonly attribute nsIInterfaceInfo             CalleeInterface;
-    readonly attribute nsIClassInfo                 CalleeClassInfo;
 };
 
 /***************************************************************************/
@@ -462,7 +405,7 @@ interface nsIXPCFunctionThisTranslator : nsISupports
     { 0xbd, 0xd6, 0x0, 0x0, 0x64, 0x65, 0x73, 0x74 } }
 %}
 
-[uuid(038ce87f-c178-4d3a-9824-f71effc63aef)]
+[uuid(20df9082-5b83-416d-ba80-0422af516d57)]
 interface nsIXPConnect : nsISupports
 {
 %{ C++
@@ -596,7 +539,7 @@ interface nsIXPConnect : nsISupports
     void syncJSContexts();
 
     readonly attribute nsIStackFrame                CurrentJSStack;
-    readonly attribute nsIXPCNativeCallContext      CurrentNativeCallContext;
+    readonly attribute nsAXPCNativeCallContextPtr   CurrentNativeCallContext;
     /* pass nsnull to clear pending exception */
              attribute nsIException                 PendingException;
 
@@ -674,9 +617,6 @@ interface nsIXPConnect : nsISupports
                               in JSObjectPtr  aScope,
                               in nsIClassInfo aClassInfo);
 
-    attribute PRBool collectGarbageOnMainThreadOnly;
-    attribute PRBool deferReleasesUntilAfterGarbageCollection;
-
     void releaseJSContext(in JSContextPtr aJSContext, in PRBool noGC);
 
     JSVal variantToJS(in JSContextPtr ctx, in JSObjectPtr scope, in nsIVariant value);
@@ -690,8 +630,12 @@ interface nsIXPConnect : nsISupports
      *
      * @param aFilenamePrefix the UTF-8 filename prefix to match, which
      *                        should end with a slash (/) character
+     * @param aWantNativeWrappers whether XPConnect should produce native
+     *                            wrappers for scripts whose paths begin
+     *                            with this prefix
      */
-    void flagSystemFilenamePrefix(in string aFilenamePrefix);
+    void flagSystemFilenamePrefix(in string aFilenamePrefix,
+                                  in PRBool aWantNativeWrappers);
 
     /**
      * Restore an old prototype for wrapped natives of type
@@ -703,4 +647,96 @@ interface nsIXPConnect : nsISupports
                                        in JSObjectPtr  aScope,
                                        in nsIClassInfo aClassInfo,
                                        in nsIXPConnectJSObjectHolder aPrototype);
+
+    /**
+     * Create a sandbox for evaluating code in isolation using
+     * evalInSandboxObject().
+     *
+     * @param cx A context to use when creating the sandbox object.
+     * @param principal The principal (or NULL to use the null principal)
+     *                  to use when evaluating code in this sandbox.
+     */
+    [noscript] nsIXPConnectJSObjectHolder createSandbox(in JSContextPtr cx,
+                                                        in nsIPrincipal principal);
+
+    /**
+     * Evaluate script in a sandbox, completely isolated from all
+     * other running scripts.
+     *
+     * @param source The source of the script to evaluate.
+     * @param cx The context to use when setting up the evaluation of
+     *           the script. The actual evaluation will happen on a new
+     *           temporary context.
+     * @param sandbox The sandbox object to evaluate the script in.
+     * @param returnStringOnly The only results to come out of the
+     *                         computation (including exceptions) will
+     *                         be coerced into strings created in the
+     *                         sandbox.
+     * @return The result of the evaluation as a jsval. If the caller
+     *         intends to use the return value from this call the caller
+     *         is responsible for rooting the jsval before making a call
+     *         to this method.
+     */
+    [noscript] JSVal evalInSandboxObject(in AString source, in JSContextPtr cx,
+                                         in nsIXPConnectJSObjectHolder sandbox,
+                                         in PRBool returnStringOnly);
+
+    /**
+     * Wrap a jsval in a cross origin wrapper.
+     * @param aJSContext A context to use to create objects.
+     * @param aParent The parent to create the wrapper with.
+     * @param aWrappedObj The object to wrap.
+     */
+    [noscript] JSVal getXOWForObject(in JSContextPtr aJSContext,
+                                     in JSObjectPtr aParent,
+                                     in JSObjectPtr aWrappedObj);
+
+    /**
+     * Tells updateXOWs to clear the scope of all of the XOWs it finds.
+     */
+    const PRUint32 XPC_XOW_CLEARSCOPE = 1;
+
+    /**
+     * Performs an operation over all of |object|'s XOWs such as clearing
+     * their scopes or updating their concept of the current principal.
+     *
+     * @param aJSContext A context to use to perform JS operations.
+     * @param aObject Which XPCWrappedNative we should find the XOWs for.
+     * @param aWay What operation to perform.
+     */
+    [noscript] void updateXOWs(in JSContextPtr aJSContext,
+                               in nsIXPConnectWrappedNative aObject,
+                               in PRUint32 aWay);
+
+    /**
+     * Root JS objects held by aHolder.
+     * @param aHolder The object that hold the JS objects that should be rooted.
+     * @param aTrace The tracer for aHolder.
+     */
+    [noscript] void addJSHolder(in voidPtr aHolder,
+                                in nsScriptObjectTracerPtr aTracer);
+
+    /**
+     * Stop rooting the JS objects held by aHolder.
+     * @param aHolder The object that hold the rooted JS objects.
+     */
+    [noscript] void removeJSHolder(in voidPtr aHolder);
+
+    /**
+     * Note aJSContext as a child to the cycle collector.
+     * @param aJSContext The JSContext to note.
+     * @param aCb The cycle collection traversal callback.
+     */
+    [noscript,notxpcom] void noteJSContext(in JSContextPtr aJSContext,
+                                           in nsCCTraversalCallbackRef aCb);
+
+    /**
+     * Get the JSClass and JSGetObjectOps pointers to use for
+     * identifying JSObjects that hold nsIXPConnectWrappedNative
+     * pointers in their private date. See IS_WRAPPER_CLASS in
+     * xpcprivate.h for details.
+     */
+    void GetXPCWrappedNativeJSClassInfo(out JSClassConstPtr clazz,
+                                        out JSGetObjectOps ops1,
+                                        out JSGetObjectOps ops2);
 };
