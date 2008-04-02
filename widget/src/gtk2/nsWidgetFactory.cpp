@@ -56,10 +56,11 @@
 #include "nsPrintOptionsGTK.h"
 #include "nsPrintSession.h"
 #include "nsDeviceContextSpecG.h"
-#include "nsDeviceContextSpecFactoryG.h"
 #include "nsIPrefService.h"
 #include "nsIPrefBranch.h"
 #include "nsImageToPixbuf.h"
+#include "nsIdleServiceGTK.h"
+#include "nsPrintDialogGTK.h"
 
 #ifdef NATIVE_THEME_SUPPORT
 #include "nsNativeThemeGTK.h"
@@ -89,7 +90,6 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsDragService)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsSound)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsScreenManagerGtk)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsDeviceContextSpecGTK)
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsDeviceContextSpecFactoryGTK)
 #ifdef NATIVE_THEME_SUPPORT
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsNativeThemeGTK)
 #endif
@@ -97,6 +97,8 @@ NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsPrintOptionsGTK, Init)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsPrinterEnumeratorGTK)
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsPrintSession, Init)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsImageToPixbuf)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsIdleServiceGTK)
+NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsPrintDialogServiceGTK, Init)
 
 static NS_IMETHODIMP
 nsFilePickerConstructor(nsISupports *aOuter, REFNSIID aIID,
@@ -266,21 +268,25 @@ static const nsModuleComponentInfo components[] =
     //    "@mozilla.org/gfx/device_context_spec/gtk;1",
     "@mozilla.org/gfx/devicecontextspec;1",
     nsDeviceContextSpecGTKConstructor },
-  { "Gtk Device Context Spec Factory",
-    NS_DEVICE_CONTEXT_SPEC_FACTORY_CID,
-    //    "@mozilla.org/gfx/device_context_spec_factory/gtk;1",
-    "@mozilla.org/gfx/devicecontextspecfactory;1",
-    nsDeviceContextSpecFactoryGTKConstructor },
   { "Image to gdk-pixbuf converter",
     NS_IMAGE_TO_PIXBUF_CID,
     "@mozilla.org/widget/image-to-gdk-pixbuf;1",
     nsImageToPixbufConstructor },
+  { "User Idle Service",
+    NS_IDLE_SERVICE_CID,
+    "@mozilla.org/widget/idleservice;1",
+    nsIdleServiceGTKConstructor },
+  { "Native Print Dialog",
+    NS_PRINTDIALOGSERVICE_CID,
+    NS_PRINTDIALOGSERVICE_CONTRACTID,
+    nsPrintDialogServiceGTKConstructor },
 };
 
 PR_STATIC_CALLBACK(void)
 nsWidgetGtk2ModuleDtor(nsIModule *aSelf)
 {
   nsFilePicker::Shutdown();
+  nsSound::Shutdown();
   nsWindow::ReleaseGlobals();
   nsAppShellShutdown(aSelf);
 }

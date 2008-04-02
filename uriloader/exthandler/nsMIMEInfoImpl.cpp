@@ -1,5 +1,5 @@
-/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
-/* vim:set ts=4 sw=4 sts=4 et: */
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* vim:set ts=2 sw=2 sts=2 et: */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -41,26 +41,59 @@
 #include "nsReadableUtils.h"
 #include "nsStringEnumerator.h"
 #include "nsIProcess.h"
+#include "nsILocalFile.h"
+#include "nsIFileURL.h"
+#include "nsEscape.h"
+#include "nsNetUtil.h"
+#include "nsIURILoader.h"
+#include "nsCURILoader.h"
 
 // nsISupports methods
-NS_IMPL_THREADSAFE_ISUPPORTS1(nsMIMEInfoBase, nsIMIMEInfo)
+NS_IMPL_THREADSAFE_ADDREF(nsMIMEInfoBase)
+NS_IMPL_THREADSAFE_RELEASE(nsMIMEInfoBase)
+
+NS_INTERFACE_MAP_BEGIN(nsMIMEInfoBase)
+    NS_INTERFACE_MAP_ENTRY(nsIHandlerInfo)
+    // This is only an nsIMIMEInfo if it's a MIME handler.
+    NS_INTERFACE_MAP_ENTRY_CONDITIONAL(nsIMIMEInfo, mClass == eMIMEInfo)
+    NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIHandlerInfo)
+NS_INTERFACE_MAP_END_THREADSAFE
 
 // nsMIMEInfoImpl methods
+
+// Constructors for a MIME handler.
 nsMIMEInfoBase::nsMIMEInfoBase(const char *aMIMEType) :
-    mMIMEType(aMIMEType),
-    mPreferredAction(nsIMIMEInfo::saveToDisk),
-    mAlwaysAskBeforeHandling(PR_TRUE),
     mMacType(0),
-    mMacCreator(0)
+    mMacCreator(0),
+    mType(aMIMEType),
+    mClass(eMIMEInfo),
+    mPreferredAction(nsIMIMEInfo::saveToDisk),
+    mAlwaysAskBeforeHandling(PR_TRUE)
 {
 }
 
 nsMIMEInfoBase::nsMIMEInfoBase(const nsACString& aMIMEType) :
-    mMIMEType(aMIMEType),
-    mPreferredAction(nsIMIMEInfo::saveToDisk),
-    mAlwaysAskBeforeHandling(PR_TRUE),
     mMacType(0),
-    mMacCreator(0)
+    mMacCreator(0),
+    mType(aMIMEType),
+    mClass(eMIMEInfo),
+    mPreferredAction(nsIMIMEInfo::saveToDisk),
+    mAlwaysAskBeforeHandling(PR_TRUE)
+{
+}
+
+// Constructor for a handler that lets the caller specify whether this is a
+// MIME handler or a protocol handler.  In the long run, these will be distinct
+// classes (f.e. nsMIMEInfo and nsProtocolInfo), but for now we reuse this class
+// for both and distinguish between the two kinds of handlers via the aClass
+// argument to this method, which can be either eMIMEInfo or eProtocolInfo.
+nsMIMEInfoBase::nsMIMEInfoBase(const nsACString& aType, HandlerClass aClass) :
+    mMacType(0),
+    mMacCreator(0),
+    mType(aType),
+    mClass(aClass),
+    mPreferredAction(nsIMIMEInfo::saveToDisk),
+    mAlwaysAskBeforeHandling(PR_TRUE)
 {
 }
 
@@ -135,12 +168,22 @@ nsMIMEInfoBase::AppendExtension(const nsACString& aExtension)
 }
 
 NS_IMETHODIMP
-nsMIMEInfoBase::GetMIMEType(nsACString& aMIMEType)
+nsMIMEInfoBase::GetType(nsACString& aType)
 {
-    if (mMIMEType.IsEmpty())
+    if (mType.IsEmpty())
         return NS_ERROR_NOT_INITIALIZED;
 
-    aMIMEType = mMIMEType;
+    aType = mType;
+    return NS_OK;
+}
+
+NS_IMETHODIMP
+nsMIMEInfoBase::GetMIMEType(nsACString& aMIMEType)
+{
+    if (mType.IsEmpty())
+        return NS_ERROR_NOT_INITIALIZED;
+
+    aMIMEType = mType;
     return NS_OK;
 }
 
@@ -167,7 +210,7 @@ nsMIMEInfoBase::Equals(nsIMIMEInfo *aMIMEInfo, PRBool *_retval)
     nsresult rv = aMIMEInfo->GetMIMEType(type);
     if (NS_FAILED(rv)) return rv;
 
-    *_retval = mMIMEType.Equals(type);
+    *_retval = mType.Equals(type);
 
     return NS_OK;
 }
@@ -226,27 +269,6 @@ nsMIMEInfoBase::SetFileExtensions(const nsACString& aExtensions)
 }
 
 NS_IMETHODIMP
-nsMIMEInfoBase::GetApplicationDescription(nsAString& aApplicationDescription)
-{
-  if (mPreferredAppDescription.IsEmpty() && mPreferredApplication) {
-    // Don't want to cache this, just in case someone resets the app
-    // without changing the description....
-    mPreferredApplication->GetLeafName(aApplicationDescription);
-  } else {
-    aApplicationDescription = mPreferredAppDescription;
-  }
-  
-  return NS_OK;
-}
- 
-NS_IMETHODIMP
-nsMIMEInfoBase::SetApplicationDescription(const nsAString& aApplicationDescription)
-{
-  mPreferredAppDescription = aApplicationDescription;
-  return NS_OK;
-}
-
-NS_IMETHODIMP
 nsMIMEInfoBase::GetDefaultDescription(nsAString& aDefaultDescription)
 {
   aDefaultDescription = mDefaultAppDescription;
@@ -254,7 +276,7 @@ nsMIMEInfoBase::GetDefaultDescription(nsAString& aDefaultDescription)
 }
 
 NS_IMETHODIMP
-nsMIMEInfoBase::GetPreferredApplicationHandler(nsIFile ** aPreferredAppHandler)
+nsMIMEInfoBase::GetPreferredApplicationHandler(nsIHandlerApp ** aPreferredAppHandler)
 {
   *aPreferredAppHandler = mPreferredApplication;
   NS_IF_ADDREF(*aPreferredAppHandler);
@@ -262,21 +284,35 @@ nsMIMEInfoBase::GetPreferredApplicationHandler(nsIFile ** aPreferredAppHandler)
 }
  
 NS_IMETHODIMP
-nsMIMEInfoBase::SetPreferredApplicationHandler(nsIFile * aPreferredAppHandler)
+nsMIMEInfoBase::SetPreferredApplicationHandler(nsIHandlerApp * aPreferredAppHandler)
 {
   mPreferredApplication = aPreferredAppHandler;
   return NS_OK;
 }
 
 NS_IMETHODIMP
-nsMIMEInfoBase::GetPreferredAction(nsMIMEInfoHandleAction * aPreferredAction)
+nsMIMEInfoBase::GetPossibleApplicationHandlers(nsIMutableArray ** aPossibleAppHandlers)
+{
+  if (!mPossibleApplications)
+    mPossibleApplications = do_CreateInstance(NS_ARRAY_CONTRACTID);
+
+  if (!mPossibleApplications)
+    return NS_ERROR_OUT_OF_MEMORY;
+
+  *aPossibleAppHandlers = mPossibleApplications;
+  NS_IF_ADDREF(*aPossibleAppHandlers);
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsMIMEInfoBase::GetPreferredAction(nsHandlerInfoAction * aPreferredAction)
 {
   *aPreferredAction = mPreferredAction;
   return NS_OK;
 }
  
 NS_IMETHODIMP
-nsMIMEInfoBase::SetPreferredAction(nsMIMEInfoHandleAction aPreferredAction)
+nsMIMEInfoBase::SetPreferredAction(nsHandlerInfoAction aPreferredAction)
 {
   mPreferredAction = aPreferredAction;
   return NS_OK;
@@ -297,18 +333,76 @@ nsMIMEInfoBase::SetAlwaysAskBeforeHandling(PRBool aAlwaysAsk)
   return NS_OK;
 }
 
+/* static */
+nsresult 
+nsMIMEInfoBase::GetLocalFileFromURI(nsIURI *aURI, nsILocalFile **aFile)
+{
+  nsresult rv;
+
+  nsCOMPtr<nsIFileURL> fileUrl = do_QueryInterface(aURI, &rv);
+  if (NS_FAILED(rv)) return rv;
+
+  nsCOMPtr<nsIFile> file;
+  rv = fileUrl->GetFile(getter_AddRefs(file));
+  if (NS_FAILED(rv)) return rv;    
+
+  return CallQueryInterface(file, aFile);
+}
+
 NS_IMETHODIMP
 nsMIMEInfoBase::LaunchWithFile(nsIFile* aFile)
 {
+  nsresult rv;
+
+  // it doesn't make any sense to call this on protocol handlers
+  NS_ASSERTION(mClass == eMIMEInfo,
+               "nsMIMEInfoBase should have mClass == eMIMEInfo");
+
+  if (mPreferredAction == useSystemDefault) {
+    return LaunchDefaultWithFile(aFile);
+  }
+
   if (mPreferredAction == useHelperApp) {
     if (!mPreferredApplication)
       return NS_ERROR_FILE_NOT_FOUND;
 
-    return LaunchWithIProcess(mPreferredApplication, aFile);
+    // at the moment, we only know how to hand files off to local handlers
+    nsCOMPtr<nsILocalHandlerApp> localHandler = 
+      do_QueryInterface(mPreferredApplication, &rv);
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    nsCOMPtr<nsIFile> executable;
+    rv = localHandler->GetExecutable(getter_AddRefs(executable));
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    nsCAutoString path;
+    aFile->GetNativePath(path);
+    return LaunchWithIProcess(executable, path);
   }
-  else if (mPreferredAction == useSystemDefault) {
-    return LaunchDefaultWithFile(aFile);
+
+  return NS_ERROR_INVALID_ARG;
+}
+
+NS_IMETHODIMP
+nsMIMEInfoBase::LaunchWithURI(nsIURI* aURI,
+                              nsIInterfaceRequestor* aWindowContext)
+{
+  // for now, this is only being called with protocol handlers; that
+  // will change once we get to more general registerContentHandler
+  // support
+  NS_ASSERTION(mClass == eProtocolInfo,
+               "nsMIMEInfoBase should be a protocol handler");
+
+  if (mPreferredAction == useSystemDefault) {
+    return LoadUriInternal(aURI);
   }
+
+  if (mPreferredAction == useHelperApp) {
+    if (!mPreferredApplication)
+      return NS_ERROR_FILE_NOT_FOUND;
+
+    return mPreferredApplication->LaunchWithURI(aURI, aWindowContext);
+  } 
 
   return NS_ERROR_INVALID_ARG;
 }
@@ -316,7 +410,7 @@ nsMIMEInfoBase::LaunchWithFile(nsIFile* aFile)
 void
 nsMIMEInfoBase::CopyBasicDataTo(nsMIMEInfoBase* aOther)
 {
-  aOther->mMIMEType = mMIMEType;
+  aOther->mType = mType;
   aOther->mDefaultAppDescription = mDefaultAppDescription;
   aOther->mExtensions = mExtensions;
 
@@ -326,9 +420,9 @@ nsMIMEInfoBase::CopyBasicDataTo(nsMIMEInfoBase* aOther)
 
 /* static */
 nsresult
-nsMIMEInfoBase::LaunchWithIProcess(nsIFile* aApp, nsIFile* aFile)
+nsMIMEInfoBase::LaunchWithIProcess(nsIFile* aApp, const nsCString& aArg)
 {
-  NS_ASSERTION(aApp && aFile, "Unexpected null pointer, fix caller");
+  NS_ASSERTION(aApp, "Unexpected null pointer, fix caller");
 
   nsresult rv;
   nsCOMPtr<nsIProcess> process = do_CreateInstance(NS_PROCESS_CONTRACTID, &rv);
@@ -338,13 +432,10 @@ nsMIMEInfoBase::LaunchWithIProcess(nsIFile* aApp, nsIFile* aFile)
   if (NS_FAILED(rv = process->Init(aApp)))
     return rv;
 
-  nsCAutoString path;
-  aFile->GetNativePath(path);
-
-  const char * strPath = path.get();
+  const char *string = aArg.get();
 
   PRUint32 pid;
-  return process->Run(PR_FALSE, &strPath, 1, &pid);
+  return process->Run(PR_FALSE, &string, 1, &pid);
 }
 
 // nsMIMEInfoImpl implementation
@@ -365,7 +456,7 @@ nsMIMEInfoImpl::GetDefaultDescription(nsAString& aDefaultDescription)
 NS_IMETHODIMP
 nsMIMEInfoImpl::GetHasDefaultHandler(PRBool * _retval)
 {
-  *_retval = PR_FALSE;
+  *_retval = !mDefaultAppDescription.IsEmpty();
   if (mDefaultApplication) {
     PRBool exists;
     *_retval = NS_SUCCEEDED(mDefaultApplication->Exists(&exists)) && exists;
@@ -379,6 +470,14 @@ nsMIMEInfoImpl::LaunchDefaultWithFile(nsIFile* aFile)
   if (!mDefaultApplication)
     return NS_ERROR_FILE_NOT_FOUND;
 
-  return LaunchWithIProcess(mDefaultApplication, aFile);
+  nsCAutoString nativePath;
+  aFile->GetNativePath(nativePath);
+  
+  return LaunchWithIProcess(mDefaultApplication, nativePath);
 }
 
+NS_IMETHODIMP
+nsMIMEInfoBase::GetPossibleLocalHandlers(nsIArray **_retval)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}

@@ -40,12 +40,14 @@
 #include "nsString.h"
 #include "nsMemory.h"
 #include "nsGtkKeyUtils.h"
+#include "nsGUIEvent.h"
 
 #include <gtk/gtkentry.h>
 #include <gtk/gtktextview.h>
 #include <gtk/gtkbindings.h>
 #include <gtk/gtkmain.h>
 #include <gdk/gdkkeysyms.h>
+#include <gdk/gdkevents.h>
 
 static nsINativeKeyBindings::DoCommandCallback gCurrentCallback;
 static void *gCurrentCallbackData;
@@ -295,6 +297,18 @@ nsNativeKeyBindings::KeyPress(const nsNativeKeyEvent& aEvent,
   gtk_bindings_activate(GTK_OBJECT(mNativeTarget),
                         keyCode, GdkModifierType(modifiers));
 
+/* gtk_bindings_activate_event is preferable, but it has unresolved bug: http://bugzilla.gnome.org/show_bug.cgi?id=162726
+Also gtk_bindings_activate may work with some non-shortcuts operations (todo: check it)
+See bugs 411005 406407
+
+  Code, which should be used after fixing http://bugzilla.gnome.org/show_bug.cgi?id=162726:
+  const nsGUIEvent *guiEvent = static_cast<nsGUIEvent*>(aEvent.nativeEvent);
+  if (guiEvent &&
+     (guiEvent->message == NS_KEY_PRESS || guiEvent->message == NS_KEY_UP || guiEvent->message == NS_KEY_DOWN) &&
+      guiEvent->nativeMsg)
+        gtk_bindings_activate_event(GTK_OBJECT(mNativeTarget),
+                                    static_cast<GdkEventKey*>(guiEvent->nativeMsg));
+*/
   gCurrentCallback = nsnull;
   gCurrentCallbackData = nsnull;
 

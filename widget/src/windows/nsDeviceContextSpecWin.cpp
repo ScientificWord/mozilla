@@ -50,11 +50,12 @@
 #include "nsCRT.h"
 #include "nsIServiceManager.h"
 #include "nsReadableUtils.h"
-#ifdef MOZ_CAIRO_GFX
-#include "gfxWindowsSurface.h"
-#endif
+#include "nsStringEnumerator.h"
 
-#include "nsUnitConversion.h"
+#include "gfxPDFSurface.h"
+#include "gfxWindowsSurface.h"
+
+#include "nsIFileStreams.h"
 #include "nsIWindowWatcher.h"
 #include "nsIDOMWindow.h"
 
@@ -75,11 +76,6 @@ PRLogModuleInfo * kWidgetPrintingLogMod = PR_NewLogModule("printing-widget");
 #else
 #define PR_PL(_p1)
 #endif
-
-//-----------------------------------------------
-// Global Data
-//-----------------------------------------------
-static HWND gParentWnd = NULL;
 
 //----------------------------------------------------------------------------------
 // The printer data is shared between the PrinterEnumerator and the nsDeviceContextSpecWin
@@ -183,11 +179,9 @@ nsDeviceContextSpecWin::nsDeviceContextSpecWin()
 
 
 //----------------------------------------------------------------------------------
-#ifdef MOZ_CAIRO_GFX
+
 NS_IMPL_ISUPPORTS1(nsDeviceContextSpecWin, nsIDeviceContextSpec)
-#else
-NS_IMPL_ISUPPORTS2(nsDeviceContextSpecWin, nsIDeviceContextSpec, nsISupportsVoid)
-#endif
+
 nsDeviceContextSpecWin::~nsDeviceContextSpecWin()
 {
   SetDeviceName(nsnull);
@@ -391,7 +385,7 @@ CheckForPrintToFile(nsIPrintSettings* aPS, LPTSTR aPrinterName, PRUnichar* aUPri
   } else {
     nsCAutoString nativeName;
     NS_CopyUnicodeToNative(nsDependentString(aUPrinterName), nativeName);
-    CheckForPrintToFileWithName(NS_CONST_CAST(char*, nativeName.get()), toFile);
+    CheckForPrintToFileWithName(const_cast<char*>(nativeName.get()), toFile);
   }
 #endif
   // Since the driver wasn't a "Print To File" Driver, check to see
@@ -423,9 +417,8 @@ NS_IMETHODIMP nsDeviceContextSpecWin::Init(nsIWidget* aWidget,
 {
   mPrintSettings = aPrintSettings;
 
-  gParentWnd = (HWND)aWidget->GetNativeData(NS_NATIVE_WINDOW);
-
-  nsresult rv = NS_ERROR_FAILURE;
+  nsresult rv = aIsPrintPreview ? NS_ERROR_GFX_PRINTER_PRINTPREVIEW : 
+                                  NS_ERROR_GFX_PRINTER_NO_PRINTER_AVAILABLE;
   if (aPrintSettings) {
     nsCOMPtr<nsIPrintSettingsWin> psWin(do_QueryInterface(aPrintSettings));
     if (psWin) {
@@ -490,7 +483,7 @@ NS_IMETHODIMP nsDeviceContextSpecWin::Init(nsIWidget* aWidget,
   }
 
   NS_ASSERTION(printerName, "We have to have a printer name");
-  if (!printerName || !*printerName) return NS_ERROR_FAILURE;
+  if (!printerName || !*printerName) return rv;
 
   if (!aIsPrintPreview) {
     CheckForPrintToFile(mPrintSettings, nsnull, printerName);
@@ -519,44 +512,54 @@ static void CleanAndCopyString(char*& aStr, char* aNewStr)
   }
 }
 
-#ifdef MOZ_CAIRO_GFX
 NS_IMETHODIMP nsDeviceContextSpecWin::GetSurfaceForPrinter(gfxASurface **surface)
 {
   NS_ASSERTION(mDevMode, "DevMode can't be NULL here");
 
-  if (mDevMode) {
-    HDC dc = ::CreateDC(mDriverName, mDeviceName, NULL, mDevMode);
+  nsRefPtr<gfxASurface> newSurface;
 
-    // have this surface take over ownership of this DC
-    nsRefPtr<gfxASurface> newSurface = new gfxWindowsSurface(dc, PR_TRUE);
+  PRInt16 outputFormat;
+  mPrintSettings->GetOutputFormat(&outputFormat);
+
+  if (outputFormat == nsIPrintSettings::kOutputFormatPDF) {
+    nsXPIDLString filename;
+    mPrintSettings->GetToFileName(getter_Copies(filename));
+
+    double width, height;
+    mPrintSettings->GetEffectivePageSize(&width, &height);
+    // convert twips to points
+    width /= 20;
+    height /= 20;
+
+    nsCOMPtr<nsILocalFile> file = do_CreateInstance("@mozilla.org/file/local;1");
+    nsresult rv = file->InitWithPath(filename);
+    if (NS_FAILED(rv))
+      return rv;
+
+    nsCOMPtr<nsIFileOutputStream> stream = do_CreateInstance("@mozilla.org/network/file-output-stream;1");
+    rv = stream->Init(file, -1, -1, 0);
+    if (NS_FAILED(rv))
+      return rv;
+
+    newSurface = new gfxPDFSurface(stream, gfxSize(width, height));
+  } else {
+    if (mDevMode) {
+      HDC dc = ::CreateDC(mDriverName, mDeviceName, NULL, mDevMode);
+
+      // have this surface take over ownership of this DC
+      newSurface = new gfxWindowsSurface(dc, gfxWindowsSurface::FLAG_TAKE_DC | gfxWindowsSurface::FLAG_FOR_PRINTING);
+    }
+  }
+
+  if (newSurface) {
     *surface = newSurface;
     NS_ADDREF(*surface);
-
     return NS_OK;
   }
 
   *surface = nsnull;
-
   return NS_ERROR_FAILURE;
 }
-
-#else
-
-// nsISupportsVoid impl stuff. goes away when we turn on cairo.
-NS_IMETHODIMP nsDeviceContextSpecWin::GetData(void **data)
-{
-  NS_ASSERTION(mDevMode, "DevMode can't be NULL here");
-
-  if (mDevMode) {
-    HDC dc = ::CreateDC(mDriverName, mDeviceName, NULL, mDevMode);
-    *data = (void*)dc;
-
-    return NS_OK;
-  }
-  return NS_ERROR_FAILURE;
-}
-
-#endif
 
 //----------------------------------------------------------------------------------
 void nsDeviceContextSpecWin::SetDeviceName(char* aDeviceName)
@@ -724,7 +727,7 @@ nsDeviceContextSpecWin::GetDataFromPrinter(const PRUnichar * aName, nsIPrintSett
   HANDLE hPrinter = NULL;
   nsCAutoString nativeName;
   NS_CopyUnicodeToNative(nsDependentString(aName), nativeName);
-  BOOL status = ::OpenPrinter(NS_CONST_CAST(char*, nativeName.get()),
+  BOOL status = ::OpenPrinter(const_cast<char*>(nativeName.get()),
                               &hPrinter, NULL);
   if (status) {
 
@@ -732,23 +735,23 @@ nsDeviceContextSpecWin::GetDataFromPrinter(const PRUnichar * aName, nsIPrintSett
     DWORD       dwNeeded, dwRet;
 
     // Allocate a buffer of the correct size.
-    dwNeeded = ::DocumentProperties(gParentWnd, hPrinter,
-                                    NS_CONST_CAST(char*, nativeName.get()),
+    dwNeeded = ::DocumentProperties(NULL, hPrinter,
+                                    const_cast<char*>(nativeName.get()),
                                     NULL, NULL, 0);
 
     pDevMode = (LPDEVMODE)::HeapAlloc (::GetProcessHeap(), HEAP_ZERO_MEMORY, dwNeeded);
     if (!pDevMode) return NS_ERROR_FAILURE;
 
     // Get the default DevMode for the printer and modify it for our needs.
-    dwRet = DocumentProperties(gParentWnd, hPrinter, 
-                               NS_CONST_CAST(char*, nativeName.get()),
+    dwRet = DocumentProperties(NULL, hPrinter, 
+                               const_cast<char*>(nativeName.get()),
                                pDevMode, NULL, DM_OUT_BUFFER);
 
     if (dwRet == IDOK && aPS) {
       SetupDevModeFromSettings(pDevMode, aPS);
       // Sets back the changes we made to the DevMode into the Printer Driver
-      dwRet = ::DocumentProperties(gParentWnd, hPrinter,
-                                   NS_CONST_CAST(char*, nativeName.get()),
+      dwRet = ::DocumentProperties(NULL, hPrinter,
+                                   const_cast<char*>(nativeName.get()),
                                    pDevMode, pDevMode,
                                    DM_IN_BUFFER | DM_OUT_BUFFER);
     }
@@ -763,7 +766,7 @@ nsDeviceContextSpecWin::GetDataFromPrinter(const PRUnichar * aName, nsIPrintSett
 
     SetDevMode(pDevMode); // cache the pointer and takes responsibility for the memory
 
-    SetDeviceName(NS_CONST_CAST(char*, nativeName.get()));
+    SetDeviceName(const_cast<char*>(nativeName.get()));
 
     SetDriverName("WINSPOOL");
 
@@ -880,18 +883,7 @@ nsPrinterEnumeratorWin::~nsPrinterEnumeratorWin()
 
 NS_IMPL_ISUPPORTS1(nsPrinterEnumeratorWin, nsIPrinterEnumerator)
 
-
-static void CleanupArray(PRUnichar**& aArray, PRInt32& aCount)
-{
-  for (PRInt32 i = aCount - 1; i >= 0; i--) {
-    nsMemory::Free(aArray[i]);
-  }
-  nsMemory::Free(aArray);
-  aArray = NULL;
-  aCount = 0;
-}
-
- //----------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------
 // Return the Default Printer name
 /* readonly attribute wstring defaultPrinterName; */
 NS_IMETHODIMP 
@@ -942,145 +934,39 @@ nsPrinterEnumeratorWin::InitPrintSettingsFromPrinter(const PRUnichar *aPrinterNa
 // Enumerate all the Printers from the global array and pass their
 // names back (usually to script)
 NS_IMETHODIMP 
-nsPrinterEnumeratorWin::EnumeratePrinters(PRUint32* aCount, PRUnichar*** aResult)
+nsPrinterEnumeratorWin::GetPrinterNameList(nsIStringEnumerator **aPrinterNameList)
 {
-  NS_ENSURE_ARG(aCount);
-  NS_ENSURE_ARG_POINTER(aResult);
+  NS_ENSURE_ARG_POINTER(aPrinterNameList);
+  *aPrinterNameList = nsnull;
 
   nsresult rv = GlobalPrinters::GetInstance()->EnumeratePrinterList();
   if (NS_FAILED(rv)) {
-    PR_PL(("***** nsDeviceContextSpecWin::EnumeratePrinters - Couldn't enumerate printers!\n"));
+    PR_PL(("***** nsDeviceContextSpecWin::GetPrinterNameList - Couldn't enumerate printers!\n"));
     return rv;
   }
 
-  if (aCount) 
-    *aCount = 0;
-  else 
-    return NS_ERROR_NULL_POINTER;
-  
-  if (aResult) 
-    *aResult = nsnull;
-  else 
-    return NS_ERROR_NULL_POINTER;
-  
   PRInt32 numPrinters = GlobalPrinters::GetInstance()->GetNumPrinters();
-  PRInt32 numItems    = numPrinters;
-
-  PRUnichar** array = (PRUnichar**) nsMemory::Alloc(numItems * sizeof(PRUnichar*));
-  if (!array) 
+  nsStringArray *printers = new nsStringArray(numPrinters);
+  if (!printers)
     return NS_ERROR_OUT_OF_MEMORY;
-  
-  PRInt32 count      = 0;
+
   PRInt32 printerInx = 0;
-  while( count < numItems ) {
+  while( printerInx < numPrinters ) {
     LPTSTR name = GlobalPrinters::GetInstance()->GetItemFromList(printerInx++);
     nsAutoString newName; 
     NS_CopyNativeToUnicode(nsDependentCString(name), newName);
-    PRUnichar *str = ToNewUnicode(newName);
-    if (!str) {
-      CleanupArray(array, count);
-      return NS_ERROR_OUT_OF_MEMORY;
-    }
-    array[count++] = str;
+    printers->AppendString(newName);
   }
-  *aCount  = count;
-  *aResult = array;
 
-  return NS_OK;
-
+  return NS_NewAdoptingStringEnumerator(aPrinterNameList, printers);
 }
 
 //----------------------------------------------------------------------------------
 // Display the AdvancedDocumentProperties for the selected Printer
 NS_IMETHODIMP nsPrinterEnumeratorWin::DisplayPropertiesDlg(const PRUnichar *aPrinterName, nsIPrintSettings* aPrintSettings)
 {
-#ifdef WINCE
-  return NS_ERROR_NOT_IMPLEMENTED;
-#else
-  nsresult rv = NS_ERROR_FAILURE;
-  HANDLE hPrinter = NULL;
-  nsCAutoString nativeName;
-  NS_CopyUnicodeToNative(nsDependentString(aPrinterName), nativeName);
-  BOOL status = ::OpenPrinter(NS_CONST_CAST(char*, nativeName.get()),
-                              &hPrinter, NULL);
-  if (status) {
-
-    LPDEVMODE   pDevMode;
-    LPDEVMODE   pNewDevMode;
-    DWORD       dwNeeded, dwRet;
-
-    // Get the buffer correct buffer size
-    dwNeeded = ::DocumentProperties(gParentWnd, hPrinter,
-                                   NS_CONST_CAST(char*, nativeName.get()),
-                                   NULL, NULL, 0);
-
-    // Allocate a buffer of the correct size.
-    pNewDevMode = (LPDEVMODE)::HeapAlloc (::GetProcessHeap(), HEAP_ZERO_MEMORY, dwNeeded);
-    if (!pNewDevMode) return NS_ERROR_FAILURE;
-
-    dwRet = ::DocumentProperties(gParentWnd, hPrinter,
-                                 NS_CONST_CAST(char*, nativeName.get()),
-                                 pNewDevMode, NULL, DM_OUT_BUFFER);
-
-    if (dwRet != IDOK) {
-       ::HeapFree(::GetProcessHeap(), 0, pNewDevMode);
-       ::ClosePrinter(hPrinter);
-       PR_PL(("***** nsDeviceContextSpecWin::DisplayPropertiesDlg - Couldn't get DocumentProperties (pNewDevMode) for [%s]\n", nativeName.get()));
-       return NS_ERROR_FAILURE;
-    }
-
-    pDevMode = (LPDEVMODE)::HeapAlloc (::GetProcessHeap(), HEAP_ZERO_MEMORY, dwNeeded);
-    if (!pDevMode) return NS_ERROR_FAILURE;
-
-    dwRet = ::DocumentProperties(gParentWnd, hPrinter,
-                                 NS_CONST_CAST(char*, nativeName.get()),
-                                 pDevMode, NULL, DM_OUT_BUFFER);
-
-    if (dwRet != IDOK) {
-       ::HeapFree(::GetProcessHeap(), 0, pDevMode);
-       ::HeapFree(::GetProcessHeap(), 0, pNewDevMode);
-       ::ClosePrinter(hPrinter);
-       PR_PL(("***** nsDeviceContextSpecWin::DisplayPropertiesDlg - Couldn't get DocumentProperties (pDevMode) for [%s]\n", nativeName.get()));
-       return NS_ERROR_FAILURE;
-    }
-
-
-    if (pDevMode && pNewDevMode) {
-      SetupDevModeFromSettings(pDevMode, aPrintSettings);
-
-      // Display the Dialog and get the new DevMode
-#if 0 // need more to do more work to see why AdvancedDocumentProperties fails 
-      // when cancel is pressed
-      LONG stat = ::AdvancedDocumentProperties(gParentWnd, hPrinter,
-                                               NS_CONST_CAST(char*, nativeName.get()),
-                                               pNewDevMode, pDevMode);
-#else
-      LONG stat = ::DocumentProperties(gParentWnd, hPrinter,
-                                       NS_CONST_CAST(char*, nativeName.get()),
-                                       pDevMode, NULL,
-                                       DM_IN_PROMPT|DM_OUT_BUFFER);
-#endif
-      if (stat == IDOK) {
-        // Now set the print options from the native Page Setup
-        nsDeviceContextSpecWin::SetPrintSettingsFromDevMode(aPrintSettings, pDevMode);
-      }
-      ::HeapFree(::GetProcessHeap(), 0, pDevMode);
-      ::HeapFree(::GetProcessHeap(), 0, pNewDevMode);
-      rv = NS_OK;
-    } else {
-      rv = NS_ERROR_OUT_OF_MEMORY;
-    }
-
-    ::ClosePrinter(hPrinter);
-
-  } else {
-    rv = NS_ERROR_GFX_PRINTER_NAME_NOT_FOUND;
-    PR_PL(("***** nsDeviceContextSpecWin::DisplayPropertiesDlg - Couldn't open printer [%s]\n", nativeName.get()));
-    DISPLAY_LAST_ERROR
-  }
-
-  return rv;
-#endif //WINCE
+  // Implementation removed because it is unused
+  return NS_OK;
 }
 
 //----------------------------------------------------------------------------------

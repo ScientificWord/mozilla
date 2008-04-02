@@ -15,7 +15,7 @@
 # The Original Code is mozilla.org code.
 #
 # The Initial Developer of the Original Code is
-# Christopher Blizzard. Portions created by Christopher Blizzard are Copyright (C) Christopher Blizzard.  All Rights Reserved.
+# Christopher Blizzard.
 # Portions created by the Initial Developer are Copyright (C) 2001
 # the Initial Developer. All Rights Reserved.
 #
@@ -69,14 +69,12 @@ REQUIRES	= xpcom \
 		  layout \
 		  util \
 		  locale \
+		  thebes \
+		  cairo \
 		  $(NULL)
-
-ifeq ($(MOZ_ENABLE_CAIRO_GFX),1)
-REQUIRES += thebes cairo
 
 ifeq ($(MOZ_ENABLE_GLITZ),1)
 REQUIRES += glitz glitzglx
-endif
 endif
 
 CSRCS		= \
@@ -106,10 +104,13 @@ CPPSRCS		= \
 		nsNativeKeyBindings.cpp \
 		nsScreenGtk.cpp \
 		nsScreenManagerGtk.cpp \
-		nsDeviceContextSpecFactoryG.cpp \
 		nsDeviceContextSpecG.cpp \
 		nsPrintOptionsGTK.cpp \
 		nsImageToPixbuf.cpp \
+		nsAccessibilityHelper.cpp \
+		nsIdleServiceGTK.cpp \
+		nsPrintDialogGTK.cpp \
+		nsPrintSettingsGTK.cpp \
 		$(NULL)
 
 # build our subdirs, too
@@ -123,19 +124,16 @@ EXTRA_DSO_LDOPTS += \
 		$(MOZ_COMPONENT_LIBS) \
 		-lgkgfx \
 		-lgtkxtbin \
+                $(MOZ_STARTUP_NOTIFICATION_LIBS) \
 		$(XLDFLAGS) \
 		$(XLIBS) \
-		$(MOZ_GTK2_LIBS)
-ifdef MOZ_ENABLE_XINERAMA
-EXTRA_DSO_LDOPTS += $(MOZ_XINERAMA_LIBS)
-endif
-
-ifeq ($(MOZ_ENABLE_CAIRO_GFX),1)
-EXTRA_DSO_LDOPTS += -lthebes
-endif
+		$(MOZ_GTK2_LIBS) \
+		-lthebes \
+		$(LCMS_LIBS) \
+		$(NULL)
 
 EXPORTS		= \
-		nsIGdkPixbufImage.h \
+                nsGTKToolkit.h \
 		nsIImageToPixbuf.h \
 		mozdrawingarea.h \
 		mozcontainer.h \
@@ -149,14 +147,11 @@ endif
 
 include $(topsrcdir)/config/rules.mk
 
-CFLAGS		+= $(MOZ_GTK2_CFLAGS)
-CXXFLAGS	+= $(MOZ_GTK2_CFLAGS)
+CFLAGS          += $(MOZ_GTK2_CFLAGS) $(MOZ_STARTUP_NOTIFICATION_CFLAGS)
+CXXFLAGS        += $(MOZ_GTK2_CFLAGS) $(MOZ_STARTUP_NOTIFICATION_CFLAGS)
 
 DEFINES         += -DUSE_XIM
-
-ifdef MOZ_ENABLE_CAIRO_GFX
 DEFINES		+= -DCAIRO_GFX
-endif
 
 ifdef MOZ_ENABLE_POSTSCRIPT
 DEFINES         += -DUSE_POSTSCRIPT
@@ -167,6 +162,7 @@ endif
 DEFINES		+= 
 INCLUDES	+= \
 		-I$(srcdir)/../xpwidgets \
+		-I$(topsrcdir)/other-licenses/atk-1.0 \
 		$(NULL)
 
 test_container: mozdrawingarea.o mozcontainer.o test_container.c
