@@ -40,6 +40,7 @@
 #include "nsAutoLock.h"
 #include "nsAutoPtr.h"
 #include "prlog.h"
+#include "nsThreadUtils.h"
 
 #ifdef PR_LOGGING
 static PRLogModuleInfo *sLog = PR_NewLogModule("nsEventQueue");
@@ -57,6 +58,13 @@ nsEventQueue::nsEventQueue()
 
 nsEventQueue::~nsEventQueue()
 {
+  // It'd be nice to be able to assert that no one else is holding the monitor,
+  // but NSPR doesn't really expose APIs for it.
+  NS_ASSERTION(IsEmpty(), "Non-empty event queue being destroyed; events being leaked.");
+
+  if (mHead)
+    FreePage(mHead);
+
   if (mMonitor)
     nsAutoMonitor::DestroyMonitor(mMonitor);
 }
@@ -64,28 +72,30 @@ nsEventQueue::~nsEventQueue()
 PRBool
 nsEventQueue::GetEvent(PRBool mayWait, nsIRunnable **result)
 {
-  nsAutoMonitor mon(mMonitor);
-
-  while (IsEmpty()) {
-    if (!mayWait) {
-      if (result)
-        *result = nsnull;
-      return PR_FALSE;
+  {
+    nsAutoMonitor mon(mMonitor);
+    
+    while (IsEmpty()) {
+      if (!mayWait) {
+        if (result)
+          *result = nsnull;
+        return PR_FALSE;
+      }
+      LOG(("EVENTQ(%p): wait begin\n", this)); 
+      mon.Wait();
+      LOG(("EVENTQ(%p): wait end\n", this)); 
     }
-    LOG(("EVENTQ(%p): wait begin\n", this)); 
-    mon.Wait();
-    LOG(("EVENTQ(%p): wait end\n", this)); 
-  }
-
-  if (result) {
-    *result = mHead->mEvents[mOffsetHead++];
-
-    // Check if mHead points to empty Page
-    if (mOffsetHead == EVENTS_PER_PAGE) {
-      Page *dead = mHead;
-      mHead = mHead->mNext;
-      FreePage(dead);
-      mOffsetHead = 0;
+    
+    if (result) {
+      *result = mHead->mEvents[mOffsetHead++];
+      
+      // Check if mHead points to empty Page
+      if (mOffsetHead == EVENTS_PER_PAGE) {
+        Page *dead = mHead;
+        mHead = mHead->mNext;
+        FreePage(dead);
+        mOffsetHead = 0;
+      }
     }
   }
 

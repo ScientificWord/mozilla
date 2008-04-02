@@ -57,6 +57,13 @@
 #include "nsReadableUtils.h"
 #include "nsISupportsPrimitives.h"
 #include "nsIMutableArray.h"
+#include "nsTraceRefcntImpl.h"
+
+#define CHECK_mWorkingPath()                    \
+    PR_BEGIN_MACRO                              \
+        if (mWorkingPath.IsEmpty())             \
+            return NS_ERROR_NOT_INITIALIZED;    \
+    PR_END_MACRO
 
 //-----------------------------------------------------------------------------
 // static helper functions
@@ -803,7 +810,7 @@ nsLocalFile::Create(PRUint32 type, PRUint32 attributes)
         {
             *slash = '\0';
 
-            rv = CreateDirectoryA(NS_CONST_CAST(char*, mWorkingPath.get()), NULL);
+            rv = CreateDirectoryA(const_cast<char*>(mWorkingPath.get()), NULL);
             if (rv) {
                 rv = ConvertOS2Error(rv);
                 if (rv != NS_ERROR_FILE_ALREADY_EXISTS)
@@ -818,7 +825,8 @@ nsLocalFile::Create(PRUint32 type, PRUint32 attributes)
     if (type == NORMAL_FILE_TYPE)
     {
         PRFileDesc* file = PR_Open(mWorkingPath.get(), PR_RDONLY | PR_CREATE_FILE | PR_APPEND | PR_EXCL, attributes);
-        if (!file) return NS_ERROR_FILE_ALREADY_EXISTS;
+        if (!file)
+            return NS_ERROR_FILE_ALREADY_EXISTS;
 
         PR_Close(file);
         return NS_OK;
@@ -826,7 +834,7 @@ nsLocalFile::Create(PRUint32 type, PRUint32 attributes)
 
     if (type == DIRECTORY_TYPE)
     {
-        rv = CreateDirectoryA(NS_CONST_CAST(char*, mWorkingPath.get()), NULL);
+        rv = CreateDirectoryA(const_cast<char*>(mWorkingPath.get()), NULL);
         if (rv)
             return ConvertOS2Error(rv);
         else
@@ -1394,7 +1402,7 @@ nsLocalFile::CopySingleFile(nsIFile *sourceFile, nsIFile *destParent,
     APIRET rc = NO_ERROR;
 
     if (move)
-        rc = DosMove(filePath.get(), (PSZ)NS_CONST_CAST(char*, destPath.get()));
+        rc = DosMove(filePath.get(), (PSZ)const_cast<char*>(destPath.get()));
 
     if (!move || rc == ERROR_NOT_SAME_DEVICE || rc == ERROR_ACCESS_DENIED)
     {
@@ -1403,7 +1411,7 @@ nsLocalFile::CopySingleFile(nsIFile *sourceFile, nsIFile *destParent,
         // the file without error, so we need to do the same   IBM-AKR
 
         do {
-            rc = DosCopy(filePath.get(), (PSZ)NS_CONST_CAST(char*, destPath.get()), DCPY_EXISTING);
+            rc = DosCopy(filePath.get(), (PSZ)const_cast<char*>(destPath.get()), DCPY_EXISTING);
             if (rc == ERROR_TOO_MANY_OPEN_FILES) {
                 ULONG CurMaxFH = 0;
                 LONG ReqCount = 20;
@@ -1424,7 +1432,7 @@ nsLocalFile::CopySingleFile(nsIFile *sourceFile, nsIFile *destParent,
             strcat(achProgram, """COPY ");
             strcat(achProgram, filePath.get());
             strcat(achProgram, " ");
-            strcat(achProgram, (PSZ)NS_CONST_CAST(char*, destPath.get()));
+            strcat(achProgram, (PSZ)const_cast<char*>(destPath.get()));
             strcat(achProgram, """");
             achProgram[strlen(achProgram) + 1] = '\0';
             achProgram[7] = '\0';
@@ -1452,6 +1460,9 @@ nsLocalFile::CopySingleFile(nsIFile *sourceFile, nsIFile *destParent,
 nsresult
 nsLocalFile::CopyMove(nsIFile *aParentDir, const nsACString &newName, PRBool move)
 {
+    // Check we are correctly initialized.
+    CHECK_mWorkingPath();
+
     nsCOMPtr<nsIFile> newParentDir = aParentDir;
 
     nsresult rv  = Stat();
@@ -1657,16 +1668,27 @@ nsLocalFile::MoveToNative(nsIFile *newParentDir, const nsACString &newName)
 NS_IMETHODIMP
 nsLocalFile::Load(PRLibrary * *_retval)
 {
+    // Check we are correctly initialized.
+    CHECK_mWorkingPath();
+
     PRBool isFile;
     nsresult rv = IsFile(&isFile);
 
     if (NS_FAILED(rv))
         return rv;
 
-    if (! isFile)
+    if (!isFile)
         return NS_ERROR_FILE_IS_DIRECTORY;
 
+#ifdef NS_BUILD_REFCNT_LOGGING
+    nsTraceRefcntImpl::SetActivityIsLegal(PR_FALSE);
+#endif
+
     *_retval =  PR_LoadLibrary(mWorkingPath.get());
+
+#ifdef NS_BUILD_REFCNT_LOGGING
+    nsTraceRefcntImpl::SetActivityIsLegal(PR_TRUE);
+#endif
 
     if (*_retval)
         return NS_OK;
@@ -1677,6 +1699,9 @@ nsLocalFile::Load(PRLibrary * *_retval)
 NS_IMETHODIMP
 nsLocalFile::Remove(PRBool recursive)
 {
+    // Check we are correctly initialized.
+    CHECK_mWorkingPath();
+
     PRBool isDir = PR_FALSE;
 
     nsresult rv = IsDirectory(&isDir);
@@ -1721,6 +1746,9 @@ nsLocalFile::Remove(PRBool recursive)
 NS_IMETHODIMP
 nsLocalFile::GetLastModifiedTime(PRInt64 *aLastModifiedTime)
 {
+    // Check we are correctly initialized.
+    CHECK_mWorkingPath();
+
     NS_ENSURE_ARG(aLastModifiedTime);
 
     *aLastModifiedTime = 0;
@@ -1746,6 +1774,9 @@ nsLocalFile::GetLastModifiedTimeOfLink(PRInt64 *aLastModifiedTime)
 NS_IMETHODIMP
 nsLocalFile::SetLastModifiedTime(PRInt64 aLastModifiedTime)
 {
+    // Check we are correctly initialized.
+    CHECK_mWorkingPath();
+
     return nsLocalFile::SetModDate(aLastModifiedTime);
 }
 
@@ -1838,6 +1869,9 @@ nsLocalFile::GetPermissionsOfLink(PRUint32 *aPermissionsOfLink)
 NS_IMETHODIMP
 nsLocalFile::SetPermissions(PRUint32 aPermissions)
 {
+    // Check we are correctly initialized.
+    CHECK_mWorkingPath();
+
     nsresult rv = Stat();
     if (NS_FAILED(rv))
         return rv;
@@ -1880,6 +1914,9 @@ nsLocalFile::SetPermissionsOfLink(PRUint32 aPermissions)
 NS_IMETHODIMP
 nsLocalFile::GetFileSize(PRInt64 *aFileSize)
 {
+    // Check we are correctly initialized.
+    CHECK_mWorkingPath();
+
     NS_ENSURE_ARG(aFileSize);
     *aFileSize = 0;
 
@@ -1942,6 +1979,9 @@ nsLocalFile::SetFileSize(PRInt64 aFileSize)
 NS_IMETHODIMP
 nsLocalFile::GetDiskSpaceAvailable(PRInt64 *aDiskSpaceAvailable)
 {
+    // Check we are correctly initialized.
+    CHECK_mWorkingPath();
+
     NS_ENSURE_ARG(aDiskSpaceAvailable);
     *aDiskSpaceAvailable = 0;
 
@@ -1969,6 +2009,9 @@ nsLocalFile::GetDiskSpaceAvailable(PRInt64 *aDiskSpaceAvailable)
 NS_IMETHODIMP
 nsLocalFile::GetParent(nsIFile * *aParent)
 {
+    // Check we are correctly initialized.
+    CHECK_mWorkingPath();
+
     NS_ENSURE_ARG_POINTER(aParent);
 
     nsCAutoString parentPath(mWorkingPath);
@@ -2005,6 +2048,9 @@ nsLocalFile::GetParent(nsIFile * *aParent)
 NS_IMETHODIMP
 nsLocalFile::Exists(PRBool *_retval)
 {
+    // Check we are correctly initialized.
+    CHECK_mWorkingPath();
+
     NS_ENSURE_ARG(_retval);
     *_retval = PR_FALSE;
 
@@ -2018,6 +2064,9 @@ nsLocalFile::Exists(PRBool *_retval)
 NS_IMETHODIMP
 nsLocalFile::IsWritable(PRBool *_retval)
 {
+    // Check we are correctly initialized.
+    CHECK_mWorkingPath();
+
     NS_ENSURE_ARG(_retval);
     *_retval = PR_FALSE;
 
@@ -2047,6 +2096,9 @@ nsLocalFile::IsWritable(PRBool *_retval)
 NS_IMETHODIMP
 nsLocalFile::IsReadable(PRBool *_retval)
 {
+    // Check we are correctly initialized.
+    CHECK_mWorkingPath();
+
     NS_ENSURE_ARG(_retval);
     *_retval = PR_FALSE;
 
@@ -2062,6 +2114,9 @@ nsLocalFile::IsReadable(PRBool *_retval)
 NS_IMETHODIMP
 nsLocalFile::IsExecutable(PRBool *_retval)
 {
+    // Check we are correctly initialized.
+    CHECK_mWorkingPath();
+
     NS_ENSURE_ARG(_retval);
     *_retval = PR_FALSE;
 
@@ -2103,12 +2158,10 @@ nsLocalFile::IsExecutable(PRBool *_retval)
     if (!ext)
         return NS_OK;
 
-    // upper-case the extension, then see if it claims to be an executable
-    WinUpper(0, 0, 0, ext);
-    if (strcmp(ext, ".EXE") == 0 ||
-        strcmp(ext, ".CMD") == 0 ||
-        strcmp(ext, ".COM") == 0 ||
-        strcmp(ext, ".BAT") == 0)
+    if (stricmp(ext, ".exe") == 0 ||
+        stricmp(ext, ".cmd") == 0 ||
+        stricmp(ext, ".com") == 0 ||
+        stricmp(ext, ".bat") == 0)
         *_retval = PR_TRUE;
 
     return NS_OK;
@@ -2174,6 +2227,9 @@ nsLocalFile::IsHidden(PRBool *_retval)
 NS_IMETHODIMP
 nsLocalFile::IsSymlink(PRBool *_retval)
 {
+    // Check we are correctly initialized.
+    CHECK_mWorkingPath();
+
     NS_ENSURE_ARG_POINTER(_retval);
 
     // No Symlinks on OS/2
@@ -2207,6 +2263,9 @@ nsLocalFile::Equals(nsIFile *inFile, PRBool *_retval)
 NS_IMETHODIMP
 nsLocalFile::Contains(nsIFile *inFile, PRBool recur, PRBool *_retval)
 {
+    // Check we are correctly initialized.
+    CHECK_mWorkingPath();
+
     *_retval = PR_FALSE;
 
     nsCAutoString myFilePath;
@@ -2237,6 +2296,9 @@ nsLocalFile::Contains(nsIFile *inFile, PRBool recur, PRBool *_retval)
 NS_IMETHODIMP
 nsLocalFile::GetNativeTarget(nsACString &_retval)
 {
+    // Check we are correctly initialized.
+    CHECK_mWorkingPath();
+
     _retval = mWorkingPath;
     return NS_OK;
 }

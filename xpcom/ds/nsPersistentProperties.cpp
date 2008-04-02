@@ -40,7 +40,7 @@
 #include "nsCRT.h"
 #include "nsReadableUtils.h"
 #include "nsIInputStream.h"
-#include "nsIUnicharInputStream.h"
+#include "nsUnicharInputStream.h"
 #include "pratom.h"
 #include "nsEnumeratorUtils.h"
 #include "nsReadableUtils.h"
@@ -49,6 +49,7 @@
 #define PL_ARENA_CONST_ALIGN_MASK 3
 #include "nsPersistentProperties.h"
 #include "nsIProperties.h"
+#include "nsISupportsArray.h"
 #include "nsProperties.h"
 
 struct PropertyTableEntry : public PLDHashEntryHdr
@@ -69,7 +70,7 @@ ArenaStrdup(const nsAFlatString& aString, PLArenaPool* aArena)
   if (mem) {
     memcpy(mem, aString.get(), len);
   }
-  return NS_STATIC_CAST(PRUnichar*, mem);
+  return static_cast<PRUnichar*>(mem);
 }
 
 static char*
@@ -82,13 +83,12 @@ ArenaStrdup(const nsAFlatCString& aString, PLArenaPool* aArena)
   NS_ASSERTION(mem, "Couldn't allocate space!\n");
   if (mem)
     memcpy(mem, aString.get(), len);
-  return NS_STATIC_CAST(char*, mem);
+  return static_cast<char*>(mem);
 }
 
 static const struct PLDHashTableOps property_HashTableOps = {
   PL_DHashAllocTable,
   PL_DHashFreeTable,
-  PL_DHashGetKeyStub,
   PL_DHashStringKey,
   PL_DHashMatchStringKey,
   PL_DHashMoveEntryStub,
@@ -100,7 +100,7 @@ static const struct PLDHashTableOps property_HashTableOps = {
 nsPersistentProperties::nsPersistentProperties()
 : mIn(nsnull)
 {
-  mSubclass = NS_STATIC_CAST(nsIPersistentProperties*, this);
+  mSubclass = static_cast<nsIPersistentProperties*>(this);
   mTable.ops = nsnull;
   PL_INIT_ARENA_POOL(&mArena, "PersistentPropertyArena", 2048);
 }
@@ -147,7 +147,8 @@ NS_IMETHODIMP
 nsPersistentProperties::Load(nsIInputStream *aIn)
 {
   PRInt32  c;
-  nsresult ret = NS_NewUTF8ConverterStream(&mIn, aIn, 0);
+  nsresult ret = nsSimpleUnicharStreamFactory::GetInstance()->
+    CreateInstanceFromUTF8Stream(aIn, &mIn);
 
   if (ret != NS_OK) {
     NS_WARNING("NS_NewUTF8ConverterStream failed");
@@ -175,27 +176,46 @@ nsPersistentProperties::Load(nsIInputStream *aIn)
       static const char trimThese[] = " \t";
       key.Trim(trimThese, PR_FALSE, PR_TRUE);
       c = Read();
-      nsAutoString value;
+      nsAutoString value, tempValue;
+      while ((c >= 0) && (c != '\r') && (c != '\n')) {
+        if (c == '\\') {
+          c = Read();
+          switch(c) {
+            case '\r':
+            case '\n':
+              // Only skip first EOL characters and then next line's
+              // whitespace characters. Skipping all EOL characters
+              // and all upcoming whitespace is too agressive.
+              if (c == '\r')
+                c = Read();
+              if (c == '\n')
+                c = Read();
+              while (c == ' ' || c == '\t')
+                c = Read();
+              continue;
+            default:
+              tempValue.Append((PRUnichar) '\\');
+              tempValue.Append((PRUnichar) c);
+          } // switch(c)
+        } else {
+          tempValue.Append((PRUnichar) c);
+        }
+        c = Read();
+      }
+      tempValue.Trim(trimThese, PR_TRUE, PR_TRUE);
+
       PRUint32 state  = 0;
       PRUnichar uchar = 0;
-      while ((c >= 0) && (c != '\r') && (c != '\n')) {
+      for (PRUint32 i = 0; i < tempValue.Length(); ++i) {
+        PRUnichar ch = tempValue[i];
         switch(state) {
           case 0:
-           if (c == '\\') {
-             c = Read();
-             switch(c) {
-               case '\r':
-               case '\n':
-                 // Only skip first EOL characters and then next line's
-                 // whitespace characters. Skipping all EOL characters
-                 // and all upcoming whitespace is too agressive.
-                 if (c == '\r')
-                    c = Read();
-                 if (c == '\n')
-                    c = Read();
-                 while (c == ' ' || c == '\t')
-                    c = Read();
-                 continue;
+           if (ch == '\\') {
+             ++i;
+             if (i == tempValue.Length())
+               break;
+             ch = tempValue[i];
+             switch(ch) {
                case 'u':
                case 'U':
                  state = 1;
@@ -211,45 +231,44 @@ nsPersistentProperties::Load(nsIInputStream *aIn)
                  value.Append(PRUnichar('\r'));
                  break;
                default:
-                 value.Append((PRUnichar) c);
-             } // switch(c)
+                 value.Append(ch);
+             } // switch(ch)
            } else {
-             value.Append((PRUnichar) c);
+             value.Append(ch);
            }
-           c = Read();
-           break;
+           continue;
          case 1:
          case 2:
          case 3:
          case 4:
-           if (('0' <= c) && (c <= '9')) {
-              uchar = (uchar << 4) | (c - '0');
+           if (('0' <= ch) && (ch <= '9')) {
+               uchar = (uchar << 4) | (ch - '0');
               state++;
-              c = Read();
-           } else if (('a' <= c) && (c <= 'f')) {
-              uchar = (uchar << 4) | (c - 'a' + 0x0a);
-              state++;
-              c = Read();
-           } else if (('A' <= c) && (c <= 'F')) {
-              uchar = (uchar << 4) | (c - 'A' + 0x0a);
-              state++;
-              c = Read();
-           } else {
-             value.Append((PRUnichar) uchar);
-             state = 0;
+              continue;
            }
-           break;
+           if (('a' <= ch) && (ch <= 'f')) {
+              uchar = (uchar << 4) | (ch - 'a' + 0x0a);
+              state++;
+              continue;
+           }
+           if (('A' <= ch) && (ch <= 'F')) {
+              uchar = (uchar << 4) | (ch - 'A' + 0x0a);
+              state++;
+              continue;
+           }
+           // if not hex digit, fall through
          case 5:
            value.Append((PRUnichar) uchar);
            state = 0;
+           --i;
+           break;
         }
       }
       if (state != 0) {
         value.Append((PRUnichar) uchar);
         state = 0;
       }
-
-      value.Trim(trimThese, PR_TRUE, PR_TRUE);
+      
       nsAutoString oldValue;
       mSubclass->SetStringProperty(NS_ConvertUTF16toUTF8(key), value, oldValue);
     }
@@ -272,8 +291,8 @@ nsPersistentProperties::SetStringProperty(const nsACString& aKey,
 
   const nsAFlatCString&  flatKey = PromiseFlatCString(aKey);
   PropertyTableEntry *entry =
-    NS_STATIC_CAST(PropertyTableEntry*,
-                   PL_DHashTableOperate(&mTable, flatKey.get(), PL_DHASH_ADD));
+    static_cast<PropertyTableEntry*>
+               (PL_DHashTableOperate(&mTable, flatKey.get(), PL_DHASH_ADD));
 
   if (entry->mKey) {
     aOldValue = entry->mValue;
@@ -311,8 +330,8 @@ nsPersistentProperties::GetStringProperty(const nsACString& aKey,
   const nsAFlatCString&  flatKey = PromiseFlatCString(aKey);
 
   PropertyTableEntry *entry =
-    NS_STATIC_CAST(PropertyTableEntry*,
-                   PL_DHashTableOperate(&mTable, flatKey.get(), PL_DHASH_LOOKUP));
+    static_cast<PropertyTableEntry*>
+               (PL_DHashTableOperate(&mTable, flatKey.get(), PL_DHASH_LOOKUP));
 
   if (PL_DHASH_ENTRY_IS_FREE(entry))
     return NS_ERROR_FAILURE;
@@ -327,7 +346,7 @@ AddElemToArray(PLDHashTable* table, PLDHashEntryHdr *hdr,
 {
   nsISupportsArray  *propArray = (nsISupportsArray *) arg;
   PropertyTableEntry* entry =
-    NS_STATIC_CAST(PropertyTableEntry*, hdr);
+    static_cast<PropertyTableEntry*>(hdr);
 
   nsPropertyElement *element =
     new nsPropertyElement(nsDependentCString(entry->mKey),

@@ -62,9 +62,19 @@
   // for |PRUnichar|
 #endif
 
+// This file may be used (through nsUTF8Utils.h) from non-XPCOM code, in
+// particular the standalone software updater. In that case stub out
+// the macros provided by nsDebug.h which are only usable when linking XPCOM
+
+#ifdef NS_NO_XPCOM
+#define NS_WARNING(msg)
+#define NS_ASSERTION(cond, msg)
+#define NS_ERROR(msg)
+#else
 #ifndef nsDebug_h__
 #include "nsDebug.h"
   // for NS_ASSERTION
+#endif
 #endif
 
 #ifdef HAVE_CPP_BOOL
@@ -73,14 +83,33 @@
   typedef PRBool nsCharTraits_bool;
 #endif
 
-// Some macros for working with PRUnichar
+/*
+ * Some macros for converting PRUnichar (UTF-16) to and from Unicode scalar
+ * values.
+ *
+ * Note that UTF-16 represents all Unicode scalar values up to U+10FFFF by
+ * using "surrogate pairs". These consist of a high surrogate, i.e. a code
+ * point in the range U+D800 - U+DBFF, and a low surrogate, i.e. a code point
+ * in the range U+DC00 - U+DFFF, like this:
+ *
+ *  U+D800 U+DC00 =  U+10000
+ *  U+D800 U+DC01 =  U+10001
+ *  ...
+ *  U+DBFF U+DFFE = U+10FFFE
+ *  U+DBFF U+DFFF = U+10FFFF
+ *
+ * These surrogate code points U+D800 - U+DFFF are not themselves valid Unicode
+ * scalar values and are not well-formed UTF-16 except as high-surrogate /
+ * low-surrogate pairs.
+ */
+
 #define PLANE1_BASE          PRUint32(0x00010000)
 // High surrogates are in the range 0xD800 -- OxDBFF
-#define IS_HIGH_SURROGATE(u) ((PRUnichar(u) & 0xFC00) == 0xD800)
+#define NS_IS_HIGH_SURROGATE(u) ((PRUint32(u) & 0xFFFFFC00) == 0xD800)
 // Low surrogates are in the range 0xDC00 -- 0xDFFF
-#define IS_LOW_SURROGATE(u)  ((PRUnichar(u) & 0xFC00) == 0xDC00)
-// Faster than testing IS_HIGH_SURROGATE || IS_LOW_SURROGATE
-#define IS_SURROGATE(u)      ((PRUnichar(u) & 0xF800) == 0xD800)
+#define NS_IS_LOW_SURROGATE(u)  ((PRUint32(u) & 0xFFFFFC00) == 0xDC00)
+// Faster than testing NS_IS_HIGH_SURROGATE || NS_IS_LOW_SURROGATE
+#define IS_SURROGATE(u)      ((PRUint32(u) & 0xFFFFF800) == 0xD800)
 
 // Everything else is not a surrogate: 0x000 -- 0xD7FF, 0xE000 -- 0xFFFF
 
@@ -151,7 +180,7 @@ struct nsCharTraits<PRUnichar>
     int_type
     to_int_type( char_type c )
       {
-        return int_type( NS_STATIC_CAST(unsigned_char_type, c) );
+        return int_type( static_cast<unsigned_char_type>(c) );
       }
 
     static
@@ -185,14 +214,14 @@ struct nsCharTraits<PRUnichar>
     char_type*
     move( char_type* s1, const char_type* s2, size_t n )
       {
-        return NS_STATIC_CAST(char_type*, memmove(s1, s2, n * sizeof(char_type)));
+        return static_cast<char_type*>(memmove(s1, s2, n * sizeof(char_type)));
       }
 
     static
     char_type*
     copy( char_type* s1, const char_type* s2, size_t n )
       {
-        return NS_STATIC_CAST(char_type*, memcpy(s1, s2, n * sizeof(char_type)));
+        return static_cast<char_type*>(memcpy(s1, s2, n * sizeof(char_type)));
       }
 
     static
@@ -211,7 +240,7 @@ struct nsCharTraits<PRUnichar>
     assign( char_type* s, size_t n, char_type c )
       {
 #ifdef USE_CPP_WCHAR_FUNCS
-        return NS_STATIC_CAST(char_type*, wmemset(s, to_int_type(c), n));
+        return static_cast<char_type*>(wmemset(s, to_int_type(c), n));
 #else
         char_type* result = s;
         while ( n-- )
@@ -286,7 +315,12 @@ struct nsCharTraits<PRUnichar>
     ASCIIToLower( char_type c )
       {
         if (c < 0x100)
-          return (c >= 'A' && c <= 'Z') ? c + ('a' - 'A') : c;
+          {
+            if (c >= 'A' && c <= 'Z')
+              return char_type(c + ('a' - 'A'));
+          
+            return c;
+          }
         else
           {
             if (c == 0x212A) // KELVIN SIGN
@@ -358,7 +392,7 @@ struct nsCharTraits<PRUnichar>
     find( const char_type* s, size_t n, char_type c )
       {
 #ifdef USE_CPP_WCHAR_FUNCS
-        return NS_REINTERPRET_CAST(const char_type*, wmemchr(s, to_int_type(c), n));
+        return reinterpret_cast<const char_type*>(wmemchr(s, to_int_type(c), n));
 #else
         while ( n-- )
           {
@@ -432,7 +466,7 @@ struct nsCharTraits<char>
     int_type
     to_int_type( char_type c )
       {
-        return int_type( NS_STATIC_CAST(unsigned_char_type, c) );
+        return int_type( static_cast<unsigned_char_type>(c) );
       }
 
     static
@@ -466,14 +500,14 @@ struct nsCharTraits<char>
     char_type*
     move( char_type* s1, const char_type* s2, size_t n )
       {
-        return NS_STATIC_CAST(char_type*, memmove(s1, s2, n * sizeof(char_type)));
+        return static_cast<char_type*>(memmove(s1, s2, n * sizeof(char_type)));
       }
 
     static
     char_type*
     copy( char_type* s1, const char_type* s2, size_t n )
       {
-        return NS_STATIC_CAST(char_type*, memcpy(s1, s2, n * sizeof(char_type)));
+        return static_cast<char_type*>(memcpy(s1, s2, n * sizeof(char_type)));
       }
 
     static
@@ -487,7 +521,7 @@ struct nsCharTraits<char>
     char_type*
     assign( char_type* s, size_t n, char_type c )
       {
-        return NS_STATIC_CAST(char_type*, memset(s, to_int_type(c), n));
+        return static_cast<char_type*>(memset(s, to_int_type(c), n));
       }
 
     static
@@ -541,7 +575,10 @@ struct nsCharTraits<char>
     char_type
     ASCIIToLower( char_type c )
       {
-        return (c >= 'A' && c <= 'Z') ? (c + ('a' - 'A')) : c;
+        if (c >= 'A' && c <= 'Z')
+          return char_type(c + ('a' - 'A'));
+
+        return c;
       }
 
     static
@@ -596,7 +633,7 @@ struct nsCharTraits<char>
     const char_type*
     find( const char_type* s, size_t n, char_type c )
       {
-        return NS_REINTERPRET_CAST(const char_type*, memchr(s, to_int_type(c), n));
+        return reinterpret_cast<const char_type*>(memchr(s, to_int_type(c), n));
       }
 
 #if 0
@@ -769,10 +806,10 @@ template <class OutputIterator>
 struct nsCharSinkTraits
   {
     static
-    PRUint32
+    void
     write( OutputIterator& iter, const typename OutputIterator::value_type* s, PRUint32 n )
       {
-        return iter.write(s, n);
+        iter.write(s, n);
       }
   };
 
@@ -782,12 +819,11 @@ template <class CharT>
 struct nsCharSinkTraits<CharT*>
   {
     static
-    PRUint32
+    void
     write( CharT*& iter, const CharT* s, PRUint32 n )
       {
         nsCharTraits<CharT>::move(iter, s, n);
         iter += n;
-        return n;
       }
   };
 
@@ -797,12 +833,11 @@ NS_SPECIALIZE_TEMPLATE
 struct nsCharSinkTraits<char*>
   {
     static
-    PRUint32
+    void
     write( char*& iter, const char* s, PRUint32 n )
       {
         nsCharTraits<char>::move(iter, s, n);
         iter += n;
-        return n;
       }
   };
 
@@ -810,12 +845,11 @@ NS_SPECIALIZE_TEMPLATE
 struct nsCharSinkTraits<PRUnichar*>
   {
     static
-    PRUint32
+    void
     write( PRUnichar*& iter, const PRUnichar* s, PRUint32 n )
       {
         nsCharTraits<PRUnichar>::move(iter, s, n);
         iter += n;
-        return n;
       }
   };
 

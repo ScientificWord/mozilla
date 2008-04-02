@@ -598,7 +598,7 @@ TestInputStream(nsIInputStream *inStr,
                 PRUint32 count,
                 PRUint32 *countWritten)
 {
-    PRBool *result = NS_STATIC_CAST(PRBool *, closure);
+    PRBool *result = static_cast<PRBool *>(closure);
     *result = PR_TRUE;
     return NS_ERROR_ABORT;  // don't call me anymore
 }
@@ -608,8 +608,9 @@ NS_InputStreamIsBuffered(nsIInputStream *stream)
 {
     PRBool result = PR_FALSE;
     PRUint32 n;
-    stream->ReadSegments(TestInputStream, &result, 1, &n);
-    return result;
+    nsresult rv = stream->ReadSegments(TestInputStream,
+                                       &result, 1, &n);
+    return result || NS_SUCCEEDED(rv);
 }
 
 static NS_METHOD
@@ -620,7 +621,7 @@ TestOutputStream(nsIOutputStream *outStr,
                  PRUint32 count,
                  PRUint32 *countRead)
 {
-    PRBool *result = NS_STATIC_CAST(PRBool *, closure);
+    PRBool *result = static_cast<PRBool *>(closure);
     *result = PR_TRUE;
     return NS_ERROR_ABORT;  // don't call me anymore
 }
@@ -644,7 +645,7 @@ NS_CopySegmentToStream(nsIInputStream *inStr,
                        PRUint32 count,
                        PRUint32 *countWritten)
 {
-    nsIOutputStream *outStr = NS_STATIC_CAST(nsIOutputStream *, closure);
+    nsIOutputStream *outStr = static_cast<nsIOutputStream *>(closure);
     *countWritten = 0;
     while (count) {
         PRUint32 n;
@@ -666,7 +667,7 @@ NS_CopySegmentToBuffer(nsIInputStream *inStr,
                        PRUint32 count,
                        PRUint32 *countWritten)
 {
-    char *toBuf = NS_STATIC_CAST(char *, closure);
+    char *toBuf = static_cast<char *>(closure);
     memcpy(&toBuf[offset], buffer, count);
     *countWritten = count;
     return NS_OK;
@@ -694,7 +695,7 @@ NS_WriteSegmentThunk(nsIInputStream *inStr,
                      PRUint32 count,
                      PRUint32 *countWritten)
 {
-    nsWriteSegmentThunk *thunk = NS_STATIC_CAST(nsWriteSegmentThunk *, closure);
+    nsWriteSegmentThunk *thunk = static_cast<nsWriteSegmentThunk *>(closure);
     return thunk->mFun(thunk->mStream, thunk->mClosure, buffer, offset, count,
                        countWritten);
 }

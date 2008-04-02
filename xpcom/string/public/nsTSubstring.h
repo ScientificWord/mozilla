@@ -183,12 +183,12 @@ class nsTSubstring_CharT : public nsTAString_CharT
 
       PRBool IsVoid() const
         {
-          return mFlags & F_VOIDED;
+          return (mFlags & F_VOIDED) != 0;
         }
 
       PRBool IsTerminated() const
         {
-          return mFlags & F_TERMINATED;
+          return (mFlags & F_TERMINATED) != 0;
         }
 
       char_type CharAt( index_type i ) const
@@ -498,16 +498,11 @@ class nsTSubstring_CharT : public nsTAString_CharT
          * NOTE: this constructor is declared public _only_ for convenience
          * inside the string implementation.
          */
-      nsTSubstring_CharT( char_type *data, size_type length, PRUint32 flags )
-#ifdef MOZ_V1_STRING_ABI
-        : abstract_string_type(data, length, flags) {}
+#ifdef XP_OS2 /* Workaround for GCC 3.3.x bug. */
+       nsTSubstring_CharT( char_type *data, size_type length, PRUint32 flags ) NS_COM;
 #else
-        : mData(data),
-          mLength(length),
-          mFlags(flags) {}
+       NS_COM nsTSubstring_CharT( char_type *data, size_type length, PRUint32 flags );
 #endif
-
-
     protected:
 
       friend class nsTObsoleteAStringThunk_CharT;
@@ -527,9 +522,9 @@ class nsTSubstring_CharT : public nsTAString_CharT
       nsTSubstring_CharT()
 #ifdef MOZ_V1_STRING_ABI
         : abstract_string_type(
-              NS_CONST_CAST(char_type*, char_traits::sEmptyBuffer), 0, F_TERMINATED) {}
+              const_cast<char_type*>(char_traits::sEmptyBuffer), 0, F_TERMINATED) {}
 #else
-        : mData(NS_CONST_CAST(char_type*, char_traits::sEmptyBuffer)),
+        : mData(const_cast<char_type*>(char_traits::sEmptyBuffer)),
           mLength(0),
           mFlags(F_TERMINATED) {}
 #endif

@@ -103,7 +103,7 @@ public:
    * This function is especially useful for static hashtables.
    * @return PR_TRUE if the table has been initialized.
    */
-  PRBool IsInitialized() const { return this->mTable.entrySize; }
+  PRBool IsInitialized() const { return !!this->mTable.entrySize; }
 
   /**
    * Return the number of entries in the table.
@@ -183,7 +183,7 @@ public:
                  "nsBaseHashtable was not initialized properly.");
 
     s_EnumReadArgs enumData = { enumFunc, userArg };
-    return PL_DHashTableEnumerate(NS_CONST_CAST(PLDHashTable*, &this->mTable),
+    return PL_DHashTableEnumerate(const_cast<PLDHashTable*>(&this->mTable),
                                   s_EnumReadStub,
                                   &enumData);
   }
@@ -276,7 +276,7 @@ public:
   ~nsBaseHashtableMT();
 
   PRBool Init(PRUint32 initSize = PL_DHASH_MIN_SIZE);
-  PRBool IsInitialized() const { return (PRBool) mLock; }
+  PRBool IsInitialized() const { return mLock != nsnull; }
   PRUint32 Count() const;
   PRBool Get(KeyType aKey, UserDataType* pData) const;
   PRBool Put(KeyType aKey, UserDataType aData);
@@ -321,7 +321,7 @@ PLDHashOperator
 nsBaseHashtable<KeyClass,DataType,UserDataType>::s_EnumReadStub
   (PLDHashTable *table, PLDHashEntryHdr *hdr, PRUint32 number, void* arg)
 {
-  EntryType* ent = NS_STATIC_CAST(EntryType*, hdr);
+  EntryType* ent = static_cast<EntryType*>(hdr);
   s_EnumReadArgs* eargs = (s_EnumReadArgs*) arg;
 
   PLDHashOperator res = (eargs->func)(ent->GetKey(), ent->mData, eargs->userArg);
@@ -340,7 +340,7 @@ PLDHashOperator
 nsBaseHashtable<KeyClass,DataType,UserDataType>::s_EnumStub
   (PLDHashTable *table, PLDHashEntryHdr *hdr, PRUint32 number, void* arg)
 {
-  EntryType* ent = NS_STATIC_CAST(EntryType*, hdr);
+  EntryType* ent = static_cast<EntryType*>(hdr);
   s_EnumArgs* eargs = (s_EnumArgs*) arg;
 
   return (eargs->func)(ent->GetKey(), ent->mData, eargs->userArg);
