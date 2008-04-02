@@ -1,15 +1,17 @@
 
 /* pngget.c - retrieval of values from info struct
  *
- * libpng 1.2.7 - September 12, 2004
+ * Last changed in libpng 1.2.15 January 5, 2007
  * For conditions of distribution and use, see copyright notice in png.h
- * Copyright (c) 1998-2004 Glenn Randers-Pehrson
+ * Copyright (c) 1998-2007 Glenn Randers-Pehrson
  * (Version 0.96 Copyright (c) 1996, 1997 Andreas Dilger)
  * (Version 0.88 Copyright (c) 1995, 1996 Guy Eric Schalnat, Group 42, Inc.)
  */
 
 #define PNG_INTERNAL
 #include "png.h"
+
+#if defined(PNG_READ_SUPPORTED) || defined(PNG_WRITE_SUPPORTED)
 
 png_uint_32 PNGAPI
 png_get_valid(png_structp png_ptr, png_infop info_ptr, png_uint_32 flag)
@@ -510,8 +512,11 @@ png_get_sPLT(png_structp png_ptr, png_infop info_ptr,
              png_sPLT_tpp spalettes)
 {
    if (png_ptr != NULL && info_ptr != NULL && spalettes != NULL)
+   {
      *spalettes = info_ptr->splt_palettes;
-   return ((png_uint_32)info_ptr->splt_palettes_num);
+     return ((png_uint_32)info_ptr->splt_palettes_num);
+   }
+   return (0);
 }
 #endif
 
@@ -557,9 +562,9 @@ png_get_IHDR(png_structp png_ptr, png_infop info_ptr,
          *interlace_type = info_ptr->interlace_type;
 
       /* check for potential overflow of rowbytes */
-      if (width == 0 || *width > PNG_UINT_31_MAX)
+      if (*width == 0 || *width > PNG_UINT_31_MAX)
         png_error(png_ptr, "Invalid image width");
-      if (height == 0 || *height > PNG_UINT_31_MAX)
+      if (*height == 0 || *height > PNG_UINT_31_MAX)
         png_error(png_ptr, "Invalid image height");
       if (info_ptr->width > (PNG_UINT_32_MAX
                  >> 3)      /* 8-byte RGBA pixels */
@@ -792,14 +797,178 @@ png_get_tRNS(png_structp png_ptr, png_infop info_ptr,
 }
 #endif
 
+#if defined(PNG_APNG_SUPPORTED)
+png_uint_32 PNGAPI
+png_get_acTL(png_structp png_ptr, png_infop info_ptr,
+             png_uint_32 *num_frames, png_uint_32 *num_plays)
+{
+    png_debug1(1, "in %s retrieval function\n", "acTL");
+    
+    if (png_ptr != NULL && info_ptr != NULL &&
+        (info_ptr->valid & PNG_INFO_acTL) &&
+        num_frames != NULL && num_plays != NULL)
+    {
+        *num_frames = info_ptr->num_frames;
+        *num_plays = info_ptr->num_plays;
+        return (1);
+    }
+    
+    return (0);
+}
+
+png_uint_32 PNGAPI
+png_get_num_frames(png_structp png_ptr, png_infop info_ptr)
+{
+    png_debug(1, "in png_get_num_frames()\n");
+    
+    if (png_ptr != NULL && info_ptr != NULL)
+        return (info_ptr->num_frames);
+    return (0);
+}
+
+png_uint_32 PNGAPI
+png_get_num_plays(png_structp png_ptr, png_infop info_ptr)
+{
+    png_debug(1, "in png_get_num_plays()\n");
+    
+    if (png_ptr != NULL && info_ptr != NULL)
+        return (info_ptr->num_plays);
+    return (0);
+}
+
+png_uint_32 PNGAPI
+png_get_next_frame_fcTL(png_structp png_ptr, png_infop info_ptr,
+             png_uint_32 *width, png_uint_32 *height,
+             png_uint_32 *x_offset, png_uint_32 *y_offset,
+             png_uint_16 *delay_num, png_uint_16 *delay_den,
+             png_byte *dispose_op, png_byte *blend_op)
+{
+    png_debug1(1, "in %s retrieval function\n", "fcTL");
+    
+    if (png_ptr != NULL && info_ptr != NULL &&
+        (info_ptr->valid & PNG_INFO_fcTL) &&
+        width != NULL && height != NULL && 
+        x_offset != NULL && x_offset != NULL && 
+        delay_num != NULL && delay_den != NULL &&
+	dispose_op != NULL && blend_op != NULL)
+    {
+        *width = info_ptr->next_frame_width;
+        *height = info_ptr->next_frame_height;
+        *x_offset = info_ptr->next_frame_x_offset;
+        *y_offset = info_ptr->next_frame_y_offset;
+        *delay_num = info_ptr->next_frame_delay_num;
+        *delay_den = info_ptr->next_frame_delay_den;
+        *dispose_op = info_ptr->next_frame_dispose_op;
+        *blend_op = info_ptr->next_frame_blend_op;
+        return (1);
+    }
+    
+    return (0);
+}
+
+png_uint_32 PNGAPI
+png_get_next_frame_width(png_structp png_ptr, png_infop info_ptr)
+{
+    png_debug(1, "in png_get_next_frame_width()\n");
+    
+    if (png_ptr != NULL && info_ptr != NULL)
+        return (info_ptr->next_frame_width);
+    return (0);
+}
+
+png_uint_32 PNGAPI
+png_get_next_frame_height(png_structp png_ptr, png_infop info_ptr)
+{
+    png_debug(1, "in png_get_next_frame_height()\n");
+    
+    if (png_ptr != NULL && info_ptr != NULL)
+        return (info_ptr->next_frame_height);
+    return (0);
+}
+
+png_uint_32 PNGAPI
+png_get_next_frame_x_offset(png_structp png_ptr, png_infop info_ptr)
+{
+    png_debug(1, "in png_get_next_frame_x_offset()\n");
+    
+    if (png_ptr != NULL && info_ptr != NULL)
+        return (info_ptr->next_frame_x_offset);
+    return (0);
+}
+
+png_uint_32 PNGAPI
+png_get_next_frame_y_offset(png_structp png_ptr, png_infop info_ptr)
+{
+    png_debug(1, "in png_get_next_frame_y_offset()\n");
+    
+    if (png_ptr != NULL && info_ptr != NULL)
+        return (info_ptr->next_frame_y_offset);
+    return (0);
+}
+
+png_uint_16 PNGAPI
+png_get_next_frame_delay_num(png_structp png_ptr, png_infop info_ptr)
+{
+    png_debug(1, "in png_get_next_frame_delay_num()\n");
+    
+    if (png_ptr != NULL && info_ptr != NULL)
+        return (info_ptr->next_frame_delay_num);
+    return (0);
+}
+
+png_uint_16 PNGAPI
+png_get_next_frame_delay_den(png_structp png_ptr, png_infop info_ptr)
+{
+    png_debug(1, "in png_get_next_frame_delay_den()\n");
+    
+    if (png_ptr != NULL && info_ptr != NULL)
+        return (info_ptr->next_frame_delay_den);
+    return (0);
+}
+
+png_byte PNGAPI
+png_get_next_frame_dispose_op(png_structp png_ptr, png_infop info_ptr)
+{
+    png_debug(1, "in png_get_next_frame_dispose_op()\n");
+    
+    if (png_ptr != NULL && info_ptr != NULL)
+        return (info_ptr->next_frame_dispose_op);
+    return (0);
+}
+
+png_byte PNGAPI
+png_get_next_frame_blend_op(png_structp png_ptr, png_infop info_ptr)
+{
+    png_debug(1, "in png_get_next_frame_blend_op()\n");
+    
+    if (png_ptr != NULL && info_ptr != NULL)
+        return (info_ptr->next_frame_blend_op);
+    return (0);
+}
+
+png_byte PNGAPI
+png_get_first_frame_is_hidden(png_structp png_ptr, png_infop info_ptr)
+{
+    png_debug(1, "in png_first_frame_is_hidden()\n");
+    
+    if (png_ptr != NULL)
+       return (png_byte)(png_ptr->apng_flags & PNG_FIRST_FRAME_HIDDEN);
+    
+    return 0;
+}
+#endif /* PNG_APNG_SUPPORTED */
+
 #if defined(PNG_UNKNOWN_CHUNKS_SUPPORTED)
 png_uint_32 PNGAPI
 png_get_unknown_chunks(png_structp png_ptr, png_infop info_ptr,
              png_unknown_chunkpp unknowns)
 {
    if (png_ptr != NULL && info_ptr != NULL && unknowns != NULL)
+   {
      *unknowns = info_ptr->unknown_chunks;
-   return ((png_uint_32)info_ptr->unknown_chunks_num);
+     return ((png_uint_32)info_ptr->unknown_chunks_num);
+   }
+   return (0);
 }
 #endif
 
@@ -827,94 +996,52 @@ png_get_compression_buffer_size(png_structp png_ptr)
 }
 #endif
 
-#ifndef PNG_1_0_X
 #ifdef PNG_ASSEMBLER_CODE_SUPPORTED
+#ifndef PNG_1_0_X
 /* this function was added to libpng 1.2.0 and should exist by default */
 png_uint_32 PNGAPI
 png_get_asm_flags (png_structp png_ptr)
 {
-    return (png_uint_32)(png_ptr? png_ptr->asm_flags : 0L);
+    /* obsolete, to be removed from libpng-1.4.0 */
+    return (png_ptr? 0L: 0L);
 }
 
 /* this function was added to libpng 1.2.0 and should exist by default */
 png_uint_32 PNGAPI
 png_get_asm_flagmask (int flag_select)
 {
-    png_uint_32 settable_asm_flags = 0;
-
-    if (flag_select & PNG_SELECT_READ)
-        settable_asm_flags |=
-          PNG_ASM_FLAG_MMX_READ_COMBINE_ROW  |
-          PNG_ASM_FLAG_MMX_READ_INTERLACE    |
-          PNG_ASM_FLAG_MMX_READ_FILTER_SUB   |
-          PNG_ASM_FLAG_MMX_READ_FILTER_UP    |
-          PNG_ASM_FLAG_MMX_READ_FILTER_AVG   |
-          PNG_ASM_FLAG_MMX_READ_FILTER_PAETH ;
-          /* no non-MMX flags yet */
-
-#if 0
-    /* GRR:  no write-flags yet, either, but someday... */
-    if (flag_select & PNG_SELECT_WRITE)
-        settable_asm_flags |=
-          PNG_ASM_FLAG_MMX_WRITE_ [whatever] ;
-#endif /* 0 */
-
-    return settable_asm_flags;  /* _theoretically_ settable capabilities only */
+    /* obsolete, to be removed from libpng-1.4.0 */
+    flag_select=flag_select;
+    return 0L;
 }
-#endif /* PNG_ASSEMBLER_CODE_SUPPORTED */
 
-
-#if defined(PNG_ASSEMBLER_CODE_SUPPORTED)
     /* GRR:  could add this:   && defined(PNG_MMX_CODE_SUPPORTED) */
 /* this function was added to libpng 1.2.0 */
 png_uint_32 PNGAPI
 png_get_mmx_flagmask (int flag_select, int *compilerID)
 {
-    png_uint_32 settable_mmx_flags = 0;
-
-    if (flag_select & PNG_SELECT_READ)
-        settable_mmx_flags |=
-          PNG_ASM_FLAG_MMX_READ_COMBINE_ROW  |
-          PNG_ASM_FLAG_MMX_READ_INTERLACE    |
-          PNG_ASM_FLAG_MMX_READ_FILTER_SUB   |
-          PNG_ASM_FLAG_MMX_READ_FILTER_UP    |
-          PNG_ASM_FLAG_MMX_READ_FILTER_AVG   |
-          PNG_ASM_FLAG_MMX_READ_FILTER_PAETH ;
-#if 0
-    /* GRR:  no MMX write support yet, but someday... */
-    if (flag_select & PNG_SELECT_WRITE)
-        settable_mmx_flags |=
-          PNG_ASM_FLAG_MMX_WRITE_ [whatever] ;
-#endif /* 0 */
-
-    if (compilerID != NULL) {
-#ifdef PNG_USE_PNGVCRD
-        *compilerID = 1;    /* MSVC */
-#else
-#ifdef PNG_USE_PNGGCCRD
-        *compilerID = 2;    /* gcc/gas */
-#else
-        *compilerID = -1;   /* unknown (i.e., no asm/MMX code compiled) */
-#endif
-#endif
-    }
-
-    return settable_mmx_flags;  /* _theoretically_ settable capabilities only */
+    /* obsolete, to be removed from libpng-1.4.0 */
+    flag_select=flag_select;
+    *compilerID = -1;   /* unknown (i.e., no asm/MMX code compiled) */
+    return 0L;
 }
 
 /* this function was added to libpng 1.2.0 */
 png_byte PNGAPI
 png_get_mmx_bitdepth_threshold (png_structp png_ptr)
 {
-    return (png_byte)(png_ptr? png_ptr->mmx_bitdepth_threshold : 0);
+    /* obsolete, to be removed from libpng-1.4.0 */
+    return (png_ptr? 0: 0);
 }
 
 /* this function was added to libpng 1.2.0 */
 png_uint_32 PNGAPI
 png_get_mmx_rowbytes_threshold (png_structp png_ptr)
 {
-    return (png_uint_32)(png_ptr? png_ptr->mmx_rowbytes_threshold : 0L);
+    /* obsolete, to be removed from libpng-1.4.0 */
+    return (png_ptr? 0L: 0L);
 }
+#endif /* ?PNG_1_0_X */
 #endif /* ?PNG_ASSEMBLER_CODE_SUPPORTED */
 
 #ifdef PNG_SET_USER_LIMITS_SUPPORTED
@@ -930,5 +1057,6 @@ png_get_user_height_max (png_structp png_ptr)
     return (png_ptr? png_ptr->user_height_max : 0);
 }
 #endif /* ?PNG_SET_USER_LIMITS_SUPPORTED */
+ 
 
-#endif /* ?PNG_1_0_X */
+#endif /* PNG_READ_SUPPORTED || PNG_WRITE_SUPPORTED */
