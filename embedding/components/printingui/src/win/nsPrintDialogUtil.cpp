@@ -74,7 +74,6 @@ WIN_LIBS=                                       \
 #include "nsIWidget.h"
 #include "nsIPrintSettings.h"
 #include "nsIPrintSettingsWin.h"
-#include "nsUnitConversion.h"
 #include "nsIPrintOptions.h"
 #include "nsWidgetsCID.h"
 static NS_DEFINE_IID(kPrinterEnumeratorCID, NS_PRINTER_ENUMERATOR_CID);
@@ -761,7 +760,7 @@ static HGLOBAL CreateGlobalDevModeAndInit(LPCTSTR aPrintName, nsIPrintSettings* 
   nsresult rv = NS_ERROR_FAILURE;
   HANDLE hPrinter = NULL;
   // const cast kludge for silly Win32 api's
-  LPTSTR printName = NS_CONST_CAST(char*, aPrintName);
+  LPTSTR printName = const_cast<char*>(aPrintName);
   BOOL status = ::OpenPrinter(printName, &hPrinter, NULL);
   if (status) {
 
@@ -885,7 +884,7 @@ ShowNativePrintDialog(HWND              aHWnd,
     HANDLE hPrinter = NULL;
     nsCAutoString printerNameNative;
     NS_CopyUnicodeToNative(nsDependentString(printerName), printerNameNative);
-    LPTSTR tempPrinterName = NS_CONST_CAST(char*, printerNameNative.get());
+    LPTSTR tempPrinterName = const_cast<char*>(printerNameNative.get());
     if(!::OpenPrinter(tempPrinterName, &hPrinter, NULL)) {
       // If the last used printer is not found, we should use default printer.
       printerName = GetDefaultPrinterNameFromGlobalPrinters();

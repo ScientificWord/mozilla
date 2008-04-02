@@ -454,6 +454,13 @@ LRESULT CMozillaBrowser::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&
                 }
             }
         }
+        else
+        {
+            if (mInitialSrc.Length() > 0)
+            {
+                Navigate(mInitialSrc, NULL, NULL, NULL, NULL);
+            }
+        }
     }
 
     // Clip the child windows out of paint operations
@@ -1081,7 +1088,7 @@ HRESULT CMozillaBrowser::Initialize()
         // create our local object
         CWindowCreator *creator = new CWindowCreator();
         nsCOMPtr<nsIWindowCreator> windowCreator;
-        windowCreator = NS_STATIC_CAST(nsIWindowCreator *, creator);
+        windowCreator = static_cast<nsIWindowCreator *>(creator);
 
         // Attach it via the watcher service
         nsCOMPtr<nsIWindowWatcher> watcher =
@@ -1206,12 +1213,12 @@ HRESULT CMozillaBrowser::CreateBrowser()
     mWebBrowserContainer->AddRef();
 
     // Set up the browser with its chrome
-    mWebBrowser->SetContainerWindow(NS_STATIC_CAST(nsIWebBrowserChrome*, mWebBrowserContainer));
+    mWebBrowser->SetContainerWindow(static_cast<nsIWebBrowserChrome*>(mWebBrowserContainer));
     mWebBrowser->SetParentURIContentListener(mWebBrowserContainer);
 
     // Subscribe for progress notifications
     nsCOMPtr<nsIWeakReference> listener(
-        do_GetWeakReference(NS_STATIC_CAST(nsIWebProgressListener*, mWebBrowserContainer)));
+        do_GetWeakReference(static_cast<nsIWebProgressListener*>(mWebBrowserContainer)));
     mWebBrowser->AddWebBrowserListener(listener, NS_GET_IID(nsIWebProgressListener));
 
     // Visible
@@ -1284,7 +1291,8 @@ HRESULT CMozillaBrowser::SetEditorMode(BOOL bEnabled)
     if (NS_FAILED(rv))
         return E_FAIL;
 
-    rv = mEditingSession->MakeWindowEditable(domWindow, "html", PR_FALSE);
+    rv = mEditingSession->MakeWindowEditable(domWindow, "html", PR_FALSE,
+                                             PR_TRUE, PR_FALSE);
  
     return S_OK;
 }
@@ -1910,7 +1918,6 @@ HRESULT STDMETHODCALLTYPE CMozillaBrowser::put_RegisterAsDropTarget(VARIANT_BOOL
 
     return S_OK;
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // Ole Command Handlers
