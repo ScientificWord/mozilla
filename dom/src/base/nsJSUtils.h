@@ -48,25 +48,19 @@
 #include "nsISupports.h"
 #include "jsapi.h"
 #include "nsString.h"
-#include "nsCOMPtr.h"
 
 class nsIDOMEventListener;
 class nsIScriptContext;
 class nsIScriptGlobalObject;
-class nsIDOMGCParticipant;
-class nsIXPConnectJSObjectHolder;
 
 class nsJSUtils
 {
 public:
   static JSBool GetCallingLocation(JSContext* aContext, const char* *aFilename,
-                                   PRUint32 *aLineno);
+                                   PRUint32* aLineno, JSPrincipals* aPrincipals);
 
   static jsval ConvertStringToJSVal(const nsString& aProp,
                                     JSContext* aContext);
-
-  static PRBool ConvertJSValToXPCObject(nsISupports** aSupports, REFNSIID aIID,
-                                        JSContext* aContext, jsval aValue);
 
   static void ConvertJSValToString(nsAString& aString,
                                    JSContext* aContext, jsval aValue);
@@ -102,50 +96,6 @@ public:
 
   ~nsDependentJSString()
   {
-  }
-};
-
-/**
- * nsMarkedJSFunctionHolder<T> is used to store objects of XPCOM
- * interface T.
- *
- * If the object stored is an XPConnect wrapped JS object and the
- * wrapper can be preserved through nsDOMClassInfo, the holder will hold
- * a weak reference and preserve the object from garbage collection as
- * long as the garbage collector can reach |aParticipant|; once both
- * |aParticipant| and the object are unreachable it will be garbage
- * collected and the holder will hold null.
- *
- * Otherwise, it holds a strong reference.
- */
-
-class nsMarkedJSFunctionHolder_base
-{
-public:
-  void Set(nsISupports *aPotentialFunction, nsIDOMGCParticipant *aParticipant);
-  already_AddRefed<nsISupports> Get(REFNSIID aIID);
-
-  nsMarkedJSFunctionHolder_base() : mObject(nsnull) {}
-  ~nsMarkedJSFunctionHolder_base();
-
-  PRBool TryMarkedSet(nsISupports *aPotentialFunction, nsIDOMGCParticipant *aParticipant);
-
-  nsISupports *mObject;
-};
-
-template <class T>
-class nsMarkedJSFunctionHolder : protected nsMarkedJSFunctionHolder_base
-{
-public:
-  void Set(T *aPotentialFunction, nsIDOMGCParticipant *aParticipant) {
-    nsMarkedJSFunctionHolder_base::Set(aPotentialFunction, aParticipant);
-  }
-  already_AddRefed<T> Get() {
-    return already_AddRefed<T>(NS_STATIC_CAST(T*, nsMarkedJSFunctionHolder_base::Get(NS_GET_TEMPLATE_IID(T)).get()));
-  }
-  // An overloaded version that's more useful for XPCOM getters
-  void Get(T** aResult) {
-    *aResult = Get().get();
   }
 };
 

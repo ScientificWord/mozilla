@@ -46,7 +46,7 @@ interface nsIControllers;
 interface nsIBoxObject;
 
 
-[scriptable, uuid(0574ed81-c088-11d2-96ed-00104b7b7deb)]
+[scriptable, uuid(30a4a815-b42a-4f0b-9c10-1e7f727cd135)]
 interface nsIDOMXULElement : nsIDOMElement
 {
   attribute DOMString                 id;
@@ -100,9 +100,6 @@ interface nsIDOMXULElement : nsIDOMElement
   
   attribute boolean allowEvents;
 
-  // XXX: This doesn't belong here, nsIDOMLinkStyle has this...
-  readonly attribute nsIDOMCSSStyleDeclaration style;
-
   readonly attribute nsIRDFCompositeDataSource database;
   readonly attribute nsIXULTemplateBuilder     builder;
   readonly attribute nsIRDFResource            resource;
@@ -116,4 +113,8 @@ interface nsIDOMXULElement : nsIDOMElement
 
   nsIDOMNodeList            getElementsByAttribute(in DOMString name,
                                                    in DOMString value);
+
+  nsIDOMNodeList            getElementsByAttributeNS(in DOMString namespaceURI,
+                                                     in DOMString name,
+                                                     in DOMString value);
 };

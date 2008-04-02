@@ -47,6 +47,7 @@
 #include "nsIDOMElement.h"
 #include "nsIDOMWindow.h"
 #include "nsWeakReference.h"
+#include "nsCycleCollectionParticipant.h"
 
 class nsIDOMElement;
 class nsIDOMWindow;
@@ -66,7 +67,7 @@ protected:
   virtual ~nsFocusController(void);
 
 public:
-  NS_DECL_ISUPPORTS
+  NS_DECL_CYCLE_COLLECTING_ISUPPORTS
 
   NS_IMETHOD GetFocusedElement(nsIDOMElement** aResult);
   NS_IMETHOD SetFocusedElement(nsIDOMElement* aElement);
@@ -86,9 +87,6 @@ public:
   NS_IMETHOD GetPopupNode(nsIDOMNode** aNode);
   NS_IMETHOD SetPopupNode(nsIDOMNode* aNode);
 
-  NS_IMETHOD GetPopupEvent(nsIDOMEvent** aEvent);
-  NS_IMETHOD SetPopupEvent(nsIDOMEvent* aEvent);
-
   NS_IMETHOD GetControllerForCommand(const char *aCommand, nsIController** aResult);
   NS_IMETHOD GetControllers(nsIControllers** aResult);
 
@@ -102,7 +100,10 @@ public:
   NS_IMETHOD Blur(nsIDOMEvent* aEvent);
 
   // nsIDOMEventListener
-  NS_IMETHOD HandleEvent(nsIDOMEvent* anEvent) { return NS_OK; };
+  NS_IMETHOD HandleEvent(nsIDOMEvent* anEvent) { return NS_OK; }
+
+  NS_DECL_CYCLE_COLLECTION_CLASS_AMBIGUOUS(nsFocusController,
+                                           nsIFocusController)
 
 protected:
   void UpdateCommands();
@@ -118,7 +119,6 @@ protected:
   nsCOMPtr<nsPIDOMWindow> mCurrentWindow; // [OWNER]
   nsCOMPtr<nsPIDOMWindow> mPreviousWindow; // [OWNER]
   nsCOMPtr<nsIDOMNode> mPopupNode; // [OWNER]
-  nsCOMPtr<nsIDOMEvent> mPopupEvent;
 
   PRUint32 mSuppressFocus;
   PRPackedBool mSuppressFocusScroll;

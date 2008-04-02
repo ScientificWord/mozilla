@@ -68,18 +68,10 @@ public:
 };
 
 
-PR_STATIC_CALLBACK(const void *)
-GlobalNameHashGetKey(PLDHashTable *table, PLDHashEntryHdr *entry)
-{
-  GlobalNameMapEntry *e = NS_STATIC_CAST(GlobalNameMapEntry *, entry);
-
-  return NS_STATIC_CAST(const nsAString *, &e->mKey);
-}
-
 PR_STATIC_CALLBACK(PLDHashNumber)
 GlobalNameHashHashKey(PLDHashTable *table, const void *key)
 {
-  const nsAString *str = NS_STATIC_CAST(const nsAString *, key);
+  const nsAString *str = static_cast<const nsAString *>(key);
 
   return HashString(*str);
 }
@@ -89,8 +81,8 @@ GlobalNameHashMatchEntry(PLDHashTable *table, const PLDHashEntryHdr *entry,
                          const void *key)
 {
   const GlobalNameMapEntry *e =
-    NS_STATIC_CAST(const GlobalNameMapEntry *, entry);
-  const nsAString *str = NS_STATIC_CAST(const nsAString *, key);
+    static_cast<const GlobalNameMapEntry *>(entry);
+  const nsAString *str = static_cast<const nsAString *>(key);
 
   return str->Equals(e->mKey);
 }
@@ -98,7 +90,7 @@ GlobalNameHashMatchEntry(PLDHashTable *table, const PLDHashEntryHdr *entry,
 PR_STATIC_CALLBACK(void)
 GlobalNameHashClearEntry(PLDHashTable *table, PLDHashEntryHdr *entry)
 {
-  GlobalNameMapEntry *e = NS_STATIC_CAST(GlobalNameMapEntry *, entry);
+  GlobalNameMapEntry *e = static_cast<GlobalNameMapEntry *>(entry);
 
   // An entry is being cleared, let the key (nsString) do its own
   // cleanup.
@@ -128,8 +120,8 @@ PR_STATIC_CALLBACK(PRBool)
 GlobalNameHashInitEntry(PLDHashTable *table, PLDHashEntryHdr *entry,
                         const void *key)
 {
-  GlobalNameMapEntry *e = NS_STATIC_CAST(GlobalNameMapEntry *, entry);
-  const nsAString *keyStr = NS_STATIC_CAST(const nsAString *, key);
+  GlobalNameMapEntry *e = static_cast<GlobalNameMapEntry *>(entry);
+  const nsAString *keyStr = static_cast<const nsAString *>(key);
 
   // Initialize the key in the entry with placement new
   new (&e->mKey) nsString(*keyStr);
@@ -158,8 +150,8 @@ nsScriptNameSpaceManager::AddToHash(const char *aKey)
 {
   NS_ConvertASCIItoUTF16 key(aKey);
   GlobalNameMapEntry *entry =
-    NS_STATIC_CAST(GlobalNameMapEntry *,
-                   PL_DHashTableOperate(&mGlobalNames, &key, PL_DHASH_ADD));
+    static_cast<GlobalNameMapEntry *>
+               (PL_DHashTableOperate(&mGlobalNames, &key, PL_DHASH_ADD));
 
   if (!entry) {
     return nsnull;
@@ -175,8 +167,8 @@ nsScriptNameSpaceManager::GetConstructorProto(const nsGlobalNameStruct* aStruct)
                "This function only works on constructor aliases!");
   if (!aStruct->mAlias->mProto) {
     GlobalNameMapEntry *proto =
-      NS_STATIC_CAST(GlobalNameMapEntry *,
-                     PL_DHashTableOperate(&mGlobalNames,
+      static_cast<GlobalNameMapEntry *>
+                 (PL_DHashTableOperate(&mGlobalNames,
                                           &aStruct->mAlias->mProtoName,
                                           PL_DHASH_LOOKUP));
 
@@ -190,7 +182,8 @@ nsScriptNameSpaceManager::GetConstructorProto(const nsGlobalNameStruct* aStruct)
 nsresult
 nsScriptNameSpaceManager::FillHash(nsICategoryManager *aCategoryManager,
                                    const char *aCategory,
-                                   nsGlobalNameStruct::nametype aType)
+                                   nsGlobalNameStruct::nametype aType,
+                                   PRBool aPrivilegedOnly)
 {
   nsCOMPtr<nsIComponentRegistrar> registrar;
   nsresult rv = NS_GetComponentRegistrar(getter_AddRefs(registrar));
@@ -254,6 +247,7 @@ nsScriptNameSpaceManager::FillHash(nsICategoryManager *aCategoryManager,
             return NS_ERROR_OUT_OF_MEMORY;
           }
           s->mType = nsGlobalNameStruct::eTypeExternalConstructorAlias;
+          s->mPrivilegedOnly = PR_FALSE;
           s->mAlias->mCID = cid;
           AppendASCIItoUTF16(constructorProto, s->mAlias->mProtoName);
           s->mAlias->mProto = nsnull;
@@ -271,6 +265,7 @@ nsScriptNameSpaceManager::FillHash(nsICategoryManager *aCategoryManager,
     if (s->mType == nsGlobalNameStruct::eTypeNotInitialized) {
       s->mType = aType;
       s->mCID = cid;
+      s->mPrivilegedOnly = aPrivilegedOnly;
     } else {
       NS_WARNING("Global script name not overwritten!");
     }
@@ -316,7 +311,7 @@ nsScriptNameSpaceManager::FillHashWithDOMInterfaces()
 
   PRBool found_old;
   nsCOMPtr<nsIInterfaceInfo> if_info;
-  nsXPIDLCString if_name;
+  const char *if_name = nsnull;
   const nsIID *iid;
 
   for ( ; domInterfaces->IsDone() == NS_ENUMERATOR_FALSE; domInterfaces->Next()) {
@@ -324,9 +319,9 @@ nsScriptNameSpaceManager::FillHashWithDOMInterfaces()
     NS_ENSURE_SUCCESS(rv, rv);
 
     nsCOMPtr<nsIInterfaceInfo> if_info(do_QueryInterface(entry));
-    if_info->GetName(getter_Copies(if_name));
+    if_info->GetNameShared(&if_name);
     if_info->GetIIDShared(&iid);
-    rv = RegisterInterface(if_name.get() + sizeof(NS_DOM_INTERFACE_PREFIX) - 1,
+    rv = RegisterInterface(if_name + sizeof(NS_DOM_INTERFACE_PREFIX) - 1,
                            iid, &found_old);
 
 #ifdef DEBUG
@@ -461,7 +456,6 @@ nsScriptNameSpaceManager::Init()
   {
     PL_DHashAllocTable,
     PL_DHashFreeTable,
-    GlobalNameHashGetKey,
     GlobalNameHashHashKey,
     GlobalNameHashMatchEntry,
     PL_DHashMoveEntryStub,
@@ -484,19 +478,23 @@ nsScriptNameSpaceManager::Init()
   NS_ENSURE_SUCCESS(rv, rv);
 
   rv = FillHash(cm, JAVASCRIPT_GLOBAL_CONSTRUCTOR_CATEGORY,
-                nsGlobalNameStruct::eTypeExternalConstructor);
+                nsGlobalNameStruct::eTypeExternalConstructor, PR_FALSE);
   NS_ENSURE_SUCCESS(rv, rv);
 
   rv = FillHash(cm, JAVASCRIPT_GLOBAL_PROPERTY_CATEGORY,
-                nsGlobalNameStruct::eTypeProperty);
+                nsGlobalNameStruct::eTypeProperty, PR_FALSE);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  rv = FillHash(cm, JAVASCRIPT_GLOBAL_PRIVILEGED_PROPERTY_CATEGORY,
+                nsGlobalNameStruct::eTypeProperty, PR_TRUE);
   NS_ENSURE_SUCCESS(rv, rv);
 
   rv = FillHash(cm, JAVASCRIPT_GLOBAL_STATIC_NAMESET_CATEGORY,
-                nsGlobalNameStruct::eTypeStaticNameSet);
+                nsGlobalNameStruct::eTypeStaticNameSet, PR_FALSE);
   NS_ENSURE_SUCCESS(rv, rv);
 
   rv = FillHash(cm, JAVASCRIPT_GLOBAL_DYNAMIC_NAMESET_CATEGORY,
-                nsGlobalNameStruct::eTypeDynamicNameSet);
+                nsGlobalNameStruct::eTypeDynamicNameSet, PR_FALSE);
   NS_ENSURE_SUCCESS(rv, rv);
 
   return NS_OK;
@@ -511,7 +509,7 @@ PR_STATIC_CALLBACK(PLDHashOperator)
 NameSetInitCallback(PLDHashTable *table, PLDHashEntryHdr *hdr,
                     PRUint32 number, void *arg)
 {
-  GlobalNameMapEntry *entry = NS_STATIC_CAST(GlobalNameMapEntry *, hdr);
+  GlobalNameMapEntry *entry = static_cast<GlobalNameMapEntry *>(hdr);
 
   if (entry->mGlobalName.mType == nsGlobalNameStruct::eTypeStaticNameSet) {
     nsresult rv = NS_OK;
@@ -519,7 +517,7 @@ NameSetInitCallback(PLDHashTable *table, PLDHashEntryHdr *hdr,
       do_CreateInstance(entry->mGlobalName.mCID, &rv);
     NS_ENSURE_SUCCESS(rv, PL_DHASH_NEXT);
 
-    NameSetClosure *closure = NS_STATIC_CAST(NameSetClosure *, arg);
+    NameSetClosure *closure = static_cast<NameSetClosure *>(arg);
     closure->rv = ns->InitializeNameSet(closure->ctx);
     if (NS_FAILED(closure->rv)) {
       NS_ERROR("Initing external script classes failed!");
@@ -547,8 +545,8 @@ nsScriptNameSpaceManager::LookupName(const nsAString& aName,
                                      const PRUnichar **aClassName)
 {
   GlobalNameMapEntry *entry =
-    NS_STATIC_CAST(GlobalNameMapEntry *,
-                   PL_DHashTableOperate(&mGlobalNames, &aName,
+    static_cast<GlobalNameMapEntry *>
+               (PL_DHashTableOperate(&mGlobalNames, &aName,
                                         PL_DHASH_LOOKUP));
 
   if (PL_DHASH_ENTRY_IS_BUSY(entry)) {

@@ -51,12 +51,26 @@
 #include "nsIDOMToString.h"
 #include "nsDOMEvent.h"
 #include "nsIDOMStorageEvent.h"
+#include "nsIDOMStorageManager.h"
+#include "nsCycleCollectionParticipant.h"
 
 #ifdef MOZ_STORAGE
 #include "nsDOMStorageDB.h"
 #endif
 
+class nsDOMStorage;
 class nsDOMStorageItem;
+
+class nsDOMStorageEntry : public nsVoidPtrHashKey
+{
+public:
+  nsDOMStorageEntry(KeyTypePointer aStr);
+  nsDOMStorageEntry(const nsDOMStorageEntry& aToCopy);
+  ~nsDOMStorageEntry();
+
+  // weak reference so that it can be deleted when no longer used
+  nsDOMStorage* mStorage;
+};
 
 class nsSessionStorageEntry : public nsStringHashKey
 {
@@ -68,32 +82,75 @@ public:
   nsRefPtr<nsDOMStorageItem> mItem;
 };
 
+class nsDOMStorageManager : public nsIDOMStorageManager
+                          , public nsIObserver
+{
+public:
+  // nsISupports
+  NS_DECL_ISUPPORTS
+
+  // nsIDOMStorageManager
+  NS_DECL_NSIDOMSTORAGEMANAGER
+
+  // nsIObserver
+  NS_DECL_NSIOBSERVER
+
+  void AddToStoragesHash(nsDOMStorage* aStorage);
+  void RemoveFromStoragesHash(nsDOMStorage* aStorage);
+
+  nsresult ClearAllStorages();
+
+  static nsresult Initialize();
+  static nsDOMStorageManager* GetInstance();
+  static void Shutdown();
+
+  static nsDOMStorageManager* gStorageManager;
+
+protected:
+
+  nsTHashtable<nsDOMStorageEntry> mStorages;
+};
+
 class nsDOMStorage : public nsIDOMStorage,
                      public nsPIDOMStorage
 {
 public:
   nsDOMStorage();
-  nsDOMStorage(const nsAString& aDomain, PRBool aUseDB);
+  nsDOMStorage(nsIURI* aURI, const nsAString& aDomain, PRBool aUseDB);
   virtual ~nsDOMStorage();
 
   // nsISupports
-  NS_DECL_ISUPPORTS
+  NS_DECL_CYCLE_COLLECTING_ISUPPORTS
+  NS_DECL_CYCLE_COLLECTION_CLASS_AMBIGUOUS(nsDOMStorage, nsIDOMStorage)
 
   // nsIDOMStorage
   NS_DECL_NSIDOMSTORAGE
 
   // nsPIDOMStorage
-  virtual void Init(const nsAString& aDomain, PRBool aUseDB);
-  virtual already_AddRefed<nsIDOMStorage> Clone();
+  virtual void Init(nsIURI* aURI, const nsAString& aDomain, PRBool aUseDB);
+  virtual already_AddRefed<nsIDOMStorage> Clone(nsIURI* aURI);
   virtual nsTArray<nsString> *GetKeys();
 
-  // cache the keys from the database for faster lookup
-  nsresult
-  CacheKeysFromDB();
+  PRBool UseDB() { return mUseDB && !mSessionOnly; }
+
+  // cache whether storage may be used by aURI, and whether it is session
+  // only. If aURI is null, the uri associated with this storage (mURI)
+  // is checked. Returns true if storage may be used.
+  static PRBool
+  CanUseStorage(nsIURI* aURI, PRPackedBool* aSessionOnly);
+
+  PRBool
+  CacheStoragePermissions()
+  {
+    return CanUseStorage(mURI, &mSessionOnly);
+  }
 
   // retrieve the value and secure state corresponding to a key out of storage.
   nsresult
-  GetDBValue(const nsAString& aKey, nsAString& aValue, PRBool* aSecure);
+  GetDBValue(const nsAString& aKey,
+             nsAString& aValue,
+             PRBool* aSecure,
+             nsAString& aOwner);
 
   // set the value corresponding to a key in the storage. If
   // aSecure is false, then attempts to modify a secure value
@@ -107,17 +164,31 @@ public:
   nsresult
   SetSecure(const nsAString& aKey, PRBool aSecure);
 
+  // clear all values from the store
+  void ClearAll();
+
 protected:
 
-  nsresult InitDB();
+  friend class nsDOMStorageManager;
+
+  static nsresult InitDB();
+
+  // cache the keys from the database for faster lookup
+  nsresult CacheKeysFromDB();
 
   void BroadcastChangeNotification();
 
   // true if the storage database should be used for values
-  PRBool mUseDB;
+  PRPackedBool mUseDB;
+
+  // true if the preferences indicates that this storage should be session only
+  PRPackedBool mSessionOnly;
 
   // true if items from the database are cached
-  PRBool mItemsCached;
+  PRPackedBool mItemsCached;
+
+  // the URI this store is associated with
+  nsCOMPtr<nsIURI> mURI;
 
   // domain this store is associated with
   nsAutoString mDomain;
@@ -136,15 +207,24 @@ public:
   nsDOMStorageList()
   {
     mStorages.Init();
-  };
+  }
 
-  virtual ~nsDOMStorageList() {};
+  virtual ~nsDOMStorageList() {}
 
   // nsISupports
   NS_DECL_ISUPPORTS
 
   // nsIDOMStorageList
   NS_DECL_NSIDOMSTORAGELIST
+
+  /**
+   * Check whether aCurrentDomain has access to aRequestedDomain
+   */
+  static PRBool
+  CanAccessDomain(const nsAString& aRequestedDomain,
+                  const nsAString& aCurrentDomain);
+
+protected:
 
   /**
    * Return the global nsIDOMStorage for a particular domain.
@@ -157,7 +237,8 @@ public:
    * @param aNoCurrentDomainCheck true to skip domain comparison
    */
   nsresult
-  GetStorageForDomain(const nsAString& aRequestedDomain,
+  GetStorageForDomain(nsIURI* aURI,
+                      const nsAString& aRequestedDomain,
                       const nsAString& aCurrentDomain,
                       PRBool aNoCurrentDomainCheck,
                       nsIDOMStorage** aStorage);
@@ -169,15 +250,6 @@ public:
   ConvertDomainToArray(const nsAString& aDomain,
                        nsStringArray* aArray);
 
-  /**
-   * Check whether aCurrentDomain has access to aRequestedDomain
-   */
-  static PRBool
-  CanAccessDomain(const nsAString& aRequestedDomain,
-                  const nsAString& aCurrentDomain);
-
-protected:
-
   nsInterfaceHashtable<nsStringHashKey, nsIDOMStorage> mStorages;
 };
 
@@ -187,11 +259,13 @@ class nsDOMStorageItem : public nsIDOMStorageItem,
 public:
   nsDOMStorageItem(nsDOMStorage* aStorage,
                    const nsAString& aKey,
+                   const nsAString& aValue,
                    PRBool aSecure);
   virtual ~nsDOMStorageItem();
 
   // nsISupports
-  NS_DECL_ISUPPORTS
+  NS_DECL_CYCLE_COLLECTING_ISUPPORTS
+  NS_DECL_CYCLE_COLLECTION_CLASS_AMBIGUOUS(nsDOMStorageItem, nsIDOMStorageItem)
 
   // nsIDOMStorage
   NS_DECL_NSIDOMSTORAGEITEM
@@ -211,16 +285,17 @@ public:
 
   const nsAString& GetValueInternal()
   {
-    NS_ASSERTION(!mStorage, "Don't call this on global storage items!");
+    return mValue;
+  }
 
-    return mKeyOrValue;
+  const void SetValueInternal(const nsAString& aValue)
+  {
+    mValue = aValue;
   }
 
   void ClearValue()
   {
-    NS_ASSERTION(!mStorage, "Don't call this on global storage items!");
-
-    mKeyOrValue.Truncate();
+    mValue.Truncate();
   }
 
 protected:
@@ -228,8 +303,11 @@ protected:
   // true if this value is for secure sites only
   PRBool mSecure;
 
-  // value of the item, or key for the item if it came from the db.
-  nsString mKeyOrValue;
+  // key for the item
+  nsString mKey;
+
+  // value of the item
+  nsString mValue;
 
   // If this item came from the db, mStorage points to the storage
   // object where this item came from.
