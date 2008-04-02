@@ -208,7 +208,7 @@ NS_IMETHODIMP nsHTMLEditor::SetInlineProperty(nsIAtom *aProperty,
           res = SetTextTagNode(nodeAsText, startOffset, endOffset, localname, nsAtom,  &aAttribute, &aValue);
         }
         else
-          res = SetInlinePropertyOnTextNode(nodeAsText, startOffset, endOffset, aProperty, &aAttribute, &aValue);
+        res = SetInlinePropertyOnTextNode(nodeAsText, startOffset, endOffset, aProperty, &aAttribute, &aValue);
         if (NS_FAILED(res)) return res;
       }
       else
@@ -318,6 +318,7 @@ NS_IMETHODIMP nsHTMLEditor::SetInlineProperty(nsIAtom *aProperty,
   }
   return res;
 }
+
 
 
 nsresult
@@ -1931,7 +1932,7 @@ nsHTMLEditor::RelativeFontChangeOnTextNode( PRInt32 aSizeChange,
 
   NS_NAMED_LITERAL_STRING(bigSize, "big");
   NS_NAMED_LITERAL_STRING(smallSize, "small");
-  const nsAString& nodeType = (aSizeChange==1) ? NS_STATIC_CAST(const nsAString&, bigSize) : NS_STATIC_CAST(const nsAString&, smallSize);
+  const nsAString& nodeType = (aSizeChange==1) ? static_cast<const nsAString&>(bigSize) : static_cast<const nsAString&>(smallSize);
   // look for siblings that are correct type of node
   nsCOMPtr<nsIDOMNode> sibling;
   GetPriorHTMLSibling(node, address_of(sibling));

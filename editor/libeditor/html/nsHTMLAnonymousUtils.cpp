@@ -152,7 +152,7 @@ nsHTMLEditor::CreateAnonymousElement(const nsAString & aTag, nsIDOMNode *  aPare
   }
 
   // establish parenthood of the element
-  newContent->SetNativeAnonymous(PR_TRUE);
+  newContent->SetNativeAnonymous();
   res = newContent->BindToTree(doc, parentContent, newContent, PR_TRUE);
   if (NS_FAILED(res)) {
     newContent->UnbindFromTree();
@@ -203,8 +203,18 @@ nsHTMLEditor::DeleteRefToAnonymousNode(nsIDOMElement* aElement,
           aShell->GetPresContext()->GetPresShell() == aShell) {
         nsCOMPtr<nsIDocumentObserver> docObserver = do_QueryInterface(aShell);
         if (docObserver) {
+          // Call BeginUpdate() so that the nsCSSFrameConstructor/PresShell
+          // knows we're messing with the frame tree.
+          nsCOMPtr<nsIDOMDocument> domDocument;
+          nsresult res = GetDocument(getter_AddRefs(domDocument));
+          nsCOMPtr<nsIDocument> document = do_QueryInterface(domDocument);
+          if (document)
+            docObserver->BeginUpdate(document, UPDATE_CONTENT_MODEL);
+
           docObserver->ContentRemoved(content->GetCurrentDoc(),
                                       aParentContent, content, -1);
+          if (document)
+            docObserver->EndUpdate(document, UPDATE_CONTENT_MODEL);
         }
       }
       content->UnbindFromTree();
@@ -219,13 +229,18 @@ nsHTMLEditor::DeleteRefToAnonymousNode(nsIDOMElement* aElement,
 NS_IMETHODIMP
 nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
 {
-	NS_ENSURE_ARG_POINTER(aSelection);
+  NS_ENSURE_ARG_POINTER(aSelection);
 
   // early way out if all contextual UI extensions are disabled
   if (!mIsObjectResizingEnabled &&
       !mIsAbsolutelyPositioningEnabled &&
       !mIsInlineTableEditingEnabled)
     return NS_OK;
+
+  // Don't change selection state if we're moving.
+  if (mIsMoving) {
+    return NS_OK;
+  }
 
   nsCOMPtr<nsIDOMElement> focusElement;
   // let's get the containing element of the selection
@@ -238,11 +253,10 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
   PRBool resizeRequested = PR_FALSE;
   res = focusElement->GetAttribute(NS_LITERAL_STRING("msi_resize"), strResizeAttr);
   if (strResizeAttr.EqualsLiteral("true")) resizeRequested = PR_TRUE;
-  // what's its tag?  
+  // what's its tag?
   nsAutoString focusTagName;
   res = focusElement->GetTagName(focusTagName);
   if (NS_FAILED(res)) return res;
-
 //  ToLowerCase(focusTagName);
   nsCOMPtr<nsIAtom> focusTagAtom = do_GetAtom(focusTagName);
 
@@ -299,6 +313,7 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
     if (NS_FAILED(res)) return res;
     refreshPositioning = PR_FALSE;
   }
+
   if (mIsObjectResizingEnabled && mResizedObject &&
       mResizedObject != focusElement) {
     nsAutoString resizedTagName;
@@ -333,7 +348,8 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
 
   // now, let's display all contextual UI for good
 
-  if (mIsObjectResizingEnabled && focusElement) {
+  if (mIsObjectResizingEnabled && focusElement &&
+      IsModifiableNode(focusElement)) {
     if (nsEditProperty::img == focusTagAtom || resizeRequested)
       mResizedObjectIsAnImage = PR_TRUE;
     if (refreshResizing)
@@ -344,7 +360,7 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
       res = ShowResizers(focusElement);
       nsCOMPtr<nsIDOMDocument> domdoc2;
       nsCOMPtr<nsIDOMElement> broadcaster;
-//      res = GetXuldoc(getter_AddRefs(domdoc));
+  //      res = GetXuldoc(getter_AddRefs(domdoc));
       if (!NS_FAILED(res))
       {
         res = m_window->GetDocument( getter_AddRefs(domdoc2));
@@ -356,7 +372,8 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
     if (NS_FAILED(res)) return res;
   }
 
-  if (mIsAbsolutelyPositioningEnabled && absPosElement) {
+  if (mIsAbsolutelyPositioningEnabled && absPosElement &&
+      IsModifiableNode(absPosElement)) {
     if (refreshPositioning)
       res = RefreshGrabber();
     else
@@ -364,7 +381,8 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
     if (NS_FAILED(res)) return res;
   }
 
-  if (mIsInlineTableEditingEnabled && cellElement) {
+  if (mIsInlineTableEditingEnabled && cellElement &&
+      IsModifiableNode(cellElement)) {
     if (refreshTableEditing)
       res = RefreshInlineTableEditingUI();
     else

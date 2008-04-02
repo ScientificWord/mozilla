@@ -172,11 +172,11 @@ public:
   nsresult JoinNodes(nsIDOMNode  *aLeftNode,
                      nsIDOMNode  *aRightNode,
                      nsIDOMNode  *aParent);
+
   nsresult ReplaceNode(nsIDOMNode *aNewNode, 
                        nsIDOMNode *aOldNode, 
                        nsIDOMNode *aParent);
   nsresult SaveSelection(nsISelection * selection);
-                       
   /* Helper functions */
   static nsresult ComparePoints(nsIDOMNode *aParent1, PRInt32 aOffset1, nsIDOMNode *aParent2, PRInt32 aOffset2, PRInt32 *aResult);
   static nsresult GetRangeEndPoints(nsIDOMRange *aRange, nsIDOMNode **aParent1, PRInt32 *aOffset1, nsIDOMNode **aParent2, PRInt32 *aOffset2);

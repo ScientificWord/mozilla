@@ -182,7 +182,7 @@ msiSelectionManager::GetRange(PRUint32 index, nsCOMPtr<nsIDOMRange> & range)
   range = nsnull;
   nsresult res(NS_ERROR_FAILURE);
   PRInt32 count = mRangeItemArray.Count();
-  if (count > 0 && index < NS_STATIC_CAST(PRUint32, count))
+  if (count > 0 && index < static_cast<PRUint32>(count))
   {
     nsRangeStore * item = (nsRangeStore*)mRangeItemArray.ElementAt(index);
     if (!item)
@@ -207,7 +207,7 @@ nsresult msiSelectionManager::IsRangeCollapsed(PRUint32 index, PRBool &collapsed
 nsRangeStore * msiSelectionManager::GetRangeStoreItem(PRUint32 index)
 {
   PRInt32 count = mRangeItemArray.Count();
-  if (count > 0 && index < NS_STATIC_CAST(PRUint32, count))
+  if (count > 0 && index < static_cast<PRUint32>(count))
     return (nsRangeStore*)(mRangeItemArray.ElementAt(index));
   else
     return nsnull;  

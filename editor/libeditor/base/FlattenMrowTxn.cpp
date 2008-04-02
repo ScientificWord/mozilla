@@ -51,7 +51,7 @@ NS_IMETHODIMP FlattenMrowTxn::DoTransaction(void)
   res = nsEditor::GetChildOffset(m_mrow, parent, _offset);  
   if (NS_FAILED(res) || _offset < 0)
     return NS_ERROR_FAILURE;
-  PRUint32 offset(NS_STATIC_CAST(PRUint32, _offset));
+  PRUint32 offset(static_cast<PRUint32>(_offset));
   
     
   PRUint32 numKids(0);
@@ -67,7 +67,7 @@ NS_IMETHODIMP FlattenMrowTxn::DoTransaction(void)
       res = TransactionFactory::GetNewTransaction(DeleteElementTxn::GetCID(), (EditTxn **)&dTxn);
       if (NS_FAILED(res) || !dTxn) 
         return NS_ERROR_FAILURE;
-      res = dTxn->Init(child, nsnull); // Want to handle range updates locally -- hence nsnull 
+      res = dTxn->Init(m_editor, child, nsnull); // Want to handle range updates locally -- hence nsnull 
       if (NS_SUCCEEDED(res)) 
         AppendChild(dTxn);
       NS_RELEASE(dTxn);
@@ -87,7 +87,7 @@ NS_IMETHODIMP FlattenMrowTxn::DoTransaction(void)
   res = TransactionFactory::GetNewTransaction(DeleteElementTxn::GetCID(), (EditTxn **)&txn);
   if (NS_FAILED(res) || !txn) 
     return NS_ERROR_FAILURE;
-  res = txn->Init(m_mrow, nsnull); // Want to handle range updates locally -- hence nsnull 
+  res = txn->Init(m_editor, m_mrow, nsnull); // Want to handle range updates locally -- hence nsnull 
   if (NS_SUCCEEDED(res)) 
     AppendChild(txn);
   NS_RELEASE(txn);
