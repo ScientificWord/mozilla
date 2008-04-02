@@ -20,6 +20,8 @@
  *
  * Contributor(s):
  *   Vladimir Vukicevic <vladimir@pobox.com>
+ *   Masayuki Nakano <masayuki@d-toybox.com>
+ *   John Daggett <jdaggett@mozilla.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -38,86 +40,133 @@
 #ifndef GFX_ATSUIFONTS_H
 #define GFX_ATSUIFONTS_H
 
+#include "cairo.h"
 #include "gfxTypes.h"
 #include "gfxFont.h"
+#include "gfxFontUtils.h"
+#include "gfxPlatform.h"
 
 #include <Carbon/Carbon.h>
 
 class gfxAtsuiFontGroup;
 
+class MacOSFontEntry;
+class MacOSFamilyEntry;
+
 class gfxAtsuiFont : public gfxFont {
 public:
-    gfxAtsuiFont(ATSUFontID fontID,
+
+    gfxAtsuiFont(MacOSFontEntry *aFontEntry,
                  const gfxFontStyle *fontStyle);
+
     virtual ~gfxAtsuiFont();
 
     virtual const gfxFont::Metrics& GetMetrics();
 
-    float GetCharWidth (PRUnichar c);
+    float GetCharWidth(PRUnichar c, PRUint32 *aGlyphID = nsnull);
+    float GetCharHeight(PRUnichar c);
 
-    ATSUFontID GetATSUFontID() { return mATSUFontID; }
+    ATSUFontID GetATSUFontID();
 
     cairo_font_face_t *CairoFontFace() { return mFontFace; }
     cairo_scaled_font_t *CairoScaledFont() { return mScaledFont; }
 
     ATSUStyle GetATSUStyle() { return mATSUStyle; }
 
+    virtual nsString GetUniqueName();
+
+    virtual PRUint32 GetSpaceGlyph() { return mSpaceGlyph; }
+    
+    PRBool HasMirroringInfo();
+
+    virtual void SetupGlyphExtents(gfxContext *aContext, PRUint32 aGlyphID,
+            PRBool aNeedTight, gfxGlyphExtents *aExtents);
+
+    PRBool TestCharacterMap(PRUint32 aCh);
+
 protected:
     const gfxFontStyle *mFontStyle;
 
-    ATSUFontID mATSUFontID;
     ATSUStyle mATSUStyle;
+
+    nsRefPtr<MacOSFontEntry> mFontEntry;
+
+    PRBool mHasMirroring;
+    PRBool mHasMirroringLookedUp;
+
+    nsString mUniqueName;
 
     cairo_font_face_t *mFontFace;
     cairo_scaled_font_t *mScaledFont;
 
     gfxFont::Metrics mMetrics;
+
+    gfxFloat mAdjustedSize;
+    PRUint32 mSpaceGlyph;    
+
+    void InitMetrics(ATSUFontID aFontID, ATSFontRef aFontRef);
+
+    virtual PRBool SetupCairoFont(gfxContext *aContext);
 };
 
 class THEBES_API gfxAtsuiFontGroup : public gfxFontGroup {
 public:
     gfxAtsuiFontGroup(const nsAString& families,
                       const gfxFontStyle *aStyle);
-    virtual ~gfxAtsuiFontGroup();
+    virtual ~gfxAtsuiFontGroup() {};
 
-    virtual gfxTextRun *MakeTextRun(const nsAString& aString);
-    virtual gfxTextRun *MakeTextRun(const nsACString& aCString) {
-        return MakeTextRun(NS_ConvertASCIItoUTF16(aCString));
+    virtual gfxFontGroup *Copy(const gfxFontStyle *aStyle);
+
+    virtual gfxTextRun *MakeTextRun(const PRUnichar* aString, PRUint32 aLength,
+                                    const Parameters* aParams, PRUint32 aFlags);
+    virtual gfxTextRun *MakeTextRun(const PRUint8* aString, PRUint32 aLength,
+                                    const Parameters* aParams, PRUint32 aFlags);
+    // When aWrapped is true, the string includes bidi control
+    // characters. The first character will be LRO or LRO to force setting the
+    // direction for all characters, the last character is PDF, and the
+    // second to last character is a non-whitespace character --- to ensure
+    // that there is no "trailing whitespace" in the string, see
+    // http://weblogs.mozillazine.org/roc/archives/2007/02/superlaser_targ.html#comments
+    void MakeTextRunInternal(const PRUnichar *aString, PRUint32 aLength,
+                             PRBool aWrapped, gfxTextRun *aTextRun);
+
+    gfxAtsuiFont* GetFontAt(PRInt32 aFontIndex) {
+        return static_cast<gfxAtsuiFont*>(static_cast<gfxFont*>(mFonts[aFontIndex]));
     }
 
-    ATSUFontFallbacks *GetATSUFontFallbacksPtr() { return &mFallbacks; }
-    
-    gfxAtsuiFont* GetFontAt(PRInt32 i) {
-        return NS_STATIC_CAST(gfxAtsuiFont*, NS_STATIC_CAST(gfxFont*, mFonts[i]));
+    PRBool HasFont(ATSUFontID fid);
+
+    inline gfxAtsuiFont* WhichFontSupportsChar(nsTArray< nsRefPtr<gfxFont> >& aFontList, PRUint32 aCh) {
+        PRUint32 len = aFontList.Length();
+        for (PRUint32 i = 0; i < len; i++) {
+            gfxAtsuiFont* font = static_cast<gfxAtsuiFont*>(aFontList.ElementAt(i).get());
+            if (font->TestCharacterMap(aCh))
+                return font;
+        }
+        return nsnull;
     }
+
+   // search through pref fonts for a character, return nsnull if no matching pref font
+   already_AddRefed<gfxAtsuiFont> WhichPrefFontSupportsChar(PRUint32 aCh);
+   
+   already_AddRefed<gfxAtsuiFont> FindFontForChar(PRUint32 aCh, PRUint32 aPrevCh, PRUint32 aNextCh, gfxAtsuiFont* aPrevMatchedFont);
 
 protected:
     static PRBool FindATSUFont(const nsAString& aName,
                                const nsACString& aGenericName,
                                void *closure);
 
-    ATSUFontFallbacks mFallbacks;
+    PRUint32 GuessMaximumStringLength();
+
+    /** Returns true for success */
+    PRBool InitTextRun(gfxTextRun *aRun, const PRUnichar *aString, PRUint32 aLength,
+                       PRBool aWrapped, PRUint32 aSegmentStart, PRUint32 aSegmentLength);
+    
+    // cache the most recent pref font to avoid general pref font lookup
+    nsRefPtr<MacOSFamilyEntry>    mLastPrefFamily;
+    nsRefPtr<gfxAtsuiFont>        mLastPrefFont;
+    eFontPrefLang                 mLastPrefLang;       // lang group for last pref font
+    PRBool                        mLastPrefFirstFont;  // is this the first font in the list of pref fonts for this lang group?
+    eFontPrefLang                 mPageLang;
 };
-
-class THEBES_API gfxAtsuiTextRun : public gfxTextRun {
-    THEBES_DECL_ISUPPORTS_INHERITED
-public:
-    gfxAtsuiTextRun(const nsAString& aString, gfxAtsuiFontGroup *aFontGroup);
-    ~gfxAtsuiTextRun();
-
-    virtual void Draw(gfxContext *aContext, gfxPoint pt);
-    virtual gfxFloat Measure(gfxContext *aContext);
-
-    virtual void SetSpacing(const nsTArray<gfxFloat>& spacingArray);
-    virtual const nsTArray<gfxFloat> *const GetSpacing() const;
-
-private:
-    nsString mString;
-    gfxAtsuiFontGroup *mGroup;
-
-    ATSUTextLayout mATSULayout;
-
-    nsTArray<ATSUStyle> mStylesToDispose;
-};
-
 #endif /* GFX_ATSUIFONTS_H */

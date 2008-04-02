@@ -39,21 +39,34 @@
 #define GFX_PDFSURFACE_H
 
 #include "gfxASurface.h"
+#include "gfxContext.h"
+
+/* for the output stream */
+#include "nsCOMPtr.h"
+#include "nsIOutputStream.h"
 
 class THEBES_API gfxPDFSurface : public gfxASurface {
 public:
-    /* size is in points */
-    gfxPDFSurface(const char *filename, gfxSize aSizeInPonits);
+    gfxPDFSurface(nsIOutputStream *aStream, const gfxSize& aSizeInPonits);
     virtual ~gfxPDFSurface();
+
+    virtual nsresult BeginPrinting(const nsAString& aTitle, const nsAString& aPrintToFileName);
+    virtual nsresult EndPrinting();
+    virtual nsresult AbortPrinting();
+    virtual nsresult BeginPage();
+    virtual nsresult EndPage();
+    virtual void Finish();
 
     void SetDPI(double x, double y);
     void GetDPI(double *xDPI, double *yDPI);
 
-    gfxSize GetSize() {
-        gfxSize size = mSize;
-        return size;
-    }
+    // this is in points!
+    const gfxSize& GetSize() const { return mSize; }
+
+    virtual PRInt32 GetDefaultContextFlags() const { return gfxContext::FLAG_DISABLE_SNAPPING; }
+
 private:
+    nsCOMPtr<nsIOutputStream> mStream;
     double mXDPI;
     double mYDPI;
     gfxSize mSize;

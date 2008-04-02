@@ -46,7 +46,6 @@
 #include "nsIDOMDocumentView.h"
 #include "nsIDOMAbstractView.h"
 #include "nsIDOMDocumentEvent.h"
-#include "nsDOMString.h"
 #include "nsIModelElementPrivate.h"
 #include "nsIXFormsUIWidget.h"
 #include "nsXFormsAtoms.h"
@@ -56,32 +55,36 @@
 #include "nsXFormsModelElement.h"
 
 NS_IMPL_ISUPPORTS_INHERITED2(nsXFormsDelegateStub,
-                             nsXFormsBindableControlStub,
+                             nsXFormsControlStub,
                              nsIDelegateInternal,
                              nsIXFormsDelegate)
 
 
+
 NS_IMETHODIMP
-nsXFormsDelegateStub::WillChangeDocument(nsIDOMDocument *aNewDocument)
+nsXFormsDelegateStub::GetAccesskeyNode(nsIDOMAttr** aNode)
 {
-  mRepeatState = eType_Unknown;
-  return nsXFormsBindableControlStub::WillChangeDocument(aNewDocument);
+  return mElement->GetAttributeNode(NS_LITERAL_STRING("accesskey"), aNode);
 }
 
 NS_IMETHODIMP
-nsXFormsDelegateStub::WillChangeParent(nsIDOMElement *aNewParent)
+nsXFormsDelegateStub::PerformAccesskey()
 {
-  mRepeatState = eType_Unknown;
-  return nsXFormsBindableControlStub::WillChangeParent(aNewParent);
+  nsCOMPtr<nsIXFormsUIWidget> widget(do_QueryInterface(mElement));
+  if (widget) {
+    widget->PerformAccesskey();
+  }
+
+  return NS_OK;
 }
 
 NS_IMETHODIMP
-nsXFormsDelegateStub::OnCreated(nsIXTFBindableElementWrapper *aWrapper)
+nsXFormsDelegateStub::OnCreated(nsIXTFElementWrapper *aWrapper)
 {
-  nsresult rv = nsXFormsBindableControlStub::OnCreated(aWrapper);
+  nsresult rv = nsXFormsControlStub::OnCreated(aWrapper);
   NS_ENSURE_SUCCESS(rv, rv);
   aWrapper->SetNotificationMask(kStandardNotificationMask |
-                                nsIXTFElement::NOTIFY_WILL_CHANGE_PARENT);
+                                nsIXTFElement::NOTIFY_PERFORM_ACCESSKEY);
   return rv;
 }
 
@@ -92,7 +95,7 @@ nsXFormsDelegateStub::OnDestroyed()
   if (mAccessor) {
     mAccessor->Destroy();
   }
-  return nsXFormsBindableControlStub::OnDestroyed();
+  return nsXFormsControlStub::OnDestroyed();
 }
 
 // nsIXFormsControl
@@ -100,7 +103,7 @@ nsXFormsDelegateStub::OnDestroyed()
 NS_IMETHODIMP
 nsXFormsDelegateStub::Refresh()
 {
-  if (mRepeatState == eType_Template)
+  if (GetRepeatState() == eType_Template)
     return NS_OK_XFORMS_NOREFRESH;
 
   const nsVoidArray* list = nsPostRefresh::PostRefreshList();
@@ -109,7 +112,7 @@ nsXFormsDelegateStub::Refresh()
     return NS_OK_XFORMS_NOREFRESH;
   }
 
-  nsresult rv = nsXFormsBindableControlStub::Refresh();
+  nsresult rv = nsXFormsControlStub::Refresh();
   NS_ENSURE_SUCCESS(rv, rv);
 
   SetMozTypeAttribute();
@@ -138,7 +141,7 @@ nsXFormsDelegateStub::TryFocus(PRBool* aOK)
 NS_IMETHODIMP
 nsXFormsDelegateStub::GetValue(nsAString& aValue)
 {
-  SetDOMStringToNull(aValue);
+  aValue.SetIsVoid(PR_TRUE);
   if (mBoundNode) {
     nsXFormsUtils::GetNodeValue(mBoundNode, aValue);
   }
@@ -170,15 +173,23 @@ nsXFormsDelegateStub::GetHasBoundNode(PRBool *aHasBoundNode)
 NS_IMETHODIMP
 nsXFormsDelegateStub::ReportError(const nsAString& aErrorMsg)
 {
-  const nsPromiseFlatString& flat = PromiseFlatString(aErrorMsg);
+  const nsString& flat = PromiseFlatString(aErrorMsg);
   nsXFormsUtils::ReportError(flat, mElement);
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsXFormsDelegateStub::ReportErrorMessage(const nsAString& aErrorMsg)
+{
+  const nsString& flat = PromiseFlatString(aErrorMsg);
+  nsXFormsUtils::ReportErrorMessage(flat, mElement);
   return NS_OK;
 }
 
 NS_IMETHODIMP
 nsXFormsDelegateStub::WidgetAttached()
 {
-  if (UpdateRepeatState() == eType_Template)
+  if (GetRepeatState() == eType_Template)
     return NS_OK;
 
   if (HasBindingAttribute()) {
@@ -195,30 +206,17 @@ nsXFormsDelegateStub::WidgetAttached()
 
 // nsXFormsDelegateStub
 
-nsRepeatState
-nsXFormsDelegateStub::UpdateRepeatState()
+NS_IMETHODIMP
+nsXFormsDelegateStub::IsTypeAllowed(PRUint16 aType, PRBool *aIsAllowed,
+                                    nsRestrictionFlag *aRestriction,
+                                    nsAString &aTypes)
 {
-  mRepeatState = eType_NotApplicable;
-  nsCOMPtr<nsIDOMNode> parent;
-  mElement->GetParentNode(getter_AddRefs(parent));
-  while (parent) {
-    if (nsXFormsUtils::IsXFormsElement(parent, NS_LITERAL_STRING("contextcontainer"))) {
-      mRepeatState = eType_GeneratedContent;
-      break;
-    }
-    if (nsXFormsUtils::IsXFormsElement(parent, NS_LITERAL_STRING("repeat"))) {
-      mRepeatState = eType_Template;
-      break;
-    }
-    if (nsXFormsUtils::IsXFormsElement(parent, NS_LITERAL_STRING("itemset"))) {
-      mRepeatState = eType_Template;
-      break;
-    }
-    nsCOMPtr<nsIDOMNode> tmp;
-    parent->GetParentNode(getter_AddRefs(tmp));
-    parent = tmp;
-  }
-  return mRepeatState;
+  NS_ENSURE_ARG_POINTER(aRestriction);
+  NS_ENSURE_ARG_POINTER(aIsAllowed);
+  *aIsAllowed = PR_TRUE;
+  *aRestriction = eTypes_NoRestriction;
+  aTypes.Truncate();
+  return NS_OK;
 }
 
 void
@@ -226,20 +224,86 @@ nsXFormsDelegateStub::SetMozTypeAttribute()
 {
   NS_NAMED_LITERAL_STRING(mozTypeNs, NS_NAMESPACE_MOZ_XFORMS_TYPE);
   NS_NAMED_LITERAL_STRING(mozType, "type");
+  NS_NAMED_LITERAL_STRING(mozTypeList, "typelist");
+  NS_NAMED_LITERAL_STRING(mozRejectedType, "rejectedtype");
 
-  if (mModel && mBoundNode) {
-    nsAutoString type, ns;
-    if (NS_FAILED(mModel->GetTypeAndNSFromNode(mBoundNode, type, ns))) {
+  // can't use mBoundNode here since mBoundNode can exist for xf:output, for
+  // example, even if there is no binding attribute.
+  nsCOMPtr<nsIDOMNode> boundNode;
+  GetBoundNode(getter_AddRefs(boundNode));
+  if (mModel && boundNode) {
+    nsAutoString type, nsOrig;
+    if (NS_FAILED(mModel->GetTypeAndNSFromNode(boundNode, type, nsOrig))) {
       mElement->RemoveAttributeNS(mozTypeNs, mozType);
+      mElement->RemoveAttributeNS(mozTypeNs, mozTypeList);
+      mElement->RemoveAttributeNS(mozTypeNs, mozRejectedType);
       return;
     }
 
-    ns.AppendLiteral("#");
-    ns.Append(type);
-    mElement->SetAttributeNS(mozTypeNs, mozType, ns);
-  } else {
-    mElement->RemoveAttributeNS(mozTypeNs, mozType);
+    nsAutoString attrValue(nsOrig);
+    attrValue.AppendLiteral("#");
+    attrValue.Append(type);
+    mElement->SetAttributeNS(mozTypeNs, mozType, attrValue);
+
+    // Get the list of types that this type derives from and set it as the
+    // value of the basetype attribute
+    nsresult rv = mModel->GetDerivedTypeList(type, nsOrig, attrValue);
+    if (NS_SUCCEEDED(rv)) {
+      mElement->SetAttributeNS(mozTypeNs, mozTypeList, attrValue);
+    } else {
+      // Note: even if we can't build the derived type list, we should leave on
+      // mozType attribute.  We can still use the attr for validation, etc.  But
+      // the type-restricted controls like range and upload won't display since
+      // they are bound to their anonymous content by @typeList.  Make sure that
+      // we don't leave around mozTypeList if it isn't accurate.
+      mElement->RemoveAttributeNS(mozTypeNs, mozTypeList);
+    }
+
+    // Get the builtin type that the bound type is derived from.  Then determine
+    // if this control is allowed to bind to this type.  Some controls like
+    // input, secret, textarea, upload and range can only bind to some types
+    // and not to others.
+    PRUint16 builtinType = 0;
+    rv = GetBoundBuiltinType(&builtinType);
+    if (NS_SUCCEEDED(rv)) {
+      PRBool isAllowed = PR_TRUE;
+      nsAutoString restrictedTypeList;
+      nsRestrictionFlag restriction;
+      IsTypeAllowed(builtinType, &isAllowed, &restriction, restrictedTypeList);
+      if (!isAllowed) {
+        // if this control isn't allowed to bind to this type, we'll set the
+        // 'mozType:rejectedtype' attr to true so that our default CSS will
+        // not display the control
+        mElement->SetAttributeNS(mozTypeNs, mozRejectedType,
+                                 NS_LITERAL_STRING("true"));
+
+        // build the error string that we want output to the ErrorConsole
+        nsAutoString localName;
+        mElement->GetLocalName(localName);
+        const PRUnichar *strings[] = { localName.get(), restrictedTypeList.get() };
+
+        nsXFormsUtils::ReportError(
+          restriction == eTypes_Inclusive ?
+            NS_LITERAL_STRING("boundTypeErrorInclusive") :
+            NS_LITERAL_STRING("boundTypeErrorExclusive"),
+          strings, 2, mElement, mElement);
+        return;
+      }
+    }
+    // We reached here for one of two reasons:
+    // 1) The control can handle this type
+    // 2) We don't have enough information to make a judgement.
+    //
+    // Either way, we'll remove the attribute so that the control is useable
+    mElement->RemoveAttributeNS(mozTypeNs, mozRejectedType);
+
+    return;
   }
+
+  mElement->RemoveAttributeNS(mozTypeNs, mozType);
+  mElement->RemoveAttributeNS(mozTypeNs, mozTypeList);
+  mElement->RemoveAttributeNS(mozTypeNs, mozRejectedType);
+  return;
 }
 
 NS_IMETHODIMP

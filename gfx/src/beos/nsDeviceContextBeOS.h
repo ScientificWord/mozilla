@@ -39,7 +39,6 @@
 #define nsDeviceContextBeOS_h___
 
 #include "nsDeviceContext.h"
-#include "nsUnitConversion.h"
 #include "nsIWidget.h"
 #include "nsIView.h"
 #include "nsIRenderingContext.h"
@@ -60,7 +59,6 @@ public:
  
   NS_IMETHOD  SupportsNativeWidgets(PRBool &aSupportsWidgets);
 
-  NS_IMETHOD  GetScrollBarDimensions(float &aWidth, float &aHeight) const;
   NS_IMETHOD  GetSystemFont(nsSystemFontID anID, nsFont *aFont) const;
 
   NS_IMETHOD CheckFontExistence(const nsString& aFontName);
@@ -87,8 +85,6 @@ private:
   PRUint32      mDepth;
   PRBool        mWriteable;
   PRUint32      mNumCells;
-  PRInt16       mScrollbarHeight; 
-  PRInt16       mScrollbarWidth;
   BFont         mMenuFont; 
   static nscoord mDpi; 
  

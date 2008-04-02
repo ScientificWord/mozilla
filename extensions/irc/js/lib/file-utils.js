@@ -121,7 +121,7 @@ function futils_nosepicker(initialPath, typeList, attribs)
         }
         else
         {
-            if (!(initialPath instanceof nsILocalFile))
+            if (!isinstance(initialPath, nsILocalFile))
                 throw "bad type for argument |initialPath|";
 
             localFile = initialPath;
@@ -135,7 +135,7 @@ function futils_nosepicker(initialPath, typeList, attribs)
     if (typeof typeList == "string")
         typeList = typeList.split(" ");
 
-    if (typeList instanceof Array)
+    if (isinstance(typeList, Array))
     {
         for (var i in typeList)
         {
@@ -330,7 +330,7 @@ function LocalFile(file, mode, perms, tmp)
     {
         this.localFile = new nsLocalFile(file);
     }
-    else if (file instanceof nsILocalFile)
+    else if (isinstance(file, nsILocalFile))
     {
         this.localFile = file;
     }
@@ -368,21 +368,27 @@ function fo_write(buf)
     return this.outputStream.write(buf, buf.length);
 }
 
+// Will return null if there is no more data in the file.
+// Will block until it has some data to return.
+// Will return an empty string if there is data, but it couldn't be read.
 LocalFile.prototype.read =
 function fo_read(max)
 {
     if (!("inputStream" in this))
         throw "file not open for reading.";
 
-    var av = this.inputStream.available();
     if (typeof max == "undefined")
-        max = av;
+        max = this.inputStream.available();
 
-    if (!av)
-        return null;
-
-    var rv = this.inputStream.read(max);
-    return rv;
+    try
+    {
+        var rv = this.inputStream.read(max);
+        return (rv != "") ? rv : null;
+    }
+    catch (ex)
+    {
+        return "";
+    }
 }
 
 LocalFile.prototype.close =

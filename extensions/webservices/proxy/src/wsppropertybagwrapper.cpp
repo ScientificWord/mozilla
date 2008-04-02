@@ -58,7 +58,9 @@ WSPPropertyBagWrapper::Init(nsIPropertyBag* aPropertyBag,
   mPropertyBag = aPropertyBag;
   mInterfaceInfo = aInterfaceInfo;
   mInterfaceInfo->GetIIDShared(&mIID);
-  return NS_OK;
+
+  nsresult rv = InitStub(*mIID);
+  return rv;
 }
 
 NS_METHOD
@@ -85,14 +87,17 @@ NS_IMPL_RELEASE(WSPPropertyBagWrapper)
 NS_IMETHODIMP
 WSPPropertyBagWrapper::QueryInterface(REFNSIID aIID, void** aInstancePtr)
 {
-  if((mIID && aIID.Equals(*mIID)) || aIID.Equals(NS_GET_IID(nsISupports))) {
-    *aInstancePtr = NS_STATIC_CAST(nsXPTCStubBase*, this);
+  if (aIID.Equals(NS_GET_IID(nsISupports))) {
+    *aInstancePtr = static_cast<nsIXPTCProxy*>(this);
+  }
+  if(mXPTCStub && mIID && aIID.Equals(*mIID)) {
+    *aInstancePtr = mXPTCStub;
   }
   else if (aIID.Equals(NS_GET_IID(nsIWebServicePropertyBagWrapper))) {
-    *aInstancePtr = NS_STATIC_CAST(nsIWebServicePropertyBagWrapper*, this);
+    *aInstancePtr = static_cast<nsIWebServicePropertyBagWrapper*>(this);
   }
   else if (aIID.Equals(NS_GET_IID(nsIClassInfo))) {
-    *aInstancePtr = NS_STATIC_CAST(nsIClassInfo*, this);
+    *aInstancePtr = static_cast<nsIClassInfo*>(this);
   } else {
     return NS_ERROR_NO_INTERFACE;
   }
@@ -103,7 +108,7 @@ WSPPropertyBagWrapper::QueryInterface(REFNSIID aIID, void** aInstancePtr)
 
 NS_IMETHODIMP
 WSPPropertyBagWrapper::CallMethod(PRUint16 methodIndex,
-                                  const nsXPTMethodInfo* info,
+                                  const XPTMethodDescriptor* info,
                                   nsXPTCMiniVariant* params)
 {
   if (methodIndex < 3) {
@@ -114,7 +119,7 @@ WSPPropertyBagWrapper::CallMethod(PRUint16 methodIndex,
   nsresult rv = NS_OK;
   nsAutoString propName;
 
-  rv = WSPFactory::C2XML(nsDependentCString(info->GetName()), propName);
+  rv = WSPFactory::C2XML(nsDependentCString(info->name), propName);
   if (NS_FAILED(rv)) {
     return rv;
   }
@@ -126,8 +131,8 @@ WSPPropertyBagWrapper::CallMethod(PRUint16 methodIndex,
   }
 
   nsCOMPtr<nsIInterfaceInfo> iinfo;
-  if (info->IsGetter()) {
-    const nsXPTParamInfo& paramInfo = info->GetParam(0);
+  if (XPT_MD_IS_GETTER(info->flags)) {
+    const nsXPTParamInfo& paramInfo = info->params[0];
     const nsXPTType& type = paramInfo.GetType();
     uint8 type_tag = type.TagPart();
 
@@ -141,12 +146,12 @@ WSPPropertyBagWrapper::CallMethod(PRUint16 methodIndex,
 
     rv = WSPProxy::VariantToValue(type_tag, params[0].val.p, iinfo, val);
   }
-  else if (info->GetParamCount() == 2) {
+  else if (info->num_args == 2) {
     // If it's not an explicit getter, it has to be an array getter
     // method.
 
     // The first parameter should be the array length out param
-    const nsXPTParamInfo& paramInfo1 = info->GetParam(0);
+    const nsXPTParamInfo& paramInfo1 = info->params[0];
     const nsXPTType& type1 = paramInfo1.GetType();
     if (!paramInfo1.IsOut() || (type1.TagPart() != nsXPTType::T_U32)) {
       NS_ERROR("Unexpected parameter type for getter");
@@ -154,7 +159,7 @@ WSPPropertyBagWrapper::CallMethod(PRUint16 methodIndex,
     }
 
     // The second parameter should be the array out pointer itself.
-    const nsXPTParamInfo& paramInfo2 = info->GetParam(1);
+    const nsXPTParamInfo& paramInfo2 = info->params[1];
     const nsXPTType& type2 = paramInfo2.GetType();
     if (!paramInfo2.IsOut() || !type2.IsArray()) {
       NS_ERROR("Unexpected parameter type for getter");
@@ -187,17 +192,6 @@ WSPPropertyBagWrapper::CallMethod(PRUint16 methodIndex,
   return rv;
 }
 
-NS_IMETHODIMP
-WSPPropertyBagWrapper::GetInterfaceInfo(nsIInterfaceInfo** info)
-{
-  NS_ENSURE_ARG_POINTER(info);
-
-  *info = mInterfaceInfo;
-  NS_ADDREF(*info);
-
-  return NS_OK;
-}
-
 ///////////////////////////////////////////////////
 //
 // Implementation of nsIClassInfo
@@ -214,19 +208,19 @@ WSPPropertyBagWrapper::GetInterfaces(PRUint32 *count, nsIID * **array)
   }
 
   *count = 2;
-  nsIID** iids = NS_STATIC_CAST(nsIID**, nsMemory::Alloc(2 * sizeof(nsIID*)));
+  nsIID** iids = static_cast<nsIID**>(nsMemory::Alloc(2 * sizeof(nsIID*)));
   if (!iids) {
     return NS_ERROR_OUT_OF_MEMORY;
   }
 
-  iids[0] = NS_STATIC_CAST(nsIID *, nsMemory::Clone(mIID, sizeof(nsIID)));
+  iids[0] = static_cast<nsIID *>(nsMemory::Clone(mIID, sizeof(nsIID)));
   if (!iids[0]) {
     nsMemory::Free(iids);
     return NS_ERROR_OUT_OF_MEMORY;
   }
 
   const nsIID& wsiid = NS_GET_IID(nsIWebServicePropertyBagWrapper);
-  iids[1] = NS_STATIC_CAST(nsIID *, nsMemory::Clone(&wsiid, sizeof(nsIID)));
+  iids[1] = static_cast<nsIID *>(nsMemory::Clone(&wsiid, sizeof(nsIID)));
   if (!iids[1]) {
     nsMemory::Free(iids[0]);
     nsMemory::Free(iids);

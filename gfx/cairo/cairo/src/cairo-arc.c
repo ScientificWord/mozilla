@@ -34,6 +34,8 @@
  *	Carl D. Worth <cworth@cworth.org>
  */
 
+#include "cairoint.h"
+
 #include "cairo-arc-private.h"
 
 /* Spline deviation from the circle in radius would be given by:
@@ -85,7 +87,7 @@ _arc_max_angle_for_tolerance_normalized (double tolerance)
 	{ M_PI / 10.0,  1.73863223499021216974e-08 },
 	{ M_PI / 11.0,  9.81410988043554039085e-09 },
     };
-    int table_size = (sizeof (table) / sizeof (table[0]));
+    int table_size = ARRAY_LENGTH (table);
 
     for (i = 0; i < table_size; i++)
 	if (table[i].error < tolerance)
@@ -190,7 +192,7 @@ _cairo_arc_in_direction (cairo_t	  *cr,
 	    _cairo_arc_in_direction (cr, xc, yc, radius,
 				     angle_min, angle_mid,
 				     dir);
-	    
+
 	    _cairo_arc_in_direction (cr, xc, yc, radius,
 				     angle_mid, angle_max,
 				     dir);
@@ -231,14 +233,14 @@ _cairo_arc_in_direction (cairo_t	  *cr,
 }
 
 /**
- * _cairo_arc_path_negative:
+ * _cairo_arc_path
  * @cr: a cairo context
  * @xc: X position of the center of the arc
  * @yc: Y position of the center of the arc
  * @radius: the radius of the arc
  * @angle1: the start angle, in radians
  * @angle2: the end angle, in radians
- * 
+ *
  * Compute a path for the given arc and append it onto the current
  * path within @cr. The arc will be accurate within the current
  * tolerance and given the current transformation.
@@ -266,8 +268,8 @@ _cairo_arc_path (cairo_t *cr,
  * @angle2: the end angle, in radians
  * @ctm: the current transformation matrix
  * @tolerance: the current tolerance value
- * @path: the path onto which th earc will be appended
- * 
+ * @path: the path onto which the arc will be appended
+ *
  * Compute a path for the given arc (defined in the negative
  * direction) and append it onto the current path within @cr. The arc
  * will be accurate within the current tolerance and given the current

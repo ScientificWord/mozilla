@@ -39,15 +39,16 @@
 #include "nsIXFormsModelElement.idl"
 
 interface nsIXFormsControl;
-interface nsISchemaType;
+interface nsISVSchemaType;
 interface nsIInstanceElementPrivate;
 interface nsIDOMNode;
+interface nsISVSchemaBuiltinType;
 
 /**
  * Private interface implemented by the model element for other
  * elements to use.
  */
-[uuid(74238f22-d112-4bed-a8dc-cc228df52c2e)]
+[uuid(e0c08554-0509-45b4-b3e5-b25c6cad8153)]
 interface nsIModelElementPrivate : nsIXFormsModelElement
 {
   /**
@@ -57,21 +58,6 @@ interface nsIModelElementPrivate : nsIXFormsModelElement
    */
   void addFormControl(in nsIXFormsControl control, in nsIXFormsControl parent);
   void removeFormControl(in nsIXFormsControl control);
-
-  /**
-   * Determine the type for a form control based on the schema included by
-   * this model.
-   */
-  nsISchemaType getTypeForControl(in nsIXFormsControl control);
-
-  /** 
-   * This function takes an instance data node, finds the type bound to it, and
-   * returns the seperated out type and namespace URI.  If no type is set for
-   * the node, then it returns the defaults: "http://www.w3.org/2001/XMLSchema"
-   * and "string"
-   */
-  void getTypeAndNSFromNode(in nsIDOMNode instancenode, out AString type, 
-                            out AString namespaceURI);
 
   /**
    * Notification that an instance element has started or finished loading
@@ -215,4 +201,61 @@ interface nsIModelElementPrivate : nsIXFormsModelElement
    * @param control           The control to rebind.
    */
   void forceRebind(in nsIXFormsControl control);
+
+   /**
+    * Determine the type for a form control based on the schema included by
+    * this model.
+    */
+  nsISVSchemaType getTypeForNode(in nsIDOMNode node);
+
+  /**
+   * Determine the type for a form control based on the schema included by
+   * this model.
+   */
+  nsISVSchemaType getTypeForControl(in nsIXFormsControl control);
+
+  /**
+   * Return builtin type name for a form control based on the schema included by
+   * this model.
+   */
+  AString getBuiltinTypeNameForControl(in nsIXFormsControl control);
+
+  /**
+   * This function takes an instance data node, finds the type bound to it, and
+   * returns the separated out type and namespace URI.  If no type is set for
+   * the node, then it returns the defaults: "http://www.w3.org/2001/XMLSchema"
+   * and "string"
+   */
+  void getTypeAndNSFromNode(in nsIDOMNode instancenode, out AString type,
+                            out AString namespaceURI);
+
+  /**
+   * Retrieves the list of datatypes that the original type is derived from
+   * or is an extension of
+   *
+   * @param aType            The original type
+   * @param aNamespace       The original namespace URI
+   * @param aTypeList        The returned space-delimited list
+   *
+   * Returns NS_ERROR_XFORMS_UNION_TYPE if a schema union datatype was
+   * encounterd while trying to build the type list.  Will also return an
+   * error if we encounter a complex type that comes from complex content
+   * extension or restriction.
+   */
+  void getDerivedTypeList(in AString aType, in AString aNamespace,
+                          out AString aTypeList);
+
+  /**
+   * Retrieves the primative builtin type that the original type derives from
+   *
+   * @param aType            The original type
+   * @param aBuiltinType     The returned builtin type (defined in nsISchema)
+   *
+   * Returns NS_ERROR_XFORMS_UNION_TYPE if a schema union datatype was
+   * encounterd while trying to build the type list.  Will also return an
+   * error if we encounter a complex type that comes from complex content
+   * extension or restriction.
+   */
+  void GetRootBuiltinType(in nsISVSchemaType aType,
+                          out unsigned short aBuiltinType);
 };

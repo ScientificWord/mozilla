@@ -46,7 +46,6 @@
 #include "nsIDOMHTMLDocument.h"
 #include "nsIDOMHTMLCollection.h"
 #include "nsIDOMHTMLFormElement.h"
-#include "nsIContent.h"
 #include "nsIDocument.h"
 #include "nsCURILoader.h"
 #include "nsIDOMHTMLInputElement.h"
@@ -62,6 +61,7 @@
 #include "nsReadableUtils.h"
 #include "nsICategoryManager.h"
 #include "nsNetUtil.h"
+#include "nsEmbedCID.h"
 
 // for making the leap from nsIDOMWindowInternal -> nsIPresShell
 
@@ -84,11 +84,12 @@ nsWalletlibService::~nsWalletlibService()
   SI_ClearUserData();
 }
 
-NS_IMPL_THREADSAFE_ISUPPORTS5(nsWalletlibService,
+NS_IMPL_THREADSAFE_ISUPPORTS6(nsWalletlibService,
                               nsIWalletService,
                               nsIObserver,
                               nsIFormSubmitObserver,
                               nsIWebProgressListener,
+                              nsIPromptFactory,
                               nsISupportsWeakReference)
 
 NS_IMETHODIMP nsWalletlibService::WALLET_PreEdit(nsAString& walletList) {
@@ -221,7 +222,7 @@ NS_IMETHODIMP nsWalletlibService::Observe(nsISupports *aSubject, const char *aTo
 }
 
 #define CRLF "\015\012"
-NS_IMETHODIMP nsWalletlibService::Notify(nsIContent* formNode, nsIDOMWindowInternal* window, nsIURI* actionURL, PRBool* cancelSubmit)
+NS_IMETHODIMP nsWalletlibService::Notify(nsIDOMHTMLFormElement* formNode, nsIDOMWindowInternal* window, nsIURI* actionURL, PRBool* cancelSubmit)
 {
   if (!formNode) {
     return NS_ERROR_FAILURE;
@@ -299,7 +300,7 @@ nsresult nsWalletlibService::Init()
            do_GetService("@mozilla.org/observer-service;1", &rv);
   if (NS_SUCCEEDED(rv) && svc) {
     // Register as an observer of form submission
-    svc->AddObserver(this, NS_FORMSUBMIT_SUBJECT, PR_TRUE);
+    svc->AddObserver(this, NS_EARLYFORMSUBMIT_SUBJECT, PR_TRUE);
     // Register as an observer of profile changes
     svc->AddObserver(this, "profile-before-change", PR_TRUE);
     // Register as an observer for login
@@ -534,6 +535,60 @@ nsWalletlibService::WALLET_Decrypt (const char *crypt, PRUnichar **text) {
   *text = ToNewUnicode(textAutoString);
   return rv;
 }
+
+NS_IMETHODIMP
+nsWalletlibService::GetPrompt(nsIDOMWindow* aParent,
+                              const nsIID& aIID,
+                              void** _retval) {
+  if (!aIID.Equals(NS_GET_IID(nsIAuthPrompt2))) {
+    NS_WARNING("Wallet asked for unexpected interface");
+    return NS_NOINTERFACE;
+  }
+
+  // NOTE: It is important to return the specific return value here. The
+  // caller cares.
+  nsresult rv;
+  nsCOMPtr<nsIPromptService2> service =
+    do_GetService(NS_PROMPTSERVICE_CONTRACTID, &rv);
+  if (NS_FAILED(rv))
+    return rv;
+
+  nsWalletAuthPromptWrapper* wrapper =
+    new nsWalletAuthPromptWrapper(service, aParent);
+  if (!wrapper)
+    return NS_ERROR_OUT_OF_MEMORY;
+
+  NS_ADDREF(wrapper);
+  *_retval = static_cast<nsIAuthPrompt2*>(wrapper);
+  return NS_OK;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// nsWalletAuthPromptWrapper
+
+NS_IMPL_ISUPPORTS1(nsWalletAuthPromptWrapper, nsIAuthPrompt2)
+
+NS_IMETHODIMP
+nsWalletAuthPromptWrapper::PromptAuth(nsIChannel* aChannel,
+                                      PRUint32 aLevel,
+                                      nsIAuthInformation* aAuthInfo,
+                                      PRBool* retval)
+{
+  return SINGSIGN_PromptAuth(mService, mParent, aChannel,
+                             aLevel, aAuthInfo, retval);
+}
+
+NS_IMETHODIMP
+nsWalletAuthPromptWrapper::AsyncPromptAuth(nsIChannel*,
+                                           nsIAuthPromptCallback*,
+                                           nsISupports*,
+                                           PRUint32,
+                                           nsIAuthInformation*,
+                                           nsICancelable**)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
 
 
 ////////////////////////////////////////////////////////////////////////////////

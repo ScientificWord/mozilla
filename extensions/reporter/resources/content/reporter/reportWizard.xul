@@ -46,6 +46,7 @@
 ]>
 
 <wizard id="reportWizard" title="&reportWizard.title;"
+        style="min-width: 535px; min-height: 442px;"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/x-javascript" src="chrome://reporter/content/reportWizard.js"/>
   <stringbundle id="strings" src="chrome://reporter/locale/reportWizard.properties"/>
@@ -80,7 +81,7 @@
       </columns>
       <rows>
         <row align="center">
-          <label control="url" value="&reportForm.url.title;"/>
+          <label control="url" value="&reportForm.url.title;" accesskey="&reportForm.url.accesskey;"/>
           <textbox id="url" size="60" readonly="true" class="noborder"/>
         </row>
         <row align="center">
@@ -102,6 +103,8 @@
               <menuitem label="&reportForm.problem_type.item4.title;" value="4"/>
               <menuitem label="&reportForm.problem_type.item5.title;" value="5"/>
               <menuitem label="&reportForm.problem_type.item6.title;" value="6"/>
+              <menuitem label="&reportForm.problem_type.item8.title;" value="8"/>
+              <!-- Other problem: must be item #7 and must be last -->
               <menuitem label="&reportForm.problem_type.item7.title;" value="7"/>
             </menupopup>
           </menulist>

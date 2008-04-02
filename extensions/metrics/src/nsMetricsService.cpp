@@ -36,11 +36,6 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-// This must be before any #includes to enable logging in release builds
-#ifdef MOZ_LOGGING
-#define FORCE_PR_LOG
-#endif
-
 #include "nsMetricsService.h"
 #include "nsMetricsEventItem.h"
 #include "nsIMetricsCollector.h"
@@ -83,14 +78,16 @@
 #ifndef MOZILLA_1_8_BRANCH
 #include "nsIClassInfoImpl.h"
 #endif
+#include "nsIDocShellTreeItem.h"
 #include "nsDocShellCID.h"
 #include "nsMemory.h"
-#include "nsIBadCertListener.h"
 #include "nsIInterfaceRequestor.h"
 #include "nsIInterfaceRequestorUtils.h"
 #include "nsIX509Cert.h"
 #include "nsAutoPtr.h"
 #include "nsIDOMWindow.h"
+#include "nsIDOMDocumentView.h"
+#include "nsIDOMAbstractView.h"
 
 // We need to suppress inclusion of nsString.h
 #define nsString_h___
@@ -115,12 +112,13 @@ PRLogModuleInfo *gMetricsLog;
 #endif
 
 static const char kQuitApplicationTopic[] = "quit-application";
-static const char kUploadTimePref[] = "metrics.upload.next-time";
-static const char kPingTimePref[] = "metrics.upload.next-ping";
-static const char kEventCountPref[] = "metrics.event-count";
-static const char kEnablePref[] = "metrics.upload.enable";
+static const char kUploadTimePref[] = "extensions.mozilla.metrics.upload.next-time";
+static const char kPingTimePref[] = "extensions.mozilla.metrics.upload.next-ping";
+static const char kEventCountPref[] = "extensions.mozilla.metrics.event-count";
+static const char kEnablePref[] = "extensions.mozilla.metrics.upload.enable";
 
 const PRUint32 nsMetricsService::kMaxRetries = 3;
+const PRUint32 nsMetricsService::kMetricsVersion = 2;
 
 //-----------------------------------------------------------------------------
 
@@ -193,95 +191,6 @@ CompressBZ2(nsIInputStream *src, PRFileDesc *outFd)
 }
 
 #endif // !defined(NS_METRICS_SEND_UNCOMPRESSED_DATA)
-
-//-----------------------------------------------------------------------------
-
-class nsMetricsService::BadCertListener : public nsIBadCertListener,
-                                          public nsIInterfaceRequestor
-{
- public:
-  NS_DECL_ISUPPORTS
-  NS_DECL_NSIBADCERTLISTENER
-  NS_DECL_NSIINTERFACEREQUESTOR
-
-  BadCertListener() { }
-
- private:
-  ~BadCertListener() { }
-};
-
-// This object has to implement threadsafe addref and release, but this is
-// only because the GetInterface call happens on the socket transport thread.
-// The actual notifications are proxied to the main thread.
-NS_IMPL_THREADSAFE_ISUPPORTS2(nsMetricsService::BadCertListener,
-                              nsIBadCertListener, nsIInterfaceRequestor)
-
-NS_IMETHODIMP
-nsMetricsService::BadCertListener::ConfirmUnknownIssuer(
-    nsIInterfaceRequestor *socketInfo, nsIX509Cert *cert,
-    PRInt16 *certAddType, PRBool *result)
-{
-  *result = PR_FALSE;
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsMetricsService::BadCertListener::ConfirmMismatchDomain(
-    nsIInterfaceRequestor *socketInfo, const nsACString &targetURL,
-    nsIX509Cert *cert, PRBool *result)
-{
-  *result = PR_FALSE;
-
-  nsCOMPtr<nsIPrefBranch> prefs = do_GetService(NS_PREFSERVICE_CONTRACTID);
-  NS_ENSURE_STATE(prefs);
-
-  nsCString certHostOverride;
-  prefs->GetCharPref("metrics.upload.cert-host-override",
-                     getter_Copies(certHostOverride));
-
-  if (!certHostOverride.IsEmpty()) {
-    // Accept the given alternate hostname (CN) for the certificate
-    nsString certHost;
-    cert->GetCommonName(certHost);
-    if (certHostOverride.Equals(NS_ConvertUTF16toUTF8(certHost))) {
-      *result = PR_TRUE;
-    }
-  }
-
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsMetricsService::BadCertListener::ConfirmCertExpired(
-    nsIInterfaceRequestor *socketInfo, nsIX509Cert *cert, PRBool *result)
-{
-  *result = PR_FALSE;
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsMetricsService::BadCertListener::NotifyCrlNextupdate(
-    nsIInterfaceRequestor *socketInfo,
-    const nsACString &targetURL, nsIX509Cert *cert)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsMetricsService::BadCertListener::GetInterface(const nsIID &uuid,
-                                                void **result)
-{
-  NS_ENSURE_ARG_POINTER(result);
-
-  if (uuid.Equals(NS_GET_IID(nsIBadCertListener))) {
-    *result = NS_STATIC_CAST(nsIBadCertListener *, this);
-    NS_ADDREF_THIS();
-    return NS_OK;
-  }
-
-  *result = nsnull;
-  return NS_ERROR_NO_INTERFACE;
-}
 
 //-----------------------------------------------------------------------------
 
@@ -872,7 +781,7 @@ nsMetricsService::PruneDisabledCollectors(const nsAString &key,
                                           void *userData)
 {
   DisabledCollectorsClosure *dc =
-    NS_STATIC_CAST(DisabledCollectorsClosure *, userData);
+    static_cast<DisabledCollectorsClosure *>(userData);
 
   // The frozen string API doesn't expose operator==, so we can't use
   // IndexOf() here.
@@ -925,7 +834,7 @@ nsMetricsService::EnableCollectors()
   for (i = 0; i < enabledCollectors.Length(); ++i) {
     const nsString &name = enabledCollectors[i];
     if (!mCollectorMap.GetWeak(name)) {
-      nsCString contractID("@mozilla.org/metrics/collector;1?name=");
+      nsCString contractID("@mozilla.org/extensions/metrics/collector;1?name=");
       contractID.Append(NS_ConvertUTF16toUTF8(name));
 
       nsCOMPtr<nsIMetricsCollector> coll = do_GetService(contractID.get());
@@ -952,7 +861,7 @@ CopySegmentToStream(nsIInputStream *inStr,
                     PRUint32 count,
                     PRUint32 *countWritten)
 {
-  nsIOutputStream *outStr = NS_STATIC_CAST(nsIOutputStream *, closure);
+  nsIOutputStream *outStr = static_cast<nsIOutputStream *>(closure);
   *countWritten = 0;
   while (count) {
     PRUint32 n;
@@ -1072,10 +981,10 @@ nsMetricsService::StartCollection()
   
   nsCOMPtr<nsIPrefBranch> prefs = do_GetService(NS_PREFSERVICE_CONTRACTID);
   NS_ENSURE_STATE(prefs);
-  prefs->GetIntPref("metrics.event-count", &mEventCount);
+  prefs->GetIntPref("extensions.mozilla.metrics.event-count", &mEventCount);
 
   // Update the session id pref for the new session
-  static const char kSessionIDPref[] = "metrics.last-session-id";
+  static const char kSessionIDPref[] = "extensions.mozilla.metrics.last-session-id";
   PRInt32 sessionID = -1;
   prefs->GetIntPref(kSessionIDPref, &sessionID);
   mSessionID.Cut(0, PR_UINT32_MAX);
@@ -1279,11 +1188,10 @@ nsMetricsService::UploadData()
     return NS_ERROR_ABORT;
   }
  
-  PRBool enable = PR_FALSE;
   nsCString spec;
   nsCOMPtr<nsIPrefBranch> prefs = do_GetService(NS_PREFSERVICE_CONTRACTID);
   if (prefs) {
-    prefs->GetCharPref("metrics.upload.uri", getter_Copies(spec));
+    prefs->GetCharPref("extensions.mozilla.metrics.upload.uri", getter_Copies(spec));
   }
   if (spec.IsEmpty()) {
     MS_LOG(("Upload URI not set"));
@@ -1328,11 +1236,6 @@ nsMetricsService::UploadData()
   nsCOMPtr<nsIWritablePropertyBag2> props = do_QueryInterface(channel);
   NS_ENSURE_STATE(props);
   props->SetPropertyAsBool(NS_LITERAL_STRING("moz-metrics-request"), PR_TRUE);
-
-  nsCOMPtr<nsIInterfaceRequestor> certListener = new BadCertListener();
-  NS_ENSURE_TRUE(certListener, NS_ERROR_OUT_OF_MEMORY);
-
-  channel->SetNotificationCallbacks(certListener);
 
   nsCOMPtr<nsIUploadChannel> uploadChannel = do_QueryInterface(channel);
   NS_ENSURE_STATE(uploadChannel); 
@@ -1418,7 +1321,7 @@ nsMetricsService::OpenCompleteXMLStream(nsILocalFile *dataFile,
 {
   // Construct a full XML document using the header, file contents, and
   // footer.  We need to generate a client id now if one doesn't exist.
-  static const char kClientIDPref[] = "metrics.client-id";
+  static const char kClientIDPref[] = "extensions.mozilla.metrics.client-id";
 
   nsCOMPtr<nsIPrefBranch> prefs = do_GetService(NS_PREFSERVICE_CONTRACTID);
   NS_ENSURE_STATE(prefs);
@@ -1435,7 +1338,8 @@ nsMetricsService::OpenCompleteXMLStream(nsILocalFile *dataFile,
 
   static const char METRICS_XML_HEAD[] =
       "<?xml version=\"1.0\"?>\n"
-      "<log xmlns=\"" NS_METRICS_NAMESPACE "\" clientid=\"%s\">\n";
+      "<log xmlns=\"" NS_METRICS_NAMESPACE "\" "
+           "version=\"%d\" clientid=\"%s\">\n";
   static const char METRICS_XML_TAIL[] = "</log>";
 
   nsCOMPtr<nsIFileInputStream> fileStream =
@@ -1453,7 +1357,7 @@ nsMetricsService::OpenCompleteXMLStream(nsILocalFile *dataFile,
       do_CreateInstance("@mozilla.org/io/string-input-stream;1");
   NS_ENSURE_STATE(stringStream);
 
-  char *head = PR_smprintf(METRICS_XML_HEAD, clientID.get());
+  char *head = PR_smprintf(METRICS_XML_HEAD, kMetricsVersion, clientID.get());
   rv = stringStream->SetData(head, -1);
   PR_smprintf_free(head);
   NS_ENSURE_SUCCESS(rv, rv);
@@ -1553,7 +1457,7 @@ nsMetricsService::GenerateClientID(nsCString &clientID)
   nsMetricsUtils::GetRandomNoise(input.b, sizeof(input.b));
 
   return HashBytes(
-      NS_REINTERPRET_CAST(const PRUint8 *, &input), sizeof(input), clientID);
+      reinterpret_cast<const PRUint8 *>(&input), sizeof(input), clientID);
 }
 
 nsresult
@@ -1575,7 +1479,7 @@ nsMetricsService::HashBytes(const PRUint8 *bytes, PRUint32 length,
     return NS_ERROR_OUT_OF_MEMORY;
   }
 
-  PL_Base64Encode(NS_REINTERPRET_CAST(char*, buf), resultLength, resultBuffer);
+  PL_Base64Encode(reinterpret_cast<char*>(buf), resultLength, resultBuffer);
 
   // Size the string to its null-terminated length
   result.SetLength(strlen(resultBuffer));
@@ -1627,7 +1531,7 @@ nsMetricsService::HashUTF8(const nsCString &str, nsCString &hashed)
   }
 
   return HashBytes(
-      NS_REINTERPRET_CAST(const PRUint8 *, str.get()), str.Length(), hashed);
+      reinterpret_cast<const PRUint8 *>(str.get()), str.Length(), hashed);
 }
 
 /* static */ nsresult
@@ -1728,7 +1632,7 @@ nsMetricsUtils::GetRandomNoise(void *buf, PRSize size)
   PRSize nbytes = 0;
   while (nbytes < size) {
     PRSize n = PR_GetRandomNoise(
-        NS_STATIC_CAST(char *, buf) + nbytes, size - nbytes);
+        static_cast<char *>(buf) + nbytes, size - nbytes);
     if (n == 0) {
       MS_LOG(("Couldn't get any random bytes"));
       return PR_FALSE;
@@ -1744,4 +1648,46 @@ nsMetricsUtils::CreateElement(nsIDOMDocument *ownerDoc,
 {
   return ownerDoc->CreateElementNS(NS_LITERAL_STRING(NS_METRICS_NAMESPACE),
                                    tag, element);
+}
+
+
+/* static */ PRBool
+nsMetricsUtils::IsSubframe(nsIDocShellTreeItem* docShell)
+{
+  // Consider the docshell to be a subframe if it's is content, not chrome,
+  // and has a parent docshell which is also content.
+  if (!docShell) {
+    return PR_FALSE;
+  }
+
+  PRInt32 itemType;
+  docShell->GetItemType(&itemType);
+  if (itemType != nsIDocShellTreeItem::typeContent) {
+    return PR_FALSE;
+  }
+
+  nsCOMPtr<nsIDocShellTreeItem> parent;
+  docShell->GetSameTypeParent(getter_AddRefs(parent));
+  return (parent != nsnull);
+}
+
+
+/* static */ PRUint32
+nsMetricsUtils::FindWindowForNode(nsIDOMNode *node)
+{
+  nsCOMPtr<nsIDOMDocument> ownerDoc;
+  node->GetOwnerDocument(getter_AddRefs(ownerDoc));
+  NS_ENSURE_STATE(ownerDoc);
+
+  nsCOMPtr<nsIDOMDocumentView> docView = do_QueryInterface(ownerDoc);
+  NS_ENSURE_STATE(docView);
+
+  nsCOMPtr<nsIDOMAbstractView> absView;
+  docView->GetDefaultView(getter_AddRefs(absView));
+  NS_ENSURE_STATE(absView);
+
+  nsCOMPtr<nsIDOMWindow> window = do_QueryInterface(absView);
+  NS_ENSURE_STATE(window);
+
+  return nsMetricsService::GetWindowID(window);
 }

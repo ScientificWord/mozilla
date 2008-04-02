@@ -38,18 +38,22 @@
 #ifndef GFX_ASURFACE_H
 #define GFX_ASURFACE_H
 
-#include <cairo.h>
-
 #include "gfxTypes.h"
 #include "gfxRect.h"
-#include "nsStringFwd.h"
+
+typedef struct _cairo_surface cairo_surface_t;
+typedef struct _cairo_user_data_key cairo_user_data_key_t;
+
+typedef void (*thebes_destroy_func_t) (void *data);
 
 /**
  * A surface is something you can draw on. Instantiate a subclass of this
  * abstract class, and use gfxContext to draw on this surface.
  */
 class THEBES_API gfxASurface {
-    THEBES_INLINE_DECL_REFCOUNTING(gfxASurface)
+public:
+    nsrefcnt AddRef(void);
+    nsrefcnt Release(void);
 
 public:
     /**
@@ -76,73 +80,83 @@ public:
         SurfaceTypeBeOS,
         SurfaceTypeDirectFB,
         SurfaceTypeSVG,
-        SurfaceTypeQuartz2
+        SurfaceTypeOS2,
+        SurfaceTypeWin32Printing,
+        SurfaceTypeQuartzImage
     } gfxSurfaceType;
+
+    typedef enum {
+        CONTENT_COLOR       = 0x1000,
+        CONTENT_ALPHA       = 0x2000,
+        CONTENT_COLOR_ALPHA = 0x3000
+    } gfxContentType;
 
     /* Wrap the given cairo surface and return a gfxASurface for it */
     static already_AddRefed<gfxASurface> Wrap(cairo_surface_t *csurf);
 
     /*** this DOES NOT addref the surface */
-    cairo_surface_t *CairoSurface() { return mSurface; }
-
-    gfxSurfaceType GetType() const { return (gfxSurfaceType)cairo_surface_get_type(mSurface); }
-
-    void SetDeviceOffset (gfxFloat xOff, gfxFloat yOff) {
-        cairo_surface_set_device_offset(mSurface,
-                                        xOff, yOff);
+    cairo_surface_t *CairoSurface() {
+        NS_ASSERTION(mSurface != nsnull, "gfxASurface::CairoSurface called with mSurface == nsnull!");
+        return mSurface;
     }
 
-    void GetDeviceOffset (gfxFloat *xOff, gfxFloat *yOff) {
-        cairo_surface_get_device_offset(mSurface, xOff, yOff);
-    }
+    gfxSurfaceType GetType() const;
 
-    void Flush() { cairo_surface_flush(mSurface); }
-    void MarkDirty() { cairo_surface_mark_dirty(mSurface); }
-    void MarkDirty(const gfxRect& r) {
-        cairo_surface_mark_dirty_rectangle(mSurface,
-                                           (int) r.pos.x, (int) r.pos.y,
-                                           (int) r.size.width, (int) r.size.height);
-    }
+    gfxContentType GetContentType() const;
+
+    void SetDeviceOffset(const gfxPoint& offset);
+    gfxPoint GetDeviceOffset() const;
+
+    void Flush();
+    void MarkDirty();
+    void MarkDirty(const gfxRect& r);
 
     /* Printing backend functions */
-    virtual nsresult BeginPrinting(const nsAString& aTitle, const nsAString& aPrintToFileName) { return NS_ERROR_NOT_IMPLEMENTED; }
-    virtual nsresult EndPrinting() { return NS_ERROR_NOT_IMPLEMENTED; }
-    virtual nsresult AbortPrinting() { return NS_ERROR_NOT_IMPLEMENTED; }
-    virtual nsresult BeginPage() { return NS_ERROR_NOT_IMPLEMENTED; }
-    virtual nsresult EndPage() { return NS_ERROR_NOT_IMPLEMENTED; }
+    virtual nsresult BeginPrinting(const nsAString& aTitle, const nsAString& aPrintToFileName);
+    virtual nsresult EndPrinting();
+    virtual nsresult AbortPrinting();
+    virtual nsresult BeginPage();
+    virtual nsresult EndPage();
 
     void SetData(const cairo_user_data_key_t *key,
                  void *user_data,
-                 cairo_destroy_func_t destroy)
-    {
-        cairo_surface_set_user_data (mSurface, key, user_data, destroy);
-    }
+                 thebes_destroy_func_t destroy);
+    void *GetData(const cairo_user_data_key_t *key);
 
-    void *GetData(const cairo_user_data_key_t *key)
-    {
-        return cairo_surface_get_user_data (mSurface, key);
-    }
+    virtual void Finish();
+
+    int CairoStatus();
+
+    /* Make sure that the given dimensions don't overflow a 32-bit signed int
+     * using 4 bytes per pixel; optionally, make sure that either dimension
+     * doesn't exceed the given limit.
+     */
+    static PRBool CheckSurfaceSize(const gfxIntSize& sz, PRInt32 limit = 0);
+
+    /* Return the default set of context flags for this surface; these are
+     * hints to the context about any special rendering considerations.  See
+     * gfxContext::SetFlag for documentation.
+     */
+    virtual PRInt32 GetDefaultContextFlags() const { return 0; }
 
 protected:
+    gfxASurface() : mSurface(nsnull), mFloatingRefs(0), mSurfaceValid(PR_FALSE) { }
+
     static gfxASurface* GetSurfaceWrapper(cairo_surface_t *csurf);
     static void SetSurfaceWrapper(cairo_surface_t *csurf, gfxASurface *asurf);
 
     void Init(cairo_surface_t *surface, PRBool existingSurface = PR_FALSE);
 
-    void Destroy();
-
-    PRBool Destroyed() const {
-        return mDestroyed;
-    }
-
     virtual ~gfxASurface() {
-        if (!mDestroyed) {
-            NS_WARNING("gfxASurface::~gfxASurface called, but cairo surface was not destroyed! (Did someone forget to call Destroy()?)");
-        }
     }
 private:
+    static void SurfaceDestroyFunc(void *data);
+
     cairo_surface_t *mSurface;
-    PRBool mDestroyed;
+    PRInt32 mFloatingRefs;
+
+protected:
+    PRPackedBool mSurfaceValid;
 };
 
 /**
@@ -151,13 +165,10 @@ private:
 class THEBES_API gfxUnknownSurface : public gfxASurface {
 public:
     gfxUnknownSurface(cairo_surface_t *surf) {
-        cairo_surface_reference(surf);
-        Init(surf);
+        Init(surf, PR_TRUE);
     }
 
-    virtual ~gfxUnknownSurface() {
-        Destroy();
-    }
+    virtual ~gfxUnknownSurface() { }
 };
 
 #endif /* GFX_ASURFACE_H */

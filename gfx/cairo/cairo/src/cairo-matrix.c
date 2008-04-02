@@ -35,9 +35,14 @@
  */
 
 #define _GNU_SOURCE
-#include <stdlib.h>
 
 #include "cairoint.h"
+
+#if _XOPEN_SOURCE >= 600 || defined(_ISOC99_SOURCE)
+#define ISFINITE(x) isfinite (x)
+#else
+#define ISFINITE(x) ((x) * (x) >= 0.) /* check for NaNs */
+#endif
 
 static void
 _cairo_matrix_scalar_multiply (cairo_matrix_t *matrix, double scalar);
@@ -48,7 +53,7 @@ _cairo_matrix_compute_adjoint (cairo_matrix_t *matrix);
 /**
  * cairo_matrix_init_identity:
  * @matrix: a #cairo_matrix_t
- * 
+ *
  * Modifies @matrix to be an identity transformation.
  **/
 void
@@ -63,14 +68,14 @@ slim_hidden_def(cairo_matrix_init_identity);
 
 /**
  * cairo_matrix_init:
- * @matrix: a cairo_matrix_t
+ * @matrix: a #cairo_matrix_t
  * @xx: xx component of the affine transformation
  * @yx: yx component of the affine transformation
  * @xy: xy component of the affine transformation
  * @yy: yy component of the affine transformation
  * @x0: X translation component of the affine transformation
  * @y0: Y translation component of the affine transformation
- * 
+ *
  * Sets @matrix to be the affine transformation given by
  * @xx, @yx, @xy, @yy, @x0, @y0. The transformation is given
  * by:
@@ -94,15 +99,15 @@ slim_hidden_def(cairo_matrix_init);
 
 /**
  * _cairo_matrix_get_affine:
- * @matrix: a @cairo_matrix_t
+ * @matrix: a #cairo_matrix_t
  * @xx: location to store xx component of matrix
  * @yx: location to store yx component of matrix
  * @xy: location to store xy component of matrix
  * @yy: location to store yy component of matrix
  * @x0: location to store x0 (X-translation component) of matrix, or %NULL
  * @y0: location to store y0 (Y-translation component) of matrix, or %NULL
- * 
- * Gets the matrix values for the affine tranformation that @matrix represents.
+ *
+ * Gets the matrix values for the affine transformation that @matrix represents.
  * See cairo_matrix_init().
  *
  *
@@ -132,10 +137,10 @@ _cairo_matrix_get_affine (const cairo_matrix_t *matrix,
 
 /**
  * cairo_matrix_init_translate:
- * @matrix: a cairo_matrix_t
+ * @matrix: a #cairo_matrix_t
  * @tx: amount to translate in the X direction
  * @ty: amount to translate in the Y direction
- * 
+ *
  * Initializes @matrix to a transformation that translates by @tx and
  * @ty in the X and Y dimensions, respectively.
  **/
@@ -152,10 +157,10 @@ slim_hidden_def(cairo_matrix_init_translate);
 
 /**
  * cairo_matrix_translate:
- * @matrix: a cairo_matrix_t
+ * @matrix: a #cairo_matrix_t
  * @tx: amount to translate in the X direction
  * @ty: amount to translate in the Y direction
- * 
+ *
  * Applies a translation by @tx, @ty to the transformation in
  * @matrix. The effect of the new transformation is to first translate
  * the coordinates by @tx and @ty, then apply the original transformation
@@ -170,13 +175,14 @@ cairo_matrix_translate (cairo_matrix_t *matrix, double tx, double ty)
 
     cairo_matrix_multiply (matrix, &tmp, matrix);
 }
+slim_hidden_def (cairo_matrix_translate);
 
 /**
  * cairo_matrix_init_scale:
- * @matrix: a cairo_matrix_t
+ * @matrix: a #cairo_matrix_t
  * @sx: scale factor in the X direction
  * @sy: scale factor in the Y direction
- * 
+ *
  * Initializes @matrix to a transformation that scales by @sx and @sy
  * in the X and Y dimensions, respectively.
  **/
@@ -196,8 +202,8 @@ slim_hidden_def(cairo_matrix_init_scale);
  * @matrix: a #cairo_matrix_t
  * @sx: scale factor in the X direction
  * @sy: scale factor in the Y direction
- * 
- * Applies scaling by @tx, @ty to the transformation in @matrix. The
+ *
+ * Applies scaling by @sx, @sy to the transformation in @matrix. The
  * effect of the new transformation is to first scale the coordinates
  * by @sx and @sy, then apply the original transformation to the coordinates.
  **/
@@ -214,13 +220,13 @@ slim_hidden_def(cairo_matrix_scale);
 
 /**
  * cairo_matrix_init_rotate:
- * @matrix: a cairo_matrix_t
+ * @matrix: a #cairo_matrix_t
  * @radians: angle of rotation, in radians. The direction of rotation
  * is defined such that positive angles rotate in the direction from
  * the positive X axis toward the positive Y axis. With the default
  * axis orientation of cairo, positive angles rotate in a clockwise
  * direction.
- * 
+ *
  * Initialized @matrix to a transformation that rotates by @radians.
  **/
 void
@@ -242,13 +248,13 @@ slim_hidden_def(cairo_matrix_init_rotate);
 
 /**
  * cairo_matrix_rotate:
- * @matrix: a @cairo_matrix_t
+ * @matrix: a #cairo_matrix_t
  * @radians: angle of rotation, in radians. The direction of rotation
  * is defined such that positive angles rotate in the direction from
  * the positive X axis toward the positive Y axis. With the default
  * axis orientation of cairo, positive angles rotate in a clockwise
  * direction.
- * 
+ *
  * Applies rotation by @radians to the transformation in
  * @matrix. The effect of the new transformation is to first rotate the
  * coordinates by @radians, then apply the original transformation
@@ -266,10 +272,10 @@ cairo_matrix_rotate (cairo_matrix_t *matrix, double radians)
 
 /**
  * cairo_matrix_multiply:
- * @result: a @cairo_matrix_t in which to store the result
- * @a: a @cairo_matrix_t
- * @b: a @cairo_matrix_t
- * 
+ * @result: a #cairo_matrix_t in which to store the result
+ * @a: a #cairo_matrix_t
+ * @b: a #cairo_matrix_t
+ *
  * Multiplies the affine transformations in @a and @b together
  * and stores the result in @result. The effect of the resulting
  * transformation is to first apply the transformation in @a to the
@@ -304,12 +310,12 @@ slim_hidden_def(cairo_matrix_multiply);
 
 /**
  * cairo_matrix_transform_distance:
- * @matrix: a @cairo_matrix_t
+ * @matrix: a #cairo_matrix_t
  * @dx: X component of a distance vector. An in/out parameter
  * @dy: Y component of a distance vector. An in/out parameter
- * 
+ *
  * Transforms the distance vector (@dx,@dy) by @matrix. This is
- * similar to cairo_matrix_transform() except that the translation
+ * similar to cairo_matrix_transform_point() except that the translation
  * components of the transformation are ignored. The calculation of
  * the returned vector is as follows:
  *
@@ -338,10 +344,10 @@ slim_hidden_def(cairo_matrix_transform_distance);
 
 /**
  * cairo_matrix_transform_point:
- * @matrix: a @cairo_matrix_t
+ * @matrix: a #cairo_matrix_t
  * @x: X position. An in/out parameter
  * @y: Y position. An in/out parameter
- * 
+ *
  * Transforms the point (@x, @y) by @matrix.
  **/
 void
@@ -356,34 +362,30 @@ slim_hidden_def(cairo_matrix_transform_point);
 
 void
 _cairo_matrix_transform_bounding_box (const cairo_matrix_t *matrix,
-				      double *x, double *y,
-				      double *width, double *height)
+				      double *x1, double *y1,
+				      double *x2, double *y2,
+				      cairo_bool_t *is_tight)
 {
     int i;
     double quad_x[4], quad_y[4];
-    double dx1, dy1;
-    double dx2, dy2;
     double min_x, max_x;
     double min_y, max_y;
 
-    quad_x[0] = *x;
-    quad_y[0] = *y;
+    quad_x[0] = *x1;
+    quad_y[0] = *y1;
     cairo_matrix_transform_point (matrix, &quad_x[0], &quad_y[0]);
 
-    dx1 = *width;
-    dy1 = 0;
-    cairo_matrix_transform_distance (matrix, &dx1, &dy1);
-    quad_x[1] = quad_x[0] + dx1;
-    quad_y[1] = quad_y[0] + dy1;
+    quad_x[1] = *x2;
+    quad_y[1] = *y1;
+    cairo_matrix_transform_point (matrix, &quad_x[1], &quad_y[1]);
 
-    dx2 = 0;
-    dy2 = *height;
-    cairo_matrix_transform_distance (matrix, &dx2, &dy2);
-    quad_x[2] = quad_x[0] + dx2;
-    quad_y[2] = quad_y[0] + dy2;
+    quad_x[2] = *x1;
+    quad_y[2] = *y2;
+    cairo_matrix_transform_point (matrix, &quad_x[2], &quad_y[2]);
 
-    quad_x[3] = quad_x[0] + dx1 + dx2;
-    quad_y[3] = quad_y[0] + dy1 + dy2;
+    quad_x[3] = *x2;
+    quad_y[3] = *y2;
+    cairo_matrix_transform_point (matrix, &quad_x[3], &quad_y[3]);
 
     min_x = max_x = quad_x[0];
     min_y = max_y = quad_y[0];
@@ -400,10 +402,25 @@ _cairo_matrix_transform_bounding_box (const cairo_matrix_t *matrix,
 	    max_y = quad_y[i];
     }
 
-    *x = min_x;
-    *y = min_y;
-    *width = max_x - min_x;
-    *height = max_y - min_y;
+    *x1 = min_x;
+    *y1 = min_y;
+    *x2 = max_x;
+    *y2 = max_y;
+    
+    if (is_tight) {
+        /* it's tight if and only if the four corner points form an axis-aligned
+           rectangle.
+           And that's true if and only if we can derive corners 0 and 3 from
+           corners 1 and 2 in one of two straightforward ways...
+           We could use a tolerance here but for now we'll fall back to FALSE in the case
+           of floating point error.
+        */
+        *is_tight =
+            (quad_x[1] == quad_x[0] && quad_y[1] == quad_y[3] &&
+             quad_x[2] == quad_x[3] && quad_y[2] == quad_y[0]) ||
+            (quad_x[1] == quad_x[3] && quad_y[1] == quad_y[0] &&
+             quad_x[2] == quad_x[0] && quad_y[2] == quad_y[3]);
+    }
 }
 
 static void
@@ -442,13 +459,13 @@ _cairo_matrix_compute_adjoint (cairo_matrix_t *matrix)
 
 /**
  * cairo_matrix_invert:
- * @matrix: a @cairo_matrix_t
- * 
+ * @matrix: a #cairo_matrix_t
+ *
  * Changes @matrix to be the inverse of it's original value. Not
  * all transformation matrices have inverses; if the matrix
  * collapses points together (it is <firstterm>degenerate</firstterm>),
  * then it has no inverse and this function will fail.
- * 
+ *
  * Returns: If @matrix has an inverse, modifies @matrix to
  *  be the inverse matrix and returns %CAIRO_STATUS_SUCCESS. Otherwise,
  *  returns %CAIRO_STATUS_INVALID_MATRIX.
@@ -460,9 +477,12 @@ cairo_matrix_invert (cairo_matrix_t *matrix)
     double det;
 
     _cairo_matrix_compute_determinant (matrix, &det);
-    
+
     if (det == 0)
-	return CAIRO_STATUS_INVALID_MATRIX;
+	return _cairo_error (CAIRO_STATUS_INVALID_MATRIX);
+
+    if (! ISFINITE (det))
+	return _cairo_error (CAIRO_STATUS_INVALID_MATRIX);
 
     _cairo_matrix_compute_adjoint (matrix);
     _cairo_matrix_scalar_multiply (matrix, 1 / det);
@@ -470,6 +490,16 @@ cairo_matrix_invert (cairo_matrix_t *matrix)
     return CAIRO_STATUS_SUCCESS;
 }
 slim_hidden_def(cairo_matrix_invert);
+
+cairo_bool_t
+_cairo_matrix_is_invertible (const cairo_matrix_t *matrix)
+{
+    double det;
+
+    _cairo_matrix_compute_determinant (matrix, &det);
+
+    return det != 0. && ISFINITE (det);
+}
 
 void
 _cairo_matrix_compute_determinant (const cairo_matrix_t *matrix,
@@ -492,6 +522,9 @@ _cairo_matrix_compute_scale_factors (const cairo_matrix_t *matrix,
 
     _cairo_matrix_compute_determinant (matrix, &det);
 
+    if (! ISFINITE (det))
+	return _cairo_error (CAIRO_STATUS_INVALID_MATRIX);
+
     if (det == 0)
     {
 	*sx = *sy = 0;
@@ -501,7 +534,7 @@ _cairo_matrix_compute_scale_factors (const cairo_matrix_t *matrix,
 	double x = x_major != 0;
 	double y = x == 0;
 	double major, minor;
-	
+
 	cairo_matrix_transform_distance (matrix, &x, &y);
 	major = sqrt(x*x + y*y);
 	/*
@@ -511,7 +544,7 @@ _cairo_matrix_compute_scale_factors (const cairo_matrix_t *matrix,
 	    det = -det;
 	if (major)
 	    minor = det / major;
-	else 
+	else
 	    minor = 0.0;
 	if (x_major)
 	{
@@ -528,64 +561,43 @@ _cairo_matrix_compute_scale_factors (const cairo_matrix_t *matrix,
     return CAIRO_STATUS_SUCCESS;
 }
 
-cairo_bool_t 
-_cairo_matrix_is_integer_translation(const cairo_matrix_t *m,
-				     int *itx, int *ity)
+cairo_bool_t
+_cairo_matrix_is_identity (const cairo_matrix_t *matrix)
 {
-    cairo_bool_t is_integer_translation;
-    cairo_fixed_t x0_fixed, y0_fixed;
-
-    x0_fixed = _cairo_fixed_from_double (m->x0);
-    y0_fixed = _cairo_fixed_from_double (m->y0);
-
-    is_integer_translation = ((m->xx == 1.0) &&
-			      (m->yx == 0.0) &&
-			      (m->xy == 0.0) &&
-			      (m->yy == 1.0) &&
-			      (_cairo_fixed_is_integer(x0_fixed)) &&
-			      (_cairo_fixed_is_integer(y0_fixed)));
-
-    if (! is_integer_translation)
-	return FALSE;
-
-    if (itx)
-	*itx = _cairo_fixed_integer_part(x0_fixed);
-    if (ity)
-	*ity = _cairo_fixed_integer_part(y0_fixed);
-
-    return TRUE;
+    return (matrix->xx == 1.0 && matrix->yx == 0.0 &&
+	    matrix->xy == 0.0 && matrix->yy == 1.0 &&
+	    matrix->x0 == 0.0 && matrix->y0 == 0.0);
 }
 
 cairo_bool_t
-_cairo_matrix_is_integer_translation_and_scale(const cairo_matrix_t *m,
-                                               int *itx, int *ity, int *sx, int *sy)
+_cairo_matrix_is_translation (const cairo_matrix_t *matrix)
 {
-    cairo_fixed_t x0_fixed, y0_fixed, xx_fixed, yy_fixed;
+    return (matrix->xx == 1.0 && matrix->yx == 0.0 &&
+	    matrix->xy == 0.0 && matrix->yy == 1.0);
+}
 
-    if ((m->yx != 0.0) || (m->yy != 0.0))
-        return FALSE;
+cairo_bool_t
+_cairo_matrix_is_integer_translation (const cairo_matrix_t *matrix,
+				      int *itx, int *ity)
+{
+    if (_cairo_matrix_is_translation (matrix))
+    {
+        cairo_fixed_t x0_fixed = _cairo_fixed_from_double (matrix->x0);
+        cairo_fixed_t y0_fixed = _cairo_fixed_from_double (matrix->y0);
 
-    x0_fixed = _cairo_fixed_from_double (m->x0);
-    y0_fixed = _cairo_fixed_from_double (m->y0);
-    xx_fixed = _cairo_fixed_from_double (m->xx);
-    yy_fixed = _cairo_fixed_from_double (m->yy);
+        if (_cairo_fixed_is_integer (x0_fixed) &&
+            _cairo_fixed_is_integer (y0_fixed))
+        {
+            if (itx)
+                *itx = _cairo_fixed_integer_part (x0_fixed);
+            if (ity)
+                *ity = _cairo_fixed_integer_part (y0_fixed);
 
-    if (!_cairo_fixed_is_integer(x0_fixed) ||
-        !_cairo_fixed_is_integer(y0_fixed) ||
-        !_cairo_fixed_is_integer(xx_fixed) ||
-        !_cairo_fixed_is_integer(yy_fixed))
-        return FALSE;
+            return TRUE;
+        }
+    }
 
-    if (itx)
-        *itx = _cairo_fixed_integer_part(x0_fixed);
-    if (ity)
-        *ity = _cairo_fixed_integer_part(y0_fixed);
-    if (sx)
-        *sx = _cairo_fixed_integer_part(xx_fixed);
-    if (sy)
-        *sy = _cairo_fixed_integer_part(yy_fixed);
-
-    return TRUE;
+    return FALSE;
 }
 
 /*
@@ -593,111 +605,108 @@ _cairo_matrix_is_integer_translation_and_scale(const cairo_matrix_t *m,
 
   The following is a derivation of a formula to calculate the length of the
   major axis for this ellipse; this is useful for error bounds calculations.
-  
+
   Thanks to Walter Brisken <wbrisken@aoc.nrao.edu> for this derivation:
-  
+
   1.  First some notation:
-  
-  All capital letters represent vectors in two dimensions.  A prime ' 
+
+  All capital letters represent vectors in two dimensions.  A prime '
   represents a transformed coordinate.  Matrices are written in underlined
   form, ie _R_.  Lowercase letters represent scalar real values.
-  
-  2.  The question has been posed:  What is the maximum expansion factor 
+
+  2.  The question has been posed:  What is the maximum expansion factor
   achieved by the linear transformation
-  
+
   X' = X _R_
-  
+
   where _R_ is a real-valued 2x2 matrix with entries:
-  
+
   _R_ = [a b]
         [c d]  .
-  
-  In other words, what is the maximum radius, MAX[ |X'| ], reached for any 
+
+  In other words, what is the maximum radius, MAX[ |X'| ], reached for any
   X on the unit circle ( |X| = 1 ) ?
-  
-  
+
   3.  Some useful formulae
-  
+
   (A) through (C) below are standard double-angle formulae.  (D) is a lesser
   known result and is derived below:
-  
+
   (A)  sin²(θ) = (1 - cos(2*θ))/2
   (B)  cos²(θ) = (1 + cos(2*θ))/2
   (C)  sin(θ)*cos(θ) = sin(2*θ)/2
   (D)  MAX[a*cos(θ) + b*sin(θ)] = sqrt(a² + b²)
-  
+
   Proof of (D):
-  
+
   find the maximum of the function by setting the derivative to zero:
-  
+
        -a*sin(θ)+b*cos(θ) = 0
-  
-  From this it follows that 
-  
-       tan(θ) = b/a 
-  
-  and hence 
-  
+
+  From this it follows that
+
+       tan(θ) = b/a
+
+  and hence
+
        sin(θ) = b/sqrt(a² + b²)
-  
-  and 
-  
+
+  and
+
        cos(θ) = a/sqrt(a² + b²)
-  
+
   Thus the maximum value is
-  
+
        MAX[a*cos(θ) + b*sin(θ)] = (a² + b²)/sqrt(a² + b²)
                                    = sqrt(a² + b²)
-  
-  
+
   4.  Derivation of maximum expansion
-  
+
   To find MAX[ |X'| ] we search brute force method using calculus.  The unit
   circle on which X is constrained is to be parameterized by t:
-  
+
        X(θ) = (cos(θ), sin(θ))
-  
-  Thus 
-  
+
+  Thus
+
        X'(θ) = X(θ) * _R_ = (cos(θ), sin(θ)) * [a b]
                                                [c d]
              = (a*cos(θ) + c*sin(θ), b*cos(θ) + d*sin(θ)).
-  
-  Define 
-  
+
+  Define
+
        r(θ) = |X'(θ)|
-  
+
   Thus
-  
+
        r²(θ) = (a*cos(θ) + c*sin(θ))² + (b*cos(θ) + d*sin(θ))²
-             = (a² + b²)*cos²(θ) + (c² + d²)*sin²(θ) 
-                 + 2*(a*c + b*d)*cos(θ)*sin(θ) 
-  
+             = (a² + b²)*cos²(θ) + (c² + d²)*sin²(θ)
+                 + 2*(a*c + b*d)*cos(θ)*sin(θ)
+
   Now apply the double angle formulae (A) to (C) from above:
-  
-       r²(θ) = (a² + b² + c² + d²)/2 
+
+       r²(θ) = (a² + b² + c² + d²)/2
 	     + (a² + b² - c² - d²)*cos(2*θ)/2
   	     + (a*c + b*d)*sin(2*θ)
              = f + g*cos(φ) + h*sin(φ)
-  
+
   Where
-  
+
        f = (a² + b² + c² + d²)/2
        g = (a² + b² - c² - d²)/2
        h = (a*c + d*d)
        φ = 2*θ
-  
+
   It is clear that MAX[ |X'| ] = sqrt(MAX[ r² ]).  Here we determine MAX[ r² ]
   using (D) from above:
-  
+
        MAX[ r² ] = f + sqrt(g² + h²)
-  
+
   And finally
 
        MAX[ |X'| ] = sqrt( f + sqrt(g² + h²) )
 
   Which is the solution to this problem.
-
 
   Walter Brisken
   2004/10/08
@@ -737,15 +746,61 @@ void
 _cairo_matrix_to_pixman_matrix (const cairo_matrix_t	*matrix,
 				pixman_transform_t	*pixman_transform)
 {
-    pixman_transform->matrix[0][0] = _cairo_fixed_from_double (matrix->xx);
-    pixman_transform->matrix[0][1] = _cairo_fixed_from_double (matrix->xy);
-    pixman_transform->matrix[0][2] = _cairo_fixed_from_double (matrix->x0);
+    static const pixman_transform_t pixman_identity_transform = {{
+        {1 << 16,        0,       0},
+        {       0, 1 << 16,       0},
+        {       0,       0, 1 << 16}
+    }};
 
-    pixman_transform->matrix[1][0] = _cairo_fixed_from_double (matrix->yx);
-    pixman_transform->matrix[1][1] = _cairo_fixed_from_double (matrix->yy);
-    pixman_transform->matrix[1][2] = _cairo_fixed_from_double (matrix->y0);
+    if (_cairo_matrix_is_identity (matrix)) {
+        *pixman_transform = pixman_identity_transform;
+    }
+    else {
+        cairo_matrix_t inv = *matrix;
+        double x = 0, y = 0;
+        pixman_vector_t vector;
 
-    pixman_transform->matrix[2][0] = 0;
-    pixman_transform->matrix[2][1] = 0;
-    pixman_transform->matrix[2][2] = _cairo_fixed_from_double (1);
+        pixman_transform->matrix[0][0] = _cairo_fixed_16_16_from_double (matrix->xx);
+        pixman_transform->matrix[0][1] = _cairo_fixed_16_16_from_double (matrix->xy);
+        pixman_transform->matrix[0][2] = _cairo_fixed_16_16_from_double (matrix->x0);
+
+        pixman_transform->matrix[1][0] = _cairo_fixed_16_16_from_double (matrix->yx);
+        pixman_transform->matrix[1][1] = _cairo_fixed_16_16_from_double (matrix->yy);
+        pixman_transform->matrix[1][2] = _cairo_fixed_16_16_from_double (matrix->y0);
+
+        pixman_transform->matrix[2][0] = 0;
+        pixman_transform->matrix[2][1] = 0;
+        pixman_transform->matrix[2][2] = 1 << 16;
+
+        /* The conversion above breaks cairo's translation invariance:
+         * a translation of (a, b) in device space translates to
+         * a translation of (xx * a + xy * b, yx * a + yy * b)
+         * for cairo, while pixman uses rounded versions of xx ... yy.
+         * This error increases as a and b get larger.
+         *
+         * To compensate for this, we fix the point (0, 0) in pattern
+         * space and adjust pixman's transform to agree with cairo's at
+         * that point. */
+
+        /* Note: If we can't invert the transformation, skip the adjustment. */
+        if (cairo_matrix_invert (&inv) != CAIRO_STATUS_SUCCESS)
+            return;
+
+        /* find the device space coordinate that maps to (0, 0) */
+        cairo_matrix_transform_point (&inv, &x, &y);
+
+        /* transform the resulting device space coordinate back
+         * to the pattern space, using pixman's transform */
+        vector.vector[0] = _cairo_fixed_16_16_from_double (x);
+        vector.vector[1] = _cairo_fixed_16_16_from_double (y);
+        vector.vector[2] = 1 << 16;
+
+        if (!pixman_transform_point_3d (pixman_transform, &vector))
+            return;
+
+        /* Ideally, the vector should now be (0, 0). We can now compensate
+         * for the resulting error */
+        pixman_transform->matrix[0][2] -= vector.vector[0];
+        pixman_transform->matrix[1][2] -= vector.vector[1];
+    }
 }

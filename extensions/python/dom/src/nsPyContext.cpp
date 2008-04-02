@@ -42,8 +42,11 @@
 #include "nsIArray.h"
 #include "nsIAtom.h"
 #include "prtime.h"
-#include "nsString.h"
+#include "nsStringAPI.h"
+#include "nsIWeakReference.h" // needed by nsGUIEvent.h
+#include "nsIWeakReferenceUtils.h" // needed by nsGUIEvent.h
 #include "nsGUIEvent.h"
+#include "nsServiceManagerUtils.h"
 #include "nsDOMScriptObjectHolder.h"
 #include "nsIDOMDocument.h"
 
@@ -106,7 +109,6 @@ NS_IMPL_RELEASE(nsPyObjectHolder)
 
 nsPythonContext::nsPythonContext() :
     mIsInitialized(PR_FALSE),
-    mOwner(nsnull),
     mScriptGlobal(nsnull),
     mScriptsEnabled(PR_TRUE),
     mProcessingScriptTag(PR_FALSE),
@@ -138,8 +140,8 @@ nsresult nsPythonContext::HandlePythonError()
   if (!PyErr_Occurred())
     return NS_OK;
 
-  nsScriptErrorEvent errorevent(PR_TRUE, NS_SCRIPT_ERROR);
-  nsAutoString strFilename;
+  nsScriptErrorEvent errorevent(PR_TRUE, NS_LOAD_ERROR);
+  nsString strFilename;
 
   PyObject *exc, *typ, *tb;
   PyErr_Fetch(&exc, &typ, &tb);
@@ -161,7 +163,7 @@ nsresult nsPythonContext::HandlePythonError()
       if (code) {
         PyObject *filename = PyObject_GetAttrString(code, "co_filename");
         if (filename && PyString_Check(filename)) {
-          CopyUTF8toUTF16(PyString_AsString(filename), strFilename);
+          CopyUTF8toUTF16(nsCString(PyString_AsString(filename)), strFilename);
           errorevent.fileName = strFilename.get();
         }
         Py_XDECREF(filename);
@@ -288,7 +290,7 @@ nsPythonContext::InitContext(nsIScriptGlobalObject *aGlobalObject)
 }
 
 void
-nsPythonContext::DidSetDocument(nsIDOMDocument *aDoc, void *aGlobal)
+nsPythonContext::DidSetDocument(nsISupports *aSupDoc, void *aGlobal)
 {
   NS_TIMELINE_MARK_FUNCTION("nsPythonContext::DidSetDocument");
   NS_ASSERTION(mDelegate != NULL, "No delegate");
@@ -298,9 +300,12 @@ nsPythonContext::DidSetDocument(nsIDOMDocument *aDoc, void *aGlobal)
 
   CEnterLeavePython _celp;
   PyObject *obDoc;
-  if (aDoc) {
-    obDoc = PyObject_FromNSDOMInterface(mDelegate, aDoc,
-                                        NS_GET_IID(nsIDOMDocument));
+  if (aSupDoc) {
+    nsCOMPtr<nsIDOMDocument> doc(do_QueryInterface(aSupDoc));
+    NS_ASSERTION(nsnull != doc, "not an nsIDOMDocument!?");
+    if (nsnull != doc)
+      obDoc = PyObject_FromNSDOMInterface(mDelegate, aSupDoc,
+                                          NS_GET_IID(nsIDOMDocument));
     if (!obDoc) {
       HandlePythonError();
       return;
@@ -470,6 +475,7 @@ nsPythonContext::CompileEventHandler(nsIAtom *aName,
                                  const char** aArgNames,
                                  const nsAString& aBody,
                                  const char *aURL, PRUint32 aLineNo,
+				     PRUint32 aVersion,
                                  nsScriptObjectHolder &aHandler)
 {
   NS_ENSURE_TRUE(mIsInitialized, NS_ERROR_NOT_INITIALIZED);
@@ -489,11 +495,11 @@ nsPythonContext::CompileEventHandler(nsIAtom *aName,
     PyList_SET_ITEM(argNames, i, PyString_FromString(aArgNames[i]));
   }
   PyObject *ret = PyObject_CallMethod(mDelegate, "CompileEventHandler",
-                                      "sNNsi",
+                                      "sNNsii",
                                       AtomToEventHandlerName(aName),
                                       argNames,
                                       PyObject_FromNSString(aBody),
-                                      aURL, aLineNo);
+                                      aURL, aLineNo, aVersion);
   if (!ret)
     return HandlePythonError();
 
@@ -538,6 +544,7 @@ nsPythonContext::CompileFunction(void* aTarget,
                              const nsAString& aBody,
                              const char* aURL,
                              PRUint32 aLineNo,
+                             PRUint32 aVersion,
                              PRBool aShared,
                              void** aFunctionObject)
 {
@@ -848,20 +855,6 @@ nsPythonContext::SetScriptsEnabled(PRBool aEnabled, PRBool aFireTimeouts)
   if (global) {
     global->SetScriptsEnabled(aEnabled, aFireTimeouts);
   }
-}
-
-void
-nsPythonContext::SetOwner(nsIScriptContextOwner* owner)
-{
-  // The owner should not be addrefed!! We'll be told
-  // when the owner goes away.
-  mOwner = owner;
-}
-
-nsIScriptContextOwner *
-nsPythonContext::GetOwner()
-{
-  return mOwner;
 }
 
 nsresult

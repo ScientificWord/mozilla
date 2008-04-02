@@ -618,10 +618,10 @@ nsSchemaLoader::GetResolvedURI(const nsAString& aSchemaURI,
                                nsIURI** aURI)
 {
   nsresult rv;
-  nsCOMPtr<nsIXPCNativeCallContext> cc;
+  nsAXPCNativeCallContext *cc = nsnull;
   nsCOMPtr<nsIXPConnect> xpc(do_GetService(nsIXPConnect::GetCID(), &rv));
   if(NS_SUCCEEDED(rv)) {
-    rv = xpc->GetCurrentNativeCallContext(getter_AddRefs(cc));
+    rv = xpc->GetCurrentNativeCallContext(&cc);
   }
 
   if (NS_SUCCEEDED(rv) && cc) {
@@ -892,22 +892,8 @@ nsSchemaLoader::ProcessSchemaElement(nsIDOMElement* aElement,
       // since we could be going cross-domain, make sure we can load it by doing
       // a principal same origin check.
 
-      // get the base document's principal
-      nsIPrincipal *basePrincipal = doc->NodePrincipal();
-      NS_ENSURE_STATE(basePrincipal);
-
-      // check the security manager and do a same original check on the principal
-      nsCOMPtr<nsIScriptSecurityManager> secMan =
-        do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID);
-      NS_ENSURE_STATE(secMan);
-
-      // get a principal for the uri we are testing
-      nsCOMPtr<nsIPrincipal> testPrincipal;
-      rv = secMan->GetCodebasePrincipal(uri, getter_AddRefs(testPrincipal));
-      NS_ENSURE_SUCCESS(rv, rv);
-
-      rv = secMan->CheckSameOriginPrincipal(basePrincipal, testPrincipal);
-      // if not allowed, continue onwards
+      // do a same origin check on the principal
+      rv = doc->NodePrincipal()->CheckMayLoad(uri, PR_TRUE);
       if (NS_FAILED(rv))
         continue;
 
@@ -1701,8 +1687,7 @@ nsSchemaLoader::ProcessComplexTypeBody(nsIWebServiceErrorHandler* aErrorHandler,
       
       if (aSequence) {
         // Check if we were collapsed
-        if (modelGroup.get() != NS_STATIC_CAST(nsISchemaModelGroup*, 
-                                               aSequence)) {
+        if (modelGroup.get() != static_cast<nsISchemaModelGroup*>(aSequence)) {
           rv = aSequence->AddParticle(modelGroup);
         }
       }

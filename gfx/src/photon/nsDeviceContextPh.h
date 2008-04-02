@@ -39,7 +39,6 @@
 #define nsDeviceContextPh_h___
 
 #include "nsDeviceContext.h"
-#include "nsUnitConversion.h"
 #include "nsIWidget.h"
 #include "nsIView.h"
 #include "nsIRenderingContext.h"
@@ -68,17 +67,6 @@ public:
 	  if( nsnull == mDC ) aSupportsWidgets = PR_TRUE;
 	  else aSupportsWidgets = PR_FALSE;   /* while printing! */
 	  return NS_OK;
-		}
-
-	inline
-  NS_IMETHODIMP GetScrollBarDimensions(float &aWidth, float &aHeight) const
-		{
-		/* Revisit: the scroll bar sizes is a gross guess based on Phab */
-		float scale;
-		GetCanonicalPixelScale(scale);
-		aWidth = mScrollbarWidth * mPixelsToTwips * scale;
-		aHeight = mScrollbarHeight * mPixelsToTwips * scale;
-		return NS_OK;
 		}
 
   NS_IMETHOD  GetSystemFont(nsSystemFontID anID, nsFont *aFont) const;
@@ -133,8 +121,6 @@ protected:
   nsIDrawingSurface*      mSurface;
   PRUint32              mDepth;  // bit depth of device
   float                 mPixelScale;
-  PRInt16               mScrollbarHeight;
-  PRInt16               mScrollbarWidth;
   
   float                 mWidthFloat;
   float                 mHeightFloat;

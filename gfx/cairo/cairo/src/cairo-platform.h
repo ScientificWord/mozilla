@@ -37,65 +37,60 @@
 #ifndef CAIRO_PLATFORM_H
 #define CAIRO_PLATFORM_H
 
+#include "prcpucfg.h"
+
 #if defined(MOZ_ENABLE_LIBXUL)
 
 #ifdef HAVE_VISIBILITY_HIDDEN_ATTRIBUTE
 #define CVISIBILITY_HIDDEN __attribute__((visibility("hidden")))
+#elif defined(__SUNPRO_C) && (__SUNPRO_C >= 0x550)
+#define CVISIBILITY_HIDDEN __hidden
 #else
 #define CVISIBILITY_HIDDEN
 #endif
 
-// In libxul builds we don't ever want to export cairo symbols
+/* In libxul builds we don't ever want to export cairo symbols */
 #define cairo_public extern CVISIBILITY_HIDDEN
-#define CCALLBACK
-#define CCALLBACK_DECL
-#define CSTATIC_CALLBACK(__x) static __x
 
-#elif defined(XP_WIN)
-
-#define cairo_public extern __declspec(dllexport)
-#define CCALLBACK
-#define CCALLBACK_DECL
-#define CSTATIC_CALLBACK(__x) static __x
-
-#elif defined(XP_BEOS)
-
-#define cairo_public extern __declspec(dllexport)
-#define CCALLBACK
-#define CCALLBACK_DECL
-#define CSTATIC_CALLBACK(__x) static __x
-
-#elif defined(XP_MAC)
-
-#define cairo_public extern __declspec(export)
-#define CCALLBACK
-#define CCALLBACK_DECL
-#define CSTATIC_CALLBACK(__x) static __x
-
-#elif defined(XP_OS2_VACPP) 
-
-#define cairo_public extern
-#define CCALLBACK _Optlink
-#define CCALLBACK_DECL
-#define CSTATIC_CALLBACK(__x) static __x CCALLBACK
-
-#else /* Unix */
-
-#ifdef HAVE_VISIBILITY_ATTRIBUTE
-#define CVISIBILITY_DEFAULT __attribute__((visibility("default")))
 #else
-#define CVISIBILITY_DEFAULT
+
+#ifdef MOZ_STATIC_BUILD
+# define cairo_public
+#else
+# if defined(XP_WIN) || defined(XP_BEOS)
+#  define cairo_public extern __declspec(dllexport)
+# elif defined(XP_OS2)
+#  ifdef __declspec
+#   define cairo_public extern __declspec(dllexport)
+#  else
+#   define cairo_public extern
+#  endif
+# else
+#  ifdef HAVE_VISIBILITY_ATTRIBUTE
+#   define cairo_public extern __attribute__((visibility("default")))
+#  elif defined(__SUNPRO_C) && (__SUNPRO_C >= 0x550)
+#   define cairo_public extern __global
+#  else
+#   define cairo_public extern
+#  endif
+# endif
 #endif
 
-#define cairo_public extern CVISIBILITY_DEFAULT
+#endif
+
 #define CCALLBACK
 #define CCALLBACK_DECL
 #define CSTATIC_CALLBACK(__x) static __x
-
-#endif
 
 #ifdef MOZILLA_VERSION
 #include "cairo-rename.h"
 #endif
+
+#if defined(IS_BIG_ENDIAN)
+#define WORDS_BIGENDIAN
+#define FLOAT_WORDS_BIGENDIAN
+#endif
+
+#define CAIRO_NO_MUTEX 1
 
 #endif /* CAIRO_PLATFORM_H */

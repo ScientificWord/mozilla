@@ -56,7 +56,7 @@
 #include "gfxPlatformGtk.h"
 
 // Glue to avoid build/runtime dependencies on Pango > 1.6
-
+#ifndef THEBES_USE_PANGO_CAIRO
 static gboolean
 (* PTR_pango_font_description_get_size_is_absolute)(PangoFontDescription*)
     = nsnull;
@@ -68,15 +68,18 @@ static void InitPangoLib()
         return;
     initialized = PR_TRUE;
 
-    PRLibrary* lib = PR_LoadLibrary("libpango-1.0.so");
-    if (!lib)
-        return;
-
+    PRLibrary *pangoLib = nsnull;
     PTR_pango_font_description_get_size_is_absolute =
         (gboolean (*)(PangoFontDescription*))
-        PR_FindFunctionSymbol(lib, "pango_font_description_get_size_is_absolute");
+        PR_FindFunctionSymbolAndLibrary("pango_font_description_get_size_is_absolute",
+                                        &pangoLib);
+    if (pangoLib)
+        PR_UnloadLibrary(pangoLib);
+}
 
-    // leak lib deliberately
+static void
+ShutdownPangoLib()
+{
 }
 
 static gboolean
@@ -89,22 +92,41 @@ MOZ_pango_font_description_get_size_is_absolute(PangoFontDescription *desc)
     // In old versions of pango, this was always false.
     return PR_FALSE;
 }
+#else
+static inline void InitPangoLib()
+{
+}
 
-#define DEFAULT_TWIP_FONT_SIZE 240
+static inline void ShutdownPangoLib()
+{
+}
 
-nsSystemFontsGTK2::nsSystemFontsGTK2(float aPixelsToTwips)
-  : mDefaultFont("sans-serif", NS_FONT_STYLE_NORMAL, NS_FONT_VARIANT_NORMAL,
-                 NS_FONT_WEIGHT_NORMAL, NS_FONT_DECORATION_NONE,
-                 DEFAULT_TWIP_FONT_SIZE),
-    mButtonFont("sans-serif", NS_FONT_STYLE_NORMAL, NS_FONT_VARIANT_NORMAL,
-                NS_FONT_WEIGHT_NORMAL, NS_FONT_DECORATION_NONE,
-                DEFAULT_TWIP_FONT_SIZE),
-    mFieldFont("sans-serif", NS_FONT_STYLE_NORMAL, NS_FONT_VARIANT_NORMAL,
-               NS_FONT_WEIGHT_NORMAL, NS_FONT_DECORATION_NONE,
-               DEFAULT_TWIP_FONT_SIZE),
-    mMenuFont("sans-serif", NS_FONT_STYLE_NORMAL, NS_FONT_VARIANT_NORMAL,
-               NS_FONT_WEIGHT_NORMAL, NS_FONT_DECORATION_NONE,
-               DEFAULT_TWIP_FONT_SIZE)
+static inline gboolean
+MOZ_pango_font_description_get_size_is_absolute(PangoFontDescription *desc)
+{
+    pango_font_description_get_size_is_absolute(desc);
+}
+#endif
+
+#define DEFAULT_PIXEL_FONT_SIZE 16.0f
+
+nsSystemFontsGTK2::nsSystemFontsGTK2()
+  : mDefaultFontName(NS_LITERAL_STRING("sans-serif"))
+  , mButtonFontName(NS_LITERAL_STRING("sans-serif"))
+  , mFieldFontName(NS_LITERAL_STRING("sans-serif"))
+  , mMenuFontName(NS_LITERAL_STRING("sans-serif"))
+  , mDefaultFontStyle(FONT_STYLE_NORMAL, FONT_WEIGHT_NORMAL,
+                 DEFAULT_PIXEL_FONT_SIZE, NS_LITERAL_CSTRING(""),
+                 0.0f, PR_TRUE, PR_FALSE)
+  , mButtonFontStyle(FONT_STYLE_NORMAL, FONT_WEIGHT_NORMAL,
+                DEFAULT_PIXEL_FONT_SIZE, NS_LITERAL_CSTRING(""),
+                0.0f, PR_TRUE, PR_FALSE)
+  , mFieldFontStyle(FONT_STYLE_NORMAL, FONT_WEIGHT_NORMAL,
+               DEFAULT_PIXEL_FONT_SIZE, NS_LITERAL_CSTRING(""),
+               0.0f, PR_TRUE, PR_FALSE)
+  , mMenuFontStyle(FONT_STYLE_NORMAL, FONT_WEIGHT_NORMAL,
+               DEFAULT_PIXEL_FONT_SIZE, NS_LITERAL_CSTRING(""),
+               0.0f, PR_TRUE, PR_FALSE)
 {
     InitPangoLib();
 
@@ -123,7 +145,7 @@ nsSystemFontsGTK2::nsSystemFontsGTK2(float aPixelsToTwips)
 
     gtk_widget_ensure_style(label);
 
-    GetSystemFontInfo(label, &mDefaultFont, aPixelsToTwips);
+    GetSystemFontInfo(label, &mDefaultFontName, &mDefaultFontStyle);
 
     gtk_widget_destroy(window);  // no unref, windows are different
 
@@ -136,7 +158,7 @@ nsSystemFontsGTK2::nsSystemFontsGTK2(float aPixelsToTwips)
     gtk_container_add(GTK_CONTAINER(window), parent);
     gtk_widget_ensure_style(entry);
 
-    GetSystemFontInfo(entry, &mFieldFont, aPixelsToTwips);
+    GetSystemFontInfo(entry, &mFieldFontName, &mFieldFontStyle);
 
     gtk_widget_destroy(window);  // no unref, windows are different
 
@@ -152,7 +174,7 @@ nsSystemFontsGTK2::nsSystemFontsGTK2(float aPixelsToTwips)
 
     gtk_widget_ensure_style(accel_label);
 
-    GetSystemFontInfo(accel_label, &mMenuFont, aPixelsToTwips);
+    GetSystemFontInfo(accel_label, &mMenuFontName, &mMenuFontStyle);
 
     gtk_widget_unref(menu);
 
@@ -168,19 +190,23 @@ nsSystemFontsGTK2::nsSystemFontsGTK2(float aPixelsToTwips)
 
     gtk_widget_ensure_style(label);
 
-    GetSystemFontInfo(label, &mButtonFont, aPixelsToTwips);
+    GetSystemFontInfo(label, &mButtonFontName, &mButtonFontStyle);
 
     gtk_widget_destroy(window);  // no unref, windows are different
 }
 
+nsSystemFontsGTK2::~nsSystemFontsGTK2()
+{
+    ShutdownPangoLib();
+}
+
 nsresult
-nsSystemFontsGTK2::GetSystemFontInfo(GtkWidget *aWidget, nsFont* aFont,
-                                     float aPixelsToTwips) const
+nsSystemFontsGTK2::GetSystemFontInfo(GtkWidget *aWidget, nsString *aFontName,
+                                     gfxFontStyle *aFontStyle) const
 {
     GtkSettings *settings = gtk_widget_get_settings(aWidget);
 
-    aFont->style       = NS_FONT_STYLE_NORMAL;
-    aFont->decorations = NS_FONT_DECORATION_NONE;
+    aFontStyle->style       = FONT_STYLE_NORMAL;
 
     gchar *fontname;
     g_object_get(settings, "gtk-font-name", &fontname, NULL);
@@ -188,15 +214,15 @@ nsSystemFontsGTK2::GetSystemFontInfo(GtkWidget *aWidget, nsFont* aFont,
     PangoFontDescription *desc;
     desc = pango_font_description_from_string(fontname);
 
-    aFont->systemFont = PR_TRUE;
+    aFontStyle->systemFont = PR_TRUE;
 
     g_free(fontname);
 
     NS_NAMED_LITERAL_STRING(quote, "\"");
     NS_ConvertUTF8toUTF16 family(pango_font_description_get_family(desc));
-    aFont->name = quote + family + quote;
+    *aFontName = quote + family + quote;
 
-    aFont->weight = pango_font_description_get_weight(desc);
+    aFontStyle->weight = pango_font_description_get_weight(desc);
 
     float size = float(pango_font_description_get_size(desc) / PANGO_SCALE);
 
@@ -209,7 +235,7 @@ nsSystemFontsGTK2::GetSystemFontInfo(GtkWidget *aWidget, nsFont* aFont,
 
     // |size| is now pixels
 
-    aFont->size = NSToCoordRound(size * aPixelsToTwips);
+    aFontStyle->size = size;
   
     pango_font_description_free(desc);
 
@@ -217,21 +243,25 @@ nsSystemFontsGTK2::GetSystemFontInfo(GtkWidget *aWidget, nsFont* aFont,
 }
 
 nsresult
-nsSystemFontsGTK2::GetSystemFont(nsSystemFontID anID, nsFont *aFont) const
+nsSystemFontsGTK2::GetSystemFont(nsSystemFontID anID, nsString *aFontName,
+                                 gfxFontStyle *aFontStyle) const
 {
     switch (anID) {
     case eSystemFont_Menu:         // css2
     case eSystemFont_PullDownMenu: // css3
-        *aFont = mMenuFont;
+        *aFontName = mMenuFontName;
+        *aFontStyle = mMenuFontStyle;
         break;
 
     case eSystemFont_Field:        // css3
     case eSystemFont_List:         // css3
-        *aFont = mFieldFont;
+        *aFontName = mFieldFontName;
+        *aFontStyle = mFieldFontStyle;
         break;
 
     case eSystemFont_Button:       // css3
-        *aFont = mButtonFont;
+        *aFontName = mButtonFontName;
+        *aFontStyle = mButtonFontStyle;
         break;
 
     case eSystemFont_Caption:      // css2
@@ -247,7 +277,8 @@ nsSystemFontsGTK2::GetSystemFont(nsSystemFontID anID, nsFont *aFont) const
     case eSystemFont_Dialog:       // css3
     case eSystemFont_Tooltips:     // moz
     case eSystemFont_Widget:       // moz
-        *aFont = mDefaultFont;
+        *aFontName = mDefaultFontName;
+        *aFontStyle = mDefaultFontStyle;
         break;
     }
 

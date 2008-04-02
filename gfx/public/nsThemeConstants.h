@@ -16,9 +16,6 @@
 // A small checkbox, for HTML forms
 #define NS_THEME_CHECKBOX_SMALL                            5
 
-// A small button, for HTML forms
-#define NS_THEME_BUTTON_SMALL                              6
-
 // A rectangular button that contains complex content
 // like images (e.g. HTML <button> elements)
 #define NS_THEME_BUTTON_BEVEL                              7
@@ -35,14 +32,17 @@
 // A dual toolbar button (e.g., a Back button with a dropdown)
 #define NS_THEME_TOOLBAR_DUAL_BUTTON                       14
 
-// The dropdown portion of a dual toolbar button
-#define NS_THEME_TOOLBAR_DUAL_BUTTON_DROPDOWN              15
+// The dropdown portion of a toolbar button
+#define NS_THEME_TOOLBAR_BUTTON_DROPDOWN                   15
 
 // A separator.  Can be horizontal or vertical.
 #define NS_THEME_TOOLBAR_SEPARATOR                         16
 
 // The gripper for a toolbar.
 #define NS_THEME_TOOLBAR_GRIPPER                           17
+
+// A splitter.  Can be horizontal or vertical.
+#define NS_THEME_SPLITTER                                  19
 
 // A status bar in a main application window.
 #define NS_THEME_STATUSBAR                                 21
@@ -85,7 +85,7 @@
 #define NS_THEME_TREEVIEW_HEADER_SORTARROW                 47
 
 // Open tree widget twisty
-#define NS_THEME_TREEVIEW_TWISTY_OPEN                    48
+#define NS_THEME_TREEVIEW_TWISTY_OPEN                      48
 
 // A horizontal progress bar.
 #define NS_THEME_PROGRESSBAR                               51
@@ -114,6 +114,10 @@
 // The tab panels container.
 #define NS_THEME_TAB_PANELS                                65
 
+// The tabs scroll arrows (left/right)
+#define NS_THEME_TAB_SCROLLARROW_BACK                      66
+#define NS_THEME_TAB_SCROLLARROW_FORWARD                   67
+
 // A tooltip
 #define NS_THEME_TOOLTIP                                   71
 
@@ -126,8 +130,14 @@
 // The down button of a spin control
 #define NS_THEME_SPINNER_DOWN_BUTTON                       74
 
+// The textfield of a spin control
+#define NS_THEME_SPINNER_TEXTFIELD                         75
+
 // A scrollbar.
-#define NS_THEME_SCROLLBAR                                 81
+#define NS_THEME_SCROLLBAR                                 80
+
+// A small scrollbar.
+#define NS_THEME_SCROLLBAR_SMALL                           81
 
 // A scrollbar button (up/down/left/right)
 #define NS_THEME_SCROLLBAR_BUTTON_UP                       82
@@ -152,6 +162,9 @@
 
 // The caret of a text area
 #define NS_THEME_TEXTFIELD_CARET                           96
+
+// A multiline text field
+#define NS_THEME_TEXTFIELD_MULTILINE                       97
 
 // A dropdown list.
 #define NS_THEME_DROPDOWN                                  101
@@ -207,3 +220,18 @@
 #define NS_THEME_MENUITEM                                  212
 #define NS_THEME_CHECKMENUITEM                             213
 #define NS_THEME_RADIOMENUITEM                             214
+
+// menu checkbox/radio appearances
+#define NS_THEME_MENUCHECKBOX                              215
+#define NS_THEME_MENURADIO                                 216
+#define NS_THEME_MENUSEPARATOR                             217
+#define NS_THEME_MENUARROW                                 218
+// An image in the menu gutter, like in bookmarks or history
+#define NS_THEME_MENUIMAGE                                 219
+// For text on non-iconic menuitems only
+#define NS_THEME_MENUITEMTEXT                              220
+
+// Vista Rebars
+#define NS_THEME_COMMUNICATIONS_TOOLBOX                    221
+#define NS_THEME_MEDIA_TOOLBOX                             222
+#define NS_THEME_BROWSER_TAB_BAR_TOOLBOX                   223

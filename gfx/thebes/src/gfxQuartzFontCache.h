@@ -20,6 +20,8 @@
  *
  * Contributor(s):
  *   Vladimir Vukicevic <vladimir@pobox.com>
+ *   Masayuki Nakano <masayuki@d-toybox.com>
+ *   John Daggett <jdaggett@mozilla.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -38,30 +40,242 @@
 #ifndef GFXQUARTZFONTCACHE_H_
 #define GFXQUARTZFONTCACHE_H_
 
-#include "gfxAtsuiFonts.h"
+#include "nsDataHashtable.h"
+#include "nsRefPtrHashtable.h"
 
-// XXX this is called a Cache because optimistically it will
-// cache [family, weight, traits, language] -> fontid so that
-// it doesn't have to do the lookup each time.  It doesn't
-// do this yet.
+#include "gfxFontUtils.h"
+#include "gfxAtsuiFonts.h"
+#include "gfxPlatform.h"
+
+#include <Carbon/Carbon.h>
+
+#include "nsUnicharUtils.h"
+#include "nsVoidArray.h"
+
+// used when picking fallback font
+struct FontSearch {
+    FontSearch(const PRUint32 aCharacter, gfxAtsuiFont *aFont) :
+        ch(aCharacter), fontToMatch(aFont), matchRank(0) {
+    }
+    const PRUint32 ch;
+    gfxAtsuiFont *fontToMatch;
+    PRInt32 matchRank;
+    nsRefPtr<MacOSFontEntry> bestMatch;
+};
+
+class MacOSFamilyEntry;
+class gfxQuartzFontCache;
+
+// a single member of a font family (i.e. a single face, such as Times Italic)
+class MacOSFontEntry
+{
+public:
+    THEBES_INLINE_DECL_REFCOUNTING(MacOSFontEntry)
+
+    // initialize with Apple-type weight [1..14]
+    MacOSFontEntry(const nsAString& aPostscriptName, PRInt32 aAppleWeight, PRUint32 aTraits, 
+                    MacOSFamilyEntry *aFamily);  
+
+    const nsString& Name() { return mPostscriptName; }
+    const nsString& FamilyName();
+    PRInt32 Weight() { return mWeight; }
+    PRUint32 Traits() { return mTraits; }
+    
+    PRBool IsFixedPitch();
+    PRBool IsItalicStyle();
+    PRBool IsBold();
+
+    ATSUFontID GetFontID();                   
+    nsresult ReadCMAP();
+    inline PRBool TestCharacterMap(PRUint32 aCh) {
+        if ( !mCmapInitialized ) ReadCMAP();
+        return mCharacterMap.test(aCh);
+    }
+        
+protected:
+    nsString mPostscriptName;
+    PRInt32 mWeight; // CSS-type value: [1..9] which map to 100, 200, ..., 900
+    PRUint32 mTraits;
+    MacOSFamilyEntry *mFamily;
+
+    ATSUFontID mATSUFontID;
+    std::bitset<128> mUnicodeRanges;
+    gfxSparseBitSet mCharacterMap;
+    
+    PRPackedBool mCmapInitialized;
+    PRPackedBool mATSUIDInitialized;
+};
+
+// helper class for adding other family names back into font cache
+class AddOtherFamilyNameFunctor;
+
+// a single font family, referencing one or more faces 
+class MacOSFamilyEntry
+{
+public:
+    THEBES_INLINE_DECL_REFCOUNTING(MacOSFamilyEntry)
+
+    MacOSFamilyEntry(nsString &aName) :
+        mName(aName), mOtherFamilyNamesInitialized(PR_FALSE), mHasOtherFamilyNames(PR_FALSE)
+    {}
+  
+    virtual ~MacOSFamilyEntry() {}
+        
+    const nsString& Name() { return mName; }
+    virtual void LocalizedName(nsString& aLocalizedName);
+    virtual PRBool HasOtherFamilyNames();
+    
+    nsTArray<nsRefPtr<MacOSFontEntry> >& GetFontList() { return mAvailableFonts; }
+    
+    void AddFontEntry(nsRefPtr<MacOSFontEntry> aFontEntry) {
+        mAvailableFonts.AppendElement(aFontEntry);
+    }
+    
+    // decides the right face for a given style, never fails
+    // may return a face that doesn't precisely match (e.g. normal face when no italic face exists)
+    MacOSFontEntry* FindFont(const gfxFontStyle* aStyle);
+    
+    // iterates over faces looking for a match with a given characters
+    // used as part of the font fallback process
+    void FindFontForChar(FontSearch *aMatchData);
+    
+    // read in other family names, if any, and use functor to add each into cache
+    virtual void ReadOtherFamilyNames(AddOtherFamilyNameFunctor& aOtherFamilyFunctor);
+    
+    // search for a specific face using the Postscript name
+    MacOSFontEntry* FindFont(const nsString& aPostscriptName);
+    
+protected:
+    
+    // add font entries into array that match specified traits, returned in array listed by weight
+    // i.e. aFontsForWeights[4] ==> pointer to the font entry for a 400-weight face on return
+    // returns true if one or more faces found
+    PRBool FindFontsWithTraits(MacOSFontEntry* aFontsForWeights[], PRUint32 aPosTraitsMask, 
+                                PRUint32 aNegTraitsMask);
+
+    // choose font based on CSS font-weight selection rules, never null
+    MacOSFontEntry* FindFontWeight(MacOSFontEntry* aFontsForWeights[], const gfxFontStyle* aStyle);
+    
+    nsString mName;  // canonical font family name returned from NSFontManager
+    nsTArray<nsRefPtr<MacOSFontEntry> >  mAvailableFonts;
+    PRPackedBool mOtherFamilyNamesInitialized;
+    PRPackedBool mHasOtherFamilyNames;
+};
+
+// special-case situation where specific faces need to be treated as separate font family
+class SingleFaceFamily : public MacOSFamilyEntry
+{
+public:
+    SingleFaceFamily(nsString &aName) :
+        MacOSFamilyEntry(aName)
+    {}
+    
+    virtual ~SingleFaceFamily() {}
+    
+    virtual void LocalizedName(nsString& aLocalizedName);
+    
+    // read in other family names, if any, and use functor to add each into cache
+    virtual void ReadOtherFamilyNames(AddOtherFamilyNameFunctor& aOtherFamilyFunctor);
+};
 
 class gfxQuartzFontCache {
 public:
     static gfxQuartzFontCache* SharedFontCache() {
-        if (!sSharedFontCache)
-            sSharedFontCache = new gfxQuartzFontCache();
         return sSharedFontCache;
     }
 
-    ATSUFontID FindATSUFontIDForFamilyAndStyle (const nsAString& aFamily,
-                                                const gfxFontStyle* aStyle);
+    static nsresult Init() {
+        NS_ASSERTION(!sSharedFontCache, "What's this doing here?");
+        sSharedFontCache = new gfxQuartzFontCache();
+        return sSharedFontCache ? NS_OK : NS_ERROR_OUT_OF_MEMORY;
+    }
+    // It's OK to call Shutdown if we never actually started or if 
+    // we already shut down.
+    static void Shutdown() {
+        delete sSharedFontCache;
+        sSharedFontCache = nsnull;
+    }
 
-    ATSUFontID GetDefaultATSUFontID (const gfxFontStyle* aStyle);
+    // methods used by gfxPlatformMac
+    
+    void GetFontList (const nsACString& aLangGroup,
+                      const nsACString& aGenericFamily,
+                      nsStringArray& aListOfFonts);
+    PRBool ResolveFontName(const nsAString& aFontName,
+                           nsAString& aResolvedFontName);
+    void UpdateFontList() { InitFontList(); }
+
+
+    MacOSFontEntry* FindFontForChar(const PRUint32 aCh, gfxAtsuiFont *aPrevFont);
+
+    MacOSFamilyEntry* FindFamily(const nsAString& aFamily);
+    
+    MacOSFontEntry* FindFontForFamily(const nsAString& aFamily, const gfxFontStyle* aStyle);
+    
+    MacOSFontEntry* GetDefaultFont(const gfxFontStyle* aStyle);
+
+    static PRInt32 AppleWeightToCSSWeight(PRInt32 aAppleWeight);
+    
+    PRBool GetPrefFontFamilyEntries(eFontPrefLang aLangGroup, nsTArray<nsRefPtr<MacOSFamilyEntry> > *array);
+    void SetPrefFontFamilyEntries(eFontPrefLang aLangGroup, nsTArray<nsRefPtr<MacOSFamilyEntry> >& array);
+    
+    void AddOtherFamilyName(MacOSFamilyEntry *aFamilyEntry, nsAString& aOtherFamilyName);
 
 private:
+    static PLDHashOperator PR_CALLBACK FindFontForCharProc(nsStringHashKey::KeyType aKey,
+                                                             nsRefPtr<MacOSFamilyEntry>& aFamilyEntry,
+                                                             void* userArg);
+
     static gfxQuartzFontCache *sSharedFontCache;
 
     gfxQuartzFontCache();
+
+    // initialize font lists
+    void InitFontList();
+    void ReadOtherFamilyNamesForFamily(const nsAString& aFamilyName);
+    
+    // separate initialization for reading in name tables, since this is expensive
+    void InitOtherFamilyNames();
+    
+    // special case font faces treated as font families (set via prefs)
+    void InitSingleFaceList();
+    
+    // commonly used fonts for which the name table should be loaded at startup
+    void PreloadNamesList();
+    
+    // eliminate faces which have the same ATSUI id
+    void EliminateDuplicateFaces(const nsAString& aFamilyName);
+                                                             
+    static PLDHashOperator PR_CALLBACK InitOtherFamilyNamesProc(nsStringHashKey::KeyType aKey,
+                                                             nsRefPtr<MacOSFamilyEntry>& aFamilyEntry,
+                                                             void* userArg);
+    
+    void GenerateFontListKey(const nsAString& aKeyName, nsAString& aResult);
+    static void ATSNotification(ATSFontNotificationInfoRef aInfo, void* aUserArg);
+    static int PR_CALLBACK PrefChangedCallback(const char *aPrefName, void *closure);
+
+    static PLDHashOperator PR_CALLBACK
+        HashEnumFuncForFamilies(nsStringHashKey::KeyType aKey,
+                                nsRefPtr<MacOSFamilyEntry>& aFamilyEntry,
+                                void* aUserArg);
+
+    // canonical family name ==> family entry (unique, one name per family entry)
+    nsRefPtrHashtable<nsStringHashKey, MacOSFamilyEntry> mFontFamilies;    
+
+    // other family name ==> family entry (not unique, can have multiple names per 
+    // family entry, only names *other* than the canonical names are stored here)
+    nsRefPtrHashtable<nsStringHashKey, MacOSFamilyEntry> mOtherFamilyNames;    
+
+    // cached pref font lists
+    // maps list of family names ==> array of family entries, one per lang group
+    nsDataHashtable<nsUint32HashKey, nsTArray<nsRefPtr<MacOSFamilyEntry> > > mPrefFonts;
+
+    // when system-wide font lookup fails for a character, cache it to skip future searches
+    gfxSparseBitSet mCodepointsWithNoFonts;
+    
+    // flag set after InitOtherFamilyNames is called upon first name lookup miss
+    PRPackedBool mOtherFamilyNamesInitialized;
+
 };
 
-#endif /* MACFONTCACHE_H_ */
+#endif /* GFXQUARTZFONTCACHE_H_ */

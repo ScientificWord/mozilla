@@ -20,7 +20,8 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *  Aaron Reed <aaronr@us.ibm.com>
+ *  Aaron Reed <aaronr@us.ibm.com> (original author)
+ *  Alexander Surkov <surkov.alexander@gmail.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -38,28 +39,91 @@
 
 #include "nsIXFormsUtilityService.h"
 
+#include "nsIDOMNodeList.h"
+#include "nsIContent.h"
+#include "nsCOMArray.h"
+
+class nsNodeList;
+
+/**
+ * The class implements "@mozilla.org/xforms-utility-service;1" XPCOM object
+ * that is used outside XForms extension by core modules, for example by
+ * accessibility.
+ */
+
 class nsXFormsUtilityService : public nsIXFormsUtilityService
 {
 public:
   NS_DECL_ISUPPORTS
 
   // nsIXFormsUtilityService
-  NS_IMETHOD GetModelFromNode(nsIDOMNode *node, nsIDOMNode **aModel);
+  NS_IMETHOD GetBuiltinTypeName(nsIDOMNode *aElement, nsAString& aName);
+  NS_IMETHOD IsReadonly(nsIDOMNode *aElement, PRBool *aState);
+  NS_IMETHOD IsRelevant(nsIDOMNode *aElement, PRBool *aState);
+  NS_IMETHOD IsRequired(nsIDOMNode *aElement, PRBool *aState);
+  NS_IMETHOD IsValid(nsIDOMNode *aElement, PRBool *aState);
+  NS_IMETHOD IsInRange(nsIDOMNode *aElement, PRUint32 *aState);
+  NS_IMETHOD GetValue(nsIDOMNode *aElement, nsAString& aValue);
+  NS_IMETHOD Focus(nsIDOMNode *aElement);
 
-  NS_IMETHOD IsNodeAssocWithModel(nsIDOMNode *aNode, nsIDOMNode *aModel,
-                                  PRBool *aModelAssocWithNode);
+  NS_IMETHOD GetRangeStart(nsIDOMNode *aElement, nsAString& aValue);
+  NS_IMETHOD GetRangeEnd(nsIDOMNode *aElement, nsAString& aValue);
+  NS_IMETHOD GetRangeStep(nsIDOMNode *aElement, nsAString& aValue);
 
-  NS_IMETHOD GetInstanceDocumentRoot(const nsAString& aID,
-                                     nsIDOMNode *aModelNode,
-                                     nsIDOMNode **aInstanceRoot);
+  NS_IMETHOD GetEditor(nsIDOMNode *aElement, nsIEditor **aEditor);
 
-  NS_IMETHOD ValidateString(const nsAString& aValue, const nsAString & aType,
-                            const nsAString& aNamespace, PRBool *aResult);
+  NS_IMETHOD IsDropmarkerOpen(nsIDOMNode *aElement, PRBool* aIsOpen);
+  NS_IMETHOD ToggleDropmarkerState(nsIDOMNode *aElement);
 
-  NS_IMETHOD GetRepeatIndex(nsIDOMNode *aRepeat, PRInt32 *aIndex);
-  NS_IMETHOD GetMonths(const nsAString& aValue, PRInt32 *aMonths);
-  NS_IMETHOD GetSeconds(const nsAString& aValue, double *aSeconds);
-  NS_IMETHOD GetSecondsFromDateTime(const nsAString& aValue, double *aSeconds);
-  NS_IMETHOD GetDaysFromDateTime(const nsAString& aValue, PRInt32 *aDays);
+  NS_IMETHOD GetSelectedItemForSelect1(nsIDOMNode *aElement,
+                                       nsIDOMNode ** aItem);
+  NS_IMETHOD SetSelectedItemForSelect1(nsIDOMNode *aElement, nsIDOMNode *aItem);
+
+  NS_IMETHOD GetSelectedItemsForSelect(nsIDOMNode *aElement,
+                                       nsIDOMNodeList **aItems);
+  NS_IMETHOD AddItemToSelectionForSelect(nsIDOMNode *aElement,
+                                         nsIDOMNode *aItem);
+  NS_IMETHOD RemoveItemFromSelectionForSelect(nsIDOMNode *aElement,
+                                              nsIDOMNode *aItem);
+  NS_IMETHOD ClearSelectionForSelect(nsIDOMNode *aElement);
+  NS_IMETHOD SelectAllItemsForSelect(nsIDOMNode *aElement);
+  NS_IMETHOD IsSelectItemSelected(nsIDOMNode *aElement, nsIDOMNode *aItem,
+                                  PRBool *aIsSelected);
+
+  NS_IMETHOD GetSelectChildrenFor(nsIDOMNode *aElement,
+                                  nsIDOMNodeList **aItemsList);
+
+protected:
+  // Append select child item/choices elements to given node list that are
+  // hosted inside xforms:select, xforms:select1, xforms:choices or
+  // xforms:itemset.
+  nsresult GetSelectChildrenForNode(nsIDOMNode *aElement,
+                                    nsNodeList *aNodeList);
+
+  // Append select child item/choices elements to given node list that are
+  // hosted inside xforms:select, xforms:select1, xforms:choices.
+  nsresult GetSelectChildrenForNodeInternal(nsIDOMNode *aElement,
+                                            nsNodeList *aNodeList);
+};
+
+
+/**
+ * Implementation of nsIDOMNodeList interface.
+ */
+class nsNodeList : public nsIDOMNodeList
+{
+public:
+  nsNodeList();
+  ~nsNodeList();
+
+  NS_DECL_ISUPPORTS
+
+  // nsIDOMNodeList
+  NS_DECL_NSIDOMNODELIST
+
+  void AppendElement(nsIContent *aContent);
+
+protected:
+  nsCOMArray<nsIContent> mElements;
 };
 

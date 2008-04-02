@@ -1,6 +1,7 @@
 /* cairo - a vector graphics library with display and print output
  *
  * Copyright © 2004 Calum Robinson
+ * Copyright (C) 2006,2007 Mozilla Corporation
  *
  * This library is free software; you can redistribute it and/or
  * modify it either under the terms of the GNU Lesser General Public
@@ -31,40 +32,74 @@
  *
  * Contributor(s):
  *    Calum Robinson <calumr@mac.com>
+ *    Vladimir Vukicevic <vladimir@mozilla.com>
  */
 
 #ifndef CAIRO_QUARTZ_PRIVATE_H
 #define CAIRO_QUARTZ_PRIVATE_H
 
-#include <cairoint.h>
+#include "cairoint.h"
+
+#ifdef CAIRO_HAS_QUARTZ_SURFACE
 #include <cairo-quartz.h>
 
 typedef struct cairo_quartz_surface {
     cairo_surface_t base;
 
-    CGContextRef context;
+    CGContextRef cgContext;
+    CGAffineTransform cgContextBaseCTM;
 
-    cairo_bool_t flipped;
+    void *imageData;
+    cairo_surface_t *imageSurfaceEquiv;
 
-    int width;
-    int height;
+    cairo_rectangle_int_t extents;
 
-    cairo_image_surface_t *image;
-	 pixman_region16_t *clip_region;
-	
-    CGImageRef cgImage;
+    /* These are stored while drawing operations are in place, set up
+     * by quartz_setup_source() and quartz_finish_source()
+     */
+    CGImageRef sourceImage;
+    cairo_surface_t *sourceImageSurface;
+    CGAffineTransform sourceImageTransform;
+    CGRect sourceImageRect;
+
+    CGShadingRef sourceShading;
+    CGPatternRef sourcePattern;
 } cairo_quartz_surface_t;
 
-cairo_bool_t
-_cairo_surface_is_quartz (cairo_surface_t *surface);
+typedef struct cairo_quartz_image_surface {
+    cairo_surface_t base;
+
+    cairo_rectangle_int_t extents;
+
+    CGImageRef image;
+    cairo_image_surface_t *imageSurface;
+} cairo_quartz_image_surface_t;
 
 cairo_bool_t
-_cairo_scaled_font_is_atsui (cairo_scaled_font_t *sfont);
+_cairo_quartz_verify_surface_size(int width, int height);
 
+CGImageRef
+_cairo_quartz_create_cgimage (cairo_format_t format,
+			      unsigned int width,
+			      unsigned int height,
+			      unsigned int stride,
+			      void *data,
+			      cairo_bool_t interpolate,
+			      CGColorSpaceRef colorSpaceOverride,
+			      CGDataProviderReleaseDataCallback releaseCallback,
+			      void *releaseInfo);
+
+#endif /* CAIRO_HAS_QUARTZ_SURFACE */
+
+#if CAIRO_HAS_ATSUI_FONT
 ATSUStyle
 _cairo_atsui_scaled_font_get_atsu_style (cairo_scaled_font_t *sfont);
 
 ATSUFontID
 _cairo_atsui_scaled_font_get_atsu_font_id (cairo_scaled_font_t *sfont);
+
+CGFontRef
+_cairo_atsui_scaled_font_get_cg_font_ref (cairo_scaled_font_t *sfont);
+#endif /* CAIRO_HAS_ATSUI_FONT */
 
 #endif /* CAIRO_QUARTZ_PRIVATE_H */

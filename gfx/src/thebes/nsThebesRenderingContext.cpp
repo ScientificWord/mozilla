@@ -53,7 +53,6 @@
 #include "nsIImage.h"
 
 #include "nsIThebesFontMetrics.h"
-#include "nsThebesDrawingSurface.h"
 #include "nsThebesRegion.h"
 #include "nsThebesImage.h"
 
@@ -72,14 +71,15 @@ static NS_DEFINE_CID(kRegionCID, NS_REGION_CID);
 
 //////////////////////////////////////////////////////////////////////
 
-#define FROM_TWIPS(_x)  ((gfxFloat)((_x)/(mP2T)))
-#define FROM_TWIPS_INT(_x)  (NSToIntRound((gfxFloat)((_x)/(mP2T))))
-#define TO_TWIPS(_x)    ((nscoord)((_x)*(mP2T)))
+// XXXTodo: rename FORM_TWIPS to FROM_APPUNITS
+#define FROM_TWIPS(_x)  ((gfxFloat)((_x)/(mP2A)))
+#define FROM_TWIPS_INT(_x)  (NSToIntRound((gfxFloat)((_x)/(mP2A))))
+#define TO_TWIPS(_x)    ((nscoord)((_x)*(mP2A)))
 #define GFX_RECT_FROM_TWIPS_RECT(_r)   (gfxRect(FROM_TWIPS((_r).x), FROM_TWIPS((_r).y), FROM_TWIPS((_r).width), FROM_TWIPS((_r).height)))
 
 //////////////////////////////////////////////////////////////////////
 
-NS_IMPL_ISUPPORTS2(nsThebesRenderingContext, nsIRenderingContext, nsIThebesRenderingContext)
+NS_IMPL_ISUPPORTS1(nsThebesRenderingContext, nsIRenderingContext)
 
 nsThebesRenderingContext::nsThebesRenderingContext() :
     mLineStyle(nsLineStyle_kNone)
@@ -98,14 +98,10 @@ nsThebesRenderingContext::Init(nsIDeviceContext* aContext, gfxASurface *aThebesS
 {
     PR_LOG(gThebesGFXLog, PR_LOG_DEBUG, ("## %p nsTRC::Init ctx %p thebesSurface %p\n", this, aContext, aThebesSurface));
 
-    nsThebesDeviceContext *thebesDC = NS_STATIC_CAST(nsThebesDeviceContext*, aContext);
+    nsThebesDeviceContext *thebesDC = static_cast<nsThebesDeviceContext*>(aContext);
 
     mDeviceContext = aContext;
     mWidget = nsnull;
-
-    mLocalDrawingSurface = new nsThebesDrawingSurface();
-    mLocalDrawingSurface->Init(thebesDC, aThebesSurface);
-    mDrawingSurface = mLocalDrawingSurface;
 
     mThebes = new gfxContext(aThebesSurface);
 
@@ -120,9 +116,6 @@ nsThebesRenderingContext::Init(nsIDeviceContext* aContext, gfxContext *aThebesCo
     mDeviceContext = aContext;
     mWidget = nsnull;
 
-    mLocalDrawingSurface = nsnull;
-    mDrawingSurface = nsnull;
-
     mThebes = aThebesContext;
 
     return (CommonInit());
@@ -133,22 +126,12 @@ nsThebesRenderingContext::Init(nsIDeviceContext* aContext, nsIWidget *aWidget)
 {
     PR_LOG(gThebesGFXLog, PR_LOG_DEBUG, ("## %p nsTRC::Init ctx %p widget %p\n", this, aContext, aWidget));
 
-    nsThebesDeviceContext *thebesDC = NS_STATIC_CAST(nsThebesDeviceContext*, aContext);
+    nsThebesDeviceContext *thebesDC = static_cast<nsThebesDeviceContext*>(aContext);
 
     mDeviceContext = aContext;
     mWidget = aWidget;
 
-    mLocalDrawingSurface = new nsThebesDrawingSurface();
-
-    nsRefPtr<gfxASurface> surface(aWidget->GetThebesSurface());
-    if (surface) {
-        mLocalDrawingSurface->Init(thebesDC, surface);
-    } else {
-        mLocalDrawingSurface->Init(thebesDC, aWidget);
-    }
-    mDrawingSurface = mLocalDrawingSurface;
-
-    mThebes = new gfxContext(mLocalDrawingSurface->GetThebesSurface());
+    mThebes = new gfxContext(aWidget->GetThebesSurface());
 
     //mThebes->SetColor(gfxRGBA(0.9, 0.0, 0.0, 0.3));
     //mThebes->Paint();
@@ -160,30 +143,15 @@ nsThebesRenderingContext::Init(nsIDeviceContext* aContext, nsIWidget *aWidget)
 }
 
 NS_IMETHODIMP
-nsThebesRenderingContext::Init(nsIDeviceContext* aContext, nsIDrawingSurface *aSurface)
-{
-    NS_ERROR("Should never be called.");
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-NS_IMETHODIMP
 nsThebesRenderingContext::CommonInit(void)
 {
     PR_LOG(gThebesGFXLog, PR_LOG_DEBUG, ("## %p nsTRC::CommonInit\n", this));
 
     mThebes->SetLineWidth(1.0);
 
-    mT2P = mDeviceContext->AppUnitsToDevUnits();
-    mP2T = mDeviceContext->DevUnitsToAppUnits();
+    mP2A = mDeviceContext->AppUnitsPerDevPixel();
 
     return NS_OK;
-}
-
-NS_IMETHODIMP
-nsThebesRenderingContext::Reset(void)
-{
-    NS_ERROR("nsThebesRenderingContext::Reset called!\n");
-    return NS_ERROR_NOT_IMPLEMENTED;
 }
 
 NS_IMETHODIMP
@@ -194,24 +162,10 @@ nsThebesRenderingContext::GetDeviceContext(nsIDeviceContext *& aDeviceContext)
     return NS_OK;
 }
 
-NS_IMETHODIMP
-nsThebesRenderingContext::SelectOffScreenDrawingSurface(nsIDrawingSurface *aSurface)
-{
-    NS_ERROR("nsThebesRenderingContext::SelectOffScreenDrawingSurface called!");
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-NS_IMETHODIMP
-nsThebesRenderingContext::GetDrawingSurface(nsIDrawingSurface **aSurface)
-{
-    NS_ERROR("nsThebesRenderingContext::GetDrawingSurface called!");
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
 NS_IMETHODIMP 
 nsThebesRenderingContext::PushTranslation(PushedTranslation* aState)
 {
-    //PR_LOG(gThebesGFXLog, PR_LOG_DEBUG, ("## %p nsTRC::PushTranslation\n", this));
+    PR_LOG(gThebesGFXLog, PR_LOG_DEBUG, ("## %p nsTRC::PushTranslation\n", this));
 
     // XXX this is slow!
     PushState();
@@ -221,7 +175,7 @@ nsThebesRenderingContext::PushTranslation(PushedTranslation* aState)
 NS_IMETHODIMP
 nsThebesRenderingContext::PopTranslation(PushedTranslation* aState)
 {
-    //PR_LOG(gThebesGFXLog, PR_LOG_DEBUG, ("## %p nsTRC::PopTranslation\n", this));
+    PR_LOG(gThebesGFXLog, PR_LOG_DEBUG, ("## %p nsTRC::PopTranslation\n", this));
 
     // XXX this is slow!
     PopState();
@@ -231,10 +185,11 @@ nsThebesRenderingContext::PopTranslation(PushedTranslation* aState)
 NS_IMETHODIMP
 nsThebesRenderingContext::SetTranslation(nscoord aX, nscoord aY)
 {
-    gfxMatrix mat = mThebes->CurrentMatrix();
-    gfxFloat a, b, c, d, tx, ty;
-    mat.ToValues(&a, &b, &c, &d, &tx, &ty);
-    gfxMatrix newMat(a, b, c, d, aX, aY);
+    PR_LOG(gThebesGFXLog, PR_LOG_DEBUG, ("## %p nsTRC::SetTranslation %d %d\n", this, aX, aY));
+
+    gfxMatrix newMat(mThebes->CurrentMatrix());
+    newMat.x0 = aX;
+    newMat.y0 = aY;
     mThebes->SetMatrix(newMat);
     return NS_OK;
 }
@@ -246,7 +201,8 @@ nsThebesRenderingContext::GetHints(PRUint32& aResult)
 
     aResult |= (NS_RENDERING_HINT_BIDI_REORDERING |
                 NS_RENDERING_HINT_ARABIC_SHAPING |
-                NS_RENDERING_HINT_REORDER_SPACED_TEXT);
+                NS_RENDERING_HINT_REORDER_SPACED_TEXT |
+                NS_RENDERING_HINT_NEW_TEXT_RUNS);
 
     return NS_OK;
 }
@@ -254,7 +210,7 @@ nsThebesRenderingContext::GetHints(PRUint32& aResult)
 NS_IMETHODIMP
 nsThebesRenderingContext::PushState()
 {
-    //PR_LOG(gThebesGFXLog, PR_LOG_DEBUG, ("## %p nsTRC::PushState\n", this));
+    PR_LOG(gThebesGFXLog, PR_LOG_DEBUG, ("## %p nsTRC::PushState\n", this));
 
     mThebes->Save();
     return NS_OK;
@@ -263,7 +219,7 @@ nsThebesRenderingContext::PushState()
 NS_IMETHODIMP
 nsThebesRenderingContext::PopState()
 {
-    //PR_LOG(gThebesGFXLog, PR_LOG_DEBUG, ("## %p nsTRC::PopState\n", this));
+    PR_LOG(gThebesGFXLog, PR_LOG_DEBUG, ("## %p nsTRC::PopState\n", this));
 
     mThebes->Restore();
     return NS_OK;
@@ -287,7 +243,16 @@ nsThebesRenderingContext::SetClipRect(const nsRect& aRect,
     }
 
     mThebes->NewPath();
-    mThebes->Rectangle(GFX_RECT_FROM_TWIPS_RECT(aRect), PR_TRUE);
+    gfxRect clipRect(GFX_RECT_FROM_TWIPS_RECT(aRect));
+    if (mThebes->UserToDevicePixelSnapped(clipRect, PR_TRUE)) {
+        gfxMatrix mat(mThebes->CurrentMatrix());
+        mThebes->IdentityMatrix();
+        mThebes->Rectangle(clipRect);
+        mThebes->SetMatrix(mat);
+    } else {
+        mThebes->Rectangle(clipRect);
+    }
+
     mThebes->Clip();
 
     return NS_OK;
@@ -313,7 +278,7 @@ nsThebesRenderingContext::SetClipRegion(const nsIRegion& pxRegion,
 
     mThebes->ResetClip();
     // GetBoundingBox, GetRects, FreeRects are non-const
-    nsIRegion *evilPxRegion = NS_CONST_CAST(nsIRegion*, &pxRegion);
+    nsIRegion *evilPxRegion = const_cast<nsIRegion*>(&pxRegion);
     if (cplx == eRegionComplexity_rect) {
         PRInt32 x, y, w, h;
         evilPxRegion->GetBoundingBox(&x, &y, &w, &h);
@@ -349,29 +314,6 @@ nsThebesRenderingContext::SetClipRegion(const nsIRegion& pxRegion,
 
     return NS_OK;
 }
-
-NS_IMETHODIMP
-nsThebesRenderingContext::GetClipRegion(nsIRegion **aRegion)
-{
-    // used in a few misc places (FontMetricsXft, generic RenderingContextImpl for DrawImage,
-    // and SVGGDIPlusCanvas
-    NS_WARNING("Unimplemented function called");
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-// only gets called from the caret blinker.
-NS_IMETHODIMP
-nsThebesRenderingContext::FlushRect(const nsRect& aRect)
-{
-    return FlushRect(aRect.x, aRect.y, aRect.width, aRect.height);
-}
-
-NS_IMETHODIMP
-nsThebesRenderingContext::FlushRect(nscoord aX, nscoord aY, nscoord aWidth, nscoord aHeight)
-{
-    return NS_OK;
-}
-
 //
 // other junk
 //
@@ -448,13 +390,10 @@ nsThebesRenderingContext::UpdateTempTransformMatrix()
      * | x0 y0 1 |            | m20 m21  1 |
      *****/
 
-    // this sort of sucks
-    gfxFloat xx, yx, xy, yy, x0, y0;
-    mThebes->CurrentMatrix().ToValues(&xx, &yx, &xy, &yy, &x0, &y0);
-
-    NS_ASSERTION(yx == 0 && xy == 0, "Can't represent Thebes matrix to Gfx");
-    mTempTransform.SetToTranslate(TO_TWIPS(x0), TO_TWIPS(y0));
-    mTempTransform.AddScale(xx, yy);
+    const gfxMatrix& ctm = mThebes->CurrentMatrix();
+    NS_ASSERTION(ctm.yx == 0 && ctm.xy == 0, "Can't represent Thebes matrix to Gfx");
+    mTempTransform.SetToTranslate(TO_TWIPS(ctm.x0), TO_TWIPS(ctm.y0));
+    mTempTransform.AddScale(ctm.xx, ctm.yy);
 }
 
 nsTransform2D&
@@ -499,45 +438,6 @@ nsThebesRenderingContext::TransformCoord (nscoord *aX, nscoord *aY)
 }
 
 NS_IMETHODIMP
-nsThebesRenderingContext::CreateDrawingSurface(const nsRect &aBounds,
-                                              PRUint32 aSurfFlags,
-                                              nsIDrawingSurface* &aSurface)
-{
-    PR_LOG(gThebesGFXLog, PR_LOG_DEBUG, ("## %p nsTRC::CreateDrawingSurface [%d,%d,%d,%d] 0x%08x\n", this, aBounds.x, aBounds.y, aBounds.width, aBounds.height, aSurfFlags));
-
-    nsThebesDrawingSurface *cds = new nsThebesDrawingSurface();
-    nsIDeviceContext *dc = mDeviceContext.get();
-    cds->Init (NS_STATIC_CAST(nsThebesDeviceContext *, dc),
-               aBounds.width, aBounds.height,
-               PR_FALSE);
-    aSurface = (nsIDrawingSurface*) cds;
-    NS_ADDREF(aSurface);
-
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsThebesRenderingContext::CreateDrawingSurface(nsNativeWidget aWidget, nsIDrawingSurface* &aSurface)
-{
-    nsThebesDrawingSurface *cds = new nsThebesDrawingSurface();
-    nsIDeviceContext *dc = mDeviceContext.get();
-    cds->Init (NS_STATIC_CAST(nsThebesDeviceContext *, dc), aWidget);
-    aSurface = (nsIDrawingSurface*) cds;
-    NS_ADDREF(aSurface);
-
-    return NS_OK;
-}
-
-
-NS_IMETHODIMP
-nsThebesRenderingContext::DestroyDrawingSurface(nsIDrawingSurface *aDS)
-{
-    NS_RELEASE(aDS);
-
-    return NS_OK;
-}
-
-NS_IMETHODIMP
 nsThebesRenderingContext::DrawLine(nscoord aX0, nscoord aY0, nscoord aX1, nscoord aY1)
 {
     PR_LOG(gThebesGFXLog, PR_LOG_DEBUG, ("## %p nsTRC::DrawLine %d %d %d %d\n", this, aX0, aY0, aX1, aY1));
@@ -552,8 +452,8 @@ nsThebesRenderingContext::DrawLine(nscoord aX0, nscoord aY0, nscoord aX1, nscoor
         p0 = mThebes->UserToDevice(p0);
         p1 = mThebes->UserToDevice(p1);
 
-        p0.round();
-        p1.round();
+        p0.Round();
+        p1.Round();
 
         mThebes->IdentityMatrix();
 
@@ -602,36 +502,63 @@ nsThebesRenderingContext::DrawRect(nscoord aX, nscoord aY, nscoord aWidth, nscoo
 }
 
 
-/* Clamp r to (0,0) (32766,32766);
+/* Clamp r to (0,0) (2^23,2^23)
  * these are to be device coordinates.
  *
- * Returns PR_FALSE if the rectangle is completely out of bounds, PR_TRUE otherwise.
+ * Returns PR_FALSE if the rectangle is completely out of bounds,
+ * PR_TRUE otherwise.
+ *
+ * This function assumes that it will be called with a rectangle being
+ * drawn into a surface with an identity transformation matrix; that
+ * is, anything above or to the left of (0,0) will be offscreen.
+ *
+ * First it checks if the rectangle is entirely beyond
+ * CAIRO_COORD_MAX; if so, it can't ever appear on the screen --
+ * PR_FALSE is returned.
+ *
+ * Then it shifts any rectangles with x/y < 0 so that x and y are = 0,
+ * and adjusts the width and height appropriately.  For example, a
+ * rectangle from (0,-5) with dimensions (5,10) will become a
+ * rectangle from (0,0) with dimensions (5,5).
+ *
+ * If after negative x/y adjustment to 0, either the width or height
+ * is negative, then the rectangle is completely offscreen, and
+ * nothing is drawn -- PR_FALSE is returned.
+ *
+ * Finally, if x+width or y+height are greater than CAIRO_COORD_MAX,
+ * the width and height are clamped such x+width or y+height are equal
+ * to CAIRO_COORD_MAX, and PR_TRUE is returned.
  */
+#define CAIRO_COORD_MAX (8388608.0)
+
 static PRBool
 ConditionRect(gfxRect& r) {
-    const double COORD_MAX = 32766.0;
-
     // if either x or y is way out of bounds;
     // note that we don't handle negative w/h here
-    if (r.pos.x > COORD_MAX || r.pos.y > COORD_MAX)
+    if (r.pos.x > CAIRO_COORD_MAX || r.pos.y > CAIRO_COORD_MAX)
         return PR_FALSE;
 
     if (r.pos.x < 0.0) {
         r.size.width += r.pos.x;
+        if (r.size.width < 0.0)
+            return PR_FALSE;
         r.pos.x = 0.0;
     }
 
-    if (r.pos.x + r.size.width > COORD_MAX) {
-        r.size.width = COORD_MAX - r.pos.x;
+    if (r.pos.x + r.size.width > CAIRO_COORD_MAX) {
+        r.size.width = CAIRO_COORD_MAX - r.pos.x;
     }
 
     if (r.pos.y < 0.0) {
         r.size.height += r.pos.y;
+        if (r.size.height < 0.0)
+            return PR_FALSE;
+
         r.pos.y = 0.0;
     }
 
-    if (r.pos.y + r.size.height > COORD_MAX) {
-        r.size.height = COORD_MAX - r.pos.y;
+    if (r.pos.y + r.size.height > CAIRO_COORD_MAX) {
+        r.size.height = CAIRO_COORD_MAX - r.pos.y;
     }
     return PR_TRUE;
 }
@@ -644,7 +571,7 @@ nsThebesRenderingContext::FillRect(const nsRect& aRect)
     gfxRect r(GFX_RECT_FROM_TWIPS_RECT(aRect));
 
     /* Clamp coordinates to work around a design bug in cairo */
-    nscoord bigval = (nscoord)(32766*mP2T);
+    nscoord bigval = (nscoord)(CAIRO_COORD_MAX*mP2A);
     if (aRect.width > bigval ||
         aRect.height > bigval ||
         aRect.x < -bigval ||
@@ -661,12 +588,17 @@ nsThebesRenderingContext::FillRect(const nsRect& aRect)
 
         mThebes->IdentityMatrix();
         mThebes->NewPath();
+
+        PR_LOG(gThebesGFXLog, PR_LOG_DEBUG, ("## %p nsTRC::FillRect conditioned to [%f,%f,%f,%f]\n", this, r.pos.x, r.pos.y, r.size.width, r.size.height));
+
         mThebes->Rectangle(r, PR_TRUE);
         mThebes->Fill();
         mThebes->SetMatrix(mat);
 
         return NS_OK;
     }
+
+    PR_LOG(gThebesGFXLog, PR_LOG_DEBUG, ("## %p nsTRC::FillRect raw [%f,%f,%f,%f]\n", this, r.pos.x, r.pos.y, r.size.width, r.size.height));
 
     mThebes->NewPath();
     mThebes->Rectangle(r, PR_TRUE);
@@ -773,7 +705,7 @@ nsThebesRenderingContext::GetNativeGraphicData(GraphicDataType aType)
     if (aType == NATIVE_GDK_DRAWABLE &&
         !gfxPlatform::GetPlatform()->UseGlitz())
     {
-        if (mWidget && mDrawingSurface == mLocalDrawingSurface)
+        if (mWidget)
             return mWidget->GetNativeData(NS_NATIVE_WIDGET);
     }
     if (aType == NATIVE_THEBES_CONTEXT)
@@ -783,97 +715,13 @@ nsThebesRenderingContext::GetNativeGraphicData(GraphicDataType aType)
 #ifdef XP_WIN
     if (aType == NATIVE_WINDOWS_DC) {
         nsRefPtr<gfxASurface> surf(mThebes->CurrentSurface());
-        return NS_STATIC_CAST(gfxWindowsSurface*, NS_STATIC_CAST(gfxASurface*, surf.get()))->GetDC();
+        if (!surf || surf->CairoStatus())
+            return nsnull;
+        return static_cast<gfxWindowsSurface*>(static_cast<gfxASurface*>(surf.get()))->GetDC();
     }
 #endif
 
     return nsnull;
-}
-
-NS_IMETHODIMP
-nsThebesRenderingContext::DrawNativeWidgetPixmap(void* aSrcSurfaceBlack,
-                                                 void* aSrcSurfaceWhite,
-                                                 const nsIntSize& pxSrcSize, 
-                                                 const nsPoint& twDestPos)
-{
-    PR_LOG(gThebesGFXLog, PR_LOG_DEBUG, ("## %p nsTRC::DrawNativeWidgetPixmap %p %p [%d,%d] [%d,%d]\n", this, aSrcSurfaceBlack, aSrcSurfaceWhite, pxSrcSize.width, pxSrcSize.height, twDestPos.x, twDestPos.y));
-
-#if 0
-    // debug
-    mThebes->Save();
-    mThebes->SetColor(gfxRGBA(0.9, 0.9, 1.0, 1.0));
-    mThebes->NewPath();
-    mThebes->Rectangle(gfxRect(FROM_TWIPS(twDestPos.x),
-                               FROM_TWIPS(twDestPos.y),
-                               pxSrcSize.width,
-                               pxSrcSize.height),
-                       PR_TRUE);
-    mThebes->Fill();
-    mThebes->Restore();
-
-    return NS_OK;
-#endif
-
-    nsThebesDrawingSurface* tmpSurf = new nsThebesDrawingSurface();
-    nsIDeviceContext* dc = mDeviceContext.get();
-    nsThebesDeviceContext* cdc = NS_STATIC_CAST(nsThebesDeviceContext*, dc);
-
-    tmpSurf->Init(cdc, aSrcSurfaceBlack, aSrcSurfaceWhite, pxSrcSize);
-
-    nsRefPtr<gfxPattern> pat = new gfxPattern(tmpSurf->GetThebesSurface());
-
-    mThebes->Save();
-    mThebes->NewPath();
-    // mm, mixed twips and pixels. are we having fun yet?
-    mThebes->PixelSnappedRectangleAndSetPattern(gfxRect(FROM_TWIPS(twDestPos.x),
-                                                        FROM_TWIPS(twDestPos.y),
-                                                        pxSrcSize.width,
-                                                        pxSrcSize.height),
-                                                pat);
-    mThebes->Fill();
-    mThebes->Restore();
-
-    delete tmpSurf;
-
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsThebesRenderingContext::UseBackbuffer(PRBool* aUseBackbuffer)
-{
-#ifndef XP_MACOSX
-    *aUseBackbuffer = PR_TRUE;
-#else
-    *aUseBackbuffer = PR_FALSE;
-#endif
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsThebesRenderingContext::GetBackbuffer(const nsRect &aRequestedSize,
-                                        const nsRect &aMaxSize,
-                                        PRBool aForBlending,
-                                        nsIDrawingSurface* &aBackbuffer)
-{
-    PR_LOG(gThebesGFXLog, PR_LOG_DEBUG,
-           ("## %p nsTRC::GetBackBuffer req: %d %d %d %d max: %d %d %d %d blending? %d\n",
-            this, aRequestedSize.x, aRequestedSize.y, aRequestedSize.width, aRequestedSize.height,
-            aMaxSize.x, aMaxSize.y, aMaxSize.width, aMaxSize.height, aForBlending));
-
-    return AllocateBackbuffer(aRequestedSize, aMaxSize, aBackbuffer, PR_FALSE,
-                              aForBlending ? NS_CREATEDRAWINGSURFACE_FOR_PIXEL_ACCESS : 0);
-}
-
-NS_IMETHODIMP
-nsThebesRenderingContext::ReleaseBackbuffer(void)
-{
-    return DestroyCachedBackbuffer();
-}
-
-NS_IMETHODIMP
-nsThebesRenderingContext::DestroyCachedBackbuffer(void)
-{
-    return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -888,7 +736,7 @@ nsThebesRenderingContext::PushFilter(const nsRect& twRect, PRBool aAreaIsOpaque,
 
     mThebes->Save();
     mThebes->Clip(GFX_RECT_FROM_TWIPS_RECT(twRect));
-    mThebes->PushGroup(gfxContext::CONTENT_COLOR_ALPHA);
+    mThebes->PushGroup(gfxASurface::CONTENT_COLOR_ALPHA);
 
     return NS_OK;
 }
@@ -919,198 +767,57 @@ nsThebesRenderingContext::PopFilter()
     return NS_OK;
 }
 
-//
-// Both twSrcRect and twDestRect need to be
-// transformed by the CTM.  This is especially odd
-// for the SrcRect!
-//
-
-NS_IMETHODIMP
-nsThebesRenderingContext::DrawImage(imgIContainer *aImage,
-                                    const nsRect &twSrcRect,
-                                    const nsRect &twDestRect)
-{
-    PR_LOG(gThebesGFXLog, PR_LOG_DEBUG, ("## %p nsTRC::DrawImage %p [%d,%d,%d,%d] [%d,%d,%d,%d]\n",
-           this, aImage, twSrcRect.x, twSrcRect.y, twSrcRect.width, twSrcRect.height,
-           twDestRect.x, twDestRect.y, twDestRect.width, twDestRect.height));
-    PR_LOG(gThebesGFXLog, PR_LOG_DEBUG, ("## %p translation: %f %f\n",
-                                         this,
-                                         mThebes->CurrentMatrix().GetTranslation().x,
-                                         mThebes->CurrentMatrix().GetTranslation().y));
-#if 0
-    fprintf (stderr, "DrawImage: src [%f %f %f %f]\n           dst [%f %f %f %f]\n           x0: %f y0: %f\n",
-             FROM_TWIPS(twSrcRect.x), FROM_TWIPS(twSrcRect.y), FROM_TWIPS(twSrcRect.width), FROM_TWIPS(twSrcRect.height),
-             FROM_TWIPS(twDestRect.x), FROM_TWIPS(twDestRect.y), FROM_TWIPS(twDestRect.width), FROM_TWIPS(twDestRect.height),
-             mThebes->CurrentMatrix().GetTranslation().x, mThebes->CurrentMatrix().GetTranslation().y);
-#endif
-
-    nsCOMPtr<gfxIImageFrame> imgFrame;
-    aImage->GetCurrentFrame(getter_AddRefs(imgFrame));
-    if (!imgFrame) return NS_ERROR_FAILURE;
-
-    nsCOMPtr<nsIImage> img(do_GetInterface(imgFrame));
-    if (!img) return NS_ERROR_FAILURE;
-
-    // For Bug 87819
-    // imgFrame may want image to start at different position, so adjust
-    nsIntRect pxImgFrameRect;
-    imgFrame->GetRect(pxImgFrameRect);
-
-    // twSrcRect is always in appunits (twips),
-    // and has nothing to do with the current transform (it's a region
-    // of the image)
-    nsIntRect pxSr;
-    pxSr.x = NSToIntRound(FROM_TWIPS(twSrcRect.x));
-    pxSr.y = NSToIntRound(FROM_TWIPS(twSrcRect.y));
-    pxSr.width = NSToIntRound(FROM_TWIPS(twSrcRect.width));
-    pxSr.height = NSToIntRound(FROM_TWIPS(twSrcRect.height));
-
-    // the dest rect is affected by the current transform; that'll be
-    // handled by Image::Draw(), when we actually set up the rectangle.
-    nsIntRect pxDr;
-    pxDr.x = NSToIntRound(FROM_TWIPS(twDestRect.x));
-    pxDr.y = NSToIntRound(FROM_TWIPS(twDestRect.y));
-    pxDr.width = NSToIntRound(FROM_TWIPS(twDestRect.width));
-    pxDr.height = NSToIntRound(FROM_TWIPS(twDestRect.height));
-
-    if (pxImgFrameRect.x > 0) {
-        pxSr.x -= pxImgFrameRect.x;
-
-        nscoord scaled_x = pxSr.x;
-        if (pxDr.width != pxSr.width) {
-            PRFloat64 scale_ratio = PRFloat64(pxDr.width) / PRFloat64(pxSr.width);
-            scaled_x = NSToCoordRound(scaled_x * scale_ratio);
-        }
-
-        if (pxSr.x < 0) {
-            pxDr.x -= scaled_x;
-            pxSr.width += pxSr.x;
-            pxDr.width += scaled_x;
-            if (pxSr.width <= 0 || pxDr.width <= 0)
-                return NS_OK;
-            pxSr.x = 0;
-        } else if (pxSr.x > pxImgFrameRect.width) {
-            return NS_OK;
-        }
-    }
-
-    if (pxImgFrameRect.y > 0) {
-        pxSr.y -= pxImgFrameRect.y;
-
-        nscoord scaled_y = pxSr.y;
-        if (pxDr.height != pxSr.height) {
-            PRFloat64 scale_ratio = PRFloat64(pxDr.height) / PRFloat64(pxSr.height);
-            scaled_y = NSToCoordRound(scaled_y * scale_ratio);
-        }
-
-        if (pxSr.y < 0) {
-            pxDr.y -= scaled_y;
-            pxSr.height += pxSr.y;
-            pxDr.height += scaled_y;
-            if (pxSr.height <= 0 || pxDr.height <= 0)
-                return NS_OK;
-            pxSr.y = 0;
-        } else if (pxSr.y > pxImgFrameRect.height) {
-            return NS_OK;
-        }
-    }
-
-    return img->Draw(*this, mDrawingSurface,
-                     pxSr.x - pxImgFrameRect.x, pxSr.y - pxImgFrameRect.y,
-                     pxSr.width, pxSr.height,
-                     pxDr.x, pxDr.y, pxDr.width, pxDr.height);
-}
-
 NS_IMETHODIMP
 nsThebesRenderingContext::DrawTile(imgIContainer *aImage,
                                    nscoord twXOffset, nscoord twYOffset,
                                    const nsRect *twTargetRect)
 {
-    PR_LOG(gThebesGFXLog, PR_LOG_DEBUG, ("## %p nsTRC::DrawTile %p %d %d [%d,%d,%d,%d]\n",
-           this, aImage, twXOffset, twYOffset,
-           twTargetRect->x, twTargetRect->y, twTargetRect->width, twTargetRect->height));
+    PR_LOG(gThebesGFXLog, PR_LOG_DEBUG, ("## %p nsTRC::DrawTile %p %f %f [%f,%f,%f,%f]\n",
+                                         this, aImage, FROM_TWIPS(twXOffset), FROM_TWIPS(twYOffset),
+                                         FROM_TWIPS(twTargetRect->x), FROM_TWIPS(twTargetRect->y),
+                                         FROM_TWIPS(twTargetRect->width), FROM_TWIPS(twTargetRect->height)));
 
-#if 0
-    PRInt32 pxWidth, pxHeight;
-    aImage->GetWidth(&pxWidth);
-    aImage->GetHeight(&pxHeight);
+    nscoord containerWidth, containerHeight;
+    aImage->GetWidth(&containerWidth);
+    aImage->GetHeight(&containerHeight);
 
     nsCOMPtr<gfxIImageFrame> imgFrame;
     aImage->GetCurrentFrame(getter_AddRefs(imgFrame));
     if (!imgFrame) return NS_ERROR_FAILURE;
+
+    nsRect imgFrameRect;
+    imgFrame->GetRect(imgFrameRect);
 
     nsCOMPtr<nsIImage> img(do_GetInterface(imgFrame));
     if (!img) return NS_ERROR_FAILURE;
     
-    nsIImage *q = (nsIImage*) img.get();
+    nsThebesImage *thebesImage = static_cast<nsThebesImage*>((nsIImage*) img.get());
 
-    nsThebesImage *thbimg = NS_STATIC_CAST(nsThebesImage*, q);
-    nsRefPtr<gfxPattern> pat = new gfxPattern(thbimg->ThebesSurface());
+    /* Phase offset of the repeated image from the origin */
+    gfxPoint phase(FROM_TWIPS(twXOffset), FROM_TWIPS(twYOffset));
 
-    gfxMatrix m;
-    m.Translate(gfxPoint(FROM_TWIPS(twXOffset % TO_TWIPS(pxWidth)), FROM_TWIPS(twYOffset % TO_TWIPS(pxHeight))));
-    m.Scale(FROM_TWIPS(twTargetRect->width) / pxWidth,
-            FROM_TWIPS(twTargetRect->height) / pxHeight);
-    pat->SetMatrix(m);
+    /* The image may be smaller than the container (bug 113561),
+     * so we need to make sure that there is the right amount of padding
+     * in between each tile of the nsIImage.  This problem goes away
+     * when we change the way the GIF decoder works to have it store
+     * full frames that are ready to be composited.
+     */
+    PRInt32 xPadding = 0;
+    PRInt32 yPadding = 0;
 
-    mThebes->SetPattern(pat);
-    mThebes->NewPath();
-    mThebes->Rectangle(GFX_RECT_FROM_TWIPS_RECT(*twTargetRect));
-    mThebes->Fill();
+    if (imgFrameRect.width != containerWidth ||
+        imgFrameRect.height != containerHeight)
+    {
+        xPadding = containerWidth - imgFrameRect.width;
+        yPadding = containerHeight - imgFrameRect.height;
 
-    return NS_OK;
+        phase.x -= imgFrameRect.x;
+        phase.y -= imgFrameRect.y;
+    }
 
-#else
-#if 0
-    fprintf (stderr, "DrawTile: %d %d [%d %d %d %d]\n",
-             twXOffset, twYOffset, twTargetRect->x,
-             twTargetRect->y, twTargetRect->width, twTargetRect->height);
-#endif
-
-    /* Almost verbatim from nsRenderingContextImpl */
-    UpdateTempTransformMatrix();
-
-    nsRect twDr(*twTargetRect);
-    mTempTransform.TransformCoord(&twDr.x, &twDr.y, &twDr.width, &twDr.height);
-    mTempTransform.TransformCoord(&twXOffset, &twYOffset);
-
-    // may have become empty due to transform shinking small number to 0
-    if (twDr.IsEmpty())
-        return NS_OK;
-
-    PRInt32 pxWidth, pxHeight;
-    aImage->GetWidth(&pxWidth);
-    aImage->GetHeight(&pxHeight);
-
-    if (pxWidth == 0 || pxHeight == 0)
-        return NS_OK;
-
-    PRInt32 pxXOffset = NSToIntRound(FROM_TWIPS((twDr.x - twXOffset) % TO_TWIPS(pxWidth)));
-    PRInt32 pxYOffset = NSToIntRound(FROM_TWIPS((twDr.y - twYOffset) % TO_TWIPS(pxHeight)));
-
-    nsCOMPtr<gfxIImageFrame> imgFrame;
-    aImage->GetCurrentFrame(getter_AddRefs(imgFrame));
-    if (!imgFrame) return NS_ERROR_FAILURE;
-
-    nsCOMPtr<nsIImage> img(do_GetInterface(imgFrame));
-    if (!img) return NS_ERROR_FAILURE;
-
-    /* bug 113561 - frame can be smaller than container */
-    nsIntRect pxImgFrameRect;
-    imgFrame->GetRect(pxImgFrameRect);
-    PRInt32 pxPadX = pxWidth - pxImgFrameRect.width;
-    PRInt32 pxPadY = pxHeight - pxImgFrameRect.height;
-
-    nsIntRect pxDr(NSToIntRound(FROM_TWIPS(twDr.x)),
-                   NSToIntRound(FROM_TWIPS(twDr.y)),
-                   NSToIntRound(FROM_TWIPS(twDr.width)),
-                   NSToIntRound(FROM_TWIPS(twDr.height)));
-
-    return img->DrawTile(*this, NULL,
-                         pxXOffset - pxImgFrameRect.x, pxYOffset - pxImgFrameRect.y,
-                         pxPadX, pxPadY,
-                         pxDr);
-#endif
+    return thebesImage->ThebesDrawTile (mThebes, mDeviceContext, phase,
+                                        GFX_RECT_FROM_TWIPS_RECT(*twTargetRect),
+                                        xPadding, yPadding);
 }
 
 //
@@ -1129,6 +836,12 @@ nsThebesRenderingContext::GetRightToLeftText(PRBool* aIsRTL)
     return NS_OK;
 }
 
+void
+nsThebesRenderingContext::SetTextRunRTL(PRBool aIsRTL)
+{
+	mFontMetrics->SetTextRunRTL(aIsRTL);
+}
+
 NS_IMETHODIMP
 nsThebesRenderingContext::SetFont(const nsFont& aFont, nsIAtom* aLangGroup)
 {
@@ -1136,7 +849,7 @@ nsThebesRenderingContext::SetFont(const nsFont& aFont, nsIAtom* aLangGroup)
 
     nsCOMPtr<nsIFontMetrics> newMetrics;
     mDeviceContext->GetMetricsFor(aFont, aLangGroup, *getter_AddRefs(newMetrics));
-    mFontMetrics = NS_REINTERPRET_CAST(nsIThebesFontMetrics*, newMetrics.get());
+    mFontMetrics = reinterpret_cast<nsIThebesFontMetrics*>(newMetrics.get());
     return NS_OK;
 }
 
@@ -1145,7 +858,7 @@ nsThebesRenderingContext::SetFont(nsIFontMetrics *aFontMetrics)
 {
     PR_LOG(gThebesGFXLog, PR_LOG_DEBUG, ("## %p nsTRC::SetFont[Metrics] %p\n", this, aFontMetrics));
 
-    mFontMetrics = NS_STATIC_CAST(nsIThebesFontMetrics*, aFontMetrics);
+    mFontMetrics = static_cast<nsIThebesFontMetrics*>(aFontMetrics);
     return NS_OK;
 }
 
@@ -1183,6 +896,11 @@ nsThebesRenderingContext::GetWidth(PRUnichar aC, nscoord &aWidth, PRInt32 *aFont
 NS_IMETHODIMP
 nsThebesRenderingContext::GetWidthInternal(const char* aString, PRUint32 aLength, nscoord& aWidth)
 {
+#ifdef DISABLE_TEXT
+    aWidth = (8 * aLength);
+    return NS_OK;
+#endif
+
     if (aLength == 0) {
         aWidth = 0;
         return NS_OK;
@@ -1195,6 +913,11 @@ NS_IMETHODIMP
 nsThebesRenderingContext::GetWidthInternal(const PRUnichar *aString, PRUint32 aLength,
                                            nscoord &aWidth, PRInt32 *aFontID)
 {
+#ifdef DISABLE_TEXT
+    aWidth = (8 * aLength);
+    return NS_OK;
+#endif
+
     if (aLength == 0) {
         aWidth = 0;
         return NS_OK;
@@ -1223,7 +946,7 @@ nsThebesRenderingContext::GetTextDimensionsInternal(const PRUnichar* aString,
   return GetWidth(aString, aLength, aDimensions.width, aFontID);
 }
 
-#if defined(_WIN32) || defined(XP_OS2) || defined(MOZ_X11) || defined(XP_BEOS)
+#if defined(_WIN32) || defined(XP_OS2) || defined(MOZ_X11) || defined(XP_BEOS) || defined(XP_MACOSX)
 NS_IMETHODIMP
 nsThebesRenderingContext::GetTextDimensionsInternal(const char*       aString,
                                                     PRInt32           aLength,
@@ -1259,7 +982,7 @@ nsThebesRenderingContext::GetBoundingMetricsInternal(const char*        aString,
                                                      PRUint32           aLength,
                                                      nsBoundingMetrics& aBoundingMetrics)
 {
-  return NS_ERROR_NOT_IMPLEMENTED;
+    return mFontMetrics->GetBoundingMetrics(aString, aLength, this, aBoundingMetrics);
 }
 
 NS_IMETHODIMP
@@ -1268,7 +991,7 @@ nsThebesRenderingContext::GetBoundingMetricsInternal(const PRUnichar*   aString,
                                                      nsBoundingMetrics& aBoundingMetrics,
                                                      PRInt32*           aFontID)
 {
-    return NS_ERROR_NOT_IMPLEMENTED;
+    return mFontMetrics->GetBoundingMetrics(aString, aLength, this, aBoundingMetrics);
 }
 #endif // MOZ_MATHML
 
@@ -1277,6 +1000,10 @@ nsThebesRenderingContext::DrawStringInternal(const char *aString, PRUint32 aLeng
                                              nscoord aX, nscoord aY,
                                              const nscoord* aSpacing)
 {
+#ifdef DISABLE_TEXT
+    return NS_OK;
+#endif
+
     return mFontMetrics->DrawString(aString, aLength, aX, aY, aSpacing,
                                     this);
 }
@@ -1287,6 +1014,10 @@ nsThebesRenderingContext::DrawStringInternal(const PRUnichar *aString, PRUint32 
                                              PRInt32 aFontID,
                                              const nscoord* aSpacing)
 {
+#ifdef DISABLE_TEXT
+    return NS_OK;
+#endif
+
     return mFontMetrics->DrawString(aString, aLength, aX, aY, aFontID,
                                     aSpacing, this);
 }
@@ -1330,129 +1061,6 @@ nsThebesRenderingContext::GetRangeWidth(const char *aText,
 NS_IMETHODIMP
 nsThebesRenderingContext::RenderEPS(const nsRect& aRect, FILE *aDataFile)
 {
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-////
-//// Unused junk
-////
-
-NS_IMETHODIMP
-nsThebesRenderingContext::IsVisibleRect(const nsRect& aRect, PRBool &aIsVisible)
-{
-    NS_ERROR("not used anywhere");
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-NS_IMETHODIMP
-nsThebesRenderingContext::GetClipRect(nsRect &aRect, PRBool &aHasLocalClip)
-{
-    NS_ERROR("not used anywhere");
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-NS_IMETHODIMP
-nsThebesRenderingContext::LockDrawingSurface(PRInt32 aX, PRInt32 aY,
-                                             PRUint32 aWidth, PRUint32 aHeight,
-                                             void **aBits, PRInt32 *aStride,
-                                             PRInt32 *aWidthBytes,
-                                             PRUint32 aFlags)
-{
-    NS_WARNING("Unimplemented function called");
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-NS_IMETHODIMP
-nsThebesRenderingContext::UnlockDrawingSurface(void)
-{
-    NS_WARNING("Unimplemented function called");
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-NS_IMETHODIMP
-nsThebesRenderingContext::CopyClipRegion(nsIRegion &aRegion)
-{
-    NS_WARNING("Unimplemented function called");
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-NS_IMETHODIMP
-nsThebesRenderingContext::GetLineStyle(nsLineStyle &aLineStyle)
-{
-    NS_ERROR("not used anywhere");
-    aLineStyle = mLineStyle;
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsThebesRenderingContext::SetPenMode(nsPenMode aPenMode)
-{
-    // aPenMode == nsPenMode_kNone, nsPenMode_kInverted.
-    NS_ERROR("not used anywhere");
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-NS_IMETHODIMP
-nsThebesRenderingContext::GetPenMode(nsPenMode &aPenMode)
-{
-    //NS_ERROR("not used anywhere, but used in a debug thing");
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-
-NS_IMETHODIMP
-nsThebesRenderingContext::DrawArc(const nsRect& aRect,
-                                 float aStartAngle, float aEndAngle)
-{
-    return DrawArc(aRect.x, aRect.y, aRect.width, aRect.height, aStartAngle, aEndAngle);
-}
-
-NS_IMETHODIMP
-nsThebesRenderingContext::DrawArc(nscoord aX, nscoord aY, nscoord aWidth, nscoord aHeight,
-                                 float aStartAngle, float aEndAngle)
-{
-    NS_ERROR("not used");
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-NS_IMETHODIMP
-nsThebesRenderingContext::FillArc(const nsRect& aRect,
-                                 float aStartAngle, float aEndAngle)
-{
-    return FillArc(aRect.x, aRect.y, aRect.width, aRect.height, aStartAngle, aEndAngle);
-}
-
-NS_IMETHODIMP
-nsThebesRenderingContext::FillArc(nscoord aX, nscoord aY, nscoord aWidth, nscoord aHeight,
-                                 float aStartAngle, float aEndAngle)
-{
-    NS_ERROR("not used");
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-NS_IMETHODIMP
-nsThebesRenderingContext::DrawPolyline(const nsPoint aPoints[],
-                                      PRInt32 aNumPoints)
-{
-    NS_ERROR("DrawPolyline called!");
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-NS_IMETHODIMP
-nsThebesRenderingContext::DrawPolygon(const nsPoint aPoints[], PRInt32 aNumPoints)
-{
-    NS_ERROR("DrawPolygon called!");
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-
-NS_IMETHODIMP
-nsThebesRenderingContext::CopyOffScreenBits(nsIDrawingSurface *aSrcSurf,
-                                           PRInt32 aSrcX, PRInt32 aSrcY,
-                                           const nsRect &aDestBounds,
-                                           PRUint32 aCopyFlags)
-{
-    NS_NOTREACHED("CopyOffScreenBits should not be called in cairo builds");
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 

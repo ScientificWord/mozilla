@@ -187,20 +187,6 @@ NS_IMETHODIMP nsDeviceContextMac :: SupportsNativeWidgets(PRBool &aSupportsWidge
 }
 
 
-/** ---------------------------------------------------
- *  See documentation in nsIDeviceContext.h
- *	@update 12/9/98 dwc
- */
-NS_IMETHODIMP nsDeviceContextMac :: GetScrollBarDimensions(float &aWidth, float &aHeight) const
-{
-  // XXX Should we push this to widget library
-  float scale;
-  GetCanonicalPixelScale(scale);
-  aWidth = 16 * mDevUnitsToAppUnits * scale;
-  aHeight = 16 * mDevUnitsToAppUnits * scale;
-  return NS_OK;
-}
-
 // helper function to get the system font for a specific script
 #define FONTNAME_MAX_UNICHRS sizeof(fontName255) * 2
 nsresult 
@@ -393,7 +379,7 @@ NS_IMETHODIMP nsDeviceContextMac::GetDepth(PRUint32& aDepth)
   if ( screen ) {
     PRInt32 depth;
     screen->GetPixelDepth ( &depth );
-    aDepth = NS_STATIC_CAST ( PRUint32, depth );
+    aDepth = static_cast<PRUint32>(depth);
   }
   else 
     aDepth = 1;
@@ -415,7 +401,7 @@ NS_IMETHODIMP nsDeviceContextMac::GetDepth(PRUint32& aDepth)
    
   PRInt32 depth;
   mPrimaryScreen->GetPixelDepth ( &depth );
-  aDepth = NS_STATIC_CAST ( PRUint32, depth );
+  aDepth = static_cast<PRUint32>(depth);
     
   return NS_OK;
 }
@@ -509,8 +495,8 @@ NS_IMETHODIMP nsDeviceContextMac::GetDeviceSurfaceDimensions(PRInt32 & outWidth,
 
 	if( mSpec ) {
 	  // we have a printer device
-		outWidth = NS_STATIC_CAST(PRInt32, (mPageRect.right-mPageRect.left)*mDevUnitsToAppUnits);
-		outHeight = NS_STATIC_CAST(PRInt32, (mPageRect.bottom-mPageRect.top)*mDevUnitsToAppUnits);
+		outWidth = static_cast<PRInt32>((mPageRect.right-mPageRect.left)*mDevUnitsToAppUnits);
+		outHeight = static_cast<PRInt32>((mPageRect.bottom-mPageRect.top)*mDevUnitsToAppUnits);
 	}
 	else {
     // we have a screen device. find the screen that the window is on and
@@ -545,8 +531,8 @@ nsDeviceContextMac::GetRect(nsRect &aRect)
 	  // we have a printer device
 	  aRect.x = 0;
 	  aRect.y = 0;
-		aRect.width = NS_STATIC_CAST(nscoord, (mPageRect.right-mPageRect.left)*mDevUnitsToAppUnits);
-		aRect.height = NS_STATIC_CAST(nscoord, (mPageRect.bottom-mPageRect.top)*mDevUnitsToAppUnits);
+		aRect.width = static_cast<nscoord>((mPageRect.right-mPageRect.left)*mDevUnitsToAppUnits);
+		aRect.height = static_cast<nscoord>((mPageRect.bottom-mPageRect.top)*mDevUnitsToAppUnits);
 	}
 	else {
     // we have a screen device. find the screen that the window is on and
@@ -581,8 +567,8 @@ NS_IMETHODIMP nsDeviceContextMac::GetClientRect(nsRect &aRect)
 	if( mSpec ) {
 	  // we have a printer device
 	  aRect.x = aRect.y = 0;
-		aRect.width = NS_STATIC_CAST(nscoord, (mPageRect.right-mPageRect.left)*mDevUnitsToAppUnits);
-		aRect.height = NS_STATIC_CAST(nscoord, (mPageRect.bottom-mPageRect.top)*mDevUnitsToAppUnits);
+		aRect.width = static_cast<nscoord>((mPageRect.right-mPageRect.left)*mDevUnitsToAppUnits);
+		aRect.height = static_cast<nscoord>((mPageRect.bottom-mPageRect.top)*mDevUnitsToAppUnits);
 	}
 	else {
     // we have a screen device. find the screen that the window is on and

@@ -49,11 +49,6 @@
 #include "nsFontMetricsBeOS.h"
 #include "nsGfxCIID.h"
 
-#ifdef USE_POSTSCRIPT
-#include "nsGfxPSCID.h"
-#include "nsIDeviceContextPS.h"
-#endif /* USE_POSTSCRIPT */
-
 #include <ScrollBar.h>
 #include <Screen.h>
 
@@ -102,7 +97,7 @@ NS_IMETHODIMP nsDeviceContextBeOS::Init(nsNativeWidget aNativeWidget)
       screen->GetPixelDepth ( &depth ); 
       mWidthFloat = float(width); 
       mHeightFloat = float(height); 
-      mDepth = NS_STATIC_CAST ( PRUint32, depth ); 
+      mDepth = static_cast<PRUint32>(depth); 
     } 
   } 
   
@@ -154,9 +149,6 @@ NS_IMETHODIMP nsDeviceContextBeOS::Init(nsNativeWidget aNativeWidget)
   } 
  
   SetDPI(mDpi); 
-
-  mScrollbarHeight = PRInt16(B_H_SCROLL_BAR_HEIGHT); 
-  mScrollbarWidth = PRInt16(B_V_SCROLL_BAR_WIDTH); 
 
   menu_info info;
   get_menu_info(&info);
@@ -227,16 +219,6 @@ NS_IMETHODIMP nsDeviceContextBeOS::SupportsNativeWidgets(PRBool &aSupportsWidget
   //XXX it is very critical that this not lie!! MMP
   // read the comments in the mac code for this
   aSupportsWidgets = PR_TRUE;
-  return NS_OK;
-}
-
-NS_IMETHODIMP nsDeviceContextBeOS::GetScrollBarDimensions(float &aWidth, float &aHeight) const
-{
-  float scale;
-  GetCanonicalPixelScale(scale);
-  aWidth = mScrollbarWidth * mPixelsToTwips * scale;
-  aHeight = mScrollbarHeight * mPixelsToTwips * scale;
-
   return NS_OK;
 }
 
@@ -348,28 +330,7 @@ NS_IMETHODIMP nsDeviceContextBeOS::GetClientRect(nsRect &aRect)
 NS_IMETHODIMP nsDeviceContextBeOS::GetDeviceContextFor(nsIDeviceContextSpec *aDevice,
                                                       nsIDeviceContext *&aContext)
 {
-#ifdef USE_POSTSCRIPT
-  static NS_DEFINE_CID(kCDeviceContextPS, NS_DEVICECONTEXTPS_CID);
-  
-  // Create a Postscript device context 
-  nsresult rv;
-  nsIDeviceContextPS *dcps;
-  
-  rv = CallCreateInstance(kCDeviceContextPS, &dcps);
-
-  NS_ASSERTION(NS_SUCCEEDED(rv), "Couldn't create PS Device context");
-  
-  dcps->SetSpec(aDevice);
-  dcps->InitDeviceContextPS((nsIDeviceContext*)aContext, (nsIDeviceContext*)this);
-
-  rv = dcps->QueryInterface(NS_GET_IID(nsIDeviceContext), (void **)&aContext);
-
-  NS_RELEASE(dcps);
-  
-  return rv;
-#else
   return NS_ERROR_NOT_IMPLEMENTED;
-#endif /* USE_POSTSCRIPT */
 }
 
 NS_IMETHODIMP nsDeviceContextBeOS::BeginDocument(PRUnichar * aTitle, PRUnichar* aPrintToFileName, PRInt32 aStartPage, PRInt32 aEndPage)

@@ -66,7 +66,7 @@
 #include "nsISound.h"
 
 #define TYPEAHEADFIND_BUNDLE_URL \
-        "chrome://global/locale/typeaheadfind.properties"
+        "chrome://communicator/locale/typeaheadfind.properties"
 #define TYPEAHEADFIND_NOTFOUND_WAV_URL \
         "chrome://global/content/notfound.wav"
 
@@ -80,7 +80,7 @@ enum {
 
 const int kMaxBadCharsBeforeCancel = 3;
 
-class nsTypeAheadFind : public nsITypeAheadFind,
+class nsTypeAheadFind : public nsISuiteTypeAheadFind,
                         public nsIDOMKeyListener,
                         public nsIDOMTextListener,
                         public nsIDOMCompositionListener,
@@ -94,10 +94,10 @@ public:
   nsTypeAheadFind();
   virtual ~nsTypeAheadFind();
 
-  NS_DEFINE_STATIC_CID_ACCESSOR(NS_TYPEAHEADFIND_CID);
+  NS_DEFINE_STATIC_CID_ACCESSOR(NS_TYPEAHEADFIND_CID)
 
   NS_DECL_ISUPPORTS
-  NS_DECL_NSITYPEAHEADFIND
+  NS_DECL_NSISUITETYPEAHEADFIND
   NS_DECL_NSIOBSERVER
   NS_DECL_NSIDOMEVENTLISTENER
   NS_DECL_NSISELECTIONLISTENER
@@ -256,6 +256,11 @@ protected:
 
   // Windows where typeaheadfind doesn't auto start as the user types
   nsCOMPtr<nsISupportsArray> mManualFindWindows;
+
+  //
+  // NOTE: if you add strong ref members here please make sure to null
+  //       them out in Shutdown() to prevent crashes like bug 414559.
+  //
 };
 
 

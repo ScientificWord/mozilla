@@ -39,6 +39,7 @@
 #define CAIRO_H
 
 #include <cairo-features.h>
+#include <cairo-deprecated.h>
 
 CAIRO_BEGIN_DECLS
 
@@ -71,7 +72,7 @@ cairo_version_string (void);
  *      /<!-- -->* do something *<!-- -->/
  *  }
  * </programlisting></informalexample>
- */
+ **/
 typedef int cairo_bool_t;
 
 /**
@@ -79,6 +80,13 @@ typedef int cairo_bool_t;
  *
  * A #cairo_t contains the current state of the rendering device,
  * including coordinates of yet to be drawn shapes.
+ *
+ * Cairo contexts, as #cairo_t objects are named, are central to
+ * cairo and all drawing with cairo is always done to a #cairo_t
+ * object.
+ *
+ * Memory management of #cairo_t is done with
+ * cairo_reference() and cairo_destroy().
  **/
 typedef struct _cairo cairo_t;
 
@@ -87,13 +95,17 @@ typedef struct _cairo cairo_t;
  *
  * A #cairo_surface_t represents an image, either as the destination
  * of a drawing operation or as source when drawing onto another
- * surface. There are different subtypes of cairo_surface_t for
+ * surface.  To draw to a #cairo_surface_t, create a cairo context
+ * with the surface as the target, using cairo_create().
+ *
+ * There are different subtypes of #cairo_surface_t for
  * different drawing backends; for example, cairo_image_surface_create()
  * creates a bitmap image in memory.
+ * The type of a surface can be queried with cairo_surface_get_type().
  *
  * Memory management of #cairo_surface_t is done with
  * cairo_surface_reference() and cairo_surface_destroy().
- */
+ **/
 typedef struct _cairo_surface cairo_surface_t;
 
 /**
@@ -119,6 +131,25 @@ typedef struct _cairo_matrix {
     double x0; double y0;
 } cairo_matrix_t;
 
+/**
+ * cairo_pattern_t:
+ *
+ * A #cairo_pattern_t represents a source when drawing onto a
+ * surface. There are different subtypes of #cairo_pattern_t,
+ * for different types of sources; for example,
+ * cairo_pattern_create_rgb() creates a pattern for a solid
+ * opaque color.
+ *
+ * Other than various cairo_pattern_create_<emphasis>type</emphasis>()
+ * functions, some of the pattern types can be implicitly created
+ * using various cairo_set_source_<emphasis>type</emphasis>() functions;
+ * for example cairo_set_source_rgb().
+ *
+ * The type of a pattern can be queried with cairo_pattern_get_type().
+ *
+ * Memory management of #cairo_pattern_t is done with
+ * cairo_pattern_reference() and cairo_pattern_destroy().
+ **/
 typedef struct _cairo_pattern cairo_pattern_t;
 
 /**
@@ -128,7 +159,7 @@ typedef struct _cairo_pattern cairo_pattern_t;
  * #cairo_destroy_func_t the type of function which is called when a
  * data element is destroyed. It is passed the pointer to the data
  * element and should free any memory and resources allocated for it.
- */
+ **/
 typedef void (*cairo_destroy_func_t) (void *data);
 
 /**
@@ -140,21 +171,21 @@ typedef void (*cairo_destroy_func_t) (void *data);
  * and there is no need to initialize the object; only the unique
  * address of a #cairo_data_key_t object is used.  Typically, you
  * would just use the address of a static #cairo_data_key_t object.
- */
+ **/
 typedef struct _cairo_user_data_key {
     int unused;
 } cairo_user_data_key_t;
 
 /**
- * cairo_status_t
+ * cairo_status_t:
  * @CAIRO_STATUS_SUCCESS: no error has occurred
  * @CAIRO_STATUS_NO_MEMORY: out of memory
- * @CAIRO_STATUS_INVALID_RESTORE: cairo_restore without matching cairo_save
+ * @CAIRO_STATUS_INVALID_RESTORE: cairo_restore() called without matching cairo_save()
  * @CAIRO_STATUS_INVALID_POP_GROUP: no saved group to pop
  * @CAIRO_STATUS_NO_CURRENT_POINT: no current point defined
  * @CAIRO_STATUS_INVALID_MATRIX: invalid matrix (not invertible)
- * @CAIRO_STATUS_INVALID_STATUS: invalid value for an input cairo_status_t
- * @CAIRO_STATUS_NULL_POINTER: NULL pointer
+ * @CAIRO_STATUS_INVALID_STATUS: invalid value for an input #cairo_status_t
+ * @CAIRO_STATUS_NULL_POINTER: %NULL pointer
  * @CAIRO_STATUS_INVALID_STRING: input string not valid UTF-8
  * @CAIRO_STATUS_INVALID_PATH_DATA: input path data not valid
  * @CAIRO_STATUS_READ_ERROR: error while reading from input stream
@@ -162,17 +193,24 @@ typedef struct _cairo_user_data_key {
  * @CAIRO_STATUS_SURFACE_FINISHED: target surface has been finished
  * @CAIRO_STATUS_SURFACE_TYPE_MISMATCH: the surface type is not appropriate for the operation
  * @CAIRO_STATUS_PATTERN_TYPE_MISMATCH: the pattern type is not appropriate for the operation
- * @CAIRO_STATUS_INVALID_CONTENT: invalid value for an input cairo_content_t
- * @CAIRO_STATUS_INVALID_FORMAT: invalid value for an input cairo_format_t
+ * @CAIRO_STATUS_INVALID_CONTENT: invalid value for an input #cairo_content_t
+ * @CAIRO_STATUS_INVALID_FORMAT: invalid value for an input #cairo_format_t
  * @CAIRO_STATUS_INVALID_VISUAL: invalid value for an input Visual*
  * @CAIRO_STATUS_FILE_NOT_FOUND: file not found
  * @CAIRO_STATUS_INVALID_DASH: invalid value for a dash setting
- * @CAIRO_STATUS_INVALID_DSC_COMMENT: invalid value for a DSC comment
+ * @CAIRO_STATUS_INVALID_DSC_COMMENT: invalid value for a DSC comment (Since 1.2)
+ * @CAIRO_STATUS_INVALID_INDEX: invalid index passed to getter (Since 1.4)
+ * @CAIRO_STATUS_CLIP_NOT_REPRESENTABLE: clip region not representable in desired format (Since 1.4)
+ * @CAIRO_STATUS_TEMP_FILE_ERROR: error creating or writing to a temporary file (Since 1.6)
+ * @CAIRO_STATUS_INVALID_STRIDE: invalid value for stride (Since 1.6)
  *
  * #cairo_status_t is used to indicate errors that can occur when
  * using Cairo. In some cases it is returned directly by functions.
  * but when using #cairo_t, the last error, if any, is stored in
  * the context and can be retrieved with cairo_status().
+ *
+ * New entries may be added in future versions.  Use cairo_status_to_string()
+ * to get a human-readable representation of an error message.
  **/
 typedef enum _cairo_status {
     CAIRO_STATUS_SUCCESS = 0,
@@ -195,23 +233,28 @@ typedef enum _cairo_status {
     CAIRO_STATUS_INVALID_VISUAL,
     CAIRO_STATUS_FILE_NOT_FOUND,
     CAIRO_STATUS_INVALID_DASH,
-    CAIRO_STATUS_INVALID_DSC_COMMENT
+    CAIRO_STATUS_INVALID_DSC_COMMENT,
+    CAIRO_STATUS_INVALID_INDEX,
+    CAIRO_STATUS_CLIP_NOT_REPRESENTABLE,
+    CAIRO_STATUS_TEMP_FILE_ERROR,
+    CAIRO_STATUS_INVALID_STRIDE
+    /* after adding a new error: update CAIRO_STATUS_LAST_STATUS in cairoint.h */
 } cairo_status_t;
 
 /**
- * cairo_content_t
+ * cairo_content_t:
  * @CAIRO_CONTENT_COLOR: The surface will hold color content only.
  * @CAIRO_CONTENT_ALPHA: The surface will hold alpha content only.
  * @CAIRO_CONTENT_COLOR_ALPHA: The surface will hold color and alpha content.
  *
- * @cairo_content_t is used to describe the content that a surface will
+ * #cairo_content_t is used to describe the content that a surface will
  * contain, whether color information, alpha information (translucence
  * vs. opacity), or both.
  *
- * Note: The large values here are designed to keep cairo_content_t
- * values distinct from cairo_format_t values so that the
+ * Note: The large values here are designed to keep #cairo_content_t
+ * values distinct from #cairo_format_t values so that the
  * implementation can detect the error if users confuse the two types.
- */
+ **/
 typedef enum _cairo_content {
     CAIRO_CONTENT_COLOR		= 0x1000,
     CAIRO_CONTENT_ALPHA		= 0x2000,
@@ -233,7 +276,7 @@ typedef enum _cairo_content {
  * CAIRO_STATUS_WRITE_ERROR otherwise.
  *
  * Returns: the status code of the write operation
- */
+ **/
 typedef cairo_status_t (*cairo_write_func_t) (void		  *closure,
 					      const unsigned char *data,
 					      unsigned int	   length);
@@ -245,7 +288,7 @@ typedef cairo_status_t (*cairo_write_func_t) (void		  *closure,
  * @length: the amount of data to read
  *
  * #cairo_read_func_t is the type of function which is called when a
- * backend needs to read data from an intput stream.  It is passed the
+ * backend needs to read data from an input stream.  It is passed the
  * closure which was specified by the user at the time the read
  * function was registered, the buffer to read the data into and the
  * length of the data in bytes.  The read function should return
@@ -253,7 +296,7 @@ typedef cairo_status_t (*cairo_write_func_t) (void		  *closure,
  * CAIRO_STATUS_READ_ERROR otherwise.
  *
  * Returns: the status code of the read operation
- */
+ **/
 typedef cairo_status_t (*cairo_read_func_t) (void		*closure,
 					     unsigned char	*data,
 					     unsigned int	length);
@@ -267,6 +310,19 @@ cairo_reference (cairo_t *cr);
 
 cairo_public void
 cairo_destroy (cairo_t *cr);
+
+cairo_public unsigned int
+cairo_get_reference_count (cairo_t *cr);
+
+cairo_public void *
+cairo_get_user_data (cairo_t			 *cr,
+		     const cairo_user_data_key_t *key);
+
+cairo_public cairo_status_t
+cairo_set_user_data (cairo_t			 *cr,
+		     const cairo_user_data_key_t *key,
+		     void			 *user_data,
+		     cairo_destroy_func_t	  destroy);
 
 cairo_public void
 cairo_save (cairo_t *cr);
@@ -288,6 +344,48 @@ cairo_pop_group_to_source (cairo_t *cr);
 
 /* Modify state */
 
+/**
+ * cairo_operator_t:
+ * @CAIRO_OPERATOR_CLEAR: clear destination layer (bounded)
+ * @CAIRO_OPERATOR_SOURCE: replace destination layer (bounded)
+ * @CAIRO_OPERATOR_OVER: draw source layer on top of destination layer
+ * (bounded)
+ * @CAIRO_OPERATOR_IN: draw source where there was destination content
+ * (unbounded)
+ * @CAIRO_OPERATOR_OUT: draw source where there was no destination
+ * content (unbounded)
+ * @CAIRO_OPERATOR_ATOP: draw source on top of destination content and
+ * only there
+ * @CAIRO_OPERATOR_DEST: ignore the source
+ * @CAIRO_OPERATOR_DEST_OVER: draw destination on top of source
+ * @CAIRO_OPERATOR_DEST_IN: leave destination only where there was
+ * source content (unbounded)
+ * @CAIRO_OPERATOR_DEST_OUT: leave destination only where there was no
+ * source content
+ * @CAIRO_OPERATOR_DEST_ATOP: leave destination on top of source content
+ * and only there (unbounded)
+ * @CAIRO_OPERATOR_XOR: source and destination are shown where there is only
+ * one of them
+ * @CAIRO_OPERATOR_ADD: source and destination layers are accumulated
+ * @CAIRO_OPERATOR_SATURATE: like over, but assuming source and dest are
+ * disjoint geometries
+ *
+ * #cairo_operator_t is used to set the compositing operator for all cairo
+ * drawing operations.
+ *
+ * The operators marked as <firstterm>unbounded</firstterm> modify their
+ * destination even outside of the mask layer (that is, their effect is not
+ * bound by the mask layer).  However, their effect can still be limited by
+ * way of clipping.
+ *
+ * To keep things simple, the operator descriptions here
+ * document the behavior for when both source and destination are either fully
+ * transparent or fully opaque.  The actual implementation works for
+ * translucent layers too.
+ * For a more detailed explanation of the effects of each operator, including
+ * the mathematical definitions, see
+ * <ulink url="http://cairographics.org/operators/">http://cairographics.org/operators/</ulink>.
+ **/
 typedef enum _cairo_operator {
     CAIRO_OPERATOR_CLEAR,
 
@@ -341,7 +439,7 @@ cairo_set_tolerance (cairo_t *cr, double tolerance);
  * @CAIRO_ANTIALIAS_SUBPIXEL: Perform antialiasing by taking
  *  advantage of the order of subpixel elements on devices
  *  such as LCD panels
- * 
+ *
  * Specifies the type of antialiasing to do when rendering text or shapes.
  **/
 typedef enum _cairo_antialias {
@@ -355,7 +453,7 @@ cairo_public void
 cairo_set_antialias (cairo_t *cr, cairo_antialias_t antialias);
 
 /**
- * cairo_fill_rule_t
+ * cairo_fill_rule_t:
  * @CAIRO_FILL_RULE_WINDING: If the path crosses the ray from
  * left-to-right, counts +1. If the path crosses the ray
  * from right to left, counts -1. (Left and right are determined
@@ -374,6 +472,8 @@ cairo_set_antialias (cairo_t *cr, cairo_antialias_t antialias);
  * or have a tricky intersection such as intersecting tangent to the path.
  * (Note that filling is not actually implemented in this way. This
  * is just a description of the rule that is applied.)
+ *
+ * New entries may be added in future versions.
  **/
 typedef enum _cairo_fill_rule {
     CAIRO_FILL_RULE_WINDING,
@@ -386,14 +486,13 @@ cairo_set_fill_rule (cairo_t *cr, cairo_fill_rule_t fill_rule);
 cairo_public void
 cairo_set_line_width (cairo_t *cr, double width);
 
-
 /**
- * cairo_line_cap_t
+ * cairo_line_cap_t:
  * @CAIRO_LINE_CAP_BUTT: start(stop) the line exactly at the start(end) point
  * @CAIRO_LINE_CAP_ROUND: use a round ending, the center of the circle is the end point
  * @CAIRO_LINE_CAP_SQUARE: use squared ending, the center of the square is the end point
  *
- * enumeration for style of line-endings
+ * Specifies how to render the endpoint of a line when stroking.
  **/
 typedef enum _cairo_line_cap {
     CAIRO_LINE_CAP_BUTT,
@@ -404,6 +503,17 @@ typedef enum _cairo_line_cap {
 cairo_public void
 cairo_set_line_cap (cairo_t *cr, cairo_line_cap_t line_cap);
 
+/**
+ * cairo_line_join_t:
+ * @CAIRO_LINE_JOIN_MITER: use a sharp (angled) corner, see
+ * cairo_set_miter_limit()
+ * @CAIRO_LINE_JOIN_ROUND: use a rounded join, the center of the circle is the
+ * joint point
+ * @CAIRO_LINE_JOIN_BEVEL: use a cut-off join, the join is cut off at half
+ * the line width from the joint point
+ *
+ * Specifies how to render the junction of two lines when stroking.
+ **/
 typedef enum _cairo_line_join {
     CAIRO_LINE_JOIN_MITER,
     CAIRO_LINE_JOIN_ROUND,
@@ -414,10 +524,10 @@ cairo_public void
 cairo_set_line_join (cairo_t *cr, cairo_line_join_t line_join);
 
 cairo_public void
-cairo_set_dash (cairo_t	*cr,
-		double	*dashes,
-		int	 num_dashes,
-		double	 offset);
+cairo_set_dash (cairo_t      *cr,
+		const double *dashes,
+		int	      num_dashes,
+		double	      offset);
 
 cairo_public void
 cairo_set_miter_limit (cairo_t *cr, double limit);
@@ -518,6 +628,11 @@ cairo_stroke_to_path (cairo_t *cr);
 cairo_public void
 cairo_close_path (cairo_t *cr);
 
+cairo_public void
+cairo_path_extents (cairo_t *cr,
+		    double *x1, double *y1,
+		    double *x2, double *y2);
+
 /* Painting functions */
 cairo_public void
 cairo_paint (cairo_t *cr);
@@ -582,16 +697,66 @@ cairo_clip (cairo_t *cr);
 cairo_public void
 cairo_clip_preserve (cairo_t *cr);
 
+cairo_public void
+cairo_clip_extents (cairo_t *cr,
+		    double *x1, double *y1,
+		    double *x2, double *y2);
+
+/**
+ * cairo_rectangle_t:
+ * @x: X coordinate of the left side of the rectangle
+ * @y: Y coordinate of the the top side of the rectangle
+ * @width: width of the rectangle
+ * @height: height of the rectangle
+ *
+ * A data structure for holding a rectangle.
+ *
+ * Since: 1.4
+ **/
+typedef struct _cairo_rectangle {
+    double x, y, width, height;
+} cairo_rectangle_t;
+
+/**
+ * cairo_rectangle_list_t:
+ * @status: Error status of the rectangle list
+ * @rectangles: Array containing the rectangles
+ * @num_rectangles: Number of rectangles in this list
+ * 
+ * A data structure for holding a dynamically allocated
+ * array of rectangles.
+ *
+ * Since: 1.4
+ **/
+typedef struct _cairo_rectangle_list {
+    cairo_status_t     status;
+    cairo_rectangle_t *rectangles;
+    int                num_rectangles;
+} cairo_rectangle_list_t;
+
+cairo_public cairo_rectangle_list_t *
+cairo_copy_clip_rectangle_list (cairo_t *cr);
+
+cairo_public void
+cairo_rectangle_list_destroy (cairo_rectangle_list_t *rectangle_list);
+
 /* Font/Text functions */
 
 /**
  * cairo_scaled_font_t:
  *
  * A #cairo_scaled_font_t is a font scaled to a particular size and device
- * resolution. A cairo_scaled_font_t is most useful for low-level font
+ * resolution. A #cairo_scaled_font_t is most useful for low-level font
  * usage where a library or application wants to cache a reference
  * to a scaled font to speed up the computation of metrics.
- */
+ *
+ * There are various types of scaled fonts, depending on the
+ * <firstterm>font backend</firstterm> they use. The type of a
+ * scaled font can be queried using cairo_scaled_font_get_type().
+ *
+ * Memory management of #cairo_scaled_font_t is done with
+ * cairo_scaled_font_reference() and cairo_scaled_font_destroy().
+ **/
 typedef struct _cairo_scaled_font cairo_scaled_font_t;
 
 /**
@@ -603,7 +768,14 @@ typedef struct _cairo_scaled_font cairo_scaled_font_t;
  * directions) . A font face can be set on a #cairo_t by using
  * cairo_set_font_face(); the size and font matrix are set with
  * cairo_set_font_size() and cairo_set_font_matrix().
- */
+ *
+ * There are various types of font faces, depending on the
+ * <firstterm>font backend</firstterm> they use. The type of a
+ * font face can be queried using cairo_font_face_get_type().
+ *
+ * Memory management of #cairo_font_face_t is done with
+ * cairo_font_face_reference() and cairo_font_face_destroy().
+ **/
 typedef struct _cairo_font_face cairo_font_face_t;
 
 /**
@@ -662,7 +834,7 @@ typedef struct {
  * doubled. They will change slightly due to hinting (so you can't
  * assume that metrics are independent of the transformation matrix),
  * but otherwise will remain unchanged.
- */
+ **/
 typedef struct {
     double x_bearing;
     double y_bearing;
@@ -693,7 +865,7 @@ typedef struct {
  *          or <firstterm>external leading</firstterm>. When space
  *          is at a premium, most fonts can be set with only
  *          a distance of @ascent+@descent between lines.
- * @max_x_advance: the maximum distance in the X direction that 
+ * @max_x_advance: the maximum distance in the X direction that
  *         the the origin is advanced for any glyph in the font.
  * @max_y_advance: the maximum distance in the Y direction that
  *         the the origin is advanced for any glyph in the font.
@@ -701,7 +873,7 @@ typedef struct {
  *         writing. (The scripts of East Asia are sometimes written
  *         vertically.)
  *
- * The #cairo_text_extents_t structure stores metric information for
+ * The #cairo_font_extents_t structure stores metric information for
  * a font. Values are given in the current user-space coordinate
  * system.
  *
@@ -712,7 +884,7 @@ typedef struct {
  * not be doubled. They will change slightly due to hinting (so you
  * can't assume that metrics are independent of the transformation
  * matrix), but otherwise will remain unchanged.
- */
+ **/
 typedef struct {
     double ascent;
     double descent;
@@ -721,12 +893,27 @@ typedef struct {
     double max_y_advance;
 } cairo_font_extents_t;
 
+/**
+ * cairo_font_slant_t:
+ * @CAIRO_FONT_SLANT_NORMAL: Upright font style
+ * @CAIRO_FONT_SLANT_ITALIC: Italic font style
+ * @CAIRO_FONT_SLANT_OBLIQUE: Oblique font style
+ *
+ * Specifies variants of a font face based on their slant.
+ **/
 typedef enum _cairo_font_slant {
   CAIRO_FONT_SLANT_NORMAL,
   CAIRO_FONT_SLANT_ITALIC,
   CAIRO_FONT_SLANT_OBLIQUE
 } cairo_font_slant_t;
-  
+
+/**
+ * cairo_font_weight_t:
+ * @CAIRO_FONT_WEIGHT_NORMAL: Normal font weight
+ * @CAIRO_FONT_WEIGHT_BOLD: Bold font weight
+ *
+ * Specifies variants of a font face based on their weight.
+ **/
 typedef enum _cairo_font_weight {
   CAIRO_FONT_WEIGHT_NORMAL,
   CAIRO_FONT_WEIGHT_BOLD
@@ -744,7 +931,7 @@ typedef enum _cairo_font_weight {
  *   with red at the top
  * @CAIRO_SUBPIXEL_ORDER_VBGR: Subpixel elements are arranged vertically
  *   with blue at the top
- * 
+ *
  * The subpixel order specifies the order of color elements within
  * each pixel on the display device when rendering with an
  * antialiasing mode of %CAIRO_ANTIALIAS_SUBPIXEL.
@@ -760,7 +947,7 @@ typedef enum _cairo_subpixel_order {
 /**
  * cairo_hint_style_t:
  * @CAIRO_HINT_STYLE_DEFAULT: Use the default hint style for
- *   for font backend and target device
+ *   font backend and target device
  * @CAIRO_HINT_STYLE_NONE: Do not hint outlines
  * @CAIRO_HINT_STYLE_SLIGHT: Hint outlines slightly to improve
  *   contrast while retaining good fidelity to the original
@@ -776,7 +963,9 @@ typedef enum _cairo_subpixel_order {
  * involves distorting them, it also reduces the faithfulness
  * to the original outline shapes. Not all of the outline hinting
  * styles are supported by all font backends.
- */
+ *
+ * New entries may be added in future versions.
+ **/
 typedef enum _cairo_hint_style {
     CAIRO_HINT_STYLE_DEFAULT,
     CAIRO_HINT_STYLE_NONE,
@@ -797,13 +986,33 @@ typedef enum _cairo_hint_style {
  * device space. Doing this improves the consistency of
  * letter and line spacing, however it also means that text
  * will be laid out differently at different zoom factors.
- */
+ **/
 typedef enum _cairo_hint_metrics {
     CAIRO_HINT_METRICS_DEFAULT,
     CAIRO_HINT_METRICS_OFF,
     CAIRO_HINT_METRICS_ON
 } cairo_hint_metrics_t;
 
+/**
+ * cairo_font_options_t:
+ *
+ * An opaque structure holding all options that are used when
+ * rendering fonts.
+ *
+ * Individual features of a #cairo_font_options_t can be set or
+ * accessed using functions named
+ * cairo_font_options_set_<emphasis>feature_name</emphasis> and
+ * cairo_font_options_get_<emphasis>feature_name</emphasis>, like
+ * cairo_font_options_set_antialias() and
+ * cairo_font_options_get_antialias().
+ *
+ * New features may be added to a #cairo_font_options_t in the
+ * future.  For this reason, cairo_font_options_copy(),
+ * cairo_font_options_equal(), cairo_font_options_merge(), and
+ * cairo_font_options_hash() should be used to copy, check
+ * for equality, merge, or compute a hash value of
+ * #cairo_font_options_t objects.
+ **/
 typedef struct _cairo_font_options cairo_font_options_t;
 
 cairo_public cairo_font_options_t *
@@ -812,7 +1021,7 @@ cairo_font_options_create (void);
 cairo_public cairo_font_options_t *
 cairo_font_options_copy (const cairo_font_options_t *original);
 
-cairo_public void 
+cairo_public void
 cairo_font_options_destroy (cairo_font_options_t *options);
 
 cairo_public cairo_status_t
@@ -839,7 +1048,7 @@ cairo_font_options_set_subpixel_order (cairo_font_options_t   *options,
 				       cairo_subpixel_order_t  subpixel_order);
 cairo_public cairo_subpixel_order_t
 cairo_font_options_get_subpixel_order (const cairo_font_options_t *options);
-			 
+
 cairo_public void
 cairo_font_options_set_hint_style (cairo_font_options_t *options,
 				   cairo_hint_style_t     hint_style);
@@ -852,14 +1061,13 @@ cairo_font_options_set_hint_metrics (cairo_font_options_t *options,
 cairo_public cairo_hint_metrics_t
 cairo_font_options_get_hint_metrics (const cairo_font_options_t *options);
 
-
 /* This interface is for dealing with text as text, not caring about the
    font object inside the the cairo_t. */
 
 cairo_public void
-cairo_select_font_face (cairo_t              *cr, 
-			const char           *family, 
-			cairo_font_slant_t   slant, 
+cairo_select_font_face (cairo_t              *cr,
+			const char           *family,
+			cairo_font_slant_t   slant,
 			cairo_font_weight_t  weight);
 
 cairo_public void
@@ -882,24 +1090,29 @@ cairo_get_font_options (cairo_t              *cr,
 			cairo_font_options_t *options);
 
 cairo_public void
-cairo_set_scaled_font (cairo_t                   *cr,
-		       const cairo_scaled_font_t *scaled_font);
-
-cairo_public void
-cairo_show_text (cairo_t *cr, const char *utf8);
-
-cairo_public void
-cairo_show_glyphs (cairo_t *cr, cairo_glyph_t *glyphs, int num_glyphs);
+cairo_set_font_face (cairo_t *cr, cairo_font_face_t *font_face);
 
 cairo_public cairo_font_face_t *
 cairo_get_font_face (cairo_t *cr);
 
 cairo_public void
-cairo_font_extents (cairo_t              *cr, 
-		    cairo_font_extents_t *extents);
+cairo_set_scaled_font (cairo_t                   *cr,
+		       const cairo_scaled_font_t *scaled_font);
+
+cairo_public cairo_scaled_font_t *
+cairo_get_scaled_font (cairo_t *cr);
 
 cairo_public void
-cairo_set_font_face (cairo_t *cr, cairo_font_face_t *font_face);
+cairo_show_text (cairo_t *cr, const char *utf8);
+
+cairo_public void
+cairo_show_glyphs (cairo_t *cr, const cairo_glyph_t *glyphs, int num_glyphs);
+
+cairo_public void
+cairo_text_path  (cairo_t *cr, const char *utf8);
+
+cairo_public void
+cairo_glyph_path (cairo_t *cr, const cairo_glyph_t *glyphs, int num_glyphs);
 
 cairo_public void
 cairo_text_extents (cairo_t              *cr,
@@ -908,15 +1121,13 @@ cairo_text_extents (cairo_t              *cr,
 
 cairo_public void
 cairo_glyph_extents (cairo_t               *cr,
-		     cairo_glyph_t         *glyphs, 
+		     const cairo_glyph_t   *glyphs,
 		     int                   num_glyphs,
 		     cairo_text_extents_t  *extents);
 
 cairo_public void
-cairo_text_path  (cairo_t *cr, const char *utf8);
-
-cairo_public void
-cairo_glyph_path (cairo_t *cr, cairo_glyph_t *glyphs, int num_glyphs);
+cairo_font_extents (cairo_t              *cr,
+		    cairo_font_extents_t *extents);
 
 /* Generic identifier for a font style */
 
@@ -926,40 +1137,48 @@ cairo_font_face_reference (cairo_font_face_t *font_face);
 cairo_public void
 cairo_font_face_destroy (cairo_font_face_t *font_face);
 
+cairo_public unsigned int
+cairo_font_face_get_reference_count (cairo_font_face_t *font_face);
+
 cairo_public cairo_status_t
 cairo_font_face_status (cairo_font_face_t *font_face);
 
 /**
- * cairo_font_type_t
- * @CAIRO_FONT_TYPE_FT: The font is of type ft
- * @CAIRO_FONT_TYPE_WIN32: The font is of type win32
- * @CAIRO_FONT_TYPE_ATSUI: The font is of type atsui
+ * cairo_font_type_t:
+ * @CAIRO_FONT_TYPE_TOY: The font was created using cairo's toy font api
+ * @CAIRO_FONT_TYPE_FT: The font is of type FreeType
+ * @CAIRO_FONT_TYPE_WIN32: The font is of type Win32
+ * @CAIRO_FONT_TYPE_ATSUI: The font is of type ATSUI
  *
- * @cairo_font_type_t is used to describe the type of a given font
+ * #cairo_font_type_t is used to describe the type of a given font
  * face or scaled font. The font types are also known as "font
  * backends" within cairo.
  *
  * The type of a font face is determined by the function used to
  * create it, which will generally be of the form
- * cairo_<type>_font_face_create. The font face type can be queried
+ * cairo_<emphasis>type</emphasis>_font_face_create. The font face type can be queried
  * with cairo_font_face_get_type()
  *
- * The various cairo_font_face functions can be used with a font face
+ * The various #cairo_font_face_t functions can be used with a font face
  * of any type.
  *
  * The type of a scaled font is determined by the type of the font
- * face passed to cairo_scaled_font_create. The scaled font type can
+ * face passed to cairo_scaled_font_create(). The scaled font type can
  * be queried with cairo_scaled_font_get_type()
  *
- * The various cairo_scaled_font functions can be used with scaled
+ * The various #cairo_scaled_font_t functions can be used with scaled
  * fonts of any type, but some font backends also provide
  * type-specific functions that must only be called with a scaled font
  * of the appropriate type. These functions have names that begin with
- * cairo_<type>_scaled_font such as cairo_ft_scaled_font_lock_face.
+ * cairo_<emphasis>type</emphasis>_scaled_font such as cairo_ft_scaled_font_lock_face().
  *
  * The behavior of calling a type-specific function with a scaled font
  * of the wrong type is undefined.
- */
+ *
+ * New entries may be added in future versions.
+ *
+ * Since: 1.2
+ **/
 typedef enum _cairo_font_type {
     CAIRO_FONT_TYPE_TOY,
     CAIRO_FONT_TYPE_FT,
@@ -994,11 +1213,24 @@ cairo_scaled_font_reference (cairo_scaled_font_t *scaled_font);
 cairo_public void
 cairo_scaled_font_destroy (cairo_scaled_font_t *scaled_font);
 
+cairo_public unsigned int
+cairo_scaled_font_get_reference_count (cairo_scaled_font_t *scaled_font);
+
 cairo_public cairo_status_t
 cairo_scaled_font_status (cairo_scaled_font_t *scaled_font);
 
 cairo_public cairo_font_type_t
 cairo_scaled_font_get_type (cairo_scaled_font_t *scaled_font);
+
+cairo_public void *
+cairo_scaled_font_get_user_data (cairo_scaled_font_t         *scaled_font,
+				 const cairo_user_data_key_t *key);
+
+cairo_public cairo_status_t
+cairo_scaled_font_set_user_data (cairo_scaled_font_t         *scaled_font,
+				 const cairo_user_data_key_t *key,
+				 void                        *user_data,
+				 cairo_destroy_func_t	      destroy);
 
 cairo_public void
 cairo_scaled_font_extents (cairo_scaled_font_t  *scaled_font,
@@ -1011,7 +1243,7 @@ cairo_scaled_font_text_extents (cairo_scaled_font_t  *scaled_font,
 
 cairo_public void
 cairo_scaled_font_glyph_extents (cairo_scaled_font_t   *scaled_font,
-				 cairo_glyph_t         *glyphs, 
+				 const cairo_glyph_t   *glyphs,
 				 int                   num_glyphs,
 				 cairo_text_extents_t  *extents);
 
@@ -1044,6 +1276,9 @@ cairo_get_tolerance (cairo_t *cr);
 cairo_public cairo_antialias_t
 cairo_get_antialias (cairo_t *cr);
 
+cairo_public cairo_bool_t
+cairo_has_current_point (cairo_t *cr);
+
 cairo_public void
 cairo_get_current_point (cairo_t *cr, double *x, double *y);
 
@@ -1062,7 +1297,11 @@ cairo_get_line_join (cairo_t *cr);
 cairo_public double
 cairo_get_miter_limit (cairo_t *cr);
 
-/* XXX: How to do cairo_get_dash??? Do we want to switch to a cairo_dash object? */
+cairo_public int
+cairo_get_dash_count (cairo_t *cr);
+
+cairo_public void
+cairo_get_dash (cairo_t *cr, double *dashes, double *offset);
 
 cairo_public void
 cairo_get_matrix (cairo_t *cr, cairo_matrix_t *matrix);
@@ -1073,6 +1312,17 @@ cairo_get_target (cairo_t *cr);
 cairo_public cairo_surface_t *
 cairo_get_group_target (cairo_t *cr);
 
+/**
+ * cairo_path_data_type_t:
+ * @CAIRO_PATH_MOVE_TO: A move-to operation
+ * @CAIRO_PATH_LINE_TO: A line-to operation
+ * @CAIRO_PATH_CURVE_TO: A curve-to operation
+ * @CAIRO_PATH_CLOSE_PATH: A close-path operation
+ *
+ * #cairo_path_data_t is used to describe the type of one portion
+ * of a path when represented as a #cairo_path_t.
+ * See #cairo_path_data_t for details.
+ **/
 typedef enum _cairo_path_data_type {
     CAIRO_PATH_MOVE_TO,
     CAIRO_PATH_LINE_TO,
@@ -1094,8 +1344,7 @@ typedef enum _cairo_path_data_type {
  * the array, (one header followed by 0 or more points). The length
  * value of the header is the number of array elements for the current
  * portion including the header, (ie. length == 1 + # of points), and
- * where the number of points for each element type must be as
- * follows:
+ * where the number of points for each element type is as follows:
  *
  * <programlisting>
  *     %CAIRO_PATH_MOVE_TO:     1 point
@@ -1112,32 +1361,40 @@ typedef enum _cairo_path_data_type {
  *
  * <informalexample><programlisting>
  *      int i;
- *      cairo_path_t *path;
- *      cairo_path_data_t *data;
+ *      #cairo_path_t *path;
+ *      #cairo_path_data_t *data;
  * &nbsp;
  *      path = cairo_copy_path (cr);
  * &nbsp;
  *      for (i=0; i < path->num_data; i += path->data[i].header.length) {
  *          data = &amp;path->data[i];
  *          switch (data->header.type) {
- *          case CAIRO_PATH_MOVE_TO:
+ *          case %CAIRO_PATH_MOVE_TO:
  *              do_move_to_things (data[1].point.x, data[1].point.y);
  *              break;
- *          case CAIRO_PATH_LINE_TO:
+ *          case %CAIRO_PATH_LINE_TO:
  *              do_line_to_things (data[1].point.x, data[1].point.y);
  *              break;
- *          case CAIRO_PATH_CURVE_TO:
+ *          case %CAIRO_PATH_CURVE_TO:
  *              do_curve_to_things (data[1].point.x, data[1].point.y,
  *                                  data[2].point.x, data[2].point.y,
  *                                  data[3].point.x, data[3].point.y);
  *              break;
- *          case CAIRO_PATH_CLOSE_PATH:
+ *          case %CAIRO_PATH_CLOSE_PATH:
  *              do_close_path_things ();
  *              break;
  *          }
  *      }
  *      cairo_path_destroy (path);
  * </programlisting></informalexample>
+ *
+ * As of cairo 1.4, cairo does not mind if there are more elements in
+ * a portion of the path than needed.  Such elements can be used by
+ * users of the cairo API to hold extra values in the path data
+ * structure.  For this reason, it is recommended that applications
+ * always use <literal>data->header.length</literal> to
+ * iterate over the path data, instead of hardcoding the number of
+ * elements for each element type.
  **/
 typedef union _cairo_path_data_t cairo_path_data_t;
 union _cairo_path_data_t {
@@ -1157,8 +1414,8 @@ union _cairo_path_data_t {
  * @num_data: the number of elements in the data array
  *
  * A data structure for holding a path. This data structure serves as
- * the return value for cairo_copy_path_data() and
- * cairo_copy_path_data_flat() as well the input value for
+ * the return value for cairo_copy_path() and
+ * cairo_copy_path_flat() as well the input value for
  * cairo_append_path().
  *
  * See #cairo_path_data_t for hints on how to iterate over the
@@ -1182,29 +1439,11 @@ cairo_public cairo_path_t *
 cairo_copy_path_flat (cairo_t *cr);
 
 cairo_public void
-cairo_append_path (cairo_t	*cr,
-		   cairo_path_t *path);
+cairo_append_path (cairo_t		*cr,
+		   const cairo_path_t	*path);
 
 cairo_public void
 cairo_path_destroy (cairo_path_t *path);
-
-/**
- * cairo_clip_rect_t:
- * 
- * A data structure for holding clip rectangles.
- */
-typedef struct _cairo_clip_rect {
-  double x, y, width, height;
-} cairo_clip_rect_t;
-
-cairo_public cairo_bool_t
-cairo_has_clip (cairo_t *cr);
-
-cairo_public cairo_bool_t
-cairo_extract_clip_rectangles (cairo_t *cr,
-                               int max_rectangles,
-                               cairo_clip_rect_t *rectangles_out,
-                               int *num_rectangles_out);
 
 /* Error status queries */
 
@@ -1231,11 +1470,14 @@ cairo_surface_finish (cairo_surface_t *surface);
 cairo_public void
 cairo_surface_destroy (cairo_surface_t *surface);
 
+cairo_public unsigned int
+cairo_surface_get_reference_count (cairo_surface_t *surface);
+
 cairo_public cairo_status_t
 cairo_surface_status (cairo_surface_t *surface);
 
 /**
- * cairo_surface_type_t
+ * cairo_surface_type_t:
  * @CAIRO_SURFACE_TYPE_IMAGE: The surface is of type image
  * @CAIRO_SURFACE_TYPE_PDF: The surface is of type pdf
  * @CAIRO_SURFACE_TYPE_PS: The surface is of type ps
@@ -1247,27 +1489,32 @@ cairo_surface_status (cairo_surface_t *surface);
  * @CAIRO_SURFACE_TYPE_BEOS: The surface is of type beos
  * @CAIRO_SURFACE_TYPE_DIRECTFB: The surface is of type directfb
  * @CAIRO_SURFACE_TYPE_SVG: The surface is of type svg
- * @CAIRO_SURFACE_TYPE_QUARTZ2: The surface is of type quartz2
+ * @CAIRO_SURFACE_TYPE_OS2: The surface is of type os2
+ * @CAIRO_SURFACE_TYPE_WIN32_PRINTING: The surface is a win32 printing surface
  *
- * @cairo_surface_type_t is used to describe the type of a given
+ * #cairo_surface_type_t is used to describe the type of a given
  * surface. The surface types are also known as "backends" or "surface
  * backends" within cairo.
  *
  * The type of a surface is determined by the function used to create
- * it, which will generally be of the form cairo_<type>_surface_create,
- * (though see cairo_surface_create_similar as well).
+ * it, which will generally be of the form cairo_<emphasis>type</emphasis>_surface_create(),
+ * (though see cairo_surface_create_similar() as well).
  *
  * The surface type can be queried with cairo_surface_get_type()
  *
- * The various cairo_surface functions can be used with surfaces of
+ * The various #cairo_surface_t functions can be used with surfaces of
  * any type, but some backends also provide type-specific functions
  * that must only be called with a surface of the appropriate
  * type. These functions have names that begin with
- * cairo_<type>_surface such as cairo_image_surface_get_width().
+ * cairo_<emphasis>type</emphasis>_surface such as cairo_image_surface_get_width().
  *
  * The behavior of calling a type-specific function with a surface of
  * the wrong type is undefined.
- */
+ *
+ * New entries may be added in future versions.
+ *
+ * Since: 1.2
+ **/
 typedef enum _cairo_surface_type {
     CAIRO_SURFACE_TYPE_IMAGE,
     CAIRO_SURFACE_TYPE_PDF,
@@ -1280,7 +1527,9 @@ typedef enum _cairo_surface_type {
     CAIRO_SURFACE_TYPE_BEOS,
     CAIRO_SURFACE_TYPE_DIRECTFB,
     CAIRO_SURFACE_TYPE_SVG,
-    CAIRO_SURFACE_TYPE_QUARTZ2
+    CAIRO_SURFACE_TYPE_OS2,
+    CAIRO_SURFACE_TYPE_WIN32_PRINTING,
+    CAIRO_SURFACE_TYPE_QUARTZ_IMAGE
 } cairo_surface_type_t;
 
 cairo_public cairo_surface_type_t
@@ -1339,10 +1588,21 @@ cairo_surface_get_device_offset (cairo_surface_t *surface,
 				 double          *x_offset,
 				 double          *y_offset);
 
+cairo_public void
+cairo_surface_set_fallback_resolution (cairo_surface_t	*surface,
+				       double		 x_pixels_per_inch,
+				       double		 y_pixels_per_inch);
+
+cairo_public void
+cairo_surface_copy_page (cairo_surface_t *surface);
+
+cairo_public void
+cairo_surface_show_page (cairo_surface_t *surface);
+
 /* Image-surface functions */
 
 /**
- * cairo_format_t
+ * cairo_format_t:
  * @CAIRO_FORMAT_ARGB32: each pixel is a 32-bit quantity, with
  *   alpha in the upper 8 bits, then red, then green, then blue.
  *   The 32-bit quantities are stored native-endian. Pre-multiplied
@@ -1359,21 +1619,34 @@ cairo_surface_get_device_offset (cairo_surface_t *surface,
  *   endianess of the platform. On a big-endian machine, the
  *   first pixel is in the uppermost bit, on a little-endian
  *   machine the first pixel is in the least-significant bit.
+ * @CAIRO_FORMAT_RGB16_565: This format value is deprecated. It has
+ *   never been properly implemented in cairo and should not be used
+ *   by applications. (since 1.2)
  *
  * #cairo_format_t is used to identify the memory format of
  * image data.
- */
+ *
+ * New entries may be added in future versions.
+ **/
 typedef enum _cairo_format {
     CAIRO_FORMAT_ARGB32,
     CAIRO_FORMAT_RGB24,
     CAIRO_FORMAT_A8,
     CAIRO_FORMAT_A1
+    /* The value of 4 is reserved by a deprecated enum value.
+     * The next format added must have an explicit value of 5.
+    CAIRO_FORMAT_RGB16_565 = 4,
+    */
 } cairo_format_t;
 
 cairo_public cairo_surface_t *
 cairo_image_surface_create (cairo_format_t	format,
 			    int			width,
 			    int			height);
+
+cairo_public int
+cairo_format_stride_for_width (cairo_format_t	format,
+			       int		width);
 
 cairo_public cairo_surface_t *
 cairo_image_surface_create_for_data (unsigned char	       *data,
@@ -1382,11 +1655,20 @@ cairo_image_surface_create_for_data (unsigned char	       *data,
 				     int			height,
 				     int			stride);
 
+cairo_public unsigned char *
+cairo_image_surface_get_data (cairo_surface_t *surface);
+
+cairo_public cairo_format_t
+cairo_image_surface_get_format (cairo_surface_t *surface);
+
 cairo_public int
 cairo_image_surface_get_width (cairo_surface_t *surface);
 
 cairo_public int
 cairo_image_surface_get_height (cairo_surface_t *surface);
+
+cairo_public int
+cairo_image_surface_get_stride (cairo_surface_t *surface);
 
 #if CAIRO_HAS_PNG_FUNCTIONS
 
@@ -1424,20 +1706,32 @@ cairo_pattern_reference (cairo_pattern_t *pattern);
 
 cairo_public void
 cairo_pattern_destroy (cairo_pattern_t *pattern);
-  
+
+cairo_public unsigned int
+cairo_pattern_get_reference_count (cairo_pattern_t *pattern);
+
 cairo_public cairo_status_t
 cairo_pattern_status (cairo_pattern_t *pattern);
 
-/**
- * cairo_pattern_type_t
+cairo_public void *
+cairo_pattern_get_user_data (cairo_pattern_t		 *pattern,
+			     const cairo_user_data_key_t *key);
 
+cairo_public cairo_status_t
+cairo_pattern_set_user_data (cairo_pattern_t		 *pattern,
+			     const cairo_user_data_key_t *key,
+			     void			 *user_data,
+			     cairo_destroy_func_t	  destroy);
+
+/**
+ * cairo_pattern_type_t:
  * @CAIRO_PATTERN_TYPE_SOLID: The pattern is a solid (uniform)
  * color. It may be opaque or translucent.
  * @CAIRO_PATTERN_TYPE_SURFACE: The pattern is a based on a surface (an image).
  * @CAIRO_PATTERN_TYPE_LINEAR: The pattern is a linear gradient.
  * @CAIRO_PATTERN_TYPE_RADIAL: The pattern is a radial gradient.
  *
- * @cairo_pattern_type_t us used to describe the type of a given pattern.
+ * #cairo_pattern_type_t is used to describe the type of a given pattern.
  *
  * The type of a pattern is determined by the function used to create
  * it. The cairo_pattern_create_rgb() and cairo_pattern_create_rgba()
@@ -1447,14 +1741,18 @@ cairo_pattern_status (cairo_pattern_t *pattern);
  *
  * The pattern type can be queried with cairo_pattern_get_type()
  *
- * Most cairo_pattern functions can be called with a pattern of any
+ * Most #cairo_pattern_t functions can be called with a pattern of any
  * type, (though trying to change the extend or filter for a solid
  * pattern will have no effect). A notable exception is
  * cairo_pattern_add_color_stop_rgb() and
  * cairo_pattern_add_color_stop_rgba() which must only be called with
  * gradient patterns (either LINEAR or RADIAL). Otherwise the pattern
  * will be shutdown and put into an error state.
- */
+ *
+ * New entries may be added in future versions.
+ *
+ * Since: 1.2
+ **/
 typedef enum _cairo_pattern_type {
     CAIRO_PATTERN_TYPE_SOLID,
     CAIRO_PATTERN_TYPE_SURFACE,
@@ -1485,18 +1783,21 @@ cairo_pattern_get_matrix (cairo_pattern_t *pattern,
 			  cairo_matrix_t  *matrix);
 
 /**
- * cairo_extend_t
+ * cairo_extend_t:
  * @CAIRO_EXTEND_NONE: pixels outside of the source pattern
  *   are fully transparent
  * @CAIRO_EXTEND_REPEAT: the pattern is tiled by repeating
  * @CAIRO_EXTEND_REFLECT: the pattern is tiled by reflecting
- *   at the edges
+ *   at the edges (not implemented for surface patterns currently)
  * @CAIRO_EXTEND_PAD: pixels outside of the pattern copy
- *   the closest pixel from the source (since cairo 1.2)
+ *   the closest pixel from the source (Since 1.2; not implemented
+ *   for surface patterns currently)
  *
  * #cairo_extend_t is used to describe how the area outside
  * of a pattern will be drawn.
- */
+ *
+ * New entries may be added in future versions.
+ **/
 typedef enum _cairo_extend {
     CAIRO_EXTEND_NONE,
     CAIRO_EXTEND_REPEAT,
@@ -1510,6 +1811,24 @@ cairo_pattern_set_extend (cairo_pattern_t *pattern, cairo_extend_t extend);
 cairo_public cairo_extend_t
 cairo_pattern_get_extend (cairo_pattern_t *pattern);
 
+/**
+ * cairo_filter_t:
+ * @CAIRO_FILTER_FAST: A high-performance filter, with quality similar
+ *     to %CAIRO_FILTER_NEAREST
+ * @CAIRO_FILTER_GOOD: A reasonable-performance filter, with quality
+ *     similar to %CAIRO_FILTER_BILINEAR
+ * @CAIRO_FILTER_BEST: The highest-quality available, performance may
+ *     not be suitable for interactive use.
+ * @CAIRO_FILTER_NEAREST: Nearest-neighbor filtering
+ * @CAIRO_FILTER_BILINEAR: Linear interpolation in two dimensions
+ * @CAIRO_FILTER_GAUSSIAN: This filter value is currently
+ *     unimplemented, and should not be used in current code.
+ *
+ * #cairo_filter_t is used to indicate what filtering should be
+ * applied when reading pixel values from patterns. See
+ * cairo_pattern_set_source() for indicating the desired filter to be
+ * used with a particular pattern.
+ */
 typedef enum _cairo_filter {
     CAIRO_FILTER_FAST,
     CAIRO_FILTER_GOOD,
@@ -1518,12 +1837,42 @@ typedef enum _cairo_filter {
     CAIRO_FILTER_BILINEAR,
     CAIRO_FILTER_GAUSSIAN
 } cairo_filter_t;
-  
+
 cairo_public void
 cairo_pattern_set_filter (cairo_pattern_t *pattern, cairo_filter_t filter);
 
 cairo_public cairo_filter_t
 cairo_pattern_get_filter (cairo_pattern_t *pattern);
+
+cairo_public cairo_status_t
+cairo_pattern_get_rgba (cairo_pattern_t *pattern,
+			double *red, double *green,
+			double *blue, double *alpha);
+
+cairo_public cairo_status_t
+cairo_pattern_get_surface (cairo_pattern_t *pattern,
+			   cairo_surface_t **surface);
+
+
+cairo_public cairo_status_t
+cairo_pattern_get_color_stop_rgba (cairo_pattern_t *pattern,
+				   int index, double *offset,
+				   double *red, double *green,
+				   double *blue, double *alpha);
+
+cairo_public cairo_status_t
+cairo_pattern_get_color_stop_count (cairo_pattern_t *pattern,
+				    int *count);
+
+cairo_public cairo_status_t
+cairo_pattern_get_linear_points (cairo_pattern_t *pattern,
+				 double *x0, double *y0,
+				 double *x1, double *y1);
+
+cairo_public cairo_status_t
+cairo_pattern_get_radial_circles (cairo_pattern_t *pattern,
+				  double *x0, double *y0, double *r0,
+				  double *x1, double *y1, double *r1);
 
 /* Matrix functions */
 
@@ -1565,12 +1914,10 @@ cairo_matrix_multiply (cairo_matrix_t	    *result,
 		       const cairo_matrix_t *a,
 		       const cairo_matrix_t *b);
 
-/* XXX: Need a new name here perhaps. */
 cairo_public void
 cairo_matrix_transform_distance (const cairo_matrix_t *matrix,
 				 double *dx, double *dy);
 
-/* XXX: Need a new name here perhaps. */
 cairo_public void
 cairo_matrix_transform_point (const cairo_matrix_t *matrix,
 			      double *x, double *y);
@@ -1578,90 +1925,6 @@ cairo_matrix_transform_point (const cairo_matrix_t *matrix,
 /* Functions to be used while debugging (not intended for use in production code) */
 cairo_public void
 cairo_debug_reset_static_data (void);
-
-#ifndef _CAIROINT_H_
-
-/* Obsolete functions. These definitions exist to coerce the compiler
- * into providing a little bit of guidance with its error
- * messages. The idea is to help users port their old code without
- * having to dig through lots of documentation.
- *
- * The first set of REPLACED_BY functions is for functions whose names
- * have just been changed. So fixing these up is mechanical, (and
- * automated by means of the cairo/util/cairo-api-update script.
- *
- * The second set of DEPRECATED_BY functions is for functions where
- * the replacement is used in a different way, (ie. different
- * arguments, multiple functions instead of one, etc). Fixing these up
- * will require a bit more work on the user's part, (and hopefully we
- * can get cairo-api-update to find these and print some guiding
- * information).
- */
-#define cairo_current_font_extents   cairo_current_font_extents_REPLACED_BY_cairo_font_extents
-#define cairo_get_font_extents       cairo_get_font_extents_REPLACED_BY_cairo_font_extents
-#define cairo_current_operator       cairo_current_operator_REPLACED_BY_cairo_get_operator
-#define cairo_current_tolerance	     cairo_current_tolerance_REPLACED_BY_cairo_get_tolerance
-#define cairo_current_point	     cairo_current_point_REPLACED_BY_cairo_get_current_point
-#define cairo_current_fill_rule	     cairo_current_fill_rule_REPLACED_BY_cairo_get_fill_rule
-#define cairo_current_line_width     cairo_current_line_width_REPLACED_BY_cairo_get_line_width
-#define cairo_current_line_cap       cairo_current_line_cap_REPLACED_BY_cairo_get_line_cap
-#define cairo_current_line_join      cairo_current_line_join_REPLACED_BY_cairo_get_line_join
-#define cairo_current_miter_limit    cairo_current_miter_limit_REPLACED_BY_cairo_get_miter_limit
-#define cairo_current_matrix         cairo_current_matrix_REPLACED_BY_cairo_get_matrix
-#define cairo_current_target_surface cairo_current_target_surface_REPLACED_BY_cairo_get_target
-#define cairo_get_status             cairo_get_status_REPLACED_BY_cairo_status
-#define cairo_concat_matrix		 cairo_concat_matrix_REPLACED_BY_cairo_transform
-#define cairo_scale_font                 cairo_scale_font_REPLACED_BY_cairo_set_font_size
-#define cairo_select_font                cairo_select_font_REPLACED_BY_cairo_select_font_face
-#define cairo_transform_font             cairo_transform_font_REPLACED_BY_cairo_set_font_matrix
-#define cairo_transform_point		 cairo_transform_point_REPLACED_BY_cairo_user_to_device
-#define cairo_transform_distance	 cairo_transform_distance_REPLACED_BY_cairo_user_to_device_distance
-#define cairo_inverse_transform_point	 cairo_inverse_transform_point_REPLACED_BY_cairo_device_to_user
-#define cairo_inverse_transform_distance cairo_inverse_transform_distance_REPLACED_BY_cairo_device_to_user_distance
-#define cairo_init_clip			 cairo_init_clip_REPLACED_BY_cairo_reset_clip
-#define cairo_surface_create_for_image	 cairo_surface_create_for_image_REPLACED_BY_cairo_image_surface_create_for_data
-#define cairo_default_matrix		 cairo_default_matrix_REPLACED_BY_cairo_identity_matrix
-#define cairo_matrix_set_affine		 cairo_matrix_set_affine_REPLACED_BY_cairo_matrix_init
-#define cairo_matrix_set_identity	 cairo_matrix_set_identity_REPLACED_BY_cairo_matrix_init_identity
-#define cairo_pattern_add_color_stop	 cairo_pattern_add_color_stop_REPLACED_BY_cairo_pattern_add_color_stop_rgba
-#define cairo_set_rgb_color		 cairo_set_rgb_color_REPLACED_BY_cairo_set_source_rgb
-#define cairo_set_pattern		 cairo_set_pattern_REPLACED_BY_cairo_set_source
-#define cairo_xlib_surface_create_for_pixmap_with_visual	cairo_xlib_surface_create_for_pixmap_with_visual_REPLACED_BY_cairo_xlib_surface_create
-#define cairo_xlib_surface_create_for_window_with_visual	cairo_xlib_surface_create_for_window_with_visual_REPLACED_BY_cairo_xlib_surface_create
-#define cairo_xcb_surface_create_for_pixmap_with_visual	cairo_xcb_surface_create_for_pixmap_with_visual_REPLACED_BY_cairo_xcb_surface_create
-#define cairo_xcb_surface_create_for_window_with_visual	cairo_xcb_surface_create_for_window_with_visual_REPLACED_BY_cairo_xcb_surface_create
-
-
-#define cairo_current_path	     cairo_current_path_DEPRECATED_BY_cairo_copy_path
-#define cairo_current_path_flat	     cairo_current_path_flat_DEPRECATED_BY_cairo_copy_path_flat
-#define cairo_get_path		     cairo_get_path_DEPRECATED_BY_cairo_copy_path
-#define cairo_get_path_flat	     cairo_get_path_flat_DEPRECATED_BY_cairo_get_path_flat
-#define cairo_set_alpha		     cairo_set_alpha_DEPRECATED_BY_cairo_set_source_rgba_OR_cairo_paint_with_alpha
-#define cairo_show_surface	     cairo_show_surface_DEPRECATED_BY_cairo_set_source_surface_AND_cairo_paint
-#define cairo_copy		     cairo_copy_DEPRECATED_BY_cairo_create_AND_MANY_INDIVIDUAL_FUNCTIONS
-#define cairo_surface_set_repeat	cairo_surface_set_repeat_DEPRECATED_BY_cairo_pattern_set_extend
-#define cairo_surface_set_matrix	cairo_surface_set_matrix_DEPRECATED_BY_cairo_pattern_set_matrix
-#define cairo_surface_get_matrix	cairo_surface_get_matrix_DEPRECATED_BY_cairo_pattern_get_matrix
-#define cairo_surface_set_filter	cairo_surface_set_filter_DEPRECATED_BY_cairo_pattern_set_filter
-#define cairo_surface_get_filter	cairo_surface_get_filter_DEPRECATED_BY_cairo_pattern_get_filter
-#define cairo_matrix_create		cairo_matrix_create_DEPRECATED_BY_cairo_matrix_t
-#define cairo_matrix_destroy		cairo_matrix_destroy_DEPRECATED_BY_cairo_matrix_t
-#define cairo_matrix_copy		cairo_matrix_copy_DEPRECATED_BY_cairo_matrix_t
-#define cairo_matrix_get_affine		cairo_matrix_get_affine_DEPRECATED_BY_cairo_matrix_t
-#define cairo_set_target_surface	cairo_set_target_surface_DEPRECATED_BY_cairo_create
-#define cairo_set_target_glitz		cairo_set_target_glitz_DEPRECATED_BY_cairo_glitz_surface_create
-#define cairo_set_target_image		cairo_set_target_image_DEPRECATED_BY_cairo_image_surface_create_for_data
-#define cairo_set_target_pdf		cairo_set_target_pdf_DEPRECATED_BY_cairo_pdf_surface_create
-#define cairo_set_target_png		cairo_set_target_png_DEPRECATED_BY_cairo_surface_write_to_png
-#define cairo_set_target_ps		cairo_set_target_ps_DEPRECATED_BY_cairo_ps_surface_create
-#define cairo_set_target_quartz		cairo_set_target_quartz_DEPRECATED_BY_cairo_quartz_surface_create
-#define cairo_set_target_win32		cairo_set_target_win32_DEPRECATED_BY_cairo_win32_surface_create
-#define cairo_set_target_xcb		cairo_set_target_xcb_DEPRECATED_BY_cairo_xcb_surface_create
-#define cairo_set_target_drawable	cairo_set_target_drawable_DEPRECATED_BY_cairo_xlib_surface_create
-#define cairo_get_status_string		cairo_get_status_string_DEPRECATED_BY_cairo_status_AND_cairo_status_to_string
-#define cairo_status_string		cairo_status_string_DEPRECATED_BY_cairo_status_AND_cairo_status_to_string
-
-#endif
 
 CAIRO_END_DECLS
 

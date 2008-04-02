@@ -41,7 +41,7 @@
 #define nsXFormsControlStub_h_
 
 #include "nsCOMPtr.h"
-#include "nsString.h"
+#include "nsStringAPI.h"
 
 #include "nsIDOMElement.h"
 #include "nsIDOMNode.h"
@@ -54,7 +54,7 @@
 #include "nsIXFormsRepeatElement.h"
 #include "nsXFormsStubElement.h"
 #include "nsXFormsUtils.h"
-#include "nsIXTFBindableElementWrapper.h"
+#include "nsIXTFElementWrapper.h"
 #include "nsIXFormsControlBase.h"
 
 class nsIDOMEvent;
@@ -64,7 +64,8 @@ class nsIDOMXPathResult;
  * Common stub for all XForms controls that inherit from nsIXFormsControl and
  * is bound to an instance node.
  */
-class nsXFormsControlStubBase : public nsIXFormsControl
+class nsXFormsControlStub : public nsXFormsStubElement,
+                            public nsIXFormsControl
 {
 public:
 
@@ -76,6 +77,8 @@ public:
    * nsXFormsUtils:EvaluateNodeBinding()
    */
   const PRUint32 kElementFlags;
+
+  NS_DECL_ISUPPORTS_INHERITED
 
   // nsIXFormsControl
   NS_IMETHOD GetBoundNode(nsIDOMNode **aBoundNode);
@@ -92,21 +95,26 @@ public:
   NS_IMETHOD TryFocus(PRBool* aOK);
   NS_IMETHOD IsEventTarget(PRBool *aOK);
   NS_IMETHOD GetUsesModelBinding(PRBool *aRes);
+  NS_IMETHOD GetUsesSingleNodeBinding(PRBool *aRes);
   NS_IMETHOD GetDefaultIntrinsicState(PRInt32 *aRes);
   NS_IMETHOD GetDisabledIntrinsicState(PRInt32 *aRes);
+  NS_IMETHOD RebindAndRefresh();
+  NS_IMETHOD GetAbortedBindListContainer(nsIXFormsContextControl **aContainer);
+  NS_IMETHOD SetAbortedBindListContainer(nsIXFormsContextControl *aContainer);
 
-  nsresult Create(nsIXTFElementWrapper *aWrapper);
   // for nsIXTFElement
-  nsresult HandleDefault(nsIDOMEvent *aEvent,
-                         PRBool      *aHandled);
-  nsresult OnDestroyed();
-  nsresult WillChangeDocument(nsIDOMDocument *aNewDocument);
-  nsresult DocumentChanged(nsIDOMDocument *aNewDocument);
-  nsresult ParentChanged(nsIDOMElement *aNewParent);
-  nsresult WillSetAttribute(nsIAtom *aName, const nsAString &aValue);
-  nsresult AttributeSet(nsIAtom *aName, const nsAString &aValue);
-  nsresult WillRemoveAttribute(nsIAtom *aName);
-  nsresult AttributeRemoved(nsIAtom *aName);
+  NS_IMETHOD OnCreated(nsIXTFElementWrapper *aWrapper);
+  NS_IMETHOD HandleDefault(nsIDOMEvent *aEvent,
+                           PRBool      *aHandled);
+  NS_IMETHOD OnDestroyed();
+  NS_IMETHOD WillChangeDocument(nsIDOMDocument *aNewDocument);
+  NS_IMETHOD DocumentChanged(nsIDOMDocument *aNewDocument);
+  NS_IMETHOD WillChangeParent(nsIDOMElement *aNewParent);
+  NS_IMETHOD ParentChanged(nsIDOMElement *aNewParent);
+  NS_IMETHOD WillSetAttribute(nsIAtom *aName, const nsAString &aValue);
+  NS_IMETHOD AttributeSet(nsIAtom *aName, const nsAString &aValue);
+  NS_IMETHOD WillRemoveAttribute(nsIAtom *aName);
+  NS_IMETHOD AttributeRemoved(nsIAtom *aName);
 
   /**
    * This function manages the mBindAttrsCount value.  mBindAttrsCount will
@@ -126,6 +134,21 @@ public:
    */
   void AddRemoveSNBAttr(nsIAtom *aName, const nsAString &aValue);
 
+  /**
+   * This function is overridden by controls that are restricted in the
+   * type of content that may be bound to the control. For example,
+   * xf:input may only be bound to simpleContent.
+   *
+   */
+  virtual PRBool IsContentAllowed();
+
+  /**
+   * This function determines if the content to which the control is being
+   * bound is complex; ie contains Element children.
+   *
+   */
+  virtual PRBool IsContentComplex();
+
   // nsIXFormsContextControl
   NS_DECL_NSIXFORMSCONTEXTCONTROL
 
@@ -135,17 +158,17 @@ public:
   
 
   /** Constructor */
-  nsXFormsControlStubBase() :
+  nsXFormsControlStub() :
     kStandardNotificationMask(nsIXTFElement::NOTIFY_WILL_SET_ATTRIBUTE |
                               nsIXTFElement::NOTIFY_ATTRIBUTE_SET |
                               nsIXTFElement::NOTIFY_WILL_REMOVE_ATTRIBUTE | 
                               nsIXTFElement::NOTIFY_ATTRIBUTE_REMOVED | 
                               nsIXTFElement::NOTIFY_WILL_CHANGE_DOCUMENT |
                               nsIXTFElement::NOTIFY_DOCUMENT_CHANGED |
+                              nsIXTFElement::NOTIFY_WILL_CHANGE_PARENT |
                               nsIXTFElement::NOTIFY_PARENT_CHANGED |
                               nsIXTFElement::NOTIFY_HANDLE_DEFAULT),
     kElementFlags(nsXFormsUtils::ELEMENT_WITH_MODEL_ATTR),
-    mHasParent(PR_FALSE),
     mPreventLoop(PR_FALSE),
     mUsesModelBinding(PR_FALSE),
     mAppearDisabled(PR_FALSE),
@@ -154,7 +177,7 @@ public:
     {};
 
 protected:
-  /** The nsIXTFXMLVisualWrapper */
+  /** The nsIXTFElementWrapper */
   nsIDOMElement*                      mElement;
 
   /** The node that the control is bound to. */
@@ -168,9 +191,6 @@ protected:
 
   /** This event listener is used to create xforms-hint and xforms-help events. */
   nsCOMPtr<nsIDOMEventListener>       mEventListener;
-
-  /** State that tells whether control has a parent or not */
-  PRPackedBool                        mHasParent;
 
   /** State to prevent infinite loop when generating and handling xforms-next
    *  and xforms-previous events
@@ -204,6 +224,23 @@ protected:
    * the index() function in the binding expression.
    */
   nsCOMArray<nsIXFormsRepeatElement>  mIndexesUsed;
+
+  /**
+   * List of XForms elements contained by this control who tried to bind
+   * and couldn't because this control wasn't ready to bind, yet.  This means
+   * that these contained nodes couldn't bind because they could be potentially
+   * using this control's bound node as a context node.  When this control
+   * is ready to bind and successfully binds, then this list will be processed.
+   * And in turn, if these controls contain controls on THEIR mAbortedBindList,
+   * then they will be similarly processed.
+   */
+  nsCOMArray<nsIXFormsControl> mAbortedBindList;
+
+  /**
+   * The control that contains the aborted bind list that this control is on.
+   * A control should never be on more than one list at a time.
+   */
+  nsCOMPtr<nsIXFormsContextControl> mAbortedBindListContainer;
 
   /**
    * Does control have a binding attribute?
@@ -281,71 +318,13 @@ protected:
    */
   nsresult MaybeAddToModel(nsIModelElementPrivate *aOldModel,
                            nsIXFormsControl       *aParent);
+
+  /**
+   * Returns the nsISVSchemaBuiltinType of the node to which this element is
+   * bound.
+   */
+  nsresult GetBoundBuiltinType(PRUint16 *aBuiltinType);
+
 };
 
-/**
- * nsXFormsBindableControlStub inherits from nsXFormsBindableStub
- */
-class nsXFormsBindableControlStub : public nsXFormsControlStubBase,
-                                    public nsXFormsBindableStub
-{
-public:
-  NS_DECL_ISUPPORTS_INHERITED
-  // nsIXTFBindableElement overrides
-  /** This sets the notification mask and initializes mElement */
-  NS_IMETHOD OnCreated(nsIXTFBindableElementWrapper *aWrapper)
-  {
-    nsresult rv = nsXFormsBindableStub::OnCreated(aWrapper);
-    return NS_SUCCEEDED(rv) ? nsXFormsControlStubBase::Create(aWrapper) : rv;
-  }
-
-  // nsIXTFElement overrides
-  NS_IMETHOD HandleDefault(nsIDOMEvent *aEvent,
-                           PRBool      *aHandled)
-  {
-    return nsXFormsControlStubBase::HandleDefault(aEvent, aHandled);
-  }
-
-  NS_IMETHOD OnDestroyed() {
-    return nsXFormsControlStubBase::OnDestroyed();
-  }
-
-  NS_IMETHOD WillChangeDocument(nsIDOMDocument *aNewDocument)
-  {
-    return nsXFormsControlStubBase::WillChangeDocument(aNewDocument);
-  }
-
-  NS_IMETHOD DocumentChanged(nsIDOMDocument *aNewDocument)
-  {
-    return nsXFormsControlStubBase::DocumentChanged(aNewDocument);
-  }
-
-  NS_IMETHOD ParentChanged(nsIDOMElement *aNewParent)
-  {
-    return nsXFormsControlStubBase::ParentChanged(aNewParent);
-  }
-
-  NS_IMETHOD WillSetAttribute(nsIAtom *aName, const nsAString &aValue)
-  {
-    return nsXFormsControlStubBase::WillSetAttribute(aName, aValue);
-  }
-
-  NS_IMETHOD AttributeSet(nsIAtom *aName, const nsAString &aValue)
-  {
-    return nsXFormsControlStubBase::AttributeSet(aName, aValue);
-  }
-
-  NS_IMETHOD WillRemoveAttribute(nsIAtom *aName)
-  {
-    return nsXFormsControlStubBase::WillRemoveAttribute(aName);
-  }
-
-  NS_IMETHOD AttributeRemoved(nsIAtom *aName)
-  {
-    return nsXFormsControlStubBase::AttributeRemoved(aName);
-  }
-  
-  /** Constructor */
-  nsXFormsBindableControlStub() : nsXFormsControlStubBase() {};
-};
 #endif
