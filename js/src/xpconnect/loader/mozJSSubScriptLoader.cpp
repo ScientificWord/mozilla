@@ -102,8 +102,8 @@ mozJSSubScriptLoader::LoadSubScript (const PRUnichar * /*url*/
     nsCOMPtr<nsIXPConnect> xpc = do_GetService(nsIXPConnect::GetCID());
     if (!xpc) return NS_ERROR_FAILURE;
 
-    nsCOMPtr<nsIXPCNativeCallContext> cc;
-    rv = xpc->GetCurrentNativeCallContext(getter_AddRefs(cc));
+    nsAXPCNativeCallContext *cc = nsnull;
+    rv = xpc->GetCurrentNativeCallContext(&cc);
     if (NS_FAILED(rv)) return NS_ERROR_FAILURE;
 
     JSContext *cx;
@@ -223,7 +223,7 @@ mozJSSubScriptLoader::LoadSubScript (const PRUnichar * /*url*/
         goto return_exception;
     }
 
-    rv = serv->NewChannel(nsDependentCString(url), nsnull, NS_STATIC_CAST(nsIURI *, nsnull),
+    rv = serv->NewChannel(nsDependentCString(url), nsnull, static_cast<nsIURI *>(nsnull),
                           getter_AddRefs(chan));
     if (NS_FAILED(rv))
     {
@@ -260,7 +260,7 @@ mozJSSubScriptLoader::LoadSubScript (const PRUnichar * /*url*/
         readcount += lastReadCount;
     } while (lastReadCount && readcount != PRUint32(len));
     
-    if (NS_STATIC_CAST(PRUint32, len) != readcount)
+    if (static_cast<PRUint32>(len) != readcount)
     {
         errmsg = JS_NewStringCopyZ (cx, LOAD_ERROR_READUNDERFLOW);
         goto return_exception;

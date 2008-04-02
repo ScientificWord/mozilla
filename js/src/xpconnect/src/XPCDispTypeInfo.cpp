@@ -119,7 +119,7 @@ XPCDispJSPropertyInfo::XPCDispJSPropertyInfo(JSContext* cx, PRUint32 memid,
     if(!chars)
         return;
 
-    mName = nsString(NS_REINTERPRET_CAST(const PRUnichar *, chars), len);
+    mName = nsString(reinterpret_cast<const PRUnichar *>(chars), len);
     JSBool found;
     uintN attr;
     // Get the property's attributes, and make sure it's found and enumerable 
@@ -213,7 +213,7 @@ XPCDispTypeInfo::FuncDescArray::~FuncDescArray()
     PRUint32 size = mArray.Count();
     for(PRUint32 index = 0; index < size; ++index)
     {
-        FUNCDESC* funcDesc = NS_REINTERPRET_CAST(FUNCDESC*,mArray.ElementAt(index));
+        FUNCDESC* funcDesc = reinterpret_cast<FUNCDESC*>(mArray.ElementAt(index));
         delete [] funcDesc->lprgelemdescParam;
         delete funcDesc;
     }
@@ -311,8 +311,8 @@ STDMETHODIMP XPCDispTypeInfo::GetIDsOfNames(
     // lookup each name
     for(UINT index = 0; index < cNames; ++index)
     {
-        nsDependentString buffer(NS_STATIC_CAST(const PRUnichar *,
-                                 rgszNames[index]),
+        nsDependentString buffer(static_cast<const PRUnichar *>
+                                            (rgszNames[index]),
                                  wcslen(rgszNames[index]));
         pMemId[index] = mNameArray.Find(buffer);
 
@@ -329,7 +329,7 @@ STDMETHODIMP XPCDispTypeInfo::Invoke(
         /* [out] */ EXCEPINFO __RPC_FAR *pExcepInfo,
         /* [out] */ UINT __RPC_FAR *puArgErr)
 {
-    CComQIPtr<IDispatch> pDisp(NS_REINTERPRET_CAST(IUnknown*,pvInstance));
+    CComQIPtr<IDispatch> pDisp(reinterpret_cast<IUnknown*>(pvInstance));
     if(pDisp)
     {
         return pDisp->Invoke(memid, IID_NULL, LOCALE_SYSTEM_DEFAULT, wFlags, 
@@ -438,37 +438,33 @@ XPCDispIDArray::XPCDispIDArray(XPCCallContext& ccx, JSIdArray* array) :
     // copy the JS ID Array to our internal array
     for(jsint index = 0; index < array->length; ++index)
     {
-        mIDArray.ReplaceElementAt(NS_REINTERPRET_CAST(void*,
-                                                      array->vector[index]), 
+        mIDArray.ReplaceElementAt(reinterpret_cast<void*>
+                                                  (array->vector[index]), 
                                   index);
     }   
 }
 
-void XPCDispIDArray::Mark()
+void XPCDispIDArray::TraceJS(JSTracer* trc)
 {
     // If already marked nothing to do
-    if(IsMarked())
-        return;
-    mMarked = JS_TRUE;
-    XPCCallContext ccx(NATIVE_CALLER);
-    // Bail if our call context is bad
-    if(!ccx.IsValid())
-        return;
+    if(JS_IsGCMarkingTracer(trc))
+    {
+        if (IsMarked())
+            return;
+        mMarked = JS_TRUE;
+    }
 
     PRInt32 count = Length();
     jsval val;
-    JSContext* cx = ccx;
+
     // Iterate each of the ID's and mark them
     for(PRInt32 index = 0; index < count; ++index)
     {
-        if(JS_IdToValue(cx,
-                        NS_REINTERPRET_CAST(jsid,
-                                            mIDArray.ElementAt(index)),
-                        &val) &&
-            JSVAL_IS_GCTHING(val))
+        if(JS_IdToValue(trc->context,
+                        reinterpret_cast<jsid>(mIDArray.ElementAt(index)),
+                        &val))
         {
-            JS_MarkGCThing(cx, NS_REINTERPRET_CAST(void*,val),
-                           nsnull, nsnull);
+            JS_CALL_VALUE_TRACER(trc, val, "disp_id_array_element");
         }
     }
 }
