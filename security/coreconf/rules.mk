@@ -60,10 +60,6 @@ ifeq (,$(filter-out _WIN%,$(NS_USE_GCC)_$(OS_TARGET)))
 USE_NT_C_SYNTAX=1
 endif
 
-ifdef XP_OS2_VACPP
-USE_NT_C_SYNTAX=1
-endif
-
 #
 # IMPORTS will always be associated with a component.  Therefore,
 # the "import" rule will always change directory to the top-level
@@ -75,7 +71,7 @@ endif
 
 import::
 	@echo "== import.pl =="
-	@perl -I$(CORE_DEPTH)/coreconf $(CORE_DEPTH)/coreconf/import.pl \
+	@$(PERL) -I$(CORE_DEPTH)/coreconf $(CORE_DEPTH)/coreconf/import.pl \
 		"RELEASE_TREE=$(RELEASE_TREE)"   \
 		"IMPORTS=$(IMPORTS)"             \
 		"VERSION=$(VERSION)" \
@@ -114,12 +110,22 @@ ifdef LIBRARY
 endif
 ifdef SHARED_LIBRARY
 	$(INSTALL) -m 775 $(SHARED_LIBRARY) $(SOURCE_LIB_DIR)
+ifdef MOZ_DEBUG_SYMBOLS
+ifeq (,$(filter-out _WIN%,$(NS_USE_GCC)_$(OS_TARGET)))
+	$(INSTALL) -m 644 $(SHARED_LIBRARY:$(DLL_SUFFIX)=pdb) $(SOURCE_LIB_DIR)
+endif
+endif
 endif
 ifdef IMPORT_LIBRARY
 	$(INSTALL) -m 775 $(IMPORT_LIBRARY) $(SOURCE_LIB_DIR)
 endif
 ifdef PROGRAM
 	$(INSTALL) -m 775 $(PROGRAM) $(SOURCE_BIN_DIR)
+ifdef MOZ_DEBUG_SYMBOLS
+ifeq (,$(filter-out _WIN%,$(NS_USE_GCC)_$(OS_TARGET)))
+	$(INSTALL) -m 644 $(PROGRAM:$(PROG_SUFFIX)=.pdb) $(SOURCE_BIN_DIR)
+endif
+endif
 endif
 ifdef PROGRAMS
 	$(INSTALL) -m 775 $(PROGRAMS) $(SOURCE_BIN_DIR)
@@ -149,7 +155,7 @@ release:: release_clean release_export release_classes release_policy release_md
 
 release_cpdistdir::
 	@echo "== cpdist.pl =="
-	@perl -I$(CORE_DEPTH)/coreconf $(CORE_DEPTH)/coreconf/cpdist.pl \
+	@$(PERL) -I$(CORE_DEPTH)/coreconf $(CORE_DEPTH)/coreconf/cpdist.pl \
 		"RELEASE_TREE=$(RELEASE_TREE)" \
 		"CORE_DEPTH=$(CORE_DEPTH)" \
 		"MODULE=${MODULE}" \
@@ -175,7 +181,7 @@ release_cpdistdir::
 
 release_jars::
 	@echo "== release.pl =="
-	@perl -I$(CORE_DEPTH)/coreconf $(CORE_DEPTH)/coreconf/release.pl \
+	@$(PERL) -I$(CORE_DEPTH)/coreconf $(CORE_DEPTH)/coreconf/release.pl \
 		"RELEASE_TREE=$(RELEASE_TREE)" \
 		"PLATFORM=$(PLATFORM)" \
 		"OS_ARCH=$(OS_ARCH)" \
@@ -264,23 +270,18 @@ alltags:
 	find . -name dist -prune -o \( -name '*.[hc]' -o -name '*.cp' -o -name '*.cpp' \) -print | xargs etags -a
 	find . -name dist -prune -o \( -name '*.[hc]' -o -name '*.cp' -o -name '*.cpp' \) -print | xargs ctags -a
 
-ifdef XP_OS2_VACPP
-# list of libs (such as -lnspr4) do not work for our compiler
-# change it to be $(DIST)/lib/nspr4.lib
-EXTRA_SHARED_LIBS := $(filter-out -L%,$(EXTRA_SHARED_LIBS))
-EXTRA_SHARED_LIBS := $(patsubst -l%,$(DIST)/lib/%.$(LIB_SUFFIX),$(EXTRA_SHARED_LIBS))
-endif
-
 $(PROGRAM): $(OBJS) $(EXTRA_LIBS)
 	@$(MAKE_OBJDIR)
 ifeq (,$(filter-out _WIN%,$(NS_USE_GCC)_$(OS_TARGET)))
 	$(MKPROG) $(subst /,\\,$(OBJS)) -Fe$@ -link $(LDFLAGS) $(subst /,\\,$(EXTRA_LIBS) $(EXTRA_SHARED_LIBS) $(OS_LIBS))
-else
-ifdef XP_OS2_VACPP
-	$(MKPROG) -Fe$@ $(CFLAGS) $(OBJS) $(EXTRA_LIBS) $(EXTRA_SHARED_LIBS) $(OS_LIBS)
+ifdef MT
+	if test -f $@.manifest; then \
+		$(MT) -NOLOGO -MANIFEST $@.manifest -OUTPUTRESOURCE:$@\;1; \
+		rm -f $@.manifest; \
+	fi
+endif	# MSVC with manifest tool
 else
 	$(MKPROG) -o $@ $(CFLAGS) $(OBJS) $(LDFLAGS) $(EXTRA_LIBS) $(EXTRA_SHARED_LIBS) $(OS_LIBS)
-endif
 endif
 
 get_objs:
@@ -329,13 +330,15 @@ ifdef NS_USE_GCC
 	$(LINK_DLL) $(OBJS) $(SUB_SHLOBJS) $(EXTRA_LIBS) $(EXTRA_SHARED_LIBS) $(OS_LIBS) $(LD_LIBS) $(RES)
 else
 	$(LINK_DLL) -MAP $(DLLBASE) $(subst /,\\,$(OBJS) $(SUB_SHLOBJS) $(EXTRA_LIBS) $(EXTRA_SHARED_LIBS) $(OS_LIBS) $(LD_LIBS) $(RES))
+ifdef MT
+	if test -f $@.manifest; then \
+		$(MT) -NOLOGO -MANIFEST $@.manifest -OUTPUTRESOURCE:$@\;2; \
+		rm -f $@.manifest; \
+	fi
+endif	# MSVC with manifest tool
 endif
-else
-ifdef XP_OS2_VACPP
-	$(MKSHLIB) $(DLLFLAGS) $(LDFLAGS) $(OBJS) $(SUB_SHLOBJS) $(LD_LIBS) $(EXTRA_LIBS) $(EXTRA_SHARED_LIBS) $(OS_LIBS)
 else
 	$(MKSHLIB) -o $@ $(OBJS) $(SUB_SHLOBJS) $(LD_LIBS) $(EXTRA_LIBS) $(EXTRA_SHARED_LIBS) $(OS_LIBS)
-endif
 	chmod +x $@
 ifeq ($(OS_TARGET),Darwin)
 ifdef MAPFILE
@@ -367,6 +370,12 @@ $(OBJDIR)/$(PROG_PREFIX)%$(PROG_SUFFIX): $(OBJDIR)/$(PROG_PREFIX)%$(OBJ_SUFFIX)
 ifeq (,$(filter-out _WIN%,$(NS_USE_GCC)_$(OS_TARGET)))
 	$(MKPROG) $< -Fe$@ -link \
 	$(LDFLAGS) $(EXTRA_LIBS) $(EXTRA_SHARED_LIBS) $(OS_LIBS)
+ifdef MT
+	if test -f $@.manifest; then \
+		$(MT) -NOLOGO -MANIFEST $@.manifest -OUTPUTRESOURCE:$@\;1; \
+		rm -f $@.manifest; \
+	fi
+endif	# MSVC with manifest tool
 else
 	$(MKPROG) -o $@ $(CFLAGS) $< \
 	$(LDFLAGS) $(EXTRA_LIBS) $(EXTRA_SHARED_LIBS) $(OS_LIBS)
@@ -401,15 +410,15 @@ PWD := $(shell pwd)
 endif
 endif
 
-abspath = $(if $(findstring :,$(1)),$(1),$(if $(filter /%,$(1)),$(1),$(PWD)/$(1)))
+core_abspath = $(if $(findstring :,$(1)),$(1),$(if $(filter /%,$(1)),$(1),$(PWD)/$(1)))
 
 $(OBJDIR)/$(PROG_PREFIX)%$(OBJ_SUFFIX): %.c
 	@$(MAKE_OBJDIR)
 ifdef USE_NT_C_SYNTAX
-	$(CC) -Fo$@ -c $(CFLAGS) $(call abspath,$<)
+	$(CC) -Fo$@ -c $(CFLAGS) $(call core_abspath,$<)
 else
 ifdef NEED_ABSOLUTE_PATH
-	$(CC) -o $@ -c $(CFLAGS) $(call abspath,$<)
+	$(CC) -o $@ -c $(CFLAGS) $(call core_abspath,$<)
 else
 	$(CC) -o $@ -c $(CFLAGS) $<
 endif
@@ -417,30 +426,24 @@ endif
 
 $(PROG_PREFIX)%$(OBJ_SUFFIX): %.c
 ifdef USE_NT_C_SYNTAX
-	$(CC) -Fo$@ -c $(CFLAGS) $(call abspath,$<)
+	$(CC) -Fo$@ -c $(CFLAGS) $(call core_abspath,$<)
 else
 ifdef NEED_ABSOLUTE_PATH
-	$(CC) -o $@ -c $(CFLAGS) $(call abspath,$<)
+	$(CC) -o $@ -c $(CFLAGS) $(call core_abspath,$<)
 else
 	$(CC) -o $@ -c $(CFLAGS) $<
 endif
 endif
 
-ifndef XP_OS2_VACPP
 ifneq (,$(filter-out _WIN%,$(NS_USE_GCC)_$(OS_TARGET)))
 $(OBJDIR)/$(PROG_PREFIX)%$(OBJ_SUFFIX): %.s
 	@$(MAKE_OBJDIR)
 	$(AS) -o $@ $(ASFLAGS) -c $<
 endif
-endif
 
 $(OBJDIR)/$(PROG_PREFIX)%$(OBJ_SUFFIX): %.asm
 	@$(MAKE_OBJDIR)
-ifdef XP_OS2_VACPP
-	$(AS) -Fdo:$(OBJDIR) $(ASFLAGS) $(subst /,\\,$<)
-else
 	$(AS) -Fo$@ $(ASFLAGS) -c $<
-endif
 
 $(OBJDIR)/$(PROG_PREFIX)%$(OBJ_SUFFIX): %.S
 	@$(MAKE_OBJDIR)
@@ -449,10 +452,10 @@ $(OBJDIR)/$(PROG_PREFIX)%$(OBJ_SUFFIX): %.S
 $(OBJDIR)/$(PROG_PREFIX)%: %.cpp
 	@$(MAKE_OBJDIR)
 ifdef USE_NT_C_SYNTAX
-	$(CCC) -Fo$@ -c $(CFLAGS) $(call abspath,$<)
+	$(CCC) -Fo$@ -c $(CFLAGS) $(call core_abspath,$<)
 else
 ifdef NEED_ABSOLUTE_PATH
-	$(CCC) -o $@ -c $(CFLAGS) $(call abspath,$<)
+	$(CCC) -o $@ -c $(CFLAGS) $(call core_abspath,$<)
 else
 	$(CCC) -o $@ -c $(CFLAGS) $<
 endif
@@ -473,10 +476,10 @@ ifdef STRICT_CPLUSPLUS_SUFFIX
 	rm -f $(OBJDIR)/t_$*.cc
 else
 ifdef USE_NT_C_SYNTAX
-	$(CCC) -Fo$@ -c $(CFLAGS) $(call abspath,$<)
+	$(CCC) -Fo$@ -c $(CFLAGS) $(call core_abspath,$<)
 else
 ifdef NEED_ABSOLUTE_PATH
-	$(CCC) -o $@ -c $(CFLAGS) $(call abspath,$<)
+	$(CCC) -o $@ -c $(CFLAGS) $(call core_abspath,$<)
 else
 	$(CCC) -o $@ -c $(CFLAGS) $<
 endif
@@ -556,7 +559,7 @@ ifdef NETLIBDEPTH
 	CORE_DEPTH := $(NETLIBDEPTH)
 endif
 
-JAVA_EXPORT_SRCS=$(shell perl $(CORE_DEPTH)/coreconf/outofdate.pl $(PERLARG)	-d $(JAVA_DESTPATH)/$(PACKAGE) $(JSRCS) $(PRIVATE_JSRCS))
+JAVA_EXPORT_SRCS=$(shell $(PERL) $(CORE_DEPTH)/coreconf/outofdate.pl $(PERLARG)	-d $(JAVA_DESTPATH)/$(PACKAGE) $(JSRCS) $(PRIVATE_JSRCS))
 
 export:: $(JAVA_DESTPATH) $(JAVA_DESTPATH)/$(PACKAGE)
 ifneq ($(JAVA_EXPORT_SRCS),)
@@ -599,7 +602,7 @@ export:: $(JAVA_DESTPATH) $(JAVA_DESTPATH)/$(PACKAGE)
 		if test -d $$d; then						\
 			set $(EXIT_ON_ERROR);					\
 			files=`echo $$d/*.java`;				\
-			list=`perl $(CORE_DEPTH)/coreconf/outofdate.pl $(PERLARG)	\
+			list=`$(PERL) $(CORE_DEPTH)/coreconf/outofdate.pl $(PERLARG)	\
 				    -d $(JAVA_DESTPATH)/$(PACKAGE) $$files`;	\
 			if test "$${list}x" != "x"; then			\
 			    echo Building all java files in $$d;		\
@@ -728,7 +731,7 @@ export::
 		$(JAVAH) -jni -d $(JNI_GEN_DIR) $(JNI_GEN);				\
 	else										\
 		echo "Checking for out of date header files" ;                          \
-		perl $(CORE_DEPTH)/coreconf/jniregen.pl $(PERLARG)			\
+		$(PERL) $(CORE_DEPTH)/coreconf/jniregen.pl $(PERLARG)			\
 		 -d $(JAVA_DESTPATH) -j "$(JAVAH) -jni -d $(JNI_GEN_DIR)" $(JNI_GEN);\
 	fi
 endif
@@ -827,7 +830,7 @@ TESTS_DIR = $(RESULTS_DIR)/$(RESULTS_SUBDIR)/$(OS_TARGET)$(OS_RELEASE)$(CPU_TAG)
 ifneq ($(REGRESSION_SPEC),)
 
 ifneq ($(BUILD_OPT),)
-REGDATE = $(subst \ ,, $(shell perl  $(CORE_DEPTH)/$(MODULE)/scripts/now))
+REGDATE = $(subst \ ,, $(shell $(PERL)  $(CORE_DEPTH)/$(MODULE)/scripts/now))
 endif
 
 tests:: $(REGRESSION_SPEC) 
@@ -873,8 +876,7 @@ endif
 
 ifneq (,$(filter-out OpenVMS OS2 WIN%,$(OS_TARGET)))
 # Can't use sed because of its 4000-char line length limit, so resort to perl
-.DEFAULT:
-	@perl -e '                                                            \
+PERL_DEPENDENCIES_PROGRAM =                                                   \
 	    open(MD, "< $(DEPENDENCIES)");                                    \
 	    while (<MD>) {                                                    \
 		if (m@ \.*/*$< @) {                                           \
@@ -901,7 +903,10 @@ ifneq (,$(filter-out OpenVMS OS2 WIN%,$(OS_TARGET)))
 	    } elsif ("$<" ne "$(DEPENDENCIES)") {                             \
 		print "$(MAKE): *** No rule to make target $<.  Stop.\n";     \
 		exit(1);                                                      \
-	    }'
+	    }
+
+.DEFAULT:
+	@$(PERL) -e '$(PERL_DEPENDENCIES_PROGRAM)'
 endif
 
 #############################################################################
