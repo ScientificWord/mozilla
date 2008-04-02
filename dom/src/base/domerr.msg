@@ -48,7 +48,7 @@ DOM_MSG_DEF(NS_ERROR_DOM_INVALID_CHARACTER_ERR, "String contains an invalid char
 DOM_MSG_DEF(NS_ERROR_DOM_NO_DATA_ALLOWED_ERR, "Node does not contain data")
 DOM_MSG_DEF(NS_ERROR_DOM_NO_MODIFICATION_ALLOWED_ERR, "Modifications are not allowed for this document")
 DOM_MSG_DEF(NS_ERROR_DOM_NOT_FOUND_ERR, "Node was not found")
-DOM_MSG_DEF(NS_ERROR_DOM_NOT_SUPPORTED_ERR, "Object cannot be created in this context")
+DOM_MSG_DEF(NS_ERROR_DOM_NOT_SUPPORTED_ERR, "Operation is not supported")
 DOM_MSG_DEF(NS_ERROR_DOM_INUSE_ATTRIBUTE_ERR, "Attribute already in use")
 
 /* DOM error codes from http://www.w3.org/TR/DOM-Level-2/ */
@@ -99,6 +99,10 @@ DOM_MSG_DEF(NS_ERROR_DOM_PROP_ACCESS_DENIED, "Access to property denied")
 DOM_MSG_DEF(NS_ERROR_DOM_XPCONNECT_ACCESS_DENIED, "Access to XPConnect service denied")
 DOM_MSG_DEF(NS_ERROR_DOM_BAD_URI, "Access to restricted URI denied")
 DOM_MSG_DEF(NS_ERROR_DOM_RETVAL_UNDEFINED, "Return value is undefined")
+DOM_MSG_DEF(NS_ERROR_DOM_QUOTA_REACHED, "Persistent storage maximum size reached")
+
+DOM_MSG_DEF(NS_ERROR_DOM_FILE_NOT_FOUND_ERR, "File was not found")
+DOM_MSG_DEF(NS_ERROR_DOM_FILE_NOT_READABLE_ERR, "File could not be read")
 
 /* common global codes (from nsError.h) */
 

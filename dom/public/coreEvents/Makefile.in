@@ -45,23 +45,18 @@ include $(DEPTH)/config/autoconf.mk
 MODULE		= dom
 
 EXPORTS =				\
-	nsIDOMEventReceiver.h		\
 	nsIDOMFocusListener.h		\
 	nsIDOMFormListener.h		\
 	nsIDOMKeyListener.h		\
 	nsIDOMLoadListener.h		\
 	nsIDOMMouseListener.h		\
 	nsIDOMMouseMotionListener.h	\
-	nsIDOMMutationListener.h	\
-	nsIDOMPaintListener.h		\
 	nsIDOMDragListener.h		\
 	nsIDOMTextListener.h		\
 	nsIDOMCompositionListener.h	\
 	nsIDOMXULListener.h		\
-	nsIDOMScrollListener.h		\
 	nsIDOMContextMenuListener.h	\
 	nsIDOMUIListener.h		\
-	nsIDOMPageTransitionListener.h	\
 	$(NULL)
 
 include $(topsrcdir)/config/rules.mk

@@ -63,7 +63,7 @@
 #include "nsDOMException.h"
 #include "nsCRT.h"
 #ifdef MOZ_XUL
-#include "nsIXULPrototypeCache.h"
+#include "nsXULPrototypeCache.h"
 #endif
 
 static NS_DEFINE_CID(kDOMScriptObjectFactoryCID, NS_DOM_SCRIPT_OBJECT_FACTORY_CID);
@@ -187,6 +187,9 @@ nsDOMScriptObjectFactory::GetScriptRuntimeByID(PRUint32 aLanguageID,
       NS_ERROR("Failed to get the script language");
       return rv;
     }
+
+    // Stash it away in our array for fast lookup by ID.
+    mLanguageArray[NS_STID_INDEX(aLanguageID)] = lang;
     *aLanguage = lang;
   }
   NS_IF_ADDREF(*aLanguage);
@@ -209,26 +212,26 @@ nsDOMScriptObjectFactory::GetIDForScriptType(const nsAString &aLanguageName,
 
 NS_IMETHODIMP
 nsDOMScriptObjectFactory::NewScriptGlobalObject(PRBool aIsChrome,
+                                                PRBool aIsModalContentWindow,
                                                 nsIScriptGlobalObject **aGlobal)
 {
-  return NS_NewScriptGlobalObject(aIsChrome, aGlobal);
+  return NS_NewScriptGlobalObject(aIsChrome, aIsModalContentWindow, aGlobal);
 }
 
 NS_IMETHODIMP_(nsISupports *)
 nsDOMScriptObjectFactory::GetClassInfoInstance(nsDOMClassInfoID aID)
 {
-  return nsDOMClassInfo::GetClassInfoInstance(aID);
+  return NS_GetDOMClassInfoInstance(aID);
 }
 
 NS_IMETHODIMP_(nsISupports *)
 nsDOMScriptObjectFactory::GetExternalClassInfoInstance(const nsAString& aName)
 {
-  extern nsScriptNameSpaceManager *gNameSpaceManager;
-
-  NS_ENSURE_TRUE(gNameSpaceManager, nsnull);
+  nsScriptNameSpaceManager *nameSpaceManager = nsJSRuntime::GetNameSpaceManager();
+  NS_ENSURE_TRUE(nameSpaceManager, nsnull);
 
   const nsGlobalNameStruct *globalStruct;
-  gNameSpaceManager->LookupName(aName, &globalStruct);
+  nameSpaceManager->LookupName(aName, &globalStruct);
   if (globalStruct) {
     if (globalStruct->mType == nsGlobalNameStruct::eTypeExternalClassInfoCreator) {
       nsresult rv;
@@ -238,7 +241,7 @@ nsDOMScriptObjectFactory::GetExternalClassInfoInstance(const nsAString& aName)
       rv = creator->RegisterDOMCI(NS_ConvertUTF16toUTF8(aName).get(), this);
       NS_ENSURE_SUCCESS(rv, nsnull);
 
-      rv = gNameSpaceManager->LookupName(aName, &globalStruct);
+      rv = nameSpaceManager->LookupName(aName, &globalStruct);
       NS_ENSURE_TRUE(NS_SUCCEEDED(rv) && globalStruct, nsnull);
 
       NS_ASSERTION(globalStruct->mType == nsGlobalNameStruct::eTypeExternalClassInfo,
@@ -260,8 +263,7 @@ nsDOMScriptObjectFactory::Observe(nsISupports *aSubject,
 #ifdef MOZ_XUL
     // Flush the XUL cache since it holds JS roots, and we're about to
     // start the final GC.
-    nsCOMPtr<nsIXULPrototypeCache> cache =
-      do_GetService("@mozilla.org/xul/xul-prototype-cache;1");
+    nsXULPrototypeCache* cache = nsXULPrototypeCache::GetInstance();
 
     if (cache)
       cache->Flush();
@@ -314,13 +316,18 @@ static nsresult
 CreateXPConnectException(nsresult aResult, nsIException *aDefaultException,
                          nsIException **_retval)
 {
-  nsresult rv = NS_OK;
-  nsCOMPtr<nsIXPCException> exception(
-      do_CreateInstance("@mozilla.org/js/xpc/Exception;1", &rv));
-  NS_ENSURE_SUCCESS(rv, rv);
+  // See whether we already have a useful XPConnect exception.  If we
+  // do, let's not create one with _less_ information!
+  nsCOMPtr<nsIXPCException> exception(do_QueryInterface(aDefaultException));
+  if (!exception) {
+    nsresult rv = NS_OK;
+    exception = do_CreateInstance("@mozilla.org/js/xpc/Exception;1", &rv);
+    NS_ENSURE_SUCCESS(rv, rv);
 
-  rv = exception->Initialize(nsnull, aResult, nsnull, nsnull, nsnull, nsnull);
-  NS_ENSURE_SUCCESS(rv, rv);
+    rv = exception->Initialize(nsnull, aResult, nsnull, nsnull, nsnull,
+                               nsnull);
+    NS_ENSURE_SUCCESS(rv, rv);
+  }
 
   NS_ADDREF(*_retval = exception);
   return NS_OK;
@@ -343,6 +350,8 @@ nsDOMScriptObjectFactory::GetException(nsresult result,
       return NS_NewXPathException(result, aDefaultException, _retval);
     case NS_ERROR_MODULE_XPCONNECT:
       return CreateXPConnectException(result, aDefaultException, _retval);
+    case NS_ERROR_MODULE_DOM_FILE:
+      return NS_NewFileException(result, aDefaultException, _retval);
     default:
       return NS_NewDOMException(result, aDefaultException, _retval);
   }
@@ -357,17 +366,16 @@ nsDOMScriptObjectFactory::RegisterDOMClassInfo(const char *aName,
 					       PRBool aHasClassInterface,
 					       const nsCID *aConstructorCID)
 {
-  extern nsScriptNameSpaceManager *gNameSpaceManager;
+  nsScriptNameSpaceManager *nameSpaceManager = nsJSRuntime::GetNameSpaceManager();
+  NS_ENSURE_TRUE(nameSpaceManager, NS_ERROR_NOT_INITIALIZED);
 
-  NS_ENSURE_TRUE(gNameSpaceManager, NS_ERROR_NOT_INITIALIZED);
-
-  return gNameSpaceManager->RegisterDOMCIData(aName,
-                                              aConstructorFptr,
-                                              aProtoChainInterface,
-                                              aInterfaces,
-                                              aScriptableFlags,
-                                              aHasClassInterface,
-                                              aConstructorCID);
+  return nameSpaceManager->RegisterDOMCIData(aName,
+                                             aConstructorFptr,
+                                             aProtoChainInterface,
+                                             aInterfaces,
+                                             aScriptableFlags,
+                                             aHasClassInterface,
+                                             aConstructorCID);
 }
 
 /* static */ nsresult
