@@ -70,7 +70,6 @@ struct JSArenaStats {
     char        *name;          /* name for debugging */
     uint32      narenas;        /* number of arenas in pool */
     uint32      nallocs;        /* number of JS_ARENA_ALLOCATE() calls */
-    uint32      nreclaims;      /* number of reclaims from freeArenas */
     uint32      nmallocs;       /* number of malloc() calls */
     uint32      ndeallocs;      /* number of lifetime deallocations */
     uint32      ngrows;         /* number of JS_ARENA_GROW() calls */
@@ -89,10 +88,20 @@ struct JSArenaPool {
     JSArena     *current;       /* arena from which to allocate space */
     size_t      arenasize;      /* net exact size of a new arena */
     jsuword     mask;           /* alignment mask (power-of-2 - 1) */
+    size_t      *quotap;        /* pointer to the quota on pool allocation
+                                   size or null if pool is unlimited */
 #ifdef JS_ARENAMETER
     JSArenaStats stats;
 #endif
 };
+
+#ifdef JS_ARENAMETER
+#define JS_INIT_NAMED_ARENA_POOL(pool, name, size, align, quotap)             \
+    JS_InitArenaPool(pool, name, size, align, quotap)
+#else
+#define JS_INIT_NAMED_ARENA_POOL(pool, name, size, align, quotap)             \
+    JS_InitArenaPool(pool, size, align, quotap)
+#endif
 
 /*
  * If the including .c file uses only one power-of-2 alignment, it may define
@@ -103,10 +112,16 @@ struct JSArenaPool {
 #define JS_ARENA_ALIGN(pool, n) (((jsuword)(n) + JS_ARENA_CONST_ALIGN_MASK)   \
                                  & ~(jsuword)JS_ARENA_CONST_ALIGN_MASK)
 
-#define JS_INIT_ARENA_POOL(pool, name, size) \
-        JS_InitArenaPool(pool, name, size, JS_ARENA_CONST_ALIGN_MASK + 1)
+#define JS_INIT_ARENA_POOL(pool, name, size, quotap)                          \
+    JS_INIT_NAMED_ARENA_POOL(pool, name, size, JS_ARENA_CONST_ALIGN_MASK + 1, \
+                             quotap)
+
 #else
 #define JS_ARENA_ALIGN(pool, n) (((jsuword)(n) + (pool)->mask) & ~(pool)->mask)
+
+#define JS_INIT_ARENA_POOL(pool, name, size, align, quotap)                   \
+    JS_INIT_NAMED_ARENA_POOL(pool, name, size, align, quotap)
+
 #endif
 
 #define JS_ARENA_ALLOCATE(p, pool, nb)                                        \
@@ -167,6 +182,12 @@ struct JSArenaPool {
 #define JS_ARENA_MARK(pool)     ((void *) (pool)->current->avail)
 #define JS_UPTRDIFF(p,q)        ((jsuword)(p) - (jsuword)(q))
 
+/*
+ * Check if the mark is inside arena's allocated area.
+ */
+#define JS_ARENA_MARK_MATCH(a, mark)                                          \
+    (JS_UPTRDIFF(mark, (a)->base) <= JS_UPTRDIFF((a)->avail, (a)->base))
+
 #ifdef DEBUG
 #define JS_FREE_PATTERN         0xDA
 #define JS_CLEAR_UNUSED(a)      (JS_ASSERT((a)->avail <= (a)->limit),         \
@@ -183,8 +204,7 @@ struct JSArenaPool {
     JS_BEGIN_MACRO                                                            \
         char *_m = (char *)(mark);                                            \
         JSArena *_a = (pool)->current;                                        \
-        if (_a != &(pool)->first &&                                           \
-            JS_UPTRDIFF(_m, _a->base) <= JS_UPTRDIFF(_a->avail, _a->base)) {  \
+        if (_a != &(pool)->first && JS_ARENA_MARK_MATCH(_a, _m)) {            \
             _a->avail = (jsuword)JS_ARENA_ALIGN(pool, _m);                    \
             JS_ASSERT(_a->avail <= _a->limit);                                \
             JS_CLEAR_UNUSED(_a);                                              \
@@ -212,12 +232,13 @@ struct JSArenaPool {
     JS_END_MACRO
 
 /*
- * Initialize an arena pool with the given name for debugging and metering,
- * with a minimum size per arena of size bytes.
+ * Initialize an arena pool with a minimum size per arena of size bytes.
+ * Always call JS_SET_ARENA_METER_NAME before calling this or use
+ * JS_INIT_ARENA_POOL macro to provide a name for for debugging and metering.
  */
 extern JS_PUBLIC_API(void)
-JS_InitArenaPool(JSArenaPool *pool, const char *name, size_t size,
-                 size_t align);
+JS_INIT_NAMED_ARENA_POOL(JSArenaPool *pool, const char *name, size_t size,
+                         size_t align, size_t *quotap);
 
 /*
  * Free the arenas in pool.  The user may continue to allocate from pool
@@ -234,22 +255,13 @@ extern JS_PUBLIC_API(void)
 JS_FinishArenaPool(JSArenaPool *pool);
 
 /*
- * Finish using arenas, freeing all memory associated with them except for
- * any locks needed for thread safety.
+ * Deprecated do-nothing function.
  */
 extern JS_PUBLIC_API(void)
 JS_ArenaFinish(void);
 
 /*
- * Free any locks or other memory needed for thread safety, just before
- * shutting down.  At that point, we must be called by a single thread.
- *
- * After shutting down, the next thread to call JS_InitArenaPool must not
- * race with any other thread.  Once a pool has been initialized, threads
- * may safely call jsarena.c functions on thread-local pools.  The upshot
- * is that pools are per-thread, but the underlying global freelist is
- * thread-safe, provided that both the first pool initialization and the
- * shut-down call are single-threaded.
+ * Deprecated do-nothing function.
  */
 extern JS_PUBLIC_API(void)
 JS_ArenaShutDown(void);
@@ -268,13 +280,6 @@ JS_ArenaGrow(JSArenaPool *pool, void *p, size_t size, size_t incr);
 
 extern JS_PUBLIC_API(void)
 JS_ArenaRelease(JSArenaPool *pool, char *mark);
-
-/*
- * Function to be used directly when an allocation has likely grown to consume
- * an entire JSArena, in which case the arena is returned to the malloc heap.
- */
-extern JS_PUBLIC_API(void)
-JS_ArenaFreeAllocation(JSArenaPool *pool, void *p, size_t size);
 
 #ifdef JS_ARENAMETER
 

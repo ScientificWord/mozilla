@@ -53,7 +53,11 @@
 #include "jsj_private.h"
 #include "jsjava.h"
 
+#include "jsdbgapi.h"
+#include "jsarena.h"
+#include "jsfun.h"
 #include "jscntxt.h"        /* For js_ReportErrorAgain().*/
+#include "jsscript.h"
 
 #include "netscape_javascript_JSObject.h"   /* javah-generated headers */
 #include "nsISecurityContext.h"
@@ -97,7 +101,7 @@ public:
 
     ~AutoPushJSContext();
 
-    nsresult ResultOfPush() { return mPushResult; };
+    nsresult ResultOfPush() { return mPushResult; }
 
 private:
     nsCOMPtr<nsIJSContextStack> mContextStack;
@@ -110,22 +114,22 @@ AutoPushJSContext::AutoPushJSContext(nsISupports* aSecuritySupports,
                                      JSContext *cx) 
                                      : mContext(cx), mPushResult(NS_OK)
 {
-    mContextStack = do_GetService("@mozilla.org/js/xpc/ContextStack;1");
+    nsCOMPtr<nsIJSContextStack> contextStack =
+        do_GetService("@mozilla.org/js/xpc/ContextStack;1");
 
-    if(mContextStack)
+    JS_BeginRequest(cx);
+
+    JSContext* currentCX;
+    if(contextStack &&
+       // Don't push if the current context is already on the stack.
+       (NS_FAILED(contextStack->Peek(&currentCX)) ||
+        cx != currentCX) )
     {
-        JSContext* currentCX;
-        if(NS_SUCCEEDED(mContextStack->Peek(&currentCX)))
+        if (NS_SUCCEEDED(contextStack->Push(cx)))
         {
-            // Is the current context already on the stack?
-            if(cx == currentCX)
-                mContextStack = nsnull;
-            else
-            {
-                mContextStack->Push(cx);
-                // Leave the reference to the mContextStack to
-                // indicate that we need to pop it in our dtor.                                               
-            }
+            // Leave the reference in mContextStack to
+            // indicate that we need to pop it in our dtor.
+            mContextStack.swap(contextStack);
         }
     }
 
@@ -174,12 +178,18 @@ AutoPushJSContext::AutoPushJSContext(nsISupports* aSecuritySupports,
             JSPrincipals* jsprinc;
             principal->GetJSPrincipals(cx, &jsprinc);
 
-            mFrame.script = JS_CompileScriptForPrincipals(cx, JS_GetGlobalObject(cx),
-                                                          jsprinc, "", 0, "", 1);
+            JSFunction *fun = JS_CompileFunctionForPrincipals(cx, JS_GetGlobalObject(cx),
+                                                              jsprinc, "anonymous", 0, nsnull,
+                                                              "", 0, "", 1);
             JSPRINCIPALS_DROP(cx, jsprinc);
 
-            if (mFrame.script)
+            if (fun)
             {
+                mFrame.fun = fun;
+                mFrame.script = JS_GetFunctionScript(cx, fun);
+                mFrame.pc = mFrame.script->code;
+                mFrame.callee = JS_GetFunctionObject(fun);
+                mFrame.scopeChain = JS_GetParent(cx, mFrame.callee);
                 mFrame.down = cx->fp;
                 cx->fp = &mFrame;
             }
@@ -194,9 +204,15 @@ AutoPushJSContext::~AutoPushJSContext()
     if (mContextStack)
         mContextStack->Pop(nsnull);
 
+    if (mFrame.callobj)
+        js_PutCallObject(mContext, &mFrame);
+    if (mFrame.argsobj)
+        js_PutArgsObject(mContext, &mFrame);
+    JS_ClearPendingException(mContext);
     if (mFrame.script)
         mContext->fp = mFrame.down;
 
+    JS_EndRequest(mContext);
 }
 
 
@@ -525,8 +541,10 @@ nsCLiveconnect::Call(JNIEnv *jEnv, lcjsobject obj, const jchar *name, jsize leng
     /* Convert arguments from Java to JS values */
     for (arg_num = 0; arg_num < argc; arg_num++) {
         jobject arg = jEnv->GetObjectArrayElement(java_args, arg_num);
-
-        if (!jsj_ConvertJavaObjectToJSValue(cx, jEnv, arg, &argv[arg_num]))
+        JSBool ret = jsj_ConvertJavaObjectToJSValue(cx, jEnv, arg, &argv[arg_num]);
+		
+        jEnv->DeleteLocalRef(arg);
+        if (!ret)
             goto cleanup_argv;
         JS_AddRoot(cx, &argv[arg_num]);
     }

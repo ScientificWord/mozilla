@@ -99,22 +99,39 @@ XPCWrappedNativeProto::Init(
             return JS_FALSE;
     }
 
-    JSClass* jsclazz = mScriptableInfo &&
-                       mScriptableInfo->GetFlags().AllowPropModsToPrototype() ?
-                            &XPC_WN_ModsAllowed_Proto_JSClass :
-                            &XPC_WN_NoMods_Proto_JSClass;
+    JSClass* jsclazz;
+
+
+    if(mScriptableInfo)
+    {
+        const XPCNativeScriptableFlags& flags(mScriptableInfo->GetFlags());
+
+        if(flags.AllowPropModsToPrototype())
+        {
+            jsclazz = flags.WantCall() ?
+                &XPC_WN_ModsAllowed_WithCall_Proto_JSClass :
+                &XPC_WN_ModsAllowed_NoCall_Proto_JSClass;
+        }
+        else
+        {
+            jsclazz = flags.WantCall() ?
+                &XPC_WN_NoMods_WithCall_Proto_JSClass :
+                &XPC_WN_NoMods_NoCall_Proto_JSClass;
+        }
+    }
+    else
+    {
+        jsclazz = &XPC_WN_NoMods_NoCall_Proto_JSClass;
+    }
 
     JSObject *parent = mScope->GetGlobalJSObject();
 
-    mJSProtoObject = JS_NewObject(ccx, jsclazz,
-                                  mScope->GetPrototypeJSObject(),
-                                  parent);
+    mJSProtoObject =
+        xpc_NewSystemInheritingJSObject(ccx, jsclazz,
+                                        mScope->GetPrototypeJSObject(),
+                                        parent);
 
     JSBool ok = mJSProtoObject && JS_SetPrivate(ccx, mJSProtoObject, this);
-
-    // Propagate the system flag from parent to child.
-    if(ok && JS_IsSystemObject(ccx, parent))
-        JS_FlagSystemObject(ccx, mJSProtoObject);
 
     DEBUG_ReportShadowedMembers(mSet, nsnull, this);
 
@@ -144,7 +161,7 @@ XPCWrappedNativeProto::JSProtoObjectFinalized(JSContext *cx, JSObject *obj)
 }
 
 void
-XPCWrappedNativeProto::SystemIsBeingShutDown(XPCCallContext& ccx)
+XPCWrappedNativeProto::SystemIsBeingShutDown(JSContext* cx)
 {
     // Note that the instance might receive this call multiple times
     // as we walk to here from various places.
@@ -162,7 +179,7 @@ XPCWrappedNativeProto::SystemIsBeingShutDown(XPCCallContext& ccx)
     if(mJSProtoObject)
     {
         // short circuit future finalization
-        JS_SetPrivate(ccx, mJSProtoObject, nsnull);
+        JS_SetPrivate(cx, mJSProtoObject, nsnull);
         mJSProtoObject = nsnull;
     }
 }

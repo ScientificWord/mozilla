@@ -96,7 +96,7 @@ HRESULT Error(HRESULT hResult, const char * message)
 static void BuildMessage(nsIException * exception, nsCString & result)
 {
     nsXPIDLCString msg;
-    exception->GetMessage(getter_Copies(msg));
+    exception->GetMessageMoz(getter_Copies(msg));
     nsXPIDLCString filename;
     exception->GetFilename(getter_Copies(filename));
 
@@ -172,14 +172,14 @@ STDMETHODIMP XPCDispatchTearOff::QueryInterface(const struct _GUID & guid,
 {
     if(IsEqualIID(guid, IID_IDispatch))
     {
-        *pPtr = NS_STATIC_CAST(IDispatch*,this);
+        *pPtr = static_cast<IDispatch*>(this);
         NS_ADDREF_THIS();
         return NS_OK;
     }
 
     if(IsEqualIID(guid, IID_ISupportErrorInfo))
     {
-        *pPtr = NS_STATIC_CAST(IDispatch*,this);
+        *pPtr = static_cast<IDispatch*>(this);
         NS_ADDREF_THIS();
         return NS_OK;
     }
@@ -316,7 +316,7 @@ STDMETHODIMP XPCDispatchTearOff::Invoke(DISPID dispIdMember, REFIID riid,
     }
     else // We're invoking a function
     {
-        jsval* stackbase;
+        jsval* stackbase = nsnull;
         jsval* sp = nsnull;
         uint8 i;
         uint8 argc = pDispParams->cArgs;
@@ -445,26 +445,8 @@ pre_call_clean_up:
 
         if(!JSVAL_IS_PRIMITIVE(fval))
         {
-            // Lift current frame (or make new one) to include the args
-            // and do the call.
-            JSStackFrame *fp, *oldfp, frame;
-            jsval *oldsp;
-
-            fp = oldfp = cx->fp;
-            if(!fp)
-            {
-                memset(&frame, 0, sizeof(frame));
-                cx->fp = fp = &frame;
-            }
-            oldsp = fp->sp;
-            fp->sp = sp;
-
-            success = js_Invoke(cx, argc, JSINVOKE_INTERNAL);
-
-            result = fp->sp[-1];
-            fp->sp = oldsp;
-            if(oldfp != fp)
-                cx->fp = oldfp;
+            success = js_Invoke(cx, argc, stackbase, JSINVOKE_INTERNAL);
+            result = stackbase[0];
         }
         else
         {
