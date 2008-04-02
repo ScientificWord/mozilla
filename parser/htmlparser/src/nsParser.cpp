@@ -48,6 +48,7 @@
 #include "nsICachingChannel.h"
 #include "nsICacheEntryDescriptor.h"
 #include "nsICharsetAlias.h"
+#include "nsICharsetConverterManager.h"
 #include "nsIInputStream.h"
 #include "CNavDTD.h"
 #include "prenv.h"
@@ -89,7 +90,7 @@ loop. The data which was left at the time of interruption will be processed
 the next time OnDataAvailable is called. If the parser has received its final
 chunk of data then OnDataAvailable will no longer be called by the networking
 module, so the parser will schedule a nsParserContinueEvent which will call
-the parser to process the  remaining data after returning to the event loop.
+the parser to process the remaining data after returning to the event loop.
 If the parser is interrupted while processing the remaining data it will
 schedule another ParseContinueEvent. The processing of data followed by
 scheduling of the continue events will proceed until either:
@@ -154,6 +155,9 @@ public:
 
 //-------------- End ParseContinue Event Definition ------------------------
 
+nsICharsetAlias* nsParser::sCharsetAliasService = nsnull;
+nsICharsetConverterManager* nsParser::sCharsetConverterManager = nsnull;
+
 /**
  *  This gets called when the htmlparser module is initialized.
  */
@@ -204,6 +208,17 @@ nsParser::Init()
     }
   }
 
+  nsCOMPtr<nsICharsetAlias> charsetAlias =
+    do_GetService(NS_CHARSETALIAS_CONTRACTID, &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
+  
+  nsCOMPtr<nsICharsetConverterManager> charsetConverter =
+    do_GetService(NS_CHARSETCONVERTERMANAGER_CONTRACTID, &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  charsetAlias.swap(sCharsetAliasService);
+  charsetConverter.swap(sCharsetConverterManager);
+
   return NS_OK;
 }
 
@@ -216,8 +231,10 @@ void nsParser::Shutdown()
 {
   delete sParserDataListeners;
   sParserDataListeners = nsnull;
+  
+  NS_IF_RELEASE(sCharsetAliasService);
+  NS_IF_RELEASE(sCharsetConverterManager);
 }
-
 
 #ifdef DEBUG
 static PRBool gDumpContent=PR_FALSE;
@@ -228,19 +245,39 @@ static PRBool gDumpContent=PR_FALSE;
  */
 nsParser::nsParser()
 {
+  Initialize(PR_TRUE);
+}
+
+nsParser::~nsParser()
+{
+  Cleanup();
+}
+
+void
+nsParser::Initialize(PRBool aConstructor)
+{
 #ifdef NS_DEBUG
   if (!gDumpContent) {
     gDumpContent = PR_GetEnv("PARSER_DUMP_CONTENT") != nsnull;
   }
 #endif
 
+  if (aConstructor) {
+    // Raw pointer
+    mParserContext = 0;
+  }
+  else {
+    // nsCOMPtrs
+    mObserver = nsnull;
+    mParserFilter = nsnull;
+  }
+
+  mContinueEvent = nsnull;
+  mCharsetSource = kCharsetUninitialized;
   mCharset.AssignLiteral("ISO-8859-1");
-  mParserContext=0;
-  mStreamStatus=0;
-  mCharsetSource=kCharsetUninitialized;
-  mInternalState=NS_OK;
-  mContinueEvent=nsnull;
-  mCommand=eViewNormal;
+  mInternalState = NS_OK;
+  mStreamStatus = 0;
+  mCommand = eViewNormal;
   mFlags = NS_PARSER_FLAG_OBSERVERS_ENABLED |
            NS_PARSER_FLAG_PARSER_ENABLED |
            NS_PARSER_FLAG_CAN_TOKENIZE;
@@ -251,12 +288,9 @@ nsParser::nsParser()
   MOZ_TIMER_RESET(mTokenizeTime);
 }
 
-/**
- *  Destructor
- */
-nsParser::~nsParser()
+void
+nsParser::Cleanup()
 {
-
 #ifdef NS_DEBUG
   if (gDumpContent) {
     if (mSink) {
@@ -289,10 +323,32 @@ nsParser::~nsParser()
   NS_ASSERTION(!(mFlags & NS_PARSER_FLAG_PENDING_CONTINUE_EVENT), "bad");
 }
 
-NS_IMPL_ISUPPORTS3(nsParser,
-                   nsIRequestObserver,
-                   nsIParser,
-                   nsIStreamListener)
+NS_IMPL_CYCLE_COLLECTION_CLASS(nsParser)
+
+NS_IMPL_CYCLE_COLLECTION_UNLINK_BEGIN(nsParser)
+  NS_IMPL_CYCLE_COLLECTION_UNLINK_NSCOMPTR(mSink)
+  NS_IMPL_CYCLE_COLLECTION_UNLINK_NSCOMPTR(mObserver)
+NS_IMPL_CYCLE_COLLECTION_UNLINK_END
+
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_BEGIN(nsParser)
+  NS_IMPL_CYCLE_COLLECTION_TRAVERSE_NSCOMPTR(mSink)
+  NS_IMPL_CYCLE_COLLECTION_TRAVERSE_NSCOMPTR(mObserver)
+  CParserContext *pc = tmp->mParserContext;
+  while (pc) {
+    cb.NoteXPCOMChild(pc->mDTD);
+    cb.NoteXPCOMChild(pc->mTokenizer);
+    pc = pc->mPrevContext;
+  }
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_END
+
+NS_IMPL_CYCLE_COLLECTING_ADDREF_AMBIGUOUS(nsParser, nsIParser)
+NS_IMPL_CYCLE_COLLECTING_RELEASE_AMBIGUOUS(nsParser, nsIParser)
+NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(nsParser)
+  NS_INTERFACE_MAP_ENTRY(nsIStreamListener)
+  NS_INTERFACE_MAP_ENTRY(nsIParser)
+  NS_INTERFACE_MAP_ENTRY(nsIRequestObserver)
+  NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIParser)
+NS_INTERFACE_MAP_END
 
 // The parser continue event is posted only if
 // all of the data to parse has been passed to ::OnDataAvailable
@@ -491,7 +547,7 @@ ParseDocTypeDecl(const nsString &aBuffer,
     if (nextChar == PRUnichar('!')) {
       PRInt32 tmpIndex = theIndex + 2;
       if (kNotFound !=
-          (theIndex=aBuffer.Find("DOCTYPE", PR_TRUE, tmpIndex, 1))) {
+          (theIndex=aBuffer.Find("DOCTYPE", PR_TRUE, tmpIndex, 0))) {
         haveDoctype = PR_TRUE;
         theIndex += 7; // skip "DOCTYPE"
         break;
@@ -510,11 +566,11 @@ ParseDocTypeDecl(const nsString &aBuffer,
   *aResultFlags |= PARSE_DTD_HAVE_DOCTYPE;
 
   theIndex = ParsePS(aBuffer, theIndex);
-  theIndex = aBuffer.Find("HTML", PR_TRUE, theIndex, 1);
+  theIndex = aBuffer.Find("HTML", PR_TRUE, theIndex, 0);
   if (kNotFound == theIndex)
     return PR_FALSE;
   theIndex = ParsePS(aBuffer, theIndex+4);
-  PRInt32 tmpIndex = aBuffer.Find("PUBLIC", PR_TRUE, theIndex, 1);
+  PRInt32 tmpIndex = aBuffer.Find("PUBLIC", PR_TRUE, theIndex, 0);
 
   if (kNotFound != tmpIndex) {
     theIndex = ParsePS(aBuffer, tmpIndex+6);
@@ -568,7 +624,7 @@ ParseDocTypeDecl(const nsString &aBuffer,
     aPublicID.CompressWhitespace(PR_TRUE, PR_TRUE);
     *aResultFlags |= PARSE_DTD_HAVE_PUBLIC_ID;
   } else {
-    tmpIndex=aBuffer.Find("SYSTEM", PR_TRUE, theIndex, 1);
+    tmpIndex=aBuffer.Find("SYSTEM", PR_TRUE, theIndex, 0);
     if (kNotFound != tmpIndex) {
       // DOCTYPES with system ID but no Public ID
       *aResultFlags |= PARSE_DTD_HAVE_SYSTEM_ID;
@@ -1038,6 +1094,12 @@ nsParser::GetRootContextKey()
 NS_IMETHODIMP
 nsParser::Terminate(void)
 {
+  // We should only call DidBuildModel once, so don't do anything if this is
+  // the second time that Terminate has been called.
+  if (mInternalState == NS_ERROR_HTMLPARSER_STOPPARSING) {
+    return NS_OK;
+  }
+
   nsresult result = NS_OK;
   // XXX - [ until we figure out a way to break parser-sink circularity ]
   // Hack - Hold a reference until we are completely done...
@@ -1274,43 +1336,6 @@ nsParser::Parse(nsIURI* aURL,
   return result;
 }
 
-
-/**
- * Cause parser to parse input from given stream
- */
-NS_IMETHODIMP
-nsParser::Parse(nsIInputStream* aStream,
-                const nsACString& aMimeType,
-                void* aKey,
-                nsDTDMode aMode)
-{
-  nsresult  result = NS_ERROR_OUT_OF_MEMORY;
-
-  // Ok, time to create our tokenizer and begin the process
-  nsAutoString theUnknownFilename(NS_LITERAL_STRING("unknown"));
-
-  nsScanner* theScanner = new nsScanner(theUnknownFilename, aStream, mCharset,
-                                        mCharsetSource);
-
-  CParserContext* pc = new CParserContext(theScanner, aKey, mCommand, 0);
-  if (pc && theScanner) {
-    PushContext(*pc);
-    pc->SetMimeType(aMimeType);
-    pc->mStreamListenerState = eOnStart;
-    pc->mMultipart = PR_FALSE;
-    pc->mContextType = CParserContext::eCTStream;
-    pc->mDTDMode = aMode;
-    mParserContext->mScanner->FillBuffer();
-    result = ResumeParse();
-    pc = PopContext();
-    delete pc;
-  } else {
-    result = mInternalState = NS_ERROR_HTMLPARSER_BADCONTEXT;
-  }
-
-  return result;
-}
-
 /**
  * Call this method if all you want to do is parse 1 string full of HTML text.
  * In particular, this method should be called by the DOM when it has an HTML
@@ -1449,14 +1474,14 @@ nsParser::Parse(const nsAString& aSourceBuffer,
 NS_IMETHODIMP
 nsParser::ParseFragment(const nsAString& aSourceBuffer,
                         void* aKey,
-                        nsVoidArray& aTagStack,
+                        nsTArray<nsAutoString>& aTagStack,
                         PRBool aXMLMode,
                         const nsACString& aMimeType,
                         nsDTDMode aMode)
 {
   nsresult result = NS_OK;
   nsAutoString  theContext;
-  PRUint32 theCount = aTagStack.Count();
+  PRUint32 theCount = aTagStack.Length();
   PRUint32 theIndex = 0;
 
   // Disable observers for fragments
@@ -1464,7 +1489,7 @@ nsParser::ParseFragment(const nsAString& aSourceBuffer,
 
   for (theIndex = 0; theIndex < theCount; theIndex++) {
     theContext.AppendLiteral("<");
-    theContext.Append((PRUnichar*)aTagStack.ElementAt(theCount - theIndex - 1));
+    theContext.Append(aTagStack[theCount - theIndex - 1]);
     theContext.AppendLiteral(">");
   }
 
@@ -1479,15 +1504,15 @@ nsParser::ParseFragment(const nsAString& aSourceBuffer,
   nsCOMPtr<nsIFragmentContentSink> fragSink = do_QueryInterface(mSink);
   NS_ASSERTION(fragSink, "ParseFragment requires a fragment content sink");
 
-  if (!aXMLMode) {
+  if (!aXMLMode && theCount) {
     // First, we have to flush any tags that don't belong in the head if there
     // was no <body> in the context.
     // XXX This is extremely ugly. Maybe CNavDTD should have FlushMisplaced()?
     NS_ASSERTION(mParserContext, "Parsing didn't create a parser context?");
 
-    CNavDTD* dtd = NS_STATIC_CAST(CNavDTD*,
-                                  NS_STATIC_CAST(nsIDTD*,
-                                                 mParserContext->mDTD));
+    CNavDTD* dtd = static_cast<CNavDTD*>
+                              (static_cast<nsIDTD*>
+                                          (mParserContext->mDTD));
     NS_ASSERTION(dtd, "How did we parse anything without a dtd?");
 
     CStartToken bodyToken(NS_LITERAL_STRING("BODY"), eHTMLTag_body);
@@ -1518,27 +1543,44 @@ nsParser::ParseFragment(const nsAString& aSourceBuffer,
   }
 
   fragSink->WillBuildContent();
-  // Now, parse the actual content. Note that this is the last call for HTML
-  // content, but for XML, we will want to build and parse the end tags.
-  result = Parse(aSourceBuffer, (void*)&theContext, aMimeType,
-                 !aXMLMode, aMode);
-  fragSink->DidBuildContent();
+  // Now, parse the actual content. Note that this is the last call
+  // for HTML content, but for XML, we will want to build and parse
+  // the end tags.  However, if tagStack is empty, it's the last call
+  // for XML as well.
+  if (!aXMLMode || (theCount == 0)) {
+    result = Parse(aSourceBuffer, &theContext, aMimeType,
+                   PR_TRUE, aMode);
+    fragSink->DidBuildContent();
+  } else {
+    // Add an end tag chunk, so expat will read the whole source buffer,
+    // and not worry about ']]' etc.
+    result = Parse(aSourceBuffer + NS_LITERAL_STRING("</"),
+                   &theContext, aMimeType, PR_FALSE, aMode);
+    fragSink->DidBuildContent();
+ 
+    if (NS_SUCCEEDED(result)) {
+      nsAutoString endContext;       
+      for (theIndex = 0; theIndex < theCount; theIndex++) {
+         // we already added an end tag chunk above
+        if (theIndex > 0) {
+          endContext.AppendLiteral("</");
+        }
 
-  if (aXMLMode && NS_SUCCEEDED(result)) {
-    nsAutoString endContext;
+        nsAutoString& thisTag = aTagStack[theIndex];
+        // was there an xmlns=?
+        PRInt32 endOfTag = thisTag.FindChar(PRUnichar(' '));
+        if (endOfTag == -1) {
+          endContext.Append(thisTag);
+        } else {
+          endContext.Append(Substring(thisTag,0,endOfTag));
+        }
 
-    for (theIndex = 0; theIndex < theCount; theIndex++) {
-      endContext.AppendLiteral("</");
-      nsAutoString thisTag( (PRUnichar*)aTagStack.ElementAt(theIndex) );
-      PRInt32 endOfTag = thisTag.FindChar(PRUnichar(' '));  // was there an xmlns=?
-      if (endOfTag == -1)
-        endContext.Append( thisTag );
-      else
-        endContext.Append( Substring(thisTag,0,endOfTag) );
-      endContext.AppendLiteral(">");
+        endContext.AppendLiteral(">");
+      }
+       
+      result = Parse(endContext, &theContext, aMimeType,
+                     PR_TRUE, aMode);
     }
-
-    result = Parse(endContext, (void*)&theContext, aMimeType, PR_TRUE, aMode);
   }
 
   mFlags |= NS_PARSER_FLAG_OBSERVERS_ENABLED;
@@ -2132,7 +2174,7 @@ ParserWriteFunc(nsIInputStream* in,
                 PRUint32 *writeCount)
 {
   nsresult result;
-  ParserWriteStruct* pws = NS_STATIC_CAST(ParserWriteStruct*, closure);
+  ParserWriteStruct* pws = static_cast<ParserWriteStruct*>(closure);
   const char* buf = fromRawSegment;
   PRUint32 theNumRead = count;
 
@@ -2336,7 +2378,6 @@ nsParser::WillTokenize(PRBool aIsFinalChunk)
   nsresult result = mParserContext->GetTokenizer(type, mSink, theTokenizer);
   NS_ENSURE_SUCCESS(result, PR_FALSE);
   mSink->WillTokenize();
-
   return NS_SUCCEEDED(theTokenizer->WillTokenize(aIsFinalChunk,
                                                  &mTokenAllocator));
 }

@@ -50,14 +50,13 @@
 #include "nsISupports.h"
 #include "nsIStreamListener.h"
 #include "nsIDTD.h"
-#include "nsIInputStream.h"
 #include "nsStringGlue.h"
-#include "nsVoidArray.h"
+#include "nsTArray.h"
 
-// {26C4ABBE-A462-4110-A0A6-244BF39AE7D4}
+// {506527cc-d832-420b-ba3a-80c05aa105f4}
 #define NS_IPARSER_IID \
-{ 0x26c4abbe, 0xa462, 0x4110, \
-  { 0xa0, 0xa6, 0x24, 0x4b, 0xf3, 0x9a, 0xe7, 0xd4 } }
+{ 0x506527cc, 0xd832, 0x420b, \
+  { 0xba, 0x3a, 0x80, 0xc0, 0x5a, 0xa1, 0x05, 0xf4 } }
 
 
 // {41421C60-310A-11d4-816F-000064657374}
@@ -228,10 +227,6 @@ class nsIParser : public nsISupports {
                      nsIRequestObserver* aListener = nsnull,
                      void* aKey = 0,
                      nsDTDMode aMode = eDTDMode_autodetect) = 0;
-    NS_IMETHOD Parse(nsIInputStream* aStream,
-                     const nsACString& aMimeType,
-                     void* aKey = 0,
-                     nsDTDMode aMode = eDTDMode_autodetect) = 0;
     NS_IMETHOD Parse(const nsAString& aSourceBuffer,
                      void* aKey,
                      const nsACString& aMimeType,
@@ -259,7 +254,7 @@ class nsIParser : public nsISupports {
      */
     NS_IMETHOD ParseFragment(const nsAString& aSourceBuffer,
                              void* aKey,
-                             nsVoidArray& aTagStack,
+                             nsTArray<nsAutoString>& aTagStack,
                              PRBool aXMLMode,
                              const nsACString& aContentType,
                              nsDTDMode aMode = eDTDMode_autodetect) = 0;
@@ -292,6 +287,8 @@ class nsIParser : public nsISupports {
      */
 
     NS_IMETHOD CancelParsingEvents() = 0;
+
+    virtual void Reset() = 0;
 };
 
 NS_DEFINE_STATIC_IID_ACCESSOR(nsIParser, NS_IPARSER_IID)

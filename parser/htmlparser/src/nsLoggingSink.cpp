@@ -98,8 +98,6 @@ nsLoggingSink::WillTokenize() {
   return NS_OK;
 }
 
-
-
 NS_IMETHODIMP
 nsLoggingSink::WillBuildModel() {
   
