@@ -46,8 +46,8 @@ MODULE		= editor
 GRE_MODULE	= 1
 
 XPIDLSRCS	= \
-    msiIArrowStateService.idl \
-    msiITagListManager.idl \
+	    msiIArrowStateService.idl \
+	    msiITagListManager.idl \
 		nsICiter.idl \
 		nsIDocumentStateListener.idl \
 		nsIEditActionListener.idl \
@@ -82,5 +82,5 @@ XPIDLSRCS	= \
         msiIEditActionListenerExtension.idl \
 		$(NULL)
 
-include $(topsrcdir)/config/rules.mk
+include $(topsrcdir)/config/rules.mk		
 

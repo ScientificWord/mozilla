@@ -51,7 +51,7 @@ NS_IMETHODIMP ReplaceScriptBaseTxn::DoTransaction(void)
       res = TransactionFactory::GetNewTransaction(DeleteElementTxn::GetCID(), (EditTxn **)&dTxn);
       if (NS_FAILED(res) || !dTxn) 
         return NS_ERROR_FAILURE;
-      res = dTxn->Init(m_newbase, nsnull); // Want to handle range updates locally -- hence nsnull 
+      res = dTxn->Init(m_editor, m_newbase, nsnull); // Want to handle range updates locally -- hence nsnull 
       if (NS_SUCCEEDED(res)) 
         AppendChild(dTxn);
       NS_RELEASE(dTxn);

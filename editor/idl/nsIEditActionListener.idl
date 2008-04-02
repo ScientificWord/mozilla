@@ -172,7 +172,7 @@ interface nsIEditActionListener : nsISupports{
                           in nsIDOMNode aRightNode,
                           in nsIDOMNode aParent,
                           in nsresult    aResult);
-                          
+
   /** 
    * Called before the editor inserts text.
    * @param aTextNode   This node getting inserted text

@@ -50,7 +50,7 @@ HTML_DIR	= html
 MSI_DIR  = msi
 endif
 
-DIRS		= base text $(HTML_DIR) $(MSI_DIR) build
+DIRS		= base text $(HTML_DIR) $(MSI_DIR)
 
 
 include $(topsrcdir)/config/rules.mk

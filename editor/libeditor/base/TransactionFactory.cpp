@@ -56,7 +56,6 @@
 #include "FlattenMrowTxn.h"
 #include "ReplaceScriptBaseTxn.h"
 #include "msiDeleteRangeTxn.h"
-
 #ifndef MOZILLA_PLAINTEXT_EDITOR_ONLY
 #include "SetDocTitleTxn.h"
 #include "ChangeCSSInlineStyleTxn.h"

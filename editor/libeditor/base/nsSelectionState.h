@@ -89,6 +89,11 @@ class nsSelectionState
     PRBool   IsEmpty();
   protected:    
     nsVoidArray mRangeItemArray;
+  nsCOMPtr<nsIDOMNode> startSurrogate;
+  PRInt32              startSurrogateOffset;
+  nsCOMPtr<nsIDOMNode> endSurrogate;
+  PRInt32              endSurrogateOffset;
+  
     
     friend class nsRangeUpdater;
 };
@@ -104,7 +109,6 @@ class nsRangeUpdater
     void DropRangeItem(nsRangeStore *aRangeItem);
     nsresult RegisterSelectionState(nsSelectionState &aSelState);
     nsresult DropSelectionState(nsSelectionState &aSelState);
-    
     void RegisterDOMPoint(DOMPoint * domPoint);
     void DropDOMPoint(DOMPoint * domPoint);
     

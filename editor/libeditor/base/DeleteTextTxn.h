@@ -75,15 +75,11 @@ private:
   DeleteTextTxn();
 
 public:
-	virtual ~DeleteTextTxn();
+  NS_DECL_EDITTXN
 
-  NS_IMETHOD DoTransaction(void);
+  PRUint32 GetOffset() { return mOffset; }
 
-  NS_IMETHOD UndoTransaction(void);
-
-  NS_IMETHOD Merge(nsITransaction *aTransaction, PRBool *aDidMerge);
-
-  NS_IMETHOD GetTxnDescription(nsAString& aTxnDescription);
+  PRUint32 GetNumCharsToDelete() { return mNumCharsToDelete; }
 
 protected:
 

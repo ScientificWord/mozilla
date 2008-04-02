@@ -13,7 +13,6 @@
 #include "nsIDOMAttr.h"
 #include "nsIDOMNamedNodeMap.h"
 #include "nsIDOMNodeList.h"
-#include "nsITextContent.h"
 
 msiEditorLog::msiEditorLog()
 {

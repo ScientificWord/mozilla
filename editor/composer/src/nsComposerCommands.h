@@ -294,7 +294,6 @@ protected:
 };
 
 
-
 class nsParagraphStateCommand : public nsMultiStateCommand
 {
 public:

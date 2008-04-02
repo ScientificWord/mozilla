@@ -10,7 +10,7 @@
  * Software distributed under the License is distributed on an "AS IS" basis,
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  * for the specific language governing rights and limitations under the
- * License.				
+ * License.
  *
  * The Original Code is mozilla.org code.
  *
@@ -159,14 +159,13 @@ interface nsIHTMLEditor : nsISupports
                                            out boolean aAny,
                                            out boolean aAll);
                              
-  
-  void getInnermostTag( in AString aTagClassName,
+    void getInnermostTag( in AString aTagClassName,
                         out boolean aFirst,
                         out boolean aAny,
                         out boolean aAll,
                         out AString outvalue);
                            
-  /**
+/**
    * removeAllInlineProperties() deletes all the inline properties from all 
    * text in the current selection.
    */
@@ -243,7 +242,8 @@ interface nsIHTMLEditor : nsISupports
    */
   void insertHTML(in AString aInputString);
 
-  /**
+
+  /** 
    *  Insert a paragraph break (i.e., press the return key).
    *  Implementation may vary depending on the context
    */
@@ -353,8 +353,7 @@ interface nsIHTMLEditor : nsISupports
    */
   void setParagraphFormat(in AString aParagraphFormat);
 
- 
- /**
+  /**
    * SetStructureTag       Insert a structure tag at the selection. Each paragraph in the 
    *                        selection becomes a new structure, and the text in the paragraph
    *                        becomes part of the section title, if there is one.

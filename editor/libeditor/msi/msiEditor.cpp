@@ -17,11 +17,9 @@
 #include "nsIDOMAttr.h"
 #include "nsIDOMNamedNodeMap.h"
 #include "nsIDOMNodeList.h"
-#include "nsITextContent.h"
 #include "nsIPresShell.h"
 #include "nsIDOMNSUIEvent.h"
 #include "nsIDOM3EventTarget.h"
-#include "nsIDOMEventReceiver.h"
 #include "nsIDOMEventGroup.h"
 #include "nsIServiceManager.h"
 #include "nsServiceManagerUtils.h"
@@ -113,14 +111,14 @@ msiEditor::InstallEventListeners()
   NS_ENSURE_TRUE(mDocWeak && mPresShellWeak && m_mouseMotionListener,
                  NS_ERROR_NOT_INITIALIZED);
 
-  nsCOMPtr<nsIDOMEventReceiver> erP = GetDOMEventReceiver();
+  nsCOMPtr<nsPIDOMEventTarget> piTarget = GetPIDOMEventTarget();
 
-  if (!erP) 
+  if (!piTarget) 
   {
     RemoveEventListeners();
     return NS_ERROR_FAILURE;
   }
-  nsresult rv = erP->AddEventListenerByIID(m_mouseMotionListener, NS_GET_IID(nsIDOMMouseMotionListener));
+  nsresult rv = piTarget->AddEventListenerByIID(m_mouseMotionListener, NS_GET_IID(nsIDOMMouseMotionListener));
   if (NS_SUCCEEDED(rv))
     rv = nsHTMLEditor::InstallEventListeners();
   else  
@@ -137,14 +135,14 @@ msiEditor::RemoveEventListeners()
   if (!mDocWeak)
     return;
 
-  nsCOMPtr<nsIDOMEventReceiver> erP = GetDOMEventReceiver();
-  if (erP)
+  nsCOMPtr<nsPIDOMEventTarget> piTarget = GetPIDOMEventTarget();
+  if (piTarget)
   {
     // unregister the event listeners with the DOM event receiver
 
     if (m_mouseMotionListener)
     {
-      erP->RemoveEventListenerByIID(m_mouseMotionListener,
+      piTarget->RemoveEventListenerByIID(m_mouseMotionListener,
                                     NS_GET_IID(nsIDOMMouseMotionListener));
       m_mouseMotionListener = nsnull;
     }
@@ -845,7 +843,7 @@ msiEditor::CreateDeleteChildrenTransaction(nsIDOMNode * parent,
   res = TransactionFactory::GetNewTransaction(EditAggregateTxn::GetCID(), (EditTxn **)&aggTxn);
   if (NS_FAILED(res) || !(aggTxn)) 
     return NS_ERROR_FAILURE;
-  for (PRInt32 i=offset+numToDelete-1; i >= NS_STATIC_CAST(PRInt32, offset) && NS_SUCCEEDED(res); i--) 
+  for (PRInt32 i=offset+numToDelete-1; ((i >= static_cast<PRInt32>(offset)) && NS_SUCCEEDED(res)); i--) 
   {
     nsCOMPtr<nsIDOMNode> currChild;
     res = childNodes->Item(i, getter_AddRefs(currChild));
@@ -1136,26 +1134,20 @@ msiEditor::DeleteSelectionImpl(nsIEditor::EDirection aAction)
   nsIEditActionListener *listener;
   if (NS_SUCCEEDED(res))  
   {
-    if (mActionListeners)
+    for (i = 0; i < mActionListeners.Count(); i++)
     {
-      for (i = 0; i < mActionListeners->Count(); i++)
-      {
-        listener = (nsIEditActionListener *)mActionListeners->ElementAt(i);
-        if (listener)
-          listener->WillDeleteSelection(selection);
-      }
+      listener = (nsIEditActionListener *)mActionListeners[i];
+      if (listener)
+        listener->WillDeleteSelection(selection);
     }
 
     res = DoTransaction(txn);  
 
-    if (mActionListeners)
+    for (i = 0; i < mActionListeners.Count(); i++)
     {
-      for (i = 0; i < mActionListeners->Count(); i++)
-      {
-        listener = (nsIEditActionListener *)mActionListeners->ElementAt(i);
-        if (listener)
-          listener->DidDeleteSelection(selection);
-      }
+      listener = (nsIEditActionListener *)mActionListeners[i];
+      if (listener)
+        listener->DidDeleteSelection(selection);
     }
   }
   mRangeUpdater.DropSelectionState(msiSelMan);
@@ -1508,8 +1500,8 @@ nsresult msiEditor::ExtractDataFromKeyEvent(nsIDOMKeyEvent * aKeyEvent,
 
 PRBool msiEditor::IsTextContentNode(nsIDOMNode* node)
 {
-  nsCOMPtr<nsITextContent> text(do_QueryInterface(node));
-  return text ? PR_TRUE : PR_FALSE;
+  nsCOMPtr<nsIContent> text(do_QueryInterface(node));
+  return (text && text->GetText()) ? PR_TRUE : PR_FALSE;
 }
 
 nsresult msiEditor::GetNSSelectionData(nsCOMPtr<nsISelection> &selection,
@@ -2279,8 +2271,8 @@ msiEditor::GetCommonAncestor(nsIDOMNode * node1,
   PRUint32 len;
   for (len = PR_MIN(pos1, pos2); len > 0; --len) 
   {
-    nsIDOMNode* child1 = NS_STATIC_CAST(nsIDOMNode*, parents1.FastElementAt(--pos1));
-    nsIDOMNode* child2 = NS_STATIC_CAST(nsIDOMNode*, parents2.FastElementAt(--pos2));
+    nsIDOMNode* child1 = static_cast<nsIDOMNode*>(parents1.FastElementAt(--pos1));
+    nsIDOMNode* child2 = static_cast<nsIDOMNode*>(parents2.FastElementAt(--pos2));
     if (child1 != child2) 
       break;
     parent = child1;
@@ -2689,7 +2681,7 @@ msiEditor::InitRules()
   nsresult res = NS_NewMSIEditRules(getter_AddRefs(mRules));
   if (NS_FAILED(res)) return res;
   if (!mRules) return NS_ERROR_UNEXPECTED;
-  res = mRules->Init(NS_STATIC_CAST(nsPlaintextEditor*,this), mFlags);
+  res = mRules->Init(static_cast<nsPlaintextEditor*>(this), mFlags);
   
   return res;
 }

@@ -397,7 +397,7 @@ msiDeleteRangeTxn::CreateTxnsToDeleteBetween(nsIDOMNode *aStartParent,
       if (NS_FAILED(result)) return result;
       if (!txn) return NS_ERROR_NULL_POINTER;
 
-      txn->Init(child, m_rangeUpdater);
+      txn->Init(m_editor, child, m_rangeUpdater);
       AppendChild(txn);
       NS_RELEASE(txn);
     }
@@ -464,7 +464,7 @@ msiDeleteRangeTxn::CreateTxnsToDeleteNodesBetween(nsCOMPtr <nsIDOMRange> & range
     if (NS_FAILED(result)) return result;
     if (!txn) return NS_ERROR_NULL_POINTER;
 
-    txn->Init(node, m_rangeUpdater);
+    txn->Init(m_editor, node, m_rangeUpdater);
     AppendChild(txn);
     NS_RELEASE(txn);
     iter->Next();
