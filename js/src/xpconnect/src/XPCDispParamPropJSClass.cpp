@@ -52,8 +52,7 @@
 inline
 XPCDispParamPropJSClass* GetParamProp(JSContext* cx, JSObject* obj)
 {
-    return NS_REINTERPRET_CAST(XPCDispParamPropJSClass*, 
-                               JS_GetPrivate(cx, obj));
+    return reinterpret_cast<XPCDispParamPropJSClass*>(xpc_GetJSPrivate(obj));
 }
 
 /**
@@ -134,23 +133,20 @@ XPC_PP_Finalize(JSContext *cx, JSObject *obj)
 }
 
 /**
- * Is called to mark during GC
- * @param cx the JS context
+ * Is called to trace things that the object holds.
+ * @param trc the tracing structure
  * @param obj the object being marked
- * @param arg we just pass this on
- * @return 0
  */
-JS_STATIC_DLL_CALLBACK(uint32)
-XPC_PP_Mark(JSContext *cx, JSObject *obj, void *arg)
+JS_STATIC_DLL_CALLBACK(void)
+XPC_PP_Trace(JSTracer *trc, JSObject *obj)
 {
-    XPCDispParamPropJSClass* paramProp = GetParamProp(cx, obj);
+    XPCDispParamPropJSClass* paramProp = GetParamProp(trc->context, obj);
     if(paramProp)
     {
         XPCWrappedNative* wrapper = paramProp->GetWrapper();
         if(wrapper && wrapper->IsValid())
-            xpc_MarkForValidWrapper(cx, wrapper, arg);
+            xpc_TraceForValidWrapper(trc, wrapper);
     }
-    return 0;
 }
 
 /**
@@ -159,7 +155,7 @@ XPC_PP_Mark(JSContext *cx, JSObject *obj, void *arg)
  */
 static JSClass ParamPropClass = {
     "XPCDispParamPropJSCass",   // Name 
-    JSCLASS_HAS_PRIVATE,        // flags  
+    JSCLASS_HAS_PRIVATE | JSCLASS_MARK_IS_TRACE, // flags
 
     /* Mandatory non-null function pointer members. */
     JS_PropertyStub,            // addProperty
@@ -178,7 +174,7 @@ static JSClass ParamPropClass = {
     nsnull,                     // construct;
     nsnull,                     // xdrObject;
     nsnull,                     // hasInstance;
-    XPC_PP_Mark,                // mark;
+    JS_CLASS_TRACE(XPC_PP_Trace), // mark/trace;
     nsnull                      // spare;
 };
 
@@ -214,8 +210,8 @@ XPCDispParamPropJSClass::XPCDispParamPropJSClass(XPCWrappedNative* wrapper,
 {
     NS_ADDREF(mWrapper);
     dispObj->QueryInterface(NSID_IDISPATCH, 
-                                              NS_REINTERPRET_CAST(void**,
-                                              &mDispObj));
+                                              reinterpret_cast<void**>
+                                                              (&mDispObj));
 }
 
 XPCDispParamPropJSClass::~XPCDispParamPropJSClass()

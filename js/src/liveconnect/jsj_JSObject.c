@@ -298,7 +298,7 @@ jsj_UnwrapJSObjectWrapper(JNIEnv *jEnv, jobject java_wrapper_obj)
     JSObjectHandle *handle;
 
 #ifndef OJI
-#if JS_BYTES_PER_LONG == 8
+#if JS_BYTES_PER_LONG == 8 || JS_BYTES_PER_WORD == 8
     handle = (JSObjectHandle*)((*jEnv)->GetLongField(jEnv, java_wrapper_obj, njJSObject_long_internal));
 #else
     handle = (JSObjectHandle*)((*jEnv)->GetIntField(jEnv, java_wrapper_obj, njJSObject_internal));
@@ -317,7 +317,7 @@ jsj_UnwrapJSObjectWrapper(JNIEnv *jEnv, jobject java_wrapper_obj)
     }
     else {
         jclass   cid = (*jEnv)->GetObjectClass(jEnv, java_wrapper_obj);
-#if JS_BYTES_PER_LONG == 8
+#if JS_BYTES_PER_LONG == 8 || JS_BYTES_PER_WORD == 8
         jfieldID fid = (*jEnv)->GetFieldID(jEnv, cid, "nativeJSObject", "J");
         handle = (JSObjectHandle*)((*jEnv)->GetLongField(jEnv, java_wrapper_obj, fid));
 #else
@@ -791,7 +791,7 @@ entry_failure:
     JS_ASSERT(!cx);
     if (err_msg) {
         jsj_LogError(err_msg);
-        free(err_msg);
+        JS_smprintf_free(err_msg);
     }
 
     return NULL;
@@ -1331,7 +1331,7 @@ Java_netscape_javascript_JSObject_finalize(JNIEnv *jEnv, jobject java_wrapper_ob
 
     success = JS_FALSE;
 
-#if JS_BYTES_PER_LONG == 8
+#if JS_BYTES_PER_LONG == 8 || JS_BYTES_PER_WORD == 8
     handle = (JSObjectHandle *)((*jEnv)->GetLongField(jEnv, java_wrapper_obj, njJSObject_long_internal));
 #else    
     handle = (JSObjectHandle *)((*jEnv)->GetIntField(jEnv, java_wrapper_obj, njJSObject_internal));
