@@ -23,6 +23,7 @@
  * Contributor(s):
  *   Vladimir Vukicevic <vladimir.vukicevic@oracle.com>
  *   Brett Wilson <brettw@gmail.com>
+ *   Shawn Wilsher <me@shawnwilsher.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -48,14 +49,17 @@
 
 #include "mozIStorageService.h"
 
-class mozStorageService : public mozIStorageService,
-                          public nsIObserver
-{
-public:
-    mozStorageService();
+class mozStorageConnection;
 
+class mozStorageService : public mozIStorageService
+{
+    friend class mozStorageConnection;
+
+public:
     // two-phase init, must call before using service
     nsresult Init();
+
+    static mozStorageService *GetSingleton();
 
     // nsISupports
     NS_DECL_ISUPPORTS
@@ -63,16 +67,12 @@ public:
     // mozIStorageService
     NS_DECL_MOZISTORAGESERVICE
 
-    NS_DECL_NSIOBSERVER
-
 private:
-    ~mozStorageService();
+    virtual ~mozStorageService();
 protected:
     nsCOMPtr<nsIFile> mProfileStorageFile;
 
-    nsresult InitStorageAsyncIO();
-    nsresult FinishAsyncIO();
-    void FreeLocks();
+    static mozStorageService *gStorageService;
 };
 
 #endif /* _MOZSTORAGESERVICE_H_ */

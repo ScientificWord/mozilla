@@ -1,5 +1,6 @@
-/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
-/* ***** BEGIN LICENSE BLOCK *****
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
+ * vim: sw=4 ts=4 sts=4
+ * ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
  * The contents of this file are subject to the Mozilla Public License Version
@@ -21,7 +22,7 @@
  *
  * Contributor(s):
  *   Vladimir Vukicevic <vladimir.vukicevic@oracle.com>
- *   Lev Serebryakov <lev@serebryakov.spb.ru>
+ *   Shawn Wilsher <me@shawnwilsher.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -37,37 +38,53 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#include "nsISupports.idl"
-
-interface mozIStorageConnection;
-interface mozIStorageValueArray;
-interface nsIArray;
-interface nsIVariant;
+#ifndef _MOZSTORAGE_H_
+#define _MOZSTORAGE_H_
 
 /**
- * mozIStorageFunction is to be implemented by storage consumers that
- * wish to receive callbacks during the request execution.
- *
- * SQL can apply functions to values from tables. Examples of
- * such functions are MIN(a1,a2) or SQRT(num). Many functions are
- * implemented in SQL engine.
- *
- * This interface allows consumers to implement their own,
- * problem-specific functions.
- * These functions can be called from triggers, too.
- *
+ * This file contains convenience methods for mozStorage.
  */
-[scriptable, uuid(9ff02465-21cb-49f3-b975-7d5b38ceec73)]
-interface mozIStorageFunction : nsISupports {
-  /**
-   * onFunctionCall is called when execution of a custom
-   * function should occur.
-   * 
-   * @param aNumArguments         The number of arguments
-   * @param aFunctionArguments    The arguments passed in to the function
-   *
-   * @returns any value as Variant type.
-   */
 
-  nsIVariant onFunctionCall(in mozIStorageValueArray aFunctionArguments);
-};
+/**
+ * Converts a SQLite return code to an nsresult return code.
+ *
+ * @param srv The SQLite return code.
+ * @return The corresponding nsresult code.
+ */
+static nsresult
+ConvertResultCode(int srv)
+{
+    switch (srv) {
+        case SQLITE_OK:
+        case SQLITE_ROW:
+        case SQLITE_DONE:
+            return NS_OK;
+        case SQLITE_CORRUPT:
+        case SQLITE_NOTADB:
+            return NS_ERROR_FILE_CORRUPTED;
+        case SQLITE_PERM:
+        case SQLITE_CANTOPEN:
+            return NS_ERROR_FILE_ACCESS_DENIED;
+        case SQLITE_BUSY:
+        case SQLITE_LOCKED:
+            return NS_ERROR_FILE_IS_LOCKED;
+        case SQLITE_READONLY:
+            return NS_ERROR_FILE_READ_ONLY;
+        case SQLITE_FULL:
+        case SQLITE_TOOBIG:
+            return NS_ERROR_FILE_NO_DEVICE_SPACE;
+        case SQLITE_NOMEM:
+            return NS_ERROR_OUT_OF_MEMORY;
+        case SQLITE_MISUSE:
+            return NS_ERROR_UNEXPECTED;
+        case SQLITE_ABORT:
+        case SQLITE_INTERRUPT:
+            return NS_ERROR_ABORT;
+    }
+
+    // generic error
+    return NS_ERROR_FAILURE;
+}
+
+#endif // _MOZSTORAGE_H_
+
