@@ -1,4 +1,5 @@
 /* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* vim: set ts=2 sw=2 et tw=78: */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -55,15 +56,13 @@
 #include "nsIXPConnect.h"
 #include "nsCOMPtr.h"
 #include "nsContentUtils.h"
-#include "nsDOMClassInfo.h"
-#include "nsIDOMGCParticipant.h"
-#include "nsIWeakReference.h"
+#include "nsIScriptSecurityManager.h"
 
 #include "nsDOMJSUtils.h" // for GetScriptContextFromJSContext
 
 JSBool
 nsJSUtils::GetCallingLocation(JSContext* aContext, const char* *aFilename,
-                              PRUint32 *aLineno)
+                              PRUint32* aLineno, JSPrincipals* aPrincipals)
 {
   // Get the current filename and line number
   JSStackFrame* frame = nsnull;
@@ -77,6 +76,37 @@ nsJSUtils::GetCallingLocation(JSContext* aContext, const char* *aFilename,
   } while (frame && !script);
 
   if (script) {
+    // If aPrincipals is non-null then our caller is asking us to ensure
+    // that the filename we return does not have elevated privileges.
+    if (aPrincipals) {
+      // The principals might not be in the script, but we can always
+      // find the right principals in the frame's callee.
+      JSPrincipals* scriptPrins = JS_GetScriptPrincipals(aContext, script);
+      if (!scriptPrins) {
+        JSObject *callee = JS_GetFrameCalleeObject(aContext, frame);
+        nsCOMPtr<nsIPrincipal> prin;
+        nsIScriptSecurityManager *ssm = nsContentUtils::GetSecurityManager();
+        if (NS_FAILED(ssm->GetObjectPrincipal(aContext, callee,
+                                              getter_AddRefs(prin))) ||
+            !prin) {
+          return JS_FALSE;
+        }
+
+        prin->GetJSPrincipals(aContext, &scriptPrins);
+
+        // The script has a reference to the principals.
+        JSPRINCIPALS_DROP(aContext, scriptPrins);
+      }
+
+      // Return the weaker of the two principals if they differ.
+      if (scriptPrins != aPrincipals &&
+          scriptPrins->subsume(scriptPrins, aPrincipals)) {
+        *aFilename = aPrincipals->codebase;
+        *aLineno = 0;
+        return JS_TRUE;
+      }
+    }
+
     const char* filename = ::JS_GetScriptFilename(aContext, script);
 
     if (filename) {
@@ -100,32 +130,12 @@ jsval
 nsJSUtils::ConvertStringToJSVal(const nsString& aProp, JSContext* aContext)
 {
   JSString *jsstring =
-    ::JS_NewUCStringCopyN(aContext, NS_REINTERPRET_CAST(const jschar*,
-                                                        aProp.get()),
+    ::JS_NewUCStringCopyN(aContext, reinterpret_cast<const jschar*>
+                                                    (aProp.get()),
                           aProp.Length());
 
   // set the return value
   return STRING_TO_JSVAL(jsstring);
-}
-
-PRBool
-nsJSUtils::ConvertJSValToXPCObject(nsISupports** aSupports, REFNSIID aIID,
-                                   JSContext* aContext, jsval aValue)
-{
-  *aSupports = nsnull;
-  if (JSVAL_IS_NULL(aValue)) {
-    return JS_TRUE;
-  }
-
-  if (JSVAL_IS_OBJECT(aValue)) {
-    // WrapJS does all the work to recycle an existing wrapper and/or do a QI
-    nsresult rv = nsContentUtils::XPConnect()->
-      WrapJS(aContext, JSVAL_TO_OBJECT(aValue), aIID, (void**)aSupports);
-
-    return NS_SUCCEEDED(rv);
-  }
-
-  return JS_FALSE;
 }
 
 void
@@ -134,8 +144,8 @@ nsJSUtils::ConvertJSValToString(nsAString& aString, JSContext* aContext,
 {
   JSString *jsstring;
   if ((jsstring = ::JS_ValueToString(aContext, aValue)) != nsnull) {
-    aString.Assign(NS_REINTERPRET_CAST(const PRUnichar*,
-                                       ::JS_GetStringChars(jsstring)),
+    aString.Assign(reinterpret_cast<const PRUnichar*>
+                                   (::JS_GetStringChars(jsstring)),
                    ::JS_GetStringLength(jsstring));
   }
   else {
@@ -215,102 +225,4 @@ nsIScriptContext *
 nsJSUtils::GetDynamicScriptContext(JSContext *aContext)
 {
   return GetScriptContextFromJSContext(aContext);
-}
-
-#define MARKED_OBJECT_BIT (PRWord(1<<0))
-
-void
-nsMarkedJSFunctionHolder_base::Set(nsISupports *aPotentialFunction,
-                                   nsIDOMGCParticipant *aParticipant)
-{
-  if (PRWord(mObject) & MARKED_OBJECT_BIT) {
-    nsDOMClassInfo::ReleaseWrapper(this);
-  }
-  nsISupports *oldVal = (nsISupports*)(PRWord(mObject) & ~MARKED_OBJECT_BIT);
-  if (!TryMarkedSet(aPotentialFunction, aParticipant)) {
-    NS_ASSERTION((PRWord(aPotentialFunction) & MARKED_OBJECT_BIT) == 0,
-                 "low bit set");
-    NS_IF_ADDREF(aPotentialFunction);
-    mObject = aPotentialFunction;
-  }
-  NS_IF_RELEASE(oldVal);
-}
-
-static nsIXPConnectJSObjectHolder* HolderToWrappedJS(void *aKey)
-{
-  nsMarkedJSFunctionHolder_base *holder = NS_STATIC_CAST(
-    nsMarkedJSFunctionHolder_base*, aKey);
-
-  NS_ASSERTION(PRWord(holder->mObject) & MARKED_OBJECT_BIT,
-               "yikes, not a marked object");
-
-  nsIWeakReference* weakRef =
-    (nsIWeakReference*)(PRWord(holder->mObject) & ~MARKED_OBJECT_BIT);
-
-  // This entire interface is a hack to avoid reference counting, so
-  // this actually doesn't do any reference counting, and we don't leak
-  // anything.  This is needed so we don't add and remove GC roots in
-  // the middle of GC.
-  nsWeakRefToIXPConnectWrappedJS *result;
-  if (NS_FAILED(CallQueryReferent(weakRef, &result)))
-    result = nsnull;
-  return result;
-}
-
-PRBool
-nsMarkedJSFunctionHolder_base::TryMarkedSet(nsISupports *aPotentialFunction,
-                                            nsIDOMGCParticipant *aParticipant)
-{
-  if (!aParticipant)
-    return PR_FALSE;
-
-  nsCOMPtr<nsIXPConnectWrappedJS> wrappedJS =
-    do_QueryInterface(aPotentialFunction);
-  if (!wrappedJS) // a non-JS implementation
-    return PR_FALSE;
-
-  // XXX We really only need to pass PR_TRUE for
-  // root-if-externally-referenced if this is an onload, onerror,
-  // onreadystatechange, etc., so we could pass the responsibility for
-  // choosing that to the caller.
-  nsresult rv =
-    nsDOMClassInfo::PreserveWrapper(this, HolderToWrappedJS, aParticipant,
-                                    PR_TRUE);
-  NS_ENSURE_SUCCESS(rv, PR_FALSE);
-
-  nsIWeakReference* weakRef; // [STRONG]
-  wrappedJS->GetWeakReference(&weakRef);
-  NS_ENSURE_TRUE(weakRef, PR_FALSE);
-
-  NS_ASSERTION((PRWord(weakRef) & MARKED_OBJECT_BIT) == 0, "low bit set");
-  mObject = (nsISupports*)(PRWord(weakRef) | MARKED_OBJECT_BIT);
-  return PR_TRUE;
-}
-
-already_AddRefed<nsISupports>
-nsMarkedJSFunctionHolder_base::Get(REFNSIID aIID)
-{
-  nsISupports *result;
-  if (PRWord(mObject) & MARKED_OBJECT_BIT) {
-    nsIWeakReference* weakRef =
-      (nsIWeakReference*)(PRWord(mObject) & ~MARKED_OBJECT_BIT);
-    nsresult rv =
-      weakRef->QueryReferent(aIID, NS_REINTERPRET_CAST(void**, &result));
-    if (NS_FAILED(rv)) {
-      NS_NOTREACHED("GC preservation didn't work");
-      result = nsnull;
-    }
-  } else {
-    NS_IF_ADDREF(result = mObject);
-  }
-  return result;
-}
-
-nsMarkedJSFunctionHolder_base::~nsMarkedJSFunctionHolder_base()
-{
-  if (PRWord(mObject) & MARKED_OBJECT_BIT) {
-    nsDOMClassInfo::ReleaseWrapper(this);
-  }
-  nsISupports *obj = (nsISupports*)(PRWord(mObject) & ~MARKED_OBJECT_BIT);
-  NS_IF_RELEASE(obj);
 }

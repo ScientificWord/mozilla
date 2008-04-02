@@ -49,6 +49,7 @@
 #include "nsJSEnvironment.h"
 #include "nsServiceManagerUtils.h"
 #include "nsDOMError.h"
+#include "nsGlobalWindow.h"
 
 static const char kSetIntervalStr[] = "setInterval";
 static const char kSetTimeoutStr[] = "setTimeout";
@@ -58,7 +59,8 @@ class nsJSScriptTimeoutHandler: public nsIScriptTimeoutHandler
 {
 public:
   // nsISupports
-  NS_DECL_ISUPPORTS
+  NS_DECL_CYCLE_COLLECTING_ISUPPORTS
+  NS_DECL_CYCLE_COLLECTION_SCRIPT_HOLDER_CLASS(nsJSScriptTimeoutHandler)
 
   nsJSScriptTimeoutHandler();
   ~nsJSScriptTimeoutHandler();
@@ -86,8 +88,11 @@ public:
   // added.
   virtual void SetLateness(PRIntervalTime aHowLate);
 
-  nsresult Init(nsIScriptContext *aContext, PRBool aIsInterval,
+  nsresult Init(nsGlobalWindow *aWindow, PRBool *aIsInterval,
                 PRInt32 *aInterval);
+
+  void ReleaseJSObjects();
+
 private:
 
   nsCOMPtr<nsIScriptContext> mContext;
@@ -107,13 +112,29 @@ private:
 
 // nsJSScriptTimeoutHandler
 // QueryInterface implementation for nsJSScriptTimeoutHandler
-NS_INTERFACE_MAP_BEGIN(nsJSScriptTimeoutHandler)
+NS_IMPL_CYCLE_COLLECTION_CLASS(nsJSScriptTimeoutHandler)
+NS_IMPL_CYCLE_COLLECTION_ROOT_BEGIN(nsJSScriptTimeoutHandler)
+  tmp->ReleaseJSObjects();
+NS_IMPL_CYCLE_COLLECTION_ROOT_END
+NS_IMPL_CYCLE_COLLECTION_UNLINK_0(nsJSScriptTimeoutHandler)
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_BEGIN(nsJSScriptTimeoutHandler)
+  NS_IMPL_CYCLE_COLLECTION_TRAVERSE_NSCOMPTR(mContext)
+  NS_IMPL_CYCLE_COLLECTION_TRAVERSE_NSCOMPTR(mArgv)
+  NS_IMPL_CYCLE_COLLECTION_TRAVERSE_SCRIPT_OBJECTS
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_END
+
+NS_IMPL_CYCLE_COLLECTION_TRACE_BEGIN(nsJSScriptTimeoutHandler)
+  NS_IMPL_CYCLE_COLLECTION_TRACE_JS_MEMBER_CALLBACK(mExpr)
+  NS_IMPL_CYCLE_COLLECTION_TRACE_JS_MEMBER_CALLBACK(mFunObj)
+NS_IMPL_CYCLE_COLLECTION_TRACE_END
+
+NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(nsJSScriptTimeoutHandler)
   NS_INTERFACE_MAP_ENTRY(nsIScriptTimeoutHandler)
   NS_INTERFACE_MAP_ENTRY(nsISupports)
 NS_INTERFACE_MAP_END
 
-NS_IMPL_ADDREF(nsJSScriptTimeoutHandler)
-NS_IMPL_RELEASE(nsJSScriptTimeoutHandler)
+NS_IMPL_CYCLE_COLLECTING_ADDREF(nsJSScriptTimeoutHandler)
+NS_IMPL_CYCLE_COLLECTING_RELEASE(nsJSScriptTimeoutHandler)
 
 nsJSScriptTimeoutHandler::nsJSScriptTimeoutHandler() :
   mLineNo(0),
@@ -125,48 +146,19 @@ nsJSScriptTimeoutHandler::nsJSScriptTimeoutHandler() :
 
 nsJSScriptTimeoutHandler::~nsJSScriptTimeoutHandler()
 {
+  ReleaseJSObjects();
+}
+
+void
+nsJSScriptTimeoutHandler::ReleaseJSObjects()
+{
   if (mExpr || mFunObj) {
-    nsIScriptContext *scx = mContext;
-    JSRuntime *rt = nsnull;
-
-    if (scx) {
-      JSContext *cx;
-      cx = (JSContext *)scx->GetNativeContext();
-      rt = ::JS_GetRuntime(cx);
-    } else {
-      // XXX The timeout *must* be unrooted, even if !scx. This can be
-      // done without a JS context using the JSRuntime. This is safe
-      // enough, but it would be better to drop all a window's
-      // timeouts before its context is cleared. Bug 50705 describes a
-      // situation where we're not. In that case, at the time the
-      // context is cleared, a timeout (actually an Interval) is still
-      // active, but temporarily removed from the window's list of
-      // timers (placed instead on the timer manager's list). This
-      // makes the nearly handy ClearAllTimeouts routine useless, so
-      // we settled on using the JSRuntime rather than relying on the
-      // window having a context. It would be good to remedy this
-      // workable but clumsy situation someday.
-
-      nsCOMPtr<nsIJSRuntimeService> rtsvc =
-        do_GetService("@mozilla.org/js/xpc/RuntimeService;1");
-
-      if (rtsvc) {
-        rtsvc->GetRuntime(&rt);
-        }
-    }
-
-    if (!rt) {
-      // most unexpected. not much choice but to bail.
-
-      NS_ERROR("nsTimeout::Release() with no JSRuntime. eek!");
-
-      return;
-    }
-
     if (mExpr) {
-      ::JS_RemoveRootRT(rt, &mExpr);
+      NS_DROP_JS_OBJECTS(this, nsJSScriptTimeoutHandler);
+      mExpr = nsnull;
     } else if (mFunObj) {
-      ::JS_RemoveRootRT(rt, &mFunObj);
+      NS_DROP_JS_OBJECTS(this, nsJSScriptTimeoutHandler);
+      mFunObj = nsnull;
     } else {
       NS_WARNING("No func and no expr - roots may not have been removed");
     }
@@ -174,21 +166,20 @@ nsJSScriptTimeoutHandler::~nsJSScriptTimeoutHandler()
 }
 
 nsresult
-nsJSScriptTimeoutHandler::Init(nsIScriptContext *aContext, PRBool aIsInterval,
+nsJSScriptTimeoutHandler::Init(nsGlobalWindow *aWindow, PRBool *aIsInterval,
                                PRInt32 *aInterval)
 {
-  if (!aContext) {
+  mContext = aWindow->GetContextInternal();
+  if (!mContext) {
     // This window was already closed, or never properly initialized,
     // don't let a timer be scheduled on such a window.
 
     return NS_ERROR_NOT_INITIALIZED;
   }
 
-  mContext = aContext;
-
-  nsCOMPtr<nsIXPCNativeCallContext> ncc;
+  nsAXPCNativeCallContext *ncc = nsnull;
   nsresult rv = nsContentUtils::XPConnect()->
-    GetCurrentNativeCallContext(getter_AddRefs(ncc));
+    GetCurrentNativeCallContext(&ncc);
   NS_ENSURE_SUCCESS(rv, rv);
 
   if (!ncc)
@@ -213,9 +204,10 @@ nsJSScriptTimeoutHandler::Init(nsIScriptContext *aContext, PRBool aIsInterval,
 
   if (argc < 1) {
     ::JS_ReportError(cx, "Function %s requires at least 1 parameter",
-                     aIsInterval ? kSetIntervalStr : kSetTimeoutStr);
+                     *aIsInterval ? kSetIntervalStr : kSetTimeoutStr);
 
-    return ncc->SetExceptionWasThrown(PR_TRUE);
+    ncc->SetExceptionWasThrown(PR_TRUE);
+    return NS_ERROR_DOM_TYPE_ERR;
   }
 
   if (argc > 1 && !::JS_ValueToECMAInt32(cx, argv[1], &interval)) {
@@ -223,7 +215,14 @@ nsJSScriptTimeoutHandler::Init(nsIScriptContext *aContext, PRBool aIsInterval,
                      "Second argument to %s must be a millisecond interval",
                      aIsInterval ? kSetIntervalStr : kSetTimeoutStr);
 
-    return ncc->SetExceptionWasThrown(PR_TRUE);
+    ncc->SetExceptionWasThrown(PR_TRUE);
+    return NS_ERROR_DOM_TYPE_ERR;
+  }
+
+  if (argc == 1) {
+    // If no interval was specified, treat this like a timeout, to avoid
+    // setting an interval of 0 milliseconds.
+    *aIsInterval = PR_FALSE;
   }
 
   switch (::JS_TypeOfValue(cx, argv[0])) {
@@ -241,7 +240,7 @@ nsJSScriptTimeoutHandler::Init(nsIScriptContext *aContext, PRBool aIsInterval,
 
   default:
     ::JS_ReportError(cx, "useless %s call (missing quotes around argument?)",
-                     aIsInterval ? kSetIntervalStr : kSetTimeoutStr);
+                     *aIsInterval ? kSetIntervalStr : kSetTimeoutStr);
 
     // Return an error that nsGlobalWindow can recognize and turn into NS_OK.
     ncc->SetExceptionWasThrown(PR_TRUE);
@@ -249,15 +248,26 @@ nsJSScriptTimeoutHandler::Init(nsIScriptContext *aContext, PRBool aIsInterval,
   }
 
   if (expr) {
-    if (!::JS_AddNamedRoot(cx, &mExpr, "timeout.mExpr")) {
-      return NS_ERROR_OUT_OF_MEMORY;
-    }
+    rv = NS_HOLD_JS_OBJECTS(this, nsJSScriptTimeoutHandler);
+    NS_ENSURE_SUCCESS(rv, rv);
 
     mExpr = expr;
-  } else if (funobj) {
-    if (!::JS_AddNamedRoot(cx, &mFunObj, "timeout.mFunObj")) {
-      return NS_ERROR_OUT_OF_MEMORY;
+
+    nsIPrincipal *prin = aWindow->GetPrincipal();
+    JSPrincipals *jsprins;
+    rv = prin->GetJSPrincipals(cx, &jsprins);
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    // Get the calling location.
+    const char *filename;
+    if (nsJSUtils::GetCallingLocation(cx, &filename, &mLineNo, jsprins)) {
+      mFileName.Assign(filename);
     }
+
+    JSPRINCIPALS_DROP(cx, jsprins);
+  } else if (funobj) {
+    rv = NS_HOLD_JS_OBJECTS(this, nsJSScriptTimeoutHandler);
+    NS_ENSURE_SUCCESS(rv, rv);
 
     mFunObj = funobj;
 
@@ -270,10 +280,12 @@ nsJSScriptTimeoutHandler::Init(nsIScriptContext *aContext, PRBool aIsInterval,
     if (NS_FAILED(rv)) {
       return NS_ERROR_OUT_OF_MEMORY;
     }
+
     PRUint32 dummy;
     jsval *jsargv = nsnull;
     nsCOMPtr<nsIJSArgArray> jsarray(do_QueryInterface(array));
-    jsarray->GetArgs(&dummy, NS_REINTERPRET_CAST(void **, &jsargv));
+    jsarray->GetArgs(&dummy, reinterpret_cast<void **>(&jsargv));
+
     // must have worked - we own the impl! :)
     NS_ASSERTION(jsargv, "No argv!");
     for (PRInt32 i = 2; (PRUint32)i < argc; ++i) {
@@ -281,17 +293,6 @@ nsJSScriptTimeoutHandler::Init(nsIScriptContext *aContext, PRBool aIsInterval,
     }
     // final arg slot remains null, array has rooted vals.
     mArgv = array;
-
-    // Get the calling location.
-    const char *filename;
-    if (nsJSUtils::GetCallingLocation(cx, &filename, &mLineNo)) {
-      mFileName.Assign(filename);
-
-      if (mFileName.IsEmpty()) {
-        return NS_ERROR_OUT_OF_MEMORY;
-      }
-    }
-
   } else {
     NS_WARNING("No func and no expr - why are we here?");
   }
@@ -305,7 +306,7 @@ void nsJSScriptTimeoutHandler::SetLateness(PRIntervalTime aHowLate)
   if (jsarray) {
     PRUint32 argc;
     jsval *jsargv;
-    jsarray->GetArgs(&argc, NS_REINTERPRET_CAST(void **, &jsargv));
+    jsarray->GetArgs(&argc, reinterpret_cast<void **>(&jsargv));
     if (jsargv && argc)
       jsargv[argc-1] = INT_TO_JSVAL((jsint) aHowLate);
   } else {
@@ -317,12 +318,12 @@ const PRUnichar *
 nsJSScriptTimeoutHandler::GetHandlerText()
 {
   NS_ASSERTION(mExpr, "No expression, so no handler text!");
-  return NS_REINTERPRET_CAST(const PRUnichar *,
-                             ::JS_GetStringChars(mExpr));
+  return reinterpret_cast<const PRUnichar *>
+                         (::JS_GetStringChars(mExpr));
 }
 
-nsresult NS_CreateJSTimeoutHandler(nsIScriptContext *aContext,
-                                   PRBool aIsInterval,
+nsresult NS_CreateJSTimeoutHandler(nsGlobalWindow *aWindow,
+                                   PRBool *aIsInterval,
                                    PRInt32 *aInterval,
                                    nsIScriptTimeoutHandler **aRet)
 {
@@ -331,11 +332,13 @@ nsresult NS_CreateJSTimeoutHandler(nsIScriptContext *aContext,
   if (!handler)
     return NS_ERROR_OUT_OF_MEMORY;
 
-  nsresult rv = handler->Init(aContext, aIsInterval, aInterval);
+  nsresult rv = handler->Init(aWindow, aIsInterval, aInterval);
   if (NS_FAILED(rv)) {
     delete handler;
     return rv;
   }
-  return handler->QueryInterface(NS_GET_IID(nsIScriptTimeoutHandler),
-                                 NS_REINTERPRET_CAST(void **, aRet));
+
+  NS_ADDREF(*aRet = handler);
+
+  return NS_OK;
 }

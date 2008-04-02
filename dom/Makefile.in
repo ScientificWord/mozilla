@@ -43,7 +43,7 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE		= dom
-DIRS		= public src locales
+DIRS		= public src locales tests
 
 include $(topsrcdir)/config/rules.mk
 

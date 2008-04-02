@@ -46,7 +46,6 @@
 
 class nsIScriptGlobalObject;
 class nsIScriptSecurityManager;
-class nsIScriptContextOwner;
 class nsIPrincipal;
 class nsIAtom;
 class nsIArray;
@@ -54,14 +53,17 @@ class nsIVariant;
 class nsIObjectInputStream;
 class nsIObjectOutputStream;
 class nsScriptObjectHolder;
-class nsIDOMDocument;
 
 typedef void (*nsScriptTerminationFunc)(nsISupports* aRef);
 
 #define NS_ISCRIPTCONTEXT_IID \
-{ /* {52B46C37-A078-4952-AED7-035D83C810C0} */ \
-  0x52b46c37, 0xa078, 0x4952, \
-  {0xae, 0xd7, 0x3, 0x5d, 0x83, 0xc8, 0x10, 0xc0 } }
+{ /* {09316a0e-8d05-4d26-9efd-8f907a7c79d2} */ \
+  0x09316a0e, 0x8d05, 0x4d26, \
+ { 0x9e, 0xfd, 0x8f, 0x90, 0x7a, 0x7c, 0x79, 0xd2 } }
+
+/* This MUST match JSVERSION_DEFAULT.  This version stuff if we don't
+   know what language we have is a little silly... */
+#define SCRIPTVERSION_DEFAULT JSVERSION_DEFAULT
 
 /**
  * It is used by the application to initialize a runtime and run scripts.
@@ -178,6 +180,7 @@ public:
    * @param aBody the event handler function's body
    * @param aURL the URL or filename for error messages
    * @param aLineNo the starting line number of the script for error messages
+   * @param aVersion the script language version to use when executing
    * @param aHandler the out parameter in which a void pointer to the compiled
    *        function object is stored on success
    *
@@ -187,7 +190,9 @@ public:
                                        PRUint32 aArgCount,
                                        const char** aArgNames,
                                        const nsAString& aBody,
-                                       const char* aURL, PRUint32 aLineNo,
+                                       const char* aURL,
+                                       PRUint32 aLineNo,
+                                       PRUint32 aVersion,
                                        nsScriptObjectHolder &aHandler) = 0;
 
   /**
@@ -257,6 +262,7 @@ public:
                                    const nsAString& aBody,
                                    const char* aURL,
                                    PRUint32 aLineNo,
+                                   PRUint32 aVersion,
                                    PRBool aShared,
                                    void **aFunctionObject) = 0;
 
@@ -363,22 +369,6 @@ public:
                                nsScriptObjectHolder &aResult) = 0;
 
   /**
-   * Let the script context know who its owner is.
-   * The script context should not addref the owner. It
-   * will be told when the owner goes away.
-   * @return NS_OK if the method is successful
-   */
-  virtual void SetOwner(nsIScriptContextOwner* owner) = 0;
-
-  /**
-   * Get the script context of the owner. The method
-   * addrefs the returned reference according to regular
-   * XPCOM rules, even though the internal reference itself
-   * is a "weak" reference.
-   */
-  virtual nsIScriptContextOwner *GetOwner() = 0;
-
-  /**
    * JS only - this function need not be implemented by languages other
    * than JS (ie, this should be moved to a private interface!)
    * Called to specify a function that should be called when the current
@@ -424,12 +414,16 @@ public:
   /**
    * Clear the scope object - may be called either as we are being torn down,
    * or before we are attached to a different document.
-   * XXXmarkh - aClearPolluter is quite likely bogus - just that some places
-   * that did this clear did not call InvalidateGlobalScopePolluter.  It
-   * seems likely this param should be dropped and that fn always called.
-   * OR some extra virtual added to abstract when that Invalidate need happen.
+   *
+   * aClearFromProtoChain is probably somewhat JavaScript specific.  It
+   * indicates that the global scope polluter should be removed from the
+   * prototype chain and that the objects in the prototype chain should
+   * also have their scopes cleared.  We don't do this all the time
+   * because the prototype chain is shared between inner and outer
+   * windows, and needs to stay with inner windows that we're keeping
+   * around.
    */
-  virtual void ClearScope(void* aGlobalObj, PRBool aClearPolluter) = 0;
+  virtual void ClearScope(void* aGlobalObj, PRBool aClearFromProtoChain) = 0;
 
   /**
    * Tell the context we're about to be reinitialize it.
@@ -443,9 +437,10 @@ public:
 
   /**
    * Tell the context our global has a new document, and the scope
-   * used by it.
+   * used by it.  Use nsISupports to avoid dependency issues - but expect
+   * a QI for nsIDOMDocument and/or nsIDocument.
    */
-  virtual void DidSetDocument(nsIDOMDocument *aDoc, void *aGlobal) = 0;
+  virtual void DidSetDocument(nsISupports *aDoc, void *aGlobal) = 0;
 
   /* Memory managment for script objects.  Used by the implementation of
    * nsScriptObjectHolder to manage the lifetimes of the held script objects.

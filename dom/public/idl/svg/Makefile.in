@@ -50,8 +50,10 @@ XPIDL_MODULE	= dom_svg
 
 XPIDLSRCS	= \
 		nsIDOMGetSVGDocument.idl \
+		nsIDOMSVGAElement.idl \
 		nsIDOMSVGAngle.idl \
 		nsIDOMSVGAnimatedAngle.idl \
+		nsIDOMSVGAnimatedBoolean.idl \
 		nsIDOMSVGAnimatedEnum.idl \
 		nsIDOMSVGAnimatedInteger.idl \
 		nsIDOMSVGAnimatedLength.idl \
@@ -106,6 +108,7 @@ XPIDLSRCS	= \
 		nsIDOMSVGStopElement.idl \
 		nsIDOMSVGStylable.idl \
 		nsIDOMSVGStyleElement.idl \
+		nsIDOMSVGSwitchElement.idl \
 		nsIDOMSVGSymbolElement.idl \
 		nsIDOMSVGTextContentElement.idl \
 		nsIDOMSVGTextElement.idl \
@@ -117,6 +120,7 @@ XPIDLSRCS	= \
 		nsIDOMSVGTransformable.idl \
 		nsIDOMSVGTSpanElement.idl \
 		nsIDOMSVGURIReference.idl \
+		nsIDOMSVGUnitTypes.idl \
 		nsIDOMSVGUseElement.idl \
 		nsIDOMSVGViewSpec.idl \
 		nsIDOMSVGZoomAndPan.idl \
