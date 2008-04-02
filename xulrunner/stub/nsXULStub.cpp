@@ -40,24 +40,89 @@
 #include "prtypes.h"
 #include "nsXPCOMPrivate.h" // for XP MAXPATHLEN
 #include "nsMemory.h" // for NS_ARRAY_LENGTH
+#include "nsXULAppAPI.h"
+#include "nsILocalFile.h"
+
+#include <stdarg.h>
 
 #ifdef XP_WIN
 #include <windows.h>
 #include <io.h>
 #define snprintf _snprintf
+#define vsnprintf _vsnprintf
 #define PATH_SEPARATOR_CHAR '\\'
-#define XULRUNNER_BIN "xulrunner.exe"
-#include "nsWindowsRestart.cpp"
 #define R_OK 04
-#else
+#elif defined(XP_MACOSX)
+#include <CFBundle.h>
+#define PATH_SEPARATOR_CHAR '/'
+#elif defined (XP_OS2)
+#define INCL_DOS
+#define INCL_DOSMISC
+#define INCL_DOSERRORS
+#include <os2.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#define PATH_SEPARATOR_CHAR '\\'
+#else
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #define PATH_SEPARATOR_CHAR '/'
-#define XULRUNNER_BIN "xulrunner-bin"
+#endif
+
+#ifdef XP_WIN
+#include "nsWindowsWMain.cpp"
 #endif
 
 #define VERSION_MAXLEN 128
+
+static void Output(PRBool isError, const char *fmt, ... )
+{
+  va_list ap;
+  va_start(ap, fmt);
+
+#if defined(XP_WIN) && !MOZ_WINCONSOLE
+  char msg[2048];
+
+  vsnprintf(msg, sizeof(msg), fmt, ap);
+
+  UINT flags = MB_OK;
+  if (isError)
+    flags |= MB_ICONERROR;
+  else
+    flags |= MB_ICONINFORMATION;
+  MessageBox(NULL, msg, "XULRunner", flags);
+#else
+  vfprintf(stderr, fmt, ap);
+#endif
+
+  va_end(ap);
+}
+
+class AutoAppData
+{
+public:
+  AutoAppData(nsILocalFile* aINIFile) : mAppData(nsnull) {
+    nsresult rv = XRE_CreateAppData(aINIFile, &mAppData);
+    if (NS_FAILED(rv))
+      mAppData = nsnull;
+  }
+  ~AutoAppData() {
+    if (mAppData)
+      XRE_FreeAppData(mAppData);
+  }
+
+  operator nsXREAppData*() const { return mAppData; }
+  nsXREAppData* operator -> () const { return mAppData; }
+
+private:
+  nsXREAppData* mAppData;
+};
+
+XRE_CreateAppDataType XRE_CreateAppData;
+XRE_FreeAppDataType XRE_FreeAppData;
+XRE_mainType XRE_main;
 
 int
 main(int argc, char **argv)
@@ -67,13 +132,56 @@ main(int argc, char **argv)
 
   char iniPath[MAXPATHLEN];
   char tmpPath[MAXPATHLEN];
+  char greDir[MAXPATHLEN];
+  PRBool greFound = PR_FALSE;
+
+#if defined(XP_MACOSX)
+  CFBundleRef appBundle = CFBundleGetMainBundle();
+  if (!appBundle)
+    return 1;
+
+  CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(appBundle);
+  if (!resourcesURL)
+    return 1;
+
+  CFURLRef absResourcesURL = CFURLCopyAbsoluteURL(resourcesURL);
+  CFRelease(resourcesURL);
+  if (!absResourcesURL)
+    return 1;
+
+  CFURLRef iniFileURL =
+    CFURLCreateCopyAppendingPathComponent(kCFAllocatorDefault,
+                                          absResourcesURL,
+                                          CFSTR("application.ini"),
+                                          false);
+  CFRelease(absResourcesURL);
+  if (!iniFileURL)
+    return 1;
+
+  CFStringRef iniPathStr =
+    CFURLCopyFileSystemPath(iniFileURL, kCFURLPOSIXPathStyle);
+  CFRelease(iniFileURL);
+  if (!iniPathStr)
+    return 1;
+
+  CFStringGetCString(iniPathStr, iniPath, sizeof(iniPath),
+                     kCFStringEncodingUTF8);
+  CFRelease(iniPathStr);
+
+#else
 
 #ifdef XP_WIN
   if (!::GetModuleFileName(NULL, iniPath, sizeof(iniPath)))
     return 1;
 
-#else
+#elif defined(XP_OS2)
+   PPIB ppib;
+   PTIB ptib;
 
+   DosGetInfoBlocks(&ptib, &ppib);
+   DosQueryModuleName(ppib->pib_hmte, sizeof(iniPath), iniPath);
+
+#else
   // on unix, there is no official way to get the path of the current binary.
   // instead of using the MOZILLA_FIVE_HOME hack, which doesn't scale to
   // multiple applications, we will try a series of techniques:
@@ -108,7 +216,6 @@ main(int argc, char **argv)
     if (!found)
       return 1;
   }
-
 #endif
 
   lastSlash = strrchr(iniPath, PATH_SEPARATOR_CHAR);
@@ -117,12 +224,17 @@ main(int argc, char **argv)
 
   *(++lastSlash) = '\0';
 
-  char greDir[MAXPATHLEN];
+  // On Linux/Win, look for XULRunner in appdir/xulrunner
+
   snprintf(greDir, sizeof(greDir),
            "%sxulrunner" XPCOM_FILE_PATH_SEPARATOR XPCOM_DLL,
            iniPath);
 
+  greFound = (access(greDir, R_OK) == 0);
+
   strncpy(lastSlash, "application.ini", sizeof(iniPath) - (lastSlash - iniPath));
+
+#endif
 
   nsINIParser parser;
   rv = parser.Init(iniPath);
@@ -131,18 +243,18 @@ main(int argc, char **argv)
     return 1;
   }
 
-  if (access(greDir, R_OK) != 0) {
+  if (!greFound) {
     char minVersion[VERSION_MAXLEN];
 
     // If a gecko maxVersion is not specified, we assume that the app uses only
     // frozen APIs, and is therefore compatible with any xulrunner 1.x.
-    char maxVersion[VERSION_MAXLEN] = "2";
+    char maxVersion[VERSION_MAXLEN] = "1.*";
 
     GREVersionRange range = {
       minVersion,
       PR_TRUE,
       maxVersion,
-      PR_FALSE
+      PR_TRUE
     };
 
     rv = parser.GetString("Gecko", "MinVersion", minVersion, sizeof(minVersion));
@@ -169,58 +281,79 @@ main(int argc, char **argv)
 //    if (NS_FAILED(rv)) {
       // XXXbsmedberg: Do something much smarter here: notify the
       // user/offer to download/?
-
-//      fprintf(stderr,
-//              "Could not find compatible GRE between version %s and %s.\n", 
-//              range.lower, range.upper);
+//
+//      Output(PR_FALSE,
+//             "Could not find compatible GRE between version %s and %s.\n",
+//             range.lower, range.upper);
 //      return 1;
 //    }
   }
-
-  lastSlash = strrchr(greDir, PATH_SEPARATOR_CHAR);
+#ifdef XP_OS2
+  // On OS/2 we need to set BEGINLIBPATH to be able to find XULRunner DLLs
+  strcpy(tmpPath, greDir);
+  lastSlash = strrchr(tmpPath, PATH_SEPARATOR_CHAR);
   if (lastSlash) {
     *lastSlash = '\0';
   }
+  DosSetExtLIBPATH(tmpPath, BEGIN_LIBPATH);
+#endif
 
-  char **argv2 = (char**) malloc(sizeof(char*) * (argc + 2));
-  if (!argv2)
+  rv = XPCOMGlueStartup(greDir);
+  if (NS_FAILED(rv)) {
+    Output(PR_TRUE, "Couldn't load XPCOM.\n");
     return 1;
+  }
 
-  char xulBin[MAXPATHLEN];
-  snprintf(xulBin, sizeof(xulBin),
-           "%s" XPCOM_FILE_PATH_SEPARATOR XULRUNNER_BIN, greDir);
+  static const nsDynamicFunctionLoad kXULFuncs[] = {
+    { "XRE_CreateAppData", (NSFuncPtr*) &XRE_CreateAppData },
+    { "XRE_FreeAppData", (NSFuncPtr*) &XRE_FreeAppData },
+    { "XRE_main", (NSFuncPtr*) &XRE_main },
+    { nsnull, nsnull }
+  };
 
-#ifndef XP_WIN
-  setenv(XPCOM_SEARCH_KEY, greDir, 1);
-#endif
+  rv = XPCOMGlueLoadXULFunctions(kXULFuncs);
+  if (NS_FAILED(rv)) {
+    Output(PR_TRUE, "Couldn't load XRE functions.\n");
+    return 1;
+  }
 
-  argv2[0] = xulBin;
-  argv2[1] = iniPath;
+  NS_LogInit();
 
-  for (int i = 1; i < argc; ++i)
-    argv2[i + 1] = argv[i];
+  int retval;
 
-  argv2[argc + 1] = NULL;
+  { // Scope COMPtr and AutoAppData
+    nsCOMPtr<nsILocalFile> iniFile;
+    rv = NS_NewNativeLocalFile(nsDependentCString(iniPath), PR_FALSE,
+                               getter_AddRefs(iniFile));
+    if (NS_FAILED(rv)) {
+      Output(PR_TRUE, "Couldn't find application.ini file.\n");
+      return 1;
+    }
 
-#ifdef XP_WIN
-  BOOL ok = WinLaunchChild(xulBin, argc + 1, argv2);
+    AutoAppData appData(iniFile);
+    if (!appData) {
+      Output(PR_TRUE, "Error: couldn't parse application.ini.\n");
+      return 1;
+    }
 
-  free (argv2);
+    NS_ASSERTION(appData->directory, "Failed to get app directory.");
 
-  return !ok;
-#else
-  execv(xulBin, argv2);
+    if (!appData->xreDirectory) {
+      // chop "libxul.so" off the GRE path
+      lastSlash = strrchr(greDir, PATH_SEPARATOR_CHAR);
+      if (lastSlash) {
+        *lastSlash = '\0';
+      }
+      NS_NewNativeLocalFile(nsDependentCString(greDir), PR_FALSE,
+                            &appData->xreDirectory);
+    }
 
-  return 1;
-#endif
+    retval = XRE_main(argc, argv, appData);
+  }
+
+  NS_LogTerm();
+
+  XPCOMGlueShutdown();
+
+  return retval;
 }
-
-#if defined( XP_WIN ) && defined( WIN32 ) && !defined(__GNUC__)
-// We need WinMain in order to not be a console app.  This function is
-// unused if we are a console application.
-int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR args, int )
-{
-  // Do the real work.
-  return main( __argc, __argv );
-}
-#endif
