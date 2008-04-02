@@ -16,12 +16,11 @@
 #
 # The Initial Developer of the Original Code is
 # the Mozilla Foundation <http://www.mozilla.org>.
-#
 # Portions created by the Initial Developer are Copyright (C) 2006
 # the Initial Developer. All Rights Reserved.
 #
 # Contributor(s):
-# Benjamin Smedberg <benjamin@smedbergs.us> (Original Code)
+#   Benjamin Smedberg <benjamin@smedbergs.us> (Original Code)
 #
 # Alternatively, the contents of this file may be used under the terms of
 # either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -58,6 +57,8 @@ include $(srcdir)/../objs.mk
 
 EXTRA_DEPS += $(srcdir)/../objs.mk
 
+LOCAL_INCLUDES	+= -I$(srcdir)/.. \
+
 REQUIRES=xpcom \
 		string \
 		uconv \
@@ -72,3 +73,5 @@ include $(topsrcdir)/config/rules.mk
 
 $(INTL_UNICHARUTIL_UTIL_LCPPSRCS): %: $(srcdir)/../%
 	$(INSTALL) $^ .
+
+GARBAGE += $(INTL_UNICHARUTIL_UTIL_LCPPSRCS)

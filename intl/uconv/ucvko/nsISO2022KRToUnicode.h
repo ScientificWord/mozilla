@@ -50,12 +50,13 @@ public:
     mLastLegalState = mState_ASCII;
     mData = 0;
     mEUCKRDecoder = nsnull;
-  };
+    mRunLength = 0;
+  }
 
   virtual ~nsISO2022KRToUnicode()
   {
     NS_IF_RELEASE(mEUCKRDecoder);
-  };
+  }
 
   NS_IMETHOD Convert(const char * aSrc, PRInt32 * aSrcLength,
      PRUnichar * aDest, PRInt32 * aDestLength) ;
@@ -65,14 +66,15 @@ public:
   {
     *aDestLength = aSrcLength;
     return NS_OK;
-  };
+  }
 
   NS_IMETHOD Reset()
   {
     mState = mState_ASCII;
     mLastLegalState = mState_ASCII;
+    mRunLength = 0;
     return NS_OK;
-  };
+  }
 
 private:
   enum {
@@ -86,6 +88,9 @@ private:
   } mState, mLastLegalState;
 
   PRUint8 mData;
+
+  // Length of non-ASCII run
+  PRUint32 mRunLength;
 
   nsIUnicodeDecoder *mEUCKRDecoder;
 };
