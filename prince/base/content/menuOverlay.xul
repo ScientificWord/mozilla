@@ -5,10 +5,10 @@
 
 <!DOCTYPE overlay [
 <!ENTITY % DTD SYSTEM "chrome://prince/locale/menuOverlay.dtd">
-%DTD;
+%DTD;                                     
 <!ENTITY % toolbarDTD SYSTEM "chrome://prince/locale/toolbarsOverlay.dtd" >
  %toolbarDTD;
- <!ENTITY % inspectorDTD SYSTEM "chrome://inspector/locale/tasksOverlay.dtd" >
+<!ENTITY % inspectorDTD SYSTEM "chrome://inspector/locale/tasksOverlay.dtd" >
  %inspectorDTD;
 ]>
 
@@ -300,8 +300,8 @@
   <menu id="toolsMenu" label="Tools" >
     <menupopup id="toolPopup">
       <menuitem  label="JavaScript debugger" id="venkmanName" oncommand="start_venkman();"/>
-      <menuitem id="menu_inspector" label="&inspectorTaskCmd.label;" 
-                accesskey="&inspectorTaskCmd.accesskey;" command="Tasks:Inspector"/>
+      <menuitem id="menu_inspector" label="amp_inspectorTaskCmd.label;" 
+                accesskey="amp_inspectorTaskCmd.accesskey;" command="Tasks:Inspector"/>
       <menuitem label="Extensions" id="menu_extensions" observes="Tools:Extensions"/>
       <menuitem label="Themes" id="menu_themes" observes="Tools:Themes"/>
       <menuitem label="Tag appearance" id="cascades" observes="Cascades"/>
