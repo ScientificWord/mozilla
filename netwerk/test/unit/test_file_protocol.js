@@ -26,22 +26,6 @@ function getFile(key) {
   return dirSvc.get(key, Components.interfaces.nsILocalFile);
 }
 
-/* read count bytes from stream and return as a String object */
-function read_stream(stream, count) {
-  /* assume stream has non-ASCII data */
-  var wrapper =
-      Cc["@mozilla.org/binaryinputstream;1"].
-      createInstance(Ci.nsIBinaryInputStream);
-  wrapper.setInputStream(stream);
-  var bytes = wrapper.readByteArray(count);
-  /* assume that the stream is going to give us all of the data.
-     not all streams conform to this. */
-  if (bytes.length != count)
-    do_throw("Partial read from input stream!");
-  /* convert array of bytes to a String object (by no means efficient) */  
-  return eval("String.fromCharCode(" + bytes.toString() + ")");
-}
-
 function new_file_input_stream(file, buffered) {
   var stream =
       Cc["@mozilla.org/network/file-input-stream;1"].
@@ -64,11 +48,15 @@ function new_file_channel(file) {
   return ios.newChannelFromURI(ios.newFileURI(file));
 }
 
-/* stream listener */
-function Listener(closure) {
+/*
+ * stream listener
+ * this listener has some additional file-specific tests, so we can't just use
+ * ChannelListener here.
+ */
+function FileStreamListener(closure) {
   this._closure = closure;
 }
-Listener.prototype = {
+FileStreamListener.prototype = {
   _closure: null,
   _buffer: "",
   _got_onstartrequest: false,
@@ -155,7 +143,7 @@ function test_read_file() {
   }
 
   chan.contentType = special_type;
-  chan.asyncOpen(new Listener(on_read_complete), null);
+  chan.asyncOpen(new FileStreamListener(on_read_complete), null);
 }
 
 function do_test_read_dir(set_type, expected_type) {
@@ -177,7 +165,7 @@ function do_test_read_dir(set_type, expected_type) {
 
   if (set_type)
     chan.contentType = expected_type;
-  chan.asyncOpen(new Listener(on_read_complete), null);
+  chan.asyncOpen(new FileStreamListener(on_read_complete), null);
 }
 
 function test_read_dir_1() {
@@ -236,7 +224,7 @@ function test_upload_file() {
   }
 
   chan.contentType = special_type;
-  chan.asyncOpen(new Listener(on_upload_complete), null);
+  chan.asyncOpen(new FileStreamListener(on_upload_complete), null);
 }
 
 function run_test() {

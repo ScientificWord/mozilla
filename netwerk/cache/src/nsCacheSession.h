@@ -46,13 +46,16 @@
 #include "nspr.h"
 #include "nsError.h"
 #include "nsICacheSession.h"
+#include "nsIOfflineCacheSession.h"
 #include "nsString.h"
 
 class nsCacheSession : public nsICacheSession
+                     , public nsIOfflineCacheSession
 {
 public:
     NS_DECL_ISUPPORTS
     NS_DECL_NSICACHESESSION
+    NS_DECL_NSIOFFLINECACHESESSION
     
     nsCacheSession(const char * clientID, nsCacheStoragePolicy storagePolicy, PRBool streamBased);
     virtual ~nsCacheSession();
@@ -71,7 +74,7 @@ public:
 
     void   MarkDoomEntriesIfExpired()  { mInfo |=  eDoomEntriesIfExpiredMask; }
     void   ClearDoomEntriesIfExpired() { mInfo &= ~eDoomEntriesIfExpiredMask; }
-    PRBool WillDoomEntriesIfExpired()  { return (mInfo & eDoomEntriesIfExpiredMask); }
+    PRBool WillDoomEntriesIfExpired()  { return (0 != (mInfo & eDoomEntriesIfExpiredMask)); }
 
     nsCacheStoragePolicy  StoragePolicy()
     {

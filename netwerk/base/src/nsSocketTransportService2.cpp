@@ -97,26 +97,43 @@ nsSocketTransportService::~nsSocketTransportService()
 //-----------------------------------------------------------------------------
 // event queue (any thread)
 
+already_AddRefed<nsIThread>
+nsSocketTransportService::GetThreadSafely()
+{
+    nsAutoLock lock(mLock);
+    nsIThread* result = mThread;
+    NS_IF_ADDREF(result);
+    return result;
+}
+
 NS_IMETHODIMP
 nsSocketTransportService::Dispatch(nsIRunnable *event, PRUint32 flags)
 {
     LOG(("STS dispatch [%p]\n", event));
 
-    NS_ENSURE_TRUE(mThread, NS_ERROR_NOT_INITIALIZED);
-    return mThread->Dispatch(event, flags);
+    nsCOMPtr<nsIThread> thread = GetThreadSafely();
+    NS_ENSURE_TRUE(thread, NS_ERROR_NOT_INITIALIZED);
+    nsresult rv = thread->Dispatch(event, flags);
+    if (rv == NS_ERROR_UNEXPECTED) {
+        // Thread is no longer accepting events. We must have just shut it
+        // down on the main thread. Pretend we never saw it.
+        rv = NS_ERROR_NOT_INITIALIZED;
+    }
+    return rv;
 }
 
 NS_IMETHODIMP
 nsSocketTransportService::IsOnCurrentThread(PRBool *result)
 {
-    NS_ENSURE_TRUE(mThread, NS_ERROR_NOT_INITIALIZED);
-    return mThread->IsOnCurrentThread(result);
+    nsCOMPtr<nsIThread> thread = GetThreadSafely();
+    NS_ENSURE_TRUE(thread, NS_ERROR_NOT_INITIALIZED);
+    return thread->IsOnCurrentThread(result);
 }
 
 //-----------------------------------------------------------------------------
 // socket api (socket thread only)
 
-nsresult
+NS_IMETHODIMP
 nsSocketTransportService::NotifyWhenCanAttachSocket(nsIRunnable *event)
 {
     LOG(("nsSocketTransportService::NotifyWhenCanAttachSocket\n"));
@@ -124,7 +141,6 @@ nsSocketTransportService::NotifyWhenCanAttachSocket(nsIRunnable *event)
     NS_ASSERTION(PR_GetCurrentThread() == gSocketThread, "wrong thread");
 
     if (CanAttachSocket()) {
-        NS_WARNING("should have called CanAttachSocket");
         return Dispatch(event, NS_DISPATCH_NORMAL);
     }
 
@@ -132,12 +148,16 @@ nsSocketTransportService::NotifyWhenCanAttachSocket(nsIRunnable *event)
     return NS_OK;
 }
 
-nsresult
+NS_IMETHODIMP
 nsSocketTransportService::AttachSocket(PRFileDesc *fd, nsASocketHandler *handler)
 {
     LOG(("nsSocketTransportService::AttachSocket [handler=%x]\n", handler));
 
     NS_ASSERTION(PR_GetCurrentThread() == gSocketThread, "wrong thread");
+
+    if (!CanAttachSocket()) {
+        return NS_ERROR_NOT_AVAILABLE;
+    }
 
     SocketContext sock;
     sock.mFD = fd;
@@ -324,9 +344,16 @@ nsSocketTransportService::Poll(PRBool wait, PRUint32 *interval)
 
     PRIntervalTime ts = PR_IntervalNow();
 
+    LOG(("    timeout = %i milliseconds\n",
+         PR_IntervalToMilliseconds(pollTimeout)));
     PRInt32 rv = PR_Poll(pollList, pollCount, pollTimeout);
 
-    *interval = PR_IntervalToSeconds(PR_IntervalNow() - ts);
+    PRIntervalTime passedInterval = PR_IntervalNow() - ts;
+
+    LOG(("    ...returned after %i milliseconds\n",
+         PR_IntervalToMilliseconds(passedInterval))); 
+
+    *interval = PR_IntervalToSeconds(passedInterval);
     return rv;
 }
 
@@ -354,6 +381,9 @@ nsSocketTransportService::Init()
     if (mInitialized)
         return NS_OK;
 
+    if (mShuttingDown)
+        return NS_ERROR_UNEXPECTED;
+
     if (!mThreadEvent) {
         mThreadEvent = PR_NewPollableEvent();
         //
@@ -366,12 +396,21 @@ nsSocketTransportService::Init()
         // event object).  if we can't create a pollable event, then we'll
         // have to "busy wait" to implement the socket event queue :-(
         //
-        NS_WARN_IF_FALSE(mThreadEvent,
-                "running socket transport thread without a pollable event");
+        if (!mThreadEvent) {
+            NS_WARNING("running socket transport thread without a pollable event");
+            LOG(("running socket transport thread without a pollable event"));
+        }
     }
 
-    nsresult rv = NS_NewThread(&mThread, this);
+    nsCOMPtr<nsIThread> thread;
+    nsresult rv = NS_NewThread(getter_AddRefs(thread), this);
     if (NS_FAILED(rv)) return rv;
+    
+    {
+        nsAutoLock lock(mLock);
+        // Install our mThread, protecting against concurrent readers
+        thread.swap(mThread);
+    }
 
     mInitialized = PR_TRUE;
     return NS_OK;
@@ -388,6 +427,9 @@ nsSocketTransportService::Shutdown()
     if (!mInitialized)
         return NS_OK;
 
+    if (mShuttingDown)
+        return NS_ERROR_UNEXPECTED;
+
     {
         nsAutoLock lock(mLock);
 
@@ -401,7 +443,12 @@ nsSocketTransportService::Shutdown()
 
     // join with thread
     mThread->Shutdown();
-    NS_RELEASE(mThread);
+    {
+        nsAutoLock lock(mLock);
+        // Drop our reference to mThread and make sure that any concurrent
+        // readers are excluded
+        mThread = nsnull;
+    }
 
     mInitialized = PR_FALSE;
     mShuttingDown = PR_FALSE;
@@ -452,6 +499,7 @@ nsSocketTransportService::SetAutodialEnabled(PRBool value)
 NS_IMETHODIMP
 nsSocketTransportService::OnDispatchedEvent(nsIThreadInternal *thread)
 {
+    nsAutoLock lock(mLock);
     if (mThreadEvent)
         PR_SetPollableEvent(mThreadEvent);
     return NS_OK;
@@ -494,6 +542,7 @@ nsSocketTransportService::Run()
     // add thread event to poll list (mThreadEvent may be NULL)
     mPollList[0].fd = mThreadEvent;
     mPollList[0].in_flags = PR_POLL_READ;
+    mPollList[0].out_flags = 0;
 
     nsIThread *thread = NS_GetCurrentThread();
 
@@ -634,7 +683,29 @@ nsSocketTransportService::DoPollIteration(PRBool wait)
 
         if (n != 0 && mPollList[0].out_flags == PR_POLL_READ) {
             // acknowledge pollable event (wait should not block)
-            PR_WaitForPollableEvent(mThreadEvent);
+            if (PR_WaitForPollableEvent(mThreadEvent) != PR_SUCCESS) {
+                // On Windows, the TCP loopback connection in the
+                // pollable event may become broken when a laptop
+                // switches between wired and wireless networks or
+                // wakes up from hibernation.  We try to create a
+                // new pollable event.  If that fails, we fall back
+                // on "busy wait".
+                {
+                    nsAutoLock lock(mLock);
+                    PR_DestroyPollableEvent(mThreadEvent);
+                    mThreadEvent = PR_NewPollableEvent();
+                }
+                if (!mThreadEvent) {
+                    NS_WARNING("running socket transport thread without "
+                               "a pollable event");
+                    LOG(("running socket transport thread without "
+                         "a pollable event"));
+                }
+                mPollList[0].fd = mThreadEvent;
+                // mPollList[0].in_flags was already set to PR_POLL_READ
+                // in Run().
+                mPollList[0].out_flags = 0;
+            }
         }
     }
 

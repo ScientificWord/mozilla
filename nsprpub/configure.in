@@ -50,7 +50,7 @@ dnl = Defaults
 dnl ========================================================
 MOD_MAJOR_VERSION=4
 MOD_MINOR_VERSION=7
-MOD_PATCH_VERSION=0
+MOD_PATCH_VERSION=1
 NSPR_MODNAME=nspr20
 _HAVE_PTHREADS=
 USE_PTHREADS=
@@ -76,6 +76,7 @@ LIBPLC='-L$(dist_libdir) -lplc$(MOD_MAJOR_VERSION)'
 CYGWIN_WRAPPER=
 MACOS_SDK_DIR=
 NEXT_ROOT=
+MT=
 
 dnl Link in libraries necessary to resolve all symbols for shared libs
 RESOLVE_LINK_SYMBOLS=
@@ -90,6 +91,7 @@ dnl ========================================================
 CFLAGS="${CFLAGS=}"
 CXXFLAGS="${CXXFLAGS=}"
 LDFLAGS="${LDFLAGS=}"
+DLLFLAGS="${DLLFLAGS=}"
 HOST_CFLAGS="${HOST_CFLAGS=}"
 HOST_LDFLAGS="${HOST_LDFLAGS=}"
 
@@ -243,7 +245,7 @@ AC_ARG_WITH(macos-sdk,
 AC_ARG_ENABLE(macos-target,
              [  --enable-macos-target=VER
                           Set the minimum MacOS version needed at runtime
-                          [10.1 for ppc, 10.4 for x86]],
+                          [10.2 for ppc, 10.4 for x86]],
              [_MACOSX_DEPLOYMENT_TARGET=$enableval])
 
 dnl ========================================================
@@ -778,6 +780,15 @@ fi
 OS_CONFIG="${OS_TARGET}${OS_RELEASE}"
 
 dnl ========================================================
+dnl Enable high-memory support on OS/2, disabled by default
+dnl ========================================================
+AC_ARG_ENABLE(os2-high-mem,
+    [  --enable-os2-high-mem Enable high-memory support on OS/2],
+    [ if test "$enableval" = "yes"; then
+        MOZ_OS2_HIGH_MEMORY=1
+      else
+        MOZ_OS2_HIGH_MEMORY=
+      fi ])
 
 dnl ========================================================
 dnl Override of system specific host options
@@ -980,8 +991,6 @@ case "$target" in
     esac
     DSO_CFLAGS=-fPIC
     DSO_LDOPTS='-dynamiclib -compatibility_version 1 -current_version 1 -all_load -install_name @executable_path/$@ -headerpad_max_install_names'
-    # Use the standard preprocessor (cpp)
-    CFLAGS="$CFLAGS -no-cpp-precomp"
     MKSHLIB='$(CC) $(DSO_LDOPTS) -o $@'
     STRIP="$STRIP -x -S"
     DLL_SUFFIX=dylib
@@ -1003,8 +1012,8 @@ case "$target" in
             dnl minimum.
             case "${target_cpu}" in
                 powerpc*)
-                    dnl Architecture minimum 10.1
-                    export MACOSX_DEPLOYMENT_TARGET=10.1
+                    dnl Architecture minimum 10.2
+                    export MACOSX_DEPLOYMENT_TARGET=10.2
                     ;;
                 i*86*)
                     dnl Architecture minimum 10.4
@@ -1045,17 +1054,32 @@ tools are selected during the Xcode/Developer Tools installation.])
                 dnl CPP needs to be set for AC_CHECK_HEADER.
                 CPP="$CPP -nostdinc ${SDK_C_INCLUDE}"
 
-                dnl ld support for -syslibroot is compiler-agnostic, but only
-                dnl available on Tiger.  Although it's possible to switch on
-                dnl the build host's OS release to use ld -syslibroot when
-                dnl available, ld -syslibroot cause warnings as long as
-                dnl NEXT_ROOT is set.  NEXT_ROOT should be set because both
-                dnl both the compiler and linker use it.
-                dnl
+                changequote(,)
+                HOST_DARWIN_MAJOR=`echo "$build_os" | sed -E -e 's/^darwin([0-9]+).*$/\1/'`
+                changequote([,])
+                if test "$HOST_DARWIN_MAJOR" -lt 9 ; then
+                    dnl The build host is running Tiger (10.4) or earlier.
+                    dnl ld support for -syslibroot is compiler-agnostic, but
+                    dnl only available on Tiger and later.  On Tiger and
+                    dnl earlier build hosts, just rely on NEXT_ROOT, because
+                    dnl it's not been shown to cause any problems.
+                    MACOS_SDK_LIBS="-L${MACOS_SDK_DIR}/usr/lib/gcc/darwin -L${MACOS_SDK_DIR}/usr/lib/gcc/darwin/${GCC_VERSION_FULL} -L${MACOS_SDK_DIR}/usr/lib ${SDK_C_FRAMEWORK}"
+                else
+                    dnl The build host is running Leopard (10.5) or later.
+                    dnl With NEXT_ROOT set, the linker will still not apply
+                    dnl it when resolving dependencies.  This causes problems
+                    dnl on Leopard, where an SDK depends on frameworks which
+                    dnl were present in earlier OS releases (and the associated
+                    dnl SDK) but not in Leopard.  -syslibroot does not have
+                    dnl this problem, but it results in harmless warnings when
+                    dnl NEXT_ROOT is set.  NEXT_ROOT needs to remain set even
+                    dnl on Leopard because the compiler uses it too.
+                    MACOS_SDK_LIBS="-Wl,-syslibroot,${MACOS_SDK_DIR}"
+                fi
+
                 dnl LDFLAGS is for the utilities built in config (now and
                 dnl nsinstall).  DSO_LDOPTS is used when linking shared
                 dnl libraries.
-                MACOS_SDK_LIBS="-L${MACOS_SDK_DIR}/usr/lib/gcc/darwin -L${MACOS_SDK_DIR}/usr/lib/gcc/darwin/${GCC_VERSION_FULL} -L${MACOS_SDK_DIR}/usr/lib ${SDK_C_FRAMEWORK}"
                 LDFLAGS="${MACOS_SDK_LIBS} $LDFLAGS"
                 DSO_LDOPTS="${MACOS_SDK_LIBS} $DSO_LDOPTS"
                 export NEXT_ROOT=$MACOS_SDK_DIR
@@ -1200,10 +1224,10 @@ tools are selected during the Xcode/Developer Tools installation.])
         AC_DEFINE(HAVE_POINTER_LOCALTIME_R)
     fi
 
-    # HP-UX 11i (B.11.11) or higher
+    # HP-UX 11i v2 (B.11.23) or higher
     changequote(<<,>>)
     case "$OS_RELEASE" in
-    [C-Z]*|B.[2-9]*|B.1[2-9]*|B.11.[2-9]*|B.11.1[1-9]*)
+    [C-Z]*|B.[2-9]*|B.1[2-9]*|B.11.[3-9]*|B.11.2[3-9]*)
         USE_IPV6=1
         ;;
     esac
@@ -1438,10 +1462,15 @@ tools are selected during the Xcode/Developer Tools installation.])
             CXX="$CXX -m32"
         fi
         ;;
+    ppc|powerpc)
+        PR_MD_ASFILES=os_Linux_ppc.s
+        ;;
     powerpc64)
         if test -n "$USE_64"; then
             CC="$CC -m64"
             CXX="$CXX -m64"
+        else
+            PR_MD_ASFILES=os_Linux_ppc.s
         fi
         ;;
     m68k)
@@ -1484,9 +1513,29 @@ tools are selected during the Xcode/Developer Tools installation.])
         _CC_MAJOR_VERSION=`echo $CC_VERSION | awk -F\. '{ print $1 }'`
         _CC_MINOR_VERSION=`echo $CC_VERSION | awk -F\. '{ print $2 }'`
         MSC_VER=${_CC_MAJOR_VERSION}${_CC_MINOR_VERSION}
+
+        # Ensure that mt is Microsoft (R) Manifest Tool and not magnetic
+        # tape manipulation utility (or something else)
+        if test "$MSC_VER" -ge "1400"; then
+            changequote(,)
+            _MSMT_VER_FILTER='s|.* \([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\).*|\1|p'
+            changequote([,])
+
+            MSMT_TOOL=`mt 2>&1|grep 'Microsoft (R) Manifest Tool'`
+            if test -n "$MSMT_TOOL"; then
+                MSMANIFEST_TOOL_VERSION=`echo ${MSMT_TOOL}|sed -ne "$_MSMT_VER_FILTER"`
+                if test -z "$MSMANIFEST_TOOL_VERSION"; then
+                    AC_MSG_WARN([Unknown version of the Microsoft (R) Manifest Tool.])
+                fi
+                MT=mt
+                unset MSMT_TOOL
+            else
+                AC_MSG_ERROR([Microsoft (R) Manifest Tool must be in your \$PATH.])
+            fi
+        fi
         
         CFLAGS="$CFLAGS -W3 -nologo -GF -Gy"
-        DLLFLAGS='-OUT:"$@"'
+        DLLFLAGS="$DLLFLAGS -OUT:\"\$@\""
         _DEBUG_FLAGS=-Z7
         _OPTIMIZE_FLAGS=-O2
         if test -z "$MOZ_OPTIMIZE"; then
@@ -1530,9 +1579,6 @@ tools are selected during the Xcode/Developer Tools installation.])
         
         if test "$OS_TARGET" = "WINNT"; then
             CFLAGS="$CFLAGS -GT"
-            if test "$CPU_ARCH" = "x86"; then
-                CFLAGS="$CFLAGS -G5"
-            fi
             LIBNSPR='$(dist_libdir)/libnspr$(MOD_MAJOR_VERSION).$(LIB_SUFFIX)'
             LIBPLC='$(dist_libdir)/libplc$(MOD_MAJOR_VERSION).$(LIB_SUFFIX)'
         else
@@ -1742,6 +1788,7 @@ mips-sony-newsos*)
     DSO_CFLAGS=-fPIC
     MDCPUCFG_H=_openbsd.cfg
     PR_MD_CSRCS=openbsd.c
+    OS_LIBS="-lc"
     if test -z "$USE_NSPR_THREADS"; then
         USE_PTHREADS=1
     fi
@@ -2091,6 +2138,11 @@ mips-sony-newsos*)
         OS_LIBS="-lsocket"
         IMPLIB='emximp -o'
         FILTER='emxexp -o'
+        if test -n "$MOZ_OS2_HIGH_MEMORY"; then
+          DSO_LDOPTS="$DSO_LDOPTS -Zhigh-mem"
+          LDFLAGS="$LDFLAGS -Zhigh-mem"
+          AC_DEFINE(MOZ_OS2_HIGH_MEMORY)
+        fi
 
         # GCC for OS/2 currently predefines these, but we don't want them
         DEFINES="$DEFINES -Uunix -U__unix -U__unix__"
@@ -2119,7 +2171,7 @@ mips-sony-newsos*)
         _OPTIMIZE_FLAGS='/O+ /Gl+ /qtune=pentium /qarch=pentium'
         _DEBUG_FLAGS='/Ti+ '
         LDFLAGS='/NOL /M /L'
-        DLLFLAGS='/O:$@ /DLL /INC:_dllentry /MAP:$(@:.dll=.map) /L /NOL'
+        DLLFLAGS="$DLLFLAGS /O:\$@ /DLL /INC:_dllentry /MAP:\$(@:.dll=.map) /L /NOL"
         EXEFLAGS='/OUT:$@ /PMTYPE:VIO /MAP:$(@:.exe=.map) /L /NOL'
         if test -n "$MOZ_DEBUG"; then
           LDFLAGS="$LDFLAGS /DE"
@@ -2779,6 +2831,7 @@ AC_SUBST(VISIBILITY_FLAGS)
 AC_SUBST(WRAP_SYSTEM_INCLUDES)
 AC_SUBST(MACOS_SDK_DIR)
 AC_SUBST(NEXT_ROOT)
+AC_SUBST(MT)
 
 dnl ========================================================
 dnl Generate output files.

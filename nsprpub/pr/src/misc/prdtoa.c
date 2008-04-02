@@ -59,8 +59,9 @@ void _PR_CleanupDtoa(void)
     /* FIXME: deal with freelist and p5s. */
 }
 
-#if defined(__arm) || defined(__arm__) || defined(__arm26__) \
-    || defined(__arm32__)
+#if !defined(__ARM_EABI__) \
+    && (defined(__arm) || defined(__arm__) || defined(__arm26__) \
+    || defined(__arm32__))
 #define IEEE_ARM
 #elif defined(IS_LITTLE_ENDIAN)
 #define IEEE_8087
@@ -3067,7 +3068,7 @@ dtoa
 				goto no_digits;
 			goto one_digit;
 			}
-		for(i = 1;; i++, dval(d) *= 10.) {
+		for(i = 1; i <= k+1; i++, dval(d) *= 10.) {
 			L = (Long)(dval(d) / ds);
 			dval(d) -= L*ds;
 #ifdef Check_FLT_ROUNDS

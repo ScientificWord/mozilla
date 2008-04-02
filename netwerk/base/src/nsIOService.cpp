@@ -21,6 +21,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
+ *      Prasad Sunkari <prasad@medhas.org>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -68,20 +69,21 @@
 #include "nsCRT.h"
 #include "nsINestedURI.h"
 #include "nsNetUtil.h"
+#include "nsThreadUtils.h"
+
+#if defined(XP_WIN)
+#include "nsNativeConnectionHelper.h"
+#endif
 
 #define PORT_PREF_PREFIX     "network.security.ports."
 #define PORT_PREF(x)         PORT_PREF_PREFIX x
 #define AUTODIAL_PREF        "network.autodial-helper.enabled"
 
-static NS_DEFINE_CID(kStreamTransportServiceCID, NS_STREAMTRANSPORTSERVICE_CID);
-static NS_DEFINE_CID(kSocketTransportServiceCID, NS_SOCKETTRANSPORTSERVICE_CID);
-static NS_DEFINE_CID(kDNSServiceCID, NS_DNSSERVICE_CID);
-static NS_DEFINE_CID(kErrorServiceCID, NS_ERRORSERVICE_CID);
-static NS_DEFINE_CID(kProtocolProxyServiceCID, NS_PROTOCOLPROXYSERVICE_CID);
+#define MAX_RECURSION_COUNT 50
 
 nsIOService* gIOService = nsnull;
 
-// A general port blacklist.  Connections to these ports will not be avoided unless 
+// A general port blacklist.  Connections to these ports will not be allowed unless 
 // the protocol overrides.
 //
 // TODO: I am sure that there are more ports to be added.  
@@ -194,16 +196,20 @@ nsIOService::Init()
 
     // TODO(darin): Load the Socket and DNS services lazily.
 
-    mSocketTransportService = do_GetService(kSocketTransportServiceCID, &rv);
-    if (NS_FAILED(rv))
+    mSocketTransportService = do_GetService(NS_SOCKETTRANSPORTSERVICE_CONTRACTID, &rv);
+    if (NS_FAILED(rv)) {
         NS_WARNING("failed to get socket transport service");
+        return rv;
+    }
 
-    mDNSService = do_GetService(kDNSServiceCID, &rv);
-    if (NS_FAILED(rv))
+    mDNSService = do_GetService(NS_DNSSERVICE_CONTRACTID, &rv);
+    if (NS_FAILED(rv)) {
         NS_WARNING("failed to get DNS service");
+        return rv;
+    }
 
     // XXX hack until xpidl supports error info directly (bug 13423)
-    nsCOMPtr<nsIErrorService> errorService = do_GetService(kErrorServiceCID);
+    nsCOMPtr<nsIErrorService> errorService = do_GetService(NS_ERRORSERVICE_CONTRACTID);
     if (errorService) {
         errorService->RegisterErrorStringBundle(NS_ERROR_MODULE_NETWORK, NECKO_MSGS_URL);
     }
@@ -212,7 +218,7 @@ nsIOService::Init()
     
     // setup our bad port list stuff
     for(int i=0; gBadPortList[i]; i++)
-        mRestrictedPortList.AppendElement(NS_REINTERPRET_CAST(void *, gBadPortList[i]));
+        mRestrictedPortList.AppendElement(reinterpret_cast<void *>(gBadPortList[i]));
 
     // Further modifications to the port list come from prefs
     nsCOMPtr<nsIPrefBranch2> prefBranch;
@@ -393,42 +399,32 @@ nsIOService::GetProtocolHandler(const char* scheme, nsIProtocolHandler* *result)
             return rv;
         }
 
-        // If the pref for this protocol was explicitly set to false, we want
-        // to use our special "blocked protocol" handler.  That will ensure we
-        // don't open any channels for this protocol.
-        if (listedProtocol) {
-            rv = CallGetService(NS_NETWORK_PROTOCOL_CONTRACTID_PREFIX"default-blocked",
-                                result);
-            if (NS_FAILED(rv))
-                return NS_ERROR_UNKNOWN_PROTOCOL;
-        }
-    }
-    
 #ifdef MOZ_X11
-    // check to see whether GnomeVFS can handle this URI scheme.  if it can
-    // create a nsIURI for the "scheme:", then we assume it has support for
-    // the requested protocol.  otherwise, we failover to using the default
-    // protocol handler.
+        // check to see whether GnomeVFS can handle this URI scheme.  if it can
+        // create a nsIURI for the "scheme:", then we assume it has support for
+        // the requested protocol.  otherwise, we failover to using the default
+        // protocol handler.
 
-    // XXX should this be generalized into something that searches a
-    // category?  (see bug 234714)
+        // XXX should this be generalized into something that searches a
+        // category?  (see bug 234714)
 
-    rv = CallGetService(NS_NETWORK_PROTOCOL_CONTRACTID_PREFIX"moz-gnomevfs",
-                        result);
-    if (NS_SUCCEEDED(rv)) {
-        nsCAutoString spec(scheme);
-        spec.Append(':');
-
-        nsIURI *uri;
-        rv = (*result)->NewURI(spec, nsnull, nsnull, &uri);
+        rv = CallGetService(NS_NETWORK_PROTOCOL_CONTRACTID_PREFIX"moz-gnomevfs",
+                            result);
         if (NS_SUCCEEDED(rv)) {
-            NS_RELEASE(uri);
-            return rv;
-        }
+            nsCAutoString spec(scheme);
+            spec.Append(':');
 
-        NS_RELEASE(*result);
-    }
+            nsIURI *uri;
+            rv = (*result)->NewURI(spec, nsnull, nsnull, &uri);
+            if (NS_SUCCEEDED(rv)) {
+                NS_RELEASE(uri);
+                return rv;
+            }
+
+            NS_RELEASE(*result);
+        }
 #endif
+    }
 
     // Okay we don't have a protocol handler to handle this url type, so use
     // the default protocol handler.  This will cause urls to get dispatched
@@ -460,13 +456,33 @@ nsIOService::GetProtocolFlags(const char* scheme, PRUint32 *flags)
     return rv;
 }
 
+class AutoIncrement
+{
+    public:
+        AutoIncrement(PRUint32 *var) : mVar(var)
+        {
+            ++*var;
+        }
+        ~AutoIncrement()
+        {
+            --*mVar;
+        }
+    private:
+        PRUint32 *mVar;
+};
+
 nsresult
 nsIOService::NewURI(const nsACString &aSpec, const char *aCharset, nsIURI *aBaseURI, nsIURI **result)
 {
-    nsresult rv;
-    nsCAutoString scheme;
+    NS_ASSERTION(NS_IsMainThread(), "wrong thread");
 
-    rv = ExtractScheme(aSpec, scheme);
+    static PRUint32 recursionCount = 0;
+    if (recursionCount >= MAX_RECURSION_COUNT)
+        return NS_ERROR_MALFORMED_URI;
+    AutoIncrement inc(&recursionCount);
+
+    nsCAutoString scheme;
+    nsresult rv = ExtractScheme(aSpec, scheme);
     if (NS_FAILED(rv)) {
         // then aSpec is relative
         if (!aBaseURI)
@@ -587,7 +603,7 @@ nsIOService::SetOffline(PRBool offline)
         // don't care if notification fails
         // this allows users to attempt a little cleanup before dns and socket transport are shut down.
         if (observerService)
-            observerService->NotifyObservers(NS_STATIC_CAST(nsIIOService *, this),
+            observerService->NotifyObservers(static_cast<nsIIOService *>(this),
                                              NS_IOSERVICE_GOING_OFFLINE_TOPIC,
                                              offlineString.get());
 
@@ -604,7 +620,7 @@ nsIOService::SetOffline(PRBool offline)
 
         // don't care if notification fails
         if (observerService)
-            observerService->NotifyObservers(NS_STATIC_CAST(nsIIOService *, this),
+            observerService->NotifyObservers(static_cast<nsIIOService *>(this),
                                              NS_IOSERVICE_OFFLINE_STATUS_TOPIC,
                                              offlineString.get());
     }
@@ -627,7 +643,7 @@ nsIOService::SetOffline(PRBool offline)
  
         // don't care if notification fails
         if (observerService)
-            observerService->NotifyObservers(NS_STATIC_CAST(nsIIOService *, this),
+            observerService->NotifyObservers(static_cast<nsIIOService *>(this),
                                              NS_IOSERVICE_OFFLINE_STATUS_TOPIC,
                                              NS_LITERAL_STRING(NS_IOSERVICE_ONLINE).get());
     }
@@ -890,10 +906,21 @@ nsIOService::TrackNetworkLinkStatusForOffline()
     if (mSocketTransportService) {
         PRBool autodialEnabled = PR_FALSE;
         mSocketTransportService->GetAutodialEnabled(&autodialEnabled);
-        // If autodialing-on-link-down is enabled, then pretend the link is
+        // If autodialing-on-link-down is enabled, check if the OS auto dial 
+        // option is set to always autodial. If so, then we are 
         // always up for the purposes of offline management.
-        if (autodialEnabled)
+        if (autodialEnabled) {
+#if defined(XP_WIN) && !defined(WINCE)
+            // On Windows, need to do some registry checking to see if
+            // autodial is enabled at the OS level. Only if that is
+            // enabled are we always up for the purposes of offline
+            // management.
+            if(nsNativeConnectionHelper::IsAutodialEnabled()) 
+                return SetOffline(PR_FALSE);
+#else
             return SetOffline(PR_FALSE);
+#endif
+        }
     }
   
     PRBool isUp;
@@ -907,7 +934,7 @@ nsIOService::EscapeString(const nsACString& aString,
                           PRUint32 aEscapeType,
                           nsACString& aResult)
 {
-  NS_ENSURE_ARG_RANGE(aEscapeType, 0, 3);
+  NS_ENSURE_ARG_RANGE(aEscapeType, 0, 4);
 
   nsCAutoString stringCopy(aString);
   nsCString result;
@@ -919,3 +946,40 @@ nsIOService::EscapeString(const nsACString& aString,
 
   return NS_OK;
 }
+
+NS_IMETHODIMP 
+nsIOService::EscapeURL(const nsACString &aStr, 
+                       PRUint32 aFlags, nsACString &aResult)
+{
+  aResult.Truncate();
+  PRBool escaped = NS_EscapeURL(aStr.BeginReading(), aStr.Length(), 
+                                aFlags | esc_AlwaysCopy, aResult);
+  return NS_OK;
+}
+
+NS_IMETHODIMP 
+nsIOService::UnescapeString(const nsACString &aStr, 
+                            PRUint32 aFlags, nsACString &aResult)
+{
+  aResult.Truncate();
+  PRBool unescaped = NS_UnescapeURL(aStr.BeginReading(), aStr.Length(), 
+                                    aFlags | esc_AlwaysCopy, aResult);
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsIOService::ExtractCharsetFromContentType(const nsACString &aTypeHeader,
+                                           nsACString &aCharset,
+                                           PRInt32 *aCharsetStart,
+                                           PRInt32 *aCharsetEnd,
+                                           PRBool *aHadCharset)
+{
+    nsCAutoString ignored;
+    net_ParseContentType(aTypeHeader, ignored, aCharset, aHadCharset,
+                         aCharsetStart, aCharsetEnd);
+    if (*aHadCharset && *aCharsetStart == *aCharsetEnd) {
+        *aHadCharset = PR_FALSE;
+    }
+    return NS_OK;
+}
+

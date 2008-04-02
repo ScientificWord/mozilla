@@ -61,11 +61,17 @@ SDK_XPIDLSRCS   = \
 		$(NULL)
 
 XPIDLSRCS	= \
+		nsIAuthInformation.idl \
 		nsIAuthPrompt.idl \
+		nsIAuthPrompt2.idl \
+		nsIAuthPromptAdapterFactory.idl \
+		nsIAuthPromptCallback.idl \
 		nsIAsyncStreamCopier.idl \
 		nsISafeOutputStream.idl \
 		nsIBufferedStreams.idl \
 		nsICancelable.idl \
+		nsICryptoHash.idl \
+		nsICryptoHMAC.idl \
 		nsIDownloader.idl \
 		nsIEncodedChannel.idl \
 		nsIFileStreams.idl \
@@ -99,6 +105,7 @@ XPIDLSRCS	= \
 		nsIStreamTransportService.idl \
 		nsIStreamLoader.idl \
 		nsISyncStreamListener.idl \
+		nsISystemProxySettings.idl \
 		nsIUnicharStreamLoader.idl \
 		nsIStandardURL.idl \
 		nsINestedURI.idl \
@@ -108,6 +115,7 @@ XPIDLSRCS	= \
 		nsISecretDecoderRing.idl \
 		nsISecureBrowserUI.idl \
 		nsICryptoFIPSInfo.idl \
+		nsINSSErrorsService.idl \
 		nsICachingChannel.idl \
 		nsIByteRangeRequest.idl \
 		nsIMultiPartChannel.idl \
@@ -118,6 +126,8 @@ XPIDLSRCS	= \
 		nsPISocketTransportService.idl \
 		nsIChannelEventSink.idl \
 		nsINetUtil.idl \
+		nsIProxiedChannel.idl \
+		nsIRandomGenerator.idl \
 		$(NULL)
 
 EXPORTS		= \
@@ -130,6 +140,7 @@ EXPORTS		= \
 		nsReadLine.h \
 		nsCPasswordManager.h \
 		nsCPasswordManagerInternal.h \
+		nsASocketHandler.h \
 		$(NULL)
 
 PREF_JS_EXPORTS = $(srcdir)/security-prefs.js

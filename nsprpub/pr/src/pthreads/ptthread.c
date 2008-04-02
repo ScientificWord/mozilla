@@ -75,6 +75,7 @@ static struct _PT_Bookeeping
 } pt_book = {0};
 
 static void _pt_thread_death(void *arg);
+static void _pt_thread_death_internal(void *arg, PRBool callDestructors);
 static void init_pthread_gc_support(void);
 
 #if defined(_PR_DCETHREADS) || defined(_POSIX_THREAD_PRIORITY_SCHEDULING)
@@ -256,6 +257,8 @@ static void *_pt_root(void *arg)
     */
     if (PR_FALSE == detached)
     {
+        /* Call TPD destructors on this thread. */
+        _PR_DestroyThreadPrivate(thred);
         rv = pthread_setspecific(pt_book.key, NULL);
         PR_ASSERT(0 == rv);
     }
@@ -596,7 +599,11 @@ PR_IMPLEMENT(PRStatus) PR_JoinThread(PRThread *thred)
             rv = pthread_detach(&id);
             PR_ASSERT(0 == rv);
 #endif
-            _pt_thread_death(thred);
+            /*
+             * PR_FALSE, because the thread already called the TPD
+             * destructors before exiting _pt_root.
+             */
+            _pt_thread_death_internal(thred, PR_FALSE);
         }
         else
         {
@@ -620,7 +627,17 @@ PR_IMPLEMENT(PRStatus) PR_JoinThread(PRThread *thred)
     return (0 == rv) ? PR_SUCCESS : PR_FAILURE;
 }  /* PR_JoinThread */
 
-PR_IMPLEMENT(void) PR_DetachThread(void) { }  /* PR_DetachThread */
+PR_IMPLEMENT(void) PR_DetachThread(void)
+{
+    void *thred;
+    int rv;
+
+    _PT_PTHREAD_GETSPECIFIC(pt_book.key, thred);
+    if (NULL == thred) return;
+    _pt_thread_death(thred);
+    rv = pthread_setspecific(pt_book.key, NULL);
+    PR_ASSERT(0 == rv);
+}  /* PR_DetachThread */
 
 PR_IMPLEMENT(PRThread*) PR_GetCurrentThread(void)
 {
@@ -797,6 +814,12 @@ PR_IMPLEMENT(PRStatus) PR_Sleep(PRIntervalTime ticks)
 
 static void _pt_thread_death(void *arg)
 {
+    /* PR_TRUE for: call destructors */ 
+    _pt_thread_death_internal(arg, PR_TRUE);
+}
+
+static void _pt_thread_death_internal(void *arg, PRBool callDestructors)
+{
     PRThread *thred = (PRThread*)arg;
 
     if (thred->state & (PT_THREAD_FOREIGN|PT_THREAD_PRIMORD))
@@ -812,7 +835,8 @@ static void _pt_thread_death(void *arg)
             thred->next->prev = thred->prev;
         PR_Unlock(pt_book.ml);
     }
-    _PR_DestroyThreadPrivate(thred);
+    if (callDestructors)
+        _PR_DestroyThreadPrivate(thred);
     PR_Free(thred->privateData);
     if (NULL != thred->errorString)
         PR_Free(thred->errorString);
@@ -924,6 +948,80 @@ void _PR_InitThreads(
     PR_SetThreadPriority(thred, priority);
 }  /* _PR_InitThreads */
 
+#ifdef __GNUC__
+/*
+ * GCC supports the constructor and destructor attributes as of
+ * version 2.5.
+ */
+static void _PR_Fini(void) __attribute__ ((destructor));
+#elif defined(__SUNPRO_C)
+/*
+ * Sun Studio compiler
+ */
+#pragma fini(_PR_Fini)
+static void _PR_Fini(void);
+#elif defined(HPUX)
+/*
+ * Current versions of HP C compiler define __HP_cc.
+ * HP C compiler A.11.01.20 doesn't define __HP_cc.
+ */
+#if defined(__ia64) || defined(_LP64)
+#pragma FINI "_PR_Fini"
+static void _PR_Fini(void);
+#else
+/*
+ * Only HP-UX 10.x style initializers are supported in 32-bit links.
+ * Need to use the +I PR_HPUX10xInit linker option.
+ */
+#include <dl.h>
+
+static void _PR_Fini(void);
+
+void PR_HPUX10xInit(shl_t handle, int loading)
+{
+    /*
+     * This function is called when a shared library is loaded as well
+     * as when the shared library is unloaded.  Note that it may not
+     * be called when the user's program terminates.
+     *
+     * handle is the shl_load API handle for the shared library being
+     * initialized.
+     *
+     * loading is non-zero at startup and zero at termination.
+     */
+    if (loading) {
+	/* ... do some initializations ... */
+    } else {
+	_PR_Fini();
+    }
+}
+#endif
+#elif defined(AIX)
+/* Need to use the -binitfini::_PR_Fini linker option. */
+#endif
+
+void _PR_Fini(void)
+{
+    void *thred;
+    int rv;
+
+    if (!_pr_initialized) return;
+
+    _PT_PTHREAD_GETSPECIFIC(pt_book.key, thred);
+    if (NULL != thred)
+    {
+        /*
+         * PR_FALSE, because it is unsafe to call back to the 
+         * thread private data destructors at final cleanup.
+         */
+        _pt_thread_death_internal(thred, PR_FALSE);
+        rv = pthread_setspecific(pt_book.key, NULL);
+        PR_ASSERT(0 == rv);
+    }
+    /* TODO: free other resources used by NSPR */
+    /* _pr_initialized = PR_FALSE; */
+}  /* _PR_Fini */
+
 PR_IMPLEMENT(PRStatus) PR_Cleanup(void)
 {
     PRThread *me = PR_GetCurrentThread();
@@ -938,6 +1036,7 @@ PR_IMPLEMENT(PRStatus) PR_Cleanup(void)
         PR_Unlock(pt_book.ml);
 
         _PR_CleanupMW();
+        _PR_CleanupTime();
         _PR_CleanupDtoa();
         _PR_CleanupCallOnce();
         _PR_ShutdownLinker();
@@ -945,6 +1044,7 @@ PR_IMPLEMENT(PRStatus) PR_Cleanup(void)
         _PR_CleanupNet();
         /* Close all the fd's before calling _PR_CleanupIO */
         _PR_CleanupIO();
+        _PR_CleanupCMon();
 
         _pt_thread_death(me);
         rv = pthread_setspecific(pt_book.key, NULL);
@@ -1115,7 +1215,12 @@ PR_IMPLEMENT(PRStatus) PR_EnumerateThreads(PREnumerator func, void *arg)
     PRIntn count = 0;
     PRStatus rv = PR_SUCCESS;
     PRThread* thred = pt_book.first;
+
+#if defined(DEBUG) || defined(FORCE_PR_ASSERT)
+#if !defined(_PR_DCETHREADS)
     PRThread *me = PR_GetCurrentThread();
+#endif
+#endif
 
     PR_LOG(_pr_gc_lm, PR_LOG_ALWAYS, ("Begin PR_EnumerateThreads\n"));
     /*

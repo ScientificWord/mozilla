@@ -163,10 +163,6 @@ static void _pr_SetNativeThreadsOnlyMode(void)
 }
 #endif
 
-#if !defined(_PR_INET6) || defined(_PR_INET6_PROBE)
-extern PRStatus _pr_init_ipv6(void);
-#endif
-
 static void _PR_InitStuff(void)
 {
 
@@ -241,15 +237,12 @@ static void _PR_InitStuff(void)
     _PR_InitLinker();
     _PR_InitCallOnce();
     _PR_InitDtoa();
+    _PR_InitTime();
     _PR_InitMW();
     _PR_InitRWLocks();
 
     nspr_InitializePRErrorTable();
 
-#if !defined(_PR_INET6) || defined(_PR_INET6_PROBE)
-	_pr_init_ipv6();
-#endif
-	
     _PR_MD_FINAL_INIT();
 }
 
@@ -420,6 +413,7 @@ PR_IMPLEMENT(PRStatus) PR_Cleanup()
 #endif
 
         _PR_CleanupMW();
+        _PR_CleanupTime();
         _PR_CleanupDtoa();
         _PR_CleanupCallOnce();
 		_PR_ShutdownLinker();
@@ -458,6 +452,7 @@ PR_IMPLEMENT(PRStatus) PR_Cleanup()
         _PR_CleanupCPUs();
 #endif
         _PR_CleanupThreads();
+        _PR_CleanupCMon();
         PR_DestroyLock(_pr_sleeplock);
         _pr_sleeplock = NULL;
         _PR_CleanupLayerCache();
@@ -822,6 +817,10 @@ PR_IMPLEMENT(PRStatus) PR_CallOnce(
             }
 	    PR_Unlock(mod_init.ml);
 	}
+    } else {
+        if (PR_SUCCESS != once->status) {
+            PR_SetError(PR_CALL_ONCE_ERROR, 0);
+        }
     }
     return once->status;
 }
@@ -847,6 +846,10 @@ PR_IMPLEMENT(PRStatus) PR_CallOnceWithArg(
             }
 	    PR_Unlock(mod_init.ml);
 	}
+    } else {
+        if (PR_SUCCESS != once->status) {
+            PR_SetError(PR_CALL_ONCE_ERROR, 0);
+        }
     }
     return once->status;
 }

@@ -91,13 +91,15 @@ nsresult
 net_GetFileFromURLSpec(const nsACString &aURL, nsIFile **result)
 {
     nsresult rv;
-    
+
     nsCOMPtr<nsILocalFile> localFile(
             do_CreateInstance(NS_LOCAL_FILE_CONTRACTID, &rv));
     if (NS_FAILED(rv)) {
         NS_ERROR("Only nsILocalFile supported right now");
         return rv;
     }
+
+    localFile->SetFollowLinks(PR_TRUE);
 
     const nsACString *specPtr;
 
@@ -128,6 +130,8 @@ net_GetFileFromURLSpec(const nsACString &aURL, nsIFile **result)
     }
     
     NS_UnescapeURL(path);
+    if (path.Length() != strlen(path.get()))
+        return NS_ERROR_FILE_INVALID_PATH;
 
     // remove leading '\'
     if (path.CharAt(0) == '\\')

@@ -67,6 +67,9 @@ enum netCoalesceFlags
 
 /* shutdown frees URL parser */
 NS_HIDDEN_(void) net_ShutdownURLHelper();
+#ifdef XP_MACOSX
+NS_HIDDEN_(void) net_ShutdownURLHelperOSX();
+#endif
 
 /* access URL parsers */
 NS_HIDDEN_(nsIURLParser *) net_GetAuthURLParser();
@@ -183,12 +186,6 @@ NS_HIDDEN_(char *) net_FindCharInSet(const char *str, const char *end, const cha
 NS_HIDDEN_(char *) net_FindCharNotInSet(const char *str, const char *end, const char *set);
 
 /**
- * returns pointer to last character of |str| in the given set.  if not found,
- * then |str - 1| is returned.
- */
-NS_HIDDEN_(char *) net_RFindCharInSet(const char *str, const char *end, const char *set);
-
-/**
  * returns pointer to last character of |str| NOT in the given set.  if all
  * characters are in the given set, then |str - 1| is returned.
  */
@@ -206,6 +203,21 @@ NS_HIDDEN_(void) net_ParseContentType(const nsACString &aHeaderStr,
                                       nsACString       &aContentType,
                                       nsACString       &aContentCharset,
                                       PRBool*          aHadCharset);
+/**
+ * As above, but also returns the start and end indexes for the charset
+ * parameter in aHeaderStr.  These are indices for the entire parameter, NOT
+ * just the value.  If there is "effectively" no charset parameter (e.g. if an
+ * earlier type with one is overridden by a later type without one),
+ * *aHadCharset will be true but *aCharsetStart will be set to -1.  Note that
+ * it's possible to have aContentCharset empty and *aHadCharset true when
+ * *aCharsetStart is nonnegative; this corresponds to charset="".
+ */
+NS_HIDDEN_(void) net_ParseContentType(const nsACString &aHeaderStr,
+                                      nsACString       &aContentType,
+                                      nsACString       &aContentCharset,
+                                      PRBool           *aHadCharset,
+                                      PRInt32          *aCharsetStart,
+                                      PRInt32          *aCharsetEnd);
 
 /* inline versions */
 
@@ -219,10 +231,6 @@ inline char *net_FindCharInSet(const char *str, const char *set)
 inline char *net_FindCharNotInSet(const char *str, const char *set)
 {
     return net_FindCharNotInSet(str, NET_MAX_ADDRESS, set);
-}
-inline char *net_RFindCharInSet(const char *str, const char *set)
-{
-    return net_RFindCharInSet(str, str + strlen(str), set);
 }
 inline char *net_RFindCharNotInSet(const char *str, const char *set)
 {
