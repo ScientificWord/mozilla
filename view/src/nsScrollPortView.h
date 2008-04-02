@@ -59,8 +59,6 @@ public:
   NS_IMETHOD QueryInterface(REFNSIID aIID,
                             void** aInstancePtr);
 
-  NS_IMETHOD  SetWidget(nsIWidget *aWidget);
-
   //nsIScrollableView interface
   NS_IMETHOD  CreateScrollControls(nsNativeWidget aNative = nsnull);
   NS_IMETHOD  GetContainerSize(nscoord *aWidth, nscoord *aHeight) const;
@@ -77,6 +75,7 @@ public:
   NS_IMETHOD  GetPageScrollDistances(nsSize *aDistances);
   NS_IMETHOD  ScrollByPages(PRInt32 aNumPagesX, PRInt32 aNumPagesY);
   NS_IMETHOD  ScrollByWhole(PRBool aTop);
+  NS_IMETHOD  ScrollByPixels(PRInt32 aNumPixelsX, PRInt32 aNumPixelsY);
   NS_IMETHOD  CanScroll(PRBool aHorizontal, PRBool aForward, PRBool &aResult);
 
   NS_IMETHOD_(nsIView*) View();
@@ -103,11 +102,10 @@ protected:
   virtual ~nsScrollPortView();
 
   //private
-  void Scroll(nsView *aScrolledView, nsPoint aTwipsDelta, nsPoint aPixDelta, float aT2P);
+  void Scroll(nsView *aScrolledView, nsPoint aTwipsDelta, nsPoint aPixDelta, PRInt32 p2a);
   PRBool CannotBitBlt(nsView* aScrolledView);
 
   nscoord             mOffsetX, mOffsetY;
-  nscoord             mOffsetXpx, mOffsetYpx;
   PRUint32            mScrollProperties;
   nscoord             mLineHeight;
   nsISupportsArray   *mListeners;

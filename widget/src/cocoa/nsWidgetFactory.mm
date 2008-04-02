@@ -58,16 +58,14 @@
 #include "nsTransferable.h"
 #include "nsHTMLFormatConverter.h"
 #include "nsDragService.h"
-#include "nsDragHelperService.h"
 
 #include "nsLookAndFeel.h"
 
 #include "nsSound.h"
+#include "nsIdleServiceX.h"
 
-#include "nsNativeScrollbar.h"
-#include "nsScreenManagerMac.h"
+#include "nsScreenManagerCocoa.h"
 #include "nsDeviceContextSpecX.h"
-#include "nsDeviceContextSpecFactoryM.h"
 #include "nsPrintOptionsX.h"
 #include "nsPrintSessionX.h"
 
@@ -79,25 +77,23 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsLookAndFeel)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsMenuBarX)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsMenuX)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsMenuItemX)
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsNativeScrollbar)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsSound)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsTransferable)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsHTMLFormatConverter)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsClipboard)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsClipboardHelper)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsDragService)
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsDragHelperService)
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsScreenManagerMac)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsScreenManagerCocoa)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsDeviceContextSpecX)
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsDeviceContextSpecFactoryMac)
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsPrintOptionsX, Init)
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsPrintSessionX, Init)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsIdleServiceX)
 
 #include "nsBidiKeyboard.h"
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsBidiKeyboard)
 
-#include "nsNativeThemeMac.h"
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsNativeThemeMac)
+#include "nsNativeThemeCocoa.h"
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsNativeThemeCocoa)
 
 static const nsModuleComponentInfo gComponents[] =
 {
@@ -141,12 +137,10 @@ static const nsModuleComponentInfo gComponents[] =
     NS_MENUITEM_CID,
     "@mozilla.org/widget/menuitem/mac;1",
     nsMenuItemXConstructor },
-#ifndef MOZ_CAIRO_GFX
   { "Sound",
     NS_SOUND_CID,
     "@mozilla.org/sound;1",
     nsSoundConstructor },
-#endif
   { "Transferable",
     NS_TRANSFERABLE_CID,
     "@mozilla.org/widget/transferable;1",
@@ -167,36 +161,22 @@ static const nsModuleComponentInfo gComponents[] =
     NS_DRAGSERVICE_CID,
     "@mozilla.org/widget/dragservice;1",
     nsDragServiceConstructor },
-  {  "Drag Helper Service",
-    NS_DRAGHELPERSERVICE_CID,
-    "@mozilla.org/widget/draghelperservice;1",
-    nsDragHelperServiceConstructor },
   { "Cocoa Bidi Keyboard",
     NS_BIDIKEYBOARD_CID,
     "@mozilla.org/widget/bidikeyboard;1",
     nsBidiKeyboardConstructor },
-  { "Native Scrollbar",
-    NS_NATIVESCROLLBAR_CID,
-    "@mozilla.org/widget/nativescrollbar;1",
-    nsNativeScrollbarConstructor },
-#ifndef MOZ_CAIRO_GFX
   { "Native Theme Renderer", 
     NS_THEMERENDERER_CID,
     "@mozilla.org/chrome/chrome-native-theme;1",
-    nsNativeThemeMacConstructor },
-#endif
+    nsNativeThemeCocoaConstructor },
   { "nsScreenManager",
     NS_SCREENMANAGER_CID,
     "@mozilla.org/gfx/screenmanager;1",
-    nsScreenManagerMacConstructor },
+    nsScreenManagerCocoaConstructor },
   { "nsDeviceContextSpec",
      NS_DEVICE_CONTEXT_SPEC_CID,
      "@mozilla.org/gfx/devicecontextspec;1",
      nsDeviceContextSpecXConstructor },
-  { "nsDeviceContextSpecFactory",
-     NS_DEVICE_CONTEXT_SPEC_FACTORY_CID,
-     "@mozilla.org/gfx/devicecontextspecfactory;1",
-     nsDeviceContextSpecFactoryMacConstructor },
   { "PrintSettings Service",
      NS_PRINTSETTINGSSERVICE_CID,
      "@mozilla.org/gfx/printsettings-service;1",
@@ -205,6 +185,10 @@ static const nsModuleComponentInfo gComponents[] =
     NS_PRINTSESSION_CID,
     "@mozilla.org/gfx/printsession;1",
     nsPrintSessionXConstructor },
+  { "User Idle Service",
+    NS_IDLE_SERVICE_CID,
+    "@mozilla.org/widget/idleservice;1",
+    nsIdleServiceXConstructor },
 };
 
 NS_IMPL_NSGETMODULE_WITH_CTOR_DTOR(nsWidgetMacModule, gComponents,

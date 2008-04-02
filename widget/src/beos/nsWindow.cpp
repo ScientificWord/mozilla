@@ -23,6 +23,7 @@
  *   Paul Ashford <arougthopher@lizardland.net>
  *   Sergei Dolgov <sergei_d@fi.tartu.ee>
  *   Fredrik Holmqvist <thesuckiestemail@yahoo.se>
+ *   Mats Palmgren <mats.palmgren@bredband.net>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -56,6 +57,7 @@
 #include "prtime.h"
 #include "nsReadableUtils.h"
 #include "nsVoidArray.h"
+#include "nsIProxyObjectManager.h"
 
 #include <Application.h>
 #include <InterfaceDefs.h>
@@ -74,10 +76,8 @@
 #include "nsIRollupListener.h"
 #include "nsIMenuRollup.h"
 
-#ifdef MOZ_CAIRO_GFX
 #include "gfxBeOSSurface.h"
 #include "gfxContext.h"
-#endif
 
 // See comments in nsWindow.h as to why we override these calls from nsBaseWidget
 NS_IMPL_THREADSAFE_ADDREF(nsWindow)
@@ -487,36 +487,6 @@ nsresult nsWindow::StandardWindowCreate(nsIWidget *aParent,
 
 	mListenForResizes = aNativeParent ? PR_TRUE : aInitData->mListenForResizes;
 		
-	// Switch to the "main gui thread" if necessary... This method must
-	// be executed on the "gui thread"...
-	//
-	nsToolkit* toolkit = (nsToolkit *)mToolkit;
-	if (toolkit && !toolkit->IsGuiThread())
-	{
-		uint32 args[7];
-		args[0] = (uint32)aParent;
-		args[1] = (uint32)&aRect;
-		args[2] = (uint32)aHandleEventFunction;
-		args[3] = (uint32)aContext;
-		args[4] = (uint32)aAppShell;
-		args[5] = (uint32)aToolkit;
-		args[6] = (uint32)aInitData;
-
-		if (nsnull != aParent)
-		{
-			// nsIWidget parent dispatch
-			MethodInfo info(this, this, nsSwitchToUIThread::CREATE, 7, args);
-			toolkit->CallMethod(&info);
-		}
-		else
-		{
-			// Native parent dispatch
-			MethodInfo info(this, this, nsSwitchToUIThread::CREATE_NATIVE, 7, args);
-			toolkit->CallMethod(&info);
-		}
-		return NS_OK;
-	}
-
 	mParent = aParent;
 	// Useful shortcut, wondering if we can use it also in GetParent() instead
 	// nsIWidget* type mParent.
@@ -614,6 +584,24 @@ NS_METHOD nsWindow::Create(nsIWidget *aParent,
                            nsIToolkit *aToolkit,
                            nsWidgetInitData *aInitData)
 {
+	// Switch to the "main gui thread" if necessary... This method must
+	// be executed on the "gui thread"...
+
+	nsToolkit* toolkit = (nsToolkit *)mToolkit;
+	if (toolkit && !toolkit->IsGuiThread())
+	{
+		nsCOMPtr<nsIWidget> widgetProxy;
+		nsresult rv = NS_GetProxyForObject(NS_PROXY_TO_MAIN_THREAD,
+										NS_GET_IID(nsIWidget),
+										this, 
+										NS_PROXY_SYNC | NS_PROXY_ALWAYS, 
+										getter_AddRefs(widgetProxy));
+	
+		if (NS_FAILED(rv))
+			return rv;
+		return widgetProxy->Create(aParent, aRect, aHandleEventFunction, aContext,
+                           			aAppShell, aToolkit, aInitData);
+	}
 	return(StandardWindowCreate(aParent, aRect, aHandleEventFunction,
 	                            aContext, aAppShell, aToolkit, aInitData,
 	                            nsnull));
@@ -634,12 +622,29 @@ NS_METHOD nsWindow::Create(nsNativeWidget aParent,
                            nsIToolkit *aToolkit,
                            nsWidgetInitData *aInitData)
 {
+	// Switch to the "main gui thread" if necessary... This method must
+	// be executed on the "gui thread"...
+
+	nsToolkit* toolkit = (nsToolkit *)mToolkit;
+	if (toolkit && !toolkit->IsGuiThread())
+	{
+		nsCOMPtr<nsIWidget> widgetProxy;
+		nsresult rv = NS_GetProxyForObject(NS_PROXY_TO_MAIN_THREAD,
+										NS_GET_IID(nsIWidget),
+										this, 
+										NS_PROXY_SYNC | NS_PROXY_ALWAYS, 
+										getter_AddRefs(widgetProxy));
+	
+		if (NS_FAILED(rv))
+			return rv;
+		return widgetProxy->Create(aParent, aRect, aHandleEventFunction, aContext,
+                           			aAppShell, aToolkit, aInitData);
+	}
 	return(StandardWindowCreate(nsnull, aRect, aHandleEventFunction,
 	                            aContext, aAppShell, aToolkit, aInitData,
 	                            aParent));
 }
 
-#ifdef MOZ_CAIRO_GFX
 gfxASurface*
 nsWindow::GetThebesSurface()
 {
@@ -649,7 +654,6 @@ nsWindow::GetThebesSurface()
 	}
 	return mThebesSurface;
 }
-#endif
 
 //-------------------------------------------------------------------------
 //
@@ -663,9 +667,16 @@ NS_METHOD nsWindow::Destroy()
 	nsToolkit* toolkit = (nsToolkit *)mToolkit;
 	if (toolkit != nsnull && !toolkit->IsGuiThread())
 	{
-		MethodInfo info(this, this, nsSwitchToUIThread::DESTROY);
-		toolkit->CallMethod(&info);
-		return NS_ERROR_FAILURE;
+		nsCOMPtr<nsIWidget> widgetProxy;
+		nsresult rv = NS_GetProxyForObject(NS_PROXY_TO_MAIN_THREAD,
+										NS_GET_IID(nsIWidget),
+										this, 
+										NS_PROXY_SYNC | NS_PROXY_ALWAYS, 
+										getter_AddRefs(widgetProxy));
+	
+		if (NS_FAILED(rv))
+			return rv;
+		return widgetProxy->Destroy();
 	}
 	// Ok, now tell the nsBaseWidget class to clean up what it needs to
 	if (!mIsDestroying)
@@ -870,28 +881,18 @@ nsWindow::DealWithPopups(uint32 methodID, nsPoint pos)
 			nsCOMPtr<nsIMenuRollup> menuRollup ( do_QueryInterface(gRollupListener) );
 			if ( menuRollup ) 
 			{
-				nsCOMPtr<nsISupportsArray> widgetChain;
-				menuRollup->GetSubmenuWidgetChain ( getter_AddRefs(widgetChain) );
-				if ( widgetChain ) 
+				nsAutoTArray<nsIWidget*, 5> widgetChain;
+				menuRollup->GetSubmenuWidgetChain(&widgetChain);
+
+				for ( PRUint32 i = 0; i < widgetChain.Length(); ++i ) 
 				{
-					PRUint32 count = 0;
-					widgetChain->Count(&count);
-					for ( PRUint32 i = 0; i < count; ++i ) 
+					nsIWidget* widget = widgetChain[i];
+					if ( nsWindow::EventIsInsideWindow((nsWindow*)widget, pos) ) 
 					{
-						nsCOMPtr<nsISupports> genericWidget;
-						widgetChain->GetElementAt ( i, getter_AddRefs(genericWidget) );
-						nsCOMPtr<nsIWidget> widget ( do_QueryInterface(genericWidget) );
-						if ( widget ) 
-						{
-							nsIWidget* temp = widget.get();
-							if ( nsWindow::EventIsInsideWindow((nsWindow*)temp, pos) ) 
-							{
-								rollup = PR_FALSE;
-								break;
-							}
-						}
-					} // foreach parent menu widget
-				} // if widgetChain
+						rollup = PR_FALSE;
+						break;
+					}
+				} // foreach parent menu widget
 			} // if rollup listener knows about menus
 		} // if rollup
 
@@ -996,7 +997,7 @@ void nsWindow::HideKids(PRBool state)
 {
 	for (nsIWidget* kid = mFirstChild; kid; kid = kid->GetNextSibling()) 
 	{
-		nsWindow *childWidget = NS_STATIC_CAST(nsWindow*, kid);
+		nsWindow *childWidget = static_cast<nsWindow*>(kid);
 		nsRect kidrect = ((nsWindow *)kid)->mBounds;
 		//Don't bother about invisible
 		if (mBounds.Intersects(kidrect))
@@ -1158,13 +1159,18 @@ NS_METHOD nsWindow::SetFocus(PRBool aRaise)
 	// be executed on the "gui thread"...
 	//
 	nsToolkit* toolkit = (nsToolkit *)mToolkit;
-	if (!toolkit->IsGuiThread()) 
+	if (toolkit && !toolkit->IsGuiThread()) 
 	{
-		uint32 args[1];
-		args[0] = (uint32)aRaise;
-		MethodInfo info(this, this, nsSwitchToUIThread::SET_FOCUS, 1, args);
-		toolkit->CallMethod(&info);
-		return NS_ERROR_FAILURE;
+		nsCOMPtr<nsIWidget> widgetProxy;
+		nsresult rv = NS_GetProxyForObject(NS_PROXY_TO_MAIN_THREAD,
+										NS_GET_IID(nsIWidget),
+										this, 
+										NS_PROXY_SYNC | NS_PROXY_ALWAYS, 
+										getter_AddRefs(widgetProxy));
+	
+		if (NS_FAILED(rv))
+			return rv;
+		return widgetProxy->SetFocus(aRaise);
 	}
 	
 	// Don't set focus on disabled widgets or popups
@@ -1233,31 +1239,6 @@ NS_METHOD nsWindow::SetBackgroundColor(const nscolor &aColor)
 	return NS_OK;
 }
 
-//-------------------------------------------------------------------------
-//
-// Get this component font
-//
-//-------------------------------------------------------------------------
-nsIFontMetrics* nsWindow::GetFont(void)
-{
-	return mFontMetrics;
-}
-
-
-//-------------------------------------------------------------------------
-//
-// Set this component font
-//
-//-------------------------------------------------------------------------
-NS_METHOD nsWindow::SetFont(const nsFont &aFont)
-{
-  // Cache Font for owner draw
-	NS_IF_RELEASE(mFontMetrics);
-	if (mContext)
-		mContext->GetMetricsFor(aFont, mFontMetrics);
-	return NS_OK;
-}
-
 
 //-------------------------------------------------------------------------
 //
@@ -1274,6 +1255,8 @@ NS_METHOD nsWindow::SetCursor(nsCursor aCursor)
 	if (aCursor != mCursor) 
 	{
 		BCursor const *newCursor = B_CURSOR_SYSTEM_DEFAULT;
+		if (be_app->IsCursorHidden())
+			be_app->ShowCursor();
 		
 		// Check to see if the array has been loaded, if not, do it.
 		if (gCursorArray.Count() == 0) 
@@ -1433,6 +1416,10 @@ NS_METHOD nsWindow::SetCursor(nsCursor aCursor)
 
 			case eCursor_ew_resize:
 				newCursor = (BCursor *)gCursorArray.SafeElementAt(1);
+				break;
+
+			case eCursor_none:
+				be_app->HideCursor();
 				break;
 
 			default:
@@ -1720,7 +1707,7 @@ NS_METHOD nsWindow::Scroll(PRInt32 aDx, PRInt32 aDy, nsRect *aClipRect)
 		// Time to silently move now invisible children
 		for (nsIWidget* kid = mFirstChild; kid; kid = kid->GetNextSibling()) 
 		{
-			nsWindow *childWidget = NS_STATIC_CAST(nsWindow*, kid);
+			nsWindow *childWidget = static_cast<nsWindow*>(kid);
 			// No need to Lock/UnlockLooper with GetBounds() and Move() methods
 			// using cached values and native MoveBy() instead
 			nsRect bounds = childWidget->mBounds;
@@ -1756,33 +1743,6 @@ bool nsWindow::CallMethod(MethodInfo *info)
 
 	switch (info->methodId)
 	{
-	case nsSwitchToUIThread::CREATE:
-		NS_ASSERTION(info->nArgs == 7, "Wrong number of arguments to CallMethod");
-		Create((nsIWidget*)(info->args[0]),
-		       (nsRect&)*(nsRect*)(info->args[1]),
-		       (EVENT_CALLBACK)(info->args[2]),
-		       (nsIDeviceContext*)(info->args[3]),
-		       (nsIAppShell *)(info->args[4]),
-		       (nsIToolkit*)(info->args[5]),
-		       (nsWidgetInitData*)(info->args[6]));
-		break;
-
-	case nsSwitchToUIThread::CREATE_NATIVE:
-		NS_ASSERTION(info->nArgs == 7, "Wrong number of arguments to CallMethod");
-		Create((nsNativeWidget)(info->args[0]),
-		       (nsRect&)*(nsRect*)(info->args[1]),
-		       (EVENT_CALLBACK)(info->args[2]),
-		       (nsIDeviceContext*)(info->args[3]),
-		       (nsIAppShell *)(info->args[4]),
-		       (nsIToolkit*)(info->args[5]),
-		       (nsWidgetInitData*)(info->args[6]));
-		break;
-
-	case nsSwitchToUIThread::DESTROY:
-		NS_ASSERTION(info->nArgs == 0, "Wrong number of arguments to CallMethod");
-		Destroy();
-		break;
-
 	case nsSwitchToUIThread::CLOSEWINDOW :
 		{
 			NS_ASSERTION(info->nArgs == 0, "Wrong number of arguments to CallMethod");
@@ -1794,7 +1754,7 @@ bool nsWindow::CallMethod(MethodInfo *info)
 
 			for (nsIWidget* kid = mFirstChild; kid; kid = kid->GetNextSibling()) 
 			{
-				nsWindow *childWidget = NS_STATIC_CAST(nsWindow*, kid);
+				nsWindow *childWidget = static_cast<nsWindow*>(kid);
 				BWindow* kidwindow = (BWindow *)kid->GetNativeData(NS_NATIVE_WINDOW);
 				if (kidwindow)
 				{
@@ -1805,13 +1765,6 @@ bool nsWindow::CallMethod(MethodInfo *info)
 			}
 			DispatchStandardEvent(NS_DESTROY);
 		}
-		break;
-
-	case nsSwitchToUIThread::SET_FOCUS:
-		NS_ASSERTION(info->nArgs == 1, "Wrong number of arguments to CallMethod");
-		if (!mEnabled)
-			return false;
-		SetFocus(((PRBool *)info->args)[0]);
 		break;
 
 #ifdef DEBUG_FOCUS
@@ -1843,16 +1796,14 @@ bool nsWindow::CallMethod(MethodInfo *info)
 
 	case nsSwitchToUIThread::BTNCLICK :
 		{
-			NS_ASSERTION(info->nArgs == 5, "Wrong number of arguments to CallMethod");
+			NS_ASSERTION(info->nArgs == 6, "Wrong number of arguments to CallMethod");
 			if (!mEnabled)
 				return false;
 			// close popup when clicked outside of the popup window
 			uint32 eventID = ((int32 *)info->args)[0];
 			PRBool rollup = PR_FALSE;
 
-			if ((eventID == NS_MOUSE_LEFT_BUTTON_DOWN ||
-			        eventID == NS_MOUSE_RIGHT_BUTTON_DOWN ||
-			        eventID == NS_MOUSE_MIDDLE_BUTTON_DOWN) &&
+			if (eventID == NS_MOUSE_BUTTON_DOWN &&
 			        mView && mView->LockLooper())
 			{
 				BPoint p(((int32 *)info->args)[1], ((int32 *)info->args)[2]);
@@ -1866,14 +1817,17 @@ bool nsWindow::CallMethod(MethodInfo *info)
 			DispatchMouseEvent(((int32 *)info->args)[0],
 			                   nsPoint(((int32 *)info->args)[1], ((int32 *)info->args)[2]),
 			                   ((int32 *)info->args)[3],
-			                   ((int32 *)info->args)[4]);
+			                   ((int32 *)info->args)[4],
+			                   ((int32 *)info->args)[5]);
 
-			if (((int32 *)info->args)[0] == NS_MOUSE_RIGHT_BUTTON_DOWN)
+			if (((int32 *)info->args)[0] == NS_MOUSE_BUTTON_DOWN &&
+			    ((int32 *)info->args)[5] == nsMouseEvent::eRightButton)
 			{
 				DispatchMouseEvent (NS_CONTEXTMENU,
 				                    nsPoint(((int32 *)info->args)[1], ((int32 *)info->args)[2]),
 				                    ((int32 *)info->args)[3],
-				                    ((int32 *)info->args)[4]);
+				                    ((int32 *)info->args)[4],
+				                    ((int32 *)info->args)[5]);
 			}
 		}
 		break;
@@ -2020,7 +1974,7 @@ bool nsWindow::CallMethod(MethodInfo *info)
 			NS_RELEASE(event.widget);
 
 			if (dragService)
-				dragService->EndDragSession();
+				dragService->EndDragSession(PR_TRUE);
 		}
 		break;
 
@@ -2585,10 +2539,12 @@ nsresult nsWindow::OnPaint(BRegion *breg)
 	}	
 
 	nsIRenderingContext* rc = GetRenderingContext();
+	if (NS_UNLIKELY(!rc)) {
+		return NS_ERROR_FAILURE;
+	}
+
 	// Double buffering for cairo builds is done here
-#ifdef MOZ_CAIRO_GFX
-	nsRefPtr<gfxContext> ctx =
-		(gfxContext*)rc->GetNativeGraphicData(nsIRenderingContext::NATIVE_THEBES_CONTEXT);
+	nsRefPtr<gfxContext> ctx = rc->ThebesContext();
 	ctx->Save();
 
 	// Clip
@@ -2603,7 +2559,6 @@ nsresult nsWindow::OnPaint(BRegion *breg)
 
 	// double buffer
 	ctx->PushGroup(gfxContext::CONTENT_COLOR);
-#endif
 
 	nsPaintEvent event(PR_TRUE, NS_PAINT, this);
 
@@ -2625,7 +2580,6 @@ nsresult nsWindow::OnPaint(BRegion *breg)
 
 	NS_RELEASE(event.widget);
 
-#ifdef MOZ_CAIRO_GFX
 	// The second half of double buffering
 	if (rv == NS_OK) {
 		ctx->SetOperator(gfxContext::OPERATOR_SOURCE);
@@ -2637,7 +2591,6 @@ nsresult nsWindow::OnPaint(BRegion *breg)
 	}
 
 	ctx->Restore();
-#endif
 
 	return rv;
 }
@@ -2673,7 +2626,8 @@ PRBool nsWindow::OnResize(nsRect &aWindowRect)
 // Deal with all sort of mouse event
 //
 //-------------------------------------------------------------------------
-PRBool nsWindow::DispatchMouseEvent(PRUint32 aEventType, nsPoint aPoint, PRUint32 clicks, PRUint32 mod)
+PRBool nsWindow::DispatchMouseEvent(PRUint32 aEventType, nsPoint aPoint, PRUint32 clicks, PRUint32 mod,
+                                    PRUint16 aButton)
 {
 	PRBool result = PR_FALSE;
 	if (nsnull != mEventCallback || nsnull != mMouseListener)
@@ -2685,6 +2639,7 @@ PRBool nsWindow::DispatchMouseEvent(PRUint32 aEventType, nsPoint aPoint, PRUint3
 		event.isAlt     = mod & B_COMMAND_KEY;
 		event.isMeta     = mod & B_OPTION_KEY;
 		event.clickCount = clicks;
+		event.button = aButton;
 
 		// call the event callback
 		if (nsnull != mEventCallback)
@@ -2701,15 +2656,11 @@ PRBool nsWindow::DispatchMouseEvent(PRUint32 aEventType, nsPoint aPoint, PRUint3
 				result = ConvertStatus(mMouseListener->MouseMoved(event));
 				break;
 
-			case NS_MOUSE_LEFT_BUTTON_DOWN :
-			case NS_MOUSE_MIDDLE_BUTTON_DOWN :
-			case NS_MOUSE_RIGHT_BUTTON_DOWN :
+			case NS_MOUSE_BUTTON_DOWN :
 				result = ConvertStatus(mMouseListener->MousePressed(event));
 				break;
 
-			case NS_MOUSE_LEFT_BUTTON_UP :
-			case NS_MOUSE_MIDDLE_BUTTON_UP :
-			case NS_MOUSE_RIGHT_BUTTON_UP :
+			case NS_MOUSE_BUTTON_UP :
 				result = ConvertStatus(mMouseListener->MouseReleased(event)) && ConvertStatus(mMouseListener->MouseClicked(event));
 				break;
 			}
@@ -2815,7 +2766,6 @@ bool nsWindowBeOS::QuitRequested( void )
 			MethodInfo *info = nsnull;
 			if (nsnull != (info = new MethodInfo(w, w, nsSwitchToUIThread::CLOSEWINDOW)))
 				t->CallMethodAsync(info);
-			NS_RELEASE(t);
 		}
 	}
 	return true;
@@ -2860,7 +2810,6 @@ void nsWindowBeOS::DispatchMessage(BMessage *msg, BHandler *handler)
 			MethodInfo *info = nsnull;
 			if (nsnull != (info = new MethodInfo(w, w, nsSwitchToUIThread::CLOSEWINDOW)))
 				t->CallMethodAsync(info);
-			NS_RELEASE(t);
 		}		
 	}
 	else
@@ -2886,7 +2835,6 @@ void nsWindowBeOS::FrameMoved(BPoint origin)
 		MethodInfo *info = nsnull;
 		if (nsnull != (info = new MethodInfo(w, w, nsSwitchToUIThread::ONMOVE)))
 			t->CallMethodAsync(info);
-		NS_RELEASE(t);
 	}
 }
 
@@ -2903,7 +2851,6 @@ void nsWindowBeOS::WindowActivated(bool active)
 		MethodInfo *info = nsnull;
 		if (nsnull != (info = new MethodInfo(w, w, nsSwitchToUIThread::ONACTIVATE, 2, args)))
 			t->CallMethodAsync(info);
-		NS_RELEASE(t);
 	}
 }
 
@@ -2921,7 +2868,6 @@ void  nsWindowBeOS::WorkspacesChanged(uint32 oldworkspace, uint32 newworkspace)
 		MethodInfo *info = nsnull;
 		if (nsnull != (info = new MethodInfo(w, w, nsSwitchToUIThread::ONWORKSPACE, 2, args)))
 			t->CallMethodAsync(info);
-		NS_RELEASE(t);
 	}	
 }
 
@@ -2938,11 +2884,10 @@ void  nsWindowBeOS::FrameResized(float width, float height)
 		MethodInfo *info = nsnull;
 		if (nsnull != (info = new MethodInfo(w, w, nsSwitchToUIThread::ONRESIZE)))
 		{
-			t->CallMethodAsync(info);
 			//Memorize fact of sending message
-			fJustGotBounds = false;
+			if (t->CallMethodAsync(info))
+				fJustGotBounds = false;
 		}
-		NS_RELEASE(t);
 	}	
 }
 
@@ -2999,11 +2944,10 @@ void nsViewBeOS::Draw(BRect updateRect)
 		info = new MethodInfo(w, w, nsSwitchToUIThread::ONPAINT, 1, args);
 		if (info)
 		{
-			t->CallMethodAsync(info);
 			//Memorize fact of sending message
-			fJustValidated = false;
+			if (t->CallMethodAsync(info))
+				fJustValidated = false;
 		}
-		NS_RELEASE(t);
 	}
 }
 
@@ -3061,19 +3005,20 @@ void nsViewBeOS::MouseDown(BPoint point)
 	if (t == NULL)
 		return;
 
-	int32 ev = (buttons & B_PRIMARY_MOUSE_BUTTON) ? NS_MOUSE_LEFT_BUTTON_DOWN :
-	           ((buttons & B_SECONDARY_MOUSE_BUTTON) ? NS_MOUSE_RIGHT_BUTTON_DOWN :
-	            NS_MOUSE_MIDDLE_BUTTON_DOWN);
-	uint32	args[5];
-	args[0] = ev;
+	PRUint16 eventButton =
+	  (buttons & B_PRIMARY_MOUSE_BUTTON) ? nsMouseEvent::eLeftButton :
+	    ((buttons & B_SECONDARY_MOUSE_BUTTON) ? nsMouseEvent::eRightButton :
+	      nsMouseEvent::eMiddleButton);
+	uint32	args[6];
+	args[0] = NS_MOUSE_BUTTON_DOWN;
 	args[1] = (uint32) point.x;
 	args[2] = (uint32) point.y;
 	args[3] = clicks;
 	args[4] = modifiers();
+	args[5] = eventButton;
 	MethodInfo *info = nsnull;
-	if (nsnull != (info = new MethodInfo(w, w, nsSwitchToUIThread::BTNCLICK, 5, args)))
+	if (nsnull != (info = new MethodInfo(w, w, nsSwitchToUIThread::BTNCLICK, 6, args)))
 		t->CallMethodAsync(info);
-	NS_RELEASE(t);
 }
 
 void nsViewBeOS::MouseMoved(BPoint point, uint32 transit, const BMessage *msg)
@@ -3092,7 +3037,7 @@ void nsViewBeOS::MouseMoved(BPoint point, uint32 transit, const BMessage *msg)
 	nsWindow	*w = (nsWindow *)GetMozillaWidget();
 	if (w == NULL)
 		return;
-	nsToolkit	*t = t = w->GetToolkit();
+	nsToolkit	*t = w->GetToolkit();
 	if (t == NULL)
 		return;
 	uint32	args[4];
@@ -3120,17 +3065,21 @@ void nsViewBeOS::MouseMoved(BPoint point, uint32 transit, const BMessage *msg)
 			if (msg == NULL)
 				break;
 			nsCOMPtr<nsIDragService> dragService = do_GetService(kCDragServiceCID);
-			dragService->EndDragSession();
+			dragService->EndDragSession(PR_FALSE);
 		}
 		break;
 	default:
 		args[0]= msg == NULL ? NS_MOUSE_MOVE : NS_DRAGDROP_OVER;
+        // fire the drag event at the source
+        if (msg != NULL) {
+			nsCOMPtr<nsIDragService> dragService = do_GetService(kCDragServiceCID);
+			dragService->FireDragEventAtSource(NS_DRAGDROP_DRAG);
+        }
  	}
  	
 	MethodInfo *moveInfo = nsnull;
 	if (nsnull != (moveInfo = new MethodInfo(w, w, nsSwitchToUIThread::ONMOUSE, 4, args)))
 		t->CallMethodAsync(moveInfo);
-	NS_RELEASE(t);
 }
 
 void nsViewBeOS::MouseUp(BPoint point)
@@ -3144,30 +3093,29 @@ void nsViewBeOS::MouseUp(BPoint point)
 	//To avoid generating extra mouseevents when there is no change in pos.
 	mousePos = point;
 
-	int32 ev = (buttons & B_PRIMARY_MOUSE_BUTTON) ? NS_MOUSE_LEFT_BUTTON_UP :
-	           ((buttons & B_SECONDARY_MOUSE_BUTTON) ? NS_MOUSE_RIGHT_BUTTON_UP :
-	            NS_MOUSE_MIDDLE_BUTTON_UP);
-	            
-	buttons = 0;
+	PRUint16 eventButton =
+	  (buttons & B_PRIMARY_MOUSE_BUTTON) ? nsMouseEvent::eLeftButton :
+	    ((buttons & B_SECONDARY_MOUSE_BUTTON) ? nsMouseEvent::eRightButton :
+	      nsMouseEvent::eMiddleButton);
 	
 	nsWindow	*w = (nsWindow *)GetMozillaWidget();
 	if (w == NULL)
 		return;
-	nsToolkit	*t = t = w->GetToolkit();
+	nsToolkit	*t = w->GetToolkit();
 	if (t == NULL)
 		return;
 
 
-	uint32	args[5];
-	args[0] = ev;
+	uint32	args[6];
+	args[0] = NS_MOUSE_BUTTON_UP;
 	args[1] = (uint32) point.x;
 	args[2] = (int32) point.y;
 	args[3] = 0;
 	args[4] = modifiers();
+	args[5] = eventButton;
 	MethodInfo *info = nsnull;
-	if (nsnull != (info = new MethodInfo(w, w, nsSwitchToUIThread::BTNCLICK, 5, args)))
+	if (nsnull != (info = new MethodInfo(w, w, nsSwitchToUIThread::BTNCLICK, 6, args)))
 		t->CallMethodAsync(info);
-	NS_RELEASE(t);
 }
 
 void nsViewBeOS::MessageReceived(BMessage *msg)
@@ -3177,7 +3125,7 @@ void nsViewBeOS::MessageReceived(BMessage *msg)
 		nsWindow	*w = (nsWindow *)GetMozillaWidget();
 		if (w == NULL)
 			return;
-		nsToolkit	*t = t = w->GetToolkit();
+		nsToolkit	*t = w->GetToolkit();
 		if (t == NULL)
 			return;
 
@@ -3243,11 +3191,10 @@ void nsViewBeOS::MessageReceived(BMessage *msg)
 				MethodInfo *info = nsnull;
 				if (nsnull != (info = new MethodInfo(w, w, nsSwitchToUIThread::ONWHEEL, 1, args)))
 				{
-					t->CallMethodAsync(info);
-					fWheelDispatched = false;
+					if (t->CallMethodAsync(info))
+						fWheelDispatched = false;
 					
 				}
-				NS_RELEASE(t);
 			}
 		}
 		break;
@@ -3294,7 +3241,6 @@ void nsViewBeOS::KeyDown(const char *bytes, int32 numBytes)
 		MethodInfo *info = nsnull;
 		if (nsnull != (info = new MethodInfo(w, w, nsSwitchToUIThread::ONKEY, 6, args)))
 			t->CallMethodAsync(info);
-		NS_RELEASE(t);
 	}
 }
 
@@ -3328,7 +3274,6 @@ void nsViewBeOS::KeyUp(const char *bytes, int32 numBytes)
 		MethodInfo *info = nsnull;
 		if (nsnull != (info = new MethodInfo(w, w, nsSwitchToUIThread::ONKEY, 6, args)))
 			t->CallMethodAsync(info);
-		NS_RELEASE(t);
 	}
 }
 
@@ -3355,7 +3300,6 @@ void nsViewBeOS::MakeFocus(bool focused)
 				t->CallMethodAsync(info);
 		}
 #endif		
-		NS_RELEASE(t);
 	}
 }
 
