@@ -21,6 +21,7 @@
 #
 # Contributor(s):
 #   Joe Hewitt <hewitt@netscape.com>
+#   Simon Bünzli <zeniko@gmail.com>
 #
 # Alternatively, the contents of this file may be used under the terms of
 # either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -36,7 +37,7 @@
 #
 # ***** END LICENSE BLOCK *****
 
-var gConsole, gConsoleBundle, gTextBoxEval;
+var gConsole, gConsoleBundle, gTextBoxEval, gEvaluator, gCodeToEvaluate;
 
 /* :::::::: Console Initialization ::::::::::::::: */
 
@@ -45,12 +46,12 @@ window.onload = function()
   gConsole = document.getElementById("ConsoleBox");
   gConsoleBundle = document.getElementById("ConsoleBundle");
   gTextBoxEval = document.getElementById("TextboxEval")  
+  gEvaluator = document.getElementById("Evaluator");
   
   updateSortCommand(gConsole.sortOrder);
   updateModeCommand(gConsole.mode);
 
-  var iframe = document.getElementById("Evaluator");
-  iframe.addEventListener("load", displayResult, true);
+  gEvaluator.addEventListener("load", loadOrDisplayResult, true);
 }
 
 /* :::::::: Console UI Functions ::::::::::::::: */
@@ -97,21 +98,6 @@ function updateModeCommand(aMode)
   bc.setAttribute("checked", true);
 }
 
-function copyItemToClipboard()
-{
-  gConsole.copySelectedItem();
-}
-
-function isItemSelected()
-{
-  return gConsole.selectedItem != null;
-}
-
-function updateCopyMenu()
-{
-  goSetCommandEnabled("cmd_copy", isItemSelected())
-}
-
 function onEvalKeyPress(aEvent)
 {
   if (aEvent.keyCode == 13)
@@ -120,21 +106,27 @@ function onEvalKeyPress(aEvent)
 
 function evaluateTypein()
 {
-  var code = gTextBoxEval.value;
-  var iframe = document.getElementById("Evaluator");
-  iframe.setAttribute("src", "javascript: " + code);
+  gCodeToEvaluate = gTextBoxEval.value;
+  // reset the iframe first; the code will be evaluated in loadOrDisplayResult
+  // below, once about:blank has completed loading (see bug 385092)
+  gEvaluator.contentWindow.location = "about:blank";
 }
 
-function displayResult()
+function loadOrDisplayResult()
 {
-  var resultRange = Evaluator.document.createRange();
-  resultRange.selectNode(Evaluator.document.documentElement);
+  if (gCodeToEvaluate) {
+    gEvaluator.contentWindow.location = "javascript: " +
+                                        gCodeToEvaluate.replace(/%/g, "%25");
+    gCodeToEvaluate = "";
+    return;
+  }
+
+  var resultRange = gEvaluator.contentDocument.createRange();
+  resultRange.selectNode(gEvaluator.contentDocument.documentElement);
   var result = resultRange.toString();
   if (result)
     gConsole.mCService.logStringMessage(result);
     // or could use appendMessage which doesn't persist
-  var iframe = document.getElementById("Evaluator");
-  iframe.setAttribute("src", "chrome://global/content/blank.html");
 }
 
 // XXX DEBUG

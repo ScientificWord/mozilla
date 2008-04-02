@@ -35,11 +35,11 @@
                              onset="return document.title = val;"/>
 
       <property name="canAdvance" onget="return this._canAdvance;"
-                                  onset="this._canAdvance=val; this._nextButton.disabled = !val;"/>
+                                  onset="this._nextButton.disabled = !val; return this._canAdvance = val;"/>
       <property name="canRewind" onget="return this._canRewind;"
-                                 onset="this._canRewind=val; this._backButton.disabled = !val;"/>
+                                 onset="this._backButton.disabled = !val; return this._canRewind = val;"/>
 
-      <property name="pageStep" onget="return this._pageStack.length"/>
+      <property name="pageStep" readonly="true" onget="return this._pageStack.length"/>
 
       <field name="pageCount">0</field>
       
@@ -106,7 +106,8 @@
         </setter>
       </property>
 
-      <property name="pageIndex" onget="return this._currentPage.pageIndex;">
+      <property name="pageIndex"
+                onget="return this._currentPage ? this._currentPage.pageIndex : -1;">
         <setter>
         <![CDATA[
           if (val < 0 || val >= this.pageCount)
@@ -121,10 +122,10 @@
         </setter>
       </property>
 
-      <property name="onFirstPage"
+      <property name="onFirstPage" readonly="true"
                 onget="return this._pageStack.length == 1;"/>
 
-      <property name="onLastPage">
+      <property name="onLastPage" readonly="true">
         <getter><![CDATA[
           var cp = this.currentPage;
           return cp && ((this._accessMethod == "sequential" && cp.pageIndex == this.pageCount-1) ||
@@ -157,6 +158,7 @@
       <field name="_finishFunc">(function() { document.documentElement.advance(); })</field>
       <field name="_cancelFunc">(function() { document.documentElement.cancel(); })</field>
       <field name="_extra1Func">(function() { document.documentElement.extra1(); })</field>
+      <field name="_extra2Func">(function() { document.documentElement.extra2(); })</field>
 
       <field name="_closeHandler">(function(event) {
         if (document.documentElement.cancel())
@@ -194,6 +196,7 @@
         this._initWizardButton("finish");
         this._initWizardButton("cancel");
         this._initWizardButton("extra1");
+        this._initWizardButton("extra2");
         
         this._initPages();
         
@@ -219,6 +222,13 @@
         <body><![CDATA[
           if (this.currentPage) 
             this._fireEvent(this.currentPage, "extra1");
+        ]]></body>
+      </method>
+
+      <method name="extra2">
+        <body><![CDATA[
+          if (this.currentPage) 
+            this._fireEvent(this.currentPage, "extra2");
         ]]></body>
       </method>
 
@@ -303,6 +313,7 @@
 
           window.close();
           window.setTimeout(function() {window.close();}, 1);
+          return false;
         ]]></body>
       </method>
       
@@ -439,7 +450,7 @@
 
   <binding id="wizardpage" extends="chrome://global/content/bindings/wizard.xml#wizard-base">
     <implementation>
-      <field name="pageIndex">null</field>
+      <field name="pageIndex">-1</field>
       
       <property name="pageid" onget="return this.getAttribute('pageid');"
                               onset="this.setAttribute('pageid', val);"/>
@@ -473,6 +484,7 @@
       <xul:vbox flex="1">
         <xul:hbox class="wizard-buttons-btm">
           <xul:button class="wizard-button" dlgtype="extra1" hidden="true"/>
+          <xul:button class="wizard-button" dlgtype="extra2" hidden="true"/>
           <xul:button label="&button-cancel-mac.label;" class="wizard-button" dlgtype="cancel"/>        
           <xul:spacer flex="1"/>
           <xul:button label="&button-back-mac.label;" accesskey="&button-back-mac.accesskey;"
@@ -519,6 +531,7 @@
         <xul:separator class="wizard-buttons-separator groove"/>
         <xul:hbox class="wizard-buttons-box-2">
           <xul:button class="wizard-button" dlgtype="extra1" hidden="true"/>
+          <xul:button class="wizard-button" dlgtype="extra2" hidden="true"/>
           <xul:spacer flex="1" anonid="spacer"/>
 #ifdef XP_UNIX
           <xul:button label="&button-cancel-unix.label;" class="wizard-button"

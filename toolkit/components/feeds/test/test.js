@@ -40,6 +40,17 @@ var ran = 0;
 if(tests.length < 1){
   dump("FAILED! tests.length was " + tests.length  + "\n");
 }
+
+function logResult(didPass, testcase, extra) {
+  var start = didPass ? "PASS | " : "FAIL | ";
+  print(start + testcase.path + " | Test was: \"" +
+        testcase.desc + "\" | " + testcase.expect + " |");
+  if (extra) {
+    print(extra);
+  }
+}
+
+
 function isIID(a,iid){
   var rv = false;
   try{
@@ -55,18 +66,21 @@ TestListener.prototype = {
     var feed = result.doc;    
     // QI to something
     (isIID(feed, Components.interfaces.nsIFeed));
-    try { 
+    try {
       if(!eval(testcase.expect)){
-        print(testcase.path + ": \n");
-        print("FAILED! Test was: \"" + testcase.desc + "\" |\n" + testcase.expect + '|\n');
+        logResult(false, testcase);
+  
       }else{
+        logResult(true, testcase);
         passed += 1;
       }
     }
     catch(e) {
-      print("FAILED! Test was: " + testcase.expect + "\nex: " + e.message + "\n");
+      logResult(false, testcase, "ex: " + e.message);
     }
+
     ran += 1;
+    result = null;
   }
 }
 
@@ -74,7 +88,6 @@ var startDate = new Date();
 
 for(var i=0; i<tests.length; i++){
   var testcase = tests[i];
-  
   var uri;
   if (testcase.base == null)
     uri = ioService.newURI('http://example.org/'+testcase.path, null,null);
@@ -87,7 +100,6 @@ for(var i=0; i<tests.length; i++){
                          .createInstance(Components.interfaces.nsIFileInputStream);
   var listener = new TestListener();
   try{
-    //print('Start: ' + testcase.path);
     stream.init(testcase.file, 0x01, 0444, 0);
     parser.listener = listener;
     parser.parseFromStream(stream, uri);

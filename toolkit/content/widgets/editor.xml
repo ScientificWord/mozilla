@@ -6,7 +6,7 @@
    xmlns:xbl="http://www.mozilla.org/xbl">
   
   <binding id="editor">
-    <implementation type="application/x-javascript" implements="nsIAccessibleProvider">
+    <implementation type="application/javascript" implements="nsIAccessibleProvider">
       <constructor>
         <![CDATA[
           // Make window editable immediately only
@@ -19,22 +19,62 @@
       </constructor>
       <destructor/>
 
-      <property name="accessible">
+      <property name="accessibleType" readonly="true">
         <getter>
           <![CDATA[
-            var accService = Components.classes["@mozilla.org/accessibilityService;1"].getService(Components.interfaces.nsIAccessibilityService);
-            return accService.createOuterDocAccessible(this);
+            return Components.interfaces.nsIAccessibleProvider.OuterDoc;
           ]]>
         </getter>
       </property>
 
+      <field name="_editorContentListener">
+        <![CDATA[
+          ({
+            QueryInterface: function(iid)
+            {
+              if (iid.equals(Components.interfaces.nsIURIContentListener) ||
+                  iid.equals(Components.interfaces.nsISupportsWeakReference) ||
+                  iid.equals(Components.interfaces.nsISupports))
+              return this;
+
+              Components.returnCode = Components.results.NS_ERROR_NO_INTERFACE;
+              return null;
+            },
+            onStartURIOpen: function(uri)
+            {
+              return false;
+            },
+            doContent: function(contentType, isContentPreferred, request, contentHandler)
+            {
+              return false;
+            },
+            isPreferred: function(contentType, desiredContentType)
+            {
+              return false;
+            },
+            canHandleContent: function(contentType, isContentPreferred, desiredContentType)
+            {
+              return false;
+            },
+            loadCookie: null,
+            parentContentListener: null
+          })
+        ]]>
+      </field>
       <method name="makeEditable">
         <parameter name="editortype"/>
         <parameter name="waitForUrlLoad"/>
         <body>
         <![CDATA[
-          this.editingSession.makeWindowEditable(this.contentWindow, editortype, waitForUrlLoad);
+          var wn = this.webNavigation;
+          var ifr = wn.QueryInterface(Components.interfaces.nsIInterfaceRequestor);
+          var s = Components.interfaces.nsIEditingSession.toString();
+          s = Components.classes["@mozilla.org/editor/editingsession;1"].name;
+          var es = ifr.getInterface(Components.interfaces.nsIEditingSession);
+          this.editingSession.makeWindowEditable(this.contentWindow, editortype, waitForUrlLoad, true, false);
           this.setAttribute("editortype", editortype);
+
+          this.docShell.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIURIContentListener).parentContentListener = this._editorContentListener;
         ]]>
         </body>
       </method>
@@ -64,7 +104,7 @@
       <property name="contentDocument" readonly="true"
                 onget="return this.webNavigation.document;"/>
       <property name="docShell"
-                onget="return this.boxObject.QueryInterface(Components.interfaces.nsIEditorBoxObject).docShell;"
+                onget="return this.boxObject.QueryInterface(Components.interfaces.nsIContainerBoxObject).docShell;"
                 readonly="true"/>
       <property name="contentWindow"
                 readonly="true"
@@ -74,7 +114,13 @@
                 onget="return this.docShell.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIWebBrowserFind);"/>
       <property name="editingSession"
                 readonly="true"
-                onget="return this.webNavigation.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIEditingSession);"/>
+                onget="
+                var wn = this.webNavigation;
+                var ifr = wn.QueryInterface(Components.interfaces.nsIInterfaceRequestor);
+                var s = Components.interfaces.nsIEditingSession.toString();
+                var es = ifr.getInterface(Components.interfaces.nsIEditingSession);
+                return es;
+                "/>
       <property name="commandManager"
                 readonly="true"
                 onget="return this.webNavigation.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsICommandManager);"/>

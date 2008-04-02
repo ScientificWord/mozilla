@@ -41,6 +41,9 @@
 #define NS_AUTOCOMPLETECONTROLLER_CONTRACTID \
   "@mozilla.org/autocomplete/controller;1"
 
+#define NS_AUTOCOMPLETECONTROLLER_CONTRACTID \
+  "@mozilla.org/autocomplete/controller;1"
+
 #define NS_AUTOCOMPLETESIMPLERESULT_CONTRACTID \
   "@mozilla.org/autocomplete/simple-result;1"
 
@@ -49,6 +52,12 @@
 
 #define NS_STRINGARRAYAUTOCOMPLETE_CONTRACTID \
   "@mozilla.org/autocomplete/search;1?name=stringarray"
+
+#define MSI_KEYMAP_CONTRACTID \
+ "@mackichan.com/keymap/keymap_service;1"
+
+#define MSI_ARROWSTATE_SERVICE_CONTRACTID \
+ "@mackichan.com/arrowstate/arrowstate_service;1"
 
 #define NS_DOWNLOADMANAGER_CONTRACTID \
   "@mozilla.org/download-manager;1"
@@ -80,8 +89,31 @@
 #define NS_URLCLASSIFIERSTREAMUPDATER_CONTRACTID \
     "@mozilla.org/url-classifier/streamupdater;1"
 
-#define NS_SCRIPTABLEUNESCAPEHTML_CONTRACTID \
-    "@mozilla.org/feed-unescapehtml;1"
+#define NS_URLCLASSIFIERUTILS_CONTRACTID \
+    "@mozilla.org/url-classifier/utils;1"
+
+#define NS_URLCLASSIFIERHASHCOMPLETER_CONTRACTID \
+    "@mozilla.org/url-classifier/hashcompleter;1"
+
+#define NS_SCRIPTABLEUNESCAPEHTML_CONTRACTID "@mozilla.org/feed-unescapehtml;1"
+
+#define NS_NAVHISTORYSERVICE_CONTRACTID \
+  "@mozilla.org/browser/nav-history-service;1"
+
+#define NS_ANNOTATIONSERVICE_CONTRACTID \
+  "@mozilla.org/browser/annotation-service;1"
+
+#define NS_NAVBOOKMARKSSERVICE_CONTRACTID \
+  "@mozilla.org/browser/nav-bookmarks-service;1"
+
+#define NS_LIVEMARKSERVICE_CONTRACTID \
+  "@mozilla.org/browser/livemark-service;2"
+
+#define NS_MORKHISTORYIMPORTER_CONTRACTID \
+  "@mozilla.org/browser/history-importer;1"
+
+#define NS_FAVICONSERVICE_CONTRACTID \
+  "@mozilla.org/browser/favicon-service;1"
 
 #define MSI_AUTOSUBSTITUTE_CONTRACTID \
     "@mozilla.org/autosubstitute;1"
@@ -108,6 +140,14 @@
 #define NS_STRINGARRAYAUTOCOMPLETE_CID \
 { 0xf45ef03a, 0x94fd, 0x466c, { 0x97, 0xac, 0xac, 0xcf, 0xcb, 0xb6, 0xad, 0x5e} }
 
+// {97A343E0-E01A-4f84-8586-9D90E124811D}
+#define MSI_ARROWSTATE_SERVICE_CID \
+{ 0x97a343e0, 0xe01a, 0x4f84, { 0x85, 0x86, 0x9d, 0x90, 0xe1, 0x24, 0x81, 0x1d } }
+
+// {0176db9d-bae7-4b42-82af-6da0269bdd2f}
+#define MSI_KEYMAP_CID \
+{ 0x0176db9d, 0xbae7, 0x4b42, { 0x82, 0xaf, 0x6d, 0xa0, 0x26, 0x9b, 0xdd, 0x2f }}
+
 #define NS_DOWNLOADMANAGER_CID \
     { 0xedb0490e, 0x1dd1, 0x11b2, { 0x83, 0xb8, 0xdb, 0xf8, 0xd8, 0x59, 0x06, 0xa6 } }
 
@@ -130,7 +170,7 @@
 // {e7f70966-9a37-48d7-8aeb-35998f31090e}
 #define NS_TYPEAHEADFIND_CID \
 { 0xe7f70966, 0x9a37, 0x48d7, { 0x8a, 0xeb, 0x35, 0x99, 0x8f, 0x31, 0x09, 0x0e} }
-
+  
 // {5eb7c3c1-ec1f-4007-87cc-eefb37d68ce6}
 #define NS_URLCLASSIFIERDBSERVICE_CID \
 { 0x5eb7c3c1, 0xec1f, 0x4007, { 0x87, 0xcc, 0xee, 0xfb, 0x37, 0xd6, 0x8c, 0xe6} }
@@ -139,9 +179,36 @@
 #define NS_URLCLASSIFIERSTREAMUPDATER_CID \
 { 0xc2be6dc0, 0xef1e, 0x4abd, { 0x86, 0xa2, 0x4f, 0x86, 0x4d, 0xdc, 0x57, 0xf6} }
 
+// {b7b2ccec-7912-4ea6-a548-b038447004bd}
+#define NS_URLCLASSIFIERUTILS_CID \
+{ 0xb7b2ccec, 0x7912, 0x4ea6, { 0xa5, 0x48, 0xb0, 0x38, 0x44, 0x70, 0x04, 0xbd} }
+
+// {786e0a0e-e035-4600-8ee0-365a63a80b80}
+#define NS_URLCLASSIFIERHASHCOMPLETER_CID \
+{ 0x786e0a0e, 0xe035, 0x4600, \
+  { 0x8e, 0xe0, 0x36, 0x5a, 0x63, 0xa8, 0x0b, 0x80 } }
+
 // {10f2f5f0-f103-4901-980f-ba11bd70d60d}
 #define NS_SCRIPTABLEUNESCAPEHTML_CID  \
 { 0x10f2f5f0, 0xf103, 0x4901, { 0x98, 0x0f, 0xba, 0x11, 0xbd, 0x70, 0xd6, 0x0d} }
+
+#define NS_NAVHISTORYSERVICE_CID \
+{ 0x88cecbb7, 0x6c63, 0x4b3b, { 0x8c, 0xd4, 0x84, 0xf3, 0xb8, 0x22, 0x8c, 0x69 } }
+
+#define NS_NAVHISTORYRESULTTREEVIEWER_CID \
+{ 0x2ea8966f, 0x0671, 0x4c02, { 0x9c, 0x70, 0x94, 0x59, 0x56, 0xd4, 0x54, 0x34 } }
+
+#define NS_ANNOTATIONSERVICE_CID \
+{ 0x5e8d4751, 0x1852, 0x434b, { 0xa9, 0x92, 0x2c, 0x6d, 0x2a, 0x25, 0xfa, 0x46 } }
+
+#define NS_NAVBOOKMARKSSERVICE_CID \
+{ 0x9de95a0c, 0x39a4, 0x4d64, {0x9a, 0x53, 0x17, 0x94, 0x0d, 0xd7, 0xca, 0xbb}}
+
+#define NS_MORKHISTORYIMPORTER_CID \
+{ 0x428e6d12, 0x9c6d, 0x436f, {0xb7, 0xa3, 0x6c, 0xa5, 0xf4, 0x80, 0x92, 0x12}}
+
+#define NS_FAVICONSERVICE_CID \
+{ 0x984e3259, 0x9266, 0x49cf, { 0xb6, 0x05, 0x60, 0xb0, 0x22, 0xa0, 0x07, 0x56 } }
 
 #define MSI_AUTOSUBSTITUTE_CID \
 { 0xfe4847ee, 0x9b9b, 0x4025, { 0x95, 0x62, 0x88, 0x27, 0xbb, 0x20, 0xcd, 0x21} }

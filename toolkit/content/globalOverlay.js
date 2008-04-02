@@ -1,8 +1,8 @@
-function closeWindow(aClose)
+function closeWindow(aClose, aPromptFunction)
 {
   var windowCount = 0;
-   var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
-                      .getService(Components.interfaces.nsIWindowMediator);
+  var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"]
+                     .getService(Components.interfaces.nsIWindowMediator);
   var e = wm.getEnumerator(null);
   
   while (e.hasMoreElements()) {
@@ -16,7 +16,10 @@ function closeWindow(aClose)
   // If we're down to the last window and someone tries to shut down, check to make sure we can!
   if (windowCount == 1 && !canQuitApplication())
     return false;
+  else if (windowCount != 1)
 #endif
+    if (typeof(aPromptFunction) == "function" && !aPromptFunction())
+      return false;
 
   if (aClose)    
     window.close();
@@ -40,7 +43,6 @@ function canQuitApplication()
       return false;
   }
   catch (ex) { }
-  os.notifyObservers(null, "quit-application-granted", null);
   return true;
 }
 
@@ -49,183 +51,120 @@ function goQuitApplication()
   if (!canQuitApplication())
     return false;
 
-  var windowManager = Components.classes['@mozilla.org/appshell/window-mediator;1'].getService();
-  var windowManagerInterface = windowManager.QueryInterface( Components.interfaces.nsIWindowMediator);
-  var enumerator = windowManagerInterface.getEnumerator( null );
   var appStartup = Components.classes['@mozilla.org/toolkit/app-startup;1'].
                      getService(Components.interfaces.nsIAppStartup);
 
-  while ( enumerator.hasMoreElements()  )
-  {
-     var domWindow = enumerator.getNext();
-     if (("tryToClose" in domWindow) && !domWindow.tryToClose())
-       return false;
-     domWindow.close();
-  };
   appStartup.quit(Components.interfaces.nsIAppStartup.eAttemptQuit);
   return true;
 }
 
-/**
- * Command Updater
- */
-var CommandUpdater = {
-  /**
-   * Gets a controller that can handle a particular command. 
-   * @param   command
-   *          A command to locate a controller for, preferring controllers that
-   *          show the command as enabled.
-   * @returns In this order of precedence:
-   *            - the first controller supporting the specified command 
-   *              associated with the focused element that advertises the
-   *              command as ENABLED
-   *            - the first controller supporting the specified command 
-   *              associated with the global window that advertises the
-   *              command as ENABLED
-   *            - the first controller supporting the specified command
-   *              associated with the focused element
-   *            - the first controller supporting the specified command
-   *              associated with the global window
-   */
-  _getControllerForCommand: function(command) {
-    try {
-      var controller = 
-          top.document.commandDispatcher.getControllerForCommand(command);
-      if (controller && controller.isCommandEnabled(command))
-        return controller;
-    }
-    catch(e) {
-    }
-    var controllerCount = window.controllers.getControllerCount();
-    for (var i = 0; i < controllerCount; ++i) {
-      var current = window.controllers.getControllerAt(i);
-      try {
-        if (current.supportsCommand(command) && current.isCommandEnabled(command))
-          return current;
-      }
-      catch (e) {
-      }
-    }
-    return controller || window.controllers.getControllerForCommand(command);
-  },
-  
-  /**
-   * Updates the state of a XUL <command> element for the specified command
-   * depending on its state.
-   * @param   command
-   *          The name of the command to update the XUL <command> element for
-   */
-  updateCommand: function(command) {
-    var controller = this._getControllerForCommand(command);
-    if (!controller)
-      return;
-    try {
-      this.enableCommand(command, controller.isCommandEnabled(command));
-    }
-    catch (e) {
-    }
-  },
-  
-  /**
-   * Enables or disables a XUL <command> element.
-   * @param   command
-   *          The name of the command to enable or disable
-   * @param   enabled
-   *          true if the command should be enabled, false otherwise.
-   */
-  enableCommand: function(command, enabled) {
-    var element = document.getElementById(command);
-    if (!element)
-      return;
-    if (enabled)
-      element.removeAttribute("disabled");
+//
+// Command Updater functions
+//
+function goUpdateCommand(aCommand)
+{
+  try {
+    var controller = top.document.commandDispatcher
+                        .getControllerForCommand(aCommand);
+
+    var enabled = false;
+    if (controller)
+      enabled = controller.isCommandEnabled(aCommand);
+
+    goSetCommandEnabled(aCommand, enabled);
+  }
+  catch (e) {
+    dump("An error occurred updating the " + aCommand + " command\n");
+  }
+}
+
+function goDoCommand(aCommand)
+{
+  try {
+    var controller = top.document.commandDispatcher
+                        .getControllerForCommand(aCommand);
+    if (controller && controller.isCommandEnabled(aCommand))
+      controller.doCommand(aCommand);
+  }
+  catch (e) {
+    dump("An error occurred executing the " + aCommand + " command\n" + e + "\n");
+  }
+}
+
+
+function goSetCommandEnabled(aID, aEnabled)
+{
+  var node = document.getElementById(aID);
+
+  if (node) {
+    if (aEnabled)
+      node.removeAttribute("disabled");
     else
-      element.setAttribute("disabled", "true");
-  },
+      node.setAttribute("disabled", "true");
+  }
+}
 
-  /**
-   * Performs the action associated with a specified command using the most
-   * relevant controller.
-   * @param   command
-   *          The command to perform.
-   */
-  doCommand: function(command) {
-    var controller = this._getControllerForCommand(command);
-    if (!controller)
-      return;
-    controller.doCommand(command);
-  }, 
-  
-  /**
-   * Changes the label attribute for the specified command.
-   * @param   command
-   *          The command to update.
-   * @param   labelAttribute
-   *          The label value to use.
-   */
-  setMenuValue: function(command, labelAttribute) {
-    var commandNode = top.document.getElementById(command);
-    if (commandNode)
-    {
-      var label = commandNode.getAttribute(labelAttribute);
-      if ( label )
-        commandNode.setAttribute('label', label);
-    }
-  },
-  
-  /**
-   * Changes the accesskey attribute for the specified command.
-   * @param   command
-   *          The command to update.
-   * @param   valueAttribute
-   *          The value attribute to use.
-   */
-  setAccessKey: function(command, valueAttribute) {
-    var commandNode = top.document.getElementById(command);
-    if (commandNode)
-    {
-      var value = commandNode.getAttribute(valueAttribute);
-      if ( value )
-        commandNode.setAttribute('accesskey', value);
-    }
-  },
+function goSetMenuValue(aCommand, aLabelAttribute)
+{
+  var commandNode = top.document.getElementById(aCommand);
+  if (commandNode) {
+    var label = commandNode.getAttribute(aLabelAttribute);
+    if (label)
+      commandNode.setAttribute("label", label);
+  }
+}
 
-  /**
-   * Inform all the controllers attached to a node that an event has occurred
-   * (e.g. the tree controllers need to be informed of blur events so that they can change some of the
-   * menu items back to their default values)
-   * @param   node
-   *          The node receiving the event
-   * @param   event
-   *          The event.
-   */
-  onEvent: function(node, event) {
-    var numControllers = node.controllers.getControllerCount();
-    var controller;
+function goSetAccessKey(aCommand, aValueAttribute)
+{
+  var commandNode = top.document.getElementById(aCommand);
+  if (commandNode) {
+    var value = commandNode.getAttribute(aValueAttribute);
+    if (value)
+      commandNode.setAttribute("accesskey", value);
+  }
+}
 
-    for ( var controllerIndex = 0; controllerIndex < numControllers; controllerIndex++ )
-    {
-      controller = node.controllers.getControllerAt(controllerIndex);
-      if ( controller )
-        controller.onEvent(event);
-    }
-  }  
-};
-// Shim for compatibility with existing code. 
-function goDoCommand(command) { CommandUpdater.doCommand(command); }
-function goUpdateCommand(command) { CommandUpdater.updateCommand(command); }
-function goSetCommandEnabled(command, enabled) { CommandUpdater.enableCommand(command, enabled); }
-function goSetMenuValue(command, labelAttribute) { CommandUpdater.setMenuValue(command, labelAttribute); }
-function goSetAccessKey(command, valueAttribute) { CommandUpdater.setAccessKey(command, valueAttribute); }
-function goOnEvent(node, event) { CommandUpdater.onEvent(node, event); }
+// this function is used to inform all the controllers attached to a node that an event has occurred
+// (e.g. the tree controllers need to be informed of blur events so that they can change some of the
+// menu items back to their default values)
+function goOnEvent(aNode, aEvent)
+{
+  var numControllers = aNode.controllers.getControllerCount();
+  var controller;
+
+  for (var controllerIndex = 0; controllerIndex < numControllers; controllerIndex++) {
+    controller = aNode.controllers.getControllerAt(controllerIndex);
+    if (controller)
+      controller.onEvent(aEvent);
+  }
+}
 
 function visitLink(aEvent) {
   var node = aEvent.target;
   while (node.nodeType != Node.ELEMENT_NODE)
     node = node.parentNode;
   var url = node.getAttribute("link");
-  if (url != "")
-    top.opener.openNewWindowWith(url, null, false, false);
+  if (!url)
+    return;
+
+  var protocolSvc = Components.classes["@mozilla.org/uriloader/external-protocol-service;1"]
+                              .getService(Components.interfaces.nsIExternalProtocolService);
+  var ioService = Components.classes["@mozilla.org/network/io-service;1"]
+                            .getService(Components.interfaces.nsIIOService);
+  var uri = ioService.newURI(url, null, null);
+
+  // if the scheme is not an exposed protocol, then opening this link
+  // should be deferred to the system's external protocol handler
+  if (protocolSvc.isExposedProtocol(uri.scheme)) {
+    var win = window.top;
+    if (win instanceof Components.interfaces.nsIDOMChromeWindow) {
+      while (win.opener && !win.opener.closed)
+        win = win.opener;
+    }
+    win.open(uri.spec);
+  }
+  else
+    protocolSvc.loadUrl(uri);
 }
 
 function isValidLeftClick(aEvent, aName)
@@ -256,3 +195,5 @@ function FillInTooltip ( tipElement )
   }
   return retVal;
 }
+
+#include debug.js
