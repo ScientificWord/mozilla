@@ -53,7 +53,7 @@
 #include "nsIDOMWindowInternal.h"
 #include "nsIFocusController.h"
 
-#include "nsSupportsArray.h"
+#include "nsCOMArray.h"
 
 #include "nsCommandManager.h"
 
@@ -70,7 +70,38 @@ nsCommandManager::~nsCommandManager()
 }
 
 
-NS_IMPL_ISUPPORTS3(nsCommandManager, nsICommandManager, nsPICommandUpdater, nsISupportsWeakReference)
+PR_STATIC_CALLBACK(PLDHashOperator)
+TraverseCommandObservers(const char* aKey, nsCOMArray<nsIObserver>* aObservers,
+                         void* aClosure)
+{
+  nsCycleCollectionTraversalCallback *cb = 
+    static_cast<nsCycleCollectionTraversalCallback*>(aClosure);
+
+  PRInt32 i, numItems = aObservers->Count();
+  for (i = 0; i < numItems; ++i) {
+    cb->NoteXPCOMChild(aObservers->ObjectAt(i));
+  }
+
+  return PL_DHASH_NEXT;
+}
+
+NS_IMPL_CYCLE_COLLECTION_CLASS(nsCommandManager)
+NS_IMPL_CYCLE_COLLECTION_UNLINK_BEGIN(nsCommandManager)
+  tmp->mObserversTable.Clear();
+NS_IMPL_CYCLE_COLLECTION_UNLINK_END
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_BEGIN(nsCommandManager)
+  tmp->mObserversTable.EnumerateRead(TraverseCommandObservers, &cb);
+NS_IMPL_CYCLE_COLLECTION_TRAVERSE_END
+
+NS_IMPL_CYCLE_COLLECTING_ADDREF_AMBIGUOUS(nsCommandManager, nsICommandManager)
+NS_IMPL_CYCLE_COLLECTING_RELEASE_AMBIGUOUS(nsCommandManager, nsICommandManager)
+
+NS_INTERFACE_MAP_BEGIN_CYCLE_COLLECTION(nsCommandManager)
+   NS_INTERFACE_MAP_ENTRY(nsICommandManager)
+   NS_INTERFACE_MAP_ENTRY(nsPICommandUpdater)
+   NS_INTERFACE_MAP_ENTRY(nsISupportsWeakReference)
+   NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsICommandManager)
+NS_INTERFACE_MAP_END
 
 #if 0
 #pragma mark -
@@ -84,6 +115,7 @@ nsCommandManager::Init(nsIDOMWindow *aWindow)
   
   NS_ASSERTION(aWindow, "Need non-null window here");
   mWindow = aWindow;      // weak ptr
+  NS_ENSURE_TRUE(mObserversTable.Init(), NS_ERROR_OUT_OF_MEMORY);
   return NS_OK;
 }
 
@@ -91,31 +123,22 @@ nsCommandManager::Init(nsIDOMWindow *aWindow)
 NS_IMETHODIMP
 nsCommandManager::CommandStatusChanged(const char * aCommandName)
 {
-	nsCStringKey hashKey(aCommandName);
+  nsCOMArray<nsIObserver>* commandObservers;
+  mObserversTable.Get(aCommandName, &commandObservers);
 
-  
-  nsresult rv = NS_OK;
-	nsCOMPtr<nsISupports>       commandSupports  = getter_AddRefs(mCommandObserversTable.Get(&hashKey));
-	nsCOMPtr<nsISupportsArray>  commandObservers = do_QueryInterface(commandSupports);
-	if (commandObservers)
-	{
-	  PRUint32  numItems;
-	  rv = commandObservers->Count(&numItems);
-	  if (NS_FAILED(rv)) return rv;
-	  
-	  for (PRUint32 i = 0; i < numItems; i ++)
-	  {
-	    nsCOMPtr<nsISupports>   itemSupports;
-	    rv = commandObservers->GetElementAt(i, getter_AddRefs(itemSupports));
-	    if (NS_FAILED(rv)) break;
-      nsCOMPtr<nsIObserver>   itemObserver = do_QueryInterface(itemSupports);
-      if (itemObserver)
-      {
-      	// should we get the command state to pass here? This might be expensive.
-        itemObserver->Observe((nsICommandManager *)this, aCommandName,NS_LITERAL_STRING("command_status_changed").get());
-      }
-	  }
-	}
+  if (commandObservers)
+  {
+    // XXX Should we worry about observers removing themselves from Observe()?
+    PRInt32 i, numItems = commandObservers->Count();
+    for (i = 0; i < numItems;  ++i)
+    {
+      nsCOMPtr<nsIObserver> observer = commandObservers->ObjectAt(i);
+      // should we get the command state to pass here? This might be expensive.
+      observer->Observe(NS_ISUPPORTS_CAST(nsICommandManager*, this),
+                        aCommandName,
+                        NS_LITERAL_STRING("command_status_changed").get());
+    }
+  }
 
   return NS_OK;
 }
@@ -128,32 +151,27 @@ nsCommandManager::CommandStatusChanged(const char * aCommandName)
 NS_IMETHODIMP
 nsCommandManager::AddCommandObserver(nsIObserver *aCommandObserver, const char *aCommandToObserve)
 {
-	NS_ENSURE_ARG(aCommandObserver);
-	
-	nsresult rv = NS_OK;
+  NS_ENSURE_ARG(aCommandObserver);
 
-	// XXX todo: handle special cases of aCommandToObserve being null, or empty
-	
-	// for each command in the table, we make a list of observers for that command
-  nsCStringKey hashKey(aCommandToObserve);
-	
-	nsCOMPtr<nsISupports>       commandSupports  = getter_AddRefs(mCommandObserversTable.Get(&hashKey));
-	nsCOMPtr<nsISupportsArray>  commandObservers = do_QueryInterface(commandSupports);
-	if (!commandObservers)
-	{
-	  rv = NS_NewISupportsArray(getter_AddRefs(commandObservers));
-  	if (NS_FAILED(rv)) return rv;
-  	
-  	commandSupports = do_QueryInterface(commandObservers);
-  	rv = mCommandObserversTable.Put(&hashKey, commandSupports);
-  	if (NS_FAILED(rv)) return rv;
-	}
-	
-	// need to check that this command observer hasn't already been registered
-	nsCOMPtr<nsISupports> observerAsSupports = do_QueryInterface(aCommandObserver);
-	PRInt32 existingIndex = commandObservers->IndexOf(observerAsSupports);
+  nsresult rv = NS_OK;
+
+  // XXX todo: handle special cases of aCommandToObserve being null, or empty
+
+  // for each command in the table, we make a list of observers for that command
+  nsCOMArray<nsIObserver>* commandObservers;
+  if (!mObserversTable.Get(aCommandToObserve, &commandObservers))
+  {
+    nsAutoPtr<nsCOMArray<nsIObserver> > array(new nsCOMArray<nsIObserver>);
+    if (!array || !mObserversTable.Put(aCommandToObserve, array))
+      return NS_ERROR_OUT_OF_MEMORY;
+
+    commandObservers = array.forget();
+  }
+
+  // need to check that this command observer hasn't already been registered
+  PRInt32 existingIndex = commandObservers->IndexOf(aCommandObserver);
   if (existingIndex == -1)
-    rv = commandObservers->AppendElement(observerAsSupports);
+    rv = commandObservers->AppendObject(aCommandObserver);
   else
     NS_WARNING("Registering command observer twice on the same command");
   
@@ -164,18 +182,16 @@ nsCommandManager::AddCommandObserver(nsIObserver *aCommandObserver, const char *
 NS_IMETHODIMP
 nsCommandManager::RemoveCommandObserver(nsIObserver *aCommandObserver, const char *aCommandObserved)
 {
-	NS_ENSURE_ARG(aCommandObserver);
+  NS_ENSURE_ARG(aCommandObserver);
 
-	// XXX todo: handle special cases of aCommandToObserve being null, or empty
-	nsCStringKey hashKey(aCommandObserved);
+  // XXX todo: handle special cases of aCommandToObserve being null, or empty
 
-	nsCOMPtr<nsISupports>       commandSupports  = getter_AddRefs(mCommandObserversTable.Get(&hashKey));
-	nsCOMPtr<nsISupportsArray>  commandObservers = do_QueryInterface(commandSupports);
-	if (!commandObservers)
-	  return NS_ERROR_UNEXPECTED;
-	
-	nsresult removed = commandObservers->RemoveElement(aCommandObserver);
-	return (removed) ? NS_OK : NS_ERROR_FAILURE;
+  nsCOMArray<nsIObserver>* commandObservers;
+  if (!mObserversTable.Get(aCommandObserved, &commandObservers))
+    return NS_ERROR_UNEXPECTED;
+
+  return commandObservers->RemoveObject(aCommandObserver) ? NS_OK :
+                                                            NS_ERROR_FAILURE;
 }
 
 /* boolean isCommandSupported(in string aCommandName,

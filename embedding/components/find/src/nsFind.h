@@ -56,6 +56,8 @@ class nsIAtom;
 #define NS_FIND_CID \
  {0x471f4944, 0x1dd2, 0x11b2, {0x87, 0xac, 0x90, 0xbe, 0x0a, 0x51, 0xd6, 0x09}}
 
+class nsFindContentIterator;
+
 class nsFind : public nsIFind
 {
 public:
@@ -64,6 +66,8 @@ public:
 
   nsFind();
   virtual ~nsFind();
+
+  static already_AddRefed<nsIDOMRange> CreateRange();
 
 protected:
   static PRInt32 sInstanceCount;
@@ -109,8 +113,9 @@ protected:
   void ResetAll();
 
   // The iterator we use to move through the document:
-  nsresult InitIterator(nsIDOMRange* aSearchRange);
-  nsCOMPtr<nsIContentIterator> mIterator;
+  nsresult InitIterator(nsIDOMNode* aStartNode, PRInt32 aStartOffset,
+                        nsIDOMNode* aEndNode, PRInt32 aEndOffset);
+  nsCOMPtr<nsFindContentIterator> mIterator;
 };
 
 #endif // nsFind_h__

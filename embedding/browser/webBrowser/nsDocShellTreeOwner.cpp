@@ -71,9 +71,16 @@
 #include "nsIDOMEvent.h"
 #include "nsIDOMMouseEvent.h"
 #include "nsIDOMNSUIEvent.h"
-#include "nsIDOMEventReceiver.h"
+#include "nsIDOMEventTarget.h"
 #include "nsIDOMNamedNodeMap.h"
 #include "nsIDOMHTMLInputElement.h"
+#include "nsIDOMHTMLTextAreaElement.h"
+#include "nsIDOMHTMLHtmlElement.h"
+#include "nsIDOMHTMLAppletElement.h"
+#include "nsIDOMHTMLObjectElement.h"
+#include "nsIDOMHTMLEmbedElement.h"
+#include "nsIDOMHTMLDocument.h"
+#include "nsIImageLoadingContent.h"
 #include "nsIWebNavigation.h"
 #include "nsIDOMHTMLElement.h"
 #include "nsIPresShell.h"
@@ -91,15 +98,16 @@
 #include "nsPresContext.h"
 #include "nsIViewManager.h"
 #include "nsIView.h"
+#include "nsPIDOMEventTarget.h"
 
 //
 // GetEventReceiver
 //
 // A helper routine that navigates the tricky path from a |nsWebBrowser| to
-// a |nsIDOMEventReceiver| via the window root and chrome event handler.
+// a |nsPIDOMEventTarget| via the window root and chrome event handler.
 //
 static nsresult
-GetEventReceiver ( nsWebBrowser* inBrowser, nsIDOMEventReceiver** outEventRcvr )
+GetPIDOMEventTarget( nsWebBrowser* inBrowser, nsPIDOMEventTarget** aTarget)
 {
   nsCOMPtr<nsIDOMWindow> domWindow;
   inBrowser->GetContentDOMWindow(getter_AddRefs(domWindow));
@@ -109,12 +117,11 @@ GetEventReceiver ( nsWebBrowser* inBrowser, nsIDOMEventReceiver** outEventRcvr )
   NS_ENSURE_TRUE(domWindowPrivate, NS_ERROR_FAILURE);
   nsPIDOMWindow *rootWindow = domWindowPrivate->GetPrivateRoot();
   NS_ENSURE_TRUE(rootWindow, NS_ERROR_FAILURE);
-  nsIChromeEventHandler *chromeHandler = rootWindow->GetChromeEventHandler();
-  NS_ENSURE_TRUE(chromeHandler, NS_ERROR_FAILURE);
-
-  nsCOMPtr<nsIDOMEventReceiver> rcvr = do_QueryInterface(chromeHandler);
-  *outEventRcvr = rcvr;
-  NS_IF_ADDREF(*outEventRcvr);
+  nsCOMPtr<nsPIDOMEventTarget> piTarget =
+    do_QueryInterface(rootWindow->GetChromeEventHandler());
+  NS_ENSURE_TRUE(piTarget, NS_ERROR_FAILURE);
+  *aTarget = piTarget;
+  NS_IF_ADDREF(*aTarget);
   
   return NS_OK;
 }
@@ -396,14 +403,28 @@ nsDocShellTreeOwner::RemoveFromWatcher()
 
 NS_IMETHODIMP
 nsDocShellTreeOwner::ContentShellAdded(nsIDocShellTreeItem* aContentShell,
-                                       PRBool aPrimary, const PRUnichar* aID)
+                                       PRBool aPrimary, PRBool aTargetable,
+                                       const nsAString& aID)
 {
    if(mTreeOwner)
-      return mTreeOwner->ContentShellAdded(aContentShell, aPrimary, aID);
+      return mTreeOwner->ContentShellAdded(aContentShell, aPrimary,
+                                           aTargetable, aID);
 
    if (aPrimary)
       mPrimaryContentShell = aContentShell;
    return NS_OK;
+}
+
+NS_IMETHODIMP
+nsDocShellTreeOwner::ContentShellRemoved(nsIDocShellTreeItem* aContentShell)
+{
+  if(mTreeOwner)
+    return mTreeOwner->ContentShellRemoved(aContentShell);
+
+  if(mPrimaryContentShell == aContentShell)
+    mPrimaryContentShell = nsnull;
+
+  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -464,10 +485,8 @@ nsDocShellTreeOwner::SizeShellTo(nsIDocShellTreeItem* aShellItem,
    
    nsRect shellArea = presContext->GetVisibleArea();
 
-   float pixelScale;
-   pixelScale = presContext->TwipsToPixels();
-   PRInt32 browserCX = PRInt32((float)shellArea.width*pixelScale);
-   PRInt32 browserCY = PRInt32((float)shellArea.height*pixelScale);
+   PRInt32 browserCX = presContext->AppUnitsToDevPixels(shellArea.width);
+   PRInt32 browserCY = presContext->AppUnitsToDevPixels(shellArea.height);
 
    return webBrowserChrome->SizeBrowserTo(browserCX, browserCY);
 }
@@ -901,10 +920,10 @@ nsDocShellTreeOwner::AddChromeListeners()
     mChromeDragHandler = do_CreateInstance("@mozilla.org:/content/content-area-dragdrop;1", &rv);
     NS_ASSERTION(mChromeDragHandler, "Couldn't create the chrome drag handler");
     if ( mChromeDragHandler ) {
-      nsCOMPtr<nsIDOMEventReceiver> rcvr;
-      GetEventReceiver(mWebBrowser, getter_AddRefs(rcvr));
-      nsCOMPtr<nsIDOMEventTarget> rcvrTarget(do_QueryInterface(rcvr));
-      mChromeDragHandler->HookupTo(rcvrTarget, NS_STATIC_CAST(nsIWebNavigation*, mWebBrowser));
+      nsCOMPtr<nsPIDOMEventTarget> piTarget;
+      GetPIDOMEventTarget(mWebBrowser, getter_AddRefs(piTarget));
+      nsCOMPtr<nsIDOMEventTarget> target(do_QueryInterface(piTarget));
+      mChromeDragHandler->HookupTo(target, static_cast<nsIWebNavigation*>(mWebBrowser));
     }
   }
 
@@ -937,7 +956,7 @@ nsDocShellTreeOwner::GetWebBrowserChrome()
   if (mWebBrowserChromeWeak != nsnull) {
     mWebBrowserChromeWeak->
                         QueryReferent(NS_GET_IID(nsIWebBrowserChrome),
-                                      NS_REINTERPRET_CAST(void**, &chrome));
+                                      reinterpret_cast<void**>(&chrome));
   } else if (mWebBrowserChrome) {
     chrome = mWebBrowserChrome;
     NS_ADDREF(mWebBrowserChrome);
@@ -953,7 +972,7 @@ nsDocShellTreeOwner::GetOwnerWin()
   if (mWebBrowserChromeWeak != nsnull) {
     mWebBrowserChromeWeak->
                         QueryReferent(NS_GET_IID(nsIEmbeddingSiteWindow),
-                                      NS_REINTERPRET_CAST(void**, &win));
+                                      reinterpret_cast<void**>(&win));
   } else if (mOwnerWin) {
     win = mOwnerWin;
     NS_ADDREF(mOwnerWin);
@@ -969,7 +988,7 @@ nsDocShellTreeOwner::GetOwnerRequestor()
   if (mWebBrowserChromeWeak != nsnull) {
     mWebBrowserChromeWeak->
                         QueryReferent(NS_GET_IID(nsIInterfaceRequestor),
-                                      NS_REINTERPRET_CAST(void**, &req));
+                                      reinterpret_cast<void**>(&req));
   } else if (mOwnerRequestor) {
     req = mOwnerRequestor;
     NS_ADDREF(mOwnerRequestor);
@@ -1111,8 +1130,8 @@ ChromeTooltipListener::~ChromeTooltipListener()
 NS_IMETHODIMP
 ChromeTooltipListener::AddChromeListeners()
 {  
-  if ( !mEventReceiver )
-    GetEventReceiver(mWebBrowser, getter_AddRefs(mEventReceiver));
+  if (!mEventTarget)
+    GetPIDOMEventTarget(mWebBrowser, getter_AddRefs(mEventTarget));
   
   // Register the appropriate events for tooltips, but only if
   // the embedding chrome cares.
@@ -1139,11 +1158,11 @@ ChromeTooltipListener::AddChromeListeners()
 NS_IMETHODIMP
 ChromeTooltipListener::AddTooltipListener()
 {
-  if (mEventReceiver) {
-    nsIDOMMouseListener *pListener = NS_STATIC_CAST(nsIDOMMouseListener *, this);
-    nsresult rv = mEventReceiver->AddEventListenerByIID(pListener, NS_GET_IID(nsIDOMMouseListener));
-    nsresult rv2 = mEventReceiver->AddEventListenerByIID(pListener, NS_GET_IID(nsIDOMMouseMotionListener));
-    nsresult rv3 = mEventReceiver->AddEventListenerByIID(pListener, NS_GET_IID(nsIDOMKeyListener));
+  if (mEventTarget) {
+    nsIDOMMouseListener *pListener = static_cast<nsIDOMMouseListener *>(this);
+    nsresult rv = mEventTarget->AddEventListenerByIID(pListener, NS_GET_IID(nsIDOMMouseListener));
+    nsresult rv2 = mEventTarget->AddEventListenerByIID(pListener, NS_GET_IID(nsIDOMMouseMotionListener));
+    nsresult rv3 = mEventTarget->AddEventListenerByIID(pListener, NS_GET_IID(nsIDOMKeyListener));
     
     // if all 3 succeed, we're a go!
     if (NS_SUCCEEDED(rv) && NS_SUCCEEDED(rv2) && NS_SUCCEEDED(rv3)) 
@@ -1167,7 +1186,7 @@ ChromeTooltipListener::RemoveChromeListeners ( )
   if ( mTooltipListenerInstalled )
     RemoveTooltipListener();
   
-  mEventReceiver = nsnull;
+  mEventTarget = nsnull;
   
   // it really doesn't matter if these fail...
   return NS_OK;
@@ -1184,11 +1203,11 @@ ChromeTooltipListener::RemoveChromeListeners ( )
 NS_IMETHODIMP 
 ChromeTooltipListener::RemoveTooltipListener()
 {
-  if (mEventReceiver) {
-    nsIDOMMouseListener *pListener = NS_STATIC_CAST(nsIDOMMouseListener *, this);
-    nsresult rv = mEventReceiver->RemoveEventListenerByIID(pListener, NS_GET_IID(nsIDOMMouseListener));
-    nsresult rv2 = mEventReceiver->RemoveEventListenerByIID(pListener, NS_GET_IID(nsIDOMMouseMotionListener));
-    nsresult rv3 = mEventReceiver->RemoveEventListenerByIID(pListener, NS_GET_IID(nsIDOMKeyListener));
+  if (mEventTarget) {
+    nsIDOMMouseListener *pListener = static_cast<nsIDOMMouseListener *>(this);
+    nsresult rv = mEventTarget->RemoveEventListenerByIID(pListener, NS_GET_IID(nsIDOMMouseListener));
+    nsresult rv2 = mEventTarget->RemoveEventListenerByIID(pListener, NS_GET_IID(nsIDOMMouseMotionListener));
+    nsresult rv3 = mEventTarget->RemoveEventListenerByIID(pListener, NS_GET_IID(nsIDOMKeyListener));
     if (NS_SUCCEEDED(rv) && NS_SUCCEEDED(rv2) && NS_SUCCEEDED(rv3))
       mTooltipListenerInstalled = PR_FALSE;
   }
@@ -1415,8 +1434,8 @@ void
 ChromeTooltipListener::sTooltipCallback(nsITimer *aTimer,
                                         void *aChromeTooltipListener)
 {
-  ChromeTooltipListener* self = NS_STATIC_CAST(ChromeTooltipListener*,
-                                               aChromeTooltipListener);
+  ChromeTooltipListener* self = static_cast<ChromeTooltipListener*>
+                                           (aChromeTooltipListener);
   if ( self && self->mPossibleTooltipNode ){
     // The actual coordinates we want to put the tooltip at are relative to the
     // toplevel docshell of our mWebBrowser.  We know what the screen
@@ -1425,7 +1444,7 @@ ChromeTooltipListener::sTooltipCallback(nsITimer *aTimer,
     // find those short of groveling for the presentation in that docshell and
     // finding the screen coords of its toplevel widget...
     nsCOMPtr<nsIDocShell> docShell =
-      do_GetInterface(NS_STATIC_CAST(nsIWebBrowser*, self->mWebBrowser));
+      do_GetInterface(static_cast<nsIWebBrowser*>(self->mWebBrowser));
     nsCOMPtr<nsIPresShell> shell;
     if (docShell) {
       docShell->GetPresShell(getter_AddRefs(shell));
@@ -1511,7 +1530,7 @@ ChromeTooltipListener::CreateAutoHideTimer()
 void
 ChromeTooltipListener::sAutoHideCallback(nsITimer *aTimer, void* aListener)
 {
-  ChromeTooltipListener* self = NS_STATIC_CAST(ChromeTooltipListener*, aListener);
+  ChromeTooltipListener* self = static_cast<ChromeTooltipListener*>(aListener);
   if ( self )
     self->HideTooltip();
 
@@ -1564,9 +1583,9 @@ ChromeContextMenuListener::~ChromeContextMenuListener()
 NS_IMETHODIMP
 ChromeContextMenuListener::AddContextMenuListener()
 {
-  if (mEventReceiver) {
-    nsIDOMContextMenuListener *pListener = NS_STATIC_CAST(nsIDOMContextMenuListener *, this);
-    nsresult rv = mEventReceiver->AddEventListenerByIID(pListener, NS_GET_IID(nsIDOMContextMenuListener));
+  if (mEventTarget) {
+    nsIDOMContextMenuListener *pListener = static_cast<nsIDOMContextMenuListener *>(this);
+    nsresult rv = mEventTarget->AddEventListenerByIID(pListener, NS_GET_IID(nsIDOMContextMenuListener));
     if (NS_SUCCEEDED(rv))
       mContextMenuListenerInstalled = PR_TRUE;
   }
@@ -1583,9 +1602,9 @@ ChromeContextMenuListener::AddContextMenuListener()
 NS_IMETHODIMP 
 ChromeContextMenuListener::RemoveContextMenuListener()
 {
-  if (mEventReceiver) {
-    nsIDOMContextMenuListener *pListener = NS_STATIC_CAST(nsIDOMContextMenuListener *, this);
-    nsresult rv = mEventReceiver->RemoveEventListenerByIID(pListener, NS_GET_IID(nsIDOMContextMenuListener));
+  if (mEventTarget) {
+    nsIDOMContextMenuListener *pListener = static_cast<nsIDOMContextMenuListener *>(this);
+    nsresult rv = mEventTarget->RemoveEventListenerByIID(pListener, NS_GET_IID(nsIDOMContextMenuListener));
     if (NS_SUCCEEDED(rv))
       mContextMenuListenerInstalled = PR_FALSE;
   }
@@ -1603,8 +1622,8 @@ ChromeContextMenuListener::RemoveContextMenuListener()
 NS_IMETHODIMP
 ChromeContextMenuListener::AddChromeListeners()
 {  
-  if ( !mEventReceiver )
-    GetEventReceiver(mWebBrowser, getter_AddRefs(mEventReceiver));
+  if (!mEventTarget)
+    GetPIDOMEventTarget(mWebBrowser, getter_AddRefs(mEventTarget));
   
   // Register the appropriate events for context menus, but only if
   // the embedding chrome cares.
@@ -1631,7 +1650,7 @@ ChromeContextMenuListener::RemoveChromeListeners()
   if ( mContextMenuListenerInstalled )
     RemoveContextMenuListener();
   
-  mEventReceiver = nsnull;
+  mEventTarget = nsnull;
   
   // it really doesn't matter if these fail...
   return NS_OK;
@@ -1687,77 +1706,71 @@ ChromeContextMenuListener::ContextMenu(nsIDOMEvent* aMouseEvent)
     menuInfo = menuInfoImpl; 
   }
 
-  // Find the first node to be an element starting with this node and
-  // working up through its parents.
-
   PRUint32 flags = nsIContextMenuListener::CONTEXT_NONE;
   PRUint32 flags2 = nsIContextMenuListener2::CONTEXT_NONE;
-  nsCOMPtr<nsIContent> content;
-  do {
-    // XXX test for selected text
-    content = do_QueryInterface(node);
-    if (content && content->IsNodeOfType(nsINode::eHTML)) {
-      const char *tagStr;
-      content->Tag()->GetUTF8String(&tagStr);
 
-      // Test what kind of element we're dealing with here
-      if (strcmp(tagStr, "img") == 0)
-      {
+  // XXX test for selected text
+
+  PRUint16 nodeType;
+  res = node->GetNodeType(&nodeType);
+  NS_ENSURE_SUCCESS(res, res);
+
+  // First, checks for nodes that never have children.
+  if (nodeType == nsIDOMNode::ELEMENT_NODE) {
+    nsCOMPtr<nsIImageLoadingContent> content(do_QueryInterface(node));
+    if (content) {
+      nsCOMPtr<nsIURI> imgUri;
+      content->GetCurrentURI(getter_AddRefs(imgUri));
+      if (imgUri) {
         flags |= nsIContextMenuListener::CONTEXT_IMAGE;
         flags2 |= nsIContextMenuListener2::CONTEXT_IMAGE;
         targetDOMnode = node;
-        // if we see an image, keep searching for a possible anchor
       }
-      else if (strcmp(tagStr, "input") == 0)
-      {
-        // INPUT element - button, combo, checkbox, text etc.
-        flags |= nsIContextMenuListener::CONTEXT_INPUT;
-        flags2 |= nsIContextMenuListener2::CONTEXT_INPUT;
-        targetDOMnode = node;
-        
-        // See if the input type is an image
-        if (menuListener2) {
-          nsCOMPtr<nsIDOMHTMLInputElement> inputElement(do_QueryInterface(node));
-          if (inputElement) {
-            nsAutoString inputElemType;
-            inputElement->GetType(inputElemType);
-            if (inputElemType.LowerCaseEqualsLiteral("image"))
-              flags2 |= nsIContextMenuListener2::CONTEXT_IMAGE;
-          }
-        }
-        break; // exit do-while
+    }
+
+    nsCOMPtr<nsIDOMHTMLInputElement> inputElement(do_QueryInterface(node));
+    if (inputElement) {
+      flags |= nsIContextMenuListener::CONTEXT_INPUT;
+      flags2 |= nsIContextMenuListener2::CONTEXT_INPUT;
+
+      if (menuListener2) {
+        nsAutoString inputElemType;
+        inputElement->GetType(inputElemType);
+        if (inputElemType.LowerCaseEqualsLiteral("text") ||
+            inputElemType.LowerCaseEqualsLiteral("password"))
+          flags2 |= nsIContextMenuListener2::CONTEXT_TEXT;
       }
-      else if (strcmp(tagStr, "textarea") == 0)
-      {
-        // text area
-        flags |= nsIContextMenuListener::CONTEXT_TEXT;
-        flags2 |= nsIContextMenuListener2::CONTEXT_TEXT;
-        targetDOMnode = node;
-        break; // exit do-while
-      }
-      else if (strcmp(tagStr, "html") == 0)
-      {
-        if (!flags && !flags2) { 
-        // only care about this if no other context was found.
-            flags |= nsIContextMenuListener::CONTEXT_DOCUMENT;
-            flags2 |= nsIContextMenuListener2::CONTEXT_DOCUMENT;
-            targetDOMnode = node;
-        }
-        if (!(flags & nsIContextMenuListener::CONTEXT_IMAGE)) {
-          // first check if this is a background image that the user was trying to click on
-          // and if the listener is ready for that (only nsIContextMenuListener2 and up)
-          if (menuInfoImpl && menuInfoImpl->HasBackgroundImage(node)) {
-            flags2 |= nsIContextMenuListener2::CONTEXT_BACKGROUND_IMAGE;
-          }
-        }
-        break; // exit do-while
-      }
-      else if (strcmp(tagStr, "object") == 0 ||  /* XXX what about images and documents? */
-               strcmp(tagStr, "embed") == 0 ||
-               strcmp(tagStr, "applet") == 0)
-      {                // always consume events for plugins and Java 
-        return NS_OK;  // who may throw their own context menus
-      }
+
+      targetDOMnode = node;
+    }
+
+    nsCOMPtr<nsIDOMHTMLTextAreaElement> textElement(do_QueryInterface(node));
+    if (textElement) {
+      flags |= nsIContextMenuListener::CONTEXT_TEXT;
+      flags2 |= nsIContextMenuListener2::CONTEXT_TEXT;
+      targetDOMnode = node;
+    }
+
+    // always consume events for plugins and Java who may throw their
+    // own context menus but not for image objects.  Document objects
+    // will never be targets or ancestors of targets, so that's OK.
+    nsCOMPtr<nsIDOMHTMLObjectElement> objectElement;
+    if (!(flags & nsIContextMenuListener::CONTEXT_IMAGE))
+      objectElement = do_QueryInterface(node);
+    nsCOMPtr<nsIDOMHTMLEmbedElement> embedElement(do_QueryInterface(node));
+    nsCOMPtr<nsIDOMHTMLAppletElement> appletElement(do_QueryInterface(node));
+
+    if (objectElement || embedElement || appletElement)
+      return NS_OK;
+  }
+
+  // Bubble out, looking for items of interest
+  do {
+    PRUint16 nodeType;
+    res = node->GetNodeType(&nodeType);
+    NS_ENSURE_SUCCESS(res, res);
+
+    if (nodeType == nsIDOMNode::ELEMENT_NODE) {
 
       // Test if the element has an associated link
       nsCOMPtr<nsIDOMElement> element(do_QueryInterface(node));
@@ -1782,6 +1795,30 @@ ChromeContextMenuListener::ContextMenu(nsIDOMEvent* aMouseEvent)
     node->GetParentNode(getter_AddRefs(parentNode));
     node = parentNode;
   } while (node);
+
+  if (!flags && !flags2) {
+    // We found nothing of interest so far, check if we
+    // have at least an html document.
+    nsCOMPtr<nsIDOMDocument> document;
+    node = do_QueryInterface(targetNode);
+    node->GetOwnerDocument(getter_AddRefs(document));
+    nsCOMPtr<nsIDOMHTMLDocument> htmlDocument(do_QueryInterface(document));
+    if (htmlDocument) {
+      flags |= nsIContextMenuListener::CONTEXT_DOCUMENT;
+      flags2 |= nsIContextMenuListener2::CONTEXT_DOCUMENT;
+      targetDOMnode = node;
+      if (!(flags & nsIContextMenuListener::CONTEXT_IMAGE)) {
+        // check if this is a background image that the user was trying to click on
+        // and if the listener is ready for that (only nsIContextMenuListener2 and up)
+        if (menuInfoImpl && menuInfoImpl->HasBackgroundImage(targetDOMnode)) {
+          flags2 |= nsIContextMenuListener2::CONTEXT_BACKGROUND_IMAGE;
+          // For the embedder to get the correct background image 
+          // targetDOMnode must point to the original node. 
+          targetDOMnode = do_QueryInterface(targetNode);
+        }
+      }
+    }
+  }
 
   // we need to cache the event target into the focus controller's popupNode
   // so we can get at it later from command code, etc.:
