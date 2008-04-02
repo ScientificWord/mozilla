@@ -79,6 +79,7 @@
 #include "nsISupportsPriority.h"
 #include "nsIProtocolProxyCallback.h"
 #include "nsICancelable.h"
+#include "nsIProxiedChannel.h"
 
 class nsHttpResponseHead;
 class nsAHttpConnection;
@@ -101,6 +102,7 @@ class nsHttpChannel : public nsHashPropertyBag
                     , public nsIResumableChannel
                     , public nsISupportsPriority
                     , public nsIProtocolProxyCallback
+                    , public nsIProxiedChannel
 {
 public:
     NS_DECL_ISUPPORTS_INHERITED
@@ -118,6 +120,7 @@ public:
     NS_DECL_NSIRESUMABLECHANNEL
     NS_DECL_NSISUPPORTSPRIORITY
     NS_DECL_NSIPROTOCOLPROXYCALLBACK
+    NS_DECL_NSIPROXIEDCHANNEL
 
     nsHttpChannel();
     virtual ~nsHttpChannel();
@@ -146,6 +149,9 @@ private:
     PRBool   RequestIsConditional();
     nsresult Connect(PRBool firstTime = PR_TRUE);
     nsresult AsyncAbort(nsresult status);
+    // Send OnStartRequest/OnStopRequest to our listener, if any.
+    void     HandleAsyncNotifyListener();
+    void     DoNotifyListener();
     nsresult SetupTransaction();
     void     AddCookiesToRequest();
     nsresult ApplyContentConversions();
@@ -165,20 +171,27 @@ private:
 
     // proxy specific methods
     nsresult ProxyFailover();
-    nsresult ReplaceWithProxy(nsIProxyInfo *);
+    nsresult DoReplaceWithProxy(nsIProxyInfo *);
+    void HandleAsyncReplaceWithProxy();
     nsresult ResolveProxy();
 
     // cache specific methods
     nsresult OpenCacheEntry(PRBool offline, PRBool *delayed);
+    nsresult OpenOfflineCacheEntryForWriting();
     nsresult GenerateCacheKey(nsACString &key);
     nsresult UpdateExpirationTime();
     nsresult CheckCache();
+    nsresult ShouldUpdateOfflineCacheEntry(PRBool *shouldCacheForOfflineUse);
     nsresult ReadFromCache();
     void     CloseCacheEntry();
+    void     CloseOfflineCacheEntry();
     nsresult InitCacheEntry();
-    nsresult StoreAuthorizationMetaData();
+    nsresult InitOfflineCacheEntry();
+    nsresult AddCacheEntryHeaders(nsICacheEntryDescriptor *entry);
+    nsresult StoreAuthorizationMetaData(nsICacheEntryDescriptor *entry);
     nsresult FinalizeCacheEntry();
     nsresult InstallCacheListener(PRUint32 offset = 0);
+    nsresult InstallOfflineCacheListener();
 
     // byte range request specific methods
     nsresult SetupByteRangeRequest(PRUint32 partialLen);
@@ -193,13 +206,12 @@ private:
     nsresult GetAuthenticator(const char *challenge, nsCString &scheme, nsIHttpAuthenticator **auth); 
     void     ParseRealm(const char *challenge, nsACString &realm);
     void     GetIdentityFromURI(PRUint32 authFlags, nsHttpAuthIdentity&);
-    nsresult PromptForIdentity(const char *scheme, const char *host, PRInt32 port, PRBool proxyAuth, const char *realm, const char *authType, PRUint32 authFlags, nsHttpAuthIdentity &);
+    nsresult PromptForIdentity(PRUint32 level, PRBool proxyAuth, const char *realm, const char *authType, PRUint32 authFlags, nsHttpAuthIdentity &);
     PRBool   ConfirmAuth(const nsString &bundleKey, PRBool doYesNoPrompt);
     void     CheckForSuperfluousAuth();
     void     SetAuthorizationHeader(nsHttpAuthCache *, nsHttpAtom header, const char *scheme, const char *host, PRInt32 port, const char *path, nsHttpAuthIdentity &ident);
     void     AddAuthorizationHeaders();
     nsresult GetCurrentPath(nsACString &);
-    void     ClearPasswordManagerEntry(const char *scheme, const char *host, PRInt32 port, const char *realm, const PRUnichar *user);
     nsresult DoAuthRetry(nsAHttpConnection *);
 
 private:
@@ -244,6 +256,10 @@ private:
     PRUint32                          mPostID;
     PRUint32                          mRequestTime;
 
+    nsCOMPtr<nsICacheEntryDescriptor> mOfflineCacheEntry;
+    nsCacheAccessMode                 mOfflineCacheAccess;
+    nsCString                         mOfflineCacheClientID;
+
     // auth specific data
     nsISupports                      *mProxyAuthContinuationState;
     nsCString                         mProxyAuthType;
@@ -256,11 +272,24 @@ private:
     nsCString                         mEntityID;
     PRUint64                          mStartPos;
 
+    // Function pointer that can be set to indicate that we got suspended while
+    // waiting on an AsyncCall.  When we get resumed we should AsyncCall this
+    // function.
+    nsAsyncCallback                   mPendingAsyncCallOnResume;
+
+    // Proxy info to replace with
+    nsCOMPtr<nsIProxyInfo>            mTargetProxyInfo;
+
+    // Suspend counter.  This is used if someone tries to suspend/resume us
+    // before we have either a cache pump or a transaction pump.
+    PRUint32                          mSuspendCount;
+
     // redirection specific data.
     PRUint8                           mRedirectionLimit;
 
     // state flags
     PRUint32                          mIsPending                : 1;
+    PRUint32                          mWasOpened                : 1;
     PRUint32                          mApplyConversion          : 1;
     PRUint32                          mAllowPipelining          : 1;
     PRUint32                          mCachedContentIsValid     : 1;
@@ -273,6 +302,7 @@ private:
     PRUint32                          mSuppressDefensiveAuth    : 1;
     PRUint32                          mResuming                 : 1;
     PRUint32                          mInitedCacheEntry         : 1;
+    PRUint32                          mCacheForOfflineUse       : 1;
 
     class nsContentEncodings : public nsIUTF8StringEnumerator
     {

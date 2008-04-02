@@ -64,8 +64,10 @@ static PRThread             *_pr_io_completion_thread;
 
 #define RECYCLE_SIZE 512
 static struct _MDLock        _pr_recycle_lock;
-static PRInt32               _pr_recycle_array[RECYCLE_SIZE];
-static PRInt32               _pr_recycle_tail = 0; 
+static PRInt32               _pr_recycle_INET_array[RECYCLE_SIZE];
+static PRInt32               _pr_recycle_INET_tail = 0; 
+static PRInt32               _pr_recycle_INET6_array[RECYCLE_SIZE];
+static PRInt32               _pr_recycle_INET6_tail = 0; 
 
 __declspec(thread) PRThread *_pr_io_restarted_io = NULL;
 DWORD _pr_io_restartedIOIndex;  /* The thread local storage slot for each
@@ -905,7 +907,9 @@ _PR_MD_INIT_IO()
     } else 
         PR_ASSERT(0);
 
+#ifdef _NEED_351_FILE_LOCKING_HACK
     IsFileLocalInit();
+#endif /* _NEED_351_FILE_LOCKING_HACK */
 
     /*
      * UDP support: start up the continuation thread
@@ -963,15 +967,20 @@ _PR_MD_INIT_IO()
  * second argument.
  */
 static SOCKET
-_md_get_recycled_socket()
+_md_get_recycled_socket(int af)
 {
     SOCKET rv;
-    int af = AF_INET;
 
     _MD_LOCK(&_pr_recycle_lock);
-    if (_pr_recycle_tail) {
-        _pr_recycle_tail--;
-        rv = _pr_recycle_array[_pr_recycle_tail];
+    if (af == AF_INET && _pr_recycle_INET_tail) {
+        _pr_recycle_INET_tail--;
+        rv = _pr_recycle_INET_array[_pr_recycle_INET_tail];
+        _MD_UNLOCK(&_pr_recycle_lock);
+        return rv;
+    }
+    if (af == AF_INET6 && _pr_recycle_INET6_tail) {
+        _pr_recycle_INET6_tail--;
+        rv = _pr_recycle_INET6_array[_pr_recycle_INET6_tail];
         _MD_UNLOCK(&_pr_recycle_lock);
         return rv;
     }
@@ -989,14 +998,19 @@ _md_get_recycled_socket()
  * Add a socket to the recycle bin.
  */
 static void
-_md_put_recycled_socket(SOCKET newsock)
+_md_put_recycled_socket(SOCKET newsock, int af)
 {
-    PR_ASSERT(_pr_recycle_tail >= 0);
+    PR_ASSERT(_pr_recycle_INET_tail >= 0);
+    PR_ASSERT(_pr_recycle_INET6_tail >= 0);
 
     _MD_LOCK(&_pr_recycle_lock);
-    if (_pr_recycle_tail < RECYCLE_SIZE) {
-        _pr_recycle_array[_pr_recycle_tail] = newsock;
-        _pr_recycle_tail++;
+    if (af == AF_INET && _pr_recycle_INET_tail < RECYCLE_SIZE) {
+        _pr_recycle_INET_array[_pr_recycle_INET_tail] = newsock;
+        _pr_recycle_INET_tail++;
+        _MD_UNLOCK(&_pr_recycle_lock);
+    } else if (af == AF_INET6 && _pr_recycle_INET6_tail < RECYCLE_SIZE) {
+        _pr_recycle_INET6_array[_pr_recycle_INET6_tail] = newsock;
+        _pr_recycle_INET6_tail++;
         _MD_UNLOCK(&_pr_recycle_lock);
     } else {
         _MD_UNLOCK(&_pr_recycle_lock);
@@ -1325,7 +1339,7 @@ _PR_MD_FAST_ACCEPT(PRFileDesc *fd, PRNetAddr *raddr, PRUint32 *rlen,
         }
     }
 
-    accept_sock = _md_get_recycled_socket();
+    accept_sock = _md_get_recycled_socket(fd->secret->af);
     if (accept_sock == INVALID_SOCKET)
         return -1;
 
@@ -1355,7 +1369,7 @@ _PR_MD_FAST_ACCEPT(PRFileDesc *fd, PRNetAddr *raddr, PRUint32 *rlen,
                   &bytes,
                   &(me->md.overlapped.overlapped));
 
-    if ( (rv == 0) && ((err = GetLastError()) != ERROR_IO_PENDING))  {
+    if ( (rv == 0) && ((err = WSAGetLastError()) != ERROR_IO_PENDING))  {
         /* Argh! The IO failed */
 		closesocket(accept_sock);
 		_PR_THREAD_LOCK(me);
@@ -1448,7 +1462,7 @@ _PR_MD_FAST_ACCEPT_READ(PRFileDesc *sd, PROsfd *newSock, PRNetAddr **raddr,
         sd->secret->md.io_model_committed = PR_TRUE;
     }
 
-    *newSock = _md_get_recycled_socket();
+    *newSock = _md_get_recycled_socket(sd->secret->af);
     if (*newSock == INVALID_SOCKET)
         return -1;
 
@@ -1698,7 +1712,7 @@ _PR_MD_SENDFILE(PRFileDesc *sock, PRSendFileData *sfd,
     }
 
     if (flags & PR_TRANSMITFILE_CLOSE_SOCKET) {
-        _md_put_recycled_socket(sock->secret->md.osfd);
+        _md_put_recycled_socket(sock->secret->md.osfd, sock->secret->af);
     }
 
     PR_ASSERT(me->io_pending == PR_FALSE);
@@ -3029,79 +3043,17 @@ IsRootDirectory(char *fn, size_t buflen)
 PRInt32
 _PR_MD_GETFILEINFO64(const char *fn, PRFileInfo64 *info)
 {
-    HANDLE hFindFile;
-    WIN32_FIND_DATA findFileData;
-    char pathbuf[MAX_PATH + 1];
+    WIN32_FILE_ATTRIBUTE_DATA findFileData;
     
     if (NULL == fn || '\0' == *fn) {
         PR_SetError(PR_INVALID_ARGUMENT_ERROR, 0);
         return -1;
     }
 
-    /*
-     * FindFirstFile() expands wildcard characters.  So
-     * we make sure the pathname contains no wildcard.
-     */
-    if (NULL != _mbspbrk(fn, "?*")) {
-        PR_SetError(PR_FILE_NOT_FOUND_ERROR, 0);
+    if (!GetFileAttributesEx(fn, GetFileExInfoStandard, &findFileData)) {
+        _PR_MD_MAP_OPENDIR_ERROR(GetLastError());
         return -1;
     }
-
-    hFindFile = FindFirstFile(fn, &findFileData);
-    if (INVALID_HANDLE_VALUE == hFindFile) {
-        DWORD len;
-        char *filePart;
-
-        /*
-         * FindFirstFile() does not work correctly on root directories.
-         * It also doesn't work correctly on a pathname that ends in a
-         * slash.  So we first check to see if the pathname specifies a
-         * root directory.  If not, and if the pathname ends in a slash,
-         * we remove the final slash and try again.
-         */
-
-        /*
-         * If the pathname does not contain ., \, and /, it cannot be
-         * a root directory or a pathname that ends in a slash.
-         */
-        if (NULL == _mbspbrk(fn, ".\\/")) {
-            _PR_MD_MAP_OPENDIR_ERROR(GetLastError());
-            return -1;
-        } 
-        len = GetFullPathName(fn, sizeof(pathbuf), pathbuf,
-                &filePart);
-        if (0 == len) {
-            _PR_MD_MAP_OPENDIR_ERROR(GetLastError());
-            return -1;
-        }
-        if (len > sizeof(pathbuf)) {
-            PR_SetError(PR_NAME_TOO_LONG_ERROR, 0);
-            return -1;
-        }
-        if (IsRootDirectory(pathbuf, sizeof(pathbuf))) {
-            info->type = PR_FILE_DIRECTORY;
-            info->size = 0;
-            /*
-             * These timestamps don't make sense for root directories.
-             */
-            info->modifyTime = 0;
-            info->creationTime = 0;
-            return 0;
-        }
-        if (!IsPrevCharSlash(pathbuf, pathbuf + len)) {
-            _PR_MD_MAP_OPENDIR_ERROR(GetLastError());
-            return -1;
-        } else {
-            pathbuf[len - 1] = '\0';
-            hFindFile = FindFirstFile(pathbuf, &findFileData);
-            if (INVALID_HANDLE_VALUE == hFindFile) {
-                _PR_MD_MAP_OPENDIR_ERROR(GetLastError());
-                return -1;
-            }
-        }
-    }
-
-    FindClose(hFindFile);
 
     if (findFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
         info->type = PR_FILE_DIRECTORY;

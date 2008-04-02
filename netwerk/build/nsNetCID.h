@@ -326,6 +326,10 @@
 #define NS_INCREMENTALDOWNLOAD_CONTRACTID \
     "@mozilla.org/network/incremental-download;1"
 
+// component implementing nsISystemProxySettings.
+#define NS_SYSTEMPROXYSETTINGS_CONTRACTID \
+    "@mozilla.org/system-proxy-settings;1"
+
 // service implementing nsIStreamTransportService
 #define NS_STREAMTRANSPORTSERVICE_CLASSNAME \
     "nsStreamTransportService"
@@ -713,6 +717,14 @@
     { 0xa2, 0x8a, 0x5b, 0xa2, 0x44, 0x7f, 0xba, 0xce } \
 }
 
+#define NS_UDPSOCKETPROVIDER_CID                       \
+{ /* 320706D2-2E81-42c6-89C3-8D83B17D3FB4 */           \
+    0x320706d2,                                        \
+    0x2e81,                                            \
+    0x42c6,                                            \
+    { 0x89, 0xc3, 0x8d, 0x83, 0xb1, 0x7d, 0x3f, 0xb4 } \
+}
+
 #define NS_SSLSOCKETPROVIDER_CONTRACTID \
     NS_NETWORK_SOCKET_CONTRACTID_PREFIX "ssl"
 
@@ -776,6 +788,14 @@
 #define NS_GENERIC_CONTENT_SNIFFER \
     "@mozilla.org/network/content-sniffer;1"
 
+/**
+ * Detector that can act as either an nsIStreamConverter or an
+ * nsIContentSniffer to decide whether text/plain data is "really" text/plain
+ * or APPLICATION_GUESS_FROM_EXT.  Use with CreateInstance.
+ */
+#define NS_BINARYDETECTOR_CONTRACTID \
+    "@mozilla.org/network/binary-detector;1"
+
 /******************************************************************************
  * netwerk/system classes
  */
@@ -796,6 +816,8 @@
 /**
  * This contract ID will be gotten as a service and gets the opportunity to look
  * at and veto all redirects that are processed by necko.
+ *
+ * Must implement nsIChannelEventSink
  */
 #define NS_GLOBAL_CHANNELEVENTSINK_CONTRACTID \
   "@mozilla.org/netwerk/global-channel-event-sink;1"
@@ -803,9 +825,31 @@
 /**
  * This contract ID will be gotten as a service implementing nsINetworkLinkService
  * and monitored by IOService for automatic online/offline management.
+ *
+ * Must implement nsINetworkLinkService
  */
 #define NS_NETWORK_LINK_SERVICE_CONTRACTID \
   "@mozilla.org/network/network-link-service;1"
+
+/**
+ * This contract ID is used when Necko needs to wrap an nsIAuthPrompt as
+ * nsIAuthPrompt2. Implementing it is required for backwards compatibility
+ * with Versions before 1.9.
+ *
+ * Must implement nsIAuthPromptAdapterFactory
+ */
+#define NS_AUTHPROMPT_ADAPTER_FACTORY_CONTRACTID \
+  "@mozilla.org/network/authprompt-adapter-factory;1"
+
+/**
+ * Must implement nsICryptoHash.
+ */
+#define NS_CRYPTO_HASH_CONTRACTID "@mozilla.org/security/hash;1"
+
+/**
+ * Must implement nsICryptoHMAC.
+ */
+#define NS_CRYPTO_HMAC_CONTRACTID "@mozilla.org/security/hmac;1"
 
 /******************************************************************************
  * Categories
@@ -835,5 +879,10 @@
  * nsIChannel::LOAD_CALL_CONTENT_SNIFFERS.
  */
 #define NS_CONTENT_SNIFFER_CATEGORY "net-content-sniffers"
+
+/**
+ * Must implement nsINSSErrorsService.
+ */
+#define NS_NSS_ERRORS_SERVICE_CONTRACTID "@mozilla.org/nss_errors_service;1"
 
 #endif // nsNetCID_h__

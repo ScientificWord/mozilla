@@ -48,7 +48,12 @@
 #define _PR_SI_ARCHITECTURE "ia64"
 #define PR_DLL_SUFFIX        ".so"
 #else
-#define _PR_SI_ARCHITECTURE "hppa"
+/*
+ * _PR_SI_ARCHITECTURE must be "hppa1.1" for backward compatibility.
+ * It was changed to "hppa" in NSPR 4.6.2, but was changed back in
+ * NSPR 4.6.4.
+ */
+#define _PR_SI_ARCHITECTURE "hppa1.1"
 #define PR_DLL_SUFFIX        ".sl"
 #endif
 
@@ -98,12 +103,31 @@ extern PRInt32 _PR_ia64_AtomicSet(PRInt32 *val, PRInt32 newval);
 #define _MD_ATOMIC_SET                _PR_ia64_AtomicSet
 #endif
 
-#ifdef _PR_INET6
-#define _PR_HAVE_INET_NTOP
 #define _PR_HAVE_GETIPNODEBYNAME
 #define _PR_HAVE_GETIPNODEBYADDR
 #define _PR_HAVE_GETADDRINFO
+#ifdef _PR_INET6
+#define _PR_HAVE_INET_NTOP
+#else
 #define _PR_INET6_PROBE
+#define _PR_HAVE_MD_SOCKADDR_IN6
+/* isomorphic to struct in6_addr on HP-UX B.11.23 */
+struct _md_in6_addr {
+    union {
+        PRUint8   _S6_u8[16];
+        PRUint16  _S6_u16[8];
+        PRUint32  _S6_u32[4];
+        PRUint32  __S6_align;
+    } _s6_un;
+};
+/* isomorphic to struct sockaddr_in6 on HP-UX B.11.23 */
+struct _md_sockaddr_in6 {
+    PRUint16 sin6_family;
+    PRUint16 sin6_port;
+    PRUint32 sin6_flowinfo;
+    struct _md_in6_addr sin6_addr;
+    PRUint32 sin6_scope_id;
+};
 #endif
 
 #if !defined(_PR_PTHREADS)

@@ -1,5 +1,7 @@
 // This file tests bug 250375
 
+do_import_script("netwerk/test/httpserver/httpd.js");
+
 function check_request_header(chan, name, value) {
   var chanValue;
   try {
@@ -32,6 +34,8 @@ var listener = {
   onStopRequest: function test_onStopR(request, ctx, status) {
     if (this._iteration == 1)
       run_test_continued();
+    else
+      httpserv.stop();
     do_test_finished();
   },
 
@@ -47,8 +51,11 @@ function makeChan() {
   return chan;
 }
 
+var httpserv = null;
+
 function run_test() {
-  start_server(4444);
+  httpserv = new nsHttpServer();
+  httpserv.start(4444);
 
   var chan = makeChan();
 
@@ -77,4 +84,3 @@ function run_test_continued() {
 
   do_test_pending();
 }
-
