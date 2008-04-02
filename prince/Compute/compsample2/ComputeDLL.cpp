@@ -14,11 +14,11 @@
 
 #include "ComputeDLL.h"
 
-#include "../CmpTypes.h"
-#include "../MRequest.h"
-#include "../MResult.h"
-#include "../WorkShop.h"
-#include "../Engines/fltutils.h"
+#include "CmpTypes.h"
+#include "MRequest.h"
+#include "MResult.h"
+#include "WorkShop.h"
+#include "fltutils.h"
 
 // global
 MathWorkShop *workshop;

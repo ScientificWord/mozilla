@@ -3,7 +3,7 @@
 #ifndef TREE2STDMML_H
 #define TREE2STDMML_H
 
-#include "../CmpTypes.h"
+#include "CmpTypes.h"
 #include "fltutils.h"
 
 class Grammar;

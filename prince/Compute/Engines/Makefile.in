@@ -19,6 +19,8 @@ endif
 
 MODULE = compute
 LIBRARY_NAME = enginelib_s
+DIST_INSTALL = 1
+
 
 DIRS		=  MuPAD
 ifeq ($(OS_ARCH),WINNT)
@@ -42,7 +44,7 @@ REQUIRES = \
   enginewrapper \
   $(NULL)
 
-LOCAL_INCLUDES	= -I$(srcdir)/../libtci 
+LOCAL_INCLUDES	= -I$(srcdir)/../libtci	 -I$(srcdir)/.. -I$(srcdir)/../computelib
 
 # we don't want the shared lib, but we want to force the creation of a static lib.
 FORCE_STATIC_LIB = 1
