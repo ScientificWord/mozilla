@@ -3,7 +3,7 @@
 #ifndef   TCISTRING_H
 #define   TCISTRING_H
 
-#include "../CmpTypes.h"
+#include "CmpTypes.h"
 
 #include <string.h>
 #include <stdarg.h>
