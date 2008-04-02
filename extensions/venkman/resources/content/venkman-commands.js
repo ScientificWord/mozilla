@@ -153,6 +153,7 @@ function initCommands()
          ["profile-tb",               "profile toggle",                      0],
          ["this",                     "props this",                CMD_CONSOLE],
          ["toggle-chrome",            "chrome-filter toggle",                0],
+         ["toggle-forcescriptload",   "toggle-pref profile.forceScriptLoad", 0],
          ["toggle-ias",               "startup-init toggle",                 0],
          ["toggle-pprint",            "pprint toggle",                       0],
          ["toggle-profile",           "profile toggle",                      0],
@@ -1179,27 +1180,28 @@ function cmdHelp (e)
     var ary;
     if (!e.pattern)
     {
-        openTopWin ("x-jsd:help", "venkman-help");
-        return true;
-    }
-    else
-    {
-        ary = console.commandManager.list (e.pattern, CMD_CONSOLE);
- 
-        if (ary.length == 0)
+        if (!console.haveBrowser)
         {
-            display (getMsg(MSN_ERR_NO_COMMAND, e.pattern), MT_ERROR);
+            display(MSG_HELP_HOSTPROBLEM, MT_ERROR);
             return false;
         }
-
-        for (var i in ary)
-        {        
-            display (getMsg(MSN_FMT_USAGE, [ary[i].name, ary[i].usage]), 
-                     MT_USAGE);
-            display (ary[i].help, MT_HELP);
-        }
+        openTopWin("x-jsd:help", "venkman-help");
+        return true;
     }
 
+    ary = console.commandManager.list(e.pattern, CMD_CONSOLE);
+
+    if (ary.length == 0)
+    {
+        display(getMsg(MSN_ERR_NO_COMMAND, e.pattern), MT_ERROR);
+        return false;
+    }
+
+    for (var i in ary)
+    {
+        display(getMsg(MSN_FMT_USAGE, [ary[i].name, ary[i].usage]), MT_USAGE);
+        display(ary[i].help, MT_HELP);
+    }
     return true;
 }
 
@@ -2035,7 +2037,7 @@ function cmdStop (e)
     if (console.jsds.interruptHook)
         setStopState(false);
     else
-        setStopState(true);
+        setTimeout(setStopState, 1, true);
 }
 
 function cmdTMode (e)

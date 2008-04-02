@@ -36,31 +36,17 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
- 
-const nsIWindowMediator = Components.interfaces.nsIWindowMediator;
 
-function toOpenWindowByType(inType, uri)
-{
-    var windowManager = Components.classes['@mozilla.org/appshell/window-mediator;1'].getService();
-    var windowManagerInterface = windowManager.QueryInterface(nsIWindowMediator);
-    var topWindow = windowManagerInterface.getMostRecentWindow(inType);
-
-    if (topWindow)
-        topWindow.focus();
-    else
-        window.open(uri, "_blank", "chrome,extrachrome,menubar,resizable,scrollbars,status,toolbar");
-}
 
 function start_venkman() 
 {
     toOpenWindowByType("mozapp:venkman", "chrome://venkman/content/venkman.xul");
 }
 
-const XULAPPINFO_CONTRACTID = "@mozilla.org/xre/app-info;1";
-const nsIXULAppInfo = Components.interfaces.nsIXULAppInfo;
-
 function isThunderbird()
 {
+    const XULAPPINFO_CONTRACTID = "@mozilla.org/xre/app-info;1";
+    const nsIXULAppInfo = Components.interfaces.nsIXULAppInfo;
     var cls = Components.classes[XULAPPINFO_CONTRACTID];
     if (!cls)
         return false;

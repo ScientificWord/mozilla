@@ -37,8 +37,10 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-const __vnk_version        = "0.9.87";
-const __vnk_requiredLocale = "0.9.86";
+#filter substitution
+
+const __vnk_version        = "@VENKMAN_VERSION@";
+const __vnk_requiredLocale = "0.9.87.3";
 var   __vnk_versionSuffix  = "";
 
 const __vnk_counter_url = 
@@ -629,15 +631,61 @@ function init()
 
 function initApplicationCompatibility()
 {
-    // This routine does nothing more than tweak the UI based on the host 
+    // This function does nothing more than tweak the UI based on the host
     // application.
 
-    var windowMenu = document.getElementById("windowMenu");
-
     // Set up simple host and platform information.
-    console.host = "Mozilla";
-    if (!windowMenu.firstChild)
-        console.host = "Firefox";
+    console.host = "Unknown";
+    console.haveBrowser = false;
+
+    var app = getService("@mozilla.org/xre/app-info;1", "nsIXULAppInfo");
+    // nsIXULAppInfo wasn't implemented before 1.8...
+    if (app)
+    {
+        // Use the XULAppInfo.ID to find out what host we run on.
+        switch (app.ID)
+        {
+            case "{ec8030f7-c20a-464f-9b0e-13a3a9e97384}":
+                console.host = "Firefox";
+                console.haveBrowser = true;
+                break;
+            case "{3550f703-e582-4d05-9a08-453d09bdfdc6}": // Thunderbird
+                console.host = "Thunderbird";
+                break;
+            case "{a463f10c-3994-11da-9945-000d60ca027b}": // Flock
+                console.host = "Flock";
+                console.haveBrowser = true;
+                break;
+            case "{718e30fb-e89b-41dd-9da7-e25a45638b28}": // Sunbird
+                console.host = "Sunbird";
+                break;
+            case "{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}": // SeaMonkey
+                console.host = "Mozilla";
+                console.haveBrowser = true;
+                break;
+            default:
+                console.unknownAppUID = app.ID;
+                console.host = "ToolkitApp"; // Unknown host, platform install
+        }
+    }
+    else if ("getBrowserURL" in window)
+    {
+        var url = getBrowserURL();
+        if (url == "chrome://navigator/content/navigator.xul")
+        {
+            console.host = "Mozilla";
+            console.haveBrowser = true;
+        }
+        else if (url == "chrome://browser/content/browser.xul")
+        {
+            console.host = "Firefox";
+            console.haveBrowser = true;
+        }
+        else
+        {
+            console.unknownAppUID = url;
+        }
+    }
 
     console.platform = "Unknown";
     if (navigator.platform.search(/mac/i) > -1)
@@ -646,6 +694,8 @@ function initApplicationCompatibility()
         console.platform = "Windows";
     if (navigator.platform.search(/linux/i) > -1)
         console.platform = "Linux";
+    if (navigator.platform.search(/os\/2/i) > -1)
+        console.platform = "OS/2";
 
     console.hostPlatform = console.host + console.platform;
 
@@ -655,16 +705,11 @@ function initApplicationCompatibility()
     //var toolsMenu = document.getElementById("mainmenu:tools");
     var comBar    = document.getElementById("component-bar");
 
-    if (console.host == "Firefox") {
+    if (console.host != "Mozilla") {
         tasksMenu.parentNode.removeChild(tasksMenu);
         winMenu.parentNode.removeChild(winMenu);
-    } else {
-        comBar.collapsed = false;
+        comBar.collapsed = true;
     }
-
-    //if ((console.host != "Firefox") || (console.platform == "Linux")) {
-    //    toolsMenu.parentNode.removeChild(toolsMenu);
-    //}
 }
 
 function initPost()
@@ -797,24 +842,25 @@ console.hooks = new Object();
 console.hooks["hook-script-instance-sealed"] =
 function hookScriptSealed (e)
 {
+    var url = e.scriptInstance.url;
     if (!("componentPath" in console))
     {
-        var ary = e.scriptInstance.url.match (/(.*)venkman-service\.js$/);
-        if (ary)
+        const VNK_SVC = "venkman-service.js";
+        if (url.substr(-VNK_SVC.length) == VNK_SVC)
         {
             if (!console.prefs["enableChromeFilter"])
             {
                 dispatch ("debug-instance-on",
                           { scriptInstance: e.scriptInstance });
             }
-            console.componentPath = ary[1];
+            console.componentPath = url.substr(0, url.length - VNK_SVC.length);
         }
     }
 
     for (var fbp in console.fbreaks)
     {
         if (console.fbreaks[fbp].enabled &&
-            e.scriptInstance.url.indexOf(console.fbreaks[fbp].url) != -1)
+            url.indexOf(console.fbreaks[fbp].url) != -1)
         {
             e.scriptInstance.setBreakpoint(console.fbreaks[fbp].lineNumber,
                                            console.fbreaks[fbp]);
