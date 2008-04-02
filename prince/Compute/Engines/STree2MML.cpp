@@ -27,9 +27,9 @@
 
 #include "STree2MML.h"
 #include "MML2Tree.h"
-#include "../MResult.h"
-#include "../DefStore.h"
-#include "../PrefStor.h"
+#include "MResult.h"
+#include "DefStore.h"
+#include "PrefStor.h"
 #include <string.h>
 
 // IDs and Templates for MathML generation.

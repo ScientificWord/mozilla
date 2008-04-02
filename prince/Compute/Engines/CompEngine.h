@@ -3,7 +3,7 @@
 #ifndef COMPENGINE_H
 #define COMPENGINE_H
 
-#include "../CmpTypes.h"
+#include "CmpTypes.h"
 #include "fltutils.h"
 #include "msiIEngineWrapper.h"
 #include "nsCOMPtr.h"

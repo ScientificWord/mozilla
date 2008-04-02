@@ -3,10 +3,10 @@
 #ifndef ANALYZER_H
 #define ANALYZER_H
 
-#include "../CmpTypes.h"
+#include "CmpTypes.h"
 #include "fltutils.h"
-#include "../MRequest.h"
-#include "../MResult.h"
+#include "MRequest.h"
+#include "MResult.h"
 
 #include <limits.h>
 

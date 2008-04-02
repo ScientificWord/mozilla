@@ -24,8 +24,8 @@
 #include "Grammar.h"
 #include "MML2Tree.h"
 #include "Tree2StdMML.h"
-#include "../DefStore.h"
-#include "../PrefStor.h"
+#include "DefStore.h"
+#include "PrefStor.h"
 
 #include <string.h>
 #include <ctype.h>

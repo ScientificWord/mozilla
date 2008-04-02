@@ -3,7 +3,7 @@
 #ifndef FilterUtils_h
 #define FilterUtils_h
 
-#include "../CmpTypes.h"
+#include "CmpTypes.h"
 #include <stdlib.h>
 #include <stdio.h>
 

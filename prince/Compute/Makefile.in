@@ -1,77 +1,20 @@
-# Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 
-DEPTH		= ../..
-topsrcdir	= @top_srcdir@
-srcdir		= @srcdir@
-VPATH		= @srcdir@
+DEPTH = ../..
+topsrcdir = @top_srcdir@
+srcdir = @srcdir@
+VPATH = @srcdir@
+XPI_NAME	= prince
 
 include $(DEPTH)/config/autoconf.mk
 
-MODULE = compute
-LIBRARY_NAME = computelib_s
-
-DIRS		=  libtci public Engines compsample2 Wrappers 
-# Testjig2
-
-include $(topsrcdir)/config/config.mk
-
-CPPSRCS =				\
-  DefStore.cpp  \
-  MRequest.cpp \
-  MResult.cpp \
-  PrefStor.cpp  \
-  WorkShop.cpp  \
+MODULE		= compute
+DIRS		= computelib \
+	libtci \
+	compsample2 \
+	Engines \
+	public \
+	Wrappers \
 	$(NULL)
 
-REQUIRES = \
-  string \
-  xpcom \
-  enginewrapper \
-  $(NULL)
-
-
-LOCAL_INCLUDES	= -I$(srcdir)/libtci
-
-# we don't want the shared lib, but we want to force the creation of a static lib.
-FORCE_STATIC_LIB = 1
-
-SupportFiles	:= \
-			$(srcdir)/swfcns.mu \
-			$(NULL)
-
-ifeq ($(OS_ARCH),WINNT)
-MuPADlib	:= \
-			$(srcdir)/MuPAD/lib/lib.tar \
-			$(srcdir)/MuPAD/lib/lib.toc \
-			$(srcdir)/MuPAD/lib/sysinit.mu \
-			$(wildcard $(srcdir)/MuPAD/lib/xmlprint.*) \
-			$(NULL)
-
-endif
-
-ifeq ($(OS_ARCH),WINNT)
-SupportFiles	+= \
-			$(srcdir)/MuPAD/win32/mupkernel.dll \
-			$(srcdir)/tcifcns.m \
-			$(NULL)
-endif
-
-GMR_FILES := \
-      $(srcdir)/MMLents.gmr \
-      $(NULL)
-
-EXPORTS		= \
-		iCmpIDs.h \
-		iCmpTypes.h \
-		$(NULL)
 
 include $(topsrcdir)/config/rules.mk
-
-ifeq ($(OS_ARCH),WINNT)
-export:: $(MuPADlib)
-	$(INSTALL) $(MuPADlib)$(FINAL_TARGET)/MuPAD/lib
-endif
-
-export:: $(SupportFiles) $(GMR_FILES)
-	$(INSTALL) $(SupportFiles) $(GMR_FILES) $(FINAL_TARGET)
-

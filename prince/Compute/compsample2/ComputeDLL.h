@@ -1,10 +1,10 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 
-// This object emulates the DLL interface defined in ../CompDLL/ComputeDLL.h
+// This object emulates the DLL interface defined in CompDLL/ComputeDLL.h
 // Sort of hokey.
 
-#include "../CmpTypes.h"
-#include "../MRequest.h"
+#include "CmpTypes.h"
+#include "MRequest.h"
 #include "nsILocalFile.h"
 
 class ComputeDLL

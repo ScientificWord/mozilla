@@ -30,10 +30,10 @@
 
 #include "CompEngine.h"
 
-#include "../MRequest.h"
-#include "../MResult.h"
-#include "../DefStore.h"
-#include "../PrefStor.h"
+#include "MRequest.h"
+#include "MResult.h"
+#include "DefStore.h"
+#include "PrefStor.h"
 #include "Grammar.h"
 #include "MML2Tree.h"
 #include "Analyzer.h"

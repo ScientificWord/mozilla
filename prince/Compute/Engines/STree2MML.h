@@ -3,7 +3,7 @@
 #ifndef STREE2MML_H
 #define STREE2MML_H
 
-#include "../CmpTypes.h"
+#include "CmpTypes.h"
 #include "fltutils.h"
 
 // See SIBASEUNITS in .gmr file

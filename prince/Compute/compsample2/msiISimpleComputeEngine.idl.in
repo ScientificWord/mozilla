@@ -4,7 +4,7 @@
 // how I get #include past the preprocessor
 IDLinclude "nsISupports.idl"
 
-#include "../iCmpIDs.h"
+#include "../computelib/iCmpIDs.h"
 
 /*
  * msiISimpleComputeEngine - connection to computation engine
