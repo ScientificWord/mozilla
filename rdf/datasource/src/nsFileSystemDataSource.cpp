@@ -67,7 +67,7 @@
 #include "nsIChannel.h"
 #include "nsIFile.h"
 #include "nsEscape.h"
-#include "nsCRT.h"
+#include "nsCRTGlue.h"
 #include "nsAutoPtr.h"
 
 #ifdef  XP_WIN
@@ -260,7 +260,7 @@ FileSystemDataSource::GetURI(char **uri)
     if (! uri)
         return NS_ERROR_NULL_POINTER;
 
-    if ((*uri = nsCRT::strdup("rdf:files")) == nsnull)
+    if ((*uri = NS_strdup("rdf:files")) == nsnull)
         return NS_ERROR_OUT_OF_MEMORY;
 
     return NS_OK;
@@ -522,17 +522,10 @@ FileSystemDataSource::GetTargets(nsIRDFResource *source,
         }
         else if (property == mNC_pulse)
         {
-            nsIRDFLiteral   *pulseLiteral;
-            mRDFService->GetLiteral(NS_LITERAL_STRING("12").get(), &pulseLiteral);
-            nsISimpleEnumerator* result = new nsSingletonEnumerator(pulseLiteral);
-            NS_RELEASE(pulseLiteral);
-
-            if (! result)
-                return NS_ERROR_OUT_OF_MEMORY;
-
-            NS_ADDREF(result);
-            *targets = result;
-            return NS_OK;
+            nsCOMPtr<nsIRDFLiteral> pulseLiteral;
+            mRDFService->GetLiteral(NS_LITERAL_STRING("12").get(),
+                                    getter_AddRefs(pulseLiteral));
+            return NS_NewSingletonEnumerator(targets, pulseLiteral);
         }
     }
     else if (isFileURI(source))
@@ -547,13 +540,7 @@ FileSystemDataSource::GetTargets(nsIRDFResource *source,
             rv = GetName(source, getter_AddRefs(name));
             if (NS_FAILED(rv)) return rv;
 
-            nsISimpleEnumerator* result = new nsSingletonEnumerator(name);
-            if (! result)
-                return NS_ERROR_OUT_OF_MEMORY;
-
-            NS_ADDREF(result);
-            *targets = result;
-            return NS_OK;
+            return NS_NewSingletonEnumerator(targets, name);
         }
         else if (property == mNC_URL)
         {
@@ -561,13 +548,7 @@ FileSystemDataSource::GetTargets(nsIRDFResource *source,
             rv = GetURL(source, nsnull, getter_AddRefs(url));
             if (NS_FAILED(rv)) return rv;
 
-            nsISimpleEnumerator* result = new nsSingletonEnumerator(url);
-            if (! result)
-                return NS_ERROR_OUT_OF_MEMORY;
-
-            NS_ADDREF(result);
-            *targets = result;
-            return NS_OK;
+            return NS_NewSingletonEnumerator(targets, url);
         }
         else if (property == mRDF_type)
         {
@@ -581,14 +562,7 @@ FileSystemDataSource::GetTargets(nsIRDFResource *source,
             rv = mRDFService->GetLiteral(url.get(), getter_AddRefs(literal));
             if (NS_FAILED(rv)) return rv;
 
-            nsISimpleEnumerator* result = new nsSingletonEnumerator(literal);
-
-            if (! result)
-                return NS_ERROR_OUT_OF_MEMORY;
-
-            NS_ADDREF(result);
-            *targets = result;
-            return NS_OK;
+            return NS_NewSingletonEnumerator(targets, literal);
         }
         else if (property == mNC_pulse)
         {
@@ -597,14 +571,7 @@ FileSystemDataSource::GetTargets(nsIRDFResource *source,
                 getter_AddRefs(pulseLiteral));
             if (NS_FAILED(rv)) return rv;
 
-            nsISimpleEnumerator* result = new nsSingletonEnumerator(pulseLiteral);
-
-            if (! result)
-                return NS_ERROR_OUT_OF_MEMORY;
-
-            NS_ADDREF(result);
-            *targets = result;
-            return NS_OK;
+            return NS_NewSingletonEnumerator(targets, pulseLiteral);
         }
     }
 
@@ -815,13 +782,7 @@ FileSystemDataSource::ArcLabelsOut(nsIRDFResource *source,
         array->AppendElement(mNC_Child);
         array->AppendElement(mNC_pulse);
 
-        nsISimpleEnumerator* result = new nsArrayEnumerator(array);
-        if (! result)
-            return NS_ERROR_OUT_OF_MEMORY;
-
-        NS_ADDREF(result);
-        *labels = result;
-        return NS_OK;
+        return NS_NewArrayEnumerator(labels, array);
     }
     else if (isFileURI(source))
     {
@@ -842,13 +803,7 @@ FileSystemDataSource::ArcLabelsOut(nsIRDFResource *source,
             array->AppendElement(mNC_pulse);
         }
 
-        nsISimpleEnumerator* result = new nsArrayEnumerator(array);
-        if (! result)
-            return NS_ERROR_OUT_OF_MEMORY;
-
-        NS_ADDREF(result);
-        *labels = result;
-        return NS_OK;
+        return NS_NewArrayEnumerator(labels, array);
     }
 
     return NS_NewEmptyEnumerator(labels);
@@ -868,18 +823,7 @@ FileSystemDataSource::GetAllResources(nsISimpleEnumerator** aCursor)
 NS_IMETHODIMP
 FileSystemDataSource::AddObserver(nsIRDFObserver *n)
 {
-    NS_PRECONDITION(n != nsnull, "null ptr");
-    if (! n)
-        return NS_ERROR_NULL_POINTER;
-
-    if (! mObservers)
-    {
-        nsresult rv;
-        rv = NS_NewISupportsArray(getter_AddRefs(mObservers));
-        if (NS_FAILED(rv)) return rv;
-    }
-    mObservers->AppendElement(n);
-    return NS_OK;
+    return NS_ERROR_NOT_IMPLEMENTED;
 }
 
 
@@ -887,15 +831,7 @@ FileSystemDataSource::AddObserver(nsIRDFObserver *n)
 NS_IMETHODIMP
 FileSystemDataSource::RemoveObserver(nsIRDFObserver *n)
 {
-    NS_PRECONDITION(n != nsnull, "null ptr");
-    if (! n)
-        return NS_ERROR_NULL_POINTER;
-
-    if (! mObservers)
-        return NS_OK;
-
-    mObservers->RemoveElement(n);
-    return NS_OK;
+    return NS_ERROR_NOT_IMPLEMENTED;
 }
 
 
@@ -1041,14 +977,7 @@ FileSystemDataSource::GetVolumeList(nsISimpleEnumerator** aResult)
     }
 #endif
 
-    nsISimpleEnumerator* result = new nsArrayEnumerator(volumes);
-    if (! result)
-        return NS_ERROR_OUT_OF_MEMORY;
-
-    NS_ADDREF(result);
-    *aResult = result;
-
-    return NS_OK;
+    return NS_NewArrayEnumerator(aResult, volumes);
 }
 
 
@@ -1196,7 +1125,7 @@ FileSystemDataSource::GetFolderList(nsIRDFResource *source, PRBool allowHidden,
             continue;
   
         nsCAutoString           leaf(escLeafStr);
-        Recycle(escLeafStr);
+        NS_Free(escLeafStr);
         escLeafStr = nsnull;
 
         // using nsEscape() [above] doesn't escape slashes, so do that by hand
@@ -1226,17 +1155,8 @@ FileSystemDataSource::GetFolderList(nsIRDFResource *source, PRBool allowHidden,
             break;
     }
 
-    nsISimpleEnumerator* result = new nsArrayEnumerator(nameArray);
-    if (! result)
-        return NS_ERROR_OUT_OF_MEMORY;
-
-    NS_ADDREF(result);
-    *aResult = result;
-
-    return NS_OK;
+    return NS_NewArrayEnumerator(aResult, nameArray);
 }
-
-
 
 nsresult
 FileSystemDataSource::GetLastMod(nsIRDFResource *source, nsIRDFDate **aResult)
