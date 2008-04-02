@@ -106,6 +106,7 @@
 #include "nsTime.h"
 #include "nsDTDUtils.h"
 #include "nsParser.h"
+#include "nsCycleCollectionParticipant.h"
 
 class nsIHTMLContentSink;
 class nsIParserNode;
@@ -158,8 +159,9 @@ public:
                            eHTMLTags aTag,
                            nsEntryStack* aStyleStack = nsnull);
 
-    NS_DECL_ISUPPORTS
+    NS_DECL_CYCLE_COLLECTING_ISUPPORTS
     NS_DECL_NSIDTD
+    NS_DECL_CYCLE_COLLECTION_CLASS(CNavDTD)
 
 private:
     /**
@@ -172,7 +174,7 @@ private:
      */
     PRBool CanPropagate(eHTMLTags aParent,
                         eHTMLTags aChild,
-                        PRBool aParentContains);
+                        PRInt32 aParentContains);
 
     /**
      *  This method gets called to determine whether a given 
@@ -186,7 +188,7 @@ private:
      */
     PRBool CanOmit(eHTMLTags aParent, 
                    eHTMLTags aChild,
-                   PRBool& aParentContains);
+                   PRInt32& aParentContains);
 
     /**
      * Looking at aParent, try to see if we can propagate from aChild to
@@ -381,7 +383,7 @@ protected:
     
     nsDeque             mMisplacedContent;
     
-    nsIHTMLContentSink* mSink;
+    nsCOMPtr<nsIHTMLContentSink> mSink;
     nsTokenAllocator*   mTokenAllocator;
     nsDTDContext*       mBodyContext;
     nsDTDContext*       mTempContext;

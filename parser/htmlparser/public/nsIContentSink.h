@@ -74,14 +74,15 @@ public:
    * @update 2006-10-17 hsivonen
    */
   NS_IMETHOD WillTokenize(void)=0;
-  
+
   /**
    * This method gets called when the parser begins the process
    * of building the content model via the content sink.
    *
    * @update 5/7/98 gess
-  */
+   */     
   NS_IMETHOD WillBuildModel(void)=0;
+
   /**
    * This method gets called when the parser concludes the process
    * of building the content model via the content sink.
