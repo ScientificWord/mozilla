@@ -2267,9 +2267,9 @@ do_DrawString(const nsFontSwitch* aFontSwitch,
       x = data->mX;
       y = data->mY;
       data->mTranMatrix->TransformCoord(&x, &y);
-      if (IS_HIGH_SURROGATE(*str) && 
+      if (NS_IS_HIGH_SURROGATE(*str) && 
           ((str+1)<end) && 
-          IS_LOW_SURROGATE(*(str+1))) 
+          NS_IS_LOW_SURROGATE(*(str+1))) 
       {
         // special case for surrogate pair
         fontWin->DrawString(data->mDC, x, y, str, 2);
@@ -2433,7 +2433,7 @@ PRInt32 nsRenderingContextWin::GetMaxStringLength()
 {
   if (!mFontMetrics)
     return 1;
-  return NS_STATIC_CAST(nsFontMetricsWin*, mFontMetrics)->GetMaxStringLength();
+  return static_cast<nsFontMetricsWin*>(mFontMetrics)->GetMaxStringLength();
 }
 
 NS_IMETHODIMP nsRenderingContextWin :: CopyOffScreenBits(nsIDrawingSurface* aSrcSurf,
@@ -2859,22 +2859,6 @@ nsRenderingContextWin::ConditionRect(nsRect& aSrcRect, RECT& aDestRect)
   aDestRect.right = ((aSrcRect.x + aSrcRect.width) > kBottomRightLimit)
                       ? kBottomRightLimit
                       : (aSrcRect.x + aSrcRect.width);
-}
-
-
-NS_IMETHODIMP 
-nsRenderingContextWin::GetBackbuffer(const nsRect &aRequestedSize, const nsRect &aMaxSize, PRBool aForBlending, nsIDrawingSurface* &aBackbuffer)
-{
-  // Do not cache the backbuffer. On WIN32 it is faster to get allocate
-  // the backbuffer as needed. @see bug 95952
-  return AllocateBackbuffer(aRequestedSize, aMaxSize, aBackbuffer, PR_FALSE, aForBlending ? NS_CREATEDRAWINGSURFACE_FOR_PIXEL_ACCESS : 0);
-}
- 
-NS_IMETHODIMP 
-nsRenderingContextWin::ReleaseBackbuffer(void) {
-  // Destroy the backbuffer. Do not cache it. On WIN32 it is faster to get allocate
-  // the backbuffer as needed. @see bug 95952
-  return DestroyCachedBackbuffer();
 }
 
 /**

@@ -59,10 +59,11 @@
 #include "nsIInputStream.h"
 #include "nsIVariant.h"
 #include "nsIModule.h"
+#include "nsServiceManagerUtils.h"
+#include "nsStringAPI.h"
 
-#include "nsXPIDLString.h"
 #include "nsCRT.h"
-#include "xptcall.h"
+#include "nsXPTCUtils.h"
 #include "xpt_xdr.h"
 
 #ifdef HAVE_LONG_LONG
@@ -77,6 +78,14 @@
 
 #include <Python.h>
 
+// python 2.4 doesn't have Py_ssize_t
+// => fallback to int
+#if PY_VERSION_HEX < 0x02050000 && !defined(PY_SSIZE_T_MIN)
+typedef int Py_ssize_t;
+#endif
+
+// PYXPCOM_EXPORT means 'exported from the pyxpcom core lib' - which changes
+// spelling depending on whether pyxpcom is being built or just referenced.
 #ifdef BUILD_PYXPCOM
     /* We are building the main dll */
 #   define PYXPCOM_EXPORT NS_EXPORT
@@ -478,31 +487,25 @@ protected:
 			PyObject **ppResult,
 			const char *szFormat,
 			va_list va);
-	nsresult InvokeNativeGetViaPolicy(const char *szPropertyName,
-			PyObject **ppResult = NULL
-			);
-	nsresult InvokeNativeSetViaPolicy(const char *szPropertyName,
-			...);
 };
 
-class PYXPCOM_EXPORT PyXPCOM_XPTStub : public PyG_Base, public nsXPTCStubBase
+class PYXPCOM_EXPORT PyXPCOM_XPTStub : public PyG_Base, public nsAutoXPTCStub
 {
 friend class PyG_Base;
 public:
-	NS_IMETHOD QueryInterface(REFNSIID aIID, void** aInstancePtr)      \
-		{return PyG_Base::QueryInterface(aIID, aInstancePtr);}     \
-	NS_IMETHOD_(nsrefcnt) AddRef(void) {return PyG_Base::AddRef();}    \
-	NS_IMETHOD_(nsrefcnt) Release(void) {return PyG_Base::Release();}  \
+	NS_IMETHOD QueryInterface(REFNSIID aIID, void** aInstancePtr)
+		{return PyG_Base::QueryInterface(aIID, aInstancePtr);}
+	NS_IMETHOD_(nsrefcnt) AddRef(void) {return PyG_Base::AddRef();}
+	NS_IMETHOD_(nsrefcnt) Release(void) {return PyG_Base::Release();}
 
-	NS_IMETHOD GetInterfaceInfo(nsIInterfaceInfo** info);
 	// call this method and return result
 	NS_IMETHOD CallMethod(PRUint16 methodIndex,
-                          const nsXPTMethodInfo* info,
+                          const XPTMethodDescriptor* info,
                           nsXPTCMiniVariant* params);
 
 	virtual void *ThisAsIID(const nsIID &iid);
 protected:
-	PyXPCOM_XPTStub(PyObject *instance, const nsIID &iid) : PyG_Base(instance, iid) {;}
+	PyXPCOM_XPTStub(PyObject *instance, const nsIID &iid);
 private:
 };
 
@@ -551,7 +554,7 @@ class PYXPCOM_EXPORT PyXPCOM_GatewayVariantHelper
 public:
 	PyXPCOM_GatewayVariantHelper( PyG_Base *gateway,
 	                              int methodIndex,
-	                              const nsXPTMethodInfo *info, 
+	                              const XPTMethodDescriptor *info, 
 	                              nsXPTCMiniVariant* params );
 	~PyXPCOM_GatewayVariantHelper();
 	PyObject *MakePyArgs();
@@ -569,7 +572,7 @@ private:
 
 
 	nsXPTCMiniVariant* m_params;
-	const nsXPTMethodInfo *m_info;
+	const XPTMethodDescriptor *m_info;
 	int m_method_index;
 	PythonTypeDescriptor *m_python_type_desc_array;
 	int m_num_type_descs;

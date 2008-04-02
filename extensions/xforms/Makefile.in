@@ -57,7 +57,6 @@ else
 MODULE_NAME	= xforms
 EXPORT_LIBRARY	= 1
 endif
-MOZILLA_INTERNAL_API = 1
 
 # Also build schema-validation
 DIRS			= ../schema-validation \
@@ -72,7 +71,7 @@ XPI_PKGNAME            = xforms
 USE_EXTENSION_MANIFEST = 1
 NO_JAR_AUTO_REG        = 1
 INSTALL_EXTENSION_ID   = {cf2812dc-6a7c-4402-b639-4d277dac4c36}
-PACKAGE_VERSION        = 0.6
+PACKAGE_VERSION        = 0.8.0.3
 
 # We want to strip the XPI
 STRIP_XPI = 1
@@ -99,7 +98,6 @@ REQUIRES	= \
 		dom \
 		widget \
 		necko \
-		websrvcs \
 		docshell \
 		mimetype \
 		caps \
@@ -112,6 +110,7 @@ REQUIRES	= \
 		pref \
 		htmlparser \
 		exthandler \
+		chardet \
 		$(NULL)
 
 # XForms IDLs
@@ -128,6 +127,8 @@ XPIDLSRCS	= \
 		nsIXFormsSwitchElement.idl \
 		nsIXFormsCaseElement.idl \
 		nsIXFormsCaseUIElement.idl \
+		nsIXFormsNSSelect1Element.idl \
+		nsIXFormsNSSelectElement.idl \
 		nsIXFormsSelectChild.idl \
 		nsIXFormsValueElement.idl \
 		nsIXFormsRepeatElement.idl \
@@ -148,6 +149,12 @@ XPIDLSRCS	= \
 		nsIXFormsCopyElement.idl \
 		nsIXFormsEphemeralMessageUI.idl \
 		nsIXFormsRangeConditionAccessors.idl \
+		nsIXFormsNSEditableElement.idl \
+		nsIXFormsComboboxUIWidget.idl \
+		nsIXFormsXPathFunctions.idl \
+		nsIXFormsXPathState.idl \
+		nsIXFormsDOMEvent.idl \
+		nsIXFormsContextInfo.idl \
 		$(NULL)
 
 # XForms source files
@@ -187,6 +194,7 @@ CPPSRCS		= \
 		nsXFormsInsertDeleteElement.cpp \
 		nsXFormsLoadElement.cpp \
 		nsXFormsMessageElement.cpp \
+		nsXFormsMediatypeElement.cpp \
 		nsXFormsLabelElement.cpp \
 		nsXFormsToggleElement.cpp \
 		nsXFormsCaseElement.cpp \
@@ -208,10 +216,18 @@ CPPSRCS		= \
 		nsXFormsRangeAccessors.cpp \
 		nsXFormsCopyElement.cpp \
 		nsXFormsRangeConditionAccessors.cpp \
+		nsXFormsXPathFunctions.cpp \
+		nsXFormsXPathState.cpp \
+		nsXFormsDOMEvent.cpp \
+		nsXFormsContextInfo.cpp \
 		$(NULL)
 
 # Standard Mozilla make rules
-EXTRA_DSO_LDOPTS = $(MOZ_COMPONENT_LIBS)
+EXTRA_DSO_LDOPTS = \
+		$(MOZ_COMPONENT_NSPR_LIBS) \
+		$(LIBXUL_DIST)/lib/$(LIB_PREFIX)unicharutil_s.$(LIB_SUFFIX) \
+		$(XPCOM_GLUE_LDOPTS) \
+		$(NULL)
 
 # Do not clean schema-validation on distclean, it should handle that itself
 distclean:: LOOP_OVER_DIRS=
@@ -220,9 +236,3 @@ include $(topsrcdir)/config/rules.mk
 
 # Temporary files that will be deleted on f.x. make clean
 GARBAGE		+= install.js install.template
-
-# Create install.js script for suite
-install.js:	install.jst
-		@echo Creating install.js...
-		rm -f install.js
-		$(PERL) $(topsrcdir)/toolkit/mozapps/installer/makejs.pl $(srcdir)/install.jst $(PACKAGE_VERSION) $(FINAL_TARGET)

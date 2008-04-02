@@ -44,6 +44,12 @@ const NS_ERROR_UNKNOWN_HOST = NS_ERROR_MODULE_NETWORK + 30;
 const NS_ERROR_CONNECTION_REFUSED = NS_ERROR_MODULE_NETWORK + 13;
 const NS_ERROR_NET_TIMEOUT = NS_ERROR_MODULE_NETWORK + 14;
 const NS_ERROR_NET_RESET = NS_ERROR_MODULE_NETWORK + 20;
+const NS_ERROR_UNKNOWN_PROXY_HOST = NS_ERROR_MODULE_NETWORK + 42;
+const NS_ERROR_PROXY_CONNECTION_REFUSED = NS_ERROR_MODULE_NETWORK + 72;
+
+// Offline error constants:
+const NS_ERROR_BINDING_ABORTED = NS_ERROR_MODULE_NETWORK + 2;
+const NS_ERROR_ABORT = 0x80004004;
 
 const NS_NET_STATUS_RESOLVING_HOST = NS_ERROR_MODULE_NETWORK + 3;
 const NS_NET_STATUS_CONNECTED_TO = NS_ERROR_MODULE_NETWORK + 4;
@@ -51,7 +57,7 @@ const NS_NET_STATUS_SENDING_TO = NS_ERROR_MODULE_NETWORK + 5;
 const NS_NET_STATUS_RECEIVING_FROM = NS_ERROR_MODULE_NETWORK + 6;
 const NS_NET_STATUS_CONNECTING_TO = NS_ERROR_MODULE_NETWORK + 7;
 
-// Security Constants. 
+// Security Constants.
 const STATE_IS_BROKEN = 1;
 const STATE_IS_SECURE = 2;
 const STATE_IS_INSECURE = 3;
@@ -159,54 +165,74 @@ function CBSConnection (binary)
     if (!ASSERT(!this.binaryMode || this.workingBinaryStreams,
                 "Unable to use binary streams in this build."))
     {
-        return null;
+        throw ("Unable to use binary streams in this build.");
     }
 }
 
 CBSConnection.prototype.workingBinaryStreams = -1;
 
 CBSConnection.prototype.connect =
-function bc_connect(host, port, bind, tcp_flag, isSecure, observer)
+function bc_connect(host, port, config, observer)
 {
-    if (typeof tcp_flag == "undefined")
-        tcp_flag = false;
-
     this.host = host.toLowerCase();
     this.port = port;
-    this.bind = bind;
-    this.tcp_flag = tcp_flag;
+
+    if (typeof config != "object")
+        config = {};
 
     // Lets get a transportInfo for this
-    var cls =
-        Components.classes["@mozilla.org/network/protocol-proxy-service;1"];
-    var pps = cls.getService(Components.interfaces.nsIProtocolProxyService);
-
+    var pps = getService("@mozilla.org/network/protocol-proxy-service;1",
+                         "nsIProtocolProxyService");
     if (!pps)
         throw ("Couldn't get protocol proxy service");
 
-    var ios = Components.classes["@mozilla.org/network/io-service;1"].
-      getService(Components.interfaces.nsIIOService);
-    var spec = "irc://" + host + ':' + port;
-    var uri = ios.newURI(spec,null,null);
-    // As of 2005-03-25, 'examineForProxy' was replaced by 'resolve'.
-    var info = null;
-    if ("resolve" in pps)
-        info = pps.resolve(uri, 0);
-    else if ("examineForProxy" in pps)
-        info = pps.examineForProxy(uri);
+    var ios = getService("@mozilla.org/network/io-service;1", "nsIIOService");
+
+    function getProxyFor(uri)
+    {
+        uri = ios.newURI(uri, null, null);
+        // As of 2005-03-25, 'examineForProxy' was replaced by 'resolve'.
+        if ("resolve" in pps)
+            return pps.resolve(uri, 0);
+        if ("examineForProxy" in pps)
+            return pps.examineForProxy(uri);
+        return null;
+    };
+
+    var proxyInfo = null;
+    var usingHTTPCONNECT = false;
+    if ("proxy" in config)
+    {
+        /* Force Necko to supply the HTTP proxy info if desired. For none,
+         * force no proxy. Other values will get default treatment.
+         */
+        if (config.proxy == "http")
+            proxyInfo = getProxyFor("http://" + host + ":" + port);
+        else if (config.proxy != "none")
+            proxyInfo = getProxyFor("irc://" + host + ":" + port);
+
+        /* Since the proxy info is opaque, we need to check that we got
+         * something for our HTTP proxy - we can't just check proxyInfo.type.
+         */
+        usingHTTPCONNECT = ((config.proxy == "http") && proxyInfo);
+    }
+    else
+    {
+        proxyInfo = getProxyFor("irc://" + host + ":" + port);
+    }
 
     if (jsenv.HAS_STREAM_PROVIDER)
     {
-        if (isSecure)
+        if (("isSecure" in config) && config.isSecure)
         {
             this._transport = this._sockService.
-                              createTransportOfType("ssl", host, port, info,
-                                                    0, 0);
+                              createTransportOfType("ssl", host, port,
+                                                    proxyInfo, 0, 0);
         }
         else
         {
             this._transport = this._sockService.
-                              createTransport(host, port, info, 0, 0);
+                              createTransport(host, port, proxyInfo, 0, 0);
         }
         if (!this._transport)
             throw ("Error creating transport.");
@@ -238,15 +264,16 @@ function bc_connect(host, port, bind, tcp_flag, isSecure, observer)
     else
     {
         /* use new necko interfaces */
-        if (isSecure)
+        if (("isSecure" in config) && config.isSecure)
         {
             this._transport = this._sockService.
-                              createTransport(["ssl"], 1, host, port, info);
+                              createTransport(["ssl"], 1, host, port,
+                                              proxyInfo);
         }
         else
         {
             this._transport = this._sockService.
-                              createTransport(null, 0, host, port, info);
+                              createTransport(null, 0, host, port, proxyInfo);
         }
         if (!this._transport)
             throw ("Error creating transport.");
@@ -275,6 +302,12 @@ function bc_connect(host, port, bind, tcp_flag, isSecure, observer)
 
     this.connectDate = new Date();
     this.isConnected = true;
+
+    // Bootstrap the connection if we're proxying via an HTTP proxy.
+    if (usingHTTPCONNECT)
+    {
+        this.sendData("CONNECT " + host + ":" + port + " HTTP/1.1\r\n\r\n");
+    }
 
     return this.isConnected;
 
@@ -313,8 +346,6 @@ function bc_accept(transport, observer)
     this._transport = transport;
     this.host = this._transport.host.toLowerCase();
     this.port = this._transport.port;
-    //this.bind = bind;
-    //this.tcp_flag = tcp_flag;
 
     if (jsenv.HAS_STREAM_PROVIDER)
     {
@@ -418,8 +449,16 @@ function bc_readdata(timeout, count)
 
     var rv;
 
+    if (!("_sInputStream" in this)) {
+        this._sInputStream = toSInputStream(this._inputStream);
+        dump("OMG, setting up _sInputStream!\n");
+    }
+
     try
     {
+        // XPCshell h4x
+        if (typeof count == "undefined")
+            count = this._sInputStream.available();
         if (this.binaryMode)
             rv = this._sInputStream.readBytes(count);
         else

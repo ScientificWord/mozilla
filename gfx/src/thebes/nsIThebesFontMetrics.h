@@ -43,6 +43,8 @@
 
 class nsThebesRenderingContext;
 
+class gfxFontGroup;
+
 class nsIThebesFontMetrics : public nsIFontMetrics {
 public:
     // Get the width for this string.  aWidth will be updated with the
@@ -97,19 +99,23 @@ public:
     // caller will have to update them to twips before passing it
     // back.
     virtual nsresult GetBoundingMetrics(const char *aString, PRUint32 aLength,
+                                        nsThebesRenderingContext *aContext,
                                         nsBoundingMetrics &aBoundingMetrics) = 0;
     // aCachedOffset will be updated with a new offset.
     virtual nsresult GetBoundingMetrics(const PRUnichar *aString,
                                         PRUint32 aLength,
-                                        nsBoundingMetrics &aBoundingMetrics,
-                                        PRInt32 *aFontID) = 0;
+                                        nsThebesRenderingContext *aContext,
+                                        nsBoundingMetrics &aBoundingMetrics) = 0;
 #endif /* MOZ_MATHML */
 
     // Set the direction of the text rendering
     virtual nsresult SetRightToLeftText(PRBool aIsRTL) = 0;
     virtual PRBool GetRightToLeftText() = 0;
+    virtual void SetTextRunRTL(PRBool aIsRTL) = 0;
 
     virtual PRInt32 GetMaxStringLength() = 0;
+
+    virtual gfxFontGroup* GetThebesFontGroup() = 0;
 };
 
 #endif /* __nsIThebesFontMetrics_h */

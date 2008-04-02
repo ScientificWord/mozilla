@@ -20,7 +20,8 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *  Aaron Reed <aaronr@us.ibm.com>
+ *  Aaron Reed <aaronr@us.ibm.com> (original author)
+ *  Alexander Surkov <surkov.alexander@gmail.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -36,389 +37,426 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#include "nsIServiceManager.h"
 #include "nsXFormsUtilityService.h"
+
+#include "nsIContent.h"
+
+#include "nsIXFormsControl.h"
+#include "nsIXFormsDelegate.h"
+#include "nsIXFormsAccessors.h"
+#include "nsIXFormsRangeConditionAccessors.h"
+#include "nsIXFormsRangeAccessors.h"
+#include "nsIXFormsUIWidget.h"
+#include "nsIXFormsItemSetUIElement.h"
+#include "nsIXFormsComboboxUIWidget.h"
+#include "nsIXFormsNSEditableElement.h"
+#include "nsIXFormsNSSelectElement.h"
+#include "nsIXFormsNSSelect1Element.h"
+#include "nsIXFormsItemElement.h"
+#include "nsIModelElementPrivate.h"
 #include "nsXFormsUtils.h"
-#include "nsIXTFElement.h"
-#include "nsIDOMNode.h"
-#include "nsIDOMElement.h"
-#include "nsString.h"
-#include "nsIDOMDocument.h"
-#include "nsIXFormsModelElement.h"
-#include "nsIDOMNodeList.h"
-#include "nsIInstanceElementPrivate.h"
-#include "nsIXFormsRepeatElement.h"
-#include "nsISchemaValidator.h"
-#include "nsISchemaDuration.h"
-#include "nsXFormsSchemaValidator.h"
-#include "prdtoa.h"
+#include "nsXFormsAtoms.h"
 
 NS_IMPL_ISUPPORTS1(nsXFormsUtilityService, nsIXFormsUtilityService)
 
-/* I don't know why Doron didn't put this in the .idl so that it could be added
- * to the generated .h file.  Put it here for now
- */
-#define NS_SCHEMAVALIDATOR_CONTRACTID  "@mozilla.org/schemavalidator;1"
+#define GET_XFORMS_ACCESSORS \
+NS_ENSURE_ARG(aElement);\
+nsCOMPtr<nsIXFormsDelegate> delegate(do_QueryInterface(aElement));\
+NS_ENSURE_TRUE(delegate, NS_ERROR_FAILURE);\
+nsCOMPtr<nsIXFormsAccessors> accessors;\
+delegate->GetXFormsAccessors(getter_AddRefs(accessors));\
+NS_ENSURE_TRUE(accessors, NS_ERROR_FAILURE);
 
+#define GET_XFORMS_UIWIDGET \
+NS_ENSURE_ARG(aElement);\
+nsCOMPtr<nsIXFormsUIWidget> widget(do_QueryInterface(aElement));\
+NS_ENSURE_TRUE(widget, NS_ERROR_FAILURE);\
+
+#define GET_COMBOBOX_UIWIDGET \
+NS_ENSURE_ARG(aElement);\
+nsCOMPtr<nsIXFormsComboboxUIWidget> widget(do_QueryInterface(aElement));\
+if (!widget) {\
+  nsCOMPtr<nsIContent> content(do_QueryInterface(aElement));\
+  widget = do_QueryInterface(content->GetBindingParent());\
+}\
+NS_ENSURE_TRUE(widget, NS_ERROR_FAILURE);\
+
+#define GET_XFORMS_SELECT1 \
+NS_ENSURE_ARG(aElement);\
+nsCOMPtr<nsIXFormsNSSelect1Element> widget(do_QueryInterface(aElement));\
+NS_ENSURE_TRUE(widget, NS_ERROR_FAILURE);\
+
+#define GET_XFORMS_SELECT \
+NS_ENSURE_ARG(aElement);\
+nsCOMPtr<nsIXFormsNSSelectElement> widget(do_QueryInterface(aElement));\
+NS_ENSURE_TRUE(widget, NS_ERROR_FAILURE);\
 
 NS_IMETHODIMP
-nsXFormsUtilityService::GetModelFromNode(nsIDOMNode *aNode, 
-                                         nsIDOMNode **aModel)
+nsXFormsUtilityService::GetBuiltinTypeName(nsIDOMNode *aElement,
+                                           nsAString& aName)
 {
-  nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aNode);
-  NS_ASSERTION(aModel, "no return buffer, we'll crash soon");
-  *aModel = nsnull;
+  nsCOMPtr<nsIDOMElement> element(do_QueryInterface(aElement));
+  NS_ENSURE_TRUE(element, NS_ERROR_FAILURE);
 
-  nsAutoString namespaceURI;
-  aNode->GetNamespaceURI(namespaceURI);
+  nsCOMPtr<nsIModelElementPrivate> model = nsXFormsUtils::GetModel(element);
+  NS_ENSURE_TRUE(model, NS_ERROR_FAILURE);
 
-  // If the node is in the XForms namespace and XTF based, then it should
-  //   be able to be handled by GetModel.  Otherwise it is probably an instance
-  //   node in a instance document.
-  if (!namespaceURI.EqualsLiteral(NS_NAMESPACE_XFORMS)) {
-    return NS_ERROR_FAILURE;
-  }
+  nsCOMPtr<nsIXFormsControl> control(do_QueryInterface(element));
+  return model->GetBuiltinTypeNameForControl(control, aName);
+}
 
-  nsCOMPtr<nsIModelElementPrivate> modelPriv = nsXFormsUtils::GetModel(element);
-  nsCOMPtr<nsIDOMNode> modelElement = do_QueryInterface(modelPriv);
-  if( modelElement ) {
-    NS_IF_ADDREF(*aModel = modelElement);
-  }
+NS_IMETHODIMP
+nsXFormsUtilityService::IsReadonly(nsIDOMNode *aElement, PRBool *aState)
+{
+  NS_ENSURE_ARG_POINTER(aState);
 
-  // No model found
-  NS_ENSURE_TRUE(*aModel, NS_ERROR_FAILURE);
+  GET_XFORMS_ACCESSORS
+  return accessors->IsReadonly(aState);
+}
+
+NS_IMETHODIMP
+nsXFormsUtilityService::IsRelevant(nsIDOMNode *aElement, PRBool *aState)
+{
+  NS_ENSURE_ARG_POINTER(aState);
+
+  GET_XFORMS_ACCESSORS
+  return accessors->IsRelevant(aState);
+}
+
+NS_IMETHODIMP
+nsXFormsUtilityService::IsRequired(nsIDOMNode *aElement, PRBool *aState)
+{
+  NS_ENSURE_ARG_POINTER(aState);
+
+  GET_XFORMS_ACCESSORS
+  return accessors->IsRequired(aState);
+}
+
+NS_IMETHODIMP
+nsXFormsUtilityService::IsValid(nsIDOMNode *aElement, PRBool *aState)
+{
+  NS_ENSURE_ARG_POINTER(aState);
+
+  GET_XFORMS_ACCESSORS
+  return accessors->IsValid(aState);
+}
+
+NS_IMETHODIMP
+nsXFormsUtilityService::IsInRange(nsIDOMNode *aElement, PRUint32 *aState)
+{
+  NS_ENSURE_ARG_POINTER(aState);
+  *aState = STATE_NOT_A_RANGE;
+
+  GET_XFORMS_ACCESSORS
+  nsCOMPtr<nsIXFormsRangeConditionAccessors> raccessors(
+    do_QueryInterface(accessors));
+  if (!raccessors)
+    return NS_OK;
+
+  PRBool isInRange = PR_FALSE;
+  nsresult rv = raccessors->IsInRange(&isInRange);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  if (isInRange)
+    *aState = STATE_IN_RANGE;
+  else
+    *aState = STATE_OUT_OF_RANGE;
 
   return NS_OK;
 }
 
-
-/**
- * Function to see if the given node is associated with the given model.
- * Right now this function is only called by XPath in the case of the
- * instance() function.
- * The provided node can be an instance node from an instance
- * document and thus be associated to the model in that way (model elements
- * contain instance elements).  Otherwise the node will be an XForms element
- * that was used as the context node of the XPath expression (i.e the
- * XForms control has an attribute that contains an XPath expression).
- * Form controls are associated with model elements either explicitly through
- * single-node binding or implicitly (if model cannot by calculated, it
- * will use the first model element encountered in the document).  The model
- * can also be inherited from a containing element like xforms:group or
- * xforms:repeat.
- */
 NS_IMETHODIMP
-nsXFormsUtilityService::IsNodeAssocWithModel( nsIDOMNode *aNode, 
-                                              nsIDOMNode *aModel,
-                                              PRBool     *aModelAssocWithNode)
+nsXFormsUtilityService::GetValue(nsIDOMNode *aElement, nsAString& aValue)
 {
+  NS_ENSURE_ARG(aElement);
 
-  nsCOMPtr<nsIDOMNode> modelNode;
+  nsCOMPtr<nsIXFormsUIWidget> widget(do_QueryInterface(aElement));
+  if (widget)
+    return widget->GetCurrentValue(aValue);
 
-  nsAutoString namespaceURI;
-  aNode->GetNamespaceURI(namespaceURI);
-  // If the node is in the XForms namespace and XTF based, then it should
-  //   be able to be handled by GetModel.  Otherwise it is probably an instance
-  //   node in a instance document.
-  if (namespaceURI.EqualsLiteral(NS_NAMESPACE_XFORMS)) {
-    nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aNode);
-    nsCOMPtr<nsIModelElementPrivate> modelPriv = nsXFormsUtils::GetModel(element);
-    modelNode = do_QueryInterface(modelPriv);
-  } else { 
-    // We are assuming that if the node coming in isn't a proper XForms element,
-    //   then it is an instance element in an instance doc.  Now we just have
-    //   to determine if the given model contains this instance document.
-    nsCOMPtr<nsIDOMNode> instNode;
-    nsresult rv =
-      nsXFormsUtils::GetInstanceNodeForData(aNode, getter_AddRefs(instNode));
-    if (NS_SUCCEEDED(rv) && instNode) {
-      instNode->GetParentNode(getter_AddRefs(modelNode));
-    }
-  }
+  nsCOMPtr<nsIXFormsItemElement> item(do_QueryInterface(aElement));
+  NS_ENSURE_TRUE(aElement, NS_ERROR_FAILURE);
 
-  if (modelNode && (modelNode == aModel)) {
-    *aModelAssocWithNode = PR_TRUE;
-  } else {
-    *aModelAssocWithNode = PR_FALSE;
-  }
-
-  return NS_OK;
+  return item->GetValue(aValue);
 }
 
 NS_IMETHODIMP
-nsXFormsUtilityService::GetInstanceDocumentRoot(const      nsAString& aID,
-                                                nsIDOMNode *aModelNode,
-                                                nsIDOMNode **aInstanceRoot)
+nsXFormsUtilityService::Focus(nsIDOMNode *aElement)
 {
-  nsresult rv = NS_ERROR_FAILURE;
-  NS_ASSERTION(aInstanceRoot, "no return buffer, we'll crash soon");
-  *aInstanceRoot = nsnull;
+  GET_XFORMS_UIWIDGET
+  PRBool advanced = PR_FALSE;
+  return widget->Focus(&advanced);
+}
 
-  if (aID.IsEmpty()) {
+NS_IMETHODIMP
+nsXFormsUtilityService::GetRangeStart(nsIDOMNode *aElement, nsAString& aValue)
+{
+  GET_XFORMS_ACCESSORS
+
+  nsCOMPtr<nsIXFormsRangeAccessors> raccessors(do_QueryInterface(accessors));
+  NS_ENSURE_TRUE(raccessors, NS_ERROR_FAILURE);
+  return raccessors->GetRangeStart(aValue);
+}
+
+NS_IMETHODIMP
+nsXFormsUtilityService::GetRangeEnd(nsIDOMNode *aElement, nsAString& aValue)
+{
+  GET_XFORMS_ACCESSORS
+
+  nsCOMPtr<nsIXFormsRangeAccessors> raccessors(do_QueryInterface(accessors));
+  NS_ENSURE_TRUE(raccessors, NS_ERROR_FAILURE);
+  return raccessors->GetRangeEnd(aValue);
+}
+
+NS_IMETHODIMP
+nsXFormsUtilityService::GetRangeStep(nsIDOMNode *aElement, nsAString& aValue)
+{
+  GET_XFORMS_ACCESSORS
+
+  nsCOMPtr<nsIXFormsRangeAccessors> raccessors(do_QueryInterface(accessors));
+  NS_ENSURE_TRUE(raccessors, NS_ERROR_FAILURE);
+  return raccessors->GetRangeStep(aValue);
+}
+
+NS_IMETHODIMP
+nsXFormsUtilityService::GetEditor(nsIDOMNode *aElement, nsIEditor **aEditor)
+{
+  NS_ENSURE_ARG(aElement);
+  NS_ENSURE_ARG_POINTER(aEditor);
+
+  nsCOMPtr<nsIXFormsNSEditableElement> editable(do_QueryInterface(aElement));
+  NS_ENSURE_TRUE(editable, NS_ERROR_FAILURE);
+
+  return editable->GetEditor(aEditor);
+}
+
+NS_IMETHODIMP
+nsXFormsUtilityService::IsDropmarkerOpen(nsIDOMNode *aElement, PRBool *aIsOpen)
+{
+  NS_ENSURE_ARG_POINTER(aIsOpen);
+
+  GET_COMBOBOX_UIWIDGET
+  return widget->GetOpen(aIsOpen);
+}
+
+NS_IMETHODIMP
+nsXFormsUtilityService::ToggleDropmarkerState(nsIDOMNode *aElement)
+{
+  GET_COMBOBOX_UIWIDGET
+
+  PRBool isOpen = PR_FALSE;
+  nsresult rv = widget->GetOpen(&isOpen);
+  NS_ENSURE_SUCCESS(rv, rv);
+  return widget->SetOpen(!isOpen);
+}
+
+// xforms:select1 utility methods
+
+NS_IMETHODIMP
+nsXFormsUtilityService::GetSelectedItemForSelect1(nsIDOMNode *aElement,
+                                                  nsIDOMNode **aItem)
+{
+  NS_ENSURE_ARG_POINTER(aItem);
+
+  GET_XFORMS_SELECT1
+  return widget->GetSelectedItem(aItem);
+}
+
+NS_IMETHODIMP
+nsXFormsUtilityService::SetSelectedItemForSelect1(nsIDOMNode *aElement,
+                                                  nsIDOMNode *aItem)
+{
+  NS_ENSURE_ARG(aItem);
+
+  GET_XFORMS_SELECT1
+  return widget->SetSelectedItem(aItem);
+}
+
+// xforms:select unility methods
+
+NS_IMETHODIMP
+nsXFormsUtilityService::GetSelectedItemsForSelect(nsIDOMNode *aElement,
+                                                  nsIDOMNodeList **aItems)
+{
+  NS_ENSURE_ARG_POINTER(aItems);
+
+  GET_XFORMS_SELECT
+  return widget->GetSelectedItems(aItems);
+}
+
+NS_IMETHODIMP
+nsXFormsUtilityService::AddItemToSelectionForSelect(nsIDOMNode *aElement,
+                                                    nsIDOMNode *aItem)
+{
+  NS_ENSURE_ARG(aItem);
+
+  GET_XFORMS_SELECT
+  return widget->AddItemToSelection(aItem);
+}
+
+NS_IMETHODIMP
+nsXFormsUtilityService::RemoveItemFromSelectionForSelect(nsIDOMNode *aElement,
+                                                         nsIDOMNode *aItem)
+{
+  NS_ENSURE_ARG(aItem);
+
+  GET_XFORMS_SELECT
+  return widget->RemoveItemFromSelection(aItem);
+}
+
+NS_IMETHODIMP
+nsXFormsUtilityService::ClearSelectionForSelect(nsIDOMNode *aElement)
+{
+  GET_XFORMS_SELECT
+  return widget->ClearSelection();
+}
+
+NS_IMETHODIMP
+nsXFormsUtilityService::SelectAllItemsForSelect(nsIDOMNode *aElement)
+{
+  GET_XFORMS_SELECT
+  return widget->SelectAll();
+}
+
+NS_IMETHODIMP
+nsXFormsUtilityService::IsSelectItemSelected(nsIDOMNode *aElement,
+                                             nsIDOMNode *aItem,
+                                             PRBool *aIsSelected)
+{
+  NS_ENSURE_ARG(aItem);
+  NS_ENSURE_ARG_POINTER(aIsSelected);
+
+  GET_XFORMS_SELECT
+  return widget->IsItemSelected(aItem, aIsSelected);
+}
+
+NS_IMETHODIMP
+nsXFormsUtilityService::GetSelectChildrenFor(nsIDOMNode *aElement,
+                                             nsIDOMNodeList **aItemsList)
+{
+  NS_ENSURE_ARG(aElement);
+  NS_ENSURE_ARG_POINTER(aItemsList);
+
+  nsNodeList* itemsList = new nsNodeList();
+  NS_ENSURE_TRUE(itemsList, NS_ERROR_OUT_OF_MEMORY);
+
+  nsresult rv = GetSelectChildrenForNode(aElement, itemsList);
+  if (NS_FAILED(rv)) {
+    delete itemsList;
     return rv;
   }
 
-  nsCOMPtr<nsIXFormsModelElement> modelElement = do_QueryInterface(aModelNode);
-  nsCOMPtr<nsIDOMDocument> doc;
-  rv = modelElement->GetInstanceDocument(aID, getter_AddRefs(doc));
-  NS_ENSURE_SUCCESS(rv, rv);
-  
-  nsCOMPtr<nsIDOMElement> element;
-  rv = doc->GetDocumentElement(getter_AddRefs(element));
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  if (element) {
-    NS_IF_ADDREF(*aInstanceRoot = element);
-  }
-
-  return rv;
-}
-
-/* Gotta do this via the service since we don't want transformiix to require
- * any of the new extensions, like schema-validation
- */
-NS_IMETHODIMP 
-nsXFormsUtilityService::ValidateString(const nsAString & aValue, 
-                                       const nsAString & aType, 
-                                       const nsAString & aNamespace,
-                                       PRBool *aResult)
-{
-
-  NS_ASSERTION(aResult, "no return buffer for result so we'll crash soon");
-  *aResult = PR_FALSE;
-
-  nsXFormsSchemaValidator *validator = new nsXFormsSchemaValidator();
-  if (validator) {
-    *aResult = validator->ValidateString(aValue, aType, aNamespace);
-    delete validator;
-  }
-  return *aResult ? NS_OK : NS_ERROR_FAILURE;
-}
-
-NS_IMETHODIMP
-nsXFormsUtilityService::GetRepeatIndex(nsIDOMNode *aRepeat, PRInt32 *aIndex)
-{
-  NS_ASSERTION(aIndex, "no return buffer for index, we'll crash soon");
-  *aIndex = 0;
-
-  nsCOMPtr<nsIXFormsRepeatElement> repeatEle = do_QueryInterface(aRepeat);
-  if (!repeatEle) {
-    // if aRepeat isn't a repeat element, then setting aIndex to -1 to tell
-    // XPath to return NaN.  Per 7.8.5 in the spec (1.0, 2nd edition)
-    *aIndex = -1;
-  } else {
-    PRUint32 retIndex = 0;
-    nsresult rv = repeatEle->GetIndex(&retIndex);
-    NS_ENSURE_SUCCESS(rv, rv);
-    *aIndex = retIndex;
-  }
-
+  NS_ADDREF(*aItemsList = itemsList);
   return NS_OK;
 }
 
-NS_IMETHODIMP
-nsXFormsUtilityService::GetMonths(const nsAString & aValue, 
-                                  PRInt32         * aMonths)
+// nsXFormsUtilityService
+
+nsresult
+nsXFormsUtilityService::GetSelectChildrenForNode(nsIDOMNode *aElement,
+                                                 nsNodeList *aNodeList)
 {
-  NS_ASSERTION(aMonths, "no return buffer for months, we'll crash soon");
+  nsCOMPtr<nsIContent> contentElm(do_QueryInterface(aElement));
+  NS_ENSURE_TRUE(contentElm, NS_ERROR_FAILURE);
 
-  *aMonths = 0;
-  nsCOMPtr<nsISchemaDuration> duration;
-  nsCOMPtr<nsISchemaValidator> schemaValidator = 
-    do_CreateInstance(NS_SCHEMAVALIDATOR_CONTRACTID);
-  NS_ENSURE_TRUE(schemaValidator, NS_ERROR_FAILURE);
+  nsCOMPtr<nsINodeInfo> nodeInfo(contentElm->NodeInfo());
+  if (!nodeInfo->NamespaceEquals(NS_LITERAL_STRING(NS_NAMESPACE_XFORMS)))
+    return NS_ERROR_FAILURE;
 
-  nsresult rv = schemaValidator->ValidateBuiltinTypeDuration(aValue, 
-                                                    getter_AddRefs(duration));
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  PRInt32 sumMonths;
-  PRUint32 years;
-  PRUint32 months;
-
-  duration->GetYears(&years);
-  duration->GetMonths(&months);
-
-  sumMonths = months + years*12;
-  PRBool negative;
-  duration->GetNegative(&negative);
-  if (negative) {
-    // according to the spec, "the sign of the result will match the sign
-    // of the duration"
-    sumMonths *= -1;
+  if (nodeInfo->Equals(nsXFormsAtoms::select) ||
+      nodeInfo->Equals(nsXFormsAtoms::select1) ||
+      nodeInfo->Equals(nsXFormsAtoms::choices)) {
+    return GetSelectChildrenForNodeInternal(aElement, aNodeList);
   }
-  
-  *aMonths = sumMonths;
 
-  return NS_OK;
+  if (!nodeInfo->Equals(nsXFormsAtoms::itemset))
+    return NS_ERROR_FAILURE;
+
+  nsCOMPtr<nsIXFormsItemSetUIElement> itemset(do_QueryInterface(aElement));
+  NS_ENSURE_TRUE(itemset, NS_ERROR_FAILURE);
+
+  nsCOMPtr<nsIDOMElement> itemsetContent;
+  itemset->GetAnonymousItemSetContent(getter_AddRefs(itemsetContent));
+  NS_ENSURE_TRUE(itemsetContent, NS_ERROR_FAILURE);
+
+  return GetSelectChildrenForNodeInternal(itemsetContent, aNodeList);
 }
 
-NS_IMETHODIMP
-nsXFormsUtilityService::GetSeconds(const nsAString & aValue, 
-                                   double          * aSeconds)
+nsresult
+nsXFormsUtilityService::GetSelectChildrenForNodeInternal(nsIDOMNode *aElement,
+                                                         nsNodeList *aNodeList)
 {
-  nsCOMPtr<nsISchemaDuration> duration;
-  nsCOMPtr<nsISchemaValidator> schemaValidator = 
-    do_CreateInstance(NS_SCHEMAVALIDATOR_CONTRACTID);
-  NS_ENSURE_TRUE(schemaValidator, NS_ERROR_FAILURE);
+  NS_ENSURE_ARG(aElement);
 
-  nsresult rv = schemaValidator->ValidateBuiltinTypeDuration(aValue, 
-                                                    getter_AddRefs(duration));
-  NS_ENSURE_SUCCESS(rv, rv);
-  double sumSeconds;
-  PRUint32 days;
-  PRUint32 hours;
-  PRUint32 minutes;
-  PRUint32 seconds;
-  double fractSecs;
+  nsCOMPtr<nsIDOMNodeList> children;
+  aElement->GetChildNodes(getter_AddRefs(children));
+  NS_ENSURE_TRUE(children, NS_ERROR_FAILURE);
 
-  duration->GetDays(&days);
-  duration->GetHours(&hours);
-  duration->GetMinutes(&minutes);
-  duration->GetSeconds(&seconds);
-  duration->GetFractionSeconds(&fractSecs);
+  PRUint32 length = 0;
+  children->GetLength(&length);
 
-  sumSeconds = seconds + minutes*60 + hours*3600 + days*24*3600 + fractSecs;
+  for (PRUint32 index = 0; index < length; index++) {
+    nsCOMPtr<nsIDOMNode> child;
+    children->Item(index, getter_AddRefs(child));
+    NS_ENSURE_TRUE(child, NS_ERROR_FAILURE);
 
-  PRBool negative;
-  duration->GetNegative(&negative);
-  if (negative) {
-    // according to the spec, "the sign of the result will match the sign
-    // of the duration"
-    sumSeconds *= -1;
-  }
+    nsCOMPtr<nsIContent> content(do_QueryInterface(child));
+    NS_ENSURE_TRUE(content, NS_ERROR_FAILURE);
 
-  *aSeconds = sumSeconds;
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsXFormsUtilityService::GetSecondsFromDateTime(const nsAString & aValue, 
-                                               double          * aSeconds)
-{
-  PRTime dateTime;
-  nsCOMPtr<nsISchemaValidator> schemaValidator = 
-    do_CreateInstance(NS_SCHEMAVALIDATOR_CONTRACTID);
-  NS_ENSURE_TRUE(schemaValidator, NS_ERROR_FAILURE);
-
-  nsresult rv = schemaValidator->ValidateBuiltinTypeDateTime(aValue, &dateTime); 
-  NS_ENSURE_SUCCESS(rv, rv);
-                                               
-  PRTime secs64 = dateTime, remain64;
-  PRInt64 usecPerSec;
-  PRInt32 secs32, remain32;
-
-  // convert from PRTime (microseconds from epoch) to seconds.
-  LL_I2L(usecPerSec, PR_USEC_PER_SEC);
-  LL_MOD(remain64, secs64, usecPerSec);   /* remainder after conversion */
-  LL_DIV(secs64, secs64, usecPerSec);     /* Conversion in whole seconds */
-
-  // convert whole seconds and remainder to PRInt32
-  LL_L2I(secs32, secs64);
-  LL_L2I(remain32, remain64);
-
-  // ready the result to send back to transformiix land now in case there are
-  // no fractional seconds or we end up having a problem parsing them out.  If
-  // we do, we'll just ignore the fractional seconds.
-  double totalSeconds = secs32;
-  *aSeconds = totalSeconds;
-
-  // We're not getting fractional seconds back in the PRTime we get from
-  // the schemaValidator.  We'll have to figure out the fractions from
-  // the original value.  Since ValidateBuiltinTypeDateTime returned
-  // successful for us to get this far, we know that the value is in
-  // the proper format.
-  int findFractionalSeconds = aValue.FindChar('.');
-  if (findFractionalSeconds < 0) {
-    // no fractions of seconds, so we are good to go as we are
-    return NS_OK;
-  }
-
-  const nsAString& fraction = Substring(aValue, findFractionalSeconds+1, 
-                                        aValue.Length());
-
-  PRBool done = PR_FALSE;
-  PRUnichar currentChar;
-  nsCAutoString fractionResult;
-  nsAString::const_iterator start, end, buffStart;
-  fraction.BeginReading(start);
-  fraction.BeginReading(buffStart);
-  fraction.EndReading(end);
-
-  while ((start != end) && !done) {
-    currentChar = *start++;
-
-    // Time is usually terminated with Z or followed by a time zone
-    // (i.e. -05:00).  Time can also be terminated by the end of the string, so
-    // test for that as well.  All of this specified at:
-    // http://www.w3.org/TR/xmlschema-2/#dateTime
-    if ((currentChar == 'Z') || (currentChar == '+') || (currentChar == '-') ||
-        (start == end)) {
-      fractionResult.AssignLiteral("0.");
-      AppendUTF16toUTF8(Substring(buffStart.get(), start.get()-1), 
-                        fractionResult);
-    } else if ((currentChar > '9') || (currentChar < '0')) {
-      // has to be a numerical character or else abort.  This should have been
-      // caught by the schemavalidator, but it is worth double checking.
-      done = PR_TRUE;
+    nsCOMPtr<nsINodeInfo> nodeInfo(content->NodeInfo());
+    if (nodeInfo->NamespaceEquals(NS_LITERAL_STRING(NS_NAMESPACE_XFORMS))) {
+      if (nodeInfo->Equals(nsXFormsAtoms::item) ||
+          nodeInfo->Equals(nsXFormsAtoms::choices)) {
+        aNodeList->AppendElement(content);
+      } else if (nodeInfo->Equals(nsXFormsAtoms::itemset)) {
+        nsresult rv = GetSelectChildrenForNode(child, aNodeList);
+        NS_ENSURE_SUCCESS(rv, rv);
+      }
     }
   }
 
-  if (fractionResult.IsEmpty()) {
-    // couldn't successfully parse the fractional seconds, so we'll just return
-    // without them.
-    return NS_OK;
-  }
+  return NS_OK;
+}
 
-  // convert the result string that we have to a double and add it to the total
-  totalSeconds += PR_strtod(fractionResult.get(), nsnull);
-  *aSeconds = totalSeconds;
+// nsNodeList
 
+NS_IMPL_ISUPPORTS1(nsNodeList, nsIDOMNodeList)
+
+nsNodeList::nsNodeList()
+{
+}
+
+nsNodeList::~nsNodeList()
+{
+}
+
+NS_IMETHODIMP
+nsNodeList::GetLength(PRUint32* aLength)
+{
+  NS_ENSURE_ARG_POINTER(aLength);
+
+  *aLength = mElements.Count();
   return NS_OK;
 }
 
 NS_IMETHODIMP
-nsXFormsUtilityService::GetDaysFromDateTime(const nsAString & aValue, 
-                                            PRInt32         * aDays)
+nsNodeList::Item(PRUint32 aIndex, nsIDOMNode** aReturn)
 {
-  NS_ASSERTION(aDays, "no return buffer for days, we'll crash soon");
-  *aDays = 0;
+  NS_ENSURE_ARG_POINTER(aReturn);
 
-  PRTime date;
-  nsCOMPtr<nsISchemaValidator> schemaValidator = 
-    do_CreateInstance(NS_SCHEMAVALIDATOR_CONTRACTID);
-  NS_ENSURE_TRUE(schemaValidator, NS_ERROR_FAILURE);
+  nsISupports *tmp = mElements.SafeObjectAt(aIndex);
 
-  // aValue could be a xsd:date or a xsd:dateTime.  If it is a dateTime, we
-  // should ignore the hours, minutes, and seconds according to 7.10.2 in
-  // the spec.  So search for such things now.  If they are there, strip 'em.
-  int findTime = aValue.FindChar('T');
-
-  nsAutoString dateString;
-  dateString.Assign(aValue);
-  if (findTime >= 0) {
-    dateString.Assign(Substring(dateString, 0, findTime));
+  if (!tmp) {
+    *aReturn = nsnull;
+    return NS_OK;
   }
 
-  nsresult rv = schemaValidator->ValidateBuiltinTypeDate(dateString, &date); 
-  NS_ENSURE_SUCCESS(rv, rv);
+  return CallQueryInterface(tmp, aReturn);
+}
 
-  PRTime secs64 = date;
-  PRInt64 usecPerSec;
-  PRInt32 secs32;
-
-  // convert from PRTime (microseconds from epoch) to seconds.  Shouldn't
-  // have to worry about remainders since input is a date.  Smallest value
-  // is in whole days.
-  LL_I2L(usecPerSec, PR_USEC_PER_SEC);
-  LL_DIV(secs64, secs64, usecPerSec);
-
-  // convert whole seconds to PRInt32
-  LL_L2I(secs32, secs64);
-
-  // convert whole seconds to days.  86400 seconds in a day.
-  *aDays = secs32/86400;
-
-  return NS_OK;
+void
+nsNodeList::AppendElement(nsIContent *aContent)
+{
+  mElements.AppendObject(aContent);
 }
 

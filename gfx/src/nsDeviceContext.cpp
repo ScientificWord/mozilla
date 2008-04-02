@@ -49,23 +49,21 @@
 #include "nsIServiceManager.h"
 #include "nsUnicharUtils.h"
 #include "nsCRT.h"
-
+#include "nsIRenderingContext.h"
 
 NS_IMPL_ISUPPORTS3(DeviceContextImpl, nsIDeviceContext, nsIObserver, nsISupportsWeakReference)
 
 DeviceContextImpl::DeviceContextImpl()
 {
+  mAppUnitsPerDevPixel = -1;
+  mAppUnitsPerInch = -1;
+  mAppUnitsPerDevNotScaledPixel = -1;
+  mPixelScale = 1.0f;
+
   mFontCache = nsnull;
-  mDevUnitsToAppUnits = 1.0f;
-  mAppUnitsToDevUnits = 1.0f;
-  mCPixelScale = 1.0f;
-  mZoom = 1.0f;
   mWidget = nsnull;
   mFontAliasTable = nsnull;
 
-#ifdef NS_PRINT_PREVIEW
-  mUseAltDC = kUseAltDCFor_NONE;
-#endif
 #ifdef NS_DEBUG
   mInitialized = PR_FALSE;
 #endif
@@ -128,28 +126,9 @@ void DeviceContextImpl::CommonInit(void)
     obs->AddObserver(this, "memory-pressure", PR_TRUE);
 }
 
-NS_IMETHODIMP DeviceContextImpl::GetCanonicalPixelScale(float &aScale) const
-{
-  aScale = mCPixelScale;
-  return NS_OK;
-}
-
-NS_IMETHODIMP DeviceContextImpl::SetCanonicalPixelScale(float aScale)
-{
-  mCPixelScale = aScale;
-  return NS_OK;
-}
-
 NS_IMETHODIMP DeviceContextImpl::CreateRenderingContext(nsIView *aView, nsIRenderingContext *&aContext)
 {
-#ifdef NS_PRINT_PREVIEW
-  // AltDC NEVER use widgets to create their DCs
-  if (mAltDC && (mUseAltDC & kUseAltDCFor_CREATERC_PAINT)) {
-    return mAltDC->CreateRenderingContext(aContext);
-  }
-#endif
-
-  nsresult            rv;
+  nsresult rv;
 
   aContext = nsnull;
   nsCOMPtr<nsIRenderingContext> pContext;
@@ -165,43 +144,9 @@ NS_IMETHODIMP DeviceContextImpl::CreateRenderingContext(nsIView *aView, nsIRende
   return rv;
 }
 
-NS_IMETHODIMP DeviceContextImpl::CreateRenderingContext(nsIDrawingSurface* aSurface, nsIRenderingContext *&aContext)
-{
-#ifdef NS_PRINT_PREVIEW
-  // AltDC NEVER use widgets to create their DCs
-  if (mAltDC && (mUseAltDC & kUseAltDCFor_CREATERC_PAINT)) {
-    return mAltDC->CreateRenderingContext(aContext);
-  }
-#endif /* NS_PRINT_PREVIEW */
-
-  nsresult rv;
-
-  aContext = nsnull;
-  nsCOMPtr<nsIRenderingContext> pContext;
-  rv = CreateRenderingContextInstance(*getter_AddRefs(pContext));
-  if (NS_SUCCEEDED(rv)) {
-    rv = InitRenderingContext(pContext, aSurface);
-    if (NS_SUCCEEDED(rv)) {
-      aContext = pContext;
-      NS_ADDREF(aContext);
-    }
-  }
-  
-  return rv;
-}
-
 NS_IMETHODIMP DeviceContextImpl::CreateRenderingContext(nsIWidget *aWidget, nsIRenderingContext *&aContext)
 {
   nsresult rv;
-
-#ifdef NS_PRINT_PREVIEW
-  // AltDC NEVER use widgets to create their DCs
-  // NOTE: The mAltDC will call it;s own init
-  // so we can return here
-  if (mAltDC && (mUseAltDC & kUseAltDCFor_CREATERC_REFLOW)) {
-    return mAltDC->CreateRenderingContext(aContext);
-  }
-#endif
 
   aContext = nsnull;
   nsCOMPtr<nsIRenderingContext> pContext;
@@ -232,32 +177,7 @@ NS_IMETHODIMP DeviceContextImpl::CreateRenderingContextInstance(nsIRenderingCont
 
 nsresult DeviceContextImpl::InitRenderingContext(nsIRenderingContext *aContext, nsIWidget *aWin)
 {
-#ifdef NS_PRINT_PREVIEW
-  // there are a couple of cases where the kUseAltDCFor_CREATERC_xxx flag has been turned off
-  // but we still need to initialize with the Alt DC
-  if (mAltDC) {
-    return aContext->Init(mAltDC, aWin);
-  } else {
-    return aContext->Init(this, aWin);
-  }
-#else
   return aContext->Init(this, aWin);
-#endif
-}
-
-nsresult DeviceContextImpl::InitRenderingContext(nsIRenderingContext *aContext, nsIDrawingSurface* aSurface)
-{
-#ifdef NS_PRINT_PREVIEW
-  // there are a couple of cases where the kUseAltDCFor_CREATERC_xxx flag has been turned off
-  // but we still need to initialize with the Alt DC
-  if (mAltDC) {
-    return aContext->Init(mAltDC, aSurface);
-  } else {
-    return aContext->Init(this, aSurface);
-  }
-#else
-  return aContext->Init(this, aSurface);
-#endif /* NS_PRINT_PREVIEW */
 }
 
 NS_IMETHODIMP DeviceContextImpl::CreateFontCache()
@@ -295,13 +215,6 @@ DeviceContextImpl::GetLocaleLangGroup(void)
 NS_IMETHODIMP DeviceContextImpl::GetMetricsFor(const nsFont& aFont,
   nsIAtom* aLangGroup, nsIFontMetrics*& aMetrics)
 {
-#ifdef NS_PRINT_PREVIEW
-  // Defer to Alt when there is one
-  if (mAltDC != nsnull && (mUseAltDC & kUseAltDCFor_FONTMETRICS)) {
-    return mAltDC->GetMetricsFor(aFont, aLangGroup, aMetrics);
-  }
-#endif
-
   if (nsnull == mFontCache) {
     nsresult  rv = CreateFontCache();
     if (NS_FAILED(rv)) {
@@ -322,13 +235,6 @@ NS_IMETHODIMP DeviceContextImpl::GetMetricsFor(const nsFont& aFont,
 
 NS_IMETHODIMP DeviceContextImpl::GetMetricsFor(const nsFont& aFont, nsIFontMetrics*& aMetrics)
 {
-#ifdef NS_PRINT_PREVIEW
-  // Defer to Alt when there is one
-  if (mAltDC != nsnull && (mUseAltDC & kUseAltDCFor_FONTMETRICS)) {
-    return mAltDC->GetMetricsFor(aFont, aMetrics);
-  }
-#endif
-
   if (nsnull == mFontCache) {
     nsresult  rv = CreateFontCache();
     if (NS_FAILED(rv)) {
@@ -339,18 +245,6 @@ NS_IMETHODIMP DeviceContextImpl::GetMetricsFor(const nsFont& aFont, nsIFontMetri
     GetLocaleLangGroup();
   }
   return mFontCache->GetMetricsFor(aFont, mLocaleLangGroup, aMetrics);
-}
-
-NS_IMETHODIMP DeviceContextImpl::SetZoom(float aZoom)
-{
-  mZoom = aZoom;
-  return NS_OK;
-}
-
-NS_IMETHODIMP DeviceContextImpl::GetZoom(float &aZoom) const
-{
-  aZoom = mZoom;
-  return NS_OK;
 }
 
 NS_IMETHODIMP DeviceContextImpl::GetDepth(PRUint32& aDepth)
@@ -541,29 +435,6 @@ NS_IMETHODIMP DeviceContextImpl::FlushFontCache(void)
   return NS_OK;
 }
 
-#ifdef NS_PRINT_PREVIEW
-NS_IMETHODIMP DeviceContextImpl::SetAltDevice(nsIDeviceContext* aAltDC)
-{
-  mAltDC = aAltDC;
-
-  // Can't use it if it isn't there
-  if (aAltDC == nsnull) {
-    mUseAltDC = kUseAltDCFor_NONE;
-  }
-  return NS_OK;
-}
-
-NS_IMETHODIMP DeviceContextImpl::SetUseAltDC(PRUint8 aValue, PRBool aOn)
-{
-  if (aOn) {
-    mUseAltDC |= aValue;
-  } else {
-    mUseAltDC &= ~aValue;
-  }
-  return NS_OK;
-}
-#endif
-
 /////////////////////////////////////////////////////////////
 
 nsFontCache::nsFontCache()
@@ -606,7 +477,7 @@ nsFontCache::GetMetricsFor(const nsFont& aFont, nsIAtom* aLangGroup,
   nsIFontMetrics* fm;
   PRInt32 n = mFontMetrics.Count() - 1;
   for (PRInt32 i = n; i >= 0; --i) {
-    fm = NS_STATIC_CAST(nsIFontMetrics*, mFontMetrics[i]);
+    fm = static_cast<nsIFontMetrics*>(mFontMetrics[i]);
     if (fm->Font().Equals(aFont)) {
       nsCOMPtr<nsIAtom> langGroup;
       fm->GetLangGroup(getter_AddRefs(langGroup));
@@ -659,7 +530,7 @@ nsFontCache::GetMetricsFor(const nsFont& aFont, nsIAtom* aLangGroup,
 
   n = mFontMetrics.Count() - 1; // could have changed in Compact()
   if (n >= 0) {
-    aMetrics = NS_STATIC_CAST(nsIFontMetrics*, mFontMetrics[n]);
+    aMetrics = static_cast<nsIFontMetrics*>(mFontMetrics[n]);
     NS_ADDREF(aMetrics);
     return NS_OK;
   }
@@ -668,7 +539,7 @@ nsFontCache::GetMetricsFor(const nsFont& aFont, nsIAtom* aLangGroup,
   return rv;
 }
 
-/* PostScript and Xprint module may override this method to create 
+/* PostScript module may override this method to create 
  * nsIFontMetrics objects with their own classes 
  */
 nsresult
@@ -688,7 +559,7 @@ nsresult nsFontCache::Compact()
 {
   // Need to loop backward because the running element can be removed on the way
   for (PRInt32 i = mFontMetrics.Count()-1; i >= 0; --i) {
-    nsIFontMetrics* fm = NS_STATIC_CAST(nsIFontMetrics*, mFontMetrics[i]);
+    nsIFontMetrics* fm = static_cast<nsIFontMetrics*>(mFontMetrics[i]);
     nsIFontMetrics* oldfm = fm;
     // Destroy() isn't here because we want our device context to be notified
     NS_RELEASE(fm); // this will reset fm to nsnull
@@ -705,7 +576,7 @@ nsresult nsFontCache::Compact()
 nsresult nsFontCache::Flush()
 {
   for (PRInt32 i = mFontMetrics.Count()-1; i >= 0; --i) {
-    nsIFontMetrics* fm = NS_STATIC_CAST(nsIFontMetrics*, mFontMetrics[i]);
+    nsIFontMetrics* fm = static_cast<nsIFontMetrics*>(mFontMetrics[i]);
     // Destroy() will unhook our device context from the fm so that we won't
     // waste time in triggering the notification of FontMetricsDeleted()
     // in the subsequent release

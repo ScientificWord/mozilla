@@ -70,21 +70,16 @@ function initMenus()
                "Math.abs((cx.fontSizeDefault - cx.fontSize) / 2) != 1";
     };
 
-    function onMenuCommand (event, window)
+    function onMenuCommand(event, window)
     {
-        var params;
         var commandName = event.originalTarget.getAttribute("commandname");
+        var params = new Object();
         if ("cx" in client.menuManager && client.menuManager.cx)
-        {
-            client.menuManager.cx.sourceWindow = window;
             params = client.menuManager.cx;
-        }
-        else
-        {
-            params = { sourceWindow: window };
-        }
+        params.sourceWindow = window;
+        params.source = "menu";
 
-        dispatch (commandName, params);
+        dispatch(commandName, params);
 
         delete client.menuManager.cx;
     };
@@ -357,10 +352,14 @@ function initMenus()
          ["toggle-umode", {type: "checkbox",
                            checkedif: "client.prefs['showModeSymbols']"}],
          ["-", {visibleif: "cx.nickname"}],
-         ["label-user", {visibleif: "cx.nickname", header: true}],
+         ["label-user", {visibleif: "cx.nickname && (cx.userCount == 1)",
+                         header: true}],
+         ["label-user-multi", {visibleif: "cx.nickname && (cx.userCount != 1)",
+                               header: true}],
          [">popup:opcommands", {visibleif: "cx.nickname",
                                 enabledif: isopish + "true"}],
-         [">popup:usercommands", {visibleif: "cx.nickname"}],
+         [">popup:usercommands", {visibleif: "cx.nickname",
+                                  enabledif: "cx.userCount == 1"}],
         ]
     };
 
@@ -420,9 +419,14 @@ function initMenus()
         ]
     };
 
-    var net          = "cx.network";
+    // Gross hacks to figure out if we're away:
     var netAway      = "cx.network.prefs['away']";
-    var awayChecked = "cx.network and (cx.network.prefs.away == item.message)";
+    var cliAway      = "client.prefs['away']";
+    var awayCheckNet = "(cx.network and (" + netAway + " == item.message))";
+    var awayCheckCli = "(!cx.network and (" + cliAway + " == item.message))";
+    var awayChecked = awayCheckNet + " or " + awayCheckCli;
+    var areBack = "(cx.network and !" + netAway + ") or " +
+                  "(!cx.network and !" + cliAway + ")";
 
     client.menuSpecs["mainmenu:nickname"] = {
         label: client.prefs["nickname"],
@@ -432,7 +436,7 @@ function initMenus()
         [
          ["nick"],
          ["-"],
-         ["back", {type: "checkbox", checkedif: net + " and !" + netAway}],
+         ["back", {type: "checkbox", checkedif: areBack}],
          ["away", {type: "checkbox",
                      checkedif: awayChecked,
                      repeatfor: "client.awayMsgs",

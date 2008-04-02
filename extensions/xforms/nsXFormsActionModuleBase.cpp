@@ -21,6 +21,7 @@
  *
  * Contributor(s):
  *   Olli Pettay <Olli.Pettay@helsinki.fi> (original author)
+ *   John L. Clark <jlc6@po.cwru.edu>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -42,12 +43,20 @@
 #include "nsMemory.h"
 #include "nsIDOMNodeList.h"
 #include "nsXFormsModelElement.h"
-#include "nsString.h"
+#include "nsStringAPI.h"
 #include "nsIDOMElement.h"
 #include "nsIDOMNodeList.h"
-#include "nsIXTFGenericElementWrapper.h"
+#include "nsIXTFElementWrapper.h"
 #include "nsIDOMDocumentEvent.h"
 #include "nsIDOMEventTarget.h"
+
+#include "nsXFormsUtils.h"
+#include "nsIDOMAttr.h"
+#include "nsIXFormsControl.h"
+
+#include "nsIPrefBranch.h"
+#include "nsIPrefService.h"
+#include "nsServiceManagerUtils.h"
 
 nsXFormsActionModuleBase::nsXFormsActionModuleBase() : mElement(nsnull)
 {
@@ -58,12 +67,12 @@ nsXFormsActionModuleBase::~nsXFormsActionModuleBase()
 }
 
 NS_IMPL_ISUPPORTS_INHERITED2(nsXFormsActionModuleBase,
-			                       nsXFormsStubElement,
+                             nsXFormsStubElement,
                              nsIXFormsActionModuleElement,
                              nsIDOMEventListener)
 
 NS_IMETHODIMP
-nsXFormsActionModuleBase::OnCreated(nsIXTFGenericElementWrapper *aWrapper)
+nsXFormsActionModuleBase::OnCreated(nsIXTFElementWrapper *aWrapper)
 {
   // It's ok to keep a weak pointer to mElement.  mElement will have an
   // owning reference to this object, so as long as we null out mElement in
@@ -72,6 +81,12 @@ nsXFormsActionModuleBase::OnCreated(nsIXTFGenericElementWrapper *aWrapper)
   aWrapper->GetElementNode(getter_AddRefs(node));
   mElement = node;
   NS_ASSERTION(mElement, "Wrapper is not an nsIDOMElement, we'll crash soon");
+
+  aWrapper->SetNotificationMask(nsIXTFElement::NOTIFY_WILL_CHANGE_DOCUMENT |
+                                nsIXTFElement::NOTIFY_WILL_CHANGE_PARENT |
+                                nsIXTFElement::NOTIFY_DOCUMENT_CHANGED |
+                                nsIXTFElement::NOTIFY_PARENT_CHANGED);
+
   return NS_OK;
 }
 
@@ -82,9 +97,186 @@ NS_IMETHODIMP nsXFormsActionModuleBase::OnDestroyed()
 }
 
 NS_IMETHODIMP
+nsXFormsActionModuleBase::WillChangeParent(nsIDOMElement *aNewParent)
+{
+  SetRepeatState(eType_Unknown);
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsXFormsActionModuleBase::ParentChanged(nsIDOMElement *aNewParent)
+{
+  nsXFormsStubElement::ParentChanged(aNewParent);
+  UpdateRepeatState(aNewParent);
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsXFormsActionModuleBase::WillChangeDocument(nsIDOMDocument *aNewDocument)
+{
+  SetRepeatState(eType_Unknown);
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsXFormsActionModuleBase::DocumentChanged(nsIDOMDocument *aNewDocument)
+{
+  nsXFormsStubElement::DocumentChanged(aNewDocument);
+
+  nsCOMPtr<nsIDOMNode> parent;
+  mElement->GetParentNode(getter_AddRefs(parent));
+  UpdateRepeatState(parent);
+  return NS_OK;
+}
+
+NS_IMETHODIMP
 nsXFormsActionModuleBase::HandleEvent(nsIDOMEvent* aEvent)
 {
+  if (GetRepeatState() == eType_Template) {
+    return NS_OK;
+  }
+
   return nsXFormsUtils::EventHandlingAllowed(aEvent, mElement) ?
            HandleAction(aEvent, nsnull) : NS_OK;
+}
+
+NS_IMETHODIMP
+nsXFormsActionModuleBase::HandleAction(nsIDOMEvent            *aEvent,
+                                       nsIXFormsActionElement *aParentAction)
+{
+  return nsXFormsActionModuleBase::DoHandleAction(this, aEvent, aParentAction);
+}
+
+/* static */ nsresult
+nsXFormsActionModuleBase::DoHandleAction(nsXFormsActionModuleHelper *aXFormsAction,
+                                         nsIDOMEvent                *aEvent,
+                                         nsIXFormsActionElement     *aParentAction)
+{
+  nsCOMPtr<nsIDOMElement> element = aXFormsAction->GetElement();
+  NS_ENSURE_STATE(element);
+  aXFormsAction->SetCurrentEvent(aEvent);
+
+  // Set the maximum run time for the loop (in microseconds).
+  PRTime microseconds = nsXFormsUtils::waitLimit * PR_USEC_PER_SEC;
+
+  PRTime runTime = 0, start = PR_Now();
+
+  while (PR_TRUE) {
+    // Test the `if` and `while` attributes to determine whether this action
+    // can be performed and should be repeated.
+    PRBool usesWhile;
+    if (!nsXFormsActionModuleBase::CanPerformAction(element, &usesWhile)) {
+      return NS_OK;
+    }
+
+    nsresult rv = aXFormsAction->HandleSingleAction(aEvent, aParentAction);
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    // Repeat this action if it can iterate and if it uses the `while`
+    // attribute (the expression of which must have evaluated to true to
+    // arrive here).
+    if (!aXFormsAction->CanIterate() || !usesWhile) {
+      return NS_OK;
+    }
+
+    // See if we've exceeded our time limit, and if so, prompt the user to
+    // determine if she wants to cancel the loop.
+    LL_SUB(runTime, PR_Now(), start);
+    if (microseconds <= 0 || runTime < microseconds) {
+      continue;
+    }
+
+    // The remaining part of the loop prompts the user about cancelling the
+    // loop, and is only executed if we've gone over the time limit.
+    PRBool stopWaiting = nsXFormsUtils::AskStopWaiting(element);
+
+    if (stopWaiting) {
+      // Stop the loop
+      return NS_OK;
+    } else {
+      start = PR_Now();
+    }
+  }
+}
+
+/* static */
+PRBool
+nsXFormsActionModuleBase::CanPerformAction(nsIDOMElement *aElement,
+                                           PRBool        *aUsesWhile,
+                                           nsIDOMNode    *aContext,
+                                           PRInt32        aContextSize,
+                                           PRInt32        aContextPosition)
+{
+  *aUsesWhile = PR_FALSE;
+
+  nsAutoString ifExpr;
+  nsAutoString whileExpr;
+  aElement->GetAttribute(NS_LITERAL_STRING("if"), ifExpr);
+  aElement->GetAttribute(NS_LITERAL_STRING("while"), whileExpr);
+
+  if (whileExpr.IsEmpty() && ifExpr.IsEmpty()) {
+    return PR_TRUE;
+  }
+
+  nsresult rv;
+  nsCOMPtr<nsIDOMXPathResult> res;
+  PRBool condTrue;
+
+  nsCOMPtr<nsIDOMNode> contextNode;
+
+  if (aContext) {
+    contextNode = aContext;
+  } else {
+    // Determine evaluation context.
+    nsCOMPtr<nsIModelElementPrivate> model;
+    nsCOMPtr<nsIDOMElement> bindElement;
+    nsCOMPtr<nsIXFormsControl> parentControl;
+    PRBool outerBind;
+    rv = nsXFormsUtils::GetNodeContext(aElement, 0,
+                                       getter_AddRefs(model),
+                                       getter_AddRefs(bindElement),
+                                       &outerBind,
+                                       getter_AddRefs(parentControl),
+                                       getter_AddRefs(contextNode),
+                                       &aContextPosition, &aContextSize, PR_FALSE);
+    NS_ENSURE_SUCCESS(rv, PR_FALSE);
+  }
+
+  if (!whileExpr.IsEmpty()) {
+    *aUsesWhile = PR_TRUE;
+
+    rv = nsXFormsUtils::EvaluateXPath(whileExpr, contextNode, aElement,
+                                      nsIDOMXPathResult::BOOLEAN_TYPE,
+                                      getter_AddRefs(res),
+                                      aContextPosition, aContextSize);
+    NS_ENSURE_SUCCESS(rv, PR_FALSE);
+    
+    rv = res->GetBooleanValue(&condTrue);
+    if (NS_FAILED(rv) || !condTrue) {
+      return PR_FALSE;
+    }
+  }
+
+  if (!ifExpr.IsEmpty()) {
+    rv = nsXFormsUtils::EvaluateXPath(ifExpr, contextNode, aElement,
+                                      nsIDOMXPathResult::BOOLEAN_TYPE,
+                                      getter_AddRefs(res),
+                                      aContextPosition, aContextSize);
+    NS_ENSURE_SUCCESS(rv, PR_FALSE);
+    
+    rv = res->GetBooleanValue(&condTrue);
+    if (NS_FAILED(rv) || !condTrue) {
+      return PR_FALSE;
+    }
+  }
+
+  return PR_TRUE;
+}
+
+NS_IMETHODIMP
+nsXFormsActionModuleBase::GetCurrentEvent(nsIDOMEvent **aEvent)
+{
+  NS_IF_ADDREF(*aEvent = mCurrentEvent);
+  return NS_OK;
 }
 

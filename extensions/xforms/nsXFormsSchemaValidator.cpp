@@ -38,7 +38,7 @@
 
 // XPCOM includes
 #include "nsIServiceManager.h"
-#include "nsString.h"
+#include "nsStringAPI.h"
 
 #include "nsXFormsUtils.h"
 #include "nsISchemaValidator.h"
@@ -46,6 +46,7 @@
 #include "nsXFormsSchemaValidator.h"
 
 #include "nsIDOM3Node.h"
+#include "nsComponentManagerUtils.h"
 
 #define NS_SCHEMAVALIDATOR_CONTRACTID "@mozilla.org/schemavalidator;1"
 
@@ -55,7 +56,7 @@ nsXFormsSchemaValidator::nsXFormsSchemaValidator()
 }
 
 nsresult
-nsXFormsSchemaValidator::LoadSchema(nsISchema* aSchema)
+nsXFormsSchemaValidator::LoadSchema(nsISVSchema* aSchema)
 {
   NS_ENSURE_TRUE(mSchemaValidator, NS_ERROR_UNEXPECTED);
 
@@ -96,7 +97,7 @@ nsXFormsSchemaValidator::Validate(nsIDOMNode* aElement)
 PRBool
 nsXFormsSchemaValidator::GetType(const nsAString & aType,
                                  const nsAString & aNamespace,
-                                 nsISchemaType **aSchemaType)
+                                 nsISVSchemaType **aSchemaType)
 {
   NS_ENSURE_TRUE(mSchemaValidator, PR_FALSE);
 
@@ -196,7 +197,7 @@ nsXFormsSchemaValidator::IsValidSchemaListItem(const nsAString & aValue)
 
   // like a string, but no whitespace
   nsAutoString string(aValue);
-  if (string.FindCharInSet(" \t\r\n") == kNotFound) {
+  if (nsXFormsUtils::FindCharInSet(string, " \t\r\n") == kNotFound) {
     mSchemaValidator->ValidateString(aValue, NS_LITERAL_STRING("string"),
                                      NS_LITERAL_STRING("http://www.w3.org/1999/XMLSchema"),
                                      &isValid);

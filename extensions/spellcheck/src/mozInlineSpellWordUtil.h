@@ -35,8 +35,6 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#include "mozITXTToHTMLConv.h"
-
 #include "nsCOMPtr.h"
 #include "nsIDOMDocument.h"
 #include "nsIDOMDocumentRange.h"
@@ -44,6 +42,7 @@
 #include "nsIDocument.h"
 #include "nsString.h"
 #include "nsTArray.h"
+#include "nsIUGenCategory.h"
 
 //#define DEBUG_SPELLCHECK
 
@@ -90,10 +89,6 @@ public:
 
   nsresult SetEnd(nsIDOMNode* aEndNode, PRInt32 aEndOffset);
 
-  // expands the current range to incorporate this new range
-  nsresult ExpandFor(nsIDOMNode* aBeginNode, PRInt32 aBeginOffset,
-                     nsIDOMNode* aEndNode, PRInt32 aEndOffset);
-
   // sets the current position, this should be inside the range. If we are in
   // the middle of a word, we'll move to its start.
   nsresult SetPosition(nsIDOMNode* aNode, PRInt32 aOffset);
@@ -123,21 +118,21 @@ public:
 
   nsIDOMDocumentRange* GetDocumentRange() const { return mDOMDocumentRange; }
   nsIDocument* GetDocument() const { return mDocument; }
-
+  nsIDOMNode* GetRootNode() { return mRootNode; }
+  nsIUGenCategory* GetCategories() { return mCategories; }
+  
 private:
 
   // cached stuff for the editor, set by Init
   nsCOMPtr<nsIDOMDocumentRange> mDOMDocumentRange;
   nsCOMPtr<nsIDocument>         mDocument;
   nsCOMPtr<nsIDOMViewCSS>       mCSSView;
+  nsCOMPtr<nsIUGenCategory>     mCategories;
 
   // range to check, see SetRange
   nsIDOMNode* mRootNode;
   NodeOffset  mSoftBegin;
   NodeOffset  mSoftEnd;
-
-  // lazily created, may be NULL
-  nsCOMPtr<mozITXTToHTMLConv> mURLDetector;
 
   // DOM text covering the soft range, with newlines added at block boundaries
   nsString mSoftText;

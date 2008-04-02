@@ -20,6 +20,7 @@
  *
  * Contributor(s):
  *   Vladimir Vukicevic <vladimir@pobox.com>
+ *   Masayuki Nakano <masayuki@d-toybox.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -42,40 +43,49 @@
 
 #include "gfxPlatform.h"
 
+class gfxFontconfigUtils;
+
 class THEBES_API gfxPlatformGtk : public gfxPlatform {
 public:
     gfxPlatformGtk();
+    virtual ~gfxPlatformGtk();
 
     static gfxPlatformGtk *GetPlatform() {
         return (gfxPlatformGtk*) gfxPlatform::GetPlatform();
     }
 
-    already_AddRefed<gfxASurface> CreateOffscreenSurface(PRUint32 width,
-                                                         PRUint32 height,
+    already_AddRefed<gfxASurface> CreateOffscreenSurface(const gfxIntSize& size,
                                                          gfxASurface::gfxImageFormat imageFormat);
-
-    GdkDrawable *GetSurfaceGdkDrawable(gfxASurface *aSurf);
-
-    void SetSurfaceGdkWindow(gfxASurface *aSurf,
-                             GdkWindow *win);
 
     nsresult GetFontList(const nsACString& aLangGroup,
                          const nsACString& aGenericFamily,
                          nsStringArray& aListOfFonts);
 
+    nsresult UpdateFontList();
+
+    nsresult ResolveFontName(const nsAString& aFontName,
+                             FontResolverCallback aCallback,
+                             void *aClosure, PRBool& aAborted);
+
+    gfxFontGroup *CreateFontGroup(const nsAString &aFamilies,
+                                  const gfxFontStyle *aStyle);
+
     static PRInt32 DPI() {
         if (sDPI == -1) {
             InitDPI();
         }
-        NS_ASSERTION(sDPI != 0, "Something is wrong");
+        NS_ASSERTION(sDPI > 0, "Something is wrong");
         return sDPI;
     }
 
 protected:
-
     static void InitDPI();
 
     static PRInt32 sDPI;
+    static gfxFontconfigUtils *sFontconfigUtils;
+
+private:
+    virtual cmsHPROFILE GetPlatformCMSOutputProfile();
 };
 
 #endif /* GFX_PLATFORM_GTK_H */

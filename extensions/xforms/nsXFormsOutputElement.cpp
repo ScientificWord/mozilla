@@ -41,20 +41,17 @@
 //#define DEBUG_XF_OUTPUT
 #endif
 
-#include "nsIXTFXMLVisualWrapper.h"
-
 #include "nsAutoPtr.h"
 #include "nsCOMPtr.h"
 #include "nsMemory.h"
-#include "nsString.h"
-#include "nsDOMString.h"
+#include "nsStringAPI.h"
 #include "nsIDOM3Node.h"
 #include "nsIDOMDocument.h"
 #include "nsIDOMElement.h"
 #include "nsIDOMEventTarget.h"
 #include "nsIDOMXPathExpression.h"
 #include "nsIDOMXPathResult.h"
-#include "nsISchema.h"
+#include "nsISVSchema.h"
 
 #include "nsIModelElementPrivate.h"
 #include "nsXFormsDelegateStub.h"
@@ -69,7 +66,7 @@
  *
  * \<output\> is not really that different from \<input\>
  * (ie. nsXFormsDelegateStub), except that it has an "value" attribute that
- * must be handled seperately because it is evaluated to a string result.
+ * must be handled separately because it is evaluated to a string result.
  *
  * @see http://www.w3.org/TR/xforms/slice8.html#ui-output
  */
@@ -85,6 +82,8 @@ public:
   NS_IMETHOD GetValue(nsAString& aValue);
   NS_IMETHOD SetValue(const nsAString& aValue);
   NS_IMETHOD GetHasBoundNode(PRBool *aHasBoundNode);
+
+  virtual PRBool IsContentAllowed();
 
   nsXFormsOutputElement();
 
@@ -107,7 +106,7 @@ nsXFormsOutputElement::nsXFormsOutputElement()
 nsresult
 nsXFormsOutputElement::Bind(PRBool *aContextChanged)
 {
-  SetDOMStringToNull(mValue);
+  mValue.SetIsVoid(PR_TRUE);
   mUseValueAttribute = PR_FALSE;
 
   nsresult rv = nsXFormsDelegateStub::Bind(aContextChanged);
@@ -149,6 +148,19 @@ nsXFormsOutputElement::Bind(PRBool *aContextChanged)
   NS_ENSURE_SUCCESS(rv, rv);
 
   if (rv == NS_OK_XFORMS_DEFERRED) {
+    // Can't leave the output in the model list.  Since the xforms processor
+    // is still deferring binds any contextcontrol helping to set the context
+    // for the output's value expression probably isn't in the control list
+    // yet.  And if that's the case, we can't have the output in the list
+    // before the contextcontrol or the output won't bind right once the
+    // deferred binds finallyhappen.  If we got mBoundNode in addition to
+    // mModel during BindToModel, it isn't likely good, either, so junk it, too.
+    mBoundNode = nsnull;
+    if (mModel) {
+      mModel->RemoveFormControl(this);
+      mModel = nsnull;
+    }
+  
     return NS_OK;
   }
 
@@ -197,6 +209,19 @@ nsXFormsOutputElement::SetValue(const nsAString& aValue)
 {
   // Setting the value on an output controls seems wrong semantically.
   return NS_ERROR_NOT_AVAILABLE;
+}
+
+PRBool
+nsXFormsOutputElement::IsContentAllowed()
+{
+  PRBool isAllowed = PR_TRUE;
+
+  // Output may not be bound to complexContent.
+  PRBool isComplex = IsContentComplex();
+  if (isComplex) {
+    isAllowed = PR_FALSE;
+  }
+  return isAllowed;
 }
 
 NS_HIDDEN_(nsresult)

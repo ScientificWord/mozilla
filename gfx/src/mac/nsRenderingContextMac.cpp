@@ -1232,7 +1232,7 @@ PRInt32 nsRenderingContextMac::GetMaxStringLength()
 {
   if (!mGS->mFontMetrics)
     return 1;
-  return NS_STATIC_CAST(nsFontMetricsMac*, mGS->mFontMetrics)->GetMaxStringLength();
+  return static_cast<nsFontMetricsMac*>(mGS->mFontMetrics)->GetMaxStringLength();
 }
 
 #pragma mark -
@@ -1515,24 +1515,6 @@ nsRenderingContextMac::DrawTile(imgIContainer *aImage,
 }
 
 #pragma mark -
-
-// override to set the port back to the window port
-NS_IMETHODIMP
-nsRenderingContextMac::ReleaseBackbuffer(void)
-{
-  SelectOffScreenDrawingSurface(nsnull);
-  return NS_OK;
-}
-
-
-// override to not use a back buffer on MacOS X
-NS_IMETHODIMP 
-nsRenderingContextMac::UseBackbuffer(PRBool* aUseBackbuffer)
-{
-  *aUseBackbuffer = PR_FALSE;
-  return NS_OK;
-}
-
 
 PRBool
 nsRenderingContextMac::OnTigerOrLater()

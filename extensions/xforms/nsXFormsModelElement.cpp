@@ -40,12 +40,13 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsXFormsModelElement.h"
-#include "nsIXTFGenericElementWrapper.h"
+#include "nsIXTFElementWrapper.h"
 #include "nsMemory.h"
 #include "nsIDOMElement.h"
 #include "nsIDOM3Node.h"
 #include "nsIDOMNodeList.h"
-#include "nsString.h"
+#include "nsIVariant.h"
+#include "nsStringAPI.h"
 #include "nsIDocument.h"
 #include "nsXFormsAtoms.h"
 #include "nsINameSpaceManager.h"
@@ -53,9 +54,11 @@
 #include "nsIDOMEvent.h"
 #include "nsIDOMDOMImplementation.h"
 #include "nsIDOMXMLDocument.h"
-#include "nsIDOMEventReceiver.h"
+#include "nsIDOMEventTarget.h"
 #include "nsIDOMXPathResult.h"
-#include "nsIXFormsXPathEvaluator.h"
+#include "nsIDOMXPathEvaluator.h"
+#include "nsIXPathEvaluatorInternal.h"
+#include "nsIDOMXPathExpression.h"
 #include "nsIDOMXPathNSResolver.h"
 #include "nsIDOMNSXPathExpression.h"
 #include "nsIContent.h"
@@ -69,9 +72,8 @@
 #include "nsXFormsUtils.h"
 #include "nsXFormsSchemaValidator.h"
 #include "nsIXFormsUIWidget.h"
-#include "nsIAttribute.h"
-#include "nsISchemaLoader.h"
-#include "nsISchema.h"
+#include "nsISVSchemaLoader.h"
+#include "nsISVSchema.h"
 #include "nsAutoPtr.h"
 #include "nsIDOMDocumentXBL.h"
 #include "nsIProgrammingLanguage.h"
@@ -80,6 +82,10 @@
 #include "nsIPrefService.h"
 #include "nsIPrefBranch.h"
 #include "nsIEventStateManager.h"
+#include "nsStringEnumerator.h"
+#include "nsIAtomService.h"
+#include "nsIAttribute.h"
+#include "nsIScriptSecurityManager.h"
 
 #define XFORMS_LAZY_INSTANCE_BINDING \
   "chrome://xforms/content/xforms.xml#xforms-lazy-instance"
@@ -133,7 +139,7 @@ DeleteVoidArray(void    *aObject,
                 void    *aPropertyValue,
                 void    *aData)
 {
-  delete NS_STATIC_CAST(nsVoidArray *, aPropertyValue);
+  delete static_cast<nsVoidArray *>(aPropertyValue);
 }
 
 static nsresult
@@ -142,8 +148,8 @@ AddToModelList(nsIDOMDocument *domDoc, nsXFormsModelElement *model)
   nsCOMPtr<nsIDocument> doc = do_QueryInterface(domDoc);
 
   nsVoidArray *models =
-      NS_STATIC_CAST(nsVoidArray *,
-                     doc->GetProperty(nsXFormsAtoms::modelListProperty));
+      static_cast<nsVoidArray *>
+                 (doc->GetProperty(nsXFormsAtoms::modelListProperty));
   if (!models) {
     models = new nsVoidArray(16);
     if (!models)
@@ -160,8 +166,8 @@ RemoveFromModelList(nsIDOMDocument *domDoc, nsXFormsModelElement *model)
   nsCOMPtr<nsIDocument> doc = do_QueryInterface(domDoc);
 
   nsVoidArray *models =
-      NS_STATIC_CAST(nsVoidArray *,
-                     doc->GetProperty(nsXFormsAtoms::modelListProperty));
+      static_cast<nsVoidArray *>
+                 (doc->GetProperty(nsXFormsAtoms::modelListProperty));
   if (models)
     models->RemoveElement(model);
 }
@@ -171,15 +177,15 @@ GetModelList(nsIDOMDocument *domDoc)
 {
   nsCOMPtr<nsIDocument> doc = do_QueryInterface(domDoc);
 
-  return NS_STATIC_CAST(nsVoidArray *,
-                        doc->GetProperty(nsXFormsAtoms::modelListProperty));
+  return static_cast<nsVoidArray *>
+                    (doc->GetProperty(nsXFormsAtoms::modelListProperty));
 }
 
 static void
 SupportsDtorFunc(void *aObject, nsIAtom *aPropertyName,
                  void *aPropertyValue, void *aData)
 {
-  nsISupports *propertyValue = NS_STATIC_CAST(nsISupports*, aPropertyValue);
+  nsISupports *propertyValue = static_cast<nsISupports*>(aPropertyValue);
   NS_IF_RELEASE(propertyValue);
 }
 
@@ -225,7 +231,7 @@ nsXFormsControlListItem::iterator::operator++()
     }
     mStack.AppendElement(mCur->mFirstChild);
   }
-    
+
   if (mCur->mNextSibling) {
     mCur = mCur->mNextSibling;
   } else if (mStack.Count()) {
@@ -244,12 +250,15 @@ nsXFormsControlListItem::iterator::operator*()
   return mCur;
 }
 
-nsXFormsControlListItem::nsXFormsControlListItem(nsIXFormsControl* aControl)
+nsXFormsControlListItem::nsXFormsControlListItem(
+  nsIXFormsControl* aControl,
+  nsRefPtrHashtable<nsISupportsHashKey,nsXFormsControlListItem>* aHashtable)
   : mNode(aControl),
     mNextSibling(nsnull),
-    mFirstChild(nsnull)
+    mFirstChild(nsnull),
+    mControlListHash(aHashtable)
 {
-  
+
 }
 
 nsXFormsControlListItem::~nsXFormsControlListItem()
@@ -282,18 +291,23 @@ nsXFormsControlListItem::Clear()
     mFirstChild->Clear();
     NS_ASSERTION(!(mFirstChild->mFirstChild || mFirstChild->mNextSibling),
                  "child did not clear members!!");
-    delete mFirstChild;
     mFirstChild = nsnull;
   }
   if (mNextSibling) {
     mNextSibling->Clear();
     NS_ASSERTION(!(mNextSibling->mFirstChild || mNextSibling->mNextSibling),
                  "sibling did not clear members!!");
-    delete mNextSibling;
     mNextSibling = nsnull;
   }
-  if (mNode)
+  if (mNode) {
+    /* we won't bother removing each item one by one from the hashtable.  This
+     * approach assumes that we are clearing the whole model's list of controls
+     * due to the model going away.  After the model clears this list, it will
+     * clear the hashtable all at once.
+     */
+    mControlListHash = nsnull;
     mNode = nsnull;
+  }
 }
 
 nsresult
@@ -309,12 +323,16 @@ nsXFormsControlListItem::AddControl(nsIXFormsControl *aControl,
 
   // 2) control with no parent
   if (!aParent) {
-    nsXFormsControlListItem* newNode = new nsXFormsControlListItem(aControl);
-    NS_ENSURE_STATE(newNode);
+    nsRefPtr<nsXFormsControlListItem> newNode =
+      new nsXFormsControlListItem(aControl, mControlListHash);
+    NS_ENSURE_TRUE(newNode, NS_ERROR_OUT_OF_MEMORY);
 
     // Empty tree (we have already checked mFirstChild)
     if (!mNode) {
       mFirstChild = newNode;
+      nsCOMPtr<nsIDOMElement> ele;
+      aControl->GetElement(getter_AddRefs(ele));
+      mControlListHash->Put(ele, newNode);
       return NS_OK;
     }
 
@@ -322,6 +340,9 @@ nsXFormsControlListItem::AddControl(nsIXFormsControl *aControl,
       newNode->mNextSibling = mNextSibling;
     }
     mNextSibling = newNode;
+    nsCOMPtr<nsIDOMElement> ele;
+    aControl->GetElement(getter_AddRefs(ele));
+    mControlListHash->Put(ele, newNode);
 #ifdef DEBUG
     nsXFormsControlListItem* next = newNode->mNextSibling;
     while (next) {
@@ -344,9 +365,14 @@ nsXFormsControlListItem::AddControl(nsIXFormsControl *aControl,
   }
 
   // 4) first child for parentControl
-  nsXFormsControlListItem* newNode = new nsXFormsControlListItem(aControl);
-  NS_ENSURE_STATE(newNode);
+  nsRefPtr<nsXFormsControlListItem> newNode =
+    new nsXFormsControlListItem(aControl, mControlListHash);
+  NS_ENSURE_TRUE(newNode, NS_ERROR_OUT_OF_MEMORY);
+
   parentControl->mFirstChild = newNode;
+  nsCOMPtr<nsIDOMElement> ele;
+  aControl->GetElement(getter_AddRefs(ele));
+  mControlListHash->Put(ele, newNode);
 
   return NS_OK;
 }
@@ -429,7 +455,9 @@ nsXFormsControlListItem::RemoveControl(nsIXFormsControl *aControl,
                  "Deleted control should not have siblings!");
     NS_ASSERTION(!(deleteMe->mFirstChild),
                  "Deleted control should not have children!");
-    delete deleteMe;
+    nsCOMPtr<nsIDOMElement> element;
+    deleteMe->mNode->GetElement(getter_AddRefs(element));
+    mControlListHash->Remove(element);
     aRemoved = PR_TRUE;
   }
 
@@ -442,25 +470,11 @@ nsXFormsControlListItem::FindControl(nsIXFormsControl *aControl)
   if (!aControl)
     return nsnull;
 
-  // this should only be false for the root
-  if (mNode) {
-    // XXX: *sigh* pointer comparision of nsIXFormsControl would be nice...
-    nsCOMPtr<nsIDOMElement> el1, el2;
-    aControl->GetElement(getter_AddRefs(el1));
-    mNode->GetElement(getter_AddRefs(el2));
-
-    if (el1 == el2)
-      return this;
-  }
-
-  nsXFormsControlListItem* cur = nsnull;
-  if (mFirstChild) {
-    cur = mFirstChild->FindControl(aControl);
-  }
-  if (!cur && mNextSibling) {
-    cur = mNextSibling->FindControl(aControl);
-  }
-  return cur;
+  nsRefPtr<nsXFormsControlListItem> listItem;
+  nsCOMPtr<nsIDOMElement> element;
+  aControl->GetElement(getter_AddRefs(element));
+  mControlListHash->Get(element, getter_AddRefs(listItem));
+  return listItem;
 }
 
 already_AddRefed<nsIXFormsControl>
@@ -493,9 +507,6 @@ nsXFormsControlListItem::end()
 //------------------------------------------------------------------------------
 
 static const nsIID sScriptingIIDs[] = {
-  NS_IDOMELEMENT_IID,
-  NS_IDOMEVENTTARGET_IID,
-  NS_IDOM3NODE_IID,
   NS_IXFORMSMODELELEMENT_IID,
   NS_IXFORMSNSMODELELEMENT_IID
 };
@@ -536,7 +547,7 @@ nsPostRefresh::~nsPostRefresh()
       // see nsVoidArray::RemoveElementsAt().
       PRInt32 last = sPostRefreshList->Count() - 1;
       nsIXFormsControl* control =
-        NS_STATIC_CAST(nsIXFormsControl*, sPostRefreshList->ElementAt(last));
+        static_cast<nsIXFormsControl*>(sPostRefreshList->ElementAt(last));
       sPostRefreshList->RemoveElementAt(last);
       if (control)
         control->Refresh();
@@ -553,22 +564,20 @@ nsPostRefresh::~nsPostRefresh()
   // container->refresh below could ask for ContainerNeedsPostRefresh which
   // will add an item to the sContainerPostRefreshList if sRefreshing > 0.
   // So keeping this under sRefreshing-- will avoid an infinite loop.
-  if (sContainerPostRefreshList) {
-    while (sContainerPostRefreshList->Count()) {
-      PRInt32 last = sContainerPostRefreshList->Count() - 1;
-      nsIXFormsControl* container =
-        NS_STATIC_CAST(nsIXFormsControl*, sContainerPostRefreshList->ElementAt(last));
-      sContainerPostRefreshList->RemoveElementAt(last);
-      if (container) {
-        container->Refresh();
-      }
+  while (sContainerPostRefreshList && sContainerPostRefreshList->Count()) {
+    PRInt32 last = sContainerPostRefreshList->Count() - 1;
+    nsIXFormsControl* container =
+      static_cast<nsIXFormsControl*>(sContainerPostRefreshList->ElementAt(last));
+    sContainerPostRefreshList->RemoveElementAt(last);
+    if (container) {
+      container->Refresh();
     }
-    delete sContainerPostRefreshList;
-    sContainerPostRefreshList = nsnull;
   }
+  delete sContainerPostRefreshList;
+  sContainerPostRefreshList = nsnull;
 }
 
-const nsVoidArray* 
+const nsVoidArray*
 nsPostRefresh::PostRefreshList()
 {
   return sPostRefreshList;
@@ -635,7 +644,7 @@ nsXFormsModelElement::CancelPostRefresh(nsIXFormsControl* aControl)
 
 nsXFormsModelElement::nsXFormsModelElement()
   : mElement(nsnull),
-    mFormControls(nsnull),
+    mFormControls(nsnull, &mControlListHash),
     mSchemaCount(0),
     mSchemaTotal(0),
     mPendingInstanceCount(0),
@@ -649,14 +658,15 @@ nsXFormsModelElement::nsXFormsModelElement()
     mLoopMax(600),
     mInstanceDocuments(nsnull)
 {
+  mControlListHash.Init();
 }
 
 NS_INTERFACE_MAP_BEGIN(nsXFormsModelElement)
   NS_INTERFACE_MAP_ENTRY(nsIXFormsModelElement)
   NS_INTERFACE_MAP_ENTRY(nsIXFormsNSModelElement)
   NS_INTERFACE_MAP_ENTRY(nsIModelElementPrivate)
-  NS_INTERFACE_MAP_ENTRY(nsISchemaLoadListener)
-  NS_INTERFACE_MAP_ENTRY(nsIWebServiceErrorHandler)
+  NS_INTERFACE_MAP_ENTRY(nsISVSchemaLoadListener)
+  NS_INTERFACE_MAP_ENTRY(nsISVSchemaErrorHandler)
   NS_INTERFACE_MAP_ENTRY(nsIDOMEventListener)
   NS_INTERFACE_MAP_ENTRY(nsIXFormsContextControl)
 NS_INTERFACE_MAP_END_INHERITING(nsXFormsStubElement)
@@ -668,12 +678,16 @@ NS_IMETHODIMP
 nsXFormsModelElement::OnDestroyed()
 {
   mElement = nsnull;
+
+  // Releasing references if the model element is removed from the
+  // document before unload, see bug 375320.
   mSchemas = nsnull;
 
   if (mInstanceDocuments)
     mInstanceDocuments->DropReferences();
 
   mFormControls.Clear();
+  mControlListHash.Clear();
 
   return NS_OK;
 }
@@ -737,7 +751,7 @@ nsXFormsModelElement::DocumentChanged(nsIDOMDocument* aNewDocument)
       targ->AddEventListener(NS_LITERAL_STRING("unload"), this, PR_TRUE);
     }
   }
-  
+
   return NS_OK;
 }
 
@@ -796,8 +810,21 @@ nsXFormsModelElement::InitializeInstances()
     // Increase by 1 to prevent OnLoad from calling FinishConstruction
     mSchemaTotal = schemas.Count();
 
+    // Get the system principal in case we need to load a remote schema
+    // file below.  This should be safe since this calls
+    // nsSchemaLoader::LoadAsyncWithPrincipal which uses XMLHttpRequest so
+    // no executable code will run and doron says that you really can't get to
+    // the schema contents from JS.
+    nsCOMPtr<nsIScriptSecurityManager> secMan =
+      do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID);
+    NS_ENSURE_STATE(secMan);
+    nsCOMPtr<nsIPrincipal> principal;
+    rv = secMan->GetSystemPrincipal(getter_AddRefs(principal));
+    NS_ENSURE_SUCCESS(rv, rv);
+
     for (PRInt32 i=0; i<mSchemaTotal; ++i) {
       rv = NS_OK;
+      nsCAutoString uriSpec;
       nsCOMPtr<nsIURI> newURI;
       NS_NewURI(getter_AddRefs(newURI), *schemas[i], nsnull, baseURI);
       nsCOMPtr<nsIURL> newURL = do_QueryInterface(newURI);
@@ -827,26 +854,27 @@ nsXFormsModelElement::InitializeInstances()
             // document has finished loading.
             mPendingInlineSchemas.AppendString(id);
           } else {
-            if (!IsDuplicateSchema(el)) {
-              nsCOMPtr<nsISchema> schema;
-              // no need to observe errors via the callback.  instead, rely on
-              // this method returning a failure code when it encounters errors.
-              rv = mSchemas->ProcessSchemaElement(el, nsnull,
-                                                  getter_AddRefs(schema));
-              if (NS_SUCCEEDED(rv))
-                mSchemaCount++;
-            }
+            // We have an inline schema in the model element that was
+            // referenced by the schema attribute. It will be processed
+            // in FinishConstruction so we skip it now to avoid processing
+            // it twice and giving invalid 'duplicate schema' errors.
+            mSchemaTotal--;
+            i--;
           }
         } else {
-          nsCAutoString uriSpec;
           newURI->GetSpec(uriSpec);
-          rv = mSchemas->LoadAsync(NS_ConvertUTF8toUTF16(uriSpec), this);
+          rv = mSchemas->LoadAsyncWithPrincipal(NS_ConvertUTF8toUTF16(uriSpec),
+                                                this, principal);
         }
       }
       if (NS_FAILED(rv)) {
         // this is a fatal error
         nsXFormsUtils::ReportError(NS_LITERAL_STRING("schemaLoadError"), mElement);
-        nsXFormsUtils::DispatchEvent(mElement, eEvent_LinkException);
+        // Context Info: 'resource-uri'
+        // The URI associated with the failed link.
+        SetContextInfo("resource-uri", NS_ConvertUTF8toUTF16(uriSpec));
+        nsXFormsUtils::DispatchEvent(mElement, eEvent_LinkException, nsnull,
+                                     nsnull, &mContextInfo);
         return NS_OK;
       }
     }
@@ -930,20 +958,20 @@ nsXFormsModelElement::HandleDefault(nsIDOMEvent *aEvent, PRBool *aHandled)
   aEvent->GetType(type);
   nsresult rv = NS_OK;
 
-  if (type.EqualsASCII(sXFormsEventsEntries[eEvent_Refresh].name)) {
+  if (type.EqualsLiteral(sXFormsEventsEntries[eEvent_Refresh].name)) {
     rv = Refresh();
-  } else if (type.EqualsASCII(sXFormsEventsEntries[eEvent_Revalidate].name)) {
+  } else if (type.EqualsLiteral(sXFormsEventsEntries[eEvent_Revalidate].name)) {
     rv = Revalidate();
-  } else if (type.EqualsASCII(sXFormsEventsEntries[eEvent_Recalculate].name)) {
+  } else if (type.EqualsLiteral(sXFormsEventsEntries[eEvent_Recalculate].name)) {
     rv = Recalculate();
-  } else if (type.EqualsASCII(sXFormsEventsEntries[eEvent_Rebuild].name)) {
+  } else if (type.EqualsLiteral(sXFormsEventsEntries[eEvent_Rebuild].name)) {
     rv = Rebuild();
-  } else if (type.EqualsASCII(sXFormsEventsEntries[eEvent_ModelConstructDone].name)) {
+  } else if (type.EqualsLiteral(sXFormsEventsEntries[eEvent_ModelConstructDone].name)) {
     rv = ConstructDone();
     mConstructDoneHandled = PR_TRUE;
-  } else if (type.EqualsASCII(sXFormsEventsEntries[eEvent_Reset].name)) {
+  } else if (type.EqualsLiteral(sXFormsEventsEntries[eEvent_Reset].name)) {
     Reset();
-  } else if (type.EqualsASCII(sXFormsEventsEntries[eEvent_BindingException].name)) {
+  } else if (type.EqualsLiteral(sXFormsEventsEntries[eEvent_BindingException].name)) {
     // we threw up a popup during the nsXFormsUtils::DispatchEvent that sent
     // this error to the model
     *aHandled = PR_TRUE;
@@ -967,7 +995,7 @@ nsXFormsModelElement::ConstructDone()
 }
 
 NS_IMETHODIMP
-nsXFormsModelElement::OnCreated(nsIXTFGenericElementWrapper *aWrapper)
+nsXFormsModelElement::OnCreated(nsIXTFElementWrapper *aWrapper)
 {
   aWrapper->SetNotificationMask(nsIXTFElement::NOTIFY_WILL_CHANGE_DOCUMENT |
                                 nsIXTFElement::NOTIFY_DOCUMENT_CHANGED |
@@ -987,7 +1015,7 @@ nsXFormsModelElement::OnCreated(nsIXTFGenericElementWrapper *aWrapper)
   nsresult rv = mMDG.Init(this);
   NS_ENSURE_SUCCESS(rv, rv);
 
-  mSchemas = do_CreateInstance(NS_SCHEMALOADER_CONTRACTID);
+  mSchemas = do_CreateInstance(NS_SVSCHEMALOADER_CONTRACTID);
 
   mInstanceDocuments = new nsXFormsModelInstanceDocuments();
   NS_ASSERTION(mInstanceDocuments, "could not create mInstanceDocuments?!");
@@ -1030,8 +1058,8 @@ nsXFormsModelElement::GetInstanceDocument(const nsAString& aInstanceID,
   if (*aDocument) {
     return NS_OK;
   }
-  
-  const nsPromiseFlatString& flat = PromiseFlatString(aInstanceID);
+
+  const nsString& flat = PromiseFlatString(aInstanceID);
   const PRUnichar *strings[] = { flat.get() };
   nsXFormsUtils::ReportError(aInstanceID.IsEmpty() ?
                                NS_LITERAL_STRING("defInstanceNotFound") :
@@ -1079,7 +1107,7 @@ nsXFormsModelElement::Recalculate()
 #ifdef DEBUG
   printf("nsXFormsModelElement::Recalculate()\n");
 #endif
-  
+
   return mMDG.Recalculate(&mChangedNodes);
 }
 
@@ -1099,7 +1127,7 @@ nsXFormsModelElement::SetStates(nsIXFormsControl *aControl,
                                 nsIDOMNode       *aNode)
 {
   NS_ENSURE_ARG(aControl);
-  
+
   nsCOMPtr<nsIDOMElement> element;
   aControl->GetElement(getter_AddRefs(element));
   NS_ENSURE_STATE(element);
@@ -1121,7 +1149,7 @@ nsXFormsModelElement::SetStates(nsIXFormsControl *aControl,
   } else {
     aControl->GetDefaultIntrinsicState(&iState);
   }
-  
+
   nsresult rv = xtfWrap->SetIntrinsicState(iState);
   NS_ENSURE_SUCCESS(rv, rv);
 
@@ -1181,11 +1209,11 @@ nsXFormsModelElement::RefreshSubTree(nsXFormsControlListItem *aCurrent,
                                      PRBool                   aForceRebind)
 {
   nsresult rv;
-
-  while (aCurrent) {
-    nsCOMPtr<nsIXFormsControl> control(aCurrent->Control());
+  nsRefPtr<nsXFormsControlListItem> current = aCurrent;
+  while (current) {
+    nsCOMPtr<nsIXFormsControl> control(current->Control());
     NS_ASSERTION(control, "A tree node without a control?!");
-    
+
     // Get bound node
     nsCOMPtr<nsIDOMNode> boundNode;
     control->GetBoundNode(getter_AddRefs(boundNode));
@@ -1218,17 +1246,31 @@ nsXFormsModelElement::RefreshSubTree(nsXFormsControlListItem *aCurrent,
       nsCOMArray<nsIDOMNode> *deps = nsnull;
       if (usesModelBinding) {
         if (!boundNode) {
-          // If a control uses a model binding, but has no bound node a
-          // rebuild is the only thing that'll (eventually) change it
-          aCurrent = aCurrent->NextSibling();
-          continue;
+          PRBool usesSNB = PR_TRUE;
+          control->GetUsesSingleNodeBinding(&usesSNB);
+
+          // If the control doesn't use single node binding (and can thus be
+          // bound to many nodes), the above test for boundNode means nothing.
+          // We'll need to continue on with the work this function does so that
+          // any controls that this control contains can be tested for whether
+          // they may need to refresh.
+          if (usesSNB) {
+            // If a control uses a model binding, but has no bound node a
+            // rebuild is the only thing that'll (eventually) change it.  We
+            // don't need to worry about contained controls (like a label)
+            // since the fact that there is no bound node means that this
+            // control (and contained controls) need to behave as if
+            // irrelevant per spec.
+            current = current->NextSibling();
+            continue;
+          }
         }
       } else {
         // Get dependencies
         control->GetDependencies(&deps);
       }
       PRUint32 depCount = deps ? deps->Count() : 0;
-        
+
 #ifdef DEBUG_MODEL
       nsAutoString boundName;
       if (boundNode)
@@ -1292,7 +1334,7 @@ nsXFormsModelElement::RefreshSubTree(nsXFormsControlListItem *aCurrent,
       }
 #ifdef DEBUG_MODEL
       printf("\trebind: %d, refresh: %d\n", rebind, refresh);
-#endif    
+#endif
     }
 
     // Handle rebinding
@@ -1313,10 +1355,10 @@ nsXFormsModelElement::RefreshSubTree(nsXFormsControlListItem *aCurrent,
     }
 
     // Refresh children
-    rv = RefreshSubTree(aCurrent->FirstChild(), rebindChildren);
+    rv = RefreshSubTree(current->FirstChild(), rebindChildren);
     NS_ENSURE_SUCCESS(rv, rv);
 
-    aCurrent = aCurrent->NextSibling();
+    current = current->NextSibling();
   }
 
   return NS_OK;
@@ -1340,11 +1382,11 @@ nsXFormsModelElement::Refresh()
   // before we clear the dispatch flags
   {
     nsPostRefresh postRefresh = nsPostRefresh();
-  
+
     if (!mDocumentLoaded) {
       return NS_OK;
     }
-  
+
     // Kick off refreshing on root node
     nsresult rv = RefreshSubTree(mFormControls.FirstChild(), PR_FALSE);
     NS_ENSURE_SUCCESS(rv, rv);
@@ -1358,14 +1400,16 @@ nsXFormsModelElement::Refresh()
   return NS_OK;
 }
 
-// nsISchemaLoadListener
+// nsISVSchemaLoadListener
 
 NS_IMETHODIMP
-nsXFormsModelElement::OnLoad(nsISchema* aSchema)
+nsXFormsModelElement::OnLoad(nsISVSchema* aSchema)
 {
   mSchemaCount++;
 
-  if (IsComplete()) {
+  // If there is no model element, then schema loading finished after
+  // main page failed to load.
+  if (IsComplete() && mElement) {
     nsresult rv = FinishConstruction();
     NS_ENSURE_SUCCESS(rv, rv);
 
@@ -1375,7 +1419,7 @@ nsXFormsModelElement::OnLoad(nsISchema* aSchema)
   return NS_OK;
 }
 
-// nsIWebServiceErrorHandler
+// nsISVSchemaErrorHandler
 
 NS_IMETHODIMP
 nsXFormsModelElement::OnError(nsresult aStatus,
@@ -1439,7 +1483,7 @@ nsXFormsModelElement::RemoveFormControl(nsIXFormsControl *aControl)
 
 NS_IMETHODIMP
 nsXFormsModelElement::GetTypeForControl(nsIXFormsControl  *aControl,
-                                        nsISchemaType    **aType)
+                                        nsISVSchemaType    **aType)
 {
   NS_ENSURE_ARG_POINTER(aType);
   *aType = nsnull;
@@ -1447,44 +1491,82 @@ nsXFormsModelElement::GetTypeForControl(nsIXFormsControl  *aControl,
   nsCOMPtr<nsIDOMNode> boundNode;
   aControl->GetBoundNode(getter_AddRefs(boundNode));
   if (!boundNode) {
-    // if the control isn't bound to instance data, it doesn't make sense to 
+    // if the control isn't bound to instance data, it doesn't make sense to
     // return a type.  It is perfectly valid for there to be no bound node,
     // so no need to use an NS_ENSURE_xxx macro, either.
     return NS_ERROR_FAILURE;
   }
 
+  return GetTypeForNode(boundNode, aType);
+}
+
+NS_IMETHODIMP nsXFormsModelElement::GetTypeForNode(nsIDOMNode     *aBoundNode,
+                                                   nsISVSchemaType **aType)
+{
   nsAutoString schemaTypeName, schemaTypeNamespace;
-  nsresult rv = GetTypeAndNSFromNode(boundNode, schemaTypeName,
-                                     schemaTypeNamespace);
+  nsresult rv = GetTypeFromNode(aBoundNode, schemaTypeName,
+                                schemaTypeNamespace);
+
   NS_ENSURE_SUCCESS(rv, rv);
 
   nsXFormsSchemaValidator validator;
 
-  nsCOMPtr<nsISchemaCollection> schemaColl = do_QueryInterface(mSchemas);
+  nsCOMPtr<nsISVSchemaCollection> schemaColl = do_QueryInterface(mSchemas);
   if (schemaColl) {
-    nsCOMPtr<nsISchema> schema;
+    nsCOMPtr<nsISVSchema> schema;
     schemaColl->GetSchema(schemaTypeNamespace, getter_AddRefs(schema));
     // if no schema found, then we will only handle built-in types.
     if (schema)
       validator.LoadSchema(schema);
   }
 
-  return validator.GetType(schemaTypeName, schemaTypeNamespace, aType);
+  if (validator.GetType(schemaTypeName, schemaTypeNamespace, aType))
+    rv = NS_OK;
+  else
+    rv = NS_ERROR_FAILURE;
+
+  return rv;
 }
 
 /* static */ nsresult
 nsXFormsModelElement::GetTypeAndNSFromNode(nsIDOMNode *aInstanceData,
                                            nsAString &aType, nsAString &aNSUri)
 {
-  nsresult rv = GetTypeFromNode(aInstanceData, aType, aNSUri);
+  // 6.2.1 1. see if the instance data has a schema type.
+  // if the control has a schema type then we will then
+  // have to set a MIP node.
+  nsCOMPtr<nsISVSchemaType> schemaType;
+  nsresult rv = GetTypeForNode(aInstanceData, getter_AddRefs(schemaType));
 
+  if (rv == NS_OK) {
+    schemaType->GetTargetNamespace(aNSUri);
+    schemaType->GetName(aType);
+
+    return NS_OK;
+  }
+
+  // 6.2.1 2 & 3
+  // see if the type is assigned as an xsi:type, or XForms:type
+  nsAutoString schemaTypePrefix;
+  rv = nsXFormsUtils::ParseTypeFromNode(aInstanceData, aType, schemaTypePrefix);
+
+  // 6.2.1 4. Otherwise it is a string
   if (rv == NS_ERROR_NOT_AVAILABLE) {
     // if there is no type assigned, then assume that the type is 'string'
     aNSUri.Assign(NS_LITERAL_STRING(NS_NAMESPACE_XML_SCHEMA));
     aType.Assign(NS_LITERAL_STRING("string"));
     rv = NS_OK;
-  }
+  } else {
+    if (schemaTypePrefix.IsEmpty()) {
+      aNSUri.AssignLiteral("");
+    } else {
+      // get the namespace url from the prefix
+      nsCOMPtr<nsIDOM3Node> domNode3(do_QueryInterface(mElement, &rv));
+      NS_ENSURE_SUCCESS(rv, rv);
 
+      rv = domNode3->LookupNamespaceURI(schemaTypePrefix, aNSUri);
+    }
+  }
   return rv;
 }
 
@@ -1542,7 +1624,7 @@ nsXFormsModelElement::FindInstanceElement(const nsAString &aID,
       } else if (!element) {
         // this should only happen if the instance on the list is lazy authored
         // and as far as I can tell, a lazy authored instance should be the
-        // first (and only) instance in the model and unable to have an ID.  
+        // first (and only) instance in the model and unable to have an ID.
         // But that isn't clear to me reading the spec, so for now
         // we'll play it safe in case the WG more clearly defines lazy authoring
         // in the future.
@@ -1586,7 +1668,7 @@ NS_IMETHODIMP
 nsXFormsModelElement::SetNodeContent(nsIDOMNode *aNode,
                                      nsIDOMNode *aNodeContent,
                                      PRBool      aDoRebuild)
-{ 
+{
   nsresult rv = mMDG.SetNodeContent(aNode, aNodeContent);
   NS_ENSURE_SUCCESS(rv, rv);
 
@@ -1610,24 +1692,40 @@ nsXFormsModelElement::ValidateNode(nsIDOMNode *aInstanceNode, PRBool *aResult)
   NS_ENSURE_ARG_POINTER(aResult);
 
   nsAutoString schemaTypeName, schemaTypeNamespace;
-  nsresult rv = GetTypeAndNSFromNode(aInstanceNode, schemaTypeName, 
+  nsresult rv = GetTypeAndNSFromNode(aInstanceNode, schemaTypeName,
                                      schemaTypeNamespace);
   NS_ENSURE_SUCCESS(rv, rv);
 
   nsXFormsSchemaValidator validator;
-  nsCOMPtr<nsISchemaCollection> schemaColl = do_QueryInterface(mSchemas);
+  nsCOMPtr<nsISVSchemaCollection> schemaColl = do_QueryInterface(mSchemas);
   if (schemaColl) {
-    nsCOMPtr<nsISchema> schema;
+    nsCOMPtr<nsISVSchema> schema;
     schemaColl->GetSchema(schemaTypeNamespace, getter_AddRefs(schema));
     // if no schema found, then we will only handle built-in types.
     if (schema)
       validator.LoadSchema(schema);
   }
 
-  nsAutoString value;
-  nsXFormsUtils::GetNodeValue(aInstanceNode, value);
-  PRBool isValid = validator.ValidateString(value, schemaTypeName, schemaTypeNamespace);
+  nsCOMPtr<nsISVSchemaType> type;
+  rv = validator.GetType(schemaTypeName, schemaTypeNamespace,
+                         getter_AddRefs(type));
+  NS_ENSURE_SUCCESS(rv, rv);
 
+  PRUint16 typevalue = nsISVSchemaType::SCHEMA_TYPE_SIMPLE;
+  if (type) {
+    rv = type->GetSchemaType(&typevalue);
+    NS_ENSURE_SUCCESS(rv, rv);
+  }
+
+  PRBool isValid = PR_FALSE;
+  if (typevalue == nsISVSchemaType::SCHEMA_TYPE_SIMPLE) {
+    nsAutoString value;
+    nsXFormsUtils::GetNodeValue(aInstanceNode, value);
+    isValid = validator.ValidateString(value, schemaTypeName,
+                                              schemaTypeNamespace);
+  } else {
+    isValid = validator.Validate(aInstanceNode);
+  }
   *aResult = isValid;
   return NS_OK;
 }
@@ -1661,17 +1759,17 @@ nsXFormsModelElement::ValidateDocument(nsIDOMDocument *aInstanceDocument,
   nsAutoString nsuri;
   element->GetNamespaceURI(nsuri);
 
-  nsCOMPtr<nsISchemaCollection> schemaColl = do_QueryInterface(mSchemas);
+  nsCOMPtr<nsISVSchemaCollection> schemaColl = do_QueryInterface(mSchemas);
   NS_ENSURE_STATE(schemaColl);
 
-  nsCOMPtr<nsISchema> schema;
+  nsCOMPtr<nsISVSchema> schema;
   schemaColl->GetSchema(nsuri, getter_AddRefs(schema));
   if (!schema) {
     // No schema found, so nothing to validate
     *aResult = PR_TRUE;
     return NS_OK;
   }
-  
+
   nsXFormsSchemaValidator validator;
   validator.LoadSchema(schema);
   // Validate will validate the node and its subtree, as per the schema
@@ -1751,16 +1849,38 @@ nsXFormsModelElement::GetTypeFromNode(nsIDOMNode *aInstanceData,
 
   // If there was no type information on the node itself, check for a type
   // bound to the node via \<xforms:bind\>
+  nsresult rv = NS_ERROR_FAILURE;
   if (!typeVal && !mNodeToType.Get(aInstanceData, &typeVal)) {
-    // check if schema validation left us a nsISchemaType*
-    nsCOMPtr<nsIContent> content = do_QueryInterface(aInstanceData);
+    // check if schema validation left us a nsISVSchemaType*
+    nsCOMPtr<nsIAtomService> atomServ =
+      do_GetService(NS_ATOMSERVICE_CONTRACTID, &rv);
+    NS_ENSURE_SUCCESS(rv, rv);
 
-    if (content) {
-      nsISchemaType *type;
-      nsCOMPtr<nsIAtom> myAtom = do_GetAtom("xsdtype");
+    nsCOMPtr<nsIAtom> key;
+    rv = atomServ->GetAtomUTF8("xsdtype", getter_AddRefs(key));
+    NS_ENSURE_SUCCESS(rv, rv);
 
-      type = NS_STATIC_CAST(nsISchemaType *, content->GetProperty(myAtom));
-      if (type) {
+    nsCOMPtr<nsIVariant> xsdType;
+    // this is stored on the DOM3Node as a property called xsdtype
+    nsCOMPtr<nsIContent> pContent(do_QueryInterface(aInstanceData));
+
+    if (pContent) {
+       xsdType = static_cast<nsIVariant*>(pContent->GetProperty(key, &rv));
+    } else {
+      // see if this is stored on an attribute node
+      nsCOMPtr<nsIAttribute> pAttribute(do_QueryInterface(aInstanceData));
+
+      if (pAttribute) {
+        xsdType = static_cast<nsIVariant*>(pAttribute->GetProperty(key, &rv));
+      }
+    }
+
+    if (NS_SUCCEEDED(rv) && xsdType) {
+      nsCOMPtr<nsISVSchemaType> type;
+      nsIID *containedInterface;
+
+      if (NS_SUCCEEDED(xsdType->GetAsInterface(&containedInterface,
+                                               getter_AddRefs(type))) && type) {
         type->GetName(aType);
         type->GetTargetNamespace(aNSUri);
         return NS_OK;
@@ -1782,26 +1902,28 @@ nsXFormsModelElement::GetTypeFromNode(nsIDOMNode *aInstanceData,
   }
 
   if (separator == kNotFound) {
-    // no namespace prefix, which is valid;
+    // no namespace prefix, which is valid.  In this case we should follow
+    // http://www.w3.org/TR/2004/REC-xmlschema-1-20041028/#src-qname and pick
+    // up the default namespace.  Which will happen by passing an empty string
+    // as first parameter to LookupNamespaceURI.
     prefix = EmptyString();
     aType.Assign(*typeVal);
   } else {
     prefix.Assign(Substring(*typeVal, 0, separator));
     aType.Assign(Substring(*typeVal, ++separator, typeVal->Length()));
-  }
 
-  if (prefix.IsEmpty()) {
-    aNSUri = EmptyString();
-    return NS_OK;
+    if (prefix.IsEmpty()) {
+      aNSUri = EmptyString();
+      return NS_OK;
+    }
   }
 
   // get the namespace url from the prefix using instance data node
-  nsresult rv;
   nsCOMPtr<nsIDOM3Node> domNode3 = do_QueryInterface(aInstanceData, &rv);
   NS_ENSURE_SUCCESS(rv, rv);
   rv = domNode3->LookupNamespaceURI(prefix, aNSUri);
 
-  if (DOMStringIsNull(aNSUri)) {
+  if (aNSUri.IsVoid()) {
     // if not found using instance data node, use <xf:instance> node
     nsCOMPtr<nsIDOMNode> instanceNode;
     rv = nsXFormsUtils::GetInstanceNodeForData(aInstanceData,
@@ -1850,7 +1972,7 @@ nsXFormsModelElement::RequestUpdateEvent(nsXFormsEvent aEvent)
   PRInt32 loopCount = 0;
   while (mUpdateEventQueue.Count()) {
     nsXFormsEvent event =
-      NS_STATIC_CAST(nsXFormsEvent, NS_PTR_TO_UINT32(mUpdateEventQueue[0]));
+      static_cast<nsXFormsEvent>(NS_PTR_TO_UINT32(mUpdateEventQueue[0]));
     NS_ENSURE_TRUE(mUpdateEventQueue.RemoveElementAt(0), NS_ERROR_FAILURE);
 
     rv = nsXFormsUtils::DispatchEvent(mElement, event);
@@ -1910,7 +2032,7 @@ nsXFormsModelElement::GetContext(nsAString      &aModelID,
                                  PRInt32        *aContextPosition,
                                  PRInt32        *aContextSize)
 {
-  // Adding the nsIXFormsContextControl interface to model to allow 
+  // Adding the nsIXFormsContextControl interface to model to allow
   // submission elements to call our binding evaluation methods, like
   // EvaluateNodeBinding.  If GetContext can get called outside of the binding
   // codepath, then this MIGHT lead to problems.
@@ -1923,7 +2045,7 @@ nsXFormsModelElement::GetContext(nsAString      &aModelID,
   // changing the other values that we are returning unless this is successful.
   nsresult rv = NS_ERROR_FAILURE;
 
-  // Anybody (like a submission element) asking a model element for its context 
+  // Anybody (like a submission element) asking a model element for its context
   // for XPath expressions will want the root node of the default instance
   // document
   nsCOMPtr<nsIDOMDocument> firstInstanceDoc =
@@ -1947,6 +2069,13 @@ nsXFormsModelElement::GetContext(nsAString      &aModelID,
   aModelID.Assign(id);
 
   return NS_OK;
+}
+
+NS_IMETHODIMP
+nsXFormsModelElement::AddRemoveAbortedControl(nsIXFormsControl *aControl,
+                                              PRBool            aAdd)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
 }
 
 // internal methods
@@ -1983,10 +2112,10 @@ nsXFormsModelElement::ProcessBindElements()
   firstInstanceDoc->GetDocumentElement(getter_AddRefs(firstInstanceRoot));
 
   nsresult rv;
-  nsCOMPtr<nsIXFormsXPathEvaluator> xpath = 
-           do_CreateInstance("@mozilla.org/dom/xforms-xpath-evaluator;1", &rv);
+  nsCOMPtr<nsIDOMXPathEvaluator> xpath = do_QueryInterface(firstInstanceDoc,
+                                                           &rv);
   NS_ENSURE_TRUE(xpath, rv);
-  
+
   nsCOMPtr<nsIDOMNodeList> children;
   mElement->GetChildNodes(getter_AddRefs(children));
 
@@ -2045,7 +2174,7 @@ nsXFormsModelElement::BackupOrRestoreInstanceData(PRBool restore)
 
       // Don't know what to do with error if we get one.
       // Restore/BackupOriginalDocument will already output warnings.
-      if(restore) {
+      if (restore) {
         instance->RestoreOriginalDocument();
       }
       else {
@@ -2060,6 +2189,11 @@ nsXFormsModelElement::BackupOrRestoreInstanceData(PRBool restore)
 nsresult
 nsXFormsModelElement::FinishConstruction()
 {
+  // Ensure that FinishConstruction isn't called due to some callback
+  // or event handler after the model has started going through its
+  // destruction phase
+  NS_ENSURE_STATE(mElement);
+
   // process inline schemas that aren't referenced via the schema attribute
   nsCOMPtr<nsIDOMNodeList> children;
   mElement->GetChildNodes(getter_AddRefs(children));
@@ -2084,7 +2218,7 @@ nsXFormsModelElement::FinishConstruction()
       if (nsURI.EqualsLiteral(NS_NAMESPACE_XML_SCHEMA) &&
           localName.EqualsLiteral("schema")) {
         if (!IsDuplicateSchema(element)) {
-          nsCOMPtr<nsISchema> schema;
+          nsCOMPtr<nsISVSchema> schema;
           nsresult rv = mSchemas->ProcessSchemaElement(element, nsnull,
                                                        getter_AddRefs(schema));
           if (!NS_SUCCEEDED(rv)) {
@@ -2105,7 +2239,7 @@ nsXFormsModelElement::FinishConstruction()
   // we get the instance data from our instance child nodes
 
   // We're done initializing this model.
-  // 5. Perform an xforms-rebuild, xforms-recalculate, and xforms-revalidate in 
+  // 5. Perform an xforms-rebuild, xforms-recalculate, and xforms-revalidate in
   // sequence, for this model element. (The xforms-refresh is not performed
   // since the user interface has not yet been initialized).
   nsXFormsUtils::DispatchEvent(mElement, eEvent_Rebuild);
@@ -2207,7 +2341,7 @@ nsXFormsModelElement::MaybeNotifyCompletion()
   // DOMContentLoaded.
   for (i = 0; i < models->Count(); ++i) {
     nsXFormsModelElement *model =
-        NS_STATIC_CAST(nsXFormsModelElement *, models->ElementAt(i));
+        static_cast<nsXFormsModelElement *>(models->ElementAt(i));
     if (!model->mDocumentLoaded || !model->IsComplete())
       return;
 
@@ -2220,7 +2354,15 @@ nsXFormsModelElement::MaybeNotifyCompletion()
     if (!extFunctionAtt.IsEmpty()) {
       nsXFormsUtils::ReportError(NS_LITERAL_STRING("invalidExtFunction"),
                                  tElement);
-      nsXFormsUtils::DispatchEvent(tElement, eEvent_ComputeException);
+
+      // Context Info: 'error-message'
+      // Error message containing the expression being processed.
+      nsAutoString errorMsg;
+      errorMsg.AssignLiteral("Non-existent extension functions: ");
+      errorMsg.Append(extFunctionAtt);
+      SetContextInfo("error-message", errorMsg);
+      nsXFormsUtils::DispatchEvent(tElement, eEvent_ComputeException, nsnull,
+                                   nsnull, &mContextInfo);
       return;
     }
   }
@@ -2238,7 +2380,7 @@ nsXFormsModelElement::MaybeNotifyCompletion()
   // Okay, dispatch xforms-model-construct-done
   for (i = 0; i < models->Count(); ++i) {
     nsXFormsModelElement *model =
-        NS_STATIC_CAST(nsXFormsModelElement *, models->ElementAt(i));
+        static_cast<nsXFormsModelElement *>(models->ElementAt(i));
     nsXFormsUtils::DispatchEvent(model->mElement, eEvent_ModelConstructDone);
   }
 
@@ -2250,7 +2392,7 @@ nsXFormsModelElement::MaybeNotifyCompletion()
       // if we are still waiting for external messages to load, then put off
       // the xforms-ready until a model in the document is notified that they
       // are finished loading
-   
+
       return;
     }
   }
@@ -2258,7 +2400,7 @@ nsXFormsModelElement::MaybeNotifyCompletion()
   // Backup instances and fire xforms-ready
   for (i = 0; i < models->Count(); ++i) {
     nsXFormsModelElement *model =
-        NS_STATIC_CAST(nsXFormsModelElement *, models->ElementAt(i));
+        static_cast<nsXFormsModelElement *>(models->ElementAt(i));
     model->BackupOrRestoreInstanceData(PR_FALSE);
     model->mReadyHandled = PR_TRUE;
     nsXFormsUtils::DispatchEvent(model->mElement, eEvent_Ready);
@@ -2266,64 +2408,69 @@ nsXFormsModelElement::MaybeNotifyCompletion()
 }
 
 nsresult
-nsXFormsModelElement::ProcessBind(nsIXFormsXPathEvaluator *aEvaluator,
-                                  nsIDOMNode              *aContextNode,
-                                  PRInt32                 aContextPosition,
-                                  PRInt32                 aContextSize,
-                                  nsIDOMElement           *aBindElement,
-                                  PRBool                  aIsOuter)
+nsXFormsModelElement::ProcessBind(nsIDOMXPathEvaluator *aEvaluator,
+                                  nsIDOMNode           *aContextNode,
+                                  PRInt32               aContextPosition,
+                                  PRInt32               aContextSize,
+                                  nsIDOMElement        *aBindElement,
+                                  PRBool                aIsOuter)
 {
   // Get the model item properties specified by this \<bind\>.
-  nsCOMPtr<nsIDOMNSXPathExpression> props[eModel__count];
+  nsCOMPtr<nsIDOMXPathExpression> props[eModel__count];
   nsAutoString propStrings[eModel__count];
-  nsresult rv;
   nsAutoString attrStr;
+
+  nsCOMPtr<nsIDOMXPathNSResolver> resolver;
+  nsresult rv = aEvaluator->CreateNSResolver(aBindElement,
+                                             getter_AddRefs(resolver));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  nsCOMPtr<nsIXPathEvaluatorInternal> eval = do_QueryInterface(aEvaluator, &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
 
   for (PRUint32 i = 0; i < eModel__count; ++i) {
     sModelPropsList[i]->ToString(attrStr);
 
     aBindElement->GetAttribute(attrStr, propStrings[i]);
-    if (!propStrings[i].IsEmpty() &&
-        i != eModel_type &&
-        i != eModel_p3ptype) {
-      rv = aEvaluator->CreateExpression(propStrings[i], aBindElement,
-                                        getter_AddRefs(props[i]));
-      if (NS_FAILED(rv)) {
-        const PRUnichar *strings[] = { propStrings[i].get() };
-        nsXFormsUtils::ReportError(NS_LITERAL_STRING("mipParseError"),
-                                   strings, 1, aBindElement, aBindElement);
-        nsXFormsUtils::DispatchEvent(mElement, eEvent_ComputeException);
-        return rv;
-      }
-    }
   }
 
   // Find the nodeset that this bind applies to.
   nsCOMPtr<nsIDOMXPathResult> result;
 
-  nsAutoString expr;
-  aBindElement->GetAttribute(NS_LITERAL_STRING("nodeset"), expr);
-  if (expr.IsEmpty()) {
-    expr = NS_LITERAL_STRING(".");
+  nsAutoString exprString;
+  aBindElement->GetAttribute(NS_LITERAL_STRING("nodeset"), exprString);
+  if (exprString.IsEmpty()) {
+    exprString = NS_LITERAL_STRING(".");
   }
-  rv = aEvaluator->Evaluate(expr, aContextNode, aContextPosition, aContextSize,
-                            aBindElement,
-                            nsIDOMXPathResult::ORDERED_NODE_SNAPSHOT_TYPE,
-                            nsnull, getter_AddRefs(result));
+
+  nsCOMPtr<nsIXFormsXPathState> state = new nsXFormsXPathState(aBindElement,
+                                                               aContextNode);
+  NS_ENSURE_TRUE(state, NS_ERROR_OUT_OF_MEMORY);
+  rv = nsXFormsUtils::EvaluateXPath(eval, exprString, aContextNode, resolver,
+                                    state,
+                                    nsIDOMXPathResult::ORDERED_NODE_SNAPSHOT_TYPE,
+                                    aContextPosition, aContextSize,
+                                    nsnull, getter_AddRefs(result));
   if (NS_FAILED(rv)) {
     if (rv == NS_ERROR_DOM_INVALID_EXPRESSION_ERR) {
       // the xpath expression isn't valid xpath
-
-      const nsPromiseFlatString& flat = PromiseFlatString(expr);
-      const PRUnichar *strings[] = { flat.get() };
+      const PRUnichar *strings[] = { exprString.get() };
       nsXFormsUtils::ReportError(NS_LITERAL_STRING("exprParseError"),
                                  strings, 1, aBindElement, nsnull);
-      nsXFormsUtils::DispatchEvent(mElement, eEvent_ComputeException);
+
+      // Context Info: 'error-message'
+      // Error message containing the expression being processed.
+      nsAutoString errorMsg;
+      errorMsg.AssignLiteral("Error parsing XPath expression: ");
+      errorMsg.Append(exprString);
+      SetContextInfo("error-message", errorMsg);
+      nsXFormsUtils::DispatchEvent(mElement, eEvent_ComputeException, nsnull,
+                                   nsnull, &mContextInfo);
     } else {
 #ifdef DEBUG
       printf("xforms-binding-exception: XPath Evaluation failed\n");
 #endif
-      const PRUnichar *strings[] = { expr.get() };
+      const PRUnichar *strings[] = { exprString.get() };
       nsXFormsUtils::ReportError(NS_LITERAL_STRING("nodesetEvaluateError"),
                                  strings, 1, aBindElement, aBindElement);
       nsXFormsUtils::DispatchEvent(mElement, eEvent_BindingException);
@@ -2332,7 +2479,7 @@ nsXFormsModelElement::ProcessBind(nsIXFormsXPathEvaluator *aEvaluator,
   }
 
   NS_ENSURE_STATE(result);
-  
+
   // If this is an outer bind, store the nodeset, as controls binding to this
   // bind will need this.
   if (aIsOuter) {
@@ -2343,31 +2490,67 @@ nsXFormsModelElement::ProcessBind(nsIXFormsXPathEvaluator *aEvaluator,
     NS_ENSURE_SUCCESS(rv, rv);
 
     // addref, circumventing nsDerivedSave
-    NS_ADDREF(NS_STATIC_CAST(nsIDOMXPathResult*, result));
+    NS_ADDREF(static_cast<nsIDOMXPathResult*>(result));
   }
 
   PRUint32 snapLen;
   rv = result->GetSnapshotLength(&snapLen);
   NS_ENSURE_SUCCESS(rv, rv);
-  
+
 
   // Iterate over resultset
   nsCOMArray<nsIDOMNode> deps;
   nsCOMPtr<nsIDOMNode> node;
-  PRUint32 snapItem;
-  for (snapItem = 0; snapItem < snapLen; ++snapItem) {
+
+  if (!snapLen) {
+    return NS_OK;
+  }
+
+  // We rightly assume that all the nodes in the nodeset came from the same
+  // document.  So now we'll get the xpath evaluator from that document.  We
+  // need to ensure that the context node for the evaluation of each MIP
+  // expression and the evaluator for those expressions came from the same
+  // document.  It is a rule for xpath.
+  PRUint32 snapItem = 0;
+
+  for (; snapItem < snapLen; ++snapItem) {
     rv = result->SnapshotItem(snapItem, getter_AddRefs(node));
     NS_ENSURE_SUCCESS(rv, rv);
-    
-    if (!node) {
+
+    if (node){
+      break;
+    } else {
       NS_WARNING("nsXFormsModelElement::ProcessBind(): Empty node in result set.");
-      continue;
     }
-    
+  }
+
+  if (!node) {
+    return NS_OK;
+  }
+
+  nsCOMPtr<nsIDOMDocument> nodesetDoc;
+  node->GetOwnerDocument(getter_AddRefs(nodesetDoc));
+
+  nsCOMPtr<nsIDOMXPathEvaluator> nodesetEval = do_QueryInterface(nodesetDoc);
+  nsCOMPtr<nsIXPathEvaluatorInternal> nodesetEvalInternal =
+    do_QueryInterface(nodesetEval);
+  NS_ENSURE_STATE(nodesetEval && nodesetEvalInternal);
+
+  // Since we've already gotten the first node in the nodeset and verified it is
+  // good to go, we'll contine on.  For this node and each subsequent node in
+  // the nodeset, we'll evaluate the MIP expressions attached to the bind
+  // element and add them to the MDG.  And also process any binds that this
+  // bind contains (aka nested binds).
+  while (node && snapItem < snapLen) {
+
+    // set the context node for the expression that is being analyzed.
+    nsCOMPtr<nsIXFormsXPathState> stateForMIP =
+      new nsXFormsXPathState(aBindElement, node);
+    NS_ENSURE_TRUE(stateForMIP, NS_ERROR_OUT_OF_MEMORY);
 
     // Apply MIPs
     nsXFormsXPathParser parser;
-    nsXFormsXPathAnalyzer analyzer(aEvaluator, aBindElement);
+    nsXFormsXPathAnalyzer analyzer(eval, resolver, stateForMIP);
     PRBool multiMIP = PR_FALSE;
     for (PRUint32 j = 0; j < eModel__count; ++j) {
       if (propStrings[j].IsEmpty())
@@ -2390,19 +2573,40 @@ nsXFormsModelElement::ProcessBind(nsIXFormsXPathEvaluator *aEvaluator,
         NS_ENSURE_TRUE(newString, NS_ERROR_OUT_OF_MEMORY);
         NS_ENSURE_TRUE(table->Put(node, newString), NS_ERROR_OUT_OF_MEMORY);
 
-        // string is succesfully stored in the table, we should not dealloc it
+        // string is successfully stored in the table, we should not dealloc it
         newString.forget();
 
         if (j == eModel_type) {
           // Inform MDG that it needs to check type. The only arguments
           // actually used are |eModel_constraint| and |node|.
-          rv = mMDG.AddMIP(eModel_constraint, nsnull, nsnull, PR_FALSE, node, 1,
-                           1);
+          rv = mMDG.AddMIP(eModel_constraint, nsnull, nsnull, PR_FALSE, node,
+                           1, 1);
           NS_ENSURE_SUCCESS(rv, rv);
         }
       } else {
+
+        rv = nsXFormsUtils::CreateExpression(nodesetEvalInternal,
+                                             propStrings[j], resolver,
+                                             stateForMIP,
+                                             getter_AddRefs(props[j]));
+        if (NS_FAILED(rv)) {
+          const PRUnichar *strings[] = { propStrings[j].get() };
+          nsXFormsUtils::ReportError(NS_LITERAL_STRING("mipParseError"),
+                                     strings, 1, aBindElement, aBindElement);
+
+          // Context Info: 'error-message'
+          // Error message containing the expression being processed.
+          nsAutoString errorMsg;
+          errorMsg.AssignLiteral("Error while parsing model item property: ");
+          errorMsg.Append(propStrings[j]);
+          SetContextInfo("error-message", errorMsg);
+          nsXFormsUtils::DispatchEvent(mElement, eEvent_ComputeException,
+                                       nsnull, nsnull, &mContextInfo);
+          return rv;
+        }
+
         // the rest of the MIPs are given to the MDG
-        nsCOMPtr<nsIDOMNSXPathExpression> expr = props[j];
+        nsCOMPtr<nsIDOMNSXPathExpression> expr = do_QueryInterface(props[j]);
 
         // Get node dependencies
         nsAutoPtr<nsXFormsXPathNode> xNode(parser.Parse(propStrings[j]));
@@ -2461,7 +2665,7 @@ nsXFormsModelElement::ProcessBind(nsIXFormsXPathEvaluator *aEvaluator,
           child->GetLocalName(value);
           if (!value.EqualsLiteral("bind"))
             continue;
-          
+
           child->GetNamespaceURI(value);
           if (!value.EqualsLiteral(NS_NAMESPACE_XFORMS))
             continue;
@@ -2473,13 +2677,26 @@ nsXFormsModelElement::ProcessBind(nsIXFormsXPathEvaluator *aEvaluator,
         }
       }
     }
+
+    ++snapItem;
+    while (snapItem < snapLen) {
+      rv = result->SnapshotItem(snapItem, getter_AddRefs(node));
+      NS_ENSURE_SUCCESS(rv, rv);
+  
+      if (node) {
+        break;
+      }
+
+      NS_WARNING("nsXFormsModelElement::ProcessBind(): Empty node in result set.");
+      snapItem++;
+    }
   }
 
   return NS_OK;
 }
 
 NS_IMETHODIMP
-nsXFormsModelElement::AddInstanceElement(nsIInstanceElementPrivate *aInstEle) 
+nsXFormsModelElement::AddInstanceElement(nsIInstanceElementPrivate *aInstEle)
 {
   NS_ENSURE_STATE(mInstanceDocuments);
   mInstanceDocuments->AddInstance(aInstEle);
@@ -2497,7 +2714,7 @@ nsXFormsModelElement::RemoveInstanceElement(nsIInstanceElementPrivate *aInstEle)
 }
 
 NS_IMETHODIMP
-nsXFormsModelElement::MessageLoadFinished() 
+nsXFormsModelElement::MessageLoadFinished()
 {
   // This is our signal that all external message links have been tested.  If
   // we were waiting for this to send out xforms-ready, then now is the time.
@@ -2516,8 +2733,8 @@ nsXFormsModelElement::MessageLoadFinished()
   const nsVoidArray *models = GetModelList(domDoc);
   nsCOMPtr<nsIDocument>doc = do_QueryInterface(domDoc);
   nsCOMArray<nsIXFormsControl> *deferredBindList =
-    NS_STATIC_CAST(nsCOMArray<nsIXFormsControl> *,
-                   doc->GetProperty(nsXFormsAtoms::deferredBindListProperty));
+    static_cast<nsCOMArray<nsIXFormsControl> *>
+               (doc->GetProperty(nsXFormsAtoms::deferredBindListProperty));
 
   // if we've already gotten the xforms-model-construct-done event and not
   // yet the xforms-ready, we've hit a window where we may still be
@@ -2533,7 +2750,7 @@ nsXFormsModelElement::MessageLoadFinished()
   // ready to send out xforms-ready to all of the models.
   for (int i = 0; i < models->Count(); ++i) {
     nsXFormsModelElement *model =
-        NS_STATIC_CAST(nsXFormsModelElement *, models->ElementAt(i));
+        static_cast<nsXFormsModelElement *>(models->ElementAt(i));
     model->mReadyHandled = PR_TRUE;
     nsXFormsUtils::DispatchEvent(model->mElement, eEvent_Ready);
   }
@@ -2571,6 +2788,519 @@ nsXFormsModelElement::ForceRebind(nsIXFormsControl* aControl)
   return RefreshSubTree(controlItem->FirstChild(), rebindChildren);
 }
 
+nsresult
+nsXFormsModelElement::GetBuiltinTypeName(PRUint16   aType,
+                                         nsAString& aName)
+{
+  switch (aType) {
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_STRING:
+      aName.AssignLiteral("string");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_BOOLEAN:
+      aName.AssignLiteral("boolean");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_DECIMAL:
+      aName.AssignLiteral("decimal");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_FLOAT:
+      aName.AssignLiteral("float");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_DOUBLE:
+      aName.AssignLiteral("double");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_DURATION:
+      aName.AssignLiteral("duration");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_DATETIME:
+      aName.AssignLiteral("dateTime");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_TIME:
+      aName.AssignLiteral("time");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_DATE:
+      aName.AssignLiteral("date");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_GYEARMONTH:
+      aName.AssignLiteral("gYearMonth");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_GYEAR:
+      aName.AssignLiteral("gYear");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_GMONTHDAY:
+      aName.AssignLiteral("gMonthDay");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_GDAY:
+      aName.AssignLiteral("gDay");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_GMONTH:
+      aName.AssignLiteral("gMonth");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_HEXBINARY:
+      aName.AssignLiteral("hexBinary");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_BASE64BINARY:
+      aName.AssignLiteral("base64Binary");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_ANYURI:
+      aName.AssignLiteral("anyURI");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_QNAME:
+      aName.AssignLiteral("QName");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_NOTATION:
+      aName.AssignLiteral("NOTATION");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_NORMALIZED_STRING:
+      aName.AssignLiteral("normalizedString");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_TOKEN:
+      aName.AssignLiteral("token");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_BYTE:
+      aName.AssignLiteral("byte");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_UNSIGNEDBYTE:
+      aName.AssignLiteral("unsignedByte");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_INTEGER:
+      aName.AssignLiteral("integer");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_NEGATIVEINTEGER:
+      aName.AssignLiteral("negativeInteger");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_NONPOSITIVEINTEGER:
+      aName.AssignLiteral("nonPositiveInteger");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_LONG:
+      aName.AssignLiteral("long");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_NONNEGATIVEINTEGER:
+      aName.AssignLiteral("nonNegativeInteger");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_INT:
+      aName.AssignLiteral("int");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_UNSIGNEDINT:
+      aName.AssignLiteral("unsignedInt");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_UNSIGNEDLONG:
+      aName.AssignLiteral("unsignedLong");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_POSITIVEINTEGER:
+      aName.AssignLiteral("positiveInteger");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_SHORT:
+      aName.AssignLiteral("short");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_UNSIGNEDSHORT:
+      aName.AssignLiteral("unsignedShort");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_LANGUAGE:
+      aName.AssignLiteral("language");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_NMTOKEN:
+      aName.AssignLiteral("NMTOKEN");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_NAME:
+      aName.AssignLiteral("Name");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_NCNAME:
+      aName.AssignLiteral("NCName");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_ID:
+      aName.AssignLiteral("ID");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_IDREF:
+      aName.AssignLiteral("IDREF");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_ENTITY:
+      aName.AssignLiteral("ENTITY");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_IDREFS:
+      aName.AssignLiteral("IDREFS");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_ENTITIES:
+      aName.AssignLiteral("ENTITIES");
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_NMTOKENS:
+      aName.AssignLiteral("NMTOKENS");
+      break;
+    default:
+      // should never hit here
+      NS_WARNING("nsXFormsModelElement::GetBuiltinTypeName: Unknown builtin type encountered.");
+      return NS_ERROR_FAILURE;
+  }
+
+  return NS_OK;
+}
+
+nsresult
+nsXFormsModelElement::GetBuiltinTypesNames(PRUint16       aType,
+                                           nsStringArray *aNameArray)
+{
+  // This function recursively appends aType (and its base types) to
+  // aNameArray.  So it assumes aType isn't in the array already.
+  nsAutoString typeString, builtString;
+  PRUint16 parentType = 0;
+
+  // We won't append xsd:anyType as the base of every type since that is kinda
+  // redundant.
+
+  nsresult rv = GetBuiltinTypeName(aType, typeString);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  switch (aType) {
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_NORMALIZED_STRING:
+      parentType = nsISVSchemaBuiltinType::BUILTIN_TYPE_STRING;
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_TOKEN:
+      parentType = nsISVSchemaBuiltinType::BUILTIN_TYPE_NORMALIZED_STRING;
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_BYTE:
+      parentType = nsISVSchemaBuiltinType::BUILTIN_TYPE_SHORT;
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_UNSIGNEDBYTE:
+      parentType = nsISVSchemaBuiltinType::BUILTIN_TYPE_UNSIGNEDSHORT;
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_INTEGER:
+      parentType = nsISVSchemaBuiltinType::BUILTIN_TYPE_DECIMAL;
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_NEGATIVEINTEGER:
+      parentType = nsISVSchemaBuiltinType::BUILTIN_TYPE_NONPOSITIVEINTEGER;
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_NONPOSITIVEINTEGER:
+      parentType = nsISVSchemaBuiltinType::BUILTIN_TYPE_INTEGER;
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_LONG:
+      parentType = nsISVSchemaBuiltinType::BUILTIN_TYPE_INTEGER;
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_NONNEGATIVEINTEGER:
+      parentType = nsISVSchemaBuiltinType::BUILTIN_TYPE_INTEGER;
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_INT:
+      parentType = nsISVSchemaBuiltinType::BUILTIN_TYPE_LONG;
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_UNSIGNEDINT:
+      parentType = nsISVSchemaBuiltinType::BUILTIN_TYPE_UNSIGNEDLONG;
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_UNSIGNEDLONG:
+      parentType = nsISVSchemaBuiltinType::BUILTIN_TYPE_NONNEGATIVEINTEGER;
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_POSITIVEINTEGER:
+      parentType = nsISVSchemaBuiltinType::BUILTIN_TYPE_NONNEGATIVEINTEGER;
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_SHORT:
+      parentType = nsISVSchemaBuiltinType::BUILTIN_TYPE_INT;
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_UNSIGNEDSHORT:
+      parentType = nsISVSchemaBuiltinType::BUILTIN_TYPE_UNSIGNEDINT;
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_LANGUAGE:
+      parentType = nsISVSchemaBuiltinType::BUILTIN_TYPE_TOKEN;
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_NMTOKEN:
+      parentType = nsISVSchemaBuiltinType::BUILTIN_TYPE_TOKEN;
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_NAME:
+      parentType = nsISVSchemaBuiltinType::BUILTIN_TYPE_TOKEN;
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_NCNAME:
+      parentType = nsISVSchemaBuiltinType::BUILTIN_TYPE_NAME;
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_ID:
+      parentType = nsISVSchemaBuiltinType::BUILTIN_TYPE_NCNAME;
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_IDREF:
+      parentType = nsISVSchemaBuiltinType::BUILTIN_TYPE_NCNAME;
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_ENTITY:
+      parentType = nsISVSchemaBuiltinType::BUILTIN_TYPE_NCNAME;
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_IDREFS:
+      parentType = nsISVSchemaBuiltinType::BUILTIN_TYPE_IDREF;
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_ENTITIES:
+      parentType = nsISVSchemaBuiltinType::BUILTIN_TYPE_ENTITY;
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_NMTOKENS:
+      parentType = nsISVSchemaBuiltinType::BUILTIN_TYPE_NMTOKEN;
+      break;
+  }
+
+  builtString.AppendLiteral(NS_NAMESPACE_XML_SCHEMA);
+  builtString.AppendLiteral("#");
+  builtString.Append(typeString);
+  aNameArray->AppendString(builtString);
+
+  if (parentType)
+    return GetBuiltinTypesNames(parentType, aNameArray);
+
+  return NS_OK;
+}
+
+nsresult
+nsXFormsModelElement::WalkTypeChainInternal(nsISVSchemaType *aType,
+                                            PRBool         aFindRootBuiltin,
+                                            PRUint16      *aBuiltinType,
+                                            nsStringArray *aTypeArray)
+{
+  PRUint16 schemaTypeValue = 0;
+  aType->GetSchemaType(&schemaTypeValue);
+  NS_ENSURE_STATE(schemaTypeValue);
+  nsresult rv = NS_OK;
+  nsCOMPtr<nsISVSchemaSimpleType> simpleType;
+
+  if (schemaTypeValue == nsISVSchemaType::SCHEMA_TYPE_SIMPLE) {
+    simpleType = do_QueryInterface(aType);
+    NS_ENSURE_STATE(simpleType);
+    PRUint16 simpleTypeValue;
+    simpleType->GetSimpleType(&simpleTypeValue);
+    NS_ENSURE_STATE(simpleTypeValue);
+
+    switch (simpleTypeValue) {
+      case nsISVSchemaSimpleType::SIMPLE_TYPE_BUILTIN:
+      {
+        nsCOMPtr<nsISVSchemaBuiltinType> builtinType(do_QueryInterface(aType));
+        NS_ENSURE_STATE(builtinType);
+
+        if (aFindRootBuiltin)
+          return BuiltinTypeToPrimative(builtinType, aBuiltinType);
+
+        PRUint16 builtinTypeVal;
+        rv = builtinType->GetBuiltinType(&builtinTypeVal);
+        NS_ENSURE_SUCCESS(rv, rv);
+
+        if (aBuiltinType)
+          *aBuiltinType = builtinTypeVal;
+
+        if (aTypeArray)
+          return GetBuiltinTypesNames(builtinTypeVal, aTypeArray);
+
+        return NS_OK;
+      }
+      case nsISVSchemaSimpleType::SIMPLE_TYPE_RESTRICTION:
+      {
+        nsCOMPtr<nsISVSchemaRestrictionType> restType(do_QueryInterface(aType));
+        NS_ENSURE_STATE(restType);
+        restType->GetBaseType(getter_AddRefs(simpleType));
+
+        break;
+      }
+      case nsISVSchemaSimpleType::SIMPLE_TYPE_LIST:
+      {
+        nsCOMPtr<nsISVSchemaListType> listType(do_QueryInterface(aType));
+        NS_ENSURE_STATE(listType);
+        listType->GetListType(getter_AddRefs(simpleType));
+
+        break;
+      }
+      case nsISVSchemaSimpleType::SIMPLE_TYPE_UNION:
+      {
+        // For now union types aren't supported.  A union means that the type
+        // could be of any type listed in the union and still be valid.  But we
+        // don't know which path it will take since we'd basically have to
+        // validate the node value to know.  Someday we may have to figure out
+        // how to properly handle this, though we may never need to if no other
+        // processor supports it.  Strictly interpreting the spec, we don't
+        // need to handle unions as far as determining whether a control can
+        // bind to data of a given type.  Just the types defined in the spec
+        // and restrictions of those types.
+        return NS_ERROR_XFORMS_UNION_TYPE;
+      }
+      default:
+        // We only anticipate the 4 types listed above.  Definitely an error
+        // if we get something else.
+        return NS_ERROR_FAILURE;
+    }
+
+  } else if (schemaTypeValue == nsISVSchemaType::SCHEMA_TYPE_COMPLEX) {
+    nsCOMPtr<nsISVSchemaComplexType> complexType(do_QueryInterface(aType));
+    NS_ENSURE_STATE(complexType);
+    PRUint16 complexTypeValue = 0;
+    complexType->GetDerivation(&complexTypeValue);
+    NS_ENSURE_STATE(complexTypeValue);
+    if ((complexTypeValue ==
+         nsISVSchemaComplexType::DERIVATION_RESTRICTION_SIMPLE) ||
+        (complexTypeValue ==
+         nsISVSchemaComplexType::DERIVATION_EXTENSION_SIMPLE)) {
+      complexType->GetSimpleBaseType(getter_AddRefs(simpleType));
+    } else {
+      return NS_ERROR_FAILURE;
+    }
+  } else {
+    return NS_ERROR_FAILURE;
+  }
+
+  // For SIMPLE_TYPE_LIST and SIMPLE_TYPE_RESTRICTION we need to go around
+  // the horn again with the next simpleType.  Same with
+  // DERIVATION_RESTRICTION_SIMPLE and DERIVATION_EXTENSION_SIMPLE.  All other
+  // types should not reach here.
+
+  NS_ENSURE_STATE(simpleType);
+
+  if (aTypeArray) {
+    nsAutoString builtString;
+    rv = aType->GetTargetNamespace(builtString);
+    NS_ENSURE_SUCCESS(rv, rv);
+    nsAutoString typeName;
+    rv = aType->GetName(typeName);
+    NS_ENSURE_SUCCESS(rv, rv);
+    builtString.AppendLiteral("#");
+    builtString.Append(typeName);
+    aTypeArray->AppendString(builtString);
+  }
+
+  return WalkTypeChainInternal(simpleType, aFindRootBuiltin, aBuiltinType,
+                               aTypeArray);
+
+}
+
+nsresult
+nsXFormsModelElement::BuiltinTypeToPrimative(nsISVSchemaBuiltinType *aSchemaType,
+                                             PRUint16             *aPrimType)
+{
+  NS_ENSURE_ARG(aSchemaType);
+  NS_ENSURE_ARG_POINTER(aPrimType);
+
+  PRUint16 builtinType = 0;
+  nsresult rv = aSchemaType->GetBuiltinType(&builtinType);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  // Note: this won't return BUILTIN_TYPE_ANY since that is the root of all
+  // types.
+
+  switch (builtinType) {
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_STRING:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_BOOLEAN:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_DECIMAL:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_FLOAT:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_DOUBLE:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_DURATION:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_DATETIME:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_TIME:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_DATE:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_GYEARMONTH:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_GYEAR:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_GMONTHDAY:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_GDAY:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_GMONTH:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_HEXBINARY:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_BASE64BINARY:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_ANYURI:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_QNAME:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_NOTATION:
+      *aPrimType = builtinType;
+      break;
+
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_NORMALIZED_STRING:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_TOKEN:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_LANGUAGE:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_NMTOKEN:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_NAME:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_NCNAME:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_ID:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_IDREF:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_ENTITY:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_IDREFS:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_ENTITIES:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_NMTOKENS:
+      *aPrimType = nsISVSchemaBuiltinType::BUILTIN_TYPE_STRING;
+      break;
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_BYTE:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_UNSIGNEDBYTE:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_INTEGER:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_NEGATIVEINTEGER:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_NONPOSITIVEINTEGER:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_LONG:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_NONNEGATIVEINTEGER:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_INT:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_UNSIGNEDINT:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_UNSIGNEDLONG:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_POSITIVEINTEGER:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_SHORT:
+    case nsISVSchemaBuiltinType::BUILTIN_TYPE_UNSIGNEDSHORT:
+      *aPrimType = nsISVSchemaBuiltinType::BUILTIN_TYPE_DECIMAL;
+      break;
+    default:
+      // should never hit here
+      NS_WARNING("nsXFormsModelElement::BuiltinTypeToPrimative: Unknown builtin type encountered.");
+      return NS_ERROR_FAILURE;
+  }
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsXFormsModelElement::GetDerivedTypeList(const nsAString &aType,
+                                         const nsAString &aNamespace,
+                                         nsAString       &aTypeList)
+{
+  nsCOMPtr<nsISVSchemaCollection> schemaColl = do_QueryInterface(mSchemas);
+  NS_ENSURE_STATE(schemaColl);
+
+  nsCOMPtr<nsISVSchemaType> schemaType;
+  schemaColl->GetType(aType, aNamespace, getter_AddRefs(schemaType));
+  NS_ENSURE_STATE(schemaType);
+
+  nsStringArray typeArray;
+  nsresult rv = WalkTypeChainInternal(schemaType, PR_FALSE, nsnull, &typeArray);
+  if (NS_SUCCEEDED(rv)) {
+    PRUint32 numStrings = typeArray.Count();
+    nsAutoString constructorString;
+    for (PRUint32 i = 0; i < numStrings; ++i) {
+      nsAutoString tempString;
+      typeArray.StringAt(i, tempString);
+      constructorString.Append(tempString);
+      if (i != numStrings - 1) {
+        // if we aren't appending the last string, then stick in the space
+        // delimeter
+        constructorString.AppendLiteral(" ");
+      }
+    }
+
+    if (numStrings) {
+      aTypeList.Assign(constructorString);
+    } else {
+      aTypeList.Truncate();
+    }
+  }
+
+  if (NS_FAILED(rv)) {
+    aTypeList.Truncate();
+  }
+
+  typeArray.Clear();
+
+  return rv;
+}
+
+NS_IMETHODIMP
+nsXFormsModelElement::GetBuiltinTypeNameForControl(nsIXFormsControl  *aControl,
+                                                   nsAString&         aTypeName)
+{
+  NS_ENSURE_ARG(aControl);
+
+  nsCOMPtr<nsISVSchemaType> schemaType;
+  nsresult rv = GetTypeForControl(aControl, getter_AddRefs(schemaType));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  PRUint16 builtinType;
+  rv = WalkTypeChainInternal(schemaType, PR_FALSE, &builtinType);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  return GetBuiltinTypeName(builtinType, aTypeName);
+}
+
+NS_IMETHODIMP
+nsXFormsModelElement::GetRootBuiltinType(nsISVSchemaType *aType,
+                                         PRUint16      *aBuiltinType)
+{
+  NS_ENSURE_ARG(aType);
+  NS_ENSURE_ARG_POINTER(aBuiltinType);
+
+  return WalkTypeChainInternal(aType, PR_TRUE, aBuiltinType);
+}
+
 /* static */ void
 nsXFormsModelElement::Startup()
 {
@@ -2597,7 +3327,7 @@ DeleteBindList(void    *aObject,
                void    *aPropertyValue,
                void    *aData)
 {
-  delete NS_STATIC_CAST(nsCOMArray<nsIXFormsControl> *, aPropertyValue);
+  delete static_cast<nsCOMArray<nsIXFormsControl> *>(aPropertyValue);
 }
 
 /* static */ nsresult
@@ -2607,7 +3337,7 @@ nsXFormsModelElement::DeferElementBind(nsIXFormsControl *aControl)
   nsCOMPtr<nsIDOMElement> element;
   nsresult rv = aControl->GetElement(getter_AddRefs(element));
   NS_ENSURE_SUCCESS(rv, rv);
-  
+
   nsCOMPtr<nsIContent> content(do_QueryInterface(element));
   NS_ASSERTION(content, "nsIDOMElement not implementing nsIContent?!");
 
@@ -2632,8 +3362,8 @@ nsXFormsModelElement::DeferElementBind(nsIXFormsControl *aControl)
   }
 
   nsCOMArray<nsIXFormsControl> *deferredBindList =
-    NS_STATIC_CAST(nsCOMArray<nsIXFormsControl> *,
-                   doc->GetProperty(nsXFormsAtoms::deferredBindListProperty));
+    static_cast<nsCOMArray<nsIXFormsControl> *>
+               (doc->GetProperty(nsXFormsAtoms::deferredBindListProperty));
 
   if (!deferredBindList) {
     deferredBindList = new nsCOMArray<nsIXFormsControl>(16);
@@ -2671,8 +3401,8 @@ nsXFormsModelElement::ProcessDeferredBinds(nsIDOMDocument *aDoc)
   doc->SetProperty(nsXFormsAtoms::readyForBindProperty, doc);
 
   nsCOMArray<nsIXFormsControl> *deferredBindList =
-      NS_STATIC_CAST(nsCOMArray<nsIXFormsControl> *,
-                     doc->GetProperty(nsXFormsAtoms::deferredBindListProperty));
+      static_cast<nsCOMArray<nsIXFormsControl> *>
+                 (doc->GetProperty(nsXFormsAtoms::deferredBindListProperty));
 
   if (deferredBindList) {
     for (PRInt32 i = 0; i < deferredBindList->Count(); ++i) {
@@ -2716,15 +3446,20 @@ nsXFormsModelElement::HandleLoad(nsIDOMEvent* aEvent)
 
   if (mPendingInlineSchemas.Count() > 0) {
     nsCOMPtr<nsIDOMElement> el;
-    nsresult rv;
+    nsresult rv = NS_OK;
     for (PRInt32 i=0; i<mPendingInlineSchemas.Count(); ++i) {
       GetSchemaElementById(mElement, *mPendingInlineSchemas[i],
                            getter_AddRefs(el));
       if (!el) {
         rv = NS_ERROR_UNEXPECTED;
       } else {
+        // According to section 3.3.1 of the spec, more than one schema per
+        // namespace isn't allowed, but it also doesn't spell out very well
+        // what this means a processor should do about it.  Since most
+        // processors ignore this rule and it isn't specifically a fatal error,
+        // we won't make this a failure here.
         if (!IsDuplicateSchema(el)) {
-          nsCOMPtr<nsISchema> schema;
+          nsCOMPtr<nsISVSchema> schema;
           // no need to observe errors via the callback.  instead, rely on
           // this method returning a failure code when it encounters errors.
           rv = mSchemas->ProcessSchemaElement(el, nsnull,
@@ -2758,24 +3493,33 @@ nsXFormsModelElement::HandleUnload(nsIDOMEvent* aEvent)
 {
   // due to fastback changes, had to move this notification out from under
   // model's WillChangeDocument override.
-  return nsXFormsUtils::DispatchEvent(mElement, eEvent_ModelDestruct);
+  nsXFormsUtils::DispatchEvent(mElement, eEvent_ModelDestruct);
+
+  // Releasing references as early as possible, see bug 375320.
+  mSchemas = nsnull;
+
+  if (mInstanceDocuments)
+    mInstanceDocuments->DropReferences();
+
+  mFormControls.Clear();
+  mControlListHash.Clear();
+  return NS_OK;
 }
 
 PRBool
 nsXFormsModelElement::IsDuplicateSchema(nsIDOMElement *aSchemaElement)
 {
-  nsCOMPtr<nsISchemaCollection> schemaColl = do_QueryInterface(mSchemas);
+  nsCOMPtr<nsISVSchemaCollection> schemaColl = do_QueryInterface(mSchemas);
   if (!schemaColl)
     return PR_FALSE;
 
-  const nsAFlatString& empty = EmptyString();
   nsAutoString targetNamespace;
-  aSchemaElement->GetAttributeNS(empty,
+  aSchemaElement->GetAttributeNS(EmptyString(),
                                  NS_LITERAL_STRING("targetNamespace"),
                                  targetNamespace);
   targetNamespace.Trim(" \r\n\t");
 
-  nsCOMPtr<nsISchema> schema;
+  nsCOMPtr<nsISVSchema> schema;
   schemaColl->GetSchema(targetNamespace, getter_AddRefs(schema));
   if (!schema)
     return PR_FALSE;
@@ -2784,13 +3528,24 @@ nsXFormsModelElement::IsDuplicateSchema(nsIDOMElement *aSchemaElement)
   // schema collection and the first instance has already been processed.
   // Report an error to the JS console and dispatch the LinkError event,
   // but do not consider it a fatal error.
-  const nsPromiseFlatString& flat = PromiseFlatString(targetNamespace);
+  const nsString& flat = PromiseFlatString(targetNamespace);
   const PRUnichar *strings[] = { flat.get() };
   nsXFormsUtils::ReportError(NS_LITERAL_STRING("duplicateSchema"),
                              strings, 1, aSchemaElement, aSchemaElement,
                              nsnull);
   nsXFormsUtils::DispatchEvent(mElement, eEvent_LinkError);
   return PR_TRUE;
+}
+
+nsresult
+nsXFormsModelElement::SetContextInfo(const char *aName, const nsAString &aValue)
+{
+  nsCOMPtr<nsXFormsContextInfo> contextInfo = new nsXFormsContextInfo(mElement);
+  NS_ENSURE_TRUE(contextInfo, NS_ERROR_OUT_OF_MEMORY);
+  contextInfo->SetStringValue(aName, aValue);
+  mContextInfo.AppendObject(contextInfo);
+
+  return NS_OK;
 }
 
 nsresult

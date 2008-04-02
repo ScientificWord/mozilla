@@ -41,8 +41,8 @@ VPATH = @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-MODULE = typeaheadfind
-LIBRARY_NAME = typeaheadfind
+MODULE = suitetypeaheadfind
+LIBRARY_NAME = suitetypeaheadfind
 ifneq ($(OS_ARCH),WINNT)
 SHORT_LIBNAME = typahead
 endif
@@ -59,6 +59,7 @@ REQUIRES	= appcomps \
 		  find \
 		  intl \
 		  gfx \
+		  thebes \
 		  layout \
 		  locale \
 		  necko \

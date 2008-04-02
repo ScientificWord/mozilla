@@ -47,8 +47,7 @@
 #include "nsIDOM3Node.h"
 #include "nsIDOMDocument.h"
 #include "nsIDOMText.h"
-#include "nsIXTFXMLVisualWrapper.h"
-#include "nsString.h"
+#include "nsStringAPI.h"
 #include "nsIXFormsUIWidget.h"
 #include "nsIDocument.h"
 #include "nsNetUtil.h"
@@ -61,7 +60,7 @@ class nsXFormsSelectElement : public nsXFormsDelegateStub
 public:
   NS_DECL_ISUPPORTS_INHERITED
 
-  NS_IMETHOD OnCreated(nsIXTFBindableElementWrapper *aWrapper);
+  NS_IMETHOD OnCreated(nsIXTFElementWrapper *aWrapper);
 
   // nsIXTFElement overrides
   NS_IMETHOD ChildInserted(nsIDOMNode *aChild, PRUint32 aIndex);
@@ -76,6 +75,8 @@ public:
   // nsIXFormsDelegate overrides
   NS_IMETHOD GetXFormsAccessors(nsIXFormsAccessors **aAccessor);
 
+  virtual PRBool IsContentAllowed();
+
 #ifdef DEBUG_smaug
   virtual const char* Name() { return "select"; }
 #endif
@@ -85,7 +86,7 @@ NS_IMPL_ISUPPORTS_INHERITED0(nsXFormsSelectElement,
                              nsXFormsDelegateStub)
 
 NS_IMETHODIMP
-nsXFormsSelectElement::OnCreated(nsIXTFBindableElementWrapper *aWrapper)
+nsXFormsSelectElement::OnCreated(nsIXTFElementWrapper *aWrapper)
 {
   nsresult rv = nsXFormsDelegateStub::OnCreated(aWrapper);
   NS_ENSURE_SUCCESS(rv, rv);
@@ -93,7 +94,8 @@ nsXFormsSelectElement::OnCreated(nsIXTFBindableElementWrapper *aWrapper)
   aWrapper->SetNotificationMask(kStandardNotificationMask |
                                 nsIXTFElement::NOTIFY_CHILD_INSERTED |
                                 nsIXTFElement::NOTIFY_CHILD_APPENDED |
-                                nsIXTFElement::NOTIFY_CHILD_REMOVED);
+                                nsIXTFElement::NOTIFY_CHILD_REMOVED |
+                                nsIXTFElement::NOTIFY_PERFORM_ACCESSKEY);
   return NS_OK;
 }
 
@@ -164,6 +166,21 @@ nsXFormsSelectElement::GetXFormsAccessors(nsIXFormsAccessors **aAccessor)
   }
   NS_ADDREF(*aAccessor = mAccessor);
   return NS_OK;
+}
+
+PRBool
+nsXFormsSelectElement::IsContentAllowed()
+{
+  PRBool isAllowed = PR_TRUE;
+
+  // For select elements, non-simpleContent is only allowed if the select
+  // element contains an itemset.
+  PRBool isComplex = IsContentComplex();
+  if (isComplex && !nsXFormsUtils::NodeHasItemset(mElement)) {
+    isAllowed = PR_FALSE;
+  }
+
+  return isAllowed;
 }
 
 NS_HIDDEN_(nsresult)

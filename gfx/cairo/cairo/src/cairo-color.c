@@ -89,19 +89,28 @@ _cairo_color_init_rgb (cairo_color_t *color,
     _cairo_color_init_rgba (color, red, green, blue, 1.0);
 }
 
-/* We multiply colors by (0x10000 - epsilon), such that we get a uniform
- * range even for 0xffff.  In other words, (1.0 - epsilon) would convert
- * to 0xffff, not 0xfffe.
+/* Convert a double in [0.0, 1.0] to an integer in [0, 65535]
+ * The conversion is designed to divide the input range into 65536
+ * equally-sized regions. This is achieved by multiplying by 65536 and
+ * then special-casing the result of an input value of 1.0 so that it
+ * maps to 65535 instead of 65536.
  */
-#define CAIRO_COLOR_ONE_MINUS_EPSILON (65536.0 - 1e-5)
+uint16_t
+_cairo_color_double_to_short (double d)
+{
+    uint32_t i;
+    i = (uint32_t) (d * 65536);
+    i -= (i >> 16);
+    return i;
+}
 
 static void
 _cairo_color_compute_shorts (cairo_color_t *color)
 {
-    color->red_short   = color->red   * color->alpha * CAIRO_COLOR_ONE_MINUS_EPSILON;
-    color->green_short = color->green * color->alpha * CAIRO_COLOR_ONE_MINUS_EPSILON;
-    color->blue_short  = color->blue  * color->alpha * CAIRO_COLOR_ONE_MINUS_EPSILON;
-    color->alpha_short = color->alpha * CAIRO_COLOR_ONE_MINUS_EPSILON;
+    color->red_short   = _cairo_color_double_to_short (color->red   * color->alpha);
+    color->green_short = _cairo_color_double_to_short (color->green * color->alpha);
+    color->blue_short  = _cairo_color_double_to_short (color->blue  * color->alpha);
+    color->alpha_short = _cairo_color_double_to_short (color->alpha);
 }
 
 void
@@ -150,4 +159,14 @@ _cairo_color_get_rgba_premultiplied (cairo_color_t *color,
     *green = color->green * color->alpha;
     *blue  = color->blue  * color->alpha;
     *alpha = color->alpha;
+}
+
+cairo_bool_t
+_cairo_color_equal (const cairo_color_t *color_a,
+	            const cairo_color_t *color_b)
+{
+    return color_a->red_short   == color_b->red_short   &&
+           color_a->green_short == color_b->green_short &&
+           color_a->blue_short  == color_b->blue_short  &&
+           color_a->alpha_short == color_b->alpha_short;
 }

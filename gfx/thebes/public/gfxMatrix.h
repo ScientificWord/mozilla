@@ -38,8 +38,6 @@
 #ifndef GFX_MATRIX_H
 #define GFX_MATRIX_H
 
-#include <cairo.h>
-
 #include "gfxPoint.h"
 #include "gfxTypes.h"
 #include "gfxRect.h"
@@ -64,46 +62,25 @@
  *           \ tx ty 1 /   \         1          /
  *
  */
-class THEBES_API gfxMatrix {
-protected:
-    cairo_matrix_t mat;
+struct THEBES_API gfxMatrix {
+    double xx; double yx;
+    double xy; double yy;
+    double x0; double y0;
 
 public:
     /**
      * Initializes this matrix as the identity matrix.
      */
     gfxMatrix() { Reset(); }
-    gfxMatrix(const gfxMatrix& m) : mat(m.mat) {}
+
     /**
      * Initializes the matrix from individual components. See the class
      * description for the layout of the matrix.
      */
-    gfxMatrix(gfxFloat a, gfxFloat b, gfxFloat c, gfxFloat d, gfxFloat tx, gfxFloat ty) {
-        // XXX cairo_matrix_init?
-        mat.xx = a; mat.yx = b; mat.xy = c; mat.yy = d; mat.x0 = tx; mat.y0 = ty;
-    }
-
-    gfxMatrix(const cairo_matrix_t& m) {
-        mat = m;
-    }
-
-    bool operator==(const gfxMatrix& m) const {
-        return ((mat.xx == m.mat.xx) &&
-                (mat.yx == m.mat.yx) &&
-                (mat.xy == m.mat.xy) &&
-                (mat.yy == m.mat.yy) &&
-                (mat.x0 == m.mat.x0) &&
-                (mat.y0 == m.mat.y0));
-    }
-
-    bool operator!=(const gfxMatrix& m) const {
-        return !(*this == m);
-    }
-
-    gfxMatrix& operator=(const cairo_matrix_t& m) {
-        mat = m;
-        return *this;
-    }
+    gfxMatrix(gfxFloat a, gfxFloat b, gfxFloat c, gfxFloat d, gfxFloat tx, gfxFloat ty) :
+        xx(a),  yx(b),
+        xy(c),  yy(d),
+        x0(tx), y0(ty) { }
 
     /**
      * Post-multiplies m onto the matrix.
@@ -119,31 +96,11 @@ public:
         return gfxMatrix(*this).Multiply(m);
     }
 
-    // conversion to other types
-    const cairo_matrix_t& ToCairoMatrix() const {
-        return mat;
-    }
-
-    void ToValues(gfxFloat *xx, gfxFloat *yx,
-                  gfxFloat *xy, gfxFloat *yy,
-                  gfxFloat *x0, gfxFloat *y0) const
-    {
-        *xx = mat.xx;
-        *yx = mat.yx;
-        *xy = mat.xy;
-        *yy = mat.yy;
-        *x0 = mat.x0;
-        *y0 = mat.y0;
-    }
-
     // matrix operations
     /**
      * Resets this matrix to the identity matrix.
      */
-    const gfxMatrix& Reset() {
-        cairo_matrix_init_identity(&mat);
-        return *this;
-    }
+    const gfxMatrix& Reset();
 
     /**
      * Inverts this matrix, if possible. Otherwise, the matrix is left
@@ -152,28 +109,27 @@ public:
      * XXX should this do something with the return value of
      * cairo_matrix_invert?
      */
-    const gfxMatrix& Invert() {
-        cairo_matrix_invert(&mat);
-        return *this;
+    const gfxMatrix& Invert();
+
+    /**
+     * Check if matrix is singular (no inverse exists).
+     */
+    PRBool IsSingular() const {
+        // if the determinant (ad - bc) is zero it's singular
+        return (xx * yy) == (yx * xy);
     }
 
     /**
      * Scales this matrix. The scale is pre-multiplied onto this matrix,
      * i.e. the scaling takes place before the other transformations.
      */
-    const gfxMatrix& Scale(gfxFloat x, gfxFloat y) {
-        cairo_matrix_scale(&mat, x, y);
-        return *this;
-    }
+    const gfxMatrix& Scale(gfxFloat x, gfxFloat y);
 
     /**
      * Translates this matrix. The translation is pre-multiplied onto this matrix,
      * i.e. the translation takes place before the other transformations.
      */
-    const gfxMatrix& Translate(const gfxPoint& pt) {
-        cairo_matrix_translate(&mat, pt.x, pt.y);
-        return *this;
-    }
+    const gfxMatrix& Translate(const gfxPoint& pt);
 
     /**
      * Rotates this matrix. The rotation is pre-multiplied onto this matrix,
@@ -181,15 +137,7 @@ public:
      *
      * @param radians Angle in radians.
      */
-    const gfxMatrix& Rotate(gfxFloat radians) {
-        // cairo_matrix_rotate?
-        gfxFloat s = sin(radians);
-        gfxFloat c = cos(radians);
-        gfxMatrix t( c, s,
-                    -s, c,
-                     0, 0);
-        return *this = t.Multiply(*this);
-    }
+    const gfxMatrix& Rotate(gfxFloat radians);
 
      /**
       * Multiplies the current matrix with m.
@@ -198,43 +146,32 @@ public:
       *
       * XXX is that difference (compared to Rotate etc) a good thing?
       */
-    const gfxMatrix& Multiply(const gfxMatrix& m) {
-        cairo_matrix_multiply(&mat, &mat, &m.mat);
-        return *this;
-    }
+    const gfxMatrix& Multiply(const gfxMatrix& m);
 
     /**
      * Transforms a point according to this matrix.
      */
-    gfxPoint Transform(const gfxPoint point) const {
-        gfxPoint ret = point;
-        cairo_matrix_transform_point(&mat, &ret.x, &ret.y);
-        return ret;
-    }
+    gfxPoint Transform(const gfxPoint& point) const;
+
 
     /**
      * Transform a distance according to this matrix. This does not apply
      * any translation components.
      */
-    gfxSize Transform(const gfxSize size) const {
-        gfxSize ret = size;
-        cairo_matrix_transform_distance(&mat, &ret.width, &ret.height);
-        return ret;
-    }
+    gfxSize Transform(const gfxSize& size) const;
 
     /**
      * Transforms both the point and distance according to this matrix.
      */
-    gfxRect Transform(const gfxRect rect) const {
-        gfxRect ret(Transform(rect.pos), Transform(rect.size));
-        return ret;
-    }
+    gfxRect Transform(const gfxRect& rect) const;
+
+    gfxRect TransformBounds(const gfxRect& rect) const;
 
     /**
      * Returns the translation component of this matrix.
      */
     gfxPoint GetTranslation() const {
-        return gfxPoint(mat.x0, mat.y0);
+        return gfxPoint(x0, y0);
     }
 
     /**
@@ -242,8 +179,64 @@ public:
      * than a straight translation
      */
     bool HasNonTranslation() const {
-        return ((mat.xx != 1.0) || (mat.yy != 1.0) ||
-                (mat.xy != 0.0) || (mat.yx != 0.0));
+        return ((xx != 1.0) || (yy != 1.0) ||
+                (xy != 0.0) || (yx != 0.0));
+    }
+
+    /**
+     * Returns true if the matrix has any transform other
+     * than a translation or a -1 y scale (y axis flip)
+     */
+    bool HasNonTranslationOrFlip() const {
+        return ((xx != 1.0) || ((yy != 1.0) && (yy != -1.0)) ||
+                (xy != 0.0) || (yx != 0.0));
+    }
+
+    /**
+     * Returns true if the matrix has any transform other
+     * than a translation or scale; this is, if there is
+     * no rotation.
+     */
+    bool HasNonAxisAlignedTransform() const {
+        return ((xy != 0.0) || (yx != 0.0));
+    }
+
+    /**
+     * Computes the determinant of this matrix.
+     */
+    double Determinant() const {
+        return xx*yy - yx*xy;
+    }
+
+    /* Computes the scale factors of this matrix; that is,
+     * the amounts each basis vector is scaled by.
+     * The xMajor parameter indicates if the larger scale is
+     * to be assumed to be in the X direction or not.
+     */
+    gfxSize ScaleFactors(PRBool xMajor) const {
+        double det = Determinant();
+
+        if (det == 0.0)
+            return gfxSize(0.0, 0.0);
+
+        gfxSize sz((xMajor != 0 ? 1.0 : 0.0),
+                        (xMajor != 0 ? 0.0 : 1.0));
+        sz = Transform(sz);
+
+        double major = sqrt(sz.width * sz.width + sz.height * sz.height);
+        double minor = 0.0;
+
+        // ignore mirroring
+        if (det < 0.0)
+            det = - det;
+
+        if (major)
+            minor = det / major;
+
+        if (xMajor)
+            return gfxSize(major, minor);
+
+        return gfxSize(minor, major);
     }
 };
 

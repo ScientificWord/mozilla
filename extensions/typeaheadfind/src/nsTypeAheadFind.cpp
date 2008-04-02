@@ -52,7 +52,6 @@
 #include "nsPIDOMWindow.h"
 #include "nsIDOMEventTarget.h"
 #include "nsIDOMNSUIEvent.h"
-#include "nsIChromeEventHandler.h"
 #include "nsIDOMNSEvent.h"
 #include "nsIPrefBranch.h"
 #include "nsIPrefBranch2.h"
@@ -78,7 +77,6 @@
 #include "nsISelectionPrivate.h"
 #include "nsISelectElement.h"
 #include "nsILink.h"
-#include "nsITextContent.h"
 #include "nsTextFragment.h"
 #include "nsILookAndFeel.h"
 
@@ -95,14 +93,15 @@
 #include "nsINameSpaceManager.h"
 #include "nsIWindowWatcher.h"
 #include "nsIObserverService.h"
-#include "nsLayoutAtoms.h"
 
 #include "nsIPrivateTextEvent.h"
 #include "nsIPrivateCompositionEvent.h"
 #include "nsGUIEvent.h"
-#include "nsIDOMEventReceiver.h"
+#include "nsPIDOMEventTarget.h"
+#include "nsIDOMEventTarget.h"
 #include "nsIDOM3EventTarget.h"
 #include "nsIDOMEventGroup.h"
+#include "nsPresShellIterator.h"
 
 // Header for this class
 #include "nsTypeAheadFind.h"
@@ -111,7 +110,7 @@
 
 
 NS_INTERFACE_MAP_BEGIN(nsTypeAheadFind)
-  NS_INTERFACE_MAP_ENTRY(nsITypeAheadFind)
+  NS_INTERFACE_MAP_ENTRY(nsISuiteTypeAheadFind)
   NS_INTERFACE_MAP_ENTRY(nsISupportsWeakReference)
   NS_INTERFACE_MAP_ENTRY(nsITimerCallback)
   NS_INTERFACE_MAP_ENTRY(nsIScrollPositionListener)
@@ -245,6 +244,8 @@ nsTypeAheadFind::ReleaseInstance()
 void 
 nsTypeAheadFind::Shutdown()
 {
+  RemoveDocListeners();
+
   // Application shutdown 
   mTimer = nsnull;
 
@@ -253,6 +254,25 @@ nsTypeAheadFind::Shutdown()
   if (windowWatcher) {
     windowWatcher->UnregisterNotification(this);
   }
+
+  // Clear strong refs.  It's important to release these so that we don't hold
+  // on to objects that depends on other modules.
+  // E.g. gfxFonts in the nsThebesGfxModule, see bug 398084 and bug 414559.
+  mSoundInterface = nsnull;
+  mStartFindRange = nsnull;
+  mSearchRange = nsnull;
+  mStartPointRange = nsnull;
+  mEndPointRange = nsnull;
+  mFind = nsnull;
+  mFindService = nsnull;
+  mStringBundle = nsnull;
+  mTimer = nsnull;
+  mFocusController = nsnull;
+  mFocusedDocSelection = nsnull;
+  mFocusedDocSelCon = nsnull;
+  mFocusedWindow = nsnull;
+  mFocusedWeakShell = nsnull;
+  mManualFindWindows->Clear();
 }
 
 
@@ -490,7 +510,7 @@ nsTypeAheadFind::UseInWindow(nsIDOMWindow *aDOMWin)
     return NS_OK;
   }
 
-  nsIPresShell *presShell = doc->GetShellAt(0);
+  nsIPresShell *presShell = doc->GetPrimaryShell();
 
   if (!presShell) {
     return NS_OK;
@@ -556,11 +576,11 @@ nsTypeAheadFind::HandleEvent(nsIDOMEvent* aEvent)
       return NS_ERROR_FAILURE;
     }
 
-    PRUint32 numShells = doc->GetNumberOfShells();
     PRBool cancelFind = PR_FALSE;
 
-    for (PRUint32 count = 0; count < numShells; count ++) {
-      nsIPresShell *shellToBeDestroyed = doc->GetShellAt(count);
+    nsPresShellIterator iter(doc);
+    nsCOMPtr<nsIPresShell> shellToBeDestroyed;
+    while ((shellToBeDestroyed = iter.GetNextShell())) {
       if (shellToBeDestroyed == focusedShell) {
         cancelFind = PR_TRUE;
         break;
@@ -696,6 +716,9 @@ nsTypeAheadFind::KeyPress(nsIDOMEvent* aEvent)
     // 1) Chrome, 2) Typeahead, 3) [platform]HTMLBindings.xml
     // If chrome handles backspace, it needs to do this work
     // Otherwise, we handle backspace here.
+
+    // Beware! This may flush notifications via synchronous
+    // ScrollSelectionIntoView.
     PRBool backspaceUsed;
     BackOneChar(&backspaceUsed);
     if (backspaceUsed) {
@@ -724,6 +747,8 @@ nsTypeAheadFind::KeyPress(nsIDOMEvent* aEvent)
   // We're using this key, no one else should
   aEvent->PreventDefault();
 
+  // Beware! This may flush notifications via synchronous
+  // ScrollSelectionIntoView.
   return HandleChar(charCode);
 }
 
@@ -826,7 +851,7 @@ nsTypeAheadFind::BackOneChar(PRBool *aIsBackspaceUsed)
       startNode->GetOwnerDocument(getter_AddRefs(domDoc));
       nsCOMPtr<nsIDocument> doc(do_QueryInterface(domDoc));
       if (doc) {
-        presShell = doc->GetShellAt(0);
+        presShell = doc->GetPrimaryShell();
       }
     }
     if (!presShell) {
@@ -847,6 +872,8 @@ nsTypeAheadFind::BackOneChar(PRBool *aIsBackspaceUsed)
 
   // ----------- Perform the find ------------------
   mIsFindingText = PR_TRUE; // so selection won't call CancelFind()
+  // Beware! This may flush notifications via synchronous
+  // ScrollSelectionIntoView.
   if (NS_FAILED(FindItNow(presShell, findBackwards, mLinksOnly, PR_FALSE))) {
     DisplayStatus(PR_FALSE, nsnull, PR_FALSE); // Display failure status
   }
@@ -965,6 +992,8 @@ nsTypeAheadFind::HandleChar(PRUnichar aChar)
       // Regular find, not repeated char find
 
       // Prefer to find exact match
+      // Beware! This may flush notifications via synchronous
+      // ScrollSelectionIntoView.
       rv = FindItNow(nsnull, PR_FALSE, mLinksOnly, mIsFirstVisiblePreferred);
     }
 
@@ -973,6 +1002,8 @@ nsTypeAheadFind::HandleChar(PRUnichar aChar)
         mTypeAheadBuffer.Length() > 1) {
       mRepeatingMode = eRepeatingChar;
       mDontTryExactMatch = PR_TRUE;  // Repeated character find mode
+      // Beware! This may flush notifications via synchronous
+      // ScrollSelectionIntoView.
       rv = FindItNow(nsnull, PR_TRUE, PR_TRUE, mIsFirstVisiblePreferred);
     }
 #endif
@@ -1180,6 +1211,8 @@ nsTypeAheadFind::HandleEndComposition(nsIDOMEvent* aCompositionEvent)
 
   // Handle the characters one at a time
   while (iter != iterEnd) {
+    // Beware! This may flush notifications via synchronous
+    // ScrollSelectionIntoView.
     if (NS_FAILED(HandleChar(*iter))) {
       // Character not found, exit loop early
       break;
@@ -1367,8 +1400,12 @@ nsTypeAheadFind::FindItNow(nsIPresShell *aPresShell,
       // Select the found text and focus it
       mFocusedDocSelection->RemoveAllRanges();
       mFocusedDocSelection->AddRange(returnRange);
-      mFocusedDocSelCon->ScrollSelectionIntoView(nsISelectionController::SELECTION_NORMAL,
-                                                 nsISelectionController::SELECTION_FOCUS_REGION, PR_TRUE);
+      // After ScrollSelectionIntoView(), the pending notifications might be
+      // flushed and PresShell/PresContext/Frames may be dead. See bug 418470.
+      mFocusedDocSelCon->ScrollSelectionIntoView(
+                           nsISelectionController::SELECTION_NORMAL,
+                           nsISelectionController::SELECTION_FOCUS_REGION,
+                           PR_TRUE);
       SetSelectionLook(presShell, PR_TRUE, mRepeatingMode != eRepeatingForward 
                                            && mRepeatingMode != eRepeatingReverse);
 
@@ -1598,12 +1635,9 @@ nsTypeAheadFind::RangeStartsInsideLink(nsIDOMRange *aRange,
     }
   }
   else if (startOffset > 0) {
-    nsCOMPtr<nsITextContent> textContent(do_QueryInterface(startContent));
-
-    if (textContent) {
+    const nsTextFragment *textFrag = startContent->GetText();
+    if (textFrag) {
       // look for non whitespace character before start offset
-      const nsTextFragment *textFrag = textContent->Text();
-
       for (PRInt32 index = 0; index < startOffset; index++) {
         if (!XP_IS_SPACE(textFrag->CharAt(index))) {
           *aIsStartingLink = PR_FALSE;  // not at start of a node
@@ -1652,11 +1686,8 @@ nsTypeAheadFind::RangeStartsInsideLink(nsIDOMRange *aRange,
     nsCOMPtr<nsIContent> parent = startContent->GetParent();
     if (parent) {
       nsIContent *parentsFirstChild = parent->GetChildAt(0);
-      nsCOMPtr<nsITextContent> textContent =
-        do_QueryInterface(parentsFirstChild);
-
       // We don't want to look at a whitespace-only first child
-      if (textContent && textContent->IsOnlyWhitespace())
+      if (parentsFirstChild && parentsFirstChild->TextIsOnlyWhitespace())
         parentsFirstChild = parent->GetChildAt(1);
 
       if (parentsFirstChild != startContent) {
@@ -1712,7 +1743,7 @@ nsTypeAheadFind::NotifySelectionChanged(nsIDOMDocument *aDoc,
 }
 
 
-// ---------------- nsITypeAheadFind --------------------
+// ---------------- nsISuiteTypeAheadFind --------------------
 
 NS_IMETHODIMP
 nsTypeAheadFind::FindNext(PRBool aFindBackwards, nsISupportsInterfacePointer *aCallerWindowSupports)
@@ -1814,6 +1845,8 @@ nsTypeAheadFind::FindNext(PRBool aFindBackwards, nsISupportsInterfacePointer *aC
 
   mIsFindingText = PR_TRUE; // prevent our listeners from calling CancelFind()
 
+  // Beware! This may flush notifications via synchronous
+  // ScrollSelectionIntoView.
   if (NS_FAILED(FindItNow(nsnull, repeatingSameChar, mLinksOnly, PR_FALSE))) {
     DisplayStatus(PR_FALSE, nsnull, PR_FALSE); // Display failure status
     mRepeatingMode = eRepeatingNone;
@@ -2280,13 +2313,13 @@ nsTypeAheadFind::RemoveWindowListeners(nsIDOMWindow *aDOMWin)
   }
 
   // Use capturing, otherwise the normal find next will get activated when ours should
-  nsCOMPtr<nsIDOMEventReceiver> receiver(do_QueryInterface(chromeEventHandler));
+  nsCOMPtr<nsPIDOMEventTarget> piTarget(do_QueryInterface(chromeEventHandler));
   nsCOMPtr<nsIDOMEventGroup> systemGroup;
-  receiver->GetSystemEventGroup(getter_AddRefs(systemGroup));
-  nsCOMPtr<nsIDOM3EventTarget> target(do_QueryInterface(receiver));
+  piTarget->GetSystemEventGroup(getter_AddRefs(systemGroup));
+  nsCOMPtr<nsIDOM3EventTarget> target(do_QueryInterface(piTarget));
 
   target->RemoveGroupedEventListener(NS_LITERAL_STRING("keypress"),
-                                     NS_STATIC_CAST(nsIDOMKeyListener*, this),
+                                     static_cast<nsIDOMKeyListener*>(this),
                                      PR_FALSE, systemGroup);
 
   if (aDOMWin == mFocusedWindow) {
@@ -2295,7 +2328,7 @@ nsTypeAheadFind::RemoveWindowListeners(nsIDOMWindow *aDOMWin)
 
   // Remove menu listeners
   nsIDOMEventListener *genericEventListener = 
-    NS_STATIC_CAST(nsIDOMEventListener*, NS_STATIC_CAST(nsIDOMKeyListener*, this));
+    static_cast<nsIDOMEventListener*>(static_cast<nsIDOMKeyListener*>(this));
 
   chromeEventHandler->RemoveEventListener(NS_LITERAL_STRING("popupshown"), 
                                           genericEventListener, 
@@ -2318,11 +2351,9 @@ nsTypeAheadFind::RemoveWindowListeners(nsIDOMWindow *aDOMWin)
                                           PR_TRUE);
 
   // Remove DOM Text listener for IME text events
-  nsCOMPtr<nsIDOMEventReceiver> chromeEventReceiver = 
-    do_QueryInterface(chromeEventHandler);
-  chromeEventReceiver->RemoveEventListenerByIID(NS_STATIC_CAST(nsIDOMTextListener*, this), 
+  piTarget->RemoveEventListenerByIID(static_cast<nsIDOMTextListener*>(this), 
     NS_GET_IID(nsIDOMTextListener));
-  chromeEventReceiver->RemoveEventListenerByIID(NS_STATIC_CAST(nsIDOMCompositionListener*, this), 
+  piTarget->RemoveEventListenerByIID(static_cast<nsIDOMCompositionListener*>(this), 
     NS_GET_IID(nsIDOMCompositionListener));
 }
 
@@ -2337,18 +2368,18 @@ nsTypeAheadFind::AttachWindowListeners(nsIDOMWindow *aDOMWin)
   }
 
   // Use capturing, otherwise the normal find next will get activated when ours should
-  nsCOMPtr<nsIDOMEventReceiver> receiver(do_QueryInterface(chromeEventHandler));
+  nsCOMPtr<nsPIDOMEventTarget> piTarget(do_QueryInterface(chromeEventHandler));
   nsCOMPtr<nsIDOMEventGroup> systemGroup;
-  receiver->GetSystemEventGroup(getter_AddRefs(systemGroup));
-  nsCOMPtr<nsIDOM3EventTarget> target(do_QueryInterface(receiver));
+  piTarget->GetSystemEventGroup(getter_AddRefs(systemGroup));
+  nsCOMPtr<nsIDOM3EventTarget> target(do_QueryInterface(piTarget));
 
   target->AddGroupedEventListener(NS_LITERAL_STRING("keypress"),
-                                  NS_STATIC_CAST(nsIDOMKeyListener*, this),
+                                  static_cast<nsIDOMKeyListener*>(this),
                                   PR_FALSE, systemGroup);
 
   // Attach menu listeners, this will help us ignore keystrokes meant for menus
   nsIDOMEventListener *genericEventListener = 
-    NS_STATIC_CAST(nsIDOMEventListener*, NS_STATIC_CAST(nsIDOMKeyListener*, this));
+    static_cast<nsIDOMEventListener*>(static_cast<nsIDOMKeyListener*>(this));
 
   chromeEventHandler->AddEventListener(NS_LITERAL_STRING("popupshown"), 
                                        genericEventListener, 
@@ -2371,11 +2402,9 @@ nsTypeAheadFind::AttachWindowListeners(nsIDOMWindow *aDOMWin)
                                        PR_TRUE);
 
   // Add DOM Text listener for IME text events
-  nsCOMPtr<nsIDOMEventReceiver> chromeEventReceiver =
-    do_QueryInterface(chromeEventHandler);
-  chromeEventReceiver->AddEventListenerByIID(NS_STATIC_CAST(nsIDOMTextListener*, this), 
+  piTarget->AddEventListenerByIID(static_cast<nsIDOMTextListener*>(this),
     NS_GET_IID(nsIDOMTextListener));
-  chromeEventReceiver->AddEventListenerByIID(NS_STATIC_CAST(nsIDOMCompositionListener*, this), 
+  piTarget->AddEventListenerByIID(static_cast<nsIDOMCompositionListener*>(this),
     NS_GET_IID(nsIDOMCompositionListener));
 }
 
@@ -2385,7 +2414,7 @@ nsTypeAheadFind::GetChromeEventHandler(nsIDOMWindow *aDOMWin,
                                        nsIDOMEventTarget **aChromeTarget)
 {
   nsCOMPtr<nsPIDOMWindow> privateDOMWindow(do_QueryInterface(aDOMWin));
-  nsIChromeEventHandler *chromeEventHandler = nsnull;
+  nsPIDOMEventTarget* chromeEventHandler = nsnull;
   if (privateDOMWindow) {
     chromeEventHandler = privateDOMWindow->GetChromeEventHandler();
   }
@@ -2480,7 +2509,7 @@ nsTypeAheadFind::GetTargetIfTypeAheadOkay(nsIDOMEvent *aEvent,
 
   // ---------- Get presshell -----------
 
-  nsIPresShell *presShell = doc->GetShellAt(0);
+  nsIPresShell *presShell = doc->GetPrimaryShell();
   if (!presShell) {
     return NS_OK;
   }
@@ -2602,6 +2631,7 @@ nsTypeAheadFind::IsRangeVisible(nsIPresShell *aPresShell,
 
   // Set up the variables we need, return true if we can't get at them all
   const PRUint16 kMinPixels  = 12;
+  PRUint16 minPixels = PRUint16(nsPresContext::CSSPixelsToAppUnits(kMinPixels));
 
   nsIViewManager* viewManager = aPresShell->GetViewManager();
   if (!viewManager) {
@@ -2614,8 +2644,6 @@ nsTypeAheadFind::IsRangeVisible(nsIPresShell *aPresShell,
   // for only needs to be a rough indicator
   nsIView *containingView = nsnull;
   nsPoint frameOffset;
-  float p2t;
-  p2t = aPresContext->PixelsToTwips();
   nsRectVisibility rectVisibility = nsRectVisibility_kAboveViewport;
 
   if (!aGetTopVisibleLeaf) {
@@ -2631,7 +2659,7 @@ nsTypeAheadFind::IsRangeVisible(nsIPresShell *aPresShell,
     relFrameRect.y = frameOffset.y;
 
     viewManager->GetRectVisibility(containingView, relFrameRect,
-                                   NS_STATIC_CAST(PRUint16, (kMinPixels * p2t)),
+                                   minPixels,
                                    &rectVisibility);
 
     if (rectVisibility != nsRectVisibility_kAboveViewport &&
@@ -2646,8 +2674,13 @@ nsTypeAheadFind::IsRangeVisible(nsIPresShell *aPresShell,
   nsCOMPtr<nsIBidirectionalEnumerator> frameTraversal;
   nsCOMPtr<nsIFrameTraversal> trav(do_CreateInstance(kFrameTraversalCID));
   if (trav) {
-    trav->NewFrameTraversal(getter_AddRefs(frameTraversal), LEAF,
-                            aPresContext, frame);
+    trav->NewFrameTraversal(getter_AddRefs(frameTraversal),
+                            aPresContext, frame,
+                            eLeaf,
+                            PR_FALSE, // aVisual
+                            PR_FALSE, // aLockInScrollView
+                            PR_FALSE  // aFollowOOFs
+                            );
   }
 
   if (!frameTraversal) {
@@ -2659,7 +2692,7 @@ nsTypeAheadFind::IsRangeVisible(nsIPresShell *aPresShell,
     frameTraversal->Next();
     nsISupports* currentItem;
     frameTraversal->CurrentItem(&currentItem);
-    frame = NS_STATIC_CAST(nsIFrame*, currentItem);
+    frame = static_cast<nsIFrame*>(currentItem);
     if (!frame) {
       return PR_FALSE;
     }
@@ -2670,9 +2703,7 @@ nsTypeAheadFind::IsRangeVisible(nsIPresShell *aPresShell,
       relFrameRect.x = frameOffset.x;
       relFrameRect.y = frameOffset.y;
       viewManager->GetRectVisibility(containingView, relFrameRect,
-                                     NS_STATIC_CAST(PRUint16,
-                                                    (kMinPixels * p2t)),
-                                     &rectVisibility);
+                                     minPixels, &rectVisibility);
     }
   }
 
@@ -2923,7 +2954,7 @@ nsTypeAheadController::DoCommand(const char *aCommand)
   EnsureContentWindow(domWinInternal, getter_AddRefs(startContentWin));
   NS_ENSURE_TRUE(startContentWin, NS_ERROR_FAILURE);
 
-  nsCOMPtr<nsITypeAheadFind> typeAhead = 
+  nsCOMPtr<nsISuiteTypeAheadFind> typeAhead = 
     do_GetService(NS_TYPEAHEADFIND_CONTRACTID);
   NS_ENSURE_TRUE(typeAhead, NS_ERROR_FAILURE);
 
