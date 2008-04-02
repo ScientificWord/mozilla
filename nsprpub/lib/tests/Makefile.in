@@ -46,18 +46,15 @@ include $(MOD_DEPTH)/config/autoconf.mk
 
 include $(topsrcdir)/config/config.mk
 
-ifeq ($(OS_ARCH), WINNT)
-# DIRS = windows
-endif
-
 ifeq ($(OS_TARGET), WIN16)
 OS_CFLAGS = $(OS_EXE_CFLAGS)
 endif
 
 CSRCS = \
 	arena.c \
-	string.c \
-	base64t.c
+	base64t.c \
+	getopt.c \
+	string.c
 
 ifeq (,$(filter-out WINNT OS2,$(OS_ARCH)))
 CSRCS += arena.c
@@ -128,6 +125,12 @@ ifeq ($(OS_ARCH), Linux)
         ifeq ($(USE_PTHREADS),1)
             EXTRA_LIBS = -lpthread
         endif
+    endif
+endif
+
+ifeq (,$(filter-out OpenBSD,$(OS_ARCH)))
+    ifeq ($(USE_PTHREADS),1)
+        EXTRA_LIBS = -lpthread
     endif
 endif
 

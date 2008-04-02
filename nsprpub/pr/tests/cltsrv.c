@@ -214,10 +214,8 @@ PRLogModuleInfo *cltsrv_log_file = NULL;
 static void _MY_Assert(const char *s, const char *file, PRIntn ln)
 {
     PL_PrintError(NULL);
-#if DEBUG
     PR_Assert(s, file, ln);
-#endif
-}  /* _MW_Assert */
+}  /* _MY_Assert */
 
 static PRBool Aborted(PRStatus rv)
 {
@@ -230,7 +228,7 @@ static void TimeOfDayMessage(const char *msg, PRThread* me)
     char buffer[100];
     PRExplodedTime tod;
     PR_ExplodeTime(PR_Now(), PR_LocalTimeParameters, &tod);
-    (void)PR_FormatTime(buffer, sizeof(buffer), "%T", &tod);
+    (void)PR_FormatTime(buffer, sizeof(buffer), "%H:%M:%S", &tod);
 
     TEST_LOG(
         cltsrv_log_file, TEST_LOG_ALWAYS,

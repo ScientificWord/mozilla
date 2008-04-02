@@ -277,6 +277,14 @@ void _PR_InitFdCache(void)
     if (NULL != low) _pr_fd_cache.limit_low = atoi(low);
     if (NULL != high) _pr_fd_cache.limit_high = atoi(high);
 
+    if (_pr_fd_cache.limit_low < 0)
+        _pr_fd_cache.limit_low = 0;
+    if (_pr_fd_cache.limit_low > FD_SETSIZE)
+        _pr_fd_cache.limit_low = FD_SETSIZE;
+
+    if (_pr_fd_cache.limit_high > FD_SETSIZE)
+        _pr_fd_cache.limit_high = FD_SETSIZE;
+
     if (_pr_fd_cache.limit_high < _pr_fd_cache.limit_low)
         _pr_fd_cache.limit_high = _pr_fd_cache.limit_low;
 
@@ -298,7 +306,11 @@ void _PR_CleanupFdCache(void)
         PR_DELETE(fd->secret);
         PR_DELETE(fd);
     }
+    _pr_fd_cache.head = NULL;
+    _pr_fd_cache.tail = NULL;
+    _pr_fd_cache.count = 0;
     PR_DestroyLock(_pr_fd_cache.ml);
+    _pr_fd_cache.ml = NULL;
     while ((pop = PR_StackPop(_pr_fd_cache.stack)) != NULL)
     {
         fd = (PRFileDesc*)((PRPtrdiff)pop - (PRPtrdiff)stack2fd);
@@ -306,6 +318,7 @@ void _PR_CleanupFdCache(void)
         PR_DELETE(fd);
     }
     PR_DestroyStack(_pr_fd_cache.stack);
+    _pr_fd_cache.stack = NULL;
 }  /* _PR_CleanupFdCache */
 
 /* prfdcach.c */

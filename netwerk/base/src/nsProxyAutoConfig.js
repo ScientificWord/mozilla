@@ -59,9 +59,6 @@ nsProxyAutoConfig.prototype = {
     // sandbox in which we eval loaded autoconfig js file
     _sandBox: null, 
 
-    // ptr to eval'ed FindProxyForURL function
-    _findProxyForURL: null,
-
     QueryInterface: function(iid) {
         if (iid.Equals(nsIProxyAutoConfig) ||
             iid.Equals(nsISupports))
@@ -72,7 +69,6 @@ nsProxyAutoConfig.prototype = {
     init: function(pacURI, pacText) {
         // remove PAC configuration if requested
         if (pacURI == "" || pacText == "") {
-            this._findProxyForURL = null;
             this._sandBox = null;
             return;
         }
@@ -88,19 +84,29 @@ nsProxyAutoConfig.prototype = {
 
         // evaluate loaded js file
         Components.utils.evalInSandbox(pacText, this._sandBox);
-        this._findProxyForURL = this._sandBox.FindProxyForURL;
+
+        // We can no longer trust this._sandBox. Touching it directly can
+        // cause all sorts of pain, so wrap it in an XPCSafeJSObjectWrapper
+        // and do all of our work through there.
+        this._sandBox = new XPCSafeJSObjectWrapper(this._sandBox);
     },
 
     getProxyForURI: function(testURI, testHost) {
-        if (!this._findProxyForURL)
+        if (!("FindProxyForURL" in this._sandBox))
             return null;
 
         // Call the original function
-        return this._findProxyForURL.call(this._sandBox, testURI, testHost);
+        try {
+            var rval = this._sandBox.FindProxyForURL(testURI, testHost);
+        } catch (e) {
+            throw XPCSafeJSObjectWrapper(e);
+        }
+        return rval;
     }
 }
 
 function proxyAlert(msg) {
+    msg = XPCSafeJSObjectWrapper(msg);
     try {
         // It would appear that the console service is threadsafe.
         var cns = Components.classes["@mozilla.org/consoleservice;1"]
@@ -122,6 +128,7 @@ function myIpAddress() {
 
 // wrapper for resolving hostnames called by PAC file
 function dnsResolve(host) {
+    host = XPCSafeJSObjectWrapper(host);
     try {
         return dns.resolve(host, 0).getNextAddrAsString();
     } catch (e) {
