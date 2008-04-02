@@ -1,9 +1,8 @@
-XPI_NAME	= prince
-
 DEPTH		= ../..
 topsrcdir	= @top_srcdir@
 srcdir	    = @srcdir@
 VPATH		= @srcdir@
+XPI_NAME	= prince
 
 DIRS		=  content locale/en-us skin/classic skin/modern
 

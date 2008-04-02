@@ -2,7 +2,7 @@
 
 //var gComposerWindowControllerID = 0;
 //var prefAuthorString = "";
-//
+//                                        
 //const kDisplayModeNormal = 0;
 //const kDisplayModeAllTags = 1;
 //const kDisplayModeSource = 2;
@@ -784,7 +784,12 @@ function msiEditorDocumentObserver(editorElement)
             editor.addOverrideStyleSheet(gMathStyleSheet);
         } catch (e) {dump("Exception in msiEditorDocumentObserver obs_documentCreated, adding overrideStyleSheets: " + e);}
 
-        this.doInitFastCursor();
+        try {
+          this.doInitFastCursor();
+        }
+        catch(e) {
+          dump("Failed to init fast cursor: "+e+"\n");
+        }
         if ("UpdateWindowTitle" in window)
           UpdateWindowTitle();
         // Add mouse click watcher if right type of editor
@@ -802,8 +807,13 @@ function msiEditorDocumentObserver(editorElement)
           // also initialize the sidebar in this case
           try {initSidebar();} catch(e){}
           // now is the time to initialize the autosubstitute engine
-          var autosub = Components.classes["@mozilla.org/autosubstitute;1"].getService(Components.interfaces.msiIAutosub);
-          autosub.initialize("resource:///res/tagdefs/autosubs.xml");
+          try {
+            var autosub = Components.classes["@mozilla.org/autosubstitute;1"].getService(Components.interfaces.msiIAutosub);
+            autosub.initialize("resource:///res/tagdefs/autosubs.xml");
+          }
+          catch(e) {
+            dump(e+"\n");
+          }
 //temp?          editor.SetTagListPath("chrome://editor/content/default.xml");
           // the order here is important, since the autocomplete component has to read the tag names 
 //          initializeAutoCompleteStringArrayForEditor(editor);
