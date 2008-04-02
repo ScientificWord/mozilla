@@ -44,10 +44,10 @@
 struct nsSize;
 
 
-// {CE295E90-FF53-4013-96AE-67B5762292A9}
+// {6672E0EA-C936-11DC-9BB7-0014850B592F}
 #define NS_ILOOKANDFEEL_IID \
-{ 0xce295e90, 0xff53, 0x4013, \
-    { 0x96, 0xae, 0x67, 0xb5, 0x76, 0x22, 0x92, 0xa9 } }
+{ 0x6672e0ea, 0xc936, 0x11dc, \
+    { 0x9b, 0xb7, 0x00, 0x14, 0x85, 0x0b, 0x59, 0x2f} }
 
 
 class nsILookAndFeel: public nsISupports {
@@ -129,6 +129,8 @@ public:
 
     eColor__moz_cellhighlight,                               //used to cell text background, selected but not focus
     eColor__moz_cellhighlighttext,                           //used to cell text, selected but not focus
+    eColor__moz_html_cellhighlight,                          //used to html select cell text background, selected but not focus
+    eColor__moz_html_cellhighlighttext,                      //used to html select cell text, selected but not focus
     eColor__moz_buttonhoverface,                             //used to button text background, when mouse is over
     eColor__moz_buttonhovertext,                             //used to button text, when mouse is over
     eColor__moz_menuhover,                                   //used to menu item background, when mouse is over
@@ -139,6 +141,7 @@ public:
     eColor__moz_mac_focusring,				//ring around text fields and lists
     eColor__moz_mac_menuselect,				//colour used when mouse is over a menu item
     eColor__moz_mac_menushadow,				//colour used to do shadows on menu items
+    eColor__moz_mac_menutextdisable,                    // color used to display text for disabled menu items
     eColor__moz_mac_menutextselect,			//colour used to display text while mouse is over a menu item
 
   	//all of the accent colours
@@ -198,12 +201,55 @@ public:
     eMetric_ScrollArrowStyle,                             // position of scroll arrows in a scrollbar
     eMetric_ScrollSliderStyle,                            // is scroll thumb proportional or fixed?
 
+    eMetric_ScrollButtonLeftMouseButtonAction,            // each button can take one of four values:
+    eMetric_ScrollButtonMiddleMouseButtonAction,          // 0 - scrolls one  line, 1 - scrolls one page
+    eMetric_ScrollButtonRightMouseButtonAction,           // 2 - scrolls to end, 3 - button ignored
+ 
     eMetric_TreeOpenDelay,                                // delay for opening spring loaded folders
     eMetric_TreeCloseDelay,                               // delay for closing spring loaded folders
     eMetric_TreeLazyScrollDelay,                          // delay for triggering the tree scrolling
     eMetric_TreeScrollDelay,                              // delay for scrolling the tree
     eMetric_TreeScrollLinesMax,                           // the maximum number of lines to be scrolled at ones
-    eMetric_TabFocusModel                                 // What type of tab-order to use
+    eMetric_TabFocusModel,                                // What type of tab-order to use
+
+    /*
+     * eMetric_AlertNotificationOrigin indicates from which corner of the
+     * screen alerts slide in, and from which direction (horizontal/vertical).
+     * 0, the default, represents bottom right, sliding vertically.
+     * Use any bitwise combination of the following constants:
+     * NS_ALERT_HORIZONTAL (1), NS_ALERT_LEFT (2), NS_ALERT_TOP (4).
+     *
+     *       6       4
+     *     +-----------+
+     *    7|           |5
+     *     |           |
+     *    3|           |1
+     *     +-----------+
+     *       2       0
+     */
+    eMetric_AlertNotificationOrigin,
+
+    /**
+     * If true, clicking on a scrollbar (not as in dragging the thumb) defaults
+     * to scrolling the view corresponding to the clicked point. Otherwise, we
+     * only do so if the scrollbar is clicked using the middle mouse button or
+     * if shift is pressed when the scrollbar is clicked.
+     */
+    eMetric_ScrollToClick,
+
+    /**
+     * IME underline styles, the values should be NS_DECORATION_LINE_STYLE_*.
+     * They are defined below.
+     */
+    eMetric_IMERawInputUnderlineStyle,
+    eMetric_IMESelectedRawTextUnderlineStyle,
+    eMetric_IMEConvertedTextUnderlineStyle,
+    eMetric_IMESelectedConvertedTextUnderline,
+
+    /**
+     * If this metric != 0, show icons in menus.
+     */
+    eMetric_ImagesInMenus
   } nsMetricID;
 
   enum {
@@ -243,7 +289,11 @@ public:
   NS_IMETHOD GetColor(const nsColorID aID, nscolor &aColor) = 0;
   NS_IMETHOD GetMetric(const nsMetricID aID, PRInt32 & aMetric) = 0;
   NS_IMETHOD GetMetric(const nsMetricFloatID aID, float & aMetric) = 0;
-  
+  virtual PRUnichar GetPasswordCharacter()
+  {
+    return PRUnichar('*');
+  }
+
   NS_IMETHOD LookAndFeelChanged() = 0;
 
 
@@ -296,5 +346,26 @@ NS_DEFINE_STATIC_IID_ACCESSOR(nsILookAndFeel, NS_ILOOKANDFEEL_IID)
 #define NS_IS_IME_SPECIAL_COLOR(c) ((c) == NS_TRANSPARENT || \
                                     (c) == NS_SAME_AS_FOREGROUND_COLOR || \
                                     (c) == NS_40PERCENT_FOREGROUND_COLOR)
+
+// -------------------------------------------------
+//  Underline styles for eMetric_IME*UnderlineStyle
+// -------------------------------------------------
+
+#define NS_UNDERLINE_STYLE_NONE   0
+#define NS_UNDERLINE_STYLE_DOTTED 1
+#define NS_UNDERLINE_STYLE_DASHED 2
+#define NS_UNDERLINE_STYLE_SOLID  3
+#define NS_UNDERLINE_STYLE_DOUBLE 4
+
+#define NS_IS_VALID_UNDERLINE_STYLE(s) \
+  (NS_UNDERLINE_STYLE_NONE <= (s) && (s) <= NS_UNDERLINE_STYLE_DOUBLE)
+
+// ------------------------------------------
+//  Bits for eMetric_AlertNotificationOrigin
+// ------------------------------------------
+
+#define NS_ALERT_HORIZONTAL 1
+#define NS_ALERT_LEFT       2
+#define NS_ALERT_TOP        4
 
 #endif /* __nsILookAndFeel */

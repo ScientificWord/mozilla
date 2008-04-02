@@ -54,11 +54,7 @@
 #include "wdgtos2rc.h"
 #include "nsILocalFileOS2.h"
 #include "nsIDocument.h"
-
-NS_IMPL_ADDREF_INHERITED(nsDragService, nsBaseDragService)
-NS_IMPL_RELEASE_INHERITED(nsDragService, nsBaseDragService)
-NS_IMPL_QUERY_INTERFACE3(nsDragService, nsIDragService, nsIDragSession, \
-                         nsIDragSessionOS2)
+#include "nsGUIEvent.h"
 
 // --------------------------------------------------------------------------
 // Local defines
@@ -133,6 +129,8 @@ nsDragService::~nsDragService()
     gPtrArray[i] = 0;
   }
 }
+
+NS_IMPL_ISUPPORTS_INHERITED1(nsDragService, nsBaseDragService, nsIDragSessionOS2)
 
 // --------------------------------------------------------------------------
 
@@ -237,6 +235,7 @@ NS_IMETHODIMP nsDragService::InvokeDragSession(nsIDOMNode *aDOMNode,
   mDoingDrag = PR_TRUE;
   HWND hwndDest = DrgDrag(mDragWnd, pDragInfo, &dragimage, 1, VK_BUTTON2,
                   (void*)0x80000000L); // Don't lock the desktop PS
+  FireDragEventAtSource(NS_DRAGDROP_END);
   mDoingDrag = PR_FALSE;
 
     // do clean up;  if the drop completed,
@@ -352,7 +351,7 @@ NS_IMETHODIMP nsDragService::StartDragSession()
   return NS_OK;
 }
 
-NS_IMETHODIMP nsDragService::EndDragSession()
+NS_IMETHODIMP nsDragService::EndDragSession(PRBool aDragDone)
 {
   NS_ASSERTION(0, "OS/2 version of EndDragSession() should never be called!");
   return NS_OK;
@@ -1472,8 +1471,22 @@ nsresult RenderToDTShare( PDRAGITEM pditem, HWND hwnd)
   nsresult rv;
   void *   pMem;
 
+#ifdef MOZ_OS2_HIGH_MEMORY
+  APIRET rc = DosAllocSharedMem( &pMem, DTSHARE_NAME, 0x100000,
+                                 PAG_WRITE | PAG_READ | OBJ_ANY);
+  if (rc != NO_ERROR &&
+      rc != ERROR_ALREADY_EXISTS) { // Did the kernel handle OBJ_ANY?
+    // Try again without OBJ_ANY and if the first failure was not caused
+    // by OBJ_ANY then we will get the same failure, else we have taken
+    // care of pre-FP13 systems where the kernel couldn't handle it.
+    rc = DosAllocSharedMem( &pMem, DTSHARE_NAME, 0x100000,
+                            PAG_WRITE | PAG_READ);
+  }
+#else
   APIRET rc = DosAllocSharedMem( &pMem, DTSHARE_NAME, 0x100000,
                                  PAG_WRITE | PAG_READ);
+#endif
+
   if (rc == ERROR_ALREADY_EXISTS)
     rc = DosGetNamedSharedMem( &pMem, DTSHARE_NAME,
                                PAG_WRITE | PAG_READ);
@@ -1729,7 +1742,7 @@ int UnicodeToCodepage(const nsAString& aString, char **aResult)
   PRInt32 bufLength;
   WideCharToMultiByte(0, PromiseFlatString(aString).get(), aString.Length(),
                       buffer, bufLength);
-  *aResult = ToNewCString(nsDependentCString(buffer.get()));
+  *aResult = ToNewCString(nsDependentCString(buffer.Elements()));
   return bufLength;
 }
 
@@ -1741,7 +1754,7 @@ int CodepageToUnicode(const nsACString& aString, PRUnichar **aResult)
   PRInt32 bufLength;
   MultiByteToWideChar(0, PromiseFlatCString(aString).get(),
                       aString.Length(), buffer, bufLength);
-  *aResult = ToNewUnicode(nsDependentString(buffer.get()));
+  *aResult = ToNewUnicode(nsDependentString(buffer.Elements()));
   return bufLength;
 }
 

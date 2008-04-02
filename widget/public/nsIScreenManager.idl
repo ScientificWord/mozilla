@@ -39,8 +39,7 @@
 #include "nsISupports.idl"
 #include "nsIScreen.idl"
 
-
-[scriptable, uuid(662e7b78-1dd2-11b2-a3d3-fc1e5f5fb9d4)]
+[scriptable, uuid(e224bd44-252b-4b66-b869-99738250904a)]
 interface nsIScreenManager : nsISupports
 {
     //
@@ -57,7 +56,11 @@ interface nsIScreenManager : nsISupports
   
     // Holds the number of screens that are available
   readonly attribute unsigned long numberOfScreens;
-  
+
+    // Returns the nsIScreen instance for the given native widget pointer;
+    // the pointer is specific to the particular widget implementation,
+    // and is generally of the same type that NS_NATIVE_WIDGET is.
+  [noscript] nsIScreen screenForNativeWidget ( in voidPtr nativeWidget );
 };
 
 

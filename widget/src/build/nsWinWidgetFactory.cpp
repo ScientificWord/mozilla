@@ -50,6 +50,7 @@
 #include "nsAppShellSingleton.h"
 #include "nsIServiceManager.h"
 #include "nsSound.h"
+#include "nsIdleServiceWin.h"
 
 #include "nsBidiKeyboard.h"
 
@@ -63,11 +64,11 @@
 #include "nsScreenManagerWin.h"
 #include "nsIGenericFactory.h"
 
-// printing
+#ifdef NS_PRINTING
 #include "nsDeviceContextSpecWin.h"
-#include "nsDeviceContextSpecFactoryW.h"
 #include "nsPrintOptionsWin.h"
 #include "nsPrintSession.h"
+#endif
 
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsWindow)
 NS_GENERIC_FACTORY_CONSTRUCTOR(ChildWindow)
@@ -80,6 +81,7 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsFilePicker)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsSound)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsDragService)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsBidiKeyboard)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsIdleServiceWin)
 #endif
 
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsToolkit)
@@ -89,11 +91,12 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsHTMLFormatConverter)
 
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsScreenManagerWin)
 
+#ifdef NS_PRINTING
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsPrintOptionsWin, Init)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsPrinterEnumeratorWin)
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsPrintSession, Init)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsDeviceContextSpecWin)
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsDeviceContextSpecFactoryWin)
+#endif
 
 static const nsModuleComponentInfo components[] =
 {
@@ -130,6 +133,10 @@ static const nsModuleComponentInfo components[] =
     NS_BIDIKEYBOARD_CID,
     "@mozilla.org/widget/bidikeyboard;1",
     nsBidiKeyboardConstructor },
+  { "User Idle Service",
+    NS_IDLE_SERVICE_CID,
+    "@mozilla.org/widget/idleservice;1",
+    nsIdleServiceWinConstructor },
 #endif
   { "Native Theme Renderer", 
     NS_THEMERENDERER_CID,
@@ -160,6 +167,7 @@ static const nsModuleComponentInfo components[] =
     NS_SCREENMANAGER_CID,
     "@mozilla.org/gfx/screenmanager;1",
     nsScreenManagerWinConstructor },
+#ifdef NS_PRINTING
   { "nsPrintOptionsWin",
     NS_PRINTSETTINGSSERVICE_CID,
     "@mozilla.org/gfx/printsettings-service;1",
@@ -176,10 +184,7 @@ static const nsModuleComponentInfo components[] =
     NS_DEVICE_CONTEXT_SPEC_CID,
     "@mozilla.org/gfx/devicecontextspec;1",
     nsDeviceContextSpecWinConstructor },
-  { "nsDeviceContextSpecFactoryWin",
-    NS_DEVICE_CONTEXT_SPEC_FACTORY_CID,
-    "@mozilla.org/gfx/devicecontextspecfactory;1",
-    nsDeviceContextSpecFactoryWinConstructor },
+#endif
 };
 
 NS_IMPL_NSGETMODULE_WITH_CTOR_DTOR(nsWidgetModule, components,

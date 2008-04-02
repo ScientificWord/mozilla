@@ -1,6 +1,6 @@
-/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
- *
- * ***** BEGIN LICENSE BLOCK *****
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* vim: set sw=2 sts=2 et cin: */
+/* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
  * The contents of this file are subject to the Mozilla Public License Version
@@ -26,6 +26,7 @@
  *   Rich Walsh <dragtext@e-vertise.com>
  *   Dan Rosen <dr@netscape.com>
  *   Dainis Jonitis <Dainis_Jonitis@swh-t.lv>
+ *   Peter Weilbacher <mozilla@Weilbacher.org>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -47,22 +48,18 @@
 #include "nsFont.h"
 #include "nsGUIEvent.h"
 #include "nsIRenderingContext.h"
-#include "nsIRenderingContextOS2.h"
 #include "nsIDeviceContext.h"
 #include "nsIScreenManager.h"
 #include "nsRect.h"
 #include "nsTransform2D.h"
 #include "nsGfxCIID.h"
 #include "prtime.h"
-// #include "nsTooltipManager.h"
 #include "nsISupportsArray.h"
-#include "nsIMenuBar.h"
-//#include "nsIMenuItem.h"
 #include "nsHashtable.h"
-//#include "nsMenu.h"
 #include "nsDragService.h"
 #include "nsILocalFile.h"
 #include "nsNetUtil.h"
+#include "nsWidgetAtoms.h"
 
 #include "nsIRollupListener.h"
 #include "nsIMenuRollup.h"
@@ -70,7 +67,7 @@
 #include "nsIPrefBranch.h"
 #include "nsIPrefService.h"
 
-//~~~ windowless plugin support
+// windowless plugin support
 #include "nsplugindefs.h"
 
 #include "nsITimer.h"
@@ -82,7 +79,6 @@
 #include "nsIFile.h"
 
 #include "nsOS2Uni.h"
-#include "nsPaletteOS2.h"
 
 #include "imgIContainer.h"
 #include "gfxIImageFrame.h"
@@ -156,7 +152,7 @@ static PRBool gIsDBCS = PR_FALSE;
 static PRUint32 gLastInputEventTime = 0;
 
 #ifdef DEBUG_FOCUS
-  int currentWindowIdentifier = 0;
+int currentWindowIdentifier = 0;
 #endif
 
 //-------------------------------------------------------------------------
@@ -234,6 +230,7 @@ nsWindow::nsWindow() : nsBaseWidget()
     mCssCursorHPtr      = 0;
 
     mIsTopWidgetWindow = PR_FALSE;
+    mThebesSurface = nsnull;
 
     if (!gGlobalsInitialized) {
       gGlobalsInitialized = PR_TRUE;
@@ -297,8 +294,7 @@ nsWindow::~nsWindow()
     mWindowState |= nsWindowState_eDoingDelete;
     mWindowState &= ~(nsWindowState_eLive|nsWindowState_ePrecreate|
                       nsWindowState_eInCreate);
-//    if( mWnd)
-      Destroy();
+    Destroy();
   }
 
 }
@@ -318,7 +314,6 @@ NS_METHOD nsWindow::CaptureMouse(PRBool aCapture)
   } else {
     WinSetCapture( HWND_DESKTOP, NULLHANDLE);
   }
-//  mIsInMouseCapture = aCapture;
   return NS_OK;
 }
 
@@ -411,8 +406,6 @@ NS_METHOD nsWindow::ScreenToWidget( const nsRect &aOldRect, nsRect &aNewRect)
 //-------------------------------------------------------------------------
 void nsWindow::InitEvent(nsGUIEvent& event, nsPoint* aPoint)
 {
-  NS_ADDREF(event.widget);
-
   // if no point was supplied, calculate it
   if (nsnull == aPoint) {
     // for most events, get the message position;  for drag events,
@@ -496,9 +489,7 @@ PRBool nsWindow::DispatchStandardEvent(PRUint32 aMsg)
   nsGUIEvent event(PR_TRUE, aMsg, this);
   InitEvent(event);
 
-  PRBool result = DispatchWindowEvent(&event);
-  NS_RELEASE(event.widget);
-  return result;
+  return DispatchWindowEvent(&event);
 }
 
 //-------------------------------------------------------------------------
@@ -506,17 +497,29 @@ PRBool nsWindow::DispatchStandardEvent(PRUint32 aMsg)
 // Dispatch app command event
 //
 //-------------------------------------------------------------------------
-PRBool nsWindow::DispatchAppCommandEvent(PRUint32 aEventCommand)
+PRBool nsWindow::DispatchCommandEvent(PRUint32 aEventCommand)
 {
-  nsAppCommandEvent event(PR_TRUE, NS_APPCOMMAND_START, this);
+  nsCOMPtr<nsIAtom> command;
+  switch (aEventCommand) {
+    case APPCOMMAND_BROWSER_BACKWARD:
+      command = nsWidgetAtoms::Back;
+      break;
+    case APPCOMMAND_BROWSER_FORWARD:
+      command = nsWidgetAtoms::Forward;
+      break;
+    case APPCOMMAND_BROWSER_REFRESH:
+      command = nsWidgetAtoms::Reload;
+      break;
+    case APPCOMMAND_BROWSER_STOP:
+      command = nsWidgetAtoms::Stop;
+      break;
+    default:
+      return PR_FALSE;
+  }
+  nsCommandEvent event(PR_TRUE, nsWidgetAtoms::onAppCommand, command, this);
 
   InitEvent(event);
-  event.appCommand = NS_APPCOMMAND_START + aEventCommand;
-
-  PRBool result = DispatchWindowEvent(&event);
-  NS_RELEASE(event.widget);
-
-  return result;
+  return DispatchWindowEvent(&event);
 }
 
 //-------------------------------------------------------------------------
@@ -535,10 +538,7 @@ PRBool nsWindow::DispatchDragDropEvent(PRUint32 aMsg)
   event.isAlt     = WinIsKeyDown(VK_ALT) || WinIsKeyDown(VK_ALTGRAF);
   event.isMeta    = PR_FALSE;
 
-  PRBool result = DispatchWindowEvent(&event);
-  NS_RELEASE(event.widget);
-
-  return result;
+  return DispatchWindowEvent(&event);
 }
 
 //-------------------------------------------------------------------------
@@ -630,30 +630,22 @@ nsWindow :: DealWithPopups ( ULONG inMsg, MRESULT* outResult )
       if (rollup) {
         nsCOMPtr<nsIMenuRollup> menuRollup ( do_QueryInterface(gRollupListener) );
         if ( menuRollup ) {
-          nsCOMPtr<nsISupportsArray> widgetChain;
-          menuRollup->GetSubmenuWidgetChain ( getter_AddRefs(widgetChain) );
-          if ( widgetChain ) {
-            PRUint32 count = 0;
-            widgetChain->Count(&count);
-            for ( PRUint32 i = 0; i < count; ++i ) {
-              nsCOMPtr<nsISupports> genericWidget;
-              widgetChain->GetElementAt ( i, getter_AddRefs(genericWidget) );
-              nsCOMPtr<nsIWidget> widget ( do_QueryInterface(genericWidget) );
-              if ( widget ) {
-                nsIWidget* temp = widget.get();
-                if ( nsWindow::EventIsInsideWindow((nsWindow*)temp) ) {
-                  rollup = PR_FALSE;
-                  break;
-                }
-              }
-            } // foreach parent menu widget
-          }
+          nsAutoTArray<nsIWidget*, 5> widgetChain;
+          menuRollup->GetSubmenuWidgetChain ( &widgetChain );
+          for ( PRUint32 i = 0; i < widgetChain.Length(); ++i ) {
+            nsIWidget* widget = widgetChain[i];
+            if ( nsWindow::EventIsInsideWindow((nsWindow*)widget) ) {
+              rollup = PR_FALSE;
+              break;
+            }
+          } // foreach parent menu widget
         } // if rollup listener knows about menus
       }
 
       // if we've determined that we should still rollup everything, do it.
       if ( rollup ) {
-        gRollupListener->Rollup();
+        // only need to deal with the last rollup for left mouse down events.
+        gRollupListener->Rollup(inMsg == WM_BUTTON1DOWN ? &mLastRollup : nsnull);
 
         // return TRUE tells Windows that the event is consumed, 
         // false allows the event to be dispatched
@@ -712,6 +704,8 @@ BOOL bothFromSameWindow( HWND hwnd1, HWND hwnd2 )
 //-------------------------------------------------------------------------
 MRESULT EXPENTRY fnwpNSWindow( HWND hwnd, ULONG msg, MPARAM mp1, MPARAM mp2)
 {
+   nsAutoRollup autoRollup;
+
    MRESULT popupHandlingResult;
    if( nsWindow::DealWithPopups(msg, &popupHandlingResult) )
       return popupHandlingResult;
@@ -731,24 +725,15 @@ MRESULT EXPENTRY fnwpNSWindow( HWND hwnd, ULONG msg, MPARAM mp1, MPARAM mp2)
       if (rollup) {
         nsCOMPtr<nsIMenuRollup> menuRollup ( do_QueryInterface(gRollupListener) );
         if ( menuRollup ) {
-          nsCOMPtr<nsISupportsArray> widgetChain;
-          menuRollup->GetSubmenuWidgetChain ( getter_AddRefs(widgetChain) );
-          if ( widgetChain ) {
-            PRUint32 count = 0;
-            widgetChain->Count(&count);
-            for ( PRUint32 i = 0; i < count; ++i ) {
-              nsCOMPtr<nsISupports> genericWidget;
-              widgetChain->GetElementAt ( i, getter_AddRefs(genericWidget) );
-              nsCOMPtr<nsIWidget> widget ( do_QueryInterface(genericWidget) );
-              if ( widget ) {
-                nsIWidget* temp = widget.get();
-                if ( nsWindow::EventIsInsideWindow((nsWindow*)temp) ) {
-                  rollup = PR_FALSE;
-                  break;
-                }
-              }
-            } // foreach parent menu widget
-          }
+          nsAutoTArray<nsIWidget*, 5> widgetChain;
+          menuRollup->GetSubmenuWidgetChain ( &widgetChain );
+          for ( PRUint32 i = 0; i < widgetChain.Length(); ++i ) {
+            nsIWidget* widget = widgetChain[i];
+            if ( nsWindow::EventIsInsideWindow((nsWindow*)widget) ) {
+              rollup = PR_FALSE;
+              break;
+            }
+          } // foreach parent menu widget
         } // if rollup listener knows about menus
       }
       }
@@ -756,7 +741,7 @@ MRESULT EXPENTRY fnwpNSWindow( HWND hwnd, ULONG msg, MPARAM mp1, MPARAM mp2)
          if( !mp2 && 
              !bothFromSameWindow( ((nsWindow*)gRollupWidget)->GetMainWindow(), 
                                   (HWND)mp1) ) {
-            gRollupListener->Rollup();
+            gRollupListener->Rollup(nsnull);
          }
       }
    }
@@ -842,7 +827,10 @@ void nsWindow::DoCreate( HWND hwndP, nsWindow *aParent,
          NS_ADDREF(mToolkit);
       }
       else if( aParent)
+      {
          mToolkit = aParent->GetToolkit();
+         NS_IF_ADDREF(mToolkit);
+      }
       else
       {
          // it's some top level window with no toolkit passed in.
@@ -881,11 +869,6 @@ void nsWindow::RealDoCreate( HWND              hwndP,
                              nsWidgetInitData *aInitData,
                              HWND              hwndOwner)
 {
-
-  // XXXX TEST HACK to get rid of window bunnies
-  //  if (!(aRect.height > 1) && !(aRect.width > 1))
-  //    return;
-
    // Set up parent data - don't addref to avoid circularity
    mParent = aParent;
 
@@ -944,7 +927,7 @@ void nsWindow::RealDoCreate( HWND              hwndP,
 #endif
 
    // Create a window: create hidden & then size to avoid swp_noadjust problems
-   // owner == parent except for 'borderless top-level' -- see nsCanvas.cpp
+   // owner == parent except for 'borderless top-level'
    mWnd = WinCreateWindow( hwndP,
                            WindowClass(),
                            0,          // text
@@ -965,7 +948,7 @@ void nsWindow::RealDoCreate( HWND              hwndP,
 
 #if DEBUG_sobotka
    printf("\n+++++++++++In nsWindow::RealDoCreate created 0x%lx, %d x %d\n",
-	  mWnd, aRect.width, aRect.height);
+          mWnd, aRect.width, aRect.height);
    printf("+++++++++++Location =  %d x %d\n", aRect.x, aRect.y);
    printf("+++++++++++Parent = 0x%lx\n", GetParentHWND());
    printf("+++++++++++WINDOWCOUNT+ = %d\n", ++WINDOWCOUNT);
@@ -1076,6 +1059,19 @@ NS_METHOD nsWindow::Create(nsNativeWidget aParent,
 
 //-------------------------------------------------------------------------
 //
+// Create a Thebes surface using the current window handle
+//
+//-------------------------------------------------------------------------
+gfxASurface* nsWindow::GetThebesSurface()
+{
+  if (mWnd && !mThebesSurface) {
+    mThebesSurface = new gfxOS2Surface(mWnd);
+  }
+  return mThebesSurface;
+}
+
+//-------------------------------------------------------------------------
+//
 // Close this nsWindow
 //
 //-------------------------------------------------------------------------
@@ -1083,38 +1079,36 @@ NS_METHOD nsWindow::Destroy()
 {
   // Switch to the "main gui thread" if necessary... This method must
   // be executed on the "gui thread"...
-   // Switch to the PM thread if necessary...
-   if( mToolkit && !mOS2Toolkit->IsGuiThread())
-   {
-      MethodInfo info( this, nsWindow::DESTROY);
-      mOS2Toolkit->CallMethod( &info);
-   }
-   else
-   {
-      // avoid calling into other objects if we're being deleted, 'cos
-      // they must have no references to us.
-      if( (mWindowState & nsWindowState_eLive) && mParent )
-         nsBaseWidget::Destroy();
+  // Switch to the PM thread if necessary...
+  if (mToolkit && !mOS2Toolkit->IsGuiThread()) {
+    MethodInfo info(this, nsWindow::DESTROY);
+    mOS2Toolkit->CallMethod(&info);
+  } else {
+    // avoid calling into other objects if we're being deleted, 'cos
+    // they must have no references to us.
+    if ((mWindowState & nsWindowState_eLive) && mParent) {
+      nsBaseWidget::Destroy();
+    }
 
-      // just to be safe. If we're going away and for some reason we're still
-      // the rollup widget, rollup and turn off capture.
-      if (this == gRollupWidget) {
-         if (gRollupListener)
-            gRollupListener->Rollup();
-         CaptureRollupEvents(nsnull, PR_FALSE, PR_TRUE);
+    // just to be safe. If we're going away and for some reason we're still
+    // the rollup widget, rollup and turn off capture.
+    if (this == gRollupWidget) {
+      if (gRollupListener) {
+        gRollupListener->Rollup(nsnull);
       }
+      CaptureRollupEvents(nsnull, PR_FALSE, PR_TRUE);
+    }
 
-      if( mWnd)
-      {
-         HWND hwndBeingDestroyed = mFrameWnd ? mFrameWnd : mWnd;
-         DEBUGFOCUS(Destroy);
-         if (hwndBeingDestroyed == WinQueryFocus(HWND_DESKTOP)) {
-           WinSetFocus(HWND_DESKTOP, WinQueryWindow(hwndBeingDestroyed, QW_PARENT));
-         }
-         WinDestroyWindow(hwndBeingDestroyed);
+    if (mWnd) {
+      HWND hwndBeingDestroyed = mFrameWnd ? mFrameWnd : mWnd;
+      DEBUGFOCUS(Destroy);
+      if (hwndBeingDestroyed == WinQueryFocus(HWND_DESKTOP)) {
+        WinSetFocus(HWND_DESKTOP, WinQueryWindow(hwndBeingDestroyed, QW_PARENT));
       }
-   }
-   return NS_OK;
+      WinDestroyWindow(hwndBeingDestroyed);
+    }
+  }
+  return NS_OK;
 }
 
 //-------------------------------------------------------------------------
@@ -1443,14 +1437,17 @@ NS_METHOD nsWindow::Resize(PRInt32 aX,
                       PRInt32 h,
                       PRBool   aRepaint)
 {
-  //   NS_ASSERTION((w >=0 ), "Negative width passed to nsWindow::Resize");
-  //   NS_ASSERTION((h >=0 ), "Negative height passed to nsWindow::Resize");
-
-   // Set cached value for lightweight and printing
-   mBounds.x      = aX;
-   mBounds.y      = aY;
-   mBounds.width  = w;
-   mBounds.height = h;
+   // For mWnd & eWindowType_child set the cached values upfront, see bug 286555.
+   // For other mWnd types we defer transfer of values to mBounds to
+   // SetWindowPos(), see bug 391421.
+   if( !mWnd || mWindowType == eWindowType_child) 
+   {
+      // Set cached value for lightweight and printing
+      mBounds.x      = aX ;
+      mBounds.y      = aY ;
+      mBounds.width  = w  ;
+      mBounds.height = h  ;
+   }
 
    // WinSetWindowPos() appears not to require a msgq
    if( mWnd)
@@ -1475,7 +1472,8 @@ NS_METHOD nsWindow::Resize(PRInt32 aX,
             Invalidate(PR_FALSE);
 
 #if DEBUG_sobotka
-   printf("+++++++++++Resized 0x%lx at %ld, %ld to %d x %d (%d,%d)\n", mWnd, ptl.x, ptl.y, w, h, aX, aY);
+      printf("+++++++++++Resized 0x%lx at %ld, %ld to %d x %d (%d,%d)\n",
+             mWnd, ptl.x, ptl.y, w, h, aX, aY);
 #endif
 
    }
@@ -1619,12 +1617,7 @@ nsIFontMetrics *nsWindow::GetFont(void)
       // FACESIZE = 32, hence the 31 here
       if( 2 == sscanf( fontNameSize, "%d.%31s", &ptSize, fontName))
       {
-         float twip2dev, twip2app;
-         twip2dev = mContext->TwipsToDevUnits();
-         twip2app = mContext->DevUnitsToAppUnits();
-         twip2app *= twip2dev;
-   
-         nscoord appSize = (nscoord) (twip2app * ptSize * 20);
+         nscoord appSize = NSToCoordRound(float(ptSize) * mContext->AppUnitsPerInch() / 72);
    
          nsFont font( fontName, NS_FONT_STYLE_NORMAL, NS_FONT_VARIANT_NORMAL,
                       NS_FONT_WEIGHT_NORMAL, 0 /*decoration*/, appSize);
@@ -1647,11 +1640,7 @@ NS_METHOD nsWindow::SetFont(const nsFont &aFont)
    {
       // jump through hoops to convert the size in the font (in app units)
       // into points. 
-      float dev2twip, app2twip;
-      dev2twip = mContext->DevUnitsToTwips();
-      app2twip = mContext->AppUnitsToDevUnits();
-      app2twip *= dev2twip;
-      int points = NSTwipsToFloorIntPoints( nscoord( aFont.size * app2twip));
+      int points = aFont.size * 72 / mContext->AppUnitsPerInch();
 
       nsAutoCharBuffer fontname;
       PRInt32 fontnameLength;
@@ -1660,7 +1649,7 @@ NS_METHOD nsWindow::SetFont(const nsFont &aFont)
 
       char *buffer = new char[fontnameLength + 6];
       if (buffer) {
-        sprintf(buffer, "%d.%s", points, fontname.get());
+        sprintf(buffer, "%d.%s", points, fontname.Elements());
         ::WinSetPresParam(mWnd, PP_FONTNAMESIZE,
                           strlen(buffer) + 1, buffer);
         delete [] buffer;
@@ -1808,6 +1797,10 @@ NS_METHOD nsWindow::SetCursor(nsCursor aCursor)
       newPointer = ::WinQuerySysPointer(HWND_DESKTOP, SPTR_SIZEWE, FALSE);
       break;
   
+    case eCursor_none:
+      newPointer = gPtrArray[IDC_NONE-IDC_BASE];
+      break;
+  
     default:
       NS_ASSERTION(0, "Invalid cursor type");
       break;
@@ -1857,9 +1850,11 @@ NS_IMETHODIMP nsWindow::SetCursor(imgIContainer* aCursor,
   if (NS_FAILED(rv))
     return rv;
 
-  // only 24-bit images with 0, 1, or 8-bit alpha data are supported
-  if (format != gfxIFormats::BGR_A1 && format != gfxIFormats::BGR_A8 &&
-      format != gfxIFormats::BGR)
+  // only 24-bit images with 0, 1, or 8-bit alpha data are supported.
+  // These are all the formats used in Cairo, and all map to the RGB24 resp. ARGB32 Cairo formats.
+  if (format != gfxIFormats::BGR_A1 && format != gfxIFormats::RGB_A1 &&
+      format != gfxIFormats::BGR_A8 && format != gfxIFormats::RGB_A8 &&
+      format != gfxIFormats::BGR && format != gfxIFormats::RGB)
     return NS_ERROR_UNEXPECTED;
 
   frame->LockImageData();
@@ -1872,42 +1867,19 @@ NS_IMETHODIMP nsWindow::SetCursor(imgIContainer* aCursor,
   }
 
   // create the color bitmap
-  HBITMAP hBmp = 0;
-  hBmp = DataToBitmap(data, width, height, 24);
-  frame->UnlockImageData();
+  HBITMAP hBmp = CreateBitmapRGB(data, width, height);
   if (!hBmp)
     return NS_ERROR_FAILURE;
 
-  // create a transparency mask from the alpha data;
-  HBITMAP hAlpha = 0;
-
-  // image has no alpha data - make the pointer opaque
-  if (format == gfxIFormats::BGR) {
-    hAlpha = CreateTransparencyMask(format, 0, width, height);
-    if (!hAlpha) {
-      GpiDeleteBitmap(hBmp);
-      return NS_ERROR_FAILURE;
-    }
+  // create a transparency mask from the alpha bytes
+  HBITMAP hAlpha = CreateTransparencyMask(format, data, width, height);
+  if (!hAlpha) {
+    GpiDeleteBitmap(hBmp);
+    return NS_ERROR_FAILURE;
   }
-  // image has either 1 or 8 bits of alpha data
-  else {
-    PRUint8* adata;
-    frame->LockAlphaData();
-    rv = frame->GetAlphaData(&adata, &dataLen);
-    if (NS_FAILED(rv)) {
-      GpiDeleteBitmap(hBmp);
-      frame->UnlockAlphaData();
-      return rv;
-    }
 
-    // create the bitmap
-    hAlpha = CreateTransparencyMask(format, adata, width, height);
-    frame->UnlockAlphaData();
-    if (!hAlpha) {
-      GpiDeleteBitmap(hBmp);
-      return NS_ERROR_FAILURE;
-    }
-  }
+  // Unlock image data after both processing colors and alpha data
+  frame->UnlockImageData();
 
   POINTERINFO info = {0};
   info.fPointer = TRUE;
@@ -1978,7 +1950,7 @@ HBITMAP nsWindow::DataToBitmap(PRUint8* aImageData, PRUint32 aWidth,
 
   // create a bitmap from the image data
   HBITMAP hBmp = GpiCreateBitmap(hps, &bi.head, CBM_INIT,
-                 NS_REINTERPRET_CAST(BYTE*, aImageData),
+                 reinterpret_cast<BYTE*>(aImageData),
                  (BITMAPINFO2*)&bi);
 
   // free the hps, then return the bitmap
@@ -1987,6 +1959,40 @@ HBITMAP nsWindow::DataToBitmap(PRUint8* aImageData, PRUint32 aWidth,
 }
 
 //-------------------------------------------------------------------------
+
+// create a RGB24 bitmap from Cairo image data
+
+HBITMAP nsWindow::CreateBitmapRGB(PRUint8* aImageData,
+                                  PRUint32 aWidth,
+                                  PRUint32 aHeight)
+{
+  // calc width in bytes, rounding up to a dword boundary
+  const PRUint32 bpr = ALIGNEDBPR(aWidth, 24);
+  PRUint8* bmp = (PRUint8*)malloc(bpr * aHeight);
+  if (!bmp)
+    return NULL;
+
+  PRUint32* pSrc = (PRUint32*)aImageData;
+  for (PRUint32 row = aHeight; row > 0; --row) {
+    PRUint8* pDst = bmp + bpr * (row - 1);
+
+    for (PRUint32 col = aWidth; col > 0; --col) {
+      // In Cairo a color is encoded as ARGB in a DWORD
+      // stored in machine endianess.
+      PRUint32 color = *pSrc++;
+      *pDst++ = color;       // Blue
+      *pDst++ = color >> 8;  // Green
+      *pDst++ = color >> 16; // Red
+    }
+  }
+
+  // create the bitmap
+  HBITMAP hAlpha = DataToBitmap(bmp, aWidth, aHeight, 24);
+
+  // free the buffer, then return the bitmap
+  free(bmp);
+  return hAlpha;
+}
 
 // create a monochrome AND/XOR bitmap from 0, 1, or 8-bit alpha data
 
@@ -1999,64 +2005,38 @@ HBITMAP nsWindow::CreateTransparencyMask(gfx_format format,
   PRUint32 abpr = ALIGNEDBPR(aWidth, 1);
   PRUint32 cbData = abpr * aHeight;
 
-  // alloc space to hold both the AND & XOR bitmaps
-  PRUint8* mono = (PRUint8*)malloc(cbData * 2);
+  // alloc and clear space to hold both the AND & XOR bitmaps
+  PRUint8* mono = (PRUint8*)calloc(cbData, 2);
   if (!mono)
     return NULL;
 
-  // init the XOR bitmap to produce either black or transparent pixels
-  memset(mono, 0x00, cbData);
-
   switch (format) {
-
-    // make the AND mask opaque
-    case gfxIFormats::BGR:
-      memset(&mono[cbData], 0x00, cbData);
-      break;
-
-    // make the AND mask the inverse of the 1-bit alpha data
-    case gfxIFormats::BGR_A1: {
-      PRUint32* pSrc = (PRUint32*)aImageData;
-      PRUint32* pAnd = (PRUint32*)&mono[cbData];
-
-      for (PRUint32 dataNdx = 0; dataNdx < cbData; dataNdx += 4)
-        *pAnd++ = ~(*pSrc++);
-
-      break;
-    }
+    // gfxIFormats::BGR and case gfxIFormats::RGB are already
+    // taken care of by initializing XOR and AND masks to zero
 
     // make the AND mask the inverse of the 8-bit alpha data
+    case gfxIFormats::BGR_A1:
+    case gfxIFormats::RGB_A1:
+    case gfxIFormats::RGB_A8:
     case gfxIFormats::BGR_A8: {
-      PRUint8*  pSrc = aImageData;
-      PRUint32* pAnd = (PRUint32*)&mono[cbData];
-
-      // if aWidth isn't a multiple of 4, the input contains byte padding;
-      // if aWidth isn't a multiple of 32, the output contains bit padding
-      for (PRUint32 dataNdx = 0; dataNdx < cbData; dataNdx += 4) {
-        PRUint32 dst = 0;
-        PRUint32 colNdx = 0;
-
-        // construct an output dword, then save
-        for (PRUint32 byteNdx = 0; byteNdx < 4; byteNdx++) {
-          PRUint32 mask = 0x80 << (byteNdx * 8);
-
-          // construct an output byte from 8 input bytes
-          for (PRUint32 bitNdx = 0; bitNdx < 8; bitNdx++) {
-            if (*pSrc++ < 128)
-              dst |= mask;
-            mask >>= 1;
-
-            // at the end of a row, skip over any padding in the
-            // input, then break out of the byte & dword loops
-            if (++colNdx >= aWidth) {
-              pSrc += (4 - (aWidth & 3)) & 3;
-              break;
-            }
+      PRInt32* pSrc = (PRInt32*)aImageData;
+      for (PRUint32 row = aHeight; row > 0; --row) {
+        // Point to the right row in the AND mask
+        PRUint8* pDst = mono + cbData + abpr * (row - 1);
+        PRUint8 mask = 0x80;
+        for (PRUint32 col = aWidth; col > 0; --col) {
+          // Use sign bit to test for transparency, as alpha byte is highest byte
+          // Positive means, alpha < 128, so consider as transparent and set the AND mask
+          if (*pSrc++ >= 0) {
+            *pDst |= mask;
           }
-          if (colNdx >= aWidth)
-            break;
+
+          mask >>= 1;
+          if (!mask) {
+            pDst++;
+            mask = 0x80;
+          }
         }
-        *pAnd++ = dst;
       }
 
       break;
@@ -2228,7 +2208,6 @@ void* nsWindow::GetNativeData(PRUint32 aDataType)
             CheckDragStatus(ACTION_DRAW, &hps);
             if (!hps)
               hps = WinGetPS(mWnd);
-            nsPaletteOS2::SelectGlobalPalette(hps, mWnd);
             return (void*)hps;
         }
 
@@ -2240,7 +2219,6 @@ void* nsWindow::GetNativeData(PRUint32 aDataType)
     return NULL;
 }
 
-//~~~
 void nsWindow::FreeNativeData(void * data, PRUint32 aDataType)
 {
   switch(aDataType)
@@ -2416,9 +2394,7 @@ BOOL nsWindow::CallMethod(MethodInfo *info)
 }
 
 //-------------------------------------------------------------------------
-//
 // OnKey
-//
 //-------------------------------------------------------------------------
 // Key handler.  Specs for the various text messages are really confused;
 // see other platforms for best results of how things are supposed to work.
@@ -2426,153 +2402,133 @@ BOOL nsWindow::CallMethod(MethodInfo *info)
 // Perhaps more importantly, the main man listening to these events (besides
 // random bits of javascript) is ender -- see 
 // mozilla/editor/base/nsEditorEventListeners.cpp.
-//
-PRBool nsWindow::OnKey( MPARAM mp1, MPARAM mp2)
+PRBool nsWindow::OnKey(MPARAM mp1, MPARAM mp2)
 {
-   nsKeyEvent pressEvent(PR_TRUE, 0, nsnull);
-   USHORT     fsFlags = SHORT1FROMMP(mp1);
-   USHORT     usVKey = SHORT2FROMMP(mp2);
-   USHORT     usChar = SHORT1FROMMP(mp2);
-//   UCHAR      uchScan = CHAR4FROMMP(mp1);
+  nsKeyEvent pressEvent(PR_TRUE, 0, nsnull);
+  USHORT fsFlags = SHORT1FROMMP(mp1);
+  USHORT usVKey = SHORT2FROMMP(mp2);
+  USHORT usChar = SHORT1FROMMP(mp2);
+  UCHAR uchScan = CHAR4FROMMP(mp1);
 
-   // It appears we're not supposed to transmit shift, control & alt events
-   // to gecko.  Shrug.
-   //
-   // XXX this may be wrong, but is what gtk is doing...
-   if( fsFlags & KC_VIRTUALKEY &&
-      (usVKey == VK_SHIFT || usVKey == VK_CTRL ||
-       usVKey == VK_ALTGRAF)) return PR_FALSE;
+  // It appears we're not supposed to transmit shift, control & alt events
+  // to gecko.  Shrug.
+  //
+  // this is what gtk is doing...
+  if (fsFlags & KC_VIRTUALKEY && !(fsFlags & KC_KEYUP) &&
+      (usVKey == VK_SHIFT || usVKey == VK_CTRL || usVKey == VK_ALTGRAF) ) {
+    return PR_FALSE;
+  }
 
-   // My gosh this is ugly
-   // Workaround bug where using Alt+Esc let an Alt key creep through
-   // Only handle alt by itself if the LONEKEY bit is set
-   if ((fsFlags & KC_VIRTUALKEY) &&
-       (usVKey == VK_ALT) &&
-       !usChar && 
-       ((fsFlags & KC_LONEKEY) == 0) &&
-       (fsFlags & KC_KEYUP)) {
-         return PR_FALSE;
-       }
+  // My gosh this is ugly
+  // Workaround bug where using Alt+Esc let an Alt key creep through
+  // Only handle alt by itself if the LONEKEY bit is set
+  if ((fsFlags & KC_VIRTUALKEY) && (usVKey == VK_ALT) && !usChar && 
+      ((fsFlags & KC_LONEKEY) == 0) && (fsFlags & KC_KEYUP)) {
+    return PR_FALSE;
+  }
 
    // Now check if it's a dead-key
-   if( fsFlags & KC_DEADKEY)
-   {
-      // XXX CUA says we're supposed to give some kind of feedback `display the
-      //     dead key glyph'.  I'm not sure if we can use the COMPOSE messages
-      //     to do this -- it should really be done by someone who can test it
-      //     & has some idea what `ought' to happen...
+  if (fsFlags & KC_DEADKEY) {
+    // CUA says we're supposed to give some kind of feedback `display
+    // the dead key glyph'.  I'm not sure if we can use the COMPOSE
+    // messagesto do this -- it should really be done by someone who can
+    // test it & has some idea what `ought' to happen...
+    return PR_TRUE;
+  }
 
-      return PR_TRUE;
-   }
+  // Now dispatch a keyup/keydown event.  This one is *not* meant to
+  // have the unicode charcode in.
+  nsPoint point(0,0);
+  nsKeyEvent event(PR_TRUE, (fsFlags & KC_KEYUP) ? NS_KEY_UP : NS_KEY_DOWN,
+                   this);
+  InitEvent(event, &point);
+  event.keyCode   = WMChar2KeyCode(mp1, mp2);
+  event.isShift   = (fsFlags & KC_SHIFT) ? PR_TRUE : PR_FALSE;
+  event.isControl = (fsFlags & KC_CTRL) ? PR_TRUE : PR_FALSE;
+  event.isAlt     = (fsFlags & KC_ALT) ? PR_TRUE : PR_FALSE;
+  event.isMeta    = PR_FALSE;
+  event.charCode = 0;
 
-   // Now dispatch a keyup/keydown event.  This one is *not* meant to
-   // have the unicode charcode in.
+  // Checking for a scroll mouse event vs. a keyboard event
+  // The way we know this is that the repeat count is 0 and
+  // the key is not physically down
+  // unfortunately, there is an exception here - if alt or ctrl are
+  // held down, repeat count is set so we have to add special checks for them
+  if (((event.keyCode == NS_VK_UP) || (event.keyCode == NS_VK_DOWN)) &&
+      !(fsFlags & KC_KEYUP) &&
+      ((CHAR3FROMMP(mp1) == 0) || fsFlags & KC_CTRL || fsFlags & KC_ALT) ) {
+    if (!(WinGetPhysKeyState(HWND_DESKTOP, uchScan) & 0x8000)) {
+      MPARAM mp2;
+      if (event.keyCode == NS_VK_UP)
+        mp2 = MPFROM2SHORT(0, SB_LINEUP);
+      else
+        mp2 = MPFROM2SHORT(0, SB_LINEDOWN);
+      WinSendMsg(mWnd, WM_VSCROLL, 0, mp2);
+      return FALSE;
+    }
+  }
 
-   nsPoint point(0,0);
-   nsKeyEvent event(PR_TRUE, (fsFlags & KC_KEYUP) ? NS_KEY_UP : NS_KEY_DOWN,
-                    this);
-   InitEvent( event, &point);
-   event.keyCode   = WMChar2KeyCode( mp1, mp2);
-   event.isShift   = (fsFlags & KC_SHIFT) ? PR_TRUE : PR_FALSE;
-   event.isControl = (fsFlags & KC_CTRL) ? PR_TRUE : PR_FALSE;
-   event.isAlt     = (fsFlags & KC_ALT) ? PR_TRUE : PR_FALSE;
-   event.isMeta    = PR_FALSE;
-   event.charCode = 0;
+  pressEvent = event;
+  PRBool rc = DispatchWindowEvent(&event);
 
-   /* Checking for a scroll mouse event vs. a keyboard event */
-   /* The way we know this is that the repeat count is 0 and */
-   /* the key is not physically down */
-   /* unfortunately, there is an exception here - if alt or ctrl are */
-   /* held down, repeat count is set so we have to add special checks for them */
-   if (((event.keyCode == NS_VK_UP) || (event.keyCode == NS_VK_DOWN)) &&
-       (!(fsFlags & KC_KEYUP))
-       && ((CHAR3FROMMP(mp1) == 0) || fsFlags & KC_CTRL || fsFlags & KC_ALT)
-       ) {
-      if (!(WinGetPhysKeyState(HWND_DESKTOP, CHAR4FROMMP(mp1)) & 0x8000)) {
-         MPARAM mp2;
-         if (event.keyCode == NS_VK_UP)
-            mp2 = MPFROM2SHORT(0, SB_LINEUP);
-         else
-            mp2 = MPFROM2SHORT(0, SB_LINEDOWN);
-         WinSendMsg(mWnd, WM_VSCROLL, 0, mp2);
-         return FALSE;
+  // Break off now if this was a key-up.
+  if (fsFlags & KC_KEYUP) {
+    return rc;
+  }
+
+  // Break off if we've got an "invalid composition" -- that is, the user
+  // typed a deadkey last time, but has now typed something that doesn't
+  // make sense in that context.
+  if (fsFlags & KC_INVALIDCOMP) {
+    mHaveDeadKey = FALSE;
+    // actually, not sure whether we're supposed to abort the keypress
+    //     or process it as though the dead key has been pressed.
+    return rc;
+  }
+
+  // Now we need to dispatch a keypress event which has the unicode char.
+  pressEvent.message = NS_KEY_PRESS;
+  if (rc) { // If keydown default was prevented, do same for keypress
+    pressEvent.flags |= NS_EVENT_FLAG_NO_DEFAULT;
+  }
+
+  if (usChar) {
+    USHORT inbuf[2];
+    inbuf[0] = usChar;
+    inbuf[1] = '\0';
+
+    nsAutoChar16Buffer outbuf;
+    PRInt32 bufLength;
+    MultiByteToWideChar(0, (const char*)inbuf, 2, outbuf, bufLength);
+
+    pressEvent.charCode = outbuf[0];
+
+    if (pressEvent.isControl && !(fsFlags & (KC_VIRTUALKEY | KC_DEADKEY))) {
+      if (!pressEvent.isShift && (pressEvent.charCode >= 'A' && pressEvent.charCode <= 'Z')) {
+        pressEvent.charCode = tolower(pressEvent.charCode);
       }
-   }
-
-   pressEvent = event;
-
-   PRBool rc = DispatchWindowEvent( &event);
-
-   // Break off now if this was a key-up.
-   if( fsFlags & KC_KEYUP)
-   {
-      NS_RELEASE( event.widget);
-      return rc;
-   }
-
-   // Break off if we've got an "invalid composition" -- that is, the user
-   // typed a deadkey last time, but has now typed something that doesn't
-   // make sense in that context.
-   if( fsFlags & KC_INVALIDCOMP)
-   {
-      mHaveDeadKey = FALSE;
-      // XXX actually, not sure whether we're supposed to abort the keypress
-      //     or process it as though the dead key has been pressed.
-      NS_RELEASE( event.widget);
-      return rc;
-   }
-
-   // Now we need to dispatch a keypress event which has the unicode char.
-
-   pressEvent.message = NS_KEY_PRESS;
-   if (rc) { // If keydown default was prevented, do same for keypress
-     pressEvent.flags |= NS_EVENT_FLAG_NO_DEFAULT;
-   }
-
-   if( usChar)
-   {
-      USHORT inbuf[2];
-      inbuf[0] = usChar;
-      inbuf[1] = '\0';
-
-      nsAutoChar16Buffer outbuf;
-      PRInt32 bufLength;
-      MultiByteToWideChar(0, (const char*)inbuf, 2, outbuf, bufLength);
-
-      pressEvent.charCode = outbuf.get()[0];
-
-      if (pressEvent.isControl && !(fsFlags & (KC_VIRTUALKEY | KC_DEADKEY))) {
-        if (!pressEvent.isShift && (pressEvent.charCode >= 'A' && pressEvent.charCode <= 'Z'))
-        {
-          pressEvent.charCode = tolower(pressEvent.charCode);
-        }
-        if (pressEvent.isShift && (pressEvent.charCode >= 'a' && pressEvent.charCode <= 'z'))
-        {
-          pressEvent.charCode = toupper(pressEvent.charCode);
-        }
+      if (pressEvent.isShift && (pressEvent.charCode >= 'a' && pressEvent.charCode <= 'z')) {
+        pressEvent.charCode = toupper(pressEvent.charCode);
+      }
+      pressEvent.keyCode = 0;
+    } else if (!pressEvent.isControl && !pressEvent.isAlt && pressEvent.charCode != 0) {
+      if (!(fsFlags & KC_VIRTUALKEY) || // not virtual key
+          ((fsFlags & KC_CHAR) && (pressEvent.keyCode == 0)) ) {
         pressEvent.keyCode = 0;
-      } else if( !pressEvent.isControl && !pressEvent.isAlt && pressEvent.charCode != 0)
-      {
-         if ( !(fsFlags & KC_VIRTUALKEY) || 
-              ((fsFlags & KC_CHAR) && (pressEvent.keyCode == 0)) )
-         {
-//            pressEvent.isShift = PR_FALSE;
-            pressEvent.keyCode = 0;
-         }
-         else if (usVKey == VK_SPACE)
-         {
-//            pressEvent.isShift = PR_FALSE;
-         }
-         else  // Real virtual key 
-         {
-            pressEvent.charCode = 0;
-         }
+      } else if (usVKey == VK_SPACE) {
+        // space key, do nothing here
+      } else if ((fsFlags & KC_VIRTUALKEY) &&
+                 isNumPadScanCode(uchScan) && pressEvent.keyCode != 0 && isNumlockOn) {
+        // this is NumLock+Numpad (no Alt), handle this like a normal number
+        pressEvent.keyCode = 0;
+      } else { // Real virtual key 
+        pressEvent.charCode = 0;
       }
-      rc = DispatchWindowEvent( &pressEvent);
-   }
+    }
+    rc = DispatchWindowEvent(&pressEvent);
+  }
 
-   NS_RELEASE( pressEvent.widget);
-   return rc;
+  return rc;
 }
 
 void nsWindow::ConstrainZLevel(HWND *aAfter) {
@@ -2611,7 +2567,6 @@ void nsWindow::ConstrainZLevel(HWND *aAfter) {
     }
   }
   NS_IF_RELEASE(event.mActualBelow);
-  NS_RELEASE(event.widget);
 }
 
 
@@ -2621,51 +2576,21 @@ PRBool nsWindow::ProcessMessage( ULONG msg, MPARAM mp1, MPARAM mp2, MRESULT &rc)
     PRBool result = PR_FALSE; // call the default window procedure
 
     switch (msg) {
-//#if 0
         case WM_COMMAND: // fire off menu selections
         {
            nsMenuEvent event(PR_TRUE, NS_MENU_SELECTED, this);
            event.mCommand = SHORT1FROMMP(mp1);
            InitEvent(event);
            result = DispatchWindowEvent(&event);
-           NS_RELEASE(event.widget);
-        }
-#if 0
-          USHORT usSrc = SHORT1FROMMP( mp2);
-          if( usSrc == CMDSRC_MENU || usSrc == CMDSRC_ACCELERATOR)
-            result = OnMenuClick( SHORT1FROMMP(mp1));
-          break;
         }
 
-        case WM_INITMENU:
-          result = OnActivateMenu( HWNDFROMMP(mp2), TRUE);
-          break;
-
-        case WM_MENUEND:
-          result = OnActivateMenu( HWNDFROMMP(mp2), FALSE);
-          break;
-#endif
-
-#if 0  // Tooltips appear to be gone
-        case WMU_SHOW_TOOLTIP:
-        {
-          nsTooltipEvent event(PR_TRUE, NS_SHOW_TOOLTIP, this);
-          InitEvent( event );
-          event.tipIndex = LONGFROMMP(mp1);
-          result = DispatchWindowEvent(&event);
-          NS_RELEASE(event.widget);
-          break;
-        }
-
-        case WMU_HIDE_TOOLTIP:
-          result = DispatchStandardEvent( NS_HIDE_TOOLTIP );
-          break;
-#endif
         case WM_CONTROL: // remember this is resent to the orginator...
           result = OnControl( mp1, mp2);
           break;
 
         case WM_CLOSE:  // close request
+        case WM_QUIT:   // interpret WM_QUIT as a close request, too,
+                        // so that windows can be closed from the Window List
           mWindowState |= nsWindowState_eClosing;
           DispatchStandardEvent( NS_XUL_CLOSE );
           result = PR_TRUE; // abort window closure
@@ -2759,7 +2684,7 @@ PRBool nsWindow::ProcessMessage( ULONG msg, MPARAM mp1, MPARAM mp2, MRESULT &rc)
         case WM_BUTTON1DOWN:
           if (!mIsScrollBar)
             WinSetCapture( HWND_DESKTOP, mWnd);
-          result = DispatchMouseEvent( NS_MOUSE_LEFT_BUTTON_DOWN, mp1, mp2);
+          result = DispatchMouseEvent( NS_MOUSE_BUTTON_DOWN, mp1, mp2);
             // there's no need to clear this on button-up
           gLastButton1Down.x = XFROMMP(mp1);
           gLastButton1Down.y = YFROMMP(mp1);
@@ -2769,24 +2694,27 @@ PRBool nsWindow::ProcessMessage( ULONG msg, MPARAM mp1, MPARAM mp2, MRESULT &rc)
         case WM_BUTTON1UP:
           if (!mIsScrollBar)
             WinSetCapture( HWND_DESKTOP, 0); // release
-          result = DispatchMouseEvent( NS_MOUSE_LEFT_BUTTON_UP, mp1, mp2);
+          result = DispatchMouseEvent( NS_MOUSE_BUTTON_UP, mp1, mp2);
           break;
         case WM_BUTTON1DBLCLK:
-          result = DispatchMouseEvent( NS_MOUSE_LEFT_DOUBLECLICK, mp1, mp2);
+          result = DispatchMouseEvent( NS_MOUSE_DOUBLECLICK, mp1, mp2);
           break;
     
         case WM_BUTTON2DOWN:
           if (!mIsScrollBar)
             WinSetCapture( HWND_DESKTOP, mWnd);
-          result = DispatchMouseEvent( NS_MOUSE_RIGHT_BUTTON_DOWN, mp1, mp2);
+          result = DispatchMouseEvent(NS_MOUSE_BUTTON_DOWN, mp1, mp2, PR_FALSE,
+                                      nsMouseEvent::eRightButton);
           break;
         case WM_BUTTON2UP:
           if (!mIsScrollBar)
             WinSetCapture( HWND_DESKTOP, 0); // release
-          result = DispatchMouseEvent( NS_MOUSE_RIGHT_BUTTON_UP, mp1, mp2);
+          result = DispatchMouseEvent(NS_MOUSE_BUTTON_UP, mp1, mp2, PR_FALSE,
+                                      nsMouseEvent::eRightButton);
           break;
         case WM_BUTTON2DBLCLK:
-          result = DispatchMouseEvent( NS_MOUSE_RIGHT_DOUBLECLICK, mp1, mp2);
+          result = DispatchMouseEvent(NS_MOUSE_DOUBLECLICK, mp1, mp2,
+                                      PR_FALSE, nsMouseEvent::eRightButton);
           break;
         case WM_CONTEXTMENU:
           if (SHORT2FROMMP(mp2) == TRUE) {
@@ -2794,10 +2722,12 @@ PRBool nsWindow::ProcessMessage( ULONG msg, MPARAM mp1, MPARAM mp2, MRESULT &rc)
             if (hwndCurrFocus != mWnd) {
               WinSendMsg(hwndCurrFocus, msg, mp1, mp2);
             } else {
-              result = DispatchMouseEvent( NS_CONTEXTMENU_KEY, mp1, mp2);
+              result = DispatchMouseEvent(NS_CONTEXTMENU, mp1, mp2, PR_TRUE,
+                                          nsMouseEvent::eLeftButton);
             }
           } else {
-            result = DispatchMouseEvent( NS_CONTEXTMENU, mp1, mp2);
+            result = DispatchMouseEvent(NS_CONTEXTMENU, mp1, mp2, PR_FALSE,
+                                        nsMouseEvent::eRightButton);
           }
           break;
 
@@ -2808,12 +2738,13 @@ PRBool nsWindow::ProcessMessage( ULONG msg, MPARAM mp1, MPARAM mp2, MRESULT &rc)
           if (WinGetKeyState(HWND_DESKTOP, VK_BUTTON1) & 
               WinGetKeyState(HWND_DESKTOP, VK_BUTTON2) &
               0x8000) {
-            PRBool isCopy = FALSE;
+            PRBool isCopy = PR_FALSE;
             if (abs(XFROMMP(mp1) - gLastButton1Down.x) >
                   (WinQuerySysValue(HWND_DESKTOP, SV_CXMOTIONSTART) / 2) ||
                 abs(YFROMMP(mp1) - gLastButton1Down.y) >
-                  (WinQuerySysValue(HWND_DESKTOP, SV_CYMOTIONSTART) / 2))
-              isCopy = TRUE;
+                  (WinQuerySysValue(HWND_DESKTOP, SV_CYMOTIONSTART) / 2)) {
+              isCopy = PR_TRUE;
+            }
 
             nsKeyEvent event(PR_TRUE, NS_KEY_PRESS, this);
             nsPoint point(0,0);
@@ -2831,18 +2762,31 @@ PRBool nsWindow::ProcessMessage( ULONG msg, MPARAM mp1, MPARAM mp2, MRESULT &rc)
             event.isMeta    = PR_FALSE;
             event.eventStructType = NS_KEY_EVENT;
             event.charCode = 0;
+            // OS/2 does not set the Shift, Ctrl, or Alt on keyup
+            if (SHORT1FROMMP(mp1) & (KC_VIRTUALKEY|KC_KEYUP|KC_LONEKEY)) {
+              USHORT usVKey = SHORT2FROMMP(mp2);
+              if (usVKey == VK_SHIFT)
+                event.isShift = PR_TRUE;
+              if (usVKey == VK_CTRL)
+                event.isControl = PR_TRUE;
+              if (usVKey == VK_ALTGRAF || usVKey == VK_ALT)
+                event.isAlt = PR_TRUE;
+            }
             result = DispatchWindowEvent( &event);
           }
           break;
 
         case WM_BUTTON3DOWN:
-          result = DispatchMouseEvent( NS_MOUSE_MIDDLE_BUTTON_DOWN, mp1, mp2);
+          result = DispatchMouseEvent(NS_MOUSE_BUTTON_DOWN, mp1, mp2, PR_FALSE,
+                                      nsMouseEvent::eMiddleButton);
           break;
         case WM_BUTTON3UP:
-          result = DispatchMouseEvent( NS_MOUSE_MIDDLE_BUTTON_UP, mp1, mp2);
+          result = DispatchMouseEvent(NS_MOUSE_BUTTON_UP, mp1, mp2, PR_FALSE,
+                                      nsMouseEvent::eMiddleButton);
           break;
         case WM_BUTTON3DBLCLK:
-          result = DispatchMouseEvent( NS_MOUSE_MIDDLE_DOUBLECLICK, mp1, mp2);
+          result = DispatchMouseEvent(NS_MOUSE_DOUBLECLICK, mp1, mp2, PR_FALSE,
+                                      nsMouseEvent::eMiddleButton);
           break;
     
         case WM_MOUSEMOVE:
@@ -2859,7 +2803,7 @@ PRBool nsWindow::ProcessMessage( ULONG msg, MPARAM mp1, MPARAM mp2, MRESULT &rc)
             }
           }
           result = DispatchMouseEvent( NS_MOUSE_MOVE, mp1, mp2);
-          // don't propogate mouse move or the OS will change the pointer
+          // don't propagate mouse move or the OS will change the pointer
           if (!mIsScrollBar)
             result = PR_TRUE;
           break;
@@ -2880,7 +2824,7 @@ PRBool nsWindow::ProcessMessage( ULONG msg, MPARAM mp1, MPARAM mp2, MRESULT &rc)
             case APPCOMMAND_BROWSER_FORWARD:
             case APPCOMMAND_BROWSER_REFRESH:
             case APPCOMMAND_BROWSER_STOP:
-              DispatchAppCommandEvent(appCommand);
+              DispatchCommandEvent(appCommand);
               // tell the driver that we handled the event
               rc = (MRESULT)1;
               result = PR_TRUE;
@@ -2965,10 +2909,6 @@ PRBool nsWindow::ProcessMessage( ULONG msg, MPARAM mp1, MPARAM mp2, MRESULT &rc)
           break;
     
     
-        case WM_REALIZEPALETTE:          // hopefully only nsCanvas & nsFrame
-          result = OnRealizePalette();   // will need this
-          break;
-    
         case WM_PRESPARAMCHANGED:
           // This is really for font-change notifies.  Do that first.
           rc = GetPrevWP()( mWnd, msg, mp1, mp2);
@@ -3040,26 +2980,6 @@ PRBool nsWindow::OnReposition( PSWP pSwp)
    return result;
 }
 
-PRBool nsWindow::OnRealizePalette()
-{
-  if (WinQueryWindowUShort(mWnd, QWS_ID) == FID_CLIENT) {
-    HWND hwndFocus = WinQueryFocus(HWND_DESKTOP);
-    if (WinIsChild(hwndFocus, mWnd)) {
-      /* We are getting the focus */
-      HPS hps = WinGetPS(hwndFocus);
-      nsPaletteOS2::SelectGlobalPalette(hps, hwndFocus);
-      WinReleasePS(hps);
-      WinInvalidateRect( mWnd, 0, TRUE);
-    } else {
-      /* We are losing the focus */
-      WinInvalidateRect( mWnd, 0, TRUE);
-    }
-  }
-
-  // Always call the default window procedure
-  return PR_TRUE;
-}
-
 PRBool nsWindow::OnPresParamChanged( MPARAM mp1, MPARAM mp2)
 {
    return PR_FALSE;
@@ -3124,16 +3044,13 @@ void nsWindow::OnDestroy()
 //
 //-------------------------------------------------------------------------
 PRBool nsWindow::OnMove(PRInt32 aX, PRInt32 aY)
-{            
+{
   // Params here are in XP-space for the desktop
   nsGUIEvent event(PR_TRUE, NS_MOVE, this);
   InitEvent( event);
   event.refPoint.x = aX;
   event.refPoint.y = aY;
-
-  PRBool result = DispatchWindowEvent( &event);
-  NS_RELEASE(event.widget);
-  return result;
+  return DispatchWindowEvent(&event);
 }
 
 //-------------------------------------------------------------------------
@@ -3143,119 +3060,118 @@ PRBool nsWindow::OnMove(PRInt32 aX, PRInt32 aY)
 //-------------------------------------------------------------------------
 PRBool nsWindow::OnPaint()
 {
-   PRBool rc = PR_FALSE;
-   nsEventStatus eventStatus = nsEventStatus_eIgnore;
+  PRBool rc = PR_FALSE;
+  nsEventStatus eventStatus = nsEventStatus_eIgnore;
 
 #ifdef NS_DEBUG
-   HRGN debugPaintFlashRegion = NULL;
-   HPS debugPaintFlashPS = NULL;
+  HRGN debugPaintFlashRegion = NULL;
+  HPS debugPaintFlashPS = NULL;
 
-   if (debug_WantPaintFlashing())
-   {
-      debugPaintFlashPS = ::WinGetPS(mWnd);
-      debugPaintFlashRegion = ::GpiCreateRegion(debugPaintFlashPS, 0, NULL);
-      ::WinQueryUpdateRegion(mWnd, debugPaintFlashRegion);
-   }
+  if (debug_WantPaintFlashing()) {
+    debugPaintFlashPS = ::WinGetPS(mWnd);
+    debugPaintFlashRegion = ::GpiCreateRegion(debugPaintFlashPS, 0, NULL);
+    ::WinQueryUpdateRegion(mWnd, debugPaintFlashRegion);
+  } // if paint flashing
 #endif
 
-   if( mContext && (mEventCallback || mEventListener))
-   {
-      // Get rect to redraw and validate window
-      RECTL rcl = { 0 };
+  if (mContext && (mEventCallback || mEventListener)) {
+    // Get rect to redraw and validate window
+    RECTL rcl = { 0 };
 
-      // get the current drag status;  if we're currently in a Moz-originated
-      // drag, get the special drag HPS then pass it to WinBeginPaint();
-      // if there is no hpsDrag, WinBeginPaint() will return a normal HPS
-      HPS hpsDrag = 0;
-      CheckDragStatus(ACTION_PAINT, &hpsDrag);
-      HPS hPS = WinBeginPaint(mWnd, hpsDrag, &rcl);
-      nsPaletteOS2::SelectGlobalPalette(hPS, mWnd);
+    // get the current drag status;  if we're currently in a Moz-originated
+    // drag, get the special drag HPS then pass it to WinBeginPaint();
+    // if there is no hpsDrag, WinBeginPaint() will return a normal HPS
+    HPS hpsDrag = 0;
+    CheckDragStatus(ACTION_PAINT, &hpsDrag);
+    HPS hPS = WinBeginPaint(mWnd, hpsDrag, &rcl);
 
-      // if the update rect is empty, suppress the paint event
-      if (!WinIsRectEmpty(0, &rcl))
-      {
-          // call the event callback 
-          if (mEventCallback) 
-          {
-              nsPaintEvent event(PR_TRUE, NS_PAINT, this);
-              InitEvent(event);
-     
-              // build XP rect from in-ex window rect
-              nsRect rect;
-              rect.x = rcl.xLeft;
-              rect.y = GetClientHeight() - rcl.yTop;
-              rect.width = rcl.xRight - rcl.xLeft;
-              rect.height = rcl.yTop - rcl.yBottom;
-              event.rect = &rect;
-              event.region = nsnull;
-     
+    // if the update rect is empty, suppress the paint event
+    if (!WinIsRectEmpty(0, &rcl)) {
+      // call the event callback
+      if (mEventCallback) {
+        nsPaintEvent event(PR_TRUE, NS_PAINT, this);
+        InitEvent(event);
+
+        // build XP rect from in-ex window rect
+        nsRect rect;
+        rect.x = rcl.xLeft;
+        rect.y = GetClientHeight() - rcl.yTop;
+        rect.width = rcl.xRight - rcl.xLeft;
+        rect.height = rcl.yTop - rcl.yBottom;
+        event.rect = &rect;
+        event.region = nsnull;
+
 #ifdef NS_DEBUG
-          debug_DumpPaintEvent(stdout,
-                               this,
-                               &event,
-                               nsCAutoString("noname"),
-                               (PRInt32) mWnd);
+        debug_DumpPaintEvent(stdout, this, &event, nsCAutoString("noname"),
+                             (PRInt32)mWnd);
 #endif // NS_DEBUG
 
-              //nsresult  res;
-             
-              static NS_DEFINE_CID(kRenderingContextCID, NS_RENDERING_CONTEXT_CID);
-             
-              if (NS_SUCCEEDED(CallCreateInstance(kRenderingContextCID, &event.renderingContext)))
-              {
-                 nsIRenderingContextOS2 *winrc;
+        nsRefPtr<gfxContext> thebesContext = new gfxContext(mThebesSurface);
 
-                 if (NS_OK == event.renderingContext->QueryInterface(NS_GET_IID(nsIRenderingContextOS2), (void **)&winrc))
-                 {
-                    nsIDrawingSurface* surf;
-                   
-                    //i know all of this seems a little backwards. i'll fix it, i swear. MMP
-                   
-                    if (NS_OK == winrc->CreateDrawingSurface(hPS, surf, event.widget))
-                    {
-                      event.renderingContext->Init(mContext, surf);
-                      rc = DispatchWindowEvent(&event, eventStatus);
-                      event.renderingContext->DestroyDrawingSurface(surf);
-                    }
+        nsCOMPtr<nsIRenderingContext> context;
+        nsresult rv = mContext->CreateRenderingContextInstance(*getter_AddRefs(context));
+        if (NS_FAILED(rv)) {
+          NS_WARNING("CreateRenderingContextInstance failed");
+          return PR_FALSE;
+        }
 
-                    NS_RELEASE(winrc);
-                 }
-              }
-     
-              NS_RELEASE(event.renderingContext);
-              NS_RELEASE(event.widget);
+        rv = context->Init(mContext, thebesContext);
+        if (NS_FAILED(rv)) {
+          NS_WARNING("context::Init failed");
+          return PR_FALSE;
+        }
+
+        event.renderingContext = context;
+        // try to dispatch a few times, 10 should be more than enough, in tests
+        // we get something at the second try at the latest
+        for (int i = 0; i < 10; i++) {
+          rc = DispatchWindowEvent(&event, eventStatus);
+          if (rc) {
+            // this was handled, so we can stop trying
+            break;
           }
-      }
-     
-      WinEndPaint(hPS);
-      if (hpsDrag)
-        ReleaseIfDragHPS(hpsDrag);
-   }
+        }
+        event.renderingContext = nsnull;
+
+        if (rc) {
+          // Only update if DispatchWindowEvent returned TRUE; otherwise, nothing handled
+          // this, and we'll just end up painting with black.
+          thebesContext->PopGroupToSource();
+          thebesContext->SetOperator(gfxContext::OPERATOR_SOURCE);
+          thebesContext->Paint();
+        }
+      } // if (mEventCallback)
+      mThebesSurface->Refresh(&rcl, hPS);
+    } // if (!WinIsRectEmpty(0, &rcl))
+
+    WinEndPaint(hPS);
+    if (hpsDrag) {
+      ReleaseIfDragHPS(hpsDrag);
+    }
+  } // if (mContext && (mEventCallback || mEventListener))
 
 #ifdef NS_DEBUG
-  if (debug_WantPaintFlashing())
-  {
-     // Only flash paint events which have not ignored the paint message.
-     // Those that ignore the paint message aren't painting anything so there
-     // is only the overhead of the dispatching the paint event.
-     if (nsEventStatus_eIgnore != eventStatus)
-     {
-        LONG CurMix = ::GpiQueryMix(debugPaintFlashPS);
-        ::GpiSetMix(debugPaintFlashPS, FM_INVERT);
+  if (debug_WantPaintFlashing()) {
+    // Only flash paint events which have not ignored the paint message.
+    // Those that ignore the paint message aren't painting anything so there
+    // is only the overhead of the dispatching the paint event.
+    if (nsEventStatus_eIgnore != eventStatus) {
+      LONG CurMix = ::GpiQueryMix(debugPaintFlashPS);
+      ::GpiSetMix(debugPaintFlashPS, FM_INVERT);
 
-        ::GpiPaintRegion(debugPaintFlashPS, debugPaintFlashRegion);
-        PR_Sleep(PR_MillisecondsToInterval(30));
-        ::GpiPaintRegion(debugPaintFlashPS, debugPaintFlashRegion);
-        PR_Sleep(PR_MillisecondsToInterval(30));
+      ::GpiPaintRegion(debugPaintFlashPS, debugPaintFlashRegion);
+      PR_Sleep(PR_MillisecondsToInterval(30));
+      ::GpiPaintRegion(debugPaintFlashPS, debugPaintFlashRegion);
+      PR_Sleep(PR_MillisecondsToInterval(30));
 
-        ::GpiSetMix (debugPaintFlashPS, CurMix);
-     }
-     ::GpiDestroyRegion(debugPaintFlashPS, debugPaintFlashRegion);
-     ::WinReleasePS(debugPaintFlashPS);
-  }
+      ::GpiSetMix(debugPaintFlashPS, CurMix);
+    } // if not eIgnore
+    ::GpiDestroyRegion(debugPaintFlashPS, debugPaintFlashRegion);
+    ::WinReleasePS(debugPaintFlashPS);
+  } // if paint flashing
 #endif
 
-   return rc;
+  return rc;
 }
 
 
@@ -3268,12 +3184,21 @@ PRBool nsWindow::OnResize(PRInt32 aX, PRInt32 aY)
 {
    mBounds.width = aX;
    mBounds.height = aY;
+
+   // resize the thebes surface to the new size
+   if (!mThebesSurface) {
+     // So we need to create a thebes surface for this window.
+     // (This is necessary for the first resize of a window.)
+     mThebesSurface = new gfxOS2Surface(mWnd);
+   }
+
+   mThebesSurface->Resize(gfxIntSize(aX, aY));
+
    return DispatchResizeEvent( aX, aY);
 }
 
 PRBool nsWindow::DispatchResizeEvent( PRInt32 aX, PRInt32 aY)
 {
-   PRBool result;
    // call the event callback 
    nsSizeEvent event(PR_TRUE, NS_SIZE, this);
    nsRect      rect( 0, 0, aX, aY);
@@ -3283,17 +3208,16 @@ PRBool nsWindow::DispatchResizeEvent( PRInt32 aX, PRInt32 aY)
    event.mWinWidth = mBounds.width;
    event.mWinHeight = mBounds.height;
 
-   result = DispatchWindowEvent( &event);
-   NS_RELEASE(event.widget);
-   return result;
-}                                           
+   return DispatchWindowEvent(&event);
+}
 
 //-------------------------------------------------------------------------
 //
 // Deal with all sort of mouse event
 //
 //-------------------------------------------------------------------------
-PRBool nsWindow::DispatchMouseEvent( PRUint32 aEventType, MPARAM mp1, MPARAM mp2)
+PRBool nsWindow::DispatchMouseEvent(PRUint32 aEventType, MPARAM mp1, MPARAM mp2,
+                                    PRBool aIsContextMenuKey, PRInt16 aButton)
 {
   PRBool result = PR_FALSE;
 
@@ -3301,13 +3225,17 @@ PRBool nsWindow::DispatchMouseEvent( PRUint32 aEventType, MPARAM mp1, MPARAM mp2
     return result;
   }
 
-  nsMouseEvent event(PR_TRUE, aEventType, this, nsMouseEvent::eReal);
+  nsMouseEvent event(PR_TRUE, aEventType, this, nsMouseEvent::eReal,
+                     aIsContextMenuKey
+                     ? nsMouseEvent::eContextMenuKey
+                     : nsMouseEvent::eNormal);
+  event.button = aButton;
 
   // Mouse leave & enter messages don't seem to have position built in.
   if( aEventType && aEventType != NS_MOUSE_ENTER && aEventType != NS_MOUSE_EXIT)
   {
     POINTL ptl;
-    if (aEventType == NS_CONTEXTMENU_KEY) {
+    if (aEventType == NS_CONTEXTMENU && aIsContextMenuKey) {
       WinQueryPointerPos(HWND_DESKTOP, &ptl);
       WinMapWindowPoints( HWND_DESKTOP, mWnd, &ptl, 1 );
     } else {
@@ -3334,10 +3262,12 @@ PRBool nsWindow::DispatchMouseEvent( PRUint32 aEventType, MPARAM mp1, MPARAM mp2
   event.isMeta    = PR_FALSE;
 
   //Dblclicks are used to set the click count, then changed to mousedowns
-  if (aEventType == NS_MOUSE_LEFT_DOUBLECLICK ||
-      aEventType == NS_MOUSE_RIGHT_DOUBLECLICK) {
-    event.message = (aEventType == NS_MOUSE_LEFT_DOUBLECLICK) ? 
-                    NS_MOUSE_LEFT_BUTTON_DOWN : NS_MOUSE_RIGHT_BUTTON_DOWN;
+  if (aEventType == NS_MOUSE_DOUBLECLICK &&
+      (aButton == nsMouseEvent::eLeftButton ||
+       aButton == nsMouseEvent::eRightButton)) {
+    event.message = NS_MOUSE_BUTTON_DOWN;
+    event.button = (aButton == nsMouseEvent::eLeftButton) ?
+                   nsMouseEvent::eLeftButton : nsMouseEvent::eRightButton;
     event.clickCount = 2;
   }
   else {
@@ -3346,34 +3276,52 @@ PRBool nsWindow::DispatchMouseEvent( PRUint32 aEventType, MPARAM mp1, MPARAM mp2
 
   nsPluginEvent pluginEvent;
 
-  switch (aEventType)//~~~
+  switch (aEventType)
   {
-    case NS_MOUSE_LEFT_BUTTON_DOWN:
-      pluginEvent.event = WM_BUTTON1DOWN;
+    case NS_MOUSE_BUTTON_DOWN:
+      switch (aButton) {
+        case nsMouseEvent::eLeftButton:
+          pluginEvent.event = WM_BUTTON1DOWN;
+          break;
+        case nsMouseEvent::eMiddleButton:
+          pluginEvent.event = WM_BUTTON3DOWN;
+          break;
+        case nsMouseEvent::eRightButton:
+          pluginEvent.event = WM_BUTTON2DOWN;
+          break;
+        default:
+          break;
+      }
       break;
-    case NS_MOUSE_LEFT_BUTTON_UP:
-      pluginEvent.event = WM_BUTTON1UP;
+    case NS_MOUSE_BUTTON_UP:
+      switch (aButton) {
+        case nsMouseEvent::eLeftButton:
+          pluginEvent.event = WM_BUTTON1UP;
+          break;
+        case nsMouseEvent::eMiddleButton:
+          pluginEvent.event = WM_BUTTON3UP;
+          break;
+        case nsMouseEvent::eRightButton:
+          pluginEvent.event = WM_BUTTON2UP;
+          break;
+        default:
+          break;
+      }
       break;
-    case NS_MOUSE_LEFT_DOUBLECLICK:
-      pluginEvent.event = WM_BUTTON1DBLCLK;
-      break;
-    case NS_MOUSE_RIGHT_BUTTON_DOWN:
-      pluginEvent.event = WM_BUTTON2DOWN;
-      break;
-    case NS_MOUSE_RIGHT_BUTTON_UP:
-      pluginEvent.event = WM_BUTTON2UP;
-      break;
-    case NS_MOUSE_RIGHT_DOUBLECLICK:
-      pluginEvent.event = WM_BUTTON2DBLCLK;
-      break;
-    case NS_MOUSE_MIDDLE_BUTTON_DOWN:
-      pluginEvent.event = WM_BUTTON3DOWN;
-      break;
-    case NS_MOUSE_MIDDLE_BUTTON_UP:
-      pluginEvent.event = WM_BUTTON3UP;
-      break;
-    case NS_MOUSE_MIDDLE_DOUBLECLICK:
-      pluginEvent.event = WM_BUTTON3DBLCLK;
+    case NS_MOUSE_DOUBLECLICK:
+      switch (aButton) {
+        case nsMouseEvent::eLeftButton:
+          pluginEvent.event = WM_BUTTON1DBLCLK;
+          break;
+        case nsMouseEvent::eMiddleButton:
+          pluginEvent.event = WM_BUTTON3DBLCLK;
+          break;
+        case nsMouseEvent::eRightButton:
+          pluginEvent.event = WM_BUTTON2DBLCLK;
+          break;
+        default:
+          break;
+      }
       break;
     case NS_MOUSE_MOVE:
       pluginEvent.event = WM_MOUSEMOVE;
@@ -3393,90 +3341,7 @@ PRBool nsWindow::DispatchMouseEvent( PRUint32 aEventType, MPARAM mp1, MPARAM mp2
 
   // call the event callback 
   if (nsnull != mEventCallback) {
-
-    result = DispatchWindowEvent(&event);
-
-#if 0  // OS2TODO
-    if (aEventType == NS_MOUSE_MOVE) {
-
-      // if we are not in mouse capture mode (mouse down and hold)
-      // then use "this" window
-      // if we are in mouse capture, then all events are being directed
-      // back to the nsWindow doing the capture. So therefore, the detection
-      // of whether we are in a new nsWindow is wrong. Meaning this MOUSE_MOVE
-      // event hold the captured windows pointer not the one the mouse is over.
-      //
-      // So we use "WindowFromPoint" to find what window we are over and 
-      // set that window into the mouse trailer timer.
-      if (!mIsInMouseCapture) {
-        MouseTrailer * mouseTrailer = MouseTrailer::GetMouseTrailer(0);
-        MouseTrailer::SetMouseTrailerWindow(this);
-        mouseTrailer->CreateTimer();
-      } else {
-        POINT mp;
-        DWORD pos = ::GetMessagePos();
-        mp.x      = LOWORD(pos);
-        mp.y      = HIWORD(pos);
-
-        // OK, now find out if we are still inside
-        // the captured native window
-        POINT cpos;
-        cpos.x = LOWORD(pos);
-        cpos.y = HIWORD(pos);
-
-        nsWindow * someWindow = NULL;
-        HWND hWnd = ::WindowFromPoint(mp);
-        if (hWnd != NULL) {
-          ::ScreenToClient(hWnd, &cpos);
-          RECT r;
-          VERIFY(::GetWindowRect(hWnd, &r));
-          if (cpos.x >= r.left && cpos.x <= r.right &&
-              cpos.y >= r.top && cpos.y <= r.bottom) {
-            // yes we are so we should be able to get a valid window
-            // although, strangley enough when we are on the frame part of the
-            // window we get right here when in capture mode
-            // but this window won't match the capture mode window so
-            // we are ok
-            someWindow = (nsWindow*)::GetWindowLong(hWnd, GWL_USERDATA);
-          } 
-        }
-        // only set the window into the mouse trailer if we have a good window
-        if (nsnull != someWindow)  {
-          MouseTrailer * mouseTrailer = MouseTrailer::GetMouseTrailer(0);
-          MouseTrailer::SetMouseTrailerWindow(someWindow);
-          mouseTrailer->CreateTimer();
-        }
-      }
-
-      nsRect rect;
-      GetBounds(rect);
-      rect.x = 0;
-      rect.y = 0;
-
-      if (rect.Contains(event.refPoint.x, event.refPoint.y)) {
-        if (gCurrentWindow == NULL || gCurrentWindow != this) {
-          if ((nsnull != gCurrentWindow) && (!gCurrentWindow->mIsDestroying)) {
-            MouseTrailer::IgnoreNextCycle();
-            gCurrentWindow->DispatchMouseEvent(NS_MOUSE_EXIT, gCurrentWindow->GetLastPoint());
-          }
-          gCurrentWindow = this;
-          if (!mIsDestroying) {
-            gCurrentWindow->DispatchMouseEvent(NS_MOUSE_ENTER);
-          }
-        }
-      } 
-    } else if (aEventType == NS_MOUSE_EXIT) {
-      if (gCurrentWindow == this) {
-        gCurrentWindow = nsnull;
-      }
-    }
-#endif //OS2TODO
-
-    // Release the widget with NS_IF_RELEASE() just in case
-    // the context menu key code in nsEventListenerManager::HandleEvent()
-    // released it already.
-    NS_IF_RELEASE(event.widget);
-    return result;
+    return DispatchWindowEvent(&event);
   }
 
   if (nsnull != mMouseListener) {
@@ -3489,34 +3354,23 @@ PRBool nsWindow::DispatchMouseEvent( PRUint32 aEventType, MPARAM mp1, MPARAM mp2
           if (gCurrentWindow == NULL || gCurrentWindow != this) {
             gCurrentWindow = this;
           }
-        } else {
-          //printf("Mouse exit");
         }
-
       } break;
 
-      case NS_MOUSE_LEFT_BUTTON_DOWN:
-      case NS_MOUSE_MIDDLE_BUTTON_DOWN:
-      case NS_MOUSE_RIGHT_BUTTON_DOWN:
+      case NS_MOUSE_BUTTON_DOWN:
         result = ConvertStatus(mMouseListener->MousePressed(event));
         break;
 
-      case NS_MOUSE_LEFT_BUTTON_UP:
-      case NS_MOUSE_MIDDLE_BUTTON_UP:
-      case NS_MOUSE_RIGHT_BUTTON_UP:
+      case NS_MOUSE_BUTTON_UP:
         result = ConvertStatus(mMouseListener->MouseReleased(event));
-//        result = ConvertStatus(mMouseListener->MouseClicked(event));
         break;
 
-      case NS_MOUSE_LEFT_CLICK:
-      case NS_MOUSE_MIDDLE_CLICK:
-      case NS_MOUSE_RIGHT_CLICK:
+      case NS_MOUSE_CLICK:
         result = ConvertStatus(mMouseListener->MouseClicked(event));
         break;
     } // switch
   } 
 
-  NS_RELEASE(event.widget);
   return result;
 }
 
@@ -3541,7 +3395,7 @@ PRBool nsWindow::DispatchFocus(PRUint32 aEventType, PRBool isMozWindowTakingFocu
 
     nsPluginEvent pluginEvent;
 
-    switch (aEventType)//~~~
+    switch (aEventType)
     {
       case NS_GOTFOCUS:
         pluginEvent.event = WM_SETFOCUS;
@@ -3557,10 +3411,7 @@ PRBool nsWindow::DispatchFocus(PRUint32 aEventType, PRBool isMozWindowTakingFocu
     }
 
     event.nativeMsg = (void *)&pluginEvent;
-
-    PRBool result = DispatchWindowEvent(&event);
-    NS_RELEASE(event.widget);
-    return result;
+    return DispatchWindowEvent(&event);
   }
   return PR_FALSE;
 }
@@ -3606,7 +3457,6 @@ PRBool nsWindow::OnVScroll( MPARAM mp1, MPARAM mp2)
             break;
         }
         DispatchWindowEvent(&scrollEvent);
-        NS_RELEASE(scrollEvent.widget);
     }
     return PR_FALSE;
 }
@@ -3641,7 +3491,6 @@ PRBool nsWindow::OnHScroll( MPARAM mp1, MPARAM mp2)
             break;
         }
         DispatchWindowEvent(&scrollEvent);
-        NS_RELEASE(scrollEvent.widget);
     }
     return PR_FALSE;
 }
@@ -3682,15 +3531,15 @@ NS_METHOD nsWindow::SetTitle(const nsAString& aTitle)
       PRInt32 titleLength;
       WideCharToMultiByte(0, uchtemp, aTitle.Length(), title, titleLength);
       if (titleLength > MAX_TITLEBAR_LENGTH) {
-        title.get()[MAX_TITLEBAR_LENGTH] = '\0';
+        title[MAX_TITLEBAR_LENGTH] = '\0';
       }
-      ::WinSetWindowText(GetMainWindow(), title.get());
+      ::WinSetWindowText(GetMainWindow(), title.Elements());
       if (mChromeHidden) {
          /* If the chrome is hidden, set the text of the titlebar directly */
          if (mFrameWnd) {
             HWND hwndTitleBar = (HWND)::WinQueryProperty(mFrameWnd,
                                                          "hwndTitleBar");
-            ::WinSetWindowText(hwndTitleBar, title.get());
+            ::WinSetWindowText(hwndTitleBar, title.Elements());
          }
       }
       nsMemory::Free(uchtemp);
@@ -3870,6 +3719,8 @@ PRBool nsWindow::OnDragDropMsg(ULONG msg, MPARAM mp1, MPARAM mp2, MRESULT &mr)
       switch (msg) {
 
         case DM_DRAGOVER:
+          dragService->FireDragEventAtSource(NS_DRAGDROP_DRAG);
+
           rv = dragSession->DragOverMsg((PDRAGINFO)mp1, mr, &dragFlags);
           eventType = NS_DRAGDROP_OVER;
           break;
@@ -4005,92 +3856,138 @@ PRBool nsWindow::ReleaseIfDragHPS(HPS aHps)
 // --------------------------------------------------------------------------
 
 // 'Native data'
-// function to translate from a WM_CHAR to an NS VK_ constant ---------------
-PRUint32 WMChar2KeyCode( MPARAM mp1, MPARAM mp2)
+// function to translate from a WM_CHAR to an NS_VK_ constant ---------------
+PRUint32 WMChar2KeyCode(MPARAM mp1, MPARAM mp2)
 {
-   PRUint32 rc = 0;
-   USHORT   flags = SHORT1FROMMP( mp1);
+  PRUint32 rc = SHORT1FROMMP(mp2);  // character code
+  PRUint32 rcmask = rc & 0x00FF;    // masked character code for key up events
+  USHORT sc = CHAR4FROMMP(mp1);     // scan code
+  USHORT flags = SHORT1FROMMP(mp1); // flag word
 
-   // First check for characters.
-   // This is complicated by keystrokes such as Ctrl+K not having the KC_CHAR
-   // bit set, but thankfully they do have the character actually there.
-   //
-   // So go on the assumption that `if not vkey or deadkey then char'
-   //
-   if( !(flags & (KC_VIRTUALKEY | KC_DEADKEY)))
-   {
-      rc = SHORT1FROMMP(mp2);
+  // First check for characters.
+  // This is complicated by keystrokes such as Ctrl+K not having the KC_CHAR
+  // bit set, but thankfully they do have the character actually there.
+  //
+  // Assume that `if not vkey or deadkey or valid number then char'
+  if (!(flags & (KC_VIRTUALKEY | KC_DEADKEY)) ||
+      (rcmask >= '0' && rcmask <= '9' &&             // handle keys on Numpad, too,
+       (isNumPadScanCode(sc) ? isNumlockOn : 1)) ) { // if NumLock is on
+    if (flags & KC_KEYUP) { // On OS/2 the scancode is in the upper byte of
+                            // usChar when KC_KEYUP is set so mask it off
+      rc = rcmask;
+    } else { // not KC_KEYUP
+      if (! (flags & KC_CHAR)) {
+        if ((flags & KC_ALT) || (flags & KC_CTRL))
+          rc = rcmask;
+        else
+          rc = 0;
+      }
+    }
 
-      if( rc < 0xFF)
-      {
-         switch( rc)
-         {
-            case ';':  rc = NS_VK_SEMICOLON;     break;
-            case '=':  rc = NS_VK_EQUALS;        break;
-            case '*':  rc = NS_VK_MULTIPLY;      break;
-            case '+':  rc = NS_VK_ADD;           break;
-            case '-':  rc = NS_VK_SUBTRACT;      break;
-            case '.':  rc = NS_VK_PERIOD;        break; // NS_VK_DECIMAL ?
-            case '|':  rc = NS_VK_SEPARATOR;     break;
-            case ',':  rc = NS_VK_COMMA;         break;
-            case '/':  rc = NS_VK_SLASH;         break; // NS_VK_DIVIDE ?
-            case '`':  rc = NS_VK_BACK_QUOTE;    break;
-            case '(':  rc = NS_VK_OPEN_BRACKET;  break;
-            case '\\': rc = NS_VK_BACK_SLASH;    break;
-            case ')':  rc = NS_VK_CLOSE_BRACKET; break;
-            case '\'': rc = NS_VK_QUOTE;         break;
-         }
+    if (rc < 0xFF) {
+      if (rc >= 'a' && rc <= 'z') { // The DOM_VK are for upper case only so
+                                    // if rc is lower case upper case it.
+        rc = rc - 'a' + NS_VK_A;
+      } else if (rc >= 'A' && rc <= 'Z') { // Upper case
+        rc = rc - 'A' + NS_VK_A;
+      } else if (rc >= '0' && rc <= '9') {
+        // Number keys, including Numpad if NumLock is not set
+        rc = rc - '0' + NS_VK_0;
+      } else {
+        /* For some characters, map the scan code to the NS_VK value */
+        /* This only happens in the char case NOT the VK case! */
+        switch (sc) {
+          case 0x02: rc = NS_VK_1;             break;
+          case 0x03: rc = NS_VK_2;             break;
+          case 0x04: rc = NS_VK_3;             break;
+          case 0x05: rc = NS_VK_4;             break;
+          case 0x06: rc = NS_VK_5;             break;
+          case 0x07: rc = NS_VK_6;             break;
+          case 0x08: rc = NS_VK_7;             break;
+          case 0x09: rc = NS_VK_8;             break;
+          case 0x0A: rc = NS_VK_9;             break;
+          case 0x0B: rc = NS_VK_0;             break;
+          case 0x0D: rc = NS_VK_EQUALS;        break;
+          case 0x1A: rc = NS_VK_OPEN_BRACKET;  break;
+          case 0x1B: rc = NS_VK_CLOSE_BRACKET; break;
+          case 0x27: rc = NS_VK_SEMICOLON;     break;
+          case 0x28: rc = NS_VK_QUOTE;         break;
+          case 0x29: rc = NS_VK_BACK_QUOTE;    break;
+          case 0x2B: rc = NS_VK_BACK_SLASH;    break;
+          case 0x33: rc = NS_VK_COMMA;         break;
+          case 0x34: rc = NS_VK_PERIOD;        break;
+          case 0x35: rc = NS_VK_SLASH;         break;
+          case 0x37: rc = NS_VK_MULTIPLY;      break;
+          case 0x4A: rc = NS_VK_SUBTRACT;      break;
+          case 0x4C: rc = NS_VK_CLEAR;         break; // numeric case is handled above
+          case 0x4E: rc = NS_VK_ADD;           break;
+          case 0x5C: rc = NS_VK_DIVIDE;        break;
+          default: break;
+        } // switch
+      } // else
+    } // if (rc < 0xFF)
+  } else if (flags & KC_VIRTUALKEY) {
+    USHORT vk = SHORT2FROMMP( mp2);
+    if (flags & KC_KEYUP) { // On OS/2 there are extraneous bits in the upper byte of
+                            // usChar when KC_KEYUP is set so mask them off
+      rc = rcmask;
+    }
+    if (isNumPadScanCode(sc) &&
+        (((flags & KC_ALT) && (sc != PMSCAN_PADPERIOD)) ||
+          ((flags & (KC_CHAR | KC_SHIFT)) == KC_CHAR)  ||
+          ((flags & KC_KEYUP) && rc != 0) )) {
+      CHAR numpadMap[] = {NS_VK_NUMPAD7, NS_VK_NUMPAD8, NS_VK_NUMPAD9, 0,
+                          NS_VK_NUMPAD4, NS_VK_NUMPAD5, NS_VK_NUMPAD6, 0,
+                          NS_VK_NUMPAD1, NS_VK_NUMPAD2, NS_VK_NUMPAD3,
+                          NS_VK_NUMPAD0, NS_VK_DECIMAL};
+      // If this is the Numpad must not return VK for ALT+Numpad or ALT+NumLock+Numpad
+      // NumLock+Numpad is OK
+      if (numpadMap[sc - PMSCAN_PAD7] != 0) { // not plus or minus on Numpad
+        if (flags & KC_ALT) // do not react on Alt plus ASCII-code sequences
+          rc = 0;
+        else
+          rc = numpadMap[sc - PMSCAN_PAD7];
+      } else {                                // plus or minus of Numpad
+        rc = 0; // No virtual key for Alt+Numpad or NumLock+Numpad
       }
-   }
-   else if( flags & KC_VIRTUALKEY)
-   {
-      USHORT vk = SHORT2FROMMP( mp2);
-      if( isNumPadScanCode(CHAR4FROMMP(mp1)) && 
-          ( ((flags & KC_ALT) && (CHAR4FROMMP(mp1) != PMSCAN_PADPERIOD)) || 
-            ((flags & (KC_CHAR | KC_SHIFT)) == KC_CHAR) ) )
-      {
-         // No virtual key for Alt+NumPad or NumLock+NumPad
-         rc = 0;
+    } else if (!(flags & KC_CHAR) || isNumPadScanCode(sc) ||
+               (vk == VK_BACKSPACE) || (vk == VK_TAB) || (vk == VK_BACKTAB) ||
+               (vk == VK_ENTER) || (vk == VK_NEWLINE) || (vk == VK_SPACE)) {
+      if (vk >= VK_F1 && vk <= VK_F24) {
+        rc = NS_VK_F1 + (vk - VK_F1);
       }
-      else if( !(flags & KC_CHAR) || isNumPadScanCode(CHAR4FROMMP(mp1)) ||
-          (vk == VK_BACKSPACE) || (vk == VK_TAB) || (vk == VK_BACKTAB) ||
-          (vk == VK_ENTER) || (vk == VK_NEWLINE) || (vk == VK_SPACE) )
-      {
-         if( vk >= VK_F1 && vk <= VK_F24)
-            rc = NS_VK_F1 + (vk - VK_F1);
-         else switch( vk)
-         {
-            case VK_NUMLOCK:   rc = NS_VK_NUM_LOCK; break;
-            case VK_SCRLLOCK:  rc = NS_VK_SCROLL_LOCK; break;
-            case VK_ESC:       rc = NS_VK_ESCAPE; break; // NS_VK_CANCEL
-            case VK_BACKSPACE: rc = NS_VK_BACK; break;
-            case VK_TAB:       rc = NS_VK_TAB; break;
-            case VK_BACKTAB:   rc = NS_VK_TAB; break; // layout tests for isShift
-            case VK_CLEAR:     rc = NS_VK_CLEAR; break;
-            case VK_NEWLINE:   rc = NS_VK_RETURN; break;
-            case VK_ENTER:     rc = NS_VK_RETURN; break;
-            case VK_SHIFT:     rc = NS_VK_SHIFT; break;
-            case VK_CTRL:      rc = NS_VK_CONTROL; break;
-            case VK_ALT:       rc = NS_VK_ALT; break;
-            case VK_PAUSE:     rc = NS_VK_PAUSE; break;
-            case VK_CAPSLOCK:  rc = NS_VK_CAPS_LOCK; break;
-            case VK_SPACE:     rc = NS_VK_SPACE; break;
-            case VK_PAGEUP:    rc = NS_VK_PAGE_UP; break;
-            case VK_PAGEDOWN:  rc = NS_VK_PAGE_DOWN; break;
-            case VK_END:       rc = NS_VK_END; break;
-            case VK_HOME:      rc = NS_VK_HOME; break;
-            case VK_LEFT:      rc = NS_VK_LEFT; break;
-            case VK_UP:        rc = NS_VK_UP; break;
-            case VK_RIGHT:     rc = NS_VK_RIGHT; break;
-            case VK_DOWN:      rc = NS_VK_DOWN; break;
-            case VK_PRINTSCRN: rc = NS_VK_PRINTSCREEN; break;
-            case VK_INSERT:    rc = NS_VK_INSERT; break;
-            case VK_DELETE:    rc = NS_VK_DELETE; break;
-         }
-      }
-   }
+      else switch (vk) {
+        case VK_NUMLOCK:   rc = NS_VK_NUM_LOCK; break;
+        case VK_SCRLLOCK:  rc = NS_VK_SCROLL_LOCK; break;
+        case VK_ESC:       rc = NS_VK_ESCAPE; break; // NS_VK_CANCEL
+        case VK_BACKSPACE: rc = NS_VK_BACK; break;
+        case VK_TAB:       rc = NS_VK_TAB; break;
+        case VK_BACKTAB:   rc = NS_VK_TAB; break; // layout tests for isShift
+        case VK_CLEAR:     rc = NS_VK_CLEAR; break;
+        case VK_NEWLINE:   rc = NS_VK_RETURN; break;
+        case VK_ENTER:     rc = NS_VK_RETURN; break;
+        case VK_SHIFT:     rc = NS_VK_SHIFT; break;
+        case VK_CTRL:      rc = NS_VK_CONTROL; break;
+        case VK_ALT:       rc = NS_VK_ALT; break;
+        case VK_PAUSE:     rc = NS_VK_PAUSE; break;
+        case VK_CAPSLOCK:  rc = NS_VK_CAPS_LOCK; break;
+        case VK_SPACE:     rc = NS_VK_SPACE; break;
+        case VK_PAGEUP:    rc = NS_VK_PAGE_UP; break;
+        case VK_PAGEDOWN:  rc = NS_VK_PAGE_DOWN; break;
+        case VK_END:       rc = NS_VK_END; break;
+        case VK_HOME:      rc = NS_VK_HOME; break;
+        case VK_LEFT:      rc = NS_VK_LEFT; break;
+        case VK_UP:        rc = NS_VK_UP; break;
+        case VK_RIGHT:     rc = NS_VK_RIGHT; break;
+        case VK_DOWN:      rc = NS_VK_DOWN; break;
+        case VK_PRINTSCRN: rc = NS_VK_PRINTSCREEN; break;
+        case VK_INSERT:    rc = NS_VK_INSERT; break;
+        case VK_DELETE:    rc = NS_VK_DELETE; break;
+      } // switch
+    }
+  } // KC_VIRTUALKEY
 
-   return rc;
+  return rc;
 }
 
 PCSZ nsWindow::WindowClass()

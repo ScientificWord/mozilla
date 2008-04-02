@@ -46,17 +46,17 @@
 #define GDK_COLOR_TO_NS_RGB(c) \
     ((nscolor) NS_RGB(c.red>>8, c.green>>8, c.blue>>8))
 
-nscolor nsLookAndFeel::sInfoText = 0;
-nscolor nsLookAndFeel::sInfoBackground = 0;
-nscolor nsLookAndFeel::sMenuText = 0;
-nscolor nsLookAndFeel::sMenuHover = 0;
-nscolor nsLookAndFeel::sMenuHoverText = 0;
-nscolor nsLookAndFeel::sMenuBackground = 0;
-nscolor nsLookAndFeel::sButtonBackground = 0;
-nscolor nsLookAndFeel::sButtonText = 0;
-nscolor nsLookAndFeel::sButtonOuterLightBorder = 0;
-nscolor nsLookAndFeel::sButtonInnerDarkBorder = 0;
-PRBool  nsLookAndFeel::sColorsInitialized = PR_FALSE;
+nscolor   nsLookAndFeel::sInfoText = 0;
+nscolor   nsLookAndFeel::sInfoBackground = 0;
+nscolor   nsLookAndFeel::sMenuText = 0;
+nscolor   nsLookAndFeel::sMenuHover = 0;
+nscolor   nsLookAndFeel::sMenuHoverText = 0;
+nscolor   nsLookAndFeel::sMenuBackground = 0;
+nscolor   nsLookAndFeel::sButtonBackground = 0;
+nscolor   nsLookAndFeel::sButtonText = 0;
+nscolor   nsLookAndFeel::sButtonOuterLightBorder = 0;
+nscolor   nsLookAndFeel::sButtonInnerDarkBorder = 0;
+PRUnichar nsLookAndFeel::sInvisibleCharacter = PRUnichar('*');
 
 //-------------------------------------------------------------------------
 //
@@ -67,8 +67,12 @@ nsLookAndFeel::nsLookAndFeel() : nsXPLookAndFeel()
 {
     InitWidget();
 
-    if (!sColorsInitialized)
-        InitColors();
+    static PRBool sInitialized = PR_FALSE;
+
+    if (!sInitialized) {
+        sInitialized = PR_TRUE;
+        InitLookAndFeel();
+    }
 }
 
 nsLookAndFeel::~nsLookAndFeel()
@@ -285,9 +289,11 @@ nsresult nsLookAndFeel::NativeGetColor(const nsColorID aID, nscolor& aColor)
         aColor = GDK_COLOR_TO_NS_RGB(mStyle->fg[GTK_STATE_PRELIGHT]);
         break;
     case eColor__moz_cellhighlight:
+    case eColor__moz_html_cellhighlight:
         aColor = GDK_COLOR_TO_NS_RGB(mStyle->base[GTK_STATE_ACTIVE]);
         break;
     case eColor__moz_cellhighlighttext:
+    case eColor__moz_html_cellhighlighttext:
         aColor = GDK_COLOR_TO_NS_RGB(mStyle->text[GTK_STATE_ACTIVE]);
         break;
     case eColor__moz_menuhover:
@@ -331,6 +337,21 @@ static PRInt32 ConvertGTKStepperStyleToMozillaScrollArrowStyle(GtkWidget* aWidge
 NS_IMETHODIMP nsLookAndFeel::GetMetric(const nsMetricID aID, PRInt32 & aMetric)
 {
     nsresult res = NS_OK;
+
+    // Set these before they can get overrided in the nsXPLookAndFeel. 
+    switch (aID) {
+    case eMetric_ScrollButtonLeftMouseButtonAction:
+        aMetric = 0;
+        return NS_OK;
+    case eMetric_ScrollButtonMiddleMouseButtonAction:
+        aMetric = 1;
+        return NS_OK;
+    case eMetric_ScrollButtonRightMouseButtonAction:
+        aMetric = 2;
+        return NS_OK;
+    default:
+        break;
+    }
 
     res = nsXPLookAndFeel::GetMetric(aID, aMetric);
     if (NS_SUCCEEDED(res))
@@ -507,7 +528,17 @@ NS_IMETHODIMP nsLookAndFeel::GetMetric(const nsMetricID aID, PRInt32 & aMetric)
     case eMetric_TreeScrollLinesMax:
         aMetric = 3;
         break;
-
+    case eMetric_IMERawInputUnderlineStyle:
+    case eMetric_IMEConvertedTextUnderlineStyle:
+        aMetric = NS_UNDERLINE_STYLE_SOLID;
+        break;
+    case eMetric_IMESelectedRawTextUnderlineStyle:
+    case eMetric_IMESelectedConvertedTextUnderline:
+        aMetric = NS_UNDERLINE_STYLE_NONE;
+        break;
+    case eMetric_ImagesInMenus:
+        aMetric = moz_gtk_images_in_menus();
+        break;
     default:
         aMetric = 0;
         res     = NS_ERROR_FAILURE;
@@ -561,17 +592,18 @@ NS_IMETHODIMP nsLookAndFeel::GetMetric(const nsMetricFloatID aID,
 }
 
 void
-nsLookAndFeel::InitColors()
+nsLookAndFeel::InitLookAndFeel()
 {
-    sColorsInitialized = PR_TRUE;
     GtkStyle *style;
 
     // tooltip foreground and background
     style = gtk_rc_get_style_by_paths(gtk_settings_get_default(),
                                       "gtk-tooltips", "GtkWindow",
                                       GTK_TYPE_WINDOW);
-    sInfoBackground = GDK_COLOR_TO_NS_RGB(style->bg[GTK_STATE_NORMAL]);
-    sInfoText = GDK_COLOR_TO_NS_RGB(style->fg[GTK_STATE_NORMAL]);
+    if (style) {
+        sInfoBackground = GDK_COLOR_TO_NS_RGB(style->bg[GTK_STATE_NORMAL]);
+        sInfoText = GDK_COLOR_TO_NS_RGB(style->fg[GTK_STATE_NORMAL]);
+    }
 
     // menu foreground & menu background
     GtkWidget *accel_label = gtk_accel_label_new("M");
@@ -589,14 +621,20 @@ nsLookAndFeel::InitColors()
     gtk_widget_realize(accel_label);
 
     style = gtk_widget_get_style(accel_label);
-    sMenuText = GDK_COLOR_TO_NS_RGB(style->fg[GTK_STATE_NORMAL]);
+    if (style) {
+        sMenuText = GDK_COLOR_TO_NS_RGB(style->fg[GTK_STATE_NORMAL]);
+    }
 
     style = gtk_widget_get_style(menu);
-    sMenuBackground = GDK_COLOR_TO_NS_RGB(style->bg[GTK_STATE_NORMAL]);
+    if (style) {
+        sMenuBackground = GDK_COLOR_TO_NS_RGB(style->bg[GTK_STATE_NORMAL]);
+    }
     
     style = gtk_widget_get_style(menuitem);
-    sMenuHover = GDK_COLOR_TO_NS_RGB(style->bg[GTK_STATE_PRELIGHT]);
-    sMenuHoverText = GDK_COLOR_TO_NS_RGB(style->fg[GTK_STATE_PRELIGHT]);
+    if (style) {
+        sMenuHover = GDK_COLOR_TO_NS_RGB(style->bg[GTK_STATE_PRELIGHT]);
+        sMenuHoverText = GDK_COLOR_TO_NS_RGB(style->fg[GTK_STATE_PRELIGHT]);
+    }
 
     gtk_widget_unref(menu);
 
@@ -618,16 +656,34 @@ nsLookAndFeel::InitColors()
     gtk_widget_realize(label);
 
     style = gtk_widget_get_style(label);
-    sButtonText = GDK_COLOR_TO_NS_RGB(style->fg[GTK_STATE_NORMAL]);
+    if (style) {
+        sButtonText = GDK_COLOR_TO_NS_RGB(style->fg[GTK_STATE_NORMAL]);
+    }
 
     style = gtk_widget_get_style(button);
-    sButtonBackground = GDK_COLOR_TO_NS_RGB(style->bg[GTK_STATE_NORMAL]);
-    sButtonOuterLightBorder =
-        GDK_COLOR_TO_NS_RGB(style->light[GTK_STATE_NORMAL]);
-    sButtonInnerDarkBorder =
-        GDK_COLOR_TO_NS_RGB(style->dark[GTK_STATE_NORMAL]);
+    if (style) {
+        sButtonBackground = GDK_COLOR_TO_NS_RGB(style->bg[GTK_STATE_NORMAL]);
+        sButtonOuterLightBorder =
+            GDK_COLOR_TO_NS_RGB(style->light[GTK_STATE_NORMAL]);
+        sButtonInnerDarkBorder =
+            GDK_COLOR_TO_NS_RGB(style->dark[GTK_STATE_NORMAL]);
+    }
 
     gtk_widget_destroy(window);
+
+    // invisible character styles
+    GtkWidget *entry = gtk_entry_new();
+    guint value;
+    g_object_get (entry, "invisible-char", &value, NULL);
+    sInvisibleCharacter = PRUnichar(value);
+    gtk_widget_destroy(entry);
+}
+
+// virtual
+PRUnichar
+nsLookAndFeel::GetPasswordCharacter()
+{
+    return sInvisibleCharacter;
 }
 
 NS_IMETHODIMP
@@ -639,7 +695,7 @@ nsLookAndFeel::LookAndFeelChanged()
         gtk_widget_unref(mWidget);
  
     InitWidget();
-    InitColors();
+    InitLookAndFeel();
 
     return NS_OK;
 }

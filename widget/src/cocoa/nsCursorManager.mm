@@ -19,6 +19,7 @@
  * Andrew Thompson. All Rights Reserved.
  *
  * Contributor(s):
+ *   Josh Aas <josh@mozilla.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -34,8 +35,9 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#import "nsCursorManager.h"
-#import "math.h"
+#include "nsCursorManager.h"
+#include "nsObjCExceptions.h"
+#include <math.h>
 
 static nsCursorManager *gInstance;
 
@@ -46,8 +48,8 @@ static nsCursorManager *gInstance;
 /*! @method     getCursor:
     @abstract   Get a reference to the native Mac representation of a cursor.
     @discussion Gets a reference to the Mac native implementation of a cursor.
-                If the cursor has been requested before, it is retreived from the cursor cache, otherwise is it created
-                and cached.
+                If the cursor has been requested before, it is retreived from the cursor cache,
+                otherwise it is created and cached.
     @param      aCursor the cursor to get
     @result     the Mac native implementation of the cursor
 */
@@ -55,74 +57,50 @@ static nsCursorManager *gInstance;
 
 /*! @method     createCursor:
     @abstract   Create a Mac native representation of a cursor.
-    @discussion Creates a version of the Mac native representation of this cursor suitable for use on this version of
-                Mac OS X
+    @discussion Creates a version of the Mac native representation of this cursor
     @param      aCursor the cursor to create
     @result     the Mac native implementation of the cursor
 */
 + (nsMacCursor *) createCursor: (enum nsCursor) aCursor;
 
-/*! @method     createNSCursor:orThemeCursor:
+/*! @method     createNSCursor:
     @abstract   Creates the appropriate cursor implementation from the arguments.
-    @discussion Creates a native Mac cursor, using NSCursor if the cursor is available on this version of Mac OS X,
-                otherwise falls back to creating a traditional Carbon AppearanceManager ThemeCursor.
-    @param      aPantherCursor selector indicating the NSCursor cursor to create if on Panther or later
-    @param      aJaguarCursor the ThemeCursor to use as an alternative if running on Jaguar
+    @discussion Creates a native Mac cursor, using NSCursor.
+    @param      aCursor selector indicating the NSCursor cursor to create
     @result     the Mac native implementation of the cursor
 */
-+ (nsMacCursor *) createNSCursor: (SEL) aPantherCursor orThemeCursor: (ThemeCursor) aJaguarCursor;
++ (nsMacCursor *) createNSCursor: (SEL) aCursor;
 
-/*! @method     createNSCursor:orImageCursor:withHotspot:
-    @abstract   Creates the appropriate cursor implementation from the arguments.
-    @discussion Creates a native Mac cursor, using NSCursor if the cursor is available on this version of Mac OS X,
-    otherwise falls back to creating an NSCursor instance from a custom image and hotspot.
-    @param      aPantherCursor selector indicating the NSCursor cursor to create if on Panther or later
-    @param      aImageName the name of the image to use for the cursor as the cursor on Jagua
-    @param      aPoint the hotspot to use with the image to form a cursor on Jaguar
-    @result     the Mac native implementation of the cursor
-*/
-+ (nsMacCursor *) createNSCursor: (SEL) aPantherCursor orImageCursor: (NSString *) aImageName withHotspot: (NSPoint) aPoint;
 @end
-
-/*! @function   isPantherOrLater
-    @abstract   Determine whether we are running on Panther (Mac OS X 10.3) or later
-    @result     YES if the current operating system version is 10.3 or later, else NO
-*/
-static BOOL isPantherOrLater();
-
-static BOOL isPantherOrLater() 
-{
-  static PRBool gInitVer = PR_FALSE;
-  static PRBool gOnPantherOrLater = PR_FALSE;
-  if(!gInitVer)
-  {
-    long version;
-    OSErr err = ::Gestalt(gestaltSystemVersion, &version);
-    gOnPantherOrLater = (err == noErr && version >= 0x00001030);
-    gInitVer = PR_TRUE;
-  }
-  return gOnPantherOrLater;
-}
 
 @implementation nsCursorManager
 
 + (nsCursorManager *) sharedInstance
 {
-  if (gInstance == nil)
-  {
+  NS_OBJC_BEGIN_TRY_ABORT_BLOCK_NIL;
+
+  if (!gInstance) {
     gInstance = [[nsCursorManager alloc] init];
   }
   return gInstance;
+
+  NS_OBJC_END_TRY_ABORT_BLOCK_NIL;
 }
 
 + (void) dispose
 {
+  NS_OBJC_BEGIN_TRY_ABORT_BLOCK;
+
   [gInstance release];
   gInstance = nil;
+
+  NS_OBJC_END_TRY_ABORT_BLOCK;
 }
 
 + (nsMacCursor *) createCursor: (enum nsCursor) aCursor 
 {
+  NS_OBJC_BEGIN_TRY_ABORT_BLOCK_NIL;
+
   switch(aCursor)
   {
     case eCursor_standard:
@@ -132,11 +110,11 @@ static BOOL isPantherOrLater()
     case eCursor_select:              
       return [nsMacCursor cursorWithCursor: [NSCursor IBeamCursor]];
     case eCursor_hyperlink:
-      return [nsCursorManager createNSCursor: @selector(pointingHandCursor) orThemeCursor: kThemePointingHandCursor];                  
+      return [nsCursorManager createNSCursor: @selector(pointingHandCursor)];                  
     case eCursor_crosshair:
-      return [nsCursorManager createNSCursor: @selector(crosshairCursor) orThemeCursor: kThemeCrossCursor];                                        
+      return [nsCursorManager createNSCursor: @selector(crosshairCursor)];                                        
     case eCursor_move:
-      return [nsCursorManager createNSCursor: @selector(openHandCursor) orThemeCursor: kThemeOpenHandCursor];                   
+      return [nsCursorManager createNSCursor: @selector(openHandCursor)];                   
     case eCursor_help:
       return [nsMacCursor cursorWithImageNamed: @"help" hotSpot: NSMakePoint(1,1)];        
     case eCursor_copy:
@@ -149,9 +127,9 @@ static BOOL isPantherOrLater()
     case eCursor_cell:
       return [nsMacCursor cursorWithThemeCursor: kThemePlusCursor];
     case eCursor_grab:
-      return [nsCursorManager createNSCursor: @selector(openHandCursor) orThemeCursor: kThemeOpenHandCursor];
+      return [nsCursorManager createNSCursor: @selector(openHandCursor)];
     case eCursor_grabbing:
-      return [nsCursorManager createNSCursor: @selector(closedHandCursor) orThemeCursor: kThemeClosedHandCursor];
+      return [nsCursorManager createNSCursor: @selector(closedHandCursor)];
     case eCursor_spinning:
       return [nsMacCursor cursorWithResources: 200 lastFrame: 203]; // better than kThemeSpinningCursor        
     case eCursor_zoom_in:
@@ -161,7 +139,7 @@ static BOOL isPantherOrLater()
     case eCursor_vertical_text:
       return [nsMacCursor cursorWithImageNamed: @"vtIBeam" hotSpot: NSMakePoint(7,8)];
     case eCursor_all_scroll:
-      return [nsCursorManager createNSCursor: @selector(openHandCursor) orThemeCursor: kThemeOpenHandCursor];                   
+      return [nsCursorManager createNSCursor: @selector(openHandCursor)];                   
     case eCursor_not_allowed:
     case eCursor_no_drop:
       return [nsMacCursor cursorWithThemeCursor: kThemeNotAllowedCursor];
@@ -169,34 +147,34 @@ static BOOL isPantherOrLater()
     // Resize Cursors:
     //North
     case eCursor_n_resize:
-        return [nsCursorManager createNSCursor: @selector(resizeUpCursor) orImageCursor: @"arrowN" withHotspot: NSMakePoint(7,7)];
+        return [nsCursorManager createNSCursor: @selector(resizeUpCursor)];
     //North East
     case eCursor_ne_resize:
         return [nsMacCursor cursorWithImageNamed: @"sizeNE" hotSpot: NSMakePoint(8,7)];
     //East
     case eCursor_e_resize:        
-        return [nsCursorManager createNSCursor: @selector(resizeRightCursor) orThemeCursor: kThemeResizeRightCursor];
+        return [nsCursorManager createNSCursor: @selector(resizeRightCursor)];
     //South East
     case eCursor_se_resize:
         return [nsMacCursor cursorWithImageNamed: @"sizeSE" hotSpot: NSMakePoint(8,8)];
     //South
     case eCursor_s_resize:
-        return [nsCursorManager createNSCursor: @selector(resizeDownCursor) orImageCursor: @"arrowS" withHotspot: NSMakePoint(7,7)];
+        return [nsCursorManager createNSCursor: @selector(resizeDownCursor)];
     //South West
     case eCursor_sw_resize:
         return [nsMacCursor cursorWithImageNamed: @"sizeSW" hotSpot: NSMakePoint(6,8)];
     //West
     case eCursor_w_resize:
-        return [nsCursorManager createNSCursor: @selector(resizeLeftCursor) orThemeCursor: kThemeResizeLeftCursor];
+        return [nsCursorManager createNSCursor: @selector(resizeLeftCursor)];
     //North West
     case eCursor_nw_resize:
         return [nsMacCursor cursorWithImageNamed: @"sizeNW" hotSpot: NSMakePoint(7,7)];
     //North & South
     case eCursor_ns_resize:
-        return [nsCursorManager createNSCursor: @selector(resizeUpDownCursor) orImageCursor: @"sizeNS" withHotspot: NSMakePoint(7,7)];                         
+        return [nsCursorManager createNSCursor: @selector(resizeUpDownCursor)];                         
     //East & West
     case eCursor_ew_resize:
-        return [nsCursorManager createNSCursor: @selector(resizeLeftRightCursor) orThemeCursor: kThemeResizeLeftRightCursor];                  
+        return [nsCursorManager createNSCursor: @selector(resizeLeftRightCursor)];                  
     //North East & South West
     case eCursor_nesw_resize:
         return [nsMacCursor cursorWithImageNamed: @"sizeNESW" hotSpot: NSMakePoint(8,8)];
@@ -212,54 +190,74 @@ static BOOL isPantherOrLater()
     default:
       return [nsMacCursor cursorWithCursor: [NSCursor arrowCursor]];
   }
+
+  NS_OBJC_END_TRY_ABORT_BLOCK_NIL;
 }
 
-+ (nsMacCursor *) createNSCursor: (SEL) aPantherCursor orThemeCursor: (ThemeCursor) aJaguarCursor
++ (nsMacCursor *) createNSCursor: (SEL) aCursor
 {
-  return isPantherOrLater() ?   [nsMacCursor cursorWithCursor: [NSCursor performSelector: aPantherCursor]] :
-                                [nsMacCursor cursorWithThemeCursor: aJaguarCursor];
-}
+  NS_OBJC_BEGIN_TRY_ABORT_BLOCK_NIL;
 
-+ (nsMacCursor *) createNSCursor: (SEL) aPantherCursor orImageCursor: (NSString *) aImageName withHotspot: (NSPoint) aPoint
-{
-  return isPantherOrLater() ?	[nsMacCursor cursorWithCursor: [NSCursor performSelector: aPantherCursor]] :
-                                [nsMacCursor cursorWithImageNamed: aImageName hotSpot: aPoint];
+  return [nsMacCursor cursorWithCursor:[NSCursor performSelector:aCursor]];
+
+  NS_OBJC_END_TRY_ABORT_BLOCK_NIL;
 }
 
 - (id) init
 {
-  if ( (self = [super init]) ) 
-  {
-    mCursors = [[NSMutableDictionary alloc] initWithCapacity: 25];
+  NS_OBJC_BEGIN_TRY_ABORT_BLOCK_NIL;
+
+  if ((self = [super init])) {
+    mCursors = [[NSMutableDictionary alloc] initWithCapacity:25];
   }
   return self;
+
+  NS_OBJC_END_TRY_ABORT_BLOCK_NIL;
 }
 
 - (void) setCursor: (enum nsCursor) aCursor
 {
-  if (aCursor != mCurrentCursor)
-  {
+  NS_OBJC_BEGIN_TRY_ABORT_BLOCK;
+
+  if (aCursor != mCurrentCursor) {
     [[self getCursor: mCurrentCursor] unset];
     [[self getCursor: aCursor] set];
+
+    if (aCursor == eCursor_none) {
+      [NSCursor hide];
+    } else if (mCurrentCursor == eCursor_none) {
+      [NSCursor unhide];
+    }
+
     mCurrentCursor = aCursor;
   }
+
+  NS_OBJC_END_TRY_ABORT_BLOCK;
 }
 
 - (nsMacCursor *) getCursor: (enum nsCursor) aCursor
 {
+  NS_OBJC_BEGIN_TRY_ABORT_BLOCK_NIL;
+
   nsMacCursor * result = [mCursors objectForKey: [NSNumber numberWithInt: aCursor]];
-  if ( result == nil ) 
-  {
+  if (!result) {
     result = [nsCursorManager createCursor: aCursor];
     [mCursors setObject: result forKey: [NSNumber numberWithInt: aCursor]];
   }
   return result;
+
+  NS_OBJC_END_TRY_ABORT_BLOCK_NIL;
 }
 
 - (void) dealloc
 {
+  NS_OBJC_BEGIN_TRY_ABORT_BLOCK;
+
   [[self getCursor: mCurrentCursor] unset];
   [mCursors release];    
-  [super dealloc];    
+  [super dealloc];
+
+  NS_OBJC_END_TRY_ABORT_BLOCK;
 }
+
 @end

@@ -37,13 +37,11 @@
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
-#ifdef MOZ_CAIRO_GFX
 #include "gfxASurface.h"
 #include "gfxImageSurface.h"
 #include "gfxContext.h"
-#endif
 
-#include "nsIGdkPixbufImage.h"
+#include "nsIImage.h"
 
 #include "nsAutoPtr.h"
 
@@ -70,20 +68,31 @@ nsImageToPixbuf::ConvertImageToPixbuf(nsIImage* aImage)
 GdkPixbuf*
 nsImageToPixbuf::ImageToPixbuf(nsIImage* aImage)
 {
-#ifdef MOZ_CAIRO_GFX
     PRInt32 width = aImage->GetWidth(),
             height = aImage->GetHeight();
 
     nsRefPtr<gfxASurface> surface;
     aImage->GetSurface(getter_AddRefs(surface));
 
+    return SurfaceToPixbuf(surface, width, height);
+}
+
+GdkPixbuf*
+nsImageToPixbuf::SurfaceToPixbuf(gfxASurface* aSurface, PRInt32 aWidth, PRInt32 aHeight)
+{
+    if (aSurface->CairoStatus()) {
+        NS_ERROR("invalid surface");
+        return nsnull;
+    }
+
     nsRefPtr<gfxImageSurface> imgSurface;
-    if (surface->GetType() == gfxASurface::SurfaceTypeImage) {
-        imgSurface = NS_STATIC_CAST(gfxImageSurface*,
-                                    NS_STATIC_CAST(gfxASurface*, surface.get()));
+    if (aSurface->GetType() == gfxASurface::SurfaceTypeImage) {
+        imgSurface = static_cast<gfxImageSurface*>
+                                (static_cast<gfxASurface*>(aSurface));
     } else {
-        imgSurface = new gfxImageSurface(gfxImageSurface::ImageFormatARGB32,
-                                         width, height);
+        imgSurface = new gfxImageSurface(gfxIntSize(aWidth, aHeight),
+					 gfxImageSurface::ImageFormatARGB32);
+                                       
         if (!imgSurface)
             return nsnull;
 
@@ -92,12 +101,12 @@ nsImageToPixbuf::ImageToPixbuf(nsIImage* aImage)
             return nsnull;
 
         context->SetOperator(gfxContext::OPERATOR_SOURCE);
-        context->SetSource(surface);
+        context->SetSource(aSurface);
         context->Paint();
     }
 
     GdkPixbuf* pixbuf = gdk_pixbuf_new(GDK_COLORSPACE_RGB, PR_TRUE, 8,
-                                       width, height);
+                                       aWidth, aHeight);
     if (!pixbuf)
         return nsnull;
 
@@ -109,12 +118,12 @@ nsImageToPixbuf::ImageToPixbuf(nsIImage* aImage)
 
     gfxASurface::gfxImageFormat format = imgSurface->Format();
 
-    for (PRInt32 row = 0; row < height; ++row) {
-        for (PRInt32 col = 0; col < width; ++col) {
+    for (PRInt32 row = 0; row < aHeight; ++row) {
+        for (PRInt32 col = 0; col < aWidth; ++col) {
             guchar* pixel = pixels + row * rowstride + 4 * col;
 
-            PRUint32* cairoPixel = NS_REINTERPRET_CAST(PRUint32*,
-                                   (cairoData + row * cairoStride + 4 * col));
+            PRUint32* cairoPixel = reinterpret_cast<PRUint32*>
+                                                   ((cairoData + row * cairoStride + 4 * col));
 
             if (format == gfxASurface::ImageFormatARGB32) {
                 const PRUint8 a = (*cairoPixel >> 24) & 0xFF;
@@ -142,11 +151,4 @@ nsImageToPixbuf::ImageToPixbuf(nsIImage* aImage)
     }
 
     return pixbuf;
-#else
-    nsCOMPtr<nsIGdkPixbufImage> img(do_QueryInterface(aImage));
-    if (img)
-        return img->GetGdkPixbuf();
-    return NULL;
-#endif
 }
-
