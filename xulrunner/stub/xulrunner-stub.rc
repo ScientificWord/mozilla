@@ -1,3 +1,4 @@
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -14,9 +15,8 @@
  * The Original Code is Mozilla XULRunner.
  *
  * The Initial Developer of the Original Code is
- * Benjamin Smedberg <benjamin@smedbergs.us>.
- *
- * Portions created by the Initial Developer are Copyright (C) 2005
+ * Mark Finkle <mfinkle@mozilla.com>.
+ * Portions created by the Initial Developer are Copyright (C) 2008
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
@@ -35,23 +35,4 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#include "nsRegisterGRE.h"
-
-#include <stdlib.h>
-#include <stdio.h>
-
-int
-RegisterXULRunner(PRBool aRegisterGlobally, nsIFile* aLocation,
-                  const GREProperty *aProperties, PRUint32 aPropertiesLen,
-                  const char *aGREMilestone)
-{
-  fprintf(stderr, "Registration not implemented on this platform!\n");
-  return 1;
-}
-
-void
-UnregisterXULRunner(PRBool aUnregisterGlobally, nsIFile* aLocation,
-                    const char *aGREMilestone)
-{
-  fprintf(stderr, "Registration not implemented on this platform!\n");
-}
+1 24 "xulrunner-stub.exe.manifest"

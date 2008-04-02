@@ -1,5 +1,4 @@
-<?xml version="1.0"?>
-# vim:set ts=8 sw=8 sts=8 noet:
+#! /bin/sh
 # ***** BEGIN LICENSE BLOCK *****
 # Version: MPL 1.1/GPL 2.0/LGPL 2.1
 #
@@ -13,14 +12,15 @@
 # for the specific language governing rights and limitations under the
 # License.
 #
-# The Original Code is the Mozilla Browser code.
+# The Original Code is Mozilla Build System
 #
-# The Initial Developer of the Original Code is Google Inc.
-# Portions created by the Initial Developer are Copyright (C) 2005
+# The Initial Developer of the Original Code is
+# Ben Turner <mozilla@songbirdnest.com>
+#
+# Portions created by the Initial Developer are Copyright (C) 2007
 # the Initial Developer. All Rights Reserved.
 #
 # Contributor(s):
-#  Darin Fisher <darin@meer.net>
 #
 # Alternatively, the contents of this file may be used under the terms of
 # either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -36,17 +36,17 @@
 #
 # ***** END LICENSE BLOCK *****
 
-<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
-
-<!DOCTYPE window SYSTEM "chrome://simple/locale/simple.dtd">
-
-<window
-  id    = "simple"
-  title = "&simple.title;"
-  xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-  <script src="chrome://simple/content/simple.js"/>
-  <vbox>
-    <textbox id="textbox" value="&simple.textValue;" flex="1"/>
-    <button id="button" label="&simple.buttonLabel;" oncommand="onButtonClick();"/>
-  </vbox>
-</window>
+MOZ_APP_NAME=xulrunner
+MOZ_APP_DISPLAYNAME=XULRunner
+MOZ_UPDATER=1
+MOZ_XULRUNNER=1
+MSI_MOZ_PRINCE=1
+MOZ_COMPOSER=1
+MOZ_ENABLE_LIBXUL=1
+MOZ_APP_VERSION=$MOZILLA_VERSION
+MOZ_JAVAXPCOM=1
+if test "$MOZ_STORAGE"; then
+  MOZ_PLACES=1
+fi
+MOZ_EXTENSIONS_DEFAULT=" xml-rpc gnomevfs"
+MOZ_NO_XPCOM_OBSOLETE=1

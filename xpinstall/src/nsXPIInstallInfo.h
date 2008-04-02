@@ -11,12 +11,12 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
- * The Original Code is Mozilla XULRunner.
+ * The Original Code is Mozilla XPInstall.
  *
  * The Initial Developer of the Original Code is
- * Benjamin Smedberg <benjamin@smedbergs.us>.
+ * Dave Townsend <dtownsend@oxymoronical.com>.
  *
- * Portions created by the Initial Developer are Copyright (C) 2005
+ * Portions created by the Initial Developer are Copyright (C) 2007
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
@@ -33,25 +33,30 @@
  * the provisions above, a recipient may use your version of this file under
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
- * ***** END LICENSE BLOCK ***** */
+ * ***** END LICENSE BLOCK *****
+ */
 
-#include "nsRegisterGRE.h"
+#include "nsXPITriggerInfo.h"
+#include "nsIXPIInstallInfo.h"
+#include "nsIDOMWindowInternal.h"
+#include "nsIDocShell.h"
+#include "nsIURI.h"
 
-#include <stdlib.h>
-#include <stdio.h>
-
-int
-RegisterXULRunner(PRBool aRegisterGlobally, nsIFile* aLocation,
-                  const GREProperty *aProperties, PRUint32 aPropertiesLen,
-                  const char *aGREMilestone)
+class nsXPIInstallInfo : public nsIXPIInstallInfo
 {
-  fprintf(stderr, "Registration not implemented on this platform!\n");
-  return 1;
-}
+public:
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSIXPIINSTALLINFO
 
-void
-UnregisterXULRunner(PRBool aUnregisterGlobally, nsIFile* aLocation,
-                    const char *aGREMilestone)
-{
-  fprintf(stderr, "Registration not implemented on this platform!\n");
-}
+  nsXPIInstallInfo(nsIDOMWindowInternal *aOriginatingWindow,
+                   nsIURI *aOriginatingURI, nsXPITriggerInfo *aTriggerInfo,
+                   PRUint32 aChromeType);
+
+private:
+  ~nsXPIInstallInfo();
+
+  nsCOMPtr<nsIDOMWindowInternal> mOriginatingWindow;
+  nsCOMPtr<nsIURI> mOriginatingURI;
+  nsXPITriggerInfo* mTriggerInfo;
+  PRUint32 mChromeType;
+};

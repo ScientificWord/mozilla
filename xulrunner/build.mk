@@ -1,5 +1,3 @@
-<?xml version="1.0"?>
-# vim:set ts=8 sw=8 sts=8 noet:
 # ***** BEGIN LICENSE BLOCK *****
 # Version: MPL 1.1/GPL 2.0/LGPL 2.1
 #
@@ -13,14 +11,15 @@
 # for the specific language governing rights and limitations under the
 # License.
 #
-# The Original Code is the Mozilla Browser code.
+# The Original Code is the Mozilla build system.
 #
-# The Initial Developer of the Original Code is Google Inc.
-# Portions created by the Initial Developer are Copyright (C) 2005
+# The Initial Developer of the Original Code is
+# the Mozilla Foundation <http://www.mozilla.org/>.
+# Portions created by the Initial Developer are Copyright (C) 2006
 # the Initial Developer. All Rights Reserved.
 #
 # Contributor(s):
-#  Darin Fisher <darin@meer.net>
+#   Benjamin Smedberg <benjamin@smedbergs.us> (Initial Code)
 #
 # Alternatively, the contents of this file may be used under the terms of
 # either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -36,17 +35,55 @@
 #
 # ***** END LICENSE BLOCK *****
 
-<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+include $(topsrcdir)/toolkit/toolkit-tiers.mk
 
-<!DOCTYPE window SYSTEM "chrome://simple/locale/simple.dtd">
+TIERS += app
 
-<window
-  id    = "simple"
-  title = "&simple.title;"
-  xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-  <script src="chrome://simple/content/simple.js"/>
-  <vbox>
-    <textbox id="textbox" value="&simple.textValue;" flex="1"/>
-    <button id="button" label="&simple.buttonLabel;" oncommand="onButtonClick();"/>
-  </vbox>
-</window>
+ifdef MOZ_EXTENSIONS
+tier_app_dirs += extensions
+endif
+
+# axcontrol
+ifndef LIBXUL_SDK
+ifeq ($(OS_ARCH),WINNT)
+ifndef MOZ_NO_ACTIVEX_SUPPORT
+tier_app_dirs += \
+		embedding/browser/activex/src/control \
+		embedding/browser/activex/src/control_kicker \
+		$(NULL)
+endif # MOZ_NO_ACTIVEX_SUPPORT
+endif # WINNT
+endif # LIBXUL_SDK
+
+# winembed, mfcembed
+ifeq ($(OS_ARCH),WINNT)
+ifneq (,$(ENABLE_TESTS)$(MOZILLA_OFFICIAL))
+tier_app_dirs += embedding/tests
+endif
+endif
+
+# os2embed
+ifeq ($(OS_ARCH),OS2)
+ifdef ENABLE_TESTS
+tier_app_dirs += embedding/tests
+endif
+endif
+
+ifdef MOZ_JAVAXPCOM
+tier_app_dirs += extensions/java
+endif
+
+tier_app_dirs += xulrunner
+
+installer:
+	@echo "XULRunner doesn't have an installer yet."
+	@exit 1
+
+package:
+	@$(MAKE) -C xulrunner/installer
+
+install:
+	@$(MAKE) -C xulrunner/installer install
+
+sdk:
+	@$(MAKE) -C xulrunner/installer make-sdk
