@@ -61,15 +61,17 @@
 #include "portreg.h"
 #include "secerr.h"
 #include "sslerr.h"
-#include "nsslocks.h"
 #include "pk11func.h"
 #include "xconst.h"   /* for  CERT_DecodeAltNameExtension */
 
-#ifndef NSS_3_4_CODE
-#define NSS_3_4_CODE
-#endif /* NSS_3_4_CODE */
 #include "pki.h"
 #include "pki3hack.h"
+
+SEC_ASN1_MKSUB(CERT_TimeChoiceTemplate)
+SEC_ASN1_MKSUB(SECOID_AlgorithmIDTemplate)
+SEC_ASN1_MKSUB(SEC_BitStringTemplate)
+SEC_ASN1_MKSUB(SEC_IntegerTemplate)
+SEC_ASN1_MKSUB(SEC_SkipTemplate)
 
 /*
  * Certificate database handling code
@@ -92,18 +94,37 @@ const SEC_ASN1Template CERT_SequenceOfCertExtensionTemplate[] = {
     { SEC_ASN1_SEQUENCE_OF, 0, CERT_CertExtensionTemplate }
 };
 
+const SEC_ASN1Template CERT_TimeChoiceTemplate[] = {
+  { SEC_ASN1_CHOICE, offsetof(SECItem, type), 0, sizeof(SECItem) },
+  { SEC_ASN1_UTC_TIME, 0, 0, siUTCTime },
+  { SEC_ASN1_GENERALIZED_TIME, 0, 0, siGeneralizedTime },
+  { 0 }
+};
+
+const SEC_ASN1Template CERT_ValidityTemplate[] = {
+    { SEC_ASN1_SEQUENCE,
+	  0, NULL, sizeof(CERTValidity) },
+    { SEC_ASN1_INLINE | SEC_ASN1_XTRN,
+          offsetof(CERTValidity,notBefore),
+          SEC_ASN1_SUB(CERT_TimeChoiceTemplate), 0 },
+    { SEC_ASN1_INLINE | SEC_ASN1_XTRN,
+          offsetof(CERTValidity,notAfter),
+          SEC_ASN1_SUB(CERT_TimeChoiceTemplate), 0 },
+    { 0 }
+};
+
 const SEC_ASN1Template CERT_CertificateTemplate[] = {
     { SEC_ASN1_SEQUENCE,
       0, NULL, sizeof(CERTCertificate) },
     { SEC_ASN1_EXPLICIT | SEC_ASN1_OPTIONAL | SEC_ASN1_CONSTRUCTED | 
-	  SEC_ASN1_CONTEXT_SPECIFIC | 0, 		/* XXX DER_DEFAULT */ 
+	  SEC_ASN1_CONTEXT_SPECIFIC | SEC_ASN1_XTRN | 0, /* XXX DER_DEFAULT */ 
 	  offsetof(CERTCertificate,version),
-	  SEC_IntegerTemplate },
+	  SEC_ASN1_SUB(SEC_IntegerTemplate) },
     { SEC_ASN1_INTEGER,
 	  offsetof(CERTCertificate,serialNumber) },
-    { SEC_ASN1_INLINE,
+    { SEC_ASN1_INLINE | SEC_ASN1_XTRN,
 	  offsetof(CERTCertificate,signature),
-	  SECOID_AlgorithmIDTemplate },
+	  SEC_ASN1_SUB(SECOID_AlgorithmIDTemplate) },
     { SEC_ASN1_SAVE, 
 	  offsetof(CERTCertificate,derIssuer) },
     { SEC_ASN1_INLINE,
@@ -122,12 +143,12 @@ const SEC_ASN1Template CERT_CertificateTemplate[] = {
     { SEC_ASN1_INLINE,
 	  offsetof(CERTCertificate,subjectPublicKeyInfo),
 	  CERT_SubjectPublicKeyInfoTemplate },
-    { SEC_ASN1_OPTIONAL |  SEC_ASN1_CONTEXT_SPECIFIC | 1,
+    { SEC_ASN1_OPTIONAL |  SEC_ASN1_CONTEXT_SPECIFIC | SEC_ASN1_XTRN | 1,
 	  offsetof(CERTCertificate,issuerID),
-	  SEC_BitStringTemplate },
-    { SEC_ASN1_OPTIONAL |  SEC_ASN1_CONTEXT_SPECIFIC | 2,
+	  SEC_ASN1_SUB(SEC_BitStringTemplate) },
+    { SEC_ASN1_OPTIONAL |  SEC_ASN1_CONTEXT_SPECIFIC | SEC_ASN1_XTRN | 2,
 	  offsetof(CERTCertificate,subjectID),
-	  SEC_BitStringTemplate },
+	  SEC_ASN1_SUB(SEC_BitStringTemplate) },
     { SEC_ASN1_EXPLICIT | SEC_ASN1_OPTIONAL | SEC_ASN1_CONSTRUCTED | 
 	  SEC_ASN1_CONTEXT_SPECIFIC | 3,
 	  offsetof(CERTCertificate,extensions),
@@ -143,9 +164,9 @@ const SEC_ASN1Template SEC_SignedCertificateTemplate[] =
 	  offsetof(CERTCertificate,signatureWrap.data) },
     { SEC_ASN1_INLINE, 
 	  0, CERT_CertificateTemplate },
-    { SEC_ASN1_INLINE,
+    { SEC_ASN1_INLINE | SEC_ASN1_XTRN,
 	  offsetof(CERTCertificate,signatureWrap.signatureAlgorithm),
-	  SECOID_AlgorithmIDTemplate },
+	  SEC_ASN1_SUB(SECOID_AlgorithmIDTemplate) },
     { SEC_ASN1_BIT_STRING,
 	  offsetof(CERTCertificate,signatureWrap.signature) },
     { 0 }
@@ -158,8 +179,8 @@ const SEC_ASN1Template SEC_CertSubjectTemplate[] = {
     { SEC_ASN1_SEQUENCE,
 	  0, NULL, sizeof(SECItem) },
     { SEC_ASN1_EXPLICIT | SEC_ASN1_OPTIONAL | SEC_ASN1_CONSTRUCTED | 
-	  SEC_ASN1_CONTEXT_SPECIFIC | 0,
-	  0, SEC_SkipTemplate },	/* version */
+	  SEC_ASN1_CONTEXT_SPECIFIC | SEC_ASN1_XTRN | 0,
+	  0, SEC_ASN1_SUB(SEC_SkipTemplate) },	/* version */
     { SEC_ASN1_SKIP },		/* serial number */
     { SEC_ASN1_SKIP },		/* signature algorithm */
     { SEC_ASN1_SKIP },		/* issuer */
@@ -176,8 +197,8 @@ const SEC_ASN1Template SEC_CertIssuerTemplate[] = {
     { SEC_ASN1_SEQUENCE,
 	  0, NULL, sizeof(SECItem) },
     { SEC_ASN1_EXPLICIT | SEC_ASN1_OPTIONAL | SEC_ASN1_CONSTRUCTED | 
-	  SEC_ASN1_CONTEXT_SPECIFIC | 0,
-	  0, SEC_SkipTemplate },	/* version */
+	  SEC_ASN1_CONTEXT_SPECIFIC | SEC_ASN1_XTRN | 0,
+	  0, SEC_ASN1_SUB(SEC_SkipTemplate) },	/* version */
     { SEC_ASN1_SKIP },		/* serial number */
     { SEC_ASN1_SKIP },		/* signature algorithm */
     { SEC_ASN1_ANY, 0, NULL },		/* issuer */
@@ -191,8 +212,8 @@ const SEC_ASN1Template SEC_CertSerialNumberTemplate[] = {
     { SEC_ASN1_SEQUENCE,
 	  0, NULL, sizeof(SECItem) },
     { SEC_ASN1_EXPLICIT | SEC_ASN1_OPTIONAL | SEC_ASN1_CONSTRUCTED | 
-	  SEC_ASN1_CONTEXT_SPECIFIC | 0,
-	  0, SEC_SkipTemplate },	/* version */
+	  SEC_ASN1_CONTEXT_SPECIFIC | SEC_ASN1_XTRN | 0,
+	  0, SEC_ASN1_SUB(SEC_SkipTemplate) },	/* version */
     { SEC_ASN1_ANY, 0, NULL }, /* serial number */
     { SEC_ASN1_SKIP_REST },
     { 0 }
@@ -207,8 +228,8 @@ const SEC_ASN1Template CERT_CertKeyTemplate[] = {
     { SEC_ASN1_SEQUENCE,
 	  0, NULL, sizeof(CERTCertKey) },
     { SEC_ASN1_EXPLICIT | SEC_ASN1_OPTIONAL | SEC_ASN1_CONSTRUCTED | 
-	  SEC_ASN1_CONTEXT_SPECIFIC | 0,
-	  0, SEC_SkipTemplate },	/* version */ 
+	  SEC_ASN1_CONTEXT_SPECIFIC | SEC_ASN1_XTRN | 0,
+	  0, SEC_ASN1_SUB(SEC_SkipTemplate) },	/* version */ 
     { SEC_ASN1_INTEGER,
 	  offsetof(CERTCertKey,serialNumber) },
     { SEC_ASN1_SKIP },		/* signature algorithm */
@@ -218,6 +239,7 @@ const SEC_ASN1Template CERT_CertKeyTemplate[] = {
     { 0 }
 };
 
+SEC_ASN1_CHOOSER_IMPLEMENT(CERT_TimeChoiceTemplate)
 SEC_ASN1_CHOOSER_IMPLEMENT(CERT_CertificateTemplate)
 SEC_ASN1_CHOOSER_IMPLEMENT(SEC_SignedCertificateTemplate)
 SEC_ASN1_CHOOSER_IMPLEMENT(CERT_SequenceOfCertExtensionTemplate)
@@ -390,27 +412,34 @@ loser:
  * DER certificate.
  */
 SECStatus
-CERT_KeyFromDERCert(PRArenaPool *arena, SECItem *derCert, SECItem *key)
+CERT_KeyFromDERCert(PRArenaPool *reqArena, SECItem *derCert, SECItem *key)
 {
     int rv;
     CERTSignedData sd;
     CERTCertKey certkey;
 
+    if (!reqArena) {
+        PORT_SetError(SEC_ERROR_INVALID_ARGS);
+        return SECFailure;
+    }
+
     PORT_Memset(&sd, 0, sizeof(CERTSignedData));
-    rv = SEC_ASN1DecodeItem(arena, &sd, CERT_SignedDataTemplate, derCert);
+    rv = SEC_QuickDERDecodeItem(reqArena, &sd, CERT_SignedDataTemplate,
+                                derCert);
     
     if ( rv ) {
 	goto loser;
     }
     
     PORT_Memset(&certkey, 0, sizeof(CERTCertKey));
-    rv = SEC_ASN1DecodeItem(arena, &certkey, CERT_CertKeyTemplate, &sd.data);
+    rv = SEC_QuickDERDecodeItem(reqArena, &certkey, CERT_CertKeyTemplate,
+                                &sd.data);
 
     if ( rv ) {
 	goto loser;
     }
 
-    return(CERT_KeyFromIssuerAndSN(arena, &certkey.derIssuer,
+    return(CERT_KeyFromIssuerAndSN(reqArena, &certkey.derIssuer,
 				   &certkey.serialNumber, key));
 loser:
     return(SECFailure);
@@ -948,6 +977,61 @@ __CERT_DecodeDERCertificate(SECItem *derSignedCert, PRBool copyDER,
 }
 
 
+CERTValidity *
+CERT_CreateValidity(int64 notBefore, int64 notAfter)
+{
+    CERTValidity *v;
+    int rv;
+    PRArenaPool *arena;
+
+    if (notBefore > notAfter) {
+       PORT_SetError(SEC_ERROR_INVALID_ARGS);
+       return NULL;
+    }
+    arena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
+    
+    if ( !arena ) {
+	return(0);
+    }
+    
+    v = (CERTValidity*) PORT_ArenaZAlloc(arena, sizeof(CERTValidity));
+    if (v) {
+	v->arena = arena;
+	rv = DER_EncodeTimeChoice(arena, &v->notBefore, notBefore);
+	if (rv) goto loser;
+	rv = DER_EncodeTimeChoice(arena, &v->notAfter, notAfter);
+	if (rv) goto loser;
+    }
+    return v;
+
+  loser:
+    CERT_DestroyValidity(v);
+    return 0;
+}
+
+SECStatus
+CERT_CopyValidity(PRArenaPool *arena, CERTValidity *to, CERTValidity *from)
+{
+    SECStatus rv;
+
+    CERT_DestroyValidity(to);
+    to->arena = arena;
+    
+    rv = SECITEM_CopyItem(arena, &to->notBefore, &from->notBefore);
+    if (rv) return rv;
+    rv = SECITEM_CopyItem(arena, &to->notAfter, &from->notAfter);
+    return rv;
+}
+
+void
+CERT_DestroyValidity(CERTValidity *v)
+{
+    if (v && v->arena) {
+	PORT_FreeArena(v->arena, PR_FALSE);
+    }
+    return;
+}
+
 /*
 ** Amount of time that a certifiate is allowed good before it is actually
 ** good. This is used for pending certificates, ones that are about to be
@@ -1282,14 +1366,8 @@ CERTCertificate *
 CERT_DupCertificate(CERTCertificate *c)
 {
     if (c) {
-#ifdef NSS_CLASSIC
-	CERT_LockCertRefCount(c);
-	++c->referenceCount;
-	CERT_UnlockCertRefCount(c);
-#else
 	NSSCertificate *tmp = STAN_GetNSSCertificate(c);
 	nssCertificate_AddRef(tmp);
-#endif
     }
     return c;
 }
@@ -1516,6 +1594,222 @@ finish:
     return rv;
 }
 
+/*
+ * If found:
+ *   - subAltName contains the extension (caller must free)
+ *   - return value is the decoded namelist (allocated off arena)
+ * if not found, or if failure to decode:
+ *   - return value is NULL
+ */
+CERTGeneralName *
+cert_GetSubjectAltNameList(CERTCertificate *cert,
+                           PRArenaPool *arena)
+{
+    CERTGeneralName * nameList       = NULL;
+    SECStatus         rv             = SECFailure;
+    SECItem           subAltName;
+
+    if (!cert || !arena)
+      return NULL;
+
+    subAltName.data = NULL;
+
+    rv = CERT_FindCertExtension(cert, SEC_OID_X509_SUBJECT_ALT_NAME, 
+                                &subAltName);
+    if (rv != SECSuccess)
+      return NULL;
+
+    nameList = CERT_DecodeAltNameExtension(arena, &subAltName);
+    SECITEM_FreeItem(&subAltName, PR_FALSE);
+    return nameList;
+}
+
+PRUint32
+cert_CountDNSPatterns(CERTGeneralName *firstName)
+{
+    CERTGeneralName * current;
+    PRUint32 count = 0;
+
+    if (!firstName)
+      return 0;
+
+    current = firstName;
+    do {
+        switch (current->type) {
+        case certDNSName:
+        case certIPAddress:
+            ++count;
+            break;
+        default:
+            break;
+        }
+        current = CERT_GetNextGeneralName(current);
+    } while (current != firstName);
+
+    return count;
+}
+
+#ifndef INET6_ADDRSTRLEN
+#define INET6_ADDRSTRLEN 46
+#endif
+
+/* will fill nickNames, 
+ * will allocate all data from nickNames->arena,
+ * numberOfGeneralNames should have been obtained from cert_CountDNSPatterns,
+ * will ensure the numberOfGeneralNames matches the number of output entries.
+ */
+SECStatus
+cert_GetDNSPatternsFromGeneralNames(CERTGeneralName *firstName,
+                                    PRUint32 numberOfGeneralNames, 
+                                    CERTCertNicknames *nickNames)
+{
+    CERTGeneralName *currentInput;
+    char **currentOutput;
+
+    if (!firstName || !nickNames || !numberOfGeneralNames)
+      return SECFailure;
+
+    nickNames->numnicknames = numberOfGeneralNames;
+    nickNames->nicknames = PORT_ArenaAlloc(nickNames->arena,
+                                       sizeof(char *) * numberOfGeneralNames);
+    if (!nickNames->nicknames)
+      return SECFailure;
+
+    currentInput = firstName;
+    currentOutput = nickNames->nicknames;
+    do {
+        char *cn = NULL;
+        char ipbuf[INET6_ADDRSTRLEN];
+        PRNetAddr addr;
+
+        if (numberOfGeneralNames < 1) {
+          /* internal consistency error */
+          return SECFailure;
+        }
+
+        switch (currentInput->type) {
+        case certDNSName:
+            /* DNS name currentInput->name.other.data is not null terminated.
+            ** so must copy it.  
+            */
+            cn = (char *)PORT_ArenaAlloc(nickNames->arena, 
+                                         currentInput->name.other.len + 1);
+            if (!cn)
+              return SECFailure;
+            PORT_Memcpy(cn, currentInput->name.other.data, 
+                            currentInput->name.other.len);
+            cn[currentInput->name.other.len + 1] = 0;
+            break;
+        case certIPAddress:
+            if (currentInput->name.other.len == 4) {
+              addr.inet.family = PR_AF_INET;
+              memcpy(&addr.inet.ip, currentInput->name.other.data, 
+                                    currentInput->name.other.len);
+            } else if (currentInput->name.other.len == 16) {
+              addr.ipv6.family = PR_AF_INET6;
+              memcpy(&addr.ipv6.ip, currentInput->name.other.data, 
+                                    currentInput->name.other.len);
+            }
+            if (PR_NetAddrToString(&addr, ipbuf, sizeof(ipbuf) == PR_FAILURE))
+              return SECFailure;
+            cn = PORT_ArenaStrdup(nickNames->arena, ipbuf);
+            if (!cn)
+              return SECFailure;
+            break;
+        default:
+            break;
+        }
+        if (cn) {
+          *currentOutput = cn;
+          nickNames->totallen += PORT_Strlen(cn);
+          ++currentOutput;
+          --numberOfGeneralNames;
+        }
+        currentInput = CERT_GetNextGeneralName(currentInput);
+    } while (currentInput != firstName);
+
+    return (numberOfGeneralNames == 0) ? SECSuccess : SECFailure;
+}
+
+/*
+ * Collect all valid DNS names from the given cert.
+ * The output arena will reference some temporaray data,
+ * but this saves us from dealing with two arenas.
+ * The caller may free all data by freeing CERTCertNicknames->arena.
+ */
+CERTCertNicknames *
+CERT_GetValidDNSPatternsFromCert(CERTCertificate *cert)
+{
+    CERTGeneralName *generalNames;
+    CERTCertNicknames *nickNames;
+    PRArenaPool *arena;
+    char *singleName;
+    
+    arena = PORT_NewArena(DER_DEFAULT_CHUNKSIZE);
+    if (!arena) {
+        return NULL;
+    }
+    
+    nickNames = PORT_ArenaAlloc(arena, sizeof(CERTCertNicknames));
+    if (!nickNames) {
+      PORT_FreeArena(arena, PR_FALSE);
+      return NULL;
+    }
+
+    /* init the structure */
+    nickNames->arena = arena;
+    nickNames->head = NULL;
+    nickNames->numnicknames = 0;
+    nickNames->nicknames = NULL;
+    nickNames->totallen = 0;
+
+    generalNames = cert_GetSubjectAltNameList(cert, arena);
+    if (generalNames) {
+      SECStatus rv_getnames = SECFailure; 
+      PRUint32 numNames = cert_CountDNSPatterns(generalNames);
+
+      if (numNames) {
+        rv_getnames = cert_GetDNSPatternsFromGeneralNames(generalNames, 
+                                                          numNames, nickNames);
+      }
+
+      /* if there were names, we'll exit now, either with success or failure */
+      if (numNames) {
+        if (rv_getnames == SECSuccess) {
+          return nickNames;
+        }
+
+        /* failure to produce output */
+        PORT_FreeArena(arena, PR_FALSE);
+        return NULL;
+      }
+    }
+
+    /* no SAN extension or no names found in extension */
+    /* now try the NS cert name extension first, then the common name */
+    singleName = 
+      CERT_FindNSStringExtension(cert, SEC_OID_NS_CERT_EXT_SSL_SERVER_NAME);
+    if (!singleName) {
+      singleName = CERT_GetCommonName(&cert->subject);
+    }
+
+    if (singleName) {
+      nickNames->numnicknames = 1;
+      nickNames->nicknames = PORT_ArenaAlloc(arena, sizeof(char *));
+      if (nickNames->nicknames) {
+        *nickNames->nicknames = PORT_ArenaStrdup(arena, singleName);
+      }
+      PORT_Free(singleName);
+
+      /* Did we allocate both the buffer of pointers and the string? */
+      if (nickNames->nicknames && *nickNames->nicknames) {
+        return nickNames;
+      }
+    }
+
+    PORT_FreeArena(arena, PR_FALSE);
+    return NULL;
+}
 
 /* Make sure that the name of the host we are connecting to matches the
  * name that is incoded in the common-name component of the certificate
@@ -2029,7 +2323,7 @@ CERT_DestroyCertArray(CERTCertificate **certs, unsigned int ncerts)
 }
 
 char *
-CERT_FixupEmailAddr(char *emailAddr)
+CERT_FixupEmailAddr(const char *emailAddr)
 {
     char *retaddr;
     char *str;
@@ -2179,127 +2473,6 @@ CERT_EncodeTrustString(CERTCertTrust *trust)
     return(retstr);
 }
 
-/* in 3.4, this will only set trust */
-SECStatus
-CERT_SaveImportedCert(CERTCertificate *cert, SECCertUsage usage,
-		      PRBool caOnly, char *nickname)
-{
-    SECStatus rv;
-    PRBool saveit;
-    CERTCertTrust trust;
-    PRBool isCA;
-    unsigned int certtype;
-    
-    isCA = CERT_IsCACert(cert, NULL);
-    if ( caOnly && ( !isCA ) ) {
-	return(SECSuccess);
-    }
-    /* In NSS 3.4, certs are given zero trust upon import.  However, this
-    * function needs to set up default CA trust (CERTDB_VALID_CA), or
-    * PKCS#12 imported certs will not show up correctly.  In the case of a
-    * CA cert with zero trust, continue with this function.  But if the cert
-    * does already have some trust bits, exit and do not change them.
-    */
-    if (isCA && cert->trust && 
-        (cert->trust->sslFlags |
-         cert->trust->emailFlags |
-         cert->trust->objectSigningFlags)) {
-	return(SECSuccess);
-    }
-
-    saveit = PR_TRUE;
-    
-    PORT_Memset((void *)&trust, 0, sizeof(trust));
-
-    certtype = cert->nsCertType;
-
-    /* if no CA bits in cert type, then set all CA bits */
-    if ( isCA && ( ! ( certtype & NS_CERT_TYPE_CA ) ) ) {
-	certtype |= NS_CERT_TYPE_CA;
-    }
-
-    /* if no app bits in cert type, then set all app bits */
-    if ( ( !isCA ) && ( ! ( certtype & NS_CERT_TYPE_APP ) ) ) {
-	certtype |= NS_CERT_TYPE_APP;
-    }
-
-    switch ( usage ) {
-      case certUsageEmailSigner:
-      case certUsageEmailRecipient:
-	if ( isCA ) {
-	    if ( certtype & NS_CERT_TYPE_EMAIL_CA ) {
-		trust.emailFlags = CERTDB_VALID_CA;
-	    }
-	} else {
-	    if ( !cert->emailAddr || !cert->emailAddr[0] ) {
-		saveit = PR_FALSE;
-	    }
-	    
-	    if ( certtype & NS_CERT_TYPE_EMAIL ) {
-		trust.emailFlags = CERTDB_VALID_PEER;
-		if ( ! ( cert->rawKeyUsage & KU_KEY_ENCIPHERMENT ) ) {
-		    /* don't save it if KeyEncipherment is not allowed */
-		    saveit = PR_FALSE;
-		}
-	    }
-	}
-	break;
-      case certUsageUserCertImport:
-	if ( isCA ) {
-	    if ( certtype & NS_CERT_TYPE_SSL_CA ) {
-		trust.sslFlags = CERTDB_VALID_CA;
-	    }
-	    
-	    if ( certtype & NS_CERT_TYPE_EMAIL_CA ) {
-		trust.emailFlags = CERTDB_VALID_CA;
-	    }
-	    
-	    if ( certtype & NS_CERT_TYPE_OBJECT_SIGNING_CA ) {
-		trust.objectSigningFlags = CERTDB_VALID_CA;
-	    }
-	    
-	} else {
-	    if ( certtype & NS_CERT_TYPE_SSL_CLIENT ) {
-		trust.sslFlags = CERTDB_VALID_PEER;
-	    }
-	    
-	    if ( certtype & NS_CERT_TYPE_EMAIL ) {
-		trust.emailFlags = CERTDB_VALID_PEER;
-	    }
-	    
-	    if ( certtype & NS_CERT_TYPE_OBJECT_SIGNING ) {
-		trust.objectSigningFlags = CERTDB_VALID_PEER;
-	    }
-	}
-	break;
-      case certUsageAnyCA:
-	trust.sslFlags = CERTDB_VALID_CA;
-	break;
-      case certUsageSSLCA:
-	trust.sslFlags = CERTDB_VALID_CA | 
-			CERTDB_TRUSTED_CA | CERTDB_TRUSTED_CLIENT_CA;
-	break;
-      default:	/* XXX added to quiet warnings; no other cases needed? */
-	break;
-    }
-
-    if ( saveit ) {
-	rv = CERT_ChangeCertTrust(cert->dbhandle, cert, &trust);
-	if ( rv != SECSuccess ) {
-	    goto loser;
-	}
-    }
-
-    rv = SECSuccess;
-    goto done;
-
-loser:
-    rv = SECFailure;
-done:
-
-    return(rv);
-}
-
 SECStatus
 CERT_ImportCerts(CERTCertDBHandle *certdb, SECCertUsage usage,
 		 unsigned int ncerts, SECItem **derCerts,
@@ -2352,9 +2525,6 @@ CERT_ImportCerts(CERTCertDBHandle *certdb, SECCertUsage usage,
 		} else {
 		    rv = CERT_AddTempCertToPerm(certs[i],
                                                 nickname?nickname:canickname, NULL);
-		}
-		if (rv == SECSuccess) {
-		    CERT_SaveImportedCert(certs[i], usage, caOnly, NULL);
 		}
 
                 if (PR_TRUE == freeNickname) {
@@ -2740,11 +2910,7 @@ static PZLock *certRefCountLock = NULL;
 void
 CERT_LockCertRefCount(CERTCertificate *cert)
 {
-    if ( certRefCountLock == NULL ) {
-	nss_InitLock(&certRefCountLock, nssILockRefLock);
-	PORT_Assert(certRefCountLock != NULL);
-    }
-    
+    PORT_Assert(certRefCountLock != NULL);
     PZ_Lock(certRefCountLock);
     return;
 }
@@ -2777,13 +2943,55 @@ static PZLock *certTrustLock = NULL;
 void
 CERT_LockCertTrust(CERTCertificate *cert)
 {
-    if ( certTrustLock == NULL ) {
-	nss_InitLock(&certTrustLock, nssILockCertDB);
-	PORT_Assert(certTrustLock != NULL);
-    }
-    
+    PORT_Assert(certTrustLock != NULL);
     PZ_Lock(certTrustLock);
     return;
+}
+
+SECStatus
+cert_InitLocks(void)
+{
+    if ( certRefCountLock == NULL ) {
+        certRefCountLock = PZ_NewLock(nssILockRefLock);
+        PORT_Assert(certRefCountLock != NULL);
+        if (!certRefCountLock) {
+            return SECFailure;
+        }
+    }
+
+    if ( certTrustLock == NULL ) {
+        certTrustLock = PZ_NewLock(nssILockCertDB);
+        PORT_Assert(certTrustLock != NULL);
+        if (!certTrustLock) {
+            PZ_DestroyLock(certRefCountLock);
+            return SECFailure;
+        }
+    }    
+
+    return SECSuccess;
+}
+
+SECStatus
+cert_DestroyLocks(void)
+{
+    SECStatus rv = SECSuccess;
+
+    PORT_Assert(certRefCountLock != NULL);
+    if (certRefCountLock) {
+        PZ_DestroyLock(certRefCountLock);
+        certRefCountLock = NULL;
+    } else {
+        rv = SECFailure;
+    }
+
+    PORT_Assert(certTrustLock != NULL);
+    if (certTrustLock) {
+        PZ_DestroyLock(certTrustLock);
+        certTrustLock = NULL;
+    } else {
+        rv = SECFailure;
+    }
+    return rv;
 }
 
 /*
