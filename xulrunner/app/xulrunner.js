@@ -42,7 +42,6 @@
 pref("general.useragent.locale", "@AB_CD@");
 pref("font.language.group", "chrome://global/locale/intl.properties");
 pref("intl.accept_languages", "chrome://global/locale/intl.properties");
-pref("intl.collationOption",  "chrome://global-platform/locale/intl.properties");
 pref("intl.charsetmenu.browser.static", "chrome://global/locale/intl.properties");
 pref("intl.charsetmenu.browser.more1",  "chrome://global/locale/intl.properties");
 pref("intl.charsetmenu.browser.more2",  "chrome://global/locale/intl.properties");
@@ -60,3 +59,13 @@ pref("xpinstall.dialog.progress.skin", "chrome://mozapps/content/extensions/exte
 pref("xpinstall.dialog.progress.type.chrome", "Extension:Manager");
 pref("xpinstall.dialog.progress.type.skin", "Extension:Manager");
 pref("xpinstall.enabled", true);
+#ifdef XP_WIN
+pref("browser.preferences.instantApply", false);
+#else
+pref("browser.preferences.instantApply", true);
+#endif
+#ifdef XP_MACOSX
+pref("browser.preferences.animateFadeIn", true);
+#else
+pref("browser.preferences.animateFadeIn", false);
+#endif
