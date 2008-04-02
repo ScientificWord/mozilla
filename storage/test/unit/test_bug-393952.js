@@ -1,4 +1,3 @@
-/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -12,16 +11,17 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
- * The Original Code is Oracle Corporation code.
+ * The Original Code is Storage Test Code.
  *
  * The Initial Developer of the Original Code is
- *  Oracle Corporation
- * Portions created by the Initial Developer are Copyright (C) 2004
+ *   Mozilla Corporation.
+ * Portions created by the Initial Developer are Copyright (C) 2007
  * the Initial Developer. All Rights Reserved.
  *
+ * This code is based off of like.test from the sqlite code
+ *
  * Contributor(s):
- *   Vladimir Vukicevic <vladimir.vukicevic@oracle.com>
- *   Lev Serebryakov <lev@serebryakov.spb.ru>
+ *   Seth Spitzer <sspitzer@mozilla.org> (Original Author)
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -37,37 +37,37 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#include "nsISupports.idl"
+// Testcase for bug 393952:  crash when I try to VACUUM and one of the tables
+// has a UNIQUE text column.   StorageUnicodeFunctions::likeFunction() 
+// needs to handle null aArgv[0] and aArgv[1]
 
-interface mozIStorageConnection;
-interface mozIStorageValueArray;
-interface nsIArray;
-interface nsIVariant;
+function setup()
+{
+  getOpenedDatabase().createTable("t1", "x TEXT UNIQUE");
 
-/**
- * mozIStorageFunction is to be implemented by storage consumers that
- * wish to receive callbacks during the request execution.
- *
- * SQL can apply functions to values from tables. Examples of
- * such functions are MIN(a1,a2) or SQRT(num). Many functions are
- * implemented in SQL engine.
- *
- * This interface allows consumers to implement their own,
- * problem-specific functions.
- * These functions can be called from triggers, too.
- *
- */
-[scriptable, uuid(9ff02465-21cb-49f3-b975-7d5b38ceec73)]
-interface mozIStorageFunction : nsISupports {
-  /**
-   * onFunctionCall is called when execution of a custom
-   * function should occur.
-   * 
-   * @param aNumArguments         The number of arguments
-   * @param aFunctionArguments    The arguments passed in to the function
-   *
-   * @returns any value as Variant type.
-   */
+  var stmt = createStatement("INSERT INTO t1 (x) VALUES ('a')");
+  stmt.execute();
+  stmt.reset();
+  stmt.finalize();
+}
 
-  nsIVariant onFunctionCall(in mozIStorageValueArray aFunctionArguments);
-};
+function test_vacuum()
+{
+  var stmt = createStatement("VACUUM;");
+  stmt.executeStep();
+  stmt.reset();
+  stmt.finalize();
+}
+
+var tests = [test_vacuum];
+
+function run_test()
+{
+  setup();
+
+  for (var i = 0; i < tests.length; i++)
+    tests[i]();
+    
+  cleanup();
+}
+

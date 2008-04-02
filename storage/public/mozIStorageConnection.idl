@@ -22,6 +22,8 @@
  * Contributor(s):
  *   Vladimir Vukicevic <vladimir.vukicevic@oracle.com>
  *   Brett Wilson <brettw@gmail.com>
+ *   Shawn Wilsher <me@shawnwilsher.com>
+ *   Lev Serebryakov <lev@serebryakov.spb.ru>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -39,7 +41,9 @@
 
 #include "nsISupports.idl"
 
+interface mozIStorageAggregateFunction;
 interface mozIStorageFunction;
+interface mozIStorageProgressHandler;
 interface mozIStorageStatement;
 interface nsIFile;
 
@@ -50,14 +54,23 @@ interface nsIFile;
  * creating prepared statements, executing SQL, and examining database
  * errors.
  */
-[scriptable, uuid(77015f88-bfc2-4669-b1c3-cc19fb07cd4e)]
+[scriptable, uuid(ffddc17b-cec3-492c-b13e-d5393c4b1595)]
 interface mozIStorageConnection : nsISupports {
   /*
    * Initialization and status
    */
+  
+  /**
+   * Closes a database connection.  C++ callers should simply set the database
+   * variable to NULL.
+   */
+   void close();
 
   /**
-   * whether the database is open or not
+   * Indicates if the connection is open and ready to use.  This will be false
+   * if the connection failed to open, or it has been closed.  It is strongly
+   * recommended that the database be backed up before removing the file by
+   * calling backupDB.
    */
   readonly attribute boolean connectionReady;
 
@@ -84,6 +97,12 @@ interface mozIStorageConnection : nsISupports {
    */
   readonly attribute AUTF8String lastErrorString;
 
+  /**
+   * The schema version of the database.  This should not be used until the 
+   * database is ready.  The schema will be reported as zero if it is not set.
+   */
+  attribute long schemaVersion;
+
   /*
    * Statement creation
    */
@@ -91,7 +110,8 @@ interface mozIStorageConnection : nsISupports {
   /**
    * Create a mozIStorageStatement for the given SQL expression.  The
    * expression may use ? to indicate sequential numbered arguments,
-   * or :name and $var to indicate named arguments.
+   * ?1, ?2 etc. to indicate specific numbered arguments or :name and 
+   * $var to indicate named arguments.
    *
    * @param aSQLStatement  The SQL statement to execute
    *
@@ -189,24 +209,73 @@ interface mozIStorageConnection : nsISupports {
 
   /**
    * Create a new SQLite function
+   *
+   * @param aFunctionName  The name of function to create, as seen in SQL.
+   * @param aNumArguments  The number of arguments the function takes. Pass
+   *                       -1 for variable-argument functions.
+   * @param aFunction      The instance of mozIStorageFunction, which implements
+   *                       the function in question.
    */
-  void createFunction(in string aFunctionName,
+  void createFunction(in AUTF8String aFunctionName,
                       in long aNumArguments,
                       in mozIStorageFunction aFunction);
 
   /**
-   * This is used to preload the database cache. It loads pages from the
-   * start of the database file until the memory cache (specified by
-   * "PRAGMA cache_size=") is full or the entire file is read.
+   * Create a new SQLite aggregate function
    *
-   * The cache MUST be active on the database for this to work. This means
-   * that you must have a transaction open on the connection, or have a
-   * transaction open on another connection that shares the same pager cache.
-   * This cached data will go away when the transaction is closed.
-   *
-   * This preload operation can dramatically speed up read operations because
-   * the data is loaded as one large block. Normally, pages are read in on
-   * demand, which can cause many disk seeks.
+   * @param aFunctionName  The name of aggregate function to create, as seen
+   *                       in SQL.
+   * @param aNumArguments  The number of arguments the function takes. Pass
+   *                       -1 for variable-argument functions.
+   * @param aFunction      The instance of mozIStorageAggreagteFunction,
+   *                       which implements the function in question.
    */
-  void preload();
+  void createAggregateFunction(in AUTF8String aFunctionName,
+                               in long aNumArguments,
+                               in mozIStorageAggregateFunction aFunction);
+  /**
+   * Delete custom SQLite function (simple or aggregate one)
+   *
+   * @param aFunctionName  The name of function to remove.
+   */
+  void removeFunction(in AUTF8String aFunctionName);
+
+  /**
+   * Sets a progress handler. Only one handler can be registered at a time.
+   * If you need more than one, you need to chain them yourself.
+   *
+   * @param aGranularity   The number of SQL virtual machine steps between
+   *                       progress handler callbacks.
+   * @param aHandler       The instance of mozIStorageProgressHandler.
+   *
+   * @return previous registered handler.
+   */
+  mozIStorageProgressHandler setProgressHandler(in PRInt32 aGranularity,
+                                                in mozIStorageProgressHandler aHandler);
+
+  /**
+   * Remove a progress handler.
+   *
+   * @return previous registered handler.
+   */
+  mozIStorageProgressHandler removeProgressHandler();
+
+  /*
+   * Utilities
+   */
+
+  /**
+   * Copies the current database file to the specified parent directory with the
+   * specified file name.  If the parent directory is not specified, it places
+   * the backup in the same directory as the current file.  This function
+   * ensures that the file being created is unique.
+   *
+   * @param aFileName
+   *        The name of the new file to create.
+   * @param [optional] aParentDirectory
+   *        The directory you'd like the file to be placed.
+   * @return The nsIFile representing the backup file.
+   */
+  nsIFile backupDB(in AString aFileName,
+                   [optional] in nsIFile aParentDirectory);
 };
