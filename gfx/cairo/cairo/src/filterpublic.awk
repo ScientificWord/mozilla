@@ -14,3 +14,6 @@ BEGIN { state = "public"; }
 			}
 		}
 
+# catch some one-off things
+END {
+}

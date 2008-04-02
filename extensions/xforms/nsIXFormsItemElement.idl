@@ -43,7 +43,7 @@
 /**
  * Interface implemented by the item element.
  */
-[scriptable, uuid(ec8d3556-8ed2-4143-88d1-6b7b2c8b0b3b)]
+[scriptable, uuid(0acdfa92-0b0a-4c7a-bcd8-7256ec04673c)]
 interface nsIXFormsItemElement : nsISupports
 {
   /**
@@ -64,13 +64,6 @@ interface nsIXFormsItemElement : nsISupports
   void setActive(in boolean aActive);
 
   /**
-   * This is called by the \<label\> child element whenever it is refreshed.
-   * This information will be propagated by the \<item\> to the nearest
-   * \<select1\> element, which can then refresh its UI.
-   */
-  void labelRefreshed();
-
-  /**
    * Indicates whether the item element contains a value child or a copy
    * child.  We'll assume that if the item is NOT a copy item, then it must
    * be a value item.  Which means that it must contain a XForms value element
@@ -83,4 +76,14 @@ interface nsIXFormsItemElement : nsISupports
    */
   readonly attribute nsIDOMNode copyNode;
 
+  /**
+   * Compare given DOM node and copy node (i.e. node that the contained copy
+   * element is bound to.
+   *
+   * @param nsIDOMNode aNode - given DOM node to compare with copy node
+   *
+   * @return boolean - return true if given node equals in copy node
+   */
+  boolean copyNodeEquals(in nsIDOMNode aNode);
 };
+

@@ -43,7 +43,6 @@
 #include "nsIFontMetrics.h"
 #include "nsFont.h"
 #include "nsString.h"
-#include "nsUnitConversion.h"
 #include "nsIDeviceContext.h"
 #include "nsCRT.h"
 #include "nsIAtom.h"
@@ -83,8 +82,7 @@ public:
   NS_IMETHOD  GetLangGroup(nsIAtom** aLangGroup);
   NS_IMETHOD  GetFontHandle(nsFontHandle& aHandle);
   NS_IMETHOD  GetSpaceWidth(nscoord& aSpaceCharWidth);
-  // No known string length limits on Mac
-  virtual PRInt32 GetMaxStringLength() { return PR_INT32_MAX; }
+  virtual PRInt32 GetMaxStringLength();
 
   nsUnicodeFontMappingMac* GetUnicodeFontMapping();
 	
@@ -104,6 +102,7 @@ protected:
   nscoord           mAveCharWidth;
   nscoord           mSpaceWidth;
   nscoord           mXHeight;
+  PRInt32           mMaxStringLength;
   nsCOMPtr<nsIAtom> mLangGroup;
   nsIDeviceContext  *mContext;
 };

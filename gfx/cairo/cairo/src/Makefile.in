@@ -53,6 +53,19 @@ MODULE          = cairo
 LIBRARY_NAME    = mozcairo
 LIBXUL_LIBRARY = 1
 
+ifdef GNU_CC
+MODULE_OPTIMIZE_FLAGS = -O2
+else
+ifeq ($(OS_ARCH),SunOS)
+MODULE_OPTIMIZE_FLAGS = -xO5
+endif
+ifeq ($(OS_ARCH),WINNT)
+# FIXME: bug 413019
+OS_COMPILE_CFLAGS += -GL-
+MODULE_OPTIMIZE_FLAGS = -O2
+endif
+endif
+
 REQUIRES        = $(PNG_REQUIRES) \
                   $(ZLIB_REQUIRES) \
                   libpixman \
@@ -63,13 +76,17 @@ CSRCS   = \
         cairo-analysis-surface.c \
         cairo-arc.c \
         cairo-array.c \
+	cairo-atomic.c \
+        cairo-bentley-ottmann.c \
         cairo-cache.c \
         cairo-clip.c \
         cairo-color.c \
         cairo-debug.c \
+        cairo-deflate-stream.c \
         cairo-fixed.c \
-        cairo-font.c \
+	cairo-font-face.c \
         cairo-font-options.c \
+        cairo-freelist.c \
         cairo-gstate.c \
         cairo-hash.c \
         cairo-hull.c \
@@ -77,20 +94,23 @@ CSRCS   = \
         cairo-lzw.c \
         cairo-matrix.c \
         cairo-meta-surface.c \
-        cairo-operator.c \
+	cairo-misc.c \
+	cairo-mutex.c \
         cairo-output-stream.c \
         cairo-paginated-surface.c \
         cairo-path.c \
         cairo-path-bounds.c \
-        cairo-path-data.c \
         cairo-path-fill.c \
+        cairo-path-fixed.c \
         cairo-path-stroke.c \
         cairo-pattern.c \
         cairo-pen.c \
         cairo-polygon.c \
+        cairo-rectangle.c \
         cairo-region.c \
         cairo-scaled-font.c \
         cairo-scaled-font-subsets.c \
+        cairo-skiplist.c \
         cairo-slope.c \
         cairo-spline.c \
         cairo-stroke-style.c \
@@ -101,28 +121,51 @@ CSRCS   = \
         cairo-wideint.c \
         $(NULL)
 
-EXPORTS = cairo.h cairo-features.h cairo-platform.h cairo-rename.h
+EXPORTS = cairo.h cairo-features.h cairo-platform.h cairo-deprecated.h cairo-rename.h
 
+# cairo-type1-subset.c should be here, but it's only supported on freetype platforms
+
+PSPDF_BASE_CSRCS = \
+	cairo-base85-stream.c \
+	cairo-type1-fallback.c \
+	cairo-truetype-subset.c \
+	cairo-cff-subset.c \
+	$(NULL)
+
+PDF_CSRCS = \
+	cairo-pdf-surface.c \
+	cairo-pdf-operators.c \
+	$(NULL)
+
+PS_CSRCS = cairo-ps-surface.c
+
+PDF_EXPORTS = cairo-pdf.h
+PS_EXPORTS = cairo-ps.h
 
 ifeq ($(MOZ_WIDGET_TOOLKIT),windows)
-CSRCS   += cairo-win32-font.c \
-           cairo-win32-surface.c
+CSRCS	+= cairo-win32.c \
+	   cairo-win32-font.c \
+	   cairo-win32-surface.c \
+	   cairo-win32-printing-surface.c
 EXPORTS += cairo-win32.h
+CSRCS   += $(PSPDF_BASE_CSRCS) $(PDF_CSRCS)
+EXPORTS += $(PDF_EXPORTS)
 endif
 
 ifeq ($(MOZ_WIDGET_TOOLKIT),os2)
+DEFINES += -DOS2_USE_PLATFORM_ALLOC
+ifdef MOZ_OS2_HIGH_MEMORY
+DEFINES += -DOS2_HIGH_MEMORY
+endif
 CSRCS   += cairo-os2-surface.c
 EXPORTS += cairo-os2.h cairo-os2-private.h
+CSRCS   += $(PSPDF_BASE_CSRCS) $(PDF_CSRCS)
+EXPORTS += $(PDF_EXPORTS)
 endif
 
 ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
-CSRCS   += cairo-quartz-surface.c cairo-atsui-font.c
+CSRCS   += cairo-quartz-surface.c cairo-quartz-image-surface.c cairo-atsui-font.c
 EXPORTS += cairo-quartz.h cairo-atsui.h
-
-ifdef MOZ_ENABLE_CAIRO_GFX
-CSRCS   += cairo-quartz2-surface.c
-EXPORTS += cairo-quartz2.h
-endif
 endif
 
 ifeq ($(MOZ_WIDGET_TOOLKIT),beos)
@@ -131,11 +174,8 @@ EXPORTS += cairo-beos.h
 endif
 
 ifeq ($(MOZ_WIDGET_TOOLKIT),gtk2)
-CSRCS   += cairo-font-subset.c \
-           cairo-base85-stream.c \
-           cairo-pdf-surface.c \
-           cairo-ps-surface.c
-EXPORTS += cairo-ps.h cairo-pdf.h
+CSRCS   += $(PSPDF_BASE_CSRCS) $(PDF_CSRCS) $(PS_CSRCS)
+EXPORTS += $(PDF_EXPORTS) $(PS_EXPORTS)
 endif
 
 ifdef BUILD_CAIRO_SVG
@@ -145,12 +185,13 @@ endif
 
 ifdef MOZ_X11
 CSRCS   += cairo-xlib-surface.c \
-	   cairo-xlib-screen.c
+	   cairo-xlib-screen.c \
+	   cairo-xlib-display.c
 EXPORTS += cairo-xlib.h cairo-xlib-xrender.h
 endif
 
 ifdef MOZ_ENABLE_CAIRO_FT
-CSRCS   += cairo-ft-font.c
+CSRCS   += cairo-ft-font.c cairo-type1-subset.c
 EXPORTS += cairo-ft.h
 OS_INCLUDES += $(CAIRO_FT_CFLAGS)
 endif
@@ -170,3 +211,13 @@ FORCE_STATIC_LIB = 1
 FORCE_USE_PIC = 1
 
 include $(topsrcdir)/config/rules.mk
+
+DEFINES += -DPACKAGE_VERSION="\"moz\"" -DPACKAGE_BUGREPORT="\"http://bugzilla.mozilla.org/\""
+
+ifeq ($(MOZ_WIDGET_TOOLKIT),windows)
+DEFINES += -DCAIRO_WIN32_STATIC_BUILD
+endif
+
+ifdef MOZ_TREE_CAIRO
+DEFINES += -DMOZ_TREE_CAIRO
+endif

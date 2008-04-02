@@ -39,7 +39,21 @@
 #ifndef nsXFormsAtoms_h_
 #define nsXFormsAtoms_h_
 
-#include "nsStaticAtom.h"
+#include "nsIAtom.h"
+
+// stolen from nsStaticAtom.h.  Not frozen though, so figured I should steal.
+// Class for declaring a static list of atoms, for use with gperf
+// Keep this VERY simple
+// mString: the value of the atom - the policy is that this is only
+//          ASCII, in order to avoid unnecessary conversions if
+//          someone asks for this in unicode
+// mAtom:   a convienience pointer - if you want to store the value of
+//          the atom created by this structure somewhere, put its
+//          address here
+struct nsXFormsStaticAtom {
+    const char* mString;
+    nsIAtom ** mAtom;
+};
 
 /**
  * Class for singleton XForms nsIAtom pointers
@@ -76,10 +90,17 @@ class nsXFormsAtoms
   static NS_HIDDEN_(nsIAtom *) deferredEventListProperty;
   static NS_HIDDEN_(nsIAtom *) attrBased;
 
+  // xforms elements atoms (required for xforms utility service)
+  static NS_HIDDEN_(nsIAtom *) choices;
+  static NS_HIDDEN_(nsIAtom *) item;
+  static NS_HIDDEN_(nsIAtom *) itemset;
+  static NS_HIDDEN_(nsIAtom *) select;
+  static NS_HIDDEN_(nsIAtom *) select1;
+
   static NS_HIDDEN_(void) InitAtoms();
 
  private:
-  static NS_HIDDEN_(const nsStaticAtom) Atoms_info[];
+  static NS_HIDDEN_(const nsXFormsStaticAtom) Atoms_info[];
 };
 
 #endif

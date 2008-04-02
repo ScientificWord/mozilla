@@ -48,12 +48,11 @@
 #include "nsThebesRenderingContext.h"
 #include "nsThebesImage.h"
 #include "nsThebesRegion.h"
-#include "nsThebesBlender.h"
 #include "nsThebesFontMetrics.h"
 #include "nsThebesFontEnumerator.h"
+#include "gfxPlatform.h"
 
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsThebesFontMetrics)
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsThebesBlender)
 NS_GENERIC_FACTORY_CONSTRUCTOR(gfxImageFrame)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsThebesDeviceContext)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsThebesRenderingContext)
@@ -132,20 +131,24 @@ static const nsModuleComponentInfo components[] =
     NS_SCRIPTABLE_REGION_CID,
     "@mozilla.org/gfx/region;1",
     nsScriptableRegionConstructor },
-  { "Thebes Blender",
-    NS_BLENDER_CID,
-    "@mozilla.org/gfx/blender;1",
-    nsThebesBlenderConstructor },
   { "image frame",
     GFX_IMAGEFRAME_CID,
     "@mozilla.org/gfx/image/frame;2",
     gfxImageFrameConstructor },
 };
 
+PR_STATIC_CALLBACK(nsresult)
+nsThebesGfxModuleCtor(nsIModule *self)
+{
+    return gfxPlatform::Init();
+}
+
 PR_STATIC_CALLBACK(void)
 nsThebesGfxModuleDtor(nsIModule *self)
 {
+    nsThebesDeviceContext::Shutdown();
+    gfxPlatform::Shutdown();
 }
 
-NS_IMPL_NSGETMODULE_WITH_DTOR(nsGfxModule, components, nsThebesGfxModuleDtor)
-
+NS_IMPL_NSGETMODULE_WITH_CTOR_DTOR(nsGfxModule, components,
+                                   nsThebesGfxModuleCtor, nsThebesGfxModuleDtor)

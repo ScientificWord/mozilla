@@ -389,10 +389,10 @@ function matchObject (o, pattern, negate)
 
     function _match (o, pattern)
     {
-        if (pattern instanceof Function)
+        if (isinstance(pattern, Function))
             return pattern(o);
 
-        for (p in pattern)
+        for (var p in pattern)
         {
             var val;
                 /* nice to have, but slow as molases, allows you to match
@@ -405,7 +405,7 @@ function matchObject (o, pattern, negate)
                 */
             val = o[p];
 
-            if (pattern[p] instanceof Function)
+            if (isinstance(pattern[p], Function))
             {
                 if (!pattern[p](val))
                     return false;
@@ -424,7 +424,7 @@ function matchObject (o, pattern, negate)
 
     }
 
-    if (!(pattern instanceof Array))
+    if (!isinstance(pattern, Array))
         return Boolean (negate ^ _match(o, pattern));
 
     for (var i in pattern)
@@ -433,6 +433,22 @@ function matchObject (o, pattern, negate)
 
     return negate;
 
+}
+
+function equalsObject(o1, o2)
+{
+    for (var p in o1)
+    {
+        if (!(p in o2) || (o1[p] != o2[p]))
+            return false;
+    }
+    for (p in o2)
+    {
+        // If the property did exist in o1, the previous loop tested it:
+        if (!(p in o1))
+            return false;
+    }
+    return true;
 }
 
 function utils_lcfn(text)
@@ -474,7 +490,8 @@ function encodeChar(ch)
 
 function escapeFileName(fileName)
 {
-    return fileName.replace(/[^\w\d.,#\-_%]/g, encodeChar);
+    // Escape / \ : * ? " < > | so they don't cause trouble.
+    return fileName.replace(/[\/\\\:\*\?"<>\|]/g, encodeChar);
 }
 
 function getCommonPfx (list, lcFn)
@@ -609,11 +626,33 @@ function getContentWindow(frame)
         if (!frame || !("contentWindow" in frame))
             return false;
 
+        // The "in" operator does not detect wrappedJSObject, so don't bother.
+        if (frame.contentWindow.wrappedJSObject)
+            return frame.contentWindow.wrappedJSObject;
         return frame.contentWindow;
     }
     catch (ex)
     {
         // throws exception is contentWindow is gone
+        return null;
+    }
+}
+
+function getContentDocument(frame)
+{
+    try
+    {
+        if (!frame || !("contentDocument" in frame))
+            return false;
+
+        // The "in" operator does not detect wrappedJSObject, so don't bother.
+        if (frame.contentDocument.wrappedJSObject)
+            return frame.contentDocument.wrappedJSObject;
+        return frame.contentDocument;
+    }
+    catch (ex)
+    {
+        // throws exception is contentDocument is gone
         return null;
     }
 }
@@ -682,14 +721,26 @@ function formatDateOffset (offset, format)
     if (!format)
     {
         var ary = new Array();
-        if (days > 0)
-            ary.push (getMsg(MSG_DAYS, days));
-        if (hours > 0)
-            ary.push (getMsg(MSG_HOURS, hours));
-        if (minutes > 0)
-            ary.push (getMsg(MSG_MINUTES, minutes));
-        if (seconds > 0 || offset == 0)
-            ary.push (getMsg(MSG_SECONDS, seconds));
+
+        if (days == 1)
+            ary.push(MSG_DAY);
+        else if (days > 0)
+            ary.push(getMsg(MSG_DAYS, days));
+
+        if (hours == 1)
+            ary.push(MSG_HOUR);
+        else if (hours > 0)
+            ary.push(getMsg(MSG_HOURS, hours));
+
+        if (minutes == 1)
+            ary.push(MSG_MINUTE);
+        else if (minutes > 0)
+            ary.push(getMsg(MSG_MINUTES, minutes));
+
+        if (seconds == 1)
+            ary.push(MSG_SECOND);
+        else if (seconds > 0 || offset == 0)
+            ary.push(getMsg(MSG_SECONDS, seconds));
 
         format = ary.join(", ");
     }
@@ -1113,9 +1164,9 @@ function getHostmaskParts(hostmask)
     var rv;
     // A bit cheeky this, we try the matches here, and then branch
     // according to the ones we like.
-    var ary1 = hostmask.match(/(\S*)!(\S*)@(.*)/);
-    var ary2 = hostmask.match(/(\S*)@(.*)/);
-    var ary3 = hostmask.match(/(\S*)!(.*)/);
+    var ary1 = hostmask.match(/([^ ]*)!([^ ]*)@(.*)/);
+    var ary2 = hostmask.match(/([^ ]*)@(.*)/);
+    var ary3 = hostmask.match(/([^ ]*)!(.*)/);
     if (ary1)
         rv = { nick: ary1[1],  user: ary1[2], host: ary1[3] };
     else if (ary2)
@@ -1261,4 +1312,152 @@ function compareVersions(ver1, ver2)
     if (ver2parts.length > 0)
         return 1;
     return 0;
+}
+
+// Zero-pad Numbers (or pad with something else if you wish)
+function padNumber(num, digits, pad)
+{
+    pad = pad || "0";
+    var rv = num.toString();
+    while (rv.length < digits)
+        rv = pad + rv;
+    return rv;
+}
+
+const timestr = {
+    A: { method: "getDay" },
+    a: { method: "getDay" },
+    B: { method: "getMonth" },
+    b: { method: "getMonth" },
+    c: { replace: null },
+    D: { replace: "%m/%d/%y" },
+    d: { method: "getDate", pad: 2 },
+    e: { method: "getDate", pad: 2, padwith: " " },
+    F: { replace: "%Y-%m-$d" },
+    h: { replace: "%b" },
+    H: { method: "getHours", pad: 2 },
+    k: { method: "getHours", pad: 2, padwith: " " },
+    M: { method: "getMinutes", pad: 2 },
+    p: { AM: null, PM: null },
+    P: { AM: null, PM: null },
+    r: { replace: null },
+    R: { replace: "%H:%M" },
+    S: { method: "getSeconds", pad: 2 },
+    T: { replace: "%H:%M:%S" },
+    w: { method: "getDay" },
+    x: { replace: null },
+    X: { replace: null },
+    Y: { method: "getFullYear" },
+    initialized: false
+}
+
+function strftime(format, time)
+{
+    /* Javascript implementation of standard C strftime */
+
+    if (!timestr.initialized)
+    {
+        timestr.A.values = getMsg("datetime.day.long").split("^");
+        timestr.a.values = getMsg("datetime.day.short").split("^");
+        timestr.B.values = getMsg("datetime.month.long").split("^");
+        timestr.b.values = getMsg("datetime.month.short").split("^");
+        // Just make sure the locale isn't playing silly with us.
+        ASSERT(timestr.A.values.length == 7, "datetime.day.long bad!");
+        ASSERT(timestr.a.values.length == 7, "datetime.day.short bad!");
+        ASSERT(timestr.B.values.length == 12, "datetime.month.long bad!");
+        ASSERT(timestr.b.values.length == 12, "datetime.month.short bad!");
+
+        timestr.p.AM = getMsg("datetime.uam");
+        timestr.p.PM = getMsg("datetime.upm");
+        timestr.P.AM = getMsg("datetime.lam");
+        timestr.P.PM = getMsg("datetime.lpm");
+
+        timestr.c.replace = getMsg("datetime.presets.lc");
+        timestr.r.replace = getMsg("datetime.presets.lr");
+        timestr.x.replace = getMsg("datetime.presets.lx");
+        timestr.X.replace = getMsg("datetime.presets.ux");
+
+        timestr.initialized = true;
+    }
+
+
+    function getDayOfYear(dateobj)
+    {
+       var yearobj = new Date(dateobj.getFullYear(), 0, 1, 0, 0, 0, 0);
+       return Math.floor((dateobj - yearobj) / 86400000) + 1;
+    };
+
+    time = time || new Date();
+    if (!isinstance(time, Date))
+        throw "Expected date object";
+
+    var ary;
+    while ((ary = format.match(/(^|[^%])%(\w)/)))
+    {
+        var start = ary[1] ? (ary.index + 1) : ary.index;
+        var rpl = "";
+        if (ary[2] in timestr)
+        {
+            var tbranch = timestr[ary[2]];
+            if (("method" in tbranch) && ("values" in tbranch))
+               rpl = tbranch.values[time[tbranch.method]()];
+            else if ("method" in tbranch)
+                rpl = time[tbranch.method]().toString();
+            else if ("replace" in tbranch)
+                rpl = tbranch.replace;
+
+            if ("pad" in tbranch)
+            {
+                var padwith = (padwith in tbranch) ? tbranch.padwith : "0";
+                rpl = padNumber(rpl, tbranch.pad, padwith);
+            }
+        }
+        if (!rpl)
+        {
+            switch (ary[2])
+            {
+                case "C":
+                    var century = Math.floor(time.getFullYear() / 100);
+                    rpl = padNumber(century, 2);
+                    break;
+                case "I":
+                case "l":
+                    var hour = (time.getHours() + 11) % 12 + 1;
+                    var padwith = (ary[2] == "I") ? "0" : " ";
+                    rpl = padNumber(hour, 2, padwith);
+                    break;
+                case "j":
+                    rpl = padNumber(getDayOfYear(time), 3);
+                    break;
+                case "m":
+                    rpl = padNumber(time.getMonth() + 1, 2);
+                    break;
+                case "p":
+                case "P":
+                    var bit = (time.getHours() < 12) ? "AM" : "PM";
+                    rpl = timestr[ary[2]][bit];
+                    break;
+                case "s":
+                    rpl = Math.round(time.getTime() / 1000);
+                    break;
+                case "u":
+                    rpl = (time.getDay() + 6) % 7 + 1;
+                    break;
+                case "y":
+                    rpl = time.getFullYear().toString().substr(2);
+                    break;
+                case "z":
+                    var mins = time.getTimezoneOffset();
+                    rpl = (mins > 0) ? "-" : "+";
+                    mins = Math.abs(mins);
+                    var hours = Math.floor(mins / 60);
+                    rpl += padNumber(hours, 2) + padNumber(mins - (hours * 60), 2);
+                    break;
+            }
+        }
+        if (!rpl)
+            rpl = "%%" + ary[2];
+        format = format.substr(0, start) + rpl + format.substr(start + 2);
+    }
+    return format.replace(/%%/, "%");
 }

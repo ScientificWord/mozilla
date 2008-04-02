@@ -57,6 +57,8 @@ extern PRLogModuleInfo* gThebesGFXLog;
 
 #ifdef XP_WIN
 #include "gfxWindowsSurface.h"
+#elif defined(XP_OS2)
+#include "gfxOS2Surface.h"
 #endif
 
 class nsThebesDeviceContext : public DeviceContextImpl
@@ -65,22 +67,23 @@ public:
     nsThebesDeviceContext();
     virtual ~nsThebesDeviceContext();
 
+    static void Shutdown();
+
     NS_DECL_ISUPPORTS_INHERITED
 
     NS_IMETHOD Init(nsNativeWidget aWidget);
+    NS_IMETHOD InitForPrinting(nsIDeviceContextSpec *aDevSpec);
     NS_IMETHOD CreateRenderingContext(nsIView *aView, nsIRenderingContext *&aContext);
 
-    NS_IMETHOD CreateRenderingContext(nsIDrawingSurface *aSurface, nsIRenderingContext *&aContext);
     NS_IMETHOD CreateRenderingContext(nsIWidget *aWidget, nsIRenderingContext *&aContext);
     NS_IMETHOD CreateRenderingContext(nsIRenderingContext *&aContext);
     NS_IMETHOD CreateRenderingContextInstance(nsIRenderingContext *&aContext);
 
-    NS_IMETHOD SupportsNativeWidgets(PRBool &aSupportsWidgets);
-    NS_IMETHOD PrepareNativeWidget(nsIWidget* aWidget, void** aOut);
-
-    NS_IMETHOD GetScrollBarDimensions(float &aWidth, float &aHeight) const;
+    NS_IMETHOD SupportsNativeWidgets(PRBool& aSupportsWidgets);
+    NS_IMETHOD PrepareNativeWidget(nsIWidget *aWidget, void **aOut);
 
     NS_IMETHOD GetSystemFont(nsSystemFontID aID, nsFont *aFont) const;
+    NS_IMETHOD ClearCachedSystemFonts();
 
     NS_IMETHOD CheckFontExistence(const nsString& aFaceName);
 
@@ -88,21 +91,18 @@ public:
 
     NS_IMETHOD GetPaletteInfo(nsPaletteInfo& aPaletteInfo);
 
-    NS_IMETHOD ConvertPixel(nscolor aColor, PRUint32 & aPixel);
+    NS_IMETHOD ConvertPixel(nscolor aColor, PRUint32& aPixel);
 
-    NS_IMETHOD GetDeviceSurfaceDimensions(PRInt32 &aWidth, PRInt32 &aHeight);
-    NS_IMETHOD GetRect(nsRect &aRect);
-    NS_IMETHOD GetClientRect(nsRect &aRect);
+    NS_IMETHOD GetDeviceSurfaceDimensions(PRInt32& aWidth, PRInt32& aHeight);
+    NS_IMETHOD GetRect(nsRect& aRect);
+    NS_IMETHOD GetClientRect(nsRect& aRect);
 
     /* printing goop */
-    NS_IMETHOD GetDeviceContextFor(nsIDeviceContextSpec *aDevice,
-                                   nsIDeviceContext *&aContext);
+    NS_IMETHOD PrepareDocument(PRUnichar *aTitle, 
+                               PRUnichar *aPrintToFileName);
 
-    NS_IMETHOD PrepareDocument(PRUnichar * aTitle, 
-                               PRUnichar*  aPrintToFileName);
-
-    NS_IMETHOD BeginDocument(PRUnichar*  aTitle, 
-                             PRUnichar*  aPrintToFileName,
+    NS_IMETHOD BeginDocument(PRUnichar  *aTitle, 
+                             PRUnichar  *aPrintToFileName,
                              PRInt32     aStartPage, 
                              PRInt32     aEndPage);
 
@@ -110,48 +110,40 @@ public:
     NS_IMETHOD AbortDocument(void);
     NS_IMETHOD BeginPage(void);
     NS_IMETHOD EndPage(void);
-    NS_IMETHOD SetAltDevice(nsIDeviceContext* aAltDC);
-    NS_IMETHOD GetAltDevice(nsIDeviceContext** aAltDC);
-    NS_IMETHOD SetUseAltDC(PRUint8 aValue, PRBool aOn);
     /* end printing goop */
 
     static void DebugShowCairoSurface (const char *aName, cairo_surface_t *aSurface);
 
-    static int prefChanged(const char *aPref, void *aClosure);
+    virtual PRBool CheckDPIChange();
+
+    virtual PRBool SetPixelScale(float aScale);
 
     nsNativeWidget GetWidget() { return mWidget; }
-#ifdef XP_WIN
-    HDC GetHDC() {
-        if (mPrintingSurface)
-            return reinterpret_cast<gfxWindowsSurface*>(mPrintingSurface.get())->GetDC();
-        return nsnull;
-    }
+#if defined(XP_WIN) || defined(XP_OS2)
+    HDC GetPrintHDC();
 #endif
 
 protected:
-    nsresult SetDPI(PRInt32 aPrefDPI);
-    void ComputeClientRectUsingScreen(nsRect* outRect);
-    void ComputeFullAreaUsingScreen(nsRect* outRect);
-    void FindScreen(nsIScreen** outScreen);
+    nsresult SetDPI();
+    void ComputeClientRectUsingScreen(nsRect *outRect);
+    void ComputeFullAreaUsingScreen(nsRect *outRect);
+    void FindScreen(nsIScreen **outScreen);
+    void CalcPrintingSize();
+    void UpdateScaledAppUnits();
 
     PRUint32 mDepth;
 
 private:
-    nsNativeWidget mWidget;
-
     nsCOMPtr<nsIScreenManager> mScreenManager;
 
-    float mWidthFloat;
-    float mHeightFloat;
-    PRInt32 mWidth;
-    PRInt32 mHeight;
-    PRInt32 mDpi;
-
-    PRBool mPrinter;
+    nscoord mWidth;
+    nscoord mHeight;
 
     nsRefPtrHashtable<nsISupportsHashKey, gfxASurface> mWidgetSurfaceCache;
 
     nsRefPtr<gfxASurface> mPrintingSurface;
+    float mPrintingScale;
+    nsCOMPtr<nsIDeviceContextSpec> mDeviceContextSpec;
 };
 
 #endif /* _NS_CAIRODEVICECONTEXT_H_ */

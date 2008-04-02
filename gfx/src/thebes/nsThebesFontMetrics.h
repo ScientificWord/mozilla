@@ -46,6 +46,7 @@
 #include "nsIAtom.h"
 
 #include "gfxFont.h"
+#include "gfxTextRunCache.h"
 
 class nsThebesFontMetrics : public nsIThebesFontMetrics
 {
@@ -77,14 +78,11 @@ public:
     NS_IMETHOD  GetFontHandle(nsFontHandle &aHandle);
     NS_IMETHOD  GetAveCharWidth(nscoord& aAveCharWidth);
     NS_IMETHOD  GetSpaceWidth(nscoord& aSpaceCharWidth);
-    NS_IMETHOD  GetLeading(nscoord& aLeading);
-    NS_IMETHOD  GetNormalLineHeight(nscoord& aLineHeight);
     virtual PRInt32 GetMaxStringLength();
 
 
     virtual nsresult GetWidth(const char* aString, PRUint32 aLength, nscoord& aWidth,
                               nsThebesRenderingContext *aContext);
-    // aCachedOffset will be updated with a new offset.
     virtual nsresult GetWidth(const PRUnichar* aString, PRUint32 aLength,
                               nscoord& aWidth, PRInt32 *aFontID,
                               nsThebesRenderingContext *aContext);
@@ -118,7 +116,6 @@ public:
                                 nscoord aX, nscoord aY,
                                 const nscoord* aSpacing,
                                 nsThebesRenderingContext *aContext);
-    // aCachedOffset will be updated with a new offset.
     virtual nsresult DrawString(const PRUnichar* aString, PRUint32 aLength,
                                 nscoord aX, nscoord aY,
                                 PRInt32 aFontID,
@@ -127,34 +124,74 @@ public:
 
 #ifdef MOZ_MATHML
     // These two functions get the bounding metrics for this handle,
-    // updating the aBoundingMetrics in Points.  This means that the
-    // caller will have to update them to twips before passing it
-    // back.
+    // updating the aBoundingMetrics in app units.
     virtual nsresult GetBoundingMetrics(const char *aString, PRUint32 aLength,
+                                        nsThebesRenderingContext *aContext,
                                         nsBoundingMetrics &aBoundingMetrics);
-    // aCachedOffset will be updated with a new offset.
     virtual nsresult GetBoundingMetrics(const PRUnichar *aString,
                                         PRUint32 aLength,
-                                        nsBoundingMetrics &aBoundingMetrics,
-                                        PRInt32 *aFontID);
+                                        nsThebesRenderingContext *aContext,
+                                        nsBoundingMetrics &aBoundingMetrics);
 #endif /* MOZ_MATHML */
 
     // Set the direction of the text rendering
     virtual nsresult SetRightToLeftText(PRBool aIsRTL);
     virtual PRBool GetRightToLeftText();
+    virtual void SetTextRunRTL(PRBool aIsRTL) { mTextRunRTL = aIsRTL; }
+
+    virtual gfxFontGroup* GetThebesFontGroup() { return mFontGroup; }
+    
+    PRBool GetRightToLeftTextRunMode() {
+        return mTextRunRTL;
+    }
 
 protected:
 
     const gfxFont::Metrics& GetMetrics() const;
 
-    gfxFontGroup *mFontGroup;
+    class AutoTextRun {
+    public:
+        AutoTextRun(nsThebesFontMetrics* aMetrics, nsIRenderingContext* aRC,
+                    const char* aString, PRInt32 aLength) {
+            mTextRun = gfxTextRunCache::MakeTextRun(
+                reinterpret_cast<const PRUint8*>(aString), aLength,
+                aMetrics->mFontGroup, aRC->ThebesContext(),
+                aMetrics->mP2A,
+                ComputeFlags(aMetrics));
+        }
+        AutoTextRun(nsThebesFontMetrics* aMetrics, nsIRenderingContext* aRC,
+                    const PRUnichar* aString, PRInt32 aLength) {
+            mTextRun = gfxTextRunCache::MakeTextRun(
+                aString, aLength, aMetrics->mFontGroup,
+                aRC->ThebesContext(),
+                aMetrics->mP2A,
+                ComputeFlags(aMetrics));
+        }
+        gfxTextRun* operator->() { return mTextRun.get(); }
+        gfxTextRun* get() { return mTextRun.get(); }
+
+    private:
+        gfxTextRunCache::AutoTextRun mTextRun;
+        
+        static PRUint32 ComputeFlags(nsThebesFontMetrics* aMetrics) {
+            PRUint32 flags = 0;
+            if (aMetrics->GetRightToLeftTextRunMode()) {
+                flags |= gfxTextRunFactory::TEXT_IS_RTL;
+            }
+            return flags;
+        }
+    };
+    friend class AutoTextRun;
+
+    nsRefPtr<gfxFontGroup> mFontGroup;
     gfxFontStyle *mFontStyle;
 
 private:
     nsThebesDeviceContext *mDeviceContext;
     nsCOMPtr<nsIAtom> mLangGroup;
-    float mDev2App;
-    PRBool mIsRTL;
+    PRInt32 mP2A;
+    PRPackedBool mIsRightToLeft;
+    PRPackedBool mTextRunRTL;
 };
 
 #endif /* NSTHEBESFONTMETRICS__H__ */

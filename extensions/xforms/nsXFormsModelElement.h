@@ -44,7 +44,7 @@
 #include "nsIModelElementPrivate.h"
 #include "nsIXFormsNSModelElement.h"
 #include "nsIDOMEventListener.h"
-#include "nsISchema.h"
+#include "nsISVSchema.h"
 #include "nsCOMArray.h"
 #include "nsVoidArray.h"
 #include "nsCOMPtr.h"
@@ -54,13 +54,14 @@
 #include "nsXFormsUtils.h"
 #include "nsIClassInfo.h"
 
-#include "nsISchemaLoader.h"
-#include "nsISchema.h"
+#include "nsISVSchemaLoader.h"
 #include "nsIXFormsContextControl.h"
+#include "nsDataHashtable.h"
+#include "nsRefPtrHashtable.h"
 
 class nsIDOMElement;
 class nsIDOMNode;
-class nsIXFormsXPathEvaluator;
+class nsIDOMXPathEvaluator;
 class nsIDOMXPathResult;
 class nsXFormsControl;
 class nsXFormsModelInstanceDocuments;
@@ -127,19 +128,52 @@ protected:
  */
 class nsXFormsControlListItem
 {
+  nsAutoRefCnt                      mRefCnt;
+
   /** The XForms control itself */
-  nsCOMPtr<nsIXFormsControl>      mNode;
+  nsCOMPtr<nsIXFormsControl>        mNode;
 
   /** The next sibling of the node */
-  nsXFormsControlListItem        *mNextSibling;
+  nsRefPtr<nsXFormsControlListItem> mNextSibling;
 
   /** The first child of the node */
-  nsXFormsControlListItem        *mFirstChild;
+  nsRefPtr<nsXFormsControlListItem> mFirstChild;
+
+  nsRefPtrHashtable<nsISupportsHashKey, nsXFormsControlListItem> *mControlListHash;
 
 public:
-  nsXFormsControlListItem(nsIXFormsControl* aControl);
+
+  /** The constructor takes a hashtable pointer, which needs to point to the
+   *  model's hashtable.  This is so that each item in the control list has
+   *  access to the same hashtable and can add/remove items from it and find
+   *  items in it.
+   */
+  nsXFormsControlListItem(
+    nsIXFormsControl* aControl,
+    nsRefPtrHashtable<nsISupportsHashKey,nsXFormsControlListItem> *aHash);
+  nsXFormsControlListItem();
   ~nsXFormsControlListItem();
   nsXFormsControlListItem(const nsXFormsControlListItem& aCopy);
+
+  nsrefcnt AddRef()
+  {
+    ++mRefCnt;
+    NS_LOG_ADDREF(this, mRefCnt, "nsXFormsControlListItem",
+                  sizeof(nsXFormsControlListItem));
+    return mRefCnt;
+  }
+
+  nsrefcnt Release()
+  {
+    --mRefCnt;
+    NS_LOG_RELEASE(this, mRefCnt, "nsXFormsControlListItem");
+    if (mRefCnt == 0) {
+      mRefCnt = 1;
+      delete this;
+      return 0;
+    }
+    return mRefCnt;
+  }
 
   /** Clear contents of current node, all siblings, and all children */
   void Clear();
@@ -189,10 +223,10 @@ public:
   {
   private:
     /** The control the iterator is currently pointing at */
-    nsXFormsControlListItem  *mCur;
+    nsRefPtr<nsXFormsControlListItem> mCur;
 
     /** A stack of non-visited nodes */
-    nsVoidArray               mStack;
+    nsVoidArray                       mStack;
 
   public:
     iterator();
@@ -222,7 +256,7 @@ public:
 class nsXFormsModelElement : public nsXFormsStubElement,
                              public nsIModelElementPrivate,
                              public nsIXFormsNSModelElement,
-                             public nsISchemaLoadListener,
+                             public nsISVSchemaLoadListener,
                              public nsIDOMEventListener,
                              public nsIXFormsContextControl
 {
@@ -233,19 +267,19 @@ public:
   NS_DECL_NSIXFORMSMODELELEMENT
   NS_DECL_NSIMODELELEMENTPRIVATE
   NS_DECL_NSIXFORMSNSMODELELEMENT
-  NS_DECL_NSISCHEMALOADLISTENER
-  NS_DECL_NSIWEBSERVICEERRORHANDLER
+  NS_DECL_NSISVSCHEMALOADLISTENER
+  NS_DECL_NSISVSCHEMAERRORHANDLER
   NS_DECL_NSIDOMEVENTLISTENER
   NS_DECL_NSIXFORMSCONTEXTCONTROL
 
-  // nsIXTFGenericElement overrides
+  // nsIXTFElement overrides
   NS_IMETHOD OnDestroyed();
   NS_IMETHOD GetScriptingInterfaces(PRUint32 *aCount, nsIID ***aArray);
   NS_IMETHOD WillChangeDocument(nsIDOMDocument *aNewDocument);
   NS_IMETHOD DocumentChanged(nsIDOMDocument *aNewDocument);
   NS_IMETHOD DoneAddingChildren();
   NS_IMETHOD HandleDefault(nsIDOMEvent *aEvent, PRBool *aHandled);
-  NS_IMETHOD OnCreated(nsIXTFGenericElementWrapper *aWrapper);
+  NS_IMETHOD OnCreated(nsIXTFElementWrapper *aWrapper);
 
   // nsIXFormsControlBase overrides
   NS_IMETHOD Bind(PRBool *aContextChanged) {
@@ -310,12 +344,12 @@ private:
   NS_HIDDEN_(nsresult) ConstructDone();
   NS_HIDDEN_(void)     MaybeNotifyCompletion();
 
-  NS_HIDDEN_(nsresult) ProcessBind(nsIXFormsXPathEvaluator   *aEvaluator,
-                                   nsIDOMNode                *aContextNode,
-                                   PRInt32                    aContextPosition,
-                                   PRInt32                    aContextSize,
-                                   nsIDOMElement             *aBindElement,
-                                   PRBool                     aIsOuter = PR_FALSE);
+  NS_HIDDEN_(nsresult) ProcessBind(nsIDOMXPathEvaluator *aEvaluator,
+                                   nsIDOMNode           *aContextNode,
+                                   PRInt32               aContextPosition,
+                                   PRInt32               aContextSize,
+                                   nsIDOMElement        *aBindElement,
+                                   PRBool                aIsOuter = PR_FALSE);
 
   NS_HIDDEN_(void)     RemoveModelFromDocument();
 
@@ -385,10 +419,60 @@ private:
    */
   void ValidateInstanceDocuments();
 
-  nsIDOMElement            *mElement;
-  nsCOMPtr<nsISchemaLoader> mSchemas;
-  nsStringArray             mPendingInlineSchemas;
-  nsXFormsControlListItem   mFormControls;
+  /**
+   * Return the name of builitn type.
+   *
+   * @param aType The builtin type
+   * @param aName The name of the given type
+   */
+  NS_HIDDEN_(nsresult) GetBuiltinTypeName(PRUint16   aType,
+                                          nsAString& aName);
+
+  /**
+   * Starting with aType, walks through the builtin derived types back to the
+   * builtin primative type, appending the datatype URIs to the string array as
+   * it goes
+   */
+  NS_HIDDEN_(nsresult) GetBuiltinTypesNames(PRUint16       aType,
+                                            nsStringArray *aNameArray);
+
+  /**
+   * Starting from aType, walks the chain of datatype extension/derivation to
+   * gather information.
+   *
+   * @param aType            The type we are trying to find datatype information
+   *                         for
+   * @param aFindRootBuiltin If true then root builtin type will be returned
+                             only
+   * @param aBuiltinType     If non-null, we'll return the builtin (if
+   *                         aFindRootBuiltin is false) or root builtin (if
+   *                         aFindRootBuiltin is true) type of the given type
+   * @param aTypeArray       If non-null and aFindRootBuiltin is false, we'll
+   *                         build a string array of datatype URIs and put them
+   *                         in aTypeArray.
+   */
+  NS_HIDDEN_(nsresult) WalkTypeChainInternal(nsISVSchemaType *aType,
+                                             PRBool         aFindRootBuiltin,
+                                             PRUint16      *aBuiltinType,
+                                             nsStringArray *aTypeArray = nsnull);
+  /**
+   * Returns the primative type that aSchemaType is derived/extended from
+   */
+  NS_HIDDEN_(nsresult) BuiltinTypeToPrimative(nsISVSchemaBuiltinType *aSchemaType,
+                                              PRUint16             *aPrimType);
+
+  /** Set context info for events.
+   *
+   * @param aName     Name of the context property.
+   * @param aValue    Value of the context property.
+   */
+  nsresult SetContextInfo(const char *aName, const nsAString &aValue);
+
+  nsIDOMElement              *mElement;
+  nsCOMPtr<nsISVSchemaLoader> mSchemas;
+  nsStringArray               mPendingInlineSchemas;
+  nsXFormsControlListItem     mFormControls;
+  nsRefPtrHashtable<nsISupportsHashKey, nsXFormsControlListItem> mControlListHash;
 
   PRInt32 mSchemaCount;
   PRInt32 mSchemaTotal;
@@ -476,6 +560,9 @@ private:
    * @see http://www.w3.org/TR/xforms/slice6.html#model-prop-p3ptype
    */
   nsClassHashtable<nsISupportsHashKey, nsString> mNodeToP3PType;
+
+  // Context Info for events.
+  nsCOMArray<nsIXFormsContextInfo> mContextInfo;
 
   friend class Updating;
 };

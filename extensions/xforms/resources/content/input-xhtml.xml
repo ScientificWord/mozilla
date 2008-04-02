@@ -58,12 +58,31 @@
           xmlns:mozType="http://www.mozilla.org/projects/xforms/2005/type">
 
 
+  <!-- INPUT: base widget for input: <default>, textarea: <default> and
+              secret: <default> controls.
+
+    Binding assumes getControlElement returns object that has properties
+    required by 'xformswidget-input-base' binding plus 'editor' property to
+    get nsIEditor for embedded editor. You shouldn't use this binding if xforms
+    input element isn't supposed to have an editor.
+  -->
+  <binding id="xformswidget-input-base"
+           extends="chrome://xforms/content/input.xml#xformswidget-input-base">
+
+    <implementation implements="nsIXFormsNSEditableElement">
+      <property name="editor" readonly="true"
+                onget="return this.control.editor;"/>
+    </implementation>
+  </binding>
+
+
   <!-- INPUT: <DEFAULT> -->
   <binding id="xformswidget-input"
-            extends="chrome://xforms/content/input.xml#xformswidget-input-base">
+           extends="#xformswidget-input-base">
     <content>
       <children includes="label"/>
-      <html:input class="xf-value" anonid="control" xbl:inherits="accesskey"/>
+      <html:input class="xf-value" anonid="control"
+                  xbl:inherits="tabindex"/>
       <children/>
     </content>
 
@@ -126,7 +145,8 @@
            extends="chrome://xforms/content/input.xml#xformswidget-input-boolean-base">
     <content>
       <children includes="label"/>
-      <html:input anonid="control" xbl:inherits="accesskey" type="checkbox"/>
+      <html:input anonid="control" type="checkbox" class="xf-value"
+                  xbl:inherits="tabindex"/>
       <children/>
     </content>
 
@@ -186,19 +206,44 @@
 
   <!-- INPUT: DATE -->
   <binding id="xformswidget-input-date"
-           extends="chrome://xforms/content/input.xml#xformswidget-input-base">
+           extends="#xformswidget-input-base">
     <content>
       <children includes="label"/>
-      <html:input anonid="control" xbl:inherits="accesskey" size="10"
-                  class="xf-value"/>
-      <html:input type="button" anonid="dropmarker"
-                  title="&xforms.datepicker.title;"/>
+      <html:span class="-moz-date-container">
+        <html:input anonid="control" size="10"
+                    class="-moz-xforms-date-input xf-value"
+                    xbl:inherits="tabindex"/>
+        <html:input mozType:dropmarker="true"
+                    type="button" anonid="dropmarker"
+                    title="&xforms.datepicker.title;"/>
+      </html:span>
       <html:span mozType:calendar="true" anonid="picker"
+                 internaltabhandling="true"
                  style="position:absolute; display:none;"/>
       <children/>
     </content>
 
-    <implementation>
+    <implementation implements="nsIXFormsComboboxUIWidget, nsIAccessibleProvider">
+      <!-- nsIXFormsComboboxUIWidget -->
+      <property name="open">
+        <getter>
+          return this._isPickerVisible;
+        </getter>
+        <setter>
+          if (val)
+            this.showPicker();
+          else
+            this.hidePicker();
+        </setter>
+      </property>
+
+    <!-- nsIAccessibleProvider -->
+      <property name="accessibleType" readonly="true">
+        <getter>
+          return Components.interfaces.nsIAccessibleProvider.XFormsInputDate;
+        </getter>
+      </property>
+
       <method name="getControlElement">
         <body>
           return {
@@ -254,13 +299,36 @@
           // 100% width, and innerWidth will always give use the browser size
           var windowWidth = this.ownerDocument.defaultView.innerWidth;
 
-          var position = dropmarkerBox.x - pickerWidth + dropmarkerBox.width;
+          var p = this.control.offsetParent;
+          var compStyle =
+            this.ownerDocument.defaultView.getComputedStyle(p, null);
+          var relative = compStyle.getPropertyValue("position") == "relative";
+          if (!relative) {
+            relative = compStyle.getPropertyValue("position") == "absolute";
+          }
 
-          // reset position if it will bleed to the left or right
+          var position;
+          if (relative) {
+            position = this.dropmarker.offsetLeft - pickerWidth + dropmarkerBox.width;
+          } else {
+            position = dropmarkerBox.x - pickerWidth + dropmarkerBox.width;
+          }
+
+          // Reset the position if it will bleed to the left or right.
           if (position < 0) {
             position = 0;
           } else if ((position + pickerWidth) > windowWidth) {
-            position = windowWidth - pickerWidth;
+            if (relative) {
+              // Can't base our position on the window width since our position
+              // will be set relative to the offsetParent.  So let's set the
+              // position to be the left-most part of the button that triggers
+              // the dropdown.  We'll assume that at least that much of the
+              // button is visible since the user navigated to it and triggered
+              // it.
+              position = this.dropmarker.offsetLeft - pickerWidth;
+            } else {
+              position = windowWidth - pickerWidth;
+            }
           }
 
           this.picker.style.left = position + "px";
@@ -442,7 +510,7 @@
 
     <handlers>
       <handler event="keypress" keycode="VK_ESCAPE">
-        this.hidePicker();
+        this.hidePicker(true);
       </handler>
 
       <handler event="keypress" keycode="VK_RETURN">
@@ -454,10 +522,12 @@
 
       <handler event="keypress">
       <![CDATA[
-        if (event.keyCode == event.DOM_VK_F4 ||
-            event.altKey && (event.keyCode == event.DOM_VK_DOWN ||
-                             event.keyCode == event.DOM_VK_UP)) {
+        if (event.keyCode == event.DOM_VK_F4) {
           this.togglePicker();
+        } else if (event.altKey && (event.keyCode == event.DOM_VK_DOWN ||
+                   event.keyCode == event.DOM_VK_UP)) {
+          this.togglePicker();
+          event.preventDefault();
         }
       ]]>
       </handler>
@@ -490,7 +560,7 @@
 
   <!-- INPUT: <DATE, APPEARANCE='FULL' -->
   <binding id="xformswidget-input-date-full"
-           extends="chrome://xforms/content/input.xml#xformswidget-input-base">
+           extends="chrome://xforms/content/input.xml#xformswidget-input-date-calendar-base">
     <content>
       <children includes="label"/>
       <html:span mozType:calendar="true" anonid="control"/>
@@ -523,7 +593,8 @@
            extends="chrome://xforms/content/input.xml#xformswidget-input-month-base">
     <content>
       <children includes="label"/>
-      <html:select anonid="control" xbl:inherits="style, accesskey">
+      <html:select anonid="control"
+                   xbl:inherits="style, tabindex">
         <html:option value=""></html:option>
       </html:select>
       <children/>
@@ -572,7 +643,8 @@
            extends="chrome://xforms/content/input.xml#xformswidget-input-day-base">
     <content>
       <children includes="label"/>
-      <html:select anonid="control" xbl:inherits="style, accesskey">
+      <html:select anonid="control"
+                   xbl:inherits="style, tabindex">
         <html:option value=""></html:option>
       </html:select>
       <children/>
@@ -618,22 +690,31 @@
 
   <!-- SECRET: <DEFAULT> -->
   <binding id="xformswidget-secret"
-           extends="chrome://xforms/content/input-xhtml.xml#xformswidget-input">
+           extends="#xformswidget-input">
     <content>
       <children includes="label"/>
-      <html:input anonid="control" xbl:inherits="accesskey" type="password"/>
+      <html:input anonid="control" type="password"
+                  xbl:inherits="tabindex"/>
       <children/>
     </content>
+
+    <implementation implements="nsIAccessibleProvider">
+      <property name="accessibleType" readonly="true">
+        <getter>
+          return Components.interfaces.nsIAccessibleProvider.XFormsSecret;
+        </getter>
+      </property>
+    </implementation>
   </binding>
 
-  
+
   <!-- TEXTAREA: <DEFAULT> -->
   <binding id="xformswidget-textarea"
-           extends="chrome://xforms/content/input.xml#xformswidget-input-base">
+           extends="#xformswidget-input-base">
     <content>
        <children includes="label"/>
        <html:textarea class="xf-value" anonid="control"
-                      xbl:inherits="accesskey"/>
+                      xbl:inherits="tabindex"/>
       <children/>
     </content>
 

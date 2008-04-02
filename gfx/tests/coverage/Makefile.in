@@ -35,31 +35,37 @@
 #
 # ***** END LICENSE BLOCK *****
 
-DEPTH		= ../../..
+DEPTH		= ../..
 topsrcdir	= @top_srcdir@
 srcdir		= @srcdir@
 VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-PROGRAM		= widget
 MOZILLA_INTERNAL_API = 1
 
+REQUIRES	= xpcom \
+		  string \
+		  gfx \
+		  $(NULL)
+
 CPPSRCS		= \
-		main.cpp \
-		nsWidgetTest.cpp \
+		DumpColors.cpp \
+		TestColorNames.cpp \
+		TestRect.cpp \
 		$(NULL)
 
+SIMPLE_PROGRAMS	= $(CPPSRCS:.cpp=$(BIN_SUFFIX))
+
 LIBS		= \
+		$(call EXPAND_LIBNAME_PATH,gkgfx,../src) \
 		$(XPCOM_LIBS) \
 		$(MOZ_JS_LIBS) \
-		$(MOZ_WIDGET_SUPPORT_LIBS) \
-		-lgkgfx \
-		$(NSPR_LIBS) \
 		$(TK_LIBS) \
+		$(NSPR_LIBS) \
 		$(NULL)
 
 include $(topsrcdir)/config/rules.mk
 
-CXXFLAGS	+= $(MOZ_TOOLKIT_REGISTRY_CFLAGS)
+INCLUDES	+= -I$(srcdir)/../src
 

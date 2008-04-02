@@ -43,7 +43,9 @@ VPATH           = @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE          = lightning
-DIRS 		= ../../calendar/lightning
+DIRS = \
+    ../../calendar/lightning \
+    $(NULL)
 
 include $(topsrcdir)/config/rules.mk
 
