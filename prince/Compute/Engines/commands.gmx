@@ -1,6 +1,6 @@
 ;; Computation commands  -- edit only the .gmx file (and possibly iCmpIDs.h)
 
-#include "../iCmpIDs.h"
+#include "iCmpIDs.h"
 
 <START_CONTEXT_COMMANDS>
 <UID(CCID_Evaluate,0)>Evaluate

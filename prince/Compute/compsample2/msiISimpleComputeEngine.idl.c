@@ -5,7 +5,7 @@
 IDLinclude "nsISupports.idl"
 IDLinclude "nsILocalFile.idl"
 
-#include "../iCmpIDs.h"
+#include "../computelib/iCmpIDs.h"
 
 /*
  * msiISimpleComputeEngine - connection to computation engine

@@ -1,7 +1,7 @@
 // Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
 
 #include "MML2Tree.h"
-#include "../CmpTypes.h"
+#include "CmpTypes.h"
 #include <string.h>
 #include <ctype.h>
 

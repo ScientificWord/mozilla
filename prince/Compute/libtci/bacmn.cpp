@@ -1,7 +1,7 @@
 // Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
 
 #include "bytearry.h"
-#include "../CmpTypes.h"
+#include "CmpTypes.h"
 #include <stdlib.h>
 #include <string.h>
 

@@ -37,21 +37,17 @@ XPIDLSRCS	= msiISimpleComputeEngine.idl
 
 include $(topsrcdir)/config/config.mk
 
-          
-
 # separate libraries linked in.
 EXTRA_DSO_LDOPTS = \
-  $(DIST)/lib/$(LIB_PREFIX)computelib_s.$(LIB_SUFFIX) \
-  $(DIST)/lib/$(LIB_PREFIX)enginelib_s.$(LIB_SUFFIX) \
-  $(DIST)/lib/$(LIB_PREFIX)libtci_s.$(LIB_SUFFIX) \
-  $(DIST)/lib/$(LIB_PREFIX)xpcomglue_s.$(LIB_SUFFIX) \
-  $(XPCOM_FROZEN_LDOPTS) \
-  $(NSPR_LIBS) \
-  $(NULL)
+	$(DIST)/lib/$(LIB_PREFIX)computelib_s.$(LIB_SUFFIX) \
+	$(DIST)/lib/$(LIB_PREFIX)enginelib_s.$(LIB_SUFFIX) \
+	$(DIST)/lib/$(LIB_PREFIX)libtci_s.$(LIB_SUFFIX) \
+	$(MOZ_COMPONENT_LIBS) \
+	$(NULL)
 
 include $(topsrcdir)/config/rules.mk
 
-LOCAL_INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../libtci
+LOCAL_INCLUDES = -I$(srcdir)/../computelib -I$(srcdir)/../libtci   -I$(srcdir)/../Engines
 
 
 libs:: $(TARGETS)
@@ -60,7 +56,7 @@ libs:: $(TARGETS)
 install:: $(TARGETS)
 	$(SYSINSTALL) $(IFLAGS1) $(srcdir)/simplecompute2 $(FINAL_TARGET)/res/samples
 
-msiISimpleComputeEngine.idl:: msiISimpleComputeEngine.idl.c ../iCmpIDs.h
+msiISimpleComputeEngine.idl:: msiISimpleComputeEngine.idl.c ../computelib/iCmpIDs.h
 	$(CPP) $<  | sed "s/^IDLinclude/#include/" > msiISimpleComputeEngine.idl
 
                  
