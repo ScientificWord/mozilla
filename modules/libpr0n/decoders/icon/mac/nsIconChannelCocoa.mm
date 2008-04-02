@@ -57,7 +57,8 @@
 #include "nsILocalFileMac.h"
 #include "nsIFileURL.h"
 #include "nsInt64.h"
-#include "nsAutoBuffer.h"
+#include "nsTArray.h"
+#include "nsObjCExceptions.h"
 
 #include <Cocoa/Cocoa.h>
 
@@ -235,6 +236,8 @@ NS_IMETHODIMP nsIconChannel::AsyncOpen(nsIStreamListener *aListener, nsISupports
 
 nsresult nsIconChannel::MakeInputStream(nsIInputStream** _retval, PRBool nonBlocking)
 {
+  NS_OBJC_BEGIN_TRY_ABORT_BLOCK_NSRESULT;
+
   nsXPIDLCString contentType;
   nsCAutoString fileExt;
   nsCOMPtr<nsIFile> fileloc; // file we want an icon for
@@ -312,18 +315,17 @@ nsresult nsIconChannel::MakeInputStream(nsIInputStream** _retval, PRBool nonBloc
   PRUint8* bitmapRepData = (PRUint8*)[bitmapRep bitmapData];
   
   // create our buffer
-  PRInt32 bufferCapacity = 3 + desiredImageSize * desiredImageSize * 5;
-  nsAutoBuffer<PRUint8, 3 + 16 * 16 * 5> iconBuffer; // initial size is for 16x16
-  if (!iconBuffer.EnsureElemCapacity(bufferCapacity))
+  PRInt32 bufferCapacity = 2 + desiredImageSize * desiredImageSize * 4;
+  nsAutoTArray<PRUint8, 3 + 16 * 16 * 5> iconBuffer; // initial size is for 16x16
+  if (!iconBuffer.SetLength(bufferCapacity))
     return NS_ERROR_OUT_OF_MEMORY;
   
-  PRUint8* iconBufferPtr = iconBuffer.get();
+  PRUint8* iconBufferPtr = iconBuffer.Elements();
   
   // write header data into buffer
   *iconBufferPtr++ = desiredImageSize;
   *iconBufferPtr++ = desiredImageSize;
-  *iconBufferPtr++ = 8; // alpha bits per pixel
-  
+
   PRUint32 dataCount = (desiredImageSize * desiredImageSize) * 4;
   PRUint32 index = 0;
   while (index < dataCount) {
@@ -332,31 +334,25 @@ nsresult nsIconChannel::MakeInputStream(nsIInputStream** _retval, PRBool nonBloc
     PRUint8 g = bitmapRepData[index++];
     PRUint8 b = bitmapRepData[index++];
     PRUint8 a = bitmapRepData[index++];
-    
-    // reverse premultiplication
-    if (a == 0) {
-      r = g = b = 0;
-    }
-    else {
-      r = ((PRUint32) r) * 255 / a;
-      g = ((PRUint32) g) * 255 / a;
-      b = ((PRUint32) b) * 255 / a;
-    }
-    
-    // write data out to our buffer - the real alpha data is appended to the
-    // end of the stream, the alpha here is just an unused extra channel
+
+    // write data out to our buffer
+    // non-cairo uses native image format, but the A channel is ignored.
+    // cairo uses ARGB (highest to lowest bits)
+#if defined(IS_LITTLE_ENDIAN)
+    *iconBufferPtr++ = b;
+    *iconBufferPtr++ = g;
+    *iconBufferPtr++ = r;
+    *iconBufferPtr++ = a;
+#else
     *iconBufferPtr++ = a;
     *iconBufferPtr++ = r;
     *iconBufferPtr++ = g;
     *iconBufferPtr++ = b;
+#endif
   }
-  
-  // add the alpha to the buffer
-  index = 3;
-  while (index < dataCount) {
-    *iconBufferPtr++ = bitmapRepData[index];
-    index += 4;
-  }
+
+  NS_ASSERTION(iconBufferPtr == iconBuffer.Elements() + bufferCapacity,
+               "buffer size miscalculation");
   
   // Now, create a pipe and stuff our data into it
   nsCOMPtr<nsIInputStream> inStream;
@@ -365,7 +361,7 @@ nsresult nsIconChannel::MakeInputStream(nsIInputStream** _retval, PRBool nonBloc
 
   if (NS_SUCCEEDED(rv)) {
     PRUint32 written;
-    rv = outStream->Write((char*)iconBuffer.get(), bufferCapacity, &written);
+    rv = outStream->Write((char*)iconBuffer.Elements(), bufferCapacity, &written);
     if (NS_SUCCEEDED(rv))
       NS_IF_ADDREF(*_retval = inStream);
   }
@@ -374,6 +370,8 @@ nsresult nsIconChannel::MakeInputStream(nsIInputStream** _retval, PRBool nonBloc
   mCallbacks = nsnull;
 
   return NS_OK;
+
+  NS_OBJC_END_TRY_ABORT_BLOCK_NSRESULT;
 }
 
 NS_IMETHODIMP nsIconChannel::GetLoadFlags(PRUint32 *aLoadAttributes)
