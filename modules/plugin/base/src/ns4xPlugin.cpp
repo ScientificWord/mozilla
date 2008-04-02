@@ -20,6 +20,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
+ *   Josh Aas <josh@mozilla.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -39,10 +40,13 @@
 
 #include "prtypes.h"
 #include "prmem.h"
+#include "prclist.h"
+#include "nsAutoLock.h"
 #include "ns4xPlugin.h"
 #include "ns4xPluginInstance.h"
 #include "ns4xPluginStreamListener.h"
 #include "nsIServiceManager.h"
+#include "nsThreadUtils.h"
 
 #include "nsIMemory.h"
 #include "nsIPluginStreamListener.h"
@@ -63,6 +67,9 @@
 #include "nsIScriptGlobalObject.h"
 #include "nsIScriptContext.h"
 #include "nsDOMJSUtils.h"
+#include "nsIPrincipal.h"
+
+#include "jscntxt.h"
 
 #include "nsIXPConnect.h"
 
@@ -71,12 +78,6 @@
 #endif
 
 //needed for nppdf plugin
-#ifdef MOZ_WIDGET_GTK
-#include <gdk/gdk.h>
-#include <gdk/gdkx.h>
-#include "gtkxtbin.h"
-#endif
-
 #ifdef MOZ_WIDGET_GTK2
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
@@ -84,6 +85,9 @@
 #endif
 
 #include "nsJSNPRuntime.h"
+
+static PRLock *sPluginThreadAsyncCallLock = nsnull;
+static PRCList sPendingAsyncCalls = PR_INIT_STATIC_CLIST(&sPendingAsyncCalls);
 
 // POST/GET stream type
 enum eNPPStreamTypeInternal {
@@ -103,92 +107,84 @@ PR_BEGIN_EXTERN_C
   // Static stub functions that are exported to the 4.x plugin as entry
   // points via the CALLBACKS variable.
   //
-  static NPError NP_EXPORT
+  static NPError NP_CALLBACK
   _requestread(NPStream *pstream, NPByteRange *rangeList);
 
-  static NPError NP_EXPORT
+  static NPError NP_CALLBACK
   _geturlnotify(NPP npp, const char* relativeURL, const char* target,
                 void* notifyData);
 
-  static NPError NP_EXPORT
+  static NPError NP_CALLBACK
   _getvalue(NPP npp, NPNVariable variable, void *r_value);
 
-  static NPError NP_EXPORT
+  static NPError NP_CALLBACK
   _setvalue(NPP npp, NPPVariable variable, void *r_value);
 
-  static NPError NP_EXPORT
+  static NPError NP_CALLBACK
   _geturl(NPP npp, const char* relativeURL, const char* target);
 
-  static NPError NP_EXPORT
+  static NPError NP_CALLBACK
   _posturlnotify(NPP npp, const char* relativeURL, const char *target,
                  uint32 len, const char *buf, NPBool file, void* notifyData);
 
-  static NPError NP_EXPORT
+  static NPError NP_CALLBACK
   _posturl(NPP npp, const char* relativeURL, const char *target, uint32 len,
               const char *buf, NPBool file);
 
-  static NPError NP_EXPORT
+  static NPError NP_CALLBACK
   _newstream(NPP npp, NPMIMEType type, const char* window, NPStream** pstream);
 
-  static int32 NP_EXPORT
+  static int32 NP_CALLBACK
   _write(NPP npp, NPStream *pstream, int32 len, void *buffer);
 
-  static NPError NP_EXPORT
+  static NPError NP_CALLBACK
   _destroystream(NPP npp, NPStream *pstream, NPError reason);
 
-  static void NP_EXPORT
+  static void NP_CALLBACK
   _status(NPP npp, const char *message);
 
-#if 0
-
-  static void NP_EXPORT
-  _registerwindow(NPP npp, void* window);
-
-  static void NP_EXPORT
-  _unregisterwindow(NPP npp, void* window);
-
-  static int16 NP_EXPORT
-  _allocateMenuID(NPP npp, NPBool isSubmenu);
-
-#endif
-
-  static void NP_EXPORT
+  static void NP_CALLBACK
   _memfree (void *ptr);
 
-  static uint32 NP_EXPORT
+  static uint32 NP_CALLBACK
   _memflush(uint32 size);
 
-  static void NP_EXPORT
+  static void NP_CALLBACK
   _reloadplugins(NPBool reloadPages);
 
-  static void NP_EXPORT
+  static void NP_CALLBACK
   _invalidaterect(NPP npp, NPRect *invalidRect);
 
-  static void NP_EXPORT
+  static void NP_CALLBACK
   _invalidateregion(NPP npp, NPRegion invalidRegion);
 
-  static void NP_EXPORT
+  static void NP_CALLBACK
   _forceredraw(NPP npp);
 
-  static void NP_EXPORT
+  static void NP_CALLBACK
   _pushpopupsenabledstate(NPP npp, NPBool enabled);
 
-  static void NP_EXPORT
+  static void NP_CALLBACK
   _poppopupsenabledstate(NPP npp);
 
-  static const char* NP_EXPORT
+  typedef void(*PluginThreadCallback)(void *);
+  static void NP_CALLBACK
+  _pluginthreadasynccall(NPP instance, PluginThreadCallback func,
+                         void *userData);
+
+  static const char* NP_CALLBACK
   _useragent(NPP npp);
 
-  static void* NP_EXPORT
+  static void* NP_CALLBACK
   _memalloc (uint32 size);
 
 #ifdef OJI
-  static JRIEnv* NP_EXPORT
+  static JRIEnv* NP_CALLBACK
   _getJavaEnv(void);
 
 #if 1
 
-  static jref NP_EXPORT
+  static jref NP_CALLBACK
   _getJavaPeer(NPP npp);
 
 #endif
@@ -379,6 +375,9 @@ ns4xPlugin::CheckClassInitialized(void)
   CALLBACKS.enumerate =
     NewNPN_EnumerateProc(FP2TV(_enumerate));
 
+  CALLBACKS.construct =
+    NewNPN_ConstructProc(FP2TV(_construct));
+
   CALLBACKS.releasevariantvalue =
     NewNPN_ReleaseVariantValueProc(FP2TV(_releasevariantvalue));
 
@@ -390,6 +389,14 @@ ns4xPlugin::CheckClassInitialized(void)
 
   CALLBACKS.poppopupsenabledstate =
     NewNPN_PopPopupsEnabledStateProc(FP2TV(_poppopupsenabledstate));
+
+  CALLBACKS.pluginthreadasynccall =
+    NewNPN_PluginThreadAsyncCallProc(FP2TV(_pluginthreadasynccall));
+
+  if (!sPluginThreadAsyncCallLock) {
+    sPluginThreadAsyncCallLock =
+      nsAutoLock::NewLock("sPluginThreadAsyncCallLock");
+  }
 
   initialized = TRUE;
 
@@ -421,43 +428,64 @@ ns4xPlugin::ns4xPlugin(NPPluginFuncs* callbacks, PRLibrary* aLibrary,
   fCallbacks.size = sizeof(fCallbacks);
 
   nsresult result = pfnGetEntryPoints(&fCallbacks);
-  NS_ASSERTION( NS_OK == result,"Failed to get callbacks");
+  NS_ASSERTION(result == NS_OK, "Failed to get callbacks");
 
   NS_ASSERTION(HIBYTE(fCallbacks.version) >= NP_VERSION_MAJOR,
                "callback version is less than NP version");
 
   fShutdownEntry = (NP_PLUGINSHUTDOWN)PR_FindSymbol(aLibrary, "NP_Shutdown");
 #elif defined(XP_MACOSX)
-  // call into the entry point
-  NP_MAIN pfnMain = (NP_MAIN) PR_FindSymbol(aLibrary, "main");
-
-  if (pfnMain == NULL)
-    return;
-
-  NPP_ShutdownUPP pfnShutdown;
   NPPluginFuncs np_callbacks;
   memset((void*) &np_callbacks, 0, sizeof(np_callbacks));
   np_callbacks.size = sizeof(np_callbacks);
-  NPError error;
 
-  NS_TRY_SAFE_CALL_RETURN(error,
-                          CallNPP_MainEntryProc(pfnMain,
-                                                &(ns4xPlugin::CALLBACKS),
-                                                &np_callbacks,
-                                                &pfnShutdown),
-                          aLibrary, nsnull);
+#ifdef MACOSX_GETENTRYPOINT_SUPPORT
+  fShutdownEntry = (NP_PLUGINSHUTDOWN)PR_FindSymbol(aLibrary, "NP_Shutdown");
+  NP_GETENTRYPOINTS pfnGetEntryPoints = (NP_GETENTRYPOINTS)PR_FindSymbol(aLibrary, "NP_GetEntryPoints");
+  NP_PLUGININIT pfnInitialize = (NP_PLUGININIT)PR_FindSymbol(aLibrary, "NP_Initialize");
+  usesGetEntryPoints = (pfnGetEntryPoints && pfnInitialize && fShutdownEntry);
 
-  NPP_PLUGIN_LOG(PLUGIN_LOG_BASIC,
-                 ("NPP MainEntryProc called: return=%d\n",error));
+  if (usesGetEntryPoints) {
+    // we call NP_Initialize before getting function pointers to match
+    // WebKit's behavior. They implemented this first on Mac OS X.
+    if (pfnInitialize(&(ns4xPlugin::CALLBACKS)) != NPERR_NO_ERROR)
+      return;
+    if (pfnGetEntryPoints(&np_callbacks) != NPERR_NO_ERROR)
+      return;
+  }
+  else
+#endif
+  {
+    // call into the entry point
+    NP_MAIN pfnMain = (NP_MAIN)PR_FindSymbol(aLibrary, "main");
 
-  if (error != NPERR_NO_ERROR)
-    return;
+    if (pfnMain == NULL)
+      return;
 
-  // version is a uint16 so cast to int to avoid an invalid
-  // comparison due to limited range of the data type
-  int cb_version = np_callbacks.version;
-  if ((cb_version >> 8) < NP_VERSION_MAJOR)
-    return;
+    NPError error;
+    NPP_ShutdownUPP pfnMainShutdown;
+    NS_TRY_SAFE_CALL_RETURN(error,
+                            CallNPP_MainEntryProc(pfnMain,
+                                                  &(ns4xPlugin::CALLBACKS),
+                                                  &np_callbacks,
+                                                  &pfnMainShutdown),
+                            aLibrary,
+                            nsnull);
+    
+    NPP_PLUGIN_LOG(PLUGIN_LOG_BASIC,
+                   ("NPP MainEntryProc called: return=%d\n",error));
+    
+    if (error != NPERR_NO_ERROR)
+      return;
+    
+    fShutdownEntry = (NP_PLUGINSHUTDOWN)TV2FP(pfnMainShutdown);
+    
+    // version is a uint16 so cast to int to avoid an invalid
+    // comparison due to limited range of the data type
+    int cb_version = np_callbacks.version;
+    if ((cb_version >> 8) < NP_VERSION_MAJOR)
+      return;
+  }
 
   // wrap all plugin entry points tvectors as mach-o callable function
   // pointers.
@@ -477,7 +505,6 @@ ns4xPlugin::ns4xPlugin(NPPluginFuncs* callbacks, PRLibrary* aLibrary,
   fCallbacks.urlnotify = (NPP_URLNotifyUPP) TV2FP(np_callbacks.urlnotify);
   fCallbacks.getvalue = (NPP_GetValueUPP) TV2FP(np_callbacks.getvalue);
   fCallbacks.setvalue = (NPP_SetValueUPP) TV2FP(np_callbacks.setvalue);
-  fShutdownEntry = (NP_PLUGINSHUTDOWN) TV2FP(pfnShutdown);
 #else // for everyone else
   memcpy((void*) &fCallbacks, (void*) callbacks, sizeof(fCallbacks));
   fShutdownEntry = aShutdown;
@@ -556,7 +583,7 @@ ns4xPlugin::CreatePlugin(nsIServiceManagerObsolete* aServiceMgr,
   callbacks.size = sizeof(callbacks);
 
   NP_PLUGINSHUTDOWN pfnShutdown =
-    (NP_PLUGINSHUTDOWN)PR_FindSymbol(aLibrary, "NP_Shutdown");
+    (NP_PLUGINSHUTDOWN)PR_FindFunctionSymbol(aLibrary, "NP_Shutdown");
 
   // create the new plugin handler
   *aResult = plptr =
@@ -576,7 +603,7 @@ ns4xPlugin::CreatePlugin(nsIServiceManagerObsolete* aServiceMgr,
   plptr->Initialize();
 
   NP_PLUGINUNIXINIT pfnInitialize =
-    (NP_PLUGINUNIXINIT)PR_FindSymbol(aLibrary, "NP_Initialize");
+    (NP_PLUGINUNIXINIT)PR_FindFunctionSymbol(aLibrary, "NP_Initialize");
 
   if (pfnInitialize == NULL)
     return NS_ERROR_UNEXPECTED; // XXX Right error?
@@ -875,7 +902,7 @@ nsresult
 ns4xPlugin::GetMIMEDescription(const char* *resultingDesc)
 {
   const char* (*npGetMIMEDescription)() =
-    (const char* (*)()) PR_FindSymbol(fLibrary, "NP_GetMIMEDescription");
+    (const char* (*)()) PR_FindFunctionSymbol(fLibrary, "NP_GetMIMEDescription");
 
   *resultingDesc = npGetMIMEDescription ? npGetMIMEDescription() : "";
 
@@ -895,7 +922,7 @@ ns4xPlugin::GetValue(nsPluginVariable variable, void *value)
   ("ns4xPlugin::GetValue called: this=%p, variable=%d\n", this, variable));
 
   NPError (*npGetValue)(void*, nsPluginVariable, void*) =
-    (NPError (*)(void*, nsPluginVariable, void*)) PR_FindSymbol(fLibrary,
+    (NPError (*)(void*, nsPluginVariable, void*)) PR_FindFunctionSymbol(fLibrary,
                                                                 "NP_GetValue");
 
   if (npGetValue && NPERR_NO_ERROR == npGetValue(nsnull, variable, value)) {
@@ -916,6 +943,8 @@ MakeNew4xStreamInternal(NPP npp, const char *relativeURL, const char *target,
 {
   if (!npp)
     return NPERR_INVALID_INSTANCE_ERROR;
+
+  PluginDestructionGuard guard(npp);
 
   nsIPluginInstance *inst = (nsIPluginInstance *) npp->ndata;
 
@@ -959,12 +988,29 @@ MakeNew4xStreamInternal(NPP npp, const char *relativeURL, const char *target,
 // Static callbacks that get routed back through the new C++ API
 //
 
-NPError NP_EXPORT
+NPError NP_CALLBACK
 _geturl(NPP npp, const char* relativeURL, const char* target)
 {
   NPN_PLUGIN_LOG(PLUGIN_LOG_NORMAL,
   ("NPN_GetURL: npp=%p, target=%s, url=%s\n", (void *)npp, target,
    relativeURL));
+
+  PluginDestructionGuard guard(npp);
+
+  // Block Adobe Acrobat from loading URLs that are not http:, https:,
+  // or ftp: URLs if the given target is null.
+  if (target == nsnull && relativeURL &&
+      (strncmp(relativeURL, "http:", 5) != 0) &&
+      (strncmp(relativeURL, "https:", 6) != 0) &&
+      (strncmp(relativeURL, "ftp:", 4) != 0)) {
+    ns4xPluginInstance *inst = (ns4xPluginInstance *) npp->ndata;
+
+    const char *name = nsPluginHostImpl::GetPluginName(inst);
+
+    if (name && strstr(name, "Adobe") && strstr(name, "Acrobat")) {
+      return NPERR_NO_ERROR;
+    }
+  }
 
   return MakeNew4xStreamInternal (npp, relativeURL, target,
                                   eNPPStreamTypeInternal_Get);
@@ -972,13 +1018,15 @@ _geturl(NPP npp, const char* relativeURL, const char* target)
 
 
 ////////////////////////////////////////////////////////////////////////
-NPError NP_EXPORT
+NPError NP_CALLBACK
 _geturlnotify(NPP npp, const char* relativeURL, const char* target,
               void* notifyData)
 {
   NPN_PLUGIN_LOG(PLUGIN_LOG_NORMAL,
     ("NPN_GetURLNotify: npp=%p, target=%s, notify=%p, url=%s\n", (void*)npp,
      target, notifyData, relativeURL));
+
+  PluginDestructionGuard guard(npp);
 
   return MakeNew4xStreamInternal (npp, relativeURL, target,
                                   eNPPStreamTypeInternal_Get, PR_TRUE,
@@ -987,7 +1035,7 @@ _geturlnotify(NPP npp, const char* relativeURL, const char* target,
 
 
 ////////////////////////////////////////////////////////////////////////
-NPError NP_EXPORT
+NPError NP_CALLBACK
 _posturlnotify(NPP npp, const char *relativeURL, const char *target,
                uint32 len, const char *buf, NPBool file, void *notifyData)
 {
@@ -997,6 +1045,8 @@ _posturlnotify(NPP npp, const char *relativeURL, const char *target,
                   (void*)npp, target, len, file, notifyData, relativeURL,
                   buf));
 
+  PluginDestructionGuard guard(npp);
+
   return MakeNew4xStreamInternal(npp, relativeURL, target,
                                  eNPPStreamTypeInternal_Post, PR_TRUE,
                                  notifyData, len, buf, file);
@@ -1004,7 +1054,7 @@ _posturlnotify(NPP npp, const char *relativeURL, const char *target,
 
 
 ////////////////////////////////////////////////////////////////////////
-NPError NP_EXPORT
+NPError NP_CALLBACK
 _posturl(NPP npp, const char *relativeURL, const char *target,
          uint32 len, const char *buf, NPBool file)
 {
@@ -1013,9 +1063,11 @@ _posturl(NPP npp, const char *relativeURL, const char *target,
                   "buf=%s\n",
                   (void*)npp, target, file, len, relativeURL, buf));
 
- return MakeNew4xStreamInternal(npp, relativeURL, target,
-                                eNPPStreamTypeInternal_Post, PR_FALSE, nsnull,
-                                len, buf, file);
+  PluginDestructionGuard guard(npp);
+
+  return MakeNew4xStreamInternal(npp, relativeURL, target,
+                                 eNPPStreamTypeInternal_Post, PR_FALSE, nsnull,
+                                 len, buf, file);
 }
 
 
@@ -1037,7 +1089,7 @@ public:
   ~ns4xStreamWrapper();
 
   void GetStream(nsIOutputStream* &result);
-  NPStream* GetNPStream(void) { return &fNPStream; };
+  NPStream* GetNPStream(void) { return &fNPStream; }
 };
 
 NS_IMPL_ISUPPORTS1(ns4xStreamWrapper, nsISupports)
@@ -1069,7 +1121,7 @@ ns4xStreamWrapper::GetStream(nsIOutputStream* &result)
 
 
 ////////////////////////////////////////////////////////////////////////
-NPError NP_EXPORT
+NPError NP_CALLBACK
 _newstream(NPP npp, NPMIMEType type, const char* target, NPStream* *result)
 {
   NPN_PLUGIN_LOG(PLUGIN_LOG_NORMAL,
@@ -1079,6 +1131,9 @@ _newstream(NPP npp, NPMIMEType type, const char* target, NPStream* *result)
   NPError err = NPERR_INVALID_INSTANCE_ERROR;
   if (npp && npp->ndata) {
     nsIPluginInstance *inst = (nsIPluginInstance *) npp->ndata;
+
+    PluginDestructionGuard guard(inst);
+
     nsCOMPtr<nsIOutputStream> stream;
     nsCOMPtr<nsIPluginInstancePeer> peer;
     if (NS_SUCCEEDED(inst->GetPeer(getter_AddRefs(peer))) &&
@@ -1101,7 +1156,7 @@ _newstream(NPP npp, NPMIMEType type, const char* target, NPStream* *result)
 
 
 ////////////////////////////////////////////////////////////////////////
-int32 NP_EXPORT
+int32 NP_CALLBACK
 _write(NPP npp, NPStream *pstream, int32 len, void *buffer)
 {
   NPN_PLUGIN_LOG(PLUGIN_LOG_NORMAL,
@@ -1111,6 +1166,8 @@ _write(NPP npp, NPStream *pstream, int32 len, void *buffer)
   // negative return indicates failure to the plugin
   if (!npp)
     return -1;
+
+  PluginDestructionGuard guard(npp);
 
   ns4xStreamWrapper* wrapper = (ns4xStreamWrapper*) pstream->ndata;
   NS_ASSERTION(wrapper != NULL, "null stream");
@@ -1133,7 +1190,7 @@ _write(NPP npp, NPStream *pstream, int32 len, void *buffer)
 
 
 ////////////////////////////////////////////////////////////////////////
-NPError NP_EXPORT
+NPError NP_CALLBACK
 _destroystream(NPP npp, NPStream *pstream, NPError reason)
 {
   NPN_PLUGIN_LOG(PLUGIN_LOG_NORMAL,
@@ -1142,6 +1199,8 @@ _destroystream(NPP npp, NPStream *pstream, NPError reason)
 
   if (!npp)
     return NPERR_INVALID_INSTANCE_ERROR;
+
+  PluginDestructionGuard guard(npp);
 
   nsCOMPtr<nsIPluginStreamListener> listener =
     do_QueryInterface((nsISupports *)pstream->ndata);
@@ -1174,7 +1233,7 @@ _destroystream(NPP npp, NPStream *pstream, NPError reason)
 
 
 ////////////////////////////////////////////////////////////////////////
-void NP_EXPORT
+void NP_CALLBACK
 _status(NPP npp, const char *message)
 {
   NPN_PLUGIN_LOG(PLUGIN_LOG_NORMAL, ("NPN_Status: npp=%p, message=%s\n",
@@ -1187,6 +1246,8 @@ _status(NPP npp, const char *message)
 
   nsIPluginInstance *inst = (nsIPluginInstance *) npp->ndata;
 
+  PluginDestructionGuard guard(inst);
+
   nsCOMPtr<nsIPluginInstancePeer> peer;
   if (NS_SUCCEEDED(inst->GetPeer(getter_AddRefs(peer))) && peer) {
     peer->ShowStatus(message);
@@ -1195,7 +1256,7 @@ _status(NPP npp, const char *message)
 
 
 ////////////////////////////////////////////////////////////////////////
-void NP_EXPORT
+void NP_CALLBACK
 _memfree (void *ptr)
 {
   NPN_PLUGIN_LOG(PLUGIN_LOG_NOISY, ("NPN_MemFree: ptr=%p\n", ptr));
@@ -1206,7 +1267,7 @@ _memfree (void *ptr)
 
 
 ////////////////////////////////////////////////////////////////////////
-uint32 NP_EXPORT
+uint32 NP_CALLBACK
 _memflush(uint32 size)
 {
   NPN_PLUGIN_LOG(PLUGIN_LOG_NOISY, ("NPN_MemFlush: size=%d\n", size));
@@ -1217,7 +1278,7 @@ _memflush(uint32 size)
 
 
 ////////////////////////////////////////////////////////////////////////
-void NP_EXPORT
+void NP_CALLBACK
 _reloadplugins(NPBool reloadPages)
 {
   NPN_PLUGIN_LOG(PLUGIN_LOG_NORMAL,
@@ -1230,7 +1291,7 @@ _reloadplugins(NPBool reloadPages)
 
 
 ////////////////////////////////////////////////////////////////////////
-void NP_EXPORT
+void NP_CALLBACK
 _invalidaterect(NPP npp, NPRect *invalidRect)
 {
   NPN_PLUGIN_LOG(PLUGIN_LOG_NORMAL,
@@ -1245,6 +1306,8 @@ _invalidaterect(NPP npp, NPRect *invalidRect)
 
   nsIPluginInstance *inst = (nsIPluginInstance *) npp->ndata;
 
+  PluginDestructionGuard guard(inst);
+
   nsCOMPtr<nsIPluginInstancePeer> peer;
   if (NS_SUCCEEDED(inst->GetPeer(getter_AddRefs(peer))) && peer) {
     nsCOMPtr<nsIWindowlessPluginInstancePeer> wpeer(do_QueryInterface(peer));
@@ -1257,7 +1320,7 @@ _invalidaterect(NPP npp, NPRect *invalidRect)
 
 
 ////////////////////////////////////////////////////////////////////////
-void NP_EXPORT
+void NP_CALLBACK
 _invalidateregion(NPP npp, NPRegion invalidRegion)
 {
   NPN_PLUGIN_LOG(PLUGIN_LOG_NORMAL,
@@ -1271,11 +1334,13 @@ _invalidateregion(NPP npp, NPRegion invalidRegion)
 
   nsIPluginInstance *inst = (nsIPluginInstance *) npp->ndata;
 
+  PluginDestructionGuard guard(inst);
+
   nsCOMPtr<nsIPluginInstancePeer> peer;
   if (NS_SUCCEEDED(inst->GetPeer(getter_AddRefs(peer))) && peer) {
     nsCOMPtr<nsIWindowlessPluginInstancePeer> wpeer(do_QueryInterface(peer));
     if (wpeer) {
-      // XXX nsRegion & NPRegion are typedef'd to the same thing
+      // nsPluginRegion & NPRegion are typedef'd to the same thing
       wpeer->InvalidateRegion((nsPluginRegion)invalidRegion);
     }
   }
@@ -1283,7 +1348,7 @@ _invalidateregion(NPP npp, NPRegion invalidRegion)
 
 
 ////////////////////////////////////////////////////////////////////////
-void NP_EXPORT
+void NP_CALLBACK
 _forceredraw(NPP npp)
 {
   NPN_PLUGIN_LOG(PLUGIN_LOG_NORMAL, ("NPN_ForceDraw: npp=%p\n", (void*)npp));
@@ -1295,6 +1360,8 @@ _forceredraw(NPP npp)
 
   nsIPluginInstance *inst = (nsIPluginInstance *) npp->ndata;
 
+  PluginDestructionGuard guard(inst);
+
   nsCOMPtr<nsIPluginInstancePeer> peer;
   if (NS_SUCCEEDED(inst->GetPeer(getter_AddRefs(peer))) && peer) {
     nsCOMPtr<nsIWindowlessPluginInstancePeer> wpeer(do_QueryInterface(peer));
@@ -1304,13 +1371,15 @@ _forceredraw(NPP npp)
   }
 }
 
-static JSContext *
-GetJSContextFromNPP(NPP npp)
+static nsIDocument *
+GetDocumentFromNPP(NPP npp)
 {
   NS_ENSURE_TRUE(npp, nsnull);
 
   ns4xPluginInstance *inst = (ns4xPluginInstance *)npp->ndata;
   NS_ENSURE_TRUE(inst, nsnull);
+
+  PluginDestructionGuard guard(inst);
 
   nsCOMPtr<nsIPluginInstancePeer> pip;
   inst->GetPeer(getter_AddRefs(pip));
@@ -1323,8 +1392,13 @@ GetJSContextFromNPP(NPP npp)
 
   nsCOMPtr<nsIDocument> doc;
   owner->GetDocument(getter_AddRefs(doc));
-  NS_ENSURE_TRUE(doc, nsnull);
 
+  return doc;
+}
+
+static JSContext *
+GetJSContextFromDoc(nsIDocument *doc)
+{
   nsIScriptGlobalObject *sgo = doc->GetScriptGlobalObject();
   NS_ENSURE_TRUE(sgo, nsnull);
 
@@ -1334,7 +1408,16 @@ GetJSContextFromNPP(NPP npp)
   return (JSContext *)scx->GetNativeContext();
 }
 
-NPObject* NP_EXPORT
+static JSContext *
+GetJSContextFromNPP(NPP npp)
+{
+  nsIDocument *doc = GetDocumentFromNPP(npp);
+  NS_ENSURE_TRUE(doc, nsnull);
+
+  return GetJSContextFromDoc(doc);
+}
+
+NPObject* NP_CALLBACK
 _getwindowobject(NPP npp)
 {
   JSContext *cx = GetJSContextFromNPP(npp);
@@ -1346,7 +1429,7 @@ _getwindowobject(NPP npp)
   return nsJSObjWrapper::GetNewOrUsed(npp, cx, ::JS_GetGlobalObject(cx));
 }
 
-NPObject* NP_EXPORT
+NPObject* NP_CALLBACK
 _getpluginelement(NPP npp)
 {
   nsIDOMElement *elementp = nsnull;
@@ -1393,7 +1476,7 @@ doGetIdentifier(JSContext *cx, const NPUTF8* name)
   return (NPIdentifier)STRING_TO_JSVAL(str);
 }
 
-NPIdentifier NP_EXPORT
+NPIdentifier NP_CALLBACK
 _getstringidentifier(const NPUTF8* name)
 {
   nsCOMPtr<nsIThreadJSContextStack> stack =
@@ -1410,7 +1493,7 @@ _getstringidentifier(const NPUTF8* name)
   return doGetIdentifier(cx, name);
 }
 
-void NP_EXPORT
+void NP_CALLBACK
 _getstringidentifiers(const NPUTF8** names, int32_t nameCount,
                       NPIdentifier *identifiers)
 {
@@ -1431,13 +1514,13 @@ _getstringidentifiers(const NPUTF8** names, int32_t nameCount,
   }
 }
 
-NPIdentifier NP_EXPORT
+NPIdentifier NP_CALLBACK
 _getintidentifier(int32_t intid)
 {
   return (NPIdentifier)INT_TO_JSVAL(intid);
 }
 
-NPUTF8* NP_EXPORT
+NPUTF8* NP_CALLBACK
 _utf8fromidentifier(NPIdentifier identifier)
 {
   if (!identifier)
@@ -1456,7 +1539,7 @@ _utf8fromidentifier(NPIdentifier identifier)
                                       ::JS_GetStringLength(str)));
 }
 
-int32_t NP_EXPORT
+int32_t NP_CALLBACK
 _intfromidentifier(NPIdentifier identifier)
 {
   jsval v = (jsval)identifier;
@@ -1468,7 +1551,7 @@ _intfromidentifier(NPIdentifier identifier)
   return JSVAL_TO_INT(v);
 }
 
-bool NP_EXPORT
+bool NP_CALLBACK
 _identifierisstring(NPIdentifier identifier)
 {
   jsval v = (jsval)identifier;
@@ -1476,7 +1559,7 @@ _identifierisstring(NPIdentifier identifier)
   return JSVAL_IS_STRING(v);
 }
 
-NPObject* NP_EXPORT
+NPObject* NP_CALLBACK
 _createobject(NPP npp, NPClass* aClass)
 {
   if (!npp) {
@@ -1484,6 +1567,8 @@ _createobject(NPP npp, NPClass* aClass)
 
     return nsnull;
   }
+
+  PluginDestructionGuard guard(npp);
 
   if (!aClass) {
     NS_ERROR("Null class passed to _createobject()!");
@@ -1506,10 +1591,13 @@ _createobject(NPP npp, NPClass* aClass)
     npobj->referenceCount = 1;
   }
 
+  NPN_PLUGIN_LOG(PLUGIN_LOG_NOISY,
+                 ("Created NPObject %p, NPClass %p\n", npobj, aClass));
+
   return npobj;
 }
 
-NPObject* NP_EXPORT
+NPObject* NP_CALLBACK
 _retainobject(NPObject* npobj)
 {
   if (npobj) {
@@ -1519,7 +1607,7 @@ _retainobject(NPObject* npobj)
   return npobj;
 }
 
-void NP_EXPORT
+void NP_CALLBACK
 _releaseobject(NPObject* npobj)
 {
   if (!npobj)
@@ -1528,6 +1616,11 @@ _releaseobject(NPObject* npobj)
   int32_t refCnt = PR_AtomicDecrement((PRInt32*)&npobj->referenceCount);
 
   if (refCnt == 0) {
+    nsNPObjWrapper::OnDestroy(npobj);
+
+    NPN_PLUGIN_LOG(PLUGIN_LOG_NOISY,
+                   ("Deleting NPObject %p, refcount hit 0\n", npobj));
+
     if (npobj->_class && npobj->_class->deallocate) {
       npobj->_class->deallocate(npobj);
     } else {
@@ -1536,20 +1629,26 @@ _releaseobject(NPObject* npobj)
   }
 }
 
-bool NP_EXPORT
+bool NP_CALLBACK
 _invoke(NPP npp, NPObject* npobj, NPIdentifier method, const NPVariant *args,
         uint32_t argCount, NPVariant *result)
 {
   if (!npp || !npobj || !npobj->_class || !npobj->_class->invoke)
     return false;
 
+  PluginDestructionGuard guard(npp);
+
   NPPExceptionAutoHolder nppExceptionHolder;
   NPPAutoPusher nppPusher(npp);
+
+  NPN_PLUGIN_LOG(PLUGIN_LOG_NOISY,
+                 ("NPN_Invoke(npp %p, npobj %p, method %p, args %d\n", npp,
+                  npobj, method, argCount));
 
   return npobj->_class->invoke(npobj, method, args, argCount, result);
 }
 
-bool NP_EXPORT
+bool NP_CALLBACK
 _invokeDefault(NPP npp, NPObject* npobj, const NPVariant *args,
                uint32_t argCount, NPVariant *result)
 {
@@ -1559,10 +1658,14 @@ _invokeDefault(NPP npp, NPObject* npobj, const NPVariant *args,
   NPPExceptionAutoHolder nppExceptionHolder;
   NPPAutoPusher nppPusher(npp);
 
+  NPN_PLUGIN_LOG(PLUGIN_LOG_NOISY,
+                 ("NPN_InvokeDefault(npp %p, npobj %p, args %d\n", npp,
+                  npobj, argCount));
+
   return npobj->_class->invokeDefault(npobj, args, argCount, result);
 }
 
-bool NP_EXPORT
+bool NP_CALLBACK
 _evaluate(NPP npp, NPObject* npobj, NPString *script, NPVariant *result)
 {
   if (!npp)
@@ -1570,7 +1673,10 @@ _evaluate(NPP npp, NPObject* npobj, NPString *script, NPVariant *result)
 
   NPPAutoPusher nppPusher(npp);
 
-  JSContext *cx = GetJSContextFromNPP(npp);
+  nsIDocument *doc = GetDocumentFromNPP(npp);
+  NS_ENSURE_TRUE(doc, false);
+
+  JSContext *cx = GetJSContextFromDoc(doc);
   NS_ENSURE_TRUE(cx, false);
 
   JSObject *obj =
@@ -1579,6 +1685,11 @@ _evaluate(NPP npp, NPObject* npobj, NPString *script, NPVariant *result)
   if (!obj) {
     return false;
   }
+
+  // Root obj and the rval (below).
+  jsval vec[] = { OBJECT_TO_JSVAL(obj), JSVAL_NULL };
+  JSAutoTempValueRooter tvr(cx, NS_ARRAY_LENGTH(vec), vec);
+  jsval *rval = &vec[1];
 
   if (result) {
     // Initialize the out param to void
@@ -1597,26 +1708,49 @@ _evaluate(NPP npp, NPObject* npobj, NPString *script, NPVariant *result)
   nsCOMPtr<nsIScriptContext> scx = GetScriptContextFromJSContext(cx);
   NS_ENSURE_TRUE(scx, false);
 
-  nsIPrincipal *principal = nsnull;
-  // XXX: Get the principal from the security stack (TBD)
+  nsIPrincipal *principal = doc->NodePrincipal();
 
-  jsval rval = JSVAL_NULL;
-  if (!::JS_AddNamedRoot(cx, &rval, "NPN_evaluate")) {
-    return false;
+  nsCAutoString specStr;
+  const char *spec;
+
+  nsCOMPtr<nsIURI> uri;
+  principal->GetURI(getter_AddRefs(uri));
+
+  if (uri) {
+    uri->GetSpec(specStr);
+    spec = specStr.get();
+  } else {
+    // No URI in a principal means it's the system principal. If the
+    // document URI is a chrome:// URI, pass that in as the URI of the
+    // script, else pass in null for the filename as there's no way to
+    // know where this document really came from. Passing in null here
+    // also means that the script gets treated by XPConnect as if it
+    // needs additional protection, which is what we want for unknown
+    // chrome code anyways.
+
+    uri = doc->GetDocumentURI();
+    PRBool isChrome = PR_FALSE;
+
+    if (uri && NS_SUCCEEDED(uri->SchemeIs("chrome", &isChrome)) && isChrome) {
+      uri->GetSpec(specStr);
+      spec = specStr.get();
+    } else {
+      spec = nsnull;
+    }
   }
-    
-  nsresult rv = scx->EvaluateStringWithValue(utf16script, obj, principal,
-                                             nsnull, 0, nsnull, &rval, nsnull);
 
-  bool retval = NS_SUCCEEDED(rv) &&
-    (!result || JSValToNPVariant(npp, cx, rval, result));
-  
-  ::JS_RemoveRoot(cx, &rval);
-  
-  return retval;
+  NPN_PLUGIN_LOG(PLUGIN_LOG_NOISY,
+                 ("NPN_Evaluate(npp %p, npobj %p, script <<<%s>>>) called\n",
+                  npp, npobj, script->utf8characters));
+
+  nsresult rv = scx->EvaluateStringWithValue(utf16script, obj, principal,
+                                             spec, 0, 0, rval, nsnull);
+
+  return NS_SUCCEEDED(rv) &&
+         (!result || JSValToNPVariant(npp, cx, *rval, result));
 }
 
-bool NP_EXPORT
+bool NP_CALLBACK
 _getproperty(NPP npp, NPObject* npobj, NPIdentifier property,
              NPVariant *result)
 {
@@ -1626,10 +1760,14 @@ _getproperty(NPP npp, NPObject* npobj, NPIdentifier property,
   NPPExceptionAutoHolder nppExceptionHolder;
   NPPAutoPusher nppPusher(npp);
 
+  NPN_PLUGIN_LOG(PLUGIN_LOG_NOISY,
+                 ("NPN_GetProperty(npp %p, npobj %p, property %p) called\n",
+                  npp, npobj, property));
+
   return npobj->_class->getProperty(npobj, property, result);
 }
 
-bool NP_EXPORT
+bool NP_CALLBACK
 _setproperty(NPP npp, NPObject* npobj, NPIdentifier property,
              const NPVariant *value)
 {
@@ -1639,10 +1777,14 @@ _setproperty(NPP npp, NPObject* npobj, NPIdentifier property,
   NPPExceptionAutoHolder nppExceptionHolder;
   NPPAutoPusher nppPusher(npp);
 
+  NPN_PLUGIN_LOG(PLUGIN_LOG_NOISY,
+                 ("NPN_SetProperty(npp %p, npobj %p, property %p) called\n",
+                  npp, npobj, property));
+
   return npobj->_class->setProperty(npobj, property, value);
 }
 
-bool NP_EXPORT
+bool NP_CALLBACK
 _removeproperty(NPP npp, NPObject* npobj, NPIdentifier property)
 {
   if (!npp || !npobj || !npobj->_class || !npobj->_class->removeProperty)
@@ -1651,10 +1793,14 @@ _removeproperty(NPP npp, NPObject* npobj, NPIdentifier property)
   NPPExceptionAutoHolder nppExceptionHolder;
   NPPAutoPusher nppPusher(npp);
 
+  NPN_PLUGIN_LOG(PLUGIN_LOG_NOISY,
+                 ("NPN_RemoveProperty(npp %p, npobj %p, property %p) called\n",
+                  npp, npobj, property));
+
   return npobj->_class->removeProperty(npobj, property);
 }
 
-bool NP_EXPORT
+bool NP_CALLBACK
 _hasproperty(NPP npp, NPObject* npobj, NPIdentifier propertyName)
 {
   if (!npp || !npobj || !npobj->_class || !npobj->_class->hasProperty)
@@ -1663,10 +1809,14 @@ _hasproperty(NPP npp, NPObject* npobj, NPIdentifier propertyName)
   NPPExceptionAutoHolder nppExceptionHolder;
   NPPAutoPusher nppPusher(npp);
 
+  NPN_PLUGIN_LOG(PLUGIN_LOG_NOISY,
+                 ("NPN_HasProperty(npp %p, npobj %p, property %p) called\n",
+                  npp, npobj, propertyName));
+
   return npobj->_class->hasProperty(npobj, propertyName);
 }
 
-bool NP_EXPORT
+bool NP_CALLBACK
 _hasmethod(NPP npp, NPObject* npobj, NPIdentifier methodName)
 {
   if (!npp || !npobj || !npobj->_class || !npobj->_class->hasMethod)
@@ -1675,15 +1825,22 @@ _hasmethod(NPP npp, NPObject* npobj, NPIdentifier methodName)
   NPPExceptionAutoHolder nppExceptionHolder;
   NPPAutoPusher nppPusher(npp);
 
+  NPN_PLUGIN_LOG(PLUGIN_LOG_NOISY,
+                 ("NPN_HasMethod(npp %p, npobj %p, property %p) called\n",
+                  npp, npobj, methodName));
+
   return npobj->_class->hasProperty(npobj, methodName);
 }
 
-bool NP_EXPORT
+bool NP_CALLBACK
 _enumerate(NPP npp, NPObject *npobj, NPIdentifier **identifier,
            uint32_t *count)
 {
   if (!npp || !npobj || !npobj->_class)
     return false;
+
+  NPN_PLUGIN_LOG(PLUGIN_LOG_NOISY,
+                 ("NPN_Enumerate(npp %p, npobj %p) called\n", npp, npobj));
 
   if (!NP_CLASS_STRUCT_VERSION_HAS_ENUM(npobj->_class) ||
       !npobj->_class->enumerate) {
@@ -1698,7 +1855,23 @@ _enumerate(NPP npp, NPObject *npobj, NPIdentifier **identifier,
   return npobj->_class->enumerate(npobj, identifier, count);
 }
 
-void NP_EXPORT
+bool NP_CALLBACK
+_construct(NPP npp, NPObject* npobj, const NPVariant *args,
+               uint32_t argCount, NPVariant *result)
+{
+  if (!npp || !npobj || !npobj->_class ||
+      !NP_CLASS_STRUCT_VERSION_HAS_CTOR(npobj->_class) ||
+      !npobj->_class->construct) {
+    return false;
+  }
+
+  NPPExceptionAutoHolder nppExceptionHolder;
+  NPPAutoPusher nppPusher(npp);
+
+  return npobj->_class->construct(npobj, args, argCount, result);
+}
+
+void NP_CALLBACK
 _releasevariantvalue(NPVariant* variant)
 {
   switch (variant->type) {
@@ -1733,7 +1906,7 @@ _releasevariantvalue(NPVariant* variant)
   VOID_TO_NPVARIANT(*variant);
 }
 
-bool NP_EXPORT
+bool NP_CALLBACK
 _tostring(NPObject* npobj, NPVariant *result)
 {
   NS_ERROR("Write me!");
@@ -1743,7 +1916,7 @@ _tostring(NPObject* npobj, NPVariant *result)
 
 static char *gNPPException;
 
-void NP_EXPORT
+void NP_CALLBACK
 _setexception(NPObject* npobj, const NPUTF8 *message)
 {
   if (gNPPException) {
@@ -1764,7 +1937,7 @@ PeekException()
 void
 PopException()
 {
-  NS_ASSERTION(!gNPPException, "Uh, no NPP exception to pop!");
+  NS_ASSERTION(gNPPException, "Uh, no NPP exception to pop!");
 
   if (gNPPException) {
     free(gNPPException);
@@ -1787,13 +1960,15 @@ NPPExceptionAutoHolder::~NPPExceptionAutoHolder()
 }
 
 ////////////////////////////////////////////////////////////////////////
-NPError NP_EXPORT
+NPError NP_CALLBACK
 _getvalue(NPP npp, NPNVariable variable, void *result)
 {
   NPN_PLUGIN_LOG(PLUGIN_LOG_NORMAL, ("NPN_GetValue: npp=%p, var=%d\n",
                                      (void*)npp, (int)variable));
 
   nsresult res;
+
+  PluginDestructionGuard guard(npp);
 
   switch(variable) {
 #if defined(XP_UNIX) && !defined(XP_MACOSX)
@@ -1808,8 +1983,6 @@ _getvalue(NPP npp, NPNVariable variable, void *result)
         return NPERR_NO_ERROR;
       }
     }
-#endif
-#if defined(MOZ_WIDGET_GTK) || defined(MOZ_WIDGET_GTK2)
     // adobe nppdf calls XtGetApplicationNameAndClass(display,
     // &instance, &class) we have to init Xt toolkit before get
     // XtDisplay just call gtk_xtbin_new(w,0) once
@@ -1829,7 +2002,7 @@ _getvalue(NPP npp, NPNVariable variable, void *result)
     return NPERR_GENERIC_ERROR;
 #endif
 
-#if defined(XP_WIN) || defined(XP_OS2)
+#if defined(XP_WIN) || defined(XP_OS2) || defined(MOZ_WIDGET_GTK2)
   case NPNVnetscapeWindow: {
     if (!npp || !npp->ndata)
       return NPERR_INVALID_INSTANCE_ERROR;
@@ -1920,10 +2093,6 @@ _getvalue(NPP npp, NPNVariable variable, void *result)
   }
 
   case NPNVToolkit: {
-#ifdef MOZ_WIDGET_GTK
-    *((NPNToolkitType*)result) = NPNVGtk12;
-#endif
-
 #ifdef MOZ_WIDGET_GTK2
     *((NPNToolkitType*)result) = NPNVGtk2;
 #endif
@@ -1955,13 +2124,51 @@ _getvalue(NPP npp, NPNVariable variable, void *result)
     return NPERR_NO_ERROR;
   }
 
+  case NPNVSupportsWindowless: {
+#if defined(XP_WIN) || defined(XP_MACOSX) || (defined(MOZ_X11) && defined(MOZ_WIDGET_GTK2))
+    *(NPBool*)result = PR_TRUE;
+#else
+    *(NPBool*)result = PR_FALSE;
+#endif
+    return NPERR_NO_ERROR;
+  }
+
+#ifdef XP_MACOSX
+  case NPNVpluginDrawingModel: {
+    if (npp) {
+      ns4xPluginInstance *inst = (ns4xPluginInstance*)npp->ndata;
+      if (inst) {
+        *(NPDrawingModel*)result = inst->GetDrawingModel();
+        return NPERR_NO_ERROR;
+      }
+    }
+    else {
+      return NPERR_GENERIC_ERROR;
+    }
+  }
+
+#ifndef NP_NO_QUICKDRAW
+  case NPNVsupportsQuickDrawBool: {
+    *(NPBool*)result = PR_TRUE;
+    
+    return NPERR_NO_ERROR;
+  }
+#endif
+
+  case NPNVsupportsCoreGraphicsBool: {
+    *(NPBool*)result = PR_TRUE;
+    
+    return NPERR_NO_ERROR;
+  }
+#endif
+
   default : return NPERR_GENERIC_ERROR;
   }
 }
 
 
 ////////////////////////////////////////////////////////////////////////
-NPError NP_EXPORT
+NPError NP_CALLBACK
 _setvalue(NPP npp, NPPVariable variable, void *result)
 {
   NPN_PLUGIN_LOG(PLUGIN_LOG_NORMAL, ("NPN_SetValue: npp=%p, var=%d\n",
@@ -1977,11 +2184,13 @@ _setvalue(NPP npp, NPPVariable variable, void *result)
   if (inst == NULL)
     return NPERR_INVALID_INSTANCE_ERROR;
 
+  PluginDestructionGuard guard(inst);
+
   switch (variable) {
 
     // we should keep backward compatibility with 4x where the
     // actual pointer value is checked rather than its content
-    // wnen passing booleans
+    // when passing booleans
     case NPPVpluginWindowBool: {
       NPBool bWindowless = (result == nsnull);
       return inst->SetWindowless(bWindowless);
@@ -2001,12 +2210,14 @@ _setvalue(NPP npp, NPPVariable variable, void *result)
           NPBool bPushCaller = (result != nsnull);
 
           if (bPushCaller) {
+            rv = NS_ERROR_FAILURE;
+
             nsCOMPtr<nsIPluginInstancePeer> peer;
             if (NS_SUCCEEDED(inst->GetPeer(getter_AddRefs(peer))) && peer) {
               nsCOMPtr<nsIPluginInstancePeer2> peer2 =
-                do_QueryInterface(peer, &rv);
+                do_QueryInterface(peer);
 
-              if (NS_SUCCEEDED(rv) && peer2) {
+              if (peer2) {
                 JSContext *cx;
                 rv = peer2->GetJSContext(&cx);
 
@@ -2026,6 +2237,19 @@ _setvalue(NPP npp, NPPVariable variable, void *result)
       NPBool bCached = (result != nsnull);
       return inst->SetCached(bCached);
     }
+      
+#ifdef XP_MACOSX
+    case NPPVpluginDrawingModel: {
+      if (inst) {
+        int dModelValue = (int)result;
+        inst->SetDrawingModel((NPDrawingModel)dModelValue);
+        return NPERR_NO_ERROR;
+      }
+      else {
+        return NPERR_GENERIC_ERROR;
+      }
+    }
+#endif
 
     default:
       return NPERR_NO_ERROR;
@@ -2033,7 +2257,7 @@ _setvalue(NPP npp, NPPVariable variable, void *result)
 }
 
 ////////////////////////////////////////////////////////////////////////
-NPError NP_EXPORT
+NPError NP_CALLBACK
 _requestread(NPStream *pstream, NPByteRange *rangeList)
 {
   NPN_PLUGIN_LOG(PLUGIN_LOG_NORMAL, ("NPN_RequestRead: stream=%p\n",
@@ -2069,7 +2293,7 @@ _requestread(NPStream *pstream, NPByteRange *rangeList)
 
 ////////////////////////////////////////////////////////////////////////
 #ifdef OJI
-JRIEnv* NP_EXPORT
+JRIEnv* NP_CALLBACK
 _getJavaEnv(void)
 {
   NPN_PLUGIN_LOG(PLUGIN_LOG_NORMAL, ("NPN_GetJavaEnv\n"));
@@ -2078,7 +2302,7 @@ _getJavaEnv(void)
 #endif
 
 ////////////////////////////////////////////////////////////////////////
-const char * NP_EXPORT
+const char * NP_CALLBACK
 _useragent(NPP npp)
 {
   NPN_PLUGIN_LOG(PLUGIN_LOG_NORMAL, ("NPN_UserAgent: npp=%p\n", (void*)npp));
@@ -2094,7 +2318,7 @@ _useragent(NPP npp)
 
 
 ////////////////////////////////////////////////////////////////////////
-void * NP_EXPORT
+void * NP_CALLBACK
 _memalloc (uint32 size)
 {
   NPN_PLUGIN_LOG(PLUGIN_LOG_NOISY, ("NPN_MemAlloc: size=%d\n", size));
@@ -2103,7 +2327,7 @@ _memalloc (uint32 size)
 
 #ifdef OJI
 ////////////////////////////////////////////////////////////////////////
-jref NP_EXPORT
+jref NP_CALLBACK
 _getJavaPeer(NPP npp)
 {
   NPN_PLUGIN_LOG(PLUGIN_LOG_NORMAL, ("NPN_GetJavaPeer: npp=%p\n", (void*)npp));
@@ -2112,7 +2336,7 @@ _getJavaPeer(NPP npp)
 
 #endif /* OJI */
 
-void NP_EXPORT
+void NP_CALLBACK
 _pushpopupsenabledstate(NPP npp, NPBool enabled)
 {
   ns4xPluginInstance *inst = (ns4xPluginInstance *)npp->ndata;
@@ -2122,7 +2346,7 @@ _pushpopupsenabledstate(NPP npp, NPBool enabled)
   inst->PushPopupsEnabledState(enabled);
 }
 
-void NP_EXPORT
+void NP_CALLBACK
 _poppopupsenabledstate(NPP npp)
 {
   ns4xPluginInstance *inst = (ns4xPluginInstance *)npp->ndata;
@@ -2130,6 +2354,158 @@ _poppopupsenabledstate(NPP npp)
     return;
 
   inst->PopPopupsEnabledState();
+}
+
+class nsPluginThreadRunnable : public nsRunnable,
+                               public PRCList
+{
+public:
+  nsPluginThreadRunnable(NPP instance, PluginThreadCallback func,
+                         void *userData);
+  virtual ~nsPluginThreadRunnable();
+
+  NS_IMETHOD Run();
+
+  PRBool IsForInstance(NPP instance)
+  {
+    return (mInstance == instance);
+  }
+
+  void Invalidate()
+  {
+    mFunc = nsnull;
+  }
+
+  PRBool IsValid()
+  {
+    return (mFunc != nsnull);
+  }
+
+private:  
+  NPP mInstance;
+  PluginThreadCallback mFunc;
+  void *mUserData;
+};
+
+nsPluginThreadRunnable::nsPluginThreadRunnable(NPP instance,
+                                               PluginThreadCallback func,
+                                               void *userData)
+  : mInstance(instance), mFunc(func), mUserData(userData)
+{
+  if (!sPluginThreadAsyncCallLock) {
+    // Failed to create lock, not much we can do here then...
+    mFunc = nsnull;
+
+    return;
+  }
+
+  PR_INIT_CLIST(this);
+
+  {
+    nsAutoLock lock(sPluginThreadAsyncCallLock);
+
+    ns4xPluginInstance *inst = (ns4xPluginInstance *)instance->ndata;
+    if (!inst || !inst->IsStarted()) {
+      // The plugin was stopped, ignore this async call.
+      mFunc = nsnull;
+
+      return;
+    }
+
+    PR_APPEND_LINK(this, &sPendingAsyncCalls);
+  }
+}
+
+nsPluginThreadRunnable::~nsPluginThreadRunnable()
+{
+  if (!sPluginThreadAsyncCallLock) {
+    return;
+  }
+
+  {
+    nsAutoLock lock(sPluginThreadAsyncCallLock);
+
+    PR_REMOVE_LINK(this);
+  }
+}
+
+NS_IMETHODIMP
+nsPluginThreadRunnable::Run()
+{
+  if (mFunc) {
+    PluginDestructionGuard guard(mInstance);
+
+    NS_TRY_SAFE_CALL_VOID(mFunc(mUserData), nsnull, nsnull);
+  }
+
+  return NS_OK;
+}
+
+void NP_CALLBACK
+_pluginthreadasynccall(NPP instance, PluginThreadCallback func, void *userData)
+{
+  nsRefPtr<nsPluginThreadRunnable> evt =
+    new nsPluginThreadRunnable(instance, func, userData);
+
+  if (evt && evt->IsValid()) {
+    NS_DispatchToMainThread(evt);
+  }
+}
+
+void
+OnPluginDestroy(NPP instance)
+{
+  if (!sPluginThreadAsyncCallLock) {
+    return;
+  }
+
+  {
+    nsAutoLock lock(sPluginThreadAsyncCallLock);
+
+    if (PR_CLIST_IS_EMPTY(&sPendingAsyncCalls)) {
+      return;
+    }
+
+    nsPluginThreadRunnable *r =
+      (nsPluginThreadRunnable *)PR_LIST_HEAD(&sPendingAsyncCalls);
+
+    do {
+      if (r->IsForInstance(instance)) {
+        r->Invalidate();
+      }
+
+      r = (nsPluginThreadRunnable *)PR_NEXT_LINK(r);
+    } while (r != &sPendingAsyncCalls);
+  }
+}
+
+void
+OnShutdown()
+{
+  NS_ASSERTION(PR_CLIST_IS_EMPTY(&sPendingAsyncCalls),
+               "Pending async plugin call list not cleaned up!");
+
+  if (sPluginThreadAsyncCallLock) {
+    nsAutoLock::DestroyLock(sPluginThreadAsyncCallLock);
+
+    sPluginThreadAsyncCallLock = nsnull;
+  }
+}
+
+void
+EnterAsyncPluginThreadCallLock()
+{
+  if (sPluginThreadAsyncCallLock) {
+    PR_Lock(sPluginThreadAsyncCallLock);
+  }
+}
+
+void
+ExitAsyncPluginThreadCallLock()
+{
+  if (sPluginThreadAsyncCallLock) {
+    PR_Unlock(sPluginThreadAsyncCallLock);
+  }
 }
 
 NPP NPPStack::sCurrentNPP = nsnull;

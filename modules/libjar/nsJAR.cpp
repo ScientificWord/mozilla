@@ -54,8 +54,6 @@
   #include <io.h>
 #endif
 
-static PRTime GetModTime(PRUint16 aDate, PRUint16 aTime);
-
 //----------------------------------------------
 // nsJARManifestItem declaration
 //----------------------------------------------
@@ -178,7 +176,10 @@ nsJAR::Open(nsIFile* zipFile)
   PRFileDesc *fd = OpenFile();
   NS_ENSURE_TRUE(fd, NS_ERROR_FAILURE);
 
-  return mZip.OpenArchive(fd);
+  nsresult rv = mZip.OpenArchive(fd);
+  if (NS_FAILED(rv)) Close();
+
+  return rv;
 }
 
 NS_IMETHODIMP
@@ -314,29 +315,48 @@ nsJAR::FindEntries(const char *aPattern, nsIUTF8StringEnumerator **result)
 NS_IMETHODIMP
 nsJAR::GetInputStream(const char* aFilename, nsIInputStream** result)
 {
+  return GetInputStreamWithSpec(EmptyCString(), aFilename, result);
+}
+
+NS_IMETHODIMP
+nsJAR::GetInputStreamWithSpec(const nsACString& aJarDirSpec, 
+                          const char* aEntryName, nsIInputStream** result)
+{
+  NS_ENSURE_ARG_POINTER(aEntryName);
   NS_ENSURE_ARG_POINTER(result);
 
-  // First check if item exists in jar
-  nsZipItem *item = mZip.GetItem(aFilename);
-  if (!item) return NS_ERROR_FILE_TARGET_DOES_NOT_EXIST;
-
-  // Open jarfile, to get its own filedescriptor for the stream
-  PRFileDesc *fd = OpenFile();
-  if (!fd) return NS_ERROR_FAILURE;
-
+  // Watch out for the jar:foo.zip!/ (aDir is empty) top-level special case!
+  nsZipItem *item = nsnull;
+  if (*aEntryName) {
+    // First check if item exists in jar
+    item = mZip.GetItem(aEntryName);
+    if (!item) return NS_ERROR_FILE_TARGET_DOES_NOT_EXIST;
+  }
   nsJARInputStream* jis = new nsJARInputStream();
-  if (!jis) return NS_ERROR_OUT_OF_MEMORY;
+  // addref now so we can call InitFile/InitDirectory()
+  NS_ENSURE_TRUE(jis, NS_ERROR_OUT_OF_MEMORY);
+  NS_ADDREF(*result = jis);
 
-  // addref now so we can call Init()
-  *result = jis;
-  NS_ADDREF(*result);
-
-  nsresult rv = jis->Init(this, item, fd);
+  nsresult rv = NS_OK;
+  if (!item || item->isDirectory) {
+    rv = jis->InitDirectory(&mZip, aJarDirSpec, aEntryName);
+  } else {
+    // Open jarfile, to get its own filedescriptor for the stream
+    // XXX The file may have been overwritten, so |item| might not be
+    // valid.  We really want to work from inode rather than file name.
+    PRFileDesc *fd = nsnull;
+    fd = OpenFile();
+    if (fd) {
+      rv = jis->InitFile(&mZip, item, fd);
+      // |jis| now owns |fd|
+    } else {
+      rv = NS_ERROR_FAILURE;
+    }
+  }
   if (NS_FAILED(rv)) {
     NS_RELEASE(*result);
-    return rv;
   }
-  return NS_OK;
+  return rv;
 }
 
 //----------------------------------------------
@@ -369,7 +389,7 @@ nsJAR::GetCertificatePrincipal(const char* aFilename, nsIPrincipal** aPrincipal)
   {
     //-- Find the item
     nsCStringKey key(aFilename);
-    nsJARManifestItem* manItem = NS_STATIC_CAST(nsJARManifestItem*, mManifestData.Get(&key));
+    nsJARManifestItem* manItem = static_cast<nsJARManifestItem*>(mManifestData.Get(&key));
     if (!manItem)
       return NS_OK;
     //-- Verify the item against the manifest
@@ -1107,7 +1127,7 @@ nsZipReaderCache::GetZip(nsIFile* zipFile, nsIZipReader* *result)
   if (NS_FAILED(rv)) return rv;
 
   nsCStringKey key(path);
-  nsJAR* zip = NS_STATIC_CAST(nsJAR*, NS_STATIC_CAST(nsIZipReader*,mZips.Get(&key))); // AddRefs
+  nsJAR* zip = static_cast<nsJAR*>(static_cast<nsIZipReader*>(mZips.Get(&key))); // AddRefs
   if (zip) {
 #ifdef ZIP_CACHE_HIT_RATE
     mZipCacheHits++;
@@ -1127,7 +1147,7 @@ nsZipReaderCache::GetZip(nsIFile* zipFile, nsIZipReader* *result)
       return rv;
     }
 
-    PRBool collision = mZips.Put(&key, NS_STATIC_CAST(nsIZipReader*, zip)); // AddRefs to 2
+    PRBool collision = mZips.Put(&key, static_cast<nsIZipReader*>(zip)); // AddRefs to 2
     NS_ASSERTION(!collision, "horked");
   }
   *result = zip;
@@ -1269,17 +1289,27 @@ nsZipReaderCache::Observe(nsISupports *aSubject,
   return NS_OK;
 }
 
-static PRTime GetModTime(PRUint16 aDate, PRUint16 aTime)
+PRTime GetModTime(PRUint16 aDate, PRUint16 aTime)
 {
-  char buffer[17];
+  PRExplodedTime time;
 
-  PR_snprintf(buffer, sizeof(buffer), "%02d/%02d/%04d %02d:%02d",
-        ((aDate >> 5) & 0x0F), (aDate & 0x1F), (aDate >> 9) + 1980,
-        ((aTime >> 11) & 0x1F), ((aTime >> 5) & 0x3F));
+  time.tm_usec = 0;
+  
+  time.tm_hour = (aTime >> 11) & 0x1F;
+  time.tm_min = (aTime >> 5) & 0x3F;
+  time.tm_sec = (aTime & 0x1F) * 2;
 
-  PRTime result;
-  PR_ParseTimeString(buffer, PR_FALSE, &result);
-  return result;
+  time.tm_year = (aDate >> 9) + 1980;
+  time.tm_month = ((aDate >> 5) & 0x0F)-1;
+  time.tm_mday = aDate & 0x1F;
+  
+  time.tm_params.tp_gmt_offset = 0;
+  time.tm_params.tp_dst_offset = 0;
+  
+  PR_NormalizeTime(&time, PR_GMTParameters);
+  time.tm_params = PR_LocalTimeParameters(&time);
+  
+  return PR_ImplodeTime(&time);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
