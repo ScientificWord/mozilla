@@ -50,6 +50,7 @@
 #include "imgILoad.h"
 #include "nsIInputStream.h"
 #include "nsIPipe.h"
+#include "lcms.h"
 
 extern "C" {
 #include "jpeglib.h"
@@ -69,7 +70,6 @@ typedef struct {
     struct jpeg_error_mgr pub;  /* "public" fields for IJG library*/
     jmp_buf setjmp_buffer;      /* For handling catastropic errors */
 } decoder_error_mgr;
-
 
 typedef enum {
     JPEG_HEADER,                          /* Reading JFIF headers */
@@ -91,12 +91,10 @@ public:
   nsJPEGDecoder();
   virtual ~nsJPEGDecoder();
 
-  PRBool FillInput(j_decompress_ptr jd);
-
-  PRUint32 mBytesToSkip;
+  nsresult  ProcessData(const char *data, PRUint32 count, PRUint32 *writeCount);
 
 protected:
-  int OutputScanlines();
+  PRBool OutputScanlines();
 
 public:
   nsCOMPtr<imgIContainer> mImage;
@@ -106,27 +104,28 @@ public:
   nsCOMPtr<imgIDecoderObserver> mObserver;
 
   struct jpeg_decompress_struct mInfo;
+  struct jpeg_source_mgr mSourceMgr;
   decoder_error_mgr mErr;
   jstate mState;
+  nsresult mError;
 
-  JSAMPARRAY mSamples;
-#ifndef MOZ_CAIRO_GFX
-  PRUint8*   mRGBRow;
-#endif
+  PRUint32 mBytesToSkip;
 
-  PRInt32 mCompletedPasses;
-  PRInt32 mPasses;
-
-  int mFillState;
-
-  JOCTET *mBuffer;
-  PRUint32 mBufferLen;  // amount of data currently in mBuffer
-  PRUint32 mBufferSize; // size in bytes what mBuffer was created with
+  const JOCTET *mSegment;   // The current segment we are decoding from
+  PRUint32 mSegmentLen;     // amount of data in mSegment
 
   JOCTET *mBackBuffer;
   PRUint32 mBackBufferLen; // Offset of end of active backtrack data
   PRUint32 mBackBufferSize; // size in bytes what mBackBuffer was created with
   PRUint32 mBackBufferUnreadLen; // amount of data currently in mBackBuffer
+
+  JOCTET  *mProfile;
+  PRUint32 mProfileLength;
+
+  cmsHPROFILE mInProfile;
+  cmsHTRANSFORM mTransform;
+
+  PRPackedBool mReading;
 };
 
 #endif // nsJPEGDecoder_h__

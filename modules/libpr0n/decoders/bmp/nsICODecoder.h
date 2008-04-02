@@ -97,7 +97,6 @@ private:
   void ProcessInfoHeader();
 
   nsresult SetImageData();
-  nsresult SetAlphaData();
 
   PRUint32 CalcAlphaRowSize();
 
@@ -106,9 +105,6 @@ private:
   nsCOMPtr<imgIContainer> mImage;
   nsCOMPtr<gfxIImageFrame> mFrame;
   
-  PRUint8 mHaveAlphaData;
-  PRPackedBool mDecodingAndMask;
-
   PRUint32 mPos;
   PRUint16 mNumIcons;
   PRUint16 mCurrIcon;
@@ -127,11 +123,11 @@ private:
   PRUint32 mRowBytes; // How many bytes of the row were already received
   PRInt32 mCurLine;
 
-  nsresult mStatus;
+  PRUint32* mImageData;
 
-  PRUint8* mDecodedBuffer;
-  PRUint8* mAlphaBuffer;
+  PRPackedBool mHaveAlphaData;
   PRPackedBool mIsCursor;
+  PRPackedBool mDecodingAndMask;
 };
 
 

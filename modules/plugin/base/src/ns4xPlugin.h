@@ -38,6 +38,7 @@
 #ifndef ns4xPlugin_h__
 #define ns4xPlugin_h__
 
+#include "nsIFactory.h"
 #include "nsIPlugin.h"
 #include "nsIPluginInstancePeer.h"
 #include "nsIWindowlessPlugInstPeer.h"
@@ -54,10 +55,12 @@
  * right calling conventions on Win16.
  */
 
+/* XXX NP_CALLBACK should be the same as NP_LOADDS in npapi.h which differs
+   for WIN16 and maybe WIN64? */
 #ifdef XP_OS2
-#define NP_EXPORT _System
+#define NP_CALLBACK _System
 #else
-#define NP_EXPORT
+#define NP_CALLBACK
 #endif
 
 #if defined(XP_WIN)
@@ -79,9 +82,23 @@ typedef NS_4XPLUGIN_CALLBACK(NPError, NP_PLUGINUNIXINIT) (const NPNetscapeFuncs*
 typedef NS_4XPLUGIN_CALLBACK(NPError, NP_PLUGINSHUTDOWN) (void);
 #endif
 
-#if defined(XP_MAC) || defined(XP_MACOSX)
+#ifdef XP_MACOSX
 typedef NS_4XPLUGIN_CALLBACK(NPError, NP_PLUGINSHUTDOWN) (void);
 typedef NS_4XPLUGIN_CALLBACK(NPError, NP_MAIN) (NPNetscapeFuncs* nCallbacks, NPPluginFuncs* pCallbacks, NPP_ShutdownUPP* unloadUpp);
+
+/*  Since WebKit supports getting function pointers via NP_GetEntryPoints and
+ *  sending function pointers via NP_Initialize, it would be nice if we
+ *  supported that too. We can't do it on PPC because there is no standard for
+ *  whether or not function pointers returned via NP_GetEntryPoints or sent
+ *  via NP_Initialize are supposed to be wrapped with tvector glue. However,
+ *  since there are no tvectors on Intel we can do it on that arch.
+ */
+#ifndef __POWERPC__
+#define MACOSX_GETENTRYPOINT_SUPPORT 1
+typedef NS_4XPLUGIN_CALLBACK(NPError, NP_GETENTRYPOINTS) (NPPluginFuncs* pCallbacks);
+typedef NS_4XPLUGIN_CALLBACK(NPError, NP_PLUGININIT) (const NPNetscapeFuncs* pCallbacks);
+#endif
+
 #endif
 
 class nsIServiceManagerObsolete;
@@ -102,34 +119,9 @@ public:
   virtual ~ns4xPlugin(void);
 
   NS_DECL_ISUPPORTS
-
-  //nsIFactory interface
-
-  NS_IMETHOD CreateInstance(nsISupports *aOuter,
-                            REFNSIID aIID,
-                            void **aResult);
-
-  NS_IMETHOD LockFactory(PRBool aLock);
-
-  //nsIPlugin interface
-
-  /**
-   * Creates a new plugin instance, based on a MIME type. This
-   * allows different impelementations to be created depending on
-   * the specified MIME type.
-   */
-  NS_IMETHOD CreatePluginInstance(nsISupports *aOuter, REFNSIID aIID, 
-                                  const char* aPluginMIMEType,
-                                  void **aResult);
+  NS_DECL_NSIFACTORY
+  NS_DECL_NSIPLUGIN
   
-  NS_IMETHOD Initialize(void);
-
-  NS_IMETHOD Shutdown(void);
-
-  NS_IMETHOD GetMIMEDescription(const char* *resultingDesc);
-
-  NS_IMETHOD GetValue(nsPluginVariable variable, void *value);
-
   ////////////////////////////////////////////////////////////////////
   // ns4xPlugin-specific methods
 
@@ -146,9 +138,8 @@ public:
                PRLibrary* aLibrary,
                nsIPlugin** aResult);
 
-#if defined(XP_MAC) || defined(XP_MACOSX)
-  void
-  SetPluginRefNum(short aRefNum);
+#ifdef XP_MACOSX
+  void SetPluginRefNum(short aRefNum);
 #endif
 
 protected:
@@ -158,8 +149,11 @@ protected:
   static void CheckClassInitialized(void);
 
 
-#if defined(XP_MAC) || defined(XP_MACOSX)
+#ifdef XP_MACOSX
   short fPluginRefNum;
+#ifdef MACOSX_GETENTRYPOINT_SUPPORT
+  PRBool usesGetEntryPoints;
+#endif
 #endif
 
   /**
@@ -179,76 +173,80 @@ protected:
 
 
 PR_BEGIN_EXTERN_C
-NPObject* NP_EXPORT
+NPObject* NP_CALLBACK
 _getwindowobject(NPP npp);
 
-NPObject* NP_EXPORT
+NPObject* NP_CALLBACK
 _getpluginelement(NPP npp);
 
-NPIdentifier NP_EXPORT
+NPIdentifier NP_CALLBACK
 _getstringidentifier(const NPUTF8* name);
 
-void NP_EXPORT
+void NP_CALLBACK
 _getstringidentifiers(const NPUTF8** names, int32_t nameCount,
                       NPIdentifier *identifiers);
 
-bool NP_EXPORT
+bool NP_CALLBACK
 _identifierisstring(NPIdentifier identifiers);
 
-NPIdentifier NP_EXPORT
+NPIdentifier NP_CALLBACK
 _getintidentifier(int32_t intid);
 
-NPUTF8* NP_EXPORT
+NPUTF8* NP_CALLBACK
 _utf8fromidentifier(NPIdentifier identifier);
 
-int32_t NP_EXPORT
+int32_t NP_CALLBACK
 _intfromidentifier(NPIdentifier identifier);
 
-NPObject* NP_EXPORT
+NPObject* NP_CALLBACK
 _createobject(NPP npp, NPClass* aClass);
 
-NPObject* NP_EXPORT
+NPObject* NP_CALLBACK
 _retainobject(NPObject* npobj);
 
-void NP_EXPORT
+void NP_CALLBACK
 _releaseobject(NPObject* npobj);
 
-bool NP_EXPORT
+bool NP_CALLBACK
 _invoke(NPP npp, NPObject* npobj, NPIdentifier method, const NPVariant *args,
         uint32_t argCount, NPVariant *result);
 
-bool NP_EXPORT
+bool NP_CALLBACK
 _invokeDefault(NPP npp, NPObject* npobj, const NPVariant *args,
                uint32_t argCount, NPVariant *result);
 
-bool NP_EXPORT
+bool NP_CALLBACK
 _evaluate(NPP npp, NPObject* npobj, NPString *script, NPVariant *result);
 
-bool NP_EXPORT
+bool NP_CALLBACK
 _getproperty(NPP npp, NPObject* npobj, NPIdentifier property,
              NPVariant *result);
 
-bool NP_EXPORT
+bool NP_CALLBACK
 _setproperty(NPP npp, NPObject* npobj, NPIdentifier property,
              const NPVariant *value);
 
-bool NP_EXPORT
+bool NP_CALLBACK
 _removeproperty(NPP npp, NPObject* npobj, NPIdentifier property);
 
-bool NP_EXPORT
+bool NP_CALLBACK
 _hasproperty(NPP npp, NPObject* npobj, NPIdentifier propertyName);
 
-bool NP_EXPORT
+bool NP_CALLBACK
 _hasmethod(NPP npp, NPObject* npobj, NPIdentifier methodName);
 
-bool NP_EXPORT
+bool NP_CALLBACK
 _enumerate(NPP npp, NPObject *npobj, NPIdentifier **identifier,
            uint32_t *count);
 
-void NP_EXPORT
+bool NP_CALLBACK
+_construct(NPP npp, NPObject* npobj, const NPVariant *args,
+           uint32_t argCount, NPVariant *result);
+
+void NP_CALLBACK
 _releasevariantvalue(NPVariant *variant);
 
-void NP_EXPORT
+void NP_CALLBACK
 _setexception(NPObject* npobj, const NPUTF8 *message);
 
 PR_END_EXTERN_C
@@ -258,6 +256,17 @@ PeekException();
 
 void
 PopException();
+
+void
+OnPluginDestroy(NPP instance);
+
+void
+OnShutdown();
+
+void
+EnterAsyncPluginThreadCallLock();
+void
+ExitAsyncPluginThreadCallLock();
 
 class NPPStack
 {
@@ -271,11 +280,22 @@ protected:
   static NPP sCurrentNPP;
 };
 
-class NPPAutoPusher : public NPPStack
+// XXXjst: The NPPAutoPusher stack is a bit redundant now that
+// PluginDestructionGuard exists, and could thus be replaced by code
+// that uses the PluginDestructionGuard list of plugins on the
+// stack. But they're not identical, and to minimize code changes
+// we're keeping both for the moment, and making NPPAutoPusher inherit
+// the PluginDestructionGuard class to avoid having to keep two
+// separate objects on the stack since we always want a
+// PluginDestructionGuard where we use an NPPAutoPusher.
+
+class NPPAutoPusher : public NPPStack,
+                      protected PluginDestructionGuard
 {
 public:
   NPPAutoPusher(NPP npp)
-    : mOldNPP(sCurrentNPP)
+    : PluginDestructionGuard(npp),
+      mOldNPP(sCurrentNPP)
   {
     NS_ASSERTION(npp, "Uh, null npp passed to NPPAutoPusher!");
 
