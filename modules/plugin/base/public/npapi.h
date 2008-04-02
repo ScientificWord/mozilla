@@ -51,7 +51,6 @@
 #include "prtypes.h"
 /* Copied from xp_core.h */
 /* removed #ifdef for hpux defined in /usr/include/model.h */
-#ifndef XP_MAC
 #ifndef _INT16
 #define _INT16
 #endif
@@ -63,7 +62,6 @@
 #endif
 #ifndef _UINT32
 #define _UINT32
-#endif
 #endif
 
 /* 
@@ -94,11 +92,6 @@
 
 #ifdef __MWERKS__
 #	define _declspec __declspec
-#	ifdef macintosh
-#		ifndef XP_MAC
-#			define XP_MAC 1
-#		endif /* XP_MAC */
-#	endif /* macintosh */
 #	ifdef __INTEL__
 #		undef NULL
 #		ifndef XP_WIN
@@ -107,9 +100,11 @@
 #	endif /* __INTEL__ */
 #endif /* __MWERKS__ */
 
-#if defined(XP_MAC) || defined(XP_MACOSX)
-	#include <Quickdraw.h>
-	#include <Events.h>
+#ifdef XP_MACOSX
+#include <Carbon/Carbon.h>
+#ifdef __LP64__
+#define NP_NO_QUICKDRAW
+#endif
 #endif
 
 #if defined(XP_UNIX) 
@@ -125,7 +120,7 @@
 /*----------------------------------------------------------------------*/
 
 #define NP_VERSION_MAJOR 0
-#define NP_VERSION_MINOR 17
+#define NP_VERSION_MINOR 19
 
 
 /* The OS/2 version of Netscape uses RC_DATA to define the
@@ -220,6 +215,15 @@ typedef long int32;
 #define NULL (0L)
 #endif
 
+#ifdef XP_MACOSX
+typedef enum {
+#ifndef NP_NO_QUICKDRAW
+  NPDrawingModelQuickDraw = 0,
+#endif
+  NPDrawingModelCoreGraphics = 1
+} NPDrawingModel;
+#endif
+
 typedef unsigned char	NPBool;
 typedef int16			NPError;
 typedef int16			NPReason;
@@ -230,10 +234,6 @@ typedef char*			NPMIMEType;
 /*----------------------------------------------------------------------*/
 /*                       Structures and definitions                     */
 /*----------------------------------------------------------------------*/
-
-#ifdef XP_MAC
-#pragma options align=mac68k
-#endif
 
 /*
  *  NPP is a plug-in's opaque instance handle
@@ -255,6 +255,16 @@ typedef struct _NPStream
   uint32 end;
   uint32 lastmodified;
   void*  notifyData;
+  const  char* headers; /* Response headers from host.
+                         * Exists only for >= NPVERS_HAS_RESPONSE_HEADERS.
+                         * Used for HTTP only; NULL for non-HTTP.
+                         * Available from NPP_NewStream onwards.
+                         * Plugin should copy this data before storing it.
+                         * Includes HTTP status line and all headers,
+                         * preferably verbatim as received from server,
+                         * headers formatted as in HTTP ("Header: Value"),
+                         * and newlines (\n, NOT \r\n) separating lines.
+                         * Terminated by \n\0 (NOT \n\n\0). */
 } NPStream;
 
 
@@ -402,6 +412,10 @@ typedef enum {
    * in Mozilla 1.8b2 (NPAPI minor version 15).
    */
   NPPVformValue = 16
+#ifdef XP_MACOSX
+  /* Used for negotiating drawing models */
+  , NPPVpluginDrawingModel = 1000
+#endif
 } NPPVariable;
 
 /*
@@ -426,7 +440,18 @@ typedef enum {
   NPNVWindowNPObject = 15,
 
   /* Get the NPObject wrapper for the plugins DOM element. */
-  NPNVPluginElementNPObject = 16
+  NPNVPluginElementNPObject = 16,
+
+  NPNVSupportsWindowless = 17
+
+#ifdef XP_MACOSX
+  /* Used for negotiating drawing models */
+  , NPNVpluginDrawingModel = 1000
+#ifndef NP_NO_QUICKDRAW
+  , NPNVsupportsQuickDrawBool = 2000
+#endif
+  , NPNVsupportsCoreGraphicsBool = 2001
+#endif
 } NPNVariable;
 
 /*
@@ -487,7 +512,7 @@ typedef struct _NPPrint
   } print;
 } NPPrint;
 
-#if defined(XP_MAC) || defined(XP_MACOSX)
+#ifdef XP_MACOSX
 typedef EventRecord	NPEvent;
 #elif defined(XP_WIN)
 typedef struct _NPEvent
@@ -507,19 +532,23 @@ typedef struct _NPEvent
 typedef XEvent NPEvent;
 #else
 typedef void*			NPEvent;
-#endif /* XP_MAC */
+#endif /* XP_MACOSX */
 
-#if defined(XP_MAC) || defined(XP_MACOSX)
-typedef RgnHandle NPRegion;
+#ifdef XP_MACOSX
+typedef void* NPRegion;
+#ifndef NP_NO_QUICKDRAW
+typedef RgnHandle NPQDRegion;
+#endif
+typedef CGPathRef NPCGRegion;
 #elif defined(XP_WIN)
 typedef HRGN NPRegion;
 #elif defined(XP_UNIX) && defined(MOZ_X11)
 typedef Region NPRegion;
 #else
 typedef void *NPRegion;
-#endif /* XP_MAC */
+#endif /* XP_MACOSX */
 
-#if defined(XP_MAC) || defined(XP_MACOSX)
+#ifdef XP_MACOSX
 /*
  *  Mac-specific structures and definitions.
  */
@@ -530,6 +559,12 @@ typedef struct NP_Port
   int32 portx;   /* position inside the topmost window */
   int32 porty;
 } NP_Port;
+
+typedef struct NP_CGContext
+{
+  CGContextRef context;
+  WindowRef window;
+} NP_CGContext;
 
 /*
  *  Non-standard event types that can be passed to HandleEvent
@@ -550,7 +585,7 @@ enum NPEventType {
 #define loseFocusEvent    (osEvt + 17)
 #define adjustCursorEvent (osEvt + 18)
 #endif
-#endif /* XP_MAC */
+#endif /* XP_MACOSX */
 
 /*
  * Values for mode passed to NPP_New:
@@ -567,10 +602,6 @@ enum NPEventType {
 #define NP_ASFILEONLY 4
 
 #define NP_MAXREADY	(((unsigned)(~0)<<1)>>1)
-
-#ifdef XP_MAC
-#pragma options align=reset
-#endif
 
 
 /*----------------------------------------------------------------------*/
@@ -614,13 +645,19 @@ enum NPEventType {
 /*
  * Version feature information
  */
-#define NPVERS_HAS_STREAMOUTPUT      8
-#define NPVERS_HAS_NOTIFICATION      9
-#define NPVERS_HAS_LIVECONNECT       9
-#define NPVERS_WIN16_HAS_LIVECONNECT 9
-#define NPVERS_68K_HAS_LIVECONNECT   11
-#define NPVERS_HAS_WINDOWLESS        11
-#define NPVERS_HAS_XPCONNECT_SCRIPTING 13
+#define NPVERS_HAS_STREAMOUTPUT             8
+#define NPVERS_HAS_NOTIFICATION             9
+#define NPVERS_HAS_LIVECONNECT              9
+#define NPVERS_WIN16_HAS_LIVECONNECT        9
+#define NPVERS_68K_HAS_LIVECONNECT          11
+#define NPVERS_HAS_WINDOWLESS               11
+#define NPVERS_HAS_XPCONNECT_SCRIPTING      13
+#define NPVERS_HAS_NPRUNTIME_SCRIPTING      14
+#define NPVERS_HAS_FORM_VALUES              15
+#define NPVERS_HAS_POPUPS_ENABLED_STATE     16
+#define NPVERS_HAS_RESPONSE_HEADERS         17
+#define NPVERS_HAS_NPOBJECT_ENUM            18
+#define NPVERS_HAS_PLUGIN_THREAD_ASYNC_CALL 19
 
 /*----------------------------------------------------------------------*/
 /*                        Function Prototypes                           */
@@ -713,6 +750,9 @@ void    NP_LOADDS NPN_InvalidateRegion(NPP instance, NPRegion invalidRegion);
 void    NP_LOADDS NPN_ForceRedraw(NPP instance);
 void    NP_LOADDS NPN_PushPopupsEnabledState(NPP instance, NPBool enabled);
 void    NP_LOADDS NPN_PopPopupsEnabledState(NPP instance);
+void    NP_LOADDS NPN_PluginThreadAsyncCall(NPP instance,
+                                            void (*func) (void *),
+                                            void *userData);
 
 #ifdef __cplusplus
 }  /* end extern "C" */

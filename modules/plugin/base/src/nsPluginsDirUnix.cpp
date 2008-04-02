@@ -83,7 +83,7 @@
 #define DEFAULT_X11_PATH ""
 #endif
 
-#if defined(MOZ_WIDGET_GTK) || defined(MOZ_WIDGET_GTK2)
+#if defined(MOZ_WIDGET_GTK2)
 
 #define PLUGIN_MAX_LEN_OF_TMP_ARR 512
 
@@ -248,7 +248,7 @@ static void LoadExtraSharedLibs()
         }
     }
 }
-#endif //MOZ_WIDGET_GTK || MOZ_WIDGET_GTK2
+#endif //MOZ_WIDGET_GTK2
 
 
 
@@ -382,7 +382,7 @@ nsresult nsPluginFile::LoadPlugin(PRLibrary* &outLibrary)
 
     libSpec.value.pathname = path.get();
 
-#if defined(MOZ_WIDGET_GTK) || defined(MOZ_WIDGET_GTK2)
+#if defined(MOZ_WIDGET_GTK2)
 
     ///////////////////////////////////////////////////////////
     // Normally, Mozilla isn't linked against libXt and libXext
@@ -413,7 +413,7 @@ nsresult nsPluginFile::LoadPlugin(PRLibrary* &outLibrary)
     }
 #else
     pLibrary = outLibrary = PR_LoadLibraryWithFlags(libSpec, 0);
-#endif  // MOZ_WIDGET_GTK || MOZ_WIDGET_GTK2
+#endif  // MOZ_WIDGET_GTK2
 
 #ifdef NS_DEBUG
     printf("LoadPlugin() %s returned %lx\n", 
@@ -437,7 +437,7 @@ nsresult nsPluginFile::GetPluginInfo(nsPluginInfo& info)
     nsServiceManager::GetGlobalServiceManager((nsIServiceManager**)&mgr);
 
     nsFactoryProc nsGetFactory =
-        (nsFactoryProc) PR_FindSymbol(pLibrary, "NSGetFactory");
+        (nsFactoryProc) PR_FindFunctionSymbol(pLibrary, "NSGetFactory");
 
     nsCOMPtr<nsIPlugin> plugin;
 
@@ -451,9 +451,19 @@ nsresult nsPluginFile::GetPluginInfo(nsPluginInfo& info)
         nsCOMPtr<nsIFactory> factory;
         rv = nsGetFactory(mgr, kPluginCID, nsnull, nsnull, 
 			  getter_AddRefs(factory));
-        if (NS_FAILED(rv)) return rv;
 
-        plugin = do_QueryInterface(factory);
+        if (NS_FAILED(rv)) {
+            // HACK: The symbol lookup for "NSGetFactory" mistakenly returns
+            // a reference to an unrelated function when we have an NPAPI
+            // plugin linked to libxul.so.  Give this plugin another shot as
+            // an NPAPI plugin
+            rv = ns4xPlugin::CreatePlugin(mgr, 0, 0, pLibrary,
+                                          getter_AddRefs(plugin));
+            if (NS_FAILED(rv))
+                return rv;
+        } else {
+            plugin = do_QueryInterface(factory);
+        }
     } else {
         // It's old sk00l
         // if fileName parameter == 0 ns4xPlugin::CreatePlugin() will not call NP_Initialize()

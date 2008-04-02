@@ -86,6 +86,8 @@ typedef enum
   JAR_NOT_SIGNED          = 7
 } JARManifestStatusType;
 
+PRTime GetModTime(PRUint16 aDate, PRUint16 aTime);
+
 /*-------------------------------------------------------------------------
  * Class nsJAR declaration. 
  * nsJAR serves as an XPCOM wrapper for nsZipArchive with the addition of 
@@ -101,7 +103,7 @@ class nsJAR : public nsIZipReader, public nsIJAR
     nsJAR();
     virtual ~nsJAR();
     
-    NS_DEFINE_STATIC_CID_ACCESSOR( NS_ZIPREADER_CID );
+    NS_DEFINE_STATIC_CID_ACCESSOR( NS_ZIPREADER_CID )
   
     NS_DECL_ISUPPORTS
 
@@ -176,14 +178,14 @@ public:
     NS_DECL_NSIZIPENTRY
     
     nsJARItem(nsZipItem* aZipItem);
-    virtual ~nsJARItem() {};
+    virtual ~nsJARItem() {}
 
 private:
     PRUint32     mSize;             /* size in original file */
     PRUint32     mRealsize;         /* inflated size */
     PRUint32     mCrc32;
-    PRUint16     mTime;
     PRUint16     mDate;
+    PRUint16     mTime;
     PRUint8      mCompression;
     PRPackedBool mIsDirectory; 
     PRPackedBool mIsSynthetic;
