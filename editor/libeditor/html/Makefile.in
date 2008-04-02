@@ -50,6 +50,7 @@ REQUIRES	= xpcom \
 		  autocomplete \
 		  string \
 		  dom \
+		  js \
 		  layout \
 		  locale \
 		  unicharutil \
@@ -60,6 +61,7 @@ REQUIRES	= xpcom \
 		  necko \
 		  pref \
 		  gfx \
+		  thebes \
 		  widget \
 		  view \
 		  webshell \

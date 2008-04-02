@@ -51,7 +51,6 @@
 #include "nsEditRules.h"
  
 class nsITransferable;
-class nsIDOMEventReceiver;
 class nsIDocumentEncoder;
 
 /**
@@ -215,6 +214,11 @@ protected:
   PRBool   mIgnoreSpuriousDragEvent;
   NS_IMETHOD IgnoreSpuriousDragEvent(PRBool aIgnoreSpuriousDragEvent) {mIgnoreSpuriousDragEvent = aIgnoreSpuriousDragEvent; return NS_OK;}
 
+  // Wrapper for nsCopySupport::GetClipboardEventTarget, finds target to fire
+  // [cut,copy,paste] and [beforecut,beforecopy,beforepaste] events at.
+  nsresult GetClipboardEventTarget(nsIDOMNode** aEventTarget);
+  nsresult FireClipboardEvent(PRUint32 msg, PRBool* aPreventDefault);
+
 // Data members
 protected:
 
@@ -224,6 +228,7 @@ protected:
   PRInt32 mMaxTextLength;
   PRInt32 mInitTriggerCounter;
   PRInt32 mNewlineHandling;
+  PRInt32 mCaretStyle;
 
 // friends
 friend class nsHTMLEditRules;

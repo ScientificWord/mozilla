@@ -42,7 +42,7 @@ NS_IMPL_QUERY_INTERFACE4(msiEditRules, nsIHTMLEditRules, nsIEditRules, nsIEditAc
 NS_IMETHODIMP
 msiEditRules::Init(nsPlaintextEditor *aEditor, PRUint32 aFlags)
 {
-  mMSIEditor = NS_STATIC_CAST(msiEditor*, aEditor);
+  mMSIEditor = static_cast<msiEditor*>(aEditor);
   return nsHTMLEditRules::Init(aEditor,aFlags);
 }
 

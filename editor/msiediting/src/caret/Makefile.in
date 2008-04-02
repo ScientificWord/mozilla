@@ -23,6 +23,7 @@ REQUIRES	= xpcom \
 		  pref \
 		  view \
 		  gfx \
+		  thebes \
 		  widget \
 		  webshell \
 		  unicharutil \

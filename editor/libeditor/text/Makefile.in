@@ -54,11 +54,12 @@ REQUIRES	= xpcom \
 		  content \
 		  txmgr \
 		  txtsvc \
-		  htmlparser \
 		  necko \
 		  pref \
 		  lwbrk \
+		  view \
 		  gfx \
+		  thebes \
 		  widget \
 		  unicharutil \
 		  $(NULL)
