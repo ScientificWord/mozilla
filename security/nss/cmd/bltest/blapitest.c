@@ -51,6 +51,7 @@
 #include "softoken.h"
 #include "nspr.h"
 #include "nss.h"
+#include "secoid.h"
 
 #ifdef NSS_ENABLE_ECC
 #include "ecl-curve.h"
@@ -58,7 +59,6 @@ SECStatus EC_DecodeParams(const SECItem *encodedParams,
 	ECParams **ecparams);
 SECStatus EC_CopyParams(PRArenaPool *arena, ECParams *dstParams,
 	      const ECParams *srcParams);
-SECStatus secoid_Init(void);
 #endif
 
 /* Temporary - add debugging ouput on windows for RSA to track QA failure */
@@ -264,7 +264,7 @@ atob(SECItem *ascii, SECItem *binary, PRArenaPool *arena)
     binary->len = 0;
     it.item = binary;
     it.arena = arena;
-    len = (strcmp(&ascii->data[ascii->len-2],"\r\n")) ? 
+    len = (strncmp(&ascii->data[ascii->len-2],"\r\n",2)) ? 
            ascii->len : ascii->len-2;
     cx = NSSBase64Decoder_Create(get_binary, &it);
     status = NSSBase64Decoder_Update(cx, (const char *)ascii->data, len);
@@ -438,7 +438,7 @@ eckey_from_filedata(SECItem *filedata)
     /* read and convert params */
     key->ecParams.arena = arena;
     key_from_filedata(arena, &key->ecParams.DEREncoding, 0, 1, filedata);
-    rv = secoid_Init();
+    rv = SECOID_Init();
     CHECKERROR(rv, __LINE__);
     rv = EC_DecodeParams(&key->ecParams.DEREncoding, &tmpECParams);
     CHECKERROR(rv, __LINE__);
@@ -543,7 +543,7 @@ static CurveNameTagPair nameTagPair[] =
 };
 
 static SECKEYECParams * 
-getECParams(char *curve)
+getECParams(const char *curve)
 {
     SECKEYECParams *ecparams;
     SECOidData *oidData = NULL;
@@ -671,6 +671,8 @@ typedef enum {
     bltestRC5_CBC,	  /* .			   */
     bltestAES_ECB,        /* .                     */
     bltestAES_CBC,        /* .                     */
+    bltestCAMELLIA_ECB,   /* .                     */
+    bltestCAMELLIA_CBC,   /* .                     */
     bltestRSA,		  /* Public Key Ciphers	   */
 #ifdef NSS_ENABLE_ECC
     bltestECDSA,	  /* . (Public Key Sig.)   */
@@ -698,6 +700,8 @@ static char *mode_strings[] =
     "rc5_cbc",
     "aes_ecb",
     "aes_cbc",
+    "camellia_ecb",
+    "camellia_cbc",
     "rsa",
 #ifdef NSS_ENABLE_ECC
     "ecdsa",
@@ -813,7 +817,7 @@ PRBool
 is_symmkeyCipher(bltestCipherMode mode)
 {
     /* change as needed! */
-    if (mode >= bltestDES_ECB && mode <= bltestAES_CBC)
+    if (mode >= bltestDES_ECB && mode <= bltestCAMELLIA_CBC)
 	return PR_TRUE;
     return PR_FALSE;
 }
@@ -855,7 +859,7 @@ cipher_requires_IV(bltestCipherMode mode)
     /* change as needed! */
     if (mode == bltestDES_CBC || mode == bltestDES_EDE_CBC ||
 	mode == bltestRC2_CBC || mode == bltestRC5_CBC     ||
-        mode == bltestAES_CBC)
+        mode == bltestAES_CBC || mode == bltestCAMELLIA_CBC)
 	return PR_TRUE;
     return PR_FALSE;
 }
@@ -1090,6 +1094,26 @@ aes_Decrypt(void *cx, unsigned char *output, unsigned int *outputLen,
 }
 
 SECStatus
+camellia_Encrypt(void *cx, unsigned char *output, unsigned int *outputLen,
+		 unsigned int maxOutputLen, const unsigned char *input,
+		 unsigned int inputLen)
+{
+    return Camellia_Encrypt((CamelliaContext *)cx, output, outputLen,
+			    maxOutputLen,
+			    input, inputLen);
+}
+
+SECStatus
+camellia_Decrypt(void *cx, unsigned char *output, unsigned int *outputLen,
+		 unsigned int maxOutputLen, const unsigned char *input,
+		 unsigned int inputLen)
+{
+    return Camellia_Decrypt((CamelliaContext *)cx, output, outputLen,
+			    maxOutputLen,
+			    input, inputLen);
+}
+
+SECStatus
 rsa_PublicKeyOp(void *key, SECItem *output, const SECItem *input)
 {
     return RSA_PublicKeyOp((RSAPublicKey *)key, output->data, input->data);
@@ -1306,6 +1330,49 @@ bltest_aes_init(bltestCipherInfo *cipherInfo, PRBool encrypt)
 	cipherInfo->cipher.symmkeyCipher = aes_Encrypt;
     else
 	cipherInfo->cipher.symmkeyCipher = aes_Decrypt;
+    return SECSuccess;
+}
+
+SECStatus
+bltest_camellia_init(bltestCipherInfo *cipherInfo, PRBool encrypt)
+{
+    bltestSymmKeyParams *camelliap = &cipherInfo->params.sk;
+    int minorMode;
+    int i;
+    int keylen   = camelliap->key.buf.len;
+    int blocklen = CAMELLIA_BLOCK_SIZE; 
+    PRIntervalTime time1, time2;
+    
+    switch (cipherInfo->mode) {
+    case bltestCAMELLIA_ECB:	    minorMode = NSS_CAMELLIA;	  break;
+    case bltestCAMELLIA_CBC:	    minorMode = NSS_CAMELLIA_CBC;  break;
+    default:
+	return SECFailure;
+    }
+    cipherInfo->cx = (void*)Camellia_CreateContext(camelliap->key.buf.data,
+						   camelliap->iv.buf.data,
+						   minorMode, encrypt, 
+						   keylen);
+    if (cipherInfo->cxreps > 0) {
+	CamelliaContext **dummycx;
+	dummycx = PORT_Alloc(cipherInfo->cxreps * sizeof(CamelliaContext *));
+	TIMESTART();
+	for (i=0; i<cipherInfo->cxreps; i++) {
+	    dummycx[i] = (void*)Camellia_CreateContext(camelliap->key.buf.data,
+						       camelliap->iv.buf.data,
+						       minorMode, encrypt,
+						       keylen);
+	}
+	TIMEFINISH(cipherInfo->cxtime, 1.0);
+	for (i=0; i<cipherInfo->cxreps; i++) {
+	    Camellia_DestroyContext(dummycx[i], PR_TRUE);
+	}
+	PORT_Free(dummycx);
+    }
+    if (encrypt)
+	cipherInfo->cipher.symmkeyCipher = camellia_Encrypt;
+    else
+	cipherInfo->cipher.symmkeyCipher = camellia_Decrypt;
     return SECSuccess;
 }
 
@@ -1793,7 +1860,7 @@ pubkeyInitKey(bltestCipherInfo *cipherInfo, PRFileDesc *file,
 	ecdsap = &cipherInfo->params.ecdsa;
 	if (curveName != NULL) {
 	    tmpECParamsDER = getECParams(curveName);
-	    rv = secoid_Init();
+	    rv = SECOID_Init();
 	    CHECKERROR(rv, __LINE__);
 	    rv = EC_DecodeParams(tmpECParamsDER, &tmpECParams) == SECFailure;
 	    CHECKERROR(rv, __LINE__);
@@ -1809,7 +1876,7 @@ pubkeyInitKey(bltestCipherInfo *cipherInfo, PRFileDesc *file,
 	    ecSerialize[2].data = ecdsap->eckey->privateValue.data;
 	    ecSerialize[2].len  = ecdsap->eckey->privateValue.len;
 	    serialize_key(&(ecSerialize[0]), 3, file);
-	    free(tmpECParamsDER);
+	    SECITEM_FreeItem(tmpECParamsDER, PR_TRUE);
 	    PORT_FreeArena(tmpECParams->arena, PR_TRUE);
 	    rv = SECOID_Shutdown();
 	    CHECKERROR(rv, __LINE__);
@@ -1862,6 +1929,12 @@ cipherInit(bltestCipherInfo *cipherInfo, PRBool encrypt)
 	SECITEM_AllocItem(cipherInfo->arena, &cipherInfo->output.buf,
 			  cipherInfo->input.pBuf.len);
 	return bltest_aes_init(cipherInfo, encrypt);
+	break;
+    case bltestCAMELLIA_ECB:
+    case bltestCAMELLIA_CBC:
+	SECITEM_AllocItem(cipherInfo->arena, &cipherInfo->output.buf,
+			  cipherInfo->input.pBuf.len);
+	return bltest_camellia_init(cipherInfo, encrypt);
 	break;
     case bltestRSA:
 	SECITEM_AllocItem(cipherInfo->arena, &cipherInfo->output.buf,
@@ -2313,6 +2386,10 @@ cipherFinish(bltestCipherInfo *cipherInfo)
     case bltestAES_CBC:
 	AES_DestroyContext((AESContext *)cipherInfo->cx, PR_TRUE);
 	break;
+    case bltestCAMELLIA_ECB:
+    case bltestCAMELLIA_CBC:
+	Camellia_DestroyContext((CamelliaContext *)cipherInfo->cx, PR_TRUE);
+	break;
     case bltestRC2_ECB:
     case bltestRC2_CBC:
 	RC2_DestroyContext((RC2Context *)cipherInfo->cx, PR_TRUE);
@@ -2461,6 +2538,8 @@ print_td:
       case bltestDES_EDE_CBC:
       case bltestAES_ECB:
       case bltestAES_CBC:
+      case bltestCAMELLIA_ECB:
+      case bltestCAMELLIA_CBC:
       case bltestRC2_ECB:
       case bltestRC2_CBC:
       case bltestRC4:
@@ -2603,6 +2682,7 @@ get_params(PRArenaPool *arena, bltestParams *params,
     case bltestDES_EDE_CBC:
     case bltestRC2_CBC:
     case bltestAES_CBC:
+    case bltestCAMELLIA_CBC:
 	sprintf(filename, "%s/tests/%s/%s%d", testdir, modestr, "iv", j);
 	load_file_data(arena, &params->sk.iv, filename, bltestBinary);
     case bltestDES_ECB:
@@ -2610,6 +2690,7 @@ get_params(PRArenaPool *arena, bltestParams *params,
     case bltestRC2_ECB:
     case bltestRC4:
     case bltestAES_ECB:
+    case bltestCAMELLIA_ECB:
 	sprintf(filename, "%s/tests/%s/%s%d", testdir, modestr, "key", j);
 	load_file_data(arena, &params->sk.key, filename, bltestBinary);
 	break;
