@@ -35,10 +35,16 @@
    -
 #endif
    - ***** END LICENSE BLOCK ***** -->
+
 <!ENTITY jsCopyValue.label "Kopírovat hodnotu">
-<!ENTITY jsEval.label "Vyhodnotit Javascript">
+<!ENTITY jsEval.label "Vyhodnotit JavaScript">
+
 <!ENTITY jsProperty.label "Vlastnost">
 <!ENTITY jsValue.label "Hodnota">
-<!ENTITY jsEval.desc "Vložte výraz v jazyce Javascript.  Proměnná &quot;target&quot; je objektem, který je právě zvolen. Navrácená hodnota bude zobrazena v Javascript Object Viewer.">
+
+<!ENTITY evaluateDialog.title "Vyhodnocení výrazu">
+<!ENTITY jsEval.desc "Vložte výraz v jazyce JavaScript. Proměnná &quot;target&quot; obsahuje objekt, který je právě zvolen.">
 <!ENTITY jsExecute.label "Spustit">
-<!ENTITY jsCancel.label "Zrušit">
+<!ENTITY inspectReturn.label "Výsledek vypsat v:">
+<!ENTITY inspectReturnNew.label "novém okně">
+<!ENTITY inspectReturnExisting.label "existujícím okně">

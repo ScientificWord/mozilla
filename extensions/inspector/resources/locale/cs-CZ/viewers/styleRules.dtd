@@ -35,7 +35,7 @@
    -
 #endif
    - ***** END LICENSE BLOCK ***** -->
-<!ENTITY miFindCSSRules.label "Najít pravidlo CSS...">
+<!ENTITY miFindCSSRules.label "Najít pravidlo CSS…">
 <!ENTITY miFindCSSRules.accesskey "N">
 <!ENTITY newRules.label "Nový">
 <!ENTITY deleteSelectedRules.label "Odstranit">

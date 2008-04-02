@@ -36,5 +36,5 @@
 #endif
    - ***** END LICENSE BLOCK ***** -->
 
-<!ENTITY propertyName.label "Egenskab">
-<!ENTITY propertyValue.label "Værdi">
+<!ENTITY propertyName.label "Eigenschaft">
+<!ENTITY propertyValue.label "Wert">

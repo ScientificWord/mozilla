@@ -15,6 +15,7 @@
 
       <menuitem id="item:findNext"
         label="&cmdFindNext.label;"
+        accesskey="&cmdFindNext.accesskey;"
         key="key:findNext"
         observes="cmd:findNext"/>
 
@@ -34,12 +35,26 @@
         accesskey="&cmdToggleAnonContent.accesskey;"
         observes="cmd:toggleAnon"/>
 
+      <menuitem id="item:toggleAccessibleNodes"
+                class="menuitem-iconic"
+                type="checkbox"
+                label="&cmdToggleAccessibleNodes.label;"
+                accesskey="&cmdToggleAccessibleNodes.accesskey;"
+                observes="cmd:toggleAccessibleNodes"/>
+
       <menuitem id="item:toggleWhitespaceNodes"
         class="menuitem-iconic"
         type="checkbox"
         label="&cmdToggleWhitespaceNodes.label;"
         accesskey="&cmdToggleWhitespaceNodes.accesskey;"
         observes="cmd:toggleWhitespaceNodes"/>
+
+      <menuitem id="item:toggleProcessingInstructions"
+                class="menuitem-iconic"
+                type="checkbox"
+                label="&cmdToggleProcessingInstructions.label;"
+                accesskey="&cmdToggleProcessingInstructions.accesskey;"
+                observes="cmd:toggleProcessingInstructions"/>
 
     </menupopup>
   </popupset>
@@ -54,6 +69,7 @@
 
     <menuitem id="item:findNext" position="2"
       label="&cmdFindNext.label;"
+      accesskey="&cmdFindNext.accesskey;"
       key="key:findNext"
       observes="cmd:findNext"/>
     
@@ -70,6 +86,7 @@
               class="menuitem-iconic" 
               type="checkbox" 
               label="&cmdFlashSelected.label;"
+              accesskey="&cmdFlashSelected.accesskey;"
               observes="cmd:flashSelected"/>
               
     <menuitem id="item:toggleAnon"
@@ -79,12 +96,26 @@
               accesskey="&cmdToggleAnonContent.accesskey;"
               observes="cmd:toggleAnon"/>
 
+    <menuitem id="item:toggleAccessibleNodes"
+              class="menuitem-iconic"
+              type="checkbox"
+              label="&cmdToggleAccessibleNodes.label;"
+              accesskey="&cmdToggleAccessibleNodes.accesskey;"
+              observes="cmd:toggleAccessibleNodes"/>
+
     <menuitem id="item:toggleWhitespaceNodes"
               class="menuitem-iconic"
               type="checkbox"
               label="&cmdToggleWhitespaceNodes.label;"
               accesskey="&cmdToggleWhitespaceNodes.accesskey;"
               observes="cmd:toggleWhitespaceNodes"/>
+      
+    <menuitem id="item:toggleProcessingInstructions"
+              class="menuitem-iconic"
+              type="checkbox"
+              label="&cmdToggleProcessingInstructions.label;"
+              accesskey="&cmdToggleProcessingInstructions.accesskey;"
+              observes="cmd:toggleProcessingInstructions"/>
   </menupopup>
 
 </overlay>

@@ -21,6 +21,7 @@
  * Contributor(s):
  *   Joe Hewitt <hewitt@netscape.com> (original author)
  *   Jason Barnabe <jason_barnabe@fastmail.fm>
+ *   Shawn Wilsher <me@shawnwilsher.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -51,6 +52,7 @@ const kDOMViewCID          = "@mozilla.org/inspector/dom-view;1";
 const kClipboardHelperCID  = "@mozilla.org/widget/clipboardhelper;1";
 const kPromptServiceCID    = "@mozilla.org/embedcomp/prompt-service;1";
 const nsIDOMNode           = Components.interfaces.nsIDOMNode;
+const nsIDOMElement        = Components.interfaces.nsIDOMElement;
 
 //////////////////////////////////////////////////
 
@@ -66,6 +68,7 @@ function DOMViewer_initialize()
 function DOMViewer_destroy()
 {
   PrefUtils.removeObserver("inspector", PrefChangeObserver);
+  viewer.removeClickListeners();
   viewer = null;
 }
 
@@ -126,16 +129,24 @@ DOMViewer.prototype =
 
   //// methods
 
-  initialize: function(aPane)
+  /**
+   * Properly sets up the DOM Viewer
+   *
+   * @param aPane The panel this references.
+   */
+  initialize: function initialize(aPane)
   {
     //this.initColumns();
 
     this.mPanel = aPane;
-    aPane.notifyViewerReady(this);
 
-    this.setAnonContent(PrefUtils.getPref("inspector.dom.showAnon"), false);
+    this.setAnonContent(PrefUtils.getPref("inspector.dom.showAnon"));
+    this.setProcessingInstructions(PrefUtils.getPref("inspector.dom.showProcessingInstructions"));
+    this.setAccessibleNodes(PrefUtils.getPref("inspector.dom.showAccessibleNodes"));
     this.setWhitespaceNodes(PrefUtils.getPref("inspector.dom.showWhitespaceNodes"));
     this.setFlashSelected(PrefUtils.getPref("inspector.blink.on"));
+
+    aPane.notifyViewerReady(this);
   },
 
   destroy: function()
@@ -152,6 +163,8 @@ DOMViewer.prototype =
       if (this.mPanel.panelset.clipboardFlavor != "inspector/dom-node")
         return false;
       clipboardNode = this.mPanel.panelset.getClipboardData();
+    }
+    if (/^cmdEdit(Paste|Insert)/.test(aCommand)) {
       selectedNode = new XPCNativeWrapper(viewer.selectedNode, "nodeType",
                                           "parentNode", "childNodes");
       if (selectedNode.parentNode)
@@ -169,8 +182,14 @@ DOMViewer.prototype =
       case "cmdEditPasteAsParent":
         return this.isValidChild(clipboardNode, selectedNode) &&
                this.isValidChild(parentNode, clipboardNode, selectedNode);
-      case "cmdEditInsert":
-        return false;
+      case "cmdEditInsertAfter":
+      	return parentNode instanceof nsIDOMElement;
+      case "cmdEditInsertBefore":
+      	return parentNode instanceof nsIDOMElement;
+      case "cmdEditInsertFirstChild":
+      	return selectedNode instanceof nsIDOMElement;
+      case "cmdEditInsertLastChild":
+      	return selectedNode instanceof nsIDOMElement;
       case "cmdEditCut":
       case "cmdEditCopy":
       case "cmdEditDelete":
@@ -227,27 +246,9 @@ DOMViewer.prototype =
   
   getCommand: function(aCommand)
   {
-    switch (aCommand) {
-      case "cmdEditCut":
-        return new cmdEditCut();
-      case "cmdEditCopy":
-        return new cmdEditCopy();
-      case "cmdEditPaste":
-        return new cmdEditPaste();
-      case "cmdEditPasteBefore":
-        return new cmdEditPasteBefore();
-      case "cmdEditPasteReplace":
-        return new cmdEditPasteReplace();
-      case "cmdEditPasteFirstChild":
-        return new cmdEditPasteFirstChild();
-      case "cmdEditPasteLastChild":
-        return new cmdEditPasteLastChild();
-      case "cmdEditPasteAsParent":
-        return new cmdEditPasteAsParent();
-      case "cmdEditDelete":
-        return new cmdEditDelete();
-    }
-    return null;
+  	if (aCommand in window)
+	    return new window[aCommand]();
+	  return null;
   },
   
   ////////////////////////////////////////////////////////////////////////////
@@ -265,20 +266,25 @@ DOMViewer.prototype =
                          "_blank", "chrome,dependent", this.mFindType, this.mFindDir, this.mFindParams);
   },
 
-  toggleAnonContent: function(aRebuild)
+  /**
+   * Toggles the setting for displaying anonymous content.
+   */
+  toggleAnonContent: function toggleAnonContent()
   {
-    this.setAnonContent(!this.mDOMView.showAnonymousContent, aRebuild);
+    var value = PrefUtils.getPref("inspector.dom.showAnon");
+    PrefUtils.setPref("inspector.dom.showAnon", !value);
   },
-  
-  setAnonContent: function(aValue, aRebuild)
+
+  /**
+   * Sets the UI and filters for anonymous content.
+   *
+   * @param aValue The value that we should be setting things to.
+   */
+  setAnonContent: function setAnonContent(aValue)
   {
     this.mDOMView.showAnonymousContent = aValue;
-    this.mPanel.panelset.setCommandAttribute("cmd:toggleAnon", "checked", aValue);
-    PrefUtils.setPref("inspector.dom.showAnon", aValue);
-
-    if (aRebuild) {
-      this.rebuild();
-    }
+    this.mPanel.panelset.setCommandAttribute("cmd:toggleAnon", "checked",
+                                             aValue);
   },
 
   toggleSubDocs: function()
@@ -288,33 +294,85 @@ DOMViewer.prototype =
     this.mPanel.panelset.setCommandAttribute("cmd:toggleSubDocs", "checked", val);
   },
 
-  setWhitespaceNodes: function(aValue)
+  /**
+   * Toggles the visibility of Processing Instructions.
+   */
+  toggleProcessingInstructions: function toggleProcessingInstructions()
   {
-    // Do this first so we ensure the checkmark is set in the case
-    // we are starting with whitespace nodes enabled.
-    this.mPanel.panelset.setCommandAttribute("cmd:toggleWhitespaceNodes", "checked", aValue);
+    var value = PrefUtils.getPref("inspector.dom.showProcessingInstructions");
+    PrefUtils.setPref("inspector.dom.showProcessingInstructions", !value);
+  },
 
-    // The rest of the stuff is redundant to do if we are not changing
-    // the value, so just bail here if we're setting the same value.
-    if (this.mDOMView.showWhitespaceNodes == aValue) {
-      return;
+  /**
+   * Sets the visibility of Processing Instructions.
+   *
+   * @param aValue The visibility of the instructions.
+   */
+  setProcessingInstructions: function setProcessingInstructions(aValue)
+  {
+    this.mPanel.panelset.setCommandAttribute("cmd:toggleProcessingInstructions",
+                                             "checked", aValue);
+    if (aValue) {
+      this.mDOMView.whatToShow |= NodeFilter.SHOW_PROCESSING_INSTRUCTION;
+    } else {
+      this.mDOMView.whatToShow &= ~NodeFilter.SHOW_PROCESSING_INSTRUCTION;
     }
+  },
 
+  /**
+   * Toggle state of 'Show Accessible Nodes' option.
+   */
+  toggleAccessibleNodes: function toggleAccessibleNodes()
+  {
+    var value = PrefUtils.getPref("inspector.dom.showAccessibleNodes");
+    PrefUtils.setPref("inspector.dom.showAccessibleNodes", !value);
+  },
+
+  /**
+   * Set state of 'Show Accessible Nodes' option.
+   *
+   * @param Boolean aValue - if true then accessible nodes will be shown
+   */
+  setAccessibleNodes: function setAccessibleNodes(aValue)
+  {
+    if (!("@mozilla.org/accessibleRetrieval;1" in Components.classes))
+      aValue = false;
+
+    this.mDOMView.showAccessibleNodes = aValue;
+    this.mPanel.panelset.setCommandAttribute("cmd:toggleAccessibleNodes",
+                                             "checked", aValue);
+    this.onItemSelected();
+  },
+
+  /**
+   * Return state of 'Show Accessible Nodes' option.
+   */
+  getAccessibleNodes: function getAccessibleNodes()
+  {
+    return this.mDOMView.showAccessibleNodes;
+  },
+
+  /**
+   * Toggles the value for whitespace nodes.
+   */
+  toggleWhitespaceNodes: function toggleWhitespaceNodes()
+  {
+    var value = PrefUtils.getPref("inspector.dom.showWhitespaceNodes");
+    PrefUtils.setPref("inspector.dom.showWhitespaceNodes", !value);
+  },
+
+  /**
+   * Sets the UI for displaying whitespace nodes.
+   *
+   * @param aValue The value we are to use to determine the state of the UI.
+   */
+  setWhitespaceNodes: function setWhitespaceNodes(aValue)
+  {
+    this.mPanel.panelset.setCommandAttribute("cmd:toggleWhitespaceNodes",
+                                             "checked", aValue);
     this.mDOMView.showWhitespaceNodes = aValue;
-    PrefUtils.setPref("inspector.dom.showWhitespaceNodes", aValue);
-    this.rebuild();
   },
 
-  toggleWhitespaceNodes: function()
-  {
-    this.setWhitespaceNodes(!this.mDOMView.showWhitespaceNodes);
-  },
-
-  toggleAttributes: function()
-  {
-    alert("NOT YET IMPLEMENTED");
-  },
-  
   showColumnsDialog: function()
   {
     var win = openDialog("chrome://inspector/content/viewers/dom/columnsDialog.xul", 
@@ -387,9 +445,9 @@ DOMViewer.prototype =
     }
   },
 
-  onPastePopupShowing: function onPastePopupShowing(menupopup) {
-    for (var i = 0; i < menupopup.childNodes.length; i++) {
-      var commandId = menupopup.childNodes[i].getAttribute("command");
+  onCommandPopupShowing: function onCommandPopupShowing(aMenuPopup) {
+    for (var i = 0; i < aMenuPopup.childNodes.length; i++) {
+      var commandId = aMenuPopup.childNodes[i].getAttribute("command");
       if (viewer.isCommandEnabled(commandId))
         document.getElementById(commandId).setAttribute("disabled", "false");
       else
@@ -567,6 +625,9 @@ DOMViewer.prototype =
 
   removeClickListeners: function()
   {
+    if (!this.mSelectDocs) // we didn't select an element by click
+      return;
+
     for (var i = 0; i < this.mSelectDocs.length; ++i) {
       this.mSelectDocs[i].removeEventListener("mousedown", MouseDownListener, true);
       this.mSelectDocs[i].removeEventListener("mouseup", EventCanceller, true);
@@ -816,42 +877,70 @@ DOMViewer.prototype =
     }
   },
 
-  toggleFlashSelected: function()
+  /**
+   * Toggles the preference for flashing selected elements.
+   */
+  toggleFlashSelected: function toggleFlashSelected()
   {
-    this.setFlashSelected(!this.mFlashSelected);
+    var value = PrefUtils.getPref("inspector.blink.on");
+    PrefUtils.setPref("inspector.blink.on", !value);
   },
 
-  setFlashSelected: function(aValue)
+  /**
+   * Sets the object's value and the command for flashing selected objects.
+   *
+   * @param aValue The value to set it to.
+   */
+  setFlashSelected: function setFlashSelected(aValue)
   {
     this.mFlashSelected = aValue;
-    this.mPanel.panelset.setCommandAttribute("cmd:flashSelected", "checked", aValue);
-    PrefUtils.setPref("inspector.blink.on", aValue);
+    this.mPanel.panelset.setCommandAttribute("cmd:flashSelected", "checked",
+                                             aValue);
   },
 
   ////////////////////////////////////////////////////////////////////////////
   //// Prefs
 
-  onPrefChanged: function(aName)
+  /**
+   * Called by PrefChangeObserver.
+   *
+   * @param aName The name of the preference that has been changed.
+   */
+  onPrefChanged: function onPrefChanged(aName)
   {
-    if (aName == "inspector.dom.showAnon")
-      this.setFlashSelected(PrefUtils.getPref("inspector.blink.on"));
+    var value = PrefUtils.getPref(aName);
 
-    if (aName == "inspector.blink.on")
-      this.setFlashSelected(PrefUtils.getPref("inspector.blink.on"));
+    if (aName == "inspector.dom.showAnon") {
+      this.setAnonContent(value);
+    } else if (aName == "inspector.dom.showProcessingInstructions") {
+      this.setProcessingInstructions(value);
+    } else if (aName == "inspector.dom.showAccessibleNodes") {
+      this.setAccessibleNodes(value);
+    } else if (aName == "inspector.dom.showWhitespaceNodes") {
+      this.setWhitespaceNodes(value);
+    } else if (aName == "inspector.blink.on") {
+      this.setFlashSelected(value);
 
-    if (this.mFlasher) {
+      // don't need to rebuild for this
+      return;
+    } else if (this.mFlasher) {
       if (aName == "inspector.blink.border-color") {
-        this.mFlasher.color = PrefUtils.getPref("inspector.blink.border-color");
+        this.mFlasher.color = value;
       } else if (aName == "inspector.blink.border-width") {
-        this.mFlasher.thickness = PrefUtils.getPref("inspector.blink.border-width");
+        this.mFlasher.thickness = value;
       } else if (aName == "inspector.blink.duration") {
-        this.mFlasher.duration = PrefUtils.getPref("inspector.blink.duration");
+        this.mFlasher.duration = value;
       } else if (aName == "inspector.blink.speed") {
-        this.mFlasher.speed = PrefUtils.getPref("inspector.blink.speed");
+        this.mFlasher.speed = value;
       } else if (aName == "inspector.blink.invert") {
-        this.mFlasher.invert = PrefUtils.getPref("inspector.blink.invert");
+        this.mFlasher.invert = value;
       }
+
+      // don't need to rebuild for these
+      return;
     }
+
+    this.rebuild();
   },
 
   ////////////////////////////////////////////////////////////////////////////
@@ -1247,6 +1336,110 @@ cmdEditPasteAsParent.prototype =
     if (this.pastedNode)
       this.originalParentNode.replaceChild(this.originalNode, this.pastedNode);
   }
+};
+
+/**
+ * Generic prototype for inserting a new node somewhere
+ */
+function InsertNode() {}
+InsertNode.prototype = 
+{
+  insertedNode: null,
+  originalNode: null,
+  attr: null,
+
+  // remove this line for bug 179621, Phase Three
+  txnType: "standard",
+
+  // required for nsITransaction
+  QueryInterface: txnQueryInterface,
+  merge: txnMerge,
+  isTransient: false,
+  redoTransaction: txnRedoTransaction,
+
+  insertNode: function insertNode()
+  {
+  },
+
+  createNode: function createNode()
+  {
+    var doc = this.originalNode.ownerDocument;
+    if (!this.attr) {
+      this.attr = { type: null, value: null, namespaceURI: null, accepted: false };
+
+      window.openDialog("chrome://inspector/content/viewers/dom/insertDialog.xul",
+                        "insert", "chrome,modal,centerscreen", doc, this.attr);
+	
+    }
+
+    if (this.attr.accepted) {
+     	switch (this.attr.type) {
+        case nsIDOMNode.ELEMENT_NODE:
+     	    this.insertedNode = doc.createElementNS(this.attr.namespaceURI, this.attr.value);
+     	    break;
+     	  case nsIDOMNode.TEXT_NODE:
+     	    this.insertedNode = doc.createTextNode(this.attr.value);
+     	    break;
+     	}
+     	return true;
+    }
+    return false;
+  },
+
+  doTransaction: function doTransaction()
+  {
+    var selected = this.originalNode ? this.originalNode : viewer.selectedNode;
+    if (selected) {
+      this.originalNode = selected;
+      if (this.createNode()) {
+        this.insertNode();
+        return false;
+      }
+    }
+    return true;
+  },
+
+  undoTransaction: function undoTransaction()
+  {
+    if (this.insertedNode)
+      this.insertedNode.parentNode.removeChild(this.insertedNode);
+  }
+};
+
+/**
+ * Inserts a node after the selected node.
+ */
+function cmdEditInsertAfter() {}
+cmdEditInsertAfter.prototype = new InsertNode();
+cmdEditInsertAfter.prototype.insertNode = function insertNode() {
+  this.originalNode.parentNode.insertBefore(this.insertedNode, this.originalNode.nextSibling);
+};
+
+/**
+ * Inserts a node before the selected node.
+ */
+function cmdEditInsertBefore() {}
+cmdEditInsertBefore.prototype = new InsertNode();
+cmdEditInsertBefore.prototype.insertNode = function insertNode() {
+  this.originalNode.parentNode.insertBefore(this.insertedNode, this.originalNode);
+};
+
+/**
+ * Inserts a node as the first child of the selected node.
+ */
+function cmdEditInsertFirstChild() {}
+cmdEditInsertFirstChild.prototype = new InsertNode();
+cmdEditInsertFirstChild.prototype.insertNode = function insertNode() {
+  this.originalNode.insertBefore(this.insertedNode, this.originalNode.firstChild);
+};
+
+/**
+ * Inserts a node as the last child of the selected node.
+ */
+function cmdEditInsertLastChild() {}
+cmdEditInsertLastChild.prototype = new InsertNode();
+cmdEditInsertLastChild.prototype.insertNode = function insertNode() {
+  this.originalNode.appendChild(this.insertedNode);
 };
 
 
