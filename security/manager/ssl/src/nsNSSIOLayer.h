@@ -49,10 +49,13 @@
 #include "nsIInterfaceRequestorUtils.h"
 #include "nsITransportSecurityInfo.h"
 #include "nsISSLSocketControl.h"
-#include "nsISSLStatus.h"
+#include "nsSSLStatus.h"
 #include "nsISSLStatusProvider.h"
+#include "nsIIdentityInfo.h"
 #include "nsXPIDLString.h"
 #include "nsNSSShutDown.h"
+#include "nsAutoPtr.h"
+#include "nsNSSCertificate.h"
 
 class nsIChannel;
 class nsSSLThread;
@@ -71,6 +74,7 @@ public:
   PRBool ensure_buffer_size(PRInt32 amount);
   
   enum ssl_state { 
+    ssl_invalid,       // used for initializating, should never occur
     ssl_idle,          // not in use by SSL thread, no activity pending
     ssl_pending_write, // waiting for SSL thread to complete writing
     ssl_pending_read,  // waiting for SSL thread to complete reading
@@ -113,12 +117,19 @@ public:
   // This variable is used to save the SSL level file descriptor,
   // to allow us to restore the original file descriptor layering.
   PRFileDesc *mReplacedSSLFileDesc;
+
+  PRBool mOneBytePendingFromEarlierWrite;
+  unsigned char mThePendingByte;
+  PRInt32 mOriginalRequestedTransferAmount;
 };
 
 class nsNSSSocketInfo : public nsITransportSecurityInfo,
                         public nsISSLSocketControl,
                         public nsIInterfaceRequestor,
                         public nsISSLStatusProvider,
+                        public nsIIdentityInfo,
+                        public nsISerializable,
+                        public nsIClassInfo,
                         public nsNSSShutDownObject,
                         public nsOnPK11LogoutCancelObject
 {
@@ -131,9 +142,13 @@ public:
   NS_DECL_NSISSLSOCKETCONTROL
   NS_DECL_NSIINTERFACEREQUESTOR
   NS_DECL_NSISSLSTATUSPROVIDER
+  NS_DECL_NSIIDENTITYINFO
+  NS_DECL_NSISERIALIZABLE
+  NS_DECL_NSICLASSINFO
 
   nsresult SetSecurityState(PRUint32 aState);
   nsresult SetShortSecurityDescription(const PRUnichar *aText);
+  nsresult SetErrorMessage(const PRUnichar *aText);
 
   nsresult SetForSTARTTLS(PRBool aForSTARTTLS);
   nsresult GetForSTARTTLS(PRBool *aForSTARTTLS);
@@ -150,38 +165,59 @@ public:
   nsresult GetPort(PRInt32 *aPort);
   nsresult SetPort(PRInt32 aPort);
 
+  nsresult GetCert(nsIX509Cert** _result);
+  nsresult SetCert(nsIX509Cert *aCert);
+
+  nsresult GetPreviousCert(nsIX509Cert** _result);
+
   void SetCanceled(PRBool aCanceled);
   PRBool GetCanceled();
   
   void SetHasCleartextPhase(PRBool aHasCleartextPhase);
   PRBool GetHasCleartextPhase();
   
-  void SetHandshakeInProgress(PRBool aIsIn) { mHandshakeInProgress = aIsIn; }
+  void SetHandshakeInProgress(PRBool aIsIn);
   PRBool GetHandshakeInProgress() { return mHandshakeInProgress; }
+  PRBool HandshakeTimeout();
+
+  void SetAllowTLSIntoleranceTimeout(PRBool aAllow);
+
+  nsresult GetExternalErrorReporting(PRBool* state);
+  nsresult SetExternalErrorReporting(PRBool aState);
 
   nsresult RememberCAChain(CERTCertList *aCertList);
 
   /* Set SSL Status values */
-  nsresult SetSSLStatus(nsISSLStatus *aSSLStatus);  
+  nsresult SetSSLStatus(nsSSLStatus *aSSLStatus);
+  nsSSLStatus* SSLStatus() { return mSSLStatus; }
+  PRBool hasCertErrors();
   
   PRStatus CloseSocketAndDestroy();
   
 protected:
   nsCOMPtr<nsIInterfaceRequestor> mCallbacks;
   PRFileDesc* mFd;
+  nsCOMPtr<nsIX509Cert> mCert;
+  nsCOMPtr<nsIX509Cert> mPreviousCert;
+  enum { 
+    blocking_state_unknown, is_nonblocking_socket, is_blocking_socket 
+  } mBlockingState;
   PRUint32 mSecurityState;
   nsString mShortDesc;
+  nsString mErrorMessage;
+  PRPackedBool mExternalErrorReporting;
   PRPackedBool mForSTARTTLS;
   PRPackedBool mHandshakePending;
   PRPackedBool mCanceled;
   PRPackedBool mHasCleartextPhase;
   PRPackedBool mHandshakeInProgress;
+  PRPackedBool mAllowTLSIntoleranceTimeout;
+  PRIntervalTime mHandshakeStartTime;
   PRInt32 mPort;
   nsXPIDLCString mHostName;
-  CERTCertList *mCAChain;
 
   /* SSL Status */
-  nsCOMPtr<nsISSLStatus> mSSLStatus;
+  nsRefPtr<nsSSLStatus> mSSLStatus;
 
   nsresult ActivateSSL();
 
@@ -239,5 +275,11 @@ nsresult nsSSLIOLayerAddToSocket(PRInt32 family,
 
 nsresult nsSSLIOLayerFreeTLSIntolerantSites();
 nsresult displayUnknownCertErrorAlert(nsNSSSocketInfo *infoObject, int error);
- 
+
+// 16786594-0296-4471-8096-8f84497ca428
+#define NS_NSSSOCKETINFO_CID \
+{ 0x16786594, 0x0296, 0x4471, \
+    { 0x80, 0x96, 0x8f, 0x84, 0x49, 0x7c, 0xa4, 0x28 } }
+
+
 #endif /* _NSNSSIOLAYER_H */

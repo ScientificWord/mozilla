@@ -58,11 +58,13 @@
 #include "nsWeakReference.h"
 #include "nsIScriptSecurityManager.h"
 #include "nsSmartCardMonitor.h"
+#include "nsINSSErrorsService.h"
 #include "nsITimer.h"
 #include "nsNetUtil.h"
 #include "nsHashtable.h"
 #include "prlock.h"
 #include "nsICryptoHash.h"
+#include "nsICryptoHMAC.h"
 #include "hasht.h"
 #include "nsNSSCallbacks.h"
 
@@ -85,9 +87,11 @@
 #define NS_PSMCONTENTLISTEN_CID {0xc94f4a30, 0x64d7, 0x11d4, {0x99, 0x60, 0x00, 0xb0, 0xd0, 0x23, 0x54, 0xa0}}
 #define NS_PSMCONTENTLISTEN_CONTRACTID "@mozilla.org/security/psmdownload;1"
 
-#define NS_CRYPTO_HASH_CLASSNAME "Mozilla Cryto Hash Function Component"
-#define NS_CRYPTO_HASH_CONTRACTID "@mozilla.org/security/hash;1"
+#define NS_CRYPTO_HASH_CLASSNAME "Mozilla Crypto Hash Function Component"
 #define NS_CRYPTO_HASH_CID {0x36a1d3b3, 0xd886, 0x4317, {0x96, 0xff, 0x87, 0xb0, 0x00, 0x5c, 0xfe, 0xf7}}
+
+#define NS_CRYPTO_HMAC_CLASSNAME "Mozilla Crypto HMAC Function Component"
+#define NS_CRYPTO_HMAC_CID {0xa496d0a2, 0xdff7, 0x4e23, {0xbd, 0x65, 0x1c, 0xa7, 0x42, 0xfa, 0x17, 0x8a}}
 
 //--------------------------------------------
 // Now we need a content listener to register 
@@ -134,6 +138,13 @@ class NS_NO_VTABLE nsINSSComponent : public nsISupports {
                                            PRUint32 numParams,
                                            nsAString &outString) = 0;
 
+  NS_IMETHOD GetNSSBundleString(const char *name,
+                                nsAString &outString) = 0;
+  NS_IMETHOD NSSBundleFormatStringFromName(const char *name,
+                                           const PRUnichar **params,
+                                           PRUint32 numParams,
+                                           nsAString &outString) = 0;
+
   // This method will just disable OCSP in NSS, it will not
   // alter the respective pref values.
   NS_IMETHOD SkipOcsp() = 0;
@@ -160,6 +171,7 @@ class NS_NO_VTABLE nsINSSComponent : public nsISupports {
 
   NS_IMETHOD DispatchEvent(const nsAString &eventType, const nsAString &token) = 0;
   
+  NS_IMETHOD EnsureIdentityInfoLoaded() = 0;
 };
 
 NS_DEFINE_STATIC_IID_ACCESSOR(nsINSSComponent, NS_INSSCOMPONENT_IID)
@@ -177,6 +189,20 @@ private:
   HASHContext* mHashContext;
 };
 
+class nsCryptoHMAC : public nsICryptoHMAC
+{
+public:
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSICRYPTOHMAC
+
+  nsCryptoHMAC();
+
+private:
+  ~nsCryptoHMAC();
+
+  PK11Context* mHMACContext;
+};
+
 struct PRLock;
 class nsNSSShutDownList;
 class nsSSLThread;
@@ -188,10 +214,11 @@ class nsNSSComponent : public nsISignatureVerifier,
                        public nsINSSComponent,
                        public nsIObserver,
                        public nsSupportsWeakReference,
-                       public nsITimerCallback
+                       public nsITimerCallback,
+                       public nsINSSErrorsService
 {
 public:
-  NS_DEFINE_STATIC_CID_ACCESSOR( NS_NSSCOMPONENT_CID );
+  NS_DEFINE_STATIC_CID_ACCESSOR( NS_NSSCOMPONENT_CID )
 
   nsNSSComponent();
   virtual ~nsNSSComponent();
@@ -201,12 +228,19 @@ public:
   NS_DECL_NSIENTROPYCOLLECTOR
   NS_DECL_NSIOBSERVER
   NS_DECL_NSITIMERCALLBACK
+  NS_DECL_NSINSSERRORSSERVICE
 
   NS_METHOD Init();
 
   NS_IMETHOD GetPIPNSSBundleString(const char *name,
                                    nsAString &outString);
   NS_IMETHOD PIPBundleFormatStringFromName(const char *name,
+                                           const PRUnichar **params,
+                                           PRUint32 numParams,
+                                           nsAString &outString);
+  NS_IMETHOD GetNSSBundleString(const char *name,
+                               nsAString &outString);
+  NS_IMETHOD NSSBundleFormatStringFromName(const char *name,
                                            const PRUnichar **params,
                                            PRUint32 numParams,
                                            nsAString &outString);
@@ -225,6 +259,7 @@ public:
   NS_IMETHOD ShutdownSmartCardThread(SECMODModule *module);
   NS_IMETHOD PostEvent(const nsAString &eventType, const nsAString &token);
   NS_IMETHOD DispatchEvent(const nsAString &eventType, const nsAString &token);
+  NS_IMETHOD EnsureIdentityInfoLoaded();
 
 private:
 
@@ -244,8 +279,10 @@ private:
   
   void ShowAlert(AlertIdentifier ai);
   void InstallLoadableRoots();
+  void UnloadLoadableRoots();
   void LaunchSmartCardThreads();
   void ShutdownSmartCardThreads();
+  void CleanupIdentityInfo();
   nsresult InitializePIPNSSBundle();
   nsresult ConfigureInternalPKCS11Token();
   nsresult RegisterPSMContentListener();
@@ -254,10 +291,20 @@ private:
   nsresult PostCRLImportEvent(const nsCSubstring &urlString, nsIStreamListener *psmDownloader);
   nsresult getParamsForNextCrlToDownload(nsAutoString *url, PRTime *time, nsAutoString *key);
   nsresult DispatchEventToWindow(nsIDOMWindow *domWin, const nsAString &eventType, const nsAString &token);
+
+  // Methods that we use to handle the profile change notifications (and to
+  // synthesize a full profile change when we're just doing a profile startup):
+  void DoProfileApproveChange(nsISupports* aSubject);
+  void DoProfileChangeNetTeardown();
+  void DoProfileChangeTeardown(nsISupports* aSubject);
+  void DoProfileBeforeChange(nsISupports* aSubject);
+  void DoProfileChangeNetRestore();
+  
   PRLock *mutex;
   
   nsCOMPtr<nsIScriptSecurityManager> mScriptSecurityManager;
   nsCOMPtr<nsIStringBundle> mPIPNSSBundle;
+  nsCOMPtr<nsIStringBundle> mNSSErrorsBundle;
   nsCOMPtr<nsIURIContentListener> mPSMContentListener;
   nsCOMPtr<nsIPrefBranch> mPrefBranch;
   nsCOMPtr<nsITimer> mTimer;
@@ -277,6 +324,9 @@ private:
   nsSSLThread *mSSLThread;
   nsCertVerificationThread *mCertVerificationThread;
   nsNSSHttpInterface mHttpForNSS;
+
+  static PRStatus PR_CALLBACK IdentityInfoInit(void);
+  PRCallOnceType mIdentityInfoCallOnce;
 };
 
 class PSMContentListener : public nsIURIContentListener,
@@ -291,6 +341,16 @@ public:
 private:
   nsCOMPtr<nsISupports> mLoadCookie;
   nsCOMPtr<nsIURIContentListener> mParentContentListener;
+};
+
+class nsNSSErrors
+{
+public:
+  static const char *getDefaultErrorStringName(PRInt32 err);
+  static const char *getOverrideErrorStringName(PRInt32 aErrorCode);
+  static nsresult getErrorMessageFromCode(PRInt32 err,
+                                          nsINSSComponent *component,
+                                          nsString &returnedMessage);
 };
 
 #endif // _nsNSSComponent_h_
