@@ -51,6 +51,15 @@
 #define NS_HASH_PROPERTY_BAG_CONTRACTID "@mozilla.org/hash-property-bag;1"
 
 /**
+ * Factory for creating nsIUnicharInputStream
+ * @implements nsIUnicharInputStreamFactory
+ * @note nsIUnicharInputStream instances cannot be created via
+ *       createInstance. Code must use one of the custom factory methods.
+ */
+#define NS_SIMPLE_UNICHAR_STREAM_FACTORY_CONTRACTID \
+  "@mozilla.org/xpcom/simple-unichar-stream-factory;1"
+
+/**
  * The global thread manager service.  This component is a singleton.
  * @implements nsIThreadManager
  */

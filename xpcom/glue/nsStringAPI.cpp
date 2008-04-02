@@ -21,6 +21,7 @@
  * Contributor(s):
  *   Darin Fisher <darin@meer.net>
  *   Benjamin Smedberg <benjamin@smedbergs.us>
+ *   Ben Turner <mozilla@songbirdnest.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -38,20 +39,10 @@
 
 #include "nscore.h"
 #include "nsCRTGlue.h"
-
-#ifdef MOZILLA_INTERNAL_API
-#undef nsAString
-#undef nsACString
-#endif
-
+#include "prprf.h"
+#include "nsStringAPI.h"
 #include "nsXPCOMStrings.h"
 #include "nsDebug.h"
-
-#ifdef MOZILLA_INTERNAL_API
-#undef MOZILLA_INTERNAL_API
-#endif
-
-#include "nsStringAPI.h"
 
 #include <stdio.h>
 
@@ -98,10 +89,10 @@ nsAString::BeginWriting(char_type **begin, char_type **end, PRUint32 newSize)
 }
 
 nsAString::char_type*
-nsAString::BeginWriting()
+nsAString::BeginWriting(PRUint32 aLen)
 {
   char_type *data;
-  NS_StringGetMutableData(*this, PR_UINT32_MAX, &data);
+  NS_StringGetMutableData(*this, aLen, &data);
   return data;
 }
 
@@ -119,6 +110,33 @@ nsAString::SetLength(PRUint32 aLen)
   char_type *data;
   NS_StringGetMutableData(*this, aLen, &data);
   return data != nsnull;
+}
+
+void
+nsAString::AssignLiteral(const char *aStr)
+{
+  PRUint32 len = strlen(aStr);
+  PRUnichar *buf = BeginWriting(len);
+  if (!buf)
+    return;
+
+  for (; *aStr; ++aStr, ++buf)
+    *buf = *aStr;
+}
+
+void
+nsAString::AppendLiteral(const char *aASCIIStr)
+{
+  PRUint32 appendLen = strlen(aASCIIStr);
+
+  PRUint32 thisLen = Length();
+  PRUnichar *begin, *end;
+  BeginWriting(&begin, &end, appendLen + thisLen);
+  if (!begin)
+    return;
+
+  for (begin += thisLen; begin < end; ++begin, ++aASCIIStr)
+    *begin = *aASCIIStr;
 }
 
 void
@@ -202,10 +220,46 @@ nsAString::DefaultComparator(const char_type *a, const char_type *b,
     if (*a == *b)
       continue;
 
-    return a < b ? -1 : 1;
+    return *a < *b ? -1 : 1;
   }
 
   return 0;
+}
+
+PRInt32
+nsAString::Compare(const char_type *other, ComparatorFunc c) const
+{
+  const char_type *cself;
+  PRUint32 selflen = NS_StringGetData(*this, &cself);
+  PRUint32 otherlen = NS_strlen(other);
+  PRUint32 comparelen = selflen <= otherlen ? selflen : otherlen;
+
+  PRInt32 result = c(cself, other, comparelen);
+  if (result == 0) {
+    if (selflen < otherlen)
+      return -1;
+    else if (selflen > otherlen)
+      return 1;
+  }
+  return result;
+}
+
+PRInt32
+nsAString::Compare(const self_type &other, ComparatorFunc c) const
+{
+  const char_type *cself, *cother;
+  PRUint32 selflen = NS_StringGetData(*this, &cself);
+  PRUint32 otherlen = NS_StringGetData(other, &cother);
+  PRUint32 comparelen = selflen <= otherlen ? selflen : otherlen;
+
+  PRInt32 result = c(cself, cother, comparelen);
+  if (result == 0) {
+    if (selflen < otherlen)
+      return -1;
+    else if (selflen > otherlen)
+      return 1;
+  }
+  return result;
 }
 
 PRBool
@@ -236,6 +290,22 @@ nsAString::Equals(const self_type &other, ComparatorFunc c) const
 }
 
 PRBool
+nsAString::EqualsLiteral(const char *aASCIIString) const
+{
+  const PRUnichar *begin, *end;
+  BeginReading(&begin, &end);
+
+  for (; begin < end; ++begin, ++aASCIIString) {
+    if (!*aASCIIString || !NS_IsAscii(*begin) ||
+        (char) *begin != *aASCIIString) {
+      return PR_FALSE;
+    }
+  }
+
+  return *aASCIIString == nsnull;
+}
+
+PRBool
 nsAString::LowerCaseEqualsLiteral(const char *aASCIIString) const
 {
   const PRUnichar *begin, *end;
@@ -248,28 +318,29 @@ nsAString::LowerCaseEqualsLiteral(const char *aASCIIString) const
     }
   }
 
-  if (*aASCIIString)
-    return PR_FALSE;
-
-  return PR_TRUE;
+  return *aASCIIString == nsnull;
 }
 
 PRInt32
-nsAString::Find(const self_type& aStr, ComparatorFunc c) const
+nsAString::Find(const self_type& aStr, PRUint32 aOffset,
+                ComparatorFunc c) const
 {
   const char_type *begin, *end;
   PRUint32 selflen = BeginReading(&begin, &end);
 
+  if (aOffset > selflen)
+    return -1;
+
   const char_type *other;
   PRUint32 otherlen = aStr.BeginReading(&other);
 
-  if (otherlen > selflen)
+  if (otherlen > selflen - aOffset)
     return -1;
 
   // We want to stop searching otherlen characters before the end of the string
   end -= otherlen;
 
-  for (const char_type *cur = begin; cur <= end; ++cur) {
+  for (const char_type *cur = begin + aOffset; cur <= end; ++cur) {
     if (!c(cur, other, otherlen))
       return cur - begin;
   }
@@ -297,7 +368,7 @@ static PRBool ns_strnimatch(const PRUnichar *aStr, const char* aSubstring,
     if (!NS_IsAscii(*aStr))
       return PR_FALSE;
 
-    if (NS_ToLower((char) *aStr) != *aSubstring)
+    if (NS_ToLower((char) *aStr) != NS_ToLower(*aSubstring))
       return PR_FALSE;
   }
 
@@ -305,7 +376,7 @@ static PRBool ns_strnimatch(const PRUnichar *aStr, const char* aSubstring,
 }
 
 PRInt32
-nsAString::Find(const char *aStr, PRBool aIgnoreCase) const
+nsAString::Find(const char *aStr, PRUint32 aOffset, PRBool aIgnoreCase) const
 {
   PRBool (*match)(const PRUnichar*, const char*, PRUint32) =
     aIgnoreCase ? ns_strnimatch : ns_strnmatch;
@@ -313,19 +384,40 @@ nsAString::Find(const char *aStr, PRBool aIgnoreCase) const
   const char_type *begin, *end;
   PRUint32 selflen = BeginReading(&begin, &end);
 
+  if (aOffset > selflen)
+    return -1;
+
   PRUint32 otherlen = strlen(aStr);
 
-  if (otherlen > selflen)
+  if (otherlen > selflen - aOffset)
     return -1;
 
   // We want to stop searching otherlen characters before the end of the string
   end -= otherlen;
 
-  for (const char_type *cur = begin; cur <= end; ++cur) {
+  for (const char_type *cur = begin + aOffset; cur <= end; ++cur) {
     if (match(cur, aStr, otherlen)) {
       return cur - begin;
     }
   }
+  return -1;
+}
+
+PRInt32
+nsAString::FindChar(char_type aChar, PRUint32 aOffset) const
+{
+  const char_type *start, *end;
+  PRUint32 len = BeginReading(&start, &end);
+  if (aOffset > len)
+    return -1;
+
+  const char_type *cur;
+
+  for (cur = start + aOffset; cur < end; ++cur) {
+    if (*cur == aChar)
+      return cur - start;
+  }
+
   return -1;
 }
 
@@ -375,6 +467,40 @@ nsAString::AppendInt(int aInt, PRInt32 aRadix)
   Append(NS_ConvertASCIItoUTF16(buf, len));
 }
 
+// Strings
+
+#ifndef XPCOM_GLUE_AVOID_NSPR
+PRInt32
+nsAString::ToInteger(nsresult *aErrorCode, PRUint32 aRadix) const
+{
+  NS_ConvertUTF16toUTF8 narrow(*this);
+
+  const char *fmt;
+  switch (aRadix) {
+  case 10:
+    fmt = "%i";
+    break;
+
+  case 16:
+    fmt = "%x";
+    break;
+
+  default:
+    NS_ERROR("Unrecognized radix!");
+    *aErrorCode = NS_ERROR_INVALID_ARG;
+    return 0;
+  }
+
+  PRInt32 result = 0;
+  if (PR_sscanf(narrow.get(), fmt, &result) == 1)
+    *aErrorCode = NS_OK;
+  else
+    *aErrorCode = NS_ERROR_FAILURE;
+
+  return result;
+}
+#endif // XPCOM_GLUE_AVOID_NSPR
+
 // nsACString
 
 PRUint32
@@ -414,10 +540,10 @@ nsACString::BeginWriting(char_type **begin, char_type **end, PRUint32 newSize)
 }
 
 nsACString::char_type*
-nsACString::BeginWriting()
+nsACString::BeginWriting(PRUint32 aLen)
 {
   char_type *data;
-  NS_CStringGetMutableData(*this, PR_UINT32_MAX, &data);
+  NS_CStringGetMutableData(*this, aLen, &data);
   return data;
 }
 
@@ -517,6 +643,42 @@ nsACString::DefaultComparator(const char_type *a, const char_type *b,
   return memcmp(a, b, len);
 }
 
+PRInt32
+nsACString::Compare(const char_type *other, ComparatorFunc c) const
+{
+  const char_type *cself;
+  PRUint32 selflen = NS_CStringGetData(*this, &cself);
+  PRUint32 otherlen = strlen(other);
+  PRUint32 comparelen = selflen <= otherlen ? selflen : otherlen;
+
+  PRInt32 result = c(cself, other, comparelen);
+  if (result == 0) {
+    if (selflen < otherlen)
+      return -1;
+    else if (selflen > otherlen)
+      return 1;
+  }
+  return result;
+}
+
+PRInt32
+nsACString::Compare(const self_type &other, ComparatorFunc c) const
+{
+  const char_type *cself, *cother;
+  PRUint32 selflen = NS_CStringGetData(*this, &cself);
+  PRUint32 otherlen = NS_CStringGetData(other, &cother);
+  PRUint32 comparelen = selflen <= otherlen ? selflen : otherlen;
+
+  PRInt32 result = c(cself, cother, comparelen);
+  if (result == 0) {
+    if (selflen < otherlen)
+      return -1;
+    else if (selflen > otherlen)
+      return 1;
+  }
+  return result;
+}
+
 PRBool
 nsACString::Equals(const char_type *other, ComparatorFunc c) const
 {
@@ -545,11 +707,29 @@ nsACString::Equals(const self_type &other, ComparatorFunc c) const
 }
 
 PRInt32
-nsACString::Find(const self_type& aStr, ComparatorFunc c) const
+nsACString::Find(const self_type& aStr, PRUint32 aOffset,
+                 ComparatorFunc c) const
 {
-  const char_type *begin;
-  PRUint32 len = aStr.BeginReading(&begin);
-  return Find(begin, len, c);
+  const char_type *begin, *end;
+  PRUint32 selflen = BeginReading(&begin, &end);
+
+  if (aOffset > selflen)
+    return -1;
+
+  const char_type *other;
+  PRUint32 otherlen = aStr.BeginReading(&other);
+
+  if (otherlen > selflen - aOffset)
+    return -1;
+
+  // We want to stop searching otherlen characters before the end of the string
+  end -= otherlen;
+
+  for (const char_type *cur = begin + aOffset; cur <= end; ++cur) {
+    if (!c(cur, other, otherlen))
+      return cur - begin;
+  }
+  return -1;
 }
 
 PRInt32
@@ -576,9 +756,27 @@ nsACString::Find(const char_type *aStr, PRUint32 aLen, ComparatorFunc c) const
   end -= aLen;
 
   for (const char_type *cur = begin; cur <= end; ++cur) {
-    if (!c(begin, aStr, aLen))
+    if (!c(cur, aStr, aLen))
       return cur - begin;
   }
+  return -1;
+}
+
+PRInt32
+nsACString::FindChar(char_type aChar, PRUint32 aOffset) const
+{
+  const char_type *start, *end;
+  PRUint32 len = BeginReading(&start, &end);
+  if (aOffset > len)
+    return -1;
+
+  const char_type *cur;
+
+  for (cur = start + aOffset; cur < end; ++cur) {
+    if (*cur == aChar)
+      return cur - start;
+  }
+
   return -1;
 }
 
@@ -624,6 +822,36 @@ nsACString::AppendInt(int aInt, PRInt32 aRadix)
 
   Append(buf, len);
 }
+
+#ifndef XPCOM_GLUE_AVOID_NSPR
+PRInt32
+nsACString::ToInteger(nsresult *aErrorCode, PRUint32 aRadix) const
+{
+  const char *fmt;
+  switch (aRadix) {
+  case 10:
+    fmt = "%i";
+    break;
+
+  case 16:
+    fmt = "%x";
+    break;
+
+  default:
+    NS_ERROR("Unrecognized radix!");
+    *aErrorCode = NS_ERROR_INVALID_ARG;
+    return 0;
+  }
+
+  PRInt32 result = 0;
+  if (PR_sscanf(nsCString(*this).get(), fmt, &result) == 1)
+    *aErrorCode = NS_OK;
+  else
+    *aErrorCode = NS_ERROR_FAILURE;
+
+  return result;
+}
+#endif // XPCOM_GLUE_AVOID_NSPR
 
 // Substrings
 

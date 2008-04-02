@@ -50,19 +50,12 @@
 #include "nsISimpleEnumerator.h"
 #include "nsIStringEnumerator.h"
 
-#if defined(XP_MAC)
-#include <Folders.h>
-#include <Files.h>
-#include <Memory.h>
-#include <Processes.h>
-#include <Gestalt.h>
-#elif defined(XP_WIN)
-#include "nsWinAPIs.h"
+#if defined(XP_WIN)
 #include <windows.h>
 #include <shlobj.h>
 #include <stdlib.h>
 #include <stdio.h>
-#elif defined(XP_UNIX) || defined(XP_MACOSX)
+#elif defined(XP_UNIX)
 #include <unistd.h>
 #include <stdlib.h>
 #include <sys/param.h>
@@ -93,13 +86,8 @@
 #include "SpecialSystemDirectory.h"
 #include "nsAppFileLocationProvider.h"
 
-#if defined(XP_MAC)
-#define COMPONENT_REGISTRY_NAME NS_LITERAL_CSTRING("Component Registry")
-#define COMPONENT_DIRECTORY     NS_LITERAL_CSTRING("Components")
-#else
 #define COMPONENT_REGISTRY_NAME NS_LITERAL_CSTRING("compreg.dat")
 #define COMPONENT_DIRECTORY     NS_LITERAL_CSTRING("components")
-#endif 
 
 #define XPTI_REGISTRY_NAME      NS_LITERAL_CSTRING("xpti.dat")
 
@@ -107,7 +95,7 @@
 // For Windows platform, We are choosing Appdata folder as HOME
 #if defined (XP_WIN)
 #define HOME_DIR NS_WIN_APPDATA_DIR
-#elif defined (XP_MAC) || defined (XP_MACOSX)
+#elif defined (XP_MACOSX)
 #define HOME_DIR NS_OSX_HOME_DIR
 #elif defined (XP_UNIX)
 #define HOME_DIR NS_UNIX_HOME_DIR
@@ -158,7 +146,7 @@ nsDirectoryService::GetCurrentProcessDirectory(nsILocalFile** aFile)
 
 #ifdef XP_WIN
     PRUnichar buf[MAX_PATH];
-    if ( nsWinAPIs::mGetModuleFileName(0, buf, sizeof(buf)) )
+    if ( ::GetModuleFileNameW(0, buf, sizeof(buf)) )
     {
         // chop off the executable name by finding the rightmost backslash
         PRUnichar* lastSlash = wcsrchr(buf, L'\\');
@@ -170,35 +158,6 @@ nsDirectoryService::GetCurrentProcessDirectory(nsILocalFile** aFile)
         return NS_OK;
     }
 
-#elif defined(XP_MAC)
-    // get info for the the current process to determine the directory
-    // its located in
-    OSErr err;
-    ProcessSerialNumber psn = {kNoProcess, kCurrentProcess};
-    ProcessInfoRec pInfo;
-    FSSpec         tempSpec;
-
-    // initialize ProcessInfoRec before calling
-    // GetProcessInformation() or die horribly.
-    pInfo.processName = nil;
-    pInfo.processAppSpec = &tempSpec;
-    pInfo.processInfoLength = sizeof(ProcessInfoRec);
-
-    err = GetProcessInformation(&psn, &pInfo);
-    if (!err)
-    {
-        // create an FSSpec from the volume and dirid of the app.
-        FSSpec appFSSpec;
-        ::FSMakeFSSpec(pInfo.processAppSpec->vRefNum, pInfo.processAppSpec->parID, 0, &appFSSpec);
-        
-        nsCOMPtr<nsILocalFileMac> localFileMac = do_QueryInterface((nsIFile*)localFile);
-        if (localFileMac) 
-        {
-            localFileMac->InitWithFSSpec(&appFSSpec);
-            *aFile = localFile;
-            return NS_OK;
-        }
-    }
 #elif defined(XP_MACOSX)
     // Works even if we're not bundled.
     CFBundleRef appBundle = CFBundleGetMainBundle();
@@ -395,6 +354,7 @@ nsIAtom*  nsDirectoryService::sAppdata = nsnull;
 nsIAtom*  nsDirectoryService::sLocalAppdata = nsnull;
 nsIAtom*  nsDirectoryService::sPrinthood = nsnull;
 nsIAtom*  nsDirectoryService::sWinCookiesDirectory = nsnull;
+nsIAtom*  nsDirectoryService::sDefaultDownloadDirectory = nsnull;
 #elif defined (XP_UNIX)
 nsIAtom*  nsDirectoryService::sLocalDirectory = nsnull;
 nsIAtom*  nsDirectoryService::sLibDirectory = nsnull;
@@ -501,6 +461,7 @@ static const nsStaticAtom directory_atoms[] = {
     { NS_WIN_LOCAL_APPDATA_DIR,    &nsDirectoryService::sLocalAppdata },
     { NS_WIN_PRINTHOOD,            &nsDirectoryService::sPrinthood },
     { NS_WIN_COOKIES_DIR,          &nsDirectoryService::sWinCookiesDirectory },
+    { NS_WIN_DEFAULT_DOWNLOAD_DIR, &nsDirectoryService::sDefaultDownloadDirectory },
 #elif defined (XP_UNIX)
     { NS_UNIX_LOCAL_DIR,           &nsDirectoryService::sLocalDirectory },
     { NS_UNIX_LIB_DIR,             &nsDirectoryService::sLibDirectory },
@@ -569,6 +530,8 @@ NS_IMPL_THREADSAFE_ISUPPORTS4(nsDirectoryService, nsIProperties, nsIDirectorySer
 NS_IMETHODIMP
 nsDirectoryService::Undefine(const char* prop)
 {
+    NS_ENSURE_ARG(prop);
+
     nsCStringKey key(prop);
     if (!mHashtable.Exists(&key))
         return NS_ERROR_FAILURE;
@@ -647,6 +610,8 @@ static PRBool FindProviderFile(nsISupports* aElement, void *aData)
 NS_IMETHODIMP
 nsDirectoryService::Get(const char* prop, const nsIID & uuid, void* *result)
 {
+    NS_ENSURE_ARG(prop);
+
     nsCStringKey key(prop);
     
     nsCOMPtr<nsISupports> value = dont_AddRef(mHashtable.Get(&key));
@@ -670,19 +635,19 @@ nsDirectoryService::Get(const char* prop, const nsIID & uuid, void* *result)
     {
         if (fileData.persistent)
         {
-            Set(prop, NS_STATIC_CAST(nsIFile*, fileData.data));
+            Set(prop, static_cast<nsIFile*>(fileData.data));
         }
         nsresult rv = (fileData.data)->QueryInterface(uuid, result);
         NS_RELEASE(fileData.data);  // addref occurs in FindProviderFile()
         return rv;
     }
 
-    FindProviderFile(NS_STATIC_CAST(nsIDirectoryServiceProvider*, this), &fileData);
+    FindProviderFile(static_cast<nsIDirectoryServiceProvider*>(this), &fileData);
     if (fileData.data)
     {
         if (fileData.persistent)
         {
-            Set(prop, NS_STATIC_CAST(nsIFile*, fileData.data));
+            Set(prop, static_cast<nsIFile*>(fileData.data));
         }
         nsresult rv = (fileData.data)->QueryInterface(uuid, result);
         NS_RELEASE(fileData.data);  // addref occurs in FindProviderFile()
@@ -695,6 +660,8 @@ nsDirectoryService::Get(const char* prop, const nsIID & uuid, void* *result)
 NS_IMETHODIMP
 nsDirectoryService::Set(const char* prop, nsISupports* value)
 {
+    NS_ENSURE_ARG(prop);
+
     nsCStringKey key(prop);
     if (mHashtable.Exists(&key) || value == nsnull)
         return NS_ERROR_FAILURE;
@@ -716,6 +683,8 @@ nsDirectoryService::Set(const char* prop, nsISupports* value)
 NS_IMETHODIMP
 nsDirectoryService::Has(const char *prop, PRBool *_retval)
 {
+    NS_ENSURE_ARG(prop);
+
     *_retval = PR_FALSE;
     nsCOMPtr<nsIFile> value;
     nsresult rv = Get(prop, NS_GET_IID(nsIFile), getter_AddRefs(value));
@@ -847,7 +816,7 @@ nsDirectoryService::GetFile(const char *prop, PRBool *persistent, nsIFile **_ret
     // cases
     else if (inAtom == nsDirectoryService::sGRE_ComponentDirectory)
     {
-        rv = Get(NS_GRE_DIR, nsILocalFile::GetIID(), getter_AddRefs(localFile));
+        rv = Get(NS_GRE_DIR, NS_GET_IID(nsILocalFile), getter_AddRefs(localFile));
         if (localFile)
              localFile->AppendNative(COMPONENT_DIRECTORY);
     }
@@ -1162,6 +1131,10 @@ nsDirectoryService::GetFile(const char *prop, PRBool *persistent, nsIFile **_ret
     else if (inAtom == nsDirectoryService::sWinCookiesDirectory)
     {
         rv = GetSpecialSystemDirectory(Win_Cookies, getter_AddRefs(localFile)); 
+    }
+    else if (inAtom == nsDirectoryService::sDefaultDownloadDirectory)
+    {
+        rv = GetSpecialSystemDirectory(Win_Downloads, getter_AddRefs(localFile));
     }
 #elif defined (XP_UNIX)
 

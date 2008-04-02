@@ -1,4 +1,4 @@
-/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: C; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -45,6 +45,8 @@
 #include "nsReadableUtils.h"
 #include "nsPrintfCString.h"
 #include "nsCRT.h"
+#include "nsNativeCharsetUtils.h"
+#include "nsUTF8Utils.h"
 
 #ifdef XP_WIN
 #include <string.h>
@@ -61,7 +63,7 @@ void NS_ShutdownLocalFile()
     nsLocalFile::GlobalShutdown();
 }
 
-#if !defined(XP_MAC) && !defined(XP_MACOSX) && !defined(XP_WIN)
+#if !defined(XP_MACOSX) && !defined(XP_WIN)
 NS_IMETHODIMP
 nsLocalFile::InitWithFile(nsILocalFile *aFile)
 {
@@ -75,47 +77,93 @@ nsLocalFile::InitWithFile(nsILocalFile *aFile)
 }
 #endif
 
-#if defined(XP_MAC)
-#define kMaxFilenameLength 31
-#define kMaxExtensionLength 10
-#else
 #define kMaxFilenameLength 255
 #define kMaxExtensionLength 100
-#endif  
-// requirement: kMaxExtensionLength < kMaxFilenameLength - 4
+#define kMaxSequenceNumberLength 5 // "-9999"
+// requirement: kMaxExtensionLength < kMaxFilenameLength - kMaxSequenceNumberLength
 
 NS_IMETHODIMP
 nsLocalFile::CreateUnique(PRUint32 type, PRUint32 attributes)
 {
-    nsresult rv = Create(type, attributes);
-    if (rv != NS_ERROR_FILE_ALREADY_EXISTS)
+    nsresult rv;
+    PRBool longName;
+
+#ifdef XP_WIN
+    nsAutoString pathName, leafName, rootName, suffix;
+    rv = GetPath(pathName);
+#else
+    nsCAutoString pathName, leafName, rootName, suffix; 
+    rv = GetNativePath(pathName);
+#endif
+    if (NS_FAILED(rv))
         return rv;
 
-    nsCAutoString leafName; 
+    longName = (pathName.Length() + kMaxSequenceNumberLength >
+                kMaxFilenameLength);
+    if (!longName)
+    {
+        rv = Create(type, attributes);
+        if (rv != NS_ERROR_FILE_ALREADY_EXISTS)
+            return rv;
+    }
+
+#ifdef XP_WIN
+    rv = GetLeafName(leafName);
+    if (NS_FAILED(rv))
+        return rv;
+
+    const PRInt32 lastDot = leafName.RFindChar(PRUnichar('.'));
+#else
     rv = GetNativeLeafName(leafName);
     if (NS_FAILED(rv))
         return rv;
 
-    const char* lastDot = strrchr(leafName.get(), '.');
-    char suffix[kMaxExtensionLength] = "";
-    if (lastDot)
+    const PRInt32 lastDot = leafName.RFindChar('.');
+#endif
+
+    if (lastDot == kNotFound)
     {
-        PL_strncpyz(suffix, lastDot, sizeof(suffix)); // include '.'
-        leafName.SetLength(lastDot - leafName.get()); // strip suffix and dot.
+        rootName = leafName;
+    } 
+    else
+    {
+        suffix = Substring(leafName, lastDot);      // include '.'
+        rootName = Substring(leafName, 0, lastDot); // strip suffix and dot
     }
 
-    PRUint32 maxRootLength = (kMaxFilenameLength - 4) - strlen(suffix) - 1;
-
-    if (leafName.Length() > maxRootLength)
-        leafName.SetLength(maxRootLength);
+    if (longName)
+    {
+        PRUint32 maxRootLength = (kMaxFilenameLength -
+                                  (pathName.Length() - leafName.Length()) -
+                                  suffix.Length() - kMaxSequenceNumberLength);
+#ifdef XP_WIN
+        // ensure that we don't cut the name in mid-UTF16-character
+        rootName.SetLength(NS_IS_LOW_SURROGATE(rootName[maxRootLength]) ?
+                           maxRootLength - 1 : maxRootLength);
+        SetLeafName(rootName + suffix);
+#else
+        if (NS_IsNativeUTF8())
+            // ensure that we don't cut the name in mid-UTF8-character
+            while (UTF8traits::isInSeq(rootName[maxRootLength]))
+                --maxRootLength;
+        rootName.SetLength(maxRootLength);
+        SetNativeLeafName(rootName + suffix);
+#endif
+        nsresult rv = Create(type, attributes);
+        if (rv != NS_ERROR_FILE_ALREADY_EXISTS)
+            return rv;
+    }
 
     for (int indx = 1; indx < 10000; indx++)
     {
         // start with "Picture-1.jpg" after "Picture.jpg" exists
-        SetNativeLeafName(leafName +
-                          nsPrintfCString("-%d", indx) +
-                          nsDependentCString(suffix));
-
+#ifdef XP_WIN
+        SetLeafName(rootName +
+                    NS_ConvertASCIItoUTF16(nsPrintfCString("-%d", indx)) +
+                    suffix);
+#else
+        SetNativeLeafName(rootName + nsPrintfCString("-%d", indx) + suffix);
+#endif
         rv = Create(type, attributes);
         if (NS_SUCCEEDED(rv) || rv != NS_ERROR_FILE_ALREADY_EXISTS) 
             return rv;
@@ -125,19 +173,12 @@ nsLocalFile::CreateUnique(PRUint32 type, PRUint32 attributes)
     return NS_ERROR_FILE_TOO_BIG;
 }
 
-#if defined(XP_MAC)
-static const PRUnichar kPathSeparatorChar       = ':';
-#elif defined(XP_WIN) || defined(XP_OS2)
+#if defined(XP_WIN) || defined(XP_OS2)
 static const PRUnichar kPathSeparatorChar       = '\\';
 #elif defined(XP_UNIX) || defined(XP_BEOS)
 static const PRUnichar kPathSeparatorChar       = '/';
 #else
 #error Need to define file path separator for your platform
-#endif
-
-#if defined(XP_MAC)
-static const char kSlashStr[] = "/";
-static const char kESCSlashStr[] = "%2F";
 #endif
 
 static PRInt32 SplitPath(PRUnichar *path, PRUnichar **nodeArray, PRInt32 arrayLen)
@@ -212,9 +253,6 @@ nsLocalFile::GetRelativeDescriptor(nsILocalFile *fromFile, nsACString& _retval)
       _retval.AppendLiteral("../");
     for (nodeIndex = branchIndex; nodeIndex < thisNodeCnt; nodeIndex++) {
       NS_ConvertUTF16toUTF8 nodeStr(thisNodes[nodeIndex]);
-#ifdef XP_MAC
-      nodeStr.ReplaceSubstring(kSlashStr, kESCSlashStr);
-#endif
       _retval.Append(nodeStr);
       if (nodeIndex + 1 < thisNodeCnt)
         _retval.Append('/');
@@ -261,13 +299,7 @@ nsLocalFile::SetRelativeDescriptor(nsILocalFile *fromFile, const nsACString& rel
     nodeBegin = nodeEnd = pos;
     while (nodeEnd != strEnd) {
       FindCharInReadable('/', nodeEnd, strEnd);
-#ifdef XP_MAC
-      nsCAutoString nodeString(Substring(nodeBegin, nodeEnd));      
-      nodeString.ReplaceSubstring(kESCSlashStr, kSlashStr);
-      targetFile->Append(NS_ConvertUTF8toUTF16(nodeString));
-#else
       targetFile->Append(NS_ConvertUTF8toUTF16(Substring(nodeBegin, nodeEnd)));
-#endif
       if (nodeEnd != strEnd) // If there's more left in the string, inc over the '/' nodeEnd is on.
         ++nodeEnd;
       nodeBegin = nodeEnd;

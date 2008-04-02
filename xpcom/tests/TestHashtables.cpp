@@ -103,7 +103,6 @@ public:
   EntityToUnicodeEntry(const EntityToUnicodeEntry& aEntry) { mNode = aEntry.mNode; }
   ~EntityToUnicodeEntry() { };
 
-  const char* GetKeyPointer() const { return mNode->mStr; }
   PRBool KeyEquals(const char* aEntity) const { return !strcmp(mNode->mStr, aEntity); }
   static const char* KeyToPointer(const char* aEntity) { return aEntity; }
   static PLDHashNumber HashKey(const char* aEntity) { return HashString(aEntity); }
@@ -266,14 +265,14 @@ IFoo::IFoo()
   {
     ++total_constructions_;
     printf("  new IFoo@%p [#%d]\n",
-           NS_STATIC_CAST(void*, this), total_constructions_);
+           static_cast<void*>(this), total_constructions_);
   }
 
 IFoo::~IFoo()
   {
     ++total_destructions_;
     printf("IFoo@%p::~IFoo() [#%d]\n",
-           NS_STATIC_CAST(void*, this), total_destructions_);
+           static_cast<void*>(this), total_destructions_);
   }
 
 nsrefcnt
@@ -281,37 +280,34 @@ IFoo::AddRef()
   {
     ++refcount_;
     printf("IFoo@%p::AddRef(), refcount --> %d\n", 
-           NS_STATIC_CAST(void*, this), refcount_);
+           static_cast<void*>(this), refcount_);
     return refcount_;
   }
 
 nsrefcnt
 IFoo::Release()
   {
-    int wrap_message = (refcount_ == 1);
-    if ( wrap_message )
+    int newcount = --refcount_;
+    if ( newcount == 0 )
       printf(">>");
-      
-    --refcount_;
-    printf("IFoo@%p::Release(), refcount --> %d\n",
-           NS_STATIC_CAST(void*, this), refcount_);
 
-    if ( !refcount_ )
+    printf("IFoo@%p::Release(), refcount --> %d\n",
+           static_cast<void*>(this), refcount_);
+
+    if ( newcount == 0 )
       {
-        printf("  delete IFoo@%p\n", NS_STATIC_CAST(void*, this));
+        printf("  delete IFoo@%p\n", static_cast<void*>(this));
+        printf("<<IFoo@%p::Release()\n", static_cast<void*>(this));
         delete this;
       }
 
-    if ( wrap_message )
-      printf("  delete IFoo@%p\n", NS_STATIC_CAST(void*, this));
-
-    return refcount_;
+    return newcount;
   }
 
 nsresult
 IFoo::QueryInterface( const nsIID& aIID, void** aResult )
   {
-    printf("IFoo@%p::QueryInterface()\n", NS_STATIC_CAST(void*, this));
+    printf("IFoo@%p::QueryInterface()\n", static_cast<void*>(this));
     nsISupports* rawPtr = 0;
     nsresult status = NS_OK;
 
@@ -321,7 +317,7 @@ IFoo::QueryInterface( const nsIID& aIID, void** aResult )
       {
         nsID iid_of_ISupports = NS_ISUPPORTS_IID;
         if ( aIID.Equals(iid_of_ISupports) )
-          rawPtr = NS_STATIC_CAST(nsISupports*, this);
+          rawPtr = static_cast<nsISupports*>(this);
         else
           status = NS_ERROR_NO_INTERFACE;
       }
@@ -352,7 +348,7 @@ CreateIFoo( IFoo** result )
   {
     printf("    >>CreateIFoo() --> ");
     IFoo* foop = new IFoo();
-    printf("IFoo@%p\n", NS_STATIC_CAST(void*, foop));
+    printf("IFoo@%p\n", static_cast<void*>(foop));
 
     foop->AddRef();
     *result = foop;

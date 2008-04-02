@@ -90,7 +90,12 @@ nsUUIDGenerator::Init()
         bytes += nbytes;
     }
 
-    initstate(seed, mState, sizeof(mState));
+    /* Initialize a new RNG state, and immediately switch
+     * back to the previous one -- we want to use mState
+     * only for our own calls to random().
+     */
+    mSavedState = initstate(seed, mState, sizeof(mState));
+    setstate(mSavedState);
 
     mRBytes = 4;
 #ifdef RAND_MAX
@@ -112,7 +117,7 @@ nsUUIDGenerator::Init()
 NS_IMETHODIMP
 nsUUIDGenerator::GenerateUUID(nsID** ret)
 {
-    nsID *id = NS_STATIC_CAST(nsID*, NS_Alloc(sizeof(nsID)));
+    nsID *id = static_cast<nsID*>(NS_Alloc(sizeof(nsID)));
     if (id == nsnull)
         return NS_ERROR_OUT_OF_MEMORY;
 
@@ -147,6 +152,12 @@ nsUUIDGenerator::GenerateUUIDInPlace(nsID* id)
 
     CFRelease(uuid);
 #else /* not windows or OS X; generate randomness using random(). */
+    /* XXX we should be saving the return of setstate here and switching
+     * back to it; instead, we use the value returned when we called
+     * initstate, since older glibc's have broken setstate() return values
+     */
+    setstate(mState);
+
     PRSize bytesLeft = sizeof(nsID);
     while (bytesLeft > 0) {
         long rval = random();
@@ -172,6 +183,9 @@ nsUUIDGenerator::GenerateUUIDInPlace(nsID* id)
     /* Put in the variant */
     id->m3[0] &= 0x3f;
     id->m3[0] |= 0x80;
+
+    /* Restore the previous RNG state */
+    setstate(mSavedState);
 #endif
 
     return NS_OK;

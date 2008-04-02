@@ -136,7 +136,7 @@ NS_DispatchToCurrentThread(nsIRunnable *event)
 {
 #ifdef MOZILLA_INTERNAL_API
   nsIThread *thread = NS_GetCurrentThread();
-  NS_ENSURE_STATE(thread);
+  if (!thread) { return NS_ERROR_UNEXPECTED; }
 #else
   nsCOMPtr<nsIThread> thread;
   nsresult rv = NS_GetCurrentThread(getter_AddRefs(thread));
@@ -154,6 +154,7 @@ NS_DispatchToMainThread(nsIRunnable *event, PRUint32 dispatchFlags)
   return thread->Dispatch(event, dispatchFlags);
 }
 
+#ifndef XPCOM_GLUE_AVOID_NSPR
 NS_METHOD
 NS_ProcessPendingEvents(nsIThread *thread, PRIntervalTime timeout)
 {
@@ -184,6 +185,7 @@ NS_ProcessPendingEvents(nsIThread *thread, PRIntervalTime timeout)
   }
   return rv;
 }
+#endif // XPCOM_GLUE_AVOID_NSPR
 
 PRBool
 NS_HasPendingEvents(nsIThread *thread)
@@ -191,7 +193,7 @@ NS_HasPendingEvents(nsIThread *thread)
 #ifdef MOZILLA_INTERNAL_API
   if (!thread) {
     thread = NS_GetCurrentThread();
-    NS_ENSURE_STATE(thread);
+    NS_ENSURE_TRUE(thread, PR_FALSE);
   }
 #else
   nsCOMPtr<nsIThread> current;
@@ -211,7 +213,7 @@ NS_ProcessNextEvent(nsIThread *thread, PRBool mayWait)
 #ifdef MOZILLA_INTERNAL_API
   if (!thread) {
     thread = NS_GetCurrentThread();
-    NS_ENSURE_STATE(thread);
+    NS_ENSURE_TRUE(thread, PR_FALSE);
   }
 #else
   nsCOMPtr<nsIThread> current;

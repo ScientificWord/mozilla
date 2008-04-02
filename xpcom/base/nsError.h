@@ -96,6 +96,7 @@
 #define NS_ERROR_MODULE_SVG        29
 #define NS_ERROR_MODULE_STORAGE    30
 #define NS_ERROR_MODULE_SCHEMA     31
+#define NS_ERROR_MODULE_DOM_FILE   32
 
 /* NS_ERROR_MODULE_GENERAL should be used by modules that do not
  * care if return code values overlap. Callers of methods that
@@ -108,6 +109,7 @@
 
 /**
  * @name Standard Error Handling Macros
+ * @return 0 or 1
  */
 
 #define NS_FAILED(_nsresult) (NS_UNLIKELY((_nsresult) & 0x80000000))

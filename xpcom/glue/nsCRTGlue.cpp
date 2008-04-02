@@ -40,7 +40,14 @@
 
 #include "nsCRTGlue.h"
 #include "nsXPCOM.h"
+#include "nsDebug.h"
 #include <string.h>
+#include <stdio.h>
+#include <stdarg.h>
+
+#ifdef XP_WIN
+#include <io.h>
+#endif
 
 const char*
 NS_strspnp(const char *delims, const char *str)
@@ -130,6 +137,18 @@ NS_strndup(const PRUnichar *aString, PRUint32 aLen)
     newBuf[aLen] = '\0';
   }
   return newBuf;
+}
+
+char*
+NS_strdup(const char *aString)
+{
+  PRUint32 len = strlen(aString);
+  char *str = (char*) NS_Alloc(len + 1);
+  if (str) {
+    memcpy(str, aString, len);
+    str[len] = '\0';
+  }
+  return str;
 }
 
 // This table maps uppercase characters to lower case characters;
@@ -246,3 +265,27 @@ PRBool NS_IsAsciiDigit(PRUnichar aChar)
 {
   return aChar >= '0' && aChar <= '9';
 }
+
+#if defined(XP_WIN) && !defined(WINCE)
+void
+printf_stderr(const char *fmt, ...)
+{
+  FILE *fp = _fdopen(_dup(2), "a");
+
+  va_list args;
+  va_start(args, fmt);
+  vfprintf(fp, fmt, args);
+  va_end(args);
+
+  fclose(fp);
+}
+#else
+void
+printf_stderr(const char *fmt, ...)
+{
+  va_list args;
+  va_start(args, fmt);
+  vfprintf(stderr, fmt, args);
+  va_end(args);
+}
+#endif

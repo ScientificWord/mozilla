@@ -39,14 +39,33 @@
 /* Implement shared vtbl methods. */
 
 #include "xptcprivate.h"
+#include "xptiprivate.h"
 
 #if !defined(LINUX) || !defined(__arm__)
 #error "This code is for Linux ARM only. Please check if it works for you, too.\nDepends strongly on gcc behaviour."
 #endif
 
+#if (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 4))
+/* This tells gcc3.4+ not to optimize away symbols.
+ * @see http://gcc.gnu.org/gcc-3.4/changes.html
+ */
+#define DONT_DROP_OR_WARN __attribute__((used))
+#else
+/* This tells older gccs not to warn about unused vairables.
+ * @see http://docs.freebsd.org/info/gcc/gcc.info.Variable_Attributes.html
+ */
+#define DONT_DROP_OR_WARN __attribute__((unused))
+#endif
+
 /* Specify explicitly a symbol for this function, don't try to guess the c++ mangled symbol.  */
 static nsresult PrepareAndDispatch(nsXPTCStubBase* self, uint32 methodIndex, PRUint32* args) asm("_PrepareAndDispatch")
-__attribute__((used));
+DONT_DROP_OR_WARN;
+
+#ifdef __ARM_EABI__
+#define DOUBLEWORD_ALIGN(p) ((PRUint32 *)((((PRUint32)(p)) + 7) & 0xfffffff8))
+#else
+#define DOUBLEWORD_ALIGN(p) (p)
+#endif
 
 static nsresult
 PrepareAndDispatch(nsXPTCStubBase* self, uint32 methodIndex, PRUint32* args)
@@ -63,12 +82,7 @@ PrepareAndDispatch(nsXPTCStubBase* self, uint32 methodIndex, PRUint32* args)
 
     NS_ASSERTION(self,"no self");
 
-    self->GetInterfaceInfo(&iface_info);
-    NS_ASSERTION(iface_info,"no interface info");
-
-    iface_info->GetMethodInfo(PRUint16(methodIndex), &info);
-    NS_ASSERTION(info,"no interface info");
-
+    self->mEntry->GetMethodInfo(PRUint16(methodIndex), &info);
     paramCount = info->GetParamCount();
 
     // setup variant array pointer
@@ -96,13 +110,16 @@ PrepareAndDispatch(nsXPTCStubBase* self, uint32 methodIndex, PRUint32* args)
         case nsXPTType::T_I8     : dp->val.i8  = *((PRInt8*)  ap);       break;
         case nsXPTType::T_I16    : dp->val.i16 = *((PRInt16*) ap);       break;
         case nsXPTType::T_I32    : dp->val.i32 = *((PRInt32*) ap);       break;
-        case nsXPTType::T_I64    : dp->val.i64 = *((PRInt64*) ap); ap++; break;
+        case nsXPTType::T_I64    : ap = DOUBLEWORD_ALIGN(ap);
+				   dp->val.i64 = *((PRInt64*) ap); ap++; break;
         case nsXPTType::T_U8     : dp->val.u8  = *((PRUint8*) ap);       break;
         case nsXPTType::T_U16    : dp->val.u16 = *((PRUint16*)ap);       break;
         case nsXPTType::T_U32    : dp->val.u32 = *((PRUint32*)ap);       break;
-        case nsXPTType::T_U64    : dp->val.u64 = *((PRUint64*)ap); ap++; break;
+        case nsXPTType::T_U64    : ap = DOUBLEWORD_ALIGN(ap);
+				   dp->val.u64 = *((PRUint64*)ap); ap++; break;
         case nsXPTType::T_FLOAT  : dp->val.f   = *((float*)   ap);       break;
-        case nsXPTType::T_DOUBLE : dp->val.d   = *((double*)  ap); ap++; break;
+        case nsXPTType::T_DOUBLE : ap = DOUBLEWORD_ALIGN(ap);
+				   dp->val.d   = *((double*)  ap); ap++; break;
         case nsXPTType::T_BOOL   : dp->val.b   = *((PRBool*)  ap);       break;
         case nsXPTType::T_CHAR   : dp->val.c   = *((char*)    ap);       break;
         case nsXPTType::T_WCHAR  : dp->val.wc  = *((wchar_t*) ap);       break;
@@ -112,9 +129,7 @@ PrepareAndDispatch(nsXPTCStubBase* self, uint32 methodIndex, PRUint32* args)
         }
     }
 
-    result = self->CallMethod((PRUint16)methodIndex, info, dispatchParams);
-
-    NS_RELEASE(iface_info);
+    result = self->mOuter->CallMethod((PRUint16)methodIndex, info, dispatchParams);
 
     if(dispatchParams != paramBuffer)
         delete [] dispatchParams;

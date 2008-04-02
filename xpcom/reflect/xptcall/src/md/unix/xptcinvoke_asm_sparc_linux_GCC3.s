@@ -1,5 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 4 -*-
  *
+ * ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
  * The contents of this file are subject to the Mozilla Public License Version
@@ -14,13 +15,13 @@
  *
  * The Original Code is mozilla.org code.
  *
- * The Initial Developer of the Original Code is Netscape
- * Communications Corporation.
+ * The Initial Developer of the Original Code is
+ * Netscape Communications Corporation.
  * Portions created by the Initial Developer are Copyright (C) 1998
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *  David S. Miller <davem@redhat.com> (ported to gcc3)
+ *   David S. Miller <davem@redhat.com> (ported to gcc3)
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -33,19 +34,20 @@
  * and other provisions required by the GPL or the LGPL. If you do not delete
  * the provisions above, a recipient may use your version of this file under
  * the terms of any one of the MPL, the GPL or the LGPL.
- */
+ *
+ * ***** END LICENSE BLOCK ***** */
 
 /*
  * Platform specific code to invoke XPCOM methods on native objects for
  * Linux/Sparc with gcc 3 ABI.
  */
-        .global XPTC_InvokeByIndex
+        .global NS_InvokeByIndex_P
 /*
- *  XPTC_InvokeByIndex(nsISupports* that, PRUint32 methodIndex,
+ *  NS_InvokeByIndex(nsISupports* that, PRUint32 methodIndex,
  *                 PRUint32 paramCount, nsXPTCVariant* params);
  *   
  */
-XPTC_InvokeByIndex:
+NS_InvokeByIndex_P:
         save    %sp,-(64 + 16),%sp   ! room for the register window and
                                     ! struct pointer, rounded up to 0 % 16
         mov     %i2,%o0             ! paramCount
