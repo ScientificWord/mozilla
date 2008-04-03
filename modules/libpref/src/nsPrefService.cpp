@@ -85,9 +85,9 @@ static nsresult pref_InitInitialObjects(void);
  */
 
 nsPrefService::nsPrefService()
-: mErrorOpeningUserPrefs(PR_FALSE)
+: mDontWriteUserPrefs(PR_FALSE)
 #if MOZ_PROFILESHARING
-  , mErrorOpeningSharedUserPrefs(PR_FALSE)
+  , mDontWriteSharedUserPrefs(PR_FALSE)
 #endif
 {
 }
@@ -152,7 +152,7 @@ nsresult nsPrefService::Init()
   rv = mRootBranch->GetCharPref("general.config.filename", getter_Copies(lockFileName));
   if (NS_SUCCEEDED(rv))
     NS_CreateServicesFromCategory("pref-config-startup",
-                                  NS_STATIC_CAST(nsISupports *, NS_STATIC_CAST(void *, this)),
+                                  static_cast<nsISupports *>(static_cast<void *>(this)),
                                   "pref-config-startup");    
 
   nsCOMPtr<nsIObserverService> observerService = 
@@ -199,6 +199,9 @@ NS_IMETHODIMP nsPrefService::Observe(nsISupports *aSubject, const char *aTopic, 
       ResetUserPrefs();
       rv = ReadUserPrefs(nsnull);
     }
+  } else if (!nsCRT::strcmp(aTopic, "reload-default-prefs")) {
+    // Reload the default prefs from file.
+    pref_InitInitialObjects();
   }
   return rv;
 }
@@ -349,9 +352,27 @@ nsresult nsPrefService::UseUserPrefFile()
   if (NS_SUCCEEDED(rv) && aFile) {
     rv = aFile->AppendNative(NS_LITERAL_CSTRING("user.js"));
     if (NS_SUCCEEDED(rv)) {
-      rv = openPrefFile(aFile);
+      PRBool exists = PR_FALSE;
+      aFile->Exists(&exists);
+      if (exists) {
+        rv = openPrefFile(aFile);
+      } else {
+        rv = NS_ERROR_FILE_NOT_FOUND;
+      }
     }
   }
+  return rv;
+}
+
+nsresult nsPrefService::MakeBackupPrefFile(nsIFile *aFile)
+{
+  // Example: this copies "prefs.js" to "Invalidprefs.js" in the same directory.
+  nsAutoString newFilename;
+  nsresult rv = aFile->GetLeafName(newFilename);
+  NS_ENSURE_SUCCESS(rv, rv);
+  newFilename.Insert(NS_LITERAL_STRING("Invalid"), 0);
+  rv = aFile->CopyTo(nsnull, newFilename);
+  NS_ENSURE_SUCCESS(rv, rv);
   return rv;
 }
 
@@ -368,11 +389,17 @@ nsresult nsPrefService::ReadAndOwnUserPrefFile(nsIFile *aFile)
   gSharedPrefHandler->ReadingUserPrefs(PR_TRUE);
 #endif
 
-  // We need to track errors in reading the shared and the
-  // non-shared files independently. 
-  // Set the appropriate member variable from it after reading.
-  nsresult rv = openPrefFile(mCurrentFile);
-  mErrorOpeningUserPrefs = NS_FAILED(rv);
+  nsresult rv = NS_OK;
+  PRBool exists = PR_FALSE;
+  mCurrentFile->Exists(&exists);
+  if (exists) {
+    rv = openPrefFile(mCurrentFile);
+    if (NS_FAILED(rv)) {
+      mDontWriteUserPrefs = NS_FAILED(MakeBackupPrefFile(mCurrentFile));
+    }
+  } else {
+    rv = NS_ERROR_FILE_NOT_FOUND;
+  }
 
 #ifdef MOZ_PROFILESHARING
   gSharedPrefHandler->ReadingUserPrefs(PR_FALSE);
@@ -395,11 +422,10 @@ nsresult nsPrefService::ReadAndOwnSharedUserPrefFile(nsIFile *aFile)
   gSharedPrefHandler->ReadingUserPrefs(PR_TRUE);
 #endif
 
-  // We need to track errors in reading the shared and the
-  // non-shared files independently. 
-  // Set the appropriate member variable from it after reading.
   nsresult rv = openPrefFile(mCurrentSharedFile);
-  mErrorOpeningSharedUserPrefs = NS_FAILED(rv);
+  if (NS_FAILED(rv) && rv != NS_ERROR_FILE_NOT_FOUND) {
+    mDontWriteSharedUserPrefs = NS_FAILED(MakeBackupPrefFile(mCurrentSharedFile));
+  }
 
 #ifdef MOZ_PROFILESHARING
   gSharedPrefHandler->ReadingUserPrefs(PR_FALSE);
@@ -468,11 +494,13 @@ nsresult nsPrefService::WritePrefFile(nsIFile* aFile)
   if (!gHashTable.ops)
     return NS_ERROR_NOT_INITIALIZED;
 
-  /* ?! Don't save (blank) user prefs if there was an error reading them */
-  if (aFile == mCurrentFile && mErrorOpeningUserPrefs)
+  // Don't save user prefs if there was an error reading them and we failed
+  // to make a backup copy, since all prefs from the error line to the end of
+  // the file would be lost (bug 361102).
+  if (mDontWriteUserPrefs && aFile == mCurrentFile)
     return NS_OK;
 #if MOZ_PROFILESHARING
-  if (aFile == mCurrentSharedFile && mErrorOpeningSharedUserPrefs)
+  if (mDontWriteSharedUserPrefs && aFile == mCurrentSharedFile)
     return NS_OK;
 #endif
 
@@ -574,16 +602,19 @@ static nsresult openPrefFile(nsIFile* aFile)
 
   PrefParseState ps;
   PREF_InitParseState(&ps, PREF_ReaderCallback, NULL);
+  nsresult rv2 = NS_OK;
   for (;;) {
     PRUint32 amtRead = 0;
     rv = inStr->Read(readBuf, sizeof(readBuf), &amtRead);
     if (NS_FAILED(rv) || amtRead == 0)
       break;
 
-    PREF_ParseBuf(&ps, readBuf, amtRead); 
+    if (!PREF_ParseBuf(&ps, readBuf, amtRead)) {
+      rv2 = NS_ERROR_FILE_CORRUPTED;
+    }
   }
   PREF_FinalizeParseState(&ps);
-  return rv;        
+  return NS_FAILED(rv) ? rv : rv2;        
 }
 
 /*
@@ -699,6 +730,32 @@ pref_LoadPrefsInDir(nsIFile* aDir, char const *const *aSpecialFiles, PRUint32 aS
   return rv;
 }
 
+static nsresult pref_LoadPrefsInDirList(const char *listId)
+{
+  nsresult rv;
+  nsCOMPtr<nsIProperties> dirSvc(do_GetService(NS_DIRECTORY_SERVICE_CONTRACTID, &rv));
+  if (NS_FAILED(rv)) return rv;
+
+  nsCOMPtr<nsISimpleEnumerator> dirList;
+  dirSvc->Get(listId,
+              NS_GET_IID(nsISimpleEnumerator),
+              getter_AddRefs(dirList));
+  if (dirList) {
+    PRBool hasMore;
+    while (NS_SUCCEEDED(dirList->HasMoreElements(&hasMore)) && hasMore) {
+      nsCOMPtr<nsISupports> elem;
+      dirList->GetNext(getter_AddRefs(elem));
+      if (elem) {
+        nsCOMPtr<nsIFile> dir = do_QueryInterface(elem);
+        if (dir) {
+          // Do we care if a file provided by this process fails to load?
+          pref_LoadPrefsInDir(dir, nsnull, 0); 
+        }
+      }
+    }
+  }
+  return NS_OK;
+}
 
 //----------------------------------------------------------------------------------------
 // Initialize default preference JavaScript buffers from
@@ -755,31 +812,19 @@ static nsresult pref_InitInitialObjects()
     NS_WARNING("Error parsing application default preferences.");
   }
 
-  // xxxbsmedberg: TODO load default prefs from a category
-  // but the architecture is not quite there yet
+  rv = pref_LoadPrefsInDirList(NS_APP_PREFS_DEFAULTS_DIR_LIST);
+  NS_ENSURE_SUCCESS(rv, rv);
 
-  nsCOMPtr<nsIProperties> dirSvc(do_GetService(NS_DIRECTORY_SERVICE_CONTRACTID, &rv));
-  if (NS_FAILED(rv)) return rv;
+  NS_CreateServicesFromCategory(NS_PREFSERVICE_APPDEFAULTS_TOPIC_ID,
+                                nsnull, NS_PREFSERVICE_APPDEFAULTS_TOPIC_ID);
 
-  nsCOMPtr<nsISimpleEnumerator> dirList;
-  dirSvc->Get(NS_APP_PREFS_DEFAULTS_DIR_LIST,
-              NS_GET_IID(nsISimpleEnumerator),
-              getter_AddRefs(dirList));
-  if (dirList) {
-    PRBool hasMore;
-    while (NS_SUCCEEDED(dirList->HasMoreElements(&hasMore)) && hasMore) {
-      nsCOMPtr<nsISupports> elem;
-      dirList->GetNext(getter_AddRefs(elem));
-      if (elem) {
-        nsCOMPtr<nsIFile> dir = do_QueryInterface(elem);
-        if (dir) {
-          // Do we care if a file provided by this process fails to load?
-          pref_LoadPrefsInDir(dir, nsnull, 0); 
-        }
-      }
-    }
-  }
+  nsCOMPtr<nsIObserverService> observerService = 
+    do_GetService("@mozilla.org/observer-service;1", &rv);
+  
+  if (NS_FAILED(rv) || !observerService)
+    return rv;
 
-  return NS_OK;
+  observerService->NotifyObservers(nsnull, NS_PREFSERVICE_APPDEFAULTS_TOPIC_ID, nsnull);
+
+  return pref_LoadPrefsInDirList(NS_EXT_PREFS_DEFAULTS_DIR_LIST);
 }
-
