@@ -14,8 +14,10 @@ html|applet > *|* {
 
 html|a {
   text-align: -moz-center;
-  overflow: -moz-hidden-unscrollable;
-  display: block;
+  display: inline-block;
+  /* overflow:hidden makes baseline vertical-alignment act like plugins */
+  overflow: hidden;
+  vertical-align: inherit;
   border: 1px outset;
   padding: 5px;
   font-size: 12px;
@@ -27,7 +29,7 @@ html|a {
 }
 
 #missingPluginPlaceholder {
-  list-style-image: url(chrome://mozapps/skin/xpinstall/xpinstallItemGeneric.png);
+  list-style-image: url(chrome://mozapps/skin/plugins/pluginGeneric.png);
   display: block;
   border: 0px;
   width: 32px;

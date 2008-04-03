@@ -38,6 +38,11 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+#ifdef MOZ_OS2_HIGH_MEMORY
+// os2safe.h has to be included before os2.h, needed for high mem
+#include <os2safe.h>
+#endif
+
 #define INCL_PM
 #define INCL_GPI
 #define INCL_DOS
@@ -66,7 +71,6 @@
 #include "nsIBaseWindow.h"
 #include "nsIWidget.h"
 #include "nsIAppShellService.h"
-#include "nsIProfileInternal.h"
 #include "nsIXULWindow.h"
 #include "nsIInterfaceRequestor.h"
 #include "nsIInterfaceRequestorUtils.h"
@@ -671,9 +675,24 @@ struct MessageWindow {
             return NS_ERROR_FAILURE;
 
         ULONG ulSize = sizeof(COPYDATASTRUCT)+strlen(cmd)+1+CCHMAXPATH;
+#ifdef MOZ_OS2_HIGH_MEMORY
+        APIRET rc = DosAllocSharedMem( &pvData, NULL, ulSize,
+                                       PAG_COMMIT | PAG_READ | PAG_WRITE | OBJ_GETTABLE | OBJ_ANY);
+        if (rc != NO_ERROR) { // Did the kernel handle OBJ_ANY?
+            // Try again without OBJ_ANY and if the first failure was not caused
+            // by OBJ_ANY then we will get the same failure, else we have taken
+            // care of pre-FP13 systems where the kernel couldn't handle it.
+            rc = DosAllocSharedMem( &pvData, NULL, ulSize,
+                                    PAG_COMMIT | PAG_READ | PAG_WRITE | OBJ_GETTABLE);
+            if (rc != NO_ERROR) {
+                return NS_ERROR_OUT_OF_MEMORY;
+            }
+        }
+#else
         if (DosAllocSharedMem( &pvData, NULL, ulSize,
-                               (PAG_COMMIT|PAG_READ|PAG_WRITE|OBJ_GETTABLE)))
+                               PAG_COMMIT | PAG_READ | PAG_WRITE | OBJ_GETTABLE | OBJ_ANY))
             return NS_ERROR_OUT_OF_MEMORY;
+#endif
 
         // We used to set dwData to zero, when we didn't send the
         // working dir.  Now we're using it as a version number.
@@ -1656,18 +1675,17 @@ SafeJSContext::~SafeJSContext() {
 }
 
 nsresult SafeJSContext::Push() {
-  nsresult rv;
-
   if (mContext) // only once
     return NS_ERROR_FAILURE;
 
   mService = do_GetService(sJSStackContractID);
   if(mService) {
-    rv = mService->GetSafeJSContext(&mContext);
-    if (NS_SUCCEEDED(rv) && mContext) {
-      rv = mService->Push(mContext);
-      if (NS_FAILED(rv))
-        mContext = 0;
+    JSContext *cx;
+    if (NS_SUCCEEDED(mService->GetSafeJSContext(&cx)) &&
+        cx &&
+        NS_SUCCEEDED(mService->Push(cx))) {
+      // Save cx in mContext to indicate need to pop.
+      mContext = cx;
     }
   }
   return mContext ? NS_OK : NS_ERROR_FAILURE;
