@@ -49,15 +49,14 @@
 menulist {
   -moz-appearance: menulist;
   margin: 2px 4px;
-  height: 20px !important;
+  min-height: 20px !important;
+  color: -moz-DialogText;
 }
 
 .menulist-label-box {
   -moz-appearance: menulist-text;
   -moz-box-align: center;
   -moz-box-pack: center;
-  background-color: #CCCCCC;
-border: 1px solid blue;
 }
 
 .menulist-label {
@@ -73,7 +72,7 @@ border: 1px solid blue;
 /* ..... dropmarker ..... */
 
 .menulist-dropmarker {
-  -moz-appearance: menulist-button;
+  display: none;
 }
 
 /* ..... disabled state ..... */
@@ -102,14 +101,12 @@ menulist[editable="true"][open="true"] > .menulist-dropmarker {
 }
 
 .menulist-editable-box {
-  margin-right: 4px;
-  border-top: 1px solid #A1A1A1;
-  border-right: 1px solid #C3C3C3;
-  border-bottom: 1px solid #DDDDDD;
-  border-left: 1px solid #C3C3C3;
-  padding: 1px 0px 1px 2px;
+  margin: -1px -1px 1px 0px;
+  padding: 0 2px;
+  border: 1px solid #CCCCCC;
   background-color: -moz-Field;
   color: -moz-FieldText;
+  -moz-box-align: center;
 }
 
 menulist[editable="true"][focused="true"] > .menulist-editable-box {

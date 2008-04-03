@@ -88,10 +88,10 @@ function init() {
       items.push(args.GetString(i));
 
     var extensionsBundle = document.getElementById("extensionsBundle");
-    var pref = Components.classes["@mozilla.org/preferences-service;1"]
-                         .getService(Components.interfaces.nsIPrefBranch);
     try {
-      var url = pref.getCharPref("extensions.blocklist.detailsURL");
+      var formatter = Components.classes["@mozilla.org/toolkit/URLFormatterService;1"]
+                                .getService(Components.interfaces.nsIURLFormatter);
+      var url = formatter.formatURLPref("extensions.blocklist.detailsURL");
     }
     catch (e) { }
 
@@ -201,9 +201,19 @@ function shutdown() {
 
 function restartApp() {
   const nsIAppStartup = Components.interfaces.nsIAppStartup;
-  if (canQuitApplication())
-    Components.classes["@mozilla.org/toolkit/app-startup;1"].getService(nsIAppStartup)
-              .quit(nsIAppStartup.eRestart | nsIAppStartup.eAttemptQuit);
+  // Notify all windows that an application quit has been requested.
+  var os = Components.classes["@mozilla.org/observer-service;1"]
+                     .getService(Components.interfaces.nsIObserverService);
+  var cancelQuit = Components.classes["@mozilla.org/supports-PRBool;1"]
+                             .createInstance(Components.interfaces.nsISupportsPRBool);
+  os.notifyObservers(cancelQuit, "quit-application-requested", null);
+
+  // Something aborted the quit process. 
+  if (cancelQuit.data)
+    return;
+
+  Components.classes["@mozilla.org/toolkit/app-startup;1"].getService(nsIAppStartup)
+            .quit(nsIAppStartup.eRestart | nsIAppStartup.eAttemptQuit);
 }
 
 /**

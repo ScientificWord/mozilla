@@ -59,14 +59,6 @@ open(locales, "<$inFile");
 $lnum = 1;
 while( $line = <locales> ) {
   $line =~ s/[\r\n]*//g;    # remove \r and \n
-  if ($line =~ m|^!define $AB_CD\_font .*|) {
-    $fontName = $line;
-    $fontName =~ s/^!define $AB_CD\_font[^"]*"([^"]*)".*$/$1/g;
-  }
-  if ($line =~ m|^!define $AB_CD\_size .*|) {
-    $fontSize = $line;
-    $fontSize =~ s/^!define $AB_CD\_size[^"]*"([^"]*)".*$/$1/g;
-  }
   if ($line =~ m|^!define $AB_CD\_rtl|) {
     $RTL = "RTL";
   }
@@ -74,7 +66,9 @@ while( $line = <locales> ) {
 }
 close locales;
 
-if ($codepage != "CP1252") {
+# In NSIS codepage CP1252 is specified with a '-'. For all other locales
+# specify the number for the locales codepage.
+if ($langCP ne "CP1252") {
   $nsisCP = $langCP;
   $nsisCP =~ s/^CP(.*)$/$1/g;
 }
@@ -105,6 +99,8 @@ while( $line = <infile> ) {
   my @values = split('=', $line, 2);
   next if (@values[0] eq undef) || (@values[1] eq undef);
   my $value = @values[1];
+  $value =~ s/^\s+//; # trim whitespace from the beginning of the string
+  $value =~ s/\s+$//; # trim whitespace from the end of the string
   $value =~ s/^"(.*)"$/$1/g; # remove " at the beginning and end of the value
   $value =~ s/(")/\$\\$1/g;  # prefix " with $\
   print outfile "LangString  ^@values[0] $langID \"$value\"\r\n";
