@@ -44,9 +44,12 @@
 
 /* ::::: menupopup ::::: */
 
-menupopup, popup {
-  -moz-appearance: menupopup !important;
+menupopup,
+popup,
+panel {
+  -moz-appearance: menupopup;
   min-width: 1px;
+  background-color: rgb(234,234,234);/*msi-Dialog*/
 }
 
 /* ::::: tooltip ::::: */

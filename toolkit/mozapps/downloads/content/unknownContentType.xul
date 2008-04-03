@@ -46,6 +46,8 @@
   %brandDTD;
   <!ENTITY % uctDTD SYSTEM "chrome://mozapps/locale/downloads/unknownContentType.dtd" >
   %uctDTD;
+  <!ENTITY % scDTD SYSTEM "chrome://mozapps/locale/downloads/settingsChange.dtd" >
+  %scDTD;
 ]>            
 
 <dialog id="unknownContentType"
@@ -58,33 +60,34 @@
         ondialogaccept="return dialog.onOK()"
         ondialogcancel="return dialog.onCancel()">
 
-  <script type="application/x-javascript" src="chrome://mozapps/content/downloads/helperApps.js"/>
+  <script type="application/javascript" src="chrome://mozapps/content/downloads/helperApps.js"/>
 
   <stringbundle id="strings" src="chrome://mozapps/locale/downloads/unknownContentType.properties"/>
 
   <vbox flex="1" id="container">  
     <description>&intro.label;</description>
     <separator class="thin"/>
-    <hbox align="center" class="small-indent">
+    <hbox align="start" class="small-indent">
       <image id="contentTypeImage"/>
-      <description id="location" class="plain" crop="start" flex="1"/>
-    </hbox>
-    <separator class="thin"/>
-    <hbox align="center">
-      <label value="&whichIsA.label;" id="whichIsA"/>
-      <textbox id="type" class="plain" readonly="true" flex="1"/>
-    </hbox>
-    <hbox align="center">
-      <label value="&from.label;" id="from"/>
-      <description id="source" class="plain" crop="start" flex="1"/>
+      <vbox flex="1">
+        <description id="location" class="plain" crop="start" flex="1"/>
+        <separator class="thin"/>
+        <hbox align="center">
+          <label value="&whichIsA.label;" id="whichIsA"/>
+          <textbox id="type" class="plain" readonly="true" flex="1"/>
+        </hbox>
+        <hbox align="center">
+          <label value="&from.label;" id="from"/>
+          <description id="source" class="plain" crop="start" flex="1"/>
+        </hbox>
+      </vbox>
     </hbox>
     
-    <hbox align="center" id="basicBox" collapsed="true">
-      <label value="&unknownPromptText.label;" id="from"/>
-      <description id="source" class="plain" crop="start" flex="1"/>
-    </hbox>
-
     <separator class="thin"/>
+
+    <hbox align="center" id="basicBox" collapsed="true">
+      <label value="&unknownPromptText.label;" flex="1"/>
+    </hbox>
 
     <groupbox flex="1" id="normalBox">
       <caption label="&actionQuestion.label;"/>
@@ -105,7 +108,7 @@
           </deck>
         </hbox>
         
-        <radio id="save" label="&save.label;" accesskey="&save.accesskey;"/>
+        <radio id="save" label="&saveFile.label;" accesskey="&saveFile.accesskey;"/>
       </radiogroup> 
       <separator class="thin"/>
       <hbox class="small-indent">
@@ -116,13 +119,9 @@
       
       <separator/>
 #ifdef XP_UNIX
-#ifdef XP_MACOSX
-      <description id="settingsChange" hidden="true">&settingsChangeMac.label;</description>
+      <description id="settingsChange" hidden="true">&settingsChangePreferences.label;</description>
 #else
-      <description id="settingsChange" hidden="true">&settingsChangeUnix.label;</description>
-#endif
-#else
-      <description id="settingsChange" hidden="true">&settingsChange.label;</description>
+      <description id="settingsChange" hidden="true">&settingsChangeOptions.label;</description>
 #endif
       <separator class="thin"/>
     </groupbox>
