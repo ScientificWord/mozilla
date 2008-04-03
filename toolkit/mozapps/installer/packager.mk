@@ -72,6 +72,11 @@ endif # MOZ_PKG_FORMAT
 
 PACKAGE       = $(PKG_BASENAME)$(PKG_SUFFIX)
 
+# By default, the SDK uses the same packaging type as the main bundle,
+# but on mac it is a .tar.bz2
+SDK_SUFFIX    = $(PKG_SUFFIX)
+SDK           = $(PKG_BASENAME).sdk$(SDK_SUFFIX)
+
 MAKE_PACKAGE	= $(error What is a $(MOZ_PKG_FORMAT) package format?);
 
 CREATE_FINAL_TAR = $(TAR) -c --owner=0 --group=0 --numeric-owner \
@@ -82,21 +87,25 @@ ifeq ($(MOZ_PKG_FORMAT),TAR)
 PKG_SUFFIX	= .tar
 MAKE_PACKAGE 	= $(CREATE_FINAL_TAR) - $(MOZ_PKG_APPNAME) > $(PACKAGE)
 UNMAKE_PACKAGE	= $(UNPACK_TAR) < $(UNPACKAGE)
+MAKE_SDK = $(CREATE_FINAL_TAR) - $(MOZ_APP_NAME)-sdk > $(SDK)
 endif
 ifeq ($(MOZ_PKG_FORMAT),TGZ)
 PKG_SUFFIX	= .tar.gz
 MAKE_PACKAGE 	= $(CREATE_FINAL_TAR) - $(MOZ_PKG_APPNAME) | gzip -vf9 > $(PACKAGE)
 UNMAKE_PACKAGE	= gunzip -c $(UNPACKAGE) | $(UNPACK_TAR)
+MAKE_SDK = $(CREATE_FINAL_TAR) - $(MOZ_APP_NAME)-sdk | gzip -vf9 > $(SDK)
 endif
 ifeq ($(MOZ_PKG_FORMAT),BZ2)
 PKG_SUFFIX	= .tar.bz2
 MAKE_PACKAGE 	= $(CREATE_FINAL_TAR) - $(MOZ_PKG_APPNAME) | bzip2 -vf > $(PACKAGE)
 UNMAKE_PACKAGE	= bunzip2 -c $(UNPACKAGE) | $(UNPACK_TAR)
+MAKE_SDK = $(CREATE_FINAL_TAR) - $(MOZ_APP_NAME)-sdk | bzip2 -vf > $(SDK)
 endif
 ifeq ($(MOZ_PKG_FORMAT),ZIP)
 PKG_SUFFIX	= .zip
 MAKE_PACKAGE	= $(ZIP) -r9D $(PACKAGE) $(MOZ_PKG_APPNAME)
 UNMAKE_PACKAGE	= $(UNZIP) $(UNPACKAGE)
+MAKE_SDK = $(ZIP) -r9D $(SDK) $(MOZ_APP_NAME)-sdk
 endif
 ifeq ($(MOZ_PKG_FORMAT),DMG)
 ifndef _APPNAME
@@ -106,7 +115,9 @@ else
 _APPNAME	= $(MOZ_APP_DISPLAYNAME).app
 endif
 endif
+ifndef _BINPATH
 _BINPATH	= /$(_APPNAME)/Contents/MacOS
+endif # _BINPATH
 PKG_SUFFIX	= .dmg
 PKG_DMG_FLAGS	=
 ifneq (,$(MOZ_PKG_MAC_DSSTORE))
@@ -128,8 +139,11 @@ _ABS_TOPSRCDIR = $(shell cd $(topsrcdir) && pwd)
 ifdef UNIVERSAL_BINARY
 STAGEPATH = universal/
 endif
+ifndef PKG_DMG_SOURCE
+PKG_DMG_SOURCE = $(STAGEPATH)$(MOZ_PKG_APPNAME)
+endif
 MAKE_PACKAGE	= $(_ABS_TOPSRCDIR)/build/package/mac_osx/pkg-dmg \
-  --source "$(STAGEPATH)$(MOZ_PKG_APPNAME)" --target "$(PACKAGE)" \
+  --source "$(PKG_DMG_SOURCE)" --target "$(PACKAGE)" \
   --volname "$(MOZ_APP_DISPLAYNAME)" $(PKG_DMG_FLAGS)
 UNMAKE_PACKAGE	= \
   set -ex; \
@@ -160,6 +174,8 @@ UNMAKE_PACKAGE	= \
   $(NULL)
 # The plst and blkx resources are skipped because they belong to each
 # individual dmg and are created by hdiutil.
+SDK_SUFFIX = .tar.bz2
+MAKE_SDK = $(CREATE_FINAL_TAR) - $(MOZ_APP_NAME)-sdk | bzip2 -vf > $(SDK)
 endif
 
 # dummy macro if we don't have PSM built
@@ -173,7 +189,7 @@ NATIVE_ARCH	= $(shell uname -p | sed -e s/powerpc/ppc/)
 NATIVE_DIST	= $(DIST)/../../$(NATIVE_ARCH)/dist
 SIGN_CMD	= $(NATIVE_DIST)/bin/run-mozilla.sh $(NATIVE_DIST)/bin/shlibsign -v -i
 else
-SIGN_CMD	= $(DIST)/bin/run-mozilla.sh $(DEPTH)/nss/shlibsign -v -i
+SIGN_CMD	= $(RUN_TEST_PROGRAM) $(DIST)/bin/shlibsign -v -i
 endif
 
 SOFTOKN		= $(DIST)/$(STAGEPATH)$(MOZ_PKG_APPNAME)$(_BINPATH)/$(DLL_PREFIX)softokn3$(DLL_SUFFIX)
@@ -232,7 +248,7 @@ NO_PKG_FILES += \
 # browser/locales/Makefile uses this makefile for it's variable defs, but
 # doesn't want the libs:: rule.
 ifndef PACKAGER_NO_LIBS
-libs:: $(PACKAGE)
+libs:: make-package
 endif
 
 DEFINES += -DDLL_PREFIX=$(DLL_PREFIX) -DDLL_SUFFIX=$(DLL_SUFFIX)
@@ -241,16 +257,10 @@ ifdef MOZ_PKG_REMOVALS
 MOZ_PKG_REMOVALS_GEN = removed-files
 
 $(MOZ_PKG_REMOVALS_GEN): $(MOZ_PKG_REMOVALS) Makefile Makefile.in
-	$(PERL) $(topsrcdir)/config/preprocessor.pl -Fsubstitution $(DEFINES) $(ACDEFINES) $(MOZ_PKG_REMOVALS) > $(MOZ_PKG_REMOVALS_GEN)
+	$(PYTHON) $(topsrcdir)/config/Preprocessor.py -Fsubstitution $(DEFINES) $(ACDEFINES) $(MOZ_PKG_REMOVALS) > $(MOZ_PKG_REMOVALS_GEN)
 endif
 
 GARBAGE		+= $(DIST)/$(PACKAGE) $(PACKAGE)
-
-ifdef USE_SHORT_LIBNAME
-MOZILLA_BIN	= $(DIST)/bin/$(MOZ_PKG_APPNAME)$(BIN_SUFFIX)
-else
-MOZILLA_BIN	= $(DIST)/bin/$(MOZ_PKG_APPNAME)-bin
-endif
 
 ifeq ($(OS_ARCH),IRIX)
 STRIP_FLAGS	= -f
@@ -305,13 +315,15 @@ endif
 		"$(DEPTH)/installer-stage/localized", \
 		"$(MOZ_PKG_MANIFEST)", "$(PKGCP_OS)", 1, 0, 1 \
 		$(foreach pkg,$(MOZ_LOCALIZED_PKG_LIST),$(PKG_ARG)) )
+ifdef MOZ_OPTIONAL_PKG_LIST
 	$(call PACKAGER_COPY, "$(DIST)",\
 		"$(DEPTH)/installer-stage/optional", \
 		"$(MOZ_PKG_MANIFEST)", "$(PKGCP_OS)", 1, 0, 1 \
 		$(foreach pkg,$(MOZ_OPTIONAL_PKG_LIST),$(PKG_ARG)) )
-	$(PERL) $(topsrcdir)/xpinstall/packager/xptlink.pl -s $(DIST) -d $(DIST)/xpt -f $(DEPTH)/installer-stage/nonlocalized/components -v
+endif
+	$(PERL) $(topsrcdir)/xpinstall/packager/xptlink.pl -s $(DIST) -d $(DIST)/xpt -f $(DEPTH)/installer-stage/nonlocalized/components -v -x "$(XPIDL_LINK)"
 
-$(PACKAGE): $(MOZILLA_BIN) $(MOZ_PKG_MANIFEST) $(MOZ_PKG_REMOVALS_GEN)
+stage-package: $(MOZ_PKG_MANIFEST) $(MOZ_PKG_REMOVALS_GEN)
 	@rm -rf $(DIST)/$(MOZ_PKG_APPNAME) $(DIST)/$(PKG_BASENAME).tar $(DIST)/$(PKG_BASENAME).dmg $@ $(EXCLUDE_LIST)
 # NOTE: this must be a tar now that dist links into the tree so that we
 # do not strip the binaries actually in the tree.
@@ -322,7 +334,7 @@ ifdef MOZ_PKG_MANIFEST
 	$(call PACKAGER_COPY, "$(DIST)",\
 		 "$(DIST)/$(MOZ_PKG_APPNAME)", \
 		"$(MOZ_PKG_MANIFEST)", "$(PKGCP_OS)", 1, 0, 1)
-	$(PERL) $(topsrcdir)/xpinstall/packager/xptlink.pl -s $(DIST) -d $(DIST)/xpt -f $(DIST)/$(MOZ_PKG_APPNAME)/components -v
+	$(PERL) $(topsrcdir)/xpinstall/packager/xptlink.pl -s $(DIST) -d $(DIST)/xpt -f $(DIST)/$(MOZ_PKG_APPNAME)/components -v -x "$(XPIDL_LINK)"
 else # !MOZ_PKG_MANIFEST
 ifeq ($(MOZ_PKG_FORMAT),DMG)
 # If UNIVERSAL_BINARY, the package will be made from an already-prepared
@@ -368,5 +380,77 @@ endif
 ifdef MOZ_PKG_REMOVALS
 	$(SYSINSTALL) $(MOZ_PKG_REMOVALS_GEN) $(DIST)/$(STAGEPATH)$(MOZ_PKG_APPNAME)$(_BINPATH)
 endif # MOZ_PKG_REMOVALS
+
+make-package: stage-package
 	@echo "Compressing..."
-	cd $(DIST); $(MAKE_PACKAGE)
+	cd $(DIST) && $(MAKE_PACKAGE)
+
+# The install target will install the application to prefix/lib/appname-version
+# In addition if INSTALL_SDK is set, it will install the development headers,
+# libraries, and IDL files as follows:
+# dist/sdk/include -> prefix/include/appname-version/stable
+# dist/include -> prefix/include/appname-version/unstable
+# dist/sdk/idl -> prefix/share/idl/appname-version/stable
+# dist/idl -> prefix/share/idl/appname-version/unstable
+# dist/sdk/lib -> prefix/lib/appname-devel-version/lib
+# prefix/lib/appname-devel-version/* symlinks to the above directories
+install:: stage-package
+ifeq (WINNT,$(OS_ARCH))
+	$(error "make install" is not supported on Windows. Use "make package" instead.)
+endif
+	$(NSINSTALL) -D $(DESTDIR)$(installdir)
+	(cd $(DIST)/$(MOZ_PKG_APPNAME) && tar $(TAR_CREATE_FLAGS) - .) | \
+	  (cd $(DESTDIR)$(installdir) && tar -xf -)
+	$(NSINSTALL) -D $(DESTDIR)$(bindir)
+	$(RM) -f $(DESTDIR)$(bindir)/$(MOZ_APP_NAME)
+	ln -s $(installdir)/$(MOZ_APP_NAME) $(DESTDIR)$(bindir)
+ifdef INSTALL_SDK # Here comes the hard part
+# include directory is stable (dist/sdk/include) and unstable (dist/include)
+	$(NSINSTALL) -D $(DESTDIR)$(includedir)/stable
+	$(NSINSTALL) -D $(DESTDIR)$(includedir)/unstable
+	(cd $(DIST)/sdk/include && tar $(TAR_CREATE_FLAGS) - .) | \
+	  (cd $(DESTDIR)$(includedir)/stable && tar -xf -)
+# The dist/include has module subdirectories that we need to flatten
+	find $(DIST)/include -xtype f -exec $(SYSINSTALL) $(IFLAGS1) {} $(DESTDIR)$(includedir)/unstable \;
+# IDL directory is stable (dist/sdk/idl) and unstable (dist/idl)
+	$(NSINSTALL) -D $(DESTDIR)$(idldir)/stable 
+	$(NSINSTALL) -D $(DESTDIR)$(idldir)/unstable
+	(cd $(DIST)/sdk/idl && tar $(TAR_CREATE_FLAGS) - .) | \
+	  (cd $(DESTDIR)$(idldir)/stable && tar -xf -)
+	(cd $(DIST)/idl && tar $(TAR_CREATE_FLAGS) - .) | \
+	  (cd $(DESTDIR)$(idldir)/unstable && tar -xf -)
+# SDK directory is the libs + a bunch of symlinks
+	$(NSINSTALL) -D $(DESTDIR)$(sdkdir)/sdk/lib
+	if test -f $(DIST)/sdk/include/xpcom-config.h; then \
+	  $(SYSINSTALL) $(IFLAGS1) $(DIST)/sdk/include/xpcom-config.h $(DESTDIR)$(sdkdir); \
+	fi
+	(cd $(DIST)/sdk/lib && tar $(TAR_CREATE_FLAGS) - .) | (cd $(DESTDIR)$(sdkdir)/sdk/lib && tar -xf -)
+	$(RM) -f $(DESTDIR)$(sdkdir)/lib $(DESTDIR)$(sdkdir)/bin $(DESTDIR)$(sdkdir)/sdk/include $(DESTDIR)$(sdkdir)/include $(DESTDIR)$(sdkdir)/sdk/idl $(DESTDIR)$(sdkdir)/idl
+	ln -s $(sdkdir)/sdk/lib $(DESTDIR)$(sdkdir)/lib
+	ln -s $(installdir) $(DESTDIR)$(sdkdir)/bin
+	ln -s $(includedir)/stable $(DESTDIR)$(sdkdir)/sdk/include
+	ln -s $(includedir)/unstable $(DESTDIR)$(sdkdir)/include
+	ln -s $(idldir)/stable $(DESTDIR)$(sdkdir)/sdk/idl
+	ln -s $(idldir)/unstable $(DESTDIR)$(sdkdir)/idl
+endif # INSTALL_SDK
+
+make-sdk:: stage-package
+	@echo "Packaging SDK..."
+	$(RM) -rf $(DIST)/$(MOZ_APP_NAME)-sdk
+	$(NSINSTALL) -D $(DIST)/$(MOZ_APP_NAME)-sdk/bin
+	(cd $(DIST)/$(MOZ_PKG_APPNAME) && tar $(TAR_CREATE_FLAGS) - .) | \
+	  (cd $(DIST)/$(MOZ_APP_NAME)-sdk/bin && tar -xf -)
+	$(NSINSTALL) -D $(DIST)/$(MOZ_APP_NAME)-sdk/sdk
+	(cd $(DIST)/sdk && tar $(TAR_CREATE_FLAGS) - .) | \
+	  (cd $(DIST)/$(MOZ_APP_NAME)-sdk/sdk && tar -xf -)
+	$(NSINSTALL) -D $(DIST)/$(MOZ_APP_NAME)-sdk/include
+	(cd $(DIST)/include && tar $(TAR_CREATE_FLAGS) - .) | \
+	  (cd $(DIST)/$(MOZ_APP_NAME)-sdk/include && tar -xf -)
+	$(NSINSTALL) -D $(DIST)/$(MOZ_APP_NAME)-sdk/idl
+	(cd $(DIST)/idl && tar $(TAR_CREATE_FLAGS) - .) | \
+	  (cd $(DIST)/$(MOZ_APP_NAME)-sdk/idl && tar -xf -)
+	$(NSINSTALL) -D $(DIST)/$(MOZ_APP_NAME)-sdk/lib
+# sdk/lib is the same as sdk/sdk/lib
+	(cd $(DIST)/sdk/lib && tar $(TAR_CREATE_FLAGS) - .) | \
+	  (cd $(DIST)/$(MOZ_APP_NAME)-sdk/lib && tar -xf -)
+	cd $(DIST) && $(MAKE_SDK)
