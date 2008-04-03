@@ -46,21 +46,23 @@
 /* ::::: toolbox ::::: */
 
 toolbox {
-  -moz-appearance: toolbar !important;
 }
 
 /* ::::: toolbar & menubar ::::: */
 
 toolbar,
-toolbarpalette,
-menubar {
+toolbarpalette {
   min-width: 1px;
   min-height: 20px !important;
   color: #000000;
-  border-bottom: 1px solid #a3a3a3;
-  background: url("chrome://global/skin/toolbar/toolbar-pinstripe-overlay.png") repeat;
+  border-bottom: 1px solid #404040;
+  background-color: #C4C4C4;
 }
 
+menubar {
+  -moz-appearance: toolbar;
+  min-width: 1px;
+}
 
 .toolbar-holder {
  min-width: 1px;
@@ -72,10 +74,6 @@ toolbar[mode="icons"] .toolbarbutton-text {
 
 toolbar[mode="text"] .toolbarbutton-icon {
   display: none;
-}
-
-toolbar[mode="text"] .toolbarbutton-1 > .toolbarbutton-text, toolbar[mode="text"] .toolbarbutton-1 > stack > toolbarbutton > .toolbarbutton-text {
-  margin: 4px;
 }
 
 /* ::::: toolbarseparator ::::: */

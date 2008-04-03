@@ -46,39 +46,34 @@
 /* :::::::::: button :::::::::: */
 
 button {
-  -moz-appearance: button;
+  /*-moz-appearance: button;*/
+  /* The margin used here come from the Aqua Human Interface Guidelines,
+     there should be 12 pixels between two buttons. */
   margin: 6px;
-  min-width: 6.3em;
-  -moz-appearance: button;
- padding: 0px 4px;
-  color: #000000;
+  padding: 0 9px;
+  min-width: 79px;
+  min-height: 22px;
+  background-color: rgb(234,234,234);/*msi-Dialog*/
+  color: ButtonText;
 }
 
 .button-text {
-  margin: 0 !important;
+  margin: 0 2px 0 3px !important;
   text-align: center;
 }
 
-button[type="default"] {
-	font: menu;
+.button-icon {
+  margin-left: 1px;
 }
 
-/* .......... active/open/checked state .......... */
-
-button:hover:active,
-button[open="true"],
-button[checked="true"] {
-
+button[type="default"] {
+  font: menu;
 }
 
 /* .......... disabled state .......... */
 
 button[disabled="true"] {
   color: #777777 !important;
-  -moz-border-top-colors: #cccccc #eeeeee #fdfdfd;
-  -moz-border-right-colors: #cccccc #d9d9d9;
-  -moz-border-bottom-colors: #cccccc #eeeeee #fdfdfd;
-  -moz-border-left-colors: #cccccc #d9d9d9;
 }
 
 /* ::::: menu/menu-button buttons ::::: */
@@ -92,40 +87,15 @@ button[type="menu-button"] {
 
 .button-menu-dropmarker,
 .button-menubutton-dropmarker {
+  -moz-appearance: none !important;
+  border: none !important;
+  background-color: transparent !important;
   margin: 1px;
-  list-style-image: url("chrome://global/skin/arrow/arrow-dn.png");
-}
-  
-.button-menu-dropmarker[disabled="true"],
-.button-menubutton-dropmarker[disabled="true"] {
-  list-style-image: url("chrome://global/skin/arrow/arrow-dn-dis.png");
-}
-
-.button-menubutton-dropmarker[open="true"] {
-  /* margin: 2px 0px 0px 2px; */
 }
 
 /* ::::: plain buttons ::::: */
 
 button.plain {
-  margin: 0px !important;
-  padding: 0px !important;
-}
-
-/* ::::: close button ::::: */
-
-.close-button {
-  list-style-image: url("chrome://global/skin/icons/close-button.gif");
-}
-
-.close-button > .toolbarbutton-icon {
-  margin: 0;
-}
-
-.close-button > .toolbarbutton-text {
-  display: none;
-}
-
-.dialog-button {
-	font: menu;
+  margin: 0 !important;
+  padding: 0 !important;
 }

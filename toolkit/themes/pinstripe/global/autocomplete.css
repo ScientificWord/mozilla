@@ -54,7 +54,6 @@ treechildren::-moz-tree-image(sw_checked) {
   /* the width of this gif is 7 pixels. The next rule keeps the left margin even */
 }
 
-
 textbox {
   cursor: default;
   padding: 0;
@@ -73,9 +72,9 @@ textbox.padded {
 /* ::::: history button ::::: */
 
 .autocomplete-history-dropmarker {
-  min-width: 17px;
-  -moz-box-align: center;
-  -moz-box-pack: center;
+  -moz-appearance: none !important;
+  border: none !important;
+  background-color: transparent !important;
   padding: 0px;
   list-style-image: url("chrome://global/skin/icons/autocomplete-dropmarker.png");
   margin: 0px;
@@ -83,18 +82,17 @@ textbox.padded {
 
 /* ::::: autocomplete popups ::::: */
 
-popup[type="autocomplete"],
+panel[type="autocomplete"],
+panel[type="autocomplete-richlistbox"],
 .autocomplete-history-popup {
   padding: 0px !important;
-  background-color: -moz-Field !important;
+  background-color: -moz-Field;
   font: icon;
   -moz-appearance: none;
-  border-top: 1px solid #C3C3C3 !important;
 }
 
 .autocomplete-history-popup {
   max-height: 180px;
-  border-top: 1px solid #C3C3C3 !important;
 }
 
 /* ::::: tree ::::: */
@@ -116,12 +114,70 @@ popup[type="autocomplete"],
   padding-left: 2px;
 }
 
+.autocomplete-treebody::-moz-tree-row {
+  border-top: none;
+}
+
 treechildren.autocomplete-treebody::-moz-tree-row(selected) {
- background-color: -moz-mac-alternateprimaryhighlight;
+ background-color: Highlight;
 }
 
 treechildren.autocomplete-treebody::-moz-tree-cell-text(selected) {
-  color: #000000 !important;
+  color: HighlightText !important;
+}
+
+.autocomplete-treebody::-moz-tree-image(treecolAutoCompleteValue) {
+  max-width: 16px;
+  height: 16px;
+}
+
+/* ::::: richlistbox autocomplete ::::: */
+
+.autocomplete-richlistbox {
+  margin: 0;
+}
+
+.autocomplete-richlistitem[selected="true"] {
+  background-color: Highlight;
+  color: HighlightText;
+}
+
+.autocomplete-richlistitem {
+  padding: 1px 0px 1px 2px;
+  border-bottom: 1px solid ThreeDShadow;
+}
+
+.ac-site-icon {
+  width: 16px; 
+  height: 16px;
+  margin-right: 8px;
+}
+
+.ac-type-icon {
+  width: 16px; 
+  height: 16px;
+}
+
+.ac-ellipsis-after {
+  margin: 2px 0px 0px 0px !important;
+  padding: 0; 
+  min-width: 1.1em;
+}
+
+.ac-normal-text {
+  margin: 2px 0px 0px 0px !important;
+  padding: 0;
+}
+
+html|*.ac-emphasize-text {
+  margin: 0 !important;
+  padding: 0;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.ac-title, .ac-url {
+  overflow: hidden;
 }
 
 /* ::::: textboxes inside toolbarpaletteitems ::::: */

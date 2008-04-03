@@ -46,8 +46,10 @@
 /* ::::: menupopup ::::: */
 
 menupopup,
-popup {
+popup,
+panel {
   -moz-appearance: menupopup;
+  background-color: rgb(234,234,234);/*msi-Dialog*/
 }
 
 /* ::::: popup internal box ::::: */

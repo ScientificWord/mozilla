@@ -58,12 +58,13 @@ function nsPluginInstallerWizard(){
   // how many plugins are to be installed
   this.pluginsToInstallNum = 0;
 
-  this.mTab = null;
+  this.mBrowser = null;
   this.mSuccessfullPluginInstallation = 0;
 
   // arguments[0] is an array that contains two items:
   //     an array of mimetypes that are missing
-  //     a reference to the tab that needs them, so we can reload it
+  //     a reference to the browser that needs them, 
+  //        so we can notify which browser can be reloaded.
 
   if ("arguments" in window) {
     for (var item in window.arguments[0].plugins){
@@ -73,7 +74,7 @@ function nsPluginInstallerWizard(){
       this.mPluginRequestArrayLength++;
     }
 
-    this.mTab = window.arguments[0].tab;
+    this.mBrowser = window.arguments[0].browser;
   }
 
   this.WSPluginCounter = 0;
@@ -337,26 +338,23 @@ nsPluginInstallerWizard.prototype.startPluginInstallation = function (){
   this.canAdvance(false);
   this.canRewind(false);
 
-  // since the user can choose what plugins to install, we need to store
-  // which ones were choosen, as nsIXPInstallManager returns an index and not the
-  // mimetype.  So store the pids.
-
-  var pluginURLArray = new Array();
-  var pluginPidArray = new Array();
+  var installerPlugins = [];
+  var xpiPlugins = [];
 
   for (pluginInfoItem in this.mPluginInfoArray){
     var pluginItem = this.mPluginInfoArray[pluginInfoItem];
 
-    // only push to the array if it has an XPILocation, else nsIXPInstallManager
-    // will complain.
-    if (pluginItem.toBeInstalled && pluginItem.XPILocation && pluginItem.licenseAccepted) {
-      pluginURLArray.push(pluginItem.XPILocation);
-      pluginPidArray.push(pluginItem.pid);
+    if (pluginItem.toBeInstalled && pluginItem.licenseAccepted) {
+      if (pluginItem.InstallerLocation)
+        installerPlugins.push(pluginItem);
+      else if (pluginItem.XPILocation)
+        xpiPlugins.push(pluginItem);
     }
   }
 
-  if (pluginURLArray.length > 0)
-    PluginInstallService.startPluginInsallation(pluginURLArray, pluginPidArray);
+  if (installerPlugins.length > 0 || xpiPlugins.length > 0)
+    PluginInstallService.startPluginInstallation(installerPlugins,
+                                                 xpiPlugins);
   else
     this.advancePage(null, true, false, false);
 }
@@ -565,17 +563,19 @@ nsPluginInstallerWizard.prototype.showPluginResults = function (){
 
 nsPluginInstallerWizard.prototype.loadURL = function (aUrl){
   // Check if the page where the plugin came from can load aUrl before
-  // loading it, and do *not* allow loading javascript: or data: URIs.
-  var pluginPage = window.opener.content.location.href;
+  // loading it, and do *not* allow loading URIs that would inherit our
+  // principal.
+  
+  var pluginPagePrincipal =
+    window.opener.content.document.nodePrincipal;
 
   const nsIScriptSecurityManager =
     Components.interfaces.nsIScriptSecurityManager;
-  var secMan =
-    Components.classes["@mozilla.org/scriptsecuritymanager;1"]
-    .getService(nsIScriptSecurityManager);
+  var secMan = Components.classes["@mozilla.org/scriptsecuritymanager;1"]
+                         .getService(nsIScriptSecurityManager);
 
-  secMan.checkLoadURIStr(pluginPage, aUrl,
-                         nsIScriptSecurityManager.DISALLOW_SCRIPT_OR_DATA);
+  secMan.checkLoadURIStrWithPrincipal(pluginPagePrincipal, aUrl,
+    nsIScriptSecurityManager.DISALLOW_INHERIT_PRINCIPAL);
 
   window.opener.open(aUrl);
 }
@@ -616,7 +616,10 @@ function PluginInfo(aResult) {
   this.pid = aResult.pid;
   this.version = aResult.version;
   this.IconUrl = aResult.IconUrl;
+  this.InstallerLocation = aResult.InstallerLocation;
+  this.InstallerHash = aResult.InstallerHash;
   this.XPILocation = aResult.XPILocation;
+  this.XPIHash = aResult.XPIHash;
   this.InstallerShowsUI = aResult.InstallerShowsUI;
   this.manualInstallationURL = aResult.manualInstallationURL;
   this.requestedMimetype = aResult.requestedMimetype;
@@ -642,13 +645,12 @@ function wizardFinish(){
   // don't refresh if no plugins were found or installed
   if ((gPluginInstaller.mSuccessfullPluginInstallation > 0) &&
       (gPluginInstaller.mPluginInfoArray.length != 0) &&
-      gPluginInstaller.mTab) {
-    // clear the tab's plugin list only if we installed at least one plugin
-    gPluginInstaller.mTab.missingPlugins = null;
-    // reset UI
-    window.opener.gMissingPluginInstaller.closeNotification();
-    // reload the browser to make the new plugin show
-    window.opener.getBrowser().reloadTab(gPluginInstaller.mTab);
+      gPluginInstaller.mBrowser) {
+    // notify listeners that a plugin is installed,
+    // so that they can reset the UI and update the browser.
+    var event = document.createEvent("Events");
+    event.initEvent("NewPluginInstalled", true, true);
+    gPluginInstaller.mBrowser.dispatchEvent(event);
   }
 
   return true;

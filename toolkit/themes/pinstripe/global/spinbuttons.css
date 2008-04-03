@@ -14,12 +14,12 @@
  * The Original Code is mozilla.org code.
  *
  * The Initial Developer of the Original Code is
- * Håkan Waara Portions created by Håkan Waara are Copyright (C) Håkan Waara.  All Rights Reserved.
+ * HÃ¥kan Waara
  * Portions created by the Initial Developer are Copyright (C) 2001
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *   Håkan Waara (Original Author)
+ *   HÃ¥kan Waara (Original Author)
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -37,18 +37,28 @@
 
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 
-.up {
-  list-style-image: url("chrome://global/skin/spinbtn-up.gif")
+spinbuttons {
+  height: 24px;
+  min-height: 24px;
+  -moz-appearance: spinner;
+  cursor: default;
 }
 
-.up:hover:active {
-  list-style-image: url("chrome://global/skin/spinbtn-up-act.gif")
+.spinbuttons-up {
+  -moz-appearance: none;
+  -moz-box-flex: 1;
+  min-width: 1px;
+  min-height: 1px;
+  margin: 0;
+  padding: 0;
 }
 
-.down {
-  list-style-image: url("chrome://global/skin/spinbtn-dn.gif")
+.spinbuttons-down {
+  -moz-appearance: none;
+  -moz-box-flex: 1;
+  min-width: 1px;
+  min-height: 1px;
+  margin: 0;
+  padding: 0;
 }
 
-.down:hover:active {
-  list-style-image: url("chrome://global/skin/spinbtn-dn-act.gif")
-}

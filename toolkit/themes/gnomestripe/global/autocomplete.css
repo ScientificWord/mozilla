@@ -21,7 +21,7 @@
  *
  * Contributor(s):
  *   Joe Hewitt (hewitt@netscape.com)
- *   Brian Ryner <bryner@brianryner.com>
+ *   Pamela Greene (pamg.bugs@gmail.com)
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -58,18 +58,12 @@ treechildren::-moz-tree-image(sw_checked) {
 textbox {
   cursor: default;
   padding: 0;
-  -moz-appearance: none;
-  border: none !important;
 }
 
-.autocomplete-textbox-container {
-  -moz-appearance: menulist-textfield;
-  -moz-box-align: center;
-  border: 2px solid;
-  -moz-border-top-colors: ThreeDShadow ThreeDDarkShadow;
-  -moz-border-right-colors: ThreeDHighlight ThreeDLightShadow;
-  -moz-border-bottom-colors: ThreeDHighlight ThreeDLightShadow;
-  -moz-border-left-colors: ThreeDShadow ThreeDDarkShadow;
+textbox[enablehistory="true"] {
+  -moz-appearance: none;
+  border: 0;
+  background-color: transparent;
 }
 
 /* Used by autocomplete widgets that don't have an icon. Gross. -dwh */
@@ -80,43 +74,23 @@ textbox.padded {
   -moz-padding-end: 0px;
 }
 
+.autocomplete-textbox-container {
+  -moz-box-align: center;
+}
+
+textbox[enablehistory="true"] > .autocomplete-textbox-container {
+  -moz-appearance: menulist-textfield;
+}
+
 .textbox-input-box {
   margin: 0 3px;
   -moz-box-align: center;
 }
 
-/* ::::: history button ::::: */
-
-.autocomplete-history-dropmarker {
-  -moz-appearance: menulist-button;
-  min-width: 17px;
-  -moz-box-align: center;
-  -moz-box-pack: center;
-  border: 2px solid;
-  -moz-border-top-colors: ThreeDLightShadow ThreeDHighlight;
-  -moz-border-right-colors: ThreeDDarkShadow ThreeDShadow;
-  -moz-border-bottom-colors: ThreeDDarkShadow ThreeDShadow;
-  -moz-border-left-colors: ThreeDLightShadow ThreeDHighlight;
-  background-color: -moz-Dialog;
-  padding: 1px;
-  list-style-image: url("chrome://global/skin/arrow/arrow-dn.gif");
-}
-
-.autocomplete-history-dropmarker:hover:active,
-.autocomplete-history-dropmarker[open="true"] {
-  -moz-border-top-colors: ThreeDShadow ThreeDFace;
-  -moz-border-right-colors: ThreeDShadow ThreeDFace;
-  -moz-border-bottom-colors: ThreeDShadow ThreeDFace;
-  -moz-border-left-colors: ThreeDShadow ThreeDFace;
-  padding-top: 2px;
-  padding-bottom: 0px;
-  -moz-padding-start: 2px;
-  -moz-padding-end: 0px;
-}
-
 /* ::::: autocomplete popups ::::: */
 
-popup[type="autocomplete"],
+panel[type="autocomplete"],
+panel[type="autocomplete-richlistbox"],
 .autocomplete-history-popup {
   border-width: 1px;
   -moz-border-top-colors: ThreeDDarkShadow;
@@ -124,7 +98,7 @@ popup[type="autocomplete"],
   -moz-border-bottom-colors: ThreeDDarkShadow;
   -moz-border-left-colors: ThreeDDarkShadow;
   padding: 0;
-  background-color: -moz-Field !important;
+  background-color: -moz-Field;
 }
 
 .autocomplete-history-popup {
@@ -136,7 +110,7 @@ popup[type="autocomplete"],
 .autocomplete-tree {
   -moz-appearance: none !important;
   border: none !important;
-  background-color: -moz-field !important;
+  background-color: transparent !important;
 }
 
 .autocomplete-treecol {
@@ -144,6 +118,11 @@ popup[type="autocomplete"],
   margin: 0 !important;
   border: none !important;
   padding: 0 !important;
+}
+
+/* GTK calculates space for a sort arrow */
+.autocomplete-treecol > .treecol-sortdirection {
+  -moz-appearance: none !important;
 }
 
 .autocomplete-treebody::-moz-tree-cell-text {
@@ -155,20 +134,63 @@ treechildren.autocomplete-treebody::-moz-tree-row(selected) {
 }
 
 treechildren.autocomplete-treebody::-moz-tree-cell-text(selected) {
-  color: #000000 !important;
-}
-
-/* thunderbird does not use the new autocomplete widget yet so we need a couple of the old styles rules for it */
-
-.autocomplete-treebody::-moz-tree-row(menuactive) {
-  background-color: Highlight;
-}
-
-.autocomplete-treebody::-moz-tree-cell-text(menuactive)  {
   color: HighlightText !important;
 }
 
-/* end of thunderbird required autocomplete rules */
+.autocomplete-treebody::-moz-tree-image(treecolAutoCompleteValue) {
+  max-width: 16px;
+  height: 16px;
+}
+
+/* ::::: richlistbox autocomplete ::::: */
+
+.autocomplete-richlistbox {
+  margin: 0;
+  background-color: transparent;
+}
+
+.autocomplete-richlistitem[selected="true"] {
+  background-color: Highlight;
+  color: HighlightText;
+}
+
+.autocomplete-richlistitem {
+  padding: 1px 0px 1px 2px;
+  border-bottom: 1px solid ThreeDShadow;
+}
+
+.ac-site-icon {
+  width: 16px; 
+  height: 16px;
+  margin-right: 8px;
+}
+
+.ac-type-icon {
+  width: 16px; 
+  height: 16px;
+}
+
+.ac-ellipsis-after {
+  margin: 2px 0px 0px 0px !important;
+  padding: 0; 
+  min-width: 1em;
+}
+
+.ac-normal-text {
+  margin: 2px 0px 0px 0px !important;
+  padding: 0;
+}
+
+html|*.ac-emphasize-text {
+  margin: 0 !important;
+  padding: 0;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.ac-title, .ac-url {
+  overflow: hidden;
+}
 
 /* ::::: textboxes inside toolbarpaletteitems ::::: */
 
