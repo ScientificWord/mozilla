@@ -54,15 +54,14 @@
 
 tabpanels {
   /* -moz-appearance: tabpanels; */ 
-  border-top: 0px;
-  border-bottom: 2px ridge #000000;
-  border-left: 2px groove #000000; 
-  border-right: 2px ridge #000000; 
+  border-right: 2px solid;
+  border-bottom: 2px solid;
+  border-left: 2px solid;
   -moz-border-right-colors: ThreeDDarkShadow ThreeDShadow;
   -moz-border-bottom-colors: ThreeDDarkShadow ThreeDShadow;
   -moz-border-left-colors: ThreeDHighlight ThreeDLightShadow;
-  padding: 2px 2px 2px 2px;
-  background-color		: #EEEEEE;
+  padding: 2px;
+  background-color: -moz-Dialog;
   margin-bottom: 4px;
   color: -moz-DialogText;
 }
@@ -71,7 +70,7 @@ tabpanels {
 
 tab 
 {
-  /* -moz-appearance: tab; */
+  -moz-appearance: tab;
   margin-top: 2px;
   border-top: 2px solid;
   border-right: 2px solid;
@@ -84,7 +83,6 @@ tab
   -moz-border-radius-topright: 2px;
   -moz-border-radius-bottomright: 1px;
   padding: 1px 4px 2px 4px;
-  /* background-color: -moz-Dialog; */
   background-image: url("chrome://prince/skin/icons/background.png");
   background-repeat: repeat-x;
   color: -moz-DialogText;
@@ -106,20 +104,21 @@ tab[selected="true"] {
   padding: 1px 6px 4px 6px;
 }
 
-/* tab:focus > .tab-middle {
-  outline: 1px dotted invert;
-}  */
+tab:focus > .tab-middle {
+  /* Don't specify the outline-color, we should always use initial value. */
+  outline: 1px dotted;
+}
 
 tab[beforeselected="true"],
 tab[afterselected="true"][chromedir="rtl"] {
-  /* -moz-appearance: tab-left-edge; */
+  -moz-appearance: tab-left-edge;
   border-right: none;
   -moz-border-radius-topright: 0;
 }
 
 tab[afterselected="true"],
 tab[beforeselected="true"][chromedir="rtl"] {
-  /* -moz-appearance: tab-right-edge; */
+  -moz-appearance: tab-right-edge;
   border-left: none;
   -moz-border-radius-topleft: 0;
 }

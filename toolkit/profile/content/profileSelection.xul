@@ -60,6 +60,7 @@
   style="width: 30em;"
   onload="startup();"
   ondialogaccept="return acceptDialog()"
+  ondialogcancel="return exitDialog()"
   buttonlabelaccept="&start.label;"
   buttonlabelcancel="&exit.label;">
 
@@ -68,7 +69,7 @@
   <stringbundle id="bundle_brand"
                 src="chrome://branding/locale/brand.properties"/>
 
-  <script type="application/x-javascript" src="chrome://mozapps/content/profile/profileSelection.js"/>
+  <script type="application/javascript" src="chrome://mozapps/content/profile/profileSelection.js"/>
 
   <description class="label">&pmDescription.label;</description>
 
@@ -88,7 +89,7 @@
     <separator flex="1"/>
 
     <vbox flex="1">
-      <listbox id="profiles" flex="1" rows="5" seltype="single"
+      <listbox id="profiles" rows="5" seltype="single"
                ondblclick="onProfilesDblClick(event)"
                onkeypress="onProfilesKey(event);">
       </listbox>
