@@ -9,7 +9,7 @@ ac_add_app_options xulrunner --enable-application=xulrunner
 ac_add_app_options prince --enable-application=prince
 ac_add_app_options prince --with-libxul-sdk=../xulrunner/dist/
 ac_add_app_options prince --enable-libxul
-ac_add_app_options xulrunner --enable-extensions=default,inspector,spellcheck,editor/cascades
+ac_add_app_options prince --enable-extensions=default,inspector,venkman,spellcheck,editor/cascades
 
 ac_add_options --disable-javaxpcom
 ac_add_options --disable-activex
