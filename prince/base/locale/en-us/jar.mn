@@ -84,3 +84,7 @@ en-US.jar:
   locale/Frame.dtd                        (dialogs/Frame.dtd)
   locale/fractionProperties.dtd           (dialogs/fractionProperties.dtd)
   locale/radicalProperties.dtd            (dialogs/radicalProperties.dtd)
+  locale/sidebar.dtd				      (sidebar.dtd)
+  locale/structurebar.dtd			      (structurebar.dtd)
+  locale/standaloneSidebar.dtd		      (standaloneSidebar.dtd)
+  locale/tabeditor.dtd				      (tabeditor.dtd)
