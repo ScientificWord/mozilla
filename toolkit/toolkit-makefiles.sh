@@ -650,6 +650,7 @@ MAKEFILES_xulapp="
   toolkit/components/autosub/Makefile
   toolkit/components/autosub/public/Makefile
   toolkit/components/autosub/src/Makefile
+  toolkit/components/scriptrunner/Makefile
   toolkit/components/keymap/Makefile
   toolkit/components/keymap/public/Makefile
   toolkit/components/keymap/src/Makefile
@@ -839,7 +840,6 @@ if [ "$MOZ_COMPOSER" ]; then
     editor/composer/Makefile
     editor/ui/Makefile
     editor/ui/locales/Makefile
-	prince/scriptrunner/Makefile
   "
 fi
 
