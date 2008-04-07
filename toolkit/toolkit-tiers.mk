@@ -133,7 +133,7 @@ tier_gecko_dirs	+= \
 		view \
 		widget \
 		content \
-		Prince/scriptrunner \
+		toolkit/components/scriptrunner \
 		toolkit/components/autocomplete/public \
 		toolkit/components/autosub/public \
 		toolkit/components/keymap/public \
