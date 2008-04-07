@@ -300,7 +300,7 @@
   <menu id="toolsMenu" label="Tools" >
     <menupopup id="toolPopup">
       <menuitem  label="JavaScript debugger" id="venkmanName" oncommand="start_venkman();"/>
-      <menuitem id="menu_inspector" label="amp_inspectorTaskCmd.label;" 
+      <menuitem id="menu_inspector" label="DOM Inspector" 
                 accesskey="amp_inspectorTaskCmd.accesskey;" command="Tasks:Inspector"/>
       <menuitem label="Extensions" id="menu_extensions" observes="Tools:Extensions"/>
       <menuitem label="Themes" id="menu_themes" observes="Tools:Themes"/>
