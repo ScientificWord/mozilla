@@ -7,6 +7,7 @@
 #include "nsIDocument.h"
 #include "nsIDOMDocument.h"
 #include "nsIDOMXMLDocument.h"
+#include "nsIXMLHttpRequest.h"
 #include "nsIDOMNodeList.h"
 #include "nsIIOService.h"
 #include "nsIFile.h"
@@ -98,8 +99,9 @@ void reverse( nsString& str )
   str.EndWriting(dest_end);
   while (start != end) *(--dest_end) = *(start++);
 }
-  
+
 static NS_DEFINE_CID( kXMLDocumentCID, NS_XMLDOCUMENT_CID );
+static NS_DEFINE_CID( kXMLHttpRequestCID, NS_XMLHTTPREQUEST_CID );
 
 /* void initialize (in string fileURI); */
 NS_IMETHODIMP msiAutosub::Initialize(const nsAString & fileURI)
@@ -107,6 +109,7 @@ NS_IMETHODIMP msiAutosub::Initialize(const nsAString & fileURI)
   nsresult rv;
   PRBool b;
   nsCOMPtr<nsIDOMXMLDocument> docAutosubs;
+  nsCOMPtr<nsIDOMDocument> domdocAutosubs;
   PRUint32 autosubCount = 0;
   PRUint32 ctx =  msiIAutosub::CONTEXT_MATHONLY;;
   PRUint32 action = msiIAutosub::ACTION_SUBSTITUTE;
@@ -125,17 +128,27 @@ NS_IMETHODIMP msiAutosub::Initialize(const nsAString & fileURI)
   nsCOMPtr<nsIDOM3Node> textNode; 
   nsCOMPtr<nsIDOMNode> patternNode;
   nsCOMPtr<nsIDOMNode> dataNode, contextNode, infoNode;
+  nsCOMPtr<nsIXMLHttpRequest> req;
+  const nsCString GET=NS_LITERAL_CSTRING("GET");
+  const nsCString xml=NS_LITERAL_CSTRING("text/xml");
   state = msiIAutosub::STATE_INIT;
   startIndex = 0;
   lastIndex = 0;
   arraylength = 0;
   // load the XML autosubs file 
-  docAutosubs = do_CreateInstance(kXMLDocumentCID, &rv);
+//  docAutosubs = do_CreateInstance(kXMLDocumentCID, &rv);
+//  if (rv) return rv;
+  req = do_CreateInstance(kXMLHttpRequestCID, &rv);
   if (rv) return rv;
-  rv = docAutosubs->SetAsync(PR_FALSE);
+  rv = req->OpenRequest(GET, NS_ConvertUTF16toUTF8(fileURI), PR_FALSE, nsString(), nsString());
   if (rv) return rv;
-  rv = docAutosubs->Load( fileURI, &b);
+  rv = req->OverrideMimeType(xml);
   if (rv) return rv;
+  rv = req->Send(nsnull);
+  if (rv) return rv;
+  rv = req->GetResponseXML(getter_AddRefs(domdocAutosubs));
+  if (rv) return rv;
+  docAutosubs = do_QueryInterface(domdocAutosubs);
   rv = docAutosubs->GetElementsByTagName(NS_LITERAL_STRING("sub"), getter_AddRefs(subsTags));
   if (subsTags) subsTags->GetLength(&autosubCount);
   if (autosubCount > 0)
