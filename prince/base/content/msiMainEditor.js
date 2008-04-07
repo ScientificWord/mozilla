@@ -98,12 +98,25 @@ function msiMainWindowMouseDownListener(event)
 //  }      
 //}
 
+function initSidebars()
+{
+  var sidebaritems = document.getElementById("sidebaritems");
+  var sidebar1 = document.getElementById("sidebar1");
+  var sidebar2 = document.getElementById("sidebar2");
+  var splitter1 = document.getElementById("splitter1");
+  var splitter2 = document.getElementById("splitter2");
+  sidebaritems.init();
+  sidebar1.init(sidebaritems, sidebar2, splitter1);
+  sidebar2.init(sidebaritems, sidebar1, splitter2);
+}
+
 function msiEditorOnLoad()
 {
+
 //  dump("\n=====================EditorOnLoad\n");
 //  dump(window.arguments[0]+"\n");
 //  dump(window.arguments.length+"\n");
-
+  initSidebars();
   // See if argument was passed.
   if ( window.arguments && window.arguments[0] )
   {
