@@ -4,6 +4,8 @@
 <?xml-stylesheet href="chrome://prince/skin/toolbarsOverlay.css" type="text/css"?>
 <?xml-stylesheet href="chrome://global/skin/toolbar.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/fastcursor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/content/bindings/sidebar.css" type="text/css"?>
+<!--<?xml-stylesheet href="chrome://prince/content/bindings/structurebar.css" type="text/css"?>-->
 
 <?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
@@ -133,17 +135,27 @@
   </vbox>
   </arrowscrollbox>
   
+<!-- XXX the following sidebaritems element is here only for test purposes
+     will be removed later -->
+<sidebaritems id="sidebaritems">
+  <sidebaritem id="sidebaritem-MSI" name="MSI" src="http://glazman.org" title="MSI Web"/>
+  <sidebaritem id="sidebaritem-blank"   name="blank" src="about:blank" title="Blanc de blanc"/>
+  <sidebaritem id="sidebaritem-fragments"   name="fragments" src="chrome://prince/content/fragment.xul" title="Fragments"/>
+  <sidebaritem id="sidebaritem-toc"   name="toc" src="chrome://prince/content/toc.xul" title="TOC"/>
+</sidebaritems>
+
 <!-- sidebar/toolbar/content/status -->
 <hbox id="sidebar-parent" flex="1">
-  <!-- From sidebarOverlay.xul -->
-  <vbox id="sidebar-box" class="chromeclass-extrachrome" hidden="true"/>
-  <splitter id="sidebar-splitter" class="chromeclass-extrachrome" hidden="true"/>
+  <sidebar id="sidebar1" sidebaritems="" persist="sidebaritems width"/>
+  <splitter id="splitter1" collapse="before" resizebefore="closest">
+    <grippy/>
+  </splitter>
 
   <vbox id="appcontent" flex="1">
     <deck id="ContentWindowDeck" selectedIndex="0" flex="1">
       <editor id="content-frame" type="content-primary" context="msiEditorContentContext"
                 editortype="html" flex="1" spellcheck="true" tooltip="aHTMLTooltip"/>
-      <vbox>
+      <vbox>                                    
         <label id="doctype-text" crop="right"/>
         <editor id="content-source" type="content" context="editorSourceContext"
                 flex="1" tooltip="aSourceTooltip"/>
@@ -153,7 +165,6 @@
     </deck>
     <hbox id="EditModeToolbar" hidden="false" persist="collapsed">
       <tabs id="EditModeTabs" align="start" class="tabs-bottom" flex="1">
-       <!-- Edit Mode toolbar -->
        <tab id="NormalModeButton"   class="tab-bottom edit-mode _plain" type="text" selected="1" label="&NormalModeTab.label;" 
           oncommand="goDoCommand('cmd_NormalMode');" tooltiptext="&NormalMode.tooltip;"/>
        <tab id="TagModeButton"      class="tab-bottom edit-mode _plain" type="text" selected="0" label="&TagsMode.label;"  
@@ -166,7 +177,12 @@
              oncommand="goDoCommand('cmd_DrectPreviewMode');" tooltiptext="&DirectPreviewMode.tooltip;"/>
       </tabs>
     </hbox>
+    <!--tabeditor/-->
   </vbox>
+  <splitter id="splitter2" collapse="after" resizeafter="closest">
+    <grippy/>
+  </splitter>
+  <sidebar id="sidebar2" sidebaritems="" persist="sidebaritems width"/>
 </hbox><!-- sidebar-parent -->
 
   <statusbar class="chromeclass-status" id="status-bar" hidden="false">
