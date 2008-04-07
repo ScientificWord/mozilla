@@ -1,16 +1,16 @@
 
-DEPTH = ../..
+DEPTH = ../../..
 topsrcdir = @top_srcdir@
 srcdir = @srcdir@
 VPATH = @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
-XPI_NAME	= prince
+# XPI_NAME	= prince
 
 MODULE		= scriptrunner
 XPIDL_MODULE = scriptrunner
 
-# GRE_MODULE	= 1
+GRE_MODULE	= 1
 EXTRA_COMPONENTS = scriptrunner.js
 
 XPIDLSRCS	= msiIScriptRunner.idl \
