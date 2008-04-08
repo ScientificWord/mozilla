@@ -93,33 +93,45 @@ function initSidebar()
                 classes["@mozilla.org/xmlextras/xmlhttprequest;1"].
                 createInstance();
   request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
-  request.open("GET", macrofile.target, false);
-  request.send(null);
+  var path = "file:///"+macrofile.target;
+#ifdef XP_WIN32
+  path = path.replace("\\","/","g");
+#endif
+  try {
+    request.open("GET", path, false);
+    request.send(null);
                                 
-  var xmlDoc = request.responseXML;
-  var nodeList;
-  var node;
-  var s;
-  var arrayElement;
-  {
-    nodeList = xmlDoc.getElementsByTagName("m");
-    for (var i = 0; i < nodeList.length; i++)
+    var xmlDoc = request.responseXML; 
+    if (!xmlDoc && request.responseText)
+      throw("macros.js exists but cannot be parsed as XML");
+    var nodeList;
+    var node;
+    var s;
+    var arrayElement;
     {
-      node = nodeList.item(i);
-      s = node.getAttribute("nm");
-      arrayElement = new Object();
-      arrayElement.forcesMath = (node.getAttribute("fm") == "1");
-      arrayElement.script = (node.getAttribute("tp") == "sc");
-      arrayElement.data = node.getElementsByTagName("data").item(0).textContent;
-      if (!arrayElement.script)
+      nodeList = xmlDoc.getElementsByTagName("m");
+      for (var i = 0; i < nodeList.length; i++)
       {
-        arrayElement.context = node.getElementsByTagName("context").item(0).textContent;
-        arrayElement.info = node.getElementsByTagName("info").item(0).textContent;
+        node = nodeList.item(i);
+        s = node.getAttribute("nm");
+        arrayElement = new Object();
+        arrayElement.forcesMath = (node.getAttribute("fm") == "1");
+        arrayElement.script = (node.getAttribute("tp") == "sc");
+        arrayElement.data = node.getElementsByTagName("data").item(0).textContent;
+        if (!arrayElement.script)
+        {
+          arrayElement.context = node.getElementsByTagName("context").item(0).textContent;
+          arrayElement.info = node.getElementsByTagName("info").item(0).textContent;
+        }
+        macroArray[s] = arrayElement;
+        ACSA.addString("macros",s);
       }
-      macroArray[s] = arrayElement;
-      ACSA.addString("macros",s);
     }
   }
+  catch (e) {
+    dump("exception: "+e+"\n");
+  }
+  
 }
 
 function insertFragmentContents( tree, pathname)
