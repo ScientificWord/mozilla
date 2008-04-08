@@ -146,8 +146,8 @@
 
 <!-- sidebar/toolbar/content/status -->
 <hbox id="sidebar-parent" flex="1">
-  <sidebar id="sidebar1" sidebaritems="" persist="sidebaritems width"/>
-  <splitter id="splitter1" collapse="before" resizebefore="closest">
+  <sidebar id="sidebar1" sidebaritems="" persist="sidebaritems collapsed"/>
+  <splitter id="splitter1" collapse="before" resizebefore="closest" persist="state">
     <grippy/>
   </splitter>
 
@@ -179,10 +179,10 @@
     </hbox>
     <!--tabeditor/-->
   </vbox>
-  <splitter id="splitter2" collapse="after" resizeafter="closest">
+  <splitter id="splitter2" collapse="after" resizeafter="closest" persist="state">
     <grippy/>
   </splitter>
-  <sidebar id="sidebar2" sidebaritems="" persist="sidebaritems width"/>
+  <sidebar id="sidebar2" sidebaritems="" persist="sidebaritems collapsed"/>
 </hbox><!-- sidebar-parent -->
 
   <statusbar class="chromeclass-status" id="status-bar" hidden="false">
