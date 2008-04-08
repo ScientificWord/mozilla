@@ -1021,7 +1021,7 @@ EXPORT_XPCOM_API(void)
 NS_LogCtor(void* aPtr, const char* aType, PRUint32 aInstanceSize)
 {
 #ifdef NS_IMPL_REFCNT_LOGGING
-  ASSERT_ACTIVITY_IS_LEGAL;
+//  BBM  ASSERT_ACTIVITY_IS_LEGAL;
   if (!gInitialized)
     InitTraceLog();
 
@@ -1058,7 +1058,7 @@ EXPORT_XPCOM_API(void)
 NS_LogDtor(void* aPtr, const char* aType, PRUint32 aInstanceSize)
 {
 #ifdef NS_IMPL_REFCNT_LOGGING
-//  ASSERT_ACTIVITY_IS_LEGAL;
+//  BBM ASSERT_ACTIVITY_IS_LEGAL;
   if (!gInitialized)
     InitTraceLog();
 
