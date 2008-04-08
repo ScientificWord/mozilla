@@ -382,6 +382,11 @@ ifneq (,$(MOZILLA_INTERNAL_API)$(LIBXUL_LIBRARY))
 DEFINES += -DMOZILLA_INTERNAL_API
 endif
 
+
+ifdef MOZ_MSI_PRINCE
+DEFINES += -DMOZ_MSI_PRINCE
+endif
+
 # Force XPCOM/widget/gfx methods to be _declspec(dllexport) when we're
 # building libxul libraries
 ifdef MOZ_ENABLE_LIBXUL
