@@ -895,7 +895,8 @@ gfxFontStyle::gfxFontStyle(PRUint8 aStyle, PRUint16 aWeight, gfxFloat aSize,
     }
 
     if (langGroup.IsEmpty()) {
-        NS_WARNING("empty langgroup");
+// BBM --a caller in thebes routinely sets langGroup=""
+//        NS_WARNING("empty langgroup");
         langGroup.Assign("x-western");
     }
 }
