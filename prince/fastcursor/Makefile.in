@@ -7,8 +7,10 @@ VPATH = @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE		= fastcursor
-REQUIRES	= editor \
-		  $(NULL)
+XPI_NAME	= prince
+
+#  REQUIRES	= editor \
+#  		  $(NULL)
 
 
 include $(topsrcdir)/config/rules.mk
