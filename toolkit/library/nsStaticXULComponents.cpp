@@ -228,7 +228,6 @@
 #ifdef MOZ_XUL
 #define XULENABLED_MODULES                   \
     MODULE(tkAutoCompleteModule)             \
-    MODULE(tkautosub)                          \
     MODULE(satchel)                          \
     MODULE(PKI)
 #else
