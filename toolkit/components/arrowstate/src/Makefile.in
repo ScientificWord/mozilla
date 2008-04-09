@@ -28,10 +28,7 @@ include $(DEPTH)/config/autoconf.mk
 
 MODULE		= arrowstate
 LIBRARY_NAME	= arrowstate
-SHORT_LIBNAME   = arowstat
-EXPORT_LIBRARY = 1
-IS_COMPONENT	= 1
-MODULE_NAME	= arrowstate
+FORCE_STATIC_LIB = 1
 LIBXUL_LIBRARY = 1
 
 REQUIRES	= xpcom \

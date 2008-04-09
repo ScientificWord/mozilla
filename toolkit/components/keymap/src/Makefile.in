@@ -27,14 +27,13 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE		= keymap
-XPIDL_MODULE	= keymap
 LIBRARY_NAME	= keymap
 SHORT_LIBNAME   = keymap
 EXPORT_LIBRARY = 1
-IS_COMPONENT	= 1
-MODULE_NAME	= keymap
+# IS_COMPONENT	= 1
+# MODULE_NAME	= keymap
+FORCE_STATIC_LIB = 1
 LIBXUL_LIBRARY = 1
-
 
 REQUIRES	= xpcom \
 		  string \
