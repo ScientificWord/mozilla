@@ -201,6 +201,7 @@ SHARED_LIBRARY_LIBS += \
 	$(DEPTH)/editor/libeditor/html/$(LIB_PREFIX)htmleditor_s.$(LIB_SUFFIX) \
 	$(DEPTH)/editor/txtsvc/src/$(LIB_PREFIX)txtsvc_s.$(LIB_SUFFIX) \
 	$(DEPTH)/editor/libeditor/msi/$(LIB_PREFIX)msieditor_s.$(LIB_SUFFIX) \
+	$(DEPTH)/editor/msiediting/src/$(LIB_PREFIX)msiediting.$(LIB_SUFFIX) \
 	$(NULL)
 endif
 
