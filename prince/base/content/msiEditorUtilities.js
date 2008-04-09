@@ -5403,7 +5403,7 @@ function msiAuxDirFromDocPath(documentURI)
   var url = Components.classes["@mozilla.org/network/simple-uri;1"].
     createInstance(Components.interfaces.nsIURI);
   url.spec = spec;
-  var path = url.path;
+  var path = unescape(url.path);
   while (path.charAt(0)=="/".charAt(0)) path=path.substr(1);
   // for Windows
 #ifdef XP_WIN32
