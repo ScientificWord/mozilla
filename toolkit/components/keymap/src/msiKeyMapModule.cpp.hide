@@ -6,7 +6,7 @@
 #include "msiKeyMap.h"
 
 
-NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiKeyMap, msiKeyMap::GetInstance)
+NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiKeyMap, )
 
 static const nsModuleComponentInfo gComponents[] = {
   { 
