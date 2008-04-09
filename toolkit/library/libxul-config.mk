@@ -254,7 +254,6 @@ endif
 ifdef MOZ_XUL
 COMPONENT_LIBS += \
 	tkautocomplete \
-	tkautosub \
 	satchel \
 	pippki \
 	$(NULL)

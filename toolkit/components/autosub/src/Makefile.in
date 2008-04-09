@@ -8,10 +8,10 @@ include $(DEPTH)/config/autoconf.mk
 MODULE = autosub
 LIBRARY_NAME = tkautosub
 SHORT_LIBNAME = tkautosub
-MODULE_NAME = tkautosub
-IS_COMPONENT = 1
+FORCE_STATIC_LIB = 1
+# IS_COMPONENT = 1
+# MODULE_NAME = tkautosub
 LIBXUL_LIBRARY = 1
-EXPORT_LIBRARY = 1
 
 REQUIRES	= dom \
       xpcom \
