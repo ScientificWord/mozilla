@@ -1,6 +1,7 @@
 prince.jar:
 % content prince %content/  
 % content branding %content/branding/
+% content communicator %content/communicator/
   content/branding/icon64.png       (icon64.png) 
 * content/prince.xul                (prince.xul)
 * content/prince.js                 (prince.js)
@@ -199,3 +200,6 @@ prince.jar:
   content/bindings/structurebar.css	 (bindings/structurebar.css)
   content/bindings/structurebar.xml	 (bindings/structurebar.xml)
   content/bindings/tabeditor.xml	 (bindings/tabeditor.xml)
+* content/communicator/contentAreaUtils.js    (/toolkit/content/contentAreaUtils.js)
+* content/communicator/contentAreaDD.js       (/xpfe/communicator/resources/content/contentAreaDD.js)
+* content/communicator/findUtils.js           (/toolkit/content/findUtils.js)
