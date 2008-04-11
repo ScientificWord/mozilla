@@ -16,7 +16,7 @@
     <key id="key_inspectPage" key="i" modifiers="accel,shift" command="Tasks:InspectPage"/>
   </keyset>
   
-  <menupopup id="toolsPopup">
+  <menupopup id="toolPopup">
     <menuitem id="menu_inspector" label="&inspectorTaskCmd.label;" 
               accesskey="&inspectorTaskCmd.accesskey;" command="Tasks:Inspector"/>
   </menupopup>
