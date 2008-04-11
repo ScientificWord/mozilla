@@ -251,15 +251,8 @@ var PrintUtils = {
     printPreviewTB.setAttribute("printpreview", true);
     printPreviewTB.setAttribute("id", "print-preview-toolbar");
 
-    var toolbox = document.getElementById("StandardToolbox");
-    try {
-      toolbox.parentNode.insertBefore(printPreviewTB, toolbox);
-    }
-    catch(e) {
-      dump(e);
-    }
-//    var navToolbox = getNavToolbox();
-//    navToolbox.parentNode.insertBefore(printPreviewTB, navToolbox);
+    var navToolbox = getNavToolbox();
+    navToolbox.parentNode.insertBefore(printPreviewTB, navToolbox);
 
     // copy the window close handler
     if (document.documentElement.hasAttribute("onclose"))
