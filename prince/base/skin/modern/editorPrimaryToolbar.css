@@ -5,7 +5,7 @@
 /* ::::: primary toolbar masthead ::::: */
 
 #EditToolbar > .toolbar-holder > .toolbar-primary-icon {
-  background-image: url("chrome://editor/skin/icons/mast-editor.gif");
+  background-image: url("chrome:/prince/skin/icons/mast-editor.gif");
   width: 57px;
 }
 
@@ -26,25 +26,25 @@
 toolbar
 {
   min-height: 0;
-  background-image: url("chrome://editor/skin/icons/background.png");
+  background-image: url("chrome://prince/skin/icons/background.png");
   background-repeat: repeat-x;
 }
 
 toolbar[iconsize="small"]
 {
-  background-image: url("chrome://editor/skin/icons/background-sm.png");
+  background-image: url("chrome://prince/skin/icons/background-sm.png");
 }
 
 toolbox
 {
   min-height: 0;
-  background-image: url("chrome://editor/skin/icons/background.png");
+  background-image: url("chrome://prince/skin/icons/background.png");
   background-repeat: repeat-x;
 }
 
 toolbox[iconsize="small"]
 {
-  background-image: url("chrome://editor/skin/icons/background-sm.png");
+  background-image: url("chrome://prince/skin/icons/background-sm.png");
 }
 
 toolbar[mode="icons"] .toolbarbutton-text {
