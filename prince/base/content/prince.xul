@@ -15,7 +15,6 @@
 <?xul-overlay href="chrome://prince/content/MathmlOverlay.xul" ?>
 <?xul-overlay href="chrome://prince/content/ComputeOverlay.xul" ?>
 <?xul-overlay href="chrome://prince/content/typesetOverlay.xul" ?>
-<?xul-overlay href="chrome://prince/content/sidebarOverlay.xul" ?>
 <?xul-overlay href="chrome://cascades/content/cascadesOverlay.xul" ?>
 
 <!DOCTYPE window [
@@ -58,10 +57,10 @@
   <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
   <script type="application/x-javascript" src="chrome://global/content/nsTransferable.js"/>
   <script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js"/>
-  <script type="application/x-javascript" src="chrome://global/content/viewSource.js" />
   <script type="application/x-javascript" src="chrome://prince/content/mainCore.js" />
   <script type="application/x-javascript" src="chrome://global/content/customizeToolbar.js"/>
   <script type="application/x-javascript" src="chrome://global/content/printUtils.js"/>
+  <script type="application/x-javascript" src="chrome://venkman/content/venkman-overlay.js"/>
   <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
   <popupset id="msiEditorContentContextSet"/>
   <popup id="sidebarPopup"/>
@@ -124,7 +123,7 @@
       <menu id="helpmenu" />
     </menubar>
   </toolbox>
-  <arrowscrollbox orient="horizontal">
+  <arrowscrollbox id="toolboxes" orient="horizontal">
   <vbox style="overflow:hidden">
     <toolbox id="StandardToolbox" />
     <toolbox id="MathToolbox" />
@@ -138,7 +137,7 @@
 <!-- XXX the following sidebaritems element is here only for test purposes
      will be removed later -->
 <sidebaritems id="sidebaritems">
-  <sidebaritem id="sidebaritem-MSI" name="MSI" src="http://glazman.org" title="MSI Web"/>
+  <sidebaritem id="sidebaritem-MSI" name="MSI" src="http://www.mackichan.com/whatsnew/whatsnew_sidebar.html" title="MSI What's new"/>
   <sidebaritem id="sidebaritem-blank"   name="blank" src="about:blank" title="Blanc de blanc"/>
   <sidebaritem id="sidebaritem-fragments"   name="fragments" src="chrome://prince/content/fragment.xul" title="Fragments"/>
   <sidebaritem id="sidebaritem-toc"   name="toc" src="chrome://prince/content/toc.xul" title="TOC"/>
