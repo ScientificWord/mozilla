@@ -47,7 +47,7 @@
 
   <script type="application/x-javascript" src="chrome://cascades/content/cascadesOverlay.js"/>
 
-  <menupopup id="taskPopup">
+  <menupopup id="tagPopup">
     <menuitem label="&cascadesMenuItem.label;"
               accesskey="&cascadesMenuItem.accesskey;"
               oncommand="openCascadesDialog();"
