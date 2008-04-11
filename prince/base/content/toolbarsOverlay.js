@@ -25,6 +25,8 @@ function setSymbolSize( size )
 function setDefaultPrinter(aStr, aEvent)
 {
   document.getElementById('defaultCompiler').setAttribute('defcomp',aStr);
+  document.getElementById('defaultCompiler').setAttribute('printCommand','cmd_print'+aStr.substr(0,1).toUpperCase()+aStr.substr(1));
+  document.getElementById('defaultCompiler').setAttribute('previewCommand','cmd_preview'+aStr.substr(0,1).toUpperCase()+aStr.substr(1));
   aEvent.stopPropagation();
   return true;
 }
@@ -34,7 +36,6 @@ function setDefault(obj)
 {
   if (obj.getAttribute('for')==obj.getAttribute('defcomp')) {
     obj.setAttribute('default','true');
-    obj.parentNode.parentNode.setAttribute('oncommand',obj.getAttribute('oncommand'));   // the button is up two.
   }
   else
     obj.setAttribute('default','false');
@@ -44,7 +45,6 @@ function setDefaultmenu(obj)
 {
   if (obj.getAttribute('for')==obj.getAttribute('defcomp')) {
     obj.setAttribute('default','true');
-    obj.parentNode.parentNode.setAttribute('onclick',obj.getAttribute('oncommand'));   // the button is up two.
   }
   else
     obj.setAttribute('default','false');
