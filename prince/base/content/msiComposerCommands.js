@@ -1111,18 +1111,27 @@ var msiPrintDirectCommand =
   }
 }
 
+function getNavToolbox()
+{
+  return document.getElementById("toolboxes");
+}
+
 function onEnterPP()
 {
-  var toolbox = document.getElementById("viewSource-toolbox");
+  var toolbox = document.getElementById("toolboxes");
   toolbox.hidden = true;
 }
 
 function onExitPP()
 {
-  var toolbox = document.getElementById("viewSource-toolbox");
+  var toolbox = document.getElementById("toolboxes");
   toolbox.hidden = false;
 }
 
+function getBrowser()
+{
+  return document.getElementById("preview-frame");
+}
 
 var msiPreviewDirectCommand =
 {
