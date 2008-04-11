@@ -41,6 +41,11 @@ topsrcdir=@top_srcdir@
 srcdir=@srcdir@
 VPATH=@srcdir@
 
+MODULE       = cascades
+PACKAGE_FILE = cascades.pkg
+XPI_NAME = cascades
+NO_JAR_AUTO_REG = 1
+
 include $(DEPTH)/config/autoconf.mk
 
 include $(topsrcdir)/config/rules.mk
