@@ -3,6 +3,7 @@
 #include "nsIDOM3Node.h"
 #include "nsIDOMDocument.h"
 #include "nsIDOMXMLDocument.h"
+#include "nsIXMLHttpRequest.h"
 #include "nsIDOMNodeList.h"
 #include "nsIFileStreams.h"
 #include "nsIConverterOutputStream.h"
@@ -169,6 +170,7 @@ nsString  msiKeyMap::VKeyIndexToString ( PRUint32 index )
 
 
 static NS_DEFINE_CID( kXMLDocumentCID, NS_XMLDOCUMENT_CID );
+static NS_DEFINE_CID( kXMLHttpRequestCID, NS_XMLHTTPREQUEST_CID );
 
 /* boolean loadKeyMapFile (in string fileName); */
 NS_IMETHODIMP msiKeyMap::LoadKeyMapFile(PRBool *_retval)
@@ -184,16 +186,16 @@ NS_IMETHODIMP msiKeyMap::LoadKeyMapFile(PRBool *_retval)
   nsString  temp;
   
   nsCOMPtr<nsIFile> mapfile;
-// BBM  rv = NS_GetSpecialDirectory("ProfD", (nsIFile **)&mapfile);
-//   if (rv == NS_OK)
-//   {
-//     mapfile->Append(fileName);
-//     mapfile->Exists(&fExists);
-//     if (fExists) rv = mapfile->GetPath(finalPath);
-//     temp.Assign(NS_LITERAL_STRING("file:///"));
-//     temp.Append(finalPath);
-//     finalPath.Assign(temp);
-//   }
+  rv = NS_GetSpecialDirectory("ProfD", (nsIFile **)&mapfile);
+  if (rv == NS_OK)
+  {
+   mapfile->Append(fileName);
+   mapfile->Exists(&fExists);
+   if (fExists) rv = mapfile->GetPath(finalPath);
+   temp.Assign(NS_LITERAL_STRING("file:///"));
+   temp.Append(finalPath);
+   finalPath.Assign(temp);
+  }
   if (!fExists)
   {
     finalPath = NS_LITERAL_STRING("resource://app/res/tagdefs/");
@@ -206,6 +208,7 @@ NS_IMETHODIMP msiKeyMap::LoadKeyMapFile(PRBool *_retval)
   nsAutoString keytype;
   PRBool fScript;
   nsCOMPtr<nsIDOMXMLDocument> docKeyMaps;
+  nsCOMPtr<nsIDOMDocument> domdocKeyMaps;
   nsCOMPtr<nsIDOMNodeList> keyTables;
   nsCOMPtr<nsIDOMNode> keyTable;
   nsCOMPtr<nsIDOMElement> keyTableElement;
@@ -219,12 +222,21 @@ NS_IMETHODIMP msiKeyMap::LoadKeyMapFile(PRBool *_retval)
 
   // load the XML key map file 
   *_retval = PR_FALSE;
-  docKeyMaps = do_CreateInstance(kXMLDocumentCID, &rv);
+  nsCOMPtr<nsIXMLHttpRequest> req;
+  const nsCString GET=NS_LITERAL_CSTRING("GET");
+  const nsCString xml=NS_LITERAL_CSTRING("text/xml");
+  req = do_CreateInstance(kXMLHttpRequestCID, &rv);
   if (rv) return rv;
-  rv = docKeyMaps->SetAsync(PR_FALSE);
+  rv = req->OpenRequest(GET, NS_ConvertUTF16toUTF8(finalPath), PR_FALSE, nsString(), nsString());
   if (rv) return rv;
-  rv = docKeyMaps->Load( finalPath, _retval);
+  rv = req->OverrideMimeType(xml);
   if (rv) return rv;
+  rv = req->Send(nsnull);
+  if (rv) return rv;
+  rv = req->GetResponseXML(getter_AddRefs(domdocKeyMaps));
+  if (rv) return rv;
+  docKeyMaps = do_QueryInterface(domdocKeyMaps);
+
   rv = docKeyMaps->GetElementsByTagName(NS_LITERAL_STRING("keytable"), getter_AddRefs(keyTables));
   if (keyTables) keyTables->GetLength(&keyTableCount);
   if (keyTableCount > 0)
@@ -548,7 +560,7 @@ NS_IMETHODIMP msiKeyMap::SaveKeyMaps(PRBool *_retval)
   profdir->Append(fileName);
   profdir->Exists(&fExists);
   // should we save a backup file?
-  if (fExists) rv = mapfile->MoveTo(nsnull,NS_LITERAL_STRING("keytables.bak"));
+  if (fExists) rv = profdir->MoveTo(nsnull,NS_LITERAL_STRING("keytables.bak"));
   mapfile->Append(fileName);
   rv = mapfile->Create(0, 0755);
   nsCOMPtr<nsIFileOutputStream> fos = do_CreateInstance("@mozilla.org/network/file-output-stream;1", &rv);
