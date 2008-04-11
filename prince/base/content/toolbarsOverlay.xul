@@ -310,27 +310,28 @@
   <toolbarbutton id="printButton" type="menu-button" class="toolbarbutton-1"
                  label="&printToolbarCmd.label;"
                  tooltiptext="&printToolbarCmd.tooltip;"
-                 persist="defcomp oncommand"
-                 oncommand="" >
-    <observes id="printButtonObs" element="defaultCompiler" attribute="defcomp" />
+                 persist="defcomp printCommand"
+                 oncommand="msiGoDoCommand(this.getAttribute('printCommand'));" >
+    <observes id="printButtonObs" element="defaultCompiler" attribute="defcomp"/>
+    <observes element="defaultCompiler" attribute="printCommand"/>
     <menupopup id="printMenu" tooltiptext="" >
       <menuitem id="printMenuItem1" label="&printButton.label;" persist="default" default="true"
-                oncommand="goDoCommand('cmd_printDirect');event.stopPropagation();" for="" onbroadcast="setDefault(this);" >
+                oncommand="msiGoDoCommand('cmd_printDirect');event.stopPropagation();" for="" onbroadcast="setDefault(this);" >
         <observes id="pmitb1" element="defaultCompiler" attribute="defcomp" />
       </menuitem>
       <menuitem id="printMenuItem1pdf" label="&pdfprintButton.label;" persist="default" default="false"
-                oncommand="goDoCommand('cmd_printPdf');event.stopPropagation();"  for="pdf" onbroadcast="setDefault(this);">
+                observes="cmd_printPdf"  for="pdf" onbroadcast="setDefault(this);">
         <observes id="pmitb2" element="defaultCompiler" attribute="defcomp"  />
       </menuitem>
       <menuitem id="printMenuItem1dvi" label="&dviprintButton.label;" persist="default" default="false"
-                oncommand="goDoCommand('cmd_printDvi');event.stopPropagation();"  for="dvi" onbroadcast="setDefault(this);">
+                oncommand="msiGoDoCommand('cmd_printDvi');event.stopPropagation();"  for="dvi" onbroadcast="setDefault(this);">
         <observes id="pmitb3" element="defaultCompiler" attribute="defcomp"  />
       </menuitem>
       <menuseparator/>
       <menu id="chooseDefPrinter" label="&chooseDefPrinter.label;" >
 	      <menupopup id="menuChooseDefPrinterPopup">
 	        <menuitem id="directMode" label="&direct;" checked="true"
-            oncommand="return setDefaultPrinter('',event);" for="" onbroadcast="setDefault(this);">
+            oncommand="return setDefaultPrinter('direct',event);" for="" onbroadcast="setDefault(this);">
             <observes id="pmitb7" element="defaultCompiler" attribute="defcomp" />
           </menuitem>
 	        <menuitem id="pdfMode" label="&pdf;"
@@ -349,8 +350,10 @@
   <toolbarbutton id="printPreviewButton" type="menu-button" class="toolbarbutton-1"
                  label="&printPreviewToolbarCmd.label;"
                  tooltiptext="&printPreviewToolbarCmd.tooltip;"
-                 persist="defcomp oncommand" oncommand="alert('Default to direct print preview');">
-    <observes id="printButtonObs" element="defaultCompiler" attribute="defcomp" />
+                 persist="defcomp previewCommand" 
+                 oncommand="msiGoDoCommand(this.getAttribute('previewCommand'));" >
+    <observes id="printButtonObs" element="defaultCompiler" attribute="defcomp"/>
+    <observes id="printButtonObs" element="defaultCompiler" attribute="previewCommand"/>
     <menupopup id="previewMenu">
       <menuitem id="directPreviewMenuItem" label="&printPreviewToolbarCmd.label;" persist="default" default="true"
                 observes="cmd_previewDirect" for="" onbroadcast="setDefault(this);" >
@@ -368,7 +371,7 @@
       <menu id="chooseDefPrinter2" label="&chooseDefPrinter.label;" >
 	      <menupopup id="menuChooseDefPrinterPopup2">
 	        <menuitem id="directMode2" label="&direct;" checked="true"
-            oncommand="return setDefaultPrinter('',event);" for="" onbroadcast="setDefault(this);">
+            oncommand="return setDefaultPrinter('direct',event);" for="" onbroadcast="setDefault(this);">
             <observes id="pmitb6" element="defaultCompiler" attribute="defcomp" />
           </menuitem>
 	        <menuitem id="pdfMode2" label="&pdf;"
@@ -474,9 +477,9 @@
     <command id="cmd_viewEditingToolbar"  oncommand="goToggleToolbar('EditingToolbar','cmd_viewEditingToolbar');"   checked="true"/>
     <command id="cmd_viewSymbolToolbar"  oncommand="goToggleToolbar('SymbolToolbar','cmd_viewSymbolToolbar');"   checked="true"/>
     <command id="cmd_compactSymbolPanels"  oncommand="setCompact('menuCompactSymbolPanels','cmd_compactSymbolPanels');"   checked="false"/>
-    <command id="cmd_showTeXLog" oncommand="goDoCommand('cmd_showTeXLog');" />
-    <command id="cmd_showXSLTLog" oncommand="goDoCommand('cmd_showXSLTLog');" />
-    <broadcaster id="defaultCompiler" persist="defcomp" defcomp="" />
+    <command id="cmd_showTeXLog" oncommand="msiGoDoCommand('cmd_showTeXLog');" />
+    <command id="cmd_showXSLTLog" oncommand="msiGoDoCommand('cmd_showXSLTLog');" />
+    <broadcaster id="defaultCompiler" persist="defcomp previewCommand printCommand" defcomp="pdf" previewCommand="cmd_previewPdf" printCommand="cmd_printPdf"/>
   </broadcasterset>
 
 
