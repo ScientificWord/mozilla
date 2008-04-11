@@ -57,7 +57,7 @@
     <script src="chrome://communicator/content/contentAreaUtils.js"/>
     <script src="chrome://communicator/content/contentAreaDD.js"/>
     <script src="chrome://communicator/content/findUtils.js"/>
-    <script src="chrome://browser/content/contentAreaUtils.js"/>
+    <!-- script src="chrome://browser/content/contentAreaUtils.js"/ -->
     <script src="chrome://global/content/findUtils.js"/>
     <script src="chrome://global/content/strres.js"/>
   
