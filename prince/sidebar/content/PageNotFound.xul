@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-
-<!DOCTYPE page SYSTEM "chrome://prince/locale/sidebarOverlay.dtd">
-
-<page xmlns ="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-  <description class="header">&sidebar.pagenotfound.label;</description>
-</page>
-
