@@ -52,6 +52,7 @@
       <menuitem accesskey="&filerevert.accesskey;" observes="cmd_revert"
         label="&fileRevert.label;" />
       <menuseparator/>
+      <menuitem id="printSetupMenuItem" observes="cmd_printSetup" label="Print setup"/>
       <menu id="printPreviewMenuItem" 
             accesskey="&fileprintpreview.accesskey;" 
             key="printpreviewkb" 
