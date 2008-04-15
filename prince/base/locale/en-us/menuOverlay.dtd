@@ -5,7 +5,7 @@
 <!-- File menu items -->
 <!ENTITY fileMenu.label "File">
 <!ENTITY filemenu.accesskey "f">
-<!ENTITY newDocument.label "New Document">
+<!ENTITY newDocument.label "New Document...">
 <!ENTITY newDocument.accesskey "N" >
 <!ENTITY newDocument.label "New">
 <!ENTITY newDocument.tooltip "New Document">
