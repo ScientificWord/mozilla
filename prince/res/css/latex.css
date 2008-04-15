@@ -81,15 +81,10 @@ plotcaption {
 * [msimathname="true"] {color: gray; }
 
 
-mml|mi[tempinput="true"]::before {
-  content: "["; /*url("resource://app/res/css/lefttempinput.png"); */
-}
-mml|mi[tempinput="true"]::after {
-  content: "]"; /*url("resource://app/res/css/righttempinput.png");*/
-}
+mml|mi[tempinput="true"]::before {  content: "[";}
+mml|mi[tempinput="true"]::after {  content: "]";}
 mml|mi[tempinput="true"]{
-  /* -moz-math-font-style: normal !important;   */
-  letter-spacing: -0.015em;
+  letter-spacing: 0; /*-0.015em;*/
 }
 
 #rotateleft{
