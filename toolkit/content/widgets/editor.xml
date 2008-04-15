@@ -71,7 +71,9 @@
           var s = Components.interfaces.nsIEditingSession.toString();
           s = Components.classes["@mozilla.org/editor/editingsession;1"].name;
           var es = ifr.getInterface(Components.interfaces.nsIEditingSession);
-          this.editingSession.makeWindowEditable(this.contentWindow, editortype, waitForUrlLoad, true, false);
+          this.editingSession.makeWindowEditable(this.contentWindow, editortype, waitForUrlLoad, true, true);
+// BBM -- allow scripts in the document
+//          this.editingSession.makeWindowEditable(this.contentWindow, editortype, waitForUrlLoad, true, false);
           this.setAttribute("editortype", editortype);
 
           this.docShell.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsIURIContentListener).parentContentListener = this._editorContentListener;
