@@ -369,6 +369,7 @@ nsresult msiUtils::CreateMathElement(nsIEditor * editor,
     msiNameSpaceUtils::GetNameSpaceURI(kNameSpaceID_MathML, mmlnsURI);
     msiNameSpaceUtils::GetNameSpaceURI(kNameSpaceID_XMLNS, xmlnsURI);
     nsAutoString xmlns, display, block;
+    xmlns = NS_LITERAL_STRING("xmlns");
     msiEditingAtoms::display->ToString(display);
     msiEditingAtoms::block->ToString(block);
     mathElement->SetAttributeNS(xmlnsURI, xmlns, mmlnsURI);
