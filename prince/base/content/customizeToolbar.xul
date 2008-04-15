@@ -6,7 +6,7 @@
   %customizeToolbarDTD;
 ]>
 
-<?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?> 
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://global/content/customizeToolbar.css" type="text/css"?>
 <?xml-stylesheet href="chrome://global/skin/customizeToolbar.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/editorPrimaryToolbar.css" type="text/css"?>

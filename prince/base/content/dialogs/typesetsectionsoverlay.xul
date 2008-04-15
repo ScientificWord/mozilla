@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <!-- Copyright (c) 2007 MacKichan Software, Inc.  All Rights Reserved. -->
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="resource://res/css/baselatex.css" type="text/css"?>
 <?xml-stylesheet href="resource://res/css/article.css" type="text/css"?>
 <?xml-stylesheet href="resource://res/css/latex.css.css" type="text/css"?>
