@@ -73,7 +73,7 @@ function doQuit() {
 //    var gmrfile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
 //    gmrfile.append("mupInstall.gmr");
 //    try {
-//      compsample.startup(gmrfile.path);
+//      compsample.startup(gmrfile.target);
 //      compengine = 2;
 //    } catch(e) {
 //      var msg_key;
@@ -312,7 +312,7 @@ function openTeX()
   // note that we have to test the native path length
   // since file.URL will be "file:///" if no filename picked (Cancel button used)
   
-  if (fp.file && fp.file.path.length > 0) {
+  if (fp.file && fp.file.target.length > 0) {
    
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //      Prepare to run pretex.exe. We need to send it some directories:                                       //
@@ -328,7 +328,7 @@ function openTeX()
     
     msiSaveFilePickerDirectory(fp, "tex");
     var filename = fp.file.leafName.substring(0,fp.file.leafName.lastIndexOf("."));
-    var infile =  "\""+fp.file.path+"\"";
+    var infile =  "\""+fp.file.target+"\"";
     dump("Open Tex: " + infile+"\n");
 
 // Get the directory for the result from the preferences, or default to the SWP Docs directory
@@ -364,7 +364,7 @@ function openTeX()
       // docdir.append("SW Docs");
       // docdir.append("SNB Docs");
       if (!docdir.exists()) docdir.create(1,0755);
-      dump("default document directory is "+docdir.path+"\n");
+      dump("default document directory is "+docdir.target+"\n");
     }
 
     var outfile = docdir.clone();
@@ -388,13 +388,13 @@ function openTeX()
     exefile.append("pretex.exe");
     var dataDir = dsprops.get("resource:app", Components.interfaces.nsIFile);
     dataDir.append("ptdata");
-    dump("\n\nExe="+exefile.path);
-    dump("\noutdir=\""+outdir.path);
-    dump("\noutfile=\""+outfile.path);
-    dump("\ninfile=\""+fp.file.path);
-    dump("\ndataDir=\""+dataDir.path);
-    dump("\nmmldir=\""+mmldir.path+"\n");
-	dump("\nargs =['-i', "+dataDir.path+", '-f', 'latex2xml.tex', '-o', "+outdir.path+", '-m',"+ mmldir.path+", "+fp.file.path+", "+outfile.path);
+    dump("\n\nExe="+exefile.target);
+    dump("\noutdir=\""+outdir.target);
+    dump("\noutfile=\""+outfile.target);
+    dump("\ninfile=\""+fp.file.target);
+    dump("\ndataDir=\""+dataDir.target);
+    dump("\nmmldir=\""+mmldir.target+"\n");
+	dump("\nargs =['-i', "+dataDir.target+", '-f', 'latex2xml.tex', '-o', "+outdir.target+", '-m',"+ mmldir.target+", "+fp.file.target+", "+outfile.target);
 
     // run pretex.exe
     
@@ -402,7 +402,7 @@ function openTeX()
     {
       var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
       theProcess.init(exefile);
-      var args =['-i', dataDir.path, '-f', 'latex2xml.tex', '-o', outdir.path, '-m', mmldir.path, fp.file.path, outfile.path];
+      var args =['-i', dataDir.target, '-f', 'latex2xml.tex', '-o', outdir.target, '-m', mmldir.target, fp.file.target, outfile.target];
       theProcess.run(true, args, args.length);
     } 
     catch (ex) 
@@ -412,10 +412,11 @@ function openTeX()
     }      
 //  TODO BBM todo: we may need to run a merge program to bring in processing instructions for specifying tag property files
     
-    msiEditPage("file:///" + outfile.path.replace(/\\/g,"/"), window, false);
+    msiEditPage("file:///" + outfile.target.replace(/\\/g,"/"), window, false);
   }                       
 }
 
+// documentAsTeXFile returns true if the TeX file was created.
 function documentAsTeXFile( document, xslSheet, outTeXfile )
 {
     dump("\nDocument as TeXFile\n");
@@ -443,6 +444,7 @@ function documentAsTeXFile( document, xslSheet, outTeXfile )
     try  {outfile.create(1, 0755);}
     catch(e){
       dump("creating temp directory failed: "+e.toString()+"\n");
+      return false
     }
     outfile.append(bareleaf + ".xml");
     outTeX.append("tex");
@@ -453,7 +455,7 @@ function documentAsTeXFile( document, xslSheet, outTeXfile )
       outTeXfile.append(bareleaf + ".tex");
     }
         
-    dump("\nOutput file = " + outfile.path+"\n");
+    dump("\nOutput file = " + outfile.target+"\n");
     var s = new XMLSerializer();
     var str = s.serializeToString(document);
 
@@ -470,9 +472,9 @@ function documentAsTeXFile( document, xslSheet, outTeXfile )
     stylefile.append("res");
     stylefile.append("xsl");
     stylefile.append(xslSheet);
-    var xslPath = stylefile.path;
-    var outfilePath = outfile.path;
-    var outfileTeXPath = outTeXfile.path;
+    var xslPath = stylefile.target;
+    var outfilePath = outfile.target;
+    var outfileTeXPath = outTeXfile.target;
     while (xslPath.charAt(0) == "/".charAt(0)) xslPath = xslPath.substr(1);
   // for Windows
 #ifdef XP_WIN32
@@ -491,8 +493,9 @@ function documentAsTeXFile( document, xslSheet, outTeXfile )
     {
       dump("\nUnable to export TeX:\n");
       dump(ex+"\n");
+      return false;
     }      
-
+    return outTeXfile.exists();
 }
 //{
 //  var str = "";
@@ -513,7 +516,7 @@ function documentAsTeXFile( document, xslSheet, outTeXfile )
 
 //function documentAsTeXFile( document, xslSheet, outputFile )
 //{
-//  if (outputFile && outputFile.path.length > 0) 
+//  if (outputFile && outputFile.target.length > 0) 
 //  {
 //    var str = documentAsTeX(document, xslSheet );
 //    if (outputFile.exists()) 
@@ -566,7 +569,8 @@ function exportTeX()
    {
      dump("filePicker threw an exception\n");
    }
-   documentAsTeXFile(editor.document, "latex.xsl", fp.file );
+   if (!documentAsTeXFile(editor.document, "latex.xsl", fp.file ))
+     AlertWithTitle("XSLT Error", "TeX file not created. Click on View/XSLT Log to see the log file");
 }
 
 /* ==== */
@@ -592,7 +596,7 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
     exefile.append("pdflatex.cmd");
   else
     exefile.append("tex.cmd");
-  dump("\nexecutable file: "+exefile.path+"\n");
+  dump("\nexecutable file: "+exefile.target+"\n");
   try 
   {
     var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
@@ -604,7 +608,7 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
 //    data.pipeconsole.open(500,80,false);
 //    data.pipetransport = Components.classes["@mozilla.org/process/pipe-transport;1"].createInstance(Components.interfaces.nsIPipeTransport);
 //    var args = ["-output-directory", outputDir, infileLeaf, passCount];
-//    data.pipetransport.init(exefile.path, args, args.length, "", 0, 2000, "", true, false, data.pipeconsole );
+//    data.pipetransport.init(exefile.target, args, args.length, "", 0, 2000, "", true, false, data.pipeconsole );
 //    data.pipetransport.loggingEnabled = true;
 //    data.pipetransport.asyncRead(data.pipeconsole, null, 0, -1, 0);
 //    data.stdin = data.pipetransport.openOutputStream(0,-1,0);
@@ -629,7 +633,7 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
   var outputfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
   outputfile.initWithPath( outputDir );
   outputfile.append(outfileLeaf);
-  dump("\nFinal output filename: "+outputfile.path+"\n");
+  dump("\nFinal output filename: "+outputfile.target+"\n");
   return true;//outputfile.exists();
 }
 
@@ -639,7 +643,7 @@ function printPDFFile( infilePath)
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
   exefile.append("printpdf.cmd");
-  dump("\nexecutable file: "+exefile.path+"\n");
+  dump("\nexecutable file: "+exefile.target+"\n");
   try 
   {
     var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
@@ -701,8 +705,8 @@ function printTeX( pdftex, preview )
     outputfile.append(extendedoutleaf+".tex");
     if (outputfile.exists()) outputfile.remove(false);
     
-    dump("\TeX file="+outputfile.path + "\n");
-    dump("DVI/PDF file is " + dvipdffile.path + "\n"); 
+    dump("\TeX file="+outputfile.target + "\n");
+    dump("DVI/PDF file is " + dvipdffile.target + "\n"); 
 //    var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
 //    fos.init(outputfile, -1, -1, false);
 //    var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
@@ -711,31 +715,36 @@ function printTeX( pdftex, preview )
 //    os.writeString(str);
 //    os.close();
   //   fos.close();
-    documentAsTeXFile(editor.document, "latex.xsl", outputfile );
-    if (compileTeXFile(pdftex, extendedoutleaf, outputfile.path, dvipdffile.parent.path, 1))
+    if (documentAsTeXFile(editor.document, "latex.xsl", outputfile ))
     {
-      if (!dvipdffile.exists())
+      if (compileTeXFile(pdftex, extendedoutleaf, outputfile.target, dvipdffile.parent.target, 1))
       {
-        AlertWithTitle("TeX Error", "Click on View/TeX Log to see the log file");
-        goDoCommand("cmd_showTeXLog");
+        if (!dvipdffile.exists())
+        {
+          AlertWithTitle("TeX Error", "Click on View/TeX Log to see the log file");
+          goDoCommand("cmd_showTeXLog");
+        }
+        dump("outputfile to be launched: "+dvipdffile.target+"\n");
+        if (preview)
+        {
+          document.getElementById("preview-frame").loadURI(dvipdffile.target);
+          // Switch to the preview pane (third in the deck)
+          goDoCommand("cmd_PreviewMode"); 
+        } else
+        {
+          printPDFFile(dvipdffile.target);
+        }     
       }
-      dump("outputfile to be launched: "+dvipdffile.path+"\n");
-      if (preview)
-      {
-        document.getElementById("preview-frame").loadURI(dvipdffile.path);
-        // Switch to the preview pane (third in the deck)
-        goDoCommand("cmd_PreviewMode"); 
-      } else
-      {
-        printPDFFile(dvipdffile.path);
-      }     
+      else {
+        dump("\nRunning TeX failed to create a file!\n");
+        AlertWithTitle("TeX Error", "TeX compilation not successful. Click on View/TeX Log to see the log file");
+      }
     }
-    else
-      dump("\nRunning TeX failed to create a file!\n");
-   }
-   catch(e) {
-     dump(e+"\n");
-   }
+  }
+  catch(e) {
+    dump(e+"\n");
+    AlertWithTitle("TeX Error", "TeX compilation not successful. Click on View/TeX Log to see the log file");
+  }
 }
 
 function previewTeX(pdftex)
@@ -772,7 +781,7 @@ function compileTeX(pdftex)
     dvipdffile.append(outleaf+ (pdftex?".pdf":".dvi"));
     if (dvipdffile.exists()) dvipdffile.remove(false);
     
-    dump("TeX file="+outputfile.path)+"\n";  
+    dump("TeX file="+outputfile.target)+"\n";  
     var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
     fp.init(window, "Save "+(pdftex?"PDF":"DVI")+" file", msIFilePicker.modeSave);
 
@@ -805,7 +814,7 @@ function compileTeX(pdftex)
       goDoCommand("cmd_showXSLTLog");
     } else
     {
-      if (compileTeXFile(pdftex, outleaf, outputfile.path, dvipdffile.parent.path, 1))
+      if (compileTeXFile(pdftex, outleaf, outputfile.target, dvipdffile.parent.target, 1))
       {
         if (!dvipdffile.exists())
         {
