@@ -308,7 +308,7 @@ function SaveRecentFilesPrefs()
   if (!gPrefs) return;
 
   var editorElement = msiGetTopLevelEditorElement();
-  var curUrl = StripPassword(msiGetEditorURL(editorElement));
+  var curUrl = unescape(StripPassword(msiGetEditorURL(editorElement)));
   var historyCount = 10;
   try {
     historyCount = gPrefs.getIntPref("editor.history.url_maximum"); 
@@ -319,8 +319,8 @@ function SaveRecentFilesPrefs()
 
   if (historyCount && !IsUrlAboutBlank(curUrl) &&  GetScheme(curUrl) != "data")
   {
-    titleArray.push(msiGetDocumentTitle());
-    urlArray.push(curUrl);
+    titleArray.push(unescape(msiGetDocumentTitle()));
+    urlArray.push(unescape(curUrl));
   }
 
   for (var i = 0; i < historyCount && urlArray.length < historyCount; i++)
@@ -334,8 +334,8 @@ function SaveRecentFilesPrefs()
     if (url && url != curUrl && GetScheme(url) != "data")
     {
       var title = GetUnicharPref("editor.history_title_"+i);
-      titleArray.push(title);
-      urlArray.push(url);
+      titleArray.push(unescape(title));
+      urlArray.push(unescape(url));
     }
   }
 
