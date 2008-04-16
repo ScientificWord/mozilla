@@ -6,7 +6,6 @@ VPATH = @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-XPI_NAME	= prince
 MODULE		= otfontlist
 XPIDL_MODULE = otfontlist
 

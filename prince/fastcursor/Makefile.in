@@ -7,7 +7,6 @@ VPATH = @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE		= fastcursor
-XPI_NAME	= prince
 
 #  REQUIRES	= editor \
 #  		  $(NULL)
