@@ -3,15 +3,14 @@ DEPTH = ../..
 topsrcdir = @top_srcdir@
 srcdir = @srcdir@
 VPATH = @srcdir@
-XPI_NAME	= prince
 
 include $(DEPTH)/config/autoconf.mk
 
 MODULE		= compute
 DIRS		= computelib \
 	libtci \
-	compsample2 \
 	Engines \
+	compsample2 \
 	public \
 	Wrappers \
 	$(NULL)
