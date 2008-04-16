@@ -44,7 +44,12 @@ REQUIRES = \
   enginewrapper \
   $(NULL)
 
-LOCAL_INCLUDES	= -I$(srcdir)/../libtci	 -I$(srcdir)/.. -I$(srcdir)/../computelib
+LOCAL_INCLUDES = -I$(srcdir)/../libtci	\
+			-I$(srcdir)/../Engines	\
+      -I$(srcdir)/../computelib \
+      -I$(srcdir)/../compsample2 \
+      -I$(srcdir)/../wrappers \
+			$(NULL)
 
 # we don't want the shared lib, but we want to force the creation of a static lib.
 FORCE_STATIC_LIB = 1
