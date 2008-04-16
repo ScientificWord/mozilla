@@ -11,9 +11,9 @@
 #ifndef MapleWrapper_H
 #define MapleWrapper_H
 
-#include "../../CmpTypes.h"
-#include "../EngWrap.h"
-#include "../fltutils.h"
+#include "CmpTypes.h"
+#include "EngWrap.h"
+#include "fltutils.h"
 #include "nsILocalFile.h"
 
 class eAnalyzer;

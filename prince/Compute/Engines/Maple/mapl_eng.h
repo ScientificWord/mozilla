@@ -13,7 +13,7 @@
 extern "C"
 {
 #define _MAPLE_WINDOWS_
-#include "../win/moemapi.h"
+#include "win/moemapi.h"
 }
 
 #define ENGINE_PACKAGES  35

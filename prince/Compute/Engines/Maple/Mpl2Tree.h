@@ -3,7 +3,7 @@
 #ifndef Maple2Tree_H
 #define Maple2Tree_H
 
-#include "../fltutils.h"
+#include "fltutils.h"
 
 class Maple2Tree
 {

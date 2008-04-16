@@ -11,9 +11,9 @@
 #include <tcistrin.h>
 #include <bytearry.h>
 
-#include "../../CmpTypes.h"
-#include "../fltutils.h"
-#include "../../MResult.h"
+#include "CmpTypes.h"
+#include "fltutils.h"
+#include "MResult.h"
 
 #define MPL_STANDARD        0
 #define MPL_READLIB         32
@@ -33,7 +33,7 @@ enum MType
 
 extern "C"
 {
-#include "../win/moemapi.h"
+#include "win/moemapi.h"
 }
 
 #define PLOTMAGIC  1234

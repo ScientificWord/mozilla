@@ -7,10 +7,10 @@
 #include "xpcom-config.h"
 #include "nsStringAPI.h"
 
-#include "../../CmpTypes.h"
-#include "../../MRequest.h"
-#include "../../MResult.h"
-#include "../fltutils.h"
+#include "CmpTypes.h"
+#include "MRequest.h"
+#include "MResult.h"
+#include "fltutils.h"
 #include <stdio.h>
 #include "nsILocalFile.h"
 

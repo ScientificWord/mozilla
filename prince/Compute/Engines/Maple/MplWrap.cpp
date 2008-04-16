@@ -6,17 +6,17 @@
 */
 
 #include "MplWrap.h"
-#include "../EngWrap.h"
+#include "EngWrap.h"
 #include <tcistrin.h>
 
 #include "mapl_eng.h"
-#include "../../CmpTypes.h"
-#include "../../MRequest.h"
-#include "../../MResult.h"
-#include "../../DefStore.h"
+#include "CmpTypes.h"
+#include "MRequest.h"
+#include "MResult.h"
+#include "DefStore.h"
 #include "Mpl2Tree.h"
 #include "eAnalyzer.h"
-#include "../Grammar.h"
+#include "Grammar.h"
 #include "nsILocalFile.h"
 
 enum MaplePackages

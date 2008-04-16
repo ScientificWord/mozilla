@@ -62,6 +62,7 @@
 
 #include "nsXPCOM.h"
 #include "nsIGenericFactory.h"
+#include "nsIClassInfoImpl.h"
 	
 /**
  * Components to be registered
@@ -69,6 +70,7 @@
 #include "msiSimpleComputeEngine2.h"
 	
 NS_GENERIC_FACTORY_CONSTRUCTOR(msiSimpleComputeEngine2)
+NS_DECL_CLASSINFO(msiSimpleComputeEngine2)
 	
 //----------------------------------------------------------
 	
@@ -78,7 +80,14 @@ static const nsModuleComponentInfo components[] =
 		"MSI computation connector",
 		MSI_SIMPLECOMPUTEENGINE2_CID,
 		MSI_SIMPLECOMPUTEENGINE2_CONTRACTID,
-		msiSimpleComputeEngine2Constructor
+		msiSimpleComputeEngine2Constructor,
+    nsnull,
+    nsnull,
+    nsnull,
+    NS_CI_INTERFACE_GETTER_NAME(msiSimpleComputeEngine2),
+    nsnull,
+    &NS_CLASSINFO_NAME(msiSimpleComputeEngine2),
+    0
 	},
 };
 	
