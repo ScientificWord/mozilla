@@ -33,6 +33,7 @@
 }
 
 \def\QTP#1{%
+   \msitag{^^0a}%
    \msihmode
    \msiopentag{QTP}{<QTP type="#1">}% 
    \begingroup
@@ -513,6 +514,7 @@
 %%%jcs  \egroup
 %%%jcs }%
 
+
 \def\msi@special#1{%
    \msihmode\msitag{<img src=}\msi@getfilename#1XXXXX\msitag{/>}
 }
@@ -522,10 +524,10 @@
 \def\FRAME#1#2#3#4#5#6#7#8{%
    \@temptokena={#7}
    \@temptokenb={Plot}
-   \ifx\@temptokena\@temptokenb
-       [PLOT]
+   \if\@temptokena\@temptokenb
+       \msitag{<html:img src="zfoo.png" style="width: #2; height: #3" alt="plot"/>}
    \else
-       [GRAPHIC]
+       \msitag{<html:img src="zfoo.png" style="width: #2; height: #3" alt="graphic"/>}
      %\begingroup
      %  \let\special\msi@special
      %  #8
