@@ -7,8 +7,8 @@
 
 #include "mupd_eng.h"
 
-#include "../fltutils.h"
-#include "../../CmpTypes.h"
+#include "fltutils.h"
+#include "CmpTypes.h"
 #include "tcistrin.h"
 
 #include <setjmp.h>

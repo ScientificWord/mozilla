@@ -6,9 +6,9 @@
 #ifndef MuPADWrapper_H
 #define MuPADWrapper_H
 
-#include "../../CmpTypes.h"
-#include "../fltutils.h"
-#include "../EngWrap.h"
+#include "CmpTypes.h"
+#include "fltutils.h"
+#include "EngWrap.h"
 #include "nsILocalFile.h"
 
 class MuAnalyzer;

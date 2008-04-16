@@ -5,9 +5,9 @@
 #ifndef MuPADPlotWrapper_H
 #define MuPADPlotWrapper_H
 
-#include "../../CmpTypes.h"
-#include "../fltutils.h"
-#include "../EngWrap.h"
+#include "CmpTypes.h"
+#include "fltutils.h"
+#include "EngWrap.h"
 #include "MuWrap.h"
 #include <string>
 using std::string;

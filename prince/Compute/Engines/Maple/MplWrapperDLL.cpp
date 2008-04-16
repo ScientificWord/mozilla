@@ -12,13 +12,13 @@
 #include <crtdbg.h>
 #endif
 
-#include "../../CmpTypes.h"
-#include "../../MRequest.h"
-#include "../../MResult.h"
-#include "../fltutils.h"
+#include "CmpTypes.h"
+#include "MRequest.h"
+#include "MResult.h"
+#include "fltutils.h"
 
 #define ENGWRAPDLL_EXPORTS
-#include "../ewrapDLL.h"
+#include "ewrapDLL.h"
 #undef ENGWRAPDLL_EXPORTS
 
 #include "MplWrap.h"

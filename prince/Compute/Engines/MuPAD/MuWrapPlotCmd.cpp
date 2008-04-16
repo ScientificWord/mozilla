@@ -7,9 +7,9 @@
 
 #include "MuWrapPlotCmd.h"
 #include "MuWrap.h"
-#include "../EngWrap.h"
+#include "EngWrap.h"
 #include "mupd_eng.h"
-#include "../../MRequest.h"
+#include "MRequest.h"
 #include "MuPADPlot.h"
 #include <string>
 #include <iostream>
