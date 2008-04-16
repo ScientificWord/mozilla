@@ -25,7 +25,12 @@ CPPSRCS =				\
 # we don't want the shared lib, but we want to force the creation of a static lib.
 FORCE_STATIC_LIB = 1
 
-LOCAL_INCLUDES	= -I$(srcdir)/../../libtci
+LOCAL_INCLUDES = -I$(srcdir)/../../libtci	\
+			-I$(srcdir)/../../Engines	\
+      -I$(srcdir)/../../computelib \
+      -I$(srcdir)/../../compsample2 \
+      -I$(srcdir)/../../wrappers \
+			$(NULL)
 
 include $(topsrcdir)/config/rules.mk
 

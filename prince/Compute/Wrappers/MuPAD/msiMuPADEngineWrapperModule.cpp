@@ -22,7 +22,7 @@ static NS_METHOD msiMuPADEngineWrapperUnregistrationProc(nsIComponentManager *aC
     return NS_OK;
 }
 
-NS_DECL_CLASSINFO(msiMuPADEngineWrapper)
+NS_DECL_CLASSINFO(msiMuPADEngineWrapperImpl)
 
 static const nsModuleComponentInfo components[] =
 {
@@ -34,10 +34,7 @@ static const nsModuleComponentInfo components[] =
     msiMuPADEngineWrapperUnregistrationProc
   }
 };
-
-NS_IMPL_NSGETMODULE(msiIEngineWrapper, components)
-
-#if NEED_TO_DEBUG_MACROS
+#if 0 //NEED_TO_DEBUG_MACROS
 NSDEPENDENT_LIBS(msiMuPADEngineWrapperModule)                            
 NS_MODULEINFO NSMODULEINFO(msiMuPADEngineWrapperModule) = {              
     NS_MODULEINFO_VERSION,                                                
@@ -57,4 +54,7 @@ NSGetModule(nsIComponentManager *servMgr,
     return NS_NewGenericModule2(&(NSMODULEINFO(msiMuPADEngineWrapperModule)), result);                            \
 }
 #endif
+
+
+NS_IMPL_NSGETMODULE(msiIEngineWrapper, components)
 

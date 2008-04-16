@@ -3,10 +3,10 @@
 #include "msiMuPADEngineWrapper.h"
 #include "MuWrap.h"
 
-#include "../../CmpTypes.h"
-#include "../../MRequest.h"
-#include "../../MResult.h"
-#include "../fltutils.h"
+#include "CmpTypes.h"
+#include "MRequest.h"
+#include "MResult.h"
+#include "fltutils.h"
 #include <stdio.h>
 #include "xpcom-config.h"
 #include "nsCOMPtr.h"

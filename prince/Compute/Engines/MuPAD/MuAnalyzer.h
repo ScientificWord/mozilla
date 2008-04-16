@@ -3,8 +3,8 @@
 #ifndef MuANALYZER_H
 #define MuANALYZER_H
 
-#include "../../CmpTypes.h"
-#include "../fltutils.h"
+#include "CmpTypes.h"
+#include "fltutils.h"
 #include "MuWrap.h"
 #include <limits.h>
 

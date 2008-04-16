@@ -52,9 +52,9 @@
 
 #include "MuPADPlot.h"
 #include "MuWrap.h"
-#include "../EngWrap.h"
+#include "EngWrap.h"
 #include "mupd_eng.h"
-#include "../../MRequest.h"
+#include "MRequest.h"
 #include "MuWrapPlotCmd.h"
 
 #include <string>

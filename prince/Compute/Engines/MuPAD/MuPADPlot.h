@@ -3,9 +3,9 @@
 #ifndef MuPADPlot_H
 #define MuPADPlot_H
 
-#include "../../CmpTypes.h"
-#include "../fltutils.h"
-#include "../EngWrap.h"
+#include "CmpTypes.h"
+#include "fltutils.h"
+#include "EngWrap.h"
 #include "MuWrap.h"
 #include <vector>
 #include <cctype>

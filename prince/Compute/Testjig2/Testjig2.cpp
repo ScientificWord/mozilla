@@ -16,7 +16,7 @@
 #include "nsIComponentRegistrar.h"
 
 
-#include "../CmpTypes.h"
+#include "CmpTypes.h"
 #include "../Engines/fltutils.h"
 
 #ifdef XP_WIN

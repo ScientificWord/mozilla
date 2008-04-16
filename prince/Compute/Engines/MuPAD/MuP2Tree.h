@@ -3,7 +3,7 @@
 #ifndef MuPAD2Tree_H
 #define MuPAD2Tree_H
 
-#include "../fltutils.h"
+#include "fltutils.h"
 
 class MuPAD2Tree
 {
