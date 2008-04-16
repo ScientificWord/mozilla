@@ -49,8 +49,8 @@ latex {
 
 tex {
   -moz-binding: url("resource://app/res/xbl/latex.xml#tex");
-  display:none;
 }
+
 
 texb {
 /*  font-size: small; */
