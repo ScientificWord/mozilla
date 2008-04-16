@@ -859,7 +859,8 @@ bool LineSource::GetLine(LineOfText* pLine)
                 }
             }
              
-        }               
+        }
+        pLine -> Append(0x0d);
    }
       
    return true;
