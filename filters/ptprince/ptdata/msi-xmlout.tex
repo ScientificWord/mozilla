@@ -704,7 +704,8 @@
 \msi@mathmlpass{\tbigvee}
 \msi@mathmlpass{\tbigotimes}
 \msi@mathmlpass{\tbiguplus}
-
+\msi@mathmlpass{\gcd}
+\msi@mathmlpass{\lcm}
 
 \msi@mathmlpass{\infty}
 \msi@mathmlpass{\neq}
@@ -1525,9 +1526,21 @@
 %% Spacing
 
 
-\def\qquad{\msihmode\msitag{<hspace dim="2em" type="twoEmSpace">}\@hex{2001}\msitag{</hspace>}}
-\def\quad{\msihmode\msitag{<hspace dim="1em" type="emSpace">}\@hex{2003}\msitag{</hspace>}}
-%% \def\ {\msihmode\msitag{<hspace type="requiredSpace">}\@hex{205f}\msitag{</hspace>}}
+\def\qquad{%
+   \ifmmode
+      \msitag{\qquad}%
+   \else
+      \msihmode\msitag{<hspace dim="2em" type="twoEmSpace">}\@hex{2001}\msitag{</hspace>}%
+   \fi
+}
+
+\def\quad{%
+   \ifmmode
+     \msitag{\quad}%
+   \else
+     \msihmode\msitag{<hspace dim="1em" type="emSpace">}\@hex{2003}\msitag{</hspace>}%
+   \fi
+}
 
 \def\ {\msihmode{ }}
 \def~{\msihmode\msitag{<hspace type="nonBreakingSpace">}\@hex{a0}\msitag{</hspace>}}
@@ -1539,7 +1552,7 @@
 \egroup
 
 
-\def\noindent{\par\msitag{<hspace dim="0.0em" type="noIndent"></hspace>}}
+\def\noindent{\par\msitag{<hspace dim="0.0em" type="noIndent"></hspace><requestimplementation>noindent</requestimplementation>}}
 
 
 \def\thinspace{%
@@ -1596,7 +1609,7 @@
    \ifmmode
       \string\label\@brace{#1}%
    \else
-      \msitag{<marker id="#1"/>}%
+      \msihmode\msitag{<marker id="#1"/>}%
    \fi
 }
 
