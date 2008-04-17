@@ -21,8 +21,6 @@ prince.jar:
 * content/typesetOverlay.js         (typesetOverlay.js)
 * content/typesetOverlay.xul        (typesetOverlay.xul)
 * content/menuOverlay.xul           (menuOverlay.xul)
-* content/customizeToolbar.xul      (customizeToolbar.xul)
-* content/customizeToolbar.js       (customizeToolbar.js)
 * content/mainCore.js               (mainCore.js)
 * content/Binomial.js       (dialogs/Binomial.js)
 * content/Binomial.xul      (dialogs/Binomial.xul)
