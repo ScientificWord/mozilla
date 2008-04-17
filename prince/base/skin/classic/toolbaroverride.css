@@ -4,7 +4,6 @@
 
 toolbar
 {
-  min-height: 0;
   background-image: url("chrome://prince/skin/icons/background.png");
   background-repeat: repeat-x;
 }
