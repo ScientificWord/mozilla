@@ -103,7 +103,9 @@
         <vbox>
           <groupbox>
             <caption label="&explanationNote.label;"/>
-		        <description value='&explanationText.label;'/>
+		        <description style="width:50em">
+              &explanationText.label;
+            </description>
           </groupbox>
   	      <label value="&commentsBox.label;"/>
 				  <textbox id="commentsBox" multiline="true" cols="80" rows="6" accesskey="&commentsBox.accessKey;"/>
