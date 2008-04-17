@@ -58,7 +58,7 @@
   <script type="application/x-javascript" src="chrome://global/content/nsTransferable.js"/>
   <script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/mainCore.js" />
-  <script type="application/x-javascript" src="chrome://global/content/customizeToolbar.js"/>
+  <!-- script type="application/x-javascript" src="chrome://global/content/customizeToolbar.js"/ -->
   <script type="application/x-javascript" src="chrome://global/content/printUtils.js"/>
   <script type="application/x-javascript" src="chrome://venkman/content/venkman-overlay.js"/>
   <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
@@ -122,17 +122,13 @@
       <!-- end DEBUG only -->
       <menu id="helpmenu" />
     </menubar>
+    <arrowscrollbox id="toolboxes" orient="horizontal">
+      <vbox style="overflow:hidden">
+        <toolbox id="Toolbox" />
+        <toolbar id="VCamToolbar" hidden="true"/>
+      </vbox>
+    </arrowscrollbox>
   </toolbox>
-  <arrowscrollbox id="toolboxes" orient="horizontal">
-  <vbox style="overflow:hidden">
-    <toolbox id="StandardToolbox" />
-    <toolbox id="MathToolbox" />
-    <toolbox id="EditingToolbox" />
-    <toolbar id="VCamToolbar" />
-    <!--toolbox id="VCamToolbox" / -->
-    <toolbox id="SymbolToolbox" />
-  </vbox>
-  </arrowscrollbox>
   
 <!-- XXX the following sidebaritems element is here only for test purposes
      will be removed later -->
@@ -140,7 +136,7 @@
   <sidebaritem id="sidebaritem-MSI" name="MSI" src="http://www.mackichan.com/whatsnew/whatsnew_sidebar.html" title="MSI What's new"/>
   <sidebaritem id="sidebaritem-blank"   name="blank" src="about:blank" title="Blanc de blanc"/>
   <sidebaritem id="sidebaritem-fragments"   name="fragments" src="chrome://prince/content/fragment.xul" title="Fragments"/>
-  <sidebaritem id="sidebaritem-toc"   name="toc" src="chrome://prince/content/toc.xul" title="TOC"/>
+  <sidebaritem id="sidebaritem-toc"   name="toc" src="about:blank" title="TOC"/>
 </sidebaritems>
 
 <!-- sidebar/toolbar/content/status -->
