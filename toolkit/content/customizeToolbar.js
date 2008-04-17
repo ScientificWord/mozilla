@@ -537,13 +537,13 @@ function addNewToolbar()
       return;
     }
     
-    if (!name.value) {
+    if (name.value.length ==0) {
       message = stringBundle.getFormattedString("enterToolbarBlank", [name.value]);
       continue;
     }
 
     var dupeFound = false;
-
+    var i;
      // Check for an existing toolbar with the same display name
     for (i = 0; i < gToolbox.childNodes.length; ++i) {
       var toolbar = gToolbox.childNodes[i];
