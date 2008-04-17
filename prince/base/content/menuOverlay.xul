@@ -494,6 +494,12 @@
                     label="View sidebar on right" />
         </menupopup>
       </menu>
+      <menu id="toolbars-menu" label="Toolbars" >
+        <menupopup id="toolbars-menu-popup" onpopupshowing="initCustomizeMenu(this,'Toolbox');">
+          <menuitem id="customizeItem-menu" oncommand="CustomizeMainToolbar('Toolbox');"
+            label="Customize toolbars" />
+        </menupopup>
+      </menu>
       <menuseparator/>
       <menuitem id="viewFootnotes"
                 type="checkbox"

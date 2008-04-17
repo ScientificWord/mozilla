@@ -15,10 +15,67 @@ function CustomizeMainToolbar(id1, id2, id3, id4, id5 )
   if (customizePopup)
     customizePopup.setAttribute("disabled", "true");
   dump("Should call CustomizeToolbar"); 
-  window.openDialog("chrome://prince/content/customizeToolbar.xul", "CustomizeToolbar",
+  window.openDialog("chrome://global/content/customizeToolbar.xul", "CustomizeToolbar",
                     "chrome,all,dependent", document.getElementById(id1), document.getElementById(id2),
                     document.getElementById(id3), document.getElementById(id4), document.getElementById(id5));
 }
+
+
+function createContextMenuItem(id, label, target, collapsed)
+{
+  var item = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
+                                         "menuitem");
+
+  item.id = "contextmenuitem_"+id;
+  item.setAttribute("label",label);
+  item.setAttribute("value",target);
+  item.setAttribute("type","checkbox");
+  item.setAttribute("checked",!collapsed);
+  item.setAttribute("oncommand","changeCollapsedState(this.value);");
+  return item;
+}
+
+function changeCollapsedState(target)
+{
+  var tb = document.getElementById(target);
+  if (tb.collapsed)
+    tb.collapsed=false;
+  else
+    tb.collapsed=true;
+}
+ 
+function initCustomizeMenu(popup,id)
+{
+  var toolbox = document.getElementById(id);
+  var toolbars = toolbox.getElementsByTagName("toolbar");
+  var customizeitem = document.getElementById("customizeItem");
+  var menuitems;
+  var i;
+  var item;
+  var tb;
+  var name;
+  var mi;
+  // first remove existing toolbar items.
+  menuitems = popup.getElementsByTagName("menuitem");
+  while (menuitems.length >0)
+  {
+    mi = menuitems[0];
+    if (mi.id == "customizeItem") break;
+    mi.parentNode.removeChild(mi);
+    menuitems = popup.getElementsByTagName("menuitem");
+  }
+  for (i=0; i<toolbars.length; i++)
+  {
+    tb = toolbars[i];
+    if (tb.hasAttribute("toolbarname"))
+    {
+      name = tb.getAttribute("toolbarname");
+      popup.insertBefore(createContextMenuItem(i,name,tb.id,tb.collapsed),customizeitem);
+    }
+  }
+}
+  
+
 
 function MainToolboxCustomizeDone(aToolboxChanged)
 {
