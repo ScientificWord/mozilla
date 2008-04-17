@@ -3,7 +3,6 @@
 <?xml-stylesheet href="chrome://prince/skin/toolbarsOverlay.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/toolbarbuttonoverride.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/toolbaroverride.css" type="text/css"?>
-<?xml-stylesheet href="chrome://prince/skin/editorPrimaryToolbar.css" type="text/css"?>
 <?xml-stylesheet href="chrome://global/skin/printpreview.css" type="text/css"?>
 
 
@@ -14,14 +13,27 @@
   
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/toolbarsOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/customizeToolbar.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/>
+  <!-- script type="application/x-javascript" src="chrome://global/content/customizeToolbar.js"/ -->
+
          
-  <toolbox id="StandardToolbox" orient="horizontal" persist="iconsize" context="standard-toolbar-context-menu">       
-    <popup id="standard-toolbar-context-menu" >
-      <menuitem oncommand="CustomizeMainToolbar('StandardToolbox');"
-        label="Customize standard toolbar" />
+  <toolbox id="Toolbox" class="toolbox-top" orient="vertical" persist="iconsize">       
+    <popup id="toolbar-context-menu" onpopupshowing="initCustomizeMenu(this,'Toolbox');">
+      <menuitem id="customizeItem" oncommand="CustomizeMainToolbar('Toolbox');"
+        label="Customize toolbars" />
     </popup>
-    <toolbarpalette id="StandardToolbarPalette"  >
+    <popup id="symbol-palettes-context-menu" >
+      <menuitem id='symbolssmall' persist="checked" checked = "true" type="checkbox" oncommand="setSymbolSize('small');"
+        label="Small symbols" />
+      <menuitem id='symbolsmedium' persist="checked" type="checkbox" oncommand="setSymbolSize('medium');"
+        label="Medium symbols" />
+      <menuitem id='symbolslarge' persist="checked" type="checkbox" oncommand="setSymbolSize('large');"
+        label="Large symbols" />
+      <menuseparator/>
+      <menuitem id="menuCompactSymbolPanels" persist="checked" type="checkbox" oncommand="setCompact(this);"
+        label="Compact" observes="cmd_compactSymbolPanels"/>
+    </popup>
+    <toolbarpalette id="ToolbarPalette"  >
       <toolbarbutton id="mathtextButton" />
       <toolbarbutton id="newButton"/>
       <toolbarbutton id="openButton"/>
@@ -40,23 +52,6 @@
       <toolbarbutton id="undoButton"/>
       <toolbarbutton id="redoButton"/>
       <toolbarbutton id="stopButton"/>
-    </toolbarpalette>
-    <toolbar id="StandardToolbar" class="chromeclass-toolbar" persist="collapsed" 
-      tbalign="center" defaultset="newButton,openButton,saveButton,printButton,printPreviewButton,mathtextButton" customizable="true" mode="icons" />
-    <toolbar id="TagSelectToolbar" class="chromeclass-toolbar" persist="collapsed" >
-      <textbox id="TextTagSelections"/>
-      <textbox id="ParaTagSelections"/>
-      <textbox id="StructTagSelections"/>
-      <textbox id="OtherTagSelections"/>
-    </toolbar>
-  </toolbox>
-
-  <toolbox id="MathToolbox" orient="horizontal" mode="icons" context="math-toolbar-context-menu">
-    <popup id="math-toolbar-context-menu" crop="right">
-      <menuitem oncommand="CustomizeMainToolbar('MathToolbox');"
-        label="Customize math toolbar" />
-    </popup>
-    <toolbarpalette id="MathToolbarPalette" >
       <toolbarbutton id="evalButton"/>
       <toolbarbutton id="evalnumButton"/>
       <toolbarbutton id="solveButton" />
@@ -82,38 +77,6 @@
       <toolbarbutton id="binomialButton"/>
       <toolbarbutton id="labelButton"/>
       <toolbarbutton id="decorationButton"/>
-    </toolbarpalette >
-    
-    <toolbar id="MathToolbar" class="chromeclass-toolbar" persist="collapsed" 
-      defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plotButton3D,defineButton,showdefsButton,fractionButton,radicalButton,superscriptButton,subscriptButton,parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,matrixButton,mathnameButton,binomialButton,labelButton,decorationButton"
-      mode="icons" customizable="true" />
-  </toolbox>
-  
-  <toolbox id="SymbolToolbox" orient="horizontal"  mode="icons" context="symbol-palettes-context-menu" >
-    <popup id="symbol-palettes-context-menu" >
-      <menuitem id='symbolssmall' persist="checked" checked = "true" type="checkbox" oncommand="setSymbolSize('small');"
-        label="Small symbols" />
-      <menuitem id='symbolsmedium' persist="checked" type="checkbox" oncommand="setSymbolSize('medium');"
-        label="Medium symbols" />
-      <menuitem id='symbolslarge' persist="checked" type="checkbox" oncommand="setSymbolSize('large');"
-        label="Large symbols" />
-      <menuseparator/>
-      <menuitem id="menuCompactSymbolPanels" persist="checked" type="checkbox" oncommand="setCompact(this);"
-        label="Compact" observes="cmd_compactSymbolPanels"/>
-    </popup>
-	  <toolbarpalette id="SymbolToolbarPalette" > 
-    </toolbarpalette >
-    <toolbar id="SymbolToolbar" class="chromeclass-toolbar" persist="collapsed iconsize" tbalign="center" >
-      <tabbox textsize="small" id="Symbol-tabbox" />
-    </toolbar>
-  </toolbox>
-  
-  <toolbox id="EditingToolbox" orient="horizontal" context="editing-toolbar-context-menu"> 
-    <popup id="editing-toolbar-context-menu" >
-      <menuitem oncommand="CustomizeMainToolbar('EditingToolbox');"
-        label="Customize editing toolbar" />
-    </popup>
-    <toolbarpalette id="EditingToolbarPalette" >
       <toolbarbutton id="noteButton" tooltiptext="&noteButton.tooltip;"/>
       <toolbarbutton id="markerButton" tooltiptext="&markerButton.tooltip;" />
       <toolbarbutton id="htlinkButton" tooltiptext="&htlinkButton.tooltip;"/>
@@ -131,20 +94,57 @@
       <toolbarbutton id="pdfcompileButton" tooltiptext="&pdfcompileButton.tooltip;"/>
       <toolbarbutton id="javascriptButton" class="toolbarbutton-1" observes=""
                  tooltiptext="&javascriptToolbarButton.tooltip;" label="&javascriptToolbarButton.label;"/>
+      <toolbaritem id="OtherTags"><textbox id="OtherTagSelections"/></toolbaritem>
+      <toolbaritem id="TextTags"><textbox id="TextTagSelections"/></toolbaritem>
+      <toolbaritem id="ParaTags"><textbox id="ParaTagSelections"/></toolbaritem>
+      <toolbaritem id="StructTags"><textbox id="StructTagSelections"/></toolbaritem>
+      <toolbaritem id="zoomer"><textbox id="zoomValue" label="Zoom %" type="number" observes="cmd_textZoomSet"/></toolbaritem>
     </toolbarpalette>
-    <toolbar id="EditingToolbar" class="chromeclass-toolbar" persist="collapsed" 
-      defaultset="noteButton,markerButton,htlinkButton,formulaButton,compileButton,frontmatterButton,packagesButton,citationButton,indexentryButton,xrefButton,texfieldButton,subdocButton,bibliographyButton,gifsAnimatedButton,vc_rotateleft"
-      mode="icons" customizable="true" />
+    <toolbar 
+      id="StandardToolbar" 
+      toolbarname="Standard toolbar"
+      class="chromeclass-toolbar" 
+      persist="collapsed"
+      tbalign="center" 
+      context="toolbar-context-menu"
+      defaultset="newButton,openButton,saveButton,printButton,printPreviewButton,mathtextButton,TextTags,
+        ParaTags,StructTags,OtherTags" customizable="true" mode="icons" />
+    <toolbar 
+      id="EditingToolbar" 
+      toolbarname="Editing toolbar"
+      class="chromeclass-toolbar" 
+      persist="collapsed" 
+      context="toolbar-context-menu"
+      defaultset="noteButton,markerButton,htlinkButton,formulaButton,compileButton,frontmatterButton,
+        packagesButton,citationButton,indexentryButton,xrefButton,texfieldButton,subdocButton,
+        bibliographyButton,gifsAnimatedButton,vc_rotateleft,zoomValue"
+      mode="icons" 
+      customizable="true" />
+    <toolbar 
+      id="MathToolbar" 
+      toolbarname="Math toolbar"
+      class="chromeclass-toolbar" 
+      persist="collapsed" 
+      context="toolbar-context-menu"
+      defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plotButton3D,
+        defineButton,showdefsButton,fractionButton,radicalButton,superscriptButton,subscriptButton,
+        parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,
+        matrixButton,mathnameButton,binomialButton,labelButton,decorationButton"
+      mode="icons" 
+      customizable="true" />
+    <toolbarset context="toolbar-context-menu"/>
+    <toolbar 
+      id="SymbolToolbar" 
+      toolbarname="Symbol toolbar"
+      class="chromeclass-toolbar" 
+      persist="collapsed iconsize" 
+      tbalign="center" 
+      context="symbol-palettes-context-menu">
+      <tabbox textsize="small" id="Symbol-tabbox" />
+    </toolbar>
   </toolbox>
 
   
-  <!--toolbox id="VCamToolbox" orient="horizontal" context="vcam-toolbar-context-menu" observes="vcamactive"> 
-    <popup id="vcam-toolbar-context-menu" >
-      <menuitem oncommand="CustomizeMainToolbar('VCamToolbox');"
-        label="Customize plot control toolbar" />
-    </popup>
-    <toolbarpalette id="VCamToolbarPalette" >
-    </toolbarpalette -->
     <toolbar id="VCamToolbar" class="chromeclass-toolbar" persist="collapsed" 
       mode="icons" customizable="true"  hidden = "true" observes="vcamactive">
       <toolbarbutton id="vc-RotateLeft" class="toolbarbutton-1" type="checkbox" label="Rotate left" command="cmd_vcRotateLeft" observes="3dplot"/>
@@ -195,7 +195,6 @@
       <toolbarbutton id="vc-Reset" class="toolbarbutton-1" label="vcReset" command="cmd_vcReset"/>
       <toolbarbutton id="vc-FitContents" class="toolbarbutton-1" label="vcFitContents" command="cmd_vcFitContents" observes="3dplot"/>
     </toolbar>
-  <!--/toolbox -->
 
 
 <!-- Button section -->
