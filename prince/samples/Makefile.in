@@ -20,8 +20,6 @@ srcdir		= @srcdir@
 VPATH		= @srcdir@
 
 
-
-
 include $(DEPTH)/config/autoconf.mk
 
 %.xhtml: %.xml
