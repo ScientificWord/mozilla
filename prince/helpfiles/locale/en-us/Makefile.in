@@ -1,5 +1,3 @@
-
-
 DEPTH		= ../../../..
 topsrcdir	= @top_srcdir@
 srcdir	    = @srcdir@

@@ -9,7 +9,6 @@ include $(DEPTH)/config/autoconf.mk
 
 PROGRAM		= pretex$(BIN_SUFFIX)
 RESFILE		= pretex.res
-XPI_NAME	= prince
 
 MODULE = pretex
 
