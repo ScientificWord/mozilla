@@ -94,11 +94,11 @@
       <toolbarbutton id="pdfcompileButton" tooltiptext="&pdfcompileButton.tooltip;"/>
       <toolbarbutton id="javascriptButton" class="toolbarbutton-1" observes=""
                  tooltiptext="&javascriptToolbarButton.tooltip;" label="&javascriptToolbarButton.label;"/>
-      <toolbaritem id="OtherTags"><textbox id="OtherTagSelections"/></toolbaritem>
-      <toolbaritem id="TextTags"><textbox id="TextTagSelections"/></toolbaritem>
-      <toolbaritem id="ParaTags"><textbox id="ParaTagSelections"/></toolbaritem>
-      <toolbaritem id="StructTags"><textbox id="StructTagSelections"/></toolbaritem>
-      <toolbaritem id="zoomer"><textbox id="zoomValue" label="Zoom %" type="number" observes="cmd_textZoomSet"/></toolbaritem>
+      <toolbaritem id="TextTags" title="&texttagselect.label;"><textbox id="TextTagSelections"/></toolbaritem>
+      <toolbaritem id="ParaTags" title="&paratagselect.label;"><textbox id="ParaTagSelections"/></toolbaritem>
+      <toolbaritem id="StructTags" title="&secttagselect.label;"><textbox id="StructTagSelections"/></toolbaritem>
+      <toolbaritem id="OtherTags" title="&othertagselect.label;"><textbox id="OtherTagSelections"/></toolbaritem>
+      <toolbaritem id="zoomer" title="Zoom setting" ><textbox id="zoomValue" label="Zoom %" type="number" observes="cmd_textZoomSet"/></toolbaritem>
     </toolbarpalette>
     <toolbar 
       id="StandardToolbar" 
