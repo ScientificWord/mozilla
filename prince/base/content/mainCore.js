@@ -48,7 +48,7 @@ function initCustomizeMenu(popup,id)
 {
   var toolbox = document.getElementById(id);
   var toolbars = toolbox.getElementsByTagName("toolbar");
-  var customizeitem = document.getElementById("customizeItem");
+  var customizeitem = null;
   var menuitems;
   var i;
   var item;
@@ -60,7 +60,12 @@ function initCustomizeMenu(popup,id)
   while (menuitems.length >0)
   {
     mi = menuitems[0];
-    if (mi.id == "customizeItem") break;
+    if (mi.id == "customizeItem")
+    {
+      customizeitem = mi;
+      break;
+    }
+    if (mi.id == "customizeItem") alert("Deleting customizeitem!");
     mi.parentNode.removeChild(mi);
     menuitems = popup.getElementsByTagName("menuitem");
   }
