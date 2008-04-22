@@ -2,7 +2,8 @@
 function focusOnEditor()
 {
   var editWindow = document.getElementById('content-frame');
-  editWindow.contentWindow.focus();         
+  if (!editWindow && opener) editWindow = opener.document.getElementById('content-frame');
+  if (editWindow) editWindow.contentWindow.focus();         
 }
 
 // we keep two objects that serve as associative arrays for the macros and fragments
@@ -279,10 +280,21 @@ var fragObserver =
     // s is now the path of the clicked file relative to the fragment root.
     try 
     {
-      var xmlDoc = document.implementation.createDocument("", "frag", null);
-      xmlDoc.async = false;
+      var request = Components.
+                    classes["@mozilla.org/xmlextras/xmlhttprequest;1"].
+                    createInstance();
+      request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
       var path = tree.getAttribute("ref") + "/" + s;
-      if (xmlDoc.load(path))
+#ifdef XP_WIN32
+      path = path.replace("\\","/","g");
+#endif
+      request.open("GET", path, false);
+      request.send(null);
+                          
+      var xmlDoc = request.responseXML; 
+      if (!xmlDoc && request.responseText)
+        throw("fragment file exists but cannot be parsed as XML");
+      if (xmlDoc)
       {
         var dataString="";
         var contextString="";
