@@ -8,7 +8,7 @@
 <!DOCTYPE overlay [
 <!ENTITY % mathmloverlaydtd SYSTEM "chrome://prince/locale/mathmlOverlay.dtd">
 %mathmloverlaydtd;
-<!ENTITY % mathmldtd SYSTEM "resource://gre/dtd/mathml.dtd">
+<!ENTITY % mathmldtd SYSTEM "resource://gre/res/dtd/mathml.dtd">
 %mathmldtd;
 ]>
 
