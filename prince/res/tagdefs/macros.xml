@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!DOCTYPE macros SYSTEM "resource://gre/dtd/mathml.dtd">
+<!DOCTYPE macros SYSTEM "resource://gre/res/dtd/mathml.dtd">
 <macros>
 <!-- Lowercase Greek -->
   <m nm="alpha" fm="1" tp="sc"><data><![CDATA[insertMathSymbol("]]>&alpha;<![CDATA[");]]></data></m>
@@ -191,7 +191,7 @@
   <m nm="models"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&models;<![CDATA[");]]></data></m>
   <m nm="supseteq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&supe;<![CDATA[");]]></data></m>
   <m nm="doteqdot"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&eDot;<![CDATA[");]]></data></m>
-  <m nm="Doteq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Doteq;<![CDATA[");]]></data></m> 
+  <!-- m nm="Doteq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&Doteq;<![CDATA[");]]></data></m --> 
   <m nm="ni"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ni;<![CDATA[");]]></data></m>
   <m nm="supseteqq"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&supE;<![CDATA[");]]></data></m>
   <m nm="eqcirc"  tp="sc"><data><![CDATA[insertMathSymbol("]]>&ecir;<![CDATA[");]]></data></m>
