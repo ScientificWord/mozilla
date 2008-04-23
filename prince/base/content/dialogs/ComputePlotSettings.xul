@@ -40,7 +40,7 @@
   <script type="application/x-javascript" src="chrome://editor/content/editorApplicationOverlay.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js" />
   <script type="application/x-javascript" src="chrome://editor/content/ComputeUtils.js" />
-  <script type="application/x-javascript" src="chrome://editor/content/mathmlOverlay.js" />
+  <script type="application/x-javascript" src="chrome://editor/content/MathmlOverlay.js" />
   <script type="application/x-javascript" src="chrome://editor/content/MathColors.js"/>
 
   <script type="application/x-javascript" src="chrome://editor/content/ComputePlotSettings.js" />
