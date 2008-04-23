@@ -2,7 +2,7 @@
 
 //var gComposerWindowControllerID = 0;
 //var prefAuthorString = "";
-//                                        
+//                                        
 //const kDisplayModeNormal = 0;
 //const kDisplayModeAllTags = 1;
 //const kDisplayModeSource = 2;
@@ -683,9 +683,6 @@ function msiEditorDocumentObserver(editorElement)
         var params = newCommandParams();
         if (!params)
           return;
-//        var isInlineSpellCheckerEnabled = gPrefs.getBoolPref("spellchecker.enablerealtimespell");
-//        msiDumpWithID("In documentCreated observer for editor [@].\n", this.mEditorElement);
-//        RealTimeSpell.Init(editor, isInlineSpellCheckerEnabled);
         try {
           commandManager.getCommandState(aTopic, this.mEditorElement.contentWindow, params);
           var errorStringId = 0;
@@ -718,8 +715,6 @@ function msiEditorDocumentObserver(editorElement)
         //   with a blank page, so simply abort here
         if (editorStatus)
           return; 
-//        var isInlineSpellCheckerEnabled = gPrefs.getBoolPref("spellchecker.enablerealtimespell");
-//        editor.getInlineSpellChecker(true).enableRealTimeSpell = isInlineSpellCheckerEnabled;
 
         editorElement.softsavetimer = new SS_Timer(2*60*1000, editor, editorElement);
         if (!("InsertCharWindow" in window))
@@ -753,6 +748,9 @@ function msiEditorDocumentObserver(editorElement)
           else
             msiDumpWithID("No parent editor element for editorElement [@] found in documentCreated observer!", this.mEditorElement);
         }
+        var isInlineSpellCheckerEnabled = gPrefs.getBoolPref("swp.spellchecker.enablerealtimespell");
+        editor.setSpellcheckUserOverride(isInlineSpellCheckerEnabled);
+        // set up a listener in case the preference changes at runtime.
 
         var bIsRealDocument = false;
         var currentURL = msiGetEditorURL(this.mEditorElement);
@@ -1562,7 +1560,7 @@ function ShutdownAnEditor(editorElement)
 {
   try
   {
-    SetUnicharPref("prince.zoom_factor", msiGetMarkupDocumentViewer(editorElement).textZoom);
+    SetUnicharPref("swp.zoom_factor", msiGetMarkupDocumentViewer(editorElement).textZoom);
   } catch(e) { dump( "In ShutdownAnEditor, setting unicharpref, error: " + e + "\n" ); }
   if (editorElement.softsavetimer) editorElement.softsavetimer.cancel();
   try
@@ -1817,7 +1815,7 @@ function setZoom()
   var zoomfactor = 1.0;
   try {
     var zoomstr;
-    zoomstr = gPrefs.getCharPref("prince.zoom_factor");
+    zoomstr = gPrefs.getCharPref("swp.zoom_factor");
     zoomfactor = parseFloat(zoomstr);
   }
   catch(ex) {
@@ -1826,6 +1824,44 @@ function setZoom()
   getMarkupDocumentViewer().textZoom = zoomfactor;
 }
 
+var gRealtimeSpellPrefs = {
+  RTSPref: "swp.spellchecker.enablerealtimespell",
+ 
+  observe: function(aSubject, aTopic, aPrefName)
+  {
+    if (aTopic != "nsPref:changed" || aPrefName != "enablerealtimespell")
+      return;
+
+    try {
+      var prefService = Components.classes["@mozilla.org/preferences-service;1"]
+        .getService(Components.interfaces.nsIPrefBranch);
+      editorElement = msiGetActiveEditorElement();
+      var editor = msiGetEditor(editorElement);
+    
+      editor.setSpellcheckUserOverride(prefService.getBoolPref(this.RTSPref));
+    }
+    catch(e)
+    {
+      dump("Failed to reset spell checking preference");
+    }
+  },
+
+  register: function()
+  {
+    var prefService = Components.classes["@mozilla.org/preferences-service;1"]
+                                .getService(Components.interfaces.nsIPrefService);
+    this._branch = prefService.getBranch("swp.spellchecker.");
+    this._branch.QueryInterface(Components.interfaces.nsIPrefBranch2);
+    this._branch.addObserver("", this, false);
+  },
+
+  unregister: function()
+  {
+    if(!this._branch) return;
+    this._branch.removeObserver("", this);
+  }
+}
+gRealtimeSpellPrefs.register();
 
 function SetDocumentCharacterSetForEditor(aCharset, editorElement)
 {
