@@ -198,7 +198,7 @@ function lookUpBibTeXDirectory()
   var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
   try
   {
-    bibPath = prefs.getComplexValue("prince.bibtex.dir", Components.interfaces.nsILocalFile);
+    bibPath = prefs.getComplexValue("swp.bibtex.dir", Components.interfaces.nsILocalFile);
     if (!bibPath || !bibPath.exists())
     {
       var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
