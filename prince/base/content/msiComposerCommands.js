@@ -3288,9 +3288,8 @@ var msiSpellingCommand =
     var editorElement = msiGetActiveEditorElement();
     window.cancelSendMessage = false;
     try {
-      var skipBlockQuotes = (window.document.firstChild.getAttribute("windowtype") == "msgcompose");
       window.openDialog("chrome://prince/content/EdSpellCheck.xul", "_blank",
-              "chrome,close,titlebar,modal", false, skipBlockQuotes, true, editorElement);
+              "chrome,close,titlebar,modal", false, false, true, editorElement);
     }
     catch(ex) {}
     editorElement.focus();
