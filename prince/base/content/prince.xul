@@ -183,24 +183,24 @@
     <statusbarpanel id="macroEntryPanel" hidden="false"/>
     <statusbarpanel id="fastCursorPanel" hidden="true">
       <toolbar id="FastCursorToolbar" align="center" fullscreentoolbar="true">
-      <toolbarbutton id="fastcursor-closebutton" tooltiptext="amp_fastcursorCloseButton.tooltip;"
+      <toolbarbutton id="fastcursor-closebutton" tooltiptext="&fastcursorCloseButton.tooltip;"
                      hidden="true" oncommand="closeFastCursorBar();"/>  
 
-      <label value="amp_fastcursor.label;"/>
+      <label value="&fastcursor.label;"/>
       <hbox id="fastcursor-field-container">
         <textbox id="fastcursor-field" oninput="fastcursor(this.value);" onfocus="onFastCursorBarFocus();"
                 onkeypress="onFastCursorBarKeyPress(event);" onblur="onFastCursorBarBlur();"/>
       </hbox>
-      <toolbarbutton id="find-next" label="amp_fastcursorNext.label;" tooltiptext="amp_fastcursorNext.tooltip;"
+      <toolbarbutton id="find-next" label="&fastcursorNext.label;" tooltiptext="&fastcursorNext.tooltip;"
                      oncommand="onFindAgainCmd();" disabled="false"/>
-      <toolbarbutton id="find-previous" label="amp_fastcursorPrevious.label;" tooltiptext="amp_fastcursorPrevious.tooltip;"
+      <toolbarbutton id="find-previous" label="&fastcursorPrevious.label;" tooltiptext="&fastcursorPrevious.tooltip;"
                      oncommand="onFindPreviousCmd();" disabled="false"/>
-      <toolbarbutton id="highlight" label="amp_highlight.label;" tooltiptext="amp_highlight.tooltip;"
+      <toolbarbutton id="highlight" label="&highlight.label;" tooltiptext="&highlight.tooltip;"
                      oncommand="toggleHighlight(!this.checked);
                                 if (gFindMode != FIND_NORMAL) setFastCursorCloseTimeout();"
                      type="checkbox" disabled="false"/>
       <checkbox id="fastcursor-case-sensitive" oncommand="toggleCaseSensitivity(this.checked);"
-                hidden="true" label="amp_caseSensitiveCheckbox.label;" accesskey="amp_caseSensitiveCheckbox.accesskey;"/>
+                hidden="true" label="&caseSensitiveCheckbox.label;" accesskey="&caseSensitiveCheckbox.accesskey;"/>
       <image id="fastcursor-status-icon"/>
       <label id="fastcursor-status"/>
     </toolbar>

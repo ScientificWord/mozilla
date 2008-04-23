@@ -89,7 +89,7 @@ function ShowHideToolbarButtons()
 function AddToolbarPrefListener()
 {
   try {
-    var pbi = GetPrefs().QueryInterface(Components.interfaces.nsIPrefBranchInternal);
+    var pbi = GetPrefs().QueryInterface(Components.interfaces.nsIPrefBranch2);
     pbi.addObserver(kEditorToolbarPrefs, gEditorToolbarPrefListener, false);
   } catch(ex) {
     dump("Failed to observe prefs: " + ex + "\n");
@@ -99,7 +99,7 @@ function AddToolbarPrefListener()
 function RemoveToolbarPrefListener()
 {
   try {
-    var pbi = GetPrefs().QueryInterface(Components.interfaces.nsIPrefBranchInternal);
+    var pbi = GetPrefs().QueryInterface(Components.interfaces.nsIPrefBranch2);
     pbi.removeObserver(kEditorToolbarPrefs, gEditorToolbarPrefListener);
   } catch(ex) {
     dump("Failed to remove pref observer: " + ex + "\n");
@@ -136,7 +136,7 @@ nsButtonPrefListener.prototype =
   startup: function()
   {
     try {
-      var pbi = pref.QueryInterface(Components.interfaces.nsIPrefBranchInternal);
+      var pbi = pref.QueryInterface(Components.interfaces.nsIPrefBranch2);
       pbi.addObserver(this.domain, this, false);
     } catch(ex) {
       dump("Failed to observe prefs (nsButtonPrefListener): " + ex + "\n");
@@ -145,7 +145,7 @@ nsButtonPrefListener.prototype =
   shutdown: function()
   {
     try {
-      var pbi = pref.QueryInterface(Components.interfaces.nsIPrefBranchInternal);
+      var pbi = pref.QueryInterface(Components.interfaces.nsIPrefBranch2);
       pbi.removeObserver(this.domain, this);
     } catch(ex) {
       dump("Failed to remove pref observers: " + ex + "\n");
