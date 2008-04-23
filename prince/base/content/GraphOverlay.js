@@ -184,7 +184,7 @@ function GraphSerializeGraph (optionalplot) {
 // get defaults from preference system, or if not there, from hardcoded list
 function GraphGetDefaultGraphValue (key) {
   var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
-  var keyname = "prince.graph." + key;
+  var keyname = "swp.graph." + key;
   var value;
   if (prefs.getPrefType(keyname) == prefs.PREF_STRING) {
     try {
@@ -334,7 +334,7 @@ function PlotGetDefaultPlotValue (key) {
   var math = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
   var value;
   var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
-  var keyname = "prince.plot." + key;
+  var keyname = "swp.plot." + key;
   if (prefs.getPrefType(keyname) == prefs.PREF_STRING) {
     value = prefs.getCharPref(keyname);
   }
