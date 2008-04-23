@@ -77,25 +77,25 @@ var msiComputeLogger =
   Init: function()
   {
     try {
-      this.logMMLSent = gPrefs.getBoolPref("prince.MuPAD.log_mathml_sent");
+      this.logMMLSent = gPrefs.getBoolPref("swp.MuPAD.log_mathml_sent");
     }
     catch(ex) {
       dump("\nfailed to get MuPAD.log_mathml_sent pref!\n");
     }
     try {
-      this.logMMLReceived = gPrefs.getBoolPref("prince.MuPAD.log_mathml_received");
+      this.logMMLReceived = gPrefs.getBoolPref("swp.MuPAD.log_mathml_received");
     }
     catch(ex) {
       dump("\nfailed to get MuPAD.log_mathml_received pref!\n");
     }
     try {
-      this.engMMLSent = gPrefs.getBoolPref("prince.MuPAD.log_engine_sent");
+      this.engMMLSent = gPrefs.getBoolPref("swp.MuPAD.log_engine_sent");
     }
     catch(ex) {
       dump("\nfailed to get MuPAD.log_engine_sent pref!\n");
     }
     try {
-      this.engMMLReceived = gPrefs.getBoolPref("prince.MuPAD.log_engine_received");
+      this.engMMLReceived = gPrefs.getBoolPref("swp.MuPAD.log_engine_received");
     }
     catch(ex) {
       dump("\nfailed to get MuPAD.log_engine_received pref!\n");
@@ -104,22 +104,22 @@ var msiComputeLogger =
   LogMMLSent: function(log)
   {
     this.logMMLSent = log;
-    gPrefs.setBoolPref("prince.MuPAD.log_mathml_sent",log);
+    gPrefs.setBoolPref("swp.MuPAD.log_mathml_sent",log);
   },
   LogMMLReceived: function(log)
   {
     this.logMMLReceived = log;
-    gPrefs.setBoolPref("prince.MuPAD.log_mathml_received",log);
+    gPrefs.setBoolPref("swp.MuPAD.log_mathml_received",log);
   },
   LogEngSent: function(log)
   {
     this.logEngSent = log;
-    gPrefs.setBoolPref("prince.MuPAD.log_engine_sent",log);
+    gPrefs.setBoolPref("swp.MuPAD.log_engine_sent",log);
   },
   LogEngReceived: function(log)
   {
     this.logEngReceived = log;
-    gPrefs.setBoolPref("prince.MuPAD.log_engine_received",log);
+    gPrefs.setBoolPref("swp.MuPAD.log_engine_received",log);
   },
 
   logMMLSent:      true,
