@@ -107,7 +107,7 @@ function aColorObj(editorElement)
 function msiAddToolbarPrefListener(editorElement)
 {
   try {
-    var pbi = GetPrefs().QueryInterface(Components.interfaces.nsIPrefBranchInternal);
+    var pbi = GetPrefs().QueryInterface(Components.interfaces.nsIPrefBranch2);
     pbi.addObserver(kEditorToolbarPrefs, editorElement.mEditorToolbarPrefListener, false);
   } catch(ex) {
     dump("Failed to observe prefs: " + ex + "\n");
@@ -117,7 +117,7 @@ function msiAddToolbarPrefListener(editorElement)
 function msiRemoveToolbarPrefListener(editorElement)
 {
   try {
-    var pbi = GetPrefs().QueryInterface(Components.interfaces.nsIPrefBranchInternal);
+    var pbi = GetPrefs().QueryInterface(Components.interfaces.nsIPrefBranch2);
     pbi.removeObserver(kEditorToolbarPrefs, editorElement.mEditorToolbarPrefListener);
   } catch(ex) {
     dump("Failed to remove pref observer: " + ex + "\n");
@@ -156,7 +156,7 @@ function msiButtonPrefListener(editorElement)
   this.startup = function()
   {
     try {
-      var pbi = GetPrefs().QueryInterface(Components.interfaces.nsIPrefBranchInternal);
+      var pbi = GetPrefs().QueryInterface(Components.interfaces.nsIPrefBranch2);
       pbi.addObserver(this.domain, this, false);
     } catch(ex) {
       dump("Failed to observe prefs (msiButtonPrefListener): " + ex + "\n");
@@ -165,7 +165,7 @@ function msiButtonPrefListener(editorElement)
   this.shutdown = function()
   {
     try {
-      var pbi = GetPrefs().QueryInterface(Components.interfaces.nsIPrefBranchInternal);
+      var pbi = GetPrefs().QueryInterface(Components.interfaces.nsIPrefBranch2);
       pbi.removeObserver(this.domain, this);
     } catch(ex) {
       dump("Failed to remove pref observers: " + ex + "\n");

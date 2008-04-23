@@ -49,7 +49,7 @@ function PrefManager (branchName)
     const PREF_CTRID = "@mozilla.org/preferences-service;1";
     const nsIPrefService = Components.interfaces.nsIPrefService;
     const nsIPrefBranch = Components.interfaces.nsIPrefBranch;
-    const nsIPrefBranchInternal = Components.interfaces.nsIPrefBranchInternal;
+    const nsIPrefBranch2 = Components.interfaces.nsIPrefBranch2;
 
     this.prefService =
         Components.classes[PREF_CTRID].getService(nsIPrefService);
@@ -60,7 +60,7 @@ function PrefManager (branchName)
     this.observer = { observe: pm_observe };
 
     this.prefBranchInternal =
-        this.prefBranch.QueryInterface(nsIPrefBranchInternal);
+        this.prefBranch.QueryInterface(nsIPrefBranch2);
     this.prefBranchInternal.addObserver("", this.observer, false);
 }
 

@@ -91,7 +91,7 @@ function G_Preferences(opt_startPoint, opt_getDefaultBranch) {
   }
 
   // QI to prefinternal in case we want to add observers
-  this.prefs_.QueryInterface(Ci.nsIPrefBranchInternal);
+  this.prefs_.QueryInterface(Ci.nsIPrefBranch2);
 }
 
 G_Preferences.setterMap_ = { "string": "setCharPref",
