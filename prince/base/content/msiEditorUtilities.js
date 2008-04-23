@@ -5462,7 +5462,7 @@ function SS_Timer(delayMS, editor, editorElement) {
   var prefService = Components.classes["@mozilla.org/preferences-service;1"]
                               .getService(Components.interfaces.nsIPrefBranch);
 
-  var pbi = prefService.QueryInterface(Components.interfaces.nsIPrefBranchInternal);
+  var pbi = prefService.QueryInterface(Components.interfaces.nsIPrefBranch2);
 
   var interval = prefService.getIntPref("swp.saveintervalminutes");
   if (!interval || interval == 0) return;

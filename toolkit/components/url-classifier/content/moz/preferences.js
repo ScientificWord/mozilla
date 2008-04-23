@@ -107,7 +107,7 @@ G_Preferences.prototype.__defineGetter__('prefs_', function() {
   }
 
   // QI to prefs in case we want to add observers
-  prefs.QueryInterface(Ci.nsIPrefBranchInternal);
+  prefs.QueryInterface(Ci.nsIPrefBranch2);
   return prefs;
 });
 
