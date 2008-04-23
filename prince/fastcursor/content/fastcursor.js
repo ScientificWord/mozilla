@@ -128,7 +128,7 @@ function initFastCursorBar()
   var prefService = Components.classes["@mozilla.org/preferences-service;1"]
                               .getService(Components.interfaces.nsIPrefBranch);
 
-  var pbi = prefService.QueryInterface(Components.interfaces.nsIPrefBranchInternal);
+  var pbi = prefService.QueryInterface(Components.interfaces.nsIPrefBranch2);
 
   gFlashFastCursorBar = prefService.getIntPref("fastcursor.flashbar");
 
@@ -157,7 +157,7 @@ function uninitFastCursorBar()
    var prefService = Components.classes["@mozilla.org/preferences-service;1"]
                                .getService(Components.interfaces.nsIPrefBranch);
 
-   var pbi = prefService.QueryInterface(Components.interfaces.nsIPrefBranchInternal);
+   var pbi = prefService.QueryInterface(Components.interfaces.nsIPrefBranch2);
    pbi.removeObserver(gTypeAheadFind.useFCPref, gFastCursor);
 
   var normaleditor = document.getElementById("content-frame");
