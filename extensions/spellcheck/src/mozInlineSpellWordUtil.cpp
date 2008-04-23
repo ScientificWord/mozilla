@@ -423,6 +423,15 @@ IsBRElement(nsIDOMNode* aNode)
   return NS_SUCCEEDED(rv);
 }
 
+static PRBool
+IsMathElement(nsIDOMNode* aNode)
+{
+  nsresult rv;
+  nsAutoString ns;
+  rv = aNode->GetNamespaceURI(ns);
+  return ns.EqualsLiteral("http://www.w3.org/1998/Math/MathML");
+}
+
 static void
 GetNodeText(nsIDOMNode* aNode, nsAutoString& aText)
 {
@@ -493,6 +502,9 @@ IsBreakElement(nsIDOMViewCSS* aDocView, nsIDOMNode* aNode)
     return PR_FALSE;
     
   if (IsBRElement(aNode))
+    return PR_TRUE;
+
+  if (IsMathElement(aNode))
     return PR_TRUE;
   
   nsCOMPtr<nsIDOMCSSStyleDeclaration> style;
