@@ -76,7 +76,7 @@ function onAccept()
     var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
     try
     {
-      prefs.setComplexValue("prince.bibtex.dir", Components.interfaces.nsILocalFile, gDialog.bibTeXDir);
+      prefs.setComplexValue("swp.bibtex.dir", Components.interfaces.nsILocalFile, gDialog.bibTeXDir);
     }
     catch(exception) {}
   }   
@@ -144,7 +144,7 @@ function getBibTeXDirectory()
 //  var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
 //  try
 //  {
-//    var startDir = prefs.getComplexValue("prince.bibtex.dir", Components.interfaces.nsILocalFile);
+//    var startDir = prefs.getComplexValue("swp.bibtex.dir", Components.interfaces.nsILocalFile);
 //    if (!startDir || !startDir.exists())
 //    {
 //      var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
