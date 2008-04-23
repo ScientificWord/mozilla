@@ -715,7 +715,7 @@ function RemoveTOC()
 //      dump("\nExport Tex: " + exportfile);
 //    
 //      // run saxon.exe
-//      //    saxon thisdoc.xml prince.xsl >exportfile.tex
+//      //    saxon thisdoc.xml swp.xsl >exportfile.tex
 //    
 //      try {
 //        var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
@@ -729,7 +729,7 @@ function RemoveTOC()
 //        var dataDir = dsprops.get("CurProcD", Components.interfaces.nsIFile);
 //        dataDir.append("todata");
 //        
-//        var xslfile = "prince.xsl";
+//        var xslfile = "swp.xsl";
 //        dump('\ncmdline args = ' + filename + ' ' + dataDir.target + '/' + xslfile +' ' + '>'+exportfile);
 //        theProcess.run(true, [docUrl, exportfile], 2, {});
 //      } catch (ex) {

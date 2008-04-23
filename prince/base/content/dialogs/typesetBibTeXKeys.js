@@ -87,8 +87,8 @@ function onAccept()
   var displayValuesStr = gDialog.displayValues.join(",");
   try
   {
-    prefs.setCharPref("prince.bibtex.hideKeyEntryTypes", hideTypesString);
-    prefs.setCharPref("prince.bibtex.displayKeyValues", displayValuesStr);
+    prefs.setCharPref("swp.bibtex.hideKeyEntryTypes", hideTypesString);
+    prefs.setCharPref("swp.bibtex.displayKeyValues", displayValuesStr);
   }
   catch(exception) {}
 
@@ -113,8 +113,8 @@ function readPrefs()
   var displayKeyValuesStr = "";
   try
   {
-    hideTypesString = prefs.getCharPref("prince.bibtex.hideKeyEntryTypes");
-    displayKeyValuesStr = prefs.getCharPref("prince.bibtex.displayKeyValues");
+    hideTypesString = prefs.getCharPref("swp.bibtex.hideKeyEntryTypes");
+    displayKeyValuesStr = prefs.getCharPref("swp.bibtex.displayKeyValues");
   }
   catch(exception) {}
   var hideEntryTypes = hideTypesString.split(",");
