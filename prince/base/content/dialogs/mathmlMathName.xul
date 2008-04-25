@@ -36,7 +36,7 @@
 >
 
  <!-- script src="chrome://global/content/dialogOverlay.js" / -->
-  <script type="application/x-javascript" src="chrome://prince/content/mathmlMathname.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/mathmlMathName.js"/>
   <!-- Methods common to all editor dialogs -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
