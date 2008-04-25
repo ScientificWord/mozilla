@@ -2,6 +2,9 @@ prince.jar:
 % content prince %content/  
   content/fragment.xul				(fragment/content/fragment.xul)
 * content/fragment.js				(fragment/content/fragment.js)
+  content/toc.xul					(toc/content/toc.xul)
+  content/toc.js					(toc/content/toc.js)
+  content/toc.xsl				 	(toc/content/toc.xsl)
 
 en-US.jar:
 % locale prince en-US %locale/
