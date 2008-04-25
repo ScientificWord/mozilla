@@ -2116,6 +2116,7 @@ function msiInitFontFaceMenu(menuPopup, editorElement)
 
 function msiInitLocalFontFaceMenu(menuPopup, editorElement)
 {
+  const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
   if (!editorElement)
   {
     editorElement = msiGetActiveEditorElement();
@@ -4898,6 +4899,7 @@ function newContextmenuListener(button, element)
 
 function msiUpdateStructToolbar(editorElement)
 {
+  const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
