@@ -89,7 +89,7 @@ function msiEditPage(url, launchWindow, delay)
 
     var windowManager = Components.classes['@mozilla.org/appshell/window-mediator;1'].getService();
     var windowManagerInterface = windowManager.QueryInterface( Components.interfaces.nsIWindowMediator);
-    var enumerator = windowManagerInterface.getEnumerator( "composer:html" );
+    var enumerator = windowManagerInterface.getEnumerator( "swp:xhtml_mathml" );
     var emptyWindow;
     var useEditorElement = null;
     while ( enumerator.hasMoreElements() )
