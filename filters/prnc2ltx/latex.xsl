@@ -10,10 +10,10 @@
 <xsl:preserve-space elements="pre"/>
 
 
-<xsl:include href="mml2ltex.xsl"/>
-<xsl:include href="preamble.xsl"/>
-<xsl:include href="spaces.xsl"/>
-<xsl:include href="frame.xsl"/>
+<!-- xsl:include href="chrome://prnc2ltx/content/mml2ltex.xsl"/>
+<xsl:include href="chrome://prnc2ltx/content/preamble.xsl"/>
+<xsl:include href="chrome://prnc2ltx/content/spaces.xsl"/>
+<xsl:include href="chrome://prnc2ltx/content/frame.xsl"/ -->
 
 <xsl:template match="/">
   <xsl:apply-templates/>
@@ -59,9 +59,9 @@
 <xsl:template match="html:body">
 \begin{document}
 <xsl:apply-templates/>
-<xsl:if test="$endnotes &gt; 0">
+<!-- xsl:if test="{$endnotes} &gt; 0">
 \theendnotes
-</xsl:if>
+</xsl:if -->
 \end{document}
 </xsl:template>
 

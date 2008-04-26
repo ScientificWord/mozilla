@@ -5,7 +5,7 @@
     xmlns:html="http://www.w3.org/1999/xhtml"
     xmlns:sw="http://www.sciword.com/namespaces/sciword"
 >
-<xsl:include href="mml2ltex.xsl"/>
+<xsl:include href="chrome://prnc2ltx/content/mml2ltex.xsl"/>
 <xsl:output method="text"/>
 <xsl:strip-space elements="*"/>
 <xsl:preserve-space elements="pre"/>
