@@ -50,6 +50,7 @@ function buildTOC()
   var newFragment;
   if (editor) newFragment = gProcessor.transformToFragment(editor.document, document);
   document.getElementById("table-of-contents").appendChild(newFragment);
+  setTOCLevel(document.getElementById("toc-level-scale").value);
 }
 
 function ensureAllStructureTagsHaveIds(doc)
@@ -83,5 +84,14 @@ function ensureAllStructureTagsHaveIds(doc)
   }
 }                    
 
-
+function setTOCLevel(level)
+{
+  var view = document.getElementById('toc-tree').view;
+  var i;
+  for (i=0; i<view.rowCount; i++)
+  {
+    if (view.isContainerOpen(i) != (view.getLevel(i) < level))
+      view.toggleOpenState(i); 
+  }
+}
 
