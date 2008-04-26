@@ -10,10 +10,10 @@
 <xsl:preserve-space elements="pre"/>
 
 
-<!-- xsl:include href="chrome://prnc2ltx/content/mml2ltex.xsl"/>
 <xsl:include href="chrome://prnc2ltx/content/preamble.xsl"/>
 <xsl:include href="chrome://prnc2ltx/content/spaces.xsl"/>
-<xsl:include href="chrome://prnc2ltx/content/frame.xsl"/ -->
+<xsl:include href="chrome://prnc2ltx/content/frame.xsl"/>
+<!-- xsl:include href="chrome://prnc2ltx/content/mml2ltex.xsl"/ -->
 
 <xsl:template match="/">
   <xsl:apply-templates/>
