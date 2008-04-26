@@ -36,7 +36,7 @@
   contenttitlesetting="true"
   titlemodifier="&editorWindow.titlemodifier;"
         titlemenuseparator="&editorWindow.titlemodifiermenuseparator;"
-  windowtype="composer:html"        
+  windowtype="swp:xhtml_mathml"        
   screenX="10" screenY="10" width="640" height="480"
   persist="screenX screenY width height sizemode"
   xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
