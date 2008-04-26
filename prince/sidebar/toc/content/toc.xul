@@ -18,6 +18,10 @@
   <script type="application/x-javascript" src="chrome://prince/content/toc.js"/>
   <hbox>
     <button label="Refresh TOC" oncommand="buildTOC();"/>
+    <scale id="toc-level-scale" min="0" max="7" 
+      increment="1" pageIncrement="1" onchange="setTOCLevel(this.value);"
+      value="0"
+      persist="value"/>
   </hbox>
 
 </page>
