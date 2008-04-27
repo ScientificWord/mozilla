@@ -21,7 +21,7 @@
 <!DOCTYPE dialog [
 <!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
 %editorDTD;
-<!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/mathmlMathname.dtd" >
+<!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/mathmlMathName.dtd" >
 %dialogDTD;
 <!ENTITY % menuOverlayDTD SYSTEM "chrome://prince/locale/menuOverlay.dtd" >
 %menuOverlayDTD;
