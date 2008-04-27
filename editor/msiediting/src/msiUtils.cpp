@@ -1386,7 +1386,8 @@ nsresult msiUtils::CreateBinomial(nsIEditor * editor,
 {
   nsresult res(NS_ERROR_FAILURE); 
   nsCOMPtr<nsIDOMElement> frac;
-  PRUint32 fracFlags = attrFlags & (msiIMMLEditDefines::MO_ATTR_sizeFlags);
+//  PRUint32 fracFlags = attrFlags & (msiIMMLEditDefines::MO_ATTR_sizeFlags);
+  PRUint32 fracFlags = msiIMMLEditDefines::MO_ATTR_none;
   res = CreateMfrac(editor, num, denom, markCaret, flags, lineThickness, fracFlags, frac);
 
   if (NS_SUCCEEDED(res) && frac)
@@ -1404,6 +1405,26 @@ nsresult msiUtils::CreateBinomial(nsIEditor * editor,
     }
     else
       mathmlElement = frac;
+
+    if (NS_SUCCEEDED(res) && mathmlElement)
+    {
+      if (attrFlags & (msiIMMLEditDefines::MO_ATTR_displaySize|msiIMMLEditDefines::MO_ATTR_smallSize))
+      {
+        nsAutoString displaystyle, msitrue, msifalse;
+        msiEditingAtoms::displaystyle->ToString(displaystyle);
+        msiEditingAtoms::msitrue->ToString(msitrue);
+        msiEditingAtoms::msifalse->ToString(msifalse);
+
+        nsCOMPtr<nsIDOMElement> styleElem;
+        res = WrapNodeInMStyle(editor, mathmlElement, styleElem);
+        if (NS_SUCCEEDED(res) && (attrFlags & msiIMMLEditDefines::MO_ATTR_displaySize))
+          res = styleElem->SetAttribute(displaystyle, msitrue);
+        else if (NS_SUCCEEDED(res) && (attrFlags & msiIMMLEditDefines::MO_ATTR_smallSize))
+          res = styleElem->SetAttribute(displaystyle, msifalse);
+        mathmlElement = styleElem;
+      }
+    }
+
   }
   else 
     res = NS_ERROR_FAILURE;
