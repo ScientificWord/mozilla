@@ -7,7 +7,7 @@ part {
   counter-increment: part;
 }
 
-part sectiontitle {
+part>sectiontitle {
   display: block;
   font-size: x-large;
   font-weight: bold;
@@ -36,7 +36,7 @@ chapter {
   counter-reset: section;
 }
 
-chapter sectiontitle {
+chapter>sectiontitle {
   display: block;
   font-size: x-large;
   font-weight: bold;
@@ -60,7 +60,7 @@ section {
   counter-reset: theorem;
 }  
 
-section sectiontitle {
+section>sectiontitle {
   display: block;
   margin: 10pt 10pt 0pt 0pt;
   margin-left: 10pt;
@@ -78,7 +78,7 @@ subsection {
   counter-reset: subsubsection;
 }
 
-subsection sectiontitle {
+subsection>sectiontitle {
   display: block;
   margin: 10pt 10pt 0pt 0pt;
   margin-left: 10pt;
@@ -95,7 +95,7 @@ subsubsection {
   counter-reset: paragraph;
 }
 
-subsubsection sectiontitle {
+subsubsection>sectiontitle {
   display: block;
   margin: 10pt 10pt 0pt 0pt;
   margin-left: 10pt;
@@ -112,7 +112,7 @@ paragraph {
   counter-increment: paragraph;
 }
 
-paragraph sectiontitle {
+paragraph>sectiontitle {
   font-size: medium;
   font-weight: normal;
   font-style: italic;
