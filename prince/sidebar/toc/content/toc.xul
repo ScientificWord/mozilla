@@ -16,6 +16,11 @@
   <script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js"/>
   <script type="application/x-javascript" src="chrome://global/content/nsTransferable.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/toc.js"/>
+  
+  <menupopup id="toc-context-menu">
+    <menuitem label="&jumptomain;" oncommand="jump();"/>
+  </menupopup>
+    
   <hbox>
     <button label="Refresh TOC" oncommand="buildTOC();"/>
     <scale id="toc-level-scale" min="0" max="7" 
