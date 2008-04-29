@@ -8,6 +8,7 @@ prince.jar:
 
 en-US.jar:
 % locale prince en-US %locale/
+  locale/toc.dtd                    (toc/locale/en-US/toc.dtd)
 
 classic.jar:
 % skin prince classic %skin/classic/
