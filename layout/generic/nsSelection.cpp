@@ -8,7 +8,7 @@
  * the License. You may obtain a copy of the License at
  * http://www.mozilla.org/MPL/
  *
- * Software distributed under the License is distributed on an "AS IS" basis,
+ * Software distributed under the License is distributed on an "AS IS" basis,
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  * for the specific language governing rights and limitations under the
  * License.
@@ -7054,7 +7054,9 @@ nsTypedSelection::GetSelectionRegionRectAndScrollableView(SelectionRegion aRegio
   switch (aRegion) {
     case nsISelectionController::SELECTION_ANCHOR_REGION:
       node       = FetchAnchorNode();
-      nodeOffset = FetchAnchorOffset();
+//BBM -- I added the +1 to the next line to fix an error in ScrollToSelection. I'm not sure it's the right fix,
+// and I don't understand why it was wrong. So this line may need revisiting      
+      nodeOffset = 1+FetchAnchorOffset();
       break;
     case nsISelectionController::SELECTION_FOCUS_REGION:
       node       = FetchFocusNode();
