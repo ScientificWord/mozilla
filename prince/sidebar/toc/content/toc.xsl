@@ -18,7 +18,7 @@
 <xsl:template match="html:body">
 
   <tree xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-  	id="toc-tree" flex="1" seltype="single"	class="tree" oncontextmenu="jump();">
+  	id="toc-tree" flex="1" seltype="single"	class="tree" contextmenu="toc-context-menu">
     <treecols>
       <treecol id="tocColumn" label="Name" primary="true" flex="1" />
     </treecols>

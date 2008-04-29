@@ -17,9 +17,10 @@ function jump()
     if (element) 
     {
       editor.selectElement(element);
-      msiResetStructToolbar(editorElement);
       var selectionController = editor.selectionController;
-      selectionController.scrollSelectionIntoView(selectionController.SELECTION_NORMAL, selectionController.SELECTION_ANCHOR_REGION, false);
+      selectionController.scrollSelectionIntoView(selectionController.SELECTION_NORMAL, 
+        selectionController.SELECTION_ANCHOR_REGION, true);
+      msiResetStructToolbar(editorElement);
       editorElement.focus();
     }
   }
