@@ -2152,7 +2152,8 @@ function applyMathStyleToObject(styleVals, objType, targ, editor)
     delete styleVals[attrib];
   }
 
-  if (styleNode.attributes.length == 0)  //no more attributes - get rid of the mstyle!
+//  if (styleNode.attributes.length == 0)
+  if (msiNavigationUtils.isUnnecessaryMStyle(styleNode))    //no more attributes - get rid of the mstyle!
   {
     if (!bAddStyleNode)
     {
