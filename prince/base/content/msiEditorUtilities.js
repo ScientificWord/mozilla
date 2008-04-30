@@ -444,12 +444,13 @@ function msiSetActiveEditor(editorElement, bIsFocusEvent)
   {
 //Logging stuff only:
 //    var logStr = "In msiSetActiveEditor, current msiActiveEditor is [" + currEdId + "], prevEdId is [" + prevEdId + "]";
-//    var logStr = msiEditorStateLogString(theWindow);
-//    logStr += ",\n  trying to change to [" + newEdId + "], setting; bIsFocusEvent is  "
-//    if (bIsFocusEvent)
-//      logStr += "true";
-//    else
-//      logStr += "false";
+    var logStr = "In msiSetActiveEditor; ";
+    logStr += msiEditorStateLogString(theWindow);
+    logStr += ",\n  trying to change to [" + newEdId + "], setting; bIsFocusEvent is  "
+    if (bIsFocusEvent)
+      logStr += "true";
+    else
+      logStr += "false";
 //End logging stuff
     if (bIsFocusEvent)
     {
@@ -466,8 +467,8 @@ function msiSetActiveEditor(editorElement, bIsFocusEvent)
 //      logStr += ", new clearEditorTimer ID is " + nNewTimer;
 //    }
     }
-//    logStr += ".\n";
-//    msiKludgeLogString(logStr);
+    logStr += ".\n";
+    msiKludgeLogString(logStr);
 //End logging stuff
     //To Do: re-parent appropriate dialogs at this point? or if there's a timer set, wait for it?
     theWindow.msiActiveEditorElement = editorElement;
@@ -5186,7 +5187,7 @@ var msiNavigationUtils =
       {
         switch(theAttrs.item(jx).nodeName)
         {
-          case 'moz-dirty':
+          case '_moz_dirty':
           break;
           default:
             retVal = false;
@@ -5196,6 +5197,32 @@ var msiNavigationUtils =
       return retVal;
     }
     return false;
+  },
+
+  isUnnecessaryMStyle : function(aNode)
+  {
+    var bUnnecessary = false;
+    if (msiGetBaseNodeName(aNode) == 'mstyle')
+    {
+      if (this.isFence(aNode))
+        return false;
+      bUnnecessary = true;
+      var theAttrs = aNode.attributes;
+      for (var jx = 0; (jx < theAttrs.length) && bUnnecessary; ++jx)
+      {
+        switch(theAttrs.item(jx).nodeName)
+        {
+          case '_moz_dirty':
+          break;
+          default:
+//            dump("In msiNavigationUtils.isUnnecessaryMStyle(), node has attribute [" + theAttrs.item(jx).nodeName + "].\n");
+            bUnnecessary = false;
+          break;
+        }
+      }
+    }
+//    dump("In msiNavigationUtils.isUnnecessaryMStyle(), returning [" + bUnnecessary + "].\n");
+    return bUnnecessary;
   },
 
   getLeafNodeText : function(aNode)
