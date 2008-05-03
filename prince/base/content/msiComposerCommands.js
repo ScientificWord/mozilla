@@ -6,6 +6,17 @@
 //var gComposerJSCommandControllerID = 0;
 
 
+// constants for file operations
+
+  const PR_RDONLY      = 0x01
+  const PR_WRONLY      = 0x02
+  const PR_RDWR        = 0x04
+  const PR_CREATE_FILE = 0x08
+  const PR_APPEND      = 0x10
+  const PR_TRUNCATE    = 0x20
+  const PR_SYNC        = 0x40
+  const PR_EXCL        = 0x80
+
 //-----------------------------------------------------------------------------------
 function msiSetupHTMLEditorCommands(editorElement)
 {
@@ -799,22 +810,26 @@ var msiOpenCommand =
       fp.show();
     }
     catch (ex) {
-      dump("filePicker.show() threw an exception\n");
+      dump("filePicker.show() threw an exception: "+ex.toString()+"\n");
     }
 
-    if (fp.file && fp.file.path.length > 0) {
-      dump("Ready to edit page: " + fp.fileURL.spec +"\n");
-      try {                                
+    try 
+    {
+      if ((fp.file) && (fp.file.path.length > 0)) 
+      {
+        dump("Ready to edit page: " + fp.fileURL.spec +"\n");
         var documentfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
         documentfile.initWithPath( fp.file.path );
-        var directory;
-        directory = documentfile.parent.path;
-        /* we should copy the current directory to the bak directory */
-        msiCopyFileAndDirectoryToBak(documentfile);
-        msiEditPage(documentfile.path, window, false);
-        msiSaveFilePickerDirectoryEx(fp, directory, MSI_EXTENSION);
-      } catch (e) { dump(" EditorLoadUrl failed: "+e+"\n"); }
+        var newdocumentfile;
+        newdocumentfile = createWorkingDirectory(documentfile);
+        msiEditPage(newdocumentfile.path, window, false);
+        msiSaveFilePickerDirectoryEx(fp, documentfile.parent.path, MSI_EXTENSION);
+      }
     } 
+    catch (e) 
+    { 
+      dump(" open:doCommand failed: "+e+"\n"); 
+    }
   }
 };
 
@@ -836,6 +851,8 @@ var msiNewCommand =
     var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
     var fp = Components.classes["@mozilla.org/filepicker;1"].
                createInstance(Components.interfaces.nsIFilePicker);
+    var newdocumentfile;
+    var dir;
     msiSetFilePickerDirectory(fp, "shell");
     fp.defaultExtension = "."+MSI_EXTENSION;
     var dir1 =dsprops.get("resource:app", Components.interfaces.nsIFile);
@@ -856,9 +873,9 @@ var msiNewCommand =
     if (fp.file && fp.file.path.length > 0) {
       dump("Ready to edit shell: " + fp.fileURL.spec +"\n");
       try {
-        msiEditPage(fp.fileURL.spec, window, false);
-  //      msiSaveFilePickerDirectoryEx(fp, directory, MSI_EXTENSION);
-      } catch (e) { dump(" EditorLoadUrl failed: "+e+"\n"); }
+        newdocumentfile = createWorkingDirectory(fp.file);
+        msiEditPage(escape("file:///"+newdocumentfile.path), window, false);
+      } catch (e) { dump("msiEditPage failed: "+e+"\n"); }
     }
   }
 } 
@@ -916,7 +933,7 @@ var msiSaveCommand =
     {
       msiFinishHTMLSource(editorElement);
       var url = msiGetEditorURL(editorElement);
-      result = msiSaveDocument(IsUrlAboutBlank(url)||IsUrlUntitled(url), false, false, editor.contentsMIMEType, editorElement);
+      result = msiSaveDocument(true, IsUrlAboutBlank(url)||IsUrlUntitled(url), false, editor.contentsMIMEType, editor, editorElement);
       editorElement.contentWindow.focus();
     }
     return result;
@@ -927,9 +944,10 @@ function doSoftSave(editorElement, editor)
 {
   if (editor)
   {
+    // we should be doing this only for top level documents, and we should restore the focus
     msiFinishHTMLSource(editorElement);
     var url = msiGetEditorURL(editorElement);
-    result = msiSaveDocument(IsUrlAboutBlank(url)||IsUrlUntitled(url), false, true, editor.contentsMIMEType, editorElement);
+    result = msiSoftSave(editor, editorElement);
   }
   return result;
 }
@@ -978,7 +996,7 @@ var msiSaveAsCommand =
     if (editor)
     {
       msiFinishHTMLSource(editorElement);
-      var result = msiSaveDocument(true, false, false, editor.contentsMIMEType, editorElement);
+      var result = msiSaveDocument(true, true, false, editor.contentsMIMEType, editor, editorElement);
       editorElement.contentWindow.focus();
       return result;
     }
@@ -1011,7 +1029,7 @@ var msiSaveCopyAsCommand =
     if (editor)
     {
       msiFinishHTMLSource(editorElement);
-      var result = msiSaveDocument(true, true, false, editor.contentsMIMEType, editorElement);
+      var result = msiSaveDocument(true, true, true, editor.contentsMIMEType, editor, editorElement);
       editorElement.contentWindow.focus();
       return result;
     }
@@ -1039,10 +1057,11 @@ var msiExportToTextCommand =
     var editorElement = msiGetActiveEditorElement();
     if (!msiIsTopLevelEditor(editorElement))
       return false;
-    if (msiGetEditor(editorElement))
+    var editor = msiGetEditor(editorElement);
+    if (editor)
     {
       msiFinishHTMLSource(editorElement);
-      var result = msiSaveDocument(true, true, false, "text/plain", editorElement);
+      var result = msiSaveDocument(true, true, true, "text/plain", editor, editorElement);
       editorElement.contentWindow.focus();
       return result;
     }
@@ -1068,6 +1087,7 @@ var msiSaveAndChangeEncodingCommand =
     var editorElement = msiGetActiveEditorElement();
     if (!msiIsTopLevelEditor(editorElement))
       return false;
+    var editor = msiGetEditor(editorElement);
     msiFinishHTMLSource(editorElement);
     window.ok = false;
     window.exportToText = false;
@@ -1081,12 +1101,12 @@ var msiSaveAndChangeEncodingCommand =
     {
       if (window.exportToText)
       {
-        window.ok = msiSaveDocument(true, true, false, "text/plain", editorElement);
+        window.ok = msiSaveDocument(true, true, true, "text/plain", editorElement);
       }
       else
       {
         var editor = msiGetEditor(editorElement);
-        window.ok = msiSaveDocument(true, false, false, (editor ? editor.contentsMIMEType : null), editorElement);
+        window.ok = msiSaveDocument(true, true, false, (editor ? editor.contentsMIMEType : null), editor, editorElement);
       }
     }
 
@@ -2189,221 +2209,281 @@ function msiIsSupportedTextMimeType(aMimeType)
   return false;
 }
 
-// throws an error or returns true if user attempted save; false if user canceled save
-// SoftSave means save the file but do not change backups or revert data
-function msiSaveDocument(aSaveAs, aSaveCopy, aSoftSave, aMimeType, editorElement)
+
+// Now that we save documents in a zip file, the save operation has two steps. We first save
+// everything that is in memory to the disk in the working directory. Then we replace the *.sci
+// or write a new one, update backup files etc. after the first step is completed. Since the first
+// step is what we call a soft save, we pull that out as a single procedure.
+
+function msiSoftSave( editor, editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
-  var editor = msiGetEditor(editorElement);
-  if (!aMimeType || aMimeType == "" || !editor)
-    throw Components.results.NS_ERROR_NOT_INITIALIZED;
-
+  if (!msiIsTopLevelEditor(editorElement))
+    return false;
+  //if (!editor) 
+    editor = msiGetEditor(editorElement);
+  var aMimeType = editor.contentsMIMEType;
   var editorDoc = editor.document;
   if (!editorDoc)
     throw Components.results.NS_ERROR_NOT_INITIALIZED;
 
   // if we don't have the right editor type bail (we handle text and html)
-  var editorType = msiGetEditorType(editorElement);
-  if (editorType != "text" && editorType != "html" 
-      && editorType != "htmlmail" && editorType != "textmail")
-    throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
-
+//  var editorType = editor.editortype;
+//  if (editorType != "text" && editorType != "html" 
+//      && editorType != "htmlmail" && editorType != "textmail")
+//    throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
+//
   var saveAsTextFile = msiIsSupportedTextMimeType(aMimeType);
-
   // check if the file is to be saved is a format we don't understand; if so, bail
   if (aMimeType != "text/html" && aMimeType != "application/xhtml+xml" && aMimeType != "text/xml" && !saveAsTextFile)
     throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
 
   if (saveAsTextFile)
     aMimeType = "text/plain";
-
   var urlstring = msiGetEditorURL(editorElement);
-  var mustShowFileDialog = !aSoftSave && (aSaveAs || IsUrlAboutBlank(urlstring) || IsUrlUntitled(urlstring) || (urlstring == ""));
+  var currentFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+  var currFilePath = GetFilepath(urlstring);
+  // for Windows
+#ifdef XP_WIN32
+      currFilePath = currFilePath.replace("/","\\","g");
+#endif
+  currentFile.initWithPath( currFilePath );
+  var success;
+  success = msiOutputFileWithPersistAPI(editorDoc, currentFile, null, aMimeType, editorElement);
+  if (success) editor.contentsMIMEType = aMimeType;
+  return success;
+}
+
+// throws an error or returns true if user attempted save; false if user canceled save
+//
+// Discussion:
+// First we do a soft save. Once that is done, all the necessary data is on the dist, in a directory we call D.
+// The original file is A.sci.
+// There may be a previously created file A.bak.
+//
+// If we are doing SaveAs or SaveCopy (SaveAs is alway true when SaveCopy is true), we bring up the 
+// PromptForSaveLocation dialog box. Assume the filename returned is B.sci. We also assume that if B.sci
+// exists, the user has already given permission to overwrite it. If we are doing a straight save, B=A.
+//
+// We do the following:
+//
+// Save the directory D to a zipfile called B.tempsci.
+//
+// If successful:
+//   If A==B (a straight save), rename A.bak to A.tempbak, rename A.sci to A.bak, rename A.tempsci to A.sci.
+//   If all is successful, delete A.tempbak 
+//   We will now have A.sci, A.bak.
+//   Now delete directory D.
+//
+//   If A!=B (a save-as), delete B.bak and B.sci if they exist. Rename B.tempsci to B.sci.
+//   BBM - addendum. I decided not to delete B.bak
+//   Delete directory D unless we are returning to editing.
+//
+
+function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor, editorElement)
+{
+  var success =  msiSoftSave( editor, editorElement);
+  if (!success) 
+    throw Components.results.NS_ERROR_UNEXPECTED;
+
+  var htmlurlstring = msiGetEditorURL(editorElement); // this is the url of the file in the directory D. It was updated by the soft save.
+  var sciurlstring = msiFindOriginalDocname(htmlurlstring); // this is the path of A.sci
+  var mustShowFileDialog = (aSaveAs || aSaveCopy || IsUrlUntitled(sciurlstring) || (sciurlstring == ""));
 
   // If editing a remote URL, force SaveAs dialog
-  if (!mustShowFileDialog && GetScheme(urlstring) != "file" && GetScheme(urlstring) != "resource")
+  if (!mustShowFileDialog && GetScheme(sciurlstring) != "file" && GetScheme(sciurlstring) != "resource")
   {
-    if (aSoftSave)
-    {
-      dump("Cannot soft save a remote file\n");
-      throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
-    } else 
-      mustShowFileDialog = true;
+    mustShowFileDialog = true;
   }
+  var saveAsTextFile = msiIsSupportedTextMimeType(aMimeType);
   var replacing = !aSaveAs;
   var titleChanged = false;
   var doUpdateURI = false;
-  var tempLocalFile = null;
+  var destLocalFile = null;
+  var destURI;
   var currentFile = null;
+  var currentSciFile = null;
+  var currentSciFilePath;
+  var WorkingDir = null;
+  var leafname;
   
+  workingDir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+  currentSciFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+  var htmlpath = GetFilepath(htmlurlstring);
+	currentSciFilePath = msiFindOriginalDocname(htmlpath);  // the path for A.sci
+// for Windows
+#ifdef XP_WIN32
+  htmlpath = htmlpath.replace("/","\\","g");
+  currentSciFilePath = currentSciFilePath.replace("/","\\","g");
+#endif
+  workingDir.initWithPath( htmlpath );  // now = the path of the xhtml file in the working dir D
+  workingDir = workingDir.parent;       // now = the directory D
+
   if (mustShowFileDialog)
   {
+	  var urlstring;
 	  try {
-	    // Prompt for title if we are saving to HTML
-	    if (!saveAsTextFile && (editorType == "html"))
+	    // Prompt for title if we are saving to .sci
+	    if (!saveAsTextFile && (editor.editortype == "html"))
 	    {
 	      var userContinuing = msiPromptAndSetTitleIfNone(editorElement); // not cancel
 	      if (!userContinuing)
 	        return false;
 	    }
-      currentFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-      var currFilePath = GetFilepath(urlstring);
-  // for Windows
-#ifdef XP_WIN32
-      currFilePath = currFilePath.replace("/","\\","g");
-#endif
-      currentFile.initWithPath( currFilePath );
-      dump("currentFile is " + currentFile.path + "; urlstring is "+urlstring+"\n");
-	    var dialogResult = msiPromptForSaveLocation(saveAsTextFile, editorType=="html"?MSI_EXTENSION:editorType, 
-        aMimeType, urlstring, editorElement);
+
+	    var dialogResult = msiPromptForSaveLocation(saveAsTextFile, editor.editortype=="html"?MSI_EXTENSION:editor.editortype, 
+        aMimeType, currentSciFilePath, editorElement);
 	    if (dialogResult.filepickerClick == msIFilePicker.returnCancel)
 	      return false;
 
 	    replacing = (dialogResult.filepickerClick == msIFilePicker.returnReplace);
 	    urlstring = dialogResult.resultingURIString;
-	    tempLocalFile = dialogResult.resultingLocalFile;
-      if (tempLocalFile)
-      {
-        localFileLeaf = tempLocalFile.leafName;
-      }
+	    destLocalFile = dialogResult.resultingLocalFile;  // this is B.sci
       // update the new URL for the webshell unless we are saving a copy
       if (!aSaveCopy)
         doUpdateURI = true;
-   } catch (e) {
+    } catch (e) {
        return false; 
-     }
-  } // mustShowFileDialog
-
-  var success = true;
-  var ioService;
-  try {
-    // if somehow we didn't get a local file but we did get a uri, 
-    // attempt to create the localfile if it's a "file" url
-    var docURI;
-    if (!tempLocalFile)
-    {
-      ioService = msiGetIOService();
-      docURI = ioService.newURI(urlstring, editor.documentCharacterSet, null);
-      
-      if (docURI.schemeIs("file"))
+    }
+    var ioService;
+    try {
+      // if somehow we didn't get a local file but we did get a uri, 
+      // attempt to create the localfile if it's a "file" url
+      var docURI;
+      if (!destLocalFile)
       {
-        var fileHandler = msiGetFileProtocolHandler();
-        tempLocalFile = fileHandler.getFileFromURLSpec(urlstring).QueryInterface(Components.interfaces.nsILocalFile);
+        ioService = msiGetIOService();
+        docURI = ioService.newURI(urlstring, editor.documentCharacterSet, null);
+    
+        if (docURI.schemeIs("file"))
+        {
+          var fileHandler = msiGetFileProtocolHandler();
+          destLocalFile = fileHandler.getFileFromURLSpec(urlstring).QueryInterface(Components.interfaces.nsILocalFile);
+        }
       }
     }
-
-    // this is the location where the related files will go
-    var relatedFilesDir = null;
-    
-    // First check pref for saving associated files
-//    var saveAssociatedFiles = false;
-//    try {
-//      var prefs = GetPrefs();
-//      saveAssociatedFiles = prefs.getBoolPref("editor.save_associated_files");
-//    } catch (e) {}
-//
-//    // Only change links or move files if pref is set 
-//    //  and we are saving to a new location
-//    if (saveAssociatedFiles && aSaveAs)
-//    {
-//      try {
-//        if (tempLocalFile)
-//        {
-//          // if we are saving to the same parent directory, don't set relatedFilesDir
-//          // grab old location, chop off file
-//          // grab new location, chop off file, compare
-//          var oldLocation = msiGetEditorURL(editorElement);
-//          var oldLocationLastSlash = oldLocation.lastIndexOf("\/");
-//          if (oldLocationLastSlash != -1)
-//            oldLocation = oldLocation.slice(0, oldLocationLastSlash);
-//
-//          var relatedFilesDirStr = urlstring;
-//          var newLocationLastSlash = relatedFilesDirStr.lastIndexOf("\/");
-//          if (newLocationLastSlash != -1)
-//            relatedFilesDirStr = relatedFilesDirStr.slice(0, newLocationLastSlash);
-//          if (oldLocation == relatedFilesDirStr || IsUrlAboutBlank(oldLocation))
-//            relatedFilesDir = null;
-//          else
-//            relatedFilesDir = tempLocalFile.parent;
-//        }
-//        else
-//        {
-//          var lastSlash = urlstring.lastIndexOf("\/");
-//          if (lastSlash != -1)
-//          {
-//            var relatedFilesDirString = urlstring.slice(0, lastSlash + 1);  // include last slash
-//            ioService = msiGetIOService();
-//            relatedFilesDir = ioService.newURI(relatedFilesDirString, editor.documentCharacterSet, null);
-//          }
-//        }
-//      } catch(e) { relatedFilesDir = null; }
-//    }
-
-    var destinationLocation;
-    if (tempLocalFile)
-      destinationLocation = tempLocalFile;
-    else
-      destinationLocation = docURI;
-    dump("Trying to save file as "+destinationLocation.path+"\n");
-    success = msiOutputFileWithPersistAPI(editorDoc, destinationLocation, relatedFilesDir, aMimeType, editorElement);
-  }
-  catch (e)
-  {
-    success = false;
-  }
-
-  if (success && !aSoftSave)
-  {
-    try { 
-      // copy the associated xxxx_files directory
-      
-      editorElement.isShellFile = false;
-      if (doUpdateURI)
-      {
-         // If a local file, we must create a new uri from nsILocalFile
-        if (tempLocalFile)
-          docURI = msiGetFileProtocolHandler().newFileURI(tempLocalFile);
-
-        // We need to set new document uri before notifying listeners
-        SetDocumentURI(docURI);
-        document.getElementById("filename").value = tempLocalFile.leafName.substr(0,tempLocalFile.leafName.lastIndexOf("."));
-      }
-      if (currentFile != null)
-        msiCopyAuxDirectory(currentFile, tempLocalFile);
-      // After a save we need to make a new backup file
-      if (doUpdateURI) msiRevertFile(currentFile, true); // restore the original file; changes are in the new file.
-      msiCopyFileAndDirectoryToBak( tempLocalFile );
-      // Update window title to show possibly different filename
-      // This also covers problem that after undoing a title change,
-      //   window title loses the extra [filename] part that this adds
-      UpdateWindowTitle();
-
-      if (!aSaveCopy)
-        editor.resetModificationCount();
-      // this should cause notification to listeners that document has changed
-
-      // Set UI based on whether we're editing a remote or local url
-      if (!aSaveCopy)
-        msiSetSaveAndPublishUI(urlstring, editorElement);
-    } catch (e) {
-        dump(e + "\n");
-      }
-  }
-  else if (!success)
-  {
+    catch (e)
+    {
+      success = false;
+    }
+  } // mustShowDialog
+  if (!success)
+  { 
     var saveDocStr = GetString("SaveDocument");
     var failedStr = GetString("SaveFileFailed");
     AlertWithTitle(saveDocStr, failedStr);
+    throw Components.results.NS_ERROR_UNEXPECTED;
   }
-  return success;
+
+  // now get the leaf name
+  if (replacing)
+  {
+    currentSciFile.initWithPath( currentSciFilePath );  // now = A.sci
+    destLocalFile = currentSciFile;
+  }
+  leafname = destLocalFile.leafName;
+  leafname = leafname.slice(0, leafname.lastIndexOf("."));
+  var zipfile = destLocalFile.parent.clone();
+  zipfile.append(leafname+".tempsci"); 
+
+// zip D into the zipfile
+  try {
+    var zw = Components.classes["@mozilla.org/zipwriter;1"]
+                          .createInstance(Components.interfaces.nsIZipWriter);
+    if (zipfile.exists()) zipfile.remove(0);
+    zipfile.create(0,0x755);
+    zw.open( zipfile, PR_RDWR | PR_CREATE_FILE | PR_TRUNCATE);
+    zipDirectory(zw, "", workingDir); 
+    zw.close();
+  }
+  catch(e) {
+    throw Components.results.NS_ERROR_UNEXPECTED;
+  } 
+// If successful:
+//   If A==B (a straight save), rename A.bak to A.tempbak, rename A.sci to A.bak, rename A.tempsci to A.sci.
+//   If all is successful, delete A.tempbak 
+//   We will now have A.sci, A.bak.
+//   Now delete directory D.
+//
+//   If A!=B (a save-as), B.sci if it exists. Rename B.tempsci to B.sci.
+//   Delete directory D.
+//
+  var tempfile;
+  if (replacing)
+  {
+    tempfile = zipfile.clone();
+      // rename A.tbak to A.tempbak
+    tempfile = tempfile.parent;
+    tempfile.append(leafname+".bak");
+    if (tempfile.exists()) tempfile.moveTo(null, leafname+".tempbak");
+      // rename A.sci to A.bak
+    tempfile = tempfile.parent;
+    tempfile.append(leafname+".sci");
+    if (tempfile.exists()) tempfile.moveTo(null, leafname+".bak");
+      // rename A.tempsci to A.sci
+    zipfile.moveTo(null, leafname+".sci");
+      // delete A.tempbak
+    tempfile = tempfile.parent;
+    tempfile.append(leafname+".tempbak");
+    if (tempfile.exists()) tempfile.remove(0);
+  }
+  else
+  {
+      // delete B.bak
+    tempfile = zipfile.clone();
+//    tempfile = tempfile.parent;
+//    tempfile.append(leafname+".bak");
+//    if (tempfile.exists()) tempfile.remove(0);
+      // delete B.sci
+    tempfile = tempfile.parent;
+    tempfile.append(leafname+".sci");
+    if (tempfile.exists()) tempfile.remove(0);
+      // rename B.tempsci to B.sci
+    zipfile.moveTo(null, leafname+".sci");
+  }
+  if (!aContinueEditing) workingDir.remove(1);
+  else
+  {
+    // if the editorElement did have a shell file, it doesn't any longer
+    editorElement.isShellFile = false;
+    if (doUpdateURI)
+    {
+      //Create a new uri from nsILocalFile
+      var newURI = msiGetFileProtocolHandler().newFileURI(tempfile);
+
+      // We need to set new document uri before notifying listeners
+      SetDocumentURI(newURI);
+      document.getElementById("filename").value = leafname;
+    }
+
+    UpdateWindowTitle();
+
+    if (!aSaveCopy)
+      editor.resetModificationCount();
+    // this should cause notification to listeners that document has changed
+
+    // Set UI based on whether we're editing a remote or local url
+    if (!aSaveCopy)
+      msiSetSaveAndPublishUI(sciurlstring, editorElement);
+  }
+  return true;
 }
+
+
+
+
+
+
+
 
 function SetDocumentURI(uri)
 {
   try {
     var editorElement = msiGetActiveEditorElement();
     if (!msiIsTopLevelEditor(editorElement)) return;
+//  not sure if we want this:
+//  uri = msiFindOriginalDocname(uri);
     editorElement.docShell.setCurrentURI(uri);
   } catch (e) { dump("SetDocumentURI:\n"+e +"\n"); }
 }
@@ -2768,12 +2848,16 @@ var msiRevertCommand =
         var urlstring = msiGetEditorURL(editorElement);
         var documentfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
         var currFilePath = GetFilepath(urlstring);
+        var scifilepath = msiFindOriginalDocname(currFilePath);
+        var scifile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+        scifile.initWithPath(scifilepath);
 // for Windows
 #ifdef XP_WIN32
       currFilePath = currFilePath.replace("/","\\","g");
 #endif
         documentfile.initWithPath( currFilePath );
-        msiRevertFile( documentfile, false );
+        msiRevertFile( true, documentfile, false );
+        createWorkingDirectory(scifile);
         msiEditorLoadUrl(editorElement, msiGetEditorURL(editorElement));
       }
     }

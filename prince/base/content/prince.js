@@ -426,14 +426,22 @@ function documentAsTeXFile( document, xslSheet, outTeXfile )
     var exefile = dsprops.get("resource:app", Components.interfaces.nsIFile);
     var stylefile = exefile.clone();
     exefile.append("Transform.exe");
-    var bareleaf = document.documentURI;
-    bareleaf = unescape(bareleaf);
-    var index =  bareleaf.lastIndexOf(".");
-    if (index > 0) bareleaf = bareleaf.substr(0,index);
-    index = bareleaf.lastIndexOf("/");
-    if (index > 0) bareleaf = bareleaf.substr(index+1);
+    var documentPath = document.documentURI;
+    documentPath = GetFilepath(documentPath);
+    var workingDir;
+    workingDir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+  // for Windows
+#ifdef XP_WIN32
+      documentPath = documentPath.replace("/","\\","g");
+#endif
+    workingDir.initWithPath( documentPath );
+    var bareleaf = workingDir.leafName; // actually, this is the leaf of the document.
+    workingDir = workingDir.parent;
 
-    var outfile = msiAuxDirFromDocPath(document.documentURI);
+    var index =  bareleaf.lastIndexOf(".");
+    if (index > 0) bareleaf = bareleaf.substr(0,index); // probably at this time, bareleaf=="main"
+
+    var outfile = workingDir.clone();
     var outTeX = outfile.clone();
     outfile.append("temp");
     // clean out the temp directory
@@ -667,25 +675,23 @@ function printTeX( pdftex, preview )
     var editorElement = msiGetTopLevelEditorElement();
     var docUrl = msiGetEditorURL(editorElement);
     var docPath = GetFilepath(docUrl);
-    var outputfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+    var workingDir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+    var outputfile;
       // for Windows
 #ifdef XP_WIN32
       docPath = docPath.replace("/","\\","g");
 #endif
-    outputfile.initWithPath( docPath ); // outputfile now points to our document file
-    var outleaf = outputfile.leafName;
-    outleaf = outleaf.substr(0, outleaf.lastIndexOf("."));
-    var extendedoutleaf = outleaf;
-    outputfile = outputfile.parent;
-    outputfile.append(outleaf + "_files");
-    if (!outputfile.exists()) outputfile.create(1, 0755);
+    workingDir.initWithPath( docPath ); // workingDir now points to our document file
+    workingDir = workingDir.parent; // and now it points to the working directory
+    outputfile = workingDir.clone();
     outputfile.append("tex");
     // remove and create the tex directory to clean it out
-//    outputfile.remove(true);
-//    outputfile.create(1, 0755);
+    if (outputfile.exists()) outputfile.remove(true);
+    outputfile.create(1, 0755);
     var dvipdffile = outputfile.clone();
     var dvipdffileroot = outputfile.clone();
-    dvipdffile.append(outleaf+ (pdftex?".pdf":".dvi"));
+    dvipdffile.append("main."+ (pdftex?"pdf":"dvi"));
+    outputfile.append("main.tex");
     if (dvipdffile.exists()) 
     {
       document.getElementById("preview-frame").loadURI("about:blank");
@@ -697,12 +703,10 @@ function printTeX( pdftex, preview )
         while (dvipdffile.exists())
         {
           dvipdffile = dvipdffileroot.clone();
-          extendedoutleaf = outleaf + "_" + n++;
-          dvipdffile.append(extendedoutleaf + (pdftex?".pdf":".dvi"));
+          dvipdffile.append("main_" + n++ + (pdftex?".pdf":".dvi"));
         }
       }
     }
-    outputfile.append(extendedoutleaf+".tex");
     if (outputfile.exists()) outputfile.remove(false);
     
     dump("\TeX file="+outputfile.target + "\n");
@@ -717,7 +721,7 @@ function printTeX( pdftex, preview )
   //   fos.close();
     if (documentAsTeXFile(editor.document, "latex.xsl", outputfile ))
     {
-      if (compileTeXFile(pdftex, extendedoutleaf, outputfile.target, dvipdffile.parent.target, 1))
+      if (compileTeXFile(pdftex, "main", outputfile.target, dvipdffile.parent.target, 1))
       {
         if (!dvipdffile.exists())
         {
