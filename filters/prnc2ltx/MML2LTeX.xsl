@@ -376,11 +376,11 @@
   </xsl:template>
 
 
-  <xsl:include href="chrome://prnc2ltx/content/attrutil.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/content/mathmap.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/content/textmap.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/content/mtext.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/content/mstyle.xsl"/>
+  <xsl:include href="attrutil.xsl"/>
+  <xsl:include href="mathmap.xsl"/>
+  <xsl:include href="textmap.xsl"/>
+  <xsl:include href="mtext.xsl"/>
+  <xsl:include href="mstyle.xsl"/>
 
 
 
@@ -479,11 +479,11 @@ no indent - disregarded completely
     <!-- xsl:text xml:space="preserve"> &amp; </xsl:text -->
   </xsl:template>
 
-  <xsl:include href="chrome://prnc2ltx/content/mn.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/content/fencemo.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/content/mo.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/content/mi.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/content/mfrac.xsl"/>
+  <xsl:include href="mn.xsl"/>
+  <xsl:include href="fencemo.xsl"/>
+  <xsl:include href="mo.xsl"/>
+  <xsl:include href="mi.xsl"/>
+  <xsl:include href="mfrac.xsl"/>
 
 
 
@@ -719,11 +719,11 @@ no indent - disregarded completely
   </xsl:template>
 
 
-  <xsl:include href="chrome://prnc2ltx/content/mfenced.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/content/scripts.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/content/munder.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/content/mover.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/content/munderover.xsl"/>
+  <xsl:include href="mfenced.xsl"/>
+  <xsl:include href="scripts.xsl"/>
+  <xsl:include href="munder.xsl"/>
+  <xsl:include href="mover.xsl"/>
+  <xsl:include href="munderover.xsl"/>
  
 
 
@@ -1127,9 +1127,9 @@ no indent - disregarded completely
 
 
 
-  <xsl:include href="chrome://prnc2ltx/content/MML2arry.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/content/MML2eqna.xsl"/>
-  <xsl:include href="chrome://prnc2ltx/content/MML2tabular.xsl"/>	
+  <xsl:include href="MML2arry.xsl"/>
+  <xsl:include href="MML2eqna.xsl"/>
+  <xsl:include href="MML2tabular.xsl"/>	
 
 <!-- Frequently, the numbered children of a MathML schemata
   translate to an argument of some LaTeX command.
@@ -1271,7 +1271,7 @@ no indent - disregarded completely
 	</xsl:choose>
   </xsl:template>
 
-  <xsl:include href="chrome://prnc2ltx/content/HTM2LTeX.xsl"/>
+  <xsl:include href="HTM2LTeX.xsl"/>
 
 
 </xsl:stylesheet>
