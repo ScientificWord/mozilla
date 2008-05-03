@@ -10,10 +10,10 @@
 <xsl:preserve-space elements="pre"/>
 
 
-<xsl:include href="chrome://prnc2ltx/content/preamble.xsl"/>
-<xsl:include href="chrome://prnc2ltx/content/spaces.xsl"/>
-<xsl:include href="chrome://prnc2ltx/content/frame.xsl"/>
-<!-- xsl:include href="chrome://prnc2ltx/content/mml2ltex.xsl"/ -->
+<xsl:include href="preamble.xsl"/>
+<xsl:include href="spaces.xsl"/>
+<xsl:include href="frame.xsl"/>
+<xsl:include href="mml2ltex.xsl"/>
 
 <xsl:template match="/">
   <xsl:apply-templates/>
@@ -59,9 +59,6 @@
 <xsl:template match="html:body">
 \begin{document}
 <xsl:apply-templates/>
-<!-- xsl:if test="{$endnotes} &gt; 0">
-\theendnotes
-</xsl:if -->
 \end{document}
 </xsl:template>
 
@@ -181,10 +178,7 @@
 <xsl:template match="html:notewrapper"><xsl:apply-templates/></xsl:template>
 
 <xsl:template match="html:note[@type='footnote']">
-<xsl:choose>
-  <xsl:when test="$endnotes &gt; 0">\endnote{</xsl:when>
-  <xsl:otherwise>\footnote{</xsl:otherwise>
-</xsl:choose>
+  \footnote{
 <xsl:apply-templates/>
 }
 </xsl:template>
