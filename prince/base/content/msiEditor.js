@@ -942,7 +942,8 @@ function msiSetFocusOnStartup(editorElement)
     editorElement.contentWindow.focus();
   } catch(e) {}
 }
-
+// BBM - this function is not robust wrt localization. 
+// TODO - find a better way or use a localizable string.
 
 function isShell (filename)
 {
@@ -1017,14 +1018,6 @@ function EditorStartupForEditorElement(editorElement)
 
   msiDumpWithID("Just before loading Shell URL in EditorStartupForEditorElement, for editorElement [@]; docShell is currently [" + editorElement.docShell + "].\n", editorElement);
   msiLoadInitialDocument(editorElement, is_topLevel);
-//  else
-//  {
-//    var parentEditor = msiGetParentOrTopLevelEditor(editorElement);
-//    if (parentEditor != null)
-//      msiFinishInitDialogEditor(editorElement, parentEditor);
-//    else
-//      msiLoadInitialDocument(editorElement);  //What else to do?
-//  }
 }
 
   // Get url for editor content and load it.
@@ -1033,30 +1026,26 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
 {
   try {
     var prefs = GetPrefs();
-    var filename = "untitled";
     var theArgs = document.getElementById("args");
     var n = 1;
     var url = "";
     var docname = "";
     var docdir;
     var shelldir;
-    var shellfile;
+    var doc;
+    var dir;
     var charset = "";
-//rwa    var leafname = "";
-//rwa    var changename = false;
     if (theArgs)
     {
       docname = document.getElementById("args").getAttribute("value");
       if ( (docname.indexOf("file://") == 0) || (docname.indexOf("about:") == 0) )
         docname = GetFilepath(docname);
-  // for Windows
 #ifdef XP_WIN32
       docname = docname.replace("/","\\","g");
 #endif
       charset = document.getElementById("args").getAttribute("charset")
     };
     var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
-    dump("docname starts out as " + docname + "\n");
     if (docname.length == 0)
     {
       if (!bTopLevel)
@@ -1066,128 +1055,40 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
       }
       if (docname.length == 0)
         docname = prefs.getCharPref("swp.defaultShell");
-      shellfile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
-      shellfile.append("shells");
-      dump("shelldir is "+shellfile.path + "\n");
-      docname = shellfile.path + "/" + docname;
-  // for Windows
-#ifdef XP_WIN32
-      docname = docname.replace("/","\\","g");
-#endif
-      dump("Docname is " + docname + "\n");
+      doc = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+// BBM: "shells" should be localizable
+      doc.append("shells");
+      var dirs = docname.split(/\//);
+      var i;
+      for (i = 0; i<dirs.length; i++) doc.append(dirs[i]);
+      dir = null; // should be the default document directory
     }
-//rwa    else
-//rwa    {
-//rwa      shellfile = Components.classes["@mozilla.org/file/local;1"].
-//rwa            createInstance(Components.interfaces.nsILocalFile);
-//rwa    } 
-    if (isShell(docname))
+    else 
     {
-      editorElement.isShellFile = true;
-      if (bTopLevel)
-        docname = msiPrepareDocumentTargetForShell(docname);
-
-//*******************BEGIN SECTION REFACTORED OUT
-//      shellfile.initWithPath(docname);
-//      // copy the shell to the default document area
-//      try
-//      {
-//        var docdirname = prefs.getCharPref("swp.prefDocumentDir");
-//        dump("swp.prefDcoumentDir is ", docdirname + "\n");
-//        docdir = Components.classes["@mozilla.org/file/local;1"].
-//            createInstance(Components.interfaces.nsILocalFile);
-//        docdir.initWithPath(docdirname);
-//        if (!valueOf(docdir.exists()))
-//          docdir.create(1, 0755);
-//      }
-//      catch (e)
-//      {
-//        var dirkey;
-//#ifdef XP_WIN
-//          dirkey = "Pers";
-//#else
-//#ifdef XP_MACOSX
-//          dirkey = "UsrDocs";
-//#else
-//          dirkey = "Home";
-//#endif
-//#endif
-//        // if we can't find the one in the prefs, get the default
-//        docdir = dsprops.get(dirkey, Components.interfaces.nsILocalFile);
-//        if (!docdir.exists()) docdir.create(1,0755);
-//        // Choose one of the three following lines depending on the app
-//        docdir.append("SWP Docs");
-//        if (!docdir.exists()) docdir.create(1,0755);
-//        // docdir.append("SW Docs");
-//        // docdir.append("SNB Docs");
-//        dump("default document directory is "+docdir.path+"\n");
-//      }
-//      // find n where untitledn.MSI_EXTENSION is the first unused file name in that folder
-//      try
-//      {
-//        dump("shellfile is " + shellfile.path + "\n");
-//        leafname = shellfile.leafName;
-//        var i = leafname.lastIndexOf(".");
-//        if (i > 0) leafname = leafname.substr(0,i);
-//        dump("leafname is " + leafname + "\n");
-//        while (n < 100)
-//        {
-//          try {
-//            dump("Copying "+shellfile.path + " to directory " + docdir.path + ", file "+filename+n+"."+MSI_EXTENSION+"\n");
-//            shellfile.copyTo(docdir,filename+n+"."+MSI_EXTENSION);
-//            // if the copy succeeded, continue to copy the "..._files" directory
-//            try {
-//              dump("Succeeded\n");
-//              var auxdir = shellfile.parent.clone();
-//              dump("auxdir is " + auxdir.path+"\n");
-//              auxdir.append(leafname+"_files");
-//              dump("Succeeded. auxdir is " + auxdir.path + "\n");
-//              dump("Trying to copy auxdir to docdir\n");
-//              auxdir.copyTo(docdir,filename+n+"_files");
-//            }
-//            catch(e) {
-//              dump("Copying auxdir caused error "+e+"\n");
-//            }
-//            break;
-//          }
-//          catch(e) {
-//            dump("File already exists? "+e+"\n");
-//            n++;
-//          }
-//        }
-//      }// at this point, shellfile is .../untitledxxx.MSI_EXTENSION
-//      catch(e)
-//      {
-//        dump("Unable to open document for editing\n");
-//      }
-//      // set the url for the xhtml portion of the document
-//      docdir.append("untitled"+n+"." + MSI_EXTENSION);
-//      dump("Final docdir path is " + docdir.path + "\n");
-//      url = docdir.path;
-//      dump("url is " + url + "\n");
-//*******************END SECTION REFACTORED OUT
-
-      
-//*************FOLLOWING NOW HANDLED UNIFORMLY BELOW
-//rwa      // set document title when?? It is too early now, so we will save the name in the XUL
-//rwa      var theFilename = document.getElementById("filename");
-//rwa      if (theFilename != null)
-//rwa        theFilename.value = filename+n;
+      doc = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+      doc.initWithPath(docname);
+      dir = doc.parent;
     }
-
-//rwa    else
-//rwa    {
+    // in cases where the user has gone through a dialog, such a File/New or File/Open, the working directory
+    // has already been created and the document name changed. When starting up, or starting with a file on the
+    // command line we still need to call "createWorkingDirectory."
+    var isSciRegEx = /\.sci$/i;
+    var isSci = isSciRegEx.test(doc.leafName);
+    var newdoc;
+    if (isSci) 
+      newdoc = createWorkingDirectory(doc);
+    else 
+      newdoc = doc;
+    docname = newdoc.path;
     url = docname;
-  // for Windows
 #ifdef XP_WIN32
     docname = docname.replace("\\","/","g");
 #endif
-    var dotIndex = docname.lastIndexOf(".");
+    var dotIndex = doc.leafName.lastIndexOf(".");
     var lastSlash = docname.lastIndexOf("/")+1;
     var theFilename = document.getElementById("filename");
     if (theFilename != null)
       theFilename.value = dotIndex == -1?docname.slice(lastSlash):docname.slice(lastSlash,dotIndex);
-//rwa    }
 
     var contentViewer = null;
     if (editorElement.docShell)
@@ -1205,182 +1106,182 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
   }
 }
 
-  // Get url for editor content and load it.
-  // the editor gets instantiated by the editingSession when the URL has finished loading.
-function msiPrepareDocumentTargetForShell(docname)
-{
-  try {
-    var prefs = GetPrefs();
-    var filename = "untitled";
-    var theArgs = document.getElementById("args");
-    var n = 1;
-    var url = "";
-    var docdir;
-//    var shelldir;
-//    var shellfile;
-//    var charset = "";
-    var leafname = "";
-//    if (theArgs)
-//    {
-//      docname = document.getElementById("args").getAttribute("value");
-//      if (docname.indexOf("file://") == 0) docname = GetFilepath(docname);
-//  // for Windows
-//#ifdef XP_WIN32
-//      docname = docname.replace("/","\\","g");
-//#endif
-//      charset = document.getElementById("args").getAttribute("charset")
-//    };
-    var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
-//    dump("docname starts out as " + docname + "\n");
-//    if (docname.length == 0)
-//    {
-//       docname=prefs.getCharPref("swp.defaultShell");
-//       shellfile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
-//       shellfile.append("shells");
-//       dump("shelldir is "+shellfile.path + "\n");
-//       docname = shellfile.path + "/" + docname;
-//  // for Windows
-//#ifdef XP_WIN32
-//      docname = docname.replace("/","\\","g");
-//#endif
-//      dump("Docname is " + docname + "\n");
-//    }
-//    else
-//    {
-//      shellfile = Components.classes["@mozilla.org/file/local;1"].
-//            createInstance(Components.interfaces.nsILocalFile);
-//    } 
-//    if (isShell(docname))
-//    {
-//      editorElement.isShellFile = true;
-
-
-    var shellfile = Components.classes["@mozilla.org/file/local;1"].
-          createInstance(Components.interfaces.nsILocalFile);
-    shellfile.initWithPath(docname);
-    // copy the shell to the default document area
-    try
-    {
-      var docdirname = prefs.getCharPref("swp.prefDocumentDir");
-      dump("swp.prefDcoumentDir is ", docdirname + "\n");
-      docdir = Components.classes["@mozilla.org/file/local;1"].
-          createInstance(Components.interfaces.nsILocalFile);
-      docdir.initWithPath(docdirname);
-      if (!valueOf(docdir.exists()))
-        docdir.create(1, 0755);
-    }
-    catch (e)
-    {
-      var dirkey;
-      var dirname;
-#ifdef XP_WIN
-        dirkey = "Pers";
-        dirname = "SWP Docs";
-        // dirname = "SW Docs";
-        // dirname = "SNB Docs";
-#else
-#ifdef XP_MACOSX
-        dirkey = "UsrDocs";
-#else
-        dirkey = "Home";
-#endif
-        dirname = "SWP_Docs";
-        // dirname = "SW_Docs";
-        // dirname = "SNB_Docs";
-#endif
-      // if we can't find the one in the prefs, get the default
-      docdir = dsprops.get(dirkey, Components.interfaces.nsILocalFile);
-      if (!docdir.exists()) docdir.create(1,0755);
-      docdir.append( dirname );
-      if (!docdir.exists()) docdir.create(1,0755);
-      dump("default document directory is "+docdir.path+"\n");
-    }
-    // find n where untitledn.MSI_EXTENSION is the first unused file name in that folder.
-    // Windows version expected a copy failure to indicate the file already exists.
-    // That doesn't work in Unix---the copy always succeeds.
-    // Instead we explicitly look for a file that doesn't yet exist, and use that file.
-    try
-    {
-      leafname = shellfile.leafName;
-      var i = leafname.lastIndexOf(".");
-      if (i > 0) leafname = leafname.substr(0,i);
-      // dump("leafname is " + leafname + "\n");
-      while (n < 100)
-      {
-        var targetfile =  Components.classes["@mozilla.org/file/local;1"].
-          createInstance(Components.interfaces.nsILocalFile);
-        targetfile.initWithPath(docdir.path);
-        targetfile.append(filename + n+"." + MSI_EXTENSION);
-        // dump( "File name is "+targetfile.path+"\n");
-        if( targetfile.exists() ) {
-          n++;
-          // dump( targetfile.path+" exists. New n is "+n+"\n");
-        } else break;
-      }
-      if (n>=100) dump("Too many untitled files. using untitled100\n");
-          // dump("Copying "+shellfile.path + " to directory " + docdir.path + ", file "+filename+n+"."+MSI_EXTENSION+"\n");
-          shellfile.copyTo(docdir,filename+n+"."+MSI_EXTENSION);
-          // dump("Copy done.\n");
-          try {
-            var auxdir = shellfile.parent.clone();
-            // dump("auxdir is " + auxdir.path+"\n");
-            auxdir.append(leafname+"_files");
-            auxdir.copyTo(docdir,filename+n+"_files");
-          }
-          catch(e) {
-            dump("Copying auxdir caused error "+e+"\n");
-          }
-    }// at this point, shellfile is .../untitledxxx.MSI_EXTENSION
-    catch(e)
-    {
-      dump("Unable to open document for editing\n");
-    }
-    // set the url for the xhtml portion of the document
-    docdir.append(filename + n+"." + MSI_EXTENSION);
-    // dump("Final docdir path is " + docdir.path + "\n");
-    url = docdir.path;
-    // dump("url is " + url + "\n");
-  }
-  catch(e)
-  {
-    dump("Uncaught error in msiPrepareDocumentTargetForShell: " + e + "\n.");
-  }
-  return url;
-      
-//      // set document title when?? It is too early now, so we will save the name in the XUL
-//      var theFilename = document.getElementById("filename");
-//      if (theFilename != null)
-//        theFilename.value = filename+n;
-//    }
-//    else
-//    {
-//      url = docname;
-//  // for Windows
-//#ifdef XP_WIN32
-//      docname = docname.replace("\\","/","g");
-//#endif
-//      var dotIndex = docname.lastIndexOf(".");
-//      var lastSlash = docname.lastIndexOf("/")+1;
-//      var theFilename = document.getElementById("filename");
-//      if (theFilename != null)
-//        theFilename.value = dotIndex == -1?docname.slice(lastSlash):docname.slice(lastSlash,dotIndex);
-//    }  
-////    var contentViewer = GetCurrentEditorElement().docShell.contentViewer;
-//    var contentViewer = null;
-//    if (editorElement.docShell)
-//      contentViewer = editorElement.docShell.contentViewer;
-//    if (contentViewer)
-//    {
-//      contentViewer.QueryInterface(Components.interfaces.nsIMarkupDocumentViewer);
-//      contentViewer.defaultCharacterSet = charset;
-//      contentViewer.forceCharacterSet = charset;
-//    }
-//    msiEditorLoadUrl(editorElement, url);
-////    msiDumpWithID("Back from call to msiEditorLoadUrl for editor [@].\n", editorElement);
-//  } catch (e) {
-//    dump("Error in loading URL in EditorStartupForEditorElement: [" + e + "]\n");
-//  }
-}
+//   // Get url for editor content and load it.
+//   // the editor gets instantiated by the editingSession when the URL has finished loading.
+// function msiPrepareDocumentTargetForShell(docname)
+// {
+//   try {
+//     var prefs = GetPrefs();
+//     var filename = "untitled";
+//     var theArgs = document.getElementById("args");
+//     var n = 1;
+//     var url = "";
+//     var docdir;
+// //    var shelldir;
+// //    var shellfile;
+// //    var charset = "";
+//     var leafname = "";
+// //    if (theArgs)
+// //    {
+// //      docname = document.getElementById("args").getAttribute("value");
+// //      if (docname.indexOf("file://") == 0) docname = GetFilepath(docname);
+// //  // for Windows
+// //#ifdef XP_WIN32
+// //      docname = docname.replace("/","\\","g");
+// //#endif
+// //      charset = document.getElementById("args").getAttribute("charset")
+// //    };
+//     var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
+// //    dump("docname starts out as " + docname + "\n");
+// //    if (docname.length == 0)
+// //    {
+// //       docname=prefs.getCharPref("swp.defaultShell");
+// //       shellfile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+// //       shellfile.append("shells");
+// //       dump("shelldir is "+shellfile.path + "\n");
+// //       docname = shellfile.path + "/" + docname;
+// //  // for Windows
+// //#ifdef XP_WIN32
+// //      docname = docname.replace("/","\\","g");
+// //#endif
+// //      dump("Docname is " + docname + "\n");
+// //    }
+// //    else
+// //    {
+// //      shellfile = Components.classes["@mozilla.org/file/local;1"].
+// //            createInstance(Components.interfaces.nsILocalFile);
+// //    } 
+// //    if (isShell(docname))
+// //    {
+// //      editorElement.isShellFile = true;
+// 
+// 
+//     var shellfile = Components.classes["@mozilla.org/file/local;1"].
+//           createInstance(Components.interfaces.nsILocalFile);
+//     shellfile.initWithPath(docname);
+//     // copy the shell to the default document area
+//     try
+//     {
+//       var docdirname = prefs.getCharPref("swp.prefDocumentDir");
+//       dump("swp.prefDcoumentDir is ", docdirname + "\n");
+//       docdir = Components.classes["@mozilla.org/file/local;1"].
+//           createInstance(Components.interfaces.nsILocalFile);
+//       docdir.initWithPath(docdirname);
+//       if (!valueOf(docdir.exists()))
+//         docdir.create(1, 0755);
+//     }
+//     catch (e)
+//     {
+//       var dirkey;
+//       var dirname;
+// #ifdef XP_WIN
+//         dirkey = "Pers";
+//         dirname = "SWP Docs";
+//         // dirname = "SW Docs";
+//         // dirname = "SNB Docs";
+// #else
+// #ifdef XP_MACOSX
+//         dirkey = "UsrDocs";
+// #else
+//         dirkey = "Home";
+// #endif
+//         dirname = "SWP_Docs";
+//         // dirname = "SW_Docs";
+//         // dirname = "SNB_Docs";
+// #endif
+//       // if we can't find the one in the prefs, get the default
+//       docdir = dsprops.get(dirkey, Components.interfaces.nsILocalFile);
+//       if (!docdir.exists()) docdir.create(1,0755);
+//       docdir.append( dirname );
+//       if (!docdir.exists()) docdir.create(1,0755);
+//       dump("default document directory is "+docdir.path+"\n");
+//     }
+//     // find n where untitledn.MSI_EXTENSION is the first unused file name in that folder.
+//     // Windows version expected a copy failure to indicate the file already exists.
+//     // That doesn't work in Unix---the copy always succeeds.
+//     // Instead we explicitly look for a file that doesn't yet exist, and use that file.
+//     try
+//     {
+//       leafname = shellfile.leafName;
+//       var i = leafname.lastIndexOf(".");
+//       if (i > 0) leafname = leafname.substr(0,i);
+//       // dump("leafname is " + leafname + "\n");
+//       while (n < 100)
+//       {
+//         var targetfile =  Components.classes["@mozilla.org/file/local;1"].
+//           createInstance(Components.interfaces.nsILocalFile);
+//         targetfile.initWithPath(docdir.path);
+//         targetfile.append(filename + n+"." + MSI_EXTENSION);
+//         // dump( "File name is "+targetfile.path+"\n");
+//         if( targetfile.exists() ) {
+//           n++;
+//           // dump( targetfile.path+" exists. New n is "+n+"\n");
+//         } else break;
+//       }
+//       if (n>=100) dump("Too many untitled files. using untitled100\n");
+//           // dump("Copying "+shellfile.path + " to directory " + docdir.path + ", file "+filename+n+"."+MSI_EXTENSION+"\n");
+//           shellfile.copyTo(docdir,filename+n+"."+MSI_EXTENSION);
+//           // dump("Copy done.\n");
+//           try {
+//             var auxdir = shellfile.parent.clone();
+//             // dump("auxdir is " + auxdir.path+"\n");
+//             auxdir.append(leafname+"_files");
+//             auxdir.copyTo(docdir,filename+n+"_files");
+//           }
+//           catch(e) {
+//             dump("Copying auxdir caused error "+e+"\n");
+//           }
+//     }// at this point, shellfile is .../untitledxxx.MSI_EXTENSION
+//     catch(e)
+//     {
+//       dump("Unable to open document for editing\n");
+//     }
+//     // set the url for the xhtml portion of the document
+//     docdir.append(filename + n+"." + MSI_EXTENSION);
+//     // dump("Final docdir path is " + docdir.path + "\n");
+//     url = docdir.path;
+//     // dump("url is " + url + "\n");
+//   }
+//   catch(e)
+//   {
+//     dump("Uncaught error in msiPrepareDocumentTargetForShell: " + e + "\n.");
+//   }
+//   return url;
+//       
+// //      // set document title when?? It is too early now, so we will save the name in the XUL
+// //      var theFilename = document.getElementById("filename");
+// //      if (theFilename != null)
+// //        theFilename.value = filename+n;
+// //    }
+// //    else
+// //    {
+// //      url = docname;
+// //  // for Windowss
+// //#ifdef XP_WIN32
+// //      docname = docname.replace("\\","/","g");
+// //#endif
+// //      var dotIndex = docname.lastIndexOf(".");
+// //      var lastSlash = docname.lastIndexOf("/")+1;
+// //      var theFilename = document.getElementById("filename");
+// //      if (theFilename != null)
+// //        theFilename.value = dotIndex == -1?docname.slice(lastSlash):docname.slice(lastSlash,dotIndex);
+// //    }  
+// ////    var contentViewer = GetCurrentEditorElement().docShell.contentViewer;
+// //    var contentViewer = null;
+// //    if (editorElement.docShell)
+// //      contentViewer = editorElement.docShell.contentViewer;
+// //    if (contentViewer)
+// //    {
+// //      contentViewer.QueryInterface(Components.interfaces.nsIMarkupDocumentViewer);
+// //      contentViewer.defaultCharacterSet = charset;
+// //      contentViewer.forceCharacterSet = charset;
+// //    }
+// //    msiEditorLoadUrl(editorElement, url);
+// ////    msiDumpWithID("Back from call to msiEditorLoadUrl for editor [@].\n", editorElement);
+// //  } catch (e) {
+// //    dump("Error in loading URL in EditorStartupForEditorElement: [" + e + "]\n");
+// //  }
+// }
 
 function msiFinishInitDialogEditor(editorElement, parentEditorElement)
 {
@@ -1416,7 +1317,6 @@ function msiEditorLoadUrl(editorElement, url)
 {
   try {
     if (url)
-//      GetCurrentEditorElement().webNavigation.loadURI(url, // uri string
       editorElement.webNavigation.loadURI(url, // uri string
              msIWebNavigation.LOAD_FLAGS_BYPASS_CACHE,     // load flags
              null,                                         // referrer
@@ -1626,7 +1526,7 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
     {
       if (command == "cmd_close" && ("isShellFile" in editorElement) && editorElement.isShellFile)
       // if the document is a shell and has never been saved, it will be deleted by Revert
-        doRevert(editorElement, true);
+        doRevert(false, editorElement, true);
       return true;
     }
   } catch (e) { return true; }
@@ -1635,7 +1535,8 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
   // and therefore need to be visible (to prevent user confusion)
   top.document.commandDispatcher.focusedWindow.focus();  
 
-  var scheme = GetScheme(msiGetEditorURL(editorElement));
+  var htmlurlstring = msiGetEditorURL(editorElement); 
+  var scheme = GetScheme(htmlurlstring);
   var doPublish = (scheme && scheme != "file");
 
   var strID;
@@ -1657,7 +1558,10 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
     
   var reasonToSave = strID ? GetString(strID) : "";
 
-  var title = GetFilename(msiGetDocumentBaseUrl(editorElement));
+  var sciurlstring = msiFindOriginalDocname(htmlurlstring);
+  var leafregex = /.*\/([^\/]+$)/;
+  var arr = leafregex.exec(sciurlstring);
+  if (arr && arr.length >1) title = arr[1];
   if (!title) title="untitled document";
 
   var dialogTitle = GetString(doPublish ? "PublishPage" : "SaveDocument");
@@ -1718,17 +1622,17 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
       contentsMIMEType = editor.contentsMIMEType;
     else
       contentsMIMEType = kTextMimeType;
-    var success = msiSaveDocument(false, false, false, contentsMIMEType, editorElement);
+    var success = msiSaveDocument(false, false, false, contentsMIMEType, editor, editorElement);
     return success;
   }
 
   if (result == 2) 
   {
     // "Don't Save"
-    if (command == "cmd_close" && ("isShellFile" in editorElement) && editorElement.isShellFile)
+    if (command == "cmd_close")
     {
-      var del = true;
-      doRevert(editorElement, del);
+      var del = (("isShellFile" in editorElement) && (editorElement.isShellFile));
+      doRevert(false, editorElement, del);
     }
     return true;
   }
@@ -1737,7 +1641,7 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
 }
 
 
-function doRevert(editorElement, del)
+function doRevert(aContinueEditing, editorElement, del)
 {
   var urlstring = msiGetEditorURL(editorElement);
   var documentfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
@@ -1747,7 +1651,7 @@ function doRevert(editorElement, del)
   currFilePath = currFilePath.replace("/","\\","g");
 #endif
   documentfile.initWithPath( currFilePath );
-  msiRevertFile( documentfile, del );
+  msiRevertFile( aContinueEditing, documentfile, del );
 }
 // --------------------------- File menu ---------------------------
 //The File menu items should only be accessible by the main editor window, really. Commented out here, available in msiMainEditor.js.

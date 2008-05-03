@@ -1,32 +1,12 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 
 
-///**** NAMESPACES ****/
-//const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
-//
-//// Each editor window must include this file
-//// Variables  shared by all dialogs:
-//
-//// Object to attach commonly-used widgets (all dialogs should use this)
-//var gDialog = {};
-//
-//// Bummer! Can't get at enums from nsIDocumentEncoder.h
-//// http://lxr.mozilla.org/seamonkey/source/content/base/public/nsIDocumentEncoder.h#111
 var gStringBundle;
 var gIOService;
 var gPrefsService;
 var gPrefsBranch;
-//var gFilePickerDirectory;
-//
 var gOS = "";
-//const msigWin = "Win";
-//const msigUNIX = "UNIX";
-//const msigMac = "Mac";
-//
-//const kWebComposerWindowID = "editorWindow";
-//const kMailComposerWindowID = "msgcomposeWindow";
-//
-//var gIsHTMLEditor;
+
 ///************* Message dialogs ***************/
 //
 function AlertWithTitle(title, message, parentWindow)
@@ -2563,16 +2543,25 @@ function msiGetParentEditorElementForDialog(dialogWindow)
 
 function msiGetDocumentTitle(editorElement)
 {
-  var theFilename = document.getElementById("filename");
-  var title = "";
-  if (theFilename != null)
-    title = theFilename.value;
-  if (title.length > 0) return title;
-  try {
-    return new XPCNativeWrapper(msiGetEditor(editorElement).document, "title").title;
-  } catch (e) {}
-
-  return "";
+    var doc = msiGetEditor(editorElement).document;
+    var nodes = doc.getElementsByTagName('title');
+    for(var i=nodes.length - 1; i >= 0; i--) {
+      if (nodes[i].textContent.length > 0)
+      {
+        return nodes[i].textContent;
+      }
+    }
+    return "untitled";  // BBM: localize
+//   var theFilename = document.getElementById("filename");
+//   var title = "";
+//   if (theFilename != null)
+//     title = theFilename.value;
+//   if (title.length > 0) return title;
+//   try {
+//     return new XPCNativeWrapper(msiGetEditor(editorElement).document, "title").title;
+//   } catch (e) {}
+// 
+//   return "";
 }
 
 function msiSetDocumentTitle(editorElement, title)
@@ -2880,132 +2869,433 @@ function msiSaveFilePickerDirectoryEx(filePicker, path, fileType)
   window.gFilePickerDirectory = null;
 }
 
-function msiCopyFileAndDirectoryToBak( documentfile ) // an nsILocalFile
+     
+function getUntitledName(destinationDirectory)
 {
-  try {
-  // new scheme: save the bak files with no name change in the ..._files/bak directory
-    var leafname = documentfile.leafName;
-    var i = leafname.lastIndexOf(".");
-    if (i > 0) leafname = leafname.substr(0,i);
-    var parentdir = documentfile.parent.clone();
-    var _filesdir = parentdir.clone();
-    _filesdir.append(leafname+"_files");
-    var tempbakdir = parentdir.clone();
-    tempbakdir.append("bak");
-    var finalbakdir = _filesdir.clone();
-    finalbakdir.append("bak");
-  // nuke current bak dir contents if there are any
-    if (finalbakdir.exists()) finalbakdir.remove(true);
-  // copy stuff to temp bak dir
-    documentfile.copyTo(tempbakdir, documentfile.leafName);
-  // copy _files to temp bak dir
-    _filesdir.copyTo(tempbakdir, leafname+"_files");
-  // We can copy the 'revert' directory to 'bak' or we can copy 'bak' to 'revert',
-  // but we can't do both without getting recursion. So delete the 'revert' directory
-  // that we just copied.
-    var revertdir = tempbakdir.clone();
-    revertdir.append(leafname+"_files");
-    revertdir.append("revert");
-    if (revertdir.exists()) revertdir.remove(true);
-    
-  // now move the temp dir to ..._files/bak
-    tempbakdir.moveTo(_filesdir, "bak"); 
-  }
-  catch (e) {
-    dump("msiCopyFileAndDirectoryToBak failed: "+e+"\n");
-  }
-}
-
-function msiCopyAuxDirectory( originalfile, newfile ) // both nsILocalFiles
-{
-  try
+  var untitled = "untitled";
+  var f = destinationDirectory.clone();
+  var count = 1; 
+  var maxcount = 100; // a maximum allowed for files named "untitledxx.sci"
+  while (count < maxcount)
   {
-    var filename = originalfile.leafName;
-    var newfilename = newfile.leafName;
-    var i = filename.lastIndexOf(".");
-    if (i >= 0) filename = filename.substr(0,i);
-    i = newfilename.lastIndexOf(".");
-    if (i >= 0) newfilename = newfilename.substr(0,i);
-    filename += "_files";
-    newfilename += "_files";
-    var parentdir = originalfile.parent.clone();
-    var newdir = newfile.parent.clone();
-    var testfile = newdir.clone();
-    testfile.append(newfilename);
-    if (testfile.exists()) testfile.remove();
-    parentdir.append(filename);
-    parentdir.copyTo(newdir, newfilename);
+    f.append(untitled+(count++).toString()+".sci");
+    if (!f.exists()) return f.leafName;
+    f = f.parent;
   }
-  catch(e) {
-    dump("unable to copy aux directory: "+e+"\n");
+  alert("too many files in directory called 'untitledxx.sci'"); // BBM: fix this up
+  return "";
+};
+    
+
+function installZipEntry(aZipReader, aZipEntry, aDestination) 
+{
+  var file = aDestination.clone();
+
+  var dirs = aZipEntry.split(/\//);
+  var isDirectory = /\/$/.test(aZipEntry);
+
+  var end = dirs.length;
+  if (!isDirectory)
+    --end;
+
+  for (var i = 0; i < end; ++i) {
+    file.append(dirs[i]);
+    if (!file.exists()) {
+      file.create(1, 0755);
+    }
+  }
+
+  if (!isDirectory) {
+    file.append(dirs[end]);
+    aZipReader.extract(aZipEntry, file);
+  }
+};
+
+
+// Write a file to the zip file represented by aZipWriter. RelPath is the path relative to the
+// directory we are zipping and sourceFile is the particular file being written.
+ 
+function writeZipEntry(aZipWriter, relPath, sourceFile) 
+{
+  var path = "";
+  var dirs = relPath.split(/\//);
+  var isDirectory = /\/$/.test(aZipEntry);
+
+  var end = dirs.length;
+  if (!isDirectory)
+    --end;
+
+  for (var i = 0; i < end; ++i) {
+    path = path+"/"+dirs[i];
+    if (!aZipWriter.hasEntry(path)) {
+      addEntryDirectory(path,0,false);
+    }
+  }
+
+  if (!isDirectory) {
+    path = path+"/"+dirs[end];
+    aZipWriter.addEntryFile(path, 0, sourceFile, false); // should get compression preference here
   }
 }
 
-// This replaces a file with its backup file, and the same for its associated directory
-// The File/Revert calls this function, but also reloads the reverted file. The pre-reverted
-// file is saved in the revert directory
-// If there is no backup file (i.e., the file has never been changed) and delete==true, then
-// we delete the file and its associated directory.
+// zipDirectory is called recursively. The first call has currentpath="". sourceDirectory is the directory
+// we are zipping, and currentpath is the path of sourceDirectory relative to the root directory.
 
-// BBM this can fail if the file has been renamed, so the .sci file in the bak directory has
-// a different name. We should fall back to searching for the only .sci file or the only directory
-// in the bak directory.
-
-function msiRevertFile (documentfile, del) // an nsILocalFile
+function zipDirectory(aZipWriter, currentpath, sourceDirectory)
 {
-  try {
-  // new scheme: save the bak files with no name change in the ..._files/bak directory
-    var leafname = documentfile.leafName;
-    var i = leafname.lastIndexOf(".");
-    if (i > 0) leafname = leafname.substr(0,i);
-    var templeafname = leafname+"_temp";
-    var parentdir = documentfile.parent.clone();
-    var tempdir = parentdir.clone();
-    tempdir.append(templeafname+"_files");
-    if (tempdir.exists()) tempdir.remove(true);
-    var _filesdir = parentdir.clone();
-    _filesdir.append(leafname+"_files");
-    var bakdir = _filesdir.clone();
-    bakdir.append("bak");
-    if (_filesdir.exists() && !bakdir.exists() && del)
+  var e;
+  e = sourceDirectory.directoryEntries;
+  while (e.hasMoreElements())
+  {
+    f = e.getNext().QueryInterface(Components.interfaces.nsIFile);
+    var leaf = f.leafName;
+    var path
+    if (currentpath.length > 0) path = currentpath + "/" + leaf;
+    else path = leaf;
+    if (f.isDirectory())
     {
-      // reverting a file that has not ever been saved
-      _filesdir.remove(true);
-      documentfile.remove(false);
+      aZipWriter.addEntryDirectory(path, f.lastModifiedTime, false);
+      zipDirectory(aZipWriter, path, f);
     }
     else
     {
-      var working = bakdir.clone();
-      working.append(leafname+"."+MSI_EXTENSION);
-      // copy doc_files/bak/doc.sci to doc_temp.sci
-      working.moveTo(parentdir,templeafname+"."+MSI_EXTENSION);
-      working = bakdir.clone();
-      working.append(leafname + "_files");                     
-      // copy doc_files/bak/doc_files to doc_temp_files
-      working.moveTo(parentdir, templeafname + "_files");
-      // remove bak and revert for doc_temp_files
-      vorking = tempdir.clone();
-      working.append("bak");
-      if (working.exists()) working.remove(true);
-      working = tempdir.clone();
-      working.append("revert");
-      if (working.exists()) working.remove(true);
-      working = tempdir.clone();
-      working.append("revert");
-      working.create(1, 0755);
-      // save current document and doc_files in the new revert directory
-      documentfile.moveTo(working, null);
-      _filesdir.moveTo(working, null);
-      // rename the temp files
-      tempdir.moveTo(parentdir, leafname+"_files");  
-      working = parentdir.clone();
-      working.append(templeafname + "." + MSI_EXTENSION);
-      working.moveTo(parentdir, leafname + "." + MSI_EXTENSION);
+      if (aZipWriter.hasEntry(path))
+        aZipWriter.removeEntry(path,true);
+      aZipWriter.addEntryFile(path, 0, f, false);
+    }
+  }
+}
+
+
+function extractZipTree(aZipReader, destdirectory)
+{
+  var strIterator;
+  strIterator = aZipReader.findEntries(null);
+  while (strIterator.hasMore())
+  {
+    installZipEntry(aZipReader, strIterator.getNext(), destdirectory);
+  }
+}
+
+// If the url of the document is something like ..../foo_work/main.xhtml, then
+// we look at the parent directory's name to synthesize the original name .../foo.sci
+
+function msiFindOriginalDocname(docUrlString)
+{
+  var path = unescape(docUrlString);
+  var regEx = /\/main.xhtml$/i;  // BBM: localize this
+  if (regEx.test(path))
+  {
+    var parentDirRegEx = /(.*\/)([A-Za-z0-9_\b\-]*)_work\/main.xhtml$/i; //BBM: localize this
+    var arr = parentDirRegEx.exec(path);
+    if ((arr.length > 2) && arr[2].length > 0)
+      path = arr[1]+arr[2]+".sci";
+  }
+  return path;
+}
+
+
+//  createWorkingDirectory does the following: 
+//  if the file parameter is something like foo.sci, it knows that the file is a jar file.
+//  It creates a directory, foo_work, and unpacks the contents of foo.sci into the new directory.
+//  The return value is an nsILocalFile which is the main xhtml file in the .sci file, usually named
+//  main.xhtml.
+//
+//  If the file parameter is not a zip file, then it creates the directory and 
+//  copies, e.g., foo.xhtml to foo_work/main.xhtml. It does not create any of the other subdirectories
+//  It returns the nsILocalFile for foo_work/main.xhtml.
+//
+
+function createWorkingDirectory(documentfile)
+{
+  var bakfilename;
+  var i;
+  var dir;
+  var destfile;
+  var str;
+  var savedLeafname;
+  var skipBackup;
+  try
+  {
+    var zr = Components.classes["@mozilla.org/libjar/zip-reader;1"]
+                          .createInstance(Components.interfaces.nsIZipReader);
+    if (isShell(documentfile.path))
+    {
+      // if we are opening a shell document, we create the working directory but skit the backup
+      // file and change the document leaf name to "untitledxxx"
+      dir =  msiDefaultNewDocDirectory();
+      bakfilename = getUntitledName(dir);
+      skipBackup = true;
+    }
+    else
+    { 
+      dir = documentfile.parent.clone();
+      bakfilename = documentfile.leafName;
+    }
+    i = bakfilename.lastIndexOf(".");
+    if (i > 0) 
+    {
+      savedLeafname=bakfilename.substr(0,i);
+      bakfilename=savedLeafname+".bak"; 
+    }
+    else
+    {
+      bakfilename += ".bak";
+    }
+    // first create a working directory for the extracted files
+    var dir;
+    dir.append(savedLeafname+"_work");
+    if (dir.exists()) dir.remove(true);
+    dir.create(1, 0755);
+
+    // we don't want to overwrite the backup file yet; wait until the user closes this file.
+    // for the moment, we keep it in the working directory.
+    if (!skipBackup)
+    {
+      var bakfile = dir.clone();
+      bakfile.append(bakfilename);
+      if (bakfile.exists()) bakfile.remove(false);
+      documentfile.copyTo(dir,bakfilename);
+      // now the file, no matter whether it is a zip file or not, is backed up.
+    }
+    var fIsZip = true;
+    try {
+      zr.open(documentfile);
+    }
+    catch(e)
+    {
+      fIsZip = false;
+    }
+    if (fIsZip)  // if our file is a zip file, extract it to the directory dir
+    {
+      extractZipTree(zr, dir);
+    }
+    else // not a zip file. Just copy it to the directory dir as main.xhtml
+    {
+      documentfile.copyTo(dir, "main.xhtml");
+    }
+  }
+  catch( e) {
+    dump("Error in createWorkingDirectory: "+e.toString()+"\n");
+  } 
+  var newdocfile;
+  newdocfile = dir.clone();
+  newdocfile.append("main.xhtml"); 
+//
+//  const PR_RDONLY      = 0x01
+//  const PR_WRONLY      = 0x02
+//  const PR_RDWR        = 0x04
+//  const PR_CREATE_FILE = 0x08
+//  const PR_APPEND      = 0x10
+//  const PR_TRUNCATE    = 0x20
+//  const PR_SYNC        = 0x40
+//  const PR_EXCL        = 0x80
+//
+//
+// Temporary test of writing a zipfile
+//  try {
+//    var zw = Components.classes["@mozilla.org/zipwriter;1"]
+//                          .createInstance(Components.interfaces.nsIZipWriter);
+//    var testfile;
+//    testfile = dir.parent.clone();
+//    testfile.append("testzipfiles.zip");
+//    testfile.create(0,0x755);
+//    zw.open( testfile, PR_RDWR | PR_CREATE_FILE | PR_TRUNCATE);
+//    zipDirectory(zw, "", dir); 
+//    zw.close();
+//  }
+//  catch(e) {} 
+  return newdocfile;
+}
+
+
+// Returns an nsIFile directory designated as the default for new documents.
+// The path is given by the swp.prefDocumentDir
+function msiDefaultNewDocDirectory()
+{
+  var docdir;
+  var prefs = GetPrefs();
+  var docdirname;
+  docdir = Components.classes["@mozilla.org/file/local;1"].
+      createInstance(Components.interfaces.nsILocalFile);
+  try {
+    docdirname = prefs.getCharPref("swp.prefDocumentDir");
+  } catch (e) {
+    docdirname = null
+  }
+  if (docdirname)
+  {
+    try {
+      docdir.initWithPath(docdirname);
+      if (!docdir.exists())
+        docdir.create(1, 0755);
+      return docdir;
+    }
+    catch (e) {}
+  }  
+  var dirkey;
+  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
+#ifdef XP_WIN
+  dirkey = "Pers";
+#else
+#ifdef XP_MACOSX
+  dirkey = "UsrDocs";
+#else
+  dirkey = "Home";
+#endif
+#endif
+  // if we can't find the one in the prefs, get the default
+  docdir = dsprops.get(dirkey, Components.interfaces.nsILocalFile);
+  if (!docdir.exists()) docdir.create(1,0755);
+  // Choose one of the three following lines depending on the app
+  docdir.append("SWP Docs");
+  // docdir.append("SW Docs");
+  // docdir.append("SNB Docs");
+  if (!docdir.exists()) docdir.create(1,0755);
+  return docdir;
+}
+
+
+// function msiCopyFileAndDirectoryToBak( documentfile ) // an nsILocalFile
+// {
+//   try {
+//   // new scheme: save the bak files with no name change in the ..._files/bak directory
+//     var leafname = documentfile.leafName;
+//     var i = leafname.lastIndexOf(".");
+//     if (i > 0) leafname = leafname.substr(0,i);
+//     var parentdir = documentfile.parent.clone();
+//     var _filesdir = parentdir.clone();
+//     _filesdir.append(leafname+"_files");
+//     var tempbakdir = parentdir.clone();
+//     tempbakdir.append("bak");
+//     var finalbakdir = _filesdir.clone();
+//     finalbakdir.append("bak");
+//   // nuke current bak dir contents if there are any
+//     if (finalbakdir.exists()) finalbakdir.remove(true);
+//   // copy stuff to temp bak dir
+//     documentfile.copyTo(tempbakdir, documentfile.leafName);
+//   // copy _files to temp bak dir
+//     _filesdir.copyTo(tempbakdir, leafname+"_files");
+//   // We can copy the 'revert' directory to 'bak' or we can copy 'bak' to 'revert',
+//   // but we can't do both without getting recursion. So delete the 'revert' directory
+//   // that we just copied.
+//     var revertdir = tempbakdir.clone();
+//     revertdir.append(leafname+"_files");
+//     revertdir.append("revert");
+//     if (revertdir.exists()) revertdir.remove(true);
+//     
+//   // now move the temp dir to ..._files/bak
+//     tempbakdir.moveTo(_filesdir, "bak"); 
+//   }
+//   catch (e) {
+//     dump("msiCopyFileAndDirectoryToBak failed: "+e+"\n");
+//   }
+// }
+// 
+
+// This should be no longer needed
+// function msiCopyAuxDirectory( originalfile, newfile ) // both nsILocalFiles
+// {
+//   try
+//   {
+//     var filename = originalfile.leafName;
+//     var newfilename = newfile.leafName;
+//     var i = filename.lastIndexOf(".");
+//     if (i >= 0) filename = filename.substr(0,i);
+//     i = newfilename.lastIndexOf(".");
+//     if (i >= 0) newfilename = newfilename.substr(0,i);
+//     filename += "_files";
+//     newfilename += "_files";
+//     var parentdir = originalfile.parent.clone();
+//     var newdir = newfile.parent.clone();
+//     var testfile = newdir.clone();
+//     testfile.append(newfilename);
+//     if (testfile.exists()) testfile.remove();
+//     parentdir.append(filename);
+//     parentdir.copyTo(newdir, newfilename);
+//   }
+//   catch(e) {
+//     dump("unable to copy aux directory: "+e+"\n");
+//   }
+// }
+
+// Recall that the current editing session has changed only files in the working directory, and
+// that the .sci file has not been changed.
+// 
+// The File/Revert calls this function, but also reloads the .sci file. The pre-reverted
+// file is saved.
+// If the file was created from a shell file then del==true, and we delete the file. 
+//
+// The algorithm:
+// Our file is currently main.xhtml in a directory we call D. Let A be the leafname of the .sci file
+// If del==false, do a soft save, and save the directory D into a zipfile which we call A.undorevert.
+// Delete D.
+// If del==true, delete A.sci.
+//
+// The final state depends on del:
+// If true, A.sci is gone as is the directory D. We leave A.bak if it exists, but it probably never does when del==true;
+// If false, A.sci and A.bak are as they were before editing, A.undorevert is the state of the document just before the revert,
+// Reloading the file A.sci will rebuild D
+
+function msiRevertFile (aContinueEditing, documentfile, del) // an nsILocalFile
+{
+  try {
+    var editorElement = msiGetActiveEditorElement();
+    if (!msiIsTopLevelEditor(editorElement))
+      return false;
+    var editor = msiGetEditor(editorElement);
+
+    var tempfile;
+    var leafname;    
+    var path = documentfile.path;
+#ifdef XP_WIN32
+    path = path.replace("\\","/","g");
+#endif
+    path = msiFindOriginalDocname(path);
+    var leafregex = /.*\/([^\/\.]+)\.sci$/i;
+    var arr = leafregex.exec(path);
+    if (arr && arr.length >1) leafname = arr[1];
+
+    var dir = documentfile.parent.clone();
+    
+    if (del)
+    {
+      tempfile = dir.clone();
+      tempfile.append(leafname + ".sci");
+      if (tempfile.exists()) tempfile.remove(0);
+      dir.remove(1);
+      return true;
+    }
+    else
+    {
+      var success =  msiSoftSave( editor, editorElement);
+      if (!success) 
+        throw Components.results.NS_ERROR_UNEXPECTED;
+
+      var zipfile = dir.parent.clone();
+      zipfile.append(leafname + ".undorevert"); // this is the file P.
+
+    // zip D into the zipfile
+      try {
+        var zw = Components.classes["@mozilla.org/zipwriter;1"]
+                              .createInstance(Components.interfaces.nsIZipWriter);
+        if (zipfile.exists()) zipfile.remove(0);
+        zipfile.create(0,0x755);
+        zw.open( zipfile, PR_RDWR | PR_CREATE_FILE | PR_TRUNCATE);
+        zipDirectory(zw, "", dir); 
+        zw.close();
+      }
+      catch(e) {
+        throw Components.results.NS_ERROR_UNEXPECTED;
+      } 
+      dir.remove(1);
+      return true;
     }
   }
   catch(e) {
     dump("msiRevertFile failed: "+e+"\n");
   }
+  return false;
 }
 
 function GetDefaultBrowserColors()
@@ -5531,7 +5821,7 @@ SS_Timer.prototype.cancel = function() {
 //  this.observerService_.unregister();
 }
 
-/**
+/*
  * Invoked by the timer when it fires
  * 
  * @param timer Reference to the nsITimer which fired (not currently 
