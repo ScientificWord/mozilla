@@ -1471,6 +1471,7 @@ function ShutdownAnEditor(editorElement)
   } catch(e) { dump( "In ShutdownAnEditor, removing active editor and toolbar pref listener, error: " + e + "\n" ); }
 
   try {
+    if (msiIsTopLevelEditor(editorElement)) deleteWorkingDirectory(editorElement);
     var commandManager = msiGetCommandManager(editorElement);
     commandManager.removeCommandObserver(editorElement.mEditorDocumentObserver, "obs_documentCreated");
     commandManager.removeCommandObserver(editorElement.mEditorDocumentObserver, "obs_documentWillBeDestroyed");
