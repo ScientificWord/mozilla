@@ -58,7 +58,7 @@
 \msi@everycellstart{<td>}
 \msi@everycellend{</td>}
 
-\def\msi@stylesheets{\msitag{<?xml-stylesheet href="}\jobname\char`_files/css/\msitag{my.css" type="text/css"?>}\br}
+\def\msi@stylesheets{\msitag{<?xml-stylesheet href="css/my.css" type="text/css"?>}\br}
 
 
 \def\@brace#1{\char123\relax#1\char125\relax}
@@ -82,16 +82,16 @@
 %% \document and \enddocument
 
 \def\out@begin@document{%
-   \msiclosetag{preamble}{</sw:preamble>}%
-   %%\msihmode\br\msiopentag{docbody}{<sw:docbody>}%
+   \msiclosetag{preamble}{</preamble>}%
+   %%\msihmode\br\msiopentag{docbody}{<docbody>}%
    \@paragraphs
    \msivmode
 }
 
 \def\out@end@document{%
-   %%\br\msiclosetag{docbody}{</sw:docbody>}%
-   \br\msiclosetag{body}{</html:body>}
-   \br\msitag{</html:html>}%
+   %%\br\msiclosetag{docbody}{</docbody>}%
+   \br\msiclosetag{body}{</body>}
+   \br\msitag{</html>}%
    \msimakecss
    \endinput
 }
@@ -194,7 +194,7 @@
 
 
 
-\def\ref#1{\msiopentag{ref}{<html:a>}#1\msiclosetag{ref}{</html:a>}}
+\def\ref#1{\msiopentag{ref}{<a>}#1\msiclosetag{ref}{</a>}}
 \def\pageref#1{\msiopentag{pageref}{<pageref>}#1\msiclosetag{pageref}{</pageref>}}
 \def\pagenumbering#1{%
    \msiopentag{latexstyleb}{<latexstyleb>}%
@@ -1849,7 +1849,7 @@
 %%      ]>}\br
 %%    
 %%    \msitag{<?xml-stylesheet href="StandardLaTeXArticle.css" type="text/css"?>}\br
-%%    \msiopentag{document}{<document xmlns:sw="http://www.sciword.com/namespaces/sciword" xmlns:mml="http://www.w3.org/1998/Math/MathML" sw:type="latex">}\br
+%%    \msiopentag{document}{<document xmlns:sw="http://www.sciword.com/namespaces/sciword" xmlns:mml="http://www.w3.org/1998/Math/MathML" type="latex">}\br
 %%    \msiopentag{preamble}{<preamble>}
 %% }
 
@@ -1857,18 +1857,17 @@
 
 \def\msi@opendocument{%
    \msitag{<?xml version="1.0"?>}\br
-   \msitag{<?xml-stylesheet href="}\jobname\char`_files\msitag{/css/my.css" type="text/css"?>}\br
+   \msitag{<?xml-stylesheet href="css/my.css" type="text/css"?>}\br
    \msitag{<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">}
    
-   
-   \br\msitag{<html:html xmlns:html="http://www.w3.org/1999/xhtml" 
+  \br\msitag{<html xmlns="http://www.w3.org/1999/xhtml" 
       xmlns:mml="http://www.w3.org/1998/Math/MathML"
       xmlns:sw="http://www.sciword.com/namespaces/sciword">}
    
-   \br\msitag{<html:head>}
-   \br\msitag{</html:head>}
-   \br\msiopentag{body}{<html:body>}
-   \br\msiopentag{preamble}{<sw:preamble>}
+   \br\msitag{<head>}
+   \br\msitag{</head>}
+   \br\msiopentag{body}{<body>}
+   \br\msiopentag{preamble}{<preamble>}
 }
 
 
