@@ -2255,6 +2255,22 @@ function msiSoftSave( editor, editorElement)
   return success;
 }
 
+
+    
+function deleteWorkingDirectory(editorElement)
+{
+  var htmlurlstring = msiGetEditorURL(editorElement); 
+  var workingDir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+  var htmlpath = GetFilepath(htmlurlstring);
+#ifdef XP_WIN32
+  htmlpath = htmlpath.replace("/","\\","g");
+#endif
+  workingDir.initWithPath( htmlpath );  
+  workingDir = workingDir.parent;       
+  workingDir.remove(1);
+}
+
+
 // throws an error or returns true if user attempted save; false if user canceled save
 //
 // Discussion:
@@ -2305,10 +2321,10 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   var currentFile = null;
   var currentSciFile = null;
   var currentSciFilePath;
-  var WorkingDir = null;
+  var workingDir = null;
   var leafname;
   
-  workingDir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+  var workingDir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
   currentSciFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
   var htmlpath = GetFilepath(htmlurlstring);
 	currentSciFilePath = msiFindOriginalDocname(htmlpath);  // the path for A.sci
