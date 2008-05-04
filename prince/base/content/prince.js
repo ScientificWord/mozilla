@@ -322,7 +322,6 @@ function openTeX()
 //         files are. This is usually resource://app.                                                                  //
 //       The input .tex file.                                                                                 //
 //       The output directory where the auxiliary files that are generated (such as .css, etc.) go.           //
-//         This is the <filename>__files directory in the directory containing the output file.
 //       The output <filename>.sci file.                                    
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
@@ -335,6 +334,7 @@ function openTeX()
     var docdir;
     try
     {
+      var prefs = GetPrefs();
       var docdirname = prefs.getCharPref("swp.prefDocumentDir");
       dump("swp.prefDcoumentDir is ", docdirname + "\n");
       docdir = Components.classes["@mozilla.org/file/local;1"].
@@ -367,10 +367,10 @@ function openTeX()
       dump("default document directory is "+docdir.target+"\n");
     }
 
-    var outfile = docdir.clone();
     var outdir = docdir.clone();
-    outfile.append(filename+".sci");
-    outdir.append(filename + "_files");
+    outdir.append(filename + "_work");
+    var outfile = outdir.clone();
+    outfile.append("main.xhtml");
 	  if (outdir.exists()) outdir.remove(true);
     outdir.create(1 , 0755);
     var css = outdir.clone();
