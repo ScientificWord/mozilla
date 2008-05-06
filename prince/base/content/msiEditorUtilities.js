@@ -4233,17 +4233,42 @@ var msiBaseMathNameList =
     mathNameFile.append("tagdefs");
     mathNameFile.append(this.sourceFile);
     this.sourceFile = mathNameFile.path;
-    this.namesDoc = document.implementation.createDocument("", "mathnames", null);
-    var nodeList;
-    var node;
-    var s;
-    var arrayElement;
-    this.namesDoc.async = false;
-    if (this.namesDoc.load("file:///" + mathNameFile.path))
-    {
+//    this.namesDoc = document.implementation.createDocument("", "mathnames", null);
+//    var nodeList;
+//    var node;
+//    var s;
+//    var arrayElement;
+
+    var request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"].createInstance();
+    request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
+    var thePath = "file:///" + mathNameFile.target;
+#ifdef XP_WIN32
+    thePath = thePath.replace("\\","/","g");
+#endif
+    try {
+      request.open("GET", thePath, false);
+      request.send(null);
+                                
+      this.namesDoc = request.responseXML; 
+      if (!this.namesDoc && request.responseText)
+        throw("file exists but cannot be parsed as XML");
+
       this.bInitialized = true;
       this.initAutoCompleteList();
     }
+    catch(exc)
+    {
+      dump("Unable to load math names file \"" + this.sourceFile + "\"; exception is [" + exc + "].\n");
+      return null;
+    }
+
+
+//    this.namesDoc.async = false;
+//    if (this.namesDoc.load("file:///" + mathNameFile.path))
+//    {
+//      this.bInitialized = true;
+//      this.initAutoCompleteList();
+//    }
   },
 
   initAutoCompleteList : function()
@@ -4544,17 +4569,40 @@ var msiBaseMathUnitsList =
     unitNameFile.append("tagdefs");
     unitNameFile.append(this.sourceFile);
     this.sourceFile = unitNameFile.path;
-    this.namesDoc = document.implementation.createDocument("", "unitnames", null);
-    var nodeList;
-    var node;
-    var s;
-    var arrayElement;
-    this.namesDoc.async = false;
-    if (this.namesDoc.load("file:///" + unitNameFile.path))
-    {
+
+    var request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"].createInstance();
+    request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
+    var thePath = "file:///" + unitNameFile.target;
+#ifdef XP_WIN32
+    thePath = thePath.replace("\\","/","g");
+#endif
+    try {
+      request.open("GET", thePath, false);
+      request.send(null);
+                                
+      this.namesDoc = request.responseXML; 
+      if (!this.namesDoc && request.responseText)
+        throw("file exists but cannot be parsed as XML");
+
       this.bInitialized = true;
-//      this.initAutoCompleteList();
     }
+    catch(exc)
+    {
+      dump("Unable to load math units file \"" + this.sourceFile + "\"; exception is [" + exc + "].\n");
+      return null;
+    }
+
+//    this.namesDoc = document.implementation.createDocument("", "unitnames", null);
+//    var nodeList;
+//    var node;
+//    var s;
+//    var arrayElement;
+//    this.namesDoc.async = false;
+//    if (this.namesDoc.load("file:///" + unitNameFile.path))
+//    {
+//      this.bInitialized = true;
+////      this.initAutoCompleteList();
+//    }
   },
 
 //  initAutoCompleteList : function()
@@ -4899,15 +4947,26 @@ var msiAutosubstitutionList =
     var autosubsFile = basedir;
     autosubsFile.append("tagdefs");
     autosubsFile.append(this.autosubsFilename);
-    var subsDoc = document.implementation.createDocument("", "subs", null);
-    subsDoc.async = false;
-    if (subsDoc.load("file:///" + autosubsFile.path))
-    {
+
+    var request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"].createInstance();
+    request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
+    var thePath = "file:///" + autosubsFile.target;
+#ifdef XP_WIN32
+    thePath = thePath.replace("\\","/","g");
+#endif
+    try {
+      request.open("GET", thePath, false);
+      request.send(null);
+                                
+      var subsDoc = request.responseXML; 
+      if (!subsDoc && request.responseText)
+        throw("file exists but cannot be parsed as XML");
+
       this.bInitialized = true;
     }
-    else
+    catch(exc)
     {
-      dump("Unable to load autosubstitution file \"" + autosubsFile.path + "\"; aborting Auto Substitution dialog.\n");
+      dump("Unable to load autosubstitution file \"" + autosubsFile.path + "\"; exception is [" + exc + "]. Aborting Auto Substitution dialog.\n");
       return null;
     }
     return subsDoc;
