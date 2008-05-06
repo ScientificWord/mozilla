@@ -703,7 +703,7 @@ function checkKeyPressEvent(control, theEvent)
           dump("Null control in checkKeyPressEvent!\n");
           control = document.getElementById("keystrokesBox");
         }
-        control.controller.handleEnter();
+        control.controller.handleEnter(false);
         theEvent.stopPropagation();
         theEvent.preventDefault();
 //        dumpStr += "called theEvent.stopPropagation().\n";

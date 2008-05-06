@@ -93,7 +93,8 @@
 		      tooltiptext="&keystrokesBox.tooltip;" label="&keystrokesBox.label;"
           onkeypress="checkKeyPressEvent(this, event);"
           onfocus="this.select();"
-          ontextentered="changePattern(this.value);" />
+          ontextentered="changePattern(this.value);" 
+          ontextcommand="changePattern(this.value);" />
       </hbox>
       <hbox>
         <groupbox id="autosubTypeGroup">
