@@ -613,7 +613,8 @@ function ShutdownAllEditors()
         // the next two lines assign the OR of the two return values, but we can't use || since we
         // want the side effects of both function calls
         keepgoing = (!msiIsTopLevelEditor(editorList.item(i)));
-        if (msiCheckAndSaveDocument(editorList.item(i), "cmd_close", true)) keepgoing = true;
+        if (!keepgoing && msiCheckAndSaveDocument(editorList.item(i), "cmd_close", true))
+          keepgoing = true;
         if (keepgoing)
           ShutdownAnEditor(editorList.item(i));
         else break;
