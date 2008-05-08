@@ -152,3 +152,5 @@ pref("swp.plot.ZPts", "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow>
 pref("swp.bibtex.dir", "/swp55/TCITeX/BibTeX/bib");
 pref("security.xpconnect.plugin.unrestricted", true);
 pref("swp.spellchecker.enablerealtimespell", true);
+pref("ui.caretBlinkTime", 500);
+pref("ui.caretWidth", 1);
