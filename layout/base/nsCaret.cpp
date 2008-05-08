@@ -17,7 +17,6 @@
  *
  * The Initial Developer of the Original Code is
  * Netscape Communications Corporation.
- * Portions created by the Initial Developer are Copyright (C) 1998
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
@@ -576,8 +575,8 @@ nsCaret::DrawAtPositionWithHint(nsIDOMNode*             aNode,
 
   // now we have a frame, check whether it's appropriate to show the caret here
   const nsStyleUserInterface* userinterface = theFrame->GetStyleUserInterface();
-  if ((!mIgnoreUserModify &&
-       userinterface->mUserModify == NS_STYLE_USER_MODIFY_READ_ONLY) ||
+  if (// !mIgnoreUserModify &&
+// BBM -- testing       userinterface->mUserModify == NS_STYLE_USER_MODIFY_READ_ONLY) ||
       (userinterface->mUserInput == NS_STYLE_USER_INPUT_NONE) ||
       (userinterface->mUserInput == NS_STYLE_USER_INPUT_DISABLED))
   {
