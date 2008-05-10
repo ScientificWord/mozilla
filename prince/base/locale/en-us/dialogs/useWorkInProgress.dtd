@@ -1,0 +1,6 @@
+<!-- Copyright (c) 2008 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY useWIP.title         "Work in progress found">
+<!ENTITY useWIP.description   "A working directory for the document you selected still exists. This means that your previous editing session may have been interrupted. Do you want to resume editing this previous work instead of starting a new editing session? ">
+<!ENTITY useWIP.accept        "Yes, use it">
+<!ENTITY useWIP.cancel        "No, ignore it">
