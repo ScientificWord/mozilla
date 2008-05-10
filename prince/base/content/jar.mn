@@ -193,6 +193,7 @@ prince.jar:
   content/radicalProperties.js       (dialogs/radicalProperties.js)
   content/standaloneSidebar.js       (dialogs/standaloneSidebar.js)
   content/standaloneSidebar.xul      (dialogs/standaloneSidebar.xul)
+  content/useWorkInProgress.xul      (dialogs/useWorkInProgress.xul)
   content/bindings/sidebar.css		 (bindings/sidebar.css)
   content/bindings/sidebar.xml		 (bindings/sidebar.xml)
   content/bindings/structurebar.css	 (bindings/structurebar.css)
