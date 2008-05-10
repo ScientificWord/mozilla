@@ -2944,6 +2944,7 @@ function writeZipEntry(aZipWriter, relPath, sourceFile)
 function zipDirectory(aZipWriter, currentpath, sourceDirectory)
 {
   var e;
+  var f;
   e = sourceDirectory.directoryEntries;
   while (e.hasMoreElements())
   {
@@ -3045,7 +3046,28 @@ function createWorkingDirectory(documentfile)
     // first create a working directory for the extracted files
     var dir;
     dir.append(savedLeafname+"_work");
-    if (dir.exists()) dir.remove(true);
+    if (dir.exists())
+    {
+      var mainfile = dir.clone();
+      mainfile.append("main.xhtml");
+      if (mainfile.exists())
+      {
+  //          var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+///                            .getService(Components.interfaces.nsIPromptService);
+///          var buttonflags = (Components.interfaces.nsIPromptService.BUTTON_POS_0+Components.interfaces.nsIPromptService.BUTTON_POS_1) * Components.interfaces.nsIPromptService.BUTTON_TITLE_IS_STRING;
+///          var check = {value: false};
+///          var result = prompts.confirmEx(window, GetString("useWIP.title"), "Que pasa?",//GetString("useWIP.desription"),
+///              buttonflags, GetString("useWIP.accept"), GetString("useWIP.cancel"),null, null, check);
+        var data = {value: false};
+        result = window.openDialog("chrome://prince/content/useWorkInProgress.xul", "_blank", "chrome,titlebar,modal", data);
+  //      alert("Dialog returned "+result+"\n");
+        if (data.value)
+        {
+          return mainfile; 
+        }
+      }
+      dir.remove(true);
+    }
     dir.create(1, 0755);
 
     // we don't want to overwrite the backup file yet; wait until the user closes this file.
