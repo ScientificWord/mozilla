@@ -644,7 +644,7 @@ function msiGetParentEditor(editorElement)
 //  if ("msiParentEditor" in docElement)
 //    return docElement.msiParentEditor;
   }
-  dump("Can't find parent editor for editorElement " + editorElement.id);
+  dump("Can't find parent editor for editorElement " + editorElement.id + ".\n");
   return null;
 }
 
@@ -1347,7 +1347,6 @@ function msiGetRealBodyElement(theDocument)
   var theNodes = null;
   if (!theDocument.rootElement)
   {
-    dump("No rootElement for document in msiGetRealBodyElement!\n");
     theNodes = theDocument.getElementsByTagName(targetTag);
   }
   else
@@ -1371,6 +1370,8 @@ function msiGetRealBodyElement(theDocument)
   }
   else
     theElement = theDocument.rootElement;
+  if (theElement == null)
+    dump("No rootElement for document in msiGetRealBodyElement!\n");
   return theElement;
 }
 

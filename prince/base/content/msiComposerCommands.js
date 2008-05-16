@@ -2265,9 +2265,13 @@ function deleteWorkingDirectory(editorElement)
 #ifdef XP_WIN32
   htmlpath = htmlpath.replace("/","\\","g");
 #endif
-  workingDir.initWithPath( htmlpath );  
-  workingDir = workingDir.parent;       
-  workingDir.remove(1);
+  try
+  {
+    workingDir.initWithPath( htmlpath );  
+    workingDir = workingDir.parent;
+    if (workingDir.exists())
+      workingDir.remove(1);
+  } catch(exc) { msiDumpWithID("In deleteWorkingDirectory for editorElement [@], trying to delete directory [" + htmlpath + "]; exception is [" + exc + "].\n", editorElement); }
 }
 
 
