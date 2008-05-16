@@ -32,7 +32,7 @@
   onload="msiEditorOnLoad()"
   onunload=""
   onclose="return msiEditorCanClose()"
-  onfocus="msiEditorWindowOnFocus()"
+  onfocus="msiEditorWindowOnFocus(event)"
   contenttitlesetting="true"
   titlemodifier="&editorWindow.titlemodifier;"
         titlemenuseparator="&editorWindow.titlemodifiermenuseparator;"
