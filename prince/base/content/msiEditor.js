@@ -116,6 +116,8 @@ function msiAddToolbarPrefListener(editorElement)
 
 function msiRemoveToolbarPrefListener(editorElement)
 {
+  if (!("mEditorToolbarPrefListener" in editorElement))
+    return;
   try {
     var pbi = GetPrefs().QueryInterface(Components.interfaces.nsIPrefBranch2);
     pbi.removeObserver(kEditorToolbarPrefs, editorElement.mEditorToolbarPrefListener);
@@ -1468,15 +1470,19 @@ function ShutdownAnEditor(editorElement)
   {
     msiRemoveActiveEditor(editorElement);
     msiRemoveToolbarPrefListener(editorElement);
-    editorElement.mCSSPrefListener.shutdown();
-  } catch(e) { dump( "In ShutdownAnEditor, removing active editor and toolbar pref listener, error: " + e + "\n" ); }
+    if ("mCSSPrefListener" in editorElement)
+      editorElement.mCSSPrefListener.shutdown();
+  } catch(e) { msiDumpWithID( "In ShutdownAnEditor for editor [@], removing active editor and toolbar pref listener, error: " + e + "\n", editorElement ); }
 
   try {
     if (msiIsTopLevelEditor(editorElement)) deleteWorkingDirectory(editorElement);
     var commandManager = msiGetCommandManager(editorElement);
-    commandManager.removeCommandObserver(editorElement.mEditorDocumentObserver, "obs_documentCreated");
-    commandManager.removeCommandObserver(editorElement.mEditorDocumentObserver, "obs_documentWillBeDestroyed");
-    commandManager.removeCommandObserver(editorElement.mEditorDocumentObserver, "obs_documentLocationChanged");
+    if ("mEditorDocumentObserver" in editorElement)
+    {
+      commandManager.removeCommandObserver(editorElement.mEditorDocumentObserver, "obs_documentCreated");
+      commandManager.removeCommandObserver(editorElement.mEditorDocumentObserver, "obs_documentWillBeDestroyed");
+      commandManager.removeCommandObserver(editorElement.mEditorDocumentObserver, "obs_documentLocationChanged");
+    }
     if ("mInitialDocObserver" in editorElement && editorElement.mInitialDocObserver != null)
     {
       for (var ix = 0; ix < editorElement.mInitialDocObserver.length; ++ix)
@@ -1488,7 +1494,7 @@ function ShutdownAnEditor(editorElement)
         }
       }
     }
-  } catch (e) {dump( "In ShutdownAnEditor, removing command observers, error: " + e + "\n" );}   
+  } catch (e) {msiDumpWithID( "In ShutdownAnEditor for editor [@], removing command observers, error: " + e + "\n", editorElement );}   
 }
 
 function SafeSetAttribute(theDocument, nodeID, attributeName, attributeValue)
@@ -5697,6 +5703,8 @@ function msiDialogEditorContentFilter(anEditorElement)
       var startNode = null;
       if (initialParaNode.childNodes.length)
         startNode = initialParaNode.childNodes[0];
+      else
+        startNode = initialParaNode;
       var docRangeObj = doc.QueryInterface(Components.interfaces.nsIDOMDocumentRange);
       theRange = docRangeObj.createRange();
       theRange.setStart(startNode, 0);
@@ -5745,13 +5753,21 @@ function msiDialogEditorContentFilter(anEditorElement)
     {
       theFragment = theRange.cloneContents();
       theFragment.normalize();
+
+      this.checkForTrailingBreak(theFragment);
+//      var dumpStr = "In msiDialogEditorContentFilter.getContentsAsDocumentFragment, returning a docFragment containing: [";
+//      for (var ix = 0; ix < theFragment.childNodes.length; ++ix)
+//        dumpStr += this.mXmlSerializer.serializeToString(theFragment.childNodes[ix]);
+//      dump(dumpStr + "] for editorElement [" + this.mEditorElement.id + "].\n");
+
     }
     return theFragment;
   };
   this.getDocumentFragmentString = function()
   {
     var theString = "";
-    var theFragment = this.getContentsAsDocumentFragment();
+//    var theFragment = this.getContentsAsDocumentFragment();
+    var theFragment = this.getXMLNodesAsDocFragment();
     if (theFragment != null)
     {
       for (var ix = 0; ix < theFragment.childNodes.length; ++ix)
@@ -5774,7 +5790,8 @@ function msiDialogEditorContentFilter(anEditorElement)
   };
   this.getTextString = function()
   {
-    var theFragment = this.getContentsAsDocumentFragment();
+//    var theFragment = this.getContentsAsDocumentFragment();
+    var theFragment = this.getXMLNodesAsDocFragment();
     if (theFragment != null)
     {
 //      dump("In msiDialogEditorContentFilter.getTextString, returning [" + theFragment.textContent + "] for editorElement [" + this.mEditorElement.id + "].\n");
