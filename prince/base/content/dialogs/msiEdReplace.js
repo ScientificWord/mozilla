@@ -26,6 +26,62 @@ function initDialogObject()
   gReplaceDialog.replaceContentFilter = null;
 }
 
+function msiEditorChangeObserver(editorElement)
+{
+  this.mEditorElement = editorElement;
+  this.observe = function(aSubject, aTopic, aData)
+  {
+    // Should we allow this even if NOT the focused editor?
+//    msiDumpWithID("In autoSubstituteDialog documentCreated observer for editor [@], observing [" + aTopic + "].\n", this.mEditorElement);
+    if (!this.mEditorElement.docShell)
+    {
+      msiDumpWithID("In autoSubstituteDialog documentCreated observer for editor [@], returning as docShell is null.\n", this.mEditorElement);
+      return;
+    }
+    var commandManager = msiGetCommandManager(this.mEditorElement);
+    if (commandManager != aSubject)
+    {
+      msiDumpWithID("In msiEdReplace documentCreated observer for editor [@], observing [" + aTopic + "]; returning, as commandManager doesn't equal aSubject; aSubject is [" + aSubject + "], while commandManager is [" + commandManager + "].\n", this.mEditorElement);
+//      if (commandManager != null)
+        return;
+    }
+
+    switch(aTopic)
+    {
+      case "cmd_bold":
+      case "cmd_setDocumentModified":
+      {
+        msiDumpWithID("In msiEdReplace command observer [" + aTopic + "] for editor [@]; calling doEnabling().\n", this.mEditorElement);
+        doEnabling();
+      }
+      break;
+
+      case "obs_documentCreated":
+      {
+        var bIsRealDocument = false;
+        var currentURL = msiGetEditorURL(this.mEditorElement);
+        msiDumpWithID("In msiEdReplace documentCreated observer for editor element [@], currentURL is " + currentURL + "].\n", this.mEditorElement);
+        if (currentURL != null)
+        {
+          var fileName = GetFilename(currentURL);
+          bIsRealDocument = (fileName != null && fileName.length > 0);
+        }
+        if (bIsRealDocument)
+        {
+          if (!gReplaceDialog.bEditorReady)
+          {
+            gReplaceDialog.bEditorReady = true;
+          }
+        }
+//        else
+          msiDumpWithID("In msiEdReplace documentCreated observer for editor [@], bIsRealDocument is false.\n", this.mEditorElement);
+//        setControlsForSubstitution();
+      }
+      break;
+    }
+  };
+}
+
 function loadDialog()
 {
   // Set initial dialog field contents.
@@ -40,6 +96,21 @@ function loadDialog()
                                                 : gFindService.searchString);
   if (theStringSource != null && theStringSource.length == 0)
     theStringSource = null;
+
+  gReplaceDialog.bEditorReady = false;
+  var substitutionControlObserver = new msiEditorChangeObserver(gReplaceDialog.findInput);
+  var commandBoldObserverData = new Object();
+  commandBoldObserverData.mCommand = "cmd_bold";
+  commandBoldObserverData.mObserver = substitutionControlObserver;
+  var commandSetModifiedObserverData = new Object();
+  commandSetModifiedObserverData.mCommand = "cmd_setDocumentModified";
+  commandSetModifiedObserverData.mObserver = substitutionControlObserver;
+  var editorDocLoadedObserverData = new Object();
+  editorDocLoadedObserverData.mCommand = "obs_documentCreated";
+  editorDocLoadedObserverData.mObserver = substitutionControlObserver;
+
+  gReplaceDialog.findInput.mInitialDocObserver = [commandSetModifiedObserverData, editorDocLoadedObserverData, commandBoldObserverData];
+
 //  msiInitializeEditorForElement(gReplaceDialog.findInput, theStringSource, true);
 
   var theStringSource2 = gFindService.replaceString;
@@ -509,6 +580,7 @@ function doEnabling()
     gReplaceDialog.findContentFilter = new msiDialogEditorContentFilter(gReplaceDialog.findInput);
 //  var findStr = gReplaceDialog.findContentFilter.getMarkupString();  - this is what it should be
   var findStr = gReplaceDialog.findContentFilter.getTextString();
+  dump("In msiEdReplace.doEnabling, findStr was [" + findStr + "].\n");
   if (findStr.length <= 0)
     findStr = null;
 //  var repStr = gReplaceDialog.replaceInput.value;  //Not used anyway - we'd probably want to check the serialized data more closely otherwise?
