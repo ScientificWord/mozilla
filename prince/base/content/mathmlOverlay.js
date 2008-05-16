@@ -1050,7 +1050,7 @@ function reviseBinomial(objectNode, openingBracket, closingBracket, lineSpec, si
           newLast = msiSetMathTokenText(lastNode, closingBracket, editor);
 
         var fracNode = theChildren[1];
-        if (fracNode.nodeName != "mfrac")
+        if (msiGetBaseNodeName(fracNode) != "mfrac")
           dump("Problem in reviseBinomial - the second node isn't an mfrac, but is a <" + fracNode.nodeName + ">.\n");
         var theLineSpec = null;
         if (lineSpec.length > 0)
