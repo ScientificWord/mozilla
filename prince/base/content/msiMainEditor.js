@@ -497,15 +497,25 @@ function msiRemoveItem(id)
 }
 
 
-function msiEditorWindowOnFocus()
+function msiEditorWindowOnFocus(event)
 {
   var commandDispatcher = window.document.commandDispatcher;
   var currElement = commandDispatcher.focusedElement;
   var changeActiveEditor = true;
-  if (currElement)
+  var targetElement = event.explicitOriginalTarget;
+  if (targetElement == null)
+    targetElement = event.originalTarget;
+  var bFound = false;
+  var targsToCheck = new Array(currElement);
+  if ((targetElement != null) && (targetElement != currElement))
+    targsToCheck.push(targetElement);
+  for (var ix = 0; !bFound && ix < targsToCheck.length; ++ix)
   {
-    switch(currElement.nodeName)
+    if ( (targsToCheck[ix] == null) || !("nodeName" in targsToCheck[ix]) )
+      continue;
+    switch(targsToCheck[ix].nodeName)
     {
+      case "#document":
       case "menu":
       case "menulist":
       case "menuitem":
@@ -518,23 +528,43 @@ function msiEditorWindowOnFocus()
       case "listitem":
       case "listcell":
         changeActiveEditor = false;
+        bFound = true;
       break;
       case "input":
       case "html:input":
       case "textbox":
+        bFound = true;
         if (msiFindParentOfType(currElement, "toolbar", "window"))
           changeActiveEditor = false;
       break;
+      case "":
+        changeActiveEditor = false;
+      break;
+      default:
+        bFound = true;
+      break; 
     }
-//Logging stuff only
-    var logString = "Focus element reported as [" + currElement.nodeName + "] in msiEditorOnFocus; changeActiveEditor is [";
-    if (changeActiveEditor)
-      logString += "true";
-    else
-      logString += "false";
-    msiKludgeLogString(logString + "].\n");
-//End logging stuff only
   }
+//Logging stuff only
+  if (!bFound)
+    changeActiveEditor = false;
+
+  var logString = msiEditorStateLogString(window);
+  logString += " Focus element reported as [";
+  if ((currElement != null) && ("nodeName" in currElement))
+    logString += currElement.nodeName;
+  logString += "] in msiEditorOnFocus; ";
+  if (targsToCheck.length > 1)
+    logString += "event target is [";
+  if ((targsToCheck[1] != null) && ("nodeName" in targsToCheck[1]))
+    logString += targsToCheck[1].nodeName;
+  logString += "]; changeActiveEditor is [";
+  if (changeActiveEditor)
+    logString += "true";
+  else
+    logString += "false";
+  msiKludgeLogString(logString + "].\n");
+//End logging stuff only
 
   if (changeActiveEditor)
   {
