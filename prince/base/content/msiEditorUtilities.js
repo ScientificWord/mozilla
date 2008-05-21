@@ -2988,9 +2988,9 @@ function msiFindOriginalDocname(docUrlString)
   var regEx = /\/main.xhtml$/i;  // BBM: localize this
   if (regEx.test(path))
   {
-    var parentDirRegEx = /(.*\/)([A-Za-z0-9_\b\-]*)_work\/main.xhtml$/i; //BBM: localize this
+    var parentDirRegEx = /(.*\/)([A-Za-z0-9_ \b\-]*)_work\/main.xhtml$/i; //BBM: localize this
     var arr = parentDirRegEx.exec(path);
-    if ((arr.length > 2) && arr[2].length > 0)
+    if (arr && (arr.length > 2) && arr[2].length > 0)
       path = arr[1]+arr[2]+".sci";
   }
   return path;
