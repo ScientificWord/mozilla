@@ -236,6 +236,7 @@ function UpdateWindowTitle()
     var editorElement = msiGetTopLevelEditorElement();
     var windowTitle;
      windowTitle = msiGetDocumentTitle(editorElement);
+     windowTitle = unescape(windowTitle);
      if (!windowTitle)
        windowTitle = GetString("untitled");
 
@@ -248,7 +249,7 @@ function UpdateWindowTitle()
       var regEx = /\/main.xhtml$/i;  // BBM: localize this
       if (regEx.test(path))
       {
-        var parentDirRegEx = /(.*\/)([A-Za-z0-9_\b\-]*)_work\/main.xhtml$/i; //BBM: localize this
+        var parentDirRegEx = /(.*\/)([^\/]*)_work\/main.xhtml$/i; //BBM: localize this
         var arr = parentDirRegEx.exec(path);
         if ((arr.length > 2) && arr[2].length > 0)
           docUrl = arr[1]+arr[2]+".sci";
@@ -258,6 +259,7 @@ function UpdateWindowTitle()
       var filename  = GetFilename(docUrl);
       if (!filename || filename.length == 0)
         filename = GetFilename(docUrl);
+      filename = unescape(filename);
 
       // Save changed title in the recent pages data in prefs
       SaveRecentFilesPrefs();
@@ -335,17 +337,28 @@ function SaveRecentFilesPrefs()
 
   for (var i = 0; i < historyCount && urlArray.length < historyCount; i++)
   {
-    var url = GetUnicharPref("editor.history_url_"+i);
+    var url = unescape(GetUnicharPref("editor.history_url_"+i));
 
     // Continue if URL pref is missing because 
-    //  a URL not found during loading may have been removed
+    // a URL not found during loading may have been removed
 
-    // Skip over current an "data" URLs
+    // Skip over current and "data" URLs
     if (url && url != curUrl && GetScheme(url) != "data")
     {
-      var title = GetUnicharPref("editor.history_title_"+i);
-      titleArray.push(unescape(title));
-      urlArray.push(unescape(url));
+      var title = unescape(GetUnicharPref("editor.history_title_"+i));
+      var duplicate = false;
+      for (var j = 0; j <urlArray.length; j++)
+      {
+        if (title == titleArray[j] && url == urlArray[j])
+        {
+          duplicate = true;
+          break;
+        }
+      }
+      if (!duplicate) {
+        titleArray.push(title);
+        urlArray.push(url);
+      }
     }
   }
 
