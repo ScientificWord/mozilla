@@ -265,6 +265,7 @@ function msiGetComposerCommandTable(editorElement)
   }
 
   if (controller)
+
   {
     var interfaceRequestor = controller.QueryInterface(Components.interfaces.nsIInterfaceRequestor);
     return interfaceRequestor.getInterface(Components.interfaces.nsIControllerCommandTable);
@@ -587,6 +588,7 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
     var editor = msiGetEditor(editorElement);
     var ns = new Object;
     if (commandID=="cmd_texttag" && editor && editor.tagListManager && editor.tagListManager.getClearTextTag(ns) == newState)
+
     {
       msiGoDoCommand('cmd_removeStyles');
     }
@@ -2260,11 +2262,16 @@ function msiSoftSave( editor, editorElement)
 function deleteWorkingDirectory(editorElement)
 {
   var htmlurlstring = msiGetEditorURL(editorElement); 
+  if (!htmlurlstring || htmlurlstring.length == 0) return;
   var workingDir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
   var htmlpath = GetFilepath(htmlurlstring);
 #ifdef XP_WIN32
   htmlpath = htmlpath.replace("/","\\","g");
 #endif
+// we know we shouldn't delete the directory unless it really is a working directory; i.e., unless it 
+// ends with "_work/main.xhtml"
+  var regEx = /_work\/main.xhtml$/i;  // BBM: localize this
+  if (regEx.test(htmlpath))
   try
   {
     workingDir.initWithPath( htmlpath );  
@@ -2272,6 +2279,7 @@ function deleteWorkingDirectory(editorElement)
     if (workingDir.exists())
       workingDir.remove(1);
   } catch(exc) { msiDumpWithID("In deleteWorkingDirectory for editorElement [@], trying to delete directory [" + htmlpath + "]; exception is [" + exc + "].\n", editorElement); }
+  else dump("Trying to remove 'work directory': "+htmlpath+"\n");
 }
 
 
@@ -4591,6 +4599,7 @@ function msiInsertBreaks(dialogData, editorElement)
     newLine:                "<br xmlns=\"" + xhtmlns + "\"></br>"
   };
   var alternateContentFromBreakType = 
+
   {
     allowBreak:             "|",
     discretionaryHyphen:    "-",
@@ -7212,6 +7221,7 @@ var msiTableOrCellColorCommand =
     return msiIsInTable(editorElement);
   },
 
+
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
@@ -7349,6 +7359,7 @@ function msiNote(currNode, editorElement)
     try
     {
       if (currNode.getAttribute("hide") == "true") data.hide=true;
+
     }
     catch(e){}
   }
