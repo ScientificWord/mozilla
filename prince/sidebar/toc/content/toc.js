@@ -72,15 +72,25 @@ function ensureAllStructureTagsHaveIds(doc)
 //    dump( 'Error: Document tree modified during iteration ' + e );
 //  }
   var i, j;
-  var list;              ;
-  var n = 3141592
+  var list; 
+  var idstring;             
+  var n = 3141592;
+  var prefix = 'tsid_';//temp structure id
+  var regexp= /^(31415|tsid_)/;
   for (i=0; i<tagarray.length; i++)
   {
     list=doc.getElementsByTagName(tagarray[i]);
     for (j=0; j<list.length; j++)
-    {
-      if (!list[j].hasAttribute("id"))
-        list[j].setAttribute("id", (n++).toString());
+    {                          
+      if (list[j].hasAttribute("id"))
+      {
+        idstring =list[j].getAttribute("id");
+        if (regexp.test(idstring)) list[j].setAttribute("id",prefix+(n++).toString());
+      }
+      else
+      {
+        list[j].setAttribute("id", prefix + (n++).toString());
+      }
     }
   }
 }                    
