@@ -6,7 +6,8 @@
       <handler event="keypress" keycode="VK_DOWN" command="cmd_lineNext"/>
       <handler event="keypress" keycode="VK_UP" command="cmd_selectLinePrevious" modifiers="shift"/>
       <handler event="keypress" keycode="VK_DOWN" command="cmd_selectLineNext" modifiers="shift"/>
-      <handler event="keypress" keycode="VK_TAB" command="cmd_insertSubstructure" modifiers="accel"/>
+      <!--handler event="keypress" keycode="VK_TAB" command="cmd_insertSubstructure" modifiers="accel"/ -->
+      <handler event="keypress" key=">" command="cmd_insertSubstructure" modifiers="accel,shift"/>
       <handler event="keypress" keycode="VK_F3" command="cmd_findNext" />
       <handler event="keypress" keycode="VK_F3" command="cmd_findPrev" modifiers="shift"/>
       <handler event="keypress" key="z" command="cmd_undo" modifiers="accel"/>
