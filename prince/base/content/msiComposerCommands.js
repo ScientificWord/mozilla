@@ -876,7 +876,7 @@ var msiNewCommand =
       dump("Ready to edit shell: " + fp.fileURL.spec +"\n");
       try {
         newdocumentfile = createWorkingDirectory(fp.file);
-        msiEditPage(escape("file:///"+newdocumentfile.path), window, false);
+        msiEditPage("file:///"+newdocumentfile.path, window, false);
       } catch (e) { dump("msiEditPage failed: "+e+"\n"); }
     }
   }
@@ -2265,21 +2265,21 @@ function deleteWorkingDirectory(editorElement)
   if (!htmlurlstring || htmlurlstring.length == 0) return;
   var workingDir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
   var htmlpath = GetFilepath(htmlurlstring);
-#ifdef XP_WIN32
-  htmlpath = htmlpath.replace("/","\\","g");
-#endif
 // we know we shouldn't delete the directory unless it really is a working directory; i.e., unless it 
 // ends with "_work/main.xhtml"
   var regEx = /_work\/main.xhtml$/i;  // BBM: localize this
   if (regEx.test(htmlpath))
   try
   {
+#ifdef XP_WIN32
+    htmlpath = htmlpath.replace("/","\\","g");
+#endif
     workingDir.initWithPath( htmlpath );  
     workingDir = workingDir.parent;
     if (workingDir.exists())
       workingDir.remove(1);
   } catch(exc) { msiDumpWithID("In deleteWorkingDirectory for editorElement [@], trying to delete directory [" + htmlpath + "]; exception is [" + exc + "].\n", editorElement); }
-  else dump("Trying to remove 'work directory': "+htmlpath+"\n");
+  else alert("Trying to remove 'work directory': "+htmlpath+"\n");
 }
 
 
@@ -2408,7 +2408,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   if (replacing)
   {
     currentSciFile.initWithPath( currentSciFilePath );  // now = A.sci
-    destLocalFile = currentSciFile;
+    destLocalFile = currentSciFile;       // clone???
   }
   leafname = destLocalFile.leafName;
   leafname = leafname.slice(0, leafname.lastIndexOf("."));
@@ -2477,8 +2477,11 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
     editorElement.isShellFile = false;
     if (doUpdateURI)
     {
+      workingDir.moveTo(null, leafname+"_work"); 
+      var newMainfile = workingDir.clone();
+      newMainfile.append("main.xhtml");
       //Create a new uri from nsILocalFile
-      var newURI = msiGetFileProtocolHandler().newFileURI(tempfile);
+      var newURI = msiGetFileProtocolHandler().newFileURI(newMainfile);
 
       // We need to set new document uri before notifying listeners
       SetDocumentURI(newURI);
