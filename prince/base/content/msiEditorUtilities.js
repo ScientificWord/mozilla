@@ -835,7 +835,7 @@ function findEditorElementForDocument(innerDocument)
 {
   if (!innerDocument)
   {
-    AlertWithTitle("Error in msiEditorUtilities.js", "Null innerDocument passed into findEditorElementForDocument!");
+//    AlertWithTitle("Error in msiEditorUtilities.js", "Null innerDocument passed into findEditorElementForDocument!");
     return null;
   }
 
@@ -2875,15 +2875,20 @@ function getUntitledName(destinationDirectory)
 {
   var untitled = "untitled";
   var f = destinationDirectory.clone();
+  var ffile;
+  var fdir;
   var count = 1; 
   var maxcount = 100; // a maximum allowed for files named "untitledxx.sci"
   while (count < maxcount)
   {
-    f.append(untitled+(count++).toString()+".sci");
-    if (!f.exists()) return f.leafName;
-    f = f.parent;
+    ffile = f.clone();
+    fdir = f.clone();
+    ffile.append(untitled+(count).toString()+".sci");
+    fdir.append(untitled+(count++).toString()+"_work");
+    fdir.append("main.xhtml");
+    if (!ffile.exists() && !fdir.exists()) return ffile.leafName;
   }
-  alert("too many files in directory called 'untitledxx.sci'"); // BBM: fix this up
+  alert("too many files called 'untitledxx.sci' in directory "); // BBM: fix this up
   return "";
 };
     
@@ -3060,7 +3065,7 @@ function createWorkingDirectory(documentfile)
 ///          var result = prompts.confirmEx(window, GetString("useWIP.title"), "Que pasa?",//GetString("useWIP.desription"),
 ///              buttonflags, GetString("useWIP.accept"), GetString("useWIP.cancel"),null, null, check);
         var data = {value: false};
-        result = window.openDialog("chrome://prince/content/useWorkInProgress.xul", "_blank", "chrome,titlebar,modal", data);
+        var result = window.openDialog("chrome://prince/content/useWorkInProgress.xul", "_blank", "chrome,titlebar,modal", data);
   //      alert("Dialog returned "+result+"\n");
         if (data.value)
         {
