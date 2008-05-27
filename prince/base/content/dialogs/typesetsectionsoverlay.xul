@@ -193,7 +193,7 @@
       <vbox flex="1"/>
       <vbox align="center">
         <label observes="leftalignment" value="Left heading indent"> <observes element="leftalignment"	attribute="msicollapsed"/></label>
-        <textbox id="tbsectleftheadingmargin" style="width: 3.5em" min="-300" increment="1"
+        <textbox id="tbsectleftheadingmargin" type="number" style="width:5em" min="-300" increment="1"
           tooltip="The left indent for the heading" observes="leftalignment" value="0" onfocus="toggleselection(document.getElementById('sectleftheadingmargin'));">
         </textbox>
         <observes element="leftalignment"	attribute="msicollapsed"/>
@@ -203,7 +203,7 @@
       <spacer/>
       <vbox align="center">
         <label value="Right heading indent" ><observes element="rightalignment"	attribute="msicollapsed"/></label>
-        <textbox id="tbsectrightheadingmargin" style="width: 3.5em" min="-300" increment="1" 
+        <textbox id="tbsectrightheadingmargin" type="number" style="width:5em" min="-300" increment="1" 
           tooltip="The right indent for the heading" observes="rightalignment" value="30" onfocus="toggleselection(document.getElementById('sectrightheadingmargin'));">
         </textbox>
         <observes element="rightalignment"	attribute="msicollapsed"/>
