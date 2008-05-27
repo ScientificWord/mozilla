@@ -1,3 +1,12 @@
 user.jar:
 % content user %content/  
 * content/macros.js                 (content/macros.js)
+  content/prototype.js              (../../dom/tests/mochitest/ajax/prototype/dist/prototype.js)
+  content/builder.js				(../../dom/tests/mochitest/ajax/scriptaculous/src/builder.js)
+  content/controls.js				(../../dom/tests/mochitest/ajax/scriptaculous/src/controls.js)
+  content/dragdrop.js				(../../dom/tests/mochitest/ajax/scriptaculous/src/dragdrop.js)
+  content/effects.js				(../../dom/tests/mochitest/ajax/scriptaculous/src/effects.js)
+  content/scriptaculous.js			(../../dom/tests/mochitest/ajax/scriptaculous/src/scriptaculous.js)
+  content/slider.js					(../../dom/tests/mochitest/ajax/scriptaculous/src/slider.js)
+  content/sound.js					(../../dom/tests/mochitest/ajax/scriptaculous/src/sound.js)
+  content/unittest.js				(../../dom/tests/mochitest/ajax/scriptaculous/src/unittest.js)
