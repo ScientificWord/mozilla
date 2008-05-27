@@ -22,14 +22,14 @@ BEGIN
     BEGIN
         BLOCK "000004b0"
         BEGIN
-            VALUE "Comments",         "Hi"
-            VALUE "LegalCopyright",   "Prototype"
+            VALUE "Comments",         ""
+            VALUE "LegalCopyright",   "Copyright 2006 by MacKichan Software, Inc."
             VALUE "CompanyName",      "MacKichan Software, Inc."
             VALUE "FileDescription",  "MuPAD Wrapper DLL from Jack"
-            VALUE "FileVersion",      "Personal Debug"
-            VALUE "ProductVersion",   "Personal Debug"
+            VALUE "FileVersion",      ""
+            VALUE "ProductVersion",   ""
             VALUE "InternalName",     "Prince"
-            VALUE "LegalTrademarks",  "Scientific WorkPlace, etc."
+            VALUE "LegalTrademarks",  "Scientific WorkPlace, Scientific Word, Scientific Notebook copyright MacKichan Software, Inc."
             VALUE "OriginalFilename", "MuPWrapperDLL.dll"
 
             VALUE "PrivateBuild",     ""
