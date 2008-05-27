@@ -36,7 +36,7 @@
    - ***** END LICENSE BLOCK ***** -->
 
 <!ENTITY sidebar.title           "Sidebar">
-<!ENTITY actions.label           "actions">
+<!ENTITY actions.label           "Actions">
 
 <!ENTITY closeMenu.label         "Close">
 <!ENTITY closeMenu.accesskey     "c">
