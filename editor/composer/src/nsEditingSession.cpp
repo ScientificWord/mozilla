@@ -292,6 +292,7 @@ const char* const gSupportedTextTypes[] = {
   "text/css",
   "text/rdf",
   "text/xsl",
+  "text/tex",
   "text/javascript",           // obsolete type
   "text/ecmascript",           // obsolete type
   "application/javascript",
