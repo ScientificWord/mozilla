@@ -636,16 +636,8 @@ function insertGraph (siblingElement, graph, editorElement) {
 #endif
     documentfile.initWithPath( currFilePath );
 
-    var newdirname = documentfile.leafName;
-    var lastDot = newdirname.lastIndexOf(".");
-    if (lastDot != -1) {
-      newdirname = newdirname.slice(0, lastDot);
-    }
-    newdirname = newdirname + "_files";
     currdocdirectory = documentfile.parent.clone();
     docauxdirectory = currdocdirectory.clone();
-    docauxdirectory.append(newdirname);
-    if (!docauxdirectory.exists()) docauxdirectory.create(1, 0755);
     docauxdirectory.append("plots");
     if (!docauxdirectory.exists()) docauxdirectory.create(1, 0755);
     leaf = createUniqueFileName("plot", filetype);
@@ -659,7 +651,7 @@ function insertGraph (siblingElement, graph, editorElement) {
   }
 //  dump("In insertGraph, about to computeGraph.\n");
   graph.computeGraph (editorElement, longfilename);
-  graph.setGraphAttribute("ImageFile", "resource://docdir/plots/"+leaf);
+  graph.setGraphAttribute("ImageFile", "plots/"+leaf);
   addGraphElementToDocument (graph.createGraphDOMElement(false), siblingElement, editorElement);
 }
 
