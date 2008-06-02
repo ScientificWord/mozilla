@@ -46,6 +46,7 @@ function AlertWithTitle(title, message, parentWindow)
 //  return false;
 //}
 //
+
 ///************* String Utilities ***************/
 //
 function GetString(name)
@@ -285,6 +286,7 @@ function clearPrevActiveEditor(timerData)
     } catch(exc) {dump("In clearPrevActiveEditor, unable to retrieve curr focused element, error is [" + exc + "].\n");}
   }
 //End logging stuff
+
   if (theWindow.msiClearEditorTimerList != null)
   {
     logStr += ";\n  clearPrevActiveEditor called, ";
@@ -2498,6 +2500,7 @@ function propertyDialogList(theWindow)
     return null;
   }
   this.findEntryForDialog = function(theDialog)
+
   {
     for (var entry in this.ourList)
     {
@@ -2649,6 +2652,7 @@ function msiSetRelevantElementsEnabledById(elementID, doEnable)
 function SetElementEnabledById(elementID, doEnable)
 {
   SetElementEnabled(document.getElementById(elementID), doEnable);
+
 }
 
 function SetElementEnabled(element, doEnable)
@@ -3072,7 +3076,9 @@ function createWorkingDirectory(documentfile)
           return mainfile; 
         }
       }
-      dir.remove(true);
+      var regEx = /_work$/i;  // BBM: localize this
+      if (regEx.test(dir.path))
+        dir.remove(true);
     }
     dir.create(1, 0755);
 
@@ -3279,6 +3285,10 @@ function msiRevertFile (aContinueEditing, documentfile, del) // an nsILocalFile
 #ifdef XP_WIN32
     path = path.replace("\\","/","g");
 #endif
+    var regEx = /_work\/main.xhtml$/i;  // BBM: localize this
+    var isSciFile = regEx.test(path);
+    if (!isSciFile) return;
+    
     path = msiFindOriginalDocname(path);
     var leafregex = /.*\/([^\/\.]+)\.sci$/i;
     var arr = leafregex.exec(path);
@@ -3942,6 +3952,7 @@ function msiViewSettings(viewFlags)
     if (!this.showInvisibles)
       theFlags |= this.hideInvisiblesFlag;
     if (!this.showHelperLines)
+
       theFlags |= this.hideHelperLinesFlag;
     if (!this.showInputBoxes)
       theFlags |= this.hideInputBoxesFlag;
@@ -4069,6 +4080,7 @@ function msiPrintOptions(printFlags)
     if (this.useCurrViewSettings != otherOptions.useCurrViewSettings)
       return false;
     if (this.printInvisibles != otherOptions.printInvisibles)
+
       return false;
     if (this.printHelperLines != otherOptions.printHelperLines)
       return false;
@@ -5234,6 +5246,7 @@ var msiNavigationUtils =
   {
     var retVal = -1;
     for (var ix = 0; ix < aNode.parentNode.childNodes.length; ++ix)
+
     {
       if (aNode.parentNode.childNodes[ix] == aNode)
       {
@@ -5306,6 +5319,7 @@ var msiNavigationUtils =
   },
 
   getFirstSignificantChild : function(node)
+
   {
     var children = this.getSignificantContents(node);
     if (children.length > 0)
