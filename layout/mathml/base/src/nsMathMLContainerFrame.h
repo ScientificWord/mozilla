@@ -308,6 +308,19 @@ public:
   static nsresult
   ReLayoutChildren(nsIFrame* aParentFrame, nsFrameState aBits);
 
+   NS_IMETHOD
+   MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+
+   NS_IMETHOD
+   MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+
+   NS_IMETHOD
+   EnterFromLeft(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+
+   NS_IMETHOD
+   EnterFromRight(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+
+
 protected:
   // Helper method which positions child frames as an <mrow> on given baseline
   // y = aBaseline starting from x = aOffsetX, calling FinishReflowChild()
@@ -342,10 +355,12 @@ private:
 // 2) proper inter-frame spacing
 // 3) firing of Stretch() (in which case FinalizeReflow() would have to be cleaned)
 // Issues: If/when mathml becomes a pluggable component, the separation will be needed.
-class nsMathMLmathBlockFrame : public nsBlockFrame {
+class nsMathMLmathBlockFrame : public nsBlockFrame,
+                               public nsMathMLFrame {
 public:
   friend nsIFrame* NS_NewMathMLmathBlockFrame(nsIPresShell* aPresShell,
           nsStyleContext* aContext, PRUint32 aFlags);
+  NS_DECL_ISUPPORTS_INHERITED
 
   // beware, mFrames is not set by nsBlockFrame
   // cannot use mFrames{.FirstChild()|.etc} since the block code doesn't set mFrames
@@ -401,8 +416,21 @@ public:
   }
 
   virtual PRBool IsFrameOfType(PRUint32 aFlags) const {
-    return nsBlockFrame::IsFrameOfType(aFlags & ~(nsIFrame::eMathML));
+    return nsBlockFrame::IsFrameOfType(aFlags  & ~(nsIFrame::eMathML));
   }
+
+  NS_IMETHOD
+  MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+
+  NS_IMETHOD
+  MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+
+  NS_IMETHOD
+  EnterFromLeft(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+
+  NS_IMETHOD
+  EnterFromRight(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+
 
 protected:
   nsMathMLmathBlockFrame(nsStyleContext* aContext) : nsBlockFrame(aContext) {
@@ -415,9 +443,12 @@ protected:
 
 // --------------
 
-class nsMathMLmathInlineFrame : public nsInlineFrame {
+class nsMathMLmathInlineFrame : public nsInlineFrame, 
+                                public nsMathMLFrame 
+{
 public:
   friend nsIFrame* NS_NewMathMLmathInlineFrame(nsIPresShell* aPresShell, nsStyleContext* aContext);
+  NS_DECL_ISUPPORTS_INHERITED
 
   NS_IMETHOD
   SetInitialChildList(nsIAtom*        aListName,
@@ -473,6 +504,19 @@ public:
   virtual PRBool IsFrameOfType(PRUint32 aFlags) const {
     return nsInlineFrame::IsFrameOfType(aFlags & ~(nsIFrame::eMathML));
   }
+
+  NS_IMETHOD
+  MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+
+  NS_IMETHOD
+  MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+
+  NS_IMETHOD
+  EnterFromLeft(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+
+  NS_IMETHOD
+  EnterFromRight(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+
 
 protected:
   nsMathMLmathInlineFrame(nsStyleContext* aContext) : nsInlineFrame(aContext) {}

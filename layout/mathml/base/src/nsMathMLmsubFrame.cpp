@@ -46,6 +46,7 @@
 #include "nsStyleConsts.h"
 #include "nsIRenderingContext.h"
 #include "nsIFontMetrics.h"
+#include "nsMathCursorUtils.h"
 
 #include "nsMathMLmsubFrame.h"
 
@@ -213,5 +214,45 @@ nsMathMLmsubFrame::PlaceSubScript (nsPresContext*      aPresContext,
     FinishReflowChild (subScriptFrame, aPresContext, nsnull, subScriptSize, dx, dy, 0);
   }
 
+  return NS_OK;
+}
+
+nsresult
+nsMathMLmsubFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count)
+{
+  printf("msub MoveOutToRight, count = %d\n", count);
+  nsIFrame * pFrame = GetFirstChild(nsnull);
+  nsCOMPtr<nsMathMLFrame> pMathMLFrame;
+  if (count > 0) count--;
+  if (leavingFrame == nsnull)  // entering base
+  {
+    pMathMLFrame = do_QueryInterface(pFrame);
+    if (pMathMLFrame) pMathMLFrame->EnterFromLeft(aOutFrame, aOutOffset, count);
+    else printf("Malformed msup -- no children\n");
+  }
+  else if (pFrame && pFrame == leavingFrame) // we are leaving the base; reduce count by one and go into the exponent
+  {
+    pFrame = pFrame->GetNextSibling();
+    pMathMLFrame = do_QueryInterface(pFrame);
+    if (pMathMLFrame) pMathMLFrame->EnterFromLeft(aOutFrame, aOutOffset, count);
+    else printf("Malformed msup\n");
+  }
+  else
+  {
+    nsIFrame * pParent;
+    // leaving the superscript position; decrease count.
+    pParent = GetParent();
+    pMathMLFrame = do_QueryInterface(pParent);
+    if (pMathMLFrame) pMathMLFrame->MoveOutToRight(this, aOutFrame, aOutOffset, count);
+    else printf("msup not a child of mathml???\n");
+  }
+  return NS_OK;  
+}
+
+
+nsresult
+nsMathMLmsubFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count)
+{
+  printf("msub MoveOutToLeft, count = %d\n", count);
   return NS_OK;
 }

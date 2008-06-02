@@ -6,10 +6,11 @@
 #include "nsFrameSelection.h"
 
 
-PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsPeekOffsetStruct** paPos, PRUint32& count)
+PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count)
 {
   nsIFrame * pChild;
   nsIFrame * pParent;
+  nsCOMPtr<nsIContent> pContent;
   nsCOMPtr<nsMathMLFrame> pMathMLFrame;
   if (fInside) // we put the cursor at the end of the contents of pFrame; we do not recurse.
   {
@@ -20,36 +21,37 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsPeekOffsetStruct**
     pMathMLFrame = do_QueryInterface(pChild);
     if (pMathMLFrame) // last child is a math ml frame. Put the cursor after it.
     {
-      (*paPos)->mResultContent = pFrame->GetContent();
-      (*paPos)->mContentOffset = 1+(*paPos)->mResultContent->IndexOf(pChild->GetContent());
+      pContent = pFrame->GetContent();
+      *aOutOffset = 1+pContent->IndexOf(pChild->GetContent());
       if (count>0) count--;
-      (*paPos)->mResultFrame = pFrame; 
-      (*paPos)->mMath = PR_TRUE;
+      *aOutFrame = pFrame; 
+//      (*paPos)->mMath = PR_TRUE;
     }
     else // child is not math, assumed to be text
     {
-      (*paPos)->mResultContent = pChild->GetContent();
-      (*paPos)->mContentOffset = -1;           // largest possible value gets converted eventually to the end.
+      pContent = pChild->GetContent();
+      *aOutOffset = -1;           // largest possible value gets converted eventually to the end.
       if (count>0) count--;
-      (*paPos)->mResultFrame = pChild; 
-      (*paPos)->mMath = PR_TRUE;
+      *aOutFrame = pChild; 
+//      (*paPos)->mMath = PR_TRUE;
     }
   }
   else // don't put the cursor inside the tag
   {
     pParent = pFrame->GetParent();
-    (*paPos)->mResultContent = pParent->GetContent();
-    (*paPos)->mContentOffset = 1+(*paPos)->mResultContent->IndexOf(pFrame->GetContent());
-    (*paPos)->mResultFrame = pParent; 
-    (*paPos)->mMath = PR_TRUE;
+    pContent = pParent->GetContent();
+    *aOutOffset = 1+pContent->IndexOf(pFrame->GetContent());
+    *aOutFrame = pParent; 
+//    (*paPos)->mMath = PR_TRUE;
   }
   return PR_TRUE;
 }
 
-PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsPeekOffsetStruct** paPos, PRUint32& count)
+PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count)
 {
   nsIFrame * pChild;
   nsIFrame * pParent;
+  nsCOMPtr<nsIContent> pContent;
   nsCOMPtr<nsMathMLFrame> pMathMLFrame;
   if (fInside)
   {
@@ -57,24 +59,24 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsPeekOffsetStruct*
     pMathMLFrame = do_QueryInterface(pChild);
     if (pMathMLFrame) // child is a math ml frame. Recurse down the tree
     {
-      pMathMLFrame->ContinueFromBefore(paPos, count);
+      pMathMLFrame->EnterFromLeft(aOutFrame, aOutOffset, count);
     }
     else // child is not math, assumed to be text
     {
-      (*paPos)->mResultContent = pChild->GetContent();
-      (*paPos)->mContentOffset = count;
+      pContent = pChild->GetContent();
+      *aOutOffset = count;
       if (count>0) count--;
-      (*paPos)->mResultFrame = pChild; 
-      (*paPos)->mMath = PR_TRUE;
+      *aOutFrame = pChild; 
+//      (*paPos)->mMath = PR_TRUE;
     }
   }
   else // don't put the cursor inside the tag
   {
     pParent = pFrame->GetParent();
-    (*paPos)->mResultContent = pParent->GetContent();
-    (*paPos)->mContentOffset = (*paPos)->mResultContent->IndexOf(pFrame->GetContent());
-    (*paPos)->mResultFrame = pParent; 
-    (*paPos)->mMath = PR_TRUE;
+    pContent = pParent->GetContent();
+    *aOutOffset = pContent->IndexOf(pFrame->GetContent());
+    *aOutFrame = pParent; 
+//    (*paPos)->mMath = PR_TRUE;
   }
   return PR_TRUE;
 }

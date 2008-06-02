@@ -46,6 +46,7 @@
 #include "nsStyleConsts.h"
 #include "nsIRenderingContext.h"
 #include "nsIFontMetrics.h"
+#include "nsMathCursorUtils.h"
 
 #include "nsMathMLmsubsupFrame.h"
 
@@ -356,3 +357,56 @@ nsMathMLmsubsupFrame::PlaceSubSupScript(nsPresContext*      aPresContext,
 
   return NS_OK;
 }
+
+nsresult
+nsMathMLmsubsupFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count)
+{
+  printf("msubsup MoveOutToRight, count = %d\n", count);
+  nsIFrame * pFrame = GetFirstChild(nsnull);
+  nsCOMPtr<nsMathMLFrame> pMathMLFrame;
+  if (count > 0) count--;
+  if (leavingFrame == nsnull)  // entering base
+  {
+    pMathMLFrame = do_QueryInterface(pFrame);
+    if (pMathMLFrame) pMathMLFrame->EnterFromLeft(aOutFrame, aOutOffset, count);
+    else printf("Malformed msubsup -- no children\n");
+  }
+  else if (pFrame && pFrame == leavingFrame) // we are leaving the base; reduce count by one,
+  // skip the subscript, and go into the exponent
+  {
+    pFrame = pFrame->GetNextSibling()->GetNextSibling();
+    pMathMLFrame = do_QueryInterface(pFrame);
+    if (pMathMLFrame) pMathMLFrame->EnterFromLeft(aOutFrame, aOutOffset, count);
+    else printf("Malformed msubsup\n");
+  }
+  else
+  {
+    pFrame = GetNextSibling();
+    if (pFrame && pFrame == leavingFrame) // we are leaving the subscript
+    {
+      pFrame = pFrame->GetNextSibling();
+      pMathMLFrame = do_QueryInterface(pFrame);
+      if (pMathMLFrame) pMathMLFrame->EnterFromLeft(aOutFrame, aOutOffset, count);
+      else printf("Malformed msubsup\n");
+    }
+    else
+    {
+      nsIFrame * pParent;
+      // leaving the superscript position
+      pParent = GetParent();
+      pMathMLFrame = do_QueryInterface(pParent);
+      if (pMathMLFrame) pMathMLFrame->MoveOutToRight(this, aOutFrame, aOutOffset, count);
+      else printf("msubsup not a child of mathml???\n");
+    }
+  }  
+  return NS_OK;  
+}
+
+
+nsresult
+nsMathMLmsubsupFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count)
+{
+  printf("msubsup MoveOutToLeft, count = %d\n", count);
+  return NS_OK;
+}
+
