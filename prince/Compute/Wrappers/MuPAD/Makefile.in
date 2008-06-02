@@ -12,6 +12,7 @@ MODULE		    = mupadenginewrapper
 LIBRARY_NAME	= mupadenginewrapper
 XPIDL_MODULE	= mupadenginewrapper
 SHORT_LIBNAME	= mupwrap
+GRE_MODULE      = 1
 
 MODULE_NAME	= msiMuPADEngineWrapperModule
 

@@ -11,7 +11,7 @@ MODULE		    = mapleenginewrapper
 XPIDL_MODULE	= mapleenginewrapper
 LIBRARY_NAME	= mapleenginewrapper
 SHORT_LIBNAME	= mapwrap
-
+GRE_MODULE      = 1
 IS_COMPONENT	= 1
 MODULE_NAME	= msiMapleEngineWrapperModule
 
