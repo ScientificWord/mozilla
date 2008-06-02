@@ -822,8 +822,11 @@ var msiOpenCommand =
         dump("Ready to edit page: " + fp.fileURL.spec +"\n");
         var documentfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
         documentfile.initWithPath( fp.file.path );
+        var regexp = /\.sci$/i;
         var newdocumentfile;
-        newdocumentfile = createWorkingDirectory(documentfile);
+        if (regexp.test(fp.file.path))
+          newdocumentfile = createWorkingDirectory(documentfile);
+        else newdocumentfile = documentfile;
         msiEditPage(newdocumentfile.path, window, false);
         msiSaveFilePickerDirectoryEx(fp, documentfile.parent.path, MSI_EXTENSION);
       }
@@ -878,6 +881,7 @@ var msiNewCommand =
         newdocumentfile = createWorkingDirectory(fp.file);
         msiEditPage("file:///"+newdocumentfile.path, window, false);
       } catch (e) { dump("msiEditPage failed: "+e+"\n"); }
+
     }
   }
 } 
@@ -2195,6 +2199,7 @@ const kSupportedTextMimeTypes =
   "text/css",
   "text/rdf",
   "text/xsl",
+  "text/tex",
   "text/javascript",
   "application/x-javascript",
   "text/xul",
@@ -2269,16 +2274,18 @@ function deleteWorkingDirectory(editorElement)
 // ends with "_work/main.xhtml"
   var regEx = /_work\/main.xhtml$/i;  // BBM: localize this
   if (regEx.test(htmlpath))
-  try
   {
+    try
+    {
 #ifdef XP_WIN32
-    htmlpath = htmlpath.replace("/","\\","g");
+      htmlpath = htmlpath.replace("/","\\","g");
 #endif
-    workingDir.initWithPath( htmlpath );  
-    workingDir = workingDir.parent;
-    if (workingDir.exists())
-      workingDir.remove(1);
-  } catch(exc) { msiDumpWithID("In deleteWorkingDirectory for editorElement [@], trying to delete directory [" + htmlpath + "]; exception is [" + exc + "].\n", editorElement); }
+      workingDir.initWithPath( htmlpath );  
+      workingDir = workingDir.parent;
+      if (workingDir.exists())
+        workingDir.remove(1);
+    } catch(exc) { msiDumpWithID("In deleteWorkingDirectory for editorElement [@], trying to delete directory [" + htmlpath + "]; exception is [" + exc + "].\n", editorElement); }
+  }
   else alert("Trying to remove 'work directory': "+htmlpath+"\n");
 }
 
@@ -2332,21 +2339,29 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   var destURI;
   var currentFile = null;
   var currentSciFile = null;
+
   var currentSciFilePath;
   var workingDir = null;
   var leafname;
+  var isSciFile;
   
   var workingDir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
   currentSciFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
   var htmlpath = GetFilepath(htmlurlstring);
 	currentSciFilePath = msiFindOriginalDocname(htmlpath);  // the path for A.sci
+  var regEx = /_work\/main.xhtml$/i;  // BBM: localize this
+  isSciFile = regEx.test(htmlpath);
 // for Windows
 #ifdef XP_WIN32
   htmlpath = htmlpath.replace("/","\\","g");
   currentSciFilePath = currentSciFilePath.replace("/","\\","g");
 #endif
-  workingDir.initWithPath( htmlpath );  // now = the path of the xhtml file in the working dir D
-  workingDir = workingDir.parent;       // now = the directory D
+  currentSciFile.initWithPath( currentSciFilePath );  // now = A.sci
+  if (isSciFile) 
+  {
+    workingDir.initWithPath( htmlpath );  // now = the path of the xhtml file in the working dir D
+    workingDir = workingDir.parent;       // now = the directory D
+  }
 
   if (mustShowFileDialog)
   {
@@ -2412,22 +2427,24 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   }
   leafname = destLocalFile.leafName;
   leafname = leafname.slice(0, leafname.lastIndexOf("."));
-  var zipfile = destLocalFile.parent.clone();
-  zipfile.append(leafname+".tempsci"); 
+  if (isSciFile)
+  {
+    var zipfile = destLocalFile.parent.clone();
+    zipfile.append(leafname+".tempsci"); 
 
-// zip D into the zipfile
-  try {
-    var zw = Components.classes["@mozilla.org/zipwriter;1"]
-                          .createInstance(Components.interfaces.nsIZipWriter);
-    if (zipfile.exists()) zipfile.remove(0);
-    zipfile.create(0,0x755);
-    zw.open( zipfile, PR_RDWR | PR_CREATE_FILE | PR_TRUNCATE);
-    zipDirectory(zw, "", workingDir); 
-    zw.close();
-  }
-  catch(e) {
-    throw Components.results.NS_ERROR_UNEXPECTED;
-  } 
+  // zip D into the zipfile
+    try {
+      var zw = Components.classes["@mozilla.org/zipwriter;1"]
+                            .createInstance(Components.interfaces.nsIZipWriter);
+      if (zipfile.exists()) zipfile.remove(0);
+      zipfile.create(0,0x755);
+      zw.open( zipfile, PR_RDWR | PR_CREATE_FILE | PR_TRUNCATE);
+      zipDirectory(zw, "", workingDir); 
+      zw.close();
+    }
+    catch(e) {
+      throw Components.results.NS_ERROR_UNEXPECTED;
+    }
 // If successful:
 //   If A==B (a straight save), rename A.bak to A.tempbak, rename A.sci to A.bak, rename A.tempsci to A.sci.
 //   If all is successful, delete A.tempbak 
@@ -2437,67 +2454,78 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
 //   If A!=B (a save-as), B.sci if it exists. Rename B.tempsci to B.sci.
 //   Delete directory D.
 //
-  var tempfile;
-  if (replacing)
-  {
-    tempfile = zipfile.clone();
-      // rename A.tbak to A.tempbak
-    tempfile = tempfile.parent;
-    tempfile.append(leafname+".bak");
-    if (tempfile.exists()) tempfile.moveTo(null, leafname+".tempbak");
-      // rename A.sci to A.bak
-    tempfile = tempfile.parent;
-    tempfile.append(leafname+".sci");
-    if (tempfile.exists()) tempfile.moveTo(null, leafname+".bak");
-      // rename A.tempsci to A.sci
-    zipfile.moveTo(null, leafname+".sci");
-      // delete A.tempbak
-    tempfile = tempfile.parent;
-    tempfile.append(leafname+".tempbak");
-    if (tempfile.exists()) tempfile.remove(0);
-  }
-  else
-  {
-      // delete B.bak
-    tempfile = zipfile.clone();
-//    tempfile = tempfile.parent;
-//    tempfile.append(leafname+".bak");
-//    if (tempfile.exists()) tempfile.remove(0);
-      // delete B.sci
-    tempfile = tempfile.parent;
-    tempfile.append(leafname+".sci");
-    if (tempfile.exists()) tempfile.remove(0);
-      // rename B.tempsci to B.sci
-    zipfile.moveTo(null, leafname+".sci");
-  }
-  if (!aContinueEditing) workingDir.remove(1);
-  else
-  {
-    // if the editorElement did have a shell file, it doesn't any longer
-    editorElement.isShellFile = false;
-    if (doUpdateURI)
+    var tempfile;
+    if (replacing)
     {
-      workingDir.moveTo(null, leafname+"_work"); 
-      var newMainfile = workingDir.clone();
-      newMainfile.append("main.xhtml");
-      //Create a new uri from nsILocalFile
-      var newURI = msiGetFileProtocolHandler().newFileURI(newMainfile);
-
-      // We need to set new document uri before notifying listeners
-      SetDocumentURI(newURI);
-      document.getElementById("filename").value = leafname;
+      tempfile = zipfile.clone();
+        // rename A.tbak to A.tempbak
+      tempfile = tempfile.parent;
+      tempfile.append(leafname+".bak");
+      if (tempfile.exists()) tempfile.moveTo(null, leafname+".tempbak");
+        // rename A.sci to A.bak
+      tempfile = tempfile.parent;
+      tempfile.append(leafname+".sci");
+      if (tempfile.exists()) tempfile.moveTo(null, leafname+".bak");
+        // rename A.tempsci to A.sci
+      zipfile.moveTo(null, leafname+".sci");
+        // delete A.tempbak
+      tempfile = tempfile.parent;
+      tempfile.append(leafname+".tempbak");
+      if (tempfile.exists()) tempfile.remove(0);
     }
+    else
+    {
+        // delete B.bak
+      tempfile = zipfile.clone();
+  //    tempfile = tempfile.parent;
+  //    tempfile.append(leafname+".bak");
+  //    if (tempfile.exists()) tempfile.remove(0);
+        // delete B.sci
+      tempfile = tempfile.parent;
+      tempfile.append(leafname+".sci");
+      if (tempfile.exists()) tempfile.remove(0);
+        // rename B.tempsci to B.sci
+      zipfile.moveTo(null, leafname+".sci");
+    }
+    if (!aContinueEditing) workingDir.remove(1);
+    else
+    {
+      // if the editorElement did have a shell file, it doesn't any longer
+      editorElement.isShellFile = false;
+      if (doUpdateURI)
+      {
+        workingDir.moveTo(null, leafname+"_work"); 
+        var newMainfile = workingDir.clone();
+        newMainfile.append("main.xhtml");
+        //Create a new uri from nsILocalFile
+        var newURI = msiGetFileProtocolHandler().newFileURI(newMainfile);
 
-    UpdateWindowTitle();
-
-    if (!aSaveCopy)
-      editor.resetModificationCount();
-    // this should cause notification to listeners that document has changed
-
-    // Set UI based on whether we're editing a remote or local url
-    if (!aSaveCopy)
-      msiSetSaveAndPublishUI(sciurlstring, editorElement);
+        // We need to set new document uri before notifying listeners
+        SetDocumentURI(newURI);
+        document.getElementById("filename").value = leafname;
+      }
+    }
   }
+  else
+  { // we are not saving a .sci file. The file has already been saved (by SoftSave). Copy it to the destination.
+    var destDir; // = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+    destDir = destLocalFile.parent.clone();
+    currentSciFile.copyTo(destDir, destLocalFile.leafName);
+    // this still needs work: In the SaveAs and SaveCopyAs cases, we don't want to change the orginal file. We need to copy before
+    // we do the SoftSave.
+    
+
+  }
+
+  UpdateWindowTitle();
+
+  if (!aSaveCopy)
+    editor.resetModificationCount();
+  // this should cause notification to listeners that document has changed
+
+  // Set UI based on whether we're editing a remote or local url
+  if (!aSaveCopy)
+    msiSetSaveAndPublishUI(sciurlstring, editorElement);
   return true;
 }
 
@@ -3167,6 +3195,7 @@ var msiPrintSetupCommand =
   isCommandEnabled: function(aCommand, dummy)
   {
     var editorElement = msiGetActiveEditorElement();
+
     if (!editorElement || !msiIsTopLevelEditor(editorElement))
       return false;
     return true;
@@ -4618,6 +4647,7 @@ function msiInsertBreaks(dialogData, editorElement)
     breakStr += "customNewLine\" dim=\"";
     breakStr += String(dialogData.customBreakData.sizeData.size) + dialogData.customBreakData.sizeData.units;
   }
+
   else
   {
     breakStr += dialogData.breakType;
@@ -6185,6 +6215,7 @@ var msiObjectPropertiesCommand =
         case 'munderover':
           if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
             msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
+
           else
             msiGoDoCommandParams("cmd_MSIreviseDecorationsCmd", cmdParams, editorElement);
         break;
@@ -6665,6 +6696,7 @@ var msiSelectTableRowCommand =
   {
     var editorElement = msiGetActiveEditorElement();
     try
+
     {
       msiGetTableEditor(editorElement).selectTableRow();
     }
@@ -7104,6 +7136,7 @@ var msiJoinTableCellsCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
+
     var editorElement = msiGetActiveEditorElement();
     if (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement))
     {
@@ -7371,6 +7404,7 @@ function msiNote(currNode, editorElement)
     //defaults
     data.type = "";
   }
+
   window.openDialog("chrome://prince/content/Note.xul","_blank", "chrome,close,titlebar,resizable=yes,modal", data);
   // data comes back altered
   dump(data.type + "\n");
@@ -7571,6 +7605,7 @@ function msiStartAnimation()
 
 //function test(firstNode, secondNode) // the nodes come from a split, so the node types should be the same
 //// If the firstNode has a 'nexttag' defined, then we should convert the second node to that type. 
+
 //{
 //  var nodeName = firstNode.nodeName
 //};
