@@ -12,6 +12,7 @@ MODULE		    = simplecomputeengine
 LIBRARY_NAME	= simplecomputeengine
 XPIDL_MODULE	= simplecomputeengine
 SHORT_LIBNAME	= compeng2
+GRE_MODULE      = 1
 
 MODULE_NAME	= msiSimpleComputeEngine2Module
 
