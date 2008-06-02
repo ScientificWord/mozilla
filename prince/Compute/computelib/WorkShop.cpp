@@ -343,6 +343,7 @@ U32 MathWorkShop::FinishInstall(nsILocalFile *eng_dbase_file,
   nsCOMPtr<nsIFile> temp;
   nsCOMPtr<nsILocalFile> baseDir;
   eng_dbase_file->GetParent(getter_AddRefs(temp));
+  baseDir = do_QueryInterface(temp);
   bool result = comp_engine->InitUnderlyingEngine(install_dBase, baseDir, mr);
   if (result) {
     // Add this engine to WorkShop's current engines list
