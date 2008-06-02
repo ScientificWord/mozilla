@@ -44,6 +44,7 @@
 
 #include "nsCOMPtr.h"
 #include "nsFrame.h"
+#include "nsMathMLFrame.h"
 #include "nsFrameList.h"
 #include "nsLineLayout.h"
 #include "nsIContent.h"
@@ -5077,6 +5078,39 @@ nsFrame::GetLineNumber(nsIFrame *aFrame, nsIFrame** aContainingBlock)
   return thisLine;
 }
 
+nsIMathMLFrame * GetMathFrame( nsIFrame * aFrame )
+{
+  nsAutoString sNamespace;
+  nsCOMPtr<nsIContent> pContent;
+  nsCOMPtr<nsIDOMNode> pNode;
+  nsresult res;
+  pContent = aFrame->GetContent();
+  pNode = do_QueryInterface(pContent);
+  res = pNode->GetNamespaceURI(sNamespace);
+  if (sNamespace.EqualsLiteral("http://www.w3.org/1998/Math/MathML")) 
+  {
+    nsCOMPtr<nsIMathMLFrame> mathMLFrame;
+    mathMLFrame = do_QueryInterface(aFrame);
+    if (!mathMLFrame) mathMLFrame = (nsIMathMLFrame *)aFrame;
+    if (mathMLFrame) mathMLFrame = do_QueryInterface(mathMLFrame);
+    return mathMLFrame;
+  }
+  return nsnull;
+}
+
+
+nsIMathMLFrame * GetMathParentFrame( nsIFrame * aFrame )
+{
+  nsIFrame* pParent = aFrame->GetParent();
+  if (pParent) 
+  {
+    return GetMathFrame(pParent);
+  }
+  else return nsnull;
+}
+
+
+
 nsresult
 nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
                                 PRBool aJumpLines, PRBool aScrollViewStop, 
@@ -5209,7 +5243,109 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
     traversedFrame->IsSelectable(&selectable, nsnull);
   } // while (!selectable)
 
-  *aOutOffset = (aDirection == eDirNext) ? 0 : -1;
+  // The above code has found a selectable frame (presumably a text frame) that is the "next" in the sense 
+  // Mozilla uses; that means it is a leaf. For mathematics, we need to check to see if we should instead
+  // choose a parent of this frame.
+  printf("Moving to a new frame; check to see if we are in math\n");
+  nsIMathMLFrame* pFrame = GetMathFrame(this);
+  nsIMathMLFrame* pParent;
+  PRUint32 count = 1;
+  if (pFrame) // 'this' is a math frame
+  {
+    printf("Starting in a math frame\n");
+    // the cursor is in a math tag, not in a text tag that is in mathematics, and we are leaving
+    pParent = GetMathParentFrame(this);
+    if (aDirection == eDirNext)
+    {
+      if (pParent) pParent->MoveOutToRight(this, aOutFrame, aOutOffset, count);
+      else // pFrame is top-level
+        pFrame->MoveOutToRight(nsnull, aOutFrame, aOutOffset, count);
+    }
+    else {
+      if (pParent) pParent->MoveOutToLeft(this, aOutFrame, aOutOffset, count);
+      else // pFrame is top-level
+        pFrame->MoveOutToLeft(nsnull, aOutFrame, aOutOffset, count);
+    }
+    return NS_OK;
+  }
+  else
+  {
+    pParent = GetMathParentFrame(traversedFrame);
+    if (pParent)
+    {
+      if (aDirection == eDirNext)
+        pParent->EnterFromLeft(aOutFrame, aOutOffset, count);
+      else pParent->EnterFromRight(aOutFrame, aOutOffset, count);
+      return NS_OK;
+    }
+  }
+//  else
+//  {
+//    pParent = GetParent();
+//    pFrame = do_QueryInterface (pParent);
+//    if (pFrame)
+//    { // we are in a math frame. Let the MathML code handle the transition to a new frame
+//      if (aPos->mDirection == eDirNext)
+//      {
+//        pFrame->DoContinueFromBefore(this, &aPos, count);
+//      }
+//      else pFrame->DoContinueFromAfter(this, &aPos, count);  
+//    }
+//  }  
+//  if ((pFrame==nsnull) || (count > 0))
+//  {
+//    pParent = traversedFrame;
+//    pFrame = do_QueryInterface (pParent);
+//    if (!pFrame) 
+//    {
+//      pParent = traversedFrame->GetParent();
+//      pChild = traversedFrame;
+//      pFrame = do_QueryInterface(pParent);
+//    }
+//    if (pFrame) // We are entering a math frame from the outside
+//    {
+//    // we have just entered traversedFrame, from the beginning
+//    // or from the end
+//  
+//      if (aPos->mDirection == eDirNext)
+//      {
+//        // we entered from the beginning. We want to go up as
+//        // far as we can until we get to the math root or until 
+//        // there is some text before us.
+//        while ((pChild == pParent->GetFirstChild(nsnull)) && pFrame)
+//        {
+//          // we might be able to go up
+//          pChild = pParent;
+//          pParent = pParent->GetParent();
+//          pFrame = do_QueryInterface(pParent);
+//        }
+//        pFrameChild = do_QueryInterface(pChild); 
+//        if (pFrameChild) pFrameChild->ContinueFromBefore(&aPos, count); 
+//        // pFrameChild can't be null because it was pFrame at the time it passed through the
+//        // while loop above
+//      }
+//      else
+//      {
+//        while ((pChild->GetNextSibling() == nsnull)&&pFrame)
+//        {
+//          // we might be able to go up
+//          pChild = pParent;
+//          pParent = pParent->GetParent();
+//          pFrame = do_QueryInterface(pParent);
+//        }
+//        pFrameChild = do_QueryInterface(pChild);  
+//        if (pFrameChild) pFrameChild->ContinueFromAfter( &aPos, count);
+//        else printf("We need some code here\n");
+//      }
+//    }  
+//    else
+//    {
+//      if (aPos->mDirection == eDirNext)
+//        aPos->mStartOffset = 0;
+//      else
+//        aPos->mStartOffset = -1;
+//    }
+//  }
 
 #ifdef IBMBIDI
   if (aVisual) {

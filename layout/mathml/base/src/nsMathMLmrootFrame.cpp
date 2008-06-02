@@ -49,6 +49,7 @@
 #include "nsIFontMetrics.h"
 
 #include "nsMathMLmrootFrame.h"
+#include "nsMathCursorUtils.h"
 
 //
 // <msqrt> and <mroot> -- form a radical - implementation
@@ -400,4 +401,86 @@ nsMathMLmrootFrame::SetAdditionalStyleContext(PRInt32          aIndex,
     mSqrChar.SetStyleContext(aStyleContext);
     break;
   }
+}
+
+nsresult
+nsMathMLmrootFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count)
+{
+  printf("mroot MoveOutToRight, count = %d\n", count);
+  nsIFrame * pBaseFrame = GetFirstChild(nsnull);
+  if (!pBaseFrame)
+  {
+    printf("Malformed mroot -- no children\n");
+    return NS_OK; //BBM fix this!!
+  }
+  nsIFrame * pIndexFrame = pBaseFrame->GetNextSibling();
+  if (!pIndexFrame)
+  {
+    printf("Malformed mroot -- no index\n");
+    return NS_OK; //BBM fix this!!
+  }
+  nsCOMPtr<nsMathMLFrame> pMathMLFrame;
+  if (count > 0) count--;
+  if (leavingFrame == nsnull)  EnterFromLeft(aOutFrame, aOutOffset, count);// entering mroot; we want the cursor to go to the index first
+  else if (pIndexFrame && pIndexFrame == leavingFrame) // we are leaving the index; go into the base
+  {
+    pMathMLFrame = do_QueryInterface(pBaseFrame);
+    if (pMathMLFrame) pMathMLFrame->EnterFromLeft(aOutFrame, aOutOffset, count);
+    else printf("Malformed mroot -- base not math\n");
+  }
+  else
+  {
+    nsIFrame * pParent;
+    // leaving the base position
+    pParent = GetParent();
+    pMathMLFrame = do_QueryInterface(pParent);
+    if (pMathMLFrame) 
+    {
+      if (count > 0) pMathMLFrame->MoveOutToRight(this, aOutFrame, aOutOffset, count);
+      else PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
+    }
+    else printf("mroot not a child of mathml???\n");
+  }  
+  return NS_OK;  
+}
+
+
+nsresult
+nsMathMLmrootFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count)
+{
+  printf("mroot MoveOutToLeft, count = %d\n", count);
+  return NS_OK;
+}
+
+
+nsresult
+nsMathMLmrootFrame::EnterFromLeft(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count)
+{
+  printf("mroot EnterFromLeft, count = %d\n", count);
+  nsIFrame * pBaseFrame = GetFirstChild(nsnull);
+  if (!pBaseFrame)
+  {
+    printf("Malformed mroot -- no children\n");
+    return NS_OK; //BBM fix this!!
+  }
+  nsIFrame * pIndexFrame = pBaseFrame->GetNextSibling();
+  if (!pIndexFrame)
+  {
+    printf("Malformed mroot -- no index\n");
+    return NS_OK; //BBM fix this!!
+  }
+  nsCOMPtr<nsMathMLFrame> pMathMLFrame;
+  pMathMLFrame = do_QueryInterface(pIndexFrame);
+  count = 0;
+  if (pMathMLFrame) pMathMLFrame->EnterFromLeft(aOutFrame, aOutOffset, count);
+  else printf("Malformed root -- index not math\n");
+  return NS_OK;
+}
+
+
+nsresult
+nsMathMLmrootFrame::EnterFromRight(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count)
+{
+  printf("mroot EnterFromRight, count = %d\n", count);
+  return NS_OK;
 }

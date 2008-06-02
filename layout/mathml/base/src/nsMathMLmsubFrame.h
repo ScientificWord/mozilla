@@ -69,7 +69,13 @@ public:
                   nscoord              aUserSubScriptShift,
                   nscoord              aScriptSpace);
 
- protected:
+   NS_IMETHOD
+  MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+
+  NS_IMETHOD
+  MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+
+protected:
   nsMathMLmsubFrame(nsStyleContext* aContext) : nsMathMLContainerFrame(aContext) {}
   virtual ~nsMathMLmsubFrame();
   

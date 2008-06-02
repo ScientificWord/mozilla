@@ -66,6 +66,7 @@
 #include "nsITableCellLayout.h"
 #include "nsIDOMNodeList.h"
 #include "nsTArray.h"
+#include "nsMathMLFrame.h"
 
 #include "nsISelectionListener.h"
 #include "nsIContentIterator.h"
@@ -1317,6 +1318,28 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
 
   nsIFrame *frame;
   result = mDomSelections[index]->GetPrimaryFrameForFocusNode(&frame, &offsetused, visualMovement);
+  // in mathml we don't want the changes given by the above line.
+  if (PR_FALSE) //(frame)
+  {
+    nsIFrame *tempFrame;
+    nsCOMPtr<nsIContent> tempContent;
+    PRInt32 SaveOffsetused = offsetused;
+
+    nsCOMPtr<nsIMathMLFrame> pMathFrame;
+    pMathFrame = do_QueryInterface(frame);
+    if (!pMathFrame) pMathFrame = do_QueryInterface(frame->GetParent());
+    if (pMathFrame) // the returned frame was math or contained in math (a text frame), so undo the GetPrimaryFrameForFocusNode.
+    {
+      tempFrame = frame;
+      tempContent = do_QueryInterface(weakNodeUsed);
+      while ( tempFrame && (tempFrame->GetContent() != tempContent)) tempFrame = tempFrame->GetParent();
+      if (tempFrame)
+      {
+        frame = tempFrame;
+        offsetused = SaveOffsetused;
+      }
+    }
+  }  
 
   if (NS_FAILED(result) || !frame)
     return result?result:NS_ERROR_FAILURE;
@@ -4233,7 +4256,7 @@ nsTypedSelection::FetchOriginalAnchorOffset()
 
 nsIDOMNode*
 nsTypedSelection::FetchFocusNode()
-{   //where is the carret
+{   //where is the caret?
   nsCOMPtr<nsIDOMNode>returnval;
   GetFocusNode(getter_AddRefs(returnval));//this queries
   return returnval;

@@ -539,3 +539,36 @@ nsMathMLFrame::DisplayBar(nsDisplayListBuilder* aBuilder,
   return aLists.Content()->AppendNewToTop(new (aBuilder)
       nsDisplayMathMLBar(aFrame, aRect));
 }
+/* We need implementations of the four cursor movement helper functions, but these have to be stubs
+ * since the real implementation has to have access to the tree structure of frames and, ironically, 
+ * nsIMathMLFrame is not a subclass of nsIFrame.  
+ */
+
+nsresult
+nsMathMLFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count)
+{
+  printf("MoveOutToRight implementation fell through to nsMathMLFrame\n");
+  return NS_OK;
+}
+
+nsresult
+nsMathMLFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count)
+{
+  printf("MoveOutToLeft implementation fell through to nsMathMLFrame\n");
+  return NS_OK;
+}
+
+nsresult
+nsMathMLFrame::EnterFromLeft(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count)
+{
+  printf("EnterFromLeft implementation fell through to nsMathMLFrame\n");
+  return NS_OK;
+}
+
+nsresult
+nsMathMLFrame::EnterFromRight(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count)
+{
+  printf("EnterFromRight implementation fell through to nsMathMLFrame\n");
+  return NS_OK;
+}
+

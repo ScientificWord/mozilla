@@ -116,6 +116,19 @@ public:
     return mParent->RemoveFrame(aListName, this);
   }
 
+   NS_IMETHOD
+   MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+
+   NS_IMETHOD
+   MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+
+   NS_IMETHOD
+   EnterFromLeft(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+
+   NS_IMETHOD
+   EnterFromRight(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+
+
 protected:
   nsMathMLForeignFrameWrapper(nsStyleContext* aContext) : nsBlockFrame(aContext) {}
   virtual ~nsMathMLForeignFrameWrapper() {}
