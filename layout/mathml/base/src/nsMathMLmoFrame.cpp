@@ -47,10 +47,11 @@
 #include "nsIRenderingContext.h"
 #include "nsIFontMetrics.h"
 #include "nsContentUtils.h"
-
+#include "nsIDOMCharacterData.h"
 #include "nsIDOMText.h"
 
 #include "nsMathMLmoFrame.h"
+#include "nsMathCursorUtils.h"
 
 //
 // <mo> -- operator, fence, or separator - implementation
@@ -1045,3 +1046,73 @@ nsMathMLmoFrame::SetAdditionalStyleContext(PRInt32          aIndex,
     break;
   }
 }
+
+PRBool
+nsMathMLmoFrame::IsInvisibleOp()
+{
+  nsIContent * pContent = GetContent();
+  nsCOMPtr<nsIDOMNode> node;
+  nsCOMPtr<nsIDOMCharacterData> cd;         
+  node=do_QueryInterface(pContent);
+  if (!node) return PR_TRUE;
+  nsString strContents;
+  nsresult res;   
+  res = node->GetFirstChild((nsIDOMNode **)&node);
+  cd = do_QueryInterface(node);
+  if (cd) res = cd->GetData(strContents);
+  else return PR_TRUE;
+  if ((strContents.Length()==1)&&(strContents[0]==0x2061 || strContents[0]==0x2062)) return PR_TRUE;
+  return PR_FALSE;  
+}
+
+nsresult
+nsMathMLmoFrame::EnterFromLeft(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count)
+{
+  printf("mo EnterFromLeft, count = %d\n", count);
+  // because the cursor does not show up when inside an mo, put it either before or after, 
+  // depending on count
+  nsIFrame * pParent = GetParent();
+  nsCOMPtr<nsMathMLFrame> pMathMLFrame;
+  if (pParent)  // if this op is invisible (apply-function, invisible-times) pass this on
+  {
+    if (IsInvisibleOp())
+    {
+      pMathMLFrame = do_QueryInterface(pParent);
+      if (pMathMLFrame) 
+      {
+        pMathMLFrame->MoveOutToRight(this, aOutFrame, aOutOffset, count);
+        return NS_OK;
+      }
+    }
+  } 
+  if (pParent && count > 0)
+  {
+    pMathMLFrame = do_QueryInterface(pParent);
+    count = 0;                                                               
+    if (pMathMLFrame) pMathMLFrame->MoveOutToRight(this, aOutFrame, aOutOffset, count);
+  }
+  else
+  {
+    PRUint32 offset = count;
+    if (!pParent)return NS_ERROR_FAILURE; 
+    nsIFrame * pFrame = pParent->GetFirstChild(nsnull);
+    // assert pFrame not null, because "this" exists.
+    nsIFrame * pNextFrame = pFrame->GetNextSibling();
+    while (pFrame && (this != pFrame))
+    {
+      pFrame = pFrame->GetNextSibling();
+      offset++;
+    }
+    if (count > 0) PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
+    else PlaceCursorBefore(this, PR_FALSE, aOutFrame, aOutOffset, count);
+  }
+  return NS_OK;  
+}
+
+nsresult
+nsMathMLmoFrame::EnterFromRight(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count)
+{
+  printf("mo EnterFromRight, count = %d\n", count);
+  return NS_OK;  
+}
+

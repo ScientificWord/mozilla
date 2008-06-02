@@ -76,6 +76,20 @@ public:
                               const nsRect&           aDirtyRect,
                               const nsDisplayListSet& aLists);
 
+  NS_IMETHOD
+  MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+
+  NS_IMETHOD
+  MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+
+  NS_IMETHOD
+  EnterFromLeft(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+
+  NS_IMETHOD
+  EnterFromRight(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+
+
+
 protected:
   nsMathMLmrootFrame(nsStyleContext* aContext);
   virtual ~nsMathMLmrootFrame();

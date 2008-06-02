@@ -49,6 +49,7 @@
 
 #include "nsMathMLmfencedFrame.h"
 #include "nsMathMLmfracFrame.h"
+#include "nsMathCursorUtils.h"
 
 //
 // <mfrac> -- form a fraction from two subexpressions - implementation
@@ -534,3 +535,117 @@ nsMathMLmfracFrame::SetAdditionalStyleContext(PRInt32          aIndex,
     break;
   }
 }
+
+nsresult
+nsMathMLmfracFrame::EnterFromLeft(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count)
+{
+  printf("mfrac EnterFromLeft, count = %d\n", count);
+  nsIFrame * pFrame = GetFirstChild(nsnull);
+  nsCOMPtr<nsMathMLFrame> pMathMLFrame;
+  if (pFrame)
+  {
+    if (count > 0) count--;
+    pMathMLFrame = do_QueryInterface(pFrame);
+    if (pMathMLFrame) pMathMLFrame->EnterFromLeft(aOutFrame, aOutOffset, count);
+    else // child frame is not a math frame. Probably a text frame. We'll assume this for now
+    // BBM come back and fix this!
+      PlaceCursorBefore(pFrame, PR_TRUE, aOutFrame, aOutOffset, count);
+  }
+  else 
+  {
+    printf("Found frac frame with no children\n");
+  }
+  return NS_OK;  
+}
+
+nsresult
+nsMathMLmfracFrame::EnterFromRight(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count)
+{
+  printf("mfrac EnterFromRight, count = %d\n", count);
+  nsIFrame * pFrame = GetFirstChild(nsnull);
+  nsCOMPtr<nsMathMLFrame> pMathMLFrame;
+  if (!pFrame)
+  {
+   pMathMLFrame = do_QueryInterface(GetParent());
+   if (pMathMLFrame) pMathMLFrame->EnterFromRight(aOutFrame, aOutOffset, count);
+  }
+  while (pFrame->GetNextSibling() != nsnull)
+    pFrame = pFrame->GetNextSibling();
+  if (!pFrame) printf("Error in nsMathMLContainerFrame::EnterFromRight()\n");   
+  else
+  {
+    pMathMLFrame = do_QueryInterface(pFrame);
+    if (pMathMLFrame) pMathMLFrame->EnterFromRight(aOutFrame, aOutOffset, count);
+  }
+  return NS_OK;  
+}
+
+ 
+nsresult
+nsMathMLmfracFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count)
+{
+  printf("mfrac MoveOutToRight, count = %d\n", count);
+  // if the cursor is leaving either of its children, the cursor goes past the end of the fraction if count > 0
+  nsIFrame * pParent = GetParent();
+  nsIFrame * pChild;
+  nsCOMPtr<nsMathMLFrame> pMathMLFrame;
+  if (leavingFrame == nsnull)
+  {
+    pChild = GetFirstChild(nsnull);
+    pMathMLFrame = do_QueryInterface(pChild);
+    if (pMathMLFrame) pMathMLFrame->EnterFromLeft(aOutFrame, aOutOffset, count);
+  }
+  else
+  {
+    // leaving numerator or denominator. Place the cursor just after the franction
+    count= 0;
+    PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
+  }
+  return NS_OK;  
+}
+
+nsresult
+nsMathMLmfracFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count)
+{                
+  printf("mfrac MoveOutToLeft, count = %d\n", count);
+  // same as above, but backwards in a singly-linked list
+  nsCOMPtr<nsMathMLFrame> pMathMLFrame;
+  nsIContent * pContent;
+  nsIFrame * pFrame = GetFirstChild(nsnull);
+  nsIFrame * pParent = nsnull;
+  nsIFrame * pPrevious = nsnull;
+  while (pFrame && pFrame != leavingFrame)
+  {
+    pPrevious = pFrame;
+    pFrame = pFrame->GetNextSibling();
+  }
+  if (pPrevious) 
+  {
+    pMathMLFrame = do_QueryInterface(pPrevious);
+    if (pMathMLFrame) pMathMLFrame->EnterFromRight(aOutFrame, aOutOffset, count);
+  }
+  else // we are falling out of the mathml frame
+  {
+    pParent = GetParent();
+    pMathMLFrame = do_QueryInterface(pParent);
+    if (pMathMLFrame) pMathMLFrame->MoveOutToLeft(this, aOutFrame, aOutOffset, count);
+    else
+    {  // we've fallen out of math.
+      PRUint32 nodeCount = 0;
+      pPrevious = nsnull;
+      pFrame = pParent->GetFirstChild(nsnull); 
+      while (pFrame && pFrame != this)
+      {
+        pPrevious = pFrame;
+        nodeCount ++;
+        pFrame = pFrame->GetNextSibling();
+      }
+      pContent = pParent->GetContent();
+      *aOutOffset = nodeCount;
+      *aOutFrame = pParent; 
+//      (*paPos)->mMath = PR_FALSE;
+    }
+  }
+  return NS_OK;  
+}  
+
