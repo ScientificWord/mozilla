@@ -240,6 +240,7 @@ NS_IMETHODIMP nsHTMLEditor::LoadHTML(const nsAString & aInputString)
     nsCOMPtr<nsIDOMDocumentFragment> docfrag;
     {
       res = nsrange->CreateContextualFragment(aInputString, getter_AddRefs(docfrag));
+      if (!docfrag) return NS_ERROR_NULL_POINTER;
       NS_ENSURE_SUCCESS(res, res);
     }
     // put the fragment into the document
