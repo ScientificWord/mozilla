@@ -99,6 +99,7 @@ struct nsPeekOffsetStruct
     mIsKeyboardSelect = aIsKeyboardSelect;
     mVisual = aVisual;
     mWordMovementType = aWordMovementType;
+    mMath = PR_FALSE;
   }
 
   // Note: Most arguments (input and output) are only used with certain values
@@ -171,6 +172,8 @@ struct nsPeekOffsetStruct
   //                 PR_TRUE means "the beginning of the frame logically after the caret".
   //                 Used with: eSelectLine, eSelectBeginLine, eSelectEndLine.
   PRBool mAttachForward;
+
+  PRBool mMath;
 };
 
 struct nsPrevNextBidiLevels
