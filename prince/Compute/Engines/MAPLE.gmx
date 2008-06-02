@@ -1,6 +1,6 @@
 ;; Maple commands  -- edit only the .gmx file (and possibly iCmpIDs.h)
 
-#include "iCmpIDs.h"
+#include "../computelib/iCmpIDs.h"
 
 <START_CONTEXT_RESET>
 ;SetSeriesOrder
