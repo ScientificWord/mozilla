@@ -69,6 +69,19 @@ public:
                     nscoord              aUserSupScriptShift,
                     nscoord              aScriptSpace);
 
+  NS_IMETHOD
+  MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+
+  NS_IMETHOD
+  MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+
+  NS_IMETHOD
+  EnterFromLeft(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+
+  NS_IMETHOD
+  EnterFromRight(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+
+
 protected:
   nsMathMLmsupFrame(nsStyleContext* aContext) : nsMathMLContainerFrame(aContext) {}
   virtual ~nsMathMLmsupFrame();
