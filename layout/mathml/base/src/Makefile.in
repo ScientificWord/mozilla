@@ -92,11 +92,12 @@ CPPSRCS =         nsMathMLChar.cpp		        \
                   nsMathMLmsupFrame.cpp			\
                   nsMathMLmsubFrame.cpp			\
                   nsMathMLmsubsupFrame.cpp		\
-                  nsMathMLmmultiscriptsFrame.cpp	\
+                  nsMathMLmmultiscriptsFrame.cpp \
                   nsMathMLmtableFrame.cpp		\
                   nsMathMLmunderFrame.cpp		\
                   nsMathMLmoverFrame.cpp		\
-                  nsMathMLmunderoverFrame.cpp		\
+				  nsMathCursorUtils.cpp       \
+                  nsMathMLmunderoverFrame.cpp	\
                   nsMathMLmpaddedFrame.cpp		\
                   nsMathMLmspaceFrame.cpp		\
                   nsMathMLmstyleFrame.cpp		\
