@@ -1,7 +1,7 @@
 /* Copyright 2008, MacKichan Software, Inc. */
 
 #include "nsMathCursorUtils.h"
-#include "nsCOM.h"
+#include "nsCom.h"
 #include "nsMathMLFrame.h"
 #include "nsFrameSelection.h"
 
