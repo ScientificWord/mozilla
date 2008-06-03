@@ -202,11 +202,11 @@ COMPONENT_LIBS += universalchardet
 DEFINES += -DMOZ_UNIVERSALCHARDET
 endif
 
-ifndef MOZ_PLAINTEXT_EDITOR_ONLY
-COMPONENT_LIBS += msiediting composer
-else										  
-DEFINES += -DMOZ_PLAINTEXT_EDITOR_ONLY
-endif
+#ifndef MOZ_PLAINTEXT_EDITOR_ONLY
+#COMPONENT_LIBS += msiediting composer
+#else										  
+#DEFINES += -DMOZ_PLAINTEXT_EDITOR_ONLY
+#endif
 
 ifdef MOZ_RDF
 COMPONENT_LIBS += \
