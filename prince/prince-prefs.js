@@ -17,6 +17,7 @@ pref("toolkit.scrollbar.smoothscroll", true);
 pref("swp.defaultShell", "article/StdArticleShell.sci");
 pref("swp.defaultDialogShell", "article/StdDialogShell.sci");
 pref("swp.saveintervalminutes",2);
+pref("swp.prefDocumentDir","SWPDocs");
 pref("editor.author",                       "");
 
 pref("editor.text_color",                   "#000000");
