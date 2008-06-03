@@ -115,12 +115,6 @@
 #define OJI_MODULES
 #endif
 
-#ifdef MOZ_PLAINTEXT_EDITOR_ONLY
-#define COMPOSER_MODULE
-#else
-#define COMPOSER_MODULE MODULE(nsComposerModule)
-#endif
-
 #ifdef ACCESSIBILITY
 #define ACCESS_MODULES MODULE(nsAccessibilityModule)
 #else
@@ -287,7 +281,6 @@
     ACCESS_MODULES                           \
     MODULE(appshell)                         \
     MODULE(nsTransactionManagerModule)       \
-    COMPOSER_MODULE                          \
     MODULE(nsChromeModule)                   \
     APPLICATION_MODULES                      \
     MODULE(Apprunner)                        \
