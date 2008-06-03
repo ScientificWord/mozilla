@@ -1246,7 +1246,7 @@ nsXMLContentSink::HandleDoctypeDecl(const nsAString & aSubset,
         nsCAutoString docSpec;
         uri->GetSpec(spec);
         (mDocument->GetDocumentURI())->GetSpec(docSpec);
-        NS_MakeAbsoluteURIWithDocPath(str, spec, docSpec); 
+        // NS_MakeAbsoluteURIWithDocPath(str, spec, docSpec); 
         if (!(str.Equals(spec))) uri->SetSpec(str);
       }  
       nsCOMPtr<nsICSSStyleSheet> sheet;
