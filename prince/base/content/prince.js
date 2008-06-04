@@ -360,9 +360,9 @@ function openTeX()
       if (!docdir.exists()) docdir.create(1,0755);
       // Choose one of the three following lines depending on the app
 	  // BBM Replace this code by using a string from a branding file
-      docdir.append("SWP_Docs");
-      // docdir.append("SW_Docs");
-      // docdir.append("SNB_Docs");
+      docdir.append("SWPDocs");
+      // docdir.append("SWDocs");
+      // docdir.append("SNBDocs");
       if (!docdir.exists()) docdir.create(1,0755);
       dump("default document directory is "+docdir.target+"\n");
     }
