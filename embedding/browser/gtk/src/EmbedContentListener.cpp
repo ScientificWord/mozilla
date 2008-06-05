@@ -14,7 +14,7 @@
  * The Original Code is mozilla.org code.
  *
  * The Initial Developer of the Original Code is
- * Christopher Blizzard. Portions created by Christopher Blizzard are Copyright (C) Christopher Blizzard.  All Rights Reserved.
+ * Christopher Blizzard.
  * Portions created by the Initial Developer are Copyright (C) 2001
  * the Initial Developer. All Rights Reserved.
  *
@@ -34,9 +34,6 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
-
-#include <strings.h>
-#include <nsXPIDLString.h>
 
 #include "nsIURI.h"
 
@@ -80,9 +77,9 @@ EmbedContentListener::OnStartURIOpen(nsIURI     *aURI,
     return rv;
 
   gint return_val = FALSE;
-  gtk_signal_emit(GTK_OBJECT(mOwner->mOwningWidget),
-		  moz_embed_signals[OPEN_URI],
-		  specString.get(), &return_val);
+  g_signal_emit(G_OBJECT(mOwner->mOwningWidget),
+                moz_embed_signals[OPEN_URI], 0,
+                specString.get(), &return_val);
 
   *aAbortOpen = return_val;
 
