@@ -248,7 +248,7 @@ NS_MakeAbsoluteURIWithDocPath(nsACString       &result,
                               nsACString        &docPath )
 {
     nsresult rv = NS_OK;
-    PRUint32 docPathLen = docPath.Length();
+    // PRUint32 docPathLen = docPath.Length();
     nsCAutoString Spec;
     char * pPattern = "resource://docdir";
     PRUint32 patlen = strlen(pPattern);
