@@ -17,7 +17,7 @@
  * The Original Code is mozilla.org code.
  *
  * The Initial Developer of the Original Code is
- * Christopher Blizzard. Portions created by Christopher Blizzard are Copyright (C) Christopher Blizzard.  All Rights Reserved.
+ * Christopher Blizzard.
  * Portions created by the Initial Developer are Copyright (C) 2001
  * the Initial Developer. All Rights Reserved.
  *
@@ -38,11 +38,10 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#include <nsCWebBrowser.h>
-#include <nsIComponentManager.h>
-#include <nsIDocShellTreeItem.h>
+#include "nsCWebBrowser.h"
+#include "nsIComponentManager.h"
+#include "nsIDocShellTreeItem.h"
 #include "nsIWidget.h"
-#include "nsReadableUtils.h"
 
 #include "EmbedWindow.h"
 #include "EmbedPrivate.h"
@@ -73,7 +72,7 @@ EmbedWindow::Init(EmbedPrivate *aOwner)
   if (!mWebBrowser)
     return NS_ERROR_FAILURE;
 
-  mWebBrowser->SetContainerWindow(NS_STATIC_CAST(nsIWebBrowserChrome *, this));
+  mWebBrowser->SetContainerWindow(static_cast<nsIWebBrowserChrome *>(this));
   
   nsCOMPtr<nsIDocShellTreeItem> item = do_QueryInterface(mWebBrowser);
   item->SetItemType(nsIDocShellTreeItem::typeContentWrapper);
@@ -138,8 +137,8 @@ EmbedWindow::SetStatus(PRUint32 aStatusType, const PRUnichar *aStatus)
   case STATUS_SCRIPT: 
     {
       mJSStatus = aStatus;
-      gtk_signal_emit(GTK_OBJECT(mOwner->mOwningWidget),
-		      moz_embed_signals[JS_STATUS]);
+      g_signal_emit(G_OBJECT(mOwner->mOwningWidget),
+                    moz_embed_signals[JS_STATUS], 0);
     }
     break;
   case STATUS_SCRIPT_DEFAULT:
@@ -148,8 +147,8 @@ EmbedWindow::SetStatus(PRUint32 aStatusType, const PRUnichar *aStatus)
   case STATUS_LINK:
     {
       mLinkMessage = aStatus;
-      gtk_signal_emit(GTK_OBJECT(mOwner->mOwningWidget),
-		      moz_embed_signals[LINK_MESSAGE]);
+      g_signal_emit(G_OBJECT(mOwner->mOwningWidget),
+                    moz_embed_signals[LINK_MESSAGE], 0);
     }
     break;
   }
@@ -191,16 +190,16 @@ EmbedWindow::DestroyBrowserWindow(void)
   // mark the owner as destroyed so it won't emit events anymore.
   mOwner->mIsDestroyed = PR_TRUE;
 
-  gtk_signal_emit(GTK_OBJECT(mOwner->mOwningWidget),
-		  moz_embed_signals[DESTROY_BROWSER]);
+  g_signal_emit(G_OBJECT(mOwner->mOwningWidget),
+                moz_embed_signals[DESTROY_BROWSER], 0);
   return NS_OK;
 }
 
 NS_IMETHODIMP
 EmbedWindow::SizeBrowserTo(PRInt32 aCX, PRInt32 aCY)
 {
-  gtk_signal_emit(GTK_OBJECT(mOwner->mOwningWidget),
-		  moz_embed_signals[SIZE_TO], aCX, aCY);
+  g_signal_emit(G_OBJECT(mOwner->mOwningWidget),
+                moz_embed_signals[SIZE_TO], 0, aCX, aCY);
   return NS_OK;
 }
 
@@ -240,15 +239,6 @@ EmbedWindow::ExitModalEventLoop(nsresult aStatus)
 NS_IMETHODIMP
 EmbedWindow::FocusNextElement()
 {
-#ifdef MOZ_WIDGET_GTK
-  GtkWidget* parent = GTK_WIDGET(mOwner->mOwningWidget)->parent;
-
-  if (GTK_IS_CONTAINER(parent))
-    gtk_container_focus(GTK_CONTAINER(parent),
-                        GTK_DIR_TAB_FORWARD);
-#endif
-
-#ifdef MOZ_WIDGET_GTK2
   GtkWidget *toplevel;
   toplevel = gtk_widget_get_toplevel(GTK_WIDGET(mOwner->mOwningWidget));
   if (!GTK_WIDGET_TOPLEVEL(toplevel))
@@ -256,23 +246,12 @@ EmbedWindow::FocusNextElement()
 
   g_signal_emit_by_name(G_OBJECT(toplevel), "move_focus",
 			GTK_DIR_TAB_FORWARD);
-#endif
-
   return NS_OK;
 }
 
 NS_IMETHODIMP
 EmbedWindow::FocusPrevElement()
 {
-#ifdef MOZ_WIDGET_GTK
-  GtkWidget* parent = GTK_WIDGET(mOwner->mOwningWidget)->parent;
-
-  if (GTK_IS_CONTAINER(parent))
-    gtk_container_focus(GTK_CONTAINER(parent),
-                        GTK_DIR_TAB_BACKWARD);
-#endif
-
-#ifdef MOZ_WIDGET_GTK2
   GtkWidget *toplevel;
   toplevel = gtk_widget_get_toplevel(GTK_WIDGET(mOwner->mOwningWidget));
   if (!GTK_WIDGET_TOPLEVEL(toplevel))
@@ -280,8 +259,6 @@ EmbedWindow::FocusPrevElement()
 
   g_signal_emit_by_name(G_OBJECT(toplevel), "move_focus",
 			GTK_DIR_TAB_BACKWARD);
-#endif
-
   return NS_OK;
 }
 
@@ -343,8 +320,8 @@ NS_IMETHODIMP
 EmbedWindow::SetTitle(const PRUnichar *aTitle)
 {
   mTitle = aTitle;
-  gtk_signal_emit(GTK_OBJECT(mOwner->mOwningWidget),
-		  moz_embed_signals[TITLE]);
+  g_signal_emit(G_OBJECT(mOwner->mOwningWidget),
+                moz_embed_signals[TITLE], 0);
   return NS_OK;
 }
 
@@ -352,14 +329,21 @@ NS_IMETHODIMP
 EmbedWindow::GetSiteWindow(void **aSiteWindow)
 {
   GtkWidget *ownerAsWidget (GTK_WIDGET(mOwner->mOwningWidget));
-  *aSiteWindow = NS_STATIC_CAST(void *, ownerAsWidget);
+  *aSiteWindow = static_cast<void *>(ownerAsWidget);
   return NS_OK;
 }
 
 NS_IMETHODIMP
 EmbedWindow::GetVisibility(PRBool *aVisibility)
 {
-  *aVisibility = mVisibility;
+  // XXX See bug 312998
+  // Work around the problem that sometimes the window
+  // is already visible even though mVisibility isn't true
+  // yet.
+  *aVisibility = mVisibility ||
+                 (!mOwner->mIsChrome &&
+                  mOwner->mOwningWidget &&
+                  GTK_WIDGET_MAPPED(mOwner->mOwningWidget));
   return NS_OK;
 }
 
@@ -375,9 +359,9 @@ EmbedWindow::SetVisibility(PRBool aVisibility)
   if (mOwner->mIsChrome && !mOwner->mChromeLoaded)
     return NS_OK;
 
-  gtk_signal_emit(GTK_OBJECT(mOwner->mOwningWidget),
-		  moz_embed_signals[VISIBILITY],
-		  aVisibility);
+  g_signal_emit(G_OBJECT(mOwner->mOwningWidget),
+                moz_embed_signals[VISIBILITY], 0,
+                aVisibility);
   return NS_OK;
 }
 
@@ -402,13 +386,7 @@ EmbedWindow::OnShowTooltip(PRInt32 aXCoords, PRInt32 aYCoords,
 {
   nsAutoString tipText ( aTipText );
 
-#ifdef MOZ_WIDGET_GTK
-  const char* tipString = ToNewCString(tipText);
-#endif
-
-#ifdef MOZ_WIDGET_GTK2
   const char* tipString = ToNewUTF8String(tipText);
-#endif
 
   if (sTipWindow)
     gtk_widget_destroy(sTipWindow);
@@ -417,8 +395,7 @@ EmbedWindow::OnShowTooltip(PRInt32 aXCoords, PRInt32 aYCoords,
   nsCOMPtr<nsIWidget> mainWidget;
   mBaseWindow->GetMainWidget(getter_AddRefs(mainWidget));
   GdkWindow *window;
-  window = NS_STATIC_CAST(GdkWindow *,
-			  mainWidget->GetNativeData(NS_NATIVE_WINDOW));
+  window = static_cast<GdkWindow *>(mainWidget->GetNativeData(NS_NATIVE_WINDOW));
   gint root_x, root_y;
   gdk_window_get_origin(window, &root_x, &root_y);
 
@@ -429,7 +406,7 @@ EmbedWindow::OnShowTooltip(PRInt32 aXCoords, PRInt32 aYCoords,
   
   sTipWindow = gtk_window_new(GTK_WINDOW_POPUP);
   gtk_widget_set_app_paintable(sTipWindow, TRUE);
-  gtk_window_set_policy(GTK_WINDOW(sTipWindow), FALSE, FALSE, TRUE);
+  gtk_window_set_resizable(GTK_WINDOW(sTipWindow), TRUE);
   // needed to get colors + fonts etc correctly
   gtk_widget_set_name(sTipWindow, "gtk-tooltips");
   
@@ -446,8 +423,8 @@ EmbedWindow::OnShowTooltip(PRInt32 aXCoords, PRInt32 aYCoords,
   // realize the widget
   gtk_widget_realize(sTipWindow);
 
-  gtk_signal_connect(GTK_OBJECT(sTipWindow), "expose_event",
-                     GTK_SIGNAL_FUNC(tooltips_paint_window), NULL);
+  g_signal_connect(G_OBJECT(sTipWindow), "expose_event",
+                   G_CALLBACK(tooltips_paint_window), NULL);
 
   // set up the label for the tooltip
   GtkWidget *label = gtk_label_new(tipString);
@@ -462,10 +439,6 @@ EmbedWindow::OnShowTooltip(PRInt32 aXCoords, PRInt32 aYCoords,
   // and show it.
   gtk_widget_show_all(sTipWindow);
 
-#ifdef MOZ_WIDGET_GTK
-  gtk_widget_popup(sTipWindow, aXCoords + root_x, aYCoords + root_y);
-#endif /* MOZ_WIDGET_GTK */
-  
   nsMemory::Free( (void*)tipString );
 
   return NS_OK;

@@ -14,7 +14,7 @@
  * The Original Code is mozilla.org code.
  *
  * The Initial Developer of the Original Code is
- * Christopher Blizzard. Portions created by Christopher Blizzard are Copyright (C) Christopher Blizzard.  All Rights Reserved.
+ * Christopher Blizzard.
  * Portions created by the Initial Developer are Copyright (C) 2001
  * the Initial Developer. All Rights Reserved.
  *
@@ -38,16 +38,15 @@
 #ifndef __EmbedWindow_h
 #define __EmbedWindow_h
 
-#include <nsString.h>
-#include <nsIWebBrowserChrome.h>
-#include <nsIWebBrowserChromeFocus.h>
-#include <nsIEmbeddingSiteWindow.h>
-#include <nsITooltipListener.h>
-#include <nsISupports.h>
-#include <nsIWebBrowser.h>
-#include <nsIBaseWindow.h>
-#include <nsIInterfaceRequestor.h>
-#include <nsCOMPtr.h>
+#include "nsIWebBrowserChrome.h"
+#include "nsIWebBrowserChromeFocus.h"
+#include "nsIEmbeddingSiteWindow.h"
+#include "nsITooltipListener.h"
+#include "nsISupports.h"
+#include "nsIWebBrowser.h"
+#include "nsIBaseWindow.h"
+#include "nsIInterfaceRequestor.h"
+#include "nsCOMPtr.h"
 #include "nsString.h"
 
 #include <gtk/gtk.h>

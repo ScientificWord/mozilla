@@ -14,7 +14,7 @@
  * The Original Code is mozilla.org code.
  *
  * The Initial Developer of the Original Code is
- * Christopher Blizzard. Portions created by Christopher Blizzard are Copyright (C) Christopher Blizzard.  All Rights Reserved.
+ * Christopher Blizzard.
  * Portions created by the Initial Developer are Copyright (C) 2001
  * the Initial Developer. All Rights Reserved.
  *
@@ -48,7 +48,7 @@ extern "C" {
 
 #ifdef MOZILLA_CLIENT
 #include "nscore.h"
-#else // MOZILLA_CLIENT
+#else /* MOZILLA_CLIENT */
 #ifndef nscore_h__
 /* Because this header may be included from files which not part of the mozilla
    build system, define macros from nscore.h */
@@ -62,8 +62,8 @@ extern "C" {
 #define NS_FROZENCALL
 #define NS_EXPORT_(type) type
 #define NS_IMPORT_(type) type
-#endif // nscore_h__
-#endif // MOZILLA_CLIENT
+#endif /* nscore_h__ */
+#endif /* MOZILLA_CLIENT */
 
 #ifdef XPCOM_GLUE
 
@@ -71,7 +71,7 @@ extern "C" {
   typedef type (NS_FROZENCALL * name##Type) params; \
   extern name##Type name NS_HIDDEN;
 
-#else // XPCOM_GLUE
+#else /* XPCOM_GLUE */
 
 #ifdef _IMPL_GTKMOZEMBED
 #define GTKMOZEMBED_API(type, name, params) NS_EXPORT_(type) name params;
@@ -79,7 +79,7 @@ extern "C" {
 #define GTKMOZEMBED_API(type,name, params) NS_IMPORT_(type) name params;
 #endif
 
-#endif // XPCOM_GLUE
+#endif /* XPCOM_GLUE */
 
 #define GTK_TYPE_MOZ_EMBED             (gtk_moz_embed_get_type())
 #define GTK_MOZ_EMBED(obj)             GTK_CHECK_CAST((obj), GTK_TYPE_MOZ_EMBED, GtkMozEmbed)
@@ -137,7 +137,7 @@ struct _GtkMozEmbedClass
   gint (* dom_focus_out)       (GtkMozEmbed *embed, gpointer dom_event);
 };
 
-GTKMOZEMBED_API(GtkType,    gtk_moz_embed_get_type,        (void))
+GTKMOZEMBED_API(GType,      gtk_moz_embed_get_type,        (void))
 GTKMOZEMBED_API(GtkWidget*, gtk_moz_embed_new,             (void))
 GTKMOZEMBED_API(void,       gtk_moz_embed_push_startup,    (void))
 GTKMOZEMBED_API(void,       gtk_moz_embed_pop_startup,     (void))
@@ -257,6 +257,7 @@ typedef enum
 #define GTK_MOZ_EMBED_SINGLE_CLASS(klass)    GTK_CHEK_CLASS_CAST((klass), GTK_TYPE_MOZ_EMBED_SINGLE, GtkMozEmbedSingleClass)
 #define GTK_IS_MOZ_EMBED_SINGLE(obj)         GTK_CHECK_TYPE((obj), GTK_TYPE_MOZ_EMBED_SINGLE)
 #define GTK_IS_MOZ_EMBED_SINGLE_CLASS(klass) GTK_CHECK_CLASS_TYPE((klass), GTK_TYPE_MOZ_EMBED)
+#define GTK_MOZ_EMBED_SINGLE_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_MOZ_EMBED_SINGLE, GtkMozEmbedSingleClass))
 
 typedef struct _GtkMozEmbedSingle      GtkMozEmbedSingle;
 typedef struct _GtkMozEmbedSingleClass GtkMozEmbedSingleClass;
@@ -276,7 +277,7 @@ struct _GtkMozEmbedSingleClass
                                 guint chromemask);
 };
 
-GTKMOZEMBED_API(GtkType,             gtk_moz_embed_single_get_type, (void))
+GTKMOZEMBED_API(GType,               gtk_moz_embed_single_get_type, (void))
 GTKMOZEMBED_API(GtkMozEmbedSingle *, gtk_moz_embed_single_get,      (void))
 
 #ifdef __cplusplus

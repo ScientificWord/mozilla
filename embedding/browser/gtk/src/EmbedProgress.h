@@ -14,7 +14,7 @@
  * The Original Code is mozilla.org code.
  *
  * The Initial Developer of the Original Code is
- * Christopher Blizzard. Portions created by Christopher Blizzard are Copyright (C) Christopher Blizzard.  All Rights Reserved.
+ * Christopher Blizzard.
  * Portions created by the Initial Developer are Copyright (C) 2001
  * the Initial Developer. All Rights Reserved.
  *
@@ -38,8 +38,8 @@
 #ifndef __EmbedProgress_h
 #define __EmbedProgress_h
 
-#include <nsIWebProgressListener.h>
-#include <nsWeakReference.h>
+#include "nsIWebProgressListener.h"
+#include "nsWeakReference.h"
 #include "EmbedPrivate.h"
 
 class EmbedProgress : public nsIWebProgressListener,
@@ -57,7 +57,7 @@ class EmbedProgress : public nsIWebProgressListener,
 
  private:
 
-  static void RequestToURIString (nsIRequest *aRequest, char **aString);
+  static void RequestToURIString (nsIRequest *aRequest, nsACString &aString);
 
   EmbedPrivate *mOwner;
 
