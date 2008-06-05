@@ -65,6 +65,8 @@
 #include "nsCSSFrameConstructor.h"
 #include "nsMathCursorUtils.h"
 #include "nsIReflowCallback.h"
+// for diagnostics only
+#include "nsTextFragment.h"
 
 NS_DEFINE_CID(kInlineFrameCID, NS_INLINE_FRAME_CID);
 
@@ -1836,13 +1838,8 @@ nsMathMLmathBlockFrame::EnterFromLeft(nsIFrame** aOutFrame, PRInt32* aOutOffset,
     else // child frame is not a math frame. Probably a text frame. We'll assume this for now
     // BBM come back and fix this!
     {
-/// Investigate what's going on
-      pContent = pFrame->GetContent();
-      PRUint32 textLength = pContent->TextLength();
-      nsIFrame * pNextSibling = GetNextSibling();
-      nsIFrame * pUncle = GetNextSibling();
+      if (count >0) count--;
       *aOutOffset = count;
-      count = 0;
       *aOutFrame = pFrame; 
 //      (*paPos)->mMath = PR_TRUE;
     }
@@ -1854,14 +1851,15 @@ nsMathMLmathBlockFrame::EnterFromLeft(nsIFrame** aOutFrame, PRInt32* aOutOffset,
     else // we have gone out of math or count == 0; proceed if count > 0. 
          // If count==0, leave the cursor at the end of this object  
     {
-//      if (count) 
-//        (*paPos)->mMath = PR_FALSE;
-//      else
-        if (!count)      {
+//    if (count) 
+//      (*paPos)->mMath = PR_FALSE;
+//    else
+      if (!count)      
+      {
         pContent = this->GetContent();
         *aOutOffset = pContent->GetChildCount();
         *aOutFrame = this; 
-//        (*paPos)->mMath = PR_TRUE;
+//      (*paPos)->mMath = PR_TRUE;
       }
     }  
   }
