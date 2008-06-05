@@ -1,3 +1,5 @@
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* vim:set ts=2 sw=2 sts=2 et cindent: */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -14,12 +16,12 @@
  * The Original Code is mozilla.org code.
  *
  * The Initial Developer of the Original Code is
- * Christopher Blizzard.
- * Portions created by the Initial Developer are Copyright (C) 2001
+ * Oleg Romashin.
+ * Portions created by the Initial Developer are Copyright (C) 2006
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *   Christopher Blizzard <blizzard@mozilla.org>
+ *   Oleg Romashin <romaxa@gmail.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -34,58 +36,32 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
+#ifndef __EmbedTools_h
+#define __EmbedTools_h
 
-#ifndef gtkmozembedprivate_h
-#define gtkmozembedprivate_h
+#include "nsCOMPtr.h"
+#ifdef MOZILLA_INTERNAL_API
+#include "nsString.h"
+#else
+#include "nsStringAPI.h"
+#endif
+#include "nsIDOMWindow.h"
+#include "nsIWindowWatcher.h"
+#include "nsIWebBrowserChrome.h"
+#include "nsIEmbeddingSiteWindow.h"
+#include "nsIServiceManager.h"
+#include "nsIContentViewer.h"
+#include "nsIDocShell.h"
+#include "nsIInterfaceRequestorUtils.h"
+#include <gtk/gtk.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+GtkWidget*
+GetGtkWidgetForDOMWindow(nsIDOMWindow* aDOMWindow);
 
-#include "gtkmozembed.h"
+GtkWindow*
+GetGtkWindowForDOMWindow(nsIDOMWindow* aDOMWindow);
 
-/* signals */
+nsresult
+GetContentViewer(nsIWebBrowser *webBrowser, nsIContentViewer **aViewer);
 
-enum {
-  LINK_MESSAGE,
-  JS_STATUS,
-  LOCATION,
-  TITLE,
-  PROGRESS,
-  PROGRESS_ALL,
-  NET_STATE,
-  NET_STATE_ALL,
-  NET_START,
-  NET_STOP,
-  NEW_WINDOW,
-  VISIBILITY,
-  DESTROY_BROWSER,
-  OPEN_URI,
-  SIZE_TO,
-  DOM_KEY_DOWN,
-  DOM_KEY_PRESS,
-  DOM_KEY_UP,
-  DOM_MOUSE_DOWN,
-  DOM_MOUSE_UP,
-  DOM_MOUSE_CLICK,
-  DOM_MOUSE_DBL_CLICK,
-  DOM_MOUSE_OVER,
-  DOM_MOUSE_OUT,
-  SECURITY_CHANGE,
-  STATUS_CHANGE,
-  DOM_ACTIVATE,
-  DOM_FOCUS_IN,
-  DOM_FOCUS_OUT,
-  EMBED_LAST_SIGNAL
-};
-
-extern guint moz_embed_signals[EMBED_LAST_SIGNAL];
-
-extern void gtk_moz_embed_single_create_window(GtkMozEmbed **aNewEmbed,
-					       guint aChromeFlags);
-
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
-
-#endif /* gtkmozembedprivate_h */
+#endif /* __EmbedTools_h */

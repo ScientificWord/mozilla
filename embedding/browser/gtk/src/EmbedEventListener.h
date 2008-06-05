@@ -14,7 +14,7 @@
  * The Original Code is mozilla.org code.
  *
  * The Initial Developer of the Original Code is
- * Christopher Blizzard. Portions created by Christopher Blizzard are Copyright (C) Christopher Blizzard.  All Rights Reserved.
+ * Christopher Blizzard.
  * Portions created by the Initial Developer are Copyright (C) 2001
  * the Initial Developer. All Rights Reserved.
  *
@@ -38,9 +38,9 @@
 #ifndef __EmbedEventListener_h
 #define __EmbedEventListener_h
 
-#include <nsIDOMKeyListener.h>
-#include <nsIDOMMouseListener.h>
-#include <nsIDOMUIListener.h>
+#include "nsIDOMKeyListener.h"
+#include "nsIDOMMouseListener.h"
+#include "nsIDOMUIListener.h"
 
 class EmbedPrivate;
 

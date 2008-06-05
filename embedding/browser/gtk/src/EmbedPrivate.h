@@ -14,7 +14,7 @@
  * The Original Code is mozilla.org code.
  *
  * The Initial Developer of the Original Code is
- * Christopher Blizzard. Portions created by Christopher Blizzard are Copyright (C) Christopher Blizzard.  All Rights Reserved.
+ * Christopher Blizzard.
  * Portions created by the Initial Developer are Copyright (C) 2001
  * the Initial Developer. All Rights Reserved.
  *
@@ -38,19 +38,19 @@
 #ifndef __EmbedPrivate_h
 #define __EmbedPrivate_h
 
-#include <nsCOMPtr.h>
-#include <nsString.h>
-#include <nsIWebNavigation.h>
-#include <nsISHistory.h>
+#include "nsCOMPtr.h"
+#include "nsString.h"
+#include "nsIWebNavigation.h"
+#include "nsISHistory.h"
 // for our one function that gets the EmbedPrivate via the chrome
 // object.
-#include <nsIWebBrowserChrome.h>
-#include <nsIAppShell.h>
-#include <nsIDOMEventReceiver.h>
-#include <nsVoidArray.h>
+#include "nsIWebBrowserChrome.h"
+#include "nsIAppShell.h"
+#include "nsPIDOMEventTarget.h"
+#include "nsVoidArray.h"
 // app component registration
-#include <nsIGenericFactory.h>
-#include <nsIComponentRegistrar.h>
+#include "nsIGenericFactory.h"
+#include "nsIComponentRegistrar.h"
 
 #include "gtkmozembedprivate.h"
 
@@ -111,13 +111,6 @@ class EmbedPrivate {
   // visibility is set.
   void        ContentFinishedLoading(void);
 
-#ifdef MOZ_WIDGET_GTK
-  // these let the widget code know when the toplevel window gets and
-  // looses focus.
-  void        TopLevelFocusIn (void);
-  void        TopLevelFocusOut(void);
-#endif
-
   // these are when the widget itself gets focus in and focus out
   // events
   void        ChildFocusIn (void);
@@ -143,10 +136,10 @@ class EmbedPrivate {
   nsCOMPtr<nsISHistory>          mSessionHistory;
 
   // our event receiver
-  nsCOMPtr<nsIDOMEventReceiver>  mEventReceiver;
+  nsCOMPtr<nsPIDOMEventTarget>   mEventTarget;
 
   // the currently loaded uri
-  nsString                       mURI;
+  nsCString                      mURI;
 
   // the number of widgets that have been created
   static PRUint32                sWidgetCount;
