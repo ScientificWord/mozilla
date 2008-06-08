@@ -126,7 +126,7 @@
       </xsl:if>
     </xsl:if>
 
-    <xsl:text xml:space="preserve">\LBe</xsl:text>
+    <!-- JCS <xsl:text xml:space="preserve">\LBe</xsl:text> -->
   </xsl:template>
 
 
@@ -228,10 +228,10 @@ columnlines="none solid solid solid" columnalign="center right left center cente
     <xsl:text xml:space="preserve">}</xsl:text>
 
 
-    <xsl:text xml:space="preserve">\LBe</xsl:text>
+    <!-- JCS <xsl:text xml:space="preserve">\LBe</xsl:text> -->
 
     <xsl:if test="@frame='solid'">
-      <xsl:text xml:space="preserve">\hline\LBe</xsl:text>
+      <xsl:text xml:space="preserve">\hline <!-- JCS \LBe --></xsl:text>
     </xsl:if>
 
 <!-- Loop thru first level children - rows -->
@@ -357,7 +357,7 @@ columnlines="none solid solid solid" columnalign="center right left center cente
 
 
     <xsl:if test="@frame='solid'">
-      <xsl:text xml:space="preserve">\\ \hline\LBe</xsl:text>
+      <xsl:text xml:space="preserve">\\ \hline <!-- JCS \LBe --></xsl:text>
     </xsl:if>
 
      <xsl:text xml:space="preserve">\end{tabular}</xsl:text>
