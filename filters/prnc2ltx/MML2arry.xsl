@@ -59,10 +59,11 @@ columnlines="none solid solid solid" columnalign="center right left center cente
     </xsl:if>
 
 
-    <xsl:text xml:space="preserve">\LBe</xsl:text>
+    <!-- JCS <xsl:text xml:space="preserve">\LBe</xsl:text> -->
 
     <xsl:if test="@frame='solid'">
-      <xsl:text xml:space="preserve">\hline\LBe</xsl:text>
+      <!-- JCS <xsl:text xml:space="preserve">\hline\LBe</xsl:text> -->
+      <xsl:text xml:space="preserve">\hline </xsl:text>
     </xsl:if>
 
     <xsl:for-each select="*">
@@ -137,7 +138,8 @@ columnlines="none solid solid solid" columnalign="center right left center cente
 
 
     <xsl:if test="@frame='solid'">
-      <xsl:text xml:space="preserve">\\ \hline\LBe</xsl:text>
+      <!-- JCS <xsl:text xml:space="preserve">\\ \hline\LBe </xsl:text> -->
+<xsl:text xml:space="preserve">\\ \hline </xsl:text>
     </xsl:if>
 
     <xsl:text xml:space="preserve">\end{</xsl:text>

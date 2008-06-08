@@ -1193,11 +1193,12 @@ The \texttt{\TEXTsymbol{\backslash}text}  ->  The <msi:code>\text</msi:code>
         <xsl:text xml:space="preserve">|</xsl:text>
       </xsl:if>
       <xsl:text xml:space="preserve">}</xsl:text>
-      <xsl:text xml:space="preserve">\LBe</xsl:text>
+      <!-- JCS <xsl:text xml:space="preserve">\LBe </xsl:text> -->
 
 
       <xsl:if test="@frame='solid'">
-        <xsl:text xml:space="preserve">\hline\LBe</xsl:text>
+        <!-- JCS  <xsl:text xml:space="preserve">\hline\LBe</xsl:text> -->
+        <xsl:text xml:space="preserve">\hline </xsl:text>
       </xsl:if>
 
 <!-- Loop thru first level children - msi:thead | msi:tbody | msi:tfoot -->
@@ -1211,7 +1212,9 @@ The \texttt{\TEXTsymbol{\backslash}text}  ->  The <msi:code>\text</msi:code>
 
 
       <xsl:if test="@frame='solid'">
-        <xsl:text xml:space="preserve">\\ \hline\LBe</xsl:text>
+        <!-- JCS <xsl:text xml:space="preserve">\\ \hline\LBe</xsl:text> -->
+        <xsl:text xml:space="preserve">\\ \hline 
+</xsl:text>
       </xsl:if>
 
 
