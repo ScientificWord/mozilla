@@ -10,16 +10,16 @@
 <xsl:preserve-space elements="pre"/>
 
 
+<xsl:include href="mml2ltex.xsl"/>
 <xsl:include href="preamble.xsl"/>
 <xsl:include href="spaces.xsl"/>
 <xsl:include href="frame.xsl"/>
-<xsl:include href="mml2ltex.xsl"/>
 
 <xsl:template match="/">
   <xsl:apply-templates/>
 </xsl:template>
 
-<xsl:template match="*"><!-- Matches everything but the root --></xsl:template>
+<xsl:template match="*">[DEF]<!-- Matches everything but the root --></xsl:template>
 
 <xsl:template match="html:html"><xsl:apply-templates/></xsl:template>
 <xsl:template match="html:head"><xsl:apply-templates/></xsl:template>
@@ -57,8 +57,12 @@
 
 
 <xsl:template match="html:body">
+\input{tcilatex}
 \begin{document}
 <xsl:apply-templates/>
+<xsl:if test="$endnotes &gt; 0">
+\theendnotes
+</xsl:if>
 \end{document}
 </xsl:template>
 
@@ -178,7 +182,10 @@
 <xsl:template match="html:notewrapper"><xsl:apply-templates/></xsl:template>
 
 <xsl:template match="html:note[@type='footnote']">
-  \footnote{
+<xsl:choose>
+  <xsl:when test="$endnotes &gt; 0">\endnote{</xsl:when>
+  <xsl:otherwise>\footnote{</xsl:otherwise>
+</xsl:choose>
 <xsl:apply-templates/>
 }
 </xsl:template>
@@ -250,6 +257,81 @@
 <xsl:template match="html:textquotedblleft">\textquotedblleft </xsl:template>
 <xsl:template match="html:textquotedblright">\textquotedblright </xsl:template>
 <xsl:template match="html:textbackslash">\textbackslash </xsl:template>
+
+<xsl:template match="html:TeXButton">
+%TCIMACRO{\TeXButton<xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="html:TBLabel">{<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="html:TBTeX">{<xsl:apply-templates/>}%
+%BeginExpansion
+<xsl:apply-templates/>
+%EndExpansion
+</xsl:template>
+
+<xsl:template match="html:enumerate">
+\begin{enumerate}
+<xsl:apply-templates/>
+\end{enumerate}
+</xsl:template>
+<xsl:template match="html:itemize">							 
+\begin{itemize}
+<xsl:apply-templates/>
+\end{itemize}
+</xsl:template>
+
+<xsl:template match="html:description">
+\begin{description}
+<xsl:apply-templates/>
+\end{description}
+</xsl:template>
+
+<xsl:template match="html:item">
+\item <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="html:explicit-item">[<xsl:apply-templates/>]</xsl:template>
+
+<xsl:template match="html:a">\ref{<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="html:cite">
+\cite<xsl:if test="@label">[<xsl:value-of select="@label"/>]</xsl:if>{<xsl:apply-templates/>}</xsl:template>
+
+<xsl:template match="html:index">\index{<xsl:apply-templates/>}</xsl:template>
+
+<xsl:template match="html:ref">\ref{<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="html:pageref">\pageref{<xsl:apply-templates/>}</xsl:template>
+
+
+<xsl:template match="html:marker">\label{<xsl:value-of select="@id"/>}</xsl:template>
+
+<xsl:template match="a">\ref{<xsl:apply-templates/>}</xsl:template>
+
+<xsl:template match="html:requestimplementation">[ NEED TO IMPLEMENT: \verb+<xsl:apply-templates/>+] </xsl:template>
+
+<xsl:template match="html:Note">
+\begin{Note}
+<xsl:apply-templates/>
+\end{Note}
+</xsl:template>
+
+
+<xsl:template match="html:GrayBox">
+\begin{GrayBox}
+<xsl:apply-templates/>
+\end{GrayBox}
+</xsl:template>
+
+<xsl:template match="html:QTR">\QTR{<xsl:value-of select="@type"/>}{<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="html:QTP">\QTP{<xsl:value-of select="@type"/>}
+<xsl:apply-templates/>
+\par
+
+</xsl:template>
+
+
+
+
+
 
 </xsl:stylesheet>
 
