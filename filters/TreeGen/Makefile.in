@@ -1,0 +1,9 @@
+.SUFFIXES : .o .cpp
+
+OBJS =  xfltutil.o grammar.o logfiler.o textoken.o tmpliter.o xthmstor.o xcrostor.o tokizer.o texparse.o test.o
+
+all: $(OBJS)
+	g++ -o treegen $(OBJS)
+
+.cpp.o:
+	g++ -c -fPIC -I "../../libtci/tlinc"  $<
