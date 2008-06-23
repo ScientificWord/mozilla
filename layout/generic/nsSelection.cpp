@@ -5337,6 +5337,7 @@ nsTypedSelection::Repaint(nsPresContext* aPresContext)
     nsresult rv = selectFrames(aPresContext, range, PR_TRUE);
 
     if (NS_FAILED(rv)) {
+
       return rv;
     }
   }
