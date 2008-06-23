@@ -802,9 +802,9 @@ var msiOpenCommand =
   {
     var fp = Components.classes["@mozilla.org/filepicker;1"].
                createInstance(Components.interfaces.nsIFilePicker);
-    fp.init(window, GetString("OpenSWPFile"), Components.interfaces.nsIFilePicker.modeOpen);
+    fp.init(window, GetString("OpenAppFile"), Components.interfaces.nsIFilePicker.modeOpen);
     msiSetFilePickerDirectory(fp, MSI_EXTENSION);
-    fp.appendFilter(GetString("SWP Documents"),"*."+MSI_EXTENSION);
+    fp.appendFilter(GetString("AppDocs"),"*."+MSI_EXTENSION);
     fp.appendFilter(GetString("XHTMLFiles"),"*.xhtml; *.xht");
     fp.appendFilters(Components.interfaces.nsIFilePicker.filterAll);
 
