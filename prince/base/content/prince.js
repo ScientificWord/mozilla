@@ -330,7 +330,7 @@ function openTeX()
     var infile =  "\""+fp.file.target+"\"";
     dump("Open Tex: " + infile+"\n");
 
-// Get the directory for the result from the preferences, or default to the SWP Docs directory
+// Get the directory for the result from the preferences, or default to the SWPDocs directory
     var docdir;
     try
     {
@@ -358,11 +358,7 @@ function openTeX()
       // if we can't find the one in the prefs, get the default
       docdir = dsprops.get(dirkey, Components.interfaces.nsILocalFile);
       if (!docdir.exists()) docdir.create(1,0755);
-      // Choose one of the three following lines depending on the app
-	  // BBM Replace this code by using a string from a branding file
-      docdir.append("SWPDocs");
-      // docdir.append("SWDocs");
-      // docdir.append("SNBDocs");
+      docdir.append(GetString("DefaultDocDir"));
       if (!docdir.exists()) docdir.create(1,0755);
       dump("default document directory is "+docdir.target+"\n");
     }
@@ -416,131 +412,127 @@ function openTeX()
   }                       
 }
 
+//#
+//define INTERNAL_XSLT
+
 // documentAsTeXFile returns true if the TeX file was created.
 function documentAsTeXFile( document, xslSheet, outTeXfile )
 {
-    dump("\nDocument as TeXFile\n");
+  dump("\nDocument as TeXFile\n");
+  if (!document) return false;
+  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
 
-    var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
-
-    var exefile = dsprops.get("resource:app", Components.interfaces.nsIFile);
-    var stylefile = exefile.clone();
-    exefile.append("Transform.exe");
-    var documentPath = document.documentURI;
-    documentPath = GetFilepath(documentPath);
-    var workingDir;
-    workingDir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+  var documentPath = document.documentURI;
+  documentPath = GetFilepath(documentPath);
   // for Windows
 #ifdef XP_WIN32
-      documentPath = documentPath.replace("/","\\","g");
+  documentPath = documentPath.replace("/","\\","g");
 #endif
-    workingDir.initWithPath( documentPath );
-    var bareleaf = workingDir.leafName; // actually, this is the leaf of the document.
-    workingDir = workingDir.parent;
-
-    var index =  bareleaf.lastIndexOf(".");
-    if (index > 0) bareleaf = bareleaf.substr(0,index); // probably at this time, bareleaf=="main"
-
-    var outfile = workingDir.clone();
-    var outTeX = outfile.clone();
-    outfile.append("temp");
-    // clean out the temp directory
-    try {if (outfile.exists()) outfile.remove(true);}
-    catch(e){
-      dump("deleting temp directory failed: "+e.toString()+"\n");
-    }
-    try  {outfile.create(1, 0755);}
-    catch(e){
-      dump("creating temp directory failed: "+e.toString()+"\n");
-      return false
-    }
-    outfile.append(bareleaf + ".xml");
+  var workingDir;
+  var outTeX;
+  workingDir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+  workingDir.initWithPath( documentPath ); 
+  var bareleaf = workingDir.leafName; // actually, this is the leaf of the document.
+  workingDir = workingDir.parent;
+  if (outTeXfile == null  || outTeXfile.target.length == 0)
+  {
+    outTeX = workingDir.clone();
     outTeX.append("tex");
     if (!outTeX.exists()) outTeX.create(1, 0755);
-    if (outTeXfile == null)
-    {
-      outTeXfile = outTeX;
-      outTeXfile.append(bareleaf + ".tex");
-    }
-        
-    dump("\nOutput file = " + outfile.target+"\n");
-    var s = new XMLSerializer();
-    var str = s.serializeToString(document);
+    outTeXfile = outTeX;
+    outTeXfile.append(bareleaf + ".tex");
+  }
+  var outfileTeXPath = outTeXfile.target;
+  var stylefile = dsprops.get("resource:app", Components.interfaces.nsIFile);
+  stylefile.append("res");
+  stylefile.append("xsl");
+  stylefile.append(xslSheet);
+  var xslPath = stylefile.target;
+
+#ifdef INTERNAL_XSLT
+
+  var str = "";
+  if (xslPath.length == 0) return str;
+  var xsltProcessor = new XSLTProcessor();
+  var myXMLHTTPRequest = new XMLHttpRequest();
+  myXMLHTTPRequest.open("GET", xslPath, false);
+  myXMLHTTPRequest.send(null);
+
+  var xslStylesheet = myXMLHTTPRequest.responseXML;
+  xsltProcessor.importStylesheet(xslStylesheet);
+  var newDoc = xsltProcessor.transformToDocument(document);
+  str = newDoc.documentElement.textContent;
+  dump("\n"+str);
+  if (outTeXfile.exists()) 
+    outTeXfile.remove(false);
+  outTeXfile.create(0, 0755);
+  var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+  fos.init(outTeXfile, -1, -1, false);
+  var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+    .createInstance(Components.interfaces.nsIConverterOutputStream);
+  os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
+  os.writeString(str);
+  os.close();
+  fos.close();
+#else
+  var exefile = dsprops.get("resource:app", Components.interfaces.nsIFile);
+  exefile.append("Transform.exe");
+
+  var index =  bareleaf.lastIndexOf(".");
+  if (index > 0) bareleaf = bareleaf.substr(0,index); // probably at this time, bareleaf=="main"
+
+  var outfile = workingDir.clone();
+  outfile.append("temp");
+  // clean out the temp directory
+  try {if (outfile.exists()) outfile.remove(true);}
+  catch(e){
+    dump("deleting temp directory failed: "+e.toString()+"\n");
+  }
+  try  {outfile.create(1, 0755);}
+  catch(e){
+    dump("creating temp directory failed: "+e.toString()+"\n");
+    return false
+  }
+  outfile.append(bareleaf + ".xml");
+      
+  dump("\nOutput file = " + outfile.target+"\n");
+  var s = new XMLSerializer();
+  var str = s.serializeToString(document);
 
 
-    var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-    fos.init(outfile, -1, -1, false);
-    var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
-      .createInstance(Components.interfaces.nsIConverterOutputStream);
-    os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
-    os.writeString(str);
-    os.close();
-    fos.close();
+  var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+  fos.init(outfile, -1, -1, false);
+  var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+    .createInstance(Components.interfaces.nsIConverterOutputStream);
+  os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
+  os.writeString(str);
+  os.close();
+  fos.close();
 
-    stylefile.append("res");
-    stylefile.append("xsl");
-    stylefile.append(xslSheet);
-    var xslPath = stylefile.target;
-    var outfilePath = outfile.target;
-    var outfileTeXPath = outTeXfile.target;
-    while (xslPath.charAt(0) == "/".charAt(0)) xslPath = xslPath.substr(1);
+  var outfilePath = outfile.target;
+  while (xslPath.charAt(0) == "/".charAt(0)) xslPath = xslPath.substr(1);
   // for Windows
 #ifdef XP_WIN32
-    xslPath = xslPath.replace("\\","/","g");
-    outfilePath = outfilePath.replace("\\","/","g");
-    outfileTeXPath = outfileTeXPath.replace("\\","/","g");
+  xslPath = xslPath.replace("\\","/","g");
+  outfilePath = outfilePath.replace("\\","/","g");
+  outfileTeXPath = outfileTeXPath.replace("\\","/","g");
 #endif
-    try 
-    {
-      var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
-      theProcess.init(exefile);
-      var args =['-s', outfilePath, '-o', outfileTeXPath, xslPath, ];
-      theProcess.run(true, args, args.length);
-    } 
-    catch (ex) 
-    {
-      dump("\nUnable to export TeX:\n");
-      dump(ex+"\n");
-      return false;
-    }      
-    return outTeXfile.exists();
+  try 
+  {
+    var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+    theProcess.init(exefile);
+    var args =['-s', outfilePath, '-o', outfileTeXPath, xslPath, ];
+    theProcess.run(true, args, args.length);
+  } 
+  catch (ex) 
+  {
+    dump("\nUnable to export TeX:\n");
+    dump(ex+"\n");
+    return false;
+  }      
+#endif
+  return outTeXfile.exists();
 }
-//{
-//  var str = "";
-//  if (!document) return str;
-//  if (xslSheetPath.length == 0) return str;
-//  var xsltProcessor = new XSLTProcessor();
-//  var myXMLHTTPRequest = new XMLHttpRequest();
-//  myXMLHTTPRequest.open("GET", xslSheetPath, false);
-//  myXMLHTTPRequest.send(null);
-//
-//  var xslStylesheet = myXMLHTTPRequest.responseXML;
-//  xsltProcessor.importStylesheet(xslStylesheet);
-//  var newDoc = xsltProcessor.transformToDocument(document);
-//  str = newDoc.documentElement.textContent;
-//  dump("\n"+str);
-//  return str;
-//}
-
-//function documentAsTeXFile( document, xslSheet, outputFile )
-//{
-//  if (outputFile && outputFile.target.length > 0) 
-//  {
-//    var str = documentAsTeX(document, xslSheet );
-//    if (outputFile.exists()) 
-//    outputFile.remove(false);
-//    outputFile.create(0, 0755);
-//    var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-//    fos.init(outputFile, -1, -1, false);
-//    var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
-//      .createInstance(Components.interfaces.nsIConverterOutputStream);
-//    os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
-//    os.writeString(str);
-//    os.close();
-////   fos.close();
-//  }
-// }
-
 
 function currentFileName()
 {
@@ -603,7 +595,7 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
   if (pdftex)
     exefile.append("pdflatex.cmd");
   else
-    exefile.append("tex.cmd");
+    exefile.append("latex.cmd");
   dump("\nexecutable file: "+exefile.target+"\n");
   try 
   {
@@ -636,7 +628,7 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
   if (pdftex)
     outfileLeaf += ".pdf";
   else
-    outfileLeaf += ".dvi";
+    outfileLeaf += ".xdv";  // good only for XeTeX BBM fix this
   dump("\nOutputleaf="+outfileLeaf+"\n");
   var outputfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
   outputfile.initWithPath( outputDir );
