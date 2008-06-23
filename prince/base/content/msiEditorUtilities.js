@@ -3175,10 +3175,7 @@ function msiDefaultNewDocDirectory()
   // if we can't find the one in the prefs, get the default
   docdir = dsprops.get(dirkey, Components.interfaces.nsILocalFile);
   if (!docdir.exists()) docdir.create(1,0755);
-  // Choose one of the three following lines depending on the app
-  docdir.append("SWPDocs");
-  // docdir.append("SWDocs");
-  // docdir.append("SNBDocs");
+  docdir.append(GetString("DefaultDocDir"));
   if (!docdir.exists()) docdir.create(1,0755);
   return docdir;
 }
