@@ -47,7 +47,6 @@
 #include "nsIFontMetrics.h"
 
 #include "nsMathMLmsupFrame.h"
-#include "nsMathCursorUtils.h"
 
 //
 // <msup> -- attach a superscript to a base - implementation
@@ -82,7 +81,7 @@ nsMathMLmsupFrame::TransmitAutomaticData()
   return NS_OK;
 }
 
-NS_IMETHODIMP
+/* virtual */ nsresult
 nsMathMLmsupFrame::Place(nsIRenderingContext& aRenderingContext,
                          PRBool               aPlaceOrigin,
                          nsHTMLReflowMetrics& aDesiredSize)
@@ -254,60 +253,3 @@ nsMathMLmsupFrame::PlaceSuperScript(nsPresContext*      aPresContext,
 
   return NS_OK;
 }
-
-nsresult
-nsMathMLmsupFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count)
-{
-  printf("msup doEnterFromLeft, count = %d\n", count);
-  nsIFrame * pFrame = GetFirstChild(nsnull);
-  nsCOMPtr<nsMathMLFrame> pMathMLFrame;
-//  if (count > 0) count--;
-  if (leavingFrame == nsnull)  // entering base
-  {
-    pMathMLFrame = do_QueryInterface(pFrame);
-    if (pMathMLFrame) pMathMLFrame->EnterFromLeft(aOutFrame, aOutOffset, count);
-    else printf("Malformed msup -- no childred\n");
-  }
-  else if (pFrame && pFrame == leavingFrame) // we are leaving the base; reduce count by one and go into the exponent
-  {
-    if (count > 0) count--;
-    pFrame = pFrame->GetNextSibling();
-    pMathMLFrame = do_QueryInterface(pFrame);
-    if (pMathMLFrame) pMathMLFrame->EnterFromLeft(aOutFrame, aOutOffset, count);
-    else printf("Malformed msup\n");
-  }
-  else
-  {
-    // leaving the superscript position; decrease count; put the cursor just past the msup
-    if (count > 0) count--;
-    PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
-  }
-  return NS_OK;  
-}
-
-
-nsresult
-nsMathMLmsupFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count)
-{
-  printf("msup MoveOutToLeft, count = %d\n", count);
-  return NS_OK;
-}
-
-nsresult
-nsMathMLmsupFrame::EnterFromLeft(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count)
-{  // enter base
-  nsIFrame * pFrame = GetFirstChild(nsnull);
-  nsCOMPtr<nsMathMLFrame> pMathMLFrame;
-//  if (count > 0) count--;
-  pMathMLFrame = do_QueryInterface(pFrame);
-  if (pMathMLFrame) pMathMLFrame->EnterFromLeft(aOutFrame, aOutOffset, count);
-  return NS_OK;  
-}
-
-nsresult
-nsMathMLmsupFrame::EnterFromRight(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count)
-{
-  printf("mfrac EnterFromRight, count = %d\n", count);
-  return NS_OK;  
-}
-
