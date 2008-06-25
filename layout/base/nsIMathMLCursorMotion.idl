@@ -1,0 +1,20 @@
+
+#include "nsISupports.idl"
+
+interface nsIFrame;
+
+[scriptable, uuid(F85AD3B9-D72D-42cf-94DE-779565620E6A)]
+
+
+interface nsIMathMLCursorMotion : nsISupports
+{
+  long MoveOutToRight(in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count);
+
+  long MoveOutToLeft(in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count);
+
+  long EnterFromLeft(in nsIFrame leavingFrame, out nsIFrame aOutFrame, in long count);
+
+  long EnterFromRight(in nsIFrame leavingFrame, out nsIFrame aOutFrame, in long count);
+
+};
+
