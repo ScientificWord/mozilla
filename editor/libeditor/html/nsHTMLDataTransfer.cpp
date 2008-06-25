@@ -953,6 +953,7 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
       res = GetSelection(getter_AddRefs(selection));
       res = newElement->GetElementsByTagName(NS_LITERAL_STRING("cursor"), getter_AddRefs(nodeList));
       if (nodeList) nodeList->GetLength(&nodeCount);
+
       if (nodeCount > 0)
       {
         nodeList->Item(0, getter_AddRefs(node));
@@ -2963,7 +2964,7 @@ nsresult nsHTMLEditor::CreateTagStack(nsTArray<nsAutoString> &aTagStack, nsIDOMN
   
   if (!bSeenBody)
   {
-      aTagStack.AppendElement(NS_LITERAL_STRING("BODY"));
+      aTagStack.AppendElement(NS_LITERAL_STRING("body"));
   }
   return res;
 }
