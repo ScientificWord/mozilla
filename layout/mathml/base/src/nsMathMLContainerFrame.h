@@ -51,6 +51,7 @@
 #include "nsMathMLChar.h"
 #include "nsMathMLFrame.h"
 #include "nsMathMLParts.h"
+#include "nsMathMLCursorMotion.h"
 
 /*
  * Base class for MathML container frames. It acts like an inferred 
@@ -66,7 +67,8 @@
 #define STRETCH_CONSIDER_EMBELLISHMENTS 0x00000002 // size calculations include embellishments
 
 class nsMathMLContainerFrame : public nsHTMLContainerFrame,
-                               public nsMathMLFrame {
+                               public nsMathMLFrame,
+                               public nsMathMLCursorMotion {
   friend class nsMathMLmfencedFrame;
 public:
   nsMathMLContainerFrame(nsStyleContext* aContext) : nsHTMLContainerFrame(aContext) {}
@@ -81,11 +83,6 @@ public:
           nsStretchDirection   aStretchDirection,
           nsBoundingMetrics&   aContainerSize,
           nsHTMLReflowMetrics& aDesiredStretchSize);
-
-  NS_IMETHOD
-  Place(nsIRenderingContext& aRenderingContext,
-        PRBool               aPlaceOrigin,
-        nsHTMLReflowMetrics& aDesiredSize);
 
   NS_IMETHOD
   UpdatePresentationDataFromChildAt(PRInt32         aFirstIndex,
@@ -198,6 +195,54 @@ public:
   // --------------------------------------------------------------------------
   // Additional methods 
 
+protected:
+  /* Place :
+   * This method is used to measure or position child frames and other
+   * elements.  It may be called any number of times with aPlaceOrigin
+   * false to measure, and the final call of the Reflow process before
+   * returning from Reflow() or Stretch() will have aPlaceOrigin true
+   * to position the elements.
+   *
+   * IMPORTANT: This method uses GetReflowAndBoundingMetricsFor() which must
+   * have been set up with SaveReflowAndBoundingMetricsFor().
+   *
+   * The Place() method will use this information to compute the desired size
+   * of the frame.
+   *
+   * @param aPlaceOrigin [in]
+   *        If aPlaceOrigin is false, compute your desired size using the
+   *        information from GetReflowAndBoundingMetricsFor.  However, child
+   *        frames or other elements should not be repositioned.
+   *
+   *        If aPlaceOrigin is true, reflow is finished. You should position
+   *        all your children, and return your desired size. You should now
+   *        use FinishReflowChild() on your children to complete post-reflow
+   *        operations.
+   *
+   * @param aDesiredSize [out] parameter where you should return your desired
+   *        size and your ascent/descent info. Compute your desired size using
+   *        the information from GetReflowAndBoundingMetricsFor, and include
+   *        any space you want for border/padding in the desired size you
+   *        return.
+   */
+  virtual nsresult
+  Place(nsIRenderingContext& aRenderingContext,
+        PRBool               aPlaceOrigin,
+        nsHTMLReflowMetrics& aDesiredSize);
+
+  // MeasureChildFrames:
+  //
+  // A method used by nsMathMLContainerFrame::GetIntrinsicWidth to get the
+  // width that a particular Place method desires.  For most frames, this will
+  // just call the object's Place method.  However <msqrt> uses
+  // nsMathMLContainerFrame::GetIntrinsicWidth to measure the child frames as
+  // if in an <mrow>, and so <msqrt> frames implement MeasureChildFrames to
+  // use nsMathMLContainerFrame::Place.
+  virtual nsresult
+  MeasureChildFrames(nsIRenderingContext& aRenderingContext,
+                     nsHTMLReflowMetrics& aDesiredSize);
+
+
   // helper to re-sync the automatic data in our children and notify our parent to
   // reflow us when changes (e.g., append/insert/remove) happen in our child list
   virtual nsresult
@@ -205,15 +250,16 @@ public:
 
   // helper to get the preferred size that a container frame should use to fire
   // the stretch on its stretchy child frames.
-  virtual void
+  void
   GetPreferredStretchSize(nsIRenderingContext& aRenderingContext,
                           PRUint32             aOptions,
                           nsStretchDirection   aStretchDirection,
                           nsBoundingMetrics&   aPreferredStretchSize);
 
+public:
   // error handlers to provide a visual feedback to the user when an error
   // (typically invalid markup) was encountered during reflow.
-  virtual nsresult
+  nsresult
   ReflowError(nsIRenderingContext& aRenderingContext,
               nsHTMLReflowMetrics& aDesiredSize);
 
@@ -227,6 +273,7 @@ public:
               const nsHTMLReflowState& aReflowState,
               nsReflowStatus&          aStatus);
 
+protected:
   // helper to add the inter-spacing when <math> is the immediate parent.
   // Since we don't (yet) handle the root <math> element ourselves, we need to
   // take special care of the inter-frame spacing on elements for which <math>
@@ -273,6 +320,7 @@ public:
                                PRUint32        aFlagsValues,
                                PRUint32        aFlagsToUpdate);
 
+public:
   static void
   PropagatePresentationDataFromChildAt(nsIFrame*       aParentFrame,
                                        PRInt32         aFirstChildIndex,
@@ -308,17 +356,18 @@ public:
   static nsresult
   ReLayoutChildren(nsIFrame* aParentFrame, nsFrameState aBits);
 
-   NS_IMETHOD
-   MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+  NS_IMETHOD 
+  MoveOutToRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRInt32 *_retval);
 
-   NS_IMETHOD
-   MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+  NS_IMETHOD 
+  MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRInt32 *_retval);
 
-   NS_IMETHOD
-   EnterFromLeft(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+  NS_IMETHOD 
+  EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 count, PRInt32 *_retval);
 
-   NS_IMETHOD
-   EnterFromRight(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
+  NS_IMETHOD 
+  EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 count, PRInt32 *_retval);
+
 
 
 protected:
@@ -355,12 +404,10 @@ private:
 // 2) proper inter-frame spacing
 // 3) firing of Stretch() (in which case FinalizeReflow() would have to be cleaned)
 // Issues: If/when mathml becomes a pluggable component, the separation will be needed.
-class nsMathMLmathBlockFrame : public nsBlockFrame,
-                               public nsMathMLFrame {
+class nsMathMLmathBlockFrame : public nsBlockFrame {
 public:
   friend nsIFrame* NS_NewMathMLmathBlockFrame(nsIPresShell* aPresShell,
           nsStyleContext* aContext, PRUint32 aFlags);
-  NS_DECL_ISUPPORTS_INHERITED
 
   // beware, mFrames is not set by nsBlockFrame
   // cannot use mFrames{.FirstChild()|.etc} since the block code doesn't set mFrames
@@ -416,21 +463,8 @@ public:
   }
 
   virtual PRBool IsFrameOfType(PRUint32 aFlags) const {
-    return nsBlockFrame::IsFrameOfType(aFlags  & ~(nsIFrame::eMathML));
+    return nsBlockFrame::IsFrameOfType(aFlags & ~(nsIFrame::eMathML));
   }
-
-  NS_IMETHOD
-  MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
-  NS_IMETHOD
-  MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
-  NS_IMETHOD
-  EnterFromLeft(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
-  NS_IMETHOD
-  EnterFromRight(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
 
 protected:
   nsMathMLmathBlockFrame(nsStyleContext* aContext) : nsBlockFrame(aContext) {
@@ -443,12 +477,9 @@ protected:
 
 // --------------
 
-class nsMathMLmathInlineFrame : public nsInlineFrame, 
-                                public nsMathMLFrame 
-{
+class nsMathMLmathInlineFrame : public nsInlineFrame {
 public:
   friend nsIFrame* NS_NewMathMLmathInlineFrame(nsIPresShell* aPresShell, nsStyleContext* aContext);
-  NS_DECL_ISUPPORTS_INHERITED
 
   NS_IMETHOD
   SetInitialChildList(nsIAtom*        aListName,
@@ -504,19 +535,6 @@ public:
   virtual PRBool IsFrameOfType(PRUint32 aFlags) const {
     return nsInlineFrame::IsFrameOfType(aFlags & ~(nsIFrame::eMathML));
   }
-
-  NS_IMETHOD
-  MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
-  NS_IMETHOD
-  MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
-  NS_IMETHOD
-  EnterFromLeft(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
-  NS_IMETHOD
-  EnterFromRight(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
 
 protected:
   nsMathMLmathInlineFrame(nsStyleContext* aContext) : nsInlineFrame(aContext) {}
