@@ -86,6 +86,7 @@ endif
 
 XPIDLSRCS	= \
 		nsIStyleSheetService.idl	\
+		nsIMathMLCursorMotion.idl   \
 		$(NULL)
 
 EXPORTS		= \
