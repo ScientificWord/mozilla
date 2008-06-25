@@ -94,12 +94,6 @@ public:
           nsBoundingMetrics&   aContainerSize,
           nsHTMLReflowMetrics& aDesiredStretchSize);
 
- NS_IMETHOD
- EnterFromLeft(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
- NS_IMETHOD
- EnterFromRight(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
 protected:
   nsMathMLmoFrame(nsStyleContext* aContext) : nsMathMLTokenFrame(aContext) {}
   virtual ~nsMathMLmoFrame();
@@ -110,6 +104,8 @@ protected:
   nsOperatorFlags  mFlags;
   float            mMinSize;
   float            mMaxSize;
+
+  PRBool UseMathMLChar();
 
   // overload the base method so that we can setup our nsMathMLChar
   virtual void ProcessTextData();
@@ -123,11 +119,6 @@ protected:
   // helper to double check thar our char should be rendered as a selected char
   PRBool
   IsFrameInSelection(nsIFrame* aFrame);
-
-  // Return if this frame contains only an invisible operator. This will cause the cursor to
-  // skip over it.
-  PRBool
-  IsInvisibleOp();
 };
 
 #endif /* nsMathMLmoFrame_h___ */

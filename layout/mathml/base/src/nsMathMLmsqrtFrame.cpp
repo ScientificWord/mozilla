@@ -137,7 +137,6 @@ nsMathMLmsqrtFrame::BuildDisplayList(nsDisplayListBuilder*   aBuilder,
                                      const nsDisplayListSet& aLists)
 {
   /////////////
-  DisplaySelectionOverlay(aBuilder, aLists,  nsISelectionDisplay::DISPLAY_ALL);
   // paint the content we are square-rooting
   nsresult rv = nsMathMLContainerFrame::BuildDisplayList(aBuilder, aDirtyRect, aLists);
   NS_ENSURE_SUCCESS(rv, rv);
@@ -164,7 +163,7 @@ nsMathMLmsqrtFrame::BuildDisplayList(nsDisplayListBuilder*   aBuilder,
   return rv;
 }
 
-NS_IMETHODIMP
+/* virtual */ nsresult
 nsMathMLmsqrtFrame::Place(nsIRenderingContext& aRenderingContext,
                           PRBool               aPlaceOrigin,
                           nsHTMLReflowMetrics& aDesiredSize)
@@ -282,6 +281,26 @@ nsMathMLmsqrtFrame::Place(nsIRenderingContext& aRenderingContext,
 
   return NS_OK;
 }
+
+/* virtual */ nscoord
+nsMathMLmsqrtFrame::GetIntrinsicWidth(nsIRenderingContext* aRenderingContext)
+{
+  // The child frames form an mrow
+  nscoord width = nsMathMLContainerFrame::GetIntrinsicWidth(aRenderingContext);
+  // Add the width of the radical symbol
+  width += mSqrChar.GetMaxWidth(PresContext(), *aRenderingContext);
+
+  return width;
+}
+
+/* virtual */ nsresult
+nsMathMLmsqrtFrame::MeasureChildFrames(nsIRenderingContext& aRenderingContext,
+                                       nsHTMLReflowMetrics& aDesiredSize)
+{
+  return nsMathMLContainerFrame::Place(aRenderingContext, PR_FALSE,
+                                       aDesiredSize);
+}
+
 
 nscoord
 nsMathMLmsqrtFrame::FixInterFrameSpacing(nsHTMLReflowMetrics& aDesiredSize)
