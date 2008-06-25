@@ -22,6 +22,6 @@
       <handler event="keypress" key="2" action="document.getElementById('ParaTagSelections').focus();" modifiers="accel"/>
       <handler event="keypress" key="3" action="document.getElementById('StructTagSelections').focus();" modifiers="accel"/>
       <handler event="keypress" key="4" action="document.getElementById('OtherTagSelections').focus();" modifiers="accel"/>
-      <handler event="keypress" key="+" action="ZoomManager.prototype.getInstance().enlarge();" modifiers="accel,shift"/>
-      <handler event="keypress" key="-" action="ZoomManager.prototype.getInstance().reduce();" modifiers="accel"/>
-      <handler event="keypress" key="0" action="ZoomManager.prototype.getInstance().reset();" modifiers="accel"/>
+      <handler event="keypress" key="+" action="ZoomManager.enlarge();" modifiers="accel,shift"/>
+      <handler event="keypress" key="-" action="ZoomManager.reduce();" modifiers="accel"/>
+      <handler event="keypress" key="0" action="ZoomManager.reset();" modifiers="accel"/>
