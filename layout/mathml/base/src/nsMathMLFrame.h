@@ -52,7 +52,6 @@
 #include "nsMathMLElement.h"
 
 class nsMathMLChar;
-struct nsPeekOffsetStruct;
 
 // Concrete base class with default methods that derived MathML frames can override
 class nsMathMLFrame : public nsIMathMLFrame {
@@ -105,14 +104,6 @@ public:
           nsStretchDirection   aStretchDirection,
           nsBoundingMetrics&   aContainerSize,
           nsHTMLReflowMetrics& aDesiredStretchSize)
-  {
-    return NS_OK;
-  }
-
-  NS_IMETHOD
-  Place(nsIRenderingContext& aRenderingContext,
-        PRBool               aPlaceOrigin,
-        nsHTMLReflowMetrics& aDesiredSize)
   {
     return NS_OK;
   }
@@ -430,18 +421,6 @@ public:
   GetAxisHeight(nsIRenderingContext& aRenderingContext, 
                 nsIFontMetrics*      aFontMetrics,
                 nscoord&             aAxisHeight);
-
-  NS_IMETHOD
-  MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
-  NS_IMETHOD
-  MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
-  NS_IMETHOD
-  EnterFromLeft(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
-  NS_IMETHOD
-  EnterFromRight(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
 
 protected:
 #if defined(NS_DEBUG) && defined(SHOW_BOUNDING_BOX)
