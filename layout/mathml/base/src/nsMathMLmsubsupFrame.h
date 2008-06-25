@@ -55,7 +55,7 @@ public:
   NS_IMETHOD
   TransmitAutomaticData();
 
-  NS_IMETHOD
+  virtual nsresult
   Place(nsIRenderingContext& aRenderingContext,
         PRBool               aPlaceOrigin,
         nsHTMLReflowMetrics& aDesiredSize);
@@ -69,13 +69,6 @@ public:
                     nscoord              aUserSubScriptShift,
                     nscoord              aUserSupScriptShift,
                     nscoord              aScriptSpace);
-
-  NS_IMETHOD
-  MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
-  NS_IMETHOD
-  MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
 
 protected:
   nsMathMLmsubsupFrame(nsStyleContext* aContext) : nsMathMLContainerFrame(aContext) {}

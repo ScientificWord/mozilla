@@ -1,25 +1,25 @@
 /* Copyright 2008, MacKichan Software, Inc. */
 
-#include "nsMathCursorUtils.h"
 #include "nsCom.h"
-#include "nsMathMLFrame.h"
 #include "nsFrameSelection.h"
+#include "nsMathCursorUtils.h"
+#include "nsMathMLCursorMotion.h"
 
 
-PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count)
+PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32& count)
 {
   nsIFrame * pChild;
   nsIFrame * pParent;
   nsCOMPtr<nsIContent> pContent;
-  nsCOMPtr<nsMathMLFrame> pMathMLFrame;
+  nsCOMPtr<nsIMathMLCursorMotion> pMCM;
   if (fInside) // we put the cursor at the end of the contents of pFrame; we do not recurse.
   {
     // find the last child
     pChild = pFrame->GetFirstChild(nsnull);
     while (pChild && pChild->GetNextSibling())
       pChild = pChild->GetNextSibling();
-    pMathMLFrame = do_QueryInterface(pChild);
-    if (pMathMLFrame) // last child is a math ml frame. Put the cursor after it.
+    pMCM = do_QueryInterface(pChild);
+    if (pMCM) // last child is a math ml frame. Put the cursor after it.
     {
       pContent = pFrame->GetContent();
       *aOutOffset = 1+pContent->IndexOf(pChild->GetContent());
@@ -47,19 +47,19 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
   return PR_TRUE;
 }
 
-PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count)
+PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32& count)
 {
   nsIFrame * pChild;
   nsIFrame * pParent;
   nsCOMPtr<nsIContent> pContent;
-  nsCOMPtr<nsMathMLFrame> pMathMLFrame;
+  nsCOMPtr<nsIMathMLCursorMotion> pMCM;
   if (fInside)
   {
     pChild = pFrame->GetFirstChild(nsnull);
-    pMathMLFrame = do_QueryInterface(pChild);
-    if (pMathMLFrame) // child is a math ml frame. Recurse down the tree
+    pMCM = do_QueryInterface(pChild);
+    if (pMCM) // child is a math ml frame. Recurse down the tree
     {
-      pMathMLFrame->EnterFromLeft(aOutFrame, aOutOffset, count);
+      pMCM->EnterFromLeft(pFrame, aOutFrame, count, (PRInt32*)&count);
     }
     else // child is not math, assumed to be text
     {

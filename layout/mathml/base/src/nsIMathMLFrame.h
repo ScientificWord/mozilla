@@ -45,7 +45,6 @@
 struct nsPresentationData;
 struct nsEmbellishData;
 struct nsHTMLReflowMetrics;
-struct nsPeekOffsetStruct;
 
 // a781ed45-4338-43cb-9739-a7a8f8418ff3
 #define NS_IMATHMLFRAME_IID \
@@ -123,42 +122,6 @@ public:
           nsStretchDirection   aStretchDirection,
           nsBoundingMetrics&   aContainerSize,
           nsHTMLReflowMetrics& aDesiredStretchSize) = 0;
-
- /* Place :
-  * This method is used before returning from Reflow(), or when a MathML frame
-  * has just been stretched. It is called to fine-tune the positions of the
-  * child frames, and other elements.
-  *
-  * IMPORTANT: For nsMathMLContainerFrames this method uses
-  * GetReflowAndBoundingMetricsFor() which must have been set up with
-  * SaveReflowAndBoundingMetricsFor().
-  *
-  * The Place() method will use this information to compute the desired size
-  * of the frame.
-  *
-  * @param aPlaceOrigin [in]
-  *        If aPlaceOrigin is false, compute your desired size using the
-  *        information in your children's rectangles. However, upon return,
-  *        the origins of your children should keep their ascent information, i.e., 
-  *        a child rect.x, and rect.y should still act like placeholders for the 
-  *        child's descent and ascent. 
-  *
-  *        If aPlaceOrigin is true, reflow is finished. You should position all
-  *        your children, and return your desired size. You should now convert
-  *        the origins of your child frames into the coordinate system 
-  *        expected by Gecko (which is relative to the upper-left
-  *        corner of the parent) and use FinishReflowChild() on your children
-  *        to complete post-reflow operations.
-  *
-  * @param aDesiredSize [out] parameter where you should return your
-  *        desired size and your ascent/descent info. Compute your desired size 
-  *        using the information in your children's rectangles, and include any
-  *        space you want for border/padding in the desired size you return.  
-  */
-  NS_IMETHOD
-  Place(nsIRenderingContext& aRenderingContext,
-        PRBool               aPlaceOrigin,
-        nsHTMLReflowMetrics& aDesiredSize) = 0;
 
  /* GetEmbellishData/SetEmbellishData :
   * Get/Set the mEmbellishData member variable.
@@ -286,35 +249,6 @@ public:
                                     PRInt32         aLastIndex,
                                     PRUint32        aFlagsValues,
                                     PRUint32        aWhichFlags) = 0;
- /*
- ** MoveOutToRight
- *
- *  Introduced by BBM, MacKichan Software, Inc.
- *	These are a handful of functions to improve cursor and selection movement within MathML.
- *  When the cursor moves out of an object when advancing (going right in left-to-right
- *  text -- which is all the implementation supports currently), the object calls 
- *  MoveOutToRight on its parent.	In the reverse direction MoveOutToLeft is
- *  called
- */
- NS_IMETHOD
- MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count) = 0;
-
- NS_IMETHOD
- MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count) = 0;
-
- /*
- ** EnterFromLeft
- *
- *  This is called on an object when the cursor enters it. Most frequently, the caller is
- *  the parent of this object.
- */
-
- NS_IMETHOD
- EnterFromLeft(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count) = 0;
-
- NS_IMETHOD
- EnterFromRight(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count) = 0;
-
 };
 
 // struct used by a container frame to keep track of its embellishments.

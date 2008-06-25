@@ -87,18 +87,6 @@ public:
     return nsTableOuterFrame::IsFrameOfType(aFlags & ~(nsIFrame::eMathML));
   }
 
-   NS_IMETHOD
-   MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
-   NS_IMETHOD
-   MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
-   NS_IMETHOD
-   EnterFromLeft(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
-   NS_IMETHOD
-   EnterFromRight(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
 protected:
   nsMathMLmtableOuterFrame(nsStyleContext* aContext) : nsTableOuterFrame(aContext) {}
   virtual ~nsMathMLmtableOuterFrame();
@@ -113,8 +101,7 @@ protected:
 
 // --------------
 
-class nsMathMLmtableFrame : public nsTableFrame,
-                                 public nsMathMLFrame
+class nsMathMLmtableFrame : public nsTableFrame
 {
 public:
   friend nsIFrame* NS_NewMathMLmtableFrame(nsIPresShell* aPresShell, nsStyleContext* aContext);
@@ -165,19 +152,6 @@ public:
   // safer (albeit grossly suboptimal) to just relayout the whole thing.
   void RestyleTable();
 
-
-   NS_IMETHOD
-   MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
-   NS_IMETHOD
-   MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
-   NS_IMETHOD
-   EnterFromLeft(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
-   NS_IMETHOD
-   EnterFromRight(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
 protected:
   nsMathMLmtableFrame(nsStyleContext* aContext) : nsTableFrame(aContext) {}
   virtual ~nsMathMLmtableFrame();
@@ -185,8 +159,7 @@ protected:
 
 // --------------
 
-class nsMathMLmtrFrame : public nsTableRowFrame,
-                                 public nsMathMLFrame
+class nsMathMLmtrFrame : public nsTableRowFrame
 {
 public:
   friend nsIFrame* NS_NewMathMLmtrFrame(nsIPresShell* aPresShell, nsStyleContext* aContext);
@@ -243,19 +216,6 @@ public:
     }
   }
 
-
-   NS_IMETHOD
-   MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
-   NS_IMETHOD
-   MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
-   NS_IMETHOD
-   EnterFromLeft(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
-   NS_IMETHOD
-   EnterFromRight(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
 protected:
   nsMathMLmtrFrame(nsStyleContext* aContext) : nsTableRowFrame(aContext) {}
   virtual ~nsMathMLmtrFrame();
@@ -263,8 +223,7 @@ protected:
 
 // --------------
 
-class nsMathMLmtdFrame : public nsTableCellFrame,
-                                 public nsMathMLFrame
+class nsMathMLmtdFrame : public nsTableCellFrame
 {
 public:
   friend nsIFrame* NS_NewMathMLmtdFrame(nsIPresShell* aPresShell, nsStyleContext* aContext);
@@ -284,19 +243,6 @@ public:
   {
     return nsTableCellFrame::IsFrameOfType(aFlags & ~(nsIFrame::eMathML));
   }
-
-
-   NS_IMETHOD
-   MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
-   NS_IMETHOD
-   MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
-   NS_IMETHOD
-   EnterFromLeft(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
-   NS_IMETHOD
-   EnterFromRight(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
 
 protected:
   nsMathMLmtdFrame(nsStyleContext* aContext) : nsTableCellFrame(aContext) {}
@@ -342,18 +288,6 @@ public:
   {
     return nsBlockFrame::IsFrameOfType(aFlags & ~(nsIFrame::eMathML));
   }
-
-   NS_IMETHOD
-   MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
-   NS_IMETHOD
-   MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
-   NS_IMETHOD
-   EnterFromLeft(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
-
-   NS_IMETHOD
-   EnterFromRight(nsIFrame** aOutFrame, PRInt32* aOutOffset, PRUint32& count);
 
 protected:
   nsMathMLmtdInnerFrame(nsStyleContext* aContext) : nsBlockFrame(aContext) {}
