@@ -3305,7 +3305,7 @@ function msiRevertFile (aContinueEditing, documentfile, del) // an nsILocalFile
         var zw = Components.classes["@mozilla.org/zipwriter;1"]
                               .createInstance(Components.interfaces.nsIZipWriter);
         if (zipfile.exists()) zipfile.remove(0);
-        zipfile.create(0,0x755);
+        zipfile.create(0,0755);
         zw.open( zipfile, PR_RDWR | PR_CREATE_FILE | PR_TRUNCATE);
         zipDirectory(zw, "", dir); 
         zw.close();
