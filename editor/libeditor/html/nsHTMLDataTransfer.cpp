@@ -155,15 +155,25 @@ static nsresult RemoveFragComments(nsCString &theStr);
 static void RemoveBodyAndHead(nsIDOMNode *aNode);
 static nsresult FindTargetNode(nsIDOMNode *aStart, nsCOMPtr<nsIDOMNode> &aResult);
 
-//#if DEBUG_barry || DEBUG_Barry
-//nsString DebTagName;
-//void DebExamineNode(nsIDOMNode * aNode)
-//{
-//  if (aNode) nsEditor::GetTagString(aNode, DebTagName);
-//  else DebTagName = NS_LITERAL_STRING("Null");
-//}
-//#endif
-void DebExamineNode(nsIDOMNode * aNode) {}
+#if DEBUG_barry || DEBUG_Barry
+nsString DebTagName;
+void DebExamineNode(nsIDOMNode * aNode)
+{
+  if (aNode) nsEditor::GetTagString(aNode, DebTagName);
+  else DebTagName = NS_LITERAL_STRING("Null");
+}
+
+void dumpTagStack( nsAutoTArray<nsAutoString, 32> sa)
+{
+  printf("Tag Stack: \n");
+  int L = sa.Length();
+  for (int i=0; i < L; i++) printf("%S\n",sa[i].get());
+}
+#else
+#define DebExamineNode(a);
+#define dumpTagStack(a); 
+#define dumpNode(a);
+#endif
 
 nsCOMPtr<nsIDOMNode> nsHTMLEditor::GetListParent(nsIDOMNode* aNode)
 {
@@ -241,6 +251,7 @@ NS_IMETHODIMP nsHTMLEditor::LoadHTML(const nsAString & aInputString)
     {
       res = nsrange->CreateContextualFragment(aInputString, getter_AddRefs(docfrag));
       if (!docfrag) return NS_ERROR_NULL_POINTER;
+//      DumpNode(docfrag); 
       NS_ENSURE_SUCCESS(res, res);
     }
     // put the fragment into the document
@@ -310,7 +321,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
                                    &streamStartOffset,
                                    &streamEndOffset);
   NS_ENSURE_SUCCESS(res, res);
-
+  DumpNode(fragmentAsNode);
   nsCOMPtr<nsIDOMNode> targetNode, tempNode;
   PRInt32 targetOffset=0;
 
@@ -630,6 +641,11 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
       {
         
         // try to insert
+        DumpNode(curNode); 
+#if DEBUG_barry || DEBUG_Barry
+    DebExamineNode(curNode);
+    DebExamineNode(parentNode);
+#endif
         res = InsertNodeAtPoint(curNode, address_of(parentNode), &offsetOfNewNode, PR_TRUE);
         if (NS_SUCCEEDED(res)) 
         {
@@ -643,6 +659,9 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
         while (NS_FAILED(res) && curNode)
         {
           curNode->GetParentNode(getter_AddRefs(parent));
+#if DEBUG_barry || DEBUG_Barry
+    DebExamineNode(parent);
+#endif
           if (parent && !nsTextEditUtils::IsBody(parent))
           {
             res = InsertNodeAtPoint(parent, address_of(parentNode), &offsetOfNewNode, PR_TRUE);
@@ -2645,16 +2664,64 @@ nsHTMLEditor::InsertAsCitedQuotation(const nsAString & aQuotedText,
   return res;
 }
 
+void RemoveContextNodes(nsAutoTArray<nsAutoString, 32> &tagStack, nsIDOMNode * fragNode)
+{
+  if (!fragNode) 
+    return;
+    
+  nsCOMPtr<nsIDOMNode> tmp, child, lastchild, base;  
+  PRInt32 L = tagStack.Length();
+  PRInt32 i = L-1;
+  nsAutoString tagName;
+  nsAutoString tagName2;
+
+  fragNode->GetFirstChild(getter_AddRefs(child));
+  base = child;
+  while ((i>=0) && child) {
+    nsEditor::GetTagString(child, tagName);
+    tagName2 = tagStack[i];
+    if (!(tagName.Equals(tagName2))) return;
+    i--;
+    lastchild = child;
+    lastchild->GetFirstChild(getter_AddRefs(child));
+  }
+  if (i < 0)
+  {
+    lastchild->GetFirstChild(getter_AddRefs(child));
+    while (child)
+    {
+      fragNode->InsertBefore(child, base, getter_AddRefs(tmp));
+      child->GetNextSibling(getter_AddRefs(tmp));
+      child = tmp;
+    }
+    fragNode->RemoveChild(base, getter_AddRefs(tmp));
+  }
+}
+
+
 
 void RemoveBodyAndHead(nsIDOMNode *aNode)
 {
   if (!aNode) 
     return;
     
-  nsCOMPtr<nsIDOMNode> tmp, child, body, head;  
+  nsCOMPtr<nsIDOMNode> tmp, child, body, head, html;  
   // find the body and head nodes if any.
   // look only at immediate children of aNode.
   aNode->GetFirstChild(getter_AddRefs(child));
+  if (nsEditor::NodeIsType(child, nsEditProperty::html))
+  {
+    html = child;
+    html->GetFirstChild(getter_AddRefs(child));
+    while (child)
+    {
+      aNode->InsertBefore(child, head, getter_AddRefs(tmp));
+      html->GetFirstChild(getter_AddRefs(child));
+    }
+    aNode->RemoveChild(html, getter_AddRefs(tmp));
+    aNode->GetFirstChild(getter_AddRefs(child));
+  }
+
   while (child)
   {
     if (nsTextEditUtils::IsBody(child))
@@ -2780,13 +2847,17 @@ nsresult nsHTMLEditor::CreateDOMFragmentFromPaste(const nsAString &aInputString,
   if (!aContextStr.IsEmpty())
   {
     res = ParseFragment(aContextStr, tagStack, doc, address_of(contextAsNode));
+    dumpTagStack(tagStack);
+    DumpNode(contextAsNode);
     NS_ENSURE_SUCCESS(res, res);
     NS_ENSURE_TRUE(contextAsNode, NS_ERROR_FAILURE);
 
     res = StripFormattingNodes(contextAsNode);
     NS_ENSURE_SUCCESS(res, res);
-
+    DumpNode(contextAsNode);
+    
     RemoveBodyAndHead(contextAsNode);
+    DumpNode(contextAsNode);
 
     res = FindTargetNode(contextAsNode, contextLeaf);
     if (res == NS_FOUND_TARGET)
@@ -2796,15 +2867,18 @@ nsresult nsHTMLEditor::CreateDOMFragmentFromPaste(const nsAString &aInputString,
 
   // get the tagstack for the context
   res = CreateTagStack(tagStack, contextLeaf);
+  dumpTagStack(tagStack);
   NS_ENSURE_SUCCESS(res, res);
 
   // create fragment for pasted html
   res = ParseFragment(aInputString, tagStack, doc, outFragNode);
+  dumpTagStack(tagStack);
+  DumpNode(*outFragNode);
   NS_ENSURE_SUCCESS(res, res);
   NS_ENSURE_TRUE(*outFragNode, NS_ERROR_FAILURE);
-
+  RemoveContextNodes(tagStack, *outFragNode);
   RemoveBodyAndHead(*outFragNode);
-
+  DumpNode(*outFragNode);
   if (contextAsNode)
   {
     // unite the two trees
@@ -2813,6 +2887,7 @@ nsresult nsHTMLEditor::CreateDOMFragmentFromPaste(const nsAString &aInputString,
   }
 
   res = StripFormattingNodes(*outFragNode, PR_TRUE);
+  DumpNode(*outFragNode);
   NS_ENSURE_SUCCESS(res, res);
 
   // If there was no context, then treat all of the data we did get as the
@@ -2920,42 +2995,42 @@ nsresult nsHTMLEditor::CreateTagStack(nsTArray<nsAutoString> &aTagStack, nsIDOMN
       nsAutoString* tagName = aTagStack.AppendElement();
       NS_ENSURE_TRUE(tagName, NS_ERROR_OUT_OF_MEMORY);
 
-      nsAutoString attrnameStr;
-      nsAutoString prefixStr;
-      nsAutoString valueStr;
-      nsCOMPtr<nsIDOMElement> element; 
-      nsCOMPtr<nsIContent> content;
-//      nsCOMPtr<nsIDOMNamedNodeMap> attributeMap;
-      
-      element = do_QueryInterface(node);
-      content = do_QueryInterface(node);
-      element->GetNodeName(*tagName);      
+//       nsAutoString attrnameStr;
+//       nsAutoString prefixStr;
+//       nsAutoString valueStr;
+//       nsCOMPtr<nsIDOMElement> element; 
+//       nsCOMPtr<nsIContent> content;
+// //      nsCOMPtr<nsIDOMNamedNodeMap> attributeMap;
+//       
+//       element = do_QueryInterface(node);
+//       content = do_QueryInterface(node);
+      node->GetNodeName(*tagName);      
       //BBM experimental: add attributes also.
-      count = content->GetAttrCount();
-      for (index = count; index > 0; )
-      {
-        --index;
-        const nsAttrName* name = content->GetAttrNameAt(index);
-        PRInt32 namespaceID = name->NamespaceID();
-        nsIAtom* attrName = name->LocalName();
-        nsIAtom* prefixName = name->GetPrefix();
-
-        attrName->ToString(attrnameStr);
-        if (prefixName) prefixName->ToString(prefixStr);
-        if (attrnameStr.EqualsLiteral("xmlns") && prefixStr.EqualsLiteral("xmlns"))
-          prefixStr.Truncate(0);
-        content->GetAttr(namespaceID, attrName, valueStr);
-        tagName->AppendLiteral(" ");
-        if (!prefixStr.IsEmpty()) 
-        {
-          tagName->Append(prefixStr);
-          tagName->AppendLiteral(":");
-        }
-        tagName->Append(attrnameStr);
-        tagName->AppendLiteral("=\"");
-        tagName->Append(valueStr);
-        tagName->AppendLiteral("\"");
-      }
+//       count = content->GetAttrCount();
+//       for (index = count; index > 0; )
+//       {
+//         --index;
+//         const nsAttrName* name = content->GetAttrNameAt(index);
+//         PRInt32 namespaceID = name->NamespaceID();
+//         nsIAtom* attrName = name->LocalName();
+//         nsIAtom* prefixName = name->GetPrefix();
+// 
+//         attrName->ToString(attrnameStr);
+//         if (prefixName) prefixName->ToString(prefixStr);
+//         if (attrnameStr.EqualsLiteral("xmlns") && prefixStr.EqualsLiteral("xmlns"))
+//           prefixStr.Truncate(0);
+//         content->GetAttr(namespaceID, attrName, valueStr);
+//         tagName->AppendLiteral(" ");
+//         if (!prefixStr.IsEmpty()) 
+//         {
+//           tagName->Append(prefixStr);
+//           tagName->AppendLiteral(":");
+//         }
+//         tagName->Append(attrnameStr);
+//         tagName->AppendLiteral("=\"");
+//         tagName->Append(valueStr);
+//         tagName->AppendLiteral("\"");
+//       }
     }
 
     res = temp->GetParentNode(getter_AddRefs(node));
