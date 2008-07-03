@@ -3109,6 +3109,7 @@ function createWorkingDirectory(documentfile)
   var newdocfile;
   newdocfile = dir.clone();
   newdocfile.append("main.xhtml"); 
+  newdocfile.permissions = 0644;
 //
 //  const PR_RDONLY      = 0x01
 //  const PR_WRONLY      = 0x02
