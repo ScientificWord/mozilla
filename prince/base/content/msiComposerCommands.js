@@ -2426,7 +2426,10 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
     destLocalFile = currentSciFile;       // clone???
   }
   leafname = destLocalFile.leafName;
-  leafname = leafname.slice(0, leafname.lastIndexOf("."));
+  if (leafename.lastIndexOf(".") > 0)
+  {
+    leafname = leafname.slice(0, leafname.lastIndexOf("."));
+  }
   if (isSciFile)
   {
     var zipfile = destLocalFile.parent.clone();
