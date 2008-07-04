@@ -172,7 +172,8 @@ void dumpTagStack( nsAutoTArray<nsAutoString, 32> sa)
 #else
 #define DebExamineNode(a);
 #define dumpTagStack(a); 
-#define dumpNode(a);
+#define DumpNode(a);
+#define nsEditor::DumpNode(a);
 #endif
 
 nsCOMPtr<nsIDOMNode> nsHTMLEditor::GetListParent(nsIDOMNode* aNode)
@@ -380,6 +381,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
 
   // make a list of what nodes in docFrag we need to move
   nsCOMArray<nsIDOMNode> nodeList;
+  DumpNode(fragmentAsNode);
   res = CreateListOfNodesToPaste(fragmentAsNode, nodeList,
                                  streamStartParent, streamStartOffset,
                                  streamEndParent, streamEndOffset);
@@ -387,7 +389,8 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
 
   if (nodeList.Count() == 0)
     return NS_OK;
-
+//  DumpNode();
+  
   // walk list of nodes; perform surgery on nodes (relativize) with _mozattr
   res = RelativizeURIInFragmentList(nodeList, aFlavor, aSourceDoc, targetNode);
   // ignore results from this call, try to paste/insert anyways
@@ -2668,8 +2671,9 @@ void RemoveContextNodes(nsAutoTArray<nsAutoString, 32> &tagStack, nsIDOMNode * f
 {
   if (!fragNode) 
     return;
-    
-  nsCOMPtr<nsIDOMNode> tmp, child, lastchild, base;  
+  printf("Entering RemoveContextNodes\n");
+  nsHTMLEditor::DumpNode(fragNode);
+  nsCOMPtr<nsIDOMNode> tmp, next, child, lastchild, base;  
   PRInt32 L = tagStack.Length();
   PRInt32 i = L-1;
   nsAutoString tagName;
@@ -2690,12 +2694,14 @@ void RemoveContextNodes(nsAutoTArray<nsAutoString, 32> &tagStack, nsIDOMNode * f
     lastchild->GetFirstChild(getter_AddRefs(child));
     while (child)
     {
+      child->GetNextSibling(getter_AddRefs(next));
       fragNode->InsertBefore(child, base, getter_AddRefs(tmp));
-      child->GetNextSibling(getter_AddRefs(tmp));
-      child = tmp;
+      child = next;
     }
     fragNode->RemoveChild(base, getter_AddRefs(tmp));
   }
+  printf("============\n");
+  nsHTMLEditor::DumpNode(fragNode);
 }
 
 
