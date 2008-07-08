@@ -127,50 +127,50 @@ function msiValidateNumber(inputWidget, listWidget, minVal, maxVal, element, att
  *  Returns the "value" as a string, or "" if error or input contents are empty
  *  The global "gValidationError" variable is set true if error was found
  */
-//function ValidateNumberRange(value, minValue, maxValue, mustHaveValue)
-//{
-//  // Initialize global error flag
-//  gValidationError = false;
-//  value = TrimString(String(value));
-//
-//  // We don't show error for empty string unless caller wants to
-//  if (!value && !mustHaveValue)
-//    return "";
-//
-//  var numberStr = "";
-//
-//  if (value.length > 0)
-//  {
-//    // Extract just numeric characters
-//    var number = Number(value.replace(/\D+/g, ""));
-//    if (number >= minValue && number <= maxValue )
-//    {
-//      // Return string version of the number
-//      return String(number);
-//    }
-//    numberStr = String(number);
-//  }
-//
-//  var message = "";
-//
-//  if (numberStr.length > 0)
-//  {
-//    // We have a number from user outside of allowed range
-//    message = GetString( "ValidateRangeMsg");
-//    message = message.replace(/%n%/, numberStr);
-//    message += "\n ";
-//  }
-//  message += GetString( "ValidateNumberMsg");
-//
-//  // Replace variable placeholders in message with number values
-//  message = message.replace(/%min%/, minValue).replace(/%max%/, maxValue);
-//  ShowInputErrorMessage(message);
-//
-//  // Return an empty string to indicate error
-//  gValidationError = true;
-//  return "";
-//}
-//
+function ValidateNumberRange(value, minValue, maxValue, mustHaveValue)
+{
+  // Initialize global error flag
+  gValidationError = false;
+  value = TrimString(String(value));
+
+  // We don't show error for empty string unless caller wants to
+  if (!value && !mustHaveValue)
+    return "";
+
+  var numberStr = "";
+
+  if (value.length > 0)
+  {
+    // Extract just numeric characters
+    var number = Number(value.replace(/\D+/g, ""));
+    if (number >= minValue && number <= maxValue )
+    {
+      // Return string version of the number
+      return String(number);
+    }
+    numberStr = String(number);
+  }
+
+  var message = "";
+
+  if (numberStr.length > 0)
+  {
+    // We have a number from user outside of allowed range
+    message = GetString( "ValidateRangeMsg");
+    message = message.replace(/%n%/, numberStr);
+    message += "\n ";
+  }
+  message += GetString( "ValidateNumberMsg");
+
+  // Replace variable placeholders in message with number values
+  message = message.replace(/%min%/, minValue).replace(/%max%/, maxValue);
+  ShowInputErrorMessage(message);
+
+  // Return an empty string to indicate error
+  gValidationError = true;
+  return "";
+}
+
 //function SetTextboxFocusById(id)
 //{
 //  SetTextboxFocus(document.getElementById(id));
@@ -224,24 +224,24 @@ function msiGetAppropriatePercentString(elementForAtt, elementInDoc)
 //  }
 //}
 //
-//function forceInteger(elementID)
-//{
-//  var editField = document.getElementById( elementID );
-//  if ( !editField )
-//    return;
-//
-//  var stringIn = editField.value;
-//  if (stringIn && stringIn.length > 0)
-//  {
-//    // Strip out all nonnumeric characters
-//    stringIn = stringIn.replace(/\D+/g,"");
-//    if (!stringIn) stringIn = "";
-//
-//    // Write back only if changed
-//    if (stringIn != editField.value)
-//      editField.value = stringIn;
-//  }
-//}
+function forceInteger(elementID)
+{
+  var editField = document.getElementById( elementID );
+  if ( !editField )
+    return;
+
+  var stringIn = editField.value;
+  if (stringIn && stringIn.length > 0)
+  {
+    // Strip out all nonnumeric characters
+    stringIn = stringIn.replace(/\D+/g,"");
+    if (!stringIn) stringIn = "";
+
+    // Write back only if changed
+    if (stringIn != editField.value)
+      editField.value = stringIn;
+  }
+}
 //
 //function LimitStringLength(elementID, length)
 //{
