@@ -1,51 +1,5 @@
 @namespace sw url("http://www.sciword.com/namespaces/sciword");
 
-sw|latex2 {
-/*  font-family: "Times-Roman"; */
-  letter-spacing: -0.2em;
-  visibility: visible;
-  -moz-user-select: all;  
-  -moz-user-modify: read-only; 
-/*  background-color: rgb(200,255,200);*/
-}
-
-latexstyleb sw|latex2 {
-  background-color: transparent;
-}
-
-
-sw|latexa {
-  font-size: smaller;
-  position: relative;
-  bottom: .15em;
-  left: -0.20em;
-}
-
-sw|latext {
-  position: relative;
-  left: -0.13em;
-  }
-
-sw|latexe {
-  position: relative;
-  bottom: -0.2em;
-  left: -0.09em;
-  }
-
-sw|tex2 {
-/*  font-family: "Times-Roman";  */
-  letter-spacing: -0.14em;
-  visibility: visible;
-  -moz-user-select: none;
-  background-color: rgb(200,255,200);
-}
-
-sw|texe {
-  position: relative;
-  bottom: -0.2em;
-  left: -.02em;
-  }
-
 sw|invis {
   display: none;
 }

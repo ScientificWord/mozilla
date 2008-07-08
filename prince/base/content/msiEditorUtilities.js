@@ -3422,8 +3422,10 @@ function msiMakeUrlRelativeTo(inputUrl, baseUrl, editorElement)
 
   // We only return "urlPath", so we can convert
   //  the entire basePath for case-insensitive comparisons
-  var os = GetOS();
-  var doCaseInsensitive = (baseScheme == "file" && os == msigWin);
+//  var os = GetOS();
+  var doCaseInsensitive = true; //(baseScheme == "file" && os == msigWin);
+#ifdef XP_WIN
+  doCaseInsensitive = false;
   if (doCaseInsensitive)
     basePath = basePath.toLowerCase();
 

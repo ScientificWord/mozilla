@@ -7,30 +7,6 @@
   xmlns:html="http://www.w3.org/1999/xhtml" 
   xmlns:mml="http://www.w3.org/1998/Math/MathML" >
 
-
-	<xbl:binding id="latex">
-	  <xbl:resources>
-	    <xbl:stylesheet  src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
-	  <xbl:content>
-      <!-- we include the children invisibly. Omitting the children doesn't work. The tag generally will contain the 
-      text 'LaTeX' so it displays something approximated correct when this xbl file is not available. -->
-      <sw:invis><xbl:children/></sw:invis>
-      <sw:latex2 style="-moz-user-select: element; -moz-user-focus: none; display: -moz-inline-block">L<sw:latexa>A</sw:latexa><sw:latext>T</sw:latext><sw:latexe>E</sw:latexe>X</sw:latex2> 
-    </xbl:content>
-  </xbl:binding>
-
-	<xbl:binding id="tex">
-	  <xbl:resources>
-	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
-	  </xbl:resources>
-
-	  <xbl:content>
-      <sw:invis><xbl:children/></sw:invis>
-      <sw:tex2>T<sw:texe>E</sw:texe>X</sw:tex2>
-    </xbl:content>
-  </xbl:binding>
-
 	<xbl:binding id="texb">
 	  <xbl:resources>
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>

@@ -56,6 +56,7 @@
   <script type="application/x-javascript" src="chrome://global/content/viewZoomOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/fragment.js"/>
   <script type="application/x-javascript" src="chrome://global/content/nsTransferable.js"/>
   <script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/mainCore.js" />
@@ -181,7 +182,20 @@
 </hbox><!-- sidebar-parent -->
 
   <statusbar class="chromeclass-status" id="status-bar" hidden="false">
-    <statusbarpanel id="macroEntryPanel" hidden="false"/>
+    <statusbarpanel id="macroEntryPanel" hidden="true">
+      <label>&macro.label;</label>
+      <toolbar id="macroEntry" >
+	      <textbox id="macroAndFragments" timeout="50" type="autocomplete"
+          minresultsforpopup="1"
+          forcecomplete="true"
+          completedefaultindex="true" autocompletesearch="stringarray" 
+          autocompletesearchparam="macros fragments" 
+		      tooltiptext="&macro.tooltip;" 
+          onfocus="this.select();"
+          enablehistory="false"
+          ontextentered="onMacroOrFragmentEntered(this.value);" />
+      </toolbar>
+    </statusbarpanel>
     <statusbarpanel id="fastCursorPanel" hidden="true">
       <toolbar id="FastCursorToolbar" align="center" fullscreentoolbar="true">
       <toolbarbutton id="fastcursor-closebutton" tooltiptext="&fastcursorCloseButton.tooltip;"
