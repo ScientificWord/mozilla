@@ -79,6 +79,7 @@ var gPreviewImageHeight = 50;
 function ImageStartup()
 {
   gDialog = new Object();
+  gDialog.import            = document.getElementById( "importRefRadioGroup").selectedIndex == 0;
   gDialog.tabBox            = document.getElementById( "TabBox" );
   gDialog.tabLocation       = document.getElementById( "imageLocationTab" );
   gDialog.tabDimensions     = document.getElementById( "imageDimensionsTab" );
@@ -280,9 +281,40 @@ function chooseFile()
   var fileName = GetLocalFileURL("img");
   if (fileName)
   {
+    if (gDialog.import) // copy the file into the graphics directory
+    {
+      try {
+        var file = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+        var path = GetFilepath(fileName);
+#ifdef XP_WIN
+        path=path.replace("/","\\","g");
+#endif
+        file.initWithPath(path);
+        var docUrl = msiGetDocumentBaseUrl();
+        var dir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+        var dirpath = GetFilepath(docUrl);
+#ifdef XP_WIN
+        dirpath=dirpath.replace("/","\\","g");
+#endif
+        dir.initWithPath(dirpath);
+        dir = dir.parent;
+        dir.append("graphics");
+        if (!dir.exists()) dir.create(1, 0755);
+        file.copyTo(dir,"");    // BBM todo: check for name clashes
+        file.permissions = 0755;
+        fileName = "graphics/"+file.leafName;
+      }
+      catch(e)
+      {
+        dump("exception: e="+e.msg);
+      }
+    }
+    else
+    {
     // Always try to relativize local file URLs
-    if (gHaveDocumentUrl)
-      fileName = msiMakeRelativeUrl(fileName);
+      if (gHaveDocumentUrl)
+        fileName = msiMakeRelativeUrl(fileName);
+    }
 
     gDialog.srcInput.value = fileName;
 
@@ -290,7 +322,7 @@ function chooseFile()
     doOverallEnabling();
   }
   LoadPreviewImage();
-  // copy to the resource://docdir/graphics directory
+  // copy to the graphics directory
   // Put focus into the input field
   SetTextboxFocus(gDialog.srcInput);
 }

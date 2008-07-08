@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <fragment>
   <data>
-	<![CDATA[<latex>LaTeX</latex>]]>
+	<![CDATA[<latex>L<sup>A</sup>T<sub>E</sub>X</latex>]]>
   </data>
   <context>
 <![CDATA[<?xml version="1.0" encoding="UTF-8"?>

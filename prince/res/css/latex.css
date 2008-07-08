@@ -1,11 +1,25 @@
 @namespace mml url("http://www.w3.org/1998/Math/MathML");
 
 latex {
-  -moz-binding: url("resource://app/res/xbl/latex.xml#latex");
+  font-family: Times, "Times New Roman", serif;	
+  letter-spacing: 1px;
 }
 
-tex {
-  -moz-binding: url("resource://app/res/xbl/latex.xml#tex");
+latex sup {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.85em;
+  vertical-align: 0.15em;
+  margin-left: -0.36em;
+  margin-right: -0.15em;
+}
+
+latex sub {
+  text-transform: uppercase;
+  vertical-align: -0.5ex;
+  margin-left: -0.1667em;
+  margin-right: -0.125em;
+  font-size: 1em;
 }
 
 hspace {

@@ -43,15 +43,6 @@ display: table-cell
 }
 
 
-latex {
-  -moz-binding: url("resource://app/res/xbl/latex.xml#latex");
-}
-
-tex {
-  -moz-binding: url("resource://app/res/xbl/latex.xml#tex");
-}
-
-
 texb {
 /*  font-size: small; */
   -moz-binding: url("resource://app/res/xbl/latex.xml#texb");
