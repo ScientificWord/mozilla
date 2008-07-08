@@ -64,6 +64,8 @@
 				<tag nm="sw:sl"><description>Slanted</description></tag>
 				<tag nm="sw:small"><description>Small</description></tag>
 				<tag nm="sw:sc"><description>Small Caps</description></tag>
+				<tag nm="sw:sub"><description>Text subscript</description></tag>
+				<tag nm="sw:sup"><description>Text superscript</description></tag>
 				<tag nm="sw:tiny"><description>Tiny</description></tag>
 				<tag nm="sw:tt"><description>Typewriter font</description></tag>
 				<tag nm="sw:upper"><description>Upper case</description></tag>
