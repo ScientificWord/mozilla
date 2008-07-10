@@ -1004,7 +1004,7 @@ protected:
 
   void     AddMouseClickListener(nsIDOMElement * aElement);
   void     RemoveMouseClickListener(nsIDOMElement * aElement);
-
+  void     FixMathematics( nsIDOMNode * fragNode, PRBool fLeftOnly, PRBool fRightOnly, PRBool fInMath );
   nsCOMPtr<nsILinkHandler> mLinkHandler;
 
 public:
