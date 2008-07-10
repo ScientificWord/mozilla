@@ -24,7 +24,6 @@
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either of the GNU General Public License Version 2 or later (the "GPL"),
- * or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
  * in which case the provisions of the GPL or the LGPL are applicable instead
  * of those above. If you wish to allow use of your version of this file only
  * under the terms of either the GPL or the LGPL, and not to allow others to
@@ -169,11 +168,6 @@ void dumpTagStack( nsAutoTArray<nsAutoString, 32> sa)
   int L = sa.Length();
   for (int i=0; i < L; i++) printf("%S\n",sa[i].get());
 }
-#else
-#define DebExamineNode(a);
-#define dumpTagStack(a); 
-#define DumpNode(a);
-#define nsEditor::DumpNode(a);
 #endif
 
 nsCOMPtr<nsIDOMNode> nsHTMLEditor::GetListParent(nsIDOMNode* aNode)
@@ -380,13 +374,19 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   // this is work to be completed at a later date (probably by jfrancis)
 
   // make a list of what nodes in docFrag we need to move
+  PRInt32 j;
   nsCOMArray<nsIDOMNode> nodeList;
   DumpNode(fragmentAsNode);
   res = CreateListOfNodesToPaste(fragmentAsNode, nodeList,
                                  streamStartParent, streamStartOffset,
                                  streamEndParent, streamEndOffset);
   NS_ENSURE_SUCCESS(res, res);
-
+  PRInt32 listCount = nodeList.Count();
+  for (j=0; j<listCount; j++)
+  {
+    printf("%d\n", j);
+    DumpNode(nodeList[j]);
+  }
   if (nodeList.Count() == 0)
     return NS_OK;
 //  DumpNode();
@@ -532,8 +532,6 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
     // Loop over the node list and paste the nodes:
     PRBool bDidInsert = PR_FALSE;
     nsCOMPtr<nsIDOMNode> parentBlock, lastInsertNode, insertedContextParent;
-    PRInt32 listCount = nodeList.Count();
-    PRInt32 j;
     if (IsBlockNode(parentNode))
       parentBlock = parentNode;
     else
@@ -2825,6 +2823,61 @@ nsresult FindTargetNode(nsIDOMNode *aStart, nsCOMPtr<nsIDOMNode> &aResult)
   return NS_OK;
 }
 
+void nsHTMLEditor::FixMathematics( nsIDOMNode * fragNode, PRBool fLeftOnly, PRBool fRightOnly, PRBool fInMath )
+{
+  // When math objects are only partly copied, we may get anomalies like a fraction with
+  // only one subnode instead of two. In those cases, we strip out the higher structure (such
+  // as the fraction. Since this happens only with partial copies, we need to check only the
+  // end nodes of the fragment, and only the first nodes on the left side and the last nodes 
+  // on the right side
+  // Check for fragNode in the list of math nodes
+  nsAutoString tagName;
+  nsAutoString tagNamespace;
+  nsAutoString nsprefix;
+  nsAutoString nullString;
+  PRInt32 offset;
+  nsCOMPtr<nsIDOMNode> parent;
+  nsCOMPtr<nsIDOMNode> mathnode;
+  nsCOMPtr<nsIDOMNode> child, next, tmp;
+  nsString strMathMLNs = NS_LITERAL_STRING("http://www.w3.org/1998/Math/MathML");
+  nsCOMPtr<nsIDOMElement> element = do_QueryInterface(fragNode);
+  nsCOMPtr<nsIDOMElement> mathElement;
+  if (element)
+  {
+    element->GetTagName(tagName);
+    element->GetNamespaceURI(tagNamespace);
+    element->GetPrefix(nsprefix);
+//    if (tagNamespace.EqualsLiteral("http://www.w3.org/1998/Math/MathML"))
+    {
+      if (tagName.EqualsLiteral("math")) fInMath = PR_TRUE;
+      else if (!fInMath) {  // we encountered the math namespace w/o a math node. Insert one.
+        fragNode->GetParentNode(getter_AddRefs(parent));
+        GetChildOffset( fragNode, parent, offset);
+        CreateNode(NS_LITERAL_STRING("math"), parent, offset, getter_AddRefs(mathnode)); 
+        mathElement = do_QueryInterface(mathnode);
+        mathElement->SetAttribute(NS_LITERAL_STRING("xmlns"), strMathMLNs);
+        mathElement->SetAttribute(NS_LITERAL_STRING("_moz_dirty"), NS_LITERAL_STRING(""));
+        fInMath = PR_TRUE;
+      }
+      if (tagName.EqualsLiteral("mfrac")||tagName.EqualsLiteral("msup")||
+        tagName.EqualsLiteral("msub")||tagName.EqualsLiteral("mroot")||
+        tagName.EqualsLiteral("msqrt"))
+      { 
+        printf("found %S\n", tagName.get());
+      }
+    }
+  }
+  nsresult res;
+  nsCOMPtr<nsIDOMNode> leftEnd;
+  nsCOMPtr<nsIDOMNode> rightEnd;
+  res = fragNode->GetFirstChild(getter_AddRefs(leftEnd));
+  res = fragNode->GetLastChild(getter_AddRefs(rightEnd));
+  if (leftEnd && !fRightOnly) FixMathematics(leftEnd, PR_TRUE, PR_FALSE, fInMath );
+  if (rightEnd && (rightEnd != leftEnd) && !fLeftOnly) FixMathematics(rightEnd, PR_FALSE, PR_TRUE, fInMath );
+}
+
+
+
 nsresult nsHTMLEditor::CreateDOMFragmentFromPaste(const nsAString &aInputString,
                                                   const nsAString & aContextStr,
                                                   const nsAString & aInfoStr,
@@ -2853,18 +2906,22 @@ nsresult nsHTMLEditor::CreateDOMFragmentFromPaste(const nsAString &aInputString,
   if (!aContextStr.IsEmpty())
   {
     res = ParseFragment(aContextStr, tagStack, doc, address_of(contextAsNode));
+#if DEBUG_barry || DEBUG_Barry
     dumpTagStack(tagStack);
     DumpNode(contextAsNode);
+#endif
     NS_ENSURE_SUCCESS(res, res);
     NS_ENSURE_TRUE(contextAsNode, NS_ERROR_FAILURE);
 
     res = StripFormattingNodes(contextAsNode);
     NS_ENSURE_SUCCESS(res, res);
+#if DEBUG_barry || DEBUG_Barry
     DumpNode(contextAsNode);
-    
+#endif    
     RemoveBodyAndHead(contextAsNode);
+#if DEBUG_barry || DEBUG_Barry
     DumpNode(contextAsNode);
-
+#endif
     res = FindTargetNode(contextAsNode, contextLeaf);
     if (res == NS_FOUND_TARGET)
       res = NS_OK;
@@ -2873,18 +2930,25 @@ nsresult nsHTMLEditor::CreateDOMFragmentFromPaste(const nsAString &aInputString,
 
   // get the tagstack for the context
   res = CreateTagStack(tagStack, contextLeaf);
+#if DEBUG_barry || DEBUG_Barry
   dumpTagStack(tagStack);
+#endif
   NS_ENSURE_SUCCESS(res, res);
 
   // create fragment for pasted html
   res = ParseFragment(aInputString, tagStack, doc, outFragNode);
+#if DEBUG_barry || DEBUG_Barry
   dumpTagStack(tagStack);
   DumpNode(*outFragNode);
+#endif
   NS_ENSURE_SUCCESS(res, res);
   NS_ENSURE_TRUE(*outFragNode, NS_ERROR_FAILURE);
   RemoveContextNodes(tagStack, *outFragNode);
   RemoveBodyAndHead(*outFragNode);
+  FixMathematics(*outFragNode, PR_FALSE, PR_FALSE, PR_FALSE);
+#if DEBUG_barry || DEBUG_Barry
   DumpNode(*outFragNode);
+#endif
   if (contextAsNode)
   {
     // unite the two trees
@@ -2893,7 +2957,9 @@ nsresult nsHTMLEditor::CreateDOMFragmentFromPaste(const nsAString &aInputString,
   }
 
   res = StripFormattingNodes(*outFragNode, PR_TRUE);
+#if DEBUG_barry || DEBUG_Barry
   DumpNode(*outFragNode);
+#endif
   NS_ENSURE_SUCCESS(res, res);
 
   // If there was no context, then treat all of the data we did get as the
