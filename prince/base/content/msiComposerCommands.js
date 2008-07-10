@@ -4204,7 +4204,7 @@ var msiReviseHTMLCommand =
 };
 
 //-----------------------------------------------------------------------------------
-//Need new versino of EditorFindOrCreateInsertCharWindow(), or ??????
+//Need new version of EditorFindOrCreateInsertCharWindow(), or ??????
 var msiInsertCharsCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
