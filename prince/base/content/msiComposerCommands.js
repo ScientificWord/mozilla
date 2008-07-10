@@ -2426,7 +2426,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
     destLocalFile = currentSciFile;       // clone???
   }
   leafname = destLocalFile.leafName;
-  if (leafename.lastIndexOf(".") > 0)
+  if (leafname.lastIndexOf(".") > 0)
   {
     leafname = leafname.slice(0, leafname.lastIndexOf("."));
   }
