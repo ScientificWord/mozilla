@@ -21,12 +21,14 @@
     <menuitem label="&jumptomain;" oncommand="jump();"/>
   </menupopup>
     
-  <hbox>
-    <button label="Refresh TOC" oncommand="buildTOC();"/>
+  <toolbar>
+    <button label="Refresh" oncommand="buildTOC();"/>
     <scale id="toc-level-scale" min="0" max="7" 
       increment="1" pageIncrement="1" onchange="setTOCLevel(this.value);"
       value="0"
       persist="value"/>
-  </hbox>
-
+    <button id="TOC" label="TOC" flex="1" type="checkbox" tooltip="Show table of contents" checked="true" persist="checked"/>
+    <button id="LOF" label="LOF" flex="1" type="checkbox" tooltip="Show list of figures" checked="false" persist="checked"/>
+    <button id="LOT" label="LOT" flex="1" type="checkbox" tooltip="Show list of tables" checked="false" persist="checked"/>
+  </toolbar>
 </page>

@@ -32,6 +32,25 @@ function buildTOC()
   var editorElement = msiGetActiveEditorElement();
   var editor;
   if (editorElement) editor = msiGetEditor(editorElement);
+  var theTagManager = editor ? editor.tagListManager : null;
+  if (!theTagManager) return;
+  if (document.getElementById("TOC").hasAttribute('checked'))
+  {
+    var taglist = theTagManager.getTagsInClass('structtag',',',false); 
+    tagarray = taglist.split(',');
+  }
+  else tagarray = [];
+  if (document.getElementById("LOF").hasAttribute('checked')) tagarray.push('img');
+  if (document.getElementById("LOT").hasAttribute('checked')) tagarray.push('table');
+  var i, length;
+  xpath="";
+  length = tagarray.length;
+  for (i=0; i< length; i++)
+  {
+    if (i>0) xpath += "|";
+    xpath += "html:" + tagarray[i];
+  }
+   
   var currentTree = document.getElementById("toc-tree");
   if (currentTree) currentTree.parentNode.removeChild(currentTree);
   ensureAllStructureTagsHaveIds(editor.document);
@@ -54,11 +73,51 @@ function buildTOC()
   setTOCLevel(document.getElementById("toc-level-scale").value);
 }
 
+// //validates given XPath, returns nsXPathExpression if valid, null otherwise
+//function getValidXpath(anXpath, aContextNode, aDefaultNS){
+//    if (!anXpath || anXpath=='/' || anXpath=='.') return;
+//    
+//    // if (!xpathEvaluator) 
+//    xpathEvaluator = new XPathEvaluator(); //lazy creation of global evaluator
+//
+//    try {
+//        var nsResolver;
+//        if (aContextNode || aDefaultNS){
+//            var originalResolver = xpathEvaluator.createNSResolver(aContextNode);
+//            //nsResolver=originalResolver;
+//            //var defNs=findDefautNS(aContextNode);
+//            if (aDefaultNS){
+//                nsResolver = function lookupNamespaceURI(aPrefix) {
+//                        //log('prefix:'+aPrefix);
+//                        if (aPrefix=='default') {
+//                            return aDefaultNS;
+//                        }
+//                        return originalResolver.lookupNamespaceURI(aPrefix); 
+//                    }
+//            }
+//            else nsResolver = originalResolver;
+//            //log("foo:"+nsResolver.lookupNamespaceURI("foo"));
+//            //log("bar:"+nsResolver.lookupNamespaceURI("bar"));
+//            //log("alias:"+nsResolver.lookupNamespaceURI("alias"));
+//        }
+//        else log("no context node");
+//        //log('expression:'+anXpath+'   '+aContextNode+ '    res:'+nsResolver);
+//        return xpathEvaluator.createExpression(anXpath, nsResolver);
+//    }
+//    catch(ex) {
+//        //log(ex);  //swallow any exception
+//        return null
+//    }
+//}
+
 function ensureAllStructureTagsHaveIds(doc)
 {
-//  var xpathExpression = ".//chapter | .//section | .//subsection | .//subsubsection | .//paragraph | .//appendix";
+////  var xpathExpression = "//default:chapter | //default:section | //default:subsection | //default:subsubsection | //default:paragraph | //default:appendix";
+//  var aDefaultNS = doc.defaultView.expatState.getDefaultNS;
+//  var xpath = getValidXPath(xpathExpression, doc.documentElement, aDefaultNS);
+//  if (!xpath) return;
 //  var nsResolver = doc.createNSResolver(doc.documentElement);
-//  var iterator = doc.evaluate(xpathExpression, doc, nsResolver, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null );
+//  var iterator = doc.evaluate(xpath, doc, nsResolver, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null );
 //
 //  try {
 //    var thisNode = iterator.iterateNext();
