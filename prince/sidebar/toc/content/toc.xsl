@@ -41,9 +41,17 @@
 	</xsl:if>
   <treerow>
 	  <treecell>
-			<xsl:attribute name="label">
-				<xsl:value-of select="*[1]"/>
-			</xsl:attribute>
+	    <!--xsl:if test="(not 'table') and (not 'img')" -->
+			  <xsl:attribute name="label">
+				  <xsl:value-of select="*[1]"/>
+			  </xsl:attribute>
+	    <!-- /xsl:if -->
+	    <xsl:if test="html:img">
+		    <xsl:attribute name="label">Figure</xsl:attribute>
+	    </xsl:if>
+	    <xsl:if test="html:table">
+		    <xsl:attribute name="label">Table</xsl:attribute>
+	    </xsl:if>
 			<xsl:attribute name="value">
 			  <xsl:value-of select="@id"/>
 			</xsl:attribute>		
@@ -52,7 +60,7 @@
 	<xsl:if id="section-test" test="##sectiontags##">
 		<treechildren>
 			<xsl:apply-templates/>
-	  	</treechildren>
+	  </treechildren>
 	</xsl:if>
 </treeitem>
 </xsl:template>
