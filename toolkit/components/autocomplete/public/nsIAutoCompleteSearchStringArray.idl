@@ -8,6 +8,8 @@ interface nsIAutoCompleteSearchStringArray : nsIAutoCompleteSearch
   boolean addString( in AString strCategory, in AString strAdd);
   boolean deleteString( in AString strCategory, in AString strDelete);
   long sizeofArray( in AString strCategory );
+  // returns the contents of an array as a single string using strSep as a separator
+  AString contentsofArray( in AString strCategory, in AString strSep);
   void resetArray( in AString strCategory );
   void resetAll();
   void sortArray( in AString strCategory );
