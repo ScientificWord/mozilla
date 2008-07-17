@@ -1112,3 +1112,10 @@ msiTagListManager::SelectionContainedInTag(const nsAString & strTag, nsIAtom *at
 }
 
 
+/* AString getTagsInClass (in AString strTag, in boolean includeNS); */
+NS_IMETHODIMP 
+msiTagListManager::GetTagsInClass(const nsAString & strTagClass, const nsAString & strSep, PRBool includeNS, nsAString & _retval)
+{
+// we ignore includeNS for now.
+  return pACSSA->ContentsofArray( strTagClass, strSep, _retval);  
+}

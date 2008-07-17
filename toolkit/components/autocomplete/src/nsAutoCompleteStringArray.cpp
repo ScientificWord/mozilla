@@ -139,6 +139,15 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArray::SizeofArray(const nsAString & str
     return NS_OK; // is there an NS_UNINITIALIZED ??
 }
 
+/* AString contentsofArray (in AString strCategory, in AString strSep); 
+   returns contents of the array concatenated with strSep as a separator */
+NS_IMETHODIMP nsAutoCompleteSearchStringArray::ContentsofArray(const nsAString & strCategory, const nsAString & strSep, nsAString & _retval)
+{
+    if (m_imp) return m_imp->ContentsofArray(strCategory, strSep, _retval);
+    printf("nsAutoCompletSearchStringArray uninitialized\n");
+    return NS_OK; // is there an NS_UNINITIALIZED ??
+}
+
 /* void resetArray (in AString strCategory); */
 NS_IMETHODIMP nsAutoCompleteSearchStringArray::ResetArray(const nsAString & strCategory)
 {
@@ -341,6 +350,21 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::SizeofArray(const nsAString & 
 {
   nsStringArray * psa = GetStringArrayForCategory(strCategory, PR_FALSE);
   *_retval = psa?psa->Count():-1;
+  return NS_OK;
+}
+
+
+/* AString contentsofArray (in AString strCategory, in AString strSep); 
+   returns contents of the array concatenated with strSep as a separator */
+NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::ContentsofArray(const nsAString & strCategory, const nsAString & strSep, nsAString & _retval)
+{
+  nsStringArray * psa = GetStringArrayForCategory(strCategory, PR_FALSE);
+  PRInt32 i;
+  _retval = NS_LITERAL_STRING("");
+  PRInt32 length = psa?psa->Count():-1;
+  if (length > 0) _retval = *(*psa)[0];
+  for (i = 1; i < length; i++)
+    _retval += strSep + *(*psa)[i];
   return NS_OK;
 }
 
