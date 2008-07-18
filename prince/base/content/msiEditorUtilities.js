@@ -3426,6 +3426,7 @@ function msiMakeUrlRelativeTo(inputUrl, baseUrl, editorElement)
   var doCaseInsensitive = true; //(baseScheme == "file" && os == msigWin);
 #ifdef XP_WIN
   doCaseInsensitive = false;
+#endif
   if (doCaseInsensitive)
     basePath = basePath.toLowerCase();
 
