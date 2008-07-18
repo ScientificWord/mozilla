@@ -9,11 +9,7 @@
 </xsl:template>
 
 <xsl:template match="*"><!--map all nodes to blank unless they match a rule below--> </xsl:template>
-
-
-
-<xsl:template match="html:html"><xsl:apply-templates/></xsl:template>
-<xsl:template match="html:head"><xsl:apply-templates/></xsl:template>
+<xsl:template match="html:*"><xsl:apply-templates/></xsl:template>
 
 <xsl:template match="html:body">
 
@@ -29,42 +25,55 @@
 
 </xsl:template>
 
-
-
-
-
 <xsl:template match="##sectiontags##">
-<treeitem xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-	<xsl:if test="##sectiontags##">
+	<treeitem xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 		<xsl:attribute name="container">true</xsl:attribute>
 		<xsl:attribute name="open">true</xsl:attribute>
-	</xsl:if>
-  <treerow>
-	  <treecell>
-	    <!--xsl:if test="(not 'table') and (not 'img')" -->
+	  <treerow>
+		  <treecell>
 			  <xsl:attribute name="label">
 				  <xsl:value-of select="*[1]"/>
 			  </xsl:attribute>
-	    <!-- /xsl:if -->
-	    <xsl:if test="html:img">
-		    <xsl:attribute name="label">Figure</xsl:attribute>
-	    </xsl:if>
-	    <xsl:if test="html:table">
-		    <xsl:attribute name="label">Table</xsl:attribute>
-	    </xsl:if>
-			<xsl:attribute name="value">
-			  <xsl:value-of select="@id"/>
-			</xsl:attribute>		
-		</treecell>
-	</treerow>
-	<xsl:if id="section-test" test="##sectiontags##">
-		<treechildren>
-			<xsl:apply-templates/>
-	  </treechildren>
-	</xsl:if>
-</treeitem>
+				<xsl:attribute name="value">
+				  <xsl:value-of select="@id"/>
+				</xsl:attribute>		
+			</treecell>
+		</treerow>
+		<xsl:if test="##otherstest####sectiontags##">
+			<treechildren>
+				<xsl:apply-templates/>
+		  </treechildren>
+		</xsl:if>
+	</treeitem>
 </xsl:template>
 
+<!-- BBM  The following two templates need to be modified to pick up a caption --> 
+
+<xsl:template match="##LOF##"> 
+	<treeitem xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+		<treerow>
+			<treecell>
+				<xsl:attribute name="label">Figure: <xsl:value-of select = "@title"/></xsl:attribute>
+				<xsl:attribute name="value">
+					<xsl:value-of select="@id"/>
+				</xsl:attribute>		
+			</treecell>
+		</treerow>
+	</treeitem>
+</xsl:template>;
+
+<xsl:template match="##LOT##"> 
+	<treeitem xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+		<treerow>
+			<treecell>
+				<xsl:attribute name="label">Table</xsl:attribute>
+				<xsl:attribute name="value">
+					<xsl:value-of select="@id"/>
+				</xsl:attribute>		
+			</treecell>
+		</treerow>
+	</treeitem>
+</xsl:template>;
 
 </xsl:stylesheet>
 
