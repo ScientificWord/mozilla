@@ -11,13 +11,11 @@ include $(topsrcdir)/config/rules.mk
 SHELL_RESOURCES := $(wildcard	$(srcdir)/*.sci) \
 	$(NULL)
 
-SHELL_RESOURCE_DIRECTORIES := $(wildcard	$(srcdir)/*_files)
 
-libs::	$(SHELL_RESOURCES)	$(SHELL_RESOURCE_DIRECTORIES)
+libs::	$(SHELL_RESOURCES)
 	-mkdir $(FINAL_TARGET)/shells
 	-mkdir $(FINAL_TARGET)/shells/article
 	cp	$(SHELL_RESOURCES)	$(FINAL_TARGET)/shells/article
-	cp -R $(SHELL_RESOURCE_DIRECTORIES) $(FINAL_TARGET)/shells/article
 
 
 
