@@ -41,8 +41,7 @@ function startup()
 {
   var menuPopup = document.getElementById("systemfontlist");
   getOTFontlist();
-var gSystemFontCount;
-  for (var i = 0; i < sgSystemFontCount; ++i)
+  for (var i = 0; i < gSystemFontCount; ++i)
   {
     if (gSystemFonts[i] != "")
     {
