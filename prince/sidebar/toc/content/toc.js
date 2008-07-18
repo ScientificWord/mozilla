@@ -1,7 +1,5 @@
 
 var gProcessor;
-var xpath="html:chapter|html:section|html:subsection|html:subsubsection|html:paragraph|html:appendix";
-var tagarray=["chapter","section","subsection","subsubsection","paragraph","appendix"];
 
 
 function jump()
@@ -31,6 +29,7 @@ function buildTOC()
 //  BBM todo: build the above from the taglist manager list of structure tags
   var editorElement = msiGetActiveEditorElement();
   var editor;
+  var tagarray;
   if (editorElement) editor = msiGetEditor(editorElement);
   var theTagManager = editor ? editor.tagListManager : null;
   if (!theTagManager) return;
@@ -40,20 +39,28 @@ function buildTOC()
     tagarray = taglist.split(',');
   }
   else tagarray = [];
-  if (document.getElementById("LOF").hasAttribute('checked')) tagarray.push('img');
-  if (document.getElementById("LOT").hasAttribute('checked')) tagarray.push('table');
+  var otherstest="";
+  var doLOF = document.getElementById("LOF").hasAttribute('checked');
+  if (doLOF)
+  {
+    otherstest = ".//html:img";
+  }
+  var doLOT = document.getElementById("LOT").hasAttribute('checked');
+  if (doLOT)
+  {
+    otherstest += ((otherstest.length?"|":"") + ".//html:table");
+  }
   var i, length;
-  xpath="";
+  var xpath="html:xxxx";
   length = tagarray.length;
   for (i=0; i< length; i++)
   {
-    if (i>0) xpath += "|";
-    xpath += "html:" + tagarray[i];
+    xpath += "|html:" + tagarray[i];
   }
-   
+  if ((xpath.length > 0) && (otherstest.length > 0)) otherstest += "|"; 
   var currentTree = document.getElementById("toc-tree");
   if (currentTree) currentTree.parentNode.removeChild(currentTree);
-  ensureAllStructureTagsHaveIds(editor.document);
+  ensureAllStructureTagsHaveIds(editor.document, tagarray);
   if (!gProcessor) gProcessor = new XSLTProcessor();
   else gProcessor.reset();
   var req = new XMLHttpRequest();
@@ -63,6 +70,12 @@ function buildTOC()
   var stylestring = req.responseText;
   var re = /##sectiontags##/g;
   stylestring = stylestring.replace(re,xpath);
+  re = /##otherstest##/g;
+  stylestring = stylestring.replace(re,otherstest);
+  re = /##LOF##/g
+  stylestring = stylestring.replace(re, ""+(doLOF?"html:img":"html:xxximg"));
+  re = /##LOT##/g
+  stylestring = stylestring.replace(re, ""+(doLOT?"html:table":"html:xxxtable"));
   var parser = new DOMParser();
   var dom = parser.parseFromString(stylestring, "text/xml");
   dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" : dom.documentElement.nodeName);
@@ -110,7 +123,7 @@ function buildTOC()
 //    }
 //}
 
-function ensureAllStructureTagsHaveIds(doc)
+function ensureAllStructureTagsHaveIds(doc, tagarray)
 {
 ////  var xpathExpression = "//default:chapter | //default:section | //default:subsection | //default:subsubsection | //default:paragraph | //default:appendix";
 //  var aDefaultNS = doc.defaultView.expatState.getDefaultNS;
@@ -136,9 +149,11 @@ function ensureAllStructureTagsHaveIds(doc)
   var n = 3141592;
   var prefix = 'tsid_';//temp structure id
   var regexp= /^(31415|tsid_)/;
-  for (i=0; i<tagarray.length; i++)
+  var extendedarray = tagarray.concat('img','table');
+  
+  for (i=0; i<extendedarray.length; i++)
   {
-    list=doc.getElementsByTagName(tagarray[i]);
+    list=doc.getElementsByTagName(extendedarray[i]);
     for (j=0; j<list.length; j++)
     {                          
       if (list[j].hasAttribute("id"))
