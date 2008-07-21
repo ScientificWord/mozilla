@@ -191,7 +191,6 @@ nsDocumentEncoder::Init(nsIDOMDocument* aDocument,
   mDocument = do_QueryInterface(aDocument);
   NS_ENSURE_TRUE(mDocument, NS_ERROR_FAILURE);
 
-  mMimeType = aMimeType;
 
   mFlags = aFlags;
   mIsCopying = PR_FALSE;
@@ -1088,7 +1087,7 @@ nsHTMLCopyEncoder::Init(nsIDOMDocument* aDocument,
   mDocument = do_QueryInterface(aDocument);
   NS_ENSURE_TRUE(mDocument, NS_ERROR_FAILURE);
 
-  mMimeType.AssignLiteral("text/html");
+  mMimeType.AssignLiteral("text/xml");
   
   // Make all links absolute when copying
   // (see related bugs #57296, #41924, #58646, #32768)
