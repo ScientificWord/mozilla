@@ -50,7 +50,9 @@ function Startup()
     return;
   }
   gDialog.rowsInput      = document.getElementById("rowsInput");
+  gRows = gDialog.rowsInput.value;
   gDialog.columnsInput   = document.getElementById("columnsInput");
+  gColumns = gDialog.columnsInput.value;
   gDialog.widthInput     = document.getElementById("widthInput");
   gDialog.borderInput    = document.getElementById("borderInput");
   gDialog.horizAlignment = document.getElementById("horizAlignment");
@@ -59,6 +61,13 @@ function Startup()
   gDialog.cellSpacing    = document.getElementById("cellSpacing");
   gDialog.cellPadding    = document.getElementById("cellPadding");
 
+  var cellid;
+  if (gRows <= 6 && gColumns <= 6) cellid = 10*(Number(gRows) -1 )+Number(gColumns);
+  else {
+    cellid = 56;
+    // Table is too big for the 'quickly' tab; activate the 'precisely' tab.
+    document.getElementById("tabpanel-tabs").selectedIndex = 1;
+  }
   gDialog.widthPixelOrPercentMenulist = document.getElementById("widthPixelOrPercentMenulist");
   gDialog.OkButton = document.documentElement.getButton("accept");
   gDialog.sizeLabel = document.getElementById("sizeLabel");
@@ -67,7 +76,7 @@ function Startup()
   if (gDialog.widthInput.value)
     gTableElement.setAttribute("width", Number(gDialog.widthInput.value) +
                                         (gDialog.widthPixelOrPercentMenulist.value == "pc" ? "%" : ""));
-
+  
   // Make a copy to use for AdvancedEdit
   globalElement = gTableElement.cloneNode(false);
   try {
@@ -102,6 +111,7 @@ function Startup()
   } catch (e) {}
 
   // Initialize all widgets with image attributes
+  SelectArea("c"+cellid);
   InitDialog(hAlign, vAlign, wrapping);
 
   SetTextboxFocusById("rowsInput");
@@ -293,16 +303,18 @@ function onAccept()
     } catch (e) {}
 
     gActiveEditor.endTransaction();
-
+    gDialog.rowsInput.value = gRows;
+    gDialog.columnsInput.value = gColumns;
+    MakePersistsValue(gDialog.rowsInput);
+    MakePersistsValue(gDialog.columnsInput);
     SaveWindowLocation();
     return true;
   }
   return false;
 }
 
-function SelectArea(cell)
+function SelectArea(cellID)
 {
-  var cellID    = cell.id;
   var numCellID = Number(cellID.substr(1));
 
   // early way out if we can...
@@ -348,11 +360,11 @@ function MakePersistsValue(elt)
 
 function SelectSize(cell)
 {
-  var columns  = (gCellID % 10);
-  var rows     = Math.ceil(gCellID / 10);
+  gColumns  = (gCellID % 10);
+  gRows     = Math.ceil(gCellID / 10);
 
-  gDialog.rowsInput.value    = rows;
-  gDialog.columnsInput.value = columns;
+  gDialog.rowsInput.value    = gRows;
+  gDialog.columnsInput.value = gColumns;
 
   onAccept();
   window.close();
