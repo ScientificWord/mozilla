@@ -191,7 +191,7 @@ nsDocumentEncoder::Init(nsIDOMDocument* aDocument,
   mDocument = do_QueryInterface(aDocument);
   NS_ENSURE_TRUE(mDocument, NS_ERROR_FAILURE);
 
-
+  mMimeType = aMimeType;
   mFlags = aFlags;
   mIsCopying = PR_FALSE;
 
