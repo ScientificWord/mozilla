@@ -3653,6 +3653,8 @@ function GetFilename(urlspec)
     return "";
 
   var filename;
+  if (urlspec.indexOf(":") < 1)
+	  urlspec = "file://"+urlspec;
 
   try {
     var uri = IOService.newURI(urlspec, null, null);
