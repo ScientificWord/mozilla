@@ -2322,8 +2322,20 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   if (!success) 
     throw Components.results.NS_ERROR_UNEXPECTED;
 
+  // The making of A.sci:
+  // Say the file being edited is /home/joe/SWPDocs/untitled1_work/main.xhtml
+  // or maybe                     C:/SWPDocs/untitled1_work/main.html
+  // Then
+  // htmlurlstring      = file:///home/joe/SWPDocs/untitled1_work/main.xhtml
+  // or                   file://C:/SWPDocs/untitled1_work/main.xhtml
+  // sciurlstring       = file:///home/joe/SWPDocs/untitled1.sci
+  // or                   file://C:/SWPDocs/untitled1.sci
+  // htmlpath           = /home/joe/SWPDocs/untitled1_work/main.xhtml
+  // or                   C:/SWPDocs/untitled1_work/main.xhtml
+  // currentSciFilePath = /home/joe/SWPDocs/untitled1.sci
+  // or                   C:/SWPDocs/untitled1.sci
   var htmlurlstring = msiGetEditorURL(editorElement); // this is the url of the file in the directory D. It was updated by the soft save.
-  var sciurlstring = msiFindOriginalDocname(htmlurlstring); // this is the path of A.sci
+  var sciurlstring = msiFindOriginalDocname(htmlurlstring); // this is the uri of A.sci
   var mustShowFileDialog = (aSaveAs || aSaveCopy || IsUrlUntitled(sciurlstring) || (sciurlstring == ""));
 
   // If editing a remote URL, force SaveAs dialog
@@ -2339,8 +2351,6 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   var destURI;
   var currentFile = null;
   var currentSciFile = null;
-
-  var currentSciFilePath;
   var workingDir = null;
   var leafname;
   var isSciFile;
@@ -2348,7 +2358,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   var workingDir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
   currentSciFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
   var htmlpath = GetFilepath(htmlurlstring);
-	currentSciFilePath = msiFindOriginalDocname(htmlpath);  // the path for A.sci
+  var currentSciFilePath = GetFilepath(sciurlstring);  // the path for A.sci
   var regEx = /_work\/main.xhtml$/i;  // BBM: localize this
   isSciFile = regEx.test(htmlpath);
 // for Windows
@@ -2376,7 +2386,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
 	    }
 
 	    var dialogResult = msiPromptForSaveLocation(saveAsTextFile, editor.editortype=="html"?MSI_EXTENSION:editor.editortype, 
-        aMimeType, currentSciFilePath, editorElement);
+        aMimeType, sciurlstring, editorElement);
 	    if (dialogResult.filepickerClick == msIFilePicker.returnCancel)
 	      return false;
 
@@ -2498,7 +2508,8 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
       if (doUpdateURI)
       {
         workingDir.moveTo(null, leafname+"_work"); 
-        var newMainfile = workingDir.clone();
+        var newMainfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+	newMainfile.initWithPath(destLocalFile.path+"_work");
         newMainfile.append("main.xhtml");
         //Create a new uri from nsILocalFile
         var newURI = msiGetFileProtocolHandler().newFileURI(newMainfile);
