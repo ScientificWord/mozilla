@@ -15,7 +15,7 @@
  *
  * The Initial Developer of the Original Code is
  * Netscape Communications Corporation.
- * Portions created by the Initial Developer are Copyright (C) 1998
+ * Portions created by the Initial Devemloper are Copyright (C) 1998
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
@@ -1231,13 +1231,14 @@ nsHTMLCopyEncoder::EncodeToStringWithContext(nsAString& aContextString,
   // where all the cells are in the same table.
 
   // leaf of ancestors might be text node.  If so discard it.
+  // if a table row got into the main pattern because of multiple tds, take tr out of the ancestors BBM
   PRInt32 count = mCommonAncestors.Count();
   PRInt32 i;
   nsCOMPtr<nsIDOMNode> node;
   if (count > 0)
     node = static_cast<nsIDOMNode *>(mCommonAncestors.ElementAt(0));
-
-  if (node && IsTextNode(node)) 
+    nsCOMPtr<nsIContent> content = do_QueryInterface(node);
+  if (node && (IsTextNode(node)||(content && content->Tag() == nsGkAtoms::tr))) 
   {
     mCommonAncestors.RemoveElementAt(0);
     // don't forget to adjust range depth info
