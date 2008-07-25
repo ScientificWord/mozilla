@@ -674,6 +674,9 @@ protected:
                                      nsCOMArray<nsIDOMNode>& aNodeArray,
                                      nsCOMArray<nsIDOMNode>& aListAndTableArray,
                                      PRInt32 aHighWaterMark);
+  nsresult ReplaceOrphanedMath( PRBool aEnd,
+                                     nsCOMArray<nsIDOMNode>& aNodeArray,
+                                     nsIDOMNode* mathParent);
   nsIDOMNode* GetArrayEndpoint(PRBool aEnd, nsCOMArray<nsIDOMNode>& aNodeArray);
 
   /* small utility routine to test if a break node is visible to user */
@@ -792,6 +795,7 @@ protected:
                              PRBool aCheckDefaults = PR_TRUE);
   nsresult HasStyleOrIdOrClass(nsIDOMElement * aElement, PRBool *aHasStyleOrIdOrClass);
   nsresult RemoveElementIfNoStyleOrIdOrClass(nsIDOMElement * aElement, nsIAtom * aTag);
+  void MathParent( nsIDOMNode * aNode, nsIDOMNode **aMathNode);
 
   /** versions of some methods in nsEditor that take name spaces into account */
   PRBool CanContainTagNS(nsIDOMNode* aParent, const nsAString &aTag, nsIAtom * nsAtom);
@@ -1004,7 +1008,8 @@ protected:
 
   void     AddMouseClickListener(nsIDOMElement * aElement);
   void     RemoveMouseClickListener(nsIDOMElement * aElement);
-  void     FixMathematics( nsIDOMNode * fragNode, PRBool fLeftOnly, PRBool fRightOnly, PRBool fInMath );
+  void     FixMathematics( nsIDOMNode * fragNode, PRBool fLeftOnly, PRBool fRightOnly);
+  void     RemoveNode( nsIDOMNode * aNode);
   nsCOMPtr<nsILinkHandler> mLinkHandler;
 
 public:

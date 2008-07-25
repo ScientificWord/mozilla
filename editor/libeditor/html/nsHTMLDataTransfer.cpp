@@ -387,6 +387,9 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
     printf("%d\n", j);
     DumpNode(nodeList[j]);
   }
+ // FixMathematics(nodeList[0], PR_FALSE, PR_FALSE, PR_FALSE);
+//  if (listCount > 1) FixMathematics(nodeList[listCount-1], PR_FALSE, PR_FALSE, PR_FALSE);
+  listCount = nodeList.Count();
   if (nodeList.Count() == 0)
     return NS_OK;
 //  DumpNode();
@@ -407,6 +410,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   if (NS_SUCCEEDED(res) && cell)
   {
     cellSelectionMode = PR_TRUE;
+    //BBM: we are pasting into a cell.
   }
   
   if (cellSelectionMode)
@@ -528,7 +532,26 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
       res = ReplaceOrphanedStructure(PR_TRUE, nodeList, endListAndTableArray, highWaterMark);
       NS_ENSURE_SUCCESS(res, res);
     }
-
+// Now do the same for math as we did for tables and list items
+    nsCOMPtr<nsIDOMNode> endNode = nodeList[0];
+    nsCOMPtr<nsIDOMNode> mathNode;
+    MathParent( endNode, getter_AddRefs(mathNode));
+    if (mathNode) ReplaceOrphanedMath(PR_FALSE, nodeList, mathNode);
+    // now do the other end.
+    PRUint32 length = nodeList.Count();
+    if (length > 1) {
+      endNode = nodeList[length-1];
+      MathParent( endNode, getter_AddRefs(mathNode));
+      if (mathNode) ReplaceOrphanedMath(PR_FALSE, nodeList, mathNode);
+    }
+// Now fix up fragments internal to the math node
+    endNode = nodeList[0];
+    FixMathematics(endNode, length > 1, PR_FALSE);
+    if (length > 1) 
+    {
+      endNode = nodeList[length-1];
+      FixMathematics(endNode, PR_FALSE, PR_TRUE);
+    }
     // Loop over the node list and paste the nodes:
     PRBool bDidInsert = PR_FALSE;
     nsCOMPtr<nsIDOMNode> parentBlock, lastInsertNode, insertedContextParent;
@@ -1327,6 +1350,8 @@ nsHTMLEditor::IsInLink(nsIDOMNode *aNode, nsCOMPtr<nsIDOMNode> *outLink)
 
 nsresult
 nsHTMLEditor::StripFormattingNodes(nsIDOMNode *aNode, PRBool aListOnly)
+// BBM: This seems to be removing white space that formats the XHTML *source*, not 
+// the rendered XHTML
 {
   NS_ENSURE_TRUE(aNode, NS_ERROR_NULL_POINTER);
 
@@ -2823,57 +2848,100 @@ nsresult FindTargetNode(nsIDOMNode *aStart, nsCOMPtr<nsIDOMNode> &aResult)
   return NS_OK;
 }
 
-void nsHTMLEditor::FixMathematics( nsIDOMNode * fragNode, PRBool fLeftOnly, PRBool fRightOnly, PRBool fInMath )
+
+void nsHTMLEditor::RemoveNode( nsIDOMNode * aNode)
+{
+  // move all children to be siblings, and then delete the node.
+  nsCOMPtr<nsIDOMNodeList> pNodeList;
+  nsCOMPtr<nsIDOMNode> pChild;
+  nsCOMPtr<nsIDOMNode> pChildClone;
+  nsCOMPtr<nsIDOMNode> pParent,ignored;
+  PRUint32 offset = 0;
+  PRUint32 length;
+  PRInt32 i;
+  nsresult rv;
+  rv = aNode->GetParentNode(getter_AddRefs(pParent));
+  rv = pParent->GetChildNodes(getter_AddRefs(pNodeList));
+  while (true)
+  {
+    rv = pNodeList->Item(offset, getter_AddRefs(pChild));
+    if (pChild != aNode) offset++;
+    else break;
+  }
+  rv = aNode->GetChildNodes(getter_AddRefs(pNodeList));
+  rv = pNodeList->GetLength(&length);
+  for (i = length-1; i >= 0; i--)
+  {
+    rv = pNodeList->Item(i, getter_AddRefs(pChild));
+    pChild->CloneNode(PR_TRUE, getter_AddRefs(pChildClone));
+    InsertNode(pChildClone, pParent, offset + 1);
+  }
+  rv = pParent->RemoveChild(aNode, getter_AddRefs(ignored));
+}
+
+void nsHTMLEditor::MathParent( nsIDOMNode * aNode, nsIDOMNode **aMathNode)
+{  // aNode is a math node (in the MathML namespace). Return aMathNode which is the parent mml:math element
+  nsCOMPtr<nsIDOMNode> parent, tempNode;
+  nsCOMPtr<nsIDOMElement> element;
+  nsAutoString tagName;
+  nsresult rv;
+  *aMathNode = nsnull;
+  rv = aNode->GetParentNode(getter_AddRefs(parent));
+  while (parent)
+  {
+    element = do_QueryInterface(parent);
+    element->GetTagName(tagName);
+    if (tagName.EqualsLiteral("math"))
+    { 
+      *aMathNode = parent;
+      return;
+    }
+    rv = parent->GetParentNode(getter_AddRefs(tempNode));
+    parent = tempNode;
+  }
+  return; 
+}
+
+void nsHTMLEditor::FixMathematics( nsIDOMNode * nodelistNode, PRBool fLeftOnly, PRBool fRightOnly)
 {
   // When math objects are only partly copied, we may get anomalies like a fraction with
   // only one subnode instead of two. In those cases, we strip out the higher structure (such
   // as the fraction. Since this happens only with partial copies, we need to check only the
   // end nodes of the fragment, and only the first nodes on the left side and the last nodes 
   // on the right side
-  // Check for fragNode in the list of math nodes
   nsAutoString tagName;
   nsAutoString tagNamespace;
-  nsAutoString nsprefix;
-  nsAutoString nullString;
-  PRInt32 offset;
-  nsCOMPtr<nsIDOMNode> parent;
-  nsCOMPtr<nsIDOMNode> mathnode;
-  nsCOMPtr<nsIDOMNode> child, next, tmp;
+//  nsAutoString nsprefix;
+  PRUint32 length;
+  PRBool isMathNode;
   nsString strMathMLNs = NS_LITERAL_STRING("http://www.w3.org/1998/Math/MathML");
-  nsCOMPtr<nsIDOMElement> element = do_QueryInterface(fragNode);
-  nsCOMPtr<nsIDOMElement> mathElement;
+  nsCOMPtr<nsIDOMElement> element = do_QueryInterface(nodelistNode);
+  nsCOMPtr<nsIDOMNodeList> pNodeList;
+  nsresult res;
+  nsCOMPtr<nsIDOMNode> leftEnd;
+  nsCOMPtr<nsIDOMNode> rightEnd;
+  res = nodelistNode->GetFirstChild(getter_AddRefs(leftEnd));
+  res = nodelistNode->GetLastChild(getter_AddRefs(rightEnd));
   if (element)
   {
     element->GetTagName(tagName);
     element->GetNamespaceURI(tagNamespace);
-    element->GetPrefix(nsprefix);
-//    if (tagNamespace.EqualsLiteral("http://www.w3.org/1998/Math/MathML"))
-    {
-      if (tagName.EqualsLiteral("math")) fInMath = PR_TRUE;
-      else if (!fInMath) {  // we encountered the math namespace w/o a math node. Insert one.
-        fragNode->GetParentNode(getter_AddRefs(parent));
-        GetChildOffset( fragNode, parent, offset);
-        CreateNode(NS_LITERAL_STRING("math"), parent, offset, getter_AddRefs(mathnode)); 
-        mathElement = do_QueryInterface(mathnode);
-        mathElement->SetAttribute(NS_LITERAL_STRING("xmlns"), strMathMLNs);
-        mathElement->SetAttribute(NS_LITERAL_STRING("_moz_dirty"), NS_LITERAL_STRING(""));
-        fInMath = PR_TRUE;
-      }
-      if (tagName.EqualsLiteral("mfrac")||tagName.EqualsLiteral("msup")||
-        tagName.EqualsLiteral("msub")||tagName.EqualsLiteral("mroot")||
-        tagName.EqualsLiteral("msqrt"))
-      { 
-        printf("found %S\n", tagName.get());
-      }
+    isMathNode = tagNamespace.Equals(strMathMLNs);
+//    element->GetPrefix(nsprefix);
+    if (isMathNode && (tagName.EqualsLiteral("mfrac")||tagName.EqualsLiteral("msup")||
+      tagName.EqualsLiteral("msub")||tagName.EqualsLiteral("mroot")||
+      tagName.EqualsLiteral("msqrt")||tagName.EqualsLiteral("msubsup")))
+    { 
+      // count the children of element. If there are too few, delete element
+      nodelistNode->GetChildNodes(getter_AddRefs(pNodeList));
+      pNodeList->GetLength(&length);
+      if ((length < 2)||((length==2)&&(tagName.EqualsLiteral("msubsup"))))
+        RemoveNode(nodelistNode);
+
     }
   }
-  nsresult res;
-  nsCOMPtr<nsIDOMNode> leftEnd;
-  nsCOMPtr<nsIDOMNode> rightEnd;
-  res = fragNode->GetFirstChild(getter_AddRefs(leftEnd));
-  res = fragNode->GetLastChild(getter_AddRefs(rightEnd));
-  if (leftEnd && !fRightOnly) FixMathematics(leftEnd, PR_TRUE, PR_FALSE, fInMath );
-  if (rightEnd && (rightEnd != leftEnd) && !fLeftOnly) FixMathematics(rightEnd, PR_FALSE, PR_TRUE, fInMath );
+  if (leftEnd && !fRightOnly) FixMathematics(leftEnd, PR_TRUE, PR_FALSE);
+  if (rightEnd && (rightEnd != leftEnd) && !fLeftOnly) FixMathematics(rightEnd, PR_FALSE, PR_TRUE);
 }
 
 
@@ -2945,8 +3013,16 @@ nsresult nsHTMLEditor::CreateDOMFragmentFromPaste(const nsAString &aInputString,
   NS_ENSURE_TRUE(*outFragNode, NS_ERROR_FAILURE);
   RemoveContextNodes(tagStack, *outFragNode);
   RemoveBodyAndHead(*outFragNode);
-  FixMathematics(*outFragNode, PR_FALSE, PR_FALSE, PR_FALSE);
 #if DEBUG_barry || DEBUG_Barry
+  DumpNode(*outFragNode);
+#endif
+#if DEBUG_barry || DEBUG_Barry
+  printf("Calling FixMath: +++++++++++\n");
+  DumpNode(*outFragNode);
+#endif
+ // FixMathematics(*outFragNode, PR_FALSE, PR_FALSE, PR_FALSE);
+#if DEBUG_barry || DEBUG_Barry
+  printf("Out of FixMath: ------------\n");
   DumpNode(*outFragNode);
 #endif
   if (contextAsNode)
@@ -2955,13 +3031,19 @@ nsresult nsHTMLEditor::CreateDOMFragmentFromPaste(const nsAString &aInputString,
     contextLeaf->AppendChild(*outFragNode, getter_AddRefs(junk));
     *outFragNode = contextAsNode;
   }
+#if DEBUG_barry || DEBUG_Barry
+  printf("contextAsNode: ------------\n");
+  DumpNode(contextAsNode);
+#endif
 
   res = StripFormattingNodes(*outFragNode, PR_TRUE);
-#if DEBUG_barry || DEBUG_Barry
-  DumpNode(*outFragNode);
-#endif
   NS_ENSURE_SUCCESS(res, res);
 
+//  FixMathematics(contextAsNode, PR_FALSE, PR_FALSE, PR_FALSE);
+#if DEBUG_barry || DEBUG_Barry
+  printf("contextAsNode: ------------\n");
+  DumpNode(contextAsNode);
+#endif
   // If there was no context, then treat all of the data we did get as the
   // pasted data.
   if (contextLeaf)
@@ -3280,7 +3362,7 @@ nsHTMLEditor::ScanForListAndTableStructure( PRBool aEnd,
         if (bList)
           *outReplaceNode = structureNode;
         else
-          *outReplaceNode = pNode;
+          *outReplaceNode = structureNode; // BBM- this seemed really strange to me -- pNode;
         break;
       }
     }
@@ -3290,6 +3372,29 @@ nsHTMLEditor::ScanForListAndTableStructure( PRBool aEnd,
   }
   return NS_OK;
 }    
+
+
+nsresult
+nsHTMLEditor::ReplaceOrphanedMath(PRBool aEnd,
+                                       nsCOMArray<nsIDOMNode>& aNodeArray,
+                                       nsIDOMNode* mathParent)
+{
+  if (!mathParent) return NS_OK;
+  nsCOMPtr<nsIDOMNode> endpoint;
+  do {
+    nsCOMPtr<nsIDOMNode> endpoint;
+    endpoint = GetArrayEndpoint(aEnd, aNodeArray);
+    if (!endpoint) break;
+    if (nsEditorUtils::IsDescendantOf(endpoint, mathParent))
+      aNodeArray.RemoveObject(endpoint);
+    else
+      break;
+  } while (endpoint);
+  if (aEnd) aNodeArray.AppendObject(mathParent);
+  else aNodeArray.InsertObjectAt(mathParent, 0);
+  return NS_OK;
+}
+
 
 nsresult
 nsHTMLEditor::ReplaceOrphanedStructure(PRBool aEnd,
