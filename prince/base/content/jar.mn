@@ -3,6 +3,7 @@ prince.jar:
 % content branding %content/branding/
 % content communicator %content/communicator/
   content/branding/icon64.png       (icon64.png) 
+  content/branding/splash.png       (swp6.png) 
 * content/prince.xul                (prince.xul)
 * content/prince.js                 (prince.js)
   content/openLocation.xul          (openLocation.xul)
@@ -196,6 +197,8 @@ prince.jar:
   content/useWorkInProgress.xul      (dialogs/useWorkInProgress.xul)
   content/bindings/sidebar.css		 (bindings/sidebar.css)
   content/bindings/sidebar.xml		 (bindings/sidebar.xml)
+  content/bindings/msibutton.xml		 (bindings/msibutton.xml)
+  content/bindings/msibutton.css		 (bindings/msibutton.css)
   content/bindings/structurebar.css	 (bindings/structurebar.css)
   content/bindings/structurebar.xml	 (bindings/structurebar.xml)
   content/bindings/tabeditor.xml	 (bindings/tabeditor.xml)
