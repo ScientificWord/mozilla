@@ -1,0 +1,145 @@
+msibutton {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+msibutton [class="msibutton-right"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-right.png);
+}
+
+toolbar[iconsize="small"] msibutton [class="msibutton-right"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-right-sm.png);
+}
+
+msibutton[disabled="true"] [class="msibutton-right"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-right-disabled.png);
+}
+
+toolbar[iconsize="small"] msibutton[disabled="true"] [class="msibutton-right"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-right-disabled-sm.png);
+}
+
+msibutton:hover [class="msibutton-right"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-right-hover.png);
+}
+
+toolbar[iconsize="small"] msibutton:hover 	[class="msibutton-right"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-right-hover-sm.png);
+}
+
+msibutton[checked] [class="msibutton-right"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-right-active.png);
+}
+
+toolbar[iconsize="small"] msibutton[checked]	[class="msibutton-right"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-right-active-sm.png);
+}
+
+/*--------------*/
+
+msibutton [class="msibutton-left"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-left.png);
+}
+
+toolbar[iconsize="small"] msibutton [class="msibutton-left"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-left-sm.png);
+}
+
+msibutton[disabled="true"] [class="msibutton-left"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-left-disabled.png);
+}
+
+toolbar[iconsize="small"] msibutton[disabled="true"] [class="msibutton-left"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-left-disabled-sm.png);
+}
+
+msibutton:hover [class="msibutton-left"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-left-hover.png);
+}
+
+toolbar[iconsize="small"] msibutton:hover 	[class="msibutton-left"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-left-hover-sm.png);
+}
+
+msibutton[checked] [class="msibutton-left"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-left-active.png);
+}
+
+toolbar[iconsize="small"] msibutton[checked]	[class="msibutton-left"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-left-active-sm.png);
+}
+
+/*-----------------------------------------*/
+msibutton [class="msibutton-mid"]{
+  background-image: url(chrome://prince/skin/icons/slice-middle.png);
+}
+
+toolbar[iconsize="small"] msibutton [class="msibutton-mid"]{
+  background-image: url(chrome://prince/skin/icons/slice-middle-sm.png);
+}
+
+msibutton[disabled="true"] [class="msibutton-mid"]{
+  background-image: url(chrome://prince/skin/icons/slice-middle-disabled.png);
+}
+
+toolbar[iconsize="small"] msibutton[disabled="true"] [class="msibutton-mid"]{
+  background-image: url(chrome://prince/skin/icons/slice-middle-disabled-sm.png);
+}
+
+msibutton:hover [class="msibutton-mid"]{
+  background-image: url(chrome://prince/skin/icons/slice-middle-hover.png);
+}
+
+toolbar[iconsize="small"] msibutton:hover 	[class="msibutton-mid"]{
+  background-image: url(chrome://prince/skin/icons/slice-middle-hover-sm.png);
+}
+
+msibutton[checked] [class="msibutton-mid"]{
+  background-image: url(chrome://prince/skin/icons/slice-middle-active.png);
+}
+
+toolbar[iconsize="small"] msibutton[checked]	[class="msibutton-mid"]{
+  background-image: url(chrome://prince/skin/icons/slice-middle-active-sm.png);
+}
+
+*[class="msibutton-mid"] {
+  font: menu;
+  background-repeat: repeat-x; 
+}
+
+/*--------------------------*/
+msibutton [class="msibutton-strut"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-middle.png);
+}
+
+toolbar[iconsize="small"] msibutton [class="msibutton-strut"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-middle-sm.png);
+}
+
+msibutton[disabled="true"] [class="msibutton-strut"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-middle-disabled.png);
+}
+
+toolbar[iconsize="small"] msibutton[disabled="true"] [class="msibutton-strut"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-middle-disabled-sm.png);
+}
+
+msibutton:hover [class="msibutton-strut"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-middle-hover.png);
+}
+
+toolbar[iconsize="small"] msibutton:hover 	[class="msibutton-strut"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-middle-hover-sm.png);
+}
+
+msibutton[checked] [class="msibutton-strut"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-middle-active.png);
+}
+
+toolbar[iconsize="small"] msibutton[checked]	[class="msibutton-strut"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-middle-active-sm.png);
+}
+
+
+
