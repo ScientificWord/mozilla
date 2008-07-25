@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/content/bindings/tbbuttonextension.css" type="text/css"?>
 
 <!DOCTYPE page [
   <!ENTITY % tocDTD SYSTEM "chrome://prince/locale/toc.dtd">
@@ -22,13 +23,15 @@
   </menupopup>
     
   <toolbar>
+
     <button label="Refresh" oncommand="buildTOC();"/>
+    <msibutton id="TOC" label="TOC" type="checkbox" tooltip="Show table of contents" checked="true" persist="checked"/>
+    <msibutton id="LOF" label="LOF" type="checkbox" tooltip="Show list of figures" checked="false" persist="checked"/>
+    <msibutton id="LOT" label="LOT" type="checkbox" tooltip="Show list of tables" checked="false" persist="checked"/>
     <scale id="toc-level-scale" min="0" max="7" 
       increment="1" pageIncrement="1" onchange="setTOCLevel(this.value);"
-      value="0"
+      value="0" 
       persist="value"/>
-    <button id="TOC" label="TOC" flex="1" type="checkbox" tooltip="Show table of contents" checked="true" persist="checked"/>
-    <button id="LOF" label="LOF" flex="1" type="checkbox" tooltip="Show list of figures" checked="false" persist="checked"/>
-    <button id="LOT" label="LOT" flex="1" type="checkbox" tooltip="Show list of tables" checked="false" persist="checked"/>
+    <spacer flex="1"/>
   </toolbar>
 </page>
