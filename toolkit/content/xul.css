@@ -111,6 +111,10 @@ bbox {
 
 /********** button **********/
 
+msibutton {
+  -moz-binding: url("chrome://prince/content/bindings/msibutton.xml#msibutton");
+}
+  
 button {
   -moz-binding: url("chrome://global/content/bindings/button.xml#button");
 }
