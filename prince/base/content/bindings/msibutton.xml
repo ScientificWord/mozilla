@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<bindings id="msiButtonBindings"
+   xmlns="http://www.mozilla.org/xbl"
+   xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+   xmlns:xbl="http://www.mozilla.org/xbl">
+
+
+
+  <binding id="msibutton" 
+           extends="chrome://global/content/bindings/button.xml#button-base">
+    <resources>
+      <stylesheet src="chrome://prince/content/bindings/msibutton.css"/>
+    </resources>
+
+    <content>
+      <children includes="observes|template|menupopup|tooltip"/>
+      <xul:hbox xbl:inherits="align,dir,pack,orient"
+                align="center" pack="center" flex="1">
+        <children>
+          <xul:image class="msibutton-left"/>
+          <xul:hbox class="msibutton-mid" pack="center" align="center">
+            <xul:image class="msibutton-strut"/>
+            <xul:label class="button-text" xbl:inherits="value=label,accesskey,crop,style"/>
+          </xul:hbox>
+          <xul:image class="msibutton-right"/>
+        </children>
+      </xul:hbox>
+    </content>
+  </binding>
+</bindings>
