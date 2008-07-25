@@ -1592,7 +1592,7 @@ function msiGetWrapColumn(editorelement)
   try {
     return msiGetEditor(editorElement).wrapWidth;
   } catch (e) {}
-  return 0;
+  return 72;
 }
 
 function msiGetPromptService()
