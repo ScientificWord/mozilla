@@ -581,6 +581,8 @@ nsXMLContentSerializer::SerializeAttr(const nsAString& aPrefix,
   }
 }
 
+static const char kMozStr[] = "moz";
+
 NS_IMETHODIMP 
 nsXMLContentSerializer::AppendElementStart(nsIDOMElement *aElement,
                                            nsIDOMElement *aOriginalElement,
@@ -692,7 +694,14 @@ nsXMLContentSerializer::AppendElementStart(nsIDOMElement *aElement,
     else {
       prefixStr.Truncate();
     }
-
+    // Filter out any attribute starting with [-|_]moz  // copied by BBM from HTML serializer
+    const char* sharedName;
+    attrName->GetUTF8String(&sharedName);
+    if ((('_' == *sharedName) || ('-' == *sharedName)) &&
+        !nsCRT::strncmp(sharedName+1, kMozStr, PRUint32(sizeof(kMozStr)-1))) {
+      continue;
+    }
+// end of copy
     addNSAttr = PR_FALSE;
     if (kNameSpaceID_XMLNS != namespaceID) {
       nsContentUtils::NameSpaceManager()->GetNameSpaceURI(namespaceID, uriStr);
@@ -978,7 +987,7 @@ nsXMLContentSerializer::MaybeFlagNewline(nsIDOMNode* aNode)
   if (parent) {
     PRUint16 type;
     parent->GetNodeType(&type);
-    mAddNewline = type == nsIDOMNode::DOCUMENT_NODE;
+    mAddNewline = (type == nsIDOMNode::DOCUMENT_NODE);
   }
 }
 
