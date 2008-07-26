@@ -2890,11 +2890,14 @@ void nsHTMLEditor::MathParent( nsIDOMNode * aNode, nsIDOMNode **aMathNode)
   while (parent)
   {
     element = do_QueryInterface(parent);
-    element->GetTagName(tagName);
-    if (tagName.EqualsLiteral("math"))
-    { 
-      *aMathNode = parent;
-      return;
+    if (element)
+    {
+      element->GetTagName(tagName);
+      if (tagName.EqualsLiteral("math"))
+      { 
+        *aMathNode = parent;
+        return;
+      }
     }
     rv = parent->GetParentNode(getter_AddRefs(tempNode));
     parent = tempNode;
