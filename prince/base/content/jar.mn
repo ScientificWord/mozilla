@@ -3,7 +3,7 @@ prince.jar:
 % content branding %content/branding/
 % content communicator %content/communicator/
   content/branding/icon64.png       (icon64.png) 
-  content/branding/splash.png       (swp6.png) 
+  content/branding/splash.png       (SWP6.png) 
 * content/prince.xul                (prince.xul)
 * content/prince.js                 (prince.js)
   content/openLocation.xul          (openLocation.xul)
