@@ -719,6 +719,7 @@ function msiEditorDocumentObserver(editorElement)
         if (editorStatus)
           return; 
 
+        //BBM get this from prefs
         editorElement.softsavetimer = new SS_Timer(2*60*1000, editor, editorElement);
         if (!("InsertCharWindow" in window))
           window.InsertCharWindow = null;

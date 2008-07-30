@@ -105,6 +105,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_insertReturnFancy", msiInsertReturnFancyCommand);
   commandTable.registerCommand("cmd_insertSubstructure", msiInsertSubstructureCommand);
   commandTable.registerCommand("cmd_documentInfo",       msiDocumentInfoCommand);
+  commandTable.registerCommand("cmd_documentStyle",       msiDocumentStyleCommand);
   commandTable.registerCommand("cmd_macrofragment", msiMacroFragmentCommand);
   commandTable.registerCommand("cmd_viewInvisibles", msiViewInvisiblesCommand);
   commandTable.registerCommand("cmd_msiReviseHyperlink", msiReviseHyperlinkCommand);
@@ -5932,6 +5933,49 @@ var msiDocumentInfoBase =
 msiDocumentInfo.prototype = msiDocumentInfoBase;
 
 //-----------------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------------
+var msiDocumentStyleCommand = 
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    var editorElement = msiGetTopLevelEditorElement();
+    if (msiGetEditorURL(editorElement).length > 0)
+      return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement));
+    return false;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    // Launch Document Style dialog
+    var editorElement = msiGetTopLevelEditorElement();
+    var documentStyle = {};
+    documentStyle.edElement = editorElement;
+
+    try {
+      msiOpenModelessDialog("chrome://prince/content/DocumentStyle.xul", "_blank", 
+                                        "chrome,close,titlebar,dependent, resizable",
+                                        editorElement, "cmd_documentInfo", this, documentStyle);
+    }
+    catch(ex) {
+      dump("*** Exception: couldn't open DocStyle Dialog: " + ex + "\n");
+    }
+    editorElement.contentWindow.focus();
+  }
+};
+
+
+function msiFinishDocumentStyleDialog(editorElement, documentStyle)
+{
+  if (!documentStyle.cancel)
+  {
+// inline this    putDocStyleInDocument(editorElement, documentStyle);
+    alert("Hi!");
+  }
+}
 
 var msiViewInvisiblesCommand =
 {
