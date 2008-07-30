@@ -135,6 +135,8 @@
       <menuseparator/>
       <menuitem id="docInfoMenuItem" accesskey="&docInfo.accesskey;"
         observes="cmd_documentInfo" label="&docInfo.label;"/>
+      <menuitem id="docStyleItem" accesskey="&docStyle.accesskey;"
+        observes="cmd_documentStyle" label="&docStyle.label;"/>
       <menuseparator/>
       <menuitem id="quitMenuItem" accesskey="&fileexit.accesskey;" key="key_quit" 
         observes="cmd_quit" label="&exitCmd.label;"/>
@@ -589,6 +591,7 @@
     <command id="cmd_compilePdf"  oncommand="msiGoDoCommand('cmd_compilePdf')"/>
     <command id="cmd_compileDvi"  oncommand="msiGoDoCommand('cmd_compileDvi')"/>
     <command id="cmd_documentInfo" oncommand="msiGoDoCommand('cmd_documentInfo')"/>
+    <command id="cmd_documentStyle" oncommand="msiGoDoCommand('cmd_documentStyle')"/>
     <command id="cmd_quit"        oncommand="msiGoDoCommand('cmd_quit')"/>
     <command id="cmd_textZoomReduce" oncommand="ZoomManager.reduce();"/>
     <command id="cmd_textZoomEnlarge" oncommand="ZoomManager.enlarge();"/>
