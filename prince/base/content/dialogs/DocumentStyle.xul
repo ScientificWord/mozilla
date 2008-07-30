@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2007 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/msiMathDlgStyle.css" type="text/css"?>
+
+<!DOCTYPE dialog [
+<!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/documentStyle.dtd" >
+%dialogDTD;
+]>
+
+<dialog title="Document style sheets"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload = "startup();"
+    buttons="accept,cancel" 
+    persist="width height screenx screeny">
+
+  <script type="application/x-javascript"  src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript"  src="chrome://prince/content/DocumentStyle.js"/>
+  <tabbox>
+    <tabs>
+      <tab label="Style sheets"/>
+      <tab label="Tag definitions"/>
+      <tab label="XSLT translations"/>
+    </tabs>
+    <tabpanels>
+      <tabpanel>
+        <vbox>
+        <label>Style sheets in use </label>
+        <hbox>
+          <listbox id="csslist" oncommand="">
+          </listbox>
+          <button class="dialog-button" id = "addcss" label = "Add" oncommand="" />
+        </hbox>
+        </vbox>
+      </tabpanel>
+      <tabpanel>
+        <vbox>
+        <label>Tag definition files in use </label>
+        <hbox>
+          <listbox id="xmllist" oncommand="">
+          </listbox>
+          <button class="dialog-button" id = "addxml" label = "Add" oncommand="" />
+        </hbox>
+        </vbox>
+      </tabpanel>
+      <tabpanel>
+        <vbox>
+        <label>XSLT translations </label>
+        <hbox>
+          <listbox id="xsltlist" oncommand="">
+          </listbox>
+          <button class="dialog-button" id = "addxxslt" label = "Add" oncommand="" />
+        </hbox>
+        </vbox>
+      </tabpanel>
+    </tabpanels>
+   </tabbox>
+</dialog>
