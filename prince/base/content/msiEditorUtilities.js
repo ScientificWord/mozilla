@@ -5935,3 +5935,31 @@ SS_Timer.prototype.QueryInterface = function(iid) {
   throw Components.results.NS_ERROR_NO_INTERFACE;
 }
 
+function processingInstructionsList( doc, target )
+{
+  var list =[];
+  var regexp;
+  var a;
+  var treeWalker = doc.createTreeWalker(
+    doc,
+    NodeFilter.SHOW_PROCESSING_INSTRUCTION,
+    { 
+      acceptNode: function(node) { 
+        if (node.target == target)
+          return NodeFilter.FILTER_ACCEPT;
+        else return NodeFilter.FILTER_REJECT; }
+    },
+    false
+   );
+   regexp = /href\=[\'\"]([^\'\"]*)/i;
+   try {
+    while(treeWalker.nextNode()){
+      a = regexp(treeWalker.currentNode.textContent);
+      list.push(a[1])
+    }
+  }
+  catch(e) {
+    dump("treeWalker error: "+e.toString());
+  }
+  return list;
+}
