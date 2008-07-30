@@ -29,6 +29,8 @@
 <!ENTITY filesavecopyas.keybinding "c">
 <!ENTITY docInfo.label "Document Info...">
 <!ENTITY docInfo.accesskey "D">
+<!ENTITY docStyle.label "Style...">
+<!ENTITY docStyle.accesskey "S">
 
 <!ENTITY publishCmd.label "Publish">
 <!ENTITY publishcmd.accesskey "u">
