@@ -5,6 +5,7 @@
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/msiMathDlgStyle.css" type="text/css"?>
+<?xml-stylesheet href="resource://app/res/css/latex.css" type="text/css" ?>
 
 <!DOCTYPE dialog [
 <!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/documentStyle.dtd" >
@@ -13,8 +14,9 @@
 
 <dialog title="Document style sheets"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    xmlns:html="http://www.w3.org/1999/xhtml"
     onload = "startup();"
-    buttons="accept,cancel" 
+    buttons="accept,cancel"
     persist="width height screenx screeny">
 
   <script type="application/x-javascript"  src="chrome://prince/content/msiEditorUtilities.js"/>
@@ -24,6 +26,7 @@
       <tab label="Style sheets"/>
       <tab label="Tag definitions"/>
       <tab label="XSLT translations"/>
+      <tab><label><html:latex>L<html:sup>A</html:sup>T<html:sub>E</html:sub>X</html:latex> style</label></tab>
     </tabs>
     <tabpanels>
       <tabpanel>
@@ -32,7 +35,13 @@
         <hbox>
           <listbox id="csslist" oncommand="">
           </listbox>
-          <button class="dialog-button" id = "addcss" label = "Add" oncommand="" />
+          <vbox>
+            <button class="dialog-button" id = "addcss" label = "Add" oncommand="" />
+            <button label="Remove"/>
+            <button label="Move up"/>
+            <button label="Move down"/>
+            <separator flex="1"/>
+          </vbox>
         </hbox>
         </vbox>
       </tabpanel>
@@ -42,7 +51,13 @@
         <hbox>
           <listbox id="xmllist" oncommand="">
           </listbox>
-          <button class="dialog-button" id = "addxml" label = "Add" oncommand="" />
+          <vbox>
+            <button class="dialog-button" id = "addxml" label = "Add" oncommand="" />
+            <button label="Remove"/>
+            <button label="Move up"/>
+            <button label="Move down"/>
+            <separator flex="1"/>
+          </vbox>
         </hbox>
         </vbox>
       </tabpanel>
@@ -52,7 +67,26 @@
         <hbox>
           <listbox id="xsltlist" oncommand="">
           </listbox>
-          <button class="dialog-button" id = "addxxslt" label = "Add" oncommand="" />
+          <vbox>
+            <button class="dialog-button" id = "addxxslt" label = "Add" oncommand="" />
+            <button label="Remove"/>
+            <button label="Move up"/>
+            <button label="Move down"/>
+            <separator flex="1"/>
+          </vbox>
+        </hbox>
+        </vbox>
+      </tabpanel>
+      <tabpanel>
+        <vbox>
+        <label><html:latex>L<html:sup>A</html:sup>T<html:sub>E</html:sub>X</html:latex> style</label>
+        <hbox>
+          <listbox id="latexstyle" oncommand="">
+          </listbox>
+          <vbox>
+            <button class="dialog-button" id = "replacelatexstyle" label = "Replace" oncommand="" />
+            <separator flex="1"/>
+          </vbox>
         </hbox>
         </vbox>
       </tabpanel>
