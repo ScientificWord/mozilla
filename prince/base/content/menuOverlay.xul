@@ -909,6 +909,7 @@
     <menuitem label="Test ChamWindow" oncommand='window.openDialog("chrome://prince/content/chamtest.xul","Cham Test", 
       "chrome,close,titlebar,resizable,modal=false");' /> 
     <menuitem label="Charset" oncommand="msiGoDoCommand('cmd_saveAndChangeEncoding');"/>
+    <menuitem label="Test XPath Find" oncommand="msiTestSearch();"/>
     </menupopup>
   </menu>
   <!-- end DEBUG only -->

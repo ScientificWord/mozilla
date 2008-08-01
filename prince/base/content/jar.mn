@@ -207,3 +207,7 @@ prince.jar:
 * content/communicator/contentAreaUtils.js    (/toolkit/content/contentAreaUtils.js)
 * content/communicator/contentAreaDD.js       (/xpfe/communicator/resources/content/contentAreaDD.js)
 * content/communicator/findUtils.js           (/toolkit/content/findUtils.js)
+  content/StdDialogShell.xhtml		  (../../shells/StdDialogShell.xhtml)
+  content/msiDebugFind.xul            (dialogs/msiDebugFind.xul)
+  content/msiDebugFind.js             (dialogs/msiDebugFind.js)
+  content/msiFindUtils.js             (msiFindUtils.js)
