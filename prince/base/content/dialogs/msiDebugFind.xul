@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+
+<!-- ***** BEGIN LICENSE BLOCK *****
+  Copyright 2006 MacKichan Software, Inc.
+ ***** END LICENSE BLOCK ***** -->
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
+
+<!--Following needed by any dialog which may contain "AdvancedEdit", "ChooseFile", "MakeRelative", or "LinkLocation" buttons-->
+<!-- ?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"? -->
+
+<!--Following needed by any dialog using commandsets defined there; generally by any dialog containing an editor-->
+<?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/ComputeOverlay.xul"?>
+<!-- If an editor control is to support context menus, also need: -->
+<?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
+
+<!--Following probably not needed by dialogs?-->
+<!-- ?xul-overlay href="chrome://prince/content/toolbarsOverlay.xul"? -->
+
+<!DOCTYPE dialog [
+<!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
+%editorDTD;
+<!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/msiDebugFind.dtd" >
+%dialogDTD;
+<!ENTITY % menuOverlayDTD SYSTEM "chrome://prince/locale/menuOverlay.dtd" >
+%menuOverlayDTD;
+]>
+
+<dialog id="replaceDlg" title="&replaceDialog.title;"
+   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+   persist="screenX screenY"
+   buttons="cancel"
+   onload = "onLoad()"
+   ondialogaccept="return onFindNext();"
+   height="470"
+   width="600">
+
+  <!-- Methods common to all editor dialogs -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
+
+  <!-- Scripts specific to this dialog -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiDebugFind.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiFindUtils.js"/>
+  <stringbundle id="findBundle" src="chrome://prince/locale/msifinddialog.properties"/>
+   
+  <!-- Following scripts are needed by any MSI dialog containing an editor -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/ComputeOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
+  <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
+  <!-- Following script needed if the editor wants to support a toolbox? -->
+  <!-- script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/ -->
+
+  <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/>
+
+  <popupset id="msiEditorContentContextSet"/>
+
+  <commandset id="tasksCommands">
+    <commandset id="globalEditMenuItems"/>
+    <commandset id="selectEditMenuItems"/>
+    <commandset id="undoEditMenuItems"/>
+    <commandset id="clipboardEditMenuItems"/>
+    <commandset id="composerMenuItems"/>
+    <commandset id="composerEditMenuItems"/>
+    <commandset id="composerStyleMenuItems"/>
+    <commandset id="composerTableMenuItems"/>
+    <commandset id="composerListMenuItems"/>
+    <command id="cmd_MSIComputeEval" oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
+    <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
+  </commandset>
+  <commandset id="MSImathMenuCommands"/>
+  
+  <keyset id="editorKeys">
+    <keyset id="tasksKeys"/>
+    <keyset id="MSIKeySet"/>
+    <key id="MSIevalKey" key="&MSIComputeEvalCmd.keybinding;" observes="cmd_MSIComputeEval"  modifiers="accel"  />        
+  </keyset>
+
+  <keyset>
+    <key id="sw.tab-key" keycode="VK_TAB" oncommand="msiTabForward(event);"/>
+    <key id="sw.shift-tab-key" keycode="VK_TAB" modifiers="shift" oncommand="msiTabBack(event);"/>
+    <key id="sw.accept-key" keycode="VK_ENTER" oncommand="doOKButton();"/>
+    <key id="sw.accept-key" keycode="VK_RETURN" oncommand="doOKButton();"/>
+  </keyset>
+
+  <hbox flex="1">
+    <vbox flex="1">
+      <spacer class="spacer" flex="0"/>
+      <grid align="start" flex="1">
+        <columns><column/><column flex="1"/></columns>
+        <rows>
+          <row align="start" flex="1">
+            <label value="&findField.label;" accesskey="&findField.accesskey;" control="dialog.findInput"/>
+            <!-- textbox id="dialog.findInput" oninput="doEnabling();"/ -->
+            <groupbox flex="1" align="stretch">
+              <editor editortype="html" type="content" context="msiEditorContentContext" id="findInput" flex="1" align="stretch"
+                minheight="60" minwidth="250" height="300px" onblur="doEnabling();"/>
+            </groupbox>
+          </row>
+          <row align="start" flex="1">
+            <label value="&XPathInput.label;" control="dialog.XPathInput"/>
+				    <textbox id="XPathInput" multiline="true" cols="80" rows="6" accesskey="&XPathInput.accesskey;" />
+          </row>
+          <row align="start" >
+            <spacer/>
+            <vbox align="start">
+              <spacer class="bigspacer"/>
+              <checkbox id="dialog.caseSensitive" label="&caseSensitiveCheckbox.label;" 
+                  accesskey="&caseSensitiveCheckbox.accesskey;"/>
+              <checkbox id="dialog.wrap" label="&wrapCheckbox.label;" 
+                  accesskey="&wrapCheckbox.accesskey;"/>
+              <checkbox id="dialog.searchBackwards" label="&backwardsCheckbox.label;" 
+                  accesskey="&backwardsCheckbox.accesskey;"/>
+            </vbox>
+          </row>
+        </rows>
+      </grid>
+    </vbox>
+    <vbox>
+      <button id="findNext" label="&findNextButton.label;" accesskey="&findNextButton.accesskey;" 
+          oncommand="onFindNext();" default="true"/>
+      <button id="checkXPath" label="&checkXPathButton.label;" accesskey="&checkXPathButton.accesskey;" 
+          oncommand="onCheckXPath();"/>
+      <button dlgtype="cancel" label="&closeButton.label;"/>
+    </vbox>
+  </hbox>
+</dialog>
