@@ -623,3 +623,12 @@ function msiDumpClipboard() {
   }
   return false;
 }
+
+function msiTestSearch()
+{
+  var editorElement = msiGetActiveEditorElement();
+  var theDialog = msiOpenModelessDialog("chrome://prince/content/msiDebugFind.xul", "_blank", 
+      "chrome,close,titlebar,resizable,dependent",
+      editorElement, "cmd_msiTestSearch", null, editorElement);
+
+}

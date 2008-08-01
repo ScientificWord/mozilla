@@ -1059,12 +1059,17 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
       }
       if (docname.length == 0)
         docname = prefs.getCharPref("swp.defaultShell");
-      doc = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+      if ((docname.length > 0) && (docname.toLowerCase().indexOf("chrome:") >= 0))
+        url = docname;
+      else
+      {
+        doc = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
 // BBM: "shells" should be localizable
-      doc.append("shells");
-      var dirs = docname.split(/\//);
-      var i;
-      for (i = 0; i<dirs.length; i++) doc.append(dirs[i]);
+        doc.append("shells");
+        var dirs = docname.split(/\//);
+        var i;
+        for (i = 0; i<dirs.length; i++) doc.append(dirs[i]);
+      }
       dir = null; // should be the default document directory
     }
     else 
@@ -1076,23 +1081,26 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
     // in cases where the user has gone through a dialog, such a File/New or File/Open, the working directory
     // has already been created and the document name changed. When starting up, or starting with a file on the
     // command line we still need to call "createWorkingDirectory."
-    var isSciRegEx = /\.sci$/i;
-    var isSci = isSciRegEx.test(doc.leafName);
-    var newdoc;
-    if (isSci) 
-      newdoc = createWorkingDirectory(doc);
-    else 
-      newdoc = doc;
-    docname = newdoc.path;
-    url = docname;
+    if (url.length == 0)
+    {
+      var isSciRegEx = /\.sci$/i;
+      var isSci = isSciRegEx.test(doc.leafName);
+      var newdoc;
+      if (isSci) 
+        newdoc = createWorkingDirectory(doc);
+      else 
+        newdoc = doc;
+      docname = newdoc.path;
+      url = docname;
 #ifdef XP_WIN32
-    docname = docname.replace("\\","/","g");
+      docname = docname.replace("\\","/","g");
 #endif
-    var dotIndex = doc.leafName.lastIndexOf(".");
-    var lastSlash = docname.lastIndexOf("/")+1;
-    var theFilename = document.getElementById("filename");
-    if (theFilename != null)
-      theFilename.value = dotIndex == -1?docname.slice(lastSlash):docname.slice(lastSlash,dotIndex);
+      var dotIndex = doc.leafName.lastIndexOf(".");
+      var lastSlash = docname.lastIndexOf("/")+1;
+      var theFilename = document.getElementById("filename");
+      if (theFilename != null)
+        theFilename.value = dotIndex == -1?docname.slice(lastSlash):docname.slice(lastSlash,dotIndex);
+    }
 
     var contentViewer = null;
     if (editorElement.docShell)
