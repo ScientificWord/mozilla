@@ -1348,6 +1348,14 @@ function msiGetRealBodyElement(theDocument)
   if (!theDocument.rootElement)
   {
     theNodes = theDocument.getElementsByTagName(targetTag);
+    dump("In msiGetRealBodyElement; no document.rootElement, and search for 'body' nodes returned [" + theNodes.length + "] nodes.\n");
+//    for (var iii = 0; iii < theNodes.length; ++iii)
+//    {
+//      var dumpStr = "  Body node [" + iii + "] contained [" + theNodes[iii].childNodes.length + "] children";
+//      if (theNodes[iii].childNodes.length > 0)
+//        dumpStr += ", of which the first is a [" + theNodes[iii].childNodes[0].nodeName + "]";
+//      dump( dumpStr + "; the text content is [\n  " + theNodes[iii].textContent + "\n].\n");
+//    }
   }
   else
   {
@@ -5247,6 +5255,46 @@ var msiNavigationUtils =
     return retVal;
   },
 
+  getNodeBeforePosition : function(aNode, offset)
+  {
+    var retNode = null;
+    if (!this.positionIsAtStart(aNode, offset))
+    {
+      if ( (aNode.childNodes != null) && (aNode.childNodes.length >= offset) )
+        retNode = aNode.childNodes[offset - 1];
+    }
+    if (retNode == null)
+    {
+      retNode = aNode.previousSibling;
+      while ( (retNode == null) && (aNode.parentNode != null) )
+      {
+        aNode = aNode.parentNode;
+        retNode = aNode.previousSibling;
+      }
+    }
+    return retNode;
+  },
+
+  getNodeAfterPosition : function(aNode, offset)
+  {
+    var retNode = null;
+    if (!this.positionIsAtEnd(aNode, offset))
+    {
+      if ( (aNode.childNodes != null) && (aNode.childNodes.length > offset) )
+        retNode = aNode.childNodes[offset];
+    }
+    if (retNode == null)
+    {
+      retNode = aNode.nextSibling;
+      while ( (retNode == null) && (aNode.parentNode != null) )
+      {
+        aNode = aNode.parentNode;
+        retNode = aNode.nextSibling;
+      }
+    }
+    return retNode;
+  },
+
   significantOffsetInParent : function(aNode)
   {
     var siblings = this.getSignificantContents(aNode.parentNode);
@@ -5272,6 +5320,19 @@ var msiNavigationUtils =
     if (retVal == null || retVal.length == 0)
       retVal = editor.tagListManager.getClassOfTag( node.nodeName, null );
     return retVal;
+  },
+
+  isDefaultParaTag : function(node, editor)
+  {
+    var nsAtom = null;
+    if (node.namespaceURI != null)
+      nsAtom = this.mAtomService.getAtom(node.namespaceURI);
+
+    var namespace = new Object();
+    var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace);
+    if ((paraTag == node.nodeName) && ((nsAtom == null) || (nsAtom == namespace)) )
+        return true;
+    return false;
   },
 
   isFence : function(node)
@@ -5613,6 +5674,7 @@ var msiNavigationUtils =
     {
       case "mi":
       case "mo":
+      case "mn":
       {
         var childNodes = this.getSignificantContents(aNode);
         if (childNodes.length != 1)
@@ -5698,6 +5760,16 @@ var msiNavigationUtils =
   {
     if (this.nodeIsPieceOfUnbreakable(aNode))
       return true;
+    return false;
+  },
+
+  isInputBox : function(aNode)
+  {
+    if (msiGetBaseNodeName(aNode) == "mi")
+    {
+      if (aNode.hasAttribute("tempinput") && aNode.getAttribute("tempinput")=="true")
+        return true;
+    }
     return false;
   }
 
