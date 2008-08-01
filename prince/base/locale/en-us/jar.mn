@@ -89,3 +89,4 @@ en-US.jar:
   locale/structurebar.dtd			      (structurebar.dtd)
   locale/standaloneSidebar.dtd		      (standaloneSidebar.dtd)
   locale/tabeditor.dtd				      (tabeditor.dtd)
+  locale/msiDebugFind.dtd                 (dialogs/msiDebugFind.dtd)
