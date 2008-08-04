@@ -1,4 +1,3 @@
-
 \catcode`\{=1
 \catcode`\}=2
 \catcode`\#=6
@@ -186,9 +185,9 @@
 \edef\today{%
   \the\year/\two@digits{\the\month}/\two@digits{\the\day}:%
     \two@digits{\the\count@}:\two@digits{\the\count2}}
-\immediate\openout15={texsys.aux}
-\immediate\write15{\today^^J}
-\immediate\closeout15 %
+%%\immediate\openout15={texsys.aux}
+%%\immediate\write15{\today^^J}
+%%\immediate\closeout15 %
 \def\IfFileExists#1#2#3{%
   \openin\@inputcheck#1 %
   \ifeof\@inputcheck
