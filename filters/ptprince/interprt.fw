@@ -991,9 +991,9 @@ case CMD_CLOSETAG : {
          ++it;
       }
    }
-   // don't let a </p> close anything except
-   // an immediately surrounding <p>
-   if (found && strTemp == "p"){
+   // don't let a </para> close anything except
+   // an immediately surrounding <para>
+   if (found && strTemp == "para"){
       if (it != s_tagStack.rbegin()){
          found = false;
       }

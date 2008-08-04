@@ -372,7 +372,10 @@
 }
 
 
-\def\hspace#1{%
+\def\hspace{%
+   \@ifnextchar*{\@hspacestar}{\@hspace}}
+
+\def\@hspace#1{   
    \ifmmode
      \string\hspace\@brace{#1}%
    \else
@@ -380,10 +383,14 @@
    \fi
 }
 
+\def\@hspacestar#1#2{
+   \@hspace{#2}%
+}
+
 \def\@paragraphs{%
   \let\@par\par
-  \def\par{\msiclosetag{p}{</p>}\@par}%
-  \everypar{\msihmode\br\msiopentag{p}{<p>}}%
+  \def\par{\msiclosetag{para}{</para>}\@par}%
+  \everypar{\msihmode\br\msiopentag{para}{<para>}}%
 }
 
 
@@ -1860,7 +1867,7 @@
 \def\msi@opendocument{%
    \msitag{<?xml version="1.0"?>}\br
    \msitag{<?xml-stylesheet href="css/my.css" type="text/css"?>}\br
-%%   \msitag{<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">}
+   \msitag{<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">}
    
   \br\msitag{<html xmlns="http://www.w3.org/1999/xhtml" 
       xmlns:mml="http://www.w3.org/1998/Math/MathML"
