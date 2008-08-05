@@ -6,6 +6,7 @@
 #include "nsIDocument.h"
 #include "nsIDOMDocument.h"
 #include "nsIDOMXMLDocument.h"
+#include "nsIXMLHttpRequest.h"
 #include "nsIDOMNodeList.h"
 #include "nsIDOMRange.h"
 #include "nsIHTMLEditor.h"
@@ -200,6 +201,7 @@ msiTagListManager::Reset(void)
 }
 
 static NS_DEFINE_CID( kXMLDocumentCID, NS_XMLDOCUMENT_CID );
+static NS_DEFINE_CID( kXMLHttpRequestCID, NS_XMLHTTPREQUEST_CID );
 
 NS_IMETHODIMP 
 msiTagListManager::AddTagInfo(const nsAString & strTagInfoPath, PRBool *_retval) 
@@ -207,15 +209,26 @@ msiTagListManager::AddTagInfo(const nsAString & strTagInfoPath, PRBool *_retval)
   nsresult rv;
   nsAutoString str;
   nsCOMPtr<nsIDOMXMLDocument> docTagInfo;
+  nsCOMPtr<nsIDOMDocument> domdocTagInfo;
   
   // load the XML tag info file 
+//***************************************
   *_retval = PR_FALSE;
-  docTagInfo = do_CreateInstance(kXMLDocumentCID, &rv);
+  nsCOMPtr<nsIXMLHttpRequest> req;
+  const nsCString GET=NS_LITERAL_CSTRING("GET");
+  const nsCString xml=NS_LITERAL_CSTRING("text/xml");
+  req = do_CreateInstance(kXMLHttpRequestCID, &rv);
   if (rv) return rv;
-  rv = docTagInfo->SetAsync(PR_FALSE);
+  rv = req->OpenRequest(GET, NS_ConvertUTF16toUTF8(strTagInfoPath), PR_FALSE, nsString(), nsString());
   if (rv) return rv;
-  rv = docTagInfo->Load( strTagInfoPath, _retval);
+  rv = req->OverrideMimeType(xml);
   if (rv) return rv;
+  rv = req->Send(nsnull);
+  if (rv) return rv;
+  rv = req->GetResponseXML(getter_AddRefs(domdocTagInfo));
+  if (rv) return rv;
+  docTagInfo = do_QueryInterface(domdocTagInfo);
+//***************************************
   BuildHashTables(docTagInfo, _retval);
   // get the default paragraph tag
   nsCOMPtr<nsIDOMElement> nodeElement;
