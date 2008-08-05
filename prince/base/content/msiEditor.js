@@ -777,6 +777,7 @@ function msiEditorDocumentObserver(editorElement)
             msiDumpWithID("No parent editor element for editorElement [@] found in documentCreated observer!", this.mEditorElement);
         }
         var isInlineSpellCheckerEnabled = gPrefs.getBoolPref("swp.spellchecker.enablerealtimespell");
+        RealTimeSpell.Init(editor, isInlineSpellCheckerEnabled);
         editor.setSpellcheckUserOverride(isInlineSpellCheckerEnabled);
         // set up a listener in case the preference changes at runtime.
 
