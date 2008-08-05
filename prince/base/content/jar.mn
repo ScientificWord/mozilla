@@ -158,7 +158,7 @@ prince.jar:
   content/DocumentInfo.xul           (dialogs/DocumentInfo.xul) 
   content/DocumentInfo.js            (dialogs/DocumentInfo.js) 
   content/DocumentStyle.xul          (dialogs/DocumentStyle.xul) 
-  content/DocumentStyle.js           (dialogs/DocumentStyle.js) 
+*  content/DocumentStyle.js           (dialogs/DocumentStyle.js) 
   content/HorizontalSpaces.xul       (dialogs/HorizontalSpaces.xul) 
   content/HorizontalSpaces.js        (dialogs/HorizontalSpaces.js) 
   content/VerticalSpaces.xul         (dialogs/VerticalSpaces.xul) 

@@ -2,9 +2,11 @@
 <!-- Copyright (c) 2007 MacKichan Software, Inc.  All Rights Reserved. -->
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://global/skin/dialog.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/msiMathDlgStyle.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/documentStyle.css" type="text/css"?>
 <?xml-stylesheet href="resource://app/res/css/latex.css" type="text/css" ?>
 
 <!DOCTYPE dialog [
@@ -30,16 +32,20 @@
     </tabs>
     <tabpanels>
       <tabpanel>
-        <vbox>
-        <label>Style sheets in use </label>
+        <vbox><!-- a comment -->
+        <label>"Style sheets in use" </label>
         <hbox>
-          <listbox id="csslist" oncommand="">
-          </listbox>
           <vbox>
-            <button class="dialog-button" id = "addcss" label = "Add" oncommand="" />
-            <button label="Remove"/>
-            <button label="Move up"/>
-            <button label="Move down"/>
+            <textbox id="cssfile" value="Enter new cascading style sheets here"/>
+            <listbox id="csslist" seltype="multiple" oncommand="">
+            </listbox>
+          </vbox>
+          <vbox>
+            <button id = "browsecss" label = "Browse" oncommand="browse('css')" />
+            <button id = "addcss" label = "Add" oncommand="add('csslist','cssfile','css');" />
+            <button label="Remove" oncommand="remove('csslist')"/>
+            <button label="Move up" oncommand="moveup('csslist')"/>
+            <button label="Move down" oncommand="movedown('csslist')"/>
             <separator flex="1"/>
           </vbox>
         </hbox>
@@ -49,13 +55,17 @@
         <vbox>
         <label>Tag definition files in use </label>
         <hbox>
-          <listbox id="xmllist" oncommand="">
-          </listbox>
           <vbox>
-            <button class="dialog-button" id = "addxml" label = "Add" oncommand="" />
-            <button label="Remove"/>
-            <button label="Move up"/>
-            <button label="Move down"/>
+            <textbox id="xmlfile"/>
+            <listbox id="xmllist" seltype="multiple" oncommand="">
+            </listbox>
+          </vbox>
+          <vbox>
+            <button id = "browsexml" label = "Browse" oncommand="browse('xml')" />
+            <button class="dialog-button" id = "addxml" label = "Add" oncommand="add('xmllist','xmlfile','xml');" />
+            <button label="Remove" oncommand="remove('xmllist')"/>
+            <button label="Move up" oncommand="moveup('xmllist')"/>
+            <button label="Move down" oncommand="movedown('xmllist')"/>
             <separator flex="1"/>
           </vbox>
         </hbox>
@@ -65,13 +75,17 @@
         <vbox>
         <label>XSLT translations </label>
         <hbox>
-          <listbox id="xsltlist" oncommand="">
-          </listbox>
           <vbox>
-            <button class="dialog-button" id = "addxxslt" label = "Add" oncommand="" />
-            <button label="Remove"/>
-            <button label="Move up"/>
-            <button label="Move down"/>
+            <textbox id="xslfile"/>
+            <listbox id="xsltlist" seltype="multiple" oncommand="">
+            </listbox>
+          </vbox>
+          <vbox>
+            <button id = "browsexslt" label = "Browse" oncommand="browse('xsl')" />
+            <button class="dialog-button" id = "addxslt" label = "Add" oncommand="add('xsllist','xslfile','xsl');" />
+            <button label="Remove" oncommand="remove('addxslt')"/>
+            <button label="Move up" oncommand="moveup('addxslt')"/>
+            <button label="Move down" oncommand="movedown('addxslt')"/>
             <separator flex="1"/>
           </vbox>
         </hbox>
@@ -81,9 +95,13 @@
         <vbox>
         <label><html:latex>L<html:sup>A</html:sup>T<html:sub>E</html:sub>X</html:latex> style</label>
         <hbox>
-          <listbox id="latexstyle" oncommand="">
-          </listbox>
           <vbox>
+            <textbox id="stylefile"/>
+            <listbox id="latexstyle" oncommand="">
+            </listbox>
+          </vbox>
+          <vbox>
+            <button id = "browsestyle" label = "Browse" oncommand="browse('style')" />
             <button class="dialog-button" id = "replacelatexstyle" label = "Replace" oncommand="" />
             <separator flex="1"/>
           </vbox>

@@ -4257,21 +4257,8 @@ var msiBaseMathNameList =
 
   initialize : function()
   {
-    var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
-    var basedir =dsprops.get("resource:app", Components.interfaces.nsIFile);
-    basedir.append("res");
-
-//    var theFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-//    theFile.initWithPath(this.sourceFile);
-//    var inputStream = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream);
-//    inputStream.init(theFile, -1, -1, false);  //these values for parameters taken from various examples...?
-//    this.namesDoc = domParser.parseFromStream(inputStream, "utf-8", inputStream.available(), "text/xml");
-//    inputstream.close();
-
-    var mathNameFile = basedir;
-    mathNameFile.append("tagdefs");
-    mathNameFile.append(this.sourceFile);
-    this.sourceFile = mathNameFile.path;
+    var mathNameFile = getUserResourceFile("mathnames.xml","xml");
+    this.sourceFile = mathNameFile.target;
 //    this.namesDoc = document.implementation.createDocument("", "mathnames", null);
 //    var nodeList;
 //    var node;
@@ -4593,20 +4580,8 @@ var msiBaseMathUnitsList =
 
   initialize : function()
   {
-    var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
-    var basedir =dsprops.get("resource:app", Components.interfaces.nsIFile);
-    basedir.append("res");
-
-//    var theFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-//    theFile.initWithPath(this.sourceFile);
-//    var inputStream = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance(Components.interfaces.nsIFileInputStream);
-//    inputStream.init(theFile, -1, -1, false);  //these values for parameters taken from various examples...?
-//    this.namesDoc = domParser.parseFromStream(inputStream, "utf-8", inputStream.available(), "text/xml");
-//    inputstream.close();
-
-    var unitNameFile = basedir;
-    unitNameFile.append("tagdefs");
-    unitNameFile.append(this.sourceFile);
+    var unitNameFile;
+    unitNameFile = getUserResourceFile("unitnames.xml", "xml");
     this.sourceFile = unitNameFile.path;
 
     var request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"].createInstance();
@@ -4980,12 +4955,7 @@ var msiAutosubstitutionList =
 
   loadDocument : function()
   {
-    var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
-    var basedir = dsprops.get("resource:app", Components.interfaces.nsIFile);
-    basedir.append("res");
-    var autosubsFile = basedir;
-    autosubsFile.append("tagdefs");
-    autosubsFile.append(this.autosubsFilename);
+    var autosubsFile = getUserResourceFile("autosubs.xml", "xml");
 
     var request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"].createInstance();
     request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
@@ -6035,3 +6005,33 @@ function processingInstructionsList( doc, target )
   }
   return list;
 }
+
+
+
+function getUserResourceFile( name, resdirname )
+{
+  var dsprops, userAreaFile, resdir, file, basedir;
+  dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
+  basedir =dsprops.get("ProfD", Components.interfaces.nsIFile);
+  userAreaFile = basedir.clone();
+  userAreaFile.append(name);
+  if (!userAreaFile.exists())
+  { // copy from resource area
+    resdir = dsprops.get("resource:app", Components.interfaces.nsIFile);
+    if (resdir) resdir.append("res");
+    if (resdir) {
+      file = resdir.clone();
+      if (resdirname && resdirname.length > 0) file.append(resdirname);
+      file.append(name);
+      try {
+        if (file.exists()) file.copyTo(basedir,"");
+      }
+      catch(e) {
+        dump("failed to copy: "+e.toString());
+      }
+    }
+    userAreaFile = file.clone();
+  }
+  return userAreaFile;
+}
+ 
