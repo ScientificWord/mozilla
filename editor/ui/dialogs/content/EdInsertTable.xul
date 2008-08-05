@@ -51,7 +51,7 @@
       <tab label="&cellTab.label;"/>
     </tabs>
     <tabpanels>
-      <vbox flex="1">
+      <vbox id="tablegrid" flex="1">
         <spacer class="spacer" flex="1"/>
         <grid class="sizeSelector">
           <columns><column flex="1"/><column/><column flex="1"/></columns>
@@ -130,7 +130,7 @@
             </row>
           </rows>
         </grid>
-        <hbox align="center">
+        <hbox id="gridcoordinates" align="center">
           <spacer class="spacer" flex="1"/>
           <label id="sizeLabel" value="2 x 2"/>
           <spacer class="spacer" flex="1"/>
