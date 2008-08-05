@@ -366,6 +366,34 @@ function SelectSize(cell)
   gDialog.rowsInput.value    = gRows;
   gDialog.columnsInput.value = gColumns;
 
-  onAccept();
-  window.close();
+  DisplaySize();
 }
+
+
+function DisplaySize()
+{
+  var i, anyCell;
+  for (i = 1; i < 80; i += 10)
+  {
+    anyCell = document.getElementById("c"+i);
+    while (anyCell)
+    {
+      anyCell.removeAttribute("mark");
+      anyCell = anyCell.nextSibling;
+    }
+  }
+
+  var numCellID;
+  numCellID = Math.min(gRows-1,7)*10 + Math.min(gColumns,8);
+  for (i = numCellID; i > 0; i -= 10)
+  {
+    anyCell = document.getElementById("c"+i);
+    while (anyCell)
+    {
+      anyCell.setAttribute("mark", "true");
+      anyCell = anyCell.previousSibling;
+    }
+  }
+  ShowSize();
+}
+
