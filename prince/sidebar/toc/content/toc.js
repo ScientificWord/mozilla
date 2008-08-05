@@ -24,21 +24,28 @@ function jump()
   }
 }
 
+function truefunc(x) {return true;}
+
 function buildTOC()
 {
 //  BBM todo: build the above from the taglist manager list of structure tags
   var editorElement = msiGetActiveEditorElement();
   var editor;
-  var tagarray;
+  var tagarray, fulltagarray;
   if (editorElement) editor = msiGetEditor(editorElement);
   var theTagManager = editor ? editor.tagListManager : null;
+  var taglist;
   if (!theTagManager) return;
+  taglist = theTagManager.getTagsInClass('structtag',',',false); 
+  fulltagarray = taglist.split(',');
   if (document.getElementById("TOC").hasAttribute('checked'))
   {
-    var taglist = theTagManager.getTagsInClass('structtag',',',false); 
-    tagarray = taglist.split(',');
+    tagarray = fulltagarray.filter(truefunc);
   }
-  else tagarray = [];
+  else
+  {
+    tagarray = [];
+  }
   var otherstest="";
   var doLOF = document.getElementById("LOF").hasAttribute('checked');
   if (doLOF)
@@ -60,7 +67,7 @@ function buildTOC()
   if ((xpath.length > 0) && (otherstest.length > 0)) otherstest += "|"; 
   var currentTree = document.getElementById("toc-tree");
   if (currentTree) currentTree.parentNode.removeChild(currentTree);
-  ensureAllStructureTagsHaveIds(editor.document, tagarray);
+  ensureAllStructureTagsHaveIds(editor.document, fulltagarray);
   if (!gProcessor) gProcessor = new XSLTProcessor();
   else gProcessor.reset();
   var req = new XMLHttpRequest();
@@ -148,7 +155,7 @@ function ensureAllStructureTagsHaveIds(doc, tagarray)
   var idstring;             
   var n = 3141592;
   var prefix = 'tsid_';//temp structure id
-  var regexp= /^(31415|tsid_)/;
+  var regexp= /^(314|tsid_)/;
   var extendedarray = tagarray.concat('img','table');
   
   for (i=0; i<extendedarray.length; i++)
