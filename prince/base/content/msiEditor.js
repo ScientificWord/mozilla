@@ -726,7 +726,31 @@ function msiEditorDocumentObserver(editorElement)
 
         if (msiIsHTMLEditor(this.mEditorElement))
         {
-          editor.addTagInfo("resource:///res/tagdefs/latexdefs.xml");
+          var match;
+          var dirs;
+          var file;
+          var path;
+          var i;
+          // check the document for tagdef processing instructions
+          var tagdeflist = processingInstructionsList(editor.document, "sw-tagdefs");
+          //  if nothing returned, use the default tagdefs
+          if (tagdeflist.length < 1) tagdeflist = ["resource://app/res/tagdefs/latexdefs.xml"];
+          for (i = 0; i < tagdeflist.length; i++)
+          {
+            match = (/resource:\/\/app\/res\/(.*)/i).exec(tagdeflist[i]);
+            if (match != null)
+            {
+              dirs = match[1].split("/");
+              file = getUserResourceFile( dirs[1], dirs[0]);
+              path = "file:///" + file.target;
+#ifdef XP_WIN32
+              path = path.replace("\\","/","g");
+#endif
+              editor.addTagInfo(path);
+            }
+            else    
+              editor.addTagInfo(tagdeflist[i]);
+          }
           try {
             editorElement.mgMathStyleSheet = msiColorObj.FormatStyleSheet(editorElement);
 //            dump("Internal style sheet contents: \n\n" + editorElement.mgMathStyleSheet + "\n\n");
@@ -804,21 +828,23 @@ function msiEditorDocumentObserver(editorElement)
           // Force color widgets to update
           msiOnFontColorChange();
           msiOnBackgroundColorChange();
-//          editor.addTagInfo("resource:///res/tagdefs/latexdefs.xml");
           editor.setTopXULWindow(window);
           // also initialize the sidebar in this case
           try {initSidebar();} catch(e){}
           // now is the time to initialize the autosubstitute engine
           try {
             var autosub = Components.classes["@mozilla.org/autosubstitute;1"].getService(Components.interfaces.msiIAutosub);
-            autosub.initialize("resource:///res/tagdefs/autosubs.xml");
+            var autosubsfile = getUserResourceFile("autosubs.xml", "xml");
+            var path;
+            path = "file:///" + autosubsfile.target;
+#ifdef XP_WIN32
+            path = path.replace("\\","/","g");
+#endif
+            autosub.initialize(path);
           }
           catch(e) {
             dump(e+"\n");
           }
-//temp?          editor.SetTagListPath("chrome://editor/content/default.xml");
-          // the order here is important, since the autocomplete component has to read the tag names 
-//          initializeAutoCompleteStringArrayForEditor(editor);
         }
 
 //        if (this.mDumpMessage)
@@ -5842,3 +5868,5 @@ function OpenExtensions(aOpenMode)
     window.openDialog(EMURL, "", EMFEATURES);
   }
 }
+
+
