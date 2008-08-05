@@ -497,6 +497,7 @@ var gEditorDocumentObserver =
           // Force color widgets to update
           onFontColorChange();
           onBackgroundColorChange();
+          alert("We shouldn't be using editor.js!")e
           editor.addTagInfo("resource:///res/tagdefs/latexdefs.xml");
           // the order here is important, since the autocomplete component has to read the tag names 
         }
