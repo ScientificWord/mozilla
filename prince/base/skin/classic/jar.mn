@@ -18,6 +18,7 @@ classic.jar:
   skin/classic/MathVarsDialog.css        (MathVarsDialog.css)
   skin/classic/msiTypesetDlgStyle.css    (msiTypesetDlgStyle.css)
   skin/classic/chamtest.css              (chamtest.css)
+  skin/classic/documentStyle.css         (documentStyle.css)
   skin/classic/icons/background.png      (icons/background.png)
   skin/classic/icons/background-sm.png   (icons/background-sm.png)
   skin/classic/icons/btn1.gif            (icons/btn1.gif)

@@ -155,8 +155,8 @@
                 key="key_redo"
                 accesskey="&redoCmd.accesskey;"
                 observes="cmd_redo"/>
-      <menuitem id="objectProperties" observes="cmd_objectProperties"/>
       <menuseparator id="edEditMenuSep1" />
+      <menuitem id="objectProperties" observes="cmd_objectProperties"/>
       <menuitem id="menu_cut"
                 label="&cutCmd.label;"
                 key="key_cut"
