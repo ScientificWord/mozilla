@@ -69,11 +69,8 @@ function initSidebar()
   // fragmentsBaseDirectory to a FILE:// url.
   macroArray = new Object();
   fragmentArray = new Object();
-  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
-  var basedir =dsprops.get("resource:app", Components.interfaces.nsIFile);
-  basedir.append("res");
-  var dir1 = basedir.clone();
-  dir1.append("fragments");
+  var dir1;
+  dir1 = getUserResourceFile("fragments","");
   var dirpath = dir1.path + "/";
 #ifdef XP_WIN32
   dirpath = dirpath.replace("\\","/","g");
@@ -87,9 +84,8 @@ function initSidebar()
   // ACSA = autocomplete string array
   var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
   ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
-  var macrofile = basedir;
-  macrofile.append("tagdefs");
-  macrofile.append("macros.xml");
+  var macrofile;
+  macrofile = getUserResourceFile("macros.xml","xml");
   var request = Components.
                 classes["@mozilla.org/xmlextras/xmlhttprequest;1"].
                 createInstance();

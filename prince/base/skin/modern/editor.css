@@ -67,3 +67,6 @@
   border: none !important;
 }
 
+listitem [readonly="true"] {
+  color: red;
+}
