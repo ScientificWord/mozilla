@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!DOCTYPE subs PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">
+<!DOCTYPE subs PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">
 <subs>
   <sub ctx="text" tp="subst"><pattern>--</pattern><data>&#x2013;</data><context/><info>0,0</info></sub>
   <sub ctx="text" tp="subst"><pattern>&#x2013;-</pattern><data>&#x2014;</data><context/><info>0,0</info></sub>
