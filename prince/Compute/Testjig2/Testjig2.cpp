@@ -213,7 +213,7 @@ bool CompEngine::Shutdown()
 char *xhtml_header[] = {
   "<?xml version=\"1.0\"?>\n",
   "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN\"\n",
-  "\"http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd\">\n",
+  "\"http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd\">\n",
   "<html xmlns=\"http://www.w3.org/1999/xhtml\"\n",
   "xmlns:mml=\"http://www.w3.org/1998/Math/MathML\">\n",
   "<head>\n",
