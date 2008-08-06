@@ -531,7 +531,7 @@ NS_IMETHODIMP msiKeyMap::SaveKeyMaps(PRBool *_retval)
 
   nsAutoString sFile;
   sFile = NS_LITERAL_STRING("<?xml version=\"1.0\"?>\n");
-  sFile +=  NS_LITERAL_STRING("<!DOCTYPE tables PUBLIC \"-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN\" \"http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd\">\n");
+  sFile +=  NS_LITERAL_STRING("<!DOCTYPE tables PUBLIC \"-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN\" \"http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd\">\n");
   sFile +=  NS_LITERAL_STRING("<tables>\n");
 
   nsAutoString str;
