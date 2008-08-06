@@ -5,7 +5,7 @@ function Startup(){
   var iframe = document.getElementById("content");
 
   var doc   = '<?xml version="1.0"?>\n';
-  doc = doc + '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">\n';
+  doc = doc + '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd">\n';
   // add math stylesheet?
   doc = doc + '<html xmlns="http://www.w3.org/1999/xhtml">\n';
   doc = doc + '<body>\n';
