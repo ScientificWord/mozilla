@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<!DOCTYPE dialog [
+<!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/gotoparagraph.dtd" >
+%dialogDTD;
+]>
+
+<dialog id="gotoparagraphdialog" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    buttons="accept,cancel"
+    buttonlabelcancel="Cancel" buttonlabelaccept="OK"
+    onload = "initialize();"
+    ondialogaccept="return onAccept();"
+    ondialogcancel="return onCancel();"
+    width="300"
+    height="200"
+    persist="width height screenX screenY"
+    title="&windowTitle.label;">
+
+  <script type="application/x-javascript" src="chrome://prince/content/gotoparagraph.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+
+  <hbox><label value="&currentParagraph.label;"/><label id="current" value="0"/></hbox>
+  <hbox><label value="&lastParagraph.label;"/><label id="total" value="0"/></hbox>
+  <separator/>
+  <hbox align="center">
+        <label id="abslabel" value="&absparanumber.label;" control="paragraphnumber" accesskey=""/>
+        <label id="rellabel" value="&relparanumber.label;" hidden="true" control="paragraphnumber" accesskey=""/>
+        <textbox id="paragraphnumber" type="number" width="60px" /></hbox>
+  <separator/>
+  <hbox align="center"><label control="mode" accesskey="" value="&movement.label;"/>
+    <radiogroup id="mode" oncommand="setmode();">
+        <radio label="&absolute.label;" value="abs" selected="true" persist="selected"/>
+        <radio label="&relative.label;" value="rel" persist="selected" />
+  </radiogroup></hbox>
+</dialog>
