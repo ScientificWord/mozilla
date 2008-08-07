@@ -7,7 +7,6 @@ function msiEditorFillContextMenu(event, contextMenuNode)
 {
   if ( event.target != contextMenuNode )
     return;
-
   // Setup object property menuitem
   var editorElement = msiGetCurrentEditorElementForWindow(window);
   var dumpStr = "Curr context editor element is [";
