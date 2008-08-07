@@ -215,6 +215,8 @@
 <!ENTITY delete.accesskey "d">
 <!ENTITY clearCmd.label "Clear">
 <!ENTITY clear.accesskey "l">
+<!ENTITY countWords.label "Count words">
+<!ENTITY countWords.accesskey "w">
 <!ENTITY selectAllCmd.label "Select All">
 <!ENTITY selectall.accesskey "a">
 <!ENTITY spellSuggestions.label   "Spelling Suggestions">
