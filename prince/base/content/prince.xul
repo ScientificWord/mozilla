@@ -244,6 +244,6 @@
   <commandset id="MSItypesetInsertMenuCommands"/>
   <commandset id="MSImathMenuCommands"/>
   <commandset id="tagsMenuCommands"/>
-  
+  <commandset id="princegotoitems"/>
 </window>
 
