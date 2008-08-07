@@ -88,7 +88,8 @@ function EditorFillContextMenu(event, contextMenuNode)
     IsMenuItemShowing("menu_copy_cm")  ||
     IsMenuItemShowing("menu_paste_cm") ||
     IsMenuItemShowing("menu_pasteNoFormatting_cm") ||
-    IsMenuItemShowing("menu_delete_cm");
+    IsMenuItemShowing("menu_delete_cm")||
+    IsMenuItemShowing("menu_countWords_cm");
 
   var haveStyle =
     IsMenuItemShowing("removeStylesMenuitem_cm") ||
