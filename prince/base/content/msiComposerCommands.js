@@ -7834,7 +7834,7 @@ var msiWordCountCommand =
     if (editor)
     {
       // use the first node of the selection as the context node
-      var wc = counteWords(editor.document);
+      var wc = countWords(editor.document);
       window.openDialog('chrome://prince/content/wordcount.xul','_blank', 'chrome,resizable,close,titlebar',wc);
       window.content.focus();
     }
