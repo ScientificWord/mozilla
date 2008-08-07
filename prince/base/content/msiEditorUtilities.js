@@ -6035,3 +6035,100 @@ function getUserResourceFile( name, resdirname )
   return userAreaFile;
 }
  
+
+
+
+function getResourceFile( name, resdirname )
+{
+  var dsprops, resfile;
+  dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
+  resfile = dsprops.get("resource:app", Components.interfaces.nsIFile);
+  if (resfile) resfile.append("res");
+  if (resfile) {
+    if (resdirname && resdirname.length > 0) resfile.append(resdirname);
+    resdir.append(name);
+  }    
+  return resfile;
+}
+ 
+var wordSep = /\W+/;
+
+function countNodeWords(node) //the intent is to count words in a text node
+{
+  var s = node.textContent;
+  var arr = s.split(wordSep);
+  var n = arr.length;
+  var countOfEmpties = 0;
+  // we can get empty 'words' at the ends
+  if (n > 0 && arr[0].length === 0) countOfEmpties = 1;
+  if (n > 1 && arr[n-1].length === 0) countOfEmpties++;
+  return n - countOfEmpties;
+}
+
+var xpath;
+function countWords(doc)
+{
+  var iterator = doc.evaluate("//text()", doc, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null );
+  var wordcount = 0;
+  var thisNode;
+  try {
+    var thisNode = iterator.iterateNext();
+  
+    while (thisNode) {
+      wordcount += countNodeWords(thisNode);
+      thisNode = iterator.iterateNext();
+    }	
+  }
+  catch (e) {
+    dump( 'Error: Document tree modified during iteration ' + e );
+  }
+  return wordcount;
+}
+
+function getTagsXPath( editor, tagcategory ) // tagcategory is one of texttag, paratag, structtag, etc.
+{
+  var tagarray, taglist, theTagManager, i, length, xpath;
+  theTagManager = editor ? editor.tagListManager : null;
+  if (!theTagManager) return;
+  taglist = theTagManager.getTagsInClass(tagcategory,',',false); 
+  tagarray = taglist.split(',');
+  length = tagarray.length;
+  xpath = "";
+  for (i=0; i< length; i++)
+  {
+    xpath += (i>0?"|":"") + "html:" + tagarray[i];
+  }
+  return xpath;
+}
+
+function gotoFirstNonspaceInElement( editor, node )
+{
+  var i, len, re, arr, currNode, firstNode;
+  re = /\S/;
+  var treeWalker = document.createTreeWalker(
+      node,
+      NodeFilter.SHOW_TEXT,
+      { acceptNode: function(node) { return NodeFilter.FILTER_ACCEPT; } },
+      false
+  );
+
+  firstNode = treeWalker.nextNode();
+  if (firstNode)
+    editor.selection.collapse(firstNode,0);
+  else
+    editor.selection.collapse(node,0);
+  // put the selection at the beginning of the first text node in case there is only white space
+  for ( ; currNode != null; currNode = treeWalker.nextNode())
+  {
+    if (arr = re.exec(currNode.textContent) != null)
+    {  // there is a match, and it begins at arr.index
+      dump("Node #"+i+"is '" + currNode.textContent + "' and non-whitespace starts at "+arr.index+"\n");
+      editor.selection.collapse(currNode,arr.index);
+      break;
+    }
+  }
+  var selectionController = editor.selectionController;
+  selectionController.scrollSelectionIntoView(selectionController.SELECTION_NORMAL,selectionController.SELECTION_ANCHOR_REGION, 
+    false);
+}
+  

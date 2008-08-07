@@ -128,6 +128,8 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_citation", msiCitationCommand);
   commandTable.registerCommand("cmd_showTeXLog", msiShowTeXLogCommand);
   commandTable.registerCommand("cmd_showXSLTLog", msiShowXSLTLogCommand);
+  commandTable.registerCommand("cmd_gotoparagraph", msiGoToParagraphCommand);
+  commandTable.registerCommand("cmd_countwords", msiWordCountCommand);
 }
 
 function msiSetupTextEditorCommands(editorElement)
@@ -7777,5 +7779,64 @@ var msiShowTeXLogCommand =
   }
 }
 
-var msiShowXSLTLogCommand
+var msiShowXSLTLogCommand =
 {}
+
+
+var msiGoToParagraphCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+  
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    result = true;
+    var editorElement = msiGetActiveEditorElement();
+    if (!msiIsTopLevelEditor(editorElement))
+      return;
+
+    var editor = msiGetEditor(editorElement);
+    if (editor)
+    {
+      // use the first node of the selection as the context node
+      var contextNode = editor.selection.focusNode;
+      window.openDialog('chrome://prince/content/gotoparagraph.xul','_blank', 'chrome,resizable,close,modal,titlebar',editor, contextNode, editorElement);
+      window.content.focus();
+    }
+  }
+};
+
+
+
+var msiWordCountCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+  
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    result = true;
+    var editorElement = msiGetActiveEditorElement();
+    if (!msiIsTopLevelEditor(editorElement))
+      return;
+
+    var editor = msiGetEditor(editorElement);
+    if (editor)
+    {
+      // use the first node of the selection as the context node
+      var wc = counteWords(editor.document);
+      window.openDialog('chrome://prince/content/wordcount.xul','_blank', 'chrome,resizable,close,titlebar',wc);
+      window.content.focus();
+    }
+  }
+};
