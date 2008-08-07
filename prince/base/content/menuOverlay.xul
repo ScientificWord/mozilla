@@ -316,7 +316,7 @@
                 accesskey="&gomenuMarker.accesskey;"/>
       <menuitem label="&gomenuParagraph.label;" 
                 id="gomenuParagraph" 
-                observes="cmd_unimp" 
+                observes="cmd_gotoparagraph" 
                 accesskey="&gomenuParagraph.accesskey;"/>
       <menuseparator id="goMenuSeparator2"/>
       <menuitem label="&gomenuViewHistory.label;" 
@@ -775,7 +775,10 @@
     <command id="cmd_othertag"         state=""    />
   </commandset>
 
-  <!-- commands updated only when the menu gets created -->
+  <commandset id="princegotoitems">
+    <command id="cmd_gotoparagraph" oncommand="msiGoDoCommand('cmd_gotoparagraph')"/>
+    <command id="cmd_countwords" disabled="false" oncommand="msiGoDoCommand('cmd_countwords')"/>
+  </commandset><!-- commands updated only when the menu gets created -->
   <commandset id="composerListMenuItems"
           commandupdater="true"
           events="create, mode_switch"
