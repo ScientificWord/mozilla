@@ -55,7 +55,7 @@ Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
         tabindex="2"/>
       <spacer flex="1"/>
       <!-- from EdDialogOverlay.xul -->
-      <button id="ChooseFile"  tabindex="3"/>
+      <msibutton id="ChooseFile"  tabindex="3"/>
     </hbox>
     <spacer class="spacer"/>
     <groupbox orient="vertical" flex="1">
@@ -276,7 +276,7 @@ Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
           label   = "&editImageMapButton.label;"
           flex    = "1"/>
 -->
-        <button
+        <msibutton
           id      = "removeImageMap"
           oncommand = "removeImageMap()"
           accesskey = "&removeImageMapButton.accessKey;"

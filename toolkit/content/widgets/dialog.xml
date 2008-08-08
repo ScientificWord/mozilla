@@ -21,22 +21,22 @@
                 xbl:inherits="pack=buttonpack,align=buttonalign,dir=buttondir,orient=buttonorient"
 #ifdef XP_UNIX
                 >
-        <xul:button dlgtype="disclosure" class="dialog-button" hidden="true"/>
-        <xul:button dlgtype="help" class="dialog-button" hidden="true"/>
-        <xul:button dlgtype="extra2" class="dialog-button" hidden="true"/>
-        <xul:button dlgtype="extra1" class="dialog-button" hidden="true"/>
+        <xul:msibutton dlgtype="disclosure" class="dialog-button" hidden="true"/>
+        <xul:msibutton dlgtype="help" class="dialog-button" hidden="true"/>
+        <xul:msibutton dlgtype="extra2" class="dialog-button" hidden="true"/>
+        <xul:msibutton dlgtype="extra1" class="dialog-button" hidden="true"/>
         <xul:spacer anonid="spacer" flex="1"/>
-        <xul:button dlgtype="cancel" class="dialog-button"/>
-        <xul:button dlgtype="accept" class="dialog-button" xbl:inherits="disabled=buttondisabledaccept"/>
+        <xul:msibutton dlgtype="cancel" class="dialog-button"/>
+        <xul:msibutton dlgtype="accept" class="dialog-button" xbl:inherits="disabled=buttondisabledaccept"/>
 #else
                 pack="end">
-        <xul:button dlgtype="extra2" class="dialog-button" hidden="true"/>
+        <xul:msibutton dlgtype="extra2" class="dialog-button" hidden="true"/>
         <xul:spacer anonid="spacer" flex="1" hidden="true"/>
-        <xul:button dlgtype="accept" class="dialog-button" xbl:inherits="disabled=buttondisabledaccept"/>
-        <xul:button dlgtype="extra1" class="dialog-button" hidden="true"/>
-        <xul:button dlgtype="cancel" class="dialog-button"/>
-        <xul:button dlgtype="help" class="dialog-button" hidden="true"/>
-        <xul:button dlgtype="disclosure" class="dialog-button" hidden="true"/>
+        <xul:msibutton dlgtype="accept" class="dialog-button" xbl:inherits="disabled=buttondisabledaccept"/>
+        <xul:msibutton dlgtype="extra1" class="dialog-button" hidden="true"/>
+        <xul:msibutton dlgtype="cancel" class="dialog-button"/>
+        <xul:msibutton dlgtype="help" class="dialog-button" hidden="true"/>
+        <xul:msibutton dlgtype="disclosure" class="dialog-button" hidden="true"/>
 #endif
       </xul:hbox>
     </content>
