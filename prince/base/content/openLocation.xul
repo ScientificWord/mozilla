@@ -81,7 +81,7 @@
                      onpopupshowing="createUBHistoryMenu(event.target);"
                      oncommand="useUBHistoryItem(event.target)"/>
         </textbox>
-        <button label="_amp_chooseFile.label;" accesskey="_amp_chooseFile.accesskey;" oncommand="onChooseFile();"/>
+        <msibutton label="_amp_chooseFile.label;" accesskey="_amp_chooseFile.accesskey;" oncommand="onChooseFile();"/>
       </hbox>
       <hbox align="center">
         <label value="_amp_openWhere.label;" accesskey="_amp_openWhere.accesskey;" control="openAppList"/>

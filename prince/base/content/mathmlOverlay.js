@@ -1825,7 +1825,10 @@ var msiColorObj =
       res += "mtext { color: "+this.mtextColor+"; } ";
     if (this.matrixColor.length > 0) {
       res += "mi[tempinput=\"true\"] { color: "+this.matrixColor+"; } ";
-      res += "mtable[border=\"0\"], mtable[border=\"0\"] > mtr > mtd, mtable:not([border]), mtable:not([border]) > mtr > mtd { border: 1px solid "+this.matrixColor+"; } ";
+      res += "mtable[border=\"0\"], mtable:not([border]) {borderwidth: 0 1px 1px 0;\n" +
+        "borderstyle: solid; bordercolor: " + "red;}" + //this.matrixColor+";}\n" + 
+        "mtable[border=\"0\"] > mtr > mtd, mtable:not([border]) > mtr > mtd  \n" + 
+        " {borderwidth: 1px 0 0 1px; borderstyle: solid; bordercolor: " + "blue;}" //this.matrixColor+";}\n";
     }
     res += "mi[msiclass=\"enginefunction\"] { text-decoration: underline; } ";
     res += "p[class=\"msi_passthrough\"] { padding-left: 2em; } ";

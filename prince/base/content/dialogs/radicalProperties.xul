@@ -46,7 +46,7 @@
       <caption label="&styleButtonGroup.label;"/>
       <hbox>
         <spacer flex="1"/>
-        <button group="radicalButtonGroup" autoCheck="false" value="msqrt">
+        <msibutton group="radicalButtonGroup" autoCheck="false" value="msqrt">
           <description>
             <mml:math display="inline">
               <mml:mrow>
@@ -61,7 +61,7 @@
             </mml:math>
           </description>
         </button>
-        <button group="radicalButtonGroup" autoCheck="false" value="mroot">
+        <msibutton group="radicalButtonGroup" autoCheck="false" value="mroot">
           <description>
             <mml:math display="inline">
               <mml:mrow>

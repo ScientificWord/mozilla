@@ -63,7 +63,7 @@
       </row>
       <row>
         <textbox id="WordInput" flex="1"/>
-        <button id="AddWord" oncommand="AddWord()" label="&AddButton.label;"
+        <msibutton id="AddWord" oncommand="AddWord()" label="&AddButton.label;"
                 accesskey="&AddButton.accessKey;"/>
       </row>
       <row>
@@ -75,14 +75,14 @@
       <row>
         <listbox rows="8" id="DictionaryList" flex="1"/>
         <vbox flex="1">
-          <button  id="ReplaceWord" oncommand="ReplaceWord()" label="&ReplaceButton.label;"
+          <msibutton  id="ReplaceWord" oncommand="ReplaceWord()" label="&ReplaceButton.label;"
                    accesskey="&ReplaceButton.accessKey;"/>
           <spacer class="spacer"/>
-          <button  id="RemoveWord" oncommand="RemoveWord()" label="&RemoveButton.label;"
+          <msibutton  id="RemoveWord" oncommand="RemoveWord()" label="&RemoveButton.label;"
                    accesskey="&RemoveButton.accessKey;"/>
           <spacer class="spacer"/>
           <spacer flex="1"/>
-          <button dlgtype="cancel" class="exit-dialog" id="close" label="&CloseButton.label;" 
+          <msibutton dlgtype="cancel" class="exit-dialog" id="close" label="&CloseButton.label;" 
                   default="true" oncommand="onClose();"
                   accesskey="&CloseButton.accessKey;"/>
         </vbox>
