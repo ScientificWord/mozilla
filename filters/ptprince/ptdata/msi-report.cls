@@ -4,18 +4,6 @@
 \newsection{paragraph}{4}{\thesectionnumber.\thesubsectionnumber.\the\subsubsectionnumber.\the\paragraphnumber}{sectiontitle}%
 \newsection{subparagraph}{5}{\thesectionnumber.\thesubsectionnumber.\the\subsubsectionnumber.\the\paragraphnumber}{sectiontitle}%
 
-%% Environments
-
-\msi@environment{quotation}
-\msi@environment{quote}
-\msi@environment{enumerate}
-\msi@environment{itemize}
-\msi@environment{description}
-\msi@environment{verse}
-\msi@environment{figure}
-\msi@environment{figure*}
-\msi@environment{table}
-\msi@environment{table*}
 
 
 
@@ -39,5 +27,7 @@
 \@text@tag{scriptsize}
 \@text@tag{footnotesize}
 
-\immediate\openout2={my.css}
-\immediate\write2{@import url("resource://app/res/css/report.css");}
+%%\immediate\openout2={my.css}
+%%\immediate\write2{@import url("resource://app/res/css/report.css");}
+
+\def\classcss{@import url("resource://app/res/css/report.css");}
