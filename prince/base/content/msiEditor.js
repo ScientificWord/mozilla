@@ -5842,6 +5842,20 @@ function msiDialogEditorContentFilter(anEditorElement)
     var str = this.getTextString();
     return ( (str != null) && (str.length > 0) );
   };
+  this.getFullContentString = function()
+  {
+    var theStr = "";
+    var doc = null;
+    var editor = msiGetEditor(this.mEditorElement);
+    if (editor != null)
+      doc = editor.document;
+    if (doc != null)
+    {
+      var rootNode = msiGetRealBodyElement(doc);
+      theStr = this.mXmlSerializer.serializeToString(rootNode);
+    }
+    return theStr;
+  };
 }
 
 
