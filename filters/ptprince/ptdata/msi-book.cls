@@ -21,71 +21,6 @@
 \msi@pass@newline{\tableofcontents}
 \msi@pass@newline{\maketitle}
 
-%% Miscellaneous commands
-
-\msi@pass{\textquotedblleft}
-\msi@pass{\textquotedblright}
-\msi@pass{\textbackslash}
-
-\msi@pass{\allowbreak}
-\msi@pass{\epsilon}
-\msi@pass{\cup}
-\msi@pass{\cap}
-\msi@pass{\gcd}
-
-\msi@pass{\int}
-\msi@pass{\dint}
-\msi@pass{\sum}
-\msi@pass{\infty}
-\msi@pass{\neq}
-\msi@pass{\leq}
-\msi@pass{\geq}
-\msi@pass{\det}
-\msi@pass{\lim}
-
-
-\msi@pass{\lfloor}
-\msi@pass{\rfloor}
-\msi@pass{\lceil}
-\msi@pass{\rceil}
-
-\msi@pass{\sin}
-\msi@pass{\cos}
-
-\msi@pass{\alpha}
-\msi@pass{\beta}
-\msi@pass{\gamma}
-\msi@pass{\delta}
-
-
-\msi@pass{\mu}
-\msi@pass{\pi}
-\msi@pass{\theta}
-
-\msi@pass{\left}
-\msi@pass{\right}
-\msi@pass{\in}
-
-\msi@pass{\vert}
-\msi@pass{\Vert}
-
-
-\msi@pass{\blacktriangleright}
-\msi@pass{\max}
-\msi@pass{\min}
-\msi@pass{\prime}
-\msi@pass{\circ}
-
-
-\msi@pass{\Delta}
-\msi@pass{\Gamma}
-
-\msi@pass{\nabla}
-
-\msi@pass{\times}
-\msi@pass{\rightarrow}
-
-
 
 
 \def\textbf#1{\msihmode\msiopentag{bold}{<bold>}#1\msiclosetag{bold}{</bold>}}
@@ -109,5 +44,7 @@
 \@text@tag{scriptsize}
 \@text@tag{footnotesize}
 
-\immediate\openout2={my.css}
-\immediate\write2{@import url("resource://app/res/css/book.css");}
+%\immediate\openout2={my.css}
+%\immediate\write2{@import url("resource://app/res/css/book.css");}
+
+\def\classcss{@import url("resource://app/res/css/book.css");}
