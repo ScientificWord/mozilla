@@ -21,21 +21,41 @@ var msiSearchUtils =
     return returnVal;
   },
 
+  isEmptyInputBox : function(aNode)
+  {
+    if (msiGetBaseNodeName(aNode) == "mi")
+    {
+    	if (aNode.hasAttribute("tempinput") && (aNode.getAttribute("tempinput") == "true") )
+        return true;
+    }
+    return false;
+  },
+
   isEmptyElement : function(aNode)
   {
+    if (this.isEmptyInputBox(aNode))
+      return true;
+
+    var nodeName = msiGetBaseNodeName(aNode);
   	var childNodes = msiNavigationUtils.getSignificantContents(aNode);
+    if (this.isMRowLike(nodeName) && (childNodes.length > 1))
+      return false;
+    
+  	if (nodeName in this.mathChildPositions)
+    {
+      for (var ii = 1; (ii <= childNodes.length) && (this.namedChildFromPosition(nodeName, ii) != ""); ++ii)
+      {
+        if (!this.isEmptyInputBox(childNodes[ii-1]))
+          return false;
+      }
+      return true;
+    }
+
     if (childNodes.length > 1)
       return false;
-    if (childNodes.length > 0)  
-    {
-      if (msiGetBaseNodeName(childNodes[0]) == "mi")
-      {
-      	if (childNodes[0].hasAttribute("tempinput") && (childNodes[1].getAttribute("tempinput") == "true") )
-          return true;
-      }
-      return false;
-    }
-    return true;
+    if ( (childNodes == null) || (childNodes.length == 0) || this.isEmptyInputBox(childNodes[0]))
+      return true;
+    return false;
   },
 
   isMRowLike: function(nodeName)  //includes <msqrt>, <mtd>, <mphantom> etc. as well as <mrow> and <mstyle>
@@ -119,7 +139,56 @@ var msiSearchUtils =
 //      return "./*[" + nTargChild + "][self::";
     }  
     return "";  
+  },
+
+  getTypeOfNodeSearch : function(aNode, anEditor)
+  {
+    var retType = "find";
+    switch(msiGetBaseNodeName(aNode))
+    {
+      case "math":
+      case "mphantom":
+        retType = "container";
+      break;
+
+      case "mrow":
+      case "#document-fragment":
+        if (!msiNavigationUtils.isFence(aNode))
+          retType = "anonContainer";
+      break;
+
+      case "mstyle":
+        retType = "styleAttribs";
+      break;
+
+      default:
+        if (msiNavigationUtils.isDefaultParaTag(aNode, anEditor))
+          retType = "anonContainer";
+        else if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
+          retType = "text";
+        else
+        {
+          var tagType = msiNavigationUtils.getTagClass(aNode, anEditor);
+          switch(tagType)
+          {
+            case "structtag":
+            case "texttag":
+            case "paratag":
+            case "envtag":
+            case "listtag":
+              retType = "container";
+            break;
+
+            case "othertag":
+            default:
+            break;
+          }
+        } 
+      break;
+    }
+    return retType;
   }
+
 };
 
 var XPathStringFormatterBase = 
@@ -352,6 +421,9 @@ function XPathFormatter(targetNode, flags)
 	  var ourBaseName = msiGetBaseNodeName(this.mNode);
     var childFlags = this.mFlags + "n";
     var theContents = this.getSearchableContentNodes(this.mNode);
+    if (msiSearchUtils.isEmptyElement(this.mNode))
+      return contentsStr;
+
     if (msiSearchUtils.isMRowLike(ourBaseName))  //includes <msqrt>, <mtd>, <mphantom> etc. as well as <mrow> and <mstyle>
     {
       var startNode = 0;
@@ -371,7 +443,7 @@ function XPathFormatter(targetNode, flags)
       }
       for (var jx = startNode; jx < endNode; ++jx)
       {
-        if (!msiSearchUtils.isEmptyElement(theContents[jx]))
+        if (!msiSearchUtils.isEmptyInputBox(theContents[jx]))
         {
           var contentFormatter = new XPathFormatter(theContents[jx], childFlags);
           contentsStr += "[" + contentFormatter.prepareXPathStringForNode("descendant-or-self::") + "]";
@@ -385,7 +457,8 @@ function XPathFormatter(targetNode, flags)
         case "mi":
         case "mo":
         case "mn":
-          contentsStr = "[text()=\"" + msiNavigationUtils.getLeafNodeText(this.mNode) + "\"]";
+          if (!msiSearchUtils.isEmptyInputBox(this.mNode))
+            contentsStr = "[text()=\"" + msiNavigationUtils.getLeafNodeText(this.mNode) + "\"]";
         break;
 
         default:
@@ -393,7 +466,7 @@ function XPathFormatter(targetNode, flags)
           for (var jx = 0; jx < theContents.length; ++jx)
           {
             //START HERE! do test for empty content, as in an input box. Strangely, we don't seem to have any such test already available.
-          	if (!msiSearchUtils.isEmptyElement(theContents[jx]))
+          	if (!msiSearchUtils.isEmptyInputBox(theContents[jx]))
             {
               var matchPosition = msiSearchUtils.getMatchPositionForChild(ourBaseName, targNodeName, jx);
               if (matchPosition != "0")
@@ -504,7 +577,7 @@ function XPathFormatter(targetNode, flags)
 
 XPathFormatter.prototype = XPathStringFormatterBase;
 
-function msiSearchManager(targEditorElement, searchDocFragment, searchFlags, searchRange)
+function msiSearchManager(targEditorElement, searchDocFragment, searchFlags)
 {
   this.LongTextLimit = 30;  //Just a wild guess
   this.mTargetEditor = msiGetEditor(targEditorElement);
@@ -515,11 +588,13 @@ function msiSearchManager(targEditorElement, searchDocFragment, searchFlags, sea
     msiDumpWithID("In msiFindUtils.js, in msiSearchManager initializer, targEditorElement is [@].\n", targEditorElement);
   this.mTargetDocument = this.mTargetEditor.document;
   this.mSearchFlags = searchFlags;
-  this.mSearchRange = searchRange;
+//  this.mSearchRange = searchRange;
 //  this.mAmbientTags = new Object();
   this.mXPathSearchNode = null;  //We want to establish which node we want the returning nodesets to target.
   this.mXPathSearchString = null;
   this.mTextSearchString = null;  //If this is filled in, it means we're going with a preliminary FindService search instead of XPath.
+  this.mTargetNode = null;  //Here we store the node identified as our target to find. It's likely not to be the root of the whole search
+                            //  expression, so we save it to work from later when doing a more thorough test of a match.
 
   this.isCaseInsensitive = function()
   {
@@ -638,54 +713,6 @@ function msiSearchManager(targEditorElement, searchDocFragment, searchFlags, sea
   //  But a priori the search pattern may just be a sequence of nodes - what common ancestor can we count on? I think the target node
   //  search must keep track as it descends of the top guy.
 
-  this.getTypeOfNodeSearch = function(aNode)
-  {
-    var retType = "find";
-    switch(msiGetBaseNodeName(aNode))
-    {
-      case "math":
-      case "mphantom":
-        retType = "container";
-      break;
-
-      case "mrow":
-      case "#document-fragment":
-        if (!msiNavigationUtils.isFence(aNode))
-          retType = "anonContainer";
-      break;
-
-      case "mstyle":
-        retType = "styleAttribs";
-      break;
-
-      default:
-        if (msiNavigationUtils.isDefaultParaTag(aNode, this.mTargetEditor))
-          retType = "anonContainer";
-        else if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
-          retType = "text";
-        else
-        {
-          var tagType = msiNavigationUtils.getTagClass(aNode, this.mTargetEditor);
-          switch(tagType)
-          {
-            case "structtag":
-            case "texttag":
-            case "paratag":
-            case "envtag":
-            case "listtag":
-              retType = "container";
-            break;
-
-            case "othertag":
-            default:
-            break;
-          }
-        } 
-      break;
-    }
-    return retType;
-  };
-
   this.compareTargetData = function(newCandidateData, oldCandidateData)
   {
     var returnData = oldCandidateData;
@@ -766,7 +793,7 @@ function msiSearchManager(targEditorElement, searchDocFragment, searchFlags, sea
     dump("In msiFindUtils.js, in msiSearchManager.findTargetNode for node [" + parentNode.nodeName + "].\n");
     var nodeData = new Object();
     nodeData.theNode = parentNode;
-    nodeData.theType = this.getTypeOfNodeSearch(parentNode);
+    nodeData.theType = msiSearchUtils.getTypeOfNodeSearch(parentNode, this.mTargetEditor);
     if ( (nodeData.theType != "anonContainer") && (nodeData.theType != "styleAttribs") )
     {
       nodeData.topNode = parentNode;
@@ -803,6 +830,8 @@ function msiSearchManager(targEditorElement, searchDocFragment, searchFlags, sea
       axisStr = "following::";
 
     var searchNodeData = this.findTargetNode(this.mSearchDocFragment);
+    this.mTargetNode = searchNodeData.theNode;
+
     switch(searchNodeData.theType)
     {
       case "text":
@@ -815,9 +844,6 @@ function msiSearchManager(targEditorElement, searchDocFragment, searchFlags, sea
       case "styleAttribs":
         //START HERE??
         //Need to use the "topNode" stuff now, and deal with multiple sibling nodes at the outer level.
-        //Current behavior is wrong - the first node being acted on is the DocumentFragment (unsurprisingly), and
-        //  it's not creating much of an interesting XPath expression. (It shouldn't be appearing, but I haven't ruled
-        //  it out correctly above.
         var contentFormatter = new XPathFormatter(searchNodeData.theNode, this.mSearchFlags);
         var prefixStr = axisStr;
         this.mXPathSearchString = contentFormatter.prepareXPathStringForNode(prefixStr);
