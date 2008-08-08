@@ -7,8 +7,8 @@
 
 
 
-  <binding id="msibutton" 
-           extends="chrome://global/content/bindings/button.xml#button-base">
+  <binding id="msibutton"  
+           extends="chrome://global/content/bindings/button.xml#button">
     <resources>
       <stylesheet src="chrome://prince/content/bindings/msibutton.css"/>
     </resources>
@@ -18,12 +18,23 @@
       <xul:hbox xbl:inherits="align,dir,pack,orient"
                 align="center" pack="center" flex="1">
         <children>
-          <xul:image class="msibutton-left"/>
-          <xul:hbox class="msibutton-mid" pack="center" align="center">
-            <xul:image class="msibutton-strut"/>
-            <xul:label class="button-text" xbl:inherits="value=label,accesskey,crop,style"/>
-          </xul:hbox>
-          <xul:image class="msibutton-right"/>
+          <xul:stack>
+            <xul:hbox>
+              <xul:image class="msibutton-left"/>
+              <xul:hbox class="msibutton-mid" pack="center" flex="1" align="center"/>
+              <xul:image class="msibutton-strut"/>
+              <xul:image class="msibutton-right"/>
+            </xul:hbox>
+            <xul:hbox flex="1">
+              <xul:spacer flex="0" width="3px" />
+              <xul:vbox align="center" flex="1">
+                <xul:spacer flex="1"/>
+                <xul:label class="button-text" align="center" xbl:inherits="value=label,accesskey,crop,style"/>
+                <xul:spacer flex="1"/>
+              </xul:vbox>
+              <xul:spacer width="3px" />
+            </xul:hbox>
+          </xul:stack>
         </children>
       </xul:hbox>
     </content>

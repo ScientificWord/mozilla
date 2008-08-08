@@ -85,7 +85,7 @@
         <parameter name="node"/>
         <body>
         <![CDATA[
-          if (node.localName == "button" && node.accessKey &&
+          if ((node.localName == "button" ||node.localName=="msibutton")&& node.accessKey &&
             !node.disabled && !node.collapsed && !node.hidden)
             return NodeFilter.FILTER_ACCEPT;
           return NodeFilter.FILTER_SKIP;

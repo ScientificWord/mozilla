@@ -41,11 +41,11 @@
             </listbox>
           </vbox>
           <vbox>
-            <button id = "browsecss" label = "Browse" oncommand="browse('css')" />
-            <button id = "addcss" label = "Add" oncommand="add('csslist','cssfile','css');" />
-            <button label="Remove" oncommand="remove('csslist')"/>
-            <button label="Move up" oncommand="moveup('csslist')"/>
-            <button label="Move down" oncommand="movedown('csslist')"/>
+            <msibutton id = "browsecss" label = "Browse" oncommand="browse('css')" />
+            <msibutton id = "addcss" label = "Add" oncommand="add('csslist','cssfile','css');" />
+            <msibutton label="Remove" oncommand="remove('csslist')"/>
+            <msibutton label="Move up" oncommand="moveup('csslist')"/>
+            <msibutton label="Move down" oncommand="movedown('csslist')"/>
             <separator flex="1"/>
           </vbox>
         </hbox>
@@ -61,11 +61,11 @@
             </listbox>
           </vbox>
           <vbox>
-            <button id = "browsexml" label = "Browse" oncommand="browse('xml')" />
-            <button class="dialog-button" id = "addxml" label = "Add" oncommand="add('xmllist','xmlfile','xml');" />
-            <button label="Remove" oncommand="remove('xmllist')"/>
-            <button label="Move up" oncommand="moveup('xmllist')"/>
-            <button label="Move down" oncommand="movedown('xmllist')"/>
+            <msibutton id = "browsexml" label = "Browse" oncommand="browse('xml')" />
+            <msibutton class="dialog-button" id = "addxml" label = "Add" oncommand="add('xmllist','xmlfile','xml');" />
+            <msibutton label="Remove" oncommand="remove('xmllist')"/>
+            <msibutton label="Move up" oncommand="moveup('xmllist')"/>
+            <msibutton label="Move down" oncommand="movedown('xmllist')"/>
             <separator flex="1"/>
           </vbox>
         </hbox>
@@ -81,11 +81,11 @@
             </listbox>
           </vbox>
           <vbox>
-            <button id = "browsexslt" label = "Browse" oncommand="browse('xsl')" />
-            <button class="dialog-button" id = "addxslt" label = "Add" oncommand="add('xsllist','xslfile','xsl');" />
-            <button label="Remove" oncommand="remove('addxslt')"/>
-            <button label="Move up" oncommand="moveup('addxslt')"/>
-            <button label="Move down" oncommand="movedown('addxslt')"/>
+            <msibutton id = "browsexslt" label = "Browse" oncommand="browse('xsl')" />
+            <msibutton class="dialog-button" id = "addxslt" label = "Add" oncommand="add('xsllist','xslfile','xsl');" />
+            <msibutton label="Remove" oncommand="remove('addxslt')"/>
+            <msibutton label="Move up" oncommand="moveup('addxslt')"/>
+            <msibutton label="Move down" oncommand="movedown('addxslt')"/>
             <separator flex="1"/>
           </vbox>
         </hbox>
@@ -101,8 +101,8 @@
             </listbox>
           </vbox>
           <vbox>
-            <button id = "browsestyle" label = "Browse" oncommand="browse('style')" />
-            <button class="dialog-button" id = "replacelatexstyle" label = "Replace" oncommand="" />
+            <msibutton id = "browsestyle" label = "Browse" oncommand="browse('style')" />
+            <msibutton class="dialog-button" id = "replacelatexstyle" label = "Replace" oncommand="" />
             <separator flex="1"/>
           </vbox>
         </hbox>

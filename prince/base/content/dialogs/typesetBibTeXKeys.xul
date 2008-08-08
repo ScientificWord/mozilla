@@ -63,8 +63,8 @@
 				</hbox>
 			</vbox>
 			<vbox>
-			  <button id='keyFiltersButton' label='&keyFiltersButton.label;' accesskey='&keyFiltersButton.accessKey;' oncommand='doViewKeyFilters();'/>
-			  <button id='viewEntryButton' label='&viewEntryButton.label;' accesskey='&viewEntryButton.accessKey;' oncommand='doViewEntry();'/>
+			  <msibutton id='keyFiltersButton' label='&keyFiltersButton.label;' accesskey='&keyFiltersButton.accessKey;' oncommand='doViewKeyFilters();'/>
+			  <msibutton id='viewEntryButton' label='&viewEntryButton.label;' accesskey='&viewEntryButton.accessKey;' oncommand='doViewEntry();'/>
 			</vbox>
 		</hbox>
 		<spacer flex='1'/>

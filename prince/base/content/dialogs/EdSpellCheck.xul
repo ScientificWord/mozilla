@@ -72,7 +72,7 @@
       <row align="center">
         <label id="MisspelledWordLabel" value="&misspelledWord.label;"/>
         <label class="bold" id="MisspelledWord"/>
-        <button class="spell-check" label="&recheckButton.label;" oncommand="Recheck();"
+        <msibutton class="spell-check" label="&recheckButton.label;" oncommand="Recheck();"
                 accesskey="&recheckButton.accessKey;"/>
       </row>
       <row align="center">
@@ -80,7 +80,7 @@
                control="ReplaceWordInput"
                accesskey="&wordEditField.accessKey;"/>
         <textbox id="ReplaceWordInput" oninput="ChangeReplaceWord()" flex="1"/>
-        <button id="CheckWord" oncommand="CheckWord()" label="&checkwordButton.label;"
+        <msibutton id="CheckWord" oncommand="CheckWord()" label="&checkwordButton.label;"
                 accesskey="&checkwordButton.accessKey;"/>
       </row>
     </rows>
@@ -100,16 +100,16 @@
             <columns><column class="spell-check" flex="1"/><column class="spell-check" flex="1"/></columns>
             <rows>
               <row>
-                <button id="Replace" label="&replaceButton.label;"
+                <msibutton id="Replace" label="&replaceButton.label;"
                         oncommand="Replace(gDialog.ReplaceWordInput.value);"
                         accesskey="&replaceButton.accessKey;"/>
-                <button id="Ignore"  oncommand="Ignore();" label="&ignoreButton.label;"
+                <msibutton id="Ignore"  oncommand="Ignore();" label="&ignoreButton.label;"
                         accesskey="&ignoreButton.accessKey;"/>
               </row>
               <row>
-                <button id="ReplaceAll" oncommand="ReplaceAll();" label="&replaceAllButton.label;"
+                <msibutton id="ReplaceAll" oncommand="ReplaceAll();" label="&replaceAllButton.label;"
                         accesskey="&replaceAllButton.accessKey;"/>
-                <button id="IgnoreAll"  oncommand="IgnoreAll();" label="&ignoreAllButton.label;"
+                <msibutton id="IgnoreAll"  oncommand="IgnoreAll();" label="&ignoreAllButton.label;"
                         accesskey="&ignoreAllButton.accessKey;"/>
               </row>
             </rows> 
@@ -117,9 +117,9 @@
           <spacer flex="1"/>
           <label value="&userDictionary.label;"/>
           <hbox flex="1" align="start">
-            <button class="spell-check" id="AddToDictionary" oncommand="AddToDictionary()" label="&addToUserDictionaryButton.label;"
+            <msibutton class="spell-check" id="AddToDictionary" oncommand="AddToDictionary()" label="&addToUserDictionaryButton.label;"
                     accesskey="&addToUserDictionaryButton.accessKey;"/>
-            <button class="spell-check" id="EditDictionary"  oncommand="EditDictionary()" label="&editUserDictionaryButton.label;"
+            <msibutton class="spell-check" id="EditDictionary"  oncommand="EditDictionary()" label="&editUserDictionaryButton.label;"
                     accesskey="&editUserDictionaryButton.accessKey;"/>
           </hbox>
         </vbox>
@@ -136,12 +136,12 @@
           </menupopup>
         </menulist>
         <hbox flex="1">
-          <button class="spell-check" dlgtype="cancel" id="Stop" label="&stopButton.label;" oncommand="CancelSpellCheck();"
+          <msibutton class="spell-check" dlgtype="cancel" id="Stop" label="&stopButton.label;" oncommand="CancelSpellCheck();"
                   accesskey="&stopButton.accessKey;"/>
           <spacer flex="1"/>
-          <button class="spell-check" id="Close" label="&closeButton.label;" oncommand="onClose();"
+          <msibutton class="spell-check" id="Close" label="&closeButton.label;" oncommand="onClose();"
                   accesskey="&closeButton.accessKey;"/>
-          <button class="spell-check" id="Send" label="&sendButton.label;" oncommand="onClose();"
+          <msibutton class="spell-check" id="Send" label="&sendButton.label;" oncommand="onClose();"
                   accesskey="&sendButton.accessKey;" hidden="true"/>
         </hbox>
       </row>

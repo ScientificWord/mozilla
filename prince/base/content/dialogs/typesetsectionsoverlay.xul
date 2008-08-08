@@ -214,13 +214,13 @@
     <spacer/>
     <hbox align="center">
       <vbox flex="1"/>
-      <button observes="toporbottommargin" label="Add rule" oncommand='addrule();'/>
+      <msibutton observes="toporbottommargin" label="Add rule" oncommand='addrule();'/>
       <spacer/>
-      <button observes="toporbottommargin" label="Add vertical space" oncommand="addspace();" />
+      <msibutton observes="toporbottommargin" label="Add vertical space" oncommand="addspace();" />
       <spacer/>
-      <button observes="toporbottommargin" label="Remove top rule or space" oncommand="removeruleorspace();"/>
+      <msibutton observes="toporbottommargin" label="Remove top rule or space" oncommand="removeruleorspace();"/>
       <spacer/>
-      <button observes="notmargin" label="Insert text" oncommand= 'textEditor();' />
+      <msibutton observes="notmargin" label="Insert text" oncommand= 'textEditor();' />
       <vbox flex="1"/>
     </hbox>
   </tabpanel>

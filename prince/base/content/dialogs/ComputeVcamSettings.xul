@@ -65,11 +65,11 @@
   <groupbox>
     <vbox>
 	  <hbox id="animationControl" collapsed="true">
-	    <button id="animateReset" label="|&lt;" />
-	    <button id="animateStart" label="&gt;" />
-	    <button id="animateStop"  label="||" />
+	    <msibutton id="animateReset" label="|&lt;" />
+	    <msibutton id="animateStart" label="&gt;" />
+	    <msibutton id="animateStop"  label="||" />
    <!--      <xul:slider flex="1">	<xul:thumb/> </xul:slider>  -->
-        <button id="animateEnd"   label="&gt;|"/>
+        <msibutton id="animateEnd"   label="&gt;|"/>
 		<groupbox>
            <menulist id="animateSpeed">
               <menupopup command="cmd_animateSpeed"> 
@@ -127,10 +127,10 @@
             </menulist>
 		  </hbox>
    		</groupbox>
-           <button id="cameraGet"   label="Get" />
-           <button id="cameraSet"   label="Set" />
-           <button id="cameraReset" label="Reset View" />
-           <button id="cameraFit"   label="Fit Contents" /> 
+           <msibutton id="cameraGet"   label="Get" />
+           <msibutton id="cameraSet"   label="Set" />
+           <msibutton id="cameraReset" label="Reset View" />
+           <msibutton id="cameraFit"   label="Fit Contents" /> 
 
      </hbox>
 		 <hbox>
@@ -158,9 +158,9 @@
                <textbox id="cameraPosZ" cols="6"/>
 			 </hbox>
              <hbox>
-               <button id="cameraRotateLeft"  label="Left" />
-               <button id="cameraRotateStop"  label="X" />
-               <button id="cameraRotateRight" label="Right" />
+               <msibutton id="cameraRotateLeft"  label="Left" />
+               <msibutton id="cameraRotateStop"  label="X" />
+               <msibutton id="cameraRotateRight" label="Right" />
            </hbox>
            </row>
 		   <row>
@@ -173,9 +173,9 @@
                <textbox id="focZ" cols="6"/>
 		   	 </hbox>
 	  	  	 <hbox>
-                <button id="cameraRotateUp"    label="Up" />
-                <button id="cameraRotate2Stop" label="X" />
-                <button id="cameraRotateDown"  label="Down" />
+                <msibutton id="cameraRotateUp"    label="Up" />
+                <msibutton id="cameraRotate2Stop" label="X" />
+                <msibutton id="cameraRotateDown"  label="Down" />
 			 </hbox>
 		   </row>
 		   <row>
@@ -188,9 +188,9 @@
                <textbox id="upZ" cols="3"/>
 			 </hbox>
   	         <hbox>
-               <button id="cameraZoomIn"   label="In" />
-               <button id="cameraZoomStop" label="X" />
-               <button id="cameraZoomOut"  label="Out" />
+               <msibutton id="cameraZoomIn"   label="In" />
+               <msibutton id="cameraZoomStop" label="X" />
+               <msibutton id="cameraZoomOut"  label="Out" />
 			 </hbox>
 		   </row>
 		   <row>
@@ -199,7 +199,7 @@
 		   <row>
 		     <hbox>  
 			   <textbox id="cameraAngle" cols="3"/>
-               <button id="URLLoad" label="Load URL:" />
+               <msibutton id="URLLoad" label="Load URL:" />
                <textbox id="url" cols="40"/> 
 			 </hbox>	
    		   </row>

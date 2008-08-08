@@ -119,7 +119,7 @@
           <hbox>
 		        <checkbox id="defaultPrintOptionsCheckbox" label="&defaultPrintOptions.label;" accesskey="&defaultPrintOptions.accessKey;" oncommand="checkEnablePrintControls();"/> 
             <spacer flex="2"/>
-					  <button id="makePrintOptionsDefault" label="&makePrintOptionsDefault.label;" accesskey="&makePrintOptionsDefault.accessKey;" oncommand="makePrintOptionsDefault();"/>
+					  <msibutton id="makePrintOptionsDefault" label="&makePrintOptionsDefault.label;" accesskey="&makePrintOptionsDefault.accessKey;" oncommand="makePrintOptionsDefault();"/>
           </hbox>
           <groupbox>
             <caption>
@@ -161,9 +161,9 @@
           <label value="&metadataValue.label;"/>
           <textbox id="metadataValueBox" accesskey="&metadataValueBox.accessKey;" oninput="checkEnableMetadataControls();" size="80"/>
           <hbox>
-					  <button id="setMetadataSelectionButton" label="&setMetadataSelectionButton.label;" accesskey="&setMetadataSelectionButton.accessKey;" oncommand="setMetadataSelection();"/>
-					  <button id="unsetMetadataSelectionButton" label="&unsetMetadataSelectionButton.label;" accesskey="&unsetMetadataSelectionButton.accessKey;" oncommand="unsetMetadataSelection();"/>
-            <button id="linksFileBrowseButton" label="&linksFileBrowseButton.label;" accesskey="&linksFileBrowseButton.accessKey;" oncommand="doBrowseFileLinks();"/>
+					  <msibutton id="setMetadataSelectionButton" label="&setMetadataSelectionButton.label;" accesskey="&setMetadataSelectionButton.accessKey;" oncommand="setMetadataSelection();"/>
+					  <msibutton id="unsetMetadataSelectionButton" label="&unsetMetadataSelectionButton.label;" accesskey="&unsetMetadataSelectionButton.accessKey;" oncommand="unsetMetadataSelection();"/>
+            <msibutton id="linksFileBrowseButton" label="&linksFileBrowseButton.label;" accesskey="&linksFileBrowseButton.accessKey;" oncommand="doBrowseFileLinks();"/>
           </hbox>
         </vbox>
       </tabpanel>

@@ -52,7 +52,7 @@
 					<hbox>
 						<textbox id="optionsDescriptionBox" size='60' readonly='true'/>
 						<spacer flex="1"/>
-						<button id="modifyButton" label="&modifyClassOptionsButton.label;" accesskey="&modifyClassOptionsButton.accessKey;" oncommand="doModifyDialog();"/>
+						<msibutton id="modifyButton" label="&modifyClassOptionsButton.label;" accesskey="&modifyClassOptionsButton.accessKey;" oncommand="doModifyDialog();"/>
 					</hbox>
 				</vbox>
 			</tabpanel>
@@ -63,18 +63,18 @@
 					<listbox id="packagesInUseListbox" onselect="selectPackage(this.selectedItem.label);"/>
 					<spacer flex="1"/>
 					<vbox>
-						<button id="moveUpButton" label="&moveUpButton.label;" accesskey="&moveUpButton.accessKey;" oncommand="movePackage(true);"/>
-						<button id="moveDownButton" label="&moveDownButton.label;" accesskey="&moveDownButton.accessKey;" oncommand="movePackage(false);"/>
-						<button id="addPackageButton" label="&addPackageButton.label;" accesskey="&addPackageButton.accessKey;" oncommand="addPackage();"/>
-						<button id="removePackageButton" label="&removePackageButton.label;" accesskey="&removePackageButton.accessKey;" oncommand="removeCurrentlySelectedPackage();"/>
-						<button id="goNativeButton" label="&goNativeButton.label;" accesskey="&goNativeButton.accessKey;" oncommand="goNative();"/>
+						<msibutton id="moveUpButton" label="&moveUpButton.label;" accesskey="&moveUpButton.accessKey;" oncommand="movePackage(true);"/>
+						<msibutton id="moveDownButton" label="&moveDownButton.label;" accesskey="&moveDownButton.accessKey;" oncommand="movePackage(false);"/>
+						<msibutton id="addPackageButton" label="&addPackageButton.label;" accesskey="&addPackageButton.accessKey;" oncommand="addPackage();"/>
+						<msibutton id="removePackageButton" label="&removePackageButton.label;" accesskey="&removePackageButton.accessKey;" oncommand="removeCurrentlySelectedPackage();"/>
+						<msibutton id="goNativeButton" label="&goNativeButton.label;" accesskey="&goNativeButton.accessKey;" oncommand="goNative();"/>
 					</vbox>
 				</groupbox>
 				<spacer flex="1"/>
 				<groupbox orient='horizontal'>
 					<caption id='currentPackageDescriptionCaption' label='&currentPackageDescription.label;' replaceTemplate='&currentPackageDescription.templateStr;'/>
 				  <textbox id='currentPackageDescription' size='60' readonly='true'/>
-					<button id="modifyPackageButton" label="&modifyPackageButton.label;" accesskey="&modifyPackageButton.accessKey;" oncommand="modifyCurrentlySelectedPackage();"/>
+					<msibutton id="modifyPackageButton" label="&modifyPackageButton.label;" accesskey="&modifyPackageButton.accessKey;" oncommand="modifyCurrentlySelectedPackage();"/>
 				</groupbox>
 				</vbox>
 			</tabpanel>
