@@ -1300,15 +1300,22 @@ bool OutputByteFile::Open(const Filename& fullpath)
    const char* path = SearchForOutput(filepath.c_str());
    if (path == 0){
       LOG("\nFailed to locate " << filepath.c_str());
-      filepath = getenv("MSIOUTPUT");
-      filepath += "\\";
-      filepath += CatFilename(area, name, ext, false);
-      path = filepath.c_str();
+      const char* envpath = getenv("MSIOUTPUT");
+      if (envpath != 0){
+        filepath = envpath;
+        filepath += "\\";
+        filepath += CatFilename(area, name, ext, false);
+        path = filepath.c_str();
+      }
 
       // BBM: we want to create the file if it doesn't exist
       // return false;
    }
 
+   if (path == 0){
+      LOG("Failed to get path");
+      return false;
+   }
    m_byteFileData -> m_file.open(path, std::ios::out | std::ios::binary );
    if ( ! m_byteFileData -> m_file.is_open() ){
       LOG("\nFailed to open " << path);
