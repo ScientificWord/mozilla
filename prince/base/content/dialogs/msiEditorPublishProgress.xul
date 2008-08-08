@@ -100,7 +100,7 @@
       <spacer class="bigspacer"/>
       <image class="progressitem" progress="failed"/>
       <label value="&failed.label;"/>
-      <button label="&troubleshooting.label;" accesskey="&troubleshooting.accessKey;" oncommand="doTroubleshooting();"/>
+      <msibutton label="&troubleshooting.label;" accesskey="&troubleshooting.accessKey;" oncommand="doTroubleshooting();"/>
     </hbox>
   </groupbox>
   <checkbox id="KeepOpen" label="&keepOpen;" oncommand="CheckKeepOpen();" persist="checked"/>

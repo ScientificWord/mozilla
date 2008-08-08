@@ -135,8 +135,8 @@
       <!-- /groupbox -->
     </vbox>
     <vbox>
-      <button id="addButton" label="&addButton.label;" accesskey="&addButton.accessKey;" oncommand="addCurrentName();" />
-      <button id="deleteButton" label="&deleteButton.label;" accesskey="&deleteButton.accessKey;" oncommand="deleteCurrentName();" />
+      <msibutton id="addButton" label="&addButton.label;" accesskey="&addButton.accessKey;" oncommand="addCurrentName();" />
+      <msibutton id="deleteButton" label="&deleteButton.label;" accesskey="&deleteButton.accessKey;" oncommand="deleteCurrentName();" />
     </vbox>
   </hbox>  
 </dialog>

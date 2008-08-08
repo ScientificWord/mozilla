@@ -3,6 +3,9 @@ msibutton {
   padding: 0;
   border: 0;
 }
+msibutton label {
+  padding: 0 4px;
+}
 
 msibutton [class="msibutton-right"]{
   list-style-image: url(chrome://prince/skin/icons/slice-right.png);
@@ -29,11 +32,11 @@ toolbar[iconsize="small"] msibutton:hover 	[class="msibutton-right"]{
 }
 
 msibutton[checked] [class="msibutton-right"]{
-  list-style-image: url(chrome://prince/skin/icons/slice-right-active.png);
+  list-style-image: url(chrome://prince/skin/icons/slice-right.png);
 }
 
 toolbar[iconsize="small"] msibutton[checked]	[class="msibutton-right"]{
-  list-style-image: url(chrome://prince/skin/icons/slice-right-active-sm.png);
+  list-style-image: url(chrome://prince/skin/icons/slice-right-sm.png);
 }
 
 /*--------------*/
@@ -63,11 +66,11 @@ toolbar[iconsize="small"] msibutton:hover 	[class="msibutton-left"]{
 }
 
 msibutton[checked] [class="msibutton-left"]{
-  list-style-image: url(chrome://prince/skin/icons/slice-left-active.png);
+  list-style-image: url(chrome://prince/skin/icons/slice-left.png);
 }
 
 toolbar[iconsize="small"] msibutton[checked]	[class="msibutton-left"]{
-  list-style-image: url(chrome://prince/skin/icons/slice-left-active-sm.png);
+  list-style-image: url(chrome://prince/skin/icons/slice-left-sm.png);
 }
 
 /*-----------------------------------------*/
@@ -96,11 +99,11 @@ toolbar[iconsize="small"] msibutton:hover 	[class="msibutton-mid"]{
 }
 
 msibutton[checked] [class="msibutton-mid"]{
-  background-image: url(chrome://prince/skin/icons/slice-middle-active.png);
+  background-image: url(chrome://prince/skin/icons/slice-middle.png);
 }
 
 toolbar[iconsize="small"] msibutton[checked]	[class="msibutton-mid"]{
-  background-image: url(chrome://prince/skin/icons/slice-middle-active-sm.png);
+  background-image: url(chrome://prince/skin/icons/slice-middle-sm.png);
 }
 
 *[class="msibutton-mid"] {
@@ -134,12 +137,14 @@ toolbar[iconsize="small"] msibutton:hover 	[class="msibutton-strut"]{
 }
 
 msibutton[checked] [class="msibutton-strut"]{
-  list-style-image: url(chrome://prince/skin/icons/slice-middle-active.png);
+  list-style-image: url(chrome://prince/skin/icons/slice-middle.png);
 }
 
 toolbar[iconsize="small"] msibutton[checked]	[class="msibutton-strut"]{
-  list-style-image: url(chrome://prince/skin/icons/slice-middle-active-sm.png);
+  list-style-image: url(chrome://prince/skin/icons/slice-middle-sm.png);
 }
 
-
+msibutton[checked] {
+  color: red;
+}
 

@@ -133,10 +133,10 @@
       </groupbox>
     </vbox>
     <vbox>
-      <button id="addOrModifyButton" label="&addButton.label;" accesskey="&addButton.accessKey;" oncommand="saveCurrentSub();" />
+      <msibutton id="addOrModifyButton" label="&addButton.label;" accesskey="&addButton.accessKey;" oncommand="saveCurrentSub();" />
       <label id="addButtonLabel" value="&addButton.label;" accesskey="&addButton.accessKey;" hidden="true"/>
       <label id="modifyButtonLabel" value="&modifyButton.label;" accesskey="&modifyButton.accessKey;" hidden="true"/>
-      <button id="removeButton" label="&removeButton.label;" accesskey="&removeButton.accessKey;" oncommand="removeCurrentSub();" />
+      <msibutton id="removeButton" label="&removeButton.label;" accesskey="&removeButton.accessKey;" oncommand="removeCurrentSub();" />
     </vbox>
   </hbox>  
 </dialog>

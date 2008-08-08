@@ -24,14 +24,18 @@
     
   <toolbar>
 
-    <button label="Refresh" oncommand="buildTOC();"/>
-    <msibutton id="TOC" label="TOC" type="checkbox" tooltip="Show table of contents" checked="true" persist="checked"/>
-    <msibutton id="LOF" label="LOF" type="checkbox" tooltip="Show list of figures" checked="false" persist="checked"/>
-    <msibutton id="LOT" label="LOT" type="checkbox" tooltip="Show list of tables" checked="false" persist="checked"/>
-    <scale id="toc-level-scale" min="0" max="7" 
+    <msibutton label="Refresh" accesskey="r" command="cmd_build_toc"/>
+    <msibutton id="TOC" label="TOC" type="checkbox" tooltip="Show table of contents" checked="true"
+       command="cmd_build_toc" persist="checked"/>
+    <msibutton id="LOF" label="LOF" type="checkbox" tooltip="Show list of figures" checked="false" 
+       command="cmd_build_toc" persist="checked"/>
+    <msibutton id="LOT" label="LOT" type="checkbox" tooltip="Show list of tables" checked="false"
+       command="cmd_build_toc" persist="checked"/>
+    <scale id="toc-level-scale" min="0" max="7" width="50px"
       increment="1" pageIncrement="1" onchange="setTOCLevel(this.value);"
       value="0" 
       persist="value"/>
     <spacer flex="1"/>
   </toolbar>
+  <command id="cmd_build_toc" oncommand="buildTOC();"/>
 </page>
