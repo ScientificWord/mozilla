@@ -1348,7 +1348,7 @@ function msiGetRealBodyElement(theDocument)
   if (!theDocument.rootElement)
   {
     theNodes = theDocument.getElementsByTagName(targetTag);
-    dump("In msiGetRealBodyElement; no document.rootElement, and search for 'body' nodes returned [" + theNodes.length + "] nodes.\n");
+//    dump("In msiGetRealBodyElement; no document.rootElement, and search for 'body' nodes returned [" + theNodes.length + "] nodes.\n");
 //    for (var iii = 0; iii < theNodes.length; ++iii)
 //    {
 //      var dumpStr = "  Body node [" + iii + "] contained [" + theNodes[iii].childNodes.length + "] children";
@@ -5648,7 +5648,7 @@ var msiNavigationUtils =
       {
         var childNodes = this.getSignificantContents(aNode);
         if (childNodes.length != 1)
-          dump("In msiNavigationUtils.getLeafNodeText, found too many children for node of type " + msigetBaseNodeName(aNode) + ".\n");
+          dump("In msiNavigationUtils.getLeafNodeText, found too many children for node of type " + msiGetBaseNodeName(aNode) + ".\n");
         return this.getLeafNodeText(childNodes[0]);
       }
       break;
