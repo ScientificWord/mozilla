@@ -108,8 +108,8 @@
 		    <listbox id='databaseFileListbox' rows='8' onselect='selectDatabaseFile(this.selectedItem);'/>
 			</vbox>
 			<vbox>
-			  <button id='viewKeysButton' label='&viewKeysButton.label;' accesskey='&viewKeysButton.accessKey;' oncommand='doViewKeys();'/>
-			  <button id='selectBibTeXDirectory' label='&selectDirectoryButton.label;' accesskey='&selectDirectoryButton.accessKey;' oncommand='doSelectBibTeXDirectory();'/>
+			  <msibutton id='viewKeysButton' label='&viewKeysButton.label;' accesskey='&viewKeysButton.accessKey;' oncommand='doViewKeys();'/>
+			  <msibutton id='selectBibTeXDirectory' label='&selectDirectoryButton.label;' accesskey='&selectDirectoryButton.accessKey;' oncommand='doSelectBibTeXDirectory();'/>
 			</vbox>
 		</hbox>
 		<spacer flex='1'/>

@@ -54,7 +54,7 @@
         <hbox>
           <radio label="Reserve for operating system use" selected="false" persist="selected" value="reservedforOS" />
         </hbox>
-        <button id="assignkey" label="" disabled="true" oncommand="assignKey();"/>
+        <msibutton id="assignkey" label="" disabled="true" oncommand="assignKey();"/>
       </vbox>
     </hbox>
   </groupbox>
@@ -69,7 +69,7 @@
       <label id="tagorscript" value=""/>
       <textbox id="nameoftagorscript" multiline="true" readonly="true" value="" flex="1"/>
       <spacer flex=".2"/>
-      <button id="deleteassignment" label = "" disabled="true" oncommand="deleteAssignment();"/>
+      <msibutton id="deleteassignment" label = "" disabled="true" oncommand="deleteAssignment();"/>
       <spacer flex="1"/>
     </vbox>
   </hbox>

@@ -19,5 +19,5 @@
   <script type="application/x-javascript" src="chrome://prince/content/editor.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/chamtest.js"/>
         
-  <button id="foo" label="Hit me" oncommand="fire();" />
+  <msibutton id="foo" label="Hit me" oncommand="fire();" />
 </dialog>
