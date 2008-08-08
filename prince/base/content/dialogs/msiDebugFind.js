@@ -20,6 +20,7 @@ function initDialogObject()
   gTestFindDialog.searchBackwards = document.getElementById("dialog.searchBackwards");
   gTestFindDialog.checkXPath      = document.getElementById("checkXPath");
   gTestFindDialog.findNext        = document.getElementById("findNext");
+  
   gTestFindDialog.findContentFilter = null;
   gTestFindDialog.findContentNodes = null;
   gTestFindDialog.xPathExpression = null;
@@ -228,12 +229,16 @@ function setUpFindInst()
 //  gFindInst.searchString = getStringFromDialogEditor(gTestFindDialog.findInput);
 
   var theString = "";
-  if (gTestFindDialog.findContentNodes != null)
+  if (gTestFindDialog.textExpression != null)
+    theString = gTestFindDialog.textExpression;
+  else if (gTestFindDialog.findContentNodes != null)
   {
+    dump("In msiDebugFind.js, setUpFindInst(); shouldn't be here if gTestFindDialog.textExpression is null!!\n");
     var xmlSerializer = new XMLSerializer();
     for (var ix = 0; ix < gTestFindDialog.findContentNodes.childNodes.length; ++ix)
       theString += xmlSerializer.serializeToString(gTestFindDialog.findContentNodes.childNodes[ix]);
   }
+
   dump("In msiDebugFind.js, setUpFindInst(), setting gFindInst.searchString to [\n  " + theString + "\n].\n");
   gFindInst.searchString = theString;
 //  gFindInst.searchString = gTestFindDialog.findContentFilter.getMarkupString();  //this is what it should be - above is just here to remove one level of redundant work
@@ -306,6 +311,8 @@ function msiXPathSearchInstanceState(theEditor, theFlags)
   this.nextAxisStr = null;
   this.nextConditionStr = null;
   this.nextContextNode = null;
+  this.bFirstPassPrepared = false;
+  this.bSecondPassPrepared = false;
 
   this.backwards = function()
   {
@@ -391,18 +398,18 @@ function msiXPathSearchInstanceState(theEditor, theFlags)
     }
     if (startNode == null)
     {
-      startNode = msiNavigationUtils.getRootDocumentNode();
+      startNode = msiGetRealBodyElement(this.mEditor.document);
       axisStr = "descendant-or-self::";
     }
     if (!this.collapsed())
     {
       parentNode = this.globalRange.commonAncestorContainer;
-      additionalCondition = "[ancestor::*[local-name=\"" + msiGetBaseNodeName(parentNode) + "\"]]";
+      additionalCondition = "[ancestor::*[local-name=\"" + msiGetBaseNodeName(parentNode) + "\" and text()=\"" + parentNode.textContent + "\"]]";
     }
     this.nextAxisStr = axisStr;
     this.nextConditionStr = additionalCondition;
     this.nextContextNode = startNode;
-//    this.bFirstPassDone = true;
+    this.bFirstPassPrepared = true;
     return true;
   };
 
@@ -435,12 +442,22 @@ function msiXPathSearchInstanceState(theEditor, theFlags)
       this.nextConditionStr = conditionStr;
       this.nextContextNode = endNode;
       retVal = true;
-//      this.bSecondPassDone = true;
+      this.bSecondPassPrepared = true;
       dump("In msiDebugFind.js, in msiXPathSearchInstanceState.prepareNextXPathIteration, doing second pass; axisStr is {" + axisStr + "}.\n");
     }
     return retVal;
   };
 
+  this.isReady = function()
+  {
+    if (!this.bFirstPassDone)
+      return this.bFirstPassPrepared;
+    else if (!this.bSecondPassDone)
+      return this.bSecondPassPrepared;
+    else
+      return false;
+  };
+  
   this.doEvaluateXPath = function(xPathExpression)
   {
     this.xPathFoundNodes = evaluateXPath(this.nextContextNode, xPathExpression);
@@ -504,23 +521,37 @@ function setUpSearchState()
 function getNextXPathResultNode()
 {
   if (gTestFindDialog.mSearchState == null)
-    onCheckXPath();
+    ensureSearchExpressionReady();
 
   dump("In msiDebugFind.js, getNextXPathResultNode, value of XPath textbox is {" + gTestFindDialog.XPathInput.value + "}.\n");
 
   var resultNode = gTestFindDialog.mSearchState.retrieveNextXPathResultNode();
   if (resultNode == null)
   {
-    if (!gTestFindDialog.mSearchState.prepareNextXPathIteration())
-      dump("Error in msiDebugFind.js, getNextXPathResultNode; prepareNextXPathIteration() is failing.\n");
-    else
+    if (!gTestFindDialog.mSearchState.isReady())
     {
-      onCheckXPath();
-      gTestFindDialog.mSearchState.doEvaluateXPath(gTestFindDialog.xPathExpression);
+      if (!gTestFindDialog.mSearchState.prepareNextXPathIteration())
+        dump("Error in msiDebugFind.js, getNextXPathResultNode; prepareNextXPathIteration() is failing.\n");
+      else
+      {
+        ensureSearchExpressionReady();
+        //onCheckXPath();
+//        gTestFindDialog.mSearchState.doEvaluateXPath(gTestFindDialog.xPathExpression);
+      }
+    }
+    if (gTestFindDialog.mSearchState.isReady())
+    {
+      gTestFindDialog.mSearchState.doEvaluateXPath(getXPathSearchExpression());
       resultNode = gTestFindDialog.mSearchState.retrieveNextXPathResultNode();
+      dump( "In msiDebugFind.js, getNextXPathResultNode; doing XPath evaluation on search string {\n  " + getXPathSearchExpression() + "\n}; number of result nodes is [" + gTestFindDialog.mSearchState.xPathFoundNodes.snapshotLength + "].\n" );
     }
   }
   return resultNode;
+}
+
+function getXPathSearchExpression()
+{
+  return gTestFindDialog.XPathInput.value;
 }
 
 function onFindNext()
@@ -531,7 +562,8 @@ function onFindNext()
   var newRange;
   var result = null;
   if (gTestFindDialog.bSearchExpressionChanged)
-    onCheckXPath();
+    ensureSearchExpressionReady();
+//    onCheckXPath();
 
   if (gTestFindDialog.xPathExpression != null)
   {
@@ -625,25 +657,34 @@ function flagsHaveChanged()
 
 function onCheckXPath()
 {
+  gTestFindDialog.bSearchExpressionChanged = true;
+  ensureSearchExpressionReady();
+}
+
+function ensureSearchExpressionReady()
+{
   if (!gEditor)
     return false;
   
+  var bNeedNewSearchString = false;
   if (gTestFindDialog.mSearchManager == null)
   {
     if (!gTestFindDialog.bSearchExpressionChanged)
-      dump("In msiDebugFind.js, onCheckXPath(), mSearchManager is uninitialized but bSearchExpressionChanged shows false!\n");
+      dump("In msiDebugFind.js, ensureSearchExpressionReady(), mSearchManager is uninitialized but bSearchExpressionChanged shows false!\n");
     gTestFindDialog.bSearchExpressionChanged = true;
   }
 
   gTestFindDialog.bSearchExpressionChanged = gTestFindDialog.bSearchExpressionChanged || flagsHaveChanged();
     
+
   if (gTestFindDialog.bSearchExpressionChanged)
   {
 
 //    var specStr = msiGetEditor(gTestFindDialog.findInput).outputToString("text/plain", 1024); // OutputLFLineBreak
     gTestFindDialog.findContentNodes = retrieveSearchExpression();
     var searchFlags = "";
-    var searchRange = null;
+//    var searchRange = null;
+    bNeedNewSearchString = true;
 
     setUpSearchState();
     //The data depending on "current state" of the search rather than the search string will be kept in gTestFindDialog.mSearchState.
@@ -659,38 +700,41 @@ function onCheckXPath()
 
     if (!gTestFindDialog.caseSensitive.checked)
       searchFlags += "i";
-    gTestFindDialog.mSearchManager = new msiSearchManager(gTestFindDialog.mTargetEditorElement, gTestFindDialog.findContentNodes, searchFlags, searchRange);
+    gTestFindDialog.mSearchManager = new msiSearchManager(gTestFindDialog.mTargetEditorElement, gTestFindDialog.findContentNodes, searchFlags);
   }
   else if (gTestFindDialog.mSearchState == null)
   {
-    dump("In msiDebugFind.js, in onCheckXPath(); gTestFindDialog.mSearchState is null but bSearchExpressionChanged is false!");
+    dump("In msiDebugFind.js, in ensureSearchExpressionReady(); gTestFindDialog.mSearchState is null but bSearchExpressionChanged is false!");
     setUpSearchState();
+    bNeedNewSearchString = true;
+  }
+  else if (gTestFindDialog.mSearchState.retrieveNextXPathResultNode() == null)  //the other case in which we get called
+  {
+    bNeedNewSearchString = true;
   }
 
-  dump("In msiDebugFind.js, in onCheckXPath(), calling mSearchManager.setUpSearch with axis string {" + gTestFindDialog.mSearchState.getAxisString() + "}.\n");
-  gTestFindDialog.mSearchManager.setUpSearch(gTestFindDialog.mSearchState.getAxisString(), gTestFindDialog.mSearchState.getConditionString());
+  if (bNeedNewSearchString)
+  {
+    dump("In msiDebugFind.js, in ensureSearchExpressionReady(), calling mSearchManager.setUpSearch with axis string {" + gTestFindDialog.mSearchState.getAxisString() + "}.\n");
+    gTestFindDialog.mSearchManager.setUpSearch(gTestFindDialog.mSearchState.getAxisString(), gTestFindDialog.mSearchState.getConditionString());
 
-  var theString = gTestFindDialog.mSearchManager.getXPathSearchString();
-  if ( (theString == null) || (theString.length == 0) )
-  {
-    gTestFindDialog.xPathExpression = null;
-    gTestFindDialog.textExpression = theString = gTestFindDialog.mSearchManager.getTextSearchString();
+    var theString = gTestFindDialog.mSearchManager.getXPathSearchString();
+    if ( (theString == null) || (theString.length == 0) )
+    {
+      gTestFindDialog.xPathExpression = null;
+      gTestFindDialog.textExpression = theString = gTestFindDialog.mSearchManager.getTextSearchString();
+    }
+    else
+    {
+      gTestFindDialog.xPathExpression = theString;
+      gTestFindDialog.textExpression = null;
+    }
+    var serializedFrag = gTestFindDialog.findContentFilter.getDocumentFragmentString();
+    dump("In msiDebugFind.js, ensureSearchExpressionReady(); search string is:\n  " + theString + "\n\n; contents of search window were\n  " + serializedFrag + "\n\n");
+    gTestFindDialog.bSearchExpressionChanged = false;
+    gTestFindDialog.XPathInput.value = theString;
   }
-  else
-  {
-    gTestFindDialog.xPathExpression = theString;
-    gTestFindDialog.textExpression = null;
-  }
-  var serializedFrag = gTestFindDialog.findContentFilter.getDocumentFragmentString();
-  dump("In msiDebugFind.js, onCheckXPath(); search string is:\n  " + theString + "\n\n; contents of search window were\n  " + serializedFrag + "\n\n");
-  gTestFindDialog.bSearchExpressionChanged = false;
-  gTestFindDialog.XPathInput.value = theString;
 }
-//  var specStr = gTestFindDialog.findContentFilter.getTextString();
-
-  // Unfortunately, because of whitespace we can't just check
-  // whether (selStr == specStr), but have to loop ourselves.
-  // N chars of whitespace in specStr can match any M >= N in selStr.
 
 
 function checkFoundMatch()
@@ -962,22 +1006,28 @@ function checkFoundMatch()
 
 function doEnabling()
 {
-//  var findEditor = msiGetEditor(gTestFindDialog.findInput);
-//  var findStr = null;
-//  if (findEditor != null)
-////    findStr = findEditor.outputToString("text/plain", 1024); // OutputLFLineBreak
-//    findStr = getStringFromEditor(gTestFindDialog.findInput);
   if (gTestFindDialog.findContentFilter == null)
     gTestFindDialog.findContentFilter = new msiDialogEditorContentFilter(gTestFindDialog.findInput);
 //  var findStr = gTestFindDialog.findContentFilter.getMarkupString();  - this is what it should be
-  var findStr = gTestFindDialog.findContentFilter.getTextString();
+  dump("In msiDebugFind.doEnabling, whole content of find string window is: [\n  " + gTestFindDialog.findContentFilter.getFullContentString() + "\n].\n");
+  var findEditor = msiGetEditor(gTestFindDialog.findInput);
+  var theSel = findEditor.selection;
+  if (theSel.rangeCount > 0)
+  {
+    var theRange = theSel.getRangeAt(0);
+    dump( "The current insert position there is at offset [" + theRange.startOffset + "] in node [" + theRange.startContainer.nodeName + "], text content [" + theRange.startContainer.textContent + "].\n" );
+  }
+  var findStr = gTestFindDialog.findContentFilter.getDocumentFragmentString();
   dump("In msiDebugFind.doEnabling, findStr was [" + findStr + "].\n");
-  if (findStr.length <= 0)
-    findStr = null;
+//  var findStr = gTestFindDialog.findContentFilter.getTextString();
+//  if (findStr.length <= 0)
+//    findStr = null;
+
 //  var repStr = gTestFindDialog.replaceInput.value;  //Not used anyway - we'd probably want to check the serialized data more closely otherwise?
-  gTestFindDialog.enabled = findStr;
-  gTestFindDialog.findNext.disabled = !findStr;
-  gTestFindDialog.bSearchExpressionChanged = true;  //start out with true
+  var bNonEmpty = gTestFindDialog.findContentFilter.isNonEmpty();
+  gTestFindDialog.enabled = bNonEmpty;
+  gTestFindDialog.findNext.disabled = !bNonEmpty;
+  gTestFindDialog.bSearchExpressionChanged = true;  //start out with true, and reset to true on each change notification
 //  gTestFindDialog.replace.disabled = !findStr;
 //  gTestFindDialog.replaceAndFind.disabled = !findStr;
 //  gTestFindDialog.replaceAll.disabled = !findStr;
@@ -1041,7 +1091,3 @@ function evaluateXPath(aNode, aExpr)
 //  return found;
 }
 
-function prepareXPathExpression(aNodeSet)
-{
-
-}
