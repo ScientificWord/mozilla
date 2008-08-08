@@ -134,15 +134,15 @@
       </grid>
     </vbox>
     <vbox>
-      <button id="findNext" label="&findNextButton.label;" accesskey="&findNextButton.accesskey;" 
+      <msibutton id="findNext" label="&findNextButton.label;" accesskey="&findNextButton.accesskey;" 
           oncommand="onFindNext();" default="true"/>
-      <button id="replace" label="&replaceButton.label;" accesskey="&replaceButton.accesskey;" 
+      <msibutton id="replace" label="&replaceButton.label;" accesskey="&replaceButton.accesskey;" 
           oncommand="onReplace();"/>
-      <button id="replaceAndFind" label="&replaceAndFindButton.label;" 
+      <msibutton id="replaceAndFind" label="&replaceAndFindButton.label;" 
           accesskey="&replaceAndFindButton.accesskey;" oncommand="onReplace(); onFindNext();"/>
-      <button id="replaceAll" label="&replaceAllButton.label;" 
+      <msibutton id="replaceAll" label="&replaceAllButton.label;" 
           accesskey="&replaceAllButton.accesskey;" oncommand="onReplaceAll();"/>
-      <button dlgtype="cancel" label="&closeButton.label;"/>
+      <msibutton dlgtype="cancel" label="&closeButton.label;"/>
     </vbox>
   </hbox>
 </dialog>

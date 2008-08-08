@@ -47,7 +47,7 @@
     <groupbox orient="horizontal" id="decorationsAboveButtonGroup" oncommand="toggleSelection(this, event.target);" onfocus="radioGroupSetFocus(this,event.target);">
       <observes element="enableDecorationsAboveBelow" attribute="disabled" onbroadcast="buttonGroupEnable(this.parentNode, this.parentNode.getAttribute('disabled') != 'true');"/>
       <caption label="&decorationsAboveButtonGroup.label;" accesskey="&decorationsAboveButtonGroup.accessKey;"/>
-      <button group="decorationsAboveButtonGroup" autoCheck="false" value="&#x00AF;">
+      <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="&#x00AF;">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -63,7 +63,7 @@
           </mml:math>
         </description>
       </button>
-      <button group="decorationsAboveButtonGroup" autoCheck="false" value="&#x2190;">
+      <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="&#x2190;">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -79,7 +79,7 @@
           </mml:math>
         </description>
       </button>
-      <button group="decorationsAboveButtonGroup" autoCheck="false" value="&#x2192;">
+      <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="&#x2192;">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -95,7 +95,7 @@
           </mml:math>
         </description>
       </button>
-      <button group="decorationsAboveButtonGroup" autoCheck="false" value="&#x2194;">
+      <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="&#x2194;">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -111,7 +111,7 @@
           </mml:math>
         </description>
       </button>
-      <button group="decorationsAboveButtonGroup" autoCheck="false" value="&#xFE37;">
+      <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="&#xFE37;">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -127,7 +127,7 @@
           </mml:math>
         </description>
       </button>
-      <button group="decorationsAboveButtonGroup" autoCheck="false" value="&#x0302;">
+      <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="&#x0302;">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -143,7 +143,7 @@
           </mml:math>
         </description>
       </button>
-      <button group="decorationsAboveButtonGroup" autoCheck="false" value="&#x02DC;">
+      <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="&#x02DC;">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -159,7 +159,7 @@
           </mml:math>
         </description>
       </button>
-      <button group="decorationsAboveButtonGroup" autoCheck="false" value="label">
+      <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="label">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -189,7 +189,7 @@
     <groupbox orient="horizontal" id="decorationsBelowButtonGroup" oncommand="toggleSelection(this, event.target);" onfocus="radioGroupSetFocus(this,event.target);">
       <observes element="enableDecorationsAboveBelow" attribute="disabled" onbroadcast="buttonGroupEnable(this.parentNode, this.parentNode.getAttribute('disabled') != 'true');"/>
       <caption label="&decorationsBelowButtonGroup.label;" accesskey="&decorationsBelowButtonGroup.accessKey;"/>
-      <button group="decorationsBelowButtonGroup" autoCheck="false" value="&#x0332;">
+      <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="&#x0332;">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -205,7 +205,7 @@
           </mml:math>
         </description>
       </button>
-      <button group="decorationsBelowButtonGroup" autoCheck="false" value="&#x2190;">
+      <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="&#x2190;">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -221,7 +221,7 @@
           </mml:math>
         </description>
       </button>
-      <button group="decorationsBelowButtonGroup" autoCheck="false" value="&#x2192;">
+      <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="&#x2192;">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -237,7 +237,7 @@
           </mml:math>
         </description>
       </button>
-      <button group="decorationsBelowButtonGroup" autoCheck="false" value="&#x2194;">
+      <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="&#x2194;">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -253,7 +253,7 @@
           </mml:math>
         </description>
       </button>
-      <button group="decorationsBelowButtonGroup" autoCheck="false" value="&#xFE38;">
+      <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="&#xFE38;">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -269,7 +269,7 @@
           </mml:math>
         </description>
       </button>
-      <button group="decorationsBelowButtonGroup" autoCheck="false" value="label">
+      <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="label">
         <description>
           <mml:math display="inline">
             <mml:mrow>
@@ -299,7 +299,7 @@
     <groupbox orient="horizontal" id="decorationsAroundButtonGroup" oncommand="toggleSelection(this, event.target);" onfocus="radioGroupSetFocus(this,event.target);">
       <observes element="enableDecorationsAround" attribute="disabled" onbroadcast="buttonGroupEnable(this.parentNode, this.parentNode.getAttribute('disabled') != 'true');"/>
       <caption label="&decorationsAroundButtonGroup.label;" accesskey="&decorationsAroundButtonGroup.accessKey;"/>
-      <button group="decorationsAroundButtonGroup" autoCheck="false" value="fbox">
+      <msibutton group="decorationsAroundButtonGroup" autoCheck="false" value="fbox">
         <description class="fbox">
           <mml:math display="inline">
             <mml:mrow class="phantomBox">
@@ -310,7 +310,7 @@
           </mml:math>
         </description>
       </button>
-      <button group="decorationsAroundButtonGroup" autoCheck="false" value="frame">
+      <msibutton group="decorationsAroundButtonGroup" autoCheck="false" value="frame">
         <description class="framebox">
           <mml:math display="inline">
             <mml:mrow class="phantomBox">

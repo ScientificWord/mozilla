@@ -139,9 +139,9 @@
                 <menupopup id="plotnumber" command="cmd_changePlot"> 
                 </menupopup>
               </menulist>
-              <button label="&editplot.label;"  command="cmd_editPlot"/>
-              <button label="&newplot.label;"   command="cmd_newPlot"/>
-              <button label="&command.delete;"  command="cmd_deletePlot"/>
+              <msibutton label="&editplot.label;"  command="cmd_editPlot"/>
+              <msibutton label="&newplot.label;"   command="cmd_newPlot"/>
+              <msibutton label="&command.delete;"  command="cmd_deletePlot"/>
             </hbox>
           </groupbox>
 
@@ -333,7 +333,7 @@
         <vbox>
            <row>
              <label id="bgcolor" control="TextButton" value="Background Color: " />
-             <button id="bgcolorbutton" class="color-button" oncommand="GetGraphColor('BGColor');">
+             <msibutton id="bgcolorbutton" class="color-button" oncommand="GetGraphColor('BGColor');">
                <spacer id="plotCW" class="color-well"/>
              </button>
            </row>

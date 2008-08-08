@@ -131,11 +131,11 @@
       </grid>
     </vbox>
     <vbox>
-      <button id="findNext" label="&findNextButton.label;" accesskey="&findNextButton.accesskey;" 
+      <msibutton id="findNext" label="&findNextButton.label;" accesskey="&findNextButton.accesskey;" 
           oncommand="onFindNext();" default="true"/>
-      <button id="checkXPath" label="&checkXPathButton.label;" accesskey="&checkXPathButton.accesskey;" 
+      <msibutton id="checkXPath" label="&checkXPathButton.label;" accesskey="&checkXPathButton.accesskey;" 
           oncommand="onCheckXPath();"/>
-      <button dlgtype="cancel" label="&closeButton.label;"/>
+      <msibutton dlgtype="cancel" label="&closeButton.label;"/>
     </vbox>
   </hbox>
 </dialog>

@@ -43,7 +43,7 @@
        </menupopup>
      </menulist>
      <separator/>
-     <button label="&Options.label;"/>
+     <msibutton label="&Options.label;"/>
 		 <label value="&HideNote.label;"/>
 		 <checkbox id="hidenote" />
     </vbox>
