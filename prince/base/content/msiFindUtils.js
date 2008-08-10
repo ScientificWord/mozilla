@@ -1,7 +1,7 @@
 var msiSearchUtils = 
 {
 //the following list needs fleshing out a lot!!
-  isNonDefaultAttr : function(attrName, attrValue, parentNode)
+  shouldSearchForAttribute : function(attrName, attrValue, parentNode)
   {
     var returnVal = true;
     switch(attrName)
@@ -15,7 +15,16 @@ var msiSearchUtils =
         if (attrValue == "auto")
           returnVal = false;
       break;
+      case "xmlns":
+        returnVal = false;
+      break;
+      case "type":
+        if (attrValue == "_moz")
+          returnVal = false;
+      break;
       default:
+        if (attrName.indexOf("xmlns:") == 0)
+          return false;
       break;
     }
     return returnVal;
@@ -323,9 +332,11 @@ var XPathStringFormatterBase =
         retData.push(sixthData);
       break;
 
+      case "math":  //If we're not outer-level, don't want to suppress the "local-name()='math'" selector. (If we are outer-level, it's handled below.)
+      break;
+
       case "mrow":
       case "mstyle":
-      case "math":
         retData[0].theName = "*";
 //        var secondData = new Object();
 //        secondData.theName = "mrow";
@@ -379,7 +390,7 @@ function XPathFormatter(targetNode, flags)
       for (var ix = 0; ix < attrs.length; ++ix)
       {
         var theAttr = attrs.item(ix);
-        if (msiSearchUtils.isNonDefaultAttr(theAttr.name, theAttr.value, this.mNode))
+        if (msiSearchUtils.shouldSearchForAttribute(theAttr.name, theAttr.value, this.mNode))
           attrStr += "[@" + theAttr.name + "=" + theAttr.value + "]";
       }
     }
@@ -713,9 +724,14 @@ function msiSearchManager(targEditorElement, searchDocFragment, searchFlags)
   //  But a priori the search pattern may just be a sequence of nodes - what common ancestor can we count on? I think the target node
   //  search must keep track as it descends of the top guy.
 
-  this.compareTargetData = function(newCandidateData, oldCandidateData)
+  this.compareTargetData = function(newCandidateData, oldCandidateData, bCompareTopNodes)
   {
-    var returnData = oldCandidateData;
+    var returnData = {
+      theNode : oldCandidateData.theNode,
+      theType : oldCandidateData.theType,
+      topNode : oldCandidateData.topNode,
+      topType : oldCandidateData.topType
+    };
     var bUseNewData = false;
     switch(oldCandidateData.theType)
     {
@@ -760,9 +776,15 @@ function msiSearchManager(targEditorElement, searchDocFragment, searchFlags)
       returnData.theType = newCandidateData.theType;
     }
 
-    if ((oldCandidateData.topType == "anonContainer") && (newCandidateData.topNode != null) && (newCandidateData.topNode != oldCandidateData.topNode))
+    if (!bCompareTopNodes)
+    {
+      returnData.topNode = newCandidateData.topNode;
+      returnData.topType = newCandidateData.topType;
+    }
+    else if ((oldCandidateData.topType == "anonContainer") && (newCandidateData.topNode != null) && (newCandidateData.topNode != oldCandidateData.topNode))
     {
       var relativePos = newCandidateData.topNode.compareDocumentPosition(oldCandidateData.topNode);
+      dump("In msiFindUtils.js, in msiSearchManager.compareTargetData for new candidate node [" + newCandidateData.theNode.nodeName + "], old candidate node [" + newCandidateData.theNode.nodeName +"]; compareDocumentPosition returned [" + relativePos + "].\n");
       if ( (relativePos & nsIDOMNode.DOCUENT_POSITION_CONTAINS) != 0 )
       {
         returnData.topNode = newCandidateData.topNode;
@@ -790,14 +812,15 @@ function msiSearchManager(targEditorElement, searchDocFragment, searchFlags)
     // a <math> tag in order to match - it need only find matching contents which are inside a <math> tag (so that the pattern
     // may be found within the contents of a <math> tag without the beginning of the <math>).
 
-    dump("In msiFindUtils.js, in msiSearchManager.findTargetNode for node [" + parentNode.nodeName + "].\n");
     var nodeData = new Object();
+    var parentType = msiSearchUtils.getTypeOfNodeSearch(parentNode, this.mTargetEditor);
     nodeData.theNode = parentNode;
-    nodeData.theType = msiSearchUtils.getTypeOfNodeSearch(parentNode, this.mTargetEditor);
+    nodeData.theType = parentType;
+    dump("In msiFindUtils.js, in msiSearchManager.findTargetNode for node [" + parentNode.nodeName + "], reported type [" + nodeData.theType + "].\n");
     if ( (nodeData.theType != "anonContainer") && (nodeData.theType != "styleAttribs") )
     {
       nodeData.topNode = parentNode;
-      nodeData.topType = nodeData.theType;
+      nodeData.topType = parentType;
     }
     else
     {
@@ -810,17 +833,31 @@ function msiSearchManager(targEditorElement, searchDocFragment, searchFlags)
 
     var childData = null;
     var childTop = null;
+    var childDataStr = "";
+    var topNodeStr = "";
     for (var ix = 0; ix < parentNode.childNodes.length; ++ix)
     {
       childData = this.findTargetNode(parentNode.childNodes[ix]);
-      nodeData = this.compareTargetData(childData, nodeData);
+      nodeData = this.compareTargetData(childData, nodeData, (ix > 0));
+      if (childData.topNode != null)
+        childDataStr = childData.topNode.nodeName;
+      if (nodeData.topNode != null)
+        topNodeStr = nodeData.topNode.nodeName;
+      dump( "In msiFindUtils.js, msiSearchManager.findTargetNode for node [" + parentNode.nodeName + "], after comparing child data with top node [" + childDataStr + "], nodeData now has top node [" + topNodeStr + "].\n" );
     }
 
-    if (nodeData.topNode = null)
+    //If nodeData.topNode isn't null, a node has been found which contains all requisite children. We use it if we're an anonContainer.
+    if ( (nodeData.topNode == null) || ( (parentType != "anonContainer") && (parentType != "styleAttribs") ) )
     {
       nodeData.topNode = parentNode;
-      nodeData.topType = nodeData.theType;
+      nodeData.topType = parentType;
     }
+    var topNodeStr = "";
+    if (nodeData.topNode != null)
+    {
+      topNodeStr = nodeData.topNode.nodeName + "] of type [" + nodeData.topType + "] with content [" + nodeData.topNode.textContent;
+    }
+    dump("Leaving msiFindUtils.js, in msiSearchManager.findTargetNode for node [" + parentNode.nodeName + "], top node is [" + topNodeStr + "].\n");
     return nodeData;
   };
 
@@ -844,11 +881,29 @@ function msiSearchManager(targEditorElement, searchDocFragment, searchFlags)
       case "styleAttribs":
         //START HERE??
         //Need to use the "topNode" stuff now, and deal with multiple sibling nodes at the outer level.
+        var topNodeStr = "";
+        if (searchNodeData.topNode != null)
+        {
+          topNodeStr = searchNodeData.topNode.nodeName + "] of type [" + searchNodeData.topType + "] with content [" + searchNodeData.topNode.textContent;
+        }
+        dump( "In msiFindUtils.js, msiSearchManager.setUpSearch, target node is [" + this.mTargetNode.nodeName + "] with content [" + this.mTargetNode.textContent + "], while topNode is [" + topNodeStr + "].\n" );
         var contentFormatter = new XPathFormatter(searchNodeData.theNode, this.mSearchFlags);
         var prefixStr = axisStr;
         this.mXPathSearchString = contentFormatter.prepareXPathStringForNode(prefixStr);
         if ( (additionalConditionStr != null) && (additionalConditionStr.length != 0) )
           this.mXPathSearchString += additionalConditionStr;
+        if ( (searchNodeData.topNode != null) && (searchNodeData.topNode != searchNodeData.theNode) )
+        {
+          switch(searchNodeData.topType)
+          {
+            case "container":
+            case "anonContainer":
+            case "styleAttribs":
+              var topContentFormatter = new XPathFormatter(searchNodeData.topNode, this.mSearchFlags + "n");
+              this.mXPathSearchString += "[" + topContentFormatter.prepareXPathStringForNode("ancestor::") + "]";
+            break;
+          }
+        }
       break;
     }
   };
