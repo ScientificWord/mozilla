@@ -1,4 +1,4 @@
-/* ==== editor.css ==========================================================
+
    == Styles shared throughout the Editor application.
    ========================================================================== */
 
@@ -69,4 +69,20 @@
 
 listitem [readonly="true"] {
   color: red;
+}
+
+
+window,
+page,
+dialog,
+wizard,
+prefwindow,
+tab,
+tabpanels,
+tabbox,
+menupopup,
+menu,
+panel
+{
+  background-color: rgb(243,243,243);
 }
