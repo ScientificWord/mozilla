@@ -69,3 +69,23 @@
 .readonly {
   color: red;
 }
+
+window,
+page,
+dialog,
+wizard,
+prefwindow,
+tab,
+tabs,
+tabpanels,
+tabbox,
+menupopup,
+menu,
+panel
+{
+  background-color: rgb(243,243,243);
+}
+
+tab { 
+  -moz-appearance: none;
+}
