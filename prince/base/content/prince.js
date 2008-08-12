@@ -412,8 +412,7 @@ function openTeX()
   }                       
 }
 
-//#
-//define INTERNAL_XSLT
+#define INTERNAL_XSLT
 
 // documentAsTeXFile returns true if the TeX file was created.
 function documentAsTeXFile( document, xslSheet, outTeXfile )
@@ -448,21 +447,13 @@ function documentAsTeXFile( document, xslSheet, outTeXfile )
   stylefile.append("xsl");
   stylefile.append(xslSheet);
   var xslPath = stylefile.target;
-
+  
 #ifdef INTERNAL_XSLT
 
-  var str = "";
-  if (xslPath.length == 0) return str;
-  var xsltProcessor = new XSLTProcessor();
-  var myXMLHTTPRequest = new XMLHttpRequest();
-  myXMLHTTPRequest.open("GET", xslPath, false);
-  myXMLHTTPRequest.send(null);
+  var str = documentToTeXString(document, xslPath);
 
-  var xslStylesheet = myXMLHTTPRequest.responseXML;
-  xsltProcessor.importStylesheet(xslStylesheet);
-  var newDoc = xsltProcessor.transformToDocument(document);
-  str = newDoc.documentElement.textContent;
-  dump("\n"+str);
+//  dump("\n"+str);
+  if (str.length < 3) return false;
   if (outTeXfile.exists()) 
     outTeXfile.remove(false);
   outTeXfile.create(0, 0755);
@@ -508,7 +499,6 @@ function documentAsTeXFile( document, xslSheet, outTeXfile )
   os.writeString(str);
   os.close();
   fos.close();
-
   var outfilePath = outfile.target;
   while (xslPath.charAt(0) == "/".charAt(0)) xslPath = xslPath.substr(1);
   // for Windows
@@ -962,3 +952,76 @@ function toOpenWindowByType( inType, uri )
   }
 }
 
+
+function documentToTeXString(document, xslPath)
+{
+  var str = "";
+  var resultString = "";
+  if (xslPath.length == 0) return resultString;
+  var contents = "";
+  var match;
+  var path = xslPath;
+  var stylesheetElement=/<xsl:stylesheet[^>]*>/;
+  var includeFileRegEx = /<xsl:include\s+href\s*=\s*\"([^\"]*)\"\/>/;
+  var leafname = /[^\/]*$/;
+#ifdef XP_WIN32
+  path ="/"+  path.replace("\\","/","g");
+#endif
+  path = "file://" + path;
+  var xsltProcessor = new XSLTProcessor();
+  var myXMLHTTPRequest = new XMLHttpRequest();
+  myXMLHTTPRequest.open("GET", path, false);
+  myXMLHTTPRequest.send(null);
+
+  str = myXMLHTTPRequest.responseText;
+// a bug in the Mozilla XSLT processor causes problems with included stylesheets, so
+// we do the inclusions ourselves 
+  var filesSeen= []; 
+  while (match = includeFileRegEx.exec(str))
+  {
+    resultString += str.slice(0, match.index);
+    str = str.slice(match.index);
+    str = str.replace(match[0],""); // get rid of the matched pattern. Why does lastIndex not work?
+    dump("File "+(leafname.exec(path))[0]+" includes "+match[1]+" and index = "+match.index+ "\n");
+    // match[1] should have the file name of the incusion 
+    if (filesSeen.indexOf(match[1]) < 0)
+    {
+      path = path.replace(leafname,match[1]);
+      myXMLHTTPRequest.open("GET", path, false);
+      myXMLHTTPRequest.send(null);
+      contents = myXMLHTTPRequest.responseText;
+      if (contents)
+      {
+        // strip out the xml and xsl declarations
+        contents = contents.replace('<?xml version="1.0"?>','');
+        contents = contents.replace("</xsl:stylesheet>","");
+        contents = contents.replace(stylesheetElement,"");
+      }
+      filesSeen.push(match[1]);
+    }
+    else {
+      dump("\n\n\n" + str+"\n\n\n");
+      dump("Already saw " + match[1] +"\n");
+      contents="";
+      break;
+    }                         
+    // now replace the include command with the contents of the file
+//    includeFileRegEx.lastIndex = includeFileRegEx.index;
+    str = contents + str;
+    // and continue  
+  }
+  resultString += str;
+  var parser = new DOMParser();
+  var doc = parser.parseFromString(resultString, "text/xml");
+    
+  try{
+    xsltProcessor.importStylesheet(doc);
+    var newDoc = xsltProcessor.transformToDocument(document);
+    var strResult = newDoc.documentElement.textContent || "";
+  }
+  catch(e){
+    dump("error: "+e.message+"\n\n");
+  //  dump(resultString);
+  }
+  return strResult;
+}
