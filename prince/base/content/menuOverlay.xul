@@ -212,6 +212,12 @@
                 observes="cmd_spelling" 
                 disabled="false"
                 label="&checkSpellingCmd.label;"/>
+      <menuitem id="menu_countwords" 
+                accesskey="&countWords.accesskey;"
+                key="countwordskb"   
+                observes="cmd_countwords" 
+                disabled="false"
+                label="&countWords.label;"/>
     </menupopup>
   </menu>
 

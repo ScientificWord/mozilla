@@ -165,6 +165,8 @@
 <!ENTITY editfindprev.keybinding "g">
 <!ENTITY editfindprev.acceltext "Shift+F3">
 <!ENTITY checkSpellingCmd.label "Check Spelling">
+<!ENTITY countWords.label "Count Words">
+<!ENTITY countWords.accesskey "w">
 <!ENTITY validateCmd.label "Validate HTML">
 <!ENTITY validate.accesskey "v">
 <!ENTITY checkLinksCmd.label "Check Links">
