@@ -3,7 +3,7 @@
     xmlns:mml="http://www.w3.org/1998/Math/MathML"
     xmlns:html="http://www.w3.org/1999/xhtml"
     xmlns:sw="http://www.sciword.com/namespaces/sciword"
-    xmlns:exslt="http://exslt.org/common"
+    xmlns:exsl="http://exslt.org/common"
 >
 
 
@@ -19,7 +19,7 @@
   </xsl:for-each>
 </xsl:variable>
 
-<xsl:variable name="requiredpackages" select ="exslt:node-set($requiredpackages.tf)"/>
+<xsl:variable name="requiredpackages" select ="exsl:node-set($requiredpackages.tf)"/>
  
 <xsl:variable name="packagelist.tf"> 
   <xsl:for-each select="$requiredpackages/*">
@@ -51,7 +51,7 @@
   </xsl:for-each>
 </xsl:variable>
  
-<xsl:variable name="packagelist" select ="exslt:node-set($packagelist.tf)"/>
+<xsl:variable name="packagelist" select ="exsl:node-set($packagelist.tf)"/>
 
 <xsl:variable name="endnotes" select="count(//html:endnotes)"/>
 
