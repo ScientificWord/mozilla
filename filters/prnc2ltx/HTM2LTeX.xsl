@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <xsl:stylesheet 
       xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-      xmlns:msxsl="urn:schemas-microsoft-com:xslt"
+      xmlns:exsl="http://exslt.org/common"
       xmlns:msi="C:/xml/xsl/lbtest"
       version="1.1">
 
@@ -100,7 +100,7 @@ after \allowbreak.  More \LBo's can be scripted as needed.
         </xsl:choose>
       </xsl:for-each>
     </xsl:variable>
-    <xsl:variable name="text-math-list" select="msxsl:node-set($text-math-list.tr)"/>
+    <xsl:variable name="text-math-list" select="exsl:node-set($text-math-list.tr)"/>
 
 <!--
 <xsl:if test="self::comment()">
@@ -261,7 +261,7 @@ after \allowbreak.  More \LBo's can be scripted as needed.
         <xsl:with-param name="next-is-math" select="$is-math"/>
       </xsl:call-template>
     </xsl:variable>
-    <xsl:variable name="lines" select="msxsl:node-set($lines.tr)"/>
+    <xsl:variable name="lines" select="exsl:node-set($lines.tr)"/>
 
 <!--
 <xsl:text>call-template make-lines:</xsl:text>
@@ -403,7 +403,7 @@ after \allowbreak.  More \LBo's can be scripted as needed.
           </xsl:if>
 
         </xsl:variable>
-        <xsl:variable name="words" select="msxsl:node-set($words.tr)"/>
+        <xsl:variable name="words" select="exsl:node-set($words.tr)"/>
 
 <!-- Initiate a series of recursive calls to catenate the contents
      of <word> nodes in our list. -->
@@ -806,7 +806,7 @@ after \allowbreak.  More \LBo's can be scripted as needed.
     <xsl:variable name="psuedo-LaTeX.tr">
       <xsl:apply-templates/>
     </xsl:variable>
-    <xsl:variable name="psuedo-LaTeX" select="msxsl:node-set($psuedo-LaTeX.tr)"/>
+    <xsl:variable name="psuedo-LaTeX" select="exsl:node-set($psuedo-LaTeX.tr)"/>
 
 <translated-text>
     <xsl:if test="string-length($LaTeX-run-nom) &gt; 0">
@@ -1161,7 +1161,7 @@ The \texttt{\TEXTsymbol{\backslash}text}  ->  The <msi:code>\text</msi:code>
     <xsl:variable name="column-counts.tr">
       <xsl:call-template name="column-counter"/>
     </xsl:variable>
-    <xsl:variable name="column-counts" select="msxsl:node-set($column-counts.tr)"/>
+    <xsl:variable name="column-counts" select="exsl:node-set($column-counts.tr)"/>
 
 
     <xsl:variable name="rowlines">
@@ -1244,7 +1244,7 @@ The \texttt{\TEXTsymbol{\backslash}text}  ->  The <msi:code>\text</msi:code>
         </xsl:for-each>
       </xsl:for-each>
     </xsl:variable>
-    <xsl:variable name="column-counts" select="msxsl:node-set($column-counts.tr)"/>
+    <xsl:variable name="column-counts" select="exsl:node-set($column-counts.tr)"/>
 
     <xsl:for-each select="$column-counts/*">
       <xsl:sort select="."/>
