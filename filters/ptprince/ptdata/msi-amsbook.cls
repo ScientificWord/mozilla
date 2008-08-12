@@ -1,0 +1,104 @@
+
+\def\frontmatter{\msitag{<frontmatter/>}}
+
+\def\title{%
+  \@ifnextchar[{\@titlea}{\@titleb}}
+
+\def\@titlea[#1]#2{%
+  \msitag{<title><short>#1</short><long>#2</long></title>}%
+}
+
+\def\@titleb#1{\@titlea[]{#1}}
+
+\def\author{%
+  \@ifnextchar[{\@authora}{\@authorb}}
+
+\def\@authora[#1]#2{%
+  \msitag{<author><authorid>#1</authorid>#2</author>}%
+}
+
+\def\@authorb#1{\@authora[]{#1}}
+
+\def\address{\@ifnextchar[{\@addressa}{\@addressb}}
+
+\def\@addressa[#1]#2{%
+  \msitag{<address><authorid>#1</authorid>}#2\msitag{</address>}%
+}
+
+\def\@addressb#1{\@addressa[]{#1}}
+
+
+\def\curraddr{\@ifnextchar[{\@curraddra}{\@curraddrb}}
+
+\def\@curraddra[#1]#2{%
+  \msitag{<curraddr><authorid>#1</authorid>}#2\msitag{</curraddr>}%
+}
+
+\def\@curraddrb#1{\@curraddra[]{#1}}
+
+
+\def\email{\@ifnextchar[{\@emaila}{\@emailb}}
+
+\def\@emaila[#1]#2{%
+  \msitag{<email><authorid>#1</authorid>}#2\msitag{</email>}%
+}
+
+\def\@emailb#1{\@emaila[]{#1}}
+
+
+
+\def\urladdr{\@ifnextchar[{\@urladdra}{\@urladdrb}}
+
+\def\@urladdra[#1]#2{%
+  \msitag{<urladdr><authorid>#1</authorid>}#2\msitag{</urladdr>}%
+}
+
+\def\@urladdrb#1{\@urladdra[]{#1}}
+
+%% Sectioning
+
+\newsection{part}{1}{Part \the\sectionnumber}{sectiontitle}%
+\newsection{chapter}{2}{Chapter \the\chapternumber}{sectiontitle}
+\newsection{section}{2}{Section \the\sectionnumber}{sectiontitle}%
+\newsection{subsection}{3}{\the\sectionnumber.\the\subsectionnumber}{sectiontitle}%
+\newsection{subsubsection}{4}{\thesectionnumber.\thesubsectionnumber.\the\subsubsectionnumber}{sectiontitle}%
+\newsection{paragraph}{5}{\thesectionnumber.\thesubsectionnumber.\the\subsubsectionnumber.\the\paragraphnumber}{sectiontitle}%
+\newsection{subparagraph}{6}{\thesectionnumber.\thesubsectionnumber.\the\subsubsectionnumber.\the\paragraphnumber}{sectiontitle}%
+
+%% Environments
+
+
+
+%% Frontmatter commands
+
+\msi@pass@newline{\frontmatter}
+\msi@pass@newline{\tableofcontents}
+\msi@pass@newline{\maketitle}
+
+
+
+\def\textbf#1{\msihmode\msiopentag{bold}{<bold>}#1\msiclosetag{bold}{</bold>}}
+\def\textit#1{\msihmode\msiopentag{it}{<it>}#1\msiclosetag{it}{</it>}}
+\def\textsf#1{\msihmode\msiopentag{sf}{<sf>}#1\msiclosetag{sf}{</sf>}}
+\def\textsl#1{\msihmode\msiopentag{sl}{<sl>}#1\msiclosetag{sl}{</sl>}}
+\def\texttt#1{\msihmode\msiopentag{tt}{<tt>}#1\msiclosetag{tt}{</tt>}}
+\def\textrm#1{\msihmode\msiopentag{rm}{<rm>}#1\msiclosetag{rm}{</rm>}}
+\def\textsc#1{\msihmode\msiopentag{sc}{<sc>}#1\msiclosetag{sc}{</sc>}}
+
+
+\@text@tag{it}
+\@text@tag{normalsize}
+\@text@tag{tiny}
+\@text@tag{small}
+\@text@tag{Large}
+\@text@tag{large}
+\@text@tag{LARGE}
+\@text@tag{huge}
+\@text@tag{Huge}
+\@text@tag{scriptsize}
+\@text@tag{footnotesize}
+
+%\immediate\openout2={my.css}
+%\immediate\write2{@import url("resource://app/res/css/book.css");}
+
+\def\classcss{@import url("resource://app/res/css/amsbook.css");}
