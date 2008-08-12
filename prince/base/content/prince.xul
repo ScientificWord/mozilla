@@ -136,7 +136,7 @@
      will be removed later -->
 <sidebaritems id="sidebaritems">
   <sidebaritem id="sidebaritem-MSI" name="MSI" src="http://www.mackichan.com/whatsnew/whatsnew_sidebar.html" title="MSI What's new"/>
-//  <sidebaritem id="sidebaritem-blank"   name="blank" src="about:blank" title="Blanc de blanc"/>
+  <!--sidebaritem id="sidebaritem-blank"   name="blank" src="about:blank" title="Blanc de blanc"/ -->
   <sidebaritem id="sidebaritem-fragments"   name="fragments" src="chrome://prince/content/fragment.xul" title="Fragments"/>
   <sidebaritem id="sidebaritem-toc"   name="toc" src="chrome://prince/content/toc.xul" title="TOC"/>
 </sidebaritems>
