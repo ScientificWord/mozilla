@@ -1,9 +1,11 @@
+<?xml version="1.0"?>
 <xsl:stylesheet version="1.1" 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:mml="http://www.w3.org/1998/Math/MathML"
     xmlns:html="http://www.w3.org/1999/xhtml"
     xmlns:sw="http://www.sciword.com/namespaces/sciword"
-    xmlns:exslt="http://exslt.org/common"
+    xmlns:msi="http://www.sciword.com/namespaces/sciword"
+    xmlns:exsl="http://exslt.org/common"
 >
 <xsl:output method="text" encoding="UTF-8"/>
 <xsl:strip-space elements="*"/>
@@ -19,7 +21,7 @@
   <xsl:apply-templates/>
 </xsl:template>
 
-<xsl:template match="*">[DEF]<!-- Matches everything but the root --></xsl:template>
+<xsl:template match="*"><!-- Matches everything but the root --></xsl:template>
 
 <xsl:template match="html:html"><xsl:apply-templates/></xsl:template>
 <xsl:template match="html:head"><xsl:apply-templates/></xsl:template>

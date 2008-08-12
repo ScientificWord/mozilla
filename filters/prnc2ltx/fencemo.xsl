@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <xsl:stylesheet 
       xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-      xmlns:msxsl="urn:schemas-microsoft-com:xslt"
+      xmlns:exsl="http://exslt.org/common"
       xmlns:mml="http://www.w3.org/1998/Math/MathML"
       version="1.1">
 
