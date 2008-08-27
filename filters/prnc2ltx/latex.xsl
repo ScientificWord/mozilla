@@ -59,7 +59,8 @@
 
 
 <xsl:template match="html:body">
-\input{tcilatex}
+<!--\input tcilatex.tex   
+should not be done under some conditions -->
 \begin{document}
 <xsl:apply-templates/>
 <xsl:if test="$endnotes &gt; 0">
@@ -269,27 +270,6 @@
 %BeginExpansion
 <xsl:apply-templates/>
 %EndExpansion
-</xsl:template>
-
-<xsl:template match="html:enumerate">
-\begin{enumerate}
-<xsl:apply-templates/>
-\end{enumerate}
-</xsl:template>
-<xsl:template match="html:itemize">							 
-\begin{itemize}
-<xsl:apply-templates/>
-\end{itemize}
-</xsl:template>
-
-<xsl:template match="html:description">
-\begin{description}
-<xsl:apply-templates/>
-\end{description}
-</xsl:template>
-
-<xsl:template match="html:item">
-\item <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="html:explicit-item">[<xsl:apply-templates/>]</xsl:template>

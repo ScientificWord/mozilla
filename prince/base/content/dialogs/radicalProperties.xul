@@ -60,7 +60,7 @@
               </mml:mrow>
             </mml:math>
           </description>
-        </button>
+        </msibutton>
         <msibutton group="radicalButtonGroup" autoCheck="false" value="mroot">
           <description>
             <mml:math display="inline">
@@ -80,7 +80,7 @@
               </mml:mrow>
             </mml:math>
           </description>
-        </button>
+        </msibutton>
         <spacer flex="1"/>
       </hbox>
     </groupbox>

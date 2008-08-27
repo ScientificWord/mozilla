@@ -7,7 +7,7 @@ toolbar[printpreview="true"] {
 }
 
 #evalButton {
-  list-style-image: url("chrome://prince/skin/icons/math_evaluate-hover.png");
+  list-style-image: url("chrome://prince/skin/icons/math_evaluate.png");
 }
 
 toolbar[iconsize="small"] #evalButton {
@@ -2007,6 +2007,87 @@ toolbar[iconsize="small"] #javascriptButton:hover:active {
 toolbar[iconsize="small"] #javascriptButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/javascript-disabled-sm.png");
 }
+
+#vc-RotateLeft{
+  list-style-image: url("chrome://prince/skin/icons/vc_rotateleft.png");
+}
+
+#vc-RotateRight{
+  list-style-image: url("chrome://prince/skin/icons/vc_rotateright.png");
+}
+
+#vc-RotateUp{
+  list-style-image: url("chrome://prince/skin/icons/vc_rotateup.png");
+}
+
+#vc-RotateDown{
+  list-style-image: url("chrome://prince/skin/icons/vc_rotatedown.png");
+}
+
+#vc-RotateScene{
+  list-style-image: url("chrome://prince/skin/icons/vc_rotatescene.png");
+}
+
+#vc-Zoom{
+  list-style-image: url("chrome://prince/skin/icons/vc_zoom.png");
+}
+
+#vc-Move{
+  list-style-image: url("chrome://prince/skin/icons/vc_move.png");
+}
+
+#vc-AutoSpeed{
+  list-style-image: url("chrome://prince/skin/icons/vc_animspeed.png");
+}
+
+#vc-AnimSpeed{
+  list-style-image: url("chrome://prince/skin/icons/vc_animspeed.png");
+}
+
+#vc-AutoZoomIn{
+  list-style-image: url("chrome://prince/skin/icons/vc_autozoomin.png");
+}
+
+#vc-AutoZoomOut{
+  list-style-image: url("chrome://prince/skin/icons/vc_AutoZoomOut.png");
+}
+
+#vc-GoToEnd{
+  list-style-image: url("chrome://prince/skin/icons/vc_GoToEnd.png");
+}
+
+#vc-GoToStart{
+  list-style-image: url("chrome://prince/skin/icons/vc_GoToStart.png");
+}
+
+#vc-LoopType{
+  list-style-image: url("chrome://prince/skin/icons/vc_LoopType.png");
+}
+
+#vc-Play{
+  list-style-image: url("chrome://prince/skin/icons/vc_Play.png");
+}
+
+#vc-Query{
+  list-style-image: url("chrome://prince/skin/icons/vc_Query.png");
+}
+
+#vc-SelObj{
+  list-style-image: url("chrome://prince/skin/icons/vc_SelObj.png");
+}
+
+#vc-FitContents{
+  list-style-image: url("chrome://prince/skin/icons/vc_fitcontents.png");
+}
+
+
+#vc-Reset{
+  list-style-image: url("chrome://prince/skin/icons/vc_reset.png");
+}
+
+
+
+
 
 
 toolbox textbox { min-height : 25px;}
