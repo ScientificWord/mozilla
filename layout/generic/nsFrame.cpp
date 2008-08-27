@@ -5095,7 +5095,7 @@ PRBool IsMathFrame( nsIFrame * aFrame )
   return PR_FALSE;
 }
 
-nsIMathMLCursorMover * GetMathCursorMover( nsIMathMLFrame * aFrame )
+nsIMathMLCursorMover * GetMathCursorMover( nsIFrame * aFrame )
 {
   nsCOMPtr<nsIMathMLCursorMover> pMathCM;
   pMathCM =  do_QueryInterface(aFrame);
@@ -5235,12 +5235,12 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
   // Mozilla uses; that means it is a leaf. For mathematics, we need to check to see if we should instead
   // choose a parent of this frame.
   printf("Moving to a new frame; check to see if we are in math\n");
-  nsIMathMLFrame* pFrame = IsMathFrame(this)?this:nsnull;  // will succeed if "this" is a math frame.
-  nsIMathMLFrame* pFrameChild;
+  nsIFrame* pFrame = IsMathFrame(this)?this:nsnull;  // will succeed if "this" is a math frame.
+  nsIFrame* pFrameChild;
   nsIFrame * pChild;
   nsIFrame * pLastChild = nsnull;
   nsIFrame* pParent;
-  nsCOMPtr<nsIFrame> pMathChild;
+  nsIFrame* pMathChild;
   nsCOMPtr<nsIMathMLCursorMover> pMathCM;
   PRInt32 count = 1;
   if (pFrame) // 'this' is a math frame
