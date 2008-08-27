@@ -51,7 +51,7 @@
 #include "nsMathMLChar.h"
 #include "nsMathMLFrame.h"
 #include "nsMathMLParts.h"
-#include "nsMathMLCursorMotion.h"
+#include "nsMathMLCursorMover.h"
 
 /*
  * Base class for MathML container frames. It acts like an inferred 
@@ -68,7 +68,7 @@
 
 class nsMathMLContainerFrame : public nsHTMLContainerFrame,
                                public nsMathMLFrame,
-                               public nsMathMLCursorMotion {
+                               public nsMathMLCursorMover {
   friend class nsMathMLmfencedFrame;
 public:
   nsMathMLContainerFrame(nsStyleContext* aContext) : nsHTMLContainerFrame(aContext) {}
@@ -363,10 +363,10 @@ public:
   MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRInt32 *_retval);
 
   NS_IMETHOD 
-  EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 count, PRInt32 *_retval);
+  EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRInt32 *_retval);
 
   NS_IMETHOD 
-  EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 count, PRInt32 *_retval);
+  EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRInt32 *_retval);
 
 
 

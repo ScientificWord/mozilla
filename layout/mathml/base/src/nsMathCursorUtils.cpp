@@ -3,7 +3,7 @@
 #include "nsCom.h"
 #include "nsFrameSelection.h"
 #include "nsMathCursorUtils.h"
-#include "nsMathMLCursorMotion.h"
+#include "nsMathMLCursorMover.h"
 
 
 PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32& count)
@@ -11,7 +11,7 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
   nsIFrame * pChild;
   nsIFrame * pParent;
   nsCOMPtr<nsIContent> pContent;
-  nsCOMPtr<nsIMathMLCursorMotion> pMCM;
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (fInside) // we put the cursor at the end of the contents of pFrame; we do not recurse.
   {
     // find the last child
@@ -52,14 +52,14 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
   nsIFrame * pChild;
   nsIFrame * pParent;
   nsCOMPtr<nsIContent> pContent;
-  nsCOMPtr<nsIMathMLCursorMotion> pMCM;
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (fInside)
   {
     pChild = pFrame->GetFirstChild(nsnull);
     pMCM = do_QueryInterface(pChild);
     if (pMCM) // child is a math ml frame. Recurse down the tree
     {
-      pMCM->EnterFromLeft(pFrame, aOutFrame, count, (PRInt32*)&count);
+      pMCM->EnterFromLeft(pFrame, aOutFrame, aOutOffset, count, (PRInt32*)&count);
     }
     else // child is not math, assumed to be text
     {
