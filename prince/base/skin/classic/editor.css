@@ -11,6 +11,7 @@
   min-width: 10px; 
   min-height: 10px;
   height: 400px;
+  background-color: #FFBBBB;
 } 
 
 .source-editor,
@@ -66,7 +67,7 @@
   border: none !important;
 }
 
-.readonly {
+listitem [readonly="true"] {
   color: red;
 }
 
@@ -79,13 +80,17 @@ tab,
 tabs,
 tabpanels,
 tabbox,
+toolbox,
 menupopup,
 menu,
 panel
 {
+  -moz-appearance: none;
   background-color: rgb(243,243,243);
 }
 
-tab { 
-  -moz-appearance: none;
+menu
+{
+  background-color: transparent;
 }
+

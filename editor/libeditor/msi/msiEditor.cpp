@@ -969,8 +969,8 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
 // Commenting the next block of code removes Larry's cursor handling code and restores
 // (since preventDefault is not called) the Mozilla cursor handling
 //
-    if (keyCode == nsIDOMKeyEvent::DOM_VK_LEFT  ||  keyCode == nsIDOMKeyEvent::DOM_VK_RIGHT ||
-        keyCode == nsIDOMKeyEvent::DOM_VK_UP    ||  keyCode == nsIDOMKeyEvent::DOM_VK_DOWN)
+    if //(keyCode == nsIDOMKeyEvent::DOM_VK_LEFT  ||  keyCode == nsIDOMKeyEvent::DOM_VK_RIGHT ||
+        (keyCode == nsIDOMKeyEvent::DOM_VK_UP    ||  keyCode == nsIDOMKeyEvent::DOM_VK_DOWN)
    {
      PRBool preventDefault(PR_FALSE);
      res = HandleArrowKeyPress(keyCode, isShift, ctrlKey, altKey, metaKey, preventDefault); 

@@ -412,7 +412,7 @@ function openTeX()
   }                       
 }
 
-#define INTERNAL_XSLT
+// #define INTERNAL_XSLT
 
 // documentAsTeXFile returns true if the TeX file was created.
 function documentAsTeXFile( document, xslSheet, outTeXfile )
@@ -668,8 +668,11 @@ function printTeX( pdftex, preview )
     outputfile = workingDir.clone();
     outputfile.append("tex");
     // remove and create the tex directory to clean it out
-    if (outputfile.exists()) outputfile.remove(true);
-    outputfile.create(1, 0755);
+    try {
+      if (outputfile.exists()) outputfile.remove(true);
+      outputfile.create(1, 0755);
+    }
+    catch(e) {}; // 
     var dvipdffile = outputfile.clone();
     var dvipdffileroot = outputfile.clone();
     dvipdffile.append("main."+ (pdftex?"pdf":"dvi"));
@@ -982,7 +985,7 @@ function documentToTeXString(document, xslPath)
     resultString += str.slice(0, match.index);
     str = str.slice(match.index);
     str = str.replace(match[0],""); // get rid of the matched pattern. Why does lastIndex not work?
-    dump("File "+(leafname.exec(path))[0]+" includes "+match[1]+" and index = "+match.index+ "\n");
+    dump("File "+match[1]+"found at index = "+match.index+ "\n");
     // match[1] should have the file name of the incusion 
     if (filesSeen.indexOf(match[1]) < 0)
     {
@@ -1011,6 +1014,18 @@ function documentToTeXString(document, xslPath)
     // and continue  
   }
   resultString += str;
+  // BBM: for debugging purposes, let's write the string out
+  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+  var outputfile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+  outputfile.append("composite.xsl");
+  var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+  fos.init(outputfile, -1, -1, false);
+  var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+    .createInstance(Components.interfaces.nsIConverterOutputStream);
+  os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
+  os.writeString(resultString);
+  os.close();
+ // end of debugging code 
   var parser = new DOMParser();
   var doc = parser.parseFromString(resultString, "text/xml");
     
