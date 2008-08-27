@@ -44,7 +44,8 @@
 
 #include "nsCOMPtr.h"
 #include "nsFrame.h"
-//#include "nsMathMLFrame.h"
+#include "nsMathMLFrame.h"
+#include "nsMathMLCursorMover.h"
 #include "nsFrameList.h"
 #include "nsLineLayout.h"
 #include "nsIContent.h"
@@ -5078,37 +5079,42 @@ nsFrame::GetLineNumber(nsIFrame *aFrame, nsIFrame** aContainingBlock)
   return thisLine;
 }
 
-//nsIMathMLFrame * GetMathFrame( nsIFrame * aFrame )
-//{
-//  nsAutoString sNamespace;
-//  nsCOMPtr<nsIContent> pContent;
-//  nsCOMPtr<nsIDOMNode> pNode;
-//  nsresult res;
-//  pContent = aFrame->GetContent();
-//  pNode = do_QueryInterface(pContent);
-//  res = pNode->GetNamespaceURI(sNamespace);
-//  if (sNamespace.EqualsLiteral("http://www.w3.org/1998/Math/MathML")) 
-//  {
-//    nsCOMPtr<nsIMathMLFrame> mathMLFrame;
-//    mathMLFrame = do_QueryInterface(aFrame);
-//    if (!mathMLFrame) mathMLFrame = (nsIMathMLFrame *)aFrame;
-//    if (mathMLFrame) mathMLFrame = do_QueryInterface(mathMLFrame);
-//    return mathMLFrame;
-//  }
-//  return nsnull;
-//}
-//
-//
-//nsIMathMLFrame * GetMathParentFrame( nsIFrame * aFrame )
-//{
-//  nsIFrame* pParent = aFrame->GetParent();
-//  if (pParent) 
-//  {
-//    return GetMathFrame(pParent);
-//  }
-//  else return nsnull;
-//}
-//
+PRBool IsMathFrame( nsIFrame * aFrame )
+{
+  nsAutoString sNamespace;
+  nsCOMPtr<nsIContent> pContent;
+  nsCOMPtr<nsIDOMNode> pNode;
+  nsresult res;
+  pContent = aFrame->GetContent();
+  pNode = do_QueryInterface(pContent);
+  res = pNode->GetNamespaceURI(sNamespace);
+  if (sNamespace.EqualsLiteral("http://www.w3.org/1998/Math/MathML")) 
+  {
+    return PR_TRUE;
+  }
+  return PR_FALSE;
+}
+
+nsIMathMLCursorMover * GetMathCursorMover( nsIMathMLFrame * aFrame )
+{
+  nsCOMPtr<nsIMathMLCursorMover> pMathCM;
+  pMathCM =  do_QueryInterface(aFrame);
+  return pMathCM;
+}
+
+
+PRBool IsParentMathFrame( nsIFrame * aFrame )
+{
+  nsIFrame* pParent = aFrame->GetParent();
+  if (pParent) 
+  {
+    return IsMathFrame(pParent);
+  }
+  else return PR_FALSE;
+}
+
+
+
 
 
 nsresult
@@ -5228,108 +5234,124 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
   // The above code has found a selectable frame (presumably a text frame) that is the "next" in the sense 
   // Mozilla uses; that means it is a leaf. For mathematics, we need to check to see if we should instead
   // choose a parent of this frame.
-//  printf("Moving to a new frame; check to see if we are in math\n");
-//  nsIMathMLFrame* pFrame = GetMathFrame(this);  // will succeed if "this" is a math frame.
-//  nsIMathMLFrame* pFrameChild;
-//  nsIFrame * pChild;
-//  nsIFrame * pLastChild = nsnull;
-//  nsIFrame* pParent;
-//  nsCOMPtr<nsIMathMLFrame> pMathChild;
-//  PRUint32 count = 1;
-//  if (pFrame) // 'this' is a math frame
-//  {
-//    printf("Starting in a math frame\n");
-//    // the cursor is in a math tag, not in a text tag that is in mathematics, and we are leaving
-//    if (*aOutOffset == 0) pChild = nsnull;
-//    else
-//    {
-//      // BBM: Fix this. Counting in the frame tree is unreliable. We should be doing it in the DOM tree.
-//      PRUint32 nodecount = 0;
-//      pChild = GetFirstChild(nsnull);
-//      while (pChild && nodecount < (*aOutOffset))
-//      {
-//        nodecount++;
-//        pLastChild = pChild;
-//        pChild = pChild->GetNextSibling();
-//      }
-//    }
-//    if (pChild) pMathChild = GetMathFrame(pChild);
-//    if (aDirection == eDirNext)
-//    {
-//      if (pMathChild) pMathChild->EnterFromLeft(aOutFrame, aOutOffset, count);
-//      else // pFrame is top-level
-//        pFrame->MoveOutToRight(pLastChild, aOutFrame, aOutOffset, count);
-//    }
-//    else {
-//      if (pMathChild) pMathChild->EnterFromRight(aOutFrame, aOutOffset, count);
-//      else // pFrame is top-level
-//        pFrame->MoveOutToLeft(pLastChild, aOutFrame, aOutOffset, count);
-//    }
-//    return NS_OK;
-//  }
-//  else
-//  {
-//    pFrame = GetMathParentFrame(this);
-//    if (pFrame)
-//    {
-//      if (aDirection == eDirNext)
-//        pFrame->EnterFromLeft(aOutFrame, aOutOffset, count);
-//      else pFrame->EnterFromRight(aOutFrame, aOutOffset, count);
-//    }
-//  }
-//  if ((pFrame==nsnull) || (count > 0))
-//  {
+  printf("Moving to a new frame; check to see if we are in math\n");
+  nsIMathMLFrame* pFrame = IsMathFrame(this)?this:nsnull;  // will succeed if "this" is a math frame.
+  nsIMathMLFrame* pFrameChild;
+  nsIFrame * pChild;
+  nsIFrame * pLastChild = nsnull;
+  nsIFrame* pParent;
+  nsCOMPtr<nsIFrame> pMathChild;
+  nsCOMPtr<nsIMathMLCursorMover> pMathCM;
+  PRInt32 count = 1;
+  if (pFrame) // 'this' is a math frame
+  {
+    printf("Starting in a math frame\n");
+    // the cursor is in a math tag, not in a text tag that is in mathematics, and we are leaving
+    if (*aOutOffset == 0) pChild = nsnull;
+    else
+    {
+      // BBM: Fix this. Counting in the frame tree is unreliable. We should be doing it in the DOM tree.
+      PRUint32 nodecount = 0;
+      pChild = GetFirstChild(nsnull);
+      while (pChild && nodecount < (*aOutOffset))
+      {
+        nodecount++;
+        pLastChild = pChild;
+        pChild = pChild->GetNextSibling();
+      }
+    }
+    if (pChild) pMathChild = IsMathFrame(pChild)?pChild:nsnull;
+    if (aDirection == eDirNext)
+    {
+      if ((pMathChild) && (pMathCM = GetMathCursorMover(pMathChild))) 
+      {
+        pMathCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, &count);
+      }
+      else // pFrame is top-level
+      {
+        pMathCM = GetMathCursorMover(pFrame);
+        pMathCM->MoveOutToRight(pLastChild, aOutFrame, aOutOffset, count, &count);
+      }
+    }
+    else {
+      if ((pMathChild) && (pMathCM = GetMathCursorMover(pMathChild)))
+      {
+         pMathCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, &count);
+      }
+      else // pFrame is top-level
+      {
+        if (pMathCM = GetMathCursorMover(pFrame))
+          pMathCM->MoveOutToLeft(pLastChild, aOutFrame, aOutOffset, count, &count);
+      }  
+    }
+    return NS_OK;
+  }
+  else
+  {
+    pFrame = IsParentMathFrame(this)?this:nsnull;
+    if (pFrame)
+    {
+      if ((pMathCM = GetMathCursorMover(pFrame)) && (aDirection == eDirNext))
+        pMathCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, &count);
+      else if (pMathCM)
+        pMathCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, &count);
+    }
+  }
+  if ((pFrame==nsnull) || (count > 0))
+  {
 //    pParent = traversedFrame;
-//    pFrame = GetMathFrame(traversedFrame);
-//    if (!pFrame) 
-//    {
-//      pParent = traversedFrame->GetParent();
-//      pFrame = GetMathFrame(pParent);
-//      pChild = traversedFrame;
-//    }
-//    if (pFrame) // We are entering a math frame from the outside
-//    {
-//    // we have just entered traversedFrame, from the beginning
-//    // or from the end
-//  
-//      if (aDirection == eDirNext)
-//      {
-//        // we entered from the beginning. We want to go up as
-//        // far as we can until we get to the math root.
-//        while ((pChild == pParent->GetFirstChild(nsnull)) && pFrame)
-//        {
-//          // we might be able to go up
-//          pChild = pParent;
-//          pParent = pParent->GetParent();
-//          pFrame = GetMathFrame(pParent);
-//        }
-//        pFrameChild = GetMathFrame(pChild); 
-//        if (pFrameChild) pFrameChild->EnterFromLeft(aOutFrame, aOutOffset, count); 
-//        // pFrameChild can't be null because it was pFrame at the time it passed through the
-//        // while loop above
-//      }
-//      else
-//      {
-//        while ((pChild->GetNextSibling() == nsnull)&&pFrame)
-//        {
-//          // we might be able to go up
-//          pChild = pParent;
-//          pParent = pParent->GetParent();
-//          pFrame = GetMathFrame(pParent);
-//        }
-//        pFrameChild = GetMathFrame(pChild);  
-//        if (pFrameChild) pFrameChild->MoveOutToLeft(pChild, aOutFrame, aOutOffset, count);
-//        else printf("We need some code here\n");
-//      }
-//    }  
-//    else
-//    {
-//      if (aDirection == eDirNext)
-//        *aOutOffset = 0;
-//      else
-//        *aOutOffset = -1;
-//    }
-//  }
+    pFrame = IsMathFrame(traversedFrame)?traversedFrame:nsnull;
+    if (!pFrame) 
+    {
+      pParent = traversedFrame->GetParent();
+      pFrame = IsParentMathFrame(traversedFrame)?pParent:nsnull;
+      pChild = traversedFrame;
+    }
+    if (pFrame) // We are entering a math frame from the outside
+    {
+    // we have just entered traversedFrame, from the beginning
+    // or from the end
+  
+      if (aDirection == eDirNext)
+      {
+        // we entered from the beginning. We want to go up as
+        // far as we can until we get to the math root.
+        while ((pChild == pParent->GetFirstChild(nsnull)) && pFrame)
+        {
+          // we might be able to go up
+          pChild = pParent;
+          pParent = pParent->GetParent();
+          pFrame = IsMathFrame(pParent)?pParent:nsnull;
+        }
+        pFrameChild = IsMathFrame(pChild)?pChild:nsnull; 
+        if ((pFrameChild) && (pMathCM = GetMathCursorMover(pFrameChild))) 
+          pMathCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, &count); 
+        // pFrameChild can't be null because it was pFrame at the time it passed through the
+        // while loop above
+      }
+      else
+      {
+        while ((pChild->GetNextSibling() == nsnull)&&pFrame)
+        {
+          // we might be able to go up
+          pChild = pParent;
+          pParent = pParent->GetParent();
+          pFrame = IsMathFrame(pParent)?pParent:nsnull;
+        }
+        pFrameChild = IsMathFrame(pChild)?pChild:nsnull;  
+        if ((pFrameChild)  && (pMathCM = GetMathCursorMover(pFrameChild))) 
+          pMathCM->MoveOutToLeft(pChild, aOutFrame, aOutOffset, count, &count);
+        else printf("We need some code here\n");
+      }
+    }  
+    else
+    {
+      if (aDirection == eDirNext)
+        *aOutOffset = 0;
+      else
+        *aOutOffset = -1;
+    }
+  }
 
 #ifdef IBMBIDI
   if (aVisual) {
