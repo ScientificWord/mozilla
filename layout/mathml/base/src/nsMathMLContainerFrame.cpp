@@ -65,7 +65,7 @@
 #include "nsCSSFrameConstructor.h"
 #include "nsIReflowCallback.h"
 #include "nsMathCursorUtils.h"
-#include "nsMathMLCursorMotion.h"
+#include "nsMathMLCursorMover.h"
 
 NS_DEFINE_CID(kInlineFrameCID, NS_INLINE_FRAME_CID);
 
@@ -78,7 +78,7 @@ NS_DEFINE_CID(kInlineFrameCID, NS_INLINE_FRAME_CID);
 
 NS_IMPL_ADDREF_INHERITED(nsMathMLContainerFrame, nsMathMLFrame)
 NS_IMPL_RELEASE_INHERITED(nsMathMLContainerFrame, nsMathMLFrame)
-NS_IMPL_QUERY_INTERFACE_INHERITED2(nsMathMLContainerFrame, nsHTMLContainerFrame, nsMathMLFrame, nsMathMLCursorMotion)
+NS_IMPL_QUERY_INTERFACE_INHERITED2(nsMathMLContainerFrame, nsHTMLContainerFrame, nsMathMLFrame, nsMathMLCursorMover)
 
 // =============================================================================
 
@@ -1480,7 +1480,7 @@ NS_IMETHODIMP nsMathMLContainerFrame::MoveOutToRight(nsIFrame *leavingFrame, nsI
   printf("containerframe MoveOutToRight, count = %d\n", count);
   // default behavior is to pass it on to the children
   nsIFrame* pFrame = GetFirstChild(nsnull);
-  nsCOMPtr<nsIMathMLCursorMotion> pMCM;
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (leavingFrame)
   {
     while (pFrame && pFrame != leavingFrame) pFrame = pFrame->GetNextSibling();
@@ -1490,7 +1490,7 @@ NS_IMETHODIMP nsMathMLContainerFrame::MoveOutToRight(nsIFrame *leavingFrame, nsI
   if (pFrame)
   {
     pMCM = do_QueryInterface(pFrame);  
-    if (pMCM) pMCM->EnterFromLeft(leavingFrame, aOutFrame, count, &count);
+    if (pMCM) pMCM->EnterFromLeft(leavingFrame, aOutFrame, aOutOffset, count, &count);
     else 
       printf("nsMathMLContainerFrame has non-MathML child\n");  //could be a text node BBM: fix this
   }
@@ -1513,7 +1513,7 @@ nsMathMLContainerFrame::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **aOutFra
 {                
   printf("containerframe MoveOutToLeft, count = %d\n", count);
   // same as above, but backwards in a singly-linked list
-  nsCOMPtr<nsIMathMLCursorMotion> pMCM;
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
   nsIFrame * pFrame = GetFirstChild(nsnull);
   nsIContent * pContent;
   nsIFrame * pParent = nsnull;
@@ -1526,7 +1526,7 @@ nsMathMLContainerFrame::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **aOutFra
   if (pPrevious) 
   {
     pMCM = do_QueryInterface(pPrevious);
-    if (pMCM) pMCM->EnterFromRight(this, aOutFrame, count, &count);
+    if (pMCM) pMCM->EnterFromRight(this, aOutFrame, aOutOffset, count, &count);
     else  // next frame backward is not math -- probably text
       PlaceCursorAfter(pPrevious, PR_TRUE, aOutFrame, aOutOffset, count);
     
@@ -1563,16 +1563,16 @@ nsMathMLContainerFrame::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **aOutFra
 }  
 
 NS_IMETHODIMP 
-nsMathMLContainerFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 count, PRInt32 *_retval)
+nsMathMLContainerFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRInt32 *_retval)
 {
   printf("containerframe EnterFromLeft, count = %d\n", count);
   nsIFrame * pFrame = GetFirstChild(nsnull);
   nsIContent * pContent;
-  nsCOMPtr<nsIMathMLCursorMotion> pMCM;
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (pFrame)
   {
     pMCM = do_QueryInterface(pFrame);
-    if (pMCM) pMCM->EnterFromLeft(this, aOutFrame, count, &count);
+    if (pMCM) pMCM->EnterFromLeft(this, aOutFrame, aOutOffset, count, &count);
     else // child frame is not a math frame. Probably a text frame. We'll assume this for not
     // BBM come back and fix this!
     {
@@ -1606,15 +1606,15 @@ nsMathMLContainerFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFra
 }
 
 NS_IMETHODIMP 
-nsMathMLContainerFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 count, PRInt32 *_retval)
+nsMathMLContainerFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRInt32 *_retval)
 {
   printf("containerframe EnterFromRight, count = %d\n", count);
   nsIFrame * pFrame = GetFirstChild(nsnull);
-  nsCOMPtr<nsIMathMLCursorMotion> pMCM;
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (!pFrame)
   {
    pMCM = do_QueryInterface(GetParent());
-   if (pMCM) pMCM->EnterFromRight(this, aOutFrame, count, &count);
+   if (pMCM) pMCM->EnterFromRight(this, aOutFrame, aOutOffset, count, &count);
   }
   while (pFrame->GetNextSibling() != nsnull)
     pFrame = pFrame->GetNextSibling();
@@ -1622,7 +1622,7 @@ nsMathMLContainerFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFr
   else
   {
     pMCM = do_QueryInterface(pFrame);
-    if (pMCM) pMCM->EnterFromRight(this, aOutFrame, count, &count);
+    if (pMCM) pMCM->EnterFromRight(this, aOutFrame, aOutOffset, count, &count);
   }
   *_retval = count;
   return NS_OK;  

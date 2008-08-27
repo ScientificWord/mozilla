@@ -62,7 +62,7 @@
             </mml:mrow>
           </mml:math>
         </description>
-      </button>
+      </msibutton>
       <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="&#x2190;">
         <description>
           <mml:math display="inline">
@@ -78,7 +78,7 @@
             </mml:mrow>
           </mml:math>
         </description>
-      </button>
+      </msibutton>
       <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="&#x2192;">
         <description>
           <mml:math display="inline">
@@ -94,7 +94,7 @@
             </mml:mrow>
           </mml:math>
         </description>
-      </button>
+      </msibutton>
       <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="&#x2194;">
         <description>
           <mml:math display="inline">
@@ -110,7 +110,7 @@
             </mml:mrow>
           </mml:math>
         </description>
-      </button>
+      </msibutton>
       <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="&#xFE37;">
         <description>
           <mml:math display="inline">
@@ -126,7 +126,7 @@
             </mml:mrow>
           </mml:math>
         </description>
-      </button>
+      </msibutton>
       <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="&#x0302;">
         <description>
           <mml:math display="inline">
@@ -142,7 +142,7 @@
             </mml:mrow>
           </mml:math>
         </description>
-      </button>
+      </msibutton>
       <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="&#x02DC;">
         <description>
           <mml:math display="inline">
@@ -158,7 +158,7 @@
             </mml:mrow>
           </mml:math>
         </description>
-      </button>
+      </msibutton>
       <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="label">
         <description>
           <mml:math display="inline">
@@ -180,7 +180,7 @@
             </mml:mrow>
           </mml:math>
         </description>
-      </button>
+      </msibutton>
     </groupbox>
   </vbox>
   <vbox xmlns:xhtml="http://www.w3.org/1999/xhtml"
@@ -204,7 +204,7 @@
             </mml:mrow>
           </mml:math>
         </description>
-      </button>
+      </msibutton>
       <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="&#x2190;">
         <description>
           <mml:math display="inline">
@@ -220,7 +220,7 @@
             </mml:mrow>
           </mml:math>
         </description>
-      </button>
+      </msibutton>
       <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="&#x2192;">
         <description>
           <mml:math display="inline">
@@ -236,7 +236,7 @@
             </mml:mrow>
           </mml:math>
         </description>
-      </button>
+      </msibutton>
       <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="&#x2194;">
         <description>
           <mml:math display="inline">
@@ -252,7 +252,7 @@
             </mml:mrow>
           </mml:math>
         </description>
-      </button>
+      </msibutton>
       <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="&#xFE38;">
         <description>
           <mml:math display="inline">
@@ -268,7 +268,7 @@
             </mml:mrow>
           </mml:math>
         </description>
-      </button>
+      </msibutton>
       <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="label">
         <description>
           <mml:math display="inline">
@@ -290,7 +290,7 @@
             </mml:mrow>
           </mml:math>
         </description>
-      </button>
+      </msibutton>
     </groupbox>
   </vbox>
   <vbox xmlns:xhtml="http://www.w3.org/1999/xhtml"
@@ -309,7 +309,7 @@
             </mml:mrow>
           </mml:math>
         </description>
-      </button>
+      </msibutton>
       <msibutton group="decorationsAroundButtonGroup" autoCheck="false" value="frame">
         <description class="framebox">
           <mml:math display="inline">
@@ -320,7 +320,7 @@
             </mml:mrow>
           </mml:math>
         </description>
-      </button>
+      </msibutton>
     </groupbox>
   </vbox>
 </dialog>

@@ -27,7 +27,7 @@
 
 <xsl:template match="sw:preamble">
 <xsl:apply-templates/>
-\input tcilatex.tex  <!-- 
+<!--\input tcilatex.tex   
 should not be done under some conditions -->
 \begin{document}
 </xsl:template>
