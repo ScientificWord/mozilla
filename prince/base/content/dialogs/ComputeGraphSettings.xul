@@ -335,7 +335,7 @@
              <label id="bgcolor" control="TextButton" value="Background Color: " />
              <msibutton id="bgcolorbutton" class="color-button" oncommand="GetGraphColor('BGColor');">
                <spacer id="plotCW" class="color-well"/>
-             </button>
+             </msibutton>
            </row>
 
           <groupbox>        

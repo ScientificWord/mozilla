@@ -1,4 +1,4 @@
-
+/* ==== editor.css ==========================================================
    == Styles shared throughout the Editor application.
    ========================================================================== */
 
@@ -78,11 +78,18 @@ dialog,
 wizard,
 prefwindow,
 tab,
+tabs,
 tabpanels,
 tabbox,
 menupopup,
 menu,
 panel
 {
+  -moz-appearance: none;
   background-color: rgb(243,243,243);
+}
+
+menu
+{
+  background-color: transparent;
 }
