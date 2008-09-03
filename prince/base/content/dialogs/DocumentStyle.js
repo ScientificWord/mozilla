@@ -17,6 +17,7 @@ function startup()
   var docStyle = window.arguments[0];
   var editor;
   var cssList;
+  var scriptList;
   var xmlList;
   var styleSheetList;
   var arr;
@@ -26,6 +27,7 @@ function startup()
   editor = msiGetEditor(docStyle.edElement);
   editordoc = editor.document;
   cssList =  document.getElementById("csslist");
+  scriptList = document.getElementById("scriptlist");
   xmlList =  document.getElementById("xmllist");
   styleSheetList = editordoc.styleSheets;
   arr = [];
@@ -44,6 +46,10 @@ function startup()
   tagdefsArr = processingInstructionsList(editordoc, "sw-tagdefs");
   for (i = 0; i < tagdefsArr.length; i++)
     appendlistitem(xmlList, tagdefsArr[i]);
+  var scripts = editordoc.getElementsByTagName("script");
+  var scriptLength = scripts.length;
+  for (i = 0; i< scriptLength; i++)
+    appendlistitem(scriptList, scripts[i].getAttribute('src'));
 }
 
 
@@ -148,7 +154,7 @@ function add(listboxid, textboxid, extension)
 }
 
 
-function browse( extension )// extension is 'css', 'xml', 'xsl' or something for tex styles
+function browse( extension )// extension is 'css', 'js', 'xml', 'xsl' or something for tex styles
 {
   const msIFilePicker = Components.interfaces.nsIFilePicker;
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
