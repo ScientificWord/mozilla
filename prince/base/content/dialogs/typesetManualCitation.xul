@@ -52,7 +52,7 @@
   <!-- Following scripts are needed if the editor wants to allow computation -->
   <script type="application/x-javascript" src="chrome://prince/content/ComputeOverlay.js"/>
 
-  <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
+  <!-- If the editor is to support context menus, but also need the following, and the commandset below: -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/>
 
