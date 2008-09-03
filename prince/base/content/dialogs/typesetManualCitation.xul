@@ -49,7 +49,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
   <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
-  <!-- Following scripts are needed if the editor wants to allow computation -->
+  <!-- Following scripts are needed if the editor really wants to allow computation -->
   <script type="application/x-javascript" src="chrome://prince/content/ComputeOverlay.js"/>
 
   <!-- If the editor is to support context menus, but also need the following, and the commandset below: -->
