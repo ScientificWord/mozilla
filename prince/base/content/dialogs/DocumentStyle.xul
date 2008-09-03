@@ -26,13 +26,14 @@
   <tabbox>
     <tabs>
       <tab label="Style sheets"/>
+      <tab label="Scripts"/>
       <tab label="Tag definitions"/>
       <tab label="XSLT translations"/>
       <tab><label><html:latex>L<html:sup>A</html:sup>T<html:sub>E</html:sub>X</html:latex> style</label></tab>
     </tabs>
     <tabpanels>
       <tabpanel>
-        <vbox><!-- a comment -->
+        <vbox>
         <label>"Style sheets in use" </label>
         <hbox>
           <vbox>
@@ -46,6 +47,26 @@
             <msibutton label="Remove" oncommand="remove('csslist')"/>
             <msibutton label="Move up" oncommand="moveup('csslist')"/>
             <msibutton label="Move down" oncommand="movedown('csslist')"/>
+            <separator flex="1"/>
+          </vbox>
+        </hbox>
+        </vbox>
+      </tabpanel>
+      <tabpanel>
+        <vbox>
+        <label>"Included JavaScript files" </label>
+        <hbox>
+          <vbox>
+            <textbox id="scriptfile" value="Enter new JavaScript files here"/>
+            <listbox id="scriptlist" seltype="multiple" oncommand="">
+            </listbox>
+          </vbox>
+          <vbox>
+            <msibutton id = "browsescript" label = "Browse" oncommand="browse('js')" />
+            <msibutton id = "addscript" label = "Add" oncommand="add('scriptlist','scriptfile','js');" />
+            <msibutton label="Remove" oncommand="remove('scriptlist')"/>
+            <msibutton label="Move up" oncommand="moveup('scriptlist')"/>
+            <msibutton label="Move down" oncommand="movedown('scriptlist')"/>
             <separator flex="1"/>
           </vbox>
         </hbox>
