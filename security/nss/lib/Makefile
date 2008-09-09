@@ -62,11 +62,11 @@ ifeq ($(OS_TARGET), WINCE)
 DIRS := $(filter-out fortcrypt,$(DIRS))
 endif
 
-# ifndef MOZILLA_CLIENT
-# ifndef NSS_USE_SYSTEM_SQLITE
+ifndef MOZILLA_CLIENT
+ifndef NSS_USE_SYSTEM_SQLITE
 DIRS := sqlite $(DIRS)
-# endif
-# endif
+endif
+endif
 
 #######################################################################
 # (5) Execute "global" rules. (OPTIONAL)                              #
