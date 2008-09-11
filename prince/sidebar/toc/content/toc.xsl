@@ -53,7 +53,14 @@
 	<treeitem xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 		<treerow>
 			<treecell>
-				<xsl:attribute name="label">Figure: <xsl:value-of select = "@title"/></xsl:attribute>
+				<xsl:attribute name="label">Figure: 
+				  <xsl:choose>
+				    <xsl:when test="string-length(@title) &gt; 0"><xsl:value-of select = "@title"/>
+				    </xsl:when>
+				    <xsl:otherwise><xsl:value-of select = "@alt"/>
+				    </xsl:otherwise>
+				  </xsl:choose>
+				</xsl:attribute>
 				<xsl:attribute name="value">
 					<xsl:value-of select="@id"/>
 				</xsl:attribute>		
