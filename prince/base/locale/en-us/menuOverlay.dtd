@@ -16,7 +16,7 @@
 <!ENTITY fileopenremote.accesskey "l">
 <!ENTITY fileopenremote.keybinding "l">
 <!ENTITY fileRecentMenu.label "Recent Files">
-<!ENTITY filerecentmenu.accesskey "r">
+<!ENTITY filerecentmenu.accesskey "R">
 <!ENTITY fileRevert.label "Revert">
 <!ENTITY filerevert.accesskey "v">
 <!ENTITY saveCmd.label "Save">
@@ -44,7 +44,7 @@
 <!ENTITY filepreview.accesskey "w">
 <!ENTITY sendPageCmd.label "Send Page...">
 <!ENTITY sendPage.accesskey "g">
-<!ENTITY printSetupCmd.label "Page Setup...">
+<!ENTITY printSetupCmd.label "Print Setup...">
 <!ENTITY fileprintsetup.accesskey "u">
 <!ENTITY printPreviewCmd.label "Print Preview">
 <!ENTITY fileprintpreview.accesskey "v">
