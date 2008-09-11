@@ -25,7 +25,7 @@ description { counter-reset: item; }
 itemize { list-style: disc; 
   counter-reset: item; }
 
-img { display: inline; margin: 2em } 
+img { display: inline;} 
 
 quote { display: block; }
 
@@ -165,7 +165,7 @@ refprintright {
 
 img {
   -moz-force-broken-image-icon: 1;
-  min-height: 17px; min-width: 70px;
+  min-height: 6px; min-width: 6px;
 }
 
 graphSpec {
