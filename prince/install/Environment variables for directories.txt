@@ -1,0 +1,20 @@
+%ALLUSERSPROFILE% 	C:\Documents and Settings\All Users 	C:\ProgramData
+ %APPDATA% 	C:\Documents and Settings\{username}\Application Data 	C:\Users\{username}\AppData\Roaming
+ %COMPUTERNAME% 	{computername} 	{computername}
+ %COMMONPROGRAMFILES% 	C:\Program Files\Common Files 	C:\Program Files\Common Files
+ %COMMONPROGRAMFILES(x86)% 	C:\Program Files (x86)\Common Files 	C:\Program Files (x86)\Common Files
+ %COMSPEC% 	C:\Windows\System32\cmd.exe 	C:\Windows\System32\cmd.exe
+ %HOMEDRIVE% 	C:\ 	C:\
+ %HOMEPATH% 	C:\Documents and Settings\{username} 	C:\Users\{username}
+ %PATH% 	C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;{plus program paths} 	C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;{plus program paths}
+ %PATHEXT% 	.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.WSF;.WSH 	.com;.exe;.bat;.cmd;.vbs;.vbe;.js;.jse;.wsf;.wsh;.msc
+ %PROGRAMFILES% 	C:\Program Files 	C:\Program Files
+ %PROGRAMFILES(X86)% 	C:\Program Files (x86) (only in 64-bit version) 	C:\Program Files (x86) (only in 64-bit version)
+ %PROMPT% 	Code for current command prompt format. Code is usually $P$G 	Code for current command prompt format. Code is usually $P$G
+ %SYSTEMDRIVE% 	C: 	C:
+ %SystemRoot% 	The Windows directory, usually C:\Windows, formerly C:\WINNT 	C:\Windows
+ %TEMP% and %TMP% 	C:\Documents and Settings\{username}\Local Settings\Temp 	C:\Users\{username}\AppData\Local\Temp
+ %USERNAME% 	{username} 	{username}
+ %USERPROFILE% 	C:\Documents and Settings\{username} 	C:\Users\{username}
+ %WINDIR% 	C:\Windows 	C:\Windows
+ %PUBLIC% 		C:\Users\Public
