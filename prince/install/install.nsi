@@ -66,6 +66,7 @@
 XPStyle on
 ShowInstDetails hide
 ShowUninstDetails hide
+SetCompressor /FINAL lzma
  
 Name "${prodname}"
 Caption "${prodname}"
