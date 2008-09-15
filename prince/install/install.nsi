@@ -19,12 +19,13 @@
  
 ;    3. This notice may not be removed or altered from any source distribution.
  
+; !define PRINCEBASE c:\prince2
 !define setup "SWPSetup.exe"
-!define princedir "\prince2\release\swppro"
+!define princedir "${PRINCEBASE}\release\swppro"
  
 ; change this to wherever the files to be packaged reside
 !define srcdir ${princedir}
-!define srctree "${princedir}\..\..\mozilla"
+!define srctree "${PRINCEBASE}\mozilla"
  
 !define company "MacKichan Software"
  
@@ -73,7 +74,7 @@ Caption "${prodname}"
 Icon "${srctree}\prince\icons\${icon}"
 !endif
  
-OutFile "${setup}"
+OutFile "${PRINCEBASE}\release\${setup}"
  
 SetDateSave on
 SetDatablockOptimize on
