@@ -5260,7 +5260,7 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
         pChild = pChild->GetNextSibling();
       }
     }
-    if (pChild) pMathChild = IsMathFrame(pChild)?pChild:nsnull;
+    pMathChild = IsMathFrame(pChild)?pChild:nsnull;
     if (aDirection == eDirNext)
     {
       if ((pMathChild) && (pMathCM = GetMathCursorMover(pMathChild))) 
