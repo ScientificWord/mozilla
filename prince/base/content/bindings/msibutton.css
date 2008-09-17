@@ -39,6 +39,14 @@ toolbar[iconsize="small"] msibutton[checked]	[class="msibutton-right"]{
   list-style-image: url(chrome://prince/skin/icons/slice-right-sm.png);
 }
 
+msibutton:active [class="msibutton-right"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-right-active.png);
+}
+
+toolbar[iconsize="small"] msibutton:active	[class="msibutton-right"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-right-active-sm.png);
+}
+
 /*--------------*/
 
 msibutton [class="msibutton-left"]{
@@ -73,6 +81,14 @@ toolbar[iconsize="small"] msibutton[checked]	[class="msibutton-left"]{
   list-style-image: url(chrome://prince/skin/icons/slice-left-sm.png);
 }
 
+msibutton:active [class="msibutton-left"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-left-active.png);
+}
+
+toolbar[iconsize="small"] msibutton:active	[class="msibutton-left"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-left-active-sm.png);
+}
+
 /*-----------------------------------------*/
 msibutton [class="msibutton-mid"]{
   background-image: url(chrome://prince/skin/icons/slice-middle.png);
@@ -104,6 +120,14 @@ msibutton[checked] [class="msibutton-mid"]{
 
 toolbar[iconsize="small"] msibutton[checked]	[class="msibutton-mid"]{
   background-image: url(chrome://prince/skin/icons/slice-middle-sm.png);
+}
+
+msibutton:active [class="msibutton-mid"]{
+  background-image: url(chrome://prince/skin/icons/slice-middle-active.png);
+}
+
+toolbar[iconsize="small"] msibutton:active	[class="msibutton-mid"]{
+  background-image: url(chrome://prince/skin/icons/slice-middle-active-sm.png);
 }
 
 *[class="msibutton-mid"] {
