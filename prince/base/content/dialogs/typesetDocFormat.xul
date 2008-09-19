@@ -765,7 +765,10 @@
         </tabpanel>
      <tabpanel id="docformatFontsPanel">
         <vbox>
-          <checkbox id="useOpenType" label="&docformatUseOpenType;" />
+          <hbox><checkbox id="useOpenType" label="&docformatUseOpenType;" />
+            <separator/>
+            <msibutton label="Refresh font list" oncommand="initializeFontFamilyList(true);"/>
+          </hbox>
           <broadcaster id="opentypeok" observes="useOpenType" />
           <groupbox>
             <caption label="&mainFontsGroup;"/>
