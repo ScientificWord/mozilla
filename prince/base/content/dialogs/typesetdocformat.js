@@ -32,9 +32,82 @@ function InitializeUnits()
   unitConversions.pica=4.2175176; // 12 * (mm per pt)
 }
 
+function newValue(element, index, array)
+{
+  if (!element.match(/\S/)) return false;
+  if (index == 0) return true;
+  return element != array[index-1];
+}
+
+var re = /:([^:]*)$/i;
+
+function stripPath(element, index, array)
+{
+  array[index] = re.exec(element)[1];
+}
+ 
+function initializeFontFamilyList(force)
+{
+  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+  var dir = dsprops.get("resource:app", Components.interfaces.nsIFile);
+  var outfile;
+  outfile = dir.clone();
+  outfile.append("fontfamilies.txt");
+  if (!force)
+  { 
+    if (outfile.exists()) return;
+  }
+  var listfile = dir.clone(); 
+  listfile.append("bigfontlist.txt");
+  if (listfile.exists()) listfile.remove(false);
+  var exefile = dir.clone();
+  exefile.append("BuildFontFamilyList.cmd");
+
+  try 
+  {
+    var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+    theProcess.init(exefile);
+    var args =[exefile.parent.path,listfile.parent.path];
+    theProcess.run(true, args, args.length);
+  } 
+  catch (ex) 
+  {
+       dump("\nUnable to run OtfInfo.exe\n");
+       dump(ex+"\n");
+  }      
+  if (!listfile.exists())
+  {
+    dump("Failed to create bigfontlist.txt\n");
+    return;
+  }
+  var path = "file://"+listfile.target;
+  var myXMLHTTPRequest = new XMLHttpRequest();
+  myXMLHTTPRequest.open("GET", path, false);
+  myXMLHTTPRequest.send(null);
+  var str = myXMLHTTPRequest.responseText;
+  var lines = str.split(/[\n\r]*[a-z]:[^:]*:/i);
+  var i;
+  lines = lines.sort();
+  var unique = lines.filter(newValue);
+// output the result
+  str = "";
+  if (outfile.exists()) outfile.remove(false);
+  for (i =0, limit=unique.length; i < limit; i++)
+    str += unique[i] + "\n";
+  var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+  fos.init(outfile, -1, -1, false);
+  var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+    .createInstance(Components.interfaces.nsIConverterOutputStream);
+  os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
+  os.writeString(str);
+  os.close();
+  fos.close();
+//  dump(str);
+}
 
 function Startup()
 {
+  initializeFontFamilyList(false);
   editor = GetCurrentEditor();
   if (!editor) {
     window.close();
