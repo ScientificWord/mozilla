@@ -1,4 +1,4 @@
-otfinfo -a %windir%\fonts\*.?tf | sed 's/.*\.[to]tf://'  |sort|uniq	   >fontfamilies.txt
+%1\otfinfo -a %windir%\fonts\*.?tf >%2\bigfontlist.txt
 
 
 
