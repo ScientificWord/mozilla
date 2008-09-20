@@ -1790,10 +1790,14 @@ public:
    *  @param aOutOffset [out] 0 indicates that we arrived at the beginning of the output frame;
    *                          -1 indicates that we arrived at its end.
    *  @param aOutJumpedLine [out] whether this frame and the returned frame are on different lines
+   *  @param aMath [out] whether the offset and frame returned were computed by the special math routines
+   *  @param fBailing [out] is set when the cursor goes from math to non-math, and the math
+   *                          code hands the job back to the Mozilla code
    */
   nsresult GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
                                  PRBool aJumpLines, PRBool aScrollViewStop, 
-                                 nsIFrame** aOutFrame, PRInt32* aOutOffset, PRBool* aOutJumpedLine);
+                                 nsIFrame** aOutFrame, PRInt32* aOutOffset, PRBool* aOutJumpedLine,
+                                 PRBool* aMath, PRBool* fBailing);
 
   /**
    *  called to see if the children of the frame are visible from indexstart to index end.
