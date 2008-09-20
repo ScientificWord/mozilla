@@ -28,5 +28,12 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
 
 PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32& count);
 
-											   
+nsIFrame * GetFirstTextFrame( nsIFrame * pFrame );
+
+nsIFrame * GetFirstTextFramePastFrame( nsIFrame * pFrame );
+
+nsIFrame * GetLastTextFrame( nsIFrame * pFrame );											   
+
+nsIFrame * GetLastTextFrameBeforeFrame( nsIFrame * pFrame );
+
 #endif /* nsMathCursorUtils_h___ */

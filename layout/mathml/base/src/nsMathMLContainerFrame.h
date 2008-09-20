@@ -51,7 +51,7 @@
 #include "nsMathMLChar.h"
 #include "nsMathMLFrame.h"
 #include "nsMathMLParts.h"
-#include "nsMathMLCursorMover.h"
+#include "nsMathMLContainerCursorMover.h"
 
 /*
  * Base class for MathML container frames. It acts like an inferred 
@@ -68,10 +68,11 @@
 
 class nsMathMLContainerFrame : public nsHTMLContainerFrame,
                                public nsMathMLFrame,
-                               public nsMathMLCursorMover {
+                               public nsMathMLContainerCursorMover {
   friend class nsMathMLmfencedFrame;
 public:
-  nsMathMLContainerFrame(nsStyleContext* aContext) : nsHTMLContainerFrame(aContext) {}
+  nsMathMLContainerFrame(nsStyleContext* aContext) : nsHTMLContainerFrame(aContext),
+    nsMathMLContainerCursorMover(this) {}
 
   NS_DECL_ISUPPORTS_INHERITED
 
@@ -356,19 +357,6 @@ public:
   static nsresult
   ReLayoutChildren(nsIFrame* aParentFrame, nsFrameState aBits);
 
-  NS_IMETHOD 
-  MoveOutToRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRInt32 *_retval);
-
-  NS_IMETHOD 
-  MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRInt32 *_retval);
-
-  NS_IMETHOD 
-  EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRInt32 *_retval);
-
-  NS_IMETHOD 
-  EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRInt32 *_retval);
-
-
 
 protected:
   // Helper method which positions child frames as an <mrow> on given baseline
@@ -404,11 +392,13 @@ private:
 // 2) proper inter-frame spacing
 // 3) firing of Stretch() (in which case FinalizeReflow() would have to be cleaned)
 // Issues: If/when mathml becomes a pluggable component, the separation will be needed.
-class nsMathMLmathBlockFrame : public nsBlockFrame {
+class nsMathMLmathBlockFrame : public nsBlockFrame,
+                               public nsMathMLContainerCursorMover {
 public:
   friend nsIFrame* NS_NewMathMLmathBlockFrame(nsIPresShell* aPresShell,
           nsStyleContext* aContext, PRUint32 aFlags);
 
+  NS_DECL_ISUPPORTS_INHERITED
   // beware, mFrames is not set by nsBlockFrame
   // cannot use mFrames{.FirstChild()|.etc} since the block code doesn't set mFrames
   NS_IMETHOD
@@ -466,8 +456,10 @@ public:
     return nsBlockFrame::IsFrameOfType(aFlags & ~(nsIFrame::eMathML));
   }
 
+
 protected:
-  nsMathMLmathBlockFrame(nsStyleContext* aContext) : nsBlockFrame(aContext) {
+  nsMathMLmathBlockFrame(nsStyleContext* aContext) : nsBlockFrame(aContext),
+    nsMathMLContainerCursorMover(this)  {
     // We should always have a space manager.  Not that things can really try
     // to float out of us anyway, but we need one for line layout.
     AddStateBits(NS_BLOCK_SPACE_MGR);
@@ -477,9 +469,12 @@ protected:
 
 // --------------
 
-class nsMathMLmathInlineFrame : public nsInlineFrame {
+class nsMathMLmathInlineFrame : public nsInlineFrame,
+                               public nsMathMLContainerCursorMover {
 public:
   friend nsIFrame* NS_NewMathMLmathInlineFrame(nsIPresShell* aPresShell, nsStyleContext* aContext);
+
+  NS_DECL_ISUPPORTS_INHERITED
 
   NS_IMETHOD
   SetInitialChildList(nsIAtom*        aListName,
@@ -537,7 +532,8 @@ public:
   }
 
 protected:
-  nsMathMLmathInlineFrame(nsStyleContext* aContext) : nsInlineFrame(aContext) {}
+  nsMathMLmathInlineFrame(nsStyleContext* aContext) : nsInlineFrame(aContext),
+    nsMathMLContainerCursorMover(this)  {}
   virtual ~nsMathMLmathInlineFrame() {}
 };
 
