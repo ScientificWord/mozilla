@@ -42,7 +42,7 @@
 }
 
 #imgURLBarIcon {
-  list-style-image: url("chrome://communicator/skin/bookmarks/location.gif");
+  list-style-image: url("chrome://inspector/skin/location.gif");
 }
 
 #bxSearch {
