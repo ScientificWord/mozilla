@@ -46,6 +46,7 @@
 #include "nsStyleConsts.h"
 #include "nsIRenderingContext.h"
 #include "nsIFontMetrics.h"
+#include "nsMathCursorUtils.h"
 
 #include "nsMathMLmfencedFrame.h"
 #include "nsMathMLmfracFrame.h"
@@ -547,3 +548,131 @@ nsMathMLmfracFrame::SetAdditionalStyleContext(PRInt32          aIndex,
     break;
   }
 }
+
+nsresult
+nsMathMLmfracFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing,
+    PRInt32 *_retval)
+{
+  printf("mfrac EnterFromLeft, count = %d\n", count);
+  if (count == 0)
+  { // then the cursor should sit in front of this fraction
+    PlaceCursorBefore(this, PR_FALSE, aOutFrame, aOutOffset, count);
+    *_retval = 0;
+    return NS_OK;
+  }
+  count = 0;
+  nsIFrame * pFrame = GetFirstChild(nsnull);
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  if (pFrame)
+  {
+    pMCM = do_QueryInterface(pFrame);
+    if (pMCM) pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailing,  _retval);
+    else // child frame is not a math frame. Probably a text frame. We'll assume this for now
+    // BBM come back and fix this!
+    {
+      PlaceCursorBefore(pFrame, PR_TRUE, aOutFrame, aOutOffset, count);
+      *_retval = 0;
+      return NS_OK;
+    }
+  }
+  else 
+  {
+    printf("Found frac frame with no children\n");
+  }
+  return NS_OK;  
+}
+
+nsresult
+nsMathMLmfracFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
+    PRBool* fBailingOut, PRInt32 *_retval)
+{
+  printf("mfrac EnterFromRight, count = %d\n", count);
+  if (count == 0)
+  { // then the cursor should sit in front of this fraction
+    PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
+    *_retval = 0;
+    return NS_OK;
+  }
+  count = 0;
+  nsIFrame * pFrame = GetFirstChild(nsnull); // the numerator
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  if (pFrame)
+  {
+    pMCM = do_QueryInterface(pFrame);
+    if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+    else // child frame is not a math frame. Probably a text frame. We'll assume this for now
+    // BBM come back and fix this!
+    {
+      PlaceCursorAfter(pFrame, PR_TRUE, aOutFrame, aOutOffset, count);
+      *_retval = 0;
+      return NS_OK;
+    }
+  }
+  else 
+  {
+    printf("Found frac frame with no children\n");
+  }
+  return NS_OK;  
+}
+
+ 
+nsresult
+nsMathMLmfracFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
+    PRBool* fBailingOut, PRInt32 *_retval)
+{
+  printf("mfrac MoveOutToRight, count = %d\n", count);
+  // if the cursor is leaving either of its children, the cursor goes past the end of the fraction if count > 0
+  nsIFrame * pChild;
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  if (leavingFrame == nsnull)
+  {
+    nsIFrame * pParent = GetParent();
+    pMCM = do_QueryInterface(pParent);
+    if (pMCM) pMCM->MoveOutToRight(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+    else  // parent isn't math??? shouldn't happen
+    {
+      *_retval = count;
+      *aOutFrame = nsnull;  // should allow default Mozilla code to take over
+      return NS_OK;
+    }
+  }
+  else
+  {
+    // leaving numerator or denominator. Place the cursor just after the fraction
+    count= 0;
+    PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
+   *_retval = 0;
+  }
+  return NS_OK;  
+}
+
+nsresult
+nsMathMLmfracFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
+    PRBool* fBailingOut, PRInt32 *_retval)
+{                
+  printf("mfrac MoveOutToLeft, count = %d\n", count);
+  // if the cursor is leaving either of its children, the cursor goes past the end of the fraction if count > 0
+  nsIFrame * pChild;
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  if (leavingFrame == nsnull)
+  {
+    nsIFrame * pParent = GetParent();
+    pMCM = do_QueryInterface(pParent);
+    if (pMCM) pMCM->MoveOutToLeft(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+    else  // parent isn't math??? shouldn't happen
+    {
+      *_retval = count;
+      *aOutFrame = nsnull;  // should allow default Mozilla code to take over
+      return NS_OK;
+    }
+  }
+  else
+  {
+    // leaving numerator or denominator. Place the cursor just before the fraction
+    count= 0;
+    PlaceCursorBefore(this, PR_FALSE, aOutFrame, aOutOffset, count);
+   *_retval = 0;
+  }
+  return NS_OK;  
+}  
+

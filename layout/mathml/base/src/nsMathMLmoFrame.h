@@ -94,9 +94,19 @@ public:
           nsBoundingMetrics&   aContainerSize,
           nsHTMLReflowMetrics& aDesiredStretchSize);
 
+  NS_IMETHOD
+  MoveOutToRight(nsIFrame* leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
+      PRBool* fBailingOut, PRInt32* fretValue);
+
+  NS_IMETHOD
+  MoveOutToLeft(nsIFrame* leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
+      PRBool* fBailingOut, PRInt32* fretValue);
+
 protected:
   nsMathMLmoFrame(nsStyleContext* aContext) : nsMathMLTokenFrame(aContext) {}
   virtual ~nsMathMLmoFrame();
+ 
+  PRBool IsInvisibleOp();
   
   virtual PRIntn GetSkipSides() const { return 0; }
 

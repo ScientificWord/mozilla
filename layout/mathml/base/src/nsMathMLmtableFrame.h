@@ -47,7 +47,8 @@
 //
 
 class nsMathMLmtableOuterFrame : public nsTableOuterFrame,
-                                 public nsMathMLFrame
+                                 public nsMathMLFrame,
+                                  nsMathMLContainerCursorMover
 {
 public:
   friend nsIFrame* NS_NewMathMLmtableOuterFrame(nsIPresShell* aPresShell, nsStyleContext* aContext);
@@ -88,7 +89,8 @@ public:
   }
 
 protected:
-  nsMathMLmtableOuterFrame(nsStyleContext* aContext) : nsTableOuterFrame(aContext) {}
+  nsMathMLmtableOuterFrame(nsStyleContext* aContext) : nsTableOuterFrame(aContext),
+    nsMathMLContainerCursorMover(this) {}
   virtual ~nsMathMLmtableOuterFrame();
 
   // helper to find the row frame at a given index, positive or negative, e.g.,

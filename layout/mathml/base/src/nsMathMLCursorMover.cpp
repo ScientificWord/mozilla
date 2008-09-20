@@ -11,7 +11,8 @@ NS_IMPL_ISUPPORTS1(nsMathMLCursorMover, nsIMathMLCursorMover)
  */
 
 NS_IMETHODIMP 
-nsMathMLCursorMover::MoveOutToRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRInt32 *_retval)
+nsMathMLCursorMover::MoveOutToRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count,
+  PRBool* fBailing, PRInt32 *_retval)
 {
   printf("MoveOutToRight implementation fell through to MathMLCursorMover\n");
   *_retval = count;
@@ -19,7 +20,8 @@ nsMathMLCursorMover::MoveOutToRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame
 }
 
 NS_IMETHODIMP 
-nsMathMLCursorMover::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRInt32 *_retval)
+nsMathMLCursorMover::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count,
+  PRBool* fBailing, PRInt32 *_retval)
 {
   printf("MoveOutToLeft implementation fell through to MathMLCursorMover\n");
   *_retval = count;
@@ -27,7 +29,8 @@ nsMathMLCursorMover::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame,
 }
 
 NS_IMETHODIMP 
-nsMathMLCursorMover::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRInt32 *_retval)
+nsMathMLCursorMover::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count,
+  PRBool* fBailing, PRInt32 *_retval)
 {
   printf("EnterFromLeft implementation fell through to MathMLCursorMover\n");
   *_retval = count;
@@ -35,7 +38,8 @@ nsMathMLCursorMover::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame,
 }
 
 NS_IMETHODIMP 
-nsMathMLCursorMover::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRInt32 *_retval)
+nsMathMLCursorMover::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count,
+  PRBool* fBailing, PRInt32 *_retval)
 {
   printf("EnterFromRight implementation fell through to MathMLCursorMover\n");
   *_retval = count;

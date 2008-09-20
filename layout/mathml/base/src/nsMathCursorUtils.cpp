@@ -5,43 +5,38 @@
 #include "nsMathCursorUtils.h"
 #include "nsMathMLCursorMover.h"
 
+PRBool IsMathFrame( nsIFrame * aFrame );
 
 PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32& count)
 {
   nsIFrame * pChild;
   nsIFrame * pParent;
   nsCOMPtr<nsIContent> pContent;
+  pParent = pFrame->GetParent();
+
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (fInside) // we put the cursor at the end of the contents of pFrame; we do not recurse.
   {
     // find the last child
-    pChild = pFrame->GetFirstChild(nsnull);
-    while (pChild && pChild->GetNextSibling())
-      pChild = pChild->GetNextSibling();
-    pMCM = do_QueryInterface(pChild);
-    if (pMCM) // last child is a math ml frame. Put the cursor after it.
-    {
-      pContent = pFrame->GetContent();
-      *aOutOffset = 1+pContent->IndexOf(pChild->GetContent());
-      if (count>0) count--;
-      *aOutFrame = pFrame; 
-//      (*paPos)->mMath = PR_TRUE;
-    }
-    else // child is not math, assumed to be text
-    {
-      pContent = pChild->GetContent();
-      *aOutOffset = -1;           // largest possible value gets converted eventually to the end.
-      if (count>0) count--;
-      *aOutFrame = pChild; 
-//      (*paPos)->mMath = PR_TRUE;
-    }
+    pChild = GetLastTextFrame(pFrame);
+    if (pChild) *aOutFrame = pChild;
+    else return PR_FALSE;
+    nsAutoString value;
+    *aOutOffset = (pChild->GetContent())->TextLength();
   }
   else // don't put the cursor inside the tag
   {
-    pParent = pFrame->GetParent();
-    pContent = pParent->GetContent();
-    *aOutOffset = 1+pContent->IndexOf(pFrame->GetContent());
-    *aOutFrame = pParent; 
+    if (IsMathFrame(pParent))
+    {
+      pContent = pParent->GetContent();
+      *aOutOffset = 1+pContent->IndexOf(pFrame->GetContent());
+      *aOutFrame = pParent;
+    }
+    else
+    {
+      *aOutFrame = GetFirstTextFramePastFrame(pFrame);
+      *aOutOffset = count;
+    } 
 //    (*paPos)->mMath = PR_TRUE;
   }
   return PR_TRUE;
@@ -55,33 +50,123 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
   nsCOMPtr<nsIMathMLCursorMover> pMCM;
   if (fInside)
   {
-    pChild = pFrame->GetFirstChild(nsnull);
-    pMCM = do_QueryInterface(pChild);
-    if (pMCM) // child is a math ml frame. Recurse down the tree
+    pChild = GetFirstTextFrame(pFrame);
+    if (pChild)
     {
-      pMCM->EnterFromLeft(pFrame, aOutFrame, aOutOffset, count, (PRInt32*)&count);
-    }
-    else // child is not math, assumed to be text
-    {
-      pContent = pChild->GetContent();
       *aOutOffset = count;
-      if (count>0) count--;
+      count = 0;
       *aOutFrame = pChild; 
-//      (*paPos)->mMath = PR_TRUE;
     }
   }
   else // don't put the cursor inside the tag
   {
-    pParent = pFrame->GetParent();
-    pContent = pParent->GetContent();
-    *aOutOffset = pContent->IndexOf(pFrame->GetContent());
-    *aOutFrame = pParent; 
-//    (*paPos)->mMath = PR_TRUE;
+    if (count == 0)
+    {
+      pParent = pFrame->GetParent();
+      pContent = pParent->GetContent();
+      *aOutOffset = pContent->IndexOf(pFrame->GetContent());
+      *aOutFrame = pParent;
+    }
+    else
+    { 
+      pChild = GetLastTextFrameBeforeFrame(pFrame);
+      *aOutFrame = pChild;
+      *aOutOffset = (pChild->GetContent())->TextLength() - count;
+      }
   }
   return PR_TRUE;
 }
 
 
 
+nsIFrame * GetFirstTextFrame( nsIFrame * pFrame )
+{
+  if (!pFrame) return nsnull;
+  nsIAtom* type = pFrame->GetType();
+  nsIFrame * pRet = nsnull;
+  nsIFrame * pChild = nsnull; 
+  if (type == nsGkAtoms::textFrame) 
+    return pFrame;
+  else
+  {
+    pChild = pFrame->GetFirstChild(nsnull);
+    while (pChild && !(pRet = GetFirstTextFrame(pChild)))
+    {
+      pChild = pChild->GetNextSibling();
+      pRet = GetFirstTextFrame( pChild);
+    }
+    return pRet;
+  }
+}
+
+nsIFrame * GetPrevSib(nsIFrame * pFrame)
+{
+  nsIFrame * pTemp = pFrame->GetParent()->GetFirstChild(nsnull);
+  while (pTemp && (pTemp->GetNextSibling() != pFrame))
+    pTemp = pTemp->GetNextSibling();
+  return pTemp;
+}
+
+nsIFrame * GetLastChild(nsIFrame * pFrame)
+{
+  if (!pFrame) return nsnull;
+  nsIFrame * pTemp = pFrame->GetFirstChild(nsnull);
+  while (pTemp && pTemp->GetNextSibling()) pTemp = pTemp->GetNextSibling();
+  return pTemp;
+} 
+
+nsIFrame * GetFirstTextFramePastFrame( nsIFrame * pFrame )
+{
+  nsIFrame *pTemp = pFrame;
+  nsIFrame *pTextFrame = nsnull;
+  while (!pTextFrame && pTemp)
+  {
+    while (pTemp && !pTemp->GetNextSibling())
+    {
+      pTemp = pTemp->GetParent();
+    }
+    pTemp = pTemp = pTemp->GetNextSibling();
+    pTextFrame = GetFirstTextFrame(pTemp);
+  }
+  return pTextFrame;
+}
+
+
+nsIFrame * GetLastTextFrame( nsIFrame * pFrame )
+{
+  if (!pFrame) return nsnull;
+  nsIAtom* type = pFrame->GetType();
+  nsIFrame * pRet = nsnull;
+  nsIFrame * pChild = nsnull; 
+  if (type == nsGkAtoms::textFrame) 
+    return pFrame;
+  else
+  {
+    pChild = GetLastChild(pFrame);
+    while (pChild && !(pRet = GetLastTextFrame(pChild)))
+    {
+      pChild = GetPrevSib(pChild);
+      pRet = GetLastTextFrame( pChild);
+    }
+    return pRet;
+  }
+}											   
+
+
+nsIFrame * GetLastTextFrameBeforeFrame( nsIFrame * pFrame )
+{
+  nsIFrame *pTemp = pFrame;
+  nsIFrame *pTextFrame = nsnull;
+  while (!pTextFrame && pTemp)
+  {
+    while (pTemp && !GetPrevSib(pTemp))
+    {
+      pTemp = pTemp->GetParent();
+    }
+    pTemp = GetPrevSib(pTemp);
+    pTextFrame = GetLastTextFrame(pTemp);
+  }
+  return pTextFrame;
+}
 
 											   
