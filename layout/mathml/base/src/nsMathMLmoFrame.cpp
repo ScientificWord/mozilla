@@ -47,7 +47,7 @@
 #include "nsIRenderingContext.h"
 #include "nsIFontMetrics.h"
 #include "nsContentUtils.h"
-
+#include "nsMathCursorUtils.h"
 #include "nsIDOMText.h"
 
 #include "nsMathMLmoFrame.h"
@@ -1066,4 +1066,114 @@ nsMathMLmoFrame::SetAdditionalStyleContext(PRInt32          aIndex,
     mMathMLChar.SetStyleContext(aStyleContext);
     break;
   }
+}
+
+PRBool
+nsMathMLmoFrame::IsInvisibleOp()
+{
+  nsIContent * pContent = GetContent();
+  nsCOMPtr<nsIDOMNode> node;
+  nsCOMPtr<nsIDOMCharacterData> cd;         
+  node=do_QueryInterface(pContent);
+  if (!node) return PR_TRUE;
+  nsString strContents;
+  nsresult res;   
+  res = node->GetFirstChild((nsIDOMNode **)&node);
+  cd = do_QueryInterface(node);
+  if (cd) res = cd->GetData(strContents);
+  else return PR_TRUE;
+  if ((strContents.Length()==1)&&(strContents[0]==0x2061 || strContents[0]==0x2062)) return PR_TRUE;
+  return PR_FALSE;  
+}
+
+nsresult
+nsMathMLmoFrame::MoveOutToRight(nsIFrame* leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
+    PRBool* fBailingOut, PRInt32* fRetValue)
+{
+  printf("moframe: moveouttoright, count = %d\n", count);
+  // because the cursor does not show up when inside an mo, put it either before or after, 
+  // depending on count
+  nsIFrame * pParent = GetParent();
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  if (pParent)  // if this op is invisible (apply-function, invisible-times) pass this on
+  {
+    if (IsInvisibleOp())
+    {
+      pMCM = do_QueryInterface(pParent);
+      if (pMCM) 
+      {
+        pMCM->MoveOutToRight(this, aOutFrame, aOutOffset, count, fBailingOut, fRetValue);
+        return NS_OK;
+      }
+    }
+    //should always have a math parent
+  } 
+//  if (pParent && count > 0)
+//  {
+//    pMCM = do_QueryInterface(pParent);
+//    count = 0;                                                               
+//    if (pMCM) pMCM->MoveOutToRight(this, aOutFrame, aOutOffset, count, fBailingOut);
+//  }
+//  else
+//  {
+//    PRUint32 offset = count;
+//    if (!pParent)return NS_ERROR_FAILURE; 
+//    nsIFrame * pFrame = pParent->GetFirstChild(nsnull);
+//    // assert pFrame not null, because "this" exists.
+//    nsIFrame * pNextFrame = pFrame->GetNextSibling();
+//    while (pFrame && (this != pFrame))
+//    {
+//      pFrame = pFrame->GetNextSibling();
+//      offset++;
+//    }
+      if (count > 0) PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
+    else PlaceCursorBefore(this, PR_FALSE, aOutFrame, aOutOffset, count);
+//  }
+  return NS_OK;  
+}
+
+nsresult
+nsMathMLmoFrame::MoveOutToLeft(nsIFrame* leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
+    PRBool* fBailingOut, PRInt32* fRetValue)
+{
+  printf("moframe: moveouttoleft, count = %d\n", count);
+  // because the cursor does not show up when inside an mo, put it either before or after, 
+  // depending on count
+  nsIFrame * pParent = GetParent();
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  if (pParent)  // if this op is invisible (apply-function, invisible-times) pass this on
+  {
+    if (IsInvisibleOp())
+    {
+      pMCM = do_QueryInterface(pParent);
+      if (pMCM) 
+      {
+        pMCM->MoveOutToLeft(this, aOutFrame, aOutOffset, count, fBailingOut, fRetValue);
+        return NS_OK;
+      }
+    }
+    //should always have a math parent
+  } 
+//  if (pParent && count > 0)
+//  {
+//    pMCM = do_QueryInterface(pParent);
+//    count = 0;                                                               
+//    if (pMCM) pMCM->MoveOutToRight(this, aOutFrame, aOutOffset, count, fBailingOut);
+//  }
+//  else
+//  {
+//    PRUint32 offset = count;
+//    if (!pParent)return NS_ERROR_FAILURE; 
+//    nsIFrame * pFrame = pParent->GetFirstChild(nsnull);
+//    // assert pFrame not null, because "this" exists.
+//    nsIFrame * pNextFrame = pFrame->GetNextSibling();
+//    while (pFrame && (this != pFrame))
+//    {
+//      pFrame = pFrame->GetNextSibling();
+//      offset++;
+//    }
+      if (count > 0) PlaceCursorBefore(this, PR_FALSE, aOutFrame, aOutOffset, count);
+    else PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
+//  }
+  return NS_OK;  
 }

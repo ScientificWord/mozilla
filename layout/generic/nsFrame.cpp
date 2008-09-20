@@ -813,6 +813,7 @@ nsFrame::DisplaySelectionOverlay(nsDisplayListBuilder*   aBuilder,
     return NS_OK;
     
   nsPresContext* presContext = PresContext();
+
   nsIPresShell *shell = presContext->PresShell();
   if (!shell)
     return NS_OK;
@@ -4665,6 +4666,8 @@ static PRBool IsMovingInFrameDirection(nsIFrame* frame, nsDirection aDirection, 
   return aDirection == (isReverseDirection ? eDirPrevious : eDirNext);
 }
 
+PRBool IsMathFrame( nsIFrame * aFrame );
+
 NS_IMETHODIMP
 nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
 {
@@ -4675,9 +4678,17 @@ nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
   if (mState & NS_FRAME_IS_DIRTY)
     return NS_ERROR_UNEXPECTED;
 
-  // Translate content offset to be relative to frame
+  PRInt32 offset;
+  PRBool fBailing = PR_FALSE;
+  PRBool math = PR_FALSE;
   FrameContentRange range = GetRangeForFrame(this);
-  PRInt32 offset = aPos->mStartOffset - range.start;
+  if (aPos->mMath) 
+    offset = aPos->mStartOffset; // we do it differently for math -- BBM
+  else
+  {
+    // Translate content offset to be relative to frame
+    offset = aPos->mStartOffset - range.start;
+  } 
   nsIFrame* current = this;
   
   switch (aPos->mAmount) {
@@ -4700,7 +4711,7 @@ nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
           result =
             current->GetFrameFromDirection(aPos->mDirection, aPos->mVisual,
                                            aPos->mJumpLines, aPos->mScrollViewStop,
-                                           &current, &offset, &jumpedLine);
+                                           &current, &offset, &jumpedLine, &math, &fBailing);
           if (NS_FAILED(result))
             return result;
 
@@ -4708,16 +4719,25 @@ nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
           // to eat non-renderable content on the new line.
           if (jumpedLine)
             eatingNonRenderableWS = PR_TRUE;
+          if (math && !fBailing) done = PR_TRUE;
         }
       }
 
       // Set outputs
-      range = GetRangeForFrame(current);
-      aPos->mResultFrame = current;
-      aPos->mResultContent = range.content;
-      // Output offset is relative to content, not frame
-      aPos->mContentOffset = offset < 0 ? range.end : range.start + offset;
-      
+      if (math)
+      {
+        aPos->mResultFrame = current;
+        aPos->mResultContent = current->GetContent();
+        aPos->mContentOffset = offset;
+      }
+      else
+      {
+        range = GetRangeForFrame(current);
+        aPos->mResultFrame = current;
+        aPos->mResultContent = range.content;
+        // Output offset is relative to content, not frame
+        aPos->mContentOffset = offset < 0 ? range.end : range.start + offset;
+      }
       break;
     }
     case eSelectWord:
@@ -4762,10 +4782,11 @@ nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
           nsIFrame* nextFrame;
           PRInt32 nextFrameOffset;
           PRBool jumpedLine;
+          PRBool math;
           result =
             current->GetFrameFromDirection(aPos->mDirection, aPos->mVisual,
                                            aPos->mJumpLines, aPos->mScrollViewStop,
-                                           &nextFrame, &nextFrameOffset, &jumpedLine);
+                                           &nextFrame, &nextFrameOffset, &jumpedLine, &math, &fBailing);
           // We can't jump lines if we're looking for whitespace following
           // non-whitespace, and we already encountered non-whitespace.
           if (NS_FAILED(result) ||
@@ -4785,11 +4806,20 @@ nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
       }
       
       // Set outputs
-      range = GetRangeForFrame(current);
-      aPos->mResultFrame = current;
-      aPos->mResultContent = range.content;
-      // Output offset is relative to content, not frame
-      aPos->mContentOffset = offset < 0 ? range.end : range.start + offset;
+      if (IsMathFrame(current))
+      {
+        aPos->mResultFrame = current;
+        aPos->mResultContent = current->GetContent();
+        aPos->mContentOffset = offset; // in math we compute it relative to content -- BBM
+      }
+      else
+      {
+        range = GetRangeForFrame(current);
+        aPos->mResultFrame = current;
+        aPos->mResultContent = range.content;
+        // Output offset is relative to content, not frame
+        aPos->mContentOffset = offset < 0 ? range.end : range.start + offset;
+      }
       break;
     }
     case eSelectLine :
@@ -5081,6 +5111,7 @@ nsFrame::GetLineNumber(nsIFrame *aFrame, nsIFrame** aContainingBlock)
 
 PRBool IsMathFrame( nsIFrame * aFrame )
 {
+  if (! aFrame) return PR_FALSE;
   nsAutoString sNamespace;
   nsCOMPtr<nsIContent> pContent;
   nsCOMPtr<nsIDOMNode> pNode;
@@ -5105,12 +5136,9 @@ nsIMathMLCursorMover * GetMathCursorMover( nsIFrame * aFrame )
 
 PRBool IsParentMathFrame( nsIFrame * aFrame )
 {
+
   nsIFrame* pParent = aFrame->GetParent();
-  if (pParent) 
-  {
-    return IsMathFrame(pParent);
-  }
-  else return PR_FALSE;
+  return IsMathFrame(pParent);
 }
 
 
@@ -5120,14 +5148,13 @@ PRBool IsParentMathFrame( nsIFrame * aFrame )
 nsresult
 nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
                                 PRBool aJumpLines, PRBool aScrollViewStop, 
-                                nsIFrame** aOutFrame, PRInt32* aOutOffset, PRBool* aOutJumpedLine)
+                                nsIFrame** aOutFrame, PRInt32* aOutOffset, PRBool* aOutJumpedLine,
+                                PRBool* aMath, PRBool* fBailing)
 {  
   if (!aOutFrame || !aOutOffset || !aOutJumpedLine)
     return NS_ERROR_NULL_POINTER;
   
   nsPresContext* presContext = PresContext();
-  *aOutFrame = nsnull;
-  *aOutOffset = 0;
   *aOutJumpedLine = PR_FALSE;
 
   // Find the prev/next selectable frame
@@ -5247,55 +5274,64 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
   {
     printf("Starting in a math frame\n");
     // the cursor is in a math tag, not in a text tag that is in mathematics, and we are leaving
-    if (*aOutOffset == 0) pChild = nsnull;
-    else
+    // BBM: Fix this. Counting in the frame tree is unreliable. We should be doing it in the DOM tree.
+    PRUint32 nodecount = 0;
+    pChild = GetFirstChild(nsnull);
+    pLastChild = nsnull;
+    while (pChild && nodecount < (*aOutOffset))
     {
-      // BBM: Fix this. Counting in the frame tree is unreliable. We should be doing it in the DOM tree.
-      PRUint32 nodecount = 0;
-      pChild = GetFirstChild(nsnull);
-      while (pChild && nodecount < (*aOutOffset))
-      {
-        nodecount++;
-        pLastChild = pChild;
-        pChild = pChild->GetNextSibling();
-      }
+      nodecount++;
+      pLastChild = pChild;
+      pChild = pChild->GetNextSibling();
     }
     pMathChild = IsMathFrame(pChild)?pChild:nsnull;
     if (aDirection == eDirNext)
     {
+      pMathChild = IsMathFrame(pChild)?pChild:nsnull;
       if ((pMathChild) && (pMathCM = GetMathCursorMover(pMathChild))) 
       {
-        pMathCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, &count);
+        pMathCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailing, &count);
       }
-      else // pFrame is top-level
+      else 
       {
         pMathCM = GetMathCursorMover(pFrame);
-        pMathCM->MoveOutToRight(pLastChild, aOutFrame, aOutOffset, count, &count);
+        pMathCM->MoveOutToRight(pLastChild, aOutFrame, aOutOffset, count, fBailing, &count);
       }
     }
     else {
+      pMathChild = IsMathFrame(pLastChild)?pLastChild:nsnull;
       if ((pMathChild) && (pMathCM = GetMathCursorMover(pMathChild)))
       {
-         pMathCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, &count);
+         pMathCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailing, &count);
       }
-      else // pFrame is top-level
+      else 
       {
         if (pMathCM = GetMathCursorMover(pFrame))
-          pMathCM->MoveOutToLeft(pLastChild, aOutFrame, aOutOffset, count, &count);
+          pMathCM->MoveOutToLeft(pLastChild, aOutFrame, aOutOffset, count, fBailing, &count);
       }  
     }
+    if (*fBailing) goto bailedOut;
+    *aMath = PR_TRUE;
     return NS_OK;
   }
   else
   {
-    pFrame = IsParentMathFrame(this)?this:nsnull;
+    pFrame = IsParentMathFrame(this)?GetParent():nsnull;
     if (pFrame)
     {
-      if ((pMathCM = GetMathCursorMover(pFrame)) && (aDirection == eDirNext))
-        pMathCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, &count);
+      // this is not a math frame, but a parent is. Probably this is a text frame.
+      // Check if the next frame is a text frame. If so, bail and let the default code take care of it.
+      *aMath = PR_TRUE;
+      if (GetNextContinuation())
+      {
+        pFrame = nsnull;
+      }
+      else if ((pMathCM = GetMathCursorMover(pFrame)) && (aDirection == eDirNext))
+        pMathCM->MoveOutToRight(this, aOutFrame, aOutOffset, count, fBailing, &count);
       else if (pMathCM)
-        pMathCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, &count);
+        pMathCM->MoveOutToLeft(this, aOutFrame, aOutOffset, count, fBailing, &count);
     }
+    if (*fBailing) goto bailedOut;
   }
   if ((pFrame==nsnull) || (count > 0))
   {
@@ -5305,13 +5341,13 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
     {
       pParent = traversedFrame->GetParent();
       pFrame = IsParentMathFrame(traversedFrame)?pParent:nsnull;
-      pChild = traversedFrame;
+      pChild = traversedFrame; 
     }
     if (pFrame) // We are entering a math frame from the outside
     {
     // we have just entered traversedFrame, from the beginning
     // or from the end
-  
+      *aMath = PR_TRUE;
       if (aDirection == eDirNext)
       {
         // we entered from the beginning. We want to go up as
@@ -5325,7 +5361,11 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
         }
         pFrameChild = IsMathFrame(pChild)?pChild:nsnull; 
         if ((pFrameChild) && (pMathCM = GetMathCursorMover(pFrameChild))) 
-          pMathCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, &count); 
+        {
+          pMathCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailing, &count);
+          if (count == 0) *aOutJumpedLine = PR_TRUE; // this signals that the advance has been done
+        }
+          
         // pFrameChild can't be null because it was pFrame at the time it passed through the
         // while loop above
       }
@@ -5340,9 +5380,10 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
         }
         pFrameChild = IsMathFrame(pChild)?pChild:nsnull;  
         if ((pFrameChild)  && (pMathCM = GetMathCursorMover(pFrameChild))) 
-          pMathCM->MoveOutToLeft(pChild, aOutFrame, aOutOffset, count, &count);
+          pMathCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailing, &count);
         else printf("We need some code here\n");
       }
+      if (*fBailing) goto bailedOut;
     }  
     else
     {
@@ -5352,7 +5393,7 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
         *aOutOffset = -1;
     }
   }
-
+bailedOut:
 #ifdef IBMBIDI
   if (aVisual) {
     PRUint8 newLevel = NS_GET_EMBEDDING_LEVEL(traversedFrame);
@@ -5361,7 +5402,7 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
       *aOutOffset = -1 - *aOutOffset;
   }
 #endif
-  *aOutFrame = traversedFrame;
+  if (!*aOutFrame) *aOutFrame = traversedFrame;
   return NS_OK;
 }
 
@@ -6003,6 +6044,7 @@ nsFrame::RefreshSizeCache(nsBoxLayoutState& aState)
     metrics->mBlockMinSize.height = 0;
     // ok we need the max ascent of the items on the line. So to do this
     // ask the block for its line iterator. Get the max ascent.
+
     nsCOMPtr<nsILineIterator> lines = do_QueryInterface(static_cast<nsIFrame*>(this));
     if (lines) 
     {
@@ -6836,6 +6878,7 @@ struct DR_Rule
   }
   ~DR_Rule() {
     if (mTarget) mTarget->Destroy();
+
     MOZ_COUNT_DTOR(DR_Rule);
   }
   void AddPart(nsIAtom* aFrameType);
@@ -7197,6 +7240,7 @@ PRBool DR_State::RuleMatches(DR_Rule&          aRule,
        rulePart && parentNode;
        rulePart = rulePart->mNext, parentNode = parentNode->mParent) {
     if (rulePart->mFrameType) {
+
       if (parentNode->mFrame) {
         if (rulePart->mFrameType != parentNode->mFrame->GetType()) {
           return PR_FALSE;
@@ -7461,6 +7505,7 @@ void nsFrame::DisplayReflowExit(nsPresContext*      aPresContext,
     char width[16];
     char height[16];
     char x[16];
+
     char y[16];
     DR_state->PrettyUC(aMetrics.width, width);
     DR_state->PrettyUC(aMetrics.height, height);
