@@ -1,3 +1,6 @@
+
+
+
 #include "nsISupports.idl"
 
 interface nsIFrame;
@@ -5,66 +8,89 @@ interface nsIFrame;
 [scriptable, uuid(F85AD3B9-D72D-42cf-94DE-779565620E6A)]
 
 /**
- * A MathMLCursorMover handles cursor movement between frames (either the source
- * frame or the destination frame is a MathML frame). Within frames, and if neither
- * of the frames supports this interface, the default cursor movement is used, which
- * goes character by character through the document. The MathMLCursorMover handles the 
- * following cases:	<ul>
- *  <li> There are two cursor positions between characters, as when a fraction follows 
- *    symbols. The cursor can be at the end of the main line characters, or before the
- *    first character in the numerator. </li>
- *  <li> We override the default "next character", as when the cursor leaves a fraction
- *    when it leaves the numerator (and skips the denominator)</li>
- *  <li> We want to force the order of traversal through sub- and super-scripts.</li>
- */
+ * nsIMathMLCursorMover
+ * 
+ * A MathMLCursorMover handles cursor movement between frames, one or both
+ * of which is a MathML frame.  Within frames, and if neither of the frames
+ * (the source or the destination) supports this interface, the default
+ * cursor movement is used, which goes character by character through the
+ * document. The MathMLCursorMover handles the  following cases:	<ul> 
+ * 
+ * <li>There are two cursor positions between characters, as when a
+ * fraction
+ * follows  symbols. The cursor can be at the end of the main line
+ * characters, or before the first character in the numerator. </li> 
+ * 
+ * <li>We override the default "next character", as when the cursor leaves
+ * a fraction when it leaves the numerator (and skips the denominator)</li>
+ * 
+ * <li> We want to force the order of traversal, as through sub- and
+ * super-scripts.</li></ul>
+ * 
+ * The most common case, implemented by nsMathMLContainerCursorMover, is
+ * is a MathML container.
+ **/
 
 interface nsIMathMLCursorMover : nsISupports
 {
 /**
- * This method is called when the cursor is leaving a frame, and most frequently a frame will call this 
- * function on its parent (if it supports this interface). A case where the parent can better handle this
- * is the fraction, which knows it has a numerator and a denominator. Those frames may not know they are
- * part of a fraction.
- *
  * @leavingFrame is the frame that the cursor is leaving
  * @count is 1 or 0, and it tells how many characters the cursor can still cross. For example, when the 
- * cursor moves from after the last character before a fraction to before the first character in the numberator,
+ * cursor moves from after the last character before a fraction to before the first character in the numerator,
  * the value of count should be decremented to 0, since moving to the new cursor position counts as a move,
- * even though no characters have been crossed.
+ * even though no characters have been crossed. If the count is not decremented, the cursor would appear after
+ * the first character in the numerator.
  * @aOutFrame is used to return the final frame containing the cursor. It must be passed along a chain of
  * calls.
  * @aOutOffset is used to return the cursor position in aOutFrame.
- * @Returns the new value of count, which may be of interest to the caller.
- */
+ * @Returns the new value of count, which modifies subsequent behavior if the process continues.
+ * 
+ * The default implementation of this function, in nsMathMLContainerCursorMover, is:
+ * If leavingFrame is null, then the cursor is leaving this frame, and so we check the parent. If it implements
+ * nsIMathMLCursorMover, we call moveOutToRight on the parent with leavingFrame = this.
+ * If leavingFrame is not null, then the cursor is leaving leavingFrame, which is a child of this. We find the next
+ * child and call EnterFromLeft on it. If there is no next child, we do the same as when leavingFrame was null.
+ * If the parent doesn't implement nsIMathMLCursorMover, we put the cursor to the right of the mathematics frame.
+ **/
 
-  long moveOutToRight(in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count);
+  long moveOutToRight(in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count,
+    out boolean fBailingOut);
 
 /**
  * This is the same as |moveOutToRight| except the cursor motion is right to left.
  */
    
-  long moveOutToLeft(in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count);
+  long moveOutToLeft(in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count,
+    out boolean fBailingOut);
 
 /**
  * This method is called on a frame when the cursor enters the frame. This will frequently be called
  * by the frame's parent.
  *
- * @leavingFrame is the frame that the cursor is leaving. It is quite likely a sibling.
+ * @leavingFrame is always null, so far
  * @count is 1 or 0, and it tells how many characters the cursor can still cross. For example, when the 
- * cursor moves from after the last character before a fraction to before the first character in the numberator,
+ * cursor moves from after the last character before a fraction to before the first character in the numerator,
  * the value of count should be decremented to 0, since moving to the new cursor position counts as a move,
  * even though no characters have been crossed.
  * @aOutFrame is used to return the final frame containing the cursor. It must be passed along a chain of
  * calls.
  * @aOutOffset is used to return the cursor position in aOutFrame.
- * @return the new value of count, which may be of interest to the caller.
- */
-  long enterFromRight(in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count);
+ * @return the new value of count, which modifies subsequent behavior if the process continues.
+ *
+ * The default implementation, in nsMathMLContainerCursorMover, is:
+ * Check the first child. If it implements nsIMathMLCursorMover, call child->enterFromRight. If not 
+ * (the child should be a text frame), place the cursor in the position given by count.
+ *
+ **/
+ 
+long enterFromRight(in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count,
+    out boolean fBailingOut);
 
 /**
  * This is the same as |enterFromRight| except the cursor motion is right to left.
  */
 
-  long enterFromLeft(in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count);
+  long enterFromLeft(in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count,
+    out boolean fBailingOut);
 };
 

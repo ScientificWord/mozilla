@@ -106,6 +106,7 @@ CPPSRCS =         nsMathMLChar.cpp		        \
                   nsMathMLmactionFrame.cpp		\
                   nsMathCursorUtils.cpp			\
                   nsMathMLCursorMover.cpp		\
+                  nsMathMLContainerCursorMover.cpp \
                   $(NULL)
 
 include $(topsrcdir)/config/config.mk

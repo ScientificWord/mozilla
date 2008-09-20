@@ -1227,6 +1227,10 @@ nsFrameSelection::Init(nsIPresShell *aShell, nsIContent *aLimiter)
   mCaretMovementStyle = nsContentUtils::GetIntPref("bidi.edit.caret_movement_style", 2);
 }
 
+extern PRBool IsMathFrame( nsIFrame * aFrame );
+extern PRBool IsParentMathFrame( nsIFrame * aFrame );
+
+
 nsresult
 nsFrameSelection::MoveCaret(PRUint32          aKeycode,
                             PRBool            aContinueSelection,
@@ -1316,20 +1320,22 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
     PR_FALSE : // Delete operations and home/end are always logical
     mCaretMovementStyle == 1 || (mCaretMovementStyle == 2 && !aContinueSelection);
 
+  offsetused = mDomSelections[index]->FetchFocusOffset();
+  weakNodeUsed = mDomSelections[index]->FetchFocusNode();
+  
   nsIFrame *frame;
   result = mDomSelections[index]->GetPrimaryFrameForFocusNode(&frame, &offsetused, visualMovement);
   // in mathml we don't want the changes given by the above line.
-  if (PR_FALSE) //(frame)
+  PRBool isMath = PR_FALSE;
+  if (frame)
   {
     nsIFrame *tempFrame;
     nsCOMPtr<nsIContent> tempContent;
     PRInt32 SaveOffsetused = offsetused;
 
-    nsCOMPtr<nsIMathMLFrame> pMathFrame;
-    pMathFrame = do_QueryInterface(frame);
-    if (!pMathFrame) pMathFrame = do_QueryInterface(frame->GetParent());
-    if (pMathFrame) // the returned frame was math or contained in math (a text frame), so undo the GetPrimaryFrameForFocusNode.
+    if (IsMathFrame(frame) || IsParentMathFrame(frame)) // the returned frame was math or contained in math (a text frame), so undo the GetPrimaryFrameForFocusNode.
     {
+      isMath = PR_TRUE;
       tempFrame = frame;
       tempContent = do_QueryInterface(weakNodeUsed);
       while ( tempFrame && (tempFrame->GetContent() != tempContent)) tempFrame = tempFrame->GetParent();
@@ -1349,6 +1355,7 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
   //when we hit scrollable views.  If no limiter then just let it go ahead
   pos.SetData(aAmount, eDirPrevious, offsetused, desiredX, 
               PR_TRUE, mLimiter != nsnull, PR_TRUE, visualMovement);
+  pos.mMath = isMath;
 
   nsBidiLevel baseLevel = nsBidiPresUtils::GetFrameBaseLevel(frame);
   
@@ -2023,9 +2030,12 @@ nsFrameSelection::GetPrevNextBidiLevels(nsIContent *aNode,
   nsIFrame *newFrame;
   PRInt32 offset;
   PRBool jumpedLine;
+  PRBool math;
+  PRBool fBailing = PR_FALSE;
   nsresult rv = currentFrame->GetFrameFromDirection(direction, PR_FALSE,
                                                     aJumpLines, PR_TRUE,
-                                                    &newFrame, &offset, &jumpedLine);
+                                                    &newFrame, &offset, &jumpedLine, &math,
+                                                    &fBailing);
   if (NS_FAILED(rv))
     newFrame = nsnull;
 
