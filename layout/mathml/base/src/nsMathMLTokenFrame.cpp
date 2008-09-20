@@ -46,6 +46,7 @@
 #include "nsIFontMetrics.h"
 #include "nsContentUtils.h"
 #include "nsCSSFrameConstructor.h"
+#include "nsMathCursorUtils.h"
 #include "nsMathMLTokenFrame.h"
 
 nsIFrame*
@@ -431,4 +432,58 @@ nsMathMLTokenFrame::SetQuotes()
                    nsGkAtoms::rquote_, value)) {
     SetQuote(rightFrame, value);
   }
+}
+
+/* long moveOutToRight (in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count); */
+NS_IMETHODIMP 
+nsMathMLTokenFrame::MoveOutToRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
+{
+  nsIFrame * pParent = GetParent();
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  pMCM = do_QueryInterface(pParent);
+  if (pMCM) pMCM->MoveOutToRight(this, aOutFrame, aOutOffset, count, fBailing, _retval);
+  return NS_OK;
+}
+
+/* long moveOutToLeft (in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count); */
+NS_IMETHODIMP 
+nsMathMLTokenFrame::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
+{
+  nsIFrame * pParent = GetParent();
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  pMCM = do_QueryInterface(pParent);
+  if (pMCM) pMCM->MoveOutToLeft(this, aOutFrame, aOutOffset, count, fBailing, _retval);
+  return NS_OK;
+}
+
+/* long enterFromRight (in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count); */
+NS_IMETHODIMP 
+nsMathMLTokenFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
+{
+    if (count == 0)
+    {
+      PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, *_retval);
+    }
+    else
+    {
+      PlaceCursorBefore(this, PR_FALSE, aOutFrame, aOutOffset, *_retval);
+    }
+    *_retval = 0;
+    return NS_OK;
+}
+
+/* long enterFromLeft (in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count); */
+NS_IMETHODIMP 
+nsMathMLTokenFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
+{
+    if (count > 0)
+    {
+      PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, *_retval);
+    }
+    else
+    {
+      PlaceCursorBefore(this, PR_FALSE, aOutFrame, aOutOffset, *_retval);
+    }
+    *_retval = 0;
+    return NS_OK;
 }
