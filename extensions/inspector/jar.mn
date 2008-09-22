@@ -139,7 +139,6 @@ inspector.jar:
   skin/classic/inspector/sidebar.css                                  (resources/skin/classic/sidebar.css)
   skin/classic/inspector/multipanel.css                               (resources/skin/classic/multipanel.css)
   skin/classic/inspector/iconViewerList-dis.gif                       (resources/skin/classic/iconViewerList-dis.gif)
-  skin/classic/inspector/location.gif                                 (resources/skin/classic/location.gif)
   skin/classic/inspector/viewers/boxModel/boxModel.css                (resources/skin/classic/viewers/boxModel/boxModel.css)
   skin/classic/inspector/viewers/dom/columnsDialog.css                (resources/skin/classic/viewers/dom/columnsDialog.css)
   skin/classic/inspector/viewers/dom/dom.css                          (resources/skin/classic/viewers/dom/dom.css)
