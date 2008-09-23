@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    title="Select shell for new document"
+    buttons="accept,cancel"
+    buttonlabelcancel="Cancel" buttonlabelaccept="OK"
+    onload = "initialize();"
+    screenX = "80"
+    screenY = "80"
+    persist = "screenX screenY"
+    ondialogaccept="return onAccept();" ondialogcancel="return onCancel();">
+
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js"/>
+  <script type="application/x-javascript" src="chrome://global/content/nsTransferable.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/openshell.js"/>
+
+  <hbox style="height: 3in">
+    <vbox style="width:2in" >
+      <label value="Shell Directories:"/>
+      <tree id="dir-tree" flex="1" enableColumnDrag="true" seltype="single" 
+             onselect="showShellsInDir(this);"
+             datasources="rdf:files" flags="dont-build-content"
+             sortActive="true" sortDirection="ascending"
+             sortResource="http://homefile.netscape.com/NC-rdf#Name"
+             ref="">
+        <treecols>
+          <treecol id="Name" label="Name" primary="true" flex="1" persist="width ordinal hidden"
+            sortactive="true" sortDirection = "ascending" />
+          <splitter/>
+          <treecol id="Date" label="Date" hidden="true" flex="1"  persist="width ordinal hidden"
+            sortDirection = "ascending"/>
+          <splitter/>
+          <treecol id="Size" label="Size" hidden="true" flex="1"  persist="width ordinal hidden"
+            sortDirection = "ascending"/>
+        </treecols>
+
+          <template>
+            <rule iscontainer="true">
+              <treechildren  >
+                <treeitem uri="rdf:*">
+                  <treerow>
+                    <treecell label="rdf:http://home.netscape.com/NC-rdf#Name"/>
+                       <!--   src="rdf:http://home.netscape.com/NC-rdf#Icon"/ -->
+                    <treecell label="rdf:http://home.netscape.com/WEB-rdf#LastModifiedDate"/>
+                    <treecell label="rdf:http://home.netscape.com/NC-rdf#Content-Length"/>
+                  </treerow>
+                </treeitem>
+              </treechildren>
+            </rule>
+          </template>
+      </tree>
+    </vbox> 
+    <vbox style="width:2in" >
+      <label value="Shell Files:"/>
+      <listbox flex = "1" id="dircontents" oncommand="return onAccept();" value=""/>
+    </vbox>
+  </hbox>
+
+
+</dialog>
