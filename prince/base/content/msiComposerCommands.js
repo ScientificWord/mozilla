@@ -856,35 +856,23 @@ var msiNewCommand =
 
   doCommand: function(aCommand)
   {
-    var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
-    var fp = Components.classes["@mozilla.org/filepicker;1"].
-               createInstance(Components.interfaces.nsIFilePicker);
     var newdocumentfile;
     var dir;
-    msiSetFilePickerDirectory(fp, "shell");
-    fp.defaultExtension = "."+MSI_EXTENSION;
-    var dir1 =dsprops.get("resource:app", Components.interfaces.nsIFile);
-    dir1.append("shells");;
-    fp.displayDirectory = dir1;
-    fp.init(window, "Open Shell File", Components.interfaces.nsIFilePicker.modeOpen);
-    fp.appendFilter("Shell Files","*."+MSI_EXTENSION);
-    fp.appendFilters(Components.interfaces.nsIFilePicker.filterText);
-    fp.appendFilters(Components.interfaces.nsIFilePicker.filterAll);
+    var data={file: "not yet"};
+    window.openDialog("chrome://prince/content/openshell.xul","_blank", "chrome,close,titlebar,modal,resizable=yes", data);
+    if (data.filename)
+    {
+      if (data.filename && data.filename.length > 0) {
+        dump("Ready to edit shell: " + data.filename +"\n");
+        try {
+          var thefile = Components.classes["@mozilla.org/file/local;1"].           
+            createInstance(Components.interfaces.nsILocalFile);
+          thefile.initWithPath(data.filename);
+          newdocumentfile = createWorkingDirectory(thefile);
+          msiEditPage("file:///"+newdocumentfile.path, window, false);
+        } catch (e) { dump("msiEditPage failed: "+e+"\n"); }
 
-    try {
-      fp.show();
-    }
-    catch (ex) {
-      dump("filePicker.show() threw an exception: "+ex+"\n");
-    }
-
-    if (fp.file && fp.file.path.length > 0) {
-      dump("Ready to edit shell: " + fp.fileURL.spec +"\n");
-      try {
-        newdocumentfile = createWorkingDirectory(fp.file);
-        msiEditPage("file:///"+newdocumentfile.path, window, false);
-      } catch (e) { dump("msiEditPage failed: "+e+"\n"); }
-
+      }
     }
   }
 } 
