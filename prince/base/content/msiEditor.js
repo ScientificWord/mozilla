@@ -830,8 +830,8 @@ function msiEditorDocumentObserver(editorElement)
           msiOnFontColorChange();
           msiOnBackgroundColorChange();
           editor.setTopXULWindow(window);
-          // also initialize the sidebar in this case
-          try {initSidebar();} catch(e){}
+          // also initialize list of macros and fragments
+          try {initializeMacrosAndFragments();} catch(e){}
           // now is the time to initialize the autosubstitute engine
           try {
             var autosub = Components.classes["@mozilla.org/autosubstitute;1"].getService(Components.interfaces.msiIAutosub);
