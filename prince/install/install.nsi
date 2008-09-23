@@ -20,8 +20,9 @@
 ;    3. This notice may not be removed or altered from any source distribution.
  
 ; !define PRINCEBASE c:\prince2
+; !define BUILD release
 !define setup "SWPSetup.exe"
-!define princedir "${PRINCEBASE}\release\swppro"
+!define princedir "${PRINCEBASE}\${BUILD}\swppro"
  
 ; change this to wherever the files to be packaged reside
 !define srcdir ${princedir}
@@ -75,7 +76,7 @@ Caption "${prodname}"
 Icon "${srctree}\prince\icons\${icon}"
 !endif
  
-OutFile "${PRINCEBASE}\release\${setup}"
+OutFile "${PRINCEBASE}\${BUILD}\${setup}"
  
 SetDateSave on
 SetDatablockOptimize on
