@@ -5,6 +5,7 @@ const NS_PIPETRANSPORT_CONTRACTID= "@mozilla.org/process/pipe-transport;1";
 const NS_PROCESSINFO_CONTRACTID = "@mozilla.org/xpcom/process-info;1";
 
 var gPipeConsole;
+Components.utils.import("resource://app/modules/macroArrays.jsm");
 
 function goAboutDialog() {
   window.openDialog("chrome://prince/content/aboutDialog.xul", GetString("About"), "modal,chrome,resizable=yes");
