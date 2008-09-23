@@ -96,6 +96,8 @@ prince.jar:
 * content/msiConsole.html      (msiConsole.html)
 * content/msiButtonGroup.js     (dialogs/msiButtonGroup.js)
 * content/msiDialogUtilities.js     (dialogs/msiDialogUtilities.js)
+* content/openshell.js     (dialogs/openshell.js)
+* content/openshell.xul     (dialogs/openshell.xul)
 * content/Operators.js      (dialogs/Operators.js)
 * content/Operators.xul     (dialogs/Operators.xul)
   content/plugins.html       (plugins.html)
