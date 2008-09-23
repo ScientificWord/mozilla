@@ -1,3 +1,4 @@
+Components.utils.import("resource://app/modules/macroArrays.jsm");
 
 function focusOnEditor()
 {
@@ -6,141 +7,45 @@ function focusOnEditor()
   if (editWindow) editWindow.contentWindow.focus();         
 }
 
-// we keep two objects that serve as associative arrays for the macros and fragments
-var macroArray;
-var fragmentArray;
 
-// builds the directory tree of fragment files and builds the list of fragment files for
-// calling by the keyboard. The boolean 'buildListOnly' is true when we don't need to rebuild
-// the tree but do need to build the list, as, for example, right after the ref has been
-// assigned.
-function rebuildFragmentTree(tree, buildListOnly)
-{
-  if (!buildListOnly) tree.builder.rebuild();
-  var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-  ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
-  var dir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-  var dirpath = tree.getAttribute("ref");
-  dirpath = dirpath.substring(8,dirpath.length-1);
-    // take ref attribute and lop off "file:///" and last "/"
-  // for Windows
-#ifdef XP_WIN32
-  dirpath = dirpath.replace("/","\\","g");
-#endif
-  dir.initWithPath(dirpath);
-   addFragmentsToList(ACSA, dir);
-}
-
-
-// A recursively-called routine that does the adding of the file names to the list
-function addFragmentsToList(autocomplete, dir)
-{
-  if (dir.isDirectory())
-  {
-    var enumerator = dir.directoryEntries.QueryInterface(Components.interfaces.nsIDirectoryEnumerator);
-    var file;
-    var dirpath = dir.path;
-    var filename;
-    while (enumerator.hasMoreElements())
-    {
-      file = enumerator.getNext();
-      file.QueryInterface(Components.interfaces.nsIFile);
-      if (file.isDirectory()) addFragmentsToList(autocomplete,file);
-      else
-      {
-        filename = file.leafName;
-        if (filename.length - filename.search(/\.frg$/)==4)
-        {
-          filename = filename.substring(0, filename.length-4);
-          autocomplete.addString("fragments",filename);
-          fragmentArray[filename] = new Object;
-          fragmentArray[filename].dirpath = dirpath;
-        }
-      }
-    }
-    enumerator.close();
-  }
-}  
-  
 
 function initSidebar()
 {
   // Since RDF file trees can't take RESOURCE:// path names, we need to convert the
   // fragmentsBaseDirectory to a FILE:// url.
-  macroArray = new Object();
-  fragmentArray = new Object();
-  var dir1;
-  dir1 = getUserResourceFile("fragments","");
-  var dirpath = dir1.path + "/";
-#ifdef XP_WIN32
-  dirpath = dirpath.replace("\\","/","g");
-#endif
-  var fragmentsBaseDirectory = "file:///" + dirpath;
-  document.getElementById("frag-tree").setAttribute("ref", fragmentsBaseDirectory);
-  rebuildFragmentTree(document.getElementById("frag-tree"),true);
-  //
-  // Now load the macros file
-  // We need to prebuild these so that the keyboard shortcut works
-  // ACSA = autocomplete string array
-  var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
-  ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
-  var macrofile;
-  macrofile = getUserResourceFile("macros.xml","xml");
-  var request = Components.
-                classes["@mozilla.org/xmlextras/xmlhttprequest;1"].
-                createInstance();
-  request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
-  var path = "file:///"+macrofile.target;
-#ifdef XP_WIN32
-  path = path.replace("\\","/","g");
-#endif
   try {
-    request.open("GET", path, false);
-    request.send(null);
-                                
-    var xmlDoc = request.responseXML; 
-    if (!xmlDoc && request.responseText)
-      throw("macros.js exists but cannot be parsed as XML");
-    var nodeList;
-    var node;
-    var s;
-    var arrayElement;
-    {
-      nodeList = xmlDoc.getElementsByTagName("m");
-      for (var i = 0; i < nodeList.length; i++)
-      {
-        node = nodeList.item(i);
-        s = node.getAttribute("nm");
-        arrayElement = new Object();
-        arrayElement.forcesMath = (node.getAttribute("fm") == "1");
-        arrayElement.script = (node.getAttribute("tp") == "sc");
-        arrayElement.data = node.getElementsByTagName("data").item(0).textContent;
-        if (!arrayElement.script)
-        {
-          arrayElement.context = node.getElementsByTagName("context").item(0).textContent;
-          arrayElement.info = node.getElementsByTagName("info").item(0).textContent;
-        }
-        macroArray[s] = arrayElement;
-        ACSA.addString("macros",s);
-      }
-    }
+    var dir1;
+    dir1 = getUserResourceFile("fragments","");
+    var dirpath = dir1.path + "/";
+#ifdef XP_WIN32
+    dirpath = dirpath.replace("\\","/","g");
+#endif
+    var fragmentsBaseDirectory = "file:///" + dirpath;
+    document.getElementById("frag-tree").setAttribute("ref", fragmentsBaseDirectory);
+    document.getElementById("frag-tree").builder.rebuild();
+    //
   }
-  catch (e) {
-    dump("exception: "+e+"\n");
+  catch(e) {
+    dump("Exception in initSidebar() = "+e.toString());
   }
-  
 }
 
-function insertFragmentContents( tree, pathname)
+function insertFragmentContents( pathname)
 {
   // pathname is now the path of the clicked file relative to the fragment root.
   try 
   {
     var editorElement = document.getElementById("content-frame");
     var editor = msiGetEditor(editorElement);
-    var xmlDoc = document.implementation.createDocument("", "frag", null);
-    xmlDoc.async = false;
-    if (xmlDoc.load(pathname))
+    var request = Components.
+                  classes["@mozilla.org/xmlextras/xmlhttprequest;1"].
+                  createInstance();
+    request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
+    request.open("GET", pathname, false);
+    request.send(null);
+                                
+    var xmlDoc = request.responseXML; 
+    if (xmlDoc)
     {
       var contextString="";
       var dataString=null;
@@ -221,28 +126,23 @@ function insertDataAtCursor( arrayElement )
 }
 
 
-
 function onMacroOrFragmentEntered( aString )
 {
-  var s = macroArray[aString];
+  var s = getMacro(aString);
   if (s) 
   {
     insertDataAtCursor( s );
   }
   else
   {
-    s = fragmentArray[aString];
+    s = getFragment(aString);
     if (s)
     {
-      var tree = document.getElementById("frag-tree");
-      if (!tree) return;
       var dirpath = s.dirpath;
-#ifdef XP_WIN32
       dirpath = dirpath.replace("\\","/","g");
-#endif
       dirpath = "file:///" + dirpath + "/" + aString + ".frg";      
       
-      insertFragmentContents( tree, dirpath );
+      insertFragmentContents( dirpath );
     }
   }
   var macrofragmentStatusPanel = document.getElementById('macroEntryPanel');
@@ -250,6 +150,7 @@ function onMacroOrFragmentEntered( aString )
     macrofragmentStatusPanel.setAttribute("hidden", "true");
   focusOnEditor();
 }
+
 
 
 var fragObserver = 
@@ -431,7 +332,7 @@ var fragObserver =
         {
           window.alert(ex.message);
         } 
-        rebuildFragmentTree(tree,false);
+        buildFragmentArray();
       }
     }
   },
