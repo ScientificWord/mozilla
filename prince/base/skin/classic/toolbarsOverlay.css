@@ -6,9 +6,45 @@ toolbar[printpreview="true"] {
   -moz-binding: url("chrome://global/content/printPreviewBindings.xml#printpreviewtoolbar");
 }
 
-#evalButton {
-  list-style-image: url("chrome://prince/skin/icons/math_evaluate.png");
+#stdToolbarTab, #editToolbarTab, #mathToolbarTab {
+  list-style-image: url("chrome://prince/skin/icons/tab.png");
 }
+
+toolbar[iconsize="small"] #stdToolbarTab, 
+toolbar[iconsize="small"] #editToolbarTab, 
+toolbar[iconsize="small"] #mathToolbarTab 
+{
+  list-style-image: url("chrome://prince/skin/icons/tab-sm.png");
+}
+
+#stdToolbarTab:hover, 
+#editToolbarTab:hover, 
+#mathToolbarTab:hover 
+{
+  list-style-image: url("chrome://prince/skin/icons/tab-hover.png");
+}
+
+toolbar[iconsize="small"] #stdToolbarTab:hover,
+toolbar[iconsize="small"] #editToolbarTab:hover,
+toolbar[iconsize="small"] #mathToolbarTab:hover 
+{
+  list-style-image: url("chrome://prince/skin/icons/tab-hover-sm.png");
+}
+
+#stdToolbarTab:active, 
+#editToolbarTab:active, 
+#mathToolbarTab:active 
+{
+  list-style-image: url("chrome://prince/skin/icons/tab-active.png");
+}
+
+toolbar[iconsize="small"] #stdToolbarTab:active 
+toolbar[iconsize="small"] #editToolbarTab:active 
+toolbar[iconsize="small"] #mathToolbarTab:active 
+{
+  list-style-image: url("chrome://prince/skin/icons/tab-active-sm.png");
+}
+
 
 toolbar[iconsize="small"] #evalButton {
   list-style-image: url("chrome://prince/skin/icons/math_evaluate-sm.png");

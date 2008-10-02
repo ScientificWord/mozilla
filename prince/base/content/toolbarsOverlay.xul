@@ -95,11 +95,15 @@
       <toolbarbutton id="pdfcompileButton" tooltiptext="&pdfcompileButton.tooltip;"/>
       <toolbarbutton id="javascriptButton" class="toolbarbutton-1" observes=""
                  tooltiptext="&javascriptToolbarButton.tooltip;" label="&javascriptToolbarButton.label;"/>
+      <toolbarbutton id="stdToolbarTab"/>
+      <toolbarbutton id="editToolbarTab"/>
+      <toolbarbutton id="mathToolbarTab"/>
       <toolbaritem id="TextTags" title="&texttagselect.label;"><textbox id="TextTagSelections"/></toolbaritem>
       <toolbaritem id="ParaTags" title="&paratagselect.label;"><textbox id="ParaTagSelections"/></toolbaritem>
       <toolbaritem id="StructTags" title="&secttagselect.label;"><textbox id="StructTagSelections"/></toolbaritem>
       <toolbaritem id="OtherTags" title="&othertagselect.label;"><textbox id="OtherTagSelections"/></toolbaritem>
       <toolbaritem id="zoomer" title="Zoom setting" ><textbox id="zoomValue" label="Zoom %" type="number" observes="cmd_textZoomSet"/></toolbaritem>
+      
     </toolbarpalette>
     <toolbar 
       id="StandardToolbar" 
@@ -109,7 +113,7 @@
       tbalign="center" 
       context="toolbar-context-menu"
       defaultset="newButton,openButton,saveButton,printButton,printPreviewButton,mathtextButton,TextTags,
-        ParaTags,StructTags,OtherTags" customizable="true" mode="icons" />
+        ParaTags,StructTags,OtherTags,stdToolbarTab" customizable="true" mode="icons" />
     <toolbar 
       id="EditingToolbar" 
       toolbarname="Editing toolbar"
@@ -118,7 +122,7 @@
       context="toolbar-context-menu"
       defaultset="noteButton,markerButton,htlinkButton,formulaButton,compileButton,frontmatterButton,
         packagesButton,citationButton,indexentryButton,xrefButton,texfieldButton,subdocButton,
-        bibliographyButton,gifsAnimatedButton,vc_rotateleft,zoomValue"
+        bibliographyButton,gifsAnimatedButton,vc_rotateleft,zoomValue,editToolbarTab"
       mode="icons" 
       customizable="true" />
     <toolbar 
@@ -130,7 +134,7 @@
       defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plotButton3D,
         defineButton,showdefsButton,fractionButton,radicalButton,superscriptButton,subscriptButton,
         parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,
-        matrixButton,mathnameButton,binomialButton,labelButton,decorationButton"
+        matrixButton,mathnameButton,binomialButton,labelButton,decorationButton,mathToolbarTab"
       mode="icons" 
       customizable="true" />
     <toolbarset context="toolbar-context-menu"/>
@@ -430,6 +434,9 @@
   <toolbarbutton id="importtexButton" class="toolbarbutton-1" observes=""
                  tooltiptext="&importtexToolbarButton.tooltip;" label="&importtexToolbarButton.label;"/>
 
+  <toolbarbutton id="stdToolbarTab" class="toolbarbutton-1" observes="" tooltiptext="Click and drag to move this toolbar"/>
+  <toolbarbutton id="editToolbarTab" class="toolbarbutton-1" observes="" tooltiptext="Click and drag to move this toolbar"/>
+  <toolbarbutton id="mathToolbarTab" class="toolbarbutton-1" observes="" tooltiptext="Click and drag to move this toolbar"/>
 
 	<textbox id="TextTagSelections" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
     completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="texttag"
