@@ -2641,7 +2641,7 @@ function EditorClick(event)
 {
   if (!event)
     return;
-
+//  if (event.target.onclick) return;
   if (event.detail == 2)
   {
     EditorDblClick(event);
@@ -3685,8 +3685,8 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
     menuItem.setAttribute("disabled", "");
 //    name = element.nodeName.toLowerCase();
     name = msiGetBaseNodeName(element);
-    if (name != null)
-      name = name.toLowerCase();
+//    if (name != null)
+//      name = name.toLowerCase();
 
     var wrappedChildElement = element;
     while ( (name == 'mstyle') || (name == 'mrow') )
@@ -5094,16 +5094,21 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     var elementName = element.localName;
     if (elementName == "object")
       elementName = element.parentNode.localName;
-    if (elementName == "notewrapper")
+    else if (elementName == "notewrapper")
     {
       element = element.getElementsByTagName("note")[0];
       if (element) elementName = element.localName;
     }
-    if (elementName == "note")
+    else if (elementName == "note")
     {
       msiNote(element,editorElement);
     }
-    if (elementName == "msiframe")
+    else if (elementName == "subdoc")
+    {
+      var nextvalue = (element.getAttribute("open") ==="true")?"false":"true";
+      element.setAttribute("open",nextvalue);
+    }
+    else if (elementName == "msiframe")
     {
       msiFrame(element,editorElement);
     }
