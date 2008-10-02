@@ -36,7 +36,13 @@ chapter {
   counter-reset: section;
 }
 
-chapter>sectiontitle {
+chapter[open="false"]>* {
+  display: none;
+  counter-increment: chapter;
+  counter-reset: section;
+}
+
+chapter>sectiontitle,chapter[open="false"]>sectiontitle,chapter[open="true"]>sectiontitle {
   display: block;
   font-size: x-large;
   font-weight: bold;
@@ -45,12 +51,16 @@ chapter>sectiontitle {
 }
 
 chapter>sectiontitle:before {
-  content: "Chapter " counter(chapter,upper-roman);
-  display: block;
+  content: url(chrome://global/skin/tree/twisty-open.png) " Chapter " counter(chapter,upper-roman);
+  display: block;								   
   font-size: x-large;
   font-weight: bold;
   line-height: 24pt;
   text-align: center;
+}
+
+chapter[open="false"]>sectiontitle:before {
+  content: url(chrome://global/skin/tree/twisty-clsd.png) " Chapter " counter(chapter,upper-roman);
 }
 
 section {
