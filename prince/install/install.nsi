@@ -63,6 +63,7 @@
 !define uninstaller "SWPUninstall.exe"
  
 ;--------------------------------
+!include "MUI2.nsh"
  
 XPStyle on
 ShowInstDetails hide
