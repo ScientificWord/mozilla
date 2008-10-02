@@ -52,7 +52,7 @@ class nsEditorTxnLog;
 class nsHTMLEditorLog : public nsHTMLEditor,
                         public nsIEditorLogging
 {
-private:
+protected:
 
   nsCOMPtr<nsIOutputStream>     mFileStream;
   nsEditorTxnLog       *mEditorTxnLog;
