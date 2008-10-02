@@ -52,9 +52,6 @@ ifdef MOZ_MOCHITEST
 DIRS		+= test
 endif
 
-# Enable Editor API Logging!
-ENABLE_EDITOR_API_LOG=1
-
 ifdef ENABLE_EDITOR_API_LOG
 DEFINES += -DENABLE_EDITOR_API_LOG
 endif

@@ -3,7 +3,6 @@
 #include "nsIDOMNSUIEvent.h"
 #include "nsCOMPtr.h"
 #include "msiEditorLog.h"
-#include "msiMathMLEditRules.h"
 #include "msiIMathMLInsertion.h"
 #include "msiIMathMLCaret.h"
 #include "msiIMathMLCoalesce.h"

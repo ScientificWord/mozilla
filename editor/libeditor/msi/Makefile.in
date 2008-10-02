@@ -46,9 +46,7 @@ CPPSRCS  = \
            $(NULL)
 
 ifdef ENABLE_EDITOR_API_LOG
-CPPSRCS += msiEditorLog.cpp \
-           $(NULL)
-
+CPPSRCS += msiEditorLog.cpp 
 DEFINES += -DENABLE_EDITOR_API_LOG
 endif
            

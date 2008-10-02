@@ -18,11 +18,11 @@ class msiISelection;
 class msiSelectionManager;
 
 class msiEditor : 
-#ifdef ENABLE_EDITOR_API_LOG
-virtual public nsHTMLEditor,
-#else
+///#ifdef ENABLE_EDITOR_API_LOG
+///virtual public nsHTMLEditor,
+///#else
 public nsHTMLEditor,
-#endif
+///#endif
 public msiIMathMLEditor
 {
 public:
