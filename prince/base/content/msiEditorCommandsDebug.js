@@ -265,74 +265,74 @@ function msiEditorTestDocument()
 
 // --------------------------- Logging stuff ---------------------------
 
-//function EditorExecuteScript(theFile)
-//{
-//  var inputStream = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance();
-//  inputStream = inputStream.QueryInterface(Components.interfaces.nsIFileInputStream);
-//
-//  inputStream.init(theFile, 1, 0, false);    // open read only
-//
-//  var scriptableInputStream = Components.classes["@mozilla.org/scriptableinputstream;1"].createInstance();
-//  scriptableInputStream = scriptableInputStream.QueryInterface(Components.interfaces.nsIScriptableInputStream);
-//
-//  scriptableInputStream.init(inputStream);    // open read only
-//
-//  var buf         = { value:null };
-//  var tmpBuf      = { value:null };
-//  var didTruncate = { value:false };
-//  var lineNum     = 0;
-//  var ex;
-//
-///*
-//  // Log files can be quite huge, so read in a line
-//  // at a time and execute it:
-//
-//  while (!inputStream.eof())
-//  {
-//    buf.value         = "";
-//    didTruncate.value = true;
-//
-//    // Keep looping until we get a complete line of
-//    // text, or we hit the end of file:
-//
-//    while (didTruncate.value && !inputStream.eof())
-//    {
-//      didTruncate.value = false;
-//      fileSpec.readLine(tmpBuf, 1024, didTruncate);
-//      buf.value += tmpBuf.value;
-//
-//      // XXX Need to null out tmpBuf.value to avoid crashing
-//      // XXX in some JavaScript string allocation method.
-//      // XXX This is probably leaking the buffer allocated
-//      // XXX by the readLine() implementation.
-//
-//      tmpBuf.value = null;
-//    }
-//
-//    ++lineNum;
-//*/
-//  {
-//    // suck in the entire file
-//    var fileSize = scriptableInputStream.available();
-//    var fileContents = scriptableInputStream.read(fileSize);
-//
-//    dump(fileContents);
-//
-//    try       { eval(fileContents); }
-//    catch(ex) { dump("Playback ERROR: Line " + lineNum + "  " + ex + "\n"); return; }
-//  }
-//
-//  buf.value = null;
-//}
+function EditorExecuteScript(theFile)
+{
+  var inputStream = Components.classes["@mozilla.org/network/file-input-stream;1"].createInstance();
+  inputStream = inputStream.QueryInterface(Components.interfaces.nsIFileInputStream);
 
-//function EditorGetScriptFileSpec()
-//{
-//  var dirServ = Components.classes['@mozilla.org/file/directory_service;1'].createInstance();
-//  dirServ = dirServ.QueryInterface(Components.interfaces.nsIProperties);
-//  var processDir = dirServ.get("Home", Components.interfaces.nsIFile);
-//  processDir.append("journal.js");
-//  return processDir;
-//}
+  inputStream.init(theFile, 1, 0, false);    // open read only
+
+  var scriptableInputStream = Components.classes["@mozilla.org/scriptableinputstream;1"].createInstance();
+  scriptableInputStream = scriptableInputStream.QueryInterface(Components.interfaces.nsIScriptableInputStream);
+
+  scriptableInputStream.init(inputStream);    // open read only
+
+  var buf         = { value:null };
+  var tmpBuf      = { value:null };
+  var didTruncate = { value:false };
+  var lineNum     = 0;
+  var ex;
+
+/*
+  // Log files can be quite huge, so read in a line
+  // at a time and execute it:
+
+  while (!inputStream.eof())
+  {
+    buf.value         = "";
+    didTruncate.value = true;
+
+    // Keep looping until we get a complete line of
+    // text, or we hit the end of file:
+
+    while (didTruncate.value && !inputStream.eof())
+    {
+      didTruncate.value = false;
+      fileSpec.readLine(tmpBuf, 1024, didTruncate);
+      buf.value += tmpBuf.value;
+
+      // XXX Need to null out tmpBuf.value to avoid crashing
+      // XXX in some JavaScript string allocation method.
+      // XXX This is probably leaking the buffer allocated
+      // XXX by the readLine() implementation.
+
+      tmpBuf.value = null;
+    }
+
+    ++lineNum;
+*/
+  {
+    // suck in the entire file
+    var fileSize = scriptableInputStream.available();
+    var fileContents = scriptableInputStream.read(fileSize);
+
+    dump(fileContents);
+
+    try       { eval(fileContents); }
+    catch(ex) { dump("Playback ERROR: Line " + lineNum + "  " + ex + "\n"); return; }
+  }
+
+  buf.value = null;
+}
+
+function EditorGetScriptFileSpec()
+{
+  var dirServ = Components.classes['@mozilla.org/file/directory_service;1'].createInstance();
+  dirServ = dirServ.QueryInterface(Components.interfaces.nsIProperties);
+  var processDir = dirServ.get("ProfD", Components.interfaces.nsIFile);
+  processDir.append("journal.js");
+  return processDir;
+}
 
 function msiEditorStartLog()
 {
