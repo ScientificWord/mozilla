@@ -77,6 +77,11 @@ textbox.padded {
   -moz-box-align: center;
 }
 
+toolbar *.textbox-input-box {
+  margin: 0px;
+  -moz-box-align: center;
+}
+
 /* ::::: autocomplete popups ::::: */
 
 panel[type="autocomplete"],
