@@ -34,3 +34,61 @@ dropmarker[disabled="true"] {
   -moz-border-left-colors: ThreeDLightShadow ThreeDHighlight !important;
   padding: 1px !important;
 }
+
+toolbar image.dropmarker-icon{
+  list-style-image: url("chrome://prince/skin/icons/dropmarker.png");
+  -moz-appearance: none;
+  border: none;
+  padding: 0px;	 
+  height: 30px;
+}
+
+toolbar[iconsize="small"] image.dropmarker-icon{
+  list-style-image: url("chrome://prince/skin/icons/dropmarker-sm.png");	 
+}
+
+toolbar dropmarker {
+  list-style-image: url("chrome://prince/skin/icons/dropmarker.png");	 
+  -moz-appearance: none;
+  border: none;
+  padding: 0px;	 
+  height: 30px;	
+}
+
+toolbar[iconsize="small"] dropmarker {
+  list-style-image: url("chrome://prince/skin/icons/dropmarker-sm.png");	 
+  height: 25px;
+}
+
+toolbar dropmarker:hover {
+  list-style-image: url("chrome://prince/skin/icons/dropmarker-hover.png");	 
+  -moz-appearance: none;
+  border: none;
+  padding: 0px;
+}
+
+toolbar[iconsize="small"] dropmarker:hover {
+  list-style-image: url("chrome://prince/skin/icons/dropmarker-hover-sm.png");	 
+}
+
+toolbar dropmarker:active {
+  list-style-image: url("chrome://prince/skin/icons/dropmarker-active.png");	 
+  -moz-appearance: none;
+  border: none;
+  padding: 0px;	 
+}
+
+toolbar[iconsize="small"] dropmarker:active {
+  list-style-image: url("chrome://prince/skin/icons/dropmarker-active-sm.png");	 
+}
+
+toolbar dropmarker[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/dropmarker.png");	 
+  -moz-appearance: none;
+  border: none;
+  padding: 0px;	 
+}
+
+toolbar[iconsize="small"] dropmarker[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/dropmarker-sm.png");	 
+}
