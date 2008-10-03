@@ -19,10 +19,13 @@
  
 ;    3. This notice may not be removed or altered from any source distribution.
  
+; The following 3 to be defined on the command line
 ; !define PRINCEBASE c:\prince2
 ; !define BUILD release
-!define setup "SWPSetup.exe"
-!define princedir "${PRINCEBASE}\${BUILD}\swppro"
+; !define setup "SWPSetup.exe"
+
+!addplugindir "C:\mozilla-build\nsis-2.33u\Plugins"
+!define princedir "${PRINCEBASE}\${BUILD}\SWPPro"
  
 ; change this to wherever the files to be packaged reside
 !define srcdir ${princedir}
@@ -64,7 +67,7 @@
  
 ;--------------------------------
 !include "MUI2.nsh"
- 
+
 XPStyle on
 ShowInstDetails hide
 ShowUninstDetails hide
@@ -122,7 +125,8 @@ Function .onGUIInit
 	InitPluginsDir
 ;	File /oname=$PLUGINSDIR\1.png "${screenimage}"
  
-	BgImage::SetBg /NOUNLOAD /FILLSCREEN $PLUGINSDIR\1.png
+;	BgImage::SetBg /NOUNLOAD /FILLSCREEN $PLUGINSDIR\1.png
+	BgImage::SetBg /NOUNLOAD /FILLSCREEN ${screenimage}
 	BgImage::Redraw /NOUNLOAD
 FunctionEnd
  
