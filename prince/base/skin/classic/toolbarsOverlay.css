@@ -2125,7 +2125,11 @@ toolbar[iconsize="small"] #javascriptButton[disabled="true"] {
 
 
 
-toolbox textbox { min-height : 25px;}
+toolbox textbox { 
+  -moz-appearance: none;
+  min-height : 25px;
+}
+
 toolbox[iconsize="small"] textbox { min-height : 15px; margin: 0;}
 
 toolbar {
