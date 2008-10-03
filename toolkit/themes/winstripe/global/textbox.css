@@ -108,3 +108,60 @@ toolbarpaletteitem > toolbaritem > textbox > .textbox-input-box > html|*.textbox
   visibility: hidden;
 }
 
+
+toolbar *.textbox-left {
+  list-style-image: url("chrome://prince/skin/icons/combobox-left.png");
+}
+
+
+toolbar[iconsize="small"] *.textbox-left {
+  list-style-image: url("chrome://prince/skin/icons/combobox-left-sm.png");
+}
+
+toolbar *.textbox-right {
+  list-style-image: url("chrome://prince/skin/icons/combobox-right.png");
+}
+
+toolbar[iconsize="small"] *.textbox-right {
+  list-style-image: url("chrome://prince/skin/icons/combobox-right-sm.png");
+}
+
+toolbar html|*.textbox-input {
+  -moz-appearance: none;
+  padding-top: 10px !important;
+  padding-bottom: 7px !important;
+  background-image: url("chrome://prince/skin/icons/combobox-middle.png");
+  background-repeat: repeat-x;
+}
+
+
+toolbar[iconsize="small"] html|*.textbox-input {
+  -moz-appearance: none;
+  padding-top: 8px !important;
+  padding-bottom: 4px !important;
+  background-image: url("chrome://prince/skin/icons/combobox-middle-sm.png");
+  background-repeat: repeat-x;
+}
+
+
+toolbar[iconsize="small"] *.textbox-left {
+  list-style-image: url("chrome://prince/skin/icons/combobox-left-sm.png");
+}
+
+toolbar[iconsize="small"] *.textbox-right {
+  list-style-image: url("chrome://prince/skin/icons/combobox-right-sm.png");
+}
+
+toolbar[iconsize="small"] html|*.textbox-input {
+  -moz-appearance: none;
+  padding-top: 8px;
+  background-image: url("chrome://prince/skin/icons/combobox-middle-sm.png");
+  background-repeat: repeat-x;
+}
+
+toolbar textbox {
+  -moz-appearance: none;
+  margin: 0px;
+  border: 0px;
+  padding: 0px;
+}
