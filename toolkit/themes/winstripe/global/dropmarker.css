@@ -26,6 +26,12 @@ dropmarker:hover:active {
   -moz-padding-end: 0px;
 }
 
+toolbar dropmarker:hover:active {
+  list-style-image: url("chrome://prince/skin/icons/dropmarker-active.png");	 
+  padding: 0px;
+  border: none;
+}
+
 dropmarker[disabled="true"] {
   list-style-image: url("chrome://global/skin/arrow/arrow-dn-dis.gif");
   -moz-border-top-colors: ThreeDLightShadow ThreeDHighlight !important;
@@ -35,23 +41,12 @@ dropmarker[disabled="true"] {
   padding: 1px !important;
 }
 
-toolbar image.dropmarker-icon{
-  list-style-image: url("chrome://prince/skin/icons/dropmarker.png");
-  -moz-appearance: none;
-  border: none;
-  padding: 0px;	 
-  height: 30px;
-}
-
-toolbar[iconsize="small"] image.dropmarker-icon{
-  list-style-image: url("chrome://prince/skin/icons/dropmarker-sm.png");	 
-}
-
 toolbar dropmarker {
   list-style-image: url("chrome://prince/skin/icons/dropmarker.png");	 
   -moz-appearance: none;
   border: none;
   padding: 0px;	 
+  width: 7px;
   height: 30px;	
 }
 
@@ -92,3 +87,26 @@ toolbar dropmarker[disabled="true"] {
 toolbar[iconsize="small"] dropmarker[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/dropmarker-sm.png");	 
 }
+
+
+toolbarbutton *.toolbarbutton-menubutton-dropmarker {
+  list-style-image: url(chrome://prince/skin/icons/dropmarkertb.png);
+  -moz-appearance: none !important;
+  border: none !important;
+  background-color: transparent !important;
+  padding: 0;
+  width: auto;
+}
+
+*.toolbarbutton-menubutton-dropmarker:hover {
+  list-style-image: url(chrome://prince/skin/icons/dropmarkertb-hover.png);
+}
+
+*.toolbarbutton-menubutton-dropmarker:active {
+  list-style-image: url(chrome://prince/skin/icons/dropmarkertb-active.png);
+}
+
+toolbarbutton[disabled="true"] *.toolbarbutton-menubutton-dropmarker[disabled="true"] {
+  padding: 0 !important;
+}
+
