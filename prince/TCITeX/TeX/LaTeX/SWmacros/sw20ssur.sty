@@ -1,0 +1,62 @@
+% sw20ssur {Article: Sqeezed States  and Uncertainty Relations}{12pt}{article}
+\typeout{TCI Document Style `sw20ssur' <20 Aug 1994>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+%
+\pagestyle{empty}
+\headheight=0mm
+\headsep=-10mm
+
+%\oddsidemargin=0in
+%\evensidemargin=0in
+%\textheight=226mm
+%\textwidth=6.5in
+\addtolength{\oddsidemargin}{-39pt}
+\evensidemargin=\oddsidemargin
+\addtolength{\textheight}{95pt}
+\addtolength{\textwidth}{79pt}
+\newdimen\dummy
+\dummy=\oddsidemargin
+\addtolength{\dummy}{72pt}
+\marginparwidth=.675\dummy
+\marginparsep=.1\dummy
+
+
+\normalbaselineskip=12pt
+\normalbaselines
+			
+\def\maketitle
+      {\par
+       \begingroup
+           \def\thefootnote{\fnsymbol{footnote}}
+           \def\@makefnmark
+                  {\hbox to\z@{$\m@th^{\@thefnmark}$\hss}}
+           \if@twocolumn
+               \twocolumn[\@maketitle]%
+           \else 
+               \newpage
+               \global\@topnum=\z@
+               \@maketitle 
+           \fi
+           \thispagestyle{empty}
+           \@thanks
+       \endgroup
+       \setcounter{footnote}{0}%
+       \let\maketitle\relax
+       \let\@maketitle\relax
+       \gdef\@thanks{}
+       \gdef\@author{}
+       \gdef\@title{}
+       \let\thanks\relax}
+
+\def\@maketitle
+       {\null
+        \vskip 6mm
+        \begin{center}%
+            {\large\bf \@title}\\[7mm]
+			       \begin{tabular}[t]{c}
+               \@author
+			       \end{tabular}
+        \end{center}
+        \vskip 2mm}

@@ -1,0 +1,57 @@
+%sw20mem4 {Memo: SW memo style #4}{12pt}{tcimemo}
+%Copyright (C) 1994-2000 MacKichan Software, Inc.
+\typeout{SW Document Style `sw20mem4' <11 Aug 2000>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+% 11 Aug 00  Define ccname, enclname, pagename and headtoname to be 
+%            consistent with Babel (gp)
+\def\ccname{cc}%
+\def\enclname{encl}%
+\def\pagename{Page}%
+\def\headtoname{To}%
+\def\headfromname{From:}%
+\def\headdatename{Date:}%
+\def\headsubjname{Subject:}%
+\def\PSname{P.S. }%
+%
+\ps@memo
+\def\@memohead{%
+ \vbox{%
+  \vskip\z@%Extra space between top of page and memodept
+  \@tempswafalse
+  \ifx\@empty\the@memocompany\else\@tempswatrue\fi
+  \ifx\@empty\the@memoname\else\@tempswatrue\fi
+  \ifx\@empty\the@memodept\else\@tempswatrue\fi
+  \if@tempswa
+   \begin{center}\@tempswafalse
+    \ifx\@empty\the@memocompany
+    \else\if@tempswa\\\fi
+    \@tempswatrue{\bf\letparBL\the@memocompany\vspace{.1in}}\fi
+    \ifx\@empty\the@memoname
+    \else\if@tempswa\\\fi\@tempswatrue{\letparBL\the@memoname\vspace{.1in}}\fi
+    \ifx\@empty\the@memodept
+    \else\if@tempswa\\\fi\@tempswatrue{\letparBL\the@memodept\vspace{.1in}}\fi
+   \end{center}%
+  \fi
+  \vskip\z@%Extra space between memodept and 'M e m o r a n d u m'
+  \hbox to\hsize{\hfil\LARGE\bf\uppercase{M e m o r a n d u m}\hfil}\vskip24pt
+  \jot4.5\p@
+  \@memoalign
+  }\nobreak\vskip18pt\raggedright
+ }%
+
+\trimheight 11in  
+%\topmargin  18pt
+\addtolength{\topmargin}{1pt}
+\headheight 12pt  \headsep    24pt
+\footskip   18pt  \botmargin  18pt
+\trimwidth 8.5in  
+%\textwidth 6.5in
+\addtolength{\textwidth}{79pt}
+%\settextheight    \centerpagemargin
+\addtolength{\textheight}{120pt}
+\addtolength{\oddsidemargin}{33pt}
+\evensidemargin=\oddsidemargin
+\marginparwidth=.675\oddsidemargin
+\marginparsep=.1\oddsidemargin

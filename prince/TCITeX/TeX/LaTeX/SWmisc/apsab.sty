@@ -1,0 +1,215 @@
+% Converted by doc2sty Mon Apr 24 16:37:42 PDT 1995.
+% This file is not intended for human consumption.
+% APSAB.STY -- APS meeting abstract form.
+
+\@ifundefined{documentclass}{\relax}
+{\@ifundefined{maketitle}{\LoadClass[11pt]{article}\RequirePackage{latexsym}}
+{\RequirePackage{latexsym}}}
+\def\revtex@ver{1.1}  
+\def\revtex@date{11 Apr 95} 
+\def\revtex@org{APS}  
+\def\revtex@jnl{BAPS}  
+\def\revtex@genre{abstract} 
+\typeout{\revtex@org\space
+\ifx\revtex@jnl\@empty\else\revtex@jnl\space\fi
+\revtex@genre\space substyle, v\revtex@ver\space <\revtex@date>.}
+\def\revtex@pageid{\xdef\@thefnmark{\null}
+\@footnotetext{This \revtex@genre\space was prepared with the
+\revtex@org\space \revtex@jnl\space Rev\TeX\space macros v\revtex@ver.}}
+\def\society@name{The American Physical Society}
+\def\society@abbrev{\revtex@org}
+\def\society@address{One Physics Ellipse\\College Park, MD 20740}
+\def\society@phone{301-209-3200}
+\def\society@email{cp@aps.org}
+\def\jnl@issue#1#2#3{\gdef\jnl@yr{#1}\gdef\jnl@vol{#2}\gdef\jnl@nr{#3}}
+\jnl@issue{\number\year}{N}{M}
+\newdimen\abwidth \abwidth 12cm
+\newdimen\abheight \abheight 10.5cm
+\def\up@case#1{\uppercase{#1}}
+\def\authorsurname#1{\ifx\@empty\auth@given\gdef\auth@sur{#1}\else
+\@temptokena=\expandafter{\auth@list}
+\xdef\auth@list{\the\@temptokena\@authdlm\up@case{\auth@given\space#1}}
+\gdef\@authdlm{,\space}\gdef\auth@sur{}\gdef\auth@given{}\fi}
+\def\authorgivenname#1{\ifx\@empty\auth@sur\gdef\auth@given{#1}\else
+\@temptokena=\expandafter{\auth@list}
+\xdef\auth@list{\the\@temptokena\@authdlm\up@case{#1\space\auth@sur}}
+\gdef\@authdlm{,\space}\gdef\auth@sur{}\gdef\auth@given{}\fi}
+\@ifundefined{documentclass}
+{\def\authoraffil#1{\@temptokena=\expandafter{\auth@list}
+\xdef\auth@list{\the\@temptokena, {\it#1\/}}}}
+{\def\authoraffil#1{\@temptokena=\expandafter{\auth@list}
+\xdef\auth@list{\the\@temptokena, {#1\/}}}}
+\def\abstract{\typeout{\society@abbrev\space abstract form v\revtex@ver
+\ifx\@empty\run@id\else, article ID \run@id\fi}
+\top@admininfo\par
+\vspace{6ex}
+\bgroup\centering
+\vbox to\abheight\bgroup\catcode`\^^M=10
+\minipage{\abwidth}
+\setcounter{mpfootnote}{\c@footnote}
+{\bf\@title}{\ifnum\c@titlenotemark>0$^{\thetitlenotemark}$\fi}
+\auth@list\space---}
+\def\endabstract{\endminipage\vfil\egroup
+\par\egroup
+\vspace{6ex}
+\bottom@admininfo}
+\def\auth@given{}
+\def\auth@sur{}
+\def\auth@list{}
+\def\@authdlm{}
+\skip\footins 4ex plus 1ex minus .5ex
+\let\footnoterule=\relax
+\long\def\@makefntext#1{\noindent\hbox{$^{\@thefnmark}$}#1}
+\def\thempfootnote{\arabic{mpfootnote}}
+\newcounter{titlenotemark}
+\def\thetitlenotemark{\arabic{titlenotemark}}
+\def\@altaffiltext#1#2{{\columnwidth\abwidth%
+\xdef\@thefnmark{#1}\@mpfootnotetext{#2}}}
+\def\titlenote#1{\stepcounter{footnote}\c@titlenotemark\c@footnote%
+\@altaffiltext{\thefootnote}{#1}}
+\def\altaffilmark#1{\@temptokena=\expandafter{\auth@list}
+\xdef\auth@list{\the\@temptokena$^{#1}$}}
+\def\altaffiltext#1#2{\stepcounter{footnote}\@altaffiltext{#1}{#2}}
+\def\thanks#1{\stepcounter{footnote}\altaffilmark{\thefootnote}%
+\@altaffiltext{\thefootnote}{#1}}
+\let\altaffil=\thanks
+\let\Title=\title
+\let\AuthorSurname=\authorsurname
+\let\AuthorGivenName=\authorgivenname
+\let\AuthorAffil=\authoraffil
+\def\@minipagerestore{\parindent .6in
+\baselineskip 1.00\normalbaselineskip}
+\def\meetingid#1{\gdef\@meetingid{#1}} \def\@meetingid{}
+\def\category#1{\gdef\@category{#1}} \def\@category{}
+\def\sortcategory#1#2#3#4{\gdef\@category{#1}\gdef\@subcategory{#2}%
+\gdef\@subsubcategory{#3}\gdef\@subsubsubcategory{#4}}
+\def\@category{} \def\@subcategory{}
+\def\@subsubcategory{} \def\@subsubsubcategory{}
+\def\dpptype#1{\gdef\@dpptype{#1}} \def\@dpptype{}
+\def\submittingmembersurname#1{\gdef\@submemsur{#1}} \def\@submemsur{}
+\def\submittingmembergivenname#1{\gdef\@submemgiven{#1}} \def\@submemgiven{}
+\def\submittingmemberemail#1{\gdef\@submememail{#1}} \def\@submememail{}
+\def\submittingmemberaffil#1{\gdef\@submemaffil{#1}} \def\@submemaffil{}
+\def\submittingmemberid#1{\gdef\@submemid{#1}} \def\@submemid{}
+\def\sessiontype#1{\gdef\@sessiontype{#1}} \def\@sessiontype{}
+\def\instructions#1{\gdef\@instructions{#1}} \def\@instructions{}
+\let\MeetingID=\meetingid
+\let\SortCategory=\sortcategory
+\let\DPPType=\dpptype
+\let\SubmittingMemberSurname=\submittingmembersurname
+\let\SubmittingMemberGivenName=\submittingmembergivenname
+\let\SubmittingMemberEmail=\submittingmemberemail
+\let\SubmittingMemberAffil=\submittingmemberaffil
+\let\SubmittingMembershipNumber=\submittingmemberid
+\let\PresentationType=\sessiontype
+\let\SpecialInstructions=\instructions
+\def\received#1{\gdef\@recvdate{#1}} \def\@recvdate{\@date}
+\def\lognumber#1{\gdef\run@id{#1}} \def\run@id{}
+\def\session#1#2{\gdef\@session{#1.#2}
+\markboth{{\rm\@session}}{{\rm\@session}}} \def\@session{}
+\newdimen\adminwidth
+\def\top@admininfo{\adminwidth\columnwidth
+\hbox to\adminwidth{\hfil Abstract Submitted\hfil}
+\hbox to\adminwidth{\hfil for the \@meetingid\space Meeting of\hfil}
+\hbox to\adminwidth{\hfil\society@name\hfil}
+\vspace{2ex}
+\hbox to\adminwidth{\hfil Sorting Category: \format@category}
+}
+\def\format@category{\@category%
+\ifx\@empty\@subcategory\else.\@subcategory\fi%
+\ifx\@empty\@subsubcategory\else.\@subsubcategory\fi%
+\ifx\@empty\@subsubsubcategory\else.\@subsubsubcategory\fi%
+\ifx\@empty\@dpptype\else\space(\@dpptype)\fi%
+}
+\def\box@checked{\fbox{\tt X}}
+\def\box@open{\fbox{$\phantom{\hbox{\tt X}}$}}
+\newif \iforal@paper \oral@paperfalse
+\newif \ifposter@paper \poster@paperfalse
+\def\bottom@admininfo{
+\def\@tempa{oral}
+\ifx\@sessiontype\@tempa\oral@papertrue\fi
+\def\@tempa{poster}
+\ifx\@sessiontype\@tempa\poster@papertrue\fi
+\hbox to\adminwidth{
+\begin{tabular}[b]{l}
+ \iforal@paper\box@checked\else\box@open\fi\quad Prefer Oral Session\\
+\ifposter@paper\box@checked\else\box@open\fi\quad Prefer Poster Session
+\end{tabular}
+\hfil
+\begin{tabular}[b]{r}
+ 
+ 
+ \@submemgiven\space\@submemsur\\\@submememail
+\ifx\@empty\@submemaffil\relax\else\\\@submemaffil\fi
+\ifx\@empty\@submemid\relax\else\\ Member ID: \@submemid\fi
+\end{tabular}}
+\ifx\@empty\@instructions\relax\else
+\vspace{3ex}
+ {\advance\adminwidth by-2.5\fboxsep
+\fbox{\parbox{\adminwidth}{Special instructions:
+     \@instructions\par}}}
+\fi
+\par\vspace{3ex}
+ 
+\hbox to\adminwidth{Date submitted: \@recvdate\hfil
+ Electronic form version \revtex@ver}
+}
+\def\arcdeg{\hbox{$^\circ$}}
+\def\sun{\hbox{$\odot$}}
+\def\earth{\hbox{$\oplus$}}
+\def\alt{\mathrel{\hbox{\rlap{\hbox{\lower4pt\hbox{$\sim$}}}\hbox{$<$}}}}
+\def\agt{\mathrel{\hbox{\rlap{\hbox{\lower4pt\hbox{$\sim$}}}\hbox{$>$}}}}
+\def\sq{\hbox{\rlap{$\sqcap$}$\sqcup$}}
+\def\arcmin{\hbox{$^\prime$}}
+\def\arcsec{\hbox{$^{\prime\prime}$}}
+\def\fd{\hbox{$.\!\!^{\rm d}$}}
+\def\fh{\hbox{$.\!\!^{\rm h}$}}
+\def\fm{\hbox{$.\!\!^{\rm m}$}}
+\def\fs{\hbox{$.\!\!^{\rm s}$}}
+\def\fdg{\hbox{$.\!\!^\circ$}}
+\def\farcm{\hbox{$.\mkern-4mu^\prime$}}
+\def\farcs{\hbox{$.\!\!^{\prime\prime}$}}
+\def\fp{\hbox{$.\!\!^{\scriptscriptstyle\rm p}$}}
+\def\micron{\hbox{$\mu$m}}
+\let\la=\alt
+\let\ga=\agt
+\def\plotone#1{{\centering \leavevmode
+\epsfxsize=\columnwidth \epsfbox{#1}}}
+\def\plottwo#1#2{{\centering \leavevmode
+\epsfxsize=.45\columnwidth \epsfbox{#1} \hfil
+\epsfxsize=.45\columnwidth \epsfbox{#2}}}
+\def\plotfiddle#1#2#3#4#5#6#7{{\centering \leavevmode
+\vbox to#2{\rule{0pt}{#2}}
+\special{psfile=#1 voffset=#7 hoffset=#6 vscale=#5 hscale=#4 angle=#3}}}
+\def\ps@apsabhead{\let\@mkboth\@gobbletwo
+\def\@oddhead{\rm\ifx\@empty\@session\relax\else Session \@session\fi
+\hfil\ifx\@empty\run@id\relax\else Log \#\run@id\fi}
+\def\@oddfoot{}\def\@evenfoot{}\let\@evenhead\@oddhead}
+\@ifundefined{documentclass}{\input{art11.sty}}{\relax}
+\let\footnotesize=\normalsize
+\oddsidemargin \z@
+\evensidemargin \z@
+\topmargin \z@
+\parindent \z@
+\parskip \z@
+\newif \ifaps@final \aps@finalfalse
+\ifaps@final
+\textwidth 10.0in
+\textheight 7.5in
+\voffset=-0.5in
+\hoffset=-0.5in
+\headsep .25in
+\columnsep .4in
+\twocolumn
+\ps@apsabhead
+\@fileswfalse
+\@ifundefined{documentclass}{\input{times.sty}}{\relax}
+\special{landscape}
+\else
+\textwidth 6.5in
+\textheight 8.9in
+\ps@apsabhead
+\fi
+
+
+

@@ -1,0 +1,13 @@
+%sw20spie {Article: SPIE Proceedings Style}{}{article}
+%Copyright (C) 1994-75 TCI Software Research
+\typeout{TCI Document Style `sw20spie' <28 May 1997>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+\@ifundefined{footheight}{\newdimen\footheight{}}{}%footheight not defined in LaTeX2e
+\input{spie.sty}
+% Environments defined in spie.sty that must be defined in document
+\let\theorem\undefined
+\let\lemma\undefined
+\let\definition\undefined
+

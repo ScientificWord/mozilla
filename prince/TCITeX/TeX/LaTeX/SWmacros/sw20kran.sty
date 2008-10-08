@@ -1,0 +1,97 @@
+\typeout{TCI Document Style `sw20kran' <20 Aug 1994>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+% These are common macros used throughout. They have been separated
+% from the other documents so that Scientific Word will not expand
+% them. All except \Ibb are macros without parameters, and \Ibb is
+% used only in the definition of \NN. This means we don't need to notify
+% Scientific Word of them---the default action is sufficient.
+%
+\def\LaTeXparent#1{}
+\def\CC{{\rm\kern.24em\vrule width.02em height1.4ex depth-.05ex\kern-.26em C}}
+\def\QQ{{\rm\kern.24em\vrule width.02em height1.4ex depth-.05ex\kern-.26em Q}}
+\def\Rr{{\rm I\kern-.2em R}}
+\def\ZZ{{\rm\kern.26em\vrule width.02em height0.5ex depth0ex\kern.04em\vrule width.02em height1.47ex depth-1ex\kern-.34em Z}}
+\def\RR{\hspace{.065in}{\rm\vrule width.02em height1.55ex depth-.07ex\kern-.3165em R}}
+\def\Ibb#1{{\rm I\kern-.23em#1}}
+\def\Ib#1{{\rm I\kern-.25em#1}}
+\def\k#1{\kern#1em}
+\def\vb#1{\vrule width.02em height1.4ex depth-.05ex}
+\def\NN{\Ibb N}
+\def\prob{\advance\pnum by 1\medbreak\noindent\llap{\bf\the\pnum.\enspace}}
+%Following macro not used
+%\def\limp{\lim_{x \rightarrow c^{\mbox{}+\mbox{}}}}
+%Following macro not used
+%\def\limm{\lim_{x \rightarrow c^{\mbox{}-\mbox{}}}}
+\def\endpf{\hfill \rule{.1in}{.1in}}
+\def\ss{\subseteq}
+%
+%\textwidth=7in
+%\textheight=9in
+%\topmargin=-.25in
+%\oddsidemargin=0in
+%\evensidemargin=0in
+\addtolength{\topmargin}{-72pt}
+\addtolength{\textwidth}{180pt}
+\addtolength{\textheight}{148pt}
+\addtolength{\oddsidemargin}{-36pt}
+\evensidemargin=\oddsidemargin
+%
+\parindent=20pt
+%
+\def\beginexercises{\twocolumn\parindent=10pt\markright{EXERCISES}%
+ \setcounter{secnumdepth}{0}}%
+\def\endexercises{\onecolumn\setcounter{secnumdepth}{2}\parindent=20pt}%
+%
+%% The following \def's from chapter 18
+\def\intr{\mathop{\int \! \int}_{\cal R}}
+\def\intu{\mathop{\int \! \int \! \int}_{\cal U}}
+\def\intv{\mathop{\int \! \int \! \int}_{\cal V}}
+%% The following \def's from chapter 15
+%\def\l{\langle}
+%\def\r{\rangle}
+%\def\O{{\bf O}}
+% The following \def's from chapter 19
+\def\div{\mbox{\rm div}\,}
+\def\curl{\mbox{\rm curl}\,}
+\def\grad{\mbox{\rm grad}\,}
+% The following \def's from chapter 13
+%\def\intr{\mathop{\int \! \int}_{\cal R}}
+%\def\ints{\mathop{\int \! \int}_{\cal S}}
+%\def\intw{\mathop{\int \! \int \! \int}_W}
+% The following \def's from chapter 20
+\def\intr{\mathop{\int \! \int}_{\cal R}}
+\def\ints{\mathop{\int \! \int}_{\cal S}}
+\def\intw{\mathop{\int \! \int \! \int}_W}
+% Avoid inputting tcilatex.tex by defining \text
+\let\text=\mbox
+%%%%%%%%%%%%%%%%%%%% Start of lori.tex%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This is a file by Lori Pickert that allows us to do the following:
+% If you want to attach a right justified label to a line in an
+% \eqnarray*  then you insert the code 
+%
+%                 \x{label}
+%
+% If the label requires a math environment, you must include that, e.g.
+%
+%                 \x{$(*)$}
+%
+% In fact this macro will have no effect unless you pull in LORI.STY
+% at the beginning of the document.  This is done with the code
+%
+%   \documentstyle[lori]{article}
+%
+%Then LaTeX pulls in LORI.STY from the directory \TEX\INPUTS.
+%
+
+\def\x#1{\def\@@eqncr{\let\@tempa\relax
+    \ifcase\@eqcnt \def\@tempa{& & &}\or \def\@tempa{& &}
+      \else \def\@tempa{&}\fi & #1\cr}}
+%%%%%%%%%%%%%%%%%%%% End of lori.tex%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Scientific Word saved document 14-5 using the \binom macro
+\def\binom#1#2{{#1 \choose #2}}%
+% Used for the preface sections (gp)
+\def\preface{\setcounter{section}{-1}}
+
+\input thmsupp.tex %TCI theorem option support

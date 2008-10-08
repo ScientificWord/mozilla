@@ -1,0 +1,230 @@
+
+%
+%%%%%%   \copyright Philip B. Yasskin, Texas A\&M Univ., 1994
+
+%%%%%   Proposed TeX Macros for the Maple CalcLab Manual
+
+%%%%%   Written to be used with Maple and LaTeX
+
+
+%%%%%   FONT DEFINITIONS:
+
+\font\smallrm=cmr8
+\font\bigbf=cmbx10 scaled \magstep1
+\font\bigcaps=cmcsc10 scaled \magstep2
+\font\ssbf=cmssbx10
+\font\caps=cmcsc10
+\font\smallsl=cmsl8
+%\font\mc=cmtt10  %Use this for maple command words.
+
+
+%%%%%   SHORTHAND MACROS:
+
+\def\n{\noindent }
+\def\d{\displaystyle }
+\def\h{\hfill}
+\def\v{\vfill}
+%\def\M{Maple }
+%\def\power{{\char94 }}
+\def\frac#1#2{{\displaystyle#1\over\displaystyle#2}}
+%\def\plotsp{\vskip .4truein}
+
+
+%%%%%  LAB MACROS:
+
+%%%%%  This goes at the top of the first page of the lab, lab report, demo or drill etc.  
+%%%%%  Put the names of the authors, Texas A\&M Univ., and the year.  
+
+%\def\cprt#1{{\smallrm \n \copyright #1 \bigskip}}
+
+
+%%%%%  Next put in the course and the lab's, demo's  or drill's title.
+%%%%%  I suggest:  Calculus I, II, III, Differential Equations, 
+%%%%%              Linear Algebra, etc.
+
+%\def\lab\course#1\title#2{\smallskip \hang{\bigbf \n #1 Lab:} \quad {\bigcaps #2}}
+%\def\demo\course#1\title#2{\smallskip \hang{\bigbf \n #1 Demo:} \quad {\bigcaps #2}}
+%\def\drill\course#1\title#2{\smallskip \hang{\bigbf \n #1 Drill:} \quad {\bigcaps #2}}
+
+
+%%%%%  If you don't put the copyright, you can put the authors.  
+%%%%%  Put the names of the authors, Texas A\&M Univ., and the year.  
+
+%\def\author#1{\goodbreak \smallskip \n {\ssbf Author: } #1 \bigskip}
+%\def\authors#1{\goodbreak \smallskip \n {\ssbf Authors: } #1 \bigskip}
+
+
+%%%%%  Several pages require a subtitle.
+
+\def\labrep{\medskip \centerline{\ssbf Lab Report} \smallskip}
+\def\usersguide{\medskip \centerline{\ssbf Users' Guide} \smallskip}
+
+
+%%%%%  These are the major section headings of the lab:
+
+\def\objectives{\goodbreak \smallskip \n {\ssbf Objectives: }}
+\def\before{\goodbreak \smallskip \n {\ssbf Before Lab: }}
+\def\prerequisites{\goodbreak \smallskip \n {\ssbf Prerequisites: }}
+\def\maplecommands{\goodbreak \smallskip \n {\ssbf Maple Commands: }}
+\def\initialization{\goodbreak \smallskip \n {\ssbf Initialization: }}
+\def\labreq{%\goodbreak
+ \smallskip \n {\ssbf Lab Report Requirements: }}
+\def\procedure{\goodbreak \smallskip \n {\ssbf Procedure: }}
+\def\method{\goodbreak \smallskip \n {\ssbf Method: }}
+\def\files{\goodbreak \smallskip \n {\ssbf Files: } \quad}
+
+
+%%%%%  Start each problem or step with a problem number.  
+%%%%%  Note, I have not put in automatic problem numbering.
+
+%\def\prob#1{\goodbreak \medskip \n #1. }
+%\def\prob#1{\goodbreak \medskip \llap{#1. }}
+
+
+%%%%%  These are subsections that might appear within a problem to 
+%%%%%  help the students:
+
+\def\mapleproc#1{\n {\caps Maple Procedure: } {\sl #1}}
+\def\comment#1{\n {\sl #1}}
+\def\note#1{\hang{} {\caps Note: } {\sl #1}}
+\def\inlinenote#1{\n {\caps Note: } {\sl #1}}
+\def\notes#1{\hang{} {\caps Notes: } {\sl #1}}
+\def\inlinenotes#1{\n {\caps Notes: } {\sl #1}}
+\def\hint#1{\hang{} {\caps Hint: } {\sl #1}}
+\def\hints#1{\hang{} {\caps Hints: } {\sl #1}}
+\def\answer#1{\hang{} {\caps Answer: } {\sl #1}}
+\def\caution#1{\hang{} {\caps Caution: } {\sl #1}}
+
+\def\say#1#2{\hang{} {\caps #1: } {\sl #2}}
+\def\inlinesay#1#2{\n {\caps #1: } {\sl #2}}
+
+
+%%%%%  These will format lines of Maple input and output code or leave blanks:
+
+%\def\maplein#1{{\tt \hang{$>$} \quad #1}}		                        %use \in
+%\def\mapleout{\hfill $\to$ \quad \undrline{3truein}}			       %use \out
+%\def\mapleinout#1{{\tt \hang{$>$} \quad #1} \hfill $\to$ \quad \undrline{3truein}}  %use \inout
+
+%\def\in#1{{\tt \hang{$>$} \quad #1}}		%a line of input
+%\def\bin{\in{\undrline{5truein}} }			%a blank for input
+%\def\outcent#1{\centerline{\tt #1}}		%a line of output - centered
+%\def\outleft#1{{\tt \hang{} \quad #1}}		%a line of output - at the left
+\def\out{\par \hfill $\to$ \quad \undrline{3truein} \hfill}	%a blank for output
+\def\outagain{\par \hfill \undrline{3truein} \hfill}		%another blank for output
+\def\longout{\par \hfill $\to$ \quad \undrline{5truein}}	%a long blank for output
+\def\longoutagain{\par \hfill \undrline{5truein}}		%another long blank for output
+%\def\inout#1{{\tt \hang{$>$} \quad #1} \hfill $\to$ \quad \undrline{3truein}}
+					%a line of input and a blank for output
+%\def\binout{\in{\undrline{2truein}} \hfill $\to$ \quad \undrline{3truein}}
+					%a blank for input and a blank for output
+
+
+%%%%%  Use this for a key on the keyboard:
+
+\def\key#1{{\caps $\langle$#1$\rangle$}}
+
+%%%%%  Use this for a menu item on the screen:
+
+\def\menu#1{{\caps #1 }}
+
+
+
+%%%%%  LAB REPORT MACROS:
+
+
+%%%%%  This goes at the top on the first page of the lab report:
+%%%%%  2 times for a lab report, 4 times for a group project
+
+\def\nameidsec{ \vskip 5pt
+\n     NAME    \undrline{1.5truein} 
+\hfill ID      \undrline{1truein}
+\hfill Section \undrline{.5truein} \par }
+
+
+%%%%%  Next put the copyright or authors, the lab course and lab title
+%%%%%  and the subtitle Lab Report,
+%%%%%  using the \cprt, \lab, \author and \labrep macros from above.
+
+%%%%%  Number each answer to match the problem numbers in the lab,
+%%%%%  using the \prob macro.
+
+
+%%%%%  This will draw a line for fill-in the blank.  
+%%%%%  You specify the width of the line.
+
+\def\undrline#1{{\vrule height -.3pt depth .4pt width #1 }}
+%\def\uline#1{{\vrule height -.3pt depth .4pt width #1 }}
+
+%%%%%  These leave space for open ended responses.
+%%%%%  You specify a prompt, such as Reason or Discussion or etc.
+%%%%%  You specify the amount of space to skip.
+
+\def\answerspace#1#2{\n {#1:} \vskip #2 }
+
+
+%%%%% This asks the student to circle a choice.
+
+\def\circle{\n {\caps Circle:} \quad }
+
+
+%%%%% This tells the students that this part of a problem is worth extra credit.
+%%%%% You give the \% extra credit.
+
+\def\extracredit#1{\n {\caps #1\% Extra Credit:} \quad }
+
+
+
+%%%%%  PROJECT MACROS:
+
+%%%%%  At the top of the project put the copyright  
+%%%%%  using the \cprt macro from above.
+
+
+%%%%%  Next put in the course and the project's title.
+
+%\def\project\course#1\title#2{\hang{\bigbf \n #1 Project:} \quad {\bigcaps #2}}
+
+
+%%%%%  Type the statement of the project.
+
+
+%%%%%  Start each problem or step with a problem number
+%%%%%  using the \prob macro form above.
+
+
+%%%%%  Use macros from above for hints, comments, Maple input and output, etc.
+
+
+
+%%%%%  PROJECT REPORT COVER PAGE MACROS:
+
+%%%%%  First put the lab course and a blank for the project title
+%%%%%  using the \project and \uline macros from above, e.g.
+%%%%%  \project\course{Calculus I}\title{\uline{4truein}}
+
+
+%%%%%  Next identify this as the cover page:
+
+\def\cover{\vskip 25pt \centerline{\bigcaps Cover Page}}
+
+
+%%%%%  Then ask for the instructor, teaching assistant and section number
+
+\def\instrtasec{ \vskip 50pt \n  INSTRUCTOR    \hskip 20pt \undrline{2.5truein} 
+                 \vskip 25pt \n  TEACHING ASST \hskip  5pt \undrline{2.5truein}
+                 \hfill \n  SECTION \#    \undrline{1truein}
+\vskip 50pt \par }
+
+
+%%%%%  Finally ask for the names and ID's of the students:
+%%%%%  2-3 times for a small group project, 4-5 times for a large group project.
+
+\def\nameid{ \vskip 10pt
+\n     NAME  \hskip  5pt   \undrline{2.5truein} 
+\hfill ID    \hskip  5pt   \undrline{2.0truein}
+\hfill \par }
+
+
+
+%%%%%%  End of macro definitions
+ 

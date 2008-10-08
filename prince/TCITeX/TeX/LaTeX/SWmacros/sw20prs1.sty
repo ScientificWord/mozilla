@@ -1,0 +1,57 @@
+%sw20prs1 {Press release: TCI press release style #1}{12pt}{tcimemo}
+%Copyright (C) 1994-95 TCI Software Research
+\typeout{TCI Document Style `sw20prs1' <1 July 1994>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+\input tcimemo.sty
+\newfield{prsrlswhen}{For Release: }
+\def\headrlsname{PRESS RELEASE}%
+\def\headfromname{Contact: }%
+\def\phonenumname{Phone: }%
+\def\faxnumname{Fax: }%
+\def\datename{}%
+%
+\ps@memo
+%
+\def\@memohead{%
+ \vbox{\sf
+  \hrule\@height5\p@\vskip5\p@
+  \hbox to\hsize{\Huge\bf\letparSP
+   \ifx\@empty\the@memoname\headrlsname\else\the@memoname\fi\hfil
+   }%
+  \vskip5\p@\hrule\@height5\p@
+  }%
+ \vskip36\p@
+ \@tempswafalse
+ \ifx\@empty\the@memocompany\else\@tempswatrue\fi
+ \ifx\@empty\the@memoaddr\else\@tempswatrue\fi
+ \if@tempswa
+  \begin{flushleft}{\letparBL\the@memocompany
+   \ifx\@empty\the@memodate\else\hfill\datename\the@memodate\fi
+  \\\the@memoaddr}\end{flushleft}%
+  \addvspace{24\p@}%
+  \fi
+ \ifx\@empty\the@prsrlswhen\else\@minipagetrue
+  \begin{flushleft}{\letparSP\the@prsrlswhen}\end{flushleft}%
+  \addvspace{12\p@}%
+  \fi
+ \ifx\@empty\the@memosubj\else
+  \begin{center}\em\the@memosubj\end{center}%
+  \fi
+ }%
+%
+%
+\trimwidth 8.5in  
+%\topmargin  52pt  
+\addtolength{\topmargin}{35pt}
+\headheight 12pt  \headsep    24pt
+\footskip   18pt  \botmargin  18pt
+\trimheight 11in  
+%\textwidth 468pt
+\addtolength{\textwidth}{78pt}
+
+%\settextheight    \centerpagemargin
+\addtolength{\textheight}{86pt}
+\addtolength{\oddsidemargin}{34pt}
+\evensidemargin=\oddsidemargin
