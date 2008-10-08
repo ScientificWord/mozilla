@@ -113,19 +113,6 @@ toolbarbutton[checked="true"] {
 }
 
 /* ::::: toolbarbutton menu ::::: */
-
-.toolbarbutton-menu-dropmarker {
-  -moz-appearance: none !important;
-  border: none !important;
-  background-color: transparent !important;
-  padding: 0;
-  width: auto;
-}
-
-.toolbarbutton-menu-dropmarker[disabled="true"] {
-  padding: 0 !important;
-}
-
 /* ::::: toolbarbutton menu-button ::::: */
 
 toolbarbutton[type="menu-button"] {
@@ -150,7 +137,7 @@ toolbarbutton[type="menu-button"][disabled="true"]:hover:active {
   -moz-box-orient: vertical;
 }
 
-/* .......... dropmarker .......... */
+/* .......... dropmarker .......... 
 
 .toolbarbutton-menubutton-dropmarker {
   -moz-appearance: none !important;
@@ -161,5 +148,8 @@ toolbarbutton[type="menu-button"][disabled="true"]:hover:active {
 }
 
 .toolbarbutton-menubutton-dropmarker[disabled="true"] {
-  padding: 3px !important;
+  padding: 3px !important;	
 }
+
+
+ */
