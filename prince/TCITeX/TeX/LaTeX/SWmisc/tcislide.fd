@@ -1,0 +1,58 @@
+% tcislide.fd
+%  This is a modification of ot1lcmm.fd in which cm/dc fonts were
+%  substituted for the lcm fonts.
+
+\def\fileversion{v3.0}
+\def\filedate{2002/03/05}
+
+\wlog{Fontdef\space file\space produced\space from:\space
+ \string`tcislide.fd'\space \fileversion\space}
+
+\DeclareFontFamily{OT1}{lcmss}{\hyphenchar\font45 }
+\DeclareFontShape{OT1}{lcmss}{m}{n}{%
+    <7><8><10><12><13.82><16.59><19.91><23.89><28.66><34.4><41.28>cmss8
+       }{}
+\DeclareFontShape{OT1}{lcmss}{m}{In}{%
+   <7><8><10><12><13.82><16.59><19.91><23.89><28.66><34.4><41.28>cmss8}{}
+\DeclareFontShape{OT1}{lcmss}{m}{sl}{%
+      <13.82><16.59><19.91><23.89><28.66><34.4><41.28>cmssi8}{}
+\DeclareFontShape{OT1}{lcmss}{m}{Isl}{%
+      <13.82><16.59><19.91><23.89><28.66><34.4><41.28>cmssi8}{}
+\DeclareFontShape{OT1}{lcmss}{m}{it}{<-> sub * cmss/m/sl }{}
+\DeclareFontShape{OT1}{lcmss}{m}{Iit}{<-> sub * cmss/m/Isl }{}
+\DeclareFontShape{OT1}{lcmss}{bx}{n}{%
+      <13.82><16.59><19.91><23.89><28.66><34.4><41.28>cmssbx10}{}
+\DeclareFontShape{OT1}{lcmss}{bx}{In}{%
+      <13.82><16.59><19.91><23.89><28.66><34.4><41.28>cmssbx10}{}
+
+\DeclareFontFamily{OT1}{lcmtt}{\hyphenchar\font\m@ne}
+\DeclareFontShape{OT1}{lcmtt}{m}{n}{%
+      <13.82><16.59><19.907><23.89><28.66><34.4><41.28>cmtt8}{}
+\DeclareFontShape{OT1}{lcmtt}{m}{In}{%
+      <13.82><16.59><19.907><23.89><28.66><34.4><41.28>cmtt8}{}
+\DeclareFontShape{OT1}{lcmtt}{m}{it}{%
+      <13.82><16.59><19.907><23.89><28.66><34.4><41.28>cmitt10}{}
+\DeclareFontShape{OT1}{lcmtt}{m}{ui}{%
+      <->sub*cmtt/m/it}{}
+\DeclareFontShape{OT1}{lcmtt}{bx}{ui}{%
+      <->sub*cmtt/m/it}{}
+
+\DeclareFontFamily{T1}{lcmss}{}
+\DeclareFontShape{T1}{lcmss}{m}{n}{<-> dcss10}{}
+\DeclareFontShape{T1}{lcmss}{m}{In}{<-> dcss10}{}
+\DeclareFontShape{T1}{lcmss}{m}{sl}{<-> dcssi10}{}
+\DeclareFontShape{T1}{lcmss}{m}{Isl}{<-> dcssi10}{}
+\DeclareFontShape{T1}{lcmss}{m}{it}{<-> sub * dcss/m/sl }{}
+\DeclareFontShape{T1}{lcmss}{m}{Iit}{<-> sub * dcss/m/Isl }{}
+\DeclareFontShape{T1}{lcmss}{bx}{n}{<-> dcssbx10}{}
+\DeclareFontShape{T1}{lcmss}{bx}{In}{<-> dcssbx10}{}
+
+\DeclareFontFamily{T1}{lcmtt}{\hyphenchar\font\m@ne}
+\DeclareFontShape{T1}{lcmtt}{m}{n}{<->dctt10}{}
+\DeclareFontShape{T1}{lcmtt}{m}{In}{<->dctt10}{}
+\DeclareFontShape{T1}{lcmtt}{m}{it}{<->dct10}{}
+\DeclareFontShape{T1}{lcmtt}{m}{ui}{<->sub*dctt/m/it}{}
+\DeclareFontShape{T1}{lcmtt}{bx}{ui}{<->sub*dctt/m/it}{}
+\endinput
+%% 
+%% End of file `tcislide.fd'

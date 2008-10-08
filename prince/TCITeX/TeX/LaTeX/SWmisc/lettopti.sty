@@ -1,0 +1,428 @@
+%lettopti
+%   this option is used in conjunction with the article 
+%   base style to make a letter style 
+%Copyright (C) 1994-2000 MacKichan Software, Inc.
+\typeout{SW Document Style `lettopti' <11 Aug 2000>.}
+\input tcilcomm
+
+\newif\ifletteropen
+\newif\ifletterclosed
+
+\newdimen\longindentation
+\longindentation=.5\textwidth
+\newdimen\indentedwidth
+\indentedwidth=\textwidth
+\advance\indentedwidth -\longindentation
+
+
+\def\stopletter{}
+\def\returnaddress{}
+
+\newcount\labelcount
+
+% startbreaks, stopbreaks --------------------------------------------
+
+\def\stopbreaks{\interlinepenalty \@M
+   \def\par{\@@par\nobreak}\let\\=\@nobreakcr
+   \let\vspace\@nobreakvspace}
+
+\def\@nobreakvspace{\@ifstar{\@nobreakvspacex}{\@nobreakvspacex}}
+
+\def\@nobreakvspacex#1{\ifvmode\nobreak\vskip #1\relax\else
+               \@bsphack\vadjust{\nobreak\vskip #1}\@esphack\fi}
+
+\def\@nobreakcr{\vadjust{\penalty\@M}\@ifstar{\@xnewline}{\@xnewline}}
+
+\def\startbreaks{\let\\=\@normalcr
+   \interlinepenalty 200\def\par{\@@par\penalty 200\relax}}
+
+
+
+
+
+% Fix mark register expansion
+\def\leftmark{\expandafter\@leftmark\botmark{}{}{}\@nil}%
+\def\rightmark{\expandafter\@rightmark\firstmark{}{}{}\@nil}%
+\def\@leftmark#1#2#3\@nil{#1}%
+\def\@rightmark#1#2#3\@nil{#2}%
+%
+%\show\raggedright
+\newskip\raggedglue
+\raggedglue\z@ plus20\p@ minus\z@
+\def\raggedright{%
+ \let\\=\@centercr\@rightskip\raggedglue\rightskip
+ \@rightskip\leftskip\z@\parindent\z@
+ }%
+%
+\def\@centercr{%
+ \ifhmode\unskip\else\@badcrerr\fi\@@par
+ \@ifstar{\penalty\@M\@xcentercr}{\@xcentercr}%
+ }%
+%
+\def\letparBL{\def\par{\\}}%
+\def\letparSP{\def\par{\ }}%
+\def\letparQD{\def\par{\quad}}%
+\def\letparSL{\def\par{\hbox to1em{\hfil/\hfil}}}%
+%
+% When \par is processed in the page head, gobble up the rest of the
+% argument.
+\def\@gobblepar#1\@empty{}%
+%
+% Physical page size after trim
+\newdimen\trimwidth
+\newdimen\trimheight
+\newdimen\botmargin
+\newdimen\marginpartotal
+%
+\def\settextheight{% calculate textheight constrained by:
+ \textheight\trimheight
+ \advance\textheight-\topmargin
+ \advance\textheight-\headheight
+ \advance\textheight-\headsep
+ \advance\textheight-\footskip
+ \advance\textheight-\botmargin
+ }%
+%
+\def\centerpagemargin{% calculate \oddsidemargin constrained by:
+ \oddsidemargin\trimwidth
+ \advance\oddsidemargin-\textwidth
+ \advance\oddsidemargin-\marginparwidth
+ \advance\oddsidemargin-\marginparsep
+ \divide\oddsidemargin\tw@
+ \evensidemargin\oddsidemargin
+ \adjustpagemargin
+ }%
+%
+%
+\def\adjustpagemargin{% adjust \oddsidemargin by \marginpartotal
+ \marginpartotal\marginparwidth\advance\marginpartotal\marginparsep
+ \advance\oddsidemargin\marginpartotal
+ \indentedwidth\textwidth
+ \advance\indentedwidth-\longindentation
+ }%
+%
+
+% Page style options----------------------------------------------
+
+\def\ps@plain{% used for chapter openers
+ \def\@oddhead{}%
+ \def\@evenhead{}%       No head.
+ \def\@oddfoot{\hfil\rm\thepage\hfil}% Right footing.
+ \def\@evenfoot{}% Left footing.
+ }%
+
+\def\ps@letterhead{\ps@plain}%
+
+\def\ps@firstpage{\def\@oddhead{}\def\@oddfoot{\raisebox
+   {-45\p@}[\z@]{\hbox to \textwidth{\hspace*{100\p@}%
+    \ifcase \@ptsize\relax
+      \normalsize
+    \or
+      \small
+    \or
+      \footnotesize
+    \fi
+    \fromlocation \hfill \telephonenum}}\hss}%
+  \def\@evenhead{}\def\@evenfoot{}}
+
+
+\def\ps@letter{%
+ % like letter.sty's \ps@headings
+ \def\@oddhead{%
+  \sl\headtoname{\let\par\@gobblepar: \ignorespaces\toname\@empty}\hfil
+  \do@date\hfil
+  \pagename: \thepage
+  }%
+ \def\@oddfoot{}%
+ \@twosidefalse
+ }%
+
+\ps@letter % The default page style.
+
+
+
+%
+\def\do@date{%
+ \ifx\@empty\the@letterdate\@date
+ \else\ignorespaces{\letparSP\the@letterdate}\fi
+ }%
+%
+\prepdef\enddocument{\@end@letter}%
+%
+\def\@end@letter{%
+ \par
+ \@do@letterclosing\@do@letterinitials\@do@letterencl
+ \@do@lettercc\@do@letterps
+ % like letter.sty's \endletter:
+ \stopletter\@@par\pagebreak\@@par
+}
+
+%
+\def\returnaddress{\the@letterretaddr}%
+%
+\def\toname{\the@letterto}%
+\def\toaddress{\the@lettertoaddr}%
+%
+
+% Newfield definitions
+%
+\newfield{letteropening}{Opening: }
+\newfield{letterto}{To: }
+\newfield{lettertoaddr}{To address: }
+\newfield{letterfrom}{From: }
+\newfield{letterfromcompany}{Company: }
+\newfield{letterfromaddr}{From address: }
+\newfield{lettersubj}{Subject: }
+\newfield{letterdate}{Date: }
+\newfield{lettersign}{Signature: }
+\newfield{letterclosing}{Closing: }
+\newfield{lettercc}{cc: }
+\newfield{letterps}{P.S. }
+\newfield{letterencl}{encl: }
+\newfield{letterinitials}{initials: }
+\newfield{letterattention}{Attention: }
+
+%                                               
+\def\@do@letteropening{}
+\def\the@letteropening{}                        
+\def\@do@letterto{}
+\def\the@letterto{}                             
+                                              
+\def\@do@lettertoaddr{}
+\def\the@lettertoaddr{}                        
+\def\@do@letterfrom{}
+\def\the@letterfrom{}                          
+\def\@do@letterfromcompany{}
+\def\the@letterfromcompany{}                    
+\def\@do@letterfromaddr{}
+\def\the@letterfromaddr{}                       
+\def\@do@letterretaddr{}
+\def\the@letterretaddr{}     
+\def\@do@lettersubj{}
+\def\the@lettersubj{}
+\def\@do@letterdate{}
+\def\the@letterdate{}
+\def\@do@letternotations{}
+\def\the@letternotations{}
+\def\@do@letterattention{}
+\def\the@letterattention{}
+\def\@do@letterinitials{}
+\def\the@letterinitials{}
+\def\@do@lettersign{}
+\def\the@lettersign{} 
+\def\@do@letterclosing{}
+\def\the@letterclosing{} 
+\def\@do@lettercc{}
+\def\the@lettercc{}             
+\def\@do@letterps{}
+\def\the@letterps{}
+\def\@do@letterencl{}
+\def\the@letterencl{}
+\def\textBL{\ifhmode\unskip
+            \else\@badcrerr\fi
+            \@@par\@ifstar{\penalty\@M\@xcentercr}{\@xcentercr}}%
+%
+
+
+\def\@do@letteropening{%
+ \ifletteropen\else\letteropentrue
+  \parindent\z@
+  \parskip.5\normalbaselineskip
+  \clearpage\thispagestyle{letterhead}%
+  \c@page\@ne
+  \do@letterhead
+  \@do@letternotations
+  \do@address
+  \do@salutation
+  \fi
+ }%
+%
+%
+\def\do@letterhead{%
+ {\raggedright  %(gp) was: \raggedleft
+  \noindent\hspace*{\longindentation}  %(gp) This line added
+  \ifx\@empty\the@letterfromaddr
+  \else
+     \begingroup
+        \thispagestyle{empty}
+        \letparBL
+	      \hskip -6pt% JCS - stuff in tabulars are shifted 6pts right
+        \begin{tabular}{l}%
+           \ignorespaces\the@letterfromaddr\\*[2\parskip]%
+           \hskip -3pt\eatblank\do@date
+        \end{tabular}%
+        \par
+     \endgroup
+  \fi
+ }%
+}%
+%
+\def\@do@letternotations{%
+ \ifletteropen
+  \ifx\@empty\the@letternotations\else
+   \vspace{2\parskip}\noindent\notaname
+   \ignorespaces{\letparSP\the@letternotations}\par\nobreak
+   \fi
+  \fi
+ }%
+%
+\def\do@address{%
+ \@tempswafalse
+ \ifx\@empty\the@letterto\else\@tempswatrue\fi
+ \ifx\@empty\the@lettertoaddr\else\@tempswatrue\fi
+ \if@tempswa\@tempswafalse
+  {\vspace{2\parskip}\raggedright\letparBL\let\\\textBL
+   \ifx\@empty\the@letterto\else\ignorespaces\the@letterto\@tempswatrue\fi
+   \ifx\@empty\the@lettertoaddr
+   \else\if@tempswa\par\fi\ignorespaces\the@lettertoaddr\fi
+   \par
+   }%
+  \fi
+ }%
+%
+\def\do@salutation{%
+ \@do@letterattention
+ \@do@lettersubj  %(gp) Subject before opening
+ \do@letteropening
+ }%
+%
+\def\@do@letterattention{%
+ \ifletteropen
+  \ifx\@empty\the@letterattention\else
+   \vspace{1\parskip}\noindent\attnname
+   \ignorespaces{\letparSP\the@letterattention}\par\nobreak
+   \fi
+  \fi
+ }%
+%
+\def\do@letteropening{%
+ \ifx\@empty\the@letteropening\else
+  \vspace{1\parskip}\ignorespaces{\letparSP\the@letteropening}\par\nobreak
+  \fi
+ }%
+%
+\def\@do@lettersubj{%
+ \ifletteropen
+  \ifx\@empty\the@lettersubj\else
+   \vspace{1\parskip}\noindent\subjname
+   \ignorespaces{\letparSP\the@lettersubj}\par\nobreak
+   \fi
+  \fi
+ }%
+%
+% Based on \closing:
+\def\@do@letterclosing{%
+ \ifletteropen
+  \ifx\@empty\the@letterclosing\else
+   \par\nobreak\vspace{\parskip}\stopbreaks
+   \noindent\hspace*{\longindentation}
+   \parbox{\indentedwidth}{\raggedright\letparBL\let\\\textBL
+    \ignorespaces{\letparSP\the@letterclosing}\\[6\medskipamount]%
+    \ignorespaces\ifx\@empty\the@lettersign\the@letterfrom
+                 \else\the@lettersign\fi
+    \strut
+    }%
+   \par
+   \let\the@letterclosing\@empty
+   \fi
+  \letteropenfalse\letterclosedtrue
+  \fi
+ }%
+%
+% Based on \ps:
+%
+\def\@do@letterps{%
+ \@do@letterclosing
+ \ifletterclosed
+  \ifx\@empty\the@letterps\else
+   \startbreaks\par
+   \PSname\the@letterps\par
+   \let\the@letterps\@empty
+   \fi
+  \fi
+ }%
+%
+\def\@do@letterinitials{%
+ \@do@letterps
+ \ifletterclosed
+  \ifx\@empty\the@letterinitials\else
+   {\letparBL\ignorespaces\the@letterinitials}%
+   \let\the@letterinitials\@empty
+   \fi
+  \fi
+ }%
+%
+
+% cc stuff ---------------------------------------------
+
+\def\CC#1{%
+   \par\noindent
+   \parbox[t]{\textwidth}
+       {\@hangfrom{\reset@font\rm \ccname: }%
+                       \ignorespaces #1\strut}\par}
+
+\def\@do@lettercc{%
+ \@do@letterinitials
+ \ifletterclosed
+  \ifx\@empty\the@lettercc\else
+   \CC{\letparBL\ignorespaces\the@lettercc}%
+   \let\the@lettercc\@empty
+   \fi
+  \fi
+ }%
+%
+
+% encl stuff --------------------------------------------------------------	  
+
+\def\encl#1{\par\noindent
+            \parbox[t]{\textwidth}{\@hangfrom{\reset@font\rm \enclname: }%
+                       \ignorespaces #1\strut}\par}
+
+\def\@do@letterencl{%
+ \@do@lettercc
+ \ifletterclosed
+  \ifx\@empty\the@letterencl\else
+   \encl{\letparBL\ignorespaces\the@letterencl}%
+   \let\the@letterencl\@empty
+   \fi
+  \fi
+ }%
+%
+
+
+%
+% Standard concrete strings for letters:
+% Note: to be localized!
+%
+\def\ccname{cc}%
+\def\enclname{encl}%
+\def\pagename{Page}%
+\def\headtoname{To}%
+\def\PSname{P.S. }%
+\def\notaname{Notations: }%
+\def\attnname{Attention: }%
+\def\subjname{Subject: }%
+%
+% Standardized dimensions for letters:
+%
+\hoffset-1in
+\voffset-1in
+%
+%LJH page parameters are determined in sw20let?.sty
+%\trimheight     11in
+%\topmargin      15pt
+%\headheight     12pt
+%\headsep        24pt
+%\footskip       10pt
+%\botmargin      10pt
+%
+%\trimwidth     8.5in
+%\textwidth     468pt
+%\marginparsep    0pt
+%\marginparwidth  0pt
+%
+\longindentation=.5\textwidth
+%
+%\settextheight
+%\centerpagemargin
+

@@ -1,0 +1,167 @@
+%sw20nhej {Article: Journal of International Economics North-Holland}{12pt}{article}
+%Copyright (C) 1994-2000 MacKichan Software, Inc.
+\typeout{Document Style `sw20nhej' <17 Oct 2000>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+%Article style option created for Andrew Criswell.
+%
+% Modified Apr 2000 and Oct 2000 by (gp) to more closely match the 
+% current submission requirements found at 
+% http://www.elsevier.nl/homepage/sae/econbase/inec/
+%
+%This style prints the title flushleft on a separate page
+%  which also contains the author, abstract, and Created.
+%
+% (gp) The objects should be centered.  Created wasn't used
+%
+%Equation numbering in the appendix is a.1, a.2 ... b.1, b.2 ... etc.
+%The top margin for all pages is 1.5".
+%Side margins are 1", and bottom margins are 1.25".
+%The title will also print on all other pages
+%
+\def\and{\\ \\}
+%
+\RequirePackage{indentfirst}
+\RequirePackage{fleqn}% Change from \input{fleqn.sty} (gp)
+\RequirePackage[body={125mm,175mm}]{geometry}
+\RequirePackage{setspace}
+%The final option sets \overfillrule, if not zero then draft 
+%and doublespace the document
+\ifdim\overfullrule>0pt\doublespacing\fi 
+
+%
+\def\title#1{\gdef\@title{#1}}
+%
+\def\ps@myheadings{%
+   \let\@mkboth\@gobbletwo
+   \def\@oddhead{{\hfil\small {\sc\@title} \hfil{\rm\thepage}}}%
+   \def\@oddfoot{}%
+   \def\@evenhead{{\small{\rm\thepage}\hfil {\sc\@title}\hfil}}%
+   \let\@evenfoot\@oddfoot%
+   \def\sectionmark##1{}\def\subsectionmark##1{}%
+}
+
+\pagestyle{myheadings}
+%
+\def\maketitle{%
+   \par
+   \begingroup
+     \def\thefootnote{\fnsymbol{footnote}}
+     \def\@makefnmark{\hbox to 0pt{$^{\@thefnmark}$\hss}}%
+     \long\def\@makefntext##1{\parindent 1em\noindent
+            \hb@xt@1.8em{%
+                \hss\@textsuperscript{\normalfont\@thefnmark}}##1}% 
+     \if@twocolumn 
+        \twocolumn[\@maketitle] 
+     \else 
+        \newpage
+        \global\@topnum\z@ 
+        \@maketitle 
+     \fi
+     \thispagestyle{empty}
+     \@thanks
+   \endgroup
+   \setcounter{footnote}{0}
+   \let\maketitle\relax
+   \let\@maketitle\relax
+   \gdef\@thanks{}
+   \gdef\@author{}
+   \let\thanks\relax
+}
+
+
+\def\@maketitle{%
+   \newpage
+   \null
+   \vskip -1.0in\vskip 0.0em 
+   \centering%(gp)\flushleft
+   %\tracingmacros=1
+   {\large\@title\par}%
+   %\vskip 1.5em 
+   {\lineskip .5em 
+    \centering%(gp)\flushleft
+    %(gp)\hskip -6pt% so that following table is flush left
+    \begin{tabular}[t]{c}%
+      \normalsize\@author 
+      \ifx\@empty\@date \else \\ \scriptsize\@date\fi
+    \end{tabular}
+    %\tracingmacros=0
+    \par}
+   %\vskip 1.5em
+   %\@ifundefined{Created}{}{{} \Created}%
+   %\vskip 1.5em
+}
+\if@titlepage
+  \renewenvironment{abstract}{%
+      \titlepage
+      \null\vfil
+      \@beginparpenalty\@lowpenalty
+        \abstractname
+        \@endparpenalty\@M
+     {\par\vfil\null\endtitlepage}
+\else
+  \renewenvironment{abstract}{%
+      \if@twocolumn
+        \section*{\abstractname}%
+      \else
+        \hrule width \columnwidth 
+        \vskip 1.5em
+        \small
+          {\bfseries\noindent\abstractname\vspace{.5em}\vspace{\z@}\par}%
+      \fi}
+      {\if@twocolumn\else\endquotation\fi}
+\fi
+%
+\def\keywords#1{\par\noindent{\scriptsize\textit{Keywords:\ }#1}}
+\def\JEL#1{\par\noindent{\scriptsize\textit{JEL classification:\ }#1}
+ \vskip 1.5em
+ \hrule width \columnwidth 
+}
+%
+\def\thepart{\Roman{part}}%
+\def\thesection{\arabic{section}.}%
+\def\thesubsection{\thesection\arabic{subsection}.}%
+\def\thesubsubsection{\thesubsection\arabic{subsubsection}.}%
+\def\theparagraph{\thesubsubsection\arabic{paragraph}.}%
+\def\thesubparagraph{\theparagraph\arabic{subparagraph}.}%
+%***************************************************************************%
+%                                                                           %
+% References without numbers or labels.                                     %
+%                                                                           %
+% Citations without [    ]                                                  %
+%                                                                           %
+%***************************************************************************%
+%
+%\def\@biblabel#1{#1\hfill}
+\def\@biblabel#1{\relax}
+\def\thebibliography#1{\section*{References\@mkboth
+ {REFERENCES}{REFERENCES}}\list
+ {}{%
+ %\settowidth\labelwidth{#1}
+ \labelwidth=0pt
+ \leftmargin=\parindent
+ \rightmargin=\z@
+ \itemindent-\leftmargin
+% \labelwidth\leftmargin
+ \usecounter{enumi}}
+ \def\newblock{\hskip .11em plus .33em minus .07em}
+ \sloppy\clubpenalty4000\widowpenalty4000
+ \sfcode`\.=1000\relax}
+\let\endthebibliography=\endlist
+%
+\def\@cite#1#2{#1\if@tempswa , #2\fi}
+%
+%\pagestyle{empty}
+%
+\def\section{\@startsection {section}{1}{\z@}{-3.5ex plus -1ex minus 
+ -.2ex}{2.3ex plus .2ex}{\normalsize\bf}}
+\def\subsection{\@startsection{subsection}{2}{\z@}{-3.25ex plus -1ex minus 
+ -.2ex}{1.5ex plus .2ex}{\normalsize\it}}
+\def\subsubsection{\@startsection{subsubsection}{3}{\z@}{-3.25ex plus
+ -1ex minus -.2ex}{1.5ex plus .2ex}{\small\it}}
+%
+\def\quotation{\list{}{\listparindent 0.0em
+    \itemindent\listparindent
+    \rightmargin\leftmargin \parsep \z@ plus\p@}\item[]}
+\let\endquotation=\endlist

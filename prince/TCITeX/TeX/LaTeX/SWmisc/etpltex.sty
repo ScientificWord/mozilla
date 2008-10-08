@@ -1,0 +1,289 @@
+
+%-------   ETPLtex   -------
+%
+% Macros for LaTeX.
+% These macros were supplied by:
+%
+% Electronic Technical Publishing Services Co.
+% 2906 NE Glisan Street
+% Portland, Oregon, USA.
+% Phone (503) 234-5522, Fax (503) 234-5604
+%
+
+
+% bk12.sty  4-Sep-86; modified by ETP 2-May-90
+
+\lineskip 1pt \normallineskip 1pt
+\def\baselinestretch{2}
+
+\def\@normalsize{\@setsize\normalsize{14.5pt}\xiipt\@xiipt
+\abovedisplayskip 12pt plus3pt minus7pt\belowdisplayskip \abovedisplayskip
+\abovedisplayshortskip \z@ plus3pt\belowdisplayshortskip 6.5pt plus3.5pt
+minus3pt}
+\def\small{\@setsize\small{13.6pt}\xipt\@xipt
+\abovedisplayskip 11pt plus3pt minus6pt\belowdisplayskip \abovedisplayskip
+\abovedisplayshortskip \z@ plus3pt\belowdisplayshortskip 6.5pt plus3.5pt
+minus3pt
+\def\@listi{\parsep 4.5pt plus 2pt minus 1pt
+ \itemsep \parsep
+ \topsep 9pt plus 3pt minus 5pt}}
+\def\footnotesize{\@setsize\footnotesize{12pt}\xpt\@xpt
+\abovedisplayskip 10pt plus2pt minus5pt\belowdisplayskip \abovedisplayskip
+\abovedisplayshortskip \z@ plus3pt\belowdisplayshortskip 6pt plus3pt minus3pt
+\def\@listi{\topsep 6pt plus 2pt minus 2pt\parsep 3pt plus 2pt minus 1pt
+\itemsep \parsep}}
+\def\scriptsize{\@setsize\scriptsize{9.5pt}\viiipt\@viiipt}
+\def\tiny{\@setsize\tiny{7pt}\vipt\@vipt}
+\def\large{\@setsize\large{18pt}\xivpt\@xivpt}
+\def\Large{\@setsize\Large{22pt}\xviipt\@xviipt}
+\def\LARGE{\@setsize\LARGE{25pt}\xxpt\@xxpt}
+\def\huge{\@setsize\huge{30pt}\xxvpt\@xxvpt}
+\let\Huge=\huge
+\normalsize 
+
+%LJH these are reset below
+%\oddsidemargin .25in 
+%\evensidemargin 1.25in 
+%\topmargin .73in 
+%\textheight = 36\baselineskip
+%\textwidth 5in 
+
+\marginparwidth 1in 
+\marginparsep 7pt 
+\headheight 12pt 
+\headsep .275in 
+\footskip 30pt 
+
+\advance\textheight by \topskip
+\columnsep 10pt \columnseprule 0pt 
+
+\footnotesep 8.4pt 
+\skip\footins 10.8pt plus 4pt minus 2pt 
+\floatsep 14pt plus 2pt minus 4pt \textfloatsep 20pt plus 2pt minus 4pt
+\intextsep 14pt plus 4pt minus 4pt 
+%\@maxsep 20pt 
+\dblfloatsep 14pt plus 2pt
+minus 4pt \dbltextfloatsep 20pt plus 2pt minus 4pt 
+%\@dblmaxsep 20pt 
+\@fptop 0pt plus 1fil \@fpsep 10pt plus 2fil \@fpbot 0pt plus 1fil 
+\@dblfptop 0pt plus 1fil \@dblfpsep 10pt plus 2fil \@dblfpbot 0pt plus 1fil
+\marginparpush 7pt 
+
+\parskip 0pt plus 1pt \parindent 1.5em \topsep 10pt plus 4pt minus 6pt
+\partopsep 3pt plus 2pt minus 2pt \itemsep 5pt plus 2.5pt minus 1pt 
+\@lowpenalty 51 \@medpenalty 151 \@highpenalty 301 
+\@beginparpenalty -\@lowpenalty \@endparpenalty -\@lowpenalty \@itempenalty
+-\@lowpenalty 
+
+\def\part{\cleardoublepage \thispagestyle{plain} \if@twocolumn \onecolumn
+\@tempswatrue \else \@tempswafalse \fi \hbox{}\vfil \bgroup \centering
+\secdef\@part\@spart} 
+\def\@part[#1]#2{\ifnum \c@secnumdepth >-2\relax \refstepcounter{part}
+\addcontentsline{toc}{part}{\thepart \hspace{1em}#1}\else
+\addcontentsline{toc}{part}{#1}\fi \markboth{}{}
+ \ifnum \c@secnumdepth >-2\relax \huge\bf Part \thepart \par \vskip 20pt \fi
+\Huge \bf #1\@endpart} 
+\def\@endpart{\par\egroup \vfil\newpage \if@twoside \hbox{}
+\thispagestyle{empty} 
+ \newpage 
+ \fi \if@tempswa \twocolumn \fi} 
+\def\@spart#1{\Huge \bf #1\@endpart}
+
+\def\@makechapterhead#1{ \vspace*{50pt} { \parindent 0pt \raggedright 
+ \ifnum \c@secnumdepth >\m@ne \huge\bf \noindent\markup{CN}\@chapapp{} \thechapter \par 
+ \vskip 20pt \fi \Huge \bf \noindent\markup{CT}#1\par 
+ \nobreak \vskip 40pt } }
+
+\def\@makeschapterhead#1{ \vspace*{50pt} { \parindent 0pt \raggedright 
+ \Huge \bf \noindent\markup{CT}#1\par 
+ \nobreak \vskip 40pt } }
+
+\def\chapter{\clearpage \thispagestyle{plain} \global\@topnum\z@
+\@afterindentfalse \secdef\@chapter\@schapter} 
+\def\@chapter[#1]#2{\ifnum \c@secnumdepth >\m@ne
+ \refstepcounter{chapter}
+ \typeout{\@chapapp\space\thechapter.}
+ \addcontentsline{toc}{chapter}{\protect
+ \numberline{\thechapter}#1}\else
+ \addcontentsline{toc}{chapter}{#1}\fi
+ \chaptermark{#1}
+ \addtocontents{lof}{\protect\addvspace{10pt}}
+\addtocontents{lot}{\protect\addvspace{10pt}} \if@twocolumn
+\@topnewpage[\@makechapterhead{#2}] 
+ \else \@makechapterhead{#2}
+ \@afterheading \fi} 
+\def\@schapter#1{\if@twocolumn \@topnewpage[\@makeschapterhead{#1}]
+ \else \@makeschapterhead{#1} 
+ \@afterheading\fi}
+
+\def\section{\@startsection {section}{1}{\z@}{-3.5ex plus -1ex minus 
+ -.2ex}{2.3ex plus .2ex}{\noindent\Large\bf\markup{A}}}
+\def\subsection{\@startsection{subsection}{2}{\z@}{-3.25ex plus -1ex minus 
+ -.2ex}{1.5ex plus .2ex}{\noindent\large\bf\markup{B}}}
+\def\subsubsection{\@startsection{subsubsection}{3}{\z@}{-3.25ex plus 
+ -1ex minus -.2ex}{1.5ex plus .2ex}{\noindent\normalsize\bf\markup{C}}}
+\def\paragraph{\@startsection
+ {paragraph}{4}{\z@}{3.25ex plus 1ex minus .2ex}{-1em}{\normalsize\bf}}
+\def\subparagraph{\@startsection
+ {subparagraph}{4}{\parindent}{3.25ex plus 1ex minus 
+ .2ex}{-1em}{\normalsize\bf}}
+
+\def\chaptermark#1{}
+
+\setcounter{secnumdepth}{2}
+
+\def\appendix{\par
+ \setcounter{chapter}{0}
+ \setcounter{section}{0}
+ \def\@chapapp{Appendix}
+ \def\thechapter{\Alph{chapter}}}
+
+
+\leftmargini 2.5em
+\leftmarginii 2.2em \leftmarginiii 1.87em \leftmarginiv 1.7em \leftmarginv 1em
+\leftmarginvi 1em
+\leftmargin\leftmargini
+\labelsep .5em
+\labelwidth\leftmargini\advance\labelwidth-\labelsep
+\parsep 5pt plus 2.5pt minus 1pt
+\def\@listi{\leftmargin\leftmargini}
+\def\@listii{\leftmargin\leftmarginii
+ \labelwidth\leftmarginii\advance\labelwidth-\labelsep
+ \topsep 5pt plus 2.5pt minus 1pt
+ \parsep 2.5pt plus 1pt minus 1pt
+ \itemsep \parsep}
+\def\@listiii{\leftmargin\leftmarginiii
+ \labelwidth\leftmarginiii\advance\labelwidth-\labelsep
+ \topsep 2.5pt plus 1pt minus 1pt 
+ \parsep \z@ \partopsep 1pt plus 0pt minus 1pt
+ \itemsep \topsep}
+\def\@listiv{\leftmargin\leftmarginiv
+ \labelwidth\leftmarginiv\advance\labelwidth-\labelsep}
+\def\@listv{\leftmargin\leftmarginv
+ \labelwidth\leftmarginv\advance\labelwidth-\labelsep}
+\def\@listvi{\leftmargin\leftmarginvi
+ \labelwidth\leftmarginvi\advance\labelwidth-\labelsep}
+
+\def\ps@headings{\let\@mkboth\markboth
+\def\@oddhead{\hfil\rightmark\ --- MANUSCRIPT\hfil}%
+\def\@evenhead{\hfil\leftmark\ --- MANUSCRIPT\hfil}%
+\def\@evenfoot{\hfil\rm\thepage\hfil}\def\@oddfoot{\hfil\rm\thepage\hfil}%
+\def\chaptermark##1{\markboth {\uppercase{\ifnum \c@secnumdepth >\m@ne
+\@chapapp\ \thechapter\fi}}{\uppercase{\ifnum \c@secnumdepth >\m@ne
+\@chapapp\ \thechapter\fi}}}\def\sectionmark##1{}}
+\def\ps@myheadings{\let\@mkboth\@gobbletwo
+\def\@oddhead{\hbox{}\sl\rightmark \hfil
+\rm\thepage}\def\@oddfoot{}\def\@evenhead{\rm \thepage\hfil\sl\leftmark\hbox
+{}}\def\@evenfoot{}\def\sectionmark##1{}\def\subsectionmark##1{}}
+
+\pagestyle{headings}
+
+\font\tenss=cmss10
+\font\ninessb=cmssbx10 at 9pt
+
+%\setlength{\topmargin}{.73in}  %ljh added
+%\setlength{\textwidth}{6in}	% \hsize=6in
+%\setlength{\textheight}{8in}	% \vsize=8in
+%\setlength{\oddsidemargin}{0pt}
+%\setlength{\evensidemargin}{0pt}
+
+\addtolength{\oddsidemargin}{-17pt}
+\setlength{\evensidemargin}{\oddsidemargin}
+\addtolength{\topmargin}{32pt}
+\addtolength{\textheight}{18pt}
+\addtolength{\textwidth}{53pt}
+
+\parskip 0pt
+\parindent 4pc
+\setlength{\hoffset}{0pt}	% \hoffset=0in
+\setlength{\voffset}{0pt}	% \voffset=0.125in
+\baselineskip 12pt
+
+\def\Dhead#1{\bigskip\noindent\markup{D}\indent{\it #1:}\quad}
+\def\Ehead#1{\ifdim\lastskip<30pt\vskip -\lastskip\vskip 30pt plus 12pt minus 8pt\fi\par
+    \hbox to \the\hsize{\markup{E}\hfill\bf\uppercase{#1}\hfill}
+    \nobreak\vskip 18pt plus 5pt minus 3pt\nobreak}%\bgroup\itemskip=12pt}
+\def\Fhead#1{\bigskip\noindent\markup{TH}{\bf #1}\hskip 1pc}
+\def\Ghead#1{\medskip\noindent\markup{G}{\it #1}\enspace}
+
+% CHANGE FOR SCIWORD: The following statements were moved into
+% the ETPBOOK.TEX shell document so that Scientific Word would
+% see them and act appropriately.
+% \newtheorem{/lemma}{Lemma}[chapter]
+% \newtheorem{theorem}{Theorem}[chapter]
+% \newtheorem{proposition}{Proposition}[chapter]
+% \newtheorem{definition}{Definition}[chapter]
+% \newtheorem{assumption}{Assumption}[chapter]
+% \newtheorem{corollary}{Corollary}[chapter]
+
+\def\proof{\Ghead{Proof.}} 
+
+\newcounter{example}[chapter]
+\def\example{\@ifnextchar[{\@example}{\@example[]}}
+\def\@example[#1]{\bigskip\noindent\refstepcounter{example}
+       \markup{EXP}{\bf Example \theexample}\quad{\bf #1}
+       \vskip 12pt\bgroup\narrower\noindent\ignorespaces}
+\def\solution{\bigskip\noindent{\bf Solution}\qquad}
+\def\beginexample{\example}
+\def\endexample{\par\egroup\bigskip}
+
+\def\exercises{\Ehead{E X E R C I S E S}}
+\def\problems{\Ehead{P R O B L E M S}}
+\def\references{\Ehead{R E F E R E N C E S}\parindent=0pt\parskip=6pt\everypar={\markup{REF}}}
+\makeatletter
+\newcount\@exerdepth \@exerdepth = 0
+\newcount\@unnumdepth \@unnumdepth = 0
+
+\@definecounter{exeri}
+\@definecounter{exerii}
+\@definecounter{exeriii}
+\@definecounter{exeriv}
+ 
+\def\labelexeri{{\bf\thechapter.\arabic{exeri}}}
+\def\theexeri{\arabic{exeri}}
+\def\labelexerii{\alph{exerii})}
+\def\theexerii{\alph{exerii}}
+\def\p@exerii{\theexeri}
+\def\labelexeriii{\roman{exeriii}.}
+\def\theexeriii{\roman{exeriii}}
+\def\p@exeriii{\theexeri(\theexerii)}
+\def\labelexeriv{\Alph{exeriv}.}
+\def\theexeriv{\Alph{exeriv}}
+\def\p@exeriv{\p@exeriii\theexeriii}
+
+\def\exercise{\ifnum \@exerdepth >3 \@toodeep\else
+      \advance\@exerdepth \@ne
+      \edef\@exerctr{exer\romannumeral\the\@exerdepth}\list
+      {\csname label\@exerctr\endcsname}{\usecounter
+        {\@exerctr}\def\makelabel##1{\hss\llap{##1}}}\fi}
+\let\endexercise =\endlist
+
+\def\unnum{\ifnum \@unnumdepth >3 \@toodeep\else
+      \advance\@unnumdepth \@ne
+      \list{}{\def\makelabel##1{}}\fi}
+\let\endunnum =\endlist
+
+\makeatother
+
+\def\extract{\bigskip\begingroup\baselineskip=11pt\advance\leftskip by\parindent
+  \parskip=6pt\parindent=0pt\par\noindent\markup{EXT}\ignorespaces}
+\def\endextract{\par\endgroup\bigskip}
+
+\newdimen\figureheight  \figureheight=2.5in
+\newdimen\figurewidth
+
+\def\Figure#1#2{\begin{figure} %\midinsert
+    \vskip\the\figureheight\leftskip=0pt\rightskip=0pt\hbox to \the\hsize{\markup{CAP}\hfill\bf Figure #1\hfill}
+                \centerline{\vtop{\noindent\hsize=4.5in #2}}
+\end{figure}} %\endinsert}
+
+\def\markup#1{\llap{\hbox to 4pc{\uppercase{\tenss #1\hfill}}}}
+
+\abovedisplayskip=12pt plus 2pt minus 2pt
+\belowdisplayskip=12pt plus 2pt minus 2pt
+\abovedisplayshortskip=12pt plus 2pt minus 2pt
+\belowdisplayshortskip=12pt plus 2pt minus 2pt
+\jot=12pt
+
+\raggedbottom
+

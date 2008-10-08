@@ -1,0 +1,71 @@
+
+\ProvidesPackage{grey}[2005/01/12]
+\AtBeginDocument{\RequirePackage{color}}
+\def\grey@color{.95}
+\long\def\tciboxit#1{%
+  \begingroup
+     \setbox0=\hbox{#1}%
+     \dimen0=\ht0 
+     \advance\dimen0 by \dp0%
+     \dimen1=\dimen0
+     \divide\dimen1 by 65536
+     \dimen2=\wd0
+     \divide\dimen2 by 65536
+     \dimen3=\dp0
+     \divide\dimen3 by 65536
+     \hbox{% Use the color package (gp)
+	   \colorbox[gray]{\grey@color}{\copy0}
+     }%
+  \endgroup%
+}%
+
+\newsavebox{\gray@box}%
+\newdimen\gray@space
+\long\def\Beginboxitpara{%
+\gray@space=\fboxsep \advance\gray@space by -\fboxrule
+\par\prevdepth=-1000pt\vskip 0.5\baselineskip\noindent
+\setbox\gray@box=%
+\hbox\bgroup 
+        %\vrule width \fboxrule
+        \vtop\bgroup 
+            %\hrule
+            \vbox\bgroup
+                \kern\gray@space
+                   \hbox\bgroup
+                        \kern\gray@space
+                        \vtop\bgroup
+                   \hsize=\linewidth\advance\hsize-2\fboxsep\noindent
+                   \ignorespaces}
+\def\Endboxitpara{%
+                             \egroup
+                        \kern\gray@space
+                        \egroup
+                   \kern\gray@space
+                   \egroup 
+                   %\hrule
+             \egroup
+             %\vrule width \fboxrule
+     \egroup
+     \tciboxit{\box\gray@box}%
+     \vskip 0.5\baselineskip
+\par}
+
+\newenvironment{boxitpara}[1]{\Beginboxitpara{#1}}{\Endboxitpara}
+\newenvironment{boxitpara*}[1]{\Beginboxitpara{#1}\hbox to\hsize{}}%
+{\Endboxitpara}
+
+
+\newenvironment{GrayBox}
+   {\begin{boxitpara}{}% 
+       \parindent=0pt
+       \parskip = 5pt
+   }%
+   {\end{boxitpara}}
+
+\def\BBox{                    % this added by chris
+   \setbox 0 = \hbox\bgroup}  % this added by chris
+\def\EBox{\egroup             % this added by chris
+    \tciboxit{\box 0 }}       % this added by chris
+
+
+\endinput

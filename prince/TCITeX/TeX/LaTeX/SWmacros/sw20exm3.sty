@@ -1,0 +1,80 @@
+%sw20exm3 {Exam: TCI exam style #2}{12pt}{article}
+%Copyright (C) 1994-95 TCI Software Research
+\typeout{TCI Document Style `sw20exm3' <1 July 1994>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+\input thmsupp.tex
+%Exam 3 Style Marshall Ash
+% Sections won't have numbers
+\setcounter{secnumdepth}{0}
+
+% Make the page area as large as possible
+\setlength{\topmargin}{-0.75in}
+\setlength{\textheight}{9.25in}
+\setlength{\oddsidemargin}{-.3in}
+\setlength{\evensidemargin}{-.3in}
+\setlength{\textwidth}{7in}
+
+% Set the first level numbering to arabic and the second level
+% to alphabetic. The remaining two levels are arabic
+\def\labelenumi{\arabic{enumi}.} 
+\def\theenumi{\arabic{enumi}} 
+\def\labelenumii{(\alph{enumii})}
+\def\theenumii{\alph{enumii}}
+\def\p@enumii{\theenumi.}
+\def\labelenumiii{\arabic{enumiii}.}
+\def\theenumiii{\arabic{enumiii}}
+\def\p@enumiii{(\theenumi)(\theenumii)}
+\def\labelenumiv{\arabic{enumiv}.}
+\def\theenumiv{\arabic{enumiv}} 
+\def\p@enumiv{\p@enumiii.\theenumiii}
+
+%Create a very compressed title with the date under the title and
+%the author and a place for the student's name.
+\def\maketitle{\par
+ \begingroup
+ \def\thefootnote{\fnsymbol{footnote}}
+ \def\@makefnmark{\hbox 
+ to 0pt{$^{\@thefnmark}$\hss}} 
+ \if@twocolumn 
+ \twocolumn[\@maketitle] 
+ \else \newpage
+ \global\@topnum\z@ \@maketitle \fi\thispagestyle{plain}\@thanks
+% \global\@topnum\z@ \@maketitle \fi\thispagestyle{empty}\@thanks
+ \endgroup
+ \setcounter{footnote}{0}
+ \let\maketitle\relax
+ \let\@maketitle\relax
+ \gdef\@thanks{}\gdef\@author{}\gdef\@title{}\let\thanks\relax}
+\def\@maketitle{\newpage
+{\tabcolsep 0.0in
+\renewcommand{\arraystretch}{2}
+\begin{tabular}[t]{l}\@title 
+ \end{tabular} 
+\hfill
+\begin{tabular}[t]{l}\@author\\ \@date 
+ \end{tabular} 
+}
+}
+
+%Change to \pagestyle{empty} to suppress numbers on following pages
+\pagestyle{plain}
+%\pagestyle{empty}
+
+% Do not reset outermost enumerate counter
+\def\enumerate{%
+ \ifnum\@enumdepth>3\@toodeep
+ \else
+  \advance\@enumdepth\@ne
+  \edef\@enumctr{enum\romannumeral\the\@enumdepth}\list
+  {\csname label\@enumctr\endcsname}{%
+  \ifnum\@enumdepth>1
+   \usecounter{\@enumctr}
+  \else % (gp) What \usecounter does except reset the counter
+   \@nmbrlisttrue\def\@listctr{\@enumctr}
+  \fi
+  \def\makelabel##1{\hss\llap{##1}}}
+ \fi}
+ 
+                           

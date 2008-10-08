@@ -1,0 +1,183 @@
+%sw20asme {Article: ASME Meeting Style Journals}{12pt}{article}
+%Copyright (C) 1994-95 TCI Software Research
+\typeout{TCI Document Style `sw20asme' <21 Aug 1994>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+% 
+%    
+\RequirePackage{ulem}
+%\input thmsupp.tex
+%
+\def\shortauthor#1{\def\theshortauthor{#1}}
+%\setlength{\oddsidemargin}{-.25in}
+%\setlength{\evensidemargin}{-.25in}
+%\setlength{\textwidth}{6.95in}
+%\setlength{\textheight}{8.75in}
+%\setlength{\topmargin}{.25in}
+\addtolength{\textwidth}{116pt}
+\addtolength{\textheight}{84pt}
+\addtolength{\topmargin}{-35pt}
+\addtolength{\oddsidemargin}{-57pt}
+\evensidemargin=\oddsidemargin
+\newdimen\dummy
+\dummy=\oddsidemargin
+\addtolength{\dummy}{72pt}
+\marginparwidth=.675\dummy
+\marginparsep=.1\dummy
+
+\setlength{\columnsep}{.375in}
+\setlength{\headheight}{0in}
+\setlength{\headsep}{0in}
+\setlength{\topskip}{10pt}
+\setcounter{secnumdepth}{0}
+
+\font\ssb=cmssbx10
+
+% Note - the following contains a bad kludge (including the author name)
+%        Fix before releasing to anyone else.
+\let\@mkboth\@gobbletwo
+\let\@oddhead\@empty
+\def\@oddfoot{\hbox to 0.75in{}\hfil\rm\thepage\hfil\rlap{\theshortauthor}\hbox to 0.75in{}}
+\let\@evenhead\@empty
+\let\@evenfoot\@oddfoot
+
+\def\maketitle{%
+   \begingroup
+      \def\thefootnote{\fnsymbol{footnote}}
+      \def\@makefnmark{\hbox to 0pt{$^{\@thefnmark}$\hss}} 
+      \if@twocolumn 
+        \twocolumn[\@maketitle] 
+      \else 
+        \newpage
+        \global\@topnum\z@ 
+        \@maketitle 
+      \fi
+      \@thanks
+   \endgroup
+   \setcounter{footnote}{0}
+   \let\maketitle\relax
+   \let\@maketitle\relax
+   \gdef\@thanks{}%
+   \gdef\@author{}%
+   \gdef\@title{}%
+   \let\thanks\relax
+}
+
+\def\@maketitle{%
+    \newpage
+	\vskip -.53in  
+	\hfill\rule{3.3in}{.5pt}
+    \vskip -3pt	   
+    \hfill\rule{3.3in}{.5pt}
+    \vskip 1.56in 
+    \begin{center}
+      \ssb\@title \par 
+      \vskip 1.5em 
+      {\lineskip .5em
+       \begin{tabular}[t]{c}
+         \@author 
+       \end{tabular}%
+       \par} 
+      \vskip 1em
+      \rm 
+    \end{center}
+    \par
+    \vskip 1.0625in} 
+
+
+%
+% Here we define a new version of \@startsection which is just like the 
+% original but uses a new version of \@sect (defined next).  A section 
+% defined with this macro will have its heading underlined.
+%     
+\def\@ULstartsection#1#2#3#4#5#6{%
+   \if@noskipsec \leavevmode \fi
+   \par \@tempskipa #4\relax
+   \@afterindenttrue
+   \ifdim \@tempskipa <\z@ \@tempskipa -\@tempskipa \@afterindentfalse\fi
+   \if@nobreak \everypar{}\else
+     \addpenalty{\@secpenalty}\addvspace{\@tempskipa}\fi \@ifstar
+     {\@ULssect{#3}{#4}{#5}{#6}}{\@dblarg{\@ULsect{#1}{#2}{#3}{#4}{#5}{#6}}}}
+%
+\def\@ULsect#1#2#3#4#5#6[#7]#8{%
+       \ifnum #2>\c@secnumdepth
+           \let\@svsec\@empty
+       \else
+           \refstepcounter{#1}
+           \edef\@svsec{\csname the#1\endcsname\hskip 1em}
+       \fi
+       \@tempskipa #5\relax
+       \ifdim \@tempskipa>\z@
+         \begingroup
+             #6\relax 
+             \@hangfrom{\hskip #3\relax\uline{\@svsec}}%
+             {\interlinepenalty \@M\uline{#8}\par}%
+         \endgroup
+         \csname #1mark\endcsname{#7}
+         \addcontentsline
+             {toc}{#1}
+             {\ifnum #2>\c@secnumdepth 
+              \else
+                \protect\numberline{\csname the#1\endcsname}%
+              \fi #7}
+      \else
+         \def\@svsechd{\hskip #3\relax  %% \relax added 2 May 90
+                  \uline{\@svsec}\uline{{\ssb #8}}%
+                  \csname #1mark\endcsname{#7}%
+                  \addcontentsline{toc}{#1}
+                        {\ifnum #2>\c@secnumdepth
+                         \else
+                            \protect\numberline{\csname the#1\endcsname}%
+                         \fi
+                         #7}}
+      \fi
+      \@xsect{#5}}
+%   
+\def\@ULssect#1#2#3#4#5{\@tempskipa #3\relax
+   \ifdim \@tempskipa>\z@
+     \begingroup #4\@hangfrom{\hskip #1}{\interlinepenalty \@M \uline{#5}\par}\endgroup
+   \else \def\@svsechd{#4\hskip #1\relax \uline{#5}}\fi
+    \@xsect{#3}}
+%
+
+\def\section{\@startsection {section}{1}{\z@}{2ex plus .1ex minus
+    .2ex}{1pt}{\ssb}}
+\def\subsection{\@ULstartsection{subsection}{2}{\z@}{3.25ex plus 1ex
+    minus .2ex}{1.5ex plus.2ex}{\ssb}}
+\def\subsubsection{\@ULstartsection{subsubsection}{3}{\z@}{3.25ex plus
+    1ex minus .2ex}{-1.5ex plus -.2ex}{\ssb}}
+
+
+
+\def\thebibliography#1{%
+       \section*{%
+           \refname
+           \@mkboth{\uppercase{\refname}}{\uppercase{\refname}}}%
+	   \list{}
+            {\labelwidth 0pt%
+             \leftmargin 0em
+             \itemindent 1.5em
+		     \usecounter{enumiv}%
+             \let\p@enumiv\@empty
+             \def\theenumiv{\arabic{enumiv}}%
+            }%
+
+    \def\newblock{\hskip .11em plus.33em minus.07em}%
+    \sloppy\clubpenalty4000\widowpenalty4000
+    \sfcode`\.=1000\relax}
+
+\def\endthebibliography{%
+  \def\@noitemerr{\@warning{Empty `thebibliography' environment}}%
+  \endlist}
+
+\def\footnoterule{\kern-3\p@
+  \hrule width .5in
+  \kern 2.6\p@}
+
+
+% JCS - brought these from the shell file
+
+
+       
+
+

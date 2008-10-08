@@ -1,0 +1,82 @@
+%Copyright (C) 1994-95 TCI Software Research
+\typeout{TCI Software Research `memolett' <24 Feb 93>.}
+%
+%% Uses tcilcomm.tex and letter.sty
+%
+\input tcilcomm.tex
+%
+\@ptoptinput{letter.sty}%
+%
+% the <21 Feb 92> version of letter.sty requires:
+\ifx\undefined\reset@font
+ \def\reset@font{}%
+ \fi
+%
+\newif\ifletteropen
+%
+\newif\ifletterclosed
+%
+\def\adjustpagemargin{% adjust \oddsidemargin by \marginpartotal
+ \marginpartotal\marginparwidth\advance\marginpartotal\marginparsep
+ \advance\oddsidemargin\marginpartotal
+ }%
+%
+\def\ps@plain{% used for chapter openers
+ \def\@oddhead{}%
+ \def\@evenhead{}%       No head.
+ \def\@oddfoot{\hfil\rm\thepage\hfil}% Right footing.
+ \def\@evenfoot{}% Left footing.
+ }%
+
+\@fileswtrue
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\newif\if@filesw \@fileswtrue
+%\def\nofiles{\@fileswtrue \typeout
+%   {Yes auxiliary output files.}\typeout{}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\def\mlabel#1#2{\setbox0\vbox{\parbox[b]{3.6in}%
+%                                       {\strut\ignorespaces #2}}%
+%        \vbox to 2in{\vss \box0 \vss}}
+\def\mlabel#1#2{}
+
+\def\document{\endgroup
+  \@colht\textheight  \@colroom\textheight \vsize\textheight
+   \columnwidth\textwidth \@clubpenalty\clubpenalty
+   \if@twocolumn \advance\columnwidth -\columnsep
+      \divide\columnwidth\tw@ \hsize\columnwidth \@firstcolumntrue
+   \fi
+  \hsize\columnwidth \linewidth\hsize
+  \begingroup\@floatplacement\@dblfloatplacement
+   \makeatletter\let\@writefile\@gobbletwo
+   \let\startlabels\@empty
+   \let\@startlabels\@empty
+   \let\mlabel\@gobbletwo
+   \@input{\jobname.aux}\endgroup
+  \if@filesw \immediate\openout\@mainaux=\jobname.aux
+    \immediate\write\@mainaux{\relax}\fi
+  \csname process@table\endcsname
+  \let\glb@currsize\@empty  %% Force \baselineskip initialisation.
+  \def\do##1{\let ##1\@notprerr}%
+  \@preamblecmds
+  \let\do\noexpand
+  \@normalsize\everypar{}\@noskipsecfalse}
+%***************************************************************************%
+%                                                                           %
+%                             References                                    %
+%                                                                           %
+%***************************************************************************%
+%
+\def\@biblabel#1{[#1]\hfill}
+\def\thebibliography#1{\begin{center}{\bf REFERENCES}\end{center}
+    \list
+ {[\arabic{enumi}]}{\settowidth\labelwidth{[#1]}\leftmargin\labelwidth
+ \advance\leftmargin\labelsep
+ \usecounter{enumi}}
+ \def\newblock{\hskip .11em plus .33em minus .07em}
+ \sloppy\clubpenalty4000\widowpenalty4000
+ \sfcode`\.=1000\relax}
+\let\endthebibliography=\endlist
+%
+

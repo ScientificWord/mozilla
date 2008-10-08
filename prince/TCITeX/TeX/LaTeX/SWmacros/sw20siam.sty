@@ -1,0 +1,21 @@
+%sw20siam {Article: SIAM journals}{12pt}{siamltex}
+%Copyright (C) 1994-95 TCI Software Research
+\typeout{TCI Document Style `sw20siam' <1 July 1994>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+\author{\ }   % Avoid a problem when using \maketitle but no \author
+\def\tableofcontents{\section*{Contents.\@mkboth{CONTENTS}{CONTENTS}%
+ \hskip 1em}  % Avoid a problem with toc.
+ \@starttoc{toc}} 
+% Environments defined in siamltex.sty that must be defined in document
+%\let\theorem\undefined
+%\let\lemma\undefined
+%\let\corollary\undefined
+%\let\proposition\undefined
+
+%\input thmsupp.tex %TCI theorem option support
+
+\def\keyphrases#1{\begin{keywords}#1\end{keywords}}
+\def\AMclass#1{\begin{AM}#1\end{AM}}
+\def\AMSclass#1{\begin{AMS}#1\end{AMS}}
