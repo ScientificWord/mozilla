@@ -1106,151 +1106,151 @@ toolbar[iconsize="small"] #formulaButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_formula-disabled-sm.png");
 }
 
-#printButton {
+#printButton toolbarbutton {
   list-style-image: url("chrome://prince/skin/icons/print.png");
 }
-toolbar[iconsize="small"] #printButton {
+toolbar[iconsize="small"] #printButton toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/print-sm.png");
 }
-#printButton:hover {
+#printButton toolbarbutton:hover {
   list-style-image: url("chrome://prince/skin/icons/print-hover.png");
 }
-toolbar[iconsize="small"] #printButton:hover {
+toolbar[iconsize="small"] #printButton toolbarbutton:hover {
   list-style-image: url("chrome://prince/skin/icons/print-hover-sm.png");
 }
-#printButton:hover:active {
+#printButton toolbarbutton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/print-active.png");
 }
-toolbar[iconsize="small"] #printButton:hover:active {
+toolbar[iconsize="small"] #printButton toolbarbutton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/print-active-sm.png");
 }
-#printButton[disabled="true"] {
+#printButton[disabled="true"] toolbarbutton {
   list-style-image: url("chrome://prince/skin/icons/print-disabled.png");
 }
 
-#printButton[defcomp="dvi"] {
+#printButton[defcomp="dvi"]  toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/type_dviprint.png");
 }
-toolbar[iconsize="small"] #printButton[defcomp="dvi"] {
+toolbar[iconsize="small"] #printButton[defcomp="dvi"]  toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/type_dviprint-sm.png");
 }
-#printButton[defcomp="dvi"]:hover {
+#printButton[defcomp="dvi"] toolbarbutton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_dviprint-hover.png");
 }
-toolbar[iconsize="small"] #printButton[defcomp="dvi"]:hover {
+toolbar[iconsize="small"] #printButton[defcomp="dvi"] toolbarbutton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_dviprint-hover-sm.png");
 }
-#printButton[defcomp="dvi"]:hover:active {
+#printButton[defcomp="dvi"] toolbarbutton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_dviprint-active.png");
 }
-toolbar[iconsize="small"] #printButton[defcomp="dvi"]:hover:active {
+toolbar[iconsize="small"] #printButton[defcomp="dvi"] toolbarbutton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_dviprint-active-sm.png");
 }
-#printButton[defcomp="dvi"][disabled="true"] {
+#printButton[defcomp="dvi"][disabled="true"]  toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/type_dviprint-disabled.png");
 }
-toolbar[iconsize="small"] #printButton[defcomp="dvi"][disabled="true"] {
+toolbar[iconsize="small"] #printButton[defcomp="dvi"][disabled="true"]  toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/type_dviprint-disabled-sm.png");
 }
 
-#printButton[defcomp="pdf"] {
+#printButton[defcomp="pdf"]  toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/type_pdfprint.png");
 }
-toolbar[iconsize="small"] #printButton[defcomp="pdf"] {
+toolbar[iconsize="small"] #printButton[defcomp="pdf"]  toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/type_pdfprint-sm.png");
 }
-#printButton[defcomp="pdf"]:hover {
+#printButton[defcomp="pdf"] toolbarbutton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_pdfprint-hover.png");
 }
-toolbar[iconsize="small"] #printButton[defcomp="pdf"]:hover {
+toolbar[iconsize="small"] #printButton[defcomp="pdf"] toolbarbutton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_pdfprint-hover-sm.png");
 }
-#printButton[defcomp="pdf"]:hover:active {
+#printButton[defcomp="pdf"] toolbarbutton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_pdfprint-active.png");
 }
-toolbar[iconsize="small"] #printButton[defcomp="pdf"]:hover:active {
+toolbar[iconsize="small"] #printButton[defcomp="pdf"] toolbarbutton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_pdfprint-active-sm.png");
 }
-#printButton[defcomp="pdf"][disabled="true"] {
+#printButton[defcomp="pdf"][disabled="true"]  toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/type_pdfprint-disabled.png");
 }
-toolbar[iconsize="small"] #printButton[defcomp="pdf"][disabled="true"] {
+toolbar[iconsize="small"] #printButton[defcomp="pdf"][disabled="true"]  toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/type_pdfprint-disabled-sm.png");
 }
 
 
-#printPreviewButton {
+#printPreviewButton toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/preview.png");
 }
-toolbar[iconsize="small"] #printPreviewButton {
+toolbar[iconsize="small"] #printPreviewButton  toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/preview-sm.png");
 }
-#printPreviewButton:hover {
+#printPreviewButton toolbarbutton:hover {
   list-style-image: url("chrome://prince/skin/icons/preview-hover.png");
 }
-toolbar[iconsize="small"] #printPreviewButton:hover {
+toolbar[iconsize="small"] #printPreviewButton toolbarbutton:hover {
   list-style-image: url("chrome://prince/skin/icons/preview-hover-sm.png");
 }
-#printPreviewButton:hover:active {
+#printPreviewButton toolbarbutton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/preview-active.png");
 }
-toolbar[iconsize="small"] #printPreviewButton:hover:active {
+toolbar[iconsize="small"] #printPreviewButton toolbarbutton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/preview-active-sm.png");
 }
-#printPreviewButton[disabled="true"] {
+#printPreviewButton[disabled="true"]  toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/preview-disabled.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[disabled="true"] {
+toolbar[iconsize="small"] #printPreviewButton[disabled="true"]  toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/preview-disabled-sm.png");
 }
 
-#printPreviewButton[defcomp='dvi'] {
+#printPreviewButton[defcomp='dvi']  toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/type_dvipreview.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[defcomp='dvi'] {
+toolbar[iconsize="small"] #printPreviewButton[defcomp='dvi']  toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/type_dvipreview-sm.png");
 }
-#printPreviewButton[defcomp='dvi']:hover {
+#printPreviewButton[defcomp='dvi']  toolbarbutton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_dvipreview-hover.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[defcomp='dvi']:hover {
+toolbar[iconsize="small"] #printPreviewButton[defcomp='dvi'] toolbarbutton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_dvipreview-hover-sm.png");
 }
-#printPreviewButton[defcomp='dvi']:hover:active {
+#printPreviewButton[defcomp='dvi'] toolbarbutton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_dvipreview-active.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[defcomp='dvi']:hover:active {
+toolbar[iconsize="small"] #printPreviewButton[defcomp='dvi'] toolbarbutton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_dvipreview-active-sm.png");
 }
-#printPreviewButton[defcomp='dvi'][disabled="true"] {
+#printPreviewButton[defcomp='dvi'][disabled="true"]  toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/type_dvipreview-disabled.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[defcomp='dvi'][disabled="true"] {
+toolbar[iconsize="small"] #printPreviewButton[defcomp='dvi'][disabled="true"]  toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/type_dvipreview-disabled-sm.png");
 }
 
-#printPreviewButton[defcomp='pdf'] {
+#printPreviewButton[defcomp='pdf']  toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf'] {
+toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf']  toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-sm.png");
 }
-#printPreviewButton[defcomp='pdf']:hover {
+#printPreviewButton[defcomp='pdf'] toolbarbutton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-hover.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf']:hover {
+toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf'] toolbarbutton:hover {
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-hover-sm.png");
 }
-#printPreviewButton[defcomp='pdf']:hover:active {
+#printPreviewButton[defcomp='pdf'] toolbarbutton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-active.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf']:hover:active {
+toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf'] toolbarbutton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-active-sm.png");
 }
-#printPreviewButton[defcomp='pdf'][disabled="true"] {
+#printPreviewButton[defcomp='pdf'][disabled="true"]  toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-disabled.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf'][disabled="true"] {
+toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf'][disabled="true"]  toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-disabled-sm.png");
 }
 
@@ -2017,6 +2017,97 @@ toolbar[iconsize="small"] #importtexButton[disabled="true"] {
 
 toolbar[iconsize="small"] #javascriptButton {
   list-style-image: url("chrome://prince/skin/icons/javascript-sm.png");
+}
+
+#javascriptButton:hover {
+  list-style-image: url("chrome://prince/skin/icons/javascript-hover.png");
+}
+
+
+toolbar[iconsize="small"] #javascriptButton:hover {
+  list-style-image: url("chrome://prince/skin/icons/javascript-hover-sm.png");
+}
+
+
+
+#boldButton {
+  list-style-image: url("chrome://prince/skin/icons/bold.png");
+}
+
+#boldButton:hover {
+  list-style-image: url("chrome://prince/skin/icons/bold-hover.png");
+}
+
+#boldButton:hover:active {
+  list-style-image: url("chrome://prince/skin/icons/bold-active.png");
+}
+
+#boldButton[checked="true"] {
+  list-style-image: url("chrome://prince/skin/icons/bold-active.png");
+}
+
+#boldButton[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/bold-disabled.png");
+}
+
+toolbar[iconsize="small"] #boldButton {
+  list-style-image: url("chrome://prince/skin/icons/bold-sm.png");
+}
+
+toolbar[iconsize="small"] #boldButton:hover {
+  list-style-image: url("chrome://prince/skin/icons/bold-hover-sm.png");
+}
+
+toolbar[iconsize="small"] #boldButton:hover:active {
+  list-style-image: url("chrome://prince/skin/icons/bold-active-sm.png");
+}
+
+toolbar[iconsize="small"] #boldButton[checked="true"] {
+  list-style-image: url("chrome://prince/skin/icons/bold-active-sm.png");
+}
+
+toolbar[iconsize="small"] #boldButton[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/bold-disabled-sm.png");
+}
+
+#italicButton {
+  list-style-image: url("chrome://prince/skin/icons/italic.png");
+}
+
+#italicButton:hover {
+  list-style-image: url("chrome://prince/skin/icons/italic-hover.png");
+}
+
+#italicButton:hover:active {
+  list-style-image: url("chrome://prince/skin/icons/italic-active.png");
+}
+
+#italicButton[checked="true"] {
+  list-style-image: url("chrome://prince/skin/icons/italic-active.png");
+}
+
+#italicButton[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/italic-disabled.png");
+}
+
+toolbar[iconsize="small"] #italicButton {
+  list-style-image: url("chrome://prince/skin/icons/italic-sm.png");
+}
+
+toolbar[iconsize="small"] #italicButton:hover {
+  list-style-image: url("chrome://prince/skin/icons/italic-hover-sm.png");
+}
+
+toolbar[iconsize="small"] #italicButton:hover:active {
+  list-style-image: url("chrome://prince/skin/icons/italic-active-sm.png");
+}
+
+toolbar[iconsize="small"] #italicButton[checked="true"] {
+  list-style-image: url("chrome://prince/skin/icons/italic-active-sm.png");
+}
+
+toolbar[iconsize="small"] #italicButton[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/italic-disabled-sm.png");
 }
 
 #javascriptButton:hover {

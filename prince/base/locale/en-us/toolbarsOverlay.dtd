@@ -209,7 +209,10 @@
 
 <!ENTITY javascriptToolbarButton.tooltip "Enable/disable JavaScript">
 <!ENTITY javascriptToolbarButton.label "JavaScript">
-
+<!ENTITY boldToolbarButton.tooltip "Toggle bold">
+<!ENTITY boldToolbarButton.label "Bold">
+<!ENTITY italicToolbarButton.tooltip "Toggle italic">
+<!ENTITY italicToolbarButton.label "Italic">
 <!ENTITY chooseDefPrinter.label "Select default">
 <!ENTITY direct "Direct">
 <!ENTITY pdf "PDF">
