@@ -1,0 +1,51 @@
+%sw20rui  {Article: Similar to AIP - modified}{12pt}{article}
+%Copyright (C) 1994-95 TCI Software Research
+\typeout{TCI Document Style `sw20rui' <1 July 1994>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+%Modified style for Dr. Steven Mellema
+% 01-06-1993
+\input aip.sty
+\input thmsupp.tex %TCI theorem option support
+
+%\setlength{\oddsidemargin}{0.5in}
+%\setlength{\evensidemargin}{0.5in}
+%\setlength{\textwidth}{6.in}
+%\setlength{\topmargin}{0in}
+%\setlength{\textheight}{8.7in}
+
+\addtolength{\oddsidemargin}{-3pt}
+\evensidemargin=\oddsidemargin
+\addtolength{\topmargin}{-17pt}
+\addtolength{\textheight}{80pt}
+\addtolength{\textwidth}{44pt}
+
+\setlength{\headheight}{0in}
+\setlength{\headsep}{0in}
+\setlength{\parindent}{2em}
+\def\ingnore{\ifnum 1=0}
+\let\endignore=\fi
+\def\thebibliography#1{\par\clearpage\section{Research Bibliography\@mkboth
+  {REFERENCES} {REFERENCES}}\list     
+   {$\m@th^{\arabic{enumi}}$}{\settowidth\labelwidth{$\m@th^{#1}$}%
+    \labelsep0pt\leftmargin\parindent
+      \itemindent-\leftmargin\advance\itemindent\labelwidth
+         \usecounter{enumi}}
+            \def\newblock{\hskip .11em plus .33em minus -.07em}
+               \sloppy
+                  \sfcode`\.=1000\relax}
+% Table of Contents -- section added (gp) 20 Jul 92
+\def\l@section#1#2{\addpenalty{\@secpenalty} 
+  \addvspace{1.0em plus 1pt}
+  \@tempdima 3.5em   % width of box holding section number
+  \begingroup
+    \parindent \z@ \rightskip \@pnumwidth 
+    \parfillskip -\@pnumwidth 
+    \bf \leavevmode 
+    \advance\leftskip\@tempdima \hskip -\leftskip #1\nobreak\hfil
+    \nobreak\hbox to\@pnumwidth{\hss #2}\par
+  \endgroup}
+% \@dottedtocline{LEVEL}{INDENT}{NUMWIDTH}{TITLE}{PAGE}
+\def\l@subsection{\@dottedtocline{2}{3.5em}{2.0em}}
+\def\l@subsubsection{\@dottedtocline{3}{5.5em}{2.0em}}

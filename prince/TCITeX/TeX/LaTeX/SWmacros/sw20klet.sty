@@ -1,0 +1,109 @@
+% sw20klet {Letter: Donald Knuth's Example}{}{article}
+\typeout{TCI Document Style `sw20klet' <20 Aug 1994>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+
+\def\deblank#1{#1}	% Remove leading blank from parameter
+
+\newdimen\longindent
+\longindent=4in
+
+\thispagestyle{empty}
+%\evensidemargin 0in
+%\oddsidemargin 0in
+\addtolength{\oddsidemargin}{-39pt}
+\evensidemargin\oddsidemargin
+\newdimen\dummy
+\dummy=\oddsidemargin
+\addtolength{\dummy}{72pt}
+\marginparwidth=.675\dummy
+\marginparsep=.1\dummy
+
+%\hsize 6.5 in
+%\textwidth=6.5 in
+\addtolength{\textwidth}{78pt}
+%\topmargin .5in
+\addtolength{\topmargin}{19pt}
+
+\def\@oddhead{To: \the@To\hfil\the@Date\hfil Page \thepage}
+\let\@evenhead\@oddhead
+\def\@oddfoot{}
+\let\@evenfoot\@oddfoot
+
+\def\letterhead{%
+      \parindent 0in      
+      \hbox to 6.5in{%
+            \vbox{\hbox to \longindent{\Huge\expandafter\deblank\the@companyname}}% 
+            \vbox{\expandafter\deblank\the@companyaddress}
+      }%
+	  \vskip 2pt
+	  \hbox to\textwidth{\hrulefill}
+	  \vskip 3pt
+	  \hbox to 6.5in{%
+	        \vbox{\hbox to \longindent{}}%
+			\vbox{\expandafter\deblank\the@from}
+	  }
+	  \vskip .5in
+	  \hbox to 6.5 in{%
+	        \vbox{\hbox to\longindent{}}%
+	        \vbox{\hbox{\expandafter\deblank\the@Date}}
+	  }
+	  \vskip \baselineskip
+	  \the@To
+
+	  \the@addr
+	  \par\bigskip
+	  \the@open
+
+	  \parskip=\medskipamount
+
+	  
+}
+
+\def\letterend{%
+     \medskip
+     \hbox{\hskip\longindent\the@close}
+	 \vskip .75in
+	 \hbox to\textwidth{\hskip\longindent\vbox{\the@signature}}
+	 \hbox{\the@initials}
+	 \ifx\@empty\the@cc\else
+	     \par CC:\the@cc
+	 \fi
+	 \ifx\@empty\the@ps\else
+	    \par\medskip P.S. \the@ps
+	 \fi
+}
+\let\enddoc\enddocument
+\def\enddocument{\letterend\enddoc}
+
+\input tcilcomm
+
+\def\@do@companyname{}
+\def\@do@companyaddress{}
+\def\@do@from{}
+\def\@do@Date{\ifx\@empty\the@Date \edef\the@Date{\today}\fi}
+\def\@do@To{}
+\def\@do@addr{}
+\def\@do@open{}
+\def\@do@close{}
+\def\@do@signature{}
+\def\@do@initials{}
+\def\@do@cc{}
+\def\@do@ps{}
+
+% JCS - moved these from shell file
+
+\newfield{companyname}{Company Name:}
+\newfield{companyaddress}{Company Address:}
+\newfield{from}{From:}
+\newfield{Date}{Date:}
+\newfield{To}{To:}
+\newfield{addr}{Address:}
+\newfield{open}{Opening:}
+\newfield{close}{Closing:}
+\newfield{signature}{Signature:}
+\newfield{initials}{Initials:}
+\newfield{ps}{Postscript:}
+\newfield{cc}{CC:}
+

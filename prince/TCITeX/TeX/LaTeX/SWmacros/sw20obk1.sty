@@ -1,0 +1,76 @@
+%sw20obk1 {Book: TCI book style #1}{12pt}{tcibook}
+%Copyright (C) 1994-95 TCI Software Research
+\typeout{TCI Document Style `sw20obk1' <1 July 1994>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+\input thmsupp.tex %TCI theorem option support
+%
+\trimwidth     8.5in
+
+%\textwidth     360pt
+\addtolength{\textwidth}{-30pt}
+
+\marginparwidth 90pt  \marginparsep   12pt
+\columnsep      28pt  \columnseprule  0pt 
+\trimheight     11in 
+ 
+%\topmargin      60pt
+\addtolength{\topmargin}{40pt}
+
+\headheight      8pt  \headsep        18pt
+\footskip       24pt  \botmargin      44pt
+\@mparswitchfalse     \@reversemargintrue
+
+%\centerpagemargin
+\addtolength{\oddsidemargin}{160pt}
+\evensidemargin\oddsidemargin
+
+\onecolumn
+%\settextheight 
+%\settextheight is defined in  tcilcomm.tex and 
+% hard wires textheight in terms of topmargin headheight headsep footskip
+% and botmargin. to make textheight adjust to page length I am using line below instead LJH
+
+\addtolength{\textheight}{92pt}
+
+\c@secnumdepth\z@
+
+\ps@headings\let\sectionmark\@gobble
+\def\ps@chapter{\ps@plain}%
+\let\rulefooting\norulefooting
+\let\headcase\@empty
+\def\rectomark{\rightmark}%
+\def\versomark{\leftmark}%
+
+\def\@makechapterhead#1{%
+ \null\nointerlineskip\nobreak
+ \vskip-\topskip\vskip-\headsep\vskip-\headheight\vskip-\topmargin
+ \ifnum \c@secnumdepth >\m@ne 
+  \vspace*{188pt}%
+  \hbox to\textwidth{\hskip-\marginparwidth\hskip-\marginparsep\leaders
+   \hrule\hfil}%
+  {\parindent44pt\Huge\bf \@chapapp{} \thechapter \par}%
+  {\baselineskip 16pt 
+   \hbox to\textwidth{\hskip-\marginparwidth\hskip-\marginparsep\leaders
+    \hrule\hfil}%
+   }%
+  \else
+  \vspace*{252pt}%
+  \fi 
+ \vskip52pt
+ {\huge \bf\raggedright#1\par}%
+ \nobreak \vskip 40pt
+ }%
+\let\introtext\dropletter
+
+\def\section{%
+ \@startsection{section}{1}{\z@}{-32pt plus -1.2ex minus -.2ex}%
+  {20pt}{\LARGE\bf}%
+ }%
+\def\subsection{%
+ \@startsection{subsection}{2}{\z@}{-24pt plus -1ex minus-.2ex}%
+  {1pt}{\large\bf}%
+ }%
+
+\def\thefigure{\thechapter-\@arabic\c@figure}

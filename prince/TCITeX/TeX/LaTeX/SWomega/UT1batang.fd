@@ -1,0 +1,47 @@
+%Filename: UT1batang.fd
+
+\ProvidesFile{UT1batang.fd}[Batang for LaTeX]
+
+\DeclareFontFamily{UT1}{batang}{}
+
+\DeclareFontShape{UT1}{batang}{m}{n}{
+   <->Batang
+}{}
+\DeclareFontShape{UT1}{batang}{m}{sc}{
+   <-> ssub * batang/m/n
+}{}
+\DeclareFontShape{UT1}{batang}{m}{it}{
+   <->Batang
+}{}
+\DeclareFontShape{UT1}{batang}{m}{sl}{
+   <-> ssub * batang/m/it
+}{}
+\DeclareFontShape{UT1}{batang}{m}{itsc}{
+   <-> ssub * batang/m/it
+}{}
+\DeclareFontShape{UT1}{batang}{m}{slsc}{
+   <-> ssub * batang/m/it
+}{}
+\DeclareFontShape{UT1}{batang}{bx}{n}{
+   <->Batang
+}{}
+\DeclareFontShape{UT1}{batang}{bx}{sc}{
+   <-> ssub * batang/bx/n
+}{}
+\DeclareFontShape{UT1}{batang}{bx}{it}{
+   <->Batang
+}{}
+\DeclareFontShape{UT1}{batang}{bx}{itsc}{
+   <-> ssub * batang/bx/it
+}{}
+\DeclareFontShape{UT1}{batang}{bx}{sl}{
+   <-> ssub * batang/bx/it
+}{}
+\DeclareFontShape{UT1}{batang}{bx}{slsc}{
+   <-> ssub * batang/bx/it
+}{}
+
+\endinput
+
+
+

@@ -1,0 +1,136 @@
+% sw20balk.sty - sytle for submissions to Balkerna. 
+\typeout{TCI Document Style `sw20balk' <23 Aug 1994>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+%\setlength{\oddsidemargin}{-.45in}
+%\setlength{\evensidemargin}{-.45in}
+\addtolength{\oddsidemargin}{-70pt}
+\evensidemargin=\oddsidemargin
+%\setlength{\textwidth}{7.4in}
+\addtolength{\textwidth}{145pt}
+\setlength{\columnsep}{.25in}
+%\setlength{\textheight}{10.5in}
+\addtolength{\textheight}{175pt}
+%\setlength{\topmargin}{-.75in}
+\addtolength{\topmargin}{-70pt}
+\setlength{\headheight}{0in}
+\setlength{\headsep}{0in}
+\newdimen\dummy
+\dummy=\oddsidemargin
+\addtolength{\dummy}{72pt}
+\marginparwidth=.5\dummy
+\marginparsep=.2\dummy
+
+
+\def\baselinestretch{.8}
+
+\let\@mkboth\@gobbletwo
+\setlength{\headsep}{0in}\let\@oddhead\@empty
+\let\@oddfootage\@empty
+\let\@evenhead\@empty
+\let\@evenfoot\@oddfoot
+
+
+\def\maketitle{%
+  %ljh\setlength{\oddsidemargin}{-.45in}
+  %ljh\setlength{\evensidemargin}{-.45in}
+  %ljh\setlength{\textwidth}{7.4in}
+  %ljh\setlength{\columnsep}{.25in}
+  \begingroup 
+    \def\thefootnote{\fnsymbol{footnote}}%
+    \def\@makefnmark{\hbox to\z@{$\m@th^{\@thefnmark}$\hss}}%
+    \twocolumn[\@maketitle]%
+    \thispagestyle{plain}
+    \@thanks
+  \endgroup
+  \setcounter{footnote}{0}%
+  \let\maketitle\relax
+  \let\@maketitle\relax
+  \gdef\@thanks{}\gdef\@author{}\gdef\@title{}\let\thanks\relax
+}
+
+% The abstract has to begin 2.8 inches below first line.  So we put
+% the title and author in a box and measure it.  Then we put out the title
+% box, and then skip 2.8inches - size of title box
+ 
+\def\@maketitle{%
+	\null
+	\def\and{\\[3mm]} % so that multiple author's work properly
+	\newbox\titlebox
+	\setbox\titlebox=\vbox{%
+	          {\bf\@title}
+	          \vskip \baselineskip
+	          \@author }
+	\newdimen\abstractskip
+	\abstractskip=2.8in
+	\advance\abstractskip by -\ht\titlebox
+	
+	\box\titlebox
+	\vskip\abstractskip
+	\unvbox\abstractbox
+	\vskip 20pt
+ }
+
+
+\newbox\abstractbox
+
+% In order to get the abstract in a box we have to temporarily 
+% redefine \end.  This is because we have to open a box in 
+% \begin{abstract} and close it in \end{abstract}.  However, 
+% \end starts by closing the \begin and then executes the 
+% \endabstract.
+
+\let\END\end
+
+\def\openbox{%
+       \def\end##1{\closebox\END{##1}}%   Sneak a close box in before \end
+       \global\setbox\abstractbox=\vbox\bgroup\noindent ABSTRACT:\ }
+
+\def\closebox{\egroup}
+
+\def\abstract{\openbox}
+\def\endabstract{\let\end\END}
+
+                 
+
+
+
+
+
+
+\def\section{\@startsection {section}{1}{\z@}{-20pt plus -.2ex minus
+    -.2ex}{12pt plus .2ex minus .2ex}{}}
+\def\subsection{\@startsection{subsection}{2}{\z@}{-20pt plus -.2ex
+    minus -.2ex}{1ex plus.2ex}{}}
+\def\subsubsection{\@startsection{subsubsection}{3}{\z@}{3.25ex plus
+    1ex minus .2ex}{-1.5ex plus -.2ex}{}}
+
+
+
+\def\thebibliography#1{%
+       \section*{%
+           REFERENCES
+           \@mkboth{\uppercase{\refname}}{\uppercase{\refname}}}%
+	   \list{}
+            {\labelwidth 0pt%
+             \leftmargin 1em
+             \itemindent -1em
+			 \itemsep 0pt
+			 \parsep 0pt
+		     \usecounter{enumiv}%
+             \let\p@enumiv\@empty
+             \def\theenumiv{\arabic{enumiv}}%
+            }%
+
+    \def\newblock{\hskip .11em plus.33em minus.07em}%
+    \sloppy\clubpenalty4000\widowpenalty4000
+    \sfcode`\.=1000\relax}
+
+\def\endthebibliography{%
+  \def\@noitemerr{\@warning{Empty `thebibliography' environment}}%
+  \endlist}
+
+\def\footnoterule{\kern-3\p@
+  \hrule width .5in
+  \kern 2.6\p@}

@@ -1,0 +1,67 @@
+% sw20bolt.sty - an exam style for Bolton Institute
+\typeout{TCI Document Style `sw20bolt' <20 Aug 1994>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+\input ulem.sty
+
+\setlength{\evensidemargin}{0in}
+\setlength{\oddsidemargin}{0in}
+\setlength{\textwidth}{6.5in}
+\setlength{\topmargin}{-.5in}
+\setlength{\headheight}{75pt}
+\setlength{\headsep}{12pt}
+
+\def\header#1{\def\@header{#1}}
+\def\module#1{\def\@module{#1}}
+\def\exam#1{\def\@exam{#1}}
+\def\semester#1{\def\@semester{#1}}
+\def\theyear#1{\def\@year{#1}}
+\def\thedate#1{\def\@date{#1}}
+\def\thetime#1{\def\@time{#1}}
+\def\readingtime#1{\def\@readingtime{#1}}
+\def\runningheader#1{\def\@runheader{#1}}
+
+\def\MakeHeader{%
+        \thispagestyle{empty}
+		\null
+        \begin{center} 
+            \vskip -1in\bf
+			\@header\\[6mm]
+			\@module\\[6mm]
+			\@exam\hfill 
+			\@semester\hfill 
+			\@year\\[6mm]
+			Date: \@date \hfill Time: \@time \\
+			\hfill (\@readingtime\ reading time)
+        \end{center}
+		\vskip 2mm
+		\hrule height .5pt
+		\vskip 6mm
+}
+
+\def\Instructions{%
+        {\noindent \bf Instructions to the candidates:}
+}
+
+\def\Materials{%
+        {\noindent \bf Materials required:}
+}
+
+\def\questions{%
+        \newpage}
+
+\def\marks#1.{\newline\null\hfill [#1 marks]}
+
+
+
+\def\@oddfoot{}
+\def\@evenfoot{}
+\def\@evenhead{%
+       \begin{minipage}[b]{6.5in}
+	       \small
+	       \hfil ---\thepage ---\hfil\\[4mm]
+           \@runheader\\[2mm]
+       \end{minipage}\hfill}
+
+\let\@oddhead\@evenhead
+

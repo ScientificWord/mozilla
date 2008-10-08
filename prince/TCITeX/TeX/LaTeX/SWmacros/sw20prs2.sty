@@ -1,0 +1,68 @@
+%sw20prs2 {Press release: TCI press release style #2}{12pt}{tcimemo}
+%Copyright (C) 1994-95 TCI Software Research
+\typeout{TCI Document Style `sw20prs2' <1 July 1994>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+\input tcimemo.sty
+\newfield{prsrlswhen}{For Release: }
+\def\headrlsname{N E W S\\RELEASE}%
+\def\headfromname{Contact: }%
+\def\phonenumname{Phone: }%
+\def\faxnumname{Fax: }%
+%
+\ps@memo
+%
+\def\@memohead{%
+ \vbox{\sf
+  \hrule\@height.5\p@
+  \setbox\z@\vtop{\Huge\bf
+   \def\\{\egroup\vskip2\p@\hbox\bgroup\rm}%
+   \hrule\@height\z@\offinterlineskip\vskip2\p@
+   \hbox{\ifx\@empty\the@memoname\headrlsname\else\the@memoname\fi}%
+   }\dp\z@\z@\hbox to\hsize{\hfil\box\z@}%
+  }%
+ \vskip12\p@
+ \ifx\@empty\the@memocompany\else\@minipagetrue
+  \begin{flushleft}\Large\bf{\letparBL\the@memocompany}\end{flushleft}%
+  \fi
+ \ifx\@empty\the@memoaddr\else\@minipagetrue
+  \begin{flushleft}\small{\letparSP\the@memoaddr}\end{flushleft}%
+  \fi
+ \ifx\@empty\the@prsrlswhen\else\@minipagetrue
+  \begin{flushleft}{\letparSP\the@prsrlswhen}\end{flushleft}%
+  \fi
+  \begingroup
+   \setbox\z@\vbox{%
+    \halign{##\quad\hfil\cr
+     \headfromname\cr\phonenumname\cr\faxnumname\cr
+     }%
+    }%
+   \advance\hsize-\wd\z@\divide\hsize\tw@\relax
+   \def\\{\@centercr}\letparBL
+    \def\crjot{\cr\ifdim\jot>\z@\noalign{\vskip\jot}\fi}%
+   \halign{%
+    ##\hfil&\vtop{\parindent\z@##}\cr
+    \headfromname&\the@memofrom\cr
+    \phonenumname&\the@memophone\cr
+    \faxnumname&\the@memofax\cr
+    }%
+   \endgroup
+ \ifx\@empty\the@memosubj\else
+  \begin{center}\bf\the@memosubj\end{center}%
+  \fi
+ }%
+%
+%
+\trimwidth 8.5in  
+%\topmargin  52pt  
+\addtolength{\topmargin}{35pt}
+\headheight 12pt  \headsep    24pt
+\footskip   18pt  \botmargin  18pt
+\trimheight 11in  
+%\textwidth 468pt
+\addtolength{\textwidth}{78pt}
+%\settextheight    \centerpagemargin
+\addtolength{\textheight}{86pt}
+\addtolength{\oddsidemargin}{34pt}
+\evensidemargin=\oddsidemargin

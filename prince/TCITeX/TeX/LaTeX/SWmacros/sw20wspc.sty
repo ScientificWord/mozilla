@@ -1,0 +1,105 @@
+%sw20wspc {Book: World Scientific Publishing Company}{12pt}{tcibook}
+%Copyright (C) 1994-95 TCI Software Research
+\typeout{TCI Document Style `sw20wspc' <7 Sept 1999>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+\input thmsupp.tex %TCI theorem option support
+%
+\trimwidth     8.5in  
+
+%\textwidth     6.0in
+\addtolength{\textwidth}{43pt}
+
+\marginparsep    0pt  \marginparwidth  0pt
+\columnsep      28pt  \columnseprule   0pt 
+\trimheight     11in  
+
+%\textheight    8.5in
+\addtolength{\textheight}{65pt}
+
+%\topmargin       0pt
+\addtolength{\topmargin}{40pt}
+
+\botmargin       0pt
+\headheight    .25in  \headsep       .25in
+\footskip       24pt  
+\@mparswitchfalse     \@reversemargintrue
+
+%\centerpagemargin
+\addtolength{\oddsidemargin}{73pt}
+\evensidemargin=\oddsidemargin
+
+\onecolumn
+
+%LJH vcenterpagemargin adjust topmargin
+%\vcenterpagemargin
+
+\c@secnumdepth\tw@
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\parindent=3pc
+
+% Force upper case (gp)
+\renewcommand\contentsname{CONTENTS}
+\renewcommand\listfigurename{LIST OF FIGURES}
+\renewcommand\listtablename{LIST OF TABLES}
+\renewcommand\bibname{BIBLIOGRAPHY}
+
+\ps@headings
+\def\ps@chapter{\ps@empty}%
+\let\rulefooting\norulefooting
+\let\headcase\@empty
+%\def\headfont{\small}%
+\def\headfont{\@setsize\small{12pt}\xpt\@xpt}
+\def\rectomark{\rightmark}%
+\def\versomark{\leftmark}%
+\def\@title{}%
+
+% only support 12pt typesetting
+
+\def\@makechapterhead#1{%
+ {%
+  \centering
+  \large
+  \vspace*{1in}%
+  \ifnum \c@secnumdepth >\m@ne \@chapapp{} \thechapter\\[3pt]\fi
+  \uppercase{#1}\par 
+  }%
+ \nobreak \vskip 18pt
+ }
+\let\introtext\@empty
+
+\def\@makeschapterhead#1{% Unnumbered chapter (gp)
+ {%
+  \centering
+  \large
+  \vspace*{1in}%
+%  \ifnum \c@secnumdepth >\m@ne \@chapapp{} \thechapter\\[3pt]\fi
+  \uppercase{#1}\par 
+  }%
+ \nobreak \vskip 18pt
+ }
+\let\introtext\@empty
+
+\def\section{%
+ \@startsection {section}{1}{\z@}{-0.6cm plus -.5ex minus -.2ex}%
+  {0.2cm}{\bf}%
+ }%
+\def\subsection{%
+ \@startsection{subsection}{2}{\z@}{-0.1cm plus -.5ex minus -.2ex}%
+  {0.1cm}{\it}%
+ }%
+
+\def\thefigure{\@arabic\c@figure}%
+
+\renewenvironment{thebibliography}[1]{%
+ \small
+ \list{\arabic{enumi}.}{%
+  \usecounter{enumi}\setlength{\parsep}{0pt}%
+  \setlength{\itemsep}{3pt}\settowidth{\labelwidth}{#1.}%
+  \sloppy
+  }%
+ }{%
+ \endlist
+ }%

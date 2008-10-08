@@ -1,0 +1,480 @@
+\typeout{TCI Document Style `sw20plr' <20 Aug 1994>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+% Style file for Air Force Phillips Lab Reports
+
+% Because of the unusual requirement that headings below the 
+% level of section be underlined, this file will work only with
+% uljonart.sty
+
+% 1" margins each side.
+
+% 12 pt font preference
+
+% 1-1/2 or double spacing
+
+% Sections with or without numbering
+
+% Parameters set for 12pt single sided article 
+
+% Classification codes for headings, contents entries, and paragraphs
+% 
+% Underlined subsection headings
+
+% Center section headings
+
+%
+\input thmsupp.tex %TCI theorem option support
+%				   
+
+\def\appendix{\par
+  \setcounter{section}{0}
+  \setcounter{subsection}{0}
+  \def\thesection{\Alph{section}}}
+
+
+
+
+\def\titlepage
+       {\@restonecolfalse
+        \if@twocolumn
+           \@restonecoltrue
+           \onecolumn
+        \else 
+           \newpage 
+        \fi 
+        \thispagestyle{empty}
+        \c@page\z@}
+
+\def\endtitlepage
+       {\if@restonecol
+           \twocolumn 
+        \else 
+           \newpage 
+        \fi}
+
+
+\def\part
+     {\par
+      \addvspace{4ex}
+      \@afterindentfalse
+      \secdef\@part\@spart}
+
+\def\@part[#1]#2%
+       { \ifnum \c@secnumdepth >\m@ne
+             \refstepcounter{part}
+             \addcontentsline{toc}{part}{\thepart\hspace{1em}#1}
+         \else
+             \addcontentsline{toc}{part}{#1}
+         \fi
+         {\parindent=\z@ 
+          \raggedright
+          \interlinepenalty \@M
+          \ifnum \c@secnumdepth >\m@ne
+             \Large\bf \partname~\thepart
+             \par\nobreak
+          \fi
+          \huge\bf #2\markboth{}{}\par
+         }
+         \nobreak
+         \vskip 3ex
+         \@afterheading
+       }
+
+\def\@spart#1%
+       {{\parindent=\z@ 
+         \raggedright
+         \interlinepenalty=\@M
+         \huge\bf
+         #1
+         \par
+		}
+        \nobreak
+        \vskip 3ex
+        \@afterheading}
+
+\def\@pnumwidth{1.55em}
+\def\@tocrmarg {2.55em}
+\def\@dotsep{4.5}
+\setcounter{tocdepth}{3}
+
+\def\tableofcontents
+       {\section*{\contentsname
+        \@mkboth{\uppercase{\contentsname}}{\uppercase{\contentsname}}}%
+        \@starttoc{toc}
+%
+%   JCS - Added normalnumbers macro.  It sets pagenumbering to arabic 
+%         and self-destructs.  Called in the section start and in the 
+%         summary part if present. In other words, we will begin normal
+%         numbering at the next section or summary.
+%
+        \def\normalnumbers{\pagenumbering{arabic}
+          \def\normalnumbers{\relax}}      % this macro undefines itself
+
+}
+
+
+\def\l@section#1#2%
+       {\addpenalty{\@secpenalty}% good place for page break
+        \addvspace{1.0em plus\p@}%
+        \@tempdima=3.0em
+        \begingroup
+		    \medbreak
+            \parindent=\z@ 
+            \rightskip=\@pnumwidth
+            \parfillskip=-\@pnumwidth
+            \leavevmode
+            \advance\leftskip\@tempdima
+            \hskip -\leftskip
+            #1
+            \nobreak
+            \hfil 
+            \nobreak
+            \hbox to\@pnumwidth{\hss #2}
+            \par
+			\medbreak
+        \endgroup}
+
+\def\l@subsection{\@dottedtocline{2}{3.1em}{2.0em}}
+\def\l@subsubsection{\@dottedtocline{3}{5.2em}{3.0em}}
+\def\l@paragraph{\@dottedtocline{4}{8.4em}{3.5em}}
+\def\l@subparagraph{\@dottedtocline{5}{10em}{4.0em}}
+
+\def\listoffigures{\section*{\listfigurename
+    \@mkboth{\uppercase{\listfigurename}}{\uppercase{\listfigurename}}}%
+  \@starttoc{lof}}
+
+\def\l@figure{\@dottedtocline{1}{1.5em}{2.3em}}
+
+\def\listoftables{\section*{\listtablename\@mkboth
+   {\uppercase{\listtablename}}{\uppercase{\listtablename}}}%
+  \@starttoc{lot}}
+\let\l@table\l@figure
+% 
+% JCS - added this appendix stuff
+%
+\def\resetcounter{\setcounter{section}{0}
+         \def\resetcounter{\relax}}               % this macro undefines itself
+\def\appendix{\newpage\par
+        \resetcounter
+        \def\thesection{}
+        \section{{APPENDIX }\Alph{section}}
+		\def\thesection{\Alph{section}}
+        \@addtoreset{equation}{section}
+%       \def\@eqnum{{\rm (\thesection.\theequation)}}
+		\def\theequation{\thesection-\arabic{equation}}
+		\def\thesubsection{\thesection.\arabic{subsection}}}
+%
+% JCS - Modified labelling:  4.  instead of [4]
+%     - capitalized REFERENCES
+%
+\def\thebibliography#1%
+      {{\def\thesection{}    % redefine so that no number is entered in toc
+       \section{\refname
+       \@mkboth{\uppercase{\refname}}{\uppercase{\refname}}}}
+       \list{\arabic{enumiv}.}
+            {\settowidth\labelwidth{\@biblabel{#1}}
+             \leftmargin\labelwidth
+             \advance\leftmargin\labelsep
+             \usecounter{enumiv}%
+             \let\p@enumiv=\@empty
+             \def\theenumiv{\arabic{enumiv}}}
+       \def\newblock{\hskip .11em plus.33em minus.07em}%
+       \sloppy
+       \clubpenalty=4000
+       \widowpenalty=4000
+       \sfcode`\.=1000\relax
+       }
+
+\def\endthebibliography{%
+       \def\@noitemerr{\@warning{Empty `thebibliography' environment}}%
+       \endlist}
+%
+% JCS - added macro to switch to "bibliography" as opposed to 
+% "references"
+%
+\def\bib{\def\refname{BIBLIOGRAPHY}}
+
+\newif\if@restonecol
+
+\def\theindex
+       {\@restonecoltrue
+        \if@twocolumn
+             \@restonecolfalse
+        \fi
+        \columnseprule=\z@
+        \columnsep=35\p@
+        \twocolumn[\section*{\indexname}]%
+        \@mkboth{\uppercase{\indexname}}{\uppercase{\indexname}}%
+        \thispagestyle{plain}
+        \parindent=\z@
+        \parskip=\z@ plus.3\p@\relax
+        \let\item\@idxitem}
+
+\def\@idxitem{\par\hangindent 40\p@}
+
+\def\subitem{\par\hangindent 40\p@ \hspace*{20\p@}}
+
+\def\subsubitem{\par\hangindent 40\p@ \hspace*{30\p@}}
+
+\def\endtheindex{\if@restonecol\onecolumn\else\clearpage\fi}
+
+\def\indexspace{\par \vskip 10\p@ plus5\p@ minus3\p@\relax}
+
+\def\footnoterule
+       {\kern -3\p@
+        \hrule width .4\columnwidth
+        \kern 2.6\p@}
+
+\long\def\@makefntext#1%
+       {\parindent=1em
+        \noindent
+        \hbox to1.8em{\hss$\m@th^{\@thefnmark}$}#1}
+
+\setcounter{topnumber}{2}
+\def\topfraction{.7}
+\setcounter{bottomnumber}{1}
+\def\bottomfraction{.3}
+\setcounter{totalnumber}{3}
+\def\textfraction{.2}
+\def\floatpagefraction{.5}
+\setcounter{dbltopnumber}{2}
+\def\dbltopfraction{.7}
+\def\dblfloatpagefraction{.5}
+
+\long\def\@makecaption#1#2%
+      {\vskip 10\p@
+       \setbox\@tempboxa\hbox{#1: #2}%
+       \ifdim \wd\@tempboxa >\hsize
+           #1: #2\par
+       \else
+          \hbox to\hsize{\hfil\box\@tempboxa\hfil}%
+       \fi}
+
+\def\thefigure{\@arabic\c@figure}
+
+%
+% Language dependent words.
+%
+
+\def\partname      {Part}							 
+\def\sectionname   {Section}
+\def\contentsname  {CONTENTS}
+\def\listfigurename{List of Figures}
+\def\listtablename {List of Tables}
+\def\refname       {REFERENCES}
+\def\indexname     {Index}
+\def\figurename    {Figure}
+\def\tablename     {Table}
+\def\abstractname  {PREFACE}
+%
+% MARGIN STUFF
+%
+%     Side margins
+\setlength{\oddsidemargin} {0in}
+\setlength{\evensidemargin}{0in}
+\setlength{\marginparwidth}{68pt}
+\setlength{\marginparsep}  {0pt}
+%     Vertical Spacing
+\setlength{\topmargin}     {0in}
+\setlength{\headheight}    {0pt}
+\setlength{\headsep}       {0pt}
+\setlength{\topskip}       {12pt}
+\setlength{\footskip}      {30pt}
+%
+% TEXT DIMENSION
+%
+\setlength{\textheight}{9.0in}     
+\setlength{\textwidth}{6.5in}
+% 
+% "DOUBLE SPACE"
+%
+\renewcommand{\baselinestretch}{1.5}
+% 
+% FOOTNOTES
+%
+\setlength{\footnotesep}{8.4pt}
+\skip\footins 10.8pt plus 4pt minus 2pt
+%
+% FLOATS ON A TEXT PAGE
+%
+\setlength{\floatsep}        {14pt plus 2pt minus 4pt}
+\setlength{\textfloatsep}    {20pt plus 2pt minus 4pt}
+\setlength{\intextsep}       {14pt plus 4pt minus 4pt}
+\setlength{\@maxsep}         {20pt}
+\setlength{\dblfloatsep}     {14pt plus 2pt minus 4pt}
+\setlength{\dbltextfloatsep} {20pt plus 2pt minus 4pt}
+\setlength{\@dblmaxsep}      {20pt} 
+%
+% FLOATS ON A FLOAT PAGE
+%
+\setlength{\@fptop}   {0pt plus 1fil}
+\setlength{\@fpsep}   {10pt plus 2fil}
+\setlength{\@fpbot}   {0pt plus 1fil}
+\setlength{\@dblfptop}{0pt plus 1fil}
+\setlength{\@dblfpsep}{10pt plus 2fil}
+\setlength{\@dblfpbot}{0pt plus 1fil}
+
+%
+% MARGIN NOTES
+%
+\setlength{\marginparpush}{7pt}
+%
+%% Note: The following definitions use no style parameter.
+%%       This file is intended to work with a modified version 
+%%       of jonart.sty in which the \@sect command has been
+%%       modified to underline it's argument.
+%
+% SECTION LABELLING MACROS
+%
+\def\@sect#1#2#3#4#5#6[#7]#8{\normalnumbers
+    \ifnum #2>\c@secnumdepth
+     \let\@svsec\@empty\else
+     \refstepcounter{#1}\edef\@svsec{\csname the#1\endcsname\hskip 1em}\fi
+     \@tempskipa #5\relax
+      \ifdim \@tempskipa>\z@
+        \begingroup #6\relax
+          \@hangfrom{\hskip #3\relax\@svsec}{\interlinepenalty \@M\insertclass #8\par}%
+        \endgroup
+       \csname #1mark\endcsname{#7}
+       \addcontentsline{toc}{#1}%
+             {\ifnum #2>\c@secnumdepth 
+              \else
+                 \protect\numberline{\csname the#1\endcsname}%
+              \fi\lastclass#7}
+      \else
+        \def\@svsechd{#6\hskip #3\relax  %% \relax added 2 May 90
+                   \@svsec\insertclass #8\csname #1mark\endcsname
+                      {#7}\addcontentsline
+                           {toc}{#1}{\ifnum #2>\c@secnumdepth \else
+                             \protect\numberline
+                                    {\csname the#1\endcsname}\fi
+                                    \lastclass#7}}\fi
+     \@xsect{#5}}
+
+\def\section{\@startsection{section}{1}{\z@}
+                {-3.5ex plus -1ex minus -.2ex}
+                {2.3ex plus .2ex}
+                {\clearpage\reset@font\centering}}
+
+
+
+% The following macro file(ULem.sty) was added, and @sect and @startsect
+% were modified (from Latex.tex) in order to get underlined headings 
+% for the USAF PLR style
+
+\input ulem.sty	   
+
+% This file redefines  \em so that it now underlines.
+
+% Here we define a new version of \@startsection which is just like the 
+% original but uses a new version of \@sect (defined next).  A section 
+% defined with this macro will have its heading underlined.
+	     
+\def\@ULstartsection#1#2#3#4#5#6{\if@noskipsec \leavevmode \fi
+   \par \@tempskipa #4\relax
+   \@afterindenttrue
+   \ifdim \@tempskipa <\z@ \@tempskipa -\@tempskipa \@afterindentfalse\fi
+   \if@nobreak \everypar{}\else
+     \addpenalty{\@secpenalty}\addvspace{\@tempskipa}\fi \@ifstar
+     {\@ssect{#3}{#4}{#5}{#6}}{\@dblarg{\@ULsect{#1}{#2}{#3}{#4}{#5}{#6}}}}
+
+\def\insertclass{\currentclass 
+                 \global\edef\lastclass{\currentclass}%
+                 \global\def\currentclass{\relax}}
+\def\currentclass{\relax}
+\def\lastclass{\relax}
+\def\classify(#1).{\def\currentclass{(#1)\ \ }}
+
+\def\classpara(#1).{\noindent(#1)\ \ }
+\def\@ULsect#1#2#3#4#5#6[#7]#8{%
+       \ifnum #2>\c@secnumdepth
+           \let\@svsec\@empty
+       \else
+           \refstepcounter{#1}
+           \edef\@svsec{\csname the#1\endcsname\hskip 1em}%
+       \fi
+       \@tempskipa #5\relax
+       \ifdim \@tempskipa>\z@
+         \begingroup
+             #6\relax 
+             \@hangfrom{\hskip #3\relax\@svsec}%
+             {\interlinepenalty \@M\insertclass\ULine{#8}\par}%
+         \endgroup
+         \csname #1mark\endcsname{#7}
+         \addcontentsline
+             {toc}{#1}
+             {\ifnum #2>\c@secnumdepth 
+              \else
+                \protect\numberline{\csname the#1\endcsname}%
+              \fi
+              \lastclass#7}
+      \else
+         \def\@svsechd{\hskip #3\relax  %% \relax added 2 May 90
+                  \@svsec\insertclass\ULine{#8}\csname #1mark\endcsname
+                      {#7}\addcontentsline
+                             {toc}{#1}
+                             {\ifnum #2>\c@secnumdepth \else
+                                  \protect\numberline{\csname the#1\endcsname}
+                              \fi\lastclass#7}}
+      \fi
+      \@xsect{#5}}
+
+
+\def\subsection{\@ULstartsection{subsection}{2}{\z@}
+                   {-3.25ex plus -1ex minus -.2ex}
+                   {1.5ex plus .2ex}
+                   {}}
+
+\def\subsubsection{\@ULstartsection{subsubsection}{3}{\z@}
+                       {-3.25ex plus -1ex minus -.2ex}
+                       {1.5ex plus .2ex}
+                       {}}
+
+\def\paragraph{\@startsection{paragraph}{4}{\z@}
+                    {3.25ex plus 1ex minus .2ex}
+                    {-1em}
+                    {}}
+
+\def\subparagraph{\@startsection{subparagraph}{5}{\z@}
+                      {3.25ex plus 1ex minus .2ex}
+                      {-1em}
+                      {\reset@font\normalsize}}
+
+     
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+% PLR uses external front pages
+% Should start on page (iii).
+\pagenumbering{roman}
+\setcounter{page}{3}
+%
+%
+% JCS - Here I had to redefine \thesection to put a .0 at the end,
+%       I.e. Section 6.0
+%       This required redefining \subsection to not use \the section
+%       because we don't want subsection 6.0.1, we want 6.1
+%       This leads to a change in defining numbering within an appendix
+\def\thepart          {\Roman{part}}
+\def\thesection       {\arabic{section}.0}
+\def\thesubsection    {\arabic{section}.\arabic{subsection}}
+\def\thesubsubsection {\thesubsection.\arabic{subsubsection}}
+
+\def\theparagraph     {\thesubsubsection.\arabic{paragraph}}
+\def\thesubparagraph  {\theparagraph.\arabic{subparagraph}}
+
+% JCS - in all of these macros we have to redefine \\ because
+%       that is what SciWord gives us when it probably ought
+%       to give us \par...
+%
+\long\def\preface#1{\newpage 
+      \let\\=\par{\hfil{PREFACE}\hfil}\bigbreak #1
+      \let\\=\newline} 
+\long\def\acknowl#1{\newpage
+      \let\\=\par
+       {\hfil ACKNOWLEDGEMENTS \hfil}\bigbreak#1
+       \let\\=\newline} 
+\long\def\summary#1{\newpage
+      \let\\=\par
+     {\hfil SUMMARY\hfil}\bigbreak\normalnumbers#1
+      \let\\=\newline} 

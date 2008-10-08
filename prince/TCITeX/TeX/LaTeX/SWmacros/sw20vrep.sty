@@ -1,0 +1,31 @@
+%sw20vrep {Report: TU Wien}{12pt}{report}
+%Copyright (C) 1994-95 TCI Software Research
+\typeout{TCI Document Style `sw20vrep' <07 Jan 94>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+\input thmsupp.tex %TCI theorem option support
+\input{refman.sty}
+%
+%Undo the DIN-A4 layout
+%Horizontal Layout
+\fullwidth=6.5in
+\leftmarginwidth=\fullwidth \advance\leftmarginwidth by -\textwidth
+\oddsidemargin=\leftmarginwidth %\advance\oddsidemargin by -3mm
+\evensidemargin=\oddsidemargin
+\marginparwidth=\leftmarginwidth \advance\marginparwidth by -\marginparsep
+\def\setleftmarginwidth#1{\templength@=#1\relax
+    \leftmarginwidth=\templength@
+    \textwidth=\fullwidth \advance\textwidth by -\templength@
+    \oddsidemargin=\leftmarginwidth %\advance\oddsidemargin by -3mm
+    \evensidemargin=\oddsidemargin
+    \marginparwidth=\leftmarginwidth \advance\marginparwidth by -\marginparsep
+    \hsize=\textwidth \linewidth=\textwidth \columnwidth=\textwidth }
+%Vertical Layout
+\advance\topmargin by 4.5\baselineskip
+\advance\headsep by -0.5\baselineskip
+\advance\footskip by -0.5\baselineskip
+\advance\textheight by -10\baselineskip
+\@colht=\textheight \@colroom=\textheight
+\emptyheadtopmargin=\topmargin \advance\emptyheadtopmargin by 1\baselineskip
+\emptyfoottopmargin=\topmargin \advance\emptyfoottopmargin by -1\baselineskip
