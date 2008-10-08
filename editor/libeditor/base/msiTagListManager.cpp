@@ -533,6 +533,21 @@ msiTagListManager::BuildParentTagList()
 }
 
 
+/* AString getTagsInClass (in AString strTag, in boolean includeNS); */
+NS_IMETHODIMP 
+msiTagListManager::GetParentTagList(const nsAString & strSep, PRBool includeNS, nsAString & _retval)
+{
+// we ignore includeNS for now.
+  BuildParentTagList();
+  PRInt32 i;
+  _retval = NS_LITERAL_STRING("");
+  PRInt32 length = mparentTags?mparentTags->Count():-1;
+  if (length > 0) _retval = *(*mparentTags)[0];
+  for (i = 1; i < length; i++)
+    _retval += strSep + *(*mparentTags)[i];
+  return NS_OK;
+}
+
 /* attribute nsIEditor editor; */
 NS_IMETHODIMP 
 msiTagListManager::GetEditor(nsEditor **aEditor)
