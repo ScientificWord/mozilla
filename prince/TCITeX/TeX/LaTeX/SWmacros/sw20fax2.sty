@@ -1,0 +1,164 @@
+%sw20fax2 {FAX: SW FAX style #2}{12pt}{tcimemo}
+%Copyright (C) 1994-2000 MacKichan Software, Inc.
+\typeout{SW Document Style `sw20fax2' <11 Aug 2000>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+% 19 Apr 92  Added Subject field (gp)
+% 04 Jun 92  Moved To: field in front of From: and Fax: in front of Date: (gp)
+% 10 Jun 92  Added Phone number below fax number (gp)
+% 10 Jun 92  Better spacing of Address/Phone footer in box (gp)
+% 11 Aug 00  Define ccname, enclname, pagename and headtoname to be 
+%            consistent with Babel (gp)
+%
+\def\faxname{Fax Transmission}%
+\def\nopgname{No. of pages incl. this one: }%
+\def\faxshortname{FAX \#: }%
+\def\faxnumname{Our FAX number is }%
+\def\phonenumname{Phone \#: }%
+\def\headtoname{To}%
+\def\headfromname{From: }%
+\def\headdatename{Date: }%
+\def\headtimename{Time: }%
+\def\faxfaultname{If you do not receive all pages, please contact: }%
+\def\headinstrname{Special Instructions: }%
+\def\ccname{cc}%
+\def\enclname{encl}%
+\def\headsubjname{Subject: }%
+\def\headtocompanyname{Company: }%
+%
+\ps@memo
+\newdimen\faxindent
+\faxindent20pt
+%
+\def\@memohead{%
+ \vbox{%
+  \ifx\@empty\the@memocompany\else\bigskip
+   \setbox\z@\vbox{%
+    \LARGE\bf\advance\hsize-\tw@\faxindent\@parboxrestore
+    \vskip22\p@
+    \letparBL\the@memocompany\endgraf{\baselineskip10\p@\null}%
+   }%
+   \hrule\hbox to\hsize{\vrule\hss\box\z@\hss\vrule}\hrule\vskip2\p@
+  \fi
+  \setbox\z@\vbox{%
+   \sf\advance\hsize-\tw@\faxindent\@parboxrestore
+   \vskip10\p@
+   \ifx\@empty\the@memoname\faxname\else{\letparBL\the@memoname}\fi
+   \ifx\@empty\the@faxpg\else\hfill\nopgname\the@faxpg\fi
+   \endgraf{\baselineskip14\p@\null}%
+  }%
+  \hrule\hbox to\hsize{\vrule\hss\box\z@\hss\vrule}\hrule\vskip2\p@
+  \setbox\z@\vbox{%
+   \sf
+   \vskip22\p@
+   \hbox{%
+    \advance\hsize-3\faxindent
+    \hskip\faxindent
+    \vtop{%
+      \hsize.67\hsize
+      \setbox\z@\vbox{%
+        \halign{%
+          ##\quad\hfil\cr
+          \headtoname: \cr\headtocompanyname\cr\headfromname\cr  %(gp)
+          \headsubjname\cr  %(gp)
+        }%
+      }%
+      \advance\hsize-\wd\z@\relax{%
+       \def\\{\cr&}\letparBL
+        \def\crjot{\cr\ifdim\jot>\z@\noalign{\vskip\jot}\fi}%
+       \halign{%
+        ##\quad\hfil&\vtop{\parindent\z@##}\cr
+        \ifx\@empty\the@memoto
+         \else\headtoname: &\the@memoto\crjot\fi  %(gp)
+        \ifx\@empty\the@memotocompany
+         \else\headtocompanyname&\the@memotocompany\crjot\fi
+        \ifx\@empty\the@memofrom
+         \else\headfromname&\the@memofrom\crjot\fi
+        \ifx\@empty\the@memosubj
+         \else\headsubjname&\the@memosubj\crjot\fi  %(gp)
+        \ifdim\jot>\z@\noalign{\vskip-\jot}\fi
+       }%
+      }%
+      \endgraf{\baselineskip22\p@\null}%
+    }%
+    \hskip\faxindent
+    \vtop{%
+     \hsize.33\hsize
+     \setbox\z@\vbox{%
+      \halign{%
+       ##\quad\hfil\cr
+       \faxshortname\cr
+       \ifx\@empty\the@memotophone\else\phonenumname\cr\fi  %(gp)
+       \headdatename\cr\headtimename\cr  %(gp)
+      }%
+     }%
+     \advance\hsize-\wd\z@\relax{%
+      \def\\{\cr&}\letparBL
+      \def\crjot{\cr\ifdim\jot>\z@\noalign{\vskip\jot}\fi}%
+      \halign{%
+       ##\quad\hfil&\vtop{\parindent\z@##}\cr
+       \ifx\@empty\the@memotofax
+        \else\faxshortname&\the@memotofax\crjot\fi  %(gp)
+       \ifx\@empty\the@memotophone
+        \else\phonenumname&\the@memotophone\cr\fi
+       \headdatename&\ifx\@empty\the@memodate\@date
+                      \else{\letparSP\the@memodate}\fi\crjot
+       \headtimename&\ifx\@empty\the@memotime\@time
+                      \else{\letparSP\the@memotime}\fi\crjot
+       \ifdim\jot>\z@\noalign{\vskip-\jot}\fi
+      }%
+     }%
+     \endgraf{\baselineskip22\p@\null}%
+    }%
+    \hskip\faxindent
+   }%
+  }%
+  \hrule\hbox to\hsize{\vrule\hss\box\z@\hss\vrule}\hrule\vskip10\p@
+ }%
+}%
+%
+\def\@end@memo{%
+  \par
+  \letterclosedtrue
+  \@do@memocc\@do@memoencl\do@memoclose\pagebreak
+}%
+%
+\def\do@memoclose{%
+  \vfil
+  \ifx\@empty\the@memofax\else
+    \setbox\z@\hbox to \hsize{\sf\hfil\sf\strut\faxnumname\letparSP
+     \the@memofax\hfil}%
+    \hrule\hbox to\hsize{\vrule\hss\box\z@\hss\vrule}\hrule\vskip2\p@
+  \fi
+  \@tempswafalse
+  \ifx\@empty\the@memoaddr\else\@tempswatrue\fi
+  \ifx\@empty\the@memophone\else\@tempswatrue\fi
+  \if@tempswa\@tempswafalse
+    \setbox\z@\hbox to \hsize{%
+      \sf\hfil
+      \strut\letparSP
+      \ifx\@empty\the@memoaddr\else\@tempswatrue\the@memoaddr\fi
+      \ifx\@empty\the@memophone\else\if@tempswa\hfil\fi\the@memophone\fi
+      \hfil
+    }%
+    \hrule\hbox to\hsize{\vrule\hss\box\z@\hss\vrule}\hrule\vskip2\p@
+  \fi
+}%
+%
+%
+
+\trimwidth 8.5in  \trimheight 11in
+%\topmargin  52pt  \botmargin  18pt
+\addtolength{\topmargin}{35pt}
+\headheight 12pt  \headsep    24pt
+\footskip   18pt  
+%\textwidth 6.5in
+\addtolength{\textwidth}{78pt}
+%\settextheight    \centerpagemargin
+ \addtolength{\textheight}{90pt}
+\addtolength{\oddsidemargin}{33pt}
+\evensidemargin=\oddsidemargin
+\marginparwidth=.675\oddsidemargin
+\marginparsep=.1\oddsidemargin
+

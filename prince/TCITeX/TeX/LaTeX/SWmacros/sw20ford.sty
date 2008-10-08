@@ -1,0 +1,186 @@
+% sw20ford {Report: Ford Motor Report}{}{article}
+% Copyright (C) 1993 TCI Software Research
+\typeout{TCI Document Style `sw20ford' <20 Aug 1994>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+\input thmsupp.tex
+%
+\pagestyle{myheadings}
+\markboth{\it Ford Motor Confidential}{\it Ford Motor Confidential}
+
+\def\registered{{\ooalign
+  {\hfil\raise.07ex\hbox{$\scriptstyle\rm\text{R}$}\hfil\crcr
+  \mathhexbox20D}}}
+
+\setlength{\topmargin}{-.75in}
+\setlength{\textheight}{9.5in}
+\setlength{\oddsidemargin}{0in}
+\setlength{\evensidemargin}{0in}
+\setlength{\textwidth}{6.5in}
+
+
+
+\newbox\abstractbox
+
+% In order to get the abstract in a box we have to temporarily 
+% redefine \end.  This is because we have to open a box in 
+% \begin{abstract} and close it in \end{abstract}.  However, 
+% \end starts by closing the \begin and then executes the 
+% \endabstract.
+
+\let\END\end
+
+\def\openbox{\global\setbox\abstractbox=\vbox\bgroup
+	         \def\end##1{\closebox\END{##1}}
+}
+
+\def\closebox{\egroup}
+
+\def\abstract{\openbox}
+\def\endabstract{\let\end\END}
+
+\def\maketitle{\par
+ \begingroup
+   \def\thefootnote{\fnsymbol{footnote}}%
+   \def\@makefnmark{\hbox to\z@{$\m@th^{\@thefnmark}$\hss}}%
+   \newpage
+   \global\@topnum\z@
+   \@maketitle
+   \@thanks
+ \endgroup
+ \setcounter{footnote}{0}%
+ \let\maketitle\relax
+ \let\@maketitle\relax
+ \gdef\@thanks{}\gdef\@author{}\gdef\@title{}\let\thanks\relax}
+
+\def\@maketitle{\newpage\null
+ \vskip -\topskip
+ \vskip -\headsep
+ \vskip -12pt
+ {\noindent \it Ford Motor Confidential}
+ \vskip \topskip
+ \vskip \headsep
+ \vskip 2em
+ \begin{center}%
+  {\LARGE \@title \par}%
+  \vskip 1.5em
+  {\large
+   \lineskip .5em
+   \begin{tabular}[t]{c}\@author
+   \end{tabular}\par}%
+  \vskip 1em
+  {\large \@date}%
+ \end{center}%
+ \par
+ \vskip 1in
+ \small                           
+ \begin{center}%
+    {\bf \abstractname\vspace{-.5em}\vspace{\z@}}%
+ \end{center}%
+ \quotation	\item
+ \unvbox\abstractbox
+ \endquotation
+ \vfill
+ \hfill Advanced Systems Section\\
+ \null\hfill Powertrain Electronics\\
+ \null\hfill Electronics Division\\
+ \null\hfill Ford Motor Company}
+
+
+% In order to get the abstract in a box we have to temporarily 
+% redefine \end.  This is because we have to open a box in 
+% \begin{abstract} and close it in \end{abstract}.  However, 
+% \end starts by closing the \begin and then executes the 
+% \endabstract.
+
+\newbox\abstractbox
+\let\END\end
+
+\def\openbox{%
+       \def\end##1{\closebox\END{##1}}%   Sneak a close box in before \end
+       \global\setbox\abstractbox=\vbox\bgroup\noindent}
+
+\def\closebox{\egroup}
+
+\def\abstract{\openbox}
+\def\endabstract{\let\end\END}
+
+ 
+
+
+\def\tableofcontents{%
+        \newpage
+        \SECTION*{\contentsname
+            \@mkboth{\uppercase{\contentsname}}{\uppercase{\contentsname}}}%
+        \@starttoc{toc}
+	      \vfill
+        \begin{center}\footnotesize
+            This document was created with Scientific 
+            Word \registered{} and is stored in \LaTeX{} format.\\
+            The source file is available through the author.
+		\end{center}
+}
+
+\def\listoffigures{\newpage\SECTION*{\listfigurename
+    \@mkboth{\uppercase{\listfigurename}}{\uppercase{\listfigurename}}}%
+  \@starttoc{lof}}
+
+\def\listoftables{\newpage\SECTION*{\listtablename\@mkboth
+   {\uppercase{\listtablename}}{\uppercase{\listtablename}}}%
+  \@starttoc{lot}}
+
+
+% Start page numbering at the first "real" section, TOC, LOF don't count.
+% We use \SECTION for the original section....
+\def\thepage{}
+\def\startnumbering{\newpage\pagenumbering{arabic}%
+           \def\startnumbering{\relax}}
+
+
+\let\SECTION\section
+\def\section{\startnumbering%
+       \@startsection {section}{1}{\z@}{-3.5ex plus-1ex minus -.2ex}%
+               {2.3ex plus.2ex}{\reset@font\Large\bf}}
+
+
+% Put DRAFT on each page.
+
+\newif\ifdraftmode
+\draftmodefalse
+				 
+
+\def\@outputpage{\begingroup\catcode`\ =10
+     \let\-\@dischyph \let\'\@acci \let\`\@accii \let\=\@acciii
+    \if@specialpage
+     \global\@specialpagefalse\@nameuse{ps@\@specialstyle}\fi
+     \if@twoside
+       \ifodd\count\z@ \let\@thehead\@oddhead \let\@thefoot\@oddfoot
+            \let\@themargin\oddsidemargin
+          \else \let\@thehead\@evenhead
+          \let\@thefoot\@evenfoot \let\@themargin\evensidemargin
+     \fi\fi
+     \shipout
+	 \vbox{%
+	       \ifdraftmode
+	          \hbox to \textwidth{\raise .8in\vbox to 0pt { \hfil\Huge DRAFT \hfil}}
+		   \fi
+	       \reset@font %% RmS 91/08/15
+           \normalsize \baselineskip\z@ \lineskip\z@
+           \let\par\@@par %% 15 Sep 87
+           \vskip \topmargin \moveright\@themargin
+           \vbox{\setbox\@tempboxa
+                   \vbox to\headheight{\vfil \hbox to\textwidth
+                                       {\let\label\@gobble \let\index\@gobble
+                                        \let\glossary\@gobble %% 21 Jun 91
+                                         \@thehead}}% %% 22 Feb 87
+                 \dp\@tempboxa\z@
+                 \box\@tempboxa
+                 \vskip \headsep
+                 \box\@outputbox
+                 \baselineskip\footskip
+                 \hbox to\textwidth{\let\label\@gobble
+                           \let\index\@gobble  %% 22 Feb 87
+                           \let\glossary\@gobble %% 21 Jun 91
+                           \@thefoot}}}\global\@colht\textheight
+           \endgroup\stepcounter{page}\let\firstmark\botmark}

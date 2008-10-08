@@ -1,0 +1,244 @@
+%sw20miam {Thesis: University of Miami}{12pt}{article}
+%Copyright (C) 1994-95 TCI Software Research
+\typeout{TCI Document Style `sw20miam' <10 Jan 2000>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+\input thmsupp.tex %TCI theorem option support
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% December 16, 1992                                                         %
+% Style created for Prasad Chittaluru                                       %
+% intended for submittion as a Thesis at the University of Miami            %
+% Title page has the name of the University, the title, the author          %
+% A Thesis(degree of) open field to write in the degree                     %
+% City and state, then Date                                                 %
+%                                                                           %
+% The Certification page hase the name of the University, (degree field)    %
+%  title, author, and 4 signature fields                                    %
+%                                                                           %
+% The Abstract page has the author(flushleft) and the degree(flushright)    %
+%  on the first line, the title(center) with the date                       %
+%                                                                           %
+% The Professor names that are on the Certification are hard coded in the   %
+%   this style file, and if their name should have to be changed, then      %
+%   these names will have to be modified in this style file. (WARNING)      %
+%    be carefull when you try this.                                         %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\title#1{\gdef\@title{\uppercase{#1}}}
+%
+\setlength{\textheight}{9.0in}
+\setlength{\oddsidemargin}{0.50in}
+\setlength{\evensidemargin}{0.0in}
+\setlength{\textwidth}{6.0in}
+\setlength{\topmargin}{-.5in}
+%
+\def\linedraw{\hbox to 1.25in{\hrulefill}}
+%
+\def\baselinestretch{2}
+%
+%\pagenumbering{roman}
+%
+\def\miami{\Huge UNIVERSITY OF MIAMI}
+%
+\def\linex{{\hrule width 2in} \hfil {\hrule width 2in}}
+%
+\flushbottom
+%
+%***************************************************************************%
+%                                                                           %
+%                         The Title Page                                    %
+%                                                                           %
+%***************************************************************************%
+%
+\def\maketitle{\par
+ \begingroup\def\baselinestretch{1}\flushbottom
+   \def\thefootnote{\fnsymbol{footnote}}%
+   \def\@makefnmark{\hbox
+       to\z@{$\m@th^{\@thefnmark}$\hss}}%
+   \if@twocolumn
+     \twocolumn[\@maketitle]%
+     \else \newpage
+     \global\@topnum\z@\thispagestyle{empty}
+     \@maketitle \fi\thispagestyle{empty}\@thanks
+ \endgroup
+ \setcounter{footnote}{0}%
+ \let\maketitle\relax
+ \let\@maketitle\relax
+ \gdef\@thanks{}\let\thanks\relax}
+%
+\def\@maketitle{\newpage\def\baselinestretch{1}
+ \null
+ %\vskip -1.5in \vskip 0.0in %2em
+\begin{center}%
+\vskip .5in \vskip 0.0in
+    {\miami}
+   \vskip 2.5em
+  {\bf \LARGE \@title \par}%
+  \vfil
+  {\large
+   \lineskip .5em
+     {By}
+   \vskip 1.0em
+   \begin{tabular}[t]{c}\@author
+   \end{tabular}\par}%
+  \vfil
+\def\baselinestretch{1}\small \normalsize
+  {A THESIS}
+\vskip .5em
+  {Submitted to the Faculty}
+\vskip .25em  
+{of the University of Miami}
+\vskip .25em
+  {in partial fulfillment of the requirements for}
+\vskip .25em  
+{the degree of Master of}\linedraw
+\vfil
+  {Coral Gables, Florida}
+   \vskip .25em
+{\large \@date}%
+ \end{center}%
+ \par
+ \vfil\newpage\thispagestyle{empty}
+%
+%***************************************************************************%
+%                                                                           %
+%                   The Certification Page                                  %
+%                                                                           %
+%***************************************************************************%
+%
+\def\baselinestretch{1}\small \normalsize \flushbottom
+\vskip 1in \vskip 0.0in
+\begin{center}
+{\miami}
+\vfil
+{A Thesis submitted in partial fulfillment of}
+\vskip .25em
+{the requirements for the degree of}
+\vskip .25em
+{Master of }\linedraw
+\vfil
+\@title
+\vfil
+\@author
+\vfil
+\end{center}
+\vfil
+\flushleft{\bf Approved:}
+\vskip 1.5em
+%\begin{center}
+\hbox{\hsize = 2in \raggedright\parindent = 0pt
+\vtop{\hrule Ima Sample \newline Professor of Biolgy \newline%
+Chairperson of the Thesis \newline%
+Committee}
+\hskip 2.0in
+\vtop{\hrule Jo Anne K. Hecker \newline
+             Interim Dean of \newline
+            The Graduate School}}
+%\end{center}
+\vfil
+\hbox{\hsize = 2in \raggedright\parindent = 0pt
+\vtop{\hrule Joseph Smith \newline Professor of Psychology}
+\hskip 2.0in
+\vtop{\hrule Frederick Jones \newline
+             Associate Professor of \newline
+             Biology}}
+\newpage\thispagestyle{empty}%
+}
+%
+%***************************************************************************%
+%                                                                           %
+%                         The Abstact Page                                  %
+%                                                                           %
+%***************************************************************************%
+%
+\def\abstract{\if@twocolumn
+\section*{\abstractname}%
+\else \normalsize \flushbottom
+\vskip .5in \vskip 0.0in
+\begin{tabular}[t]{l}\@author
+   \end{tabular}%
+\hskip 2in
+\@ifundefined{Description}{}{{} \Description}%\Description
+\vskip 1.5em
+\begin{flushleft}
+{\def\baselinestretch{1}\Large \@title\hskip .5in {\normalsize\@date}}
+\end{flushleft}
+\vskip 1.5em
+\quotation
+\fi}
+%
+\def\endabstract{\if@twocolumn\else\setcounter{page}{0}\newpage
+\thispagestyle{plain}
+%\vskip 1in \vskip 0.0in%
+\endquotation\fi}
+%
+%***************************************************************************%
+%                                                                           %
+%                      The Footnotes Marks                                  %
+%                                                                           %
+%***************************************************************************%
+%
+\long\def\@makefntext#1{\def\baselinestretch{1}\vskip -.18in
+\vskip 0pt\parindent .25in\noindent 
+ \hbox to .8em{ }#1}
+%
+%***************************************************************************%
+%                                                                           %
+%                               Quotation                                   %
+%                                                                           %
+%***************************************************************************%
+%
+\def\quotation{\list{}{\listparindent 0.0em %1.5em
+    \itemindent\listparindent
+    \rightmargin\leftmargin \parsep \z@ plus\p@}\item[]}
+\let\endquotation=\endlist
+%
+%***************************************************************************%
+%                                                                           %
+%                               Footnotes                                   %
+%                                                                           %
+%***************************************************************************%
+%
+\long\def\@footnotetext#1{\def\baselinestretch{1}
+   \insert\footins{\footnotesize
+    \interlinepenalty\interfootnotelinepenalty 
+    \splittopskip\footnotesep
+    \splitmaxdepth \dp\strutbox \floatingpenalty \@MM
+    \hsize\columnwidth \@parboxrestore
+   \edef\@currentlabel{\csname p@footnote\endcsname}\@makefnmark \@makefntext
+    {\rule{\z@}{\footnotesep}\ignorespaces
+      #1\@finalstrut\strutbox}}}
+%
+%***************************************************************************%
+%                                                                           %
+%                             References                                    %
+%                               without                                     %
+%                               brackets                                    %
+%                                                                           %
+%***************************************************************************%
+%
+\def\@biblabel#1{#1\hfil}%
+\def\thebibliography#1{\newpage\section*{\large \bf REFERENCES\@mkboth
+ {\large \bf REFERENCES}{\large \bf REFERENCES}}\list
+ {}{\settowidth\labelwidth{#1}\labelwidth\leftmargin
+ \usecounter{enumi}
+ }
+ \def\newblock{\hskip .11em plus .33em minus .07em}
+ \sloppy\clubpenalty4000\widowpenalty4000
+ \sfcode`\.=1000\relax\def\baselinestretch{1}\large \normalsize}
+\let\endthebibliography=\endlist
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pagestyle{myheadings}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%|-----   |\    |   |-----\%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%|        | \   |   |     |%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%|---     |  \  |   |     |%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%|        |   \ |   |     |%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%|-----   |    \|   |_____/%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

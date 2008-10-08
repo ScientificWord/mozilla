@@ -1,0 +1,29 @@
+%sw20chic {Article: SPIE Proceedings Style, Modified}{}{article}
+%Copyright (C) 1994-97 TCI Software Research
+% A  modification of SPIE style for Chichilnsky.
+\typeout{TCI Document Style `sw20chic' <28 May 1997>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+\@ifundefined{footheight}{\newdimen\footheight{}}{}%footheight not defined in LaTeX2e
+\input{spie.sty}
+% Environments defined in spie.sty that must be defined in document
+\let\theorem\undefined
+\let\lemma\undefined
+\let\definition\undefined
+
+\def\baselinestretch{2}
+
+
+% Following \appendix, all sectiions are section*'s. 
+\let\SECTION\section 
+\let\APP\appendix
+\def\appendix{%
+       \def\section##1{%
+               \SECTION*{##1}
+               \addcontentsline{toc}{section}{##1}}
+       \begingroup 
+          \def\baselinestretch{1}\Huge\small}
+
+\def\endappendix{\endgroup}
+

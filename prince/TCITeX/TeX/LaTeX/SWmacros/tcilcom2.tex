@@ -1,0 +1,236 @@
+% Macros used for TCI styles released with Scientific Word 1.1.
+%Copyright (C) 1992-93 TCI Software Research, Inc.
+\typeout{TCILCOM2 Macros for TCI styles <16 Dec 93>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+% Revisions:
+% 08 Apr 93 - GP change line length to under 80 characters
+% 30 Mar 92 - AO added \setmoremathsizes and hooks to, e.g. \@xpt, 
+%             for support of bold Greek
+%
+\def\@ptoptions{%
+ \let\@elt\relax\@for\@tempa:=\@optionlist\do{%
+  \expandafter\let\expandafter\@tempb\csname ds@\@tempa\endcsname
+  \expandafter\let\expandafter\@tempc\csname ds@11pt\endcsname
+  \ifx\@tempb\@tempc\else
+   \expandafter\let\expandafter\@tempc\csname ds@12pt\endcsname
+   \ifx\@tempb\@tempc\else\let\@tempb\relax\fi
+   \fi
+  \@tempb
+  }%
+ }%
+%
+% read in style file, but only process the pt size options
+%
+\def\@ptoptinput#1{%
+ \let\@save@optionlist\@optionlist
+ \let\@save@options\@options
+ \let\@options\@ptoptions
+ %
+ \input #1
+ %
+ \let\@optionlist\@save@optionlist
+ \let\@options\@save@options
+ }%
+%
+% the <21 Feb 92> version of letter.sty requires:
+\ifx\undefined\reset@font
+ \def\reset@font{}%
+ \fi
+%
+% Change LaTeX
+%
+% Add command to append tokens
+\newtoks\@temptokenb
+\long\def\appdef#1#2{%
+ \ifx#1\undefined\let#1\@empty\fi
+ \@temptokena\expandafter{#1}\@temptokenb{#2}%
+ \edef#1{\the\@temptokena\the\@temptokenb}%
+ }%
+\long\def\prepdef#1#2{%
+ \ifx#1\undefined\let#1\@empty\fi
+ \@temptokena\expandafter{#1}\@temptokenb{#2}%
+ \edef#1{\the\@temptokenb\the\@temptokena}%
+ }%
+% Discard contents of \box\@cclv at beginning of document
+\appdef\document{{\output{\setbox\z@\box\@cclv}\endgraf\null\eject}}%
+% Fix mark register expansion
+\def\leftmark{\expandafter\@leftmark\botmark{}{}{}\@nil}%
+\def\rightmark{\expandafter\@rightmark\firstmark{}{}{}\@nil}%
+\def\@leftmark#1#2#3\@nil{#1}%
+\def\@rightmark#1#2#3\@nil{#2}%
+%
+%\show\raggedright
+\newskip\raggedglue
+\raggedglue\z@ plus20\p@ minus\z@
+\def\raggedright{%
+ \let\\=\@centercr\@rightskip\raggedglue\rightskip
+ \@rightskip\leftskip\z@\parindent\z@
+ }%
+%
+\def\@centercr{%
+ \ifhmode\unskip\else\@badcrerr\fi\@@par
+ \@ifstar{\penalty\@M\@xcentercr}{\@xcentercr}%
+ }%
+%
+\def\traceoutput{\tracingoutput2\showboxbreadth\maxdimen
+ \showboxdepth\maxdimen}%
+%
+% change \@array to allow \par to mean something within its scope
+%
+\def\@array [#1]#2{%
+ \setbox\@arstrutbox\hbox{\vrule height\arraystretch\ht
+  \strutbox depth\arraystretch\dp\strutbox width\z@}%
+ \@mkpream{#2}%
+ \edef\@preamble{\halign\noexpand\@halignto\bgroup\tabskip
+  \z@\@arstrut\@preamble\tabskip\z@\cr}%
+ \let\@startpbox\@@startpbox\let\@endpbox\@@endpbox
+ \if#1t\vtop\else\if#1b\vbox\else\vcenter\fi\fi
+ \bgroup
+  %\let\par\relax
+  \let\@sharp##
+  \let\protect\relax
+  \lineskip\z@\baselineskip\z@
+  \@preamble
+ }%
+%
+% Expands to hex digit corresponding to the value of the argument
+%
+\def\hexnumber@#1{\ifnum#1<10 \number#1\else
+ \ifnum#1=10 A\else\ifnum#1=11 B\else\ifnum#1=12 C\else
+ \ifnum#1=13 D\else\ifnum#1=14 E\else\ifnum#1=15 F\fi\fi\fi\fi\fi\fi\fi}%
+%
+% define command to set more math sizes. 
+% Styles like Greekbf will hook in here.
+%
+\def\setmoremathsizes#1#2#3{}%
+%
+% define size switch addenda 
+%  Note: these choices agree with those in lfonts.tex, even if incorrect.
+%
+\prepdef\@vpt{\setmoremathsizes{fiv}{fiv}{fiv}}%
+\prepdef\@vipt{\setmoremathsizes{six}{six}{six}}%
+\prepdef\@viipt{\setmoremathsizes{sev}{fiv}{fiv}}%
+\prepdef\@viiipt{\setmoremathsizes{egt}{six}{fiv}}%
+\prepdef\@ixpt{\setmoremathsizes{nin}{six}{fiv}}%
+\prepdef\@xpt{\setmoremathsizes{ten}{sev}{fiv}}%
+\prepdef\@xipt{\setmoremathsizes{elv}{egt}{six}}%
+\prepdef\@xiipt{\setmoremathsizes{twl}{egt}{six}}%
+\prepdef\@xivpt{\setmoremathsizes{frtn}{ten}{sev}}%
+\prepdef\@xviipt{\setmoremathsizes{svtn}{twl}{ten}}%
+\prepdef\@xxpt{\setmoremathsizes{twty}{frtn}{twl}}%
+\prepdef\@xxvpt{\setmoremathsizes{twty}{twty}{svtn}}%
+%
+% The \newfield command defines (like \newenvironment) a user syntax:
+%
+%   \newfield{foo} 
+%
+% lets you write 
+%
+%   \begin{foo}...\end{foo}
+%
+% but differs from \newenvironment in that TeX parses the entire content
+% of the field and stores it in a macro \the@foo, and then executes \@do@foo.
+%
+% This means that the content of the field is actually more like an argument
+% than the content of an environment. So \verb will not necessarily work
+% within a field, and neither will \index. Caveat emptor.
+%
+% The default procedure for a field is to process its argument within a
+% group.  If you want a field to simply store its data away, define its
+% procedure to be synonymous with \@empty, as illustrated below.
+%
+\long\def\@readenvir#1#2\end{%
+ \appdef\envirsofar{#2}%
+ \@ifnextchar\bgroup{\@checkenvir{#1}}{\@envirenderr}%
+ }%
+%
+\def\@envirenderr{%
+ \@latexerr{\string\end\space not followed by environment name}\@eha
+ }%
+%
+\def\@checkenvir#1#2{%
+ \def\@tempa{#1}\def\@tempb{#2}%
+ \ifx\@tempa\@tempb
+  \ifx\envirsofar\@blankspace\let\envirsofar\@empty\fi
+  \expandafter\let\csname the@#1\endcsname\envirsofar
+  \def\@tempa{\csname @do@#1\endcsname}%
+  \else
+  \appdef\envirsofar{\end{#2}}%
+  \def\@tempa{\@readenvir{#1}}%
+  \fi
+ \@tempa
+ }%
+%
+\def\newfield#1#2{%
+ \expandafter\@ifdefinable\csname#1\endcsname{%
+  \expandafter\def\csname#1\endcsname{%
+   \endgroup\let\envirsofar\@empty\@readenvir{#1}%
+   }%
+  \expandafter\let\csname the@#1\endcsname\@empty
+  \expandafter\ifx\csname @do@#1\endcsname\relax
+   \expandafter\def\csname @do@#1\endcsname{{\csname the@#1\endcsname}}%
+   \fi
+  }%
+ }%
+%
+\def\@blankspace{ }% SciWord's nil field
+%
+\def\letparBL{\def\par{\\}}%
+\def\letparSP{\def\par{\ }}%
+\def\letparQD{\def\par{\quad}}%
+\def\letparSL{\def\par{\hbox to1em{\hfil/\hfil}}}%
+%
+% When \par is processed in the page head, gobble up the rest of the
+% argument.
+\def\@gobblepar#1\@empty{}%
+%
+% Physical page size after trim
+%\newdimen\trimwidth
+%\newdimen\trimheight
+\newdimen\botmargin
+\newdimen\marginpartotal
+%
+\def\adjustpagemargin{% adjust \oddsidemargin by \marginpartotal
+ \marginpartotal\marginparwidth\advance\marginpartotal\marginparsep
+ \advance\oddsidemargin\marginpartotal
+ }%
+%
+\def\settextheight{% calculate textheight constrained by:
+ \textheight\trimheight
+ \advance\textheight-\topmargin
+ \advance\textheight-\headheight
+ \advance\textheight-\headsep
+ \advance\textheight-\footskip
+ \advance\textheight-\botmargin
+ }%
+%
+\def\vcenterpagemargin{% calculate \topmargin constrained by:
+ \topmargin\trimheight
+ \advance\topmargin-\textheight
+ \advance\topmargin-\headheight
+ \advance\topmargin-\headsep
+ \advance\topmargin-\footskip
+ \divide\topmargin\tw@\botmargin\topmargin
+ }%
+%
+\def\centerpagemargin{% calculate \oddsidemargin constrained by:
+ \oddsidemargin\trimwidth
+ \advance\oddsidemargin-\textwidth
+ \advance\oddsidemargin-\marginparwidth
+ \advance\oddsidemargin-\marginparsep
+ \divide\oddsidemargin\tw@
+ \evensidemargin\oddsidemargin
+ \adjustpagemargin
+ }%
+%
+\def\leftpagemargin{% calculate \oddsidemargin constrained by:
+ \oddsidemargin\trimwidth
+ \advance\oddsidemargin-\textwidth
+ \advance\oddsidemargin-\marginparwidth
+ \advance\oddsidemargin-\marginparsep
+ \advance\oddsidemargin-\evensidemargin
+ \adjustpagemargin
+ }%
+

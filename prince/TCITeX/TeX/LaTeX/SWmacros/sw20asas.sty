@@ -1,0 +1,186 @@
+%sw20asas {Article: Astronomy/Astrophysics Journals}{12pt}{article}
+%Copyright (C) 1994-95 TCI Software Research
+\typeout{TCI Document Style `sw20asas' <10 Jan 2000>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+%Article style option created for Darren L DePoy.      
+%Intended for submission to Astronomy/Astrophysics Journals.
+%This style prints the title centered on a separate page
+%  which also contains the author, abstract, and subject.
+% also uses Received which is printed after the author
+%Equation numbering in the appendix is a.1, a.2 ... b.1, b.2 ... etc.
+%The top margin for all pages is 1.5".
+%Side margins are 1", and bottom margins are 1.25".
+%
+\def\baselinestretch{1.75}
+%
+\def\author#1{\gdef\@author{#1}}
+%
+\def\@cite#1#2{({#1\if@tempswa , #2\fi})}
+%
+\def\received{{\it Received: }\hbox to 1.5in{\hrulefill}{;}\qquad
+              {\it Accepted: }\hbox to 1.5in{\hrulefill}}
+%
+\setcounter{page}{1}
+\def\and{\\ }
+%
+%***************************************************************************%
+%                                                                           %
+%                       This is the Title                                   %
+%                                                                           %
+%***************************************************************************%
+%
+\def\maketitle{\par
+ \begingroup
+ \if@twocolumn 
+ \twocolumn[\@maketitle] 
+ \else\newpage
+ \global\@topnum\z@ \@maketitle \fi\thispagestyle{plain}\@thanks
+ \endgroup
+ %\setcounter{footnote}{0}
+ \let\maketitle\relax
+ \let\@maketitle\relax
+ \gdef\@thanks{}\let\thanks\relax}
+\def\@maketitle{\newpage
+ \null
+\vskip -1.0in\vskip 0pt
+ \begin{center}
+ {\def\baselinestretch{1.25}\large{\bf\@title}\par}%
+  \vskip1.5em{\large\lineskip .5em\par} 
+\end{center}
+ \par
+ \small \hspace{-.10in}
+\begin{tabular}[t]{c}\@author 
+ \end{tabular}\par
+ \vskip 1.5em
+ %\vfill
+ \begin{center}
+ \received \par
+ \end{center}
+ \vskip 1.5em} 
+
+%
+%****************************************************************************%
+%                                                                            %
+%                        Abstract Section                                    %
+%                                                                            %
+%****************************************************************************%
+%
+\def\abstract{\if@twocolumn
+\section*{Abstract}
+\else \small 
+\begin{center}
+{\bf Abstract\vspace{-.5em}\vspace{0pt}} 
+\end{center}
+\quotation
+\fi}
+\def\endabstract{
+\vskip 1.5em
+%\vfill
+\hspace{-.29in}
+\@ifundefined{Subject}{}{{\it Subject headings: } \Subject}%
+\vskip 1.5em
+%\vfill
+}
+%
+%***************************************************************************%
+%                                                                           %
+%                               Footnotes                                   %
+%                                                                           %
+%***************************************************************************%
+%
+\long\def\@footnotetext#1{\def\baselinestretch{1}
+   \insert\footins{\footnotesize
+    \interlinepenalty\interfootnotelinepenalty 
+    \splittopskip\footnotesep
+    \splitmaxdepth \dp\strutbox \floatingpenalty \@MM
+    \hsize\columnwidth \@parboxrestore
+   \edef\@currentlabel{\csname p@footnote\endcsname}\@makefnmark \@makefntext
+    {\rule{\z@}{\footnotesep}\ignorespaces
+      #1\@finalstrut\strutbox}}}
+%
+%***************************************************************************%
+%                                                                           %
+%                             References                                    %
+%                               without                                     %
+%                               Numbers                                     %
+%                               and no                                      %
+%                               labels                                      %
+%                                                                           %
+%***************************************************************************%
+%
+\def\@biblabel#1{#1\hfil}%
+\def\thebibliography#1{\section*{\large \bf REFERENCES\@mkboth
+ {\large \bf REFERENCES}{\large \bf REFERENCES}}\list
+ {}{\settowidth\labelwidth{#1}\labelwidth\leftmargin
+ \usecounter{enumi}
+ }
+ \def\newblock{\hskip .11em plus .33em minus .07em}
+ \sloppy\clubpenalty4000\widowpenalty4000
+ \sfcode`\.=1000\relax\def\baselinestretch{1}\large \normalsize}
+\let\endthebibliography=\endlist
+%
+%***************************************************************************%
+%                                                                           %
+%                      Setting up the Page Size for Text                    %
+%                                                                           %
+%***************************************************************************%
+%
+
+%\setlength{\topmargin}{0.0in}
+%\setlength{\textheight}{8.5in}
+%\setlength{\oddsidemargin}{0.0in}
+%\setlength{\evensidemargin}{0.0in}
+%\setlength{\textwidth}{6.5in}
+
+\addtolength{\oddsidemargin}{-39pt}
+\evensidemargin=\oddsidemargin
+\addtolength{\topmargin}{-17pt}
+\addtolength{\textheight}{66pt}
+\addtolength{\textwidth}{79pt}
+
+\newdimen\dummy
+\dummy=\oddsidemargin
+\addtolength{\dummy}{72pt}
+\marginparwidth=.675\dummy
+\marginparsep=.1\dummy
+
+%
+%***************************************************************************%
+%                                                                           %
+%                        Equation numbering in                              %
+%                         the appendix is a.1,                              %
+%                           a.2 ... b.1, b.2                                %
+%                                ... etc.                                   %
+%                                                                           %
+%***************************************************************************%
+%
+\def\appendix{\par
+ \def\@eqnnum{{\rm (\thesection.\theequation)}}
+ \setcounter{section}{0}
+ \setcounter{subsection}{0}
+ \def\thesection{\Alph{section}}}
+%
+%***************************************************************************%
+%
+\long\def\@makefntext#1{\def\baselinestretch{1}\vskip -.19in\vskip 0pt
+ \parindent .25in\noindent\hbox to .8em{ }#1}
+%
+\def\description{\list{}{\labelwidth\z@ \itemindent-\leftmargin\flushleft
+ \let\makelabel\descriptionlabel}}
+\let\enddescription\endlist
+%
+\def\section{\@startsection {section}{1}{\z@}{-3.5ex plus -1ex minus 
+ -.2ex}{2.3ex plus .2ex}{\large\bf}}
+\def\subsection{\@startsection{subsection}{2}{\z@}{-3.25ex plus -1ex minus 
+ -.2ex}{1.5ex plus .2ex}{\large\bf}}
+\def\subsubsection{\@startsection{subsubsection}{3}{\z@}{-3.25ex plus
+ -1ex minus -.2ex}{1.5ex plus .2ex}{\large\bf}}
+%
+\def\thepart{\Roman{part}}%
+\def\thesection{\arabic{section}.}%
+\def\thesubsection{\thesection\arabic{subsection}}%
+\def\thesubsubsection{\thesubsection.\arabic{subsubsection}}%
+\def\theparagraph{\thesubsubsection.\arabic{paragraph}}%
+\def\thesubparagraph{\theparagraph.\arabic{subparagraph}}%

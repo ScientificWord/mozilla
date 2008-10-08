@@ -1,0 +1,273 @@
+% IEEE Trans on Energy Conversion
+%      Trans on Power Delivery
+%      Trans on Power Systems
+\typeout{TCI Document Style `sw20ieee' <20 Aug 1994>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%\def\@ptsize{0} 
+%\@namedef{ds@11pt}{\def\@ptsize{1}}
+%\@namedef{ds@12pt}{\def\@ptsize{2}} 
+%\def\ds@twoside{\@twosidetrue \@mparswitchtrue} \def\ds@draft{\overfullrule
+%5pt} 
+%\@options
+%\input art10.sty
+
+\normalsize 
+\input thmsupp.tex %TCI theorem option support
+
+%LJH I commented these lines out. these parameters are be reset later in this file!
+%\if@twoside
+%   \oddsidemargin 44pt  
+%   \evensidemargin 82pt 
+%   \marginparwidth 107pt
+%\else  
+%   \oddsidemargin 63pt 
+%   \evensidemargin 63pt
+%   \marginparwidth 90pt 
+%\fi
+%\marginparsep 11pt 
+%\topmargin 27pt  
+\headheight 12pt 
+\headsep 25pt 
+\footskip 30pt 
+
+%\textheight = 43\baselineskip
+\advance\textheight by \topskip
+%\textwidth 345pt 
+%\columnsep 10pt 
+\columnseprule 0pt 
+
+
+\def\section{\@startsection {section}{1}{\z@}{-2.5ex plus -1ex minus 
+ -.2ex}{2ex plus .1ex}{\centering\sc}} %{if\thesection=2 \drop{\@nextchar} \fi }}
+\def\subsection{\@startsection{subsection}{2}{\z@}{-2.25ex plus -1ex minus 
+ -.2ex}{2ex plus .1ex}{\normalsize\it}}
+\def\subsubsection{\@startsection{subsubsection}{3}{\z@}{-3.25ex plus 
+-1ex minus -.2ex}{.2ex plus .1ex}{\normalsize}}
+\def\paragraph{\@startsection
+ {paragraph}{4}{\z@}{3.25ex plus 1ex minus .2ex}{-1em}{\normalsize}}
+\def\subparagraph{\@startsection
+ {subparagraph}{4}{\parindent}{3.25ex plus 1ex minus 
+ .2ex}{-1em}{\normalsize}}
+
+
+\setcounter{secnumdepth}{3}
+
+\def\appendix{\par
+ \setcounter{section}{0}
+ \setcounter{subsection}{0}
+ \section{\Alph{section}}}
+
+
+%%%%%% end of art10.sty input/modifications
+
+
+
+\def\titlepage{\@restonecolfalse\if@twocolumn\@restonecoltrue\onecolumn
+ \else \newpage \fi \thispagestyle{empty}\c@page\z@}
+\def\endtitlepage{\if@restonecol\twocolumn \else \newpage \fi}
+
+
+\def\thepart{PART \Roman{part}} 
+\def\thesection {\Roman{section}.}
+\def\thesubsection {\Alph{subsection}.}
+\def\thesubsubsection {\arabic{subsubsection}.}
+\def\theparagraph {\thesubsubsection\arabic{paragraph}.}
+\def\thesubparagraph {\theparagraph\arabic{subparagraph}.}
+
+
+% thebibliography adapted from openbib.sty
+\newdimen\bibindent
+\bibindent=1.5em
+
+% \def\newblock{\par}
+ \def\newblock{\hskip 0em}
+ 
+\let\endthebibliography=\endlist
+
+\def\thebibliography#1{\setbox0=\hbox{#1}\section*{References\markboth
+  {REFERENCES}{REFERENCES}}
+  \sloppy
+  \list{[\arabic{enumi}]}
+       {\settowidth\labelwidth{[#1]}\leftmargin\labelwidth
+        \advance\leftmargin\labelsep
+        \usecounter{enumi}}}
+
+
+\newif\if@restonecol
+\def\theindex{\@restonecoltrue\if@twocolumn\@restonecolfalse\fi
+\columnseprule \z@
+\columnsep 35pt\twocolumn[\section*{Index}]
+ \@mkboth{INDEX}{INDEX}\thispagestyle{plain}\parindent\z@
+ \parskip\z@ plus .3pt\relax\let\item\@idxitem}
+\def\@idxitem{\par\hangindent 40pt}
+\def\subitem{\par\hangindent 40pt \hspace*{20pt}}
+\def\subsubitem{\par\hangindent 40pt \hspace*{30pt}}
+\def\endtheindex{\if@restonecol\onecolumn\else\clearpage\fi}
+\def\indexspace{\par \vskip 10pt plus 5pt minus 3pt\relax}
+
+\def\footnoterule{\kern-3\p@ 
+ \hrule width .4\columnwidth 
+ \kern 2.6\p@} 
+
+\long\def\@makefntext#1{\parindent 1em\noindent 
+ \hbox to 1.8em{\hss$^{\@thefnmark}$}#1}
+
+ 
+% to set widths of hrules in tables
+% top and bottom lines always \thickhline
+% others: \thinhline
+\def\thinhline{\noalign{\ifnum0=`}\fi\hrule \@height \arrayrulewidth 
+   \futurelet \@tempa\@xhline}
+\def\thickhline{\noalign{\ifnum0=`}\fi\hrule \@height 2\arrayrulewidth 
+   \futurelet \@tempa\@xhline}
+\def\@xhline{\ifx\@tempa\hline\vskip \doublerulesep\fi
+      \ifnum0=`{\fi}}
+
+
+% @makecaption makes Figure 1 -- Caption text.
+%                and Table 1: Caption text.
+\long\def\@makecaption#1#2{
+  \def\tmpcs{figure}
+ \ifx\@captype\tmpcs \def\separator{ -- }  
+ \else \def\separator{.\ }
+ \fi
+ \vskip 5pt 
+ \setbox\@tempboxa\hbox{#1\separator #2}
+ \ifdim \wd\@tempboxa >\hsize #1\separator #2\par \else \hbox
+to\hsize{\hfil\box\@tempboxa\hfil} 
+ \fi}
+
+
+\def\maketitle{\par
+ \begingroup
+ \def\thefootnote{\fnsymbol{footnote}}
+ \def\@makefnmark{\hbox to 0pt{$^{\@thefnmark}$\hss}} 
+ \if@twocolumn 
+    \twocolumn[\@maketitle] 
+ \else 
+    \newpage
+    \global\@topnum\z@ 
+    \@maketitle 
+ \fi
+ \thispagestyle{plain}\@thanks
+ \endgroup
+ \setcounter{footnote}{0}
+ \let\maketitle\relax
+ \let\@maketitle\relax
+ \gdef\@thanks{}\gdef\@author{}\gdef\@title{}\let\thanks\relax}
+
+\def\@maketitle{\newpage
+  \null
+ \vskip 2em 
+ \begin{center}
+   {\LARGE\bf\@title\par} 
+   \vskip 1.5em 
+   {\large \lineskip .5em
+     \begin{tabular}[t]{c}
+       \@author 
+     \end{tabular}\par} 
+    \end{center}
+ \par
+ \vskip 1.5em} 
+
+\def\keywords{ {\sc Keywords.\ }} % just make "keywords" in small caps
+
+
+% JCS - end abstract modified so that an empty floating figure would be
+%       placed at the end of the first column of text.  This is not a 
+%       good solution since the figure may go to the bottom of the 
+%       second column.
+
+\def\abstract{{\it Abstract\/}---\small\bf\enlargethispage{-2in}} 
+\def\endabstract{\rm\normalsize
+                  % Correction by CWC
+} % This will allow for the 2 inch space at the bottom of the first column.
+
+\mark{{}{}} 
+
+\if@twoside \def\ps@headings{
+  \let\@mkboth\markboth
+  \def\@oddfoot{}
+  \def\@evenfoot{}
+  \def\@evenhead{\rm \thepage\hfil \sl \leftmark}
+  \def\@oddhead{\hbox{}\sl \rightmark \hfil \rm\thepage}
+  \def\sectionmark##1{\markboth {\uppercase{\ifnum \c@secnumdepth
+>\z@
+    \thesection\hskip 1em\relax \fi ##1}}{}} 
+  \def\subsectionmark##1{\markright
+    {\ifnum \c@secnumdepth >\@ne
+    \thesubsection\hskip 1em\relax \fi ##1}}
+}
+\else \def\ps@headings{
+  \let\@mkboth\markboth
+  \def\@oddfoot{}
+  \def\@evenfoot{}
+  \def\@oddhead{\hbox {}\sl \rightmark \hfil \rm\thepage}
+  \def\sectionmark##1{\markright {\uppercase{\ifnum \c@secnumdepth
+>\z@
+ \thesection\hskip 1em\relax \fi ##1}}}
+}
+\fi
+\def\ps@myheadings{\let\@mkboth\@gobbletwo
+  \def\@oddhead{\hbox{}\sl\rightmark \hfil \rm\thepage}
+  \def\@oddfoot{}
+  \def\@evenhead{\rm \thepage\hfil\sl\leftmark\hbox {}}
+  \def\@evenfoot{}
+  \def\sectionmark##1{}
+  \def\subsectionmark##1{}}
+
+
+\ps@plain \pagenumbering{arabic} \onecolumn 
+\if@twoside\else\raggedbottom\fi 
+
+% twocolumn.sty  27 Jan 85
+\twocolumn
+\sloppy
+\flushbottom
+\parindent 1em
+\leftmargini 2em
+\leftmarginv .5em
+\leftmarginvi .5em
+\marginparsep 10pt 
+%\textwidth 7.1in 
+\addtolength{\textwidth}{123pt}
+
+
+%\topmargin 0pt
+\addtolength{\topmargin}{-17pt}
+\advance \topmargin by -2\headheight
+\advance \topmargin by -\headsep
+     
+%\textheight 8.9in
+\addtolength{\textheight}{83pt}
+     
+%\oddsidemargin -0.3in
+\addtolength{\oddsidemargin}{-60pt}
+\evensidemargin=\oddsidemargin
+\marginparwidth 0.25in
+     
+
+\columnsep .25in
+
+\def\BiBTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+                                                                      
+\def\@cite#1#2{[{#1\if@tempswa , #2\fi}]}
+\def\@biblabel#1{[#1]\hfill}
+
+
+% JCS - modified \and so that two authors would be centered over the
+%       two columns respectively.
+
+\def\and{%%                             % \begin{tabular}
+\end{tabular}\hfil\hfil\begin{tabular}[t]{c}%% \end{tabular}
+}
+
+\def\biog{\goodbreak\small \hangafter -11 \hangindent 3.5cm}
+\def\biognp{\goodbreak\small}
+
+%\if\thesection=1%
+%     \enlargethispage{-2in}%
+%\fi%
+

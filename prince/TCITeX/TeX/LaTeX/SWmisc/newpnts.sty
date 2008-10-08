@@ -1,0 +1,36 @@
+% This package was developed at TCI.
+% You can distribute it freely.
+% Use \POINTS{val} to place point values for exam
+%  problems in the left margin.
+% Use \RESUME to continue a list at the correct number
+%  after interrupting it with text.
+
+
+
+\def\POINTS#1{%
+  \setbox0=\hbox{#1}%
+  \hskip -\leftmargin
+  \hskip -\wd0
+  \hskip -5pt%
+  \unhbox0%
+  \hskip \leftmargin
+  \hskip 5pt%
+}
+
+
+\def\RESUME{%
+   \let\USECOUNTERORIGINAL=\usecounter
+   \def\usecounter##1{%
+       \@nmbrlisttrue
+       \def\@listctr{##1}
+       %\setcounter{##1}\z@   i.e. do not reset counter
+	   \let\usecounter=\USECOUNTERORIGINAL
+	}%
+}
+
+
+
+
+   
+ 
+

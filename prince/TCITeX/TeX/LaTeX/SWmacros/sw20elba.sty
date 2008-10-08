@@ -1,0 +1,80 @@
+%sw20elba {Article: Elbert Walker's}{12pt}{article}
+%Copyright (C) 1994-95 TCI Software Research
+\typeout{TCI Document Style `sw20elba' <1 July 1994>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+%\setcounter{secnumdepth}{0}
+%
+% Make the page area as large as possible
+
+%\setlength{\topmargin}{-.5in}
+%\setlength{\textheight}{8.5in}
+%\setlength{\oddsidemargin}{0.25in}
+%\setlength{\evensidemargin}{0.25in}
+%\setlength{\textwidth}{6.0in}
+\addtolength{\oddsidemargin}{-21pt}
+\evensidemargin=\oddsidemargin
+\addtolength{\textwidth}{43pt}
+\addtolength{\topmargin}{-53pt}
+\addtolength{\textheight}{66pt}
+\newdimen\dummy
+\dummy=\oddsidemargin
+\addtolength{\dummy}{72pt}
+\marginparwidth=.675\dummy
+\marginparsep=.1\dummy
+
+
+%Change to \pagestyle{empty} to suppress numbers on following pages
+\pagestyle{plain}
+%\pagestyle{empty}
+
+% Define \tighttoc to alter table of contents entry so that
+% sections are treated like subsections, subsubsections, etc.
+
+\def\tighttoc{\def\l@section{\@dottedtocline{1}{0em}{1.4em}}}
+\tighttoc
+
+%\def\@sect#1#2#3#4#5#6[#7]#8{\ifnum #2>\c@secnumdepth
+%     \def\@svsec{}\else 
+%     \refstepcounter{#1}
+%     \edef\@svsec{\expandafter\relax\csname @pre#1\endcsname}\fi
+%     \@tempskipa #5\relax
+%      \ifdim \@tempskipa>\z@ 
+%        \begingroup \expandafter\relax\csname @#1style\endcsname\relax
+%          \@hangfrom{\hskip #3\relax\@svsec}{\interlinepenalty \@M #8\par}
+%        \endgroup
+%       \csname #1mark\endcsname{#7}\addcontentsline
+%         {toc}{#1}{\ifnum #2>\c@secnumdepth \else
+%                      \protect\numberline{\bf\csname the#1\endcsname}\fi
+%                    {\bf #7}}\else
+%        \def\@svsechd{%
+%            \expandafter\relax\csname @#1style\endcsname\relax
+%            \hskip #3\@svsec #8\csname #1mark\endcsname
+%                      {#7}\addcontentsline
+%                           {toc}{#1}{\ifnum #2>\c@secnumdepth \else
+%                             \protect\numberline{\bf\csname the#1\endcsname}\fi
+%                      {\bf #7}}}\fi
+%     \@xsect{#5}}
+
+
+
+\if@twoside \def\ps@headings{\let\@mkboth\markboth
+\def\@oddfoot{}\def\@evenfoot{}\def\@evenhead{\rm \thepage\hfil \sl
+\leftmark}\def\@oddhead{\hbox{}\sl \rightmark \hfil
+\rm\thepage}\def\chaptermark##1{\markboth {\uppercase{\ifnum \c@secnumdepth
+>\m@ne
+ \@chapapp\ \thechapter. \ \fi ##1}}{}}\def\sectionmark##1{\markright
+{\uppercase{\ifnum \c@secnumdepth >\z@
+ \thesection. \ \fi ##1}}}}
+\else \def\ps@headings{\let\@mkboth\markboth
+\def\@oddfoot{}\def\@evenfoot{}\def\@oddhead{\hbox {}\sl \rightmark \hfil
+\rm\thepage}\def\chaptermark##1{\markright {\uppercase{\ifnum \c@secnumdepth
+>\m@ne
+ \@chapapp\ \thechapter. \ \fi ##1}}}}
+\fi
+\def\ps@myheadings{\let\@mkboth\@gobbletwo
+\def\@oddhead{\hbox{}\sl\rightmark \hfil
+\rm\thepage}\def\@oddfoot{}\def\@evenhead{\rm \thepage\hfil\sl\leftmark\hbox
+{}}\def\@evenfoot{}\def\chaptermark##1{}\def\sectionmark##1{}%
+\def\subsectionmark##1{}}

@@ -1,0 +1,310 @@
+%Copyright (C) 1994-95 TCI Software Research
+\typeout{TCI Software Research `tcilett' <13 Apr 93>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+%% Uses memolett.sty; memolett.sty uses tcilcomm.tex and letter.sty
+%
+% 17 Mar 92      Original release
+% 04 Jun 92 (gp) Move Subject in front of Opening; Move return address
+%                and date toward center; Change space between attn,
+%                subj and opening.
+%
+% Document should have the following style:
+%  \documentstyle[options]{tcilett}
+%
+% This extension to LaTeX's letter style reads in letter.sty
+% and uses parts of its functionality. See the file test-letter
+% for an example of how to use it.
+% Note that the {letter} environment is not used: only one letter per document!
+%
+\input memolett.sty % JCS made all lower case
+%
+\def\ps@letter{%
+ % like letter.sty's \ps@headings
+ \def\@oddhead{%
+  \sl\headtoname{\let\par\@gobblepar\ignorespaces\toname\@empty}\hfil
+  \do@date\hfil
+  \pagename{}\thepage
+  }%
+ \def\@oddfoot{}%
+ \@twosidefalse
+ }%
+\ps@letter
+%
+\def\do@date{%
+ \ifx\@empty\the@letterdate\@date
+ \else\ignorespaces{\letparSP\the@letterdate}\fi
+ }%
+%
+\prepdef\enddocument{\@end@letter}%
+%
+\def\@end@letter{%
+ \par
+ \@do@letterclosing\@do@letterinitials\@do@letterencl
+ \@do@lettercc\@do@letterps
+ % like letter.sty's \endletter:
+ \stopletter\@@par\pagebreak\@@par
+ \if@filesw
+  \begingroup
+   \let\\=\relax\def\par{\\}\def\protect##1{\string##1\space}%
+   \immediate
+   \write\@auxout{\string\mlabel{\returnaddress}{\toname\\\toaddress}}%
+   \endgroup
+  \fi
+ }%
+%
+\def\returnaddress{\the@letterretaddr}%
+%
+\def\toname{\the@letterto}%
+\def\toaddress{\the@lettertoaddr}%
+%
+% Supply nil values and procedures for all fields that I know what to do
+% with. Some of these commands are redefined below. Note that an
+% instance of \par (blank lines) within the content of such fields will
+% have a meaning based on what's appropriate to the usage of that
+% field. Since each field is used just once (at present), the meaning of
+% \par is noted below:
+%                                                   \par means
+\def\@do@letteropening{}\def\the@letteropening{}%   \ 
+\def\@do@letterto{}\def\the@letterto{}%             \\ (when used in running
+                                      %          head, gobbles rest of field)
+\def\@do@lettertoaddr{}\def\the@lettertoaddr{}%     \\
+\def\@do@letterfrom{}\def\the@letterfrom{}%         \\
+\def\@do@letterfromcompany{}\def\the@letterfromcompany{}%
+\def\@do@letterfromaddr{}\def\the@letterfromaddr{}% \\
+%\def\@do@letterfromtele{}\def\the@letterfromtele{}%  (unused at present)
+                                                 % (suggested use: letterhead)
+%\def\@do@letterfromloca{}\def\the@letterfromloca{}%  (unused at present)
+                                                 % (suggested use: letterhead)
+\def\@do@letterretaddr{}\def\the@letterretaddr{}%   \par
+\def\@do@lettersubj{}\def\the@lettersubj{}%         (unused at present)
+                                                 % (suggested use: running header)
+\def\@do@letterdate{}\def\the@letterdate{}%         \ 
+\def\@do@letternotations{}\def\the@letternotations{}%
+\def\@do@letterattention{}\def\the@letterattention{}%
+\def\@do@letterinitials{}\def\the@letterinitials{}%
+\def\@do@lettersign{}\def\the@lettersign{}%         \\
+\def\@do@letterclosing{}\def\the@letterclosing{}%   \ 
+\def\@do@lettercc{}\def\the@lettercc{}%             \\
+\def\@do@letterps{}\def\the@letterps{}%             \par
+\def\@do@letterencl{}\def\the@letterencl{}%         \\
+%
+\def\textBL{\ifhmode\unskip
+            \else\@badcrerr\fi
+            \@@par\@ifstar{\penalty\@M\@xcentercr}{\@xcentercr}}%
+%
+% Based on \opening:
+\def\@do@letteropening{%
+ \ifletteropen\else\letteropentrue
+  \parindent\z@
+  \parskip.5\normalbaselineskip
+  \clearpage\thispagestyle{letterhead}%
+  \c@page\@ne
+  \do@letterhead
+  \@do@letternotations
+  \do@address
+  \do@salutation
+  \fi
+ }%
+%
+\def\ps@letterhead{\ps@plain}%
+%
+\def\do@letterhead{%
+ {\raggedright  %(gp) was: \raggedleft
+  \noindent\hspace*{\longindentation}  %(gp) This line added
+  \ifx\@empty\the@letterfromaddr
+   \thispagestyle{firstpage}%
+   \do@date\par
+   \else
+   \begingroup
+    \thispagestyle{empty}\letparBL
+    \begin{tabular}{l}%
+     \ignorespaces\the@letterfromaddr\\*[2\parskip]%
+     \do@date
+     \end{tabular}%
+    \par
+    \endgroup
+   \fi
+  }%
+ }%
+%
+\def\@do@letternotations{%
+ \ifletteropen
+  \ifx\@empty\the@letternotations\else
+   \vspace{2\parskip}\noindent\notaname
+   \ignorespaces{\letparSP\the@letternotations}\par\nobreak
+   \fi
+  \fi
+ }%
+%
+\def\do@address{%
+ \@tempswafalse
+ \ifx\@empty\the@letterto\else\@tempswatrue\fi
+ \ifx\@empty\the@lettertoaddr\else\@tempswatrue\fi
+ \if@tempswa\@tempswafalse
+  {\vspace{2\parskip}\raggedright\letparBL\let\\\textBL
+   \ifx\@empty\the@letterto\else\ignorespaces\the@letterto\@tempswatrue\fi
+   \ifx\@empty\the@lettertoaddr
+   \else\if@tempswa\par\fi\ignorespaces\the@lettertoaddr\fi
+   \par
+   }%
+  \fi
+ }%
+%
+\def\do@salutation{%
+ \@do@letterattention
+ \@do@lettersubj  %(gp) Subject before opening
+ \do@letteropening
+ }%
+%
+\def\@do@letterattention{%
+ \ifletteropen
+  \ifx\@empty\the@letterattention\else
+   \vspace{1\parskip}\noindent\attnname
+   \ignorespaces{\letparSP\the@letterattention}\par\nobreak
+   \fi
+  \fi
+ }%
+%
+\def\do@letteropening{%
+ \ifx\@empty\the@letteropening\else
+  \vspace{1\parskip}\ignorespaces{\letparSP\the@letteropening}\par\nobreak
+  \fi
+ }%
+%
+\def\@do@lettersubj{%
+ \ifletteropen
+  \ifx\@empty\the@lettersubj\else
+   \vspace{1\parskip}\noindent\subjname
+   \ignorespaces{\letparSP\the@lettersubj}\par\nobreak
+   \fi
+  \fi
+ }%
+%
+% Based on \closing:
+\def\@do@letterclosing{%
+ \ifletteropen
+  \ifx\@empty\the@letterclosing\else
+   \par\nobreak\vspace{\parskip}\stopbreaks
+   \noindent\hspace*{\longindentation}
+   \parbox{\indentedwidth}{\raggedright\letparBL\let\\\textBL
+    \ignorespaces{\letparSP\the@letterclosing}\\[6\medskipamount]%
+    \ignorespaces\ifx\@empty\the@lettersign\the@letterfrom
+                 \else\the@lettersign\fi
+    \strut
+    }%
+   \par
+   \let\the@letterclosing\@empty
+   \fi
+  \letteropenfalse\letterclosedtrue
+  \fi
+ }%
+%
+% Based on \ps:
+%
+\def\@do@letterps{%
+ \@do@letterclosing
+ \ifletterclosed
+  \ifx\@empty\the@letterps\else
+   \startbreaks\par
+   \PSname\the@letterps\par
+   \let\the@letterps\@empty
+   \fi
+  \fi
+ }%
+%
+\def\@do@letterinitials{%
+ \@do@letterps
+ \ifletterclosed
+  \ifx\@empty\the@letterinitials\else
+   \initials{\letparBL\ignorespaces\the@letterinitials}%
+   \let\the@letterinitials\@empty
+   \fi
+  \fi
+ }%
+%
+\def\@do@lettercc{%
+ \@do@letterinitials
+ \ifletterclosed
+  \ifx\@empty\the@lettercc\else
+   \cc{\letparBL\ignorespaces\the@lettercc}%
+   \let\the@lettercc\@empty
+   \fi
+  \fi
+ }%
+%
+\def\@do@letterencl{%
+ \@do@lettercc
+ \ifletterclosed
+  \ifx\@empty\the@letterencl\else
+   \encl{\letparBL\ignorespaces\the@letterencl}%
+   \let\the@letterencl\@empty
+   \fi
+  \fi
+ }%
+%
+\appdef\adjustpagemargin{%
+ \indentedwidth\textwidth\advance\indentedwidth-\longindentation
+ }%
+%
+% Dimensions needed for letter labels:
+%
+\def\startlabels{%
+ \labelcount=0 \baselineskip=0pt \lineskip=0pt
+ \pagestyle{empty}%
+ \let\@texttop=\relax
+ \topmargin      22pt
+ \headsep         0pt
+ \oddsidemargin  37pt
+ \evensidemargin 37pt
+ \textheight     10in
+ \textwidth     550pt
+ \columnsep      25pt
+ \xpt
+ \baselineskip=   0pt
+ \lineskip=0pt
+ \boxmaxdepth=0pt
+ \parindent=0pt 
+ \settextheight
+ \@colht\textheight \@colroom\textheight \vsize\textheight
+ \twocolumn\relax
+ }%
+%
+% Standard concrete strings for letters:
+% Note: to be localized!
+%
+\def\ccname{cc}%
+\def\enclname{encl}%
+\def\pagename{Page: }%
+\def\headtoname{To: }%
+\def\PSname{P.S. }%
+\def\notaname{Notations: }%
+\def\attnname{Attention: }%
+\def\initials{}%
+\def\subjname{Subject: }%
+%
+% Standardized dimensions for letters:
+%
+\hoffset-1in
+\voffset-1in
+%
+\trimheight     11in
+\topmargin      36pt
+\headheight     12pt
+\headsep        24pt
+\footskip       18pt
+\botmargin      18pt
+%
+\trimwidth     8.5in
+\textwidth     324pt
+\marginparsep    0pt
+\marginparwidth  0pt
+%
+\longindentation=.5\textwidth
+%
+\settextheight\centerpagemargin
+%
+\@options
+
+

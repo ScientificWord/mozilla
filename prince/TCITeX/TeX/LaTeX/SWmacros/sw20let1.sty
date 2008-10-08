@@ -1,0 +1,44 @@
+%sw20let1 {Letter: SW letter style #1}{12pt}{tcilett}
+%Copyright (C) 1994-2000 MacKichan Software, Inc.
+\typeout{SW Document Style `sw20let1' <11 Aug 2000>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+\def\attnname{Attention: }%
+\def\subjname{Subject: }%
+\def\PSname{P.S. }%
+\def\initials{}%
+\def\ccname{cc}%       the colon is added in LaTeX's letter.sty
+\def\enclname{encl}%   the colon is added in LaTeX's letter.sty
+\def\pagename{Page}%
+\def\headtoname{To}%
+%
+\hoffset-1in
+\voffset-1in
+%
+
+\trimheight     11in
+%\topmargin      15pt
+\addtolength{\topmargin}{55pt}
+
+\headheight     12pt
+\headsep        24pt
+\footskip       0pt %LJH was 10
+\botmargin      10pt
+%
+\trimwidth     8.5in
+
+%\textwidth     468pt
+\addtolength{\textwidth}{78pt}
+
+%\marginparsep    0pt
+%\marginparwidth  0pt
+%
+\longindentation=.5\textwidth
+%
+%\settextheight\centerpagemargin
+\addtolength{\textheight}{66pt}
+\addtolength{\oddsidemargin}{33pt}
+\evensidemargin\oddsidemargin
+\marginparwidth=.675\oddsidemargin
+\marginparsep=.1\oddsidemargin

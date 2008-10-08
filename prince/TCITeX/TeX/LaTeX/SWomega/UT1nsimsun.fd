@@ -1,0 +1,47 @@
+%Filename: UT1nsimsun.fd
+
+\ProvidesFile{UT1nsimsun.fd}[MS PMincho for LaTeX]
+
+\DeclareFontFamily{UT1}{nsimsun}{}
+
+\DeclareFontShape{UT1}{nsimsun}{m}{n}{
+   <->Nsimsun
+}{}
+\DeclareFontShape{UT1}{nsimsun}{m}{sc}{
+   <-> ssub * nsimsun/m/n
+}{}
+\DeclareFontShape{UT1}{nsimsun}{m}{it}{
+   <->Nsimsun
+}{}
+\DeclareFontShape{UT1}{nsimsun}{m}{sl}{
+   <-> ssub * nsimsun/m/it
+}{}
+\DeclareFontShape{UT1}{nsimsun}{m}{itsc}{
+   <-> ssub * nsimsun/m/it
+}{}
+\DeclareFontShape{UT1}{nsimsun}{m}{slsc}{
+   <-> ssub * nsimsun/m/it
+}{}
+\DeclareFontShape{UT1}{nsimsun}{bx}{n}{
+   <->Nsimsun
+}{}
+\DeclareFontShape{UT1}{nsimsun}{bx}{sc}{
+   <-> ssub * nsimsun/bx/n
+}{}
+\DeclareFontShape{UT1}{nsimsun}{bx}{it}{
+   <->Nsimsun
+}{}
+\DeclareFontShape{UT1}{nsimsun}{bx}{itsc}{
+   <-> ssub * nsimsun/bx/it
+}{}
+\DeclareFontShape{UT1}{nsimsun}{bx}{sl}{
+   <-> ssub * nsimsun/bx/it
+}{}
+\DeclareFontShape{UT1}{nsimsun}{bx}{slsc}{
+   <-> ssub * nsimsun/bx/it
+}{}
+
+\endinput
+
+
+

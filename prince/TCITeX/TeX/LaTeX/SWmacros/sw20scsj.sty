@@ -1,0 +1,148 @@
+%sw20scsj {Article: Society for Computer Simulation}{}{article}
+%Copyright (C) 1994-95 TCI Software Research
+\typeout{TCI Document Style `sw20scsj' <1 July 1994>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%\input thmsupp.tex %TCI theorem option support
+%
+%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%
+%                                                                         %
+%                General Page Setup                                       %
+%                                                                         %
+%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%
+%
+\newdimen\marginpartotal
+\pagestyle{empty}
+\setlength{\topmargin}{-.50in}
+\def\and{\\ \\}
+\setlength{\oddsidemargin}{-.25in}
+\setlength{\evensidemargin}{-.50in}
+\setlength{\textwidth}{7.0in}
+%
+\def\title#1{\gdef\@title{\bf\uppercase{#1}}}
+%
+%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%
+%                                                                           %
+%                  Setting up the Abstract                                  %
+%                                                                           %
+%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%
+%
+\def\abstract{\if@twocolumn
+\section*{ABSTRACT}%
+\else \small
+\begin{center}%
+{\bf ABSTRACT\vspace{-.5em}\vspace{\z@}}%
+\end{center}%
+\quotation
+\fi}
+\def\endabstract{\if@twocolumn\else\endquotation\fi}
+%
+%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%
+%                                                                           %
+%                Setting up the underline for Section                       %
+%                                                                           %
+%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%
+%
+\newdimen\sectionruledimen
+\sectionruledimen.4pt
+%
+\newdimen\sectionbackskip
+\sectionbackskip\z@
+%
+\def\makeparrule{%
+ \def\par{%
+  \endgraf\nobreak\vskip\lineskip\nointerlineskip
+  \hbox to\hsize{\hskip\sectionbackskip\leaders\hrule height
+   \sectionruledimen\hfil}%
+  %\nointerlineskip
+  }%
+ }%
+\def\prerule{\par
+ \hbox to\hsize{\hskip-\marginpartotal\leaders\hrule height
+  \sectionruledimen\hfil}%
+ \nobreak
+ }%
+%
+%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%
+%                                                                           %
+%                  Setting up the Section Heads                             %
+%                                                                           %
+%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%
+%
+\setcounter{secnumdepth}{0}
+% \section is tricky because we want to both support \section* and have
+% the section title uppercased.
+\def\section{\secdef\@sectionb\@sections}
+\def\@sectionb[#1]#2{\@sections{#2}}
+\def\@sections#1{\@startsection
+  {section}{1}{\z@}{3.5ex plus -1ex minus -.2ex}{2.3ex plus .2ex}
+        {\Large\bf\makeparrule}{\uppercase{#1}}}
+%
+\def\subsection{\@startsection{subsection}{2}{\z@}{-3.25ex plus -1ex minus 
+ -.2ex}{1.5ex plus .2ex}{\large\bf\makeparrule}}
+%
+\def\subsubsection{\@startsection{subsubsection}{3}{\z@}{-3.25ex plus 
+ -1ex minus -.2ex}{-1.5ex plus .2ex}{\normalsize\bf\makeparrule}}
+%
+%***************************************************************************%
+%                                                                           %
+%                             References                                    %
+%                       with no labels or numbers                           %
+%***************************************************************************%
+%
+\def\cite{\@ifnextchar [{\@tempswatrue\@citex}{\@tempswafalse\@citex[]}}
+%
+\def\@biblabel#1{}
+\def\thebibliography#1{\section*{REFERENCES\@mkboth
+ {REFERENCES}{REFERENCES}}\list
+ {}{\settowidth\labelwidth{#1}
+   \labelsep0pt\leftmargin\parindent
+    \itemindent-\leftmargin\advance\itemindent\labelwidth
+%\labelwidth\leftmargin
+ \usecounter{enumi}}
+ \def\newblock{\hskip .11em plus .33em minus .07em}
+ \sloppy\clubpenalty4000\widowpenalty4000
+ \sfcode`\.=1000\relax\def\baselinestretch{1}\large \normalsize}
+\let\endthebibliography=\endlist
+%
+%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%
+%                                                                           %
+%                 Setting up Title Page                                     %
+%                                                                           %
+%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%
+%
+\def\maketitle{\par
+ \begingroup
+ \def\thefootnote{\fnsymbol{footnote}}
+ \def\@makefnmark{\hbox 
+ to 0pt{$^{\@thefnmark}$\hss}} 
+ \if@twocolumn 
+ \twocolumn[\@maketitle] 
+ \else \newpage
+ \global\@topnum\z@ \@maketitle \fi\thispagestyle{empty}\@thanks
+ \endgroup
+ \setcounter{footnote}{0}
+ \let\maketitle\relax
+ \let\@maketitle\relax
+ \gdef\@thanks{}\gdef\@author{}\gdef\@title{}\let\thanks\relax}
+%
+\def\@maketitle{\newpage
+ \null
+ \vskip -.50in \vskip 0.0pt 
+ \begin{center}
+   {\LARGE \sc \@title \par} 
+   \vskip 1.5em 
+   {\large \lineskip .5em
+     \begin{tabular}[t]{c}
+       \@author 
+     \end{tabular}\par} 
+   \vskip 1em {\large} 
+ \end{center}
+ \par
+ \vskip 1.5em} 
+%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%
+%                                                                           %
+%                  End of sw20SCSJ.STY                                      %
+%                                                                           %
+%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%
+

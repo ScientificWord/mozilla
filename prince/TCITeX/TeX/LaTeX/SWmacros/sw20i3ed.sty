@@ -1,0 +1,114 @@
+\typeout{TCI Document Style `sw20i3ed' <20 Aug 1994>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+% Style for IEEE draft submissions
+%
+\input thmsupp.tex %TCI theorem option support
+%
+%\setlength{\topmargin}{0in}
+%\setlength{\textheight}{9in}
+%\setlength{\evensidemargin}{0in}
+%\setlength{\oddsidemargin}{0in}
+%\setlength{\textwidth}{6.5in}
+
+\addtolength{\oddsidemargin}{-39pt}
+\evensidemargin=\oddsidemargin
+\addtolength{\topmargin}{-17pt}
+\addtolength{\textheight}{101pt}
+\addtolength{\textwidth}{80pt}
+
+\setlength{\headheight}{0in}
+\setlength{\headsep}{0in}
+\def\baselinestretch{2}
+\def\thesection{\Roman{section}.}
+\def\thesubsection{\Alph{subsection}.}
+\def\thesubsubsection{\arabic{subsubsection}.}
+
+\def\@startsection#1#2#3#4#5#6{\if@noskipsec \leavevmode \fi
+   \par \@tempskipa #4\relax
+   \@afterindenttrue
+   \ifdim \@tempskipa <\z@ \@tempskipa -\@tempskipa \@afterindentfalse\fi
+   \if@nobreak \everypar{}\else
+     \addpenalty{\@secpenalty}\addvspace{\@tempskipa}\fi \@ifstar
+     {\@ssect{#3}{#4}{#5}{#6}}{\@dblarg{\@sect{#1}{#2}{#3}{#4}{#5}{#6}}}}
+ 
+\def\@sect#1#2#3#4#5#6[#7]#8{\ifnum #2>\c@secnumdepth
+     \let\@svsec\@empty\else
+     \refstepcounter{#1}\edef\@svsec{\csname the#1\endcsname\hskip 1em}\fi
+     \@tempskipa #5\relax
+      \ifdim \@tempskipa>\z@
+        \begingroup #6\relax
+          \@hangfrom{\hskip #3\relax\@svsec}{\interlinepenalty \@M #8\par}%
+        \endgroup
+       \csname #1mark\endcsname{#7}\addcontentsline
+         {toc}{#1}{\ifnum #2>\c@secnumdepth \else
+                      \protect\numberline{\csname the#1\endcsname}\fi
+                    \hskip .3em #7}\else
+        \def\@svsechd{#6\hskip #3\relax  %% \relax added 2 May 90
+                   \@svsec #8\csname #1mark\endcsname
+                      {#7}\addcontentsline
+                           {toc}{#1}{\ifnum #2>\c@secnumdepth \else
+                             \protect\numberline{\csname the#1\endcsname}\fi
+                       \hskip .3em #7}}\fi
+     \@xsect{#5}}
+ 
+\def\@xsect#1{\@tempskipa #1\relax
+      \ifdim \@tempskipa>\z@
+       \par \nobreak
+       \vskip \@tempskipa
+       \@afterheading
+    \else \global\@nobreakfalse \global\@noskipsectrue
+       \everypar{\if@noskipsec \global\@noskipsecfalse
+                   \clubpenalty\@M \hskip -\parindent
+                   \begingroup \@svsechd \endgroup \unskip
+                   \hskip -#1\relax  % relax added 14 Jan 91
+                  \else \clubpenalty \@clubpenalty
+                    \everypar{}\fi}\fi\ignorespaces}
+ 
+\def\@ssect#1#2#3#4#5{\@tempskipa #3\relax
+   \ifdim \@tempskipa>\z@
+     \begingroup #4\@hangfrom{\hskip #1}{\interlinepenalty \@M #5\par}\endgroup
+   \else \def\@svsechd{#4\hskip #1\relax #5}\fi
+    \@xsect{#3}}
+
+\def\section
+      {\@startsection {section}{1}{\z@}
+                      {-3.5ex plus-1ex minus -.2ex}
+                      {2.3ex plus.2ex}
+                      {\reset@font\sc\centering}}
+
+\def\subsection
+      {\@startsection{subsection}{2}{\z@}
+                     {-3.25ex plus-1ex minus-.2ex}
+                     {1.5ex plus.2ex}
+                     {\reset@font}}
+
+\def\subsubsection
+      {\@startsection{subsubsection}{3}{\z@}
+                     {-3.25ex plus -1ex minus-.2ex}
+                     {1.5ex plus.2ex}
+                     {\reset@font\normalsize}}
+
+\def\paragraph
+      {\@startsection{paragraph}{4}{\z@}
+                     {3.25ex plus1ex minus.2ex}
+                     {-1em}
+                     {\reset@font\normalsize}}
+
+\def\subparagraph
+      {\@startsection {subparagraph}{4}{\parindent}
+                      {3.25ex plus1ex minus .2ex}
+                      {-1em}
+                      {\reset@font\normalsize}}
+
+
+ 
+\def\abstract{\bgroup\bf\centerline{ABSTRACT} }
+\def\endabstract{\egroup\newpage}
+
+\def\listfigs{\newpage\listoffigures}
+\def\listtabs{\newpage\listoftables}
+
+\def\tighttoc{\def\l@section{\@dottedtocline{1}{0em}{1.4em}}}
+\tighttoc

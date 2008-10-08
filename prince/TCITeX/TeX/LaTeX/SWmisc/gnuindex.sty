@@ -1,0 +1,38 @@
+% <TEX.LATEX>GNUINDEX.STY.2, 18-Oct-86 15:44:17, Edit by BEEBE
+% Indexing macros for LaTeX and TeXIDX
+% Usage:
+%       \INDEX{sortkey}{primaryentry}
+%       \SUBINDEX{sortkey}{primaryentry}{secondaryentry}
+%
+% For \SUBINDEX, the {secondary} field is automatically appended
+% to the sort key, but separated from it by an ASCII <TAB>
+% character, so that
+% \SUBINDEX{foo}{foo}{bar}
+% sorts before
+% \SUBINDEX{foo}{foo}{baz}
+% and
+% \INDEX{foo bar}{foo bar}{bar}
+%
+% The keys will be "foo<TAB>{bar}", "foo<TAB>{baz}", and "foo
+% bar", respectively.
+%
+    \def\initial#1{\bigbreak{\raggedright\large\bf #1}\kern 2pt\penalty3000}
+    \def\entry#1#2{\item {#1}, #2}
+    \def\primary#1{\item {#1}}
+    \def\secondary#1#2{\subitem {#1}, #2}
+
+  \def\INDEX{\@bsphack\begingroup\@sanitize\@WRINDEX\@indexfile}
+  \def\@WRINDEX#1#2#3{\let\thepage\relax
+     \xdef\@gtempa{\write#1{\string
+      \entry{#2}{\thepage}{#3}}}\endgroup\@gtempa
+     \if@nobreak \ifvmode\nobreak\fi\fi\@esphack}
+%
+  \def\SUBINDEX{\@bsphack\begingroup\@sanitize\@WRSUBINDEX\@indexfile}
+%
+  \def\@WRSUBINDEX#1#2#3#4{\let\thepage\relax
+     \xdef\@gtempa{\write#1{\string
+% NB: #3<tab>#4, NOT #3<space>#4 in the next line
+% NB: [[TAB]] is required by TCI's Windows version of TeXIDX
+     \entry{#2\space\space\space#4}{\thepage}{#3}{#4}}}\endgroup\@gtempa
+     \if@nobreak \ifvmode\nobreak\fi\fi\@esphack}
+

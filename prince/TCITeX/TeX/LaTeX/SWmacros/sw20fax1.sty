@@ -1,0 +1,123 @@
+%sw20fax1 {FAX: SW FAX style #1}{12pt}{tcimemo}
+%Copyright (C) 1994-2000 MacKichan Software, Inc.
+\typeout{SW Document Style `sw20fax1' <11 Aug 2000>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+% 11 Aug 00  Define ccname, enclname, pagename and headtoname to be 
+%            consistent with Babel (gp)
+%
+\def\faxname{Fax Transmission}%
+\def\nopgname{No. of pages incl. this one: }%
+\def\faxshortname{Fax number: }%
+\def\faxnumname{(Fax) }%
+\def\phonenumname{Voice: }%
+\def\headtoname{To}%
+\def\headfromname{From: }%
+\def\headdatename{Date: }%
+\def\headtimename{Time: }%
+\def\faxfaultname{If you do not receive all pages, please contact: }%
+\def\headinstrname{Special Instructions: }%
+\def\ccname{cc}%
+\def\enclname{encl}%
+\def\headsubjname{Subject: }%
+\def\headtocompanyname{Company: }%
+%
+\ps@memo
+\def\@memohead{%
+ \vbox{%
+  \begin{center}\Huge
+   \ifx\@empty\the@memoname\faxname\else{\letparBL\the@memoname}\fi
+   \end{center}%
+  \ifx\@empty\the@faxpg\else\bigskip
+   \hbox to\hsize{\hskip.5\hsize\nopgname\the@faxpg\hfil}%
+   \fi
+  \ifx\@empty\the@memoto\else\bigskip
+   \hangfield\headtoname{\letparBL: \ignorespaces\the@memoto}%
+   \fi
+  \@tempswafalse
+  \ifx\@empty\the@memotofax\else\@tempswatrue\fi
+  \ifx\@empty\the@memotophone\else\@tempswatrue\fi
+  \if@tempswa\bigskip
+   \hbox to\hsize{%
+    \advance\hsize2em\divide\hsize\tw@\advance\hsize-2em\relax
+    \vtop{%
+     \ifx\@empty\the@memotofax\leavevmode\else
+      \hangfield\faxshortname{\letparBL\ignorespaces\the@memotofax}%
+      \fi
+     }\hskip2em
+    \vtop{%
+     \ifx\@empty\the@memotophone\leavevmode\else
+      \hangfield\phonenumname{\letparBL\ignorespaces\the@memotophone}%
+      \fi
+     }%
+    }%
+   \fi
+  \ifx\@empty\the@memocc\else
+   \hangfield\ccname{\letparBL: \ignorespaces\the@memocc}%
+   \global\let\the@memocc\@empty
+   \fi
+  \@fromdatealign
+  \@tempswafalse
+  \ifx\@empty\the@memocompany\else\@tempswatrue\fi
+  \ifx\@empty\the@memoaddr\else\@tempswatrue\fi
+  \ifx\@empty\the@memofax\else\@tempswatrue\fi
+  \ifx\@empty\the@memophone\else\@tempswatrue\fi
+  \if@tempswa\bigskip
+   \hbox{\faxfaultname}%
+   \hbox{%
+    \divide\hsize\tw@
+    \hskip\hsize
+    \vtop{%
+     \def\\{\cr}\letparBL\def\crjot{\cr\ifdim\jot>\z@\noalign{\vskip\jot}\fi}%
+     \halign{\vtop{\parindent\z@##}\cr
+      \ifx\@empty\the@memocompany\else\the@memocompany\crjot\fi
+      \ifx\@empty\the@memoaddr\else\the@memoaddr\crjot\fi
+      \ifx\@empty\the@memophone\else\the@memophone\crjot\fi
+      \ifx\@empty\the@memofax\else\faxnumname\the@memofax\crjot\fi
+      \ifdim\jot>\z@\noalign{\vskip-\jot}\fi
+      }%
+     }%
+    }%
+   \fi
+  \ifx\@empty\the@memoinstr\leavevmode\else
+   \hangfield\headinstrname{\letparBL\ignorespaces\the@memoinstr}%
+   \fi
+  \ifx\@empty\the@memosubj\leavevmode\else
+   \hangfield\headsubjname{\letparBL\ignorespaces\the@memosubj}%
+   \fi
+  }\nobreak\vskip24pt\raggedright
+ }%
+%
+\def\@fromdatealign{%
+ \setbox\z@\vbox{%
+  \halign{##\quad\hfil\cr
+   \headfromname\cr\headdatename\cr
+   }%
+  }%
+ \bigskip
+ \advance\hsize-\wd\z@\relax{\def\\{\cr&}\letparBL
+  \def\crjot{\cr\ifdim\jot>\z@\noalign{\vskip\jot}\fi}%
+  \halign{##\quad\hfil&\vtop{\parindent\z@##}\cr
+   \ifx\@empty\the@memofrom\else\headfromname&\the@memofrom\crjot\fi
+   \headdatename&\ifx\@empty\the@memodate\@date
+    \else{\letparSP\the@memodate}\fi\crjot
+   \ifdim\jot>\z@\noalign{\vskip-\jot}\fi
+   }%
+  }%
+ }%
+%
+\trimwidth 8.5in  
+%\topmargin  52pt  
+\addtolength{\topmargin}{35pt}
+\headheight 12pt  \headsep    24pt
+\footskip   18pt  \botmargin  18pt
+\trimheight 11in  
+%\textwidth 468pt
+\addtolength{\textwidth}{78pt}
+%\settextheight    \centerpagemargin
+\addtolength{\textheight}{90pt}
+\addtolength{\oddsidemargin}{33pt}
+\evensidemargin=\oddsidemargin
+\marginparwidth=.675\oddsidemargin
+\marginparsep=.1\oddsidemargin
+

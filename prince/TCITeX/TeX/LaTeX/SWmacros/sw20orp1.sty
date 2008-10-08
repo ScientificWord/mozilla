@@ -1,0 +1,92 @@
+%sw20orp1 {Report - SW Report #1}{12pt}{tcibook}
+%Copyright (C) 1994-2003 MacKichan Software, Inc.
+\typeout{SW Document Style `sw20orp1' <30 April 2003>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+\input thmsupp.tex %TCI theorem option support
+%
+\trimwidth     8.5in  
+
+%\textwidth     468pt
+\addtolength{\textwidth}{78pt}
+
+\marginparsep    0pt  \marginparwidth  0pt
+\columnsep      20pt  \columnseprule   0pt 
+\trimheight     11in  
+%\topmargin      72pt
+\addtolength{\topmargin}{55pt}
+
+
+\headheight      0pt  \headsep         0pt
+\footskip       20pt  \botmargin      50pt
+\@mparswitchfalse     \@reversemargintrue
+%\centerpagemargin
+\addtolength{\oddsidemargin}{33pt}
+\evensidemargin=\oddsidemargin
+
+\twocolumn
+%\settextheight
+\addtolength{\textheight}{105pt}
+\c@secnumdepth=4
+
+\ps@footings\let\chaptermark\@gobble\let\sectionmark\@gobble
+\def\ps@chapter{}%
+\let\rulefooting\norulefooting
+\let\headcase\@empty
+\def\rectomark{\rightmark}%
+\def\versomark{\leftmark}%
+
+\def\@makechapterhead#1{%
+ {\raggedright\advance\leftskip40pt
+  \huge\em
+  \ifnum \c@secnumdepth >\m@ne \@chapapp{} \thechapter \quad \fi
+  #1\par 
+  \vskip4pt\nointerlineskip
+  }%
+ \nobreak \vskip 10pt
+ }
+\def\@makeschapterhead#1{%
+ {\raggedright\advance\leftskip40pt
+  \huge\em
+  %\ifnum \c@secnumdepth >\m@ne \@chapapp{} \thechapter \quad \fi
+  #1\par 
+  \vskip4pt\nointerlineskip
+  }%
+ \nobreak \vskip 10pt
+ }
+\let\introtext\@empty
+
+\def\section{%
+ \@startsection {section}{1}{\z@}{-10pt plus -1.2ex minus -.2ex}%
+  {.5pt}{\large\bf}%
+ }%
+\def\subsection{%
+ \@startsection{subsection}{2}{\z@}{-10pt plus -1ex minus -.2ex}%
+  {.5pt}{\bf}%
+ }%
+
+\def\thefigure{\@arabic\c@figure}%
+
+%Turn off the footers in the bibliography
+%Copy from report.cls, except for the %'ed line below
+\renewenvironment{thebibliography}[1]
+     {\chapter*{\bibname}%
+      %\@mkboth{\MakeUppercase\bibname}{\MakeUppercase\bibname}%
+      \list{\@biblabel{\@arabic\c@enumiv}}%
+           {\settowidth\labelwidth{\@biblabel{#1}}%
+            \leftmargin\labelwidth
+            \advance\leftmargin\labelsep
+            \@openbib@code
+            \usecounter{enumiv}%
+            \let\p@enumiv\@empty
+            \renewcommand\theenumiv{\@arabic\c@enumiv}}%
+      \sloppy
+      \clubpenalty4000
+      \@clubpenalty \clubpenalty
+      \widowpenalty4000%
+      \sfcode`\.\@m}
+     {\def\@noitemerr
+       {\@latex@warning{Empty `thebibliography' environment}}%
+      \endlist}
+\endinput

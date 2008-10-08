@@ -1,0 +1,90 @@
+%sw20fax3 {FAX: SW FAX style #3}{12pt}{tcimemo}
+%Copyright (C) 1994-2000 MacKichan Software, Inc.
+\typeout{SW Document Style `sw20fax3' <11 Aug 2000>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+% 11 Aug 00  Define ccname, enclname, pagename and headtoname to be 
+%            consistent with Babel (gp)
+%
+\def\faxname{Fax Transmission}%
+\def\nopgname{ page(s) incl. this one}%
+\def\faxshortname{FAX \#: }%
+\def\faxnumname{Our FAX number is }%
+\def\phonenumname{Call }%
+\def\headtoname{To}%
+\def\headfromname{From: }%
+\def\headdatename{Date: }%
+\def\headtimename{Time: }%
+\def\faxfaultname{Questions? }%
+\def\headinstrname{Special Instructions: }%
+\def\ccname{cc}%
+\def\enclname{encl}%
+\def\headsubjname{}%
+\def\headtocompanyname{Company: }%
+%
+\ps@memo
+%
+\newdimen\faxindent
+\def\@memohead{%
+ \vbox{\sf
+  \setbox\z@\vbox{\bf\advance\hsize-\faxindent\@parboxrestore
+   \parfillskip\z@
+   \vskip10\p@{\leavevmode\hfil
+    \ifx\@empty\the@memoname\faxname\else\letparBL\the@memoname\fi
+    \endgraf\baselineskip6\p@\null
+    }%
+   }%
+  \hrule\hbox to\hsize{\vrule\hss\box\z@\hskip\faxindent\vrule}\hrule
+  \vskip32\p@
+  \begingroup
+   \setbox\z@\vbox{%
+    \halign{##\quad\hfil\cr
+     \headfromname\cr\faxfaultname\cr\headtoname: \cr\headtocompanyname\cr
+     \headaddrname\cr\headdatename\cr\headtimename\cr
+     }%
+    }%
+   \advance\hsize-\wd\z@\divide\hsize\tw@\relax
+   \def\\{\@centercr}\letparBL
+   \def\crjot{\cr\ifdim\jot>\z@\noalign{\vskip\jot}\fi}%
+   \halign{%
+    ##\hfil&\vtop{\parindent\z@##}&\vtop{\parindent\z@##}\cr
+    \headfromname&\the@memofrom&\the@memocompany\cr
+    \faxfaultname&\phonenumname{\letparBL\the@memophone}&\the@memoaddr\cr
+    \ifx\@empty\the@memoto\else\headtoname:  &\the@memoto&\cr\fi
+    \ifx\@empty\the@memotocompany
+    \else\headtocompanyname&\the@memotocompany&\cr\fi
+    \ifx\@empty\the@memotoaddr
+    \else\headaddrname&\the@memotoaddr&\cr\fi
+    \headdatename&{\letparSP\ifx\@empty\the@memodate\@date
+                            \else\the@memodate\fi}&\cr
+    \headtimename&{\letparSP\ifx\@empty\the@memotime\@time
+                            \else\the@memotime\fi}&
+                  {\letparSP\ifx\@empty\the@faxpg\@ne
+                            \else\the@faxpg\fi\nopgname}\cr
+    \crcr
+    }%
+   \endgroup
+  \vskip12\p@\hrule\@height2\p@\vskip12\p@
+  \ifx\@empty\the@memosubj\else
+   \begin{flushleft}{\letparBL\the@memosubj}\end{flushleft}%
+   \fi
+  }%
+ }%
+%
+%
+\faxindent  20pt
+%
+\trimwidth 8.5in  
+%\topmargin  52pt  
+\addtolength{\topmargin}{35pt}
+\headheight 12pt  \headsep    24pt
+\footskip   18pt  \botmargin  18pt
+\trimheight 11in  
+%\textwidth 468pt
+\addtolength{\textwidth}{78pt}
+%\settextheight    \centerpagemargin
+\addtolength{\textheight}{90pt}
+\addtolength{\oddsidemargin}{33pt}
+\evensidemargin=\oddsidemargin
+\marginparwidth=.675\oddsidemargin
+\marginparsep=.1\oddsidemargin

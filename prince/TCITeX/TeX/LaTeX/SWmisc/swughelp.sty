@@ -1,0 +1,95 @@
+
+
+\font\bigfont=arialbd at 36pt
+\def\BIGNUMBER{{\bigfont \chapterCount}}
+\def\BIGLETTER{{\bigfont \AppendixCount}}
+
+\def\HeadCLeadin{%
+   %\show\c@@chapterCount
+   %\showthe\count96
+   \noexpand\ifnum\count96=0 %
+   \noexpand\else\noexpand\ifnum\count96>9
+   \noexpand\else
+      Chapter \chapterCount \Space{2mm}%
+   \noexpand\fi
+   \noexpand\fi}
+
+
+\def\TheTriangle{\leavevmode\llap{$\blacktriangleright$ \hskip 3mm}}
+
+\newdimen\WD
+\def\STARTEXAMPLE{%
+      \penalty -300
+      \vspace{3ex}
+      %\hrule
+      \vspace{2mm}
+      \noindent
+      \setbox0 = \hbox{\sffamily\bfseries Example \hskip 3mm}%
+      \WD=\wd0
+      \hskip -\wd0
+      \unhbox0%
+     }
+\def\ENDEXAMPLE{% 
+       \vskip -\baselineskip
+       \nobreak
+       \noindent
+       \nobreak
+       \hskip -\WD
+       \nobreak
+       \rule{.5 in}{4pt}%
+       \penalty -5000
+       \vskip \baselineskip
+       \vspace{3ex}%
+       %\hrule
+       %\vspace{2ex}
+}
+
+
+\RequirePackage{grey}
+
+\def\STARTGRAYBOX{\begin{boxitpara}{}% 
+       \parindent=0pt
+       \parskip = 5pt
+   }%
+\def\ENDGRAYBOX{\end{boxitpara}}
+
+%DoingMath example lead-in
+\def\Example{\textbf{Example\quad}}
+
+\makeatletter
+%\newenvironment{theindex}
+%               {\IndexPage
+%                \AddContentsLine{toc}{1}{}{Index}%
+%                \gdef\initial##1{\vspace{5mm}}
+%                \footnotesize
+%                \advance\linewidth by 1.5in
+%                \columnseprule \z@
+%                \columnsep 35\p@
+%                \thispagestyle{empty}
+%                \begin{multicols}{3}
+%                \parindent\z@
+%                \parskip\z@ \@plus .3\p@\relax
+%                {\Huge\bfseries\sffamily Index}\vspace{1.5in}
+%                \let\item\@idxitem}
+%               {\end{multicols}\newpage}
+%\newcommand\@idxitem  {\par\hangindent 20\p@}
+%\newcommand\subitem   {\par\hangindent 20\p@ \hspace*{10\p@}}
+%\newcommand\subsubitem{\par\hangindent 20\p@ \hspace*{15\p@}}
+%\newcommand\indexspace{\par \vskip 10\p@ \@plus5\p@ \@minus3\p@\relax}
+
+%Use a different name for "Chapter" when Babel is used
+\def\chapternameSE{%
+  \protect\@ifundefined{iflanguage}{Chapter}{\protect\chaptername}%
+  %%%\protect\chaptername%this line should be sufficient if \chaptername was defined in sebase.cls
+}
+\def\contentsnameSE{%
+  \protect\@ifundefined{iflanguage}{Contents}{\protect\contentsname}%
+}
+\def\indexnameSE{%
+  \protect\@ifundefined{iflanguage}{Index}{\protect\indexname}%
+}
+\def\appendixnameSE{%
+  \protect\@ifundefined{iflanguage}{Appendix}{\protect\appendixname}%
+}
+%
+\endinput

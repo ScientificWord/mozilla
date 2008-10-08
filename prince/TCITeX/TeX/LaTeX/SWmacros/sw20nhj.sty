@@ -1,0 +1,162 @@
+%sw20nhj {Article: Similar to North-Holland journals}{12pt}{article}
+%Copyright (C) 1994-95 TCI Software Research
+\typeout{TCI Document Style `sw20nhj' <1 July 1994>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+%Article style option created for Murray Frank.      
+%Intended for submission to the editors of North-Holland journals.
+%The description is printed on the title page at the top right
+%     and the date is printed below the description (flushright)
+%This style prints the title centered on a separate page
+%  which also contains the abstract, Keywords, created, author.
+%Keywords are used in this style, and come after the abstract.
+%Created is used in this style, and come after Keywords (used for JEL)
+%The author and author address are after the Keywords, and are flush left.
+%Equation numbering in the appendix is a.1, a.2 ... b.1, b.2 ... etc.
+%The top margin for all pages is 1.5".
+%Side margins are 1", and bottom margins are 1.25".
+%
+\def\baselinestretch{2}
+%
+\setcounter{page}{0}
+\def\and{\\ \\}
+%
+%***************************************************************************%
+%                       This is the Title                                   %
+%                              with                                         %
+%                        the Description ---------\_________[FLUSH RIGHT]   %
+%                            and Date    ---------/                         %
+%***************************************************************************%
+%
+\def\maketitle{\par
+ \begingroup
+ \def\thefootnote{\fnsymbol{footnote}}
+ \def\@makefnmark{\hbox 
+ to 0pt{$^{\@thefnmark}$\hss}}%
+ \long\def\@makefntext##1{\parindent 1em\noindent
+            \hb@xt@1.8em{%
+                \hss\@textsuperscript{\normalfont\@thefnmark}}##1}% 
+ \if@twocolumn 
+ \twocolumn[\@maketitle] 
+ \else\newpage
+ \global\@topnum\z@ \@maketitle \fi\thispagestyle{empty}\@thanks
+ \endgroup
+ \setcounter{footnote}{0}
+ \let\maketitle\relax
+ \let\@maketitle\relax
+ \gdef\@thanks{}\let\thanks\relax}
+\def\@maketitle{\newpage
+ \null
+ \vskip -1.0in\vskip 0pt 
+ \begin{flushright}\def\baselinestretch{1}
+ \small \normalsize
+\@ifundefined{Description}{}{\Description}\par
+\@date\par
+ \end{flushright}
+ \vfill
+ \begin{center}
+ {\bf \large \@title \par} \vskip 1.5em {\large \lineskip .5em
+ \par} 
+\end{center}
+ \par
+ \vskip 1.5em} 
+%
+%****************************************************************************%
+%                        Abstract Section                                    %
+%                              With                                          %
+%                            Keywords    ----\                               %
+%                            Created          ---[FLUSH LEFT]                 %
+%                         and the Author ----/                               %
+%****************************************************************************%
+%
+\def\abstract{\def\baselinestretch{1}\if@twocolumn
+\section*{Abstract}
+\else \small 
+\begin{center}
+{\bf Abstract\vspace{-.5em}\vspace{0pt}} 
+\end{center}
+\fi}
+\def\endabstract{
+\vfill 
+\hspace{-.29in}
+\@ifundefined{Keywords}{}{{\bf Keywords: } \Keywords}%
+\vfill
+\hspace{-.29in}
+\@ifundefined{Created}{}{\Created}
+\vfill                                
+\hspace{-.3in}
+\begin{tabular}[t]{l}\@author 
+ \end{tabular}}
+%
+%***************************************************************************%
+%                               Footnotes                                   %
+%***************************************************************************%
+%
+\long\def\@makefntext#1{%
+    \parindent 1em%
+    \noindent
+    \hbox to 1.8em{\hss\@makefnmark}\ #1}
+
+\long\def\@footnotetext#1{\def\baselinestretch{1}
+   \insert\footins{\footnotesize
+    \interlinepenalty\interfootnotelinepenalty 
+    \splittopskip\footnotesep
+    \splitmaxdepth \dp\strutbox \floatingpenalty \@MM
+    \hsize\columnwidth \@parboxrestore
+    \vspace{\footnotesep}
+    \edef\@currentlabel{\csname p@footnote\endcsname}
+    \leavevmode
+    \@makefntext{\ignorespaces\strut #1}}}
+%
+%***************************************************************************%
+%                             References                                    %
+%                               without                                     %
+%                               Numbers                                     %
+%                                 and                                       %
+%                         labels without [    ]                             %
+%***************************************************************************%
+%
+\def\@biblabel#1{#1\hfill}
+\def\thebibliography#1{\section*{References\@mkboth
+ {REFERENCES}{REFERENCES}}\list
+ {}{\settowidth\labelwidth{#1}\labelwidth\leftmargin
+ \usecounter{enumi}}
+ \def\newblock{\hskip .11em plus .33em minus .07em}
+ \sloppy\clubpenalty4000\widowpenalty4000
+ \sfcode`\.=1000\relax\def\baselinestretch{1}\large \normalsize}
+\let\endthebibliography=\endlist
+%
+%***************************************************************************%
+%                      Setting up the Page Size for Text                    %
+%***************************************************************************%
+
+%\setlength{\topmargin}{0.0in}
+%\setlength{\textheight}{8.48in}
+%\setlength{\oddsidemargin}{0.0in}
+%\setlength{\evensidemargin}{0.0in}
+%\setlength{\textwidth}{6.5in}
+\setlength{\marginparwidth}{0.0in}
+
+\addtolength{\oddsidemargin}{-39pt}
+\evensidemargin=\oddsidemargin
+\addtolength{\topmargin}{-17pt}
+\addtolength{\textheight}{64pt}
+\addtolength{\textwidth}{79pt}
+
+
+%***************************************************************************%
+%                        Equation numbering in                              %
+%                         the appendix is a.1,                              %
+%                           a.2 ... b.1, b.2                                %
+%                                ... etc.                                   %
+%***************************************************************************%
+
+\def\appendix{\par
+ \def\@eqnnum{{\rm (\thesection.\theequation)}}
+ \setcounter{section}{0}
+ \setcounter{subsection}{0}
+ \def\thesection{\Alph{section}}}
+
+%***************************************************************************%
+

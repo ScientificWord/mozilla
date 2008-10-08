@@ -1,0 +1,47 @@
+%Filename: UT1pmincho.fd
+
+\ProvidesFile{UT1pmincho.fd}[MS PMincho for LaTeX]
+
+\DeclareFontFamily{UT1}{pmincho}{}
+
+\DeclareFontShape{UT1}{pmincho}{m}{n}{
+   <->MSPmincho
+}{}
+\DeclareFontShape{UT1}{pmincho}{m}{sc}{
+   <-> ssub * pmincho/m/n
+}{}
+\DeclareFontShape{UT1}{pmincho}{m}{it}{
+   <->MSPmincho
+}{}
+\DeclareFontShape{UT1}{pmincho}{m}{sl}{
+   <-> ssub * pmincho/m/it
+}{}
+\DeclareFontShape{UT1}{pmincho}{m}{itsc}{
+   <-> ssub * pmincho/m/it
+}{}
+\DeclareFontShape{UT1}{pmincho}{m}{slsc}{
+   <-> ssub * pmincho/m/it
+}{}
+\DeclareFontShape{UT1}{pmincho}{bx}{n}{
+   <->MSPmincho
+}{}
+\DeclareFontShape{UT1}{pmincho}{bx}{sc}{
+   <-> ssub * pmincho/bx/n
+}{}
+\DeclareFontShape{UT1}{pmincho}{bx}{it}{
+   <->MSPmincho
+}{}
+\DeclareFontShape{UT1}{pmincho}{bx}{itsc}{
+   <-> ssub * pmincho/bx/it
+}{}
+\DeclareFontShape{UT1}{pmincho}{bx}{sl}{
+   <-> ssub * pmincho/bx/it
+}{}
+\DeclareFontShape{UT1}{pmincho}{bx}{slsc}{
+   <-> ssub * pmincho/bx/it
+}{}
+
+\endinput
+
+
+
