@@ -95,6 +95,10 @@
       <toolbarbutton id="pdfcompileButton" tooltiptext="&pdfcompileButton.tooltip;"/>
       <toolbarbutton id="javascriptButton" class="toolbarbutton-1" observes=""
                  tooltiptext="&javascriptToolbarButton.tooltip;" label="&javascriptToolbarButton.label;"/>
+      <toolbarbutton id="boldButton" class="toolbarbutton-1" observes=""
+                 tooltiptext="&boldToolbarButton.tooltip;" label="&boldToolbarButton.label;"/>
+      <toolbarbutton id="italicButton" class="toolbarbutton-1" observes=""
+                 tooltiptext="&italicToolbarButton.tooltip;" label="&italicToolbarButton.label;"/>
       <toolbarbutton id="stdToolbarTab"/>
       <toolbarbutton id="editToolbarTab"/>
       <toolbarbutton id="mathToolbarTab"/>
@@ -112,17 +116,17 @@
       persist="collapsed"
       tbalign="center" 
       context="toolbar-context-menu"
-      defaultset="newButton,openButton,saveButton,printButton,printPreviewButton,mathtextButton,TextTags,
-        ParaTags,StructTags,OtherTags,stdToolbarTab" customizable="true" mode="icons" />
+      defaultset="stdToolbarTab,newButton,openButton,saveButton,printButton,printPreviewButton,mathtextButton,TextTags,
+        ParaTags,StructTags,OtherTags" customizable="true" mode="icons" />
     <toolbar 
       id="EditingToolbar" 
       toolbarname="Editing toolbar"
       class="chromeclass-toolbar" 
       persist="collapsed" 
       context="toolbar-context-menu"
-      defaultset="noteButton,markerButton,htlinkButton,formulaButton,compileButton,frontmatterButton,
+      defaultset="editToolbarTab,noteButton,markerButton,htlinkButton,formulaButton,compileButton,frontmatterButton,
         packagesButton,citationButton,indexentryButton,xrefButton,texfieldButton,subdocButton,
-        bibliographyButton,gifsAnimatedButton,vc_rotateleft,zoomValue,editToolbarTab"
+        bibliographyButton,gifsAnimatedButton,boldButton,italicButton,zoomValue"
       mode="icons" 
       customizable="true" />
     <toolbar 
@@ -131,10 +135,10 @@
       class="chromeclass-toolbar" 
       persist="collapsed" 
       context="toolbar-context-menu"
-      defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plotButton3D,
+      defaultset="mathToolbarTab,evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plotButton3D,
         defineButton,showdefsButton,fractionButton,radicalButton,superscriptButton,subscriptButton,
         parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,
-        matrixButton,mathnameButton,binomialButton,labelButton,decorationButton,mathToolbarTab"
+        matrixButton,mathnameButton,binomialButton,labelButton,decorationButton"
       mode="icons" 
       customizable="true" />
     <toolbarset context="toolbar-context-menu"/>

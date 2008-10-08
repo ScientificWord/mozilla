@@ -15,7 +15,6 @@ function msiEditorFillContextMenu(event, contextMenuNode)
   dump(dumpStr + "]\n");
   var objectName = msiInitObjectPropertiesMenuitem(editorElement, "objectProperties_cm");
   var isInLink = objectName == "href";
-//BBM here is where to put in paragraph properties hook
   // Special case of an image inside a link
   if (objectName == "img")
   try {
@@ -89,6 +88,7 @@ function msiEditorFillContextMenu(event, contextMenuNode)
   msiShowMenuItem("tableInsertMenu_cm",  inCell);
   msiShowMenuItem("tableSelectMenu_cm",  inCell);
   msiShowMenuItem("tableDeleteMenu_cm",  inCell);
+  addSectionProperties(editorElement, contextMenuNode);
 }
 
 function msiIsItemOrCommandEnabled( item )
@@ -129,3 +129,62 @@ function msiIsMenuItemShowing(menuID)
   return false;
 }
 
+function addSectionProperties(editorElement, contextMenuNode)
+{
+  var editor = msiGetEditor(editorElement);
+  var parentTagString;
+  var parentTagArray;
+  var tag;
+  var i, length;
+  removeSectionProperties(contextMenuNode);
+  if (editor && editor.tagListManager)
+  {
+    parentTagString = editor.tagListManager.getParentTagList(",",false);
+    parentTagArray = parentTagString.split(","); 
+    for (i = 0, length = parentTagArray.length; i < length; i++)
+    {
+      tag = parentTagArray[i].replace(/\s-\s\w*$/,"");
+      if (/\w/.test(tag) && editor.tagListManager.getTagInClass("paratag", tag, null))
+      {
+        createContextPropertiesItem(tag,"Properties of "+tag,tag, contextMenuNode);
+      }
+    }
+    for (i = 0, length = parentTagArray.length; i < length; i++)
+    {
+      tag = parentTagArray[i].replace(/\s-\s\w*$/,"");
+      if (/\w/.test(tag) && editor.tagListManager.getTagInClass("structtag", tag, null))
+      {
+        createContextPropertiesItem(tag,"Properties of "+tag,tag, contextMenuNode);
+      }
+    }
+  }
+}
+
+function createContextPropertiesItem(id, label, target, contextMenuNode)
+{
+  var item = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
+                                         "menuitem");
+
+  item.setAttribute("oncommand","openStructureTagDialog("+target+";");
+  item.id = "contexttagitem_"+id;
+  item.setAttribute("label",label);
+  item.setAttribute("value",target);
+  
+  return contextMenuNode.appendChild(item);
+}
+
+function removeSectionProperties(contextMenuNode)
+{
+  var item = document.getElementById("structure-properties-separator");
+  item = item.nextSibling;
+  var next;
+  while (item)
+  {
+    next = item.nextSibling;
+    item.parentNode.removeChild(item);
+    item = next;
+  }
+}
+    
+  
+   
