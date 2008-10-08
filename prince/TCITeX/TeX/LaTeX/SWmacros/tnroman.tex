@@ -1,0 +1,165 @@
+%% 
+\def\fileversion{v2.2f}
+\def\filedate{1994/06/21}
+
+\DeclareFontFamily{T1}{ntr}{}
+\DeclareFontShape{T1}{ntr}{m}{n}
+   {  <5> <6> <7> <8> <9> <10> <12> 
+      <10.95> 
+      <14.4>  
+      <17.28><20.74><24.88> times}{}
+\DeclareFontShape{T1}{ntr}{m}{sl}
+    {
+      <5><6><7><8><9>
+      <10><10.95><12><14.4><17.28><20.74><24.88> timesi%
+      }{}
+\DeclareFontShape{T1}{ntr}{m}{it}
+    {
+      <5><6><7><8><9>
+      <10><10.95>
+      <12><14.4><17.28><20.74><24.88>timesi%
+      }{}
+\DeclareFontShape{T1}{ntr}{m}{sc}
+    {
+      <5><6><7><8><9><10><10.95><12>
+      <14.4><17.28><20.74><24.88> cmcsc10
+      }{}
+% Warning: please note that the upright shape below is
+%          used for the \pounds symbol of LaTeX. So this
+%          font definition shouldn't be removed.
+%
+\DeclareFontShape{T1}{cmr}{m}{ui}
+   {
+      <5><6><7><8><9><10><10.95><12>%
+      <14.4><17.28><20.74><24.88>cmu10%
+      }{}
+%%%%%%% bold series
+\DeclareFontShape{T1}{ntr}{bx}{n}
+     {
+      <5><6><7><8><9><10><10.95><12>
+      <14.4><17.28><20.74><24.88> timesbd}{}
+%%%%%%%% bold extended series
+\DeclareFontShape{T1}{cmr}{bx}{n}
+   {
+      <5> <6> <7> <8> <9> gen * cmbx
+      <10><10.95> cmbx10
+      <12><14.4><17.28><20.74><24.88>cmbx12
+      }{}
+\DeclareFontShape{T1}{cmr}{bx}{sl}
+      {
+      <5> <6> <7> <8> <9>
+      <10> <10.95> <12> <14.4> <17.28> <20.74> <24.88> cmbxsl10
+      }{}
+\DeclareFontShape{T1}{cmr}{bx}{it}
+      {
+      <5> <6>  <7>  <8> <9>
+      <10> <10.95> <12> <14.4> <17.28> <20.74> <24.88> cmbxti10
+      }{}
+% Again this is necessary for a correct \pounds symbol in
+% the cmr fonts Hopefully the dc/ec font layout will take
+% over soon.
+%
+\DeclareFontShape{T1}{cmr}{bx}{ui}
+      {<->ssub * cmr/m/ui}{}
+
+
+
+
+
+\DeclareFontFamily{T1}{ari}{}
+\DeclareFontShape{T1}{ari}{m}{n}
+   {  <5> <6> <7> <8> <9> <10> <12> 
+      <10.95> 
+      <14.4>  
+      <17.28><20.74><24.88> arial}{}
+\DeclareFontShape{T1}{ari}{m}{sl}
+    {
+      <5><6><7><8><9>
+      <10><10.95><12><14.4><17.28><20.74><24.88> ariali%
+      }{}
+\DeclareFontShape{T1}{ari}{m}{it}
+    {
+      <5><6><7><8><9>
+      <10><10.95>
+      <12><14.4><17.28><20.74><24.88>ariali%
+      }{}
+\DeclareFontShape{T1}{ntr}{m}{sc}
+    {
+      <5><6><7><8><9><10><10.95><12>
+      <14.4><17.28><20.74><24.88> cmcsc10
+      }{}
+\DeclareFontShape{T1}{ari}{bx}{n}
+   {  <5> <6> <7> <8> <9> <10> <12> 
+      <10.95> 
+      <14.4>  
+      <17.28><20.74><24.88> arialbd}{}
+\DeclareFontShape{T1}{ari}{bx}{sl}
+    {
+      <5><6><7><8><9>
+      <10><10.95><12><14.4><17.28><20.74><24.88> arialib%
+      }{}
+\DeclareFontShape{T1}{ari}{bx}{it}
+    {
+      <5><6><7><8><9>
+      <10><10.95>
+      <12><14.4><17.28><20.74><24.88>arialbi%
+      }{}
+\DeclareFontShape{T1}{ntr}{bx}{sc}
+    {
+      <5><6><7><8><9><10><10.95><12>
+      <14.4><17.28><20.74><24.88> cmcsc10
+      }{}
+
+
+
+\DeclareFontFamily{T1}{cou}{}
+\DeclareFontShape{T1}{cou}{m}{n}
+   {  <5> <6> <7> <8> <9> <10> <12> 
+      <10.95> 
+      <14.4>  
+      <17.28><20.74><24.88> cour}{}
+\DeclareFontShape{T1}{cou}{m}{sl}
+    {
+      <5><6><7><8><9>
+      <10><10.95><12><14.4><17.28><20.74><24.88> couri%
+      }{}
+\DeclareFontShape{T1}{cou}{m}{it}
+    {
+      <5><6><7><8><9>
+      <10><10.95>
+      <12><14.4><17.28><20.74><24.88>couri%
+      }{}
+\DeclareFontShape{T1}{cou}{m}{sc}
+    {
+      <5><6><7><8><9><10><10.95><12>
+      <14.4><17.28><20.74><24.88> cmcsc10
+      }{}
+\DeclareFontShape{T1}{cou}{bx}{n}
+   {  <5> <6> <7> <8> <9> <10> <12> 
+      <10.95> 
+      <14.4>  
+      <17.28><20.74><24.88> courbd}{}
+\DeclareFontShape{T1}{cou}{bx}{sl}
+    {
+      <5><6><7><8><9>
+      <10><10.95><12><14.4><17.28><20.74><24.88> courbi%
+      }{}
+\DeclareFontShape{T1}{cou}{bx}{it}
+    {
+      <5><6><7><8><9>
+      <10><10.95>
+      <12><14.4><17.28><20.74><24.88>courbi%
+      }{}
+\DeclareFontShape{T1}{cou}{bx}{sc}
+    {
+      <5><6><7><8><9><10><10.95><12>
+      <14.4><17.28><20.74><24.88> cmcsc10
+      }{}
+
+\renewcommand{\familydefault}{ntr}
+\renewcommand{\sfdefault}{ari}
+\renewcommand{\ttdefault}{cou}
+
+
+\endinput
+%% 

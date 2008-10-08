@@ -1,0 +1,18 @@
+%sw20geoj {Article: Geophysics journal}{12pt}{article}
+%Copyright (C) 1994-97 TCI Software Research
+\typeout{TCI Document Style `sw20geoj' <5 Aug 1997>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+\input geophysics.sty
+%This style can't handle a table of contents
+\@ifundefined{tableofcontents}{\def\tableofcontents{}}{\def\tableofcontents{}}
+%
+\input thmsupp.tex %TCI theorem option support
+%
+\newdimen\dummy
+\dummy=\oddsidemargin
+\addtolength{\dummy}{72pt}
+\marginparwidth=.675\dummy
+\marginparsep=.1\dummy
+

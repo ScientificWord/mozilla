@@ -1,0 +1,47 @@
+%Filename: UT1swtimes.fd
+
+\ProvidesFile{UT1swtimes.fd}[MS Times New Roman for LaTeX]
+
+\DeclareFontFamily{UT1}{swtimes}{}
+
+\DeclareFontShape{UT1}{swtimes}{m}{n}{
+   <->swtimes
+}{}
+\DeclareFontShape{UT1}{swtimes}{m}{sc}{
+   <-> ssub * swtimes/m/n
+}{}
+\DeclareFontShape{UT1}{swtimes}{m}{it}{
+   <->swtimesi
+}{}
+\DeclareFontShape{UT1}{swtimes}{m}{sl}{
+   <-> ssub * swtimes/m/it
+}{}
+\DeclareFontShape{UT1}{swtimes}{m}{itsc}{
+   <-> ssub * swtimes/m/it
+}{}
+\DeclareFontShape{UT1}{swtimes}{m}{slsc}{
+   <-> ssub * swtimes/m/it
+}{}
+\DeclareFontShape{UT1}{swtimes}{bx}{n}{
+   <->swtimesbd
+}{}
+\DeclareFontShape{UT1}{swtimes}{bx}{sc}{
+   <-> ssub * pmincho/bx/n
+}{}
+\DeclareFontShape{UT1}{swtimes}{bx}{it}{
+   <->swtimesbi
+}{}
+\DeclareFontShape{UT1}{swtimes}{bx}{itsc}{
+   <-> ssub * swtimes/bx/it
+}{}
+\DeclareFontShape{UT1}{swtimes}{bx}{sl}{
+   <-> ssub * swtimes/bx/it
+}{}
+\DeclareFontShape{UT1}{swtimes}{bx}{slsc}{
+   <-> ssub * swtimes/bx/it
+}{}
+
+\endinput
+
+
+

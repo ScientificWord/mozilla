@@ -1,0 +1,238 @@
+%sw20swug {Book: Scientific Word User's Guide}{}{book}
+%Copyright (C) 1994-95 TCI Software Research
+\typeout{TCI Document Style `sw20swug' <11 Nov 91>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+
+\let\UserA\bf
+\let\UserB\sc
+\let\UserC\sf
+\let\UserD\tt
+\let\UserE\bf
+\let\UserF\it
+\let\UserG\it
+
+
+% Added by JCS
+
+\def\UserH{\bfseries\itshape}
+
+\input amsfonts.sty
+\input amssym.def
+\input amssym.tex
+\input tcilcom2 % Special tcilcomm for use with brooksa.sty
+
+\def\eatspace#1{#1}
+
+\def\@do@Instruction{%
+   \vspace{2ex}%
+   \noindent
+   \setbox0=\hbox{$\blacktriangleright$\hskip 3mm}%
+   \hskip -\wd0
+   \box0
+   {\rmfamily\bfseries \expandafter\eatspace\the@Instruction} 
+}
+
+
+\def\@do@Tip{%
+   \vspace{2ex}
+   \hrule
+   \vspace{2mm}
+   \noindent{\sffamily\bfseries Tip } \the@Tip \par
+   \vspace{2mm}
+   \nobreak
+   \hrule
+   \vspace{2ex}
+}
+
+
+
+\def\@do@Example{%
+   \vspace{3ex}
+   %\hrule
+   %\vspace{2mm}
+   \setbox0=\hbox{\sffamily\bfseries ExaMPLE \hskip 3mm}
+   \noindent
+   \hskip -wd0
+   \unhbox0
+   \the@Example \par
+   \vspace{2mm}
+   \nobreak
+   %\hrule
+   \vspace{3ex}
+}
+
+
+\def\@do@Note{%
+   \vspace{2ex}
+   \hrule
+   \vspace{2mm}
+   \noindent{\sffamily\bfseries Note } \the@Note \par
+   \vspace{2mm}
+   \nobreak
+   \hrule
+   \vspace{2ex}
+}
+
+\def\@do@Important{%
+   \vspace{2ex}
+   \hrule
+   \vspace{2mm}
+   \noindent{\sffamily\bfseries Important } \the@Important \par
+   \vspace{2mm}
+   \nobreak
+   \hrule
+   \vspace{2ex}
+}
+
+% Stuff to make a grey box
+%%
+%% PSBOXIT
+%%
+%% \psboxit{PS program}{TeX stuff}
+%%
+%% The bounding box of the TeX stuff is pushed on the PostScript stack
+%% and then the program in the first argument is called
+%%
+%% EXAMPLE: set some text on a gray background, Use the SPBOX macro to
+%% give some space around the text.
+%%
+%%      \psboxit{box 0.5 setgray fill}{\spbox{Some Text}}
+%%
+%% See \PScommands for the \box definition
+%%
+ 
+\long\def\psboxit#1#2{%
+\begingroup\setbox0=\hbox{#2}%
+\dimen0=\ht0 \advance\dimen0 by \dp0%
+    % Write out the PS code to set the current path using HEIGHT,
+    % WIDTH , DEPTH of box0.
+    \hbox{%
+    \special{postscript gsave currentpoint translate
+        0
+%        \number\dp0 \space 15800 div    % hand tuned for dvips
+%        \number\wd0 \space 15800 div    % hand tuned for dvips
+%        \number\ht0 \space -15800 div   % hand tuned for dvips
+%        \number\dp0 \space 16384 div
+%        \number\wd0 \space 16384 div
+%        \number\ht0 \space -16384 div   % Bounding box
+        \number\dp0 \space -65536 div
+        \number\wd0 \space 65536 div
+        \number\ht0 \space 65536 div   % Bounding box
+newpath 2 copy moveto 3 copy pop exch lineto 4 copy pop pop
+lineto exch pop exch pop lineto closepath 
+        #1 grestore}%
+    \copy0%
+}%HBOX
+\endgroup%
+}%
+
+\newsavebox{\gray@box}%
+\newdimen\gray@space
+%
+\long\def\Beginboxitpara#1{\edef\gray@tmp{#1}%
+\gray@space=\fboxsep \advance\gray@space by -\fboxrule
+\par\prevdepth=-1000pt\vskip 0.5\baselineskip\noindent
+\setbox\gray@box=%
+\hbox\bgroup 
+        %\vrule width \fboxrule
+        \vtop\bgroup 
+            %\hrule
+            \vbox\bgroup
+                \kern\gray@space
+                   \hbox\bgroup
+                        \kern\gray@space
+                        \vtop\bgroup
+                   \hsize=\linewidth\advance\hsize-2\fboxsep\noindent
+                   \ignorespaces}
+\def\Endboxitpara{%
+                             \egroup
+                        \kern\gray@space
+                        \egroup
+                   \kern\gray@space
+                   \egroup 
+                   %\hrule
+             \egroup
+             %\vrule width \fboxrule
+     \egroup
+     \psboxit{\gray@tmp}{\box\gray@box}%
+     \vskip 0.5\baselineskip
+\par}
+
+\newenvironment{boxitpara}[1]{\Beginboxitpara{#1}}{\Endboxitpara}
+\newenvironment{boxitpara*}[1]{\Beginboxitpara{#1}\hbox to\hsize{}}%
+{\Endboxitpara}
+
+
+%\def\@do@GrayBox{
+%   \begin{boxitpara}{.93 setgray fill}
+%     \parindent=0pt%
+%     \parskip = 5pt%
+%     \the@GrayBox
+%   \end{boxitpara}
+%}
+
+\newenvironment{GrayBox}
+   {\begin{boxitpara}{.93 setgray fill}% 
+       \parindent=0pt
+       \parskip = 5pt
+   }%
+   {\end{boxitpara}}
+
+\def\killnewfield{\def\newfield##1##2{\relax}}
+
+\newdimen\WD
+
+\newenvironment{Example}
+     {\penalty -300
+      \vspace{3ex}
+      %\hrule
+      \vspace{2mm}
+      \noindent
+      \setbox0 = \hbox{\sffamily\bfseries Example \hskip 3mm}%
+      \WD=\wd0
+      \hskip -\wd0
+      \unhbox0%
+     }
+     { \vskip -\baselineskip
+       \nobreak
+       \noindent
+       \nobreak
+       \hskip -\WD
+       \nobreak
+       \rule{.5 in}{4pt}%
+       \penalty -5000
+       \vskip \baselineskip
+       \vspace{3ex}%
+       %\hrule
+       %\vspace{2ex}
+}
+
+
+\def\redefine{%
+   \def\entry##1##2{\hangindent=2em\hangafter=1\raggedright%
+      \setbox\argbox=\hbox{\ignorespaces##2}% 
+      \ifdim\wd\argbox>0pt ##1\ignorespaces, ##2\par 
+      \else ##1\par\fi}
+     
+   \def\secondary##1##2{\hangindent=1em\hangafter=0%
+      \raggedright##1, ##2\par}
+
+   \def\seesecondary##1##2{\hangindent=1em\hangafter=0%
+      \raggedright##1\par}
+
+   \def\primary##1{ \entry{##1}{}}
+
+   \def\initial##1{\bigbreak}
+
+
+}
+
+\def\tableofcontents{\chapter*{Contents}\@starttoc{toc}}
+
+\setcounter{tocdepth}{1}
+
+
+\def\l@subsubsection#1#2{\relax}
+\def\l@paragraph#1#2{\relax}
+\def\l@subparagraph#1#2{\relax}

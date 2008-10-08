@@ -1,0 +1,67 @@
+%sw20mitt {Thesis: Massachussets Institute of Technology}{11pt}{report}
+%Copyright (C) 1994-95 TCI Software Research
+\typeout{TCI Document Style `sw20mitt' <1 July 1994>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+\input mitthesis.sty
+\input thmsupp.tex
+
+\degree{undefined}
+\degreemonth{degreemonth undefined}
+\degreeyear{degreeyear undefined}
+
+% If the thesis is copyright by the Institute, leave out copyrightnotice
+% and the standard copyright line will be used instead.
+
+\def\university#1{\def\Mit{#1}}
+\def\MIT{\uppercase\expandafter{\Mit}}
+
+% Use university name instead of 'MIT'
+\def\permission{\par\noindent{\centering
+  The author hereby grants to \Mit\ permission to reproduce and \\*
+  to distribute copies of this thesis document in whole or in part.}\par}
+
+% Use \date as \thesisdate
+\let\@thesisdate=\@date
+\def\date#1{\gdef\@date{#1}\gdef\@thesisdate{#1}}
+
+\def\thisdegree#1{\degree{#1}}
+
+% Change \chairman{Chairman Name}{Chairman Title} to use
+% \chairmanname{Chairman Name} and \chairmantitle{Chairman Title}
+\def\chairmanname#1{\gdef\@chairmanname{#1}}
+\def\chairmantitle#1{\gdef\@chairmantitle{#1}}
+
+% Change \supervisor[Optional Title]{Supervisor Name}{Supervisor Title}
+% to use \super{Supervisor Name} and
+% \supertitle[Optional Title]{Supervisor Name}
+\def\super#1{\gdef\@super{#1}}
+\def\supertitle{\@ifnextchar[{\@supertitle}{\@supertitle[Thesis Supervisor]}}
+\def\@supertitle[#1]#2{\setbox\@titlesupervisor\vbox
+  {\unvbox\@titlesupervisor \vskip 10pt plus 1fil minus 1fil
+  \def\baselinestretch{1}\large
+  \signature{Certified by}{\@super \\ #2 \\ #1}}
+  \setbox\@abstractsupervisor\vbox{\unvbox\@abstractsupervisor
+  \vskip\baselineskip \def\baselinestretch{1}\@normalsize 
+  \par\noindent #1: \@super \\ Title: #2}}
+
+% Redefine the abstract environment to be the same as the
+% abstractpage environment.  This means the abstract environment is
+% not separately available.
+\def\abstract{\newpage
+\begin{center}{\large{\bf \@title} \\
+by \\
+\@author \\[\baselineskip]}
+\par
+\def\baselinestretch{1}\@normalsize
+Submitted to the \@department \\
+on \@thesisdate, in partial fulfillment of the \\
+requirements for the \@degreeword\ of \\
+\@degree
+\end{center}
+\par
+\subsection*{\abstractname}\small\def\baselinestretch{1}\@normalsize}
+
+\def\endabstract{\par\noindent
+  \unvbox\@abstractsupervisor \newpage}

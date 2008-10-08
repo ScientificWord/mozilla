@@ -1,0 +1,18 @@
+\def\SW{{\sl Scientific Word\/}}
+\def\SWPRINTSTYLES{{\sl Scientific Word\/} {\bf Print Styles}}
+
+\newcount\YandY
+\YandY=0
+\def\SPECIALPS#1{%
+\ifnum\YandY=1 language "PS", include "{#1}"\else%
+ps {#1}\fi}
+
+\makeatletter
+\newcount\landscape
+\landscape=\z@
+\ifnum\landscape=\@ne
+ \def\section{\@startsection {section}{1}{\z@}{.1ex plus-1ex minus
+    -.2ex}{.1ex plus.2ex}{\reset@font\Large\bf}}
+\fi
+\makeatother
+

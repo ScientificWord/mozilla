@@ -1,0 +1,44 @@
+% sw20mnra {Articl: Mon. Not. Royal Astron. Soc.}{}{mn}{sw20mnra}
+\typeout{TCI Document Style `sw20mnra' <20 Aug 1994>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+
+% The following lines occurs in mn.sty:
+%   \def\author{\@ifnextchar [{\@authortwo}{\@authorone}}
+%   \def\@authortwo[#1]#2{\gdef\@author{#2}\gdef\@shortauthor{#1}}
+%   \def\@authorone#1{\gdef\@author{#1}\gdef\@shortauthor{#1}}
+% The problem is that this alters the definition of the LaTeX command
+% \author - it now has an optional parameter which SciWord doesn't 
+% know about.  We'll add a \shortauthor macro so that SciWord users
+% can set the value of \@shortauthor.   
+
+\def\shortauthor#1{\def\@shortauthor{#1}}
+
+% The problem remains that SciWord will not correctly save a file
+% that uses the nonstandard syntax. 
+
+
+\newdimen\dummy
+\dummy=\oddsidemargin
+\addtolength{\dummy}{72pt}
+\marginparwidth=.675\dummy
+\marginparsep=.1\dummy
+
+
+\def\keyphrases#1{\begin{keywords} #1 \end{keywords}}
+
+%%%%
+% The next section added by Ron Ausbrooks and Judy Wherritt
+% 9/30/97
+% because of a conflict between mn.sty and the newest LaTeX
+% that caused the string [tbp] to appear wherever figures were
+% imported
+%%%%
+\def\@tcixfig[#1]{\def\baselinestretch{1}%
+  \let\@makecaption=\SFB@makefigurecaption%
+  \@float{figure}\fstyle@figure}
+\def\figure{\@ifnextchar [{\@tcixfig}{\def\baselinestretch{1}%
+  \let\@makecaption=\SFB@makefigurecaption%
+  \@float{figure}\fstyle@figure}}
+
+

@@ -1,0 +1,46 @@
+%sw20haro {Article: ASAE Transactions - modified}{12pt}{asaetr}
+%Copyright (C) 1994-95 TCI Software Research
+\typeout{TCI Document Style `sw20haro' <1 July 1994>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+\input thmsupp.tex %TCI theorem option support
+%
+%allows for description to be used in the titlepage
+%authors are flushleft, along with created
+\def\and{\\ \\}
+%
+\def\maketitle{\par
+ \begingroup
+   \def\thefootnote{\fnsymbol{footnote}}
+   \def\@makefnmark{\hbox
+   to 0pt{$^{\@thefnmark}$\hss}}
+ \if@twocolumn
+ \twocolumn[\@maketitle]
+ \else \newpage
+ \global\@topnum\z@ \@maketitle \fi\thispagestyle{empty}\@thanks
+ \endgroup
+ \setcounter{footnote}{0}
+ \let\maketitle\relax
+ \let\@maketitle\relax
+ \gdef\@thanks{}\gdef\@author{}\gdef\@title{}\let\thanks\relax}
+ %
+ \def\@maketitle{\newpage
+  \null
+  \vskip 2em
+  \begin{center}
+      {\LARGE \bf \@title\par}
+      \vskip 1.5em
+  {\large \lineskip .5em}
+  \end{center}
+  \hspace{.23in}
+  \begin{tabular}[t]{l}
+      \@author
+  \end{tabular}\par
+  \vskip 1em
+  \par
+  %
+  \@ifundefined{Created}{}{\hspace{.25in}\Created}%
+  \vskip 1em
+  \@ifundefined{Description}{}{\quote{\Description}}%
+  \vskip 1em}

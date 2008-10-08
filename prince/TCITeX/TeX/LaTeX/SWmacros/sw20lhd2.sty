@@ -1,0 +1,65 @@
+%sw20llhd2 {Letter: SW letter style #5}{12pt}{tcilett}
+%Copyright (C) 1994-2000 MacKichan Software, Inc.
+\typeout{SW Document Style `sw20lhd2' <11 Aug 2000>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+\def\attnname{Attention: }%
+\def\subjname{Subject: }%
+\def\PSname{P.S. }%
+\def\initials{}%
+\def\ccname{cc}%       the colon is added in LaTeX's letter.sty
+\def\enclname{encl}%   the colon is added in LaTeX's letter.sty
+\def\pagename{Page}%
+\def\headtoname{To}%
+
+\def\ps@letterhead{%
+ \def\@oddhead{}%
+ \def\@oddfoot{}%
+ }%
+%
+\def\do@letterhead{%
+ \thispagestyle{letterhead}%
+ \ifx\@empty\the@letterfromcompany\else 
+  \fi
+ \@tempswafalse
+ \ifx\@empty\the@letterdate\else\@tempswatrue\fi
+ \ifx\@empty\@date\else\@tempswatrue\fi
+ \if@tempswa
+ \begin{flushright}\ignorespaces{\letparSP\do@date}\end{flushright}\fi
+ \par
+ }%
+%
+%
+\hoffset-1in
+\voffset-1in
+%
+
+\trimheight     11in
+%\topmargin      81pt
+\addtolength{\topmargin}{64pt}
+
+\headheight     12pt
+\headsep        24pt
+\footskip       0pt %was 10 LJH
+\botmargin      10pt
+%
+\trimwidth     8.5in
+%\textwidth     468pt
+\addtolength{\textwidth}{78pt}
+
+%\marginparsep    0pt
+%\marginparwidth  0pt
+%
+\longindentation=.5\textwidth
+%
+%\settextheight%\centerpagemargin
+\addtolength{\textheight}{85pt}
+\addtolength{\textheight}{-\headheight}
+\addtolength{\textheight}{-\headsep}
+\addtolength{\textheight}{-\footskip}
+
+\addtolength{\oddsidemargin}{33pt}
+\evensidemargin\oddsidemargin
+\marginparwidth=.675\oddsidemargin
+\marginparsep=.1\oddsidemargin

@@ -1,0 +1,206 @@
+%REV KT 5/22/96 fix logo defs
+%REV SAK 5/23/96 Add logo defs
+%REV SAK 53196 delete old caution def
+
+\reversemarginpar
+\marginparwidth = 150pt
+
+\def\STARTCHAPTER{%
+   \marginpar{%
+      \parindent=0pt
+      \rule{.1in}{.1in} \hskip .1in
+      \sffamily\the@NFChapQuote\par
+      \vskip 6pt{\rmfamily\itshape\the@NFQuoting}
+   }%
+   \vskip -\baselineskip
+   \noindent\the@NFChapterOpening
+}
+
+   
+\def\STARTBOX{\vskip .2in\setbox0=\vbox\bgroup\parindent=0pt}
+\def\ENDBOX{\egroup\noindent\fbox{\box0}\vskip 12pt plus 3pt minus 3pt}
+
+\def\StartDefinitionBox{\vskip .2in\setbox0=\vbox\bgroup\parindent=0pt}
+\def\EndDefinitionBox{\egroup\fbox{\box0}\vskip .2in}
+
+\def\StartTheoremBox{\vskip .2in\setbox0=\vbox\bgroup\parindent=0pt}
+\def\EndTheoremBox{\egroup\fbox{\box0}\vskip .2in}
+
+\def\STARTNOTE{\vskip 12pt\noindent{\itshape Note: }}
+\def\ENDNOTE{\vskip 12pt}
+
+\def\STARTINSTR{\vskip 12pt plus 36pt\noindent\ignorespaces}
+
+\def\ENDINSTR{\vskip -.5\baselineskip}
+									   
+\def\CALC{\leavevmode\raise 12pt \llap{\hskip-25pt\special{language
+"Scientific Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display
+"USEDEF";valid_file "F";width 0.1479in;height 0.262in;depth
+0pt;original-width 13.0625pt;original-height 17.0625pt;cropleft
+"0.1634";croptop "1";cropright "0.8365";cropbottom "0";filename
+'C:/stewart/GRAPHICS/Calc.ai';file-properties "XNPEU";}\hfill}}
+
+\def\CALCD{\leavevmode\raise 12pt \llap{\hskip-100pt\special{language
+"Scientific Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display
+"USEDEF";valid_file "F";width 0.1479in;height 0.262in;depth
+0pt;original-width 13.0625pt;original-height 17.0625pt;cropleft
+"0.1634";croptop "1";cropright "0.8365";cropbottom "0";filename
+'C:/stewart/GRAPHICS/Calc.ai';file-properties "XNPEU";}\hfill}}
+
+\def\CALCSD{\leavevmode\raise 12pt \llap{\hskip-140pt\special{language
+"Scientific Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display
+"USEDEF";valid_file "F";width 0.1479in;height 0.262in;depth
+0pt;original-width 13.0625pt;original-height 17.0625pt;cropleft
+"0.1634";croptop "1";cropright "0.8365";cropbottom "0";filename
+'C:/stewart/GRAPHICS/Calc.ai';file-properties "XNPEU";}\hfill}}
+
+\def\CALCX{\leavevmode\raise 12pt \llap{\hskip-36pt\special{language
+"Scientific Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display
+"USEDEF";valid_file "F";width 0.1479in;height 0.262in;depth
+0pt;original-width 13.0625pt;original-height 17.0625pt;cropleft
+"0.1634";croptop "1";cropright "0.8365";cropbottom "0";filename
+'C:/stewart/GRAPHICS/Calc.ai';file-properties "XNPEU";}\hfill}}
+
+\def\CALCXT{\leavevmode\raise 12pt \llap{\hskip-54pt\special{language
+"Scientific Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display
+"USEDEF";valid_file "F";width 0.1479in;height 0.262in;depth
+0pt;original-width 13.0625pt;original-height 17.0625pt;cropleft
+"0.1634";croptop "1";cropright "0.8365";cropbottom "0";filename
+'C:/stewart/GRAPHICS/Calc.ai';file-properties "XNPEU";}\hfill}}
+
+\def\CALCI{\leavevmode\raise 12pt \llap{\hskip-23pt\special{language
+"Scientific Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display
+"USEDEF";valid_file "F";width 0.1479in;height 0.262in;depth
+0pt;original-width 13.0625pt;original-height 17.0625pt;cropleft
+"0.1634";croptop "1";cropright "0.8365";cropbottom "0";filename
+'C:/stewart/GRAPHICS/Calc.ai';file-properties "XNPEU";}\hfill}}
+
+\def\CALCET{\leavevmode\raise 12pt \llap{\hskip-48pt\special{language
+"Scientific Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display
+"USEDEF";valid_file "F";width 0.1479in;height 0.262in;depth
+0pt;original-width 13.0625pt;original-height 17.0625pt;cropleft
+"0.1634";croptop "1";cropright "0.8365";cropbottom "0";filename
+'C:/stewart/GRAPHICS/Calc.ai';file-properties "XNPEU";}\hfill}}
+
+\def\GCALC{\leavevmode\raise 12pt \llap{\hskip-30pt\special{language "Scientific
+Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display "USEDEF";valid_file
+"F";width 0.2067in;height 0.2067in;depth 0pt;original-width
+13.0625pt;original-height 13.0625pt;cropleft "0";croptop "1";cropright
+"1";cropbottom "0";filename 'C:/stewart/GRAPHICS/Gcalc.ai';file-properties
+"XNPEU";}\hfill}}
+
+\def\GECALC{\leavevmode\raise 12pt \llap{\hskip-90pt\special{language "Scientific
+Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display "USEDEF";valid_file
+"F";width 0.2067in;height 0.2067in;depth 0pt;original-width
+13.0625pt;original-height 13.0625pt;cropleft "0";croptop "1";cropright
+"1";cropbottom "0";filename 'C:/stewart/GRAPHICS/Gcalc.ai';file-properties
+"XNPEU";}\hfill}}
+
+\def\GECALCT{\leavevmode\raise 10pt \llap{\hskip-51pt\special{language "Scientific
+Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display "USEDEF";valid_file
+"F";width 0.2067in;height 0.2067in;depth 0pt;original-width
+13.0625pt;original-height 13.0625pt;cropleft "0";croptop "1";cropright
+"1";cropbottom "0";filename 'C:/stewart/GRAPHICS/Gcalc.ai';file-properties
+"XNPEU";}\hfill}}
+
+\def\GCALCI{\leavevmode\raise 12pt \llap{\hskip-23pt\special{language "Scientific
+Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display "USEDEF";valid_file
+"F";width 0.2067in;height 0.2067in;depth 0pt;original-width
+13.0625pt;original-height 13.0625pt;cropleft "0";croptop "1";cropright
+"1";cropbottom "0";filename 'C:/stewart/GRAPHICS/Gcalc.ai';file-properties
+"XNPEU";}\hfill}}
+
+\def\GCALCX{\leavevmode\raise 12pt \llap{\hskip-42pt\special{language "Scientific
+Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display "USEDEF";valid_file
+"F";width 0.2067in;height 0.2067in;depth 0pt;original-width
+13.0625pt;original-height 13.0625pt;cropleft "0";croptop "1";cropright
+"1";cropbottom "0";filename 'C:/stewart/GRAPHICS/Gcalc.ai';file-properties
+"XNPEU";}\hfill}}
+
+\def\GCALCXT{\leavevmode\raise 12pt \llap{\hskip-57pt\special{language "Scientific
+Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display "USEDEF";valid_file
+"F";width 0.2067in;height 0.2067in;depth 0pt;original-width
+13.0625pt;original-height 13.0625pt;cropleft "0";croptop "1";cropright
+"1";cropbottom "0";filename 'C:/stewart/GRAPHICS/Gcalc.ai';file-properties
+"XNPEU";}\hfill}}
+
+\def\CAS{\leavevmode\raise 12pt \llap{\hskip-40pt\special{language
+"Scientific Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display
+"USEDEF";valid_file "F";width 0.2067in;height 0.1652in;depth
+0pt;original-width 0pt;original-height 0pt;cropleft "0";croptop
+"1";cropright "1";cropbottom "0";filename
+'C:/STEWART/GRAPHICS/Cas.ai';file-properties "XNPEU";}\hfill}}
+
+\def\CASX{\leavevmode\raise 10pt \llap{\hskip-36pt\special{language
+"Scientific Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display
+"USEDEF";valid_file "F";width 0.2067in;height 0.1652in;depth
+0pt;original-width 0pt;original-height 0pt;cropleft "0";croptop
+"1";cropright "1";cropbottom "0";filename
+'C:/STEWART/GRAPHICS/Cas.ai';file-properties "XNPEU";}\hfill}}
+
+\def\CASXT{\leavevmode\raise 10pt \llap{\hskip-57pt\special{language
+"Scientific Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display
+"USEDEF";valid_file "F";width 0.2067in;height 0.1652in;depth
+0pt;original-width 0pt;original-height 0pt;cropleft "0";croptop
+"1";cropright "1";cropbottom "0";filename
+'C:/STEWART/GRAPHICS/Cas.ai';file-properties "XNPEU";}\hfill}}
+
+\def\CASI{\leavevmode\raise 10pt \llap{\hskip-23pt\special{language
+"Scientific Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display
+"USEDEF";valid_file "F";width 0.2067in;height 0.1652in;depth
+0pt;original-width 0pt;original-height 0pt;cropleft "0";croptop
+"1";cropright "1";cropbottom "0";filename
+'C:/STEWART/GRAPHICS/Cas.ai';file-properties "XNPEU";}\hfill}}
+
+\def\CAUTION{\leavevmode\raise 12pt \llap{\hskip-30pt\special{language "Scientific
+Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display "USEDEF";valid_file
+"F";width 0.262in;height 0.2482in;depth 0pt;original-width
+17.0625pt;original-height 16.0625pt;cropleft "0";croptop "1";cropright
+"1";cropbottom "0";filename 'C:/stewart/GRAPHICS/Warn.ai';file-properties
+"XNPEU";}\hfill}}
+
+\def\CAUTIONM{\leavevmode\raise 12pt \llap{\hskip-20pt\special{language "Scientific
+Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display "USEDEF";valid_file
+"F";width 0.262in;height 0.2482in;depth 0pt;original-width
+17.0625pt;original-height 16.0625pt;cropleft "0";croptop "1";cropright
+"1";cropbottom "0";filename 'C:/stewart/GRAPHICS/Warn.ai';file-properties
+"XNPEU";}\hfill}}
+
+\def\CAUTIONS{\leavevmode\raise 12pt \llap{\hskip-80pt\special{language "Scientific
+Word";type "GRAPHIC";maintain-aspect-ratio TRUE;display "USEDEF";valid_file
+"F";width 0.262in;height 0.2482in;depth 0pt;original-width
+17.0625pt;original-height 16.0625pt;cropleft "0";croptop "1";cropright
+"1";cropbottom "0";filename 'C:/stewart/GRAPHICS/Warn.ai';file-properties
+"XNPEU";}\hfill}}
+
+\def\PSBStart{\vskip .2in\setbox0=\vbox\bgroup\parindent=0pt}
+\def\PSBEnd{\egroup\fbox{\box0}\vskip .2in}
+
+\def\BIOSTART{\vskip .2in\setbox0=\vbox\bgroup\parindent=0pt}
+\def\BIOEND{\egroup\fbox{\box0}\vskip .2in}
+
+%\let\BLACKSQUARE\blacksquare
+%\def\blacksquare{\hfill\BLACKSQUARE}
+
+\def\eatdollar#1{}
+     \let\BLACKSQUARE\blacksquare
+     \def\blacksquare{%
+            \ifinner
+               \hfill\BLACKSQUARE$%
+            \else 
+               \]%
+               \vskip -\baselineskip
+               \vskip -\belowdisplayshortskip
+               \hfill$\BLACKSQUARE$
+            \fi
+            \eatdollar
+     }
+
+\let\SQUARE\square
+\def\square{\hfill\SQUARE}
+
+\def\arraystretch{1.2}
+
+\def\hyperref#1#2#3#4{#2}
+
+\raggedbottom

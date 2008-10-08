@@ -1,0 +1,13 @@
+%sw20mitp {Article: A simple MIT Press style}{12pt}{article}
+%Copyright (C) 1994-95 TCI Software Research
+\typeout{TCI Document Style `sw20mitp' <1 July 1994>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+\input mitpress.sty
+\input thmsupp.tex %TCI theorem option support
+\newdimen\dummy
+\dummy=\oddsidemargin
+\addtolength{\dummy}{72pt}
+\marginparwidth=.5\dummy
+\marginparsep=.1\dummy

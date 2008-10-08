@@ -1,0 +1,4539 @@
+\StyleEditorStyle{
+   \Name{StyleInfo}
+   \Mode{0}
+   \Version{3.5}
+   \DocumentType{FAX}
+   \StyleDescription{Fax #1}
+   \SaveCST{true}
+   \SaveSHL{false}
+}
+\GlobalParams{
+   \Name{GlobalParameters}
+   \Mode{0}
+   \FontScheme{Times}
+   \PointSize{12}
+   \ThmHeadingFont{TheoremHeadingFont}
+   \GenericPageSetup{DefaultPageSetup}
+   \GenericParagraph{@AAD}
+   \GenericFont{BodyTextFont}
+   \ExternalFile{}
+   \ExtMacroNames{}
+   \PrimaryLevel{1}
+   \SecondaryLevel{2}
+   \TopNum{2}
+   \BottomNum{1}
+   \TotalNum{3}
+   \TopFrac{0.7}
+   \TextFrac{0.2}
+   \BottomFrac{0.3}
+   \FloatPgFrac{0.5}
+   \DblTopNum{2}
+   \DblTopFrac{0.7}
+   \DblFloatPgFrac{0.5}
+   \FloatSep{4 pt}
+   \TextFloatSep{4 pt}
+   \InTextSep{4 pt}
+   \DblFloatSep{4 pt}
+   \DblTextFloat{4 pt}
+   \TopFigRule{None}
+   \BottomFigRule{None}
+   \DblFigRule{None}
+   \PageSize{USLetter}
+   \CropMarks{false}
+   \PageHeight{11 in}
+   \PageWidth{8.5 in}
+   \TrimHeight{11 in}
+   \TrimWidth{8.5 in}
+   \HorizontalOffset{0 pt}
+   \VerticalOffset{0 pt}
+}
+\ShellDescriptor{
+   \Name{ShellDescriptor}
+   \Mode{0}
+   \TheList{\NumberofPages \LineBreak\To \LineBreak\FromFaxNumber \LineBreak\Voice \LineBreak\Cc \LineBreak\From \LineBreak\date \LineBreak\Information \LineBreak\Specialinst \LineBreak\Subject \LineBreak\Body \LineBreak\attachments \LineBreak\FAXPAGE \LineBreak}
+}
+\DocumentVariable{
+   \Name{Body}
+   \Mode{0}
+   \Default{Place the body of the fax here }
+   \Frontmatter{false}
+   \Leadin{Body:}
+}
+\DocumentVariable{
+   \Name{Cc}
+   \Mode{0}
+   \Default{Leticia Phetteplace}
+   \Frontmatter{false}
+   \Leadin{cc}
+}
+\DocumentVariable{
+   \Name{From}
+   \Mode{0}
+   \Default{The from name field}
+   \Frontmatter{false}
+   \Leadin{From:}
+}
+\DocumentVariable{
+   \Name{FromFaxNumber}
+   \Mode{0}
+   \Default{1-505/522-0116}
+   \Frontmatter{false}
+   \Leadin{From Fax Number:}
+}
+\DocumentVariable{
+   \Name{Information}
+   \Mode{0}
+   \Default{1-505/522-4600}
+   \Frontmatter{false}
+   \Leadin{Information:}
+}
+\DocumentVariable{
+   \Name{NumberofPages}
+   \Mode{0}
+   \Default{1}
+   \Frontmatter{false}
+   \Leadin{NumberofPages}
+}
+\DocumentVariable{
+   \Name{Specialinst}
+   \Mode{0}
+   \Default{Please Hand-deliver to Addressee.}
+   \Frontmatter{false}
+   \Leadin{Special Instructions: }
+}
+\DocumentVariable{
+   \Name{Subject}
+   \Mode{0}
+   \Default{This is a sample}
+   \Frontmatter{false}
+   \Leadin{Subject:}
+}
+\DocumentVariable{
+   \Name{To}
+   \Mode{0}
+   \Default{Roger Hunter}
+   \Frontmatter{false}
+   \Leadin{To: }
+}
+\DocumentVariable{
+   \Name{Voice}
+   \Mode{0}
+   \Default{1-505/522-4600}
+   \Frontmatter{false}
+   \Leadin{Voice}
+}
+\DocumentVariable{
+   \Name{attachments}
+   \Mode{0}
+   \Default{List attachments}
+   \Frontmatter{false}
+   \Leadin{Attachments:}
+}
+\DocumentVariable{
+   \Name{date}
+   \Mode{0}
+   \Default{The date here}
+   \Frontmatter{false}
+   \Leadin{Date:}
+}
+\StyleVariable{
+   \Name{ContentsPhrase}
+   \Mode{0}
+   \Value{Table of Contents}
+}
+\StyleVariable{
+   \Name{Figures}
+   \Mode{0}
+   \Value{List of Figures}
+}
+\Rule{
+   \Name{BoxRule}
+   \Mode{0}
+   \Length{3.5 in}
+   \Height{0.6 pt}
+   \Shift{0 pt}
+   \Color{R:0 G:0 B:0}
+}
+\Rule{
+   \Name{LongRule}
+   \Mode{0}
+   \Length{7.006 in}
+   \Height{0.6 pt}
+   \Shift{0 pt}
+   \Color{R:0 G:0 B:0}
+}
+\Rule{
+   \Name{LongVrule}
+   \Mode{0}
+   \Length{0.6 pt}
+   \Height{6 in}
+   \Shift{-6 in}
+   \Color{R:0 G:0 B:0}
+}
+\Rule{
+   \Name{ShortRule}
+   \Mode{0}
+   \Length{2 in}
+   \Height{0.6 pt}
+   \Shift{0 pt}
+   \Color{R:0 G:0 B:0}
+}
+\Rule{
+   \Name{ShortVrule}
+   \Mode{0}
+   \Length{0.6 pt}
+   \Height{0.45 in}
+   \Shift{-0.45 in}
+   \Color{R:0 G:0 B:0}
+}
+\Counter{
+   \Name{ObsoleteEqCount}
+   \Mode{0}
+   \ResetOn{Document}
+   \Appearance{arabic}
+   \RefPrefix{\ObsoleteEqCount }
+   \RefFont{BodyTextFont}
+   \InitialValue{0}
+}
+\Counter{
+   \Name{bibitemCount}
+   \Mode{0}
+   \ResetOn{Document}
+   \Appearance{arabic}
+   \RefPrefix{\bibitemCount }
+   \RefFont{BodyTextFont}
+   \InitialValue{0}
+}
+\Counter{
+   \Name{bibliographyCount}
+   \Mode{0}
+   \ResetOn{Document}
+   \Appearance{arabic}
+   \RefPrefix{\bibliographyCount }
+   \RefFont{BodyTextFont}
+   \InitialValue{0}
+}
+\Counter{
+   \Name{bibsectionCount}
+   \Mode{0}
+   \ResetOn{Document}
+   \Appearance{arabic}
+   \RefPrefix{\bibsectionCount }
+   \RefFont{BodyTextFont}
+   \InitialValue{0}
+}
+\Counter{
+   \Name{descriptionAcount}
+   \Mode{0}
+   \ResetOn{Document}
+   \Appearance{arabic}
+   \RefPrefix{\descriptionAcount }
+   \RefFont{BodyTextFont}
+   \InitialValue{0}
+}
+\Counter{
+   \Name{descriptionBcount}
+   \Mode{0}
+   \ResetOn{descriptionAcount}
+   \Appearance{arabic}
+   \RefPrefix{\descriptionBcount }
+   \RefFont{BodyTextFont}
+   \InitialValue{0}
+}
+\Counter{
+   \Name{descriptionCcount}
+   \Mode{0}
+   \ResetOn{descriptionBcount}
+   \Appearance{arabic}
+   \RefPrefix{\descriptionCcount }
+   \RefFont{BodyTextFont}
+   \InitialValue{0}
+}
+\Counter{
+   \Name{descriptionDcount}
+   \Mode{0}
+   \ResetOn{descriptionCcount}
+   \Appearance{arabic}
+   \RefPrefix{\descriptionDcount }
+   \RefFont{BodyTextFont}
+   \InitialValue{0}
+}
+\Counter{
+   \Name{enumerateAcount}
+   \Mode{0}
+   \ResetOn{Document}
+   \Appearance{arabic}
+   \RefPrefix{\enumerateAcount }
+   \RefFont{BodyTextFont}
+   \InitialValue{0}
+}
+\Counter{
+   \Name{enumerateBcount}
+   \Mode{0}
+   \ResetOn{Document}
+   \Appearance{alph}
+   \RefPrefix{\enumerateAcount \enumerateBcount }
+   \RefFont{BodyTextFont}
+   \InitialValue{0}
+}
+\Counter{
+   \Name{enumerateCcount}
+   \Mode{0}
+   \ResetOn{Document}
+   \Appearance{roman}
+   \RefPrefix{\enumerateAcount (\enumerateBcount )\enumerateCcount }
+   \RefFont{BodyTextFont}
+   \InitialValue{0}
+}
+\Counter{
+   \Name{enumerateDcount}
+   \Mode{0}
+   \ResetOn{Document}
+   \Appearance{Alph}
+   \RefPrefix{\enumerateAcount (\enumerateBcount )\enumerateCcount \enumerateDcount }
+   \RefFont{BodyTextFont}
+   \InitialValue{0}
+}
+\Counter{
+   \Name{figureCount}
+   \Mode{0}
+   \ResetOn{Document}
+   \Appearance{arabic}
+   \RefPrefix{\figureCount }
+   \RefFont{BodyTextFont}
+   \InitialValue{0}
+}
+\Counter{
+   \Name{itemizeAcount}
+   \Mode{0}
+   \ResetOn{Document}
+   \Appearance{Alph}
+   \RefPrefix{\itemizeAcount }
+   \RefFont{BodyTextFont}
+   \InitialValue{0}
+}
+\Counter{
+   \Name{itemizeBcount}
+   \Mode{0}
+   \ResetOn{itemizeAcount}
+   \Appearance{Alph}
+   \RefPrefix{\itemizeBcount }
+   \RefFont{BodyTextFont}
+   \InitialValue{0}
+}
+\Counter{
+   \Name{itemizeCcount}
+   \Mode{0}
+   \ResetOn{itemizeBcount}
+   \Appearance{Alph}
+   \RefPrefix{\itemizeCcount }
+   \RefFont{BodyTextFont}
+   \InitialValue{0}
+}
+\Counter{
+   \Name{itemizeDcount}
+   \Mode{0}
+   \ResetOn{itemizeCcount}
+   \Appearance{Alph}
+   \RefPrefix{\itemizeDcount }
+   \RefFont{BodyTextFont}
+   \InitialValue{0}
+}
+\Counter{
+   \Name{paragraphCount}
+   \Mode{0}
+   \ResetOn{LevelThreeDiv}
+   \Appearance{arabic}
+   \RefPrefix{\paragraphCount }
+   \RefFont{BodyTextFont}
+   \InitialValue{0}
+}
+\Counter{
+   \Name{sectionCount}
+   \Mode{0}
+   \ResetOn{Document}
+   \Appearance{arabic}
+   \RefPrefix{\sectionCount }
+   \RefFont{BodyTextFont}
+   \InitialValue{0}
+}
+\Counter{
+   \Name{subparagraphCount}
+   \Mode{0}
+   \ResetOn{LevelFourDiv}
+   \Appearance{arabic}
+   \RefPrefix{\subparagraphCount }
+   \RefFont{BodyTextFont}
+   \InitialValue{0}
+}
+\Counter{
+   \Name{subsectionCount}
+   \Mode{0}
+   \ResetOn{LevelOneDiv}
+   \Appearance{arabic}
+   \RefPrefix{\sectionCount .\subsectionCount }
+   \RefFont{BodyTextFont}
+   \InitialValue{0}
+}
+\Counter{
+   \Name{subsubsectionCount}
+   \Mode{0}
+   \ResetOn{LevelTwoDiv}
+   \Appearance{arabic}
+   \RefPrefix{\subsubsectionCount }
+   \RefFont{BodyTextFont}
+   \InitialValue{0}
+}
+\Counter{
+   \Name{subsubsubsectionCount}
+   \Mode{0}
+   \ResetOn{Document}
+   \Appearance{arabic}
+   \RefPrefix{\subsubsubsectionCount }
+   \RefFont{BodyTextFont}
+   \InitialValue{0}
+}
+\Counter{
+   \Name{tableCount}
+   \Mode{0}
+   \ResetOn{Document}
+   \Appearance{arabic}
+   \RefPrefix{\tableCount }
+   \RefFont{BodyTextFont}
+   \InitialValue{0}
+}
+\FontNFSS{
+   \Name{@AAB}
+   \Mode{0}
+   \Family{Inherit}
+   \Shape{Inherit}
+   \Series{Inherit}
+   \Size{Inherit}
+}
+\FontNFSS{
+   \Name{@AAC}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@AAE}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{bold}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@AAF}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@AAH}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{bold}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@AAI}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{bold}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@AAJ}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{bold}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@AAK}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{bold}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@AAL}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{bold}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@AAM}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{bold}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@AAN}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{bold}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@AAO}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{bold}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@AAP}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@AAQ}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@AAS}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{small}
+}
+\FontNFSS{
+   \Name{@AAT}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{bold}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@AAV}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@AAX}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@AAY}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ABA}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ABB}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ABE}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ABG}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ABI}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ABK}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ABM}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ABN}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ABQ}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ABS}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ABT}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ABW}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ABY}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ABZ}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ACC}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ACE}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ACG}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ACI}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ACK}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ACM}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ACO}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ACQ}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ACT}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ACV}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{footnotesize}
+}
+\FontNFSS{
+   \Name{@ACW}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ACX}
+   \Mode{0}
+   \Family{Inherit}
+   \Shape{Inherit}
+   \Series{Inherit}
+   \Size{Inherit}
+}
+\FontNFSS{
+   \Name{@ACY}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ADB}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ADC}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ADF}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ADH}
+   \Mode{0}
+   \Family{Inherit}
+   \Shape{Inherit}
+   \Series{Inherit}
+   \Size{Inherit}
+}
+\FontNFSS{
+   \Name{@ADI}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ADK}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ADL}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ADO}
+   \Mode{0}
+   \Family{Inherit}
+   \Shape{Inherit}
+   \Series{Inherit}
+   \Size{Inherit}
+}
+\FontNFSS{
+   \Name{@ADP}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ADR}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ADS}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ADV}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ADX}
+   \Mode{0}
+   \Family{Inherit}
+   \Shape{Inherit}
+   \Series{Inherit}
+   \Size{Inherit}
+}
+\FontNFSS{
+   \Name{@ADY}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@AEA}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@AEC}
+   \Mode{0}
+   \Family{Inherit}
+   \Shape{Inherit}
+   \Series{Inherit}
+   \Size{Inherit}
+}
+\FontNFSS{
+   \Name{@AED}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@AEF}
+   \Mode{0}
+   \Family{Inherit}
+   \Shape{Inherit}
+   \Series{Inherit}
+   \Size{Inherit}
+}
+\FontNFSS{
+   \Name{@AEG}
+   \Mode{0}
+   \Family{Inherit}
+   \Shape{Inherit}
+   \Series{Inherit}
+   \Size{Inherit}
+}
+\FontNFSS{
+   \Name{@AEH}
+   \Mode{0}
+   \Family{Inherit}
+   \Shape{Inherit}
+   \Series{Inherit}
+   \Size{Inherit}
+}
+\FontNFSS{
+   \Name{@AEI}
+   \Mode{0}
+   \Family{Inherit}
+   \Shape{Inherit}
+   \Series{Inherit}
+   \Size{Inherit}
+}
+\FontNFSS{
+   \Name{@AEJ}
+   \Mode{0}
+   \Family{Inherit}
+   \Shape{Inherit}
+   \Series{Inherit}
+   \Size{Inherit}
+}
+\FontNFSS{
+   \Name{@AEK}
+   \Mode{0}
+   \Family{Inherit}
+   \Shape{Inherit}
+   \Series{Inherit}
+   \Size{Inherit}
+}
+\FontNFSS{
+   \Name{@ALT}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ALU}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ALV}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ALW}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ALX}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@ALY}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@AOJ}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@AOM}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{@AOP}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{BigFont}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{bold}
+   \Size{Huge}
+}
+\FontNFSS{
+   \Name{BodyTextFont}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{FaxFont}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{FootnoteFont}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{medium}
+   \Size{footnotesize}
+}
+\FontNFSS{
+   \Name{SecHeadingFont}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{bold}
+   \Size{Large}
+}
+\FontNFSS{
+   \Name{SqueezeFont}
+   \Mode{0}
+   \Family{Inherit}
+   \Shape{Inherit}
+   \Series{Inherit}
+   \Size{footnotesize}
+}
+\FontNFSS{
+   \Name{SubsecHeadingFont}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{bold}
+   \Size{large}
+}
+\FontNFSS{
+   \Name{SubsubsecHeadingFont}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{bold}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{TheoremBodyFont}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{italic}
+   \Series{medium}
+   \Size{normalsize}
+}
+\FontNFSS{
+   \Name{TheoremHeadingFont}
+   \Mode{0}
+   \Family{Serif}
+   \Shape{upright}
+   \Series{bold}
+   \Size{normalsize}
+}
+\InlineElement{
+   \Name{@ABH}
+   \Mode{0}
+   \Font{@ABG}
+   \Components{}
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{@ABJ}
+   \Mode{0}
+   \Font{@ABI}
+   \Components{}
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{@ABP}
+   \Mode{0}
+   \Font{@ABM}
+   \Components{}
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{@ABV}
+   \Mode{0}
+   \Font{@ABS}
+   \Components{}
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{@ACB}
+   \Mode{0}
+   \Font{@ABY}
+   \Components{}
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{@ACF}
+   \Mode{0}
+   \Font{@ACE}
+   \Components{}
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{@ACH}
+   \Mode{0}
+   \Font{@ACG}
+   \Components{}
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{@ACJ}
+   \Mode{0}
+   \Font{@ACI}
+   \Components{}
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{@ACL}
+   \Mode{0}
+   \Font{@ACK}
+   \Components{}
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{@ACN}
+   \Mode{0}
+   \Font{@ACM}
+   \Components{}
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{@ACP}
+   \Mode{0}
+   \Font{@ACO}
+   \Components{}
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{@ACR}
+   \Mode{0}
+   \Font{@ACQ}
+   \Components{}
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{@ALH}
+   \Mode{0}
+   \Font{BodyTextFont}
+   \Components{}
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{@ALI}
+   \Mode{0}
+   \Font{BodyTextFont}
+   \Components{}
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{@ALJ}
+   \Mode{0}
+   \Font{BodyTextFont}
+   \Components{}
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{@ALK}
+   \Mode{0}
+   \Font{BodyTextFont}
+   \Components{}
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{@ALL}
+   \Mode{0}
+   \Font{BodyTextFont}
+   \Components{}
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{@ALM}
+   \Mode{0}
+   \Font{BodyTextFont}
+   \Components{}
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{@ALN}
+   \Mode{0}
+   \Font{BodyTextFont}
+   \Components{}
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{@ALO}
+   \Mode{0}
+   \Font{BodyTextFont}
+   \Components{}
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{@ALP}
+   \Mode{0}
+   \Font{BodyTextFont}
+   \Components{}
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{@ALQ}
+   \Mode{0}
+   \Font{BodyTextFont}
+   \Components{}
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{@ALR}
+   \Mode{0}
+   \Font{BodyTextFont}
+   \Components{}
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{@ALS}
+   \Mode{0}
+   \Font{BodyTextFont}
+   \Components{}
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{AbstractLeadin}
+   \Mode{0}
+   \Font{@AAS}
+   \Components{Abstract.\Space{6mm}}
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{Moveover}
+   \Mode{0}
+   \Font{BodyTextFont}
+   \Components{\Space{3.5in}}
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{Outdentattach}
+   \Mode{0}
+   \Font{@AAE}
+   \Components{Attachments: }
+   \FixedWidth{true}
+   \Width{1 in}
+   \RightJustified{true}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{Outdentbody}
+   \Mode{0}
+   \Font{BodyTextFont}
+   \Components{}
+   \FixedWidth{false}
+   \Width{0 in}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{Outdentcc}
+   \Mode{0}
+   \Font{@AAH}
+   \Components{cc:}
+   \FixedWidth{true}
+   \Width{1 in}
+   \RightJustified{true}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{Outdentdate}
+   \Mode{0}
+   \Font{@AAI}
+   \Components{Date: }
+   \FixedWidth{true}
+   \Width{1 in}
+   \RightJustified{true}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{Outdentfrom}
+   \Mode{0}
+   \Font{@AAJ}
+   \Components{From: }
+   \FixedWidth{true}
+   \Width{1 in}
+   \RightJustified{true}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{Outdentinformation}
+   \Mode{0}
+   \Font{@AAM}
+   \Components{If you do not receive all pages, please contact: }
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{Outdentnum}
+   \Mode{0}
+   \Font{@AAK}
+   \Components{Fax Number:}
+   \FixedWidth{true}
+   \Width{1 in}
+   \RightJustified{true}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{Outdentspecial}
+   \Mode{0}
+   \Font{@AAL}
+   \Components{Special Instructions: }
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{Outdentsubject}
+   \Mode{0}
+   \Font{@AAN}
+   \Components{Subject: }
+   \FixedWidth{true}
+   \Width{1 in}
+   \RightJustified{true}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{Outdentto}
+   \Mode{0}
+   \Font{@AAO}
+   \Components{To:}
+   \FixedWidth{true}
+   \Width{1 in}
+   \RightJustified{true}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{Outdentvoice}
+   \Mode{0}
+   \Font{@AAT}
+   \Components{Voice: }
+   \FixedWidth{false}
+   \Width{0 in}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{attachobject}
+   \Mode{0}
+   \Font{BodyTextFont}
+   \Components{}
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\InlineElement{
+   \Name{subsubsubsectionHead}
+   \Mode{0}
+   \Font{SubsubsecHeadingFont}
+   \Components{\CurrentHeading }
+   \FixedWidth{false}
+   \Width{0 pt}
+   \RightJustified{false}
+   \PrintColor{R:0 G:0 B:0}
+}
+\DisplayElement{
+   \Name{ATTACHMENTS}
+   \Mode{0}
+   \Components{\Outdentattach \Space{-1.6in}}
+   \ParagraphType{@AAG}
+   \Font{BodyTextFont}
+   \Color{R:0 G:0 B:0}
+}
+\DisplayElement{
+   \Name{ATTACHOBJECT}
+   \Mode{0}
+   \Components{\attachments }
+   \ParagraphType{@ACA}
+   \Font{BodyTextFont}
+   \Color{R:0 G:0 B:0}
+}
+\DisplayElement{
+   \Name{BODY}
+   \Mode{0}
+   \Components{\Outdentbody \Body }
+   \ParagraphType{@ABO}
+   \Font{BodyTextFont}
+   \Color{R:0 G:0 B:0}
+}
+\DisplayElement{
+   \Name{CC}
+   \Mode{0}
+   \Components{\Outdentcc \Space{-1.6in}}
+   \ParagraphType{@ACD}
+   \Font{BodyTextFont}
+   \Color{R:0 G:0 B:0}
+}
+\DisplayElement{
+   \Name{CCOBJECT}
+   \Mode{0}
+   \Components{\Cc }
+   \ParagraphType{@ABX}
+   \Font{BodyTextFont}
+   \Color{R:0 G:0 B:0}
+}
+\DisplayElement{
+   \Name{DATE}
+   \Mode{0}
+   \Components{\Outdentdate \Space{.2in}\date }
+   \ParagraphType{@ACS}
+   \Font{FaxFont}
+   \Color{R:0 G:0 B:0}
+}
+\DisplayElement{
+   \Name{FAXPA}
+   \Mode{0}
+   \Components{Fax Transmission}
+   \ParagraphType{@ADE}
+   \Font{BigFont}
+   \Color{R:0 G:0 B:0}
+}
+\DisplayElement{
+   \Name{FROM}
+   \Mode{0}
+   \Components{\Outdentfrom \Space{.2in}\From }
+   \ParagraphType{@ADN}
+   \Font{FaxFont}
+   \Color{R:0 G:0 B:0}
+}
+\DisplayElement{
+   \Name{FROMFAXNUMBER}
+   \Mode{0}
+   \Components{\Outdentnum \Space{.2in}\FromFaxNumber \Space{.5in}\Outdentvoice \Space{.2in}\Voice }
+   \ParagraphType{@ADQ}
+   \Font{FaxFont}
+   \Color{R:0 G:0 B:0}
+}
+\DisplayElement{
+   \Name{INFORMATION}
+   \Mode{0}
+   \Components{\Outdentinformation \Information }
+   \ParagraphType{@ABF}
+   \Font{FaxFont}
+   \Color{R:0 G:0 B:0}
+}
+\DisplayElement{
+   \Name{IndentLongRule}
+   \Mode{0}
+   \Components{\LongRule }
+   \ParagraphType{@ABR}
+   \Font{BodyTextFont}
+   \Color{R:0 G:0 B:0}
+}
+\DisplayElement{
+   \Name{NUMBEROFPAGES}
+   \Mode{0}
+   \Components{No. of pages incl. this one: \NumberofPages }
+   \ParagraphType{@AAR}
+   \Font{BodyTextFont}
+   \Color{R:0 G:0 B:0}
+}
+\DisplayElement{
+   \Name{SPECIALINST}
+   \Mode{0}
+   \Components{\Specialinst }
+   \ParagraphType{@AAZ}
+   \Font{BodyTextFont}
+   \Color{R:0 G:0 B:0}
+}
+\DisplayElement{
+   \Name{SPECIALTEXT}
+   \Mode{0}
+   \Components{\Outdentspecial \Space{.2in}\Specialinst }
+   \ParagraphType{@ABC}
+   \Font{FaxFont}
+   \Color{R:0 G:0 B:0}
+}
+\DisplayElement{
+   \Name{SUBJECTTEXT}
+   \Mode{0}
+   \Components{\Outdentsubject \Space{.2in}\Subject }
+   \ParagraphType{@ABL}
+   \Font{FaxFont}
+   \Color{R:0 G:0 B:0}
+}
+\DisplayElement{
+   \Name{TO}
+   \Mode{0}
+   \Components{\Outdentto \Space{-1.6in}}
+   \ParagraphType{@ADT}
+   \Font{BodyTextFont}
+   \Color{R:0 G:0 B:0}
+}
+\DisplayElement{
+   \Name{TOOBJECT}
+   \Mode{0}
+   \Components{\To }
+   \ParagraphType{@ABU}
+   \Font{BodyTextFont}
+   \Color{R:0 G:0 B:0}
+}
+\DisplayElement{
+   \Name{VOICE}
+   \Mode{0}
+   \Components{\Space{.5in}Voice: \Voice }
+   \ParagraphType{@AAW}
+   \Font{BodyTextFont}
+   \Color{R:0 G:0 B:0}
+}
+\Division{
+   \Name{bibsection}
+   \Mode{0}
+   \Level{1}
+   \SetRightMark{false}
+   \SetLeftMark{false}
+   \HeadType{Display}
+   \OverrideTitle{false}
+   \SETitlePage{DefaultPageSetup}
+   \RevertTitle{false}
+   \OverrideRest{false}
+   \RestPages{DefaultPageSetup}
+   \RevertRest{false}
+   \TOCLabelComponents{}
+   \IndentFirstPar{false}
+   \Position{CurrentPage}
+   \TextAfterHead{true}
+   \SkipBefore{18 pt}
+   \SkipAfter{10 pt}
+   \HeadComponents{\CurrentHeading }
+   \HeadParagraph{BodyTextParagraph}
+   \HeadFont{BodyTextFont}
+   \HeadColor{R:0 G:0 B:0}
+   \UseCounter{bibsectionCount}
+   \OverrideEqnLabel{false}
+   \ResetEqnCnt{false}
+   \EqnAppearance{arabic}
+   \EqnLabelComponents{(\equationCount )}
+   \EqnXRefComponents{}
+   \OverrideFigLabel{false}
+   \ResetFigCnt{false}
+   \FigAppearance{arabic}
+   \FigLabelComponents{\figureCount }
+   \FigXRefComponents{}
+   \OverrideTabLabel{false}
+   \ResetTabCnt{false}
+   \TabAppearance{arabic}
+   \TabLabelComponents{\tableCount }
+   \TabXRefComponents{}
+   \OverridePageNo{false}
+   \PageNoApp{arabic}
+   \PageNoReset{false}
+   \GenLeftMark{false}
+   \GenRightMark{false}
+   \Mark{\CurrentShortHeading }
+}
+\Division{
+   \Name{paragraph}
+   \Mode{0}
+   \Level{4}
+   \SetRightMark{false}
+   \SetLeftMark{false}
+   \HeadType{Inline}
+   \OverrideTitle{false}
+   \SETitlePage{DefaultPageSetup}
+   \RevertTitle{false}
+   \OverrideRest{false}
+   \RestPages{DefaultPageSetup}
+   \RevertRest{false}
+   \TOCLabelComponents{}
+   \IndentFirstPar{false}
+   \Position{CurrentPage}
+   \TextAfterHead{true}
+   \SkipBefore{6 pt}
+   \SkipAfter{10 pt}
+   \HeadComponents{\CurrentHeading }
+   \HeadParagraph{BodyTextParagraph}
+   \HeadFont{SubsubsecHeadingFont}
+   \HeadColor{R:0 G:0 B:0}
+   \UseCounter{paragraphCount}
+   \OverrideEqnLabel{false}
+   \ResetEqnCnt{false}
+   \EqnAppearance{arabic}
+   \EqnLabelComponents{(\equationCount )}
+   \EqnXRefComponents{}
+   \OverrideFigLabel{false}
+   \ResetFigCnt{false}
+   \FigAppearance{arabic}
+   \FigLabelComponents{\figureCount }
+   \FigXRefComponents{}
+   \OverrideTabLabel{false}
+   \ResetTabCnt{false}
+   \TabAppearance{arabic}
+   \TabLabelComponents{\tableCount }
+   \TabXRefComponents{}
+   \OverridePageNo{false}
+   \PageNoApp{arabic}
+   \PageNoReset{false}
+   \GenLeftMark{false}
+   \GenRightMark{false}
+   \Mark{\CurrentShortHeading }
+}
+\Division{
+   \Name{section}
+   \Mode{0}
+   \Level{1}
+   \SetRightMark{false}
+   \SetLeftMark{true}
+   \HeadType{Display}
+   \OverrideTitle{false}
+   \SETitlePage{DefaultPageSetup}
+   \RevertTitle{false}
+   \OverrideRest{false}
+   \RestPages{DefaultPageSetup}
+   \RevertRest{false}
+   \TOCLabelComponents{}
+   \IndentFirstPar{false}
+   \Position{CurrentPage}
+   \TextAfterHead{true}
+   \SkipBefore{18 pt}
+   \SkipAfter{10 pt}
+   \HeadComponents{\sectionCount \Space{6mm}\CurrentHeading }
+   \HeadParagraph{@ADU}
+   \HeadFont{SecHeadingFont}
+   \HeadColor{R:0 G:0 B:0}
+   \UseCounter{sectionCount}
+   \OverrideEqnLabel{false}
+   \ResetEqnCnt{false}
+   \EqnAppearance{arabic}
+   \EqnLabelComponents{(\equationCount )}
+   \EqnXRefComponents{}
+   \OverrideFigLabel{false}
+   \ResetFigCnt{false}
+   \FigAppearance{arabic}
+   \FigLabelComponents{\figureCount }
+   \FigXRefComponents{}
+   \OverrideTabLabel{false}
+   \ResetTabCnt{false}
+   \TabAppearance{arabic}
+   \TabLabelComponents{\tableCount }
+   \TabXRefComponents{}
+   \OverridePageNo{false}
+   \PageNoApp{arabic}
+   \PageNoReset{false}
+   \GenLeftMark{false}
+   \GenRightMark{false}
+   \Mark{\CurrentShortHeading }
+}
+\Division{
+   \Name{subparagraph}
+   \Mode{0}
+   \Level{5}
+   \SetRightMark{false}
+   \SetLeftMark{false}
+   \HeadType{Inline}
+   \OverrideTitle{false}
+   \SETitlePage{DefaultPageSetup}
+   \RevertTitle{false}
+   \OverrideRest{false}
+   \RestPages{DefaultPageSetup}
+   \RevertRest{false}
+   \TOCLabelComponents{}
+   \IndentFirstPar{true}
+   \Position{CurrentPage}
+   \TextAfterHead{true}
+   \SkipBefore{6 pt}
+   \SkipAfter{10 pt}
+   \HeadComponents{\CurrentHeading }
+   \HeadParagraph{BodyTextParagraph}
+   \HeadFont{SubsubsecHeadingFont}
+   \HeadColor{R:0 G:0 B:0}
+   \UseCounter{subparagraphCount}
+   \OverrideEqnLabel{false}
+   \ResetEqnCnt{false}
+   \EqnAppearance{arabic}
+   \EqnLabelComponents{(\equationCount )}
+   \EqnXRefComponents{}
+   \OverrideFigLabel{false}
+   \ResetFigCnt{false}
+   \FigAppearance{arabic}
+   \FigLabelComponents{\figureCount }
+   \FigXRefComponents{}
+   \OverrideTabLabel{false}
+   \ResetTabCnt{false}
+   \TabAppearance{arabic}
+   \TabLabelComponents{\tableCount }
+   \TabXRefComponents{}
+   \OverridePageNo{false}
+   \PageNoApp{arabic}
+   \PageNoReset{false}
+   \GenLeftMark{false}
+   \GenRightMark{false}
+   \Mark{\CurrentShortHeading }
+}
+\Division{
+   \Name{subsection}
+   \Mode{0}
+   \Level{2}
+   \SetRightMark{true}
+   \SetLeftMark{false}
+   \HeadType{Display}
+   \OverrideTitle{false}
+   \SETitlePage{DefaultPageSetup}
+   \RevertTitle{false}
+   \OverrideRest{false}
+   \RestPages{DefaultPageSetup}
+   \RevertRest{false}
+   \TOCLabelComponents{}
+   \IndentFirstPar{false}
+   \Position{CurrentPage}
+   \TextAfterHead{true}
+   \SkipBefore{8 pt}
+   \SkipAfter{10 pt}
+   \HeadComponents{\sectionCount .\subsectionCount \Space{6mm}\CurrentHeading }
+   \HeadParagraph{@AEB}
+   \HeadFont{SubsecHeadingFont}
+   \HeadColor{R:0 G:0 B:0}
+   \UseCounter{subsectionCount}
+   \OverrideEqnLabel{false}
+   \ResetEqnCnt{false}
+   \EqnAppearance{arabic}
+   \EqnLabelComponents{(\equationCount )}
+   \EqnXRefComponents{}
+   \OverrideFigLabel{false}
+   \ResetFigCnt{false}
+   \FigAppearance{arabic}
+   \FigLabelComponents{\figureCount }
+   \FigXRefComponents{}
+   \OverrideTabLabel{false}
+   \ResetTabCnt{false}
+   \TabAppearance{arabic}
+   \TabLabelComponents{\tableCount }
+   \TabXRefComponents{}
+   \OverridePageNo{false}
+   \PageNoApp{arabic}
+   \PageNoReset{false}
+   \GenLeftMark{false}
+   \GenRightMark{false}
+   \Mark{\CurrentShortHeading }
+}
+\Division{
+   \Name{subsubsection}
+   \Mode{0}
+   \Level{3}
+   \SetRightMark{false}
+   \SetLeftMark{false}
+   \HeadType{Display}
+   \OverrideTitle{false}
+   \SETitlePage{DefaultPageSetup}
+   \RevertTitle{false}
+   \OverrideRest{false}
+   \RestPages{DefaultPageSetup}
+   \RevertRest{false}
+   \TOCLabelComponents{}
+   \IndentFirstPar{false}
+   \Position{CurrentPage}
+   \TextAfterHead{true}
+   \SkipBefore{6 pt}
+   \SkipAfter{10 pt}
+   \HeadComponents{\sectionCount .\subsectionCount .\subsubsectionCount \Space{6mm}\CurrentHeading }
+   \HeadParagraph{@AEE}
+   \HeadFont{SubsubsecHeadingFont}
+   \HeadColor{R:0 G:0 B:0}
+   \UseCounter{subsubsectionCount}
+   \OverrideEqnLabel{false}
+   \ResetEqnCnt{false}
+   \EqnAppearance{arabic}
+   \EqnLabelComponents{(\equationCount )}
+   \EqnXRefComponents{}
+   \OverrideFigLabel{false}
+   \ResetFigCnt{false}
+   \FigAppearance{arabic}
+   \FigLabelComponents{\figureCount }
+   \FigXRefComponents{}
+   \OverrideTabLabel{false}
+   \ResetTabCnt{false}
+   \TabAppearance{arabic}
+   \TabLabelComponents{\tableCount }
+   \TabXRefComponents{}
+   \OverridePageNo{false}
+   \PageNoApp{arabic}
+   \PageNoReset{false}
+   \GenLeftMark{false}
+   \GenRightMark{false}
+   \Mark{\CurrentShortHeading }
+}
+\List{
+   \Name{description}
+   \Mode{0}
+   \LevelUp{1}
+\ListLevel{
+   \Name{descriptionA}
+   \Mode{0}
+   \Level{0}
+   \ItemSep{0 pt}
+   \ItemFont{@AEK}
+   \ItemPar{@ADD}
+   \TopSep{0 pt}
+   \BotSep{0 pt}
+   \LabelScheme{enumerated}
+   \BulletType{BulletA}
+}
+\ListLevel{
+   \Name{descriptionB}
+   \Mode{0}
+   \Level{0}
+   \ItemSep{0 pt}
+   \ItemFont{@AEJ}
+   \ItemPar{@ADG}
+   \TopSep{0 pt}
+   \BotSep{0 pt}
+   \LabelScheme{enumerated}
+   \BulletType{BulletA}
+}
+\ListLevel{
+   \Name{descriptionC}
+   \Mode{0}
+   \Level{0}
+   \ItemSep{0 pt}
+   \ItemFont{@AEI}
+   \ItemPar{@ADJ}
+   \TopSep{0 pt}
+   \BotSep{0 pt}
+   \LabelScheme{enumerated}
+   \BulletType{BulletA}
+}
+\ListLevel{
+   \Name{descriptionD}
+   \Mode{0}
+   \Level{0}
+   \ItemSep{0 pt}
+   \ItemFont{@AEH}
+   \ItemPar{@ADM}
+   \TopSep{0 pt}
+   \BotSep{0 pt}
+   \LabelScheme{enumerated}
+   \BulletType{BulletA}
+}
+}
+\List{
+   \Name{enumerate}
+   \Mode{0}
+   \LevelUp{1}
+\ListLevel{
+   \Name{enumerateA}
+   \Mode{0}
+   \Level{1}
+   \ItemSep{8 pt}
+   \ItemFont{@AEG}
+   \ItemPar{@AKZ}
+   \TopSep{10 pt}
+   \BotSep{10 pt}
+   \LabelScheme{enumerated}
+   \BulletType{BulletA}
+}
+\ListLevel{
+   \Name{enumerateB}
+   \Mode{0}
+   \Level{2}
+   \ItemSep{6 pt}
+   \ItemFont{@AEF}
+   \ItemPar{@ALA}
+   \TopSep{0 pt}
+   \BotSep{0 pt}
+   \LabelScheme{enumerated}
+   \BulletType{BulletA}
+}
+\ListLevel{
+   \Name{enumerateC}
+   \Mode{0}
+   \Level{3}
+   \ItemSep{2 pt}
+   \ItemFont{@AEC}
+   \ItemPar{@ALB}
+   \TopSep{0 pt}
+   \BotSep{0 pt}
+   \LabelScheme{enumerated}
+   \BulletType{BulletA}
+}
+\ListLevel{
+   \Name{enumerateD}
+   \Mode{0}
+   \Level{4}
+   \ItemSep{0 pt}
+   \ItemFont{@ADX}
+   \ItemPar{@ALC}
+   \TopSep{0 pt}
+   \BotSep{0 pt}
+   \LabelScheme{enumerated}
+   \BulletType{BulletA}
+}
+}
+\List{
+   \Name{itemize}
+   \Mode{0}
+   \LevelUp{1}
+\ListLevel{
+   \Name{itemizeA}
+   \Mode{0}
+   \Level{0}
+   \ItemSep{9 pt}
+   \ItemFont{@ADO}
+   \ItemPar{@ALD}
+   \TopSep{0 pt}
+   \BotSep{0 pt}
+   \LabelScheme{bulleted}
+   \BulletType{BulletA}
+}
+\ListLevel{
+   \Name{itemizeB}
+   \Mode{0}
+   \Level{0}
+   \ItemSep{7 pt}
+   \ItemFont{@ADH}
+   \ItemPar{@ALE}
+   \TopSep{0 pt}
+   \BotSep{0 pt}
+   \LabelScheme{bulleted}
+   \BulletType{BulletB}
+}
+\ListLevel{
+   \Name{itemizeC}
+   \Mode{0}
+   \Level{0}
+   \ItemSep{5 pt}
+   \ItemFont{@ACX}
+   \ItemPar{@ALF}
+   \TopSep{0 pt}
+   \BotSep{0 pt}
+   \LabelScheme{bulleted}
+   \BulletType{BulletC}
+}
+\ListLevel{
+   \Name{itemizeD}
+   \Mode{0}
+   \Level{0}
+   \ItemSep{3 pt}
+   \ItemFont{@AAB}
+   \ItemPar{@ALG}
+   \TopSep{0 pt}
+   \BotSep{0 pt}
+   \LabelScheme{bulleted}
+   \BulletType{BulletD}
+}
+}
+\Float{
+   \Name{figure}
+   \Mode{0}
+   \Components{\figureCount .\CaptionText }
+   \ParagraphType{@ADW}
+   \Font{BodyTextFont}
+   \FloatCountApp{arabic}
+   \FloatLabelComps{}
+   \FloatXrefComps{\figureCount }
+   \FloatXrefFont{BodyTextFont}
+   \TOCLabelComponents{}
+}
+\Float{
+   \Name{table}
+   \Mode{0}
+   \Components{\tableCount .\CaptionText }
+   \ParagraphType{@ADZ}
+   \Font{BodyTextFont}
+   \FloatCountApp{arabic}
+   \FloatLabelComps{}
+   \FloatXrefComps{\tableCount }
+   \FloatXrefFont{BodyTextFont}
+   \TOCLabelComponents{}
+}
+\Paragraph{
+   \Name{@AAD}
+   \Mode{0}
+   \Justification{0}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0 pt}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{50 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 mm}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@AAC}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@AAG}
+   \Mode{0}
+   \Justification{0}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0 pt}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{50 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 mm}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@AAF}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@AAR}
+   \Mode{0}
+   \Justification{3}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0 pt}
+   \LeftRag{1 fil}
+   \RightIndent{0 pt}
+   \RightRag{1 fil}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 pt}
+   \ParFill{0 pt}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@AAQ}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@AAU}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0 pt}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 mm}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@AAP}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@AAW}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0 pt}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 pt}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@AAV}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@AAZ}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{2 in}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 pt}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@AAY}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@ABC}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0.2 in}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 pt}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@ABB}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@ABD}
+   \Mode{0}
+   \Justification{0}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0 pt}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{50 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 mm}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@ABA}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@ABF}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0.2 in}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 pt}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@ABE}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@ABL}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0 pt}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 pt}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@ABK}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@ABO}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0.2 in}
+   \LeftRag{0 pt}
+   \RightIndent{0.4 in}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 mm}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@ABN}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@ABR}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0.2 in}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 mm}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@ABQ}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@ABU}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{1.2 in}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 mm}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@ABT}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@ABX}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{1.2 in}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 mm}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@ABW}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@ACA}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{1.2 in}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 mm}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@ABZ}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@ACD}
+   \Mode{0}
+   \Justification{0}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0 pt}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{50 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 pt}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@ACC}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@ACS}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0 pt}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 pt}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@AAX}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@ACU}
+   \Mode{0}
+   \Justification{0}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0 pt}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{50 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 mm}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@ACT}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@ACZ}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0 pt}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 mm}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@ACY}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@ADD}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0 pt}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 mm}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@ADC}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@ADE}
+   \Mode{0}
+   \Justification{3}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0 pt}
+   \LeftRag{1 fil}
+   \RightIndent{0 pt}
+   \RightRag{1 fil}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt plus 4 pt}
+   \ParIndent{0 pt}
+   \ParFill{0 pt}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@ADB}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@ADG}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0 pt}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 mm}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@ADF}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@ADJ}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0 pt}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 mm}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@ADI}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@ADM}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0 pt}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 mm}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@ADL}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@ADN}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0 pt}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 pt}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@ADK}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@ADQ}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0 pt}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 pt}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@ADP}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@ADT}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0 pt}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 pt}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@ADS}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@ADU}
+   \Mode{0}
+   \Justification{0}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0 mm}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{1 fil}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 pt}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{true}
+   \LabelComponents{}
+   \LabelFont{@ADR}
+   \LabelWidth{0 mm}
+   \LabelSep{0 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@ADW}
+   \Mode{0}
+   \Justification{0}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0 pt}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{50 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 mm}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@ADV}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@ADZ}
+   \Mode{0}
+   \Justification{0}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0 pt}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{50 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 mm}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@ADY}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@AEB}
+   \Mode{0}
+   \Justification{0}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0 mm}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{1 fil}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 pt}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{true}
+   \LabelComponents{}
+   \LabelFont{@AEA}
+   \LabelWidth{10 mm}
+   \LabelSep{0 mm}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@AEE}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0 mm}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 pt}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{true}
+   \LabelComponents{}
+   \LabelFont{@AED}
+   \LabelWidth{10 mm}
+   \LabelSep{0 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@AKZ}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{7 mm}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{1 pc}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{50}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{(\enumerateAcount )}
+   \LabelFont{BodyTextFont}
+   \LabelWidth{5 mm}
+   \LabelSep{2 mm}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{6 pt}
+}
+\Paragraph{
+   \Name{@ALA}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{8 mm}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{1 pc}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{50}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{(\enumerateBcount )}
+   \LabelFont{BodyTextFont}
+   \LabelWidth{4.1 mm}
+   \LabelSep{6 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{3 pt}
+}
+\Paragraph{
+   \Name{@ALB}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{7 mm}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{1 pc}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{50}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{(\enumerateCcount )}
+   \LabelFont{BodyTextFont}
+   \LabelWidth{3 mm}
+   \LabelSep{5 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{3 pt}
+}
+\Paragraph{
+   \Name{@ALC}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{7 mm}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{1 pc}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{50}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{(\enumerateDcount )}
+   \LabelFont{BodyTextFont}
+   \LabelWidth{3 mm}
+   \LabelSep{5 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{3 pt}
+}
+\Paragraph{
+   \Name{@ALD}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{16 pt}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{1 pc}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{50}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{\itemCount }
+   \LabelFont{BodyTextFont}
+   \LabelWidth{10 pt}
+   \LabelSep{6 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{6 pt}
+}
+\Paragraph{
+   \Name{@ALE}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{16 pt}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{1 pc}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{50}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{\itemCount }
+   \LabelFont{BodyTextFont}
+   \LabelWidth{10 pt}
+   \LabelSep{6 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{5 pt}
+}
+\Paragraph{
+   \Name{@ALF}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{16 pt}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{1 pc}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{50}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{\itemCount }
+   \LabelFont{BodyTextFont}
+   \LabelWidth{10 pt}
+   \LabelSep{6 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{4 pt}
+}
+\Paragraph{
+   \Name{@ALG}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{16 pt}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{1 pc}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{50}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{\itemCount }
+   \LabelFont{BodyTextFont}
+   \LabelWidth{10 pt}
+   \LabelSep{6 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@ALZ}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0 pt}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{1 pc}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{50}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{[\bibitemCount ]}
+   \LabelFont{BodyTextFont}
+   \LabelWidth{5 mm}
+   \LabelSep{2 mm}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@AOK}
+   \Mode{0}
+   \Justification{3}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0 pt}
+   \LeftRag{1 fil}
+   \RightIndent{0 pt}
+   \RightRag{1 fil}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt plus 4 pt}
+   \ParIndent{0 pt}
+   \ParFill{0 pt}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@AOJ}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@AON}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{5 mm}
+   \LeftRag{0 pt}
+   \RightIndent{5 mm}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{5 mm}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@AOM}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{@AOQ}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{5 mm}
+   \LeftRag{0 pt}
+   \RightIndent{5 mm}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 pt}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{@AOP}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{BodyTextParagraph}
+   \Mode{0}
+   \Justification{0}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0 pt}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{50 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{0 mm}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{0}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{BodyTextFont}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\Paragraph{
+   \Name{VerseParagraph}
+   \Mode{0}
+   \Justification{2}
+   \UseLeading{false}
+   \LineSpacing{1}
+   \LeftIndent{0 pt}
+   \LeftRag{0 pt}
+   \RightIndent{0 pt}
+   \RightRag{0 pt}
+   \JustZone{0 pt}
+   \MinLineLength{0 pt}
+   \ParSkip{0 pt}
+   \ParIndent{1 pc}
+   \ParFill{0 pt plus 1 fil}
+   \AllowHyphens{true}
+   \HyphenPen{50}
+   \LinePenalty{10}
+   \DblHyphenPen{10000}
+   \ExHyphenPen{50}
+   \FinalHyphenPen{5000}
+   \PostHyphenMin{0}
+   \PreHyphenMin{0}
+   \Tolerance{200}
+   \PreTolerance{100}
+   \EmergencyStretch{0 pt}
+   \IncompatabilityPen{10000}
+   \LineSkipLimit{0 pt}
+   \LineSkipGlue{1 pt}
+   \KeepLines{false}
+   \PageBreakPen{0}
+   \ClubPen{150}
+   \WidowPen{150}
+   \DisplayPen{50}
+   \BrokenPen{100}
+   \HasLabel{false}
+   \LabelComponents{}
+   \LabelFont{BodyTextFont}
+   \LabelWidth{0 pt}
+   \LabelSep{10 pt}
+   \FixedWidth{false}
+   \RightJust{false}
+   \LabelParIndent{0 pt}
+   \LabelParSep{0 pt}
+}
+\PageSetup{
+   \Name{@ADA}
+   \Mode{0}
+   \AutoVert{1}
+   \AutoHoriz{1}
+   \AutoHead{2}
+   \OddLeftMargin{0.5 in}
+   \OddRightMargin{0.5 in}
+   \FacingPages{true}
+   \TopMargin{0.5 in}
+   \BottomMargin{0.5 in}
+   \TypeHeight{60.225 pc}
+   \TypeWidth{7.5 in}
+   \HeadHeight{12 pt}
+   \HeadSep{20 pt}
+   \TopSkip{12 pt}
+   \FootSkip{30 pt}
+   \FootSep{0 pt}
+   \TextWidth{0 pt}
+   \TextHeight{49.0358 pc}
+   \ColumnSep{10 pt}
+   \ColumnRuleWidth{0 pt}
+   \TwoColumn{false}
+   \OddHeaderLeft{\@ABH }
+   \OddHeaderRight{\@ABJ }
+   \OddHeaderMiddle{\@ABP }
+   \OddFooterLeft{\@ABV }
+   \OddFooterRight{\@ACB }
+   \OddFooterMiddle{\@ACF }
+   \EvenHeaderLeft{\@ACH }
+   \EvenHeaderRight{\@ACJ }
+   \EvenHeaderMiddle{\@ACL }
+   \EvenFooterLeft{\@ACN }
+   \EvenFooterRight{\@ACP }
+   \EvenFooterMiddle{\@ACR }
+   \FootnotePar{@ACU}
+   \FootnoteBodyFont{@ACV}
+   \FootnoteRuleLength{52.5 mm}
+   \FootnoteRuleWidth{0.4 pt}
+   \FootnoteSeparation{5 pt}
+   \FootnoteHSkip{1 em}
+   \FootnoteSymbol{arabic}
+   \MarginColumn{false}
+   \MarginParFont{@ACW}
+   \MarginParPar{@ACZ}
+   \MarginParPush{10 pt}
+   \MarginParSep{20 pt}
+   \MarginParWidth{0.75 in}
+   \ReverseMarginPar{false}
+}
+\PageSetup{
+   \Name{DefaultPageSetup}
+   \Mode{0}
+   \AutoVert{1}
+   \AutoHoriz{1}
+   \AutoHead{2}
+   \OddLeftMargin{0.5 in}
+   \OddRightMargin{0.5 in}
+   \FacingPages{true}
+   \TopMargin{0.5 in}
+   \BottomMargin{0.5 in}
+   \TypeHeight{60.225 pc}
+   \TypeWidth{7.5 in}
+   \HeadHeight{12 pt}
+   \HeadSep{20 pt}
+   \TopSkip{12 pt}
+   \FootSkip{30 pt}
+   \FootSep{0 pt}
+   \TextWidth{0 pt}
+   \TextHeight{49.0358 pc}
+   \ColumnSep{10 pt}
+   \ColumnRuleWidth{0 pt}
+   \TwoColumn{false}
+   \OddHeaderLeft{\@ALK }
+   \OddHeaderRight{\@ALM }
+   \OddHeaderMiddle{\@ALL }
+   \OddFooterLeft{\@ALQ }
+   \OddFooterRight{\@ALS }
+   \OddFooterMiddle{\@ALR }
+   \EvenHeaderLeft{\@ALH }
+   \EvenHeaderRight{\@ALJ }
+   \EvenHeaderMiddle{\@ALI }
+   \EvenFooterLeft{\@ALN }
+   \EvenFooterRight{\@ALP }
+   \EvenFooterMiddle{\@ALO }
+   \FootnotePar{@ABD}
+   \FootnoteBodyFont{FootnoteFont}
+   \FootnoteRuleLength{52.5 mm}
+   \FootnoteRuleWidth{0.4 pt}
+   \FootnoteSeparation{5 pt}
+   \FootnoteHSkip{1 em}
+   \FootnoteSymbol{arabic}
+   \MarginColumn{false}
+   \MarginParFont{BodyTextFont}
+   \MarginParPar{@AAU}
+   \MarginParPush{10 pt}
+   \MarginParSep{20 pt}
+   \MarginParWidth{0.75 in}
+   \ReverseMarginPar{false}
+}
+\ContentsLevel{
+   \Name{figure@toc}
+   \Mode{0}
+   \Level{1}
+   \MakeTOCEntry{false}
+   \LabelFont{BodyTextFont}
+   \TOCTitleFont{BodyTextFont}
+   \PgNoFont{BodyTextFont}
+   \InterItemPenalty{0}
+   \InterItemSkip{0 pt}
+   \LabelComponents{}
+   \LeftMarginToNumber{0 pt}
+   \LeftMarginToText{0 pt}
+   \RightMarginToNumber{0 pt}
+   \RightMarginToText{0 pt}
+   \ContinuationIndent{0 pt}
+   \UseLeaderDots{false}
+   \MinDotLength{0 pt}
+   \DotSeparation{0 pt}
+   \UpperCase{false}
+}
+\ContentsLevel{
+   \Name{subsection@toc}
+   \Mode{0}
+   \Level{2}
+   \MakeTOCEntry{true}
+   \LabelFont{@ALT}
+   \TOCTitleFont{@ALU}
+   \PgNoFont{@ALV}
+   \InterItemPenalty{8000}
+   \InterItemSkip{0 pt}
+   \LabelComponents{}
+   \LeftMarginToNumber{5 mm}
+   \LeftMarginToText{14 mm}
+   \RightMarginToNumber{0 pt}
+   \RightMarginToText{40 pt}
+   \ContinuationIndent{20 pt}
+   \UseLeaderDots{false}
+   \MinDotLength{20 pt}
+   \DotSeparation{5 pt}
+   \UpperCase{false}
+}
+\ContentsLevel{
+   \Name{subsubsection@toc}
+   \Mode{0}
+   \Level{3}
+   \MakeTOCEntry{true}
+   \LabelFont{@ALW}
+   \TOCTitleFont{@ALX}
+   \PgNoFont{@ALY}
+   \InterItemPenalty{400}
+   \InterItemSkip{0 pt}
+   \LabelComponents{}
+   \LeftMarginToNumber{14 mm}
+   \LeftMarginToText{24 mm}
+   \RightMarginToNumber{0 pt}
+   \RightMarginToText{0 pt}
+   \ContinuationIndent{0 pt}
+   \UseLeaderDots{false}
+   \MinDotLength{20 pt}
+   \DotSeparation{5 pt}
+   \UpperCase{false}
+}
+\ContentsLevel{
+   \Name{table@toc}
+   \Mode{0}
+   \Level{1}
+   \MakeTOCEntry{false}
+   \LabelFont{BodyTextFont}
+   \TOCTitleFont{BodyTextFont}
+   \PgNoFont{BodyTextFont}
+   \InterItemPenalty{0}
+   \InterItemSkip{0 pt}
+   \LabelComponents{}
+   \LeftMarginToNumber{0 pt}
+   \LeftMarginToText{0 pt}
+   \RightMarginToNumber{0 pt}
+   \RightMarginToText{0 pt}
+   \ContinuationIndent{0 pt}
+   \UseLeaderDots{false}
+   \MinDotLength{0 pt}
+   \DotSeparation{0 pt}
+   \UpperCase{false}
+}
+\Index{
+   \Name{Index}
+   \Mode{0}
+   \Font{BodyTextFont}
+   \ItemIndent{0 pt}
+   \SubitemIndent{0 pt}
+   \Initials{false}
+   \NumColumns{0}
+   \InitialFont{BodyTextFont}
+}
+\Math{
+   \Name{DefaultMath}
+   \Mode{0}
+   \EZLabelAppearance{LabelB}
+   \EZLabelPosition{Right}
+   \EZEquationPosition{Center}
+   \Label{(\equationCount )}
+   \LabelFont{BodyTextFont}
+   \EquationsFlushLeft{false}
+   \LabelsOnRight{true}
+   \MathIndent{30 pt}
+   \Jot{0 pt}
+   \ArrayStretch{1}
+   \BeforeSkip{2 pt}
+   \BeforeShortSkip{0 pt}
+   \AfterSkip{2 pt}
+   \AfterShortSkip{0 pt}
+   \ArrayColSep{5 pt}
+   \ArrayRuleWidth{0.4 pt}
+   \EqnCountApp{arabic}
+   \EqnLabelComps{(\equationCount )}
+   \EqnXrefComps{\equationCount }
+   \EqnXrefFont{BodyTextFont}
+}
+\Theorem{
+   \Name{example}
+   \Mode{0}
+   \UseWithin{true}
+   \CounterRef{Document}
+   \Style{plain}
+   \BodyFont{TheoremBodyFont}
+   \SkipBefore{10 pt}
+   \SkipAfter{10 pt}
+   \LeadIn{Example}
+}
+\Theorem{
+   \Name{remark}
+   \Mode{0}
+   \UseWithin{true}
+   \CounterRef{Document}
+   \Style{plain}
+   \BodyFont{TheoremBodyFont}
+   \SkipBefore{10 pt}
+   \SkipAfter{10 pt}
+   \LeadIn{Remark}
+}
+\Theorem{
+   \Name{theorem}
+   \Mode{0}
+   \UseWithin{true}
+   \CounterRef{Document}
+   \Style{plain}
+   \BodyFont{TheoremBodyFont}
+   \SkipBefore{10 pt}
+   \SkipAfter{10 pt}
+   \LeadIn{Theorem}
+}
+\Theorem{
+   \Name{corollary}
+   \Mode{0}
+   \UseWithin{false}
+   \CounterRef{theorem}
+   \Style{plain}
+   \BodyFont{TheoremBodyFont}
+   \SkipBefore{10 pt}
+   \SkipAfter{10 pt}
+   \LeadIn{Corollary}
+}
+\Theorem{
+   \Name{lemma}
+   \Mode{0}
+   \UseWithin{false}
+   \CounterRef{theorem}
+   \Style{plain}
+   \BodyFont{TheoremBodyFont}
+   \SkipBefore{10 pt}
+   \SkipAfter{10 pt}
+   \LeadIn{Lemma}
+}
+\Theorem{
+   \Name{proposition}
+   \Mode{0}
+   \UseWithin{false}
+   \CounterRef{theorem}
+   \Style{plain}
+   \BodyFont{TheoremBodyFont}
+   \SkipBefore{10 pt}
+   \SkipAfter{10 pt}
+   \LeadIn{Proposition}
+}
+\Bibliography{
+   \Name{thebibliography}
+   \Mode{0}
+   \CiteComponents{[\CiteText \Remark ]}
+   \CiteFont{BodyTextFont}
+   \EntryParagraph{@ALZ}
+   \EntryFont{BodyTextFont}
+   \ItemSep{1 mm}
+   \Superscript{false}
+   \Ranges{false}
+}
+\Environment{
+   \Name{center}
+   \Mode{0}
+   \Prefix{\Space{7pt}}
+   \RunIn{}
+   \Font{BodyTextFont}
+   \ParagraphType{@AOK}
+   \Suffix{\Space{7pt}}
+   \RunOut{}
+   \Frontmatter{false}
+   \Leadin{Center}
+}
+\Environment{
+   \Name{quotation}
+   \Mode{0}
+   \Prefix{\Space{7pt}}
+   \RunIn{}
+   \Font{BodyTextFont}
+   \ParagraphType{@AON}
+   \Suffix{\Space{7pt}}
+   \RunOut{}
+   \Frontmatter{false}
+   \Leadin{Quotation}
+}
+\Environment{
+   \Name{quote}
+   \Mode{0}
+   \Prefix{\Space{7pt}}
+   \RunIn{}
+   \Font{BodyTextFont}
+   \ParagraphType{@AOQ}
+   \Suffix{\Space{7pt}}
+   \RunOut{}
+   \Frontmatter{false}
+   \Leadin{Quote}
+}
+\Environment{
+   \Name{verse}
+   \Mode{0}
+   \Prefix{}
+   \RunIn{}
+   \Font{BodyTextFont}
+   \ParagraphType{VerseParagraph}
+   \Suffix{}
+   \RunOut{}
+   \Frontmatter{false}
+   \Leadin{Verse}
+}
+\Exception{
+   \Name{FAXPAGE}
+   \Mode{0}
+   \PageLayout{@ADA}
+   \VerticalMaterial{\FAXPA \Space{24pt}\LineBreak\NUMBEROFPAGES \Space{24pt}\LineBreak\TO \Space{-7pt}\TOOBJECT \Space{18pt}\LineBreak\FROM \Space{18pt}\LineBreak\FROMFAXNUMBER \LineBreak\Space{18pt}\LineBreak\CC \Space{-7pt}\CCOBJECT \Space{18pt}\LineBreak\DATE \Space{18pt}\LineBreak\SUBJECTTEXT \Space{18pt}\LineBreak\INFORMATION \Space{9pt}\LineBreak\SPECIALTEXT \Space{9pt}\LineBreak\IndentLongRule \Space{18pt}\LineBreak\BODY \Space{18pt}\LineBreak\ATTACHMENTS \Space{-7pt}\ATTACHOBJECT }
+   \AllowText{true}
+   \Start{NextPage}
+   \Frontmatter{false}
+   \Leadin{Fax Page}
+   \OverridePgNum{false}
+   \NumberType{arabic}
+}
+\TextTag{
+   \Name{squeeze}
+   \Mode{0}
+   \Font{SqueezeFont}
+   \PrintColor{R:0 G:0 B:0}
+   \ScreenColor{R:0 G:0 B:0}
+   \ScreenFace{Times New Roman}
+}
+\Trailer{
+   \Name{Trailer}
+   \Mode{0}
+   \ExternalFile{}
+}

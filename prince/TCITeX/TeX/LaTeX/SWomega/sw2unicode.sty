@@ -1,0 +1,18 @@
+%% sw2unicode.sty
+%% invoke the Omega input processor for SW documents
+%%
+\ProvidesPackage{sw2unicode}
+[2001/10/18 
+Omega SW to Unicode translation
+]
+\ocp\Jon=sw2uni
+\ocp\Albr=addallowbreaks
+\ocplist\JonOCP=%
+\addbeforeocplist 1 \Jon
+\addbeforeocplist 1 \Albr
+\nullocplist
+\clearocplists
+\pushocplist\JonOCP%
+
+\def\U#1{/QQ[#1]}
+\endinput

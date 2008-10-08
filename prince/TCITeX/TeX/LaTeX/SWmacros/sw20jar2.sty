@@ -1,0 +1,40 @@
+%sw20jar2 {Article: JEEP - double-spaced except for quotes}{12pt}{article}{empty}
+%Copyright (C) 1994-2002 MacKichan Software, Inc.
+\typeout{SW Document Style `sw20jar2' <13 Nov. 2002>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+\input{jeep.sty}
+\input thmsupp.tex %TCI theorem option support
+\cfoot{\thepage}%
+\tighttoc%
+\numberbysection%
+\thispagestyle{empty}%
+%
+%% The following is included to suppress page numbers on the first page
+%% when a title is used.
+% No longer needed (and causes a LaTeX error), so removed via comments.
+%\def\maketitle{\par
+% \begingroup
+%   \def\thefootnote{\fnsymbol{footnote}}%
+%   \def\@makefnmark{\hbox
+%       to\z@{$\m@th^{\@thefnmark}$\hss}}%
+%   \if@twocolumn
+%     \twocolumn[\@maketitle]%
+%     \else \newpage
+%     \global\@topnum\z@
+%%     \@maketitle \fi\thispagestyle{plain}\@thanks  % Page number on first page
+%     \@maketitle \fi\thispagestyle{empty}\@thanks  % No page numbers
+% \endgroup
+%\setcounter{footnote}{0}%
+%\let\maketitle\relax
+%\let\@maketitle\relax
+%\gdef\@thanks{}\gdef\@author{}\gdef\@title{}\let\thanks\relax}
+%
+% This style is double-spaced
+\input{doublespace.sty}
+% Except for quotes
+\def\quote{\begin{singlespace}\list{}{\rightmargin\leftmargin}\item[]}
+\def\endquote{\global\advance\@listdepth\m@ne
+    \endtrivlist\end{singlespace}}
+\endinput
