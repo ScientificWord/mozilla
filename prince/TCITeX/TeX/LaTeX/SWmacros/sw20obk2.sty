@@ -1,0 +1,74 @@
+%sw20obk2 {Book: TCI book style #2}{12pt}{tcibook}
+%Copyright (C) 1994-95 TCI Software Research
+\typeout{TCI Document Style `sw20obk2' <1 July 1994>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+\input thmsupp.tex %TCI theorem option support
+%
+\trimwidth     8.5in
+
+%\textwidth     500pt
+\addtolength{\textwidth}{110pt}
+\marginparsep    0pt \marginparwidth  0pt
+\columnsep      28pt \columnseprule   0pt 
+\trimheight11in      
+
+%\topmargin 38pt
+\addtolength{\topmargin}{18pt}
+
+\headheight 8pt      \headsep   18pt
+\footskip  24pt      \botmargin 36pt
+\@mparswitchfalse     \@reversemargintrue
+
+%\centerpagemargin
+\addtolength{\oddsidemargin}{40pt}
+\evensidemargin\oddsidemargin
+
+\twocolumn
+
+%\settextheight
+\addtolength{\textheight}{122pt}
+
+\c@secnumdepth\z@
+
+\ps@footings\let\sectionmark\@gobble
+\def\ps@chapter{}%
+\let\rulefooting\norulefooting
+\let\headcase\@empty
+\def\rectomark{\rightmark}%
+\def\versomark{\leftmark}%
+
+\def\@makechapterhead#1{%
+ \null\nobreak
+ \vskip-\topskip\vskip-\headsep\vskip-\headheight\vskip-\topmargin
+ {\raggedright 
+  \ifnum \c@secnumdepth >\m@ne 
+   \vspace*{200pt}%
+   \parindent0pt
+   \Huge\bf\vskip-\baselineskip
+   \@chapapp\ \thechapter \par 
+   \vspace*{108pt}%
+   \else
+   \vspace*{308pt}%
+   \fi 
+  \huge \bf
+  \vskip-\baselineskip
+  #1\par 
+  }%
+ \nobreak \vskip 42pt
+ }
+\let\introtext\dropletter
+
+\def\section{%
+ \@startsection{section}{1}{\sectionbackskip}{-32pt plus -1.2ex minus -.2ex}%
+  {20pt}{\LARGE\sf\makeparrule}%
+ }%
+\sectionbackskip\z@
+\sectionruledimen.4pt
+\def\subsection{%
+ \@startsection{subsection}{2}{\z@}{-24pt plus -1ex minus-.2ex}%
+  {1pt}{\large\sf}%
+ }%
+
+\def\thefigure{\thechapter-\@arabic\c@figure}%

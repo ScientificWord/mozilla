@@ -1,0 +1,80 @@
+%sw20obk6 {Book - SW Book #6}{12pt}{tcibook}
+%Copyright (C) 1994-2003 MacKichan Software, Inc.
+\typeout{SW Document Style `sw20obk6' <30 April 2003>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+\input thmsupp.tex %TCI theorem option support
+%
+\trimwidth     8.5in  
+
+%\textwidth     480pt
+\addtolength{\textwidth}{90pt}
+
+\marginparsep    0pt  \marginparwidth  0pt
+\columnsep      14pt  \columnseprule 0pt 
+\trimheight     11in  
+
+%\topmargin      32pt
+\addtolength{\topmargin}{12pt}
+
+\headheight      0pt  \headsep         0pt
+\footskip       20pt  \botmargin      32pt
+\@mparswitchfalse     \@reversemargintrue
+
+%\centerpagemargin
+\addtolength{\oddsidemargin}{50pt}
+\evensidemargin\oddsidemargin
+
+\twocolumn
+
+%\settextheight
+\addtolength{\textheight}{163pt}
+
+\c@secnumdepth\z@
+
+\ps@footings\let\chaptermark\@gobble\let\sectionmark\@gobble
+\def\ps@chapter{}%
+\let\rulefooting\rulebelowfooting
+\let\headcase\@empty
+\def\rectomark{\@title}%
+\def\versomark{\@title}%
+\def\@title{}%
+
+\def\@makechapterhead#1{%
+ {\hrule height1.5pt\vskip4pt
+  \centering
+  \Huge\em
+  \ifnum \c@secnumdepth >\m@ne \@chapapp{} \thechapter \quad \fi
+  \uppercase{#1}\par 
+  \vskip4pt\hrule height1.5pt
+  }%
+ \nobreak \vskip 18pt
+ }%
+\def\@makeschapterhead#1{%
+ {\hrule height1.5pt\vskip4pt
+  \centering
+  \Huge\em
+  %\ifnum \c@secnumdepth >\m@ne \@chapapp{} \thechapter \quad \fi
+  \uppercase{#1}\par 
+  \vskip4pt\hrule height1.5pt
+  }%
+ \nobreak \vskip 18pt
+ }%
+\let\introtext\@empty
+
+\def\section{%
+ \@startsection {section}{1}{\z@}{-24pt plus -1.2ex minus -.2ex}%
+  {12pt}{\Large\sf\centering}%
+ }%
+\def\subsection{%
+ \@startsection{subsection}{2}{\z@}{-24pt plus -1ex minus -.2ex}%
+  {12pt}{\sf}%
+ }%
+
+\def\thefigure{\@arabic\c@figure}%
+
+\renewcommand{\bibname}{BIBLIOGRAPHY}%
+\renewcommand{\contentsname}{CONTENTS}%
+
+\endinput

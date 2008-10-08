@@ -1,0 +1,241 @@
+%sw20asap {Article: Amer. Stat. Assoc. Proc.}{12pt}{article}
+%Copyright (C) 1994-2000 MacKichan Software, Inc.
+\typeout{MSI Document Style `sw20asap' <10 April 2000>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%\input thmsupp.tex %TCI theorem option support
+
+% Based on deproc.sty, by Barbara Beeton
+
+% Use two column unless one column set in class options
+
+\@twocolumntrue
+\DeclareOption{onecolumn}{\@twocolumnfalse}
+\ProcessOptions
+     
+%\oddsidemargin 0pc \evensidemargin 0pc
+%\topmargin 0pc
+\addtolength{\oddsidemargin}{-39pt}
+\evensidemargin\oddsidemargin
+\headheight 0pt \headsep 0pt
+%\footheight 0pt \footskip 0pt
+%\footheight 1pc \footskip 2pc   Removed for LaTeX2e
+%\textheight 9in  \textwidth 6.5in 
+\addtolength{\textheight}{98pt}
+\addtolength{\textwidth}{80pt}
+\columnsep .25in \columnseprule 0pt
+\newdimen\dummy
+\dummy=\oddsidemargin
+\addtolength{\dummy}{72pt}
+\marginparwidth=.675\dummy
+\marginparsep=.1\dummy
+
+
+\def\keywords#1\par{\noindent KEY WORDS #1}
+\def\keyphrases#1{\noindent KEY WORDS #1}  % For use by SW20
+     
+\def\@oddhead{}\def\@evenhead{}
+%  For debugging, keep running footers.
+%\def\@oddfoot{}
+%\def\@oddfoot{\rm\rightmark \hfil Page \thepage}
+\def\@oddfoot{\hfil \tiny\thepage \hfil}
+\def\@evenfoot{\@oddfoot}
+\def\maketitle{\par
+ \begingroup
+   \if@twocolumn%
+    \def\@makefnmark{\hbox to 0pt{$^{\@thefnmark}$\hss}}%
+    \twocolumn%
+   [\@maketitle]
+   \@thanks
+   \else
+    \def\@makefnmark{\hbox to 0pt{$^{\@thefnmark}$\hss}}%
+    \@maketitle
+    \@thanks
+   \fi%
+ \endgroup
+ \let\maketitle\relax
+ \let\@maketitle\relax
+ \gdef\@thanks{}\gdef\@author{}\gdef\@title{}\let\thanks\relax
+ \@afterheading}
+     
+\def\@maketitle{\vbox{\hsize\textwidth
+ \linewidth\hsize \vskip\baselineskip \centering
+ {\large\bf \@title \par} 
+ {%\let\@endline=\\\def\\{\@endline\rm}%
+  \gdef\thefootnote{*}
+  \def\and{\unskip\enspace{and}\enspace}%
+  \def\And{\unskip\\\null\\\bf}%
+  \begin{tabular}[t]{c}\bf\@author \end{tabular}\vskip 1.5ex} 
+  }}
+               
+     
+%  Allow more space above a narrower footnote rule.
+%  Footnotes not quite so far apart.
+\footnotesep=10pt
+\skip\footins=12pt              % full blank line
+\def\footnoterule{\kern-8pt
+  \hrule width 5pc \kern 7.6pt } % the \hrule is .4pt high
+     
+     
+%  Force footnotes to bottom of page, regardless of ragged bottom.
+\def\@makecol{\ifvoid\footins \setbox\@outputbox\box\@cclv
+   \else\setbox\@outputbox
+     \vbox to\@colht{\unvbox\@cclv\vfill\relax
+          \vskip\skip\footins\footnoterule\unvbox\footins}\fi
+     \xdef\@freelist{\@freelist\@midlist}\gdef\@midlist{}\@combinefloats
+     \setbox\@outputbox\vbox to\@colht{\boxmaxdepth\maxdepth
+        \@texttop\unvbox\@outputbox \@textbottom}\global\maxdepth\@maxdepth}
+     
+     
+%  All footnotes are numbered; no other symbols.
+\setcounter{footnote}{0}
+ 
+\def\@sect#1#2#3#4#5#6[#7]#8{\ifnum #2>\c@secnumdepth
+     \def\@svsec{}\else
+     \refstepcounter{#1}\edef\@svsec{\csname the#1\endcsname\hskip 1em }\fi
+     \@tempskipa #5\relax
+      \ifdim \@tempskipa>\z@
+        \begingroup #6\relax
+		  \@hangfrom{\hskip #3\relax\@svsec}
+          {\interlinepenalty \@M #8\par}
+        \endgroup
+       \csname #1mark\endcsname{#7}\addcontentsline
+         {toc}{#1}{\ifnum #2>\c@secnumdepth \else
+                      \protect\numberline{\csname the#1\endcsname}\fi
+                    #7}\else
+        \def\@svsechd{#6\hskip #3\@svsec #8\csname #1mark\endcsname
+                      {#7}\addcontentsline
+                           {toc}{#1}{\ifnum #2>\c@secnumdepth \else
+                             \protect\numberline{\csname the#1\endcsname}\fi
+                       #7}}\fi
+        \@xsect{#5}} 
+     
+\def\section{\@startsection {section}{1}{\z@}{1.2ex plus .6ex
+ minus .1ex}{6pt}{\normalsize\bf}}
+\def\subsection{\@startsection{subsection}{2}{\z@}{.6ex plus .4ex
+ minus .1ex}{4pt}{\parindent=\z@\normalsize\bf}}
+\def\subsubsection{\@startsection{subsubsection}{3}{\z@}{.5ex plus .3ex
+ minus .1ex}{-6pt}{\normalsize\it}}
+
+\def\thesection{\arabic{section}.}
+\def\thesubsection{\thesection\arabic{subsection}}
+\def\thesubsubsection{}
+\def\theparagraph{}
+\def\thesubparagraph{}
+     
+%  Change the default item labels after the first.
+     
+\def\bull{\vrule height .9ex width .8ex depth -.1ex } % square bullet
+     
+\def\labelitemii{$\circ$}
+\def\labelitemiii{\bull}
+\def\labelitemiv{$\ast$}
+%  Indent verbatim blocks
+\def\verbatim{\@totalleftmargin\parindent
+   \@verbatim \frenchspacing\@vobeyspaces \@xverbatim}
+     
+%  Figure and table caption labels boldface
+\long\def\@makecaption#1#2{
+  \vskip 10pt
+  \setbox\@tempboxa\hbox{{\bf#1:}\enspace#2}
+  \ifdim \wd\@tempboxa >\hsize \unhbox\@tempboxa\par \else \hbox
+    to\hsize{\hfil\box\@tempboxa\hfil}
+  \fi}
+               
+\newdimen\bibindent
+\bibindent=1.5em
+\def\thebibliography#1{\section*{REFERENCES\@mkboth  % see below for oldsect def
+ {REFERENCES}{REFERENCES}}\list
+ {}{%\advance\leftmargin\bibindent
+ \itemindent -2em
+ \listparindent \itemindent
+ \parsep \z@
+ \itemsep \z@
+ \usecounter{enumi}}
+ \def\newblock{\hskip 0em}
+ \sloppy
+ \sfcode`\.=1000\relax}
+\let\endthebibliography=\endlist
+
+
+\newlength{\n@rmal@parindent}   % set below after \parindent set
+\def\no@biblabelindent{}%\leavevmode\kern\n@rmal@parindent}
+     
+\def\@lbibitem[#1]#2{\item[\@biblabel{#1}]\if@filesw
+      { \def\protect##1{\string ##1\space}\immediate
+        \write\@auxout{\string\bibcite{#2}{#1}}\fi
+    \no@biblabelindent\ignorespaces}}
+\def\@bibitem#1{\item\if@filesw \immediate\write\@auxout
+      {\string\bibcite{#1}{\the\c@enumi}}\fi\no@biblabelindent\ignorespaces}
+\if@twocolumn
+ \twocolumn
+ \sloppy
+\fi
+\parindent 20pt
+\setlength{\n@rmal@parindent}{\parindent}
+\leftmargini 2em
+\leftmargin\leftmargini
+\leftmarginv .5em
+\leftmarginvi .5em
+%\flushbottom
+     
+\def\same{---\kern -2pt ---\thinspace}
+
+\def\appendices{\par
+  \setcounter{section}{0}%
+  \def\thesection{\Alph{section}.}
+  \def\section{\@startAsection {section}{1}{\z@}{1.5ex plus 1ex
+        minus .2ex}{.6ex plus .2ex}{\normalsize\bf}}
+
+  \def\@startAsection##1##2##3##4##5##6{%
+   \if@noskipsec 
+       \leavevmode 
+   \fi
+   \par 
+   \@tempskipa ##4\relax
+   \@afterindenttrue
+   \ifdim \@tempskipa <\z@ 
+        \@tempskipa -\@tempskipa 
+        \@afterindentfalse
+   \fi
+   \if@nobreak 
+      \everypar{}
+   \else
+      \addpenalty{\@secpenalty}
+      \addvspace{\@tempskipa}
+   \fi 
+   \@ifstar
+       {\@ssect{##3}{##4}{##5}{##6}}
+       {\@dblarg{\@Asect{##1}{##2}{##3}{##4}{##5}{##6}}}}
+
+
+   \def\@Asect##1##2##3##4##5##6[##7]##8{\ifnum ##2>\c@secnumdepth
+     \def\@svsec{}\else
+     \refstepcounter{##1}\edef\@svsec{\csname the##1\endcsname\hskip 1em }\fi
+     \@tempskipa ##5\relax
+      \ifdim \@tempskipa>\z@
+        \begingroup ##6\relax
+		  \@hangfrom{\hskip ##3\relax}% JCS - move number to right:  App A
+          {\interlinepenalty \@M ##8 \@svsec\par}
+        \endgroup
+        \csname ##1mark\endcsname{##7}\addcontentsline{toc}{##1}
+        {\ifnum ##2>\c@secnumdepth 
+         \else
+             \protect\numberline{\csname the##1\endcsname}
+         \fi
+         ##7}
+       \else
+         \def\@svsechd{##6\hskip ##3\@svsec ##8\csname ##1mark\endcsname
+                      {##7}\addcontentsline{toc}{##1}
+                      {\ifnum ##2>\c@secnumdepth 
+                       \else
+                          \protect\numberline{\csname the##1\endcsname}
+                       \fi##7}}
+	   \fi
+       \@xsect{##5}\unskip\indent}
+
+}
+
+
+\setcounter{secnumdepth}{2}
+\pagestyle{empty}

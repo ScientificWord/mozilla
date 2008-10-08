@@ -1,0 +1,304 @@
+%Copyright (C) 1992-2000 MacKichan Software, Inc.
+\typeout{MacKichan Software, Inc. `tcimemo' <11 Aug 2000>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+%
+\input tcilcomm.tex
+%
+%\def\ccname{cc}
+%\def\enclname{encl}
+%\def\pagename{Page}
+%\def\headtoname{To}
+%
+\newdimen\longindentation
+\longindentation=.5\textwidth
+\newdimen\indentedwidth
+\indentedwidth=\textwidth
+\advance\indentedwidth -\longindentation
+%
+\def\stopletter{}
+%
+\def\returnaddress{}
+\newcount\labelcount
+%
+\def\startlabels{\labelcount\z@
+\pagestyle{empty}%
+\let\@texttop\relax
+\topmargin -50\p@
+\headsep \z@
+\oddsidemargin -35\p@
+\evensidemargin -35\p@
+\textheight 10in
+\@colht\textheight  \@colroom\textheight \vsize\textheight
+\textwidth 550\p@
+\columnsep 25\p@
+\ifcase \@ptsize\relax
+  \normalsize
+ \or
+  \small
+ \or
+  \footnotesize
+ \fi
+\baselineskip \z@
+\lineskip \z@
+\boxmaxdepth \z@
+\parindent \z@
+\twocolumn\relax}
+
+\def\@texttop{\ifnum\c@page=1\vskip \z@ plus.00006fil\relax\fi}
+
+\def\ps@headings{\def\@oddhead{\sl \headtoname{} \ignorespaces\toname
+    \hfil \@date
+    \hfil \pagename{} \thepage}\def\@oddfoot{}}
+
+\def\ps@empty{\def\@oddhead{}\def\@oddfoot{}%
+\def\@evenhead{}\def\@evenfoot{}}
+
+\def\ps@firstpage{\def\@oddhead{}\def\@oddfoot{\raisebox
+   {-45\p@}[\z@]{\hbox to \textwidth{\hspace*{100\p@}%
+    \ifcase \@ptsize\relax
+      \normalsize
+    \or
+      \small
+    \or
+      \footnotesize
+    \fi
+    \fromlocation \hfill \telephonenum}}\hss}%
+  \def\@evenhead{}\def\@evenfoot{}}
+
+\def\ps@plain{\def\@oddhead{}\def\@oddfoot{\rm\hfil\thepage
+     \hfil}\def\@evenhead{}\let\@evenfoot\@oddfoot}
+
+%
+%
+\newif\ifletteropen
+%
+\newif\ifletterclosed
+%
+\def\adjustpagemargin{% adjust \oddsidemargin by \marginpartotal
+ \marginpartotal\marginparwidth\advance\marginpartotal\marginparsep
+ \advance\oddsidemargin\marginpartotal
+ }%
+%
+\def\ps@plain{% used for chapter openers
+ \def\@oddhead{}%
+ \def\@evenhead{}%       No head.
+ \def\@oddfoot{\hfil\rm\thepage\hfil}% Right footing.
+ \def\@evenfoot{}% Left footing.
+ }%
+
+\@fileswtrue
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\newif\if@filesw \@fileswtrue
+%\def\nofiles{\@fileswtrue \typeout
+%   {Yes auxiliary output files.}\typeout{}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%***************************************************************************%
+%                                                                           %
+%                             References                                    %
+%                                                                           %
+%***************************************************************************%
+%
+\def\@biblabel#1{[#1]\hfill}
+\def\thebibliography#1{\begin{center}{\bf REFERENCES}\end{center}
+    \list
+ {[\arabic{enumi}]}{\settowidth\labelwidth{[#1]}\leftmargin\labelwidth
+ \advance\leftmargin\labelsep
+ \usecounter{enumi}}
+ \def\newblock{\hskip .11em plus .33em minus .07em}
+ \sloppy\clubpenalty4000\widowpenalty4000
+ \sfcode`\.=1000\relax}
+\let\endthebibliography=\endlist
+%
+%
+\def\ps@memo{%
+ \def\@oddhead{{\let\par\@gobblepar\ignorespaces\the@memosubj\@empty}\hfil%
+   \ifx\@empty\the@memodate\@date
+   \else\ignorespaces{\letparSP\the@memodate}\fi}%
+ \def\@oddfoot{}\def\@evenhead{}\def\@evenfoot{}%
+ \@twosidefalse
+ }%
+\ps@memo
+%
+\def\ccname{cc}%
+\def\enclname{encl}%
+\def\pagename{Page}%
+\def\headtoname{To}%
+\def\headtocompanyname{Company: }%
+\def\headaddrname{Address: }%
+\def\headfromname{From: }%
+\def\headdatename{Date: }%
+\def\headtimename{Time: }%
+\def\headsubjname{Subject: }%
+\def\PSname{P.S. }%
+%
+% Standard concrete strings for faxes:
+% Localize:
+%
+\def\faxshortname{(Fax) }%
+\def\faxnumname{Fax number: }%
+\def\phonenumname{Voice: }%
+\def\faxname{Fax Transmission}%
+\def\nopgname{No. of pages incl. this one: }%
+\def\faxfaultname{If you do not receive all pages, please contact: }%
+\def\headinstrname{Special Instructions: }%
+%
+% Standard concrete strings for press releases:
+% Localize:
+%
+\def\headrlsname{PRESS RELEASE}%
+
+% Define all of the newfields
+
+\newfield{memoaddr}{Address:}
+\newfield{memophone}{Phone:}
+\newfield{memofax}{Fax Number:}
+\newfield{memotocompany}{At Company:}
+\newfield{memotophone}{At Phone #:}
+\newfield{memotofax}{At Fax #:}
+\newfield{memotime}{Time:}
+\newfield{faxpg}{Number of pages:}
+\newfield{memoinstr}{Special Instructions:}
+\newfield{memoname}{Title: }
+\newfield{memocompany}{Company: }
+\newfield{memodept}{Department: }
+\newfield{memosubj}{Subject: }
+\newfield{memoto}{To: }
+\newfield{memofrom}{From: }
+\newfield{memodate}{Date: }
+\newfield{memocc}{cc: }
+\newfield{memoencl}{encl: }
+
+% Supply nil values and procedures for all fields that I know what to do
+% with. Some of these commands are redefined below. Note that an
+% instance of \par (blank lines) within the content of such fields will
+% have a meaning based on what's appropriate to the usage of that
+% field. Since each field is used just once (at present), the meaning of
+% \par is noted below:
+%                                              \par means
+\def\@do@memosubj{}\def\the@memosubj{}%   \\ ( in header, gobbles rest of arg)
+\def\@do@memoto{}\def\the@memoto{}%            \\
+\def\@do@memotocompany{}\def\the@memotocompany{}%\\
+\def\@do@memotoaddr{}\def\the@memotoaddr{}%    \\
+\def\@do@memotophone{}\def\the@memotophone{}%  \\
+\def\@do@memotofax{}\def\the@memotofax{}%      \\
+\def\@do@memofrom{}\def\the@memofrom{}%        \\
+\def\@do@memocompany{}\def\the@memocompany{}%  \\
+\def\@do@memodept{}\def\the@memodept{}%        \\
+\def\@do@memoaddr{}\def\the@memoaddr{}%        \\
+\def\@do@memophone{}\def\the@memophone{}%      \ 
+\def\@do@memofax{}\def\the@memofax{}%          \ 
+\def\@do@memoname{}\def\the@memoname{}%        \\
+\def\@do@memodate{}\def\the@memodate{}%        \ 
+\def\@do@memotime{}\def\the@memotime{}%        \ 
+\def\@do@memocc{}\def\the@memocc{}%            \\
+\def\@do@memoencl{}\def\the@memoencl{}%        \\
+\def\@do@faxpg{}\def\the@faxpg{}%              \
+\def\@do@prsrlswhen{}\def\the@prsrlswhen{}%    \
+\def\@do@memoinstr{}\def\the@memoinstr{}%      \\
+%
+\prepdef\enddocument{\@end@memo}%
+%
+\def\@end@memo{%
+ \par
+ \letterclosedtrue
+ \@do@memocc\@do@memoencl
+ }%
+%
+\def\@do@memosubj{%
+ \ifletteropen\else\letteropentrue
+  \parindent\z@
+  \parskip.5\normalbaselineskip
+  \clearpage\thispagestyle{empty}%
+  \@memohead
+  \fi
+ }%
+%
+\newdimen\dropshadowwidth
+\dropshadowwidth4pt
+%
+\def\@memoalign{%
+ \setbox\z@\vbox{%
+  \halign{##\quad\hfil\cr
+   \headtoname:\cr\headfromname\cr\headdatename\cr\headsubjname\cr
+   }%
+  }%
+ \advance\hsize-\wd\z@\relax{\def\\{\cr&}\letparBL
+ \def\crjot{\cr\ifdim\jot>\z@\noalign{\vskip\jot}\fi}%
+  \halign{##\quad\hfil&\vtop{\parindent\z@##}\cr
+   \ifx\@empty\the@memoto\else\headtoname:&\the@memoto\crjot\fi
+   \ifx\@empty\the@memofrom\else\headfromname&\the@memofrom\crjot\fi
+   \headdatename&\ifx\@empty\the@memodate\@date
+                 \else{\letparSP\the@memodate}\fi\crjot
+   \ifx\@empty\the@memosubj\else\headsubjname&\the@memosubj\crjot\fi
+   \ifdim\jot>\z@\noalign{\vskip-\jot}\fi
+   }%
+  }%
+ }%
+%
+\def\@do@memocc{%
+ \ifletterclosed
+  \ifx\@empty\the@memocc\else
+   \hangfield\ccname{\letparBL: \ignorespaces\the@memocc}%
+   \global\let\the@memocc\@empty
+   \fi
+  \fi
+ }%
+%
+\def\@do@memoencl{%
+ \@do@memocc
+ \ifletterclosed
+  \ifx\@empty\the@memoencl\else
+   \hangfield\enclname{\letparBL: \ignorespaces\the@memoencl}%
+   \global\let\the@memoencl\@empty
+   \fi
+  \fi
+ }%
+%
+\def\hangfield#1#2{%
+ \par\noindent
+ \parbox[t]{\hsize}{%
+  \@hangfrom{\reset@font\rm#1}\ignorespaces#2\strut
+  }\par
+ }%
+%
+%%%%%%%%%%%%%%%%%%%%%%
+% macros for time
+\newcount\@hour\newcount\@minute\chardef\@x10\chardef\@xv60
+\def\tcitime{
+\def\@time{%
+  \@minute\time\@hour\@minute\divide\@hour\@xv
+  \ifnum\@hour<\@x 0\fi\the\@hour:%
+  \multiply\@hour\@xv\advance\@minute-\@hour
+  \ifnum\@minute<\@x 0\fi\the\@minute
+  }}%
+%%%%%%%%%%%%%%%%%%%%%%
+% Standard concrete strings for memos:
+% Localize:
+%
+%
+% Standardized dimensions for letters:
+%
+\hoffset-1in
+\voffset-1in
+%
+%\trimheight     11in
+%\topmargin      72pt
+%\headheight     12pt
+%\headsep        24pt
+%\footskip       18pt
+%\botmargin      18pt
+
+%\trimwidth     8.5in
+%\textwidth     324pt
+\marginparsep    0pt
+\marginparwidth  0pt
+
+%\settextheight\centerpagemargin
+\@options
+
+\endinput

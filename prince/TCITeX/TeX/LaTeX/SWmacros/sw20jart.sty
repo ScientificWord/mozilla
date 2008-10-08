@@ -1,0 +1,34 @@
+%sw20jart {Article: JEEP (a general purpose vehicle)}{12pt}{article}{empty}
+%Copyright (C) 1994-95 TCI Software Research
+\typeout{TCI Document Style `sw20jart' <1 July 1994>.}
+\typeout{NOTICE:  This macro file is NOT proprietary and may be 
+freely copied and distributed.}
+%
+\input{jeep.sty}
+\input thmsupp.tex %TCI theorem option support
+\cfoot{\thepage}%
+\tighttoc%
+\numberbysection%
+\thispagestyle{empty}%
+%
+% The following is included to suppress page numbers on the first page
+% when a title is used.
+\def\maketitle{\par
+ \begingroup
+   \def\thefootnote{\fnsymbol{footnote}}%
+   \def\@makefnmark{\hbox
+       to\z@{$\m@th^{\@thefnmark}$\hss}}%
+   \long\def\@makefntext##1{\parindent 1em\noindent
+            \hb@xt@1.8em{%
+                \hss\@textsuperscript{\normalfont\@thefnmark}}##1}%
+   \if@twocolumn
+     \twocolumn[\@maketitle]%
+     \else \newpage
+     \global\@topnum\z@
+%     \@maketitle \fi\thispagestyle{plain}\@thanks  % Page number on first page
+     \@maketitle \fi\thispagestyle{empty}\@thanks  % No page numbers
+ \endgroup
+ \setcounter{footnote}{0}%
+ \let\maketitle\relax
+ \let\@maketitle\relax
+ \gdef\@thanks{}\gdef\@author{}\gdef\@title{}\let\thanks\relax}

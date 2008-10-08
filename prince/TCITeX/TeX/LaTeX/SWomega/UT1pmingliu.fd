@@ -1,0 +1,47 @@
+%Filename: UT1pmingliu.fd
+
+\ProvidesFile{UT1pmingliu.fd}[PMingLiU for LaTeX]
+
+\DeclareFontFamily{UT1}{pmingliu}{}
+
+\DeclareFontShape{UT1}{pmingliu}{m}{n}{
+   <->PMingLiU
+}{}
+\DeclareFontShape{UT1}{pmingliu}{m}{sc}{
+   <-> ssub * pmingliu/m/n
+}{}
+\DeclareFontShape{UT1}{pmingliu}{m}{it}{
+   <->PMingLiU
+}{}
+\DeclareFontShape{UT1}{pmingliu}{m}{sl}{
+   <-> ssub * pmingliu/m/it
+}{}
+\DeclareFontShape{UT1}{pmingliu}{m}{itsc}{
+   <-> ssub * pmingliu/m/it
+}{}
+\DeclareFontShape{UT1}{pmingliu}{m}{slsc}{
+   <-> ssub * pmingliu/m/it
+}{}
+\DeclareFontShape{UT1}{pmingliu}{bx}{n}{
+   <->PMingLiU
+}{}
+\DeclareFontShape{UT1}{pmingliu}{bx}{sc}{
+   <-> ssub * pmingliu/bx/n
+}{}
+\DeclareFontShape{UT1}{pmingliu}{bx}{it}{
+   <->PMingLiU
+}{}
+\DeclareFontShape{UT1}{pmingliu}{bx}{itsc}{
+   <-> ssub * pmingliu/bx/it
+}{}
+\DeclareFontShape{UT1}{pmingliu}{bx}{sl}{
+   <-> ssub * pmingliu/bx/it
+}{}
+\DeclareFontShape{UT1}{pmingliu}{bx}{slsc}{
+   <-> ssub * pmingliu/bx/it
+}{}
+
+\endinput
+
+
+

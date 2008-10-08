@@ -1,0 +1,53 @@
+
+% Style adjustments which could be made in a local style file:
+\topmargin 0in
+\oddsidemargin 0in
+\evensidemargin 0in
+\textwidth 6.5in
+%The print fails on the IBM 3800 if the following line is made 8.5in:
+\textheight 8in
+\input tcilatex
+
+\newcommand{\permute}{Questions will be permuted}
+\newcommand{\questiongroup}[2]{\par Select #1 questions, taking one at random
+                        from each of the following files:\par {\tt #2}\par}
+\newcommand{\answerbox}[1]{\par \vbox to #1{} \par}
+\newcommand{\answerboxa}{\answerbox{2.25in}}
+\newcommand{\answerboxb}{\answerbox{3in}}
+\newcommand{\answerboxc}{\answerbox{4in}}
+\newcommand{\answerboxd}{\answerbox{9in}}
+
+% The main macro which formats the questions:
+\newcommand{\question}[2]{\item
+  \parbox[t]{6.7in}{ #1}\hbox to .5in{}\parbox[t]{4.5in}{#2}}
+
+% The main macro which formats the questions:
+\newcommand{\questiononly}[1]{\item
+  \parbox[t]{6.7in}{ #1}}
+
+% The main macro which formats the questions:
+\newcommand{\answeronly}[1]{\item
+  \parbox[t]{4.5in}{#1}}
+
+\newcounter{seqno}
+
+%\pagestyle{myheadings}
+\newcommand{\firstexam}{\maketitle}
+
+\pagestyle{fancy}
+\setlength{\headwidth}{12in}
+\lhead{{Page \thepage\qquad\rightmark}}
+\rhead{{\rightmark\qquad Page \thepage\quad}}
+\cfoot{}
+
+\newcommand{\eachexam}{
+  \setcounter{page}{1}
+  \addtocounter{seqno}{1}
+  \markboth{
+    {Math 180\qquad No. \theseqno \qquad \today}
+  }{
+    {Math 180\qquad No. \theseqno \qquad \today}
+  }
+}
+
+%\batchmode

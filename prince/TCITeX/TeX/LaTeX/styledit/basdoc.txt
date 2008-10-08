@@ -1,0 +1,130 @@
+Getting Started
+If you have never used the Style Editor before, the first thing you should do is open a style that most closely describes the type of document style you want to create, such as a thesis style, book style,  etc.  As soon as you have opened the style, do a save as and save the style under a new name.  This way you do not change the built-in Style Editor styles and are free to experiment with your own style   If you have never used the Style Editor it will be worth your while to go through the steps below and should save you much time time in becoming familiar with the style editor.
+
+Understanding the Style Editor
+1.	Parts of a style
+Much of the style editors screen layout is based upon the different document parts that the style will affect.  Menu items in the base menu pertain to default settings that apply to the whole or main portion of the document.  Menu items in the Parts menu pertain to style details for different parts of the document, such as title pages, sections (found under division), table of contents, etc.  Menu items in the Elements menu are not actually a major part of a document like those found in Base and Parts, but instead apply to minor details of style that either can be created or defined and then are used in other parts of the document style.  For example a rule element is an element that allows you to create lines of the thickness and color you choose to place in other parts of the style.  If you are doing a resume and desire a thick line after your personal data, you could create a rule and then insert that rule into the document where it would show up after your personal data.
+
+In the Style Editor:
+a.	Take a look at the Base menu, Parts menu, and Elements menu.  Note the different menu items in each area in light of the discussion above.
+
+2.	Screens and Dialog boxes
+You will find two different types of Style Editor interfaces:  Screens and dialog boxes.  Dialog boxes allow you to define one set of style settings for that element of style.  An example of this is the Page and Paper Size dialog box.  You can only define one set of style details related to the size of paper and the logical page size.  Yet there are many other areas of the style editor where you can create multiple sets of style settings.  This in done on a screen.  The easiest way to recognize a style editor screen is a screen has a list of items that appears to the left of the screen.  The item list has a new item and delete item button below it.  You may create as many different aspects of that element of style as desired.  This is very important to know, so that you will be able to get the full flexibility out of the style editor, for which it was designed.  For example, the List screen, in most Style Editor styles contains an enumerate and bullet items in the item list.  These items define the style for numbered and bulleted lists in SW.  What if you want to use a numbered list that uses only Roman Numerals yet you also want to keep the original numbered list to use in your style also.  You can just create a new list type named romannum, and change the settings so that roman numbered are all that is used. 
+
+In the Style Editor:
+a.	From the Base menu, choose Page and Paper Size.  Note the settings.  You may redefine any of these settings and they will apply to every page in the document.
+b.	From the Elements menu, choose List.  
+c.	Click on itemize in the item list box on the left of the screen.  All settings to the left of the item list box, apply to itemize lists.  This is true with all screens.  The settings to the right of the item list box reflects the setting of the selected item in the item list.  Settings can be defined or changed for each item in the item list.
+c.	Choose New Item.
+d.	Place the name romannum in the New Item dialog box.
+e.	Choose Ok.  Now all settings in the screen, to the right of the item list box, apply to the new list romannum.  Let's change some of these.
+d.	In the List Level area,  choose Level 1.
+e.	In the Level Labeling Scheme, choose enumerate.
+f.	At the bottom of the screen, in the Appearances list, choose the Large Roman Numerals.
+g.	In the List Level area, choose Level 2.
+h.	In the Level Labeling Scheme, choose enumerate.
+i.	In the Appearances list, choose small roman numerals.
+j.	From the File menu, choose Save.  This saves the Style.
+k.	Go to Scientific Word/WorkPlace.
+l.	Choose New from the File menu.
+m.	Choose your style editor style.
+n.	Now go to the item popup list and choose the romannum tag.  Enter some text following this tag.
+o.	Hit enter and then choose the romannum tag again from the popup list.  Enter some text following this tag.
+p.	Preview your document.  You should have a list item at level 1 and level 2 that uses roman numberals.
+
+3.	Page Layout
+Page Layout encompasses the following style details:  margins, header and footer appearance, footnotes, margin notes, and columns.  There are 4 areas of the style editor that allow you to set page layout settings.  You set the default settings for the document in the Base Page Layout.  You set page layout settings for the exceptional pages such as a title page on the Exceptional Page screen.  In addition, the default page layout settings set in Base Page Layout may be overridden for any division title page or other page of the division, on the Division Page Layout screen.
+
+a.	From the Base menu, choose Margins.
+b.	Change the right and left margins to 1inch.
+c.	From the Parts menu, choose Division.
+d.	Click on an item in the item list box that is familiar to, such as Section, if the style type your using contains a Section division.
+e.	Click on the Page Effects tab towards the top of the dialog box.
+The Page Effects tab sheets appears.
+f.	Check the Override Base Page Layout for Subsequent Pages.
+g.	Now click on the Page Layout for Subsequent Pages button.
+h.	The Division Page Subsequent Layout dialog box should appear.  Change the left and right margins to 2in.
+i.	Choose OK.
+j.	From the File menu, choose Save.
+k.	Go to Scientific Word/WorkPlace.
+l.	Choose New from the File menu.
+m.	Choose your style editor style.
+n.	Enter some text.  This is body text.  
+n.	From the section tag popup menu, choose the tag with the same name as the item you chose in step d, above.
+o.	Enter a name for the section and press enter.
+p.	Now enter some text.  This is text that you defined under the division title page.  It is the text that should preview with 2inch margins.
+q.	Preview your document.  You should see some text with 1 inch margins, followed by a division heading entered in step o.  You should also see the text entered in step p, with 2inch margins.
+
+4.  Edit fields
+Throughout the style editor, edit fields exist that are expecting a certain type of input.  These inputs are numbers, text, dimensions, stretchy space and component lists.  How do you know what type of input is required for each edit field.  For many edit fields, you can place the insertion pointer inside the edit field and press the function key F2.  A dialog box appears with choices for the edit fields.  For dimensions, a dimension dialog box appears.  For component lists a component list dialog box appears.  For stretchy space, a stretchy space dialog box appears.  Some edit fields expect numbers and text.  F2 will not work with edit fields that expect this type of input but you can press the Help button for the dialog or screen, and then look at the help for the particular edit field.  The help will inform you of what type of input the edit field expects.
+
+5. Numbers*
+Beginning under numbers.
+a.  From the Base menu, choose Body Text Paragraph.
+b. In the Line Spacing area, choose Relative.
+c.  Place the cursor in the Lines field.  Press f2.  Nothing happens because F2 does not work for the type of input that this field takes.
+d.  Press the Help button in the dialog.
+d.  With the mouse, move the mouse pointer over the picture of the dialog in help until there is a hand over the Lines edit field.
+e.  Click the mouse button.
+f.  The help for this field says that it is a Number field and takes a whole or decimal number.
+g.  You may now close the help.
+
+This was mainly to show you how to find out what type of input a field takes if F2 does not work for the field type.
+
+Stretchy Space
+a.  Still in the Body Text Paragraph dialog box, place the cursor inside the Space Above edit field.  
+b.  Press F2.
+c.  A Stretchy Space dialog box appears.  Stretchy Space gives you the ability to give the ideal space you would like above each paragraph of body text plus any amount of stretch or  extra space you’d allow to be added by the Style Editor to this space and  any amount of shrink or subtraction of space from the ideal space you allow by the Style Editor.  The reason spaces are sometimes stretched or shrunk is to provide a more balanced layout of the page overall.
+d.  Choose 1 inch for the Natural Size, 3 points for the Stretch and 3 points for the Shrink.  
+f.  Press Enter.
+g.  The value you chose in the Stretchy Space dialog box now appears in the Space Above field.
+h.  Choose Cancel.
+  
+Dimensions
+a.  Choose Margins, from the Base menu.
+b.  Place the insertion pointer (cursor) in the left margin field.
+c.  Press F2.
+d.  Explore the Dimension Parameters dialog box and see how margins can be entered in different unit types (your choice) and also how the dimensions box can be used to do conversions between different unit types.   
+e.  Cancel the dialog box.  If you had chosen Ok then the value in the Dimensions dialog box would of been entered in the Left Margin field.
+
+Component Lists
+Component Lists often appear complicated to new users but with a little practice, you will find they are not very difficult to use and provide great flexibility.  A component list holds material to be typeset.  Many component lists exist throughout the style editor.  
+a.  From the Base Menu choose, Head/Foot Content.
+b.  Select the Left Button under the Even Page Head area.  Say you want the Title of the document printed for the header in this position.
+c.  Press F2.
+d.  A variety of different lists appear which may be input in a component list.  It would be worth your while to press the Help button and read up on the types of inputs Component Lists take.  You don’t have to understand in detail yet what each type of input does but understand what can be entered.  
+e.  Close the help if it is open, and choose Title from the Document Variable list.  
+f.  Choose Ok.  Note that the component list now has Title.  
+Component lists often hold multiple inputs.  You could insert other information in this component list if you wanted too.
+
+You now are probably to the point that you can explore the style editor on your own.    Before you do though there are a few other tutorials worth exploring.
+
+If you follow through the steps of How to create a Title Page for Front Matter, you will be introduced to the use of document variables, display elements, vertical material, the shell file and title pages.  
+
+If you follow through the steps of how to create a rule element, you will have a better understanding of using Rules and Inline Elements.
+
+Last remember that the help file provides information on all screens and dialog boxes.  The fields within these areas are all documented and in the majority of cases step by step How to’s exist related to various procedures.
+
+
+
+_____
+
+Numbers
+Component lists seem to be make beginning Style Editor users uncomfortable, however they are not as difficult to use as they appear at first glance and in time you will probably come to enjoy the flexibility they provide.
+
+Styles are created by choosing an existing style and then modifying that style to suit your needs.  The Style Editor Menu is setup so that your overall page layout operations are located in the Base Menu.  Operations that deal with a specific portion of the document are located in the Parts Menu, and specific style element operations that can be used to affect any portions of the style are available in the Elements menu.  Some categories in the Parts menu, and all categories in the Elements menu, allow you to create multiple incidences of a specific style element or style part.  For example, you can create multiple Exceptional Pages and multiple paragraph types.  In other words, the text font, justification, indention and other document layout concerns are not specified for the document as a whole but instead are specified for each area of style, such as body text, footnote, and margin note.  After making changes and upon saving a style, the settings you make are stored in files that consist of Latex commands and have the .sty file extension.
+
+The first step in modifying or creating a style is to open the file for the existing style that most closely matches the printed appearance you want.  For example if you are creating a style for a report, you would want to choose the built in Style Editor Report Style.
+
+
+Opening a style
+Modifying a style
+Saving a style
+Deleting a style
+Specifying the Page Layout
+Using a style with SW
+Using a style without SW
+Sending a style to someone
+Receiving a style from someone
+Exiting the program
+
