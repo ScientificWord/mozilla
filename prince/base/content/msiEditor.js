@@ -5889,4 +5889,20 @@ function OpenExtensions(aOpenMode)
   }
 }
 
+function openStructureTagDialog(tagname)
+{
+ var structureData= {tagName: tagname};
+ openDialog( "chrome://prince/content/structureProperties.xul",
+                             "",
+                             "",
+                             structureData);
+}
 
+function openParaTagDialog(tagname)
+{
+ var paragraphData= {tagName: tagname};
+  openDialog( "chrome://prince/content/paragraphProperties.xul",
+                             "",
+                             "",
+                             paragraphData);
+}
