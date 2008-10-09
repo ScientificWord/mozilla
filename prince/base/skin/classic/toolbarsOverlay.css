@@ -45,10 +45,14 @@ toolbar[iconsize="small"] #mathToolbarTab:active
   list-style-image: url("chrome://prince/skin/icons/tab-active-sm.png");
 }
 
+#evalButton {
+  list-style-image: url("chrome://prince/skin/icons/math_evaluate.png");
+}
 
 toolbar[iconsize="small"] #evalButton {
   list-style-image: url("chrome://prince/skin/icons/math_evaluate-sm.png");
 }
+
 
 #evalButton:hover {
   list-style-image: url("chrome://prince/skin/icons/math_evaluate-hover.png");
@@ -2225,7 +2229,6 @@ toolbox[iconsize="small"] textbox { min-height : 15px; margin: 0;}
 
 toolbar {
   border: 0;
-  width: 100%;
 }
 
 toolbox {
