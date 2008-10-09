@@ -146,7 +146,7 @@ function addSectionProperties(editorElement, contextMenuNode)
       tag = parentTagArray[i].replace(/\s-\s\w*$/,"");
       if (/\w/.test(tag) && editor.tagListManager.getTagInClass("paratag", tag, null))
       {
-        createContextPropertiesItem(tag,"Properties of "+tag,tag, contextMenuNode);
+        createContextPropertiesItem(tag,"Properties of "+tag,tag, contextMenuNode,"paratag");
       }
     }
     for (i = 0, length = parentTagArray.length; i < length; i++)
@@ -154,20 +154,20 @@ function addSectionProperties(editorElement, contextMenuNode)
       tag = parentTagArray[i].replace(/\s-\s\w*$/,"");
       if (/\w/.test(tag) && editor.tagListManager.getTagInClass("structtag", tag, null))
       {
-        createContextPropertiesItem(tag,"Properties of "+tag,tag, contextMenuNode);
+        createContextPropertiesItem(tag,"Properties of "+tag,tag, contextMenuNode, "structtag");
       }
     }
   }
 }
 
-function createContextPropertiesItem(id, label, target, contextMenuNode)
+function createContextPropertiesItem(id, label, target, contextMenuNode, tagfamily)
 {
   var item = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
                                          "menuitem");
 
-  item.setAttribute("oncommand","openStructureTagDialog("+target+";");
+  item.setAttribute("oncommand",tagfamily==="structtag"?"openStructureTagDialog('"+target+"');":"openParaTagDialog('"+target+"');");
   item.id = "contexttagitem_"+id;
-  item.setAttribute("label",label);
+  item.setAttribute("label",label);                                               
   item.setAttribute("value",target);
   
   return contextMenuNode.appendChild(item);
@@ -178,8 +178,8 @@ function removeSectionProperties(contextMenuNode)
   var item = document.getElementById("structure-properties-separator");
   item = item.nextSibling;
   var next;
-  while (item)
-  {
+  while (item && item.localName === "menuitem")
+  {                   
     next = item.nextSibling;
     item.parentNode.removeChild(item);
     item = next;

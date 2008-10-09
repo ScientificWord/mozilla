@@ -200,6 +200,8 @@ prince.jar:
   content/standaloneSidebar.js       (dialogs/standaloneSidebar.js)
   content/standaloneSidebar.xul      (dialogs/standaloneSidebar.xul)
   content/useWorkInProgress.xul      (dialogs/useWorkInProgress.xul)
+  content/paragraphProperties.xul      (dialogs/paragraphProperties.xul)
+  content/structureProperties.xul      (dialogs/structureProperties.xul)
   content/wordcount.xul              (dialogs/wordcount.xul) 
   content/bindings/sidebar.css		 (bindings/sidebar.css)
   content/bindings/sidebar.xml		 (bindings/sidebar.xml)
