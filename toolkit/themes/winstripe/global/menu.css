@@ -140,6 +140,7 @@ menubar > menu[_moz-menuactive="true"][open="true"] {
 }
 menubar > menu[_moz-menuactive="true"],
 menubar > menu[_moz-menuactive="true"][open="true"] {
+  background-color: -moz-menuhover;
   color: -moz-menubarhovertext;
 }
 
