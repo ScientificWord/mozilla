@@ -338,6 +338,7 @@ function msiGoUpdateCommandState(command, editorElement)
       case "cmd_paratag":
       case "cmd_structtag":
       case "cmd_othertag":
+
         msiPokeTagStateUI(command, params);
         break;
 
@@ -769,6 +770,7 @@ var nsDummyHTMLCommand =
   }
 
 };
+
 
 //-----------------------------------------------------------------------------------
 var msiGIFAnimation = 
@@ -1847,6 +1849,7 @@ function msigEditorOutputProgressListener(editorElement)
   {
     var bDebugOutputLocationChange = ("gShowDebugOutputLocationChange" in window) && window.gShowDebugOutputLocationChange;
     if (bDebugOutputLocationChange)
+
     {
       dump("***** onLocationChange: "+aLocation.spec+"\n");
       try {
@@ -3108,6 +3111,7 @@ var msiDirectPrintCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
+
     var editorElement = msiGetActiveEditorElement();
     if (!editorElement || !msiIsTopLevelEditor(editorElement))
       return false;
@@ -3601,6 +3605,7 @@ var msiInputTagCommand =
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
+
   doCommand: function(aCommand, dummy)
   {
     var editorElement = msiGetActiveEditorElement();
@@ -3961,6 +3966,7 @@ var msiImageCommand =
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
+
   doCommand: function(aCommand, dummy)
   {
     var editorElement = msiGetActiveEditorElement();
@@ -4123,6 +4129,7 @@ var msiReviseHyperlinkCommand =
   },
 
   doCommand: function(aCommand, dummy)  {}
+
 };
 
 //-----------------------------------------------------------------------------------
@@ -4773,6 +4780,7 @@ var msiListPropertiesCommand =
   {
     var editorElement = msiGetActiveEditorElement();
     return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement));
+
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
@@ -6222,6 +6230,7 @@ var msiObjectPropertiesCommand =
             msiGoDoCommandParams("cmd_MSIreviseTensorCmd", cmdParams, editorElement);
         break;
 
+
         case 'mi':
           if (msiNavigationUtils.isUnit(wrappedChildElement))
             msiGoDoCommandParams("cmd_MSIreviseUnitsCommand", cmdParams, editorElement);
@@ -6766,6 +6775,7 @@ var msiSelectTableColumnCommand =
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
+
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement();
@@ -7137,6 +7147,7 @@ var msiDeleteTableCellContentsCommand =
   doCommandParams: function(aCommand, aParams, aRefCon) {},
 
   doCommand: function(aCommand)
+
   {
     var editorElement = msiGetActiveEditorElement();
     try
