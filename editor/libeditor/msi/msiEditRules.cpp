@@ -89,8 +89,52 @@ msiEditRules::DidReplaceNode(nsIDOMNode *aNewNode,
                              nsIDOMNode *aParent, 
                              nsresult    aResult)
 {
- return NS_OK;
+  printf("msiEditRules:DidReplaceNode\n");
+ return NS_OK; //nsHTMLEditRules::DidReplaceNode(aNewNode,aOldNode,aParent,aResult);
+}
+
+NS_IMETHODIMP 
+msiEditRules::DidDeleteNode(nsIDOMNode *aChild, nsresult aResult)
+{
+  printf("msiEditRules:DidDeleteNode\n");
+  return nsHTMLEditRules::DidDeleteNode(aChild, aResult);  
 }
 
 
+NS_IMETHODIMP 
+msiEditRules::DidSplitNode(nsIDOMNode *aExistingRightNode, 
+                              PRInt32 aOffset, 
+                              nsIDOMNode *aNewLeftNode, 
+                              nsresult aResult)
+{
+  printf("msiEditRules:DidSplitNode\n");
+ return nsHTMLEditRules::DidSplitNode(aExistingRightNode,aOffset,aNewLeftNode,aResult);
+}
+
+
+NS_IMETHODIMP 
+msiEditRules::DidDeleteText(nsIDOMCharacterData *aTextNode, 
+                                  PRInt32 aOffset, 
+                                  PRInt32 aLength, 
+                                  nsresult aResult)
+{
+  printf("msiEditRules:DidDeleteText\n");
+  return nsHTMLEditRules::DidDeleteText(aTextNode, aOffset, aLength, aResult);  
+}
+
+
+NS_IMETHODIMP
+msiEditRules::DidDeleteRange(nsIDOMRange *aRange)
+{
+  printf("msiEditRules:DidDeleteRange\n");
+  return nsHTMLEditRules::DidDeleteRange(aRange);
+}
+
+
+NS_IMETHODIMP
+msiEditRules::DidDeleteSelection(nsISelection *aSelection)
+{
+  printf("msiEditRules:DidDeleteSelection\n");
+  return nsHTMLEditRules::DidDeleteSelection(aSelection);
+}
 
