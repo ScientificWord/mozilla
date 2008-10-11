@@ -460,13 +460,14 @@ nsMathMLTokenFrame::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, 
 NS_IMETHODIMP 
 nsMathMLTokenFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
 {
+    *_retval = count;
     if (count == 0)
     {
       PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, *_retval);
     }
     else
     {
-      PlaceCursorBefore(this, PR_FALSE, aOutFrame, aOutOffset, *_retval);
+      PlaceCursorBefore(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
     }
     *_retval = 0;
     return NS_OK;
@@ -476,13 +477,14 @@ nsMathMLTokenFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame,
 NS_IMETHODIMP 
 nsMathMLTokenFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
 {
+    *_retval = count;
     if (count > 0)
     {
       PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, *_retval);
     }
     else
     {
-      PlaceCursorBefore(this, PR_FALSE, aOutFrame, aOutOffset, *_retval);
+      PlaceCursorBefore(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
     }
     *_retval = 0;
     return NS_OK;

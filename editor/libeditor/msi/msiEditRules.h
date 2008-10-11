@@ -26,6 +26,11 @@ public:
   //nsHTMLEditRules methods
   nsresult WillDeleteSelection(nsISelection *aSelection, nsIEditor::EDirection aAction, 
                                PRBool *aCancel, PRBool *aHandled);
+  NS_IMETHOD DidDeleteNode(nsIDOMNode *aChild, nsresult aResult);
+  NS_IMETHOD DidSplitNode(nsIDOMNode *aExistingRightNode, PRInt32 aOffset, nsIDOMNode *aNewLeftNode, nsresult aResult);
+  NS_IMETHOD DidDeleteText(nsIDOMCharacterData *aTextNode, PRInt32 aOffset, PRInt32 aLength, nsresult aResult);
+  NS_IMETHOD DidDeleteRange(nsIDOMRange *aRange);
+  NS_IMETHOD DidDeleteSelection(nsISelection *aSelection);
 
   // data members
 protected:
