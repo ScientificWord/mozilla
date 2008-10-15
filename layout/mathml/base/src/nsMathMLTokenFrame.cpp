@@ -461,9 +461,9 @@ NS_IMETHODIMP
 nsMathMLTokenFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
 {
     *_retval = count;
-    if (count == 0)
+    if (count == 0)  //BBM: if this code stays unchanged, this test is redundant
     {
-      PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, *_retval);
+      PlaceCursorAfter(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
     }
     else
     {
@@ -478,9 +478,9 @@ NS_IMETHODIMP
 nsMathMLTokenFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
 {
     *_retval = count;
-    if (count > 0)
+    if (count > 0)  //BBM: if this code stays unchanged, this test is redundant
     {
-      PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, *_retval);
+      PlaceCursorAfter(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
     }
     else
     {
