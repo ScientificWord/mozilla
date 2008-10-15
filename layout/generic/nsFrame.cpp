@@ -5273,7 +5273,7 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
   if (pFrame) // 'this' is a math frame
   {
     printf("Starting in a math frame\n");
-    // the cursor is in a math tag, not in a text tag that is in mathematics, and we are leaving
+    // the cursor is in a math tag, not in a text tag that is in mathematics, and we are leaving or entering
     // BBM: Fix this. Counting in the frame tree is unreliable. We should be doing it in the DOM tree.
     PRUint32 nodecount = 0;
     pChild = GetFirstChild(nsnull);
