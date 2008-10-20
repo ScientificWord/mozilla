@@ -4022,6 +4022,14 @@ nsDocument::GetLastChild(nsIDOMNode** aLastChild)
   return NS_OK;
 }
 
+
+NS_IMETHODIMP
+nsDocument::GetLastTraversalChild(nsIDOMNode** aLastChild)
+{
+  return GetLastChild(aLastChild);
+}
+
+
 NS_IMETHODIMP
 nsDocument::GetPreviousSibling(nsIDOMNode** aPreviousSibling)
 {

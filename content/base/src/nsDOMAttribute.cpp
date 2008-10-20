@@ -315,6 +315,13 @@ nsDOMAttribute::GetLastChild(nsIDOMNode** aLastChild)
   return GetFirstChild(aLastChild);
 }
 
+
+NS_IMETHODIMP
+nsDOMAttribute::GetLastTraversalChild(nsIDOMNode** aLastChild)
+{
+  return GetFirstChild(aLastChild);
+}
+
 NS_IMETHODIMP
 nsDOMAttribute::GetPreviousSibling(nsIDOMNode** aPreviousSibling)
 {
