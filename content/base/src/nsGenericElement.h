@@ -494,6 +494,7 @@ public:
   NS_IMETHOD HasChildNodes(PRBool* aHasChildNodes);
   NS_IMETHOD GetFirstChild(nsIDOMNode** aFirstChild);
   NS_IMETHOD GetLastChild(nsIDOMNode** aLastChild);
+  NS_IMETHOD GetLastTraversalChild(nsIDOMNode** aLastChild);
   NS_IMETHOD InsertBefore(nsIDOMNode* aNewChild, nsIDOMNode* aRefChild,
                           nsIDOMNode** aReturn);
   NS_IMETHOD ReplaceChild(nsIDOMNode* aNewChild, nsIDOMNode* aOldChild,

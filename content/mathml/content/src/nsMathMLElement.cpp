@@ -457,3 +457,18 @@ nsMathMLElement::SetIncrementScriptLevel(PRBool aIncrementScriptLevel,
   doc->ContentStatesChanged(this, nsnull,
                             NS_EVENT_STATE_INCREMENT_SCRIPT_LEVEL);
 }
+
+
+nsresult
+nsMathMLElement::GetLastTraversalChild(nsIDOMNode** aNode)
+{
+  nsAutoString szName;
+  GetLocalName(szName);
+  if (szName.EqualsLiteral("mfrac")) // add others (msup, mroot) here
+  {
+    return GetFirstChild(aNode);
+  }
+  else  
+    return GetLastChild(aNode);
+}
+
