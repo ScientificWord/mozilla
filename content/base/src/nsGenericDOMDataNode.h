@@ -105,6 +105,12 @@ public:
     *aLastChild = nsnull;
     return NS_OK;
   }
+  nsresult GetLastTraversalChild(nsIDOMNode** aLastChild)
+  {
+    NS_ENSURE_ARG_POINTER(aLastChild);
+    *aLastChild = nsnull;
+    return NS_OK;
+  }
   nsresult InsertBefore(nsIDOMNode* aNewChild, nsIDOMNode* aRefChild,
                         nsIDOMNode** aReturn)
   {
@@ -368,6 +374,9 @@ private:
   }                                                                         \
   NS_IMETHOD GetLastChild(nsIDOMNode** aLastChild) {                        \
     return nsGenericDOMDataNode::GetLastChild(aLastChild);                  \
+  }                                                                         \
+  NS_IMETHOD GetLastTraversalChild(nsIDOMNode** aLastChild) {               \
+    return nsGenericDOMDataNode::GetLastTraversalChild(aLastChild);         \
   }                                                                         \
   NS_IMETHOD GetPreviousSibling(nsIDOMNode** aPreviousSibling) {            \
     return nsGenericDOMDataNode::GetPreviousSibling(aPreviousSibling);      \
