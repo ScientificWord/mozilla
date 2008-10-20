@@ -1544,6 +1544,13 @@ nsGenericElement::GetLastChild(nsIDOMNode** aNode)
   return NS_OK;
 }
 
+
+nsresult
+nsGenericElement::GetLastTraversalChild(nsIDOMNode** aNode)
+{
+  return GetLastChild(aNode);
+}
+
 NS_IMETHODIMP
 nsGenericElement::GetTagName(nsAString& aTagName)
 {
