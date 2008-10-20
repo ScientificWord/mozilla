@@ -63,7 +63,38 @@ public:
 
   // Forward implementations of parent interfaces of nsMathMLElement to 
   // our base class
-  NS_FORWARD_NSIDOMNODE(nsMathMLElementBase::)
+
+  // Since we override one of the nsIDOMNode method, we can't use the following line:
+//  NS_FORWARD_NSIDOMNODE(nsMathMLElementBase::)
+//  Instead we do this:
+  NS_IMETHOD GetNodeName(nsAString & aNodeName) { return nsMathMLElementBase::GetNodeName(aNodeName); } \
+  NS_IMETHOD GetNodeValue(nsAString & aNodeValue) { return nsMathMLElementBase::GetNodeValue(aNodeValue); } \
+  NS_IMETHOD SetNodeValue(const nsAString & aNodeValue) { return nsMathMLElementBase::SetNodeValue(aNodeValue); } \
+  NS_IMETHOD GetNodeType(PRUint16 *aNodeType) { return nsMathMLElementBase::GetNodeType(aNodeType); } \
+  NS_IMETHOD GetParentNode(nsIDOMNode * *aParentNode) { return nsMathMLElementBase::GetParentNode(aParentNode); } \
+  NS_IMETHOD GetChildNodes(nsIDOMNodeList * *aChildNodes) { return nsMathMLElementBase::GetChildNodes(aChildNodes); } \
+  NS_IMETHOD GetFirstChild(nsIDOMNode * *aFirstChild) { return nsMathMLElementBase::GetFirstChild(aFirstChild); } \
+  NS_IMETHOD GetLastChild(nsIDOMNode * *aLastChild) { return nsMathMLElementBase::GetLastChild(aLastChild); } \
+  NS_IMETHOD GetPreviousSibling(nsIDOMNode * *aPreviousSibling) { return nsMathMLElementBase::GetPreviousSibling(aPreviousSibling); } \
+  NS_IMETHOD GetNextSibling(nsIDOMNode * *aNextSibling) { return nsMathMLElementBase::GetNextSibling(aNextSibling); } \
+  NS_IMETHOD GetAttributes(nsIDOMNamedNodeMap * *aAttributes) { return nsMathMLElementBase::GetAttributes(aAttributes); } \
+  NS_IMETHOD GetOwnerDocument(nsIDOMDocument * *aOwnerDocument) { return nsMathMLElementBase::GetOwnerDocument(aOwnerDocument); } \
+  NS_IMETHOD InsertBefore(nsIDOMNode *newChild, nsIDOMNode *refChild, nsIDOMNode **_retval) { return nsMathMLElementBase::InsertBefore(newChild, refChild, _retval); } \
+  NS_IMETHOD ReplaceChild(nsIDOMNode *newChild, nsIDOMNode *oldChild, nsIDOMNode **_retval) { return nsMathMLElementBase::ReplaceChild(newChild, oldChild, _retval); } \
+  NS_IMETHOD RemoveChild(nsIDOMNode *oldChild, nsIDOMNode **_retval) { return nsMathMLElementBase::RemoveChild(oldChild, _retval); } \
+  NS_IMETHOD AppendChild(nsIDOMNode *newChild, nsIDOMNode **_retval) { return nsMathMLElementBase::AppendChild(newChild, _retval); } \
+  NS_IMETHOD HasChildNodes(PRBool *_retval) { return nsMathMLElementBase::HasChildNodes(_retval); } \
+  NS_IMETHOD CloneNode(PRBool deep, nsIDOMNode **_retval) { return nsMathMLElementBase::CloneNode(deep, _retval); } \
+  NS_IMETHOD Normalize(void) { return nsMathMLElementBase::Normalize(); } \
+  NS_IMETHOD IsSupported(const nsAString & feature, const nsAString & version, PRBool *_retval) { return nsMathMLElementBase::IsSupported(feature, version, _retval); } \
+  NS_IMETHOD GetNamespaceURI(nsAString & aNamespaceURI) { return nsMathMLElementBase::GetNamespaceURI(aNamespaceURI); } \
+  NS_IMETHOD GetPrefix(nsAString & aPrefix) { return nsMathMLElementBase::GetPrefix(aPrefix); } \
+  NS_IMETHOD SetPrefix(const nsAString & aPrefix) { return nsMathMLElementBase::SetPrefix(aPrefix); } \
+  NS_IMETHOD GetLocalName(nsAString & aLocalName) { return nsMathMLElementBase::GetLocalName(aLocalName); } \
+  NS_IMETHOD HasAttributes(PRBool *_retval) { return nsMathMLElementBase::HasAttributes(_retval); } 
+
+  NS_IMETHOD GetLastTraversalChild(nsIDOMNode * *aLastTraversalChild);
+
   NS_FORWARD_NSIDOMELEMENT(nsMathMLElementBase::)
 
   nsresult BindToTree(nsIDocument* aDocument, nsIContent* aParent,
