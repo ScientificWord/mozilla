@@ -81,6 +81,8 @@ public:
   { return nsGenericElement::GetFirstChild(aFirstChild); }
   NS_IMETHOD    GetLastChild(nsIDOMNode** aLastChild)
   { return nsGenericElement::GetLastChild(aLastChild); }
+  NS_IMETHOD    GetLastTraversalChild(nsIDOMNode** aLastChild)
+  { return nsGenericElement::GetLastTraversalChild(aLastChild); }
   NS_IMETHOD    GetPreviousSibling(nsIDOMNode** aPreviousSibling)
   { return nsGenericElement::GetPreviousSibling(aPreviousSibling); }
   NS_IMETHOD    GetNextSibling(nsIDOMNode** aNextSibling)
