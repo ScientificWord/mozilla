@@ -570,9 +570,11 @@
 \def\TeXButton#1#2{%
    \msitag{<TeXButton><TBLabel>#1</TBLabel><TBTeX>#2</TBTeX></TeXButton>}}
 
-\def\QSubDoc#1#2{%
-   \msitag{<IncludeSubdoc><Label>#1</Label><TeX>#2</TeX></IncludeSubdoc>}%
-}
+%%\def\QSubDoc#1#2{%
+%%   \msitag{<IncludeSubdoc><Label>#1</Label><TeX>#2</TeX></IncludeSubdoc>}%
+%%}
+
+\def\QSubDoc#1#2{#2}
 
 
 
@@ -844,6 +846,7 @@
       \typeout{Did not find limits or no limits}%
       \temptoksc={}%
       \let\@next\msi@limits%
+
    \fi\fi
    \@next   
 }%

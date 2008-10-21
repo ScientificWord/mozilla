@@ -83,6 +83,7 @@
 
 \def\out@begin@document{%
    \msiclosetag{preamble}{</preamble>}%
+
    \br\msitag{</head>}
    \br\msiopentag{body}{<body>}
    %%\msihmode\br\msiopentag{docbody}{<docbody>}%
@@ -1316,6 +1317,7 @@
 \msi@uni{P}{b6}
 \msi@uni{AE}{c6}
 \msi@uni{O-umlat}{d6}
+
 \msi@uni{ae}{e6}
 \msi@uni{o-umlat}{f6}
 
@@ -1761,8 +1763,10 @@
 
 \def\&{\char`\&amp;}
 
+
+
 \def\out@hyperref#1#2#3#4{%
-   \msiopentag{a}{<a href="#4">}#1\msiclosetag{a}{</a>}
+   \msiopentag{<a href="#4">}#1\msiclosetag{</a>}%
 }
 
 \newif\if@in@texttag
