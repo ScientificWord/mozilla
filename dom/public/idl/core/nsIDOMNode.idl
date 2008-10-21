@@ -80,6 +80,8 @@ interface nsIDOMNode : nsISupports
   readonly attribute nsIDOMNamedNodeMap attributes;
   // Modified in DOM Level 2:
   readonly attribute nsIDOMDocument   ownerDocument;
+  // BBM Added for math traversal
+  readonly attribute nsIDOMNode       lastTraversalChild;
   nsIDOMNode                insertBefore(in nsIDOMNode newChild, 
                                          in nsIDOMNode refChild)
                                           raises(DOMException);
