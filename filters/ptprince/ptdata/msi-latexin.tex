@@ -178,6 +178,7 @@
 \def\strip@prefix#1>{}
 \begingroup
 \count@\time
+
 \divide\count@ 60
 \count2=-\count@
 \multiply\count2 60
@@ -1994,6 +1995,7 @@
   \@tempdimb \maxdimen
   \let \best@size \@empty
   \expandafter \try@simples \font@info <\number\@M>\@nil<\@nnil
+
 }
 \def\font@submax{0pt}
 \def\fontsubfuzz{.4pt}
@@ -2436,6 +2438,7 @@
   \ifin@
     \expandafter\in@\expandafter#3\expandafter{\group@list}%
     \ifin@
+
       \begingroup
         \expandafter\get@cdp\string#2\@nil\reserved@a
         \toks@{}%
@@ -2844,6 +2847,7 @@
            \csname sym#2\expandafter\endcsname\csname sym#4\endcsname#1%
            \reserved@c\reserved@d
       \endgroup
+
     \else
       \@latex@error{Symbol font `#4' is not defined}\@eha
     \fi
@@ -3129,6 +3133,7 @@
   \def \reserved@b {#1}%
   \def \reserved@c {#3}%
   \ifx \reserved@a \reserved@b
+
     \ifx \reserved@c \@empty
       \let \check@icl \@empty
     \else
@@ -3828,6 +3833,7 @@
 %%jcs   \ifnum \@enumdepth >\thr@@\@toodeep\else
 %%jcs     \advance\@enumdepth\@ne
 %%jcs     \edef\@enumctr{enum\romannumeral\the\@enumdepth}%
+
 %%jcs       \expandafter
 %%jcs       \list
 %%jcs         \csname label\@enumctr\endcsname
@@ -4945,6 +4951,7 @@
              \@setfpsbit \tw@
            \fi
            \if \reserved@a b%
+
              \@setfpsbit 4%
            \fi
            \if \reserved@a p%
@@ -6175,6 +6182,7 @@
    \advance \@reqcolroom
      \ifx #2\@empty \textfloatsep \else \floatsep \fi
    \ifdim \@colroom>\@reqcolroom
+
      \ifdim #1>\ht\@currbox
        \@tempswatrue
      \else
@@ -6425,6 +6433,7 @@
        \default@ds}%
       \@use@ption}%
   \@for\CurrentOption:=\@declaredoptions\do{%
+
     \expandafter\let\csname ds@\CurrentOption\endcsname\relax}%
   \let\CurrentOption\@empty
   \let\@fileswith@pti@ns\@@fileswith@pti@ns
@@ -6885,12 +6894,35 @@
 
 \def\U#1{\char`\&\char`\#x#1;}
 
-\def\msihyperref#1#2#3#4{%
-  \out@hyperref{#1}{#2}{#3}{#4}%
+
+
+%% \def\msihyperref#1#2#3#4
+%% Replace with contortion to convert & in parameter 4
+
+\begingroup
+
+   \catcode`\&=13%
+   \gdef&{\char`\&amp;}
+\endgroup
+  
+\def\msihyperref#1#2#3{%
+     \def\continue{\msihyperrefB{#1}{#2}{#3}}%
+     \catcode`\&=13%
+     \afterassignment\continue
+     \let\repl
 }
 
-\def\hyperref#1#2#3#4{%
-  \out@hyperref{#1}{#2}{#3}{#4}%
+\def\msihyperrefB#1#2#3#4{%
+     \xdef\repl{#4}%
+     \catcode`\&=
+     \temptoksa={\out@hyperref{#1}{#2}{#3}{\repl}}%
+}
+
+
+\def\hyperref#1#2#3{%
+  \begingroup
+     \catcode`\&=13%
+     \msihyperrefB{#1}{#2}{#3}%
 }
 
 
