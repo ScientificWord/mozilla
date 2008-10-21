@@ -140,6 +140,14 @@ int main(int argc, char* argv[])
       InputByteFile* pbf = new InputByteFile;
       pbf -> Open(fn);
 
+
+      // Adjust input directory to include this file's directory
+
+      const char* dir = fn.GetAreaString();
+      strcat(envInput, ";");
+      strcat(envInput, dir);
+      _putenv(envInput);
+
       // // Open a tap file for holding defs
       // std::string tappath = fn.GetAreaString();
       // s_tapfilename = fn.GetNameString();
