@@ -83,7 +83,6 @@
 
 \def\out@begin@document{%
    \msiclosetag{preamble}{</preamble>}%
-
    \br\msitag{</head>}
    \br\msiopentag{body}{<body>}
    %%\msihmode\br\msiopentag{docbody}{<docbody>}%
@@ -200,6 +199,7 @@
 \def\ref#1{\msiopentag{ref}{<a>}#1\msiclosetag{ref}{</a>}}
 \def\pageref#1{\msiopentag{pageref}{<pageref>}#1\msiclosetag{pageref}{</pageref>}}
 \def\pagenumbering#1{%
+
    \msiopentag{latexstyleb}{<latexstyleb>}%
       \msiopentag{styleprop}{<styleprop>}%
          page number style
@@ -458,6 +458,15 @@
      \msiextproc[jbm][\begin{align*}#1\end{align*}]%
      \msiclosetag[mml][</mml:math>]
   ]  
+  \gdef\@scan@gather@star#1\end{gather*}[%
+     \egroup
+     \@make@braces@normal
+     \msiopentag[mml][<mml:math class="displayedmathml" mode="display" display="block">]%
+     \msiextproc[jbm][\begin{gather*}#1\end{gather*}]%
+     \msiclosetag[mml][</mml:math>]
+  ]  
+
+
   \gdef\@scan@equation@star#1\end{equation*}[%
      \egroup
      \@make@braces@normal
@@ -517,6 +526,7 @@
 \@namedef{msi@begin@eqnarray}{\ \@make@braces@other\relax\@scan@eqnarray}
 
 \@namedef{msi@begin@align*}{\ \@make@braces@other\relax\@scan@align@star}
+\@namedef{msi@begin@gather*}{\ \@make@braces@other\relax\@scan@gather@star}
 
 \@namedef{msi@begin@equation*}{\ \@make@braces@other\relax\@scan@equation@star}
 \def\msi@begin@array{\ \@make@braces@other\relax\@scan@array}
@@ -1230,13 +1240,28 @@
 
 \def\@hex#1{\char38\char35x#1;}
 
+
+\newif\if@inaccent
+\@inaccentfalse
+
+
 \def\@accent#1#2{%
-  \ifx#1\i
-    \csname dotlessi-#2\endcsname
-  \else\ifx#1\j
-    \csname dotlessj-#2\endcsname
-  \else 
-    \csname #1-#2\endcsname
+    \if@inaccent
+      \@@accent{#1}{#2}%
+    \else
+      \@inaccenttrue
+      \expandafter\csname \@@accent{#1}{#2}\endcsname
+      \@inaccentfalse
+    \fi
+}
+
+\def\@@accent#1#2{%
+    \ifx#1\i
+      dotlessi-#2
+    \else\ifx#1\j
+      dotlessj-#2
+    \else 
+      #1-#2
   \fi\fi\fi
 }
 
@@ -1317,7 +1342,6 @@
 \msi@uni{P}{b6}
 \msi@uni{AE}{c6}
 \msi@uni{O-umlat}{d6}
-
 \msi@uni{ae}{e6}
 \msi@uni{o-umlat}{f6}
 
