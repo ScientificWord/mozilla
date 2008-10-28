@@ -34,6 +34,7 @@ CPPSRCS		=		   \
 	textio.cpp \
 	tokens.cpp \
 	typesetter.cpp \
+  mml.cpp \
 	$(NULL)
 
 # not right, but compiles
@@ -72,6 +73,7 @@ FWSRCS  =  \
   $(srcdir)/textio.fw        \
   $(srcdir)/tokens.fw        \
   $(srcdir)/toks.fw          \
+  $(srcdir)/mml.fw           \
   $(srcdir)/typeset.fw       \
   $(srcdir)/userface.fw      \
   $(srcdir)/which.fw         \
