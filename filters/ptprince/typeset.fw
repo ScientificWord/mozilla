@@ -21,12 +21,12 @@ lines, formulas, pages, footnotes, and so on.
 #include "typesetter.h"
 #include <iostream>
 #include <strstream>
-#include <windows.h>
+//#include <windows.h>
+#include "mml.h"
 //#include <filespec.h>
 //#include <tcistrin.h>
 //#include <dataman.h>
 //#include <bytearry.h>
-#include "mmldll.h"
 
 enum FieldTarget{TARG_NUCLEUS, TARG_SUBSCRIPT, TARG_SUPERSCRIPT};
 
@@ -375,17 +375,11 @@ void Typesetter::EndProcess()
    if (strcmp(proc, "jbm") == 0){
       if (strlen(theCStr) != 2) { // i.e. more than $$
          LOG("\nSending to mathmldll: " << theCStr);
-         if (s_hDLL == 0){
-            SetupMathMLDLL();
-         }
-         LPCONVERT convertfunc;
-         convertfunc  = (LPCONVERT)GetProcAddress(s_hDLL,"ConvertInline");
-         convertfunc( theCStr, mathmlHandler, 2 );
+         SetupMathML();
+         std::string s_mathml;
+         ProcessMathML(theCStr, s_mathml);
+         
          LOG("\nGot back " << s_mathml.c_str());
-         //std::string str;
-         //str +=  "<mml:math>";
-         //str +=  s_mathml;
-         //str +=  "</mml:math>";
          AppendTag(s_mathml.c_str());
          s_mathml = "";
       }
@@ -560,12 +554,9 @@ void Typesetter::EndInline()
 
       if (strlen(theCStr) != 2) { // i.e. more than $$
          LOG("\nSending to jbm processor : " << theCStr);
-         if (s_hDLL == 0){
-            SetupMathMLDLL();
-         }
-         LPCONVERT convertfunc;
-         convertfunc  = (LPCONVERT)GetProcAddress(s_hDLL,"ConvertInline");
-         convertfunc( theCStr, mathmlHandler, 2 );
+         SetupMathML();
+         std::string s_mathml;
+         ProcessMathML(theCStr, s_mathml);
          LOG("\nGot back " << s_mathml.c_str());
          std::string str;
          str +=  "<mml:math>";
@@ -632,13 +623,10 @@ void Typesetter::EndDisplay()
 
       if (strlen(theCStr) != 2) { // i.e. more than $$
          LOG("\nSending to jbm processor : " << theCStr);
-         if (s_hDLL == 0){
-            SetupMathMLDLL();
-         }
-         LPCONVERT convertfunc;
-         convertfunc  = (LPCONVERT)GetProcAddress(s_hDLL,"ConvertDisplay");
-         convertfunc( theCStr, mathmlHandler, 2 );
-         LOG("\nGot back " << s_mathml.c_str());
+         SetupMathML();
+         std::string s_mathml;
+         ProcessMathML(theCStr, s_mathml);
+         LOG("\nGot back " << s_mathml.c_str());                   
          std::string str;
          str +=  "<mml:math class=\"displayedmathml\" "
                  "mode=\"display\" display=\"block\">";
