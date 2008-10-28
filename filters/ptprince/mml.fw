@@ -1,0 +1,131 @@
+                                                                    
+@A@<MML Definition@>
+
+@o@<mml.h@>==@{@-
+#ifndef MML_H
+#define MML_H
+#include <string>
+bool SetupMathML();
+void ProcessMathML(const char* inp, std::string& outp);
+#endif
+@}
+
+@o@<mml.cpp@>==@{@-
+#include "mml.h"
+#include <windows.h>
+#include <iostream>
+
+#include "mmldll.h"
+@<MML Implementation@>
+@}
+
+@$@<MML Implementation@>+=@{@-
+const int NUM_UPREF_STRS = 20;
+const int FIX_IE_BUG = 18;
+
+char *upref_zstrs[] = {
+  "200",                           // U8* mml_version
+  "<mml:math class=\"inlinemathml\" display=\"inline\">",
+  "mml:",                         //  U8* namespace_prefix;
+  "fontfamily=\"Times New Roman\" fontsize=\"120%\"",   //  U8* mstyle_attrs;
+  "mathcolor=\"gray\"",           //  U8* mathname_attrs;
+  "mathcolor=\"green\"",          //  U8* unitname_attrs;
+  "mathcolor=\"black\"",          //  U8* text_in_math_attrs;
+  "mathcolor=\"green\"",          //  U8* link_attrs;
+  "true",                         //  U8* renderer_baselines;
+  "false",                        //  U8* eqn_tags_to_mlabeledtr;
+  "false",                        //  U8* eqn_nums_to_mlabeledtr;
+  "0",                            //  U8* entity_mode;
+  "1",                            //  U8* lr_spacing_mode;
+  "1",                            //  U8* lr_spacing_mode_in_scripts;
+  "(%theequation%)",              //  U8* eqn_nums_format;
+  "false",                        //  U8* long_arrows_are_stretched;
+  "2",                            //  U8* indent_increment;
+  "true",                         //  U8* adjust_output_for_IE_spacing_bug;
+  "<mml:mtext class=\"fix-IE-bug\">&ZeroWidthSpace;</mml:mtext></mml:math>",
+  ""
+};
+
+
+
+bool fix_IE_space_bug =  true;
+
+HINSTANCE s_hApp;
+HINSTANCE s_hDLL;
+
+std::string s_mathml;
+extern char* s_mmldirname;
+
+BOOL CALLBACK mathmlHandler(DWORD type, const char* data)
+{
+  if ( type < 1000 ) {
+    s_mathml += "\n";
+    s_mathml += data;
+  }
+  return true;
+}
+
+bool SetupMathML()
+{
+    if (s_hDLL != 0) return true;
+
+    std::string strPath = s_mmldirname;
+    strPath += "\\mmldll.dll";
+    s_hDLL = ::LoadLibrary( strPath.c_str() );
+    if (s_hDLL == NULL) {
+      std::cout << "Load library failed for " << strPath.c_str() << "\n";
+      return false;
+    }
+
+    for (int j = 0; j < NUM_UPREF_STRS; j++ )
+    {
+      if (upref_zstrs[j] == NULL)
+      {
+        char* temp = new char[1];
+        temp[0] = 0;
+        upref_zstrs[j] = temp;
+      }
+    }
+    fix_IE_space_bug = (strcmp(upref_zstrs[FIX_IE_BUG], "true") == 0);
+    LPINITIALIZE Initialize = (LPINITIALIZE)GetProcAddress(s_hDLL,"Initialize");
+    if (!Initialize)
+    {
+      // TCI_ASSERT(FALSE);
+      return false;
+    }
+    HRESULT hr = (*Initialize)( (const char*) s_mmldirname,
+                                (const char*)"mml:",
+                                (const char**)upref_zstrs );
+    if (hr != S_OK) {
+      // TCI_ASSERT(FALSE);
+      return false;
+    }
+    return true;
+}
+
+void ProcessMathML(const char* str, std::string& outp){
+  LPCONVERT convertfunc;
+  convertfunc  = (LPCONVERT)GetProcAddress(s_hDLL,"ConvertInline");
+  convertfunc( str, mathmlHandler, 2 );
+  outp = s_mathml;
+  s_mathml = "";
+}
+
+
+void CloseMathML()
+{
+  int i =  0;
+  while ( i < 20 ) {
+    char* str = upref_zstrs[i];
+    if ( str )
+       delete[] str;
+    i++;
+  }
+  if (s_hDLL != 0){
+     FreeLibrary(s_hDLL);
+  }
+}
+
+
+
+@}
