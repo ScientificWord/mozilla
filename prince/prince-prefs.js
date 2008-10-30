@@ -14,7 +14,7 @@ pref("toolkit.scrollbar.clickToScroll.scrollDelay", 100);
 pref("toolkit.scrollbar.scrollIncrement", 20);
 pref("toolkit.scrollbar.smoothscroll", true);
 
-pref("swp.defaultShell", "article/StdArticleShell.sci");
+pref("swp.defaultShell", "articles/StdArticleShell.sci");
 pref("swp.defaultDialogShell", "chrome://prince/content/StdDialogShell.xhtml");
 pref("swp.saveintervalminutes",2);
 pref("swp.prefDocumentDir","SWPDocs");
