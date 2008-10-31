@@ -207,7 +207,7 @@ File /a "${srcdir}\${notefile}"
 File /a "${srctree}\prince\icons\${icon}"
 !endif
  
-File "/oname=$TEMPLATES\New Scientific WorkPlace 6 Document.sci" "${srcdir}\shells\article\StdArticleShell.sci"
+File "/oname=$TEMPLATES\New Scientific WorkPlace 6 Document.sci" "${srcdir}\shells\Articles\StdArticleShell.sci"
 
 ; any application-specific files
 !ifdef files
