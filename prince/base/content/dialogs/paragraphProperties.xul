@@ -1,26 +1,105 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
-<dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-    buttons="accept,cancel"
-    buttonlabelcancel="Cancel" buttonlabelaccept="OK"
-    ondialogaccept="{accept action}" ondialogcancel="{cancel action}">
-  <label>Paragraph Properties for ##</label>
- 
-  <tabbox id="tabboxid" flex="1">
-    <tabs>
-      <tab label="Format"/>
-      <tab label="Advanced"/>    
-    </tabs>
-    <tabpanels flex="1">
-      <tabpanel>
-        <vbox>
-          <checkbox id="noIndentCheckbox" label="Keep as an included subdocument?" checked="false"
-              persist="checked"/>
-          <checkbox id="noNumberCheckbox" label="Number this section?" checked="true" persist="checked"/>          
-        </vbox>        
-      </tabpanel>        
-      <tabpanel>
-      </tabpanel>
-    </tabpanels>  
-  </tabbox>
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/msiMathDlgStyle.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/typesetDocFormat.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/paragraphProperties.dtd" >
+<dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" 
+  buttons="accept,cancel" 
+  buttonlabelcancel="Cancel" 
+  buttonlabelaccept="OK" 
+  onload = "initialize();"
+  ondialogaccept="return onAccept();"
+  ondialogcancel="return onCancel();"
+  persist="width height screenX screenY"
+  title="&windowTitle.label;">
+<tabbox id="tabboxid" flex="1">
+  <tabs>
+    <tab label="&tab.indents.spacing;" />
+    <tab label="&tab.alignment;" /> 
+    <tab label="&tab.numbering;" />
+    <tab label="&tab.drop.caps;" />
+    <tab label="&tab.borders;" />
+    <tab label="&tab.background;" />
+  </tabs>
+  <tabpanels flex="1">
+    <tabpanel orient="horizontal">
+      <vbox flex="1.5">
+      <groupbox>
+        <caption label="&caption.indent;" />
+        <hbox align="center">
+          <label value="&label.before.text;" />
+          <spacer flex="1" />
+          <textbox id="beforetext" type="number" width="40px" />    
+         </hbox>
+        <hbox align="center">
+          <label value="&label.after.text;" />
+          <spacer flex="1" />
+          <textbox id="aftertext" type="number" width="40px" />   
+         </hbox>
+        <hbox align="center">
+          <label value="&label.first.line;" />
+          <spacer flex="1" />
+          <textbox id="firstline" type="number" width="40px" />   
+         </hbox>
+      </groupbox>
+      <groupbox>
+        <caption label="&caption.spacing;" />      
+        <hbox align="center">
+          <label value="&label.above.paragraph;" />
+          <spacer flex="1" />
+          <textbox id="aboveparagraph" type="number" width="40px" />   
+         </hbox>
+        <hbox align="center">
+          <label value="&label.below.paragraph;" />
+          <spacer flex="1" />
+          <textbox id="belowparagraph" type="number" width="40px" />  
+        </hbox>
+      </groupbox>
+      <groupbox>
+        <caption label="&caption.line.spacing;" />      
+        <hbox align="center">
+          <menulist>
+            <menupopup>
+              <menuitem value="single" label="&menuitem.single;" />
+              <menuitem value="sesqui" label="&menuitem.1.5.lines;" />
+              <menuitem value="double" label="&menuitem.double;" />
+              <menuitem value="leading" label="&menuitem.leading;" />
+            </menupopup>
+          </menulist>
+          <spacer flex="1" />
+          <textbox id="linespacing" type="number" width="40px" />  
+        </hbox>
+      </groupbox>
+      </vbox>
+      <vbox flex="1">
+        <label value="&label.units;" />
+        <menulist id="otfont.units" style="width:5em">
+          <menupopup>
+            <menuitem id="otfont.pt" label="pt" value="pt" />
+            <menuitem id="otfont.cm" label="cm" value="cm" />
+            <menuitem id="otfont.mm" label="mm" value="mm" />
+            <menuitem id="otfont.inch" label="in" value="in" />
+          </menupopup>
+        </menulist>
+        <hbox flex="1" />
+      </vbox>
+    </tabpanel>
+    <tabpanel>
+    </tabpanel>
+    <tabpanel>
+    </tabpanel>
+    <tabpanel>
+    </tabpanel>
+    <tabpanel>
+    </tabpanel>
+    <tabpanel>
+    </tabpanel>
+    <tabpanel>
+    </tabpanel> 
+  </tabpanels>
+</tabbox>
+
 </dialog>
