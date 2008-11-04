@@ -199,7 +199,6 @@
 \def\ref#1{\msiopentag{ref}{<a>}#1\msiclosetag{ref}{</a>}}
 \def\pageref#1{\msiopentag{pageref}{<pageref>}#1\msiclosetag{pageref}{</pageref>}}
 \def\pagenumbering#1{%
-
    \msiopentag{latexstyleb}{<latexstyleb>}%
       \msiopentag{styleprop}{<styleprop>}%
          page number style
@@ -1005,6 +1004,7 @@
 \msi@mathmlpass{\gneq}
 \msi@mathmlpass{\npreceq}
 \msi@mathmlpass{\nsucceq}
+
 \msi@mathmlpass{\precnsim}
 \msi@mathmlpass{\succnsim}
 \msi@mathmlpass{\lnsim}
@@ -1222,10 +1222,11 @@
   \fi
 }
 
-\def\backslash{\@hex{5c}}
+%\def\backslash{\@hex{5c}}
 
 %\def\textendash{\@hex{e28093}}
 %\def\textemdash{\@hex{e28094}}
+\msi@pass{\backslash}
 
 \def\textemdash{\@hex{2014}}
 

@@ -44,7 +44,7 @@ happens, otherwise an exception is thrown.
 
 
 @$@<Assertions@>+=@{@-
-#ifdef DEBUG
+ #ifdef DEBUG
    #define ASSERT(expr) _Assert(expr,__FILE__,__LINE__, #expr)
    void _Assert(bool assertion, const char* file, int line, const char* expr);
 #else
@@ -1349,7 +1349,7 @@ void OutputByteFile::Write(String& str)
    for (int i = 0; i < str.Size(); ++i){
      Put(str[i]);
    }
-   Put('\r'); // 
+   Put('\r');
    Put('\n');
 }
 @}
