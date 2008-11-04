@@ -12,10 +12,11 @@ void ProcessMathML(const char* inp, std::string& outp);
 
 @o@<mml.cpp@>==@{@-
 #include "mml.h"
-#include <windows.h>
+#include "../TreeGen/mmllib.h"
+//#include <windows.h>
 #include <iostream>
 
-#include "mmldll.h"
+//#include "mmldll.h"
 @<MML Implementation@>
 @}
 
@@ -25,6 +26,7 @@ const int FIX_IE_BUG = 18;
 
 char *upref_zstrs[] = {
   "200",                           // U8* mml_version
+  "<mml:math class=\"displayedmathml\" mode=\"display\" display=\"block\">",
   "<mml:math class=\"inlinemathml\" display=\"inline\">",
   "mml:",                         //  U8* namespace_prefix;
   "fontfamily=\"Times New Roman\" fontsize=\"120%\"",   //  U8* mstyle_attrs;
@@ -50,13 +52,13 @@ char *upref_zstrs[] = {
 
 bool fix_IE_space_bug =  true;
 
-HINSTANCE s_hApp;
-HINSTANCE s_hDLL;
+//HINSTANCE s_hApp;
+//HINSTANCE s_hDLL;
 
 std::string s_mathml;
 extern char* s_mmldirname;
 
-BOOL CALLBACK mathmlHandler(DWORD type, const char* data)
+bool mathmlHandler(U32 type, const char* data)
 {
   if ( type < 1000 ) {
     s_mathml += "\n";
@@ -67,15 +69,15 @@ BOOL CALLBACK mathmlHandler(DWORD type, const char* data)
 
 bool SetupMathML()
 {
-    if (s_hDLL != 0) return true;
+    //if (s_hDLL != 0) return true;
 
-    std::string strPath = s_mmldirname;
-    strPath += "\\mmldll.dll";
-    s_hDLL = ::LoadLibrary( strPath.c_str() );
-    if (s_hDLL == NULL) {
-      std::cout << "Load library failed for " << strPath.c_str() << "\n";
-      return false;
-    }
+    //std::string strPath = s_mmldirname;
+    //strPath += "\\mmldll.dll";
+    //s_hDLL = ::LoadLibrary( strPath.c_str() );
+    //if (s_hDLL == NULL) {
+    //  std::cout << "Load library failed for " << strPath.c_str() << "\n";
+    //  return false;
+    //}
 
     for (int j = 0; j < NUM_UPREF_STRS; j++ )
     {
@@ -87,26 +89,28 @@ bool SetupMathML()
       }
     }
     fix_IE_space_bug = (strcmp(upref_zstrs[FIX_IE_BUG], "true") == 0);
-    LPINITIALIZE Initialize = (LPINITIALIZE)GetProcAddress(s_hDLL,"Initialize");
-    if (!Initialize)
-    {
-      // TCI_ASSERT(FALSE);
-      return false;
-    }
-    HRESULT hr = (*Initialize)( (const char*) s_mmldirname,
+    //LPINITIALIZE Initialize =
+    //     (LPINITIALIZE)GetProcAddress(s_hDLL,"Initialize");
+    
+    //if (!Initialize)
+    //{
+    //  // TCI_ASSERT(FALSE);
+    //  return false;
+    //}
+    bool hr = InitializeMML( (const char*) s_mmldirname,
                                 (const char*)"mml:",
                                 (const char**)upref_zstrs );
-    if (hr != S_OK) {
-      // TCI_ASSERT(FALSE);
-      return false;
-    }
-    return true;
+    //if (hr != S_OK) {
+    //  // TCI_ASSERT(FALSE);
+    //  return false;
+    //}
+    return hr;
 }
 
 void ProcessMathML(const char* str, std::string& outp){
-  LPCONVERT convertfunc;
-  convertfunc  = (LPCONVERT)GetProcAddress(s_hDLL,"ConvertInline");
-  convertfunc( str, mathmlHandler, 2 );
+  //LPCONVERT convertfunc;
+  //convertfunc  = (LPCONVERT)GetProcAddress(s_hDLL,"ConvertInline");
+  ConvertInline( str, mathmlHandler, 2 );
   outp = s_mathml;
   s_mathml = "";
 }
@@ -121,9 +125,9 @@ void CloseMathML()
        delete[] str;
     i++;
   }
-  if (s_hDLL != 0){
-     FreeLibrary(s_hDLL);
-  }
+  //if (s_hDLL != 0){
+  //   FreeLibrary(s_hDLL);
+  //}
 }
 
 
