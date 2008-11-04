@@ -865,6 +865,8 @@ function layoutPage(which)
   var s;
   var i;
   var elt;
+  var eventsource = document.getElementById("tb"+which);
+  if (eventsource) eventsource._validateValue(eventsource.inputField.value,false,true);
   var vcenter = document.getElementById("vcenter").checked;
   var hcenter = document.getElementById("hcenter").checked;
   if (hcenter)
