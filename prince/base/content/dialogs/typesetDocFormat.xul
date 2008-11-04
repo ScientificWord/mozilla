@@ -464,7 +464,8 @@
                     <label value="&docformatColSeparation;" observes="multicolumn" />
                     <textbox id="tbcolsep" type="number" style="width: 5em" observes="multicolumn"  
                      onkeypress="geomHandleChar(event,'colsep', 'tbcolsep');layoutPage('colsep');" 
-                     onchange="layoutPage('colsep');" onfocus="activate('colsep');" onblur="deactivate('colsep');"/>
+                     onchange="layoutPage('colsep');" onfocus="activate('colsep');" 
+                     onblur="deactivate('colsep');"/>
                   </vbox>
                 </hbox>
                 <spacer flex="1"/>
