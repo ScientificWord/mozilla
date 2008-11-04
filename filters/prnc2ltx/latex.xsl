@@ -252,7 +252,12 @@ should not be done under some conditions -->
 <xsl:template match="html:LARGE">{\LARGE <xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:huge">{\huge <xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:Huge">{\Huge <xsl:apply-templates/>}</xsl:template>
-<xsl:template match="html:fontsize">{\fontsize{<xsl:value-of select="@size"/>}{<xsl:value-of select="@size"/>}\selectfont <xsl:apply-templates/>}</xsl:template>
+<xsl:template match="html:fontsize">
+  <xsl:variable name="fontsize" select="@size"/>
+  <xsl:variable name="units" select="substring-after($fontsize,' ')"/>
+  <xsl:if test="number(substring-before($fontsize,'/'))>0">
+    {\fontsize{<xsl:value-of select="concat(substring-before($fontsize,'/'),$units)"/>}{<xsl:choose><xsl:when test="number(substring-before(substring-after($fontsize,'/'),' '))>0"><xsl:value-of select="concat(substring-before(substring-after($fontsize,'/'),' '),$units)"/></xsl:when><xsl:otherwise><xsl:value-of select="concat(substring-before($fontsize,'/'),$units)"/></xsl:otherwise></xsl:choose>}\selectfont </xsl:if>
+    <xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:fontcolor">\textcolor[HTML]{<xsl:value-of select="substring(./@color,2,8)"/>}{<xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:otfont">{\fontspec{<xsl:value-of select="@fontname"/>}<xsl:apply-templates/>}</xsl:template>
 

@@ -426,7 +426,15 @@
     <xbl:implementation>
       <xbl:constructor>
         <![CDATA[
-          var style = "font-size: " + this.getAttribute("size"); 
+// size will look like '18/22 pt'
+          var size = this.getAttribute("size");
+          size = size.split('/');  // size[0] is 18, size[1] is 22 pt.
+          var leadingAndUnits = size[1].split(' ');
+          var leading = leadingAndUnits[0];
+          var units = leadingAndUnits[1];
+          var style = "font-size: " + size[0] + units + ";";
+          if (/[1-9]/.test(leading))      // do not add line height if it is zero or blank.
+            style +=  " " + "line-height: " + leading + units; 
           var span = document.getAnonymousElementByAttribute(this, "anonid", "fontsizespan");
           dump("Setting style on fontsize object to "+style+"\n");
           span.setAttribute("style", style);  
