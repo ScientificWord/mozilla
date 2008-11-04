@@ -137,6 +137,7 @@
         ]]>
         </setter>
       </property>
+      
 
       <method name="decrease">
         <body>
@@ -198,6 +199,7 @@
       <method name="_validateValue">
         <parameter name="aValue"/>
         <parameter name="aIsIncDec"/>
+        <parameter name="synchronizing"/>
         <body>
           <![CDATA[
             aValue = Number(aValue) || 0;
@@ -216,7 +218,7 @@
 
             this._valueEntered = false;
             this._value = Number(aValue);
-            this.inputField.value = aValue.replace(/\./, this.decimalSymbol);
+            if (!synchronizing) this.inputField.value = aValue.replace(/\./, this.decimalSymbol);
 
             if (!wrapAround)
               this._enableDisableButtons();
