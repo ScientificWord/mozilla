@@ -127,7 +127,6 @@ struct LineOfTextData {
         m_cursor(0)
         // m_cursor(m_line.begin())
    {}
-   
 };
 @}
 
@@ -211,7 +210,7 @@ bool LineOfText::bPeek(const char* str) const
   }else{
       for (int i = 0; i < strlen(str); ++i)
       {
-         //LOG("i == " << i << ",  chPeek(i) == " << 
+         //LOG("i == " << i << ",  chPeek(i) == " <<
          //    chPeek(i) << ",  str[i] == " << str[i]);
          if (chPeek(i) != str[i])
            return false;
@@ -234,7 +233,7 @@ void LineOfText::StripTCIMEnd(bool bMiddle)
    //LOG("\nStrip string: " << realstring.c_str());
    if (bMiddle){
        if ( (str[n-1] == (TeXChar)'\x0d')) {
-         if ( str[n-2] == '%' ){        
+         if ( str[n-2] == '%' ){
             str.erase(n-2, 2);
          } else {
             str.erase(n-1, 1);
@@ -731,7 +730,7 @@ private:
    CharStream& m_charStream;
    TCIMState m_tcimState;
    LineOfText* m_held;
-   
+
 public:
    LineSource(CharStream&);
    ~LineSource();
@@ -739,8 +738,7 @@ public:
    bool GetLine(LineOfText* line);
    bool GetRawLine(LineOfText* pLine);
    bool ScanALine(LineOfText* pLine);
-   
-   
+
 private:
    // Unimplemented
    LineSource(const LineSource&);
@@ -798,7 +796,6 @@ bool LineSource::ScanALine(LineOfText* pLine)
    // a line end character or not, so I'll
    // remove this for now.
    //pLine -> Append(LINE_END);
-   
    return true;
 }
 
@@ -821,10 +818,10 @@ bool LineSource::GetLine(LineOfText* pLine)
       m_held = 0;
       return true;
    }
-   
+
    if (!GetRawLine(pLine))
       return false;
-   
+
    // Adjust for TCIMACROs
    // note: check longer string first
    if (pLine -> bPeek("%TCIMACRO{%\x0D") || pLine -> bPeek("%TCIMACRO{")){
@@ -862,7 +859,7 @@ bool LineSource::GetLine(LineOfText* pLine)
         }
         pLine -> Append(0x0d);
    }
-      
+
    return true;
 }
 @}
