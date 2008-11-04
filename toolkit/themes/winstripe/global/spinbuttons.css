@@ -44,7 +44,7 @@ spinbuttons {
 
 .spinbuttons-button {
   min-width: 13px;
-  min-height: 11px;
+  min-height: 8px;
   margin: 0 !important;
   border: 2px solid;
   -moz-border-top-colors: ThreeDHighlight ThreeDLightShadow;
