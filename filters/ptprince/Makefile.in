@@ -12,8 +12,7 @@ RESFILE		= pretex.res
 
 MODULE = pretex
 
-MathMLDLL = \
-    $(srcdir)/mmldll.dll \
+MathML = \
     $(srcdir)/MATHML.gmr \
     $(srcdir)/MathType.gmr \
     $(srcdir)/MTEF5.gmr \
@@ -79,6 +78,10 @@ FWSRCS  =  \
   $(srcdir)/which.fw         \
   $(NULL)
 
+LOCAL_INCLUDES = -I$(srcdir)/../TreeGen
+
+LIBS = $(DIST)/lib/$(LIB_PREFIX)treegen_s.$(LIB_SUFFIX) \
+
 OS_LIBS += \
     urlmon.lib \
     winspool.lib \
@@ -105,8 +108,8 @@ ifdef MOZ_DEBUG
 CXXFLAGS	+= -DTESTING    -DLOGGING
 endif
 
-export:: $(FWSRCS) $(MathMLDLL) 
+export:: $(FWSRCS) $(MathML) 
 	$(INSTALL) $(FWSRCS) .
-	$(INSTALL) $(MathMLDLL) $(FINAL_TARGET)
+	$(INSTALL) $(MathML) $(FINAL_TARGET)
 
 
