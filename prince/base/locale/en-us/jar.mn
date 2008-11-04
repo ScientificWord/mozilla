@@ -90,4 +90,5 @@ en-US.jar:
   locale/standaloneSidebar.dtd		      (standaloneSidebar.dtd)
   locale/tabeditor.dtd				      (tabeditor.dtd)
   locale/msiDebugFind.dtd                 (dialogs/msiDebugFind.dtd)
-  locale/gotoparagraph.dtd                 (dialogs/gotoparagraph.dtd)
+  locale/gotoparagraph.dtd                (dialogs/gotoparagraph.dtd)
+  locale/paragraphProperties.dtd          (dialogs/paragraphProperties.dtd)
