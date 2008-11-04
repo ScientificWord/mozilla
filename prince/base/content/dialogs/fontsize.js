@@ -6,9 +6,8 @@ function onAccept()
   var size=Number(document.getElementById("otfont.fontsize").value);
   if (size==NaN) return;
   var units = document.getElementById("otfont.units").value;
-  var sizewithunits = size+units;
-//  var leading=Number(document.getElementById("leading").value);
-//  sizewithunits = sizewithunits+"/"+leading+units;
+  var leading=Number(document.getElementById("leading").value);
+  var sizewithunits = size+"/"+leading+" "+units;
   var editorElement = msiGetParentEditorElementForDialog(window);
   if (!editorElement)
   {
