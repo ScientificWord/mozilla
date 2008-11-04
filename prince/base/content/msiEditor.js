@@ -1990,8 +1990,6 @@ function onFontSizeChange(fontSizeMenulist, commandID)
 
 function msiEditorSetFontSize(size, editorElement)
 {
-//  var editorElement = msiGetParentEditorElementForDialog(window);
-//  var editor = msiGetEditor(editorElement);
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
   if (!editorElement)
