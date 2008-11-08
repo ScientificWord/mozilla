@@ -1,0 +1,20 @@
+<!ENTITY windowTitle.label "Paragraph Properties">
+<!ENTITY tab.indents.spacing "Indents &amp; Spacing">
+<!ENTITY tab.alignment "Alignment">
+<!ENTITY tab.numbering "Numbering">
+<!ENTITY tab.drop.caps "Drop Caps">
+<!ENTITY tab.borders "Borders">
+<!ENTITY tab.background "Background">
+<!ENTITY caption.indent "Indent">
+<!ENTITY label.before.text "Before text">
+<!ENTITY label.after.text "After text">
+<!ENTITY label.first.line "First line">
+<!ENTITY caption.spacing "Spacing">
+<!ENTITY label.above.paragraph "Above paragraph">
+<!ENTITY label.below.paragraph "Below paragraph">
+<!ENTITY caption.line.spacing "Line spacing">
+<!ENTITY menuitem.single "Single">
+<!ENTITY menuitem.1.5.lines "1.5 lines">
+<!ENTITY menuitem.double "Double">
+<!ENTITY menuitem.leading "Leading">
+<!ENTITY label.units "units">
