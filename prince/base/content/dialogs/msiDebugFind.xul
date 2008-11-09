@@ -131,10 +131,15 @@
       </grid>
     </vbox>
     <vbox>
+      <label id="verifyFindLabel" hidden="true" value="&verifyFindButton.label;" />
+      <label id="verifyFailed" hidden="true" value="&verifyFailed.label;" />
+      <label id="verifySucceeded" hidden="true" value="&verifySucceeded.label;" />
       <msibutton id="findNext" label="&findNextButton.label;" accesskey="&findNextButton.accesskey;" 
           oncommand="onFindNext();" default="true"/>
       <msibutton id="checkXPath" label="&checkXPathButton.label;" accesskey="&checkXPathButton.accesskey;" 
           oncommand="onCheckXPath();"/>
+      <msibutton id="verifyFind" label="&verifyFindButton.label;" accesskey="&verifyFindButton.accesskey;" 
+          oncommand="onVerifyFind();"/>
       <msibutton dlgtype="cancel" label="&closeButton.label;"/>
     </vbox>
   </hbox>
