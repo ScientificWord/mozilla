@@ -1,5 +1,15 @@
 var msiSearchUtils = 
 {
+  //Some defined constants
+  completedMatch: 1,
+  partialMatch: 2,
+  cannotMatch: 3,
+
+  isMatching : function(matchValue)
+  {
+    return (matchValue != this.cannotMatch);
+  },
+
 //the following list needs fleshing out a lot!!
   shouldSearchForAttribute : function(attrName, attrValue, parentNode)
   {
@@ -30,6 +40,42 @@ var msiSearchUtils =
     return returnVal;
   },
 
+  //This list isn't full!!
+  attributeIsInheritable : function(attrName)
+  {
+    switch(attrName)
+    {
+      case "limitPlacement":
+        return false;
+      break;
+      default:
+        return true;
+      break;
+    }
+  },
+
+  shouldAddAttributeToInheritedList : function(attrName, attrVal, parentNode)
+  {
+    return ( this.shouldSearchForAttribute(attrName, attrVal, parentNode) && this.attributeIsInheritable(attrName) );
+  },
+
+//////Note that "refEditor" is used to determine tagtypes. If may be passed in as null.
+  shouldAddNodeToInheritedList : function(targNode, refEditor)
+  {
+    var nodeType = this.getTypeOfNodeSearch(targNode, refEditor);
+    switch(nodeType)
+    {
+      case "textContainer":
+      case "blockContainer":
+      case "mathContainer":
+        return true;
+      break;
+      default:
+      break;
+    }
+    return false;
+  },
+  
   isEmptyInputBox : function(aNode)
   {
     if (msiGetBaseNodeName(aNode) == "mi")
@@ -67,6 +113,7 @@ var msiSearchUtils =
     return false;
   },
 
+  //This method returns true for objects whose contents are "implied mrows".
   isMRowLike: function(nodeName)  //includes <msqrt>, <mtd>, <mphantom> etc. as well as <mrow> and <mstyle>
   {
     switch(nodeName)
@@ -87,6 +134,87 @@ var msiSearchUtils =
         return false;
       break;
     }
+  },
+
+//////Note that "anEditor" is used to determine tagtypes. If may be passed in as null.
+  isContainer : function(aNode, anEditor)
+  {
+    var nodeName = msiGetBaseNodeName(aNode);
+    if (this.isMRowLike(nodeName))
+      return true;
+    switch( this.getTypeOfNodeSearch(aNode, anEditor) )
+    {
+      case "mathContainer":
+      case "anonContainer":
+      case "textContainer":
+      case "blockContainer":
+      case "styleAttribs":
+        return true;
+      break;
+    }
+    return false;
+  },
+
+//////Note that "anEditor" is used to determine tagtypes. If may be passed in as null.
+  //Is this even right now?
+  getContainerParent : function(aNode, anEditor)
+  {
+    var candidate = aNode.parentNode;
+    var retVal = null;
+    while ( (retVal == null) && (candidate != null) )
+    {
+      if (!this.isContainer(candidate, anEditor))
+        retVal = candidate;
+      else if ( (candidate.parentNode != null) && (!this.isContainer(candidate.parentNode)) )
+        retVal = candidate;
+      candidate = candidate.parentNode;
+    }
+    return retVal;
+  },
+
+  getSingleRangeContent : function(targRange)
+  {
+    var retVal = null;
+    if (targRange.startContainer == targRange.endContainer)  //is this condition necessary? Assume so, for now
+    {
+      if (targRange.startContainer.childNodes)
+      {
+        for (var ix = targRange.startOffset; ix < targRange.endOffset; ++ix)
+        {
+          if (!msiNavigationUtils.isIgnorableWhitespace(targRange.startContainer.childNodes[ix]))
+          {
+            if (retVal)     //already found one - so can't return a single child
+            {
+              retVal = null;
+              break;
+            }
+            retVal = targRange.startContainer.childNodes[ix];
+          }
+        }
+      }
+    }
+    return retVal;
+  },
+
+  getSingleChild : function(aNode)
+  {
+    var retVal = null;
+    if (aNode.childNodes)
+    {
+      for (var ix = 0; ix < aNode.childNodes.length; ++ix)
+      {
+        if (!msiNavigationUtils.isIgnorableWhitespace(aNode.childNodes[ix]))
+        {
+          if (retVal)     //already found one - so can't return a single child
+          {
+            retVal = null;
+            break;
+          }
+          retVal = aNode.childNodes[ix];
+        }
+      }
+    }
+    return retVal;
   },
 
   mathChildPositions :
@@ -150,6 +278,7 @@ var msiSearchUtils =
     return "";  
   },
 
+//////Note that "anEditor" is used to determine tagtypes. If may be passed in as null(?)
   getTypeOfNodeSearch : function(aNode, anEditor)
   {
     var retType = "find";
@@ -157,12 +286,14 @@ var msiSearchUtils =
     {
       case "math":
       case "mphantom":
-        retType = "container";
+        retType = "mathContainer";
       break;
 
       case "mrow":
       case "#document-fragment":
-        if (!msiNavigationUtils.isFence(aNode))
+        if (msiNavigationUtils.isFence(aNode))
+          retType = "mathContainer";
+        else
           retType = "anonContainer";
       break;
 
@@ -171,6 +302,8 @@ var msiSearchUtils =
       break;
 
       default:
+        if (this.isMathTemplate(aNode))
+          retType = "mathTemplate";
         if (msiNavigationUtils.isDefaultParaTag(aNode, anEditor))
           retType = "anonContainer";
         else if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
@@ -184,8 +317,11 @@ var msiSearchUtils =
             case "texttag":
             case "paratag":
             case "envtag":
+              retType = "blockContainer";
+            break;
+
             case "listtag":
-              retType = "container";
+              retType = "textContainer";
             break;
 
             case "othertag":
@@ -196,7 +332,60 @@ var msiSearchUtils =
       break;
     }
     return retType;
-  }
+  },
+
+  isMathTemplate : function(aNode)
+  {
+    var nodeName = msiGetBaseNodeName(aNode);
+  	return (nodeName in this.mathChildPositions);
+  },
+
+  isTemplate : function(aNode)  //this function is intended to perhaps be more general, but for now it's the same as isMathTemplate()
+  {
+    return this.isMathTemplate(aNode);
+  },
+
+  getSearchableContentNodes : function(aNode)
+  {
+    var retArray = new Array();
+    var theContents = msiNavigationUtils.getSignificantContents(aNode);
+    if (!this.isMRowLike(msiGetBaseNodeName(aNode)))
+      return theContents;
+
+    for (var jx = 0; jx < theContents.length; ++jx)
+    {
+      switch(msiGetBaseNodeName(theContents[jx]))
+      {
+        case "mrow":
+        case "mstyle":
+          retArray = retArray.concat(this.getSearchableContentNodes(theContents[jx]));
+        break;
+
+        default:
+          retArray.push(theContents[jx]);
+        break;
+      }
+    }
+    return retArray;
+  } //,
+
+//  getNextMatchNodeToLeft : function(aNode)
+//  {
+//    if (!aNode)
+//      return null;
+//
+//    var retNode = aNode.previousSibling;
+//    if (retNode != null)
+//    {
+//      if (this.isMRowLike(retNode))  //Is this enough?? What if we traverse into a different span or something? Rethink...again...
+//        retNode = msiNavigationUtils.getLastSignificantChild(retNode);
+//    }
+//    else if (aNode.parentNode != null)
+//    {
+//      retNode = this.getNextMatchNodeToLeft(aNode.parentNode);
+//    }
+//    return retNode;
+//  },
 
 };
 
@@ -397,30 +586,6 @@ function XPathFormatter(targetNode, flags)
     return attrStr;
   };
 
-  this.getSearchableContentNodes = function(aNode)
-  {
-    var retArray = new Array();
-    var theContents = msiNavigationUtils.getSignificantContents(aNode);
-    if (!msiSearchUtils.isMRowLike(msiGetBaseNodeName(aNode)))
-      return theContents;
-
-    for (var jx = 0; jx < theContents.length; ++jx)
-    {
-      switch(msiGetBaseNodeName(theContents[jx]))
-      {
-        case "mrow":
-        case "mstyle":
-          retArray = retArray.concat(this.getSearchableContentNodes(theContents[jx]));
-        break;
-
-        default:
-          retArray.push(theContents[jx]);
-        break;
-      }
-    }
-    return retArray;
-  };
-
 //NOTE: It's assumed that this will only be called in the presence of an existing test node set, so that it's all to be put
 //  inside "[]" brackets and evaluated as a condition. If we encounter something like an <mrow> in the open, it'll be up to 
 //  the calling code to deal with the true outer-level search string. (So this should happen in the generic prepareXPathStringForNode
@@ -431,7 +596,7 @@ function XPathFormatter(targetNode, flags)
 //    var theMatchInfo = this.mMatchInfo[matchInfoIndex];
 	  var ourBaseName = msiGetBaseNodeName(this.mNode);
     var childFlags = this.mFlags + "n";
-    var theContents = this.getSearchableContentNodes(this.mNode);
+    var theContents = msiSearchUtils.getSearchableContentNodes(this.mNode);
     if (msiSearchUtils.isEmptyElement(this.mNode))
       return contentsStr;
 
@@ -534,7 +699,7 @@ function XPathFormatter(targetNode, flags)
 	  var ourBaseName = msiGetBaseNodeName(this.mNode);
     if (bOuterLevel && ((ourBaseName == "mrow") || (ourBaseName == "mstyle") || (ourBaseName == "math")) )
     {
-      var theContents = this.getSearchableContentNodes(this.mNode);
+      var theContents = msiSearchUtils.getSearchableContentNodes(this.mNode);
       if (theContents.length > 0)
       {
         var childFlags = this.mFlags + "n";
@@ -580,7 +745,7 @@ function XPathFormatter(targetNode, flags)
       retStr += ")";
 //      retStr += "]";
 //    }
-    dump( "in XPathFormatter.prepareXPathStringForNode, for node {" + msiGetBaseNodeName(this.mNode) + "} with prefix string {" + prefixStr + "}; returning {" + retStr + "}.\n" );
+    msiKludgeLogString( "in XPathFormatter.prepareXPathStringForNode, for node {" + msiGetBaseNodeName(this.mNode) + "} with prefix string {" + prefixStr + "}; returning {" + retStr + "}.\n", ["search"] );
     return retStr;
   };
 
@@ -594,9 +759,9 @@ function msiSearchManager(targEditorElement, searchDocFragment, searchFlags)
   this.mTargetEditor = msiGetEditor(targEditorElement);
   this.mSearchDocFragment = searchDocFragment;
   if (targEditorElement == null)
-    dump("In msiFindUtils.js, in msiSearchManager initializer, targEditorElement is null!\n");
+    msiKludgeLogString( "In msiFindUtils.js, in msiSearchManager initializer, targEditorElement is null!\n", ["search"] );
   else
-    msiDumpWithID("In msiFindUtils.js, in msiSearchManager initializer, targEditorElement is [@].\n", targEditorElement);
+    msiKludgeLogString( "In msiFindUtils.js, in msiSearchManager initializer, targEditorElement is [" + targEditorElement.id + "].\n", ["search"]);
   this.mTargetDocument = this.mTargetEditor.document;
   this.mSearchFlags = searchFlags;
 //  this.mSearchRange = searchRange;
@@ -643,16 +808,21 @@ function msiSearchManager(targEditorElement, searchDocFragment, searchFlags)
 
   //The following "search types" are being used here:
   //  "find" - This means the node is an immediate candidate to search for. A priori, this is any tag, unless we "know better".
-  //  "container" - This means that the node is to be found in the search, BUT it can't necessarily be looked for directly. The
+  //  "mathContainer"
+  //  "textContainer":
+  //  "blockContainer":
+  //   - Any of these mean that the node is to be found in the search, BUT it can't necessarily be looked for directly. The
   //                most important cases are nodes which provide an environment of some sort (such as <math> or a paragraph or 
   //                environment tag, so that a match may take place entirely within them. The key is to look for the contents 
   //                first; if they're found, we check ancestors for these tags.
   //  "anonContainer" - This means the node's contents are the real objects of interest, and the node need not be present at all in
   //                    a match. The key example is <mrow> (except for those which are really fences); though we treat <mstyle> 
   //                    similarly for most purposes, it's in some sense closer to the "container" class above, but is handled below.
-  //  "styleAttribs": - This is a node - and <mstyle> is the main or only one - which need not appear in a match or in the ancestor
+  //  "styleAttribs" - This is a node - and <mstyle> is the main or only one - which need not appear in a match or in the ancestor
   //                    chain of a match at all, but which imposes attributes which should be looked for in the ancestor chain.
-  //  "text" : - This pretty much means that it's a text node as usual. The point is that as a search type, it means we'll use
+  //  "mathTemplate" - These nodes must find a candidate node to match, and must match specified children against specified
+  //                   children of the target (not necessarily the same, for instance, if a <msup> is matching an <msubsup>).
+  //  "text"  - This pretty much means that it's a text node as usual. The point is that as a search type, it means we'll use
   //             the FindService instead of XPath at all.  
   //
   //Given these definitions, what's the strategy?
@@ -736,15 +906,20 @@ function msiSearchManager(targEditorElement, searchDocFragment, searchFlags)
     switch(oldCandidateData.theType)
     {
       case "find":
+      case "mathTemplate":
+
         if ((newCandidateData.theType == "text") && (newCandidateData.theNode.textContent.length > this.LongTextLimit))
           bUseNewData = true;
       break;
 
-      case "container":
+      case "mathContainer":
+      case "textContainer":
+      case "blockContainer":
       case "styleAttribs":
         switch(newCandidateData.theType)
         {
           case "find":
+          case "mathTemplate":
           case "text":
             bUseNewData =  true;
           break;
@@ -758,7 +933,7 @@ function msiSearchManager(targEditorElement, searchDocFragment, searchFlags)
       break;
 
       case "text":
-        if ((newCandidateData.theType == "find") && (oldCandidateData.theNode.textContent.length <= this.LongTextLimit))
+        if ( ( (newCandidateData.theType == "find") || (newCandidateData.theType == "mathTemplate") )&& (oldCandidateData.theNode.textContent.length <= this.LongTextLimit))
           bUseNewData = true;
         if (newCandidateData.theType == "text")
           bUseNewData = (newCandidateData.theNode.textContent.length > oldCandidateData.theNode.textContent.length);
@@ -784,7 +959,7 @@ function msiSearchManager(targEditorElement, searchDocFragment, searchFlags)
     else if ((oldCandidateData.topType == "anonContainer") && (newCandidateData.topNode != null) && (newCandidateData.topNode != oldCandidateData.topNode))
     {
       var relativePos = newCandidateData.topNode.compareDocumentPosition(oldCandidateData.topNode);
-      dump("In msiFindUtils.js, in msiSearchManager.compareTargetData for new candidate node [" + newCandidateData.theNode.nodeName + "], old candidate node [" + newCandidateData.theNode.nodeName +"]; compareDocumentPosition returned [" + relativePos + "].\n");
+      msiKludgeLogString( "In msiFindUtils.js, in msiSearchManager.compareTargetData for new candidate node [" + newCandidateData.theNode.nodeName + "], old candidate node [" + newCandidateData.theNode.nodeName +"]; compareDocumentPosition returned [" + relativePos + "].\n", ["search"]);
       if ( (relativePos & nsIDOMNode.DOCUENT_POSITION_CONTAINS) != 0 )
       {
         returnData.topNode = newCandidateData.topNode;
@@ -816,7 +991,7 @@ function msiSearchManager(targEditorElement, searchDocFragment, searchFlags)
     var parentType = msiSearchUtils.getTypeOfNodeSearch(parentNode, this.mTargetEditor);
     nodeData.theNode = parentNode;
     nodeData.theType = parentType;
-    dump("In msiFindUtils.js, in msiSearchManager.findTargetNode for node [" + parentNode.nodeName + "], reported type [" + nodeData.theType + "].\n");
+    msiKludgeLogString( "In msiFindUtils.js, in msiSearchManager.findTargetNode for node [" + parentNode.nodeName + "], reported type [" + nodeData.theType + "].\n", ["search"] );
     if ( (nodeData.theType != "anonContainer") && (nodeData.theType != "styleAttribs") )
     {
       nodeData.topNode = parentNode;
@@ -843,7 +1018,7 @@ function msiSearchManager(targEditorElement, searchDocFragment, searchFlags)
         childDataStr = childData.topNode.nodeName;
       if (nodeData.topNode != null)
         topNodeStr = nodeData.topNode.nodeName;
-      dump( "In msiFindUtils.js, msiSearchManager.findTargetNode for node [" + parentNode.nodeName + "], after comparing child data with top node [" + childDataStr + "], nodeData now has top node [" + topNodeStr + "].\n" );
+      msiKludgeLogString( "In msiFindUtils.js, msiSearchManager.findTargetNode for node [" + parentNode.nodeName + "], after comparing child data with top node [" + childDataStr + "], nodeData now has top node [" + topNodeStr + "].\n", ["search"] );
     }
 
     //If nodeData.topNode isn't null, a node has been found which contains all requisite children. We use it if we're an anonContainer.
@@ -857,7 +1032,7 @@ function msiSearchManager(targEditorElement, searchDocFragment, searchFlags)
     {
       topNodeStr = nodeData.topNode.nodeName + "] of type [" + nodeData.topType + "] with content [" + nodeData.topNode.textContent;
     }
-    dump("Leaving msiFindUtils.js, in msiSearchManager.findTargetNode for node [" + parentNode.nodeName + "], top node is [" + topNodeStr + "].\n");
+    msiKludgeLogString( "Leaving msiFindUtils.js, in msiSearchManager.findTargetNode for node [" + parentNode.nodeName + "], top node is [" + topNodeStr + "].\n", ["search"] );
     return nodeData;
   };
 
@@ -876,7 +1051,10 @@ function msiSearchManager(targEditorElement, searchDocFragment, searchFlags)
       break;
 
       case "find":
-      case "container":
+      case "mathTemplate":
+      case "textContainer":
+      case "blockContainer":
+      case "mathContainer":
       case "anonContainer":
       case "styleAttribs":
         //START HERE??
@@ -886,7 +1064,7 @@ function msiSearchManager(targEditorElement, searchDocFragment, searchFlags)
         {
           topNodeStr = searchNodeData.topNode.nodeName + "] of type [" + searchNodeData.topType + "] with content [" + searchNodeData.topNode.textContent;
         }
-        dump( "In msiFindUtils.js, msiSearchManager.setUpSearch, target node is [" + this.mTargetNode.nodeName + "] with content [" + this.mTargetNode.textContent + "], while topNode is [" + topNodeStr + "].\n" );
+        msiKludgeLogString( "In msiFindUtils.js, msiSearchManager.setUpSearch, target node is [" + this.mTargetNode.nodeName + "] with content [" + this.mTargetNode.textContent + "], while topNode is [" + topNodeStr + "].\n", ["search"] );
         var contentFormatter = new XPathFormatter(searchNodeData.theNode, this.mSearchFlags);
         var prefixStr = axisStr;
         this.mXPathSearchString = contentFormatter.prepareXPathStringForNode(prefixStr);
@@ -924,4 +1102,2327 @@ function msiSearchManager(targEditorElement, searchDocFragment, searchFlags)
   {
     return this.mTextSearchString;
   };
+
+////  //This function assumes that we have a match of what's to our right with the various ranges (probably just one) in rangeArray.
+////  //The first thing to be done is to determine whether we can extend the match at all. If we're some sort of container and we
+////  //  have more to our left to match, the answer is tentatively yes. If we're a template of some sort (like a <mfrac>), the answer
+////  //  is probably no. 
+////  //Then we have to examine each of the ranges to see what we encounter if we look to the left; if we're leaving an object, 
+////  //  can our match extend across its boundary? This is generally a difficult one to answer. If the matching node is a template, 
+////  //  we really don't want to be in this function anyway, in some sense; a template should try to match each of its component pieces.
+////  //  But does that mean we don't end up here or want to sometimes return true? Generally, though, we can return false in that case? What
+////  //  should happen if we're a fraction that has matched its denominator and wants to match its numerator, or a fraction which is
+////  //  empty and thus matches any fraction? It remains true that we must match an entire <mfrac>, and then can't extend beyond it.
+////  this.extendToLeft = function(rangeArray, sourceNode, offset)
+////  {
+////    while (rangeArray.length > 0)
+////    {
+////      if (offset > 0)
+////
+////    }
+////    var nextNode = null;
+////    var targParent = null;
+////    var nextOffset = 0;
+////    var nextToTest = null;
+////    if ((offset < 0) || (offset > this.mNode.childNodes.length))  //offset = -1 is passed in if the current matching position is to our right
+////      nextNode = this.getLastChild();
+////    else
+////      nextNode = this.mNode.childNodes[offset - 1];
+////
+////    for (var ix = 0; ix < rangeArray.length; ++ix)
+////    {
+////      targParent = rangeArray[ix].startContainer;
+////      nextOffset = rangeArray[ix].startOffset;
+////      NOW WHAT??  Want to look at the targParent to see whether something of our kind even CAN extend into something of their kind.
+////      For instance, if we're a template object like a radical, we only extend against other radicals? Or does it depend on our offset?
+////    }
+////  };
+////
+////  this.extendToRight = function(rangeArray)
+////  {
+////  };
+
+//////Idea is:
+//////  i) When we've completed matching a node, we move up to its "container parent" rather than to its preceding sibling. The point
+//////     is that the container parent, since it's part of the match pattern, has to match something, and is in a better position to
+//////     decide whether the match can even potentially be extended or not.
+////// ii) If we're going to try extending, the our container parent will begin by finding the (possibly extended) child preceding
+//////     the last matched node and try matching that.
+  this.verifySearch = function(targRange)
+  {
+    var foundTargetNode = targRange.commonAncestorContainer;
+    if (targRange.startContainer == targRange.endContainer)
+    {
+      if ( ((targRange.endOffset - targRange.startOffset) <= 1) && (targRange.startContainer.childNodes) )
+        foundTargetNode = targRange.startContainer.childNodes[targRange.startOffset];
+    }
+    var returnVal = false;
+    var ourRange = createMsiMatchingRange();
+    var nextNode = null;
+//    var targRange = null;
+    var nextNode = this.mTargetNode;
+//    var ourRanges = new Array();
+    var ourMatch = createMatchNode(this.mTargetNode, this.mSearchFlags, this.mTargetEditor);
+
+//    targRange = this.mTargetEditor.document.createRange();
+//    targRange.selectNode(foundTargetNode);
+    var matchVal = ourMatch.matchARange( targRange );
+    returnVal = msiSearchUtils.isMatching(matchVal);
+    if (!returnVal)
+      return false;
+
+    ourRange.selectNode(this.mTargetNode);
+//    ourRanges.push(targRange);
+    while (returnVal)
+    {
+//      nextNode = msiSearchUtils.getNextMatchNodeToLeft(this.mTargetNode);
+      nextNode = nextNode.parentNode;
+      if (nextNode == null)
+        break;
+      ourMatch = createMatchNode(nextNode, this.mSearchFlags, this.mTargetEditor);
+      //Want to write something like:
+      switch( ourMatch.extendMatchToLeft(targRange, ourRange, this.mTargetEditor) )
+      {
+        case msiSearchUtils.completedMatch:
+        case msiSearchUtils.partialMatch:
+          returnVal = true;
+        break;
+        case msiSearchUtils.cannotMatch:
+        default:
+          returnVal = false;
+        break;
+      }
+    }
+    if (!returnVal)
+      return returnVal;
+
+    nextNode = ourRange.endContainer;
+    do
+    {
+//      nextNode = msiSearchUtils.getNextMatchNodeToRight(this.mTargetNode);
+      nextNode = nextNode.parentNode;
+      if (nextNode == null)
+        break;
+      ourMatch = createMatchNode(nextNode, this.mSearchFlags, this.mTargetEditor);
+      //Want to write something like:
+//      switch( ourMatch.extendToRight( ourRanges ))
+      switch( ourMatch.extendMatchToRight(targRange, ourRange, this.mTargetEditor))
+      {
+        case msiSearchUtils.completedMatch:
+        case msiSearchUtils.partialMatch:
+          returnVal = true;
+        break;
+        case msiSearchUtils.cannotMatch:
+        default:
+          returnVal = false;
+        break;
+//        case msiSearchutils.finishedToLeft:
+      // What may be missing is matching attributes (or more than attributes??) coming from the parent of the search node?
+      }
+    } while (returnVal);
+
+    return returnVal;
+  };
 }
+
+//function msiGenericMatchNode(theNode, theFlags, inheritedAttrs)
+function msiMatchNode() {}
+msiMatchNode.prototype =
+{
+
+  init : function(aNode, theFlags, refEditor)
+  {
+    this.mNode = aNode;
+    this.mFlags = theFlags;
+    this.mEditor = refEditor;
+    this.getInheritedAttribs(aNode, refEditor);
+    this.mSearchType = msiSearchUtils.getTypeOfNodeSearch(aNode, refEditor);
+  },
+
+  matchIsCaseSensitive : function()
+  {
+    return (this.mFlags) && (this.mFlags.indexOf("i") < 0);  //"i" for "insensitive"?
+  },
+
+  getInheritedAttribs : function(ourNode, refEditor)
+  {
+    var theAttrName = "";
+    var theAttrVal = "";
+    if (!this.mInheritedAttrs)
+      this.mInheritedAttrs = new Object();
+    if (!this.mNeededAncestors)
+      this.mNeededAncestors = new Array();
+    for (var targNode = ourNode; targNode; targNode = targNode.parentNode)
+    {
+      for (var jx = 0; (targNode.attributes) && (jx < targNode.attributes.length); ++jx)
+      {
+        theAttrName = targNode.attributes.item(jx).nodeName;
+        theAttrVal = targNode.attributes.item(jx).textContent;
+        if (msiSearchUtils.shouldAddAttributeToInheritedList(theAttrName, theAttrVal, targNode) )
+        {
+          if (!(theAttrName in this.mInheritedAttrs))
+            this.mInheritedAttrs[theAttrName] = theAttrVal;
+        }
+      }
+      if (msiSearchUtils.shouldAddNodeToInheritedList(targNode, refEditor))
+        this.mNeededAncestors.push( targNode.nodeName );
+    }
+  },
+
+  checkInheritedAttribute : function(targNode, attrName, attrVal)
+  {
+    for (var parNode = targNode; parNode; parNode = parNode.parentNode)
+    {
+      if (parNode.hasAttribute(attrName))
+        return (attrVal == parNode.getAttribute(attrName));
+    }
+    return false;
+  },
+
+  checkNeededAncestor : function(targNode, ancestorName)
+  {
+    for (var parNode = targNode; parNode; parNode = parNode.parentNode)
+    {
+      if (parNode.nodeName == ancestorName)
+        return true;
+    }
+    return false;
+  },
+
+  //Important to be clear about when this function is called. It is only to match a node against the contents of a range. 
+  matchARange : function(targRange)
+  {
+    var retVal = msiSearchUtils.cannotMatch;
+    var localTargRange = null;
+    var ourRange = null;
+    var aTargNode = msiSearchUtils.getSingleRangeContent(targRange);
+    if (aTargNode)
+      return this.match(aTargNode, targRange); //Note that this call will possibly change targRange, as it's really an "out" value for that function.
+    //What if targRange is in a text node? Can we only match then if this.mNode is a text node? However, if this.mNode is a text node we
+    //  should be using a different function.
+    //Otherwise, targRange contains several children of some parent. We find the first child and try to match it if it's legal for us
+    //  to do so - note that templates will be using different functions here. If that succeeds, then we proceed via extendMatchRight.
+    if (msiSearchUtils.isContainer(this.mNode))
+    {
+      localTargRange = this.mEditor.document.createRange();
+      localTargRange.setStart(targRange.startContainer, targRange.startOffset);
+      ourRange = createMsiMatchingRange();
+      ourRange.setStart(this.mNode, 0);
+      retVal = this.extendMatchToRight(localTargRange, ourRange, this.mEditor);
+      if (msiSearchUtils.isMatching(retVal))  //check whether we got all of us
+      {
+        if (this.haveContentAfterRangeEnd(ourRange))
+          retVal = msiSearchUtils.cannotMatch;
+        else
+        {
+          targRange.setStart(localTargRange.startContainer, localTargRange.startOffset);
+          targRange.setEnd(localTargRange.endContainer, localTargRange.endOffset);
+        }
+      }
+    }
+    return retVal;
+  },
+
+  match : function(targNode, targRange)
+  {
+    var matched = msiSearchUtils.cannotMatch;
+    var ourRange = null;
+    var ourTargRange = this.mEditor.document.createRange();
+    ourTargRange.setStart(targNode, 0);
+    ourTargRange.setEnd(targNode, 0);
+    msiKludgeLogString( "Entering match for node [" + this.describe() + "]; targRange is [" + this.describeMsiRange(targRange) + "];\n  ourTargRange is [" + this.describeMsiRange(ourTargRange) + "].\n", ["search"] );
+    var localTargNode = null;
+    var bCanMatch = this.doStructuralNodeMatch(targNode);
+    if (bCanMatch)
+      matched = msiSearchUtils.completedMatch;
+    else if (!this.mustMatchNode())
+      bCanMatch = this.canExtendInside(targNode);
+
+    //  The failure of doStructuralNodeMatch() may mean that, regardless of finding a specific node to match, we failed to
+    //  find required attributes in the target.
+    if (bCanMatch)
+    {
+      if (!msiSearchUtils.isEmptyElement(this.mNode))
+      {
+        ourRange = createMsiMatchingRange();
+        ourRange.setStart(this.mNode, 0);
+        ourRange.setEnd(this.mNode, 0);
+        matched = this.extendMatchToRight(ourTargRange, ourRange, this.mEditor);
+        if (this.haveContentAfterRangeEnd(ourRange))
+          matched = msiSearchUtils.cannotMatch;
+      }
+    }
+    else if (this.canExtendInside(targNode))
+    {
+      localTargNode = msiSearchUtils.getSingleChild(targNode);
+      if (localTargNode)
+        matched = this.match(localTargNode, ourTargRange);
+    }
+    if (msiSearchUtils.isMatching(matched))
+    {
+      targRange.setStart( ourTargRange.startContainer, ourTargRange.startOffset );
+      targRange.setEnd( ourTargRange.endContainer, ourTargRange.endOffset );
+    }
+
+    if (!bCanMatch)
+      msiKludgeLogString("doStructuralNodeMatch failed in msiMatchNode.match(), with target [" + targNode.nodeName + "] and targRange [" + targRange.toString() + "], for matching node [" + this.describe() + "].\n", ["search"] );
+    else
+      msiKludgeLogString( "Returning [" + this.matchReturnString(matched) + "] from msiMatchNode.match(), with target [" + targNode.nodeName + "] and targRange [" + targRange.toString() + "], for matching node [" + this.describe() + "].\n", ["search"] );
+
+    return matched;
+  },
+
+//Note that one essential problem is ensuring that "extendMatchLeft/Right" is called in a reasonable way - the situation could arise
+//  where a parent calls a child to extend and the child passes the match back to the parent (when it encounters the left edge of the
+//  target node, for instance - I believe this should only be handled by the parent?). We'll avoid this by disallowing passing the
+//  match off to one's parent - instead, we'll add a return value of "reachedEndOfTarget"?
+//(The rationale behind wanting the parent node (or the function caller) to deal with moving left in the target? 
+// I think the real plan should be: [still not right]
+//   (i) check whether we can extend against this target.
+//  (ii) if we get a return of "pieceByPiece" or "incremental" or whatever we want to use, we go to our current offset and ask that
+//       object to extend against the same target.
+// (iii) 
+
+  offsetIsAtEnd : function(aNode, anOffset)
+  {
+    if (anOffset < 0)
+      return true;
+    return msiNavigationUtils.positionIsAtEnd(aNode, anOffset);
+  },
+
+  offsetIsAtStart : function(aNode, anOffset)
+  {
+    if (anOffset == 0)
+      return true;
+    return msiNavigationUtils.positionIsAtStart(aNode, anOffset);
+  },
+
+  //The mustMatchNode() property means that this node must match a specific and unique node in the target. Nodes which are instead
+  //  defined by their contents may still make requirements on the target, but in particular may match across several target nodes,
+  //  and in that case may need to check each target node individually. That will be reflected by the targNodeIsCompatible() method.
+  mustMatchNode : function()
+  {
+    switch(this.mSearchType)
+    {
+      case "mathTemplate":
+        return true;
+      break;
+      case "mathContainer":
+      case "anonContainer":
+      case "textContainer":
+      case "text":
+        return false;
+      break;
+      case "blockContainer":
+        return false;         //may want to handle this one differently
+      break;
+      default:
+      break;
+    }
+    return true;
+  },
+
+  //in the default implementation, this simply checks for a nodeName match
+  doStructuralNodeMatch : function(aTarget)
+  {
+    if (this.mNode.nodeName != aTarget.nodeName)
+      return false;
+    //Should we include some sort of namespace check here? Probably...
+    return this.targNodeIsCompatible(aTarget);
+  },
+
+  targNodeIsCompatible : function(targNode)
+  {
+    for (var anAttr in this.mInheritedAttrs)
+    {
+      if ( !this.checkInheritedAttribute(targNode, anAttr, this.mInheritedAttrs[anAttr]) )
+        return false;
+    }
+    for (var ix = 0; ix < this.mNeededAncestors.length; ++ix)
+    {
+      if ( !this.checkNeededAncestor(targNode, this.mNeededAncestors[ix]) )
+        return false;
+    }
+    return true;
+  },
+
+//Remaining questions:
+//  (i) Do we want to allow matchRange to be modified as we go, or should we be using a local copy? Let's try with just the one.
+// (ii) Should we be doing anything different when we go through the loop with bNewTargNode rather than just bTargOffsetChanged?
+//      Isn't there a compatibility check we have to do with the next targNode before charging into it, or can we leave that for our
+//      children which may be trying to match against it? Assume we can - the exception being text nodes. How to catch them in the
+//      outer loop (other than by completely overriding the extendMatchToLeft() function, which is of course a possibility)?
+//(iii) Is there some reason why doMatchCheck() should sometimes do less than a full doStructuralNodeMatch()? Assume no.
+  extendMatchToLeft : function(matchRange, ourRange, refEditor)
+  {
+    msiKludgeLogString( "Entering extendMatchToLeft for node [" + this.describe() + "]; matchRange is [" + this.describeMsiRange(matchRange) + "];\n  ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"]);
+    var localTargRange = matchRange.cloneRange();
+
+    var retVal = msiSearchUtils.partialMatch;
+//    var bMustMatchContainingNode = ( this.mustMatchNode() && !this.offsetIsAtEnd(this.mNode, ourOffset) );
+//    var bMustMatchContainingNode = ( this.mustMatchNode() && ourRange.startIsInside(this.mNode) );
+    var bMustMatchContainingNode = ( this.mustMatchNode() && ourRange.endIsInside(this.mNode) );
+
+    var theTarget = matchRange.startContainer;
+    var origTarget = theTarget;
+    var currTarget = theTarget;
+    var theOffset = matchRange.startOffset;
+    var currOffset = theOffset;
+    var bNewTargNode = true;
+    var bTargOffsetChanged = true;
+    var localMatch = msiSearchUtils.partialMatch;
+    var localMatchNode = null;
+    while (bTargOffsetChanged && this.haveContentBeforeRangeStart(ourRange))
+    {
+      currTarget = theTarget;
+      currOffset = theOffset;
+      if (bMustMatchContainingNode)
+        retVal = this.doLeftMatchCheck(localTargRange, ourRange, origTarget, bNewTargNode);
+      else
+        retVal = this.doLeftMatchCheck(localTargRange, ourRange, null, bNewTargNode);
+      theTarget = localTargRange.startContainer;
+      theOffset = localTargRange.startOffset;
+      bNewTargNode = (theTarget != currTarget);
+      bTargOffsetChanged = (bNewTargNode || (currOffset != theOffset));
+      if (!bTargOffsetChanged)
+        bTargOffsetChanged = this.adjustLeftStartingTargPosition(localTargRange, ourRange, refEditor);
+    }
+    if (this.haveContentBeforeRangeStart(ourRange))
+      retVal = msiSearchUtils.cannotMatch;
+    if (msiSearchUtils.isMatching(retVal))
+    {
+//      matchRange.setStart( theTarget, theOffset );
+      this.adjoinRange(matchRange, localTargRange);
+    }  
+    msiKludgeLogString( "Returning [" + this.matchReturnString(retVal) + "] from extendMatchToLeft for node [" + this.describe() + "]; matchRange is [" + this.describeMsiRange(matchRange) + "].\n", ["search"] );
+    return retVal;
+  },
+
+
+  extendMatchToRight : function(matchRange, ourRange, refEditor)
+  {
+    msiKludgeLogString( "Entering extendMatchToRight for node [" + this.describe() + "]; matchRange is [" + this.describeMsiRange(matchRange) + "];\n  ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
+    var localTargRange = matchRange.cloneRange();
+    var retVal = msiSearchUtils.partialMatch;
+//    var bMustMatchContainingNode = ( this.mustMatchNode() && !this.offsetIsAtStart(this.mNode, ourOffset) );
+//    var bMustMatchContainingNode = ( this.mustMatchNode() && ourRange.endIsInside(this.mNode) );
+    var bMustMatchContainingNode = ( this.mustMatchNode() && ourRange.startIsInside(this.mNode) );
+
+    var theTarget = matchRange.endContainer;
+    var origTarget = theTarget;
+    var currTarget = theTarget;
+    var theOffset = matchRange.endOffset;
+    var currOffset = theOffset;
+    var localMatchNode = null;
+    var bNewTargNode = true;
+    var bTargOffsetChanged = true;
+    var localMatch = msiSearchUtils.partialMatch;
+    var localMatchNode = null;
+    var bMoreToGo = this.haveContentAfterRangeEnd(ourRange);
+    if (!bMoreToGo)
+    {
+      msiKludgeLogString( "Initial false from haveContentAfterRangeEnd in extendMatchToRight for node [" + this.describe() + "]!\n", ["search"] );
+      msiNavigationUtils.comparePositions(this.mNode, this.lastOffset(this.mNode), ourRange.endContainer, ourRange.endOffset, true);
+
+    }
+    while (bTargOffsetChanged && bMoreToGo)
+    {
+      currTarget = localTargRange.endContainer;
+      currOffset = localTargRange.endOffset;
+      if (bMustMatchContainingNode)
+        retVal = this.doRightMatchCheck(localTargRange, ourRange, origTarget, bNewTargNode);
+      else
+        retVal = this.doRightMatchCheck(localTargRange, ourRange, null, bNewTargNode);
+      msiKludgeLogString( "Got [" + this.matchReturnString(retVal) + "] back from doRightMatchCheck call in extendMatchToRight for node [" + this.describe() + "]; localTargRange is [" + this.describeMsiRange(localTargRange) + "]; ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
+//      theTarget = localTargRange.endContainer;
+//      theOffset = localTargRange.endOffset;
+      bNewTargNode = (localTargRange.endContainer != currTarget);
+      bTargOffsetChanged = (bNewTargNode || (currOffset != localTargRange.endOffset));
+      if (!bTargOffsetChanged)
+      {
+        bTargOffsetChanged = this.adjustRightStartingTargPosition(localTargRange, ourRange, refEditor);
+        if (bTargOffsetChanged)
+          msiKludgeLogString( "adjustRightStartingTargPosition() call changed offset in extendMatchToRight for node [" + this.describe() + "]; localTargRange is [" + this.describeMsiRange(localTargRange) + "];\n  ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
+      }
+      bMoreToGo = this.haveContentAfterRangeEnd(ourRange);
+    }
+    if (bMoreToGo)
+      retVal = msiSearchUtils.cannotMatch;
+    else
+      retVal = msiSearchUtils.completedMatch;
+    if (msiSearchUtils.isMatching(retVal))
+    {
+      this.adjoinRange(matchRange, localTargRange);
+    }  
+    msiKludgeLogString( "Returning [" + this.matchReturnString(retVal) + "] from extendMatchToRight for node [" + this.describe() + "]; matchRange is [" + this.describeMsiRange(matchRange) + "]; ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
+    return retVal;
+  },
+
+
+//The parameters here:
+//  "matchRange" represents the range of target nodes that have been matched
+//  "ourRange" represents the range of source nodes that have matched
+//  "origTarget" is passed in non-null when we've been recursively called by a node which has to match a specific node and didn't yet;
+//    it points to the target node we were looking at when that match failed, and in that case we need to ensure we match a node which
+//    is at least that high in the heirarchy. (In other words, it represents a level where we may have found, for instance, an mrow
+//    inside an mfrac but we still need to find the containing mfrac. This implementation may still be suspect.)
+//  "bNewTargNode" signals that we're encountering a new target node in the outer loop which calls this function. It's used in
+//    the "derived class" implementations; should perhaps be used here as well.
+  doLeftMatchCheck : function(targRange, ourRange, origTarget, bNewTargNode)
+  {
+    //The "bNeedNodeMatch" cases other than "bMustMatchContainingNode" simply mean that we're looking through the target's children 
+    // trying to match our node rather than its children - thus our offset is at the end of an object which must find a matching node. 
+    // Again, we try to match as long as the targOffset can be safely moved left, but in this case we don't try to match our children 
+    // here; once we find a matching node, we'll set "bNeedNodeMatch" to false and move theTarget inside it.
+//      else if (bNeedNodeMatch)
+    msiKludgeLogString( "Entering doLeftMatchCheck for node [" + this.describe() + "]\n", ["search"] );
+    var retVal = msiSearchUtils.partialMatch;
+    var bMustMatchContainingNode = false;
+    var localNodeToMatch = null;
+    var localMatcher = null;
+    var localMatch = msiSearchUtils.partialMatch;
+    var targNode = targRange.startContainer;
+    var targOffset = targRange.startOffset;
+    if (origTarget != null)
+      bMustMatchContainingNode = true;
+    var bNeedNodeMatch = this.mustMatchNode();
+    if (!bMustMatchContainingNode && bNeedNodeMatch)
+    {
+//NOTE! The following may in fact be needed, but it seems wrong. Keep an eye out for this case.
+//  The question, if we extend to start matching a node (presumably a parent) without being properly inside it (so for instance
+//  moving to the next child in a container and asking it to extend the match), can it ever be the case that it's the target position's
+//  container node that it should match? This really isn't even yet clear...
+//      if (this.offsetIsAtEnd(targNode, targOffset))  //In this case, the entire targNode is a candidate for us to match??
+//        bNeedNodeMatch = !this.doStructuralNodeMatch(targNode);
+      if ( (targOffset > 0) && targNode.childNodes && (targOffset <= targNode.childNodes.length) )
+        bNeedNodeMatch = !this.doStructuralNodeMatch(targNode.childNodes[targOffset-1]);
+
+      //So we now match "targNode"; move on to match our contents if appropriate.
+      if (!bNeedNodeMatch && targNode.childNodes)
+      {
+        if (targOffset > targNode.childNodes.length)
+        {
+          msiKludgeLogString( "In msiMatchNode.doLeftMatchCheck() for node [" + this.mNode.nodeName + "], problem! targNode is [" + targNode.nodeName + "], and targOffset is [" + targOffset + "] while length of target child nodes is [" + targNode.childNodes.length + "].\n", ["search"] );
+          targOffset = targNode.childNodes.length;
+        }
+        //If targOffset is 0, we'll go through and drop out of the calling loop (since targOffset and targNode will be unchanged),
+        //  and this is appropriate; if ourOffset is 0 we'll report matched, otherwise we've got content and the target doesn't, so
+        //  we should report unmatched.
+        if (targOffset > 0)  
+        {
+          targNode = targNode.childNodes[targOffset - 1];
+          targOffset = this.lastOffset(targNode);
+          targRange.setStart(targNode, targOffset);
+        }
+        ourRange.setStart(this.mNode, this.lastOffset(this.mNode));
+      }
+    }
+    else
+    {
+      //The "bMustMatchContainingNode" case is handled by continuing to move to the left in the target until either we can't
+      //  legally move left anymore (in which case we've failed to match our required node and reached something nontrivial to the
+      //  left in the target, which should signal a general failure), or we do manage to find a match. In this case we can continue
+      //  to check our child nodes against the target's children and extend the match left as we go. NOTE: The case of a template,
+      //  where the positional matching of children is strict and dependant on the nodeName of both the matching node and the target,
+      //  has to be handled separately. (However, it should perhaps be handled in this function anyway, as it needs to use the
+      //  targOffset and targNode moving as long as it can? So how should that be written in?)
+      if (bMustMatchContainingNode)
+      {
+        if (msiNavigationUtils.isAncestor(theTarget, origTarget))
+          bMustMatchContainingNode = !this.doStructuralNodeMatch(theTarget);
+      }
+      //Now, if appropriate, look at the next child node.
+      if (this.haveContentBeforeRangeStart(ourRange) && (!bMustMatchContainingNode || !msiSearchUtils.isTemplate(this.mNode)) )
+//      if ( (ourOffset > 0) && (!bMustMatchContainingNode || !msiSearchUtils.isTemplate(this.mNode)) )
+      {
+        localNodeToMatch = this.nextChildToLeft(ourRange);
+//        if (ourOffset > this.mNode.childNodes.length)
+//        {
+//          dump("In msiMatchNode.doLeftMatchCheck() for node [" + this.mNode.nodeName + "], problem! ourOffset is [" + ourOffset + "] while length of child nodes is [" + this.mNode.childNodes.length + "].\n");
+//          ourOffset = this.mNode.childNodes.length;
+//        }
+        localMatch = msiSearchUtils.cannotMatch;
+        if (localNodeToMatch != null)
+        {
+          localMatcher = createMatchNode(localNodeToMatch, this.mFlags, this.mEditor);
+          localMatch = localMatcher.extendMatchToLeft(targRange, ourRange, refEditor);
+        }
+        if (!msiSearchUtils.isMatching(localMatch))
+          return msiSearchUtils.cannotMatch;
+//        --ourOffset;
+//        targOffset = matchRange.startOffset;
+//        targNode = matchRange.startContainer;
+      }
+    }
+    msiKludgeLogString( "Returning [" + this.matchReturnString(retVal) + "] from doLeftMatchCheck for node [" + this.describe() + "]\n", ["search"] );
+    return retVal;
+  },
+
+//See "doLeftMatchCheck" above for a description of parameters.
+  doRightMatchCheck : function(matchRange, ourRange, origTarget, bNewTargNode)
+  {
+    //The "bNeedNodeMatch" cases other than "bMustMatchContainingNode" simply mean that we're looking through the target's children 
+    // trying to match our node rather than its children - thus our offset is at the end of an object which must find a matching node. 
+    // Again, we try to match as long as the targOffset can be safely moved right, but in this case we don't try to match our children 
+    // here; once we find a matching node, we'll set "bNeedNodeMatch" to false and move theTarget inside it.
+//      else if (bNeedNodeMatch)
+    msiKludgeLogString( "Entering doRightMatchCheck for node [" + this.describe() + "]\n", ["search"] );
+    var bMustMatchContainingNode = false;
+    var targNode = matchRange.endContainer;
+    var targOffset = matchRange.endOffset;
+    if (origTarget != null)
+      bMustMatchContainingNode = true;
+    var retVal = msiSearchUtils.partialMatch;
+    var localNodeToMatch = null;
+    var localMatcher = null;
+    var localMatch = msiSearchUtils.partialMatch;
+    var bNeedNodeMatch = this.mustMatchNode();
+    if (!bMustMatchContainingNode && bNeedNodeMatch)
+    {
+//NOTE! The following may in fact be needed, but it seems wrong. Keep an eye out for this case.
+//      if (this.offsetIsAtStart(targNode, targOffset))  //In this case, the entire targNode is a candidate for us to match
+//        bNeedNodeMatch = !this.doStructuralNodeMatch(targNode);
+
+      if ( (targOffset >= 0) && targNode.childNodes && (targOffset < targNode.childNodes.length) )
+        bNeedNodeMatch = !this.doStructuralNodeMatch(targNode.childNodes[targOffset]);
+      //So we now match "targNode"; move on to match our contents if appropriate.
+
+      if (!bNeedNodeMatch && targNode.childNodes)
+      {
+        if (targOffset > targNode.childNodes.length)
+        {
+          msiKludgeLogString( "In msiMatchNode.doRightMatchCheck() for node [" + this.mNode.nodeName + "], problem! targNode is [" + targNode.nodeName + "], and targOffset is [" + targOffset + "] while length of target child nodes is [" + targNode.childNodes.length + "].\n", ["search"] );
+          targOffset = targNode.childNodes.length;
+        }
+        //If targOffset is 0, we'll go through and drop out of the calling loop (since targOffset and targNode will be unchanged),
+        //  and this is appropriate; if ourOffset is 0 we'll report matched, otherwise we've got content and the target doesn't, so
+        //  we should report unmatched.
+        if (!this.offsetIsAtEnd(targNode, targOffset))
+        {
+          targNode = targNode.childNodes[targOffset];
+          targOffset = 0;
+          matchRange.setEnd(targNode, targOffset);
+        }
+      }
+    }
+    else
+    {
+      //The "bMustMatchContainingNode" case is handled by continuing to move to the left in the target until either we can't
+      //  legally move left anymore (in which case we've failed to match our required node and reached something nontrivial to the
+      //  left in the target, which should signal a general failure), or we do manage to find a match. In this case we can continue
+      //  to check our child nodes against the target's children and extend the match left as we go. NOTE: The case of a template,
+      //  where the positional matching of children is strict and dependant on the nodeName of both the matching node and the target,
+      //  has to be handled separately. (However, it should perhaps be handled in this function anyway, as it needs to use the
+      //  targOffset and targNode moving as long as it can? So how should that be written in?)
+      if (bMustMatchContainingNode)
+      {
+        if (msiNavigationUtils.isAncestor(targNode, origTarget))
+          bMustMatchContainingNode = !this.doStructuralNodeMatch(targNode);
+      }
+      //Now, if appropriate, look at the next child node.
+//      if ( (ourOffset > 0) && (!bMustMatchContainingNode || !msiSearchUtils.isTemplate(this.mNode)) )
+      if ( this.haveContentAfterRangeEnd(ourRange) && (!bMustMatchContainingNode || !msiSearchUtils.isTemplate(this.mNode)) )
+      {
+//        if (ourOffset > this.mNode.childNodes.length)
+//        {
+//          dump("In msiMatchNode.doLeftMatchCheck() for node [" + this.mNode.nodeName + "], problem! ourOffset is [" + ourOffset + "] while length of child nodes is [" + this.mNode.childNodes.length + "].\n");
+//          ourOffset = this.mNode.childNodes.length;
+//        }
+        localNodeToMatch = this.nextChildToRight(ourRange);
+        localMatch = msiSearchUtils.cannotMatch;
+        if (localNodeToMatch != null)
+        {
+          localMatcher = createMatchNode(localNodeToMatch, this.mFlags, this.mEditor);
+          localMatch = localMatcher.extendMatchToRight(matchRange, ourRange, this.mEditor);
+        }
+        if (!msiSearchUtils.isMatching(localMatch))
+        {
+          msiKludgeLogString( "Returning cannotMatch from doRightMatchCheck for node [" + this.describe() + "]\n", ["search"] );
+          return msiSearchUtils.cannotMatch;
+        }
+//        --ourOffset;
+//        targOffset = matchRange.startOffset;
+//        targNode = matchRange.startContainer;
+      }
+    }
+    msiKludgeLogString( "Returning [" + this.matchReturnString(retVal) + "] from doRightMatchCheck for node [" + this.describe() + "]\n", ["search"] );
+    return retVal;
+  },
+
+////  this.extendMatchToLeft = function(matchRange, ourOffset, refEditor)
+////  {
+////    var retVal = msiSearchUtils.partialMatch;
+////    if (ourOffset < 0)
+////      ourOffset = this.lastOffset()
+////    var theTarget = matchRange.startContainer;
+////    var theOffset = matchRange.startOffset;
+//////    this.adjustLeftStartingTargPosition(theTarget, theOffset, ourOffset);
+////
+////    var bNewTargNode = true;
+////    var bTargOffsetChanged = true;
+////    while ( (retVal == msiSearchUtils.partialMatch) && (ourOffset > 0) )
+////    {
+////      if (bNewTargNode)
+////      {
+////        if (!this.checkNodeStructuralMatch(theTarget, theOffset))
+////          retVal = msiSearchUtils.cannotMatch;
+////        bNewTargNode = false;
+////      }
+////      if (!bTargOffsetChanged && (ourOffset == 0) )
+////        return msiSearchUtils.completedMatch;
+////
+////      
+////      bTargOffsetChanged = this.adjustLeftStartingTargPosition(theTarget, theOffset, ourOffset, refEditor);
+////
+////      var theTarget = this.getNextTargetToLeft(theTarget, theOffset);
+////      if (theTarget == null)
+////        return msiSearchUtils.cannotMatch;
+////      var nodeType = msiSearchUtils.getTypeOfNodeSearch(theTarget);
+//////      if (nodeType == "blockContainer")
+////      if (this.shouldSkipOverWhiteSpaceWhenMatchingBoundary(nodeType))
+////        ourOffset = moveLeftOfTrailingWhiteSpace(ourOffset);
+////      switch(this.canMatch(nodeType))
+////      {
+////        START HERE! This isnt right! What do we do to indicate that we just want to move the left position outside an object and try again?
+////        case msiSearchUtils.matchPieceByPiece:
+////        case msiSearchUtils.matchOne:
+////        //Now try to match our right-hand end against targText's, where right-hand end means, of course, taking offsets into account.
+////        {
+////          var targText = theTarget.textContent;
+////          if ( (theOffset >= 0) && (theOffset < targText.length) )
+////            targText = targText.substr(0, theOffset);
+////          var matchLen = ourOffset;
+////          if (ourOffset < 0)
+////            matchLen = this.mText.length; ?????
+////          if (targText.length < this.mText
+////        }
+////        break;
+////        default:
+////          retVal = msiSearchUtils.cannotMatch;
+////        break;
+////      }
+////    }
+////  };
+
+  //We've been passed a position inside theTarget. Can we move any further to the left to try to match?
+  //Answer is yes if:
+  //   (i) We're at the beginning of theTarget and can move outside it;
+  //  (ii) We can move inside the object just to our left;
+  // (iii) What's to our left is ignorable whitespace.
+//  adjustLeftStartingTargPosition : function(theTarget, theOffset, ourRange, refEditor)
+//  {
+//    var retVal = false;
+//    var bGoInside = false;
+//    var bGoOutside = false;
+//    var newNode = null;
+//    if (theOffset < 0)
+//      theOffset = this.lastOffset(theTarget);
+//    if (this.offsetIsAtStart(theTarget, theOffset))
+//    {
+//      bGoOutside = this.canExtendOutside(theTarget);
+//    }
+//    else if (theTarget.nodeType == nsIDOMNode.TEXT_NODE)
+//    //In this case we can't do anything unless theTarget is ignorable whitespace, in which case we'll step outside:
+//    {
+//      bGoOutside = msiNavigationUtils.isIgnorableWhitespace(theTarget);
+//    }
+//    else //Look at child nodes:
+//    {
+//      if (theOffset > theTarget.childNodes.length)
+//        theOffset = theTarget.childNodes.length;
+//      for ( ; !bGoInside && (theOffset > 0); --theOffset)
+//      {
+//        newNode = theTarget.childNodes[theOffset - 1];  //Note that theOffset isn't 0, since we didn't fall into the "offsetIsAtStart" case.
+//        if (this.canExtendInside(newNode))
+//          bGoInside = true;
+//        else if (msiNavigationUtils.isIgnorableWhitespace(newNode))
+//          retVal = true;
+//        else
+//          break;
+//      }
+//    }
+//
+//    if (bGoOutside)
+//    {
+//      theOffset = msiNavigationUtils.offsetInParent(theTarget);
+//      theTarget = theTarget.parentNode;
+//      retVal = true;
+//    }
+//    else if (bGoInside && (newNode != null))
+//    {
+//      theTarget = newNode;
+//      theOffset = -1;
+//      retVal = true;
+//    }
+//    return retVal;
+//  },
+
+  adjustLeftStartingTargPosition : function(targRange, ourRange, refEditor)
+  {
+    var retVal = false;
+    var bGoInside = false;
+    var bGoOutside = false;
+    var newNode = null;
+    var theTarget = targRange.startContainer;
+    var theOffset = targRange.startOffset;
+
+//    if (this.offsetIsAtStart(theTarget, theOffset))
+    if (!this.nodeHasContentBeforeRangeStart(targRange, theTarget))
+    {
+      bGoOutside = this.canExtendOutside(theTarget);
+    }
+    else if (theTarget.nodeType == nsIDOMNode.TEXT_NODE)
+    //In this case we can't do anything unless theTarget is ignorable whitespace, in which case we'll step outside:
+    {
+      bGoOutside = msiNavigationUtils.isIgnorableWhitespace(theTarget);
+    }
+    else //Look at child nodes:
+    {
+      if (theOffset > theTarget.childNodes.length)
+        theOffset = theTarget.childNodes.length;
+      for ( ; !bGoInside && (theOffset > 0); --theOffset)
+      {
+        newNode = theTarget.childNodes[theOffset - 1];  //Note that theOffset isn't 0, since we didn't fall into the "offsetIsAtStart" case.
+        if (this.canExtendInside(newNode))
+          bGoInside = true;
+        else if (msiNavigationUtils.isIgnorableWhitespace(newNode))
+          retVal = true;
+        else
+          break;
+      }
+    }
+
+    if (bGoOutside)
+    {
+      targRange.setStartBefore(theTarget);
+//      theOffset = msiNavigationUtils.offsetInParent(theTarget);
+//      theTarget = theTarget.parentNode;
+      retVal = true;
+    }
+    else if (bGoInside && (newNode != null))
+    {
+      theTarget = newNode;
+      theOffset = this.lastOffset(newNode);
+      targRange.setStart(theTarget, theOffset);
+      retVal = true;
+    }
+    return retVal;
+  },
+
+  //We've been passed a position inside theTarget. Can we move any further to the right to try to match?
+  //Answer is yes if:
+  //   (i) We're at the end of theTarget and can move outside it;
+  //  (ii) We can move inside the object just to our right;
+  // (iii) What's to our right is ignorable whitespace.
+//  adjustRightStartingTargPosition : function(theTarget, theOffset, ourRange, refEditor)
+//  {
+//    var retVal = false;
+//    var bGoInside = false;
+//    var bGoOutside = false;
+//    var newNode = null;
+//    if ( (theOffset > theTarget.childNodes.length) || (theOffset < 0) )
+//      theOffset = this.lastOffset(theTarget);  //is this the right thing to do?? Do we want -1 as an offset to mean "coming in" or "coming in from the right"?
+//
+//    if (this.offsetIsAtEnd(theTarget, theOffset))
+//    {
+//      bGoOutside = this.canExtendOutside(theTarget);
+//    }
+//    else if (theTarget.nodeType == nsIDOMNode.TEXT_NODE)
+//    //In this case we can't do anything unless theTarget is ignorable whitespace, in which case we'll step outside:
+//    {
+//      bGoOutside = msiNavigationUtils.isIgnorableWhitespace(theTarget);
+//    }
+//    else //Look at child nodes:
+//    {
+//      for ( ; !bGoInside && (theOffset < theTarget.childNodes.length); ++theOffset)
+//      {
+//        newNode = theTarget.childNodes[theOffset];  //Note that theOffset isn't at the end, since we didn't fall into the "offsetIsAtStart" case.
+//        if (this.canExtendInside(newNode))
+//          bGoInside = true;
+//        else if (msiNavigationUtils.isIgnorableWhitespace(newNode))
+//          retVal = true;
+//        else
+//          break;
+//      }
+//    }
+//
+//    if (bGoOutside)
+//    {
+//      theOffset = msiNavigationUtils.offsetInParent(theTarget) + 1;
+//      theTarget = theTarget.parentNode;
+//      retVal = true;
+//    }
+//    else if (bGoInside && (newNode != null))
+//    {
+//      theTarget = newNode;
+//      theOffset = 0;
+//      retVal = true;
+//    }
+//    return retVal;
+//  },
+
+  adjustRightStartingTargPosition : function(targRange, ourRange, refEditor)
+  {
+    var theTarget = targRange.endContainer;
+    var theOffset = targRange.endOffset;
+    var retVal = false;
+    var bGoInside = false;
+    var bGoOutside = false;
+    var newNode = null;
+    if ( (theOffset > theTarget.childNodes.length) || (theOffset < 0) )
+      theOffset = this.lastOffset(theTarget);  //is this the right thing to do?? Do we want -1 as an offset to mean "coming in" or "coming in from the right"?
+
+//    if (this.offsetIsAtEnd(theTarget, theOffset))
+    if (!this.nodeHasContentAfterRangeEnd(targRange, theTarget))
+    {
+      bGoOutside = this.canExtendOutside(theTarget);
+    }
+    else if (theTarget.nodeType == nsIDOMNode.TEXT_NODE)
+    //In this case we can't do anything unless theTarget is ignorable whitespace, in which case we'll step outside:
+    {
+      bGoOutside = msiNavigationUtils.isIgnorableWhitespace(theTarget);
+    }
+    else //Look at child nodes:
+    {
+      for ( ; !bGoInside && (theOffset < theTarget.childNodes.length); ++theOffset)
+      {
+        newNode = theTarget.childNodes[theOffset];  //Note that theOffset isn't at the end, since we didn't fall into the "offsetIsAtStart" case.
+        if (this.canExtendInside(newNode))
+          bGoInside = true;
+        else if (msiNavigationUtils.isIgnorableWhitespace(newNode))
+          retVal = true;
+        else
+          break;
+      }
+    }
+
+    if (bGoOutside)
+    {
+      targRange.setEndAfter(theTarget);
+//      theOffset = msiNavigationUtils.offsetInParent(theTarget) + 1;
+//      theTarget = theTarget.parentNode;
+      retVal = true;
+    }
+    else if (bGoInside && (newNode != null))
+    {
+//      theTarget = newNode;
+//      theOffset = 0;
+      targRange.setEnd(newNode, 0);
+      retVal = true;
+    }
+    return retVal;
+  },
+
+//  getNextTargetToLeft : function(aNode, anOffset)
+//  {
+//    var targNode = aNode;
+//    while (anOffset == 0)
+//    {
+//      if (!this.canExtendOutside(aNode) || (!aNode.parentNode))
+//        return null;
+//      anOffset = msiNavigationUtils.offsetInParent(aNode);
+//      aNode = aNode.parentNode;
+//    }
+////    if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
+//    if ( (aNode.childNodes) && (anOffset > 0) && (anOffset <= aNode.childNodes.length) )
+//    {
+//      aNode = aNode.childNodes[anOffset - 1];
+//      anOffset = -1;
+//    }
+//  },
+//
+//  getNextTargetToRight : function(aNode, anOffset)
+//  {
+//    var targNode = aNode;
+//    while ( (anOffset < 0) || (anOffset >= aNode.childNodes.length) )
+//    {
+//      if (!this.canExtendOutside(aNode) || (!aNode.parentNode))
+//        return null;
+//      anOffset = msiNavigationUtils.offsetInParent(aNode);
+//      aNode = aNode.parentNode;
+//    }
+////    if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
+//    if ( (aNode.childNodes) && (anOffset >= 0) && (anOffset < aNode.childNodes.length) )
+//    {
+//      aNode = aNode.childNodes[anOffset];
+//      anOffset = 0;
+//    }
+//  },
+
+  canExtendOutside : function(aNode)
+  {
+    return this.nodeCanExtendOutside(this.mNode, aNode, this.mFlags);
+  },
+
+  nodeCanExtendOutside : function(ourNode, targNode, matchFlags)
+  {
+    var matchInfo = null;
+    if (msiSearchUtils.isTemplate(targNode))
+      return false;
+    if (targNode.parentNode && msiSearchUtils.isTemplate(targNode.parentNode))
+    {
+      if (msiSearchUtils.isTemplate(ourNode))
+      {
+        var targetName = msiGetBaseNodeName(targNode);
+        matchInfo = XPathStringFormatterBase.getMatchingNodeInfo( msiGetBaseNodeName(ourNode), matchFlags);
+        for (var ix = 0; ix < matchInfo.length; ++ix)
+        {
+          if (targetName == matchInfo[ix].theName)
+            return true;
+        }
+      }
+      return false;
+    }
+
+    var nodeType = msiSearchUtils.getTypeOfNodeSearch(ourNode);
+    var targType = msiSearchUtils.getTypeOfNodeSearch(targNode);
+    switch(nodeType)
+    {
+      case "text":
+        return this.nodeCanExtendOutside(ourNode.parentNode, targNode);
+      break;
+
+      case "textContainer":
+      case "blockContainer":
+      case "anonContainer":
+        return true;
+      break;
+      case "mathTemplate":  
+      case "mathContainer":
+      case "find":
+      default:
+        return false;
+      break;
+    }
+  },
+
+  canExtendInside : function(aNode)
+  {
+    return this.nodeCanExtendInside(this.mNode, aNode, this.mFlags);
+  },
+
+  nodeCanExtendInside : function(ourNode, targNode, matchFlags)
+  {
+    if (msiSearchUtils.isTemplate(targNode))
+      return false;
+
+    var nodeType = msiSearchUtils.getTypeOfNodeSearch(ourNode);
+    if (nodeType == "text")
+      return this.nodeCanExtendInside(ourNode.parentNode, targNode);
+
+    var targType = msiSearchUtils.getTypeOfNodeSearch(targNode);
+    switch(targType)
+    {
+      case "text":
+      case "textContainer":
+      case "blockContainer":
+      case "anonContainer":
+        return true;
+      break;
+      case "mathTemplate":  
+      case "mathContainer":
+      case "find":
+      default:
+        return false;
+      break;
+    }
+  },
+
+  lastOffset : function(aNode)
+  {
+    if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
+      return aNode.textContent.length;
+    if (aNode.childNodes)
+      return aNode.childNodes.length;
+    return 0;
+  },
+
+  haveContentBeforeRangeStart : function(aRange)
+  {
+    return this.nodeHasContentBeforeRangeStart(aRange, this.mNode);
+  },
+
+  nodeHasContentBeforeRangeStart : function(aRange, aNode)
+  {
+    var retVal = false;
+    var compVal = msiNavigationUtils.comparePositions(aNode, 0, aRange.startContainer, aRange.startOffset);
+    if (compVal < 0) //start of aNode is before start position of aRange
+      retVal = true;
+//    var compNode = msiNavigationUtils.getNodeBeforePosition(aRange.startContainer, aRange.startOffset);
+//    if (compNode && msiNavigationUtils.isAncestor(aNode, compNode))
+//      retVal = true;
+//    else if (msiNavigationUtils.isAncestor(aRange.startContainer, aNode))
+//      retVal = false;  //in this case, compNode should have been aNode or contained it if aNode had content before aRange
+//    else  //No content of aNode is immediately to the left of the range start; now we only want to return true if rangeStart is altogether before aNode.
+//    {
+//      compNode = aRange.startContainer;
+//      compVal = aRange.startContainer.compareDocumentPosition(aNode);
+//      retVal = ( (compVal & Node.DOCUMENT_POSITION_FOLLOWING) != null);
+//    }
+    return retVal;  
+  },
+
+  haveContentAfterRangeEnd : function(aRange)
+  {
+    return this.nodeHasContentAfterRangeEnd(aRange, this.mNode);
+  },
+
+  nodeHasContentAfterRangeEnd : function(aRange, aNode)
+  {
+    var retVal = false;
+    var anOffset = this.lastOffset(aNode);
+    var compVal = msiNavigationUtils.comparePositions(aNode, anOffset, aRange.endContainer, aRange.endOffset);
+    if (compVal > 0) //last offset in aNode is after end position of aRange
+      retVal = true;
+    
+//    var compNode = msiNavigationUtils.getNodeAfterPosition(aRange.endContainer, aRange.endOffset);
+//    if (compNode && msiNavigationUtils.isAncestor(aNode, compNode))
+//      retVal = true;
+//    else if (msiNavigationUtils.isAncestor(aRange.endContainer, aNode))
+//      retVal = false;
+//    else  //No content of aNode is immediately to the right of the range end; now we only want to return true if rangeEnd is altogether before aNode.
+//    {
+//      compVal = aRange.endContainer.compareDocumentPosition(aNode);
+//      retVal = ( (compVal & Node.DOCUMENT_POSITION_PRECEDING) != null);
+//    }
+    return retVal;  
+  },
+
+  nextChildToLeft : function(aRange)
+  {
+    return this.nextNodeChildToLeft(this.mNode, aRange);
+  },
+
+  nextNodeChildToLeft : function(aNode, aRange)
+  {
+    var compNode = null;
+    if (msiNavigationUtils.isAncestor(aNode, aRange.startContainer))
+    {
+      compNode = msiNavigationUtils.getNodeBeforePosition(aRange.startContainer, aRange.startOffset);
+      if (compNode.parentNode == aNode)
+        return compNode;
+    }
+    else
+    {
+      compNode = msiNavigationUtils.getNodeBeforePosition(aRange.startContainer, aRange.startOffset);
+      if (compNode == aNode)
+        return msiNavigationUtils.getLastSignificantChild(compNode);
+    }
+    return null;
+  },
+
+  nextChildToRight : function(aRange)
+  {
+    return this.nextNodeChildToRight(this.mNode, aRange);
+  },
+
+  nextNodeChildToRight : function(aNode, aRange)
+  {
+
+    var compNode = null;
+    if (msiNavigationUtils.isAncestor(aNode, aRange.endContainer))
+    {
+      compNode = msiNavigationUtils.getNodeAfterPosition(aRange.endContainer, aRange.endOffset);
+      if (compNode.parentNode == aNode)
+        return compNode;
+    }
+    else
+    {
+      compNode = msiNavigationUtils.getNodeAfterPosition(aRange.endContainer, aRange.endOffset);
+      if (compNode == aNode)
+        return msiNavigationUtils.getFirstSignificantChild(compNode);
+    }
+    return null;
+  },
+
+  adjoinRange : function(oldRange, newRange)
+  {
+//    if (oldRange.compareBoundaryPoints(nsIDOMRange.START_TO_START, newRange) < 0)
+    if (msiNavigationUtils.comparePositions(newRange.startContainer, newRange.startOffset, oldRange.startContainer, oldRange.startOffset) < 0)
+      oldRange.setStart(newRange.startContainer, newRange.startOffset);
+//    if (oldRange.compareBoundaryPoints(nsIDOMRange.END_TO_END, newRange) > 0)
+    if (msiNavigationUtils.comparePositions(newRange.endContainer, newRange.endOffset, oldRange.endContainer, oldRange.endOffset) > 0)
+      oldRange.setEnd(newRange.endContainer, newRange.endOffset);
+  },
+
+  matchReturnString : function(matchedValue)
+  {
+    switch(matchedValue)
+    {
+      case msiSearchUtils.completedMatch: 
+        return "completedMatch";          break;
+      case msiSearchUtils.partialMatch:
+        return "partialMatch";            break;
+      case msiSearchUtils.cannotMatch:
+        return "cannotMatch";             break;
+      default:
+        return "unrecognized value";      break;
+    }
+  },
+
+  describe : function()
+  {
+    var descStr = "msiMatchNode, with mNode [" + this.mNode.nodeName + "]";
+    return descStr;
+  },
+
+  describeMsiRange : function(ourRange)
+  {
+    var descStr = "start " + ourRange.startContainer.nodeName + "[" + ourRange.startContainer.textContent + "]," + ourRange.startOffset;
+    descStr += "; end " + ourRange.endContainer.nodeName + "[" + ourRange.startContainer.textContent + "]," + ourRange.endOffset;
+    return descStr;
+  }
+
+};
+
+function msiTextMatchNode() {}
+msiTextMatchNode.prototype =
+{
+  m_spaceSplitRE : /(\s+)/,
+  mWhiteSpaceTestRE : /^\s*$/,
+
+  init : function(aNode, theFlags, refEditor)
+  {
+    this.mNode = aNode;
+    this.mFlags = theFlags;
+    this.mEditor = refEditor;
+    this.mText = aNode.textContent;
+    this.mTextPieces = aNode.textContent.split(this.m_spaceSplitRE);
+    this.getInheritedAttribs(aNode, refEditor);
+    this.mSearchType = msiSearchUtils.getTypeOfNodeSearch(aNode, refEditor);
+  },
+
+////  this.extendMatchToLeft = function(matchRange, ourOffset, refEditor)
+////  {
+////    var retVal = msiSearchUtils.partialMatch;
+////    if (this.mText && (ourOffset < 0) )
+////      ourOffset = this.mText.length;
+////
+////  }
+
+//  this.extendMatchToLeft = function(matchRange, ourOffset, refEditor)
+//  {
+//    var retVal = msiSearchUtils.partialMatch;
+//    if (this.mText && (ourOffset < 0) )
+//      ourOffset = this.mText.length;
+//    if (ourOffset == 0)
+//      return msiSearchUtils.completedMatch;
+//    var theTarget = matchRange.startContainer;
+//    var theOffset = matchRange.startOffset;
+//    while ( (retVal == msiSearchUtils.partialMatch) && (ourOffset > 0) )
+//    {
+//      var theTarget = this.getNextTargetToLeft(theTarget, theOffset);
+//      if (theTarget == null)
+//        return msiSearchUtils.cannotMatch;
+//      var nodeType = msiSearchUtils.getTypeOfNodeSearch(theTarget);
+////      if (nodeType == "blockContainer")
+//      if (this.shouldSkipOverWhiteSpaceWhenMatchingBoundary(nodeType))
+//        ourOffset = moveLeftOfTrailingWhiteSpace(ourOffset);
+//      switch(this.canMatch(nodeType))
+//      {
+//        START HERE! This isnt right! What do we do to indicate that we just want to move the left position outside an object and try again?
+//        case msiSearchUtils.matchPieceByPiece:
+//        case msiSearchUtils.matchOne:
+//        //Now try to match our right-hand end against targText's, where right-hand end means, of course, taking offsets into account.
+//        {
+//          var targText = theTarget.textContent;
+//          if ( (theOffset >= 0) && (theOffset < targText.length) )
+//            targText = targText.substr(0, theOffset);
+//          var matchLen = ourOffset;
+//          if (ourOffset < 0)
+//            matchLen = this.mText.length; ?????
+//          if (targText.length < this.mText
+//        }
+//        break;
+//        default:
+//          retVal = msiSearchUtils.cannotMatch;
+//        break;
+//      }
+//    }
+//  };
+
+//  match : function(targetNode, targRange)
+//  {
+//    var matched = msiSearchUtils.cannotMatch;
+//
+//    return matched;
+//  },
+
+  doLeftMatchCheck : function(matchRange, ourRange, origTarget, bNewTargNode)
+  {
+    var bMatched = false;
+    var targNode = matchRange.startContainer;
+    var targOffset = matchRange.startOffset;
+    var bMustMatchContainingNode = false;
+    if (origTarget != null)
+      bMustMatchContainingNode = true;
+    var retVal = msiSearchUtils.partialMatch;
+    var bNeedNodeMatch = false;
+    if (ourRange.startContainer != this.mNode)
+    {
+      var localNodeToMatch = this.nextNodeChildToLeft(this.mNode.parentNode, ourRange);
+      if (localNodeToMatch == this.mNode)
+      {
+        ourRange.setStart(this.mNode, this.mText.length);
+        bNewTargNode = true;
+      }
+      else
+      {
+        msiKludgeLogString( "In msiTextMatchNode.doLeftMatchCheck, incoming 'ourRange' doesn't point to this text node!\n", ["search"] );
+        return msiSearchUtils.cannotMatch;
+      }
+    }
+    var ourOffset = ourRange.startOffset;
+    if (bNewTargNode)
+      bNeedNodeMatch = !this.doStructuralNodeMatch(targNode);
+    
+    if (!bNeedNodeMatch)
+    {
+      //We know we're looking at a #text node, so we can just move on to examining the string.
+
+      var targText = targNode.textContent;
+      if ( (targOffset < 0) || (targOffset > targText.length) )
+        targOffset = targText.length;
+      var targPieces = targText.split(this.m_spaceSplitRE);
+      var targPos = this.totalOffsetToPieceAndOffset(targPieces, targOffset);
+      var ourPos = this.totalOffsetToPieceAndOffset(this.mTextPieces, ourOffset);
+
+//      var matchLen = ourOffset;
+//      var strToMatch = this.mText;
+//      if (ourOffset < 0)
+//        matchLen = this.mText.length;
+//      else
+//        strToMatch = this.mText.substr(0, matchLen);
+//
+//      bMatched = this.doMatchString(strToMatch, targText);
+      bMatched = true;
+      do
+      {
+        this.adjustPositionAndOffsetLeft(targPieces, targPos);
+        this.adjustPositionAndOffsetLeft(this.mTextPieces, ourPos);
+        bMatched = this.doMatchSubStringLeft(ourPos, targPieces, targPos);
+      }
+      while ( bMatched && ( (ourPos.nPiece > 0) || (ourPos.nOffset > 0) ) && ( (targPos.nPiece > 0) || (targPos.nOffset > 0) ) );
+
+      if (bMatched)
+      {
+        //Now, adjust ourOffset and the target stuff and match ranges.
+        ourOffset = this.pieceAndOffsetToTotalOffset(this.mTextPieces, ourPos);
+        targOffset = this.pieceAndOffsetToTotalOffset(targPieces, targPos);
+        if (ourOffset <= 0)
+        {
+          ourRange.setStartBefore(this.mNode);
+          retVal = msiSearchutils.completedMatch;
+        }
+        else
+          ourRange.startOffset = ourOffset;
+        if (targOffset <= 0)
+          matchRange.setStartBefore(targNode);
+        else
+          matchRange.setStart(targNode, targOffset);
+      }
+
+//      targOffset = matchRange.startOffset;
+//      targNode = matchRange.startContainer;
+    }
+    return retVal;
+  },
+
+  doRightMatchCheck : function(matchRange, ourRange, origTarget, bNewTargNode)
+  {
+    msiKludgeLogString( "Entering doRightMatchCheck for node [" + this.describe() + "]; matchRange is [" + this.describeMsiRange(matchRange) + "];\n  ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
+    var bMatched = false;
+    var targNode = matchRange.endContainer;
+    var targOffset = matchRange.endOffset;
+    var bMustMatchContainingNode = false;
+    if (origTarget != null)
+      bMustMatchContainingNode = true;
+    var retVal = msiSearchUtils.partialMatch;
+    if (ourRange.endContainer != this.mNode)
+    {
+      var localNodeToMatch = this.nextNodeChildToRight(this.mNode.parentNode, ourRange);
+      if (localNodeToMatch == this.mNode)
+      {
+        ourRange.setEnd(this.mNode, 0);
+        bNewTargNode = true;
+      }
+      else
+      {
+        msiKludgeLogString( "In msiTextMatchNode.doRightMatchCheck, incoming 'ourRange' is [" + this.describeMsiRange(ourRange) + "]; doesn't point to this text node!\n", ["search"] );
+        return msiSearchUtils.cannotMatch;
+      }
+    }
+    var ourOffset = ourRange.endOffset;
+    var bNeedNodeMatch = false;
+    if (bNewTargNode)
+      bNeedNodeMatch = !this.doStructuralNodeMatch(targNode);
+    
+    if (!bNeedNodeMatch)
+    {
+      //We know we're looking at a #text node, so we can just move on to examining the string.
+
+      var targText = targNode.textContent;
+      if (targOffset < 0)
+        targOffset = 0;
+      else if (targOffset > targText.length)
+        targOffset = targText.length;
+      var targPieces = targText.split(this.m_spaceSplitRE);
+      var targPos = this.totalOffsetToPieceAndOffset(targPieces, targOffset);
+      var ourPos = this.totalOffsetToPieceAndOffset(this.mTextPieces, ourOffset);
+
+//      var matchLen = ourOffset;
+//      var strToMatch = this.mText;
+//      if (ourOffset < 0)
+//        matchLen = this.mText.length;
+//      else
+//        strToMatch = this.mText.substr(0, matchLen);
+//
+//      bMatched = this.doMatchString(strToMatch, targText);
+      bMatched = true;
+      do
+      {
+        this.adjustPositionAndOffsetRight(targPieces, targPos);
+        this.adjustPositionAndOffsetRight(this.mTextPieces, ourPos);
+        bMatched = this.doMatchSubStringRight(ourPos, targPieces, targPos);
+      }
+      while ( bMatched && ( (ourPos.nPiece < this.mTextPieces.length - 1) || ((ourPos.nPiece == this.mTextPieces.length - 1) && (ourPos.nOffset < this.mTextPieces[ourPos.nPiece].length)) ) 
+                       && ( (targPos.nPiece < targPieces.length - 1) || ((targPos.nPiece == targPieces.length - 1) && (targPos.nOffset < targPieces[targPos.nPiece].length)) ) );
+
+      if (bMatched)
+      {
+        //Now, adjust ourOffset and the target stuff and match ranges.
+        ourOffset = this.pieceAndOffsetToTotalOffset(this.mTextPieces, ourPos);
+        targOffset = this.pieceAndOffsetToTotalOffset(targPieces, targPos);
+        if (ourOffset >= this.mText.length)
+        {
+          retVal = msiSearchUtils.completedMatch;
+          ourRange.setEndAfter(this.mNode);
+        }
+        else
+          ourRange.endOffset = ourOffset;
+        if (targOffset >= targText.length)
+          matchRange.setEndAfter(targNode);
+        else
+          matchRange.setEnd(targNode, targOffset);
+      }
+
+//      targOffset = matchRange.startOffset;
+//      targNode = matchRange.startContainer;
+    }
+    msiKludgeLogString( "Returning [" + this.matchReturnString(retVal) + "] from doRightMatchCheck for node [" + this.describe() + "]; matchRange is [" + this.describeMsiRange(matchRange) + "];\n  ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
+    return retVal;
+  },
+
+  adjustPositionAndOffsetLeft : function(thePieces, thePos)
+  {
+    var bNewPos = false;
+    if (thePos.nOffset == 0)
+    {
+      --thePos.nPiece;
+      bNewPos = true;
+      if (thePos.nPiece < 0)
+      {
+        bNewPos = false;
+        thePos.nOffset = -1;
+      }
+      else
+        thePos.nOffset = thePieces[thePos.nPiece].length;
+    }
+    return bNewPos;
+  },
+
+  adjustPositionAndOffsetRight : function(thePieces, thePos)
+  {
+    var bNewPos = false;
+    if (thePos.nPiece < 0)
+    {
+      thePos.nPiece = 0;
+      thePos.nOffset = 0;
+      bNewPos = true;
+    }
+    else if (thePos.nPiece >= thePieces.length)
+    {
+      thePos.nOffset = 0;
+    }
+    else if (thePos.nOffset >= thePieces[thePos.nPiece].length)
+    {
+      ++thePos.nPiece;
+      thePos.nOffset = 0;
+      bNewPos = true;
+    }
+    return bNewPos;
+  },
+
+  doMatchSubStringLeft : function(ourPosition, targetPieces, targetPosition)
+  {
+    var bMatched = false;
+    var nMatchlen = 0;
+    var ourPiece = this.mTextPieces[ourPosition.nPiece];
+    if (ourPosition.nOffset < ourPiece.length)
+      ourPiece = ourPiece.substr(0, ourPosition.nOffset);
+    var targPiece = targetPieces[targetPosition.nPiece];
+    if (targetPosition.nOffset < targPiece.length)
+      targPiece = targPiece.substr(0, targetPosition.nOffset);
+
+    if (this.isWhiteSpace(ourPiece))
+    {
+      bMatched = (ourPiece == targPiece);
+      if (!bMatched && this.isWhiteSpace(targPiece))
+      {
+        if (ourPiece.length < targPiece.length)
+          bMatched = true;
+      }
+      if (bMatched)
+      {
+        ourPosition.nOffset -= ourPiece.length;
+        targetPosition.nOffset -= targPiece.length;
+      }
+    }
+    else
+    {
+      if (!this.matchIsCaseSensitive())
+      {
+        ourPiece = ourPiece.toLowerCase();
+        targPiece = targPiece.toLowerCase();
+      }
+      nMatchlen = ourPiece.length;
+      if (targPiece.length < nMatchlen)
+        nMatchlen = targPiece.length;
+      bMatched = (ourPiece.substr(nMatchlen) == targPiece.substr(nMatchlen));
+      if (bMatched)
+      {
+        ourPosition.nOffset -= nMatchlen;
+        targetPosition.nOffset -= nMatchlen;
+      }
+    }
+
+    return bMatched;
+  },
+
+  doMatchSubStringRight : function(ourPosition, targetPieces, targetPosition)
+  {
+    var bMatched = false;
+    var nMatchlen = 0;
+    var ourPiece = this.mTextPieces[ourPosition.nPiece];
+    if (ourPosition.nOffset > 0)
+      ourPiece = ourPiece.substr(ourPosition.nOffset);
+    var targPiece = targetPieces[targetPosition.nPiece];
+    if (targetPosition.nOffset > 0)
+      targPiece = targPiece.substr(targetPosition.nOffset);
+
+    if (this.isWhiteSpace(ourPiece))
+    {
+      bMatched = (ourPiece == targPiece);
+      if (!bMatched && this.isWhiteSpace(targPiece))
+      {
+        if (ourPiece.length < targPiece.length)
+          bMatched = true;
+      }
+      if (bMatched)
+      {
+        ourPosition.nOffset += ourPiece.length;
+        targetPosition.nOffset += targPiece.length;
+      }
+    }
+    else
+    {
+      if (!this.matchIsCaseSensitive())
+      {
+        ourPiece = ourPiece.toLowerCase();
+        targPiece = targPiece.toLowerCase();
+      }
+
+      nMatchlen = ourPiece.length;
+      if (targPiece.length < nMatchlen)
+        nMatchlen = targPiece.length;
+      bMatched = (ourPiece.substr(nMatchlen) == targPiece.substr(nMatchlen));
+      if (bMatched)
+      {
+        ourPosition.nOffset += nMatchlen;
+        targetPosition.nOffset += nMatchlen;
+      }
+    }
+
+    return bMatched;
+  },
+
+//  doMatchString : function(strToMatch, targText)
+//  {
+//    if (targText.length < strToMatch.length)
+//      bMatched = 
+//    else  //look to match our whole string
+//      bMatched = ??
+//  },
+
+  totalOffsetToPieceAndOffset : function(pieceArray, totalOffset)
+  {
+    var retVal = new Object();
+    retVal.nPiece = -1;
+    retVal.nOffset = -1;
+    for (var ix = 0; ix < pieceArray.length; ++ix)
+    {
+      if (totalOffset < pieceArray[ix].length)
+      {
+        retVal.nPiece = ix;
+        retVal.nOffset = totalOffset;
+      }
+      totalOffset -= pieceArray[ix].length;
+    }
+    return retVal;
+  },
+
+  pieceAndOffsetToTotalOffset : function(pieceArray, posObj)
+  {
+    var retVal = posObj.nOffset;
+    if (retVal < 0)
+      retVal = 0;  //is this right????
+    for (var ix = 0; ix < posObj.nPiece; ++ix)
+    {
+      retVal += pieceArray[ix].length;
+    }
+    return retVal;
+  },
+
+  shouldSkipOverWhiteSpaceWhenMatchingBoundary : function(nodeType)
+  {
+    switch(nodeType)
+    {
+      case "blockContainer":
+      case "mathTemplate":  
+      case "mathContainer":
+      case "find":
+        return true;
+      break;
+      default:
+        return false;
+      break;
+    }
+  },
+
+  moveLeftOfTrailingWhiteSpace : function(anOffset)
+  {
+    var leftText = this.mText.substr(0, anOffset);
+    if (leftText.length == 0)
+      return 0;
+    var regExp = /(\s+)$/;
+    var foundIndex = leftText.search(regExp);
+    if (foundIndex < 0)
+      return anOffset;
+    return foundIndex;
+  },
+
+  moveRightOfLeadingWhiteSpace : function(anOffset)
+  {
+    var rightText = this.mText.substring(anOffset);
+//    if (rightText.length == 0)  this looks unnecessary
+//      return this.mText.length;
+    var regExp = /\S/;
+    var foundIndex = rightText.search(regExp);
+    if (foundIndex < 0)
+      return this.mText.length;  //move to the end if there's no non-whitespace
+    return (foundIndex + anOffset);
+  },
+
+  canExtendOutside : function(aNode)
+  {
+    var nodeType = msiSearchUtils.getTypeOfNodeSearch(theNode);
+    switch(nodeType)
+    {
+      case "textContainer":
+      case "blockContainer":
+      case "text":
+        return true;
+      break;
+      case "mathTemplate":  
+      case "mathContainer":
+      case "find":
+      default:
+        return false;
+      break;
+    }
+  },
+
+  isWhiteSpace : function(aTextPiece)
+  {
+    return ( this.mWhiteSpaceTestRE.test(aTextPiece) );
+  },
+
+  describe : function()
+  {
+    var descStr = "msiTextMatchNode, with mNode [" + this.mNode.nodeName + "], with [" + this.mTextPieces.length + "] text pieces: ";
+    for (var ix = 0; ix < this.mTextPieces.length; ++ix)
+    {
+      if (ix > 0)
+        descStr += ",";
+      descStr += "[" + this.mTextPieces[ix] + "]";
+    }
+//    descStr += "\n";
+    return descStr;
+  }
+
+}
+
+msiTextMatchNode.prototype.__proto__ = msiMatchNode.prototype;
+
+function msiTemplateMatchNode() {}
+msiTemplateMatchNode.prototype =
+{
+  init : function(theNode, theFlags, refEditor)
+  {
+    this.mNode = theNode;
+    this.mFlags = theFlags;
+    this.mEditor = refEditor;
+    this.mMatchInfo = XPathStringFormatterBase.getMatchingNodeInfo( msiGetBaseNodeName(theNode), theFlags);
+    this.getInheritedAttribs(theNode, refEditor);
+    this.mSearchType = msiSearchUtils.getTypeOfNodeSearch(theNode, refEditor);
+  },
+
+  match : function(targetNode, targRange)
+  {
+    var matched = msiSearchUtils.cannotMatch;
+    var targNodeName = msiGetBaseNodeName(targetNode);
+    var ourBaseName = msiGetBaseNodeName(this.mNode);
+    var bMatched = false;
+    var childMatchInfo = null;
+    var localTargRange = this.mEditor.document.createRange();
+    var bTemplateMayMatch = false;
+    for (var ix = 0; ix < this.mMatchInfo.length; ++ix)
+    {
+      if (targNodeName == this.mMatchInfo[ix].theName)
+      {
+        bMatched = bTemplateMayMatch = true;
+        var theContents = msiNavigationUtils.getSignificantContents(this.mNode);
+        var targetContents = msiNavigationUtils.getSignificantContents(targetNode);
+        for (var jx = 0; bMatched && (jx < theContents.length); ++jx)
+        {
+        	if (!msiSearchUtils.isEmptyInputBox(theContents[jx]))
+          {
+            var matchPosition = msiSearchUtils.getMatchPositionForChild(ourBaseName, targNodeName, jx);
+            if (matchPosition != "0")
+            {
+              if ( (matchPosition == "*") || msiSearchUtils.isMRowLike(targNodeName))
+              {
+              //What to do here? We're a well-behaved template, like an mroot, but we're trying to match, perhaps
+              //  a msqrt. In this case try to match our contents against all of theirs?
+                childMatchInfo = createMatchNode(theContents[jx], this.mFlags, this.mEditor);
+//                localTargRange.selectNode(targetNode);
+                localTargRange.setStartBefore(targetNode);
+                localTargRange.collapse(true);
+                bMatched = msiSearchUtils.isMatching(childMatchInfo.match(targetNode, localTargRange)); //this is wrong?
+              }  
+              else  
+              {
+                var nMatchPos = Number(matchPosition) - 1;  //the positions returned above are one-based rather than zero
+                if (nMatchPos < targetContents.length)
+                {
+                  childMatchInfo = createMatchNode(theContents[jx], this.mFlags, this.mEditor);
+//                  localTargRange.selectNode(targetContents[nMatchPos]);
+                  localTargRange.setStartBefore(targetContents[nMatchPos]);
+                  localTargRange.collapse(true);
+                  bMatched = msiSearchUtils.isMatching(childMatchInfo.match(targetContents[nMatchPos], localTargRange));
+                }
+                else
+                  bMatched = false;
+              }  
+            }
+          }  
+        }
+        break;
+      }
+    }
+    if (bMatched)
+    {
+      targRange.selectNode(targetNode);
+      matched = msiSearchUtils.completedMatch;
+    }
+    else
+      matched = msiSearchUtils.cannotMatch;
+    if (bTemplateMayMatch)
+      msiKludgeLogString( "Returning [" + this.matchReturnString(matched) + "] from msiMatchNode.match(), with target [" + targetNode.nodeName + "] and targRange [" + targRange.toString() + "], for matching node [" + this.describe() + "].\n", ["search"] );
+    else
+      msiKludgeLogString( "Template structural mismatch from msiMatchNode.match(), with target [" + targNodeName + "] and targRange [" + targRange.toString() + "], for matching node [" + this.describe() + "].\n", ["search"] );
+    return matched;
+  },
+
+  doLeftMatchCheck : function(matchRange, ourRange, origTarget, bNewTargNode)
+  {
+
+    //The "bNeedNodeMatch" cases other than "bMustMatchContainingNode" simply mean that we're looking through the target's children 
+    // trying to match our node rather than its children - thus our offset is at the end of an object which must find a matching node. 
+    // Again, we try to match as long as the targOffset can be safely moved left, but in this case we don't try to match our children 
+    // here; once we find a matching node, we'll set "bNeedNodeMatch" to false and move theTarget inside it.
+//      else if (bNeedNodeMatch)
+    var bMustMatchContainingNode = false;
+    var targNode = matchRange.startContainer;
+    var targOffset = matchRange.startOffset;
+    if (origTarget != null)
+      bMustMatchContainingNode = true;
+    var retVal = msiSearchUtils.cannotMatch;
+    var localTargRange = this.mEditor.document.createRange();
+    if (!bMustMatchContainingNode)
+    {
+//NOTE! The following may in fact be needed, but it seems wrong. Keep an eye out for this case.
+//      if (this.offsetIsAtEnd(targNode, targOffset))  //In this case, the entire targNode is a candidate for us to match??
+//        bNeedNodeMatch = !this.doStructuralNodeMatch(targNode);
+      if ( (targOffset > 0) && targNode.childNodes && (targOffset <= targNode.childNodes.length) )
+      {
+//        localTargRange.selectNode( targNode.childNodes[targOffset-1] );
+        localTargRange.setEndAfter(targNode.childNodes[targOffset-1]);
+        localTargRange.collapse(false);
+        retVal = this.match(targNode.childNodes[targOffset-1], localTargRange);
+      }
+      if (msiSearchUtils.isMatching(retVal))
+      {
+//        --targOffset;
+//        matchRange.startOffset = targOffset;
+        this.adjoinRange(matchRange, localTargRange);
+        ourRange.setStartBefore(this.mNode);
+      }
+    }
+    else
+    {
+      if (msiNavigationUtils.isAncestor(targNode, origTarget))
+      {
+//        localtargRange.selectNode(targNode);
+        localTargRange.setEndAfter(targNode);
+        localTargRange.collapse(false);
+        bMustMatchContainingNode = !this.match(targNode, localTargRange);
+      }
+      if (msiSearchUtils.isMatching(retVal))
+      {
+        ourRange.setStartBefore(this.mNode);
+////        --ourOffset;
+//        matchRange.setStartBefore(targNode);
+        this.adjoinRange(matchRange, localTargRange);
+////        targOffset = matchRange.startOffset;
+////        targNode = matchRange.startContainer;
+      }
+    }
+    return retVal;
+  },
+
+  doRightMatchCheck : function(matchRange, ourRange, origTarget, bNewTargNode)
+  {
+
+    //The "bNeedNodeMatch" cases other than "bMustMatchContainingNode" simply mean that we're looking through the target's children 
+    // trying to match our node rather than its children - thus our offset is at the end of an object which must find a matching node. 
+    // Again, we try to match as long as the targOffset can be safely moved left, but in this case we don't try to match our children 
+    // here; once we find a matching node, we'll set "bNeedNodeMatch" to false and move theTarget inside it.
+//      else if (bNeedNodeMatch)
+    msiKludgeLogString( "Entering doRightMatchCheck for node [" + this.describe() + "]; matchRange is [" + this.describeMsiRange(matchRange) + "];\n  ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
+    var bMustMatchContainingNode = false;
+    var targNode = matchRange.endContainer;
+    var targOffset = matchRange.endOffset;
+    if (origTarget != null)
+      bMustMatchContainingNode = true;
+    var retVal = msiSearchUtils.cannotMatch;
+    var localTargRange = this.mEditor.document.createRange();
+    if (!bMustMatchContainingNode)
+    {
+//NOTE! The following may in fact be needed, but it seems wrong. Keep an eye out for this case.
+//      if (this.offsetIsAtEnd(targNode, targOffset))  //In this case, the entire targNode is a candidate for us to match??
+//        bNeedNodeMatch = !this.doStructuralNodeMatch(targNode);
+      if ( (targOffset >= 0) && targNode.childNodes && (targOffset < targNode.childNodes.length) )
+      {
+//        localTargRange.selectNode( targNode.childNodes[targOffset]);
+        localTargRange.setStartBefore(targNode.childNodes[targOffset]);
+        localTargRange.collapse(true);
+        retVal = this.match(targNode.childNodes[targOffset], localTargRange);
+      }
+      if (msiSearchUtils.isMatching(retVal))
+      {
+        this.adjoinRange(matchRange, localTargRange);
+//        ++targOffset;
+//        matchRange.endOffset = targOffset;
+        ourRange.setEndAfter(this.mNode);
+      }
+    }
+    else
+    {
+      if (msiNavigationUtils.isAncestor(targNode, origTarget))
+      {
+//        localTargRange.selectNode(targNode);
+        localTargRange.setStartBefore(targNode);
+        localTargRange.collapse(true);
+        bMustMatchContainingNode = !this.match(targNode, localTargRange);
+      }
+      if (msiSearchUtils.isMatching(retVal))
+      {
+//        --ourOffset;
+        ourRange.setEndAfter(this.mNode);
+        this.adjoinRange(matchRange, localTargRange);
+//        matchRange.setEndAfter(targNode);
+////        targOffset = matchRange.startOffset;
+////        targNode = matchRange.startContainer;
+      }
+    }
+    msiKludgeLogString( "Returning [" + this.matchReturnString(retVal) + "] from doRightMatchCheck for node [" + this.describe() + "]; matchRange is [" + this.describeMsiRange(matchRange) + "];\n  ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
+    return retVal;
+  },
+
+  describe : function()
+  {
+    var descStr = "msiTemplateMatchNode, with mNode [" + this.mNode.nodeName + "]";
+    return descStr;
+  }
+
+};
+
+msiTemplateMatchNode.prototype.__proto__ = msiMatchNode.prototype;
+
+function msiMathContainerMatchNode() {}
+msiMathContainerMatchNode.prototype =
+{
+
+  init: function(theNode, theFlags, refEditor)
+  {
+    this.mNode = theNode;
+    this.mFlags = theFlags;
+    this.mEditor = refEditor;
+    this.mContents = msiSearchUtils.getSearchableContentNodes(this.mNode);
+    this.getInheritedAttribs(theNode, refEditor);
+    this.mSearchType = msiSearchUtils.getTypeOfNodeSearch(theNode, refEditor);
+  },
+
+//  getLastChild : function()
+//  {
+//    var retNode = null;
+//    if ( (this.mContents != null) && (this.mContents.length > 0) )
+//      retNode = this.mContents[this.mContents.length - 1];
+//    return retNode;
+//  },
+//
+//  match : function(targetNode)
+//  {
+//    WHAT GOES HERE? anything? or just use the base function?
+//  },
+
+//  //This function assumes that we have a match of what's to our right with the various ranges (probably just one) in rangeArray.
+//  //The first thing to be done is to determine whether we can extend the match at all. If we're some sort of container and we
+//  //  have more to our left to match, the answer is tentatively yes. If we're a template of some sort (like a <mfrac>), the answer
+//  //  is probably no. 
+//  //Then we have to examine each of the ranges to see what we encounter if we look to the left; if we're leaving an object, 
+//  //  can our match extend across its boundary? This is generally a difficult one to answer. If we're a template, we really don't
+//  //  want to be in this function anyway, in some sense; a template should try to match each of its component pieces. But does
+//  //  that mean we don't end up here or want to sometimes return true? Generally, though, we can return false in that case? What
+//  //  should happen if we're a fraction that has matched its denominator and wants to match its numerator, or a fraction which is
+//  //  empty and thus matches any fraction? It remains true that we must match an entire <mfrac>, and then can't extend beyond it.
+//  extendToLeft : function(rangeArray, offset)
+//  {
+//    if (offset == 0)  //what should this mean? We want to extend to left but we're at our beginning - return still extending?
+//      return msiSearchUtils.completedMatch;  //Means we've completed our requirements and the match is still good.
+//
+//    var nextNode = null;
+//    var targParent = null;
+//    var nextOffset = 0;
+//    var nextToTest = null;
+//    if ((offset < 0) || (offset > this.mNode.childNodes.length))  //offset = -1 is passed in if the current matching position is to our right
+//      nextNode = this.getLastChild();
+//    else
+//      nextNode = this.mNode.childNodes[offset - 1];
+//
+//    for (var ix = rangeArray.length - 1; rangeArray >= 0; --ix)
+//    {
+//      targParent = rangeArray[ix].startContainer;
+//      nextOffset = rangeArray[ix].startOffset;
+//      if (msiSearchUtils.isContainer(targParent))
+//      {
+//      }
+//      else
+//        rangeArray.splice(ix, 1);  //remove this one - we can't extend it
+////      NOW WHAT??  Want to look at the targParent to see whether something of our kind even CAN extend into something of their kind.
+////      For instance, if we're a template object like a radical, we only extend against other radicals? Or does it depend on our offset?
+//    }
+//  },
+
+//  doLeftMatchCheck : function(matchRange, targNode, targOffset, ourOffset, origTarget, bNewTargNode)
+//  {
+//    WHAT GOES HERE? anything? or just use the base function?
+//  }
+
+  describe : function()
+  {
+    var descStr = "msiMathContainerMatchNode, with mNode [" + this.mNode.nodeName + "]";
+    return descStr;
+  }
+};
+
+msiMathContainerMatchNode.prototype.__proto__ = msiMatchNode.prototype;
+
+function msiTextContainerMatchNode() {}
+msiTextContainerMatchNode.prototype = 
+{
+  describe : function()
+  {
+    var descStr = "msiTextContainerMatchNode, with mNode [" + this.mNode.nodeName + "]";
+    return descStr;
+  }
+};
+
+msiTextContainerMatchNode.prototype.___proto__ = msiMatchNode.prototype;
+
+function msiBlockContainerMatchNode() {}
+msiBlockContainerMatchNode.prototype = 
+{
+  describe : function()
+  {
+    var descStr = "msiBlockContainerMatchNode, with mNode [" + this.mNode.nodeName + "]";
+    return descStr;
+  }
+};
+
+msiBlockContainerMatchNode.prototype.__proto__ = msiMatchNode.prototype;
+
+function msiAnonContainerMatchNode() {}
+msiAnonContainerMatchNode.prototype =
+{
+//  init: function(theNode, theFlags, refEditor)
+//  {
+//    this.mNode = theNode;
+//    this.mFlags = theFlags;
+//    this.mEditor = refEditor;
+//    this.getInheritedAttribs(theNode, refEditor);
+//    this.mSearchType = msiSearchUtils.getTypeOfNodeSearch(theNode, refEditor);
+//  },
+
+  describe : function()
+  {
+    var descStr = "msiAnonContainerMatchNode, with mNode [" + this.mNode.nodeName + "]";
+    return descStr;
+  }
+
+};
+
+msiAnonContainerMatchNode.prototype.__proto__ = msiMatchNode.prototype;
+
+//Now let's try again to get the classification right.
+//The following should be the "matchNode" types:
+//   (i) mathContainer - this matches generally if its contents match; there may be some structural matching (as in <msqrt> or <mphantom>).
+//        As such, it matches "matchPieceByPiece", and determines extending a match piece by piece.
+//  (ii) mathTemplate - this matches only if the target is one of its allowed types and if corresponding pieces match.
+//        Thus it matches "matchCorrespondingPieces"; extending only occurs if a structural match is present.
+// (iii) mathLeaf - this matches only if the target is like it and the contents match.
+//        It matches "matchSingleObject" and rarely extends.
+//  (iv) textContainer - this matches things like texttags. It matches "matchPieceByPiece"; there will generally be structural
+//        matching in the ancestor axis (that is, we'll need to ensure we're inside the proper text tag regardless of whatever else
+//        we may be in). Generally can extend. Question: Do we need to differentiate block-level structures here? Unclear...
+//   (v) textNodes - just text nodes, as the name implies. Match "matchPieceByPiece", and can generally extend matches.
+
+//Each matchNode should have the functions:
+//   (i) extendLeft(offset, targetNode, targetOffset)
+//  (ii) extendRight(offset, targetNode, targetOffset)
+// (iii) match(targetNode, targetOffset)
+//  and what else?
+
+function createMatchNode(theNode, theFlags, refEditor)
+{
+//  var theProto = null;
+  var retVal = null;
+  var nodeType = msiSearchUtils.getTypeOfNodeSearch(theNode);
+//  if (msiSearchUtils.isMathTemplate(theNode))
+  switch(nodeType)
+  {
+    case "mathTemplate":  
+//      theProto = msiTemplateMatchNode;
+      retVal = new msiTemplateMatchNode();
+    break;
+//  if (msiSearchUtils.isMRowLike(theNode))
+    case "mathContainer":
+//      theProto = msiMathContainerMatchNode;
+      retVal = new msiMathContainerMatchNode();
+    break;
+    case "textContainer":
+//      theProto = msiTextContainerMatchNode;
+      retVal = new msiTextContainerMatchNode();
+    break;
+    case "blockContainer":
+//      theProto = msiBlockContainerMatchNode;
+      retVal = new msiBlockContainerMatchNode();
+    break;
+    case "text":
+//      theProto = msiTextMatchNode;
+      retVal = new msiTextMatchNode();
+    break;
+    case "find":
+//      theProto = msiMatchNode;
+      retVal = new msiMatchNode();
+    break;
+    case "anonContainer":
+      retVal = new msiAnonContainerMatchNode();
+    break;
+  }
+//  if (theProto)
+  if (retVal)
+  {
+//    var newFunc = function() {};
+//    newFunc.prototype = new theProto();
+//    retVal = new newFunc();
+////    retVal.prototype = theProto;
+    var logStr = "Creating a matchNode of type [" + nodeType + "] for node [" + theNode.nodeName + "].\n";
+//    var logStr = "Creating a matchNode of type [" + nodeType + "]; it has members:\n";
+    msiKludgeLogString(logStr, ["search"]);
+    try
+    {
+      retVal.init(theNode, theFlags, refEditor);
+//      logStr = "  init succeeded; retVal has [";
+//      for (var aProp in retVal)
+//      {
+//        logStr += aProp + ",  ";
+//      }
+//      dump(logStr + "] properties.\n");
+    } catch(exc)
+    {
+      msiKludgeLogString("Unable to init msiMatchNode due to exception: " + exc + "\n", ["search"]);
+//      logStr = "  Members of retVal are:\n";
+//      for (var aProp in retVal)
+//      {
+//        logStr += "  " + aProp + ":      [" + retVal[aProp] + "]\n";
+//      }
+//      dump(logStr);
+    }
+  }
+  else
+    msiKludgeLogString( "Failed to create a matchNode, node of type [" + nodeType + "] for node [" + theNode.nodeName + "].\n", ["search"] );
+  return retVal;
+}
+
+function msiMatchingRange() {}
+msiMatchingRange.prototype =
+{
+  startContainer : null,
+  startOffset : 0,
+  endContainer : null,
+  endOffset : 0,
+
+  setStart : function(aNode, anOffset)
+  {
+    this.startContainer = aNode;
+    this.startOffset = anOffset;
+  },
+
+  setEnd : function(aNode, anOffset)
+  {
+    this.endContainer = aNode;
+    this.endOffset = anOffset;
+  },
+
+  setStartBefore : function(aNode)
+  {
+    var parent = aNode.parentNode;
+    var parOffset = msiNavigationUtils.offsetInParent(aNode);
+    this.setStart(parent, parOffset);
+  },
+
+  setEndAfter : function(aNode)
+  {
+    var parent = aNode.parentNode;
+    var parOffset = msiNavigationUtils.offsetInParent(aNode);
+    this.setEnd(parent, parOffset + 1);
+  },
+
+  selectNode : function(aNode)
+  {
+    this.setStartBefore(aNode);
+    this.setEndAfter(aNode);
+  },
+
+  collapse : function(toStart)
+  {
+    if (toStart)
+    {
+      this.endContainer = this.startContainer;
+      this.endOffset = this.startOffset;
+    }
+    else
+    {
+      this.startContainer = this.endContainer;
+      this.startOffset = this.endOffset;
+    }
+  },
+
+  collapsed : function()
+  {
+    return (this.startContainer == this.endContainer) && (this.startOffset == this.endOffset);
+  },
+
+  startIsInside : function(aNode)
+  {
+    for (var aTarg = this.startContainer; aTarg != null; aTarg = aTarg.parentNode)
+    {
+      if (aTarg == aNode)
+        return true;
+    }
+    return false;
+  },
+
+  endIsInside : function(aNode)
+  {
+    for (var aTarg = this.endContainer; aTarg != null; aTarg = aTarg.parentNode)
+    {
+      if (aTarg == aNode)
+        return true;
+    }
+    return false;
+  },
+
+  cloneRange : function()
+  {
+    var retVal = createMsiMatchingRange();
+    retVal.setStart(this.startContainer, this.startOffset);
+    retVal.setEnd(this.endContainer, this.endOffset);
+    return retVal;
+  },
+
+  comparePoint : function(aNode, anOffset)
+  {
+
+    var startVal = msiNavigationUtils.comparePositions(aNode, anOffset, this.startContainer, this.startOffset);
+    var endVal = msiNavigationUtils.comparePositions(aNode, anOffset, this.endContainer, this.endOffset);
+    if (startVal < 0)
+      return -1;  //aNode comes before our start
+    if (endVal > 0)
+      return 1;  //aNode comes after our end
+    //Otherwise, do we assume that aNode is between the two????? We know startVal >= 0 and endVal <= 0, so that should be enough
+    return 0;
+  },
+
+  compareBoundaryPoints : function(howToCompare, refRange)
+  {
+    switch(howToCompare)
+    {
+      case nsIDOMRange.END_TO_END:
+        return msiNavigationUtils.comparePositions(this.endContainer, this.endOffset, this.endContainer, refRange.endOffset);
+      break;
+      case nsIDOMRange.END_TO_START:
+        return msiNavigationUtils.comparePositions(this.endContainer, this.endOffset, this.startContainer, refRange.startOffset);
+      break;
+      case nsIDOMRange.START_TO_END:
+        return msiNavigationUtils.comparePositions(this.startContainer, this.startOffset, this.endContainer, refRange.endOffset);
+      break;
+      case nsIDOMRange.START_TO_START:
+      default:  //It should really be an error if "howToCompare" is anything else, but we'll just compare starts and have done with it.
+        return msiNavigationUtils.comparePositions(this.startContainer, this.startOffset, this.startContainer, refRange.startOffset);
+      break;
+    }
+  }
+};
+
+function createMsiMatchingRange()
+{
+  var msiRange = new msiMatchingRange();
+//  msiRange.prototype = msiMatchingRange;
+  return msiRange;
+}
+
+//We need to look into some of the following situations:
+//  <math><msub><mrow><mi>a</mi><mo>+</mo><mi>b</mi></mrow><mn>3</mn></msub><mo>&invisTimes;</mo><mrow><mo fence="true">{</mo><mi>a</mi><mo>-</mo><mi>b</mi><mo fence="true">}</mo></mrow></math>
+//  Suppose this is to be matched by <math><mi>a</mi><mo>-</mo><mi>b</mi></math>, and that the initial candidate node has been flagged as the first <mi>a</mi>.
+//  How to write the code to check to the left and right to extend the match (and in this case determine that it doesn't match)?
+//  What if instead we find a target in the numerator of an <mfrac> and want to decide whether it extends left and right?
+
+//A further classification scheme (!??) seems to be called for. The question we really want to answer has to do with the "mode of
+//  matching" of one node against another. The essentials MAY be distinguishable as:
+//  (i) Can this node match against part of the target node? That is, must a match be made against the entire target node or should
+//      we consider pieces of it? Example: a #text node may "always" match a piece (substring) of a target.
+// (ii) Can a part of this node match against the target node?
+//(iii) Can this node match against the target node at all?
+//The idea is to use this classification to determine our responses. So we'd like to write "extendMatchLeft" in terms like:
+//    if (this.canMatchPart(targetNode))
+//      this.extendLeft(getNextNodeToLeft(targetNode, targetOffset); ??
+//    else if (this.canPartiallyMatch(targetNode)
+//      this.getNextPieceToLeft(ourOffset).extendMatchToLeft();
+//  or:
+//    switch(getMatchMode(targetNode))
+//      case pieceByPiece:  this should mean parts of us can match parts of them
+//      case canMatchPart:  this should mean all of us could match parts of them?? should this be different?
+//      case pieceCanMatch:  this should mean a piece of us can match all of them??
+//We want to go through a loop to extend a match. Each time we should try to move the left edge of the range in the target further
+//  left; if we can't we have to get out. At each point, we want to examine the next object to the left (until we exit the current object!
+//  at which point things have to pass to our parent); if the matching should be done by one of our children we should pass it on
+//  to the child, otherwise try to match it ourselves.
+//The code we're trying to write would look something like:
+//    if (??)
+//      then move match target into subobject and go through loop again?
+
+//////A problem still not well handled is what a math template, for instance, should do when an extendLeft() reaches its end inside a
+//////  child node and gets handed (via a controlling function) up to the math template. The key issue is to recognize what the real
+//////  target node is - it's still essential that the wrong target not be handled by the math template. Is this somehow taken care of
+//////  by the position of the selection edge as it comes in to the extendLeft call? For instance, it may be that we're an <mfrac> and
+//////  the match started (and has thus far succeeded) inside of our numerator. In this case, we need several things to happen. First,
+//////  the match position in the target should be at the left of the nodes that matched our numerator; does this allow us to check for a
+//////  corresponding <mfrac> in the right place? The key here come from the "ourOffset" parameter. If "ourOffset" indicates (-1, or our
+//////  complete childNodes.length) that none of our subobjects have been involved in the match, then we should look to the left in the
+//////  target for a matching math template. If the offset is anything else, the previous matching must have occurred within one of our
+//////  subobject "fields", and the key is to hopefully retain the information about which fields have matched, pass to the parent of the
+//////  target node (in all cases????? check this) and check it for a match, then check the remaining unmatched fields.
+//////So, generically? If an object is called upon to extend a match to the left, and the offset parameter indicates that the match includes
+//////  already some subNodes of the object, then the object must look at the parent of the just-matched node. 
+////
+//////This function is intended to answer the question "Can matchNode match part of targNode?"
+////function canMatchPart(matchNode, targNode)
+////{
+////  var retVal = false;
+////  var matchName = msiGetBaseNodeName(matchNode);
+////  var targName = msiGetBaseNodeName(targNode);
+////  if (msiSearchUtils.isContainer(matchNode))
+////  {
+////    if (matchName == "msqrt")
+////
+////  }
+////}
+
+//////What we really need is a classificatino of nodes that's more like:
+//////  canMatchPieceByPiece  - this would be <mrow> and implied mrow's(?)
+//////  canMatchCorrespondingPieces - this would be math templates
+//////  canMatchSingleObject and this would be what?
+//////The function should be called with a matchNode and a targetNode. The big question is - how and when? For instance,
+//////  matchNode of <mfrac> with targetNode of <mrow> would produce an answer of canMatchSingleObject, but we'd need to know
+//////  for sure that the match being attempted is not, for instance, the <mfrac> against the contents of an <mfrac>'s denominator.
+//////I think this will work if we're careful how we call the function. One scenario, for instance, would be that we've matched the
+//////  numerator and denomiator of an <mfrac> and are moving out, getting the <mfrac> as the next node to try to extend. On the
+//////  target side we may find that we've moved out of an <mrow> and the parent is again an <mrow>. Since this match shouldn't work,
+//////  the next attempt will be to see whether we're at the left end of the <mrow> (using the msiNavigationUtils function), and exit
+//////  to its parent again if we are. If we then encounter an <mfrac>, then we're presumably okay. ????
+////function canExtendLeft(matchingParent, targetParent, theFlags, refEditor)
+////{
+////  var retVal = msiSearchUtils.matchPieceByPiece;
+////  if (msiSearchUtils.isContainer(matchingParent))
+////  {
+////    if (!msiSearchUtils.isContainer(targetParent))
+////    {
+////      retVal = msiSearchUtils.cannotMatch;
+////      //Except for?? May want to make an exception, for instance, for a/b matching the corresponding <mfrac>?
+////    }
+////  }
+////  else if (msiSearchUtils.isMathTemplate(matchingParent))
+////  {
+//////    if (msiSearchUtils.isContainer(targetParent))
+//////    {
+//////      retVal = msiSearchUtils.canMatchOnePiece; ???
+//////    }
+//////    else
+//////    {
+////      retVal = msiSearchUtils.cannotMatch;  //really?
+////      var matchInfo = XPathStringFormatterBase.getMatchingNodeInfo( msiGetBaseNodeName(matchingParent), theFlags);
+////      var targetName = msiGetBaseNodeName(targetParent);
+////      for (var ix = 0; ix < matchInfo.length; ++ix)
+////      {
+////        if (matchInfo[ix].theName == targetName)
+////        {
+////          retVal = msiSearchUtils.matchCorrespondingPieces;
+////          break;
+////        }
+////      }
+//////    }
+////  else if (msiNavigationUtils.isMathMLLeafNode(matchingParent))
+////  {
+////  }
+////  else
+////  {
+////    switch(msiGetBaseNodeName(matchingParent))  //??
+////    {
+////
+////    }
+////  }
+////}
+//////Need to start over!!!

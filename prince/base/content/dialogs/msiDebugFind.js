@@ -20,6 +20,7 @@ function initDialogObject()
   gTestFindDialog.searchBackwards = document.getElementById("dialog.searchBackwards");
   gTestFindDialog.checkXPath      = document.getElementById("checkXPath");
   gTestFindDialog.findNext        = document.getElementById("findNext");
+  gTestFindDialog.verifyFind      = document.getElementById("verifyFind");
   
   gTestFindDialog.findContentFilter = null;
   gTestFindDialog.findContentNodes = null;
@@ -598,6 +599,7 @@ function onFindNext()
       newRange.selectNode(result);
       gEditor.selection.removeAllRanges();
       gEditor.selection.addRange(newRange);
+      gTestFindDialog.verifyFind.disabled = false;
     }
   }
   else  //must be a text search
@@ -618,9 +620,24 @@ function onFindNext()
     SetTextboxFocus(gTestFindDialog.findInput);
 //    gTestFindDialog.findInput.select();
     gTestFindDialog.findInput.focus();
+    gTestFindDialog.verifyFind.diabled = true;
     return false;
   } 
+  gTestFindDialog.verifyFind.label = document.getElementById("verifyFindLabel").value;
   return true;
+}
+
+function onVerifyFind()
+{
+  var theRange = gEditor.selection.getRangeAt(0);
+  if (!gTestFindDialog.mSearchManager.verifySearch(theRange))
+  {
+    theRange.collapse(false);
+    gTestFindDialog.verifyFind.label = document.getElementById("verifyFailed").value;
+  }
+  else
+    gTestFindDialog.verifyFind.label = document.getElementById("verifySucceeded").value;
+
 }
 
 function flagsHaveChanged()
@@ -1028,6 +1045,8 @@ function doEnabling()
   gTestFindDialog.enabled = bNonEmpty;
   gTestFindDialog.findNext.disabled = !bNonEmpty;
   gTestFindDialog.bSearchExpressionChanged = true;  //start out with true, and reset to true on each change notification
+  gTestFindDialog.verifyFind.disabled = true;
+  gTestFindDialog.verifyFind.label = document.getElementById("verifyFindLabel").value;
 //  gTestFindDialog.replace.disabled = !findStr;
 //  gTestFindDialog.replaceAndFind.disabled = !findStr;
 //  gTestFindDialog.replaceAll.disabled = !findStr;
@@ -1052,26 +1071,6 @@ function doEnabling()
 //   //mfrac[./*[string-length()>0][1][contains(string(),"a")]][./*[string-length()>0][2][contains(string(),"b")]] - correctly found the mfrac
 //   The last one worked also on #2. above.
 //   //mfrac[./*[string-length()>0][1]/mi[contains(string(),"a")]][./*[string-length()>0][2][contains(string(),"b")]] - worked on #2
-
-//More results:
-//  (//msqrt|//mroot|//mo)//mi - this sort of formulation will extract child mi's.
-
-//Let's get together a list. To recognize either a square root or a mroot that is a square root, could use:
-//  (//msqrt|//mroot[./*[string-length(normalize-space())>0][2][(@tempinput="true") or (string()="2")]])
-//  or perhaps better:
-//  (//msqrt|//mroot[(./mi|./mn|./mrow)[2][(@tempinput="true") or (string()="2")]])
-// or perhaps best:
-//  //msqrt|(//mroot[(./mi|./mn|./mrow|./msqrt|./mroot|./mstyle|./mfrac|./mo)[2][(@tempinput="true") or (string()="2")]])
-
-//We may want to use XSLT since it's more powerful. Unfortunately, it wouldn't be as amenable to repeated
-//  uses; also, wouldn't this make it necessary to introduce a lot of extraneous id's into the document?
-//Following copied from Mozilla MDC Using XPath documentation. Now,
-//  how to use it here remains a bit of a mystery.
-// Evaluate an XPath expression aExpression against a given DOM node
-// or Document object (aNode), returning the results as an array
-// thanks wanderingstan at morethanwarm dot mail dot com for the
-// initial work.
-//var XPathResult = Components.interfaces.XPathResult;
 
 function evaluateXPath(aNode, aExpr)
 {
