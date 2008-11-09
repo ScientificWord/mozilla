@@ -5225,6 +5225,136 @@ var msiNavigationUtils =
     return retVal;
   },
 
+  isAncestor : function(aNode, refNode)
+  {
+    var retVal = false;
+    for (var targNode = aNode; targNode; targNode = targNode.parentNode)
+    {
+      if (targNode == refNode)
+      {
+        retVal = true;
+        break;
+      }
+    }
+    return retVal;
+  },
+
+  comparePositions : function(aNode, anOffset, refNode, refOffset, bLogIt)
+  {
+    var aNodeAncestors = new Array();
+    var nNodeAncestors = 0;
+    var refAncestors = new Array();
+    var nRefAncestors = 0;
+    var nRealOffset = anOffset;
+    var nRealRefOffset = refOffset;
+    var lastNode = aNode;
+    var lastRefNode = refNode;
+    for (var anAncestor = aNode; anAncestor; anAncestor = anAncestor.parentNode)
+    {
+      nNodeAncestors = aNodeAncestors.push(anAncestor);
+    }
+    for (var aRefAncestor = refNode; aRefAncestor; aRefAncestor = aRefAncestor.parentNode)
+    {
+      nRefAncestors = refAncestors.push(aRefAncestor);
+    }
+    if (aNodeAncestors.pop() != refAncestors.pop())
+    {
+      dump("In msiNavigationUtils.comparePositions(), no common ancestor for nodes [" + aNode.nodeName + ",[" + aNode.textContent + "]] and [" + refNode.nodeName + ",[" + refNode.textContent + "]]!\n");
+      return 0;
+    }
+    //Descend the ancestor chains until we reach the last point of common ancestry (or rather the first point of different ancestry)
+    while ((aNodeAncestors.length > 0) || (refAncestors.length > 0))
+    {
+      lastNode = aNodeAncestors.pop();
+      lastRefNode = refAncestors.pop();
+      if (lastNode != lastRefNode)
+        break;
+    }
+    if (lastNode != lastRefNode)  //if they're equal, it should mean that aNode was equal to refNode, and then we want to compare incoming offsets so leave them alone.
+    {
+      if (lastNode)
+        nRealOffset = this.offsetInParent(lastNode);
+      if (lastRefNode)
+        nRealRefOffset = this.offsetInParent(lastRefNode);
+    }
+    if (bLogIt)
+    {
+      function describeNode(someNode)
+      {
+        var retString = "[";
+        if (someNode)
+          retString += someNode.nodeName + ",[" + someNode.textContent + "]]";
+        else
+          retString += "null]";
+        return retString;
+      };
+//      dump("In msiNavigationUtils.comparePositions; aNode is [" + aNode.nodeName + ",[" + aNode.textContent + "]], while refNode is [" + refNode.nodeName + ",[" + refNode.textContent + "]].\n");
+      dump("In msiNavigationUtils.comparePositions; aNode is " + describeNode(aNode) + ", while refNode is " + describeNode(refNode) + ".\n");
+      dump("  After checking ancestor arrays, ended with lastNode being " + describeNode(lastNode) + " and lastRefNode " + describeNode(lastRefNode) + "; nRealOffset is then [" + nRealOffset + "] and nRealRefOffset is [" + nRealRefOffset + "].\n");
+    }
+    if (nRealOffset > nRealRefOffset)
+      return 1;
+    else if (nRealOffset < nRealRefOffset)
+      return -1;
+//    else
+    if (lastNode && !lastRefNode)  //in this case our position is inside lastNode and thus to the right of the ref position
+      return 1;
+    if (lastRefNode && !lastNode)  //in this case the ref position is inside lastRefNode and thus to the right of our position
+      return -1;
+        
+    return 0;
+  },
+
+//  comparePositions : function(aNode, anOffset, refNode, refOffset)
+//  {
+//    var compVal = aNode.compareDocumentPosition(refNode);
+//    var aParent, refParent;
+//    if (!compVal)  //this means aNode and refNode are the same
+//    {
+//      if (anOffset < refOffset)
+//        return -1;
+//      if (anOffset > refOffset)
+//        return 1;
+//      return 0;
+//    }
+//
+//    if (compVal & nsIDOMNode.DOCUMENT_POSITION_CONTAINS)  //refNode is a child of our node - before or after offset?
+//    {
+//      refParent = refNode;
+//      while (refParent)
+//      {
+//        if (refParent.parentNode == aNode)
+//        {
+//          if (anOffset <= this.offsetInParent(refParent))
+//            return -1;  //refNode is a child of aNode.childNodes[offsetInParent] and so follows the (aNode,anOffset) position
+//          else
+//            return 1;  //otherwise refNode comes before (aNode, anOffset)
+//        }
+//        refParent = refParent.parentNode;
+//      }
+//    }
+//    else if (compVal & nsIDOMNode.DOCUMENT_POSITION_IS_CONTAINED)
+//    {
+//      aParent = aNode;
+//      while (aParent)
+//      {
+//        if (aParent.parentNode == refNode)
+//        {
+//          if (refOffset <= this.offsetInParent(aParent))
+//            return 1;  //aNode is a child of refNode.childNodes[offsetInParent] and so follows the (refNode,refOffset) position
+//          else
+//            return -1;  //otherwise aNode comes before (refNode, refOffset)
+//        }
+//        aParent = aParent.parentNode;
+//      }
+//    }
+//    if (compVal & nsIDOMNode.DOCUMENT_POSITION_FOLLOWING)
+//      return 1;  //we're after the ref node
+//    if (compVal & nsIDOMNode.DOCUMENT_POSITION_PRECEDING)
+//      return -1;  //we're before the ref node
+//    return 0;  //Big leap of faith here - just assume if we couldn't find it anywhere else that it's the same position?????
+//  },
+
   getNodeBeforePosition : function(aNode, offset)
   {
     var retNode = null;
@@ -5286,9 +5416,13 @@ var msiNavigationUtils =
     if (node.namespaceURI != null)
       nsAtom = this.mAtomService.getAtom(node.namespaceURI);
 
-    var retVal = editor.tagListManager.getClassOfTag( node.nodeName, nsAtom);
-    if (retVal == null || retVal.length == 0)
-      retVal = editor.tagListManager.getClassOfTag( node.nodeName, null );
+    var retVal = "othertag";
+    if (editor != null)
+    {
+      retVal = editor.tagListManager.getClassOfTag( node.nodeName, nsAtom);
+      if (retVal == null || retVal.length == 0)
+        retVal = editor.tagListManager.getClassOfTag( node.nodeName, null );
+    }
     return retVal;
   },
 
@@ -5299,7 +5433,9 @@ var msiNavigationUtils =
       nsAtom = this.mAtomService.getAtom(node.namespaceURI);
 
     var namespace = new Object();
-    var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace);
+    var paraTag = "para";
+    if (editor != null)
+      paraTag = editor.tagListManager.getDefaultParagraphTag(namespace);
     if ((paraTag == node.nodeName) && ((nsAtom == null) || (nsAtom == namespace)) )
         return true;
     return false;
@@ -5325,6 +5461,11 @@ var msiNavigationUtils =
     return false;
   },
 
+  nodeIsSignificant : function(aNode)
+  {
+    return (!this.isIgnorableWhitespace(aNode));
+  },
+
   getSignificantContents : function(node)
   {
     var retList = new Array();
@@ -5333,7 +5474,7 @@ var msiNavigationUtils =
 
     for (var ix = 0; ix < node.childNodes.length; ++ix)
     {
-      if (!this.isIgnorableWhitespace(node.childNodes[ix]))
+      if (this.nodeIsSignificant(node.childNodes[ix]))
         retList.push(node.childNodes[ix]);
     }
     return retList;
@@ -5456,6 +5597,24 @@ var msiNavigationUtils =
       return this.isMathname(node.childNodes[0]);
 
     return false;
+  },
+
+  isMathMLLeafNode : function(aNode)
+  {
+    switch(msiGetBaseNodeName(aNode))
+    {
+      case "mi":
+      case "mo":
+      case "mn":
+        return true;
+      break;
+    }
+    return false;
+  },
+
+  isTextNode : function(aNode)
+  {
+    return (aNode.nodeType == nsIDOMNode.TEXT_NODE);
   },
 
   getEmbellishedOperator : function(node)
@@ -5810,34 +5969,27 @@ function msiDumpWithID(str, element)
   dump( str.replace("@", replStr) );
 }
 
-function msiKludgeLogString(logStr)
+function msiKludgeLogString(logStr, keyArray)
 {
-  return;
-  dump(logStr);
+  var keysInUse = [];
+#if DEBUG_Ron
+  keysInUse.push("search");
+#endif
 
-//  if (!("msiLogPath" in window) || !window.msiLogPath)
-//  {
-//    var logLocalFile = null;
-//    try
-//    {
-//      var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
-//      logLocalFile = dsprops.get("CurProcD", Components.interfaces.nsIFile);
-//    } 
-//    catch(exception) {alert("Couldn't set log path in msiKludgeLotString!"); window.msiLogPath = "failed"; return;}
-//    if (!logLocalFile)
-//    {
-//      var localFileInstance = Components.classes["@mozilla.org/file/local;1"].createInstance(nsILocalFile);
-//      localFileInstance.initWithPath("C:\\");
-//      logLocalFile = localFileInstance;
-//    }
-////    alert("Initial log path is " + logLocalFile.path);
-//    if (!logLocalFile.isDirectory())
-//      logLocalFile = logLocalFile.parent;
-//    logLocalFile.append("msiInfo.log");
-//    window.msiLogPath = logLocalFile.path;
-////    alert("Log path is " + window.msiLogPath);
-//  }
-//  addDataToFile(window.msiLogPath, logStr);
+  var bDoIt = false;
+  if (keyArray && keyArray.length)
+  {
+    for (var ix = 0; ix < keyArray.length; ++ix)
+    {
+      if (keysInUse.indexOf( keyArray[ix] ) >= 0)
+      {
+        bDoIt = true;
+        break;
+      }
+    }
+  }
+  if (bDoIt)
+    dump(logStr);
 }
 
 function msiAuxDirFromDocPath(documentURI)
