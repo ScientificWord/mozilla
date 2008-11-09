@@ -417,7 +417,7 @@ function onReplaceAll()
 //  var repNodes = gReplaceDialog.replaceContentFilter.getXMLNodesAsDocFragment();
 //rwa  var repFrag = gReplaceDialog.replaceContentFilter.getContentsAsDocumentFragment();
 //  var repString = gReplaceDialog.replaceContentFilter.getDocumentFragmentString();
-  var repString = gReplaceDialog.replaceContentFilter.getMarkupString();
+  var replString = gReplaceDialog.replaceContentFilter.getMarkupString();
 //  var repStr = gReplaceDialog.replaceInput.value;
 
   var finder = Components.classes["@mozilla.org/embedcomp/rangefind;1"].createInstance().QueryInterface(Components.interfaces.nsIFind);
@@ -589,4 +589,64 @@ function doEnabling()
   gReplaceDialog.replace.disabled = !findStr;
   gReplaceDialog.replaceAndFind.disabled = !findStr;
   gReplaceDialog.replaceAll.disabled = !findStr;
+}
+
+
+//We want to arrange the search so the following will match:
+
+//I. The expression "Just some words and stuff" should match:
+//   1. <em>Just some</em> words and <sf>stuff and then going on</sf>
+//   2. Just some</para></part><section><para>words and <em>stuff and then more</em>
+//   3. Just some <em>words and <bold>stu</bold>f</em>f and then more
+
+//II. The expression "<math><mfrac><mi>a</mi><mi>b</mi></mfrac></math>" should match:
+//   1. <msqrt><mrow><mn>3</mn><mo>+</mo><mfrac><mi>a</mi><mi>b</mi></mfrac></mrow></msqrt>
+//   2. <mfrac><mrow><mi>a</mi><mo>-<mo><mn>2</mn></mrow><mi>b</mi></mfrac>
+//Here are some of the trials I've done in Mozilla's XPath Evaluator:
+//    //mfrac[contains(string(.[1]),"a")] - correctly found the mfrac
+//    //mfrac//*[string-length()>0][1][contains(string(),"a")] - correctly found the mi
+//    //mfrac[.//*[string-length()>0][1][contains(string(),"a")]] - correctly found the mfrac, as also did
+//    //mfrac[./*[string-length()>0][1][contains(string(),"a")]] - (using direct child single-/ instead of descendant "//"
+//   //mfrac[./*[string-length()>0][1][contains(string(),"a")]][./*[string-length()>0][2][contains(string(),"b")]] - correctly found the mfrac
+//   The last one worked also on #2. above.
+//   //mfrac[./*[string-length()>0][1]/mi[contains(string(),"a")]][./*[string-length()>0][2][contains(string(),"b")]] - worked on #2
+
+//More results:
+//  (//msqrt|//mroot|//mo)//mi - this sort of formulation will extract child mi's.
+
+//Let's get together a list. To recognize either a square root or a mroot that is a square root, could use:
+//  (//msqrt|//mroot[./*[string-length(normalize-space())>0][2][(@tempinput="true") or (string()="2")]])
+//  or perhaps better:
+//  (//msqrt|//mroot[(./mi|./mn|./mrow)[2][(@tempinput="true") or (string()="2")]])
+// or perhaps best:
+//  //msqrt|(//mroot[(./mi|./mn|./mrow|./msqrt|./mroot|./mstyle|./mfrac|./mo)[2][(@tempinput="true") or (string()="2")]])
+
+//We may want to use XSLT since it's more powerful. Unfortunately, it wouldn't be as amenable to repeated
+//  uses; also, wouldn't this make it necessary to introduce a lot of extraneous id's into the document?
+//Following copied from Mozilla MDC Using XPath documentation. Now,
+//  how to use it here remains a bit of a mystery.
+// Evaluate an XPath expression aExpression against a given DOM node
+// or Document object (aNode), returning the results as an array
+// thanks wanderingstan at morethanwarm dot mail dot com for the
+// initial work.
+function evaluateXPath(aNode, aExpr)
+{
+  if (!gReplaceDialog.xpathEval)
+  {
+    gReplaceDialog.xpathEval = new XPathEvaluator();
+    gReplaceDialog.nsResolver = gReplaceDialog.xpathEval.createNSResolver(aNode.ownerDocument == null ?
+                                             aNode.documentElement : aNode.ownerDocument.documentElement);
+  }
+
+  var result = gReplaceDialog.xpathEval.evaluate(aExpr, aNode, gReplaceDialog.nsResolver, 0, null);
+  var found = [];
+  var res;
+  while (res = result.iterateNext())
+    found.push(res);
+  return found;
+}
+
+function prepareXPathExpression(aNodeSet)
+{
+
 }

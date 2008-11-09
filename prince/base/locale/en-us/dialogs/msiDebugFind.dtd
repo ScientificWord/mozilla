@@ -43,6 +43,9 @@
 <!ENTITY findField.accesskey "n">
 <!ENTITY XPathInput.label "XPath expression:">
 <!ENTITY XPathInput.accesskey "x">
+<!ENTITY verifyFindButton.label "Verify find">
+<!ENTITY verifyFindButton.accesskey "v">
+
 <!ENTITY caseSensitiveCheckbox.label "Match upper/lower case">
 <!ENTITY caseSensitiveCheckbox.accesskey "c">
 <!ENTITY wrapCheckbox.label "Wrap around">
@@ -55,3 +58,5 @@
 <!ENTITY checkXPathButton.accesskey "v">
 <!ENTITY closeButton.label "Close">
 <!ENTITY notFoundWarning.label "The text you entered was not found.">
+<!ENTITY verifyFailed.label "Match failed">
+<!ENTITY verifySucceeded.label "Match succeeded">
