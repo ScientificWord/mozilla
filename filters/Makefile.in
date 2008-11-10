@@ -6,7 +6,7 @@ VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-DIRS		=   prnc2ltx
+DIRS		=   prnc2ltx mathml
 ifeq ($(OS_ARCH),WINNT)
 DIRS		+= ptprince
 endif
