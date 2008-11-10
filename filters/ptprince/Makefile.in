@@ -78,9 +78,9 @@ FWSRCS  =  \
   $(srcdir)/which.fw         \
   $(NULL)
 
-LOCAL_INCLUDES = -I$(srcdir)/../TreeGen
+LOCAL_INCLUDES = -I$(srcdir)/../mathml
 
-LIBS = $(DIST)/lib/$(LIB_PREFIX)treegen_s.$(LIB_SUFFIX) \
+LIBS = $(DIST)/lib/$(LIB_PREFIX)mathml_s.$(LIB_SUFFIX) \
 
 OS_LIBS += \
     urlmon.lib \
