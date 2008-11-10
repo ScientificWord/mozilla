@@ -379,13 +379,13 @@ nsFrame::QueryInterface(const nsIID& aIID, void** aInstancePtr)
 
 nsrefcnt nsFrame::AddRef(void)
 {
-  NS_WARNING("not supported for frames");
+//  NS_WARNING("not supported for frames");
   return 1;
 }
 
 nsrefcnt nsFrame::Release(void)
 {
-  NS_WARNING("not supported for frames");
+//  NS_WARNING("not supported for frames");
   return 1;
 }
 
@@ -5117,7 +5117,9 @@ PRBool IsMathFrame( nsIFrame * aFrame )
   nsCOMPtr<nsIDOMNode> pNode;
   nsresult res;
   pContent = aFrame->GetContent();
+  if (!pContent) return PR_FALSE;
   pNode = do_QueryInterface(pContent);
+  if (!pNode) return PR_FALSE;
   res = pNode->GetNamespaceURI(sNamespace);
   if (sNamespace.EqualsLiteral("http://www.w3.org/1998/Math/MathML")) 
   {
@@ -5134,9 +5136,9 @@ nsIMathMLCursorMover * GetMathCursorMover( nsIFrame * aFrame )
 }
 
 
-PRBool IsParentMathFrame( nsIFrame * aFrame )
+PRBool IsParentMathFrame( nsIFrame * aFrame )                              
 {
-
+  if (!aFrame) return PR_FALSE;
   nsIFrame* pParent = aFrame->GetParent();
   return IsMathFrame(pParent);
 }
@@ -5312,6 +5314,7 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
     }
     if (*fBailing) goto bailedOut;
     *aMath = PR_TRUE;
+    printf("Exit 1\n");
     return NS_OK;
   }
   else
@@ -5371,8 +5374,8 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
       }
       else
       {
-        while ((pChild->GetNextSibling() == nsnull)&&pFrame)
-        {
+        while (pChild && (pChild->GetNextSibling() == nsnull) && pFrame)
+        {                                                         
           // we might be able to go up
           pChild = pParent;
           pParent = pParent->GetParent();
@@ -5402,7 +5405,9 @@ bailedOut:
       *aOutOffset = -1 - *aOutOffset;
   }
 #endif
-  if (!*aOutFrame) *aOutFrame = traversedFrame;
+  if (*fBailing) *aMath = PR_FALSE;
+  if (!*aMath) *aOutFrame = traversedFrame;
+  printf("Exit 2, aMath = %s, aOutFrame = %x\n", *aMath?"true":"false", *aOutFrame);
   return NS_OK;
 }
 
