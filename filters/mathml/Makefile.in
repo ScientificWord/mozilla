@@ -7,9 +7,9 @@ VPATH     = @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-MODULE = TreeGen
+MODULE = mathml
 
-LIBRARY_NAME = treegen_s
+LIBRARY_NAME = mathml_s
 DIST_INSTALL = 1
 FORCE_STATIC_LIB = 1
 
