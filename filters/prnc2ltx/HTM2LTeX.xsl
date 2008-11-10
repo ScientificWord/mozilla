@@ -266,6 +266,7 @@ after \allowbreak.  More \LBo's can be scripted as needed.
 <!--
 <xsl:text>call-template make-lines:</xsl:text>
   <xsl:value-of select="$remainder-from-last-node"/>
+
 <xsl:text>|</xsl:text><xsl:value-of select="$next-LaTeX-frag"/><xsl:text>|</xsl:text>
   <xsl:value-of select="$is-math"/>
 <xsl:text>:</xsl:text>
@@ -1093,6 +1094,7 @@ The \texttt{\TEXTsymbol{\backslash}text}  ->  The <msi:code>\text</msi:code>
       <xsl:when test="@class='hrulefill'">
         <xsl:text xml:space="preserve">\hrulefill </xsl:text>
       </xsl:when>
+
       <xsl:otherwise>
       </xsl:otherwise>
     </xsl:choose>
