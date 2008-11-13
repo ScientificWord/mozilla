@@ -2139,82 +2139,310 @@ toolbar[iconsize="small"] #javascriptButton[disabled="true"] {
 }
 
 #vc-RotateLeft{
-  list-style-image: url("chrome://prince/skin/icons/vc_rotateleft.png");
+  list-style-image: url("chrome://prince/skin/icons/v_rotateleft.png");
 }
 
 #vc-RotateRight{
-  list-style-image: url("chrome://prince/skin/icons/vc_rotateright.png");
+  list-style-image: url("chrome://prince/skin/icons/v_rotateright.png");
 }
 
 #vc-RotateUp{
-  list-style-image: url("chrome://prince/skin/icons/vc_rotateup.png");
+  list-style-image: url("chrome://prince/skin/icons/v_rotateup.png");
 }
 
 #vc-RotateDown{
-  list-style-image: url("chrome://prince/skin/icons/vc_rotatedown.png");
+  list-style-image: url("chrome://prince/skin/icons/v_rotatedown.png");
 }
 
 #vc-RotateScene{
-  list-style-image: url("chrome://prince/skin/icons/vc_rotatescene.png");
+  list-style-image: url("chrome://prince/skin/icons/v_rotate.png");
 }
 
 #vc-Zoom{
-  list-style-image: url("chrome://prince/skin/icons/vc_zoom.png");
+  list-style-image: url("chrome://prince/skin/icons/v_zooming.png");
 }
 
 #vc-Move{
-  list-style-image: url("chrome://prince/skin/icons/vc_move.png");
+  list-style-image: url("chrome://prince/skin/icons/v_move.png");
 }
 
 #vc-AutoSpeed{
-  list-style-image: url("chrome://prince/skin/icons/vc_animspeed.png");
+  list-style-image: url("chrome://prince/skin/icons/v_speed.png");
 }
 
 #vc-AnimSpeed{
-  list-style-image: url("chrome://prince/skin/icons/vc_animspeed.png");
+  list-style-image: url("chrome://prince/skin/icons/v_speed.png");
 }
 
 #vc-AutoZoomIn{
-  list-style-image: url("chrome://prince/skin/icons/vc_autozoomin.png");
+  list-style-image: url("chrome://prince/skin/icons/v_zoomin.png");
 }
 
 #vc-AutoZoomOut{
-  list-style-image: url("chrome://prince/skin/icons/vc_AutoZoomOut.png");
+  list-style-image: url("chrome://prince/skin/icons/v_zoomout.png");
 }
 
 #vc-GoToEnd{
-  list-style-image: url("chrome://prince/skin/icons/vc_GoToEnd.png");
+  list-style-image: url("chrome://prince/skin/icons/v_end.png");
 }
 
 #vc-GoToStart{
-  list-style-image: url("chrome://prince/skin/icons/vc_GoToStart.png");
+  list-style-image: url("chrome://prince/skin/icons/v_begin.png");
 }
 
 #vc-LoopType{
-  list-style-image: url("chrome://prince/skin/icons/vc_LoopType.png");
+  list-style-image: url("chrome://prince/skin/icons/v_anistyle.png");
 }
 
 #vc-Play{
-  list-style-image: url("chrome://prince/skin/icons/vc_Play.png");
+  list-style-image: url("chrome://prince/skin/icons/v_start.png");
 }
 
 #vc-Query{
-  list-style-image: url("chrome://prince/skin/icons/vc_Query.png");
+  list-style-image: url("chrome://prince/skin/icons/v_query.png");
 }
 
 #vc-SelObj{
-  list-style-image: url("chrome://prince/skin/icons/vc_SelObj.png");
+  list-style-image: url("chrome://prince/skin/icons/v_selection.png");
 }
 
 #vc-FitContents{
-  list-style-image: url("chrome://prince/skin/icons/vc_fitcontents.png");
+  list-style-image: url("chrome://prince/skin/icons/v_fit.png");
 }
-
 
 #vc-Reset{
-  list-style-image: url("chrome://prince/skin/icons/vc_reset.png");
+  list-style-image: url("chrome://prince/skin/icons/v_reset.png");
 }
 
+#vc-RotateLeft:hover{
+  list-style-image: url("chrome://prince/skin/icons/v_rotateleft-hover.png");
+}
+
+#vc-RotateRight:hover{
+  list-style-image: url("chrome://prince/skin/icons/v_rotateright-hover.png");
+}
+
+#vc-RotateUp:hover{
+  list-style-image: url("chrome://prince/skin/icons/v_rotateup-hover.png");
+}
+
+#vc-RotateDown:hover{
+  list-style-image: url("chrome://prince/skin/icons/v_rotatedown-hover.png");
+}
+
+#vc-RotateScene:hover{
+  list-style-image: url("chrome://prince/skin/icons/v_rotate-hover.png");
+}
+
+#vc-Zoom:hover{
+  list-style-image: url("chrome://prince/skin/icons/v_zooming-hover.png");
+}
+
+#vc-Move:hover{
+  list-style-image: url("chrome://prince/skin/icons/v_move-hover.png");
+}
+
+#vc-AutoSpeed:hover{
+  list-style-image: url("chrome://prince/skin/icons/v_speed-hover.png");
+}
+
+#vc-AnimSpeed:hover{
+  list-style-image: url("chrome://prince/skin/icons/v_speed-hover.png");
+}
+
+#vc-AutoZoomIn:hover{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomin-hover.png");
+}
+
+#vc-AutoZoomOut:hover{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomout-hover.png");
+}
+
+#vc-GoToEnd:hover{
+  list-style-image: url("chrome://prince/skin/icons/v_end-hover.png");
+}
+
+#vc-GoToStart:hover{
+  list-style-image: url("chrome://prince/skin/icons/v_begin-hover.png");
+}
+
+#vc-LoopType:hover{
+  list-style-image: url("chrome://prince/skin/icons/v_anistyle-hover.png");
+}
+
+#vc-Play:hover{
+  list-style-image: url("chrome://prince/skin/icons/v_start-hover.png");
+}
+
+#vc-Query:hover{
+  list-style-image: url("chrome://prince/skin/icons/v_query-hover.png");
+}
+
+#vc-SelObj:hover{
+  list-style-image: url("chrome://prince/skin/icons/v_selection-hover.png");
+}
+
+#vc-FitContents:hover{
+  list-style-image: url("chrome://prince/skin/icons/v_fit-hover.png");
+}
+
+#vc-Reset:hover{
+  list-style-image: url("chrome://prince/skin/icons/v_reset-hover.png");
+}
+
+
+#vc-RotateLeft:active{
+  list-style-image: url("chrome://prince/skin/icons/v_rotateleft-active.png");
+}
+
+#vc-RotateRight:active{
+  list-style-image: url("chrome://prince/skin/icons/v_rotateright-active.png");
+}
+
+#vc-RotateUp:active{
+  list-style-image: url("chrome://prince/skin/icons/v_rotateup-active.png");
+}
+
+#vc-RotateDown:active{
+  list-style-image: url("chrome://prince/skin/icons/v_rotatedown-active.png");
+}
+
+#vc-RotateScene:active{
+  list-style-image: url("chrome://prince/skin/icons/v_rotate-active.png");
+}
+
+#vc-Zoom:active{
+  list-style-image: url("chrome://prince/skin/icons/v_zooming-active.png");
+}
+
+#vc-Move:active{
+  list-style-image: url("chrome://prince/skin/icons/v_move-active.png");
+}
+
+#vc-AutoSpeed:active{
+  list-style-image: url("chrome://prince/skin/icons/v_speed-active.png");
+}
+
+#vc-AnimSpeed:active{
+  list-style-image: url("chrome://prince/skin/icons/v_speed-active.png");
+}
+
+#vc-AutoZoomIn:active{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomin-active.png");
+}
+
+#vc-AutoZoomOut:active{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomout-active.png");
+}
+
+#vc-GoToEnd:active{
+  list-style-image: url("chrome://prince/skin/icons/v_end-active.png");
+}
+
+#vc-GoToStart:active{
+  list-style-image: url("chrome://prince/skin/icons/v_begin-active.png");
+}
+
+#vc-LoopType:active{
+  list-style-image: url("chrome://prince/skin/icons/v_anistyle-active.png");
+}
+
+#vc-Play:active{
+  list-style-image: url("chrome://prince/skin/icons/v_start-active.png");
+}
+
+#vc-Query:active{
+  list-style-image: url("chrome://prince/skin/icons/v_query-active.png");
+}
+
+#vc-SelObj:active{
+  list-style-image: url("chrome://prince/skin/icons/v_selection-active.png");
+}
+
+#vc-FitContents:active{
+  list-style-image: url("chrome://prince/skin/icons/v_fit-active.png");
+}
+
+#vc-Reset:active{
+  list-style-image: url("chrome://prince/skin/icons/v_reset-active.png");
+}
+
+
+#vc-RotateLeft[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/v_rotateleft-disabled.png");
+}
+
+#vc-RotateRight[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/v_rotateright-disabled.png");
+}
+
+#vc-RotateUp[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/v_rotateup-disabled.png");
+}
+
+#vc-RotateDown[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/v_rotatedown-disabled.png");
+}
+
+#vc-RotateScene[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/v_rotate-disabled.png");
+}
+
+#vc-Zoom[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/v_zooming-disabled.png");
+}
+
+#vc-Move[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/v_move-disabled.png");
+}
+
+#vc-AutoSpeed[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/v_speed-disabled.png");
+}
+
+#vc-AnimSpeed[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/v_speed-disabled.png");
+}
+
+#vc-AutoZoomIn[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/v_zoomin-disabled.png");
+}
+
+#vc-AutoZoomOut[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/v_zoomout-disabled.png");
+}
+
+#vc-GoToEnd[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/v_end-disabled.png");
+}
+
+#vc-GoToStart[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/v_begin-disabled.png");
+}
+
+#vc-LoopType[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/v_anistyle-disabled.png");
+}
+
+#vc-Play[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/v_start-disabled.png");
+}
+
+#vc-Query[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/v_query-disabled.png");
+}
+
+#vc-SelObj[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/v_selection-disabled.png");
+}
+
+#vc-FitContents[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/v_fit-disabled.png");
+}
+
+#vc-Reset[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/v_reset-disabled.png");
+}
 
 
 
