@@ -13,3 +13,13 @@ function onCancel()
   data.filename = "";
 }
 
+function initialize()
+{
+  var data = window.arguments[0];
+  if (data.filename && data.filename.length > 0) document.getElementById("fragment-name").value = data.filename; 
+  var broadcasters = document.getElementsByTagName("broadcaster");
+  var j;
+  for (j=0; j< broadcasters.length; j++) broadcasters[j].setAttribute("hidden","true");
+  if (data.role) document.getElementById(data.role).setAttribute("hidden","false");
+}
+
