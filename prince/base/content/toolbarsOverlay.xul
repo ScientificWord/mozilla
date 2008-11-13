@@ -156,14 +156,24 @@
   
     <toolbar id="VCamToolbar" class="chromeclass-toolbar" persist="collapsed" 
       mode="icons" customizable="true"  hidden = "true" observes="vcamactive">
+      <toolbarbutton id="vc-Reset" class="toolbarbutton-1" label="vcReset" command="cmd_vcReset"/>
+      <toolbarbutton id="vc-FitContents" class="toolbarbutton-1" label="vcFitContents" command="cmd_vcFitContents" observes="3dplot"/>
+      <toolbarseparator/>
+      <toolbarbutton id="vc-SelObj" class="toolbarbutton-1" label="vcSelObj" command="cmd_vcSelObj"/>
+      <toolbarbutton id="vc-RotateScene" class="toolbarbutton-1" label="vcRotateScene" command="cmd_vcRotateScene" observes="3dplot"/>
+      <toolbarbutton id="vc-Zoom" class="toolbarbutton-1" label="vcZoom" command="cmd_vcZoom"/>
+      <toolbarbutton id="vc-Move" class="toolbarbutton-1" label="vcMove" command="cmd_vcMove"/>
+      <toolbarbutton id="vc-Query" class="toolbarbutton-1" label="vcQuery" command="cmd_vcQuery"/>
+      <toolbarseparator/>
       <toolbarbutton id="vc-RotateLeft" class="toolbarbutton-1" type="checkbox" label="Rotate left" command="cmd_vcRotateLeft" observes="3dplot"/>
       <toolbarbutton id="vc-RotateRight" class="toolbarbutton-1" type="checkbox" label="vcRotateRight" command="cmd_vcRotateRight" observes="3dplot"/>
       <toolbarbutton id="vc-RotateUp" class="toolbarbutton-1" type="checkbox" label="vcRotateUp" command="cmd_vcRotateUp" observes="3dplot"/>
       <toolbarbutton id="vc-RotateDown" class="toolbarbutton-1" type="checkbox" label="vcRotateDown" command="cmd_vcRotateDown" observes="3dplot"/>
-      <toolbarbutton id="vc-RotateScene" class="toolbarbutton-1" label="vcRotateScene" command="cmd_vcRotateScene" observes="3dplot"/>
-      <toolbarbutton id="vc-Zoom" class="toolbarbutton-1" label="vcZoom" command="cmd_vcZoom"/>
-      <toolbarbutton id="vc-Move" class="toolbarbutton-1" label="vcMove" command="cmd_vcMove"/>
-      <toolbarbutton id="vc-AutoSpeed" type="menu-button" class="toolbarbutton-1" label="vcAutoSpeed" observes="3dplot">
+      <toolbarseparator/>
+      <toolbarbutton id="vc-AutoZoomIn" class="toolbarbutton-1" type="checkbox" label="vcAutoZoomIn" command="cmd_vcAutoZoomIn" observes="3dplot"/>
+      <toolbarbutton id="vc-AutoZoomOut" class="toolbarbutton-1" type="checkbox" label="vcAutoZoomOut" command="cmd_vcAutoZoomOut" observes="3dplot"/>
+      <toolbarseparator/>
+      <toolbarbutton id="vc-AutoSpeed" type="menu" class="toolbarbutton-1" label="vcAutoSpeed" observes="3dplot">
         <menupopup>
           <menuitem id="actionspeed8s" type="radio" label="8x slower" oncommand="setActionSpeed(0.125);" />
           <menuitem id="actionspeed4s" type="radio" label="4x slower" oncommand="setActionSpeed(0.25);" />
@@ -174,7 +184,20 @@
           <menuitem id="actionspeed8f" type="radio" label="8x faster" oncommand="setActionSpeed(8.0);" />
         </menupopup>
       </toolbarbutton>
-      <toolbarbutton id="vc-AnimSpeed" type="menu-button" class="toolbarbutton-1" label="vcAnimSpeed" observes="animplot">
+      <toolbarseparator/>
+      <toolbarseparator/>
+      <toolbarbutton id="vc-GoToStart" class="toolbarbutton-1" label="vcGoToStart" command="cmd_vcGoToStart" observes="animplot"/>
+      <toolbarbutton id="vc-Play" class="toolbarbutton-1" type="checkbox" label="vcPlay" command="cmd_vcPlay" observes="animplot"/>
+      <scale id="vc-AnimScale" width="150" observes="animplot"/>
+      <toolbarbutton id="vc-GoToEnd" class="toolbarbutton-1" label="vcGoToEnd" command="cmd_vcGoToEnd" observes="animplot"/>
+      <toolbarbutton id="vc-LoopType" type="menu" class="toolbarbutton-1" label="vcLoopType" observes="animplot">
+        <menupopup observes = "vc-LootType">
+          <menuitem id="runonce" type="radio" checked="true" label="Run once" oncommand="setLoopMode(0);" />
+          <menuitem id="loop" type="radio" label="Loop" oncommand="setLoopMode(1);" />
+          <menuitem id="backandforth" type="radio" label="Back and forth" oncommand="setLoopMode(2);" />
+        </menupopup>
+      </toolbarbutton>
+      <toolbarbutton id="vc-AnimSpeed" type="menu" class="toolbarbutton-1" label="vcAnimSpeed" observes="animplot">
         <menupopup>
           <menuitem id="animspeed8s" type="radio" label="8x slower" oncommand="setAnimSpeed(0.125);" />
           <menuitem id="animspeed4s" type="radio" label="4x slower" oncommand="setAnimSpeed(0.250);" />
@@ -185,24 +208,6 @@
           <menuitem id="animspeed8f" type="radio" label="8x faster" oncommand="setAnimSpeed(8.0);" />
         </menupopup>
       </toolbarbutton>
-      
-      <toolbarbutton id="vc-AutoZoomIn" class="toolbarbutton-1" type="checkbox" label="vcAutoZoomIn" command="cmd_vcAutoZoomIn" observes="3dplot"/>
-      <toolbarbutton id="vc-AutoZoomOut" class="toolbarbutton-1" type="checkbox" label="vcAutoZoomOut" command="cmd_vcAutoZoomOut" observes="3dplot"/>
-      <toolbarbutton id="vc-GoToStart" class="toolbarbutton-1" label="vcGoToStart" command="cmd_vcGoToStart" observes="animplot"/>
-      <scale id="vc-AnimScale" width="150" observes="animplot"/>
-      <toolbarbutton id="vc-GoToEnd" class="toolbarbutton-1" label="vcGoToEnd" command="cmd_vcGoToEnd" observes="animplot"/>
-      <toolbarbutton id="vc-LoopType" type="menu-button" class="toolbarbutton-1" label="vcLoopType" observes="animplot">
-        <menupopup>
-          <menuitem id="runonce" type="radio" checked="true" label="Run once" oncommand="setLoopMode(0);" />
-          <menuitem id="loop" type="radio" label="Loop" oncommand="setLoopMode(1);" />
-          <menuitem id="backandforth" type="radio" label="Back and forth" oncommand="setLoopMode(2);" />
-        </menupopup>
-      </toolbarbutton>
-      <toolbarbutton id="vc-Play" class="toolbarbutton-1" type="checkbox" label="vcPlay" command="cmd_vcPlay" observes="animplot"/>
-      <toolbarbutton id="vc-Query" class="toolbarbutton-1" label="vcQuery" command="cmd_vcQuery"/>
-      <!--toolbarbutton id="vc-SelObj" class="toolbarbutton-1" label="vcSelObj" command="cmd_vcSelObj"/  -->
-      <toolbarbutton id="vc-Reset" class="toolbarbutton-1" label="vcReset" command="cmd_vcReset"/>
-      <toolbarbutton id="vc-FitContents" class="toolbarbutton-1" label="vcFitContents" command="cmd_vcFitContents" observes="3dplot"/>
     </toolbar>
 
 
