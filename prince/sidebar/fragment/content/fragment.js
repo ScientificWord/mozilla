@@ -1,5 +1,12 @@
 Components.utils.import("resource://app/modules/macroArrays.jsm");
 
+var pathSeparator = 
+#ifdef XP_WIN32
+    "\\";
+#else
+    "/"
+#endif
+
 function focusOnEditor()
 {
   var editWindow = document.getElementById('content-frame');
@@ -33,6 +40,7 @@ function initSidebar()
 function insertFragmentContents( pathname)
 {
   // pathname is now the path of the clicked file relative to the fragment root.
+  dump("insertFragmentContents: pathname = "+pathname+"\n");
   try 
   {
     var editorElement = document.getElementById("content-frame");
@@ -81,7 +89,7 @@ function insertFragmentContents( pathname)
   }
   catch(e)
   {
-//    alert(e);
+    alert(e);
   }
   focusOnEditor();
 }
@@ -92,17 +100,131 @@ function loadFragment(event,tree)
   var i = tree.currentIndex;
   var s = tree.view.getCellText( i,namecol);
   if (event.type=="keypress" && event.keyCode!=event.DOM_VK_RETURN) return;
-  if (!tree.view.isContainer(i))
-  {  
     while (tree.view.getParentIndex(i) >= 0)
     {           
       i = tree.view.getParentIndex(i);
-      s = tree.view.getCellText(i,namecol)+ "/" + s;
+      s = tree.view.getCellText(i,namecol)+ pathSeparator + s;
     }
-  }
   s = tree.getAttribute("ref") + "/" +s;
-  insertFragmentContents(tree, s);
+  insertFragmentContents(s);
   focusOnEditor();
+}
+
+function deleteFragment(tree)
+{
+  var tree = document.getElementById("frag-tree");
+  var namecol = tree.columns.getNamedColumn('Name');
+  var i = tree.currentIndex;
+  if (i < 0) return;
+  var s = tree.view.getCellText( i,namecol);
+  var file = getUserResourceFile("fragments","");
+    while (tree.view.getParentIndex(i) >= 0)
+    {           
+      i = tree.view.getParentIndex(i);
+      s = tree.view.getCellText(i,namecol)+pathSeparator+s;
+    }
+  var pieces = s.split(pathSeparator);
+  var j;
+  for (j = 0; j < pieces.length; j++) file.append(pieces[j]);
+  dump('found file  '+file.path+'\n');
+  try {
+    file.remove(false);
+  }
+  catch (e) {
+    dump(e.message+'\n');
+  }
+  buildFragmentArray();
+  tree.builder.rebuild();
+}
+
+function renameFragment(tree)
+{
+  var tree = document.getElementById("frag-tree");
+  var namecol = tree.columns.getNamedColumn('Name');
+  var i = tree.currentIndex;
+  if (i < 0) return;
+  var s = tree.view.getCellText( i,namecol);
+  var data = new Object();
+  data.filename = s;
+  data.role = "renamefrag";
+  dump('found item '+s+'\n');
+  window.openDialog("chrome://prince/content/fragmentname.xul", "", "modal,chrome,resizable=yes", data);
+  if (data.filename.length > 0)
+  {
+    dump('new name is '+data.filename+'\n');
+    var file = getUserResourceFile("fragments","");
+    var regexp = /\.frg$/i;
+    var newname = data.filename;
+    if (!regexp.test(newname)) newname += '.frg';
+      while (tree.view.getParentIndex(i) >= 0)
+      {           
+        i = tree.view.getParentIndex(i);
+        s = tree.view.getCellText(i,namecol)+pathSeparator+s;
+      }
+    var pieces = s.split(pathSeparator);
+    var j;
+    for (j = 0; j < pieces.length; j++) file.append(pieces[j]);
+    file.moveTo(null, newname);
+    buildFragmentArray();
+    tree.builder.rebuild();
+  }
+}
+
+function fixFragmentContextMenu()
+{
+  var tree = document.getElementById("frag-tree");
+  var namecol = tree.columns.getNamedColumn('Name');
+  var i = tree.currentIndex;
+  if (i < 0) return;
+  var s = tree.view.getCellText( i,namecol);
+  var menu = document.getElementById("fragment_delete");
+  menu.setAttribute("label", menu.getAttribute("label")+" "+s);
+  var menu = document.getElementById("fragment_rename");
+  menu.setAttribute("label", menu.getAttribute("label")+" "+s);
+}
+
+function restoreFragmentContextMenu()
+{
+  var menu = document.getElementById("fragment_delete");
+  menu.setAttribute("label", menu.getAttribute("barelabel"));
+  var menu = document.getElementById("fragment_rename");
+  menu.setAttribute("label", menu.getAttribute("barelabel"));
+}
+
+function newFragmentFolder()
+{
+  var tree = document.getElementById("frag-tree");
+  var namecol = tree.columns.getNamedColumn('Name');
+  var i = tree.currentIndex;
+  var s = "";
+  if (i < 0) return;
+  if (tree.view.isContainer(i))
+    s = tree.view.getCellText( i,namecol);
+  var file = getUserResourceFile("fragments","");
+  while (tree.view.getParentIndex(i) >= 0)
+  {           
+    i = tree.view.getParentIndex(i);
+    s = tree.view.getCellText(i,namecol)+pathSeparator+s;
+  }
+  var pieces = s.split(pathSeparator);
+  var j;
+  for (j = 0; j < pieces.length; j++) file.append(pieces[j]);
+  var data = new Object();
+  data.role = "newfolder";
+  window.openDialog("chrome://prince/content/fragmentname.xul", "", "modal,chrome,resizable=yes", data);
+  if (data.filename.length > 0)
+  {
+    dump('new name is '+data.filename+'\n');
+    file.append(data.filename);
+    try {
+      file.create(1, 0755);
+    }
+    catch(e) {
+      dump(e.message+'\n');
+    }
+    buildFragmentArray();
+    tree.builder.rebuild();
+  }
 }
 
 function insertDataAtCursor( arrayElement )
@@ -128,6 +250,7 @@ function insertDataAtCursor( arrayElement )
 
 function onMacroOrFragmentEntered( aString )
 {
+  dump('onMacroOrFragmentEntered: '+aString+'\n');
   var s = getMacro(aString);
   if (s) 
   {
@@ -135,13 +258,15 @@ function onMacroOrFragmentEntered( aString )
   }
   else
   {
+    dump(aString+' is not a macro\n');
     s = getFragment(aString);
+    dump(s+'\n');
     if (s)
     {
       var dirpath = s.dirpath;
       dirpath = dirpath.replace("\\","/","g");
       dirpath = "file:///" + dirpath + "/" + aString + ".frg";      
-      
+      dump('calling insertFragmentContents('+dirpath+'\n');
       insertFragmentContents( dirpath );
     }
   }
@@ -273,6 +398,7 @@ var fragObserver =
     else if (session.isDataFlavorSupported("text/html"))
     {
       var data = new Object();
+      data.role = "newfrag";
       window.openDialog("chrome://prince/content/fragmentname.xul", "", "modal,chrome,resizable=yes", data);
       if (data.filename.length > 0)
       {
@@ -333,6 +459,7 @@ var fragObserver =
           window.alert(ex.message);
         } 
         buildFragmentArray();
+        tree.builder.rebuild();
       }
     }
   },

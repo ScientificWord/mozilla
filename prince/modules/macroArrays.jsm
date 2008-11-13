@@ -92,8 +92,8 @@ function addFragmentsToList(autocomplete, dir)
         {
           filename = filename.substring(0, filename.length-4);
           autocomplete.addString("fragments",filename);
-          fragmentArray[filename] = new Object;
-          fragmentArray[filename].dirpath = dirpath;
+          fragmentArray[filename.toLowerCase()] = new Object;
+          fragmentArray[filename.toLowerCase()].dirpath = dirpath;
         }
       }
     }
@@ -136,5 +136,5 @@ function getMacro(key)
 
 function getFragment(key)
 {
-  return fragmentArray[key];
+  return fragmentArray[key.toLowerCase()];
 }

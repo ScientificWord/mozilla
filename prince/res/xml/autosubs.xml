@@ -30,7 +30,11 @@
   <sub ctx="text" tp="sc"><pattern>.auth.</pattern><data>insertParaTag('author',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.addr.</pattern><data>insertParaTag('address',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.maket.</pattern><data>insertTag('maketitle',true);</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.lorem.</pattern><data>insertFragmentOrMacro('Lorem');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.lorem.</pattern><data>insertFragmentOrMacro('lorem');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.latex.</pattern><data>insertFragmentOrMacro('latex');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.tex.</pattern><data>insertFragmentOrMacro('tex');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.xetex.</pattern><data>insertFragmentOrMacro('xetex');</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.xelatex.</pattern><data>insertFragmentOrMacro('xelatex');</data></sub>
   <sub ctx="math" tp="sc"><pattern>+-</pattern><data>insertMathSymbol('±',true);</data></sub>
   <sub ctx="math" tp="sc"><pattern>sin</pattern><data>insertMathname('sin','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>sinh</pattern><data>insertMathname('sinh','true');</data></sub>
