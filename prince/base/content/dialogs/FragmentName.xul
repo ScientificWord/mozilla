@@ -13,12 +13,20 @@
 
 <dialog title="&fragmentname.title;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" persist="height width"
+    onload="initialize();"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();">
 
+  <broadcaster id="newfrag" hidden="false"/>
+  <broadcaster id="renamefrag" hidden="true"/>
+  <broadcaster id="newfolder" hidden="true"/>
+  
   <script type="application/x-javascript" src="chrome://prince/content/fragmentname.js"/>
   
-  <label value = "&fragmentname.fragmentname;"/>
+  <label value = "&fragmentname.fragmentname;" observes="newfrag"/>
+  <label value = "&fragmentname.renamefragment;" observes="renamefrag"/>
+  <label value = "&fragmentname.foldername;" observes="newfolder"/>
+  
   <spacer flex="1"/>
   <textbox id = "fragment-name"/>
 </dialog>
