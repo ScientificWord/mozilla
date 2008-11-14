@@ -32,7 +32,7 @@
          onkeypress="loadFragment(event, this);"
          ondraggesture = "nsDragAndDrop.startDrag(event, fragObserver);nsDragAndDrop.mDragSession=null;"
          ondragover = "nsDragAndDrop.dragOver(event, fragObserver);" 
-         ondragdrop = "nsDragAndDrop.drop(event,fragObserver);"
+         ondragdrop = "nsDragAndDrop.drop(event, fragObserver);"
          datasources="rdf:files" flags="dont-build-content"
          sortActive="true" sortDirection="ascending"
          sortResource="http://homefile.netscape.com/NC-rdf#Name" >
@@ -49,7 +49,7 @@
 
       <template>
         <rule>
-          <treechildren  >
+          <treechildren>
             <treeitem uri="rdf:*">
               <treerow >
                 <treecell label="rdf:http://home.netscape.com/NC-rdf#Name"/>
