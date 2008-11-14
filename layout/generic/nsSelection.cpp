@@ -1327,7 +1327,7 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
   result = mDomSelections[index]->GetPrimaryFrameForFocusNode(&frame, &offsetused, visualMovement);
   // in mathml we don't want the changes given by the above line.
   PRBool isMath = PR_FALSE;
-  if (frame)
+  if (NS_SUCCEEDED(result) && frame)
   {
     nsIFrame *tempFrame;
     nsCOMPtr<nsIContent> tempContent;
