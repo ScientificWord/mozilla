@@ -14,7 +14,11 @@ function focusOnEditor()
   if (editWindow) editWindow.contentWindow.focus();         
 }
 
-
+function refresh(tree)
+{
+  buildFragmentArray();
+  tree.builder.rebuild();
+}
 
 function initSidebar()
 {
@@ -133,8 +137,7 @@ function deleteFragment(tree)
   catch (e) {
     dump(e.message+'\n');
   }
-  buildFragmentArray();
-  tree.builder.rebuild();
+  refresh(tree);
 }
 
 function renameFragment(tree)
@@ -165,8 +168,7 @@ function renameFragment(tree)
     var j;
     for (j = 0; j < pieces.length; j++) file.append(pieces[j]);
     file.moveTo(null, newname);
-    buildFragmentArray();
-    tree.builder.rebuild();
+    refresth(tree);
   }
 }
 
@@ -222,8 +224,7 @@ function newFragmentFolder()
     catch(e) {
       dump(e.message+'\n');
     }
-    buildFragmentArray();
-    tree.builder.rebuild();
+    refresh(tree);
   }
 }
 
@@ -280,10 +281,10 @@ function onMacroOrFragmentEntered( aString )
 
 var fragObserver = 
 { 
-//    canHandleMultipleItems: function ()
-//    {
-//      return true;
-//    },
+  canHandleMultipleItems: function ()
+  {
+    return true;
+  },
   
   onDragStart: function (evt, transferData, action)
   {
@@ -306,7 +307,7 @@ var fragObserver =
                     classes["@mozilla.org/xmlextras/xmlhttprequest;1"].
                     createInstance();
       request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
-      var path = tree.getAttribute("ref") + "/" + s;
+      var path = tree.getAttribute("ref") + s;
 #ifdef XP_WIN32
       path = path.replace("\\","/","g");
 #endif
@@ -361,6 +362,11 @@ var fragObserver =
     focusOnEditor();
   },
   
+  canDrop: function(evt, session)
+  {
+    return true;
+  },
+  
   onDrop: function(evt, dropData, session)
   {
     var tree = evt.currentTarget;
@@ -378,22 +384,31 @@ var fragObserver =
     if (i >= 0)
     {
       if (tree.view.isContainer(i)) 
-        path = tree.view.getCellText(i,namecol)+"/";
+        path = tree.view.getCellText(i,namecol);
       while (tree.view.getParentIndex(i) >= 0)
       {           
         i = tree.view.getParentIndex(i);
         path = tree.view.getCellText(i,namecol)+ "/" + path;
       }
-    }
+    }                                                                           i
 //    dump("New fragment file path is "+pathbase + path + "\n");
     if (session.isDataFlavorSupported("privatefragmentfile"))
     {
-      var origPath = dropData.data;
+      var origPath = dropData.first.first.data.substr(8);  //This HAS to be fixed BBM:
+#ifdef XP_WIN32
+      origPath = origPath.replace("/","\\","g");
+#endif
       // now move origPath to path
-      var origfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+      var file = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
       file.QueryInterface(Components.interfaces.nsIFile);
       file.initWithPath( origPath );
-      file.moveTo(path);
+      var dir = getUserResourceFile("fragments","");
+      var pieces = path.split("/");
+      var j;
+      for (j = 0; j < pieces.length; j++) if (pieces[j].length > 0) dir.append(pieces[j]);
+      
+      file.moveTo(dir, "");
+      refresh(tree);
     }
     else if (session.isDataFlavorSupported("text/html"))
     {
@@ -458,15 +473,20 @@ var fragObserver =
         {
           window.alert(ex.message);
         } 
-        buildFragmentArray();
-        tree.builder.rebuild();
+        refresh(tree);
       }
     }
   },
   
   onDragOver: function(evt, flavour, session) 
   {
-//    dump(flavour.contentType+"\n");
+    dump(flavour.contentType+"\n");
+    var supported = session.isDataFlavorSupported("privatefragmentfile");
+    if (!supported)
+      supported = session.isDataFlavorSupported("text/html");
+
+    if (supported)
+      session.canDrop = true;
   },
   
   getSupportedFlavours: function()
