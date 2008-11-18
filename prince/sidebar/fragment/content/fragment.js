@@ -390,7 +390,7 @@ var fragObserver =
         i = tree.view.getParentIndex(i);
         path = tree.view.getCellText(i,namecol)+ "/" + path;
       }
-    }                                                                           i
+    }                                                                           
 //    dump("New fragment file path is "+pathbase + path + "\n");
     if (session.isDataFlavorSupported("privatefragmentfile"))
     {
