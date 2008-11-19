@@ -65,7 +65,9 @@
   <script type="application/x-javascript" src="chrome://global/content/printUtils.js"/>
   <script type="application/x-javascript" src="chrome://venkman/content/venkman-overlay.js"/>
   <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
+  <stringbundleset id="stringbundleset"/>
   <popupset id="msiEditorContentContextSet"/>
+  <popupset id="mainPopupSet"/>
   <popup id="sidebarPopup"/>
 
   <commandset id="tasksCommands">
