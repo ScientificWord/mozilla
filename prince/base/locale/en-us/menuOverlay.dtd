@@ -32,6 +32,9 @@
 <!ENTITY docStyle.label "Style...">
 <!ENTITY docStyle.accesskey "S">
 
+<!ENTITY reloadCmd.key "R">
+<!ENTITY reloadCmd.label "Reload">
+
 <!ENTITY publishCmd.label "Publish">
 <!ENTITY publishcmd.accesskey "u">
 <!ENTITY publishAsCmd.label "Publish As...">
@@ -234,15 +237,15 @@
 <!ENTITY insertBreakAllCmd.label "Break Below Image(s)">
 <!ENTITY insertbreakall.accesskey "k">
 <!ENTITY insertSpacingObjects.label "Spacing Objects">
-<!ENTITY insertSpacingObjects.accessKey "S">
+<!ENTITY insertSpacingObjects.accesskey "S">
 <!ENTITY insertHorizontalSpaces.label "Horizontal Spaces...">
-<!ENTITY insertHorizontalSpaces.accessKey "H">
+<!ENTITY insertHorizontalSpaces.accesskey "H">
 <!ENTITY insertVerticalSpaces.label "Vertical Spaces...">
-<!ENTITY insertVerticalSpaces.accessKey "V">
+<!ENTITY insertVerticalSpaces.accesskey "V">
 <!ENTITY insertRules.label "Rules...">
-<!ENTITY insertRules.accessKey "R">
+<!ENTITY insertRules.accesskey "R">
 <!ENTITY insertBreaks.label "Breaks...">
-<!ENTITY insertBreaks.accessKey "B">
+<!ENTITY insertBreaks.accesskey "B">
 <!-- Insert form menu items -->
 <!ENTITY insertFormCmd.label "Define Form...">
 <!ENTITY insertform.accesskey "D">
@@ -550,7 +553,7 @@
 <!ENTITY venkman.label "JavaScript debugger">
 <!ENTITY venkman.accesskey "d">
 <!ENTITY autoSubstituteDlg.label "Auto Substitution...">
-<!ENTITY autoSubstituteDlg.accessKey "A">
+<!ENTITY autoSubstituteDlg.accesskey "A">
 
 <!-- Go menu -->
 <!ENTITY gomenu.label "Go">
