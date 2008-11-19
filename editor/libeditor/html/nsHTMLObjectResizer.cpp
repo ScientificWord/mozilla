@@ -328,8 +328,8 @@ nsHTMLEditor::RefreshResizers()
   if (NS_FAILED(res)) return res;
   res = SetAllResizersPosition();
   if (NS_FAILED(res)) return res;
-  return SetShadowPosition(mResizingShadow, mResizedObject,
-                           mResizedObjectX, mResizedObjectY);
+//  return SetShadowPosition(mResizingShadow, mResizedObject,       // BBM: Disable shadows -- see below
+//                           mResizedObjectX, mResizedObjectY);
 }
 
 NS_IMETHODIMP 
@@ -386,14 +386,15 @@ nsHTMLEditor::ShowResizers(nsIDOMElement *aResizedElement)
   res = SetAllResizersPosition();
   if (NS_FAILED(res)) return res;
 
-  // now, let's create the resizing shadow
-  res = CreateShadow(getter_AddRefs(mResizingShadow), parentNode,
-                     aResizedElement);
-  if (NS_FAILED(res)) return res;
-  // and set its position
-  res = SetShadowPosition(mResizingShadow, mResizedObject,
-                          mResizedObjectX, mResizedObjectY);
-  if (NS_FAILED(res)) return res;
+// BBM: Disable shadows, since they were producing a second image out of place 
+// // now, let's create the resizing shadow
+//  res = CreateShadow(getter_AddRefs(mResizingShadow), parentNode,
+//                     aResizedElement);
+//  if (NS_FAILED(res)) return res;
+//  // and set its position
+//  res = SetShadowPosition(mResizingShadow, mResizedObject,
+//                          mResizedObjectX, mResizedObjectY);
+//  if (NS_FAILED(res)) return res;
 
   // and then the resizing info tooltip
   res = CreateResizingInfo(getter_AddRefs(mResizingInfo), parentNode);
