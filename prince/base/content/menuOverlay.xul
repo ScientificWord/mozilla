@@ -258,7 +258,7 @@
 			          accesskey="&insertframe.accesskey;"      
 			          observes="cmd_frame"       
                 label="&insertFrame.label;"/>
-      <menuitem accesskey="&insertBreaks.accessKey;"               
+      <menuitem accesskey="&insertBreaks.accesskey;"               
                 observes="cmd_msiInsertBreaks"                
                 label="&insertBreaks.label;"/>
       <!-- menuitem id="insertHTMLSource" accesskey="&insertHTMLCmd.accesskey;"   observes="cmd_insertHTMLWithDialog"  key="inserthtmlkb"/>
@@ -285,12 +285,12 @@
                     oncommand="addCalendarSmartWidget();"/>
         </menupopup>
       </menu-->
-      <menu accesskey="&insertSpacingObjects.accessKey;"   id="insertSpacesMenu"        label="&insertSpacingObjects.label;">
+      <menu accesskey="&insertSpacingObjects.accesskey;"   id="insertSpacesMenu"        label="&insertSpacingObjects.label;">
         <menupopup>
-          <menuitem accesskey="&insertHorizontalSpaces.accessKey;"      
+          <menuitem accesskey="&insertHorizontalSpaces.accesskey;"      
                     observes="cmd_insertHorizontalSpaces"      
                     label="&insertHorizontalSpaces.label;"/>
-          <menuitem accesskey="&insertVerticalSpaces.accessKey;"        
+          <menuitem accesskey="&insertVerticalSpaces.accesskey;"        
                     observes="cmd_insertVerticalSpaces"        
                     label="&insertVerticalSpaces.label;"/>
         </menupopup>
@@ -396,7 +396,7 @@
                 observes="Cascades"/>
       <menuseparator id="toolsMenuSeparator"/>
       <menuitem label="&autoSubstituteDlg.label;" 
-                accesskey="&autoSubstituteDlg.accessKey;" 
+                accesskey="&autoSubstituteDlg.accesskey;" 
                 command="cmd_MSIAutoSubDlg"/>
     </menupopup>
   </menu>

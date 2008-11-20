@@ -5,18 +5,18 @@
 
 <!ENTITY lineRadioGroup.label "Line">
 <!ENTITY lineNoneRadio.label "None">
-<!ENTITY lineNoneRadio.accessKey "o">
+<!ENTITY lineNoneRadio.accesskey "o">
 <!ENTITY lineNormalRadio.label "Normal">
-<!ENTITY lineNormalRadio.accessKey "N">
+<!ENTITY lineNormalRadio.accesskey "N">
 <!ENTITY lineThickRadio.label "Thick">
-<!ENTITY lineThickRadio.accessKey "T">
+<!ENTITY lineThickRadio.accesskey "T">
 
 <!ENTITY sizeRadioGroup.label "Size">
 <!ENTITY sizeAutoRadio.label "Auto">
-<!ENTITY sizeAutoRadio.accessKey "A">
+<!ENTITY sizeAutoRadio.accesskey "A">
 <!ENTITY sizeBigRadio.label "Big">
-<!ENTITY sizeBigRadio.accessKey "B">
+<!ENTITY sizeBigRadio.accesskey "B">
 <!ENTITY sizeSmallRadio.label "Small">
-<!ENTITY sizeSmallRadio.accessKey "S">
+<!ENTITY sizeSmallRadio.accesskey "S">
 
 <!-- <!ENTITY .tooltip "">  -->

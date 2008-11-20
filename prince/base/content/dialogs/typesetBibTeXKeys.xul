@@ -43,7 +43,7 @@
 	<vbox>
 		<hbox>
 		  <vbox>
-		    <description id="entriesListboxDescription" value='&entriesListboxDescription.label;' accesskey='&entriesListboxDescription.accessKey;'/>
+		    <description id="entriesListboxDescription" value='&entriesListboxDescription.label;' accesskey='&entriesListboxDescription.accesskey;'/>
 		    <listbox id='bibTeXEntriesListbox' rows='8' onselect='selectDatabaseEntry(this.selectedItem);'>
   				<listhead onclick='checkClickListHeader(event);'>
   					<listheader label='&entryHeader.label;' flex='0'/>
@@ -63,8 +63,8 @@
 				</hbox>
 			</vbox>
 			<vbox>
-			  <msibutton id='keyFiltersButton' label='&keyFiltersButton.label;' accesskey='&keyFiltersButton.accessKey;' oncommand='doViewKeyFilters();'/>
-			  <msibutton id='viewEntryButton' label='&viewEntryButton.label;' accesskey='&viewEntryButton.accessKey;' oncommand='doViewEntry();'/>
+			  <msibutton id='keyFiltersButton' label='&keyFiltersButton.label;' accesskey='&keyFiltersButton.accesskey;' oncommand='doViewKeyFilters();'/>
+			  <msibutton id='viewEntryButton' label='&viewEntryButton.label;' accesskey='&viewEntryButton.accesskey;' oncommand='doViewEntry();'/>
 			</vbox>
 		</hbox>
 		<spacer flex='1'/>

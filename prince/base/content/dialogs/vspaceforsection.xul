@@ -33,7 +33,7 @@
 	  <label>Units are: </label><label id="vspaceUnits" value=""/>
 	</vbox>
 	<vbox>
-	<label value="&spaceHeight.label;" accesskey="&spaceHeight.accessKey;"/>
+	<label value="&spaceHeight.label;" accesskey="&spaceHeight.accesskey;"/>
 	<textbox id="spaceHeight" style="width: 3.5em" onkeypress="handleChar(event,'spaceheight');"
 	  tooltip="&spaceHeight.label;"/>
 	</vbox>

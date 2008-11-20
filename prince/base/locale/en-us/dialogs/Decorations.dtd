@@ -4,10 +4,10 @@
 <!-- <!ENTITY colors.desc "You can override the page colors to make editing certain math objects easier."> -->
 
 <!ENTITY decorationsAboveButtonGroup.label "Decorations above:">
-<!ENTITY decorationsAboveButtonGroup.accessKey "v">
+<!ENTITY decorationsAboveButtonGroup.accesskey "v">
 <!ENTITY decorationsBelowButtonGroup.label "Decorations below:">
-<!ENTITY decorationsBelowButtonGroup.accessKey "b">
+<!ENTITY decorationsBelowButtonGroup.accesskey "b">
 <!ENTITY decorationsAroundButtonGroup.label "Decorations around:">
-<!ENTITY decorationsAroundButtonGroup.accessKey "d">
+<!ENTITY decorationsAroundButtonGroup.accesskey "d">
 
 <!-- <!ENTITY .tooltip "">  -->

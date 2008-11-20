@@ -8,6 +8,6 @@
 <!ENTITY leftBracketGroup.label "Left">
 <!ENTITY rightBracketGroup.label "Right">
 
-<!ENTITY leftBracketGroup.accessKey "L">
-<!ENTITY rightBracketGroup.accessKey "R">
+<!ENTITY leftBracketGroup.accesskey "L">
+<!ENTITY rightBracketGroup.accesskey "R">
 <!-- <!ENTITY .tooltip "">  -->

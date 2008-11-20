@@ -39,18 +39,18 @@
 		<hbox>
       <label id="propertiesTitle" hidden="true" value="&windowPropertiesTitle.label;" />
 		  <vbox>
-		    <description value='&unitTypesListbox.label;' accesskey='&unitTypesListbox.accessKey;'/>
+		    <description value='&unitTypesListbox.label;' accesskey='&unitTypesListbox.accesskey;'/>
 		    <listbox id='unitTypesListbox' rows='15' onselect='setUnitType(this.selectedItem.value);'/>
 			</vbox>
 			<vbox>
-		    <description value='&unitNamesListbox.label;' accesskey='&unitNamesListbox.accessKey;'/>
+		    <description value='&unitNamesListbox.label;' accesskey='&unitNamesListbox.accesskey;'/>
 		    <listbox id='unitNamesListbox' rows='15'/>
 			</vbox>
 		</hbox>
 		<spacer flex='1'/>
 		<!-- hbox>
-		  <button id='insertButton' label='&insertButton.label;' accesskey='&insertButton.accessKey;' oncommand='doInsertUnit();'/>
-		  <button id='replaceButton' label='&replaceButton.label;' accesskey='&replaceButton.accessKey;' oncommand='doReplaceUnit();'/>
+		  <button id='insertButton' label='&insertButton.label;' accesskey='&insertButton.accesskey;' oncommand='doInsertUnit();'/>
+		  <button id='replaceButton' label='&replaceButton.label;' accesskey='&replaceButton.accesskey;' oncommand='doReplaceUnit();'/>
 		</hbox>
 		<spacer flex='1'/ -->
 	</vbox>

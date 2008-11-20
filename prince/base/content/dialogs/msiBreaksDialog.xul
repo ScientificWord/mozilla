@@ -48,16 +48,16 @@
 				  </rows>
 				  <columns>
 				    <column>
-              <radio label="&allowBreak.label;" accesskey="&allowBreak.accessKey;" value="allowBreak" group="breaksRadioGroup"/>
-              <radio label="&discretionaryHyphen.label;" accesskey="&discretionaryHyphen.accessKey;" value="discretionaryHyphen" group="breaksRadioGroup"/>
-              <radio label="&noBreak.label;" accesskey="&noBreak.accessKey;" value="noBreak" group="breaksRadioGroup"/>
-              <radio label="&pageBreak.label;" accesskey="&pageBreak.accessKey;" value="pageBreak" group="breaksRadioGroup"/>
+              <radio label="&allowBreak.label;" accesskey="&allowBreak.accesskey;" value="allowBreak" group="breaksRadioGroup"/>
+              <radio label="&discretionaryHyphen.label;" accesskey="&discretionaryHyphen.accesskey;" value="discretionaryHyphen" group="breaksRadioGroup"/>
+              <radio label="&noBreak.label;" accesskey="&noBreak.accesskey;" value="noBreak" group="breaksRadioGroup"/>
+              <radio label="&pageBreak.label;" accesskey="&pageBreak.accesskey;" value="pageBreak" group="breaksRadioGroup"/>
 				    </column>
 				    <column>
-              <radio label="&newPage.label;" accesskey="&newPage.accessKey;" value="newPage" group="breaksRadioGroup"/>
-              <radio label="&lineBreak.label;" accesskey="&lineBreak.accessKey;" value="lineBreak" group="breaksRadioGroup"/>
-              <radio label="&newLine.label;" accesskey="&newLine.accessKey;" value="newLine" group="breaksRadioGroup"/>
-              <radio label="&customNewLine.label;" accesskey="&customNewLine.accessKey;" value="customNewLine" group="breaksRadioGroup"/>
+              <radio label="&newPage.label;" accesskey="&newPage.accesskey;" value="newPage" group="breaksRadioGroup"/>
+              <radio label="&lineBreak.label;" accesskey="&lineBreak.accesskey;" value="lineBreak" group="breaksRadioGroup"/>
+              <radio label="&newLine.label;" accesskey="&newLine.accesskey;" value="newLine" group="breaksRadioGroup"/>
+              <radio label="&customNewLine.label;" accesskey="&customNewLine.accesskey;" value="customNewLine" group="breaksRadioGroup"/>
 					  </column>
 				  </columns>
 			  </grid>
@@ -70,11 +70,11 @@
       <groupbox id="additionalVertSpaceControls">
         <caption label="&additionalVertSpaceControls.label;"/>
         <hbox>
-          <label control="depthSizeTextbox" value="&depthSize.label;"	accesskey="&depthSize.accessKey;"/>
+          <label control="depthSizeTextbox" value="&depthSize.label;"	accesskey="&depthSize.accesskey;"/>
           <textbox id="depthSizeTextbox" />
         </hbox>
         <hbox>
-          <label control="sizeUnitsbox" value="&sizeUnits.label;"	accesskey="&sizeUnits.accessKey;"/>
+          <label control="sizeUnitsbox" value="&sizeUnits.label;"	accesskey="&sizeUnits.accesskey;"/>
           <menulist id="sizeUnitsbox"  oncommand="changeUnits(this);"  >
              <menupopup>
              </menupopup>
@@ -85,8 +85,8 @@
       <groupbox id="typesetGroupbox">
         <caption label="&typesetGroup.label;"/>
         <radiogroup id="typesetRadioGroup" orient="vertical">
-          <radio id="typesetDiscardAtLineEnd" label="&typesetDiscardAtLineEnd.label;" value="discardAtLineEnd" accesskey="&typesetDiscardAtLineEnd.accessKey;"/>
-          <radio id="typesetAlways" label="&typesetAlways.label;" value="always" accesskey="&typesetAlways.accessKey;"/>
+          <radio id="typesetDiscardAtLineEnd" label="&typesetDiscardAtLineEnd.label;" value="discardAtLineEnd" accesskey="&typesetDiscardAtLineEnd.accesskey;"/>
+          <radio id="typesetAlways" label="&typesetAlways.label;" value="always" accesskey="&typesetAlways.accesskey;"/>
         </radiogroup>
       </groupbox>
     </hbox>

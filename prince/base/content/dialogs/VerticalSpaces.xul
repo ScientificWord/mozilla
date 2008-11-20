@@ -70,11 +70,11 @@
         <caption label="&sizeGroupbox.label;"/>
         <vbox id="fixedSizeControls">
           <hbox>
-            <label control="fixedSizeTextbox" value="&fixedDepth.label;"	accesskey="&fixedDepth.accessKey;"/>
+            <label control="fixedSizeTextbox" value="&fixedDepth.label;"	accesskey="&fixedDepth.accesskey;"/>
             <textbox id="fixedSizeTextbox" />
           </hbox>
           <hbox>
-            <label control="fixedSizeUnitsbox" value="&fixedSizeUnits.label;"	accesskey="&fixedSizeUnits.accessKey;"/>
+            <label control="fixedSizeUnitsbox" value="&fixedSizeUnits.label;"	accesskey="&fixedSizeUnits.accesskey;"/>
             <menulist id="fixedSizeUnitsbox"  oncommand="changeUnits(this);"  >
                <menupopup>
                </menupopup>
@@ -86,8 +86,8 @@
       <groupbox id="typesetGroupbox">
         <caption label="&typesetGroup.label;"/>
         <radiogroup id="typesetRadioGroup" orient="vertical">
-          <radio id="typesetDiscardAtLineEnd" label="&typesetDiscardAtLineEnd.label;" value="discardAtLineEnd" accesskey="&typesetDiscardAtLineEnd.accessKey;"/>
-          <radio id="typesetAlways" label="&typesetAlways.label;" value="always" accesskey="&typesetAlways.accessKey;"/>
+          <radio id="typesetDiscardAtLineEnd" label="&typesetDiscardAtLineEnd.label;" value="discardAtLineEnd" accesskey="&typesetDiscardAtLineEnd.accesskey;"/>
+          <radio id="typesetAlways" label="&typesetAlways.label;" value="always" accesskey="&typesetAlways.accesskey;"/>
         </radiogroup>
       </groupbox>
     </hbox>

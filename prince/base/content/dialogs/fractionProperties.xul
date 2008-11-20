@@ -46,18 +46,18 @@
       <groupbox align="start" orient="vertical">
         <caption label="&lineRadioGroup.label;"/>
         <radiogroup id="lineRadioGroup" oncommand="setLineThickness(event.target);">
-          <radio label="&lineNoneRadio.label;" group="lineRadioGroup" value="0" id="noLineRadio" accesskey="&lineNoneRadio.accessKey;"/>
-          <radio label="&lineNormalRadio.label;" group="lineRadioGroup" value="" id="normalLineRadio" accesskey="&lineNormalRadio.accessKey;"/>
-          <radio label="&lineThickRadio.label;" group="lineRadioGroup" value="thick" id="thickLineRadio" accesskey="&lineThickRadio.accessKey;"/>
+          <radio label="&lineNoneRadio.label;" group="lineRadioGroup" value="0" id="noLineRadio" accesskey="&lineNoneRadio.accesskey;"/>
+          <radio label="&lineNormalRadio.label;" group="lineRadioGroup" value="" id="normalLineRadio" accesskey="&lineNormalRadio.accesskey;"/>
+          <radio label="&lineThickRadio.label;" group="lineRadioGroup" value="thick" id="thickLineRadio" accesskey="&lineThickRadio.accesskey;"/>
         </radiogroup>
       </groupbox>
         <spacer flex="1"/>
       <groupbox align="start" orient="vertical">
         <caption label="&sizeRadioGroup.label;"/>
         <radiogroup id="sizeRadioGroup" oncommand="setFractionSize(event.target);">
-          <radio label="&sizeAutoRadio.label;" group="sizeRadioGroup" value="auto" id="autoSizeRadio" accesskey="&sizeAutoRadio.accessKey;"/>
-          <radio label="&sizeBigRadio.label;" group="sizeRadioGroup" value="big" id="bigSizeRadio" accesskey="&sizeBigRadio.accessKey;"/>
-          <radio label="&sizeSmallRadio.label;" group="sizeRadioGroup" value="small" id="smallSizeRadio" accesskey="&sizeSmallRadio.accessKey;"/>
+          <radio label="&sizeAutoRadio.label;" group="sizeRadioGroup" value="auto" id="autoSizeRadio" accesskey="&sizeAutoRadio.accesskey;"/>
+          <radio label="&sizeBigRadio.label;" group="sizeRadioGroup" value="big" id="bigSizeRadio" accesskey="&sizeBigRadio.accesskey;"/>
+          <radio label="&sizeSmallRadio.label;" group="sizeRadioGroup" value="small" id="smallSizeRadio" accesskey="&sizeSmallRadio.accesskey;"/>
         </radiogroup>
       </groupbox>
       <spacer flex="1"/>

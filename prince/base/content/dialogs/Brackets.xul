@@ -58,7 +58,7 @@
     </hbox>
     <groupbox align="start" orient="vertical">
       <hbox>
-        <label id="leftGroupLabel" control="leftBracketGroup" value="&leftBracketGroup.label;"	accesskey="&leftBracketGroup.accessKey;"/>
+        <label id="leftGroupLabel" control="leftBracketGroup" value="&leftBracketGroup.label;"	accesskey="&leftBracketGroup.accesskey;"/>
       </hbox>
       <hbox id="leftBracketGroup" orient="horizontal" 
         oncommand="setSelectionByIndex(setSelection(this, event.target),'rightBracketGroup');"  
@@ -113,7 +113,7 @@
         <spacer flex="1"/> 
   	  </hbox>
       <hbox>
-        <label id="rightGroupLabel" control="rightBracketGroup" value="&rightBracketGroup.label;"	accesskey="&rightBracketGroup.accessKey;"/>
+        <label id="rightGroupLabel" control="rightBracketGroup" value="&rightBracketGroup.label;"	accesskey="&rightBracketGroup.accesskey;"/>
       </hbox>
       <hbox id="rightBracketGroup" orient="horizontal" 
         oncommand="setSelection(this, event.target);" 
