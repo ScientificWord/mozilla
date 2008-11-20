@@ -237,7 +237,7 @@ public:
   nsIDOMNode*  FetchOriginalAnchorNode();  //where did the ORIGINAL selection begin
   PRInt32      FetchOriginalAnchorOffset();
 
-  nsIDOMNode*  FetchFocusNode();   //where is the carret
+  nsIDOMNode*  FetchFocusNode();   //where is the caret
   PRInt32      FetchFocusOffset();
 
   nsIDOMNode*  FetchStartParent(nsIDOMRange *aRange);   //skip all the com stuff and give me the start/end
@@ -1342,7 +1342,9 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
       if (tempFrame)
       {
         frame = tempFrame;
-        offsetused = SaveOffsetused;
+        // BBM: isn't this next line redundant?
+		offsetused = SaveOffsetused;
+//		if (aKeycode == nsIDOMKeyEvent::DOM_VK_LEFT) offsetused--;
       }
     }
   }  
