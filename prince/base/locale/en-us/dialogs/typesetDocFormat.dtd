@@ -60,11 +60,11 @@
 <!ENTITY docformatTwoPageMessage	"You are laying out the right page. The left page is a mirror image of this.">
 <!ENTITY docformatpaperSize	"Paper Size">
 <!ENTITY camera.label	"Camera">
-<!ENTITY camera.accessKey	"C">
+<!ENTITY camera.accesskey	"C">
 <!ENTITY cross.label	"Cross">
-<!ENTITY cross.accessKey	"X">
+<!ENTITY cross.accesskey	"X">
 <!ENTITY frame.label	"Frame">
-<!ENTITY frame.accessKey	"F">
+<!ENTITY frame.accesskey	"F">
 					
 <!ENTITY docformatUseOpenType "Use OpenType fonts (may make your document not portable)?">
 <!ENTITY mainFontsGroup "Main document fonts">
@@ -75,6 +75,6 @@
 
 <!ENTITY pageonpaper.label "Place of page on paper">
 <!ENTITY pageonpapercenter.label "Centered">
-<!ENTITY popcenter.accessKey "d">
+<!ENTITY popcenter.accesskey "d">
 <!ENTITY pageonpaperupperleft.label "Upper left">
-<!ENTITY popupperleft.accessKey "U">
+<!ENTITY popupperleft.accesskey "U">

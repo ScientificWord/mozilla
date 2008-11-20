@@ -46,9 +46,9 @@
       <groupbox align="start" orient="vertical">
         <caption label="&limitPositionRadioGroup.label;"/>
         <radiogroup id="limitPositionRadioGroup">
-          <radio label="&limitPositionAutoRadio.label;" group="limitPositionRadioGroup" value="auto" id="autoLimitPositionRadio" accesskey="&limitPositionAutoRadio.accessKey;"/>
-          <radio label="&limitPositionAboveBelowRadio.label;" group="limitPositionRadioGroup" value="aboveBelow" id="aboveBelowLimitPositionRadio" accesskey="&limitPositionAboveBelowRadio.accessKey;"/>
-          <radio label="&limitPositionAtRightRadio.label;" group="limitPositionRadioGroup" value="atRight" id="atRightLimitPositionRadio" accesskey="&limitPositionAtRightRadio.accessKey;"/>
+          <radio label="&limitPositionAutoRadio.label;" group="limitPositionRadioGroup" value="auto" id="autoLimitPositionRadio" accesskey="&limitPositionAutoRadio.accesskey;"/>
+          <radio label="&limitPositionAboveBelowRadio.label;" group="limitPositionRadioGroup" value="aboveBelow" id="aboveBelowLimitPositionRadio" accesskey="&limitPositionAboveBelowRadio.accesskey;"/>
+          <radio label="&limitPositionAtRightRadio.label;" group="limitPositionRadioGroup" value="atRight" id="atRightLimitPositionRadio" accesskey="&limitPositionAtRightRadio.accesskey;"/>
         </radiogroup>
       </groupbox>
       <spacer flex="1"/>
@@ -72,15 +72,15 @@
       <groupbox align="start" orient="vertical">
         <caption label="&sizeRadioGroup.label;"/>
         <radiogroup id="sizeRadioGroup">
-          <radio label="&sizeAutoRadio.label;" group="sizeRadioGroup" value="auto" id="autoSizeRadio" accesskey="&sizeAutoRadio.accessKey;"/>
-          <radio label="&sizeBigRadio.label;" group="sizeRadioGroup" value="big" id="bigSizeRadio" accesskey="&sizeBigRadio.accessKey;"/>
-          <radio label="&sizeSmallRadio.label;" group="sizeRadioGroup" value="small" id="smallSizeRadio" accesskey="&sizeSmallRadio.accessKey;"/>
+          <radio label="&sizeAutoRadio.label;" group="sizeRadioGroup" value="auto" id="autoSizeRadio" accesskey="&sizeAutoRadio.accesskey;"/>
+          <radio label="&sizeBigRadio.label;" group="sizeRadioGroup" value="big" id="bigSizeRadio" accesskey="&sizeBigRadio.accesskey;"/>
+          <radio label="&sizeSmallRadio.label;" group="sizeRadioGroup" value="small" id="smallSizeRadio" accesskey="&sizeSmallRadio.accesskey;"/>
         </radiogroup>
       </groupbox>
       <spacer flex="1"/>
     </hbox>
     <groupbox selectsOnFocus="false" id="operatorsButtonGroup" oncommand="setSelection(this, event.target);" onfocus="radioGroupSetFocus(this,event.target);">
-			<caption label="&operatorsButtonGroup.label;" accesskey="&operatorsButtonGroup.accessKey;"/>
+			<caption label="&operatorsButtonGroup.label;" accesskey="&operatorsButtonGroup.accesskey;"/>
 			<grid flex="1">
 				<columns>
 					<column/>

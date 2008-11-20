@@ -32,10 +32,10 @@
     <hbox>
       <radiogroup id="MathColorGroup">
         <radio id="DefaultMathRadio" label="&defaultColorsRadio.label;" oncommand="UseDefaultColors('mathCW')"
-          accesskey="&defaultColorsRadio.accessKey;"
+          accesskey="&defaultColorsRadio.accesskey;"
           tooltiptext="&defaultColorsRadio.tooltip;" />
         <radio id="CustomMathRadio" label="&customColorsRadio.label;" oncommand="UseCustomColors('mathCW')"
-          accesskey="&customColorsRadio.accessKey;"
+          accesskey="&customColorsRadio.accesskey;"
           tooltiptext="&customColorsRadio.tooltip;" />
       </radiogroup>
       <spacer flex="1"/>
@@ -44,7 +44,7 @@
         <hbox>
           <label id="Math" control="TextButton"
                  value="&mathText.label;&colon.character;"
-                 accesskey="&mathText.accessKey;"/>
+                 accesskey="&mathText.accesskey;"/>
           <button id="MathButton" class="color-button" oncommand="GetColorAndUpdate('mathCW');">
             <spacer id="mathCW" class="color-well"/>
           </button>
@@ -57,10 +57,10 @@
     <hbox>
       <radiogroup id="MathnameColorGroup">
         <radio id="DefaultMathnameRadio" label="&defaultColorsRadio.label;" oncommand="UseDefaultColors('mathnameCW')"
-          accesskey="&defaultColorsRadio.accessKey;"
+          accesskey="&defaultColorsRadio.accesskey;"
           tooltiptext="&defaultColorsRadio.tooltip;" />
         <radio id="CustomMathnameRadio" label="&customColorsRadio.label;" oncommand="UseCustomColors('mathnameCW')"
-          accesskey="&customColorsRadio.accessKey;"
+          accesskey="&customColorsRadio.accesskey;"
           tooltiptext="&customColorsRadio.tooltip;" />
       </radiogroup>
       <spacer flex="1"/>
@@ -69,7 +69,7 @@
         <hbox>
           <label id="Mathname" control="TextButton"
                  value="&mathnameText.label;&colon.character;"
-                 accesskey="&mathnameText.accessKey;"/>
+                 accesskey="&mathnameText.accesskey;"/>
           <button id="MathnameButton" class="color-button" oncommand="GetColorAndUpdate('mathnameCW');">
             <spacer id="mathnameCW" class="color-well"/>
           </button>
@@ -82,10 +82,10 @@
     <hbox>
       <radiogroup id="UnitColorGroup">
         <radio id="DefaultUnitRadio" label="&defaultColorsRadio.label;" oncommand="UseDefaultColors('unitCW')"
-          accesskey="&defaultColorsRadio.accessKey;"
+          accesskey="&defaultColorsRadio.accesskey;"
           tooltiptext="&defaultColorsRadio.tooltip;" />
         <radio id="CustomUnitRadio" label="&customColorsRadio.label;" oncommand="UseCustomColors('unitCW')"
-          accesskey="&customColorsRadio.accessKey;"
+          accesskey="&customColorsRadio.accesskey;"
           tooltiptext="&customColorsRadio.tooltip;" />
       </radiogroup>
       <spacer flex="1"/>
@@ -94,7 +94,7 @@
         <hbox>
           <label id="Unit" control="TextButton"
                  value="&unitText.label;&colon.character;"
-                 accesskey="&unitText.accessKey;"/>
+                 accesskey="&unitText.accesskey;"/>
           <button id="UnitButton" class="color-button" oncommand="GetColorAndUpdate('unitCW');">
             <spacer id="unitCW" class="color-well"/>
           </button>
@@ -107,10 +107,10 @@
     <hbox>
       <radiogroup id="MtextColorGroup">
         <radio id="DefaultUnitRadio" label="&defaultColorsRadio.label;" oncommand="UseDefaultColors('mtextCW')"
-          accesskey="&defaultColorsRadio.accessKey;"
+          accesskey="&defaultColorsRadio.accesskey;"
           tooltiptext="&defaultColorsRadio.tooltip;" />
         <radio id="CustomUnitRadio" label="&customColorsRadio.label;" oncommand="UseCustomColors('mtextCW')"
-          accesskey="&customColorsRadio.accessKey;"
+          accesskey="&customColorsRadio.accesskey;"
           tooltiptext="&customColorsRadio.tooltip;" />
       </radiogroup>
       <spacer flex="1"/>
@@ -119,7 +119,7 @@
         <hbox>
           <label id="Mtext" control="TextButton"
                  value="&mtextText.label;&colon.character;"
-                 accesskey="&mtextText.accessKey;"/>
+                 accesskey="&mtextText.accesskey;"/>
           <button id="MtextButton" class="color-button" oncommand="GetColorAndUpdate('mtextCW');">
             <spacer id="mtextCW" class="color-well"/>
           </button>
@@ -132,10 +132,10 @@
     <hbox>
       <radiogroup id="MatrixColorGroup">
         <radio id="DefaultMatrixRadio" label="&defaultColorsRadio.label;" oncommand="UseDefaultColors('matrixCW')"
-          accesskey="&defaultColorsRadio.accessKey;"
+          accesskey="&defaultColorsRadio.accesskey;"
           tooltiptext="&defaultColorsRadio.tooltip;" />
         <radio id="CustomMatrixRadio" label="&customColorsRadio.label;" oncommand="UseCustomColors('matrixCW')"
-          accesskey="&customColorsRadio.accessKey;"
+          accesskey="&customColorsRadio.accesskey;"
           tooltiptext="&customColorsRadio.tooltip;" />
       </radiogroup>
       <spacer flex="1"/>
@@ -144,7 +144,7 @@
         <hbox>
           <label id="Matrix" control="TextButton"
                  value="&matrixLines.label;&colon.character;"
-                 accesskey="&matrixLines.accessKey;"/>
+                 accesskey="&matrixLines.accesskey;"/>
           <button id="MatrixButton" class="color-button" oncommand="GetColorAndUpdate('matrixCW');">
             <spacer id="matrixCW" class="color-well"/>
           </button>

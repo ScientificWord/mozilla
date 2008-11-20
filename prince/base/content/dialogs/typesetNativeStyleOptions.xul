@@ -44,7 +44,7 @@
 		  <description value='&warningText.label;'/>
 		</groupbox>
 		<spacer flex='1'/>
-		<description value='&optionsCaption.label;' accesskey='&optionsCaption.accessKey;'/>
+		<description value='&optionsCaption.label;' accesskey='&optionsCaption.accesskey;'/>
 		<textbox id='optionsTextbox' size='80'/>
 	</vbox>
 

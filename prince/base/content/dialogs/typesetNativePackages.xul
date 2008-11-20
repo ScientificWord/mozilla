@@ -40,9 +40,9 @@
 		  <description value='&warningText.label;'/>
 		</groupbox>
 		<spacer flex='1'/>
-		<description value='&packagesCaption.label;' accesskey='&packagesCaption.accessKey;'/>
+		<description value='&packagesCaption.label;' accesskey='&packagesCaption.accesskey;'/>
 		<textbox id='packagesTextbox' size='80' rows='3'/>
-		<checkbox id='suppressManagementCheckbox' label='&suppressManagement.label;' accesskey='&suppressManagement.accessKey;'/> 
+		<checkbox id='suppressManagementCheckbox' label='&suppressManagement.label;' accesskey='&suppressManagement.accesskey;'/> 
 	</vbox>
 
 </dialog>

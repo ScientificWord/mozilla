@@ -103,12 +103,12 @@
 	
 	<vbox>
 		<hbox>
-		  <description value='&keyCaption.label;' accesskey='&keyCaption.accessKey;'/>
+		  <description value='&keyCaption.label;' accesskey='&keyCaption.accesskey;'/>
 		  <menulist id='keysListbox' size='30' editable='true' oninput='checkDisableControls();' oncommand='checkDisableControls();'/>
 		</hbox>
 		<spacer flex='1'/>
 		<hbox>
-			<description value='&remarkCaption.label;' accesskey='&remarkCaption.accessKey;'/>
+			<description value='&remarkCaption.label;' accesskey='&remarkCaption.accesskey;'/>
 			<!-- textbox id='remarkTextbox' multiline='true' rows='4' cols='30'/ -->
       <editor editortype="html" type="content-primary" context="msiEditorContentContext" id="remarkEditControl" flex="1" height="350" width="450"/>
 		</hbox>
