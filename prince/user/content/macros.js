@@ -108,18 +108,20 @@ function dumpMath()
   var editor = msiGetEditor(editorElement);
   var HTMLEditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
   var rootnode = HTMLEditor.getSelectionContainer();
-  while (rootnode && rootnode.localName != "math") rootnode = rootnode.parentNode;
+  while (rootnode && rootnode.localName != "math" && editor.tagListManager.getTagInClass("paratags",rootnode.localName,null)) rootnode = rootnode.parentNode;
   if (!rootnode)
   { 
-    dump("Failed to find math node\n");
+    dump("Failed to find math or paragraph node\n");
     return;
   }
   var sel = HTMLEditor.selection;
   var selNode = sel.anchorNode;
   var selOffset = sel.anchorOffset;
+  var focNode = sel.focusNode;
+  var focOffset = sel.focusOffset;
   var indent = 0;
   dump("Selection: node="+selNode.nodeType == Node.TEXT_NODE?"text":selNode.localName+", offset="+selOffset+"\n");
-  dumpNodeMarkingSel(rootnode, selNode, selOffset, indent);
+  dumpNodeMarkingSel(rootnode, selNode, selOffset, focNode, focOffset, indent);
 }
 
 
@@ -129,7 +131,7 @@ function doIndent( k )
 }
 
 
-function dumpNodeMarkingSel(node, selnode, offset, indent)
+function dumpNodeMarkingSel(node, selnode, seloffset, focnode, focoffset, indent)
 {
   var len = node.childNodes.length;
   if (node.nodeType == Node.ELEMENT_NODE)
@@ -138,17 +140,27 @@ function dumpNodeMarkingSel(node, selnode, offset, indent)
     dump("<"+((node.localName!="null")?node.localName:"text")+"> \n");
     for (var i = 0; i < len; i++)
     {    
-      if (node==selnode && i==offset)
+      if (node==selnode && i==seloffset)
       {
         for (var j = 0; j<= indent; j++) dump("**"); 
-        dump("<cursor>\n");
+        dump("<selection anchor>\n");
       }
-      dumpNodeMarkingSel(node.childNodes[i],selnode,offset, indent+1);
+      if (node==focnode && i==focoffset)
+      {
+        for (var j = 0; j<= indent; j++) dump("**"); 
+        dump("<selection focus>\n");
+      }
+      dumpNodeMarkingSel(node.childNodes[i],selnode,seloffset, focnode, focoffset, indent+1);
     }
     if (node==selnode && offset==len) 
     {
       for (var j = 0; j<= indent; j++) dump("**"); 
-      dump("<cursor>\n");
+      dump("<selection anchor>\n");
+    }
+    if (node==focnode && focoffset==len) 
+    {
+      for (var j = 0; j<= indent; j++) dump("**"); 
+      dump("<selection focus>\n");
     }
     doIndent(indent);
     dump("</"+node.localName+">\n");
@@ -158,19 +170,27 @@ function dumpNodeMarkingSel(node, selnode, offset, indent)
     if (node==selnode)
     {
       doIndent(indent);
-      dump(node.nodeValue.slice(0,offset));
-      dump("<cursor>");
-      dump(node.nodeValue.slice(offset)+"\n");
+      dump(node.nodeValue.slice(0,seloffset));
+      dump("<selection anchor>");
+      dump(node.nodeValue.slice(seloffset)+"\n");
     }
-    else 
-    {
-      var s = node.nodeValue;
-      var t = s.replace(/^\s*/,'');
-      var r = t.replace(/\s*$/,'');
-      if (r.length>0)
+    else {
+      if (node==focnode)
       {
         doIndent(indent);
-        dump(r+'\n');
+        dump(node.nodeValue.slice(0,focoffset));
+        dump("<selection focus>");
+        dump(node.nodeValue.slice(focoffset)+"\n");
+      }
+      else {
+        var s = node.nodeValue;
+        var t = s.replace(/^\s*/,'');
+        var r = t.replace(/\s*$/,'');
+        if (r.length>0)
+        {
+          doIndent(indent);
+          dump(r+'\n');
+        }
       }
     }  
   }
