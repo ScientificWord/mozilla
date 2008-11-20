@@ -37,11 +37,11 @@
 	<vbox>
 		<hbox>
 		  <vbox>
-		    <description value='&databaseFileListbox.label;' accesskey='&databaseFileListbox.accessKey;'/>
+		    <description value='&databaseFileListbox.label;' accesskey='&databaseFileListbox.accesskey;'/>
 		    <listbox id='databaseFileListbox' rows='15'/>
 			</vbox>
 			<vbox>
-		    <description value='&styleFileListbox.label;' accesskey='&styleFileListbox.accessKey;'/>
+		    <description value='&styleFileListbox.label;' accesskey='&styleFileListbox.accesskey;'/>
 		    <listbox id='styleFileListbox' rows='15'/>
 			</vbox>
 		</hbox>

@@ -4,10 +4,10 @@
 
 <!ENTITY prepareFor.label "Prepare the document for">
 <!ENTITY dviOutputButton.label "DVI output">
-<!ENTITY dviOutputButton.accessKey "D">
+<!ENTITY dviOutputButton.accesskey "D">
 <!ENTITY pdfOutputButton.label "PDF output">
-<!ENTITY pdfOutputButton.accessKey "F">
+<!ENTITY pdfOutputButton.accesskey "F">
 <!ENTITY bothOutputButton.label "Both DVI and PDF output">
-<!ENTITY bothOutputButton.accessKey "B">
+<!ENTITY bothOutputButton.accesskey "B">
 
 <!-- <!ENTITY .tooltip "">  -->

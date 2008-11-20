@@ -3,12 +3,12 @@
 <!ENTITY windowTitle.label "Options for __type__ __Name__">
 
 <!ENTITY categoryDescription.label "Category:">
-<!ENTITY categoryDescription.accessKey "C">
+<!ENTITY categoryDescription.accesskey "C">
 <!ENTITY optionsDescription.label "Options">
-<!ENTITY optionsDescription.accessKey "O">
+<!ENTITY optionsDescription.accesskey "O">
 <!ENTITY currentOptionsDescription.label "Currently selected options">
 <!ENTITY goNativeButton.label "Go Native...">
-<!ENTITY goNativeButton.accessKey "N">
+<!ENTITY goNativeButton.accesskey "N">
    
 
 <!-- <!ENTITY .tooltip "">  -->

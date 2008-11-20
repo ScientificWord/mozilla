@@ -100,43 +100,43 @@
         <groupbox id="autosubTypeGroup">
           <caption label="&autosubType.label;" id="autosubTypeLabel"/>
           <radiogroup id="autosubTypeRadioGroup" orient="vertical" oncommand="changeType(this.value);">
-            <radio id="typeSubstitution" label="&typeSubstitution.label;" value="substitution" accesskey="&typeSubstitution.accessKey;"/>
-            <radio id="typeExecuteScript" label="&typeExecuteScript.label;" value="script" accesskey="&typeExecuteScript.accessKey;"/>
+            <radio id="typeSubstitution" label="&typeSubstitution.label;" value="substitution" accesskey="&typeSubstitution.accesskey;"/>
+            <radio id="typeExecuteScript" label="&typeExecuteScript.label;" value="script" accesskey="&typeExecuteScript.accesskey;"/>
           </radiogroup>
         </groupbox>
         <groupbox id="autosubContextGroup">
           <caption label="&autosubContext.label;" id="autosubContextLabel"/>
           <radiogroup id="autosubContextRadioGroup" orient="vertical" oncommand="changeContext(this.value);">
-            <radio id="contextMath" label="&contextMath.label;" value="math" accesskey="&contextMath.accessKey;"/>
-            <radio id="contextText" label="&contextText.label;" value="text" accesskey="&contextText.accessKey;"/>
-            <radio id="contextMathOrText" label="&contextMathOrText.label;" value="mathOrText" accesskey="&contextMathOrText.accessKey;"/>
+            <radio id="contextMath" label="&contextMath.label;" value="math" accesskey="&contextMath.accesskey;"/>
+            <radio id="contextText" label="&contextText.label;" value="text" accesskey="&contextText.accesskey;"/>
+            <radio id="contextMathOrText" label="&contextMathOrText.label;" value="mathOrText" accesskey="&contextMathOrText.accesskey;"/>
           </radiogroup>
         </groupbox>
       </hbox>
     </vbox>
     <vbox>
       <groupbox>
-        <!-- caption id="replacementLabel" label="&substitution.label;" accesskey="&substitution.accessKey;"/ -->
-        <label id="substitutionLabel" control="substitution-frame" value="&substitution.label;" accesskey="&substitution.accessKey;"/>
+        <!-- caption id="replacementLabel" label="&substitution.label;" accesskey="&substitution.accesskey;"/ -->
+        <label id="substitutionLabel" control="substitution-frame" value="&substitution.label;" accesskey="&substitution.accesskey;"/>
         <editor editortype="html" type="content" width="200" height="100" context="msiEditorContentContext" id="subst-frame"/>
-        <label id="scriptLabel" control="scriptTextbox" value="&script.label;"	accesskey="&script.accessKey;"/>
+        <label id="scriptLabel" control="scriptTextbox" value="&script.label;"	accesskey="&script.accesskey;"/>
         <textbox id="scriptTextbox" size="60"  onkeypress="checkScriptControl(this);"/>
       </groupbox>
       <spacer flex="1"/>
       <groupbox>
         <caption label="&enableDisableAutosubs.label;"/>
-        <checkbox id="enableSubsInMath" label="&enableSubsInMath.label;" accesskey="&enableSubsInMath.accessKey;"/>
-        <checkbox id="enableSubsInText" label="&enableSubsInText.label;" accesskey="&enableSubsInText.accessKey;"/>
-        <!-- checkbox id="enableUnitSubs" label="&enableUnitSubs.label;" accesskey="&enableUnitSubs.accessKey;"/>
-        <checkbox id="enableMathNameSubs" label="&enableMathNameSubs.label;" accesskey="&enableMathNameSubs.accessKey;"/ -->
+        <checkbox id="enableSubsInMath" label="&enableSubsInMath.label;" accesskey="&enableSubsInMath.accesskey;"/>
+        <checkbox id="enableSubsInText" label="&enableSubsInText.label;" accesskey="&enableSubsInText.accesskey;"/>
+        <!-- checkbox id="enableUnitSubs" label="&enableUnitSubs.label;" accesskey="&enableUnitSubs.accesskey;"/>
+        <checkbox id="enableMathNameSubs" label="&enableMathNameSubs.label;" accesskey="&enableMathNameSubs.accesskey;"/ -->
         <!-- description id="enableAutoSubDescription" control="enableAutoSub">&enableAutoSub.description;</description -->
       </groupbox>
     </vbox>
     <vbox>
-      <msibutton id="addOrModifyButton" label="&addButton.label;" accesskey="&addButton.accessKey;" oncommand="saveCurrentSub();" />
-      <label id="addButtonLabel" value="&addButton.label;" accesskey="&addButton.accessKey;" hidden="true"/>
-      <label id="modifyButtonLabel" value="&modifyButton.label;" accesskey="&modifyButton.accessKey;" hidden="true"/>
-      <msibutton id="removeButton" label="&removeButton.label;" accesskey="&removeButton.accessKey;" oncommand="removeCurrentSub();" />
+      <msibutton id="addOrModifyButton" label="&addButton.label;" accesskey="&addButton.accesskey;" oncommand="saveCurrentSub();" />
+      <label id="addButtonLabel" value="&addButton.label;" accesskey="&addButton.accesskey;" hidden="true"/>
+      <label id="modifyButtonLabel" value="&modifyButton.label;" accesskey="&modifyButton.accesskey;" hidden="true"/>
+      <msibutton id="removeButton" label="&removeButton.label;" accesskey="&removeButton.accesskey;" oncommand="removeCurrentSub();" />
     </vbox>
   </hbox>  
 </dialog>

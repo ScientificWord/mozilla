@@ -5,6 +5,6 @@
 <!ENTITY warning.label "WARNING!">
 <!ENTITY warningText.label "Entries from this dialog are passed directly to LaTeX.">
 <!ENTITY optionsCaption.label "Options:      (e.g. 12pt,draft)">
-<!ENTITY optionsCaption.accessKey "O">
+<!ENTITY optionsCaption.accesskey "O">
 
 <!-- <!ENTITY .tooltip "">  -->
