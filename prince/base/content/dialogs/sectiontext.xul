@@ -85,7 +85,7 @@
 
 	<vbox>
 	  <groupbox>
-	    <label id="sectionCodeDescription" control="sectiontitle-frame" accesskey="&sectionCodeDescription.accessKey;">
+	    <label id="sectionCodeDescription" control="sectiontitle-frame" accesskey="&sectionCodeDescription.accesskey;">
         &sectionCodeDescription.label;
       </label>
 	    <editor editortype="html" type="content" width="400" height="100" context="msiEditorContentContext" id="sectiontitle-frame"/>

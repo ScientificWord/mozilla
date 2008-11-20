@@ -5,8 +5,8 @@
 <!ENTITY warning.label "WARNING!">
 <!ENTITY warningText.label "Entries from this dialog are passed directly to LaTeX.">
 <!ENTITY packagesCaption.label "Packages:      (e.g. [german]{babel} )">
-<!ENTITY packagesCaption.accessKey "P">
+<!ENTITY packagesCaption.accesskey "P">
 <!ENTITY suppressManagement.label "Suppress Package Management">
-<!ENTITY suppressManagement.accessKey "S">
+<!ENTITY suppressManagement.accesskey "S">
 
 <!-- <!ENTITY .tooltip "">  -->

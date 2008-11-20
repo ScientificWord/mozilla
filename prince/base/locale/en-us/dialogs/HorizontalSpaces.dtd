@@ -5,54 +5,54 @@
 <!ENTITY spacesRadioGroupbox.label "Spacing Types">
 
 <!ENTITY normalSpace.label "Normal">
-<!ENTITY normalSpace.accessKey "N">
+<!ENTITY normalSpace.accesskey "N">
 <!ENTITY requiredSpace.label "Required space">
-<!ENTITY requiredSpace.accessKey "q">
+<!ENTITY requiredSpace.accesskey "q">
 <!ENTITY nonBreakingSpace.label "Non-breaking space">
-<!ENTITY nonBreakingSpace.accessKey "k">
+<!ENTITY nonBreakingSpace.accesskey "k">
 <!ENTITY emSpace.label "Em space">
-<!ENTITY emSpace.accessKey "m">
+<!ENTITY emSpace.accesskey "m">
 <!ENTITY twoEmSpace.label "2 em space">
-<!ENTITY twoEmSpace.accessKey "2">
+<!ENTITY twoEmSpace.accesskey "2">
 <!ENTITY thinSpace.label "Thin space">
-<!ENTITY thinSpace.accessKey "T">
+<!ENTITY thinSpace.accesskey "T">
 <!ENTITY thickSpace.label "Thick space">
-<!ENTITY thickSpace.accessKey "h">
+<!ENTITY thickSpace.accesskey "h">
 <!ENTITY italicCorrectionSpace.label "Italic correction">
-<!ENTITY italicCorrectionSpace.accessKey "I">
+<!ENTITY italicCorrectionSpace.accesskey "I">
 <!ENTITY negativeThinSpace.label "Negative thin space">
-<!ENTITY negativeThinSpace.accessKey "g">
+<!ENTITY negativeThinSpace.accesskey "g">
 <!ENTITY zeroSpace.label "Zero space">
-<!ENTITY zeroSpace.accessKey "Z">
+<!ENTITY zeroSpace.accesskey "Z">
 <!ENTITY noIndent.label "No indent">
-<!ENTITY noIndent.accessKey "d">
+<!ENTITY noIndent.accesskey "d">
 <!ENTITY customSpace.label "Custom">
-<!ENTITY customSpace.accessKey "C">
+<!ENTITY customSpace.accesskey "C">
 
 
 <!ENTITY sizeGroupbox.label "Size">
 <!ENTITY fixedSize.label "Fixed">
-<!ENTITY fixedSize.accessKey "x">
+<!ENTITY fixedSize.accesskey "x">
 <!ENTITY fixedWidth.label "Width">
-<!ENTITY fixedWidth.accessKey "W">
+<!ENTITY fixedWidth.accesskey "W">
 <!ENTITY fixedSizeUnits.label "Units">
-<!ENTITY fixedSizeUnits.accessKey "U">
+<!ENTITY fixedSizeUnits.accesskey "U">
 <!ENTITY stretchySize.label "Stretchy">
-<!ENTITY stretchySize.accessKey "y">
+<!ENTITY stretchySize.accesskey "y">
 <!ENTITY stretchySizeFactor.label "Factor">
-<!ENTITY stretchySizeFactor.accessKey "F">
+<!ENTITY stretchySizeFactor.accesskey "F">
 
 <!ENTITY fillWithGroup.label "Fill with">
 <!ENTITY fillNothing.label "Nothing">
-<!ENTITY fillNothing.accessKey "N">
+<!ENTITY fillNothing.accesskey "N">
 <!ENTITY fillLine.label "Line">
-<!ENTITY fillLine.accessKey "L">
+<!ENTITY fillLine.accesskey "L">
 <!ENTITY fillDots.label "Dots">
-<!ENTITY fillDots.accessKey "D">
+<!ENTITY fillDots.accesskey "D">
 <!ENTITY typesetGroup.label "Typeset behavior">
 <!ENTITY typesetDiscardAtLineEnd.label "Discard at line end">
-<!ENTITY typesetDiscardAtLineEnd.accessKey "e">
+<!ENTITY typesetDiscardAtLineEnd.accesskey "e">
 <!ENTITY typesetAlways.label "Always">
-<!ENTITY typesetAlways.accessKey "A">
+<!ENTITY typesetAlways.accesskey "A">
 
 <!-- <!ENTITY .tooltip "">  -->

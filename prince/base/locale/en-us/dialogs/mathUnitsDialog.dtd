@@ -4,12 +4,12 @@
 <!ENTITY windowPropertiesTitle.label "Unit Properties">
 
 <!ENTITY unitTypesListbox.label "Physical quantity">
-<!ENTITY unitTypesListbox.accessKey "P">
+<!ENTITY unitTypesListbox.accesskey "P">
 <!ENTITY unitNamesListbox.label "Unit name">
-<!ENTITY unitNamesListbox.accessKey "U">
+<!ENTITY unitNamesListbox.accesskey "U">
 <!ENTITY insertButton.label "Insert">
-<!ENTITY insertButton.accessKey "I">
+<!ENTITY insertButton.accesskey "I">
 <!ENTITY replaceButton.label "Replace">
-<!ENTITY replaceButton.accessKey "R">
+<!ENTITY replaceButton.accesskey "R">
 
 <!-- <!ENTITY .tooltip "">  -->

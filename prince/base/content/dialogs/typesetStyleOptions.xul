@@ -45,7 +45,7 @@
     <vbox>
       <hbox>
         <vbox>
-          <description value='&categoryDescription.label;' accesskey='&categoryDescription.accessKey;'/>
+          <description value='&categoryDescription.label;' accesskey='&categoryDescription.accesskey;'/>
           <listbox id='categoryListbox' datasources='chrome://prince/content/texOptions.rdf' ref='' onselect='changeOptionSelection(this.selectedItem);'>
             <template>
               <!-- listitem uri="rdf:*" label='rdf:http://www.sciword.com/namespaces/texoptions-rdf#displayText' value='rdf:http://www.sciword.com/namespaces/texoptions-rdf#optionValues'/ -->
@@ -54,7 +54,7 @@
           </listbox>
         </vbox>
         <vbox>
-          <description value='&optionsDescription.label;' accesskey='&optionsDescription.accessKey;'/>
+          <description value='&optionsDescription.label;' accesskey='&optionsDescription.accesskey;'/>
           <listbox id='optionsListbox' datasources='chrome://prince/content/texOptions.rdf' ref='' onselect='changeOptionChoice();'>
             <template>
               <listitem uri="rdf:*" label="rdf:http://www.sciword.com/namespaces/texoptions-rdf#displayText" value="rdf:http://www.sciword.com/namespaces/texoptions-rdf#latexString"/>
@@ -67,7 +67,7 @@
           <description value='&currentOptionsDescription.label;'/>
           <textbox id='selectedOptionsDescription' size='80' readonly='true'/>
         </vbox>
-        <msibutton id="goNativeButton" label="&goNativeButton.label;" accesskey="&goNativeButton.accessKey;" oncommand="doGoNative();"/>
+        <msibutton id="goNativeButton" label="&goNativeButton.label;" accesskey="&goNativeButton.accesskey;" oncommand="doGoNative();"/>
       </hbox>
     </vbox>
 

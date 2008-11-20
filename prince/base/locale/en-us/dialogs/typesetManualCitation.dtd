@@ -3,8 +3,8 @@
 <!ENTITY windowTitle.label "Citation">
 
 <!ENTITY keyCaption.label "Key:">
-<!ENTITY keyCaption.accessKey "K">
+<!ENTITY keyCaption.accesskey "K">
 <!ENTITY remarkCaption.label "Remark:">
-<!ENTITY remarkCaption.accessKey "R">
+<!ENTITY remarkCaption.accesskey "R">
 
 <!-- <!ENTITY .tooltip "">  -->

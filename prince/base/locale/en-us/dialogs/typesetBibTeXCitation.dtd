@@ -3,16 +3,16 @@
 <!ENTITY windowTitle.label "BibTeX Citation">
 
 <!ENTITY databaseFileListbox.label "Database File">
-<!ENTITY databaseFileListbox.accessKey "D">
+<!ENTITY databaseFileListbox.accesskey "D">
 <!ENTITY viewKeysButton.label "View Keys">
-<!ENTITY viewKeysButton.accessKey "V">
+<!ENTITY viewKeysButton.accesskey "V">
 <!ENTITY selectDirectoryButton.label "Select BibTeX Directory">
-<!ENTITY selectDirectoryButton.accessKey "S">
+<!ENTITY selectDirectoryButton.accesskey "S">
 <!ENTITY keyCaption.label "Key:">
-<!ENTITY keyCaption.accessKey "K">
+<!ENTITY keyCaption.accesskey "K">
 <!ENTITY remarkCaption.label "Remark:">
-<!ENTITY remarkCaption.accessKey "R">
+<!ENTITY remarkCaption.accesskey "R">
 <!ENTITY bibEntryOnlyCheckbox.label "Bibliography Entry Only - No Citation">
-<!ENTITY bibEntryOnlyCheckbox.accessKey "B">
+<!ENTITY bibEntryOnlyCheckbox.accesskey "B">
 
 <!-- <!ENTITY .tooltip "">  -->

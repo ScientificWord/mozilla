@@ -89,15 +89,15 @@
 <!ENTITY insertmenu.label "Insert">
 <!ENTITY insertmenu.accesskey "I">
 <!ENTITY insertSpacingObjects.label "Spacing">
-<!ENTITY insertSpacingObjects.accessKey "S">
+<!ENTITY insertSpacingObjects.accesskey "S">
 <!ENTITY insertHorizontalSpaces.label "Horizontal Space...">
-<!ENTITY insertHorizontalSpaces.accessKey "H">
+<!ENTITY insertHorizontalSpaces.accesskey "H">
 <!ENTITY insertVerticalSpaces.label "Vertical Space...">
-<!ENTITY insertVerticalSpaces.accessKey "V">
+<!ENTITY insertVerticalSpaces.accesskey "V">
 <!ENTITY insertRules.label "Rule...">
-<!ENTITY insertRules.accessKey "R">
+<!ENTITY insertRules.accesskey "R">
 <!ENTITY insertBreaks.label "Break...">
-<!ENTITY insertBreaks.accessKey "B">
+<!ENTITY insertBreaks.accesskey "B">
 <!ENTITY insertTableCmd.label "Table...">
 <!ENTITY inserttable.accesskey "a">
 <!ENTITY insertmenuNote.label "Note...">

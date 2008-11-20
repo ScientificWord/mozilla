@@ -35,16 +35,16 @@ Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
     <radiogroup id="importRefRadioGroup" orient="horizontal" flex="1">
       <radio id = "importRadio" 
         label   = "&importButton.label;"
-        accesskey = "&importButton.accessKey;"
+        accesskey = "&importButton.accesskey;"
         oncommand = "SetImport(true);"/>
       <radio id = "referenceRadio" 
         label   = "&referenceButton.label;"
-        accesskey = "&referenceButton.accessKey;"
+        accesskey = "&referenceButton.accesskey;"
         oncommand = "SetImport(false);"/>
     </radiogroup>
     <label control = "srcInput"
       value = "&locationEditField.label;"
-      accesskey="&locationEditField.accessKey;"
+      accesskey="&locationEditField.accesskey;"
       tooltiptext="&locationEditField.tooltip;"
       />
     <textbox id="srcInput" oninput="ChangeImageSrc();" tabindex="1" class="uri-element"/>
@@ -66,7 +66,7 @@ Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
             <label 
               style   = "margin-left: 5px"
               control = "titleInput"
-              accesskey = "&title.accessKey;"
+              accesskey = "&title.accesskey;"
               value   ="&title.label;"
               tooltiptext="&title.tooltip;"
               for     = "titleInput"/>
@@ -80,7 +80,7 @@ Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
             <label 
               style   = "margin-left: 5px"
               control = "altTextInput"
-              accesskey = "&altText.accessKey;"
+              accesskey = "&altText.accesskey;"
               value   ="&altText.label;"
               tooltiptext="&altTextEditField.tooltip;"
               for     = "titleInput"/>
@@ -126,13 +126,13 @@ Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
         <radio
           id      = "actualSizeRadio" 
           label   = "&actualSizeRadio.label;"
-          accesskey = "&actualSizeRadio.accessKey;"
+          accesskey = "&actualSizeRadio.accesskey;"
           tooltiptext="&actualSizeRadio.tooltip;"
           oncommand = "SetActualSize()"/>
         <radio
           id      = "customSizeRadio" 
           label   = "&customSizeRadio.label;"
-          accesskey = "&customSizeRadio.accessKey;"
+          accesskey = "&customSizeRadio.accesskey;"
           tooltiptext="&customSizeRadio.tooltip;"
           oncommand = "doDimensionEnabling();" />
       </radiogroup>
@@ -140,7 +140,7 @@ Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
       <vbox>
         <spacer flex="1"/>
         <checkbox id="constrainCheckbox" label="&constrainCheckbox.label;"
-             accesskey="&constrainCheckbox.accessKey;"
+             accesskey="&constrainCheckbox.accesskey;"
              oncommand="ToggleConstrain()"
              tooltiptext="&constrainCheckbox.tooltip;"/>
       </vbox>
@@ -153,7 +153,7 @@ Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
         <row align="center">
           <label id    = "widthLabel"
             control   = "widthInput"
-            accesskey = "&widthEditField.accessKey;"
+            accesskey = "&widthEditField.accesskey;"
             value = "&widthEditField.label;" />
           <textbox
             id        = "widthInput" 
@@ -163,7 +163,7 @@ Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
         <row align="center">
           <label id   = "heightLabel"
             control   = "heightInput"
-            accesskey = "&heightEditField.accessKey;"
+            accesskey = "&heightEditField.accesskey;"
             value = "&heightEditField.label;" />
           <textbox
             id        = "heightInput" 
@@ -173,7 +173,7 @@ Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
         <row align="center">
           <label id   = "unitLabel"
             control   = "unitMenulist"
-            accesskey = "&unitLabel.accessKey;"
+            accesskey = "&unitLabel.accesskey;"
             value     = "&unitLabel.label;" />
           <menulist id = "unitMenulist"
             oncommand  = "doDimensionEnabling();" >
@@ -204,7 +204,7 @@ Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
               class = "align-right" 
               id    = "leftrightLabel"
               control = "imageleftrightInput"
-              accesskey = "&leftRightEditField.accessKey;"
+              accesskey = "&leftRightEditField.accesskey;"
               value = "&leftRightEditField.label;"/>
             <textbox
               class     = "narrow"
@@ -220,7 +220,7 @@ Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
               class = "align-right" 
               id    = "topbottomLabel"
               control = "imagetopbottomInput"
-              accesskey = "&topBottomEditField.accessKey;"
+              accesskey = "&topBottomEditField.accesskey;"
               value = "&topBottomEditField.label;"/>
             <textbox
               class     = "narrow"
@@ -235,7 +235,7 @@ Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
             <label class = "align-right" 
               id    = "borderLabel"
               control = "border"
-              accesskey = "&borderEditField.accessKey;"
+              accesskey = "&borderEditField.accesskey;"
               value = "&borderEditField.label;"/>
             <textbox
               class     = "narrow"
@@ -279,7 +279,7 @@ Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
         <msibutton
           id      = "removeImageMap"
           oncommand = "removeImageMap()"
-          accesskey = "&removeImageMapButton.accessKey;"
+          accesskey = "&removeImageMapButton.accesskey;"
           label   = "&removeImageMapButton.label;"
           flex    = "1"/>
         <spacer flex="1"/><!-- remove when we restore Image Map Editor -->

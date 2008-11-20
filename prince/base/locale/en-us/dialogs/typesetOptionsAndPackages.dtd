@@ -8,21 +8,21 @@
 <!ENTITY classDescription.templateStr "__classname__">
 <!ENTITY classOptions.label "Options are:">
 <!ENTITY packagesInUse.label "Packages in use:">
-<!ENTITY packagesInUse.accessKey "P">
+<!ENTITY packagesInUse.accesskey "P">
 <!ENTITY moveUpButton.label "Move Up">
-<!ENTITY moveUpButton.accessKey "U">
+<!ENTITY moveUpButton.accesskey "U">
 <!ENTITY moveDownButton.label "Move Down">
-<!ENTITY moveDownButton.accessKey "D">
+<!ENTITY moveDownButton.accesskey "D">
 <!ENTITY addPackageButton.label "Add Package...">
-<!ENTITY addPackageButton.accessKey "A">
+<!ENTITY addPackageButton.accesskey "A">
 <!ENTITY removePackageButton.label "Remove Package...">
-<!ENTITY removePackageButton.accessKey "R">
+<!ENTITY removePackageButton.accesskey "R">
 <!ENTITY goNativeButton.label "Go Native...">
-<!ENTITY goNativeButton.accessKey "N">
+<!ENTITY goNativeButton.accesskey "N">
 <!ENTITY modifyPackageButton.label "Modify Package...">
-<!ENTITY modifyPackageButton.accessKey "M">
+<!ENTITY modifyPackageButton.accesskey "M">
 <!ENTITY modifyClassOptionsButton.label "Modify...">
-<!ENTITY modifyClassOptionsButton.accessKey "M">
+<!ENTITY modifyClassOptionsButton.accesskey "M">
 <!ENTITY currentPackageDescription.label "Currently Selected Options for the Package __packagename__">
 <!ENTITY currentPackageDescription.templateStr "__packagename__">
    

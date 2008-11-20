@@ -5,15 +5,15 @@
 <!ENTITY sizeGroupbox.label "Size and position">
 
 <!ENTITY liftSize.label "Lift">
-<!ENTITY liftSize.accessKey "L">
+<!ENTITY liftSize.accesskey "L">
 <!ENTITY widthSize.label "Width">
-<!ENTITY widthSize.accessKey "W">
+<!ENTITY widthSize.accesskey "W">
 <!ENTITY heightSize.label "Height">
-<!ENTITY heightSize.accessKey "H">
+<!ENTITY heightSize.accesskey "H">
 <!ENTITY sizeUnits.label "Units">
-<!ENTITY sizeUnits.accessKey "U">
+<!ENTITY sizeUnits.accesskey "U">
 
 <!ENTITY colorButton.label "Color">
-<!ENTITY colorButton.accessKey "C">
+<!ENTITY colorButton.accesskey "C">
 
 <!-- <!ENTITY .tooltip "">  -->

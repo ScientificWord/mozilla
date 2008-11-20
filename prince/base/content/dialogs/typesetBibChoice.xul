@@ -39,9 +39,9 @@
     
     <groupbox>
       <radiogroup>
-		    <radio id="manualBibButton" label='&manualBibButton.label;' accesskey='&manualBibButton.accessKey;'/>
+		    <radio id="manualBibButton" label='&manualBibButton.label;' accesskey='&manualBibButton.accesskey;'/>
 		    <spacer flex='1'/>
-		    <radio id="BibTeXButton" label='&BibTeXButton.label;' accesskey='&BibTeXButton.accessKey;'/>
+		    <radio id="BibTeXButton" label='&BibTeXButton.label;' accesskey='&BibTeXButton.accesskey;'/>
       </radiogroup>
     </groupbox>
 
