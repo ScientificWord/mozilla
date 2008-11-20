@@ -3888,8 +3888,8 @@ nsEditor::GetRightmostChild(nsIDOMNode *aCurrentNode,
   aCurrentNode->HasChildNodes(&hasChildren);
   while (hasChildren)
   {
-    temp->GetLastChild(getter_AddRefs(resultNode));
-    if (resultNode)
+    temp->GetLastTraversalChild(getter_AddRefs(resultNode));
+    if (resultNode && (temp != resultNode))
     {
       if (bNoBlockCrossing && IsBlockNode(resultNode))
          return resultNode;

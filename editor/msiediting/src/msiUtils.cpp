@@ -375,14 +375,14 @@ nsresult msiUtils::CreateMathElement(nsIEditor * editor,
     mathElement->SetAttributeNS(xmlnsURI, xmlns, mmlnsURI);
     if (isDisplay)
       mathElement->SetAttribute(display, block);
-    nsCOMPtr<nsIDOMElement> inputbox;
-    res = CreateInputbox(editor, nestInMrow, markCaret, flags, inputbox);
-    nsCOMPtr<nsIDOMNode> inputboxNode(do_QueryInterface(inputbox));
-    if (NS_SUCCEEDED(res) && inputboxNode) 
-    {
-      nsCOMPtr<nsIDOMNode> dontcare;
-      res = mathElement->AppendChild(inputboxNode, getter_AddRefs(dontcare));
-    }
+//    nsCOMPtr<nsIDOMElement> inputbox;
+//    res = CreateInputbox(editor, nestInMrow, markCaret, flags, inputbox);
+//    nsCOMPtr<nsIDOMNode> inputboxNode(do_QueryInterface(inputbox));
+//    if (NS_SUCCEEDED(res) && inputboxNode) 
+//    {
+//      nsCOMPtr<nsIDOMNode> dontcare;
+//      res = mathElement->AppendChild(inputboxNode, getter_AddRefs(dontcare));
+//    }
   }
   return res;
 }
