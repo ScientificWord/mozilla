@@ -1786,6 +1786,7 @@ nsresult msiEditor::ComparePoints(nsIDOMNode * node1, PRUint32 offset1,
 nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focusOffset, 
                                  PRBool selecting, PRBool & preventDefault)
 {
+//BBM ToDo Check for other non-text, non-structure, non-para tags.
   if (!focusNode || focusOffset > msiIMathMLEditingBC::LAST_VALID)
     return NS_ERROR_FAILURE;
   nsCOMPtr<msiISelection> msiSelection;
@@ -1804,9 +1805,11 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
     collapse = PR_FALSE;
     PRBool doSet(PR_FALSE);
     nsCOMPtr<nsIDOMNode> commonAncestor, anchorNode, startNode, endNode;
+    nsCOMPtr<nsIDOMNodeList> childNodes;
     PRUint32 anchorOffset(msiIMathMLEditingBC::INVALID);
     PRUint32 startOffset(msiIMathMLEditingBC::INVALID), endOffset(msiIMathMLEditingBC::INVALID);
     PRInt32 compareFocusAnchor(0);
+    PRInt32 compareOldFocusFocus(0);
     
     msiSelection->GetMsiAnchorNode(getter_AddRefs(anchorNode));
     msiSelection->GetMsiAnchorOffset(&anchorOffset);
@@ -1855,6 +1858,14 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
              res = GetMathMLCaretInterface(mathParent, 0, getter_AddRefs(mathCaret));
            if (NS_SUCCEEDED(res) && mathCaret)
            {
+             nsCOMPtr<nsIDOMNode> oldFocusNode;
+             PRUint32 oldFocusOffset(msiIMathMLEditingBC::INVALID);
+    
+             msiSelection->GetMsiFocusNode(getter_AddRefs(oldFocusNode));
+             msiSelection->GetMsiFocusOffset(&oldFocusOffset);
+             ComparePoints(oldFocusNode, oldFocusOffset, focusNode, focusOffset, &compareOldFocusFocus);
+             msiSelection->GetMsiAnchorNode(getter_AddRefs(anchorNode));
+             msiSelection->GetMsiAnchorOffset(&anchorOffset);
              if (compareFocusAnchor < 0 ) //focus before anchor
              {
                res = mathCaret->GetSelectableMathFragment(this, 
@@ -1862,6 +1873,13 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
                                                           nsnull, msiIMathMLEditingBC::INVALID,
                                                           getter_AddRefs(startNode), &startOffset,
                                                           getter_AddRefs(dummyNode), &dummyOffset);
+               // The focus node has possibly been expanded to a larger object. We now need to determine whether this
+               // will be added or subtracted from the selection (whether the selection is being enlarged or shrunken)
+               if (compareOldFocusFocus < 0) // old focus is before the focus. We are shortening the selection.    
+               {
+                 startNode->GetChildNodes(getter_AddRefs(childNodes));
+                 childNodes->GetLength(&startOffset);
+               }
                startSet  = NS_SUCCEEDED(res) && startNode && startOffset <= msiIMathMLEditingBC::LAST_VALID;
              }
              else
@@ -1871,6 +1889,12 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
                                                           focusNode, focusOffset,
                                                           getter_AddRefs(dummyNode), &dummyOffset,
                                                           getter_AddRefs(endNode), &endOffset);
+               // The focus node has possibly been expanded to a larger object. We now need to determine whether this
+               // will be added or subtracted from the selection (whether the selection is being enlarged or shrunken)
+               if (compareOldFocusFocus > 0) // old focus is after the focus. We are shortening the selection.    
+               {
+                 endOffset = 0;
+               }
                endSet  = NS_SUCCEEDED(res) && endNode && endOffset <= msiIMathMLEditingBC::LAST_VALID;
              }  
            }                                               
@@ -1893,15 +1917,24 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
                                                           anchorNode, anchorOffset,
                                                           getter_AddRefs(dummyNode), &dummyOffset,
                                                           getter_AddRefs(endNode), &endOffset);
+               if (compareOldFocusFocus < 0) // old focus is before the focus. We are shortening the selection.    
+               {
+                 endNode->GetChildNodes(getter_AddRefs(childNodes));
+                 childNodes->GetLength(&endOffset);
+               }
                endSet  = NS_SUCCEEDED(res) && endNode && endOffset <= msiIMathMLEditingBC::LAST_VALID;
              }
-             else
+             else  // focus is after anchor
              {
                res = mathCaret->GetSelectableMathFragment(this, 
                                                           anchorNode, anchorOffset,
                                                           nsnull, msiIMathMLEditingBC::INVALID,
                                                           getter_AddRefs(startNode), &startOffset,
                                                           getter_AddRefs(dummyNode), &dummyOffset);
+               if (compareOldFocusFocus > 0) // old focus is after the focus. We are shortening the selection.    
+               {
+                 startOffset = 0;
+               }
                startSet  = NS_SUCCEEDED(res) && startNode && startOffset <= msiIMathMLEditingBC::LAST_VALID;
              }                                             
            }                                               
@@ -1941,6 +1974,7 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
        {
          msiSelection->Set(startNode, startOffset, endNode, endOffset,
                            focusNode, focusOffset, anchorNode, anchorOffset);
+            //               endNode, endOffset, anchorNode, anchorOffset);
          preventDefault = PR_TRUE;
        }  
     }

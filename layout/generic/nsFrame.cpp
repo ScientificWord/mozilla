@@ -1397,6 +1397,7 @@ nsIFrame::BuildDisplayListForChild(nsDisplayListBuilder*   aBuilder,
   if ((isPositioned && pos->mZIndex.GetUnit() == eStyleUnit_Integer) ||
       isComposited || (aFlags & DISPLAY_CHILD_FORCE_STACKING_CONTEXT)) {
     // True stacking context
+
     rv = aChild->BuildDisplayListForStackingContext(aBuilder, dirty, &list);
     if (NS_SUCCEEDED(rv)) {
       rv = aBuilder->DisplayCaret(aChild, dirty, aLists);
@@ -4780,6 +4781,7 @@ nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
         
         if (!done) {
           nsIFrame* nextFrame;
+
           PRInt32 nextFrameOffset;
           PRBool jumpedLine;
           PRBool math;
@@ -5275,6 +5277,7 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
   if (pFrame) // 'this' is a math frame
   {
     printf("Starting in a math frame\n");
+//    *aMath = PR_TRUE;
     // the cursor is in a math tag, not in a text tag that is in mathematics, and we are leaving or entering
     // BBM: Fix this. Counting in the frame tree is unreliable. We should be doing it in the DOM tree.
     PRUint32 nodecount = 0;

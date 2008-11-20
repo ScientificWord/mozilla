@@ -466,6 +466,7 @@ nsMathMLElement::GetLastTraversalChild(nsIDOMNode** aNode)
   GetLocalName(szName);
   if (szName.EqualsLiteral("mfrac")) // add others (msup, mroot) here
   {
+    //*aNode = this;
     return GetFirstChild(aNode);
   }
   else  
