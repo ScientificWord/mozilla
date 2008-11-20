@@ -41,11 +41,11 @@
 			<caption label='&prepareFor.label;'/>
       <radiogroup id='prepareForRadioGroup'>
 		    <spacer flex='1'/>
-		    <radio id="dviOutputButton" label='&dviOutputButton.label;' accesskey='&dviOutputButton.accessKey;' value='dvi'/>
+		    <radio id="dviOutputButton" label='&dviOutputButton.label;' accesskey='&dviOutputButton.accesskey;' value='dvi'/>
 		    <spacer flex='1'/>
-		    <radio id="pdfOutputButton" label='&pdfOutputButton.label;' accesskey='&pdfOutputButton.accessKey;' value='pdf'/>
+		    <radio id="pdfOutputButton" label='&pdfOutputButton.label;' accesskey='&pdfOutputButton.accesskey;' value='pdf'/>
 		    <spacer flex='1'/>
-		    <radio id="bothOutputButton" label='&bothOutputButton.label;' accesskey='&bothOutputButton.accessKey;' value='both'/>
+		    <radio id="bothOutputButton" label='&bothOutputButton.label;' accesskey='&bothOutputButton.accesskey;' value='both'/>
 		    <spacer flex='1'/>
       </radiogroup>
     </groupbox>

@@ -35,7 +35,7 @@
   <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
 	
 	<vbox>
-		<description value='&dataField.label;' accesskey='&dataField.accessKey;'/>
+		<description value='&dataField.label;' accesskey='&dataField.accesskey;'/>
 		<spacer flex='1'/>
 		<textbox id='dataField' multiline='true' cols='80' rows='8' readonly='true'/>
 	</vbox>

@@ -5,29 +5,29 @@
 <!ENTITY spacesRadioGroupbox.label "Spacing Types">
 
 <!ENTITY smallSkip.label "Small skip">
-<!ENTITY smallSkip.accessKey "S">
+<!ENTITY smallSkip.accesskey "S">
 <!ENTITY mediumSkip.label "Medium skip">
-<!ENTITY mediumSkip.accessKey "M">
+<!ENTITY mediumSkip.accesskey "M">
 <!ENTITY bigSkip.label "Big skip">
-<!ENTITY bigSkip.accessKey "B">
+<!ENTITY bigSkip.accesskey "B">
 <!ENTITY strut.label "Strut">
-<!ENTITY strut.accessKey "t">
+<!ENTITY strut.accesskey "t">
 <!ENTITY mathStrut.label "Math strut">
-<!ENTITY mathStrut.accessKey "u">
+<!ENTITY mathStrut.accesskey "u">
 <!ENTITY customSpace.label "Custom">
-<!ENTITY customSpace.accessKey "C">
+<!ENTITY customSpace.accesskey "C">
 
 
 <!ENTITY sizeGroupbox.label "Size">
 <!ENTITY fixedDepth.label "Depth">
-<!ENTITY fixedDepth.accessKey "D">
+<!ENTITY fixedDepth.accesskey "D">
 <!ENTITY fixedSizeUnits.label "Units">
-<!ENTITY fixedSizeUnits.accessKey "U">
+<!ENTITY fixedSizeUnits.accesskey "U">
 
 <!ENTITY typesetGroup.label "Typeset behavior">
 <!ENTITY typesetDiscardAtLineEnd.label "Discard at line end">
-<!ENTITY typesetDiscardAtLineEnd.accessKey "e">
+<!ENTITY typesetDiscardAtLineEnd.accesskey "e">
 <!ENTITY typesetAlways.label "Always">
-<!ENTITY typesetAlways.accessKey "A">
+<!ENTITY typesetAlways.accesskey "A">
 
 <!-- <!ENTITY .tooltip "">  -->

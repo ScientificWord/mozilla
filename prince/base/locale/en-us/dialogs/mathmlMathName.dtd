@@ -8,23 +8,23 @@
 <!ENTITY mathAppearance.label "Appearance">
 <!ENTITY nameType.label "Name Type">
 <!ENTITY typeOperator.label "Operator">
-<!ENTITY typeOperator.accessKey "O">
+<!ENTITY typeOperator.accesskey "O">
 <!ENTITY typeFunction.label "Function">
-<!ENTITY typeFunction.accessKey "F">
+<!ENTITY typeFunction.accesskey "F">
 <!ENTITY typeVariable.label "Variable">
-<!ENTITY typeVariable.accessKey "V">
+<!ENTITY typeVariable.accesskey "V">
 <!ENTITY operatorLimitPlacement.label "Operator Limit Placement">
 <!ENTITY limitPlacementAuto.label "Auto">
-<!ENTITY limitPlacementAuto.accessKey "u">
+<!ENTITY limitPlacementAuto.accesskey "u">
 <!ENTITY limitPlacementAboveBelow.label "Above/Below">
-<!ENTITY limitPlacementAboveBelow.accessKey "b">
+<!ENTITY limitPlacementAboveBelow.accesskey "b">
 <!ENTITY limitPlacementAtRight.label "At right">
-<!ENTITY limitPlacementAtRight.accessKey "r">
+<!ENTITY limitPlacementAtRight.accesskey "r">
 <!ENTITY addAutoSubstitution.label "Add automatic substitution">
-<!ENTITY addAutoSubstitution.accessKey "s">
+<!ENTITY addAutoSubstitution.accesskey "s">
 <!ENTITY engfunc.desc "This is an engine string.">
-<!ENTITY engfunc.accessKey "e">
+<!ENTITY engfunc.accesskey "e">
 <!ENTITY addButton.label "Add">
-<!ENTITY addButton.accessKey "A">
+<!ENTITY addButton.accesskey "A">
 <!ENTITY deleteButton.label "Delete">
-<!ENTITY deleteButton.accessKey "D">
+<!ENTITY deleteButton.accesskey "D">

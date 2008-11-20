@@ -80,17 +80,17 @@
           <groupbox id="sizeGroupbox" orient="horizontal">
             <caption label="&sizeGroupbox.label;"/>
             <radiogroup id="fixedOrStretchyRadioGroup" orient="vertical" oncommand="checkEnableControls();">
-              <radio label="&fixedSize.label;" value="fixed" accesskey="&fixedSize.accessKey;"/>
-              <radio label="&stretchySize.label;" value="stretchy" accesskey="&stretchySize.accessKey;"/>
+              <radio label="&fixedSize.label;" value="fixed" accesskey="&fixedSize.accesskey;"/>
+              <radio label="&stretchySize.label;" value="stretchy" accesskey="&stretchySize.accesskey;"/>
             </radiogroup>
             <spacer flex="1"/>
             <vbox id="fixedSizeControls">
               <hbox>
-                <label control="fixedSizeTextbox" value="&fixedWidth.label;"	accesskey="&fixedWidth.accessKey;"/>
+                <label control="fixedSizeTextbox" value="&fixedWidth.label;"	accesskey="&fixedWidth.accesskey;"/>
                 <textbox id="fixedSizeTextbox" />
               </hbox>
               <hbox>
-                <label control="fixedSizeUnitsbox" value="&fixedSizeUnits.label;"	accesskey="&fixedSizeUnits.accessKey;"/>
+                <label control="fixedSizeUnitsbox" value="&fixedSizeUnits.label;"	accesskey="&fixedSizeUnits.accesskey;"/>
                 <menulist id="fixedSizeUnitsbox"  oncommand="changeUnits(this);"  >
                    <menupopup>
                    </menupopup>
@@ -99,7 +99,7 @@
               </hbox>
             </vbox>
             <vbox id="stretchySizeControls" collapsed="true">
-              <label control="stretchySizeFactor" value="&stretchySizeFactor.label;"	accesskey="&stretchySizeFactor.accessKey;"/>
+              <label control="stretchySizeFactor" value="&stretchySizeFactor.label;"	accesskey="&stretchySizeFactor.accesskey;"/>
               <textbox id="stretchySizeFactor" />
             </vbox>
           </groupbox>
@@ -108,16 +108,16 @@
           <groupbox id="fillWithGroupbox">
             <caption label="&fillWithGroup.label;"/>
             <radiogroup id="fillWithRadioGroup" orient="vertical">
-              <radio label="&fillNothing.label;" value="fillNothing" accesskey="&fillNothing.accessKey;"/>
-              <radio label="&fillLine.label;" value="fillLine" accesskey="&fillLine.accessKey;"/>
-              <radio label="&fillDots.label;" value="fillDots" accesskey="&fillDots.accessKey;"/>
+              <radio label="&fillNothing.label;" value="fillNothing" accesskey="&fillNothing.accesskey;"/>
+              <radio label="&fillLine.label;" value="fillLine" accesskey="&fillLine.accesskey;"/>
+              <radio label="&fillDots.label;" value="fillDots" accesskey="&fillDots.accesskey;"/>
             </radiogroup>
           </groupbox>
           <groupbox id="typesetGroupbox">
             <caption label="&typesetGroup.label;"/>
             <radiogroup id="typesetRadioGroup" orient="vertical">
-              <radio id="typesetDiscardAtLineEnd" label="&typesetDiscardAtLineEnd.label;" value="discardAtLineEnd" accesskey="&typesetDiscardAtLineEnd.accessKey;"/>
-              <radio id="typesetAlways" label="&typesetAlways.label;" value="always" accesskey="&typesetAlways.accessKey;"/>
+              <radio id="typesetDiscardAtLineEnd" label="&typesetDiscardAtLineEnd.label;" value="discardAtLineEnd" accesskey="&typesetDiscardAtLineEnd.accesskey;"/>
+              <radio id="typesetAlways" label="&typesetAlways.label;" value="always" accesskey="&typesetAlways.accesskey;"/>
             </radiogroup>
           </groupbox>
         </hbox>

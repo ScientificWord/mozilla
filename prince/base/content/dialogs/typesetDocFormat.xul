@@ -598,15 +598,15 @@
                         <radiogroup id="cropGroup" orient="horizontal"  observes="cropmarks">
                           <vbox align="center">                        
                             <label value="&camera.label;" control="camera"/> 
-                            <radio id="camera" value="cam" accesskey="&camera.accessKey;" selected="true"/>
+                            <radio id="camera" value="cam" accesskey="&camera.accesskey;" selected="true"/>
                           </vbox>
                           <vbox>
                             <label value="&cross.label;" conrol="cross"/> 
-                            <radio id="cross" value="cross" accesskey="&cross.accessKey;"/>
+                            <radio id="cross" value="cross" accesskey="&cross.accesskey;"/>
                           </vbox>
                           <vbox>
                             <label value="&frame.label;" />
-                            <radio id="frame"  value="frame" accesskey="&frame.accessKey;"/>
+                            <radio id="frame"  value="frame" accesskey="&frame.accesskey;"/>
                           </vbox>
                         </radiogroup>
                       </groupbox>
@@ -615,11 +615,11 @@
                         <radiogroup id="pageonpaperlayout" orient="horizontal" observes="cropmarks" oncommand="centerCropmarks(this.value);">
                           <vbox align="center">                        
                             <label value="&pageonpaperupperleft.label;" control="popupperleft"/> 
-                            <radio id="popupperleft" value="upperleft" accesskey="popupperleft.accessKey;" selected="true"/>
+                            <radio id="popupperleft" value="upperleft" accesskey="popupperleft.accesskey;" selected="true"/>
                           </vbox>
                           <vbox align="center">
                             <label value="&pageonpapercenter.label;" control="popcenter"/> 
-                            <radio id="popcenter" value="center" accesskey="popcenter.accessKey;" selected="false"/>
+                            <radio id="popcenter" value="center" accesskey="popcenter.accesskey;" selected="false"/>
                           </vbox>
                         </radiogroup>      
                       </groupbox>

@@ -30,23 +30,23 @@
 
   <vbox>
     <groupbox>
-      <caption id="ruleLabel" label="&rule.label;" accesskey="&rule.accessKey;"/>
+      <caption id="ruleLabel" label="&rule.label;" accesskey="&rule.accesskey;"/>
   <!-- we need width, height, units, color, and as an alternative to width, wide (margin-to-margin) and narrow (width of title) -->
       <vbox align="center">
     	  <label>Units are: </label><label id="ruleUnits" value=""/>
       </vbox>
       <vbox>
-        <label value="&ruleHeight.label;" accesskey="&ruleHeight.accessKey;"/>
+        <label value="&ruleHeight.label;" accesskey="&ruleHeight.accesskey;"/>
         <textbox id="ruleHeight" style="width: 3.5em" onkeypress="handleChar(event,'ruleheight');"
           tooltip="&ruleHeight.label;"/>
       </vbox>
       <vbox>
         <label>&ruleWidth.label;</label>
         <radiogroup id="rulesize" orient="vertical">
-          <radio id="wide" label="&wide.label;" value="wide" accesskey="&wide.accessKey;" selected="true" oncommand=""/>
-          <radio id="narrow" label="&narrow.label;" value="narrow" accesskey="&narrow.accessKey;" oncommand=""/>
+          <radio id="wide" label="&wide.label;" value="wide" accesskey="&wide.accesskey;" selected="true" oncommand=""/>
+          <radio id="narrow" label="&narrow.label;" value="narrow" accesskey="&narrow.accesskey;" oncommand=""/>
           <hbox>
-            <radio id="other" label="&other.label;"  value="other" accesskey="&other.accessKey;" oncommand=""/>
+            <radio id="other" label="&other.label;"  value="other" accesskey="&other.accesskey;" oncommand=""/>
             <textbox id="ruleWidth" style="width: 3.5em" onkeypress="handleChar(event,'rulewidth');"
               tooltip="&ruleWidth.label;"/>
           </hbox>
@@ -56,7 +56,7 @@
     <spacer flex="1"/>
   </vbox>
   <hbox>
-    <label control="colorButton" value="&ruleColor.label;"	accesskey="&ruleColor.accessKey;"/>
+    <label control="colorButton" value="&ruleColor.label;"	accesskey="&ruleColor.accesskey;"/>
     <button id="colorButton" class="color-button" oncommand="getColorAndUpdate();">
       <spacer id="colorWell" class="color-well"/>
     </button>

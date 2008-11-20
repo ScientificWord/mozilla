@@ -58,33 +58,33 @@
       <row>
         <label value="&wordEditField.label;"
                control="WordInput"
-               accesskey="&wordEditField.accessKey;"/>
+               accesskey="&wordEditField.accesskey;"/>
         <spacer/>
       </row>
       <row>
         <textbox id="WordInput" flex="1"/>
         <msibutton id="AddWord" oncommand="AddWord()" label="&AddButton.label;"
-                accesskey="&AddButton.accessKey;"/>
+                accesskey="&AddButton.accesskey;"/>
       </row>
       <row>
         <label value="&DictionaryList.label;"
                control="DictionaryList"
-               accesskey="&DictionaryList.accessKey;"/>
+               accesskey="&DictionaryList.accesskey;"/>
         <spacer/>
       </row>
       <row>
         <listbox rows="8" id="DictionaryList" flex="1"/>
         <vbox flex="1">
           <msibutton  id="ReplaceWord" oncommand="ReplaceWord()" label="&ReplaceButton.label;"
-                   accesskey="&ReplaceButton.accessKey;"/>
+                   accesskey="&ReplaceButton.accesskey;"/>
           <spacer class="spacer"/>
           <msibutton  id="RemoveWord" oncommand="RemoveWord()" label="&RemoveButton.label;"
-                   accesskey="&RemoveButton.accessKey;"/>
+                   accesskey="&RemoveButton.accesskey;"/>
           <spacer class="spacer"/>
           <spacer flex="1"/>
           <msibutton dlgtype="cancel" class="exit-dialog" id="close" label="&CloseButton.label;" 
                   default="true" oncommand="onClose();"
-                  accesskey="&CloseButton.accessKey;"/>
+                  accesskey="&CloseButton.accesskey;"/>
         </vbox>
       </row>
     </rows>

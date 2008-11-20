@@ -104,26 +104,26 @@
 	<vbox>
 		<hbox>
 		  <vbox>
-		    <description value='&databaseFileListbox.label;' accesskey='&databaseFileListbox.accessKey;'/>
+		    <description value='&databaseFileListbox.label;' accesskey='&databaseFileListbox.accesskey;'/>
 		    <listbox id='databaseFileListbox' rows='8' onselect='selectDatabaseFile(this.selectedItem);'/>
 			</vbox>
 			<vbox>
-			  <msibutton id='viewKeysButton' label='&viewKeysButton.label;' accesskey='&viewKeysButton.accessKey;' oncommand='doViewKeys();'/>
-			  <msibutton id='selectBibTeXDirectory' label='&selectDirectoryButton.label;' accesskey='&selectDirectoryButton.accessKey;' oncommand='doSelectBibTeXDirectory();'/>
+			  <msibutton id='viewKeysButton' label='&viewKeysButton.label;' accesskey='&viewKeysButton.accesskey;' oncommand='doViewKeys();'/>
+			  <msibutton id='selectBibTeXDirectory' label='&selectDirectoryButton.label;' accesskey='&selectDirectoryButton.accesskey;' oncommand='doSelectBibTeXDirectory();'/>
 			</vbox>
 		</hbox>
 		<spacer flex='1'/>
 		<hbox>
-		  <description value='&keyCaption.label;' accesskey='&keyCaption.accessKey;'/>
+		  <description value='&keyCaption.label;' accesskey='&keyCaption.accesskey;'/>
 		  <textbox id='keyTextbox' size='30' oninput='checkDisableControls();'/>
 		</hbox>
 		<spacer flex='1'/>
 		<hbox>
-			<description value='&remarkCaption.label;' accesskey='&remarkCaption.accessKey;'/>
+			<description value='&remarkCaption.label;' accesskey='&remarkCaption.accesskey;'/>
 			<!-- textbox id='remarkTextbox' multiline='true' rows='4' cols='30'/ -->
       <editor editortype="html" type="content-primary" context="msiEditorContentContext" id="remarkEditControl" flex="1" height="350" width="450"/>
 		</hbox>
-		<checkbox id='bibEntryOnlyCheckbox' label='&bibEntryOnlyCheckbox.label;' accesskey='&bibEntryOnlyCheckbox.accessKey;'/>
+		<checkbox id='bibEntryOnlyCheckbox' label='&bibEntryOnlyCheckbox.label;' accesskey='&bibEntryOnlyCheckbox.accesskey;'/>
 		<spacer flex='1'/>
 	</vbox>
 

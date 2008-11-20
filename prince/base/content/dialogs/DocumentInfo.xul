@@ -108,43 +108,43 @@
             </description>
           </groupbox>
   	      <label value="&commentsBox.label;"/>
-				  <textbox id="commentsBox" multiline="true" cols="80" rows="6" accesskey="&commentsBox.accessKey;"/>
+				  <textbox id="commentsBox" multiline="true" cols="80" rows="6" accesskey="&commentsBox.accesskey;"/>
   	      <label value="&descriptionBox.label;"/>
-				  <textbox id="descriptionBox" multiline="true" cols="80" rows="6" accesskey="&descriptionBox.accessKey;"/>
+				  <textbox id="descriptionBox" multiline="true" cols="80" rows="6" accesskey="&descriptionBox.accesskey;"/>
        </vbox>
       </tabpanel>      
 
       <tabpanel id="printOptionsPage">
         <vbox>
           <hbox>
-		        <checkbox id="defaultPrintOptionsCheckbox" label="&defaultPrintOptions.label;" accesskey="&defaultPrintOptions.accessKey;" oncommand="checkEnablePrintControls();"/> 
+		        <checkbox id="defaultPrintOptionsCheckbox" label="&defaultPrintOptions.label;" accesskey="&defaultPrintOptions.accesskey;" oncommand="checkEnablePrintControls();"/> 
             <spacer flex="2"/>
-					  <msibutton id="makePrintOptionsDefault" label="&makePrintOptionsDefault.label;" accesskey="&makePrintOptionsDefault.accessKey;" oncommand="makePrintOptionsDefault();"/>
+					  <msibutton id="makePrintOptionsDefault" label="&makePrintOptionsDefault.label;" accesskey="&makePrintOptionsDefault.accesskey;" oncommand="makePrintOptionsDefault();"/>
           </hbox>
           <groupbox>
             <caption>
-              <checkbox id="printUseCurrViewSettings" label="&printUseCurrViewSettings.label;" accesskey="&printUseCurrViewSettings.accessKey;" oncommand="checkEnablePrintControls();"/>
+              <checkbox id="printUseCurrViewSettings" label="&printUseCurrViewSettings.label;" accesskey="&printUseCurrViewSettings.accesskey;" oncommand="checkEnablePrintControls();"/>
             </caption>
-            <checkbox id="printInvisibles" label="&printInvisibles.label;" accesskey="&printInvisibles.accessKey;"/>
-            <checkbox id="printHelperLines" label="&printHelperLines.label;" accesskey="&printHelperLines.accessKey;"/>
-            <checkbox id="printInputBoxes" label="&printInputBoxes.label;" accesskey="&printInputBoxes.accessKey;"/>
-            <checkbox id="printMarkers" label="&printMarkers.label;" accesskey="&printMarkers.accessKey;"/>
-            <checkbox id="printIndexEntries" label="&printIndexEntries.label;" accesskey="&printIndexEntries.accessKey;"/>
+            <checkbox id="printInvisibles" label="&printInvisibles.label;" accesskey="&printInvisibles.accesskey;"/>
+            <checkbox id="printHelperLines" label="&printHelperLines.label;" accesskey="&printHelperLines.accesskey;"/>
+            <checkbox id="printInputBoxes" label="&printInputBoxes.label;" accesskey="&printInputBoxes.accesskey;"/>
+            <checkbox id="printMarkers" label="&printMarkers.label;" accesskey="&printMarkers.accesskey;"/>
+            <checkbox id="printIndexEntries" label="&printIndexEntries.label;" accesskey="&printIndexEntries.accesskey;"/>
           </groupbox>
           <groupbox>
             <caption label="&printSpecificOptions.label;"/>
-            <checkbox id="printAllTextInBlack" label="&printAllTextInBlack.label;" accesskey="&printAllTextInBlack.accessKey;"/>
-            <checkbox id="printAllLinesInBlack" label="&printAllLinesInBlack.label;" accesskey="&printAllLinesInBlack.accessKey;"/>
-            <checkbox id="printBackgroundsTransparent" label="&printBackgroundsTransparent.label;" accesskey="&printBackgroundsTransparent.accessKey;"/>
-            <checkbox id="printGrayButtonsTransparent" label="&printGrayButtonsTransparent.label;" accesskey="&printGrayButtonsTransparent.accessKey;"/>
-            <checkbox id="printSuppressGrayBoxes" label="&printSuppressGrayBoxes.label;" accesskey="&printSuppressGrayBoxes.accessKey;"/>
+            <checkbox id="printAllTextInBlack" label="&printAllTextInBlack.label;" accesskey="&printAllTextInBlack.accesskey;"/>
+            <checkbox id="printAllLinesInBlack" label="&printAllLinesInBlack.label;" accesskey="&printAllLinesInBlack.accesskey;"/>
+            <checkbox id="printBackgroundsTransparent" label="&printBackgroundsTransparent.label;" accesskey="&printBackgroundsTransparent.accesskey;"/>
+            <checkbox id="printGrayButtonsTransparent" label="&printGrayButtonsTransparent.label;" accesskey="&printGrayButtonsTransparent.accesskey;"/>
+            <checkbox id="printSuppressGrayBoxes" label="&printSuppressGrayBoxes.label;" accesskey="&printSuppressGrayBoxes.accesskey;"/>
           </groupbox>
           <groupbox>
             <caption>
-              <checkbox id="printUseCurrViewZoom" label="&printUseCurrViewZoom.label;" accesskey="&printUseCurrViewZoom.accessKey;" oncommand="checkEnablePrintControls();"/>
+              <checkbox id="printUseCurrViewZoom" label="&printUseCurrViewZoom.label;" accesskey="&printUseCurrViewZoom.accesskey;" oncommand="checkEnablePrintControls();"/>
             </caption>
             <label value="&zoomPercentage.label;"/>
-            <textbox id="printZoomPercentageBox" size="30" accesskey="&zoomPercentage.accessKey;"/>
+            <textbox id="printZoomPercentageBox" size="30" accesskey="&zoomPercentage.accesskey;"/>
           </groupbox>
         </vbox>
       </tabpanel>
@@ -152,18 +152,18 @@
       <tabpanel id="metadataPage">
         <vbox>
           <label value="&metadataRelation.label;"/>
-					<listbox id="metadataRelationsListbox" accesskey="&metadataRelation.accessKey;" onselect="changeMetadataRelation(this.selectedItem);"/>
+					<listbox id="metadataRelationsListbox" accesskey="&metadataRelation.accesskey;" onselect="changeMetadataRelation(this.selectedItem);"/>
           <spacer flex="2"/>
           <radiogroup id="metadataTypeRadioGroup" orient="horizontal" oncommand="setMetadataType(event.target);">
-            <radio label="&metadataTypeDataRadio.label;" group="metadataTypeRadioGroup" value="meta" id="metadataTypeDataRadio" accesskey="&metadataTypeDataRadio.accessKey;"/>
-            <radio label="&metadataTypeLinkRadio.label;" group="metadataTypeRadioGroup" value="link" id="metadataTypeLinkRadio" accesskey="&metadataTypeLinkRadio.accessKey;"/>
+            <radio label="&metadataTypeDataRadio.label;" group="metadataTypeRadioGroup" value="meta" id="metadataTypeDataRadio" accesskey="&metadataTypeDataRadio.accesskey;"/>
+            <radio label="&metadataTypeLinkRadio.label;" group="metadataTypeRadioGroup" value="link" id="metadataTypeLinkRadio" accesskey="&metadataTypeLinkRadio.accesskey;"/>
           </radiogroup>
           <label value="&metadataValue.label;"/>
-          <textbox id="metadataValueBox" accesskey="&metadataValueBox.accessKey;" oninput="checkEnableMetadataControls();" size="80"/>
+          <textbox id="metadataValueBox" accesskey="&metadataValueBox.accesskey;" oninput="checkEnableMetadataControls();" size="80"/>
           <hbox>
-					  <msibutton id="setMetadataSelectionButton" label="&setMetadataSelectionButton.label;" accesskey="&setMetadataSelectionButton.accessKey;" oncommand="setMetadataSelection();"/>
-					  <msibutton id="unsetMetadataSelectionButton" label="&unsetMetadataSelectionButton.label;" accesskey="&unsetMetadataSelectionButton.accessKey;" oncommand="unsetMetadataSelection();"/>
-            <msibutton id="linksFileBrowseButton" label="&linksFileBrowseButton.label;" accesskey="&linksFileBrowseButton.accessKey;" oncommand="doBrowseFileLinks();"/>
+					  <msibutton id="setMetadataSelectionButton" label="&setMetadataSelectionButton.label;" accesskey="&setMetadataSelectionButton.accesskey;" oncommand="setMetadataSelection();"/>
+					  <msibutton id="unsetMetadataSelectionButton" label="&unsetMetadataSelectionButton.label;" accesskey="&unsetMetadataSelectionButton.accesskey;" oncommand="unsetMetadataSelection();"/>
+            <msibutton id="linksFileBrowseButton" label="&linksFileBrowseButton.label;" accesskey="&linksFileBrowseButton.accesskey;" oncommand="doBrowseFileLinks();"/>
           </hbox>
         </vbox>
       </tabpanel>
@@ -172,19 +172,19 @@
         <vbox>
           <groupbox>
             <caption label="&saveOptionsGraphics.label;"/>
-            <checkbox id="relativeGraphicsPathsCheckbox" label="&relativeGraphicsPathsCheckbox.label;" accesskey="&relativeGraphicsPathsCheckbox.accessKey;"/>
+            <checkbox id="relativeGraphicsPathsCheckbox" label="&relativeGraphicsPathsCheckbox.label;" accesskey="&relativeGraphicsPathsCheckbox.accesskey;"/>
           </groupbox>
           <spacer flex="1"/>
           <groupbox>
             <caption label="&saveOptionsViewSettings.label;"/>
-            <checkbox id="storeViewSettingsCheckbox" label="&storeViewSettingsCheckbox.label;" accesskey="&storeViewSettingsCheckbox.accessKey;"/>
-            <checkbox id="storeViewPercentCheckbox" label="&storeViewPercentCheckbox.label;" accesskey="&storeViewPercentCheckbox.accessKey;"/>
+            <checkbox id="storeViewSettingsCheckbox" label="&storeViewSettingsCheckbox.label;" accesskey="&storeViewSettingsCheckbox.accesskey;"/>
+            <checkbox id="storeViewPercentCheckbox" label="&storeViewPercentCheckbox.label;" accesskey="&storeViewPercentCheckbox.accesskey;"/>
           </groupbox>
           <spacer flex="1"/>
           <groupbox>
             <caption label="&saveOptionsNoteSettings.label;"/>
-            <checkbox id="storeNoteViewSettingsCheckbox" label="&storeNoteViewSettingsCheckbox.label;" accesskey="&storeNoteViewSettingsCheckbox.accessKey;"/>
-            <checkbox id="storeNoteViewPercentCheckbox" label="&storeNoteViewPercentCheckbox.label;" accesskey="&storeNoteViewPercentCheckbox.accessKey;"/>
+            <checkbox id="storeNoteViewSettingsCheckbox" label="&storeNoteViewSettingsCheckbox.label;" accesskey="&storeNoteViewSettingsCheckbox.accesskey;"/>
+            <checkbox id="storeNoteViewPercentCheckbox" label="&storeNoteViewPercentCheckbox.label;" accesskey="&storeNoteViewPercentCheckbox.accesskey;"/>
           </groupbox>
           <spacer flex="1"/>
         </vbox>

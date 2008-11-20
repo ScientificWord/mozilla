@@ -359,13 +359,13 @@ function enableControls()
   if (gDialog.bIsNew)
   {
     actionControl.label = addLabel.value;
-    actionControl.accessKey = addLabel.accessKey;
+    actionControl.accesskey = addLabel.accesskey;
   }
   else
   {
     bActionEnabled = gDialog.bDataNonEmpty && gDialog.bNameOK && bCurrentItemModified;
     actionControl.label = modifyLabel.value;
-    actionControl.accessKey = modifyLabel.accessKey;
+    actionControl.accesskey = modifyLabel.accesskey;
   }
   enableControlsByID(["addOrModifyButton"], bActionEnabled);
   enableControlsByID(["deleteButton"], (gDialog.bNameOK && !gDialog.bIsNew));

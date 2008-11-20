@@ -8,21 +8,21 @@
 <!ENTITY limitPositionRadioGroup.label "Limit Position">
 
 <!ENTITY limitPositionAutoRadio.label "Auto">
-<!ENTITY limitPositionAutoRadio.accessKey "A">
+<!ENTITY limitPositionAutoRadio.accesskey "A">
 <!ENTITY limitPositionAboveBelowRadio.label "Above/Below">
-<!ENTITY limitPositionAboveBelowRadio.accessKey "v">
+<!ENTITY limitPositionAboveBelowRadio.accesskey "v">
 <!ENTITY limitPositionAtRightRadio.label "At Right">
-<!ENTITY limitPositionAtRightRadio.accessKey "R">
+<!ENTITY limitPositionAtRightRadio.accesskey "R">
 
 <!ENTITY sizeRadioGroup.label "Size">
 <!ENTITY sizeAutoRadio.label "Auto">
-<!ENTITY sizeAutoRadio.accessKey "u">
+<!ENTITY sizeAutoRadio.accesskey "u">
 <!ENTITY sizeBigRadio.label "Big">
-<!ENTITY sizeBigRadio.accessKey "B">
+<!ENTITY sizeBigRadio.accesskey "B">
 <!ENTITY sizeSmallRadio.label "Small (In-Line)">
-<!ENTITY sizeSmallRadio.accessKey "S">
+<!ENTITY sizeSmallRadio.accesskey "S">
 
 <!ENTITY operatorsButtonGroup.label "Operators">
-<!ENTITY operatorsButtonGroup.accessKey "O">
+<!ENTITY operatorsButtonGroup.accesskey "O">
 
 <!-- <!ENTITY .tooltip "">  -->

@@ -4,7 +4,7 @@ var specialAcceleratorList=null;
 
 function inaccessibleAcceleratorFilter(anElement)
 {
-  if (!anElement.accessKey)
+  if (!anElement.accesskey)
     return NodeFilter.FILTER_SKIP;
   switch(anElement.nodeName)
   {
@@ -46,10 +46,10 @@ function checkInaccessibleAcceleratorKeys(rootElement)
       break;
     started = true;
     var test = iterator.currentNode;
-    if (test && test.accessKey)
+    if (test && test.accesskey)
     {
       foundSome = true;
-      addToSpecialAccList( test.accessKey.toLowerCase() );
+      addToSpecialAccList( test.accesskey.toLowerCase() );
     }
     if (started && test == rootElement)
       break;
@@ -63,8 +63,8 @@ function checkInaccessibleAcceleratorKeys(rootElement)
 
 function acceleratorKeyFilter(anElement)
 {
-//  alert('Checking node ' + anElement.nodeName + ' with access key [' + anElement.accessKey + '].');
-  if ((anElement.accessKey!=null) && (anElement.accessKey.length>0) && !anElement.disabled && !anElement.collapsed && !anElement.hidden)
+//  alert('Checking node ' + anElement.nodeName + ' with access key [' + anElement.accesskey + '].');
+  if ((anElement.accesskey!=null) && (anElement.accesskey.length>0) && !anElement.disabled && !anElement.collapsed && !anElement.hidden)
     return NodeFilter.FILTER_ACCEPT;
   return NodeFilter.FILTER_SKIP;
 }
@@ -202,7 +202,7 @@ function specialAcceleratorKeysHandler(event)
     var test = iterator.currentNode;
     if (!test)
       isOkay = false;
-//    alert('Checking node ' + test.nodeName + ' with access key [' + test.accessKey + ']; searching for [' + charPressedLower + '].');
+//    alert('Checking node ' + test.nodeName + ' with access key [' + test.accesskey + ']; searching for [' + charPressedLower + '].');
     if (!isOkay)
     {
       if (!startedOver)
@@ -217,10 +217,10 @@ function specialAcceleratorKeysHandler(event)
     }
     if (startedOver && test==currElement)
       break;
-    if (!test.accessKey)
+    if (!test.accesskey)
       continue;
 
-    var testKey = test.accessKey.toLowerCase();
+    var testKey = test.accesskey.toLowerCase();
     if (test.nodeName == 'label')
     {
       test = this.ownerDocument.getElementById(test.control);

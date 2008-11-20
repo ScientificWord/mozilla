@@ -20,71 +20,71 @@
 <!ENTITY explanationNote.label "Note:">
 <!ENTITY explanationText.label "Text that you can use to give a complete explanation of your document's purpose. The Comment field places comments at the beginning of the LaTeX document. The Description field is for use in this dialog.">
 <!ENTITY commentsBox.label "Comments:">
-<!ENTITY commentsBox.accessKey "C">
+<!ENTITY commentsBox.accesskey "C">
 <!ENTITY descriptionBox.label "Description:">
-<!ENTITY descriptionBox.accessKey "D">
+<!ENTITY descriptionBox.accesskey "D">
 
 <!ENTITY defaultPrintOptions.label "Use default print options">
-<!ENTITY defaultPrintOptions.accessKey "d">
+<!ENTITY defaultPrintOptions.accesskey "d">
 <!ENTITY makePrintOptionsDefault.label "Make default">
-<!ENTITY makePrintOptionsDefault.accessKey "d">
+<!ENTITY makePrintOptionsDefault.accesskey "d">
 <!ENTITY printUseCurrViewSettings.label "Use current view settings">
-<!ENTITY printUseCurrViewSettings.accessKey "U">
+<!ENTITY printUseCurrViewSettings.accesskey "U">
 <!ENTITY printInvisibles.label "Invisibles">
-<!ENTITY printInvisibles.accessKey "I">
+<!ENTITY printInvisibles.accesskey "I">
 <!ENTITY printHelperLines.label "Helper lines">
-<!ENTITY printHelperLines.accessKey "H">
+<!ENTITY printHelperLines.accesskey "H">
 <!ENTITY printInputBoxes.label "Input boxes">
-<!ENTITY printInputBoxes.accessKey "b">
+<!ENTITY printInputBoxes.accesskey "b">
 <!ENTITY printMarkers.label "Markers">
-<!ENTITY printMarkers.accessKey "k">
+<!ENTITY printMarkers.accesskey "k">
 <!ENTITY printIndexEntries.label "Index entries">
-<!ENTITY printIndexEntries.accessKey "x">
+<!ENTITY printIndexEntries.accesskey "x">
 <!ENTITY printSpecificOptions.label "Print">
 <!ENTITY printAllTextInBlack.label "All text in black">
-<!ENTITY printAllTextInBlack.accessKey "A">
+<!ENTITY printAllTextInBlack.accesskey "A">
 <!ENTITY printAllLinesInBlack.label "All lines in black">
-<!ENTITY printAllLinesInBlack.accessKey "l">
+<!ENTITY printAllLinesInBlack.accesskey "l">
 <!ENTITY printBackgroundsTransparent.label "Backgrounds as transparent">
-<!ENTITY printBackgroundsTransparent.accessKey "g">
+<!ENTITY printBackgroundsTransparent.accesskey "g">
 <!ENTITY printGrayButtonsTransparent.label "Gray boxes as transparent">
-<!ENTITY printGrayButtonsTransparent.accessKey "G">
+<!ENTITY printGrayButtonsTransparent.accesskey "G">
 <!ENTITY printSuppressGrayBoxes.label "Suppress gray boxes (except markers)">
-<!ENTITY printSuppressGrayBoxes.accessKey "S">
+<!ENTITY printSuppressGrayBoxes.accesskey "S">
 <!ENTITY printUseCurrViewZoom.label "Use current view zoom settings">
-<!ENTITY printUseCurrViewZoom.accessKey "z">
+<!ENTITY printUseCurrViewZoom.accesskey "z">
 <!ENTITY zoomPercentage.label "Zoom percentage">
-<!ENTITY zoomPercentage.accessKey "p">
+<!ENTITY zoomPercentage.accesskey "p">
 
 <!ENTITY metadataRelation.label "Relation:">
-<!ENTITY metadataRelation.accessKey "R">
+<!ENTITY metadataRelation.accesskey "R">
 <!ENTITY metadataValue.label "Metadata value or link target:">
-<!ENTITY metadataValueBox.accessKey "v">
+<!ENTITY metadataValueBox.accesskey "v">
 <!ENTITY linksFileSelection.label "Link target:">
-<!ENTITY linksFileSelectionBox.accessKey "t">
+<!ENTITY linksFileSelectionBox.accesskey "t">
 <!ENTITY metadataTypeDataRadio.label "Metadata">
-<!ENTITY metadataTypeDataRadio.accessKey "M">
+<!ENTITY metadataTypeDataRadio.accesskey "M">
 <!ENTITY metadataTypeLinkRadio.label "Link">
-<!ENTITY metadataTypeLinkRadio.accessKey "L">
+<!ENTITY metadataTypeLinkRadio.accesskey "L">
 <!ENTITY setMetadataSelectionButton.label "Set">
-<!ENTITY setMetadataSelectionButton.accessKey "S">
+<!ENTITY setMetadataSelectionButton.accesskey "S">
 <!ENTITY unsetMetadataSelectionButton.label "Unset">
-<!ENTITY unsetMetadataSelectionButton.accessKey "U">
+<!ENTITY unsetMetadataSelectionButton.accesskey "U">
 <!ENTITY linksFileBrowseButton.label "Browse...">
-<!ENTITY linksFileBrowseButton.accessKey "B">
+<!ENTITY linksFileBrowseButton.accesskey "B">
 
 <!ENTITY saveOptionsGraphics.label "Graphics">
 <!ENTITY relativeGraphicsPathsCheckbox.label "Store relative graphics paths">
-<!ENTITY relativeGraphicsPathsCheckbox.accessKey "G">
+<!ENTITY relativeGraphicsPathsCheckbox.accesskey "G">
 <!ENTITY saveOptionsViewSettings.label "View">
 <!ENTITY storeViewSettingsCheckbox.label "Store view settings in file">
-<!ENTITY storeViewSettingsCheckbox.accessKey "S">
+<!ENTITY storeViewSettingsCheckbox.accesskey "S">
 <!ENTITY storeViewPercentCheckbox.label "Store view percent in file">
-<!ENTITY storeViewPercentCheckbox.accessKey "p">
+<!ENTITY storeViewPercentCheckbox.accesskey "p">
 <!ENTITY saveOptionsNoteSettings.label "Notes">
 <!ENTITY storeNoteViewSettingsCheckbox.label "Store notes view settings in file">
-<!ENTITY storeNoteViewSettingsCheckbox.accessKey "v">
+<!ENTITY storeNoteViewSettingsCheckbox.accesskey "v">
 <!ENTITY storeNoteViewPercentCheckbox.label "Store notes view percent in file">
-<!ENTITY storeNoteViewPercentCheckbox.accessKey "n">
+<!ENTITY storeNoteViewPercentCheckbox.accesskey "n">
 
 <!-- <!ENTITY .tooltip "">  -->

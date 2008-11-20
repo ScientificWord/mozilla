@@ -10,21 +10,21 @@
 <!ENTITY matrixlinesColor.label "Matrix Lines">
 
 <!ENTITY defaultColorsRadio.label "Reader's default color (Don't override colors in page)">
-<!ENTITY defaultColorsRadio.accessKey "D">
+<!ENTITY defaultColorsRadio.accesskey "D">
 <!ENTITY defaultColorsRadio.tooltip "Use the color settings from the page when editing">
 <!ENTITY customColorsRadio.label "Override color:">
-<!ENTITY customColorsRadio.accessKey "C">
+<!ENTITY customColorsRadio.accesskey "C">
 <!ENTITY customColorsRadio.tooltip "These color settings override those in the page and browser">
 
 <!ENTITY mathText.label "Math">
-<!ENTITY mathText.accessKey "M">
+<!ENTITY mathText.accesskey "M">
 <!ENTITY mathnameText.label "Mathname">
-<!ENTITY mathnameText.accessKey "n">
+<!ENTITY mathnameText.accesskey "n">
 <!ENTITY unitText.label "Unit">
-<!ENTITY unitText.accessKey "U">
+<!ENTITY unitText.accesskey "U">
 <!ENTITY mtextText.label "Text in Math">
-<!ENTITY mtextText.accessKey "T">
+<!ENTITY mtextText.accesskey "T">
 <!ENTITY matrixLines.label "Matrix Helper Lines">
-<!ENTITY matrixLines.accessKey "x">
+<!ENTITY matrixLines.accesskey "x">
 
 <!ENTITY colon.character ":">
