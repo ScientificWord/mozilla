@@ -107,17 +107,17 @@
       <groupbox id="nameTypeGroup">
         <caption label="&nameType.label;" id="nameTypeLabel"/>
         <radiogroup id="nameTypeRadioGroup" orient="vertical" oncommand="updateControls();">
-          <radio id="typeOperator" label="&typeOperator.label;" value="operator" accesskey="&typeOperator.accessKey;"/>
-          <radio id="typeFunction" label="&typeFunction.label;" value="function" accesskey="&typeFunction.accessKey;"/>
-          <radio id="typeFunction" label="&typeVariable.label;" value="variable" accesskey="&typeVariable.accessKey;"/>
+          <radio id="typeOperator" label="&typeOperator.label;" value="operator" accesskey="&typeOperator.accesskey;"/>
+          <radio id="typeFunction" label="&typeFunction.label;" value="function" accesskey="&typeFunction.accesskey;"/>
+          <radio id="typeFunction" label="&typeVariable.label;" value="variable" accesskey="&typeVariable.accesskey;"/>
         </radiogroup>
       </groupbox>
       <groupbox id="limitPlacementGroup">
         <caption label="&operatorLimitPlacement.label;" id="limitPlacementGroupCaption" />
         <radiogroup id="operatorLimitPlacementRadioGroup" orient="vertical">
-          <radio id="limitPlacementAuto" label="&limitPlacementAuto.label;" accesskey="&limitPlacementAuto.accessKey;" value="auto"/>
-          <radio id="limitPlacementAboveBelow" label="&limitPlacementAboveBelow.label;" accesskey="&limitPlacementAboveBelow.accessKey;" value="aboveBelow"/>
-          <radio id="limitPlacementAtRight" label="&limitPlacementAtRight.label;" accesskey="&limitPlacementAtRight.accessKey;" value="atRight"/>
+          <radio id="limitPlacementAuto" label="&limitPlacementAuto.label;" accesskey="&limitPlacementAuto.accesskey;" value="auto"/>
+          <radio id="limitPlacementAboveBelow" label="&limitPlacementAboveBelow.label;" accesskey="&limitPlacementAboveBelow.accesskey;" value="aboveBelow"/>
+          <radio id="limitPlacementAtRight" label="&limitPlacementAtRight.label;" accesskey="&limitPlacementAtRight.accesskey;" value="atRight"/>
         </radiogroup>
       </groupbox>
       <separator class="thin"/>
@@ -126,17 +126,17 @@
         <hbox>
           <description id="enginefunctionDescription" control="enginefunction">&engfunc.desc;</description>
           <spacer flex="1"/>
-          <checkbox id="enginefunction" accesskey="&engfunc.accessKey;"/>
+          <checkbox id="enginefunction" accesskey="&engfunc.accesskey;"/>
         </hbox>
         <hbox>
           <description id="addAutoSubstitutionDescription" control="addAutoSubstitution">&addAutoSubstitution.label;</description>
-          <checkbox id="addAutoSubstitution" accesskey="&addAutoSubstitution.accessKey;"/>
+          <checkbox id="addAutoSubstitution" accesskey="&addAutoSubstitution.accesskey;"/>
         </hbox>
       <!-- /groupbox -->
     </vbox>
     <vbox>
-      <msibutton id="addButton" label="&addButton.label;" accesskey="&addButton.accessKey;" oncommand="addCurrentName();" />
-      <msibutton id="deleteButton" label="&deleteButton.label;" accesskey="&deleteButton.accessKey;" oncommand="deleteCurrentName();" />
+      <msibutton id="addButton" label="&addButton.label;" accesskey="&addButton.accesskey;" oncommand="addCurrentName();" />
+      <msibutton id="deleteButton" label="&deleteButton.label;" accesskey="&deleteButton.accesskey;" oncommand="deleteCurrentName();" />
     </vbox>
   </hbox>  
 </dialog>

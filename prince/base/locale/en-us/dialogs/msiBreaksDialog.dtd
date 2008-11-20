@@ -5,33 +5,33 @@
 <!ENTITY breakTypesGroupbox.label "Break types">
 
 <!ENTITY allowBreak.label "Allowbreak">
-<!ENTITY allowBreak.accessKey "A">
+<!ENTITY allowBreak.accesskey "A">
 <!ENTITY discretionaryHyphen.label "Discretionary hyphen">
-<!ENTITY discretionaryHyphen.accessKey "h">
+<!ENTITY discretionaryHyphen.accesskey "h">
 <!ENTITY noBreak.label "No break">
-<!ENTITY noBreak.accessKey "b">
+<!ENTITY noBreak.accesskey "b">
 <!ENTITY pageBreak.label "Pagebreak">
-<!ENTITY pageBreak.accessKey "g">
+<!ENTITY pageBreak.accesskey "g">
 <!ENTITY newPage.label "Newpage">
-<!ENTITY newPage.accessKey "p">
+<!ENTITY newPage.accesskey "p">
 <!ENTITY lineBreak.label "Linebreak">
-<!ENTITY lineBreak.accessKey "k">
+<!ENTITY lineBreak.accesskey "k">
 <!ENTITY newLine.label "Newline">
-<!ENTITY newLine.accessKey "N">
+<!ENTITY newLine.accesskey "N">
 <!ENTITY customNewLine.label "Custom newline">
-<!ENTITY customNewLine.accessKey "C">
+<!ENTITY customNewLine.accesskey "C">
 
 
 <!ENTITY additionalVertSpaceControls.label "Additional vertical space">
 <!ENTITY depthSize.label "Depth">
-<!ENTITY depthSize.accessKey "D">
+<!ENTITY depthSize.accesskey "D">
 <!ENTITY sizeUnits.label "Units">
-<!ENTITY sizeUnits.accessKey "U">
+<!ENTITY sizeUnits.accesskey "U">
 
 <!ENTITY typesetGroup.label "Typeset">
 <!ENTITY typesetDiscardAtLineEnd.label "Discard at line end">
-<!ENTITY typesetDiscardAtLineEnd.accessKey "e">
+<!ENTITY typesetDiscardAtLineEnd.accesskey "e">
 <!ENTITY typesetAlways.label "Always">
-<!ENTITY typesetAlways.accessKey "A">
+<!ENTITY typesetAlways.accesskey "A">
 
 <!-- <!ENTITY .tooltip "">  -->

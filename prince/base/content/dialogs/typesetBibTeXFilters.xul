@@ -39,11 +39,11 @@
 	<vbox>
 		<hbox>
 		  <vbox>
-		    <description id="entryTypesDescription" value='&entryTypesDescription.label;' accesskey='&entryTypesDescription.accessKey;'/>
+		    <description id="entryTypesDescription" value='&entryTypesDescription.label;' accesskey='&entryTypesDescription.accesskey;'/>
 		    <listbox id='entryTypesListbox' rows='8' seltype='multiple' onselect='selectEntryType(event);'/>
 			</vbox>
 			<vbox>
-		    <description id="filtersFieldsDescription" value='&filtersFieldsDescription.label;' accesskey='&filtersFieldsDescription.accessKey;'/>
+		    <description id="filtersFieldsDescription" value='&filtersFieldsDescription.label;' accesskey='&filtersFieldsDescription.accesskey;'/>
 		    <listbox id='filtersFieldsListbox' rows='8'>
 				  <listhead>
 						<listheader label='&fieldNameHeader.label;' flex='1'/>

@@ -3,6 +3,6 @@
 <!ENTITY windowTitle.label "BibTeX Database Entry">
 
 <!ENTITY dataField.label "Data">
-<!ENTITY dataField.accessKey "D">
+<!ENTITY dataField.accesskey "D">
 
 <!-- <!ENTITY .tooltip "">  -->

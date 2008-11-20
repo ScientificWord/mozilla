@@ -2,18 +2,18 @@
 
 <!ENTITY windowTitle.label	"Add rule">
 <!ENTITY rule.label	"Rule dimensions">
-<!ENTITY rule.accessKey	"R">
+<!ENTITY rule.accesskey	"R">
 <!ENTITY ruleHeight.label	"Rule height">
-<!ENTITY ruleHeight.accessKey	"H">
+<!ENTITY ruleHeight.accesskey	"H">
 <!ENTITY ruleWidth.label	"Rule width">
 <!ENTITY wide.label	"Margin to margin">
-<!ENTITY wide.accessKey	"M">
+<!ENTITY wide.accesskey	"M">
 <!ENTITY narrow.label	"Width of title">
-<!ENTITY narrow.accessKey	"W">
+<!ENTITY narrow.accesskey	"W">
 <!ENTITY other.label	"Other: ">
-<!ENTITY other.accessKey	"O">
+<!ENTITY other.accesskey	"O">
 <!ENTITY ruleColor.label	"Rule color">
 <!ENTITY spaceHeight.label	"Vertical space height">
-<!ENTITY spaceHeight.accessKey	"H">
-<!ENTITY ruleColor.accessKey	"C">
+<!ENTITY spaceHeight.accesskey	"H">
+<!ENTITY ruleColor.accesskey	"C">
 <!ENTITY vspaceWindowTitle.label	"Add vertical space">

@@ -46,7 +46,7 @@
     <spacer flex="1"/>
     <groupbox orient="horizontal" id="decorationsAboveButtonGroup" oncommand="toggleSelection(this, event.target);" onfocus="radioGroupSetFocus(this,event.target);">
       <observes element="enableDecorationsAboveBelow" attribute="disabled" onbroadcast="buttonGroupEnable(this.parentNode, this.parentNode.getAttribute('disabled') != 'true');"/>
-      <caption label="&decorationsAboveButtonGroup.label;" accesskey="&decorationsAboveButtonGroup.accessKey;"/>
+      <caption label="&decorationsAboveButtonGroup.label;" accesskey="&decorationsAboveButtonGroup.accesskey;"/>
       <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="&#x00AF;">
         <description>
           <mml:math display="inline">
@@ -188,7 +188,7 @@
     <spacer flex="1"/>
     <groupbox orient="horizontal" id="decorationsBelowButtonGroup" oncommand="toggleSelection(this, event.target);" onfocus="radioGroupSetFocus(this,event.target);">
       <observes element="enableDecorationsAboveBelow" attribute="disabled" onbroadcast="buttonGroupEnable(this.parentNode, this.parentNode.getAttribute('disabled') != 'true');"/>
-      <caption label="&decorationsBelowButtonGroup.label;" accesskey="&decorationsBelowButtonGroup.accessKey;"/>
+      <caption label="&decorationsBelowButtonGroup.label;" accesskey="&decorationsBelowButtonGroup.accesskey;"/>
       <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="&#x0332;">
         <description>
           <mml:math display="inline">
@@ -298,7 +298,7 @@
     <spacer flex="1"/>
     <groupbox orient="horizontal" id="decorationsAroundButtonGroup" oncommand="toggleSelection(this, event.target);" onfocus="radioGroupSetFocus(this,event.target);">
       <observes element="enableDecorationsAround" attribute="disabled" onbroadcast="buttonGroupEnable(this.parentNode, this.parentNode.getAttribute('disabled') != 'true');"/>
-      <caption label="&decorationsAroundButtonGroup.label;" accesskey="&decorationsAroundButtonGroup.accessKey;"/>
+      <caption label="&decorationsAroundButtonGroup.label;" accesskey="&decorationsAroundButtonGroup.accesskey;"/>
       <msibutton group="decorationsAroundButtonGroup" autoCheck="false" value="fbox">
         <description class="fbox">
           <mml:math display="inline">

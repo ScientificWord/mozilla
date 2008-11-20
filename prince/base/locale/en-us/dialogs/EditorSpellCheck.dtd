@@ -40,32 +40,32 @@
 
 <!ENTITY misspelledWord.label "Misspelled word:">
 <!ENTITY wordEditField.label "Replace with:">
-<!ENTITY wordEditField.accessKey "w">
+<!ENTITY wordEditField.accesskey "w">
 <!ENTITY checkwordButton.label "Check Word">
-<!ENTITY checkwordButton.accessKey "k">
+<!ENTITY checkwordButton.accesskey "k">
 <!ENTITY suggestions.label "Suggestions:">
-<!ENTITY suggestions.accessKey "u">
+<!ENTITY suggestions.accesskey "u">
 <!ENTITY ignoreButton.label "Ignore">
-<!ENTITY ignoreButton.accessKey "I">
+<!ENTITY ignoreButton.accesskey "I">
 <!ENTITY ignoreAllButton.label "Ignore All">
-<!ENTITY ignoreAllButton.accessKey "n">
+<!ENTITY ignoreAllButton.accesskey "n">
 <!ENTITY replaceButton.label "Replace">
-<!ENTITY replaceButton.accessKey "R">
+<!ENTITY replaceButton.accesskey "R">
 <!ENTITY replaceAllButton.label "Replace All">
-<!ENTITY replaceAllButton.accessKey "A">
+<!ENTITY replaceAllButton.accesskey "A">
 <!ENTITY stopButton.label "Stop">
-<!ENTITY stopButton.accessKey "t">
+<!ENTITY stopButton.accesskey "t">
 <!ENTITY userDictionary.label "Personal Dictionary:">
 <!ENTITY moreDictionaries.label "Download more dictionaries...">
 <!ENTITY addToUserDictionaryButton.label "Add Word">
-<!ENTITY addToUserDictionaryButton.accessKey "d">
+<!ENTITY addToUserDictionaryButton.accesskey "d">
 <!ENTITY editUserDictionaryButton.label "Edit...">
-<!ENTITY editUserDictionaryButton.accessKey "E">
+<!ENTITY editUserDictionaryButton.accesskey "E">
 <!ENTITY recheckButton.label "Recheck Page">
-<!ENTITY recheckButton.accessKey "P">
+<!ENTITY recheckButton.accesskey "P">
 <!ENTITY closeButton.label "Close">
-<!ENTITY closeButton.accessKey "C">
+<!ENTITY closeButton.accesskey "C">
 <!ENTITY sendButton.label "Send">
-<!ENTITY sendButton.accessKey "S">
+<!ENTITY sendButton.accesskey "S">
 <!ENTITY languagePopup.label "Language:">
-<!ENTITY languagePopup.accessKey "L">
+<!ENTITY languagePopup.accesskey "L">

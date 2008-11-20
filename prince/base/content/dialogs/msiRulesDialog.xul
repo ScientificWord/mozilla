@@ -45,19 +45,19 @@
         </columns>
         <rows>
           <row>
-            <label control="liftSizeTextbox" value="&liftSize.label;"	accesskey="&liftSize.accessKey;"/>
+            <label control="liftSizeTextbox" value="&liftSize.label;"	accesskey="&liftSize.accesskey;"/>
             <textbox id="liftSizeTextbox" />
           </row>
           <row>
-            <label control="widthSizeTextbox" value="&widthSize.label;"	accesskey="&widthSize.accessKey;"/>
+            <label control="widthSizeTextbox" value="&widthSize.label;"	accesskey="&widthSize.accesskey;"/>
             <textbox id="widthSizeTextbox" />
           </row>
           <row>
-            <label control="heightSizeTextbox" value="&heightSize.label;"	accesskey="&heightSize.accessKey;"/>
+            <label control="heightSizeTextbox" value="&heightSize.label;"	accesskey="&heightSize.accesskey;"/>
             <textbox id="heightSizeTextbox" />
           </row>
           <row>
-            <label control="sizeUnitsbox" value="&sizeUnits.label;"	accesskey="&sizeUnits.accessKey;"/>
+            <label control="sizeUnitsbox" value="&sizeUnits.label;"	accesskey="&sizeUnits.accesskey;"/>
             <menulist id="sizeUnitsbox"  oncommand="changeUnits(this);"  >
                <menupopup>
                </menupopup>
@@ -69,7 +69,7 @@
     </groupbox>
   </vbox>
   <hbox>
-    <label control="colorButton" value="&colorButton.label;"	accesskey="&colorButton.accessKey;"/>
+    <label control="colorButton" value="&colorButton.label;"	accesskey="&colorButton.accesskey;"/>
     <button id="colorButton" class="color-button" oncommand="getColorAndUpdate();">
       <spacer id="colorWell" class="color-well"/>
     </button>

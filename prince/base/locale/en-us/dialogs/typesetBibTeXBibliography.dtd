@@ -3,8 +3,8 @@
 <!ENTITY windowTitle.label "BibTeX Bibliography">
 
 <!ENTITY databaseFileListbox.label "Database Files">
-<!ENTITY databaseFileListbox.accessKey "D">
+<!ENTITY databaseFileListbox.accesskey "D">
 <!ENTITY styleFileListbox.label "Style">
-<!ENTITY styleFileListbox.accessKey "S">
+<!ENTITY styleFileListbox.accesskey "S">
 
 <!-- <!ENTITY .tooltip "">  -->
