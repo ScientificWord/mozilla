@@ -47,7 +47,7 @@
     <!-- This will right-align the button -->
     <spacer flex="1"/>
     <button id="AdvancedEditButton1" oncommand="onAdvancedEdit()" label="&AdvancedEditButton.label;"
-            accesskey="&AdvancedEditButton.accessKey;" tooltiptext="&AdvancedEditButton.tooltip;"/>
+            accesskey="&AdvancedEditButton.accesskey;" tooltiptext="&AdvancedEditButton.tooltip;"/>
   </hbox>
   <separator class="groove"/>
 </vbox>
@@ -60,31 +60,31 @@
   id        = "AdvancedEditButton"
   oncommand = "onAdvancedEdit();"
   label     = "&AdvancedEditButton.label;"
-  accesskey = "&AdvancedEditButton.accessKey;"
+  accesskey = "&AdvancedEditButton.accesskey;"
   tooltiptext="&AdvancedEditButton.tooltip;"/>
 
 <button 
   id        = "AdvancedEditButton2" 
   oncommand = "onAdvancedEdit()" 
   label     = "&AdvancedEditButton.label;"
-  accesskey = "&AdvancedEditButton.accessKey;"
+  accesskey = "&AdvancedEditButton.accesskey;"
   tooltiptext="&AdvancedEditButton.tooltip;"/>
 
 <button 
   id        = "ChooseFile" 
   oncommand = "chooseFile()"
   label     = "&chooseButton.label;"
-  accesskey = "&chooseFile.accessKey;"/>
+  accesskey = "&chooseFile.accesskey;"/>
 
 <checkbox
   id        = "MakeRelativeCheckbox"
   label     = "&makeUrlRelative.label;"
-  accesskey = "&makeUrlRelative.accessKey;"
+  accesskey = "&makeUrlRelative.accesskey;"
   oncommand = "msiMakeInputValueRelativeOrAbsolute(this);"
   tooltiptext = "&makeUrlRelative.tooltip;"/>
 
 <vbox id="LinkLocationBox">
-  <label control="hrefInput" accesskey="&LinkURLEditField.accessKey;" width="1">&LinkURLEditField.label;</label>
+  <label control="hrefInput" accesskey="&LinkURLEditField.accesskey;" width="1">&LinkURLEditField.label;</label>
   <textbox id="hrefInput" type="autocomplete"
            searchSessions="history" timeout="50" maxrows="6"
            disablehistory="false" class="uri-element"
@@ -98,11 +98,11 @@
     <checkbox id="MakeRelativeLink"
               for="hrefInput"
               label="&makeUrlRelative.label;"
-              accesskey="&makeUrlRelative.accessKey;"
+              accesskey="&makeUrlRelative.accesskey;"
               oncommand="msiMakeInputValueRelativeOrAbsolute(this);"
               tooltiptext="&makeUrlRelative.tooltip;"/>
     <spacer flex="1"/>
-    <button label="&chooseButton.label;" accesskey="&chooseFileLink.accessKey;" oncommand="chooseLinkFile();"/>
+    <button label="&chooseButton.label;" accesskey="&chooseFileLink.accesskey;" oncommand="chooseLinkFile();"/>
   </hbox>
 </vbox>  
 

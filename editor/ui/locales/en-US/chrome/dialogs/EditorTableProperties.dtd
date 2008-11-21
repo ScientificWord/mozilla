@@ -42,26 +42,26 @@
 <!ENTITY tableTab.label                   "Table">
 <!ENTITY cellTab.label                    "Cells">
 <!ENTITY tableRows.label                  "Rows:">
-<!ENTITY tableRows.accessKey              "R">
+<!ENTITY tableRows.accesskey              "R">
 <!ENTITY tableColumns.label               "Columns:">
-<!ENTITY tableColumns.accessKey           "C">
+<!ENTITY tableColumns.accesskey           "C">
 <!ENTITY tableHeight.label                "Height:">
-<!ENTITY tableHeight.accessKey            "G">
+<!ENTITY tableHeight.accesskey            "G">
 <!ENTITY tableWidth.label                 "Width:">
-<!ENTITY tableWidth.accessKey             "W">
+<!ENTITY tableWidth.accesskey             "W">
 <!ENTITY tableBorderSpacing.label         "Borders and Spacing">
 <!ENTITY tableBorderWidth.label           "Border:">
-<!ENTITY tableBorderWidth.accessKey       "B">
+<!ENTITY tableBorderWidth.accesskey       "B">
 <!ENTITY tableSpacing.label               "Spacing:">
-<!ENTITY tableSpacing.accessKey           "S">
+<!ENTITY tableSpacing.accesskey           "S">
 <!ENTITY tablePadding.label               "Padding:">
-<!ENTITY tablePadding.accessKey           "P">
+<!ENTITY tablePadding.accesskey           "P">
 <!ENTITY tablePxBetwCells.label           "pixels between cells">
 <!ENTITY tablePxBetwBrdrCellContent.label "pixels between cell border and content">
 <!ENTITY tableAlignment.label             "Table Alignment:">
-<!ENTITY tableAlignment.accessKey         "T">
+<!ENTITY tableAlignment.accesskey         "T">
 <!ENTITY tableCaption.label               "Caption:">
-<!ENTITY tableCaption.accessKey           "N">
+<!ENTITY tableCaption.accesskey           "N">
 <!ENTITY tableCaptionAbove.label          "Above Table">
 <!ENTITY tableCaptionBelow.label          "Below Table">
 <!ENTITY tableCaptionLeft.label           "Left of Table">
@@ -75,9 +75,9 @@
 <!ENTITY cellSelectRow.label              "Row">
 <!ENTITY cellSelectColumn.label           "Column">
 <!ENTITY cellSelectNext.label             "Next">
-<!ENTITY cellSelectNext.accessKey         "N">
+<!ENTITY cellSelectNext.accesskey         "N">
 <!ENTITY cellSelectPrevious.label         "Previous">
-<!ENTITY cellSelectPrevious.accessKey     "P">
+<!ENTITY cellSelectPrevious.accesskey     "P">
 <!ENTITY cellApplyBeforeMove.label        "Apply changes before changing selection">
 <!ENTITY cellKeepCurrentData.label        "Keep current settings">
 <!-- LOCALIZATION NOTE Next 2 form 1 sentence (we don't want to use HTML tag to wrap) -->
@@ -87,15 +87,15 @@
 <!ENTITY cellColSpan.label                "Column Span:">
 <!ENTITY cellContentAlignment.label       "Content Alignment">
 <!ENTITY cellHorizontal.label             "Horizontal:">
-<!ENTITY cellHorizontal.accessKey         "Z">
+<!ENTITY cellHorizontal.accesskey         "Z">
 <!ENTITY cellVertical.label               "Vertical:">
-<!ENTITY cellVertical.accessKey           "V">
+<!ENTITY cellVertical.accesskey           "V">
 <!ENTITY cellStyle.label                  "Cell Style:">
-<!ENTITY cellStyle.accessKey              "C">
+<!ENTITY cellStyle.accesskey              "C">
 <!ENTITY cellNormal.label                 "Normal">
 <!ENTITY cellHeader.label                 "Header">
 <!ENTITY cellTextWrap.label               "Text Wrap:">
-<!ENTITY cellTextWrap.accessKey           "T">
+<!ENTITY cellTextWrap.accesskey           "T">
 <!ENTITY cellWrap.label                   "Wrap">
 <!ENTITY cellNoWrap.label                 "Don't wrap">
 <!ENTITY cellAlignTop.label               "Top">
@@ -110,7 +110,7 @@
 <!ENTITY size.label                       "Size">
 <!ENTITY pixels.label                     "pixels">
 <!ENTITY backgroundColor.label            "Background Color:">
-<!ENTITY backgroundColor.accessKey        "B">
+<!ENTITY backgroundColor.accesskey        "B">
 <!ENTITY AlignLeft.label                  "Left">
 <!ENTITY AlignCenter.label                "Center">
 <!ENTITY AlignRight.label                 "Right">

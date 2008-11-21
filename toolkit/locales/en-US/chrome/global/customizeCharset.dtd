@@ -40,11 +40,11 @@
 <!ENTITY title.label        "Customize Character Encoding">
 <!ENTITY current.label      "Active Character Encodings:">
 <!ENTITY remove.label       "Remove">
-<!ENTITY remove.accessKey   "R">
+<!ENTITY remove.accesskey   "R">
 <!ENTITY additional.label   "Available Character Encodings:">
 <!ENTITY add.label          "Add">
-<!ENTITY add.accessKey      "A">
+<!ENTITY add.accesskey      "A">
 <!ENTITY moveUp.label       "Move Up">
-<!ENTITY moveUp.accessKey   "U">
+<!ENTITY moveUp.accesskey   "U">
 <!ENTITY moveDown.label     "Move Down">
-<!ENTITY moveDown.accessKey "D">
+<!ENTITY moveDown.accesskey "D">

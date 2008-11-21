@@ -68,7 +68,7 @@
         <row align="center">
           <label control="width"
                  value="&widthEditField.label;"
-                 accesskey="&widthEditField.accessKey;"/>
+                 accesskey="&widthEditField.accesskey;"/>
           <textbox class="narrow" id="width" flex="1" oninput="forceInteger('width')"/>
           <menulist id="pixelOrPercentMenulist" />
           <!-- menupopup and menuitems added by JS -->
@@ -76,26 +76,26 @@
         <row align="center">
           <label control="height"
                  value="&heightEditField.label;"
-                 accesskey="&heightEditField.accessKey;"/>
+                 accesskey="&heightEditField.accesskey;"/>
           <textbox class="narrow" id="height" oninput="forceInteger('height')"/>
           <label value="&pixelsPopup.value;" />
         </row>
       </rows>
     </grid>        
-    <checkbox id="3dShading" label="&threeDShading.label;" accesskey="&threeDShading.accessKey;"/>
+    <checkbox id="3dShading" label="&threeDShading.label;" accesskey="&threeDShading.accesskey;"/>
   </groupbox>
   <groupbox><caption label="&alignmentBox.label;"/>
     <radiogroup id="alignmentGroup" orient="horizontal">
       <spacer class="spacer"/>
-      <radio id="leftAlign"   label="&leftRadio.value;"   accesskey="&leftRadio.accessKey;"/>
-      <radio id="centerAlign" label="&centerRadio.value;" accesskey="&centerRadio.accessKey;"/>
-      <radio id="rightAlign"  label="&rightRadio.value;"  accesskey="&rightRadio.accessKey;"/>
+      <radio id="leftAlign"   label="&leftRadio.value;"   accesskey="&leftRadio.accesskey;"/>
+      <radio id="centerAlign" label="&centerRadio.value;" accesskey="&centerRadio.accesskey;"/>
+      <radio id="rightAlign"  label="&rightRadio.value;"  accesskey="&rightRadio.accesskey;"/>
     </radiogroup>
   </groupbox>
   <spacer class="spacer"/>
   <hbox>
     <button  id="SaveDefault" label="&saveSettings.label;" 
-         accesskey="&saveSettings.accessKey;"
+         accesskey="&saveSettings.accesskey;"
          oncommand="onSaveDefault()"
          tooltiptext="&saveSettings.tooltip;" />
     <spacer flex="1"/>

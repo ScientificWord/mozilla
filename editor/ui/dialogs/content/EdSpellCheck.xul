@@ -72,21 +72,21 @@
         <label id="MisspelledWordLabel" value="&misspelledWord.label;"/>
         <label class="bold" id="MisspelledWord"/>
         <button class="spell-check" label="&recheckButton.label;" oncommand="Recheck();"
-                accesskey="&recheckButton.accessKey;"/>
+                accesskey="&recheckButton.accesskey;"/>
       </row>
       <row align="center">
         <label id="ReplaceWordLabel" value="&wordEditField.label;"
                control="ReplaceWordInput"
-               accesskey="&wordEditField.accessKey;"/>
+               accesskey="&wordEditField.accesskey;"/>
         <textbox id="ReplaceWordInput" oninput="ChangeReplaceWord()" flex="1"/>
         <button id="CheckWord" oncommand="CheckWord()" label="&checkwordButton.label;"
-                accesskey="&checkwordButton.accessKey;"/>
+                accesskey="&checkwordButton.accesskey;"/>
       </row>
     </rows>
   </grid>
   <label id="SuggestedListLabel" value="&suggestions.label;"
          control="SuggestedList"
-         accesskey="&suggestions.accessKey;"/>
+         accesskey="&suggestions.accesskey;"/>
   <grid>
     <columns><column/><column/></columns>
     <rows>
@@ -101,15 +101,15 @@
               <row>
                 <button id="Replace" label="&replaceButton.label;"
                         oncommand="Replace(gDialog.ReplaceWordInput.value);"
-                        accesskey="&replaceButton.accessKey;"/>
+                        accesskey="&replaceButton.accesskey;"/>
                 <button id="Ignore"  oncommand="Ignore();" label="&ignoreButton.label;"
-                        accesskey="&ignoreButton.accessKey;"/>
+                        accesskey="&ignoreButton.accesskey;"/>
               </row>
               <row>
                 <button id="ReplaceAll" oncommand="ReplaceAll();" label="&replaceAllButton.label;"
-                        accesskey="&replaceAllButton.accessKey;"/>
+                        accesskey="&replaceAllButton.accesskey;"/>
                 <button id="IgnoreAll"  oncommand="IgnoreAll();" label="&ignoreAllButton.label;"
-                        accesskey="&ignoreAllButton.accessKey;"/>
+                        accesskey="&ignoreAllButton.accesskey;"/>
               </row>
             </rows> 
           </grid>
@@ -117,15 +117,15 @@
           <label value="&userDictionary.label;"/>
           <hbox flex="1" align="start">
             <button class="spell-check" id="AddToDictionary" oncommand="AddToDictionary()" label="&addToUserDictionaryButton.label;"
-                    accesskey="&addToUserDictionaryButton.accessKey;"/>
+                    accesskey="&addToUserDictionaryButton.accesskey;"/>
             <button class="spell-check" id="EditDictionary"  oncommand="EditDictionary()" label="&editUserDictionaryButton.label;"
-                    accesskey="&editUserDictionaryButton.accessKey;"/>
+                    accesskey="&editUserDictionaryButton.accesskey;"/>
           </hbox>
         </vbox>
       </row>
       <label value ="&languagePopup.label;"
              control="LanguageMenulist"
-             accesskey="&languagePopup.accessKey;"/>
+             accesskey="&languagePopup.accesskey;"/>
       <row>
         <menulist id="LanguageMenulist" oncommand="SelectLanguage()">
           <menupopup onpopupshowing="InitLanguageMenu(gDialog.LanguageMenulist.selectedItem.value);">
@@ -136,12 +136,12 @@
         </menulist>
         <hbox flex="1">
           <button class="spell-check" dlgtype="cancel" id="Stop" label="&stopButton.label;" oncommand="CancelSpellCheck();"
-                  accesskey="&stopButton.accessKey;"/>
+                  accesskey="&stopButton.accesskey;"/>
           <spacer flex="1"/>
           <button class="spell-check" id="Close" label="&closeButton.label;" oncommand="onClose();"
-                  accesskey="&closeButton.accessKey;"/>
+                  accesskey="&closeButton.accesskey;"/>
           <button class="spell-check" id="Send" label="&sendButton.label;" oncommand="onClose();"
-                  accesskey="&sendButton.accessKey;" hidden="true"/>
+                  accesskey="&sendButton.accesskey;" hidden="true"/>
         </hbox>
       </row>
     </rows>
