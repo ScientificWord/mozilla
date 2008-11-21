@@ -70,7 +70,7 @@
       
       <hbox align="center">
         <button id="add_button" oncommand="AddAvailableCharset();"
-                label="&add.label;" icon="add"  accesskey="&add.accessKey;"/>
+                label="&add.label;" icon="add"  accesskey="&add.accesskey;"/>
       </hbox>
     </vbox>
     
@@ -86,11 +86,11 @@
       <separator class="thin"/>
       <hbox align="center">
         <button id="up_button" label="&moveUp.label;" icon="go-up"
-                accesskey="&moveUp.accessKey;" oncommand="MoveUp();"/>
+                accesskey="&moveUp.accesskey;" oncommand="MoveUp();"/>
         <button id="down_button" label="&moveDown.label;" icon="go-down"
-                accesskey="&moveDown.accessKey;" oncommand="MoveDown();"/>
+                accesskey="&moveDown.accesskey;" oncommand="MoveDown();"/>
         <button id="remove_button" oncommand="RemoveActiveCharset();" icon="remove"
-                label="&remove.label;" accesskey="&remove.accessKey;"/>
+                label="&remove.label;" accesskey="&remove.accesskey;"/>
       </hbox>
     </vbox> 
   </hbox>

@@ -58,10 +58,10 @@
   <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
 
   <hbox id="TableOrCellGroup" align="center" collapsed="true">
-    <label control="CellOrTableGroup" value="&background.label;" accesskey="&background.accessKey;"/>
+    <label control="CellOrTableGroup" value="&background.label;" accesskey="&background.accesskey;"/>
     <radiogroup id="CellOrTableGroup" orient="horizontal">
-      <radio id="TableRadio" label="&table.label;" accesskey="&table.accessKey;"/>
-      <radio id="CellRadio"  label="&cell.label;"  accesskey="&cell.accessKey;"/>
+      <radio id="TableRadio" label="&table.label;" accesskey="&table.accesskey;"/>
+      <radio id="CellRadio"  label="&cell.label;"  accesskey="&cell.accesskey;"/>
   </radiogroup>
   </hbox>
   <colorpicker id="ColorPicker" palettename="standard" 
@@ -83,17 +83,17 @@
       <spacer id="LastPickedColor"
                   LastTextColor="" LastBackgroundColor=""
                   persist="LastTextColor LastBackgroundColor"/>
-      <label value="&lastPickedColor.label;" accesskey="&lastPickedColor.accessKey;" flex="1" style="text-align: center;"/>
+      <label value="&lastPickedColor.label;" accesskey="&lastPickedColor.accesskey;" flex="1" style="text-align: center;"/>
     </button>
     <label value="&setColor1.label;"/>
-    <label value="&setColor2.label;" accesskey="&setColor2.accessKey;" control="ColorInput"/>
+    <label value="&setColor2.label;" accesskey="&setColor2.accesskey;" control="ColorInput"/>
     <label value="&setColorExample.label;"/>
     <hbox align="center" flex="1=">
       <textbox id="ColorInput" style="width: 8em" oninput="SetColorSwatch(); SetDefaultToOk();"/>
       <spacer flex="1"/>
       <spacer id="ColorPickerSwatch"/>
       <spacer flex="1"/>
-      <button id="DefaultColorButton" label="&default.label;" accesskey="&default.accessKey;"
+      <button id="DefaultColorButton" label="&default.label;" accesskey="&default.accesskey;"
         style="margin-right:0px;" oncommand="RemoveColor()"/>
     </hbox>
   </vbox>

@@ -25,13 +25,13 @@
 
 <!ENTITY size.label "Size">
 <!ENTITY numRowsEditField.label "Rows:">
-<!ENTITY numRowsEditField.accessKey "R">
+<!ENTITY numRowsEditField.accesskey "R">
 <!ENTITY numColumnsEditField.label "Columns:">
-<!ENTITY numColumnsEditField.accessKey "C">
+<!ENTITY numColumnsEditField.accesskey "C">
 <!ENTITY widthEditField.label "Width:">
-<!ENTITY widthEditField.accessKey "W">
+<!ENTITY widthEditField.accesskey "W">
 <!ENTITY borderEditField.label "Border:">
-<!ENTITY borderEditField.accessKey "B">
+<!ENTITY borderEditField.accesskey "B">
 <!ENTITY borderEditField.tooltip "Type a number for the table's border, or type zero (0) for no border">
 <!ENTITY pixels.label "pixels">
 

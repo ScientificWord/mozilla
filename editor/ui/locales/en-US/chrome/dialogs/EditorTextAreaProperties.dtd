@@ -39,24 +39,24 @@
 <!ENTITY Settings.label "Settings">
 
 <!ENTITY TextAreaName.label "Field Name:">
-<!ENTITY TextAreaName.accessKey "N">
+<!ENTITY TextAreaName.accesskey "N">
 <!ENTITY TextAreaRows.label "Rows:">
-<!ENTITY TextAreaRows.accessKey "R">
+<!ENTITY TextAreaRows.accesskey "R">
 <!ENTITY TextAreaCols.label "Columns:">
-<!ENTITY TextAreaCols.accessKey "C">
+<!ENTITY TextAreaCols.accesskey "C">
 <!ENTITY TextAreaReadOnly.label "Read Only">
-<!ENTITY TextAreaReadOnly.accessKey "O">
+<!ENTITY TextAreaReadOnly.accesskey "O">
 <!ENTITY TextAreaDisabled.label "Disabled">
-<!ENTITY TextAreaDisabled.accessKey "D">
+<!ENTITY TextAreaDisabled.accesskey "D">
 <!ENTITY TextAreaTabIndex.label "Tab Index:">
-<!ENTITY TextAreaTabIndex.accessKey "I">
+<!ENTITY TextAreaTabIndex.accesskey "I">
 <!ENTITY TextAreaAccessKey.label "Access Key:">
-<!ENTITY TextAreaAccessKey.accessKey "K">
+<!ENTITY TextAreaAccessKey.accesskey "K">
 <!ENTITY InitialText.label "Initial Text:">
-<!ENTITY InitialText.accessKey "T">
+<!ENTITY InitialText.accesskey "T">
 
 <!ENTITY TextAreaWrap.label "Wrap Mode:">
-<!ENTITY TextAreaWrap.accessKey "W">
+<!ENTITY TextAreaWrap.accesskey "W">
 <!ENTITY WrapDefault.value "Default">
 <!ENTITY WrapOff.value "Off">
 <!ENTITY WrapHard.value "Hard">
