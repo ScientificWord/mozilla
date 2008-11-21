@@ -149,21 +149,21 @@
               <row align="center">
                 <label control="rowsInput" class="align-right"
                        value="&numRowsEditField.label;"
-                       accesskey="&numRowsEditField.accessKey;"/>
+                       accesskey="&numRowsEditField.accesskey;"/>
                 <textbox value="2" class="narrow" id="rowsInput" oninput="ChangeRowOrColumn(this.id); MakePersistsValue(this)" persist="value"/>
                 <spacer/>
               </row>
               <row align="center">
                 <label control="columnsInput" class="align-right"
                        value="&numColumnsEditField.label;"
-                       accesskey="&numColumnsEditField.accessKey;"/>
+                       accesskey="&numColumnsEditField.accesskey;"/>
                 <textbox value="4" class="narrow" id="columnsInput" oninput="ChangeRowOrColumn(this.id); MakePersistsValue(this)" persist="value"/>
                 <spacer/>
               </row>
               <row align="center">
                 <label control="widthInput" class="align-right"
                        value="&widthEditField.label;"
-                       accesskey="&widthEditField.accessKey;"/>
+                       accesskey="&widthEditField.accesskey;"/>
                 <textbox value="100" class="narrow" id="widthInput" oninput="forceInteger(this.id); MakePersistsValue(this)" persist="value"/>
                 <menulist value="pc" id="widthPixelOrPercentMenulist" flex="1" persist="value"/>
                   <!-- child elements are appended by JS -->
@@ -176,7 +176,7 @@
         <hbox align="center">
           <label control="borderInput" class="align-right"
               value="&borderEditField.label;"
-              accesskey="&borderEditField.accessKey;"
+              accesskey="&borderEditField.accesskey;"
               tooltiptext="&borderEditField.tooltip;" />
           <textbox value="1" class="narrow" id="borderInput" oninput="forceInteger(this.id); MakePersistsValue(this)" persist="value"/>
           <label id="&pixels.label;"/>  
