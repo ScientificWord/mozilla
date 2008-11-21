@@ -40,9 +40,9 @@
 <!ENTITY windowTitle.label "Snap to Grid">
 
 <!ENTITY enableSnapToGrid.label "enable Snap to Grid">
-<!ENTITY enableSnapToGrid.accessKey "e">
+<!ENTITY enableSnapToGrid.accesskey "e">
 
 <!ENTITY sizeEditField.label "Size:">
-<!ENTITY sizeEditField.accessKey "S">
+<!ENTITY sizeEditField.accesskey "S">
 
 <!ENTITY pixelsLabel.value "pixels">

@@ -82,14 +82,14 @@
     <spacer class="spacer"/>
     <hbox>
       <label id="StartingNumberLabel" control="StartingNumber"
-             value="&startingNumber.label;" accesskey="&startingNumber.accessKey;"/>
+             value="&startingNumber.label;" accesskey="&startingNumber.accesskey;"/>
       <textbox class="narrow" id="StartingNumber"/>
       <spacer/>
     </hbox>
   </groupbox>
   <radiogroup id="RadioGroup" index="0" persist="index">
-    <radio id="ChangeAll"      label="&changeEntireListRadio.label;" accesskey="&changeEntireListRadio.accessKey;"/>
-    <radio id="ChangeSelected" label="&changeSelectedRadio.label;"   accesskey="&changeSelectedRadio.accessKey;"/>
+    <radio id="ChangeAll"      label="&changeEntireListRadio.label;" accesskey="&changeEntireListRadio.accesskey;"/>
+    <radio id="ChangeSelected" label="&changeSelectedRadio.label;"   accesskey="&changeSelectedRadio.accesskey;"/>
   </radiogroup>
   <!-- from EdDialogOverlay -->
   <vbox id="AdvancedEdit"/>

@@ -68,7 +68,7 @@
       <richlistitem id="item-choose" orient="horizontal" selected="true">
         <label value="&ChooseApp.description;" flex="1"/>
         <button oncommand="dialog.chooseApplication();"
-                label="&ChooseApp.label;" accesskey="&ChooseApp.accessKey;"/>
+                label="&ChooseApp.label;" accesskey="&ChooseApp.accesskey;"/>
       </richlistitem>
     </richlistbox>
   </vbox>

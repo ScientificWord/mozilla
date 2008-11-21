@@ -2,4 +2,4 @@
 <!ENTITY window.emHeight "26em">
 <!ENTITY ChooseApp.description "Choose an Application">
 <!ENTITY ChooseApp.label "Choose…">
-<!ENTITY ChooseApp.accessKey "C">
+<!ENTITY ChooseApp.accesskey "C">
