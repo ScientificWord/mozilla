@@ -46,4 +46,4 @@
 <!ENTITY succeeded.label       "Succeeded">
 <!ENTITY failed.label          "Failed">
 <!ENTITY troubleshooting.label "Troubleshooting">
-<!ENTITY troubleshooting.accessKey "T">
+<!ENTITY troubleshooting.accesskey "T">

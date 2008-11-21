@@ -61,17 +61,17 @@
     <grid><columns><column/><column/></columns>
       <rows>
         <row align="center">
-          <label control="TextAreaName" value="&TextAreaName.label;" accesskey="&TextAreaName.accessKey;"/>
+          <label control="TextAreaName" value="&TextAreaName.label;" accesskey="&TextAreaName.accesskey;"/>
           <textbox id="TextAreaName" oninput="onInput();"/>
         </row>
         <row align="center">
-          <label control="TextAreaRows" value="&TextAreaRows.label;" accesskey="&TextAreaRows.accessKey;"/>
+          <label control="TextAreaRows" value="&TextAreaRows.label;" accesskey="&TextAreaRows.accesskey;"/>
           <hbox>
             <textbox id="TextAreaRows" class="narrow" oninput="forceInteger(this.id);onInput();"/>
           </hbox>
         </row>
         <row align="center">
-          <label control="TextAreaCols" value="&TextAreaCols.label;" accesskey="&TextAreaCols.accessKey;"/>
+          <label control="TextAreaCols" value="&TextAreaCols.label;" accesskey="&TextAreaCols.accesskey;"/>
           <hbox>
             <textbox id="TextAreaCols" class="narrow" oninput="forceInteger(this.id);onInput();"/>
           </hbox>
@@ -84,7 +84,7 @@
     <grid id="MoreSection"><columns><column/><column/></columns>
       <rows>
         <row align="center">
-          <label control="TextAreaWrap" value="&TextAreaWrap.label;" accesskey="&TextAreaWrap.accessKey;"/>
+          <label control="TextAreaWrap" value="&TextAreaWrap.label;" accesskey="&TextAreaWrap.accesskey;"/>
           <menulist id="TextAreaWrap">
             <menupopup>
               <menuitem label="&WrapDefault.value;"/>
@@ -104,26 +104,26 @@
         </row>
         <row>
           <spacer/>
-          <checkbox id="TextAreaReadOnly" label="&TextAreaReadOnly.label;" accesskey="&TextAreaReadOnly.accessKey;"/>
+          <checkbox id="TextAreaReadOnly" label="&TextAreaReadOnly.label;" accesskey="&TextAreaReadOnly.accesskey;"/>
         </row>
         <row>
           <spacer/>
-          <checkbox id="TextAreaDisabled" label="&TextAreaDisabled.label;" accesskey="&TextAreaDisabled.accessKey;"/>
+          <checkbox id="TextAreaDisabled" label="&TextAreaDisabled.label;" accesskey="&TextAreaDisabled.accesskey;"/>
         </row>
         <row align="center">
-          <label control="TextAreaTabIndex" value="&TextAreaTabIndex.label;" accesskey="&TextAreaTabIndex.accessKey;"/>
+          <label control="TextAreaTabIndex" value="&TextAreaTabIndex.label;" accesskey="&TextAreaTabIndex.accesskey;"/>
           <hbox>
             <textbox id="TextAreaTabIndex" class="narrow" oninput="forceInteger(this.id);"/>
           </hbox>
         </row>
         <row align="center">
-          <label control="TextAreaAccessKey" value="&TextAreaAccessKey.label;" accesskey="&TextAreaAccessKey.accessKey;"/>
+          <label control="TextAreaAccessKey" value="&TextAreaAccessKey.label;" accesskey="&TextAreaAccessKey.accesskey;"/>
           <hbox>
             <textbox id="TextAreaAccessKey" class="narrow" maxlength="1"/>
           </hbox>
         </row>
         <row>
-          <label control="TextAreaValue" value="&InitialText.label;" accesskey="&InitialText.accessKey;"/>
+          <label control="TextAreaValue" value="&InitialText.label;" accesskey="&InitialText.accesskey;"/>
         </row>
         <textbox id="TextAreaValue" flex="1" multiline="true" rows="5"/>
       </rows>

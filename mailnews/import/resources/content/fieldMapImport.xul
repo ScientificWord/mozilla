@@ -64,7 +64,7 @@
   <hbox align="center">
     <checkbox id="skipFirstRecord"
               label="&fieldMapImport.skipFirstRecord;"
-              accesskey="&fieldMapImport.skipFirstRecord.accessKey;"/>
+              accesskey="&fieldMapImport.skipFirstRecord.accesskey;"/>
   </hbox>
 
   <separator class="thin"/>

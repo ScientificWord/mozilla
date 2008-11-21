@@ -63,7 +63,7 @@
 
   <checkbox id="enableSnapToGrid"
             label="&enableSnapToGrid.label;"
-            accesskey="&enableSnapToGrid.accessKey;"
+            accesskey="&enableSnapToGrid.accesskey;"
             oncommand="toggleSnapToGrid();"/>
 
   <spacer class="spacer"/>
@@ -75,7 +75,7 @@
         <label value="&sizeEditField.label;"
                id="sizeLabel"
                control="size"
-               accesskey="&sizeEditField.accessKey;"/>
+               accesskey="&sizeEditField.accesskey;"/>
         <textbox class="narrow" id="size" oninput="forceInteger('size')"/>
         <label id="unitLabel"
                value="&pixelsLabel.value;" />

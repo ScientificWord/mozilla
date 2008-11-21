@@ -39,15 +39,15 @@
 <!ENTITY windowTitle.label "Personal Dictionary">
 
 <!ENTITY wordEditField.label "New word:">
-<!ENTITY wordEditField.accessKey "N">
+<!ENTITY wordEditField.accesskey "N">
 <!ENTITY AddButton.label "Add">
-<!ENTITY AddButton.accessKey "A">
+<!ENTITY AddButton.accesskey "A">
 <!ENTITY DictionaryList.label "Words in dictionary:">
-<!ENTITY DictionaryList.accessKey "W">
+<!ENTITY DictionaryList.accesskey "W">
 <!ENTITY ReplaceButton.label "Replace">
-<!ENTITY ReplaceButton.accessKey "R">
+<!ENTITY ReplaceButton.accesskey "R">
 <!ENTITY RemoveButton.label "Remove">
-<!ENTITY RemoveButton.accessKey "e">
+<!ENTITY RemoveButton.accesskey "e">
 
 <!ENTITY CloseButton.label "Close">
-<!ENTITY CloseButton.accessKey "C">
+<!ENTITY CloseButton.accesskey "C">
