@@ -63,19 +63,19 @@
             <columns><column/><column/><column/><column/><column/></columns>
               <rows>
                 <row align="center">
-                  <label value="&tableRows.label;" accesskey="&tableRows.accessKey;" control="TableRowsInput"/>
+                  <label value="&tableRows.label;" accesskey="&tableRows.accesskey;" control="TableRowsInput"/>
                   <textbox class="narrow" id="TableRowsInput" oninput="forceInteger(this.id);"/>
                   <spring class="bigspacer"/>
-                  <label value="&tableHeight.label;" accesskey="&tableHeight.accessKey;"
+                  <label value="&tableHeight.label;" accesskey="&tableHeight.accesskey;"
                          id="TableHeightLabel" control="TableHeightInput"/>
                   <textbox class="narrow" id="TableHeightInput" oninput="forceInteger(this.id);"/>
                   <menulist id="TableHeightUnits"/>
                 </row>
               <row align="center">
-                <label value="&tableColumns.label;" accesskey="&tableColumns.accessKey;" control="TableColumnsInput"/>
+                <label value="&tableColumns.label;" accesskey="&tableColumns.accesskey;" control="TableColumnsInput"/>
                 <textbox class="narrow" id="TableColumnsInput" oninput="forceInteger(this.id);"/>
                 <spring class="bigspacer"/>
-                <label value="&tableWidth.label;" accesskey="&tableWidth.accessKey;" control="TableWidthInput"/>
+                <label value="&tableWidth.label;" accesskey="&tableWidth.accesskey;" control="TableWidthInput"/>
                 <textbox class="narrow" id="TableWidthInput" oninput="forceInteger(this.id);"/>
                 <menulist id="TableWidthUnits"/>
               </row>
@@ -90,21 +90,21 @@
             <row align="center">
               <label control="BorderWidthInput"
                      value="&tableBorderWidth.label;"
-                     accesskey="&tableBorderWidth.accessKey;"/>
+                     accesskey="&tableBorderWidth.accesskey;"/>
               <textbox class="narrow" id="BorderWidthInput" oninput="forceInteger(this.id);"/>
               <label align="left" value="&pixels.label;"/>
             </row>
             <row align="center">
               <label control="SpacingInput"
                      value="&tableSpacing.label;"
-                     accesskey="&tableSpacing.accessKey;"/>
+                     accesskey="&tableSpacing.accesskey;"/>
               <textbox class="narrow" id="SpacingInput" oninput="forceInteger(this.id);"/>
               <label value="&tablePxBetwCells.label;"/>
             </row>
             <row align="center">
               <label control="PaddingInput"
                      value="&tablePadding.label;"
-                     accesskey="&tablePadding.accessKey;"/>
+                     accesskey="&tablePadding.accesskey;"/>
               <textbox class="narrow" id="PaddingInput" oninput="forceInteger(this.id);"/>
               <label value="&tablePxBetwBrdrCellContent.label;"/>
             </row>
@@ -115,7 +115,7 @@
         <hbox flex="1" align="center">
           <label control="TableAlignList"
                  value="&tableAlignment.label;"
-                 accesskey="&tableAlignment.accessKey;"/>
+                 accesskey="&tableAlignment.accesskey;"/>
           <menulist id="TableAlignList">
             <menupopup>
               <menuitem label="&AlignLeft.label;"   value="left"/>
@@ -126,7 +126,7 @@
           <spacer class="spacer"/>
           <label control="TableCaptionList"
                  value="&tableCaption.label;"
-                 accesskey="&tableCaption.accessKey;"/>
+                 accesskey="&tableCaption.accesskey;"/>
           <menulist id="TableCaptionList">
             <menupopup>
               <menuitem label="&tableCaptionNone.label;"  value=""/>
@@ -169,8 +169,8 @@
               </menupopup>
             </menulist>
             <hbox flex="1">
-              <button id="PreviousButton" label="&cellSelectPrevious.label;" accesskey="&cellSelectPrevious.accessKey;" oncommand="MoveSelection(0)" flex="1"/>
-              <button id="NextButton" class="align-right" label="&cellSelectNext.label;" accesskey="&cellSelectNext.accessKey;" oncommand="MoveSelection(1)" flex="1"/>
+              <button id="PreviousButton" label="&cellSelectPrevious.label;" accesskey="&cellSelectPrevious.accesskey;" oncommand="MoveSelection(0)" flex="1"/>
+              <button id="NextButton" class="align-right" label="&cellSelectNext.label;" accesskey="&cellSelectNext.accesskey;" oncommand="MoveSelection(1)" flex="1"/>
             </hbox>
           </vbox>
           <spacer class="bigspacer"/>
@@ -186,13 +186,13 @@
               <columns><column/><column/><column flex="1"/></columns>
               <rows>
                 <row align="center">
-                  <checkbox id="CellHeightCheckbox" label="&tableHeight.label;" accesskey="&tableHeight.accessKey;"/>
+                  <checkbox id="CellHeightCheckbox" label="&tableHeight.label;" accesskey="&tableHeight.accesskey;"/>
                   <textbox class="narrow" id="CellHeightInput"
                            oninput="ChangeIntTextbox(this.id,'CellHeightCheckbox');"/>
                   <menulist id="CellHeightUnits" oncommand="SetCheckbox('CellHeightCheckbox');"/>
                 </row>
                 <row align="center">
-                  <checkbox id="CellWidthCheckbox" label="&tableWidth.label;" accesskey="&tableWidth.accessKey;"/>
+                  <checkbox id="CellWidthCheckbox" label="&tableWidth.label;" accesskey="&tableWidth.accesskey;"/>
                   <textbox class="narrow" id="CellWidthInput"
                            oninput="ChangeIntTextbox(this.id,'CellWidthCheckbox');"/>
                   <menulist id="CellWidthUnits" oncommand="SetCheckbox('CellWidthCheckbox');"/>
@@ -207,7 +207,7 @@
               <columns><column/><column flex="1"/><column/></columns>
               <rows>
                 <row align="center">
-                  <checkbox id="CellVAlignCheckbox" label="&cellVertical.label;" accesskey="&cellVertical.accessKey;"/>
+                  <checkbox id="CellVAlignCheckbox" label="&cellVertical.label;" accesskey="&cellVertical.accesskey;"/>
                   <menulist id="CellVAlignList" oncommand="SetCheckbox('CellVAlignCheckbox');">
                     <menupopup>
                       <menuitem label="&cellAlignTop.label;"    value="top"/>
@@ -217,7 +217,7 @@
                   </menulist>
                 </row>
                 <row align="center">
-                  <checkbox id="CellHAlignCheckbox" label="&cellHorizontal.label;" accesskey="&cellHorizontal.accessKey;"/>
+                  <checkbox id="CellHAlignCheckbox" label="&cellHorizontal.label;" accesskey="&cellHorizontal.accesskey;"/>
                   <menulist id="CellHAlignList"  oncommand="SelectCellHAlign()">
                     <menupopup>
                       <menuitem label="&AlignLeft.label;"        value="left"/>
@@ -233,7 +233,7 @@
         </hbox>
         <spacer class="spacer"/>
         <hbox align="center">
-          <checkbox id="CellStyleCheckbox" label="&cellStyle.label;" accesskey="&cellStyle.accessKey;"/>
+          <checkbox id="CellStyleCheckbox" label="&cellStyle.label;" accesskey="&cellStyle.accesskey;"/>
           <menulist id="CellStyleList" oncommand="SetCheckbox('CellStyleCheckbox');">
             <menupopup>
               <menuitem label="&cellNormal.label;" value="td"/>
@@ -241,7 +241,7 @@
             </menupopup>
           </menulist>
           <spacer class="bigspacer"/>
-          <checkbox id="TextWrapCheckbox" label="&cellTextWrap.label;" accesskey="&cellTextWrap.accessKey;"/>
+          <checkbox id="TextWrapCheckbox" label="&cellTextWrap.label;" accesskey="&cellTextWrap.accesskey;"/>
           <menulist id="TextWrapList" oncommand="SetCheckbox('TextWrapCheckbox');">
             <menupopup>
               <menuitem label="&cellWrap.label;" value="wrap"/>
@@ -251,7 +251,7 @@
         </hbox>
         <separator class="groove"/>
         <hbox align="center">
-          <checkbox id="CellColorCheckbox" label="&backgroundColor.label;" accesskey="&backgroundColor.accessKey;"/>
+          <checkbox id="CellColorCheckbox" label="&backgroundColor.label;" accesskey="&backgroundColor.accesskey;"/>
           <button class="color-button" oncommand="GetColorAndUpdate('cellBackgroundCW');">
             <spacer id="cellBackgroundCW" class="color-well"/>
           </button>

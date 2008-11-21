@@ -40,9 +40,9 @@
 <!ENTITY windowTitle.label "Insert Character">
 <!ENTITY category.label "Category">
 <!ENTITY letter.label "Letter:">
-<!ENTITY letter.accessKey "L">
+<!ENTITY letter.accesskey "L">
 <!ENTITY character.label "Character:">
-<!ENTITY character.accessKey "C">
+<!ENTITY character.accesskey "C">
 <!ENTITY accentUpper.label "Accent Uppercase">
 <!ENTITY accentLower.label "Accent Lowercase">
 <!ENTITY otherUpper.label "Other Uppercase">
