@@ -11,7 +11,6 @@
  * Software distributed under the License is distributed on an "AS IS" basis,
  * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
  * for the specific language governing rights and limitations under the
- * License.
  *
  * The Original Code is mozilla.org code.
  *
@@ -135,6 +134,8 @@
 #include "nsIPrefService.h"
 #include "nsIContentFilter.h"
 #include "nsEventDispatcher.h"
+#include "nsEscape.h"
+#include "nsIWindowWatcher.h"
 #include "../../../content/base/src/nsAttrName.h"
 
 const PRUnichar nbsp = 160;
@@ -1635,6 +1636,8 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
         if (fileURL)
         {
           PRBool insertAsImage = PR_FALSE;
+          PRBool insertAsLink = PR_FALSE; // nothing currently sets this to true. In the future we may allow user prefs
+           // to determine if dropping a file inserts a link or opens the file.
           nsCAutoString fileextension;
           rv = fileURL->GetFileExtension(fileextension);
           if (NS_SUCCEEDED(rv) && !fileextension.IsEmpty())
@@ -1642,7 +1645,9 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
             if ( (nsCRT::strcasecmp(fileextension.get(), "jpg") == 0 )
               || (nsCRT::strcasecmp(fileextension.get(), "jpeg") == 0 )
               || (nsCRT::strcasecmp(fileextension.get(), "gif") == 0 )
-              || (nsCRT::strcasecmp(fileextension.get(), "png") == 0 ) )
+              || (nsCRT::strcasecmp(fileextension.get(), "png") == 0 )
+              //BBM Extend this list!
+               )
             {
               insertAsImage = PR_TRUE;
             }
@@ -1652,28 +1657,87 @@ NS_IMETHODIMP nsHTMLEditor::InsertFromTransferable(nsITransferable *transferable
           rv = fileURL->GetSpec(urltext);
           if (NS_SUCCEEDED(rv) && !urltext.IsEmpty())
           {
-            if (insertAsImage)
+            if (insertAsImage || insertAsLink)
             {
-              stuffToPaste.AssignLiteral("<IMG src=\"");
-              AppendUTF8toUTF16(urltext, stuffToPaste);
-              stuffToPaste.AppendLiteral("\" alt=\"\" >");
-            }
-            else /* insert as link */
-            {
-              stuffToPaste.AssignLiteral("<A href=\"");
-              AppendUTF8toUTF16(urltext, stuffToPaste);
-              stuffToPaste.AppendLiteral("\">");
-              AppendUTF8toUTF16(urltext, stuffToPaste);
-              stuffToPaste.AppendLiteral("</A>");
-            }
-            nsAutoEditBatch beginBatching(this);
+              if (insertAsImage)
+              {
+                // copy file to graphics directory. Insert image with path "graphics/imagename.xxx"
+                nsresult rv;
+                nsCOMPtr<nsILocalFile> file;
+                nsCAutoString fileName;
+                rv = fileURL->GetFileName(fileName);
+                if (NS_FAILED(rv))
+                    return rv;
+                nsCOMPtr<nsIDOMDocument> domDoc;
+                GetDocument(getter_AddRefs(domDoc));
+                if (!domDoc) return NS_ERROR_FAILURE;
+                nsCOMPtr<nsIDocument> doc = do_QueryInterface(domDoc);
+                if (!doc) return NS_ERROR_FAILURE;
+                nsCOMPtr<nsIURI> docURI;
+                docURI = doc->GetDocumentURI();
+                nsCOMPtr<nsIURL> docURL;
+                docURL = do_QueryInterface(docURI);
+                nsCAutoString dirPath;
+                rv = docURL->GetDirectory(dirPath);
+                char * unescaped = strdup(dirPath.get());
+                nsUnescape(unescaped);
+                dirPath.Assign(unescaped, PR_UINT32_MAX); 
 
-            const nsAFlatString& empty = EmptyString();
-            rv = InsertHTMLWithContext(stuffToPaste,
-                                       empty, empty, flavor, 
-                                       aSourceDoc,
-                                       aDestinationNode, aDestOffset,
-                                       aDoDeleteSelection);
+// ifdef windows
+                dirPath.Cut(0,1);
+                PRInt32 len = dirPath.Length();
+                for (PRInt32 i = 0; i < len; i++)
+                {
+                  if (dirPath[i]=='/') dirPath.Replace(i,1,'\\');
+                }
+// endif
+                nsCOMPtr<nsILocalFile> dir;
+                rv = NS_NewLocalFile(NS_ConvertUTF8toUTF16(dirPath), PR_FALSE, getter_AddRefs(dir));
+                dir->Append(NS_LITERAL_STRING("graphics"));
+                PRBool fExists;
+                dir->Exists(&fExists);
+
+                if (!fExists) dir->Create(1,0755);
+                fileObj->CopyTo(dir, NS_LITERAL_STRING(""));
+
+                stuffToPaste.AssignLiteral("<img xmlns=\"http://www.w3.org/1999/xhtml\" src=\"");
+                stuffToPaste.AppendLiteral("graphics/");
+                unescaped = strdup(fileName.get());
+                nsUnescape(unescaped);
+                AppendUTF8toUTF16(unescaped, stuffToPaste);
+                stuffToPaste.AppendLiteral("\" alt=\"\"></img>");
+              }
+              else // insertAsLink
+              {
+                stuffToPaste.AssignLiteral("<a xmlns=\"http://www.w3.org/1999/xhtml\" href=\"");
+                AppendUTF8toUTF16(urltext, stuffToPaste);
+                stuffToPaste.AppendLiteral("\">");
+                AppendUTF8toUTF16(urltext, stuffToPaste);
+                stuffToPaste.AppendLiteral("</a>");
+              }
+              nsAutoEditBatch beginBatching(this);
+
+              const nsAFlatString& empty = EmptyString();
+              rv = InsertHTMLWithContext(stuffToPaste,
+                                         empty, empty, flavor, 
+                                         aSourceDoc,
+                                         aDestinationNode, aDestOffset,
+                                         aDoDeleteSelection);
+            }
+            else // open new document window for file
+            {
+              nsCOMPtr<nsIWindowWatcher> wwatch(do_GetService(NS_WINDOWWATCHER_CONTRACTID));
+              nsCOMPtr<nsISupportsString> urlWrapper(do_CreateInstance(NS_SUPPORTS_STRING_CONTRACTID));
+              if (!wwatch || !urlWrapper)
+                return NS_ERROR_FAILURE;
+
+              urlWrapper->SetData(NS_ConvertUTF8toUTF16(urltext));
+              nsCOMPtr<nsIDOMWindow> window;
+
+              wwatch->OpenWindow(nsnull, "chrome://prince/content/prince.xul",
+                                  "_blank", "chrome,dialog=no,all",
+                                  urlWrapper, getter_AddRefs(window));
+            }
           }
         }
       }
