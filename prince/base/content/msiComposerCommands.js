@@ -4002,7 +4002,6 @@ var msiReviseImageCommand =
     var imageNode = aParams.getISupportsValue("reviseObject");
     if (imageNode != null && editorElement != null)
     {
-//      AlertWithTitle("msiComposerCommands.js", "In msiReviseImageCommand, trying to revise an image, dialog not yet implemented.");
       var dlgWindow = msiOpenModelessDialog("chrome://prince/content/msiEdImageProps.xul", "_blank", "chrome,close,titlebar,dependent",
                                                                                                      editorElement, "cmd_reviseImage", this);
     }
