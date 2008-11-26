@@ -178,6 +178,7 @@ function removeSectionProperties(contextMenuNode)
   var item = document.getElementById("structure-properties-separator");
   item = item.nextSibling;
   var next;
+  while (item && item.localName != "menuitem") item = item.nextSibling;
   while (item && item.localName === "menuitem")
   {                   
     next = item.nextSibling;
