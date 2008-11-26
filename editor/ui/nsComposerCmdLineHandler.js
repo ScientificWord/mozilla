@@ -72,10 +72,10 @@ nsComposerCmdLineHandler.prototype = {
   /* nsICmdLineHandler */
   commandLineArgument : "-edit",
   prefNameForStartup : "general.startup.editor",
-  chromeUrlForTask : "chrome://editor/content/editor.xul",
-  helpText : "Start with editor.",
+  chromeUrlForTask : "chrome://prince/content/prince.xul",
+  helpText : "Start with SW/SWP/SNB.",
   handlesArgs : true,
-  defaultArgs : "about:blank",
+  defaultArgs : "",
   openWindowWithArgs : true,
 
   /* nsICommandLineHandler */
@@ -100,7 +100,7 @@ nsComposerCmdLineHandler.prototype = {
     }
     catch (e) {
       // One of the flags is present but no data, so set default arg.
-      args.data = "about:blank";
+      args.data = "";
     }
 
     var wwatch = Components.classes["@mozilla.org/embedcomp/window-watcher;1"]
