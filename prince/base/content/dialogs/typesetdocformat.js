@@ -82,6 +82,7 @@ function initializeFontFamilyList(force)
   }
   var path = "file://"+listfile.target;
   var myXMLHTTPRequest = new XMLHttpRequest();
+  myXMLHTTPRequest.overrideMimeType("text/plain");
   myXMLHTTPRequest.open("GET", path, false);
   myXMLHTTPRequest.send(null);
   var str = myXMLHTTPRequest.responseText;
