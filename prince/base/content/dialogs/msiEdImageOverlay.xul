@@ -22,6 +22,7 @@ Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
      xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEdImageOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
 
   <tab id="imageInputTab" label="&imageInputTab.label;"/>
