@@ -139,27 +139,27 @@ function InitImage()
   // Initialize altText widgets during dialog startup 
   //   or if user enterred altText in Advanced Edit dialog
   //  (this preserves "Don't use alt text" radio button state)
-  if (!gDialog.altTextRadioGroup.selectedItem || altText)
-  {
-    if (gInsertNewImage || !hasAltText || (hasAltText && gDialog.altTextInput.value))
-    {
-      SetAltTextDisabled(false);
-      gDialog.altTextRadioGroup.selectedItem = gDialog.altTextRadio;
-    }
-    else
-    {
-      SetAltTextDisabled(true);
-      gDialog.altTextRadioGroup.selectedItem = gDialog.noAltTextRadio;
-    }
-  }
+//  if (!gDialog.altTextRadioGroup.selectedItem || altText)
+//  {
+//    if (gInsertNewImage || !hasAltText || (hasAltText && gDialog.altTextInput.value))
+//    {
+//      SetAltTextDisabled(false);
+//      gDialog.altTextRadioGroup.selectedItem = gDialog.altTextRadio;
+//    }
+//    else
+//    {
+//      SetAltTextDisabled(true);
+//      gDialog.altTextRadioGroup.selectedItem = gDialog.noAltTextRadio;
+//    }
+//  }
 
   // setup the height and width widgets
-//  var width = msiInitPixelOrPercentMenulist(globalElement,
-//                    gInsertNewImage ? null : imageElement,
-//                    "width", "widthUnitsMenulist", gPixel);
-//  var height = msiInitPixelOrPercentMenulist(globalElement,
-//                    gInsertNewImage ? null : imageElement,
-//                    "height", "heightUnitsMenulist", gPixel);
+  var width = msiInitPixelOrPercentMenulist(globalElement,
+                    gInsertNewImage ? null : imageElement,
+                    "width", "widthUnitsMenulist", gPixel);
+  var height = msiInitPixelOrPercentMenulist(globalElement,
+                    gInsertNewImage ? null : imageElement,
+                    "height", "heightUnitsMenulist", gPixel);
 
   // Set actual radio button if both set values are the same as actual
   SetSizeWidgets(width, height);
@@ -172,7 +172,7 @@ function InitImage()
   gDialog.imagetbInput.value = globalElement.getAttribute("vspace");
 
   // dialog.border.value       = globalElement.getAttribute("border");
-  var bv = GetHTMLOrCSSStyleValue(globalElement, "border", "border-top-width");
+  var bv = msiGetHTMLOrCSSStyleValue(null, globalElement, "border", "border-top-width");
   if (/px/.test(bv))
   {
     // Strip out the px
