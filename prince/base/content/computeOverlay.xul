@@ -21,7 +21,7 @@
 
   <commandset id="MSIcomputeMenuCommands"
                   commandupdater="true"
-                  events="create, mode_switch"
+                  events="create, mode_switch, focus, select, undo"
                   oncommandupdate="goUpdateMSIcomputeMenuItems(this)">
     <command id="cmd_MSIComputeEval"                     oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
     <command id="cmd_MSIComputeEvalNum"                  oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
