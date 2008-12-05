@@ -742,8 +742,9 @@ function msiEditorDocumentObserver(editorElement)
             {
               dirs = match[1].split("/");
               file = getUserResourceFile( dirs[1], dirs[0]);
-              path = "file:///" + file.target;
+              path = "file://" + file.path;
 #ifdef XP_WIN32
+              path = "file:///" + file.path;
               path = path.replace("\\","/","g");
 #endif
               editor.addTagInfo(path);
