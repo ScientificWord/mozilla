@@ -4267,7 +4267,7 @@ var msiBaseMathNameList =
 
     var request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"].createInstance();
     request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
-    var thePath = "file:///" + mathNameFile.target;
+    var thePath = msiFileURLFromAbsolutePath( mathNameFile.target );
 #ifdef XP_WIN32
     thePath = thePath.replace("\\","/","g");
 #endif
@@ -4586,7 +4586,7 @@ var msiBaseMathUnitsList =
 
     var request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"].createInstance();
     request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
-    var thePath = "file:///" + unitNameFile.target;
+    var thePath = msiFileURLFromAbsolutePath( unitNameFile.target );
 #ifdef XP_WIN32
     thePath = thePath.replace("\\","/","g");
 #endif
@@ -4959,7 +4959,7 @@ var msiAutosubstitutionList =
 
     var request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"].createInstance();
     request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
-    var thePath = "file:///" + autosubsFile.target;
+    var thePath = msiFileURLFromAbsolutePath( autosubsFile.target );
 #ifdef XP_WIN32
     thePath = thePath.replace("\\","/","g");
 #endif
@@ -6283,4 +6283,21 @@ function gotoFirstNonspaceInElement( editor, node )
   selectionController.scrollSelectionIntoView(selectionController.SELECTION_NORMAL,selectionController.SELECTION_ANCHOR_REGION, 
     false);
 }
+
+function msiFileURLFromAbsolutePath( absPath )
+{
+#ifdef XP_WIN32
+  var url = "file:///"+absPath;
+#else
+  var url = "file://"+absPath;
+#endif
+  return url;
+}
+
+function msiPathFromFileURL( url )
+{
+  var dirpath = GetFilepath( url );
+  return dirpath
+}
+
   
