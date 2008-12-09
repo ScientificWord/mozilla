@@ -5270,6 +5270,8 @@ var msiNavigationUtils =
       if (lastNode != lastRefNode)
         break;
     }
+    try
+    {
     if (lastNode != lastRefNode)  //if they're equal, it should mean that aNode was equal to refNode, and then we want to compare incoming offsets so leave them alone.
     {
       if (lastNode)
@@ -5277,6 +5279,7 @@ var msiNavigationUtils =
       if (lastRefNode)
         nRealRefOffset = this.offsetInParent(lastRefNode);
     }
+    } catch(exc) {bLogIt = true; dump("Exception in msiNavigationUtils.comparePositions: [" + exc + "].\n");}
     if (bLogIt)
     {
       function describeNode(someNode)
@@ -5493,6 +5496,15 @@ var msiNavigationUtils =
     var children = this.getSignificantContents(node);
     if (children.length > 0)
       return children[children.length - 1];
+    return null;
+  },
+
+  //Note that this expects a 0-based child number.
+  getIndexedSignificantChild : function(node, nChild)
+  {
+    var children = this.getSignificantContents(node);
+    if (children.length > nChild)
+      return children[nChild];
     return null;
   },
 
