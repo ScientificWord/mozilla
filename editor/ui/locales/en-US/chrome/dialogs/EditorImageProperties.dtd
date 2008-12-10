@@ -67,6 +67,9 @@
 <!ENTITY actualSizeRadio.label "Actual Size">
 <!ENTITY actualSizeRadio.accesskey "A">
 <!ENTITY actualSizeRadio.tooltip "Revert to the image's actual size">
+<!ENTITY iconicImageRadio.label "Icon">
+<!ENTITY iconicImageRadio.accesskey "I">
+<!ENTITY iconicImageRadio.tooltip "Use an icon to mark the image's location">
 <!ENTITY customSizeRadio.label "Custom Size">
 <!ENTITY customSizeRadio.accesskey "S">
 <!ENTITY customSizeRadio.tooltip "Change the image's size as displayed in the page">
@@ -117,7 +120,9 @@
 
 <!-- These tabs are currently used in the image input dialog -->
 <!ENTITY imageInputTab.label "Form">
-<!ENTITY imageLocationTab.label "Location">
-<!ENTITY imageDimensionsTab.label "Dimensions">
-<!ENTITY imageAppearanceTab.label "Appearance">
+<!ENTITY imagePictureTab.label "Image">
+<!ENTITY msiFrameTab.label "Frame">
+<!ENTITY imageLabelingTab.label "Labeling">
 <!ENTITY imageLinkTab.label "Link">
+
+<!ENTITY placement.label "Placement">
