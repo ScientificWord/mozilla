@@ -38,68 +38,223 @@
    - the terms of any one of the MPL, the GPL or the LGPL.
    -
    - ***** END LICENSE BLOCK ***** -->
-
+ 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
-
-<?xul-overlay href="chrome://prince/content/msiEdImageOverlay.xul"?> 
+ 
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> <!--DO NOT DELETE -->
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/msiFrameOverlay.xul"?> 
 <!--?xul-overlay href="chrome://communicator/content/utilityOverlay.xul"? -->
-
+ 
 <!DOCTYPE dialog SYSTEM "chrome://editor/locale/EditorImageProperties.dtd">
-
-
-<!-- dialog containing a control requiring initial setup -->
-<dialog id="imageDlg" title="&windowTitle.label;"
+ 
+<dialog id="imgDialog" title="&windowTitle.label;"
     xmlns ="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload = "Startup()"
     buttons="accept,cancel,help"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();"
     ondialoghelp="return doHelpButton();">
-  
-  <!-- script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/ -->
+ 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdImageProps.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdImageOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
-#  <script type="application/x-javascript" src="chrome://global/content/globalOverlay.js"/>
-#  <script type="application/x-javascript" src="chrome://help/content/contextHelp.js"/>
-
+ 
   <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
   <broadcaster id="args" value=""/>
-
+ 
   <tabbox id="TabBox">
     <tabs flex="1">
-      <tab id="imageLocationTab"/>
-      <tab id="imageDimensionsTab"/>
-      <tab id="imageAppearanceTab"/>
-      <tab id="imageLinkTab"/>
+      <!--tab id="imageInputTab" label="&imageInputTab.label;"/ -->
+      <tab id="imagePictureTab" label="&imagePictureTab.label;"/>
+      <tab id="msiFrameTab"/>
+      <tab id="msiPlacementTab"/>
+      <tab id="imageLabelingTab" label="&imageLabelingTab.label;"/>
+      <tab id="imageLinkTab" label="&imageLinkTab.label;"/>
     </tabs>
     <tabpanels>
-      <!-- panels overlayed from msiEdImageOverlay.xul -->
-      <vbox id="imageLocation"/>
-      <vbox id="imageDimensions"/>
-      <hbox id="imageAppearance"/>
+      <vbox id="imagePicture">
+        <spacer class="spacer"/>
+        <radiogroup id="importRefRadioGroup" orient="horizontal" flex="1">
+          <radio id = "importRadio"
+            label   = "&importButton.label;"
+            accesskey = "&importButton.accesskey;"
+            oncommand = "SetImport(true);"/>
+          <radio id = "referenceRadio"
+            label   = "&referenceButton.label;"
+            accesskey = "&referenceButton.accesskey;"
+            oncommand = "SetImport(false);"/>
+        </radiogroup>
+        <label control = "srcInput"
+          value = "&locationEditField.label;"
+          accesskey="&locationEditField.accesskey;"
+          tooltiptext="&locationEditField.tooltip;"
+          />
+        <textbox id="srcInput" oninput="ChangeImageSrc();" tabindex="1" class="uri-element"/>
+        <hbox>
+          <checkbox
+            id  = "MakeRelativeCheckbox"
+            for = "srcInput"
+            tabindex="2"/>
+          <spacer flex="1"/>
+          <!-- from EdDialogOverlay.xul -->
+          <msibutton id="ChooseFile"  tabindex="3"/>
+        </hbox>
+        <spacer class="spacer"/>
+        <radiogroup id="imgSizeGroup"/>
+        <spacer class="spacer"/>
+        <grid flex="1">
+          <columns>
+            <column align="start"/>
+            <column align="start"/>
+            <column align="start"/>
+            <column align="start"/>
+          </columns>
+
+          <rows>
+            <row>
+              <radio
+                id      = "actualSizeRadio"
+                label   = "&actualSizeRadio.label;"
+                accesskey = "&actualSizeRadio.accesskey;"
+                tooltiptext="&actualSizeRadio.tooltip;"
+                oncommand = "SetActualSize()"
+                radioGroup="imgSizeGroup"/>
+              <checkbox id="constrainCheckbox" label="&constrainCheckbox.label;"
+                accesskey="&constrainCheckbox.accesskey;"
+                oncommand="ToggleConstrain()"
+                tooltiptext="&constrainCheckbox.tooltip;"/>
+              <label id   = "unitLabel"
+                control   = "unitMenulist"
+                accesskey = "&unitLabel.accesskey;"
+                value     = "&unitLabel.label;" />
+              <menulist id = "unitMenulist"
+                oncommand  = "doDimensionEnabling();" >
+                <menupopup>
+                  <menuitem value="in" label="in"/>
+                  <menuitem value="pct" label="percent"/>
+                  <menuitem value="cm" label="cm"/>
+                  <menuitem value="pt" label="pt" />
+                  <menuitem value="mm" label="mm"/>
+                  <menuitem value="pica" label="pica"/>
+                  <menuitem value="pixel" label="pixel"/>
+                </menupopup>
+              </menulist>
+            </row>
+            <row>
+              <radio
+                id      = "iconicImageRadio"
+                label   = "&iconicImageRadio.label;"
+                accesskey = "&iconicImageRadio.accesskey;"
+                tooltiptext="&iconicImageRadio.tooltip;"
+                oncommand = "SetIconicImage()"
+                radioGroup="imgSizeGroup"/>
+              <hbox/>
+              <label id    = "widthLabel"
+                  control   = "widthInput"
+                  accesskey = "&widthEditField.accesskey;"
+                  value = "&widthEditField.label;" />
+              <textbox
+                id        = "widthInput"
+                class     = "narrow"
+                type      = "number"
+                hidespinbuttons="false"
+                oninput   = "constrainProportions(this.id, 'heightInput')"/>
+            </row>
+            <row>
+              <radio
+                id      = "customSizeRadio"
+                label   = "&customSizeRadio.label;"
+                accesskey = "&customSizeRadio.accesskey;"
+                tooltiptext="&customSizeRadio.tooltip;"
+                oncommand = "doDimensionEnabling();"
+                radioGroup="imgSizeGroup"/>
+              <hbox/>
+              <label id   = "heightLabel"
+                control   = "heightInput"
+                accesskey = "&heightEditField.accesskey;"
+                value = "&heightEditField.label;" />
+              <textbox
+                id        = "heightInput"
+                class     = "narrow"
+                type      = "number"
+                oninput   = "constrainProportions(this.id, 'widthInput')"/>
+            </row>
+          </rows>
+        </grid>
+      </vbox>
+      <vbox id="msiFrame"/>
+      <vbox id="msiPlacement"/>
+      <vbox id="imageLabeling">
+        <hbox>
+          <label value="Key"/>
+          <textbox id="keyInput" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
+            completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="key"
+            tooltiptext="Enter a new key name"
+            onfocus=""
+            ontextentered="" />
+        </hbox>
+        <groupbox>
+          <caption id="captionPlacementLabel" label="Caption placement"/>
+          <radiogroup id="captionPlacementRadioGroup" orient="horizontal">
+            <radio id="captionAboveRadio" label="Above"/>
+            <radio id="captionBelowRadio" label="Below"/>
+          </radiogroup>
+        </groupbox>
+        <label value="Caption text"/>
+        <editor id="captionTextInput" height="2in" flex="1"/>
+        <label value="Alt text"/>
+        <textbox id="altTextInput"/>
+      </vbox>
       <vbox>
         <spacer class="spacer"/>
-        <vbox id="LinkLocationBox"/>
+        <label wrap="true" value="Enter a document location, a local document, or select a marker"/>
+        <label value="or heading from the popup list:"/>
+        <textbox id="linkKeyInput" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
+          completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="key"
+          tooltiptext="Enter a new key name or a document name"
+          onfocus=""
+          ontextentered="" />
         <spacer class="spacer"/>
         <checkbox id="showLinkBorder"
                   label="&showImageLinkBorder.label;"
                   accesskey="&showImageLinkBorder.accesskey;"
                   oncommand="ToggleShowLinkBorder();"/>
       </vbox>
+            
     </tabpanels>
   </tabbox>
-
+ 
   <hbox align="end">
-    <groupbox id="imagePreview"/>
-
+    <groupbox id="imagePreview" orient="horizontal" flex="1">
+      <caption label="&previewBox.label;"/>
+      <hbox id="preview-image-box" align="center">
+        <spacer flex="1"/>
+        <description id="preview-image-holder"/>
+        <spacer flex="1"/>
+      </hbox>
+      <vbox id="PreviewSize" collapsed="true">
+        <spacer flex="1"/>
+        <label value="&actualSize.label;"/>
+        <hbox>
+          <label value="&widthEditField.label;"/>
+          <spacer flex="1"/>
+          <label id="PreviewWidth"/>
+        </hbox>
+        <hbox>
+          <label value="&heightEditField.label;"/>
+          <spacer flex="1"/>
+          <label id="PreviewHeight"/>
+        </hbox>
+        <spacer flex="1"/>
+      </vbox>
+    </groupbox>
     <!-- from EdDialogOverlay -->
     <vbox id="AdvancedEdit"/>
   </hbox>
-
+ 
 </dialog>
