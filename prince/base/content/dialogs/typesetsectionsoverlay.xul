@@ -139,7 +139,7 @@
                   <vbox id="sectiontextareacontainer"  style="overflow: hidden; width:200px; min-height:20px"  >
 		                <iframe id="sectiontextarea" tooltiptext="Click to enter section text"
 		                  onclick="toggleselection(this);"	
-		                  src="resource://app/shells/article/latexDialogShell.sci"> 
+		                  src="resource://app/shells/stdDialogShell.xhtml"> 
 		                </iframe> 
 		              </vbox>
                 </deck>                                                                                                                         

@@ -13,6 +13,7 @@
 * {
   -moz-user-focus: ignore;
   -moz-user-select: -moz-none;
+  background-color: rgb(243, 243, 243);
   display: -moz-box;
 }
 
