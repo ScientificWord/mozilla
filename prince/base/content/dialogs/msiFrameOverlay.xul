@@ -1,0 +1,161 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+<!DOCTYPE dialog SYSTEM "chrome://editor/locale/EditorImageProperties.dtd">
+ 
+<overlay id="msiFrameOverlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <!--script type="application/x-javascript" src="chrome://prince/content/msiFrameOverlay.js"/-->
+  <tab id="msiFrameTab" label="Frame"/>
+  <tab id="msiPlacementTab" label="Placement"/>
+  <vbox id="msiFrame" align="start">
+    <grid flex="1">
+      <columns>
+        <column/>
+        <column flex="1"/>
+        <column flex="1"/>
+        <column flex="1"/>
+        <column flex="1"/>
+      </columns>
+      <rows>
+        <row>
+          <hbox/>
+          <label value="Left"/>
+          <label value="Right"/>
+          <label value="Top"/>
+          <label value="Bottom"/>
+        </row>
+        <row>
+          <label value="Margin"/>
+          <textbox
+            id        = "marginLeftInput"
+            class     = "medwidth"
+            type      = "number"
+            oninput   = ""/>
+          <textbox
+            id        = "marginRightInput"
+            class     = "medwidth"
+            type      = "number"
+            oninput   = ""/>
+          <textbox
+            id        = "marginTopInput"
+            class     = "medwidth"
+            type      = "number"
+            oninput   = ""/>
+          <textbox
+            id        = "marginBottomInput"
+            class     = "medwidth"
+            type      = "number"
+            oninput   = ""/>
+        </row>
+        <row>
+          <label value="Border"/>
+          <textbox
+            id        = "borderLeftInput"
+            class     = "medwidth"
+            type      = "number"
+            oninput   = ""/>
+          <textbox
+            id        = "borderRightInput"
+            class     = "medwidth"
+            type      = "number"
+            oninput   = ""/>
+          <textbox
+            id        = "borderTopInput"
+            class     = "medwidth"
+            type      = "number"
+            oninput   = ""/>
+          <textbox
+            id        = "borderBottomInput"
+            class     = "medwidth"
+            type      = "number"
+            oninput   = ""/>
+        </row>
+        <row>
+          <label value="Padding"/>
+          <textbox
+            id        = "paddingLeftInput"
+            class     = "medwidth"
+            type      = "number"
+            oninput   = ""/>
+          <textbox
+            id        = "paddingRightInput"
+            class     = "medwidth"
+            type      = "number"
+            oninput   = ""/>
+          <textbox
+            id        = "paddingTopInput"
+            class     = "medwidth"
+            type      = "number"
+            />
+          <textbox
+            id        = "paddingBottomInput"
+            class     = "medwidth"
+            type      = "number"
+            oninput   = ""/>
+        </row>
+        <row>
+          <label value="Crop"/>
+          <textbox
+            id        = "cropLeftInput"
+            class     = "medwidth"
+            type      = "number"
+            oninput   = ""/>
+          <textbox
+            id        = "cropRightInput"
+            class     = "medwidth"
+            type      = "number"
+            oninput   = ""/>
+          <textbox
+            id        = "cropTopInput"
+            class     = "medwidth"
+            type      = "number"
+            oninput   = ""/>
+          <textbox
+            id        = "cropBottomInput"
+            class     = "medwidth"
+            type      = "number"
+            oninput   = ""/>
+        </row>
+        <row>
+          <label value="Border color"/>
+          <button id="colorButton" class="color-button" oncommand="getColorAndUpdate();">
+            <spacer id="colorWell" class="color-well"/>
+          </button>
+        </row>
+      </rows>
+    </grid>    
+  </vbox>
+  <vbox id="msiPlacement">
+    <groupbox flex="1">
+      <caption label="Placement"/>
+      <radiogroup id="placementRadioGroup"/>
+      <hbox flex="1">
+        <vbox>
+          <radio id="inlineRadio" label="In line" radioGroup="placementRadioGroup"/>
+        </vbox>
+        <vbox>
+          <radio id="displayedRadio" label="Displayed" radioGroup="placementRadioGroup"/>
+        </vbox>
+        <vbox>
+          <radio id="floatingRadio" label="Floating" radioGroup="placementRadioGroup"/>
+          <vbox>
+            <checkbox id="placeHereCheck" label="Here" />
+            <checkbox id="placeFloatsCheck" label="On a page of floats" />
+            <checkbox id="placeTopCheck" label="Top of page" />
+            <checkbox id="placeBottomCheck" label="Bottom of page" />
+          </vbox>
+        </vbox>
+        <vbox>
+          <radiogroup id="inlinePlacementRadioGroup" align="vertical">
+            <radio id="inlineLeftRadio" label="Left" />
+            <radio id="inlineRightRadio" label="Right" />
+            <radio id="inlineInsideRadio" label="Inside" />
+            <radio id="inlineOutsideRadio" label="Outside" />
+            <radio id="inlineFullWidthRadio" label="Full width" />
+          </radiogroup>
+        </vbox>
+      </hbox>
+    </groupbox>
+  </vbox>
+</overlay>
