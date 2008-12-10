@@ -48,7 +48,6 @@ var gHNodeArray = {};
 
 function Startup()
 {
-//  var editor = GetCurrentEditor();
   var editorElement = msiGetParentEditorElementForDialog(window);
   var editor = msiGetEditor(editorElement);
   if (!editor)
@@ -58,19 +57,20 @@ function Startup()
   }
 
   ImageStartup();
-  gDialog.hrefInput        = document.getElementById("hrefInput");
-  gDialog.makeRelativeLink = document.getElementById("MakeRelativeLink");
-  gDialog.showLinkBorder   = document.getElementById("showLinkBorder");
-  gDialog.linkTab          = document.getElementById("imageLinkTab");
+  gDialog.importRefRadioGroup        = document.getElementById("importRefRadioGroup");
+  gDialog.srcInput                   = document.getElementById("srcInput");
+  gDialog.placementRadioGroup        = document.getElementById("placementRadioGroup");
+  gDialog.inlinePlacementRadioGroup  = document.getElementById("inlinePlacementRadioGroup");
+  // add more for the other tabs
 
   // Get a single selected image element
   var tagName = "img";
   if ("arguments" in window && window.arguments[0])
   {
     imageElement = window.arguments[0];
-    // We've been called from form field propertes, so we can't insert a link
-    gDialog.linkTab.parentNode.removeChild(gDialog.linkTab);
-    gDialog.linkTab = null;
+//    // We've been called from form field propertes, so we can't insert a link
+//    gDialog.linkTab.parentNode.removeChild(gDialog.linkTab);
+//    gDialog.linkTab = null;
   }
   else
   {
