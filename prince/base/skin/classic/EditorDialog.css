@@ -82,6 +82,10 @@ groupbox {
   width: 3em;
 }
 
+.medwidth {
+  width: 7em;
+}
+
 .wrap {
  width: 1em;
 }

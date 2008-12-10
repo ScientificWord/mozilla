@@ -197,8 +197,9 @@ function dumpNodeMarkingSel(node, selnode, seloffset, focnode, focoffset, indent
 }   
   
 
-function softSave()
+function softSave(delSelection)
 {
+  if (delSelection) deleteSelection();
   msiGoDoCommand('cmd_softSave');
 }
 
