@@ -53,10 +53,9 @@
 <dialog id="imgDialog" title="&windowTitle.label;"
     xmlns ="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload = "Startup()"
-    buttons="accept,cancel,help"
+    buttons="accept,cancel"
     ondialogaccept="return onAccept();"
-    ondialogcancel="return onCancel();"
-    ondialoghelp="return doHelpButton();">
+    ondialogcancel="return onCancel();">
  
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
@@ -78,7 +77,7 @@
     </tabs>
     <tabpanels>
       <vbox id="imagePicture">
-        <spacer class="spacer"/>
+        <spacer class="spacer" flex="1"/>
         <radiogroup id="importRefRadioGroup" orient="horizontal" flex="1">
           <radio id = "importRadio"
             label   = "&importButton.label;"
@@ -97,7 +96,7 @@
         <textbox id="srcInput" oninput="ChangeImageSrc();" tabindex="1" class="uri-element"/>
         <hbox>
           <checkbox
-            id  = "MakeRelativeCheckbox"
+            id  = "makeRelativeCheckbox"
             for = "srcInput"
             tabindex="2"/>
           <spacer flex="1"/>
@@ -105,8 +104,8 @@
           <msibutton id="ChooseFile"  tabindex="3"/>
         </hbox>
         <spacer class="spacer"/>
-        <radiogroup id="imgSizeGroup"/>
         <spacer class="spacer"/>
+        <radiogroup id="imgSizeGroup">
         <grid flex="1">
           <columns>
             <column align="start"/>
@@ -186,14 +185,16 @@
             </row>
           </rows>
         </grid>
+        </radiogroup>
       </vbox>
       <vbox id="msiFrame"/>
       <vbox id="msiPlacement"/>
       <vbox id="imageLabeling">
+        <spacer flex="1"/>
         <hbox>
           <label value="Key"/>
           <textbox id="keyInput" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
-            completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="key"
+            completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys"
             tooltiptext="Enter a new key name"
             onfocus=""
             ontextentered="" />
