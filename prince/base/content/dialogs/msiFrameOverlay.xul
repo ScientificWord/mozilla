@@ -2,14 +2,59 @@
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/content/Frame.css" type="text/css"?>
 <!DOCTYPE dialog SYSTEM "chrome://editor/locale/EditorImageProperties.dtd">
  
 <overlay id="msiFrameOverlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-  <!--script type="application/x-javascript" src="chrome://prince/content/msiFrameOverlay.js"/-->
+  <script type="application/x-javascript" src="chrome://prince/content/msiFrameOverlay.js"/>
   <tab id="msiFrameTab" label="Frame"/>
   <tab id="msiPlacementTab" label="Placement"/>
   <vbox id="msiFrame" align="start">
-    <grid flex="1">
+    <spacer flex="1"/>
+    <hbox>
+      <vbox>
+        <label id   = "frameUnitLabel"
+          control   = "frameUnitMenulist"
+          accesskey = "&unitLabel.accesskey;"
+          value     = "&unitLabel.label;" />
+        <menulist id = "frameUnitMenulist"
+          oncommand  = "doDimensionEnabling();" >
+          <menupopup>
+            <menuitem value="in" label="in"/>
+            <menuitem value="pct" label="percent"/>
+            <menuitem value="cm" label="cm"/>
+            <menuitem value="pt" label="pt" />
+            <menuitem value="mm" label="mm"/>
+            <menuitem value="pica" label="pica"/>
+            <menuitem value="pixel" label="pixel"/>
+          </menupopup>
+        </menulist>
+        <spacer flex="1"/>
+      </vbox>
+      <vbox id="illustration" width="210px" outer="false"> <!-- the illustration -->
+        <hbox height="30px">
+          <hbox width="100px"/><hbox type="text" width="100px"/><hbox width="10px"/>
+        </hbox>
+        <hbox observes="topmargin">
+          <hbox flex="1"/><hbox type="text" observes="textwidth"/><hbox width="10px"/>
+        </hbox>
+        <hbox observes="noteheight">
+          <hbox id="reducedleftmargin" flex="1"/> 
+          <hbox id="thenote" observes="notedata">
+            <hbox id="innerbox" flex="1"/>
+          </hbox>
+          <hbox observes="sidemargin"/>
+          <hbox type="text" observes="textwidth"/><hbox width="10px"/>
+        </hbox>
+        <hbox observes="topmargin">
+          <hbox id="leftbottommargin" flex="1"/><hbox type="text" observes="textwidth"/><hbox width="10px"/>
+        </hbox>
+        <hbox height="30px">
+          <hbox flex="1"/><hbox type="text" width="100px"/><hbox width="10px"/>
+        </hbox>
+      </vbox>
+    </hbox>
+    <grid>
       <columns>
         <column/>
         <column flex="1"/>
@@ -31,22 +76,22 @@
             id        = "marginLeftInput"
             class     = "medwidth"
             type      = "number"
-            oninput   = ""/>
+            onblur    = "extendInput(this.id);"/>
           <textbox
             id        = "marginRightInput"
             class     = "medwidth"
             type      = "number"
-            oninput   = ""/>
+            onblur    = "extendInput(this.id);"/>
           <textbox
             id        = "marginTopInput"
             class     = "medwidth"
             type      = "number"
-            oninput   = ""/>
+            onblur   = "extendInput(this.id);"/>
           <textbox
             id        = "marginBottomInput"
             class     = "medwidth"
             type      = "number"
-            oninput   = ""/>
+            onblur    = "extendInput(this.id);"/>
         </row>
         <row>
           <label value="Border"/>
@@ -54,22 +99,22 @@
             id        = "borderLeftInput"
             class     = "medwidth"
             type      = "number"
-            oninput   = ""/>
+            onblur    = "extendInput(this.id);"/>
           <textbox
             id        = "borderRightInput"
             class     = "medwidth"
             type      = "number"
-            oninput   = ""/>
+            onblur    = "extendInput(this.id);"/>
           <textbox
             id        = "borderTopInput"
             class     = "medwidth"
             type      = "number"
-            oninput   = ""/>
+            onblur    = "extendInput(this.id);"/>
           <textbox
             id        = "borderBottomInput"
             class     = "medwidth"
             type      = "number"
-            oninput   = ""/>
+            onblur    = "extendInput(this.id);"/>
         </row>
         <row>
           <label value="Padding"/>
@@ -77,22 +122,22 @@
             id        = "paddingLeftInput"
             class     = "medwidth"
             type      = "number"
-            oninput   = ""/>
+            onblur    = "extendInput(this.id);"/>
           <textbox
             id        = "paddingRightInput"
             class     = "medwidth"
             type      = "number"
-            oninput   = ""/>
+            onblur    = "extendInput(this.id);"/>
           <textbox
             id        = "paddingTopInput"
             class     = "medwidth"
             type      = "number"
-            />
+            onblur    = "extendInput(this.id);"/>
           <textbox
             id        = "paddingBottomInput"
             class     = "medwidth"
             type      = "number"
-            oninput   = ""/>
+            onblur    = "extendInput(this.id);"/>
         </row>
         <row>
           <label value="Crop"/>
@@ -100,22 +145,22 @@
             id        = "cropLeftInput"
             class     = "medwidth"
             type      = "number"
-            oninput   = ""/>
+            onblur   = ""/>
           <textbox
             id        = "cropRightInput"
             class     = "medwidth"
             type      = "number"
-            oninput   = ""/>
+            onblur   = ""/>
           <textbox
             id        = "cropTopInput"
             class     = "medwidth"
             type      = "number"
-            oninput   = ""/>
+            onblur   = ""/>
           <textbox
             id        = "cropBottomInput"
             class     = "medwidth"
             type      = "number"
-            oninput   = ""/>
+            onblur   = ""/>
         </row>
         <row>
           <label value="Border color"/>
@@ -127,9 +172,10 @@
     </grid>    
   </vbox>
   <vbox id="msiPlacement">
-    <groupbox flex="1">
+    <spacer flex="1"/>
+    <groupbox >
       <caption label="Placement"/>
-      <radiogroup id="placementRadioGroup"/>
+      <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);">
       <hbox flex="1">
         <vbox>
           <radio id="inlineRadio" label="In line" radioGroup="placementRadioGroup"/>
@@ -139,23 +185,34 @@
         </vbox>
         <vbox>
           <radio id="floatingRadio" label="Floating" radioGroup="placementRadioGroup"/>
-          <vbox>
-            <checkbox id="placeHereCheck" label="Here" />
-            <checkbox id="placeFloatsCheck" label="On a page of floats" />
-            <checkbox id="placeTopCheck" label="Top of page" />
-            <checkbox id="placeBottomCheck" label="Bottom of page" />
+          <vbox oncommand="enableHere(this);">
+            <checkbox id="placeHereCheck" label="Here" observes="floatingPlacement"/>
+            <checkbox id="placeFloatsCheck" label="On a page of floats" observes="floatingPlacement" />
+            <checkbox id="placeTopCheck" label="Top of page" observes="floatingPlacement" />
+            <checkbox id="placeBottomCheck" label="Bottom of page" observes="floatingPlacement" />
           </vbox>
         </vbox>
         <vbox>
           <radiogroup id="inlinePlacementRadioGroup" align="vertical">
-            <radio id="inlineLeftRadio" label="Left" />
-            <radio id="inlineRightRadio" label="Right" />
-            <radio id="inlineInsideRadio" label="Inside" />
-            <radio id="inlineOutsideRadio" label="Outside" />
-            <radio id="inlineFullWidthRadio" label="Full width" />
+            <radio id="inlineLeftRadio" label="Left" observes="herePlacement" />
+            <radio id="inlineRightRadio" label="Right" observes="herePlacement"/>
+            <radio id="inlineInsideRadio" label="Inside" observes="herePlacement" />
+            <radio id="inlineOutsideRadio" label="Outside" observes="herePlacement" />
+            <radio id="inlineFullWidthRadio" label="Full width" observes="herePlacement" />
           </radiogroup>
         </vbox>
       </hbox>
+      </radiogroup>
     </groupbox>
+    <broadcasterset>
+      <broadcaster id="floatingPlacement" disabled="true"/>
+      <broadcaster id="herePlacement" disabled="true"/>
+      <broadcaster id="textwidth" width="52"/> <!-- = 100 + overhang - notedata.width - sidemargin -->
+      <broadcaster id="noteheight" height="40"/>
+      <broadcaster id="reducedleftmargin" width="40"   /> <!-- 60 - overhang -->        
+      <broadcaster id="sidemargin" width="8"/>         
+      <broadcaster id="topmargin" height="8"/> 
+      <broadcaster id="notedata" width="60" color="#000000" bwidth="2" bstyle="solid" pwidth="1"/>        
+    </broadcasterset>
   </vbox>
 </overlay>
