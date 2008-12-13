@@ -219,3 +219,4 @@ prince.jar:
   content/msiFindUtils.js             (msiFindUtils.js)
   content/paragraphProperties.xul     (dialogs/paragraphProperties.xul)
   content/msiFrameOverlay.xul     (dialogs/msiFrameOverlay.xul)
+  content/msiFrameOverlay.js      (dialogs/msiFrameOverlay.js)
