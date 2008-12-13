@@ -40,9 +40,7 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-var gAnchorElement = null;
-var gOriginalHref = "";
-var gHNodeArray = {};
+var gDialog;
 
 // dialog initialization code
 
@@ -56,11 +54,42 @@ function Startup()
     return;
   }
 
-  ImageStartup();
-  gDialog.importRefRadioGroup        = document.getElementById("importRefRadioGroup");
-  gDialog.srcInput                   = document.getElementById("srcInput");
-  gDialog.placementRadioGroup        = document.getElementById("placementRadioGroup");
-  gDialog.inlinePlacementRadioGroup  = document.getElementById("inlinePlacementRadioGroup");
+  initKeyList();
+  gDialog = new Object();
+  gDialog.import            = document.getElementById( "importRefRadioGroup").selectedIndex == 0;
+  gDialog.tabBox            = document.getElementById( "TabBox" );
+  gDialog.tabPicture        = document.getElementById( "imagePictureTab" );
+  gDialog.tabFrame          = document.getElementById( "msiFrameTab" );
+  gDialog.tabPlacement      = document.getElementById( "msiPlacementTab" );
+  gDialog.tabLabeling       = document.getElementById( "imageLabelingTab" );
+  gDialog.tabLink           = document.getElementById( "imageLinkTab" );
+  gDialog.srcInput          = document.getElementById( "srcInput" );
+  gDialog.relativeURL       = document.getElementById( "makeRelativeCheckbox" ).checked;
+ // gDialog.titleInput        = document.getElementById( "titleInput" );
+ // gDialog.altTextInput      = document.getElementById( "altTextInput" );
+ // gDialog.altTextRadioGroup = document.getElementById( "altTextRadioGroup" );
+ // gDialog.altTextRadio      = document.getElementById( "altTextRadio" );
+ // gDialog.noAltTextRadio    = document.getElementById( "noAltTextRadio" );
+  gDialog.actualSizeRadio   = document.getElementById( "actualSizeRadio" );
+  gDialog.iconicImageRadio  = document.getElementById( "iconicImageRadio" );
+  gDialog.customSizeRadio   = document.getElementById( "customSizeRadio" );
+  gDialog.constrainCheckbox = document.getElementById( "constrainCheckbox" );
+  gDialog.unitMenulist      = document.getElementById( "unitMenulist" );
+  gDialog.widthInput        = document.getElementById( "widthInput" );
+  gDialog.heightInput       = document.getElementById( "heightInput" );
+  gDialog.unitMenulist      = document.getElementById( "unitMenulist" );
+ // frame and placement tabs
+  initFrameTab(gDialog);
+ // labeling tab
+  gDialog.ImageHolder       = document.getElementById( "preview-image-holder" );
+  gDialog.PreviewWidth      = document.getElementById( "PreviewWidth" );
+  gDialog.PreviewHeight     = document.getElementById( "PreviewHeight" );
+  gDialog.PreviewSize       = document.getElementById( "PreviewSize" );
+  gDialog.PreviewImage      = null;
+  gDialog.OkButton          = document.documentElement.getButton("accept");
+  
+  msiCSSUnitConversions.pica = 4.2333333; //mm per pica
+  msiCSSUnitConversions.pixel = 0.26458342; //mm per pixel at 96 pixels/inch.
   // add more for the other tabs
 
   // Get a single selected image element
@@ -68,13 +97,11 @@ function Startup()
   if ("arguments" in window && window.arguments[0])
   {
     imageElement = window.arguments[0];
-//    // We've been called from form field propertes, so we can't insert a link
-//    gDialog.linkTab.parentNode.removeChild(gDialog.linkTab);
-//    gDialog.linkTab = null;
   }
   else
   {
     // First check for <input type="image">
+    // Does this ever get run?
     try {
       imageElement = editor.getSelectedElement("input");
 
@@ -130,16 +157,14 @@ function Startup()
     gOriginalHref = gAnchorElement.getAttribute("href");
   gDialog.hrefInput.value = gOriginalHref;
 
-  FillLinkMenulist(gDialog.hrefInput, gHNodeArray);
+//  FillLinkMenulist(gDialog.hrefInput, gHNodeArray);
   ChangeLinkLocation();
 
   // Save initial source URL
   gOriginalSrc = gDialog.srcInput.value;
 
   // By default turn constrain on, but both width and height must be in pixels
-  gDialog.constrainCheckbox.checked =
-    gDialog.widthUnitsMenulist.selectedIndex == 0 &&
-    gDialog.heightUnitsMenulist.selectedIndex == 0;
+  gDialog.constrainCheckbox.checked = true;
 
   window.mMSIDlgManager = new msiDialogConfigManager(window);
   window.mMSIDlgManager.configureDialog();
@@ -331,4 +356,42 @@ function onAccept()
 
   return true;
 //  return false;
+}
+
+
+var xsltSheet="<?xml version='1.0'?><xsl:stylesheet version='1.1' xmlns:xsl='http://www.w3.org/1999/XSL/Transform' xmlns:html='http://www.w3.org/1999/xhtml' ><xsl:output method='text' encoding='UTF-8'/> <xsl:template match='/'>  <xsl:apply-templates select='//*[@key]'/></xsl:template><xsl:template match='//*[@key]'>   <xsl:value-of select='@key'/><xsl:text> </xsl:text></xsl:template> </xsl:stylesheet>";
+
+function initKeyList()
+{
+  var editorElement = msiGetActiveEditorElement();
+  var editor;
+  if (editorElement) editor = msiGetEditor(editorElement);
+  var parser = new DOMParser();
+  var dom = parser.parseFromString(xsltSheet, "text/xml");
+  dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" + dom.documentElement.textContents : dom.documentElement.nodeName);
+  var processor = new XSLTProcessor();
+  processor.importStylesheet(dom.documentElement);
+  var newDoc;
+  if (editor) newDoc = processor.transformToDocument(editor.document, document);
+  dump(newDoc.documentElement.localName+"\n");
+  var keyString = newDoc.documentElement.textContent;
+  var keys = keyString.split(/\s+/);
+  var i;
+  var len;
+  keys.sort();
+  var lastkey = "";
+  for (i=keys.length-1; i >= 0; i--)
+  {
+    if (keys[i] == "" || keys[i] == lastkey) keys.splice(i,1);
+    else lastkey = keys[i];
+  }  
+  var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+  ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+  ACSA.resetArray("keys");
+  for (i=0, len=keys.length; i<len; i++)
+  {
+    if (keys[i].length > 0) 
+      ACSA.addString("keys",keys[i]);
+  }
+  dump("Keys are : "+keys.join()+"\n");    
 }

@@ -371,13 +371,24 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::ContentsofArray(const nsAStrin
 /* void resetArray (in AString strCategory); */
 NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::ResetArray(const nsAString & strCategory)
 {
-  nsStringArray * psa = GetStringArrayForCategory(strCategory, PR_FALSE);
-  if (psa) {
-    delete psa;
-    psa = nsnull;
+  stringStringArray * pssa = m_stringArrays;
+  stringStringArray * pPrev = nsnull;
+  while (pssa)
+  {
+    if (pssa->strCategory.Equals(strCategory))
+    {
+      if (pPrev == nsnull) m_stringArrays = pssa->next;
+      else pPrev->next = pssa->next;
+      delete pssa->strArray;
+      delete pssa;
+      return NS_OK;
+    }
+    pPrev = pssa;
+    pssa = pssa->next;
   }
   return NS_OK;
 }
+  
 
 /* void resetAll (); */
 NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::ResetAll()
