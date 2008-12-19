@@ -46,6 +46,7 @@ var gDialog;
 
 function Startup()
 {
+  debugger;
   var editorElement = msiGetParentEditorElementForDialog(window);
   var editor = msiGetEditor(editorElement);
   if (!editor)
