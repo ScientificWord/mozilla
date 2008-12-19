@@ -111,6 +111,20 @@ function ImageStartup()
   msiCSSUnitConversions.pixel = 0.26458342; //mm per pixel at 96 pixels/inch.
 }
 
+function stripPx(s, index, array) // strip "px" from a string if it is there
+{ if (/px/.test(s)) return RegExp.leftContext;
+  else if (s=="thin") return 1;
+  else if (s=="medium") return 3;
+  else if (s=="thick") return 5;
+}
+var gBorderdesc = ["border-top-width","border-right-width","border-bottom-width","border-left-width"];
+function fillInValue(element, index, array)
+{
+  if (!element || element.length == 0)
+    element= msiGetHTMLOrCSSStyleValue(null, globalElement, gBorderdesc[index], null);
+}
+
+
 // Set dialog widgets with attribute data
 // We get them from globalElement copy so this can be used
 //   by AdvancedEdit(), which is shared by all property dialogs
@@ -168,55 +182,59 @@ function InitImage()
   gDialog.heightInput.value = gConstrainHeight = height ? height : (gActualHeight ? gActualHeight : "");
 
   // set spacing editfields
-  gDialog.imagelrInput.value = globalElement.getAttribute("hspace");
-  gDialog.imagetbInput.value = globalElement.getAttribute("vspace");
+  var herePlacement;
+  var placement = globalElement.getAttribute("placement");
+  if (placement == "here");
+    gDialog.herePlacementRadioGroup.value=globalElement.getAttribute("herePlacement");
 
   // dialog.border.value       = globalElement.getAttribute("border");
-  var bv = msiGetHTMLOrCSSStyleValue(null, globalElement, "border", "border-top-width");
-  if (/px/.test(bv))
-  {
-    // Strip out the px
-    bv = RegExp.leftContext;
-  }
-  else if (bv == "thin")
-  {
-    bv = "1";
-  }
-  else if (bv == "medium")
-  {
-    bv = "3";
-  }
-  else if (bv == "thick")
-  {
-    bv = "5";
-  }
-  gDialog.border.value = bv;
+  var bordervalues;
+  var bv = msiGetHTMLOrCSSStyleValue(null, globalElement, "border", null);
+  var i;
+  bordervalues = bv.split(/\s+/);
+  if (bordervalues[3] && bordervalues[3].length > 0)
+    ; /* all four values were given */
+  else if (bordervalues[2] && bordervalues[2].length > 0)
+    // only 3 values given. The last is the same as the second.
+    bordervalues[3] = bordervalues[1]; 
+  else if (bordervalues[1] && bordervalues[1].length > 0) {
+    // only 2 values given; repeat
+    bordervalues[2] = bordervalues[0]; bordervalues[3] = bordervalues[1];}
+  else if (bordervalues[0] && bordervalues[0].length > 0) 
+    bordervalues[3] = bordervalues[2]  = bordervalues[1] = bordervalues[0]; 
+  bordervalues.forEach(fillInValue);
+  bordervalues.forEach(stripPx);
+    
+  gDialog.borderInput.top = bordervalues[0];
+  gDialog.borderInput.right = bordervalues[1];
+  gDialog.borderInput.bottom = bordervalues[2];
+  gDialog.borderInput.left = bordervalues[3];
 
   // Get alignment setting
-  var align = globalElement.getAttribute("align");
-  if (align)
-    align = align.toLowerCase();
-
-  var imgClass;
-  var textID;
-
-  switch ( align )
-  {
-    case "top":
-    case "middle":
-    case "right":
-    case "left":
-      gDialog.alignTypeSelect.value = align;
-      break;
-    default:  // Default or "bottom"
-      gDialog.alignTypeSelect.value = "bottom";
-  }
-
-  // Get image map for image
-  gImageMap = GetImageMap();
-
-  doOverallEnabling();
-  doDimensionEnabling();
+//  var align = globalElement.getAttribute("align");
+//  if (align)
+//    align = align.toLowerCase();
+//
+//  var imgClass;
+//  var textID;
+//
+//  switch ( align )
+//  {
+//    case "top":
+//    case "middle":
+//    case "right":
+//    case "left":
+//      gDialog.alignTypeSelect.value = align;
+//      break;
+//    default:  // Default or "bottom"
+//      gDialog.alignTypeSelect.value = "bottom";
+//  }
+//
+//  // Get image map for image
+//  gImageMap = GetImageMap();
+//
+//  doOverallEnabling();
+//  doDimensionEnabling();
 }
 
 function  SetSizeWidgets(width, height)
