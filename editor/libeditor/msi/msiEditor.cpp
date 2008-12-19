@@ -2564,8 +2564,8 @@ nsresult msiEditor::AdjustCaret(nsIDOMEvent * aMouseEvent, nsCOMPtr<nsIDOMNode> 
 // 2. We have hit the beginning of a tag other than a text formatting tag. We do not allow patterns to span
 //    paragraphs or other block object, and we do not go into or out of math if we started on the outside or 
 //    inside, respectively.
-// 3. In math, we will quit once we encounter a node other than <mi> or <mo>. If we encounter a multicharacter <mi>,
-//    we sent fCanEndHere to false until we are returning the first character in the <mi>. This keeps us from 
+// 3. In math, we will quit once we encounter a node other than <mi>, <mn> or <mo>. If we encounter a multicharacter <mi>,
+//    we set fCanEndHere to false until we are returning the first character in the <mi>. This keeps us from 
 //    matching a proper subset of a multicharacter <mi> (but we can include al of the <mi> contents in a match).
 // 4. Multiple white space characters will be coalesced into a space, and &invisibletimes is ignored. For this reason
 //    we pass the last character matched (actually, a boolean telling if the last character matched was a space would
@@ -2708,6 +2708,54 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
   }
   return res;
 }
+
+//nsresult
+//msiEditor::CheckForUnicodeNumber(PRBool inmath)
+//{
+//  nsresult res = NS_OK;
+//  nsCOMPtr<nsISelection> selection;
+//  GetSelection(getter_AddRefs(selection)); 
+//  if (!selection) return res;
+//  nsCOMPtr<nsIDOMNode> node;
+//  nsCOMPtr<nsIDOM3Node> textNode;
+//  nsCOMPtr<nsIDOMNode> originalNode;
+//  PRUnichar ch = 0;
+//  PRInt32 ctx, action; 
+//  PRInt32 intOffset;
+//  PRUint32 offset;
+//  nsAutoString theText;
+//  PRInt32 lookupResult;
+//  nsAutoString data, pasteContext, pasteInfo, error;       
+//  selection->GetFocusNode((nsIDOMNode **) getter_AddRefs(originalNode));
+//  if (!originalNode) return res;
+//  selection->GetFocusOffset( &intOffset );
+//  offset = (PRUint32)intOffset;
+//  PRUint32 originalOffset = offset;
+//  GetNextCharacter(originalNode, originalOffset, getter_AddRefs(node), offset, ch, lookupResult);
+//  if (node)  // there was success somewhere
+//  {
+//    m_autosub->GetCurrentData(&ctx, &action, pasteContext, pasteInfo, data);
+//    if ((ctx!=msiIAutosub::CONTEXT_TEXTONLY) == inmath || 
+//      inmath != (ctx!=msiIAutosub::CONTEXT_MATHONLY))
+//    {
+//      selection->Collapse(node, offset);
+//      selection->Extend(originalNode,originalOffset);
+//      if (action == msiIAutosub::ACTION_SUBSTITUTE)
+//        InsertHTMLWithContext(data, pasteContext, pasteInfo, NS_LITERAL_STRING("text/html"), nsnull, nsnull, 0, PR_TRUE); 
+//      else if (action == msiIAutosub::ACTION_EXECUTE)
+//      {
+//        nsCOMPtr<msiIScriptRunner> sr = do_CreateInstance("@mackichan.com/scriptrunner;1", &res);
+//        if (res == NS_OK)
+//        {
+//          sr->SetCtx(m_window);
+//          sr->Eval(data, error);
+//          if (error.Length() > 0) printf("Error in Eval: %S\n", error.BeginReading());
+//        }
+//      }
+//    }
+//  }
+//  return res;
+//}
 
 NS_IMETHODIMP
 msiEditor::InitRules()
