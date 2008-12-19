@@ -24,7 +24,7 @@ function  initFrameTab(gDialog)
   gDialog.placeFloatsCheck      = document.getElementById("placeFloatsCheck");
   gDialog.placeTopCheck         = document.getElementById("placeTopCheck");
   gDialog.placeBottomCheck      = document.getElementById("placeBottomCheck");
-  gDialog.inlinePlacementRadioGroup   = document.getElementById("inlinePlacementRadioGroup");
+  gDialog.herePlacementRadioGroup   = document.getElementById("herePlacementRadioGroup");
 }
 
 function extendInput( anId )
