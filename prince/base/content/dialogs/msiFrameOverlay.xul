@@ -5,7 +5,8 @@
 <?xml-stylesheet href="chrome://prince/content/Frame.css" type="text/css"?>
 <!DOCTYPE dialog SYSTEM "chrome://editor/locale/EditorImageProperties.dtd">
  
-<overlay id="msiFrameOverlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+<overlay id="msiFrameOverlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+      xmlns:html="http://www.w3.org/1999/xhtml">
   <script type="application/x-javascript" src="chrome://prince/content/msiFrameOverlay.js"/>
   <tab id="msiFrameTab" label="Frame"/>
   <tab id="msiPlacementTab" label="Placement"/>
@@ -31,27 +32,30 @@
         </menulist>
         <spacer flex="1"/>
       </vbox>
-      <vbox id="illustration" width="210px" outer="false"> <!-- the illustration -->
-        <hbox height="30px">
-          <hbox width="100px"/><hbox type="text" width="100px"/><hbox width="10px"/>
+      <vbox id="illustration" pack="start" width="220px" 
+         outer="false"> <!-- the illustration -->
+        <hbox flex="1"/>
+        <hbox>
+          <vbox width="60px" />
+          <hbox class="page" height="30px" style="background-color:rgb(90,90,90);width:100px;"/>
         </hbox>
-        <hbox observes="topmargin">
-          <hbox flex="1"/><hbox type="text" observes="textwidth"/><hbox width="10px"/>
+        <hbox>
+          <hbox id="leftspacer" height="1px" width="60px"/> <!-- width is 60 + min(0, left margin) -->
+          <hbox id="leftpage" height="1px" class="page" width="48px" style="background-color:rgb(90,90,90);"/> <!-- width is max(0,leftmargin) (scaled, of course)
+            or, when on the right, it is 100 - contentwidth - mx -px -bx -->
+          <vbox id = "outer" style="background-color:white; padding:4px"> <!-- padding is the "margin" of the frame-->
+            <vbox id="frame" style="border-style:solid; border-width:1px; padding: 3px;"><!-- border and padding are those of the frame-->
+              <vbox id="content" style="background-color:red; height:40px; width:50px"/><!-- height and width are those of the content of the frame --> 
+            </vbox>
+          </vbox>
+          <hbox id="rightpage" height="1px" class="page" style="background-color:rgb(90,90,90);" width="0px"/><!-- width is 100 - contentwidth - mx - px - bx,
+            where mx is the sum of the left and right margins, and px and bx are the same for the padding and border -->
+        </hbox >
+        <hbox>
+          <vbox width="60px" height="1px"/>
+          <hbox class = "page" style="background-color:rgb(90,90,90);width:100px; height:34px"/><!-- height is 90 - contentheight - my -py -by -->
         </hbox>
-        <hbox observes="noteheight">
-          <hbox id="reducedleftmargin" flex="1"/> 
-          <hbox id="thenote" observes="notedata">
-            <hbox id="innerbox" flex="1"/>
-          </hbox>
-          <hbox observes="sidemargin"/>
-          <hbox type="text" observes="textwidth"/><hbox width="10px"/>
-        </hbox>
-        <hbox observes="topmargin">
-          <hbox id="leftbottommargin" flex="1"/><hbox type="text" observes="textwidth"/><hbox width="10px"/>
-        </hbox>
-        <hbox height="30px">
-          <hbox flex="1"/><hbox type="text" width="100px"/><hbox width="10px"/>
-        </hbox>
+        <vbox flex="1"/>
       </vbox>
     </hbox>
     <grid>
@@ -193,12 +197,12 @@
           </vbox>
         </vbox>
         <vbox>
-          <radiogroup id="inlinePlacementRadioGroup" align="vertical">
-            <radio id="inlineLeftRadio" label="Left" observes="herePlacement" />
-            <radio id="inlineRightRadio" label="Right" observes="herePlacement"/>
-            <radio id="inlineInsideRadio" label="Inside" observes="herePlacement" />
-            <radio id="inlineOutsideRadio" label="Outside" observes="herePlacement" />
-            <radio id="inlineFullWidthRadio" label="Full width" observes="herePlacement" />
+          <radiogroup id="herePlacementRadioGroup" align="vertical">
+            <radio id="hereLeftRadio" label="Left" value="left" observes="herePlacement" />
+            <radio id="hereRightRadio" label="Right" value="right" observes="herePlacement"/>
+            <radio id="hereInsideRadio" label="Inside" value="inside" observes="herePlacement" />
+            <radio id="hereOutsideRadio" label="Outside" value="outside" observes="herePlacement" />
+            <radio id="hereFullWidthRadio" label="Full width" value="full" observes="herePlacement" />
           </radiogroup>
         </vbox>
       </hbox>
@@ -211,7 +215,7 @@
       <broadcaster id="noteheight" height="40"/>
       <broadcaster id="reducedleftmargin" width="40"   /> <!-- 60 - overhang -->        
       <broadcaster id="sidemargin" width="8"/>         
-      <broadcaster id="topmargin" height="8"/> 
+      <broadcaster id="topmargin" height="8"/>
       <broadcaster id="notedata" width="60" color="#000000" bwidth="2" bstyle="solid" pwidth="1"/>        
     </broadcasterset>
   </vbox>
