@@ -632,7 +632,11 @@ function onVerifyFind()
   var theRange = gEditor.selection.getRangeAt(0);
   if (!gTestFindDialog.mSearchManager.verifySearch(theRange))
   {
-    theRange.collapse(false);
+//    theRange.collapse(false);
+    if (gTestFindDialog.mSearchState.backwards())
+      gEditor.selection.collapseToStart();
+    else
+      gEditor.selection.collapseToEnd();
     gTestFindDialog.verifyFind.label = document.getElementById("verifyFailed").value;
   }
   else
