@@ -1300,12 +1300,18 @@ msiMatchNode.prototype =
     {
       if (!("hasAttribute" in parNode))
       {
-        msiKludgeLogString( "In msiMatchNode.checkInheritedAttribute, no 'hasAttribute' function for parNode [" + parNode.nodeName + ", " + parNode.textContent + "].\n", ["search"] );
+        msiKludgeLogString( "In msiMatchNode.checkInheritedAttribute, no 'hasAttribute' function for parNode [" + parNode.nodeName + ", " + parNode.textContent + "] - searching for attribute [" + attrName + " = " + attrVal + "].\n", ["search"] );
         //Then just continue looping
       }
       else if (parNode.hasAttribute(attrName))
-        return (attrVal == parNode.getAttribute(attrName));
+      {
+        if (attrVal == parNode.getAttribute(attrName))
+          return true;
+        msiKludgeLogString( "In msiMatchNode.checkInheritedAttribute, hasAttribute failed for attribute [" + attrName + " = " + attrVal + "]; actual value was [" + parNode.getAttribute(attrName) + ".\n", ["search"] );
+        return false;
+      }
     }
+    msiKludgeLogString( "In msiMatchNode.checkInheritedAttribute, hasAttribute failed for attribute [" + attrName + " = " + attrVal + "].\n", ["search"] );
     return false;
   },
 
@@ -1316,6 +1322,7 @@ msiMatchNode.prototype =
       if (parNode.nodeName == ancestorName)
         return true;
     }
+    msiKludgeLogString( "In msiMatchNode.checkNeededAncestor, failed to find ancestor [" + ancestorName + "].\n", ["search"] );
     return false;
   },
 
@@ -1650,6 +1657,8 @@ msiMatchNode.prototype =
 //        bTargOffsetChanged = true;
         if (bTargOffsetChanged)
           msiKludgeLogString( "adjustRightStartingTargPosition() call changed offset in extendMatchToRight for node [" + this.describe() + "]; localTargRange is [" + this.describeMsiRange(localTargRange) + "];\n  ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
+//        else
+//          msiKludgeLogString( "adjustRightStartingTargPosition() call did not change offset in extendMatchToRight for node [" + this.describe() + "]; localTargRange is [" + this.describeMsiRange(localTargRange) + "];\n  ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
       }
       if (this.targNodeIsCompatible(localTargRange.endContainer))
         lastGoodLocalRange.setEnd(localTargRange.endContainer, localTargRange.endOffset);
@@ -1710,6 +1719,7 @@ msiMatchNode.prototype =
     var localMatch = msiSearchUtils.partialMatch;
     var targNode = targRange.startContainer;
     var targOffset = targRange.startOffset;
+    var ourLocalRange = ourRange.cloneRange();
     if (origTarget != null)
       bMustMatchContainingNode = true;
     var bNeedNodeMatch = this.mustMatchNode();
@@ -1774,8 +1784,13 @@ msiMatchNode.prototype =
         localMatch = msiSearchUtils.cannotMatch;
         if (localNodeToMatch != null)
         {
+          ourLocalRange.setEnd(ourRange.endContainer, ourRange.endOffset);
+          ourLocalRange.setStartAfter(localNodeToMatch);
           localMatcher = createMatchNode(localNodeToMatch, this.mFlags, this.mEditor);
-          localMatch = localMatcher.extendMatchToLeft(targRange, ourRange);
+//          localMatch = localMatcher.extendMatchToLeft(targRange, ourRange);
+          localMatch = localMatcher.extendMatchToLeft(targRange, ourLocalRange);
+          if (msiMatchUtils.isMatching(localMatch))
+            ourRange.setStart(ourLocalRange.startContainer, ourLocalRange.startOffset);
         }
         else
         {
@@ -1821,6 +1836,7 @@ msiMatchNode.prototype =
     var localNodeToMatch = null;
     var localMatcher = null;
     var localMatch = msiSearchUtils.partialMatch;
+    var ourLocalRange = ourRange.cloneRange();
     var bNeedNodeMatch = this.mustMatchNode();
     if (!bMustMatchContainingNode && bNeedNodeMatch)
     {
@@ -1881,8 +1897,13 @@ msiMatchNode.prototype =
         localMatch = msiSearchUtils.cannotMatch;
         if (localNodeToMatch != null)
         {
+          ourLocalRange.setStart(ourRange.startContainer, ourRange.startOffset);
+          ourLocalRange.setEndBefore(localNodeToMatch);
           localMatcher = createMatchNode(localNodeToMatch, this.mFlags, this.mEditor);
-          localMatch = localMatcher.extendMatchToRight(matchRange, ourRange, this.mEditor);
+//          localMatch = localMatcher.extendMatchToRight(matchRange, ourRange, this.mEditor);
+          localMatch = localMatcher.extendMatchToRight(matchRange, ourLocalRange);
+          if (msiSearchUtils.isMatching(localMatch))
+            ourRange.setEnd(ourLocalRange.endContainer, ourLocalRange.endOffset);
         }
         else
         {
@@ -2154,10 +2175,14 @@ msiMatchNode.prototype =
         newNode = theTarget.childNodes[theOffset];  //Note that theOffset isn't at the end, since we didn't fall into the "offsetIsAtStart" case.
         if (this.canExtendInside(newNode))
           bGoInside = true;
-        else if (msiNavigationUtils.isIgnorableWhitespace(newNode))
-          retVal = true;
         else
-          break;
+        {
+          msiKludgeLogString( "In adjustRightStartingPosition for node [" + this.describe() + "], can't go inside [" + this.describeNode(newNode) + "].\n", ["search"] );
+          if (msiNavigationUtils.isIgnorableWhitespace(newNode))
+            retVal = true;
+          else
+            break;
+        }
       }
     }
 
@@ -2284,8 +2309,20 @@ msiMatchNode.prototype =
       case "anonContainer":
         return true;
       break;
-      case "mathTemplate":  
       case "mathContainer":
+        switch(nodeType)         //is this really what we want here??
+        {
+          case "mathContainer":
+          case "blockContainer":
+          case "anonContainer":
+            return true;
+          break;
+          default:
+            return false;
+          break;
+        }
+      break;
+      case "mathTemplate":  
       case "find":
       default:
         return false;
@@ -2399,6 +2436,7 @@ msiMatchNode.prototype =
       if (compNode == aNode)
         return msiNavigationUtils.getFirstSignificantChild(compNode);
     }
+    msiKludgeLogString( "In nextNodeChildToRight for node [" + this.describeNode(aNode) + "], compNode is [" + this.describeNode(compNode) + "]; returning null.\n", ["search"] );
     return null;
   },
 
@@ -2429,7 +2467,8 @@ msiMatchNode.prototype =
 
   describe : function()
   {
-    var descStr = "msiMatchNode, with mNode [" + this.mNode.nodeName + "]";
+//    var descStr = "msiMatchNode, with mNode [" + this.mNode.nodeName + "]";
+    var descStr = "msiMatchNode, with mNode [" + this.describeNode(this.mNode) + "]";
     return descStr;
   },
 
@@ -3547,6 +3586,36 @@ msiMatchingRange.prototype =
     else
       this.setStart(aNode, 0);
 //    } catch(exc) {dump("Exception in msiMatchingRange.setStartBefore [" + exc + "]; aNode is [" + aNode.nodeName + "].\n");}
+  },
+
+  setEndBefore : function(aNode)
+  {
+//    try
+//    {
+    var parent = aNode.parentNode;
+    if (parent)
+    {
+      var parOffset = msiNavigationUtils.offsetInParent(aNode);
+      this.setEnd(parent, parOffset);
+    }
+    else
+      this.setEnd(aNode, 0);
+//    } catch(exc) {dump("Exception in msiMatchingRange.setStartBefore [" + exc + "]; aNode is [" + aNode.nodeName + "].\n");}
+  },
+
+  setStartAfter : function(aNode)
+  {
+//    try
+//    {
+    var parent = aNode.parentNode;
+    if (parent)
+    {
+      var parOffset = msiNavigationUtils.offsetInParent(aNode);
+      this.setStart(parent, parOffset + 1);
+    }
+    else
+      this.setStart(aNode, msiMatchNode.prototype.lastOffset(aNode));
+//    } catch(exc) {dump("Exception in msiMatchingRange.setEndAfter [" + exc + "]; aNode is [" + aNode.nodeName + "].\n");}
   },
 
   setEndAfter : function(aNode)
