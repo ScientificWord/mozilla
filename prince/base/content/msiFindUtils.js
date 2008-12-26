@@ -177,7 +177,7 @@ var msiSearchUtils =
     var retVal = null;
     if (targRange.startContainer == targRange.endContainer)  //is this condition necessary? Assume so, for now
     {
-      if (targRange.startContainer.childNodes)
+      if (targRange.startContainer.childNodes && targRange.startContainer.childNodes.length)
       {
         for (var ix = targRange.startOffset; ix < targRange.endOffset; ++ix)
         {
@@ -1339,12 +1339,15 @@ msiMatchNode.prototype =
     //  should be using a different function.
     //Otherwise, targRange contains several children of some parent. We find the first child and try to match it if it's legal for us
     //  to do so - note that templates will be using different functions here. If that succeeds, then we proceed via extendMatchRight.
-    if (msiSearchUtils.isContainer(this.mNode))
-    {
+
+//rwa 12-23-08 Try just going through this bit for all cases (commented out the "if"):
+//    if (msiSearchUtils.isContainer(this.mNode))
+//    {
       localTargRange = this.mEditor.document.createRange();
       localTargRange.setStart(targRange.startContainer, targRange.startOffset);
       ourRange = createMsiMatchingRange();
       ourRange.setStart(this.mNode, 0);
+      ourRange.setEnd(this.mNode, 0);
       retVal = this.extendMatchToRight(localTargRange, ourRange, this.mEditor);
       if (msiSearchUtils.isMatching(retVal))  //check whether we got all of us
       {
@@ -1356,7 +1359,7 @@ msiMatchNode.prototype =
           targRange.setEnd(localTargRange.endContainer, localTargRange.endOffset);
         }
       }
-    }
+//    }
     return retVal;
   },
 
@@ -1789,7 +1792,7 @@ msiMatchNode.prototype =
           localMatcher = createMatchNode(localNodeToMatch, this.mFlags, this.mEditor);
 //          localMatch = localMatcher.extendMatchToLeft(targRange, ourRange);
           localMatch = localMatcher.extendMatchToLeft(targRange, ourLocalRange);
-          if (msiMatchUtils.isMatching(localMatch))
+          if (msiSearchUtils.isMatching(localMatch))
             ourRange.setStart(ourLocalRange.startContainer, ourLocalRange.startOffset);
         }
         else
@@ -2501,7 +2504,8 @@ msiTextMatchNode.prototype =
     this.mFlags = theFlags;
     this.mEditor = refEditor;
     this.mText = aNode.textContent;
-    this.mTextPieces = aNode.textContent.split(this.m_spaceSplitRE);
+//    this.mTextPieces = aNode.textContent.split(this.m_spaceSplitRE);
+    this.mTextPieces = this.makePiecesArrayFromString(aNode.textContent);
     this.getInheritedAttribs(aNode, refEditor);
     this.mSearchType = msiSearchUtils.getTypeOfNodeSearch(aNode, refEditor);
   },
@@ -2597,7 +2601,8 @@ msiTextMatchNode.prototype =
       var targText = targNode.textContent;
       if ( (targOffset < 0) || (targOffset > targText.length) )
         targOffset = targText.length;
-      var targPieces = targText.split(this.m_spaceSplitRE);
+//      var targPieces = targText.split(this.m_spaceSplitRE);
+      var targPieces = this.makePiecesArrayFromString(targText);
       var targPos = this.totalOffsetToPieceAndOffset(targPieces, targOffset);
       var ourPos = this.totalOffsetToPieceAndOffset(this.mTextPieces, ourOffset);
 
@@ -2614,9 +2619,11 @@ msiTextMatchNode.prototype =
       {
         this.adjustPositionAndOffsetLeft(targPieces, targPos);
         this.adjustPositionAndOffsetLeft(this.mTextPieces, ourPos);
+        if ( !( (ourPos.nPiece > 0) || (ourPos.nOffset > 0) ) || !( (targPos.nPiece > 0) || (targPos.nOffset > 0) ) )
+          break;
         bMatched = this.doMatchSubStringLeft(ourPos, targPieces, targPos);
       }
-      while ( bMatched && ( (ourPos.nPiece > 0) || (ourPos.nOffset > 0) ) && ( (targPos.nPiece > 0) || (targPos.nOffset > 0) ) );
+      while (bMatched);
 
       if (bMatched)
       {
@@ -2626,7 +2633,7 @@ msiTextMatchNode.prototype =
         if (ourOffset <= 0)
         {
           ourRange.setStartBefore(this.mNode);
-          retVal = msiSearchutils.completedMatch;
+          retVal = msiSearchUtils.completedMatch;
         }
         else
           ourRange.startOffset = ourOffset;
@@ -2680,7 +2687,8 @@ msiTextMatchNode.prototype =
         targOffset = 0;
       else if (targOffset > targText.length)
         targOffset = targText.length;
-      var targPieces = targText.split(this.m_spaceSplitRE);
+//      var targPieces = targText.split(this.m_spaceSplitRE);
+      var targPieces = this.makePiecesArrayFromString(targText);
       var targPos = this.totalOffsetToPieceAndOffset(targPieces, targOffset);
       var ourPos = this.totalOffsetToPieceAndOffset(this.mTextPieces, ourOffset);
 
@@ -2697,10 +2705,12 @@ msiTextMatchNode.prototype =
       {
         this.adjustPositionAndOffsetRight(targPieces, targPos);
         this.adjustPositionAndOffsetRight(this.mTextPieces, ourPos);
+        if (  !( (ourPos.nPiece < this.mTextPieces.length - 1) || ((ourPos.nPiece == this.mTextPieces.length - 1) && (ourPos.nOffset < this.mTextPieces[ourPos.nPiece].length)) ) 
+                       || !( (targPos.nPiece < targPieces.length - 1) || ((targPos.nPiece == targPieces.length - 1) && (targPos.nOffset < targPieces[targPos.nPiece].length)) )  )
+          break;
         bMatched = this.doMatchSubStringRight(ourPos, targPieces, targPos);
       }
-      while ( bMatched && ( (ourPos.nPiece < this.mTextPieces.length - 1) || ((ourPos.nPiece == this.mTextPieces.length - 1) && (ourPos.nOffset < this.mTextPieces[ourPos.nPiece].length)) ) 
-                       && ( (targPos.nPiece < targPieces.length - 1) || ((targPos.nPiece == targPieces.length - 1) && (targPos.nOffset < targPieces[targPos.nPiece].length)) ) );
+      while ( bMatched );
 
       if (bMatched)
       {
@@ -2725,6 +2735,16 @@ msiTextMatchNode.prototype =
     }
     msiKludgeLogString( "Returning [" + this.matchReturnString(retVal) + "] from doRightMatchCheck for node [" + this.describe() + "]; matchRange is [" + this.describeMsiRange(matchRange) + "];\n  ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
     return retVal;
+  },
+
+  makePiecesArrayFromString : function(aString)
+  {
+    var targPieces = aString.split(this.m_spaceSplitRE);
+    if ( (targPieces.length > 1) && !targPieces[0].length )
+      targPieces.shift();
+    if ( (targPieces.length > 1) && !targPieces[targPieces.length - 1].length )
+      targPieces.pop();
+    return targPieces;
   },
 
   adjustPositionAndOffsetLeft : function(thePieces, thePos)
@@ -2771,7 +2791,12 @@ msiTextMatchNode.prototype =
   {
     var bMatched = false;
     var nMatchlen = 0;
+    if (ourPosition.nPiece >= this.mTextPieces.length)
+      msiKludgeLogString( "In msiTextMatchNode.doMatchSubStringLeft, nPiece is too big [" + nPiece + "] for node [" + this.describe() + "].\n", ["search"] );
+
     var ourPiece = this.mTextPieces[ourPosition.nPiece];
+    if (!ourPiece)
+      msiKludgeLogString( "In msiTextMatchNode.doMatchSubStringLeft, ourPiece is too null, for nPiece [" + nPiece + "] and node [" + this.describe() + "].\n", ["search"] );
     if (ourPosition.nOffset < ourPiece.length)
       ourPiece = ourPiece.substr(0, ourPosition.nOffset);
     var targPiece = targetPieces[targetPosition.nPiece];
@@ -2802,7 +2827,8 @@ msiTextMatchNode.prototype =
       nMatchlen = ourPiece.length;
       if (targPiece.length < nMatchlen)
         nMatchlen = targPiece.length;
-      bMatched = (ourPiece.substr(nMatchlen) == targPiece.substr(nMatchlen));
+      bMatched = (ourPiece.substr(ourPiece.length - nMatchlen) == targPiece.substr(targPiece.length - nMatchlen));
+//      bMatched = (ourPiece.substr(nMatchlen) == targPiece.substr(nMatchlen));
       if (bMatched)
       {
         ourPosition.nOffset -= nMatchlen;
@@ -2817,7 +2843,11 @@ msiTextMatchNode.prototype =
   {
     var bMatched = false;
     var nMatchlen = 0;
+    if (ourPosition.nPiece >= this.mTextPieces.length)
+      msiKludgeLogString( "In msiTextMatchNode.doMatchSubStringRight, nPiece is too big [" + nPiece + "] for node [" + this.describe() + "].\n", ["search"] );
     var ourPiece = this.mTextPieces[ourPosition.nPiece];
+    if (!ourPiece)
+      msiKludgeLogString( "In msiTextMatchNode.doMatchSubStringRight, ourPiece is too null, for nPiece [" + nPiece + "] and node [" + this.describe() + "].\n", ["search"] );
     if (ourPosition.nOffset > 0)
       ourPiece = ourPiece.substr(ourPosition.nOffset);
     var targPiece = targetPieces[targetPosition.nPiece];
@@ -2849,7 +2879,7 @@ msiTextMatchNode.prototype =
       nMatchlen = ourPiece.length;
       if (targPiece.length < nMatchlen)
         nMatchlen = targPiece.length;
-      bMatched = (ourPiece.substr(nMatchlen) == targPiece.substr(nMatchlen));
+      bMatched = (ourPiece.substr(0, nMatchlen) == targPiece.substr(0, nMatchlen));
       if (bMatched)
       {
         ourPosition.nOffset += nMatchlen;
@@ -2868,6 +2898,7 @@ msiTextMatchNode.prototype =
 //      bMatched = ??
 //  },
 
+//Note that problems arise when the totalOffset is at the right end of the string!
   totalOffsetToPieceAndOffset : function(pieceArray, totalOffset)
   {
     var retVal = new Object();
@@ -2875,10 +2906,11 @@ msiTextMatchNode.prototype =
     retVal.nOffset = -1;
     for (var ix = 0; ix < pieceArray.length; ++ix)
     {
-      if (totalOffset < pieceArray[ix].length)
+      if (totalOffset <= pieceArray[ix].length)
       {
         retVal.nPiece = ix;
         retVal.nOffset = totalOffset;
+        break;
       }
       totalOffset -= pieceArray[ix].length;
     }

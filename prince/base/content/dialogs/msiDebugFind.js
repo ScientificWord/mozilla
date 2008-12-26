@@ -609,6 +609,8 @@ function onFindNext()
 
     // Search.
     result = gFindInst.findNext();
+    if (result)
+      gTestFindDialog.verifyFind.disabled = false;
   }
 
   if (!result)
