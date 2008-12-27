@@ -32,6 +32,9 @@ var msiSearchUtils =
         if (attrValue == "_moz")
           returnVal = false;
       break;
+      case "tempinput":
+        returnVal = false;
+      break;
       default:
         if (attrName.indexOf("xmlns:") == 0)
           return false;
@@ -165,7 +168,7 @@ var msiSearchUtils =
     {
       if (!this.isContainer(candidate, anEditor))
         retVal = candidate;
-      else if ( (candidate.parentNode != null) && (!this.isContainer(candidate.parentNode)) )
+      else if ( (candidate.parentNode != null) && (!this.isContainer(candidate.parentNode, anEditor)) )
         retVal = candidate;
       candidate = candidate.parentNode;
     }
@@ -329,13 +332,13 @@ var msiSearchUtils =
           switch(tagType)
           {
             case "structtag":
-            case "texttag":
+            case "listtag":
             case "paratag":
             case "envtag":
               retType = "blockContainer";
             break;
 
-            case "listtag":
+            case "texttag":
               retType = "textContainer";
             break;
 
@@ -661,7 +664,7 @@ function XPathFormatter(targetNode, flags)
           	if (!msiSearchUtils.isEmptyInputBox(theContents[jx]))
             {
               var matchPosition = msiSearchUtils.getMatchPositionForChild(ourBaseName, targNodeName, jx);
-              if (matchPosition != "0")
+              if ( (matchPosition.length > 0) && (matchPosition != "0") )
               {
                 if ( (matchPosition == "*") || msiSearchUtils.isMRowLike(targNodeName))
                 {
@@ -2244,10 +2247,10 @@ msiMatchNode.prototype =
 
   canExtendOutside : function(aNode)
   {
-    return this.nodeCanExtendOutside(this.mNode, aNode, this.mFlags);
+    return this.nodeCanExtendOutside(this.mNode, aNode, this.mFlags, this.mEditor);
   },
 
-  nodeCanExtendOutside : function(ourNode, targNode, matchFlags)
+  nodeCanExtendOutside : function(ourNode, targNode, matchFlags, refEditor)
   {
     var matchInfo = null;
     if (msiSearchUtils.isTemplate(targNode))
@@ -2267,12 +2270,12 @@ msiMatchNode.prototype =
       return false;
     }
 
-    var nodeType = msiSearchUtils.getTypeOfNodeSearch(ourNode);
-    var targType = msiSearchUtils.getTypeOfNodeSearch(targNode);
+    var nodeType = msiSearchUtils.getTypeOfNodeSearch(ourNode, refEditor);
+    var targType = msiSearchUtils.getTypeOfNodeSearch(targNode, refEditor);
     switch(nodeType)
     {
       case "text":
-        return this.nodeCanExtendOutside(ourNode.parentNode, targNode);
+        return this.nodeCanExtendOutside(ourNode.parentNode, targNode, matchFlags, refEditor);
       break;
 
       case "textContainer":
@@ -2291,19 +2294,19 @@ msiMatchNode.prototype =
 
   canExtendInside : function(aNode)
   {
-    return this.nodeCanExtendInside(this.mNode, aNode, this.mFlags);
+    return this.nodeCanExtendInside(this.mNode, aNode, this.mFlags, this.mEditor);
   },
 
-  nodeCanExtendInside : function(ourNode, targNode, matchFlags)
+  nodeCanExtendInside : function(ourNode, targNode, matchFlags, refEditor)
   {
     if (msiSearchUtils.isTemplate(targNode))
       return false;
 
-    var nodeType = msiSearchUtils.getTypeOfNodeSearch(ourNode);
+    var nodeType = msiSearchUtils.getTypeOfNodeSearch(ourNode, refEditor);
     if (nodeType == "text")
       return this.nodeCanExtendInside(ourNode.parentNode, targNode);
 
-    var targType = msiSearchUtils.getTypeOfNodeSearch(targNode);
+    var targType = msiSearchUtils.getTypeOfNodeSearch(targNode, refEditor);
     switch(targType)
     {
       case "text":
@@ -2971,7 +2974,7 @@ msiTextMatchNode.prototype =
 
   canExtendOutside : function(aNode)
   {
-    var nodeType = msiSearchUtils.getTypeOfNodeSearch(aNode);
+    var nodeType = msiSearchUtils.getTypeOfNodeSearch(aNode, this.mEditor);
     switch(nodeType)
     {
       case "textContainer":
@@ -3047,7 +3050,7 @@ msiTemplateMatchNode.prototype =
         	if (!msiSearchUtils.isEmptyInputBox(theContents[jx]))
           {
             var matchPosition = msiSearchUtils.getMatchPositionForChild(ourBaseName, targNodeName, jx);
-            if (matchPosition != "0")
+            if ( (matchPosition.length > 0) && (matchPosition != "0") )
             {
               if ( (matchPosition == "*") || msiSearchUtils.isMRowLike(targNodeName))
               {
@@ -3290,6 +3293,12 @@ msiContainerTemplateMatchNode.prototype =
 
     var bMoreToGo = this.haveContentAfterRangeEnd(ourRange);
     var bTargOffsetChanged = true;
+    if (msiSearchUtils.isEmptyElement(this.mNode))
+    {
+      bMoreToGo = false;
+      localMatch = msiSearchUtils.completedMatch;
+      localTargRange.setEnd(localTargRange.endContainer, this.lastOffset(localTargRange.endContainer));
+    }
     while (bTargOffsetChanged && bMoreToGo)
     {
       currTarget = localTargRange.endContainer;
@@ -3433,6 +3442,16 @@ msiMathContainerMatchNode.prototype.__proto__ = msiMatchNode.prototype;
 function msiTextContainerMatchNode() {}
 msiTextContainerMatchNode.prototype = 
 {
+  init: function(theNode, theFlags, refEditor)
+  {
+    this.mNode = theNode;
+    this.mFlags = theFlags;
+    this.mEditor = refEditor;
+//    this.mContents = msiSearchUtils.getSearchableContentNodes(this.mNode);
+    this.getInheritedAttribs(theNode, refEditor);
+    this.mSearchType = msiSearchUtils.getTypeOfNodeSearch(theNode, refEditor);
+  },
+
   doStructuralNodeMatch : function(aTarget)
   {
     return this.targNodeIsCompatible(aTarget);
@@ -3445,7 +3464,7 @@ msiTextContainerMatchNode.prototype =
   }
 };
 
-msiTextContainerMatchNode.prototype.___proto__ = msiMatchNode.prototype;
+msiTextContainerMatchNode.prototype.__proto__ = msiMatchNode.prototype;
 
 function msiBlockContainerMatchNode() {}
 msiBlockContainerMatchNode.prototype = 
@@ -3514,7 +3533,7 @@ function createMatchNode(theNode, theFlags, refEditor)
 {
 //  var theProto = null;
   var retVal = null;
-  var nodeType = msiSearchUtils.getTypeOfNodeSearch(theNode);
+  var nodeType = msiSearchUtils.getTypeOfNodeSearch(theNode, refEditor);
 //  if (msiSearchUtils.isMathTemplate(theNode))
   switch(nodeType)
   {
@@ -3572,11 +3591,12 @@ function createMatchNode(theNode, theFlags, refEditor)
     } catch(exc)
     {
       msiKludgeLogString("Unable to init msiMatchNode due to exception: " + exc + "\n", ["search"]);
-//      logStr = "  Members of retVal are:\n";
-//      for (var aProp in retVal)
-//      {
-//        logStr += "  " + aProp + ":      [" + retVal[aProp] + "]\n";
-//      }
+      logStr = "  Members of retVal are:\n";
+      for (var aProp in retVal)
+      {
+        logStr += "  " + aProp + ":      [" + retVal[aProp] + "]\n";
+      }
+      msiKludgeLogString(logStr + "\n", ["search"]);
 //      dump(logStr);
     }
   }
