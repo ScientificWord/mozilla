@@ -15,6 +15,7 @@ File /r ${srcdir}\components
 File /r ${srcdir}\defaults
 File /r ${srcdir}\dictionaries
 File /r ${srcdir}\extensions
+File /r ${srcdir}\modules
 File /r ${srcdir}\MuPAD
 File /r ${srcdir}\plugins
 File /r ${srcdir}\ptdata
