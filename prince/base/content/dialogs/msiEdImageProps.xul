@@ -70,8 +70,8 @@
     <tabs flex="1">
       <!--tab id="imageInputTab" label="&imageInputTab.label;"/ -->
       <tab id="imagePictureTab" label="&imagePictureTab.label;"/>
-      <tab id="msiFrameTab"/>
       <tab id="msiPlacementTab"/>
+      <tab id="msiFrameTab"/>
       <tab id="imageLabelingTab" label="&imageLabelingTab.label;"/>
       <tab id="imageLinkTab" label="&imageLinkTab.label;"/>
     </tabs>
@@ -187,8 +187,8 @@
         </grid>
         </radiogroup>
       </vbox>
-      <vbox id="msiFrame"/>
       <vbox id="msiPlacement"/>
+      <vbox id="msiFrame"/>
       <vbox id="imageLabeling">
         <spacer flex="1"/>
         <hbox>
