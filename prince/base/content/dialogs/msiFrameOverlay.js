@@ -1,8 +1,10 @@
-var currentUnit = "pt";
+Components.utils.import("resource://app/modules/unitHandler.jsm");
+var unitHandler = new UnitHandler();
 var currentFrame;
 
 function initFrameTab(gDialog, element)
 {
+  unitHandler.setCurrentUnit("in");
   gDialog.frameUnitMenulist      = document.getElementById( "frameUnitMenulist");
   gDialog.marginInput = {left:   document.getElementById( "marginLeftInput"),
                          right:  document.getElementById( "marginRightInput"),
@@ -163,6 +165,11 @@ function enableFloating( )
   broadcaster.setAttribute("disabled",theValue);
   if (theValue=="true") document.getElementById("herePlacement").setAttribute("disabled","true");
   else enableHere();
+}
+
+function handleChar(event, id)
+{
+  alert("event = , id = "+id);
 }
 
 /************************************/
