@@ -133,14 +133,14 @@
                 value     = "&unitLabel.label;" />
               <menulist id = "unitMenulist"
                 oncommand  = "doDimensionEnabling();" >
-                <menupopup>
+                <menupopup id="unitList">
                   <menuitem value="in" label="in"/>
                   <menuitem value="pct" label="percent"/>
                   <menuitem value="cm" label="cm"/>
                   <menuitem value="pt" label="pt" />
                   <menuitem value="mm" label="mm"/>
-                  <menuitem value="pica" label="pica"/>
-                  <menuitem value="pixel" label="pixel"/>
+                  <menuitem value="pc" label="pica"/>
+                  <menuitem value="px" label="pixel"/>
                 </menupopup>
               </menulist>
             </row>

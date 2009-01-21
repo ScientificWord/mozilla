@@ -4,36 +4,60 @@ var EXPORTED_SYMBOLS = ["UnitHandler"];
 function UnitHandler()
 {
   this.supportedUnits = ["mm", "cm", "in", "pt", "bp", "pc", "px", "pct"];
-  this.unitSize =  // in mm
-    {mm: 1,
-     cm: 10,
-     "in": 25.4,
-     pt: 0.3514598,
-     bp: 0.3527778,
-     pc: 2.54,
-     px: 0.2654833,	// we say 96 pixels/inch. It varies but portability requires a fixed value
-     pct: null };
+  this.units =  // in mm
+    {mm: {size: 1, increment: .1, places: 1 },
+     cm: {size: 10, increment: .1, places: 2 },
+     "in": {size: 25.4, increment: .1, places: 2 },
+     pt: {size: 0.3514598, increment: .1, places: 1 },
+     bp: {size: 0.3527778, increment: .1, places: 1 },
+     pc: {size: 2.54, increment: .1, places: 1 },
+     px: {size: 0.2654833, increment: 1, places: 0 },	// we say 96 pixels/inch. It varies but portability requires a fixed value
+     pct: {size: null, increment: .1, places: 1 }
+  };
+
+  this.editFieldList = [];
+  this.setEditFieldList = function (fieldArray)
+  {
+    this.editFieldList = fieldArray;
+  }
 
   this.currentUnit = null;
 
   this.getValueAs = function( value, unit )  // given a measurement that is 'value' in the current unit, provide it in the new unit.
   { 
-    if (!(unit in this.unitSize)){ return null;}
+    if (!(unit in this.units)){ return null;}
     if (unit === this.currentUnit) { return value; }
-    return (value/this.unitSize[unit])*this.unitSize[this.currentUnit];
+    return (value/this.units[unit].size)*this.units[this.currentUnit].size;
   };
 
   this.setCurrentUnit = function( unit ) // returns the previous value
   {
     var prev = this.currentUnit;
-    if (!(unit in this.unitSize)) 
+    if (!(unit in this.units)) 
     {
       this.currentUnit = null;
       return prev;
     }
+    var factor = this.units[this.currentUnit].size/this.units[unit].size;
+    for (var i = 0, len = this.editFieldList.length; i < len; i++)
+    {
+      this.editFieldList[i].setAttribute("increment", this.units[unit].increment); 
+      this.editFieldList[i].setAttribute("decimalplaces", this.units[unit].places); 
+      this.editFieldList[i].value *= factor; 
+    }
     this.currentUnit = unit;
     return prev;
   };
+   
+  this.initCurrentUnit = function(unit) // this is for setting the initial value -- no conversions
+  {
+    for (var i in this.editFieldList)
+    {
+      this.editFieldList[i].setAttribute("increment", this.units[unit].increment); 
+      this.editFieldList[i].setAttribute("decimalplaces", this.units[unit].places); 
+    }
+    this.currentUnit = unit;
+  }
    
   this.getCurrentUnit = function()
   {
@@ -42,14 +66,14 @@ function UnitHandler()
 
   this.convertAll = function(newUnit, valueArray )
   {
-    var factor = this.unitSize[this.currentUnit]/this.unitSize[newUnit];
+    var factor = this.units[this.currentUnit].size/this.units[newUnit].size;
     for (var i = 0, len = valueArray.length; i < len; i++)
       { valueArray[i] *= factor; }
   };
 
   this.getDisplayString = function(theUnit)
   {
-    if (!(theUnit in this.unitSize)){ return null;}
+    if (!(theUnit in this.units)){ return null;}
     if (!this.mStringBundle)
     {
       try {
@@ -94,8 +118,8 @@ function UnitHandler()
       return NaN;
     }
     // convert both to mm
-    var firstMm = value1.number *  this.unitSize[value1.unit];
-    var secondMm = value1.number * this.unitSize[value2.unit];
+    var firstMm = value1.number *  this.units[value1.unit].size;
+    var secondMm = value1.number * this.units[value2.unit].size;
     if (firstMm < secondMm)
       { return -1; }
     else if (firstMm > secondMm)

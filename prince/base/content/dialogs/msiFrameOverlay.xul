@@ -28,10 +28,10 @@
           accesskey = "&unitLabel.accesskey;"
           value     = "&unitLabel.label;" />
         <menulist id = "frameUnitMenulist"
-          oncommand  = "doDimensionEnabling();" >
-          <menupopup>
+          oncommand  = "setNewUnit(this);" >
+          <menupopup id = "unitList">
             <menuitem value="in" label="in"/>
-            <menuitem value="pct" label="percent"/>
+            <!--menuitem value="pct" label="percent"/  -->
             <menuitem value="cm" label="cm"/>
             <menuitem value="pt" label="pt" />
             <menuitem value="mm" label="mm"/>
@@ -46,24 +46,24 @@
         <hbox flex="1"/>
         <hbox>
           <vbox width="60px" />
-          <hbox class="page" height="30px" style="background-color:rgb(90,90,90);width:100px;"/>
+          <hbox class="page" height="30px" style="background-color:rgb(90,90,90);width:150px;"/>
         </hbox>
         <hbox>
           <hbox id="leftspacer" height="1px" width="60px"/> <!-- width is 60 + min(0, left margin) -->
-          <hbox id="leftpage" height="1px" class="page" width="48px" style="background-color:rgb(90,90,90);"/> 
+          <hbox id="leftpage" height="1px" class="page" style="background-color:rgb(90,90,90); width: 100px"/> 
             <!-- width is max(0,leftmargin) (scaled, of course)
             or, when on the right, it is 100 - contentwidth - mx -px -bx -->
-          <vbox id = "outer" style="background-color:white; padding:4px"> <!-- padding is the "margin" of the frame-->
-            <vbox id="frame" style="border-style:solid; border-width:1px; padding: 3px;"><!-- border and padding are those of the frame-->
+          <vbox id = "outer" style="background-color:white;"> <!-- padding is the "margin" of the frame-->
+            <vbox id="frame" style="border-style:solid;"><!-- border and padding are those of the frame-->
               <vbox id="content" style="background-color:red; height:40px; width:50px"/><!-- height and width are those of the content of the frame --> 
             </vbox>
           </vbox>
-          <hbox id="rightpage" height="1px" class="page" style="background-color:rgb(90,90,90);" width="0px"/><!-- width is 100 - contentwidth - mx - px - bx,
+          <hbox id="rightpage" height="1px" class="page" style="background-color:rgb(90,90,90);" width="0px"/><!-- width is 150 - contentwidth - mx - px - bx,
             where mx is the sum of the left and right margins, and px and bx are the same for the padding and border -->
         </hbox >
         <hbox>
           <vbox width="60px" height="1px"/>
-          <hbox class = "page" style="background-color:rgb(90,90,90);width:100px; height:34px"/><!-- height is 90 - contentheight - my -py -by -->
+          <hbox class = "page" style="background-color:rgb(90,90,90);width:150px; height:34px"/><!-- height is 90 - contentheight - my -py -by -->
         </hbox>
         <vbox flex="1"/>
       </vbox>
@@ -112,70 +112,69 @@
           <textbox
             id        = "borderLeftInput"
             observes  = "lengthwithunits"
-            onkeyup   = "extendInput(this.id);"
-            onblur    = "extendInput(this.id);"/>
+            onkeypress= "handleChar(event, this.id);"
+            onchange  = "extendInput(this.id);"/>
           <textbox
             id        = "borderRightInput"
             observes  = "lengthwithunits"
-            onkeyup   = "extendInput(this.id);"
-            onblur    = "extendInput(this.id);"/>
+            onkeypress= "handleChar(event, this.id);"
+            onchange  = "extendInput(this.id);"/>
           <textbox
             id        = "borderTopInput"
             observes  = "lengthwithunits"
-            onkeyup   = "extendInput(this.id);"
-            onblur    = "extendInput(this.id);"/>
+            onkeypress= "handleChar(event, this.id);"
+            onchange  = "extendInput(this.id);"/>
           <textbox
             id        = "borderBottomInput"
             observes  = "lengthwithunits"
-            onkeyup   = "extendInput(this.id);"
-            onblur    = "extendInput(this.id);"/>
+            onkeypress= "handleChar(event, this.id);"
+            onchange  = "extendInput(this.id);"/>
         </row>
         <row>
           <label value="Padding"/>
           <textbox
             id        = "paddingLeftInput"
             observes  = "lengthwithunits"
-            onkeyup   = "extendInput(this.id);"
-            onblur    = "extendInput(this.id);"/>
+            onkeypress= "handleChar(event, this.id);"
+            onchange  = "extendInput(this.id);"/>
           <textbox
             id        = "paddingRightInput"
             observes  = "lengthwithunits"
-            onkeyup   = "extendInput(this.id);"
-            onblur    = "extendInput(this.id);"/>
+            onkeypress= "handleChar(event, this.id);"
+            onchange  = "extendInput(this.id);"/>
           <textbox
             id        = "paddingTopInput"
             observes  = "lengthwithunits"
-            onkeyup   = "extendInput(this.id);"
-            onblur    = "extendInput(this.id);"/>
+            onkeypress= "handleChar(event, this.id);"
+            onchange  = "extendInput(this.id);"/>
           <textbox
             id        = "paddingBottomInput"
             observes  = "lengthwithunits"
-            onkeyup   = "extendInput(this.id);"
-            onblur    = "extendInput(this.id);"/>
+            onkeypress= "handleChar(event, this.id);"
+            onchange  = "extendInput(this.id);"/>
         </row>
         <row>
           <label value="Crop"/>
           <textbox
             id        = "cropLeftInput"
             observes  = "lengthwithunits"
-            onkeyup   = "extendInput(this.id);"
-            onblur    = "extendInput(this.id);"/>
+            onkeypress= "handleChar(event, this.id);"
+            onchange  = "extendInput(this.id);"/>
           <textbox
             id        = "cropRightInput"
             observes  = "lengthwithunits"
-            onkeyup   = "extendInput(this.id);"
-            onblur    = "extendInput(this.id);"/>
+            onkeypress= "handleChar(event, this.id);"
+            onchange  = "extendInput(this.id);"/>
           <textbox
             id        = "cropTopInput"
-            class     = "medwidth"
             observes  = "lengthwithunits"
-            onkeyup   = "extendInput(this.id);"
-            onblur    = "extendInput(this.id);"/>
+            onkeypress= "handleChar(event, this.id);"
+            onchange  = "extendInput(this.id);"/>
           <textbox
             id        = "cropBottomInput"
             observes  = "lengthwithunits"
-            onkeyup   = "extendInput(this.id);"
-            onblur    = "extendInput(this.id);"/>
+            onkeypress= "handleChar(event, this.id);"
+            onchange  = "extendInput(this.id);"/>
         </row>
         <row>
           <label value="Border color"/>
