@@ -1,10 +1,17 @@
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 var unitHandler = new UnitHandler();
+var sides = ["Top", "Right", "Bottom", "Left"];
 var currentFrame;
+var scale = 0.25;
 
 function initFrameTab(gDialog, element)
 {
-  unitHandler.setCurrentUnit("in");
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  var editor = msiGetEditor(editorElement);
+  if (!editor) {
+    window.close();
+    return;
+  }
   gDialog.frameUnitMenulist      = document.getElementById( "frameUnitMenulist");
   gDialog.marginInput = {left:   document.getElementById( "marginLeftInput"),
                          right:  document.getElementById( "marginRightInput"),
@@ -29,9 +36,24 @@ function initFrameTab(gDialog, element)
   gDialog.placeTopCheck         = document.getElementById("placeTopCheck");
   gDialog.placeBottomCheck      = document.getElementById("placeBottomCheck");
   gDialog.herePlacementRadioGroup   = document.getElementById("herePlacementRadioGroup");
+  var fieldList = [];
+  var attrs = ["margin","border","padding","crop"];
+  for (var side in sides)
+  {
+    for (var attr in attrs)
+    {
+      fieldList.push(gDialog[attrs[attr]+"Input"][sides[side].toLowerCase()]);
+    }
+  }
+  unitHandler.setEditFieldList(fieldList);
+  unitHandler.initCurrentUnit("in");
+  initUnitList(document.getElementById("unitList"));
+  unitHandler.setCurrentUnit(gDialog.frameUnitMenuList.value);
+
   if (element && element.localName == "msiframe")
   {
     currentFrame = element;
+    //read current units
     var values = [0,0,0,0];
     var i;
     if (element.hasAttribute("margin"))
@@ -43,16 +65,33 @@ function initFrameTab(gDialog, element)
       values = parseLengths(element.getAttribute("border-width"));
     for (i = 0; i<4; i++)
       gDialog.borderInput[toLowerCase(sides[i])].value = values[i];
-    values = [0,0,0,0];
+    values = [0,0,0,
+    0];
     if (element.hasAttribute("padding"))
       values = parseLengths(element.getAttribute("padding"));
     for (i = 0; i<4; i++)
       gDialog.paddingInput[toLowerCase(sides[i])].value = values[i];
   }
-  else
-    currentFrame = editor.createElementWithDefaults("msiframe"); 
+//  else
+//    currentFrame = editor.createElementWithDefaults("msiframe"); 
 }
 
+function setNewUnit(element)
+{
+  unitHandler.setCurrentUnit(element.value);
+}
+
+function initUnitList(unitPopUp)
+{
+  var elements = unitPopUp.getElementsByTagName("menuitem");
+  var i, len;
+  for (i=0, len = elements.length; i<len; i++)
+  {
+    elements[i].label = unitHandler.getDisplayString(elements[i].value);
+    dump("element with value "+elements[i].value+" has label "+elements[i].label+"\n");
+  }
+}
+  
 function parseLengths( str ) // correctly parse something like margin= 10px or margin = 10px 5px 3px 7px
 // the inverse operation is going on in updateDiagram
 {
@@ -82,18 +121,20 @@ function extendInput( anId )
   if (anId.length == 0) return;
   var regexp=/(.*)(Left|Right|Top|Bottom)(.*)/;
   var result = regexp.exec(anId);
-  switch (result[2]) { // notice that there are no breaks in this switch statement -- intentional
-    case "Left":  document.getElementById(result[1]+"Left"+result[3]).value = document.getElementById(anId).value;
-    case "Right": document.getElementById(result[1]+"Right"+result[3]).value = document.getElementById(anId).value;
-    case "Top":   document.getElementById(result[1]+"Top"+result[3]).value = document.getElementById(anId).value;
-    case "Bottom": document.getElementById(result[1]+"Bottom"+result[3]).value = document.getElementById(anId).value;
-  }
+//  switch (result[2]) { // notice that there are no breaks in this switch statement -- intentional
+//    case "Left":  document.getElementById(result[1]+"Left"+result[3]).value = document.getElementById(anId).value;
+//    case "Right": document.getElementById(result[1]+"Right"+result[3]).value = document.getElementById(anId).value;
+//    case "Top":   document.getElementById(result[1]+"Top"+result[3]).value = document.getElementById(anId).value;
+//    case "Bottom": document.getElementById(result[1]+"Bottom"+result[3]).value = document.getElementById(anId).value;
+//  }
+  var eventsource = document.getElementById(anId);
+  if (eventsource) eventsource._validateValue(eventsource.inputField.value,false,true);
   updateDiagram( result[1] );
 }
 
 function toPixels( x )
 {
-  return x;
+  return unitHandler.getValueAs(x,"px")*scale;
 }
 
 var color;
@@ -113,12 +154,11 @@ function getColorAndUpdate()
 
   color = colorObj.TextColor;
   setColorWell("colorWell", color); 
-  currentFrame.setAttribute("bordercolor",color);
+  currentFrame.setAttribute("border-color",color);
 }
 
 
 
-var sides = ["Top", "Right", "Bottom", "Left"];
 function updateDiagram( attribute ) //attribute = margin, border, padding; 
 {
   var i;
@@ -135,17 +175,31 @@ function updateDiagram( attribute ) //attribute = margin, border, padding;
     }
   }
   var val = values.join("px ")+"px";
-  var style = document.getElementById("frame").getAttribute("style");
   var att = attribute + ((attribute === "border")?"-width":"");
-  var re = new RegExp(att + ":[^;]*;","");
-  if (re.test(style))
-    style = style.replace(re, att + ": " +val+"; ");
-  else
-    style = style + " " + att +": " + val + "; ";
-  document.getElementById("frame").setAttribute("style",style);
+  setStyleAttribute("frame", att, val );
   dump(document.getElementById("frame").getAttribute("style"));
+// assume for now that the picture width (scaled) is 40px high and 50px wide
+  var imageWidth = 200*scale;
+  var imageHeight = 160*scale;
+  // space flowing around the diagram is 150 - (lmargin + rmargin + lborder + lpadding + rborder + rpadding + imageWidth)*scale
+  var hmargin = toPixels(Number(gDialog.marginInput.left.value) + Number(gDialog.marginInput.right.value));
+  var hborder = toPixels(Number(gDialog.borderInput.left.value) + Number(gDialog.borderInput.right.value));
+  var hpadding = toPixels(Number(gDialog.paddingInput.left.value) + Number(gDialog.paddingInput.right.value));
+  setStyleAttribute("leftpage", "width", 150 - imageWidth - (hmargin + hborder + hpadding)*scale + "px");  
+
   // update currentElement also
 
+}
+
+function setStyleAttribute( id, att, value)
+{
+  var style = document.getElementById(id).getAttribute("style");
+  var re = new RegExp(att + ":[^;]*;","");
+  if (re.test(style))
+    style = style.replace(re, att + ": " +value+"; ");
+  else
+    style = style + " " + att +": " + value + "; ";
+  document.getElementById(id).setAttribute("style",style);
 }
 
 function enableHere( )
@@ -173,11 +227,12 @@ function handleChar(event, id)
 }
 
 /************************************/
-function handleChar(event, id, tbid)
+function handleChar(event, id)
 {
   var element = event.originalTarget;
   if ((event.keyCode != event.DOM_VK_UP) && (event.keyCode != event.DOM_VK_DOWN))
-    updateTextNumber(element,event);
+    updateTextNumber(element, id, event);
+  extendInput(id);
   event.preventDefault();
 }
 
@@ -192,9 +247,11 @@ function geomHandleChar(event, id, tbid)
 // we handle the updating here. This function takes a textbox element and an event and returns sets
 // the value of the text box
 
-function updateTextNumber(textelement, event)
+function updateTextNumber(textelement, id, event)
 {
   var val = textelement.value;
+  var textbox = document.getElementById(id);
+  //textbox is the text box; textelement in the underlying html:input
   var selStart = textelement.selectionStart;
   var selEnd = textelement.selectionEnd;
   var keycode = event.keyCode;
@@ -262,7 +319,7 @@ function goDown(id)
 
 function geomInputChar(event, id, tbid)
 {
-//  if (id!="columns") layoutPage(id);
+  extendInput(id);  
 }
 
 
