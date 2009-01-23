@@ -134,13 +134,13 @@
               <menulist id = "unitMenulist"
                 oncommand  = "doDimensionEnabling();" >
                 <menupopup id="unitList">
+                  <menuitem value="px" label="pixel"/>
                   <menuitem value="in" label="in"/>
                   <menuitem value="pct" label="percent"/>
                   <menuitem value="cm" label="cm"/>
                   <menuitem value="pt" label="pt" />
                   <menuitem value="mm" label="mm"/>
                   <menuitem value="pc" label="pica"/>
-                  <menuitem value="px" label="pixel"/>
                 </menupopup>
               </menulist>
             </row>
@@ -162,7 +162,8 @@
                 class     = "narrow"
                 type      = "number"
                 hidespinbuttons="false"
-                oninput   = "constrainProportions(this.id, 'heightInput')"/>
+                oninput   = "constrainProportions(this.id, 'heightInput')"
+                onchange = "constrainProportions(this.id, 'heightInput')"/>
             </row>
             <row>
               <radio
@@ -181,7 +182,8 @@
                 id        = "heightInput"
                 class     = "narrow"
                 type      = "number"
-                oninput   = "constrainProportions(this.id, 'widthInput')"/>
+                oninput   = "constrainProportions(this.id, 'widthInput')"
+                onchange = "constrainProportions(this.id, 'widthInput')"/>
             </row>
           </rows>
         </grid>

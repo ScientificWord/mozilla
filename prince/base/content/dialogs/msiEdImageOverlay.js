@@ -67,7 +67,6 @@ var gOriginalSrc = "";
 var gHaveDocumentUrl = false;
 var gTimerID;
 var gValidateTab;
-var gDialog;
 
 // These must correspond to values in EditorDialog.css for each theme
 // (unfortunately, setting "style" attribute here doesn't work!)
@@ -177,6 +176,7 @@ function InitImage()
 
   // Set actual radio button if both set values are the same as actual
   SetSizeWidgets(width, height);
+  gDialog.unitMenuList.value = "px";
 
   gDialog.widthInput.value  = gConstrainWidth = width ? width : (gActualWidth ? gActualWidth : "");
   gDialog.heightInput.value = gConstrainHeight = height ? height : (gActualHeight ? gActualHeight : "");
@@ -451,6 +451,7 @@ function ChangeImageSrc()
 
   gTimerID = setTimeout("LoadPreviewImage()", 800);
 
+  InitImage();
   msiSetRelativeCheckbox();
   doOverallEnabling();
 }
@@ -476,6 +477,8 @@ function doDimensionEnabling()
 //         && ( gDialog.heightUnitsMenulist.selectedIndex == 0 );
 
   SetElementEnabledById( "constrainCheckbox", constrainEnable );
+  imageUnitHandler.setCurrentUnit(gDialog.unitMenulist.value);
+
 }
 
 function doOverallEnabling()
@@ -484,11 +487,6 @@ function doOverallEnabling()
 
   SetElementEnabled(gDialog.OkButton, enabled);
   SetElementEnabledById("AdvancedEditButton1", enabled);
-  SetElementEnabledById("imagemapLabel", enabled);
-
-  //TODO: Restore when Image Map editor is finished
-  //SetElementEnabledById("editImageMap", enabled);
-  SetElementEnabledById("removeImageMap", gCanRemoveImageMap);
 }
 
 function ToggleConstrain()
