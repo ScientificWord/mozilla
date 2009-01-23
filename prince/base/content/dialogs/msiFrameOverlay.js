@@ -1,5 +1,5 @@
 Components.utils.import("resource://app/modules/unitHandler.jsm");
-var unitHandler = new UnitHandler();
+var frameUnitHandler = new UnitHandler();
 var sides = ["Top", "Right", "Bottom", "Left"];
 var currentFrame;
 var scale = 0.25;
@@ -36,6 +36,8 @@ function initFrameTab(gDialog, element)
   gDialog.placeTopCheck         = document.getElementById("placeTopCheck");
   gDialog.placeBottomCheck      = document.getElementById("placeBottomCheck");
   gDialog.herePlacementRadioGroup   = document.getElementById("herePlacementRadioGroup");
+  gDialog.frameUnitMenuList     = document.getElementById("frameUnitMenulist");
+  gDialog.OkButton          = document.documentElement.getButton("accept");
   var fieldList = [];
   var attrs = ["margin","border","padding","crop"];
   for (var side in sides)
@@ -45,10 +47,10 @@ function initFrameTab(gDialog, element)
       fieldList.push(gDialog[attrs[attr]+"Input"][sides[side].toLowerCase()]);
     }
   }
-  unitHandler.setEditFieldList(fieldList);
-  unitHandler.initCurrentUnit("in");
+  frameUnitHandler.setEditFieldList(fieldList);
+  frameUnitHandler.initCurrentUnit("in");
   initUnitList(document.getElementById("unitList"));
-  unitHandler.setCurrentUnit(gDialog.frameUnitMenuList.value);
+  frameUnitHandler.setCurrentUnit(gDialog.frameUnitMenuList.value);
 
   if (element && element.localName == "msiframe")
   {
@@ -78,7 +80,7 @@ function initFrameTab(gDialog, element)
 
 function setNewUnit(element)
 {
-  unitHandler.setCurrentUnit(element.value);
+  frameUnitHandler.setCurrentUnit(element.value);
 }
 
 function initUnitList(unitPopUp)
@@ -87,7 +89,7 @@ function initUnitList(unitPopUp)
   var i, len;
   for (i=0, len = elements.length; i<len; i++)
   {
-    elements[i].label = unitHandler.getDisplayString(elements[i].value);
+    elements[i].label = frameUnitHandler.getDisplayString(elements[i].value);
     dump("element with value "+elements[i].value+" has label "+elements[i].label+"\n");
   }
 }
@@ -134,7 +136,7 @@ function extendInput( anId )
 
 function toPixels( x )
 {
-  return unitHandler.getValueAs(x,"px")*scale;
+  return frameUnitHandler.getValueAs(x,"px")*scale;
 }
 
 var color;
