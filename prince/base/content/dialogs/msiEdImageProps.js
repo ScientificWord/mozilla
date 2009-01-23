@@ -41,7 +41,9 @@
  * ***** END LICENSE BLOCK ***** */
 
 var gDialog;
-
+var globalElement;
+Components.utils.import("resource://app/modules/unitHandler.jsm");
+var imageUnitHandler = new UnitHandler();
 // dialog initialization code
 
 function Startup()
@@ -80,7 +82,6 @@ function Startup()
   gDialog.heightInput       = document.getElementById( "heightInput" );
   gDialog.unitMenulist      = document.getElementById( "unitMenulist" );
  // frame and placement tabs
-  initFrameTab(gDialog);
  // labeling tab
   gDialog.ImageHolder       = document.getElementById( "preview-image-holder" );
   gDialog.PreviewWidth      = document.getElementById( "PreviewWidth" );
@@ -89,8 +90,13 @@ function Startup()
   gDialog.PreviewImage      = null;
   gDialog.OkButton          = document.documentElement.getButton("accept");
   
-  msiCSSUnitConversions.pica = 4.2333333; //mm per pica
-  msiCSSUnitConversions.pixel = 0.26458342; //mm per pixel at 96 pixels/inch.
+  imageSizeFieldList = [gDialog.widthInput, gDialog.heightInput];
+  imageUnitHandler.setEditFieldList(imageSizeFieldList);
+  imageUnitHandler.initCurrentUnit("px");
+  initImageUnitList(document.getElementById("unitMenulist"));
+  imageUnitHandler.setCurrentUnit("px");
+//  msiCSSUnitConversions.pica = 4.2333333; //mm per pica
+//  msiCSSUnitConversions.pixel = 0.26458342; //mm per pixel at 96 pixels/inch.
   // add more for the other tabs
 
   // Get a single selected image element
@@ -154,6 +160,7 @@ function Startup()
   gHaveDocumentUrl = msiGetDocumentBaseUrl();
 
   InitDialog();
+  initFrameTab(gDialog);
   if (gAnchorElement)
     gOriginalHref = gAnchorElement.getAttribute("href");
   gDialog.hrefInput.value = gOriginalHref;
@@ -192,6 +199,18 @@ function InitDialog()
   gDialog.showLinkBorder.checked = border != "" && border > 0;
 }
 
+function initImageUnitList(unitPopUp)
+{
+  var elements = unitPopUp.getElementsByTagName("menuitem");
+  var i, len;
+  for (i=0, len = elements.length; i<len; i++)
+  {
+    elements[i].label = frameUnitHandler.getDisplayString(elements[i].value);
+    dump("element with value "+elements[i].value+" has label "+elements[i].label+"\n");
+  }
+}
+  
+
 function ChangeLinkLocation()
 {
   SetRelativeCheckbox(gDialog.makeRelativeLink);
@@ -217,6 +236,117 @@ function ToggleShowLinkBorder()
 function ValidateData()
 {
   return ValidateImage();
+}
+
+// Get data from widgets, validate, and set for the global element
+//   accessible to AdvancedEdit() [in EdDialogCommon.js]
+function ValidateImage()
+{
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  var editor = msiGetEditor(editorElement);
+//  var editor = GetCurrentEditor();
+  if (!editor)
+    return false;
+
+//  gValidateTab = gDialog.tabLocation;
+  if (!gDialog.srcInput.value)
+  {
+    AlertWithTitle(null, GetString("MissingImageError"));
+    SwitchToValidatePanel();
+    gDialog.srcInput.focus();
+    return false;
+  }
+
+  //TODO: WE NEED TO DO SOME URL VALIDATION HERE, E.G.:
+  // We must convert to "file:///" or "http://" format else image doesn't load!
+  var src = TrimString(gDialog.srcInput.value);
+  globalElement.setAttribute("src", src);
+
+  var title = TrimString(gDialog.titleInput.value);
+  if (title)
+    globalElement.setAttribute("title", title);
+  else
+    globalElement.removeAttribute("title");
+
+  alt = TrimString(gDialog.altTextInput.value);
+
+  globalElement.setAttribute("alt", alt);
+
+  var width = "";
+  var height = "";
+
+  gValidateTab = gDialog.tabDimensions;
+  if (!gDialog.actualSizeRadio.selected)
+  {
+    // Get user values for width and height
+//    width = msiValidateNumber(gDialog.widthInput, gDialog.widthUnitsMenulist, 1, gMaxPixels, 
+//                           globalElement, "width", false, true);
+//    if (gValidationError)
+//      return false;
+//
+//    height = msiValidateNumber(gDialog.heightInput, gDialog.heightUnitsMenulist, 1, gMaxPixels, 
+//                            globalElement, "height", false, true);
+//    if (gValidationError)
+//      return false;
+  }
+
+  // We always set the width and height attributes, even if same as actual.
+  //  This speeds up layout of pages since sizes are known before image is loaded
+  if (!width)
+    width = gActualWidth;
+  if (!height)
+    height = gActualHeight;
+
+  // Remove existing width and height only if source changed
+  //  and we couldn't obtain actual dimensions
+  var srcChanged = (src != gOriginalSrc);
+  if (width)
+    globalElement.setAttribute("width", width);
+  else if (srcChanged)
+    editor.removeAttributeOrEquivalent(globalElement, "width", true);
+
+  if (height)
+    globalElement.setAttribute("height", height);
+  else if (srcChanged) 
+    editor.removeAttributeOrEquivalent(globalElement, "height", true);
+
+  // spacing attributes
+  gValidateTab = gDialog.tabBorder;
+  msiValidateNumber(gDialog.imagelrInput, null, 0, gMaxPixels, 
+                 globalElement, "hspace", false, true, true);
+  if (gValidationError)
+    return false;
+
+  msiValidateNumber(gDialog.imagetbInput, null, 0, gMaxPixels, 
+                 globalElement, "vspace", false, true);
+  if (gValidationError)
+    return false;
+
+  // note this is deprecated and should be converted to stylesheets
+  msiValidateNumber(gDialog.border, null, 0, gMaxPixels, 
+                 globalElement, "border", false, true);
+  if (gValidationError)
+    return false;
+
+  // Default or setting "bottom" means don't set the attribute
+  // Note that the attributes "left" and "right" are opposite
+  //  of what we use in the UI, which describes where the TEXT wraps,
+  //  not the image location (which is what the HTML describes)
+  switch ( gDialog.alignTypeSelect.value )
+  {
+    case "top":
+    case "middle":
+    case "right":
+    case "left":
+      globalElement.setAttribute( "align", gDialog.alignTypeSelect.value );
+      break;
+    default:
+      try {
+        editor.removeAttributeOrEquivalent(globalElement, "align", true);
+      } catch (e) {}
+  }
+
+  return true;
 }
 
 function doHelpButton()
