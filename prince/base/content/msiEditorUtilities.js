@@ -6312,4 +6312,86 @@ function msiPathFromFileURL( url )
   return dirpath
 }
 
+
+// since the onkeypress event gets called *before* the value of a text box is updated,
+// we handle the updating here. This function takes a textbox element and an event and sets
+// the value of the text box
+// This is used for number boxes
+
+function updateTextNumber(textelement, id, event)
+{
+  if (event.type == "keypress")
+  {
+    var val = textelement.value;
+    var textbox = document.getElementById(id);
+    //textbox is the text box; textelement in the underlying html:input
+    var selStart = textelement.selectionStart;
+    var selEnd = textelement.selectionEnd;
+    var keycode = event.keyCode;
+    var charcode = event.charCode;
+  
+    if (keycode == event.DOM_VK_BACK_SPACE) {
+      if (selStart > 0) {
+        selStart--;
+        val = val.slice(0,selStart)+val.slice(selEnd);
+      }
+    }
+    else 
+    if (keycode == event.DOM_VK_DELETE) {
+      selEnd++;
+      val = val.slice(0,selStart)+val.slice(selEnd);
+    }
+    else
+    if (charcode == "-".charCodeAt(0) || charcode == "+".charCodeAt(0) || charcode == ".".charCodeAt(0) ||
+      (charcode >= 48 && charcode <58))
+    {
+      if (selEnd >= selStart) val = val.slice(0,selStart)+ String.fromCharCode(charcode)+val.slice(selEnd);
+      selStart++;
+    }
+    else return;
+    // now check to see if we have a string
+    try {
+      if (!isNaN(Number(val))) 
+      {
+        textelement.value = val;
+        textelement.setSelectionRange(selStart, selStart)
+        event.preventDefault();
+      }
+    }
+    catch(e)
+    {
+      dump(e.toString + "\n");
+    }
+  }
+  var eventsource = document.getElementById(id);
+  if (eventsource) eventsource._validateValue(eventsource.inputField.value,false,true);
+}
+
+
+function goUp(id)
+{
+  var element = document.getElementById(id);
+  var value = Number(element.value);
+  if (value == NaN) return;
+  var max = Number(element.getAttribute("max"));
+  if ((max == 0)||(max == NaN)) max = Number.MAX_VALUE;
+  value += Number(element.getAttribute("increment"));
+  value = Math.min(max,value);
+  element.value = unitRound(value);
+}
+
+function goDown(id)
+{
+  var element = document.getElementById(id);
+  var value = Number(element.value);
+  if (value == NaN) return;
+  var min = Number(element.getAttribute("min"));
+  if (min == NaN) min = 0;
+  value -= Number(element.getAttribute("increment"));
+  value = Math.max(min,value);
+  element.value = unitRound(value);
+}
+
+           
+ 
   
