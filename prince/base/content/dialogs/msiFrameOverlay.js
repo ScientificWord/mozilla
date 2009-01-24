@@ -35,7 +35,6 @@ function initFrameTab(gDialog, element)
   gDialog.placeFloatsCheck      = document.getElementById("placeFloatsCheck");
   gDialog.placeTopCheck         = document.getElementById("placeTopCheck");
   gDialog.placeBottomCheck      = document.getElementById("placeBottomCheck");
-  gDialog.herePlacementRadioGroup   = document.getElementById("herePlacementRadioGroup");
   gDialog.frameUnitMenuList     = document.getElementById("frameUnitMenulist");
   gDialog.OkButton          = document.documentElement.getButton("accept");
   var fieldList = [];
@@ -129,8 +128,6 @@ function extendInput( anId )
 //    case "Top":   document.getElementById(result[1]+"Top"+result[3]).value = document.getElementById(anId).value;
 //    case "Bottom": document.getElementById(result[1]+"Bottom"+result[3]).value = document.getElementById(anId).value;
 //  }
-  var eventsource = document.getElementById(anId);
-  if (eventsource) eventsource._validateValue(eventsource.inputField.value,false,true);
   updateDiagram( result[1] );
 }
 
@@ -156,7 +153,7 @@ function getColorAndUpdate()
 
   color = colorObj.TextColor;
   setColorWell("colorWell", color); 
-  currentFrame.setAttribute("border-color",color);
+  setStyleAttribute("content","border-color",color);
 }
 
 
@@ -223,11 +220,6 @@ function enableFloating( )
   else enableHere();
 }
 
-function handleChar(event, id)
-{
-  alert("event = , id = "+id);
-}
-
 /************************************/
 function handleChar(event, id)
 {
@@ -245,91 +237,18 @@ function geomHandleChar(event, id, tbid)
 }
 
 
-// since the onkeypress event gets called *before* the value of a text box is updated,
-// we handle the updating here. This function takes a textbox element and an event and returns sets
-// the value of the text box
-
-function updateTextNumber(textelement, id, event)
-{
-  var val = textelement.value;
-  var textbox = document.getElementById(id);
-  //textbox is the text box; textelement in the underlying html:input
-  var selStart = textelement.selectionStart;
-  var selEnd = textelement.selectionEnd;
-  var keycode = event.keyCode;
-  var charcode = event.charCode;
-  
-  if (keycode == event.DOM_VK_BACK_SPACE) {
-    if (selStart > 0) {
-      selStart--;
-      val = val.slice(0,selStart)+val.slice(selEnd);
-    }
-  }
-  else 
-  if (keycode == event.DOM_VK_DELETE) {
-    selEnd++;
-    val = val.slice(0,selStart)+val.slice(selEnd);
-  }
-  else
-  if (charcode == "-".charCodeAt(0) || charcode == "+".charCodeAt(0) || charcode == ".".charCodeAt(0) ||
-    (charcode >= 48 && charcode <58))
-  {
-    if (selEnd >= selStart) val = val.slice(0,selStart)+ String.fromCharCode(charcode)+val.slice(selEnd);
-    selStart++;
-  }
-  else return;
-  // now check to see if we have a string
-  try {
-    if (!isNaN(Number(val))) 
-    {
-      textelement.value = val;
-      textelement.setSelectionRange(selStart, selStart)
-      event.preventDefault();
-    }
-  }
-  catch(e)
-  {
-    dump(e.toString + "\n");
-  }
-}           
- 
-
-function goUp(id)
-{
-  var element = document.getElementById(id);
-  var value = Number(element.value);
-  if (value == NaN) return;
-  var max = Number(element.getAttribute("max"));
-  if ((max == 0)||(max == NaN)) max = Number.MAX_VALUE;
-  value += Number(element.getAttribute("increment"));
-  value = Math.min(max,value);
-  element.value = unitRound(value);
-}
-
-function goDown(id)
-{
-  var element = document.getElementById(id);
-  var value = Number(element.value);
-  if (value == NaN) return;
-  var min = Number(element.getAttribute("min"));
-  if (min == NaN) min = 0;
-  value -= Number(element.getAttribute("increment"));
-  value = Math.max(min,value);
-  element.value = unitRound(value);
-}
-
-
 function geomInputChar(event, id, tbid)
 {
   extendInput(id);  
 }
 
 
-function unitRound( size )
+function unitRound( size, unit )
 {
   var places;
+  if (!unit) unit = frameUnitHandler.getCurrentUnit();
   // round off to a number of decimal places appropriate for the units
-  switch (currentUnit) {
+  switch (unit) {
     case "mm" : places = 10;
       break;
     case "cm" : places = 100;
@@ -343,3 +262,12 @@ function unitRound( size )
   return Math.round(size*places)/places;
 }
 
+function setImageSize(width, height)  // width and height are the size of the image in pixels
+{
+  var scaledWidth = Math.round(scale*width);
+  var scaledHeight = Math.round(scale*height);
+  setStyleAttribute("content", "width", scaledWidth + "px");
+  setStyleAttribute("content", "height", scaledHeight + "px");
+}
+
+  

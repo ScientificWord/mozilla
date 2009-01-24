@@ -40,7 +40,7 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-var gDialog;
+// var gDialog;
 var globalElement;
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 var imageUnitHandler = new UnitHandler();
@@ -88,9 +88,10 @@ function Startup()
   gDialog.PreviewHeight     = document.getElementById( "PreviewHeight" );
   gDialog.PreviewSize       = document.getElementById( "PreviewSize" );
   gDialog.PreviewImage      = null;
+  gDialog.herePlacementRadioGroup   = document.getElementById("herePlacementRadioGroup");
   gDialog.OkButton          = document.documentElement.getButton("accept");
   
-  imageSizeFieldList = [gDialog.widthInput, gDialog.heightInput];
+  var imageSizeFieldList = [gDialog.widthInput, gDialog.heightInput];
   imageUnitHandler.setEditFieldList(imageSizeFieldList);
   imageUnitHandler.initCurrentUnit("px");
   initImageUnitList(document.getElementById("unitMenulist"));
@@ -115,8 +116,8 @@ function Startup()
       if (!imageElement || imageElement.getAttribute("type") != "image") {
         // Get a single selected image element
         imageElement = editor.getSelectedElement(tagName);
-        if (imageElement)
-          gAnchorElement = editor.getElementOrParentByTagName("href", imageElement);
+//        if (imageElement)
+//          gAnchorElement = editor.getElementOrParentByTagName("href", imageElement);
       }
     } catch (e) {}
 
@@ -159,8 +160,8 @@ function Startup()
   // We only need to test for this once per dialog load
   gHaveDocumentUrl = msiGetDocumentBaseUrl();
 
-  InitDialog();
   initFrameTab(gDialog);
+  InitDialog();
   if (gAnchorElement)
     gOriginalHref = gAnchorElement.getAttribute("href");
   gDialog.hrefInput.value = gOriginalHref;
@@ -195,8 +196,8 @@ function Startup()
 function InitDialog()
 {
   InitImage();
-  var border = TrimString(gDialog.border.value);
-  gDialog.showLinkBorder.checked = border != "" && border > 0;
+//  var border = TrimString(gDialog.border.value);
+//  gDialog.showLinkBorder.checked = border != "" && border > 0;
 }
 
 function initImageUnitList(unitPopUp)

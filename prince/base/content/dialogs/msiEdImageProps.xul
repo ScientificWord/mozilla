@@ -162,8 +162,8 @@
                 class     = "narrow"
                 type      = "number"
                 hidespinbuttons="false"
-                oninput   = "constrainProportions(this.id, 'heightInput')"
-                onchange = "constrainProportions(this.id, 'heightInput')"/>
+                onkeypress= "constrainProportions(this.id, 'heightInput', event)"
+                onchange = "constrainProportions(this.id, 'heightInput', event)"/>
             </row>
             <row>
               <radio
@@ -182,8 +182,8 @@
                 id        = "heightInput"
                 class     = "narrow"
                 type      = "number"
-                oninput   = "constrainProportions(this.id, 'widthInput')"
-                onchange = "constrainProportions(this.id, 'widthInput')"/>
+                onkeypress= "constrainProportions(this.id, 'widthInput', event)"
+                onchange  = "constrainProportions(this.id, 'widthInput', event)"/>
             </row>
           </rows>
         </grid>

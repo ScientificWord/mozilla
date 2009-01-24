@@ -176,7 +176,7 @@ function InitImage()
 
   // Set actual radio button if both set values are the same as actual
   SetSizeWidgets(width, height);
-  gDialog.unitMenuList.value = "px";
+  gDialog.unitMenulist.value = "px";
 
   gDialog.widthInput.value  = gConstrainWidth = width ? width : (gActualWidth ? gActualWidth : "");
   gDialog.heightInput.value = gConstrainHeight = height ? height : (gActualHeight ? gActualHeight : "");
@@ -191,17 +191,21 @@ function InitImage()
   var bordervalues;
   var bv = msiGetHTMLOrCSSStyleValue(null, globalElement, "border", null);
   var i;
-  bordervalues = bv.split(/\s+/);
-  if (bordervalues[3] && bordervalues[3].length > 0)
-    ; /* all four values were given */
-  else if (bordervalues[2] && bordervalues[2].length > 0)
-    // only 3 values given. The last is the same as the second.
-    bordervalues[3] = bordervalues[1]; 
-  else if (bordervalues[1] && bordervalues[1].length > 0) {
-    // only 2 values given; repeat
-    bordervalues[2] = bordervalues[0]; bordervalues[3] = bordervalues[1];}
-  else if (bordervalues[0] && bordervalues[0].length > 0) 
-    bordervalues[3] = bordervalues[2]  = bordervalues[1] = bordervalues[0]; 
+  if (bv.length > 0)
+  {
+    bordervalues = bv.split(/\s+/);
+    if (bordervalues[3] && bordervalues[3].length > 0)
+      ; /* all four values were given */
+    else if (bordervalues[2] && bordervalues[2].length > 0)
+      // only 3 values given. The last is the same as the second.
+      bordervalues[3] = bordervalues[1]; 
+    else if (bordervalues[1] && bordervalues[1].length > 0) {
+      // only 2 values given; repeat
+      bordervalues[2] = bordervalues[0]; bordervalues[3] = bordervalues[1];}
+    else if (bordervalues[0] && bordervalues[0].length > 0) 
+      bordervalues[3] = bordervalues[2]  = bordervalues[1] = bordervalues[0]; 
+  }
+  else bordervalues = [0,0,0,0];
   bordervalues.forEach(fillInValue);
   bordervalues.forEach(stripPx);
     
@@ -371,11 +375,12 @@ function PreviewImageLoaded()
       gDialog.PreviewImage.width = width;
       gDialog.PreviewImage.height = height;
 
-      gDialog.PreviewWidth.setAttribute("value", gActualWidth);
-      gDialog.PreviewHeight.setAttribute("value", gActualHeight);
+      gDialog.PreviewWidth.setAttribute("value", gActualWidth+" pixels");
+      gDialog.PreviewHeight.setAttribute("value", gActualHeight+" pixels");
 
       gDialog.PreviewSize.collapsed = false;
       gDialog.ImageHolder.collapsed = false;
+      setImageSize(gActualWidth, gActualHeight);
 
       SetSizeWidgets(gDialog.widthInput.value, gDialog.heightInput.value);
     }
@@ -502,12 +507,12 @@ function ToggleConstrain()
   }
 }
 
-function constrainProportions( srcID, destID )
+function constrainProportions( srcID, destID, event )
 {
   var srcElement = document.getElementById(srcID);
   if (!srcElement)
     return;
-
+  updateTextNumber(srcElement, srcID, event);
   var destElement = document.getElementById(destID);
   if (!destElement)
     return;
@@ -515,10 +520,9 @@ function constrainProportions( srcID, destID )
   // always force an integer (whether we are constraining or not)
   forceInteger(srcID);
 
-  if (!gActualWidth || !gActualHeight ||
-      !(gDialog.constrainCheckbox.checked && !gDialog.constrainCheckbox.disabled))
-    return;
-
+  if (gActualWidth && gActualHeight &&
+      (gDialog.constrainCheckbox.checked && !gDialog.constrainCheckbox.disabled))
+  {
 //  // double-check that neither width nor height is in percent mode; bail if so!
 //  if ( (gDialog.widthUnitsMenulist.selectedIndex != 0)
 //     || (gDialog.heightUnitsMenulist.selectedIndex != 0) )
@@ -528,11 +532,11 @@ function constrainProportions( srcID, destID )
   // which is kind of funky if you change one number without the constrain
   // and then turn constrain on and change a number
   // I prefer the old strategy (below) but I can see some merit to this solution
-  if (srcID == "widthInput")
-    destElement.value = Math.round( srcElement.value * gActualHeight / gActualWidth );
-  else
-    destElement.value = Math.round( srcElement.value * gActualWidth / gActualHeight );
-
+    if (srcID == "widthInput")
+      destElement.value = Math.round( srcElement.value * gActualHeight / gActualWidth );
+    else
+      destElement.value = Math.round( srcElement.value * gActualWidth / gActualHeight );
+  }
 /*
   // With this strategy, the width and height ratio
   //   can be reset to whatever the user entered.
@@ -541,6 +545,7 @@ function constrainProportions( srcID, destID )
   else
     destElement.value = Math.round( srcElement.value * gConstrainWidth / gConstrainHeight );
 */
+  setImageSize(imageUnitHandler.getValueAs(gDialog.widthInput.value,"px"), imageUnitHandler.getValueAs(gDialog.heightInput.value,"px"));
 }
 
 //function editImageMap()
