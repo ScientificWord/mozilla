@@ -53,6 +53,7 @@
 <dialog id="imgDialog" title="&windowTitle.label;"
     xmlns ="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload = "Startup()"
+    persist="screenX screenY width height sizemode"
     buttons="accept,cancel"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();">

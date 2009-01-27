@@ -3,6 +3,12 @@ var frameUnitHandler = new UnitHandler();
 var sides = ["Top", "Right", "Bottom", "Left"];
 var currentFrame;
 var scale = 0.25;
+var scaledWidth = 50; 
+var scaledHeight = 40;
+var position = 0;  // left = 1, right = 2, neither = 0
+
+
+
 
 function initFrameTab(gDialog, element)
 {
@@ -58,20 +64,19 @@ function initFrameTab(gDialog, element)
     var values = [0,0,0,0];
     var i;
     if (element.hasAttribute("margin"))
-      values = parseLengths(element.getAttribute("margin"));
+      { values = parseLengths(element.getAttribute("margin"));}
     for (i = 0; i<4; i++)
-      gDialog.marginInput[toLowerCase(sides[i])].value = values[i];
+      { gDialog.marginInput[toLowerCase(sides[i])].value = values[i];}
     values = [0,0,0,0];
     if (element.hasAttribute("border-width"))
-      values = parseLengths(element.getAttribute("border-width"));
+      { values = parseLengths(element.getAttribute("border-width"));}
     for (i = 0; i<4; i++)
-      gDialog.borderInput[toLowerCase(sides[i])].value = values[i];
-    values = [0,0,0,
-    0];
+      { gDialog.borderInput[toLowerCase(sides[i])].value = values[i];}
+    values = [0,0,0,0];
     if (element.hasAttribute("padding"))
-      values = parseLengths(element.getAttribute("padding"));
+      { values = parseLengths(element.getAttribute("padding"));}
     for (i = 0; i<4; i++)
-      gDialog.paddingInput[toLowerCase(sides[i])].value = values[i];
+      { gDialog.paddingInput[toLowerCase(sides[i])].value = values[i];}
   }
 //  else
 //    currentFrame = editor.createElementWithDefaults("msiframe"); 
@@ -116,7 +121,7 @@ function parseLengths( str ) // correctly parse something like margin= 10px or m
 }
 
 
-function extendInput( anId )
+function update( anId )
 {
   //parse the id
   if (anId.length == 0) return;
@@ -131,9 +136,19 @@ function extendInput( anId )
   updateDiagram( result[1] );
 }
 
+function extendInput( anId )
+{
+  var input = "Input";
+  var val = document.getElementById(anId+"Left"+input).value;
+  document.getElementById(anId+"Right"+input).value = Math.max(0,val);
+  document.getElementById(anId+"Top"+input).value = Math.max(0,val);
+  document.getElementById(anId+"Bottom"+input).value = Math.max(0,val);
+  updateDiagram( anId );
+}
+
 function toPixels( x )
 {
-  return frameUnitHandler.getValueAs(x,"px")*scale;
+  return Math.round(frameUnitHandler.getValueAs(x,"px")*scale);
 }
 
 var color;
@@ -153,7 +168,7 @@ function getColorAndUpdate()
 
   color = colorObj.TextColor;
   setColorWell("colorWell", color); 
-  setStyleAttribute("content","border-color",color);
+  setStyleAttribute("frame","border-color",color);
 }
 
 
@@ -163,7 +178,7 @@ function updateDiagram( attribute ) //attribute = margin, border, padding;
   var i;
   var values = [];
   for (i = 0; i<4; i++)
-    values.push( toPixels(document.getElementById(attribute + sides[i] + "Input").value ));
+    { values.push( Math.max(0,toPixels(document.getElementById(attribute + sides[i] + "Input").value )));}
   if (values[1] == values[3])
   {
     values.splice(3,1);
@@ -177,15 +192,32 @@ function updateDiagram( attribute ) //attribute = margin, border, padding;
   var att = attribute + ((attribute === "border")?"-width":"");
   setStyleAttribute("frame", att, val );
   dump(document.getElementById("frame").getAttribute("style"));
-// assume for now that the picture width (scaled) is 40px high and 50px wide
-  var imageWidth = 200*scale;
-  var imageHeight = 160*scale;
   // space flowing around the diagram is 150 - (lmargin + rmargin + lborder + lpadding + rborder + rpadding + imageWidth)*scale
-  var hmargin = toPixels(Number(gDialog.marginInput.left.value) + Number(gDialog.marginInput.right.value));
-  var hborder = toPixels(Number(gDialog.borderInput.left.value) + Number(gDialog.borderInput.right.value));
-  var hpadding = toPixels(Number(gDialog.paddingInput.left.value) + Number(gDialog.paddingInput.right.value));
-  setStyleAttribute("leftpage", "width", 150 - imageWidth - (hmargin + hborder + hpadding)*scale + "px");  
-
+  var hmargin = toPixels(Number(gDialog.marginInput.left.value)) + toPixels(Number(gDialog.marginInput.right.value));
+  var hborder = toPixels(Number(gDialog.borderInput.left.value)) + toPixels(Number(gDialog.borderInput.right.value));
+  var hpadding = toPixels(Number(gDialog.paddingInput.left.value)) + toPixels(Number(gDialog.paddingInput.right.value));
+  switch(position)
+  {
+    case 1: document.getElementById("leftspacer").setAttribute("width", Number(60+ Math.min(toPixels(gDialog.marginInput.left.value),0)) + "px"); 
+            document.getElementById("leftpage").setAttribute("width", "0px");    
+            document.getElementById("rightpage").setAttribute("width", Math.min(150,150 - scaledWidth - (hmargin + hborder + hpadding)) + "px");  
+            document.getElementById("rightspace").setAttribute("width", Math.max(0, - scaledWidth - (hmargin + hborder + hpadding)) + "px");  
+            document.getElementById("leftspace").setAttribute("width", "0px");
+            break;
+    case 2: document.getElementById("leftspacer").setAttribute("width", Number(60 + Math.min(0,150 - scaledWidth - (hmargin + hborder + hpadding))) + "px"); 
+            document.getElementById("leftpage").setAttribute("width", Math.min(150,150 - scaledWidth - (hmargin + hborder + hpadding)) + "px");    
+            document.getElementById("rightpage").setAttribute("width", "0px");  
+            document.getElementById("rightspace").setAttribute("width", "0px");
+            document.getElementById("leftspace").setAttribute("width", Math.max(0, - scaledWidth - (hmargin + hborder + hpadding)) + "px");  
+            break;
+    default: document.getElementById("leftspacer").setAttribute("width", Number(135 - (scaledWidth + hborder + hpadding)/2) + "px");
+            document.getElementById("leftpage").setAttribute("width", "0px");    
+            document.getElementById("rightpage").setAttribute("width", "0px");  
+            document.getElementById("rightspace").setAttribute("width", "0px");
+            document.getElementById("leftspace").setAttribute("width", "0px");
+            break;
+  }  
+  dump(document.getElementById("frame").getAttribute("width"));
   // update currentElement also
 
 }
@@ -205,8 +237,20 @@ function enableHere( )
 {
   var broadcaster = document.getElementById("herePlacement");
   var theValue = "true";
-  if (document.getElementById('placeHereCheck').checked) theValue = "false";
+  var position;
+  if (document.getElementById('placeHereCheck').checked)
+  {
+    theValue = "false";
+    position = document.getElementById('herePlacementRadioGroup').value;
+    setAlignment( (position==="left" || position==="inside")?1:((position==="right"||position=="outside")?2:0));
+  }
+  else
+  {
+    setAlignment(0);
+  }
   broadcaster.setAttribute("disabled",theValue);
+//  document.getElementById('herePlacementRadioGroup').value;
+  updateDiagram("margin");
 }
 
 
@@ -226,21 +270,21 @@ function handleChar(event, id)
   var element = event.originalTarget;
   if ((event.keyCode != event.DOM_VK_UP) && (event.keyCode != event.DOM_VK_DOWN))
     updateTextNumber(element, id, event);
-  extendInput(id);
+  update(id);
   event.preventDefault();
 }
 
 function geomHandleChar(event, id, tbid)
 {
   handleChar(event, id, tbid);
-  geomInputChar(event, id, tbid);
+//  geomInputChar(event, id, tbid);
 }
 
 
-function geomInputChar(event, id, tbid)
-{
-  extendInput(id);  
-}
+//function geomInputChar(event, id, tbid)
+//{
+//  update(id);  
+//}
 
 
 function unitRound( size, unit )
@@ -264,10 +308,27 @@ function unitRound( size, unit )
 
 function setImageSize(width, height)  // width and height are the size of the image in pixels
 {
-  var scaledWidth = Math.round(scale*width);
-  var scaledHeight = Math.round(scale*height);
+  scaledWidth = Math.round(scale*width);
+  scaledHeight = Math.round(scale*height);
   setStyleAttribute("content", "width", scaledWidth + "px");
   setStyleAttribute("content", "height", scaledHeight + "px");
+  updateDiagram("margin");
 }
 
   
+function setAlignment( alignment ) // alignment = 1 for left, 2 for right, 0 for neither
+{
+  position = alignment;
+  if (position ==1|| position ==2)
+  {
+    gDialog.marginInput.left.removeAttribute("disabled");
+    gDialog.marginInput.right.removeAttribute("disabled");
+  }
+  else
+  {
+    gDialog.marginInput.left.setAttribute("disabled", "true");
+    gDialog.marginInput.left.setAttribute("value", "0.00");
+    gDialog.marginInput.right.setAttribute("disabled", "true");
+    gDialog.marginInput.right.setAttribute("value", "0.00");
+  }
+}
