@@ -209,10 +209,10 @@ function InitImage()
   bordervalues.forEach(fillInValue);
   bordervalues.forEach(stripPx);
     
-  gDialog.borderInput.top = bordervalues[0];
-  gDialog.borderInput.right = bordervalues[1];
-  gDialog.borderInput.bottom = bordervalues[2];
-  gDialog.borderInput.left = bordervalues[3];
+//  gDialog.borderInput.top = bordervalues[0];
+//  gDialog.borderInput.right = bordervalues[1];
+//  gDialog.borderInput.bottom = bordervalues[2];
+//  gDialog.borderInput.left = bordervalues[3];
 
   // Get alignment setting
 //  var align = globalElement.getAttribute("align");
