@@ -162,9 +162,9 @@ function Startup()
 
   initFrameTab(gDialog);
   InitDialog();
-  if (gAnchorElement)
-    gOriginalHref = gAnchorElement.getAttribute("href");
-  gDialog.hrefInput.value = gOriginalHref;
+//  if (gAnchorElement)
+//    gOriginalHref = gAnchorElement.getAttribute("href");
+//  gDialog.hrefInput.value = gOriginalHref;
 
 //  FillLinkMenulist(gDialog.hrefInput, gHNodeArray);
   ChangeLinkLocation();
@@ -214,8 +214,8 @@ function initImageUnitList(unitPopUp)
 
 function ChangeLinkLocation()
 {
-  SetRelativeCheckbox(gDialog.makeRelativeLink);
-  gDialog.showLinkBorder.disabled = !TrimString(gDialog.hrefInput.value);
+//  SetRelativeCheckbox(gDialog.makeRelativeLink);
+//  gDialog.showLinkBorder.disabled = !TrimString(gDialog.hrefInput.value);
 }
 
 function ToggleShowLinkBorder()

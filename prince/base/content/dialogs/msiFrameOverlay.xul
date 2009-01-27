@@ -17,7 +17,6 @@
       class     = "medwidth"
       unit      = "px"
       type      = "number"
-      min       = "-1000"
       increment = "1"
       decimalplaces = "0"/>
       
@@ -50,15 +49,15 @@
         </hbox>
         <hbox>
           <hbox id="leftspacer" height="1px" width="60px"/> <!-- width is 60 + min(0, left margin) -->
-          <hbox id="leftpage" height="1px" class="page" style="background-color:rgb(90,90,90); width: 100px"/> 
+          <hbox id="leftpage" height="1px" class="page" style="background-color:rgb(90,90,90); width: 0px"/> 
             <!-- width is max(0,leftmargin) (scaled, of course)
             or, when on the right, it is 100 - contentwidth - mx -px -bx -->
-          <vbox id = "outer" style="background-color:white;"> <!-- padding is the "margin" of the frame-->
-            <vbox id="frame" style="border-style:solid; border-width:0" ><!-- border and padding are those of the frame-->
-              <vbox id="content" style="background-color:rgb(150,150,150); "/><!-- height and width are those of the content of the frame --> 
-            </vbox>
+          <box id="leftspace" class="page" style="background-color:transparent;" width="0px"/>
+          <vbox id="frame" style="border-style:solid; border-width:0" ><!-- border and padding are those of the frame-->
+            <vbox id="content" style="background-color:rgb(150,150,150); "/><!-- height and width are those of the content of the frame --> 
           </vbox>
-          <hbox id="rightpage" height="1px" class="page" style="background-color:rgb(90,90,90);" width="0px"/><!-- width is 150 - contentwidth - mx - px - bx,
+          <box id="rightspace" class="page" style="background-color:transparent;" width="0px"/>
+          <box id="rightpage" class="page" style="background-color:rgb(90,90,90);" width="150px"/><!-- width is 150 - contentwidth - mx - px - bx,
             where mx is the sum of the left and right margins, and px and bx are the same for the padding and border -->
         </hbox >
         <hbox>
@@ -75,11 +74,13 @@
         <column flex="1"/>
         <column flex="1"/>
         <column flex="1"/>
+        <column flex="1"/>
       </columns>
       <rows>
         <row>
           <hbox/>
           <label value="Left"/>
+          <hbox/>
           <label value="Right"/>
           <label value="Top"/>
           <label value="Bottom"/>
@@ -88,24 +89,27 @@
           <label value="Margin"/>
           <textbox
             id        = "marginLeftInput"
+            min       = "-1000"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
-            onchange  = "extendInput(this.id);"/>
+            onchange  = "update(this.id);"/>
+          <button width="1em" label=">" oncommand="extendInput('margin')"/>
           <textbox
             id        = "marginRightInput"
+            min       = "-1000"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
-            onchange  = "extendInput(this.id);"/>
+            onchange  = "update(this.id);"/>
           <textbox
             id        = "marginTopInput"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
-            onchange  = "extendInput(this.id);"/>
+            onchange  = "update(this.id);"/>
           <textbox
             id        = "marginBottomInput"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
-            onchange  = "extendInput(this.id);"/>
+            onchange  = "update(this.id);"/>
         </row>
         <row>
           <label value="Border"/>
@@ -113,22 +117,23 @@
             id        = "borderLeftInput"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
-            onchange  = "extendInput(this.id);"/>
+            onchange  = "update(this.id);"/>
+          <button width="1em" label=">" oncommand="extendInput('border')"/>
           <textbox
             id        = "borderRightInput"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
-            onchange  = "extendInput(this.id);"/>
+            onchange  = "update(this.id);"/>
           <textbox
             id        = "borderTopInput"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
-            onchange  = "extendInput(this.id);"/>
+            onchange  = "update(this.id);"/>
           <textbox
             id        = "borderBottomInput"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
-            onchange  = "extendInput(this.id);"/>
+            onchange  = "update(this.id);"/>
         </row>
         <row>
           <label value="Padding"/>
@@ -136,22 +141,23 @@
             id        = "paddingLeftInput"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
-            onchange  = "extendInput(this.id);"/>
+            onchange  = "update(this.id);"/>
+          <button width="1em" label=">" oncommand="extendInput('padding')"/>
           <textbox
             id        = "paddingRightInput"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
-            onchange  = "extendInput(this.id);"/>
+            onchange  = "update(this.id);"/>
           <textbox
             id        = "paddingTopInput"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
-            onchange  = "extendInput(this.id);"/>
+            onchange  = "update(this.id);"/>
           <textbox
             id        = "paddingBottomInput"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
-            onchange  = "extendInput(this.id);"/>
+            onchange  = "update(this.id);"/>
         </row>
         <row>
           <label value="Crop"/>
@@ -159,22 +165,23 @@
             id        = "cropLeftInput"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
-            onchange  = "extendInput(this.id);"/>
+            onchange  = "update(this.id);"/>
+          <button width="1em" label=">" oncommand="extendInput('crop')"/>
           <textbox
             id        = "cropRightInput"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
-            onchange  = "extendInput(this.id);"/>
+            onchange  = "update(this.id);"/>
           <textbox
             id        = "cropTopInput"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
-            onchange  = "extendInput(this.id);"/>
+            onchange  = "update(this.id);"/>
           <textbox
             id        = "cropBottomInput"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
-            onchange  = "extendInput(this.id);"/>
+            onchange  = "update(this.id);"/>
         </row>
         <row>
           <label value="Border color"/>
@@ -198,16 +205,16 @@
           <radio id="displayedRadio" label="Displayed" radioGroup="placementRadioGroup"/>
         </vbox>
         <vbox>
-          <radio id="floatingRadio" label="Floating" radioGroup="placementRadioGroup"/>
-          <vbox oncommand="enableHere(this);">
+          <radio id="floatingRadio" label="Floating" radioGroup="placementRadioGroup" oncommand="enableHere(this);"/>
+          <vbox>
             <checkbox id="placeHereCheck" label="Here" observes="floatingPlacement"/>
-            <checkbox id="placeFloatsCheck" label="On a page of floats" observes="floatingPlacement" />
-            <checkbox id="placeTopCheck" label="Top of page" observes="floatingPlacement" />
-            <checkbox id="placeBottomCheck" label="Bottom of page" observes="floatingPlacement" />
+            <checkbox id="placeFloatsCheck" label="On a page of floats" observes="floatingPlacement"/>
+            <checkbox id="placeTopCheck" label="Top of page" observes="floatingPlacement"/>
+            <checkbox id="placeBottomCheck" label="Bottom of page" observes="floatingPlacement"/>
           </vbox>
         </vbox>
         <vbox>
-          <radiogroup id="herePlacementRadioGroup" align="vertical">
+          <radiogroup id="herePlacementRadioGroup" align="vertical"  oncommand="enableHere(this);">
             <radio id="hereLeftRadio" label="Left" value="left" observes="herePlacement" />
             <radio id="hereRightRadio" label="Right" value="right" observes="herePlacement"/>
             <radio id="hereInsideRadio" label="Inside" value="inside" observes="herePlacement" />
