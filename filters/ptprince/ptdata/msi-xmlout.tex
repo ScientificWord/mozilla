@@ -498,6 +498,12 @@
      %\temptoksa=[\begin{Bmatrix}#1\end{Bmatrix}]%
      %\the\temptoksa
   ]
+  \gdef\@scan@smallmatrix#1\end{smallmatrix}[%
+     \egroup
+     \@make@braces@normal
+     \msitag[\begin{smallmatrix}#1\end{smallmatrix}]
+  ]
+
   \gdef\@scan@vmatrix#1\end{vmatrix}[%
      \egroup
      \@make@braces@normal
@@ -532,6 +538,7 @@
 
 \def\msi@begin@bmatrix{\@make@braces@other\relax\@scan@bmatrix} 
 \def\msi@begin@Bmatrix{\@make@braces@other\relax\@scan@Bmatrix} 
+\def\msi@begin@smallmatrix{\@make@braces@other\relax\@scan@smallmatrix} 
 \def\msi@begin@vmatrix{\@make@braces@other\relax\@scan@vmatrix} 
 \def\msi@begin@Vmatrix{\@make@braces@other\relax\@scan@Vmatrix} 
 \def\msi@begin@pmatrix{\@make@braces@other\relax\@scan@pmatrix}
@@ -611,6 +618,7 @@
       \catcode`}=\other
       \catcode`&=\active
       \catcode`$=\other
+      \catcode`##=\other
       \msiopentag{verb}{<verb>}%
       \@sverb   
 }
