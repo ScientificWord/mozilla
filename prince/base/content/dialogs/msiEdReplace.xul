@@ -49,6 +49,7 @@
 
   <!-- Scripts specific to this dialog -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEdReplace.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiFindUtils.js"/>
   <stringbundle id="findBundle" src="chrome://prince/locale/msifinddialog.properties"/>
    
   <!-- Following scripts are needed by any MSI dialog containing an editor -->

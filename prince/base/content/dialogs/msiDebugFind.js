@@ -216,7 +216,6 @@ function retrieveSearchExpression()
 {
   if (gTestFindDialog.findContentFilter == null)
     gTestFindDialog.findContentFilter = new msiDialogEditorContentFilter(gTestFindDialog.findInput);
-//  gFindInst.searchString = gTestFindDialog.findContentFilter.getTextString();
   return gTestFindDialog.findContentFilter.getXMLNodesAsDocFragment();
 }
 
