@@ -1088,11 +1088,15 @@ function msiSearchManager(targEditorElement, searchDocFragment, searchFlags)
         this.mXPathSearchString = contentFormatter.prepareXPathStringForNode(prefixStr);
         if ( (additionalConditionStr != null) && (additionalConditionStr.length != 0) )
           this.mXPathSearchString += additionalConditionStr;
+        //NOTE! The following, insisting as it does on finding a single parent node containing all these children, will prevent
+        //  a search from matching, for instance, two contiguous pieces of math separated by an empty text node. If we want to
+        //  somehow allow for matching across containers, this XPath stuff would need to change. (I don't have a good candidate in mind yet.)
         if ( (searchNodeData.topNode != null) && (searchNodeData.topNode != searchNodeData.theNode) )
         {
           switch(searchNodeData.topType)
           {
             case "container":
+            case "mathContainer":
             case "anonContainer":
             case "styleAttribs":
               var topContentFormatter = new XPathFormatter(searchNodeData.topNode, this.mSearchFlags + "n");
