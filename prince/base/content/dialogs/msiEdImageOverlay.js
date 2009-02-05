@@ -380,7 +380,7 @@ function PreviewImageLoaded()
 
       gDialog.PreviewSize.collapsed = false;
       gDialog.ImageHolder.collapsed = false;
-      setImageSize(gActualWidth, gActualHeight);
+      setContentSize(gActualWidth, gActualHeight);
 
       SetSizeWidgets(gDialog.widthInput.value, gDialog.heightInput.value);
     }
@@ -545,7 +545,7 @@ function constrainProportions( srcID, destID, event )
   else
     destElement.value = Math.round( srcElement.value * gConstrainWidth / gConstrainHeight );
 */
-  setImageSize(imageUnitHandler.getValueAs(gDialog.widthInput.value,"px"), imageUnitHandler.getValueAs(gDialog.heightInput.value,"px"));
+  setContentSize(imageUnitHandler.getValueAs(gDialog.widthInput.value,"px"), imageUnitHandler.getValueAs(gDialog.heightInput.value,"px"));
 }
 
 //function editImageMap()
@@ -601,13 +601,13 @@ function ValidateImage()
   var src = TrimString(gDialog.srcInput.value);
   globalElement.setAttribute("src", src);
 
-  var title = TrimString(gDialog.titleInput.value);
+  var title = ""; //TrimString(gDialog.titleInput.value);
   if (title)
     globalElement.setAttribute("title", title);
   else
     globalElement.removeAttribute("title");
 
-  alt = TrimString(gDialog.altTextInput.value);
+  alt = ""; //TrimString(gDialog.altTextInput.value);
 
   globalElement.setAttribute("alt", alt);
 
