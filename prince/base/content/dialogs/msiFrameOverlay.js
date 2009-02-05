@@ -37,6 +37,7 @@ function initFrameTab(gDialog, element)
                          bottom: document.getElementById( "cropBottomInput")};
   gDialog.colorWell   = document.getElementById("colorWell");
   gDialog.placementRadioGroup   = document.getElementById("placementRadioGroup");
+  gDialog.placeForceHereCheck        = document.getElementById("placeForceHereCheck");
   gDialog.placeHereCheck        = document.getElementById("placeHereCheck");
   gDialog.placeFloatsCheck      = document.getElementById("placeFloatsCheck");
   gDialog.placeTopCheck         = document.getElementById("placeTopCheck");
@@ -56,6 +57,11 @@ function initFrameTab(gDialog, element)
   frameUnitHandler.initCurrentUnit("in");
   initUnitList(document.getElementById("unitList"));
   frameUnitHandler.setCurrentUnit(gDialog.frameUnitMenuList.value);
+  var color = getColorWell("colorWell");
+  if (color.length > 0)
+  { 
+    setStyleAttribute("frame","border-color",color);
+  }
 
   if (element && element.localName == "msiframe")
   {
@@ -94,7 +100,7 @@ function initUnitList(unitPopUp)
   for (i=0, len = elements.length; i<len; i++)
   {
     elements[i].label = frameUnitHandler.getDisplayString(elements[i].value);
-    dump("element with value "+elements[i].value+" has label "+elements[i].label+"\n");
+    // dump("element with value "+elements[i].value+" has label "+elements[i].label+"\n");
   }
 }
   
@@ -171,7 +177,24 @@ function getColorAndUpdate()
   setStyleAttribute("frame","border-color",color);
 }
 
-
+// come up with a four part attribute giving the four parts of the margin or padding or border, etc. using the same rules as CSS
+function getCompositeMeasurement(attribute, unit)
+{
+  var i;
+  var values = [];
+  for (i = 0; i<4; i++)
+    { values.push( Math.max(0,Number(document.getElementById(attribute + sides[i] + "Input").value )));}
+  if (values[1] == values[3])
+  {
+    values.splice(3,1);
+    if (values[0] == values[2]) 
+    {
+      values.splice(2,1);
+      if (values[0] == values[1]) values.splice(1,1);
+    }
+  }
+  var val = values.join(" ");
+}
 
 function updateDiagram( attribute ) //attribute = margin, border, padding; 
 {
@@ -191,7 +214,7 @@ function updateDiagram( attribute ) //attribute = margin, border, padding;
   var val = values.join("px ")+"px";
   var att = attribute + ((attribute === "border")?"-width":"");
   setStyleAttribute("frame", att, val );
-  dump(document.getElementById("frame").getAttribute("style"));
+  // dump(document.getElementById("frame").getAttribute("style"));
   // space flowing around the diagram is 150 - (lmargin + rmargin + lborder + lpadding + rborder + rpadding + imageWidth)*scale
   var hmargin = toPixels(Number(gDialog.marginInput.left.value)) + toPixels(Number(gDialog.marginInput.right.value));
   var hborder = toPixels(Number(gDialog.borderInput.left.value)) + toPixels(Number(gDialog.borderInput.right.value));
@@ -217,20 +240,25 @@ function updateDiagram( attribute ) //attribute = margin, border, padding;
             document.getElementById("leftspace").setAttribute("width", "0px");
             break;
   }  
-  dump(document.getElementById("frame").getAttribute("width"));
+  // dump(document.getElementById("frame").getAttribute("width"));
   // update currentElement also
 
 }
 
-function setStyleAttribute( id, att, value)
+function setStyleAttributeOnNode( node, att, value)
 {
-  var style = document.getElementById(id).getAttribute("style");
+  var style = node.getAttribute("style");
   var re = new RegExp(att + ":[^;]*;","");
   if (re.test(style))
     style = style.replace(re, att + ": " +value+"; ");
   else
     style = style + " " + att +": " + value + "; ";
-  document.getElementById(id).setAttribute("style",style);
+  node.setAttribute("style",style);
+}
+
+function setStyleAttribute( id, att, value)
+{
+  setStyleAttributeOnNode(document.getElementById(id));
 }
 
 function enableHere( )
@@ -306,7 +334,7 @@ function unitRound( size, unit )
   return Math.round(size*places)/places;
 }
 
-function setImageSize(width, height)  // width and height are the size of the image in pixels
+function setContentSize(width, height)  // width and height are the size of the image in pixels
 {
   scaledWidth = Math.round(scale*width);
   scaledHeight = Math.round(scale*height);
@@ -331,4 +359,52 @@ function setAlignment( alignment ) // alignment = 1 for left, 2 for right, 0 for
     gDialog.marginInput.right.setAttribute("disabled", "true");
     gDialog.marginInput.right.setAttribute("value", "0.00");
   }
+}
+
+function setFrameAttributes(frameNode)
+{
+  frameNode.units = frameUnitHandler.currentUnit;
+  var unit = frameNode.units;
+  frameNode.setAttribute("margin", getCompositeMeasurement("margin",unit));  
+  frameNode.setAttribute("border", getCompositeMeasurement("border",unit));  
+  frameNode.setAttribute("padding", getCompositeMeasurement("padding",unit));  
+  frameNode.setAttribute("crop", getCompositeMeasurement("crop",unit));  
+  var bgcolor = document.getElementById("colorWell").getAttribute("style");
+  bgcolor = bgcolor.replace(/background-color\s*:\s*/,"");
+  setStyleAttributeOnNode(frameNode, "border-color", bgcolor);
+  frameNode.setAttribute("border-color", bgcolor);  
+  frameNode.setAttribute("placement", gDialog.placementRadioGroup.value);
+  var placeLocation="";
+  var isHere = false;
+  if (gDialog.placeForceHereCheck.checked)
+  {
+    placeLocation += "H";
+    isHere = true;
+  }
+  else
+  {
+    if (gDialog.placeHereCheck.checked)
+    {
+      placeLocation += "h";
+      isHere = true;
+    }
+    if (gDialog.placeFloatsCheck.checked)
+      { placeLocation += "p"}
+    if (gDialog.placeTopCheck.checked)
+      { placeLocation += "t"}
+    if (gDialog.placeBottomCheck.checked)
+      { placeLocation += "b" }
+  }
+  frameNode.setAttribute("placeLocation", placeLocation);
+  if (isHere)
+  {
+    dump("Find parameters for here placement");
+  }
+  // now set measurements in the stile for frameNode
+  var style = getCompositeMeasurement("margin","px");
+  setStyleAttributeOnNode(frameNode, "margin", style);
+  style = getCompositeMeasurement("padding","px");
+  setStyleAttributeOnNode(frameNode, "padding", style);
+  style = getCompositeMeasurement("border","px");
+  setStyleAttributeOnNode(frameNode, "border", style);
 }

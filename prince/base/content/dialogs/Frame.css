@@ -17,3 +17,12 @@
 #illustration[outer="true"] hbox {
   direction: rtl;
 }
+
+*.extend {
+  margin: 2px;
+  width: 15px;
+  min-width: 15px;
+  max-width: 15px !important;
+  list-style-image: url(chrome://global/skin/arrow/arrow-rit.gif);
+}
+
