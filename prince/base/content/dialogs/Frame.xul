@@ -3,11 +3,11 @@
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
-<?xml-stylesheet href="chrome://prince/content/Frame.css" type="text/css"?>
 
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
 <?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/msiFrameOverlay.xul"?>
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/Frame.dtd" >
 <dialog id="FrameDlg"
   title="&windowTitle.label;"
@@ -18,136 +18,90 @@
   buttons="accept,cancel"
   buttonlabelaccept="OK"
   buttonlabelcancel="Cancel"
-  persist="screenX screenY width height"
->
+  persist="screenX screenY width height">
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/EdDialogCommon.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/msiFrameOverlay.js" />
   <!-- Scripts specific to this dialog -->
   <script type="application/x-javascript" src="chrome://prince/content/Frame.js"/>
-  <hbox>
-    <grid flex="1">
-      <columns>
-        <column/>
-        <column/>
-        <column/>
-        <column/>
-      </columns>
-      <rows>
-        <row>
-          <hbox><spacer flex="1"/><label value="&units;" control="units"/></hbox>
-          <menulist id="units"  
-                oncommand="switchUnits(this.value);"  >
-            <menupopup>
-              <menuitem id="inch" label="&inch;" value="in"/>
-              <menuitem id="cm" label="&centimeter;" value="cm"/>
-              <menuitem id="pt" label="&point;" value="pt"/>
-              <menuitem id="mm" label="&millimeter;" value="mm"/>
-            </menupopup>
-          </menulist>
-          <spacer/>
-          <spacer/>
-        </row>
-        <row>
-          <hbox><spacer flex="1"/><label value="&position.label;" control="frame.position"/></hbox>
-          <menulist id="frame.position" oncommand="setPosition(this.value);" >
-            <menupopup>
-              <menuitem id="inner" label="&inner;" value="inner"/>
-              <menuitem id="inline" label="&inline;" value="inline"/>
-              <menuitem id="display" label="&display;" value="display"/>
-              <menuitem id="outer" label="&outer;" value="outer"/>
-            </menupopup>
-          </menulist>
-          <hbox><spacer flex="1"/><label value="&width;" control="width" /></hbox>
-          <textbox id="width" style='width: 6em' value="2" min="0" increment="1" oninput="updateParameter('notedata','width');" onkeypress="handleChar(event,'notedata','width');"/>
-        </row>
-        <row>
-          <spacer/>
-          <spacer/>
-          <hbox><spacer flex="1"/><label value="&height;" control="height"/></hbox>
-          <textbox id="height" style='width: 6em' value="auto"  min="0" increment="1" oninput="updateParameter('noteheight','height');" onkeypress="handleChar(event,'noteheight','height');"/>
-        </row>
-        <row>
-          <hbox><spacer flex="1"/><label value="&alignment.label;" control="textalignment"/></hbox>
-          <menulist id="textalignment" >
-            <menupopup>
-              <menuitem id="inner" label="&innerAlign;" value="inner"/>
-              <menuitem id="center" label="&centerAlign;" value="center"/>
-              <menuitem id="justified" label="&justAlign;" value="just"/>
-              <menuitem id="outer" label="&outerAlign;" value="outer"/>
-            </menupopup>
-          </menulist>
-          <hbox><spacer flex="1"/><label value="&overhang;" control="overhang"/></hbox>
-          <textbox id="overhang"  style='width: 6em'  min="-100" max="100"	value="0"
-           increment="1" oninput="updateParameter(null,'overhang');" onkeypress="handleChar(event,null,'overhang');" />
-        </row>
-        <row>
-          <spacer/>
-          <hbox><spacer flex="1"/><label value="&margin;"/></hbox>
-          <hbox><spacer flex="1"/><label value="&topAndBottom;" control="marginTop"/></hbox>
-          <textbox id="marginTop" style='width: 6em' value=".07" min="0" increment="1" oninput="updateParameter('topmargin','marginTop');" onkeypress="handleChar(event,'topmargin','marginTop');"/>
-        </row>
-        <row>
-          <spacer/>
-          <spacer/>
-          <hbox><spacer flex="1"/><label value="&side;" control="marginSide"/></hbox>
-          <textbox id="marginSide" style='width: 6em' value=".07" min="0" increment="1" oninput="updateParameter('sidemargin','marginSide');" onkeypress="handleChar(event,'sidemargin','marginSide');"/>                                    
-        </row>
-        <row>
-          <hbox><spacer flex="1"/><label value="&rotation;" control="rotation"/></hbox>
-          <menulist id="rotation" >
-            <menupopup>
-              <menuitem id="rot0" label="&rot0;" value="rot0"/>
-              <menuitem id="rot270" label="&rot270;" value="rot270"/>
-              <menuitem id="rot90" label="&rot90;" value="rot90"/>
-            </menupopup>
-          </menulist>
-          <hbox><spacer flex="1"/><label value="&border;"/></hbox>
-          <textbox id="border" value=".02" style='width: 6em' onkeypress="updateBorderWidth(event,this);"  />
-        </row>
-        <row align="baseline">
-          <spacer/>
-          <spacer/>
-          <hbox><spacer flex="1"/><label value="&padding;"/></hbox>
-          <textbox id="padding" value=".02" style='width: 6em' onkeypress="updatePadding(event,this);" />	 
-        </row>
-        <row>
-<!--          <hbox><spacer flex="1"/><label value="&color;" control="colorButton"/></hbox>
-          <hbox><button id="colorButton" class="color-button" oncommand="getColorAndUpdate();">
-              <spacer id="colorWell" class="color-well"/>
-            </button><spacer flex="1"/>
-          </hbox> -->
-        </row>
-      </rows>
-    </grid>
-    <vbox id="illustration" width="210px" outer="false"> <!-- the illustration -->
-      <hbox height="30px">
-        <hbox width="100px"/><hbox type="text" width="100px"/><hbox width="10px"/>
-      </hbox>
-      <hbox observes="topmargin">
-        <hbox flex="1"/><hbox type="text" observes="textwidth"/><hbox width="10px"/>
-      </hbox>
-      <hbox observes="noteheight">
-        <hbox id="reducedleftmargin" flex="1"/> 
-        <hbox id="thenote" observes="notedata">
-          <hbox id="innerbox" flex="1"/>
-        </hbox>
-        <hbox observes="sidemargin"/>
-        <hbox type="text" observes="textwidth"/><hbox width="10px"/>
-      </hbox>
-      <hbox observes="topmargin">>
-        <hbox id="leftbottommargin" flex="1"/><hbox type="text" observes="textwidth"/><hbox width="10px"/>
-      </hbox>
-      <hbox height="30px">
-        <hbox flex="1"/><hbox type="text" width="100px"/><hbox width="10px"/>
-      </hbox>
-    </vbox>
-  </hbox>
-  <broadcaster id="textwidth" width="52"/> <!-- = 100 + overhang - notedata.width - sidemargin -->
-  <broadcaster id="noteheight" height="40"/>
-  <broadcaster id="reducedleftmargin" width="40"   /> <!-- 60 - overhang -->        
-  <broadcaster id="sidemargin" width="8"/>         
-  <broadcaster id="topmargin" height="8"/> 
-  <broadcaster id="notedata" width="60" color="#000000" bwidth="2" bstyle="solid" pwidth="1"/>        
+  <tabbox id="frametabbox">
+    <tabs flex="1">
+      <tab label="Size &amp; Placement"/>
+      <tab id="msiFrameTab"/>
+    </tabs>
+    <tabpanels>
+      <tabpanel orient="vertical">
+        <groupbox>
+          <caption label="Size"/>
+          <vbox>
+            <hbox>
+              <label id   = "frameUnitLabel"
+                control   = "frameUnitMenulist"
+                accesskey = "unitLabel.accesskey;"
+                value     = "Units" />
+              <menulist id = "frameUnitMenulist"
+                width=".75in"
+                oncommand  = "setNewUnit(this);" >
+                <menupopup id = "unitList">
+                  <menuitem value="in" label="in" width=".75in"/>
+                  <menuitem value="cm" label="cm" />
+                  <menuitem value="pt" label="pt" />
+                  <menuitem value="mm" label="mm"/>
+                  <menuitem value="pc" label="pica"/>
+                  <menuitem value="px" label="pixel"/>
+                </menupopup>
+              </menulist>
+              <spacer flex="1"/>
+            </hbox>
+            <hbox>
+              <grid>
+                <columns>
+                  <column flex="1" width=".75in"/>
+                  <column width="12px"/>
+                  <column flex="1" width=".75in"/>
+                  <column flex="1"/>
+                </columns>
+                <rows>
+                  <row>
+                    <label value="Width"/>
+                    <label value="Auto" control="autoWidth"/>
+                    <label value="Height"/>
+                    <label value="Auto" control="autoHeight"/>
+                  </row>
+                  <row>
+                    <textbox
+                      id        = "frameWidthInput"
+                      type      = "number"
+                      onkeypress= ""
+                      onchange  = ""/>
+                    <checkbox id="autoWidth" oncommand ="document.getElementById('frameWidthInput').setAttribute('disabled',this.checked);"/>
+                    <textbox
+                      id        = "frameHeightInput"
+                      type      = "number"
+                      onkeypress= ""
+                      onchange  = ""/>
+                    <checkbox id="autoHeight" oncommand ="document.getElementById('frameHeightInput').setAttribute('disabled',this.checked);"/>
+                  </row>
+                </rows>
+              </grid>
+            </hbox>
+            <hbox align="center">
+              <label value="Rotate contents"/>
+              <menulist id = "rotationList">
+                <menupopup id = "rotationsList">
+                  <menuitem value="rot0" label="None"/>
+                  <menuitem value="rot90" label="90 degrees CW" />
+                  <menuitem value="rot270" label="90 degrees CCW"/>
+                </menupopup>
+              </menulist>
+            </hbox>
+          </vbox>
+        </groupbox>
+        <vbox id="msiPlacement"/>
+      </tabpanel>
+      <vbox id="msiFrame"/>
+    </tabpanels>
+  </tabbox>
 </dialog>
- 
+
