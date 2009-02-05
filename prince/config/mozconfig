@@ -18,4 +18,5 @@ ac_add_options --disable-activex
 ac_add_options --disable-activex-scripting
 ac_add_options --disable-tests
 ac_add_options --disable-mochitest
+ac_add_options --disable-installer
 
