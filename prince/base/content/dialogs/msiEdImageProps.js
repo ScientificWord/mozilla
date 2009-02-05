@@ -280,15 +280,15 @@ function ValidateImage()
   if (!gDialog.actualSizeRadio.selected)
   {
     // Get user values for width and height
-//    width = msiValidateNumber(gDialog.widthInput, gDialog.widthUnitsMenulist, 1, gMaxPixels, 
-//                           globalElement, "width", false, true);
-//    if (gValidationError)
-//      return false;
-//
-//    height = msiValidateNumber(gDialog.heightInput, gDialog.heightUnitsMenulist, 1, gMaxPixels, 
-//                            globalElement, "height", false, true);
-//    if (gValidationError)
-//      return false;
+    width = msiValidateNumber(gDialog.widthInput, gDialog.widthUnitsMenulist, 1, gMaxPixels, 
+                           globalElement, "width", false, true);
+    if (gValidationError)
+      return false;
+
+    height = msiValidateNumber(gDialog.heightInput, gDialog.heightUnitsMenulist, 1, gMaxPixels, 
+                            globalElement, "height", false, true);
+    if (gValidationError)
+      return false;
   }
 
   // We always set the width and height attributes, even if same as actual.
@@ -312,40 +312,40 @@ function ValidateImage()
     editor.removeAttributeOrEquivalent(globalElement, "height", true);
 
   // spacing attributes
-  gValidateTab = gDialog.tabBorder;
-  msiValidateNumber(gDialog.imagelrInput, null, 0, gMaxPixels, 
-                 globalElement, "hspace", false, true, true);
-  if (gValidationError)
-    return false;
-
-  msiValidateNumber(gDialog.imagetbInput, null, 0, gMaxPixels, 
-                 globalElement, "vspace", false, true);
-  if (gValidationError)
-    return false;
+//  gValidateTab = gDialog.tabBorder;
+//  msiValidateNumber(gDialog.imagelrInput, null, 0, gMaxPixels, 
+//                 globalElement, "hspace", false, true, true);
+//  if (gValidationError)
+//    return false;
+//
+//  msiValidateNumber(gDialog.imagetbInput, null, 0, gMaxPixels, 
+//                 globalElement, "vspace", false, true);
+//  if (gValidationError)
+//    return false;
 
   // note this is deprecated and should be converted to stylesheets
-  msiValidateNumber(gDialog.border, null, 0, gMaxPixels, 
-                 globalElement, "border", false, true);
-  if (gValidationError)
-    return false;
+//  msiValidateNumber(gDialog.border, null, 0, gMaxPixels, 
+//                 globalElement, "border", false, true);
+//  if (gValidationError)
+//    return false;
 
   // Default or setting "bottom" means don't set the attribute
   // Note that the attributes "left" and "right" are opposite
   //  of what we use in the UI, which describes where the TEXT wraps,
   //  not the image location (which is what the HTML describes)
-  switch ( gDialog.alignTypeSelect.value )
-  {
-    case "top":
-    case "middle":
-    case "right":
-    case "left":
-      globalElement.setAttribute( "align", gDialog.alignTypeSelect.value );
-      break;
-    default:
-      try {
-        editor.removeAttributeOrEquivalent(globalElement, "align", true);
-      } catch (e) {}
-  }
+//  switch ( gDialog.alignTypeSelect.value )
+//  {
+//    case "top":
+//    case "middle":
+//    case "right":
+//    case "left":
+//      globalElement.setAttribute( "align", gDialog.alignTypeSelect.value );
+//      break;
+//    default:
+//      try {
+//        editor.removeAttributeOrEquivalent(globalElement, "align", true);
+//      } catch (e) {}
+//  }
 
   return true;
 }
@@ -373,112 +373,112 @@ function onAccept()
     var editor = msiGetEditor(editorElement);
 //    var editor = GetCurrentEditor();
 
-    editor.beginTransaction();
-
-    try
-    {
-      if (gRemoveImageMap)
-      {
-        globalElement.removeAttribute("usemap");
-        if (gImageMap)
-        {
-          editor.deleteNode(gImageMap);
-          gInsertNewIMap = true;
-          gImageMap = null;
-        }
-      }
-      else if (gImageMap)
-      {
-        // un-comment to see that inserting image maps does not work!
-        /*
-        gImageMap = editor.createElementWithDefaults("map");
-        gImageMap.setAttribute("name", "testing");
-        var testArea = editor.createElementWithDefaults("area");
-        testArea.setAttribute("shape", "circle");
-        testArea.setAttribute("coords", "86,102,52");
-        testArea.setAttribute("href", "test");
-        gImageMap.appendChild(testArea);
-        */
-
-        // Assign to map if there is one
-        var mapName = gImageMap.getAttribute("name");
-        if (mapName != "")
-        {
-          globalElement.setAttribute("usemap", ("#"+mapName));
-          if (globalElement.getAttribute("border") == "")
-            globalElement.setAttribute("border", 0);
-        }
-      }
-
-      // Create or remove the link as appropriate
-      var href = gDialog.hrefInput.value;
-      if (href != gOriginalHref)
-      {
-        if (href && !gInsertNewImage)
-          msiEditorSetTextProperty(editorElement, "a", "href", href);
-        else
-          msiEditorRemoveTextProperty(editorElement, "href", "");
-      }
-
-      // If inside a link, always write the 'border' attribute
-      if (href)
-      {
-        if (gDialog.showLinkBorder.checked)
-        {
-          // Use default = 2 if border attribute is empty
-          if (!globalElement.hasAttribute("border"))
-            globalElement.setAttribute("border", "2");
-        }
-        else
-          globalElement.setAttribute("border", "0");
-      }
-
-      if (gInsertNewImage)
-      {
-        if (href) {
-          var linkElement = editor.createElementWithDefaults("a");
-          linkElement.setAttribute("href", href);
-          linkElement.appendChild(imageElement);
-          editor.insertElementAtSelection(linkElement, true);
-        }
-        else
-          // 'true' means delete the selection before inserting
-          editor.insertElementAtSelection(imageElement, true);
-      }
-
-      // Check to see if the link was to a heading
-      // Do this last because it moves the caret (BAD!)
-      if (href in gHNodeArray)
-      {
-        var anchorNode = editor.createElementWithDefaults("a");
-        if (anchorNode)
-        {
-          anchorNode.name = href.substr(1);
-          // Remember to use editor method so it is undoable!
-          editor.insertNode(anchorNode, gHNodeArray[href], 0, false);
-        }
-      }
-      // All values are valid - copy to actual element in doc or
-      //   element we just inserted
-      editor.cloneAttributes(imageElement, globalElement);
-
-      // If document is empty, the map element won't insert,
-      //  so always insert the image first
-      if (gImageMap && gInsertNewIMap)
-      {
-        // Insert the ImageMap element at beginning of document
-        var body = editor.rootElement;
-        editor.setShouldTxnSetSelection(false);
-        editor.insertNode(gImageMap, body, 0);
-        editor.setShouldTxnSetSelection(true);
-      }
-    }
-    catch (e)
-    {
-      dump(e);
-    }
-
-    editor.endTransaction();
+//    editor.beginTransaction();
+//
+//    try
+//    {
+//      if (gRemoveImageMap)
+//      {
+//        globalElement.removeAttribute("usemap");
+//        if (gImageMap)
+//        {
+//          editor.deleteNode(gImageMap);
+//          gInsertNewIMap = true;
+//          gImageMap = null;
+//        }
+//      }
+//      else if (gImageMap)
+//      {
+//        // un-comment to see that inserting image maps does not work!
+//        /*
+//        gImageMap = editor.createElementWithDefaults("map");
+//        gImageMap.setAttribute("name", "testing");
+//        var testArea = editor.createElementWithDefaults("area");
+//        testArea.setAttribute("shape", "circle");
+//        testArea.setAttribute("coords", "86,102,52");
+//        testArea.setAttribute("href", "test");
+//        gImageMap.appendChild(testArea);
+//        */
+//
+//        // Assign to map if there is one
+//        var mapName = gImageMap.getAttribute("name");
+//        if (mapName != "")
+//        {
+//          globalElement.setAttribute("usemap", ("#"+mapName));
+//          if (globalElement.getAttribute("border") == "")
+//            globalElement.setAttribute("border", 0);
+//        }
+//      }
+//
+//      // Create or remove the link as appropriate
+//      var href = gDialog.hrefInput.value;
+//      if (href != gOriginalHref)
+//      {
+//        if (href && !gInsertNewImage)
+//          msiEditorSetTextProperty(editorElement, "a", "href", href);
+//        else
+//          msiEditorRemoveTextProperty(editorElement, "href", "");
+//      }
+//
+//      // If inside a link, always write the 'border' attribute
+//      if (href)
+//      {
+//        if (gDialog.showLinkBorder.checked)
+//        {
+//          // Use default = 2 if border attribute is empty
+//          if (!globalElement.hasAttribute("border"))
+//            globalElement.setAttribute("border", "2");
+//        }
+//        else
+//          globalElement.setAttribute("border", "0");
+//      }
+//
+//      if (gInsertNewImage)
+//      {
+//        if (href) {
+//          var linkElement = editor.createElementWithDefaults("a");
+//          linkElement.setAttribute("href", href);
+//          linkElement.appendChild(imageElement);
+//          editor.insertElementAtSelection(linkElement, true);
+//        }
+//        else
+//          // 'true' means delete the selection before inserting
+//          editor.insertElementAtSelection(imageElement, true);
+//      }
+//
+//      // Check to see if the link was to a heading
+//      // Do this last because it moves the caret (BAD!)
+//      if (href in gHNodeArray)
+//      {
+//        var anchorNode = editor.createElementWithDefaults("a");
+//        if (anchorNode)
+//        {
+//          anchorNode.name = href.substr(1);
+//          // Remember to use editor method so it is undoable!
+//          editor.insertNode(anchorNode, gHNodeArray[href], 0, false);
+//        }
+//      }
+//      // All values are valid - copy to actual element in doc or
+//      //   element we just inserted
+//      editor.cloneAttributes(imageElement, globalElement);
+//
+//      // If document is empty, the map element won't insert,
+//      //  so always insert the image first
+//      if (gImageMap && gInsertNewIMap)
+//      {
+//        // Insert the ImageMap element at beginning of document
+//        var body = editor.rootElement;
+//        editor.setShouldTxnSetSelection(false);
+//        editor.insertNode(gImageMap, body, 0);
+//        editor.setShouldTxnSetSelection(true);
+//      }
+//    }
+//    catch (e)
+//    {
+//      dump(e);
+//    }
+//
+//    editor.endTransaction();
 
     SaveWindowLocation();
     return true;

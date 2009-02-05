@@ -8,6 +8,7 @@
 <overlay id="msiFrameOverlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
       xmlns:html="http://www.w3.org/1999/xhtml">
   <script type="application/x-javascript" src="chrome://prince/content/msiFrameOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/EdDialogCommon.js"/>
   <tab id="msiFrameTab" label="Frame"/>
   <tab id="msiPlacementTab" label="Placement"/>
@@ -27,6 +28,7 @@
           accesskey = "&unitLabel.accesskey;"
           value     = "&unitLabel.label;" />
         <menulist id = "frameUnitMenulist"
+          width=".75in"
           oncommand  = "setNewUnit(this);" >
           <menupopup id = "unitList">
             <menuitem value="in" label="in"/>
@@ -74,26 +76,26 @@
         <column flex="1"/>
         <column flex="1"/>
         <column flex="1"/>
-        <column flex="1"/>
       </columns>
       <rows>
         <row>
           <hbox/>
           <label value="Left"/>
-          <hbox/>
           <label value="Right"/>
           <label value="Top"/>
           <label value="Bottom"/>
         </row>
         <row>
           <label value="Margin"/>
-          <textbox
-            id        = "marginLeftInput"
-            min       = "-1000"
-            observes  = "lengthwithunits"
-            onkeypress= "handleChar(event, this.id);"
-            onchange  = "update(this.id);"/>
-          <button width="1em" label=">" oncommand="extendInput('margin')"/>
+          <hbox>
+            <textbox
+              id        = "marginLeftInput"
+              min       = "-1000"
+              observes  = "lengthwithunits"
+              onkeypress= "handleChar(event, this.id);"
+              onchange  = "update(this.id);"/>
+            <button class="extend" oncommand="extendInput('margin')"/>
+          </hbox>
           <textbox
             id        = "marginRightInput"
             min       = "-1000"
@@ -113,12 +115,14 @@
         </row>
         <row>
           <label value="Border"/>
-          <textbox
-            id        = "borderLeftInput"
-            observes  = "lengthwithunits"
-            onkeypress= "handleChar(event, this.id);"
-            onchange  = "update(this.id);"/>
-          <button width="1em" label=">" oncommand="extendInput('border')"/>
+          <hbox>
+            <textbox
+              id        = "borderLeftInput"
+              observes  = "lengthwithunits"
+              onkeypress= "handleChar(event, this.id);"
+              onchange  = "update(this.id);"/>
+            <button class="extend" oncommand="extendInput('border')"/>
+          </hbox>
           <textbox
             id        = "borderRightInput"
             observes  = "lengthwithunits"
@@ -137,12 +141,14 @@
         </row>
         <row>
           <label value="Padding"/>
-          <textbox
-            id        = "paddingLeftInput"
-            observes  = "lengthwithunits"
-            onkeypress= "handleChar(event, this.id);"
-            onchange  = "update(this.id);"/>
-          <button width="1em" label=">" oncommand="extendInput('padding')"/>
+          <hbox>
+            <textbox
+              id        = "paddingLeftInput"
+              observes  = "lengthwithunits"
+              onkeypress= "handleChar(event, this.id);"
+              onchange  = "update(this.id);"/>
+            <button class="extend" oncommand="extendInput('padding')"/>
+          </hbox>
           <textbox
             id        = "paddingRightInput"
             observes  = "lengthwithunits"
@@ -161,12 +167,14 @@
         </row>
         <row>
           <label value="Crop"/>
-          <textbox
-            id        = "cropLeftInput"
-            observes  = "lengthwithunits"
-            onkeypress= "handleChar(event, this.id);"
-            onchange  = "update(this.id);"/>
-          <button width="1em" label=">" oncommand="extendInput('crop')"/>
+          <hbox>
+            <textbox
+              id        = "cropLeftInput"
+              observes  = "lengthwithunits"
+              onkeypress= "handleChar(event, this.id);"
+              onchange  = "update(this.id);"/>
+            <button class="extend" oncommand="extendInput('crop')"/>
+          </hbox>
           <textbox
             id        = "cropRightInput"
             observes  = "lengthwithunits"
@@ -186,7 +194,7 @@
         <row>
           <label value="Border color"/>
           <button id="colorButton" class="color-button" oncommand="getColorAndUpdate();">
-            <spacer id="colorWell" class="color-well"/>
+            <spacer persist="style" id="colorWell" class="color-well" style="background-color: black"/>
           </button>
         </row>
       </rows>
@@ -207,6 +215,7 @@
         <vbox>
           <radio id="floatingRadio" label="Floating" radioGroup="placementRadioGroup" oncommand="enableHere(this);"/>
           <vbox>
+            <checkbox id="placeForceHereCheck" label="Force here" observes="floatingPlacement"/>
             <checkbox id="placeHereCheck" label="Here" observes="floatingPlacement"/>
             <checkbox id="placeFloatsCheck" label="On a page of floats" observes="floatingPlacement"/>
             <checkbox id="placeTopCheck" label="Top of page" observes="floatingPlacement"/>
