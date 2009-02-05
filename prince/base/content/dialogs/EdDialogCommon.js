@@ -47,7 +47,7 @@ var gDialog = {};
 var gValidationError = false;
 
 // Use for 'defaultIndex' param in InitPixelOrPercentMenulist
-const gPixel = 0;
+// const gPixel = 0;
 const gPercent = 1;
 
 const gMaxPixels  = 100000; // Used for image size, borders, spacing, and padding
@@ -389,6 +389,19 @@ function setColorWell(ColorWellID, color)
     }
   }
 }
+
+function getColorWell(colorWellId)
+{
+  var colorWell = document.getElementById(colorWellId);
+  if (colorWell)
+  {
+    var style = colorWell.getAttribute("style");
+    var ma = style.match(/background-color\s*:([\w\(\),\s]+;)/);
+    if (ma.length >0) return ma[1];
+  }
+  return "";
+}
+
 
 function getColorAndSetColorWell(ColorPickerID, ColorWellID)
 {
