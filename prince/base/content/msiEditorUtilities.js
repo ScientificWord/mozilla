@@ -6033,7 +6033,8 @@ function msiAuxDirFromDocPath(documentURI)
 function setStyleAttribute( element, attribute, value)
 {
 //  element.style[attribute]=value;
-  var inStyleString = element.getAttribute("style");
+  var elem = document.getElementById(element);
+  var inStyleString = elem.getAttribute("style");
   var array = inStyleString.split(";");
   var i, foundindex;
   var found = false;
@@ -6055,7 +6056,7 @@ function setStyleAttribute( element, attribute, value)
   if (value==null && found) array.splice(foundindex,1);  
   var outStyleString = array.join(";");
   if (!found)  outStyleString = attribute+": "+value+"; "+outStyleString;
-  element.setAttribute("style", outStyleString);
+  elem.setAttribute("style", outStyleString);
 }
 	  
 

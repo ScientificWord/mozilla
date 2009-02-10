@@ -182,8 +182,9 @@ function getCompositeMeasurement(attribute, unit)
 {
   var i;
   var values = [];
+  dump("attribute = "+attribute+", unit = "+unit+"\n");
   for (i = 0; i<4; i++)
-    { values.push( Math.max(0,Number(document.getElementById(attribute + sides[i] + "Input").value )));}
+    { values.push( Math.max(0,frameUnitHandler.getValueAs(Number(document.getElementById(attribute + sides[i] + "Input").value ),unit)));}
   if (values[1] == values[3])
   {
     values.splice(3,1);
@@ -193,7 +194,13 @@ function getCompositeMeasurement(attribute, unit)
       if (values[0] == values[1]) values.splice(1,1);
     }
   }
+  if (unit == "px")
+  {
+    for (i=0; i<values.length; i++)
+      values[i] = Math.round(values[i]);
+  }
   var val = values.join(" ");
+  return val;
 }
 
 function updateDiagram( attribute ) //attribute = margin, border, padding; 
@@ -363,7 +370,18 @@ function setAlignment( alignment ) // alignment = 1 for left, 2 for right, 0 for
 
 function setFrameAttributes(frameNode)
 {
-  frameNode.units = frameUnitHandler.currentUnit;
+  var unit = frameUnitHandler.currentUnit;
+//  frameNode.units = unit;
+  dump(getCompositeMeasurement("margin",unit)+"\n");
+  dump(getCompositeMeasurement("border",unit)+"\n");
+  dump(getCompositeMeasurement("padding",unit)+"\n");
+  dump(getCompositeMeasurement("crop",unit)+"\n");
+
+  dump(getCompositeMeasurement("margin","px")+"\n");
+  dump(getCompositeMeasurement("border","px")+"\n");
+  dump(getCompositeMeasurement("padding","px")+"\n");
+  dump(getCompositeMeasurement("crop","px")+"\n");
+
   var unit = frameNode.units;
   frameNode.setAttribute("margin", getCompositeMeasurement("margin",unit));  
   frameNode.setAttribute("border", getCompositeMeasurement("border",unit));  
@@ -400,7 +418,7 @@ function setFrameAttributes(frameNode)
   {
     dump("Find parameters for here placement");
   }
-  // now set measurements in the stile for frameNode
+  // now set measurements in the style for frameNode
   var style = getCompositeMeasurement("margin","px");
   setStyleAttributeOnNode(frameNode, "margin", style);
   style = getCompositeMeasurement("padding","px");
