@@ -7465,6 +7465,9 @@ function msiNote(currNode, editorElement)
 
   window.openDialog("chrome://prince/content/Note.xul","_blank", "chrome,close,titlebar,resizable=yes,modal", data);
   // data comes back altered
+  if (data.Cancel)
+    return;
+
   dump(data.type + "\n");
   if (data.type != 'footnote') msiRequirePackage(editorElement, "ragged2e", "raggedrightboxes"); 
   var editor = msiGetEditor(editorElement);
