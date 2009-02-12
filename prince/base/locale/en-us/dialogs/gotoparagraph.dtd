@@ -3,8 +3,8 @@
 <!ENTITY currentParagraph.label   "Current paragraph is #">
 <!ENTITY lastParagraph.label   "Last paragraph is #">
 <!ENTITY movement.label   "Movement is">
-<!ENTITY absolute.label   "absolute">
-<!ENTITY relative.label   "relative">
+<!ENTITY absolute.label   "Absolute">
+<!ENTITY relative.label   "Relative">
 
 <!ENTITY absparanumber.label "Go to paragraph #">
 <!ENTITY relparanumber.label "Move this many paragraphs:">

@@ -13,9 +13,7 @@
     onload = "initialize();"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();"
-    width="300"
-    height="200"
-    persist="width height screenX screenY"
+    persist="screenX screenY width height"
     title="&windowTitle.label;">
 
   <script type="application/x-javascript" src="chrome://prince/content/gotoparagraph.js"/>
@@ -29,9 +27,14 @@
         <label id="rellabel" value="&relparanumber.label;" hidden="true" control="paragraphnumber" accesskey=""/>
         <textbox id="paragraphnumber" type="number" width="60px" /></hbox>
   <separator/>
-  <hbox align="center"><label control="mode" accesskey="" value="&movement.label;"/>
-    <radiogroup id="mode" oncommand="setmode();">
+  <hbox align="center">
+  <groupbox align="center">
+    <caption label="&movement.label;"/>
+  <!-- label control="mode" accesskey="" value="&movement.label;"/ -->
+    <radiogroup id="mode" orient="horizontal" oncommand="setmode();">
         <radio label="&absolute.label;" value="abs" selected="true" persist="selected"/>
         <radio label="&relative.label;" value="rel" persist="selected" />
-  </radiogroup></hbox>
+  </radiogroup>
+  </groupbox>
+  </hbox>
 </dialog>
