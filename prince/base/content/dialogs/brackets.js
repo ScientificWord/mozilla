@@ -179,6 +179,10 @@ function InitDialog()
   makeSampleWindowDependOn(gDialog.BracketPreview, sampleDependencies);
 
   drawSample(gDialog.BracketPreview);
+
+  var sampleStyle = document.defaultView.getComputedStyle(gDialog.BracketPreview, null);
+  var initHeight = sampleStyle.getPropertyValue("height");
+  gDialog.BracketPreview.style.maxHeight = initHeight;
 }
 
 //NOTE!! All the convoluted replacement code used below is necessary due to a bug in Mozilla MathML rendering.
@@ -232,6 +236,8 @@ function drawSample(sampleControl)
       dump("Problem in Brackets.js, drawSample! Replacement right bracket has lost the stretchy attribute.\n");
     rightBrackSamp = closing;
   }
+
+//usethis??  window.sizeToContent();
 
 //  var rightText = document.createTextNode(gDialog.RightBracketGroup.valueStr);
 //  n = rightBrackSamp.childNodes.length;
