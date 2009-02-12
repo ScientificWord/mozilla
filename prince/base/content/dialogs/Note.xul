@@ -30,22 +30,25 @@
 
   <hbox>
     <vbox align="center">
-     nm<label value="&noteType.label;"/>
-     <menulist id="note.names" >
+     <label value="&noteType.label;"/>
+     <menulist id="note.names" oncommand="checkEnable();" >
        <menupopup>
-         <menuitem id="footnote" label="Footnote" value="footnote"/>
-         <menuitem id="marginNote" label="Margin note" value="marginnote"/>
-         <menuitem id="marginHint" label="Margin hint" value="marginhint"/>
-         <menuitem id="solutionNote" label="Solution note" value="solutionnote"/>
-         <menuitem id="problemHint" label="Problem solving hint" value="problemhint"/>
-         <menuitem id="note" label="Note" value="note"/>
-         <menuitem id="answerNote" label="Answer note" value="answernote"/>
+         <menuitem id="footnote" label="&footnote.label;" value="footnote"/>
+         <menuitem id="marginNote" label="&marginNote.label;" value="marginnote"/>
+         <menuitem id="marginHint" label="&marginHint.label;" value="marginhint"/>
+         <menuitem id="solutionNote" label="&solutionNote.label;" value="solutionnote"/>
+         <menuitem id="problemHint" label="&problemHint.label;" value="problemhint"/>
+         <menuitem id="note" label="&note.label;" value="note"/>
+         <menuitem id="answerNote" label="&answerNote.label;" value="answernote"/>
        </menupopup>
      </menulist>
      <separator/>
-     <msibutton label="&Options.label;"/>
-		 <label value="&HideNote.label;"/>
-		 <checkbox id="hidenote" />
+     <hbox>
+		   <!--label value="&HideNote.label;"/-->
+		   <checkbox id="hidenote" label="&HideNote.label;"/>
+       <separator flex="1" />
+       <msibutton id="optionsButton" label="&Options.label;" oncommand="launchOptionsDialog();" />
+     </hbox>
     </vbox>
 	</hbox>
 </dialog>
