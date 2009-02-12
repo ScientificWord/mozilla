@@ -5,7 +5,7 @@
 
 <!ENTITY  footnote.label			"Footnote">
 <!ENTITY  marginNote.label			"Margin note">
-<!ENTITY  marginHint.selected		"Margin hint">
+<!ENTITY  marginHint.label		"Margin hint">
 <!ENTITY  solutionNote.label		"Solution note">
 <!ENTITY  problemHint.label			"Problem solving hint">
 <!ENTITY  note.label				"Note">
