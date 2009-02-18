@@ -630,8 +630,8 @@
 }
 
 \def\fbox#1{\ifmmode\temptoksa={#1}\string\fbox\char`\{\the\temptoksa\char`\}\fi}
-\def\{{\char123\relax}
-\def\}{\char125\relax}
+\def\{{\ifmmode\string\{\else\char123\relax\fi}
+\def\}{\ifmmode\string\}\else\char125\relax\fi}
 \let\@hbox\hbox
 \def\hbox{%
    \def\@after{}
