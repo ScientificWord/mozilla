@@ -5660,8 +5660,9 @@ void LaTeX2MMLTree::TeXDelimToMMLOp( U8* TeX_fence_delim_uID,
         }
 	  }
 
-	} else
-	  TCI_ASSERT(0);
+	} else{
+	  //TCI_ASSERT(0);
+	}
   }		// if ( tex_fence_delim_node )
 
 }
@@ -5834,8 +5835,9 @@ TNODE* LaTeX2MMLTree::BindByOpPrecedence( TNODE* MML_list,
 			    TCI_ASSERT(0);
 
 			} else {
-			  if ( MML_rover->next || MML_rover->prev )
-			    TCI_ASSERT(0);
+			  if ( MML_rover->next || MML_rover->prev ) {
+			    //TCI_ASSERT(0);
+        }
 			}
 
 		  } else if ( form==3 ) {		// postfix
