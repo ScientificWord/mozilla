@@ -7,7 +7,7 @@
    \let\@temp=\relax
    \ifmmode
       \string\QTR\@brace{#1}%
-      \let@temp=\QTRa
+      \let\@temp=\QTRa
    \else
       \msihmode
       \msiopentag{QTR}{<QTR type="#1">}%
@@ -797,26 +797,26 @@
 % Macros for text size operators:
 %
 
-\def\tint{\msi@int\textstyle\int}%
-\def\tiint{\msi@int\textstyle\iint}%
-\def\tiiint{\msi@int\textstyle\iiint}%
-\def\tiiiint{\msi@int\textstyle\iiiint}%
-\def\tidotsint{\msi@int\textstyle\idotsint}%
-\def\toint{\msi@int\textstyle\oint}%
-
-
-\def\tsum{\mathop{\textstyle \sum }}%
-\def\tprod{\mathop{\textstyle \prod }}%
-\def\tbigcap{\mathop{\textstyle \bigcap }}%
-\def\tbigwedge{\mathop{\textstyle \bigwedge }}%
-\def\tbigoplus{\mathop{\textstyle \bigoplus }}%
-\def\tbigodot{\mathop{\textstyle \bigodot }}%
-\def\tbigsqcup{\mathop{\textstyle \bigsqcup }}%
-\def\tcoprod{\mathop{\textstyle \coprod }}%
-\def\tbigcup{\mathop{\textstyle \bigcup }}%
-\def\tbigvee{\mathop{\textstyle \bigvee }}%
-\def\tbigotimes{\mathop{\textstyle \bigotimes }}%
-\def\tbiguplus{\mathop{\textstyle \biguplus }}%
+%% jcs \def\tint{\msi@int\textstyle\int}%
+%% jcs \def\tiint{\msi@int\textstyle\iint}%
+%% jcs \def\tiiint{\msi@int\textstyle\iiint}%
+%% jcs \def\tiiiint{\msi@int\textstyle\iiiint}%
+%% jcs \def\tidotsint{\msi@int\textstyle\idotsint}%
+%% jcs \def\toint{\msi@int\textstyle\oint}%
+%% jcs 
+%% jcs 
+%% jcs \def\tsum{\mathop{\textstyle \sum }}%
+%% jcs \def\tprod{\mathop{\textstyle \prod }}%
+%% jcs \def\tbigcap{\mathop{\textstyle \bigcap }}%
+%% jcs \def\tbigwedge{\mathop{\textstyle \bigwedge }}%
+%% jcs \def\tbigoplus{\mathop{\textstyle \bigoplus }}%
+%% jcs \def\tbigodot{\mathop{\textstyle \bigodot }}%
+%% jcs \def\tbigsqcup{\mathop{\textstyle \bigsqcup }}%
+%% jcs \def\tcoprod{\mathop{\textstyle \coprod }}%
+%% jcs \def\tbigcup{\mathop{\textstyle \bigcup }}%
+%% jcs \def\tbigvee{\mathop{\textstyle \bigvee }}%
+%% jcs \def\tbigotimes{\mathop{\textstyle \bigotimes }}%
+%% jcs \def\tbiguplus{\mathop{\textstyle \biguplus }}%
 %
 %
 %Macros for display size operators:
@@ -891,18 +891,18 @@
 %%jcs \def\didotsint{\msi@int\displaystyle\idotsint}%
 %%jcs \def\doint{\msi@int\displaystyle\oint}%
 
-\def\dsum{\mathop{\displaystyle \sum }}%
-\def\dprod{\mathop{\displaystyle \prod }}%
-\def\dbigcap{\mathop{\displaystyle \bigcap }}%
-\def\dbigwedge{\mathop{\displaystyle \bigwedge }}%
-\def\dbigoplus{\mathop{\displaystyle \bigoplus }}%
-\def\dbigodot{\mathop{\displaystyle \bigodot }}%
-\def\dbigsqcup{\mathop{\displaystyle \bigsqcup }}%
-\def\dcoprod{\mathop{\displaystyle \coprod }}%
-\def\dbigcup{\mathop{\displaystyle \bigcup }}%
-\def\dbigvee{\mathop{\displaystyle \bigvee }}%
-\def\dbigotimes{\mathop{\displaystyle \bigotimes }}%
-\def\dbiguplus{\mathop{\displaystyle \biguplus }}%
+%% jcs \def\dsum{\mathop{\displaystyle \sum }}%
+%% jcs \def\dprod{\mathop{\displaystyle \prod }}%
+%% jcs \def\dbigcap{\mathop{\displaystyle \bigcap }}%
+%% jcs \def\dbigwedge{\mathop{\displaystyle \bigwedge }}%
+%% jcs \def\dbigoplus{\mathop{\displaystyle \bigoplus }}%
+%% jcs \def\dbigodot{\mathop{\displaystyle \bigodot }}%
+%% jcs \def\dbigsqcup{\mathop{\displaystyle \bigsqcup }}%
+%% jcs \def\dcoprod{\mathop{\displaystyle \coprod }}%
+%% jcs \def\dbigcup{\mathop{\displaystyle \bigcup }}%
+%% jcs \def\dbigvee{\mathop{\displaystyle \bigvee }}%
+%% jcs \def\dbigotimes{\mathop{\displaystyle \bigotimes }}%
+%% jcs \def\dbiguplus{\mathop{\displaystyle \biguplus }}%
 
 \if@compatibility\else
   % Always load amsmath in LaTeX2e mode
