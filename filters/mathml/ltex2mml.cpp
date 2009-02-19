@@ -5777,8 +5777,9 @@ TNODE* LaTeX2MMLTree::BindByOpPrecedence( TNODE* MML_list,
                 if ( MML_rover->next )
                   TCI_ASSERT(0);
 	    	  }
-            } else
-              TCI_ASSERT(0);
+			} else {
+              //TCI_ASSERT(0);
+			}
 
 		  } else if ( form==2 ) {		// infix
 
@@ -14070,7 +14071,7 @@ void LaTeX2MMLTree::GetAttribsFromGammarInfo( U8* zinfo,
 		    U16 ln  =  eptr - sptr;
 		    if ( ln > 0 ) {
 		      op_record.precedence  =  atoi( sptr );
-	        TCI_ASSERT( op_record.precedence );
+	        //TCI_ASSERT( op_record.precedence );
 		    }
 	    } else if ( state==3 ) {		// U0dddd,
 	  // currently not used
@@ -15485,7 +15486,7 @@ TCI_BOOL LaTeX2MMLTree::BucketContainsMath( TNODE* contents ) {
   if ( n_math_objects == 0
   &&   n_text_runs    == 0
   &&   n_tabulars     == 0 ) {	// Run contains no math!!
-	  TCI_ASSERT(0);
+	  //TCI_ASSERT(0);
 	  rv  =  FALSE;
   }
 
@@ -18045,8 +18046,9 @@ void LaTeX2MMLTree::UnicodesToSymbols( TNODE* LaTeX_list ) {
             DisposeTList( parts );
           } else
             TCI_ASSERT(0);
-        } else
-          TCI_ASSERT(0);
+		} else{
+          //TCI_ASSERT(0);
+		}
       } else    // if ( unicode )
         TCI_ASSERT(0);
 
@@ -18138,7 +18140,7 @@ TNODE* LaTeX2MMLTree::FixImpliedMRow( TNODE* mml_node ) {
           rv  =  mml_node->parts->contents;
           mml_node->parts->contents =  NULL;
         } else {
-          TCI_ASSERT(0);
+          //TCI_ASSERT(0);
           rv  =  NULL;
         }
         DisposeTList( mml_node );
