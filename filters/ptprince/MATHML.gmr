@@ -399,6 +399,11 @@ unknown_op<uID3.5.7>infix,25
 &deg;F<uID11.0.8457>3.17.163
 
 
+;; jcs  Unicode a6 "brokenbar" not sure what's going on with this
+&0xa6;<uID11.0.166>3.17.167
+
+
+
 ;Entities used as accents
 
 ;Hat<uID4.1.1>postfix,70,U00302,accent="true"
