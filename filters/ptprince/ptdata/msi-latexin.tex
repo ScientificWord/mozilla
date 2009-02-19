@@ -6892,7 +6892,7 @@
 
 
 
-\def\U#1{\char`\&\char`\#x#1;}
+\def\U#1{\ifmmode\string\U{#1}\else\char`\&\char`\#x#1;\fi}
 
 
 
@@ -6914,7 +6914,7 @@
 
 \def\msihyperrefB#1#2#3#4{%
      \xdef\repl{#4}%
-     \catcode`\&=
+     \catcode`\&=4\relax
      \temptoksa={\out@hyperref{#1}{#2}{#3}{\repl}}%
 }
 
