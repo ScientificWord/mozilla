@@ -220,3 +220,5 @@ prince.jar:
   content/paragraphProperties.xul     (dialogs/paragraphProperties.xul)
   content/msiFrameOverlay.xul     (dialogs/msiFrameOverlay.xul)
   content/msiFrameOverlay.js      (dialogs/msiFrameOverlay.js)
+  content/sourceparseerror.xul     (dialogs/sourceparseerror.xul)
+  content/sourceparseerror.js      (dialogs/sourceparseerror.js)

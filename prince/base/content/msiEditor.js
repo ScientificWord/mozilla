@@ -3026,6 +3026,24 @@ function msiFindRevisableObjectToLeft(aNode, anOffset, editor)
 
 /******Display Mode stuff - for the time being, only applicable to main editor window, but leave the functions here anyway******/
 
+function handleSourceParseError(errorMsg) // returns true if the user wants to go back to editing
+{
+  try
+  {
+    var editorElement = msiGetActiveEditorElement();
+    var parentWindow = msiGetWindowContainingEditor(editorElement);
+    var data = {msg: errorMsg,
+                result: false };
+    parentWindow.openDialog( "chrome://prince/content/sourceparseerror.xul",
+                             "_blank",
+                             "chrome,resizable,titlebar,modal",
+                             data);
+    return data.result;
+  }
+  catch(exc) {AlertWithTitle("Error in msiEditor.js", "In msiEditorNewPlaintext(), failed to open; exception: " + exc);}
+  return false;
+}
+
 function msiSetEditMode(mode, editorElement)
 {
   if (!editorElement)
@@ -3046,11 +3064,11 @@ function msiSetEditMode(mode, editorElement)
   // Switch the UI mode before inserting contents
   //   so user can't type in source window while new window is being filled
   var previousMode = msiGetEditorDisplayMode(editorElement);
-  if (!msiSetDisplayMode(editorElement, mode))
-    return;
 
   if (mode == kDisplayModeSource)
   {
+    if (!msiSetDisplayMode(editorElement, mode))
+      return;
     // Display the DOCTYPE as a non-editable string above edit area
     var domdoc;
     try { domdoc = editor.document; } catch (e) { dump( e + "\n");}
@@ -3141,10 +3159,23 @@ function msiSetEditMode(mode, editorElement)
       try {
         // We are coming from edit source mode,
         //   so transfer that back into the document
+        var errMsg="";
+        var willReturn = false;
         var sourceTextEditor = msiGetHTMLSourceEditor(editorElement);
         source = sourceTextEditor.outputToString(kTextMimeType, 1024); // OutputLFLineBreak
-        editor.rebuildDocumentFromSource(source);
-
+        try {
+          errMsg = editor.rebuildDocumentFromSource(source);
+        }
+        catch(e){}
+        if (errMsg.length >0) // there was a parsing failure
+        {
+          willReturn = handleSourceParseError(errMsg);
+          if (willReturn)
+          {
+            editor.endTransaction();
+            return;
+          }             
+        }
         // Get the text for the <title> from the newly-parsed document
         // (must do this for proper conversion of "escaped" characters)
         var title = "";
@@ -3168,6 +3199,8 @@ function msiSetEditMode(mode, editorElement)
         editor.transactionManager.maxTransactionCount = -1;
       } catch (e) {}
     }
+    if (!msiSetDisplayMode(editorElement, mode))
+      return;
 
     // Clear out the string buffers
     var sourceContentWindow = msiGetHTMLSourceTextWindow(editorElement);
