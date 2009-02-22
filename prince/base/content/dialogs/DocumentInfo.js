@@ -108,6 +108,7 @@ function InitDialog()
   
   checkEnablePrintControls();
   checkEnableMetadataControls();
+  convertLinkPaths();
 
   document.documentElement.getButton("accept").setAttribute("default", true);
 }
@@ -187,6 +188,8 @@ function getMetadataOptions(theData)
     theMetaData = theData.metadata;
   var metaRelStrings = document.getElementById("metadataRelationStrings");
   var metaRelListbox = document.getElementById("metadataRelationsListbox");
+  var initVal = metaRelListbox.getAttribute("value");
+  var initSelItem = null;
   var relIter = metaRelStrings.strings;
   var currItem = null;
   while (relIter.hasMoreElements())
@@ -213,7 +216,11 @@ function getMetadataOptions(theData)
 //          itemInfo.status = "empty";
           theMetaData[theName] = itemInfo;
         }
-        metaRelListbox.appendItem(currItem.value, theName);
+        itemInfo.defaultType = typeStr;
+        if (initVal && initVal.length && (initVal==theName))
+          initSelItem = metaRelListbox.appendItem(currItem.value, theName);
+        else
+          metaRelListbox.appendItem(currItem.value, theName);
       }
     }
   }
@@ -224,9 +231,14 @@ function getMetadataOptions(theData)
       var theName = datum;
       if (("name" in theMetaData[datum]) && (theMetaData[datum].name != null))
         theName = theMetaData[datum].name;
-      metaRelListbox.appendItem(theName, datum);
+      if (initVal && initVal.length && (initVal==datum))
+        initSelItem = metaRelListbox.appendItem(theName, datum);
+      else
+        metaRelListbox.appendItem(theName, datum);
     }
   }
+  if (initSelItem)
+    metaRelListbox.selectItem(initSelItem);
 }
 
 function getSaveOptions(theData)
@@ -239,6 +251,7 @@ function getSaveOptions(theData)
   setDataToCheckbox(saveData, "storeViewPercent", true, "storeViewPercentCheckbox");
   setDataToCheckbox(saveData, "storeNoteViewSettings", true, "storeNoteViewSettingsCheckbox");
   setDataToCheckbox(saveData, "storeNoteViewPercent", true, "storeNoteViewPercentCheckbox");
+  setDataToCheckbox(saveData, "relativeMetadataLinks", true, "relativeMetadataLinksCheckbox");
 }
 
 function storeComments(theData)
@@ -302,6 +315,8 @@ function storeSaveOptions(theData)
   getDataFromCheckbox(theData.saveOptions, "storeViewPercent", true, "storeViewPercentCheckbox");
   getDataFromCheckbox(theData.saveOptions, "storeNoteViewSettings", true, "storeNoteViewSettingsCheckbox");
   getDataFromCheckbox(theData.saveOptions, "storeNoteViewPercent", true, "storeNoteViewPercentCheckbox");
+  getDataFromCheckbox(theData.saveOptions, "relativeMetadataLinks", true, "relativeMetadataLinksCheckbox");
+  dump("In DocumentInfo.js, storeSaveOptions; theData.saveOptions.relativeMetadataLinks is[" + theData.saveOptions.relativeMetadataLinks + "].\n");
 }
 
 function onCancel()
@@ -319,30 +334,35 @@ function doBrowseFileLinks()
   var dirPicker = Components.classes["@mozilla.org/filepicker;1"].createInstance(Components.interfaces.nsIFilePicker);
   dirPicker.init(window, "Select file", Components.interfaces.nsIFilePicker.modeOpen);
   dirPicker.appendFilters(Components.interfaces.nsIFilePicker.filterHTML|Components.interfaces.nsIFilePicker.filterXML);
+  dirPicker.appendFilter(GetString("AppDocs"),"*."+MSI_EXTENSION);
+  dirPicker.appendFilters(Components.interfaces.nsIFilePicker.filterAll);
   var pathTextbox = document.getElementById("metadataValueBox");
   var ioService = msiGetIOService();
-  var baseUri = getBasePath();
-  if (pathTextbox.value.length > 0)
-  {
-    var theUri = ioservice.newURI(pathTextbox.value, null, null);
-
-    theUri = theURI.resolve(baseUri);
-    dirPicker.displayDirectory = baseUri.directory;
-//    dirPicker.displayDirectory.initWithPath(
-
-  }
+  try {
+    var theUri = ioService.newURI(getBasePath(), null, null);
+    if (pathTextbox.value.length > 0)
+    {
+      if (shouldDisplayRelativeLinkPaths())
+        theUri = ioService.newURI(theUri.resolve(pathTextbox.value), null, null);
+      else
+        theUri = ioService.newURI(pathTextbox.value, null, null);
+    }
+    dirPicker.displayDirectory = theUri.directory;
+    dirPicker.filterIndex = 2;  //should be .sci by default
+  } catch(exc) {dump("Error in DocumentInfo.js, doBrowseFileLinks: [" + exc + "].\n"); return;}
   var res = dirPicker.show();
+  var basePath = getBasePath();
   if (res == Components.interfaces.nsIFilePicker.returnOK)
   {
     var displayUri = dirPicker.fileURL.spec;
-    if (baseUri.length > 0 && shouldDisplayRelativeLinkPaths())
+    if (basePath.length > 0 && shouldDisplayRelativeLinkPaths())
     {
       var editorElement = msiGetParentEditorElementForDialog(window);
 //      var editor = msiGetEditor(editorElement);
 //      var baseUriObject = msiGetIOService().newURI(baseUri, editor.documentCharacterSet, null);
 //      baseUriObject.QueryInterface(Components.interfaces.nsIURL);
 //      displayUri = dirPicker.fileURL.getRelativeSpec(baseUriObject);
-      displayUri = msiMakeUrlRelativeTo(displayUri, baseUri, editorElement);
+      displayUri = msiMakeUrlRelativeTo(displayUri, basePath, editorElement);
     }
     pathTextbox.value = displayUri;
     checkEnableMetadataControls();
@@ -351,7 +371,42 @@ function doBrowseFileLinks()
 
 function shouldDisplayRelativeLinkPaths()
 {
-  return true;  //Why not? Until and unless we add a checkbox for this...
+  var boolVal = document.getElementById("relativeMetadataLinksCheckbox").checked;
+  return boolVal;  //Why not? Until and unless we add a checkbox for this...
+}
+
+function convertLinkPaths()
+{
+  var bRelative = shouldDisplayRelativeLinkPaths();
+  var theObj = null;
+  var ioService = msiGetIOService();
+  var basePath = getBasePath();
+  var baseUri = ioService.newURI(basePath, null, null);
+  var parentEditor = msiGetParentEditorElementForDialog(window);
+  var storePath = null;
+  var currObj = null;
+  var currItem = document.getElementById("metadataRelationsListbox").selectedItem;
+  if (currItem.value && currItem.value.length)
+    currObj = data.metadata[currItem.value];
+
+  for (var datum in data.metadata)
+  {
+    theObj = data.metadata[datum];
+    if ( ("uri" in theObj) && theObj.uri != null)
+    {
+      if (bRelative)
+      {
+        storePath = msiMakeUrlRelativeTo(theObj.uri, basePath, parentEditor);
+      }
+      else
+      {
+        storePath = baseUri.resolve(theObj.uri);
+      }
+      theObj.uri = storePath;
+      if (theObj == currObj)
+        document.getElementById("metadataValueBox").value = storePath;
+    }
+  }
 }
 
 function getBasePath()
@@ -449,6 +504,8 @@ function checkEnableMetadataControls()
   var metaRelListbox = document.getElementById("metadataRelationsListbox");
   var theItem = metaRelListbox.selectedItem;
   var bTypeIsLink = (document.getElementById("metadataTypeRadioGroup").value == "link");
+  var bCanBeLink = true;  //This appears to always be true, but a variable here to use if cases appear where it's false.
+
   if (theItem != null && theItem.value != null)
   {
     bEnableBrowse = true;
@@ -460,10 +517,10 @@ function checkEnableMetadataControls()
       dump("In DocumentInfo dialog, in checkEnableMetadataControls, relation " + theItem.label + " has no associated data object in metadata!\n");
       metaObj = new Object();
       metaObj.name = theItem.label;
-      metaObj.type = "meta";  //should we go looking about otherwise for it?
+      metaObj.defaultType = metaObj.type = "meta";  //should we go looking about otherwise for it?
       data.metadata[theItem.value] = metaObj;
     }
-    switch (metaObj.type)
+    switch (metaObj.defaultType)
     {
       case "DC":
         alert("DC metadata not supposed to appear in listbox yet!");
@@ -484,7 +541,12 @@ function checkEnableMetadataControls()
         else if ( !bTypeIsLink && (!metaObj.contents || (metaObj.contents != theValue)) )
           bEnableSet = true;
       }
-      if ( ((metaObj.uri != null) && (metaObj.uri.length > 0)) || ((metaObj.contents != null) && (metaObj.contents.length > 0)) )
+      if ( (metaObj.uri != null) && (metaObj.uri.length > 0) )
+      {
+        bEnableUnset = true;
+        bTypeIsLink = true;
+      }
+      else if ( (metaObj.contents != null) && (metaObj.contents.length > 0) )
         bEnableUnset = true;
 //    }
 //    else if (theValue.length > 0)
@@ -492,7 +554,7 @@ function checkEnableMetadataControls()
   }
   if (bShouldBeLink && !bTypeIsLink) //force it
     document.getElementById("metadataTypeRadioGroup").selectedItem = document.getElementById("metadataTypeLinkRadio");
-  else if (!bShouldBeLink && bTypeIsLink)
+  else if (!bCanBeLink && bTypeIsLink)
     document.getElementById("metadataTypeRadioGroup").selectedItem = document.getElementById("metadataTypeDataRadio");
     
   enableControlsByID(["setMetadataSelectionButton"], bEnableSet);
@@ -537,6 +599,7 @@ function setMetadataSelection()
       theObj.contents = theValue;
     theObj.status = "changed";
   }
+  checkEnableMetadataControls();
 }
 
 function unsetMetadataSelection()
@@ -559,6 +622,7 @@ function unsetMetadataSelection()
       theObj.status = "deleted";
     }
   }
+  checkEnableMetadataControls();
 }
 
 function changeMetadataRelation(selItem)
@@ -566,6 +630,7 @@ function changeMetadataRelation(selItem)
   var valStr = "";
   var theObj = null;
   var currType = "meta";
+  document.getElementById("metadataRelationsListbox").setAttribute("value", selItem.value);
   if (selItem.value in data.metadata)
   {
     theObj = data.metadata[selItem.value];
