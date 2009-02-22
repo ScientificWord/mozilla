@@ -535,7 +535,8 @@ nsMsgCompose::ConvertAndLoadComposeWindow(nsString& aPrefix,
   {
     if (aHTMLEditor && htmlEditor)
     {
-      htmlEditor->RebuildDocumentFromSource(aBuf);
+      nsString dummy;
+      htmlEditor->RebuildDocumentFromSource(aBuf, dummy);
 
       m_editor->EndOfDocument();
 
