@@ -1,0 +1,4 @@
+
+<!ENTITY windowTitle.label "XML parsing error">
+<!ENTITY accept.label "Return to source">
+<!ENTITY cancel.label "Abandon changes">
