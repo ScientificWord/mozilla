@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/content/bindings/tbbuttonextension.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/toolbaroverride.css" type="text/css"?>
 
 <!DOCTYPE page [
   <!ENTITY % tocDTD SYSTEM "chrome://prince/locale/toc.dtd">
