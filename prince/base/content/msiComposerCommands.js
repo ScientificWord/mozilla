@@ -5047,6 +5047,7 @@ function msiDocumentInfo(editorElement)
                 case "noteviewsettings":
                 case "noteviewpercent":
                 case "saveformode":
+                case "relativemetadatalinks":
                   subObject = this.saveSettings;
                 break;
                 case "printoptions":
@@ -5183,6 +5184,7 @@ function msiDocumentInfo(editorElement)
                 case "viewpercent":
                 case "noteviewsettings":
                 case "noteviewpercent":
+                case "relativemetadatalinks":
                   objParent = this.saveSettings;
                 break;
                 case "printoptions":
@@ -5739,6 +5741,15 @@ function msiDocumentInfo(editorElement)
       dlgInfo.saveOptions.storeNoteViewPercent = true;
     else
       dlgInfo.saveOptions.storeNoteViewPercent = false;
+
+    if (("relativemetadatalinks" in this.saveSettings) && this.saveSettings.relativemetadatalinks != null)
+    {
+      var nValue = this.saveSettings.relativemetadatalinks.contents.valueOf();
+      dlgInfo.saveOptions.relativeMetadataLinks = (nValue != 0);
+    }
+    else
+      dlgInfo.saveOptions.relativeMetadataLinks = false;
+
   };
 
   this.setDataFromSaveFlags = function(dlgInfo)
@@ -5765,6 +5776,17 @@ function msiDocumentInfo(editorElement)
     if (!theContents)
       theContents = 100;
     this.setObjectFromData(this.saveSettings, "noteviewpercent", dlgInfo.saveOptions.storeNoteViewPercent, "NoteViewPercent", String(theContents), "comment-meta");
+
+    var theContents = 0;
+    if (dlgInfo.saveOptions.relativeMetadataLinks)
+    {
+      theContents = dlgInfo.saveOptions.relativeMetadataLinks;
+//      dump("In msiComposerCommands, in msiDocumentInfo.setDataFromSaveFlags, dlgInfo.saveOptions.relativeMetadataLinks was [" + theContents + "].\n");
+    }
+//    else
+//      dump("In msiComposerCommands, in msiDocumentInfo.setDataFromSaveFlags, dlgInfo.saveOptions.relativeMetadataLinks was empty!\n");
+    this.setObjectFromData(this.saveSettings, "relativemetadatalinks", dlgInfo.saveOptions.relativeMetadataLinks, "relativeMetadataLinks", String(theContents), "comment-meta");
+//    dump("In msiComposerCommands, in msiDocumentInfo.setDataFromSaveFlags after setting relativemetadatalinks, value is [" + this.saveSettings.relativemetadatalinks + "].\n");
   };
 
   this.setObjectFromData = function(theParent, theObject, bSet, theName, theContents, theType)

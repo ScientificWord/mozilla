@@ -72,6 +72,9 @@
 <!ENTITY unsetMetadataSelectionButton.accesskey "U">
 <!ENTITY linksFileBrowseButton.label "Browse...">
 <!ENTITY linksFileBrowseButton.accesskey "B">
+<!ENTITY relativeMetadataLinksCheckbox.label "Store relative link paths">
+<!ENTITY relativeMetadataLinksCheckbox.accesskey "R">
+
 
 <!ENTITY saveOptionsGraphics.label "Graphics">
 <!ENTITY relativeGraphicsPathsCheckbox.label "Store relative graphics paths">
