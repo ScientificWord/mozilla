@@ -53,11 +53,13 @@
 
 #include "nsHTMLURIRefObject.h"
 
+#include "nsContentCID.h"
 #include "nsIDOMText.h"
 #include "nsIDOMNodeList.h"
 #include "nsIDOMDocument.h"
 #include "nsIDOMAttr.h"
 #include "nsIDocument.h"
+#include "nsIDOMParser.h"
 #include "nsIDOMEventTarget.h" 
 #include "nsIDOM3EventTarget.h" 
 #include "nsIDOMKeyEvent.h"
@@ -1904,156 +1906,217 @@ nsHTMLEditor::ReplaceHeadContentsWithHTML(const nsAString& aSourceToInsert)
   return res;
 }
 
-NS_IMETHODIMP
-nsHTMLEditor::RebuildDocumentFromSource(const nsAString& aSourceString)
-{
-  ForceCompositionEnd();
 
+NS_IMETHODIMP
+nsHTMLEditor::RebuildDocumentFromSource(const nsAString& aSourceString, nsAString & _retval)
+{
+//  const nsCString xml=NS_LITERAL_CSTRING("text/xml");
+  NS_DEFINE_CID( kDOMParserCID, NS_DOMPARSER_CID );
+  ForceCompositionEnd();
+  _retval.Assign(EmptyString());
+
+
+  nsString errMsg;
   nsCOMPtr<nsISelection>selection;
   nsresult res = GetSelection(getter_AddRefs(selection));
   if (NS_FAILED(res)) return res;
 
-  nsIDOMElement *bodyElement = GetRoot();
-  if (NS_FAILED(res)) return res;
-  if (!bodyElement) return NS_ERROR_NULL_POINTER;
+  nsIDOMElement *rootElement = GetRoot(); // this should be the <body> element
+  nsCOMPtr<nsIDOMElement> htmlElement;
+  nsCOMPtr<nsIDOMNode> htmlNode;
+  nsCOMPtr<nsIDOMElement> newHtmlElement;
+  nsCOMPtr<nsIDOMNode> newHtmlNode;
+  nsCOMPtr<nsIDOMParser> parser;
+  nsCOMPtr<nsIDOMNodeList> nodeList;
+  nsString nodeName;
 
-  // Find where the <body> tag starts.
-  nsReadingIterator<PRUnichar> beginbody;
-  nsReadingIterator<PRUnichar> endbody;
-  aSourceString.BeginReading(beginbody);
-  aSourceString.EndReading(endbody);
-  PRBool foundbody = /*CaseInsensitive*/FindInReadable(NS_LITERAL_STRING("<body"),
-                                                   beginbody, endbody);
+  res = rootElement->GetParentNode(getter_AddRefs(htmlNode));
+  htmlElement = do_QueryInterface(htmlNode);
+  nsCOMPtr<nsIDOMDocument> domdoc;
+  nsCOMPtr<nsIDOMNode> origDocNode;
+  nsCOMPtr<nsIDOMElement> origDocElement;
+  res = htmlNode->GetParentNode(getter_AddRefs(origDocNode));
+  origDocElement = do_QueryInterface(origDocNode);
 
-  nsReadingIterator<PRUnichar> beginhead;
-  nsReadingIterator<PRUnichar> endhead;
-  aSourceString.BeginReading(beginhead);
-  aSourceString.EndReading(endhead);
-  PRBool foundhead = /*CaseInsensitive*/FindInReadable(NS_LITERAL_STRING("<head"),
-                                                   beginhead, endhead);
 
-  nsReadingIterator<PRUnichar> beginclosehead;
-  nsReadingIterator<PRUnichar> endclosehead;
-  aSourceString.BeginReading(beginclosehead);
-  aSourceString.EndReading(endclosehead);
+  parser = do_CreateInstance(kDOMParserCID, &res);
+  if (res) return res;
+  PRUnichar * src = ToNewUnicode(aSourceString);
+  res = parser->ParseFromString(src,"text/xml", getter_AddRefs(domdoc));
+  NS_Free(src);
+  if (res) return res;
+  res = domdoc->GetElementsByTagName(NS_LITERAL_STRING("html"), getter_AddRefs(nodeList));
+  if (res) return res;
+  res = nodeList->Item(0, getter_AddRefs(newHtmlNode));
+  if (!newHtmlNode) 
+  {
+    nsCAutoString formatType(NS_DOC_ENCODER_CONTRACTID_BASE);
+    formatType.AppendWithConversion(NS_LITERAL_STRING("text/xml"));
+    nsCOMPtr<nsIDocumentEncoder> docEncoder (do_CreateInstance(formatType.get(), &res));
+    NS_ENSURE_SUCCESS(res, res);
 
-  // Find the index after "<head>"
-  PRBool foundclosehead = /*CaseInsensitive*/FindInReadable(
-           NS_LITERAL_STRING("</head>"), beginclosehead, endclosehead);
-  
-  // Time to change the document
-  nsAutoEditBatch beginBatching(this);
-
-  nsReadingIterator<PRUnichar> endtotal;
-  aSourceString.EndReading(endtotal);
-
-  if (foundhead) {
-    if (foundclosehead)
-      res = ReplaceHeadContentsWithHTML(Substring(beginhead, beginclosehead));
-    else if (foundbody)
-      res = ReplaceHeadContentsWithHTML(Substring(beginhead, beginbody));
-    else
-      // XXX Without recourse to some parser/content sink/docshell hackery
-      // we don't really know where the head ends and the body begins
-      // so we assume that there is no body
-      res = ReplaceHeadContentsWithHTML(Substring(beginhead, endtotal));
-  } else {
-    nsReadingIterator<PRUnichar> begintotal;
-    aSourceString.BeginReading(begintotal);
-    NS_NAMED_LITERAL_STRING(head, "<head>");
-    if (foundclosehead)
-      res = ReplaceHeadContentsWithHTML(head + Substring(begintotal, beginclosehead));
-    else if (foundbody)
-      res = ReplaceHeadContentsWithHTML(head + Substring(begintotal, beginbody));
-    else
-      // XXX Without recourse to some parser/content sink/docshell hackery
-      // we don't really know where the head ends and the body begins
-      // so we assume that there is no head
-      res = ReplaceHeadContentsWithHTML(head);
+    res = docEncoder->Init(domdoc, NS_LITERAL_STRING("text/plain"), 0);
+    NS_ENSURE_SUCCESS(res, res);
+    docEncoder->EncodeToString(errMsg);
+    printf("Result:\n%S\n",errMsg);
+    _retval.Assign(errMsg);
+    return NS_OK;
   }
-  if (NS_FAILED(res)) return res;
+  newHtmlElement = do_QueryInterface(newHtmlNode);
+  ReplaceNode(newHtmlNode, htmlNode, origDocNode);
 
-  res = SelectAll();
-  if (NS_FAILED(res)) return res;
 
-  if (!foundbody) {
-    NS_NAMED_LITERAL_STRING(body, "<body>");
-    // XXX Without recourse to some parser/content sink/docshell hackery
-    // we don't really know where the head ends and the body begins
-    if (foundclosehead) // assume body starts after the head ends
-      res = LoadHTML(body + Substring(endclosehead, endtotal));
-    else if (foundhead) // assume there is no body
-      res = LoadHTML(body);
-    else // assume there is no head, the entire source is body
-      res = LoadHTML(body + aSourceString);
-    if (NS_FAILED(res))
-      return res;
 
-    nsCOMPtr<nsIDOMElement> divElement;
-    res = CreateElementWithDefaults(NS_LITERAL_STRING("div"), getter_AddRefs(divElement));
-    if (NS_FAILED(res))
-      return res;
 
-    res = CloneAttributes(bodyElement, divElement);
-    if (NS_FAILED(res))
-      return res;
 
-    return BeginningOfDocument();
-  }
 
-  // endtotal now points past </html> but <html> appears before beginbody
-  nsReadingIterator<PRUnichar> beginclosehtml;
-  nsReadingIterator<PRUnichar> endclosehtml;
-  aSourceString.BeginReading(beginclosehtml);
-  aSourceString.EndReading(endclosehtml);
 
-  // Find the index after "<head>"
-  PRBool foundclosehtml = /*CaseInsensitive*/FindInReadable(
-           NS_LITERAL_STRING("</html>"), beginclosehtml, endclosehtml);
-  if (foundclosehtml) endtotal = beginclosehtml;
 
-  res = LoadHTML(Substring(beginbody, endtotal));
-  if (NS_FAILED(res)) return res;
 
-  // Now we must copy attributes user might have edited on the <body> tag
-  //  because InsertHTML (actually, CreateContextualFragment()) 
-  //  will never return a body node in the DOM fragment
-  
-  // We already know where "<body" begins
-  nsReadingIterator<PRUnichar> beginclosebody = beginbody;
-  nsReadingIterator<PRUnichar> endclosebody;
-  aSourceString.EndReading(endclosebody);
-  if (!FindInReadable(NS_LITERAL_STRING(">"),beginclosebody,endclosebody))
-    return NS_ERROR_FAILURE;
 
-  // Truncate at the end of the body tag
-  // Kludge of the year: fool the parser by replacing "body" with "div" so we get a node
-  nsAutoString bodyTag;
-  bodyTag.AssignLiteral("<div ");
-  bodyTag.Append(Substring(endbody, endclosebody));
 
-  nsCOMPtr<nsIDOMRange> range;
-  res = selection->GetRangeAt(0, getter_AddRefs(range));
-  if (NS_FAILED(res)) return res;
 
-  nsCOMPtr<nsIDOMNSRange> nsrange (do_QueryInterface(range));
-  if (!nsrange) return NS_ERROR_NO_INTERFACE;
 
-  nsCOMPtr<nsIDOMDocumentFragment> docfrag;
-  res = nsrange->CreateContextualFragment(bodyTag, getter_AddRefs(docfrag));
-  if (NS_FAILED(res)) return res;
-
-  nsCOMPtr<nsIDOMNode> fragmentAsNode (do_QueryInterface(docfrag));
-  if (!fragmentAsNode) return NS_ERROR_NULL_POINTER;
-  
-  nsCOMPtr<nsIDOMNode> child;
-  res = fragmentAsNode->GetFirstChild(getter_AddRefs(child));
-  if (NS_FAILED(res)) return res;
-  if (!child) return NS_ERROR_NULL_POINTER;
-  
-  // Copy all attributes from the div child to current body element
-  res = CloneAttributes(bodyElement, child);
-  if (NS_FAILED(res)) return res;
+//   if (NS_FAILED(res)) return res;
+//   if (!bodyElement) return NS_ERROR_NULL_POINTER;
+// 
+//   // Find where the <body> tag starts.
+//   nsReadingIterator<PRUnichar> beginbody;
+//   nsReadingIterator<PRUnichar> endbody;
+//   aSourceString.BeginReading(beginbody);
+//   aSourceString.EndReading(endbody);
+//   PRBool foundbody = /*CaseInsensitive*/FindInReadable(NS_LITERAL_STRING("<body"),
+//                                                    beginbody, endbody);
+// 
+//   nsReadingIterator<PRUnichar> beginhead;
+//   nsReadingIterator<PRUnichar> endhead;
+//   aSourceString.BeginReading(beginhead);
+//   aSourceString.EndReading(endhead);
+//   PRBool foundhead = /*CaseInsensitive*/FindInReadable(NS_LITERAL_STRING("<head"),
+//                                                    beginhead, endhead);
+// 
+//   nsReadingIterator<PRUnichar> beginclosehead;
+//   nsReadingIterator<PRUnichar> endclosehead;
+//   aSourceString.BeginReading(beginclosehead);
+//   aSourceString.EndReading(endclosehead);
+// 
+//   // Find the index after "<head>"
+//   PRBool foundclosehead = /*CaseInsensitive*/FindInReadable(
+//            NS_LITERAL_STRING("</head>"), beginclosehead, endclosehead);
+//   
+//   // Time to change the document
+//   nsAutoEditBatch beginBatching(this);
+// 
+//   nsReadingIterator<PRUnichar> endtotal;
+//   aSourceString.EndReading(endtotal);
+// 
+//   if (foundhead) {
+//     if (foundclosehead)
+//       res = ReplaceHeadContentsWithHTML(Substring(beginhead, beginclosehead));
+//     else if (foundbody)
+//       res = ReplaceHeadContentsWithHTML(Substring(beginhead, beginbody));
+//     else
+//       // XXX Without recourse to some parser/content sink/docshell hackery
+//       // we don't really know where the head ends and the body begins
+//       // so we assume that there is no body
+//       res = ReplaceHeadContentsWithHTML(Substring(beginhead, endtotal));
+//   } else {
+//     nsReadingIterator<PRUnichar> begintotal;
+//     aSourceString.BeginReading(begintotal);
+//     NS_NAMED_LITERAL_STRING(head, "<head>");
+//     if (foundclosehead)
+//       res = ReplaceHeadContentsWithHTML(head + Substring(begintotal, beginclosehead));
+//     else if (foundbody)
+//       res = ReplaceHeadContentsWithHTML(head + Substring(begintotal, beginbody));
+//     else
+//       // XXX Without recourse to some parser/content sink/docshell hackery
+//       // we don't really know where the head ends and the body begins
+//       // so we assume that there is no head
+//       res = ReplaceHeadContentsWithHTML(head);
+//   }
+//   if (NS_FAILED(res)) return res;
+// 
+//   res = SelectAll();
+//   if (NS_FAILED(res)) return res;
+// 
+//   if (!foundbody) {
+//     NS_NAMED_LITERAL_STRING(body, "<body>");
+//     // XXX Without recourse to some parser/content sink/docshell hackery
+//     // we don't really know where the head ends and the body begins
+//     if (foundclosehead) // assume body starts after the head ends
+//       res = LoadHTML(body + Substring(endclosehead, endtotal));
+//     else if (foundhead) // assume there is no body
+//       res = LoadHTML(body);
+//     else // assume there is no head, the entire source is body
+//       res = LoadHTML(body + aSourceString);
+//     if (NS_FAILED(res))
+//       return res;
+// 
+//     nsCOMPtr<nsIDOMElement> divElement;
+//     res = CreateElementWithDefaults(NS_LITERAL_STRING("div"), getter_AddRefs(divElement));
+//     if (NS_FAILED(res))
+//       return res;
+// 
+//     res = CloneAttributes(bodyElement, divElement);
+//     if (NS_FAILED(res))
+//       return res;
+// 
+//     return BeginningOfDocument();
+//   }
+// 
+//   // endtotal now points past </html> but <html> appears before beginbody
+//   nsReadingIterator<PRUnichar> beginclosehtml;
+//   nsReadingIterator<PRUnichar> endclosehtml;
+//   aSourceString.BeginReading(beginclosehtml);
+//   aSourceString.EndReading(endclosehtml);
+// 
+//   // Find the index after "<head>"
+//   PRBool foundclosehtml = /*CaseInsensitive*/FindInReadable(
+//            NS_LITERAL_STRING("</html>"), beginclosehtml, endclosehtml);
+//   if (foundclosehtml) endtotal = beginclosehtml;
+// 
+//   res = LoadHTML(Substring(beginbody, endtotal));
+//   if (NS_FAILED(res)) return res;
+// 
+//   // Now we must copy attributes user might have edited on the <body> tag
+//   //  because InsertHTML (actually, CreateContextualFragment()) 
+//   //  will never return a body node in the DOM fragment
+//   
+//   // We already know where "<body" begins
+//   nsReadingIterator<PRUnichar> beginclosebody = beginbody;
+//   nsReadingIterator<PRUnichar> endclosebody;
+//   aSourceString.EndReading(endclosebody);
+//   if (!FindInReadable(NS_LITERAL_STRING(">"),beginclosebody,endclosebody))
+//     return NS_ERROR_FAILURE;
+// 
+//   // Truncate at the end of the body tag
+//   // Kludge of the year: fool the parser by replacing "body" with "div" so we get a node
+//   nsAutoString bodyTag;
+//   bodyTag.AssignLiteral("<div ");
+//   bodyTag.Append(Substring(endbody, endclosebody));
+// 
+//   nsCOMPtr<nsIDOMRange> range;
+//   res = selection->GetRangeAt(0, getter_AddRefs(range));
+//   if (NS_FAILED(res)) return res;
+// 
+//   nsCOMPtr<nsIDOMNSRange> nsrange (do_QueryInterface(range));
+//   if (!nsrange) return NS_ERROR_NO_INTERFACE;
+// 
+//   nsCOMPtr<nsIDOMDocumentFragment> docfrag;
+//   res = nsrange->CreateContextualFragment(bodyTag, getter_AddRefs(docfrag));
+//   if (NS_FAILED(res)) return res;
+// 
+//   nsCOMPtr<nsIDOMNode> fragmentAsNode (do_QueryInterface(docfrag));
+//   if (!fragmentAsNode) return NS_ERROR_NULL_POINTER;
+//   
+//   nsCOMPtr<nsIDOMNode> child;
+//   res = fragmentAsNode->GetFirstChild(getter_AddRefs(child));
+//   if (NS_FAILED(res)) return res;
+//   if (!child) return NS_ERROR_NULL_POINTER;
+//   
+//   // Copy all attributes from the div child to current body element
+//   res = CloneAttributes(bodyElement, child);
+//   if (NS_FAILED(res)) return res;
   
   // place selection at first editable content
   return BeginningOfDocument();
@@ -6384,3 +6447,10 @@ NS_IMETHODIMP nsHTMLEditor::SetFocusedPlot(nsIDOMElement * aFocusedPlot)
     return NS_OK;
 }
 
+
+/* AString returnAString (in AString thisone); */
+NS_IMETHODIMP nsHTMLEditor::ReturnAString(const nsAString & thisone, nsAString & _retval)
+{
+    _retval = thisone;
+    return NS_OK;
+}
