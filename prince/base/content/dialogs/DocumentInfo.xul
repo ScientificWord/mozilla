@@ -49,11 +49,11 @@
 
   <tabbox id="docinfo-outer-box" flex="1">
     <tabs class="tabs-top">
-	    <tab label="&tabbar.general;"       selected="1" />
-	    <tab label="&tabbar.comments;"        selected="0" />
-	    <tab label="&tabbar.printOptions;"      selected="0" />
-	    <tab label="&tabbar.metadata;"   selected="0" />
-	    <tab label="&tabbar.saveOptions;"        selected="0" />
+	    <tab id="generalTab" label="&tabbar.general;"       selected="1" persist="selected" />
+	    <tab id="commentsTab" label="&tabbar.comments;"        selected="0" persist="selected" />
+	    <tab id="printOptionsTab" label="&tabbar.printOptions;"      selected="0" persist="selected" />
+	    <tab id="metadataTab" label="&tabbar.metadata;"   selected="0" persist="selected" />
+	    <tab id="saveOptionsTab" label="&tabbar.saveOptions;"        selected="0" persist="selected" />
 	  </tabs>
 
     <tabpanels>
@@ -152,7 +152,7 @@
       <tabpanel id="metadataPage">
         <vbox>
           <label value="&metadataRelation.label;"/>
-					<listbox id="metadataRelationsListbox" accesskey="&metadataRelation.accesskey;" onselect="changeMetadataRelation(this.selectedItem);"/>
+					<listbox id="metadataRelationsListbox" accesskey="&metadataRelation.accesskey;" value="" persist="value" onselect="changeMetadataRelation(this.selectedItem);"/>
           <spacer flex="2"/>
           <radiogroup id="metadataTypeRadioGroup" orient="horizontal" oncommand="setMetadataType(event.target);">
             <radio label="&metadataTypeDataRadio.label;" group="metadataTypeRadioGroup" value="meta" id="metadataTypeDataRadio" accesskey="&metadataTypeDataRadio.accesskey;"/>
@@ -164,6 +164,8 @@
 					  <msibutton id="setMetadataSelectionButton" label="&setMetadataSelectionButton.label;" accesskey="&setMetadataSelectionButton.accesskey;" oncommand="setMetadataSelection();"/>
 					  <msibutton id="unsetMetadataSelectionButton" label="&unsetMetadataSelectionButton.label;" accesskey="&unsetMetadataSelectionButton.accesskey;" oncommand="unsetMetadataSelection();"/>
             <msibutton id="linksFileBrowseButton" label="&linksFileBrowseButton.label;" accesskey="&linksFileBrowseButton.accesskey;" oncommand="doBrowseFileLinks();"/>
+            <spacer flex="2" />
+            <checkbox id="relativeMetadataLinksCheckbox" label="&relativeMetadataLinksCheckbox.label;" accesskey="&relativeMetadataLinksCheckbox.accesskey;" oncommand="convertLinkPaths();" />
           </hbox>
         </vbox>
       </tabpanel>
