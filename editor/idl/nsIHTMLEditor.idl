@@ -267,7 +267,7 @@ interface nsIHTMLEditor : nsISupports
    *
    *  @param aSourceString   HTML source string of the entire new document
    */
-  void rebuildDocumentFromSource(in AString aSourceString);
+  AString rebuildDocumentFromSource(in AString aSourceString);
 
   /**
    * Insert some HTML source, interpreting
@@ -639,5 +639,6 @@ interface nsIHTMLEditor : nsISupports
   attribute nsIDOMElement focusedPlot;
   void addTagInfo( in AString strPath );
   void setOneShotTranslation( in AString tablename );
+  AString returnAString( in AString thisone);
 };
 
