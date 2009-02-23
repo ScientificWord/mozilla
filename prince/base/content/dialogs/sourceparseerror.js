@@ -25,16 +25,25 @@ function startup()
 {
   data = window.arguments[0];
   var msg = data.msg;
-  var errObj =document.getElementById("errdisplay").cloneNode(true);
+  var errObj =document.createElement("error");
   var matchArray=/(.*)Location:\s*([^L]*)Line\sNumber\s(\d*), Column (\d*):([^\-]*)/.exec(msg);
   
-  errObj.setAttribute("msg", escapeString(matchArray[1]));
+  errObj.setAttribute("id", "errdisplay"); 
+  errObj.setAttribute("class","console-row" );
+  errObj.setAttribute("typetext","Error:" );
+  errObj.setAttribute("type","error");
+  errObj.setAttribute("category","malformed-xml");
+//  errObj.setAttribute("msg", escapeString(matchArray[1]));
+  errObj.setAttribute("msg", matchArray[1]);
   errObj.setAttribute("href", matchArray[2]);
   errObj.setAttribute("line", matchArray[3]);
   errObj.setAttribute("col", matchArray[4]);
-  errObj.setAttribute("code", escapeString(matchArray[5]));
-  errObj.setAttribute("errorDots", repeatChar("&nbsp;",Number(matchArray[4]))); 
-  document.getElementById("theparent").replaceChild(errObj,document.getElementById("errdisplay"));
+//  errObj.setAttribute("code", escapeString(matchArray[5]));
+  errObj.setAttribute("code", matchArray[5]);
+  var dots = repeatChar(" ",Number(matchArray[4]));
+  errObj.setAttribute("errorDots", dots); 
+  errObj.setAttribute("errorCaret", " ");
+  document.getElementById("theparent").appendChild(errObj);
 }
 
 function onAccept()
