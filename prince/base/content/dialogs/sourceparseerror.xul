@@ -12,6 +12,7 @@
 
 <dialog title="&windowTitle.label;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    xmlns:html="http://www.w3.org/1999/xhtml"
     onload = "return startup();"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();"
@@ -21,7 +22,11 @@
     persist="screenX screenY width height sizemode"
     width="600px" height="200px">
   <script type="application/x-javascript" src="chrome://prince/content/sourceparseerror.js"/>
-
+  <html:style type="text/css">
+   .console-error-source { display: none }
+   .console-error-spacer { display: none }
+  </html:style>
+    
   <vbox id="theparent">
     <label>
     There was an error parsing the XML source</label>
