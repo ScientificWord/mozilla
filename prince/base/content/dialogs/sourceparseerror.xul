@@ -26,13 +26,6 @@
     <label>
     There was an error parsing the XML source</label>
     <separator/>
-    <error id="errdisplay" class="console-row" typetext="Error:" type="error"
-      category="malformed-xml" errorDots=" " errorCaret=" "
-      msg="XML Parsing Error: mismatched tag. Expected: &lt;/em>. "
-      href="moz-nullprincipal:{7f53b037-a5c4-426b-8de4-24bad9c0e085}"
-      line="64"
-      col="63"
-      code="&lt;section id=&quot;tsid_3141592&quot;>&lt;sectiontitle> The &lt;em>file menu.&lt;/sectiontitle> "/>
   </vbox>
     
 </dialog>
