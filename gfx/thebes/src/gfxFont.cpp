@@ -558,7 +558,34 @@ gfxFont::SanitizeMetrics(gfxFont::Metrics *aMetrics)
 gfxGlyphExtents::~gfxGlyphExtents()
 {
 #ifdef DEBUG_TEXT_RUN_STORAGE_METRICS
-    gGlyphExtentsWidthsTotalSize += mContainedGlyphWidths.ComputeSize();
+    gGlyphExtentsWidthsTotalSize += mContainedGlyphWidths.
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    Size();
     gGlyphExtentsCount++;
 #endif
     MOZ_COUNT_DTOR(gfxGlyphExtents);
@@ -1103,7 +1130,11 @@ gfxTextRun::ComputeLigatureData(PRUint32 aPartStart, PRUint32 aPartEnd,
     PRUint32 partClusterIndex = 0;
     PRUint32 partClusterCount = 0;
     for (i = result.mLigatureStart; i < result.mLigatureEnd; ++i) {
-        if (charGlyphs[i].IsClusterStart()) {
+        // Treat the first character of the ligature as the start of a          
+        // cluster for our purposes of allocating ligature width to its         
+        // characters.                                                                                                                                        
+
+        if (i == result.mLigatureStart || charGlyphs[i].IsClusterStart()) {        
             ++totalClusterCount;
             if (i < aPartStart) {
                 ++partClusterIndex;
@@ -1112,12 +1143,17 @@ gfxTextRun::ComputeLigatureData(PRUint32 aPartStart, PRUint32 aPartEnd,
             }
         }
     }
+    
+    // jcs A hack:   merge the correct code from more recent mozilla
+	  if (totalClusterCount == 0) {
+       totalClusterCount = 1;
+    }
+    
     result.mPartAdvance = ligatureWidth*partClusterIndex/totalClusterCount;
     result.mPartWidth = ligatureWidth*partClusterCount/totalClusterCount;
     result.mPartIsStartOfLigature = partClusterIndex == 0;
     result.mPartIsEndOfLigature = partClusterIndex + partClusterCount == totalClusterCount;
-
-    if (aProvider && (mFlags & gfxTextRunFactory::TEXT_ENABLE_SPACING)) {
+       if (aProvider && (mFlags & gfxTextRunFactory::TEXT_ENABLE_SPACING)) {
         gfxFont::Spacing spacing;
         if (aPartStart == result.mLigatureStart) {
             aProvider->GetSpacing(aPartStart, 1, &spacing);
