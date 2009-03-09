@@ -23,8 +23,8 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/EdDialogCommon.js" />
   <script type="application/x-javascript" src="chrome://prince/content/msiFrameOverlay.js" />
-  <!-- Scripts specific to this dialog -->
   <script type="application/x-javascript" src="chrome://prince/content/Frame.js"/>
+  <vbox id="units" />
   <tabbox id="frametabbox">
     <tabs flex="1">
       <tab label="Size &amp; Placement"/>
@@ -35,14 +35,14 @@
         <groupbox>
           <caption label="Size"/>
           <vbox>
-            <hbox>
+            <!--hbox>
               <label id   = "frameUnitLabel"
                 control   = "frameUnitMenulist"
                 accesskey = "unitLabel.accesskey;"
                 value     = "Units" />
               <menulist id = "frameUnitMenulist"
                 width=".75in"
-                oncommand  = "setNewUnit(this);" >
+                oncommand  = "frameUnitHandler.setCurrentUnit(this.value);" >
                 <menupopup id = "unitList">
                   <menuitem value="in" label="in" width=".75in"/>
                   <menuitem value="cm" label="cm" />
@@ -53,7 +53,7 @@
                 </menupopup>
               </menulist>
               <spacer flex="1"/>
-            </hbox>
+            </hbox -->
             <hbox>
               <grid>
                 <columns>
