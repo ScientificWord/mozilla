@@ -20,7 +20,23 @@ item:before { content: counters(item, ".") ":  ";
  
 enumerate { counter-reset: item; }
 
-description { counter-reset: item; }  
+description { counter-reset: item; }
+
+theorem {
+  display: block;
+  font-style: italic
+}
+
+proof {
+  display: block;
+}
+
+proof:before {
+  content: "Proof. ";
+  background-color: gray;
+  font-weight: bold;
+}
+  
 
 itemize { list-style: disc; 
   counter-reset: item; }
