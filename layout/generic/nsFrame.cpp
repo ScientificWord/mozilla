@@ -4784,7 +4784,7 @@ nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
 
           PRInt32 nextFrameOffset;
           PRBool jumpedLine;
-          PRBool math;
+          PRBool math = PR_FALSE;
           result =
             current->GetFrameFromDirection(aPos->mDirection, aPos->mVisual,
                                            aPos->mJumpLines, aPos->mScrollViewStop,

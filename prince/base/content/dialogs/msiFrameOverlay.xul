@@ -12,6 +12,26 @@
   <script type="application/x-javascript" src="chrome://prince/content/EdDialogCommon.js"/>
   <tab id="msiFrameTab" label="Frame"/>
   <tab id="msiPlacementTab" label="Placement"/>
+  <vbox id="units" >
+    <label id   = "frameUnitLabel"
+      control   = "frameUnitMenulist"
+      accesskey = "&unitLabel.accesskey;"
+      value     = "&unitLabel.label;" />
+    <menulist id = "frameUnitMenulist"
+      width=".75in"
+      oncommand  = "frameUnitHandler.setCurrentUnit(this.value);" >
+      <menupopup id = "unitList" selectedIndex="2" persist="selectedIndex">
+        <menuitem value="in" label="in"/>
+        <!--menuitem value="pct" label="percent"/  -->
+        <menuitem value="cm" label="cm"/>
+        <menuitem value="pt" label="pt" />
+        <menuitem value="mm" label="mm"/>
+        <menuitem value="pc" label="pica"/>
+        <menuitem value="px" label="pixel"/>
+      </menupopup>
+    </menulist>
+    <spacer flex="1"/>
+  </vbox>
   <vbox id="msiFrame" align="start">
     <spacer flex="1"/>
     <broadcaster id="lengthwithunits"
@@ -22,26 +42,6 @@
       decimalplaces = "0"/>
       
     <hbox>
-      <vbox>
-        <label id   = "frameUnitLabel"
-          control   = "frameUnitMenulist"
-          accesskey = "&unitLabel.accesskey;"
-          value     = "&unitLabel.label;" />
-        <menulist id = "frameUnitMenulist"
-          width=".75in"
-          oncommand  = "setNewUnit(this);" >
-          <menupopup id = "unitList">
-            <menuitem value="in" label="in"/>
-            <!--menuitem value="pct" label="percent"/  -->
-            <menuitem value="cm" label="cm"/>
-            <menuitem value="pt" label="pt" />
-            <menuitem value="mm" label="mm"/>
-            <menuitem value="pc" label="pica"/>
-            <menuitem value="px" label="pixel"/>
-          </menupopup>
-        </menulist>
-        <spacer flex="1"/>
-      </vbox>
       <vbox id="illustration" pack="start" width="220px" 
          outer="false"> <!-- the illustration -->
         <hbox flex="1"/>
