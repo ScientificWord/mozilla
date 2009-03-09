@@ -104,3 +104,11 @@ mml|mi[tempinput="true"]{
 #rotateleft{
   list-style-image: url("chrome://prince/skin/icons/vc-rotateleft.png");
 }
+
+mml|mrow[id]:after {
+  content: "(" attr(id) ")" ;
+  text-align: right;
+  font-color: black;
+  padding: 0 0 0 100%;
+
+}
