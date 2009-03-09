@@ -325,6 +325,14 @@ tabular {
   display: table
 }
 
+proof {
+  display: block;
+}
+
+proof:before {
+  content: "Proof. ";
+}
+
 tr {
   display: table-row
 }
