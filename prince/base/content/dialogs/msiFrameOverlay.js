@@ -1,4 +1,5 @@
 Components.utils.import("resource://app/modules/unitHandler.jsm");
+
 var frameUnitHandler = new UnitHandler();
 var sides = ["Top", "Right", "Bottom", "Left"];
 var currentFrame;
@@ -10,7 +11,7 @@ var position = 0;  // left = 1, right = 2, neither = 0
 
 
 
-function initFrameTab(gDialog, element)
+function initFrameTab(gDialog, element, newElement)
 {
   var editorElement = msiGetParentEditorElementForDialog(window);
   var editor = msiGetEditor(editorElement);
@@ -18,7 +19,8 @@ function initFrameTab(gDialog, element)
     window.close();
     return;
   }
-  gDialog.frameUnitMenulist      = document.getElementById( "frameUnitMenulist");
+  currentFrame = element;
+  gDialog.unitList      = document.getElementById( "unitList");
   gDialog.marginInput = {left:   document.getElementById( "marginLeftInput"),
                          right:  document.getElementById( "marginRightInput"),
                          top:    document.getElementById( "marginTopInput"),
@@ -42,7 +44,6 @@ function initFrameTab(gDialog, element)
   gDialog.placeFloatsCheck      = document.getElementById("placeFloatsCheck");
   gDialog.placeTopCheck         = document.getElementById("placeTopCheck");
   gDialog.placeBottomCheck      = document.getElementById("placeBottomCheck");
-  gDialog.frameUnitMenuList     = document.getElementById("frameUnitMenulist");
   gDialog.OkButton          = document.documentElement.getButton("accept");
   var fieldList = [];
   var attrs = ["margin","border","padding","crop"];
@@ -54,38 +55,48 @@ function initFrameTab(gDialog, element)
     }
   }
   frameUnitHandler.setEditFieldList(fieldList);
-  frameUnitHandler.initCurrentUnit("in");
-  initUnitList(document.getElementById("unitList"));
-  frameUnitHandler.setCurrentUnit(gDialog.frameUnitMenuList.value);
+  var unit;
+  initUnitList(gDialog.unitList);
+  if (!newElement)
+    unit =  element.getAttribute("units");
+  else
+    unit = gDialog.unitList.value;
+  if (!unit) unit = "pt";
+  frameUnitHandler.initCurrentUnit(unit);
+  if (gDialog.unitList.value) frameUnitHandler.setCurrentUnit(gDialog.unitList.value);
+  else frameUnitHandler.setCurrentUnit("pt")
   var color = getColorWell("colorWell");
+  if (!newElement)
+    color = element.getAttribute("border-color");
   if (color.length > 0)
   { 
     setStyleAttribute("frame","border-color",color);
   }
-
+                                       
   if (element && element.localName == "msiframe")
   {
     currentFrame = element;
     //read current units
     var values = [0,0,0,0];
-    var i;
-    if (element.hasAttribute("margin"))
-      { values = parseLengths(element.getAttribute("margin"));}
-    for (i = 0; i<4; i++)
-      { gDialog.marginInput[toLowerCase(sides[i])].value = values[i];}
-    values = [0,0,0,0];
-    if (element.hasAttribute("border-width"))
-      { values = parseLengths(element.getAttribute("border-width"));}
-    for (i = 0; i<4; i++)
-      { gDialog.borderInput[toLowerCase(sides[i])].value = values[i];}
-    values = [0,0,0,0];
-    if (element.hasAttribute("padding"))
-      { values = parseLengths(element.getAttribute("padding"));}
-    for (i = 0; i<4; i++)
-      { gDialog.paddingInput[toLowerCase(sides[i])].value = values[i];}
+    if (!newElement)
+    {
+      var i;
+      if (element.hasAttribute("margin"))
+        { values = parseLengths(element.getAttribute("margin"));}
+      for (i = 0; i<4; i++)
+        { gDialog.marginInput[sides[i].toLowerCase()].value = values[i];}
+      values = [0,0,0,0];
+      if (element.hasAttribute("border-width"))
+        { values = parseLengths(element.getAttribute("border-width"));}
+      for (i = 0; i<4; i++)
+        { gDialog.borderInput[sides[i].toLowerCase()].value = values[i];}
+      values = [0,0,0,0];
+      if (element.hasAttribute("padding"))
+        { values = parseLengths(element.getAttribute("padding"));}
+      for (i = 0; i<4; i++)
+        { gDialog.paddingInput[sides[i].toLowerCase()].value = values[i];}
+    }
   }
-//  else
-//    currentFrame = editor.createElementWithDefaults("msiframe"); 
 }
 
 function setNewUnit(element)
@@ -178,28 +189,36 @@ function getColorAndUpdate()
 }
 
 // come up with a four part attribute giving the four parts of the margin or padding or border, etc. using the same rules as CSS
-function getCompositeMeasurement(attribute, unit)
+function getCompositeMeasurement(attribute, unit, showUnit)
 {
   var i;
   var values = [];
   dump("attribute = "+attribute+", unit = "+unit+"\n");
   for (i = 0; i<4; i++)
-    { values.push( Math.max(0,frameUnitHandler.getValueAs(Number(document.getElementById(attribute + sides[i] + "Input").value ),unit)));}
+    { dump(i + "\n");
+      values.push( Math.max(0,frameUnitHandler.getValueAs(Number(document.getElementById(attribute + sides[i] + "Input").value ),unit)));
+    }
   if (values[1] == values[3])
   {
     values.splice(3,1);
     if (values[0] == values[2]) 
     {
       values.splice(2,1);
-      if (values[0] == values[1]) values.splice(1,1);
+      if (values[0] == values[1]) {values.splice(1,1);}
     }
   }
   if (unit == "px")
   {
     for (i=0; i<values.length; i++)
+    {
+      dump(i + "\n");
       values[i] = Math.round(values[i]);
+    }
   }
-  var val = values.join(" ");
+  var val;
+  if (showUnit) {val = values.join(unit+" ")+unit;}
+  else { val = values.join(" ");}
+  dump("getCompositeMeasurement returning "+attribute+" = "+val+"\n");
   return val;
 }
 
@@ -219,8 +238,18 @@ function updateDiagram( attribute ) //attribute = margin, border, padding;
     }
   }
   var val = values.join("px ")+"px";
-  var att = attribute + ((attribute === "border")?"-width":"");
-  setStyleAttribute("frame", att, val );
+  if (attribute=="border")  // add border color and border width
+  {
+    var bgcolor = gDialog.colorWell.getAttribute("style");
+    var arr = bgcolor.match(/background-color\s*:([a-zA-Z\ \,0-9\(\)]+)\s*;\s*/,"");
+    removeStyleAttributeOnNode(document.getElementById("frame"), "border");
+    setStyleAttribute("frame", "border-width", val );
+    setStyleAttribute("frame", "border-color", arr[1]);
+    setStyleAttribute("frame", "border-style", "solid" );
+  }
+  else
+    { setStyleAttribute("frame", attribute, val );}
+  dump(document.getElementById("frame").getAttribute("style")+"\n");
   // dump(document.getElementById("frame").getAttribute("style"));
   // space flowing around the diagram is 150 - (lmargin + rmargin + lborder + lpadding + rborder + rpadding + imageWidth)*scale
   var hmargin = toPixels(Number(gDialog.marginInput.left.value)) + toPixels(Number(gDialog.marginInput.right.value));
@@ -254,14 +283,36 @@ function updateDiagram( attribute ) //attribute = margin, border, padding;
 
 function setStyleAttributeOnNode( node, att, value)
 {
-  var style = node.getAttribute("style");
+  dump("setStyleAttributeOnNode( "+node.id+", "+att+", "+value+" );\n");
+  var style="";
+  if (node.hasAttribute("style")) style = node.getAttribute("style");
+  dump("original style is '"+style+"'\n");
+  style.replace("null","");
   var re = new RegExp(att + ":[^;]*;","");
   if (re.test(style))
     style = style.replace(re, att + ": " +value+"; ");
   else
     style = style + " " + att +": " + value + "; ";
+  dump("Setting style of node to "+style+"\n");
   node.setAttribute("style",style);
 }
+
+function removeStyleAttributeOnNode( node, att)
+{
+  dump("removeStyleAttributeOnNode( "+node.id+", "+att+");\n");
+  var style="";
+  if (node.hasAttribute("style")) style = node.getAttribute("style");
+  dump("original style is '"+style+"'\n");
+  style.replace("null","");
+  var re = new RegExp(att + ":[^;]*;","");
+  if (re.test(style))
+  {
+    style = style.replace(re, "");
+    node.setAttribute("style",style);
+    dump("Setting style of node to "+style+"\n");
+  }
+}
+
 
 function setStyleAttribute( id, att, value)
 {
@@ -371,27 +422,16 @@ function setAlignment( alignment ) // alignment = 1 for left, 2 for right, 0 for
 function setFrameAttributes(frameNode)
 {
   var unit = frameUnitHandler.currentUnit;
-//  frameNode.units = unit;
-  dump(getCompositeMeasurement("margin",unit)+"\n");
-  dump(getCompositeMeasurement("border",unit)+"\n");
-  dump(getCompositeMeasurement("padding",unit)+"\n");
-  dump(getCompositeMeasurement("crop",unit)+"\n");
-
-  dump(getCompositeMeasurement("margin","px")+"\n");
-  dump(getCompositeMeasurement("border","px")+"\n");
-  dump(getCompositeMeasurement("padding","px")+"\n");
-  dump(getCompositeMeasurement("crop","px")+"\n");
-
-  var unit = frameNode.units;
-  frameNode.setAttribute("margin", getCompositeMeasurement("margin",unit));  
-  frameNode.setAttribute("border", getCompositeMeasurement("border",unit));  
-  frameNode.setAttribute("padding", getCompositeMeasurement("padding",unit));  
-  frameNode.setAttribute("crop", getCompositeMeasurement("crop",unit));  
-  var bgcolor = document.getElementById("colorWell").getAttribute("style");
-  bgcolor = bgcolor.replace(/background-color\s*:\s*/,"");
-  setStyleAttributeOnNode(frameNode, "border-color", bgcolor);
-  frameNode.setAttribute("border-color", bgcolor);  
-  frameNode.setAttribute("placement", gDialog.placementRadioGroup.value);
+  frameNode.setAttribute("units",unit);
+  frameNode.setAttribute("margin", getCompositeMeasurement("margin", unit, false));  
+  frameNode.setAttribute("border", getCompositeMeasurement("border",unit, false));  
+  frameNode.setAttribute("padding", getCompositeMeasurement("padding",unit, false));  
+  frameNode.setAttribute("crop", getCompositeMeasurement("crop",unit, false));  
+  var bgcolor = gDialog.colorWell.getAttribute("style");
+  var arr = bgcolor.match(/background-color\s*:([a-zA-Z\ \,0-9\(\)]+)\s*;\s*/,"");
+  setStyleAttributeOnNode(frameNode, "border-color", arr[1]);
+  frameNode.setAttribute("border-color", arr[1]);  
+  setStyleAttributeOnNode(frameNode, "display", "block");
   var placeLocation="";
   var isHere = false;
   if (gDialog.placeForceHereCheck.checked)
@@ -416,13 +456,21 @@ function setFrameAttributes(frameNode)
   frameNode.setAttribute("placeLocation", placeLocation);
   if (isHere)
   {
+    var floatparam = document.getElementById("herePlacementRadioGroup").value;
+    frameNode.setAttribute("placement",floatparam); 
+    if (floatparam == "inside") floatparam = "left";
+    else if (floatparam == "outside") floatparam = "right";
+    setStyleAttributeOnNode(frameNode, "float", floatparam);
+
     dump("Find parameters for here placement");
   }
+  else {removeStyleAttributeOnNode(frameNode, "float");}
   // now set measurements in the style for frameNode
-  var style = getCompositeMeasurement("margin","px");
+  var style = getCompositeMeasurement("margin","px", true);
   setStyleAttributeOnNode(frameNode, "margin", style);
-  style = getCompositeMeasurement("padding","px");
+  style = getCompositeMeasurement("padding","px", true);
   setStyleAttributeOnNode(frameNode, "padding", style);
-  style = getCompositeMeasurement("border","px");
-  setStyleAttributeOnNode(frameNode, "border", style);
+  style = getCompositeMeasurement("border","px", true);
+  setStyleAttributeOnNode(frameNode, "border-width", style);
+  if (style != "0px") { setStyleAttributeOnNode( frameNode, "border-style", "solid");}
 }

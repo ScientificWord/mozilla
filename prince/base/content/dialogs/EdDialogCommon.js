@@ -396,7 +396,7 @@ function getColorWell(colorWellId)
   if (colorWell)
   {
     var style = colorWell.getAttribute("style");
-    var ma = style.match(/background-color\s*:([\w\(\),\s]+;)/);
+    var ma = style.match(/background-color\s*:([\w\(\),\s]+);/);
     if (ma.length >0) return ma[1];
   }
   return "";

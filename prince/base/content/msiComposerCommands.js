@@ -7517,154 +7517,48 @@ function msiFrame(currNode, editorElement)
 {
   var data= new Object();
   data.editorElement = editorElement;
+  var editor = msiGetEditor(editorElement);
   var currNodeTag = "";
+  data.newElement = true; 
   if (currNode) {
-    data.units = currNode.getAttribute("units");
-    data.position = currNode.getAttribute("position");
-    data.width = currNode.getAttribute("width");
-    data.height = currNode.getAttribute("height");
-    data.overhang = currNode.getAttribute("overhang");
-    data.topmargin = currNode.getAttribute("topmargin");
-    data.sidemargin = currNode.getAttribute("sidemargin");
-    data.border = currNode.getAttribute("border");
-    data.padding = currNode.getAttribute("padding");
-//    data.color = currNode.getAttribute("color");
-    data.textalignment = currNode.getAttribute("textalignment");
-//    data.borderstyle = currNode.getAttribute("borderstyle");
-    data.rotation = currNode.getAttribute("rotation");
+    data.newElement = false;
+    data.element = currNode;
   }
   else
   {
-    //defaults
+    data.element = null;
   }
-  window.openDialog("chrome://prince/content/Frame.xul","_blank", "chrome,close,titlebar,resizable=yes,modal", data);
+  editor.beginTransaction();
+  window.openDialog("chrome://prince/content/Frame.xul","_blank", "chrome,close,titlebar,resizable=yes,modal=yes", data);
   // data comes back altered
   var editor = msiGetEditor(editorElement);
-  var lmargin;
-  var rmargin;
-  var tmargin = data.topmargin+data.units; 
-  var w;
-  var h;
-  if (data.position=="inner") {
-    lmargin="0"; rmargin=data.sidemargin+data.units;
-  }
-  else if (data.position == "outer") {
-    rmargin="0"; lmargin=data.sidemargin+data.units;
-  }
-  else {
-    lmargin = data.sidemargin+data.units;
-    rmargin = lmargin;
-  }
-  
-  if (currNode)  // currnode is an msiframe node
+  dump("data.newElement is "+data.newElement+"\n");
+  if (data.newElement)
   {
-    currNode.setAttribute("units",data.units);
-    currNode.setAttribute("position",data.position);
-    if (data.width == 'auto' || data.width==0) currNode.removeAttribute("width");
-    else currNode.setAttribute("width",data.width);
-    if (data.height == 'auto' || data.height==0)  currNode.removeAttribute("height");
-    else currNode.setAttribute("height",data.height);
-    currNode.setAttribute("overhang",data.overhang);
-    currNode.setAttribute("topmargin",data.topmargin);
-    currNode.setAttribute("sidemargin",data.sidemargin);
-    currNode.setAttribute("border",data.border);
-    currNode.setAttribute("padding",data.padding);
-//    currNode.setAttribute("color",data.color);
-    currNode.setAttribute("textalignment",data.textalignment);
-//    currNode.setAttribute("borderstyle",data.borderstyle);
-    currNode.setAttribute("rotation",data.rotation);
-    if (data.width == 'auto' || data.width == 0) w = null;
-    else w = data.width+data.units;
-    if (data.height == 'auto' || data.height == 0) h = null;
-    else h = data.height+data.units;
-    setStyleAttribute(currNode,"width",w);
-    setStyleAttribute(currNode,"height",h);
-    setStyleAttribute(currNode,"margin",tmargin+" "+rmargin+" "+tmargin+" "+lmargin);
-    if (Number(data.border)>0) setStyleAttribute(currNode,"border",data.border+data.units+" solid black");
-    if (Number(data.padding)>0) setStyleAttribute(currNode,"padding",data.padding+data.units);
-    if (data.position=="inline") {
-      setStyleAttribute(currNode,"display","inline-block");
-      setStyleAttribute(currNode,"float",null);
+    try
+    {
+      var namespace = new Object();                      
+      var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace);
+      msiRequirePackage(editorElement, "wrapfig", null);
+      msiRequirePackage(editorElement, "boxedminipage", null);
+      var selection = editor.selection;
+      selection.getRangeAt(0).insertNode(data.element);
+      if (!selection.collapsed) editor.deleteSelection(0);
+      try
+      {
+        var defpara = "para";
+        var para = editor.document.createElement(defpara);
+        var br = editor.document.createElement("br");
+        data.element.appendChild(para);
+        para.appendChild(br);
+      }
+      catch(e) {
+      }
     }
-    else if (data.position=="display") {
-      setStyleAttribute(currNode,"display","block");
-      setStyleAttribute(currNode,"float",null);
+    catch(e) {
     }
-    else if (data.position=="inner") {
-      setStyleAttribute(currNode,"float","left");
-//      setStyleAttribute(currNode,"display",null);
-    }
-    else if (data.position=="outer") {
-      setStyleAttribute(currNode,"float","right");
-//      setStyleAttribute(currNode,"display",null);
-    }
-    if (data.textalignment == "inner") {
-      setStyleAttribute(currNode,"text-align", "left");
-    }
-    else if (data.textalignment == "outer") {
-      setStyleAttribute(currNode, "text-align", "right");
-    }
-    else if (data.textalignment == "just") {
-      setStyleAttribute(currNode, "text-align", "justify");
-    }
-    else if (data.textalignment == "center") {
-      setStyleAttribute(currNode, "text-align", "center");
-    }
-  }
-  else
-  {
-    var namespace = new Object();                      
-    var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace);
-    msiRequirePackage(editorElement, "wrapfig", null);
-    msiRequirePackage(editorElement, "boxedminipage", null);
-    var inlineStyle = "style='";
-    if (data.width != 'auto' || data.width > 0) inlineStyle += "width: "+data.width+data.units+"; ";
-    if (data.height != 'auto') inlineStyle += "height: "+data.width+data.units+"; ";
-    var lmargin;
-    var rmargin;
-    var tmargin = data.topmargin+data.units;
-    inlineStyle += "margin: "+tmargin+" "+rmargin+" "+tmargin+" "+lmargin+"; ";
-    if (Number(data.border)>0) {
-      inlineStyle += "border: "+data.border+data.units+" solid black; ";
-    }
-    if (Number(data.padding)>0) {
-      inlineStyle += "padding: "+data.padding+data.units+"; ";
-    }
-    if (data.position=="inline") {
-    }
-    else if (data.position=="display") {
-      inlineStyle += "display: block; ";
-    }
-    else if (data.position=="inner") {
-      inlineStyle += "float: left; ";
-    }
-    else if (data.position=="outer") {
-      inlineStyle += "float: right; ";
-    } 
-    if (data.textalignment == "inner") {
-      inlineStyle += "text-align: left; ";
-    }
-    else if (data.textalignment == "outer") {
-      inlineStyle +=  "text-align: right; ";
-    }
-    else if (data.textalignment == "just") {
-      inlineStyle +=  "text-align: justify; ";
-    }
-    else if (data.textalignment == "center") {
-      inlineStyle +=  "text-align: center; ";
-    }
-    inlineStyle += "' ";
-    
-    var xml = "<msiframe xmlns='http://www.w3.org/1999/xhtml'" + 
-     " units='"+data.units+"' position='"+data.position+"' width='"+data.width+"' height='"+data.height+
-     "' overhang='"+data.overhang+"' topmargin='"+data.topmargin+"' sidemargin='"+data.sidemargin+
-     "' border='"+data.border+"' padding='"+data.padding+"' borderstyle='"+data.borderstyle+"' color='"+data.color+
-     "' textalignment='"+data.textalignment+"' rotation='"+data.rotation+ "' " + inlineStyle +
-     "><"+paraTag+"><br/></"+paraTag+"></msiframe>";                     
-    dump(xml+"\n");
-    editor.deleteSelection(0);
-    insertXMLAtCursor(editor,xml,true,false);
-  }
+  } 
+  editor.endTransaction();
 }
 
 
