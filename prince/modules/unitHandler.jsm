@@ -16,6 +16,12 @@ function UnitHandler()
   };
 
   this.editFieldList = [];
+
+  this.addEditFieldList = function (fieldArray)
+  {
+    this.editFieldList = this.editFieldList.concat(fieldArray);
+  }
+
   this.setEditFieldList = function (fieldArray)
   {
     this.editFieldList = fieldArray;
@@ -51,6 +57,7 @@ function UnitHandler()
    
   this.initCurrentUnit = function(unit) // this is for setting the initial value -- no conversions
   {
+    if (!unit) return;
     for (var i in this.editFieldList)
     {
       this.editFieldList[i].setAttribute("increment", this.units[unit].increment); 
