@@ -2369,24 +2369,26 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
 
   if (mustShowFileDialog)
   {
-	  var urlstring;
-	  try {
-	    // Prompt for title if we are saving to .sci
-	    if (!saveAsTextFile && (editor.editortype == "html"))
-	    {
-	      var userContinuing = msiPromptAndSetTitleIfNone(editorElement); // not cancel
-	      if (!userContinuing)
-	        return false;
-	    }
+    var urlstring;
+    try {
+      // Prompt for title if we are saving to .sci
+      if (!saveAsTextFile && (editor.editortype == "html"))
+      {
+        var userContinuing = msiPromptAndSetTitleIfNone(editorElement); // not cancel
+        if (!userContinuing)
+          return false;
+      }
 
-	    var dialogResult = msiPromptForSaveLocation(saveAsTextFile, editor.editortype=="html"?MSI_EXTENSION:editor.editortype, 
+      var dialogResult = msiPromptForSaveLocation(saveAsTextFile, editor.editortype=="html"?MSI_EXTENSION:editor.editortype, 
         aMimeType, sciurlstring, editorElement);
-	    if (dialogResult.filepickerClick == msIFilePicker.returnCancel)
-	      return false;
+      if (dialogResult.filepickerClick == msIFilePicker.returnCancel)
+        return false;
 
-	    replacing = (dialogResult.filepickerClick == msIFilePicker.returnReplace);
-	    urlstring = dialogResult.resultingURIString;
-	    destLocalFile = dialogResult.resultingLocalFile;  // this is B.sci
+      replacing = (dialogResult.filepickerClick == msIFilePicker.returnReplace);
+      urlstring = dialogResult.resultingURIString;
+
+      // jcs without .clone() this always set destLocalFile void
+      destLocalFile = dialogResult.resultingLocalFile.clone();  // this is B.sci
       // update the new URL for the webshell unless we are saving a copy
       if (!aSaveCopy)
         doUpdateURI = true;
@@ -2398,7 +2400,8 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
       // if somehow we didn't get a local file but we did get a uri, 
       // attempt to create the localfile if it's a "file" url
       var docURI;
-      if (!destLocalFile)
+
+      if (!Boolean(destLocalFile) )
       {
         ioService = msiGetIOService();
         docURI = ioService.newURI(urlstring, editor.documentCharacterSet, null);
@@ -2424,11 +2427,15 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   }
 
   // now get the leaf name
-  if (replacing)
-  {
-    currentSciFile.initWithPath( currentSciFilePath );  // now = A.sci
-    destLocalFile = currentSciFile;       // clone???
-  }
+
+  // jcs What is this supposed to do? If "replacing" just means that the
+  // jcs save target already exists
+  // jcs if (replacing)
+  // jcs {
+  // jcs   currentSciFile.initWithPath( currentSciFilePath );  // now = A.sci
+  // jcs   destLocalFile = currentSciFile;       // clone???
+  // jcs }
+
   leafname = destLocalFile.leafName;
   if (leafname.lastIndexOf(".") > 0)
   {
@@ -2501,9 +2508,19 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
       editorElement.isShellFile = false;
       if (doUpdateURI)
       {
-        workingDir.moveTo(null, leafname+"_work"); 
+
+        var newWorkingDir = workingDir.clone();
+        newWorkingDir = newWorkingDir.parent;
+        newWorkingDir.append(leafname+"_work");
+
+        if (newWorkingDir.exists())
+           newWorkingDir.remove(true); // recursive delete
+        
+
+        workingDir.moveTo(null, leafname+"_work");
+         
         var newMainfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-	newMainfile.initWithPath(destLocalFile.path+"_work");
+        newMainfile.initWithPath(destLocalFile.path.replace(".sci","")+"_work");
         newMainfile.append("main.xhtml");
         //Create a new uri from nsILocalFile
         var newURI = msiGetFileProtocolHandler().newFileURI(newMainfile);
@@ -2998,11 +3015,11 @@ var msiOpenRemoteCommand =
 
   doCommand: function(aCommand)
   {
-	  /* The last parameter is the current browser window.
-	     Use 0 and the default checkbox will be to load into an editor
-	     and loading into existing browser option is removed
-	   */
-	  window.openDialog( "chrome://prince/content/openLocation.xul", "_blank", "chrome,modal,titlebar", 0);
+    /* The last parameter is the current browser window.
+       Use 0 and the default checkbox will be to load into an editor
+       and loading into existing browser option is removed
+     */
+    window.openDialog( "chrome://prince/content/openLocation.xul", "_blank", "chrome,modal,titlebar", 0);
     window.content.focus();
   }
 };
@@ -3026,13 +3043,13 @@ var msiPreviewCommand =
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement();
-	  // Don't continue if user canceled during prompt for saving
+    // Don't continue if user canceled during prompt for saving
     // DocumentHasBeenSaved will test if we have a URL and suppress "Don't Save" button if not
     if (!CheckAndSaveDocument("cmd_preview", DocumentHasBeenSaved()))
-	    return;
+      return;
 
     // Check if we saved again just in case?
-	  if (DocumentHasBeenSaved())
+    if (DocumentHasBeenSaved())
     {
       var browser;
       try {
@@ -3091,7 +3108,7 @@ var msiSendPageCommand =
     // Don't continue if user canceled during prompt for saving
     // DocumentHasBeenSaved will test if we have a URL and suppress "Don't Save" button if not
     if (!CheckAndSaveDocument("cmd_editSendPage", DocumentHasBeenSaved()))
-	    return;
+      return;
 
     // Check if we saved again just in case?
     if (DocumentHasBeenSaved())
@@ -4394,7 +4411,7 @@ function msiInsertHorizontalSpace(dialogData, editorElement)
   {
     spaceStr += "customSpace\" dim=\"";
     spaceStr += String(dialogData.customSpaceData.fixedData.size) + dialogData.customSpaceData.fixedData.units;
-	spaceStr += "\" atEnd=\"" + (dialogData.customSpaceData.typesetChoice=="always"?"true":"false");
+  spaceStr += "\" atEnd=\"" + (dialogData.customSpaceData.typesetChoice=="always"?"true":"false");
   }
   else if (dialogData.customSpaceData.customType == "stretchy")
   {
@@ -4502,7 +4519,7 @@ function msiInsertVerticalSpace(dialogData, editorElement)
   {
     spaceStr += "customSpace\" dim=\"";
     spaceStr += String(dialogData.customSpaceData.sizeData.size) + dialogData.customSpaceData.sizeData.units;
-	spaceStr += "\" atEnd=\"" + (dialogData.customSpaceData.typesetChoice=="always"?"true":"false");
+  spaceStr += "\" atEnd=\"" + (dialogData.customSpaceData.typesetChoice=="always"?"true":"false");
   }
   if (dialogData.spaceType in contentFromSpaceType)
     spaceStr += "\">" + contentFromSpaceType[dialogData.spaceType] + "</vspace>";
@@ -5519,14 +5536,14 @@ function msiDocumentInfo(editorElement)
 
     var tcidataReplaceRegExp = /(tcidata[\s]*\{)((?:(?:\\\})|(?:[^\}]))+)\}/i;
 //	  var fullNameReplaceSyntax = /meta[\s]+.*name=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
-	  var fullContentsReplaceSyntax = /(meta[\s]+.*content=\")((?:(?:\\\")|(?:[^\"]))+)\"/i;
+    var fullContentsReplaceSyntax = /(meta[\s]+.*content=\")((?:(?:\\\")|(?:[^\"]))+)\"/i;
 //	  var altfullNameReplaceSyntax = /meta[\s]+.*name=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
-	  var altfullContentsReplaceSyntax = /(meta[\s]+.*content=\')((?:(?:\\\')|(?:[^\']))+)\'/i;
+    var altfullContentsReplaceSyntax = /(meta[\s]+.*content=\')((?:(?:\\\')|(?:[^\']))+)\'/i;
 //	  var fullLinkReplaceSyntax = /link[\s]+.*rel=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
-	  var fullLinkRefReplaceSyntax = /(link[\s]+.*href=\")((?:(?:\\\")|(?:[^\"]))+)\"/i;
+    var fullLinkRefReplaceSyntax = /(link[\s]+.*href=\")((?:(?:\\\")|(?:[^\"]))+)\"/i;
 //	  var altfullLinkReplaceSyntax = /link[\s]+.*rel=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
-	  var altfullLinkRefReplaceSyntax = /(link[\s]+.*href=\')((?:(?:\\\')|(?:[^\']))+)\'/i;
-	  var keyValueReplaceSyntax = /((?:[\S]+)=)(.*)/;
+    var altfullLinkRefReplaceSyntax = /(link[\s]+.*href=\')((?:(?:\\\')|(?:[^\']))+)\'/i;
+    var keyValueReplaceSyntax = /((?:[\S]+)=)(.*)/;
 
     dump("In reviseComment, comment data is [" + theData + "].\n");
     var tciData = theData.match(tcidataReplaceRegExp);
@@ -5918,16 +5935,16 @@ function msiDocumentInfo(editorElement)
   };
 
   this.tcidataRegExp = /tcidata[\s]*\{((?:(?:\\\})|(?:[^\}]))+)\}/i;
-	this.fullNameSyntax = /meta[\s]+.*name=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
-	this.fullContentsSyntax = /meta[\s]+.*content=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
-	this.altfullNameSyntax = /meta[\s]+.*name=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
-	this.altfullContentsSyntax = /meta[\s]+.*content=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
-	this.fullLinkSyntax = /link[\s]+.*rel=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
-	this.fullLinkRefSyntax = /link[\s]+.*href=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
-	this.altfullLinkSyntax = /link[\s]+.*rel=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
-	this.altfullLinkRefSyntax = /link[\s]+.*href=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
-	this.keyValueSyntax = /([\S]+)=(.*)/;
-	this.keyValueValueSyntax = /(?:[\S]+)=(.*)/;
+  this.fullNameSyntax = /meta[\s]+.*name=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
+  this.fullContentsSyntax = /meta[\s]+.*content=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
+  this.altfullNameSyntax = /meta[\s]+.*name=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
+  this.altfullContentsSyntax = /meta[\s]+.*content=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
+  this.fullLinkSyntax = /link[\s]+.*rel=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
+  this.fullLinkRefSyntax = /link[\s]+.*href=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
+  this.altfullLinkSyntax = /link[\s]+.*rel=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
+  this.altfullLinkRefSyntax = /link[\s]+.*href=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
+  this.keyValueSyntax = /([\S]+)=(.*)/;
+  this.keyValueValueSyntax = /(?:[\S]+)=(.*)/;
 
 }
 
@@ -7631,9 +7648,9 @@ function callColorDialog()
   {
     AlertWithTitle("Error", "No editor in otfont.OnAccept!");
   }
-	var theWindow = window.opener;
-	if (!theWindow || !("msiEditorSetTextProperty" in theWindow))
-	  theWindow = msiGetTopLevelWindow();
+  var theWindow = window.opener;
+  if (!theWindow || !("msiEditorSetTextProperty" in theWindow))
+    theWindow = msiGetTopLevelWindow();
   theWindow.msiRequirePackage(editorElement, "xcolor", null);
   theWindow.msiEditorSetTextProperty(editorElement, "fontcolor", "color", colorObj.TextColor);
   editorElement.contentWindow.focus();
