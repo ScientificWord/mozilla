@@ -78,7 +78,6 @@ prince.jar:
 * content/RealTimeSpell.js       (RealTimeSpell.js)
   content/fragmentname.xul           (dialogs/FragmentName.xul)
   content/fragmentname.js           (dialogs/FragmentName.js)
-* content/EdDialogCommon.js       (dialogs/EdDialogCommon.js)
 * content/latexcontentsline.js      (dialogs/latexcontentsline.js)
 * content/latexcontentsline.xul     (dialogs/latexcontentsline.xul)
 * content/latexheaders.js       (dialogs/latexheaders.js)
