@@ -61,10 +61,15 @@ function startUp()
   
   var fmSizeFieldList = [gDialog.widthInput, gDialog.heightInput];
   frameUnitHandler.addEditFieldList(fmSizeFieldList);
-  var saveUnit = frameUnitHandler.setCurrentUnit("px");  // frameUnitHander defined in overlay
-  setContentSize((!gDialog.autoHeight.checked)?200:frameUnitHandler.getValueAs(gDialog.heightInput.value,"px"),
-    (!gDialog.autoWidth.checked)?300:frameUnitHandler.getValueAs(gDialog.widthInput.value,"px"));
+  var saveUnit = frameUnitHandler.setCurrentUnit("mm");  // frameUnitHander defined in overlay
+  setContentSize((!gDialog.autoHeight.checked)?50:frameUnitHandler.getValueAs(gDialog.heightInput.value,"mm"),
+    (!gDialog.autoWidth.checked)?75:frameUnitHandler.getValueAs(gDialog.widthInput.value,"mm"));
   frameUnitHandler.setCurrentUnit(saveUnit);
+  for (var i = 0; i<gDialog.frameUnitMenulist.itemCount; i++)
+  {
+    if (gDialog.frameUnitMenulist.getItemAtIndex(i).value == saveUnit) break;
+  }
+  if (i<gDialog.frameUnitMenulist.itemCount) gDialog.frameUnitMenulist.selectedItem = i; 
 }
 
 function onOK() {
