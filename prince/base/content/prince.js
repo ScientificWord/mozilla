@@ -554,14 +554,18 @@ function exportTeX()
    fp.defaultExtension = ".tex";
    try 
    {
-     fp.show();
+     var dialogResult = fp.show();
+     if (dialogResult != msIFilePicker.returnCancel)
+       if (!documentAsTeXFile(editor.document, "latex.xsl", fp.file ))
+         AlertWithTitle("XSLT Error", "TeX file not created. Click on View/XSLT Log to see the log file");
+
    }
    catch (ex) 
    {
      dump("filePicker threw an exception\n");
    }
-   if (!documentAsTeXFile(editor.document, "latex.xsl", fp.file ))
-     AlertWithTitle("XSLT Error", "TeX file not created. Click on View/XSLT Log to see the log file");
+
+   
 }
 
 /* ==== */
