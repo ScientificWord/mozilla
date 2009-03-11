@@ -156,7 +156,6 @@ comm.jar:
       content/editor/images/sick.gif                           (composer/content/images/sick.gif)
       content/editor/images/s_frown.gif                        (composer/content/images/s_frown.gif)
       content/editor/images/s_wink.gif                         (composer/content/images/s_wink.gif)
-      content/editor/EdDialogCommon.js                         (dialogs/content/EdDialogCommon.js) 
       content/editor/EdLinkProps.xul                           (dialogs/content/EdLinkProps.xul) 
       content/editor/EdLinkProps.js                            (dialogs/content/EdLinkProps.js) 
       content/editor/EdLinkChecker.xul                         (dialogs/content/EdLinkChecker.xul) 
