@@ -25,6 +25,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiFrameOverlay.js" />
   <script type="application/x-javascript" src="chrome://prince/content/Frame.js"/>
   <vbox id="units" />
+  <spacer/>
   <tabbox id="frametabbox">
     <tabs flex="1">
       <tab label="Size &amp; Placement"/>
@@ -32,72 +33,7 @@
     </tabs>
     <tabpanels>
       <tabpanel orient="vertical">
-        <groupbox>
-          <caption label="Size"/>
-          <vbox>
-            <!--hbox>
-              <label id   = "frameUnitLabel"
-                control   = "frameUnitMenulist"
-                accesskey = "unitLabel.accesskey;"
-                value     = "Units" />
-              <menulist id = "frameUnitMenulist"
-                width=".75in"
-                oncommand  = "frameUnitHandler.setCurrentUnit(this.value);" >
-                <menupopup id = "unitList">
-                  <menuitem value="in" label="in" width=".75in"/>
-                  <menuitem value="cm" label="cm" />
-                  <menuitem value="pt" label="pt" />
-                  <menuitem value="mm" label="mm"/>
-                  <menuitem value="pc" label="pica"/>
-                  <menuitem value="px" label="pixel"/>
-                </menupopup>
-              </menulist>
-              <spacer flex="1"/>
-            </hbox -->
-            <hbox>
-              <grid>
-                <columns>
-                  <column flex="1" width=".75in"/>
-                  <column width="12px"/>
-                  <column flex="1" width=".75in"/>
-                  <column flex="1"/>
-                </columns>
-                <rows>
-                  <row>
-                    <label value="Width"/>
-                    <label value="Auto" control="autoWidth"/>
-                    <label value="Height"/>
-                    <label value="Auto" control="autoHeight"/>
-                  </row>
-                  <row>
-                    <textbox
-                      id        = "frameWidthInput"
-                      type      = "number"
-                      onkeypress= ""
-                      onchange  = ""/>
-                    <checkbox id="autoWidth" oncommand ="document.getElementById('frameWidthInput').setAttribute('disabled',this.checked);"/>
-                    <textbox
-                      id        = "frameHeightInput"
-                      type      = "number"
-                      onkeypress= ""
-                      onchange  = ""/>
-                    <checkbox id="autoHeight" oncommand ="document.getElementById('frameHeightInput').setAttribute('disabled',this.checked);"/>
-                  </row>
-                </rows>
-              </grid>
-            </hbox>
-            <hbox align="center">
-              <label value="Rotate contents"/>
-              <menulist id = "rotationList">
-                <menupopup id = "rotationsList">
-                  <menuitem value="rot0" label="None"/>
-                  <menuitem value="rot90" label="90 degrees CW" />
-                  <menuitem value="rot270" label="90 degrees CCW"/>
-                </menupopup>
-              </menulist>
-            </hbox>
-          </vbox>
-        </groupbox>
+        <vbox id="msiFrameSize"/>
         <vbox id="msiPlacement"/>
       </tabpanel>
       <vbox id="msiFrame"/>

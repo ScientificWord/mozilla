@@ -3,13 +3,13 @@
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/content/Frame.css" type="text/css"?>
-<!DOCTYPE dialog SYSTEM "chrome://editor/locale/EditorImageProperties.dtd">
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/Frame.dtd">
  
 <overlay id="msiFrameOverlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
       xmlns:html="http://www.w3.org/1999/xhtml">
   <script type="application/x-javascript" src="chrome://prince/content/msiFrameOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/EdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <tab id="msiFrameTab" label="Frame"/>
   <tab id="msiPlacementTab" label="Placement"/>
   <vbox id="units" >
@@ -17,19 +17,19 @@
       control   = "frameUnitMenulist"
       accesskey = "&unitLabel.accesskey;"
       value     = "&unitLabel.label;" />
-    <menulist id = "frameUnitMenulist"
+    <hbox> <menulist id = "frameUnitMenulist"
       width=".75in"
       oncommand  = "frameUnitHandler.setCurrentUnit(this.value);" >
       <menupopup id = "unitList" selectedIndex="2" persist="selectedIndex">
-        <menuitem value="in" label="in"/>
+        <menuitem value="in" label="&inch;"/>
         <!--menuitem value="pct" label="percent"/  -->
-        <menuitem value="cm" label="cm"/>
-        <menuitem value="pt" label="pt" />
-        <menuitem value="mm" label="mm"/>
-        <menuitem value="pc" label="pica"/>
-        <menuitem value="px" label="pixel"/>
+        <menuitem value="cm" label="&centimeter;"/>
+        <menuitem value="pt" label="&point;" selected="true" />
+        <menuitem value="mm" label="&millimeter;"/>
+        <menuitem value="pc" label="&pica;"/>
+        <menuitem value="px" label="&pixel;"/>
       </menupopup>
-    </menulist>
+    </menulist><spacer flex = "1"/></hbox>
     <spacer flex="1"/>
   </vbox>
   <vbox id="msiFrame" align="start">
@@ -90,7 +90,7 @@
           <hbox>
             <textbox
               id        = "marginLeftInput"
-              min       = "-1000"
+              min       = "0"
               observes  = "lengthwithunits"
               onkeypress= "handleChar(event, this.id);"
               onchange  = "update(this.id);"/>
@@ -98,7 +98,7 @@
           </hbox>
           <textbox
             id        = "marginRightInput"
-            min       = "-1000"
+            min       = "0"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
             onchange  = "update(this.id);"/>
@@ -200,6 +200,56 @@
       </rows>
     </grid>    
   </vbox>
+  <vbox id = "msiFrameSize">
+    <groupbox>
+      <caption label="Size"/>
+      <vbox>
+        <hbox>
+          <grid>
+            <columns>
+              <column flex="1" width=".75in"/>
+              <column width="12px"/>
+              <column flex="1" width=".75in"/>
+              <column flex="1"/>
+            </columns>
+            <rows>
+              <row>
+                <label value="Width"/>
+                <label value="Auto" control="autoWidth"/>
+                <label value="Height"/>
+                <label value="Auto" control="autoHeight"/>
+              </row>
+              <row>
+                <textbox
+                  id        = "frameWidthInput"
+                  type      = "number"
+                  onkeypress= ""
+                  onchange  = "frameWidthChanged(this);"/>
+                <checkbox id="autoWidth" oncommand ="document.getElementById('frameWidthInput').setAttribute('disabled',this.checked);"/>
+                <textbox
+                  id        = "frameHeightInput"
+                  type      = "number"
+                  onkeypress= ""
+                  onchange  = "frameHeightChanged(this);"/>
+                <checkbox id="autoHeight" oncommand ="document.getElementById('frameHeightInput').setAttribute('disabled',this.checked);"/>
+              </row>
+            </rows>
+          </grid>
+        </hbox>
+        <hbox align="center">
+          <label value="Rotate contents"/>
+          <menulist id = "rotationList">
+            <menupopup id = "rotationsList">
+              <menuitem value="rot0" label="None"/>
+              <menuitem value="rot90" label="90 degrees CW" />
+              <menuitem value="rot270" label="90 degrees CCW"/>
+            </menupopup>
+          </menulist>
+        </hbox>
+      </vbox>
+    </groupbox>
+  </vbox>
+
   <vbox id="msiPlacement">
     <spacer flex="1"/>
     <groupbox >
@@ -207,13 +257,13 @@
       <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);">
       <hbox flex="1">
         <vbox>
-          <radio id="inlineRadio" label="In line" radioGroup="placementRadioGroup"/>
+          <radio id="inline" label="In line" radioGroup="placementRadioGroup"/>
         </vbox>
         <vbox>
-          <radio id="displayedRadio" label="Displayed" radioGroup="placementRadioGroup"/>
+          <radio id="display" label="Displayed" radioGroup="placementRadioGroup"/>
         </vbox>
         <vbox>
-          <radio id="floatingRadio" label="Floating" radioGroup="placementRadioGroup" oncommand="enableHere(this);"/>
+          <radio id="float" label="Floating" radioGroup="placementRadioGroup" oncommand="enableHere(this);"/>
           <vbox>
             <checkbox id="placeForceHereCheck" label="Force here" observes="floatingPlacement"/>
             <checkbox id="placeHereCheck" label="Here" observes="floatingPlacement"/>
@@ -245,4 +295,5 @@
       <broadcaster id="notedata" width="60" color="#000000" bwidth="2" bstyle="solid" pwidth="1"/>        
     </broadcasterset>
   </vbox>
+
 </overlay>
