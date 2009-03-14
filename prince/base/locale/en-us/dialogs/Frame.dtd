@@ -7,35 +7,39 @@
 <!ENTITY  inline					"In line">
 <!ENTITY  display					"Displayed">
 <!ENTITY  outer						"Outer margin">
-<!ENTITY  alignment.label			"Text alignment">
-<!ENTITY  innerAlign				"Inner side">
-<!ENTITY  centerAlign				"Center">
-<!ENTITY  justAlign					"Justified">
-<!ENTITY  outerAlign			  	"Outer side">
-<!ENTITY  borderstyle.label			"Border style">
+<!ENTITY  alignment.label	"Text alignment">
+<!ENTITY  innerAlign			"Inner side">
+<!ENTITY  centerAlign			"Center">
+<!ENTITY  justAlign				"Justified">
+<!ENTITY  outerAlign			"Outer side">
+<!ENTITY  borderstyle.label	"Border style">
 <!ENTITY  none						"None">
 <!ENTITY  solid						"Solid">
 <!ENTITY  dashed					"Dashed">
 <!ENTITY  width						"Width">
 <!ENTITY  height					"Height">
-<!ENTITY  overhang					"Overhang">
+<!ENTITY  overhang				"Overhang">
 <!ENTITY  margin					"Margin">  
 <!ENTITY  side						"Side">
-<!ENTITY  topAndBottom				"Top and bottom">
+<!ENTITY  topAndBottom		"Top and bottom">
 <!ENTITY  padding					"Padding">
 <!ENTITY  border					"Border width">
-<!ENTITY  solid					    "Solid">
+<!ENTITY  solid					  "Solid">
 <!ENTITY  dotted					"Dotted">
 <!ENTITY  dashed					"Dashed">
-<!ENTITY  rotation					"Rotation">
+<!ENTITY  rotation				"Rotation">
 <!ENTITY  rot0						"None">
 <!ENTITY  rot270					"90 clockwise">
 <!ENTITY  rot90						"90 CCW">
 <!ENTITY  color						"Border color">
 <!ENTITY  units						"Units">
-<!ENTITY  inch						"inch">
-<!ENTITY  centimeter				"centimeter">
-<!ENTITY  point						"point">
-<!ENTITY  millimeter				"millimeter">
-<!ENTITY  position.label			"Position">
+<!ENTITY  inch						"in">
+<!ENTITY  centimeter			"cm">
+<!ENTITY  point						"pt">
+<!ENTITY  millimeter			"mm">
+<!ENTITY  pixel			    	"pixel">
+<!ENTITY  pica 			    	"pica">
+<!ENTITY  position.label	"Position">
 <!ENTITY  units						"Units">
+<!ENTITY unitLabel.accesskey "U">
+<!ENTITY unitLabel.label "Units">
