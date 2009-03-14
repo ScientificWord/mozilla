@@ -1,102 +1,149 @@
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 
 var frameUnitHandler = new UnitHandler();
-var sides = ["Top", "Right", "Bottom", "Left"];
+var sides = ["Top", "Right", "Bottom", "Left"]; // do not localize -- visible to code only
+var gDialog={};
 var currentFrame;
 var scale = 0.25;
 var scaledWidth = 50; 
 var scaledHeight = 40;
 var position = 0;  // left = 1, right = 2, neither = 0
+var unit;
 
 
 
 
-function initFrameTab(gDialog, element, newElement)
+function initFrameTab(dialog, element, newElement)
 {
   var editorElement = msiGetParentEditorElementForDialog(window);
   var editor = msiGetEditor(editorElement);
   if (!editor) {
     window.close();
-    return;
+    return null;
   }
+  // For convenience, map dialog elements to an object
   currentFrame = element;
-  gDialog.unitList      = document.getElementById( "unitList");
-  gDialog.marginInput = {left:   document.getElementById( "marginLeftInput"),
-                         right:  document.getElementById( "marginRightInput"),
-                         top:    document.getElementById( "marginTopInput"),
-                         bottom: document.getElementById( "marginBottomInput")};
-  gDialog.borderInput = {left:   document.getElementById( "borderLeftInput"),
-                         right:  document.getElementById( "borderRightInput"),
-                         top:    document.getElementById( "borderTopInput"),
-                         bottom: document.getElementById( "borderBottomInput")};
-  gDialog.paddingInput ={left:   document.getElementById( "paddingLeftInput"),
-                         right:  document.getElementById( "paddingRightInput"),
-                         top:    document.getElementById( "paddingTopInput"),
-                         bottom: document.getElementById( "paddingBottomInput")};
-  gDialog.cropInput   = {left:   document.getElementById( "cropLeftInput"),
-                         right:  document.getElementById( "cropRightInput"),
-                         top:    document.getElementById( "cropTopInput"),
-                         bottom: document.getElementById( "cropBottomInput")};
-  gDialog.colorWell   = document.getElementById("colorWell");
-  gDialog.placementRadioGroup   = document.getElementById("placementRadioGroup");
-  gDialog.placeForceHereCheck        = document.getElementById("placeForceHereCheck");
-  gDialog.placeHereCheck        = document.getElementById("placeHereCheck");
-  gDialog.placeFloatsCheck      = document.getElementById("placeFloatsCheck");
-  gDialog.placeTopCheck         = document.getElementById("placeTopCheck");
-  gDialog.placeBottomCheck      = document.getElementById("placeBottomCheck");
-  gDialog.OkButton          = document.documentElement.getButton("accept");
+  dialog.unitList             = document.getElementById("frameUnitMenulist");
+  dialog.widthInput           = document.getElementById("frameWidthInput");
+  dialog.heightInput          = document.getElementById("frameHeightInput");
+  dialog.autoHeightCheck      = document.getElementById("autoHeight");
+  dialog.autoWidthCheck       = document.getElementById("autoWidth");
+  dialog.frameUnitMenulist    = document.getElementById("frameUnitMenulist");
+  dialog.marginInput = {left:   document.getElementById("marginLeftInput"),
+                         right: document.getElementById("marginRightInput"),
+                         top:   document.getElementById("marginTopInput"),
+                         bottom:document.getElementById("marginBottomInput")};
+  dialog.borderInput = {left:   document.getElementById("borderLeftInput"),
+                         right: document.getElementById("borderRightInput"),
+                         top:   document.getElementById("borderTopInput"),
+                         bottom:document.getElementById("borderBottomInput")};
+  dialog.paddingInput ={left:   document.getElementById("paddingLeftInput"),
+                         right: document.getElementById("paddingRightInput"),
+                         top:   document.getElementById("paddingTopInput"),
+                         bottom:document.getElementById("paddingBottomInput")};
+  dialog.cropInput   = {left:   document.getElementById("cropLeftInput"),
+                         right: document.getElementById("cropRightInput"),
+                         top:   document.getElementById("cropTopInput"),
+                         bottom:document.getElementById("cropBottomInput")};
+  dialog.colorWell            = document.getElementById("colorWell");
+  dialog.placementRadioGroup  = document.getElementById("placementRadioGroup");
+  dialog.placeForceHereCheck  = document.getElementById("placeForceHereCheck");
+  dialog.placeHereCheck       = document.getElementById("placeHereCheck");
+  dialog.placeFloatsCheck     = document.getElementById("placeFloatsCheck");
+  dialog.placeTopCheck        = document.getElementById("placeTopCheck");
+  dialog.placeBottomCheck     = document.getElementById("placeBottomCheck");
+  dialog.herePlacementRadioGroup  = document.getElementById("herePlacementRadioGroup");
+  dialog.OkButton             = document.documentElement.getButton("accept");
   var fieldList = [];
   var attrs = ["margin","border","padding","crop"];
   for (var side in sides)
   {
     for (var attr in attrs)
     {
-      fieldList.push(gDialog[attrs[attr]+"Input"][sides[side].toLowerCase()]);
+      fieldList.push(dialog[attrs[attr]+"Input"][sides[side].toLowerCase()]);
     }
   }
+  fieldList.push(dialog.heightInput);
+  fieldList.push(dialog.widthInput);
   frameUnitHandler.setEditFieldList(fieldList);
   var unit;
-  initUnitList(gDialog.unitList);
+//  initUnitList(dialog.unitList);
+// The defaults for the document are set by the XUL document, modified by persist attributes. If there is
+// no pre-existing frame object, the dialog is set to go.
   if (!newElement)
+  {   // we need to initialize the dialog from the frame element
     unit =  element.getAttribute("units");
-  else
-    unit = gDialog.unitList.value;
-  if (!unit) unit = "pt";
-  frameUnitHandler.initCurrentUnit(unit);
-  if (gDialog.unitList.value) frameUnitHandler.setCurrentUnit(gDialog.unitList.value);
-  else frameUnitHandler.setCurrentUnit("pt")
-  var color = getColorWell("colorWell");
-  if (!newElement)
-    color = element.getAttribute("border-color");
-  if (color.length > 0)
-  { 
-    setStyleAttribute("frame","border-color",color);
-  }
-                                       
-  if (element && element.localName == "msiframe")
-  {
-    currentFrame = element;
-    //read current units
-    var values = [0,0,0,0];
-    if (!newElement)
+    var i;
+    var values;
+    for (i = 0; i < dialog.unitList.itemCount; i++)
+      if (dialog.unitList.getItemAtIndex(i).value == unit)
+      {
+        dialog.unitList.selectedIndex = i;
+        break;
+      }
+    var width = 0;
+    if (element.hasAttribute("width")) width = element.getAttribute("width");
+    if (Number(width) > 0)
     {
-      var i;
-      if (element.hasAttribute("margin"))
-        { values = parseLengths(element.getAttribute("margin"));}
-      for (i = 0; i<4; i++)
-        { gDialog.marginInput[sides[i].toLowerCase()].value = values[i];}
-      values = [0,0,0,0];
-      if (element.hasAttribute("border-width"))
-        { values = parseLengths(element.getAttribute("border-width"));}
-      for (i = 0; i<4; i++)
-        { gDialog.borderInput[sides[i].toLowerCase()].value = values[i];}
-      values = [0,0,0,0];
-      if (element.hasAttribute("padding"))
-        { values = parseLengths(element.getAttribute("padding"));}
-      for (i = 0; i<4; i++)
-        { gDialog.paddingInput[sides[i].toLowerCase()].value = values[i];}
+      dialog.widthInput.value = width;
+      dialog.autoWidthCheck.checked = false;
     }
+    else dialog.autoWidthCheck.checked = true;
+    var height = 0;
+    if (element.hasAttribute("height")) height = element.getAttribute("height");
+    if (height > 0)
+    {
+      dialog.heightInput.value = height;
+      dialog.autoHeightCheck.checked = false;
+    }
+    else dialog.autoHeightCheck.checked = true;
+
+    if (element.hasAttribute("margin"))
+      { values = parseLengths(element.getAttribute("margin"));}
+    for (i = 0; i<4; i++)
+      { dialog.marginInput[sides[i].toLowerCase()].value = values[i];}
+    values = [0,0,0,0];
+    if (element.hasAttribute("border"))
+      { values = parseLengths(element.getAttribute("border"));}
+    for (i = 0; i<4; i++)
+      { dialog.borderInput[sides[i].toLowerCase()].value = values[i];}
+    values = [0,0,0,0];
+    if (element.hasAttribute("padding"))
+      { values = parseLengths(element.getAttribute("padding"));}
+    for (i = 0; i<4; i++)
+      { dialog.paddingInput[sides[i].toLowerCase()].value = values[i];}
+    if (element.hasAttribute("crop"))
+      { values = parseLengths(element.getAttribute("crop"));}
+    for (i = 0; i<4; i++)
+      { dialog.cropInput[sides[i].toLowerCase()].value = values[i];}
+    var placeLocation = element.getAttribute("placeLocation");
+    dialog.placeForceHereCheck.checked = /H/.test(placeLocation);
+    dialog.placeHereCheck.checked = /h/.test(placeLocation);
+    dialog.placeFloatsCheck.checked = /p/.test(placeLocation);
+    dialog.placeTopCheck.checked = /t/.test(placeLocation);
+    dialog.placeBottomCheck.checked = /b/.test(placeLocation);
+
+    dialog.herePlacementRadioGroup.value = element.getAttribute("placement");
+    var pos = element.getAttribute("pos");
+    dialog.placementRadioGroup.selectedIndex = (pos == "inline")?0:(pos == "display")?1:(pos == "float")?2:-1;
+
+    // TODO: color
   }
+// Now initialize the UI, including the diagram
+  unit = "pt"; //dialog.unitList.selectedItem.value;
+  frameUnitHandler.initCurrentUnit(unit);
+  var placement = 0;
+  if (/left|inside/.test(placeLocation)) placement=1;
+  else if (/right|outside/.test(placeLocation)) placement = 2;
+  gDialog = dialog;
+  setAlignment(placement);
+  enableHere();
+  enableFloating();
+  updateDiagram("margin");
+  updateDiagram("border");
+  updateDiagram("padding");
+  return dialog;
+  
 }
 
 function setNewUnit(element)
@@ -165,7 +212,7 @@ function extendInput( anId )
 
 function toPixels( x )
 {
-  return Math.round(frameUnitHandler.getValueAs(x,"px")*scale);
+  return Math.round(.4999 + frameUnitHandler.getValueAs(x,"px")*scale);
 }
 
 var color;
@@ -207,14 +254,14 @@ function getCompositeMeasurement(attribute, unit, showUnit)
       if (values[0] == values[1]) {values.splice(1,1);}
     }
   }
-  if (unit == "px")
-  {
-    for (i=0; i<values.length; i++)
-    {
-      dump(i + "\n");
-      values[i] = Math.round(values[i]);
-    }
-  }
+//  if (unit == "px")
+//  {
+//    for (i=0; i<values.length; i++)
+//    {
+//      dump(i + "\n");
+//      values[i] = Math.round(values[i]);
+//    }
+//  }
   var val;
   if (showUnit) {val = values.join(unit+" ")+unit;}
   else { val = values.join(" ");}
@@ -242,10 +289,10 @@ function updateDiagram( attribute ) //attribute = margin, border, padding;
   {
     var bgcolor = gDialog.colorWell.getAttribute("style");
     var arr = bgcolor.match(/background-color\s*:([a-zA-Z\ \,0-9\(\)]+)\s*;\s*/,"");
-    removeStyleAttributeOnNode(document.getElementById("frame"), "border");
-    setStyleAttribute("frame", "border-width", val );
-    setStyleAttribute("frame", "border-color", arr[1]);
-    setStyleAttribute("frame", "border-style", "solid" );
+    removeStyleAttributeFamilyOnNode(document.getElementById("frame"), "border");
+    var style = document.getElementById("frame").getAttribute("style");
+    style += " border-width: "+val+"; border-color: " + arr[1]+"; border-style: solid;";
+    document.getElementById("frame").setAttribute("style", style);
   }
   else
     { setStyleAttribute("frame", attribute, val );}
@@ -259,18 +306,21 @@ function updateDiagram( attribute ) //attribute = margin, border, padding;
   {
     case 1: document.getElementById("leftspacer").setAttribute("width", Number(60+ Math.min(toPixels(gDialog.marginInput.left.value),0)) + "px"); 
             document.getElementById("leftpage").setAttribute("width", "0px");    
-            document.getElementById("rightpage").setAttribute("width", Math.min(150,150 - scaledWidth - (hmargin + hborder + hpadding)) + "px");  
-            document.getElementById("rightspace").setAttribute("width", Math.max(0, - scaledWidth - (hmargin + hborder + hpadding)) + "px");  
+            document.getElementById("frame").setAttribute("width", scaledWidth+hborder+"px");
+            document.getElementById("rightpage").setAttribute("width", Math.min(150,150 - scaledWidth - (hmargin+hborder)) + "px");  
+            document.getElementById("rightspace").setAttribute("width", Math.max(0, - scaledWidth - (hmargin+hborder)) + "px");  
             document.getElementById("leftspace").setAttribute("width", "0px");
             break;
-    case 2: document.getElementById("leftspacer").setAttribute("width", Number(60 + Math.min(0,150 - scaledWidth - (hmargin + hborder + hpadding))) + "px"); 
-            document.getElementById("leftpage").setAttribute("width", Math.min(150,150 - scaledWidth - (hmargin + hborder + hpadding)) + "px");    
+    case 2: document.getElementById("leftspacer").setAttribute("width", Number(60 + Math.min(0,150 - scaledWidth - (hmargin + hborder))) + "px"); 
+            document.getElementById("leftpage").setAttribute("width", Math.min(150,150 - scaledWidth - (hmargin + hborder)) + "px");    
+            document.getElementById("frame").setAttribute("width", scaledWidth+hborder +"px");
             document.getElementById("rightpage").setAttribute("width", "0px");  
             document.getElementById("rightspace").setAttribute("width", "0px");
-            document.getElementById("leftspace").setAttribute("width", Math.max(0, - scaledWidth - (hmargin + hborder + hpadding)) + "px");  
+            document.getElementById("leftspace").setAttribute("width", Math.max(0, - scaledWidth - (hmargin + hborder)) + "px");  
             break;
-    default: document.getElementById("leftspacer").setAttribute("width", Number(135 - (scaledWidth + hborder + hpadding)/2) + "px");
+    default: document.getElementById("leftspacer").setAttribute("width", Number(135 - (scaledWidth + hborder)/2) + "px");
             document.getElementById("leftpage").setAttribute("width", "0px");    
+            document.getElementById("frame").setAttribute("width", scaledWidth+"px");
             document.getElementById("rightpage").setAttribute("width", "0px");  
             document.getElementById("rightspace").setAttribute("width", "0px");
             document.getElementById("leftspace").setAttribute("width", "0px");
@@ -283,28 +333,24 @@ function updateDiagram( attribute ) //attribute = margin, border, padding;
 
 function setStyleAttributeOnNode( node, att, value)
 {
-  dump("setStyleAttributeOnNode( "+node.id+", "+att+", "+value+" );\n");
   var style="";
+  removeStyleAttributeFamilyOnNode( node, att);
   if (node.hasAttribute("style")) style = node.getAttribute("style");
   dump("original style is '"+style+"'\n");
   style.replace("null","");
-  var re = new RegExp(att + ":[^;]*;","");
-  if (re.test(style))
-    style = style.replace(re, att + ": " +value+"; ");
-  else
-    style = style + " " + att +": " + value + "; ";
+  style = style + " " + att +": " + value + "; ";
   dump("Setting style of node to "+style+"\n");
   node.setAttribute("style",style);
 }
 
-function removeStyleAttributeOnNode( node, att)
+function removeStyleAttributeFamilyOnNode( node, att)
 {
-  dump("removeStyleAttributeOnNode( "+node.id+", "+att+");\n");
+  dump("removeStyleAttributeFamilyOnNode( "+node.id+", "+att+");\n");
   var style="";
   if (node.hasAttribute("style")) style = node.getAttribute("style");
   dump("original style is '"+style+"'\n");
   style.replace("null","");
-  var re = new RegExp(att + ":[^;]*;","");
+  var re = new RegExp("^|[^-]"+att + "[-a-zA-Z]*:[^;]*;","g");
   if (re.test(style))
   {
     style = style.replace(re, "");
@@ -328,7 +374,7 @@ function enableHere( )
   {
     theValue = "false";
     position = document.getElementById('herePlacementRadioGroup').value;
-    setAlignment( (position==="left" || position==="inside")?1:((position==="right"||position=="outside")?2:0));
+    setAlignment((position==="left" || position==="inside")?1:((position==="right"||position=="outside")?2:0));
   }
   else
   {
@@ -344,7 +390,7 @@ function enableFloating( )
 {
   var broadcaster = document.getElementById("floatingPlacement");
   var theValue = "true";
-  if (document.getElementById('floatingRadio').selected) theValue = "false";
+  if (document.getElementById('float').selected) theValue = "false";
   broadcaster.setAttribute("disabled",theValue);
   if (theValue=="true") document.getElementById("herePlacement").setAttribute("disabled","true");
   else enableHere();
@@ -402,7 +448,7 @@ function setContentSize(width, height)  // width and height are the size of the 
 }
 
   
-function setAlignment( alignment ) // alignment = 1 for left, 2 for right, 0 for neither
+function setAlignment(alignment ) // alignment = 1 for left, 2 for right, 0 for neither
 {
   position = alignment;
   if (position ==1|| position ==2)
@@ -427,6 +473,20 @@ function setFrameAttributes(frameNode)
   frameNode.setAttribute("border", getCompositeMeasurement("border",unit, false));  
   frameNode.setAttribute("padding", getCompositeMeasurement("padding",unit, false));  
   frameNode.setAttribute("crop", getCompositeMeasurement("crop",unit, false));  
+  if (gDialog.autoHeightCheck.checked)
+  {
+    if (frameNode.hasAttribute("height")) frameNode.removeAttribute("height");
+  }
+  else frameNode.setAttribute("height", gDialog.heightInput.value);
+  if (gDialog.autoWidthCheck.checked)
+  {
+    if (frameNode.hasAttribute("width")) frameNode.removeAttribute("width");
+  }
+  else frameNode.setAttribute("width", gDialog.widthInput.value);
+  frameNode.setAttribute("crop", getCompositeMeasurement("crop",unit, false));  
+  var pos = document.getElementById("placementRadioGroup").selectedItem;
+  frameNode.setAttribute("pos", pos?pos.getAttribute("id"):"");
+
   var bgcolor = gDialog.colorWell.getAttribute("style");
   var arr = bgcolor.match(/background-color\s*:([a-zA-Z\ \,0-9\(\)]+)\s*;\s*/,"");
   setStyleAttributeOnNode(frameNode, "border-color", arr[1]);
@@ -464,13 +524,31 @@ function setFrameAttributes(frameNode)
 
     dump("Find parameters for here placement");
   }
-  else {removeStyleAttributeOnNode(frameNode, "float");}
+  else {removeStyleAttributeFamilyOnNode(frameNode, "float");}
   // now set measurements in the style for frameNode
   var style = getCompositeMeasurement("margin","px", true);
   setStyleAttributeOnNode(frameNode, "margin", style);
+  dump("Setting margin style to "+style+"\n");
   style = getCompositeMeasurement("padding","px", true);
   setStyleAttributeOnNode(frameNode, "padding", style);
   style = getCompositeMeasurement("border","px", true);
   setStyleAttributeOnNode(frameNode, "border-width", style);
+  if (frameNode.hasAttribute("height"))
+    setStyleAttributeOnNode(frameNode, "height", frameUnitHandler.getValueAs(frameNode.getAttribute("height"),"px") + "px");
+  else removeStyleAttributeFamilyOnNode(frameNode, "height");
+  if (frameNode.hasAttribute("width"))
+    setStyleAttributeOnNode(frameNode, "width", frameUnitHandler.getValueAs(frameNode.getAttribute("width"),"px") + "px");
+  else removeStyleAttributeFamilyOnNode(frameNode, "width");
   if (style != "0px") { setStyleAttributeOnNode( frameNode, "border-style", "solid");}
+}
+
+
+function frameHeightChanged(input)
+{
+  scaledHeight = toPixels(input.value*scale);
+}
+
+function frameWidthChanged(input)
+{
+  scaledWidth = toPixels(input.value*scale);
 }
