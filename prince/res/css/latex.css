@@ -105,6 +105,8 @@ mml|mi[tempinput="true"]{
   list-style-image: url("chrome://prince/skin/icons/vc-rotateleft.png");
 }
 
+msiframe { background-color: rgb(200,200,200); }
+
 mml|mrow[id]:after {
   content: "(" attr(id) ")" ;
   text-align: right;

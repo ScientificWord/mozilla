@@ -7560,7 +7560,7 @@ function msiFrame(currNode, editorElement)
       msiRequirePackage(editorElement, "boxedminipage", null);
       var selection = editor.selection;
       selection.getRangeAt(0).insertNode(data.element);
-      if (!selection.collapsed) editor.deleteSelection(0);
+      if (!selection.isCollapsed) editor.deleteSelection(0);
       try
       {
         var defpara = "para";
