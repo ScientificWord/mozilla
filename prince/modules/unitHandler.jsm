@@ -41,7 +41,6 @@ function UnitHandler()
     var prev = this.currentUnit;
     if (!(unit in this.units)) 
     {
-      this.currentUnit = null;
       return prev;
     }
     var factor = this.units[this.currentUnit].size/this.units[unit].size;
