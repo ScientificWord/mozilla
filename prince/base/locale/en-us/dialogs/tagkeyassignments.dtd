@@ -10,3 +10,13 @@
 <!ENTITY currentkeys.tooltip "Currently assigned keys">
 <!ENTITY scriptradio.label "Run script">
 <!ENTITY scripttext.tooltip "Enter the script to run when the keys are pressed">
+<!ENTITY reserveForOS.label "Reserved for operating system">
+<!ENTITY reserveForOS.tooltip "Reserve for operating system use">
+<!ENTITY assignKey.label "Assign action to key">
+<!ENTITY assignKey.accesskey "A">
+<!ENTITY tagOrScript.tagLabel "Key assigns the tag">
+<!ENTITY tagOrScript.scriptLabel "Key runs the JavaScript">
+<!ENTITY tagOrScript.reservedLabel "Key is reserved for operating system use">
+<!ENTITY tagOrScript.tooltip "Tag or script currently assigned to this key combination">
+<!ENTITY deleteAssignment.label "Delete assignment">
+<!ENTITY deleteAssignment.accesskey "D">
