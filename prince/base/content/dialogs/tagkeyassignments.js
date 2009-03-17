@@ -74,11 +74,14 @@ function handleChar(event, object)
 //   else
   document.getElementById("newkeys").value = display;
   document.getElementById("assignkey").disabled = display.length > 0?false:true;
-  document.getElementById("assignkey").label = "Assign action to "+display;
+  var templateStrings = document.getElementById("templateStrings");
+  var assignTemplate = templateStrings.getString("tagKeyAssignmentDlg.assignTemplate");
+//  document.getElementById("assignkey").label = "Assign action to "+display;
+  document.getElementById("assignkey").label = assignTemplate.replace(/%keyDescriptor%/, display);
   event.preventDefault();
 }
 
-function radioswitched( obj )
+function radioswitched( event, obj )
 {
   var taglisttextbox=document.getElementById("alltaglist");
   var keyscript=document.getElementById("keyscript");
@@ -90,6 +93,20 @@ function radioswitched( obj )
   {
     taglisttextbox.disabled = true;
     keyscript.disabled = false;
+  }
+}
+
+function doTagListMouseDown( event )
+{
+  var tagListBox = document.getElementById("alltaglist");
+  var theDropMarker = document.getAnonymousElementByAttribute(tagListBox, "anonid", "historydropmarker");
+  var initObj = event.originalTarget;
+  if (initObj == theDropMarker)
+  {
+    if (!tagListBox.disabled && ("showPopup" in theDropMarker))
+      theDropMarker.showPopup();
+    event.stopPropagation();
+    event.preventDefault();
   }
 }
 
@@ -148,6 +165,23 @@ function startUp()
     if (fReserved) itemNode.setAttribute("reserved", "1");
     popup.appendChild(itemNode);
   }
+
+////Debugging stuff:
+  var theTagList = document.getElementById("alltaglist");
+//  var theDropMarker = document.getAnonymousElementByAttribute(theTagList, "anonid", "historydropmarker");
+  theTagList.addEventListener("mousedown", doTagListMouseDown, true);
+//  var logStr = "The taglist has popup [" + theTagList.popup + "]; it has historydropmarker [";
+//  if (theDropMarker)
+//  {
+//    logStr += theDropMarker + "]. Its members are:\n";
+//    for (var aProp in theDropMarker)
+//    {
+//      logStr += "  " + aProp + ":      [" + theDropMarker[aProp] + "]\n";
+//    } 
+//  }
+//  else
+//    logStr += "void]";
+//  dump(logStr + "\n");
 }
 
 function assignTag( obj )
@@ -205,13 +239,17 @@ function selectCurrentKey( amenulist )
     // this needs to be made more robust. My regular expressions for finding the whole pattern didn't work.
     var button = document.getElementById("deleteassignment");
     button.disabled = false;
-    button.label = "Delete assignment for " + amenulist.selectedItem.label;
+    var templateStrings = document.getElementById("templateStrings");
+    var delTemplate = templateStrings.getString("tagKeyAssignmentDlg.deleteTemplate");
+    button.label = delTemplate.replace(/%keyDescriptor%/, amenulist.selectedItem.label);
+//    button.label = "Delete assignment for " + amenulist.selectedItem.label;
     if (mapsTo.search(/toggleTextTag|insertParaTag|insertSectionTag|insertTag/) >= 0)
     {
       var myArray = mapsTo.match("'([a-zA-Z()]+)'");
       if (myArray != null)
       {
-        document.getElementById("tagorscript").value = "Key assigns the tag";
+//        document.getElementById("tagorscript").value = "Key assigns the tag";
+        document.getElementById("tagorscript").value = document.getElementById("tagorscriptTag").value;
         document.getElementById("nameoftagorscript").value=myArray[1];
         document.getElementById("tagorscript").setAttribute("reserved","false");
         //document.getElementById("keyresult").selectedIndex = 0;
@@ -219,9 +257,18 @@ function selectCurrentKey( amenulist )
     }
     else
     {
-      document.getElementById("tagorscript").value = (reserved.value?"Key is reserved for operating system use":"Key runs the JavaScript");
-      document.getElementById("tagorscript").setAttribute("reserved",reserved.value?"true":"false");
-      document.getElementById("nameoftagorscript").value=reserved.value?"":mapsTo;
+      if (reserved.value)
+      {
+        document.getElementById("tagorscript").value = document.getElementById("tagorscriptReserved").value;
+        document.getElementById("tagorscript").setAttribute("reserved", "true");
+        document.getElementById("nameoftagorscript").value = "";
+      }
+      else
+      {
+        document.getElementById("tagorscript").value = document.getElementById("tagorscriptScript").value;
+        document.getElementById("tagorscript").setAttribute("reserved", "false");
+        document.getElementById("nameoftagorscript").value = mapsTo;
+      }
     }
   }
 }    
@@ -313,6 +360,6 @@ function assignKey()
 function onAccept()
 {
   keymapper.saveKeyMaps();
-  acceptDialog();
+//  acceptDialog();
   return true;
 }   
