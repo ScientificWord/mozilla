@@ -14,6 +14,8 @@
 <dialog title="&windowTitle.label;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload="Startup()"
+    width = "200"
+    height = "150"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();">
 
