@@ -310,6 +310,8 @@ const AppInstall = {
     "<string>" + infoString + "</string>\n" +
     "<key>CFBundleName</key>\n" +
     "<string>" + appName + "</string>\n" +
+    "<key>CFBundleIconFile</key>\n" +
+    "<string>" + appName + ".icns</string>\n" +
     "<key>CFBundleShortVersionString</key>\n" +
     "<string>" + version + "</string>\n" +
     "<key>CFBundleVersion</key>\n" +
@@ -321,8 +323,6 @@ const AppInstall = {
     // "<string>org.%s.%s</string>\n" +
     // "<key>CFBundleSignature</key>\n" +
     // "<string>MOZB</string>\n" +
-    // "<key>CFBundleIconFile</key>\n" +
-    // "<string>document.icns</string>\n" +
 
     ostream.write(contents, contents.length);
     ostream.close();
