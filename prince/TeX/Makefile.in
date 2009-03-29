@@ -10,7 +10,11 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 include $(topsrcdir)/config/rules.mk
 
+ifneq (,$(filter windows,$(MOZ_WIDGET_TOOLKIT)))
 CMD_RESOURCES := $(wildcard	$(srcdir)/bin/*.cmd)
+else
+CMD_RESOURCES := $(wildcard	$(srcdir)/bin/*.bash)
+endif
 
 libs::	$(CMD_RESOURCES)
 	$(INSTALL)	$(CMD_RESOURCES)	$(FINAL_TARGET)
