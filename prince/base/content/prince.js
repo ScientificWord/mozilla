@@ -588,7 +588,11 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
   if (pdftex)
+#ifdef XP_WIN32
     exefile.append("pdflatex.cmd");
+#else
+    exefile.append("pdflatex.bash");
+#endif
   else
     exefile.append("latex.cmd");
   dump("\nexecutable file: "+exefile.target+"\n");
