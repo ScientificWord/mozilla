@@ -3987,7 +3987,7 @@ var msiImageCommand =
   doCommand: function(aCommand, dummy)
   {
     var editorElement = msiGetActiveEditorElement();
-    var dlgWindow = msiOpenModelessDialog("chrome://prince/content/msiEdImageProps.xul", "_blank", "chrome,close,titlebar,dependent",
+    var dlgWindow = msiOpenModelessDialog("chrome://prince/content/msiEdImageProps.xul", "_blank", "chrome, resizable, close,titlebar,dependent",
                                                                                                      editorElement, "cmd_image", this);
 //    window.openDialog("chrome://editor/content/EdImageProps.xul","_blank", "chrome,close,titlebar,modal");
 //    editorElement.focus();
@@ -4019,7 +4019,7 @@ var msiReviseImageCommand =
     var imageNode = aParams.getISupportsValue("reviseObject");
     if (imageNode != null && editorElement != null)
     {
-      var dlgWindow = msiOpenModelessDialog("chrome://prince/content/msiEdImageProps.xul", "_blank", "chrome,close,titlebar,dependent",
+      var dlgWindow = msiOpenModelessDialog("chrome://prince/content/msiEdImageProps.xul", "_blank", "chrome,close,titlebar,resizable, dependent",
                                                                                                      editorElement, "cmd_reviseImage", this);
     }
     editorElement.focus();
@@ -4120,8 +4120,8 @@ var msiLinkCommand =
     // since last tab panel handles 
     var editorElement = msiGetActiveEditorElement();
     var element = msiGetObjectForProperties(editorElement);
-    if (element && msiGetBaseNodeName(element).toLowerCase() == "img")
-      window.openDialog("chrome://prince/content/EdImageProps.xul","_blank", "chrome,close,titlebar,modal", null, true);
+    if (element && msiGetBaseNodeName(element) == "img")
+      window.openDialog("chrome://prince/content/msiEdImageProps.xul","_blank", "chrome,close,titlebar,modal", null, true);
     else
       window.openDialog("chrome://editor/content/EdLinkProps.xul","_blank", "chrome,close,titlebar,modal");
     editorElement.focus();

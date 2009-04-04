@@ -756,7 +756,7 @@ function msiEditorDocumentObserver(editorElement)
             editorElement.mgMathStyleSheet = msiColorObj.FormatStyleSheet(editorElement);
 //            dump("Internal style sheet contents: \n\n" + editorElement.mgMathStyleSheet + "\n\n");
           } catch(e) { dump("Error formatting style sheet using msiColorObj: [" + e + "]\n"); }
-          // Now is a good time to initialize the key mapping. This is a service, and so is initialized only one. Later
+          // Now is a good time to initialize the key mapping. This is a service, and so is initialized only once. Later
           // initializations will not do anything
           var keymapper;
           try {
