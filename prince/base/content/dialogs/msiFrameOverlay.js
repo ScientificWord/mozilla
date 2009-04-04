@@ -151,6 +151,12 @@ function setNewUnit(element)
   frameUnitHandler.setCurrentUnit(element.value);
 }
 
+function initFrameSizePanel()
+{
+  document.getElementById("hasNaturalSize").removeAttribute("hidden");
+}
+
+
 function initUnitList(unitPopUp)
 {
   var elements = unitPopUp.getElementsByTagName("menuitem");
@@ -533,10 +539,10 @@ function setFrameAttributes(frameNode)
   setStyleAttributeOnNode(frameNode, "padding", style);
   style = getCompositeMeasurement("border","px", true);
   setStyleAttributeOnNode(frameNode, "border-width", style);
-  if (frameNode.hasAttribute("height"))
+  if (frameNode.hasAttribute("height") && Number(frameNode.getAttribute("height"))!= 0 )
     setStyleAttributeOnNode(frameNode, "height", frameUnitHandler.getValueAs(frameNode.getAttribute("height"),"px") + "px");
   else removeStyleAttributeFamilyOnNode(frameNode, "height");
-  if (frameNode.hasAttribute("width"))
+  if (frameNode.hasAttribute("width") && Number(frameNode.getAttribute("width"))!= 0)
     setStyleAttributeOnNode(frameNode, "width", frameUnitHandler.getValueAs(frameNode.getAttribute("width"),"px") + "px");
   else removeStyleAttributeFamilyOnNode(frameNode, "width");
   if (style != "0px") { setStyleAttributeOnNode( frameNode, "border-style", "solid");}
