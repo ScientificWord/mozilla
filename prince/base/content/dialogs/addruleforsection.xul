@@ -26,7 +26,7 @@
 
   <!-- Scripts specific to this dialog -->
   <script type="application/x-javascript" src="chrome://prince/content/addruleforsection.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/EdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
 
   <vbox>
     <groupbox>
