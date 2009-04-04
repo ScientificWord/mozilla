@@ -9,8 +9,10 @@
 <xsl:template match="html:msiframe">
 	<!--xsl:if test="@position='inner' || @position='outer'" -->				
 \begin{wrapfigure}
-<xsl:choose><xsl:when test="@position='inner'">{i}</xsl:when>
-<xsl:when test="@position='outer'">{o}</xsl:when></xsl:choose>
+<xsl:choose>
+  <xsl:when test="@position='inner'">{i}</xsl:when>
+  <xsl:when test="@position='outer'">{o}</xsl:when>
+</xsl:choose>
 [<xsl:value-of select="@overhang"/><xsl:value-of select="@units"/>]
 {<xsl:choose><xsl:when test="@rotation='rot0'"><xsl:value-of select="@width"/></xsl:when><xsl:otherwise><xsl:value-of select="@height"/></xsl:otherwise></xsl:choose><xsl:value-of select="@units"/>}
 \setlength \intextsep {<xsl:value-of select="@topmargin"/><xsl:value-of select="@units"/>}
