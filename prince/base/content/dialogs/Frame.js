@@ -38,7 +38,9 @@ function startUp()
      
   gd = new Object();
   gd = initFrameTab(gd, frmElement, data.newElement);
+  initFrameSizePanel(); // needed when the user can set the size
 }
+
 
 function onOK() {
   setFrameAttributes(frmElement);
