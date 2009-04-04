@@ -62,10 +62,12 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdImageProps.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdImageOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiFrameOverlay.js" />
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
  
   <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
   <broadcaster id="args" value=""/>
+  <vbox id="units" />
  
   <tabbox id="TabBox">
     <tabs flex="1">
@@ -78,7 +80,6 @@
     </tabs>
     <tabpanels>
       <vbox id="imagePicture">
-        <spacer class="spacer" flex="1"/>
         <radiogroup id="importRefRadioGroup" orient="horizontal" flex="1">
           <radio id = "importRadio"
             label   = "&importButton.label;"
@@ -99,96 +100,13 @@
           <checkbox
             id  = "makeRelativeCheckbox"
             for = "srcInput"
+            label = "Make reference relative"
             tabindex="2"/>
-          <spacer flex="1"/>
           <!-- from EdDialogOverlay.xul -->
           <msibutton id="ChooseFile"  tabindex="3"/>
         </hbox>
         <spacer class="spacer"/>
-        <spacer class="spacer"/>
-        <radiogroup id="imgSizeGroup">
-        <grid flex="1">
-          <columns>
-            <column align="start"/>
-            <column align="start"/>
-            <column align="start"/>
-            <column align="start"/>
-          </columns>
-
-          <rows>
-            <row>
-              <radio
-                id      = "actualSizeRadio"
-                label   = "&actualSizeRadio.label;"
-                accesskey = "&actualSizeRadio.accesskey;"
-                tooltiptext="&actualSizeRadio.tooltip;"
-                oncommand = "SetActualSize()"
-                radioGroup="imgSizeGroup"/>
-              <checkbox id="constrainCheckbox" label="&constrainCheckbox.label;"
-                accesskey="&constrainCheckbox.accesskey;"
-                oncommand="ToggleConstrain()"
-                tooltiptext="&constrainCheckbox.tooltip;"/>
-              <label id   = "unitLabel"
-                control   = "unitMenulist"
-                accesskey = "&unitLabel.accesskey;"
-                value     = "&unitLabel.label;" />
-              <menulist id = "unitMenulist"
-                oncommand  = "doDimensionEnabling();" >
-                <menupopup id="unitList">
-                  <menuitem value="px" label="pixel"/>
-                  <menuitem value="in" label="in"/>
-                  <menuitem value="pct" label="percent"/>
-                  <menuitem value="cm" label="cm"/>
-                  <menuitem value="pt" label="pt" />
-                  <menuitem value="mm" label="mm"/>
-                  <menuitem value="pc" label="pica"/>
-                </menupopup>
-              </menulist>
-            </row>
-            <row>
-              <radio
-                id      = "iconicImageRadio"
-                label   = "&iconicImageRadio.label;"
-                accesskey = "&iconicImageRadio.accesskey;"
-                tooltiptext="&iconicImageRadio.tooltip;"
-                oncommand = "SetIconicImage()"
-                radioGroup="imgSizeGroup"/>
-              <hbox/>
-              <label id    = "widthLabel"
-                  control   = "widthInput"
-                  accesskey = "&widthEditField.accesskey;"
-                  value = "&widthEditField.label;" />
-              <textbox
-                id        = "widthInput"
-                class     = "narrow"
-                type      = "number"
-                hidespinbuttons="false"
-                onkeypress= "constrainProportions(this.id, 'heightInput', event)"
-                onchange = "constrainProportions(this.id, 'heightInput', event)"/>
-            </row>
-            <row>
-              <radio
-                id      = "customSizeRadio"
-                label   = "&customSizeRadio.label;"
-                accesskey = "&customSizeRadio.accesskey;"
-                tooltiptext="&customSizeRadio.tooltip;"
-                oncommand = "doDimensionEnabling();"
-                radioGroup="imgSizeGroup"/>
-              <hbox/>
-              <label id   = "heightLabel"
-                control   = "heightInput"
-                accesskey = "&heightEditField.accesskey;"
-                value = "&heightEditField.label;" />
-              <textbox
-                id        = "heightInput"
-                class     = "narrow"
-                type      = "number"
-                onkeypress= "constrainProportions(this.id, 'widthInput', event)"
-                onchange  = "constrainProportions(this.id, 'widthInput', event)"/>
-            </row>
-          </rows>
-        </grid>
-        </radiogroup>
+        <vbox id = "msiFrameSize"/>
       </vbox>
       <vbox id="msiPlacement"/>
       <vbox id="msiFrame"/>
@@ -228,6 +146,7 @@
                   label="&showImageLinkBorder.label;"
                   accesskey="&showImageLinkBorder.accesskey;"
                   oncommand="ToggleShowLinkBorder();"/>
+        <spacer class="spacer"/>
       </vbox>
             
     </tabpanels>
