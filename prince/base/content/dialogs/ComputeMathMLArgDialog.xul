@@ -45,7 +45,7 @@
   <!-- Methods common to all editor dialogs -->
   <!-- script type="application/x-javascript" src="chrome://editor/content/StructBarContextMenu.js"/ -->
   <!-- script type="application/x-javascript" src="chrome://editor/content/editorApplicationOverlay.js"/ -->
-  <!-- script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js" / -->
+  <!-- script type="application/x-javascript" src="chrome://editor/content/msiEdDialogCommon.js" / -->
 
   <script type="application/x-javascript" src="chrome://prince/content/ComputeMathMLArgDialog.js" />
   <script type="application/x-javascript" src="chrome://prince/content/ComputeUtils.js" />

@@ -69,6 +69,7 @@
         <vbox flex="1"/>
       </vbox>
     </hbox>
+    <spacer flex="1"/>
     <grid>
       <columns>
         <column/>
@@ -203,7 +204,20 @@
   <vbox id = "msiFrameSize">
     <groupbox>
       <caption label="Size"/>
-      <vbox>
+      <vbox observes="hasNaturalSize">
+        <radiogroup id="sizeRadio">
+          <hbox flex="1">
+            <vbox>
+              <radio id="actual" label="Actual size" radioGroup="sizeRadio"/>
+            </vbox>
+            <vbox>
+              <radio id="iconic" label="Iconic" radioGroup="sizeRadio"/>
+            </vbox>
+            <vbox>
+              <radio id="custom" label="Custom" radioGroup="sizeRadio"/>
+            </vbox>
+          </hbox>
+        </radiogroup>
         <hbox>
           <grid>
             <columns>
@@ -211,6 +225,7 @@
               <column width="12px"/>
               <column flex="1" width=".75in"/>
               <column flex="1"/>
+              <column observes="hasNaturalSize" width = "12px" />
             </columns>
             <rows>
               <row>
@@ -218,6 +233,7 @@
                 <label value="Auto" control="autoWidth"/>
                 <label value="Height"/>
                 <label value="Auto" control="autoHeight"/>
+                <label observes="hasNaturalSize" value="Constrain" control="constrainCheck"/>
               </row>
               <row>
                 <textbox
@@ -232,6 +248,7 @@
                   onkeypress= ""
                   onchange  = "frameHeightChanged(this);"/>
                 <checkbox id="autoHeight" oncommand ="document.getElementById('frameHeightInput').setAttribute('disabled',this.checked);"/>
+                <checkbox observes="hasNaturalSize" id="Constrain" oncommand ="setConstrainMode(this);"/>
               </row>
             </rows>
           </grid>
@@ -292,7 +309,8 @@
       <broadcaster id="reducedleftmargin" width="40"   /> <!-- 60 - overhang -->        
       <broadcaster id="sidemargin" width="8"/>         
       <broadcaster id="topmargin" height="8"/>
-      <broadcaster id="notedata" width="60" color="#000000" bwidth="2" bstyle="solid" pwidth="1"/>        
+      <broadcaster id="notedata" width="60" color="#000000" bwidth="2" bstyle="solid" pwidth="1"/>
+      <broadcaster id="hasNaturalSize" hidden="true"/>        
     </broadcasterset>
   </vbox>
 
