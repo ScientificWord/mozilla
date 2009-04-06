@@ -18,7 +18,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
   <!--script type="application/x-javascript"  src="chrome://venkman/content/venkman-overlay.js"/ -->
   <script type="application/x-javascript"  src="chrome://inspector/content/hooks.js"/>
-  <script type="application/x-javascript" src="chrome://global/content/viewzoomoverlay.js"/>
+  <script type="application/x-javascript" src="chrome://global/content/viewZoomOverlay.js"/>
   <script type="application/x-javascript" src="chrome://help/content/contextHelp.js"/>
   
   <menu id="fileMenu" label="&fileMenu.label;" accesskey="&filemenu.accesskey;">
