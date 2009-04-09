@@ -6,7 +6,9 @@ function initialize()
   dir.append("shells");
   url = dir.path;
   // is this platform independent?
+#ifdef XP_WIN32
   url.replace("\\","/","g");
+#endif
   if (url.charAt(0) === '/')
     url = "file://"+url;
   else
@@ -32,9 +34,11 @@ function showShellsInDir(tree)
   createInstance(Components.interfaces.nsILocalFile);
   var path= tree.getAttribute("ref")+"/"+leafname;
   //convert URL to path
-  path = path.replace(/^file:\/\/\//i,"");
+  path = msiPathFromFileURL( path );
   //for windows
+#ifdef XP_WIN32
   path = path.replace("/",'\\','g');
+#endif
   try {
     directory.initWithPath(path);
 //    directory.append(leafname);
