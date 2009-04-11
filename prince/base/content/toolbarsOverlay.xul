@@ -18,7 +18,7 @@
   <!-- script type="application/x-javascript" src="chrome://global/content/customizeToolbar.js"/ -->
 
          
-  <toolbox id="Toolbox" class="toolbox-top" orient="vertical" persist="iconsize">       
+  <toolbox id="Toolbox" class="toolbox-top" orient="vertical" persist="iconsize" flex="1">       
     <popup id="toolbar-context-menu" onpopupshowing="initCustomizeMenu(this,'Toolbox');">
       <menuitem id="customizeItem" oncommand="CustomizeMainToolbar('Toolbox');"
         label="Customize toolbars" />
@@ -114,15 +114,20 @@
       toolbarname="Standard toolbar"
       class="chromeclass-toolbar" 
       persist="collapsed"
+      flex = "1"
       tbalign="center" 
       context="toolbar-context-menu"
       defaultset="stdToolbarTab,newButton,openButton,saveButton,printButton,printPreviewButton,mathtextButton,TextTags,
-        ParaTags,StructTags,OtherTags" customizable="true" mode="icons" />
+        ParaTags,StructTags,OtherTags" 
+      mode="icons" 
+      customizable="true" />
     <toolbar 
       id="EditingToolbar" 
       toolbarname="Editing toolbar"
       class="chromeclass-toolbar" 
       persist="collapsed" 
+      flex = "1"
+      tbalign="center" 
       context="toolbar-context-menu"
       defaultset="editToolbarTab,noteButton,markerButton,htlinkButton,formulaButton,compileButton,frontmatterButton,
         packagesButton,citationButton,indexentryButton,xrefButton,texfieldButton,subdocButton,
@@ -134,6 +139,8 @@
       toolbarname="Math toolbar"
       class="chromeclass-toolbar" 
       persist="collapsed" 
+      flex = "1"
+      tbalign="center" 
       context="toolbar-context-menu"
       defaultset="mathToolbarTab,evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plotButton3D,
         defineButton,showdefsButton,fractionButton,radicalButton,superscriptButton,subscriptButton,
@@ -147,6 +154,7 @@
       toolbarname="Symbol toolbar"
       class="chromeclass-toolbar" 
       persist="collapsed iconsize" 
+      flex = "1"
       tbalign="center" 
       context="symbol-palettes-context-menu">
       <tabbox textsize="small" id="Symbol-tabbox" />
@@ -155,6 +163,7 @@
 
   
     <toolbar id="VCamToolbar" class="chromeclass-toolbar" persist="collapsed" 
+      flex = "1"
       mode="icons" customizable="true"  hidden = "true" observes="vcamactive">
       <toolbarbutton id="vc-Reset" class="toolbarbutton-1" label="vcReset" command="cmd_vcReset"/>
       <toolbarbutton id="vc-FitContents" class="toolbarbutton-1" label="vcFitContents" command="cmd_vcFitContents" observes="3dplot"/>
