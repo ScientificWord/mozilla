@@ -415,7 +415,7 @@ function GetLocalFileURL(filterType)
   if (filterType == "img")
   {
     fp.init(window, GetString("SelectImageFile"), nsIFilePicker.modeOpen);
-    fp.appendFilters(nsIFilePicker.filterImages);
+    fp.appendFilters(nsIFilePicker.filterImgObjects);
     fileType = "image";
   }
   // Current usage of this is in Link dialog,
