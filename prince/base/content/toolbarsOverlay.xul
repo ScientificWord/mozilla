@@ -120,7 +120,8 @@
       defaultset="stdToolbarTab,newButton,openButton,saveButton,printButton,printPreviewButton,mathtextButton,TextTags,
         ParaTags,StructTags,OtherTags" 
       mode="icons" 
-      customizable="true" />
+      customizable="true"
+      iconsize="small" />
     <toolbar 
       id="EditingToolbar" 
       toolbarname="Editing toolbar"
@@ -133,7 +134,8 @@
         packagesButton,citationButton,indexentryButton,xrefButton,texfieldButton,subdocButton,
         bibliographyButton,gifsAnimatedButton,boldButton,italicButton,zoomValue"
       mode="icons" 
-      customizable="true" />
+      customizable="true"
+      iconsize="small" />
     <toolbar 
       id="MathToolbar" 
       toolbarname="Math toolbar"
@@ -147,7 +149,8 @@
         parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,
         matrixButton,mathnameButton,binomialButton,labelButton,decorationButton"
       mode="icons" 
-      customizable="true" />
+      customizable="true"
+      iconsize="small" />
     <toolbarset context="toolbar-context-menu"/>
     <toolbar 
       id="SymbolToolbar" 
@@ -155,8 +158,10 @@
       class="chromeclass-toolbar" 
       persist="collapsed iconsize" 
       flex = "1"
-      tbalign="center" 
-      context="symbol-palettes-context-menu">
+      tbalign="center"
+      collapsed="true" 
+      context="symbol-palettes-context-menu"
+      iconsize="small" >
       <tabbox textsize="small" id="Symbol-tabbox" />
     </toolbar>
   </toolbox>
