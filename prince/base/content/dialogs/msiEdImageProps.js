@@ -101,7 +101,7 @@ function Startup()
   // add more for the other tabs
 
   // Get a single selected image element
-  var tagName = "img";
+  var tagName = "object";
   if ("arguments" in window && window.arguments[0])
   {
     imageElement = window.arguments[0];
