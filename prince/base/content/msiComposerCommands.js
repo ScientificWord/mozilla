@@ -871,8 +871,9 @@ var msiNewCommand =
             createInstance(Components.interfaces.nsILocalFile);
           thefile.initWithPath(data.filename);
           newdocumentfile = createWorkingDirectory(thefile);
-          msiEditPage("file:///"+newdocumentfile.path, window, false);
-        } catch (e) { dump("msiEditPage failed: "+e+"\n"); }
+	  var url = msiFileURLFromAbsolutePath( newdocumentfile.path );
+          msiEditPage( url, window, false);
+        } catch (e) { dump("msiEditPage failed: "+e.toString()+"\n"); }
 
       }
     }
