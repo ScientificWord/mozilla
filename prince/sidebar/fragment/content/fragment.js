@@ -28,10 +28,7 @@ function initSidebar()
     var dir1;
     dir1 = getUserResourceFile("fragments","");
     var dirpath = dir1.path + "/";
-#ifdef XP_WIN32
-    dirpath = dirpath.replace("\\","/","g");
-#endif
-    var fragmentsBaseDirectory = "file:///" + dirpath;
+    var fragmentsBaseDirectory = msiFileURLFromAbsolutePath( dirpath );
     document.getElementById("frag-tree").setAttribute("ref", fragmentsBaseDirectory);
     document.getElementById("frag-tree").builder.rebuild();
     //
@@ -265,8 +262,10 @@ function onMacroOrFragmentEntered( aString )
     if (s)
     {
       var dirpath = s.dirpath;
+#ifdef XP_WIN32
       dirpath = dirpath.replace("\\","/","g");
-      dirpath = "file:///" + dirpath + "/" + aString + ".frg";      
+#endif
+      dirpath = msiFileURLFromAbsolutePath(  dirpath ) + "/" + aString + ".frg";      
       dump('calling insertFragmentContents('+dirpath+'\n');
       insertFragmentContents( dirpath );
     }
@@ -374,7 +373,11 @@ var fragObserver =
     var namecol = tree.columns.getNamedColumn('Name');
     var saveref = tree.getAttribute("ref");
     var pathbase = saveref + "/";
+#ifdef XP_WIN32
     pathbase = pathbase.substr(8); // omit "path:///" at the start
+#else
+    pathbase = pathbase.substr(7); // omit "path:///" at the start
+#endif
     var path="";
     var row = new Object;
     var column = new Object;
@@ -390,7 +393,7 @@ var fragObserver =
         i = tree.view.getParentIndex(i);
         path = tree.view.getCellText(i,namecol)+ "/" + path;
       }
-    }                                                                           
+    }
 //    dump("New fragment file path is "+pathbase + path + "\n");
     if (session.isDataFlavorSupported("privatefragmentfile"))
     {
