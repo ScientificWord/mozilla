@@ -4268,9 +4268,6 @@ var msiBaseMathNameList =
     var request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"].createInstance();
     request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
     var thePath = msiFileURLFromAbsolutePath( mathNameFile.target );
-#ifdef XP_WIN32
-    thePath = thePath.replace("\\","/","g");
-#endif
     try {
       request.open("GET", thePath, false);
       request.send(null);
@@ -4587,9 +4584,6 @@ var msiBaseMathUnitsList =
     var request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"].createInstance();
     request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
     var thePath = msiFileURLFromAbsolutePath( unitNameFile.target );
-#ifdef XP_WIN32
-    thePath = thePath.replace("\\","/","g");
-#endif
     try {
       request.open("GET", thePath, false);
       request.send(null);
@@ -4960,9 +4954,6 @@ var msiAutosubstitutionList =
     var request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"].createInstance();
     request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
     var thePath = msiFileURLFromAbsolutePath( autosubsFile.target );
-#ifdef XP_WIN32
-    thePath = thePath.replace("\\","/","g");
-#endif
     try {
       request.open("GET", thePath, false);
       request.send(null);
@@ -6301,6 +6292,7 @@ function msiFileURLFromAbsolutePath( absPath )
 {
 #ifdef XP_WIN32
   var url = "file:///"+absPath;
+  url = url.replace("\\","/","g");
 #else
   var url = "file://"+absPath;
 #endif

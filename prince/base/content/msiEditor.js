@@ -742,11 +742,7 @@ function msiEditorDocumentObserver(editorElement)
             {
               dirs = match[1].split("/");
               file = getUserResourceFile( dirs[1], dirs[0]);
-              path = "file://" + file.path;
-#ifdef XP_WIN32
-              path = "file:///" + file.path;
-              path = path.replace("\\","/","g");
-#endif
+              path = msiFileURLFromAbsolutePath( file.path );
               editor.addTagInfo(path);
             }
             else    
@@ -838,10 +834,7 @@ function msiEditorDocumentObserver(editorElement)
             var autosub = Components.classes["@mozilla.org/autosubstitute;1"].getService(Components.interfaces.msiIAutosub);
             var autosubsfile = getUserResourceFile("autosubs.xml", "xml");
             var path;
-            path = "file:///" + autosubsfile.target;
-#ifdef XP_WIN32
-            path = path.replace("\\","/","g");
-#endif
+            path = msiFileURLFromAbsolutePath( autosubsfile.target );
             autosub.initialize(path);
           }
           catch(e) {
