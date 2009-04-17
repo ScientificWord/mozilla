@@ -6157,9 +6157,72 @@ function processingInstructionsList( doc, target )
     }
   }
   catch(e) {
+    dump("treeWalker error: " + e.toString() + "\n");
+  }
+  return list;
+}
+
+
+function deleteProcessingInstructions( doc, target )
+{
+  var list =[];
+  var regexp;
+  var i;
+  var arr=[];
+  var editor;
+  var arrToDelete =[];
+  var editorElement = msiGetActiveEditorElement();
+  if (editorElement)
+    editor = msiGetEditor(editorElement);
+  if (!editor) {
+    dump("Cannot find editor in 'deleteProcessingInstructions'");
+    return;
+  }
+  var treeWalker = doc.createTreeWalker(
+    doc,
+    NodeFilter.SHOW_PROCESSING_INSTRUCTION,
+    { 
+      acceptNode: function(node) { 
+        if (node.target == target)
+          return NodeFilter.FILTER_ACCEPT;
+        else return NodeFilter.FILTER_REJECT; }
+    },
+    false
+  );
+  regexp = /href\=[\'\"]([^\'\"]*)/i;
+  try {
+    while(treeWalker.nextNode()){
+      arr.push(treeWalker.currentNode);
+    }
+    for (i=0; i<arr.length; i++) arr[i].parentNode.removeChild(arr[i]);
+  }
+  catch(e) {
     dump("treeWalker error: "+e.toString());
   }
   return list;
+}
+
+function addProcessingInstruction(doc, target, data, type)
+{
+  var editor;
+  var editorElement = msiGetActiveEditorElement();
+  if (editorElement)
+    editor = msiGetEditor(editorElement);
+  if (!editor) {
+    dump("Cannot find editor in 'deleteProcessingInstructions'");
+    return;
+  }
+  dump("This is a place to put a break point\n");
+  try {
+    var contents = 'href="'+data+'" type="'+type+'"';
+    var pi = doc.createProcessingInstruction(target, contents);
+    var root = doc.getElementsByTagName('html')[0];
+    root.parentNode.insertBefore(pi,root);
+  }
+  catch(e)
+  {
+    dump(e.toString()+"\n");
+  }
 }
 
 
@@ -6168,7 +6231,7 @@ function getUserResourceFile( name, resdirname )
 {
   var dsprops, userAreaFile, resdir, file, basedir;
   dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
-  basedir =dsprops.get("ProfD", Components.interfaces.nsIFile);
+  basedir = dsprops.get("ProfD", Components.interfaces.nsIFile);
   userAreaFile = basedir.clone();
   userAreaFile.append(name);
   if (!userAreaFile.exists())
@@ -6291,10 +6354,12 @@ function gotoFirstNonspaceInElement( editor, node )
 function msiFileURLFromAbsolutePath( absPath )
 {
 #ifdef XP_WIN32
+  var path = absPath;
+  path = path.replace("\\","/","g");
   var url = "file:///"+absPath;
   url = url.replace("\\","/","g");
 #else
-  var url = "file://"+absPath;
+  var url = "file:/"+absPath;
 #endif
   return url;
 }
