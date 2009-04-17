@@ -173,13 +173,14 @@
 %   \br\msitag{<newtheorem name="#1" counter="#2" label="#3"/>}%
    
    \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}[#2]{#3}}
-   \msitag{\newtheorem{#1}[#2]{#3}}%
    \@namedef{msi@begin@#1}{\br\msiopentag{theorem}{<theorem type="#1">}}
    \@namedef{msi@end@#1}{\br\msiclosetag{theorem}{</theorem>}}
 }
 
 \def\out@newtheoremb#1#2{%
-   \br\msitag{<newtheorem name="#1" label="#2"/>}%
+%   \br\msitag{<newtheorem name="#1" label="#2"/>}%
+   
+   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}{#2}}
    \@namedef{msi@begin@#1}{\br\msiopentag{theorem}{<theorem type="#1">}}
    \@namedef{msi@end@#1}{\br\msiclosetag{theorem}{</theorem>}}
 }
