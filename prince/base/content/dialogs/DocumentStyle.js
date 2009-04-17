@@ -1,4 +1,5 @@
 var editordoc;
+var editor;
 var regex = /^resource:\/\/app/;
 function appendlistitem(list, itemstring)
 {
@@ -15,7 +16,6 @@ function startup()
 // get a list of the style sheets used in the document and
 // get a list of the tag definitions
   var docStyle = window.arguments[0];
-  var editor;
   var cssList;
   var scriptList;
   var xmlList;
@@ -37,15 +37,26 @@ function startup()
   for (i = styleSheetList.length - 1; i>= 0;  i--)
   {
     uri = styleSheetList[i].href; 
+  //relativize the names when we can
+    if ("file" == GetScheme(uri)) uri = msiMakeRelativeUrl(uri);
     if (arr.indexOf(uri) === -1)
       arr.push(uri);
   }
   for (i = arr.length -1; i>=0; i--)
     appendlistitem(cssList, arr[i]);
   var tagdefsArr;
+  arr=[];
   tagdefsArr = processingInstructionsList(editordoc, "sw-tagdefs");
-  for (i = 0; i < tagdefsArr.length; i++)
-    appendlistitem(xmlList, tagdefsArr[i]);
+  for (i = tagdefsArr.length - 1; i>= 0;  i--)
+  {
+    uri = tagdefsArr[i].href; 
+  //relativize the names when we can
+    if ("file" == GetScheme(uri)) uri = msiMakeRelativeUrl(uri);
+    if (arr.indexOf(uri) === -1)
+      arr.push(uri);
+  }
+  for (i = arr.length -1; i>=0; i--)
+    appendlistitem(xmlList, arr[i]);
   var scripts = editordoc.getElementsByTagName("script");
   var scriptLength = scripts.length;
   for (i = 0; i< scriptLength; i++)
@@ -120,11 +131,20 @@ function add(listboxid, textboxid, extension)
   newurl = textbox.value;
 // this is all we do when the url is "resource://app/... but in other cases we need to create
 // a css or xml directory in the document working directory and copy the file into it.
-  if (regex.test(newurl))
+  if (!newurl || newurl.length <= 5) ret8urn;
+  switch (GetScheme(newurl))
   {
-    if (newurl && newurl.length > 5) 
+    case "file": break;
+    case "resource":
       appendlistitem(listbox, newurl);
-    return;
+      return;
+    case "http":
+      appendlistitem(listbox, newurl);
+      return;
+    case "chrome":
+      appendlistitem(listbox, newurl);
+      return;
+    default: return;
   }
   docurl = editordoc.URL;
   if (docurl)
@@ -149,7 +169,7 @@ function add(listboxid, textboxid, extension)
     if (!selectedfile.exists()) return; //BBM need some feedback to the user here
     // check to see if a file with the destination name already exists.
     appendlistitem(listbox, extension+"/"+selectedfile.leafName);
-    selectedfile.CopyTo(docfile, "");
+    selectedfile.copyTo(docfile, "");
   }
 }
 
@@ -197,14 +217,36 @@ function browse( extension )// extension is 'css', 'js', 'xml', 'xsl' or somethi
     chosenURL = "file://" + fp.file.target;
     chosenURL = chosenURL.replace("\\","/","g");
   }
+  dump("a\n");
   document.getElementById(extension+"file").value = chosenURL;
+  dump("b\n");
 }
 
 
 function onAccept()
 {
-}
+  // save css PI's
+  // out with the old. Can't use editordoc.styleSheets because it is read-only
+  deleteProcessingInstructions(editordoc,"xml-stylesheet");
+  var xmlList;
+  var i;
+  var listbox = document.getElementById("csslist");
+  for (i=0; i<listbox.itemCount; i++)
+  {
+    addProcessingInstruction(editordoc, "xml-stylesheet", listbox.getItemAtIndex(i).label, "text/css");
+  }
+  // save tagdefs PI's
+  // out with the old.
+  deleteProcessingInstructions(editordoc,"sw-tagdefs");
+  xmlList =  document.getElementById("xmllist");
+  for (i=xmlList.itemCount-1; i>=0; i--)
+  {
+    addProcessingInstruction(editordoc, "sw-tagdefs", xmlList.getItemAtIndex(i).label,"text/xml");
+  }
+  // still need to do something for the other tabs
+} 
 
 function onCancel()
 {
+  return true;
 }
