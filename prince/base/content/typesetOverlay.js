@@ -516,12 +516,37 @@ function doFrontMatterDlg(editorElement, commandHandler)
 
 function doPreambleDlg()
 {
+
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  var document = editor.document;
+
+  var preambleNode = document.getElementsByTagName("preamble")[0];
+
+  var preambleTeXNodeSet = preambleNode.getElementsByTagName("preambleTeX");
+  if (preambleTeXNodeSet.length == 0){
+     preambleTeXNode = document.createElement("preambleTeX");
+     preambleNode.appendChild(preambleTeXNode);
+  } else {
+     preambleTeXNode = preambleTeXNodeSet[0];
+  }
+  
   var preambleData = new Object();
-  preambleData.preambleText = "\\input{tcilatex}";
+
+  preambleData.preambleText = preambleNode.textContent;
+
+
   window.openDialog("chrome://prince/content/typesetPreamble.xul", "_blank", "chrome,close,titlebar,modal", preambleData);
+  
   if (!preambleData.Cancel)
   {
-    alert("Preamble Dialog returned:\n[" + preambleData.preambleText + "]\n Needs to be hooked up to do something!");
+      preambleNode.removeChild(preambleTeXNode);
+      preambleTeXNode = document.createElement("preambleTeX");
+
+      // may need to insert multiple cdata
+      var cdataNode = document.createCDATASection(preambleData.preambleText)
+      preambleTeXNode.appendChild(cdataNode);
+      preambleNode.appendChild(preambleTeXNode);
   }
 }
 
