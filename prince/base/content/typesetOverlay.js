@@ -533,7 +533,7 @@ function doPreambleDlg()
   
   var preambleData = new Object();
 
-  preambleData.preambleText = preambleNode.textContent;
+  preambleData.preambleText = preambleTeXNode.textContent;
 
 
   window.openDialog("chrome://prince/content/typesetPreamble.xul", "_blank", "chrome,close,titlebar,modal", preambleData);
