@@ -36,8 +36,7 @@ function buildMacroArray()
                 classes["@mozilla.org/xmlextras/xmlhttprequest;1"].
                 createInstance();
   request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
-  var path = "file:///"+macrofile.target;
-  path = path.replace("\\","/","g");
+  var path = msiFileURLFromAbsolutePath( macrofile.path );
   request.open("GET", path, false);
   request.send(null);
                             
