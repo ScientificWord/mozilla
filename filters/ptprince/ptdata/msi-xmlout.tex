@@ -32,6 +32,8 @@
 
 % \newcounter{#1}[#2]
 
+\newtoks\preambleToks
+
 \def\out@newcounterA#1{%
   \br\msitag{<texb>\newcounter{#1}</texb>}%   
 }
@@ -79,9 +81,15 @@
 }
 
 
+
+\def\out@preamble@tex#1{
+   \msitag{<preambleTeX>#1</preambleTeX>}%
+}
+
 %% \document and \enddocument
 
 \def\out@begin@document{%
+   \expandafter\out@preamble@tex\expandafter{\the\preambleToks}
    \msiclosetag{preamble}{</preamble>}%
    \br\msitag{</head>}
    \br\msiopentag{body}{<body>}
@@ -162,7 +170,10 @@
 %% newtheorem
 
 \def\out@newtheorema#1[#2]#3{%
-   \br\msitag{<newtheorem name="#1" counter="#2" label="#3"/>}%
+%   \br\msitag{<newtheorem name="#1" counter="#2" label="#3"/>}%
+   
+   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}[#2]{#3}}
+   \msitag{\newtheorem{#1}[#2]{#3}}%
    \@namedef{msi@begin@#1}{\br\msiopentag{theorem}{<theorem type="#1">}}
    \@namedef{msi@end@#1}{\br\msiclosetag{theorem}{</theorem>}}
 }
