@@ -834,7 +834,7 @@ function msiEditorDocumentObserver(editorElement)
             var autosub = Components.classes["@mozilla.org/autosubstitute;1"].getService(Components.interfaces.msiIAutosub);
             var autosubsfile = getUserResourceFile("autosubs.xml", "xml");
             var path;
-            path = msiFileURLFromAbsolutePath( autosubsfile.target );
+            path = msiFileURLFromAbsolutePath( autosubsfile.path );
             autosub.initialize(path);
           }
           catch(e) {
