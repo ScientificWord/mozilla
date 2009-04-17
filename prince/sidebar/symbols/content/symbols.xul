@@ -28,6 +28,8 @@
 
   <command id="cmd_MSIsymbolCmd2"      
     oncommand="doSymbols(event);" />
+  <command id="cmd_MSIInsertChar2"      
+    oncommand="doChar(event);" />
   <broadcaster id="tabpanelstyle" style="height: 180px; overflow-y: scroll;" persist="scrollPos"/>
   
     
@@ -36,33 +38,33 @@
     xmlns:mml="http://www.w3.org/1998/Math/MathML"
     style="height: 150px;">
  	  <tabs class="tabs-top" align="start baseline">
-			  <tab dir="rtl" label="&#x03B1;&#x03B2;" tooltiptext="&MSISymbolTabLCGreek;" selected="1"
+			  <tab dir="rtl" label="&#x03B1;&#x03B2;" mathsym="true" tooltiptext="&MSISymbolTabLCGreek;" selected="1"
 			    linkedpanel="symbol_lcGreek" />
-			  <tab dir="rtl" label="&#x03A6;&#x03A8;" tooltiptext="&MSISymbolTabCCGreek;" selected="0"
+			  <tab dir="rtl" label="&#x03A6;&#x03A8;" mathsym="true" tooltiptext="&MSISymbolTabCCGreek;" selected="0"
 			    linkedpanel="symbol_ucGreek" />
-			  <tab dir="rtl" label="&#x00B1;&#x00F7;" tooltiptext="&MSISymbolTabBinaryOps;"   selected="0"
+			  <tab dir="rtl" label="&#x00B1;&#x00F7;" mathsym="true" tooltiptext="&MSISymbolTabBinaryOps;"   selected="0"
 			    linkedpanel="symbol_binOp" />
-			  <tab dir="rtl" label="&#x2264;&#x2282;" tooltiptext="&MSISymbolTabBinaryRels;"  selected="0"
+			  <tab dir="rtl" label="&#x2264;&#x2282;" mathsym="true" tooltiptext="&MSISymbolTabBinaryRels;"  selected="0"
 			    linkedpanel="symbol_binRel" />
-			  <tab dir="rtl" label="&#x2260;&#x2209;" tooltiptext="&MSISymbolTabNegatedRels;" selected="0"
+			  <tab dir="rtl" label="&#x2260;&#x2209;" mathsym="true" tooltiptext="&MSISymbolTabNegatedRels;" selected="0"
 			    linkedpanel="symbol_negRel" />
     </tabs>
     <tabs>
-			  <tab dir="rtl" label="&#x2194;&#x2191;" tooltiptext="&MSISymbolTabArrows;"        selected="0"
+			  <tab dir="rtl" label="&#x2194;&#x2191;" mathsym="true" tooltiptext="&MSISymbolTabArrows;"        selected="0"
 			    linkedpanel="symbol_arrow" />
- 			  <tab dir="rtl" label="&#x221E;&#x2202;" tooltiptext="&MSISymbolTabMisc;"        selected="0"
+ 			  <tab dir="rtl" label="&#x221E;&#x2202;" mathsym="true" tooltiptext="&MSISymbolTabMisc;"        selected="0"
  			    linkedpanel="symbol_misc" />
-			  <tab dir="rtl" label="&#x232A;&#x2308;" tooltiptext="&MSISymbolTabDelimiters;"        selected="0"
+			  <tab dir="rtl" label="&#x232A;&#x2308;" mathsym="true" tooltiptext="&MSISymbolTabDelimiters;"        selected="0"
 			    linkedpanel="symbol_delims" />
-			  <tab dir="rtl" label="&#x00A3;&#x00B9;" tooltiptext="&MSISymbolTabLatin1;"        selected="0"
+			  <tab dir="rtl" label="&#x00A3;&#x00B9;" mathsym="false" tooltiptext="&MSISymbolTabLatin1;"        selected="0"
 			    linkedpanel="symbol_latin1" />
-			  <tab dir="rtl" label="&#x0141;&#x011B;" tooltiptext="&MSISymbolTabLatinE;"        selected="0"
+			  <tab dir="rtl" label="&#x0141;&#x011B;" mathsym="false" tooltiptext="&MSISymbolTabLatinE;"        selected="0"
 			    linkedpanel="symbol_latinextended" />
-			  <tab dir="rtl" label="&#x201C;&#x201D;" tooltiptext="&MSISymbolTabPunctuation;"        selected="0"
+			  <tab dir="rtl" label="&#x201C;&#x201D;" mathsym="false" tooltiptext="&MSISymbolTabPunctuation;"        selected="0"
 			    linkedpanel="symbol_punctuation" />
     </tabs>
     <tabpanels id="symbol-tabpanels" equalsize="never" hidden="false" > <!--oncommand="if (!event.target.getAttribute('msiText'))  else msiGetEditor.insertText(event.target.getAttribute('msivalue'));" equalsize="never" hidden="false" -->
-	  <tabpanel id="symbol_lcGreek" autostretch="never" align="baseline" observes="tabpanelstyle"> 
+	  <tabpanel id="symbol_lcGreek" mathsym="true" autostretch="never" align="baseline" observes="tabpanelstyle cmd_MSIsymbolCmd2"> 
         <grid>
           <columns>
             <column/>
@@ -73,8 +75,7 @@
           </columns>
           <rows>
             <row>
-              <toolbarbutton label="&alpha;" tooltiptext="&symbolalpha.tooltip;"  msivalue="&#x03B1;"
-                  observes="cmd_MSIsymbolCmd2"/>
+              <toolbarbutton label="&alpha;" tooltiptext="&symbolalpha.tooltip;"  msivalue="&#x03B1;" />
               <toolbarbutton label="&#x03B2;" tooltiptext="&symbolbeta.tooltip;"   msivalue="&#x03B2;"
                   observes="cmd_MSIsymbolCmd2"/>
               <toolbarbutton label="&#x03B3;" tooltiptext="&symbolgamma.tooltip;"  msivalue="&#x03B3;"
@@ -157,7 +158,7 @@
      </tabpanel>
      
 <!-- UPPERCASE GREEK -->
-     <tabpanel id="symbol_ucGreek" align="baseline" observes="tabpanelstyle">
+     <tabpanel id="symbol_ucGreek" mathsym="true" align="baseline" observes="tabpanelstyle">
         <grid>
           <columns>
             <column/>
@@ -202,7 +203,7 @@
       </tabpanel>
 
 <!-- BINARY OPERATIONS -->
-    	<tabpanel id="symbol_binOp"  align="baseline" observes="tabpanelstyle">
+    	<tabpanel id="symbol_binOp"  mathsym="true" align="baseline" observes="tabpanelstyle">
         <grid>
           <columns>
             <column/>
@@ -363,7 +364,7 @@
       </tabpanel>
 
         <!-- BINARY RELATIONS -->
-      <tabpanel id="symbol_binRel" align="baseline" observes="tabpanelstyle">
+      <tabpanel id="symbol_binRel" mathsym="true" align="baseline" observes="tabpanelstyle">
         <grid>
           <columns>
             <column/>
@@ -620,7 +621,7 @@
       </tabpanel>
 
 <!-- NEGATED RELATIONS -->
-      <tabpanel id="symbol_negRel" align="baseline" observes="tabpanelstyle">
+      <tabpanel id="symbol_negRel" mathsym="true" align="baseline" observes="tabpanelstyle">
         <grid>
           <columns>
             <column/>
@@ -787,7 +788,7 @@
       </tabpanel>
 
 <!-- ARROWS -->
-      <tabpanel id="symbol_arrow" align="baseline" observes="tabpanelstyle">
+      <tabpanel id="symbol_arrow" mathsym="true" align="baseline" observes="tabpanelstyle">
         <grid>
           <columns>
             <column/>
@@ -959,7 +960,7 @@
       </tabpanel>
 
 <!-- MISCELLANEOUS SYMBOLS -->
-      <tabpanel id="symbol_misc" align="baseline" observes="tabpanelstyle">
+      <tabpanel id="symbol_misc" mathsym="true" align="baseline" observes="tabpanelstyle">
         <grid>
           <columns>
             <column/>
@@ -1150,7 +1151,7 @@
       </tabpanel>
 
       <!-- DELIMITERS -->
-      <tabpanel id="symbol_delims" align="baseline" observes="tabpanelstyle">
+      <tabpanel id="symbol_delims" mathsym="true" align="baseline" observes="tabpanelstyle">
         <grid>
           <columns>
             <column/>
@@ -1189,7 +1190,7 @@
       </tabpanel> 
 
 <!-- LATIN-1 -->
-      <tabpanel id="symbol_latin1" align="baseline" observes="tabpanelstyle">
+      <tabpanel id="symbol_latin1" mathsym="false" align="baseline" observes="tabpanelstyle">
         <grid>
           <columns>
             <column/>
@@ -1201,234 +1202,234 @@
           <rows>
             <row>
               <toolbarbutton label="&#x00B0;" tooltiptext="&symboltextdegree.tooltip;"       msivalue="&#x00B0;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00A1;" tooltiptext="&symboltextexclamdown.tooltip;"       msivalue="&#x00A1;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00BF;" tooltiptext="&symboltextquestiondown.tooltip;"       msivalue="&#x00BF;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00B1;" tooltiptext="&symbolpm.tooltip;"       msivalue="&#x00B1;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00F7;" tooltiptext="&symboldiv.tooltip;"       msivalue="&#x00F7;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x00B9;" tooltiptext="&symboltextonesuperior.tooltip;"       msivalue="&#x00B9;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00B2;" tooltiptext="&symboltexttwosuperior.tooltip;"       msivalue="&#x00B2;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00B3;" tooltiptext="&symboltextthreesuperior.tooltip;"       msivalue="&#x00B3;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00A2;" tooltiptext="&symboltextcent.tooltip;"       msivalue="&#x00A2;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00A3;" tooltiptext="&symbolsterling.tooltip;"       msivalue="&#x00A3;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x00A4;" tooltiptext="&symboltextcurrency.tooltip;"       msivalue="&#x00A4;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00A5;" tooltiptext="&symbolyen.tooltip;"       msivalue="&#x00A5;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00B5;" tooltiptext="&symboltextmu.tooltip;"       msivalue="&#x00B5;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00A6;" tooltiptext="&symboltextbrokenbar.tooltip;"       msivalue="&#x00A6;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00B6;" tooltiptext="&symbolP.tooltip;"       msivalue="&#x00B6;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x00A7;" tooltiptext="&symbolS.tooltip;"       msivalue="&#x00A7;"
               observes="cmd_MSItextCmd"/>
               <toolbarbutton label="&#x00B7;" tooltiptext="&symbolcdotp.tooltip;"       msivalue="&#x00B7;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00B4;" tooltiptext="&symboltextasciiacute.tooltip;"       msivalue="&#x00B4;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00A8;" tooltiptext="&symboltextasciidieresis.tooltip;"       msivalue="&#x00A8;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00B8;" tooltiptext="&symbolcedilla.tooltip;"       msivalue="&#x00B8;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x00A9;" tooltiptext="&symboltextcopyright.tooltip;"       msivalue="&#x00A9;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00AE;" tooltiptext="&symboltextregistered.tooltip;"       msivalue="&#x00AE;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00AB;" tooltiptext="&symbolguillemotleft.tooltip;"       msivalue="&#x00AB;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00BB;" tooltiptext="&symbolguillemotright.tooltip;"       msivalue="&#x00BB;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00AD;" tooltiptext="&symbolshy.tooltip;"       msivalue="&#x00AD;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x00AF;" tooltiptext="&symboltextasciimacron.tooltip;"       msivalue="&#x00AF;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00BC;" tooltiptext="&symboltextonequarter.tooltip;"       msivalue="&#x00BC;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00BD;" tooltiptext="&symboltextonehalf.tooltip;"       msivalue="&#x00BD;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00BE;" tooltiptext="&symboltextthreequarters.tooltip;"       msivalue="&#x00BE;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00AA;" tooltiptext="&symboltextordfeminine.tooltip;"       msivalue="&#x00AA;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x00BA;" tooltiptext="&symboltextordmasculine.tooltip;"       msivalue="&#x00BA;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00C1;" tooltiptext="&symbolAacute.tooltip;"       msivalue="&#x00C1;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00C2;" tooltiptext="&symbolAcircumflex.tooltip;"       msivalue="&#x00C2;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00C4;" tooltiptext="&symbolAdieresis.tooltip;"       msivalue="&#x00C4;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00C0;" tooltiptext="&symbolAgrave.tooltip;"       msivalue="&#x00C0;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x00C3;" tooltiptext="&symbolAtilde.tooltip;"       msivalue="&#x00C3;"
-              observes="cmd_MSIsymbolCmd2"/>									   
+              observes="cmd_MSIInsertChar2"/>									   
               <toolbarbutton label="&#x00C5;" tooltiptext="&symbolAA.tooltip;"       msivalue="&#x00C5;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00C6;" tooltiptext="&symbolAE.tooltip;"       msivalue="&#x00C6;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00C7;" tooltiptext="&symbolCcedilla.tooltip;"       msivalue="&#x00C7;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00D0;" tooltiptext="&symbolDH.tooltip;"       msivalue="&#x00D0;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x00C9;" tooltiptext="&symbolEacute.tooltip;"       msivalue="&#x00C9;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00CA;" tooltiptext="&symbolEcircumflex.tooltip;"       msivalue="&#x00CA;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00CB;" tooltiptext="&symbolEdieresis.tooltip;"       msivalue="&#x00CB;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00C8;" tooltiptext="&symbolEgrave.tooltip;"       msivalue="&#x00C8;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00CD;" tooltiptext="&symbolIacute.tooltip;"       msivalue="&#x00CD;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x00CE;" tooltiptext="&symbolIcircumflex.tooltip;"       msivalue="&#x00CE;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00CF;" tooltiptext="&symbolIdieresis.tooltip;"       msivalue="&#x00CF;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00CC;" tooltiptext="&symbolIgrave.tooltip;"       msivalue="&#x00CC;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00D1;" tooltiptext="&symbolNtilde.tooltip;"       msivalue="&#x00D1;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00D3;" tooltiptext="&symbolOacute.tooltip;"       msivalue="&#x00D3;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x00D4;" tooltiptext="&symbolOcircumflex.tooltip;"       msivalue="&#x00D4;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00D6;" tooltiptext="&symbolOdieresis.tooltip;"       msivalue="&#x00D6;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00D2;" tooltiptext="&symbolOgrave.tooltip;"       msivalue="&#x00D2;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00D8;" tooltiptext="&symbolO.tooltip;"       msivalue="&#x00D8;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00D5;" tooltiptext="&symbolOtilde.tooltip;"       msivalue="&#x00D5;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x00DE;" tooltiptext="&symbolTH.tooltip;"       msivalue="&#x00DE;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00DA;" tooltiptext="&symbolUacute.tooltip;"       msivalue="&#x00DA;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00DB;" tooltiptext="&symbolUcircumflex.tooltip;"       msivalue="&#x00DB;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00DC;" tooltiptext="&symbolUdieresis.tooltip;"       msivalue="&#x00DC;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00D9;" tooltiptext="&symbolUgrave.tooltip;"       msivalue="&#x00D9;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x00DD;" tooltiptext="&symbolYacute.tooltip;"       msivalue="&#x00DD;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00E1;" tooltiptext="&symbolaacute.tooltip;"       msivalue="&#x00E1;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00E2;" tooltiptext="&symbolacircumflex.tooltip;"       msivalue="&#x00E2;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00E4;" tooltiptext="&symboladieresis.tooltip;"       msivalue="&#x00E4;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00E0;" tooltiptext="&symbolagrave.tooltip;"       msivalue="&#x00E0;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x00E3;" tooltiptext="&symbolatilde.tooltip;"       msivalue="&#x00E3;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00E5;" tooltiptext="&symbolaa.tooltip;"       msivalue="&#x00E5;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00E6;" tooltiptext="&symbolae.tooltip;"       msivalue="&#x00E6;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00E7;" tooltiptext="&symbolccedilla.tooltip;"       msivalue="&#x00E7;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00F0;" tooltiptext="&symboldh.tooltip;"       msivalue="&#x00F0;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x00E9;" tooltiptext="&symboleacute.tooltip;"       msivalue="&#x00E9;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00EA;" tooltiptext="&symbolecircumflex.tooltip;"       msivalue="&#x00EA;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00EB;" tooltiptext="&symboledieresis.tooltip;"       msivalue="&#x00EB;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00E8;" tooltiptext="&symbolegrave.tooltip;"       msivalue="&#x00E8;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00ED;" tooltiptext="&symboliacute.tooltip;"       msivalue="&#x00ED;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x00EE;" tooltiptext="&symbolicircumflex.tooltip;"       msivalue="&#x00EE;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00EF;" tooltiptext="&symbolidieresis.tooltip;"       msivalue="&#x00EF;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00EC;" tooltiptext="&symboligrave.tooltip;"       msivalue="&#x00EC;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00F1;" tooltiptext="&symbolntilde.tooltip;"       msivalue="&#x00F1;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00F3;" tooltiptext="&symboloacute.tooltip;"       msivalue="&#x00F3;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x00F4;" tooltiptext="&symbolocircumflex.tooltip;"       msivalue="&#x00F4;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00F6;" tooltiptext="&symbolodieresis.tooltip;"       msivalue="&#x00F6;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00F2;" tooltiptext="&symbolograve.tooltip;"       msivalue="&#x00F2;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00F8;" tooltiptext="&symbolo.tooltip;"       msivalue="&#x00F8;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00F5;" tooltiptext="&symbolotilde.tooltip;"       msivalue="&#x00F5;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x00FA;" tooltiptext="&symboluacute.tooltip;"       msivalue="&#x00FA;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00FB;" tooltiptext="&symbolucircumflex.tooltip;"       msivalue="&#x00FB;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00FC;" tooltiptext="&symboludieresis.tooltip;"       msivalue="&#x00FC;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00F9;" tooltiptext="&symbolugrave.tooltip;"       msivalue="&#x00F9;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00DF;" tooltiptext="&symbolss.tooltip;"       msivalue="&#x00DF;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x00FE;" tooltiptext="&symbolth.tooltip;"       msivalue="&#x00FE;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00FD;" tooltiptext="&symbolyacute.tooltip;"       msivalue="&#x00FD;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x00FF;" tooltiptext="&symbolydieresis.tooltip;"       msivalue="&#x00FF;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
           </rows>
         </grid>
       </tabpanel> 
 
 <!-- LATIN EXTENDED -->
-      <tabpanel id="symbol_latinextended" align="baseline" observes="tabpanelstyle">
+      <tabpanel id="symbol_latinextended" mathsym="false" align="baseline" observes="tabpanelstyle">
         <grid>
           <columns>
             <column/>
@@ -1440,314 +1441,314 @@
           <rows>
             <row>
               <toolbarbutton label="&#x0102;" tooltiptext="&symbolAbreve.tooltip;"       msivalue="&#x0102;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0100;" tooltiptext="&symbolAmacr.tooltip;"       msivalue="&#x0100;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0104;" tooltiptext="&symbolAogon.tooltip;"       msivalue="&#x0104;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0106;" tooltiptext="&symbolCacute.tooltip;"       msivalue="&#x0106;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x010C;" tooltiptext="&symbolCcaron.tooltip;"       msivalue="&#x010C;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x0108;" tooltiptext="&symbolCcirc.tooltip;"       msivalue="&#x0108;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x010A;" tooltiptext="&symbolCdot.tooltip;"       msivalue="&#x010A;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x010E;" tooltiptext="&symbolDcaron.tooltip;"       msivalue="&#x010E;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0110;" tooltiptext="&symbolDJ.tooltip;"       msivalue="&#x0110;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0114;" tooltiptext="&symbolEbreve.tooltip;"       msivalue="&#x0114;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x011A;" tooltiptext="&symbolEcaron.tooltip;"       msivalue="&#x011A;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0116;" tooltiptext="&symbolEdot.tooltip;"       msivalue="&#x0116;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0112;" tooltiptext="&symbolEmacr.tooltip;"       msivalue="&#x0112;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0118;" tooltiptext="&symbolEogon.tooltip;"       msivalue="&#x0118;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x011E;" tooltiptext="&symbolGbreve.tooltip;"       msivalue="&#x011E;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x0122;" tooltiptext="&symbolGcedil.tooltip;"       msivalue="&#x0122;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x011C;" tooltiptext="&symbolGcirc.tooltip;"       msivalue="&#x011C;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0120;" tooltiptext="&symbolGdot.tooltip;"       msivalue="&#x0120;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0124;" tooltiptext="&symbolHcirc.tooltip;"       msivalue="&#x0124;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0126;" tooltiptext="&symbolHstrok.tooltip;"       msivalue="&#x0126;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x012C;" tooltiptext="&symbolIbreve.tooltip;"       msivalue="&#x012C;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0130;" tooltiptext="&symbolIdot.tooltip;"       msivalue="&#x0130;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x012A;" tooltiptext="&symbolImacr.tooltip;"       msivalue="&#x012A;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x012E;" tooltiptext="&symbolIogon.tooltip;"       msivalue="&#x012E;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0128;" tooltiptext="&symbolItilde.tooltip;"       msivalue="&#x0128;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x0132;" tooltiptext="&symbolIJ.tooltip;"       msivalue="&#x0132;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0134;" tooltiptext="&symbolJcirc.tooltip;"       msivalue="&#x0134;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0136;" tooltiptext="&symbolKcedil.tooltip;"       msivalue="&#x0136;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0138;" tooltiptext="&symbolkgreen.tooltip;"       msivalue="&#x0138;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0139;" tooltiptext="&symbolLacute.tooltip;"       msivalue="&#x0139;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x013D;" tooltiptext="&symbolLcaron.tooltip;"       msivalue="&#x013D;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x013B;" tooltiptext="&symbolLcedil.tooltip;"       msivalue="&#x013B;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x013F;" tooltiptext="&symbolLmidot.tooltip;"       msivalue="&#x013F;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0141;" tooltiptext="&symbolL.tooltip;"       msivalue="&#x0141;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0143;" tooltiptext="&symbolNacute.tooltip;"       msivalue="&#x0143;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x0147;" tooltiptext="&symbolNcaron.tooltip;"       msivalue="&#x0147;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0145;" tooltiptext="&symbolNcedil.tooltip;"       msivalue="&#x0145;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x014A;" tooltiptext="&symbolNG.tooltip;"       msivalue="&#x014A;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x014E;" tooltiptext="&symbolObreve.tooltip;"       msivalue="&#x014E;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0150;" tooltiptext="&symbolOdblac.tooltip;"       msivalue="&#x0150;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x014C;" tooltiptext="&symbolOmacr.tooltip;"       msivalue="&#x014C;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0152;" tooltiptext="&symbolOE.tooltip;"       msivalue="&#x0152;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0154;" tooltiptext="&symbolRacute.tooltip;"       msivalue="&#x0154;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0158;" tooltiptext="&symbolRcaron.tooltip;"       msivalue="&#x0158;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0156;" tooltiptext="&symbolRcedil.tooltip;"       msivalue="&#x0156;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x015A;" tooltiptext="&symbolSacute.tooltip;"       msivalue="&#x015A;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0160;" tooltiptext="&symbolScaron.tooltip;"       msivalue="&#x0160;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x015E;" tooltiptext="&symbolScedil.tooltip;"       msivalue="&#x015E;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x015C;" tooltiptext="&symbolScirc.tooltip;"       msivalue="&#x015C;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0164;" tooltiptext="&symbolTcaron.tooltip;"       msivalue="&#x0164;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x0162;" tooltiptext="&symbolTcedil.tooltip;"       msivalue="&#x0162;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0166;" tooltiptext="&symbolTstrok.tooltip;"       msivalue="&#x0166;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x016C;" tooltiptext="&symbolUbreve.tooltip;"       msivalue="&#x016C;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0170;" tooltiptext="&symbolUdblac.tooltip;"       msivalue="&#x0170;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x016A;" tooltiptext="&symbolUmacr.tooltip;"       msivalue="&#x016A;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x0172;" tooltiptext="&symbolUogon.tooltip;"       msivalue="&#x0172;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x016E;" tooltiptext="&symbolUring.tooltip;"       msivalue="&#x016E;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0168;" tooltiptext="&symbolUtilde.tooltip;"       msivalue="&#x0168;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0174;" tooltiptext="&symbolWcirc.tooltip;"       msivalue="&#x0174;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0176;" tooltiptext="&symbolYcirc.tooltip;"       msivalue="&#x0176;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x0178;" tooltiptext="&symbolYdieresis.tooltip;"       msivalue="&#x0178;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0179;" tooltiptext="&symbolZacute.tooltip;"       msivalue="&#x0179;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x017D;" tooltiptext="&symbolZcaron.tooltip;"       msivalue="&#x017D;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x017B;" tooltiptext="&symbolZdot.tooltip;"       msivalue="&#x017B;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0103;" tooltiptext="&symbolabreve.tooltip;"       msivalue="&#x0103;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x0101;" tooltiptext="&symbolamacr.tooltip;"       msivalue="&#x0101;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0105;" tooltiptext="&symbolaogon.tooltip;"       msivalue="&#x0105;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0107;" tooltiptext="&symbolcacute.tooltip;"       msivalue="&#x0107;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x010D;" tooltiptext="&symbolccaron.tooltip;"       msivalue="&#x010D;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0109;" tooltiptext="&symbolccirc.tooltip;"       msivalue="&#x0109;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x010B;" tooltiptext="&symboldotc.tooltip;"       msivalue="&#x010B;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x010F;" tooltiptext="&symboldcaron.tooltip;"       msivalue="&#x010F;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0111;" tooltiptext="&symboldj.tooltip;"       msivalue="&#x0111;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0115;" tooltiptext="&symbolebreve.tooltip;"       msivalue="&#x0115;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x011B;" tooltiptext="&symbolecaron.tooltip;"       msivalue="&#x011B;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x0117;" tooltiptext="&symboledot.tooltip;"       msivalue="&#x0117;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0113;" tooltiptext="&symbolemacr.tooltip;"       msivalue="&#x0113;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0119;" tooltiptext="&symboleogon.tooltip;"       msivalue="&#x0119;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x011F;" tooltiptext="&symbolgbreve.tooltip;"       msivalue="&#x011F;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0123;" tooltiptext="&symbolgcedil.tooltip;"       msivalue="&#x0123;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x011D;" tooltiptext="&symbolgcirc.tooltip;"       msivalue="&#x011D;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0121;" tooltiptext="&symbolgdot.tooltip;"       msivalue="&#x0121;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0125;" tooltiptext="&symbolhcirc.tooltip;"       msivalue="&#x0125;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0127;" tooltiptext="&symboltextcrh.tooltip;"       msivalue="&#x0127;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x012D;" tooltiptext="&symbolibreve.tooltip;"       msivalue="&#x012D;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x012B;" tooltiptext="&symbolimacr.tooltip;"       msivalue="&#x012B;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x012F;" tooltiptext="&symboliogon.tooltip;"       msivalue="&#x012F;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0129;" tooltiptext="&symbolitilde.tooltip;"       msivalue="&#x0129;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0133;" tooltiptext="&symbolij.tooltip;"       msivalue="&#x0133;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0135;" tooltiptext="&symboljcirc.tooltip;"       msivalue="&#x0135;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x0137;" tooltiptext="&symbolkcedil.tooltip;"       msivalue="&#x0137;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x013A;" tooltiptext="&symbollacute.tooltip;"       msivalue="&#x013A;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x013E;" tooltiptext="&symbollcaron.tooltip;"       msivalue="&#x013E;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x013C;" tooltiptext="&symbollcedil.tooltip;"       msivalue="&#x013C;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0140;" tooltiptext="&symbollmidot.tooltip;"       msivalue="&#x0140;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x0142;" tooltiptext="&symboll.tooltip;"       msivalue="&#x0142;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0144;" tooltiptext="&symbolnacute.tooltip;"       msivalue="&#x0144;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0149;" tooltiptext="&symbolnapos.tooltip;"       msivalue="&#x0149;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0148;" tooltiptext="&symbolncaron.tooltip;"       msivalue="&#x0148;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0146;" tooltiptext="&symbolncedil.tooltip;"       msivalue="&#x0146;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x014B;" tooltiptext="&symbolng.tooltip;"       msivalue="&#x014B;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x014F;" tooltiptext="&symbolobreve.tooltip;"       msivalue="&#x014F;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0151;" tooltiptext="&symbolodblac.tooltip;"       msivalue="&#x0151;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x014D;" tooltiptext="&symbolomacr.tooltip;"       msivalue="&#x014D;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0153;" tooltiptext="&symboloe.tooltip;"       msivalue="&#x0153;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x0155;" tooltiptext="&symbolracute.tooltip;"       msivalue="&#x0155;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0159;" tooltiptext="&symbolrcaron.tooltip;"       msivalue="&#x0159;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0157;" tooltiptext="&symbolrcedil.tooltip;"       msivalue="&#x0157;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x015B;" tooltiptext="&symbolsacute.tooltip;"       msivalue="&#x015B;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0161;" tooltiptext="&symbolscaron.tooltip;"       msivalue="&#x0161;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x015F;" tooltiptext="&symbolscedil.tooltip;"       msivalue="&#x015F;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0165;" tooltiptext="&symboltcaron.tooltip;"       msivalue="&#x0165;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0163;" tooltiptext="&symboltcedil.tooltip;"       msivalue="&#x0163;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x015D;" tooltiptext="&symbolscirc.tooltip;"       msivalue="&#x015D;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0167;" tooltiptext="&symboltstrok.tooltip;"       msivalue="&#x0167;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x016D;" tooltiptext="&symbolubreve.tooltip;"       msivalue="&#x016D;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0171;" tooltiptext="&symboludblac.tooltip;"       msivalue="&#x0171;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x016B;" tooltiptext="&symbolumacr.tooltip;"       msivalue="&#x016B;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0173;" tooltiptext="&symboluogon.tooltip;"       msivalue="&#x0173;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x016F;" tooltiptext="&symboluring.tooltip;"       msivalue="&#x016F;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x0169;" tooltiptext="&symbolutilde.tooltip;"       msivalue="&#x0169;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0175;" tooltiptext="&symbolwcirc.tooltip;"       msivalue="&#x0175;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x0177;" tooltiptext="&symbolycirc.tooltip;"       msivalue="&#x0177;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x017A;" tooltiptext="&symbolzacute.tooltip;"       msivalue="&#x017A;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x017E;" tooltiptext="&symbolzcaron.tooltip;"       msivalue="&#x017E;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x017C;" tooltiptext="&symbolzdot.tooltip;"       msivalue="&#x017C;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
             </row>
           </rows>
         </grid>
       </tabpanel> 
 
 <!-- PUNCTUATION -->
-      <tabpanel id="symbol_punctuation" align="baseline" observes="tabpanelstyle">
+      <tabpanel id="symbol_punctuation" mathsym="false" align="baseline" observes="tabpanelstyle">
         <grid>
           <columns>
             <column/>
@@ -1759,27 +1760,27 @@
           <rows>
             <row>
               <toolbarbutton label="&#x2013;" tooltiptext="&symbolendash.tooltip;"       msivalue="&#x2013;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x2014;" tooltiptext="&symbolemdash.tooltip;"       msivalue="&#x2014;"
-              observes="cmd_MSIsymbolCmd2"/>
+              observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x2018;" tooltiptext="&symbollq.tooltip;"       msivalue="&#x2018;"
-                 observes="cmd_MSIsymbolCmd2"/>
+                 observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x2019;" tooltiptext="&symbolrq.tooltip;"       msivalue="&#x2019;"
-                 observes="cmd_MSIsymbolCmd2"/>
+                 observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x201A;" tooltiptext="&symbolquotsinglbase.tooltip;"       msivalue="&#x201A;"
-                 observes="cmd_MSIsymbolCmd2"/>
+                 observes="cmd_MSIInsertChar2"/>
             </row>
             <row>
               <toolbarbutton label="&#x201E;" tooltiptext="&symbolquotdblbase.tooltip;"       msivalue="&#x201E;"
-                 observes="cmd_MSIsymbolCmd2"/>
+                 observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x201C;" tooltiptext="&symboltextquotedblleft.tooltip;"       msivalue="&#x201C;"
-                 observes="cmd_MSIsymbolCmd2"/>
+                 observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x201D;" tooltiptext="&symboltextquotedblright.tooltip;"       msivalue="&#x201D;"
-                 observes="cmd_MSIsymbolCmd2"/>
+                 observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x2039;" tooltiptext="&symbolguilsinglleft.tooltip;"       msivalue="&#x2039;"
-                 observes="cmd_MSIsymbolCmd2"/>
+                 observes="cmd_MSIInsertChar2"/>
               <toolbarbutton label="&#x203A;" tooltiptext="&symbolguilsinglright.tooltip;"       msivalue="&#x203A;"
-                 observes="cmd_MSIsymbolCmd2"/>
+                 observes="cmd_MSIInsertChar2"/>
             </row>
           </rows>
         </grid>
