@@ -19,6 +19,8 @@
     xmlns:html="http://www.w3.org/1999/xhtml"
     onload = "startup();"
     buttons="accept,cancel"
+    ondialogaccept="return onAccept();"
+    ondialogcancel="return onCancel();"
     persist="width height screenx screeny">
 
   <script type="application/x-javascript"  src="chrome://prince/content/msiEditorUtilities.js"/>
