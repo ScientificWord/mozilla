@@ -1,5 +1,7 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 
+const typesetOverlayJS_duplicateTest = "Bad";
+
 var gBibChoice = "manual";  //a kludge - must get hooked up to editor to really work
 var gBibItemList = ["bibItem1", "bibItem2", "journalBibEntry", "bookBibEntry"];
 
