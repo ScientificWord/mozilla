@@ -6361,7 +6361,7 @@ function msiFileURLFromAbsolutePath( absPath )
   var url = "file:///"+absPath;
   url = url.replace("\\","/","g");
 #else
-  var url = "file:/"+absPath;
+  var url = "file://"+absPath;
 #endif
   return url;
 }
