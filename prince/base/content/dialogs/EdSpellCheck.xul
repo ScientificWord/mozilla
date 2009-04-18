@@ -50,11 +50,11 @@
     ondialogaccept="return doDefault();"
     ondialogcancel="return CancelSpellCheck();">
 
-  <script type="application/x-javascript" src="chrome://prince/content/editorUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/msiEdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://communicator/content/utilityOverlay.js"/>
   <script type="application/x-javascript" src="chrome://communicator/content/builtinURLs.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/EdSpellCheck.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
 
   <broadcaster id="args" value=""/>
