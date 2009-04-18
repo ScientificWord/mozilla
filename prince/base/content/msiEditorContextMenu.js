@@ -3,6 +3,8 @@
   Copyright 2007 MacKichan Software, Inc.
  * ***** END LICENSE BLOCK ***** */
 
+const msiEditorContextMenuJS_duplicateTest = "Bad";
+
 function msiEditorFillContextMenu(event, contextMenuNode)
 {
   if ( event.target != contextMenuNode )
@@ -134,6 +136,7 @@ function addSectionProperties(editorElement, contextMenuNode)
   var editor = msiGetEditor(editorElement);
   var parentTagString;
   var parentTagArray;
+  var labelString;
   var tag;
   var i, length;
   removeSectionProperties(contextMenuNode);
@@ -141,12 +144,15 @@ function addSectionProperties(editorElement, contextMenuNode)
   {
     parentTagString = editor.tagListManager.getParentTagList(",",false);
     parentTagArray = parentTagString.split(","); 
+    labelString = GetString("TagPropertiesMenuLabel");
     for (i = 0, length = parentTagArray.length; i < length; i++)
     {
       tag = parentTagArray[i].replace(/\s-\s\w*$/,"");
       if (/\w/.test(tag) && editor.tagListManager.getTagInClass("paratag", tag, null))
       {
-        createContextPropertiesItem(tag,"Properties of "+tag,tag, contextMenuNode,"paratag");
+        labelString = labelString.replace(/%tagname%/, tag);
+        createContextPropertiesItem(tag, labelString, tag, contextMenuNode,"paratag");
+//        createContextPropertiesItem(tag,"Properties of "+tag,tag, contextMenuNode,"paratag");
       }
     }
     for (i = 0, length = parentTagArray.length; i < length; i++)
@@ -154,7 +160,9 @@ function addSectionProperties(editorElement, contextMenuNode)
       tag = parentTagArray[i].replace(/\s-\s\w*$/,"");
       if (/\w/.test(tag) && editor.tagListManager.getTagInClass("structtag", tag, null))
       {
-        createContextPropertiesItem(tag,"Properties of "+tag,tag, contextMenuNode, "structtag");
+        labelString = labelString.replace(/%tagname%/, tag);
+        createContextPropertiesItem(tag, labelString, tag, contextMenuNode, "structtag");
+//        createContextPropertiesItem(tag,"Properties of "+tag,tag, contextMenuNode, "structtag");
       }
     }
   }
