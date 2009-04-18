@@ -15,7 +15,7 @@
 <overlay id="menuOverlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/x-javascript"  src="chrome://prince/content/toolbarsOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
+  <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/ -->
   <!--script type="application/x-javascript"  src="chrome://venkman/content/venkman-overlay.js"/ -->
   <script type="application/x-javascript"  src="chrome://inspector/content/hooks.js"/>
   <script type="application/x-javascript" src="chrome://global/content/viewZoomOverlay.js"/>
@@ -144,7 +144,8 @@
     </menupopup>
   </menu>
   
-  <menu id="editMenu" label="&editMenu.label;" accesskey="&editmenu.accesskey;" onpopupshowing="msiEditorInitFormatMenu();">
+  <menu id="editMenu" label="&editMenu.label;" accesskey="&editmenu.accesskey;" onpopupshowing="msiEditorInitFormatMenu(event, this);" 
+        onpopuphidden="msiCleanUpPropertiesMenu(event, this);">
     <menupopup id="edEditMenuPopup">
       <menuitem id="menu_undo"
                 label="&undoCmd.label;"
