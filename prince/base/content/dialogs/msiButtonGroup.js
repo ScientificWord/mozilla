@@ -9,6 +9,14 @@ function getButtonValue(buttonNode)
   return buttonNode.label;
 }
 
+function getButtonGroupKids(parentNode)
+{
+  if ("getKids" in parentNode)
+    return parentNode.getKids();
+  dump("Problem in msiButtonGroup.js! getKids() not defined\n");
+  return new Array(0);
+}
+
 function toggleSelection(parentNode, targetNode)
 {
   if (targetNode.disabled)
@@ -16,7 +24,7 @@ function toggleSelection(parentNode, targetNode)
   if (parentNode==targetNode)
     return -1;
 
-  var kids = parentNode.getKids();
+  var kids = getButtonGroupKids(parentNode);
   var nWhichButton = -1;
   var bSelect = true;
   for (var i = 0; i < kids.length; ++i)
@@ -58,7 +66,7 @@ function setSelection(parentNode,targetNode)
   if (parentNode==targetNode)
     return -1;
 
-  var kids = parentNode.getKids();
+  var kids = getButtonGroupKids(parentNode);
   var nWhichButton = -1;
   for (var i = 0; i < kids.length; ++i)
   {
@@ -82,7 +90,7 @@ function setSelection(parentNode,targetNode)
 function setSelectionByIndex(nWhichButton, groupIDString)
 {
   var theGroup = document.getElementById(groupIDString);
-  var kids = theGroup.getKids();
+  var kids = getButtonGroupKids(theGroup);
   if (nWhichButton >= 0 && nWhichButton < kids.length)
     setSelection(theGroup, kids[nWhichButton]);
 }
@@ -90,7 +98,7 @@ function setSelectionByIndex(nWhichButton, groupIDString)
 function setSelectionByValue(parentNode,valueStr)
 {
   var theNode = null;
-  var theKids = parentNode.getKids();
+  var theKids = getButtonGroupKids(parentNode);
   if (!theNode)
   {
     for (var i = 0; i < theKids.length; ++i)
@@ -116,7 +124,7 @@ function msiAdvanceButton(buttonGroup, event, forward)
 
   if (focusElement && focusElement.nodeName == 'button' && focusElement.getAttribute('group')==buttonGroup.id)
   {
-    var kids = buttonGroup.getKids();
+    var kids = getButtonGroupKids(buttonGroup);
     var nSelIndex = -1;
     for (var i = 0; i < (kids.length) && (nSelIndex < 0); ++i)
     {
@@ -264,7 +272,7 @@ function radioGroupSetFocus(radioGroup,focusTarget)
   if (radioGroup != focusTarget)
     return;
 
-  var kids = radioGroup.getKids();
+  var kids = getButtonGroupKids(radioGroup);
   for (var i = 0; i < kids.length; ++i)
   {
     if (kids[i].checked)
@@ -288,7 +296,7 @@ function elementIsDescendant(child, parent)
 
 function buttonGroupEnable(buttonGroup, doEnable)
 {
-  var kids = buttonGroup.getKids();
+  var kids = getButtonGroupKids(buttonGroup);
   for (var i = 0; i < kids.length; ++i)
   {
     kids[i].disabled = !doEnable;
@@ -331,7 +339,7 @@ function makeMSIButtonGroup(element, bSelectOnFocus, subordinateIDString)
     var kids = this.getElementsByAttribute("group", this.id);
     if (kids.length == 0)
     {
-      kids = this.getButtonsByTagName("button");
+      kids = this.getElementsByTagName("button");
     }
     return kids;
   };
