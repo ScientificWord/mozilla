@@ -578,7 +578,7 @@ function SwitchToValidatePanel()
 }
 
 // Get data from widgets, validate, and set for the global element
-//   accessible to AdvancedEdit() [in EdDialogCommon.js]
+//   accessible to AdvancedEdit() [in msiEdDialogCommon.js]
 function ValidateImage()
 {
   var editorElement = msiGetParentEditorElementForDialog(window);

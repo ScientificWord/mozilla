@@ -3,11 +3,11 @@
 
 // Each editor window must include this file
 
-//// Object to attach commonly-used widgets (all dialogs should use this)
-//var gDialog = {};
-//
-//var gValidationError = false;
-//
+// Object to attach commonly-used widgets (all dialogs should use this)
+var gDialog = {};
+
+var gValidationError = false;
+
 // Use for 'defaultIndex' param in InitPixelOrPercentMenulist
 const gPixel = 0;
 const gPercent = 1;
@@ -18,10 +18,10 @@ const gMaxPixels  = 100000; // Used for image size, borders, spacing, and paddin
 const gMaxRows    = 1000;
 const gMaxColumns = 1000;
 const gMaxTableSize = 1000000; // Width or height of table or cells
-//
-//// For dialogs that expand in size. Default is smaller size see "onMoreFewer()" below
-//var SeeMore = false;
-//
+
+// For dialogs that expand in size. Default is smaller size see "onMoreFewer()" below
+var SeeMore = false;
+
 // A XUL element with id="location" for managing
 // dialog location relative to parent window
 var gLocation;
@@ -42,7 +42,7 @@ var globalElement;
  *  attName        Name of the attribute to set.  May be null or ignored if "element" is null
  *  mustHaveValue  If true, error dialog is displayed if "value" is empty string
  *
- *  This calls "ValidateNumberRange()", which puts up an error dialog to inform the user. 
+ *  This calls "msiValidateNumberRange()", which puts up an error dialog to inform the user. 
  *    If error, we also: 
  *      Shift focus and select contents of the inputWidget,
  *      Switch to appropriate panel of tabbed dialog if user implements "SwitchToValidate()",
@@ -73,7 +73,7 @@ function msiValidateNumber(inputWidget, listWidget, minVal, maxVal, element, att
       maxLimit = 100;
 
     // This method puts up the error message
-    numString = ValidateNumberRange(numString, minVal, maxLimit, mustHaveValue);
+    numString = msiValidateNumberRange(numString, minVal, maxLimit, mustHaveValue);
     if(!numString)
     {
       // Switch to appropriate panel for error reporting
@@ -127,7 +127,7 @@ function msiValidateNumber(inputWidget, listWidget, minVal, maxVal, element, att
  *  Returns the "value" as a string, or "" if error or input contents are empty
  *  The global "gValidationError" variable is set true if error was found
  */
-function ValidateNumberRange(value, minValue, maxValue, mustHaveValue)
+function msiValidateNumberRange(value, minValue, maxValue, mustHaveValue)
 {
   // Initialize global error flag
   gValidationError = false;
@@ -171,11 +171,11 @@ function ValidateNumberRange(value, minValue, maxValue, mustHaveValue)
   return "";
 }
 
-//function SetTextboxFocusById(id)
-//{
-//  SetTextboxFocus(document.getElementById(id));
-//}
-//
+function SetTextboxFocusById(id)
+{
+  SetTextboxFocus(document.getElementById(id));
+}
+
 function SetTextboxFocus(textbox)
 {
   if (textbox)
@@ -186,11 +186,11 @@ function SetTextboxFocus(textbox)
   }
 }
 
-//function ShowInputErrorMessage(message)
-//{
-//  AlertWithTitle(GetString("InputError"), message);
-//  window.focus();
-//}
+function ShowInputErrorMessage(message)
+{
+  AlertWithTitle(GetString("InputError"), message);
+  window.focus();
+}
 
 // Get the text appropriate to parent container
 //  to determine what a "%" value is referring to.
@@ -214,16 +214,16 @@ function msiGetAppropriatePercentString(elementForAtt, elementInDoc)
   } catch (e) { return "";}
 }
 
-//function ClearListbox(listbox)
-//{
-//  if (listbox)
-//  {
-//    listbox.clearSelection();
-//    while (listbox.firstChild)
-//      listbox.removeChild(listbox.firstChild);
-//  }
-//}
-//
+function ClearListbox(listbox)
+{
+  if (listbox)
+  {
+    listbox.clearSelection();
+    while (listbox.firstChild)
+      listbox.removeChild(listbox.firstChild);
+  }
+}
+
 function forceInteger(elementID)
 {
   var editField = document.getElementById( elementID );
@@ -242,17 +242,17 @@ function forceInteger(elementID)
       editField.value = stringIn;
   }
 }
-//
-//function LimitStringLength(elementID, length)
-//{
-//  var editField = document.getElementById( elementID );
-//  if ( !editField )
-//    return;
-//
-//  var stringIn = editField.value;
-//  if (stringIn && stringIn.length > length)
-//    editField.value = stringIn.slice(0,length);
-//}
+
+function LimitStringLength(elementID, length)
+{
+  var editField = document.getElementById( elementID );
+  if ( !editField )
+    return;
+
+  var stringIn = editField.value;
+  if (stringIn && stringIn.length > length)
+    editField.value = stringIn.slice(0,length);
+}
 
 function msiInitPixelOrPercentMenulist(elementForAtt, elementInDoc, attribute, menulistID, defaultIndex)
 {
@@ -369,42 +369,42 @@ function getColorAndSetColorWell(ColorPickerID, ColorWellID)
   return color;
 }
 
-//function InitMoreFewer()
-//{
-//  // Set SeeMore bool to the OPPOSITE of the current state,
-//  //   which is automatically saved by using the 'persist="more"'
-//  //   attribute on the gDialog.MoreFewerButton button
-//  //   onMoreFewer will toggle it and redraw the dialog
-//  SeeMore = (gDialog.MoreFewerButton.getAttribute("more") != "1");
-//  onMoreFewer();
-//  gDialog.MoreFewerButton.setAttribute("accesskey",GetString("PropertiesAccessKey"));
-//}
-//
-//function onMoreFewer()
-//{
-//  if (SeeMore)
-//  {
-//    gDialog.MoreSection.collapsed = true;
-//    gDialog.MoreFewerButton.setAttribute("more","0");
-//    gDialog.MoreFewerButton.setAttribute("label",GetString("MoreProperties"));
-//    SeeMore = false;
-//  }
-//  else
-//  {
-//    gDialog.MoreSection.collapsed = false;
-//    gDialog.MoreFewerButton.setAttribute("more","1");
-//    gDialog.MoreFewerButton.setAttribute("label",GetString("FewerProperties"));
-//    SeeMore = true;
-//  }
-//  window.sizeToContent();
-//}
-//
-//function SwitchToValidatePanel()
-//{
-//  // no default implementation
-//  // Only EdTableProps.js currently implements this
-//}
-//
+function InitMoreFewer()
+{
+  // Set SeeMore bool to the OPPOSITE of the current state,
+  //   which is automatically saved by using the 'persist="more"'
+  //   attribute on the gDialog.MoreFewerButton button
+  //   onMoreFewer will toggle it and redraw the dialog
+  SeeMore = (gDialog.MoreFewerButton.getAttribute("more") != "1");
+  onMoreFewer();
+  gDialog.MoreFewerButton.setAttribute("accesskey",GetString("PropertiesAccessKey"));
+}
+
+function onMoreFewer()
+{
+  if (SeeMore)
+  {
+    gDialog.MoreSection.collapsed = true;
+    gDialog.MoreFewerButton.setAttribute("more","0");
+    gDialog.MoreFewerButton.setAttribute("label",GetString("MoreProperties"));
+    SeeMore = false;
+  }
+  else
+  {
+    gDialog.MoreSection.collapsed = false;
+    gDialog.MoreFewerButton.setAttribute("more","1");
+    gDialog.MoreFewerButton.setAttribute("label",GetString("FewerProperties"));
+    SeeMore = true;
+  }
+  window.sizeToContent();
+}
+
+function SwitchToValidatePanel()
+{
+  // no default implementation
+  // Only EdTableProps.js currently implements this
+}
+
 const nsIFilePicker = Components.interfaces.nsIFilePicker;
 
 function GetLocalFileURL(filterType)
@@ -581,9 +581,10 @@ function msiSetMetaElementContent(metaElement, content, insertNew, prepend)
   }
 }
 
-function msiGetHeadElement()
+function msiGetHeadElement(editorElement)
 {
-  var editorElement = msiGetActiveEditorElement();
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   try {
     var headList = editor.document.getElementsByTagName("head");
@@ -595,11 +596,11 @@ function msiGetHeadElement()
 
 function PrependHeadElement(element)
 {
-  var head = GetHeadElement();
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  var head = msiGetHeadElement(editorElement);
   if (head)
   {
-    var editorElement = msiGetActiveEditorElement();
-    var editor = msiGetEditor(editorElement);
     try {
       // Use editor's undoable transaction
       // Last param "true" says "don't change the selection"
@@ -610,15 +611,15 @@ function PrependHeadElement(element)
 
 function AppendHeadElement(element)
 {
-  var head = GetHeadElement();
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  var head = msiGetHeadElement(editorElement);
   if (head)
   {
     var position = 0;
     if (head.hasChildNodes())
       position = head.childNodes.length;
 
-    var editorElement = msiGetActiveEditorElement();
-    var editor = msiGetEditor(editorElement);
     try {
       // Use editor's undoable transaction
       // Last param "true" says "don't change the selection"
@@ -756,40 +757,40 @@ function msiMakeInputValueRelativeOrAbsolute(checkbox)
   }
 }
 
-//var IsBlockParent = {
-//  APPLET: true,
-//  BLOCKQUOTE: true,
-//  BODY: true,
-//  CENTER: true,
-//  DD: true,
-//  DIV: true,
-//  FORM: true,
-//  LI: true,
-//  NOSCRIPT: true,
-//  OBJECT: true,
-//  TD: true,
-//  TH: true
-//};
-//
-//var NotAnInlineParent = {
-//  COL: true,
-//  COLGROUP: true,
-//  DL: true,
-//  DIR: true,
-//  MENU: true,
-//  OL: true,
-//  TABLE: true,
-//  TBODY: true,
-//  TFOOT: true,
-//  THEAD: true,
-//  TR: true,
-//  UL: true
-//};
-//
-//function nodeIsBreak(editor, node)
-//{
-//  return !node || node.localName == 'BR' || editor.nodeIsBlock(node);
-//}
+var IsBlockParent = {
+  APPLET: true,
+  BLOCKQUOTE: true,
+  BODY: true,
+  CENTER: true,
+  DD: true,
+  DIV: true,
+  FORM: true,
+  LI: true,
+  NOSCRIPT: true,
+  OBJECT: true,
+  TD: true,
+  TH: true
+};
+
+var NotAnInlineParent = {
+  COL: true,
+  COLGROUP: true,
+  DL: true,
+  DIR: true,
+  MENU: true,
+  OL: true,
+  TABLE: true,
+  TBODY: true,
+  TFOOT: true,
+  THEAD: true,
+  TR: true,
+  UL: true
+};
+
+function nodeIsBreak(editor, node)
+{
+  return !node || node.localName == 'BR' || editor.nodeIsBlock(node);
+}
 
 function msiInsertElementAroundSelection(element, editorElement)
 {
@@ -902,24 +903,24 @@ function msiInsertElementAroundSelection(element, editorElement)
   return true;
 }
 
-//function nodeIsBlank(node)
-//{
-//  return node && node.NODE_TYPE == Node.TEXT_NODE && !/\S/.test(node.data);
-//}
-//
-//function nodeBeginsBlock(node)
-//{
-//  while (nodeIsBlank(node))
-//    node = node.nextSibling;
-//  return nodeIsBlock(node);
-//}
-//
-//function nodeEndsBlock(node)
-//{
-//  while (nodeIsBlank(node))
-//    node = node.previousSibling;
-//  return nodeIsBlock(node);
-//}
+function nodeIsBlank(node)
+{
+  return node && node.NODE_TYPE == Node.TEXT_NODE && !/\S/.test(node.data);
+}
+
+function nodeBeginsBlock(node)
+{
+  while (nodeIsBlank(node))
+    node = node.nextSibling;
+  return nodeIsBlock(node);
+}
+
+function nodeEndsBlock(node)
+{
+  while (nodeIsBlank(node))
+    node = node.previousSibling;
+  return nodeIsBlock(node);
+}
 
 // C++ function isn't exposed to JS :-(
 function msiRemoveBlockContainer(element, editorElement)
@@ -1069,31 +1070,31 @@ function msiFillLinkMenulist(linkMenulist, headingsArray, editorElement)
   } catch (e) {}
 }
 
-//function createMenuItem(aMenuPopup, aLabel)
-//{
-//  var menuitem = document.createElement("menuitem");
-//  menuitem.setAttribute("label", aLabel);
-//  aMenuPopup.appendChild(menuitem);
-//  return menuitem;
-//}
-//
-//// Shared by Image and Link dialogs for the "Choose" button for links
-//function chooseLinkFile()
-//{
-//  // Get a local file, converted into URL format
-//  var fileName = GetLocalFileURL("html, img");
-//  if (fileName) 
-//  {
-//    // Always try to relativize local file URLs
-//    if (gHaveDocumentUrl)
-//      fileName = msiMakeRelativeUrl(fileName);
-//
-//    gDialog.hrefInput.value = fileName;
-//
-//    // Do stuff specific to a particular dialog
-//    // (This is defined separately in Image and Link dialogs)
-//    ChangeLinkLocation();
-//  }
-//  // Put focus into the input field
-//  SetTextboxFocus(gDialog.hrefInput);
-//}
+function createMenuItem(aMenuPopup, aLabel)
+{
+  var menuitem = document.createElement("menuitem");
+  menuitem.setAttribute("label", aLabel);
+  aMenuPopup.appendChild(menuitem);
+  return menuitem;
+}
+
+// Shared by Image and Link dialogs for the "Choose" button for links
+function chooseLinkFile()
+{
+  // Get a local file, converted into URL format
+  var fileName = GetLocalFileURL("html, img");
+  if (fileName) 
+  {
+    // Always try to relativize local file URLs
+    if (gHaveDocumentUrl)
+      fileName = msiMakeRelativeUrl(fileName);
+
+    gDialog.hrefInput.value = fileName;
+
+    // Do stuff specific to a particular dialog
+    // (This is defined separately in Image and Link dialogs)
+    ChangeLinkLocation();
+  }
+  // Put focus into the input field
+  SetTextboxFocus(gDialog.hrefInput);
+}

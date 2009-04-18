@@ -1,6 +1,8 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 
 
+const msiEditorUtilitiesJS_duplicateTest = "Bad";
+
 var gStringBundle;
 var gIOService;
 var gPrefsService;
