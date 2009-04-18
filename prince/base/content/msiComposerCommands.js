@@ -402,6 +402,35 @@ function msiGoUpdateTagSelectors(commandset, editorElement)
 }
 //
 ////-----------------------------------------------------------------------------------
+function msiDoAPropertiesDialogFromMenu(command, menuItem)
+{
+  var theElement = null;
+  var editorElement = null;
+  if (menuItem && menuItem.refElement)
+    theElement = menuItem.refElement;
+  if (menuItem && menuItem.refEditor)
+    editorElement = menuItem.refEditor;
+
+  if (!theElement || !command || !command.length)
+  {
+    dump("msiDoAPropertiesDialog called without node or command! Get from context?\n");
+    return;
+  }
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+
+  var cmdParams = newCommandParams();
+  if (!cmdParams)
+  {
+    dump("Trouble in msiDoAPropertiesDialog! Can't create new CommandParams - aborting.\n");
+    return;
+  }
+
+  cmdParams.setISupportsValue("reviseObject", theElement);
+  msiGoDoCommandParams(command, cmdParams, editorElement);
+}
+
+
 function msiGoDoCommandParams(command, params, editorElement)
 {
   if (!editorElement)
