@@ -1,6 +1,6 @@
 // Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved.
 
-const mathmlOverlayJS_dulicateTest = "Bad";
+const mathmlOverlayJS_duplicateTest = "Bad";
 
 function SetupMSIMathMenuCommands()
 {
