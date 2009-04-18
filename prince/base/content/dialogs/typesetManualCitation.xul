@@ -31,10 +31,8 @@
     ondialogcancel="return onCancel();">
 
   <!-- Following scripts are needed by any MSI dialog brought up by an editor -->
-  <!-- script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/ -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/msiEdDialogCommon.js"/>
-  <!-- script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/ -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
 
   <!-- Following scripts are needed specifically by this dialog -->
@@ -46,15 +44,15 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
   <!-- script type="application/x-javascript" src="chrome://editor/content/ComposerCommands.js"/ -->
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
+  <!-- script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/ -->
   <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
   <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
   <!-- Following scripts are needed if the editor really wants to allow computation -->
-  <script type="application/x-javascript" src="chrome://prince/content/ComputeOverlay.js"/>
+  <!-- script type="application/x-javascript" src="chrome://prince/content/ComputeOverlay.js"/ -->
 
   <!-- If the editor is to support context menus, but also need the following, and the commandset below: -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/>
+  <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/ -->
 
   <popupset id="msiEditorContentContextSet"/>
   <commandset id="tasksCommands">

@@ -37,10 +37,7 @@
     buttons="accept,cancel">
 
   <!-- Methods common to all editor dialogs -->
-  <!-- script type="application/x-javascript" src="chrome://editor/content/editor.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/EditorContextMenu.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/StructBarContextMenu.js"/>
+  <!-- script type="application/x-javascript" src="chrome://editor/content/StructBarContextMenu.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/editorApplicationOverlay.js"/ -->
 
   <script type="application/x-javascript" src="chrome://prince/content/ComputeUtils.js" />
@@ -50,20 +47,20 @@
 
   <!-- Methods common to all editor dialogs -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
-  <!-- script type="application/x-javascript" src="chrome://editor/content/msiEdDialogCommon.js"/ -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
    
   <!-- Following scripts are needed by any MSI dialog containing an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/ComputeOverlay.js"/>
+  <!-- script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/ -->
+  <!-- script type="application/x-javascript" src="chrome://prince/content/ComputeOverlay.js"/ -->
   <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
   <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
   <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/>
+  <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/ -->
 
   <popupset id="msiEditorContentContextSet"/>
 

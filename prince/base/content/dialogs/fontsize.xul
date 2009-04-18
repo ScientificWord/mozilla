@@ -19,6 +19,7 @@
     width="300px" height="200px">
 
   <!-- Following scripts are needed by any MSI dialog brought up by an editor -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/fontsize.js"/>
   <label>Generally you should use the tags such as large, huge, and small to change font size. Use this dialog sparingly.</label>

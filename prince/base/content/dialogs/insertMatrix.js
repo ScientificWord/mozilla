@@ -20,7 +20,7 @@
  * Contributor(s): 
  */
 
-//Cancel() is in EdDialogCommon.js
+//Cancel() is in msiEdDialogCommon.js
 var gTableElement = null;
 var gRows;
 var gColumns;
