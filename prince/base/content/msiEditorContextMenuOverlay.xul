@@ -48,7 +48,8 @@
 
 <popupset id="msiEditorContentContextSet">
  <popup id="msiEditorContentContext"   
-   onpopupshowing="msiEditorFillContextMenu(event, this);RealTimeSpell.updateMenu('spellSuggestionsMenu','spellSuggestionsMenuSeparator')"> 
+   onpopupshowing="msiEditorFillContextMenu(event, this);RealTimeSpell.updateMenu('spellSuggestionsMenu','spellSuggestionsMenuSeparator')"
+   onpopuphidden="msiCleanUpPropertiesMenu(event, this);">
     <menu id="spellSuggestionsMenu" label="&spellSuggestions.label;"
                                     accesskey="&spellSuggestions.accesskey;">
       <menupopup id="spellSuggestionsMenuPopup"
