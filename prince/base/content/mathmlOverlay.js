@@ -1,5 +1,7 @@
 // Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved.
 
+const mathmlOverlayJS_dulicateTest = "Bad";
+
 function SetupMSIMathMenuCommands()
 {
   var commandTable = GetComposerCommandTable();
@@ -1606,7 +1608,7 @@ function doMathnameDlg(editorElement, commandID, commandHandler)
   var o = new Object();
   o.val = "";
 //  window.openDialog("chrome://prince/content/MathmlMathname.xul", "_blank", "chrome,close,titlebar,modal", o);
-  msiOpenModelessDialog("chrome://prince/content/MathmlMathname.xul", "_blank", "chrome,close,titlebar,dependent",
+  msiOpenModelessDialog("chrome://prince/content/mathmlMathName.xul", "_blank", "chrome,close,titlebar,dependent",
                                         editorElement, commandID, commandHandler, o);
 }
 
