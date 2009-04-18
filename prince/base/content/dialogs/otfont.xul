@@ -21,6 +21,7 @@
     width="300px" height="200px">
 
   <!-- Following scripts are needed by any MSI dialog brought up by an editor -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/otfont.js"/>
   <label>Generally you should use the tags such as emph, sf, large, and small to change font characteristics. Use this dialog sparingly.</label>

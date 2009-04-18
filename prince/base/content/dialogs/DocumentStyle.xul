@@ -23,6 +23,7 @@
     ondialogcancel="return onCancel();"
     persist="width height screenx screeny">
 
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript"  src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript"  src="chrome://prince/content/DocumentStyle.js"/>
   <tabbox>
