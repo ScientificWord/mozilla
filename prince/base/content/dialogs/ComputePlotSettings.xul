@@ -34,13 +34,14 @@
   <!-- Methods common to all editor dialogs -->
   <script type="application/x-javascript" src="chrome://editor/content/editor.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/ComposerCommands.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/EditorContextMenu.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/StructBarContextMenu.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/editorApplicationOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/msiEdDialogCommon.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js" />
   <script type="application/x-javascript" src="chrome://editor/content/ComputeUtils.js" />
-  <script type="application/x-javascript" src="chrome://editor/content/MathmlOverlay.js" />
+  <!-- script type="application/x-javascript" src="chrome://editor/content/MathmlOverlay.js" / -->
   <script type="application/x-javascript" src="chrome://editor/content/MathColors.js"/>
 
   <script type="application/x-javascript" src="chrome://editor/content/ComputePlotSettings.js" />

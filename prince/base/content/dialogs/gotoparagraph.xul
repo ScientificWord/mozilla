@@ -17,6 +17,7 @@
     title="&windowTitle.label;">
 
   <script type="application/x-javascript" src="chrome://prince/content/gotoparagraph.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
 
   <hbox><label value="&currentParagraph.label;"/><label id="current" value="0"/></hbox>
