@@ -158,9 +158,19 @@ theorem {
   font-style: italic
 }
 
+proof {
+  display: block;
+}
+
+proof:before {
+  content: "Proof. ";
+}
+
+
 tabular {
   display: table
 }
+
 
 tr {
   display: table-row
