@@ -464,6 +464,15 @@
      \msiextproc[jbm][\begin{eqnarray}#1\end{eqnarray}]%
      \msiclosetag[mml][</mml:math>]
   ]
+
+  \gdef\@scan@multline@star#1\end{multline*}[%
+     \egroup
+     \@make@braces@normal
+     \msiopentag[mml][<mml:math class="displayedmathml" mode="display" display="block">]%
+     \msiextproc[jbm][\begin{multline*}#1\end{multline*}]%
+     \msiclosetag[mml][</mml:math>]
+  ]
+
   \gdef\@scan@align@star#1\end{align*}[%
      \egroup
      \@make@braces@normal
@@ -543,6 +552,9 @@
 
 \@namedef{msi@begin@eqnarray*}{\ \@make@braces@other\relax\@scan@eqnarray@star}
 \@namedef{msi@begin@eqnarray}{\ \@make@braces@other\relax\@scan@eqnarray}
+
+\@namedef{msi@begin@multline*}{\ \@make@braces@other\relax\@scan@multline@star}
+
 
 \@namedef{msi@begin@align*}{\ \@make@braces@other\relax\@scan@align@star}
 \@namedef{msi@begin@gather*}{\ \@make@braces@other\relax\@scan@gather@star}
