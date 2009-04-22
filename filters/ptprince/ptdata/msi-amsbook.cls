@@ -1,4 +1,6 @@
 
+\newcount\c@MaxMatrixCols
+
 \def\frontmatter{\msitag{<frontmatter/>}}
 
 \def\title{%
