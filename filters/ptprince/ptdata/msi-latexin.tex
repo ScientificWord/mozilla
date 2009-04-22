@@ -3502,29 +3502,33 @@
                                  % either subscript or \_
 \def\({\relax\ifmmode\@badmath\else$\fi}
 \def\){\relax\ifmmode\ifinner$\else\@badmath\fi\else \@badmath\fi}
-\def\[{%
-   \relax\ifmmode
-      \@badmath
-   \else
-      \ifvmode
-         \nointerlineskip
-         \makebox[.6\linewidth]%
-      \fi
-      $$%%$$ BRACE MATCH HACK
-   \fi
-}
-\def\]{%
-   \relax\ifmmode
-      \ifinner
-         \@badmath
-      \else
-         $$%%$$ BRACE MATCH HACK
-      \fi
-   \else
-      \@badmath
-   \fi
-   \ignorespaces
-}
+%%jcs \def\[{%
+%%jcs    \relax\ifmmode
+%%jcs       \@badmath
+%%jcs    \else
+%%jcs       \ifvmode
+%%jcs          \nointerlineskip
+%%jcs          \makebox[.6\linewidth]%
+%%jcs       \fi
+%%jcs       $$%%$$ BRACE MATCH HACK
+%%jcs    \fi
+%%jcs }
+%%jcs\def\]{%
+%%jcs   \relax\ifmmode
+%%jcs      \ifinner
+%%jcs         \@badmath
+%%jcs      \else
+%%jcs         $$%%$$ BRACE MATCH HACK
+%%jcs      \fi
+%%jcs   \else
+%%jcs      \@badmath
+%%jcs   \fi
+%%jcs   \ignorespaces
+%%jcs}
+
+\def\[{$$}
+\def\]{$$}
+
 \let\math=\(
 \let\endmath=\)
 \def\displaymath{\[}
