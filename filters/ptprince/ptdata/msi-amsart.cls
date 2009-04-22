@@ -24,7 +24,13 @@
 \def\address{\@ifnextchar[{\@addressa}{\@addressb}}
 
 \def\@addressa[#1]#2{%
-  \msitag{<address><authorid>#1</authorid>}#2\msitag{</address>}%
+  \msitag{^^0a}%
+  \msiopentag{address}{<address>}%
+     \msiopentag{authorid}{<authorid>}%
+     #1
+     \msiclosetag{authorid}{</authorid>}%
+  #2
+  \msiclosetag{address}{</address>}%
 }
 
 \def\@addressb#1{\@addressa[]{#1}}
@@ -101,6 +107,6 @@
 \@text@tag{footnotesize}
 
 %\immediate\openout2={my.css}
-%\immediate\write2{@import url("resource://app/res/css/book.css");}
+%\immediate\write2{@import url("resource://app/res/css/article.css");}
 
-\def\classcss{@import url("resource://app/res/css/amsbook.css");}
+\def\classcss{@import url("resource://app/res/css/amsart.css");}
