@@ -25,7 +25,7 @@
 
 </xsl:template>
 
-<xsl:template match="##sectiontags##">
+<xsl:template match="##sectiontags####othertags##">
 	<treeitem xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 		<xsl:attribute name="container">true</xsl:attribute>
 		<xsl:attribute name="open">true</xsl:attribute>
@@ -39,7 +39,7 @@
 				</xsl:attribute>		
 			</treecell>
 		</treerow>
-		<xsl:if test="##otherstest####sectiontags##">
+		<xsl:if test="##sectiontags##">
 			<treechildren>
 				<xsl:apply-templates/>
 		  </treechildren>
@@ -74,6 +74,19 @@
 		<treerow>
 			<treecell>
 				<xsl:attribute name="label">Table</xsl:attribute>
+				<xsl:attribute name="value">
+					<xsl:value-of select="@id"/>
+				</xsl:attribute>		
+			</treecell>
+		</treerow>
+	</treeitem>
+</xsl:template>;
+
+<xsl:template match="##TAG##"> 
+	<treeitem xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+		<treerow>
+			<treecell>
+				<xsl:attribute name="label"><xsl:value-of select="localname()"/>: <xsl:value-of select="*"/><xsl:value-of select="*[1]"/></xsl:attribute>
 				<xsl:attribute name="value">
 					<xsl:value-of select="@id"/>
 				</xsl:attribute>		
