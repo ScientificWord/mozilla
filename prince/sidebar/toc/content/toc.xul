@@ -22,6 +22,8 @@
   <menupopup id="toc-context-menu">
     <menuitem label="&jumptomain;" oncommand="jump();"/>
   </menupopup>
+
+  <broadcaster id="taglist" taglist="note firstdef"/>
     
   <toolbar>
 
@@ -31,6 +33,8 @@
     <msibutton id="LOF" label="LOF" type="checkbox" tooltip="Show list of figures" checked="false" 
        command="cmd_build_toc" persist="checked"/>
     <msibutton id="LOT" label="LOT" type="checkbox" tooltip="Show list of tables" checked="false"
+       command="cmd_build_toc" persist="checked"/>
+    <msibutton id="Tag" label="Tag" type="checkbox" tooltip="Show tag occurrences" checked="false"
        command="cmd_build_toc" persist="checked"/>
     <scale id="toc-level-scale" min="0" max="7" width="50px"
       increment="1" pageIncrement="1" onchange="setTOCLevel(this.value);"
