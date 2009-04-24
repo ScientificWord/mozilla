@@ -36,9 +36,21 @@ function buildTOC()
   var theTagManager = editor ? editor.tagListManager : null;
   var taglist;
   if (!theTagManager) return;
+  // get non-structure tags that we want listed
+  var otherTags = document.getElementById("taglist").getAttribute('taglist');
+  var tagArr = otherTags.split(" ");
+  var otherTagArray = tagArr;
+  var doLOF, doLOT, doTOC, doTag;
+  if (doLOF = document.getElementById("LOF").hasAttribute('checked'))
+    otherTagArray.concat("img");
+  if (doLOT = document.getElementById("LOT").hasAttribute('checked'))
+    otherTagArray.concat("table");
+
+  // get structure tags
   taglist = theTagManager.getTagsInClass('structtag',',',false); 
   fulltagarray = taglist.split(',');
-  if (document.getElementById("TOC").hasAttribute('checked'))
+  doTag = document.getElementById("Tag").hasAttribute('checked');
+  if (doTOC = document.getElementById("TOC").hasAttribute('checked'))
   {
     tagarray = fulltagarray.filter(truefunc);
   }
@@ -46,25 +58,11 @@ function buildTOC()
   {
     tagarray = [];
   }
-  var otherstest="";
-  var doLOF = document.getElementById("LOF").hasAttribute('checked');
-  if (doLOF)
-  {
-    otherstest = ".//html:img";
-  }
-  var doLOT = document.getElementById("LOT").hasAttribute('checked');
-  if (doLOT)
-  {
-    otherstest += ((otherstest.length?"|":"") + ".//html:table");
-  }
   var i, length;
-  var xpath="html:xxxx";
   length = tagarray.length;
-  for (i=0; i< length; i++)
-  {
-    xpath += "|html:" + tagarray[i];
-  }
-  if ((xpath.length > 0) && (otherstest.length > 0)) otherstest += "|"; 
+  if (length == 0) return;
+
+  var xpath="html:xxxx|html:"+ tagarray.join("|html:")+"|";
   var currentTree = document.getElementById("toc-tree");
   if (currentTree) currentTree.parentNode.removeChild(currentTree);
   ensureAllStructureTagsHaveIds(editor.document, fulltagarray);
@@ -77,12 +75,17 @@ function buildTOC()
   var stylestring = req.responseText;
   var re = /##sectiontags##/g;
   stylestring = stylestring.replace(re,xpath);
-  re = /##otherstest##/g;
-  stylestring = stylestring.replace(re,otherstest);
+  var re = /##othertags##/g;
+  stylestring = stylestring.replace(re,".//html:"+tagArr.join("|.//html:"));
   re = /##LOF##/g
   stylestring = stylestring.replace(re, ""+(doLOF?"html:img":"html:xxximg"));
   re = /##LOT##/g
   stylestring = stylestring.replace(re, ""+(doLOT?"html:table":"html:xxxtable"));
+  re = /##TAG##/g
+  stylestring = stylestring.replace(re, ""+(doTag?"html:"+tagArr.join("|html:"):"html:xxx"));
+
+dump( stylestring+"\n");
+
   var parser = new DOMParser();
   var dom = parser.parseFromString(stylestring, "text/xml");
   dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" : dom.documentElement.nodeName);
@@ -156,7 +159,9 @@ function ensureAllStructureTagsHaveIds(doc, tagarray)
   var n = 3141592;
   var prefix = 'tsid_';//temp structure id
   var regexp= /^(314|tsid_)/;
-  var extendedarray = tagarray.concat('img','table');
+  var otherTags = document.getElementById("taglist").getAttribute('taglist');
+  var tagArr = otherTags.split(" ");
+  var extendedarray = tagarray.concat('img','table', tagArr);
   
   for (i=0; i<extendedarray.length; i++)
   {
