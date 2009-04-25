@@ -2343,8 +2343,12 @@ function deleteWorkingDirectory(editorElement)
 function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor, editorElement)
 {
   var success =  msiSoftSave( editor, editorElement);
-  if (!success) 
+  if (!success) {
+    var saveDocStr = GetString("SaveDocument");
+    var failedStr = GetString("SaveFileFailed");
+    AlertWithTitle(saveDocStr, failedStr);
     throw Components.results.NS_ERROR_UNEXPECTED;
+  }
 
   // The making of A.sci:
   // Say the file being edited is /home/joe/SWPDocs/untitled1_work/main.xhtml
@@ -2445,26 +2449,31 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
     }
     catch (e)
     {
-      success = false;
+      var saveDocStr = GetString("SaveDocument");
+      var failedStr = GetString("SaveFileFailed");
+      AlertWithTitle(saveDocStr, failedStr);
+      throw Components.results.NS_ERROR_UNEXPECTED;
     }
   } // mustShowDialog
-  if (!success)
-  { 
-    var saveDocStr = GetString("SaveDocument");
-    var failedStr = GetString("SaveFileFailed");
-    AlertWithTitle(saveDocStr, failedStr);
-    throw Components.results.NS_ERROR_UNEXPECTED;
-  }
+// moved this test earlier right after the soft save
+// also just above here
+//  if (!success)
+//  { 
+//    var saveDocStr = GetString("SaveDocument");
+//    var failedStr = GetString("SaveFileFailed");
+//    AlertWithTitle(saveDocStr, failedStr);
+//    throw Components.results.NS_ERROR_UNEXPECTED;
+//  }
 
   // now get the leaf name
 
   // jcs What is this supposed to do? If "replacing" just means that the
   // jcs save target already exists
-  // jcs if (replacing)
-  // jcs {
-  // jcs   currentSciFile.initWithPath( currentSciFilePath );  // now = A.sci
-  // jcs   destLocalFile = currentSciFile;       // clone???
-  // jcs }
+if (replacing)
+ {
+   currentSciFile.initWithPath( currentSciFilePath );  // now = A.sci
+   destLocalFile = currentSciFile.clone();       // clone???
+ }
 
   leafname = destLocalFile.leafName;
   if (leafname.lastIndexOf(".") > 0)
