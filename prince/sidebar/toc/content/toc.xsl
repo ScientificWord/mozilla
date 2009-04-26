@@ -30,13 +30,16 @@
 		<xsl:attribute name="container">true</xsl:attribute>
 		<xsl:attribute name="open">true</xsl:attribute>
 	  <treerow>
+			<xsl:attribute name="ondblclick">
+			  jump();
+			</xsl:attribute>
 		  <treecell>
-			  <xsl:attribute name="label">
-				  <xsl:value-of select="*[1]"/>
-			  </xsl:attribute>
-				<xsl:attribute name="value">
-				  <xsl:value-of select="@id"/>
-				</xsl:attribute>		
+			<xsl:attribute name="label">
+			  <xsl:value-of select="*[1]"/>
+			</xsl:attribute>
+			<xsl:attribute name="value">
+			  <xsl:value-of select="@id"/>
+			</xsl:attribute>		
 			</treecell>
 		</treerow>
 		<xsl:if test="##sectiontags##">
@@ -67,7 +70,7 @@
 			</treecell>
 		</treerow>
 	</treeitem>
-</xsl:template>;
+</xsl:template>
 
 <xsl:template match="##LOT##"> 
 	<treeitem xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
@@ -80,20 +83,20 @@
 			</treecell>
 		</treerow>
 	</treeitem>
-</xsl:template>;
+</xsl:template>
 
 <xsl:template match="##TAG##"> 
 	<treeitem xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 		<treerow>
 			<treecell>
-				<xsl:attribute name="label"><xsl:value-of select="localname()"/>: <xsl:value-of select="*"/><xsl:value-of select="*[1]"/></xsl:attribute>
+				<xsl:attribute name="label"><xsl:value-of select="local-name(.)"/>: <xsl:value-of select="*"/></xsl:attribute>
 				<xsl:attribute name="value">
 					<xsl:value-of select="@id"/>
 				</xsl:attribute>		
 			</treecell>
 		</treerow>
 	</treeitem>
-</xsl:template>;
+</xsl:template>
 
 </xsl:stylesheet>
 
