@@ -22,6 +22,7 @@ function jump()
       editorElement.focus();
     }
   }
+  //event.preventDefault();
 }
 
 function truefunc(x) {return true;}
@@ -41,16 +42,19 @@ function buildTOC()
   var tagArr = otherTags.split(" ");
   var otherTagArray = tagArr;
   var doLOF, doLOT, doTOC, doTag;
-  if (doLOF = document.getElementById("LOF").hasAttribute('checked'))
+  doTOC = document.getElementById("TOC").hasAttribute('checked');
+  doLOF = document.getElementById("LOF").hasAttribute('checked');
+  doLOT = document.getElementById("LOT").hasAttribute('checked');
+  doTag = document.getElementById("Tag").hasAttribute('checked');
+  if (doLOF)
     otherTagArray.concat("img");
-  if (doLOT = document.getElementById("LOT").hasAttribute('checked'))
+  if (doLOT)
     otherTagArray.concat("table");
 
   // get structure tags
   taglist = theTagManager.getTagsInClass('structtag',',',false); 
   fulltagarray = taglist.split(',');
-  doTag = document.getElementById("Tag").hasAttribute('checked');
-  if (doTOC = document.getElementById("TOC").hasAttribute('checked'))
+  if (doTOC)
   {
     tagarray = fulltagarray.filter(truefunc);
   }
@@ -58,11 +62,9 @@ function buildTOC()
   {
     tagarray = [];
   }
-  var i, length;
-  length = tagarray.length;
-  if (length == 0) return;
-
-  var xpath="html:xxxx|html:"+ tagarray.join("|html:")+"|";
+  var i;
+ 
+  var xpath="html:xxxx|html:"+ tagarray.join("|html:");
   var currentTree = document.getElementById("toc-tree");
   if (currentTree) currentTree.parentNode.removeChild(currentTree);
   ensureAllStructureTagsHaveIds(editor.document, fulltagarray);
@@ -76,7 +78,7 @@ function buildTOC()
   var re = /##sectiontags##/g;
   stylestring = stylestring.replace(re,xpath);
   var re = /##othertags##/g;
-  stylestring = stylestring.replace(re,".//html:"+tagArr.join("|.//html:"));
+  stylestring = stylestring.replace(re,tagArr.join("|html:"));
   re = /##LOF##/g
   stylestring = stylestring.replace(re, ""+(doLOF?"html:img":"html:xxximg"));
   re = /##LOT##/g
