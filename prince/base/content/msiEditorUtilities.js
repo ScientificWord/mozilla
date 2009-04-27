@@ -6289,7 +6289,10 @@ function countNodeWords(node) //the intent is to count words in a text node
 var xpath;
 function countWords(doc)
 {
-  var iterator = doc.evaluate("//text()", doc, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null );
+  var iterator;
+  doc.documentElement.normalize();
+// a hack for saying /html/body//text() without messing with namespaces and resolvers
+  iterator = doc.evaluate("/*[1]/*[2]//text()", doc, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null );
   var wordcount = 0;
   var thisNode;
   try {
