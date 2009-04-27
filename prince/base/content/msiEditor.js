@@ -5958,7 +5958,7 @@ var msiCommandUpdater = {
       controller.doCommand(command);
     }
     catch (e) {
-      dump("An error occurred executing the "+command+" command\n");
+      dump("An error occurred executing the "+command+" command: "+e.message+"\n");
     }
   }, 
   
