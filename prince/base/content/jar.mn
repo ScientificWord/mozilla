@@ -150,7 +150,7 @@ prince.jar:
 * content/msiEdImageOverlay.xul     (dialogs/msiEdImageOverlay.xul)
 * content/msiEdImageProps.js        (dialogs/msiEdImageProps.js)
 * content/msiEdImageProps.xul       (dialogs/msiEdImageProps.xul)
-* content/EditorContent.css         (dialogs/EditorContent.css)
+* content/EditorContent.css         (EditorContent.css)
 * content/msiEdReplace.xul          (dialogs/msiEdReplace.xul)
 * content/msiEdReplace.js           (dialogs/msiEdReplace.js)
   content/EditorPublishProgress.xul  (dialogs/msiEditorPublishProgress.xul) 
