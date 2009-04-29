@@ -1,4 +1,17 @@
 /* Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. */
+tabeditor {
+  -moz-binding: url('chrome://prince/content/bindings/tabeditor.xml#tabeditor');
+}
+
+tabeditor[visibility="hidden"]  tabs,
+tabeditor[visibility="hidden"]  tabpanels
+{
+  visibility: hidden;
+}
+
+tabeditor[visibility="hidden"] {
+  background-color: rgb(128,128,128);
+}
 
 a[name] {
   min-height: 17px; margin-left: 2px; margin-top: 2px;
