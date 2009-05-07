@@ -145,7 +145,7 @@
   </menu>
   
   <menu id="editMenu" label="&editMenu.label;" accesskey="&editmenu.accesskey;" onpopupshowing="msiEditorInitFormatMenu(event, this);" 
-        onpopuphidden="msiCleanUpPropertiesMenu(event, this);">
+        onpopuphidden="msiCleanUpPropertiesMenu(event, this, 'propertiesMenu');">
     <menupopup id="edEditMenuPopup">
       <menuitem id="menu_undo"
                 label="&undoCmd.label;"
@@ -158,7 +158,11 @@
                 accesskey="&redoCmd.accesskey;"
                 observes="cmd_redo"/>
       <menuseparator id="edEditMenuSep1" />
-      <menuitem id="objectProperties" observes="cmd_objectProperties"/>
+      <menu id="propertiesMenu" label="&propertiesMenu.label;" accesskey="&propertiesMenu.accesskey;" oncommand="msiSelectPropertiesMenu(event, this);">
+        <menupopup id="propertiesMenuPopup" onpopuphidden="msiPropMenuCloseup(event, this);">
+          <menuitem id="objectProperties" observes="cmd_objectProperties"/>
+        </menupopup>
+      </menu>
       <menuitem id="menu_cut"
                 label="&cutCmd.label;"
                 key="key_cut"
