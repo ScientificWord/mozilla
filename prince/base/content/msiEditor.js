@@ -3682,7 +3682,7 @@ function msiEditorInitFormatMenu(event, theMenu)
 
   var editorElement = msiGetActiveEditorElement();
   try {
-    msiInitObjectPropertiesMenuitem(editorElement, "objectProperties");
+    msiInitObjectPropertiesMenuitem(editorElement, "propertiesMenu");
     msiInitRemoveStylesMenuitems(editorElement, "removeStylesMenuitem", "removeLinksMenuitem", "removeNamedAnchorsMenuitem");
   } catch(ex) {dump("Exception in msiEditor.js, msiEditorInitFormatMenu: [" + ex + "].\n");}
 }
@@ -3746,13 +3746,15 @@ function getObjectPropertiesDataFromNodeData(editorElement, element, bIncludePar
         break;
       case "table":
         objStr = GetString("Table");
-        scriptStr = "msiEditorInsertOrEditTable(false, editorElement, 'cmd_objectProperties', this)";
+//        scriptStr = "msiEditorInsertOrEditTable(false, editorElement, 'cmd_objectProperties', this)";
+        commandStr = "cmd_editTable";
         break;
       case "th":
         name = "td";
       case "td":
         objStr = GetString("TableCell");
-        scriptStr = "msiEditorTableCellProperties(editorElement)";
+//        scriptStr = "msiEditorTableCellProperties(editorElement)";
+        commandStr = "cmd_editTable";
         break;
       case "ol":
       case "ul":
@@ -3991,6 +3993,51 @@ function getObjectPropertiesDataFromNodeData(editorElement, element, bIncludePar
   return propsData;
 }
 
+function msiSelectPropertiesMenu(event, theMenu)
+{
+  var bRightOne = (event.target == theMenu) || ( (event.target.nodeName == "menupopup") && (event.target.parentNode == theMenu) );
+  var theEvent;
+  if (bRightOne)
+  {
+    if ( ("defaultItem" in theMenu) && (theMenu.defaultItem != null) )
+    {
+      if (theMenu.commandStr)
+        msiDoAPropertiesDialogFromMenu(commandStr, theMenu.defaultItem);
+//      theEvent = document.createEvent("XULCommandEvent");
+//      theEvent.initCommandEvent("command", true, true);  this way seems too hard
+    }
+  }
+}
+
+function msiGetPropertiesMenuIDs(startID)
+{
+  var theIDs = new Object();
+  var startItem = document.getElementById(startID);
+  if (!startItem) return null;
+
+  theIDs.menuID = "propertiesMenu";
+  theIDs.itemID = "objectProperties";
+  theIDs.popupID = "propertiesMenuPopup";
+  theIDs.bIsContextMenu = false;
+  for (var menuAncestor = startItem; menuAncestor && !theIDs.bIsContextMenu; menuAncestor = menuAncestor.parentNode)
+  {
+    if (menuAncestor.id)
+    {
+      if ( (menuAncestor.id == "propertiesMenu_cm") || (menuAncestor.id == "propertiesMenuPopup_cm") )
+        theIDs.bIsContextMenu = true;
+//      if ( (menuAncestor.id == "objectProperties_cm") || (menuAncestor.id == "msiEditorContentContext") )
+//        bIsContextMenu = true;
+    }
+  }
+  if (theIDs.bIsContextMenu)
+  {
+    theIDs.menuID = "propertiesMenu_cm";
+    theIDs.popupID = "propertiesMenuPopup_cm";
+    theIDs.itemID = "objectProperties_cm";
+  }
+  return theIDs;
+}
+
 function msiInitObjectPropertiesMenuitem(editorElement, id)
 {
   // Set strings and enable for the [Object] Properties item
@@ -3999,18 +4046,37 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
-  var menuItem = document.getElementById(id);
-  var bIsContextMenu = false;
-  for (var menuAncestor = menuItem; menuAncestor && !bIsContextMenu; menuAncestor = menuAncestor.parentNode)
-  {
-    if (menuAncestor.id)
-    {
-      if ( (menuAncestor.id == "objectProperties_cm") || (menuAncestor.id == "msiEditorContentContext") )
-        bIsContextMenu = true;
-    }
-  }
-  if (!menuItem) return null;
+  if ( (id != "propertiesMenu") && (id != "propertiesMenu_cm") )
+    dump("Problem in msiEditor.js, msiInitObjectPropertiesMenuitem() - id passed in isn't correct (it's " + id + ").\n");
+  
+  var menuItem;
+  var subMenu = document.getElementById(id);
+  if (!subMenu) return null;
 
+  var menuInfo = msiGetPropertiesMenuIDs(id);
+  if (!menuInfo)
+    return null;
+  subMenu = document.getElementById(menuInfo.menuID);
+//  var itemID = "objectProperties";
+//  var popupID = "propertiesMenuPopup";
+//  var bIsContextMenu = false;
+//  for (var menuAncestor = subMenu; menuAncestor && !bIsContextMenu; menuAncestor = menuAncestor.parentNode)
+//  {
+//    if (menuAncestor.id)
+//    {
+//      if ( (menuAncestor.id == "propertiesMenu_cm") || (menuAncestor.id == "propertiesMenuPopup_cm") )
+//        bIsContextMenu = true;
+////      if ( (menuAncestor.id == "objectProperties_cm") || (menuAncestor.id == "msiEditorContentContext") )
+////        bIsContextMenu = true;
+//    }
+//  }
+//  if (bIsContextMenu)
+//  {
+//    popupID = "propertiesMenuPopup_cm";
+//    itemID = "objectProperties_cm";
+//  }
+  var subPopup = document.getElementById(menuInfo.popupID);
+  var menuItem = document.getElementById(menuInfo.itemID);
   var nodeData;
   var element;
   var menuStr = GetString("AdvancedProperties");
@@ -4023,184 +4089,6 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
       element = nodeData.theNode;
   }
 
-//  if (element && element.nodeName)
-//  {
-//    var objStr = "";
-//    menuItem.setAttribute("disabled", "");
-////    name = element.nodeName.toLowerCase();
-//    name = msiGetBaseNodeName(element);
-////    if (name != null)
-////      name = name.toLowerCase();
-//
-//    var wrappedChildElement = element;
-//    while ( (name == 'mstyle') || (name == 'mrow') )
-//    {
-//      var newChildElement = msiNavigationUtils.getSingleWrappedChild(wrappedChildElement);
-//      if (newChildElement == null)
-//        break;
-//      wrappedChildElement = newChildElement;
-//      name = msiGetBaseNodeName(wrappedChildElement).toLowerCase();
-//    }
-//
-//    switch (name)
-//    {
-//      case "#text":
-//      break;
-//
-//      case "img":
-//        // Check if img is enclosed in link
-//        //  (use "href" to not be fooled by named anchor)
-//        try
-//        {
-//          if (msiGetEditor(editorElement).getElementOrParentByTagName("href", element))
-//            objStr = GetString("ImageAndLink");
-//        } catch(e) {}
-//        
-//        if (objStr == "")
-//          objStr = GetString("Image");
-//        break;
-//      case "hr":
-//        objStr = GetString("HLine");
-//        break;
-//      case "table":
-//        objStr = GetString("Table");
-//        break;
-//      case "th":
-//        name = "td";
-//      case "td":
-//        objStr = GetString("TableCell");
-//        break;
-//      case "ol":
-//      case "ul":
-//      case "dl":
-//        objStr = GetString("List");
-//        break;
-//      case "li":
-//        objStr = GetString("ListItem");
-//        break;
-//      case "form":
-//        objStr = GetString("Form");
-//        break;
-//      case "input":
-//        var type = element.getAttribute("type");
-//        if (type && type.toLowerCase() == "image")
-//          objStr = GetString("InputImage");
-//        else
-//          objStr = GetString("InputTag");
-//        break;
-//      case "textarea":
-//        objStr = GetString("TextArea");
-//        break;
-//      case "select":
-//        objStr = GetString("Select");
-//        break;
-//      case "button":
-//        objStr = GetString("Button");
-//        break;
-//      case "label":
-//        objStr = GetString("Label");
-//        break;
-//      case "fieldset":
-//        objStr = GetString("FieldSet");
-//        break;
-//      case "a":
-//        if (element.name)
-//        {
-//          objStr = GetString("NamedAnchor");
-//          name = "anchor";
-//        }
-//          else if(wrappedChildElement.href)
-//        {
-//          objStr = GetString("Link");
-//          name = "href";
-//        }
-//        break;
-//
-//      case 'hspace':
-//        objStr = GetString("HorizontalSpace");
-//      break;
-//
-//      case 'vspace':
-//        objStr = GetString("VerticalSpace");
-//      break;
-//
-//      case 'msirule':
-//        objStr = GetString("Rule");
-//      break;
-//
-//      case 'msibreak':
-//        objStr = GetString("GenBreak");
-//      break;
-//
-//      case 'mfrac':
-//        objStr = GetString("Fraction");
-//      break;
-//
-//      case 'mroot':
-//      case 'msqrt':
-//        objStr = GetString("Radical");
-//      break;
-//
-//      case 'msub':
-//      case 'msup':
-//      case 'msubsup':
-//        if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
-//          objStr = GetString("Operator");
-////        msiGoDoCommandParams("cmd_MSIreviseScriptsCmd", cmdParams, editorElement);
-//// Should be no Properties dialog available for these cases? SWP has none...
-//      break;
-//
-//      case 'mover':
-//      case 'munder':
-//      case 'munderover':
-//        if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
-//          objStr = GetString("Operator");
-//        else
-//          objStr = GetString("Decoration");
-//      break;
-//
-//      case 'mmultiscripts':
-//        if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
-//          objStr = GetString("Operator");
-//        else
-//          objStr = GetString("Tensor");
-//      break;
-//
-//      case 'mmatrix':
-//        objStr = GetString("Matrix");
-//      break;
-//
-//      case 'mi':
-//        if (msiNavigationUtils.isUnit(wrappedChildElement))
-//          objStr = GetString("Unit");
-//        else if (msiNavigationUtils.isMathname(wrappedChildElement))
-//          objStr = GetString("MathName");
-//      break;
-//
-////  commandTable.registerCommand("cmd_MSIreviseSymbolCmd",    msiReviseSymbolCmd);
-//
-//      case 'mrow':
-//      case 'mstyle':
-//        if (msiNavigationUtils.isFence(wrappedChildElement))
-//        {
-//          if (msiNavigationUtils.isBinomial(wrappedChildElement))
-//            objStr = GetString("Binomial");
-//          else
-//            objStr = GetString("GenBracket");
-//        }
-//      break;
-//
-//      case 'mo':
-//        if (msiNavigationUtils.isMathname(wrappedChildElement))
-//          objStr = GetString("MathName");
-//        else
-//          objStr = GetString("Operator");
-//      break;
-//
-//    }
-//    if (objStr)
-//      menuStr = GetString("ObjectProperties").replace(/%obj%/,objStr);
-//  }
 
   var propsData = null;
   if (element)
@@ -4210,7 +4098,22 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
   if (propsData)
   {
     menuStr = propsData.menuStr;
-    menuItem.setAttribute("disabled", "false");
+    menuItem.removeAttribute("disabled");
+    subPopup.origSelection = copyCurrSelection(editor);
+
+    if (propsData.commandStr)
+    {
+//      menuItem.setAttribute("oncommand", "msiPropMenuClearOrigSel('" + menuInfo.popupID + "'); msiDoAPropertiesDialogFromMenu('" + propsData.commandStr + "', this);");
+      menuItem.setAttribute("oncommand", "msiPropMenuResetOrigSel('" + menuInfo.popupID + "'); msiDoAPropertiesDialogFromMenu('" + propsData.commandStr + "', this);");
+      subMenu.defaultItem = menuItem;
+      subMenu.commandStr = propsData.commandStr;
+    }
+    else if (propsData.scriptStr)
+      menuItem.setAttribute("oncommand", "msiPropMenuClearOrigSel('" + menuInfo.popupID + "');" + propsData.scriptStr);
+    menuItem.addEventListener("DOMMenuItemActive", msiPropertiesMenuItemHover, false);
+//How to generate a reasonable ID? But does it need one?
+    menuItem.refElement = propsData.theNode;
+    menuItem.refEditor = editorElement;
   }
   else
   {
@@ -4220,12 +4123,13 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
   menuItem.setAttribute("label", menuStr);
   menuItem.setAttribute("accesskey",GetString("ObjectPropertiesAccessKey"));
 
-  var parentMenu = menuItem.parentNode;
-  var subMenu = document.getElementById("morePropertiesMenu");
-  var subPopup = document.getElementById("morePropertiesPopup");
-  var bWasInitialized = (subPopup != null);
-  if (bWasInitialized)
-    dump("In msiEditor.js, msiInitObjectPropertiesMenuitem(), the subpopupmenu was previously initialized!\n");
+//  var parentMenu = menuItem.parentNode;
+//  var subMenu = document.getElementById("morePropertiesMenu");
+//  var subPopup = document.getElementById("morePropertiesPopup");
+//  var bWasInitialized = (subPopup != null);
+//  if (bWasInitialized)
+//    dump("In msiEditor.js, msiInitObjectPropertiesMenuitem(), the subpopupmenu was previously initialized!\n");
+
   var nextNode = element.parentNode;
   var lastCoreNode = element;
   var lastPropsData = propsData;
@@ -4242,12 +4146,12 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
   function createMorePropsSubmenu()
   {
     subMenu = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "menu");
-    subMenu.id = "morePropertiesMenu";
+    subMenu.id = id;
     subMenu.setAttribute("label", GetString("MorePropertiesMenuLabel"));
     subMenu.setAttribute("accesskey", GetString("MorePropertiesMenuAccessKey"));
     subMenu = parentMenu.insertBefore(subMenu, menuItem.nextSibling);
     subPopup = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "menupopup");
-    subPopup.id = "morePropertiesPopup";
+    subPopup.id = popupID;
     subPopup.origSelection = copyCurrSelection(editor);
     subPopup.setAttribute("onpopuphidden", "msiPropMenuCloseup(event, this);");
     subPopup = subMenu.appendChild(subPopup);
@@ -4259,9 +4163,9 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
                                            "menuitem");
 
     if (prevPropData.commandStr)
-      item.setAttribute("oncommand", "msiPropMenuClearOrigSel('morePropertiesPopup'); msiDoAPropertiesDialogFromMenu('" + prevPropData.commandStr + "', this);");
+      item.setAttribute("oncommand", "msiPropMenuClearOrigSel('" + menuInfo.popupID + "'); msiDoAPropertiesDialogFromMenu('" + prevPropData.commandStr + "', this);");
     else if (prevPropData.scriptStr)
-      item.setAttribute("oncommand", "msiPropMenuClearOrigSel('morePropertiesPopup');" + prevPropData.scriptStr);
+      item.setAttribute("oncommand", "msiPropMenuClearOrigSel('"+ menuInfo.popupID + "');" + prevPropData.scriptStr);
     item.addEventListener("DOMMenuItemActive", msiPropertiesMenuItemHover, false);
 //How to generate a reasonable ID? But does it need one?
 //    item.id = "contexttagitem_"+id;
@@ -4271,6 +4175,9 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
 //    item.setAttribute("value",target);
     if (!subPopup)
       createMorePropsSubmenu();
+    if (!("origSelection" in subPopup))
+      subPopup.origSelection = copyCurrSelection(editor);
+
     return subPopup.appendChild(item);
   }
 
@@ -4311,7 +4218,8 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
 
   while (nextNode != null)
   {
-    propsData = getObjectPropertiesDataFromNodeData(editorElement, nextNode, !bIsContextMenu);
+//    propsData = getObjectPropertiesDataFromNodeData(editorElement, nextNode, !menuInfo.bIsContextMenu);
+    propsData = getObjectPropertiesDataFromNodeData(editorElement, nextNode, true);
     if (propsData)
     {
       if (!lastPropsData || (propsData.coreElement != lastPropsData.coreElement))  //we've hit a really new object
@@ -4321,35 +4229,43 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
           //Note! In this case, we've hit the first properties data with a coreElement differing from that of the
           //  original item, which is still being held in prevPropData. Thus we don't want to add an item now, but we
           //  are assured that an item will be needed. Just create the submenu and submenupop and get out.
+          dump("In msiEditor.js, in msiInitObjectPropertiesMenuitem(), subMenu is currently null - should no longer happen!\n");
           createMorePropsSubmenu();
         }
         else
-          addPropsMenuItem(lastPropsData);
+          addPropsMenuItem(propsData);
       }
       lastPropsData = propsData;
     }
     nextNode = nextNode.parentNode;
   }
-  if (subMenu && lastPropsData)
-    addPropsMenuItem(lastPropsData);
+//  if (subMenu && lastPropsData)
+//    addPropsMenuItem(lastPropsData);
 
   return name;
 }
 
-function msiCleanUpPropertiesMenu(event, theMenu)
+function msiCleanUpPropertiesMenu(event, theMenu, menuID)
 {
   var bRightOne = (event.target == theMenu) || ( (event.target.nodeName == "menupopup") && (event.target.parentNode == theMenu) );
   if (!bRightOne)
     return;
 
-  var subPropsMenu = document.getElementById("morePropertiesMenu");
-  if (subPropsMenu && subPropsMenu.childNodes.length)
+  var menuInfo = msiGetPropertiesMenuIDs(menuID);
+//  var subPropsMenu = document.getElementById("morePropertiesMenu");
+  var subPropsMenu = document.getElementById(menuInfo.popupID);
+  var itemID;
+  if ( subPropsMenu && (subPropsMenu.childNodes.length > 1) )
   {
     for (var ix = subPropsMenu.childNodes.length - 1; ix>=0; --ix)
     {
-      subPropsMenu.removeChild(subPropsMenu.childNodes[ix]);
+      itemID = subPropsMenu.childNodes[ix].id;
+      if (!itemID || !itemID.length)
+        itemID = subPropsMenu.childNodes[ix].getAttribute("id");
+      if (!itemID || itemID != menuInfo.itemID)
+        subPropsMenu.removeChild(subPropsMenu.childNodes[ix]);
     }
-    subPropsMenu.parentNode.removeChild(subPropsMenu);
+//    subPropsMenu.parentNode.removeChild(subPropsMenu);
   }
 }
 
@@ -4357,7 +4273,20 @@ function msiPropMenuCloseup(event, thePopupMenu)
 {
   if (event.target != thePopupMenu)
     return;
+  msiPropMenuResetOrigSel(thePopupMenu.id);
+}
   
+//function msiPropMenuDefItemSelect(event, theItem)
+//{
+//  var menuInfo = msiGetPropertiesMenuIDs(theItem.id);
+//  var popupMenu;
+//  if (menuInfo)
+//    msiPropMenuResetOrigSel(menuInfo.popupID);
+//}
+
+function msiPropMenuResetOrigSel(popupID)
+{
+  var thePopupMenu = document.getElementById(popupID);
   var theEditorElement = null;
   if (thePopupMenu.childNodes.length)
   {

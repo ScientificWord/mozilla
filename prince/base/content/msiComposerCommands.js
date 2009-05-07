@@ -6781,7 +6781,18 @@ var msiEditTableCommand =
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
-  doCommandParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) 
+  {
+    var editorElement = msiGetActiveEditorElement();
+    var tableNode = aParams.getISupportsValue("reviseObject");
+    if (tableNode != null && editorElement != null)
+    {
+      msiEditorInsertOrEditTable(false, editorElement, aCommand, this);
+//      var dlgWindow = msiOpenModelessDialog("chrome://editor/content/msiEdTextAreaProps.xul", "_blank", "chrome,close,titlebar,dependent",
+//                                                                                                     editorElement, "cmd_reviseTextarea", this);
+    }
+    editorElement.focus();
+  },
 
   doCommand: function(aCommand)
   {
