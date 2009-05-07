@@ -15,7 +15,7 @@ function msiEditorFillContextMenu(event, contextMenuNode)
   if (editorElement)
     dumpStr += editorElement.id;
   dump(dumpStr + "]\n");
-  var objectName = msiInitObjectPropertiesMenuitem(editorElement, "objectProperties_cm");
+  var objectName = msiInitObjectPropertiesMenuitem(editorElement, "propertiesMenu_cm");
   var isInLink = objectName == "href";
   // Special case of an image inside a link
   if (objectName == "img")
@@ -90,7 +90,7 @@ function msiEditorFillContextMenu(event, contextMenuNode)
   msiShowMenuItem("tableInsertMenu_cm",  inCell);
   msiShowMenuItem("tableSelectMenu_cm",  inCell);
   msiShowMenuItem("tableDeleteMenu_cm",  inCell);
-  addSectionProperties(editorElement, contextMenuNode);
+//  addSectionProperties(editorElement, contextMenuNode);
 }
 
 function msiIsItemOrCommandEnabled( item )
