@@ -168,13 +168,13 @@
 <!ENTITY editfindprev.keybinding "g">
 <!ENTITY editfindprev.acceltext "Shift+F3">
 <!ENTITY checkSpellingCmd.label "Check Spelling">
-<!ENTITY countWords.label "Count Words">
-<!ENTITY countWords.accesskey "w">
 <!ENTITY validateCmd.label "Validate HTML">
 <!ENTITY validate.accesskey "v">
 <!ENTITY checkLinksCmd.label "Check Links">
 <!ENTITY editcheckspelling.accesskey "s">
 <!ENTITY editcheckspelling.keybinding "k">
+<!ENTITY propertiesMenu.label "Properties">
+<!ENTITY propertiesMenu.accesskey "P">
 
 <!ENTITY helpmenu.label    "Help">
 <!ENTITY helpmenu.accesskey    "H">
@@ -212,6 +212,8 @@
 <!ENTITY viewparagraphmarks.accesskey "p">
 
 <!-- Insert menu items -->
+<!ENTITY insertMenu.label "Insert">
+<!ENTITY insertmenu.accesskey "i">
 <!ENTITY insertLinkCmd.label "Link...">
 <!ENTITY insertlink.accesskey "l">
 <!ENTITY insertlink.keybinding "l">
@@ -286,8 +288,13 @@
 <!ENTITY delete.accesskey "d">
 <!ENTITY clearCmd.label "Clear">
 <!ENTITY clear.accesskey "l">
+<!ENTITY countWords.label "Count Words">
+<!ENTITY countWords.accesskey "w">
 <!ENTITY selectAllCmd.label "Select All">
 <!ENTITY selectall.accesskey "a">
+<!ENTITY spellSuggestions.label   "Spelling Suggestions">
+<!ENTITY spellSuggestions.accesskey "S">
+<!ENTITY spellAddToDictionary.label "Add to Dictionary">
 
 <!-- Font Face SubMenu -->
 <!ENTITY FontFaceSelect.tooltip "Choose a font">
