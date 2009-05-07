@@ -38,7 +38,8 @@
    -
    - ***** END LICENSE BLOCK ***** -->
 
-<!DOCTYPE overlay SYSTEM "chrome://editor/locale/editorOverlay.dtd">
+<!-- !DOCTYPE overlay SYSTEM "chrome://editor/locale/editorOverlay.dtd" -->
+<!DOCTYPE overlay SYSTEM "chrome://prince/locale/menuOverlay.dtd">
 
 <overlay id="ComposerContextMenuOverlay"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
@@ -49,7 +50,7 @@
 <popupset id="msiEditorContentContextSet">
  <popup id="msiEditorContentContext"   
    onpopupshowing="msiEditorFillContextMenu(event, this);RealTimeSpell.updateMenu('spellSuggestionsMenu','spellSuggestionsMenuSeparator')"
-   onpopuphidden="msiCleanUpPropertiesMenu(event, this);">
+   onpopuphidden="msiCleanUpPropertiesMenu(event, this, 'propertiesMenu_cm');">
     <menu id="spellSuggestionsMenu" label="&spellSuggestions.label;"
                                     accesskey="&spellSuggestions.accesskey;">
       <menupopup id="spellSuggestionsMenuPopup"
@@ -88,7 +89,13 @@
     <menuseparator id="styles-separator"/>
 
     <!-- label and accesskey are set in InitObjectProperties -->
-    <menuitem id="objectProperties_cm" observes="cmd_objectProperties"/>
+    <menu id="propertiesMenu_cm" label="&propertiesMenu.label;" accesskey="&propertiesMenu.accesskey;" oncommand="msiSelectPropertiesMenu(event, this);">
+      <menupopup id="propertiesMenuPopup_cm" onpopuphidden="msiPropMenuCloseup(event, this);">
+        <menuitem id="objectProperties_cm" observes="cmd_objectProperties"/>
+      </menupopup>
+    </menu>
+
+
     <menuitem id="editLink_cm" label="&editLinkCmd.label;" accesskey="&editlink.accesskey;" command="cmd_editLink"/>
     <menuseparator id="property-separator"/>
 
