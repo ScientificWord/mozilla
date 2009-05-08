@@ -712,7 +712,7 @@ void PrintDefn(TokenList& tl)
       Typesetter::AppendTag(s_tapfilename.c_str());
       s_bTapped = true;
    }
-   
+
    s_tapfile << "\n";
    TokenList::const_iterator it;
 
