@@ -1,0 +1,108 @@
+
+
+% msi-latex-default.tex
+%
+% This file should contain default definitions of all common LaTeX commands
+% except for "tricky" ones that are covered elsewhere [1]. This file will always
+% be read by Prince's input filter so anything in here will be defined for all
+% imported TeX documents. Class and package files (.cls and .sty) may override
+% any or all of this.
+%
+% In cases where the same command is commonly used in two different ways
+% pick one of them to be the default and place its definition here. Place the other
+% common definition in an appropriate cls file.
+
+
+% Use MSIEmptyElement to convert
+% From  \X
+% To    <X/>
+%
+% For example, \MSIEmptyElement{maketitle} cause the input filter to translate
+% \maketitle   to   <maketitle/>
+%
+% There is an optional parameter to set the XML name if it should be different
+% fom the LaTeX name.
+
+\MSIEmptyElement[italic-correction]{/}
+\MSIEmptyElement{maketitle}
+\MSIEmptyElement{tableofcontents}
+\MSIEmptyElement{listoffigures}
+
+\MSIEmptyElement{listoftables}
+\MSIEmptyElement{frontmatter}
+\MSIEmptyElement{backmatter}
+\MSIEmptyElement{appendix}
+\MSIEmptyElement{mainmatter}
+\MSIEmptyElement[leftquote]{textquotedblleft}
+\MSIEmptyElement[rightquote]{textquotedblright}
+\MSIEmptyElement{textbackslash}
+
+
+
+
+
+% Use MSISimpleEnvironment when you want to convert a
+% from   \begin{X}...\end{X}
+% to     <X>...</X>
+%
+% This macro takes an optional parameter which is an XML name
+% in case you want it to be different from the LaTeX name.
+% E.g. you could write \MSISimpleEnvironment[ABSTRACT]{abstract}
+% and then you'd get <ABSTRACT> ... <ABSTRACT> in the output
+ 
+\MSISimpleEnvironment{abstract}
+\MSISimpleEnvironment{quote}
+\MSISimpleEnvironment{quotation}
+\MSISimpleEnvironment{center}
+\MSISimpleEnvironment{flushleft}
+\MSISimpleEnvironment{flushright}
+\MSISimpleEnvironment{subequations}
+\MSISimpleEnvironment{proof}
+
+
+
+
+% Use \MSITextElement to create translations like
+% From  \textbf{...}
+% To    <bold> ... </bold>
+
+\MSITextElement[bold]{textbf}
+\MSITextElement[it]{textit}
+\MSITextElement[sf]{textsf}
+\MSITextElement[sl]{textsl}
+\MSITextElement[tt]{texttt}
+\MSITextElement[rm]{textrm}
+\MSITextElement[sc]{textsc}
+\MSITextElement[em]{emph}
+
+
+
+
+
+
+% Use \MSIFontSwitch to create definitions for things like
+% \it, \bf, \tiny. These are not so common in the LaTeX2e
+% world. Most docs these days will use things like 
+% \textbf{...} instead. A text tag has syntax like
+%  .... \bf .....  and it is not always easy to see how to 
+% translate into XML because LaTeX does not say when to end 
+% the markup. The filter will generate <bold> ... </bold>.
+
+\MSIFontSwitch{it}
+\MSIFontSwitch[bold]{bf}
+\MSIFontSwitch{rm}
+\MSIFontSwitch{normalsize}
+\MSIFontSwitch{tiny}
+\MSIFontSwitch{small}
+\MSIFontSwitch{Large}
+\MSIFontSwitch{large}
+\MSIFontSwitch{LARGE}
+\MSIFontSwitch{huge}
+\MSIFontSwitch{Huge}
+\MSIFontSwitch{scriptsize}
+\MSIFontSwitch{footnotesize}
+
+
+
+
+

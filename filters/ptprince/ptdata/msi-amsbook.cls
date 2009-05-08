@@ -79,26 +79,7 @@
 
 
 
-\def\textbf#1{\msihmode\msiopentag{bold}{<bold>}#1\msiclosetag{bold}{</bold>}}
-\def\textit#1{\msihmode\msiopentag{it}{<it>}#1\msiclosetag{it}{</it>}}
-\def\textsf#1{\msihmode\msiopentag{sf}{<sf>}#1\msiclosetag{sf}{</sf>}}
-\def\textsl#1{\msihmode\msiopentag{sl}{<sl>}#1\msiclosetag{sl}{</sl>}}
-\def\texttt#1{\msihmode\msiopentag{tt}{<tt>}#1\msiclosetag{tt}{</tt>}}
-\def\textrm#1{\msihmode\msiopentag{rm}{<rm>}#1\msiclosetag{rm}{</rm>}}
-\def\textsc#1{\msihmode\msiopentag{sc}{<sc>}#1\msiclosetag{sc}{</sc>}}
 
-
-\@text@tag{it}
-\@text@tag{normalsize}
-\@text@tag{tiny}
-\@text@tag{small}
-\@text@tag{Large}
-\@text@tag{large}
-\@text@tag{LARGE}
-\@text@tag{huge}
-\@text@tag{Huge}
-\@text@tag{scriptsize}
-\@text@tag{footnotesize}
 
 %\immediate\openout2={my.css}
 %\immediate\write2{@import url("resource://app/res/css/book.css");}
