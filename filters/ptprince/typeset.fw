@@ -626,7 +626,7 @@ void Typesetter::EndDisplay()
          SetupMathML();
          std::string s_mathml;
          ProcessMathML(theCStr, s_mathml);
-         LOG("\nGot back " << s_mathml.c_str());                   
+         LOG("\nGot back " << s_mathml.c_str());
          std::string str;
          str +=  "<mml:math class=\"displayedmathml\" "
                  "mode=\"display\" display=\"block\">";
