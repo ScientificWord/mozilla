@@ -118,12 +118,13 @@
 
 %% Frontmatter
 
-\def\out@frontmatter{%
-   \msihmode\br\msitag{<frontmatter />}%
-}
 
 \def\out@title#1{%
    {\everypar={}\msitag{^^0a}\msiopentag{title}{<title>}#1\msiclosetag{title}{</title>}}}
+
+\def\out@thanks#1{%
+   \msitag{^^0a}\msiopentag{thanks}{<thanks>}#1\msiclosetag{thanks}{</thanks>}}
+
    
 \def\out@author#1{%
   \begingroup
@@ -136,50 +137,40 @@
 \def\out@date#1{%
    \msihmode\br\msiopentag{date}{<date>}#1\msiclosetag{date}{</date>}}
 
-\def\out@maketitle{%
-   \msihmode\br\msitag{<maketitle />}%
-}
-\def\out@tableofcontents{%
-   \msihmode\br\msitag{<tableofcontents />}%
-}
-\def\out@listoffigures{%
-   \msihmode\br\msitag{<listoffigures />}%
-}
-\def\out@listoftables{%
-   \msihmode\br\msitag{<listoftables />}%
-}
-
-\def\out@thanks#1{%
-   \msitag{^^0a}\msiopentag{thanks}{<thanks>}#1\msiclosetag{thanks}{</thanks>}}
 
 
-\def\out@begin@abstract{%
-   \msitag{^^0a}\msiopentag{abstract}{<abstract>}
-}
+\def\MSIEmptyElement{%
+  \@ifnextchar[{\msi@empty@elmA}{\msi@empty@elmB}}
 
-\def\out@end@abstract{%
-   \msitag{^^0a}\msiclosetag{abstract}{</abstract>}
-}
+\def\msi@empty@elmA[#1]#2{%
+  \expandafter\def\csname #2\endcsname{\msihmode\br\msitag{<#1/>}}
+
+\def\msi@empty@elmB#1{\msi@empty@elmA[#1]{#1}}
+   
+
+\def\MSISimpleEnvironment{%
+  \@ifnextchar[{\msi@simple@envA}{\msi@simple@envB}}
+
+\def\msi@simple@envA[#1]#2{%
+  \expandafter\def\csname msi@begin@#2\endcsname{\msi@open@element<#1>}
+  \expandafter\def\csname msi@end@#2\endcsname{\msi@close@element</#1>}}
+
+\def\msi@simple@envB#1{\msi@simple@envA[#1]{#1}}
+
+
 
 %% Main matter
 
-\def\out@mainmatter{%
-   \msihmode\br\msitag{<mainmatter />}%
-}
 
 %% newtheorem
 
 \def\out@newtheorema#1[#2]#3{%
-%   \br\msitag{<newtheorem name="#1" counter="#2" label="#3"/>}%
-   
    \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}[#2]{#3}}
    \@namedef{msi@begin@#1}{\br\msiopentag{theorem}{<theorem type="#1">}}
    \@namedef{msi@end@#1}{\br\msiclosetag{theorem}{</theorem>}}
 }
 
 \def\out@newtheoremb#1#2{%
-%   \br\msitag{<newtheorem name="#1" label="#2"/>}%
-   
    \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}{#2}}
    \@namedef{msi@begin@#1}{\br\msiopentag{theorem}{<theorem type="#1">}}
    \@namedef{msi@end@#1}{\br\msiclosetag{theorem}{</theorem>}}
@@ -290,27 +281,6 @@
 
 \def\msi@thm@like#1{}
 
-
-\def\msi@begin@quote{\br\msiopentag{quote}{<quote>}}
-\def\msi@end@quote{\br\msiclosetag{quote}{</quote>}}
-
-\def\msi@begin@quotation{\br\msiopentag{quotation}{<quotation>}}
-\def\msi@end@quotation{\br\msiclosetag{quotation}{</quotation>}}
-
-\def\msi@begin@center{\br\msiopentag{center}{<center>}}
-\def\msi@end@center{\br\msiclosetag{center}{</center>}}
-
-\def\msi@begin@flushleft{\br\msiopentag{flushleft}{<flushleft>}}
-\def\msi@end@flushleft{\br\msiclosetag{flushleft}{</flushleft>}}
-
-\def\msi@begin@flushright{\br\msiopentag{flushright}{<flushright>}}
-\def\msi@end@flushright{\br\msiclosetag{flushright}{</flushright>}}
-
-\def\msi@begin@subequations{\br\msiopentag{subequations}{<subequations>}}
-\def\msi@end@subequations{\br\msiclosetag{subequations}{</subequations>}}
-
-\def\msi@begin@proof{\br\msiopentag{proof}{<proof>}}
-\def\msi@end@proof{\br\msiclosetag{proof}{</proof>}}
 
 
 
@@ -675,20 +645,7 @@
 
 \def\LaTeX{<latex>LaTeX</latex>}
 \def\TeX{<tex>TeX</tex>}
-\def\textquotedblleft{<leftquote/>}
-\def\textquotedblright{<rightquote/>}
-\def\textbackslash{<textbackslash/>}
 
-%% Back matter
-
-\def\out@backmatter{%
-   \msihmode\br\msitag{<backmatter />}%
-}
-\def\out@appendix{%
-   \msihmode\br\msitag{<appendix />}%
-}
-
-%% 
 
 \msi@mathmlpass{\dot}
 \msi@mathmlpass{\boldsymbol}
@@ -904,13 +861,6 @@
 \msi@mathmlpass{\veebar}
 \msi@mathmlpass{\wedge}
 \msi@mathmlpass{\wr}
-
-
-
-%\msi@mathmlpass{\}
-%\msi@mathmlpass{\}
-%\msi@mathmlpass{\}
-
 
 % Binary Relations
 
@@ -1280,7 +1230,7 @@
 }
 
 
-\def\/{\msitag{<italic-correction/>}}
+
 
 \def\@hex#1{\char38\char35x#1;}
 
@@ -1824,9 +1774,6 @@
 
 
 
-%%\def\msi@textsmall#1{\msiopentag{<small>}#1\msiclosetag{</small>}}
-
-\def\emph#1{\msiopentag{em}{<em>}#1\msiclosetag{em}{</em>}}
 
 
 \def\&{\char`\&amp;}
@@ -1851,10 +1798,12 @@
 \def\@ttclose#1{\msiclosetag{#1}{</#1>}}
 \def\@closelasttexttag{\expandafter\@ttclose\expandafter{\@lasttexttag}}
 
+\def\MSIFontSwitch{%
+  \@ifnextchar[{\msi@font@switchA}{\msi@font@switchB}}
 
 
-\def\@text@tag#1{%
-   \expandafter\def\csname#1\endcsname{%
+\def\msi@font@switchA[#1]#2{%
+   \expandafter\def\csname#2\endcsname{%
       \msihmode
       \if@in@texttag
          \expandafter\@ttclose\expandafter{\@lasttexttag}%
@@ -1867,6 +1816,20 @@
    }
 }
 
+\def\msi@font@switchB#1{\msi@font@switchA[#1]{#1}}
+
+
+\def\MSITextElement{%
+  \@ifnextchar[{\msi@text@elmA}{msi@text@elmB}}
+
+\def\msi@text@elmA[#1]#2{%
+  \expandafter\def\csname #2\endcsname##1{%
+     \msihmode\msiopentag{#1}{<#1>}##1\msiclosetag{#1}{</#1>}}}
+
+\def\msi@text@elmB#1{\msi@text@elmA[#1]{#1}}
+
+
+
 %% Various note type things
 
 \def\@start@notewrapper{%
@@ -1877,6 +1840,8 @@
 
 \def\@end@footnote{\msiclosetag{note}{</note>}\@end@notewrapper}
 \def\@innote{\bgroup\aftergroup\@end@footnote}
+
+%%<note type="#2">
 
 
 \def\footnote{%
@@ -1951,3 +1916,4 @@
 
 
 
+\input latex-default.tex

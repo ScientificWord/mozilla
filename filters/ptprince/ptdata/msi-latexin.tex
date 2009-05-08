@@ -1,13 +1,42 @@
-\catcode`\{=1
-\catcode`\}=2
-\catcode`\#=6
-\catcode`\^=7
+
+
+\catcode`\{=1 % left brace is begin-group character
+\catcode`\}=2 % right brace is end-group character
+\catcode`\$=3 % dollar sign is math shift
+\catcode`\&=4 % ampersand is alignment tab
+\catcode`\#=6 % hash mark is macro parameter character
+\catcode`\^=7 % circumflex and uparrow are for superscripts
+\catcode`\_=8 % underline and downarrow are for subscripts
+\catcode`\^^I=10 % ascii tab is a blank space
+\chardef\active=13 
+\catcode`\~=\active % tilde is active
+\catcode`\^^L=\active \outer\def^^L{\par}% ascii form-feed is \outer\par
+\catcode`@=11
+%\def~{\nobreakspace{}}
+
 \chardef\active=13
-\catcode`\@=11
+
+\def\@makeother#1{\catcode`#112\relax}
+
+\catcode`\%=12
+\def\@percentchar{%}
+\catcode`\%=14
+
+
 \countdef\count@=255
 \let\bgroup={ \let\egroup=}
 \def\makeatletter{\catcode`\@=11}
 \def\makeatother{\catcode`\@=12}
+
+
+\def\scantospace#1 {\def\@temp{#1}\@gobbletoend}%
+\def\@gobbletoend#1>{}
+
+\def\msi@open@element<#1>{\scantospace#1 >%
+   \expandafter\msiopentag\expandafter{\@temp}{<#1>}}
+
+\def\msi@close@element</#1>{\msiclosetag{#1}{</#1>}}
+
 \def\msi@pass#1{\def#1{\msitag{#1}}}
 \def\msi@pass@newline#1{\def#1{\br\msihmode\msitag{<texb>#1</texb>}}}
 
@@ -88,13 +117,7 @@
 \def\thanks#1{\out@thanks{#1}}
 \def\and{\out@and}
 
-\def\maketitle{\out@maketitle}
-\def\tableofcontents{\out@tableofcontents}
-\def\listoffigures{\out@listoffigures}
-\def\listoftables{\out@listoftables}
 
-\def\msi@begin@abstract{\out@begin@abstract}
-\def\msi@end@abstract{\out@end@abstract}
 
 %% Main matter
 
@@ -104,30 +127,22 @@
 %% \begin and \end
 
 \def\begin#1{%
-     \def\reserved@a{%
-        \def\@currenvir{#1}%
-        \edef\@currenvline{\on@line}%
-        \csname msi@begin@#1\endcsname
-     }%
-  \@ignorefalse
-  \begingroup\@endpefalse\reserved@a
+  \begingroup
+  \msitag{^^0a}\csname msi@begin@#1\endcsname
 }
+
 \def\end#1{%
-  \csname msi@end@#1\endcsname\@checkend{#1}%
-  \expandafter\endgroup\if@endpe\@doendpe\fi
-  \if@ignore
-     \@ignorefalse
-     \ignorespaces
-  \fi
+  \csname msi@end@#1\endcsname
+  \msitag{^^0a}
+  \endgroup
 }
-\def\@checkend#1{\def\reserved@a{#1}\ifx
-      \reserved@a\@currenvir \else\@badend{#1}\fi}
-\let\@currenvline\@empty
+   
+
+
+
 
 %% Back matter
 
-\def\backmatter{\out@backmatter}
-\def\appendix{\out@appendix}
 
 %%%%%%%%%%%%%%%%
 
@@ -141,7 +156,8 @@
 \def\typeout{\immediate\write17}
 \def\dospecials{\do\ \do\\\do\{\do\}\do\$\do\&%
   \do\#\do\^\do\_\do\%\do\~}
-\def\@makeother#1{\catcode`#1=12\relax}
+
+
 \def\space{ }
 \def\@tempswafalse{\let\if@tempswa\iffalse}
 \def\@tempswatrue{\let\if@tempswa\iftrue}
@@ -152,6 +168,7 @@
 \def\two@digits#1{\ifnum#1<10 0\fi\number#1}
 \long\def\@firstoftwo#1#2{#1}
 \long\def\@secondoftwo#1#2{#2}
+
 \def\ProvidesFile#1{%
   \begingroup
     \catcode`\ 10 %
@@ -162,6 +179,7 @@
     \fi
     \@makeother\/%
     \@ifnextchar[{\@providesfile{#1}}{\@providesfile{#1}[]}}
+
 \def\@providesfile#1[#2]{%
     \wlog{File: #1 #2}%
     \@addtofilelist{ #2}%
@@ -169,44 +187,43 @@
 
 \long\def\@addtofilelist#1{}
 \def\@empty{}
-\catcode`\%=12
-\def\@percentchar{%}
-\catcode`\%=14
 \let\@currdir\@undefined
 \let\input@path\@undefined
 \let\filename@parse\@undefined
 \def\strip@prefix#1>{}
-\begingroup
-\count@\time
 
-\divide\count@ 60
-\count2=-\count@
-\multiply\count2 60
-\advance\count2 \time
-\edef\today{%
-  \the\year/\two@digits{\the\month}/\two@digits{\the\day}:%
-    \two@digits{\the\count@}:\two@digits{\the\count2}}
-%%\immediate\openout15={texsys.aux}
-%%\immediate\write15{\today^^J}
-%%\immediate\closeout15 %
-\def\IfFileExists#1#2#3{%
-  \openin\@inputcheck#1 %
-  \ifeof\@inputcheck
-     #3\relax
-  \else
-    \read\@inputcheck to \reserved@a
-    \ifx\reserved@a\today
-      \typeout{#1 found}#2\relax
-    \else
-      \typeout{BAD: old file \reserved@a (should be \today)}%
-      #3\relax
-    \fi
-  \fi
-  \closein\@inputcheck}
-\endlinechar=-1
-\gdef\@currdir{./}
-\immediate\closeout15 %
+
+\begingroup
+    \count@\time
+
+    \divide\count@ 60
+    \count2=-\count@
+    \multiply\count2 60
+    \advance\count2 \time
+    \edef\today{%
+      \the\year/\two@digits{\the\month}/\two@digits{\the\day}:%
+        \two@digits{\the\count@}:\two@digits{\the\count2}}
+
+    \def\IfFileExists#1#2#3{%
+      \openin\@inputcheck#1 %
+      \ifeof\@inputcheck
+         #3\relax
+      \else
+        \read\@inputcheck to \reserved@a
+        \ifx\reserved@a\today
+          \typeout{#1 found}#2\relax
+        \else
+          \typeout{BAD: old file \reserved@a (should be \today)}%
+          #3\relax
+        \fi
+      \fi
+      \closein\@inputcheck}
+
+    \endlinechar=-1
+    \gdef\@currdir{./}
+    \immediate\closeout15 %
 \endgroup
+
 \ifx\filename@parse\@undefined
   \def\reserved@a{./}\ifx\@currdir\reserved@a
     \typeout{^^JDefining UNIX/DOS style filename parser.^^J}
@@ -279,20 +296,10 @@
 \fi
 
 
-\catcode`\{=1 % left brace is begin-group character
-\catcode`\}=2 % right brace is end-group character
-\catcode`\$=3 % dollar sign is math shift
-\catcode`\&=4 % ampersand is alignment tab
-\catcode`\#=6 % hash mark is macro parameter character
-\catcode`\^=7 % circumflex and uparrow are for superscripts
-\catcode`\_=8 % underline and downarrow are for subscripts
-\catcode`\^^I=10 % ascii tab is a blank space
-\chardef\active=13 \catcode`\~=\active % tilde is active
-\catcode`\^^L=\active \outer\def^^L{\par}% ascii form-feed is \outer\par
 
 \def\dospecials{\do\ \do\\\do\{\do\}\do\$\do\&%
   \do\#\do\^\do\_\do\%\do\~}
-\catcode`@=11
+
 \chardef\@ne=1
 \chardef\tw@=2
 \chardef\thr@@=3
@@ -1031,10 +1038,10 @@
 \newskip\smallskipamount \smallskipamount=3pt plus 1pt minus 1pt
 \newskip\medskipamount   \medskipamount  =6pt plus 2pt minus 2pt
 \newskip\bigskipamount   \bigskipamount =12pt plus 4pt minus 4pt
+
 \DeclareRobustCommand{\nobreakspace}{%
    \leavevmode\nobreak\ }
-\catcode `\~=13
-%\def~{\nobreakspace{}}
+
 \expandafter\let\expandafter\@xobeysp\csname nobreakspace \endcsname
 \DeclareRobustCommand{\,}{%
    \relax\ifmmode\mskip\thinmuskip\else\thinspace\fi
@@ -3098,17 +3105,6 @@
     \fi
                        }%
 }
-%%% jcs \DeclareTextFontCommand{\textrm}{\rmfamily}
-%%% jcs \DeclareTextFontCommand{\textsf}{\sffamily}
-%%% jcs \DeclareTextFontCommand{\texttt}{\ttfamily}
-%%% jcs \DeclareTextFontCommand{\textnormal}{\normalfont}
-%%% jcs \DeclareTextFontCommand{\textbf}{\bfseries}
-%%% jcs \DeclareTextFontCommand{\textmd}{\mdseries}
-%%% jcs \DeclareTextFontCommand{\textit}{\itshape}
-%%% jcs \DeclareTextFontCommand{\textsl}{\slshape}
-%%% jcs \DeclareTextFontCommand{\textsc}{\scshape}
-%%% jcs \DeclareTextFontCommand{\textup}{\upshape}
-%%% jcs \DeclareTextFontCommand{\emph}{\em}
 \let \nocorr \relax
 \let \check@icl \@empty
 \let \check@icr \@empty
@@ -3340,7 +3336,7 @@
 
 \@namedef{verbatim*}{\@verbatim\@sxverbatim}
 \expandafter\let\csname endverbatim*\endcsname =\endverbatim
-\def\@makeother#1{\catcode`#112\relax}
+
 \let\verb@balance@group\@empty
 \def\verb@egroup{\global\let\verb@balance@group\@empty\egroup}
 \begingroup
@@ -3371,39 +3367,6 @@
 \def\@noligs{\let\do\do@noligs \verbatim@nolig@list}
 
 
-%%jcs \message{math definitions,}
-%%jcs \def\log{\mathop{\operator@font log}\nolimits}
-%%jcs \def\lg{\mathop{\operator@font lg}\nolimits}
-%%jcs \def\ln{\mathop{\operator@font ln}\nolimits}
-%%jcs \def\lim{\mathop{\operator@font lim}}
-%%jcs \def\limsup{\mathop{\operator@font lim\,sup}}
-%%jcs \def\liminf{\mathop{\operator@font lim\,inf}}
-%%jcs \def\sin{\mathop{\operator@font sin}\nolimits}
-%%jcs \def\arcsin{\mathop{\operator@font arcsin}\nolimits}
-%%jcs \def\sinh{\mathop{\operator@font sinh}\nolimits}
-%%jcs \def\cos{\mathop{\operator@font cos}\nolimits}
-%%jcs \def\arccos{\mathop{\operator@font arccos}\nolimits}
-%%jcs \def\cosh{\mathop{\operator@font cosh}\nolimits}
-%%jcs \def\tan{\mathop{\operator@font tan}\nolimits}
-%%jcs \def\arctan{\mathop{\operator@font arctan}\nolimits}
-%%jcs \def\tanh{\mathop{\operator@font tanh}\nolimits}
-%%jcs \def\cot{\mathop{\operator@font cot}\nolimits}
-%%jcs \def\coth{\mathop{\operator@font coth}\nolimits}
-%%jcs \def\sec{\mathop{\operator@font sec}\nolimits}
-%%jcs \def\csc{\mathop{\operator@font csc}\nolimits}
-%%jcs \def\max{\mathop{\operator@font max}}
-%%jcs \def\min{\mathop{\operator@font min}}
-%%jcs \def\sup{\mathop{\operator@font sup}}
-%%jcs \def\inf{\mathop{\operator@font inf}}
-%%jcs \def\arg{\mathop{\operator@font arg}\nolimits}
-%%jcs \def\ker{\mathop{\operator@font ker}\nolimits}
-%%jcs \def\dim{\mathop{\operator@font dim}\nolimits}
-%%jcs \def\hom{\mathop{\operator@font hom}\nolimits}
-%%jcs \def\det{\mathop{\operator@font det}}
-%%jcs \def\exp{\mathop{\operator@font exp}\nolimits}
-%%jcs \def\Pr{\mathop{\operator@font Pr}}
-%%jcs \def\gcd{\mathop{\operator@font gcd}}
-%%jcs \def\deg{\mathop{\operator@font deg}\nolimits}
 
 
 \def\pmod#1{\allowbreak\,({\rm mod})\,\,#1)}
@@ -3729,9 +3692,11 @@
 }
 \def\@endparenv{%
   \addpenalty\@endparpenalty\addvspace\@topsepadd\@endpetrue}
+
 \def\@doendpe{\@endpetrue
      \def\par{\@restorepar\everypar{}\par\@endpefalse}\everypar
                {{\setbox\z@\lastbox}\everypar{}\@endpefalse}}
+
 \newif\if@endpe
 \@endpefalse
 \def\@mklab#1{\hfil #1}
@@ -5214,8 +5179,8 @@
  \endgroup
  \@esphack}
 
-%%\def\index{\@bsphack\begingroup \@sanitize\@index}
 \def\index#1{\msihmode\msitag{<index>#1</index>}}
+
 
 %%\def\@index#1{\endgroup\@esphack}
 \def\makeglossary{%
