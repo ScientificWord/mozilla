@@ -1,4 +1,4 @@
-                                                                    
+
 @A@<MML Definition@>
 
 @o@<mml.h@>==@{@-
@@ -91,7 +91,6 @@ bool SetupMathML()
     fix_IE_space_bug = (strcmp(upref_zstrs[FIX_IE_BUG], "true") == 0);
     //LPINITIALIZE Initialize =
     //     (LPINITIALIZE)GetProcAddress(s_hDLL,"Initialize");
-    
     //if (!Initialize)
     //{
     //  // TCI_ASSERT(FALSE);

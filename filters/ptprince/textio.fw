@@ -240,7 +240,7 @@ void LineOfText::StripTCIMEnd(bool bMiddle)
          }
          if (m_lineData -> m_cursor > str.length())
               m_lineData -> m_cursor = str.length();
-       }      
+       }
    } else {
       if ( (str[n-2] == (TeXChar)'%')  && (str[n-3] == (TeXChar)'}')){
          str.erase(n-3, 3);
@@ -275,7 +275,7 @@ void LineOfText::StripTCIMEnd(bool bMiddle)
 bool CopyLine(LineOfText* src, LineOfText* dst)
 {
     while (!src -> bEmpty()){
-      dst -> Append( src -> chGet() ); 
+      dst -> Append( src -> chGet() );
     }
     return true;
 }
@@ -827,7 +827,7 @@ bool LineSource::GetLine(LineOfText* pLine)
    if (pLine -> bPeek("%TCIMACRO{%\x0D") || pLine -> bPeek("%TCIMACRO{")){
         LOG("\nTCIMACRO START");
         // scan ahead removing leading % until a line starts
-        // with %BeginExpansion or a non %. Then remove 
+        // with %BeginExpansion or a non %. Then remove
         // the preceeding brace-percent
         LOG("\nLINE: " << *pLine);
         while (true){
@@ -845,7 +845,7 @@ bool LineSource::GetLine(LineOfText* pLine)
                 } else if ( pNextLine -> bPeek("%" )) {
                    pLine -> StripTCIMEnd(true);
                    CopyLine (pNextLine, pLine);
-                   LOG("\nINTER: " << *pLine); 
+                   LOG("\nINTER: " << *pLine);
                    delete pNextLine;
                 } else {
                    LOG("\nNon-comment next line");
@@ -855,7 +855,6 @@ bool LineSource::GetLine(LineOfText* pLine)
                    break;
                 }
             }
-             
         }
         pLine -> Append(0x0d);
    }
