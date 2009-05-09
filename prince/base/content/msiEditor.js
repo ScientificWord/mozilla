@@ -5772,7 +5772,6 @@ var msiCommandUpdater = {
 //      if (bLogIt)
 //      {
 //        var bStopHere = true;
-//        goUpdateCommand(command);
 //  //      return;
 //      }
 
