@@ -126,6 +126,7 @@ nsMathMLFrame::InheritAutomaticData(nsIFrame* aParent)
     mPresentationData.flags |= NS_MATHML_DISPLAYSTYLE;
   }
 
+
 #if defined(NS_DEBUG) && defined(SHOW_BOUNDING_BOX)
   mPresentationData.flags |= NS_MATHML_SHOW_BOUNDING_METRICS;
 #endif
@@ -498,14 +499,14 @@ nsMathMLFrame::DisplayBoundingMetrics(nsDisplayListBuilder* aBuilder,
   nscoord h = aMetrics.ascent + aMetrics.descent;
 
   return aLists.Content()->AppendNewToTop(new (aBuilder)
-      nsDisplayMathMLBoundingMetrics(this, nsRect(x,y,w,h)));
+      nsDisplayMathMLBoundingMetrics((nsIFrame*)this, nsRect(x,y,w,h)));
 }
 #endif
 
 class nsDisplayMathMLBar : public nsDisplayItem {
 public:
-  nsDisplayMathMLBar(nsIFrame* aFrame, const nsRect& aRect)
-    : nsDisplayItem(aFrame), mRect(aRect) {
+  nsDisplayMathMLBar(nsIFrame* aFrame, const nsRect& aRect, PRBool isSelected)
+    : nsDisplayItem(aFrame), mRect(aRect), mSelected(isSelected) {
     MOZ_COUNT_CTOR(nsDisplayMathMLBar);
   }
 #ifdef NS_BUILD_REFCNT_LOGGING
@@ -519,23 +520,29 @@ public:
   NS_DISPLAY_DECL_NAME("MathMLBar")
 private:
   nsRect    mRect;
+  PRBool    mSelected;
 };
 
 void nsDisplayMathMLBar::Paint(nsDisplayListBuilder* aBuilder,
      nsIRenderingContext* aCtx, const nsRect& aDirtyRect)
 {
   // paint the bar with the current text color
-  aCtx->SetColor(mFrame->GetStyleColor()->mColor);
+  // Set color ...
+  nscolor fgcolor;
+    if (mSelected) fgcolor=NS_RGB(255,255,255); else fgcolor = NS_RGB(255,0,0);
+  aCtx->SetColor(fgcolor);
+
   aCtx->FillRect(mRect + aBuilder->ToReferenceFrame(mFrame));
 }
 
 nsresult
 nsMathMLFrame::DisplayBar(nsDisplayListBuilder* aBuilder,
                           nsIFrame* aFrame, const nsRect& aRect,
-                          const nsDisplayListSet& aLists) {
+                          const nsDisplayListSet& aLists,
+                          PRBool isSelected) {
   if (!aFrame->GetStyleVisibility()->IsVisible() || aRect.IsEmpty())
     return NS_OK;
 
   return aLists.Content()->AppendNewToTop(new (aBuilder)
-      nsDisplayMathMLBar(aFrame, aRect));
+      nsDisplayMathMLBar(aFrame, aRect, isSelected));
 }

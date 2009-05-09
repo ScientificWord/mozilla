@@ -2019,7 +2019,8 @@ nsresult
 nsMathMLChar::Display(nsDisplayListBuilder*   aBuilder,
                       nsIFrame*               aForFrame,
                       const nsDisplayListSet& aLists,
-                      const nsRect*           aSelectedRect)
+                      const nsRect*           aSelectedRect,
+                      PRBool                  fForceSelected)
 {
   nsresult rv = NS_OK;
   nsStyleContext* parentContext = mStyleContext->GetParent();
@@ -2059,14 +2060,12 @@ nsMathMLChar::Display(nsDisplayListBuilder*   aBuilder,
 
 #if defined(NS_DEBUG) && defined(SHOW_BOUNDING_BOX)
     // for visual debug
-    rv = aLists.BorderBackground()->AppendToTop(new (aBuilder)
+    aLists.BorderBackground()->AppendToTop(new (aBuilder)
         nsDisplayMathMLCharDebug(aForFrame, mRect));
-    NS_ENSURE_SUCCESS(rv, rv);
 #endif
   }
   return aLists.Content()->AppendNewToTop(new (aBuilder)
-        nsDisplayMathMLCharForeground(aForFrame, this,
-                                      aSelectedRect && !aSelectedRect->IsEmpty()));
+        nsDisplayMathMLCharForeground(aForFrame, this, fForceSelected || (aSelectedRect && !aSelectedRect->IsEmpty())));
 }
 
 void

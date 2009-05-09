@@ -797,6 +797,61 @@ void nsDisplaySelectionOverlay::Paint(nsDisplayListBuilder* aBuilder,
   ctx->Fill();
 }
 
+class nsDisplaySelectionUnderlay : public nsDisplayItem {
+public:
+  nsDisplaySelectionUnderlay(nsFrame* aFrame, PRInt16 aSelectionValue)
+    : nsDisplayItem(aFrame), mSelectionValue(aSelectionValue) {
+    MOZ_COUNT_CTOR(nsDisplaySelectionOverlay);
+  }
+#ifdef NS_BUILD_REFCNT_LOGGING
+  virtual ~nsDisplaySelectionUnderlay() {
+    MOZ_COUNT_DTOR(nsDisplaySelectionUnderlay);
+  }
+#endif
+
+  virtual void Paint(nsDisplayListBuilder* aBuilder, nsIRenderingContext* aCtx,
+     const nsRect& aDirtyRect);
+  NS_DISPLAY_DECL_NAME("SelectionUnderlay")
+private:
+  PRInt16 mSelectionValue;
+};
+
+
+
+void nsDisplaySelectionUnderlay::Paint(nsDisplayListBuilder* aBuilder,
+     nsIRenderingContext* aCtx, const nsRect& aDirtyRect)
+{
+  nscolor color = NS_RGB(60, 60, 255);
+  
+  nsILookAndFeel::nsColorID colorID;
+  nsresult result;
+  if (mSelectionValue == nsISelectionController::SELECTION_ON) {
+    colorID = nsILookAndFeel::eColor_TextSelectBackground;
+  } else if (mSelectionValue == nsISelectionController::SELECTION_ATTENTION) {
+    colorID = nsILookAndFeel::eColor_TextSelectBackgroundAttention;
+  } else {
+    colorID = nsILookAndFeel::eColor_TextSelectBackgroundDisabled;
+  }
+
+  nsCOMPtr<nsILookAndFeel> look;
+  look = do_GetService(kLookAndFeelCID, &result);
+  if (NS_SUCCEEDED(result) && look)
+    look->GetColor(colorID, color);
+
+  gfxRGBA c(color);
+//  c.a = 0;
+
+  nsRefPtr<gfxContext> ctx = aCtx->ThebesContext();
+  ctx->SetColor(c);
+
+  nsRect rect(aBuilder->ToReferenceFrame(mFrame), mFrame->GetSize());
+  rect.IntersectRect(rect, aDirtyRect);
+  rect.ScaleRoundOut(1.0f / mFrame->PresContext()->AppUnitsPerDevPixel());
+  ctx->NewPath();
+  ctx->Rectangle(gfxRect(rect.x, rect.y, rect.width, rect.height), PR_TRUE);
+  ctx->Fill();
+}
+
 /********************************************************
 * Refreshes each content's frame
 *********************************************************/
@@ -854,8 +909,63 @@ nsFrame::DisplaySelectionOverlay(nsDisplayListBuilder*   aBuilder,
     details = next;
   }
 
-  return aLists.Content()->AppendNewToTop(new (aBuilder)
-      nsDisplaySelectionOverlay(this, selectionValue));
+  return aLists.Content()->AppendNewToTop(new (aBuilder) nsDisplaySelectionOverlay(this, selectionValue));
+}
+
+nsresult
+nsFrame::DisplaySelectionUnderlay(nsDisplayListBuilder*   aBuilder,
+                                 const nsDisplayListSet& aLists,
+                                 PRUint16                aContentType)
+{
+//check frame selection state
+  if ((GetStateBits() & NS_FRAME_SELECTED_CONTENT) != NS_FRAME_SELECTED_CONTENT)
+    return NS_OK;
+  if (!IsVisibleForPainting(aBuilder))
+    return NS_OK;
+    
+  nsPresContext* presContext = PresContext();
+
+  nsIPresShell *shell = presContext->PresShell();
+  if (!shell)
+    return NS_OK;
+
+  PRInt16 displaySelection;
+  nsresult rv = shell->GetSelectionFlags(&displaySelection);
+  if (NS_FAILED(rv))
+    return rv;
+  if (!(displaySelection & aContentType))
+    return NS_OK;
+
+  const nsFrameSelection* frameSelection = GetConstFrameSelection();
+  PRInt16 selectionValue = frameSelection->GetDisplaySelection();
+
+  if (selectionValue <= nsISelectionController::SELECTION_HIDDEN)
+    return NS_OK; // selection is hidden or off
+
+  nsIContent *newContent = mContent->GetParent();
+
+  //check to see if we are anonymous content
+  PRInt32 offset = 0;
+  if (newContent) {
+    // XXXbz there has GOT to be a better way of determining this!
+    offset = newContent->IndexOf(mContent);
+  }
+
+  SelectionDetails *details;
+  //look up to see what selection(s) are on this frame
+  details = frameSelection->LookUpSelection(newContent, offset, 1, PR_FALSE);
+  // XXX is the above really necessary? We don't actually DO anything
+  // with the details other than test that they're non-null
+  if (!details)
+    return NS_OK;
+  
+  while (details) {
+    SelectionDetails *next = details->mNext;
+    delete details;
+    details = next;
+  }
+
+  return aLists.Content()->AppendNewToBottom(new (aBuilder) nsDisplaySelectionUnderlay(this, selectionValue));
 }
 
 nsresult
@@ -1714,7 +1824,7 @@ nsFrame::IsSelectable(PRBool* aSelectable, PRUint8* aSelectStyle) const
     *aSelectStyle = selectStyle;
   // BBM - I commented out the next two lines to improve selectability
 //  if (mState & NS_FRAME_GENERATED_CONTENT)
-//    *aSelectable = PR_FALS
+//    *aSelectable = PR_FALSE
   return NS_OK;
 }
 
