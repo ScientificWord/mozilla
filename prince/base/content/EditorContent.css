@@ -54,11 +54,12 @@ form
 }
 
 /* give a green dotted border to labels otherwise they are invisible
-*/
+
 label
 {
   border: 1px dotted green;
 }
+*/
 
 /* smileys */
 span.moz-smiley-s1,
