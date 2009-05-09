@@ -423,6 +423,7 @@ public:
                 nscoord&             aAxisHeight);
 
 protected:
+
 #if defined(NS_DEBUG) && defined(SHOW_BOUNDING_BOX)
   nsresult DisplayBoundingMetrics(nsDisplayListBuilder* aBuilder,
                                   nsIFrame* aFrame, const nsPoint& aPt,
@@ -436,7 +437,8 @@ protected:
    */
   nsresult DisplayBar(nsDisplayListBuilder* aBuilder,
                       nsIFrame* aFrame, const nsRect& aRect,
-                      const nsDisplayListSet& aLists);
+                      const nsDisplayListSet& aLists,
+                      PRBool isSelected);
 
   // information about the presentation policy of the frame
   nsPresentationData mPresentationData;

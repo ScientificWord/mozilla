@@ -681,6 +681,7 @@ nsMathMLContainerFrame::BuildDisplayList(nsDisplayListBuilder*   aBuilder,
   rv = DisplayTextDecorationsAndChildren(aBuilder, aDirtyRect, aLists);
   NS_ENSURE_SUCCESS(rv, rv);
 
+
 #if defined(NS_DEBUG) && defined(SHOW_BOUNDING_BOX)
   // for visual debug
   // ----------------
