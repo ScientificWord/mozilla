@@ -31,10 +31,11 @@ var gPrefs;
 // dialog initialization code
 function Startup()
 {
-  gActiveEditor = GetCurrentTableEditor();
+  debugger;
+  gActiveEditor = msiGetTableEditor();
   if (!gActiveEditor)
   {
-    dump("Failed to get active editor!\n");
+    dump("Failed to get active table editor!\n");
     window.close();
     return;
   }
