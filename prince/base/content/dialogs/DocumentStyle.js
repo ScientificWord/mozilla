@@ -49,7 +49,7 @@ function startup()
   tagdefsArr = processingInstructionsList(editordoc, "sw-tagdefs");
   for (i = tagdefsArr.length - 1; i>= 0;  i--)
   {
-    uri = tagdefsArr[i].href; 
+    uri = tagdefsArr[i]; 
   //relativize the names when we can
     if ("file" == GetScheme(uri)) uri = msiMakeRelativeUrl(uri);
     if (arr.indexOf(uri) === -1)
