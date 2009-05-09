@@ -6272,12 +6272,12 @@ function getResourceFile( name, resdirname )
   return resfile;
 }
  
-var wordSep = /\W+/;
+var wordSep = /[ -]+/;  // this needs to be localizable BBM
 
 function countNodeWords(node) //the intent is to count words in a text node
 {
   var s = node.textContent;
-  var arr = s.split(wordSep);
+  var arr = s.split(" ");
   var n = arr.length;
   var countOfEmpties = 0;
   // we can get empty 'words' at the ends
