@@ -5,10 +5,11 @@ const mathmlOverlayJS_duplicateTest = "Bad";
 function SetupMSIMathMenuCommands()
 {
   var commandTable = GetComposerCommandTable();
-  
+  alert("Should not be calling SetupMSIMathMenuCommands()!");
   //dump("Registering msi math menu commands\n");
   commandTable.registerCommand("cmd_MSIinlineMathCmd",  msiInlineMath);
   commandTable.registerCommand("cmd_MSIdisplayMathCmd", msiDisplayMath);
+  commandTable.registerCommand("cmd_MSImathtext",       msiToggleMathText);
   commandTable.registerCommand("cmd_MSItextCmd",        msiDoSomething);
   commandTable.registerCommand("cmd_MSIfractionCmd",    msiFraction);
   commandTable.registerCommand("cmd_MSIradicalCmd",     msiRadical);
@@ -74,7 +75,7 @@ function msiSetupMSIMathMenuCommands(editorElement)
   //dump("Registering msi math menu commands\n");
   commandTable.registerCommand("cmd_MSIinlineMathCmd",  msiInlineMath);
   commandTable.registerCommand("cmd_MSIdisplayMathCmd", msiDisplayMath);
-  commandTable.registerCommand("cmd_MSItextCmd",        msiDoSomething);
+  commandTable.registerCommand("cmd_MSImathtext",       msiToggleMathText);
   commandTable.registerCommand("cmd_MSIfractionCmd",    msiFraction);
   commandTable.registerCommand("cmd_MSIradicalCmd",     msiRadical);
   commandTable.registerCommand("cmd_MSIrootCmd",        msiRoot);
@@ -175,6 +176,26 @@ var msiDoSomething =
   doCommand: function(aCommand)
   {
     dump("msiDoSomething():  ie not implemented.\n");
+    return;
+  }
+};
+
+
+var msiToggleMathText =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    insertinlinemath();
+    dump("called msiToggleMathText\n");
+    //dump("Clearing math mode is not implemented.\n");
     return;
   }
 };

@@ -6,7 +6,8 @@ var msiEvaluateCommand =
   isCommandEnabled: function(aCommand, editorElement)
   {
     var theEditorElement = msiGetActiveEditorElement();
-    return (msiIsDocumentEditable(theEditorElement) && msiIsEditingRenderedHTML(theEditorElement));
+    return (msiIsDocumentEditable(theEditorElement) && msiIsEditingRenderedHTML(theEditorElement) &&
+      isInMath(editorElement));
   },
 
   getCommandStateParams: function(aCommand, aParams, editorElement) {},
@@ -24,7 +25,8 @@ var msiDefineCommand =
   isCommandEnabled: function(aCommand, dummy)
   {
     var editorElement = msiGetActiveEditorElement();
-    return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement));
+    return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement) &&
+      isInMath(editorElement));
   },
 
   getCommandStateParams: function(aCommand, aParams, editorElement) {},
