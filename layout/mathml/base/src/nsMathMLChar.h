@@ -122,7 +122,8 @@ public:
   Display(nsDisplayListBuilder*   aBuilder,
           nsIFrame*               aForFrame,
           const nsDisplayListSet& aLists,
-          const nsRect*           aSelectedRect = nsnull);
+          const nsRect*           aSelectedRect = nsnull,
+          PRBool                  fForceSelected = PR_FALSE);
           
   void PaintForeground(nsPresContext* aPresContext,
                        nsIRenderingContext& aRenderingContext,
