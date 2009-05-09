@@ -251,13 +251,31 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
   // is the -msi-resize attribute set?
   nsAutoString strResizeAttr;
   PRBool resizeRequested = PR_FALSE;
-  res = focusElement->GetAttribute(NS_LITERAL_STRING("msi_resize"), strResizeAttr);
-  if (strResizeAttr.EqualsLiteral("true")) resizeRequested = PR_TRUE;
+  nsCOMPtr<nsIDOMElement> tempElement;
+  nsCOMPtr<nsIDOMNode> node;
+  tempElement = focusElement;
+
+  while (!resizeRequested)
+  {
+    res = tempElement->GetAttribute(NS_LITERAL_STRING("msi_resize"), strResizeAttr);
+    if (NS_FAILED(res)) break;
+    if (strResizeAttr.EqualsLiteral("true")) 
+    {
+      resizeRequested = PR_TRUE;
+      break;
+    }
+    node = do_QueryInterface(tempElement);
+    res = tempElement->GetParentNode(getter_AddRefs(node));
+    if (NS_FAILED(res)) break;
+    tempElement = do_QueryInterface(node);
+    if (!tempElement) break;
+  }
+  
+  if (resizeRequested) focusElement = tempElement;
   // what's its tag?
   nsAutoString focusTagName;
   res = focusElement->GetTagName(focusTagName);
   if (NS_FAILED(res)) return res;
-//  ToLowerCase(focusTagName);
   nsCOMPtr<nsIAtom> focusTagAtom = do_GetAtom(focusTagName);
 
   nsCOMPtr<nsIDOMElement> absPosElement;

@@ -334,10 +334,11 @@ nsHTMLEditor::Init(nsIDOMDocument *aDoc, nsIPresShell *aPresShell,
     mSelectionListenerP = new ResizerSelectionListener(this);
     if (!mSelectionListenerP) {return NS_ERROR_NULL_POINTER;}
 
-    if (!(mFlags & eEditorAllowInteraction)) {
+    //BBM
+    //if (!(mFlags & eEditorAllowInteraction)) {
       // ignore any errors from this in case the file is missing
       AddOverrideStyleSheet(NS_LITERAL_STRING("resource://gre/res/EditorOverride.css"));
-    }
+    //}
 
     nsCOMPtr<nsISelection>selection;
     result = GetSelection(getter_AddRefs(selection));
