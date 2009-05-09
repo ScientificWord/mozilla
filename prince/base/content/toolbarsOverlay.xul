@@ -96,13 +96,10 @@
       <toolbarbutton id="pdfcompileButton" tooltiptext="&pdfcompileButton.tooltip;"/>
       <toolbarbutton id="javascriptButton" class="toolbarbutton-1" observes=""
                  tooltiptext="&javascriptToolbarButton.tooltip;" label="&javascriptToolbarButton.label;"/>
-      <toolbarbutton id="boldButton" class="toolbarbutton-1" observes=""
+      <toolbarbutton id="boldButton" class="toolbarbutton-1" observes="cmd_textBold"
                  tooltiptext="&boldToolbarButton.tooltip;" label="&boldToolbarButton.label;"/>
-      <toolbarbutton id="italicButton" class="toolbarbutton-1" observes=""
+      <toolbarbutton id="italicButton" class="toolbarbutton-1" observes="cmd_textItalic"
                  tooltiptext="&italicToolbarButton.tooltip;" label="&italicToolbarButton.label;"/>
-      <toolbarbutton id="stdToolbarTab"/>
-      <toolbarbutton id="editToolbarTab"/>
-      <toolbarbutton id="mathToolbarTab"/>
       <toolbaritem id="TextTags" title="&texttagselect.label;"><textbox id="TextTagSelections"/></toolbaritem>
       <toolbaritem id="ParaTags" title="&paratagselect.label;"><textbox id="ParaTagSelections"/></toolbaritem>
       <toolbaritem id="StructTags" title="&secttagselect.label;"><textbox id="StructTagSelections"/></toolbaritem>
@@ -118,7 +115,7 @@
       flex = "1"
       tbalign="center" 
       context="toolbar-context-menu"
-      defaultset="stdToolbarTab,newButton,openButton,saveButton,printButton,printPreviewButton,mathtextButton,TextTags,
+      defaultset="newButton,openButton,saveButton,printButton,printPreviewButton,mathtextButton,TextTags,
         ParaTags,StructTags,OtherTags" 
       mode="icons" 
       customizable="true"
@@ -131,7 +128,7 @@
       flex = "1"
       tbalign="center" 
       context="toolbar-context-menu"
-      defaultset="editToolbarTab,noteButton,markerButton,htlinkButton,formulaButton,compileButton,frontmatterButton,
+      defaultset="noteButton,markerButton,htlinkButton,formulaButton,compileButton,frontmatterButton,
         packagesButton,citationButton,indexentryButton,xrefButton,texfieldButton,subdocButton,
         bibliographyButton,gifsAnimatedButton,boldButton,italicButton,zoomValue"
       mode="icons" 
@@ -145,7 +142,7 @@
       flex = "1"
       tbalign="center" 
       context="toolbar-context-menu"
-      defaultset="mathToolbarTab,evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plotButton3D,
+      defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plotButton3D,
         defineButton,showdefsButton,fractionButton,radicalButton,superscriptButton,subscriptButton,
         parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,
         matrixButton,mathnameButton,binomialButton,labelButton,decorationButton"
@@ -228,7 +225,7 @@
 
 <!-- Button section -->
   <toolbarbutton id="mathtextButton" class="toolbarbutton-1" type="checkbox" autoCheck="true" observes="cmd_MSImathtext" tooltiptext="&mathtextButton.tooltip;"
-    label="&mathtextButton.label;" oncommand="insertinlinemath();">
+    label="&mathtextButton.label;">
     <observes element="cmd_MSImathtext" type="checkbox" attribute="state" onbroadcast="msiOnButtonUpdate(this.parentNode,'cmd_MSImathtext')"/>
   </toolbarbutton>
 
@@ -458,10 +455,6 @@
   <toolbarbutton id="importtexButton" class="toolbarbutton-1" observes=""
                  tooltiptext="&importtexToolbarButton.tooltip;" label="&importtexToolbarButton.label;"/>
 
-  <toolbarbutton id="stdToolbarTab" class="toolbarbutton-1" observes="" tooltiptext="Click and drag to move this toolbar"/>
-  <toolbarbutton id="editToolbarTab" class="toolbarbutton-1" observes="" tooltiptext="Click and drag to move this toolbar"/>
-  <toolbarbutton id="mathToolbarTab" class="toolbarbutton-1" observes="" tooltiptext="Click and drag to move this toolbar"/>
-
 	<textbox id="TextTagSelections" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
     completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="texttag"
 		tooltiptext="&texttagselect.tooltip;" onkeypress="doTagKeyCommand(event,'cmd_texttag',this.value);"
@@ -488,7 +481,7 @@
 		tooltiptext="&othertagselect.tooltip;" onkeypress="doTagKeyCommand(event,'cmd_othertag',this.value);"
 		label="&othertagselect.label;"
     onfocus="this.select();"
-    ontextentered=" msiDoStatefulCommand('cmd_othertag',this.value);" />
+    ontextentered="msiDoStatefulCommand('cmd_othertag',this.value);" />
 
   <menu id="viewShowHide">
 <!-- the order here should match the order at the top of the screen -->
@@ -510,6 +503,8 @@
     <command id="cmd_compactSymbolPanels"  oncommand="setCompact('menuCompactSymbolPanels','cmd_compactSymbolPanels');"   checked="false"/>
     <command id="cmd_showTeXLog" oncommand="msiGoDoCommand('cmd_showTeXLog');" />
     <command id="cmd_showXSLTLog" oncommand="msiGoDoCommand('cmd_showXSLTLog');" />
+    <command id="cmd_textBold" oncommand="msiDoStatefulCommand('cmd_texttag','bold');" />
+    <command id="cmd_textItalic" oncommand="msiDoStatefulCommand('cmd_texttag','it');" />
     <broadcaster id="defaultCompiler" persist="defcomp previewCommand printCommand" defcomp="pdf" previewCommand="cmd_previewPdf" printCommand="cmd_printPdf"/>
   </broadcasterset>
 
