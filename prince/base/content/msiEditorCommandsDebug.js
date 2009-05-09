@@ -592,7 +592,7 @@ function msiDumpClipboard() {
   textmimetypes.kHTMLMime                    = "text/html";
   textmimetypes.kHTMLContext                 = "text/_moz_htmlcontext";
   textmimetypes.kHTMLInfo                    = "text/_moz_htmlinfo";
-//  textmimetypes.kNativeHTMLMime              = "application/x-moz-nativehtml";
+  textmimetypes.kNativeHTMLMime              = "application/x-moz-nativehtml";
 
   var pastetext;
   var clip = Components.classes["@mozilla.org/widget/clipboard;1"].
