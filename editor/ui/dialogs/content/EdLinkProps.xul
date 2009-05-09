@@ -55,7 +55,7 @@
    ondialoghelp="return doHelpButton();">
 
   <script type="application/x-javascript" src="chrome://editor/content/editorUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/EdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/EdLinkProps.js"/>
   <script type="application/x-javascript" src="chrome://help/content/contextHelp.js"/>
 
