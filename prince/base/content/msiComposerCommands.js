@@ -319,7 +319,6 @@ function msiGoUpdateCommandState(command, editorElement)
       case "cmd_nobreak":
       case "cmd_ul":
       case "cmd_ol":
-      case "cmd_MSImathtext":
         msiPokeStyleUI(command, params.getBooleanValue("state_all"));
         break;
 
@@ -338,12 +337,15 @@ function msiGoUpdateCommandState(command, editorElement)
       case "cmd_paratag":
       case "cmd_structtag":
       case "cmd_othertag":
-
         msiPokeTagStateUI(command, params);
         break;
 
       case "cmd_viewInvisibles":
         updateViewMenuFromEditor(editorElement);
+      break;
+
+      case "cmd_MSImathtext":
+        updateMathText(editorElement);
       break;
 
       case "cmd_decreaseZIndex":
@@ -361,6 +363,21 @@ function msiGoUpdateCommandState(command, editorElement)
     }
   }
   catch (e) { dump("An error occurred updating the "+command+" command: \n"+e+"\n"); }
+}
+
+function isInMath(editorElement)
+{
+  var editor = msiGetEditor(editorElement);
+  return editor.tagListManager.selectionContainedInTag("math",null)
+}
+  
+
+function updateMathText(editorElement)
+{
+  var cmd = document.getElementById("cmd_MSImathtext");
+  var editor = msiGetEditor(editorElement);
+  
+  cmd.setAttribute("isMath",isInMath(editorElement)?"true":"false");
 }
 
 function msiGoUpdateComposerMenuItems(commandset, editorElement)
