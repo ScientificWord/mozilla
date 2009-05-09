@@ -6,45 +6,6 @@ toolbar[printpreview="true"] {
   -moz-binding: url("chrome://global/content/printPreviewBindings.xml#printpreviewtoolbar");
 }
 
-#stdToolbarTab, #editToolbarTab, #mathToolbarTab {
-  list-style-image: url("chrome://prince/skin/icons/tab.png");
-}
-
-toolbar[iconsize="small"] #stdToolbarTab, 
-toolbar[iconsize="small"] #editToolbarTab, 
-toolbar[iconsize="small"] #mathToolbarTab 
-{
-  list-style-image: url("chrome://prince/skin/icons/tab-sm.png");
-}
-
-#stdToolbarTab:hover, 
-#editToolbarTab:hover, 
-#mathToolbarTab:hover 
-{
-  list-style-image: url("chrome://prince/skin/icons/tab-hover.png");
-}
-
-toolbar[iconsize="small"] #stdToolbarTab:hover,
-toolbar[iconsize="small"] #editToolbarTab:hover,
-toolbar[iconsize="small"] #mathToolbarTab:hover 
-{
-  list-style-image: url("chrome://prince/skin/icons/tab-hover-sm.png");
-}
-
-#stdToolbarTab:active, 
-#editToolbarTab:active, 
-#mathToolbarTab:active 
-{
-  list-style-image: url("chrome://prince/skin/icons/tab-active.png");
-}
-
-toolbar[iconsize="small"] #stdToolbarTab:active 
-toolbar[iconsize="small"] #editToolbarTab:active 
-toolbar[iconsize="small"] #mathToolbarTab:active 
-{
-  list-style-image: url("chrome://prince/skin/icons/tab-active-sm.png");
-}
-
 #evalButton {
   list-style-image: url("chrome://prince/skin/icons/math_evaluate.png");
 }
@@ -358,11 +319,11 @@ toolbar[iconsize="small"] #mathtextButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/math_mathtext-checked-active-sm.png");
 }
 
-#mathtextButton[checked="true"] {
+#mathtextButton[isMath="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_mathtext-checked.png");
 }
 
-toolbar[iconsize="small"] #mathtextButton[checked="true"] {
+toolbar[iconsize="small"] #mathtextButton[isMath="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_mathtext-checked-sm.png");
 }
 
