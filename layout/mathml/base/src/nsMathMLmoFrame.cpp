@@ -140,12 +140,17 @@ nsMathMLmoFrame::BuildDisplayList(nsDisplayListBuilder*   aBuilder,
     // make our char selected if our inner child text frame is selected
     PRBool isSelected = PR_FALSE;
     nsRect selectedRect;
+  // BBM: experiment
+//    if (IsFrameInSelection(this)) {
+//      selectedRect = GetRect();
+//      isSelected = PR_TRUE;
+//    }
     nsIFrame* firstChild = mFrames.FirstChild();
     if (IsFrameInSelection(firstChild)) {
       selectedRect = firstChild->GetRect();
       isSelected = PR_TRUE;
     }
-    rv = mMathMLChar.Display(aBuilder, this, aLists, isSelected ? &selectedRect : nsnull);
+    rv = mMathMLChar.Display(aBuilder, this, aLists, isSelected ? &selectedRect : nsnull, isSelected ); //, isSelected ? &selectedRect : nsnull);
     NS_ENSURE_SUCCESS(rv, rv);
   
 #if defined(NS_DEBUG) && defined(SHOW_BOUNDING_BOX)
@@ -153,6 +158,8 @@ nsMathMLmoFrame::BuildDisplayList(nsDisplayListBuilder*   aBuilder,
     rv = DisplayBoundingMetrics(aBuilder, this, mReference, mBoundingMetrics, aLists);
 #endif
   }
+//BBM
+  DisplaySelectionUnderlay(aBuilder,aLists);
   return rv;
 }
 

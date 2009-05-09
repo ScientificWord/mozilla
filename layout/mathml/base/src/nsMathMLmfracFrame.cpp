@@ -219,13 +219,17 @@ nsMathMLmfracFrame::BuildDisplayList(nsDisplayListBuilder*   aBuilder,
   
   /////////////
   // paint the fraction line
+  PRBool isSelected = PR_FALSE;
+  GetSelected(&isSelected);
   if (mSlashChar) {
     // bevelled rendering
     rv = mSlashChar->Display(aBuilder, this, aLists);
   } else {
-    rv = DisplayBar(aBuilder, this, mLineRect, aLists);
+    rv = DisplayBar(aBuilder, this, mLineRect, aLists, isSelected);
   }
 
+//BBM
+  DisplaySelectionUnderlay(aBuilder,aLists);
   return rv;
 }
 

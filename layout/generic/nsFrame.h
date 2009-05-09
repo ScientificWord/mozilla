@@ -551,6 +551,9 @@ protected:
   nsresult DisplaySelectionOverlay(nsDisplayListBuilder* aBuilder,
       const nsDisplayListSet& aLists, PRUint16 aContentType = nsISelectionDisplay::DISPLAY_FRAMES);
 
+  nsresult DisplaySelectionUnderlay(nsDisplayListBuilder* aBuilder,
+      const nsDisplayListSet& aLists, PRUint16 aContentType = nsISelectionDisplay::DISPLAY_FRAMES);
+ 
   PRInt16 DisplaySelection(nsPresContext* aPresContext, PRBool isOkToTurnOn = PR_FALSE);
   
   // Style post processing hook
