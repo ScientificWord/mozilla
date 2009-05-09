@@ -475,6 +475,7 @@ function setFrameAttributes(frameNode)
 {
   var unit = frameUnitHandler.currentUnit;
   frameNode.setAttribute("units",unit);
+  frameNode.setAttribute("msi_resize","true");
   frameNode.setAttribute("margin", getCompositeMeasurement("margin", unit, false));  
   frameNode.setAttribute("border", getCompositeMeasurement("border",unit, false));  
   frameNode.setAttribute("padding", getCompositeMeasurement("padding",unit, false));  
