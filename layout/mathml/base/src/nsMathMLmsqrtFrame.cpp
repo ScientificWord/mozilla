@@ -137,6 +137,10 @@ nsMathMLmsqrtFrame::BuildDisplayList(nsDisplayListBuilder*   aBuilder,
                                      const nsDisplayListSet& aLists)
 {
   /////////////
+  PRBool isSelected;
+  GetSelected(&isSelected);
+  nsRect selRect;;
+  if (isSelected) mSqrChar.GetRect(selRect);
   // paint the content we are square-rooting
   nsresult rv = nsMathMLContainerFrame::BuildDisplayList(aBuilder, aDirtyRect, aLists);
   NS_ENSURE_SUCCESS(rv, rv);
@@ -144,10 +148,10 @@ nsMathMLmsqrtFrame::BuildDisplayList(nsDisplayListBuilder*   aBuilder,
   /////////////
   // paint the sqrt symbol
   if (!NS_MATHML_HAS_ERROR(mPresentationData.flags)) {
-    rv = mSqrChar.Display(aBuilder, this, aLists);
+    rv = mSqrChar.Display(aBuilder, this, aLists, isSelected?&selRect:nsnull);
     NS_ENSURE_SUCCESS(rv, rv);
 
-    rv = DisplayBar(aBuilder, this, mBarRect, aLists);
+    rv = DisplayBar(aBuilder, this, mBarRect, aLists, isSelected);
     NS_ENSURE_SUCCESS(rv, rv);
 
 #if defined(NS_DEBUG) && defined(SHOW_BOUNDING_BOX)
@@ -159,7 +163,8 @@ nsMathMLmsqrtFrame::BuildDisplayList(nsDisplayListBuilder*   aBuilder,
     rv = DisplayBoundingMetrics(aBuilder, this, rect.TopLeft(), bm, aLists);
 #endif
   }
-
+//BBM
+  DisplaySelectionUnderlay(aBuilder,aLists);
   return rv;
 }
 
