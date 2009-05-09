@@ -1447,6 +1447,9 @@ nsTextControlFrame::CreateFrameFor(nsIContent*      aContent)
   // All gfxtextcontrolframe2's are widgets
   editorFlags |= nsIPlaintextEditor::eEditorWidgetMask;
 
+  // BBM: this seems to be required to get resize widgets around frames
+  editorFlags |= nsIPlaintextEditor::eEditorAllowInteraction;
+
   // Use async reflow and painting for text widgets to improve
   // performance.
 
