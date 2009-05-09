@@ -16,10 +16,11 @@
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
 <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
+<!-- Perhaps the list of keys should be moved to content/xbl/builtin/xxxx/editor-base.inc -->
 
-  <keyset id="editorKeys">
+  <keyset id="editorKeys">  
     <keyset id="MSIKeySet">
-      <key id="MSIinlineMathKey" modifiers="accel" key="&MSIinlineMathCmd.keybinding;" command="cmd_MSIinlineMathCmd"/>    
+      <key id="MSIinlineMathKey" modifiers="accel" key="&MSIinlineMathCmd.keybinding;" command="cmd_MSImathtext"/>    
       <key id="MSIdisplayKey"    modifiers="accel" key="&MSIdisplayCmd.keybinding;"    command="cmd_MSIdisplayMathCmd"/>
       <key id="MSIfractionKey"   modifiers="accel" key="&MSIfractionCmd.keybinding;"   command="cmd_MSIfractionCmd"/>   
       <key id="MSIradicalKey"    modifiers="accel" key="&MSIradicalCmd.keybinding;"    command="cmd_MSIradicalCmd"/>    
@@ -41,7 +42,8 @@
   
     <command id="cmd_MSIinlineMathCmd"  oncommand="msiGoDoCommand('cmd_MSIinlineMathCmd')"/>
     <command id="cmd_MSIdisplayMathCmd" oncommand="msiGoDoCommand('cmd_MSIdisplayMathCmd')"/>
-    <command id="cmd_MSItextCmd"        disabled="true" oncommand="msiGoDoCommand('cmd_MSItextCmd')"/>
+    <command id="cmd_MSItextCmd"        oncommand="msiGoDoCommand('cmd_MSItextCmd')"/>
+    <command id="cmd_MSImathtext"       oncommand="msiGoDoCommand('cmd_MSImathtext')"/>
     <command id="cmd_MSIfractionCmd"    oncommand="msiGoDoCommand('cmd_MSIfractionCmd')"/>
     <command id="cmd_MSIradicalCmd"     oncommand="msiGoDoCommand('cmd_MSIradicalCmd')"/>
     <command id="cmd_MSIrootCmd"        oncommand="msiGoDoCommand('cmd_MSIrootCmd')"/>
