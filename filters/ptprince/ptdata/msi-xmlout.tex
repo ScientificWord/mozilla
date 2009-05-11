@@ -1,5 +1,4 @@
 \makeatletter
-
 \def\msi@rfi#1#2{\def#1{\msitag{<requestimplementation>#2</requestimplementation>}}}
 
 
@@ -28,6 +27,13 @@
 \msi@pass@newline{\settoheight}
 \msi@pass@newline{\settodepth}
 \msi@pass@newline{\settowidth}
+
+
+\def\MSIMathQuote#1{%
+   \expandafter\def\csname#1\endcsname{\char`\\#1\char32\relax}}
+
+%\MSIMathQuote{\\} %% may need to hard-code this one
+
 
 
 % \newcounter{#1}[#2]
@@ -118,6 +124,20 @@
 
 %% Frontmatter
 
+\def\title#1{\gdef\@title{#1}\out@title{#1}}
+\def\author#1{\gdef\@author{#1}\out@author{#1}}
+\def\date#1{\gdef\@date{#1}\out@date{#1}}
+
+\def\thanks#1{\out@thanks{#1}}
+\def\and{\out@and}
+
+
+%\def\frontmatter{\out@frontmatter}
+%\def\mainmatter{\out@mainmatter}
+
+
+
+
 
 \def\out@title#1{%
    {\everypar={}\msitag{^^0a}\msiopentag{title}{<title>}#1\msiclosetag{title}{</title>}}}
@@ -143,7 +163,7 @@
   \@ifnextchar[{\msi@empty@elmA}{\msi@empty@elmB}}
 
 \def\msi@empty@elmA[#1]#2{%
-  \expandafter\def\csname #2\endcsname{\msihmode\br\msitag{<#1/>}}
+  \expandafter\def\csname #2\endcsname{\msihmode\br\msitag{<#1/>}}}
 
 \def\msi@empty@elmB#1{\msi@empty@elmA[#1]{#1}}
    
@@ -157,9 +177,6 @@
 
 \def\msi@simple@envB#1{\msi@simple@envA[#1]{#1}}
 
-
-
-%% Main matter
 
 
 %% newtheorem
@@ -199,8 +216,9 @@
 
 
 
-\def\ref#1{\msiopentag{ref}{<a>}#1\msiclosetag{ref}{</a>}}
-\def\pageref#1{\msiopentag{pageref}{<pageref>}#1\msiclosetag{pageref}{</pageref>}}
+%\def\ref#1{\msiopentag{ref}{<a>}#1\msiclosetag{ref}{</a>}}
+%\def\pageref#1{\msiopentag{pageref}{<pageref>}#1\msiclosetag{pageref}{</pageref>}}
+
 \def\pagenumbering#1{%
    \msiopentag{latexstyleb}{<latexstyleb>}%
       \msiopentag{styleprop}{<styleprop>}%
@@ -213,7 +231,7 @@
 
 
 \def\msi@pass#1{\def#1{\msitag{#1}}}
-\def\msi@mathmlpass#1{\def#1{\string#1\char32\relax}}
+
 
 \newif\if@first@item
 
@@ -263,15 +281,22 @@
 \def\@closeitem{\msiclosetag{li}{</li>}}
 \def\@openitem{\msiopentag{li}{<li>}}
 
-\def\msi@begin@enumerate{\everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue \msiopentag{enumerate}{<enumerate>}}
-\def\msi@end@enumerate{\br\msiclosetag{enumerate}{</enumerate>}}
+%%\def\msi@begin@enumerate{\everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue \msiopentag{enumerate}{<enumerate>}}
+%%\def\msi@end@enumerate{\br\msiclosetag{enumerate}{</enumerate>}}
+%%
+%%\def\msi@begin@itemize{\everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue\msiopentag{itemize}{<itemize>}}
+%%\def\msi@end@itemize{\br\msiclosetag{itemize}{</itemize>}}
+%%
+%%\def\msi@begin@description{\everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue\msiopentag{description}{<description>}}
+%%\def\msi@end@description{\br\msiclosetag{description}{</description>}}
 
-\def\msi@begin@itemize{\everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue\msiopentag{itemize}{<itemize>}}
-\def\msi@end@itemize{\br\msiclosetag{itemize}{</itemize>}}
+\def\MSIListEnvironment#1{%
+  \expandafter\def\csname msi@begin@#1\endcsname{%
+      \everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue\msiopentag{#1}{<#1>}}
 
-\def\msi@begin@description{\everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue\msiopentag{description}{<description>}}
-\def\msi@end@description{\br\msiclosetag{description}{</description>}}
-
+  \expandafter\def\csname msi@end@#1\endcsname{%
+      \br\msiclosetag{#1}{</#1>}}}
+       
 \def\msi@begin@thebibliography#1{%
   \everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue \msiopentag{thebibliography}{<thebibliography>}%
 }
@@ -647,563 +672,8 @@
 \def\TeX{<tex>TeX</tex>}
 
 
-\msi@mathmlpass{\dot}
-\msi@mathmlpass{\boldsymbol}
-
-\msi@mathmlpass{\allowbreak}
-\msi@mathmlpass{\epsilon}
-\msi@mathmlpass{\cup}
-\msi@mathmlpass{\cap}
 
 % Operators
-
-\msi@mathmlpass{\int}
-\msi@mathmlpass{\iint}
-\msi@mathmlpass{\iiint}
-\msi@mathmlpass{\iiiint}
-\msi@mathmlpass{\idotsint}
-\msi@mathmlpass{\oint}
-\msi@mathmlpass{\sum}
-\msi@mathmlpass{\prod}
-\msi@mathmlpass{\bigcap}
-\msi@mathmlpass{\bigwedge}
-\msi@mathmlpass{\bigoplus}
-\msi@mathmlpass{\bigodot}
-\msi@mathmlpass{\bigsqcup}
-\msi@mathmlpass{\coprod}
-\msi@mathmlpass{\bigcup}
-\msi@mathmlpass{\bigvee}
-\msi@mathmlpass{\bigotimes}
-\msi@mathmlpass{\biguplus}
-
-\msi@mathmlpass{\nolimits}
-\msi@mathmlpass{\dint}
-\msi@mathmlpass{\diint}
-\msi@mathmlpass{\diiint}
-\msi@mathmlpass{\diiiint}
-\msi@mathmlpass{\didotsint}
-\msi@mathmlpass{\dbigwedge}
-\msi@mathmlpass{\dbigoplus}
-\msi@mathmlpass{\dbigodot}
-\msi@mathmlpass{\dbigsqcup}
-\msi@mathmlpass{\dcoprod}
-
-\msi@mathmlpass{\doint}
-\msi@mathmlpass{\dsum}
-\msi@mathmlpass{\dprod}
-\msi@mathmlpass{\dbigcap}
-\msi@mathmlpass{\dbigcup}
-\msi@mathmlpass{\dbigvee}
-\msi@mathmlpass{\dbigotimes}
-\msi@mathmlpass{\dbiguplus}
-\msi@mathmlpass{\tint}
-\msi@mathmlpass{\tiint}
-\msi@mathmlpass{\tiiint}
-\msi@mathmlpass{\tiiiint}
-\msi@mathmlpass{\tidotsint}
-\msi@mathmlpass{\tbigwedge}
-\msi@mathmlpass{\tbigoplus}
-\msi@mathmlpass{\tbigodot}
-\msi@mathmlpass{\tbigsqcup}
-\msi@mathmlpass{\tcoprod}
-\msi@mathmlpass{\toint}
-\msi@mathmlpass{\tsum}
-\msi@mathmlpass{\tprod}
-\msi@mathmlpass{\tbigcap}
-\msi@mathmlpass{\tbigcup}
-\msi@mathmlpass{\tbigvee}
-\msi@mathmlpass{\tbigotimes}
-\msi@mathmlpass{\tbiguplus}
-\msi@mathmlpass{\gcd}
-\msi@mathmlpass{\lcm}
-
-\msi@mathmlpass{\infty}
-\msi@mathmlpass{\neq}
-\msi@mathmlpass{\leq}
-\msi@mathmlpass{\geq}
-\msi@mathmlpass{\det}
-
-\msi@mathmlpass{\lfloor}
-\msi@mathmlpass{\rfloor}
-\msi@mathmlpass{\lceil}
-\msi@mathmlpass{\rceil}
-
-\msi@mathmlpass{\sin}
-\msi@mathmlpass{\cos}
-\msi@mathmlpass{\tan}
-\msi@mathmlpass{\cot}
-\msi@mathmlpass{\sec}
-\msi@mathmlpass{\csc}
-
-\msi@pass{\arcsin}
-\msi@pass{\arccos}
-\msi@pass{\arctan}
-
-
-\msi@mathmlpass{\ln}
-
-\msi@mathmlpass{\limits}
-\msi@mathmlpass{\substack}
-\msi@mathmlpass{\\}
-\msi@mathmlpass{\arg}
-
-
-
-
-% Lowercase Greek 
-\msi@mathmlpass{\alpha}
-\msi@mathmlpass{\beta}
-\msi@mathmlpass{\chi}
-\msi@mathmlpass{\delta}
-\msi@mathmlpass{\eta}
-\msi@mathmlpass{\gamma}
-\msi@mathmlpass{\iota}
-\msi@mathmlpass{\kappa}
-\msi@mathmlpass{\lambda}
-\msi@mathmlpass{\mu}
-\msi@mathmlpass{\nu}
-\msi@mathmlpass{\omega}
-\msi@mathmlpass{\phi}
-\msi@mathmlpass{\pi}
-\msi@mathmlpass{\psi}
-\msi@mathmlpass{\rho}
-\msi@mathmlpass{\sigma}
-\msi@mathmlpass{\tau}
-\msi@mathmlpass{\theta}
-\msi@mathmlpass{\upsilon}
-\msi@mathmlpass{\varepsilon}
-\msi@mathmlpass{\varkappa}
-\msi@mathmlpass{\varphi}
-\msi@mathmlpass{\varpi}
-\msi@mathmlpass{\varrho}
-\msi@mathmlpass{\varsigma}
-\msi@mathmlpass{\vartheta}
-\msi@mathmlpass{\xi}
-\msi@mathmlpass{\zeta}
-
-
-
-% Uppercase Greek
-
-\msi@mathmlpass{\Delta}
-\msi@mathmlpass{\digamma}
-\msi@mathmlpass{\Gamma}
-\msi@mathmlpass{\Lambda}
-\msi@mathmlpass{\Omega}
-\msi@mathmlpass{\Phi}
-\msi@mathmlpass{\Pi}
-\msi@mathmlpass{\Psi}
-\msi@mathmlpass{\Sigma}
-\msi@mathmlpass{\Theta}
-\msi@mathmlpass{\Upsilon}
-\msi@mathmlpass{\Xi}
-
-% Binary Operations
-
-\msi@mathmlpass{\amalg}
-\msi@mathmlpass{\And}
-\msi@mathmlpass{\ast}
-\msi@mathmlpass{\bullet}
-\msi@mathmlpass{\bigcirc}
-\msi@mathmlpass{\barwedge}
-\msi@mathmlpass{\bigtriangledown}
-\msi@mathmlpass{\bigtriangleup}
-\msi@mathmlpass{\boxplus}
-\msi@mathmlpass{\boxminus}
-\msi@mathmlpass{\boxtimes}
-\msi@mathmlpass{\boxdot}
-\msi@mathmlpass{\cdot}
-\msi@mathmlpass{\cup}
-\msi@mathmlpass{\cap}
-\msi@mathmlpass{\circ}
-\msi@mathmlpass{\circledast}
-\msi@mathmlpass{\circledcirc}
-\msi@mathmlpass{\Cup}
-\msi@mathmlpass{\Cap}
-\msi@mathmlpass{\curlyvee}
-\msi@mathmlpass{\curlywedge}
-\msi@mathmlpass{\circleddash}
-\msi@mathmlpass{\centerdot}
-\msi@mathmlpass{\div}
-\msi@mathmlpass{\doublebarwedge}
-\msi@mathmlpass{\diamond}
-\msi@mathmlpass{\dagger}
-\msi@mathmlpass{\ddagger}
-\msi@mathmlpass{\dotplus}
-\msi@mathmlpass{\divideontimes}
-\msi@mathmlpass{\intercal}
-\msi@mathmlpass{\leftthreetimes}
-\msi@mathmlpass{\lhd}
-\msi@mathmlpass{\ltimes}
-\msi@mathmlpass{\mp} 
-\msi@mathmlpass{\oplus}
-\msi@mathmlpass{\odot}
-\msi@mathmlpass{\oslash}
-\msi@mathmlpass{\otimes}
-\msi@mathmlpass{\ominus}
-\msi@mathmlpass{\pm}
-\msi@mathmlpass{\rhd}
-\msi@mathmlpass{\rightthreetimes}
-\msi@mathmlpass{\rtimes}   
-\msi@mathmlpass{\sqcup}
-\msi@mathmlpass{\sqcap}
-\msi@mathmlpass{\setminus}
-\msi@mathmlpass{\smallsetminus}
-\msi@mathmlpass{\smallint}
-\msi@mathmlpass{\star}
-\msi@mathmlpass{\times}
-\msi@mathmlpass{\triangleleft}
-\msi@mathmlpass{\triangleright}
-\msi@mathmlpass{\uplus}
-\msi@mathmlpass{\unlhd}
-\msi@mathmlpass{\unrhd}
-\msi@mathmlpass{\vee}
-\msi@mathmlpass{\veebar}
-\msi@mathmlpass{\wedge}
-\msi@mathmlpass{\wr}
-
-% Binary Relations
-
-\msi@mathmlpass{\leq}
-\msi@mathmlpass{\prec}
-\msi@mathmlpass{\preceq}
-\msi@mathmlpass{\ll}
-\msi@mathmlpass{\subset}
-\msi@mathmlpass{\subseteq}
-\msi@mathmlpass{\sqsubset}
-\msi@mathmlpass{\sqsubseteq}
-\msi@mathmlpass{\in}
-\msi@mathmlpass{\vdash}
-\msi@mathmlpass{\smile}
-\msi@mathmlpass{\frown}
-\msi@mathmlpass{\equiv}
-\msi@mathmlpass{\sim}
-\msi@mathmlpass{\simeq}
-\msi@mathmlpass{\asymp}
-\msi@mathmlpass{\approx}
-\msi@mathmlpass{\geq}
-\msi@mathmlpass{\succ}
-\msi@mathmlpass{\succeq}
-\msi@mathmlpass{\gg}
-\msi@mathmlpass{\supset}
-\msi@mathmlpass{\supseteq}
-\msi@mathmlpass{\sqsupset}
-\msi@mathmlpass{\sqsupseteq}
-\msi@mathmlpass{\ni}
-\msi@mathmlpass{\dashv}
-\msi@mathmlpass{\mid}
-\msi@mathmlpass{\parallel}
-\msi@mathmlpass{\perp}
-\msi@mathmlpass{\cong}
-\msi@mathmlpass{\bowtie}
-\msi@mathmlpass{\propto}
-\msi@mathmlpass{\models}
-\msi@mathmlpass{\doteq}
-\msi@mathmlpass{\Join}
-\msi@mathmlpass{\Vdash}
-\msi@mathmlpass{\Vvdash}
-\msi@mathmlpass{\vDash}
-\msi@mathmlpass{\circeq}
-\msi@mathmlpass{\succsim}
-\msi@mathmlpass{\gtrsim}
-\msi@mathmlpass{\gtrapprox}
-\msi@mathmlpass{\therefore}
-\msi@mathmlpass{\because}
-\msi@mathmlpass{\doteqdot}
-\msi@mathmlpass{\triangleq}
-\msi@mathmlpass{\precsim}
-\msi@mathmlpass{\lesssim}
-\msi@mathmlpass{\lessapprox}
-\msi@mathmlpass{\eqslantless}
-\msi@mathmlpass{\eqslantgtr}
-\msi@mathmlpass{\curlyeqprec}
-\msi@mathmlpass{\curlyeqsucc}
-\msi@mathmlpass{\preccurlyeq}
-\msi@mathmlpass{\leqq}
-\msi@mathmlpass{\leqslant}
-\msi@mathmlpass{\lessgtr}
-\msi@mathmlpass{\risingdotseq}
-\msi@mathmlpass{\fallingdotseq}
-\msi@mathmlpass{\succcurlyeq}
-\msi@mathmlpass{\geqq}
-\msi@mathmlpass{\geqslant}
-\msi@mathmlpass{\gtrless}
-\msi@mathmlpass{\vartriangleright}
-\msi@mathmlpass{\vartriangleleft}
-\msi@mathmlpass{\trianglerighteq}
-\msi@mathmlpass{\trianglelefteq}
-\msi@mathmlpass{\between}
-\msi@mathmlpass{\blacktriangleright}
-\msi@mathmlpass{\blacktriangleleft}
-\msi@mathmlpass{\eqcirc}
-\msi@mathmlpass{\lesseqgtr}
-\msi@mathmlpass{\gtreqless}
-\msi@mathmlpass{\lesseqqgtr}
-\msi@mathmlpass{\gtreqqless}
-\msi@mathmlpass{\varpropto}
-\msi@mathmlpass{\eqcirc}
-\msi@mathmlpass{\smallfrown}
-\msi@mathmlpass{\Subset}
-\msi@mathmlpass{\Supset}
-\msi@mathmlpass{\subseteqq}
-\msi@mathmlpass{\supseteqq}
-\msi@mathmlpass{\bumpeq}
-\msi@mathmlpass{\Bumpeq}
-\msi@mathmlpass{\lll}
-\msi@mathmlpass{\ggg}
-\msi@mathmlpass{\pitchfork}
-\msi@mathmlpass{\backsim}
-\msi@mathmlpass{\backsimeq}
-\msi@mathmlpass{\eqsim}
-\msi@mathmlpass{\lessdot}
-\msi@mathmlpass{\gtrdot}
-\msi@mathmlpass{\shortmid}
-\msi@mathmlpass{\shortparallel}
-\msi@mathmlpass{\thicksim}
-\msi@mathmlpass{\thickapprox}
-\msi@mathmlpass{\approxeq}
-\msi@mathmlpass{\succapprox}
-\msi@mathmlpass{\precapprox}
-\msi@mathmlpass{\backepsilon}
-\msi@mathmlpass{\vartriangle}
-
-
-% Negated relations
-
-\msi@mathmlpass{\neq}
-\msi@mathmlpass{\notin}
-\msi@mathmlpass{\lvertneqq}
-\msi@mathmlpass{\gvertneqq}
-\msi@mathmlpass{\nleq}
-\msi@mathmlpass{\ngeq}
-\msi@mathmlpass{\nless}
-\msi@mathmlpass{\ngtr}
-\msi@mathmlpass{\nprec}
-\msi@mathmlpass{\nsucc}
-\msi@mathmlpass{\lneqq}
-\msi@mathmlpass{\gneqq}
-\msi@mathmlpass{\nleqslant}
-\msi@mathmlpass{\ngeqslant}
-\msi@mathmlpass{\lneq}
-\msi@mathmlpass{\gneq}
-\msi@mathmlpass{\npreceq}
-\msi@mathmlpass{\nsucceq}
-
-\msi@mathmlpass{\precnsim}
-\msi@mathmlpass{\succnsim}
-\msi@mathmlpass{\lnsim}
-\msi@mathmlpass{\gnsim}
-\msi@mathmlpass{\nleqq}
-\msi@mathmlpass{\ngeqq}
-\msi@mathmlpass{\precneqq}
-\msi@mathmlpass{\succneqq}
-\msi@mathmlpass{\precnapprox}
-\msi@mathmlpass{\succnapprox}
-\msi@mathmlpass{\lnapprox}
-\msi@mathmlpass{\gnapprox}
-\msi@mathmlpass{\nsim}
-\msi@mathmlpass{\ncong}
-\msi@mathmlpass{\varsubsetneq}
-\msi@mathmlpass{\varsupsetneq}
-\msi@mathmlpass{\nsubseteqq}
-\msi@mathmlpass{\nsupseteqq}
-\msi@mathmlpass{\subsetneqq}
-\msi@mathmlpass{\supsetneqq}
-\msi@mathmlpass{\varsubsetneqq}
-\msi@mathmlpass{\varsupsetneqq}
-\msi@mathmlpass{\subsetneq}
-\msi@mathmlpass{\supsetneq}
-\msi@mathmlpass{\nsubseteq}
-\msi@mathmlpass{\nsupseteq}
-\msi@mathmlpass{\nparallel}
-\msi@mathmlpass{\nmid}
-\msi@mathmlpass{\nshortmid}
-\msi@mathmlpass{\nshortparallel}
-\msi@mathmlpass{\nvdash}
-\msi@mathmlpass{\nVdash}
-\msi@mathmlpass{\nvDash}
-\msi@mathmlpass{\nVDash}
-\msi@mathmlpass{\ntrianglerighteq}
-\msi@mathmlpass{\ntrianglelefteq}
-\msi@mathmlpass{\ntriangleright}
-\msi@mathmlpass{\ntriangleleft}
-\msi@mathmlpass{\nleftarrow}
-\msi@mathmlpass{\nrightarrow}
-\msi@mathmlpass{\nLeftarrow}
-\msi@mathmlpass{\nRightarrow}
-\msi@mathmlpass{\nLeftrightarrow}
-\msi@mathmlpass{\nleftrightarrow}
-
-
-%Arrows
-\msi@mathmlpass{\leftarrow}
-\msi@mathmlpass{\Leftarrow}
-\msi@mathmlpass{\rightarrow}
-\msi@mathmlpass{\Rightarrow}
-\msi@mathmlpass{\leftrightarrow}
-\msi@mathmlpass{\Leftrightarrow}
-\msi@mathmlpass{\mapsto}
-\msi@mathmlpass{\hookleftarrow}
-\msi@mathmlpass{\leftharpoonup}
-\msi@mathmlpass{\leftharpoondown}
-\msi@mathmlpass{\uparrow}
-\msi@mathmlpass{\Uparrow}
-\msi@mathmlpass{\downarrow}
-\msi@mathmlpass{\Downarrow}
-\msi@mathmlpass{\updownarrow}
-\msi@mathmlpass{\longleftarrow}
-\msi@mathmlpass{\Longleftarrow}
-\msi@mathmlpass{\longrightarrow}
-\msi@mathmlpass{\Longrightarrow}
-\msi@mathmlpass{\longleftrightarrow}
-\msi@mathmlpass{\Longleftrightarrow}
-\msi@mathmlpass{\longmapsto}
-\msi@mathmlpass{\hookrightarrow}
-\msi@mathmlpass{\rightharpoonup}
-\msi@mathmlpass{\rightharpoondown}
-\msi@mathmlpass{\leadsto}
-\msi@mathmlpass{\Updownarrow}
-\msi@mathmlpass{\nearrow}
-\msi@mathmlpass{\searrow}
-\msi@mathmlpass{\swarrow}
-\msi@mathmlpass{\nwarrow}
-\msi@mathmlpass{\circlearrowright}
-\msi@mathmlpass{\circlearrowleft}
-\msi@mathmlpass{\rightleftharpoons}
-\msi@mathmlpass{\leftrightharpoons}
-\msi@mathmlpass{\twoheadrightarrow}
-\msi@mathmlpass{\twoheadleftarrow}
-\msi@mathmlpass{\leftleftarrows}
-\msi@mathmlpass{\rightrightarrows}
-\msi@mathmlpass{\upuparrows}
-\msi@mathmlpass{\downdownarrows}
-\msi@mathmlpass{\upharpoonright}
-\msi@mathmlpass{\downharpoonright}
-\msi@mathmlpass{\upharpoonleft}
-\msi@mathmlpass{\downharpoonleft}
-\msi@mathmlpass{\rightarrowtail}
-\msi@mathmlpass{\leftarrowtail}
-\msi@mathmlpass{\leftrightarrows}
-\msi@mathmlpass{\rightleftarrows}
-\msi@mathmlpass{\Lsh}
-\msi@mathmlpass{\Rsh}
-\msi@mathmlpass{\rightsquigarrow}
-\msi@mathmlpass{\leftrightsquigarrow}
-\msi@mathmlpass{\looparrowleft}
-\msi@mathmlpass{\looparrowright}
-\msi@mathmlpass{\multimap}
-\msi@mathmlpass{\Rrightarrow}
-\msi@mathmlpass{\Lleftarrow}
-\msi@mathmlpass{\curvearrowleft}
-\msi@mathmlpass{\curvearrowright}
-\msi@mathmlpass{\dashrightarrow}
-\msi@mathmlpass{\dashleftarrow}
-\msi@mathmlpass{\implies}
-\msi@mathmlpass{\impliedby}
-\msi@mathmlpass{\iff}
-
-
-%Miscellaneous
-
-\msi@mathmlpass{\infty}
-\msi@mathmlpass{\partial}
-\msi@mathmlpass{\ldots}
-\msi@mathmlpass{\cdots}
-\msi@mathmlpass{\vdots}
-\msi@mathmlpass{\ddots}
-%\msi@mathmlpass{\i}
-%\msi@mathmlpass{\j}
-\msi@mathmlpass{\ell}
-\msi@mathmlpass{\wp}
-\msi@mathmlpass{\hbar}
-\msi@mathmlpass{\hslash}
-\msi@mathmlpass{\forall}
-\msi@mathmlpass{\exists}
-\msi@mathmlpass{\nexists}
-\msi@mathmlpass{\Re}
-\msi@mathmlpass{\Im}
-\msi@mathmlpass{\aleph}
-\msi@mathmlpass{\prime}
-\msi@mathmlpass{\backprime}
-\msi@mathmlpass{\emptyset}
-\msi@mathmlpass{\varnothing}
-\msi@mathmlpass{\diagup}
-\msi@mathmlpass{\diagdown}
-\msi@mathmlpass{\nabla}
-\msi@mathmlpass{\surd}
-\msi@mathmlpass{\top}
-\msi@mathmlpass{\bot}
-\msi@mathmlpass{\eth}
-\msi@mathmlpass{\lambdabar}
-\msi@mathmlpass{\angle}
-\msi@mathmlpass{\measuredangle}
-\msi@mathmlpass{\sphericalangle}
-\msi@mathmlpass{\circledS}
-\msi@mathmlpass{\tciLaplace}
-\msi@mathmlpass{\tciFourier}
-\msi@mathmlpass{\lnot}
-\msi@mathmlpass{\complement}
-\msi@mathmlpass{\Finv}
-\msi@mathmlpass{\Game}
-\msi@mathmlpass{\bigstar}
-\msi@mathmlpass{\Vert}
-\msi@mathmlpass{\square}
-\msi@mathmlpass{\blacksquare}
-\msi@mathmlpass{\Diamond}
-\msi@mathmlpass{\lozenge}
-\msi@mathmlpass{\blacklozenge}
-\msi@mathmlpass{\triangle}
-\msi@mathmlpass{\blacktriangle}
-\msi@mathmlpass{\triangledown}
-\msi@mathmlpass{\blacktriangledown}
-\msi@mathmlpass{\dag}
-\msi@mathmlpass{\ddag}
-\msi@mathmlpass{\beth}
-\msi@mathmlpass{\gimel}
-\msi@mathmlpass{\daleth}
-\msi@mathmlpass{\sharp}
-\msi@mathmlpass{\flat}
-\msi@mathmlpass{\natural}
-\msi@mathmlpass{\clubsuit}
-\msi@mathmlpass{\diamondsuit}
-\msi@mathmlpass{\heartsuit}
-\msi@mathmlpass{\spadesuit}
-\msi@mathmlpass{\checkmark}
-\msi@mathmlpass{\maltese}
-\msi@mathmlpass{\Bbbk}
-\msi@mathmlpass{\cents}
-\msi@mathmlpass{\pounds}
-\msi@mathmlpass{\textcurrency}
-\msi@mathmlpass{\yen}
-\msi@mathmlpass{\euro}
-\msi@mathmlpass{\textfranc}
-\msi@mathmlpass{\textlira}
-\msi@mathmlpass{\textpeseta}
-\msi@mathmlpass{\texttrademark}
-\msi@mathmlpass{\mho}
-\msi@mathmlpass{\colon}
-
-% Delimiters
-
-\msi@mathmlpass{\lfloor}
-\msi@mathmlpass{\rfloor}
-\msi@mathmlpass{\lceil}
-\msi@mathmlpass{\rceil}
-\msi@mathmlpass{\langle}
-\msi@mathmlpass{\rangle}
-\msi@mathmlpass{\ulcorner}
-\msi@mathmlpass{\urcorner}
-\msi@mathmlpass{\llcorner}
-\msi@mathmlpass{\lrcorner}
-
-
-
-\msi@mathmlpass{\hat}
-\msi@mathmlpass{\check}
-\msi@mathmlpass{\bar}
-\msi@mathmlpass{\overline}
-\msi@mathmlpass{\notag}
-
 
 
 \def\TEXTsymbol#1{%
@@ -1277,280 +747,20 @@
 
 \def\r#1{\@accent{#1}{r}}
 
-
-%% \'{\^{e}}
-
-\def\msi@uni#1#2{\@namedef{#1}{\@hex{#2}}}
-
-
-
-\msi@uni{i}{131} %dotless i
-\msi@uni{j}{132} %dotless j
-
-\msi@uni{A-grave}{c0}
-\msi@uni{a-grave}{e0}
-
-\msi@uni{DH}{d0}
-\msi@uni{dh}{f0}
-
-\msi@uni{textexclamdown}{a1}
-
-\msi@uni{A-acute}{c1}
-\msi@uni{N-tilde}{d1}
-\msi@uni{a-acute}{e1}
-\msi@uni{n-tilde}{f1}
-
-\msi@uni{cents}{a2}
-
-
-\msi@uni{A-caret}{c2}
-\msi@uni{O-grave}{d2}
-\msi@uni{a-caret}{e2}
-\msi@uni{o-grave}{f2}
-
-\msi@uni{pounds}{a3}
-
-\msi@uni{A-tilde}{c3}
-\msi@uni{O-acute}{d3}
-\msi@uni{a-tilde}{e3}
-\msi@uni{o-acute}{f3}
-
-
-\msi@uni{textcurrency}{a4}
-
-\msi@uni{-acute}{b4}
-\msi@uni{A-umlat}{c4}
-\msi@uni{O-caret}{d4}
-\msi@uni{a-umlat}{e4}
-\msi@uni{o-caret}{f4}
-
-
-\msi@uni{yen}{a5}
-
-\msi@uni{AA}{c5}
-
-\msi@uni{O-tilde}{d5}
-\msi@uni{aa}{e5}
-\msi@uni{o-tilde}{f5}
-
-\msi@uni{P}{b6}
-\msi@uni{AE}{c6}
-\msi@uni{O-umlat}{d6}
-\msi@uni{ae}{e6}
-\msi@uni{o-umlat}{f6}
-
-\msi@uni{S}{a7}
-\msi@uni{textperiodcentered}{b7}
-\msi@uni{C-ced}{c7}
-\msi@uni{c-ced}{e7}
-
-\msi@uni{-umlat}{a8}
-\msi@uni{-ced}{b8}
-\msi@uni{E-grave}{c8}
-
-\msi@uni{O}{d8}
-\msi@uni{e-grave}{e8}
-\msi@uni{o}{f8}
-
-
-\msi@uni{copyright}{a9}
-
-\msi@uni{E-acute}{c9}
-\msi@uni{U-grave}{d9}
-\msi@uni{e-acute}{e9}
-\msi@uni{u-grave}{f9}
-\msi@uni{E-caret}{ca}
-\msi@uni{U-acute}{da}
-\msi@uni{e-caret}{ea}
-\msi@uni{u-acute}{fa}
-
-
-\msi@uni{guillemotleft}{ab}
-\msi@uni{guillemotright}{bb}
-
-\msi@uni{E-umlat}{cb}
-\msi@uni{U-caret}{db}
-\msi@uni{e-umlat}{eb}
-\msi@uni{u-caret}{fb}
-\msi@uni{I-grave}{cc}
-\msi@uni{U-umlat}{dc}
-
-\msi@uni{dotlessi-grave}{ec}
-
-\msi@uni{u-umlat}{fc}
-\msi@uni{I-acute}{cd}
-\msi@uni{Y-acute}{dd}
-\msi@uni{dotlessi-acute}{ed}
-\msi@uni{y-acute}{fd}
-
-\msi@uni{registered}{ae}
-\msi@uni{I-caret}{ce}
-\msi@uni{TH}{de}
-\msi@uni{dotlessi-caret}{ee}
-\msi@uni{th}{fe}
-
-\msi@uni{-bar}{af}
-\msi@uni{textquestiondown}{bf}
-
-\msi@uni{I-umlat}{cf}
-\msi@uni{ss}{df}
-\msi@uni{dotlessi-umlat}{ef}
-\msi@uni{y-umlat}{ff}
-
-
-%%%% Latin-extended
-%%%
-\msi@uni{A-bar}{100}
-\msi@uni{a-bar}{101}
-\msi@uni{G-dot}{120}
-\msi@uni{g-dot}{121}
-\msi@uni{I-dot}{130}
-\msi@uni{E-bar}{112}
-\msi@uni{e-bar}{113}
-\msi@uni{E-dot}{116}
-\msi@uni{e-dot}{117}
-\msi@uni{G-ced}{122}
-\msi@uni{g-ced}{123}
-\msi@uni{T-ced}{162}
-\msi@uni{t-ced}{163}
-\msi@uni{N-ced}{145}
-\msi@uni{n-ced}{146}
-\msi@uni{K-ced}{136}
-\msi@uni{k-ced}{137}
-\msi@uni{R-ced}{156}
-\msi@uni{Y-caret}{176}
-\msi@uni{y-caret}{177}
-\msi@uni{N-v}{147}
-\msi@uni{r-ced}{157}
-\msi@uni{E-k}{118}
-\msi@uni{I-tilde}{128}
-\msi@uni{n-v}{148}
-\msi@uni{R-v}{158}
-\msi@uni{U-tilde}{168}
-
-
-
-
-
-\msi@uni{C-acute}{106}
-\msi@uni{c-acute}{107}
-\msi@uni{N-acute}{143}
-\msi@uni{n-acute}{144}
-\msi@uni{H-caret}{124}
-\msi@uni{h-caret}{125}
-\msi@uni{J-caret}{134}
-\msi@uni{j-caret}{[[j-caret?]]}
-\msi@uni{C-caret}{108}
-\msi@uni{c-caret}{109}
-\msi@uni{C-dot}{10a}
-\msi@uni{c-dot}{10b}
-
-\msi@uni{R-acute}{154}
-\msi@uni{r-acute}{155}
-\msi@uni{W-caret}{174}
-\msi@uni{w-caret}{175}
-\msi@uni{Y-umlat}{178}
-
-%%\msi@uni{dotlessj-caret}{[[dotless j caret]]}
-
-
 \def\H#1{\@accent{#1}{H}}
+
 \def\v#1{\@accent{#1}{v}}
+
 \def\u#1{\@accent{#1}{u}}
-
-
- 
-\msi@uni{O-H}{150}
-\msi@uni{U-H}{170}
-\msi@uni{o-H}{151}
-\msi@uni{u-H}{171}
-
-\msi@uni{S-v}{160}
-\msi@uni{s-v}{161}
-\msi@uni{T-v}{164}
-\msi@uni{t-v}{165}
-
-\msi@uni{A-u}{102}
-\msi@uni{a-u}{103}
-\msi@uni{E-u}{114}
-\msi@uni{e-u}{115}
-
 
 \def\k#1{\@accent{#1}{k}}
 
-\msi@uni{A-k}{104}
-\msi@uni{a-k}{105}
-\msi@uni{U-k}{172}
-\msi@uni{u-k}{173}
-\msi@uni{e-k}{119}
-\msi@uni{dotlessi-tilde}{129}
-\msi@uni{L-acute}{139}
-\msi@uni{r-v}{159}
-\msi@uni{u-tilde}{169}
-\msi@uni{Z-acute}{179}
-
-\msi@uni{E-v}{11a}
-\msi@uni{I-bar}{12a}
-\msi@uni{l-acute}{13a}
-\msi@uni{S-acute}{15a}
-\msi@uni{U-bar}{16a}
-\msi@uni{z-acute}{17a}
-
-\msi@uni{e-v}{11b}
-\msi@uni{dotlessi-bar}{12b}
-\msi@uni{L-ced}{13b}
-\msi@uni{s-acute}{15b}
-\msi@uni{u-bar}{16b}
-\msi@uni{Z-dot}{17b}
-
-\msi@uni{C-v}{10c}
-\msi@uni{G-caret}{11c}
-\msi@uni{I-u}{12c}
-\msi@uni{l-ced}{13c}
-\msi@uni{O-bar}{14c}
-\msi@uni{S-caret}{15c}
-\msi@uni{U-u}{16c}
-\msi@uni{z-dot}{17c}
-
-\msi@uni{c-v}{10d}
-\msi@uni{g-caret}{11d}
-\msi@uni{dotlessi-u}{12d}
-\msi@uni{L-v}{13d}
-\msi@uni{o-bar}{14d}
-\msi@uni{s-caret}{15d}
-\msi@uni{u-u}{16d}
-\msi@uni{Z-v}{17d}
-
-\msi@uni{D-v}{10e}
-\msi@uni{G-u}{11e}
-\msi@uni{I-k}{12e}
-\msi@uni{l-v}{13e}
-\msi@uni{O-u}{14e}
-\msi@uni{S-ced}{15e}
-\msi@uni{z-v}{17e}
 
 
-\msi@uni{d-v}{10f}
-\msi@uni{g-u}{11f}
-\msi@uni{i-k}{12f}
-\msi@uni{o-u}{14f}
-\msi@uni{s-ced}{15f}
+%% \'{\^{e}}
 
+\def\MSIUnicode#1#2{\@namedef{#1}{\@hex{#2}}}
 
-\msi@uni{L}{141}
-\msi@uni{l}{142}
-\msi@uni{NG}{14a}
-\msi@uni{ng}{14b}
-\msi@uni{DJ}{110}
-\msi@uni{dj}{111}
-\msi@uni{OE}{152}
-\msi@uni{oe}{153}
-
-\msi@uni{U-r}{16e}
-\msi@uni{u-r}{16f}
-
-\msi@uni{guilsinglleft}{2039}
-\msi@uni{guilsinglright}{203a}
 
 %% Spacing
 
@@ -1655,7 +865,6 @@
 
 
 
-\msi@mathmlpass{\lim}
 
 \def\func#1{\string\func\@brace{#1}}
 \def\limfunc#1{\string\limfunc\@brace{#1}}
@@ -1673,16 +882,6 @@
 \def\@nthroot[#1]#2{%
    \string\sqrt[#1]\@brace{#2}%
 }
-
-\msi@mathmlpass{\vert}
-\msi@mathmlpass{\Vert}
-
-
-
-\msi@mathmlpass{\blacktriangleright}
-\msi@mathmlpass{\max}
-\msi@mathmlpass{\min}
-\msi@mathmlpass{\prime}
 
 
 %\msi@mathmlpass{\thinspace}
@@ -1739,7 +938,6 @@
 %  
 
 
-\msi@mathmlpass{\QABOVED}
 %\def\QABOVED#1#2#3#4#5{{#4 \abovewithdelims#1#2#3 #5}}%
 %  \def\QTABOVED#1#2#3#4#5{{\textstyle 
 %     {#4 \abovewithdelims#1#2#3 #5}}}%
@@ -1749,18 +947,8 @@
 
 \def\unit#1{\string\unit\@brace{#1}}
 
+\MSIMathQuote{\QABOVED} % special case? Why is this here?
 
-\msi@mathmlpass{\left}
-\msi@mathmlpass{\right}
-\msi@mathmlpass{\in}
-\msi@mathmlpass{\overset}
-\msi@mathmlpass{\underset}
-\msi@mathmlpass{\sinh}
-\msi@mathmlpass{\cosh}
-\msi@mathmlpass{\tanh}
-\msi@mathmlpass{\coth}
-\msi@mathmlpass{\exp}
-\msi@mathmlpass{\mathstrut}
 
 \def\text#1{\msitag{\text{#1}}}
 
@@ -1820,7 +1008,7 @@
 
 
 \def\MSITextElement{%
-  \@ifnextchar[{\msi@text@elmA}{msi@text@elmB}}
+  \@ifnextchar[{\msi@text@elmA}{\msi@text@elmB}}
 
 \def\msi@text@elmA[#1]#2{%
   \expandafter\def\csname #2\endcsname##1{%
