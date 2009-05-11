@@ -1,5 +1,4 @@
 
-
 \catcode`\{=1 % left brace is begin-group character
 \catcode`\}=2 % right brace is end-group character
 \catcode`\$=3 % dollar sign is math shift
@@ -106,23 +105,6 @@
 }
 
 
-%% Frontmatter
-
-\def\frontmatter{\out@frontmatter}
-
-\def\title#1{\gdef\@title{#1}\out@title{#1}}
-\def\author#1{\gdef\@author{#1}\out@author{#1}}
-\def\date#1{\gdef\@date{#1}\out@date{#1}}
-
-\def\thanks#1{\out@thanks{#1}}
-\def\and{\out@and}
-
-
-
-%% Main matter
-
-\def\mainmatter{\out@mainmatter}
-
 
 %% \begin and \end
 
@@ -139,9 +121,6 @@
    
 
 
-
-
-%% Back matter
 
 
 %%%%%%%%%%%%%%%%
@@ -3463,32 +3442,8 @@
 \def\pr@@@t#1#2{#2\egroup}
 {\catcode`\_=\active \gdef_{\_}} % _ in math is
                                  % either subscript or \_
-\def\({\relax\ifmmode\@badmath\else$\fi}
-\def\){\relax\ifmmode\ifinner$\else\@badmath\fi\else \@badmath\fi}
-%%jcs \def\[{%
-%%jcs    \relax\ifmmode
-%%jcs       \@badmath
-%%jcs    \else
-%%jcs       \ifvmode
-%%jcs          \nointerlineskip
-%%jcs          \makebox[.6\linewidth]%
-%%jcs       \fi
-%%jcs       $$%%$$ BRACE MATCH HACK
-%%jcs    \fi
-%%jcs }
-%%jcs\def\]{%
-%%jcs   \relax\ifmmode
-%%jcs      \ifinner
-%%jcs         \@badmath
-%%jcs      \else
-%%jcs         $$%%$$ BRACE MATCH HACK
-%%jcs      \fi
-%%jcs   \else
-%%jcs      \@badmath
-%%jcs   \fi
-%%jcs   \ignorespaces
-%%jcs}
-
+\def\({$}
+\def\){$}
 \def\[{$$}
 \def\]{$$}
 
@@ -3509,31 +3464,6 @@
 \newif\if@eqnsw\@eqnswtrue
 \newskip\@centering
 \@centering = 0pt plus 1000pt
-%% \def\msi@begin@eqnarray{%
-%%    \stepcounter{equation}%
-%%    \def\@currentlabel{\p@equation\theequation}%
-%%    \global\@eqnswtrue
-%%    \m@th
-%%    \global\@eqcnt\z@
-%%    \tabskip\@centering
-%%    \let\\\@eqncr
-%%    $$\everycr{}\halign to\displaywidth\bgroup
-%%        \hskip\@centering$\displaystyle\tabskip\z@skip{##}$\@eqnsel
-%%       &\global\@eqcnt\@ne\hskip \tw@\arraycolsep \hfil${##}$\hfil
-%%       &\global\@eqcnt\tw@ \hskip \tw@\arraycolsep
-%%          $\displaystyle{##}$\hfil\tabskip\@centering
-%%       &\global\@eqcnt\thr@@ \hb@xt@\z@\bgroup\hss##\egroup
-%%          \tabskip\z@skip
-%%       \cr
-%% }
-%% \def\msi@end@endeqnarray{%
-%%       \@@eqncr
-%%       \egroup
-%%       \global\advance\c@equation\m@ne
-%%    $$\@ignoretrue
-%% }
-
-
 
 
 \let\@eqnsel=\relax
