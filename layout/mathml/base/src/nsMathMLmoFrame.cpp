@@ -141,15 +141,15 @@ nsMathMLmoFrame::BuildDisplayList(nsDisplayListBuilder*   aBuilder,
     PRBool isSelected = PR_FALSE;
     nsRect selectedRect;
   // BBM: experiment
-//    if (IsFrameInSelection(this)) {
-//      selectedRect = GetRect();
-//      isSelected = PR_TRUE;
-//    }
     nsIFrame* firstChild = mFrames.FirstChild();
-    if (IsFrameInSelection(firstChild)) {
+    if (IsFrameInSelection(this)) {
       selectedRect = firstChild->GetRect();
+//      selectedRect = GetRect();
       isSelected = PR_TRUE;
     }
+//    if (IsFrameInSelection(firstChild)) {
+//      isSelected = PR_TRUE;
+//      }
     rv = mMathMLChar.Display(aBuilder, this, aLists, isSelected ? &selectedRect : nsnull, isSelected ); //, isSelected ? &selectedRect : nsnull);
     NS_ENSURE_SUCCESS(rv, rv);
   
