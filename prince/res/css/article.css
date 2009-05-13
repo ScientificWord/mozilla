@@ -388,7 +388,7 @@ theorem {
 }
 
 theorem:before {
-  content:  attr(type) " " counter(section) "."  counter(theorem) ". " ;
+  content:  "Theorem " counter(section) "."  counter(theorem) ". " ;
 }
 
 section defaulttitletag:after {
