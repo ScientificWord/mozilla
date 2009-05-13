@@ -1,3 +1,9 @@
+function startup()
+{
+//  var editorElement = msiGetActiveEditorElement(window.parent);
+//  window.msiSetupHTMLEditorCommands(editorElement);
+}
+
 function doSymbols(event)
 {
   var w = window.parent;
