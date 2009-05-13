@@ -88,6 +88,7 @@ function initializeFontFamilyList(force)
   var str = myXMLHTTPRequest.responseText;
   var lines = str.split(/[\n\r]*[a-z]:[^:]*:/i);
   var i;
+  var limiit
   lines = lines.sort();
   var unique = lines.filter(newValue);
 // output the result
@@ -109,7 +110,8 @@ function initializeFontFamilyList(force)
 function Startup()
 {
   initializeFontFamilyList(false);
-  editor = GetCurrentEditor();
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  var editor = msiGetEditor(editorElement);
   if (!editor) {
     window.close();
     return;
