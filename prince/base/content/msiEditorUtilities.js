@@ -6272,7 +6272,7 @@ function getResourceFile( name, resdirname )
   return resfile;
 }
  
-var wordSep = /[ -]+/;  // this needs to be localizable BBM
+var wordSep = /[ ]+/;  // this needs to be localizable BBM
 
 function countNodeWords(node) //the intent is to count words in a text node
 {
