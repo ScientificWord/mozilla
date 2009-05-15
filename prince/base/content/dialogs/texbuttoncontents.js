@@ -1,6 +1,6 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 
-const xhtmlns  = "http://www.w3.org/1999/xhtml";
+//const xhtmlns  = "http://www.w3.org/1999/xhtml";
 
 var data;
 
@@ -20,7 +20,8 @@ function Startup()
 
   InitDialog();
 
-  document.getElementById("texbuttonTextbox").focus();
+//  document.getElementById("texbuttonTextbox").focus();
+  msiSetInitialDialogFocus(document.getElementById("texbuttonTextbox"));
 
   SetWindowLocation();
 }

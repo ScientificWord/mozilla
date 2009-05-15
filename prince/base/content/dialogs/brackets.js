@@ -59,7 +59,9 @@ function Startup()
   }
   window.mMSIDlgManager.configureDialog();
 
-  gDialog.LeftBracketGroup.focus();
+//  gDialog.LeftBracketGroup.focus();
+  msiSetInitialDialogFocus(gDialog.LeftBracketGroup);
+
 
   SetWindowLocation();
 }

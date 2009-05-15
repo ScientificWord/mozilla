@@ -35,7 +35,8 @@ function Startup()
   window.mMSIDlgManager = new msiDialogConfigManager(window);
   window.mMSIDlgManager.configureDialog();
 
-  document.getElementById("breaksRadioGroup").focus();
+//  document.getElementById("breaksRadioGroup").focus();
+  msiSetInitialDialogFocus(document.getElementById("breaksRadioGroup"));
 
   SetWindowLocation();
 }

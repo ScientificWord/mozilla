@@ -2,7 +2,7 @@
 
 
 //const mmlns    = "http://www.w3.org/1998/Math/MathML";
-const xhtmlns  = "http://www.w3.org/1999/xhtml";
+//const xhtmlns  = "http://www.w3.org/1999/xhtml";
 
 var data;
 
@@ -23,7 +23,8 @@ function Startup()
 
   InitDialog();
 
-  document.getElementById("entryTypesListbox").focus();
+//  document.getElementById("entryTypesListbox").focus();
+  msiSetInitialDialogFocus(document.getElementById("entryTypesListbox"));
 
   SetWindowLocation();
 }

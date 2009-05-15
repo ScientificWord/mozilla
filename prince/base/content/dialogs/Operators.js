@@ -54,7 +54,8 @@ function Startup()
   }
   window.mMSIDlgManager.configureDialog();
 
-  gDialog.limitsSpecGroup.focus();
+//  gDialog.limitsSpecGroup.focus();
+  msiSetInitialDialogFocus(gDialog.limitsSpecGroup);
 
   SetWindowLocation();
 }

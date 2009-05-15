@@ -35,7 +35,8 @@ function Startup()
   window.mMSIDlgManager = new msiDialogConfigManager(window);
   window.mMSIDlgManager.configureDialog();
 
-  document.getElementById("liftSizeTextbox").focus();
+//  document.getElementById("liftSizeTextbox").focus();
+  msiSetInitialDialogFocus(document.getElementById("liftSizeTextbox"));
 
   SetWindowLocation();
 }
