@@ -1346,6 +1346,8 @@ function msiFinishInitDialogEditor(editorElement, parentEditorElement)
     }
     catch(exc) { msiDumpWithID("In msiEditor.msiFinishInitDialogEditor for editor [@], unable to access parent style sheets: [" + exc + "].\n", editorElement); }
   }
+  if ( ("mbSetFocusOnStartup" in editorElement) && editorElement.mbSetFocusOnStartup)
+    editorElement.contentWindow.focus();
 }
 
 function msiEditorLoadUrl(editorElement, url)
@@ -3760,11 +3762,13 @@ function getObjectPropertiesDataFromNodeData(editorElement, element, bIncludePar
       case "ul":
       case "dl":
         objStr = GetString("List");
-        scriptStr =   "msiGoDoCommand('cmd_listProperties', editorElement)";
+        commandStr = "cmd_listProperties";
+//        scriptStr =   "msiGoDoCommand('cmd_listProperties', editorElement)";
         break;
       case "li":
         objStr = GetString("ListItem");
-        scriptStr =   "msiGoDoCommand('cmd_listProperties', editorElement)";
+        commandStr = "cmd_listProperties";
+//        scriptStr =   "msiGoDoCommand('cmd_listProperties', editorElement)";
         break;
       case "form":
         objStr = GetString("Form");
