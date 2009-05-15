@@ -583,10 +583,10 @@ function formatRecreateGraph (DOMGraph, commandStr, editorElement) {
   // non-modal dialog, the return is immediate
 
   var extraArgsArray = new Array(graph, DOMGraph, currentDOMGs);
-  msiOpenModelessPropertiesDialog("chrome://prince/content/ComputeGraphSettings.xul",
-                     "", "chrome,close,titlebar,dependent", editorElement, commandStr, DOMGraph, extraArgsArray);
-//  window.openDialog ("chrome://prince/content/ComputeGraphSettings.xul",
-//                     "", "chrome,close,titlebar,dependent", editorElement, DOMGraph, extraArgsArray);
+//  msiOpenModelessPropertiesDialog("chrome://prince/content/ComputeGraphSettings.xul",
+//                     "", "chrome,close,titlebar,dependent", editorElement, commandStr, DOMGraph, extraArgsArray);
+var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/ComputeGraphSettings.xul", "", "chrome,close,titlebar,dependent",
+                                                     editorElement, commandStr, DOMGraph, graph, DOMGraph, currentDOMGs);
   return;
 }
 
