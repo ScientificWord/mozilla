@@ -23,7 +23,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/typesetPreamble.js"/>
   <!-- script type="application/x-javascript" src="chrome://prince/content/typesetDialogUtils.js"/ -->
-  <!-- script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/ -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
 
   <!-- keyset>
     <key id="sw.tab-key" keycode="VK_TAB" oncommand="msiTabForward(event);"/>
