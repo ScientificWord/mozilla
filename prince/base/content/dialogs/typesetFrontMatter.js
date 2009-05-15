@@ -23,7 +23,8 @@ function Startup()
 
   InitDialog();
 
-  document.getElementById("editControl").focus();
+//  document.getElementById("editControl").focus();
+  msiSetInitialDialogFocus(document.getElementById("editControl"));
 
   SetWindowLocation();
 }

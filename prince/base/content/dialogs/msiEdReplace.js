@@ -126,6 +126,7 @@ function loadDialog()
   if (theStringSource2 != null && theStringSource2.length == 0)
     theStringSource2 = null;
 //  msiInitializeEditorForElement(gReplaceDialog.replaceInput, theStringSource2, true);
+//RWA now replaced  gReplaceDialog.findInput.mbSetFocusOnStartup = true;
   var editorInitializer = new msiEditorArrayInitializer();
   editorInitializer.addEditorInfo(gReplaceDialog.findInput, theStringSource, true);
   editorInitializer.addEditorInfo(gReplaceDialog.replaceInput, theStringSource2, true);
@@ -188,7 +189,8 @@ function onLoad()
 //  if (gReplaceDialog.findInput.value)
 //    gReplaceDialog.findInput.select();
 //  else
-    gReplaceDialog.findInput.focus();
+//    gReplaceDialog.findInput.focus();
+  msiSetInitialDialogFocus(gReplaceDialog.findInput);
 }
 
 function onUnload() {
@@ -639,7 +641,7 @@ function onFindNext()
     gReplaceDialog.mSearchManager = null;
     var bundle = document.getElementById("findBundle");
     AlertWithTitle(null, bundle.getString("notFoundWarning"));
-    SetTextboxFocus(gReplaceDialog.findInput);
+//    SetTextboxFocus(gReplaceDialog.findInput);
 //    gTestFindDialog.findInput.select();
     gReplaceDialog.findInput.focus();
     return false;

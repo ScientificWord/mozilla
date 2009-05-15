@@ -5,7 +5,7 @@ var gBodyElement;
 const emptyElementStr=" ";
 
 //const mmlns    = "http://www.w3.org/1998/Math/MathML";
-const xhtmlns  = "http://www.w3.org/1999/xhtml";
+//const xhtmlns  = "http://www.w3.org/1999/xhtml";
 
 var data;
 
@@ -19,7 +19,8 @@ function Startup()
 
   InitDialog();
 
-  document.getElementById("dataField").focus();
+//  document.getElementById("dataField").focus();
+  msiSetInitialDialogFocus(document.getElementById("dataField"));
 
   SetWindowLocation();
 }

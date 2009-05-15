@@ -5,14 +5,16 @@ var gBodyElement;
 const emptyElementStr=" ";
 
 //const mmlns    = "http://www.w3.org/1998/Math/MathML";
-const xhtmlns  = "http://www.w3.org/1999/xhtml";
+//const xhtmlns  = "http://www.w3.org/1999/xhtml";
 
 var data;
 
 // dialog initialization code
 function Startup()
 {
-  var editor = GetCurrentEditor();
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  var editor = msiGetEditor(editorElement);
+//  var editor = GetCurrentEditor();
   if (!editor) {
     window.close();
     return;
@@ -28,7 +30,8 @@ function Startup()
 
   InitDialog();
 
-  gDialog.packagesListbox.focus();
+//  gDialog.packagesListbox.focus();
+  msiSetInitialDialogFocus(gDialog.packagesListbox);
 
   SetWindowLocation();
 }

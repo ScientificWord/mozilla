@@ -44,14 +44,24 @@ function Startup()
 
   InitDialog();
 
-  if (gDialog.DecorationsAboveGroup.valueStr.length > 0)
-    gDialog.DecorationsAboveGroup.focus();
-  else if (gDialog.DecorationsBelowGroup.valueStr.length > 0)
-    gDialog.DecorationsBelowGroup.focus();
-  else if (gDialog.DecorationsAroundGroup.valueStr.length > 0)
-    gDialog.DecorationsAroundGroup.focus();
-  else
-    gDialog.DecorationsAboveGroup.focus();
+  var initialFocus = gDialog.DecorationsAboveGroup;
+  if (gDialog.DecorationsAboveGroup.valueStr.length <= 0)
+  {
+    if (gDialog.DecorationsBelowGroup.valueStr.length > 0)
+      initialFocus = gDialog.DecorationsBelowGroup;
+    else if (gDialog.DecorationsAroundGroup.valueStr.length > 0)
+      initialFocus = gDialog.DecorationsAroundGroup;
+  }
+  msiSetInitialDialogFocus(initialFocus);
+
+//  if (gDialog.DecorationsAboveGroup.valueStr.length > 0)
+//    gDialog.DecorationsAboveGroup.focus();
+//  else if (gDialog.DecorationsBelowGroup.valueStr.length > 0)
+//    gDialog.DecorationsBelowGroup.focus();
+//  else if (gDialog.DecorationsAroundGroup.valueStr.length > 0)
+//    gDialog.DecorationsAroundGroup.focus();
+//  else
+//    gDialog.DecorationsAboveGroup.focus();
 
   SetWindowLocation();
 }
