@@ -232,9 +232,11 @@ var msiReviseFractionCmd =
     {
       var fractionData = new Object();
       fractionData.reviseObject = theFrac;
-      var argArray = [fractionData];
-      msiOpenModelessPropertiesDialog("chrome://prince/content/fractionProperties.xul", "_blank", "chrome,close,titlebar,dependent",
-                                        editorElement, "cmd_MSIreviseFractionCmd", theFrac, argArray);
+//      var argArray = [fractionData];
+//      msiOpenModelessPropertiesDialog("chrome://prince/content/fractionProperties.xul", "_blank", "chrome,close,titlebar,dependent",
+//                                        editorElement, "cmd_MSIreviseFractionCmd", theFrac, argArray);
+      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/fractionProperties.xul", "_blank", "chrome,close,titlebar,dependent",
+                                                     editorElement, "cmd_MSIreviseFractionCmd", theFrac, fractionData);
     }
   },
 
@@ -292,9 +294,11 @@ var msiReviseRadicalCmd =
     {
       var radicalData = new Object();
       radicalData.reviseObject = theRadical;
-      var argArray = [radicalData];
-      msiOpenModelessPropertiesDialog("chrome://prince/content/radicalProperties.xul", "_blank", "chrome,close,titlebar,dependent",
-                                        editorElement, "cmd_MSIreviseRadicalCmd", theRadical, argArray);
+//      var argArray = [radicalData];
+//      msiOpenModelessPropertiesDialog("chrome://prince/content/radicalProperties.xul", "_blank", "chrome,close,titlebar,dependent",
+//                                        editorElement, "cmd_MSIreviseRadicalCmd", theRadical, argArray);
+      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/radicalProperties.xul", "_blank", "chrome,close,titlebar,dependent",
+                                                     editorElement, "cmd_MSIreviseRadicalCmd", theRadical, radicalData);
     }
 //    AlertWithTitle("mathmlOverlay.js", "In msiReviseRadicalCmd, trying to revise radical, dialog unimplemented.");
   },
@@ -506,10 +510,11 @@ var msiReviseMathnameCmd =
 
     var mathNameData = new Object();
     mathNameData.reviseObject = theMathname;
-    var argArray = [mathNameData];
-    msiOpenModelessPropertiesDialog("chrome://prince/content/MathmlMathname.xul", "_blank", "chrome,close,titlebar,dependent",
-                                      editorElement, "cmd_MSIreviseMathnameCmd", theMathname, argArray);
-//    AlertWithTitle("mathmlOverlay.js", "In msiReviseMathnameCmd, trying to revise mathname, dialog unimplemented.");
+//    var argArray = [mathNameData];
+//    msiOpenModelessPropertiesDialog("chrome://prince/content/MathmlMathname.xul", "_blank", "chrome,close,titlebar,dependent",
+//                                      editorElement, "cmd_MSIreviseMathnameCmd", theMathname, argArray);
+    var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/MathmlMathname.xul", "_blank", "chrome,close,titlebar,dependent",
+                                                     editorElement, "cmd_MSIreviseMathnameCmd", theMathname, mathNameData);
   },
 
   doCommand: function(aCommand)
@@ -705,12 +710,11 @@ var msiReviseGenBracketsCmd =
     var theBrackets = aParams.getISupportsValue("reviseObject");
     var bracketData = new Object();
     bracketData.reviseObject = theBrackets;
-    var argArray = [bracketData];
-    msiOpenModelessPropertiesDialog("chrome://prince/content/Brackets.xul", "_blank", "chrome,close,titlebar,dependent",
-                                      editorElement, "cmd_MSIreviseGenBracketsCmd", theBrackets, argArray);
-
-
-//    AlertWithTitle("mathmlOverlay.js", "In msiReviseGenBracketsCmd, trying to revise brackets, dialog unimplemented.");
+//    var argArray = [bracketData];
+//    msiOpenModelessPropertiesDialog("chrome://prince/content/Brackets.xul", "_blank", "chrome,close,titlebar,dependent",
+//                                      editorElement, "cmd_MSIreviseGenBracketsCmd", theBrackets, argArray);
+    var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/Brackets.xul", "_blank", "chrome,close,titlebar,dependent",
+                                                     editorElement, "cmd_MSIreviseGenBracketsCmd", theBrackets, bracketData);
   },
 
   doCommand: function(aCommand)
@@ -749,9 +753,11 @@ var msiReviseBinomialsCmd =
     var theBinomial = aParams.getISupportsValue("reviseObject");
     var binomialData = new Object();
     binomialData.reviseObject = theBinomial;
-    var argArray = [binomialData];
-    msiOpenModelessPropertiesDialog("chrome://prince/content/Binomial.xul", "_blank", "chrome,close,titlebar,dependent",
-                                      editorElement, "cmd_MSIreviseBinomialsCmd", theBinomial, argArray);
+//    var argArray = [binomialData];
+//    msiOpenModelessPropertiesDialog("chrome://prince/content/Binomial.xul", "_blank", "chrome,close,titlebar,dependent",
+//                                      editorElement, "cmd_MSIreviseBinomialsCmd", theBinomial, argArray);
+    var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/Binomial.xul", "_blank", "chrome,close,titlebar,dependent",
+                                                     editorElement, "cmd_MSIreviseBinomialsCmd", theBinomial, binomialData);
     
 //    AlertWithTitle("mathmlOverlay.js", "In msiReviseBinomialsCmd, trying to revise binomial, dialog unimplemented.");
   },
@@ -790,11 +796,11 @@ var msiReviseOperatorsCmd =
     var theOperator = aParams.getISupportsValue("reviseObject");
     var operatorData = new Object();
     operatorData.reviseObject = theOperator;
-    var argArray = [operatorData];
-    msiOpenModelessPropertiesDialog("chrome://prince/content/Operators.xul", "_blank", "chrome,close,titlebar,dependent",
-                                      editorElement, "cmd_MSIreviseOperatorsCmd", theOperator, argArray);
-//    AlertWithTitle("mathmlOverlay.js", "In msiReviseOperatorsCmd, trying to revise operator, dialog unimplemented.");
-
+//    var argArray = [operatorData];
+//    msiOpenModelessPropertiesDialog("chrome://prince/content/Operators.xul", "_blank", "chrome,close,titlebar,dependent",
+//                                      editorElement, "cmd_MSIreviseOperatorsCmd", theOperator, argArray);
+    var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/Operators.xul", "_blank", "chrome,close,titlebar,dependent",
+                                                     editorElement, "cmd_MSIreviseOperatorsCmd", theOperator, operatorData);
   },
 
   doCommand: function(aCommand)
@@ -872,9 +878,11 @@ var msiReviseUnitsCommand =
     {
       var unitsData = new Object();
       unitsData.reviseObject = theUnit;
-      var argArray = [unitsData];
-      msiOpenModelessPropertiesDialog("chrome://prince/content/mathUnitsDialog.xul", "_blank", "chrome,close,titlebar,dependent",
-                                        editorElement, "cmd_MSIreviseUnitsCmd", theUnit, argArray);
+//      var argArray = [unitsData];
+//      msiOpenModelessPropertiesDialog("chrome://prince/content/mathUnitsDialog.xul", "_blank", "chrome,close,titlebar,dependent",
+//                                        editorElement, "cmd_MSIreviseUnitsCmd", theUnit, argArray);
+      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/mathUnitsDialog.xul", "_blank", "chrome,close,titlebar,dependent",
+                                                     editorElement, "cmd_MSIreviseUnitsCmd", theUnit, unitsData);
     }
     catch(exc) { dump("In msiReviseUnitsCommand, exception: " + exc + ".\n"); }
   },

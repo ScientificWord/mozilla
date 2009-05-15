@@ -2248,6 +2248,17 @@ function msiOpenModelessDialog(chromeUrl, dlgName, options, targetEditorElement,
     return msiOpenSingleInstanceModelessDialog(chromeUrl, dlgName, options, targetEditorElement, commandID, extraArgsArray);
 }
 
+function msiDoModelessPropertiesDialog(chromeUrl, dlgName, options, targetEditorElement, commandID, reviseObject)
+{
+  var editor = msiGetEditor(targetEditorElement);
+  var extraArgsArray = new Array();
+  for (var i = 6; i < arguments.length; ++i)
+  {
+    extraArgsArray.push(arguments[i]);
+  }
+  return msiOpenModelessPropertiesDialog(chromeUrl, dlgName, options, targetEditorElement, commandID, reviseObject, extraArgsArray);
+}
+
 function msiOpenSingleInstanceModelessDialog(chromeUrl, dlgName, options, targetEditor, commandID, extraArgsArray)
 {
 //  var extraArgsArray = new Array();
