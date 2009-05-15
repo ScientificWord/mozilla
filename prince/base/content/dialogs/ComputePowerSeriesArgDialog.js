@@ -63,7 +63,8 @@ function Startup(){
   editorInitializer.addEditorInfo(termsEditorControl, theStringSource3, true);
   editorInitializer.doInitialize();
 
-  varEditorControl.focus();
+//  varEditorControl.focus();
+  msiSetInitialDialogFocus(varEditorControl);
 }
 
 function OK(){
