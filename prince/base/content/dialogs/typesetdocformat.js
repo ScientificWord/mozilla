@@ -1882,7 +1882,7 @@ function displayTextForSectionHeader()
 //		width = 200;
   }
 	var iframecontainer = document.getElementById("sectiontextareacontainer");
-	setStyleAttribute(iframecontainer,"height",Number(height)+"px");
+	setStyleAttributeOnNode(iframecontainer,"height",Number(height)+"px");
 //	setStyleAttribute(iframecontainer,"width",width+sectionUnit));
 }
 
