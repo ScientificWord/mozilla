@@ -42,7 +42,8 @@ function Startup()
   InitDialog();
 
   if (gDialog.RadicalGroup.valueStr.length > 0)
-    gDialog.RadicalGroup.focus();
+    msiSetInitialDialogFocus(gDialog.RadicalGroup);
+//    gDialog.RadicalGroup.focus();
 
   SetWindowLocation();
 }

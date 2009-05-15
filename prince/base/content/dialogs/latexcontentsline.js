@@ -46,7 +46,9 @@ var msiEditorDocumentObserverG =
   { 
     if (aTopic == "obs_documentCreated") {
 //      var plotno = window.arguments[0].getGraphAttribute("plotnumber");
-      var editor = GetCurrentEditor();
+//      var editor = GetCurrentEditor();
+      var editorElement = msiGetParentEditorElementForDialog(window);
+      var editor = msiGetEditor(editorElement);
       editor.addOverrideStyleSheet("chrome://prince/skin/MathVarsDialog.css");
 	  populateDialog ();
     }  
@@ -489,7 +491,9 @@ function populateDialog () {
     body[0].parentNode.removeChild (body[0]);
   }
   var str = buildEditorTable ();
-  var editor = GetCurrentEditor();
+//  var editor = GetCurrentEditor();
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  var editor = msiGetEditor(editorElement);
   dump(str);
   editor.insertHTML(str);
   // now mark the body as in the chrome, to prevent resize widgets around the table.

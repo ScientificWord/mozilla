@@ -713,3 +713,16 @@ function msiDialogConfigManager(theDialogWindow)
     cancelButton.label = this.mStringBundle.GetStringFromName("msiDlgButton.close");
   };
 }
+
+function msiSetInitialDialogFocus(focusElement)
+{
+  if (!focusElement)
+  {
+    dump("In msiDialogUtilities.js, msiSetInitialDialogFocus was called with a null focusElement!\n");
+    return;
+  }
+
+  if (focusElement.nodeName == "editor")
+    focusElement.mbSetFocusOnStartup = true;
+  focusElement.focus();
+}
