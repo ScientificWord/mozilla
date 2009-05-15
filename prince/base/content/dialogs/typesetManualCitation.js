@@ -27,7 +27,8 @@ function Startup()
 
   InitDialog();
 
-  document.getElementById("keysListbox").focus();
+//  document.getElementById("keysListbox").focus();
+  msiSetInitialDialogFocus(document.getElementById("keysListbox"));
 
   SetWindowLocation();
 }

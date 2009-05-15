@@ -77,7 +77,8 @@ function Startup()
 
   InitDialog();
 
-  document.getElementById("docTitleBox").focus();
+//  document.getElementById("docTitleBox").focus();
+  msiSetInitialDialogFocus(getElementById("docTitleBox"));
 
   SetWindowLocation();
 }
