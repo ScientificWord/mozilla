@@ -6034,10 +6034,8 @@ function msiAuxDirFromDocPath(documentURI)
 
 // receives a style string, sets a new value for attribute
 // if the new value is null, we remove the style attribute
-function setStyleAttribute( element, attribute, value)
+function setStyleAttribute(elem, attribute, value )
 {
-//  element.style[attribute]=value;
-  var elem = document.getElementById(element);
   var inStyleString = elem.getAttribute("style");
   var array = inStyleString.split(";");
   var i, foundindex;
