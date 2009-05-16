@@ -238,7 +238,7 @@ function getColorAndUpdate()
 
   color = colorObj.TextColor;
   setColorWell("colorWell", color); 
-  setStyleAttribute("frame","border-color",color);
+  setStyleAttributeByID("frame","border-color",color);
 }
 
 // come up with a four part attribute giving the four parts of the margin or padding or border, etc. using the same rules as CSS
@@ -301,7 +301,7 @@ function updateDiagram( attribute ) //attribute = margin, border, padding;
     document.getElementById("frame").setAttribute("style", style);
   }
   else
-    { setStyleAttribute("frame", attribute, val );}
+    { setStyleAttributeByID("frame", attribute, val );}
   dump(document.getElementById("frame").getAttribute("style")+"\n");
   // dump(document.getElementById("frame").getAttribute("style"));
   // space flowing around the diagram is 150 - (lmargin + rmargin + lborder + lpadding + rborder + rpadding + imageWidth)*scale
@@ -366,7 +366,7 @@ function removeStyleAttributeFamilyOnNode( node, att)
 }
 
 
-function setStyleAttribute( id, att, value)
+function setStyleAttributeByID( id, att, value)
 {
   setStyleAttributeOnNode(document.getElementById(id));
 }
@@ -448,8 +448,8 @@ function setContentSize(width, height)  // width and height are the size of the 
 {
   scaledWidth = Math.round(scale*width);
   scaledHeight = Math.round(scale*height);
-  setStyleAttribute("content", "width", scaledWidth + "px");
-  setStyleAttribute("content", "height", scaledHeight + "px");
+  setStyleAttributeByID("content", "width", scaledWidth + "px");
+  setStyleAttributeByID("content", "height", scaledHeight + "px");
   updateDiagram("margin");
 }
 

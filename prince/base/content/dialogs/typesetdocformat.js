@@ -111,7 +111,7 @@ function Startup()
 {
   initializeFontFamilyList(false);
   var editorElement = msiGetParentEditorElementForDialog(window);
-  var editor = msiGetEditor(editorElement);
+  editor = msiGetEditor(editorElement);
   if (!editor) {
     window.close();
     return;
@@ -1882,8 +1882,9 @@ function displayTextForSectionHeader()
 //		width = 200;
   }
 	var iframecontainer = document.getElementById("sectiontextareacontainer");
-	setStyleAttributeOnNode(iframecontainer,"height",Number(height)+"px");
-//	setStyleAttribute(iframecontainer,"width",width+sectionUnit));
+//	setStyleAttributeOnNode(iframecontainer,"height",Number(height)+"px");
+//	setStyleAttribute(iframecontainer,"width",width+sectionUnit);
+	setStyleAttribute(iframecontainer,"height",Number(height)+"px");
 }
 
 
