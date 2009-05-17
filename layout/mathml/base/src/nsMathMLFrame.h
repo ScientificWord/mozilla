@@ -422,6 +422,14 @@ public:
                 nsIFontMetrics*      aFontMetrics,
                 nscoord&             aAxisHeight);
 
+
+  static void
+  DumpMathFrameData(nsIFrame* aFrame);
+
+
+  static void
+  DumpFrameData(nsIFrame* aFrame, PRUint32 indent = 0);
+
 protected:
 
 #if defined(NS_DEBUG) && defined(SHOW_BOUNDING_BOX)
