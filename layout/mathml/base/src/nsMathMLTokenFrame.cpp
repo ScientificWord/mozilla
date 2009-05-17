@@ -467,6 +467,7 @@ nsMathMLTokenFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame,
     }
     else
     {
+      *_retval = 0;
       PlaceCursorBefore(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
     }
     *_retval = 0;
@@ -484,6 +485,7 @@ nsMathMLTokenFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, 
     }
     else
     {
+      *_retval = 0;
       PlaceCursorBefore(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
     }
     *_retval = 0;
