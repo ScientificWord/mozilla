@@ -5387,6 +5387,7 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
   if (pFrame) // 'this' is a math frame
   {
     printf("Starting in a math frame\n");
+    nsMathMLFrame::DumpMathFrameData(pFrame);
 //    *aMath = PR_TRUE;
     // the cursor is in a math tag, not in a text tag that is in mathematics, and we are leaving or entering
     // BBM: Fix this. Counting in the frame tree is unreliable. We should be doing it in the DOM tree.
@@ -5435,6 +5436,7 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
     pFrame = IsParentMathFrame(this)?GetParent():nsnull;
     if (pFrame)
     {
+      nsMathMLFrame::DumpMathFrameData(pFrame);
       // this is not a math frame, but a parent is. Probably this is a text frame.
       // Check if the next frame is a text frame. If so, bail and let the default code take care of it.
       *aMath = PR_TRUE;
