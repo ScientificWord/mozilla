@@ -546,3 +546,61 @@ nsMathMLFrame::DisplayBar(nsDisplayListBuilder* aBuilder,
   return aLists.Content()->AppendNewToTop(new (aBuilder)
       nsDisplayMathMLBar(aFrame, aRect, isSelected));
 }
+
+PRBool IsMath( nsIFrame * aFrame )
+{
+  if (! aFrame) return PR_FALSE;
+  nsAutoString sNamespace;
+  nsCOMPtr<nsIContent> pContent;
+  nsCOMPtr<nsIDOMNode> pNode;
+  nsresult res;
+  pContent = aFrame->GetContent();
+  if (!pContent) return PR_FALSE;
+  pNode = do_QueryInterface(pContent);
+  if (!pNode) return PR_FALSE;
+  res = pNode->GetNamespaceURI(sNamespace);
+  if (sNamespace.EqualsLiteral("http://www.w3.org/1998/Math/MathML")) 
+  {
+    return PR_TRUE;
+  }
+  return PR_FALSE;
+}
+
+
+/*  static */ void
+nsMathMLFrame::DumpMathFrameData(nsIFrame* aFrame)
+{
+  nsIFrame * pNextFrame;
+  nsIFrame * pFrame = aFrame;
+  pNextFrame = pFrame->GetParent();
+  while (IsMath(pNextFrame))
+  {
+    pFrame = pNextFrame;
+    pNextFrame = pFrame->GetParent();
+  }
+  nsMathMLFrame::DumpFrameData(pFrame, 0);
+}
+
+
+/*  static */ void
+nsMathMLFrame::DumpFrameData(nsIFrame* aFrame, PRUint32 indent)
+{
+  nsAutoString indentString;
+  PRUint32 i = indent;
+  NS_NAMED_LITERAL_STRING(spaces, "  ");
+  while (i-- > 0) indentString += spaces;
+  printf("%S", indentString.get());
+  printf("%p", aFrame);
+  nsAutoString tagName;
+  aFrame->GetContent()->Tag()->ToString(tagName);
+  printf(" Content: %S\n", tagName);
+  nsIFrame * pNextFrame;
+  nsIFrame * pFrame = aFrame->GetFirstChild(nsnull);
+  while (pFrame)
+  {
+    nsMathMLFrame::DumpFrameData(pFrame, indent + 2);
+    pNextFrame = pFrame->GetNextSibling();
+    pFrame = pNextFrame;
+  }
+}
+
