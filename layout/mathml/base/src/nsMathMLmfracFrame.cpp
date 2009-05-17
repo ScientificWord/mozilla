@@ -592,7 +592,7 @@ nsMathMLmfracFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame,
 {
   printf("mfrac EnterFromRight, count = %d\n", count);
   if (count == 0)
-  { // then the cursor should sit in front of this fraction
+  { // then the cursor should sit iafter this fraction
     PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
     *_retval = 0;
     return NS_OK;
