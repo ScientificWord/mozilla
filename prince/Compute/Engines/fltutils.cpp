@@ -175,6 +175,40 @@ MNODE *MakeTNode(U32 s_off, U32 s_len, U32 line_no)
   return rv;
 }
 
+
+// Follows links associated with the node and
+// tries to crash if anyone has a bad pointer.
+
+bool CheckLinks(MNODE* n)
+{
+   if (n == 0) 
+    return true;
+    
+   MNODE* p = n->parent;
+   MNODE* m = n;
+   while (m){
+     m = m->parent;
+   }
+   m = n;
+   while (m) {
+     if (m -> parent != p){
+       _asm{int 3};
+     } else {
+       m = m-> next;
+     }
+   }
+   
+   m = n->first_kid;
+   while (m){
+     if (m->parent != n)
+       _asm{int 3}
+    else
+      m = m-> next;
+   } 
+    
+   return true; 
+}
+
 const char * OpIlkToString(OpIlk ilk)
 {
   switch (ilk) {
