@@ -201,7 +201,8 @@ SEMANTICS_NODE *Analyzer::BuildSemanticsTree(MathServiceRequest & msr,
                                              MNODE * dMML_tree,
                                              U32 curr_cmd_ID,
                                              INPUT_NOTATION_REC * in_notation)
-{ 
+{
+  TCI_ASSERT(CheckLinks(dMML_tree));
   SEMANTICS_NODE *rv = NULL;
 
   cmd_ID = curr_cmd_ID;
@@ -212,12 +213,15 @@ SEMANTICS_NODE *Analyzer::BuildSemanticsTree(MathServiceRequest & msr,
     case CCID_Cleanup:
     case CCID_Fixup:
       dMML_tree = CanonicalTreeGen->TreeToCleanupForm(dMML_tree);
+      TCI_ASSERT(CheckLinks(dMML_tree));
       break;
     case CCID_Interpret:
       dMML_tree = CanonicalTreeGen->TreeToInterpretForm(dMML_tree, in_notation);
+      TCI_ASSERT(CheckLinks(dMML_tree));
       break;
     default:
       dMML_tree = CanonicalTreeGen->TreeToCanonicalForm(dMML_tree, in_notation);
+      TCI_ASSERT(CheckLinks(dMML_tree));
       break;
   }
 
@@ -246,7 +250,7 @@ SEMANTICS_NODE *Analyzer::BuildSemanticsTree(MathServiceRequest & msr,
     TCI_ASSERT(s_indvar);
     DeterminePDEFuncNames(dMML_tree);
   }
-
+  TCI_ASSERT(CheckLinks(dMML_tree));
   JBM::DumpTList(dMML_tree, 0);
   TCI_ASSERT(!msg_list);
   DisposeMsgs(msg_list);
@@ -2291,7 +2295,7 @@ BUCKET_REC *Analyzer::GetFencedArgs(MNODE * mml_fence)
 char *Analyzer::GetCanonicalIDforMathNode(MNODE * mml_node)
 {
   char *rv = NULL;
-
+  TCI_ASSERT(CheckLinks(mml_node));
   if (mml_node) {
     char buffer[1024];
     buffer[0] = 0;
@@ -2340,6 +2344,7 @@ char *Analyzer::GetCanonicalIDforMathNode(MNODE * mml_node)
 SEMANTICS_NODE *Analyzer::GetSemanticsList(MNODE * dMML_list,
                                            BUCKET_REC * parent_bucket)
 {
+  TCI_ASSERT(CheckLinks(dMML_list));
   return GetSemanticsList(dMML_list, parent_bucket, ALL_NODES, false);
 }
 
@@ -2348,6 +2353,7 @@ SEMANTICS_NODE *Analyzer::GetSemanticsList(MNODE * dMML_list,
                                            int mml_node_lim,
                                            bool isLHSofDef)
 {
+  TCI_ASSERT(CheckLinks(dMML_list));
   SEMANTICS_NODE *head = NULL;
   SEMANTICS_NODE *tail;
 
@@ -2503,7 +2509,7 @@ SEMANTICS_NODE *Analyzer::SNodeFromMNodes(MNODE * mml_node,
                                           bool isLHSofDef)
 {
   SEMANTICS_NODE *rv = NULL;
-
+  TCI_ASSERT(CheckLinks(mml_node));
   if (mml_node) {
     int local_nodes_done = 1;
     rv = CreateSemanticsNode();
@@ -3045,7 +3051,8 @@ void Analyzer::TranslateEmbellishedOp(MNODE * mml_embellop_node,
                                       int& nodes_done)
 {
   nodes_done = 1;
-
+  
+  TCI_ASSERT(CheckLinks(mml_embellop_node));
   MNODE *base = mml_embellop_node->first_kid;
   if (base) {                   // the underlying operator - \int, \sum, etc.
     size_t ln = strlen(base->p_chdata);
@@ -3248,18 +3255,20 @@ void Analyzer::OperandToBucketList(MNODE * big_op_node, SemanticType bigop_type,
                                    SEMANTICS_NODE * bigop_snode,
                                    int& nodes_done)
 {
+  TCI_ASSERT(CheckLinks(big_op_node));
   nodes_done = 0;
 
   int local_nodes_done = 0;
   if (big_op_node && big_op_node->next) {
     MNODE *mml_operand = big_op_node->next;
+	  TCI_ASSERT(CheckLinks(mml_operand));
 
     // step over any whitespace
     while (IsWhiteSpace(mml_operand)) {
       local_nodes_done++;
       mml_operand = mml_operand->next;
     }
-
+    TCI_ASSERT(CheckLinks(mml_operand));
     if (mml_operand) {
       local_nodes_done++;
       if (bigop_type == SEM_TYP_BIGOP_SUM) {
@@ -3394,6 +3403,7 @@ void Analyzer::OperandToBucketList(MNODE * big_op_node, SemanticType bigop_type,
           BUCKET_REC *a_rec = MakeBucketRec(MB_OPERAND, NULL);
           bigop_snode->bucket_list =
             AppendBucketRec(bigop_snode->bucket_list, a_rec);
+		      TCI_ASSERT(CheckLinks(integrand_starter));
           SEMANTICS_NODE *contents = GetSemanticsList(integrand_starter, a_rec);
           a_rec->first_child = contents;
           contents->parent = a_rec;
@@ -3776,6 +3786,7 @@ bool Analyzer::IsWhiteText(const char *z_text)
 
 void Analyzer::SemanticAttribs2Buffer(char *buffer, MNODE * mml_node, int lim)
 {
+  TCI_ASSERT(CheckLinks(mml_node));
   GetCurrAttribValue(mml_node, true, "mathvariant", buffer, lim);
   // May need to add more calls here
 }

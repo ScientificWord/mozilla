@@ -139,6 +139,7 @@ typedef struct tagMIC2MMLNODE_REC
   char *mml_markup;
 } MIC2MMLNODE_REC;
 
+bool CheckLinks(MNODE* n);
 BUCKET_REC *MakeBucketRec(U32 which_bucket, SEMANTICS_NODE * sem_child);
 BUCKET_REC *AppendBucketRec(BUCKET_REC * a_list, BUCKET_REC * new_a_rec);
 BUCKET_REC *FindBucketRec(BUCKET_REC * a_list, U32 bucket_ID);
