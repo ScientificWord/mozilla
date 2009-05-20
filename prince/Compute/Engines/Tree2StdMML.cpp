@@ -314,7 +314,7 @@ void Tree2StdMML::LookupMOInfo(MNODE * mml_node)
     if (p_data && *p_data) {
       if (strstr(p_data,"multiform,")) {
         const char * str_ilk;
-        if (op_ilk == OP_none && !strcmp(mml_node->p_chdata,"&#x2212;")) {
+        if (op_ilk == OP_none && (!strcmp(mml_node->p_chdata,"&#x2212;") || !strcmp(mml_node->p_chdata,"-"))) {
           if (!mml_node->prev) {  // a rough heuristic
             op_ilk = OP_prefix;
             set_form = true;
