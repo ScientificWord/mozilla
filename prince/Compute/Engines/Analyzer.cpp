@@ -5489,11 +5489,20 @@ MNODE *Analyzer::LocateOperator(MNODE * mml_list, OpIlk &op_ilk, int & advance)
 
     // Check the current node for the target attribute
     if (key && !strcmp(key->src_tok, "mo")) {
-      const char *attr_val = GetATTRIBvalue(key->attrib_list, "form");
-      if (attr_val)
-        op_ilk = StringToOpIlk(attr_val);
-      else
-        op_ilk = OP_infix;
+		if (key == mml_list){
+      // jcs -- assume that any mo at the beginning is prefix operator.
+			op_ilk = OP_prefix;
+      ATTRIB_REC * form = MakeATTRIBNode("form", "prefix");
+      form -> next = key->attrib_list;
+      key -> attrib_list = form;
+      
+		} else {
+            const char *attr_val = GetATTRIBvalue(key->attrib_list, "form");
+            if (attr_val)
+              op_ilk = StringToOpIlk(attr_val);
+            else
+              op_ilk = OP_infix;
+		}
 
       rv = rover;
       if (embellished && op_ilk != OP_prefix)
