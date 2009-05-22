@@ -413,9 +413,10 @@ static void DumpLayoutData(char* aTitleStr, char* aURLStr,
 nsresult
 nsPrintEngine::CommonPrint(PRBool                  aIsPrintPreview,
                            nsIPrintSettings*       aPrintSettings,
-                           nsIWebProgressListener* aWebProgressListener) {
+                           nsIWebProgressListener* aWebProgressListener,
+                           PRBool                  fSilentPrint) {
   nsresult rv = DoCommonPrint(aIsPrintPreview, aPrintSettings,
-                              aWebProgressListener);
+                              aWebProgressListener, fSilentPrint);
   if (NS_FAILED(rv)) {
     if (aIsPrintPreview) {
       SetIsCreatingPrintPreview(PR_FALSE);
@@ -437,7 +438,8 @@ nsPrintEngine::CommonPrint(PRBool                  aIsPrintPreview,
 nsresult
 nsPrintEngine::DoCommonPrint(PRBool                  aIsPrintPreview,
                              nsIPrintSettings*       aPrintSettings,
-                             nsIWebProgressListener* aWebProgressListener)
+                             nsIWebProgressListener* aWebProgressListener,
+                             PRBool                  fSilentPrinting)
 {
   nsresult rv;
 
@@ -568,7 +570,8 @@ nsPrintEngine::DoCommonPrint(PRBool                  aIsPrintPreview,
     // Check prefs for a default setting as to whether we should print silently
     printSilently = nsContentUtils::GetBoolPref("print.always_print_silent",
                                                 printSilently);
-
+    //BBM added this line Override printSilently if PR_TRUE was passed.
+    if (fSilentPrinting) printSilently= PR_TRUE;
     // Ask dialog to be Print Shown via the Plugable Printing Dialog Service
     // This service is for the Print Dialog and the Print Progress Dialog
     // If printing silently or you can't get the service continue on
@@ -721,7 +724,7 @@ NS_IMETHODIMP
 nsPrintEngine::Print(nsIPrintSettings*       aPrintSettings,
                      nsIWebProgressListener* aWebProgressListener)
 {
-  return CommonPrint(PR_FALSE, aPrintSettings, aWebProgressListener);
+  return CommonPrint(PR_FALSE, aPrintSettings, aWebProgressListener, PR_FALSE);
 }
 
 NS_IMETHODIMP
@@ -729,7 +732,16 @@ nsPrintEngine::PrintPreview(nsIPrintSettings* aPrintSettings,
                                  nsIDOMWindow *aChildDOMWin, 
                                  nsIWebProgressListener* aWebProgressListener)
 {
-  return CommonPrint(PR_TRUE, aPrintSettings, aWebProgressListener);
+  return CommonPrint(PR_TRUE, aPrintSettings, aWebProgressListener, PR_FALSE);
+}
+
+NS_IMETHODIMP
+nsPrintEngine::PrintPDF(nsIPrintSettings* aPrintSettings)
+{
+  aPrintSettings->SetPrintToFile(PR_TRUE);
+  aPrintSettings->SetToFileName(NS_LITERAL_STRING("C:\\a.pdf").get()); // need to fix this
+  aPrintSettings->SetOutputFormat(2);
+  return CommonPrint(PR_FALSE, aPrintSettings, nsnull, PR_TRUE);
 }
 
 //----------------------------------------------------------------------------------
