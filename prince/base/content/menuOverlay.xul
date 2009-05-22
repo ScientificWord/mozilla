@@ -853,6 +853,7 @@
     <!-- DEBUG only -->
   <menu id="debugMenu" label="&debugMenu.label;">
   <menupopup id="menu_debugPopup">
+    <menuitem label="printPDF" oncommand="PrintUtils.printPDF();"/>
     <menuitem label="&newEditorTestPage.label;" oncommand="window.openDialog('chrome://editor/content','_blank','chrome,all,dialog=no','chrome://editor/content/EditorInitPage.html')"/>
     <menuitem label="&textEditorCmd.label;"     oncommand="msiEditorNewPlaintext();" />
     <menuitem label="&outputTextCmd.label;"
@@ -861,7 +862,7 @@
            oncommand="msiEditorGetHTML()"/>
     <menuitem label="Execute JavaScript"
            oncommand='window.openDialog("chrome://prince/content/ExecuteJS.xul","Execute JavaScript", 
-      "chrome,close,titlebar,resizable,modal=false");' />  
+      "chrome,close,titlebar,resizable,modal=false");' />                                  
     <menuseparator />
     <menuitem label="&pasteAsQuotationCmd.label;"
            accesskey="&editpastequotation.accesskey;"
