@@ -3554,6 +3554,51 @@ DocumentViewerImpl::PrintPreview(nsIPrintSettings* aPrintSettings,
 #endif
 }
 
+
+// BBM: copied from PrintPreview. We could reduce duplicated code
+NS_IMETHODIMP
+DocumentViewerImpl::PrintPDF(nsIPrintSettings* aPrintSettings)
+{
+  nsresult rv = NS_OK;
+  // Temporary code for Bug 136185 / Bug 240490
+
+  if (!mContainer) {
+    PR_PL(("Container was destroyed yet we are still trying to use it!"));
+    return NS_ERROR_FAILURE;
+  }
+
+  nsCOMPtr<nsIDocShell> docShell(do_QueryReferent(mContainer));
+  NS_ASSERTION(docShell, "This has to be a docshell");
+  nsCOMPtr<nsIPresShell> presShell;
+  docShell->GetPresShell(getter_AddRefs(presShell));
+  if (!presShell || !mDocument || !mDeviceContext || !mParentWidget) {
+    PR_PL(("Can't Print Prelview without pres shell, document etc"));
+    return NS_ERROR_FAILURE;
+  }
+
+  if (!mPrintEngine) {
+    mPrintEngine = new nsPrintEngine();
+    NS_ENSURE_TRUE(mPrintEngine, NS_ERROR_OUT_OF_MEMORY);
+
+    rv = mPrintEngine->Initialize(this, docShell, mDocument,
+                                  mDeviceContext, mParentWidget,
+#ifdef NS_DEBUG
+                                  mDebugFile
+#else
+                                  nsnull
+#endif
+                                  );
+    if (NS_FAILED(rv)) {
+      mPrintEngine->Destroy();
+      mPrintEngine = nsnull;
+      return rv;
+    }
+  }
+
+  rv = mPrintEngine->PrintPDF(aPrintSettings);
+  return rv;
+}
+
 //----------------------------------------------------------------------
 NS_IMETHODIMP
 DocumentViewerImpl::PrintPreviewNavigate(PRInt16 aType, PRInt32 aPageNum)
