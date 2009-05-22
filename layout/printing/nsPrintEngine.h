@@ -75,6 +75,7 @@ public:
   NS_IMETHOD PrintPreview(nsIPrintSettings* aPrintSettings,
                           nsIDOMWindow *aChildDOMWin,
                           nsIWebProgressListener* aWebProgressListener);
+  NS_IMETHOD PrintPDF(nsIPrintSettings* aPrintSettings);
   NS_IMETHOD GetIsFramesetDocument(PRBool *aIsFramesetDocument);
   NS_IMETHOD GetIsIFrameSelected(PRBool *aIsIFrameSelected);
   NS_IMETHOD GetIsRangeSelection(PRBool *aIsRangeSelection);
@@ -227,10 +228,10 @@ public:
 protected:
 
   nsresult CommonPrint(PRBool aIsPrintPreview, nsIPrintSettings* aPrintSettings,
-              nsIWebProgressListener* aWebProgressListener);
+              nsIWebProgressListener* aWebProgressListener, PRBool fSilentPrint = PR_FALSE);
 
   nsresult DoCommonPrint(PRBool aIsPrintPreview, nsIPrintSettings* aPrintSettings,
-                         nsIWebProgressListener* aWebProgressListener);
+                         nsIWebProgressListener* aWebProgressListener, PRBool fSilentPrint);
 
   void FirePrintCompletionEvent();
   static nsresult GetSeqFrameAndCountPagesInternal(nsPrintObject*  aPO,

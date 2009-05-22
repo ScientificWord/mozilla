@@ -1069,8 +1069,8 @@ nsPrintOptions::ReadPrefString(const char * aPrefId, nsAString& aString)
 
   nsXPIDLCString str;
   nsresult rv = mPrefBranch->GetCharPref(aPrefId, getter_Copies(str));
-  NS_ENSURE_SUCCESS(rv, rv);
-
+//  NS_ENSURE_SUCCESS(rv, rv);
+  rv = 0; //BBM: hack! If there is no pref, just return ""
   CopyUTF8toUTF16(str.get(), aString);
 
   return rv;
