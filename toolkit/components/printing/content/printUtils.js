@@ -142,6 +142,18 @@ var PrintUtils = {
     }
   },
 
+  printPDF: function (aWindow)
+  {
+    var webBrowserPrint = this.getWebBrowserPrint(aWindow);
+    var printSettings   = this.getPrintSettings();
+    try {
+      webBrowserPrint.printPDF(printSettings);
+    } catch (e) {
+      return;
+    }
+
+  },
+
   getWebBrowserPrint: function (aWindow)
   {
     var contentWindow = aWindow || window.content;
