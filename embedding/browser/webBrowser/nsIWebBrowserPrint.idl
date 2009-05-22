@@ -153,6 +153,15 @@ interface nsIWebBrowserPrint : nsISupports
                     in nsIWebProgressListener aWPListener);
 
   /**
+   * Print the specified DOM window using PDF
+   *
+   * @param aThePrintSettings - Printer Settings for the PDF print, if aThePrintSettings is null
+   *                            then the global PS will be used.
+   * @return void
+   */
+  void printPDF(in nsIPrintSettings aThePrintSettings);
+
+  /**
    * Print Preview - Navigates within the window
    *
    * @param aNavType - navigation enum
