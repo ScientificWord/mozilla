@@ -192,7 +192,7 @@ bool CheckLinks(MNODE* n)
    m = n;
    while (m) {
      if (m -> parent != p){
-       _asm{int 3};
+       //_asm{int 3};
      } else {
        m = m-> next;
      }
@@ -200,10 +200,11 @@ bool CheckLinks(MNODE* n)
    
    m = n->first_kid;
    while (m){
-     if (m->parent != n)
-       _asm{int 3}
-    else
+     if (m->parent != n){
+       //_asm{int 3}
+    } else {
       m = m-> next;
+    }
    } 
     
    return true; 
