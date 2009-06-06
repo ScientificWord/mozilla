@@ -52,7 +52,7 @@ math {
   direction: ltr;
   unicode-bidi: embed;
   display: inline;
-  font-size: inherit;
+  font-size: 125%;
   font-style: normal;
   font-family: Cambria, Cambria Math, STIXGeneral;
   text-rendering: optimizeLegibility;
