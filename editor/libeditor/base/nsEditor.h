@@ -67,6 +67,7 @@
 #include "nsPIDOMEventTarget.h"
 #include "nsStubMutationObserver.h"
 #include "nsIViewManager.h"
+#include "msiITagListManager.h"
 
 class nsIDOMCharacterData;
 class nsIDOMRange;
@@ -496,19 +497,12 @@ public:
     */
   nsCOMPtr<nsIDOMNode> GetLeftmostChild(nsIDOMNode  *aCurrentNode, 
                                          PRBool      bNoBlockCrossing = PR_FALSE);
-
   /** returns PR_TRUE if aNode is of the type implied by aTag */
-  static inline PRBool NodeIsType(nsIDOMNode *aNode, nsIAtom *aTag)
-  {
-    return GetTag(aNode) == aTag;
-  }
+  static PRBool NodeIsType(nsIDOMNode *aNode, nsIAtom *aTag, msiITagListManager * manager = nsnull);
+
 
   // we should get rid of this method if we can
-  static inline PRBool NodeIsTypeString(nsIDOMNode *aNode, const nsAString &aTag)
-  {
-    nsIAtom *nodeAtom = GetTag(aNode);
-    return nodeAtom && nodeAtom->Equals(aTag);
-  }
+  static PRBool NodeIsTypeString(nsIDOMNode *aNode, const nsAString &aTag, msiITagListManager * manager = nsnull);
 
 
   /** returns PR_TRUE if aParent can contain a child of type aTag */
