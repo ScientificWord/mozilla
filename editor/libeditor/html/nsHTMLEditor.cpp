@@ -6152,8 +6152,9 @@ nsHTMLEditor::NodesSameType(nsIDOMNode *aNode1, nsIDOMNode *aNode2)
   GetIsCSSEnabled(&useCSS);
 
   nsCOMPtr<nsIAtom> tag1 = GetTag(aNode1);
+  nsCOMPtr<nsIAtom> tag2 = GetTag(aNode2);
 
-  if (tag1 == GetTag(aNode2)) {
+  if (tag1 == tag2) {
     if (useCSS && tag1 == nsEditProperty::span) {
       if (mHTMLCSSUtils->ElementsSameStyle(aNode1, aNode2)) {
         return PR_TRUE;
@@ -6162,6 +6163,19 @@ nsHTMLEditor::NodesSameType(nsIDOMNode *aNode1, nsIDOMNode *aNode2)
     else {
       return PR_TRUE;
     }
+  }
+  else // tags aren't same, but categories might be
+  {
+    nsIAtom *dummyAtom = nsnull;
+    nsAutoString strTag1;
+    tag1->ToString(strTag1);
+    nsAutoString strTag2;
+    tag1->ToString(strTag2);
+    nsAutoString type1;
+    nsAutoString type2;
+    mtagListManager->GetClassOfTag(strTag1, dummyAtom, type1);
+    mtagListManager->GetClassOfTag(strTag2, dummyAtom, type2);
+    return type1.Equals(type2);
   }
   return PR_FALSE;
 }

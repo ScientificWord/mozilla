@@ -153,7 +153,7 @@ nsHTMLEditUtils::IsHeader(nsIDOMNode *node, msiITagListManager * manager)
 PRBool 
 nsHTMLEditUtils::IsParagraph(nsIDOMNode *node, msiITagListManager * manager)
 {
-  return nsEditor::NodeIsType(node, nsEditProperty::p);
+  return nsEditor::NodeIsTypeString(node, NS_LITERAL_STRING("paratag"), manager);
 }
 
 
@@ -175,9 +175,10 @@ nsHTMLEditUtils::IsListItem(nsIDOMNode *node, msiITagListManager * manager)
 {
   NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsListItem");
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
-  return (nodeAtom == nsEditProperty::li)
+  if  ((nodeAtom == nsEditProperty::li)
       || (nodeAtom == nsEditProperty::dd)
-      || (nodeAtom == nsEditProperty::dt);
+      || (nodeAtom == nsEditProperty::dt)) return true;
+  return nsEditor::NodeIsTypeString(node, NS_LITERAL_STRING("listtag"), manager);
 }
 
 
