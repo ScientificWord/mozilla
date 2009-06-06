@@ -5090,7 +5090,7 @@ nsHTMLEditRules::CheckForEmptyBlock(nsIDOMNode *aStartNode,
           res = aSelection->Collapse(listParent, listOffset);
           if (NS_FAILED(res)) return res;
         }
-        // else just let selection perculate up.  We'll adjust it in AfterEdit()
+        // else just let selection percolate up.  We'll adjust it in AfterEdit()
       }
     }
     else
@@ -5100,6 +5100,27 @@ nsHTMLEditRules::CheckForEmptyBlock(nsIDOMNode *aStartNode,
       if (NS_FAILED(res)) return res;
     }
     res = mHTMLEditor->DeleteNode(emptyBlock);
+    // If there is no paragraph left, put in a new one
+    if (blockParent == aBodyNode)
+    {
+      nsString defPara;
+      nsIAtom * atomDummy;
+      mHTMLEditor->mtagListManager->GetDefaultParagraphTag(&atomDummy, defPara);
+      if (!mHTMLEditor->CanContainTag(blockParent, defPara))  
+        return NS_ERROR_FAILURE;
+      // else insert the default paragraph
+      mHTMLEditor->SetParagraphFormat(defPara);
+      // We want to move the selection here as well.
+      // blockParent is the parent node
+      nsCOMPtr<nsIDOMNodeList> nodelist;
+      nsCOMPtr<nsIDOMElement> element = do_QueryInterface(blockParent);
+      if (!element) return false;
+      res = element->GetElementsByTagName(defPara, getter_AddRefs(nodelist));
+      res = nodelist->Item(0, getter_AddRefs(blockParent)); // now selNode is the new selection node.
+      aSelection->Collapse(blockParent,0);
+    
+      printf("Just inserted default paragraph (%S) here\n", defPara.BeginReading());
+    }
     *aHandled = PR_TRUE;
   }
   return res;
