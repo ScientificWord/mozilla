@@ -7,7 +7,7 @@ part {
   counter-increment: part;
 }
 
-part>sectiontitle {
+part>*:first-child {
   display: block;
   font-size: x-large;
   font-weight: bold;
@@ -23,7 +23,7 @@ part>sectiontitle {
 }
 
 
-part>sectiontitle:before {
+part>*:first-child:before {
   content: "Part " counter(part,upper-roman);
   display: block;
   font-size: large;
@@ -42,7 +42,7 @@ chapter[open="false"]>* {
   counter-reset: section;
 }
 
-chapter>sectiontitle,chapter[open="false"]>sectiontitle,chapter[open="true"]>sectiontitle {
+chapter>*:first-child,chapter[open="false"]>*:first-child,chapter[open="true"]>*:first-child {
   display: block;
   font-size: x-large;
   font-weight: bold;
@@ -50,7 +50,7 @@ chapter>sectiontitle,chapter[open="false"]>sectiontitle,chapter[open="true"]>sec
   text-align: center;
 }
 
-chapter>sectiontitle:before {
+chapter>*:first-child:before {
   content: url(chrome://global/skin/tree/twisty-open.png) " Chapter " counter(chapter,upper-roman);
   display: block;								   
   font-size: x-large;
@@ -59,7 +59,7 @@ chapter>sectiontitle:before {
   text-align: center;
 }
 
-chapter[open="false"]>sectiontitle:before {
+chapter[open="false"]>*:first-child:before {
   content: url(chrome://global/skin/tree/twisty-clsd.png) " Chapter " counter(chapter,upper-roman);
 }
 
@@ -70,7 +70,7 @@ section {
   counter-reset: theorem;
 }  
 
-section>sectiontitle {
+section>*:first-child {
   display: block;
   margin: 10pt 10pt 0pt 0pt;
   margin-left: 10pt;
@@ -78,7 +78,7 @@ section>sectiontitle {
   font-weight: bold;
 }
 
-section>sectiontitle:before {
+section>*:first-child:before {
   content: counter(section) ".  ";
 }
 
@@ -88,14 +88,14 @@ subsection {
   counter-reset: subsubsection;
 }
 
-subsection>sectiontitle {
+subsection>*:first-child {
   display: block;
   margin: 10pt 10pt 0pt 0pt;
   margin-left: 10pt;
   font-size: large;
 }
 
-subsection>sectiontitle:before {
+subsection>*:first-child:before {
   content: counter(section) "." counter(subsection) ".  ";
 }
 
@@ -105,7 +105,7 @@ subsubsection {
   counter-reset: paragraph;
 }
 
-subsubsection>sectiontitle {
+subsubsection>*:first-child {
   display: block;
   margin: 10pt 10pt 0pt 0pt;
   margin-left: 10pt;
@@ -113,7 +113,7 @@ subsubsection>sectiontitle {
   font-weight: bold;
 }
 
-subsubsection>sectiontitle:before {
+subsubsection>*:first-child:before {
   content: counter(section) "." counter(subsection) "." counter(subsubsection) ".  ";
 }
 
@@ -122,13 +122,13 @@ paragraph {
   counter-increment: paragraph;
 }
 
-paragraph>sectiontitle {
+paragraph>*:first-child {
   font-size: medium;
   font-weight: normal;
   font-style: italic;
 }
 
-paragraph>sectiontitle:before {
+paragraph>*:first-child:before {
   content: counter(section) "." counter(subsection) "." counter(subsubsection) "." counter(paragraph) ".  "; 
 }
 
