@@ -5470,7 +5470,7 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
       {
         // we entered from the beginning. We want to go up as
         // far as we can until we get to the math root.
-        while ((pChild == pParent->GetFirstChild(nsnull)) && pFrame)
+        while (pParent && (pChild == pParent->GetFirstChild(nsnull)) && pFrame)
         {
           // we might be able to go up
           pChild = pParent;
@@ -5493,7 +5493,7 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
         {                                                         
           // we might be able to go up
           pChild = pParent;
-          pParent = pParent->GetParent();
+          if (pParent) pParent = pParent->GetParent();
           pFrame = IsMathFrame(pParent)?pParent:nsnull;
         }
         pFrameChild = IsMathFrame(pChild)?pChild:nsnull;  
