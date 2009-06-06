@@ -571,6 +571,8 @@ interface nsIEditor  : nsISupports
 
   void setTopXULWindow( in nsIDOMWindow window);
 
+  void simpleDeleteNode( in nsIDOMNode aNode);
+
 
   /* ------------ Debug methods -------------- */
 

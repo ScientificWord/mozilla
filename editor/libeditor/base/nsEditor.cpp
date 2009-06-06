@@ -279,6 +279,41 @@ nsEditor::DumpNode(nsIDOMNode *aNode, PRInt32 indent)
   }
 }
 
+/** returns PR_TRUE if aNode is of the type implied by aTag */
+PRBool nsEditor::NodeIsType(nsIDOMNode *aNode, nsIAtom *aTag, msiITagListManager * manager)
+{
+  nsIAtom * nodeAtom = nsEditor::GetTag(aNode);
+  if (nodeAtom == aTag) return PR_TRUE;
+  PRBool fIsInTagClass;
+  if (manager)
+  {
+    nsAutoString strNodeName;
+    nsAutoString strTagName;
+    nodeAtom->ToString(strNodeName);
+    aTag->ToString(strTagName);
+    manager->GetTagInClass(strTagName, strNodeName, nsnull, &fIsInTagClass);
+    if (fIsInTagClass) return PR_TRUE;
+  }
+  return PR_FALSE;
+}
+
+// we should get rid of this method if we can
+PRBool nsEditor::NodeIsTypeString(nsIDOMNode *aNode, const nsAString &aTag, msiITagListManager * manager)
+{
+  nsIAtom *nodeAtom = nsEditor::GetTag(aNode);
+  if (nodeAtom && nodeAtom->Equals(aTag)) return PR_TRUE;
+  PRBool fIsInTagClass;
+  if (manager) {
+    nsAutoString strNodeName;
+    nodeAtom->ToString(strNodeName);
+    manager->GetTagInClass(aTag, strNodeName, nsnull, &fIsInTagClass);
+    if (fIsInTagClass) return PR_TRUE;
+  }
+  return PR_FALSE;
+}
+
+
+
 NS_IMETHODIMP
 nsEditor::Init(nsIDOMDocument *aDoc, nsIPresShell* aPresShell, nsIContent *aRoot, nsISelectionController *aSelCon, PRUint32 aFlags)
 {
@@ -5636,4 +5671,16 @@ PRBool
 nsEditor::IsModifiableNode(nsIDOMNode *aNode)
 {
   return PR_TRUE;
+}
+
+NS_IMETHODIMP 
+nsEditor::SimpleDeleteNode( nsIDOMNode *aNode)
+{
+  nsresult res;
+  nsRefPtr<DeleteElementTxn> txn;
+  res = CreateTxnForDeleteElement(aNode, getter_AddRefs(txn));
+  if (NS_SUCCEEDED(res))  {
+    res = DoTransaction(txn);  
+  }
+  return res;
 }
