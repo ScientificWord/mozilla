@@ -164,13 +164,17 @@ msiMContainer::InsertNodes(nsIEditor * editor,
       {
         if (lfSide)
         {
-          editor->DeleteNode(lfSide);
+          editor->SimpleDeleteNode(lfSide); //We don't call DeleteNode since we don't want to trigger DidDelete and WillDelete
           insertPos -= 1;
         }
         if (tobeRemoved)
-          editor->DeleteNode(tobeRemoved);
+        {
+          editor->SimpleDeleteNode(tobeRemoved);
+        }
         if  (rtSide)
-          editor->DeleteNode(rtSide);
+        {
+          editor->SimpleDeleteNode(rtSide);
+        }
           
         PRBool someMore(PR_FALSE);
         while (NS_SUCCEEDED(res) && NS_SUCCEEDED(enumerator->HasMoreElements(&someMore)) && someMore) 
