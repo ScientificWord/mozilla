@@ -46,6 +46,7 @@
 #include "nsStyleConsts.h"
 #include "nsIRenderingContext.h"
 #include "nsIFontMetrics.h"
+#include "nsMathCursorUtils.h"
 
 #include "nsMathMLmsubsupFrame.h"
 
@@ -356,3 +357,132 @@ nsMathMLmsubsupFrame::PlaceSubSupScript(nsPresContext*      aPresContext,
 
   return NS_OK;
 }
+
+
+
+
+nsresult
+nsMathMLmsubsupFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing,
+    PRInt32 *_retval)
+{
+  printf("msup EnterFromLeft, count = %d\n", count);
+  nsIFrame * pBaseFrame = GetFirstChild(nsnull);
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  if (pBaseFrame)
+  {
+    pMCM = do_QueryInterface(pBaseFrame);
+    if (pMCM) pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailing,  _retval);
+    else // child frame is not a math frame. Probably a text frame. We'll assume this for now
+    {
+      PlaceCursorBefore(pBaseFrame, PR_TRUE, aOutFrame, aOutOffset, count);
+      *_retval = 0;
+      return NS_OK;
+    }
+  }
+  else 
+  {
+    printf("Found msubsup frame with no children\n");
+  }
+  return NS_OK;  
+}
+
+nsresult
+nsMathMLmsubsupFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
+    PRBool* fBailingOut, PRInt32 *_retval)
+{
+  printf("msup EnterFromRight, count = %d\n", count);
+  if (count > 0)
+  {
+    nsIFrame * pFrame = GetFirstChild(nsnull); // the base
+    pFrame = pFrame->GetNextSibling();
+    pFrame = pFrame->GetNextSibling();
+    nsCOMPtr<nsIMathMLCursorMover> pMCM;
+    if (pFrame)
+    {
+      pMCM = do_QueryInterface(pFrame);
+      count--;
+      if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+      else // child frame is not a math frame. Probably a text frame. We'll assume this for now
+      {
+        PlaceCursorAfter(pFrame, PR_TRUE, aOutFrame, aOutOffset, count);
+        *_retval = 0;
+        return NS_OK;
+      }
+    }
+    else 
+    {
+      printf("Found msubsup frame with no superscript\n");
+    }
+  }
+  else
+  {
+    printf("msub EnterFromRight called with count == 0\n");
+    PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
+  }
+  return NS_OK;  
+}
+
+                            
+nsresult
+nsMathMLmsubsupFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
+    PRBool* fBailingOut, PRInt32 *_retval)
+{
+  printf("msup MoveOutToRight, count = %d\n", count);
+  nsIFrame * pBase = GetFirstChild(nsnull);
+  nsIFrame * pSub = nsnull;
+  nsIFrame * pSup = nsnull;
+  if (pBase) pSub = pBase->GetNextSibling();
+  if (pSub) pSup = pSub->GetNextSibling();
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  if (leavingFrame == pSup || leavingFrame == pSub)
+  {
+    // leaving superscript. Count = 0
+    PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
+    *_retval = 0;
+    return NS_OK;
+  }
+  else
+  {
+    // leaving base 
+    count= 0;
+    pMCM = do_QueryInterface(pSup);
+    if (pMCM) pMCM->EnterFromLeft(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+    else printf("msup MoveOutToRight: no superscript\n");
+   *_retval = 0;
+  }
+  return NS_OK;  
+}
+
+nsresult
+nsMathMLmsubsupFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
+    PRBool* fBailingOut, PRInt32 *_retval)
+{                
+  printf("msup MoveOutToLeft, count = %d\n", count);
+  nsIFrame * pBase = GetFirstChild(nsnull);
+  nsIFrame * pSub = nsnull;
+  nsIFrame * pSup = nsnull;
+  if (pBase) pSub = pBase->GetNextSibling();
+  if (pSub) pSup = pSub->GetNextSibling();
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  if (leavingFrame == nsnull || leavingFrame == pBase)
+  {
+    nsIFrame * pParent = GetParent();
+    pMCM = do_QueryInterface(pParent);
+    if (pMCM) pMCM->MoveOutToLeft(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+    else  // parent isn't math??? shouldn't happen
+    {
+      *_retval = count;
+      *aOutFrame = nsnull;  // should allow default Mozilla code to take over
+      return NS_OK;
+    }
+  }
+  else
+  {
+    // leaving superscript or subscript. Place the cursor just after the base.
+    count= 0;
+    pMCM = do_QueryInterface(pBase);
+    if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+   *_retval = 0;
+  }
+  return NS_OK;  
+}  

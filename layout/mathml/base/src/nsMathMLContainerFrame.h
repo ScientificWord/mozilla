@@ -531,6 +531,11 @@ public:
     return nsInlineFrame::IsFrameOfType(aFlags & ~(nsIFrame::eMathML));
   }
 
+  // bypass the nsInlineFrame implementation that skips over inline frames.
+  virtual PRBool PeekOffsetCharacter(PRBool aForward, PRInt32* aOffset) {
+    return false;
+  }
+
 protected:
   nsMathMLmathInlineFrame(nsStyleContext* aContext) : nsInlineFrame(aContext),
     nsMathMLContainerCursorMover(this)  {}
