@@ -281,14 +281,6 @@
 \def\@closeitem{\msiclosetag{li}{</li>}}
 \def\@openitem{\msiopentag{li}{<li>}}
 
-%%\def\msi@begin@enumerate{\everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue \msiopentag{enumerate}{<enumerate>}}
-%%\def\msi@end@enumerate{\br\msiclosetag{enumerate}{</enumerate>}}
-%%
-%%\def\msi@begin@itemize{\everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue\msiopentag{itemize}{<itemize>}}
-%%\def\msi@end@itemize{\br\msiclosetag{itemize}{</itemize>}}
-%%
-%%\def\msi@begin@description{\everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue\msiopentag{description}{<description>}}
-%%\def\msi@end@description{\br\msiclosetag{description}{</description>}}
 
 \def\MSIListEnvironment#1{%
   \expandafter\def\csname msi@begin@#1\endcsname{%
@@ -962,7 +954,8 @@
 
 
 
-
+\def\MSICounter#1{%
+  \expandafter\newcount\csname c@#1\endcsname}
 
 \def\&{\char`\&amp;}
 
@@ -992,15 +985,19 @@
 
 \def\msi@font@switchA[#1]#2{%
    \expandafter\def\csname#2\endcsname{%
-      \msihmode
-      \if@in@texttag
-         \expandafter\@ttclose\expandafter{\@lasttexttag}%
+      \ifmmode
+        \char`\\\msitag{#2}%
       \else
-         \@in@texttagtrue
+        \msihmode
+        \if@in@texttag
+           \expandafter\@ttclose\expandafter{\@lasttexttag}%
+        \else
+           \@in@texttagtrue
+        \fi
+        \gdef\@lasttexttag{#1}%
+        \msiopentag{#1}{<#1>}%
+        \aftergroup\@closelasttexttag
       \fi
-      \gdef\@lasttexttag{#1}%
-      \msiopentag{#1}{<#1>}%
-      \aftergroup\@closelasttexttag
    }
 }
 
