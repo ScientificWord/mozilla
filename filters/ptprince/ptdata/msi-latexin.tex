@@ -3759,7 +3759,15 @@
   \@ifnextchar(%)
     \@makepicbox
     {\@ifnextchar[\@makebox\mbox}}
-\long\def\mbox#1{\leavevmode\hbox{#1}}
+
+\long\def\mbox#1{%
+  \ifmmode
+     \msitag{\mbox{#1}}%
+  \else 
+     \leavevmode\hbox{#1}%
+  \fi
+}
+
 \def\@makebox[#1]{%
   \@ifnextchar [{\@imakebox[#1]}{\@imakebox[#1][c]}}
 \long\def\@begin@tempboxa#1#2{%
