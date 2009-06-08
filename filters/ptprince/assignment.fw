@@ -23,9 +23,12 @@ void DoAssignment(int prefixes)
    if (Global::globaldefs != 0){
       bGlobal = Global::globaldefs > 0;
    }
-   if (bGlobal) LOG(" global ");
-   if (bLong)   LOG(" long");
-   if (bOuter)  LOG(" outer");
+   if (bGlobal) 
+     LOG(" global ");
+   if (bLong)   
+     LOG(" long");
+   if (bOuter)  
+     LOG(" outer");
 
    switch (CurCmdCode()){
       @<Assignments@>
