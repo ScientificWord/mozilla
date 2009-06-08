@@ -20,11 +20,14 @@
 % From  \X
 % To    <X/>
 %
-% For example, \MSIEmptyElement{maketitle} cause the input filter to translate
+% For example, \MSIEmptyElement{maketitle} causes the input filter to translate
 % \maketitle   to   <maketitle/>
 %
 % There is an optional parameter to set the XML name if it should be different
 % fom the LaTeX name.
+% For example,  \MSIEmptyElement[italic-correction]{/} causes the translation
+% From \/
+% To   <italic-correction/>
 
 \MSIEmptyElement[italic-correction]{/}
 \MSIEmptyElement{maketitle}
@@ -118,6 +121,9 @@
 \MSIFontSwitch{footnotesize}
 
 
+% Counters
+\MSICounter{chapter}
+\MSICounter{page}
 
 % Unicode
 
