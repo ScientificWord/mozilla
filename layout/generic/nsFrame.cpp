@@ -821,7 +821,7 @@ private:
 void nsDisplaySelectionUnderlay::Paint(nsDisplayListBuilder* aBuilder,
      nsIRenderingContext* aCtx, const nsRect& aDirtyRect)
 {
-  nscolor color = NS_RGB(60, 60, 255);
+  nscolor color;
   
   nsILookAndFeel::nsColorID colorID;
   nsresult result;
@@ -836,7 +836,9 @@ void nsDisplaySelectionUnderlay::Paint(nsDisplayListBuilder* aBuilder,
   nsCOMPtr<nsILookAndFeel> look;
   look = do_GetService(kLookAndFeelCID, &result);
   if (NS_SUCCEEDED(result) && look)
+  {
     look->GetColor(colorID, color);
+  }
 
   gfxRGBA c(color);
 //  c.a = 0;
