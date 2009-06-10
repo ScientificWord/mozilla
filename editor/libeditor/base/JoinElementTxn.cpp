@@ -109,7 +109,7 @@ NS_IMETHODIMP JoinElementTxn::DoTransaction(void)
         childNodes->GetLength(&mOffset);
       }
     }
-    result = mEditor->JoinNodesImpl(mRightNode, mLeftNode, mParent, PR_FALSE);
+    result = mEditor->JoinNodesImpl(mLeftNode, mRightNode, mParent, PR_TRUE);
 #ifdef NS_DEBUG
     if (NS_SUCCEEDED(result))
     {
@@ -130,7 +130,7 @@ NS_IMETHODIMP JoinElementTxn::DoTransaction(void)
 NS_IMETHODIMP JoinElementTxn::UndoTransaction(void)
 {
 #ifdef NS_DEBUG
-  if (gNoisy) { printf("%p Undo Join, right node = %p\n", this, mRightNode.get()); }
+  if (gNoisy) { printf("%p Undo Join, leftt node = %p\n", this, mLeftNode.get()); }
 #endif
 
   NS_ASSERTION(mRightNode && mLeftNode && mParent, "bad state");
@@ -138,28 +138,38 @@ NS_IMETHODIMP JoinElementTxn::UndoTransaction(void)
   nsresult result;
   nsCOMPtr<nsIDOMNode>resultNode;
   // first, massage the existing node so it is in its post-split state
-  nsCOMPtr<nsIDOMCharacterData>rightNodeAsText = do_QueryInterface(mRightNode);
-  if (rightNodeAsText)
+  nsCOMPtr<nsIDOMCharacterData>leftNodeAsText = do_QueryInterface(mLeftNode);
+  if (leftNodeAsText)
   {
-    result = rightNodeAsText->DeleteData(0, mOffset);
+    result = leftNodeAsText->DeleteData(mOffset, -1);
   }
   else
   {
     nsCOMPtr<nsIDOMNode>child;
-    result = mRightNode->GetFirstChild(getter_AddRefs(child));
+    nsCOMPtr<nsIDOMNode>destChild;
+    result = mRightNode->GetFirstChild(getter_AddRefs(destChild));
+    result = mLeftNode->GetFirstChild(getter_AddRefs(child));
     nsCOMPtr<nsIDOMNode>nextSibling;
     PRUint32 i;
     for (i=0; i<mOffset; i++)
     {
+      child->GetNextSibling(getter_AddRefs(nextSibling));
+      child = do_QueryInterface(nextSibling);
+    };
+
+    for (i=mOffset; child; i++)
+    {
       if (NS_FAILED(result)) {return result;}
       if (!child) {return NS_ERROR_NULL_POINTER;}
       child->GetNextSibling(getter_AddRefs(nextSibling));
-      result = mLeftNode->AppendChild(child, getter_AddRefs(resultNode));
+      result = mRightNode->InsertBefore(child, destChild, getter_AddRefs(destChild));
       child = do_QueryInterface(nextSibling);
     }
   }
-  // second, re-insert the left node into the tree 
-  result = mParent->InsertBefore(mLeftNode, mRightNode, getter_AddRefs(resultNode));
+  // second, re-insert the right node into the tree 
+  nsCOMPtr<nsIDOMNode> insertBeforeMe;
+  result = mLeftNode->GetNextSibling(getter_AddRefs(insertBeforeMe));
+  result = mParent->InsertBefore(mRightNode, insertBeforeMe, getter_AddRefs(resultNode));
   return result;
 
 }
