@@ -1899,8 +1899,19 @@ void nsDisplayMathMLSelectionRect::Paint(nsDisplayListBuilder* aBuilder,
 {
   // get color to use for selection from the look&feel object
   nscolor bgColor = NS_RGB(0, 0, 0);
+  nsILookAndFeel::nsColorID colorID;
+  nsresult result;
+  const nsFrameSelection* frameSelection = mFrame->GetConstFrameSelection();
+  PRInt16 selectionValue = frameSelection->GetDisplaySelection();
+  if (selectionValue == nsISelectionController::SELECTION_ON) {
+    colorID = nsILookAndFeel::eColor_TextSelectBackground;
+  } else if (selectionValue == nsISelectionController::SELECTION_ATTENTION) {
+    colorID = nsILookAndFeel::eColor_TextSelectBackgroundAttention;
+  } else {
+    colorID = nsILookAndFeel::eColor_TextSelectBackgroundDisabled;
+  }
   mFrame->PresContext()->LookAndFeel()->
-      GetColor(nsILookAndFeel::eColor_TextSelectBackground, bgColor);
+      GetColor(colorID, bgColor);
   aCtx->SetColor(bgColor);
   aCtx->FillRect(mRect + aBuilder->ToReferenceFrame(mFrame));
 }
