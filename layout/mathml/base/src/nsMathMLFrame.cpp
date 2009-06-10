@@ -36,6 +36,7 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+#include "nsILookAndFeel.h"
 #include "nsINameSpaceManager.h"
 #include "nsMathMLFrame.h"
 #include "nsMathMLChar.h"
@@ -529,7 +530,15 @@ void nsDisplayMathMLBar::Paint(nsDisplayListBuilder* aBuilder,
   // paint the bar with the current text color
   // Set color ...
   nscolor fgcolor;
-    if (mSelected) fgcolor=NS_RGB(255,255,255); else fgcolor = NS_RGB(255,0,0);
+  if (mSelected) {
+    // get color to use for selection from the look&feel object
+    mFrame->PresContext()->LookAndFeel()->
+      GetColor(nsILookAndFeel::eColor_TextSelectForeground, fgcolor);
+  }
+  else
+  {
+    fgcolor = mFrame->GetStyleContext()->GetStyleColor()->mColor;
+  }
   aCtx->SetColor(fgcolor);
 
   aCtx->FillRect(mRect + aBuilder->ToReferenceFrame(mFrame));
