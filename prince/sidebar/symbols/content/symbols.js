@@ -36,3 +36,14 @@ function doChar(event)
     editor.insertText(s);
   } catch(e) { dump("error thrown in doSymbols: "+e+"\n"); }
 }
+
+
+function onHeightChange(h)
+{
+//  alert("foo! Height is "+h);
+  var adjHeight = Number(h) - 31 - 31 - 4 - 2;
+  var broadcaster = document.getElementById("sidebar-symbol-tabbox");
+  broadcaster.setAttribute("style","height: "+adjHeight+"px;");
+  broadcaster = document.getElementById("tabpanelstyle");
+  broadcaster.setAttribute("style","height: "+adjHeight+"px; overflow-y: auto;");
+}
