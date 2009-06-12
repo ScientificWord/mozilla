@@ -47,3 +47,10 @@ function onHeightChange(h)
   broadcaster = document.getElementById("tabpanelstyle");
   broadcaster.setAttribute("style","height: "+adjHeight+"px; overflow-y: auto;");
 }
+
+
+function windowChanged()
+{
+  var h = innerHeight;
+  onHeightChange(h);
+}
