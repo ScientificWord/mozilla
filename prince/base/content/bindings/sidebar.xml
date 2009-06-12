@@ -169,7 +169,7 @@
                 // each time a splitter between sidebarcontent elements is moved
                 var height     = item.getAttribute("height");
 
-                // lets see if we have a localized string for that
+                // let's see if we have a localized string for that
                 // item name
                 var label      = item.getAttribute("title");
 
@@ -191,7 +191,7 @@
                 sidebarcontent.setAttribute("ordinal", ordinalIndex++);
 
                 // and this is not the last sidebaritem for this sidebar,
-                // lets add a splitter
+                // let's add a splitter
                 if (i < itemsArray.length - 1)
                 {
                   var splitter = document.createElementNS(this.mXUL_NS, "splitter");
@@ -225,26 +225,20 @@
             var child = contents[i];
             // find their unique identifier
             var name = child.getAttribute("name");
-//            if (name.length > 0)
-//            {
+            if (name.length)
+            {
               // find the corresponding sidebaritem
               var items = this.mSidebarItems._getItemsFromName(name);
               if (items && items.length)
               {
                 var item = items[0];
-                // get the sidebarcontent height and store it in the
+                // get the sidebarcontent's height and store it in the
                 // sidebaritem
-                var h = child.getAttribute("height");
-                item.setAttribute("height", h);
+                item.setAttribute("height", child.getAttribute("height"));
                 // make it persist so we get it back next session
                 document.persist(item.getAttribute("id"), "height");
-                // now send the height to the sidebar item so it can adjust if necessary.
-                h = Number(h) - 24; //BBM refine this. The height of titlebox and separator
-
-                var  w = child.getElementsByTagName("iframe")[0].contentDocument.defaultView;
-                if ("onHeightChange" in w) w.onHeightChange(h);
               }
-//            }
+            }
           }
 
         ]]>
