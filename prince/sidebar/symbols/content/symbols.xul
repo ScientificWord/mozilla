@@ -33,7 +33,7 @@
     <command id="cmd_MSIInsertChar" />
   </commandset>
 
-  <broadcaster id="tabpanelstyle" style="height: 180px; overflow-y: scroll;" persist="scrollPos"/>
+  <broadcaster id="tabpanelstyle" style="height: 180px; overflow-y: auto;" persist="scrollPos style"/>
   
     
   <tabbox id="sidebar-symbol-tabbox" textsize="small" iconsize="large" persist="iconsize textsize" 
@@ -67,7 +67,7 @@
 			    linkedpanel="symbol_punctuation" />
     </tabs>
     <tabpanels id="symbol-tabpanels" equalsize="never" hidden="false" > <!--oncommand="if (!event.target.getAttribute('msiText'))  else msiGetEditor.insertText(event.target.getAttribute('msivalue'));" equalsize="never" hidden="false" -->
-	  <tabpanel id="symbol_lcGreek" mathsym="true" autostretch="never" align="baseline" observes="tabpanelstyle cmd_MSIsymbolCmd2"> 
+	  <tabpanel id="symbol_lcGreek" mathsym="true" autostretch="never" align="baseline" observes="tabpanelstyle"> 
         <grid>
           <columns>
             <column width="29px"/>
