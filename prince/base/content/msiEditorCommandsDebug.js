@@ -632,3 +632,50 @@ function msiTestSearch()
       editorElement, "cmd_msiTestSearch", null, editorElement);
 
 }
+
+  
+function extendSelection()
+{
+  var selection = msiGetCurrentEditor().selection;
+  var rangeCount = selection.rangeCount;
+  var range;
+  var i;
+  for (i=0; i<rangeCount; i++)
+  {
+    dump("extending range #"+(i+1)+"\n");
+    range = selection.getRangeAt(i);
+    selection.removeRange(range);
+    adjustRange(range,selection);
+    selection.addRange(range);
+  }
+}  
+
+function adjustRange(range, selection)
+{
+  var commonAncestor = range.CommonAncestorContainer;
+  var node = range.startContainer;
+  var newContainer = null;
+  var newEndOffset;
+  var tagname;
+  while ( node && node!=commonAncestor )
+  {
+    tagname = node.tagName;
+    if (tagname == 'mfrac' || tagname == "mroot" )
+      newContainer = node;
+    node = node.parentNode;
+  }
+  if (newContainer)
+    range.setStart(newContainer,0);
+  node = range.endContainer;
+  newContainer = null;
+  while ( node && node!=commonAncestor )
+  {
+    tagname = node.tagName;
+    if (tagname == 'mfrac' || tagname == "mroot"|| tagname=="mtable" || tagname=="mtd" | tagname=="mtd")
+    {
+      newContainer = node;
+      newEndOffset = node.childElementCount + 1;
+    }
+    node = node.parentNode;
+  }
+}     
