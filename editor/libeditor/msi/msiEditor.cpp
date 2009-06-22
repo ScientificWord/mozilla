@@ -2768,3 +2768,92 @@ msiEditor::InitRules()
   return res;
 }
 
+
+
+NS_IMETHODIMP
+msiEditor::AdjustRange(nsIDOMRange * aRange)
+{
+  nsresult res = NS_OK;
+  nsCOMPtr<nsIDOMNode> startNode;
+  res = aRange->GetStartContainer(getter_AddRefs(startNode));
+  nsCOMPtr<nsIDOMNode> endNode;
+  res = aRange->GetEndContainer(getter_AddRefs(endNode));
+  // BBM: can we assume startNode comes before endNode?
+  nsCOMPtr<nsIDOMNode> commonAncestor;
+  nsCOMPtr<nsIDOMNode> newContainer;
+  nsCOMPtr<nsIDOMNode> tempNode;
+  nsCOMPtr<nsINode> node;
+  PRUint32 endOffset;
+  nsAutoString tagName;
+  res = aRange->GetCommonAncestorContainer(getter_AddRefs(commonAncestor));
+  while (startNode && (startNode != commonAncestor))
+  {
+    startNode->GetNodeName(tagName);
+    if (  tagName.EqualsLiteral("mfrac")    || tagName.EqualsLiteral("mroot") ||
+          tagName.EqualsLiteral("mtable")    || tagName.EqualsLiteral("mtd") ||
+          tagName.EqualsLiteral("mtr")    || tagName.EqualsLiteral("msub") ||
+          tagName.EqualsLiteral("msup")    || tagName.EqualsLiteral("msubsup") ||
+          tagName.EqualsLiteral("msqrt"))
+    {
+      newContainer = startNode;
+    }
+    startNode->GetParentNode(getter_AddRefs(tempNode));
+    startNode = tempNode;
+  }
+  if (newContainer)
+    aRange->SetStartBefore(newContainer);
+  newContainer = nsnull;
+  while (endNode && (endNode != commonAncestor))
+  {
+    endNode->GetNodeName(tagName);
+    if (  tagName.EqualsLiteral("mfrac")    || tagName.EqualsLiteral("mroot") ||
+          tagName.EqualsLiteral("mtable")    || tagName.EqualsLiteral("mtd") ||
+          tagName.EqualsLiteral("mtr")    || tagName.EqualsLiteral("msub") ||
+          tagName.EqualsLiteral("msup")    || tagName.EqualsLiteral("msubsup") ||
+          tagName.EqualsLiteral("msqrt"))
+    {
+      newContainer = endNode;
+      node = do_QueryInterface(endNode);
+      endOffset = 1 + node->GetChildCount();
+    }
+    endNode->GetParentNode(getter_AddRefs(tempNode));
+    endNode = tempNode;
+  }
+  if (newContainer)
+    aRange->SetEndAfter(newContainer);
+
+  return res;
+}
+
+
+
+NS_IMETHODIMP
+msiEditor::AdjustSelection()
+{
+  nsresult res = NS_OK;
+  PRInt32 rangeCount;
+  PRUint32 i;
+  nsCOMPtr<nsISelection> sel;
+  nsCOMPtr<nsIDOMRange> range;
+  nsCOMPtr<nsIDOMRange> modrange;
+  nsCOMPtr<nsIDOMNode>nodeContainerStart;
+  nsCOMPtr<nsIDOMNode>nodeContainerEnd;
+  PRInt32 offsetStart;
+  PRInt32 offsetEnd;
+  res = GetSelection(getter_AddRefs(sel));
+  res = sel->GetRangeCount(&rangeCount);
+  rangeCount = 1;
+  for (i = 0; i < rangeCount; i++)
+  {
+    sel->GetRangeAt(i, getter_AddRefs(range));
+    range->CloneRange(getter_AddRefs(modrange));
+    AdjustRange(modrange);
+    modrange->GetStartContainer(getter_AddRefs(nodeContainerStart));
+    modrange->GetStartOffset(&offsetStart);
+    modrange->GetEndContainer(getter_AddRefs(nodeContainerEnd));
+    modrange->GetEndOffset(&offsetEnd);
+    sel->Collapse(nodeContainerStart, offsetStart);
+    sel->Extend(nodeContainerEnd, offsetEnd);
+  }
+  return res;
+}
