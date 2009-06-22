@@ -1,6 +1,7 @@
 #include "msiEditRules.h"
 #include "nsCOMPtr.h"
 #include "nsIServiceManager.h"
+#include "nsIRange.h"
 #include "msiEditor.h"
 
 /********************************************************
@@ -62,16 +63,58 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
   nsresult res = aSelection->GetIsCollapsed(&bCollapsed);
   if (NS_FAILED(res)) return res;
   
+  nsCOMPtr<nsIDOMNode> startNode, endNode;
+  PRInt32 startOffset, endOffset;
+  res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(startNode), &startOffset);
+  if (NS_FAILED(res)) return res;
+  if (!startNode) return NS_ERROR_FAILURE;
+  res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(endNode), &endOffset);
+  if (NS_FAILED(res)) return res;
+  if (!endNode) return NS_ERROR_FAILURE;
   if (bCollapsed) {
-    nsCOMPtr<nsIDOMNode> startNode, selNode;
-    PRInt32 startOffset, selOffset;
-    
-    res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(startNode), &startOffset);
-    if (NS_FAILED(res)) return res;
-    if (!startNode) return NS_ERROR_FAILURE;
-    if (mMSIEditor->NodeInMath(startNode))
-      /* do something special here (based on direction) */;
   }  
+  if (mMSIEditor->NodeInMath(startNode)||mMSIEditor->NodeInMath(endNode))
+  {
+    nsCOMPtr<nsIDOMNode> mathNode;
+    nsCOMPtr<nsIDOMElement> mathElement;
+    nsCOMPtr<nsIDOMNode> firstChildNode;
+    nsCOMPtr<nsIDOMNode> lastChildNode;
+    nsCOMPtr<nsIDOMRange> range;
+    mMSIEditor->GetMathParent(startNode, mathNode);
+    mathElement = do_QueryInterface(mathNode);
+    mathElement->GetFirstChild(getter_AddRefs(firstChildNode));
+    mathElement->GetLastChild(getter_AddRefs(lastChildNode));
+    PRBool partlyContained = PR_TRUE;
+    PRBool containsNode;
+    aSelection->ContainsNode(firstChildNode, partlyContained, &containsNode);
+    if (containsNode)
+    {
+      aSelection->ContainsNode(lastChildNode, partlyContained, &containsNode);
+      if (containsNode) // all children of the math node are in the selection
+      {
+        aSelection->GetRangeAt(0, getter_AddRefs(range));
+        range->SelectNode(mathNode);
+      }
+    } 
+    mMSIEditor->GetMathParent(endNode, mathNode);
+    mathElement = do_QueryInterface(mathNode);
+    mathElement->GetFirstChild(getter_AddRefs(firstChildNode));
+    mathElement->GetLastChild(getter_AddRefs(lastChildNode));
+    aSelection->ContainsNode(firstChildNode, partlyContained, &containsNode);
+    if (containsNode)
+    {
+      aSelection->ContainsNode(lastChildNode, partlyContained, &containsNode);
+      if (containsNode) // all children of the math node are in the selection
+      {
+        aSelection->GetRangeAt(0, getter_AddRefs(range));
+        range->SelectNode(mathNode);
+      }
+    } 
+
+    /* do something special here (based on direction) */;
+    
+  }
+//  mMSIEditor->AdjustSelection();
   return nsHTMLEditRules::WillDeleteSelection(aSelection, aAction, aCancel, aHandled);
 }
 

@@ -65,7 +65,6 @@ public:
 //Utility functions
 PRBool   NodeInMath(nsIDOMNode* node);
 
-protected:
 //Utility functions
 nsresult GetMathParent(nsIDOMNode * node, nsCOMPtr<nsIDOMNode> & mathParent);
 
@@ -129,6 +128,8 @@ nsresult CreateTxnForDeleteInsertionPoint(msiSelectionManager & msiSelMan,
                                           EditAggregateTxn     *aTxn);
 nsresult GetNextCharacter( nsIDOMNode * nodeIn, PRUint32 offsetIn, nsIDOMNode ** pnodeOut, PRUint32& offsetOut, PRUnichar prevChar, PRInt32 & _result);
 nsresult CheckForAutoSubstitute(PRBool inmath);
+//NS_IMETHOD AdjustRange(nsIDOMRange * aRange);
+//NS_IMETHOD AdjustSelection();
 
 };
 

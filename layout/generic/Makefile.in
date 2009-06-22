@@ -57,6 +57,7 @@ REQUIRES	= xpcom \
 		  gfx \
 		  widget \
 		  locale \
+      editor \
 		  view \
 		  necko \
 		  js \

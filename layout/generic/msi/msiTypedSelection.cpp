@@ -1,5 +1,6 @@
 #include "msiISelection.h"
 #include "nsIPrivateDOMEvent.h"
+#include "msiIMathMLEditor.h"
 
 class msiTypedSelection : public nsTypedSelection,
                           public msiISelection
@@ -22,6 +23,7 @@ public:
   NS_IMETHOD RemoveRange(nsIDOMRange *range);
   NS_IMETHOD RemoveAllRanges(void);
   // end override nsISelection
+  NS_IMETHOD Adjust();
 
 protected:
   void SyncMSIwithNS();
@@ -429,4 +431,35 @@ PRBool  msiTypedSelection::IsMouseEventActive()
     }
   }
   return rv;
+}
+
+
+NS_IMETHODIMP 
+msiTypedSelection::Adjust()
+{
+  nsresult res = NS_OK;
+  PRInt32 rangeCount;
+  PRUint32 i;
+  nsCOMPtr<nsIDOMRange> range;
+  nsCOMPtr<nsIDOMRange> modrange;
+  nsCOMPtr<nsIDOMNode>nodeContainerStart;
+  nsCOMPtr<nsIDOMNode>nodeContainerEnd;
+  PRInt32 offsetStart;
+  PRInt32 offsetEnd;
+  res = GetRangeCount(&rangeCount);
+  rangeCount = 1;
+  for (i = 0; i < rangeCount; i++)
+  {
+    GetRangeAt(i, getter_AddRefs(range));
+    range->CloneRange(getter_AddRefs(modrange));
+    res = ((msiIMathMLEditor *)m_msiEditor)->AdjustRange(modrange);
+    modrange->GetStartContainer(getter_AddRefs(nodeContainerStart));
+    modrange->GetStartOffset(&offsetStart);
+    modrange->GetEndContainer(getter_AddRefs(nodeContainerEnd));
+    modrange->GetEndOffset(&offsetEnd);
+    Collapse(nodeContainerStart, offsetStart);
+    nsTypedSelection::Extend(nodeContainerEnd, offsetEnd);
+  }
+  return res;
+//  return ((msiIMathMLEditor *)m_msiEditor)->AdjustSelection();
 }
