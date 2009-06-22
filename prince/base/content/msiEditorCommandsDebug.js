@@ -652,7 +652,7 @@ function extendSelection()
 
 function adjustRange(range, selection)
 {
-  var commonAncestor = range.CommonAncestorContainer;
+  var commonAncestor = range.commonAncestorContainer;
   var node = range.startContainer;
   var newContainer = null;
   var newEndOffset;
@@ -660,8 +660,11 @@ function adjustRange(range, selection)
   while ( node && node!=commonAncestor )
   {
     tagname = node.tagName;
-    if (tagname == 'mfrac' || tagname == "mroot" )
+    if (tagname == 'mfrac' || tagname == "mroot"|| tagname == "mtable" || tagname == "mtd" | tagname == "mtd"
+      || tagname == "msub" || tagname == "msup" || tagname == "msubsup" )
+    {
       newContainer = node;
+    }
     node = node.parentNode;
   }
   if (newContainer)
@@ -671,7 +674,8 @@ function adjustRange(range, selection)
   while ( node && node!=commonAncestor )
   {
     tagname = node.tagName;
-    if (tagname == 'mfrac' || tagname == "mroot"|| tagname=="mtable" || tagname=="mtd" | tagname=="mtd")
+    if (tagname == 'mfrac' || tagname == "mroot"|| tagname == "mtable" || tagname == "mtd" | tagname == "mtd"
+      || tagname == "msub" || tagname == "msup" || tagname == "msubsup" )
     {
       newContainer = node;
       newEndOffset = node.childElementCount + 1;
