@@ -146,6 +146,7 @@ var PrintUtils = {
   {
     var webBrowserPrint = this.getWebBrowserPrint(aWindow);
     var printSettings   = this.getPrintSettings();
+    printSettings.downloadFonts = true
     try {
       webBrowserPrint.printPDF(printSettings);
     } catch (e) {
