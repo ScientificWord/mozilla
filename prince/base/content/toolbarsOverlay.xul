@@ -414,13 +414,12 @@
   <toolbarbutton id="dvicompileButton" class="toolbarbutton-1" observes="cmd_compileDvi" tooltiptext="&dvicompileButton.tooltip;"/>
   <toolbarbutton id="pdfcompileButton" class="toolbarbutton-1" observes="cmd_compilePdf" tooltiptext="&pdfcompileButton.tooltip;"/>
 
-#
   <toolbarbutton id="cutButton" class="toolbarbutton-1"
-                 label="&cutCmd.label;" command="cmd_cut"
+                 label="&cutCmd.label;" disabled="true" command="cmd_cut"
                  tooltiptext="&cutCmd.label;"/>
 
   <toolbarbutton id="copyButton" class="toolbarbutton-1"
-                 label="&copyCmd.label;" command="cmd_copy"
+                 label="&copyCmd.label;" disabled="true" command="cmd_copy"
                  tooltiptext="&copyCmd.tooltip;"/>
 
   <toolbarbutton id="pasteButton" class="toolbarbutton-1"
