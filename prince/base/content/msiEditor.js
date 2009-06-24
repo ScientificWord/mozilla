@@ -824,6 +824,7 @@ function msiEditorDocumentObserver(editorElement)
         {
           addClickEventListenerForEditor(this.mEditorElement);
           addFocusEventListenerForEditor(this.mEditorElement);
+          pdfModCount = 0;
 
           // Force color widgets to update
           msiOnFontColorChange();
@@ -3197,11 +3198,11 @@ function msiSetEditMode(mode, editorElement)
   // Switch the UI mode before inserting contents
   //   so user can't type in source window while new window is being filled
   var previousMode = msiGetEditorDisplayMode(editorElement);
+  if (!msiSetDisplayMode(editorElement, mode))
+    return;
 
   if (mode == kDisplayModeSource)
   {
-    if (!msiSetDisplayMode(editorElement, mode))
-      return;
     // Display the DOCTYPE as a non-editable string above edit area
     var domdoc;
     try { domdoc = editor.document; } catch (e) { dump( e + "\n");}
@@ -3425,6 +3426,7 @@ function msiSetDisplayMode(editorElement, mode)
 {
   if (!msiIsHTMLEditor(editorElement))
     return false;
+  var editor = msiGetEditor(editorElement);
 
   // Already in requested mode:
   //  return false to indicate we didn't switch
@@ -3456,6 +3458,33 @@ function msiSetDisplayMode(editorElement, mode)
     msiHideItem("MathToolbox");
     msiHideItem("EditingToolbox");
     msiHideItem("structToolbar");
+    if (mode ==  kDisplayModePreview)
+    {
+      if (pdfModCount < editor.getModificationCount())
+      {
+        printTeX(true, true);
+      }
+      else
+      {
+        var docUrl = msiGetEditorURL(editorElement);
+        var docPath = GetFilepath(docUrl);
+        var pdffile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+          // for Windows
+#ifdef XP_WIN32
+        docPath = docPath.replace("/","\\","g");
+#endif
+        pdffile.initWithPath( docPath ); // pdffile now points to our document file
+        pdffile = pdffile.parent; // and now it points to the working directory
+        pdffile.append("tex");
+        pdffile.append("main.pdf");
+        if (pdffile.exists())
+        {
+          document.getElementById("preview-frame").loadURI(msiFileURLFromAbsolutePath(pdffile.path));
+        }
+        else
+          document.getElementById("preview-frame").loadURI("about:blank");
+      }
+    }
     if ("gSourceContentWindow" in window)
       window.gSourceContentWindow.contentWindow.focus();
     // Switch to the sourceWindow or bWindow(second or third in the deck)
@@ -3550,8 +3579,11 @@ function msiSetDisplayMode(editorElement, mode)
 
   // Uncheck previous menuitem and set new check since toolbar may have been used
   if (previousMode >= 0)
+  {
     document.getElementById(kDisplayModeMenuIDs[previousMode]).setAttribute("checked","false");
+  }
   document.getElementById(kDisplayModeMenuIDs[mode]).setAttribute("checked","true");
+  
   
 
   return true;
