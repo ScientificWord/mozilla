@@ -1194,9 +1194,9 @@ function msiSearchManager(targEditorElement, searchDocFragment, searchFlags)
     if (!returnVal)
       return false;
 
-//    if (!msiMatchNode.prototype.nodeHasContentBeforeRangeStart(targRange, targRange.startContainer))
+//    if (!msiNavigationUtils.nodeHasContentBeforeRangeStart(targRange, targRange.startContainer))
 //      targRange.setStartBefore(targRange.startContainer);
-//    if (!msiMatchNode.prototype.nodeHasContentAfterRangeEnd(targRange, targRange.endContainer))
+//    if (!msiNavigationUtils.nodeHasContentAfterRangeEnd(targRange, targRange.endContainer))
 //      targRange.setEndAfter(targRange.endContainer);
 
     ourRange.selectNode(this.mTargetNode);
@@ -1637,7 +1637,7 @@ msiMatchNode.prototype =
     if (!bMoreToGo)
     {
       msiKludgeLogString( "Initial false from haveContentAfterRangeEnd in extendMatchToRight for node [" + this.describe() + "]!\n", ["search"] );
-      msiNavigationUtils.comparePositions(this.mNode, this.lastOffset(this.mNode), ourRange.endContainer, ourRange.endOffset, true);
+      msiNavigationUtils.comparePositions(this.mNode, msiNavigationUtils.lastOffset(this.mNode), ourRange.endContainer, ourRange.endOffset, true);
       bMoreToGo = true;  //experimental
     }
     while (bTargOffsetChanged && bMoreToGo)
@@ -1758,11 +1758,11 @@ msiMatchNode.prototype =
         if (targOffset > 0)  
         {
           targNode = targNode.childNodes[targOffset - 1];
-          targOffset = this.lastOffset(targNode);
+          targOffset = msiNavigationUtils.lastOffset(targNode);
           msiKludgeLogString( "In doLeftMatchCheck for node [" + this.describe() + "], moving end of target to [" + this.describeNode(targNode) + ", offset " + targOffset + "].\n", ["search"] );
           targRange.setStart(targNode, targOffset);
         }
-        ourRange.setStart(this.mNode, this.lastOffset(this.mNode));
+        ourRange.setStart(this.mNode, msiNavigationUtils.lastOffset(this.mNode));
       }
     }
 //rwa 11-25-08 experiment!    else
@@ -1918,7 +1918,7 @@ msiMatchNode.prototype =
         else
         {
           msiKludgeLogString( "localNodeToMatch is null in doRightMatchCheck for node [" + this.describe() + "]!\n", ["search"] );
-          msiNavigationUtils.comparePositions(this.mNode, this.lastOffset(this.mNode), ourRange.endContainer, ourRange.endOffset, true);
+          msiNavigationUtils.comparePositions(this.mNode, msiNavigationUtils.lastOffset(this.mNode), ourRange.endContainer, ourRange.endOffset, true);
         }
         if (!msiSearchUtils.isMatching(localMatch))
         {
@@ -1941,7 +1941,7 @@ msiMatchNode.prototype =
 ////  {
 ////    var retVal = msiSearchUtils.partialMatch;
 ////    if (ourOffset < 0)
-////      ourOffset = this.lastOffset()
+////      ourOffset = msiNavigationUtils.lastOffset()
 ////    var theTarget = matchRange.startContainer;
 ////    var theOffset = matchRange.startOffset;
 //////    this.adjustLeftStartingTargPosition(theTarget, theOffset, ourOffset);
@@ -2004,7 +2004,7 @@ msiMatchNode.prototype =
 //    var bGoOutside = false;
 //    var newNode = null;
 //    if (theOffset < 0)
-//      theOffset = this.lastOffset(theTarget);
+//      theOffset = msiNavigationUtils.lastOffset(theTarget);
 //    if (this.offsetIsAtStart(theTarget, theOffset))
 //    {
 //      bGoOutside = this.canExtendOutside(theTarget);
@@ -2055,9 +2055,9 @@ msiMatchNode.prototype =
     var theOffset = targRange.startOffset;
 
 //    if (this.offsetIsAtStart(theTarget, theOffset))
-    if (!this.nodeHasContentBeforeRangeStart(targRange, theTarget))
+    if (!msiNavigationUtils.nodeHasContentBeforeRangeStart(targRange, theTarget))
     {
-      if (!this.nodeHasContentAfterRangeEnd(targRange, theTarget))  //our match extends to right outside theTarget, so we can extend to left?
+      if (!msiNavigationUtils.nodeHasContentAfterRangeEnd(targRange, theTarget))  //our match extends to right outside theTarget, so we can extend to left?
         bGoOutside = true;
       else
         bGoOutside = this.canExtendOutside(theTarget);
@@ -2093,7 +2093,7 @@ msiMatchNode.prototype =
     else if (bGoInside && (newNode != null))
     {
       theTarget = newNode;
-      theOffset = this.lastOffset(newNode);
+      theOffset = msiNavigationUtils.lastOffset(newNode);
       targRange.setStart(theTarget, theOffset);
       retVal = true;
     }
@@ -2112,7 +2112,7 @@ msiMatchNode.prototype =
 //    var bGoOutside = false;
 //    var newNode = null;
 //    if ( (theOffset > theTarget.childNodes.length) || (theOffset < 0) )
-//      theOffset = this.lastOffset(theTarget);  //is this the right thing to do?? Do we want -1 as an offset to mean "coming in" or "coming in from the right"?
+//      theOffset = msiNavigationUtils.lastOffset(theTarget);  //is this the right thing to do?? Do we want -1 as an offset to mean "coming in" or "coming in from the right"?
 //
 //    if (this.offsetIsAtEnd(theTarget, theOffset))
 //    {
@@ -2163,12 +2163,12 @@ msiMatchNode.prototype =
     var bGoOutside = false;
     var newNode = null;
     if ( (theOffset > theTarget.childNodes.length) || (theOffset < 0) )
-      theOffset = this.lastOffset(theTarget);  //is this the right thing to do?? Do we want -1 as an offset to mean "coming in" or "coming in from the right"?
+      theOffset = msiNavigationUtils.lastOffset(theTarget);  //is this the right thing to do?? Do we want -1 as an offset to mean "coming in" or "coming in from the right"?
 
 //    if (this.offsetIsAtEnd(theTarget, theOffset))
-    if (!this.nodeHasContentAfterRangeEnd(targRange, theTarget))
+    if (!msiNavigationUtils.nodeHasContentAfterRangeEnd(targRange, theTarget))
     {
-      if (!this.nodeHasContentBeforeRangeStart(targRange, theTarget))  //our match started outside theTarget, so we can extend?
+      if (!msiNavigationUtils.nodeHasContentBeforeRangeStart(targRange, theTarget))  //our match started outside theTarget, so we can extend?
         bGoOutside = true;
       else
         bGoOutside = this.canExtendOutside(theTarget);
@@ -2340,66 +2340,66 @@ msiMatchNode.prototype =
     }
   },
 
-  lastOffset : function(aNode)
-  {
-    if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
-      return aNode.textContent.length;
-    if (aNode.childNodes)
-      return aNode.childNodes.length;
-    return 0;
-  },
+//  lastOffset : function(aNode)
+//  {
+//    if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
+//      return aNode.textContent.length;
+//    if (aNode.childNodes)
+//      return aNode.childNodes.length;
+//    return 0;
+//  },
 
   haveContentBeforeRangeStart : function(aRange)
   {
-    return this.nodeHasContentBeforeRangeStart(aRange, this.mNode);
+    return msiNavigationUtils.nodeHasContentBeforeRangeStart(aRange, this.mNode);
   },
 
-  nodeHasContentBeforeRangeStart : function(aRange, aNode)
-  {
-    var retVal = false;
-    var compVal = msiNavigationUtils.comparePositions(aNode, 0, aRange.startContainer, aRange.startOffset);
-    if (compVal < 0) //start of aNode is before start position of aRange
-      retVal = true;
-//    var compNode = msiNavigationUtils.getNodeBeforePosition(aRange.startContainer, aRange.startOffset);
-//    if (compNode && msiNavigationUtils.isAncestor(aNode, compNode))
+//  nodeHasContentBeforeRangeStart : function(aRange, aNode)
+//  {
+//    var retVal = false;
+//    var compVal = msiNavigationUtils.comparePositions(aNode, 0, aRange.startContainer, aRange.startOffset);
+//    if (compVal < 0) //start of aNode is before start position of aRange
 //      retVal = true;
-//    else if (msiNavigationUtils.isAncestor(aRange.startContainer, aNode))
-//      retVal = false;  //in this case, compNode should have been aNode or contained it if aNode had content before aRange
-//    else  //No content of aNode is immediately to the left of the range start; now we only want to return true if rangeStart is altogether before aNode.
-//    {
-//      compNode = aRange.startContainer;
-//      compVal = aRange.startContainer.compareDocumentPosition(aNode);
-//      retVal = ( (compVal & Node.DOCUMENT_POSITION_FOLLOWING) != null);
-//    }
-    return retVal;  
-  },
-
+////    var compNode = msiNavigationUtils.getNodeBeforePosition(aRange.startContainer, aRange.startOffset);
+////    if (compNode && msiNavigationUtils.isAncestor(aNode, compNode))
+////      retVal = true;
+////    else if (msiNavigationUtils.isAncestor(aRange.startContainer, aNode))
+////      retVal = false;  //in this case, compNode should have been aNode or contained it if aNode had content before aRange
+////    else  //No content of aNode is immediately to the left of the range start; now we only want to return true if rangeStart is altogether before aNode.
+////    {
+////      compNode = aRange.startContainer;
+////      compVal = aRange.startContainer.compareDocumentPosition(aNode);
+////      retVal = ( (compVal & Node.DOCUMENT_POSITION_FOLLOWING) != null);
+////    }
+//    return retVal;  
+//  },
+//
   haveContentAfterRangeEnd : function(aRange)
   {
-    return this.nodeHasContentAfterRangeEnd(aRange, this.mNode);
+    return msiNavigationUtils.nodeHasContentAfterRangeEnd(aRange, this.mNode);
   },
 
-  nodeHasContentAfterRangeEnd : function(aRange, aNode)
-  {
-    var retVal = false;
-    var anOffset = this.lastOffset(aNode);
-    var compVal = msiNavigationUtils.comparePositions(aNode, anOffset, aRange.endContainer, aRange.endOffset);
-    if (compVal > 0) //last offset in aNode is after end position of aRange
-      retVal = true;
-    
-//    var compNode = msiNavigationUtils.getNodeAfterPosition(aRange.endContainer, aRange.endOffset);
-//    if (compNode && msiNavigationUtils.isAncestor(aNode, compNode))
+//  nodeHasContentAfterRangeEnd : function(aRange, aNode)
+//  {
+//    var retVal = false;
+//    var anOffset = msiNavigationUtils.lastOffset(aNode);
+//    var compVal = msiNavigationUtils.comparePositions(aNode, anOffset, aRange.endContainer, aRange.endOffset);
+//    if (compVal > 0) //last offset in aNode is after end position of aRange
 //      retVal = true;
-//    else if (msiNavigationUtils.isAncestor(aRange.endContainer, aNode))
-//      retVal = false;
-//    else  //No content of aNode is immediately to the right of the range end; now we only want to return true if rangeEnd is altogether before aNode.
-//    {
-//      compVal = aRange.endContainer.compareDocumentPosition(aNode);
-//      retVal = ( (compVal & Node.DOCUMENT_POSITION_PRECEDING) != null);
-//    }
-    return retVal;  
-  },
-
+//    
+////    var compNode = msiNavigationUtils.getNodeAfterPosition(aRange.endContainer, aRange.endOffset);
+////    if (compNode && msiNavigationUtils.isAncestor(aNode, compNode))
+////      retVal = true;
+////    else if (msiNavigationUtils.isAncestor(aRange.endContainer, aNode))
+////      retVal = false;
+////    else  //No content of aNode is immediately to the right of the range end; now we only want to return true if rangeEnd is altogether before aNode.
+////    {
+////      compVal = aRange.endContainer.compareDocumentPosition(aNode);
+////      retVal = ( (compVal & Node.DOCUMENT_POSITION_PRECEDING) != null);
+////    }
+//    return retVal;  
+//  },
+//
   nextChildToLeft : function(aRange)
   {
     return this.nextNodeChildToLeft(this.mNode, aRange);
@@ -2503,7 +2503,7 @@ function msiTextMatchNode() {}
 msiTextMatchNode.prototype =
 {
   m_spaceSplitRE : /(\s+)/,
-  mWhiteSpaceTestRE : /^\s*$/,
+//  mWhiteSpaceTestRE : /^\s*$/,
 
   init : function(aNode, theFlags, refEditor)
   {
@@ -2810,10 +2810,10 @@ msiTextMatchNode.prototype =
     if (targetPosition.nOffset < targPiece.length)
       targPiece = targPiece.substr(0, targetPosition.nOffset);
 
-    if (this.isWhiteSpace(ourPiece))
+    if (msiNavigationUtils.isWhiteSpace(ourPiece))
     {
       bMatched = (ourPiece == targPiece);
-      if (!bMatched && this.isWhiteSpace(targPiece))
+      if (!bMatched && msiNavigationUtils.isWhiteSpace(targPiece))
       {
         if (ourPiece.length < targPiece.length)
           bMatched = true;
@@ -2861,10 +2861,10 @@ msiTextMatchNode.prototype =
     if (targetPosition.nOffset > 0)
       targPiece = targPiece.substr(targetPosition.nOffset);
 
-    if (this.isWhiteSpace(ourPiece))
+    if (msiNavigationUtils.isWhiteSpace(ourPiece))
     {
       bMatched = (ourPiece == targPiece);
-      if (!bMatched && this.isWhiteSpace(targPiece))
+      if (!bMatched && msiNavigationUtils.isWhiteSpace(targPiece))
       {
         if (ourPiece.length < targPiece.length)
           bMatched = true;
@@ -2995,10 +2995,10 @@ msiTextMatchNode.prototype =
     }
   },
 
-  isWhiteSpace : function(aTextPiece)
-  {
-    return ( this.mWhiteSpaceTestRE.test(aTextPiece) );
-  },
+//  isWhiteSpace : function(aTextPiece)
+//  {
+//    return ( this.mWhiteSpaceTestRE.test(aTextPiece) );
+//  },
 
   describe : function()
   {
@@ -3301,7 +3301,7 @@ msiContainerTemplateMatchNode.prototype =
     {
       bMoreToGo = false;
       localMatch = msiSearchUtils.completedMatch;
-      localTargRange.setEnd(localTargRange.endContainer, this.lastOffset(localTargRange.endContainer));
+      localTargRange.setEnd(localTargRange.endContainer, msiNavigationUtils.lastOffset(localTargRange.endContainer));
     }
     while (bTargOffsetChanged && bMoreToGo)
     {
@@ -3318,7 +3318,7 @@ msiContainerTemplateMatchNode.prototype =
       else
       {
         msiKludgeLogString( "localNodeToMatch is null in doRightMatchCheck for node [" + this.describe() + "]!\n", ["search"] );
-        msiNavigationUtils.comparePositions(this.mNode, this.lastOffset(this.mNode), ourRange.endContainer, ourRange.endOffset, true);
+        msiNavigationUtils.comparePositions(this.mNode, msiNavigationUtils.lastOffset(this.mNode), ourRange.endContainer, ourRange.endOffset, true);
       }
 
       bNewTargNode = (localTargRange.endContainer != currTarget);
@@ -3670,7 +3670,7 @@ msiMatchingRange.prototype =
       this.setStart(parent, parOffset + 1);
     }
     else
-      this.setStart(aNode, msiMatchNode.prototype.lastOffset(aNode));
+      this.setStart(aNode, msiNavigationUtils.lastOffset(aNode));
 //    } catch(exc) {dump("Exception in msiMatchingRange.setEndAfter [" + exc + "]; aNode is [" + aNode.nodeName + "].\n");}
   },
 
@@ -3685,7 +3685,7 @@ msiMatchingRange.prototype =
       this.setEnd(parent, parOffset + 1);
     }
     else
-      this.setEnd(aNode, msiMatchNode.prototype.lastOffset(aNode));
+      this.setEnd(aNode, msiNavigationUtils.lastOffset(aNode));
 //    } catch(exc) {dump("Exception in msiMatchingRange.setEndAfter [" + exc + "]; aNode is [" + aNode.nodeName + "].\n");}
   },
 

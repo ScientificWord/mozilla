@@ -177,6 +177,8 @@ function msiGetSelectionAsText(editorElement)
 
 function msiGetTableEditor(editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   return (editor && (editor instanceof nsITableEditor)) ? editor : null;
 }
@@ -2236,7 +2238,7 @@ function msiOpenModelessDialog(chromeUrl, dlgName, options, targetEditorElement,
   var reviseObject = null;
 //  if (commandHandler && ("bRevising" in commandHandler) && commandHandler.bRevising && ("msiGetReviseObject" in commandHandler))
   if (commandHandler && ("msiGetReviseObject" in commandHandler))
-    reviseObject = commandHandler.msiGetReviseObject(editor);
+    reviseObject = commandHandler.msiGetReviseObject(targetEditorElement);
   var extraArgsArray = new Array();
   for (var i = 6; i < arguments.length; ++i)
   {
@@ -2315,7 +2317,7 @@ function msiOpenModelessPropertiesDialog(chromeUrl, dlgName, options, targetEdit
     return;
   }
   var theDialog = null;
-//  reviseObject = commandHandler.msiGetReviseObject(editor);
+//  reviseObject = commandHandler.msiGetReviseObject(targetEditorElement);
   theDialog = msiFindPropertiesDialogForObject(reviseObject);
   if (!theDialog)
   {
@@ -5111,6 +5113,13 @@ var msiNavigationUtils =
     return this.m_DOMUtils.isIgnorableWhitespace(node);
   },
 
+  mWhiteSpaceTestRE : /^\s*$/,
+  isWhiteSpace : function(aTextPiece)
+  {
+    return ( this.mWhiteSpaceTestRE.test(aTextPiece) );
+  },
+
+
   boundaryIsTransparent : function(node, editor, posAndDirection)  //This has to do with whether node's children at right or left are considered adjacent to following or preceding objects, not with cursor movement.
   {
     if (node.nodeType == nsIDOMNode.TEXT_NODE)
@@ -5241,6 +5250,19 @@ var msiNavigationUtils =
       }
     }
     return retVal;
+  },
+
+  findCommonAncestor : function(someNodes)
+  {
+    var anAncestor = someNodes[0];
+    for (var ix = 1; ix < someNodes.length; ++ix)
+    {
+      while ( anAncestor && (!this.isAncestor(someNodes[ix], anAncestor)) )
+      {
+        anAncestor = anAncestor.parentNode;
+      }
+    }
+    return anAncestor;
   },
 
   comparePositions : function(aNode, anOffset, refNode, refOffset, bLogIt)
@@ -5633,6 +5655,14 @@ var msiNavigationUtils =
     return (aNode.nodeType == nsIDOMNode.TEXT_NODE);
   },
 
+  isBigOperator : function(aNode)
+  {
+    if ( (aNode != null) && (msiGetBaseNodeName(aNode) == 'mo') && aNode.hasAttribute("largeop")
+                                  && (aNode.getAttribute("largeop") == "true") )
+      return true;
+    return false;
+  },
+
   getEmbellishedOperator : function(node)
   {
     if ( node != null)
@@ -5759,6 +5789,18 @@ var msiNavigationUtils =
       }
     }
     return null;
+  },
+
+  findWrappingNode : function(aNode)
+  {
+    if ( (aNode != null) && (aNode.parentNode != null) )
+    {
+      if ( this.getSingleWrappedChild(aNode.parentNode) == aNode )
+      {
+        return this.findWrappingNode(aNode.parentNode);
+      }
+    }
+    return aNode;
   },
 
   isOrdinaryMRow : function(aNode)
@@ -5916,6 +5958,87 @@ var msiNavigationUtils =
         return true;
     }
     return false;
+  },
+
+  lastOffset : function(aNode)
+  {
+    if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
+      return aNode.textContent.length;
+    if (aNode.childNodes)
+      return aNode.childNodes.length;
+    return 0;
+  },
+
+  nodeHasContentBeforeRangeStart : function(aRange, aNode)
+  {
+    var retVal = false;
+    var compVal = this.comparePositions(aNode, 0, aRange.startContainer, aRange.startOffset);
+    if (compVal < 0) //start of aNode is before start position of aRange
+      retVal = true;
+//    var compNode = msiNavigationUtils.getNodeBeforePosition(aRange.startContainer, aRange.startOffset);
+//    if (compNode && msiNavigationUtils.isAncestor(aNode, compNode))
+//      retVal = true;
+//    else if (msiNavigationUtils.isAncestor(aRange.startContainer, aNode))
+//      retVal = false;  //in this case, compNode should have been aNode or contained it if aNode had content before aRange
+//    else  //No content of aNode is immediately to the left of the range start; now we only want to return true if rangeStart is altogether before aNode.
+//    {
+//      compNode = aRange.startContainer;
+//      compVal = aRange.startContainer.compareDocumentPosition(aNode);
+//      retVal = ( (compVal & Node.DOCUMENT_POSITION_FOLLOWING) != null);
+//    }
+    return retVal;  
+  },
+
+  nodeHasContentAfterRangeStart : function(aRange, aNode)
+  {
+    var retVal = false;
+    var anOffset = this.lastOffset(aNode);
+    var compVal = this.comparePositions(aNode, anOffset, aRange.startContainer, aRange.startOffset);
+    if (compVal > 0) //end of aNode is after start position of aRange
+      retVal = true;
+    return retVal;  
+  },
+
+  nodeHasContentAfterRangeEnd : function(aRange, aNode)
+  {
+    var retVal = false;
+    var anOffset = this.lastOffset(aNode);
+    var compVal = this.comparePositions(aNode, anOffset, aRange.endContainer, aRange.endOffset);
+    if (compVal > 0) //last offset in aNode is after end position of aRange
+      retVal = true;
+    
+//    var compNode = msiNavigationUtils.getNodeAfterPosition(aRange.endContainer, aRange.endOffset);
+//    if (compNode && msiNavigationUtils.isAncestor(aNode, compNode))
+//      retVal = true;
+//    else if (msiNavigationUtils.isAncestor(aRange.endContainer, aNode))
+//      retVal = false;
+//    else  //No content of aNode is immediately to the right of the range end; now we only want to return true if rangeEnd is altogether before aNode.
+//    {
+//      compVal = aRange.endContainer.compareDocumentPosition(aNode);
+//      retVal = ( (compVal & Node.DOCUMENT_POSITION_PRECEDING) != null);
+//    }
+    return retVal;  
+  },
+
+  nodeHasContentBeforeRangeEnd : function(aRange, aNode)
+  {
+    var retVal = false;
+    var compVal = this.comparePositions(aNode, 0, aRange.endContainer, aRange.endOffset);
+    if (compVal < 0) //start of aNode is before end position of aRange
+      retVal = true;
+    return retVal;  
+  },
+
+  getCommonAncestorForSelection : function(aSelection)
+  {
+    var topNode = null;
+    var parentNodes = [];
+    if (aSelection.rangeCount == 1)
+      return aSelection.getRangeAt(0).commonAncestorContainer;
+
+    for (var ix = 0; ix < aSelection.rangeCount; ++ix)
+      parentNodes.push( aSelection.getRangeAt(ix).commonAncestorContainer );
+    return this.findCommonAncestor(parentNodes);
   }
 
 };
@@ -5936,6 +6059,138 @@ var msiNavigationUtils =
 //  }
 //  return clone;
 //}
+
+var msiSpaceUtils = 
+{
+  hSpaceInfo : {
+    requiredSpace :         {charContent: "&#x205f;"},  //MEDIUM MATHEMATICAL SPACE in Unicode?
+    nonBreakingSpace :      {charContent: "&#x00a0;"},
+    emSpace :               {dimensions: "1em", charContent: "&#x2003;"},
+    twoEmSpace :            {dimensions: "2em", charContent: "&#x2001;"}, //EM QUAD
+    thinSpace :             {dimensions: "0.17em", charContent: "&#x2009;"},
+    thickSpace :            {dimensions: "0.5em", charContent: "&#x2002;"},   //"EN SPACE" in Unicode?
+    italicCorrectionSpace : {dimensions: "0.083en", charContent: "&#x200a;"},   //the "HAIR SPACE" in Unicode?
+    negativeThinSpace :     {dimensions: "0.0em"},
+    zeroSpace :             {dimensions: "0.0em", charContent: "&#x200b;"},
+    noIndent :              {dimensions: "0.0em", showInvisibleChars: "&#x2190;"} 
+  },
+
+  vSpaceInfo : {
+    smallSkip :             {dimensions: "3pt"},
+    mediumSkip :            {dimensions: "6pt"},
+    bigSkip :               {dimensions: "12pt"},
+    strut :                 {lineHeight: "100%"},
+    mathStrut:              {lineHeight:  "100%"}   //not really right, but for the moment
+  },
+
+  breaksInfo : {
+    allowBreak :            {charContent: "&#x200b;"},  //this is the zero-width space  -   showInvisibleChars:  "|"?
+    discretionaryHyphen :   {charContent: "&#x00ad;", showInvisibleChars: "-"},
+    noBreak:                {charContent: "&#x2060;", showInvisibleChars: "~"},
+    pageBreak:              {charContent: "&#x000c;"},  //formfeed?  - showInvisibleChars: "&#x21b5;"?
+    newPage:                {charContent: "&#x000c;"},  //formfeed?  - showInvisibleChars: "&#x21b5;"?
+    lineBreak:              {charContent: "<br xmlns=\"http://www.w3.org/1999/xhtml\"></br>", showInvisibleChars: "&#x21b5;"},
+    newLine:                {charContent: "<br xmlns=\"http://www.w3.org/1999/xhtml\"></br>", showInvisibleChars: "&#x21b5;"}
+//    lineBreak:              {charContent: "<br xmlns=\"" + xhtmlns + "\"></br>", showInvisibleChars: "&#x21b5;"},
+//    newLine:                {charContent: "<br xmlns=\"" + xhtmlns + "\"></br>", showInvisibleChars: "&#x21b5;"}
+  },
+  
+  spaceInfoFromChars : function(charStr)
+  {
+    var retData = null;
+    var spaceTypes = ["hspace", "vspace", "msibreak"];
+    var spaceInfoTypes = ["hSpaceInfo", "vSpaceInfo", "breaksInfo"];
+    if (charStr == " ")
+      retData = {theType: "hspace", theSpace: "normalSpace"};
+    for (var ix = 0; !retData && (ix < spaceInfoTypes.length); ++ix)
+    {
+      for (var anInfo in this[spaceInfoTypes[ix]])
+      {
+        if ( ("charContent" in this[spaceInfoTypes[ix]][anInfo]) && (this[spaceInfoTypes[ix]][anInfo].charContent == charStr) )
+        {
+          retData = {theType: spaceTypes[ix], theSpace : anInfo};
+          break;
+        }
+      }
+    }
+    if (!retData && msiNavigationUtils.isWhiteSpace(charStr))
+      retData = {theType: "hspace", theSpace: "normalSpace"};  //punt, but not entirely
+    return retData;
+  },
+
+  getHSpaceDims : function(spaceName)
+  {
+    var retDims = null;
+    if ( (spaceName in this.hSpaceInfo) && ("dimensions" in this.hSpaceInfo[spaceName]) )
+      retDims = this.hSpaceInfo[spaceName].dimensions;
+    return retDims;
+  },
+
+  getVSpaceDims : function(spaceName)
+  {
+    var retDims = null;
+    if ( (spaceName in this.vSpaceInfo) && ("dimensions" in this.vSpaceInfo[spaceName]) )
+      retDims = this.vSpaceInfo[spaceName].dimensions;
+    return retDims;
+  },
+
+  getVSpaceLineHeight : function(spaceName)
+  {
+    var retHt = null;
+    if ( (spaceName in this.vSpaceInfo) && ("lineHeight" in this.vSpaceInfo[spaceName]) )
+      retHt = this.vSpaceInfo[spaceName].lineHeight;
+    return retHt;
+  },
+
+  getHSpaceCharContent : function(spaceName)
+  {
+    var theContent = null;
+    if ( (spaceName in this.hSpaceInfo) && ("charContent" in this.hSpaceInfo[spaceName]) )
+      theContent = this.hSpaceInfo[spaceName].charContent;
+    return theContent;
+  },
+
+  getVSpaceCharContent : function(spaceName)
+  {
+    var theContent = null;
+    if ( (spaceName in this.vSpaceInfo) && ("charContent" in this.vSpaceInfo[spaceName]) )
+      theContent = this.vSpaceInfo[spaceName].charContent;
+    return theContent;
+  },
+
+  getBreakCharContent : function(breakName)
+  {
+    var theContent = null;
+    if ( (breakName in this.breaksInfo) && ("charContent" in this.breaksInfo[breakName]) )
+      theContent = this.breaksInfo[breakName].charContent;
+    return theContent;
+  },
+
+  getHSpaceShowInvis : function(spaceName)
+  {
+    var theInvisChars = null;
+    if ( (spaceName in this.hSpaceInfo) && ("showInvisibleChars" in this.hSpaceInfo[spaceName]) )
+      theInvisChars = this.hSpaceInfo[spaceName].showInvisibleChars;
+    return theInvisChars;
+  },
+
+  getVSpaceShowInvis : function(spaceName)
+  {
+    var theInvisChars = null;
+    if ( (spaceName in this.vSpaceInfo) && ("showInvisibleChars" in this.vSpaceInfo[spaceName]) )
+      theInvisChars = this.vSpaceInfo[spaceName].showInvisibleChars;
+    return theInvisChars;
+  },
+
+  getBreakShowInvis : function(breakName)
+  {
+    var theInvisChars = null;
+    if ( (breakName in this.breaksInfo) && ("showInvisibleChars" in this.breaksInfo[breakName]) )
+      theInvisChars = this.breaksInfo[breakName].showInvisibleChars;
+    return theInvisChars;
+  }
+
+};
 
 //Following stolen from calendar/resources/content/importExport.js and modified:
 function addDataToFile(aFilePath, aDataStream)
