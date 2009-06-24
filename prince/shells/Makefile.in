@@ -5,7 +5,7 @@ srcdir		= @srcdir@
 VPATH		= @srcdir@
 
 
-DIRS		= Articles Books Theses
+DIRS		= Articles Books Theses	Help
 
 
 include $(DEPTH)/config/autoconf.mk
