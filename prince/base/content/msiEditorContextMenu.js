@@ -21,8 +21,8 @@ function msiEditorFillContextMenu(event, contextMenuNode)
   if (objectName == "img")
   try {
     var objData = msiGetObjectDataForProperties(editorElement);
-    if (objData != null && objData.theNode != null)
-      isInLink = msiGetEditor(editorElement).getElementOrParentByTagName("href", objData.theNode);
+    if (objData != null && objData.getNode() != null)
+      isInLink = msiGetEditor(editorElement).getElementOrParentByTagName("href", objData.theNode());
   } catch (e) {}
 
   msiInitRemoveStylesMenuitems(editorElement, "removeStylesMenuitem_cm", "removeLinksMenuitem_cm", "removeNamedAnchorsMenuitem_cm");

@@ -2674,56 +2674,56 @@ function EditorClick(event)
   }
 }
 
-function msiGetCharForProperties(editorElement)
-{
-  var nodeData = msiGetObjectDataForProperties(editorElement);
-  if (nodeData != null && nodeData.theNode != null && nodeData.theOffset != null)
-  {
-    return nodeData;
-  }
-  return null;
-}
+//function msiGetCharForProperties(editorElement)
+//{
+//  var nodeData = msiGetObjectDataForProperties(editorElement);
+//  if (nodeData != null && nodeData.theNode != null && nodeData.theOffset != null)
+//  {
+//    return nodeData;
+//  }
+//  return null;
+//}
 
-//Resolves whether the object at anIndex inside aNode is a character or a node.
-function msiPropertiesObjectData(aNode, anIndex)
-{
-  if (aNode == null)
-  {
-    dump("In msiPropertiesObjectData constructor, null node was passed in!\n");
-    return null;
-  }
-
-  if (anIndex != null)
-  {
-    if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
-    {
-      //What do we return to say we want the character to the left?
-      this.theNode = aNode;
-      this.theOffset = anIndex;
-    }
-    else if (anIndex < aNode.childNodes.length)
-    {
-      this.theNode = aNode.childNodes[anIndex];
-      this.theOffset = null;
-    }
-    else  //trouble??
-    {
-      dump("Problem case in msiPropertiesObjectData - aNode is [" + aNode.nodeName + "], with length [" + aNode.childNodes.length + "], and anIndex is [" + anIndex + "].\n");
-      this.theNode = aNode;
-      this.theOffset = null;
-    }
-  }
-  else
-  {
-    this.theNode = aNode;
-    this.theOffset = null;
-  }
-}
+////Resolves whether the object at anIndex inside aNode is a character or a node.
+//function msiPropertiesObjectData(aNode, anIndex)
+//{
+//  if (aNode == null)
+//  {
+//    dump("In msiPropertiesObjectData constructor, null node was passed in!\n");
+//    return null;
+//  }
+//
+//  if (anIndex != null)
+//  {
+//    if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
+//    {
+//      //What do we return to say we want the character to the left?
+//      this.theNode = aNode;
+//      this.theOffset = anIndex;
+//    }
+//    else if (anIndex < aNode.childNodes.length)
+//    {
+//      this.theNode = aNode.childNodes[anIndex];
+//      this.theOffset = null;
+//    }
+//    else  //trouble??
+//    {
+//      dump("Problem case in msiPropertiesObjectData - aNode is [" + aNode.nodeName + "], with length [" + aNode.childNodes.length + "], and anIndex is [" + anIndex + "].\n");
+//      this.theNode = aNode;
+//      this.theOffset = null;
+//    }
+//  }
+//  else
+//  {
+//    this.theNode = aNode;
+//    this.theOffset = null;
+//  }
+//}
 
 function msiGetObjectDataForProperties(editorElement)
 {
-  var editor = msiGetEditor(editorElement);
-  var nodeData = msiSelectPropertiesObjectFromSelection(editor);
+//  var editor = msiGetEditor(editorElement);
+  var nodeData = msiGetPropertiesObjectFromSelection(editorElement);
   return nodeData;
 }
 
@@ -2734,19 +2734,24 @@ function msiGetObjectDataForProperties(editorElement)
 */
 // For property dialogs, we want the selected element,
 //  but will accept a parent link, list, or table cell if inside one
-function msiGetObjectForProperties(editorElement)
+//function msiGetObjectForProperties(editorElement)
+//{
+//  if (!editorElement)
+//    editorElement = msiGetActiveEditorElement();
+//  var editor = msiGetEditor(editorElement);
+//  if (!editor || !msiIsHTMLEditor(editorElement))
+//    return null;
+//  return msiEditorGetObjectForProperties(editor);
+//}
+
+function msiEditorGetObjectForProperties(editorElement)
 {
+  var element;
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   if (!editor || !msiIsHTMLEditor(editorElement))
     return null;
-  return msiEditorGetObjectForProperties(editor);
-}
-
-function msiEditorGetObjectForProperties(editor)
-{
-  var element;
   try {
     element = editor.getSelectedElement("");
   } catch (e) {}
@@ -2756,7 +2761,7 @@ function msiEditorGetObjectForProperties(editor)
   // Find nearest parent of selection anchor node
   //   that is a link, list, table cell, or table
 
-  var nodeData = msiSelectPropertiesObjectFromSelection(editor);
+  var nodeData = msiGetPropertiesObjectFromSelection(editorElement);
   if (nodeData != null && nodeData.theNode != null)
   {
     if (nodeData.theOffset == null)
@@ -2764,7 +2769,7 @@ function msiEditorGetObjectForProperties(editor)
     else
       return null; //Calls to this function are assumed to want some object or other to revise - those which can
                    //revise a character in text should go in through the msiGetCharForProperties(editorElement) method,
-                   //or directly through the msiSelectPropertiesObjectFromSelection function?
+                   //or directly through the msiGetPropertiesObjectFromSelection function?
   }
   var node = null;
   var anchorNode;
@@ -2808,78 +2813,121 @@ function msiEditorGetObjectForProperties(editor)
   return null;
 }
 
-function msiSelectPropertiesObjectFromSelection(editor)
+function msiCreatePropertiesObjectDataFromSelection(aSelection, editorElement)
 {
   var retObj = null;
-  if (editor.selection.isCollapsed)
-    retObj = msiSelectPropertiesObjectFromCursor(editor);
-  else
-  {
-    var theRange = editor.selection.getRangeAt(0);
-    if (theRange == null)
-    {
-      theRange = editor.document.createRange();
-      theRange.setStart(editor.selection.anchorNode, editor.selection.anchorOffset);
-      theRange.setEnd(editor.selection.focusNode, editor.selection.focusOffset);
-      if (theRange.collapsed)  //According to the W3C DOM Range interface specification, this will happen if anchor was after focus.
-      {
-        theRange.setStart(editor.selection.focusNode, editor.selection.focusOffset);
-        theRange.setEnd(editor.selection.anchorNode, editor.selection.anchorOffset);
-      }
-    }
-    if (theRange.collapsed)
-      retObj = msiSelectPropertiesObjectFromCursor(editor);
-    else
-      retObj = msiSelectPropertiesObjectFromRange(editor, theRange);
-  }
+//  var container = msiNavigationUtils.getCommonAncestorForSelection(editor.selection);
+  var containerData = msiGetSelectionContainer(editorElement);
+  var container = containerData.node;
+  var editor = msiGetEditor(editorElement);
+  var theRange = null;
+  var theText = null;
 
-  if ( (retObj != null) && (retObj.theOffset == null) )  //in the case we've identified a revisable object
+  switch(msiGetBaseNodeName(container))
   {
-    var parentNode = msiNavigationUtils.findWrappingStyleNode(retObj.theNode);
-    if (parentNode != null)
-      retObj.theNode = parentNode;
+    //Note that a container which is a cell in a table shouldn't be constructed here, as it's essentially no differrent from any other container.
+    case 'mtable':
+    case 'table':
+    case "thead":
+    case "tfoot":
+    case "tbody":
+    case 'mtr':
+    case 'mlabeledtr':
+    case 'tr':
+      retObj = new msiTablePropertiesObjectData();
+      retObj.initFromSelection(editor.selection, editorElement);
+    break;
+
+    case '#text':
+      retObj = new msiCharPropertiesObjectData();
+      retObj.initFromSelection(editor.selection, editorElement);
+    break;
+
+    default:
+    break;
   }
+  if (!retObj && editor.selection.rangeCount == 1)
+    retObj = msiCreatePropertiesObjectDataFromRange(editor.selection.getRangeAt(0), editorElement);
 
   return retObj;
-  //We're trying to identify the situation where there's essentially (to be laboriously defined below) one object selected.
-  //The plan is:
-  //  (1) In the best situation, we'll find that anchorNode and focusNode are children of the same element, with a difference
-  //        of one in their offsets. That node is then the revisable one.
-  //  (2) If one of anchorNode/focusNode is a child of the common ancestor but the other isn't, we want to look for the situation
-  //        where the non-direct child is essentially at the start/end of the node we're hoping for in (1). This should be handled
-  //        carefully, but the idea is much like the msiFindRevisableObjectToLeft() function - we'd like to be able to move up
-  //        to the parent but have to ensure the situation warrants it.
-  //  (3) If neither is a direct child of commonAncestor, we try to move both positions up to the parents. The hope is that the
-  //        positions passed in are just beyond the ends of an object, with nothing significant between; failing that, the hope is
-  //        that they're just inside the ends of an object.
-  //  Now write the code?
-//  var rangeContentList = msiNavigationUtils.getSignificantRangeContent(theRange);
-
 }
 
-function msiSelectPropertiesObjectFromRange(editor, aRange)
+function msiGetPropertiesObjectFromSelection(editorElement)
 {
-  var aNode = null;
-  var anOffset = null;
+  var retObj = null;
+  var editor = msiGetEditor(editorElement);
+  if (editor.selection.isCollapsed)
+    retObj = msiSelectPropertiesObjectFromCursor(editorElement);
+  else
+//rwa    {
+    retObj = msiCreatePropertiesObjectDataFromSelection(editor.selection, editorElement);
+//rwa      if (retObj)
+//rwa        return retObj;
+//rwa  
+//rwa      var theRange = editor.selection.getRangeAt(0);
+//rwa      if (theRange == null)
+//rwa      {
+//rwa        theRange = editor.document.createRange();
+//rwa        theRange.setStart(editor.selection.anchorNode, editor.selection.anchorOffset);
+//rwa        theRange.setEnd(editor.selection.focusNode, editor.selection.focusOffset);
+//rwa        if (theRange.collapsed)  //According to the W3C DOM Range interface specification, this will happen if anchor was after focus.
+//rwa        {
+//rwa          theRange.setStart(editor.selection.focusNode, editor.selection.focusOffset);
+//rwa          theRange.setEnd(editor.selection.anchorNode, editor.selection.anchorOffset);
+//rwa        }
+//rwa      }
+//rwa      if (theRange.collapsed)
+//rwa        retObj = msiSelectPropertiesObjectFromCursor(editorElement);
+//rwa      else
+//rwa        retObj = msiSelectPropertiesObjectFromRange(editorElement, theRange);
+//rwa    }
+//rwa  
+//rwa    if ( (retObj != null) && (retObj.theOffset == null) )  //in the case we've identified a revisable object
+//rwa    {
+//rwa      var parentNode = msiNavigationUtils.findWrappingStyleNode(retObj.theNode);
+//rwa      if (parentNode != null)
+//rwa        retObj.theNode = parentNode;
+//rwa    }
+//rwa  
+//rwa    return retObj;
+//rwa    //We're trying to identify the situation where there's essentially (to be laboriously defined below) one object selected.
+//rwa    //The plan is:
+//rwa    //  (1) In the best situation, we'll find that anchorNode and focusNode are children of the same element, with a difference
+//rwa    //        of one in their offsets. That node is then the revisable one.
+//rwa    //  (2) If one of anchorNode/focusNode is a child of the common ancestor but the other isn't, we want to look for the situation
+//rwa    //        where the non-direct child is essentially at the start/end of the node we're hoping for in (1). This should be handled
+//rwa    //        carefully, but the idea is much like the msiFindRevisableObjectToLeft() function - we'd like to be able to move up
+//rwa    //        to the parent but have to ensure the situation warrants it.
+//rwa    //  (3) If neither is a direct child of commonAncestor, we try to move both positions up to the parents. The hope is that the
+//rwa    //        positions passed in are just beyond the ends of an object, with nothing significant between; failing that, the hope is
+//rwa    //        that they're just inside the ends of an object.
+//rwa    //  Now write the code?
+//rwa  //  var rangeContentList = msiNavigationUtils.getSignificantRangeContent(theRange);
 
-  if (aRange.startContainer == aRange.endContainer)  //the simple case
+  return retObj;
+}
+
+function msiCreatePropertiesObjectDataFromRange(aRange, editorElement)
+{
+  var retObj = null;
+  var anOffset = null;
+  var ancestorNode = aRange.commonAncestorContainer;
+  var editor = msiGetEditor(editorElement);
+
+  if (aRange.startContainer == aRange.endContainer)
   {
-    if (aRange.endOffset - aRange.startOffset == 1)  //the simplest (hoped-for) case
+    if (aRange.endOffset - aRange.startOffset == 1)
     {
-      //Want something else here - another function that returns one of our "properties objects" from a node and offset?
-      //Even in the simplest case, have to distinguish between selecting a character (parent is Text) and selecting a node.
-      return new msiPropertiesObjectData(aRange.startContainer, aRange.startOffset);
+      if (aRange.startContainer.childNodes.length > aRange.startOffset)
+        return msiCreatePropertiesObjectDataFromNode(aRange.startContainer.childNodes[aRange.startOffset], editorElement);
     }
     if (msiNavigationUtils.positionIsAtStart(aRange.startContainer, aRange.startOffset) && msiNavigationUtils.positionIsAtEnd(aRange.endContainer, aRange.endOffset))
     {
-      return new msiPropertiesObjectData(aRange.startContainer, null);
+      return msiCreatePropertiesObjectDataFromNode(aRange.startContainer, editorElement);
     }
-    return null;
   }
-  else  //Can we move up the tree without essentially changing the range?
+  else
   {
-    var retVal = null;
-    var ancestorNode = aRange.commonAncestorContainer;
     var trialSequenceStart = [0];
     if (aRange.startContainer != ancestorNode)
       trialSequenceStart = [1,2];  //means try left first, then right
@@ -2897,69 +2945,151 @@ function msiSelectPropertiesObjectFromRange(editor, aRange)
         {
           bChanged = true;
           newRange.setStartBefore(aRange.startContainer);
-//          msiNavigationUtils.moveRangeStartOutOfObject(newRange, false);  //the "false" means "to left" as opposed to "to right"
         }
         else if ((trialSequenceStart[jx] == 2) && msiNavigationUtils.positionIsAtEnd(aRange.startContainer, aRange.startOffset) && msiNavigationUtils.boundaryIsTransparent(aRange.startContainer, editor, msiNavigationUtils.rightEndToRight))
-//RWA-insert        else if ((trialSequenceStart[jx] == 2) && msiNavigationUtils.positionIsAtEnd(aRange.startContainer, aRange.startOffset) && msiNavigationUtils.boundaryIsTransparent(aRange.startContainer, editor, msiNavigationUtils.rightEndToRight))
         {
           bChanged = true;
           newRange.setStartAfter(aRange.startContainer);
-//          msiNavigationUtils.moveRangeStartOutOfObject(newRange, true);  //the "true" means "to right"
         }
         if ((trialSequenceEnd[kx] == 1) && msiNavigationUtils.positionIsAtStart(aRange.endContainer, aRange.endOffset) && msiNavigationUtils.boundaryIsTransparent(aRange.endContainer, editor, msiNavigationUtils.leftEndToLeft))
-//RWA-insert        if ((trialSequenceEnd[kx] == 1) && msiNavigationUtils.positionIsAtStart(aRange.endContainer, aRange.endOffset) && msiNavigationUtils.boundaryIsTransparent(aRange.endContainer, editor, msiNavigationUtils.leftEndToLeft))
         {
           bChanged = true;
           newRange.setEndBefore(aRange.endContainer);
-//          msiNavigationUtils.moveRangeEndOutOfObject(newRange, false);  //the "false" means "to left" as opposed to "to right"
         }
         else if ((trialSequenceEnd[kx] == 2) && msiNavigationUtils.positionIsAtEnd(aRange.endContainer, aRange.endOffset))
         {
           bChanged = true;
           newRange.setEndAfter(aRange.endContainer);
-//          msiNavigationUtils.moveRangeEndOutOfObject(newRange, true);  //the "true" means "to right"
         }
 
         if (bChanged)
-          retVal = msiSelectPropertiesObjectFromRange(editor, newRange);
+          retObj = msiCreatePropertiesObjectDataFromRange(newRange, editorElement);
+//          retObj = msiSelectPropertiesObjectFromRange(editorElement, newRange);
       }
 
-      if ((retVal != null))
-      {
-        return retVal;
-        break;
-      }
+      if ((retObj != null))
+        return retObj;
     }
   }
 
-  return null;
+  //If we reach here, we didn't find anything appropriate. so just return null - or "retObj", which is the same thing.
+  return retObj;
 }
 
-function msiSelectPropertiesObjectFromCursor(editor)
+
+//function msiSelectPropertiesObjectFromRange(editorElement, aRange)
+//{
+//  var aNode = null;
+//  var anOffset = null;
+//  var editor = msiGetEditor(editorElement);
+//
+//  if (aRange.startContainer == aRange.endContainer)  //the simple case
+//  {
+//    //Note that we're not looking at a #text node - those should have been handled in the calling msiCreatePropertiesObjectDataFromSelection() function
+//    if (aRange.endOffset - aRange.startOffset == 1)  //the simplest (hoped-for) case
+//    {
+//      //Want something else here - another function that returns one of our "properties objects" from a node and offset?
+//      //Even in the simplest case, have to distinguish between selecting a character (parent is Text) and selecting a node.
+//      return new msiPropertiesObjectData(aRange.startContainer, aRange.startOffset);
+//    }
+//    if (msiNavigationUtils.positionIsAtStart(aRange.startContainer, aRange.startOffset) && msiNavigationUtils.positionIsAtEnd(aRange.endContainer, aRange.endOffset))
+//    {
+//      return new msiPropertiesObjectData(aRange.startContainer, null);
+//    }
+//    return null;
+//  }
+//  else  //Can we move up the tree without essentially changing the range?
+//  {
+//    var retVal = null;
+//    var ancestorNode = aRange.commonAncestorContainer;
+//    var trialSequenceStart = [0];
+//    if (aRange.startContainer != ancestorNode)
+//      trialSequenceStart = [1,2];  //means try left first, then right
+//    var trialSequenceEnd = [0];
+//    if (aRange.endContainer != ancestorNode)
+//      trialSequenceEnd = [2,1];  //means try right first, then left
+//
+//    for (var jx = 0; jx < trialSequenceStart.length; ++jx)
+//    {
+//      for (var kx = 0; kx < trialSequenceEnd.length; ++kx)
+//      {
+//        var bChanged = false;
+//        var newRange = aRange.cloneRange();
+//        if ((trialSequenceStart[jx] == 1) && msiNavigationUtils.positionIsAtStart(aRange.startContainer, aRange.startOffset))
+//        {
+//          bChanged = true;
+//          newRange.setStartBefore(aRange.startContainer);
+////          msiNavigationUtils.moveRangeStartOutOfObject(newRange, false);  //the "false" means "to left" as opposed to "to right"
+//        }
+//        else if ((trialSequenceStart[jx] == 2) && msiNavigationUtils.positionIsAtEnd(aRange.startContainer, aRange.startOffset) && msiNavigationUtils.boundaryIsTransparent(aRange.startContainer, editor, msiNavigationUtils.rightEndToRight))
+////RWA-insert        else if ((trialSequenceStart[jx] == 2) && msiNavigationUtils.positionIsAtEnd(aRange.startContainer, aRange.startOffset) && msiNavigationUtils.boundaryIsTransparent(aRange.startContainer, editor, msiNavigationUtils.rightEndToRight))
+//        {
+//          bChanged = true;
+//          newRange.setStartAfter(aRange.startContainer);
+////          msiNavigationUtils.moveRangeStartOutOfObject(newRange, true);  //the "true" means "to right"
+//        }
+//        if ((trialSequenceEnd[kx] == 1) && msiNavigationUtils.positionIsAtStart(aRange.endContainer, aRange.endOffset) && msiNavigationUtils.boundaryIsTransparent(aRange.endContainer, editor, msiNavigationUtils.leftEndToLeft))
+////RWA-insert        if ((trialSequenceEnd[kx] == 1) && msiNavigationUtils.positionIsAtStart(aRange.endContainer, aRange.endOffset) && msiNavigationUtils.boundaryIsTransparent(aRange.endContainer, editor, msiNavigationUtils.leftEndToLeft))
+//        {
+//          bChanged = true;
+//          newRange.setEndBefore(aRange.endContainer);
+////          msiNavigationUtils.moveRangeEndOutOfObject(newRange, false);  //the "false" means "to left" as opposed to "to right"
+//        }
+//        else if ((trialSequenceEnd[kx] == 2) && msiNavigationUtils.positionIsAtEnd(aRange.endContainer, aRange.endOffset))
+//        {
+//          bChanged = true;
+//          newRange.setEndAfter(aRange.endContainer);
+////          msiNavigationUtils.moveRangeEndOutOfObject(newRange, true);  //the "true" means "to right"
+//        }
+//
+//        if (bChanged)
+//          retVal = msiSelectPropertiesObjectFromRange(editorElement, newRange);
+//      }
+//
+//      if ((retVal != null))
+//      {
+//        return retVal;
+//        break;
+//      }
+//    }
+//  }
+//
+//  return null;
+//}
+
+function msiSelectPropertiesObjectFromCursor(editorElement)
 {
+  var editor = msiGetEditor(editorElement);
   var currNode = editor.selection.anchorNode;
   //Look to the left of the cursor:
-  return msiFindRevisableObjectToLeft(currNode, editor.selection.anchorOffset, editor);
+  return msiFindRevisableObjectToLeft(currNode, editor.selection.anchorOffset, editorElement);
 }
 
-function msiFindRevisableObjectToLeft(aNode, anOffset, editor)
+function msiFindRevisableObjectToLeft(aNode, anOffset, editorElement)
 {
-  var returnVal = new Object();
-  returnVal.theNode = null;
-  returnVal.theOffset = null;
+//  var returnVal = new Object();
+//  returnVal.theNode = null;
+//  returnVal.theOffset = null;
+  var editor = msiGetEditor(editorElement);
+  var retObj = null;
+
   if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
   {
-    if (msiNavigationUtils.isMathname(aNode.parentNode) || msiNavigationUtils.isUnit(aNode.parentNode) )
+    if (msiNavigationUtils.isMathname(aNode.parentNode) || msiNavigationUtils.isUnit(aNode.parentNode) 
+        || msiNavigationUtils.isBigOperator(aNode.parentNode))
     {
-      returnVal.theNode = aNode.parentNode;
-      return returnVal;
+      retObj = msiCreatePropertiesObjectDataFromNode(aNode.parentNode, editorElement);
+//      returnVal.theNode = aNode.parentNode;
+      return retObj;
     }
     if (anOffset > 0)
     {
       //What do we return to say we want the character to the left?
-      returnVal.theNode = aNode;
-      returnVal.theOffset = anOffset - 1;
-      return returnVal;
+      retObj = new msiCharPropertiesObjectData();
+      retObj.initFromNodeAndOffset(aNode, anOffset, editorElement);
+//      returnVal.theNode = aNode;
+//      returnVal.theOffset = anOffset - 1;
+      return retObj;
     }
   }
   var nextNode = null;
@@ -2978,7 +3108,7 @@ function msiFindRevisableObjectToLeft(aNode, anOffset, editor)
   if (ix != 0 && nextNode == null)
   {
     dump("Unexpected result in msiFindObjectToLeft! Return null.\n");
-    return returnVal;
+    return retObj;
   }
 
   //Now the only way that nextNode should be null is really if we're at the beginning of aNode:
@@ -2989,7 +3119,7 @@ function msiFindRevisableObjectToLeft(aNode, anOffset, editor)
     //Move to left and try again...
       nextNode = aNode.previousSibling;
     else
-      return returnVal;  //No reasonable object to revise here.
+      return retObj;  //No reasonable object to revise here.
     //Move to our parent since we're at his beginning,
     if (nextNode == null)
     {
@@ -3011,14 +3141,20 @@ function msiFindRevisableObjectToLeft(aNode, anOffset, editor)
 
   //Finally, one last check on the validity of aNode. If it fails, there's nothing good to revise.
   if (msiNavigationUtils.cannotSelectNodeForProperties(aNode))
-    return returnVal;
+    return retObj;
 
-  returnVal.theNode = aNode;
+//  returnVal.theNode = aNode;
   if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
-    returnVal.theOffset = aNode.length - 1;
+  {
+//    returnVal.theOffset = aNode.length - 1;
+    retObj = new msiCharPropertiesObjectData();
+    retObj.initFromNodeAndOffset(aNode, aNode.length, editorElement);
+  }
   else
-    returnVal.theOffset = null;
-  return returnVal;
+    retObj = msiCreatePropertiesObjectDataFromNode(aNode, editorElement);
+//    returnVal.theOffset = null;
+
+  return retObj;
 }
 
 /******Display Mode stuff - for the time being, only applicable to main editor window, but leave the functions here anyway******/
@@ -3689,7 +3825,8 @@ function msiEditorInitFormatMenu(event, theMenu)
   } catch(ex) {dump("Exception in msiEditor.js, msiEditorInitFormatMenu: [" + ex + "].\n");}
 }
 
-function getObjectPropertiesDataFromNodeData(editorElement, element, bIncludeParaAndStructure)
+//function getObjectPropertiesDataFromNodeData(editorElement, element, bIncludeParaAndStructure)
+function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeParaAndStructure)
 {
   var objStr = null;
   var commandStr = null;
@@ -3697,6 +3834,7 @@ function getObjectPropertiesDataFromNodeData(editorElement, element, bIncludePar
   var coreElement = null;
   var fixedName = null;
   var theMenuStr = null;
+  var propsData = null;
 
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
@@ -3746,18 +3884,31 @@ function getObjectPropertiesDataFromNodeData(editorElement, element, bIncludePar
         objStr = GetString("HLine");
         commandStr = "cmd_reviseLine";
         break;
+
       case "table":
-        objStr = GetString("Table");
-//        scriptStr = "msiEditorInsertOrEditTable(false, editorElement, 'cmd_objectProperties', this)";
-        commandStr = "cmd_editTable";
-        break;
+//        objStr = GetString("Table");
+////        scriptStr = "msiEditorInsertOrEditTable(false, editorElement, 'cmd_objectProperties', this)";
+//        commandStr = "cmd_editTable";
+//        break;
       case "th":
-        name = "td";
+//        name = "td";
       case "td":
-        objStr = GetString("TableCell");
-//        scriptStr = "msiEditorTableCellProperties(editorElement)";
-        commandStr = "cmd_editTable";
-        break;
+//        objStr = GetString("TableCell");
+////        scriptStr = "msiEditorTableCellProperties(editorElement)";
+//        commandStr = "cmd_editTable";
+//        break;
+      case "th":
+      case "thead":
+      case "tbody":
+      case "tfoot":
+      case "tr":
+      case "mtable":
+      case "mtr":
+      case "mlabeledtr":
+        propsData = new msiTablePropertiesObjectData();
+        propsData.initFromNode(coreElement, editorElement);
+      break;
+
       case "ol":
       case "ul":
       case "dl":
@@ -3855,7 +4006,8 @@ function getObjectPropertiesDataFromNodeData(editorElement, element, bIncludePar
       case 'msub':
       case 'msup':
       case 'msubsup':
-        if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
+        var childOp = msiNavigationUtils.getEmbellishedOperator(wrappedChildElement);
+        if (childOp != null && msiNavigationUtils.isBigOperator(childOp))
         {
           objStr = GetString("Operator");
           commandStr = "cmd_MSIreviseOperatorsCmd";
@@ -3867,7 +4019,8 @@ function getObjectPropertiesDataFromNodeData(editorElement, element, bIncludePar
       case 'mover':
       case 'munder':
       case 'munderover':
-        if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
+        var childOp = msiNavigationUtils.getEmbellishedOperator(wrappedChildElement);
+        if (childOp != null && msiNavigationUtils.isBigOperator(childOp))
         {
           objStr = GetString("Operator");
           commandStr = "cmd_MSIreviseOperatorsCmd";
@@ -3880,7 +4033,8 @@ function getObjectPropertiesDataFromNodeData(editorElement, element, bIncludePar
       break;
 
       case 'mmultiscripts':
-        if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
+        var childOp = msiNavigationUtils.getEmbellishedOperator(wrappedChildElement);
+        if (childOp != null && msiNavigationUtils.isBigOperator(childOp))
         {
           objStr = GetString("Operator");
           commandStr = "cmd_MSIreviseOperatorsCmd";
@@ -3892,10 +4046,10 @@ function getObjectPropertiesDataFromNodeData(editorElement, element, bIncludePar
         }
       break;
 
-      case 'mmatrix':
-        objStr = GetString("Matrix");
-        commandStr = "cmd_MSIreviseMatrixCmd";
-      break;
+//      case 'mtable':
+//        objStr = GetString("Matrix");
+//        commandStr = "cmd_MSIreviseMatrixCmd";
+//      break;
 
       case 'mi':
         if (msiNavigationUtils.isUnit(wrappedChildElement))
@@ -3935,7 +4089,7 @@ function getObjectPropertiesDataFromNodeData(editorElement, element, bIncludePar
           objStr = GetString("MathName");
           commandStr = "cmd_MSIreviseMathnameCmd";
         }
-        else
+        else if (msiNavigationUtils.isBigOperator(wrappedChildElement))
         {
           objStr = GetString("Operator");
           commandStr = "cmd_MSIreviseOperatorsCmd";
@@ -3981,11 +4135,12 @@ function getObjectPropertiesDataFromNodeData(editorElement, element, bIncludePar
     }
   }
 
-  var propsData = null;
-  if (objStr && objStr.length)
+  if (!propsData && objStr && objStr.length)  //That is, we're constructing a garden variety simple propertiesData object:
   {
-    propsData = new Object();
-    propsData.theNode = element;
+    propsData = new msiPropertiesObjectData();
+    propsData.initFromNode(coreElement, editorElement);
+//    propsData = new Object();
+//    propsData.theNode = element;
     if (theMenuStr)
       propsData.menuStr = theMenuStr;
     else
@@ -3996,6 +4151,7 @@ function getObjectPropertiesDataFromNodeData(editorElement, element, bIncludePar
   }
   return propsData;
 }
+
 
 function msiSelectPropertiesMenu(event, theMenu)
 {
@@ -4042,6 +4198,1496 @@ function msiGetPropertiesMenuIDs(startID)
   return theIDs;
 }
 
+function msiGetEnclosingTableOrMatrixDimensions(editorElement, nodeInTable)
+{
+  var retDims = {nRows: 0, nCols : 0};
+  var theTable = null;
+  var theMatrix = null;
+  var nRow = 0;
+  var nCol = 0;
+  var currRow = null;
+
+  var aParent = msiGetContainingTableOrMatrix(nodeInTable);
+  switch(msiGetBaseNodeName(aParent))
+  {
+    case "table":
+      theTable = aParent;
+    break;
+    case "mtable":
+      theMatrix = aParent;
+    break;
+    default:
+    break;
+  }
+
+  if (theTable)
+  {
+    tableEditor = msiGetTableEditor(editorElement);
+    if (tableEditor)
+      tableEditor.getTableSize(theTable, nRow, nCol);
+    retDims.nRows = nRow;
+    retDims.nCols = nCol;
+  }
+  else if (theMatrix)
+  {
+    for (var ix = 0; ix < theMatrix.childNodes.length; ++ix)
+    {
+      ++nRow;
+      switch(msiGetBaseName(theMatrix.childNodes[ix]))
+      {
+        case "mtr":
+        case "mlabeledtr":
+          currRow = theMatrix.childNodes[ix];
+          nCol = 0;
+          for (var jx = 0; jx < currRow.childNodes.length; ++jx)
+          {
+            switch(msiGetBaseName(currRow.childNodes[jx]))
+            {
+              case "mtd":
+                if (currRow.childNodes[jx].hasAttribute("colspan"))
+                  nCol += Number(currRow.childNodes[jx].getAttribute("colspan"));
+                else
+                  ++nCol;
+              break;
+              default:
+                ++nCol;
+              break;
+            }
+          }
+        break;
+        default:
+          nCol = 1;
+        break;
+      }
+      if (nCol > retDims.nCols)
+        retDims.nCols = nCol;
+    }
+    retDims.nRows = nRow;
+  }
+
+  return retDims;
+}
+
+function msiGetContainingTableOrMatrix(aNode)
+{
+  var tableOrMatrix = null;
+  for ( var aParent = aNode; (!tableOrMatrix) && (aParent); aParent = aParent.parentNode)
+  {
+    switch(msiGetBaseNodeName(aParent))
+    {
+      case "table":
+      case "mtable":
+        tableOrMatrix = aParent;
+      break;
+      default:
+      break;
+    }
+  }
+  return tableOrMatrix;
+}
+
+//function msiGetCellsInSelection(rangeArray, tableDims, editorElement)
+//{
+//  var retArray = new Array();
+//  var tableParent = msiGetContainingTableOrMatrix(rangeArray[0].startContainer);
+//  for (var ix = 0; ix < rangeArray.length; ++ix)
+//  {
+//
+//  }
+//}
+//
+//function msiGetSelectionForEnclosingRowsAndColumns(rangeArray, tableDims, editorElement)
+//{
+//  var containingTable = msiGetContainingTableOrMatrix(rangeArray[0].startContainer);
+//  if (!editorElement)
+//    editorElement = msiGetActiveEditorElement();
+//  var tableEditor = null;
+//  var bSelContainsWholeRows = false;
+//}
+
+
+function msiGetRowAndColumnData(tableElement, tableDims, editorElement)
+{
+  if (!tableDims)
+    tableDims = msiGetEnclosingTableOrMatrixDimensions(editorElement, tableElement);
+  var retTableData = new Object();
+  retTableData.cellInfoArray = new Array(tableDims.nRows);
+  for (var ii = 0; ii < tableDims.nRows; ++ii)
+    retTableData.cellInfoArray[ii] = new Array(tableDims.nCols);
+  retTableData.rowsData = new Array(tableDims.nRows);
+  retTableData.colsData = new Array(tableDims.nCols);
+  retTableData.m_nRows = tableDims.nRows;
+  retTableData.m_nCols = tableDims.nCols;
+  var nCurrRow = 1;
+
+  function addRowsToList(aTableData, aParent, currRow)
+  {
+    var childNode = null;
+    var currCol = 1;
+//    var currRow = 1;
+    for (var ix = 0; ix < aParent.childNodes.length; ++ix)
+    {
+      currCol = 1;
+      childNode = aParent.childNodes[ix];
+      switch(msiGetBaseName(childNode))
+      {
+        case "table":
+        case "mtable":
+        case "thead":
+        case "tfoot":
+        case "tbody":
+          addRowsToList(aTableData, childNode, currRow);
+        break;
+
+        case "tr":
+        case "mtr":
+        case "mlabeledtr":
+          for (var jx = 0; jx < childNode.childNodes.length; ++jx)
+          {
+            addCellToList(aTableData, childNode.childNodes[jx], currRow, currCol);
+          }
+        break;
+
+        case "th":
+        case "td":
+        default:
+          addCellToList(aTableData, childNode, currRow, currCol);
+        break;
+      }
+      ++currRow;
+    }
+  }
+
+//  function setCellData(aTableData, nRowIndex, nColIndex, datumName, datumValue)
+//  {
+//    var cellData = aTableData.cellInfoArray[nRowIndex][nColIndex];
+//    if (!cellData)
+//    {
+//      aTableData.cellInfoArray[nRowIndex][nColIndex] = new Object();
+//      cellData = aTableData.cellInfoArray[nRowIndex][nColIndex];
+//    }
+//    var compare = 1;
+//    switch(datumName)
+//    {
+//      case "mRowContinuation":
+//      case "mColContinuation":
+//        compare = 0;
+//      break;
+//    }
+//    if ( !(datumName in rowData) || ( (compare * rowData[datumName]) < (compare * datumValue) ) )
+//      rowData[datumName] = datumValue;
+//  }
+//
+  function setRowData(aTableData, nRowIndex, datumName, datumValue)
+  {
+    var rowData = aTableData.rowsData[nRowIndex];
+    if (!rowData)
+    {
+      aTableData.rowsData[nRowIndex] = new Object();
+      rowData = aTableData.rowsData[nRowIndex];
+    }
+    var compare = 1;
+    switch(datumName)
+    {
+      case "firstRow":
+        compare = -1;
+      break;
+    }
+    if ( !(datumName in rowData) || ( (compare * rowData[datumName]) < (compare * datumValue) ) )
+      rowData[datumName] = datumValue;
+  }
+
+  function setColData(aTableData, nColIndex, datumName, datumValue)
+  {
+    var colData = aTableData.colsData[nColIndex];
+    if (!colData)
+    {
+      aTableData.colsData[nColIndex] = new Object();
+      colData = aTableData.colsData[nColIndex];
+    }
+    var compare = 1;
+    switch(datumName)
+    {
+      case "firstCol":
+        compare = -1;
+      break;
+    }
+    if ( !(datumName in colData) || ( compare * (colData[datumName]- datumValue) < 0) )
+      colData[datumName] = datumValue;
+  }
+
+  function addCellToList(aTableData, cellNode, nRow, nCol)
+  {
+    var numCols = aTableData.cellInfoArray[0].length;
+    var colspan = 1;
+    var rowspan = 1;
+
+    switch(msiGetBaseName(cellNode))
+    {
+      case "th":
+      case "td":
+      case "mtd":
+        while ( (aTableData.cellInfoArray[nRow-1][nCol-1] != null) && (nCol <= numCols) )
+        {
+          ++nCol;
+        }
+        if (nCol > numCols)  //There's no empty spot in this row for the cell data.
+        {
+          dump("In msiEditor.js, msiGetRowAndColumnData(), problem with too many cells in row [" + nRow + "].\n");
+          return;
+        }
+        aTableData.cellInfoArray[nRow-1][nCol-1] = {mNode : cellNode};
+        if (cellNode.hasAttribute("colspan"))
+          colspan = Number(cellNode.getAttribute("colspan"));
+        if (colspan == 0)
+          colspan = numCols - nCol + 1;
+        else if (colspan > numCols - nCol + 1)
+          colspan = numCols - nCol + 1;
+        if (cellNode.hasAttribute("rowspan"))
+          colspan = Number(cellNode.getAttribute("rowspan"));
+        if (rowspan == 0)
+          rowspan = numRows - nRow + 1;
+        else if (rowspan > numRows - nRow + 1)
+          rowspan = numRows - nRow + 1;
+        setRowData(aTableData, nRow-1, "lastNonemptyCell", nCol - 2 + colspan);
+        setColData(aTableData, nCol-1, "lastNonemptyCell", nRow - 2 + rowspan);
+        if (colspan != 1)
+        {
+          aTableData.cellInfoArray[nRow-1][nCol-1].mColContinuation = colspan - 1;
+          setColData(aTableData, nCol-1, "firstCol", nCol - 1);
+          setColData(aTableData, nCol-1, "lastCol", nCol - 2 + colspan); //lastCol calculation is (nCol-1) + (colspan-1)
+        }
+        if (rowspan != 1)
+        {
+          aTableData.cellInfoArray[nRow-1][nCol-1].mRowContinuation = rowspan - 1;
+          setRowData(aTableData, nRow-1, "firstRow", nRow - 1);
+          setRowData(aTableData, nRow-1, "lastRow", nRow - 2 + rowspan);   //lastRow calculation is (nRow-1) + (rowspan-1)
+        }
+        for (var ii = 0; ii < rowspan; ++ii)
+        {
+          for (var jj = 0; jj < colspan; ++jj)
+          {
+            if (!ii && !jj)
+              continue;
+            if (!aTableData.cellInfoArray[nRow-1+ii][nCol-1+jj])
+              aTableData.cellInfoArray[nRow-1+ii][nCol-1+jj] = {mNode : cellNode, mRowContinuation : -ii, mColContinuation : -jj};
+//            aTableData.cellInfoArray[nRow-1+ii][nCol-1+jj].mNode = cellNode;
+//            aTableData.cellInfoArray[nRow-1+ii][nCol-1+jj].mRowContinuation = -ii-1;
+//            aTableData.cellInfoArray[nRow-1+ii][nCol-1+jj].mColContinuation = -jj-1;
+            if (ii > 0)
+            {
+              setRowData(aTableData, nRow-1+ii, "firstRow", nRow - 1);
+              setRowData(aTableData, nRow-1+ii, "lastRow", nRow - 2 + rowspan);
+            }
+            if (jj > 0)
+            {
+              setColData(aTableData, nCol-1+jj, "firstCol", nCol - 1);
+              setColData(aTableData, nCol-1+jj, "lastCol", nCol - 2 + colspan);
+            }
+          }
+        }
+        nCol += colspan;  //we don't change nRow here, incidentally - it can only change at the outer level of the loop (in the calling function).
+      break;
+      
+      default:
+        dump("In msiEditor.js, msiGetRowAndColumnData(), bad cell node passed in to addCellToList - node is [" + msiGetBaseName(cellNode) + "].\n");
+      break;
+    }
+  }
+
+//  for (var ix = 0; ix < tableElement.childNodes.length; ++ix)
+//  {
+  addRowsToList(retTableData, tableElement, nCurrRow);
+//  }
+
+  return retTableData;
+}
+
+function msiMergeArrayIntoArray( targArray, srcArray, orderFunction )
+{
+  function doInsertOne(anItem)
+  {
+    var bDone = false;
+    if (orderFunction)
+    {
+      for (var jx = 0; jx < targArray.length; ++jx)
+      {
+        var orderRes = orderFunction(targArray[jx], anItem);
+        if ( orderRes > 0 )
+        {
+          targArray.splice(jx, 1, anItem);
+          bDone = true;
+        }
+        else if (orderRes == 0)
+          bDone = true;
+      }
+    }
+    if (!bDone)  //this happens if either there is ordering but anItem belongs after all the others, or if there's no ordering
+      targArray.push(anItem);
+  }
+
+  for (var ix = 0; ix < srcArray.length; ++ix)
+  {
+    if (targArray.indexOf(srcArray[ix]) < 0)
+      doInsertOne(srcArray[ix]);
+  }
+}
+
+//WHAT'S LEFT TO DO:
+//  i) Need to ensure that the code descending into an mrow or mstyle to be a "wrapped" element gets executed everywhere.
+
+function msiPropertiesObjectData() {}
+
+msiPropertiesObjectData.prototype = 
+{
+
+// NOTE: We're probably abandoning all this "ContentType" stuff...
+//  //Constants: represents a jumbled attempt to identify some orthogonal properties (which can hopefully be improved
+//  //  into a coherent attempt) Below, the phrase "selected text" indicates "content under consideration", which may not
+//  //  be the same as the on-screen selection, and of course may not be "text".
+//  ContentType_Unknown : 0,
+//  ContentType_Node : 1,  //the selected text is the content of a single node (and not one of the special cases below).
+//  ContentType_Character : 2,  //The selected text is a character within a (Text) node.
+//  ContentType_Characters : 3,  //The selected text is a string of characters within a Text node.
+//  ContentType_Space : 4,       //The selected text is a space character within a text node. (Other special spacing objects will occur as ContentType_Node.)
+//  ContentType_Table : 5,   //The selected text is a table.
+//  ContentType_TableCell : 0x11,  //The selected text is a table cell.
+//  ContentType_TableCellGroup : 0x12,  //The selected text is a group (block?) of table cells.
+//  ContentType_TableRows : 0x14,  //The selected text consists of a group of cells spanning entire table rows. This may or may not be the same as a <tr>.
+//  ContentType_TableColumns : 0x18, //The selected text consists of a group of cells spanning entire table columns.
+
+//Constants and data:
+  Selected_SomeSelected : 1,
+  Selected_SomeUnselected : 2,
+  Selected_MixedSelection : 3,
+
+  menuStr : null,
+  commandStr : null,
+  scriptStr : null,
+
+//Interface:
+  initFromNode : function(aNode, editorElement)
+  {
+    this.setEditorElement(editorElement);
+    this.mNode = aNode;
+//    this.mContentType = this.ContentType_Node;
+    this.finishInit();
+  },
+
+  initFromSelection : function(editorElement)
+  {
+    this.setEditorElement(editorElement);
+    var theEditor = msiGetEditor(this.mEditorElement);
+    var containerData = msiGetSelectionContainer(editorElement);
+    if (containerData)
+      this.mNode = containerData.node;
+    this.mSelection = [];
+    if (theEditor)
+    {
+      for (var ix = 0; ix < theEditor.selection.rangeCount; ++ix)
+        this.mSelection.push( theEditor.selection.getRangeAt(ix).cloneRange() );
+    }
+    this.finishInit();
+//    this.initFromData(rangeArray, editorElement);  
+  },
+
+//  initFromData : function(rangeArray, editorElement)
+//  {
+//    this.mEditorElement = editorElement;
+//    this.mSelection = rangeArray;
+//    this.mNode = 
+////    this.mContentType = this.getContentType();
+//    this.finishInit();
+//  },
+
+  doSelectItems : function(menuLabel)
+  {
+    var editorElement = this.mEditorElement;
+    if (!editorElement)
+      this.mEditorElement = editorElement = msiGetActiveEditorElement();
+    var theEditor = msiGetEditor(editorElement);
+    var aNode, aRange, aRangeArray;
+    aRange = this.getRange();
+    if (aRange)
+      aRangeArray = [aRange];
+    else
+      aRangeArray = this.getRangeArray();
+    if (aRangeArray)
+    {
+      theEditor.selection.removeAllRanges();
+      for (var ii = 0; ii < aRangeArray.length; ++ii)
+        theEditor.selection.addRange(aRangeArray[ii]);
+      return;
+    }
+    aNode = this.getNode();
+    if (aNode)
+    {
+      theEditor.selectElement(aNode);
+      return;
+    }
+    else
+      dump("Trouble in msiEditor.js, in msiPropertiesObject.doSelectItems - we don't have a node, range, or range array to select!\n");
+  },
+
+  getReferenceNode : function()  //The "reference Node" is intended to be the Node used to index or look up a properties dialog in our list of properties dialogs.
+  {
+    var retNode = this.getNode();
+    if (retNode)
+      return retNode;
+    //otherwise we represent a selection - or should a character in a text run be a special case?
+
+  },
+
+  getNode : function()
+  {
+    return this.mNode;
+  },
+
+  getRange : function()
+  {
+    if (this.mSelection && this.mSelection.length == 1)
+      return this.mSelection[0];
+    return null;
+  },
+
+  getRangeArray : function()
+  {
+    if (this.mSelection && this.mSelection.length > 1)
+      return this.mSelection;
+    return null;
+  },
+
+  getTopNode : function()
+  {
+    if (this.mTopNode)
+      return this.mTopNode;
+    return this.getReferenceNode();
+  },
+
+  getMenuString : function(nWhich)
+  {
+    if ( (nWhich==0) && this.menuStr )
+      return this.menuStr;
+    return null;
+  },
+
+  getCommandString : function(nWhich)
+  {
+    if ( (nWhich==0) && this.commandStr )
+      return this.commandStr;
+    return null;
+  },
+
+  getScriptString : function(nWhich)
+  {
+    if ( (nWhich==0) && this.scriptStr )
+      return this.scriptStr;
+    return null;
+  },
+
+  hasReviseData : function(iter)
+  {
+    return ((iter == 0) && this.menuStr);
+  },
+
+//Implementation (non-interface) methods:
+  setEditorElement : function(editorElement)
+  {
+    if (!editorElement)
+      editorElement = msiGetActiveEditorElement();
+    this.mEditorElement = editorElement;
+  },
+
+  finishInit : function()
+  {
+    this.setTopNode();
+//    this.setStrings();
+  },
+
+  setStrings : function()
+  {
+    //Do nothing here. For a regular simple node-based properties data, the strings are set in the function creating us.
+  },
+
+  setTopNode : function()
+  {
+    var ourNode = this.getReferenceNode();
+    var parentNode = msiNavigationUtils.findWrappingNode(ourNode);
+    if (parentNode != null)
+      this.mTopNode = parentNode;
+    else
+      this.mTopNode = ourNode;
+  },
+
+  //Need a function to "normalize" a range or selection. What we need to know is whether the range actually contains just one node,
+  //  or whether it's within a run of text and then how many characters it contains.
+  normalizeRange : function(aRange)
+  {
+    var retRange = aRange.cloneRange();
+    var topNode = retRange.commonAncestorContainer;
+    while (retRange.startContainer != topNode)  //in this case the startContainer is a descendant of topNode, and endContainer is a different descendant (or is topNode itself).
+    {
+      //We can only do anything to help if there's no content inside startContainer before us, in which case we can move the start outside.
+      //On the other hand, if the startContainer has no content after the range start we can move out to the right.
+      if (!msiNavigationUtils.nodeHasContentBeforeRangeStart(retRange, retRange.startContainer))
+        retRange.setStartBefore(retRange.startContainer);
+      else if (!msiNavigationUtils.nodeHasContentAfterRangeStart(retRange, retRange.startContainer))
+        retRange.setStartAfter(retRange.startContainer);
+      else
+        break;
+    }
+    while (retRange.endContainer != topNode)  //in this case the endContainer is a descendant of topNode, and startContainer is a different descendant (or is topNode itself).
+    {
+      //We can only do anything to help if there's no content inside endContainer after us, in which case we can move the end outside.
+      if (!msiNavigationUtils.nodeHasContentAfterRangeEnd(retRange, retRange.endContainer))
+        retRange.setEndAfter(retRange.endContainer);
+      else if (!msiNavigationUtils.nodeHasContentBeforeRangeEnd(retRange, retRange.endContainer))
+        retRange.setEndBefore(retRange.endContainer);
+      else
+        break;
+    }
+    return retRange;
+  }
+
+//  getContentType : function()
+//  {
+//    if (this.mContentType && (this.mContentType != this.ContentType_Unknown))
+//      return this.mContentType;
+//
+//    if (this.mNode)
+//    {
+//      this.mContentType = this.contentTypeFromNode(this.mNode);
+//      return this.mContentType;
+//    }
+//    
+//    //Otherwise we're looking at a selection. Is it just a range?
+//    var theRange = this.getRange();
+//    if (theRange)
+//    {
+//      this.mContentType = this.contentTypeFromRange(theRange);
+//      return this.mContentType;
+//    }
+//
+//    //Must be a complex selection:
+//    var rangeArray = this.getRangeArray();
+//    if (rangeArray)
+//    {
+//      this.mContentType = this.contentTypeFromRangeArray(rangeArray);
+//      return this.mContentType;
+//    }
+//
+//    this.mContentType = this.ContentType_Unknown;
+//    return this.mContentType;
+//  },
+//
+//  contentTypeFromNode : function(aNode)
+//  {
+//    var retType = this.mContentType_Node;
+//    switch(msiGetBaseNodeName(aNode))
+//    {
+//      case '':  //node without a name? probably a null node passed in.
+//        retType = this.ContentType_Unknown;
+//      break;
+//      case 'mtd':
+//      case 'td':
+//      case 'th':
+//        retType = this.ContentType_TableCell;
+//      break;
+//      case 'mtable':
+//      case 'table':
+//        retType = this.ContentType_Table;
+//      break;
+//      case 'mtr':
+//      case 'mlabeledtr':
+//      case 'tr':
+//        retType = this.ContentType_TableRows;
+//      break;
+//      case '#text':
+//        if (aNode.textContent.length > 1)
+//          retType = this.ContentType_Characters;
+//        else if (aNode.textContent.length < 1)
+//          retType = this.ContentType_Unknown;
+//        else  //Have to look at the content
+//        {
+//          if (msiNavigationUtils.isWhiteSpace(aNode.textContent))
+//            retType = this.ContentType_Space;
+//          else
+//            retType = this.ContentType_Character;
+//        }
+//      break;
+//    }
+//    return retType;
+//  },
+
+//  contentTypeFromRange : function(theRange)
+//  {
+//    var retType = this.ContentType_Unknown;
+//    var testRange = this.normalizeRange(theRange);
+//    if (testRange.startContainer == testRange.endContainer)
+//    {
+//      var nLength = testRange.endOffset - testRange.startOffset;
+//      if ( ("childNodes" in testRange.startContainer) && (testRange.startContainer.childNodes.length >= testRange.endOffset) )
+//      {
+//        if (nLength == 1)
+//          retType = this.contentTypeFromNode(testRange.startContainer.childNodes[testRange.endOffset-1]);
+//      }
+//      if (retType == this.ContentType_Unknown)
+//      {
+//        switch(msiGetBaseNodeName(testRange.startContainer))
+//        {
+//          case '#text':
+//            var theText = testRange.startContainer.textContent;
+//            if (theText.length >= testRange.endOffset)
+//            {
+//              if (nLength > 1)
+//                retType = this.ContentType_Characters;
+//              else if (nLength < 1)
+//                retType = this.ContentType_Unknown;
+//              else  //Have to look at the content
+//              {
+//                if (msiNavigationUtils.isWhiteSpace(theText.substr(testRange.startOffset, 1))
+//                  retType = this.ContentType_Space;
+//                else
+//                  retType = this.ContentType_Character;
+//              }
+//            }
+//          break;
+//          case 'mtd':
+//          case 'td':
+//          case 'th':  //in this case we're some subset of a table cell - can't do anything for this
+//          break;
+//          case 'mtr':
+//          case 'mlabeledtr':
+//          case 'tr':
+//          case 'table':
+//            retType = this.contentTypeForTable([testRange]); //pass it as a single-entry array
+//          break;
+//          default:
+//          break;
+//        }
+//      }
+//    }
+//    return retType;
+//  },
+
+};
+
+function msiCharPropertiesObjectData() {}
+msiCharPropertiesObjectData.prototype = 
+{
+//Data:
+  mOffset : null,
+  mText : null,
+
+//Interface:
+  //Note that in this function the text to be possibly modified is to the LEFT of "anOffset".
+  initFromNodeAndOffset : function(aNode, anOffset, editorElement)
+  {
+    this.setEditorElement(editorElement);
+    this.mNode = aNode;
+    if (anOffset > 0)
+      this.mOffset = anOffset - 1;
+    else
+      this.mOffset = 0;
+    this.mText = aNode.textContent.substr(this.mOffset, 1);
+    this.examineText();
+    this.setTopNode();
+  },
+
+  initFromSelection : function(aSelection, editorElement)
+  {
+    this.setEditorElement(editorElement);
+    var containerData = msiGetSelectionContainer(editorElement);
+    var container = containerData ? containerData.node : null;
+    this.mNode = container;
+    if (aSelection.rangeCount == 1)
+    {
+      theRange = aSelection.getRangeAt(0);
+      if ( (theRange.startContainer == container) && (theRange.endContainer == container) )  //are there any other cases to consider?
+      {
+        this.mText = container.textContent.substr(theRange.startOffset, theRange.endOffset - theRange.startOffset);
+        this.mOffset = theRange.startOffset;
+      }
+    }
+    this.examineText();
+    this.setTopNode();
+  },
+
+  doSelectItems : function(menuLabel)
+  {
+    var editorElement = this.mEditorElement;
+    if (!editorElement)
+      this.mEditorElement = editorElement = msiGetActiveEditorElement();
+    var theEditor = msiGetEditor(editorElement);
+    var aNode, aRange, aRangeArray;
+    aRange = this.getRange();
+    if (aRange)
+      aRangeArray = [aRange];
+    else
+      aRangeArray = this.getRangeArray();
+    if (aRangeArray)
+    {
+      theEditor.selection.removeAllRanges();
+      for (var ii = 0; ii < aRangeArray.length; ++ii)
+        theEditor.selection.addRange(aRangeArray[ii]);
+      return;
+    }
+    aNode = this.getNode();
+    if (aNode)
+    {
+      theEditor.selectElement(aNode);
+      return;
+    }
+    else
+      dump("Trouble in msiEditor.js, in msiPropertiesObject.doSelectItems - we don't have a node, range, or range array to select!\n");
+  },
+
+//Implementation:
+  setStrings : function()
+  {
+    //do nothing - the setting of appropriate strings should have taken place during the examineText() function
+    dump("In msiEditor.js, msiCharPropertiesObjectData.setStrings() was called - this shouldn't happen!\n");
+  },
+
+  examineText : function()
+  {
+    var objStr;
+    if (this.mText)
+    {
+      var spaceInfo = msiSpaceUtils.spaceInfoFromChars(this.mText);
+      if (spaceInfo != null)
+      {
+        switch(spaceInfo.theType)
+        {
+          case 'hspace':
+            objStr = GetString("HorizontalSpace");
+            this.commandStr = "cmd_reviseHorizontalSpaces";
+          break;
+
+          case 'vspace':
+            objStr = GetString("VerticalSpace");
+            this.commandStr = "cmd_reviseVerticalSpaces";
+          break;
+
+          case 'msibreak':
+            objStr = GetString("GenBreak");
+            this.commandStr = "cmd_msiReviseBreaks";
+          break;
+
+          default:
+          break;
+        }
+      }
+      else if (this.mText.length == 1)
+      {
+        objStr = GetString("Character");
+        this.commandStr = "cmd_reviseChars";
+      }
+
+      if (objStr)
+      {
+        this.menuStr = GetString("ObjectProperties").replace(/%obj%/,objStr);
+        var newRange = this.mNode.ownerDocument.createRange();
+        newRange.setStart(this.mNode, this.mOffset);
+        newRange.setEnd(this.mNode, this.mOffset + this.mText.length);
+        this.mSelection = [newRange];
+      }
+    }
+  }
+};
+
+msiCharPropertiesObjectData.prototype.__proto__ = msiPropertiesObjectData.prototype;
+
+function msiTablePropertiesObjectData() {}
+
+msiTablePropertiesObjectData.prototype = 
+{
+//Data:
+  menuStrings: [],
+  commandStrings : [],
+  scriptStrings : [],
+
+//Interface:
+  initFromNode : function(aNode, editorElement, bSelected)
+  {
+    this.setEditorElement(editorElement);
+    this.mStartNode = aNode;
+    switch(msiGetBaseNodeName(aNode))
+    {
+      case "mtd":
+      case "td":
+      case "th":
+        this.mCell = aNode;
+        this.mTableElement = msiGetContainingTableOrMatrix(aNode);
+      break;
+
+      case "mtr":
+      case "mlabeledtr":
+      case "tr":
+      case "thead":
+      case "tfoot":
+      case "tbody":
+        this.mTableElement = msiGetContainingTableOrMatrix(aNode);
+      break;
+
+      case "table":
+      case "mtable":
+        this.mTableElement = aNode;
+      break;
+    }
+    var aRange = aNode.ownerDocument.createRange();
+    //Is this right????? Yes - if we're being initialized from a node, it should be treated as selected for the purposes of finding containing rows and columns...
+    aRange.setEndAfter(aNode);
+    aRange.setStartBefore(aNode);
+    this.examineTable( [aRange] );
+    this.finishInit();
+  },
+
+  initFromSelection : function(selection, editorElement)
+  {
+    this.setEditorElement(editorElement);
+    this.mTableElement = msiGetContainingTableOrMatrix(rangeArray[0].startContainer);
+    this.examineTable(rangeArray);
+//    var tableDims = msiGetEnclosingTableOrMatrixDimensions(this.mEditorElement, this.mTableElement);
+//    this.mTableInfo = msiGetRowAndColumnData(this.mTableElement, tableDims, editorElement);
+//    this.markCellsInRangeArray(rangeArray);
+//    this.mRowSelection = this.getSelectionForWholeRows(rangeArray);
+//    this.mColSelection = this.getSelectionForWholeColumns(rangeArray);
+    this.mCell = this.getSingleSelectedCell();  //May, of course, be null
+//    if (!this.mNode && !this.mRowSelection && !this.mColSelection)
+      //does this mean the entire table is selected?
+
+    this.finishInit();
+  },
+
+  //This function should only be called after we've done all our work - and thus things SHOULD be readily available...
+  doSelectItems : function(menuLabel)
+  {
+    var editorElement = this.mEditorElement;
+    if (!editorElement)
+      this.mEditorElement = editorElement = msiGetActiveEditorElement();
+
+    var aNode, aRange, aRangeArray;
+    if (menuLabel == GetString("Table"))
+      aNode = this.mTableElement;
+    else if (menuLabel == GetString("TableCell"))  //This should only be available if our original selection is within a single table cell.
+    {
+      aNode = this.mCell;  //will this work?
+      if (!aNode)
+      {
+        dump("In msiTablePropertiesObjectData.doSelectItems(), mNode hasn't been set though we've reported TableCell as an option!\n");
+        aNode = this.getSingleSelectedCell();
+        //If this still fails, we'll return null and further operations will simply not happen.
+      }
+    }
+    else if (menuLabel == GetString("TableColumn"))
+      aRangeArray = this.mColSelection;
+    else if (menuLabel == GetString("TableRow"))
+      aRangeArray = this.mRowSelection;
+
+    var theEditor = msiGetEditor(editorElement);
+    aNode = this.getNode();
+    if (aNode)
+    {
+      theEditor.selectElement(aNode);
+      return;
+    }
+    aRange = this.getRange();
+    if (aRange)
+      aRangeArray = [aRange];
+    else
+      aRangeArray = this.getRangeArray();
+    if (aRangeArray)
+    {
+      theEditor.selection.removeAllRanges();
+      for (var ii = 0; ii < aRangeArray.length; ++ii)
+        theEditor.selection.addRange(aRangeArray[ii]);
+    }
+    else
+      dump("Trouble in msiEditor.js, in msiPropertiesObject.doSelectItems - we don't have a node, range, or range array to select!\n");
+  },
+
+  getReferenceNode : function()
+  {
+    return this.mTableElement;
+  },
+
+  getNode : function()
+  {
+    if (this.mStartNode)
+      return this.mStartNode;
+    if (this.mCell)
+      return this.mCell;
+    return null;
+  },
+
+  getRange : function()
+  {
+    if (this.mSelection && this.mSelection.length == 1)
+      return this.mSelection[0];
+    return null;
+  },
+
+  getRangeArray : function()
+  {
+    if (this.mSelection && this.mSelection.length > 1)
+      return this.mSelection;
+    return null;
+  },
+
+  getMenuString : function(nWhich)
+  {
+    if (this.menuStrings[nWhich])
+      return this.menuStrings[nWhich];
+    return null;
+  },
+
+  getCommandString : function(nWhich)
+  {
+    if (this.commandStrings[nWhich])
+      return this.commandStrings[nWhich];
+    return null;
+  },
+
+  getScriptString : function(nWhich)
+  {
+    if (this.scriptStrings[nWhich])
+      return this.scriptStrings[nWhich];
+    return null;
+  },
+
+  hasReviseData : function(iter)
+  {
+    return (iter < this.menuStrings.length);
+  },
+
+//Implementation (non-interface) methods:
+  setStrings : function()
+  {
+    var ourArray = ["mCell", "mRowSelection", "mColSelection", "mTableElement"];
+    var strArray = null;
+    var commandArray = null;
+    if (this.isMatrix())
+    {
+      strArray = ["MatrixCell", "MatrixRow", "MatrixColumn", "Matrix"];
+      commandArray = ["cmd_MSIreviseMatrixCellCmd", "cmd_MSIreviseMatrixRowsCmd", "cmd_MSIreviseMatrixColsCmd", "cmd_MSIreviseMatrixCmd"];
+    }
+    else
+    {
+      strArray = ["TableCell", "TableRow", "TableColumn", "Table"];
+      commandArray = ["cmd_editTableCell", "cmd_editTableRows", "cmd_editTableCols", "cmd_editTable"];
+    }
+
+    for (var ix = 0; !retStr && (ix < ourArray.length); ++ix)
+    {
+      if (this[ourArray[ix]] != null)
+      {
+        this.menuStrings.push( GetString( strArray[ix] ) );
+        this.commandStrings.push( commandArray[ix] );
+      }
+    }
+  },
+
+  examineTable : function(rangeArray)
+  {
+    var tableDims = msiGetEnclosingTableOrMatrixDimensions(this.mEditorElement, this.mTableElement);
+    this.mTableInfo = msiGetRowAndColumnData(this.mTableElement, tableDims, editorElement);
+    this.markCellsInRangeArray(rangeArray);
+    this.mRowSelection = this.getSelectionForWholeRows(rangeArray);
+    this.mColSelection = this.getSelectionForWholeColumns(rangeArray);
+  },
+
+//  contentTypeForTable : function(rangeArray)
+//  {
+//    if (!this.mTableElement || !this.mTableInfo)
+//      this.initFromData(rangeArray);
+////Now need to decide among:
+////  ContentType_Table : 5,   //The selected text is a table.
+////  ContentType_TableCell : 0x11,  //The selected text is a table cell.
+////  ContentType_TableCellGroup : 0x12,  //The selected text is a group (block?) of table cells.
+////  ContentType_TableRows : 0x14,  //The selected text consists of a group of cells spanning entire table rows. This may or may not be the same as a <tr>.
+////  ContentType_TableColumns : 0x18, //The selected text consists of a group of cells spanning entire table columns.
+//    
+//  },
+
+  markCellsInRange : function(aRange, tableInfo)
+  {
+    var testRange = this.normalizeRange(aRange);
+    var parent = testRange.commonAncestorContainer;
+
+    function markRowSelected(tableData, nWhichRow, nSelectionType)
+    {
+      if (!tableData.rowsData[nWhichRow])
+        tableData.rowsData[nWhichRow] = new Object();
+      if (!tableData.rowsData[nWhichRow].mSelected)
+        tableData.rowsData[nWhichRow].mSelected = nSelectionType;
+      else
+        tableData.rowsData[nWhichRow].mSelected |= nSelectionType;
+    }
+
+    function markColumnSelected(tableData, nwhichCol, nSelectionType)
+    {
+      if (!tableData.rowsData[nWhichCol])
+        tableData.colsData[nWhichCol] = new Object();
+      if (!tableData.colsData[nWhichCol].mSelected)
+        tableData.colsData[nWhichCol].mSelected = nSelectionType;
+      else
+        tableData.colsData[nWhichCol].mSelected |= nSelectionType;
+    }
+
+    function markCellSelected(aCell, tableData, nSelectionType)
+    {
+      var bDone = false;
+      for (var ii = 0; !bDone && (ii < tableData.m_nRows); ++ii)
+      {
+        for (var jj = 0; !bDone && (jj < tableData.cellInfoArray[ii].length); ++jj)
+        {
+          if ( tableData.cellInfoArray[ii][jj] && tableData.cellInfoArray[ii][jj].mNode && (tableData.cellInfoArray[ii][jj].mNode == aCell) )
+          {
+            //Since we'll come first to the top left corner of an "extended" cell, we worry only about setting things to our right and below us.
+            //  (Recall from above that we recorded negative "mContinuation" values for the cells not at the upper left.)
+            for (var kk = 0; kk <= tableData.cellInfoArray[ii][jj].mRowContinuation; ++kk)
+            {
+              for (var ll = 0; ll <= tableData.cellInfoArray[ii][jj].mColContinuation; ++ll)
+              {
+                if (tableData.cellInfoArray[ii + kk][jj + ll].mSelected)
+                  tableData.cellInfoArray[ii + kk][jj + ll].mSelected |= nSelectionType;
+                else
+                  tableData.cellInfoArray[ii + kk][jj + ll].mSelected = nSelectionType;
+                markColSelected(tableData, jj + ll, nSelectionType);
+              }
+              markRowSelected(tableData, ii + kk, nSelectionType);
+            }
+            bDone = true;
+          }
+        }
+      }
+      return bDone;
+    }
+
+    function markCellsInNode(aNode, aRange, tableInfo)
+    {
+      var startPos = 0;
+      var endPos = msiNavigationUtils.lastOffset(aNode);
+      if (aRange)
+      {
+        if (aRange.startContainer == aNode)
+          startPos = aRange.startOffset;
+        if (aRange.endContainer == aNode)
+          endPos = aRange.endOffset;
+      }
+
+      switch( msiGetBaseNodeName(aNode) )
+      {
+        case "mtd":
+        case "td":
+        case "th":
+          if (!aRange)
+            markCellSelected(aNode, tableInfo, this.Selected_SomeSelected);
+          else if (aRange.collapsed)
+            markCellSelected(aNode, tableInfo, this.Selected_MixedSelection);  //"3" means the cell is partially selected
+          else if (msiNavigationUtils.nodeHasContentBeforeRangeStart(aRange, aNode) || msiNavigationUtils.nodeHasContentAfterRangeEnd(aRange, aNode))
+            markCellSelected(aNode, tableInfo, this.Selected_MixedSelection);  //"3" means the cell is partially selected
+          else
+            markCellSelected(aNode, tableInfo, this.Selected_SomeSelection);
+        break;
+
+        case "mtr":
+        case "mlabeledtr":
+        case "tr":
+        case "thead":
+        case "tfoot":
+        case "tbody":
+        case "table":
+        case "mtable":
+          for (var ix = startPos; ix < endPos; ++ix)
+          {
+            if (aNode.childNodes[ix])
+              markCellsInNode(aNode.childNodes[ix], null, tableInfo);
+          }
+        break;
+
+        default:
+        break;
+      }
+    }
+
+    while (testRange.startContainer != parent)
+    {
+      markCellsInNode(testRange.startContainer, testRange, this.mTableInfo);
+      testRange.setStartAfter(testRange.startContainer);
+    }
+    while (testRange.endContainer != parent)
+    {
+      markCellsInNode(testRange.endContainer, testRange, this.mTableInfo);
+      testRange.setEndBefore(testRange.endContainer);
+    }
+
+    if (testRange.startContainer == testRange.endContainer)
+      markCellsInNode(testRange.startContainer, testRange, this.mTableInfo);
+  },
+
+  markCellsInRangeArray : function(rangeArray)
+  {
+    //For starters, we'll assume (as does code elsewhere) that the array of ranges in a Selection is always document-ordered.
+    //  This should be tested, however. (And we're also assuming that any array of ranges passed to this function came from an
+    //  actual selection in the document.)
+//    var currRangeStart = 0;
+//    var bAfterStart = false;
+//    var bBeforeEnd = false;
+
+    function checkRowSelection(tableData)
+    {
+      var bAllSelected = true;
+      for (var ii = 0; ii < tableData.rowsData.length; ++ii)
+      {
+        if (tableData.rowsData[ii] && ("mSelected" in tableData.rowsData[ii]) && (tableData.rowsData[ii].mSelected == this.Selection_SomeSelected) )
+        {
+          bAllSelected = true;
+          for (var jj = 0; bAllSelected && jj < tableData.m_nRows; ++jj)
+          {
+            bAllSelected = ( tableData.cellInfoArray[ii][jj] && ("mSelected" in tableData.cellInfoArray[ii][jj]) && (tableData.cellInfoArray[ii][jj].mSelected == this.Selection_SomeSelected) );
+          }
+          if (!bAllSelected)
+            tableData.rowsData[jj].mSelected |= this.Selection_SomeUnselected;
+        }
+      }
+    }
+
+    function checkColumnSelection(tableData)
+    {
+      var bAllSelected = true;
+      for (var jj = 0; jj < tableData.colsData.length; ++jj)
+      {
+        if (tableData.colsData[jj] && ("mSelected" in tableData.colsData[jj]) && (tableData.colsData[jj].mSelected == this.Selection_SomeSelected) )
+        {
+          bAllSelected = true;
+          for (var ii = 0; bAllSelected && ii < tableData.m_nRows; ++ii)
+          {
+            bAllSelected = ( tableData.cellInfoArray[ii][jj] && ("mSelected" in tableData.cellInfoArray[ii][jj]) && (tableData.cellInfoArray[ii][jj].mSelected == this.Selection_SomeSelected) );
+          }
+          if (!bAllSelected)
+            tableData.colsData[jj].mSelected |= this.Selection_SomeUnselected;
+        }
+      }
+    }
+
+    for (var ii = 0; ii < rangeArray.length; ++ii)
+    {
+      this.markCellsInRange(rangeArray[ii], ii);
+    }
+
+    checkRowSelection(this.mTableInfo);
+    checkColumnSelection(this.mTableInfo);
+  },
+
+  //A return of null from this function means the existing selection contains whole rows. Otherwise, it's an array of Ranges.
+  getSelectionForWholeRows : function(rangeArray)
+  {
+    var retRangeArray = [];
+    var nRows = this.mTableInfo.m_nRows;
+    var nCols = this.mTableInfo.m_nCols;
+    var addRowsArray = [];
+    var extraRowsArray = [];
+    var bNeedExpandSel = false;
+    var tableElement = msiGetContainingTableOrMatrix(rangeArray[0].startContainer);
+
+    function checkARow(nWhichRow, extraRowArray, tableInfo)
+    {
+      var bAddRow = false;
+      var bWasSelected = true;
+      var newExtraRows = [];
+      var nExtraRow = -1;
+
+      if (tableInfo.rowsData[nWhichRow] && tableInfo.rowsData[nWhichRow].mSelected)
+      {
+        bAddRow = ( (tableInfo.rowsData[nWhichRow].mSelected & this.Selected_SomeSelected) != 0 );
+        if (bAddRow)
+          bWasSelected = (tableInfo.rowsData[nWhichRow].mSelected == this.Selected_SomeSelected);
+      }
+
+      if (bAddRow)
+      {
+        for (var ix = tableInfo.rowsData[nWhichRow].firstRow; ix <= tableInfo.rowsData[nWhichRow].lastRow; ++ix)
+        {
+//        extraRowArray = extraRowArray.concat(newExtraRows);
+          if (extraRowArray.indexOf(ix) < 0)
+            extraRowArray.push(ix);
+        }
+      }
+
+      //Finally, we only want to return TRUE if we're actually changing the selection.
+      bAddRow = bAddRow && !bWasSelected;
+      return bAddRow;
+    }
+
+    function getExtraRows( tableData, foundRows, rowsToCheck )
+    {
+      var newExtraRows = [];
+      for (var ii = 0; ii < rowsToCheck.length; ++ii)
+      {
+        if (tableData.rowsData[rowsToCheck[ii]] && tableData.rowsData[rowsToCheck[ii]].firstRow)
+        {
+          for (var jj = tableData.rowsData[rowsToCheck[ii]].firstRow; jj <= tableData.rowsData[rowsToCheck[ii]].lastRow; ++jj)
+          {
+            if (foundRows.indexOf(jj) < 0)
+              newExtraRows.push(jj);
+          }
+        }
+      }
+      return newExtraRows;
+    }
+    
+    function findRowParent(aNode)
+    {
+      var retParent = null;
+      for (var aParent = aNode; !retParent && aParent; aParent = aParent.parentNode)
+      {
+        switch(msiGetBaseNodeName(aParent))
+        {
+          case "mtr":
+          case "mlabeledtr":
+          case "tr":
+            return aParent;
+          break;
+
+          case "thead":
+          case "tfoot":
+          case "tbody":
+          case "table":
+          case "mtable":
+            return null;
+          break;
+        }
+      }
+      return null;
+    }
+
+    function addRowsToRangeList(rangeList, tableInfo, startingRow, endingRow)
+    {
+      var newRange = tableElement.ownerDocument.createRange();
+      var firstCellData =tableInfo.cellInfoArray[startingRow][0];
+      var nLastCell = tableInfo.m_nCols;
+      if ("lastNonemptyCell" in tableInfo.rowsData[endingRow])
+        nLastCell = tableInfo.rowsData[endingRow].lastNonemptyCell;
+      else
+      {
+        while (!tableInfo.cellInfoArray[endingRow][nLastCell] || !tableInfo.cellInfoArray[endingRow][nLastCell].mNode)
+          --nLastCell;
+      }
+      var lastCellData = tableInfo.cellInfoArray[endingRow][nLastCell];
+      var startRowNode = null;
+      var endRowNode = null;
+
+      if (firstCellData && lastCellData)
+      {
+        startRowNode = findRowParent(firstCellData.mNode);
+        endRowNode = findRowParent(lastCellData.mNode);
+        if (!startRowNode)
+          startRowNode = firstCellData.mNode;
+        if (!lastRowNode)
+          lastRowNode = lastCellData.mNode;
+      }
+
+      if (startRowNode == endRowNode)
+      {
+        newRange.selectNode(startRowNode);
+      }
+      else
+      {
+        newRange.setStartBefore(startRowNode);
+        newRange.setEndAfter(endRowNode);
+      }
+    }
+
+    for (var ix = 0; ix < nRows; ++ix)
+      bNeedExpandSel = checkARow(ix, addRowsArray, this.mTableInfo) || bNeedExpandSel;
+    addRowsArray.sort( function(a,b) {return (a-b);} );
+
+    extraRowsArray = extraRowsArray.concat(addRowsArray);
+    do
+    {
+      extraRowsArray = getExtraRows(extraRowsArray, addRowsArray);
+      msiMergeArrayIntoArray( addRowsArray, extraRowsArray, function(a,b) {return (a-b);} );
+    } while (extraRowsArray.length > 0);  //since this can only keep iterating if it's finding new rows, it has to terminate after nRows iterations at most
+
+    if (bNeedExpandSel)
+    {
+      if (addRowsArray.length == nRows)  //all rows are to be selected! Has to be the whole table
+      {
+        var newRange = tableElement.ownerDocument.createRange();
+        newRange.selectNode(tableElement);
+        retRangeArray.push(newRange);
+      }
+      else
+      {
+        var startRow = addRowsArray[0];
+        var endRow = addRowsArray[0];
+        for (var ii = 1; ii < addRowsArray.length; ++ii)
+        {
+          if (addRowsArray[ii] == endRow + 1)
+            ++endRow;
+          else
+          {
+            addRowsToRange(retRangeArray, this.mTableInfo, startRow, endRow);
+            startRow = endRow = addRowsArray[ii];
+          }
+        }
+        //Then there's one set left over to add after the loop:
+        addRowsToRange(retRangeArray, this.mTableInfo, startCol, endCol);
+      }
+    }
+    else
+      retRangeArray = null;
+
+    return retRangeArray;
+  },
+
+  //A return of null from this function means the existing selection contains whole columns. Otherwise, it's an array of Ranges.
+  getSelectionForWholeColumns : function(rangeArray)
+  {
+    var retRangeArray = [];
+    var nRows = this.mTableInfo.m_nRows;
+    var nCols = this.mTableInfo.m_nCols;
+    var addColsArray = [];
+    var extraColsArray = [];
+    var bNeedExpandSel = false;
+    var tableElement = msiGetContainingTableOrMatrix(rangeArray[0].startContainer);
+
+    function checkAColumn(nWhichCol, extraColArray, tableInfo)
+    {
+      var bAddCol = false;
+      var bWasSelected = true;
+      var newExtraCols = [];
+      var nExtraCol = -1;
+
+      if (tableInfo.colsData[nWhichCol] && tableInfo.colsData[nWhichCol].mSelected)
+      {
+        bAddCol = ( (tableInfo.colsData[nWhichCol].mSelected & this.Selected_SomeSelected) != 0 );
+        if (bAddCol)
+          bWasSelected = (tableInfo.colsData[nWhichCol].mSelected == this.Selected_SomeSelected);
+      }
+
+      if (bAddCol)
+      {
+        for (var ix = tableInfo.colsData[nWhichCol].firstCol; ix <= tableInfo.colsData[nWhichCol].lastCol; ++ix)
+        {
+//        extraColArray = extraColArray.concat(newExtraCols);
+          if (extraColArray.indexOf(ix) < 0)
+            extraColArray.push(ix);
+        }
+      }
+
+      //Finally, we only want to return TRUE if we're actually changing the selection.
+      bAddCol = bAddCol && !bWasSelected;
+      return bAddCol;
+    }
+
+    function addColsToRangeList(rangeList, tableInfo, startingCol, endingCol)
+    {
+      var newRange = null;
+      for (var ix = 0; ix < tableInfo.m_nRows; ++ix)
+      {
+        newRange = tableElement.ownerDocument.createRange();
+        if (startingCol == endingCol)
+          newRange.selectNode(tableInfo.cellInfoArray[ix][startingCol].mNode);
+        else
+        {
+          newRange.setStartBefore(tableInfo.cellInfoArray[ix][startingCol].mNode);
+          newRange.setEndAfter(tableInfo.cellInfoArray[ix][endingCol].mNode);
+        }
+        rangeList.push(newRange);
+      }
+    }
+
+    function getExtraCols( tableData, foundCols, colsToCheck )
+    {
+      var newExtraCols = [];
+      for (var ii = 0; ii < colsToCheck.length; ++ii)
+      {
+        if (tableData.colsData[colsToCheck[ii]] && tableData.colsData[colsToCheck[ii]].firstCol)
+        {
+          for (var jj = tableData.colsData[colsToCheck[ii]].firstCol; jj <= tableData.colsData[colsToCheck[ii]].lastCol; ++jj)
+          {
+            if (foundCols.indexOf(jj) < 0)
+              newExtraCols.push(jj);
+          }
+        }
+      }
+      return newExtraCols;
+    }
+    
+    for (var jx = 0; jx < nCols; ++jx)
+      bNeedExpandSel = checkAColumn(jx, addColsArray, this.mTableInfo) || bNeedExpandSel;
+    addColsArray.sort( function(a,b) {return (a-b);} );
+
+    extraColsArray = extraColsArray.concat(addColsArray);
+    do
+    {
+      extraColsArray = getExtraCols(extraColsArray, addColsArray);
+      msiMergeArrayIntoArray( addColsArray, extraColsArray, function(a,b) {return (a-b);} );
+    } while (extraColsArray.length > 0);  //since this can only keep iterating if it's finding new rows, it has to terminate after nRows iterations at most
+
+
+    if (bNeedExpandSel)
+    {
+      if (addColsArray.length == nCols)  //all columns are to be selected! Has to be the whole table
+      {
+        var newRange = tableElement.ownerDocument.createRange();
+        newRange.selectNode(tableElement);
+        retRangeArray.push(newRange);
+      }
+      else
+      {
+        var startCol = addColsArray[0];
+        var endCol = addColsArray[0];
+        for (var ii = 1; ii < addColsArray.length; ++ii)
+        {
+          if (addColsArray[ii] == endCol + 1)
+            ++endCol;
+          else
+          {
+            addColsToRange(retRangeArray, this.mTableInfo, startCol, endCol);
+            startCol = endCol = addColsArray[ii];
+          }
+        }
+        //Then there's one set left over to add after the loop:
+        addColsToRange(retRangeArray, this.mTableInfo, startCol, endCol);
+      }
+    }
+    else
+      retRangeArray = null;
+
+    return addColsArray;
+  },
+
+  getSingleSelectedCell : function()
+  {
+    var retCell = null;
+    var bDone = false;
+    for (var ix = 0; !bDone && (ix < this.mTableInfo.m_nRows); ++ix)
+    {
+      for (var jx = 0; !bDone && (jx < this.mTableInfo.m_nCols); ++jx)
+      {
+        if (this.mTableInfo.cellInfoArray[ix][jx] && this.mTableInfo.cellInfoArray[ix][jx].mSelected)
+        {
+          if (retCell && (retCell != this.mTableInfo.cellInfoArray[ix][jx].mNode))
+          {
+            bDone = true;
+            retCell = null;  //There isn't just a single cell to report!
+          }
+          else
+            retCell = this.mTableInfo.cellInfoArray[ix][jx].mNode;
+        }
+      }
+    }
+    return retCell;
+  }
+
+};
+
+msiTablePropertiesObjectData.prototype.__proto__ = msiPropertiesObjectData.prototype;
+
 function msiInitObjectPropertiesMenuitem(editorElement, id)
 {
   // Set strings and enable for the [Object] Properties item
@@ -4081,43 +5727,55 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
 //  }
   var subPopup = document.getElementById(menuInfo.popupID);
   var menuItem = document.getElementById(menuInfo.itemID);
-  var nodeData;
+//  var nodeData;
   var element;
   var menuStr = GetString("AdvancedProperties");
   var name;
+  var propsData = null;
+  var nextNode = null;
+  var commandStr, scriptStr;
 
   if (msiIsEditingRenderedHTML(editorElement))
   {
-    nodeData = msiGetObjectDataForProperties(editorElement);
-    if (nodeData && nodeData.theNode != null)
-      element = nodeData.theNode;
+    propsData = msiGetObjectDataForProperties(editorElement);
+//    if (propsData && propsData.getReferenceNode != null)
+    if (propsData)
+    {
+      element = propsData.getReferenceNode();
+      nextNode = propsData.getTopNode().parentNode;
+    }
   }
 
-
-  var propsData = null;
-  if (element)
-    propsData = getObjectPropertiesDataFromNodeData(editorElement, element, false);
-  else
+//  if (element)
+//    propsData = getObjectPropertiesDataFromNodeData(editorElement, element, false);
+//  else
+  if (!element)
     element = editor.selection.getRangeAt(0).commonAncestorContainer;
+
   if (propsData)
   {
-    menuStr = propsData.menuStr;
+    menuStr = propsData.getMenuString(0);
     menuItem.removeAttribute("disabled");
     subPopup.origSelection = copyCurrSelection(editor);
-
-    if (propsData.commandStr)
+    commandStr = propsData.getCommandString(0);
+    if (commandStr)
     {
 //      menuItem.setAttribute("oncommand", "msiPropMenuClearOrigSel('" + menuInfo.popupID + "'); msiDoAPropertiesDialogFromMenu('" + propsData.commandStr + "', this);");
-      menuItem.setAttribute("oncommand", "msiPropMenuResetOrigSel('" + menuInfo.popupID + "'); msiDoAPropertiesDialogFromMenu('" + propsData.commandStr + "', this);");
+      menuItem.setAttribute("oncommand", "msiPropMenuResetOrigSel('" + menuInfo.popupID + "'); msiDoAPropertiesDialogFromMenu('" + commandStr + "', this);");
       subMenu.defaultItem = menuItem;
-      subMenu.commandStr = propsData.commandStr;
+      subMenu.commandStr = commandStr;
     }
-    else if (propsData.scriptStr)
-      menuItem.setAttribute("oncommand", "msiPropMenuClearOrigSel('" + menuInfo.popupID + "');" + propsData.scriptStr);
+    else
+    {
+      scriptStr = propsData.getScriptString(0);
+      if (propsData.scriptStr)
+        menuItem.setAttribute("oncommand", "msiPropMenuClearOrigSel('" + menuInfo.popupID + "');" + scriptStr);
+    }
     menuItem.addEventListener("DOMMenuItemActive", msiPropertiesMenuItemHover, false);
 //How to generate a reasonable ID? But does it need one?
-    menuItem.refElement = propsData.theNode;
-    menuItem.refEditor = editorElement;
+    menuItem.propertiesData = propsData;
+    menuItem.refElement = propsData.getReferenceNode();
+    menuItem.refEditor = propsData.mEditorElement;
   }
   else
   {
@@ -4134,7 +5792,8 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
 //  if (bWasInitialized)
 //    dump("In msiEditor.js, msiInitObjectPropertiesMenuitem(), the subpopupmenu was previously initialized!\n");
 
-  var nextNode = element.parentNode;
+  if (!nextNode)
+    nextNode = element.parentNode;
   var lastCoreNode = element;
   var lastPropsData = propsData;
 
@@ -4161,22 +5820,22 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
     subPopup = subMenu.appendChild(subPopup);
   }
 
-  function addPropsMenuItem(prevPropData)
+//  function addPropsMenuItem(propData)
+  function addPropsMenuItem(propData, menuString, commandString, scriptString)
   {
     var item = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
                                            "menuitem");
 
-    if (prevPropData.commandStr)
-      item.setAttribute("oncommand", "msiPropMenuClearOrigSel('" + menuInfo.popupID + "'); msiDoAPropertiesDialogFromMenu('" + prevPropData.commandStr + "', this);");
-    else if (prevPropData.scriptStr)
-      item.setAttribute("oncommand", "msiPropMenuClearOrigSel('"+ menuInfo.popupID + "');" + prevPropData.scriptStr);
+//    if (propData.commandStr)
+    if (commandString)
+      item.setAttribute("oncommand", "msiPropMenuClearOrigSel('" + menuInfo.popupID + "'); msiDoAPropertiesDialogFromMenu('" + commandString + "', this);");
+    else if (scriptString)
+      item.setAttribute("oncommand", "msiPropMenuClearOrigSel('"+ menuInfo.popupID + "');" + scriptString);
     item.addEventListener("DOMMenuItemActive", msiPropertiesMenuItemHover, false);
-//How to generate a reasonable ID? But does it need one?
-//    item.id = "contexttagitem_"+id;
-    item.setAttribute("label", prevPropData.menuStr);
-    item.refElement = prevPropData.theNode;
+    item.setAttribute("label", menuString);
+    item.refElement = propData.getReferenceNode();
     item.refEditor = editorElement;
-//    item.setAttribute("value",target);
+    item.propertiesData = propData;
     if (!subPopup)
       createMorePropsSubmenu();
     if (!("origSelection" in subPopup))
@@ -4223,10 +5882,11 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
   while (nextNode != null)
   {
 //    propsData = getObjectPropertiesDataFromNodeData(editorElement, nextNode, !menuInfo.bIsContextMenu);
-    propsData = getObjectPropertiesDataFromNodeData(editorElement, nextNode, true);
+    propsData = msiCreatePropertiesObjectDataFromNode(nextNode, editorElement, true);
     if (propsData)
     {
-      if (!lastPropsData || (propsData.coreElement != lastPropsData.coreElement))  //we've hit a really new object
+//      if (!lastPropsData || (propsData.coreElement != lastPropsData.coreElement))  //we've hit a really new object
+      if (!lastPropsData || (propsData.getReferenceNode() != lastPropsData.getReferenceNode()))  //we've hit a really new object
       {
         if (!subMenu)
         {
@@ -4236,12 +5896,21 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
           dump("In msiEditor.js, in msiInitObjectPropertiesMenuitem(), subMenu is currently null - should no longer happen!\n");
           createMorePropsSubmenu();
         }
-        else
-          addPropsMenuItem(propsData);
+        menuStr = null;
+        for (var iter = 0; propsData.hasReviseData(iter); ++iter)
+        {
+          menuStr = propsData.getMenuString(iter);
+          commandStr = propsData.getCommandString(iter);
+          scriptStr = propsData.getScriptString(iter);
+          addPropsMenuItem(propsData, menuStr, commandStr, scriptStr);
+          //addPropsMenuItem(propsData);
+        }
       }
       lastPropsData = propsData;
+      nextNode = propsData.getTopNode().parentNode;
     }
-    nextNode = nextNode.parentNode;
+    else
+      nextNode = nextNode.parentNode;
   }
 //  if (subMenu && lastPropsData)
 //    addPropsMenuItem(lastPropsData);
@@ -4294,7 +5963,9 @@ function msiPropMenuResetOrigSel(popupID)
   var theEditorElement = null;
   if (thePopupMenu.childNodes.length)
   {
-    if ("refEditor" in thePopupMenu.childNodes[0])
+    if ("propertiesData" in thePopupMenu.childNodes[0])
+      theEditorElement = thePopupMenu.childNodes[0].propertiesData.mEditorElement;
+    if (!theEditorElement && ("refEditor" in thePopupMenu.childNodes[0]))
       theEditorElement = thePopupMenu.childNodes[0].refEditor;
   }
   var theEditor = msiGetEditor(theEditorElement);
@@ -4320,10 +5991,10 @@ function msiPropertiesMenuItemHover(event)
   var menuItem = event.currentTarget;
   if (!menuItem)
     menuItem = event.target;
-  if (menuItem.refElement && menuItem.refEditor)
-  {
+  if ( menuItem.propertiesData && ("doSelectItems" in menuItem.propertiesData) )
+    menuItem.propertiesData.doSelectItems();
+  else if (menuItem.refElement && menuItem.refEditor)
     msiGetEditor(menuItem.refEditor).selectElement(menuItem.refElement);
-  }
 }
 
 function msiInitParagraphMenu(editorElement)

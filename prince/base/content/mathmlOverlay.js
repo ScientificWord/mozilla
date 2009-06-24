@@ -42,6 +42,9 @@ function SetupMSIMathMenuCommands()
   commandTable.registerCommand("cmd_MSIreviseRadicalCmd",      msiReviseRadicalCmd);
 //  commandTable.registerCommand("cmd_MSIreviseScriptsCmd",      msiReviseScriptsCmd);
   commandTable.registerCommand("cmd_MSIreviseMatrixCmd",       msiReviseMatrixCmd);  //Need to implement!
+  commandTable.registerCommand("cmd_MSIreviseMatrixCellCmd",   msiReviseMatrixCmd);
+  commandTable.registerCommand("cmd_MSIreviseMatrixRowsCmd",   msiReviseMatrixCmd);
+  commandTable.registerCommand("cmd_MSIreviseMatrixColsCmd",   msiReviseMatrixCmd);
   commandTable.registerCommand("cmd_MSIreviseTensorCmd",       msiDoSomething);
   commandTable.registerCommand("cmd_MSIreviseMathnameCmd",     msiReviseMathnameCmd);
 //    commandTable.registerCommand("cmd_MSIreviseSymbolCmd",    msiReviseSymbolCmd);
@@ -107,6 +110,9 @@ function msiSetupMSIMathMenuCommands(editorElement)
   commandTable.registerCommand("cmd_MSIreviseRadicalCmd",      msiReviseRadicalCmd);
 //  commandTable.registerCommand("cmd_MSIreviseScriptsCmd",      msiReviseScriptsCmd);
   commandTable.registerCommand("cmd_MSIreviseMatrixCmd",       msiReviseMatrixCmd);
+  commandTable.registerCommand("cmd_MSIreviseMatrixCellCmd",   msiReviseMatrixCmd);
+  commandTable.registerCommand("cmd_MSIreviseMatrixRowsCmd",   msiReviseMatrixCmd);
+  commandTable.registerCommand("cmd_MSIreviseMatrixColsCmd",   msiReviseMatrixCmd);
   commandTable.registerCommand("cmd_MSIreviseTensorCmd",       msiDoSomething);
   commandTable.registerCommand("cmd_MSIreviseMathnameCmd",     msiReviseMathnameCmd);
 //    commandTable.registerCommand("cmd_MSIreviseSymbolCmd",    msiReviseSymbolCmd);
@@ -645,6 +651,8 @@ var msiMatrix =
   }
 };
 
+//"cmd_MSIreviseMatrixCellCmd", "cmd_MSIreviseMatrixRowsCmd", "cmd_MSIreviseMatrixColsCmd" also go through here.
+//  (Code should pay attention to "aCommand"!!)
 var msiReviseMatrixCmd =
 {
   isCommandEnabled: function(aCommand, dummy)
@@ -654,7 +662,7 @@ var msiReviseMatrixCmd =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement(window);
-    var theMatrix = aParams.getISupportsValue("reviseObject");
+    var theMatrixData = aParams.getISupportsValue("reviseObject");
     AlertWithTitle("mathmlOverlay.js", "In msiReviseMatrixCmd, trying to revise matrix, dialog unimplemented.");
 //    reviseFraction(editorElement, theFrac);
   },
@@ -663,6 +671,7 @@ var msiReviseMatrixCmd =
   {
   }
 };
+
 
 var msiColors =
 {
