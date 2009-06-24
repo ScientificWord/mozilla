@@ -69,6 +69,9 @@ function msiSetupHTMLEditorCommands(editorElement)
 
   commandTable.registerCommand("cmd_table",              msiInsertOrEditTableCommand);
   commandTable.registerCommand("cmd_editTable",          msiEditTableCommand);
+  commandTable.registerCommand("cmd_editTableCell",      msiEditTableCommand);
+  commandTable.registerCommand("cmd_editTableRows",      msiEditTableCommand);
+  commandTable.registerCommand("cmd_editTableCols",      msiEditTableCommand);
   commandTable.registerCommand("cmd_SelectTable",        msiSelectTableCommand);
   commandTable.registerCommand("cmd_SelectRow",          msiSelectTableRowCommand);
   commandTable.registerCommand("cmd_SelectColumn",       msiSelectTableColumnCommand);
@@ -423,10 +426,20 @@ function msiDoAPropertiesDialogFromMenu(command, menuItem)
 {
   var theElement = null;
   var editorElement = null;
-  if (menuItem && menuItem.refElement)
-    theElement = menuItem.refElement;
-  if (menuItem && menuItem.refEditor)
-    editorElement = menuItem.refEditor;
+  var propsData = null;
+  if (menuItem)
+  {
+    if (menuItem.propertiesData)
+    {
+      propsData = menuItem.propertiesData;
+      theElement = menuItem.propertiesData.getReferenceNode();
+      editorElement = menuItem.propertiesData.mEditorElement;
+    }
+    if (!theElement && menuItem.refElement)
+      theElement = menuItem.refElement;
+    if (!editorElement && menuItem.refEditor)
+      editorElement = menuItem.refEditor;
+  }
 
   if (!theElement || !command || !command.length)
   {
@@ -444,6 +457,8 @@ function msiDoAPropertiesDialogFromMenu(command, menuItem)
   }
 
   cmdParams.setISupportsValue("reviseObject", theElement);
+  if (propsData)
+    cmdParams.setISupportsValue("propertiesData", propsData);
   msiGoDoCommandParams(command, cmdParams, editorElement);
 }
 
@@ -3629,9 +3644,10 @@ var msiFormCommand =
     editorElement.focus();
   },
 
-  msiGetReviseObject: function(editor)
+  msiGetReviseObject: function(editorElement)
   {
     // Get a single selected form element
+    var editor = msiGetEditor(editorElement);
     var theFormElement = null;
     const kTagName = "form";
     try {
@@ -3689,10 +3705,11 @@ var msiInputTagCommand =
 //    editorElement.focus();
   },
 
-  msiGetReviseObject: function(editor)
+  msiGetReviseObject: function(editorElement)
   {
     var inputElement = null;
     const kTagName = "input";
+    var editor = msiGetEditor(editorElement);
     try {
       inputElement = editor.getSelectedElement(kTagName);
     } catch (e) {}
@@ -3722,10 +3739,11 @@ var msiInputImageCommand =
 //    editorElement.focus();
   },
 
-  msiGetReviseObject: function(editor)
+  msiGetReviseObject: function(editorElement)
   {
     var inputElement = null;
     const kTagName = "input";
+    var editor = msiGetEditor(editorElement);
     try {
       inputElement = editor.getSelectedElement(kTagName);
     } catch (e) {}
@@ -3754,10 +3772,11 @@ var msiTextAreaCommand =
 //    editorElement.focus();
   },
 
-  msiGetReviseObject: function(editor)
+  msiGetReviseObject: function(editorElement)
   {
     var textAreaElement = null;
     const kTagName = "textarea";
+    var editor = msiGetEditor(editorElement);
     try {
       textareaElement = editor.getSelectedElement(kTagName);
     } catch (e) {}
@@ -3806,10 +3825,11 @@ var msiSelectCommand =
 //    editorElement.focus();
   },
 
-  msiGetReviseObject: function(editor)
+  msiGetReviseObject: function(editorElement)
   {
     var selectElement = null;
     const kTagName = "select";
+    var editor = msiGetEditor(editorElement);
     try {
       selectElement = editor.getSelectedElement(kTagName);
     } catch (e) {}
@@ -3838,10 +3858,11 @@ var msiButtonCommand =
 //    editorElement.focus();
   },
 
-  msiGetReviseObject: function(editor)
+  msiGetReviseObject: function(editorElement)
   {
     var buttonElement = null;
     const kTagName = "button";
+    var editor = msiGetEditor(editorElement);
     try {
       buttonElement = editor.getSelectedElement(kTagName);
     } catch (e) {}
@@ -3887,7 +3908,7 @@ var msiLabelCommand =
 //    var tagName = "label";
     try {
       var editor = msiGetEditor(editorElement);
-      var labelElement = this.msiGetReviseObject(editor);
+      var labelElement = this.msiGetReviseObject(editorElement);
 //      // Find selected label or if start/end of selection is in label 
 //      var labelElement = editor.getSelectedElement(tagName);
 //      if (!labelElement)
@@ -3908,10 +3929,11 @@ var msiLabelCommand =
     } catch (e) {}
   },
 
-  msiGetReviseObject: function(editor)
+  msiGetReviseObject: function(editorElement)
   {
     var labelElement = null;
     const kTagName = "label";
+    var editor = msiGetEditor(editorElement);
     try {
       // Find selected label or if start/end of selection is in label 
       labelElement = editor.getSelectedElement(kTagName);
@@ -3966,10 +3988,11 @@ var msiFieldSetCommand =
 //    editorElement.focus();
   },
 
-  msiGetReviseObject: function(editor)
+  msiGetReviseObject: function(editorElement)
   {
     var fieldsetElement = null;
     const kTagName = "fieldset";
+    var editor = msiGetEditor(editorElement);
     try {
       // Find a selected fieldset, or if one is at start or end of selection.
       fieldsetElement = editor.getSelectedElement(kTagName);
@@ -4048,9 +4071,10 @@ var msiImageCommand =
 //    window.openDialog("chrome://editor/content/EdImageProps.xul","_blank", "chrome,close,titlebar,modal");
 //    editorElement.focus();
   },
-  msiGetReviseObject: function(editor)
+  msiGetReviseObject: function(editorElement)
   {
     var imageElement = null;
+    var editor = msiGetEditor(editorElement);
     try {
       var tagName = "img";
       imageElement = editor.getSelectedElement("input");
@@ -4427,48 +4451,53 @@ function msiInsertHorizontalSpace(dialogData, editorElement)
     dump("In msiInsertHorizontalSpace, inserting normal space.\n");
     return;
   }
-  var dimensionsFromSpaceType = 
-  {
-//    requiredSpace:
-//    nonBreakingSpace:
-    emSpace:        "1em",
-    twoEmSpace:       "2em",
-    thinSpace:      "0.17em",
-    thickSpace:     "0.5em",
-    italicCorrectionSpace: "0.083en",
-    negativeThinSpace:   "0.0em",
-    zeroSpace:           "0.0em",
-    noIndent:            "0.0em"
-  };
-  var contentFromSpaceType = 
-  {
-    requiredSpace:     "&#x205f;",  //MEDIUM MATHEMATICAL SPACE in Unicode?
-    nonBreakingSpace:  "&#x00a0;",
-    emSpace:           "&#x2003;",
-    twoEmSpace:          "&#x2001;",  //EM QUAD
-    thinSpace:         "&#x2009;",
-    thickSpace:        "&#x2002;",  //"EN SPACE" in Unicode?
-    italicCorrectionSpace:  "&#x200a;",  //the "HAIR SPACE" in Unicode?
-    zeroSpace:          "&#x200b;"
-//    negativeThinSpace:
-//    noIndent:
-  };
-  var specialShowInvisibleChars = 
-  {
-    noIndent:          "&#x2190;"  //left arrow
-  };
+//  var dimensionsFromSpaceType = 
+//  {
+////    requiredSpace:
+////    nonBreakingSpace:
+//    emSpace:        "1em",
+//    twoEmSpace:       "2em",
+//    thinSpace:      "0.17em",
+//    thickSpace:     "0.5em",
+//    italicCorrectionSpace: "0.083en",
+//    negativeThinSpace:   "0.0em",
+//    zeroSpace:           "0.0em",
+//    noIndent:            "0.0em"
+//  };
+//  var contentFromSpaceType = 
+//  {
+//    requiredSpace:     "&#x205f;",  //MEDIUM MATHEMATICAL SPACE in Unicode?
+//    nonBreakingSpace:  "&#x00a0;",
+//    emSpace:           "&#x2003;",
+//    twoEmSpace:          "&#x2001;",  //EM QUAD
+//    thinSpace:         "&#x2009;",
+//    thickSpace:        "&#x2002;",  //"EN SPACE" in Unicode?
+//    italicCorrectionSpace:  "&#x200a;",  //the "HAIR SPACE" in Unicode?
+//    zeroSpace:          "&#x200b;"
+////    negativeThinSpace:
+////    noIndent:
+//  };
+//  var specialShowInvisibleChars = 
+//  {
+//    noIndent:          "&#x2190;"  //left arrow
+//  };
   var spaceStr = "<hspace type=\"";
+  var dimsStr = null;
+  var contentStr = null;
   if (dialogData.spaceType != "customSpace")
   {
     spaceStr += dialogData.spaceType;
-    if (dialogData.spaceType in dimensionsFromSpaceType)
-      spaceStr += "\" dim=\"" + dimensionsFromSpaceType[dialogData.spaceType];
+    dimsStr = msiSpaceUtils.getHSpaceDims(dialogData.spaceType);
+    if (dimsStr)
+      spaceStr += "\" dim=\"" + dimsStr;
+//    if (dialogData.spaceType in dimensionsFromSpaceType)
+//      spaceStr += "\" dim=\"" + dimensionsFromSpaceType[dialogData.spaceType];
   }
   else if (dialogData.customSpaceData.customType == "fixed")
   {
     spaceStr += "customSpace\" dim=\"";
     spaceStr += String(dialogData.customSpaceData.fixedData.size) + dialogData.customSpaceData.fixedData.units;
-  spaceStr += "\" atEnd=\"" + (dialogData.customSpaceData.typesetChoice=="always"?"true":"false");
+    spaceStr += "\" atEnd=\"" + (dialogData.customSpaceData.typesetChoice=="always"?"true":"false");
   }
   else if (dialogData.customSpaceData.customType == "stretchy")
   {
@@ -4479,8 +4508,11 @@ function msiInsertHorizontalSpace(dialogData, editorElement)
     else if (dialogData.customSpaceData.stretchData.fillWith == "fillDots")
       spaceStr += "\" fillWith=\"dots";
   }
-  if (dialogData.spaceType in contentFromSpaceType)
-    spaceStr += "\">" + contentFromSpaceType[dialogData.spaceType] + "</hspace>";
+  contentStr = msiSpaceUtils.getHSpaceCharContent(dialogData.spaceType);
+  if (contentStr)
+    spaceStr += "\">" + contentStr + "</hspace>";
+//  if (dialogData.spaceType in contentFromSpaceType)
+//    spaceStr += "\">" + contentFromSpaceType[dialogData.spaceType] + "</hspace>";
   else
     spaceStr += "\"/>";
   dump("In msiInsertHorizontalSpace, inserting space: [" + spaceStr + "].\n");
@@ -4540,46 +4572,59 @@ function msiInsertVerticalSpace(dialogData, editorElement)
   var editor = msiGetEditor(editorElement);
 //  var parentNode = editor.selection.anchorNode;
 //  var insertPos = editor.selection.anchorOffset;
-  var dimensionsFromSpaceType = 
-  {
-//    requiredSpace:
-//    nonBreakingSpace:
-    smallSkip:        "3pt",
-    mediumSkip:       "6pt",
-    bigSkip:         "12pt"
-  };
-  var lineHeightFromSpaceType = 
-  {
-    strut:     "100%",
-    mathStrut: "100%"   //not really right, but for the moment
-  };
-  var contentFromSpaceType = 
-  {
-//    zeroSpace:          "&#x200b;"
-////    negativeThinSpace:
-////    noIndent:
-  };
-  var specialShowInvisibleChars = 
-  {
-    strut:          ""  //
-  };
+//  var dimensionsFromSpaceType = 
+//  {
+////    requiredSpace:
+////    nonBreakingSpace:
+//    smallSkip:        "3pt",
+//    mediumSkip:       "6pt",
+//    bigSkip:         "12pt"
+//  };
+//  var lineHeightFromSpaceType = 
+//  {
+//    strut:     "100%",
+//    mathStrut: "100%"   //not really right, but for the moment
+//  };
+//  var contentFromSpaceType = 
+//  {
+////    zeroSpace:          "&#x200b;"
+//////    negativeThinSpace:
+//////    noIndent:
+//  };
+//  var specialShowInvisibleChars = 
+//  {
+//    strut:          ""  //
+//  };
   var spaceStr = "<vspace type=\"";
   if (dialogData.spaceType != "customSpace")
   {
     spaceStr += dialogData.spaceType;
-    if (dialogData.spaceType in dimensionsFromSpaceType)
-      spaceStr += "\" dim=\"" + dimensionsFromSpaceType[dialogData.spaceType];
-    else if (dialogData.spaceType in lineHeightFromSpaceType)
-      spaceStr += "\" lineHt=\"" + lineHeightFromSpaceType[dialogData.spaceType];
+    var dimStr = msiSpaceUtils.getVSpaceDims(dialogData.spaceType);
+    var lineHtStr = null;
+//    if (dialogData.spaceType in dimensionsFromSpaceType)
+//      spaceStr += "\" dim=\"" + dimensionsFromSpaceType[dialogData.spaceType];
+//    else if (dialogData.spaceType in lineHeightFromSpaceType)
+//      spaceStr += "\" lineHt=\"" + lineHeightFromSpaceType[dialogData.spaceType];
+    if (dimStr)
+      spaceStr += "\" dim=\"" + dimStr;
+    else
+    {
+      lineHtStr = msiSpaceUtils.getVSpaceLineHeight(dialogData.spaceType);
+      if (lineHtStr)
+      spaceStr += "\" lineHt=\"" + lineHtStr;
+    }
   }
   else
   {
     spaceStr += "customSpace\" dim=\"";
     spaceStr += String(dialogData.customSpaceData.sizeData.size) + dialogData.customSpaceData.sizeData.units;
-  spaceStr += "\" atEnd=\"" + (dialogData.customSpaceData.typesetChoice=="always"?"true":"false");
+    spaceStr += "\" atEnd=\"" + (dialogData.customSpaceData.typesetChoice=="always"?"true":"false");
   }
-  if (dialogData.spaceType in contentFromSpaceType)
-    spaceStr += "\">" + contentFromSpaceType[dialogData.spaceType] + "</vspace>";
+//  if (dialogData.spaceType in contentFromSpaceType)
+//    spaceStr += "\">" + contentFromSpaceType[dialogData.spaceType] + "</vspace>";
+  var contentStr = msiSpaceUtils.getVSpaceCharContent(dialogData.spaceType);
+  if (contentStr)
+    spaceStr += "\">" + contentStr + "</vspace>";
   else
     spaceStr += "\"/>";
   dump("In msiInsertVerticalSpace, inserting space: [" + spaceStr + "].\n");
@@ -4705,27 +4750,30 @@ function msiInsertBreaks(dialogData, editorElement)
   var editor = msiGetEditor(editorElement);
 //  var parentNode = editor.selection.anchorNode;
 //  var insertPos = editor.selection.anchorOffset;
-  var contentFromBreakType =
-  {
-    allowBreak:             "&#x200b;",  //this is the zero-width space
-    discretionaryHyphen:    "&#x00ad;",
-    noBreak:                "&#x2060;",
-    pageBreak:              "&#x000c;",  //formfeed?
-    newPage:                "&#x000c;",  //formfeed?
-    lineBreak:              "<br xmlns=\"" + xhtmlns + "\"></br>",
-    newLine:                "<br xmlns=\"" + xhtmlns + "\"></br>"
-  };
-  var alternateContentFromBreakType = 
+//  var contentFromBreakType =
+//  {
+//    allowBreak:             "&#x200b;",  //this is the zero-width space
+//    discretionaryHyphen:    "&#x00ad;",
+//    noBreak:                "&#x2060;",
+//    pageBreak:              "&#x000c;",  //formfeed?
+//    newPage:                "&#x000c;",  //formfeed?
+//    lineBreak:              "<br xmlns=\"" + xhtmlns + "\"></br>",
+//    newLine:                "<br xmlns=\"" + xhtmlns + "\"></br>"
+//  };
+//  var alternateContentFromBreakType = 
+//
+//  {
+//    allowBreak:             "|",
+//    discretionaryHyphen:    "-",
+//    noBreak:                "~",
+//    pageBreak:              "&#x21b5;",
+//    newPage:                "&#x21b5;",
+//    lineBreak:              "&#x21b5;",
+//    newLine:                "&#x21b5;"
+//  };
 
-  {
-    allowBreak:             "|",
-    discretionaryHyphen:    "-",
-    noBreak:                "~",
-    pageBreak:              "&#x21b5;",
-    newPage:                "&#x21b5;",
-    lineBreak:              "&#x21b5;",
-    newLine:                "&#x21b5;"
-  };
+  var invisStr = msiSpaceUtils.getBreakShowInvis(dialogData.breakType);
+  var contentStr = msiSpaceUtils.getBreakCharContent(dialogData.breakType);
   var breakStr = "<msibreak type=\"";
   if (dialogData.breakType == "customNewLine")
   {
@@ -4738,10 +4786,14 @@ function msiInsertBreaks(dialogData, editorElement)
     breakStr += dialogData.breakType;
   }
 
-  if (dialogData.breakType in alternateContentFromBreakType)
-    breakStr += "\" invisDisplay=\"" + alternateContentFromBreakType[dialogData.breakType];
-  if (dialogData.breakType in contentFromBreakType)
-    breakStr += "\">" + contentFromBreakType[dialogData.breakType] + "</msibreak>";
+//  if (dialogData.breakType in alternateContentFromBreakType)
+//    breakStr += "\" invisDisplay=\"" + alternateContentFromBreakType[dialogData.breakType];
+  if (invisStr)
+    breakStr += "\" invisDisplay=\"" + invisStr;
+//  if (dialogData.breakType in contentFromBreakType)
+//    breakStr += "\">" + contentFromBreakType[dialogData.breakType] + "</msibreak>";
+  if (contentStr)
+    breakStr += "\">" + contentStr + "</msibreak>";
 //    breakStr += "\"/>" + contentFromBreakType[dialogData.breakType];
   else
     breakStr += "\"/>";
@@ -6180,9 +6232,10 @@ var msiObjectPropertiesCommand =
     if (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement))
     {
       var nodeData = msiGetObjectDataForProperties(editorElement);
-      var editor = msiGetEditor(editorElement);
-      isEnabled = ( (nodeData != null && nodeData.theNode != null) ||
-                    (editor != null && editor.getSelectedElement("href") != null) );
+      isEnabled = ( (nodeData != null) && nodeData.hasReviseData() );
+//      var editor = msiGetEditor(editorElement);
+//      isEnabled = ( (nodeData != null && nodeData.theNode != null) ||
+//                    (editor != null && editor.getSelectedElement("href") != null) );
     }
     return isEnabled;
   },
@@ -6196,21 +6249,23 @@ var msiObjectPropertiesCommand =
     var editorElement = msiGetActiveEditorElement();
     var nodeData = msiGetObjectDataForProperties(editorElement);
     var element = nodeData.theNode;
+    var cmdString = nodeData.getCommandString(0);
+
     if (element)
     {
-      if (element.nodeType == nsIDOMNode.TEXT_NODE)
-      {
-        if (nodeData.theOffset != null)
-        {
-          //Need to bring up the ReviseCharacter dialog. Not yet implemented.
-          var theCharacter = element.data.charAt(nodeData.theOffset);
-        }
-        else
-        {
-          dump("No offset specified in text node for Properties dialog! Aborting.\n");
-          return;
-        }
-      }
+//      if (element.nodeType == nsIDOMNode.TEXT_NODE)
+//      {
+//        if (nodeData.theOffset != null)
+//        {
+//          //Need to bring up the ReviseCharacter dialog. Not yet implemented.
+//          var theCharacter = element.data.charAt(nodeData.theOffset);
+//        }
+//        else
+//        {
+//          dump("No offset specified in text node for Properties dialog! Aborting.\n");
+//          return;
+//        }
+//      }
       var cmdParams = newCommandParams();
       if (!cmdParams)
       {
@@ -6218,174 +6273,180 @@ var msiObjectPropertiesCommand =
         return;
       }
 
-      var name = msiGetBaseNodeName(element).toLowerCase();
+//      var name = msiGetBaseNodeName(element).toLowerCase();
       cmdParams.setISupportsValue("reviseObject", element);
-      var wrappedChildElement = element;
-      while ((name == 'mstyle') || (name == 'mrow') )
+      cmdParams.setISupportsValue("propertiesData", nodeData);
+      if (cmdString)
+        msiGoDoCommandParams(cmdString, cmdParams, editorElement);
+      else
       {
-        var newChildElement = msiNavigationUtils.getSingleWrappedChild(wrappedChildElement);
-        if (newChildElement == null)
+        var wrappedChildElement = element;
+        while ((name == 'mstyle') || (name == 'mrow') )
+        {
+          var newChildElement = msiNavigationUtils.getSingleWrappedChild(wrappedChildElement);
+          if (newChildElement == null)
+            break;
+          wrappedChildElement = newChildElement;
+          name = msiGetBaseNodeName(wrappedChildElement).toLowerCase();
+        }
+
+        switch (name)
+        {
+          case 'img':
+            msiGoDoCommandParams("cmd_reviseImage", cmdParams, editorElement);
           break;
-        wrappedChildElement = newChildElement;
-        name = msiGetBaseNodeName(wrappedChildElement).toLowerCase();
-      }
-
-      switch (name)
-      {
-        case 'img':
-          msiGoDoCommandParams("cmd_reviseImage", cmdParams, editorElement);
-        break;
-        case 'hr':
-          msiGoDoCommandParams("cmd_reviseLine", cmdParams, editorElement);
-        break;
-        case 'form':
-          msiGoDoCommandParams("cmd_reviseForm", cmdParams, editorElement);
-        break;
-        case 'input':
-          var type = element.getAttribute("type");
-          if (type && type.toLowerCase() == "image")
-            msiGoDoCommand("cmd_inputimage", editorElement);
-          else
-            msiGoDoCommand("cmd_inputtag", editorElement);
-        break;
-        case 'textarea':
-          msiGoDoCommandParams("cmd_reviseTextarea", cmdParams, editorElement);
-        break;
-        case 'select':
-//          msiGoDoCommand("cmd_select", editorElement);
-//  Don't think we want to support this???
-        break;
-        case 'button':
-          msiGoDoCommandParams("cmd_reviseButton", cmdParams, editorElement);
-        break;
-        case 'label':
-          msiGoDoCommandParams("cmd_reviseLabel", cmdParams, editorElement);
-        break;
-        case 'fieldset':
-          msiGoDoCommandParams("cmd_reviseFieldset", cmdParams, editorElement);
-        break;
-
-        case 'table':
-          msiEditorInsertOrEditTable(false, editorElement, "cmd_objectProperties", this);
-        break;
-        case 'td':
-        case 'th':
-          msiEditorTableCellProperties(editorElement);
-        break;
-
-        case 'ol':
-        case 'ul':
-        case 'dl':
-        case 'li':
-          msiGoDoCommand("cmd_listProperties", editorElement);
-        break;
-
-        case 'a':
-          if (element.name)
-          {
-            msiGoDoCommandParams("cmd_reviseAnchor", cmdParams, editorElement);
-          }
-          else if(element.href)
-          {
-            msiGoDoCommandParams("cmd_msiReviseHyperlink", cmdParams, editorElement);
-          }
-        break;
-
-        case 'hspace':
-          msiGoDoCommandParams("cmd_reviseHorizontalSpaces", cmdParams, editorElement);
-        break;
-
-        case 'vspace':
-          msiGoDoCommandParams("cmd_reviseVerticalSpaces", cmdParams, editorElement);
-        break;
-
-        case 'msirule':
-          msiGoDoCommandParams("cmd_msiReviseRules", cmdParams, editorElement);
-        break;
-
-        case 'msibreak':
-          msiGoDoCommandParams("cmd_msiReviseBreaks", cmdParams, editorElement);
-        break;
-
-        case 'mfrac':
-          msiGoDoCommandParams("cmd_MSIreviseFractionCmd", cmdParams, editorElement);
-        break;
-
-        case 'mroot':
-        case 'msqrt':
-          msiGoDoCommandParams("cmd_MSIreviseRadicalCmd", cmdParams, editorElement);
-        break;
-
-        case 'msub':
-        case 'msup':
-        case 'msubsup':
-          if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
-            msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
-//          msiGoDoCommandParams("cmd_MSIreviseScriptsCmd", cmdParams, editorElement);
-// Should be no Properties dialog available for these cases? SWP has none...
-        break;
-
-        case 'mmatrix':
-          msiGoDoCommandParams("cmd_MSIreviseMatrixCmd", cmdParams, editorElement);
-        break;
-
-        case 'mmultiscripts':
-          if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
-            msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
-          else
-            msiGoDoCommandParams("cmd_MSIreviseTensorCmd", cmdParams, editorElement);
-        break;
-
-
-        case 'mi':
-          if (msiNavigationUtils.isUnit(wrappedChildElement))
-            msiGoDoCommandParams("cmd_MSIreviseUnitsCommand", cmdParams, editorElement);
-          else if (msiNavigationUtils.isMathname(wrappedChildElement))
-            msiGoDoCommandParams("cmd_MSIreviseMathnameCmd", cmdParams, editorElement);
-        break;
-
-//    commandTable.registerCommand("cmd_MSIreviseSymbolCmd",    msiReviseSymbolCmd);
-
-        case 'mstyle':
-          if (msiNavigationUtils.isFence(wrappedChildElement))
-          {
-            if (msiNavigationUtils.isBinomial(wrappedChildElement))
-              msiGoDoCommandParams("cmd_MSIreviseBinomialsCmd", cmdParams, editorElement);
-            else
-              msiGoDoCommandParams("cmd_MSIreviseGenBracketsCmd", cmdParams, editorElement);
-          }
-        break;
-
-        case 'mrow':
-          if (msiNavigationUtils.isFence(wrappedChildElement))
-          {
-            if (msiNavigationUtils.isBinomial(wrappedChildElement))
-              msiGoDoCommandParams("cmd_MSIreviseBinomialsCmd", cmdParams, editorElement);
-            else
-              msiGoDoCommandParams("cmd_MSIreviseGenBracketsCmd", cmdParams, editorElement);
-          }
-        break;
-
-        case 'mo':
-          if (msiNavigationUtils.isMathname(wrappedChildElement))
-            msiGoDoCommandParams("cmd_MSIreviseMathnameCmd", cmdParams, editorElement);
-          else
-            msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
-        break;
-
-        case 'mover':
-        case 'munder':
-        case 'munderover':
-          if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
-            msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
-
-          else
-            msiGoDoCommandParams("cmd_MSIreviseDecorationsCmd", cmdParams, editorElement);
-        break;
-
-        default:
-          msiDoAdvancedProperties(element, editorElement);
+          case 'hr':
+            msiGoDoCommandParams("cmd_reviseLine", cmdParams, editorElement);
           break;
+          case 'form':
+            msiGoDoCommandParams("cmd_reviseForm", cmdParams, editorElement);
+          break;
+          case 'input':
+            var type = element.getAttribute("type");
+            if (type && type.toLowerCase() == "image")
+              msiGoDoCommand("cmd_inputimage", editorElement);
+            else
+              msiGoDoCommand("cmd_inputtag", editorElement);
+          break;
+          case 'textarea':
+            msiGoDoCommandParams("cmd_reviseTextarea", cmdParams, editorElement);
+          break;
+          case 'select':
+  //          msiGoDoCommand("cmd_select", editorElement);
+  //  Don't think we want to support this???
+          break;
+          case 'button':
+            msiGoDoCommandParams("cmd_reviseButton", cmdParams, editorElement);
+          break;
+          case 'label':
+            msiGoDoCommandParams("cmd_reviseLabel", cmdParams, editorElement);
+          break;
+          case 'fieldset':
+            msiGoDoCommandParams("cmd_reviseFieldset", cmdParams, editorElement);
+          break;
+
+          case 'table':
+            msiEditorInsertOrEditTable(false, editorElement, "cmd_objectProperties", this);
+          break;
+          case 'td':
+          case 'th':
+            msiEditorTableCellProperties(editorElement);
+          break;
+
+          case 'ol':
+          case 'ul':
+          case 'dl':
+          case 'li':
+            msiGoDoCommand("cmd_listProperties", editorElement);
+          break;
+
+          case 'a':
+            if (element.name)
+            {
+              msiGoDoCommandParams("cmd_reviseAnchor", cmdParams, editorElement);
+            }
+            else if(element.href)
+            {
+              msiGoDoCommandParams("cmd_msiReviseHyperlink", cmdParams, editorElement);
+            }
+          break;
+
+          case 'hspace':
+            msiGoDoCommandParams("cmd_reviseHorizontalSpaces", cmdParams, editorElement);
+          break;
+
+          case 'vspace':
+            msiGoDoCommandParams("cmd_reviseVerticalSpaces", cmdParams, editorElement);
+          break;
+
+          case 'msirule':
+            msiGoDoCommandParams("cmd_msiReviseRules", cmdParams, editorElement);
+          break;
+
+          case 'msibreak':
+            msiGoDoCommandParams("cmd_msiReviseBreaks", cmdParams, editorElement);
+          break;
+
+          case 'mfrac':
+            msiGoDoCommandParams("cmd_MSIreviseFractionCmd", cmdParams, editorElement);
+          break;
+
+          case 'mroot':
+          case 'msqrt':
+            msiGoDoCommandParams("cmd_MSIreviseRadicalCmd", cmdParams, editorElement);
+          break;
+
+          case 'msub':
+          case 'msup':
+          case 'msubsup':
+            if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
+              msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
+  //          msiGoDoCommandParams("cmd_MSIreviseScriptsCmd", cmdParams, editorElement);
+  // Should be no Properties dialog available for these cases? SWP has none...
+          break;
+
+          case 'mmatrix':
+            msiGoDoCommandParams("cmd_MSIreviseMatrixCmd", cmdParams, editorElement);
+          break;
+
+          case 'mmultiscripts':
+            if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
+              msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
+            else
+              msiGoDoCommandParams("cmd_MSIreviseTensorCmd", cmdParams, editorElement);
+          break;
+
+
+          case 'mi':
+            if (msiNavigationUtils.isUnit(wrappedChildElement))
+              msiGoDoCommandParams("cmd_MSIreviseUnitsCommand", cmdParams, editorElement);
+            else if (msiNavigationUtils.isMathname(wrappedChildElement))
+              msiGoDoCommandParams("cmd_MSIreviseMathnameCmd", cmdParams, editorElement);
+          break;
+
+  //    commandTable.registerCommand("cmd_MSIreviseSymbolCmd",    msiReviseSymbolCmd);
+
+          case 'mstyle':
+            if (msiNavigationUtils.isFence(wrappedChildElement))
+            {
+              if (msiNavigationUtils.isBinomial(wrappedChildElement))
+                msiGoDoCommandParams("cmd_MSIreviseBinomialsCmd", cmdParams, editorElement);
+              else
+                msiGoDoCommandParams("cmd_MSIreviseGenBracketsCmd", cmdParams, editorElement);
+            }
+          break;
+
+          case 'mrow':
+            if (msiNavigationUtils.isFence(wrappedChildElement))
+            {
+              if (msiNavigationUtils.isBinomial(wrappedChildElement))
+                msiGoDoCommandParams("cmd_MSIreviseBinomialsCmd", cmdParams, editorElement);
+              else
+                msiGoDoCommandParams("cmd_MSIreviseGenBracketsCmd", cmdParams, editorElement);
+            }
+          break;
+
+          case 'mo':
+            if (msiNavigationUtils.isMathname(wrappedChildElement))
+              msiGoDoCommandParams("cmd_MSIreviseMathnameCmd", cmdParams, editorElement);
+            else
+              msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
+          break;
+
+          case 'mover':
+          case 'munder':
+          case 'munderover':
+            if (msiNavigationUtils.getEmbellishedOperator(wrappedChildElement) != null)
+              msiGoDoCommandParams("cmd_MSIreviseOperatorsCmd", cmdParams, editorElement);
+
+            else
+              msiGoDoCommandParams("cmd_MSIreviseDecorationsCmd", cmdParams, editorElement);
+          break;
+
+          default:
+            msiDoAdvancedProperties(element, editorElement);
+            break;
+        }
       }
     } else {
       // We get a partially-selected link if asked for specifically
@@ -6409,9 +6470,9 @@ var msiObjectPropertiesCommand =
     editorElement.contentWindow.focus();
   },
 
-  msiGetReviseObject: function(editor)
+  msiGetReviseObject: function(editorElement)
   {
-    return msiEditorGetObjectForProperties(editor);
+    return msiEditorGetObjectForProperties(editorElement);
   }
 
 };
@@ -6802,6 +6863,9 @@ var msiInsertOrEditTableCommand =
 };
 
 ////-----------------------------------------------------------------------------------
+
+//This handler deals with the "cmd_editTable", "cmd_editTableCell", "cmd_editTableRows",  and "cmd_editTableCols" commands.
+//  Code should pay attention to "aCommand", or at least to "tableNodeData", to know which to focus on.
 var msiEditTableCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
@@ -6813,8 +6877,8 @@ var msiEditTableCommand =
   doCommandParams: function(aCommand, aParams, aRefCon) 
   {
     var editorElement = msiGetActiveEditorElement();
-    var tableNode = aParams.getISupportsValue("reviseObject");
-    if (tableNode != null && editorElement != null)
+    var tableNodeData = aParams.getISupportsValue("reviseObject");
+    if (tableNodeData != null && editorElement != null)
     {
       msiEditorInsertOrEditTable(false, editorElement, aCommand, this);
 //      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/msiEdTableProps.xul", "_blank", "chrome,close,titlebar,dependent",
@@ -6829,6 +6893,7 @@ var msiEditTableCommand =
     msiEditorInsertOrEditTable(false, editorElement, aCommand, this);
   }
 };
+
 
 ////-----------------------------------------------------------------------------------
 var msiSelectTableCommand =
