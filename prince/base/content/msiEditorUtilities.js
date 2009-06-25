@@ -5876,6 +5876,21 @@ var msiNavigationUtils =
     return null;
   },
 
+  getSingleTextNodeContent : function(aNode)
+  {
+    if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
+      return aNode;
+    
+    var childNodes = this.getSignificantContents(aNode);
+    if ( (childNodes.length == 1) && (childNodes[0].nodeType == nsIDOMNode.TEXT_NODE) )
+      return childNodes[0];
+    
+    var kid = this.getSingleWrappedChild(aNode);
+    if (kid != null)
+      return this.getLeafNodeText(kid);
+    return null;
+  },
+
   findStyleEnclosingObj : function(targNode, objTypeStr, expectedStyle, foundStyle)
   {
     var retStyleNode = null;
