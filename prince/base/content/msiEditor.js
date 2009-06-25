@@ -4130,7 +4130,21 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
 
     }
 
-    if (!objStr)
+    if (!objStr && !propsData)
+    {
+      var textChild = msiNavigationUtils.getSingleTextNodeContent(wrappedChildElement);
+      if (textChild)
+      {
+        propsData = new msiCharPropertiesObjectData();
+        propsData.initFromNode(textChild, editorElement);
+        if (propsData.hasReviseData(0))
+          propsData.setTopNode(wrappedChildElement);
+        else
+          propsData = null;
+      }
+    }
+
+    if (!objStr && !propsData)
     {
       if (bIncludeParaAndStructure && editor && editor.tagListManager)
       {
@@ -4741,9 +4755,10 @@ msiPropertiesObjectData.prototype =
     //Do nothing here. For a regular simple node-based properties data, the strings are set in the function creating us.
   },
 
-  setTopNode : function()
+  setTopNode : function(ourNode)
   {
-    var ourNode = this.getReferenceNode();
+    if (!ourNode)
+      ourNode = this.getReferenceNode();
     var parentNode = msiNavigationUtils.findWrappingNode(ourNode);
     if (parentNode != null)
       this.mTopNode = parentNode;
@@ -4913,6 +4928,12 @@ msiCharPropertiesObjectData.prototype =
 
 //Interface:
   //Note that in this function the text to be possibly modified is to the LEFT of "anOffset".
+  initFromNode : function(aNode, editorElement)
+  {
+    var nLen = aNode.textContent.length;
+    this.initFromNodeAndOffset(aNode, nLen, editorElement);
+  },
+
   initFromNodeAndOffset : function(aNode, anOffset, editorElement)
   {
     this.setEditorElement(editorElement);
