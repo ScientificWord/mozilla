@@ -3241,8 +3241,10 @@ TNODE* LaTeX2MMLTree::Array2MML( TNODE* tex_array_node,
           UidsTozuID( 5,35,11,(U8*)zlistID );
           U16 zln =  strlen( (char*)zlistID );
           zlistID[zln]  =  ':';
-          itoa( col_count,(char*)zlistID+zln+1,10 );
 
+          // JCS non-standard: itoa( col_count,(char*)zlistID+zln+1,10 );
+          sprintf((char*)zlistID+zln+1, "%d", col_count);
+          
           TNODE* list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
           list_node->parts  =  cell;
           cell->sublist_owner =  list_node;
@@ -3286,8 +3288,8 @@ _MTCELL_IF(MATH,?mtd?,5.35.14)ifEND
       UidsTozuID( 5,35,9,(U8*)zlistID );
 	  U16 zln =  strlen( (char*)zlistID );
 	  zlistID[zln]  =  ':';
-      itoa( row_count,(char*)zlistID+zln+1,10 );
-
+          // JCS non-standard: itoa( row_count,(char*)zlistID+zln+1,10 );
+          sprintf((char*)zlistID+zln+1, "%d", row_count);
 	  TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
 	  row_list_node->parts  =  mtr;
 	  mtr->sublist_owner  =  row_list_node;
@@ -4444,7 +4446,8 @@ TNODE* LaTeX2MMLTree::Tabular2MML( TNODE* tex_tabular_node,
       UidsTozuID( 5,35,11,(U8*)zlistID );
 	  U16 zln =  strlen( (char*)zlistID );
 	  zlistID[zln]  =  ':';
-      itoa( col_count,(char*)zlistID+zln+1,10 );
+          // JCS non-standard itoa( col_count,(char*)zlistID+zln+1,10 );
+          sprintf((char*)zlistID+zln+1, "%d", col_count);
 
 	  TNODE* mtd_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
 	  mtd_list_node->parts  =  mtd;
@@ -4480,8 +4483,8 @@ TNODE* LaTeX2MMLTree::Tabular2MML( TNODE* tex_tabular_node,
     UidsTozuID( 5,35,9,(U8*)zlistID );
 	U16 zln =  strlen( (char*)zlistID );
 	zlistID[zln]  =  ':';
-    itoa( row_count,(char*)zlistID+zln+1,10 );
-
+        // JCS non-standard itoa( row_count,(char*)zlistID+zln+1,10 );
+        sprintf((char*)zlistID+zln+1, "%d", row_count);
 	TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
 	row_list_node->parts  =  mtr;
 	mtr->sublist_owner    =  row_list_node;
@@ -4637,7 +4640,8 @@ TNODE* LaTeX2MMLTree::TranslateTeXEqnArray( TNODE* src_eqn,
       UidsTozuID( 5,35,11,(U8*)zlistID );
 	  U16 zln =  strlen( (char*)zlistID );
 	  zlistID[zln]  =  ':';
-      itoa( 0,(char*)zlistID+zln+1,10 );
+          // JCS non-standard itoa( 0,(char*)zlistID+zln+1,10 );
+          sprintf((char*)zlistID+zln+1, "%d", 0);
 	  TNODE* col_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
 
 	  col_list_node->parts  =  mtd;
@@ -4651,7 +4655,8 @@ TNODE* LaTeX2MMLTree::TranslateTeXEqnArray( TNODE* src_eqn,
       UidsTozuID( 5,35,9,(U8*)zlistID );
 	  zln =  strlen( (char*)zlistID );
 	  zlistID[zln]  =  ':';
-      itoa( dest_line_counter,(char*)zlistID+zln+1,10 );
+          // JCS non-standard itoa( dest_line_counter,(char*)zlistID+zln+1,10 );
+          sprintf((char*)zlistID+zln+1, "%d", dest_line_counter);
 	  TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
 
 	  row_list_node->parts  =  mtr;
@@ -4784,8 +4789,8 @@ TNODE* LaTeX2MMLTree::TranslateTeXEqnArray( TNODE* src_eqn,
     UidsTozuID( 5,35,11,(U8*)zlistID );
 	U16 zln =  strlen( (char*)zlistID );
 	zlistID[zln]  =  ':';
-    itoa( 0,(char*)zlistID+zln+1,10 );
-
+        // itoa( 0,(char*)zlistID+zln+1,10 );
+        sprintf((char*)zlistID+zln+1, "%d", 0);
 	TNODE* list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
 	list_node->parts  =  mml_cell;
 	mml_cell->sublist_owner =  list_node;
@@ -4902,8 +4907,8 @@ _EQNNUMBER_reqELEMENT(5.35.42)
     UidsTozuID( 5,35,9,(U8*)zlistID );
 	zln =  strlen( (char*)zlistID );
 	zlistID[zln]  =  ':';
-    itoa( dest_line_counter,(char*)zlistID+zln+1,10 );
-
+        // itoa( dest_line_counter,(char*)zlistID+zln+1,10 );
+        sprintf((char*)zlistID+zln+1, "%d", dest_line_counter);
 	TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
 	row_list_node->parts  =  mtr;
 	mtr->sublist_owner  =  row_list_node;
@@ -10975,7 +10980,8 @@ TNODE* LaTeX2MMLTree::Unicode2MML( TNODE* obj_node ) {
 
     entity[0] =  '&';
     entity[1] =  '#';
-    ultoa( unicode,(char*)entity+2,10 );
+    //ultoa( unicode,(char*)entity+2,10 );
+    sprintf((char*)entity+2, "%d", unicode);
     strcat( (char*)entity,";" );
 
 
@@ -11249,8 +11255,8 @@ TNODE* LaTeX2MMLTree::ScriptStack2MML( TNODE* scriptstack_node,
     UidsTozuID( 5,35,9,(U8*)zlistID );
 	  U16 zln =  strlen( (char*)zlistID );
 	  zlistID[zln]  =  ':';
-    itoa( row_count,(char*)zlistID+zln+1,10 );
-
+          // itoa( row_count,(char*)zlistID+zln+1,10 );
+          sprintf((char*)zlistID+zln+1, "%d", row_count);
 	  TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
 	  row_list_node->parts  =  mtr;
 	  mtr->sublist_owner  =  row_list_node;
@@ -12165,9 +12171,10 @@ void LaTeX2MMLTree::GetUnicodeForBoldSymbol( TNODE* mml_rover,
 
 	if ( offset != 100L ) {
 	  U32 the_unicode =  0x1D400 + offset;
-      unicode[0]  =  '#';
-    //unicode[1]  =  'x';
-	  ultoa( the_unicode,(char*)unicode+1,10 );
+	  unicode[0]  =  '#';
+	  //unicode[1]  =  'x';
+	  //ultoa( the_unicode,(char*)unicode+1,10 );
+	  sprintf((char*)unicode+1, "%d", the_unicode);
 	}
 
   } else
@@ -12839,8 +12846,8 @@ TNODE* LaTeX2MMLTree::SbAndSp2MML( TNODE* SborSp_node,
         UidsTozuID( 5,35,9,(U8*)zlistID );
 	      U16 zln =  strlen( (char*)zlistID );
 	      zlistID[zln]  =  ':';
-        itoa( row_count,(char*)zlistID+zln+1,10 );
-
+              // itoa( row_count,(char*)zlistID+zln+1,10 );
+              sprintf((char*)zlistID+zln+1, "%d", row_count);
 	      TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
 	      row_list_node->parts  =  mtr;
 	      mtr->sublist_owner  =  row_list_node;
@@ -13281,10 +13288,10 @@ void LaTeX2MMLTree::GetMtableColumnAttrs( TNODE* TeX_cols_list,
           if ( ri < 500 ) {
             if ( ri )
               vline_buffer[ri++]  =  ' ';
-		        char* line_attr =  r_verts ? "solid" : "none";
-	          strcpy( (char*)vline_buffer+ri,line_attr );
-	          ri  +=  strlen( line_attr );
-		      }
+	    const char* line_attr =  r_verts ? "solid" : "none";
+	    strcpy( (char*)vline_buffer+ri,line_attr );
+	    ri  +=  strlen( line_attr );
+	  }
           if ( r_verts )
             has_lines =  TRUE;
 		    }
@@ -15136,7 +15143,8 @@ TNODE* LaTeX2MMLTree::LaTeXCases2MML( TNODE* src_cases,
       UidsTozuID( 5,35,11,(U8*)zlistID );
 	    U16 zln =  strlen( (char*)zlistID );
 	    zlistID[zln]  =  ':';
-      itoa( col_count,(char*)zlistID+zln+1,10 );
+            // itoa( col_count,(char*)zlistID+zln+1,10 );
+            sprintf((char*)zlistID+zln+1, "%d", col_count);
 	    TNODE* list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
 	    list_node->parts  =  mml_cell;
 	    mml_cell->sublist_owner =  list_node;
@@ -15176,7 +15184,8 @@ _MTCELL_IF(MATH,?mtd?,5.35.14)ifEND
     UidsTozuID( 5,35,9,(U8*)zlistID );
 	  U16 zln =  strlen( (char*)zlistID );
 	  zlistID[zln]  =  ':';
-    itoa( src_line_counter,(char*)zlistID+zln+1,10 );
+	  // itoa( src_line_counter,(char*)zlistID+zln+1,10 );
+          sprintf((char*)zlistID+zln+1, "%d", src_line_counter);
 
 	  TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
 	  row_list_node->parts  =  mtr;
@@ -16032,7 +16041,8 @@ void LaTeX2MMLTree::SetMTRAttribs( TNODE* mtr_node,
 
   if ( ncols_spanned > 1 ) {
     U8 zval[32];
-    itoa( ncols_spanned,(char*)zval,10 );
+    // JCS non-standard: itoa( ncols_spanned,(char*)zval,10 );
+    sprintf((char*)zval, "%d", ncols_spanned);
     SetNodeAttrib( mtr_node,(U8*)"columnspan",(U8*)zval );
   }
   if ( alignment && alignment<=3 ) {
@@ -17418,7 +17428,9 @@ TNODE* LaTeX2MMLTree::NestedTeXEqnArray2MML( TNODE* src_eqn,
       UidsTozuID( 5,35,11,(U8*)zlistID );
 	  U16 zln =  strlen( (char*)zlistID );
 	  zlistID[zln]  =  ':';
-      itoa( 0,(char*)zlistID+zln+1,10 );
+	  // JCS non-standard: itoa( 0,(char*)zlistID+zln+1,10 );
+          sprintf((char*)zlistID+zln+1,"%d", 0);
+
 	  TNODE* col_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
 
 	  col_list_node->parts  =  mtd;
@@ -17432,7 +17444,8 @@ TNODE* LaTeX2MMLTree::NestedTeXEqnArray2MML( TNODE* src_eqn,
       UidsTozuID( 5,35,9,(U8*)zlistID );
 	  zln =  strlen( (char*)zlistID );
 	  zlistID[zln]  =  ':';
-      itoa( dest_line_counter,(char*)zlistID+zln+1,10 );
+	  // JCS non-standard: itoa( dest_line_counter,(char*)zlistID+zln+1,10 );
+          sprintf((char*)zlistID+zln+1, "%d", dest_line_counter);
 	  TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
 
 	  row_list_node->parts  =  mtr;
@@ -17545,7 +17558,8 @@ TNODE* LaTeX2MMLTree::NestedTeXEqnArray2MML( TNODE* src_eqn,
     UidsTozuID( 5,35,11,(U8*)zlistID );
 	U16 zln =  strlen( (char*)zlistID );
 	zlistID[zln]  =  ':';
-    itoa( 0,(char*)zlistID+zln+1,10 );
+	// JCS non-standard: itoa( 0,(char*)zlistID+zln+1,10 );
+        sprintf((char*)zlistID+zln+1,"%d", 0);
 
 	TNODE* list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
 	list_node->parts  =  mml_cell;
@@ -17588,8 +17602,8 @@ _EQNNUMBER_reqELEMENT(5.35.42)
     UidsTozuID( 5,35,9,(U8*)zlistID );
 	zln =  strlen( (char*)zlistID );
 	zlistID[zln]  =  ':';
-    itoa( dest_line_counter,(char*)zlistID+zln+1,10 );
-
+	// JCS non-standard: itoa( dest_line_counter,(char*)zlistID+zln+1,10 );
+        sprintf((char*)zlistID+zln+1, "%d", dest_line_counter);
 	TNODE* row_list_node  =  MakeTNode( 0,0,0,(U8*)zlistID );
 	row_list_node->parts  =  mtr;
 	mtr->sublist_owner  =  row_list_node;
@@ -18101,7 +18115,8 @@ void LaTeX2MMLTree::FormatCurrEqnNumber( U8* ztag ) {
             }
             ptr +=  tok_len;
 
-            itoa( thecounter,(char*)ztag+tag_len,10 );
+            // JCS non-standard: itoa( thecounter,(char*)ztag+tag_len,10 );
+            sprintf((char*)ztag+tag_len, "%d", thecounter);
             tag_len =  strlen( (char*)ztag );
           }
 
