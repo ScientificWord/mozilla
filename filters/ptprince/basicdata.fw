@@ -1194,6 +1194,7 @@ InputByteFile* Global::g_readFile[15];
 @o@<basicdata.cpp@>==@{@-
 #include "basicdata.h"
 #include "platform.h"
+#include <cstring>
 @<Parameter definitions@>
 @<Implement catcode functions@>
 @<Uccode table@>

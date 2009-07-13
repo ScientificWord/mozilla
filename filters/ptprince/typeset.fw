@@ -21,6 +21,7 @@ lines, formulas, pages, footnotes, and so on.
 #include "typesetter.h"
 #include <iostream>
 #include <strstream>
+#include <cstring>
 //#include <windows.h>
 #include "mml.h"
 //#include <filespec.h>

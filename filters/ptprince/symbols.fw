@@ -290,7 +290,7 @@ This component consists of two files: @{symbols.h@} and
 
 @o@<symbols.cpp@>==@{@-
 #include "symbols.h"
-#include <string> // for strlen
+#include <cstring> // for strlen
 @<HashTable implementation@>
 @<GetId imp@>
 @<GetDef imp@>
@@ -305,7 +305,7 @@ This component consists of two files: @{symbols.h@} and
 @o@<symbols.t.cpp@>==@{@-
 #include "platform.h"
 #include "symbols.h"
-#include <string>
+#include <cstring>
 #include <iostream>
 
 @<Test jig@>@(@<Symbols test functions@>@,@<Symbols TestTable entries@>@)

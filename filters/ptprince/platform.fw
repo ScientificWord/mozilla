@@ -168,7 +168,7 @@ alternative would be to write something like
      s_pStream -> open("tex.log");
      ASSERT(s_pLog != 0);
      char path[200];
-     if (_getcwd(path, 200)){
+     if (getcwd(path, 200)){
        (*s_pStream) << "\nCWD = " << path;
      }
 
@@ -649,7 +649,7 @@ static std::string s_CWD;
 void SetCWD()
 {
    char path[200];
-   if (_getcwd(path, 200)){
+   if (getcwd(path, 200)){
      LOG("\nCWD = " << path);
      s_CWD = path;
    } else {
@@ -666,7 +666,7 @@ const char* GetCWD()
 
 bool ChangeDir(const char* dir)
 {
-   return _chdir(dir);
+   return chdir(dir);
 }
 
 @}
@@ -1079,6 +1079,16 @@ InputByteFile::~InputByteFile()
 }
 @}
 
+@$@<Search Utility@>==@{@-
+#ifdef WINDOWS
+#define SearchEnv _searchenv
+#else
+void SearchEnv(const char *filename, const char *varname, char *pathname)
+{
+}
+#endif
+@}
+
 @$@<InputByteFile implementation@>+=@{@-
 const char* SearchFor(const char* searchfile)
 {
@@ -1088,7 +1098,7 @@ const char* SearchFor(const char* searchfile)
    char envvar[] = "MSITEXINPUT";
    if (getenv("MSITEXINPUT"))
      LOG("Search env: MSITEXINPUT =" << getenv("MSITEXINPUT"));
-   _searchenv( searchfile, envvar, pathbuffer );
+   SearchEnv( searchfile, envvar, pathbuffer );
    if( *pathbuffer != '\0' ){
       LOG("\nPath for " << searchfile << " == " << pathbuffer);
       return pathbuffer;
@@ -1271,7 +1281,7 @@ const char* SearchForOutput(const char* searchfile)
    static char pathbuffer[_MAX_PATH];
    char envvar[] = "MSIOUTPUT";
 
-   _searchenv( searchfile, envvar, pathbuffer );
+   SearchEnv( searchfile, envvar, pathbuffer );
    if( *pathbuffer != '\0' ){
       LOG("\nPath for " << searchfile << " == " << pathbuffer);
       return pathbuffer;
@@ -1397,12 +1407,23 @@ computations.  The necessary routines are described here.
 #include <cstdlib>
 #include <string>
 #include <limits.h>
-#include <direct.h>
+//#include <direct.h>
+#include <cstring>
+#include <stdlib.h>
+#ifdef _WINDOWS
+  #include <direct.h>
+#else
+  #include <unistd.h>
+  #define _MAX_PATH 2000
+#endif
+
+
 @<TeXException implementation@>
 @<Execution log imp@>
 @<Assertions imp@>
 @<String implementation@>
 @<StringBuilder implementation@>
+@<Search Utility@>
 @<InputByteStream implementation@>
 @<OutputByteStream implementation@>
 @<Filename implementation@>

@@ -361,7 +361,7 @@ typedef struct tagCELL_STRUCT {	//
 void 	  FUSetDumpFile( char* dump_file_spec );
 TCI_BOOL  FUOpenDumpFile();
 void	  FUCloseDumpFile();
-void 	  DumpLine( char* line );
+void 	  DumpLine( const char* line );
 
 void 	  JBMLine( char* line );
 
