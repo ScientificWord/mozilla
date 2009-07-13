@@ -109,7 +109,7 @@ public:
 private:
 
   void          LineToLogFile( char* line,char* logfile_spec );
-  char*		    IDtoSrcMsg( U16 msgID );
+  const char*   IDtoSrcMsg( U16 msgID );
   LOG_MSG_REC*  MakeLogMsg( U8* intro,U8* msg,U8* suffix,
   									U8* src_tok,U32 src_line );
   U8* 			GetMsgStr( U16 msg_ID );
