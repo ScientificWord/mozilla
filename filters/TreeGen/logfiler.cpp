@@ -54,7 +54,7 @@ LogFiler::~LogFiler() {
 
 char* LogFiler::IDtoSrcMsg( U16 msgID ) {
 
-  char* msg;
+  const char* msg;
   switch ( msgID ) {
     case BAD_TMPL_SYNTAX        :
       msg =  "Bad syntax for a template element";		break;

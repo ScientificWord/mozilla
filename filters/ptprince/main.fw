@@ -16,6 +16,8 @@
 
 #include <iostream>
 #include <fstream>
+#include <cstring>
+#include <stdlib.h>
 
 extern void SetupExpandables();
 std::string s_tapfilename;
@@ -69,6 +71,9 @@ int main(int argc, char* argv[])
    SetCWD();
 
    // Set up tex input directory
+   #ifndef _WINDOWS
+     const size_t _MAX_PATH = 2000;
+   #endif
    char envInput[_MAX_PATH+12];
    char envOutput[_MAX_PATH+12];
    strcpy(envInput, "MSITEXINPUT=.;");
@@ -85,7 +90,7 @@ int main(int argc, char* argv[])
          if (inputdir[strlen(inputdir)-1]=='"')
             inputdir[strlen(inputdir)-1] = '\0';
          strcat(envInput, inputdir);
-         _putenv(envInput);
+         putenv(envInput);
          std::cout << "Set input environment " << envInput << "\n";
          delete inputdir;
         }
@@ -97,7 +102,7 @@ int main(int argc, char* argv[])
           if (outputdir[strlen(outputdir)-1]=='"')
            outputdir[strlen(outputdir)-1] = '\0';
           strcat(envOutput, outputdir);
-          _putenv(envOutput);
+          putenv(envOutput);
           std::cout << "Set output environment " << envOutput << "\n";
           delete outputdir;
         }
@@ -146,7 +151,7 @@ int main(int argc, char* argv[])
       const char* dir = fn.GetAreaString();
       strcat(envInput, ";");
       strcat(envInput, dir);
-      _putenv(envInput);
+      putenv(envInput);
 
       // // Open a tap file for holding defs
       // std::string tappath = fn.GetAreaString();

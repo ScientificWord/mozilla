@@ -957,6 +957,7 @@ here is another line
 @o@<textio.cpp@>==@{@-
 #include "textio.h"
 #include <string>
+#include <cstring>
 @<static data@>
 @<LineOfText implementation@>
 @<CharStream implementation@>

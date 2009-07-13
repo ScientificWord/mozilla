@@ -15,6 +15,7 @@ void ProcessMathML(const char* inp, std::string& outp);
 #include "../mathml/mmllib.h"
 //#include <windows.h>
 #include <iostream>
+#include <cstring>
 
 //#include "mmldll.h"
 @<MML Implementation@>

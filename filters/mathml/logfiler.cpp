@@ -6,7 +6,7 @@
 #include "fltutils.h"
 
 #include <string.h>
-#include <stdio.h>
+#include <cstdio>
 #include <stdlib.h>
 
 #ifdef TESTING
@@ -51,9 +51,9 @@ LogFiler::~LogFiler() {
 
 // Lookup table for messages generated while parsing source LaTeX
 
-char* LogFiler::IDtoSrcMsg( U16 msgID ) {
+const char* LogFiler::IDtoSrcMsg( U16 msgID ) {
 
-  char* msg;
+  const char* msg;
   switch ( msgID ) {
     case BAD_TMPL_SYNTAX        :
       msg =  "Bad syntax for a template element";		break;
@@ -101,7 +101,7 @@ void LogFiler::LogSrcError( U16 msgID,U8* zhint,
 //JBMLine( "DLL_LogFiler::LogSrcError\n" );
 
   char* buff  =  TCI_NEW( char[512] );
-  char* msg   =  IDtoSrcMsg( msgID );
+  const char* msg   =  IDtoSrcMsg( msgID );
 
   if ( msg ) {
     if ( zhint ) {
@@ -195,9 +195,11 @@ void LogFiler::MsgToLog( LOG_MSG_REC* msg_rec,
   // Put the source TeX line number in the message
 
   // jcs ultoa not a standard function:  ultoa( msg_rec->src_lineno,number,10 );
-  
+   #ifdef _WINDOWS
     _snprintf(number,  10, "%ld",  msg_rec->src_lineno);
-    
+   #else
+    snprintf(number,  10, "%ld",  msg_rec->src_lineno);
+   #endif
 
     target  =  "%SRC_LINE";
     while ( strstr(line,target) )
@@ -216,9 +218,11 @@ JBMLine( xxx );
 
     
   // jcs ultoa not a standard function:  ultoa( dst_line_num,number,10 );
-  
+    #ifdef _WINDOWS
     _snprintf(number,  10, "%ld",  dst_line_num);
-    
+    #else
+    snprintf(number,  10, "%ld",  msg_rec->src_lineno);
+    #endif
 
 
     target  =  "%DST_LINE";
@@ -229,7 +233,7 @@ JBMLine( xxx );
 
     if ( logfile_spec[0] ) {
       dst_logmsg_count++;
-
+      
 	  LineToLogFile( line,logfile_spec );
     } else
       DumpLine( (char*)line );

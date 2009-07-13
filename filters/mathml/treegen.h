@@ -110,7 +110,7 @@ private :
   Grammar*  s_math_grammar;
   Grammar*  d_math_grammar;
 
-  char*     eoln;
+  const char*     eoln;
   U32       batch_count;
 
   int       do_xml;
