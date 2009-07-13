@@ -129,7 +129,7 @@ TNODE* TreeGenerator::ParseBytes( U8* context,U8* src_ba,
 	if ( FUOpenDumpFile() ) {
 	  FUCloseDumpFile();
       DumpLine( "\nDumping Source Parse Tree - from Bytes\n\n" );
-	  U16 tokenizerID =  s_tex_grammar->GetTokenizerID();
+      U16 tokenizerID =  s_tex_grammar->GetTokenizerID();
       DumpTList( parse_tree,0,tokenizerID );
       DumpLine( "\n\n" );
 	}

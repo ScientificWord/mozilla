@@ -8,7 +8,7 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 PROGRAM		= pretex$(BIN_SUFFIX)
-RESFILE		= pretex.res
+#RESFILE		= pretex.res
 
 MODULE = pretex
 
@@ -82,15 +82,15 @@ LOCAL_INCLUDES = -I$(srcdir)/../mathml
 
 LIBS = $(DIST)/lib/$(LIB_PREFIX)mathml_s.$(LIB_SUFFIX) \
 
-OS_LIBS += \
-    urlmon.lib \
-    winspool.lib \
-    oldnames.lib \
-    ole32.lib \
-    oleaut32.lib \
-    uuid.lib \
-    oledlg.lib \
-	$(NULL)
+#OS_LIBS += \
+#    urlmon.lib \
+#    winspool.lib \
+#    oldnames.lib \
+#    ole32.lib \
+#    oleaut32.lib \
+#    uuid.lib \
+#    oledlg.lib \
+#	$(NULL)
 
 DIRS = ptdata
 
@@ -98,12 +98,19 @@ include $(topsrcdir)/config/config.mk
 
 include $(topsrcdir)/config/rules.mk
 
+ifeq ($(OS_ARCH),WINNT)
+FW=funnelweb.exe
+else
+FW=funnelweb
+endif
+
 $(CPPSRCS):$(FWSRCS)
-	-$(srcdir)/funnelweb +t +D tex
+	-$(srcdir)/$(FW) +t +D tex
 
 # why doesn't this work?
 LOCAL_INCLUDES	= -I$(srcdir)
-CXXFLAGS	+= -GX -GR -DMOZILLA_VERSION=\"$(MOZILLA_VERSION)\"
+#CXXFLAGS	+= -GX -GR -DMOZILLA_VERSION=\"$(MOZILLA_VERSION)\"
+CXXFLAGS =
 ifdef MOZ_DEBUG
 CXXFLAGS	+= -DTESTING    -DLOGGING
 endif
