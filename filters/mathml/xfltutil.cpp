@@ -62,7 +62,7 @@ void FUCloseDumpFile() {
   }
 }
 
-void DumpLine( char* line ) {    // DIAGNOSTIC
+void DumpLine( const char* line ) {    // DIAGNOSTIC
 
   if ( dumpfile ) {
     fputs( line,dumpfile );

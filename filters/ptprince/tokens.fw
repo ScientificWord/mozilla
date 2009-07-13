@@ -976,6 +976,7 @@ x 0{}$&#\boo   % here's some more
 @o@<tokens.cpp@>==@{@-
 #include "tokens.h"
 #include "textio.h"
+#include <cstring>
 @<alignstate@>
 @<Init@>
 @<function bHexDigit@>
