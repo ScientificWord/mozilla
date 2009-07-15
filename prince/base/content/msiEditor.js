@@ -3476,7 +3476,7 @@ function msiSetDisplayMode(editorElement, mode)
         pdffile.initWithPath( docPath ); // pdffile now points to our document file
         pdffile = pdffile.parent; // and now it points to the working directory
         pdffile.append("tex");
-        pdffile.append("main.pdf");
+        pdffile.append(currPDFfileLeaf);
         if (pdffile.exists())
         {
           document.getElementById("preview-frame").loadURI(msiFileURLFromAbsolutePath(pdffile.path));
