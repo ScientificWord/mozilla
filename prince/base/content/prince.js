@@ -5,6 +5,7 @@ const NS_PIPETRANSPORT_CONTRACTID= "@mozilla.org/process/pipe-transport;1";
 const NS_PROCESSINFO_CONTRACTID = "@mozilla.org/xpcom/process-info;1";
 
 var gPipeConsole;
+var currPDFfileLeaf = "main.pdf";
 Components.utils.import("resource://app/modules/macroArrays.jsm");
 
 function goAboutDialog() {
@@ -635,6 +636,7 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
     outfileLeaf += ".pdf";
   else
     outfileLeaf += ".xdv";  // good only for XeTeX BBM fix this
+
   dump("\nOutputleaf="+outfileLeaf+"\n");
   var tempOutputfile;
   var outputfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
@@ -642,10 +644,20 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
   tempOutputfile = outputfile.clone();
   var leaf = "main"+(pdftex?".pdf":".dvi");
   outputfile.append(leaf);
+  var n = 0;
+  dump("Leaf is "+leaf+"\n");
+  while (outputfile.exists())
+  {
+    leaf = "main"+(n++)+(pdftex?".pdf":".dvi");
+    dump("Leaf is "+leaf+"\n");
+    outputfile = outputfile.parent;
+    outputfile.append(leaf);
+  }
+  currPDFfileLeaf = leaf;
   tempOutputfile.append("swp"+(pdftex?".pdf":".dvi"));
-  if (outputfile.exists())
-    outputfile.remove(false);
-  tempOutputfile.moveTo(null, leaf);     // BBM: allow for .xdv ??
+//  if (outputfile.exists())
+//    outputfile.remove(false);
+  dump(tempOutputfile.moveTo(null, leaf)+"\n");     // BBM: allow for .xdv ??
   dump("\nFinal output filename: "+tempOutputfile.target+"\n");
   return true;//output file exists();
 }
@@ -709,33 +721,18 @@ function compileDocument( pdftex )
     catch(e) {}; // 
     var dvipdffile = outputfile.clone();
     var dvipdffileroot = outputfile.clone();
-    dvipdffile.append("main."+ (pdftex?"pdf":"dvi"));
     outputfile.append("main.tex");
-    if (dvipdffile.exists()) 
-    {
-      try {
-        dvipdffile.remove(false);
-      }
-      catch(e) {
-      }
-    }
     if (outputfile.exists()) outputfile.remove(false);
     
     dump("\TeX file="+outputfile.target + "\n");
-    dump("DVI/PDF file is " + dvipdffile.target + "\n"); 
+//    dump("DVI/PDF file is " + dvipdffile.target + "\n"); 
     if (documentAsTeXFile(editor.document, "latex.xsl", outputfile ))
     {
-      if (dvipdffile.exists())    // Yes, check again! It seems that Acrobat writes out the old pdf file it was displaying.
-                                  // By checking now, we have given Acrobat all the time taken by the XSLT processing.
+      if (compileTeXFile(pdftex, "main", outputfile.target, dvipdffile.target, 1))
       {
-        try {
-          dvipdffile.remove(false);
-        }
-        catch(e) {
-        }
-      }
-      if (compileTeXFile(pdftex, "main", outputfile.target, dvipdffile.parent.target, 1))
-      {
+        if (!currPDFfileLeaf) currPDFfileLeaf = "main.pdf";
+        dump("currPDFfileLeaf is "+currPDFfileLeaf+"\n");
+        dvipdffile.append(currPDFfileLeaf);
         if (!dvipdffile.exists())
         {  
           AlertWithTitle("TeX Error", "Unable to create a "+(pdftex?"PDF":"DVI")+" file. Try View/TeX Log");
