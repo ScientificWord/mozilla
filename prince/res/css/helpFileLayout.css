@@ -1,0 +1,442 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * Version: MPL 1.1/GPL 2.0/LGPL 2.1
+ *
+ * The contents of this file are subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+ * for the specific language governing rights and limitations under the
+ * License.
+ *
+ * The Original Code is Mozilla Help CSS
+ *
+ * The Initial Developer of the Original Code is
+ * R.J. Keller
+ * Portions created by the Initial Developer are Copyright (C) 2003
+ * the Initial Developer. All Rights Reserved.
+ *
+ * Contributor(s):
+ *      Jeff Walden <jwalden+code@mit.edu>
+ *      Steffen Wilberg <steffen.wilberg@web.de>
+ *
+ * Alternatively, the contents of this file may be used under the terms of
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
+ * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+ * in which case the provisions of the GPL or the LGPL are applicable instead
+ * of those above. If you wish to allow use of your version of this file only
+ * under the terms of either the GPL or the LGPL, and not to allow others to
+ * use your version of this file under the terms of the MPL, indicate your
+ * decision by deleting the provisions above and replace them with the notice
+ * and other provisions required by the GPL or the LGPL. If you do not delete
+ * the provisions above, a recipient may use your version of this file under
+ * the terms of any one of the MPL, the GPL or the LGPL.
+ *
+ * ***** END LICENSE BLOCK ***** */
+
+@import url('chrome://help/content/platformClasses.css');
+
+math {
+  direction: ltr;
+}
+
+body, td, th, input {
+  font-family: verdana, sans-serif;
+  font-size: small;
+}
+
+body {
+	margin: 2ex;
+	max-width: 120ex;
+}
+
+:link:hover,
+:visited:hover {
+  color: -moz-activehyperlinktext;
+}
+
+hr {
+  height: 1px;
+  background-color: #000;
+  color: #000;
+  margin: 2em 0;
+}
+
+a[href^="http://"]:after,
+a[href^="https://"]:after {
+  content: url('chrome://help/skin/Weblink.png');
+}
+
+:link { color: #039; }
+:visited { color: #636; }
+:link:hover, :visited:hover { color: #333; }
+:link:active, :link:active { color: #000; }
+
+
+*[class="showinvis"] sectiontitle:after {
+  content: "\B6";
+  display: inline;
+  font-family: Courier New;
+  color: green;
+  font-weight: bold;
+}
+
+h1 { font-size: 160%; font-weight: normal; }
+
+section {
+  display: block;
+}  
+
+section>*:first-child {
+  display: block;
+  font-size: 160%;
+  font-weight: normal;
+  margin: 1em 0 0.2em 0;
+  border-bottom: 1px solid #ccc;
+  font-family: arial, verdana, sans-serif;
+}
+
+h2 { font-size: 150%; font-weight: normal; }
+
+
+subsection {
+  display: block;
+}
+
+subsection>*:first-child {
+  display: block;
+  font-size: 150%;
+  font-weight: normal;
+  margin: 1em 0 0.2em 0;
+  border-bottom: 1px solid #ccc;
+  font-family: arial, verdana, sans-serif;
+}
+
+h3 { font-size: 120%; }
+
+subsubsection {
+  display:block;
+}
+
+subsubsection>*:first-child {
+  display: block;
+  font-size: 120%;
+  margin: 1em 0 0.2em 0;
+  border-bottom: 1px solid #ccc;
+  font-family: arial, verdana, sans-serif;
+  font-weight: bold;
+}
+
+h4 { font-size: 100%; }
+
+paragraph {
+  display:block;
+}
+
+paragraph>*:first-child {
+  font-size: 100%;
+  margin: 1em 0 0.2em 0;
+  border-bottom: 1px solid #ccc;
+  font-family: arial, verdana, sans-serif;
+  font-weight: bold;
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 1em 0 0.2em 0;
+  border-bottom: 1px solid #ccc;
+  font-family: arial, verdana, sans-serif;
+}
+
+li h1, li h2, li h3, li h4, li h5, li h6 {
+  border: none;
+}
+
+
+dt { font-weight: bold; }
+
+sup {
+  font-size: 70%;
+}
+
+:link img,
+:visited img {
+  border: 0;
+}
+
+.contentsBox, 
+.contentsBox > ul,
+li {
+	text-indent: 0px;
+}
+
+.contentsBox > ul,
+.contentsBox ul > ul{
+	margin: 0 0 0 0;
+	list-style-type: none;
+}
+
+.contentsBox {
+	margin-top: 12px;
+	background-color: #eee;
+	border: 1px solid #ccc;
+	width: 300px;
+	padding: 1em;
+}
+
+.menuPath {
+  background: #c4d0f4; /* bluish color */
+  color: inherit;
+  padding-left:  1px; /* else bgcolor ends at last char - no space */
+  padding-right: 1px;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+td, th {
+  border: 1px solid #ddd;    /* grey */
+  padding: 6px;
+  vertical-align: top;
+}
+
+th {
+  background-color: #eee;    /* light grey */
+  font-weight: bold;
+  text-align: left;
+}
+
+.noTableBorder,
+.noTableBorder td,
+.noTableBorder th {
+	background-color: transparent;
+	border: 0px solid transparent;
+}
+
+para {
+  display: block;
+  margin: 10pt 10pt 5pt 5pt;
+}
+
+
+*[class="showinvis"] para:after {
+  content: "\B6";
+  display: inline;
+  font-family: Courier New;
+  color: green;
+  font-weight: bold;
+}
+
+mathp {
+  display: block;
+  margin: 10pt 10pt 5pt 5pt;
+  color: rgb(0,128,64);
+}
+
+*[class="showinvis"] mathp:after {
+  content: "\B6";
+  display: inline;
+  font-family: Courier New;
+  color: green;
+  font-weight: bold;
+}
+
+author {
+  text-align: center;
+  font-weight: normal;
+  display: block;
+  padding-top: 10pt;
+}
+
+date {
+  text-align: center;
+  font-weight: normal;
+  display: block;
+  padding-top: 2pt;
+}
+
+address {
+  display: block;
+  text-align: center;
+}
+
+title {
+  font-size: x-large;
+  display: block;
+  margin-top: 12pt;
+  text-align: center;
+}
+
+*[class="showinvis"] title:after {
+  content: "\B6";
+  display: inline;
+  font-family: Courier New;
+  color: green;
+  font-weight: bold;
+}
+
+quote {
+  display: block; 
+  margin-left: 20pt;
+  margin-right: 20pt;
+}
+
+*[class="showinvis"] quote:after {
+  content: "\B6";
+  display: inline;
+  font-family: Courier New;
+  color: green;
+  font-weight: bold;
+}
+
+quotation {
+  display: block; 
+  margin-left: 20pt;
+  margin-right: 20pt;
+}
+
+*[class="showinvis"] quotation:after {
+  content: "\B6";
+  display: inline;
+  font-family: Courier New;
+  color: green;
+  font-weight: bold;
+}
+
+center {
+  display: block;
+  margin: 10pt 10pt 5pt 5pt;
+  text-align: center;
+}
+
+flushright {
+  display: block;
+  margin: 10pt 10pt 5pt 5pt;
+  text-align: right;
+}
+
+flushleft {
+  display: block;
+  margin: 10pt 10pt 5pt 5pt;
+  text-align: left;
+}
+
+em {
+  font-style: italic;
+  color: rgb(9,62,125)
+}
+
+em span.inlineMath {
+  color: rgb(255,0,255)
+}
+
+rm {
+  font-family: Times New Roman, serif;
+  color: rgb(0,0,255)
+}
+
+cal, *[mathvariant="script"] {
+  font-family: monotype corsiva;
+  color: rgb(0,0,255)
+}
+
+alt {
+  color: rgb(0,255,0)
+}
+
+bold {
+  font-weight: 700
+}
+
+bbold {
+  font-weight: 700
+}
+
+fraktur {
+  font-weight: 700
+}
+
+it {
+  font-style: italic
+}
+
+sl {
+  font-style: italic;
+  font-weight: 700;
+  color: rgb(9,62,125)
+}
+
+sf {
+  font-family: Arial;
+  font-weight: 400;
+  color: rgb(9,62,125)
+}
+
+sc {
+  font-variant: small-caps;
+  color: rgb(0,0,0)
+}
+
+tt {
+  font-family: Courier New;
+  font-weight: 300
+}
+
+rtl {
+  color: rgb(100,50,0);
+  direction: rtl;
+  unicode-bidi: bidi-override 
+}
+
+tiny {
+  font-size: 50%
+}
+
+scriptsize {
+  font-size: 67%
+}
+
+footnotesize {
+  font-size: 75%
+}
+
+small {
+  font-size: 83%
+}
+
+normalsize {
+  font-size: 100%
+}
+
+large {
+  font-size: 117%
+}
+
+Large {
+  font-size: 133%
+}
+
+LARGE {
+  font-size: 150%
+}
+
+huge {
+  font-size: 167%
+}
+
+Huge {
+  font-size: 183%
+}
+
+theorem {
+  display: block;
+  font-style: italic;
+  counter-increment: theorem;
+}
+
+theorem:before {
+  content:  "Theorem " counter(section) "."  counter(theorem) ". " ;
+}
