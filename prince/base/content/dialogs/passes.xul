@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2007 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<!-- ?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"? -->
+<!-- ?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"? -->
+
+<!DOCTYPE dialog [
+<!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/passes.dtd" >
+%dialogDTD;
+]>
+<dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    title="LaTeX passes" buttons="cancel"
+    buttonlabelcancel="Cancel"
+    ondialogcancel="onCancel();"
+    onload="Init();"
+    width="400px"
+    height="200px"
+    persist="top left width height"
+    id="dialog">
+  <!-- Following scripts are needed by any MSI dialog brought up by an editor -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/passes.js"/>
+  <dialogheader title="LaTeX passes" description="Set the number of LaTeX passes"/>  
+  <label hidden="true" id="passStatusTemplate" value="Making pass #n of #m"/>
+  <label id="passStatus" value = ""/>
+  <separator/>
+  <hbox>
+    <vbox>
+      <label control="numpasses" accesskey="n" value="New number of passes"/>
+      <textbox id="numpasses" type="number" persist="width" style="width:25px;" value="3" onchange="newPasses();"/>
+    </vbox>
+    <vbox flex="1"/>
+  </hbox>
+</dialog>

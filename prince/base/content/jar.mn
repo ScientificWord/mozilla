@@ -221,3 +221,5 @@ prince.jar:
   content/msiFrameOverlay.js      (dialogs/msiFrameOverlay.js)
   content/sourceparseerror.xul     (dialogs/sourceparseerror.xul)
   content/sourceparseerror.js      (dialogs/sourceparseerror.js)
+  content/passes.xul               (dialogs/passes.xul)
+  content/passes.js                (dialogs/passes.js)
