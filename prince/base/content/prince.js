@@ -588,6 +588,8 @@ compileTeXFile:
  = */
 /* ==== */
 
+var passData;
+
 function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
 {
   // the following requires that the pdflatex program (or a hard link to it) be in TeX/bin/pdflatex 
@@ -595,6 +597,7 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
   var exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
   var extension;
   var compiledFileLeaf = "SWP";
+  passData = new Object;
 #ifdef XP_WIN32
   extension = "cmd";
 #else
@@ -605,34 +608,27 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
   else
     exefile.append("latex."+extension);
   dump("\nexecutable file: "+exefile.target+"\n");
-  try 
-  {
-    var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
-    theProcess.init(exefile);
-    var args = ["-output-directory", outputDir, infileLeaf, compiledFileLeaf, passCount];
-    theProcess.run(true, args, args.length);
-//    var data=new Object();
-//    data.pipeconsole = Components.classes["@mozilla.org/process/pipe-console;1"].createInstance(Components.interfaces.nsIPipeConsole);
-//    data.pipeconsole.open(500,80,false);
-//    data.pipetransport = Components.classes["@mozilla.org/process/pipe-transport;1"].createInstance(Components.interfaces.nsIPipeTransport);
-//    var args = ["-output-directory", outputDir, infileLeaf, passCount];
-//    data.pipetransport.init(exefile.target, args, args.length, "", 0, 2000, "", true, false, data.pipeconsole );
-//    data.pipetransport.loggingEnabled = true;
-//    data.pipetransport.asyncRead(data.pipeconsole, null, 0, -1, 0);
-//    data.stdin = data.pipetransport.openOutputStream(0,-1,0);
-//    data.clean = false;
-//    window.openDialog("chrome://prince/content/msiConsole.xul", "_blank", "chrome,close,titlebar,modal", data);
-//    data.pipetransport.join();
-//    // we need to kill the process
-//    
-  } 
-  catch (ex) {
-    dump("\nUnable to run TeX: "+ex.message+"\n");
-    return false;
-  }
+  passData.file = exefile;
+  passData.pdftex = pdftex;
+  passData.outputDir = outputDir;
+  passData.args = ["-output-directory", outputDir, infileLeaf, compiledFileLeaf, 1];
+  passData.passCount = 3;  // replace this with a realistic guess.
+  var i;
+  dump("Opening dialog\n");
+  window.openDialog("chrome://prince/content/passes.xul", GetString("About"), "chrome,modal=yes,resizable=yes,alwaysRaised=yes",
+    passData);
+//  finishCompileTeXFile(passData);
+//    There was some commented code here for using the pipe-console object from the enigmail project. We are not 
+//    using it in 6.0, and XulRunner is getting a better implementation, which we will use later.
+}
+
+
+function finishCompileTeXFile(passData)
+{
   // check for a dvi or pdf file
+  var compiledFileLeaf = "SWP";
   var outfileLeaf = compiledFileLeaf;
-  if (pdftex)
+  if (passData.pdftex)
     outfileLeaf += ".pdf";
   else
     outfileLeaf += ".xdv";  // good only for XeTeX BBM fix this
@@ -640,26 +636,25 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
   dump("\nOutputleaf="+outfileLeaf+"\n");
   var tempOutputfile;
   var outputfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-  outputfile.initWithPath( outputDir );
+  outputfile.initWithPath( passData.outputDir );
   tempOutputfile = outputfile.clone();
-  var leaf = "main"+(pdftex?".pdf":".dvi");
+  var leaf = "main"+(passData.pdftex?".pdf":".dvi");
   outputfile.append(leaf);
   var n = 0;
   dump("Leaf is "+leaf+"\n");
   while (outputfile.exists())
   {
-    leaf = "main"+(n++)+(pdftex?".pdf":".dvi");
+    leaf = "main"+(n++)+(passData.pdftex?".pdf":".dvi");
     dump("Leaf is "+leaf+"\n");
     outputfile = outputfile.parent;
     outputfile.append(leaf);
   }
   currPDFfileLeaf = leaf;
-  tempOutputfile.append("swp"+(pdftex?".pdf":".dvi"));
+  tempOutputfile.append("swp"+(passData.pdftex?".pdf":".dvi"));
 //  if (outputfile.exists())
 //    outputfile.remove(false);
   dump(tempOutputfile.moveTo(null, leaf)+"\n");     // BBM: allow for .xdv ??
   dump("\nFinal output filename: "+tempOutputfile.target+"\n");
-  return true;//output file exists();
 }
 
 
