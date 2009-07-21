@@ -21,8 +21,12 @@ button[group][checked="true"] > xul|*.button-box{
   min-width: 1em;
 }
 
-*[selectsOnFocus="false"] button[group][checked="true"] > .button-box {
+*[selectsOnFocus="false"] msibutton[group][checked="true"] mml|math {
   background-color: rgb(255,222,222);
+}
+
+*[selectsOnFocus="false"] msibutton[group][disabled="true"] mml|math {
+  background-color: rgb(222,222,222);
 }
 
 description.MSISample {

@@ -233,7 +233,7 @@ var msiReviseFractionCmd =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement(window);
-    var theFrac = aParams.getISupportsValue("reviseObject");
+    var theFrac = msiGetReviseObjectFromCommandParams(aParams);
     if ( (editorElement != null) && (theFrac != null) )
     {
       var fractionData = new Object();
@@ -295,7 +295,7 @@ var msiReviseRadicalCmd =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement(window);
-    var theRadical = aParams.getISupportsValue("reviseObject");
+    var theRadical = msiGetReviseObjectFromCommandParams(aParams);
     if ( (editorElement != null) && (theRadical != null) )
     {
       var radicalData = new Object();
@@ -512,7 +512,7 @@ var msiReviseMathnameCmd =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement(window);
-    var theMathname = aParams.getISupportsValue("reviseObject");
+    var theMathname = msiGetReviseObjectFromCommandParams(aParams);
 
     var mathNameData = new Object();
     mathNameData.reviseObject = theMathname;
@@ -662,7 +662,7 @@ var msiReviseMatrixCmd =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement(window);
-    var theMatrixData = aParams.getISupportsValue("reviseObject");
+    var theMatrixData = msiGetReviseObjectFromCommandParams(aParams);
     AlertWithTitle("mathmlOverlay.js", "In msiReviseMatrixCmd, trying to revise matrix, dialog unimplemented.");
 //    reviseFraction(editorElement, theFrac);
   },
@@ -716,7 +716,7 @@ var msiReviseGenBracketsCmd =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement(window);
-    var theBrackets = aParams.getISupportsValue("reviseObject");
+    var theBrackets = msiGetReviseObjectFromCommandParams(aParams);
     var bracketData = new Object();
     bracketData.reviseObject = theBrackets;
 //    var argArray = [bracketData];
@@ -759,7 +759,7 @@ var msiReviseBinomialsCmd =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement(window);
-    var theBinomial = aParams.getISupportsValue("reviseObject");
+    var theBinomial = msiGetReviseObjectFromCommandParams(aParams);
     var binomialData = new Object();
     binomialData.reviseObject = theBinomial;
 //    var argArray = [binomialData];
@@ -802,7 +802,7 @@ var msiReviseOperatorsCmd =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement(window);
-    var theOperator = aParams.getISupportsValue("reviseObject");
+    var theOperator = msiGetReviseObjectFromCommandParams(aParams);
     var operatorData = new Object();
     operatorData.reviseObject = theOperator;
 //    var argArray = [operatorData];
@@ -830,9 +830,125 @@ var msiDecorations =
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement(window);
-    doDecorationsDlg(String.fromCharCode(0x00AF), "", "", editorElement);
+    doDecorationsDlg(String.fromCharCode(0x00AF), "", "", "cmd_MSIdecorationsCmd", editorElement, this);
   }
 };
+
+var standardDecorAboveStrings = 
+  [ String.fromCharCode(0x00AF), String.fromCharCode(0x2190), String.fromCharCode(0x2192),
+    String.fromCharCode(0x2194), String.fromCharCode(0xFE37), String.fromCharCode(0x0302),
+    String.fromCharCode(0x02DC) ];
+
+var standardDecorBelowStrings = 
+  [ String.fromCharCode(0x0332), String.fromCharCode(0x2190), String.fromCharCode(0x2192),
+    String.fromCharCode(0x2194), String.fromCharCode(0xFE38) ];
+
+var standardAroundDecorNotationStrings = 
+  { frame : {mNotation: "box", mType: "frame"},
+    fbox : {mNotation: "box", mType: "fbox"},
+    roundedbox : {mNotation: "roundedbox"} };
+
+function msiGetMEncloseNotationAndTypeFromDecorString(decorationAroundStr)
+{
+  if (decorationAroundStr in standardAroundDecorNotationStrings)
+    return standardAroundDecorNotationStrings[decorationAroundStr];
+  return null;
+}
+
+function msiGetDecorStringFromMEncloseNotationAndType(notationSpec, typeSpec)
+{
+  for (var aDecor in standardAroundDecorNotationStrings)
+  {
+    if (standardAroundDecorNotationStrings[aDecor].mNotation == notationSpec)
+    {
+      if ( !("mType" in standardAroundDecorNotationStrings[aDecor]) || (standardAroundDecorNotationStrings[aDecor].mType == typeSpec) )
+        return aDecor;
+    }
+  }
+  return "";
+}
+
+//This function is a utility used both in the reviseDecoration function (called when the dialog is accepted) and within the dialog
+//  to set the dialog data from the object.
+function extractDataFromDecoration(decorationNode, decorData)
+{
+  var baseDecorNode = decorationNode;
+  var underDecorChild, overDecorChild;
+
+  function extractDecorationTextFromOverUnder(aChild, bOver)
+  {
+    var theText = "";
+    switch( msiGetBaseNodeName(aChild))
+    {
+      case "mo":
+        theText = msiNavigationUtils.getLeafNodeText(aChild);
+        if (bOver)
+        {
+          if (standardDecorAboveStrings.indexOf(theText) < 0)
+            theText = "label";
+        }
+        else
+        {
+          if (standardDecorBelowStrings.indexOf(theText) < 0)
+            thetext = "label";
+        }
+        return theText;
+      break;
+      default:
+        //what?? I think we must assume that these are what we call "labels" - and encode using that string.
+        return "label";
+      break;
+    }
+    return null;
+  }
+
+  switch( msiGetBaseNodeName(decorationNode) )
+  {
+    case "menclose":
+      var notationSpec = decorationNode.getAttribute("notation");
+      var typeSpec = decorationNode.getAttribute("type");
+      var childNode = msiNavigationUtils.getSingleSignificantChild(decorationNode);
+      if (childNode)
+        baseDecorNode = extractDataFromDecoration(childNode, decorData);
+      if (!baseDecorNode)
+        baseDecorNode = decorationNode;
+//      else
+//      {
+//        aboveStr = null;
+//        belowStr = null;
+//      }
+      decorData.aroundStr = msiGetDecorStringFromMEncloseNotationAndType(notationSpec, typeSpec);
+    break;
+
+    case "mover":
+      overDecorChild = msiNavigationUtils.getIndexedSignificantChild(decorationNode, 1);  //2nd child - expects 0-based index
+      decorData.aboveStr = String(extractDecorationTextFromOverUnder(overDecorChild, true));
+//      belowStr = null;
+//      aroundStr = null;
+    break;
+
+    case "munder":
+      underDecorChild = msiNavigationUtils.getIndexedSignificantChild(decorationNode, 1);  //2nd child - expects 0-based index
+      decorData.belowStr = String(extractDecorationTextFromOverUnder(underDecorChild, false));
+//      aboveStr = null;
+//      aroundStr = null;
+    break;
+
+    case "munderover":
+      overDecorChild = msiNavigationUtils.getIndexedSignificantChild(decorationNode, 2);  //3rd child - expects 0-based index
+      decorData.aboveStr = String(extractDecorationTextFromOverUnder(overDecorChild, true));
+      underDecorChild = msiNavigationUtils.getIndexedSignificantChild(decorationNode, 1);  //2nd child - expects 0-based index
+      decorData.belowStr = String(extractDecorationTextFromOverUnder(underDecorChild, false));
+//      aroundStr = null;
+    break;
+
+    default:
+      baseDecorNode = null;  //Anything else isn't a decoration
+    break;
+  }
+
+  return baseDecorNode;
+}
 
 var msiReviseDecorationsCmd =
 {
@@ -843,9 +959,17 @@ var msiReviseDecorationsCmd =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement(window);
-    var theDecoration = aParams.getISupportsValue("reviseObject");
-    AlertWithTitle("mathmlOverlay.js", "In msiReviseDecorationsCmd, trying to revise decoration, dialog unimplemented.");
-//    reviseFraction(editorElement, theFrac);
+    var theDecoration = msiGetReviseObjectFromCommandParams(aParams);
+    var decorationData = new Object();
+    decorationData.reviseObject = theDecoration;
+//    var aboveStr, belowStr, aroundStr;
+//    var coreDecoration = extractDataFromDecoration(theDecoration, aboveStr, belowStr, aroundStr);
+//    doDecorationsDlg(aboveStr, belowStr, aroundStr, editorElement, theDecoration);
+//    AlertWithTitle("mathmlOverlay.js", "In msiReviseDecorationsCmd, trying to revise decoration, dialog unimplemented.");
+////    reviseFraction(editorElement, theFrac);
+
+    var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/Decorations.xul", "_blank", "chrome,close,titlebar,dependent",
+                                                     editorElement, "msiReviseDecorationsCmd", theDecoration, decorationData);
   },
 
   doCommand: function(aCommand)
@@ -865,7 +989,6 @@ var msiUnitsDialog =
 
   doCommand: function(aCommand)
   {
-    dump("Reached the msiUnitsDialog command handler.\n");
     var editorElement = msiGetActiveEditorElement(window);
     doUnitsDlg("", "cmd_MSIunitsCommand", editorElement, this);
   }
@@ -880,7 +1003,7 @@ var msiReviseUnitsCommand =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement(window);
-    var theUnit = aParams.getISupportsValue("reviseObject");
+    var theUnit = msiGetReviseObjectFromCommandParams(aParams);
 //    AlertWithTitle("mathmlOverlay.js", "In msiReviseUnitsCmd, trying to revise unit, dialog unimplemented.");
 //    doUnitsDlg("", "cmd_MSIunitsCommand", editorElement, this);
     try
@@ -1292,6 +1415,24 @@ function reviseOperator(objectNode, newOperatorStr, limitPlacement, sizeSpec, ed
   return retVal;
 }
 
+function msiSetEncloseDecoration(targNode, decorationAroundStr, editor)
+{
+  var notationSpec = null;
+  if (msiGetBaseNodeName(targNode) == "menclose")
+  {
+    notationSpec = msiGetMEncloseNotationAndTypeFromDecorString(decorationAroundStr);
+    if (notationSpec)
+    {
+      if (notationSpec.mNotation && notationSpec.mNotation.length)
+        msiEditorEnsureElementAttribute(targNode, "notation", notationSpec.mNotation, editor);
+      if (notationSpec.mType && notationSpec.mType.length)
+        msiEditorEnsureElementAttribute(targNode, "type", notationSpec.mType, editor);
+    }
+  }
+  else
+    dump("Problem in mathmlOverlay.js, reviseDecoration, msiSetEncloseDecoration! targNode isn't an menclose!\n");
+}
+
 function insertDecoration(decorationAboveStr, decorationBelowStr, decorationAroundStr, editorElement)
 {
 //  alert("Inserting Decoration above: [" + decorationAboveStr + "], below: [" + decorationBelowStr + "], around: [" + decorationAroundStr + "].");
@@ -1301,12 +1442,328 @@ function insertDecoration(decorationAboveStr, decorationBelowStr, decorationArou
   try 
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
-    mathmlEditor.InsertDecoration(decorationAboveStr, decorationBelowStr);
+    var theParent = editor.selection.focusNode;
+    var theOffset = editor.selection.focusOffset;
+//    var theParent = msiNavigationUtils.getCommonAncestorForSelection(editor.selection);
+    if (decorationAroundStr && decorationAroundStr.length)
+    {
+      var encloseNode = editor.document.createElementNS(mmlns, "menclose");
+      editor.insertNode(encloseNode, theParent, theOffset);
+      msiSetEncloseDecoration(encloseNode, decorationAroundStr, editor);
+      var childNode = newbox(editor);
+      editor.insertNode( childNode, encloseNode, 0 );
+      editor.selection.collapse(childNode, 0);
+    }
+    if ( (decorationAboveStr && decorationAboveStr.length) || (decorationBelowStr && decorationBelowStr.length) )
+      mathmlEditor.InsertDecoration(decorationAboveStr, decorationBelowStr);
     editorElement.contentWindow.focus();
   } 
   catch (e) 
   {
   }
+}
+
+function reviseDecoration(decorationNode, decorationAboveStr, decorationBelowStr, decorationAroundStr, editorElement)
+{
+//The plan we want to follow here - and possibly generalize to simplify these functions in the future - is:
+//  (i) Determine the base node type, old and new. "Base node" here means a munder, mover, or munderover, which may then be wrapped
+//      by a menclose. (A big problem here: menclose isn't implemented in the core! Though it could almost be done at the level of
+//      XBL, a true implementation with its own Frame objects would be the way to go.) Note, however, that if the base node - either
+//      old or new - is missing, we should use the outer menclose node as the base node. If there is no outer menclose, then - what
+//      are we doing here? Removing decorations from something? How to deal with that? (SWP doesn't allow using the revise decorations
+//      dialog to remove them, so let's not allow it here either.)
+// (ii) If the base node types aren't the same, and a new one is needed, create it. Now you want to move corresponding pieces of the
+//      old node to the new one. We do that by iterating through the significant children of the old node and doing a move.
+//(iii) Finally we substitute pieces that have changed. Note that in doing this, a label above could be moved to a label below and we'd
+//      preserve its contents.
+  var editor = msiGetEditor(editorElement);
+
+//*********************************************************//
+//The set of internal functions following are intended to potentially be used more generally in math editing.
+  function moveAChildNode(targParent, targIndex, srcParent, srcIndex)
+  {
+    var theChild = msiNavigationUtils.getIndexedSignificantChild(srcParent, srcIndex);
+    if (theChild)
+    {
+      editor.deleteNode(theChild);
+      editor.insertNode(theChild, targParent, targIndex);
+      editor.insertNode( newbox(editor), srcParent, srcIndex ); //We don't want to mess up the child count of the source
+    }
+    return theChild;
+  }
+
+  function replaceDecorationChild(targParent, targIndex, decorStr)
+  {
+    var oldChild = msiNavigationUtils.getIndexedSignificantChild(targParent, targIndex);
+    var newChild = null;
+    if (decorStr == "label")
+    {
+      if (!msiNavigationUtils.isEmptyInputBox(oldChild))
+      {
+        editor.deleteNode(oldChild);
+        newChild = newbox(editor);
+        editor.insertNode(newChild, targParent, targIndex);
+      }
+    }
+    else
+    {
+      if (msiGetBaseNodeName(oldChild) == "mo")
+        oldChild.textContent = decorStr;
+      else
+      {
+        newChild = editor.document.createElementNS(mmlns, "mo");
+        newChild.textContent = decorStr;
+        editor.insertNode(newChild, targParent, targIndex);
+      }
+    }
+  }
+
+  function moveCorrespondingContents(targNode, srcNode)
+  {
+    var childContentTable = 
+    {
+      mover : { base : 1, sup : 2 },
+      munder : { base : 1, sub : 2 },
+      munderover : { base : 1, sub : 2, sup : 3 },
+      menclose : { base : -1 }
+    };
+    function positionToContentName(aNodeName, nPos)
+    {
+      if (! (aNodeName in childContentTable) )
+        return null;
+      for (var aChild in childContentTable[aNodeName])
+      {
+        if (childContentTable[aNodeName][aChild] == nPos)
+          return aChild;
+      }
+      return null;
+    }
+    function lastChildPosition(aNodeName)
+    {
+      var nPos = 0;
+      if (aNodeName in childContentTable)
+      {
+        for (var aChild in childContentTable[aNodeName])
+        {
+          if (childContentTable[aNodeName][aChild] > nPos)
+            nPos = childContentTable[aNodeName][aChild];
+        }
+      }
+      return nPos;
+    }
+
+    var newName = msiGetBaseNodeName(targNode);
+    var oldName = msiGetBaseNodeName(srcNode);
+    var childNode = null;
+    var newPos, oldPos;
+    var aPosition = null;
+    aPosition = positionToContentName(newName, -1);
+    if (aPosition)  //so this one has all children together in one place
+    {
+      if (aPosition in childContentTable[oldName])
+      {
+        oldPos = childContentTable[oldName][aPosition];
+        if (oldPos > 0)  //moving it from a specified position - may be wrapped in an mrow
+        {
+          childNode = msiNavigationUtils.getIndexedSignificantChild(srcNode, oldPos - 1);
+          if (childNode)
+          {
+            if (msiNavigationUtils.isOrdinaryMRow(childNode))
+              msiEditorMoveChildren(targNode, childNode, editor);
+            else  //just a regular single node
+            {
+              editor.deleteNode(childNode);
+              editor.insertNode(childNode, targNode, 0);
+            }
+          }
+        }
+        else
+        {
+          childNode = msiNavigationUtils.getIndexedSignificantChild(srcNode, 0);  //We're using "childNode" as a marker for success, so set it to the first child
+          if (childNode)
+            msiEditorMoveChildren(targNode, srcNode);
+        }
+      }
+      if (!childNode)
+      {
+        childNode = newbox(editor);  //create an input box at this position
+        editor.insertNode(childNode, targNode, 0);
+      }
+      return targNode;  //Since all of the child nodes are at unspecified positions, there can be nothing else to do.
+    }
+    for (var nn = 1; nn <= lastChildPosition(newName); ++nn)
+    {
+      aPosition = positionToContentName(newName, nn);
+      if (aPosition)
+      {
+        if ( (oldName in childContentTable) && (aPosition in childContentTable[oldName]) )
+        {
+          oldPos = childContentTable[oldName][aPosition];
+          if (oldPos < 0)  //this means we're moving all the children of srcNode to the desired position in targNode
+          {
+            childNode = srcNode.ownerDocument.createElementNS(mmlns, "mrow");
+            editor.insertNode(childNode, targNode, nn - 1);
+            msiEditorMoveChildren(childNode, srcNode, editor);
+          }
+          else  //so the old node had a specified position
+          {
+            childNode = msiNavigationUtils.getIndexedSignificantChild(srcNode, oldPos - 1);
+            editor.deleteNode(childNode);
+            editor.insertNode(childNode, targNode, nn - 1);
+            editor.insertNode( newbox(editor), srcNode, oldPos - 1 );  //Do this to keep the child count of srcNode intact
+          }
+        }
+        if (!childNode)
+        {
+          childNode = newbox(editor);
+          editor.insertNode(childNode, targNode, nn - 1);
+        }
+      }
+    }
+  }
+//*********************************************************//
+
+  var currNodeName = msiGetBaseNodeName(decorationNode);
+  var bWasEnclose = (currNodeName == "menclose");
+  var bIsEnclose = (decorationAroundStr && (decorationAroundStr.length > 0) );
+  var oldAboveStr, oldBelowStr, oldAroundStr;
+  var decorData = new Object();
+  var coreDecorNode = extractDataFromDecoration(decorationNode, decorData);
+  currNodeName = msiGetBaseNodeName(coreDecorNode);
+  var newNodeName = null;
+  var newTopName = null;
+  var targCoreNode = null;
+  var targTopNode = null;
+  if (decorationAboveStr && (decorationAboveStr.length > 0) )
+  {
+    if (decorationBelowStr && (decorationBelowStr.length > 0) )
+      newNodeName = "munderover";
+    else
+      newNodeName = "mover";
+  }
+  else if (decorationBelowStr && (decorationBelowStr.length > 0) )
+    newNodeName = "munder";
+  if (!newNodeName)
+  {
+    if (bIsEnclose)
+      newNodeName = "menclose";
+    else
+    {
+      dump("In mathmlOverlay.js, reviseDecoration(); now show no decoration present - this should NOT happen! Just spill the contents out into our parent?\n");
+      return;
+    }
+  }
+  if (bIsEnclose)  //So whatever else we're creating has to end up as the child of an menclose.
+    newTopName = "menclose";
+
+  if (newNodeName == currNodeName)
+  {
+    targCoreNode = coreDecorNode;
+    newNodeName = null;  //Don't need a new core node
+  }
+  else if (newNodeName == "menclose")
+  {
+    if (bWasEnclose)
+    {
+      targTopNode = targCoreNode = decorationNode;
+      newNodeName = null;  //Don't need a new core node
+    }
+  }
+  if (newTopName == "menclose")
+  {
+    if (bWasEnclose)
+    {
+      targTopNode = decorationNode;
+      newTopName = null;  //Don't need a new menclose node.
+    }
+  }
+
+  editor.beginTransaction();
+  if (newNodeName)
+  {
+    targCoreNode = decorationNode.ownerDocument.createElementNS(mmlns, newNodeName);
+    if (coreDecorNode)
+      moveCorrespondingContents(targCoreNode, coreDecorNode);
+    if (newNodeName == "menclose")
+      targTopNode = targCoreNode;
+  }
+  //The one weird case to deal with for decorations is where a label above or below is moved to the other position.
+  //  Thus we check for newNodeName = "mover" and oldNodeName = "munder" or vice versa with a corresponding string of "label";
+  //  if this is found, we move the contents of the label child.
+  var bDone = false;
+  if ( (newNodeName == "mover") && (currNodeName == "munder") )
+  {
+    if ( (decorData.belowStr == "label") && (decorationAboveStr == "label") )
+    {
+      //Copy the old munder contents to the new mover
+      moveAChildNode(targCoreNode, 1, coreDecorNode, 1);
+      bDone = true;
+    }
+  }
+  else if ( (newNodeName == "munder") && (currNodeName == "mover") )
+  {
+    if ( (decorData.aboveStr == "label") && (decorationBelowStr == "label") )
+    {
+      //Copy the old munder contents to the new mover
+      moveAChildNode(targCoreNode, 1, coreDecorNode, 1);
+      bDone = true;
+    }
+  }
+  if (!bDone)
+  {
+    switch(msiGetBaseNodeName(targCoreNode))
+    {
+      case "mover":
+        if (!decorData.aboveStr || (decorData.aboveStr != decorationAboveStr))
+          replaceDecorationChild(targCoreNode, 1, decorationAboveStr);
+      break;
+      case "munderover":
+        if (!decorData.aboveStr || (decorData.aboveStr != decorationAboveStr))
+          replaceDecorationChild(targCoreNode, 2, decorationAboveStr);
+        if (!decorData.belowStr || (decorData.belowStr != decorationBelowStr))
+          replaceDecorationChild(targCoreNode, 1, decorationBelowStr);
+      break;
+      case "munder":
+        if (!decorData.belowStr || (decorData.belowStr != decorationBelowStr))
+          replaceDecorationChild(targCoreNode, 1, decorationBelowStr);
+      break;
+    }
+  }
+
+  if (newTopName && !targTopNode)
+    targTopNode = decorationNode.ownerDocument.createElementNS(mmlns, newTopName);
+  
+  var theParent = decorationNode.parentNode;
+  if (targTopNode)
+  {
+    if (targCoreNode != targTopNode)
+    {
+      if (targCoreNode != msiNavigationUtils.getSingleSignificantChild(targTopNode, false))
+      {
+        //Do we need to worry about removing targCoreNode from where it may have been in the document?
+        if (targCoreNode.parentNode)
+          editor.removeNode(targCoreNode);
+        var encloseChildren = msiNavigationUtils.getSignificantContents(targTopNode);
+        for (var ix = 0; ix < encloseChildren.length; ++ix)
+          editor.removeNode(encloseChildren[ix]);
+        editor.insertNode(targCoreNode, targTopNode, 0);
+      }
+    }
+    if (targTopNode != decorationNode)
+      editor.replaceNode(targTopNode, decorationNode, theParent);
+    if (!decorData.aroundStr || (decorData.aroundStr != decorationAroundStr))
+      msiSetEncloseDecoration(targTopNode, decorationAroundStr, editor);
+  }
+  else
+  {
+    if (targCoreNode != coreDecorNode)
+    {
+      theParent = coreDecorNode.parentNode;
+      editor.replaceNode(targCoreNode, coreDecorNode, theParent);
+    }
+  }
+
+  editor.endTransaction();
 }
 
 function insertroot(editorElement) 
@@ -2085,16 +2542,18 @@ function doOperatorsDlg(operatorStr, limitPlacement, size, commandID, editorElem
 //  alert("Insert operator [" + operatorData.operator + "] with limit placement [" + operatorData.limitsSpec + "] and size [" + operatorData.sizeSpec + "].");
 }
 
-function doDecorationsDlg(decorationAboveStr, decorationBelowStr, decorationAroundStr, editorElement)
+function doDecorationsDlg(decorationAboveStr, decorationBelowStr, decorationAroundStr, commandID, editorElement, commandHandler)
 {
   var decorationData = new Object();
   decorationData.decorationAboveStr = decorationAboveStr;
   decorationData.decorationBelowStr = decorationBelowStr;
   decorationData.decorationAroundStr = decorationAroundStr;
-  window.openDialog("chrome://prince/content/Decorations.xul", "_blank", "chrome,close,titlebar,modal", decorationData);
-  if (decorationData.Cancel)
-    return;
-  insertDecoration(decorationData.decorationAboveStr, decorationData.decorationBelowStr, decorationData.decorationAroundStr, editorElement);
+  msiOpenModelessDialog("chrome://prince/content/Decorations.xul", "_blank", "chrome,close,titlebar,dependent",
+                                        editorElement, commandID, commandHandler, decorationData);
+//  window.openDialog("chrome://prince/content/Decorations.xul", "_blank", "chrome,close,titlebar,modal", decorationData);
+//  if (decorationData.Cancel)
+//    return;
+//  insertDecoration(decorationData.decorationAboveStr, decorationData.decorationBelowStr, decorationData.decorationAroundStr, editorElement);
 }
 
 

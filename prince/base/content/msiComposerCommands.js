@@ -432,7 +432,7 @@ function msiDoAPropertiesDialogFromMenu(command, menuItem)
     if (menuItem.propertiesData)
     {
       propsData = menuItem.propertiesData;
-      theElement = menuItem.propertiesData.getReferenceNode();
+      theElement = menuItem.propertiesData.getPropertiesDialogNode();
       editorElement = menuItem.propertiesData.mEditorElement;
     }
     if (!theElement && menuItem.refElement)
@@ -458,7 +458,8 @@ function msiDoAPropertiesDialogFromMenu(command, menuItem)
 
   cmdParams.setISupportsValue("reviseObject", theElement);
   if (propsData)
-    cmdParams.setISupportsValue("propertiesData", propsData);
+    msiSetCommandParamWeakRefValue(cmdParams, "propertiesData", propsData);
+//    cmdParams.setISupportsValue("propertiesData", propsData);
   msiGoDoCommandParams(command, cmdParams, editorElement);
 }
 
@@ -3668,7 +3669,7 @@ var msiReviseFormCommand =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement();
-    var formNode = aParams.getISupportsValue("reviseObject");
+    var formNode = msiGetReviseObjectFromCommandParams(aParams);
     if (formNode != null && editorElement != null)
     {
       AlertWithTitle("msiComposerCommands.js", "In msiReviseFormCommand, trying to revise a form, dialog not yet implemented.");
@@ -3791,7 +3792,7 @@ var msiReviseTextareaCommand =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement();
-    var textAreaNode = aParams.getISupportsValue("reviseObject");
+    var textAreaNode = msiGetReviseObjectFromCommandParams(aParams);
     if (textAreaNode != null && editorElement != null)
     {
       AlertWithTitle("msiComposerCommands.js", "In msiReviseTextareaCommand, trying to revise a textarea, dialog not yet implemented.");
@@ -3877,7 +3878,7 @@ var msiReviseButtonCommand =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement();
-    var buttonNode = aParams.getISupportsValue("reviseObject");
+    var buttonNode = msiGetReviseObjectFromCommandParams(aParams);
     if (buttonNode != null && editorElement != null)
     {
       AlertWithTitle("msiComposerCommands.js", "In msiReviseButtonCommand, trying to revise a button, dialog not yet implemented.");
@@ -3910,11 +3911,6 @@ var msiLabelCommand =
       var editor = msiGetEditor(editorElement);
       var labelElement = this.msiGetReviseObject(editorElement);
 //      // Find selected label or if start/end of selection is in label 
-//      var labelElement = editor.getSelectedElement(tagName);
-//      if (!labelElement)
-//        labelElement = editor.getElementOrParentByTagName(tagName, editor.selection.anchorNode);
-//      if (!labelElement)
-//        labelElement = editor.getElementOrParentByTagName(tagName, editor.selection.focusNode);
       if (labelElement) {
         // We only open the dialog for an existing label
         var dlgWindow = msiOpenModelessDialog("chrome://editor/content/msiEdLabelProps.xul", "_blank", "chrome,close,titlebar,dependent",
@@ -3953,7 +3949,7 @@ var msiReviseLabelCommand =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement();
-    var labelNode = aParams.getISupportsValue("reviseObject");
+    var labelNode = msiGetReviseObjectFromCommandParams(aParams);
     if (labelNode != null && editorElement != null)
     {
       AlertWithTitle("msiComposerCommands.js", "In msiReviseLabelCommand, trying to revise a label, dialog not yet implemented.");
@@ -4012,7 +4008,7 @@ var msiReviseFieldsetCommand =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement();
-    var fieldSetNode = aParams.getISupportsValue("reviseObject");
+    var fieldSetNode = msiGetReviseObjectFromCommandParams(aParams);
     if (fieldSetNode != null && editorElement != null)
     {
       AlertWithTitle("msiComposerCommands.js", "In msiReviseFieldsetCommand, trying to revise a fieldset, dialog not yet implemented.");
@@ -4096,7 +4092,7 @@ var msiReviseImageCommand =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement();
-    var imageNode = aParams.getISupportsValue("reviseObject");
+    var imageNode = msiGetReviseObjectFromCommandParams(aParams);
     if (imageNode != null && editorElement != null)
     {
       var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/msiEdImageProps.xul", "_blank", "chrome,close,titlebar,resizable, dependent",
@@ -4215,7 +4211,7 @@ var msiReviseHyperlinkCommand =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement();
-    var linkNode = aParams.getISupportsValue("reviseObject");
+    var linkNode = msiGetReviseObjectFromCommandParams(aParams);
     if (linkNode != null && editorElement != null)
     {
       AlertWithTitle("msiComposerCommands.js", "In msiReviseHyperlinkCommand, trying to revise a hyperlink, dialog not implemented.");
@@ -4256,7 +4252,7 @@ var msiReviseAnchorCommand =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement();
-    var anchorNode = aParams.getISupportsValue("reviseObject");
+    var anchorNode = msiGetReviseObjectFromCommandParams(aParams);
     if (anchorNode != null && editorElement != null)
     {
       AlertWithTitle("msiComposerCommands.js", "In msiReviseAnchorCommand, trying to revise hyperlink anchor, dialog not implemented.");
@@ -4296,7 +4292,7 @@ var msiReviseHTMLCommand =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement();
-    var htmlNode = aParams.getISupportsValue("reviseObject");
+    var htmlNode = msiGetReviseObjectFromCommandParams(aParams);
     if (htmlNode != null && editorElement != null)
     {
       AlertWithTitle("msiComposerCommands.js", "In msiReviseHTMLCommand, trying to revise encapsulated HTML, dialog not implemented.");
@@ -4337,7 +4333,7 @@ var msiReviseCharsCommand =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement();
-    var charsObject = aParams.getISupportsValue("reviseObject");
+    var charsObject = msiGetReviseObjectFromCommandParams(aParams);
     if (charsObject != null && editorElement != null)
     {
       AlertWithTitle("msiComposerCommands.js", "In msiReviseCharsCommand, trying to revise a character, dialog not yet implemented.");
@@ -4427,7 +4423,7 @@ var msiReviseHorizontalSpacesCommand =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement();
-    var hspaceNode = aParams.getISupportsValue("reviseObject");
+    var hspaceNode = msiGetReviseObjectFromCommandParams(aParams);
     if (hspaceNode != null && editorElement != null)
     {
       AlertWithTitle("msiComposerCommands.js", "In msiReviseHorizontalSpacesCommand, trying to revise a horizontal space, dialog not yet implemented.");
@@ -4666,7 +4662,7 @@ var msiReviseRulesCommand =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement();
-    var ruleNode = aParams.getISupportsValue("reviseObject");
+    var ruleNode = msiGetReviseObjectFromCommandParams(aParams);
     if (ruleNode != null && editorElement != null)
     {
       AlertWithTitle("msiComposerCommands.js", "In msiReviseRulesCommand, trying to revise a rule, dialog not yet implemented.");
@@ -4732,7 +4728,7 @@ var msiReviseBreaksCommand =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement();
-    var breakNode = aParams.getISupportsValue("reviseObject");
+    var breakNode = msiGetReviseObjectFromCommandParams(aParams);
     if (breakNode != null && editorElement != null)
     {
       AlertWithTitle("msiComposerCommands.js", "In msiReviseBreaksCommand, trying to revise a break, dialog not yet implemented.");
@@ -4912,7 +4908,7 @@ var msiListPropertiesCommand =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement();
-    var listNode = aParams.getISupportsValue("reviseObject");
+    var listNode = msiGetReviseObjectFromCommandParams(aParams);
     if (listNode != null && editorElement != null)
     {
       AlertWithTitle("msiComposerCommands.js", "In msiListPropertiesCommand, trying to revise list items, dialog not yet implemented.");
@@ -6275,7 +6271,8 @@ var msiObjectPropertiesCommand =
 
 //      var name = msiGetBaseNodeName(element).toLowerCase();
       cmdParams.setISupportsValue("reviseObject", element);
-      cmdParams.setISupportsValue("propertiesData", nodeData);
+      msiSetCommandParamWeakRefValue(cmdParams, "propertiesData", nodeData);
+//      cmdParams.setISupportsValue("propertiesData", nodeData);
       if (cmdString)
         msiGoDoCommandParams(cmdString, cmdParams, editorElement);
       else
@@ -6455,14 +6452,17 @@ var msiObjectPropertiesCommand =
       } catch (e) {}
       if (element)
       {
-        var cmdParams = newCommandParams();
-        if (!cmdParams)
+        var linkCmdParams = newCommandParams();
+        if (!linkCmdParams)
         {
           dump("Trouble in msiObjectPropertiesCommand.doCommand! Can't create new CommandParams - aborting.\n");
           return;
         }
 
-        cmdParams.setISupportsValue("reviseObject", element);
+        linkCmdParams.setISupportsValue("reviseObject", element);
+        var linkData = msiCreatePropertiesObjectDataFromNode(element, editorElement);
+        msiSetCommandParamWeakRefValue(linkCmdParams, "propertiesData", linkData);
+//        linkCmdParams.setISupportsValue("propertiesData", linkData);
         msiGoDoCommandParams("cmd_msiReviseHyperlink", cmdParams, editorElement);
 //        msiGoDoReviseCommand("cmd_link", editorElement);
       }
@@ -6877,7 +6877,7 @@ var msiEditTableCommand =
   doCommandParams: function(aCommand, aParams, aRefCon) 
   {
     var editorElement = msiGetActiveEditorElement();
-    var tableNodeData = aParams.getISupportsValue("reviseObject");
+    var tableNodeData = aParams.getISupportsValue("propertiesData");
     if (tableNodeData != null && editorElement != null)
     {
       msiEditorInsertOrEditTable(false, editorElement, aCommand, this);

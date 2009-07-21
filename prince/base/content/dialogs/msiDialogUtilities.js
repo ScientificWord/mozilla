@@ -624,16 +624,17 @@ function msiDialogConfigManager(theDialogWindow)
   this.mDlgWindow = theDialogWindow;
   this.mDlgWindow.mDialogConfigMan = this;
   this.mbIsRevise = false;
+  this.mbIsModeless = true;
+  this.mbCloseOnAccept = false;
+  this.mbApplied = false;
 
   var topWindow = msiGetTopLevelWindow();
   if (topWindow.msiPropertiesDialogList != null)
   {
     if ( topWindow.msiPropertiesDialogList.findEntryForDialog(theDialogWindow) != null )
-      this.mbIsRevise = true;
+      this.mbCloseOnAccept = this.mbIsRevise = true;
   }
 
-  this.mbIsModeless = true;
-  this.mbCloseOnAccept = false;
   var windowWatcher = Components.classes["@mozilla.org/embedcomp/window-watcher;1"].getService(Components.interfaces.nsIWindowWatcher);
   var dlgChrome = windowWatcher.getChromeForWindow(theDialogWindow);
   if (dlgChrome != null)
@@ -691,6 +692,9 @@ function msiDialogConfigManager(theDialogWindow)
   this.doAccept = function()
   {
 //    var rv = eval(this.mOrigAcceptHandler);
+    if (this.mbApplied)
+      return true;
+
     var rv = this.mOrigAcceptHandler();
     return rv;
   };
@@ -700,6 +704,7 @@ function msiDialogConfigManager(theDialogWindow)
     var rv = this.mOrigAcceptHandler();
     if (rv)
     {
+      this.mbApplied = true;
       if (!this.mbCloseOnAccept)
         this.cancelToClose();
       return this.mbCloseOnAccept;
