@@ -79,19 +79,9 @@ var msiSearchUtils =
     return false;
   },
   
-  isEmptyInputBox : function(aNode)
-  {
-    if (msiGetBaseNodeName(aNode) == "mi")
-    {
-    	if (aNode.hasAttribute("tempinput") && (aNode.getAttribute("tempinput") == "true") )
-        return true;
-    }
-    return false;
-  },
-
   isEmptyElement : function(aNode)
   {
-    if (this.isEmptyInputBox(aNode))
+    if (msiNavigationUtils.isEmptyInputBox(aNode))
       return true;
 
     var nodeName = msiGetBaseNodeName(aNode);
@@ -103,7 +93,7 @@ var msiSearchUtils =
     {
       for (var ii = 1; (ii <= childNodes.length) && (this.namedChildFromPosition(nodeName, ii) != ""); ++ii)
       {
-        if (!this.isEmptyInputBox(childNodes[ii-1]))
+        if (!msiNavigationUtils.isEmptyInputBox(childNodes[ii-1]))
           return false;
       }
       return true;
@@ -111,7 +101,7 @@ var msiSearchUtils =
 
     if (childNodes.length > 1)
       return false;
-    if ( (childNodes == null) || (childNodes.length == 0) || this.isEmptyInputBox(childNodes[0]))
+    if ( (childNodes == null) || (childNodes.length == 0) || msiNavigationUtils.isEmptyInputBox(childNodes[0]))
       return true;
     return false;
   },
@@ -638,7 +628,7 @@ function XPathFormatter(targetNode, flags)
       }
       for (var jx = startNode; jx < endNode; ++jx)
       {
-        if (!msiSearchUtils.isEmptyInputBox(theContents[jx]))
+        if (!msiNavigationUtils.isEmptyInputBox(theContents[jx]))
         {
           var contentFormatter = new XPathFormatter(theContents[jx], childFlags);
           contentsStr += "[" + contentFormatter.prepareXPathStringForNode("descendant-or-self::") + "]";
@@ -652,7 +642,7 @@ function XPathFormatter(targetNode, flags)
         case "mi":
         case "mo":
         case "mn":
-          if (!msiSearchUtils.isEmptyInputBox(this.mNode))
+          if (!msiNavigationUtils.isEmptyInputBox(this.mNode))
             contentsStr = "[text()=\"" + msiNavigationUtils.getLeafNodeText(this.mNode) + "\"]";
         break;
 
@@ -661,7 +651,7 @@ function XPathFormatter(targetNode, flags)
           for (var jx = 0; jx < theContents.length; ++jx)
           {
             //START HERE! do test for empty content, as in an input box. Strangely, we don't seem to have any such test already available.
-          	if (!msiSearchUtils.isEmptyInputBox(theContents[jx]))
+          	if (!msiNavigationUtils.isEmptyInputBox(theContents[jx]))
             {
               var matchPosition = msiSearchUtils.getMatchPositionForChild(ourBaseName, targNodeName, jx);
               if ( (matchPosition.length > 0) && (matchPosition != "0") )
@@ -3051,7 +3041,7 @@ msiTemplateMatchNode.prototype =
         var targetContents = msiNavigationUtils.getSignificantContents(targetNode);
         for (var jx = 0; bMatched && (jx < theContents.length); ++jx)
         {
-        	if (!msiSearchUtils.isEmptyInputBox(theContents[jx]))
+        	if (!msiNavigationUtils.isEmptyInputBox(theContents[jx]))
           {
             var matchPosition = msiSearchUtils.getMatchPositionForChild(ourBaseName, targNodeName, jx);
             if ( (matchPosition.length > 0) && (matchPosition != "0") )
