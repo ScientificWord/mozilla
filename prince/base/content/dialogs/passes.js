@@ -57,6 +57,7 @@ function onCancel()
   if (timer) timer.cancel();
   timer=null;
   Components.utils.reportError("in OnCancel\n");
+  SaveWindowLocation();
   return true;
 }
 
