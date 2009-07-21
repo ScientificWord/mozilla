@@ -16,7 +16,8 @@
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload="Startup()"
     ondialogaccept="return onAccept();"
-    ondialogcancel="return onCancel();">
+    ondialogcancel="return onCancel();"
+    persist="left top width height">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
@@ -32,7 +33,7 @@
     <key id="sw.accept-key" keycode="VK_RETURN" oncommand="doOKButton();"/>
   </keyset>
 
-
+  <dialogheader title="Lines or rules" description="Enter rules or rectangles" />
   <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
 
   <vbox>
