@@ -4064,6 +4064,11 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
         }
       break;
 
+      case 'menclose':
+        objStr = GetString("Decoration");
+        commandStr = "cmd_MSIreviseDecorationsCmd";
+      break;
+
       case 'mmultiscripts':
         var childOp = msiNavigationUtils.getEmbellishedOperator(wrappedChildElement);
         if (childOp != null && msiNavigationUtils.isBigOperator(childOp))
@@ -4611,7 +4616,15 @@ msiPropertiesObjectData.prototype =
   commandStr : null,
   scriptStr : null,
 
-//Interface:
+////Interface:
+//  QueryInterface : function(aIID)
+//  {
+//    if (aIID.equals(Components.interfaces.nsISupports)
+//    || aIID.equals(Components.interfaces.nsISupportsWeakReference))
+//      return this;
+//    throw Components.results.NS_NOINTERFACE;
+//  },
+
   initFromNode : function(aNode, editorElement)
   {
     this.setEditorElement(editorElement);
@@ -4682,6 +4695,11 @@ msiPropertiesObjectData.prototype =
       return retNode;
     //otherwise we represent a selection - or should a character in a text run be a special case?
 
+  },
+
+  getPropertiesDialogNode : function()
+  {
+    return this.getTopNode();
   },
 
   getNode : function()
@@ -6016,10 +6034,13 @@ function msiPropMenuResetOrigSel(popupID)
   var theEditorElement = null;
   if (thePopupMenu.childNodes.length)
   {
-    if ("propertiesData" in thePopupMenu.childNodes[0])
-      theEditorElement = thePopupMenu.childNodes[0].propertiesData.mEditorElement;
-    if (!theEditorElement && ("refEditor" in thePopupMenu.childNodes[0]))
-      theEditorElement = thePopupMenu.childNodes[0].refEditor;
+    for (var ix = 0; (ix < thePopupMenu.childNodes.length) && !theEditorElement; ++ix)
+    {
+      if ("propertiesData" in thePopupMenu.childNodes[ix])
+        theEditorElement = thePopupMenu.childNodes[ix].propertiesData.mEditorElement;
+      if (!theEditorElement && ("refEditor" in thePopupMenu.childNodes[ix]))
+        theEditorElement = thePopupMenu.childNodes[ix].refEditor;
+    }
   }
   var theEditor = msiGetEditor(theEditorElement);
   if (thePopupMenu.origSelection && thePopupMenu.origSelection.length)

@@ -2538,6 +2538,55 @@ function propertyDialogList(theWindow)
   }
 }
 
+//function msiSupportsVoid(dataObj)
+//{
+//  ourData : dataObj,
+//////Interface:
+//  QueryInterface : function(aIID)
+//  {
+//    if (aIID.equals(Components.interfaces.nsISupports)
+//    || aIID.equals(Components.interfaces.nsISupportsWeakReference))
+//      return this;
+//    throw Components.results.NS_NOINTERFACE;
+//  },
+//
+//
+//}
+
+function msiSetCommandParamWeakRefValue(commandParams, dataName, dataObj)
+{
+//  var iSupportsVoid = Components.classes["@mozilla.org/supports-void;1"]
+//                          .createInstance(Components.interfaces.nsISupportsVoid);
+//  iSupportsVoid.data = dataObj;
+  var weak = Components.utils.getWeakReference(dataObj);
+//  dump("In msiSetCommandParamVoidValue, the weak reference returns [" + weak.get() + "]\n");
+  commandParams.setISupportsValue(dataName, weak);
+}
+
+function msiGetReviseObjectFromCommandParams(aParams)
+{
+  var theObject = null;
+  var propsData = msiGetPropertiesDataFromCommandParams(aParams);
+  if (propsData)
+    theObject = propsData.getPropertiesDialogNode();
+  if (!theObject)
+  {
+    theObject = aParams.getISupportsValue("reviseObject");
+    dump("In msiEditorUtilities.js, msiGetReviseObjectFromCommandParams for object [" + theObject + "], no propertiesData object available, or the propertiesData object reports no reference node!\n");
+  }
+  return theObject;
+}
+
+function msiGetPropertiesDataFromCommandParams(aParams)
+{
+  var propsData = null;
+  var propsDataPtr = aParams.getISupportsValue("propertiesData");
+  var qiPropsDataPtr = propsDataPtr.QueryInterface(Components.interfaces.xpcIJSWeakReference);
+  if (qiPropsDataPtr)
+    propsData = qiPropsDataPtr.get();
+  return propsData;
+}
+
 
 //Utility for use by editors in dialogs.
 function msiGetParentEditorElementForDialog(dialogWindow)
@@ -5776,6 +5825,20 @@ var msiNavigationUtils =
     return null;
   },
 
+  getSingleSignificantChild : function(aNode, bIncludeWrappers)
+  {
+    var retNode = null;
+    var nodeContents = this.getSignificantContents(aNode);
+    if (nodeContents.length == 1)
+    {
+      if (!bIncludeWrappers)
+        retNode = this.getSingleWrappedChild(nodeContents[0]);
+      if (!retNode)
+        retNode = nodeContents[0];
+    }
+    return retNode;
+  },
+
   findWrappingStyleNode : function(aNode)
   {
     if (msiGetBaseNodeName(aNode) == 'mstyle')
@@ -5801,6 +5864,16 @@ var msiNavigationUtils =
       }
     }
     return aNode;
+  },
+
+  isEmptyInputBox : function(aNode)
+  {
+    if (msiGetBaseNodeName(aNode) == "mi")
+    {
+    	if (aNode.hasAttribute("tempinput") && (aNode.getAttribute("tempinput") == "true") )
+        return true;
+    }
+    return false;
   },
 
   isOrdinaryMRow : function(aNode)

@@ -3,6 +3,7 @@
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="resource://res/css/baselatex.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/bracketsDialog.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/decorationsDialog.css" type="text/css"?>
@@ -26,6 +27,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/Decorations.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiButtonGroup.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
 
   <keyset>
     <key id="sw.tab-key" keycode="VK_TAB" oncommand="msiTabForward(event);"/>
@@ -43,6 +45,7 @@
 
   <vbox xmlns:xhtml="http://www.w3.org/1999/xhtml"
            xmlns:mml="http://www.w3.org/1998/Math/MathML">
+    <label id="propertiesTitle" hidden="true" value="&windowPropertiesTitle.label;" />
     <spacer flex="1"/>
     <groupbox orient="horizontal" id="decorationsAboveButtonGroup" oncommand="toggleSelection(this, event.target);" onfocus="radioGroupSetFocus(this,event.target);">
       <observes element="enableDecorationsAboveBelow" attribute="disabled" onbroadcast="buttonGroupEnable(this.parentNode, this.parentNode.getAttribute('disabled') != 'true');"/>
@@ -312,6 +315,17 @@
       </msibutton>
       <msibutton group="decorationsAroundButtonGroup" autoCheck="false" value="frame">
         <description class="framebox">
+          <mml:math display="inline">
+            <mml:mrow class="phantomBox">
+              <mml:mphantom>
+                <mml:mi>abc</mml:mi>
+              </mml:mphantom>
+            </mml:mrow>
+          </mml:math>
+        </description>
+      </msibutton>
+      <msibutton group="decorationsAroundButtonGroup" autoCheck="false" value="roundedbox">
+        <description class="roundedbox">
           <mml:math display="inline">
             <mml:mrow class="phantomBox">
               <mml:mphantom>
