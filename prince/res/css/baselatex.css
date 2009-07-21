@@ -1,3 +1,5 @@
+@namespace mml url("http://www.w3.org/1998/Math/MathML");
+
 body { 
   display: block;
   font-family: Georgia;
@@ -288,4 +290,20 @@ IncludeSubdoc>TeX {
   display: none;
 }
 
+mml|menclose[notation~="box"] {
+  border-style : solid;
+  border-width : thin;
+  border-color : black
+}
 
+mml|menclose[notation~="box"][type="fbox"] {
+  padding : 4px
+}
+
+mml|menclose[notation~="roundedbox"] {
+  padding : 0.5ex 0.4em;
+  border-style : solid;
+  border-width : thin;
+  border-color : black;
+  -moz-border-radius : 0.5em
+}
