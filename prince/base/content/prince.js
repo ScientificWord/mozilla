@@ -617,14 +617,8 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
   dump("Opening dialog\n");
   window.openDialog("chrome://prince/content/passes.xul", GetString("About"), "chrome,modal=yes,resizable=yes,alwaysRaised=yes",
     passData);
-//  finishCompileTeXFile(passData);
 //    There was some commented code here for using the pipe-console object from the enigmail project. We are not 
 //    using it in 6.0, and XulRunner is getting a better implementation, which we will use later.
-}
-
-
-function finishCompileTeXFile(passData)
-{
   // check for a dvi or pdf file
   var compiledFileLeaf = "SWP";
   var outfileLeaf = compiledFileLeaf;
@@ -653,8 +647,13 @@ function finishCompileTeXFile(passData)
   tempOutputfile.append("swp"+(passData.pdftex?".pdf":".dvi"));
 //  if (outputfile.exists())
 //    outputfile.remove(false);
-  dump(tempOutputfile.moveTo(null, leaf)+"\n");     // BBM: allow for .xdv ??
-  dump("\nFinal output filename: "+tempOutputfile.target+"\n");
+  if (tempOutputfile.exists())
+  {
+    tempOutputfile.moveTo(null, leaf);     // BBM: allow for .xdv ??
+    dump("\nFinal output filename: "+tempOutputfile.target+"\n");
+    return true;
+  }
+  else return false;    
 }
 
 
