@@ -29,9 +29,11 @@ function Startup()
   data = window.arguments[0];
   data.Cancel = false;
 
-  gDialog.decorationAboveStr = data.decorationAboveStr;
-  gDialog.decorationBelowStr = data.decorationBelowStr;
-  gDialog.decorationAroundStr = data.decorationAroundStr;
+  if (data.reviseObject)
+    setDataFromReviseObject(data.reviseObject);
+  gDialog.decorationAboveStr = data.decorationAboveStr ? data.decorationAboveStr : "";
+  gDialog.decorationBelowStr = data.decorationBelowStr ? data.decorationBelowStr : "";
+  gDialog.decorationAroundStr = data.decorationAroundStr ? data.decorationAroundStr : "";
   if (!gDialog.decorationAboveStr.length && !gDialog.decorationBelowStr.length && !gDialog.decorationAroundStr.length)
     gDialog.decorationAboveStr = String.fromCharCode(0x00AF);
 //  gDialog.decorationPos = data.decorationPos;
@@ -43,6 +45,8 @@ function Startup()
   gDialog.DecorationsAroundGroup = document.getElementById("decorationsAroundButtonGroup");
 
   InitDialog();
+  window.mMSIDlgManager = new msiDialogConfigManager(window);
+  window.mMSIDlgManager.configureDialog();
 
   var initialFocus = gDialog.DecorationsAboveGroup;
   if (gDialog.DecorationsAboveGroup.valueStr.length <= 0)
@@ -64,6 +68,18 @@ function Startup()
 //    gDialog.DecorationsAboveGroup.focus();
 
   SetWindowLocation();
+}
+
+function setDataFromReviseObject(decorNode)
+{
+  var decorData = new Object();
+  extractDataFromDecoration(decorNode, decorData);
+  if (decorData.aboveStr)
+    data.decorationAboveStr = decorData.aboveStr;
+  if (decorData.belowStr)
+    data.decorationBelowStr = decorData.belowStr;
+  if (decorData.aroundStr)
+    data.decorationAroundStr = decorData.aroundStr;
 }
 
 function InitDialog()
@@ -108,6 +124,18 @@ function InitDialog()
   document.documentElement.getButton("accept").setAttribute("default", true);
 }
 
+function isReviseDialog()
+{
+  if (data.reviseObject)
+    return true;
+  return false;
+}
+
+function getPropertiesDialogTitle()
+{
+  return document.getElementById("propertiesTitle").value;
+}
+
 function checkEnableControls(event)
 {
   var disableAboveBelowStr = "false";
@@ -127,7 +155,10 @@ function checkEnableControls(event)
   document.getElementById("enableDecorationsAboveBelow").setAttribute("disabled", disableAboveBelowStr);
   document.getElementById("enableDecorationsAboveBelow").setAttribute("disabled", disableAboveBelowStr);
   document.getElementById("enableDecorationsAround").setAttribute("disabled", disableAroundStr);
-  document.documentElement.getButton("accept").setAttribute("disabled", disableOKStr);
+  if (disableOKStr == "true")
+    document.documentElement.getButton("accept").setAttribute("disabled", disableOKStr);
+  else
+    document.documentElement.getButton("accept").removeAttribute("disabled");
 }
 
 function onAccept()
@@ -139,7 +170,20 @@ function onAccept()
   data.decorationBelowStr = gDialog.decorationBelowStr;
   data.decorationAroundStr = gDialog.decorationAroundStr;
 
-//  var editorElement = msiGetParentEditorElementForDialog(window);
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  var theWindow = window.opener;
+  if (isReviseDialog())
+  {
+    if (!theWindow || !("reviseDecoration" in theWindow))
+      theWindow = msiGetTopLevelWindow();
+    theWindow.reviseDecoration(data.reviseObject, data.decorationAboveStr, data.decorationBelowStr, data.decorationAroundStr, editorElement);
+  }
+  else
+  {
+    if (!theWindow || !("insertDecoration" in theWindow))
+      theWindow = msiGetTopLevelWindow();
+    theWindow.insertDecoration(data.decorationAboveStr, data.decorationBelowStr, data.decorationAroundStr, editorElement);
+  }
 
   SaveWindowLocation();
   return true;
