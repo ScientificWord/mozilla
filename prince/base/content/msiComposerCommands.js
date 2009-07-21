@@ -4650,7 +4650,7 @@ var msiInsertRulesCommand =
     var editorElement = msiGetActiveEditorElement();
     var rulesData = new Object();
     try {
-      msiOpenModelessDialog("chrome://prince/content/msiRulesDialog.xul", "_blank", "chrome,close,titlebar,dependent",
+      msiOpenModelessDialog("chrome://prince/content/msiRulesDialog.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
                                         editorElement, "cmd_msiInsertRules", this, rulesData);
     }
     catch(ex) {
