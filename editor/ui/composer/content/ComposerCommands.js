@@ -2234,6 +2234,8 @@ function CloseWindow()
 {
   // Check to make sure document is saved. "true" means allow "Don't Save" button,
   //   so user can choose to close without saving
+  if (document.getElementById("preview-frame"))
+    document.getElementById("preview-frame").loadURI("about:blank");
   if (CheckAndSaveDocument("cmd_close", true)) 
   {
     if (window.InsertCharWindow)
