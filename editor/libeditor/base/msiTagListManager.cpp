@@ -964,7 +964,7 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
   if (firstNodeName.Length()== 0) return NS_OK;
   nsIAtom * dummyatom = NS_NewAtom(NS_LITERAL_STRING(""));
   rv = GetStringPropertyForTag(firstNodeName, dummyatom, NS_LITERAL_STRING("nexttag"), str);
-  if (str.Length() > 0)
+  if ((str.Length() > 0) && !(str.Equals(firstNodeName)))
   {
     meditor->ReplaceContainer(*secondNode, address_of(aNewNode), str, nsnull, nsnull, PR_TRUE);
     *secondNode = aNewNode;
