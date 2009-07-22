@@ -4648,7 +4648,18 @@ nsHTMLEditor::IsContainer(nsIDOMNode *aNode)
 
   nsresult rv = aNode->GetNodeName(stringTag);
   NS_ENSURE_SUCCESS(rv, PR_FALSE);
-
+  PRBool fRet;
+  if (mtagListManager)
+  {
+    mtagListManager->GetTagInClass(NS_LITERAL_STRING("paratag"),stringTag, nsnull, &fRet);
+    if (fRet) return PR_TRUE;
+    mtagListManager->GetTagInClass(NS_LITERAL_STRING("listtag"),stringTag, nsnull, &fRet);
+    if (fRet) return PR_TRUE;
+    mtagListManager->GetTagInClass(NS_LITERAL_STRING("structtag"),stringTag, nsnull, &fRet);
+    if (fRet) return PR_TRUE;
+    mtagListManager->GetTagInClass(NS_LITERAL_STRING("envtag"),stringTag, nsnull, &fRet);
+    if (fRet) return PR_TRUE;
+  }
   PRInt32 tagEnum;
   // XXX Should this handle #cdata-section too?
   if (stringTag.EqualsLiteral("#text")) {
