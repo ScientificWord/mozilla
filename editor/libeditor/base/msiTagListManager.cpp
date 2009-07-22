@@ -988,15 +988,25 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
       rv = GetStringPropertyForTag(firstNodeName, dummyatom, NS_LITERAL_STRING("initialcontentsforempty"), strContents);
     if (strContents.Length() > 0)
     {
+      PRUint32 count, i;
       nsCOMPtr<nsIDOMNode> newNode;
-      nsCOMPtr<nsIDOMNode> parentNode;
-      firstNode->GetParentNode(getter_AddRefs(parentNode));
+//      nsCOMPtr<nsIDOMNode> parentNode;
+//      firstNode->GetParentNode(getter_AddRefs(parentNode));
       rv = firstNode->CloneNode(PR_FALSE, getter_AddRefs(newNode));
-      nsCOMPtr<nsIDOMNSHTMLElement> firstElement(do_QueryInterface(newNode));
-      if (firstElement) firstElement->SetInnerHTML(strContents);
+      nsCOMPtr<nsIDOMNSHTMLElement> appendElement(do_QueryInterface(newNode));
+      if (appendElement) appendElement->SetInnerHTML(strContents);
 //      NS_ADDREF((nsIDOMNode *)newNode);
-      meditor->ReplaceNode(newNode, firstNode, parentNode);
-      meditor->MarkNodeDirty(newNode);
+      nsCOMPtr<nsIDOMNodeList> children;
+      nsCOMPtr<nsIDOMNode> node;
+      nsCOMPtr<nsIDOMNode> node2;
+      rv = newNode->GetChildNodes(getter_AddRefs(children));
+      rv = children->GetLength(&count);
+      for (i = 0; i < count; i++)
+      {
+        rv = children->Item(i, getter_AddRefs(node)); 
+        firstNode->AppendChild( node, getter_AddRefs(node2));
+      }
+      meditor->MarkNodeDirty(firstNode);
       pnode = newNode;
     }
   }
