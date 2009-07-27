@@ -789,7 +789,7 @@ char *MuPADWrapper::ProcessSemNode(SEMANTICS_NODE * s_node,
         } else if (s_node->semantic_type == SEM_TYP_PREFIX_OP
                    && s_node->contents) {
           char ch = s_node->contents[0];
-          if (ch == '+' || !strcmp(s_node->contents, "&#x2212;"))
+          if (ch == '+' || !strcmp(s_node->contents, "&#x2212;") || !strcmp(s_node->contents, "-") )
             rv = NestInParens(rv, false);
         }
       }
