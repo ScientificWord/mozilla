@@ -1080,7 +1080,7 @@ InputByteFile::~InputByteFile()
 @}
 
 @$@<Search Utility@>==@{@-
-#ifdef WINDOWS
+#ifdef _WINDOWS
 #define SearchEnv _searchenv
 #else
 void SearchEnv(const char *filename, const char *varname, char *pathname)
