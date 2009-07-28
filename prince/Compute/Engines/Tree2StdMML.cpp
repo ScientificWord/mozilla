@@ -315,7 +315,7 @@ void Tree2StdMML::LookupMOInfo(MNODE * mml_node)
       if (strstr(p_data,"multiform,")) {
         const char * str_ilk;
         if (op_ilk == OP_none && (!strcmp(mml_node->p_chdata,"&#x2212;") || !strcmp(mml_node->p_chdata,"-"))) {
-          if (!mml_node->prev) {  // a rough heuristic
+          if (!mml_node->prev || (!strcmp(mml_node->prev->p_chdata,"&#x2212;") || !strcmp(mml_node->prev->p_chdata,"-"))) {  
             op_ilk = OP_prefix;
             set_form = true;
           }
@@ -497,6 +497,8 @@ MNODE * Tree2StdMML::BindByOpPrecedence(MNODE * dMML_list, int high, int low)
 {
   TCI_ASSERT(high>=low && low>0);
   MNODE * rv = dMML_list;
+  bool skipped_an_infix_op = false;
+
   for (int curr_prec = high; curr_prec >= low; curr_prec--) {
     MNODE* rover = rv;
     while (rover) {
@@ -505,11 +507,18 @@ MNODE * Tree2StdMML::BindByOpPrecedence(MNODE * dMML_list, int high, int low)
         switch (rover->form) {
           case OP_prefix:
             if (rover->next ) {
-              MNODE * new_row = MakeMROW(rover, rover->next);
-              if (new_row != rover) {
-                the_next = new_row;
-                if (rover == rv)
-                  rv = the_next;
+			  // If the next thing is also an infix op, skip this one till later
+			  // pass through loop.
+			  if (the_next->form != OP_none && the_next->precedence == curr_prec){
+			    skipped_an_infix_op = true;
+				rover = the_next;
+			  } else{
+              	MNODE * new_row = MakeMROW(rover, rover->next);
+              	if (new_row != rover) {
+                	the_next = new_row;
+                	if (rover == rv)
+                  	  rv = the_next;
+				}
               }
             }
             break;
