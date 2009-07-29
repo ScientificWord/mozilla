@@ -35,7 +35,7 @@ interface msiIMathMLEditor : nsISupports
                       in DOMString minsize, in DOMString maxsize);
   void InsertDecoration(in DOMString above, 
                         in DOMString below);
-  void AdjustSelection();
+  void AdjustSelectionEnds();
   void AdjustRange(in nsIDOMRange range);
                    
   /* GetMathMLEditingBC returns a msiIMathMLEditingBC object based
