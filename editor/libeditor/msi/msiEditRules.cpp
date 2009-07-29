@@ -114,7 +114,7 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
     /* do something special here (based on direction) */;
     
   }
-//  mMSIEditor->AdjustSelection();
+  mMSIEditor->AdjustSelectionEnds();
   return nsHTMLEditRules::WillDeleteSelection(aSelection, aAction, aCancel, aHandled);
 }
 
