@@ -24,6 +24,7 @@
 #include "nsIServiceManager.h"
 #include "nsServiceManagerUtils.h"
 #include "nsIEditActionListener.h"
+#include "nsIRange.h"
 
 #include "DeleteTextTxn.h"
 #include "DeleteElementTxn.h"
@@ -42,6 +43,60 @@
 static PRInt32 instanceCounter = 0;
 nsCOMPtr<nsIRangeUtils> msiEditor::m_rangeUtils = nsnull;
 nsCOMPtr<msiIAutosub> msiEditor::m_autosub = nsnull;
+
+void DumpRange( nsIRange * range)
+{ 
+  nsresult res;
+  nsCOMPtr<nsINode> aAnchorNode;
+  nsCOMPtr<nsIDOMNode> aAnchorDOMNode;
+  PRInt32 anchorOffset;
+  nsString anchorName;
+  aAnchorNode = range->GetStartParent();
+  aAnchorDOMNode = do_QueryInterface(aAnchorNode);
+  res = aAnchorDOMNode->GetNodeName(anchorName);
+  anchorOffset = range->StartOffset();
+  nsCOMPtr<nsINode> aFocusNode;
+  nsCOMPtr<nsIDOMNode> aFocusDOMNode;
+  PRInt32 focusOffset;
+  nsString focusName;
+  aFocusNode = range->GetEndParent();
+  aFocusDOMNode = do_QueryInterface(aFocusNode);
+  res = aFocusDOMNode->GetNodeName(focusName);
+  focusOffset = range->EndOffset();
+  printf("  Range: \n    Anchor: %x (%S) %d\n    Focus: %x (%S) %d\n", aAnchorNode, anchorName.get(), anchorOffset,
+       aFocusNode, focusName.get(), focusOffset );
+}
+
+void DumpSelection( nsISelection * sel)
+{
+  nsresult res;
+  nsCOMPtr<nsIDOMNode> aAnchorNode;
+  PRInt32 anchorOffset;
+  nsString anchorName;
+  res = sel->GetAnchorNode(getter_AddRefs(aAnchorNode));
+  res = aAnchorNode->GetNodeName(anchorName);
+  res = sel->GetAnchorOffset(&anchorOffset);
+  nsCOMPtr<nsIDOMNode> aFocusNode;
+  PRInt32 focusOffset;
+  nsString focusName;
+  res = sel->GetFocusNode(getter_AddRefs(aFocusNode));
+  res = aFocusNode->GetNodeName(focusName);
+  res = sel->GetFocusOffset(&focusOffset);
+  printf("Selection: \n    Anchor: %x (%S) %d\n    Focus: %x (%S) %d\n", aAnchorNode, anchorName.get(), anchorOffset,
+       aFocusNode, focusName.get(), focusOffset );
+  PRInt32 i;
+  PRInt32 count;
+  res = sel->GetRangeCount(&count); 
+  nsCOMPtr<nsIDOMRange> domrange;
+  nsCOMPtr<nsIRange> range;
+  for (i = 0; i < count; i++)
+  {
+    sel->GetRangeAt(i, getter_AddRefs(domrange));
+    range=do_QueryInterface(domrange);
+    DumpRange(range);
+  }
+}
+
 
 msiEditor::msiEditor()
 {
@@ -1117,9 +1172,13 @@ msiEditor::DeleteSelectionImpl(nsIEditor::EDirection aAction)
 {
   nsCOMPtr<nsISelection>selection;
   nsresult res = GetSelection(getter_AddRefs(selection));
+  printf("1\n");
+  DumpSelection(selection);
   if (NS_FAILED(res)) 
     return res;
   msiSelectionManager msiSelMan(selection, this);
+  printf("2\n");
+  DumpSelection(selection);
   mRangeUpdater.RegisterSelectionState(msiSelMan);
   EditAggregateTxn *txn;
   res = CreateTxnForDeleteSelection(aAction, msiSelMan, &txn);
@@ -1137,6 +1196,8 @@ msiEditor::DeleteSelectionImpl(nsIEditor::EDirection aAction)
     for (i = 0; i < mActionListeners.Count(); i++)
     {
       listener = (nsIEditActionListener *)mActionListeners[i];
+      printf("3\n");
+      DumpSelection(selection);
       if (listener)
         listener->WillDeleteSelection(selection);
     }
@@ -1146,6 +1207,8 @@ msiEditor::DeleteSelectionImpl(nsIEditor::EDirection aAction)
     for (i = 0; i < mActionListeners.Count(); i++)
     {
       listener = (nsIEditActionListener *)mActionListeners[i];
+      printf("4\n");
+      DumpSelection(selection);
       if (listener)
         listener->DidDeleteSelection(selection);
     }
@@ -2828,7 +2891,7 @@ msiEditor::AdjustRange(nsIDOMRange * aRange)
 
 
 NS_IMETHODIMP
-msiEditor::AdjustSelection()
+msiEditor::AdjustSelectionEnds()
 {
   nsresult res = NS_OK;
   PRInt32 rangeCount;
