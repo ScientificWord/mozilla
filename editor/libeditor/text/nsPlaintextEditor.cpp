@@ -701,6 +701,7 @@ NS_IMETHODIMP nsPlaintextEditor::DeleteSelection(nsIEditor::EDirection aAction)
           break;
         case eNext:
           result = selCont->CharacterExtendForDelete();
+          DumpSelection(selection);
           aAction = eNone;
           break;
         case eToBeginningOfLine:
