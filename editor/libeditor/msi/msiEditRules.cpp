@@ -31,6 +31,8 @@ msiEditRules::~msiEditRules()
 {
 }
 
+void DumpSelection( nsISelection * sel);
+
 /********************************************************
  *  XPCOM Cruft
  ********************************************************/
@@ -65,6 +67,8 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
   
   nsCOMPtr<nsIDOMNode> startNode, endNode;
   PRInt32 startOffset, endOffset;
+  printf("In msiEditRules::WillDeleteSelection\n");
+  DumpSelection(aSelection);
   res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(startNode), &startOffset);
   if (NS_FAILED(res)) return res;
   if (!startNode) return NS_ERROR_FAILURE;
@@ -84,7 +88,7 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
     mathElement = do_QueryInterface(mathNode);
     mathElement->GetFirstChild(getter_AddRefs(firstChildNode));
     mathElement->GetLastChild(getter_AddRefs(lastChildNode));
-    PRBool partlyContained = PR_TRUE;
+    PRBool partlyContained = PR_FALSE;
     PRBool containsNode;
     aSelection->ContainsNode(firstChildNode, partlyContained, &containsNode);
     if (containsNode)
@@ -114,7 +118,11 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
     /* do something special here (based on direction) */;
     
   }
+  printf("In msiEditRules::WillDeleteSelection(2)\n");
+  DumpSelection(aSelection);
   mMSIEditor->AdjustSelectionEnds();
+  printf("In msiEditRules::WillDeleteSelection(3)\n");
+  DumpSelection(aSelection);
   return nsHTMLEditRules::WillDeleteSelection(aSelection, aAction, aCancel, aHandled);
 }
 
