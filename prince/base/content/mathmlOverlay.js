@@ -43,6 +43,7 @@ function SetupMSIMathMenuCommands()
 //  commandTable.registerCommand("cmd_MSIreviseScriptsCmd",      msiReviseScriptsCmd);
   commandTable.registerCommand("cmd_MSIreviseMatrixCmd",       msiReviseMatrixCmd);  //Need to implement!
   commandTable.registerCommand("cmd_MSIreviseMatrixCellCmd",   msiReviseMatrixCmd);
+  commandTable.registerCommand("cmd_MSIreviseMatrixCellGroupCmd", msiReviseMatrixCmd);
   commandTable.registerCommand("cmd_MSIreviseMatrixRowsCmd",   msiReviseMatrixCmd);
   commandTable.registerCommand("cmd_MSIreviseMatrixColsCmd",   msiReviseMatrixCmd);
   commandTable.registerCommand("cmd_MSIreviseTensorCmd",       msiDoSomething);
@@ -111,6 +112,7 @@ function msiSetupMSIMathMenuCommands(editorElement)
 //  commandTable.registerCommand("cmd_MSIreviseScriptsCmd",      msiReviseScriptsCmd);
   commandTable.registerCommand("cmd_MSIreviseMatrixCmd",       msiReviseMatrixCmd);
   commandTable.registerCommand("cmd_MSIreviseMatrixCellCmd",   msiReviseMatrixCmd);
+  commandTable.registerCommand("cmd_MSIreviseMatrixCellGroupCmd", msiReviseMatrixCmd);
   commandTable.registerCommand("cmd_MSIreviseMatrixRowsCmd",   msiReviseMatrixCmd);
   commandTable.registerCommand("cmd_MSIreviseMatrixColsCmd",   msiReviseMatrixCmd);
   commandTable.registerCommand("cmd_MSIreviseTensorCmd",       msiDoSomething);
@@ -519,7 +521,7 @@ var msiReviseMathnameCmd =
 //    var argArray = [mathNameData];
 //    msiOpenModelessPropertiesDialog("chrome://prince/content/MathmlMathname.xul", "_blank", "chrome,close,titlebar,dependent",
 //                                      editorElement, "cmd_MSIreviseMathnameCmd", theMathname, argArray);
-    var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/MathmlMathname.xul", "_blank", "chrome,close,titlebar,dependent",
+    var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/mathmlMathName.xul", "_blank", "chrome,close,titlebar,dependent",
                                                      editorElement, "cmd_MSIreviseMathnameCmd", theMathname, mathNameData);
   },
 
