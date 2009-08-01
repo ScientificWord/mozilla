@@ -129,7 +129,7 @@ function InitDialog(hAlign, vAlign, wrapping)
   // Get the width attribute of the element, stripping out "%"
   // This sets contents of menu combobox list
   // 2nd param = null: Use current selection to find if parent is table cell or window
-  /*gDialog.widthInput.value =*/ InitPixelOrPercentMenulist(globalElement, null, "width", "widthPixelOrPercentMenulist", gPercent);
+  /*gDialog.widthInput.value =*/ msiInitPixelOrPercentMenulist(globalElement, null, "width", "widthPixelOrPercentMenulist", gPercent);
   /*gDialog.borderInput.value = globalElement.getAttribute("border");*/
 
   gDialog.horizAlignment.value = hAlign;
@@ -161,20 +161,20 @@ function ChangeRowOrColumn(id)
 // Set attributes on globalElement so they can be accessed by AdvancedEdit()
 function ValidateData()
 {
-  gRows = ValidateNumber(gDialog.rowsInput, null, 1, gMaxRows, null, null, true)
+  gRows = msiValidateNumber(gDialog.rowsInput, null, 1, gMaxRows, null, null, true)
   if (gValidationError)
     return false;
 
-  gColumns = ValidateNumber(gDialog.columnsInput, null, 1, gMaxColumns, null, null, true)
+  gColumns = msiValidateNumber(gDialog.columnsInput, null, 1, gMaxColumns, null, null, true)
   if (gValidationError)
     return false;
 
   // Set attributes: NOTE: These may be empty strings (last param = false)
-  ValidateNumber(gDialog.borderInput, null, 0, gMaxPixels, globalElement, "border", false);
+  msiValidateNumber(gDialog.borderInput, null, 0, gMaxPixels, globalElement, "border", false);
   // TODO: Deal with "BORDER" without value issue
   if (gValidationError) return false;
 
-  ValidateNumber(gDialog.widthInput, gDialog.widthPixelOrPercentMenulist,
+  msiValidateNumber(gDialog.widthInput, gDialog.widthPixelOrPercentMenulist,
                  1, gMaxTableSize, globalElement, "width", false);
   gDialog.widthPixelOrPercentMenulist.value = gDialog.widthPixelOrPercentMenulist.selectedItem.value;
 
