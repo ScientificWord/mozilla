@@ -393,7 +393,8 @@ function onOK() {
   }
 
   SaveWindowLocation();
-  return bRevise;
+  return true;
+//  return bRevise;
 }
 
 
