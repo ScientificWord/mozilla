@@ -70,6 +70,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_table",              msiInsertOrEditTableCommand);
   commandTable.registerCommand("cmd_editTable",          msiEditTableCommand);
   commandTable.registerCommand("cmd_editTableCell",      msiEditTableCommand);
+  commandTable.registerCommand("cmd_editTableCellGroup", msiEditTableCommand);
   commandTable.registerCommand("cmd_editTableRows",      msiEditTableCommand);
   commandTable.registerCommand("cmd_editTableCols",      msiEditTableCommand);
   commandTable.registerCommand("cmd_SelectTable",        msiSelectTableCommand);
@@ -6877,7 +6878,8 @@ var msiEditTableCommand =
   doCommandParams: function(aCommand, aParams, aRefCon) 
   {
     var editorElement = msiGetActiveEditorElement();
-    var tableNodeData = aParams.getISupportsValue("propertiesData");
+    var tableNodeData = msiGetPropertiesDataFromCommandParams(aParams);
+
     if (tableNodeData != null && editorElement != null)
     {
       msiEditorInsertOrEditTable(false, editorElement, aCommand, this);
