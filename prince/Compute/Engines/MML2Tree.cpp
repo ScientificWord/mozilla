@@ -2,6 +2,7 @@
 
 #include "MML2Tree.h"
 #include "CmpTypes.h"
+#include "attriblist.h"
 #include <string.h>
 #include <ctype.h>
 
@@ -317,7 +318,7 @@ ATTRIB_REC *MML2Tree::GetAttribute(const char *p_attr, int &bytesdone)
   }
   attrib_value[di] = 0;
 
-  rv = MakeATTRIBNode(attrib_name, attrib_value);
+  rv = new ATTRIB_REC(attrib_name, attrib_value);
 
   needle++;
   bytesdone = needle - p_attr;

@@ -29,7 +29,8 @@ endif
 
 include $(topsrcdir)/config/config.mk
 
-CPPSRCS =				\
+CPPSRCS = \
+  attriblist.cpp \
   Analyzer.cpp \
   CompEngine.cpp \
   MML2Tree.cpp \
