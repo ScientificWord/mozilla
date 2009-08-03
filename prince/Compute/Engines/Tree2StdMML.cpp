@@ -45,6 +45,7 @@
 #include "Tree2StdMML.h"
 #include "Grammar.h"
 #include "Analyzer.h"
+#include "attriblist.h"
 #include <string.h>
 
 
@@ -249,7 +250,7 @@ MNODE *Tree2StdMML::FixMFENCEDs(MNODE * dMML_tree)
               rv = mfenced;
             the_next = mfenced;
             if (IsEnclosedList(gi)) {
-              ATTRIB_REC *ar_ilk = MakeATTRIBNode("ilk", "enclosed-list");
+              ATTRIB_REC *ar_ilk = new ATTRIB_REC("ilk", "enclosed-list");
               ar_ilk->next = mfenced->attrib_list;
               mfenced->attrib_list->prev = ar_ilk;
               mfenced->attrib_list = ar_ilk;
@@ -274,7 +275,7 @@ void Tree2StdMML::FixInvisibleFences(MNODE * dMML_tree)
     if (!strcmp(rover->src_tok, "mfenced")) {
       const char *opener = GetATTRIBvalue(rover->attrib_list, "open");
       if (opener[0] == 'I' && opener[1] == 0) {
-        ATTRIB_REC *ar_open = MakeATTRIBNode("open", "");
+        ATTRIB_REC *ar_open = new ATTRIB_REC("open", "");
         rover->attrib_list = MergeAttrsLists(rover->attrib_list, ar_open);
       }
     }
@@ -2235,8 +2236,8 @@ MNODE *Tree2StdMML::PermuteTreeToMFENCED(MNODE * opening_mo, GROUP_INFO & gi)
         mfenced->first_kid->prev = NULL;
     }
 
-    ATTRIB_REC *ar_open = MakeATTRIBNode("open", gi.opening_delim);
-    ATTRIB_REC *ar_close = MakeATTRIBNode("close", gi.closing_delim);
+    ATTRIB_REC *ar_open = new ATTRIB_REC("open", gi.opening_delim);
+    ATTRIB_REC *ar_close = new ATTRIB_REC("close", gi.closing_delim);
     ar_open->next = ar_close;
     ar_close->prev = ar_open;
     mfenced->attrib_list = ar_open;
@@ -2537,7 +2538,7 @@ void Tree2StdMML::PermuteMixedNumber(MNODE * num)
 ATTRIB_REC *Tree2StdMML::StackAttr(ATTRIB_REC * attr_stack,
                                    const char *attr_nom, const char *attr_val)
 {
-  ATTRIB_REC *a_new = MakeATTRIBNode(attr_nom, attr_val);
+  ATTRIB_REC *a_new = new ATTRIB_REC(attr_nom, attr_val);
   a_new->next = attr_stack;
   if (attr_stack)
     attr_stack->prev = a_new;
@@ -2673,8 +2674,7 @@ void Tree2StdMML::InstallStackedAttr(MNODE * mml_node,
     }
   }
   if (!done) {
-    ATTRIB_REC *a_new =
-      MakeATTRIBNode(attr_stack->zattr_nom, attr_stack->zattr_val);
+    ATTRIB_REC* a_new = new ATTRIB_REC(attr_stack->zattr_nom, attr_stack->zattr_val);
     a_new->next = mml_node->attrib_list;
     if (mml_node->attrib_list)
       mml_node->attrib_list->prev = a_new;

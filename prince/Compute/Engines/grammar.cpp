@@ -9,9 +9,104 @@
 #include <string.h>
 #include <stdlib.h>
 
+struct HASH_REC
+{
+  char *zname;
+  U32 ID;
+  U32 subID;
+  const char *ztemplate;
+};
+
+struct HASH_TABLE
+{
+  HASH_TABLE *next;
+  char *zenv_names;
+  U32 slot_count;
+  HASH_REC *records;
+};
+
+struct LINE_REC
+{
+  LINE_REC *next;
+  char *zline;
+  HASH_TABLE *table_node;
+};
+
+#define TOK_LEN_LIM     40
+#define CONTEXT_NOM_LIM 40
+#define NUM_CONTEXTS    30
+
+
+struct CONTEXT_ID
+{
+  char context_nom[CONTEXT_NOM_LIM];
+  U32 context_uID;
+};
+
+#define UNKNOWN_CLASS   999
+
+
+// struct CONTEXT_ID_ARRAY
+// {
+//   CONTEXT_ID m_array[NUM_CONTEXTS];
+// };
+
+
+
+
+LINE_REC* FileToLineList(FILE * grammar_file, Grammar*);
+void FileLineToHashTables(const char *fline, HASH_TABLE * t_node, Grammar*);
+
+void ExtractIDs(const char *num_str, U32 & rec_ID, U32 & rec_subID, Grammar* grammar);
+
+
+U32 HashzNom(const char *znom)
+{
+  U32 rv = 0L;
+
+  U32 fudge = 31L;
+  while (*znom) {
+    rv += (*znom - 31) * fudge;
+    znom++;
+    if (fudge == 7L)
+      fudge = 31L;
+    else
+      fudge = fudge - 12L;
+  }
+
+  return rv;
+}
+
+
+U32 HashFromIDs(U32 ID, U32 subID)
+{
+  U32 rv = 0L;
+
+  char buffer[32];
+  sprintf(buffer, "%lu.%lu", ID, subID);
+
+  int shift = 0;
+  char *ptr = buffer;
+  while (*ptr) {
+    if (*ptr >= '0' && *ptr <= '9') {
+      U32 tmp = *ptr;
+      rv += (tmp << shift);
+      shift++;
+    } else {
+      break;
+    }
+    ptr++;
+  }
+
+  return rv;
+}
+
+
+
+
 // Each hash table has a list of env names - a catenation of zstrs.
 //  We check that the table identified by "tableID" is valid for "zcurr_env".
-bool Grammar::EnvOK(const char *zcurr_env, HASH_TABLE * table)
+bool EnvOK(const char *zcurr_env, HASH_TABLE* table)
 {
   bool rv = false;
 
@@ -41,7 +136,7 @@ bool Grammar::EnvOK(const char *zcurr_env, HASH_TABLE * table)
 //               ^   ^       ^
 //               0   1       2
 
-void Grammar::LocateOffsets(const char *fline, int * offsets)
+void LocateOffsets(const char *fline, int * offsets)
 {
   const char *ptr = strstr(fline, "<uID");
   if (ptr) {
@@ -62,7 +157,7 @@ void Grammar::LocateOffsets(const char *fline, int * offsets)
 // <START_CONTEXT_TEXT,1.1.0>
 //                ^
 
-void Grammar::GetContextNom(const char *nom, char *dest, U32 & the_uID)
+void GetContextNom(const char *nom, char *dest, U32 & the_uID)
 {
   while (*nom != '>' && *nom != ',') {
     *dest = *nom;
@@ -83,7 +178,7 @@ void Grammar::GetContextNom(const char *nom, char *dest, U32 & the_uID)
 
 // Utility to put info that identifies a context encountered during
 //   the read of .gmr file into contextIDs array.
-void Grammar::AddContext(const char *new_env_nom, char *env_list, U32 the_uID)
+void AddContext(const char *new_env_nom, char *env_list, U32 the_uID, CONTEXT_ID* pContextIDs)
 {
   while (*env_list) {
     if (!strcmp(env_list, new_env_nom))
@@ -95,15 +190,15 @@ void Grammar::AddContext(const char *new_env_nom, char *env_list, U32 the_uID)
   *env_list = 0;
 
   int slot = 0;
-  while (contextIDs[slot].context_uID)
+  while (pContextIDs[slot].context_uID)
     slot++;
   TCI_ASSERT(slot < NUM_CONTEXTS);
 
-  strcpy(contextIDs[slot].context_nom, new_env_nom);
-  contextIDs[slot].context_uID = the_uID;
+  strcpy(pContextIDs[slot].context_nom, new_env_nom);
+  pContextIDs[slot].context_uID = the_uID;
 }
 
-void Grammar::RemoveContextName(const char *del_nom, char *env_list)
+void RemoveContextName(const char *del_nom, char *env_list)
 {
   char *delp = NULL;
   char *endp = env_list;
@@ -124,45 +219,11 @@ void Grammar::RemoveContextName(const char *del_nom, char *env_list)
   }
 }
 
-HASH_TABLE *Grammar::FindTableForEnv(const char *env_list)
-{
-  if (*env_list == 0)
-    return h_tables->next;
-
-  HASH_TABLE *rv = NULL;
-
-  HASH_TABLE *rover = h_tables;
-  while (rover) {
-    char *env_names = rover->zenv_names;
-    if (env_names) {
-      if (IsSubset(env_names, env_list) && IsSubset(env_list, env_names)) {
-        rv = rover;
-        break;
-      }
-    }
-    rover = rover->next;
-  }
-
-  if (!rv) {
-    const char *tp = env_list;
-    while (*tp)
-      tp += strlen(tp) + 1;
-
-    size_t zln = tp - env_list + 1;
-    char *envs = new char[zln];
-    memcpy(envs, env_list, zln);
-
-    rv = MakeNextHNode();
-    rv->zenv_names = envs;
-  }
-
-  return rv;
-}
 
 // env_list_subset  =  "math0text00"
 // env_list_superset=  "junk0text0math00"
-bool Grammar::IsSubset(const char *env_list_subset,
-                           const char *env_list_superset)
+bool IsSubset(const char *env_list_subset,
+              const char *env_list_superset)
 {
   while (*env_list_subset) {
     const char *test_names = env_list_superset;
@@ -182,7 +243,8 @@ bool Grammar::IsSubset(const char *env_list_subset,
   return (*env_list_subset) ? false : true;
 }
 
-HASH_TABLE *Grammar::MakeNextHNode()
+
+HASH_TABLE* MakeNextHNode(Grammar* grammar)
 {
   HASH_TABLE *rv = new HASH_TABLE();
 
@@ -193,16 +255,55 @@ HASH_TABLE *Grammar::MakeNextHNode()
 
   // add this node to the "h_tables" list
 
-  if (h_tables) {
-    HASH_TABLE *rover = h_tables;
+  if (grammar -> HashTables()) {
+    HASH_TABLE *rover = grammar -> HashTables();
     while (rover->next)
       rover = rover->next;
     rover->next = rv;
   } else {
-    h_tables = rv;
+    grammar -> SetHashTables(rv);
   }
   return rv;
 }
+
+
+
+HASH_TABLE* FindTableForEnv(const char *env_list, Grammar* grammar)
+{
+  if (*env_list == 0)
+    return grammar -> HashTables() -> next;
+
+  HASH_TABLE *rv = NULL;
+
+  HASH_TABLE *rover = grammar -> HashTables();
+  while (rover) {
+    char *env_names = rover -> zenv_names;
+    if (env_names) {
+      if (IsSubset(env_names, env_list) && IsSubset(env_list, env_names)) {
+        rv = rover;
+        break;
+      }
+    }
+    rover = rover->next;
+  }
+
+  if (!rv) {
+    const char *tp = env_list;
+    while (*tp)
+      tp += strlen(tp) + 1;
+
+    size_t zln = tp - env_list + 1;
+    char *envs = new char[zln];
+    memcpy(envs, env_list, zln);
+
+    rv = MakeNextHNode(grammar);
+    rv->zenv_names = envs;
+  }
+
+  return rv;
+}
+
+
 
 //zzzzzz
 
@@ -219,7 +320,7 @@ HASH_TABLE *Grammar::MakeNextHNode()
 
 Grammar::Grammar(FILE * grammar_file, bool key_on_uids)
 {
-  hashed_on_uids = key_on_uids;
+  SetHashedOnUIDs(key_on_uids);
 
   // Clear the list of hash tables for named grammar objects.
   //   Every set of names has its own hash table, and a list of "context"
@@ -227,30 +328,32 @@ Grammar::Grammar(FILE * grammar_file, bool key_on_uids)
   //   Examples of contexts are "text" and "math" and the arguments of
   //   some special commands like format, which takes \l \c \r tokens only.
 
-  h_tables = (HASH_TABLE *) NULL; // list of "hash table" nodes
+  SetHashTables( (HASH_TABLE *) NULL); // list of "hash table" nodes
 
   // the first node is reserved for "_DEFS_"
-  MakeNextHNode();
+  MakeNextHNode(this);
 
   // the second node is reserved for the un-named context
-  MakeNextHNode();
+  MakeNextHNode(this);
+
+  SetContextIDs( new CONTEXT_ID[NUM_CONTEXTS] );
 
   // Store for the names and uIDs of the contexts in this grammar
   for (U32 slot = 0; slot < NUM_CONTEXTS; slot++) { // text,math,\format,etc
-    contextIDs[slot].context_nom[0] = 0;
-    contextIDs[slot].context_uID = 0;
+    m_pContextIDs[slot].context_nom[0] = 0;
+    m_pContextIDs[slot].context_uID = 0;
   }
 
   // The following call reads in the grammar file.  As lines are read
   //   they are examined for environment switches.  Nodes are created
   //   in "h_tables" for sets of names encountered and are filled out
   //   re "zenv_names" and "slot_count"s.
-  LINE_REC *line_list = FileToLineList(grammar_file);
+  LINE_REC *line_list = FileToLineList(grammar_file, this);
 
   // Allocate arrays of hash slots for each "hash table" node.
   // The "slot_count" field gives the number of items to be placed
   //   in each hash table.
-  HASH_TABLE *rover = h_tables;
+  HASH_TABLE *rover = HashTables();
   while (rover) {
     if (rover->slot_count) {
       U32 n_slots = (3 * rover->slot_count) / 2;
@@ -269,7 +372,7 @@ Grammar::Grammar(FILE * grammar_file, bool key_on_uids)
 
   // Move data from "line_list" to the hash tables
   while (line_list) {
-    FileLineToHashTables(line_list->zline, line_list->table_node);
+    FileLineToHashTables(line_list->zline, line_list->table_node, this);
 
     LINE_REC *del = line_list;
     line_list = line_list->next;
@@ -277,7 +380,7 @@ Grammar::Grammar(FILE * grammar_file, bool key_on_uids)
     delete del;
   }
 
-  last_table_hit = NULL;        // last hash table in which an object was located
+  SetLastTableHit(NULL);        // last hash table in which an object was located
 
   // Use the following to dump this grammar
   //Dump( (FILE*)NULL  );   // this goes to "\jbm"
@@ -286,12 +389,12 @@ Grammar::Grammar(FILE * grammar_file, bool key_on_uids)
 Grammar::~Grammar()
 {
   HASH_TABLE *del;
-  while (h_tables) {
-    delete h_tables->zenv_names;
+  while (HashTables()) {
+    delete HashTables() -> zenv_names;
 
-    U32 lim_slot = h_tables->slot_count;
+    U32 lim_slot = HashTables() -> slot_count;
     if (lim_slot) {
-      HASH_REC *slot_array = h_tables->records;
+      HASH_REC *slot_array = HashTables() -> records;
       U32 slot = 0;
       while (slot < lim_slot) {
         delete slot_array[slot].zname;
@@ -301,14 +404,14 @@ Grammar::~Grammar()
       delete slot_array;
     }
 
-    del = h_tables;
-    h_tables = h_tables->next;
+    del = HashTables();
+    SetHashTables( HashTables() -> next );
     delete del;
   }
 }
 
 #ifdef DEBUG_Dump
-void Grammar::Dump(FILE * df)
+void Dump(FILE * df)
 {
   char zzz[256];
 
@@ -382,18 +485,19 @@ void Grammar::Dump(FILE * df)
 bool Grammar::GetRecordFromIDs(const char *zcurr_env, U32 uID, U32 usubID,
                                    const char **dest_zname,
                                    const char **dest_ztemplate)
+                                  
 {
   *dest_zname = NULL;
   *dest_ztemplate = NULL;
 
   bool rv = false;
-  if (!hashed_on_uids) {
+  if ( !HashedOnUIDs() ) {
     TCI_ASSERT(0);
     return rv;
   }
 
-  HASH_TABLE *start_table = last_table_hit ? last_table_hit : h_tables->next;
-  HASH_TABLE *curr_table = start_table;
+  HASH_TABLE* start_table = LastTableHit() ? LastTableHit() : HashTables() -> next;
+  HASH_TABLE* curr_table = start_table;
 
   U32 hash = HashFromIDs(uID, usubID);
 
@@ -413,7 +517,7 @@ bool Grammar::GetRecordFromIDs(const char *zcurr_env, U32 uID, U32 usubID,
           if (curr_ID == uID && curr_sub == usubID) {
             *dest_zname = h_array[curr_slot].zname;
             *dest_ztemplate = h_array[curr_slot].ztemplate;
-            last_table_hit = curr_table;
+            SetLastTableHit(curr_table);
             rv = true;
           } else {
             curr_slot++;
@@ -426,7 +530,7 @@ bool Grammar::GetRecordFromIDs(const char *zcurr_env, U32 uID, U32 usubID,
 
     curr_table = curr_table->next;
     if (!curr_table) {
-      curr_table = h_tables->next;
+      curr_table = HashTables() -> next;
     }
   } while (!rv && curr_table != start_table);
 
@@ -438,7 +542,7 @@ bool Grammar::GetRecordFromName(const char *zcurr_env, const char *token,
                                     const char **d_ztemplate)
 {
   bool rv = false;
-  if (hashed_on_uids) {
+  if ( HashedOnUIDs() ) {
     TCI_ASSERT(0);
     return rv;
   }
@@ -450,7 +554,7 @@ bool Grammar::GetRecordFromName(const char *zcurr_env, const char *token,
   } else {
     return rv;
   }
-  HASH_TABLE *start_table = last_table_hit ? last_table_hit : h_tables->next;
+  HASH_TABLE *start_table = LastTableHit() ? LastTableHit() : HashTables() -> next;
   HASH_TABLE *curr_table = start_table;
 
   U32 hash = HashzNom(ztoken);
@@ -489,7 +593,7 @@ bool Grammar::GetRecordFromName(const char *zcurr_env, const char *token,
               uID = h_array[curr_slot].ID;
               usubID = h_array[curr_slot].subID;
               *d_ztemplate = h_array[curr_slot].ztemplate;
-              last_table_hit = curr_table;
+              SetLastTableHit(curr_table);
               rv = true;
             } else {
               curr_slot++;
@@ -503,7 +607,7 @@ bool Grammar::GetRecordFromName(const char *zcurr_env, const char *token,
 
     curr_table = curr_table->next;
     if (!curr_table)
-      curr_table = h_tables->next;
+      curr_table = HashTables() -> next;
   } while (!rv && curr_table != start_table);
 
   return rv;
@@ -515,7 +619,7 @@ bool Grammar::GetRecordFromName(const char *zcurr_env, const char *token,
 //   they are examined for context switches.  "h_tables" is filled
 //   re "zenv_names" and "slot_count"s.
 
-LINE_REC *Grammar::FileToLineList(FILE * grammar_file)
+LINE_REC* FileToLineList(FILE * grammar_file, Grammar* grammar)
 {
   char *t_ptr;
 
@@ -559,15 +663,15 @@ LINE_REC *Grammar::FileToLineList(FILE * grammar_file)
 
         char new_env_nom[CONTEXT_NOM_LIM];
         GetContextNom(t_ptr + 15, new_env_nom, env_uID);
-        AddContext(new_env_nom, env_list, env_uID);
-        curr_table = FindTableForEnv(env_list);
+        AddContext(new_env_nom, env_list, env_uID, grammar -> ContextIDs() );
+        curr_table = FindTableForEnv(env_list, grammar);
 
       } else if ((t_ptr = strstr(fline, "<END_CONTEXT_"))) {
 
         char new_env_nom[CONTEXT_NOM_LIM];
         GetContextNom(t_ptr + 13, new_env_nom, env_uID);
         RemoveContextName(new_env_nom, env_list);
-        curr_table = FindTableForEnv(env_list);
+        curr_table = FindTableForEnv(env_list, grammar);
 
       } else {                  // put this line on the list
 
@@ -582,11 +686,11 @@ LINE_REC *Grammar::FileToLineList(FILE * grammar_file)
             is_macro = true;
 
         if (is_macro) {
-          new_node->table_node = h_tables;
-          h_tables->slot_count = h_tables->slot_count + 1;
+          new_node->table_node = grammar -> HashTables();
+          grammar -> HashTables() -> slot_count = grammar -> HashTables() -> slot_count + 1;
         } else {
           new_node->table_node = curr_table;
-          curr_table->slot_count = curr_table->slot_count + 1;
+          curr_table->slot_count = curr_table -> slot_count + 1;
         }
 
         if (!head)
@@ -606,7 +710,7 @@ LINE_REC *Grammar::FileToLineList(FILE * grammar_file)
 // fline =  "\alpha<uID3.1.1>"
 // fline =  "_BLAH_etc."
 
-void Grammar::FileLineToHashTables(const char *fline, HASH_TABLE * t_node)
+void FileLineToHashTables(const char *fline, HASH_TABLE * t_node, Grammar* grammar)
 {
   U32 rec_ID = 0;
   U32 rec_subID = 0;
@@ -622,26 +726,26 @@ void Grammar::FileLineToHashTables(const char *fline, HASH_TABLE * t_node)
 
   int offsets[4];
 
-  if (t_node == h_tables) {     // first table reserved for "_DEFS_"
+  if (t_node == grammar -> HashTables() ) {     // first table reserved for "_DEFS_"
     const char *p = strchr(fline + 1, '_');
     offsets[0] = offsets[2] = p - fline + 1;
   } else {
     LocateOffsets(fline, offsets);
-    ExtractIDs(fline + offsets[1], rec_ID, rec_subID);
+    ExtractIDs(fline + offsets[1], rec_ID, rec_subID, grammar);
   }
 
   // Set up the name of this syntax element in a heap zstring
   size_t zln = offsets[0];
-  char *znom = new char[zln + 1];
+  char* znom = new char[zln + 1];
   strncpy(znom, fline, zln);
   znom[zln] = 0;
 
   // Find a slot for the element in the hash table
-  HASH_REC *h_array = t_node->records;
+  HASH_REC* h_array = t_node->records;
   U32 slot_lim = t_node->slot_count;
 
   U32 slot;
-  if (hashed_on_uids && t_node != h_tables) {
+  if (grammar -> HashedOnUIDs() && t_node != grammar -> HashTables() ) {
     U32 hash = HashFromIDs(rec_ID, rec_subID);
     slot = hash % slot_lim;
   } else {
@@ -668,47 +772,10 @@ void Grammar::FileLineToHashTables(const char *fline, HASH_TABLE * t_node)
   }
 }
 
-U32 Grammar::HashzNom(const char *znom)
-{
-  U32 rv = 0L;
 
-  U32 fudge = 31L;
-  while (*znom) {
-    rv += (*znom - 31) * fudge;
-    znom++;
-    if (fudge == 7L)
-      fudge = 31L;
-    else
-      fudge = fudge - 12L;
-  }
 
-  return rv;
-}
 
-U32 Grammar::HashFromIDs(U32 ID, U32 subID)
-{
-  U32 rv = 0L;
-
-  char buffer[32];
-  sprintf(buffer, "%lu.%lu", ID, subID);
-
-  int shift = 0;
-  char *ptr = buffer;
-  while (*ptr) {
-    if (*ptr >= '0' && *ptr <= '9') {
-      U32 tmp = *ptr;
-      rv += (tmp << shift);
-      shift++;
-    } else {
-      break;
-    }
-    ptr++;
-  }
-
-  return rv;
-}
-
-void Grammar::ExtractIDs(const char *num_str, U32 & rec_ID, U32 & rec_subID)
+void ExtractIDs(const char *num_str, U32 & rec_ID, U32 & rec_subID, Grammar* grammar)
 {
   rec_ID = 0;
   rec_subID = 0;

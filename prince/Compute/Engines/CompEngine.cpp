@@ -43,6 +43,7 @@
 #include "nsServiceManagerUtils.h"
 #include "nsComponentManagerUtils.h"
 #include "nsStringAPI.h"
+#include "attriblist.h"
 
 
 void AppendSubPath( nsILocalFile * file, const char * asciiPath )
@@ -342,7 +343,7 @@ void CompEngine::Execute(MathServiceRequest & msr, MathResult & mr)
       }   
       if (ptr && ((strncmp("graphSpec", ptr->src_tok, 9)) == 0)) {
         // grab and save the graph attributes
-        for (ATTRIB_REC *aptr = ptr->attrib_list; aptr != NULL; aptr = aptr->next) {
+        for (ATTRIB_REC* aptr = ptr->attrib_list; aptr != NULL; aptr = aptr->next) {
           psr->StorePlotParam (aptr->zattr_nom, aptr->zattr_val, zPT_ASCII_text);
         }
         U32 plotno = 0;
@@ -422,6 +423,9 @@ void CompEngine::Execute(MathServiceRequest & msr, MathResult & mr)
           semantic_analyzer->BuildSemanticsTree(msr,
                                                 mr, src, dMML_tree, UI_cmd_ID,
                                                 p_input_notation);
+		#ifdef DEBUG
+          JBM::DumpSList(semantics_tree);
+        #endif
         curr_IDs_2mml =
           JoinIDsLists(curr_IDs_2mml, semantic_analyzer->GetBackMap());
 
