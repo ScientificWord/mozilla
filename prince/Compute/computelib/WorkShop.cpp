@@ -186,7 +186,7 @@ U32 MathWorkShop::InstallCompEngine(nsILocalFile *install_script,
 
     const char *db_zname;
     const char *db_ztemplate;
-    install_dBase->GetRecordFromIDs("ENGINFO", ENG_Name, 0, &db_zname,
+    install_dBase -> GetRecordFromIDs("ENGINFO", ENG_Name, 0, &db_zname,
                                     &db_ztemplate);
     //Maple5<uID1.0>  MuPAD<uID1.0>
     if (db_zname && *db_zname) {
