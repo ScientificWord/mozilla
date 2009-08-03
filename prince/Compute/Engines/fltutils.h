@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+
 /*  As we parse LaTeX, a data structure called a "Parse Tree"
 is generated. Each node in this tree is a "MNODE" struct
 as defined below.
@@ -36,13 +37,16 @@ as defined below.
   contents of these parts appear below.
 */
 
-typedef struct tagPARAM_REC
+class ATTRIB_REC;
+
+
+struct PARAM_REC
 {                               // Struct to carry a command parameter
-  tagPARAM_REC *next;
+  PARAM_REC *next;
   U32 param_ID;
   U32 param_type;
   char *ztext;
-} PARAM_REC;
+};
 
 PARAM_REC *AppendParam(PARAM_REC * curr_list, U32 p_ID, U32 p_type,
                        const char *zdata);
@@ -54,12 +58,12 @@ enum VarType {
   VT_Matrix
 };
 
-typedef struct tagVAR_REC
+struct VAR_REC
 {
-  tagVAR_REC *next;
-  char *var_eng_name;
+  VAR_REC *next;
+  char* var_eng_name;
   VarType var_type;
-} VAR_REC;
+};
 
 void AppendVarRec(VAR_REC * &curr_list, const char *v_nom, VarType v_type);
 void DisposeVarList(VAR_REC * v_list);
@@ -83,61 +87,58 @@ const char * OpIlkToString(OpIlk ilk);
 OpIlk StringToOpIlk(const char * form);
 
 
-typedef struct tagNAME2AKA_REC {	// name -> node mapping record
-  tagNAME2AKA_REC*  next;
-  char*             alias;      // engine name
-  char*             src_canonical_name;
-  char*             user_name;
-  NameIlk           obj_ilk;
-} NAME2AKA_REC;
+struct NAME2AKA_REC {	// name -> node mapping record
+  NAME2AKA_REC*  next;
+  char*          alias;      // engine name
+  char*          src_canonical_name;
+  char*          user_name;
+  NameIlk        obj_ilk;
+};
 
-typedef struct tagClientAliases_REC { 
-  tagClientAliases_REC*  next;
-  U32                    client_ID;
-  NAME2AKA_REC*          AKAs_list;
-  U32                    next_var_number;
-  U32                    next_func_number;
-} ClientAliases_REC;
+struct ClientAliases_REC { 
+  ClientAliases_REC*  next;
+  U32                 client_ID;
+  NAME2AKA_REC*       AKAs_list;
+  U32                 next_var_number;
+  U32                 next_func_number;
+};
 
-typedef struct tagATTRIB_REC
-{                               // Struct to define an attribute node.
-  tagATTRIB_REC *next;          //  The MNODE struct defined below
-  tagATTRIB_REC *prev;          //  can carry a list of attributes.
-  char *zattr_nom;
-  char *zattr_val;
-} ATTRIB_REC;
 
 // struct to carry info for a message to be written to the log file
-typedef struct tagLOG_MSG_REC
+struct LOG_MSG_REC
 {
-  tagLOG_MSG_REC *next;
+  LOG_MSG_REC *next;
   char *msg;
-} LOG_MSG_REC;
+};
 
-typedef struct tagMNODE
+struct MNODE
 {
-  tagMNODE *next;
-  tagMNODE *prev;
+  MNODE* next;
+  MNODE* prev;
   U32 src_linenum;
   U32 src_start_offset;
   U32 src_length;
   char src_tok[32];
-  tagMNODE *parent;
-  tagMNODE *first_kid;
-  const char *p_chdata;
+  MNODE* parent;
+  MNODE* first_kid;
+  const char* p_chdata;
   int precedence;
   OpIlk form;
-  ATTRIB_REC *attrib_list;
-  LOG_MSG_REC *msg_list;
-} MNODE;
+  ATTRIB_REC* attrib_list;
+  LOG_MSG_REC* msg_list;
+};
 
-typedef struct tagMIC2MMLNODE_REC
+
+
+struct MIC2MMLNODE_REC
 {                               // name -> node mapping record
-  tagMIC2MMLNODE_REC *next;
+  MIC2MMLNODE_REC *next;
   U32 owner_ID;
   char *canonical_name;
   char *mml_markup;
-} MIC2MMLNODE_REC;
+};
+
+
 
 bool CheckLinks(MNODE* n);
 BUCKET_REC *MakeBucketRec(U32 which_bucket, SEMANTICS_NODE * sem_child);
@@ -188,12 +189,6 @@ bool HasRequiredChildren(MNODE * mml_node);
 bool HasScriptChildren(MNODE * mml_node);
 bool HasInferedMROW(MNODE * mml_node);
 
-ATTRIB_REC *MakeATTRIBNode(const char *attrib_name, const char *attrib_value);
-const char *GetATTRIBvalue(ATTRIB_REC * a_list, const char *attrib_name);
-void DisposeAttribs(ATTRIB_REC * alist);
-ATTRIB_REC *ExtractAttrs(char *zattrsAndvals);
-ATTRIB_REC *MergeAttrsLists(ATTRIB_REC * dest_list, ATTRIB_REC * new_attrs);
-ATTRIB_REC *RemoveAttr(ATTRIB_REC * a_list, const char *attr_nom);
 
 class Grammar;
 bool IsTrigArgFuncName(Grammar *mml_entities, const char * f_nom);
