@@ -30,6 +30,7 @@
 #include "MResult.h"
 #include "DefStore.h"
 #include "PrefStor.h"
+#include "attriblist.h"
 #include <string.h>
 
 // IDs and Templates for MathML generation.
@@ -5514,8 +5515,8 @@ ATTRIB_REC *STree2MML::VariantToStyleAtts(const char *mathvariant,
 
   switch (attr_val_ln) {
   case 4:{                     // mathvariant =  "bold";
-      rv = MakeATTRIBNode("fontweight", "bold");
-      ATTRIB_REC *ar2 = MakeATTRIBNode("fontstyle", "upright");
+      rv = new ATTRIB_REC("fontweight", "bold");
+      ATTRIB_REC *ar2 = new ATTRIB_REC("fontstyle", "upright");
       rv->next = ar2;
       ar2->prev = rv;
     }
@@ -5523,35 +5524,35 @@ ATTRIB_REC *STree2MML::VariantToStyleAtts(const char *mathvariant,
   case 6:
     if (!strcmp(mathvariant, "script")) { //  Calligraphic
       strcpy(suffix, "scr");
-      rv = MakeATTRIBNode("fontstyle", "upright");
+      rv = new ATTRIB_REC("fontstyle", "upright");
     } else if (!strcmp(mathvariant, "normal")) {
-      rv = MakeATTRIBNode("fontweight", "normal");
+      rv = new ATTRIB_REC("fontweight", "normal");
     } else if (!strcmp(mathvariant, "italic")) {
 
     }
     break;
   case 7:                      // mathvariant =  "fraktur";
     strcpy(suffix, "fr");
-    rv = MakeATTRIBNode("fontstyle", "upright");
+    rv = new ATTRIB_REC("fontstyle", "upright");
     break;
   case 9:{                     // mathvariant =  "monospace";
-      rv = MakeATTRIBNode("fontstyle", "italic");
+      rv = new ATTRIB_REC("fontstyle", "italic");
     }
     break;
   case 10:{                    // mathvariant =  "sans-serif";
-      rv = MakeATTRIBNode("fontstyle", "italic");
+      rv = new ATTRIB_REC("fontstyle", "italic");
     }
     break;
   case 11:{                    // mathvariant =  "bold-italic";
-      rv = MakeATTRIBNode("fontweight", "bold");
-      ATTRIB_REC *ar2 = MakeATTRIBNode("fontstyle", "italic");
+      rv = new ATTRIB_REC("fontweight", "bold");
+      ATTRIB_REC *ar2 = new ATTRIB_REC("fontstyle", "italic");
       rv->next = ar2;
       ar2->prev = rv;
     }
     break;
   case 13:                     // mathvariant =  "double-struck";
     strcpy(suffix, "opf");
-    rv = MakeATTRIBNode("fontstyle", "upright");
+    rv = new ATTRIB_REC("fontstyle", "upright");
     break;
 
   default:
