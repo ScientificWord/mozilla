@@ -46,6 +46,7 @@
 #include "Grammar.h"
 #include "Analyzer.h"
 #include "attriblist.h"
+#include "strutils.h"
 #include <string.h>
 
 
@@ -60,53 +61,41 @@ Tree2StdMML::~Tree2StdMML()
   TCI_ASSERT(lt_stack == NULL);
 }
 
-MNODE *Tree2StdMML::TreeToCanonicalForm(MNODE * dMML_tree,
-                                        INPUT_NOTATION_REC * in_notation)
+MNODE* Tree2StdMML::TreeToCanonicalForm(MNODE* dMML_tree,
+                                        INPUT_NOTATION_REC* in_notation)
 {
   TCI_ASSERT(CheckLinks(dMML_tree));
+
   MNODE *rv = ChDataToCanonicalForm(dMML_tree);
-  TCI_ASSERT(CheckLinks(rv));
   RemoveMixedNumbers(rv, in_notation);
-  TCI_ASSERT(CheckLinks(rv));
   rv = FixMFENCEDs(rv);
-  TCI_ASSERT(CheckLinks(rv));
   rv = InfixDivideToMFRAC(rv);
-  TCI_ASSERT(CheckLinks(rv));
   rv = RemoveMatrixDelims(rv, in_notation);
-  TCI_ASSERT(CheckLinks(rv));
   RemoveMSTYLEs(rv);
-  TCI_ASSERT(CheckLinks(rv));
-
   rv = RemoveMPADDEDs(rv);
-
   rv = RemoveRedundantMROWs(rv);
   //  The following is NOT a mistake!
   rv = RemoveRedundantMROWs(rv);
-
   InsertInvisibleAddSigns(rv);
+
   TCI_ASSERT(CheckLinks(rv));
   return rv;
 }
 
-MNODE *Tree2StdMML::TreeToInterpretForm(MNODE * dMML_tree,
-                                        INPUT_NOTATION_REC * in_notation)
+MNODE* Tree2StdMML::TreeToInterpretForm(MNODE* dMML_tree,
+                                        INPUT_NOTATION_REC* in_notation)
 {
-  MNODE *rv = ChDataToCanonicalForm(dMML_tree);
+  MNODE* rv = ChDataToCanonicalForm(dMML_tree);
   BindDelimitedGroups(rv);
   BindScripts(rv);
-  
   rv = FixMFENCEDs(rv);
-
   RemoveMixedNumbers(rv, in_notation);
-  
   FinishFixup(rv);
   
   rv = InfixDivideToMFRAC(rv);
   rv = RemoveMatrixDelims(rv, in_notation);
-
   RemoveMSTYLEs(rv);
   rv = RemoveMPADDEDs(rv);
-
   rv = RemoveRedundantMROWs(rv);
   rv = RemoveRedundantMROWs(rv);
 
@@ -120,24 +109,20 @@ MNODE *Tree2StdMML::TreeToFixupForm(MNODE * dMML_tree, bool D_is_derivative)
   MNODE *rv = ChDataToCanonicalForm(dMML_tree);
   BindDelimitedGroups(rv);
   BindScripts(rv);
-  
   rv = FixMFENCEDs(rv);
-
   mDisDerivative = D_is_derivative;
   FinishFixup(rv);
-  
   rv = RemoveRedundantMROWs(rv);
   rv = RemoveRedundantMROWs(rv);
-
   FixInvisibleFences(rv);
   
   return rv;
 }
 
 // The input to CCID_Cleanup may be ugly.  Resolve that here.
-MNODE *Tree2StdMML::TreeToCleanupForm(MNODE * dMML_tree)
+MNODE* Tree2StdMML::TreeToCleanupForm(MNODE* dMML_tree)
 {
-  TCI_ASSERT(strcmp(dMML_tree->src_tok,"math") == 0);
+  TCI_ASSERT( strcmp(dMML_tree -> src_tok, "math") == 0 );
 
   RemoveEmptyTags(dMML_tree);
   FixAdjacentMNs(dMML_tree);
@@ -146,35 +131,35 @@ MNODE *Tree2StdMML::TreeToCleanupForm(MNODE * dMML_tree)
   return dMML_tree;
 }
 
-MNODE *Tree2StdMML::ChDataToCanonicalForm(MNODE * dMML_tree)
+MNODE* Tree2StdMML::ChDataToCanonicalForm(MNODE* dMML_tree)
 {
-  MNODE *rv = dMML_tree;
+  MNODE* rv = dMML_tree;
 
-  MNODE *rover = dMML_tree;
+  MNODE* rover = dMML_tree;
   while (rover) {
-    MNODE *curr = rover;
-    rover = rover->next;
+    MNODE* curr = rover;
+    rover = rover -> next;
 
-    if (curr->first_kid) {      // rover is a schemata
-      MNODE *c_list = ChDataToCanonicalForm(curr->first_kid);
-      if (c_list != curr->first_kid) {
-        curr->first_kid = c_list;
-        c_list->parent = curr;
+    if (curr -> first_kid) {      // rover is a schemata
+      MNODE* c_list = ChDataToCanonicalForm(curr -> first_kid);
+      if (c_list != curr -> first_kid) {
+        curr -> first_kid = c_list;
+        c_list -> parent = curr;
       }
     } else {                    // rover is elementary
-      if (curr->p_chdata) {
-        char *tmp = ChdataToString(curr->p_chdata);
+      if (curr -> p_chdata) {
+        char* tmp = ChdataToString( curr -> p_chdata );
         if (tmp) {
           delete[] curr->p_chdata;
-          curr->p_chdata = tmp;
+          curr -> p_chdata = tmp;
         } else {
           TCI_ASSERT(!"Unknown character entity or out of memory.");
         }
       } else {
-        if (!strcmp(curr->src_tok, "mspace")
-            || !strcmp(curr->src_tok, "maligngroup")) {
+        if (!strcmp(curr -> src_tok, "mspace")
+            || !strcmp(curr -> src_tok, "maligngroup")) {
           if (curr == rv)
-            rv = curr->next;
+            rv = curr -> next;
           DelinkTNode(curr);
           DisposeTNode(curr);
         }
@@ -184,13 +169,13 @@ MNODE *Tree2StdMML::ChDataToCanonicalForm(MNODE * dMML_tree)
   return rv;
 }
 
-void Tree2StdMML::RemoveMixedNumbers(MNODE * dMML_tree,
-                                     INPUT_NOTATION_REC * in_notation)
+void Tree2StdMML::RemoveMixedNumbers(MNODE* dMML_tree,
+                                     INPUT_NOTATION_REC* in_notation)
 {
-  MNODE *rover = dMML_tree;
+  MNODE* rover = dMML_tree;
   while (rover) {
-    if (rover->first_kid) {     // rover is a schemata
-      RemoveMixedNumbers(rover->first_kid, in_notation);
+    if ( rover -> first_kid ) {     // rover is a schemata
+      RemoveMixedNumbers( rover -> first_kid, in_notation );
     } else {                    // rover is elementary
       int whole_digits;
       if (!strcmp(rover->src_tok, "mn")
@@ -198,19 +183,19 @@ void Tree2StdMML::RemoveMixedNumbers(MNODE * dMML_tree,
           && rover->next && !strcmp(rover->next->src_tok, "mfrac")) {
         MNODE *frac = rover->next;
         if (frac->first_kid) {
-          MNODE *numerator = frac->first_kid;
-          MNODE *denominator = numerator->next;
+          MNODE* numerator = frac -> first_kid;
+          MNODE* denominator = numerator -> next;
           if (denominator) {
             int num_digits;
             int den_digits;
-            if (IsAllDigits(numerator, num_digits)
-                && IsAllDigits(denominator, den_digits)) {
-              bool do_it = !HasPositionalChildren(rover->parent);
+            if (IsAllDigits(numerator, num_digits) && IsAllDigits(denominator, den_digits)) 
+            {
+              bool do_it = !HasPositionalChildren( rover->parent );
               if (whole_digits + den_digits > 9)  // arbitrary complexity limit...note use of U32 in PermutMixedNumbers()
                 do_it = false;
               if (do_it) {
                 PermuteMixedNumber(rover);
-                in_notation->nmixed_numbers++;
+                in_notation -> nmixed_numbers++;
               }
             }
           } else {
@@ -2494,14 +2479,14 @@ bool Tree2StdMML::HasPeriod(MNODE * num)
 void Tree2StdMML::PermuteMixedNumber(MNODE * num)
 {
   U32 whole_num = ASCII2U32(num->p_chdata, 10);
-  MNODE *frac = num->next;
-  MNODE *numerator = frac->first_kid;
-  MNODE *denominator = numerator->next;
+  MNODE* frac = num->next;
+  MNODE* numerator = frac->first_kid;
+  MNODE* denominator = numerator->next;
   U32 numerator_num = ASCII2U32(numerator->p_chdata, 10);
   U32 denominator_num = ASCII2U32(denominator->p_chdata, 10);
   U32 new_numerator = whole_num * denominator_num + numerator_num;
 
-  MNODE *right_anchor = frac->next;
+  MNODE* right_anchor = frac->next;
 
   num->next = right_anchor;
   if (right_anchor)
@@ -2509,11 +2494,12 @@ void Tree2StdMML::PermuteMixedNumber(MNODE * num)
   frac->prev = NULL;
   frac->next = NULL;
 
-  TCI_ASSERT(num->first_kid == NULL);
+  TCI_ASSERT( num->first_kid == NULL );
+
   num->first_kid = frac->first_kid;
   frac->first_kid = NULL;
   // reparent
-  MNODE *rover = num->first_kid;
+  MNODE* rover = num->first_kid;
   while (rover) {
     rover->parent = num;
     rover = rover->next;
