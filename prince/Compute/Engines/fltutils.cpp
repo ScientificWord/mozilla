@@ -2,6 +2,7 @@
 
 #include "fltutils.h"
 #include "attriblist.h"
+#include "strutils.h"
 #include <string.h>
 #include <ctype.h>
 
@@ -34,7 +35,7 @@ void DisposeVarList(VAR_REC * v_list)
   }
 }
 
-VAR_REC *FindVarRec(VAR_REC * v_list, const char *targ_nom)
+VAR_REC* FindVarRec(VAR_REC * v_list, const char *targ_nom)
 {
   VAR_REC *v_rover = v_list;
   while (v_rover) {
@@ -152,361 +153,11 @@ void JBM::ClearLog()
 }
 
 
-// Utility to make a translation node
-
-MNODE *MakeTNode(U32 s_off, U32 s_len, U32 line_no)
-{
-  MNODE *rv = new MNODE();
-  rv->next = NULL;
-  rv->prev = NULL;
-  rv->src_linenum = line_no;
-  rv->src_start_offset = s_off;
-  rv->src_length = s_len;
-
-  rv->src_tok[0] = 0;
-
-  rv->parent = NULL;
-  rv->first_kid = NULL;
-  rv->p_chdata = NULL;
-  rv->precedence = 0;
-  rv->form = OP_none;
-  rv->attrib_list = NULL;
-  rv->msg_list = NULL;
-
-  return rv;
-}
 
 
-// Follows links associated with the node and
-// tries to crash if anyone has a bad pointer.
-
-bool CheckLinks(MNODE* n)
-{
-   if (n == 0) 
-    return true;
-    
-   MNODE* p = n->parent;
-   MNODE* m = n;
-   while (m){
-     m = m->parent;
-   }
-   m = n;
-   while (m) {
-     if (m -> parent != p){
-       //_asm{int 3};
-     } else {
-       m = m-> next;
-     }
-   }
-   
-   m = n->first_kid;
-   while (m){
-     if (m->parent != n){
-       //_asm{int 3}
-    } else {
-      m = m-> next;
-    }
-   } 
-    
-   return true; 
-}
-
-const char * OpIlkToString(OpIlk ilk)
-{
-  switch (ilk) {
-    case OP_prefix:
-      return "prefix";
-    case OP_infix:
-      return "infix";
-      break;
-    case OP_postfix:
-      return "postfix";
-      break;
-    default:
-      TCI_ASSERT(!"No string form.");
-      return NULL;
-  }
-}
-
-OpIlk StringToOpIlk(const char * form)
-{
-    if (!strcmp(form, "prefix")) {
-    return OP_prefix;
-  } else if (!strcmp(form, "infix")) {
-    return OP_infix;
-  } else if (!strcmp(form, "postfix")) {
-    return OP_postfix;
-  } else {
-    TCI_ASSERT(!"bogus form attribute on operator");
-    return OP_none;
-  }
-}
-
-// message IDs and strings for development purposes only.
-// final versions of strings will go in language dependent resources.
-
-char *eMsgStrs[] = {
-  "Unsupported number, %s\n",
-  "Unsupported operator, %s\n",
-  "Undefined function, %s\n",
-  "No inverse defined for function, %s\n",
-  "Undefined prefix operator with limits, %s\n",
-  "Unexpected text in math, %s\n",
-  0
-};
-
-// See enum LogMsgID in fltutils.h
-LOG_MSG_REC *MakeLogMsg()
-{
-  LOG_MSG_REC *rv = new LOG_MSG_REC();
-  rv->next = NULL;
-  rv->msg = NULL;
-
-  return rv;
-}
-
-void DisposeMsgs(LOG_MSG_REC * msg_list)
-{
-  LOG_MSG_REC *msg_rover = msg_list;
-  while (msg_rover) {
-    LOG_MSG_REC *del = msg_rover;
-    msg_rover = msg_rover->next;
-    delete[] del->msg;
-    delete del;
-  }
-}
-
-LOG_MSG_REC *AppendLogMsg(LOG_MSG_REC * msg_list, LOG_MSG_REC * new_msg_rec)
-{
-  if (!msg_list)
-    return new_msg_rec;
-  else {
-    LOG_MSG_REC *rover = msg_list;
-    while (rover->next)
-      rover = rover->next;
-    rover->next = new_msg_rec;
-    return msg_list;
-  }
-}
-
-void RecordMsg(LOG_MSG_REC * &msg_list, LogMsgID id, const char *token)
-{
-  char *msg_str = eMsgStrs[id];
-  size_t zln = strlen(msg_str);
-  if (token)
-    zln += strlen(token);
-
-  char *buffer = new char[zln];
-  if (token)
-    sprintf(buffer, msg_str, token);
-  else
-    strcpy(buffer, msg_str);
-
-  LOG_MSG_REC *new_msg_rec = MakeLogMsg();
-  new_msg_rec->msg = buffer;
-  msg_list = AppendLogMsg(msg_list, new_msg_rec);
-}
-
-void DisposeTNode(MNODE * del)
-{
-  delete[] del->p_chdata;
-  DisposeAttribs(del->attrib_list);
-
-  LOG_MSG_REC *msg_rover = del->msg_list;
-  while (msg_rover) {
-    LOG_MSG_REC *msg_del = msg_rover;
-    msg_rover = msg_rover->next;
-    delete msg_del->msg;
-    delete msg_del;
-  }
-
-  DisposeTList(del->first_kid);
-  delete del;
-}
-
-void DisposeTList(MNODE * t_list)
-{
-  MNODE *del;
-  while (t_list) {
-    del = t_list;
-    t_list = t_list->next;
-    DisposeTNode(del);
-  }
-}
-
-MNODE *JoinTLists(MNODE * list, MNODE * newtail)
-{
-  MNODE *rv;
-  if (list) {
-    rv = list;
-    while (list->next)
-      list = list->next;
-    list->next = newtail;
-    if (newtail)
-      newtail->prev = list;
-  } else {
-    rv = newtail;
-  }
-
-  return rv;
-}
-
-void StrReplace(char *line, size_t zln, char *tok, const char *sub)
-{
-  char *ptr = strstr(line, tok);
-  if (ptr) {
-    char *buffer = new char[zln];
-
-    *ptr = 0;
-    strcpy(buffer, line);       // head
-    if (sub)
-      strcat(buffer, sub);      // substitution
-    ptr += strlen(tok);
-    strcat(buffer, ptr);        // tail
-
-    strcpy(line, buffer);
-    delete[] buffer;
-  }
-}
-
-// itoa replacement
-void StrFromInt(int val, char* buffer)
-{
-  sprintf(buffer, "%d", val);
-}
-
-// Function to remove a MNODE's links to a tree.
-// The delinked node can be moved or disposed by the caller.
-// Note that we can't delink the first node of a first
-//  level list here.
-
-bool DelinkTNode(MNODE * elem)
-{
-  bool rv = true;           // assume all will be OK.
-
-  // remove elem from it's present list:  prev <-> elem <-> next
-  MNODE *el_prev = elem->prev;
-  if (el_prev) {                // elem has a prev
-    el_prev->next = elem->next;
-    if (elem->next) {
-      elem->next->prev = el_prev;
-    }
-  } else {                      // elem may head a sublist
-    MNODE *el_owner = elem->parent;
-    if (el_owner) {
-      if (el_owner->first_kid == elem) {
-        el_owner->first_kid = elem->next;
-        if (elem->next) {
-          elem->next->parent = el_owner;
-          elem->next->prev = NULL;
-        }
-      } else {
-        TCI_ASSERT(0);
-        rv = false;
-      }
-    } else {
-      TCI_ASSERT(!"No sublist_owner");
-      rv = false;
-    }
-  }
-  if (rv) {
-    elem->prev = NULL;
-    elem->next = NULL;
-    elem->parent = NULL;
-  }
-  return rv;
-}
-
-void DetachTList(MNODE * elem)
-{
-  MNODE *prev_node = elem->prev;
-  if (prev_node) {              // elem has a prev
-    // remove elem from it's present list:  prev <-> elem
-    prev_node->next = NULL;
-    elem->prev = NULL;
-  } else {                      // elem may head a sublist
-    MNODE *owner_node = elem->parent;
-    if (owner_node) {
-      if (owner_node->first_kid == elem) {
-        owner_node->first_kid = NULL;
-      } else {
-        TCI_ASSERT(0);
-      }
-      elem->parent = NULL;
-    }
-    //TCI_ASSERT(0);
-  }
-}
-
-// there is a question about whether mfenced should be in this list
-bool HasPositionalChildren(MNODE * mml_node)
-{
-  if (mml_node) {
-    const char* p_elem = mml_node->src_tok;
-    if (!strcmp(p_elem, "mfrac")
-        || !strcmp(p_elem, "msub")
-        || !strcmp(p_elem, "msup")
-        || !strcmp(p_elem, "msubsup")
-        || !strcmp(p_elem, "munder")
-        || !strcmp(p_elem, "mover")
-        || !strcmp(p_elem, "munderover"))
-      return true;
-  }
-  return false;
-}
-
-// there is a question about whether mfenced and mtable should be in this list
-bool HasRequiredChildren(MNODE * mml_node)
-{
-  if (mml_node) {
-    const char* p_elem = mml_node->src_tok;
-    if (!strcmp(p_elem, "mfrac")
-        || !strcmp(p_elem, "mroot")
-        || !strcmp(p_elem, "msub")
-        || !strcmp(p_elem, "msup")
-        || !strcmp(p_elem, "msubsup")
-        || !strcmp(p_elem, "munder")
-        || !strcmp(p_elem, "mover")
-        || !strcmp(p_elem, "munderover"))
-      return true;
-  }
-  return false;
-}
-
-bool HasScriptChildren(MNODE * mml_node)
-{
-  if (mml_node) {
-    const char* p_elem = mml_node->src_tok;
-    if (!strcmp(p_elem, "msub")
-        || !strcmp(p_elem, "msup")
-        || !strcmp(p_elem, "msubsup")
-        || !strcmp(p_elem, "munder")
-        || !strcmp(p_elem, "mover")
-        || !strcmp(p_elem, "munderover"))
-      return true;
-  }
-  return false;
-}
-
-bool HasInferedMROW(MNODE * mml_node)
-{
-  if (mml_node) {
-    const char* p_elem = mml_node->src_tok;
-    if (!strcmp(p_elem, "math")
-        || !strcmp(p_elem, "msqrt")
-        || !strcmp(p_elem, "mstyle")
-        || !strcmp(p_elem, "merror")
-        || !strcmp(p_elem, "mpadded")
-        || !strcmp(p_elem, "mphantom")
-        || !strcmp(p_elem, "menclose")
-        || !strcmp(p_elem, "mtd"))
-      return true;
-  }
-  return false;
-}
 
 
-BUCKET_REC *MakeBucketRec(U32 which_bucket, SEMANTICS_NODE * sem_child)
+BUCKET_REC* MakeBucketRec(U32 which_bucket, SEMANTICS_NODE * sem_child)
 {
   BUCKET_REC *rv = new BUCKET_REC();
   rv->next = NULL;
@@ -517,7 +168,7 @@ BUCKET_REC *MakeBucketRec(U32 which_bucket, SEMANTICS_NODE * sem_child)
   return rv;
 }
 
-BUCKET_REC *AppendBucketRec(BUCKET_REC * a_list, BUCKET_REC * list_to_append)
+BUCKET_REC* AppendBucketRec(BUCKET_REC * a_list, BUCKET_REC * list_to_append)
 {
   if (!a_list) {
     return list_to_append;
@@ -530,7 +181,7 @@ BUCKET_REC *AppendBucketRec(BUCKET_REC * a_list, BUCKET_REC * list_to_append)
   }
 }
 
-BUCKET_REC *FindBucketRec(BUCKET_REC * a_list, U32 targ_bucket_ID)
+BUCKET_REC* FindBucketRec(BUCKET_REC * a_list, U32 targ_bucket_ID)
 {
   BUCKET_REC *rover = a_list;
   while (rover) {
@@ -556,7 +207,7 @@ void DisposeBucketList(BUCKET_REC * b_list)
   }
 }
 
-SEMANTICS_NODE *CreateSemanticsNode()
+SEMANTICS_NODE* CreateSemanticsNode()
 {
   SEMANTICS_NODE *rv = new SEMANTICS_NODE;
   rv->next = NULL;
@@ -814,7 +465,7 @@ const char *GetMarkupFromID(MIC2MMLNODE_REC * node_IDs_list,
   return NULL;
 }
 
-U32 ASCII2U32(const char *ptr, int place_val)
+U32 ASCII2U32(const char* ptr, int place_val)
 {
   U32 unicode = 0;
 
@@ -843,12 +494,15 @@ U32 ASCII2U32(const char *ptr, int place_val)
   return unicode;
 }
 
-U32 NumericEntity2U32(const char *p_entity)
+
+
+U32 NumericEntity2U32(const char* p_entity)
 {
+   
   U32 unicode = 0;
 
   if (p_entity && *p_entity == '&' && *(p_entity + 1) == '#') {
-    const char *p = p_entity + 2;
+    const char* p = p_entity + 2;
     int place_val = 10;
     if (*p == 'x') {
       p++;
@@ -861,8 +515,12 @@ U32 NumericEntity2U32(const char *p_entity)
   return unicode;
 }
 
-PARAM_REC *AppendParam(PARAM_REC * curr_list, U32 p_ID, U32 p_type,
-                       const char *zdata)
+
+
+PARAM_REC* AppendParam(PARAM_REC* curr_list, 
+                       U32 p_ID, 
+                       U32 p_type,
+                       const char* zdata)
 {
   PARAM_REC *new_rec = new PARAM_REC();
   new_rec->next = curr_list;
@@ -880,6 +538,7 @@ PARAM_REC *AppendParam(PARAM_REC * curr_list, U32 p_ID, U32 p_type,
   return new_rec;
 }
 
+
 void DisposeParamList(PARAM_REC * p_list)
 {
   while (p_list) {
@@ -890,50 +549,10 @@ void DisposeParamList(PARAM_REC * p_list)
   }
 }
 
-char *AppendStr2HeapStr(char *zheap_str, U32 & buffer_ln,
-                        const char *z_append_str)
+
+INPUT_NOTATION_REC* CreateNotationRec()
 {
-  char *rv = zheap_str;
-
-  if (z_append_str && *z_append_str) {
-    U32 curr_ln = 0;
-    if (zheap_str)
-      curr_ln += strlen(zheap_str);
-    size_t delta_ln = strlen(z_append_str);
-    U32 bytes_needed = curr_ln + delta_ln + 1;
-
-    bool OK = true;
-    if (bytes_needed > buffer_ln) {
-      buffer_ln = bytes_needed + 512;
-      char *tmp = new char[buffer_ln];
-      if (tmp) {
-        rv = tmp;
-        if (zheap_str) {
-          strcpy(rv, zheap_str);
-          delete[] zheap_str;
-        } else {
-          rv[0] = 0;
-        }
-      } else {
-        TCI_ASSERT(0);
-        OK = false;
-      }
-    }
-
-    if (OK) {
-      if (zheap_str)
-        strcat(rv, z_append_str);
-      else
-        strcpy(rv, z_append_str);
-    }
-  }
-
-  return rv;
-}
-
-INPUT_NOTATION_REC *CreateNotationRec()
-{
-  INPUT_NOTATION_REC *new_struct = new INPUT_NOTATION_REC();
+  INPUT_NOTATION_REC* new_struct = new INPUT_NOTATION_REC();
 
   new_struct->nbracket_tables = 0;
   new_struct->nparen_tables = 0;
@@ -951,8 +570,8 @@ INPUT_NOTATION_REC *CreateNotationRec()
   return new_struct;
 }
 
-SEMANTICS_NODE *AppendSLists(SEMANTICS_NODE * s_list,
-                             SEMANTICS_NODE * new_tail)
+SEMANTICS_NODE* AppendSLists(SEMANTICS_NODE* s_list,
+                             SEMANTICS_NODE* new_tail)
 {
   if (!s_list) {
     return new_tail;
@@ -969,8 +588,9 @@ SEMANTICS_NODE *AppendSLists(SEMANTICS_NODE * s_list,
   }
 }
 
-SEMANTICS_NODE *NestInPGroup(SEMANTICS_NODE * s_list,
-                             BUCKET_REC * parent_bucket)
+
+SEMANTICS_NODE* NestInPGroup(SEMANTICS_NODE* s_list,
+                             BUCKET_REC* parent_bucket)
 {
   SEMANTICS_NODE *rv = CreateSemanticsNode();
 
@@ -1126,11 +746,11 @@ void SetInfixPrecedence(SEMANTICS_NODE * snode)
 //  are used directly for output.  The following function converts
 //  these "prefix" trees to "infix".
 
-SEMANTICS_NODE *PrefixToInfix(SEMANTICS_NODE * s_list)
+SEMANTICS_NODE* PrefixToInfix(SEMANTICS_NODE* s_list)
 {
-  SEMANTICS_NODE *rv = s_list;
+  SEMANTICS_NODE* rv = s_list;
 
-  SEMANTICS_NODE *s_rover = s_list;
+  SEMANTICS_NODE* s_rover = s_list;
   while (s_rover) {
     SEMANTICS_NODE *save_next = s_rover->next;
 
@@ -1138,13 +758,13 @@ SEMANTICS_NODE *PrefixToInfix(SEMANTICS_NODE * s_list)
       if (s_rover->semantic_type == SEM_TYP_INFIX_OP
           || s_rover->semantic_type == SEM_TYP_PREFIX_OP
           || s_rover->semantic_type == SEM_TYP_POSTFIX_OP) {
-        BUCKET_REC *new_parent = s_rover->parent;
-        SEMANTICS_NODE *l_anchor = s_rover->prev;
-        SEMANTICS_NODE *r_anchor = s_rover->next;
+        BUCKET_REC* new_parent = s_rover->parent;
+        SEMANTICS_NODE* l_anchor = s_rover->prev;
+        SEMANTICS_NODE* r_anchor = s_rover->next;
 
-        BUCKET_REC *b_node = s_rover->bucket_list;
-        SEMANTICS_NODE *l_operand = NULL;
-        SEMANTICS_NODE *r_operand = NULL;
+        BUCKET_REC* b_node = s_rover->bucket_list;
+        SEMANTICS_NODE* l_operand = NULL;
+        SEMANTICS_NODE* r_operand = NULL;
         if (s_rover->semantic_type == SEM_TYP_INFIX_OP
             || s_rover->semantic_type == SEM_TYP_POSTFIX_OP) {
           l_operand = b_node->first_child;
@@ -1185,7 +805,7 @@ SEMANTICS_NODE *PrefixToInfix(SEMANTICS_NODE * s_list)
           s_rover->next = NULL;
         }
 
-        SEMANTICS_NODE *pg = NestInPGroup(new_list, new_parent);
+        SEMANTICS_NODE* pg = NestInPGroup(new_list, new_parent);
 
         if (rv == s_rover)
           rv = pg;
@@ -1203,7 +823,7 @@ SEMANTICS_NODE *PrefixToInfix(SEMANTICS_NODE * s_list)
           pg->next = r_anchor;
         }
       } else {                  // has children, but isn't an operator
-        BUCKET_REC *b_node = s_rover->bucket_list;
+        BUCKET_REC* b_node = s_rover->bucket_list;
         while (b_node) {
           PrefixToInfix(b_node->first_child);
           b_node = b_node->next;
@@ -1216,7 +836,9 @@ SEMANTICS_NODE *PrefixToInfix(SEMANTICS_NODE * s_list)
   return rv;
 }
 
-char *NestInParens(char *z_expr, bool forced)
+
+
+char* NestInParens(char* z_expr, bool forced)
 {
   char *rv = NULL;
 
@@ -1259,9 +881,11 @@ char *NestInParens(char *z_expr, bool forced)
   return rv;
 }
 
-char *NestInBrackets(char *z_expr)
+
+
+char* NestInBrackets(char *z_expr)
 {
-  char *rv = NULL;
+  char* rv = NULL;
 
   if (z_expr && *z_expr) {
     size_t zln = strlen(z_expr);
@@ -1278,9 +902,11 @@ char *NestInBrackets(char *z_expr)
   return rv;
 }
 
-char *RemovezStrParens(char *z_expr)
+
+
+char* RemovezStrParens(char *z_expr)
 {
-  char *rv = z_expr;
+  char* rv = z_expr;
 
   if (z_expr && *z_expr) {
     bool do_it = false;
@@ -1311,116 +937,7 @@ char *RemovezStrParens(char *z_expr)
   return rv;
 }
 
-void FUSetPrefix(const char *src_tok, char *prefix, char *buffer)
-{
-  buffer[0] = 0;
-  if (src_tok) {
-    const char *token_ptr = strchr(src_tok, ':');
-    if (token_ptr)
-      token_ptr++;
-    else
-      token_ptr = src_tok;
 
-    if (prefix && *prefix)
-      strcpy(buffer, prefix);
-
-    strcat(buffer, token_ptr);
-  }
-}
-
-char *TNodeToStr(MNODE * mml_node, char *prefix, int indent)
-{
-  char *rv = NULL;
-  char *buffer = NULL;
-  U32 bln = 0;
-
-  if (mml_node) {
-    // make sure the prefix ends with ":"
-    char l_prefix[32];
-    l_prefix[0] = 0;
-    if (prefix && *prefix) {
-      size_t zln = strlen(prefix);
-      if (zln < 32) {
-        strcpy(l_prefix, prefix);
-        if (prefix[zln - 1] != ':')
-          strcat(l_prefix, ":");
-      }
-    }
-    // form the indentation string
-    char indent_str[128];
-    int ii = 0;
-    while (ii < indent && ii < 127)
-      indent_str[ii++] = ' ';
-    indent_str[ii] = 0;
-
-    char element[80];
-    char zzz[256];
-    FUSetPrefix(mml_node->src_tok, l_prefix, element);
-    sprintf(zzz, "%s<%s", indent_str, element);
-    buffer = AppendStr2HeapStr(buffer, bln, zzz);
-
-    ATTRIB_REC *rover = mml_node->attrib_list;
-    while (rover) {
-      sprintf(zzz, " %s=\"%s\"", rover->zattr_nom, rover->zattr_val);
-      buffer = AppendStr2HeapStr(buffer, bln, zzz);
-      rover = rover->next;
-    }
-
-    if (mml_node->p_chdata && mml_node->first_kid) {
-      TCI_ASSERT
-        (!"I don't MML will ever allow both chdata and children on the same node");
-      sprintf(zzz, " name=\"%s\">", mml_node->p_chdata);
-      buffer = AppendStr2HeapStr(buffer, bln, zzz);
-
-      buffer = AppendStr2HeapStr(buffer, bln, "\n");
-      MNODE *t_list = mml_node->first_kid;
-      while (t_list) {
-        char *tmp = TNodeToStr(t_list, l_prefix, indent + 2);
-        buffer = AppendStr2HeapStr(buffer, bln, tmp);
-        delete[] tmp;
-        t_list = t_list->next;
-      }
-      FUSetPrefix(mml_node->src_tok, l_prefix, element);
-      sprintf(zzz, "%s</%s>\n", indent_str, element);
-      buffer = AppendStr2HeapStr(buffer, bln, zzz);
-    } else if (mml_node->p_chdata) {
-      buffer = AppendStr2HeapStr(buffer, bln, ">");
-      buffer = AppendStr2HeapStr(buffer, bln, mml_node->p_chdata);
-      FUSetPrefix(mml_node->src_tok, l_prefix, element);
-      sprintf(zzz, "</%s>\n", element);
-      buffer = AppendStr2HeapStr(buffer, bln, zzz);
-    } else if (mml_node->first_kid) {
-      buffer = AppendStr2HeapStr(buffer, bln, ">\n");
-      MNODE *t_list = mml_node->first_kid;
-      while (t_list) {
-        char *tmp = TNodeToStr(t_list, l_prefix, indent + 2);
-        buffer = AppendStr2HeapStr(buffer, bln, tmp);
-        delete[] tmp;
-        t_list = t_list->next;
-      }
-      FUSetPrefix(mml_node->src_tok, l_prefix, element);
-      sprintf(zzz, "%s</%s>\n", indent_str, element);
-      buffer = AppendStr2HeapStr(buffer, bln, zzz);
-    } else {
-      if (!strcmp(mml_node->src_tok, "mspace")) {
-        buffer = AppendStr2HeapStr(buffer, bln, ">\n");
-      } else {
-        FUSetPrefix(mml_node->src_tok, l_prefix, element);
-        sprintf(zzz, "></%s>\n", element);
-        buffer = AppendStr2HeapStr(buffer, bln, zzz);
-      }
-    }
-  } else {
-    TCI_ASSERT(0);
-  }
-  if (buffer) {
-    size_t zln = strlen(buffer);
-    rv = new char[zln + 1];
-    strcpy(rv, buffer);
-    delete[] buffer;
-  }
-  return rv;
-}
 
 void FunctionToInfix(SEMANTICS_NODE * s_func, char *zop_str)
 {
@@ -1488,7 +1005,7 @@ int CountSymbols(const char *p_chdata, int &n_entities)
 }
 
 // May need to reverse bytes in the following 2 functions
-char *WideToASCII(const U16 * w_markup)
+char* WideToASCII(const U16 * w_markup)
 {
   char *rv = NULL;
   U32 zln = 0;
@@ -1512,7 +1029,7 @@ char *WideToASCII(const U16 * w_markup)
 
 // To emulate Mozilla, we convert our input ASCII MathML
 //  into a widechar string.
-U16 *ASCIItoWide(const char *ascii, int &zlen)
+U16* ASCIItoWide(const char *ascii, int &zlen)
 {
   U16 *rv = NULL;
   zlen = 0;
@@ -1561,7 +1078,7 @@ U16 *ASCIItoWide(const char *ascii, int &zlen)
 }
 
 
-char *DumpSNode(const SEMANTICS_NODE * s_node, int indent)
+char* DumpSNode(const SEMANTICS_NODE* s_node, int indent)
 {
   char *zheap_str = NULL;
   U32 buffer_ln = 0;
@@ -1866,7 +1383,7 @@ char *DumpSNode(const SEMANTICS_NODE * s_node, int indent)
   return zheap_str;
 }
 
-char *DumpSList(const SEMANTICS_NODE * s_list, int indent)
+char* DumpSList(const SEMANTICS_NODE * s_list, int indent)
 {
   char *zheap_str = NULL;
   U32 buffer_ln = 0;
@@ -1889,7 +1406,7 @@ char *DumpSList(const SEMANTICS_NODE * s_list, int indent)
 
 #include "Grammar.h"
 
-bool IsTrigArgFuncName(Grammar *gmr, const char * nom)
+bool IsTrigArgFuncName(Grammar* gmr, const char* nom)
 {
   U32 ID, subID;
   const char *p_data;

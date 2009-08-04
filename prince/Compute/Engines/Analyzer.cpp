@@ -27,6 +27,8 @@
 #include "DefStore.h"
 #include "PrefStor.h"
 #include "attriblist.cpp"
+#include "mnode.h"
+#include "strutils.h"
 
 #include <string.h>
 #include <ctype.h>
@@ -79,66 +81,66 @@ enum BaseType {
 
 
 
-  enum ExpType {
-    ET_POWER,
-    ET_PRIMES,
-    ET_INVERSE_INDICATOR,
-    ET_DECORATION,
-    ET_DIRECTION,
-    ET_CONJUGATE_INDICATOR,
-    ET_VARIABLE,
-    ET_NUMBER,
-    ET_EXPRESSION,
-    ET_TRANSPOSE_INDICATOR,
-    ET_HTRANSPOSE_INDICATOR,
-    ET_PARENED_PRIMES_COUNT
-  };
+enum ExpType {
+  ET_POWER,
+  ET_PRIMES,
+  ET_INVERSE_INDICATOR,
+  ET_DECORATION,
+  ET_DIRECTION,
+  ET_CONJUGATE_INDICATOR,
+  ET_VARIABLE,
+  ET_NUMBER,
+  ET_EXPRESSION,
+  ET_TRANSPOSE_INDICATOR,
+  ET_HTRANSPOSE_INDICATOR,
+  ET_PARENED_PRIMES_COUNT
+};
 
 
 
-  enum AccentType {
-    OT_NONE,
-    OT_HAT,
-    OT_CHECK,
-    OT_TILDE,
-    OT_ACUTE,
-    OT_GRAVE,
-    OT_BREVE,
-    OT_BAR,
-    OT_MATHRING,
-    OT_DOT,
-    OT_DDOT,
-    OT_DDDOT,
-    OT_DDDDOT,
-    OT_VEC
-  };
+enum AccentType {
+  OT_NONE,
+  OT_HAT,
+  OT_CHECK,
+  OT_TILDE,
+  OT_ACUTE,
+  OT_GRAVE,
+  OT_BREVE,
+  OT_BAR,
+  OT_MATHRING,
+  OT_DOT,
+  OT_DDOT,
+  OT_DDDOT,
+  OT_DDDDOT,
+  OT_VEC
+};
 
 
-  enum OpOrderIlk {
-    OOI_none,
-    OOI_lessthan,
-    OOI_lessorequal,
-    OOI_equal,
-    OOI_greaterthan,
-    OOI_greaterorequal,
-    OOI_element,
-    OOI_rightarrow
-  };
+enum OpOrderIlk {
+  OOI_none,
+  OOI_lessthan,
+  OOI_lessorequal,
+  OOI_equal,
+  OOI_greaterthan,
+  OOI_greaterorequal,
+  OOI_element,
+  OOI_rightarrow
+};
 
 
-  enum PrefixOpIlk {
-    POI_none,
-    POI_listop,  //gcd,lcm,max,min
-    POI_det,
-    POI_distribution,
-    POI_Dirac, // + Heaviside
-    POI_gradient,
-    POI_divergence,
-    POI_curl,
-    POI_Laplacian,
-    POI_integral,
-    POI_sum
-  };
+enum PrefixOpIlk {
+  POI_none,
+  POI_listop,  //gcd,lcm,max,min
+  POI_det,
+  POI_distribution,
+  POI_Dirac, // + Heaviside
+  POI_gradient,
+  POI_divergence,
+  POI_curl,
+  POI_Laplacian,
+  POI_integral,
+  POI_sum
+};
 
 
 struct DE_FUNC_REC
@@ -151,9 +153,9 @@ struct DE_FUNC_REC
 
 
 
-SEMANTICS_NODE* GetSemanticsList(MNODE * dMML_list, BUCKET_REC * parent_bucket, Analyzer* pAnalyzer);
+SEMANTICS_NODE* GetSemanticsList(MNODE* dMML_list, BUCKET_REC * parent_bucket, Analyzer* pAnalyzer);
 
-SEMANTICS_NODE* GetSemanticsList(MNODE * dMML_list,
+SEMANTICS_NODE* GetSemanticsList(MNODE* dMML_list,
                                  BUCKET_REC * parent_bucket,
                                  int mml_node_lim,
                                  bool isLHSofDef,
@@ -259,7 +261,7 @@ void GetCurrAttribValue(MNODE * mml_node, bool inherit,
                         char *targ_attr, char *buffer, int lim);
 
 
-MNODE *LocateOperator(MNODE * mml_list, OpIlk & op_ilk, int & advance);
+MNODE* LocateOperator(MNODE * mml_list, OpIlk & op_ilk, int & advance);
 int ChData2Unicodes(const char *p_chdata, U32 * unicodes, int n_unicodes, Analyzer* pAnalyzer);
 
 DE_FUNC_REC *LocateFuncRec(DE_FUNC_REC* f_list, const char* canon_name,
@@ -434,7 +436,7 @@ bool SetIMPLICITvars(MathServiceRequest & msr, MathResult & mr, Analyzer* pAnaly
 			
 
 
-Analyzer::Analyzer(Grammar * mml_grammar, PrefsStore * up_store)
+Analyzer::Analyzer(Grammar* mml_grammar, PrefsStore* up_store)
 {
   SetScrStr( NULL );
   mml_entities = mml_grammar;
@@ -1273,8 +1275,10 @@ void AnalyzeMROOT(MNODE * mml_mroot_node,
   snode->semantic_type = SEM_TYP_ROOT;
 }
 
-void AnalyzeMFENCED(MNODE * mml_mfenced_node,
-                              SEMANTICS_NODE * snode, int& nodes_done, Analyzer* pAnalyzer)
+void AnalyzeMFENCED(MNODE* mml_mfenced_node,
+                    SEMANTICS_NODE* snode, 
+                    int& nodes_done, 
+                    Analyzer* pAnalyzer)
 {
   nodes_done = 1;
   U32 l_unicode = '(';
@@ -2502,9 +2506,9 @@ BUCKET_REC* ArgBucketFromMROW(MNODE * mml_mrow, Analyzer* pAnalyzer)
   return rv;
 }
 
-BUCKET_REC* GetParenedArgs(MNODE * mml_mo, int& nodes_done, Analyzer* pAnalyzer)
+BUCKET_REC* GetParenedArgs(MNODE* mml_mo, int& nodes_done, Analyzer* pAnalyzer)
 {
-  BUCKET_REC *rv = NULL;
+  BUCKET_REC* rv = NULL;
   nodes_done = 0;
   int local_nodes_done = 0;
 
@@ -2530,7 +2534,7 @@ BUCKET_REC* GetParenedArgs(MNODE * mml_mo, int& nodes_done, Analyzer* pAnalyzer)
   }
 
   if (matched_parens) {
-    MNODE *arg_ptr = mml_mo->next;
+    MNODE* arg_ptr = mml_mo->next;
 
     // descend into an mrow here if necessary
     if (nodes_within_parens == 1) {
@@ -2556,11 +2560,12 @@ BUCKET_REC* GetParenedArgs(MNODE * mml_mo, int& nodes_done, Analyzer* pAnalyzer)
         }
       }
 
-      BUCKET_REC *new_a_rec = MakeBucketRec(MB_UNNAMED, NULL);
+      BUCKET_REC* new_a_rec = MakeBucketRec(MB_UNNAMED, NULL);
       rv = AppendBucketRec(rv, new_a_rec);
 
       SEMANTICS_NODE *s_arg =
         GetSemanticsList(arg_first_obj, new_a_rec, nodes_in_arg, false, pAnalyzer);
+      
       new_a_rec->first_child = s_arg;
 
       if (!done) {
@@ -2579,14 +2584,14 @@ BUCKET_REC* GetParenedArgs(MNODE * mml_mo, int& nodes_done, Analyzer* pAnalyzer)
   return rv;
 }
 
-BUCKET_REC* GetFencedArgs(MNODE * mml_fence, Analyzer* pAnalyzer)
+BUCKET_REC* GetFencedArgs(MNODE* mml_fence, Analyzer* pAnalyzer)
 {
-  BUCKET_REC *rv = NULL;
+  BUCKET_REC* rv = NULL;
 
   if (mml_fence && mml_fence->first_kid) {
-    MNODE *rover = mml_fence->first_kid;
+    MNODE* rover = mml_fence->first_kid;
     while (rover) {
-      BUCKET_REC *new_a_rec = MakeBucketRec(MB_UNNAMED, NULL);
+      BUCKET_REC* new_a_rec = MakeBucketRec(MB_UNNAMED, NULL);
       rv = AppendBucketRec(rv, new_a_rec);
 
       SEMANTICS_NODE *s_arg = GetSemanticsFromNode(rover, new_a_rec, pAnalyzer);
@@ -2692,31 +2697,32 @@ char* GetCanonicalIDforMathNode(MNODE * mml_node, Analyzer* pAnalyzer)
 //  Operators are located and their operands are translated
 //  and recorded as children of the generated semantic operator node.
 
-SEMANTICS_NODE* GetSemanticsList(MNODE * dMML_list,
-                                 BUCKET_REC * parent_bucket, Analyzer* pAnalyzer)
+SEMANTICS_NODE* GetSemanticsList(MNODE* dMML_list,
+                                 BUCKET_REC* parent_bucket, 
+                                 Analyzer* pAnalyzer)
 {
-  TCI_ASSERT(CheckLinks(dMML_list));
   return GetSemanticsList(dMML_list, parent_bucket, ALL_NODES, false, pAnalyzer);
 }
 
-SEMANTICS_NODE* GetSemanticsList(MNODE * dMML_list,
-                                 BUCKET_REC * parent_bucket,
+SEMANTICS_NODE* GetSemanticsList(MNODE* dMML_list,
+                                 BUCKET_REC* parent_bucket,
                                  int mml_node_lim,
                                  bool isLHSofDef,
                                  Analyzer* pAnalyzer)
 {
   TCI_ASSERT(CheckLinks(dMML_list));
-  SEMANTICS_NODE *head = NULL;
-  SEMANTICS_NODE *tail;
+
+  SEMANTICS_NODE* head = NULL;
+  SEMANTICS_NODE* tail;
 
   int mml_nodes_done = 0;
-  MNODE *rover = dMML_list;
+  MNODE* rover = dMML_list;
   while (rover && mml_nodes_done < mml_node_lim) {
     SEMANTICS_NODE* new_node = NULL;
     // Look ahead in the MML list for an operator.
     OpIlk op_ilk;
     int advance;
-    MNODE *mo = LocateOperator(rover, op_ilk, advance);
+    MNODE* mo = LocateOperator(rover, op_ilk, advance);
 
     int mml_nodes_remaining = mml_node_lim - mml_nodes_done;
     if (mo && mml_nodes_remaining > 1) {
@@ -6747,7 +6753,7 @@ SEMANTICS_NODE* GetDefSList(MNODE * dMML_list,
 // Utilities
 
 
-MNODE* LocateOperator(MNODE * mml_list, OpIlk &op_ilk, int & advance)
+MNODE* LocateOperator(MNODE* mml_list, OpIlk &op_ilk, int& advance)
 {
   MNODE *rv = NULL;
   op_ilk = OP_none;
@@ -6756,10 +6762,11 @@ MNODE* LocateOperator(MNODE * mml_list, OpIlk &op_ilk, int & advance)
   MNODE *rover = mml_list;
   while (rover) {
     const char *mml_element = rover->src_tok;
+
     size_t ln = strlen(mml_element);
 
     bool embellished = true;
-    MNODE *key = NULL;
+    MNODE* key = NULL;
     switch (ln) {
     case 2:
       if (!strcmp(mml_element, "mi")) {
@@ -6818,7 +6825,7 @@ MNODE* LocateOperator(MNODE * mml_list, OpIlk &op_ilk, int & advance)
            key -> attrib_list = form;
 
 		} else {
-            const char *attr_val = GetATTRIBvalue(key->attrib_list, "form");
+            const char* attr_val = GetATTRIBvalue(key->attrib_list, "form");
             if (attr_val)
               op_ilk = StringToOpIlk(attr_val);
             else
