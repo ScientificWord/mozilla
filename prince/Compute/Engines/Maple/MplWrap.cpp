@@ -18,6 +18,7 @@
 #include "eAnalyzer.h"
 #include "Grammar.h"
 #include "nsILocalFile.h"
+#include "strutils.h"
 
 enum MaplePackages
 {

@@ -25,6 +25,7 @@
 
 #include "Mpl2Tree.h"
 #include "CmpTypes.h"
+#include "strutils.h"
 #include <string.h>
 #include <ctype.h>
 

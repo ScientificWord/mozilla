@@ -9,12 +9,12 @@
 #include "nsCOMPtr.h"
 #include "nsILocalFile.h"
 
-typedef struct tagENG_ATTR_REC
+struct ENG_ATTR_REC
 {
-  tagENG_ATTR_REC *next;
+  ENG_ATTR_REC* next;
   int ID;
-  char *value;
-} ENG_ATTR_REC;
+  char* value;
+};
 
 class MathServiceRequest;
 class MathResult;
@@ -37,7 +37,7 @@ public:
 
   void Execute(MathServiceRequest & msr, MathResult & mr);
 
-  bool SetEngineAttr(int attr_ID, int i_val, const char *s_val);
+  bool SetEngineAttr(int attr_ID, int i_val, const char* s_val);
   const char *GetEngineAttr(int attr_ID);
 
 
