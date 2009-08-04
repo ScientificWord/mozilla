@@ -60,7 +60,7 @@ void FileLineToHashTables(const char *fline, HASH_TABLE * t_node, Grammar*);
 void ExtractIDs(const char *num_str, U32 & rec_ID, U32 & rec_subID, Grammar* grammar);
 
 
-U32 HashzNom(const char *znom)
+U32 HashzNom(const char* znom)
 {
   U32 rv = 0L;
 
@@ -537,9 +537,9 @@ bool Grammar::GetRecordFromIDs(const char *zcurr_env, U32 uID, U32 usubID,
   return rv;
 }
 
-bool Grammar::GetRecordFromName(const char *zcurr_env, const char *token,
-                                    size_t ln, U32 & uID, U32 & usubID,
-                                    const char **d_ztemplate)
+bool Grammar::GetRecordFromName(const char* zcurr_env, const char* token,
+                                    size_t ln, U32& uID, U32& usubID,
+                                    const char** d_ztemplate)
 {
   bool rv = false;
   if ( HashedOnUIDs() ) {
@@ -554,20 +554,20 @@ bool Grammar::GetRecordFromName(const char *zcurr_env, const char *token,
   } else {
     return rv;
   }
-  HASH_TABLE *start_table = LastTableHit() ? LastTableHit() : HashTables() -> next;
-  HASH_TABLE *curr_table = start_table;
+  HASH_TABLE* start_table = LastTableHit() ? LastTableHit() : HashTables() -> next;
+  HASH_TABLE* curr_table = start_table;
 
   U32 hash = HashzNom(ztoken);
 
   do {                          // loop thru the hash tables
     if (EnvOK(zcurr_env, curr_table)) {
-      U32 slot_limit = curr_table->slot_count;
+      U32 slot_limit = curr_table -> slot_count;
       if (slot_limit) {
         U32 curr_slot = hash % slot_limit;
-        HASH_REC *h_array = curr_table->records;
+        HASH_REC* h_array = curr_table->records;
 
         do {                    // loop down this array
-          const char *zcurr_nom = h_array[curr_slot].zname;
+          const char* zcurr_nom = h_array[curr_slot].zname;
 
           if (!zcurr_nom) {     // lookup failed, empty table entry
             break;

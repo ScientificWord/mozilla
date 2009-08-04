@@ -31,6 +31,7 @@
 #include "DefStore.h"
 #include "PrefStor.h"
 #include "attriblist.h"
+#include "strutils.h"
 #include <string.h>
 
 // IDs and Templates for MathML generation.

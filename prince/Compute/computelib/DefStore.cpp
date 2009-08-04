@@ -2,6 +2,7 @@
 
 #include "DefStore.h"
 #include "CmpTypes.h"
+#include "strutils.h"
 #include <string.h>
 
 DefStore::DefStore(DefStore * parent_store, U32 client_handle) :
