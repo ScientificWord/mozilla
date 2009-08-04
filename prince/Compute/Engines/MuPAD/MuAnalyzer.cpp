@@ -21,6 +21,7 @@
 
 #include "MuAnalyzer.h"
 #include "MuWrap.h"
+#include "strutils.h"
 #include <string.h>
 #include <ctype.h>
 

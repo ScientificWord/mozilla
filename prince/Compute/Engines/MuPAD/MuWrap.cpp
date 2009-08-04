@@ -30,6 +30,7 @@
 #include "nsStringAPI.h"
 #include "nsILocalFile.h"
 #include "nsComponentManagerUtils.h"
+#include "strutils.h"
 
 MuPADEngine *mupd_eng = NULL;
 
