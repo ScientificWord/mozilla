@@ -15,7 +15,7 @@ struct CONTEXT_ID;
 class Grammar
 {
 public:
-  Grammar(FILE * grammar_file, bool key_on_uids);
+  Grammar(FILE* grammar_file, bool key_on_uids);
   ~Grammar();
 
   bool GetRecordFromIDs(const char*  zcurr_env, U32 uID, U32 usubID,
@@ -31,7 +31,7 @@ public:
 
   
    
-   
+  
   
   HASH_TABLE* LastTableHit() const { return m_last_table_hit;}
   void SetLastTableHit(HASH_TABLE* ht) { m_last_table_hit = ht; }

@@ -44,6 +44,7 @@
 #include "nsComponentManagerUtils.h"
 #include "nsStringAPI.h"
 #include "attriblist.h"
+#include "strutils.h"
 
 
 void AppendSubPath( nsILocalFile * file, const char * asciiPath )
@@ -68,8 +69,10 @@ void AppendSubPath( nsILocalFile * file, const char * asciiPath )
   }
 }
       
-CompEngine::CompEngine(Grammar * ID_dBase, Grammar * NOM_dBase,
-                       Grammar * mathml_grammar, PrefsStore * up_store)
+CompEngine::CompEngine(Grammar* ID_dBase, 
+                       Grammar* NOM_dBase,
+                       Grammar* mathml_grammar, 
+                       PrefsStore * up_store)
 {
   id_dBase = ID_dBase;
   nom_dBase = NOM_dBase;
@@ -721,11 +724,11 @@ bool CompEngine::GetdBaseIDRecord(const char *bin_name, U32 ID, U32 subID,
   return rv;
 }
 
-const char *CompEngine::GetEngineAttr(int targ_ID)
+const char* CompEngine::GetEngineAttr(int targ_ID)
 {
   const char *rv = NULL;
 
-  ENG_ATTR_REC *a_rover = engine_attrs;
+  ENG_ATTR_REC* a_rover = engine_attrs;
   while (a_rover) {
     if (a_rover->ID == targ_ID) {
       rv = a_rover->value;
@@ -1557,9 +1560,10 @@ SEMANTICS_NODE *CompEngine::RemovePGroup(SEMANTICS_NODE * s_node)
   return rv;
 }
 
-bool CompEngine::AdjustSemTree(MathServiceRequest & msr,
-                                   SEMANTICS_NODE * s_tree,
-                                   U32 cmd_ID, int& error_code)
+bool CompEngine::AdjustSemTree(MathServiceRequest& msr,
+                               SEMANTICS_NODE* s_tree,
+                               U32 cmd_ID, 
+                               int& error_code)
 {
   bool rv = false;
   error_code = 0;
@@ -1571,6 +1575,7 @@ bool CompEngine::AdjustSemTree(MathServiceRequest & msr,
     BUCKET_REC *parent_bucket = NULL;
 
     SEMANTICS_NODE *s_rover = s_tree;
+
     if (s_rover->semantic_type == SEM_TYP_MATH_CONTAINER) {
       if (s_rover->bucket_list) {
         parent_bucket = s_rover->bucket_list;
@@ -1581,6 +1586,7 @@ bool CompEngine::AdjustSemTree(MathServiceRequest & msr,
         return false;
       }
     }
+
     if (s_rover->semantic_type == SEM_TYP_PRECEDENCE_GROUP
         && !s_rover->next) {
       if (s_rover->bucket_list) {
