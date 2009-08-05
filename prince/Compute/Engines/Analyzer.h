@@ -18,7 +18,6 @@ class MML2Tree;
 
 struct DE_FUNC_REC;
 
-enum OpMatrixIntervalType;
 enum IdentIlk;
 enum BaseType;
 enum ExpType;
