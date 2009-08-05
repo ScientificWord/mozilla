@@ -12,14 +12,15 @@ public:
   MML2Tree();
   ~MML2Tree();
 
-  MNODE *MMLstr2Tree(const char *src);
+  MNODE* MMLstr2Tree(const char* src);
 
 private:
 
-    MNODE * GetElementList(const char *z_src, int &advance, MNODE * parent);
+  MNODE* GetElementList(const char* z_src, int& advance, MNODE* parent);
 
   int GetElementHeader(const char *p_header,
                        MNODE * new_node, int &has_no_contents);
+
   MNODE *GetElement(const char *z_src, int &advance);
 
   ATTRIB_REC *GetAttribute(const char *p_attr, int &bytesdone);

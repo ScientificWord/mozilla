@@ -465,35 +465,6 @@ const char *GetMarkupFromID(MIC2MMLNODE_REC * node_IDs_list,
   return NULL;
 }
 
-U32 ASCII2U32(const char* ptr, int place_val)
-{
-  U32 unicode = 0;
-
-  if (place_val == 10) {
-    while (*ptr) {
-      if (isdigit(*ptr))
-        unicode = place_val * unicode + *ptr - '0';
-      else
-        break;
-      ptr++;
-    }
-  } else if (place_val == 16) {
-    while (*ptr) {
-      if (isdigit(*ptr))
-        unicode = place_val * unicode + *ptr - '0';
-      else if (*ptr >= 'A' && *ptr <= 'F')
-        unicode = place_val * unicode + *ptr - 'A' + 10;
-      else if (*ptr >= 'a' && *ptr <= 'f')
-        unicode = place_val * unicode + *ptr - 'a' + 10;
-      else
-        break;
-      ptr++;
-    }
-  }
-
-  return unicode;
-}
-
 
 
 U32 NumericEntity2U32(const char* p_entity)

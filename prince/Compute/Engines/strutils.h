@@ -9,6 +9,8 @@ char* AppendStr2HeapStr(char* zheap_str,
 
 void StrReplace(char* line, size_t zln, char* tok, const char* sub);
 void StrFromInt(int val, char* buffer);
+U32 ASCII2U32(const char *p_digits, int place_val);
+
 
 
 #endif

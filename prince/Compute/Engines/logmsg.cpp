@@ -2,6 +2,8 @@
 
 #include "cmptypes.h"
 #include <cstring>
+#include <stdio.h>
+
 
 
 // message IDs and strings for development purposes only.
