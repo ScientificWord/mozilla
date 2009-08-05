@@ -142,7 +142,6 @@ bool IsTrigArgFuncName(Grammar* mml_entities, const char* f_nom);
 bool IsReservedFuncName(Grammar* mml_entities, const char* f_nom);
 
 
-U32 ASCII2U32(const char *p_digits, int place_val);
 U32 NumericEntity2U32(const char *p_entity);
 int CountSymbols(const char *p_chdata, int &n_entities);
 

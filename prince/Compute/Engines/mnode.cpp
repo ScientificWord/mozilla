@@ -65,9 +65,9 @@ void DisposeTNode(MNODE * del)
   delete del;
 }
 
-void DisposeTList(MNODE * t_list)
+void DisposeTList(MNODE* t_list)
 {
-  MNODE *del;
+  MNODE* del;
   while (t_list) {
     del = t_list;
     t_list = t_list->next;
@@ -75,14 +75,14 @@ void DisposeTList(MNODE * t_list)
   }
 }
 
-MNODE *JoinTLists(MNODE * list, MNODE * newtail)
+MNODE* JoinTLists(MNODE* list, MNODE* newtail)
 {
   MNODE *rv;
   if (list) {
     rv = list;
-    while (list->next)
-      list = list->next;
-    list->next = newtail;
+    while (list -> next)
+      list = list -> next;
+    list -> next = newtail;
     if (newtail)
       newtail->prev = list;
   } else {
@@ -98,19 +98,19 @@ MNODE *JoinTLists(MNODE * list, MNODE * newtail)
 // Note that we can't delink the first node of a first
 //  level list here.
 
-bool DelinkTNode(MNODE * elem)
+bool DelinkTNode(MNODE* elem)
 {
   bool rv = true;           // assume all will be OK.
 
   // remove elem from it's present list:  prev <-> elem <-> next
-  MNODE *el_prev = elem->prev;
+  MNODE* el_prev = elem->prev;
   if (el_prev) {                // elem has a prev
     el_prev->next = elem->next;
     if (elem->next) {
       elem->next->prev = el_prev;
     }
   } else {                      // elem may head a sublist
-    MNODE *el_owner = elem->parent;
+    MNODE* el_owner = elem->parent;
     if (el_owner) {
       if (el_owner->first_kid == elem) {
         el_owner->first_kid = elem->next;
@@ -135,15 +135,17 @@ bool DelinkTNode(MNODE * elem)
   return rv;
 }
 
-void DetachTList(MNODE * elem)
+
+
+void DetachTList(MNODE* elem)
 {
-  MNODE *prev_node = elem->prev;
+  MNODE* prev_node = elem->prev;
   if (prev_node) {              // elem has a prev
     // remove elem from it's present list:  prev <-> elem
     prev_node->next = NULL;
     elem->prev = NULL;
   } else {                      // elem may head a sublist
-    MNODE *owner_node = elem->parent;
+    MNODE* owner_node = elem->parent;
     if (owner_node) {
       if (owner_node->first_kid == elem) {
         owner_node->first_kid = NULL;
@@ -157,10 +159,10 @@ void DetachTList(MNODE * elem)
 }
 
 // there is a question about whether mfenced should be in this list
-bool HasPositionalChildren(MNODE * mml_node)
+bool HasPositionalChildren(MNODE* mml_node)
 {
   if (mml_node) {
-    const char* p_elem = mml_node->src_tok;
+    const char* p_elem = mml_node -> src_tok;
     if (!strcmp(p_elem, "mfrac")
         || !strcmp(p_elem, "msub")
         || !strcmp(p_elem, "msup")
@@ -228,7 +230,7 @@ void FUSetPrefix(const char* src_tok, char* prefix, char* buffer)
 {
   buffer[0] = 0;
   if (src_tok) {
-    const char *token_ptr = strchr(src_tok, ':');
+    const char* token_ptr = strchr(src_tok, ':');
     if (token_ptr)
       token_ptr++;
     else
@@ -274,7 +276,7 @@ char* TNodeToStr(MNODE * mml_node, char *prefix, int indent)
     sprintf(zzz, "%s<%s", indent_str, element);
     buffer = AppendStr2HeapStr(buffer, bln, zzz);
 
-    ATTRIB_REC *rover = mml_node->attrib_list;
+    ATTRIB_REC* rover = mml_node->attrib_list;
     while (rover) {
       sprintf(zzz, " %s=\"%s\"", rover->zattr_nom, rover->zattr_val);
       buffer = AppendStr2HeapStr(buffer, bln, zzz);
@@ -372,5 +374,371 @@ bool CheckLinks(MNODE* n)
     
    return true; 
 }
+
+
+void GetCurrAttribValue(MNODE* mml_node, 
+                       bool inherit,
+                       char* targ_attr_name, 
+                       char *buffer, int lim)
+{
+  // Check the current node for the target attribute
+  const char *attr_val = GetATTRIBvalue(mml_node->attrib_list, targ_attr_name);
+
+  // Ascend the parent tree if necessary
+  if (!attr_val && inherit) {
+    MNODE *rover = mml_node->parent;
+    while (rover && !attr_val) {
+      if (!strcmp(rover->src_tok, "mstyle")) {
+        attr_val = GetATTRIBvalue(rover->attrib_list, targ_attr_name);
+      }
+      rover = rover->parent;
+    }
+  }
+
+  if (attr_val) {
+    size_t curr_ln = strlen(buffer);
+    size_t inc_ln = strlen(attr_val);
+    if (curr_ln + inc_ln < lim)
+      strcat(buffer, attr_val);
+    else
+      TCI_ASSERT(0);
+  }
+}
+
+
+void SemanticAttribs2Buffer(char *buffer, MNODE * mml_node, int lim)
+{
+  TCI_ASSERT(CheckLinks(mml_node));
+  GetCurrAttribValue(mml_node, true, "mathvariant", buffer, lim);
+  // May need to add more calls here
+}
+
+
+bool IsDDIFFOP(MNODE* mml_msub_node)
+{
+  bool rv = false;
+
+  if (mml_msub_node && mml_msub_node->first_kid) {
+    MNODE *base = mml_msub_node->first_kid;
+    const char *base_elem = base->src_tok;
+    const char *base_data = base->p_chdata;
+    if (!strcmp(base_elem, "mo")
+        && !strcmp(base_data, "&#x2145;"))  // &DD;
+      rv = true;
+  } else
+    TCI_ASSERT(0);
+
+  return rv;
+}
+
+bool IsDIFFOP(MNODE* mml_frac_node,
+              MNODE** m_num_operand, 
+              MNODE** m_den_var_expr)
+{
+  bool rv = false;
+  *m_num_operand = NULL;
+  *m_den_var_expr = NULL;
+
+  if (mml_frac_node) {
+    MNODE *num = mml_frac_node->first_kid;
+    if (num) {
+      MNODE *den = num->next;
+      if (den) {
+
+        if (!strcmp(num->src_tok, "mrow")) {  // dy OR d expr
+          num = num->first_kid;
+          *m_num_operand = num->next;
+        }
+        const char *num_elem = num->src_tok;  // mo OR msup
+        const char *num_data = num->p_chdata; // d OR d^2
+
+        if (!strcmp(num_elem, "msup")) {  // d^2
+          MNODE *num_base = num->first_kid;
+          num_elem = num_base->src_tok; // mo
+          num_data = num_base->p_chdata;  // d
+        }
+
+        if (strcmp(num_elem, "mo")) // must be a diff op here
+          return false;
+
+        int diff_symbol = 0;
+        if (!strcmp(num_data, "&#x2146;"))  // &dd;
+          diff_symbol = 1;
+        else if (!strcmp(num_data, "&#x2202;")) // &PartialD;
+          diff_symbol = 2;
+
+        if (diff_symbol) {
+          const char *den_elem = den->src_tok;
+          if (!strcmp(den_elem, "mrow")) {  // d * x
+            MNODE *den1 = den->first_kid;
+            if (den1) {
+              // may have a product in the denom - dx^2 * dy^5
+              if (!strcmp(den1->src_tok, "mrow"))
+                den1 = den1->first_kid;
+
+              const char *den1_elem = den1->src_tok;  // mo
+              const char *den1_data = den1->p_chdata; // &dd;
+
+              if (strcmp(den1_elem, "mo"))  // diff op
+                return false;
+
+              int diff1_symbol = 0;
+              if (!strcmp(den1_data, "&#x2146;")) // &dd;
+                diff1_symbol = 1;
+              else if (!strcmp(den1_data, "&#x2202;"))  // &PartialD;
+                diff1_symbol = 2;
+
+              if (diff_symbol == diff1_symbol) {
+                MNODE *den2 = den1->next;
+                const char *den2_elem = den2->src_tok;
+                if (!strcmp(den2_elem, "mi")  // dx{^2}
+                    || !strcmp(den2_elem, "msup")) {
+                  rv = true;
+                  *m_den_var_expr = den;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return rv;
+}
+
+
+bool IsBesselFunc(MNODE * mml_msub_node)
+{
+  bool rv = false;
+
+  if (mml_msub_node && mml_msub_node->first_kid) {
+    MNODE *base = mml_msub_node->first_kid;
+    MNODE *sub = base->next;
+    if (sub) {
+      const char *base_elem = base->src_tok;
+      if (!strcmp(base_elem, "mi")) {
+        const char *ptr = base->p_chdata;
+        if (ptr && !strncmp(ptr, "Bessel", 6)) {
+          rv = true;
+        }
+      }
+    }
+  }
+
+  return rv;
+}
+
+
+bool IsApplyFunction(MNODE* next_elem)
+{
+  bool rv = false;
+
+  const char *next_elem_nom = next_elem -> src_tok;
+  if (!strcmp(next_elem_nom, "mo")) {
+    const char *ptr = strstr(next_elem -> p_chdata, "&#x");
+    if (ptr) {
+      U32 unicode = ASCII2U32(ptr + 3, 16);
+      if (unicode == 0x2061)    // &Applyfunction;
+        rv = true;
+    }
+  }
+  return rv;
+}
+
+
+// Need to complete the following - find an unused var.
+
+void ChooseIndVar(MNODE* dMML_tree, char *buffer)
+{
+  strcpy(buffer, "t");
+}
+
+// Locate the "dx".
+// Note that the "mrow" passed into this function
+//  may be the numerator of a fractional integrand.
+// The function isn't recursive - I think the "dx"
+//   should be the entire numerator as in "dx/x" or
+//   should be a factor of the numerator as in "2xdx/sin(x)"
+
+MNODE* Find_dx(MNODE * num_mrow, bool & is_nested)
+{
+  MNODE *rv = NULL;
+  is_nested = false;
+
+  if (num_mrow && !strcmp(num_mrow->src_tok, "mrow")) {
+    MNODE *m_child = num_mrow->first_kid;
+    if (m_child && !strcmp(m_child->src_tok, "mo")
+        && !strcmp(m_child->p_chdata, "&#x2146;")) {  // "d"
+      rv = num_mrow;
+    } else if (m_child) {
+      MNODE *m_rover = m_child;
+      while (m_rover) {
+        if (!strcmp(m_rover->src_tok, "mrow")) {
+          MNODE *m_child2 = m_rover->first_kid;
+          if (m_child2 && !strcmp(m_child2->src_tok, "mo")
+              && !strcmp(m_child2->p_chdata, "&#x2146;")) { // "d"
+            rv = m_rover;
+            is_nested = true;
+            break;
+          }
+        }
+        m_rover = m_rover->next;
+      }
+    } else
+      TCI_ASSERT(0);
+  } else
+    TCI_ASSERT(0);
+
+  return rv;
+}
+
+
+bool IsUnitsFraction(MNODE* mml_frac)
+{
+  bool num_OK = false;
+  bool den_OK = false;
+
+  if (mml_frac && !strcmp(mml_frac->src_tok, "mfrac")) {
+    MNODE *rover = mml_frac->first_kid;
+    if (rover) {
+      if (!strcmp(rover->src_tok, "mi")) {
+        char zclass[256];
+        zclass[0] = 0;
+        GetCurrAttribValue(rover, false, "class", zclass, 256);
+        if (!strcmp(zclass, "msi_unit"))
+          num_OK = true;
+      }
+      rover = rover->next;
+      if (rover && !strcmp(rover->src_tok, "mi")) {
+        char zclass[256];
+        zclass[0] = 0;
+        GetCurrAttribValue(rover, false, "class", zclass, 256);
+        if (!strcmp(zclass, "msi_unit"))
+          den_OK = true;
+      }
+    }
+  }
+
+  return num_OK && den_OK;
+}
+
+bool IsPositionalChild(MNODE* mml_node)
+{
+  MNODE* the_parent = mml_node->parent;
+  if (!the_parent && mml_node->prev) {
+    MNODE* rover = mml_node->prev;
+    while (rover->prev)
+      rover = rover->prev;
+    the_parent = rover->parent;
+  }
+
+  return HasPositionalChildren(the_parent);
+}
+
+
+
+// Some subscripted fences are intrepreted as "subs".
+bool IsSUBSTITUTION(MNODE * mml_msub_node)
+{
+  bool rv = false;
+
+  if (mml_msub_node) {
+    MNODE *base = mml_msub_node->first_kid;
+    if (base) {
+      MNODE *sub = base->next;
+      if (sub) {
+        const char *base_elem = base->src_tok;
+        if (!strcmp(base_elem, "mfenced")) {
+          char zopen_attr_val[32];
+          zopen_attr_val[0] = 0;
+          GetCurrAttribValue(base, false, "open", zopen_attr_val, 256);
+
+          char zclose_attr_val[32];
+          zclose_attr_val[0] = 0;
+          GetCurrAttribValue(base, false, "close", zclose_attr_val, 256);
+
+          if (zopen_attr_val[0] == '[' && zclose_attr_val[0] == ']')
+            rv = true;
+          if (zopen_attr_val[0] == 'I' && zclose_attr_val[0] == ']')
+            rv = true;
+          if (zopen_attr_val[0] == 'I' && zclose_attr_val[0] == '|')
+            rv = true;
+        }
+      }
+    }
+  }
+
+  return rv;
+}
+
+bool IsUSunit(const char *ptr)
+{
+  return false;
+}
+
+bool IsLaplacian(MNODE* op_node)
+{
+  bool rv = false;
+
+  if (op_node && op_node->p_chdata) {
+    const char *ptr = strstr(op_node->p_chdata, "&#x");
+    if (ptr) {
+      U32 unicode = ASCII2U32(ptr + 3, 16);
+      if (unicode == 0x2207) {  // nabla
+        MNODE *sup = op_node->next;
+        if (sup && sup->p_chdata && !strcmp(sup->p_chdata, "2"))
+          rv = true;
+      }
+    }
+  }
+  return rv;
+}
+
+
+// Function to decide if an operator may take matrix args
+//  or interval args
+
+OpMatrixIntervalType GetOpType(MNODE * mo)
+{
+  OpMatrixIntervalType rv = OMI_none;
+
+  if (mo && mo->p_chdata) {
+    const char *ptr = strstr(mo->p_chdata, "&#x");
+    if (ptr) {
+      U32 unicode = ASCII2U32(ptr + 3, 16);
+      if (unicode == 0x2212     // &minus;
+          || unicode == 0xd7    // &times;
+          || unicode == 0x22c5) { // DOT PRODUCT
+        rv = OMI_matrix;
+      } else if (unicode == 0x2208  // &elem;
+                 || unicode == 0x220a  // &elem;
+                 || unicode == 0x2229  // &cap;
+                 || unicode == 0x222a) {  // &cup;
+        rv = OMI_interval;
+      }
+    } else {
+      size_t zln = strlen(mo->p_chdata);
+      if (zln == 1) {
+        char ch = mo->p_chdata[0];
+        if (ch == '+')
+          rv = OMI_matrix;
+      }
+    }
+  }
+
+  return rv;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 

@@ -30,7 +30,7 @@ x
    that provides some access functions thru its interface.
 
   All nodes in the output tree are of one type (struct MNODE)
-  defined in fltutils.h.
+  defined in mnode.h.
   FltUtils.cpp provides a diagnostic function that dumps
   the output tree to a file - DumpTList( tree );
 */
@@ -68,14 +68,15 @@ MNODE *MML2Tree::MMLstr2Tree(const char *src)
   return rv;
 }
 
-MNODE *MML2Tree::GetElementList(const char *z_src,
-                                int &advance, MNODE * parent)
+MNODE* MML2Tree::GetElementList(const char* z_src,
+                                int& advance, 
+                                MNODE * parent)
 {
-  MNODE *rv = NULL;
-  MNODE *tail;
+  MNODE* rv = NULL;
+  MNODE* tail;
 
   int local_advance = 0;
-  const char *needle = z_src;
+  const char* needle = z_src;
 
   // loop thru consecutive elements   <mrow>..</mrow>  <mstyle>..</mstyle> etc.
   while (1) {
@@ -92,10 +93,10 @@ MNODE *MML2Tree::GetElementList(const char *z_src,
         if (!VerifyElementEnder(parent, needle + 1))
           TCI_ASSERT(0);
         break;
-      } else {                  // we're at the start of 
-        // one of the siblings in the current list
+      } else {                  
+        // we're at the start of one of the siblings in the current list
         int len_element = 0;
-        MNODE *new_node = GetElement(needle, len_element);
+        MNODE* new_node = GetElement(needle, len_element);
         new_node->parent = parent;
         local_advance += len_element;
         needle += len_element;
@@ -117,12 +118,12 @@ MNODE *MML2Tree::GetElementList(const char *z_src,
   return rv;
 }
 
-MNODE *MML2Tree::GetElement(const char *z_src, int &advance)
+MNODE* MML2Tree::GetElement(const char* z_src, int& advance)
 {
-  MNODE *rv = NULL;
+  MNODE* rv = NULL;
 
   int local_advance = 0;
-  const char *needle = z_src;
+  const char* needle = z_src;
 
   if (*needle == '<') {
     rv = MakeTNode(z_src - start_ptr, 0, src_line_number);
@@ -217,17 +218,18 @@ MNODE *MML2Tree::GetElement(const char *z_src, int &advance)
   return rv;
 }
 
-int MML2Tree::GetElementHeader(const char *p_header,
-                               MNODE * new_node, int &is_empty)
+int MML2Tree::GetElementHeader(const char* p_header,
+                               MNODE* new_node, 
+                               int& is_empty)
 {
   is_empty = 0;
 
   TCI_ASSERT(*p_header == '<');
   TCI_ASSERT(*(p_header + 1) != '/');
 
-  const char *p_nom_left_delim = p_header;
+  const char* p_nom_left_delim = p_header;
 
-  const char *needle = p_header + 1;
+  const char* needle = p_header + 1;
   while (isalpha(*needle))
     needle++;
 
@@ -247,9 +249,10 @@ int MML2Tree::GetElementHeader(const char *p_header,
   } else {
     TCI_ASSERT(0);
   }
+  
   // handle attributes
-  ATTRIB_REC *a_list = NULL;
-  ATTRIB_REC *tail;
+  ATTRIB_REC* a_list = NULL;
+  ATTRIB_REC* tail;
 
   while (1) {
     while (*needle && *needle <= ' ') {
@@ -260,7 +263,7 @@ int MML2Tree::GetElementHeader(const char *p_header,
 
     if (isalpha(*needle)) {
       int bytesdone = 0;
-      ATTRIB_REC *new_attr = GetAttribute(needle, bytesdone);
+      ATTRIB_REC* new_attr = GetAttribute(needle, bytesdone);
       needle += bytesdone;
 
       if (new_attr) {
@@ -292,14 +295,15 @@ int MML2Tree::GetElementHeader(const char *p_header,
   return needle - p_header;
 }
 
-ATTRIB_REC *MML2Tree::GetAttribute(const char *p_attr, int &bytesdone)
+
+ATTRIB_REC* MML2Tree::GetAttribute(const char* p_attr, int& bytesdone)
 {
   ATTRIB_REC *rv = NULL;
 
   char attrib_name[32];
   char attrib_value[256];
 
-  const char *needle = p_attr;
+  const char* needle = p_attr;
   int di = 0;
   while (isalpha(*needle)) {
     attrib_name[di++] = *needle;
@@ -326,10 +330,11 @@ ATTRIB_REC *MML2Tree::GetAttribute(const char *p_attr, int &bytesdone)
   return rv;
 }
 
+
 // "...<mml:mrow>......</mml:mrow>..."
 // needle =            ^ 
 
-int MML2Tree::VerifyElementEnder(MNODE * mml_element, const char *needle)
+int MML2Tree::VerifyElementEnder(MNODE* mml_element, const char* needle)
 {
   int rv = 1;                   // assume ending token OK
 
