@@ -1128,7 +1128,7 @@ static void DumpArbitraryHelp()
 static void
 DumpHelp()
 {
-  printf("Usage: %s [ options ... ] [URL]\n"
+  printf("Usage: %s [ options ... ]\n"
          "       where options include:\n\n", gArgv[0]);
 
 #ifdef MOZ_X11
@@ -1144,18 +1144,15 @@ DumpHelp()
          "\nMozilla options\n");
 #endif
 
-  printf("\t-height <value>\t\tSet height of startup window to <value>.\n"
-         "\t-h or -help\t\tPrint this message.\n"
-         "\t-width <value>\t\tSet width of startup window to <value>.\n"
-         "\t-v or -version\t\tPrint %s version.\n"
-         "\t-P <profile>\t\tStart with <profile>.\n"
-         "\t-ProfileManager\t\tStart with ProfileManager.\n"
-         "\t-no-remote\t\tOpen new instance, not a new window in running instance.\n"
-         "\t-UILocale <locale>\t\tStart with <locale> resources as UI Locale.\n"
-         "\t-safe-mode\t\tDisables extensions and themes for this session.\n", gAppData->name);
+  printf("\t-h or -help        Print this message.\n"
+         "\t-v or -version     Print %s version.\n"
+         "\t-P <profile>       Start with <profile>.\n"
+         "\t-ProfileManager    Start with ProfileManager.\n"
+         "\t-UILocale <locale> Start with <locale> resources as UI Locale.\n"
+         "\t-safe-mode         Disables extensions and themes for this session.\n", gAppData->name);
 
 #if defined(XP_WIN) || defined(XP_OS2)
-  printf("\t-console\t\tStart %s with a debugging console.\n", gAppData->name);
+  printf("\t-console           Start %s with a debugging console.\n", gAppData->name);
 #endif
 
   // this works, but only after the components have registered.  so if you drop in a new command line handler, -help

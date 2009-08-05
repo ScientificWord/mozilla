@@ -73,7 +73,7 @@ nsComposerCmdLineHandler.prototype = {
   commandLineArgument : "-edit",
   prefNameForStartup : "general.startup.editor",
   chromeUrlForTask : "chrome://prince/content/prince.xul",
-  helpText : "Start with SW/SWP/SNB.",
+  helpText : "Edit document with SW/SWP/SNB.",
   handlesArgs : true,
   defaultArgs : "",
   openWindowWithArgs : true,
@@ -111,7 +111,7 @@ nsComposerCmdLineHandler.prototype = {
     cmdLine.preventDefault = true;
   },
 
-  helpInfo : "  -edit <url>          Open Composer.\n"
+  helpInfo : "  -edit <path>          Open document for editing.\n"
 };
 
 function nsComposerCmdLineHandlerFactory() {
