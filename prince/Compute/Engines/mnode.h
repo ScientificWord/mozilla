@@ -16,6 +16,14 @@ const char* OpIlkToString(OpIlk ilk);
 OpIlk StringToOpIlk(const char* form);
 
 
+enum OpMatrixIntervalType {
+    OMI_none,
+    OMI_matrix,
+    OMI_interval
+  };
+
+
+
 
 
 class MNODE
@@ -72,7 +80,34 @@ char* TNodeToStr(MNODE * mml_node, char *prefix, int indent);
 
 //void CheckMNODETallies();
 
+void GetCurrAttribValue(MNODE * mml_node, bool inherit,
+                        char *targ_attr, char *buffer, int lim);
 
+void SemanticAttribs2Buffer(char *buffer, MNODE * mml_node, int lim);
+
+bool IsDIFFOP(MNODE* mml_frac_node,
+              MNODE** m_num_operand, 
+              MNODE** m_den_var_expr);
+
+
+bool IsDDIFFOP(MNODE* mml_msub_node);
+
+bool IsBesselFunc(MNODE* mml_msub_node);
+bool IsApplyFunction(MNODE* next_elem);
+bool IsLaplacian(MNODE* op_node);
+
+
+void ChooseIndVar(MNODE* dMML_tree, char* buffer);
+MNODE* Find_dx(MNODE* mrow, bool& is_nested);
+
+
+bool IsUnitsFraction(MNODE * mml_node);
+bool IsPositionalChild(MNODE * mml_node);
+bool IsSUBSTITUTION(MNODE * mml_msub_node);
+bool IsUSunit(const char *ptr);
+
+
+OpMatrixIntervalType GetOpType(MNODE* mo);
 
 
 bool CheckLinks(MNODE* n);

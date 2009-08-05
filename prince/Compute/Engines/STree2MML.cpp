@@ -218,13 +218,14 @@ STree2MML::~STree2MML()
 //  "ID_2_mmlnode" carries a mapping from these "canonical_IDs"
 //  to pointers back to objects in the source MML tree.
 
-char *STree2MML::BackTranslate(SEMANTICS_NODE * semantic_tree,
-                               const char *src_MML_markup,
+char *STree2MML::BackTranslate(SEMANTICS_NODE* semantic_tree,
+                               const char* src_MML_markup,
                                int output_markup_ID,
-                               MIC2MMLNODE_REC * curr_IDs_2mml,
-                               MIC2MMLNODE_REC * def_IDs_2mml,
-                               INPUT_NOTATION_REC * notation_info,
-                               DefStore * ds, MathResult * mr)
+                               MIC2MMLNODE_REC* curr_IDs_2mml,
+                               MIC2MMLNODE_REC* def_IDs_2mml,
+                               INPUT_NOTATION_REC* notation_info,
+                               DefStore* ds, 
+                               MathResult* mr)
 {
   char *zh_rv = NULL;
 

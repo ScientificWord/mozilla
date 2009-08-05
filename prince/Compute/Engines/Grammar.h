@@ -6,6 +6,7 @@
 //This object holds a .gmr file in a hash table.
 
 #include "CmpTypes.h"
+#include <stdio.h>
 
 struct LINE_REC;
 struct HASH_TABLE;
