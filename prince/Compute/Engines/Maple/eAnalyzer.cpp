@@ -281,8 +281,8 @@ void eAnalyzer::AnalyzePARENGROUP(MNODE * eng_node,
   BUCKET_REC *item_list = NULL;
   if (eng_node->first_kid) {
 
-    MNODE *contents = eng_node->first_kid;
-    BUCKET_REC *obj_bucket = MakeBucketRec(MB_UNNAMED, NULL);
+    MNODE* contents = eng_node->first_kid;
+    BUCKET_REC* obj_bucket = MakeBucketRec(MB_UNNAMED, NULL);
     item_list = AppendBucketRec(item_list, obj_bucket);
 
     SEMANTICS_NODE *s_cell = GetSemanticsList(contents, obj_bucket);
@@ -758,18 +758,18 @@ void eAnalyzer::AnalyzeDERIVATIVE(MNODE * deriv_node,
     s_func->semantic_type = SEM_TYP_FUNCTION;
     AnalyzeFUNCTION(func_node, s_func, local_nodes_done);
 
-    BUCKET_REC *expr_bucket = MakeBucketRec(MB_UNNAMED, s_func);
+    BUCKET_REC* expr_bucket = MakeParentBucketRec(MB_UNNAMED, s_func);
     snode->bucket_list = AppendBucketRec(snode->bucket_list, expr_bucket);
-    s_func->parent = expr_bucket;
+    
 
     // Always 1 prime here
 
     // Different output form for multiple primes
     MNODE *m_diff_var = LocateDiffVar(deriv_node);
     if (m_diff_var) {
-      BUCKET_REC *bucket = MakeBucketRec(MB_DIFF_VAR, NULL);
+      BUCKET_REC* bucket = MakeBucketRec(MB_DIFF_VAR, NULL);
       snode->bucket_list = AppendBucketRec(snode->bucket_list, bucket);
-      SEMANTICS_NODE *s_var = GetSemanticsList(m_diff_var, bucket);
+      SEMANTICS_NODE* s_var = GetSemanticsList(m_diff_var, bucket);
       bucket->first_child = s_var;
       s_var->parent = bucket;
     }
@@ -816,11 +816,12 @@ void eAnalyzer::AnalyzeEXPONENTIAL(MNODE * func_node,
           strcpy(tmp, "&#x2147;");  // exponential "e"
           s_base->contents = tmp;
 
-          BUCKET_REC *b_list = NULL;
-          BUCKET_REC *base_bucket = MakeBucketRec(MB_SCRIPT_BASE, s_base);
-          s_base->parent = base_bucket;
+          BUCKET_REC* b_list = NULL;
+          BUCKET_REC* base_bucket = MakeParentBucketRec(MB_SCRIPT_BASE, s_base);
+          
           b_list = AppendBucketRec(b_list, base_bucket);
           b_list = AppendBucketRec(b_list, script_bucket);
+
           snode->bucket_list = b_list;
         }
       }
@@ -903,27 +904,27 @@ void eAnalyzer::AnalyzeLIMIT(MNODE * func_node,
         MNODE *arg2 = arg1->next;
         if (arg1->first_kid) {
           MNODE *contents = arg1->first_kid;
-          BUCKET_REC *bucket = MakeBucketRec(MB_UNNAMED, NULL);
-          SEMANTICS_NODE *s_cell = GetSemanticsList(contents, bucket);
+          BUCKET_REC* bucket = MakeBucketRec(MB_UNNAMED, NULL);
+          SEMANTICS_NODE* s_cell = GetSemanticsList(contents, bucket);
           snode->bucket_list = AppendBucketRec(snode->bucket_list, bucket);
           bucket->first_child = s_cell;
         }
         if (arg2->first_kid) {
-          BUCKET_REC *bucket = MakeBucketRec(MB_LOWERLIMIT, NULL);
-          BUCKET_REC *parts_list = NULL;
+          BUCKET_REC* bucket = MakeBucketRec(MB_LOWERLIMIT, NULL);
+          BUCKET_REC* parts_list = NULL;
           // MuPad generates "x=infinity"
           int tally = 0;
           MNODE *m_rover = arg2->first_kid;
           while (m_rover) {
             if (tally == 0) {
-              BUCKET_REC *bucket = MakeBucketRec(MB_LL_VAR, NULL);
-              SEMANTICS_NODE *s_var = GetSemanticsList(m_rover, bucket, 1);
+              BUCKET_REC* bucket = MakeBucketRec(MB_LL_VAR, NULL);
+              SEMANTICS_NODE* s_var = GetSemanticsList(m_rover, bucket, 1);
               parts_list = AppendBucketRec(parts_list, bucket);
               bucket->first_child = s_var;
             } else if (tally == 1) {
             } else if (tally == 2) {
-              BUCKET_REC *bucket = MakeBucketRec(MB_LL_EXPR, NULL);
-              SEMANTICS_NODE *s_expr = GetSemanticsList(m_rover, bucket);
+              BUCKET_REC* bucket = MakeBucketRec(MB_LL_EXPR, NULL);
+              SEMANTICS_NODE* s_expr = GetSemanticsList(m_rover, bucket);
               parts_list = AppendBucketRec(parts_list, bucket);
               bucket->first_child = s_expr;
             }
@@ -947,9 +948,8 @@ void eAnalyzer::AnalyzeLIMIT(MNODE * func_node,
                 TCI_ASSERT(0);
               s_num->contents = tmp;
 
-              BUCKET_REC *bucket = MakeBucketRec(MB_LL_DIRECTION, s_num);
+              BUCKET_REC* bucket = MakeParentBucketRec(MB_LL_DIRECTION, s_num);
               parts_list = AppendBucketRec(parts_list, bucket);
-              s_num->parent = bucket;
             }
           }
           bucket->parts = parts_list;
@@ -1296,12 +1296,12 @@ void eAnalyzer::AnalyzeMIXEDNUM(MNODE * mixnum_node,
   } else
     TCI_ASSERT(0);
 
-  BUCKET_REC *num_bucket = MakeBucketRec(MB_MN_WHOLE, s_whole);
-  s_whole->parent = num_bucket;
+  BUCKET_REC* num_bucket = MakeParentBucketRec(MB_MN_WHOLE, s_whole);
+  
   s_whole = RemoveParens(s_whole);
 
-  BUCKET_REC *den_bucket = MakeBucketRec(MB_MN_FRACTION, s_fraction);
-  s_fraction->parent = den_bucket;
+  BUCKET_REC* den_bucket = MakeParentBucketRec(MB_MN_FRACTION, s_fraction);
+  
   s_fraction = RemoveParens(s_fraction);
 
   snode->bucket_list = AppendBucketRec(snode->bucket_list, num_bucket);
@@ -1394,10 +1394,10 @@ void eAnalyzer::AnalyzeVARIABLE(MNODE * eng_node, SEMANTICS_NODE * snode,
         int local_nodes_done;
         AnalyzeBRACKETLIST(eng_node->first_kid, s_qual, local_nodes_done);
 
-        BUCKET_REC *bucket = MakeBucketRec(MB_UNNAMED, s_qual);
+        BUCKET_REC* bucket = MakeParentBucketRec(MB_UNNAMED, s_qual);
         snode->bucket_list = AppendBucketRec(snode->bucket_list, bucket);
         bucket->first_child = s_qual;
-        s_qual->parent = bucket;
+        
       }
     } else {                    // variable generated by Maple, "u1"
       //  may be numbered
@@ -1410,11 +1410,11 @@ void eAnalyzer::AnalyzeVARIABLE(MNODE * eng_node, SEMANTICS_NODE * snode,
         snode->contents = tmp;
       } else {
         if (zln > 1 && var_nom[1] >= '0' && var_nom[1] <= '9') {
-          BUCKET_REC *obj_bucket = MakeBucketRec(MB_UNNAMED, snode);
+          BUCKET_REC* obj_bucket = MakeBucketRec(MB_UNNAMED, snode);
           snode->bucket_list =
             AppendBucketRec(snode->bucket_list, obj_bucket);
 
-          SEMANTICS_NODE *s_sub = CreateSemanticsNode();
+          SEMANTICS_NODE* s_sub = CreateSemanticsNode();
           s_sub->semantic_type = SEM_TYP_NUMBER;
           char *tmp = new char[zln];
           strcpy(tmp, var_nom + 1);
@@ -1910,9 +1910,9 @@ SEMANTICS_NODE *eAnalyzer::FixMapleEigenVect(SEMANTICS_NODE * s_list)
       s_curr->next = NULL;
       s_curr->prev = NULL;
 
-      BUCKET_REC *bucket = MakeBucketRec(MB_UNNAMED, s_curr);
+      BUCKET_REC* bucket = MakeParentBucketRec(MB_UNNAMED, s_curr);
       rv->bucket_list = AppendBucketRec(rv->bucket_list, bucket);
-      s_curr->parent = bucket;
+      
 
       int bucket_num = 0;
       BUCKET_REC *bucket_rover = s_curr->bucket_list;
@@ -2176,10 +2176,10 @@ bool eAnalyzer::IsText(const char *var_nom)
 
 void eAnalyzer::AddPrimesCount(SEMANTICS_NODE * snode, int n_primes)
 {
-  SEMANTICS_NODE *s_nprimes = CreateSemanticsNode();
-  BUCKET_REC *pr_bucket = MakeBucketRec(MB_NPRIMES, s_nprimes);
+  SEMANTICS_NODE* s_nprimes = CreateSemanticsNode();
+  BUCKET_REC* pr_bucket = MakeParentBucketRec(MB_NPRIMES, s_nprimes);
   snode->bucket_list = AppendBucketRec(snode->bucket_list, pr_bucket);
-  s_nprimes->parent = pr_bucket;
+  
 
   s_nprimes->semantic_type = SEM_TYP_NUMBER;
   char buffer[32];
