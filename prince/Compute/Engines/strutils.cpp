@@ -101,4 +101,30 @@ U32 ASCII2U32(const char* ptr, int place_val)
 }
 
 
+char* DuplicateString(const char* str)
+{
+   size_t ln = strlen(str);
+   char* tmp = new char[ln + 1];
+   strcpy(tmp, str);
+   return tmp;
+   
+}
+
+
+bool StringEqual(const char* str1, const char* str2)
+{
+  if (str1 == NULL && str2 != NULL)
+    return false;
+
+  if (str1 != NULL && str2 == NULL)
+    return false;
+
+  if (str1 == NULL && str2 == NULL)
+    return true;
+
+  return ! strcmp(str1, str2);
+}
+
+
+
 

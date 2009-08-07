@@ -949,8 +949,8 @@ void CompEngine::ConvertTreeToPDE(SEMANTICS_NODE * semantics_tree)
         s_ODE->semantic_type = SEM_TYP_PDE;
         s_save = s_ODE;
 
-        BUCKET_REC *b_list = MakeBucketRec(MB_UNNAMED, s_PDE);
-        s_PDE->parent = b_list;
+        BUCKET_REC* b_list = MakeParentBucketRec(MB_UNNAMED, s_PDE);
+        
         s_ODE->bucket_list = b_list;
         b_rover->first_child = s_ODE;
 
@@ -1018,8 +1018,8 @@ void CompEngine::ConvertTreeToODE(SEMANTICS_NODE * semantics_tree,
         s_ODE->semantic_type = SEM_TYP_ODE_SYSTEM;
         s_save = s_ODE;
 
-        BUCKET_REC *b_list = MakeBucketRec(MB_UNNAMED, s_ODEsystem);
-        s_ODEsystem->parent = b_list;
+        BUCKET_REC* b_list = MakeParentBucketRec(MB_UNNAMED, s_ODEsystem);
+        
         s_ODE->bucket_list = b_list;
         b_rover->first_child = s_ODE;
 
@@ -1074,14 +1074,14 @@ void CompEngine::ConvertTreeToRecursion(SEMANTICS_NODE * semantics_tree,
       s_recur->semantic_type = SEM_TYP_RECURSION;
       s_save = s_recur;
 
-      BUCKET_REC *b_list = MakeBucketRec(MB_RECUR_EQN, s_child);
+      BUCKET_REC* b_list = MakeParentBucketRec(MB_RECUR_EQN, s_child);
       s_recur->bucket_list = b_list;
-      s_child->parent = b_list;
+      
 
       parent_buc->first_child = s_recur;
       s_recur->parent = parent_buc;
 
-      BUCKET_REC *b = MakeBucketRec(MB_RECUR_FUNC, NULL);
+      BUCKET_REC* b = MakeBucketRec(MB_RECUR_FUNC, NULL);
       s_recur->bucket_list = AppendBucketRec(s_recur->bucket_list, b);
       AddRecurFuncNode(s_recur, b);
     } else if (s_child->semantic_type == SEM_TYP_TABULATION) {
@@ -2877,8 +2877,8 @@ SEMANTICS_NODE *CompEngine::InsertPGroup(SEMANTICS_NODE * s_math)
       s_math->bucket_list = NULL;
     }
 
-    BUCKET_REC *b = MakeBucketRec(MB_UNNAMED, s_pgroup);
-    s_pgroup->parent = b;
+    BUCKET_REC* b = MakeParentBucketRec(MB_UNNAMED, s_pgroup);
+    
     s_math->bucket_list = b;
   }
 
@@ -2937,8 +2937,8 @@ const char *CompEngine::QVarToFuncHeader(SEMANTICS_NODE * s_qvar)
           int n_args = 0;
           if (IsVariableInSubscript(s_node)) {
             s_qvar->n_sub_args = 1;
-            b_args_list = MakeBucketRec(MB_UNNAMED, s_node);
-            s_node->parent = b_args_list;
+            b_args_list = MakeParentBucketRec(MB_UNNAMED, s_node);
+            
             b_rover->first_child = NULL;
           } else if (IsSubVariableList(s_node, n_args)) {
             s_qvar->n_sub_args = n_args;
