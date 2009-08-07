@@ -2,6 +2,7 @@
 
 #include "attriblist.h"
 #include "CmpTypes.h"
+#include "strutils.h"
 #include <cstring>
 
 
@@ -15,18 +16,18 @@ ATTRIB_REC::ATTRIB_REC(const char* attr_nom, const char* attr_val)
   prev = NULL;
 
   if (attr_nom) {
-    size_t zln = strlen(attr_nom);
-    char *tmp = new char[zln + 1];
-    strcpy(tmp, attr_nom);
-    zattr_nom = tmp;
+    //size_t zln = strlen(attr_nom);
+    //char *tmp = new char[zln + 1];
+    //strcpy(tmp, attr_nom);
+    zattr_nom = DuplicateString(attr_nom);
   } else {
     zattr_nom = NULL;
   }
   if (attr_val) {               // we have a STR value for the attribute
-    size_t zln = strlen(attr_val);
-    char *tmp = new char[zln + 1];
-    strcpy(tmp, attr_val);
-    zattr_val = tmp;
+    //size_t zln = strlen(attr_val);
+    //char *tmp = new char[zln + 1];
+    //strcpy(tmp, attr_val);
+    zattr_val = DuplicateString(attr_val);
   } else {
     zattr_val = NULL;
   }
