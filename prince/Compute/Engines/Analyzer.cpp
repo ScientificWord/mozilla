@@ -2343,6 +2343,8 @@ IdentIlk GetMIilk(char *mi_canonical_str, MNODE * m_node,
         rv = MI_function;
     }
   }
+
+  return rv;
 }
 
 
