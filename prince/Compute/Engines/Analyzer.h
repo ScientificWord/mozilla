@@ -62,6 +62,10 @@ public:
   U32 CurrEngineID() const { return m_curr_engine_ID; }
   void SetCurrEngineID(U32 id) { m_curr_engine_ID = id; }
 
+  U32 CmdID() const { return m_cmd_ID; }
+  void SetCmdID(U32 id) { m_cmd_ID = id; }
+
+
 
 
   const char* ScrStr() const { return m_z_scr_str; }
@@ -99,7 +103,6 @@ public:
   bool prime_is_derivative;
   bool D_is_derivative;
 
-  U32 cmd_ID;
 
 private:
 
@@ -111,6 +114,8 @@ private:
 
   DE_FUNC_REC* m_DE_func_names;
   DE_FUNC_REC* m_IMPLDIFF_func_names;
+  U32 m_cmd_ID;
+
 
 
 };

@@ -299,8 +299,9 @@ void Tree2StdMML::LookupMOInfo(MNODE * mml_node)
   if (mml_entities->GetRecordFromName("MATH", entity, strlen(entity), ID, subID, &p_data)) {
     if (p_data && *p_data) {
       if (strstr(p_data,"multiform,")) {
+	    set_form = true;
         const char * str_ilk;
-        if (op_ilk == OP_none && (!strcmp(mml_node->p_chdata,"&#x2212;") || !strcmp(mml_node->p_chdata,"-"))) {
+        if (op_ilk == OP_none && ((!strcmp(mml_node->p_chdata,"&#x2212;") || !strcmp(mml_node->p_chdata,"-")))) {
           if (!mml_node->prev || (!strcmp(mml_node->prev->p_chdata,"&#x2212;") || !strcmp(mml_node->prev->p_chdata,"-"))) {  
             op_ilk = OP_prefix;
             set_form = true;
