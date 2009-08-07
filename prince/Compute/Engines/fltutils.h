@@ -113,7 +113,10 @@ struct MIC2MMLNODE_REC
 
 
 
-BUCKET_REC *MakeBucketRec(U32 which_bucket, SEMANTICS_NODE * sem_child);
+BUCKET_REC* MakeBucketRec(U32 which_bucket, SEMANTICS_NODE* sem_child);
+BUCKET_REC* MakeParentBucketRec(U32 which_bucket, SEMANTICS_NODE* sem_child);
+
+
 BUCKET_REC *AppendBucketRec(BUCKET_REC * a_list, BUCKET_REC * new_a_rec);
 BUCKET_REC *FindBucketRec(BUCKET_REC * a_list, U32 bucket_ID);
 void DisposeBucketList(BUCKET_REC * arg_list);

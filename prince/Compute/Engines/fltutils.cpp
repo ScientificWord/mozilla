@@ -157,9 +157,9 @@ void JBM::ClearLog()
 
 
 
-BUCKET_REC* MakeBucketRec(U32 which_bucket, SEMANTICS_NODE * sem_child)
+BUCKET_REC* MakeBucketRec(U32 which_bucket, SEMANTICS_NODE* sem_child)
 {
-  BUCKET_REC *rv = new BUCKET_REC();
+  BUCKET_REC* rv = new BUCKET_REC();
   rv->next = NULL;
   rv->parts = NULL;
   rv->bucket_ID = which_bucket;
@@ -168,7 +168,20 @@ BUCKET_REC* MakeBucketRec(U32 which_bucket, SEMANTICS_NODE * sem_child)
   return rv;
 }
 
-BUCKET_REC* AppendBucketRec(BUCKET_REC * a_list, BUCKET_REC * list_to_append)
+
+// jcs -- a common idiom
+BUCKET_REC* MakeParentBucketRec(U32 which_bucket, SEMANTICS_NODE* sem_child)
+{
+  BUCKET_REC* rv = MakeBucketRec(which_bucket, sem_child);
+  if (sem_child != NULL)
+    sem_child -> parent = rv;
+  return rv;
+
+}
+
+
+
+BUCKET_REC* AppendBucketRec(BUCKET_REC* a_list, BUCKET_REC* list_to_append)
 {
   if (!a_list) {
     return list_to_append;
@@ -181,7 +194,7 @@ BUCKET_REC* AppendBucketRec(BUCKET_REC * a_list, BUCKET_REC * list_to_append)
   }
 }
 
-BUCKET_REC* FindBucketRec(BUCKET_REC * a_list, U32 targ_bucket_ID)
+BUCKET_REC* FindBucketRec(BUCKET_REC* a_list, U32 targ_bucket_ID)
 {
   BUCKET_REC *rover = a_list;
   while (rover) {
@@ -192,16 +205,16 @@ BUCKET_REC* FindBucketRec(BUCKET_REC * a_list, U32 targ_bucket_ID)
   return rover;
 }
 
-void DisposeBucketList(BUCKET_REC * b_list)
+void DisposeBucketList(BUCKET_REC* b_list)
 {
-  BUCKET_REC *del;
+  
   while (b_list) {
     if (b_list->parts) {
       DisposeBucketList(b_list->parts);
       b_list->parts = NULL;
     }
-    del = b_list;
-    b_list = b_list->next;
+    BUCKET_REC* del = b_list;
+    b_list = b_list -> next;
     DisposeSList(del->first_child);
     delete del;
   }
