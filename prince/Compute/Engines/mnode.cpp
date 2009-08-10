@@ -352,33 +352,36 @@ char* TNodeToStr(MNODE * mml_node, char *prefix, int indent)
 // Follows links associated with the node and
 // tries to crash if anyone has a bad pointer.
 
-bool CheckLinks(MNODE* n)
+bool CheckLinks(MNODE* me)
 {
-   if (n == 0) 
+   if (me == 0) 
     return true;
-    
-   MNODE* p = n->parent;
-   MNODE* m = n;
-   while (m){
-     m = m->parent;
-   }
-   m = n;
-   while (m) {
-     if (m -> parent != p){
-       _asm{int 3};
-     } else {
-       m = m-> next;
-     }
-   }
    
-   m = n->first_kid;
-   while (m){
-     if (m->parent != n){
-       _asm{int 3}
-    } else {
-      m = m-> next;
-    }
-   } 
+   MNODE* parent = me -> parent;    
+   MNODE* first = me -> first_kid;
+
+   
+   
+   MNODE* rover = first;
+   while (rover != NULL){
+     
+     if (rover -> parent != me)	 
+         _asm{int 3};
+
+     if (rover -> next){
+	   if (rover -> next -> prev != rover)
+	     _asm{int 3};
+	 }
+
+     if (rover -> prev){
+	   if (rover -> prev -> next != rover)
+	     _asm{int 3};
+	 }
+	 if (! CheckLinks(rover)){
+	     _asm{int 3};
+	 } 
+	 rover = rover -> next;
+   }
     
    return true; 
 }
