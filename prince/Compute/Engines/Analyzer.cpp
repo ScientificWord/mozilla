@@ -1957,24 +1957,24 @@ void AnalyzeMSUBSUP(MNODE* mml_msubsup_node,
         break;
 
       case BT_FENCED: {
-          MNODE *f_fence = mml_msubsup_node->first_kid;
-          MNODE *f_norm = f_fence->next;
-          MNODE *f_exp = f_norm->next;
+          MNODE* f_fence = mml_msubsup_node->first_kid;
+          MNODE* f_norm = f_fence->next;
+          MNODE* f_exp = f_norm->next;
 
-          SEMANTICS_NODE *s_fence = CreateSemanticsNode();
+          SEMANTICS_NODE* s_fence = CreateSemanticsNode();
           AnalyzeSubscriptedFence(mml_msubsup_node, s_fence, nodes_done, pAnalyzer);
 
           // Create a semantic power form
-          BUCKET_REC *base_bucket = MakeBucketRec(MB_SCRIPT_BASE, NULL);
+          BUCKET_REC* base_bucket = MakeBucketRec(MB_SCRIPT_BASE, NULL);
           snode->bucket_list =
             AppendBucketRec(snode->bucket_list, base_bucket);
           base_bucket->first_child = s_fence;
           s_fence->parent = base_bucket;
 
-          BUCKET_REC *power_bucket = MakeBucketRec(MB_SCRIPT_UPPER, NULL);
+          BUCKET_REC* power_bucket = MakeBucketRec(MB_SCRIPT_UPPER, NULL);
           snode->bucket_list =
             AppendBucketRec(snode->bucket_list, power_bucket);
-          SEMANTICS_NODE *s_power = GetSemanticsFromNode(f_exp, power_bucket, pAnalyzer);
+          SEMANTICS_NODE* s_power = GetSemanticsFromNode(f_exp, power_bucket, pAnalyzer);
           power_bucket->first_child = s_power;
           s_power->parent = power_bucket;
 
@@ -3967,34 +3967,38 @@ void AnalyzeSubscriptedArgFunc(MNODE * mml_msub_node,
   snode->semantic_type = SEM_TYP_FUNCTION;
 }
 
-void AnalyzeSubscriptedFence(MNODE * mml_msub_node,
-                                       SEMANTICS_NODE * snode,
-                                       int& nodes_done, Analyzer* pAnalyzer)
+void AnalyzeSubscriptedFence(MNODE* mml_msub_node,
+                             SEMANTICS_NODE* snode,
+                             int& nodes_done, 
+                             Analyzer* pAnalyzer)
 {
   nodes_done = 1;
 
-  MNODE *base = mml_msub_node->first_kid;
-  if (base && !strcmp(base->src_tok, "mfenced")) {
-    const char *open_value = GetATTRIBvalue(base->attrib_list, "open");
-    const char *close_value = GetATTRIBvalue(base->attrib_list, "close");
-    bool is_Vert = !strcmp(open_value, "&#x2016;") && !strcmp(close_value, "&#x2016;");
-    bool is_abs = !strcmp(open_value, "|") && !strcmp(close_value, "|");
+  MNODE* base = mml_msub_node->first_kid;
+  if (base && StringEqual(base->src_tok, "mfenced")) {
+
+    const char* open_value = GetATTRIBvalue(base->attrib_list, "open");
+    const char* close_value = GetATTRIBvalue(base->attrib_list, "close");
+
+    bool is_Vert = StringEqual(open_value, "&#x2016;") && StringEqual(close_value, "&#x2016;");
+    bool is_abs = StringEqual(open_value, "|") && StringEqual(close_value, "|");
     
     if (is_Vert || is_abs) {
       // Handle ||...||_{norm} here
       // (note we don't have a different representation for |...|_{norm}
       int local_nodes_done;
+      
       AnalyzeMFENCED(base, snode, local_nodes_done, pAnalyzer);
 
       if (snode->bucket_list) {
-        BUCKET_REC *bucket = FindBucketRec(snode->bucket_list, MB_UNNAMED);
+        BUCKET_REC* bucket = FindBucketRec(snode->bucket_list, MB_UNNAMED);
         if (bucket && bucket->first_child)
           FenceToMatrix(bucket->first_child);
       }
       if (base->next) {
-        BUCKET_REC *bucket = MakeBucketRec(MB_NORM_NUMBER, NULL);
+        BUCKET_REC* bucket = MakeBucketRec(MB_NORM_NUMBER, NULL);
         snode->bucket_list = AppendBucketRec(snode->bucket_list, bucket);
-        SEMANTICS_NODE *norm_num = GetSemanticsFromNode(base->next, bucket, pAnalyzer);
+        SEMANTICS_NODE* norm_num = GetSemanticsFromNode(base->next, bucket, pAnalyzer);
         bucket->first_child = norm_num;
         norm_num->parent = bucket;
       } else {
