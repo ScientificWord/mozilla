@@ -85,15 +85,22 @@ MNODE* Tree2StdMML::TreeToCanonicalForm(MNODE* dMML_tree,
 MNODE* Tree2StdMML::TreeToInterpretForm(MNODE* dMML_tree,
                                         INPUT_NOTATION_REC* in_notation)
 {
+  TCI_ASSERT(CheckLinks(dMML_tree));
   MNODE* rv = ChDataToCanonicalForm(dMML_tree);
   BindDelimitedGroups(rv);
+  TCI_ASSERT(CheckLinks(dMML_tree));
   BindScripts(rv);
+  TCI_ASSERT(CheckLinks(dMML_tree));
   rv = FixMFENCEDs(rv);
+  TCI_ASSERT(CheckLinks(dMML_tree));
   RemoveMixedNumbers(rv, in_notation);
+  TCI_ASSERT(CheckLinks(dMML_tree));
   FinishFixup(rv);
-  
+  TCI_ASSERT(CheckLinks(dMML_tree));
   rv = InfixDivideToMFRAC(rv);
+  TCI_ASSERT(CheckLinks(dMML_tree));
   rv = RemoveMatrixDelims(rv, in_notation);
+  TCI_ASSERT(CheckLinks(dMML_tree));
   RemoveMSTYLEs(rv);
   rv = RemoveMPADDEDs(rv);
   rv = RemoveRedundantMROWs(rv);
@@ -113,14 +120,10 @@ MNODE* Tree2StdMML::TreeToFixupForm(MNODE* dMML_tree, bool D_is_derivative)
   BindScripts(rv);
   rv = FixMFENCEDs(rv);
   mDisDerivative = D_is_derivative;
-  JBM::DumpTList(rv, 0);
   FinishFixup(rv);
-  JBM::DumpTList(rv, 0);
   rv = RemoveRedundantMROWs(rv);
   rv = RemoveRedundantMROWs(rv);
-  JBM::DumpTList(rv, 0);
   FixInvisibleFences(rv);
-  JBM::DumpTList(rv, 0);
   
   return rv;
 }
@@ -879,23 +882,26 @@ MNODE* Tree2StdMML::FinishFixup(MNODE* dMML_tree)
   return rv;
 }
 
-MNODE *Tree2StdMML::InfixDivideToMFRAC(MNODE * dMML_list)
+MNODE* Tree2StdMML::InfixDivideToMFRAC(MNODE* dMML_list)
 {
-  MNODE *rv = dMML_list;
+  MNODE* rv = dMML_list;
 
-  MNODE *rover = dMML_list;
+  MNODE* rover = dMML_list;
   while (rover) {
-    MNODE *the_next = rover->next;
+    MNODE* the_next = rover->next;
 
     if (!strcmp(rover->src_tok, "mo")
         && (!strcmp(rover->p_chdata, "/") || !strcmp(rover->p_chdata, "&#xf7;"))) {
-      MNODE *l_operand = rover->prev;
-      MNODE *r_operand = rover->next;
+
+      MNODE* l_operand = rover->prev;
+      MNODE* r_operand = rover->next;
+
       if (l_operand && r_operand) {
-        MNODE *mfrac = rover;
+        MNODE* mfrac = rover;
         strcpy(rover->src_tok, "mfrac");
-        MNODE *l_anchor = l_operand->prev;
-        MNODE *r_anchor = r_operand->next;
+
+        MNODE* l_anchor = l_operand->prev;
+        MNODE* r_anchor = r_operand->next;
 
         mfrac->prev = l_anchor;
         mfrac->next = r_anchor;
@@ -903,10 +909,12 @@ MNODE *Tree2StdMML::InfixDivideToMFRAC(MNODE * dMML_list)
         l_operand->next = r_operand;
         r_operand->prev = l_operand;
         r_operand->next = NULL;
-        r_operand->parent = NULL;
 
         mfrac->first_kid = l_operand;
+        
         l_operand->parent = mfrac;
+        r_operand->parent = mfrac;
+
 
         if (r_anchor)
           r_anchor->prev = mfrac;
