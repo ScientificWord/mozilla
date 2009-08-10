@@ -650,17 +650,17 @@ bool IsPositionalChild(MNODE* mml_node)
 
 
 // Some subscripted fences are intrepreted as "subs".
-bool IsSUBSTITUTION(MNODE * mml_msub_node)
+bool IsSUBSTITUTION(MNODE* mml_msub_node)
 {
   bool rv = false;
 
   if (mml_msub_node) {
-    MNODE *base = mml_msub_node->first_kid;
+    MNODE* base = mml_msub_node->first_kid;
     if (base) {
-      MNODE *sub = base->next;
+      MNODE* sub = base->next;
       if (sub) {
-        const char *base_elem = base->src_tok;
-        if (!strcmp(base_elem, "mfenced")) {
+        const char* base_elem = base->src_tok;
+        if (StringEqual(base_elem, "mfenced")) {
           char zopen_attr_val[32];
           zopen_attr_val[0] = 0;
           GetCurrAttribValue(base, false, "open", zopen_attr_val, 256);
@@ -675,6 +675,8 @@ bool IsSUBSTITUTION(MNODE * mml_msub_node)
             rv = true;
           if (zopen_attr_val[0] == 'I' && zclose_attr_val[0] == '|')
             rv = true;
+		  if (zopen_attr_val[0] == '\0' &&  zclose_attr_val[0] == '|')
+		    rv = true;
         }
       }
     }
