@@ -104,15 +104,22 @@ bool DelinkTNode(MNODE* elem)
 
   // remove elem from it's present list:  prev <-> elem <-> next
   MNODE* el_prev = elem->prev;
+
   if (el_prev) {                // elem has a prev
+
     el_prev->next = elem->next;
     if (elem->next) {
       elem->next->prev = el_prev;
     }
+
   } else {                      // elem may head a sublist
+
     MNODE* el_owner = elem->parent;
+
     if (el_owner) {
-      if (el_owner->first_kid == elem) {
+
+      if (el_owner->first_kid == elem) {  // elem is head of sublist
+
         el_owner->first_kid = elem->next;
         if (elem->next) {
           elem->next->parent = el_owner;
@@ -122,6 +129,7 @@ bool DelinkTNode(MNODE* elem)
         TCI_ASSERT(0);
         rv = false;
       }
+
     } else {
       TCI_ASSERT(!"No sublist_owner");
       rv = false;
@@ -357,7 +365,7 @@ bool CheckLinks(MNODE* n)
    m = n;
    while (m) {
      if (m -> parent != p){
-       //_asm{int 3};
+       _asm{int 3};
      } else {
        m = m-> next;
      }
@@ -366,7 +374,7 @@ bool CheckLinks(MNODE* n)
    m = n->first_kid;
    while (m){
      if (m->parent != n){
-       //_asm{int 3}
+       _asm{int 3}
     } else {
       m = m-> next;
     }
