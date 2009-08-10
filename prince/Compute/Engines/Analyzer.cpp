@@ -2893,18 +2893,29 @@ SEMANTICS_NODE* SNodeFromMNodes(MNODE * mml_node,
 
     // integral<uID4.0>tciint(%integrand%,%variable%,%lowerlim%,%upperlim%),
     case 5:{
-        if (!strcmp(mml_element, "mfrac")) {
-          AnalyzeMFRAC(mml_node, rv, local_nodes_done, pAnalyzer);
-        } else if (!strcmp(mml_element, "msqrt"), pAnalyzer) {
-          AnalyzeMSQRT(mml_node, rv, local_nodes_done, pAnalyzer);
-        } else if (!strcmp(mml_element, "mroot")) {
-          AnalyzeMROOT(mml_node, rv, local_nodes_done, pAnalyzer);
-        } else if (!strcmp(mml_element, "mover")) {
-          AnalyzeMOVER(mml_node, rv, local_nodes_done, isLHSofDef, pAnalyzer);
-        } else if (!strcmp(mml_element, "mtext")) {
-          AnalyzeMTEXT(mml_node, rv, local_nodes_done, pAnalyzer);
+        if (StringEqual(mml_element, "mfrac")) {
+
+            AnalyzeMFRAC(mml_node, rv, local_nodes_done, pAnalyzer);
+
+        } else if (StringEqual(mml_element, "msqrt")) {
+
+            AnalyzeMSQRT(mml_node, rv, local_nodes_done, pAnalyzer);
+
+        } else if (StringEqual(mml_element, "mroot")) {
+
+            AnalyzeMROOT(mml_node, rv, local_nodes_done, pAnalyzer);
+
+        } else if (StringEqual(mml_element, "mover")) {
+
+            AnalyzeMOVER(mml_node, rv, local_nodes_done, isLHSofDef, pAnalyzer);
+
+        } else if (StringEqual(mml_element, "mtext")) {
+
+            AnalyzeMTEXT(mml_node, rv, local_nodes_done, pAnalyzer);
+
         } else {
-          TCI_ASSERT(0);
+
+            TCI_ASSERT(0);
         }
       }
       break;
