@@ -762,7 +762,7 @@ void AnalyzeMI(MNODE* mml_mi_node,
     back to this object.
   */
 
-  char *mml_canonical_name = GetCanonicalIDforMathNode(mml_mi_node, pAnalyzer);
+  char* mml_canonical_name = GetCanonicalIDforMathNode(mml_mi_node, pAnalyzer);
 
   if (!mml_canonical_name) {
     snode->error_flag = 1;
@@ -787,33 +787,40 @@ void AnalyzeMI(MNODE* mml_mi_node,
   }
   if (mi_ilk) {
     if (IdentIsConstant(mi_ilk)) {
-      const char *cont = mml_mi_node->p_chdata;
-      if (mi_ilk == MI_imaginaryunit)
-        cont = "i";
-	  char* tmp = DuplicateString(cont);
-      snode->contents = tmp;
-      snode->semantic_type = SEM_TYP_UCONSTANT;
+
+        const char* cont = mml_mi_node->p_chdata;
+        if (mi_ilk == MI_imaginaryunit)
+          cont = "i";
+
+        snode->contents = DuplicateString(cont);
+        snode->semantic_type = SEM_TYP_UCONSTANT;
+
     } else if (mi_ilk == MI_Laplace || mi_ilk == MI_Fourier || mi_ilk == MI_function) {
-	  char* tmp = DuplicateString(mml_mi_node->p_chdata);
-      snode->contents = tmp;
-      if (mi_ilk == MI_Laplace || mi_ilk == MI_Fourier)
-        snode->semantic_type = SEM_TYP_TRANSFORM;
-      else
-        snode->semantic_type = SEM_TYP_FUNCTION;
+    	
+        snode->contents = DuplicateString(mml_mi_node->p_chdata);;
+        if (mi_ilk == MI_Laplace || mi_ilk == MI_Fourier)
+          snode->semantic_type = SEM_TYP_TRANSFORM;
+        else
+          snode->semantic_type = SEM_TYP_FUNCTION;
 
-      int local_nodes_done;
-      BUCKET_REC *bucket = ArgsToBucket(mml_mi_node, local_nodes_done, pAnalyzer);
-      nodes_done += local_nodes_done;
+        int local_nodes_done;
+        BUCKET_REC* bucket = ArgsToBucket(mml_mi_node, local_nodes_done, pAnalyzer);
+        nodes_done += local_nodes_done;
 
-      bool arg_is_matrix = OpArgIsMatrix(mml_mi_node);
-      if (arg_is_matrix)        // the args become entries in a row matrix
-        ArgsToMatrix(snode, bucket);
-      else
-        snode->bucket_list = AppendBucketRec(snode->bucket_list, bucket);
+        bool arg_is_matrix = OpArgIsMatrix(mml_mi_node);
+        if (arg_is_matrix)        // the args become entries in a row matrix
+          ArgsToMatrix(snode, bucket);
+        else
+          snode->bucket_list = AppendBucketRec(snode->bucket_list, bucket);
+
     } else if (mi_ilk == MI_variable) {
-      snode->semantic_type = SEM_TYP_VARIABLE;
+
+        snode->semantic_type = SEM_TYP_VARIABLE;
+
     } else
-      TCI_ASSERT(0);
+
+        TCI_ASSERT(0);
+
   } else {                      // default semantics for <mi>
     int entity_count;
     int symbol_count = CountSymbols(mml_mi_node->p_chdata, entity_count);

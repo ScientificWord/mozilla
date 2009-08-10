@@ -104,17 +104,23 @@ MNODE* Tree2StdMML::TreeToInterpretForm(MNODE* dMML_tree,
 
 // The input to CCID_Fixup may be less well-formed than that for other commands.  Resolve that here.
 //XXX second arg is in place of general user prefs parameter
-MNODE *Tree2StdMML::TreeToFixupForm(MNODE * dMML_tree, bool D_is_derivative)
+MNODE* Tree2StdMML::TreeToFixupForm(MNODE* dMML_tree, bool D_is_derivative)
 {
-  MNODE *rv = ChDataToCanonicalForm(dMML_tree);
+  MNODE* rv = dMML_tree;
+  RemoveMSTYLEs(rv);
+  rv = ChDataToCanonicalForm(rv);
   BindDelimitedGroups(rv);
   BindScripts(rv);
   rv = FixMFENCEDs(rv);
   mDisDerivative = D_is_derivative;
+  JBM::DumpTList(rv, 0);
   FinishFixup(rv);
+  JBM::DumpTList(rv, 0);
   rv = RemoveRedundantMROWs(rv);
   rv = RemoveRedundantMROWs(rv);
+  JBM::DumpTList(rv, 0);
   FixInvisibleFences(rv);
+  JBM::DumpTList(rv, 0);
   
   return rv;
 }
@@ -416,13 +422,15 @@ void Tree2StdMML::AddDDOperatorInfo(MNODE * dMML_tree)
   }
 }
 
-void Tree2StdMML::InsertApplyFunction(MNODE * dMML_list)
+void Tree2StdMML::InsertApplyFunction(MNODE* dMML_list)
 {
   MNODE* rover = dMML_list;
+
   while (rover) {
     bool do_insert = false;
     bool is_delimited = false;
     int n_arg_nodes;
+
     if (NodeIsFunction(rover)) {
       if (FunctionHasArg(rover,n_arg_nodes,is_delimited)) {
         do_insert = true;
@@ -824,18 +832,20 @@ void Tree2StdMML::FixupSmalld(MNODE * dMML_list)
 
 
 // finish MathML bindings
-MNODE *Tree2StdMML::FinishFixup(MNODE * dMML_tree)
+MNODE* Tree2StdMML::FinishFixup(MNODE* dMML_tree)
 {  
   if (!dMML_tree)
     return dMML_tree;
-  MNODE * rv = dMML_tree;
+
+  MNODE* rv = dMML_tree;
 
   if (mDisDerivative)
     FixupCapitalD(rv);  // D_x
+
   FixupSmalld(rv);  // d/dx
 
   // depth first recursion
-  MNODE * rover = dMML_tree;
+  MNODE* rover = dMML_tree;
   while (rover) {
     MNODE *the_next = rover->next;
     FinishFixup(rover->first_kid);
@@ -2079,29 +2089,35 @@ MNODE *Tree2StdMML::RemoveMPADDEDs(MNODE * MML_list)
   return rv;
 }
 
-void Tree2StdMML::RemoveMSTYLEs(MNODE * MML_list)
+void Tree2StdMML::RemoveMSTYLEs(MNODE* MML_list)
 {
   TCI_ASSERT(CheckLinks(MML_list));
-  MNODE *rover = MML_list;
+
+  MNODE* rover = MML_list;
   while (rover) {
-    TCI_ASSERT(CheckLinks(MML_list));
-    MNODE *the_next = rover->next;
-    if (!strcmp(rover->src_tok, "mstyle")) {
-      RemoveMSTYLEnode(rover);
+    MNODE* the_next = rover->next;
+    if (StringEqual(rover->src_tok, "mstyle")) {
+
+        RemoveMSTYLEnode(rover);
+
     } else if (rover->first_kid) {  // rover is a schemata
-      if (!strcmp(rover->src_tok, "mfrac"))
-        if (lt_stack)
-          InstallStackedAttr(rover, lt_stack);
-      RemoveMSTYLEs(rover->first_kid);
-      TCI_ASSERT(CheckLinks(MML_list));
+
+        if (StringEqual(rover->src_tok, "mfrac"))
+          if (lt_stack)
+            InstallStackedAttr(rover, lt_stack);
+        RemoveMSTYLEs(rover->first_kid);
+
     } else {                    // rover is atomic
-      if (!strcmp(rover->src_tok, "mi"))
-        if (mv_stack)
-          InstallStackedAttr(rover, mv_stack);
-      TCI_ASSERT(CheckLinks(MML_list));  
+
+        if (StringEqual(rover->src_tok, "mi"))
+          if (mv_stack)
+            InstallStackedAttr(rover, mv_stack);
+
     }
     rover = the_next;
   }
+
+  
 }
 
 MNODE *Tree2StdMML::RemoveMatrixDelims(MNODE * MML_list,
@@ -2554,81 +2570,90 @@ void Tree2StdMML::MoveAttrsToChildren(MNODE * mml_list)
     MNODE *the_next = rover->next;
 
     if (!strcmp(rover->src_tok, "mstyle")) {
-      RemoveMSTYLEnode(rover);
+
+        RemoveMSTYLEnode(rover);
 
     } else if (!strcmp(rover->src_tok, "mi")) {
-      if (mv_stack)
-        InstallStackedAttr(rover, mv_stack);
+
+        if (mv_stack)
+          InstallStackedAttr(rover, mv_stack);
 
     } else if (!strcmp(rover->src_tok, "mfrac")) {
-      if (lt_stack)
-        InstallStackedAttr(rover, lt_stack);
-      MNODE *num = rover->first_kid;
-      if (num) {
-        RemoveMSTYLEs(num);
-        MNODE *den = num->next;
-        if (den)
-          RemoveMSTYLEs(den);
-      }
+
+        if (lt_stack)
+          InstallStackedAttr(rover, lt_stack);
+
+        MNODE* num = rover->first_kid;
+        if (num) {
+          RemoveMSTYLEs(num);
+          MNODE* den = num->next;
+          if (den)
+            RemoveMSTYLEs(den);
+        }
+
     } else if (rover->first_kid) {
-      RemoveMSTYLEs(rover->first_kid);
+
+        RemoveMSTYLEs(rover->first_kid);
     }
     rover = the_next;
   }
 }
 
-void Tree2StdMML::RemoveMSTYLEnode(MNODE * mstyle)
+void Tree2StdMML::RemoveMSTYLEnode(MNODE* mstyle)
 {
   TCI_ASSERT(CheckLinks(mstyle));
-  const char *mv_val = GetATTRIBvalue(mstyle->attrib_list, "mathvariant");
-  const char *lt_val =
-    GetATTRIBvalue(mstyle->attrib_list, "linethickness");
-  const char *fw_val = GetATTRIBvalue(mstyle->attrib_list, "fontweight");
 
-  if (mv_val)
+  const char* mv_val = GetATTRIBvalue(mstyle->attrib_list, "mathvariant");
+  const char* lt_val = GetATTRIBvalue(mstyle->attrib_list, "linethickness");
+  const char* fw_val = GetATTRIBvalue(mstyle->attrib_list, "fontweight");
+
+  if (mv_val)  
     mv_stack = StackAttr(mv_stack, "mathvariant", mv_val);
-  if (lt_val)
+
+  if (lt_val)  
     lt_stack = StackAttr(lt_stack, "linethickness", lt_val);
-  if (fw_val && !strcmp(fw_val, "bold"))
+
+  if (fw_val && !strcmp(fw_val, "bold"))  
     mv_stack = StackAttr(mv_stack, "mathvariant", "Bold");
 
   //  If we don't descend into children here, nested mstyles
   //    will not be processed.
-  TCI_ASSERT(CheckLinks(mstyle));
+  
   if (mstyle->first_kid){
     MoveAttrsToChildren(mstyle->first_kid);
   }
 
   if (mv_val)
     mv_stack = UnstackAttr(mv_stack);
+
   if (lt_val)
     lt_stack = UnstackAttr(lt_stack);
+
   if (fw_val && !strcmp(fw_val, "bold"))
     mv_stack = UnstackAttr(mv_stack);
   
-  MNODE *eldest = mstyle->first_kid;
-  MNODE *parent = mstyle->parent;
-  MNODE *left_anchor = mstyle->prev;
-  MNODE *right_anchor = mstyle->next;
+  MNODE* eldest = mstyle->first_kid;
+  MNODE* parent = mstyle->parent;
+  MNODE* left_anchor = mstyle->prev;
+  MNODE* right_anchor = mstyle->next;
 
-  MNODE *right_end = eldest;
+  MNODE* right_end = eldest;
   if (right_end) {
     while (right_end->next)
       right_end = right_end->next;
   }
+  
   mstyle->first_kid = NULL;
   
   DelinkTNode(mstyle);
   DisposeTNode(mstyle);
-  TCI_ASSERT(CheckLinks(parent))
-  ;
+
   MNODE* p = eldest;
   while (p){
 	  p->parent = parent;
 	  p = p->next;
   }
-  //if (eldest)
-  //  eldest->parent = parent;
+
 
   if (left_anchor) {
     left_anchor->next = eldest;
@@ -2637,11 +2662,14 @@ void Tree2StdMML::RemoveMSTYLEnode(MNODE * mstyle)
   } else {
     parent->first_kid = eldest;
   }
+
   if (right_anchor) {
     right_anchor->prev = right_end;
     if (eldest)
       right_end->next = right_anchor;
   }
+
+  TCI_ASSERT(CheckLinks(parent));
 }
 
 void Tree2StdMML::InstallStackedAttr(MNODE * mml_node,
