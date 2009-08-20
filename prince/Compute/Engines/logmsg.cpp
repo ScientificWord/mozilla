@@ -1,6 +1,6 @@
 #include "logmsg.h"
 
-#include "cmptypes.h"
+#include "CmpTypes.h"
 #include <cstring>
 #include <stdio.h>
 

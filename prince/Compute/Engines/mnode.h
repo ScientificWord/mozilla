@@ -3,7 +3,7 @@
 
 #include "attriblist.h"
 #include "logmsg.h"
-#include "cmptypes.h"
+#include "CmpTypes.h"
 
 enum OpIlk {
   OP_none,

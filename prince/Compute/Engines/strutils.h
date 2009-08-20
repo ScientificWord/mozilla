@@ -1,7 +1,7 @@
 #ifndef STR_UTILS_H
 #define STR_UTILS_H
 
-#include "cmptypes.h"
+#include "CmpTypes.h"
 
 char* AppendStr2HeapStr(char* zheap_str, 
                         U32& buffer_ln,
