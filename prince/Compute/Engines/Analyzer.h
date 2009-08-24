@@ -18,12 +18,6 @@ class MML2Tree;
 
 struct DE_FUNC_REC;
 
-enum IdentIlk;
-enum BaseType;
-enum ExpType;
-enum AccentType;
-enum PrefixOpIlk;
-enum OpOrderIlk;
 
 
 
