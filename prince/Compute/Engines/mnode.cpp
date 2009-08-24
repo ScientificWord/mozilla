@@ -1,7 +1,7 @@
 #include "mnode.h"
 #include "strutils.h"
 #include "CmpTypes.h"
-
+#include <cstring>
 
 const char * OpIlkToString(OpIlk ilk)
 {
@@ -348,6 +348,14 @@ char* TNodeToStr(MNODE * mml_node, char *prefix, int indent)
 }
 
 
+// A function to enter debugger
+
+void CallDebugger()
+{
+#ifdef _WINDOWS
+  _asm{int 3};
+#endif
+}
 
 // Follows links associated with the node and
 // tries to crash if anyone has a bad pointer.
@@ -366,19 +374,19 @@ bool CheckLinks(MNODE* me)
    while (rover != NULL){
      
      if (rover -> parent != me)	 
-         _asm{int 3};
+         CallDebugger();
 
      if (rover -> next){
 	   if (rover -> next -> prev != rover)
-	     _asm{int 3};
+	     CallDebugger();
 	 }
 
      if (rover -> prev){
 	   if (rover -> prev -> next != rover)
-	     _asm{int 3};
+	     CallDebugger();
 	 }
 	 if (! CheckLinks(rover)){
-	     _asm{int 3};
+	     CallDebugger();
 	 } 
 	 rover = rover -> next;
    }
