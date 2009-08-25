@@ -7819,7 +7819,7 @@ var msiShowTeXLogCommand =
       var match = re.exec(url);
       if (match)
       {
-        var resurl = match[1]+"/"+match[2]+"_files/tex/"+match[2]+".log";
+        var resurl = match[1]+"/"+match[2]+"_files/tex/"+"SWP.log";
         var thefile = Components.classes["@mozilla.org/file/local;1"].
         createInstance(Components.interfaces.nsILocalFile);
         thefile.initWithPath(resurl);
