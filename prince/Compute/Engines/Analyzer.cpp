@@ -26,7 +26,7 @@
 #include "Tree2StdMML.h"
 #include "DefStore.h"
 #include "PrefStor.h"
-#include "attriblist.cpp"
+#include "attriblist.h"
 #include "mnode.h"
 #include "strutils.h"
 
