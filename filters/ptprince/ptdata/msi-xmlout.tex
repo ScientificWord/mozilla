@@ -35,6 +35,9 @@
 
 %\MSIMathQuote{\\} %% may need to hard-code this one
 
+\let\@dblslash\\
+\def\\{\ifmmode\string\\\else\@dblslash\fi}
+
 
 
 % \newcounter{#1}[#2]
