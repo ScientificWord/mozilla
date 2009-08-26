@@ -299,27 +299,31 @@ void Tree2StdMML::LookupMOInfo(MNODE * mml_node)
   if (form_val)
     op_ilk = StringToOpIlk(form_val);
   // look up via mml_entities
-  const char *entity = mml_node->p_chdata;
+  const char* entity = mml_node->p_chdata;
   TCI_ASSERT(entity); //mo tags should always have character data!
+
   bool found_one = false;
   bool set_form = false;
   U32 ID, subID;
-  const char *p_data;
+  const char* p_data;
+
   if (mml_entities->GetRecordFromName("MATH", entity, strlen(entity), ID, subID, &p_data)) {
     if (p_data && *p_data) {
       if (strstr(p_data,"multiform,")) {
 	    set_form = true;
-        const char * str_ilk;
+        const char* str_ilk;
         if (op_ilk == OP_none && ((!strcmp(mml_node->p_chdata,"&#x2212;") || !strcmp(mml_node->p_chdata,"-")))) {
-          if (!mml_node->prev || (!strcmp(mml_node->prev->p_chdata,"&#x2212;") || !strcmp(mml_node->prev->p_chdata,"-"))) {  
+          if (mml_node->prev == 0 || (StringEqual(mml_node->prev->p_chdata,"&#x2212;") || StringEqual(mml_node->prev->p_chdata,"-"))) {  
             op_ilk = OP_prefix;
             set_form = true;
           }
         }
+        
         if (op_ilk == OP_none)
           str_ilk = "default";
         else
           str_ilk = OpIlkToString(op_ilk);
+
         size_t new_ln = strlen(entity) + 1 + strlen(str_ilk);
         char *tmp = new char[new_ln + 1];
         strcpy(tmp, entity);
