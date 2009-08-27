@@ -67,11 +67,35 @@ msiMnCoalesce::Coalesce(nsIEditor * editor,
         cDataNode->GetData(newText);
         newTextLen = newText.Length();
       }
-      else  //TODO  coalesce . or , into MN
+      else 
         newTextLen = 0;
       if (newTextLen > 0)
         msiUtils::CloneNode(m_mathmlNode, clone);
     }
+	else if (NS_SUCCEEDED(res) && nodetype == msiIMathMLEditingBC::MATHML_MO){
+	  //TODO  coalesce . or , into MN
+	  nsCOMPtr<nsIDOMNode> kid;
+      nsCOMPtr<nsIDOMCharacterData> cDataNode;
+      node->GetFirstChild(getter_AddRefs(kid));
+      if (kid)
+        cDataNode = do_QueryInterface(kid);
+      if (cDataNode)
+        cDataNode->GetLength(&newTextLen);
+      if (newTextLen > 0)
+      {
+        cDataNode->GetData(newText);
+        newTextLen = newText.Length();
+		if (newText[0] != '.')
+			newTextLen = 0;
+      }
+      else 
+        newTextLen = 0;
+
+      if (newTextLen > 0)
+        msiUtils::CloneNode(m_mathmlNode, clone);
+
+
+	}
     if (NS_SUCCEEDED(res) && clone && newTextLen > 0)
     {
       nsCOMPtr<nsIDOMNode> child;
