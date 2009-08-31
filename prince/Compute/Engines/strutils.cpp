@@ -103,6 +103,9 @@ U32 ASCII2U32(const char* ptr, int place_val)
 
 char* DuplicateString(const char* str)
 {
+   if (str == NULL)
+     return (char*) NULL;
+
    size_t ln = strlen(str);
    char* tmp = new char[ln + 1];
    strcpy(tmp, str);
