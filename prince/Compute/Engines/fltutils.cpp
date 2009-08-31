@@ -60,8 +60,7 @@ void JBM::DumpTNode(MNODE * t_node, int indent)
     indent_str[ii] = 0;
 
     char zzz[256];
-    sprintf(zzz, "%4lu %s<%s", t_node->src_linenum, indent_str,
-            t_node->src_tok);
+    sprintf(zzz, "%4lu %s<%s", t_node->src_linenum, indent_str, t_node->src_tok);
     JBMLine(zzz);
 
     ATTRIB_REC* rover = t_node->attrib_list;

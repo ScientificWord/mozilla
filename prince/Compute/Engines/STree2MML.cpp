@@ -5228,21 +5228,22 @@ FACTOR_REC *STree2MML::AbsorbUnaryOps(FACTOR_REC * factors,
 //  const char*   p_chdata;
 //  ATTRIB_REC*   attrib_list;
 
-MNODE *STree2MML::CleanupMMLsource(MNODE * mml_var_node)
+MNODE* STree2MML::CleanupMMLsource(MNODE* mml_var_node)
 {
-  MNODE *rv = mml_var_node;
+  MNODE* rv = mml_var_node;
 
   if (mml_var_node) {
     // Convert msubsup to msub - as required
-    if (!strcmp(mml_var_node->src_tok, "msubsup")) {
-      MNODE *child = mml_var_node->first_kid;
+    if (ElementNameIs(mml_var_node, "msubsup")) {
+      MNODE* child = mml_var_node->first_kid;
       if (child && child->next) {
-        MNODE *sub = child->next;
+        MNODE* sub = child->next;
         if (sub->next) {        // we have a superscript
-          MNODE *sup = sub->next;
+          MNODE* sup = sub->next;
           DelinkTNode(sup);
           DisposeTNode(sup);
-          strcpy(mml_var_node->src_tok, "msub");
+		  SetElementName(mml_var_node, "msub");
+          //strcpy(mml_var_node->src_tok, "msub");
         }
       }
     }
@@ -5254,7 +5255,7 @@ MNODE *STree2MML::CleanupMMLsource(MNODE * mml_var_node)
         char suffix[8];
         ATTRIB_REC *a_list = VariantToStyleAtts(mv_val, suffix);
         if (suffix[0]) {
-          if (!strcmp(mml_var_node->src_tok, "mi") && mml_var_node->p_chdata) {
+          if (ElementNameIs(mml_var_node, "mi") && mml_var_node->p_chdata) {
             if (strlen(mml_var_node->p_chdata) == 1) {
               bool do_it = false;
               char ch = mml_var_node->p_chdata[0];
