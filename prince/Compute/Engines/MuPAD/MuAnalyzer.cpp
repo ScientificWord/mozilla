@@ -154,10 +154,11 @@ void MuAnalyzer::SNodeFromOneMNode(SEMANTICS_NODE * snode,
 
   const char *eng_element = eng_node->src_tok;
   size_t ln = strlen(eng_element);
+  
   switch (ln) {
 
   case 3:{
-      if (!strcmp(eng_element, "set")) {
+      if (ElementNameIs(eng_node, "set")) {
         AnalyzeSET(eng_node, snode, local_nodes_done);
       } else
         TCI_ASSERT(0);
@@ -165,7 +166,7 @@ void MuAnalyzer::SNodeFromOneMNode(SEMANTICS_NODE * snode,
     break;
 
   case 5:{
-      if (!strcmp(eng_element, "blist")) {
+      if (ElementNameIs(eng_node, "blist")) {
         AnalyzeBRACKETLIST(eng_node, snode, local_nodes_done);
       } else
         TCI_ASSERT(0);
@@ -173,76 +174,75 @@ void MuAnalyzer::SNodeFromOneMNode(SEMANTICS_NODE * snode,
     break;
 
   case 6:{
-      if (!strcmp(eng_element, "number")) {
-        AnalyzeNUMBER(eng_node, snode, local_nodes_done);
-      } else if (!strcmp(eng_element, "pgroup")) {
-        AnalyzePARENGROUP(eng_node, snode, local_nodes_done);
-      } else if (!strcmp(eng_element, "string")) {
-        AnalyzeSTRING(eng_node, snode, local_nodes_done);
+      if (ElementNameIs(eng_node, "number")) {
+          AnalyzeNUMBER(eng_node, snode, local_nodes_done);
+      } else if (ElementNameIs(eng_node, "pgroup")) {
+          AnalyzePARENGROUP(eng_node, snode, local_nodes_done);
+      } else if (ElementNameIs(eng_node, "string")) {
+          AnalyzeSTRING(eng_node, snode, local_nodes_done);
       } else
         TCI_ASSERT(0);
     }
     break;
 
   case 7:{
-      if (!strcmp(eng_element, "arglist")) {
-        TCI_ASSERT(0);
-        AnalyzeARGLIST(eng_node, snode, local_nodes_done);
-      } else if (!strcmp(eng_element, "Boolean")) {
-        AnalyzeBOOLEAN(eng_node, snode, local_nodes_done);
+      if (ElementNameIs(eng_node, "arglist")) {
+          TCI_ASSERT(0);
+          AnalyzeARGLIST(eng_node, snode, local_nodes_done);
+      } else if (ElementNameIs(eng_node, "Boolean")) {
+          AnalyzeBOOLEAN(eng_node, snode, local_nodes_done);
       } else
-        TCI_ASSERT(0);
+          TCI_ASSERT(0);
     }
     break;
 
   case 8:{
-      if (!strcmp(eng_element, "function")) {
-        AnalyzeFUNCTION(eng_node, snode, local_nodes_done);
-      } else if (!strcmp(eng_element, "variable")) {
-        AnalyzeVARIABLE(eng_node, snode, local_nodes_done);
-      } else if (!strcmp(eng_element, "operator")) {
-        AnalyzeOPERATOR(eng_node, snode, local_nodes_done);
-      } else if (!strcmp(eng_element, "fraction")) {
-        AnalyzeFRACTION(eng_node, snode, local_nodes_done);
-      } else if (!strcmp(eng_element, "constant")) {
-        AnalyzeCONSTANT(eng_node, snode, local_nodes_done);
+      if (ElementNameIs(eng_node, "function")) {
+          AnalyzeFUNCTION(eng_node, snode, local_nodes_done);
+      } else if (ElementNameIs(eng_node, "variable")) {
+          AnalyzeVARIABLE(eng_node, snode, local_nodes_done);
+      } else if (ElementNameIs(eng_node, "operator")) {
+          AnalyzeOPERATOR(eng_node, snode, local_nodes_done);
+      } else if (ElementNameIs(eng_node, "fraction")) {
+          AnalyzeFRACTION(eng_node, snode, local_nodes_done);
+      } else if (ElementNameIs(eng_node, "constant")) {
+          AnalyzeCONSTANT(eng_node, snode, local_nodes_done);
       } else
-        TCI_ASSERT(0);
+          TCI_ASSERT(0);
     }
     break;
 
   case 9:{
-      if (!strcmp(eng_element, "mixed_num")) {
-        AnalyzeMIXEDNUM(eng_node, snode, local_nodes_done);
+      if (ElementNameIs(eng_node, "mixed_num")) {
+          AnalyzeMIXEDNUM(eng_node, snode, local_nodes_done);
       } else
-        TCI_ASSERT(0);
+          TCI_ASSERT(0);
     }
     break;
 
   case 10:{
-      if (!strcmp(eng_element, "power_form")) {
-        AnalyzeSUPERSCRIPT(eng_node, snode, local_nodes_done);
-      } else if (!strcmp(eng_element, "derivative")) {
-        AnalyzeDERIVATIVE(eng_node, snode, local_nodes_done);
+      if (ElementNameIs(eng_node, "power_form")) {
+          AnalyzeSUPERSCRIPT(eng_node, snode, local_nodes_done);
+      } else if (ElementNameIs(eng_node, "derivative")) {
+          AnalyzeDERIVATIVE(eng_node, snode, local_nodes_done);
       } else
-        TCI_ASSERT(0);
+          TCI_ASSERT(0);
     }
     break;
 
   case 11:{
-      if (!strcmp(eng_element, "item_bucket")) {
-        AnalyzeCOMPONENT(eng_node, snode, local_nodes_done);
+      if (ElementNameIs(eng_node, "item_bucket")) {
+          AnalyzeCOMPONENT(eng_node, snode, local_nodes_done);
       } else
-        TCI_ASSERT(0);
+          TCI_ASSERT(0);
     }
     break;
 
   case 16:{
-      if (!strcmp(eng_element, "precedence_group")) {
-        AnalyzePRECGROUP(eng_node, snode, local_nodes_done);
-
+      if (ElementNameIs(eng_node, "precedence_group")) {
+          AnalyzePRECGROUP(eng_node, snode, local_nodes_done);
       } else
-        TCI_ASSERT(0);
+          TCI_ASSERT(0);
     }
     break;
 
@@ -254,10 +254,10 @@ void MuAnalyzer::SNodeFromOneMNode(SEMANTICS_NODE * snode,
   TCI_ASSERT(local_nodes_done == 1);
 }
 
-SEMANTICS_NODE *MuAnalyzer::SNodeFromMNodes(MNODE * eng_node,
-                                            int & eng_nodes_done)
+SEMANTICS_NODE* MuAnalyzer::SNodeFromMNodes(MNODE* eng_node,
+                                            int& eng_nodes_done)
 {
-  SEMANTICS_NODE *rv = NULL;
+  SEMANTICS_NODE* rv = NULL;
 
   if (eng_node) {
     rv = CreateSemanticsNode();
@@ -269,37 +269,38 @@ SEMANTICS_NODE *MuAnalyzer::SNodeFromMNodes(MNODE * eng_node,
   return rv;
 }
 
-void MuAnalyzer::AnalyzePARENGROUP(MNODE * eng_node,
-                                   SEMANTICS_NODE * snode,
-                                   int & local_nodes_done)
+void MuAnalyzer::AnalyzePARENGROUP(MNODE* eng_node,
+                                   SEMANTICS_NODE* snode,
+                                   int& local_nodes_done)
 {
   local_nodes_done = 1;
   snode->semantic_type = SEM_TYP_PRECEDENCE_GROUP;
 
-  BUCKET_REC *item_list = NULL;
+  BUCKET_REC* item_list = NULL;
   if (eng_node->first_kid) {
 
-    MNODE *contents = eng_node->first_kid;
-    BUCKET_REC *obj_bucket = MakeBucketRec(MB_UNNAMED, NULL);
+    MNODE* contents = eng_node->first_kid;
+    BUCKET_REC* obj_bucket = MakeBucketRec(MB_UNNAMED, NULL);
     item_list = AppendBucketRec(item_list, obj_bucket);
 
-    SEMANTICS_NODE *s_cell = GetSemanticsList(contents, obj_bucket);
+    SEMANTICS_NODE* s_cell = GetSemanticsList(contents, obj_bucket);
     obj_bucket->first_child = s_cell;
     s_cell->parent = obj_bucket;
   }
   snode->bucket_list = item_list;
 }
 
-void MuAnalyzer::AnalyzeNUMBER(MNODE * eng_node,
-                               SEMANTICS_NODE * snode, int & local_nodes_done)
+void MuAnalyzer::AnalyzeNUMBER(MNODE* eng_node,
+                               SEMANTICS_NODE* snode, 
+                               int& local_nodes_done)
 {
   local_nodes_done = 1;
   snode->semantic_type = SEM_TYP_NUMBER;
   if (eng_node->p_chdata) {
-    size_t zln = strlen(eng_node->p_chdata);
-    char *tmp = new char[zln + 1];
-    strcpy(tmp, eng_node->p_chdata);
-    snode->contents = tmp;
+    //size_t zln = strlen( );
+    //char *tmp = new char[zln + 1];
+    //strcpy(tmp, eng_node->p_chdata);
+    snode->contents = DuplicateString(eng_node->p_chdata);
   }
 }
 
@@ -341,9 +342,9 @@ void MuAnalyzer::AnalyzeSURD(MNODE * func_node,
 {
   local_nodes_done = 1;
   snode->semantic_type = SEM_TYP_ROOT;
-  MNODE *args_node = func_node->first_kid;
-  if (args_node && !strcmp(args_node->src_tok, "arglist")) {
-    BUCKET_REC *item_list = NULL;
+  MNODE* args_node = func_node->first_kid;
+  if (ElementNameIs(args_node, "arglist")) {
+    BUCKET_REC* item_list = NULL;
     if (args_node->first_kid) {
 
       // locate items in this fence
@@ -391,10 +392,10 @@ void MuAnalyzer::AnalyzeBINOMIAL(MNODE * func_node,
   local_nodes_done = 1;
   snode->semantic_type = SEM_TYP_BINOMIAL;
   MNODE *args_node = func_node->first_kid;
-  if (args_node && !strcmp(args_node->src_tok, "arglist")) {
-    BUCKET_REC *item_list = NULL;
+  if (ElementNameIs(args_node, "arglist")) {
+    BUCKET_REC* item_list = NULL;
     if (args_node->first_kid) {
-      MNODE *item_rover = args_node->first_kid;
+      MNODE* item_rover = args_node->first_kid;
       if (item_rover->first_kid) {
         MNODE *contents = item_rover->first_kid;
         BUCKET_REC *item_bucket = MakeBucketRec(MB_NUMERATOR, NULL);
@@ -433,15 +434,15 @@ void MuAnalyzer::AnalyzeINTERVAL(MNODE * func_node,
   bool right_open = true;
 
   MNODE *args_list = func_node->first_kid;
-  if (args_list && !strcmp(args_list->src_tok, "arglist")) {
+  if (ElementNameIs(args_list, "arglist")) {
     if (args_list->first_kid) {
       MNODE *arg1 = args_list->first_kid;
       if (arg1->first_kid) {
         BUCKET_REC *bucket = MakeBucketRec(MB_INTERVAL_START, NULL);
         snode->bucket_list = AppendBucketRec(snode->bucket_list, bucket);
 
-        MNODE *contents = arg1->first_kid;
-        if (!strcmp(contents->src_tok, "blist")) {
+        MNODE* contents = arg1->first_kid;
+        if (ElementNameIs(contents, "blist")) {
           left_open = false;
           contents = contents->first_kid;
           if (contents)
@@ -458,8 +459,8 @@ void MuAnalyzer::AnalyzeINTERVAL(MNODE * func_node,
             BUCKET_REC *bucket = MakeBucketRec(MB_INTERVAL_END, NULL);
             snode->bucket_list = AppendBucketRec(snode->bucket_list, bucket);
 
-            MNODE *contents = arg2->first_kid;
-            if (!strcmp(contents->src_tok, "blist")) {
+            MNODE* contents = arg2->first_kid;
+            if (ElementNameIs(contents, "blist")) {
               right_open = false;
               contents = contents->first_kid;
               if (contents)
@@ -497,7 +498,7 @@ void MuAnalyzer::AnalyzeNO_OP(MNODE * func_node,
   local_nodes_done = 1;
 
   MNODE *args_node = func_node->first_kid;
-  if (args_node && !strcmp(args_node->src_tok, "arglist")) {
+  if (ElementNameIs(args_node, "arglist")) {
     if (args_node->first_kid) {
       MNODE *arg_bucket = args_node->first_kid;
       if (arg_bucket->first_kid) {
@@ -723,7 +724,7 @@ void MuAnalyzer::AnalyzeCONJUGATE(MNODE * func_node,
   local_nodes_done = 1;
   snode->semantic_type = SEM_TYP_CONJUGATE;
   MNODE *args_node = func_node->first_kid;
-  if (args_node && !strcmp(args_node->src_tok, "arglist")) {
+  if (ElementNameIs(args_node, "arglist")) {
     BUCKET_REC *item_list = NULL;
     if (args_node->first_kid) {
       MNODE *item_rover = args_node->first_kid;
@@ -742,16 +743,16 @@ void MuAnalyzer::AnalyzeCONJUGATE(MNODE * func_node,
 
 // Engine output - "D(D(q1y(q1x)))(q1x)" for y"(x) OR d^2y/dx^2
 
-void MuAnalyzer::AnalyzeDERIVATIVE(MNODE * deriv_node,
-                                   SEMANTICS_NODE * snode,
-                                   int & local_nodes_done)
+void MuAnalyzer::AnalyzeDERIVATIVE(MNODE* deriv_node,
+                                   SEMANTICS_NODE* snode,
+                                   int& local_nodes_done)
 {
   local_nodes_done = 1;
   snode->semantic_type = SEM_TYP_DERIVATIVE;
 
   MNODE *func_node = deriv_node->first_kid;
-  if (func_node && !strcmp(func_node->src_tok, "function")) {
-    SEMANTICS_NODE *s_func = CreateSemanticsNode();
+  if (ElementNameIs(func_node, "function")) {
+    SEMANTICS_NODE* s_func = CreateSemanticsNode();
     s_func->semantic_type = SEM_TYP_FUNCTION;
 
     AnalyzeFUNCTION(func_node, s_func, local_nodes_done);
@@ -786,7 +787,7 @@ void MuAnalyzer::AnalyzeEXPONENTIAL(MNODE * func_node,
   local_nodes_done = 1;
   snode->semantic_type = SEM_TYP_POWERFORM;
   MNODE *args_node = func_node->first_kid;
-  if (args_node && !strcmp(args_node->src_tok, "arglist")) {
+  if (ElementNameIs(args_node, "arglist")) {
     // Get the value of the argument
     if (args_node->first_kid) {
       MNODE *exponent = args_node->first_kid;
@@ -795,7 +796,7 @@ void MuAnalyzer::AnalyzeEXPONENTIAL(MNODE * func_node,
 
         bool is_one = false;
         if (exp_contents && !exp_contents->next)
-          if (!strcmp(exp_contents->src_tok, "number"))
+          if (ElementNameIs(exp_contents, "number"))
             if (exp_contents->p_chdata)
               if (!strcmp(exp_contents->p_chdata, "1"))
                 is_one = true;
@@ -867,16 +868,15 @@ void MuAnalyzer::AnalyzeARRAY(MNODE * array_node,
       if (di < 16)
         dimens[di++] = n_end - n_start + 1;
     } else {
-      MNODE *c_rover = arg_rover->first_kid;
-      MNODE *cell_content = NULL;
-      if (c_rover && !strcmp(c_rover->src_tok, "pgroup")) { // (1,1)
+      MNODE* c_rover = arg_rover->first_kid;
+      MNODE* cell_content = NULL;
+      if (ElementNameIs(c_rover, "pgroup")) { // (1,1)
         c_rover = c_rover->next;
-        if (c_rover && !strcmp(c_rover->src_tok, "operator")) { // =
+        if (ElementNameIs(c_rover, "operator")) { // =
           if (c_rover->p_chdata && c_rover->p_chdata[0] == '=') {
             cell_content = c_rover->next;
             // The contents a matrix cell doesn't need an enclosing precedence group
-            if (!strcmp(cell_content->src_tok, "precedence_group")
-                && !cell_content->next)
+            if (ElementNameIs(cell_content, "precedence_group")  && !cell_content->next)
               cell_content = cell_content->first_kid;
           }
         }
@@ -1254,12 +1254,12 @@ void MuAnalyzer::AnalyzeFUNCTION(MNODE * func_node, SEMANTICS_NODE * snode,
       }
     }
 
-    MNODE *args_node = func_node->first_kid;
-    if (args_node && !strcmp(args_node->src_tok, "arglist")) {
-      BUCKET_REC *item_list = NULL;
+    MNODE* args_node = func_node->first_kid;
+    if (ElementNameIs(args_node, "arglist")) {
+      BUCKET_REC* item_list = NULL;
       if (args_node->first_kid) {
         // locate items in this fence
-        MNODE *item_rover = args_node->first_kid;
+        MNODE* item_rover = args_node->first_kid;
         while (item_rover) {
           if (item_rover->first_kid) {
             MNODE* contents = item_rover->first_kid;
@@ -1296,7 +1296,7 @@ void MuAnalyzer::AnalyzePIECEWISE(MNODE * PIECEWISE_node,
   }
 
   MNODE *pieceslist = PIECEWISE_node->first_kid;
-  if (pieceslist && !strcmp(pieceslist->src_tok, "arglist")) {
+  if (ElementNameIs(pieceslist, "arglist")) {
     BUCKET_REC *item_list = NULL;
     if (pieceslist->first_kid) {
       MNODE *arg_rover = pieceslist->first_kid;
@@ -1893,7 +1893,7 @@ void MuAnalyzer::AnalyzeBRACKETLIST(MNODE * eng_blist_node,
 {
   local_nodes_done = 1;
   snode->semantic_type = SEM_TYP_BRACKETED_LIST;
-  if (!strcmp(eng_blist_node->src_tok, "qlist"))
+  if (ElementNameIs(eng_blist_node, "qlist"))
     snode->semantic_type = SEM_TYP_QSUB_LIST;
 
   BUCKET_REC *item_list = NULL;
@@ -1993,7 +1993,7 @@ BUCKET_REC *MuAnalyzer::GetCellsFromROW(MNODE * row_container,
 
   if (row_container && row_container->first_kid) {
     MNODE *contents = row_container->first_kid;
-    if (!strcmp(contents->src_tok, "blist")) {
+    if (ElementNameIs(contents, "blist")) {
       MNODE *col_rover = contents->first_kid;
       while (col_rover) {
         // col_rover should be a "item" node
@@ -2243,7 +2243,7 @@ MNODE *MuAnalyzer::InfixToPrefix(MNODE * eng_tree, char *z_op)
 
   MNODE *rover = eng_tree;
   while (rover) {
-    if (!strcmp(rover->src_tok, "operator")
+    if (ElementNameIs(rover, "operator")
         && rover->p_chdata && !strcmp(rover->p_chdata, z_op)) {
       MNODE *left_operand = rover->prev;
       MNODE *right_operand = rover->next;
@@ -2256,11 +2256,11 @@ MNODE *MuAnalyzer::InfixToPrefix(MNODE * eng_tree, char *z_op)
 
         MNODE *schemata = MakeTNode(0, 0, 0);
         if (rover->p_chdata[0] == '/')
-          strcpy(schemata->src_tok, "fraction");
+		  SetElementName(schemata, "fraction");
         else if (rover->p_chdata[0] == '^')
-          strcpy(schemata->src_tok, "power_form");
+          SetElementName(schemata, "power_form");
         else if (rover->p_chdata[0] == 'm')
-          strcpy(schemata->src_tok, "mixed_num");
+          SetElementName(schemata, "mixed_num");
         else
           TCI_ASSERT(0);
 
@@ -2341,14 +2341,13 @@ bool MuAnalyzer::IsArrayDimen(MNODE * arg, U32 & n_start, U32 & n_end)
   bool rv = false;
 
   if (arg && arg->first_kid) {
-    MNODE *rover = arg->first_kid;
-    if (!strcmp(rover->src_tok, "number")) {
+    MNODE* rover = arg->first_kid;
+    if (ElementNameIs(rover, "number")) {
       n_start = atoi(rover->p_chdata);
       rover = rover->next;
-      if (rover && !strcmp(rover->src_tok, "operator")
-          && !strcmp(rover->p_chdata, "..")) {
+      if (ElementNameIs(rover, "operator") && ContentIs(rover, "..")) {
         rover = rover->next;
-        if (rover && !strcmp(rover->src_tok, "number")) {
+        if (ElementNameIs(rover, "number")) {
           rv = true;
           if (rover->p_chdata)
             n_end = atoi(rover->p_chdata);
@@ -2429,7 +2428,7 @@ void MuAnalyzer::AnalyzeDIFF(MNODE * func_node,
     snode->semantic_type = SEM_TYP_PARTIALD;
 
   MNODE *args_list = func_node->first_kid;
-  if (args_list && !strcmp(args_list->src_tok, "arglist")) {
+  if (ElementNameIs(args_list, "arglist")) {
     if (args_list->first_kid) {
       // First arg is the function being differentiated
       MNODE *arg_rover = args_list->first_kid;
@@ -2539,16 +2538,16 @@ bool MuAnalyzer::IsDerivative(MNODE * func_node, int & n_primes)
       // First arg is the function or expression being differentiated
       const char *the_var = NULL;
       if (arg_rover->first_kid) { // enter first argument
-        MNODE *cont = arg_rover->first_kid;
-        if (!strcmp(cont->src_tok, "function")) {
-          MNODE *a_list = cont->first_kid;
-          if (a_list && !strcmp(a_list->src_tok, "arglist")) {
+        MNODE* cont = arg_rover->first_kid;
+        if (ElementNameIs(cont, "function")) {
+          MNODE* a_list = cont->first_kid;
+          if (ElementNameIs(a_list, "arglist")) {
             if (a_list->first_kid) {
               MNODE *a_rover = a_list->first_kid;
               if (a_rover && a_rover->first_kid && !a_rover->next) {
                 // func of single variable
                 MNODE *var = a_rover->first_kid;
-                if (!strcmp(var->src_tok, "variable"))
+                if (ElementNameIs(var, "variable"))
                   the_var = var->p_chdata;
               }
             }
@@ -2612,10 +2611,10 @@ MNODE *MuAnalyzer::LocateDiffVar(MNODE * deriv_node)
            && rover->first_kid->first_kid
            && rover->first_kid->first_kid->first_kid) {
       MNODE *cont = rover->first_kid->first_kid->first_kid;
-      if (!strcmp(cont->src_tok, "variable")) {
+      if (ElementNameIs(cont, "variable")) {
         rv = cont;
         break;
-      } else if (!strcmp(cont->src_tok, "function")) {
+      } else if (ElementNameIs(cont, "function")) {
         rover = cont;
       } else {
         break;

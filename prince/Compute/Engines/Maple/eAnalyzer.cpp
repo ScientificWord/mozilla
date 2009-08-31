@@ -373,7 +373,7 @@ void eAnalyzer::AnalyzeSURD(MNODE * func_node,
   local_nodes_done = 1;
   snode->semantic_type = SEM_TYP_ROOT;
   MNODE *args_node = func_node->first_kid;
-  if (args_node && !strcmp(args_node->src_tok, "arglist")) {
+  if (args_node && ElementNameIs(args_node, "arglist")) {
     //    local_nodes_done++;
     BUCKET_REC *item_list = NULL;
     if (args_node->first_kid) {
@@ -417,7 +417,7 @@ void eAnalyzer::AnalyzeDIFF(MNODE * diff_node,
     snode->semantic_type = SEM_TYP_PARTIALD;
 
   MNODE *args_node = diff_node->first_kid;
-  if (args_node && !strcmp(args_node->src_tok, "arglist")) {
+  if (args_node && ElementNameIs(args_node, "arglist")) {
     if (args_node->first_kid) {
       // first arg is the function (expression) being differentiated
       MNODE *item_rover = args_node->first_kid;
@@ -475,7 +475,7 @@ void eAnalyzer::AnalyzeBINOMIAL(MNODE * func_node,
   local_nodes_done = 1;
   snode->semantic_type = SEM_TYP_BINOMIAL;
   MNODE *args_node = func_node->first_kid;
-  if (args_node && !strcmp(args_node->src_tok, "arglist")) {
+  if (args_node && ElementNameIs(args_node, "arglist")) {
     BUCKET_REC *item_list = NULL;
     if (args_node->first_kid) {
       MNODE *item_rover = args_node->first_kid;
@@ -508,7 +508,7 @@ void eAnalyzer::AnalyzeNO_OP(MNODE * func_node,
 {
   local_nodes_done = 1;
   MNODE *args_node = func_node->first_kid;
-  if (args_node && !strcmp(args_node->src_tok, "arglist")) {
+  if (args_node && ElementNameIs(args_node, "arglist")) {
     if (args_node->first_kid) {
       MNODE *arg_bucket = args_node->first_kid;
       if (arg_bucket->first_kid) {
@@ -728,7 +728,7 @@ void eAnalyzer::AnalyzeCONJUGATE(MNODE * func_node,
   local_nodes_done = 1;
   snode->semantic_type = SEM_TYP_CONJUGATE;
   MNODE *args_node = func_node->first_kid;
-  if (args_node && !strcmp(args_node->src_tok, "arglist")) {
+  if (args_node && ElementNameIs(args_node, "arglist")) {
     BUCKET_REC *item_list = NULL;
     if (args_node->first_kid) {
       MNODE *item_rover = args_node->first_kid;
@@ -753,7 +753,7 @@ void eAnalyzer::AnalyzeDERIVATIVE(MNODE * deriv_node,
   snode->semantic_type = SEM_TYP_DERIVATIVE;
 
   MNODE *func_node = deriv_node->first_kid;
-  if (func_node && !strcmp(func_node->src_tok, "function")) {
+  if (func_node && ElementNameIs(func_node, "function")) {
     SEMANTICS_NODE *s_func = CreateSemanticsNode();
     s_func->semantic_type = SEM_TYP_FUNCTION;
     AnalyzeFUNCTION(func_node, s_func, local_nodes_done);
@@ -787,7 +787,7 @@ void eAnalyzer::AnalyzeEXPONENTIAL(MNODE * func_node,
   snode->semantic_type = SEM_TYP_POWERFORM;
 
   MNODE *args_node = func_node->first_kid;
-  if (args_node && !strcmp(args_node->src_tok, "arglist")) {
+  if (args_node && ElementNameIs(args_node, "arglist")) {
     // Get the value of the argument
     if (args_node->first_kid) {
       MNODE *exponent = args_node->first_kid;
@@ -795,7 +795,7 @@ void eAnalyzer::AnalyzeEXPONENTIAL(MNODE * func_node,
         MNODE *exp_contents = exponent->first_kid;
         bool is_one = false;
         if (exp_contents && !exp_contents->next)
-          if (!strcmp(exp_contents->src_tok, "number"))
+          if (ElementNameIs(exp_contents, "number"))
             if (exp_contents->p_chdata)
               if (!strcmp(exp_contents->p_chdata, "1"))
                 is_one = true;
@@ -1170,7 +1170,7 @@ void eAnalyzer::AnalyzeFUNCTION(MNODE * func_node,
     }
 
     MNODE *args_node = func_node->first_kid;
-    if (args_node && !strcmp(args_node->src_tok, "arglist")) {
+    if (args_node && ElementNameIs(args_node, "arglist")) {
       BUCKET_REC *item_list = NULL;
       if (args_node->first_kid) {
         // locate items in this fence
@@ -1206,7 +1206,7 @@ void eAnalyzer::AnalyzePIECEWISE(MNODE * PIECEWISE_node,
   }
 
   MNODE *pieceslist = PIECEWISE_node->first_kid;
-  if (pieceslist && !strcmp(pieceslist->src_tok, "arglist")) {
+  if (pieceslist && ElementNameIs(pieceslist, "arglist")) {
     BUCKET_REC *item_list = NULL;
     if (pieceslist->first_kid) {
       MNODE *item_rover = pieceslist->first_kid;
@@ -1712,7 +1712,7 @@ void eAnalyzer::AnalyzeBRACKETLIST(MNODE * eng_blist_node,
 {
   local_nodes_done = 1;
   snode->semantic_type = SEM_TYP_BRACKETED_LIST;
-  if (!strcmp(eng_blist_node->src_tok, "qlist"))
+  if (ElementNameIs(eng_blist_node, "qlist"))
     snode->semantic_type = SEM_TYP_QSUB_LIST;
 
   BUCKET_REC *item_list = NULL;
@@ -1808,15 +1808,15 @@ BUCKET_REC *eAnalyzer::GetCellsFromROW(MNODE * row_container, int & col_tally)
   col_tally = 0;
 
   if (row_container && row_container->first_kid) {
-    MNODE *contents = row_container->first_kid;
-    if (!strcmp(contents->src_tok, "blist")) {
+    MNODE* contents = row_container->first_kid;
+    if (ElementNameIs(contents, "blist")) {
       MNODE *col_rover = contents->first_kid;
       while (col_rover) {
         // col_rover should be a "item" node
-        BUCKET_REC *cell_bucket = MakeBucketRec(MB_UNNAMED, NULL);
+        BUCKET_REC* cell_bucket = MakeBucketRec(MB_UNNAMED, NULL);
         rv = AppendBucketRec(rv, cell_bucket);
 
-        SEMANTICS_NODE *curr_cell = GetSemanticsList(col_rover, cell_bucket, 1);
+        SEMANTICS_NODE* curr_cell = GetSemanticsList(col_rover, cell_bucket, 1);
 
         if (curr_cell
             && curr_cell->semantic_type == SEM_TYP_PRECEDENCE_GROUP
@@ -2082,9 +2082,9 @@ MNODE *eAnalyzer::InfixToPrefix(MNODE * eng_tree, char *z_op)
 {
   MNODE *rv = eng_tree;
 
-  MNODE *rover = eng_tree;
+  MNODE* rover = eng_tree;
   while (rover) {
-    if (!strcmp(rover->src_tok, "operator")
+    if (ElementNameIs(rover, "operator")
         && rover->p_chdata && !strcmp(rover->p_chdata, z_op)) {
       MNODE *left_operand = rover->prev;
       MNODE *right_operand = rover->next;
@@ -2097,11 +2097,11 @@ MNODE *eAnalyzer::InfixToPrefix(MNODE * eng_tree, char *z_op)
 
         MNODE *schemata = MakeTNode(0, 0, 0);
         if (rover->p_chdata[0] == '/')
-          strcpy(schemata->src_tok, "fraction");
+          SetElementName(schemata, "fraction");
         else if (rover->p_chdata[0] == '^')
-          strcpy(schemata->src_tok, "power_form");
+          SetElementName(schemata, "power_form");
         else if (rover->p_chdata[0] == 'm')
-          strcpy(schemata->src_tok, "mixed_num");
+          SetElementName(schemata, "mixed_num");
         else
           TCI_ASSERT(0);
 
@@ -2196,7 +2196,7 @@ void eAnalyzer::AnalyzeDOLLAR(MNODE * func_node,
   local_nodes_done = 1;
   snode->semantic_type = SEM_TYP_POWERFORM;
   MNODE *args_node = func_node->first_kid;
-  if (args_node && !strcmp(args_node->src_tok, "arglist")) {
+  if (args_node && ElementNameIs(args_node, "arglist")) {
     if (args_node->first_kid) {
       MNODE *item_rover = args_node->first_kid;
       if (item_rover->first_kid) {
@@ -2237,15 +2237,15 @@ bool eAnalyzer::IsDerivative(MNODE * diff_node, int & n_primes)
       // First arg contains the function being differentiated
       const char *the_var = NULL;
       if (arg_rover->first_kid) { // enter first argument
-        MNODE *cont = arg_rover->first_kid;
-        if (!strcmp(cont->src_tok, "function")) {
-          MNODE *a_list = cont->first_kid;
-          if (a_list && !strcmp(a_list->src_tok, "arglist")) {
+        MNODE* cont = arg_rover->first_kid;
+        if (ElementNameIs(cont, "function")) {
+          MNODE* a_list = cont->first_kid;
+          if (a_list && ElementNameIs(a_list, "arglist")) {
             if (a_list->first_kid) {
               MNODE *a_rover = a_list->first_kid;
               if (a_rover && a_rover->first_kid && !a_rover->next) {  // func of a single variable
                 MNODE *var = a_rover->first_kid;
-                if (!strcmp(var->src_tok, "variable"))
+                if (ElementNameIs(var, "variable"))
                   the_var = var->p_chdata;
               }
             }
@@ -2253,26 +2253,26 @@ bool eAnalyzer::IsDerivative(MNODE * diff_node, int & n_primes)
         }
       }
       if (the_var) {
-        const char *var2 = NULL;
+        const char* var2 = NULL;
         arg_rover = arg_rover->next;
         // Remaining args are variables of differentiation
         //   diff(q1m(q1x),`$`(q1x,2))
         //   diff(q1m(q1x),q1x)
         if (arg_rover->first_kid) { // enter second argument
-          MNODE *dollar = arg_rover->first_kid;
-          if (!strcmp(dollar->src_tok, "function")) {
-            MNODE *a_list = dollar->first_kid;
-            if (a_list && !strcmp(a_list->src_tok, "arglist")) {
+          MNODE* dollar = arg_rover->first_kid;
+          if (ElementNameIs(dollar, "function")) {
+            MNODE* a_list = dollar->first_kid;
+            if (a_list && ElementNameIs(a_list, "arglist")) {
               if (a_list->first_kid) {
-                MNODE *a_rover = a_list->first_kid;
+                MNODE* a_rover = a_list->first_kid;
                 if (a_rover && a_rover->first_kid && a_rover->next) { // func of two variables
-                  MNODE *var = a_rover->first_kid;
-                  if (!strcmp(var->src_tok, "variable")) {
+                  MNODE* var = a_rover->first_kid;
+                  if (ElementNameIs(var, "variable")) {
                     var2 = var->p_chdata;
                     a_rover = a_rover->next;
                     if (a_rover->first_kid) {
-                      MNODE *num = a_rover->first_kid;
-                      if (!strcmp(num->src_tok, "number")
+                      MNODE* num = a_rover->first_kid;
+                      if (ElementNameIs(num, "number")
                           && num->p_chdata && !strcmp(the_var, var2)) {
                         n_primes = atoi(num->p_chdata);
                         rv = true;
@@ -2283,7 +2283,7 @@ bool eAnalyzer::IsDerivative(MNODE * diff_node, int & n_primes)
                 }
               }
             }
-          } else if (!strcmp(dollar->src_tok, "variable")) {
+          } else if (ElementNameIs(dollar, "variable")) {
             var2 = dollar->p_chdata;
             if (!strcmp(the_var, var2)) {
               n_primes = 1;
@@ -2332,18 +2332,18 @@ void eAnalyzer::AnalyzePRIMED(MNODE * atat_node,
     MNODE *func_nom = atat_node->next;
     MNODE *var_nom = func_nom->next;
     // Get n_primes from "atat_node"
-    MNODE *a_list = atat_node->first_kid;
-    if (a_list && !strcmp(a_list->src_tok, "arglist")) {
+    MNODE* a_list = atat_node->first_kid;
+    if (a_list && ElementNameIs(a_list, "arglist")) {
       if (a_list->first_kid) {
-        MNODE *a_rover = a_list->first_kid;
+        MNODE* a_rover = a_list->first_kid;
         if (a_rover && a_rover->first_kid && a_rover->next) { // func of two variables
-          MNODE *const_D = a_rover->first_kid;
-          if (!strcmp(const_D->src_tok, "constant")
+          MNODE* const_D = a_rover->first_kid;
+          if (ElementNameIs(const_D, "constant")
               && !strcmp(const_D->p_chdata, "D")) {
             a_rover = a_rover->next;
             if (a_rover->first_kid) {
               MNODE *num = a_rover->first_kid;
-              if (!strcmp(num->src_tok, "number")
+              if (ElementNameIs(num, "number")
                   && num->p_chdata) {
                 n_primes = atoi(num->p_chdata);
                 go_on = true;
@@ -2356,11 +2356,12 @@ void eAnalyzer::AnalyzePRIMED(MNODE * atat_node,
       }
     }
 
-    if (go_on && !strcmp(func_nom->src_tok, "pgroup")
-        && !strcmp(var_nom->src_tok, "pgroup")) {
+    if (go_on && ElementNameIs(func_nom, "pgroup")
+        && ElementNameIs(var_nom, "pgroup")) {
+
       SEMANTICS_NODE *s_func;
       MNODE *func = func_nom->first_kid;
-      if (func && !strcmp(func->src_tok, "variable")) {
+      if (func && ElementNameIs(func, "variable")) {
         BUCKET_REC *bucket = MakeBucketRec(MB_UNNAMED, NULL);
         snode->bucket_list = AppendBucketRec(snode->bucket_list, bucket);
         s_func = GetSemanticsList(func, bucket);
@@ -2377,7 +2378,7 @@ void eAnalyzer::AnalyzePRIMED(MNODE * atat_node,
         bucket->first_child = s_var;
         s_var->parent = bucket;
 
-        if (!strcmp(var->src_tok, "variable")) {
+        if (ElementNameIs(var, "variable")) {
           bucket = MakeBucketRec(MB_DIFF_VAR, NULL);
           snode->bucket_list = AppendBucketRec(snode->bucket_list, bucket);
           SEMANTICS_NODE *s_diff_var = GetSemanticsList(var, bucket);
@@ -2409,10 +2410,10 @@ MNODE *eAnalyzer::LocateDiffVar(MNODE * deriv_node)
            && rover->first_kid->first_kid
            && rover->first_kid->first_kid->first_kid) {
       MNODE *cont = rover->first_kid->first_kid->first_kid;
-      if (!strcmp(cont->src_tok, "variable")) {
+      if (ElementNameIs(cont, "variable")) {
         rv = cont;
         break;
-      } else if (!strcmp(cont->src_tok, "function")) {
+      } else if (ElementNameIs(cont, "function")) {
         rover = cont;
       } else {
         break;
