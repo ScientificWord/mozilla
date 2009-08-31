@@ -545,13 +545,13 @@ function doComputeCommand(cmd, editorElement, cmdHandler)
       doComputeImplicitDiff(element, editorElement, cmdHandler);
       break;
     case "cmd_compute_SolveODEExact":
-      doComputeSolveODE(element,"ODE.fmt",eng.solveODEExact,"ODE.title", "", editorElement, cmd, cmdHandler);
+      doComputeSolveODE(element,"ODE.fmt",eng.Solve_ODE_Exact,"ODE.title", "", editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_SolveODELaplace":
-      doComputeSolveODE(element,"ODELaplace.fmt",eng.solveODELaplace,"ODELaplace.title", "", editorElement, cmd, cmdHandler);
+      doComputeSolveODE(element,"ODELaplace.fmt",eng.Solve_ODE_Laplace,"ODELaplace.title", "", editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_SolveODENumeric":
-      doComputeSolveODE(element,"ODENumeric.fmt",eng.solveODENumeric,"ODENumeric.title", "", editorElement, cmd, cmdHandler);
+      doComputeSolveODE(element,"ODENumeric.fmt",eng.Solve_ODE_Numeric,"ODENumeric.title", "", editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_SolveODESeries":
       doComputeSolveODESeries(element, editorElement);
@@ -1828,7 +1828,9 @@ function doComputeSolveODE(math,labelID,func,titleID, vars, editorElement, cmd, 
   msiComputeLogger.Sent4(labelID,mathstr,"specifying",vars);
   try {
     ComputeCursor(editorElement);
-    var out = func(mathstr,vars);
+    //var out = func(mathstr,vars);
+	var eng = GetCurrentEngine();
+	var out = eng.solveODEExact(mathstr,vars);
     msiComputeLogger.Received(out);
     appendLabeledResult(out,GetComputeString(labelID),math, editorElement);
     RestoreCursor(editorElement);
