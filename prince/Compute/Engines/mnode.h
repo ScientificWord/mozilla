@@ -45,6 +45,8 @@ public:
   {}
 
 
+
+
   MNODE* next;
   MNODE* prev;
 
@@ -62,6 +64,12 @@ public:
   ATTRIB_REC* attrib_list;
   LOG_MSG_REC* msg_list;
 };
+
+bool ElementNameIs(const MNODE* pNode, const char* str);
+void SetElementName(MNODE* pNode, const char* str);
+
+bool ContentIs(const MNODE* pNode, const char* str);
+void SetContent(MNODE* pNode, const char* str);
 
 
 MNODE* MakeTNode(U32 s_off, U32 e_off, U32 line_no);

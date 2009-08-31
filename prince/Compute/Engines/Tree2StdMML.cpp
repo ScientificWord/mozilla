@@ -88,19 +88,12 @@ MNODE* Tree2StdMML::TreeToInterpretForm(MNODE* dMML_tree,
   TCI_ASSERT(CheckLinks(dMML_tree));
   MNODE* rv = ChDataToCanonicalForm(dMML_tree);
   BindDelimitedGroups(rv);
-  TCI_ASSERT(CheckLinks(dMML_tree));
   BindScripts(rv);
-  TCI_ASSERT(CheckLinks(dMML_tree));
   rv = FixMFENCEDs(rv);
-  TCI_ASSERT(CheckLinks(dMML_tree));
   RemoveMixedNumbers(rv, in_notation);
-  TCI_ASSERT(CheckLinks(dMML_tree));
   FinishFixup(rv);
-  TCI_ASSERT(CheckLinks(dMML_tree));
   rv = InfixDivideToMFRAC(rv);
-  TCI_ASSERT(CheckLinks(dMML_tree));
   rv = RemoveMatrixDelims(rv, in_notation);
-  TCI_ASSERT(CheckLinks(dMML_tree));
   RemoveMSTYLEs(rv);
   rv = RemoveMPADDEDs(rv);
   rv = RemoveRedundantMROWs(rv);
@@ -131,7 +124,7 @@ MNODE* Tree2StdMML::TreeToFixupForm(MNODE* dMML_tree, bool D_is_derivative)
 // The input to CCID_Cleanup may be ugly.  Resolve that here.
 MNODE* Tree2StdMML::TreeToCleanupForm(MNODE* dMML_tree)
 {
-  TCI_ASSERT( strcmp(dMML_tree -> src_tok, "math") == 0 );
+  TCI_ASSERT( ElementNameIs(dMML_tree, "math") );
 
   RemoveEmptyTags(dMML_tree);
   FixAdjacentMNs(dMML_tree);
@@ -165,8 +158,7 @@ MNODE* Tree2StdMML::ChDataToCanonicalForm(MNODE* dMML_tree)
           TCI_ASSERT(!"Unknown character entity or out of memory.");
         }
       } else {
-        if (!strcmp(curr -> src_tok, "mspace")
-            || !strcmp(curr -> src_tok, "maligngroup")) {
+        if (ElementNameIs(curr , "mspace") || ElementNameIs(curr, "maligngroup")) {
           if (curr == rv)
             rv = curr -> next;
           DelinkTNode(curr);
@@ -187,10 +179,12 @@ void Tree2StdMML::RemoveMixedNumbers(MNODE* dMML_tree,
       RemoveMixedNumbers( rover -> first_kid, in_notation );
     } else {                    // rover is elementary
       int whole_digits;
-      if (!strcmp(rover->src_tok, "mn")
-          && IsAllDigits(rover, whole_digits)
-          && rover->next && !strcmp(rover->next->src_tok, "mfrac")) {
-        MNODE *frac = rover->next;
+      if (ElementNameIs(rover, "mn") && 
+          IsAllDigits(rover, whole_digits) && 
+          rover->next && 
+          ElementNameIs(rover->next, "mfrac") ) {
+
+        MNODE* frac = rover->next;
         if (frac->first_kid) {
           MNODE* numerator = frac -> first_kid;
           MNODE* denominator = numerator -> next;
@@ -233,7 +227,7 @@ MNODE *Tree2StdMML::FixMFENCEDs(MNODE * dMML_tree)
         c_list->parent = rover;
       }
     } else {                    // rover is elementary
-      if (!strcmp(rover->src_tok, "mo") && !HasRequiredChildren(rover->parent)) {
+      if (ElementNameIs(rover, "mo") && !HasRequiredChildren(rover->parent)) {
         if (IsFenceMO(rover)) {
           GROUP_INFO gi;
           GetFenceInfo(rover, gi);
@@ -266,7 +260,7 @@ void Tree2StdMML::FixInvisibleFences(MNODE * dMML_tree)
     if (rover->first_kid) {     // rover is a schemata
       FixInvisibleFences(rover->first_kid);
     }
-    if (!strcmp(rover->src_tok, "mfenced")) {
+    if (ElementNameIs(rover, "mfenced")) {
       const char *opener = GetATTRIBvalue(rover->attrib_list, "open");
       if (opener[0] == 'I' && opener[1] == 0) {
         ATTRIB_REC *ar_open = new ATTRIB_REC("open", "");
@@ -290,7 +284,7 @@ void Tree2StdMML::AddOperatorInfo(MNODE * dMML_tree)
 // return precedence of mo according to the MathML Operator Dictionary
 void Tree2StdMML::LookupMOInfo(MNODE * mml_node)
 {
-  if (strcmp(mml_node->src_tok,"mo"))
+  if (! ElementNameIs(mml_node, "mo"))
     return;
   int precedence = 0;
   const char *accent_val = GetATTRIBvalue(mml_node->attrib_list, "accent");
@@ -312,8 +306,8 @@ void Tree2StdMML::LookupMOInfo(MNODE * mml_node)
       if (strstr(p_data,"multiform,")) {
 	    set_form = true;
         const char* str_ilk;
-        if (op_ilk == OP_none && ((!strcmp(mml_node->p_chdata,"&#x2212;") || !strcmp(mml_node->p_chdata,"-")))) {
-          if (mml_node->prev == 0 || (StringEqual(mml_node->prev->p_chdata,"&#x2212;") || StringEqual(mml_node->prev->p_chdata,"-"))) {  
+        if (op_ilk == OP_none && ((ContentIs(mml_node, "&#x2212;") || ContentIs(mml_node, "-")))) {
+          if (mml_node->prev == 0 || (ContentIs(mml_node->prev, "&#x2212;") || ContentIs(mml_node->prev, "-"))) {  
             op_ilk = OP_prefix;
             set_form = true;
           }
@@ -401,7 +395,7 @@ void Tree2StdMML::LookupEmbellishedMO(MNODE * mml_node)
 
 bool Tree2StdMML::GetBasePrecedence(MNODE * mml_node, int &precedence, OpIlk &op_ilk)
 {
-  if (!strcmp(mml_node->src_tok,"mo")) {
+  if (ElementNameIs(mml_node, "mo")) {
     precedence = mml_node->precedence;
     op_ilk = mml_node->form;
     return true;
@@ -417,9 +411,9 @@ void Tree2StdMML::AddDDOperatorInfo(MNODE * dMML_tree)
 {
   MNODE *rover = dMML_tree;
   while (rover) {
-    if (!strcmp(rover->src_tok,"msub")) {
+    if (ElementNameIs(rover, "msub")) {
       MNODE *base = rover->first_kid;
-      if (!strcmp(base->src_tok,"mo") && !strcmp(base->p_chdata,"&#x2145;")) { // &DD;
+      if (ElementNameIs(base, "mo") && ContentIs(base, "&#x2145;")) { // &DD;
         LookupMOInfo(base);  //probably not necessary
         rover->precedence = base->precedence;
         rover->form = base->form;
@@ -470,8 +464,8 @@ void Tree2StdMML::InsertInvisibleTimes(MNODE * dMML_list)
 {
   MNODE* rover = dMML_list;
   if (rover && rover->parent) {
-      if (!strcmp(rover->parent->src_tok,"mfenced") ||
-          !strcmp(rover->parent->src_tok,"mtable") ||
+      if (ElementNameIs(rover->parent, "mfenced") ||
+          ElementNameIs(rover->parent, "mtable") ||
           HasRequiredChildren(rover->parent))
     return;
   }
@@ -627,8 +621,9 @@ MNODE *Tree2StdMML::FixAdjacentMNs(MNODE * dMML_tree)
           if (!(HasPeriod(rover) && HasPeriod(right))) {
             the_next = rover;
             // glue together
-            if (strcmp(rover->src_tok,"mn") != 0)
-              strcpy(rover->src_tok,"mn");  // might have been mo
+            if ( ! ElementNameIs(rover, "mn") )
+              SetElementName(rover, "mn");  // might have been mo
+
             size_t ln = strlen(rover->p_chdata) + strlen(right->p_chdata);
             char *tmp = new char[ln + 1];
             strcpy(tmp, rover->p_chdata);
@@ -660,7 +655,7 @@ void Tree2StdMML::BindDelimitedGroups(MNODE * dMML_tree)
     if (rover->first_kid) {     // rover is a schemata
       BindDelimitedGroups(rover->first_kid);
     } else {                    // rover is elementary
-      if (!strcmp(rover->src_tok, "mo") && !HasRequiredChildren(rover->parent)) {
+      if (ElementNameIs(rover, "mo") && !HasRequiredChildren(rover->parent)) {
         if (IsLeftFenceMO(rover)) {
           MNODE *lfence = rover;
           GROUP_INFO gi;
@@ -688,7 +683,7 @@ void Tree2StdMML::BindScripts(MNODE * dMML_tree)
     if (rover->first_kid) {     // rover is a schemata
       BindScripts(rover->first_kid);
     } else {                    // rover is elementary
-      if (!strcmp(rover->src_tok, "mo") && !HasRequiredChildren(rover->parent)) {
+      if (ElementNameIs(rover, "mo") && !HasRequiredChildren(rover->parent)) {
         if (IsLeftFenceMO(rover)) {
           MNODE *lfence = rover;
           GROUP_INFO gi;
@@ -827,7 +822,7 @@ void Tree2StdMML::FixupSmalld(MNODE * dMML_list)
 {
   MNODE* rover = dMML_list;
   while (rover) {
-    if (!strcmp(rover->src_tok, "mfrac")) {
+    if (ElementNameIs(rover, "mfrac")) {
       if (NodeIsDiffNumerator(rover->first_kid) && NodeIsDiffDenominator(rover->first_kid->next)) {
         PermuteDiffNumerator(rover->first_kid);
         PermuteDiffDenominator(rover->first_kid->next);
@@ -894,15 +889,15 @@ MNODE* Tree2StdMML::InfixDivideToMFRAC(MNODE* dMML_list)
   while (rover) {
     MNODE* the_next = rover->next;
 
-    if (!strcmp(rover->src_tok, "mo")
-        && (!strcmp(rover->p_chdata, "/") || !strcmp(rover->p_chdata, "&#xf7;"))) {
+    if (ElementNameIs(rover, "mo") && 
+         (ContentIs(rover, "/") || ContentIs(rover, "&#xf7;"))) {
 
       MNODE* l_operand = rover->prev;
       MNODE* r_operand = rover->next;
 
       if (l_operand && r_operand) {
         MNODE* mfrac = rover;
-        strcpy(rover->src_tok, "mfrac");
+        SetElementName(rover, "mfrac");
 
         MNODE* l_anchor = l_operand->prev;
         MNODE* r_anchor = r_operand->next;
@@ -962,13 +957,13 @@ bool Tree2StdMML::FunctionHasArg(MNODE * mml_func_node, int & n_arg_nodes, bool 
   if (!arg)
     return false;
 
-  if (!strcmp(arg->src_tok,"mo") && !strcmp(arg->p_chdata,"&#x2061;"))
+  if (ElementNameIs(arg, "mo") && ContentIs(arg, "&#x2061;"))
     return false;  // OK, it has an arg but already has ApplyFunction
 
   if (IsDelimitedGroup(arg)) {
     is_delimited = true;
     return true;
-  } else if (!strcmp(arg->src_tok,"mrow") && IsDelimitedGroup(arg->first_kid)) {
+  } else if (ElementNameIs(arg, "mrow") && IsDelimitedGroup(arg->first_kid)) {
     is_delimited = true;
     return true;
   } else if (do_trigargs && FuncTakesTrigArgs(base_node)) {
@@ -1128,7 +1123,7 @@ void Tree2StdMML::GetFenceInfo(MNODE * MML_opener, GROUP_INFO & gi)
     }
 
     if (body) {                 // there's an interior
-      if (n_interior_nodes == 1 && !strcmp(body->src_tok, "mrow"))
+      if (n_interior_nodes == 1 && ElementNameIs(body, "mrow"))
         body = body->first_kid;
       GetGroupInsideInfo(body, rfence, gi);
     }
@@ -1194,7 +1189,7 @@ MNODE *Tree2StdMML::GetMatchingFenceInfo(MNODE * MML_opener, GROUP_INFO & gi)
     }
 
     if (body) {                 // there's an interior
-      if (n_interior_nodes == 1 && !strcmp(body->src_tok, "mrow"))
+      if (n_interior_nodes == 1 && ElementNameIs(body, "mrow"))
         body = body->first_kid;
       GetGroupInsideInfo(body, rfence, gi);
     }
@@ -1259,7 +1254,7 @@ MNODE *Tree2StdMML::GetScriptedFenceInfo(MNODE * MML_opener, GROUP_INFO & gi)
     }
 
     if (body) {                 // there's an interior
-      if (n_interior_nodes == 1 && !strcmp(body->src_tok, "mrow"))
+      if (n_interior_nodes == 1 && ElementNameIs(body, "mrow"))
         body = body->first_kid;
       GetGroupInsideInfo(body, rfence, gi);
     }
@@ -1276,7 +1271,7 @@ void Tree2StdMML::GetGroupInsideInfo(MNODE * MML_cont, MNODE * rfence, GROUP_INF
       break;
     gi.n_interior_nodes++;
 
-    if (!strcmp(rover->src_tok, "mo")) {
+    if (ElementNameIs(rover, "mo")) {
       gi.operator_count++;
 
       if (rover->p_chdata)
@@ -1285,14 +1280,14 @@ void Tree2StdMML::GetGroupInsideInfo(MNODE * MML_cont, MNODE * rfence, GROUP_INF
 
       if (gi.n_interior_nodes == 1 && gi.operator_count == 1)
         if (rover->p_chdata)
-          if (!strcmp(rover->p_chdata, "mod"))
+          if (ContentIs(rover, "mod"))
             gi.is_mod = true;
-    } else if (!strcmp(rover->src_tok, "mi")) {
+    } else if (ElementNameIs(rover, "mi")) {
       if (gi.n_interior_nodes == 1)
         if (rover->p_chdata)
-          if (!strcmp(rover->p_chdata, "mod"))
+          if (ContentIs(rover, "mod"))
             gi.is_mod = true;
-    } else if (!strcmp(rover->src_tok, "mtext")) {
+    } else if (ElementNameIs(rover, "mtext")) {
       gi.has_mtext = true;
     }
     rover = rover->next;
@@ -1305,13 +1300,13 @@ bool Tree2StdMML::IsFenceMO(MNODE * mml_node)
 {
   bool rv = false;
 
-  if (!strcmp(mml_node->src_tok, "mo")) {
+  if (ElementNameIs(mml_node, "mo")) {
     ATTRIB_REC *arover = mml_node->attrib_list;
     while (arover) {
-      if (strcmp(arover->zattr_nom, "fence")) {
+      if (!StringEqual(arover->zattr_nom, "fence")) {
         arover = arover->next;
       } else {
-        if (!strcmp("true", arover->zattr_val))
+        if (StringEqual("true", arover->zattr_val))
           rv = true;
         break;
       }
@@ -1319,7 +1314,7 @@ bool Tree2StdMML::IsFenceMO(MNODE * mml_node)
     if (!rv) {
       if (mml_node->p_chdata) {
         // look for <mo>s that are fencing ops by default
-        const char *delim_str = mml_node->p_chdata;
+        const char* delim_str = mml_node->p_chdata;
         size_t zln = strlen(delim_str);
         if (zln == 1) {
           char ch = delim_str[0];
@@ -1327,15 +1322,15 @@ bool Tree2StdMML::IsFenceMO(MNODE * mml_node)
               ch == '{' || ch == '}' || ch == '|')
             rv = true;
         } else if (zln == 8) {
-          if (!strcmp("&#x230a;", delim_str))   // LeftFloor
+          if (StringEqual("&#x230a;", delim_str))   // LeftFloor
             rv = true;
-          else if (!strcmp("&#x230b;", delim_str))   // RightFloor
+          else if (StringEqual("&#x230b;", delim_str))   // RightFloor
             rv = true;
-          else if (!strcmp("&#x2308;", delim_str))   // LeftCeiling
+          else if (StringEqual("&#x2308;", delim_str))   // LeftCeiling
             rv = true;
-          else if (!strcmp("&#x2309;", delim_str))   // RightCeiling
+          else if (StringEqual("&#x2309;", delim_str))   // RightCeiling
             rv = true;
-          else if (!strcmp("&#x2016;", delim_str))   // Verbar
+          else if (StringEqual("&#x2016;", delim_str))   // Verbar
             rv = true;
         }
       } else {
@@ -1354,17 +1349,17 @@ bool Tree2StdMML::IsLeftFenceMO(MNODE * mml_node)
   bool fence_false = false;
   bool prefix_false = false;
 
-  if (!strcmp(mml_node->src_tok, "mo")) {
-    ATTRIB_REC *arover = mml_node->attrib_list;
+  if (ElementNameIs(mml_node, "mo")) {
+    ATTRIB_REC* arover = mml_node->attrib_list;
     while (arover) {
-      if (!strcmp(arover->zattr_nom, "fence")) {
-        if (!strcmp("true", arover->zattr_val))
+      if (StringEqual(arover->zattr_nom, "fence")) {
+        if (StringEqual("true", arover->zattr_val))
           fence_true = true;
-        else if (!strcmp("false", arover->zattr_val))
+        else if (StringEqual("false", arover->zattr_val))
           fence_false = true;
       }
-      else if (!strcmp(arover->zattr_nom, "form")) {
-        if (!strcmp("prefix", arover->zattr_val))
+      else if (StringEqual(arover->zattr_nom, "form")) {
+        if (StringEqual("prefix", arover->zattr_val))
           prefix_true = true;
         else
           prefix_false = true;
@@ -1378,18 +1373,18 @@ bool Tree2StdMML::IsLeftFenceMO(MNODE * mml_node)
 
     // look for <mo>s that are left fencing ops by default
     if (mml_node->p_chdata) {
-      const char *delim_str = mml_node->p_chdata;
+      const char* delim_str = mml_node->p_chdata;
       size_t zln = strlen(delim_str);
       if (zln == 1) {
         char ch = delim_str[0];
         if (ch == '(' || ch == '[' || ch == '{' || ch == '|')
           rv = true;
       } else if (zln == 8) {
-        if (!strcmp("&#x230a;", delim_str))   // LeftFloor
+        if (StringEqual("&#x230a;", delim_str))   // LeftFloor
           rv = true;
-        else if (!strcmp("&#x2308;", delim_str))   // LeftCeiling
+        else if (StringEqual("&#x2308;", delim_str))   // LeftCeiling
           rv = true;
-        else if (!strcmp("&#x2016;", delim_str))   // Verbar
+        else if (StringEqual("&#x2016;", delim_str))   // Verbar
           rv = true;
       }
     }
@@ -1405,17 +1400,17 @@ bool Tree2StdMML::IsRightFenceMO(MNODE * mml_node)
   bool fence_false = false;
   bool postfix_false = false;
 
-  if (!strcmp(mml_node->src_tok, "mo")) {
+  if (ElementNameIs(mml_node, "mo")) {
     ATTRIB_REC *arover = mml_node->attrib_list;
     while (arover) {
-      if (!strcmp(arover->zattr_nom, "fence")) {
-        if (!strcmp("true", arover->zattr_val))
+      if (StringEqual(arover->zattr_nom, "fence")) {
+        if (StringEqual("true", arover->zattr_val))
           fence_true = true;
-        else if (!strcmp("false", arover->zattr_val))
+        else if (StringEqual("false", arover->zattr_val))
           fence_false = true;
       }
-      else if (!strcmp(arover->zattr_nom, "form")) {
-        if (!strcmp("postfix", arover->zattr_val))
+      else if (StringEqual(arover->zattr_nom, "form")) {
+        if (StringEqual("postfix", arover->zattr_val))
           postfix_true = true;
         else
           postfix_false = true;
@@ -1429,18 +1424,18 @@ bool Tree2StdMML::IsRightFenceMO(MNODE * mml_node)
 
     // look for <mo>s that are right fencing ops by default
     if (mml_node->p_chdata) {
-      const char *delim_str = mml_node->p_chdata;
+      const char* delim_str = mml_node->p_chdata;
       size_t zln = strlen(delim_str);
       if (zln == 1) {
         char ch = delim_str[0];
         if (ch == ')' || ch == ']' || ch == '}' || ch == '|')
           rv = true;
       } else if (zln == 8) {
-        if (!strcmp("&#x230b;", delim_str))   // RightFloor
+        if (StringEqual("&#x230b;", delim_str))   // RightFloor
           rv = true;
-        else if (!strcmp("&#x2309;", delim_str))   // RightCeiling
+        else if (StringEqual("&#x2309;", delim_str))   // RightCeiling
           rv = true;
-        else if (!strcmp("&#x2016;", delim_str))   // Verbar
+        else if (StringEqual("&#x2016;", delim_str))   // Verbar
           rv = true;
       }
     }
@@ -1449,7 +1444,7 @@ bool Tree2StdMML::IsRightFenceMO(MNODE * mml_node)
 }
 
 // Note: we don't use the concept of embellished fence from the MathML spec.
-bool Tree2StdMML::IsScriptedFenceMO(MNODE * mml_node)
+bool Tree2StdMML::IsScriptedFenceMO(MNODE* mml_node)
 {
   MNODE *fence = GetBaseFence(mml_node);
   if (fence)
@@ -1458,34 +1453,34 @@ bool Tree2StdMML::IsScriptedFenceMO(MNODE * mml_node)
     return false;
 }
 
-bool Tree2StdMML::IsDelimitedGroup(MNODE * mml_node)
+bool Tree2StdMML::IsDelimitedGroup(MNODE* mml_node)
 {
-  if (!strcmp(mml_node->src_tok,"mfenced"))
-    return true;
-  else
-    return false;
+  return ElementNameIs(mml_node, "mfenced");
 }
 
-bool Tree2StdMML::IsEmptyMO(MNODE * mml_node)
+bool Tree2StdMML::IsEmptyMO(MNODE* mml_node)
 {
-  if (strcmp(mml_node->src_tok,"mo") != 0)
+  if (! ElementNameIs(mml_node, "mo") )
     return false;
+
   if (mml_node->p_chdata && *mml_node->p_chdata)
     return false;
-  ATTRIB_REC *arover = mml_node->attrib_list;
+
+  ATTRIB_REC* arover = mml_node->attrib_list;
   while (arover) {
-    if (!strcmp(arover->zattr_nom, "fence"))
-      if (!strcmp("true", arover->zattr_val))
+    if (StringEqual(arover->zattr_nom, "fence"))
+      if (StringEqual("true", arover->zattr_val))
         return false;
     arover = arover->next;
   }
   return true;
 }
 
-bool Tree2StdMML::NodeIsNumber(MNODE * mml_node)
+bool Tree2StdMML::NodeIsNumber(MNODE* mml_node)
 {
-  if (!strcmp(mml_node->src_tok,"mn"))
+  if (ElementNameIs(mml_node, "mn"))
     return true;
+
   if (HasScriptChildren(mml_node))
     return NodeIsNumber(mml_node->first_kid);
   else
@@ -1496,7 +1491,7 @@ bool Tree2StdMML::NodeIsNumber(MNODE * mml_node)
 bool Tree2StdMML::NodeIsTrueNumber(MNODE * mml_node)
 {
   int dummy;
-  if (!strcmp(mml_node->src_tok,"mn"))
+  if (ElementNameIs(mml_node, "mn"))
     return IsAllDigits(mml_node,dummy);
   else
     return false;
@@ -1505,7 +1500,7 @@ bool Tree2StdMML::NodeIsTrueNumber(MNODE * mml_node)
 // Check for n/m where n,m integers
 bool Tree2StdMML::NodeIsRationalFraction(MNODE * mml_node)
 {
-  if (!strcmp(mml_node->src_tok,"mfrac")) {
+  if (ElementNameIs(mml_node, "mfrac")) {
     MNODE * rover = mml_node->first_kid;
     if (rover) {
       if (NodeIsTrueNumber(rover)) {
@@ -1523,7 +1518,7 @@ bool Tree2StdMML::NodeIsFunction(MNODE * mml_node)
   // might be f^-1 or something, in which case the whole expr is the function
   if (HasScriptChildren(mml_node))
     return NodeIsFunction(mml_node->first_kid);
-  else if (!strcmp(mml_node->src_tok,"mi"))
+  else if (ElementNameIs(mml_node, "mi"))
     if (IsTrigArgFuncName(mml_entities,mml_node->p_chdata) ||
         IsReservedFuncName(mml_entities,mml_node->p_chdata) ||
         my_analyzer->IsDefinedFunction(mml_node))
@@ -1535,7 +1530,7 @@ bool Tree2StdMML::NodeIsFunction(MNODE * mml_node)
 //assuming NodeIsFunction() true, find the actual function name node
 MNODE * Tree2StdMML::GetBaseFunction(MNODE * mml_node)
 {
-  if (!strcmp(mml_node->src_tok,"mi"))
+  if (ElementNameIs(mml_node, "mi"))
     return mml_node;
   if (HasScriptChildren(mml_node))
     return GetBaseFunction(mml_node->first_kid);
@@ -1551,14 +1546,14 @@ bool Tree2StdMML::FuncTakesTrigArgs(MNODE * mml_node)
 bool Tree2StdMML::NodeIsOperator(MNODE * mml_node)
 {
   //TODO look up in def. store and other places
-  if (!strcmp(mml_node->src_tok,"mo")) {
+  if (ElementNameIs(mml_node, "mo")) {
     return true;
-  } else if (!strcmp(mml_node->src_tok,"mi")) {
+  } else if (ElementNameIs(mml_node, "mi")) {
     //XXX  might be max/lim/lcm etc.
     return false;
-  } else if (HasScriptChildren(mml_node) || !strcmp(mml_node->src_tok,"mfrac")) {
+  } else if (HasScriptChildren(mml_node) || ElementNameIs(mml_node, "mfrac")) {
     return NodeIsOperator(mml_node->first_kid);
-  } else if (!strcmp(mml_node->src_tok,"mrow")) {
+  } else if (ElementNameIs(mml_node, "mrow")) {
     if (mml_node->first_kid->next)
       return false;
     else
@@ -1576,11 +1571,13 @@ bool Tree2StdMML::NodeIsIntegral(MNODE * mml_node)
 // This looks a lot like Analyzer::GetBigOpType()
 int Tree2StdMML::GetIntegralCount(MNODE * mml_node)
 {
-  if (!strcmp(mml_node->src_tok, "msubsup") ||
-      !strcmp(mml_node->src_tok, "munderover"))
+  if (ElementNameIs(mml_node, "msubsup") ||
+      ElementNameIs(mml_node, "munderover"))
     return GetIntegralCount(mml_node->first_kid);
-  if (strcmp(mml_node->src_tok,"mo"))
+
+  if (! ElementNameIs(mml_node, "mo"))
     return 0;
+
   //TODO study Unicode list (this list from SWP)
   const char *ptr = strstr(mml_node->p_chdata, "&#x");
   if (ptr) {
@@ -1602,130 +1599,151 @@ int Tree2StdMML::GetIntegralCount(MNODE * mml_node)
 }
 
 //TODO check that it's followed by a variable
-bool Tree2StdMML::NodeIsDifferential(MNODE * mml_node, bool & nested)
+
+bool Tree2StdMML::NodeIsDifferential(MNODE* mml_node, bool& nested)
 {
   nested = false;
-  if (!strcmp(mml_node->src_tok,"mrow")) {
-    nested = true;
-    bool dummy;
-    return NodeIsDifferential(mml_node->first_kid, dummy);
-  } else if (!strcmp(mml_node->src_tok,"mo")) {
-    return !strcmp(mml_node->p_chdata,"&#x2146;") || // differentiald
-           !strcmp(mml_node->p_chdata,"d");
-  } else if (!strcmp(mml_node->src_tok,"mi")) {
-    return !strcmp(mml_node->p_chdata,"d");
+  if (ElementNameIs(mml_node, "mrow")) {
+
+      nested = true;
+      bool dummy;
+      return NodeIsDifferential(mml_node->first_kid, dummy);
+
+  } else if (ElementNameIs(mml_node, "mo")) {
+
+      return ContentIs(mml_node, "&#x2146;") || // differentiald
+             ContentIs(mml_node, "d");
+
+  } else if (ElementNameIs(mml_node, "mi")) {
+
+      return ContentIs(mml_node, "d");
+
   } else {
-    return false;
+
+      return false;
   }
 }
 
 // Assuming NodeIsDifferential() is true, change d to &dd;
-void Tree2StdMML::PermuteDifferential(MNODE * mml_node)
+void Tree2StdMML::PermuteDifferential(MNODE* mml_node)
 {
-  if ((!strcmp(mml_node->src_tok,"mi") && !strcmp(mml_node->p_chdata,"d")) ||
-      (!strcmp(mml_node->src_tok,"mo") && !strcmp(mml_node->p_chdata,"d"))) {
-    strcpy(mml_node->src_tok,"mo");
-    const char * dd = "&#x2146;";   // &dd;
-    size_t ln = strlen(dd);
-    char *tmp = new char[ln + 1];
-    strcpy(tmp, dd);
-    delete mml_node->p_chdata;
-    mml_node->p_chdata = tmp;
+  if ((ElementNameIs(mml_node, "mi") && ContentIs(mml_node,"d")) ||
+      (ElementNameIs(mml_node, "mo") && ContentIs(mml_node,"d"))) {
+
+    SetElementName(mml_node, "mo");
+	SetContent(mml_node, "&#x2146;");
     LookupMOInfo(mml_node);
+
   }
 }
 
-bool Tree2StdMML::NodeIsCapitalDifferential(MNODE * mml_node)
+bool Tree2StdMML::NodeIsCapitalDifferential(MNODE* mml_node)
 {
-  if (strcmp(mml_node->src_tok,"msub")) {
+  if (! ElementNameIs(mml_node, "msub")) {
     return false;
   }
-  MNODE *base = mml_node->first_kid;
-  if ((!strcmp(base->src_tok,"mi") && !strcmp(base->p_chdata,"D")) ||
-      (!strcmp(base->src_tok,"mo") && !strcmp(base->p_chdata,"D"))) {
-    return NodeIsVariableList(base->next);
+  MNODE* base = mml_node->first_kid;
+
+  if ((ElementNameIs(base, "mi") && ContentIs(base, "D")) ||
+      (ElementNameIs(base, "mo") && ContentIs(base, "D"))) {
+
+     return NodeIsVariableList(base->next);
+
   } else {
-    return false;
+     return false;
   }
 }
 
 // Assuming NodeIsCapitalDifferential() is true, change D to &DD;
-void Tree2StdMML::PermuteCapitalDifferential(MNODE * mml_node)
+void Tree2StdMML::PermuteCapitalDifferential(MNODE* mml_node)
 {
-  if (strcmp(mml_node->src_tok,"msub"))
+  if (! ElementNameIs(mml_node, "msub"))
     return;  //shouldn't get here
   
-  MNODE *theD = mml_node->first_kid;
-  if ((!strcmp(theD->src_tok,"mi") && !strcmp(theD->p_chdata,"D")) ||
-      (!strcmp(theD->src_tok,"mo") && !strcmp(theD->p_chdata,"D"))) {
-    strcpy(theD->src_tok,"mo");
-    const char * DD = "&#x2145;";  // &DD;
-    size_t ln = strlen(DD);
-    char *tmp = new char[ln + 1];
-    strcpy(tmp, DD);
-    delete theD->p_chdata;
-    theD->p_chdata = tmp;
+  MNODE* theD = mml_node->first_kid;
+  if ((ElementNameIs(theD, "mi") && ContentIs(theD, "D")) ||
+      (ElementNameIs(theD, "mo") && ContentIs(theD, "D"))) {
+
+    SetElementName(theD, "mo");
+	SetContent(theD, "&#x2145;"); 
     LookupMOInfo(theD);
   }
 }
 
 // Assuming NodeIsDiffNumerator() is true, change d to &dd;
-void Tree2StdMML::PermuteDiffNumerator(MNODE * mml_node)
+void Tree2StdMML::PermuteDiffNumerator(MNODE* mml_node)
 {
-  MNODE *rover = mml_node;
-  if (!strcmp(rover->src_tok,"mrow"))
+  MNODE* rover = mml_node;
+
+  if (ElementNameIs(rover, "mrow"))
     rover = rover->first_kid;
-  if (!strcmp(rover->src_tok,"msup"))
+
+  if (ElementNameIs(rover, "msup"))
     rover = rover->first_kid;
+
   PermuteDifferential(rover);
 }
 
 // Assuming NodeIsDiffDenominator() is true, change d to &dd;
-void Tree2StdMML::PermuteDiffDenominator(MNODE * mml_node)
+void Tree2StdMML::PermuteDiffDenominator(MNODE* mml_node)
 {
-  MNODE *rover = mml_node;
-  if (!strcmp(rover->src_tok,"mrow"))
+  MNODE* rover = mml_node;
+
+  if (ElementNameIs(rover, "mrow"))
     PermuteDiffDenominator(rover->first_kid);
-  if (!strcmp(rover->src_tok,"msup"))
+
+  if (ElementNameIs(rover, "msup"))
     PermuteDifferential(rover->first_kid);
   else
     PermuteDifferential(rover);
+
   rover = rover->next;
+
   if (rover)
     rover = rover->next;
+
   if (rover)
     PermuteDiffDenominator(rover);
 }
 
-bool Tree2StdMML::NodeIsDiffNumerator(MNODE * mml_node)
+bool Tree2StdMML::NodeIsDiffNumerator(MNODE* mml_node)
 {
-  if (!strcmp(mml_node->src_tok,"mrow") || !strcmp(mml_node->src_tok,"msup")) {
-    return NodeIsDiffNumerator(mml_node->first_kid);
+  if (ElementNameIs(mml_node, "mrow") || ElementNameIs(mml_node, "msup")) {
+      return NodeIsDiffNumerator(mml_node->first_kid);
   } else {
-    bool nested; // unused
-    return NodeIsDifferential(mml_node,nested);
+      bool nested; // unused
+      return NodeIsDifferential(mml_node, nested);
   }
 }
 
 // dx dy or dx^3 or d^3x
-bool Tree2StdMML::NodeIsDiffDenominator(MNODE * mml_node)
+bool Tree2StdMML::NodeIsDiffDenominator(MNODE* mml_node)
 {
-  if (!strcmp(mml_node->src_tok,"mrow")) {
-    return NodeIsDiffNumerator(mml_node->first_kid);
-  } else if (!strcmp(mml_node->src_tok,"msup")) {
-    if (!NodeIsDiffNumerator(mml_node->first_kid))
-      return false;
+  if (ElementNameIs(mml_node, "mrow")) {
+      
+      return NodeIsDiffNumerator(mml_node->first_kid);
+
+  } else if (ElementNameIs(mml_node, "msup")) {
+      
+      if (!NodeIsDiffNumerator(mml_node->first_kid))
+        return false;
+
   } else {
-    bool nested; // unused
-    if (!NodeIsDifferential(mml_node,nested))
-      return false;
+      
+      bool nested; // unused
+      if (!NodeIsDifferential(mml_node,nested))
+        return false;
   }
-  MNODE *rover = mml_node->next;
+
+  MNODE* rover = mml_node->next;
   if (!rover)
     return false;
+
   if (!NodeIsVariableList(rover))
     return false;
+
   rover = rover->next;
+
   if (!rover)
     return true;
   else
@@ -1736,9 +1754,9 @@ bool Tree2StdMML::NodeIsDiffDenominator(MNODE * mml_node)
 //TODO: decorated variables?
 bool Tree2StdMML::NodeIsVariableList(MNODE * mml_node)
 {
-  if (!strcmp(mml_node->src_tok,"mi"))
+  if (ElementNameIs(mml_node, "mi"))
     return true;
-  else if (!strcmp(mml_node->src_tok,"mrow") || !strcmp(mml_node->src_tok,"msup"))
+  else if (ElementNameIs(mml_node, "mrow") || ElementNameIs(mml_node, "msup"))
     return NodeIsVariableList(mml_node->first_kid);
   else
     return false;
@@ -1750,7 +1768,7 @@ bool Tree2StdMML::NodeIsFactor(MNODE * mml_node)
   //NOTE assuming fences are all mfenced
   if (NodeIsOperator(mml_node))
     return false;
-  if (!strcmp(mml_node->src_tok,"mtr") || !strcmp(mml_node->src_tok,"mtd"))
+  if (ElementNameIs(mml_node, "mtr") || ElementNameIs(mml_node, "mtd"))
     return false;
   else
     return true;
@@ -1759,24 +1777,24 @@ bool Tree2StdMML::NodeIsFactor(MNODE * mml_node)
 // return first leaf child at base of msup
 MNODE * Tree2StdMML::GetBaseFence(MNODE * mml_node)
 {
-  if (!strcmp(mml_node->src_tok, "msup")) {
+  if (ElementNameIs(mml_node, "msup")) {
     return mml_node->first_kid;
-  } else if (!strcmp(mml_node->src_tok, "msub")) {
+  } else if (ElementNameIs(mml_node, "msub")) {
     return mml_node->first_kid;
-  } else if (!strcmp(mml_node->src_tok, "msubsup")) {
+  } else if (ElementNameIs(mml_node, "msubsup")) {
     return mml_node->first_kid;
   } else {
     return NULL;
   }
 }
 
-char *Tree2StdMML::ChdataToString(const char *p_chdata)
+char* Tree2StdMML::ChdataToString(const char* p_chdata)
 {
-  char *rv = NULL;
+  char* rv = NULL;
   U32 rln = 0;
 
   if (p_chdata && *p_chdata) {
-    const char *ptr = p_chdata;
+    const char* ptr = p_chdata;
     while (*ptr) {
       U32 unicode = 0;
       char ch = 0;
@@ -1919,17 +1937,21 @@ bool Tree2StdMML::NodeInTrigargList(MNODE * mml_node, bool & is_op)
 {
   is_op = false;
   if (mml_node) {
-    const char* p_elem = mml_node->src_tok;
-    if (!strcmp(p_elem,"mrow")
-        || !strcmp(p_elem, "mroot")
-        || !strcmp(p_elem, "msqrt")) {
+    //const char* p_elem = mml_node->src_tok;
+    if (ElementNameIs(mml_node, "mrow") || 
+        ElementNameIs(mml_node, "mroot")|| 
+        ElementNameIs(mml_node, "msqrt")) {
+
       return true;
-    } else if (!strcmp(p_elem, "msub")
-        || !strcmp(p_elem, "msup")
-        || !strcmp(p_elem, "msubsup")) {
+
+    } else if (ElementNameIs(mml_node, "msub") || 
+               ElementNameIs(mml_node, "msup") || 
+               ElementNameIs(mml_node, "msubsup")) {
+
       bool dummy;
       return NodeInTrigargList(mml_node->first_kid, dummy);
-    } else if (!strcmp(p_elem,"mo")) {
+
+    } else if (ElementNameIs(mml_node, "mo")) {
       is_op = true;
       // true if multiplicative (this needs to be refactored)
       const char *ptr = mml_node->p_chdata;
@@ -1957,21 +1979,22 @@ bool Tree2StdMML::NodeInTrigargList(MNODE * mml_node, bool & is_op)
             return true;
         }
       }
-    } else if (!strcmp(p_elem,"mi")) {
+    } else if (ElementNameIs(mml_node, "mi")) {
+
       return (!IsTrigArgFuncName(mml_entities, mml_node->p_chdata));
     }
   }
   return false;
 }
 
-MNODE *Tree2StdMML::RemoveRedundantMROWs(MNODE * MML_list)
+MNODE* Tree2StdMML::RemoveRedundantMROWs(MNODE* MML_list)
 {
-  MNODE *rv = MML_list;
+  MNODE* rv = MML_list;
 
-  MNODE *rover = MML_list;
+  MNODE* rover = MML_list;
   while (rover) {
-    MNODE *the_next = rover->next;
-    if (!strcmp(rover->src_tok, "mrow")) {
+    MNODE* the_next = rover->next;
+    if (ElementNameIs(rover, "mrow")) {
       MNODE *eldest = rover->first_kid;
       bool zerokids = !eldest;
       bool onekid = eldest && !eldest->next;
@@ -2030,8 +2053,8 @@ MNODE *Tree2StdMML::RemoveEmptyTags(MNODE * MML_list)
       RemoveEmptyTags(rover->first_kid);
     } else {
       if (IsEmptyMO(rover)
-          || strcmp(rover->src_tok,"mn") == 0
-          || strcmp(rover->src_tok,"mi") == 0) {
+          || ElementNameIs(rover, "mn")
+          || ElementNameIs(rover, "mi") ) {
         if (!rover->p_chdata || !*rover->p_chdata) {
           if (!HasRequiredChildren(rover->parent)) {
             DelinkTNode(rover);
@@ -2045,14 +2068,14 @@ MNODE *Tree2StdMML::RemoveEmptyTags(MNODE * MML_list)
   return rv;
 }
 
-MNODE *Tree2StdMML::RemoveMPADDEDs(MNODE * MML_list)
+MNODE* Tree2StdMML::RemoveMPADDEDs(MNODE* MML_list)
 {
-  MNODE *rv = MML_list;
+  MNODE* rv = MML_list;
 
-  MNODE *rover = MML_list;
+  MNODE* rover = MML_list;
   while (rover) {
-    MNODE *the_next = rover->next;
-    if (!strcmp(rover->src_tok, "mpadded")) {
+    MNODE* the_next = rover->next;
+    if (ElementNameIs(rover, "mpadded")) {
       MNODE *eldest = rover->first_kid;
       if (!eldest || !eldest->next) {
         MNODE *parent = rover->parent;
@@ -2108,20 +2131,20 @@ void Tree2StdMML::RemoveMSTYLEs(MNODE* MML_list)
   MNODE* rover = MML_list;
   while (rover) {
     MNODE* the_next = rover->next;
-    if (StringEqual(rover->src_tok, "mstyle")) {
+    if (ElementNameIs(rover, "mstyle")) {
 
         RemoveMSTYLEnode(rover);
 
     } else if (rover->first_kid) {  // rover is a schemata
 
-        if (StringEqual(rover->src_tok, "mfrac"))
+        if (ElementNameIs(rover, "mfrac"))
           if (lt_stack)
             InstallStackedAttr(rover, lt_stack);
         RemoveMSTYLEs(rover->first_kid);
 
     } else {                    // rover is atomic
 
-        if (StringEqual(rover->src_tok, "mi"))
+        if (ElementNameIs(rover, "mi"))
           if (mv_stack)
             InstallStackedAttr(rover, mv_stack);
 
@@ -2132,14 +2155,14 @@ void Tree2StdMML::RemoveMSTYLEs(MNODE* MML_list)
   
 }
 
-MNODE *Tree2StdMML::RemoveMatrixDelims(MNODE * MML_list,
-                                       INPUT_NOTATION_REC * in_notation)
+MNODE* Tree2StdMML::RemoveMatrixDelims(MNODE* MML_list,
+                                       INPUT_NOTATION_REC* in_notation)
 {
-  MNODE *rv = MML_list;
-  MNODE *rover = MML_list;
+  MNODE* rv = MML_list;
+  MNODE* rover = MML_list;
   while (rover) {
-    MNODE *the_next = rover->next;
-    if (!strcmp(rover->src_tok, "mfenced")) {
+    MNODE* the_next = rover->next;
+    if (ElementNameIs(rover, "mfenced")) {
       bool is_parens = false;
       bool is_brackets = false;
 
@@ -2161,7 +2184,7 @@ MNODE *Tree2StdMML::RemoveMatrixDelims(MNODE * MML_list,
 
       MNODE *eldest = rover->first_kid;
       if (do_it &&
-          eldest && !eldest->next && !strcmp(eldest->src_tok, "mtable")) {
+          eldest && !eldest->next && ElementNameIs(eldest, "mtable")) {
         if (is_brackets)
           in_notation->nbracket_tables++;
         else if (is_parens)
@@ -2206,24 +2229,24 @@ MNODE *Tree2StdMML::PermuteTreeToMFENCED(MNODE * opening_mo, GROUP_INFO & gi)
 {
   MNODE *mfenced = opening_mo;
 
-  strcpy(mfenced->src_tok, "mfenced");
-  delete[] mfenced->p_chdata;
-  mfenced->p_chdata = NULL;
+  SetElementName(mfenced, "mfenced");
+  SetContent(mfenced, NULL);
 
   if (mfenced->attrib_list) {
     DisposeAttribs(mfenced->attrib_list);
     mfenced->attrib_list = NULL;
   }
-  MNODE *body = opening_mo->next;
+
+  MNODE* body = opening_mo->next;
   int n_interior_nodes = 0;
-  MNODE *closer = body;
+  MNODE* closer = body;
   while (closer) {
-    if (!strcmp(closer->src_tok, "mo")) {
+    if (ElementNameIs(closer, "mo")) {
       if (closer->p_chdata) {
-        if (!strcmp(closer->p_chdata, gi.closing_delim))
+        if (ContentIs(closer, gi.closing_delim))
           break;
       } else {
-        if (!strcmp("I", gi.closing_delim))
+        if (StringEqual("I", gi.closing_delim))
           break;
       }
     }
@@ -2283,30 +2306,31 @@ MNODE *Tree2StdMML::ExtractItems(MNODE * body,
     MNODE *old_list = body;
 
     // strip away possible enclosing <mrow>
-    if (!body->next && !strcmp(body->src_tok, "mrow")) {
+    if (!body->next && ElementNameIs(body, "mrow")) {
       old_list = body->first_kid;
       body->first_kid = NULL;
       DelinkTNode(body);
       DisposeTNode(body);
     }
     // Loop thru list entries, removing commas separators, etc.
-    MNODE *rover = old_list;
+    MNODE* rover = old_list;
     while (rover) {
-      MNODE *l_anchor = rover;
-      MNODE *r_anchor = rover;
+      MNODE* l_anchor = rover;
+      MNODE* r_anchor = rover;
+
       while (r_anchor) {
-        if (!strcmp(r_anchor->src_tok, "mo")
-            && !strcmp(r_anchor->p_chdata, ","))
+        if (ElementNameIs(r_anchor, "mo") && ContentIs(r_anchor, ","))
           break;
         else
           r_anchor = r_anchor->next;
       }
+      
       if (r_anchor)
         rover = r_anchor->next;
       else
         rover = NULL;
 
-      MNODE *item = MakeItem(l_anchor, r_anchor);
+      MNODE* item = MakeItem(l_anchor, r_anchor);
       item->parent = parent_mfenced;
       if (new_list) {
         new_tail->next = item;
@@ -2333,7 +2357,7 @@ MNODE *Tree2StdMML::MakeItem(MNODE * l_anchor, MNODE * r_anchor)
 
   if (l_anchor == r_anchor) {
     rv = MakeTNode(l_anchor->src_start_offset, 0, l_anchor->src_linenum);
-    strcpy(rv->src_tok, "mrow");
+    SetElementName(rv, "mrow");
   } else {
     if (r_anchor) {             // , - remove
       if (r_anchor->prev)
@@ -2347,7 +2371,7 @@ MNODE *Tree2StdMML::MakeItem(MNODE * l_anchor, MNODE * r_anchor)
     if (l_anchor->next) {
       rv = MakeTNode(l_anchor->src_start_offset,
                      l_anchor->src_length, l_anchor->src_linenum);
-      strcpy(rv->src_tok, "mrow");
+      SetElementName(rv, "mrow");
       rv->first_kid = l_anchor;
       while (l_anchor) {
         l_anchor->parent = rv;
@@ -2372,14 +2396,14 @@ MNODE *Tree2StdMML::MakeMROW(MNODE * l_anchor, MNODE * r_anchor)
     TCI_ASSERT(!"Anchors are not siblings!");
     return NULL;
   }
-  bool inMrow = !strcmp(l_anchor->parent->src_tok,"mrow")
+  bool inMrow = ElementNameIs(l_anchor->parent, "mrow")
                 || HasInferedMROW(l_anchor->parent);
   if (inMrow && l_anchor->prev == NULL && r_anchor->next == NULL)
     return l_anchor;  // already is in mrow
   
   MNODE *rv = MakeTNode(l_anchor->src_start_offset,
                  l_anchor->src_length, l_anchor->src_linenum);
-  strcpy(rv->src_tok, "mrow");
+  SetElementName(rv, "mrow");
 
   rv->first_kid = l_anchor;
   rv->parent = l_anchor->parent; // sew together LHS of mrow
@@ -2419,11 +2443,12 @@ MNODE *Tree2StdMML::MakeSCRIPT(MNODE * l_anchor, MNODE * r_anchor)
   MNODE *rv = MakeTNode(l_anchor->src_start_offset,
                  l_anchor->src_length, l_anchor->src_linenum);
   TCI_ASSERT(r_anchor->src_tok);
-  strcpy(rv->src_tok, r_anchor->src_tok);  // msup, msub or msubsup
+  SetElementName(rv, r_anchor->src_tok);  // msup, msub or msubsup
 
-  MNODE *base = MakeTNode(l_anchor->src_start_offset,
+  MNODE* base = MakeTNode(l_anchor->src_start_offset,
                  l_anchor->src_length, l_anchor->src_linenum);
-  strcpy(base->src_tok, "mrow");
+
+  SetElementName(base, "mrow");
 
   base->first_kid = l_anchor;
   base->parent = rv;
@@ -2446,8 +2471,8 @@ MNODE *Tree2StdMML::MakeSCRIPT(MNODE * l_anchor, MNODE * r_anchor)
     r_anchor->next->prev = rv;
 
   // recall, r_anchor is an msup
-  MNODE * oldbase = r_anchor->first_kid;
-  MNODE * oldscript = oldbase->next;
+  MNODE* oldbase = r_anchor->first_kid;
+  MNODE* oldscript = oldbase->next;
   
   oldbase->parent = base;
   oldbase->prev = r_anchor->prev;
@@ -2467,7 +2492,7 @@ MNODE *Tree2StdMML::MakeSCRIPT(MNODE * l_anchor, MNODE * r_anchor)
   return rv;
 }
 
-bool Tree2StdMML::IsAllDigits(MNODE * num, int & n_digits)
+bool Tree2StdMML::IsAllDigits(MNODE* num, int& n_digits)
 {
   bool rv = true;
   n_digits = 0;
@@ -2487,13 +2512,13 @@ bool Tree2StdMML::IsAllDigits(MNODE * num, int & n_digits)
   return rv;
 }
 
-bool Tree2StdMML::IsNumberOrPeriod(MNODE * num)
+bool Tree2StdMML::IsNumberOrPeriod(MNODE* num)
 {
-  const char * p = num->p_chdata;
-  if (strcmp(num->src_tok,"mn") == 0)
+  const char* p = num->p_chdata;
+  if (ElementNameIs(num, "mn") )
     return p != 0;
-  else if (strcmp(num->src_tok,"mo") == 0) {
-    return p != 0 && strcmp(p,".") == 0;
+  else if (ElementNameIs(num, "mo") ) {
+    return p != 0 && StringEqual(p,".");
   } else {
     return false;
   }
@@ -2535,19 +2560,15 @@ void Tree2StdMML::PermuteMixedNumber(MNODE * num)
   }
 
   num->src_length += frac->src_length;
-  strcpy(num->src_tok, "mfrac");
-  delete[] num->p_chdata;
-  num->p_chdata = NULL;
+  SetElementName(num, "mfrac");
+  SetContent(num, NULL);
 
   DisposeTNode(frac);
 
-  delete[] numerator->p_chdata;
   char buffer[32];
   sprintf(buffer, "%lu", new_numerator);
-  size_t ln = strlen(buffer);
-  char *tmp = new char[ln + 1];
-  strcpy(tmp, buffer);
-  numerator->p_chdata = tmp;
+
+  SetContent(numerator, buffer);
 }
 
 ATTRIB_REC *Tree2StdMML::StackAttr(ATTRIB_REC * attr_stack,
@@ -2574,23 +2595,23 @@ ATTRIB_REC *Tree2StdMML::UnstackAttr(ATTRIB_REC * attr_stack)
   return rv;
 }
 
-void Tree2StdMML::MoveAttrsToChildren(MNODE * mml_list)
+void Tree2StdMML::MoveAttrsToChildren(MNODE* mml_list)
 {
-  MNODE *rover = mml_list;
+  MNODE* rover = mml_list;
   while (rover) {
     TCI_ASSERT(CheckLinks(rover));
-    MNODE *the_next = rover->next;
+    MNODE* the_next = rover->next;
 
-    if (!strcmp(rover->src_tok, "mstyle")) {
+    if (ElementNameIs(rover, "mstyle")) {
 
         RemoveMSTYLEnode(rover);
 
-    } else if (!strcmp(rover->src_tok, "mi")) {
+    } else if (ElementNameIs(rover, "mi")) {
 
         if (mv_stack)
           InstallStackedAttr(rover, mv_stack);
 
-    } else if (!strcmp(rover->src_tok, "mfrac")) {
+    } else if (ElementNameIs(rover, "mfrac")) {
 
         if (lt_stack)
           InstallStackedAttr(rover, lt_stack);
@@ -2625,7 +2646,7 @@ void Tree2StdMML::RemoveMSTYLEnode(MNODE* mstyle)
   if (lt_val)  
     lt_stack = StackAttr(lt_stack, "linethickness", lt_val);
 
-  if (fw_val && !strcmp(fw_val, "bold"))  
+  if (fw_val && StringEqual(fw_val, "bold"))  
     mv_stack = StackAttr(mv_stack, "mathvariant", "Bold");
 
   //  If we don't descend into children here, nested mstyles
@@ -2641,7 +2662,7 @@ void Tree2StdMML::RemoveMSTYLEnode(MNODE* mstyle)
   if (lt_val)
     lt_stack = UnstackAttr(lt_stack);
 
-  if (fw_val && !strcmp(fw_val, "bold"))
+  if (fw_val && StringEqual(fw_val, "bold"))
     mv_stack = UnstackAttr(mv_stack);
   
   MNODE* eldest = mstyle->first_kid;
@@ -2693,7 +2714,7 @@ void Tree2StdMML::InstallStackedAttr(MNODE * mml_node,
   bool done = false;
   ATTRIB_REC *arover = mml_node->attrib_list;
   while (arover) {
-    if (strcmp(arover->zattr_nom, targ_attr)) {
+    if (!StringEqual(arover->zattr_nom, targ_attr)) {
       arover = arover->next;
     } else {
       done = true;
@@ -2709,13 +2730,12 @@ void Tree2StdMML::InstallStackedAttr(MNODE * mml_node,
   }
 }
 
-void Tree2StdMML::InsertAF(MNODE * func)
+void Tree2StdMML::InsertAF(MNODE* func)
 {
-  MNODE *af = MakeTNode(func->src_start_offset, 0, func->src_linenum);
-  strcpy(af->src_tok, "mo");
-  char *tmp = new char[9];
-  strcpy(tmp,"&#x2061;");  // ApplyFunction
-  af->p_chdata = tmp;
+  MNODE* af = MakeTNode(func->src_start_offset, 0, func->src_linenum);
+  SetElementName(af, "mo");
+  SetContent(af, "&#x2061;");  // ApplyFunction
+
   af->prev = func;
   af->next = func->next;
   func->next = af;
@@ -2727,10 +2747,9 @@ void Tree2StdMML::InsertAF(MNODE * func)
 void Tree2StdMML::InsertIT(MNODE * term)
 {
   MNODE *it = MakeTNode(term->src_start_offset, 0, term->src_linenum);
-  strcpy(it->src_tok, "mo");
-  char *tmp = new char[9];
-  strcpy(tmp,"&#x2062;");  // InvisibleTimes
-  it->p_chdata = tmp;
+  SetElementName(it, "mo");
+  SetContent(it, "&#x2062;");  // InvisibleTimes
+
   it->prev = term;
   it->next = term->next;
   term->next = it;
@@ -2745,25 +2764,29 @@ void Tree2StdMML::InsertInvisibleAddSigns(MNODE * dMML_list)
   MNODE *rover = dMML_list;
   while (rover) {
     if (rover->first_kid) {     // rover is a schemata
-      if (!strcmp(rover->src_tok, "mrow")) {
+      if (ElementNameIs(rover, "mrow")) {
+
         if (NeedsInvisiblePlus(rover)) {
-          MNODE *l_anchor = rover;
-          MNODE *r_anchor = rover->next;
-          MNODE *plus = MakeTNode(r_anchor->src_start_offset,
+          MNODE* l_anchor = rover;
+          MNODE* r_anchor = rover->next;
+          MNODE* plus = MakeTNode(r_anchor->src_start_offset,
                                   0, r_anchor->src_linenum);
-          strcpy(plus->src_tok, "mo");
-          char *tmp = new char[2];
-          strcpy(tmp, "+");
-          plus->p_chdata = tmp;
+          
+          SetElementName(plus, "mo");
+		  SetContent(plus, "+");
+
           plus->prev = l_anchor;
           plus->next = r_anchor;
+
           l_anchor->next = plus;
           r_anchor->prev = plus;
+
           if (l_anchor->parent)
             plus->parent = l_anchor->parent;
         } else {
           InsertInvisibleAddSigns(rover->first_kid);
         }
+
       } else if (HasPositionalChildren(rover)) {
         MNODE *child_list = rover->first_kid;
         // recurse into children
@@ -2771,8 +2794,7 @@ void Tree2StdMML::InsertInvisibleAddSigns(MNODE * dMML_list)
         child_list = child_list->next;
         if (child_list) {
           InsertInvisibleAddSigns(child_list);
-          if (!strcmp(rover->src_tok, "msubsup")
-              || !strcmp(rover->src_tok, "munderover")) {
+          if (ElementNameIs(rover, "msubsup") || ElementNameIs(rover, "munderover")) {
             child_list = child_list->next;
             if (child_list)
               InsertInvisibleAddSigns(child_list);
@@ -2791,44 +2813,45 @@ bool Tree2StdMML::NeedsInvisiblePlus(MNODE * dMML_mrow)
   bool rv = false;
 
   if (dMML_mrow && dMML_mrow->next) {
-    char *t1 = NULL;
-    char *t2 = NULL;
-    MNODE *c1 = NULL;
-    MNODE *c2 = NULL;
-    if (!strcmp(dMML_mrow->src_tok, "mrow")) {
+    char* t1 = NULL;
+    char* t2 = NULL;
+    MNODE* c1 = NULL;
+    MNODE* c2 = NULL;
+
+    if (ElementNameIs(dMML_mrow, "mrow")) {
       c1 = dMML_mrow->first_kid;
       if (c1)
         c1 = c1->next;
       if (c1)
         c1 = c1->next;
       t1 = "mi";
-    } else if (!strcmp(dMML_mrow->src_tok, "msup")) {
+    } else if (ElementNameIs(dMML_mrow, "msup")) {
       c1 = dMML_mrow->first_kid;
       if (c1)
         c1 = c1->next;
       t1 = "mo";
     }
-    if (!strcmp(dMML_mrow->next->src_tok, "mrow")) {
+    if (ElementNameIs(dMML_mrow->next, "mrow")) {
       c2 = dMML_mrow->next->first_kid;
       if (c2)
         c2 = c2->next;
       if (c2)
         c2 = c2->next;
       t2 = "mi";
-    } else if (!strcmp(dMML_mrow->next->src_tok, "msup")) {
+    } else if (ElementNameIs(dMML_mrow->next, "msup")) {
       c2 = dMML_mrow->next->first_kid;
       if (c2)
         c2 = c2->next;
       t2 = "mo";
     }
-    if (c1 && c2 && !strcmp(c1->src_tok, t1)
-        && !strcmp(c2->src_tok, t2)) {
-      if (!strcmp(c1->p_chdata, "&#xb0;")) {  // degree
-        if (!strcmp(c2->p_chdata, "&#x2032;") // minute
-            || !strcmp(c2->p_chdata, "&#x2033;")) // second
+    if (c1 && c2 && ElementNameIs(c1, t1) && ElementNameIs(c2, t2)) {
+
+      if (ContentIs(c1, "&#xb0;")) {  // degree
+        if (ContentIs(c2, "&#x2032;") || // minute
+            ContentIs(c2, "&#x2033;"))   // second
           rv = true;
-      } else if (!strcmp(c1->p_chdata, "&#x2032;")) {
-        if (!strcmp(c2->p_chdata, "&#x2033;"))
+      } else if (ContentIs(c1, "&#x2032;")) {
+        if (ContentIs(c2, "&#x2033;"))
           rv = true;
       }
     }
