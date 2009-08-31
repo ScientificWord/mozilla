@@ -14923,7 +14923,7 @@ TNODE* LaTeX2MMLTree::Labels2MML( TNODE* MML_rv,
                                 zuID_name_bucket,INVALID_LIST_POS );
       if ( l_name_bucket && l_name_bucket->contents) {
         U8* attr_val  =  l_name_bucket->contents->var_value;
-        SetNodeAttrib( rv,(U8*)"id",attr_val );
+        SetNodeAttrib( rv,(U8*)"key",attr_val );
 	    } else
 	      TCI_ASSERT(0);
 	  }
