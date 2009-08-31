@@ -3,6 +3,27 @@
 #include "CmpTypes.h"
 #include <cstring>
 
+bool ElementNameIs(const MNODE* pNode, const char* str)
+{
+  return StringEqual(pNode->src_tok, str);
+}
+
+void SetElementName(MNODE* pNode, const char* str)
+{
+  strcpy(pNode->src_tok, str);
+}
+
+bool ContentIs(const MNODE* pNode, const char* str)
+{
+  return StringEqual(pNode->p_chdata, str);
+}
+
+void SetContent(MNODE* pNode, const char* str)
+{
+  delete [] pNode -> p_chdata;
+  pNode -> p_chdata = DuplicateString(str);
+}
+
 const char * OpIlkToString(OpIlk ilk)
 {
   switch (ilk) {
