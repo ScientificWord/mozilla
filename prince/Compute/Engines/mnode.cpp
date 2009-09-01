@@ -446,7 +446,7 @@ void GetCurrAttribValue(MNODE* mml_node,
 }
 
 
-void SemanticAttribs2Buffer(char *buffer, MNODE * mml_node, int lim)
+void SemanticAttribs2Buffer(char* buffer, MNODE* mml_node, int lim)
 {
   TCI_ASSERT(CheckLinks(mml_node));
   GetCurrAttribValue(mml_node, true, "mathvariant", buffer, lim);

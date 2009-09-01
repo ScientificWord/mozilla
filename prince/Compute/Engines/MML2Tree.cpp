@@ -43,9 +43,9 @@ MML2Tree::~MML2Tree()
 {
 }
 
-MNODE *MML2Tree::MMLstr2Tree(const char *src)
+MNODE* MML2Tree::MMLstr2Tree(const char* src)
 {
-  MNODE *rv = NULL;
+  MNODE* rv = NULL;
 
   if (src && *src) {
     start_ptr = src;
@@ -70,7 +70,7 @@ MNODE *MML2Tree::MMLstr2Tree(const char *src)
 
 MNODE* MML2Tree::GetElementList(const char* z_src,
                                 int& advance, 
-                                MNODE * parent)
+                                MNODE* parent)
 {
   MNODE* rv = NULL;
   MNODE* tail;

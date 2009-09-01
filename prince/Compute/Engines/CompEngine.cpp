@@ -462,27 +462,34 @@ void CompEngine::Execute(MathServiceRequest & msr, MathResult & mr)
           return;
         }
       } else if (UI_cmd_ID == CCID_Solve_Recursion) {
-        // In SWP, a "recursion" and possibly a system of condition equations
-        //  can be placed in a matrix as data to "Solve Recursion".
-        // We convert such matrices to a dedicated SEM_TYP_RECURSION here.
-        ConvertTreeToRecursion(semantics_tree, p_input_notation);
+
+          // In SWP, a "recursion" and possibly a system of condition equations
+          //  can be placed in a matrix as data to "Solve Recursion".
+          // We convert such matrices to a dedicated SEM_TYP_RECURSION here.
+          ConvertTreeToRecursion(semantics_tree, p_input_notation);
+
       } else if (UI_cmd_ID == CCID_Solve_PDE) {
-        ConvertTreeToPDE(semantics_tree);
+
+          ConvertTreeToPDE(semantics_tree);
+
       } else if (UI_cmd_ID >= CCID_Solve_ODE_Exact && UI_cmd_ID <= CCID_Solve_ODE_Series) {
-        // In SWP, ODEs are entered as matrices. We convert such
-        //  matrices to a dedicated ODE type here.
-        if (mr.GetResultCode() == CR_queryindepvar) {
-          delete p_input_notation;
-          return;
-        }
-        int n_boundary_conds;
-        ConvertTreeToODE(semantics_tree, UI_cmd_ID, n_boundary_conds);
-        if (UI_cmd_ID == CCID_Solve_ODE_Numeric && n_boundary_conds == 0) {
-          mr.PutResultCode(CR_missingBoundaries);
-          delete p_input_notation;
-          DisposeSList(semantics_tree);
-          return;
-        }
+
+          // In SWP, ODEs are entered as matrices. We convert such
+          //  matrices to a dedicated ODE type here.
+          if (mr.GetResultCode() == CR_queryindepvar) {
+            delete p_input_notation;
+            return;
+          }
+
+          int n_boundary_conds;
+          ConvertTreeToODE(semantics_tree, UI_cmd_ID, n_boundary_conds);
+          if (UI_cmd_ID == CCID_Solve_ODE_Numeric && n_boundary_conds == 0) {
+            mr.PutResultCode(CR_missingBoundaries);
+            delete p_input_notation;
+            DisposeSList(semantics_tree);
+            return;
+          }
+
       } else if (UI_cmd_ID == CCID_Moment || UI_cmd_ID == CCID_Quantile) {
         ConvertSetToPList(semantics_tree);
       } else if (UI_cmd_ID >= CCID_Simplex_Dual && UI_cmd_ID <= CCID_Simplex_Standardize) {
@@ -970,37 +977,41 @@ void CompEngine::ConvertTreeToPDE(SEMANTICS_NODE * semantics_tree)
     TCI_ASSERT(0);
 }
 
-void CompEngine::ConvertTreeToODE(SEMANTICS_NODE * semantics_tree,
-                                  U32 cmd_ID, int & n_boundary_conditions)
+void CompEngine::ConvertTreeToODE(SEMANTICS_NODE* semantics_tree,
+                                  U32 cmd_ID, 
+                                  int& n_boundary_conditions)
 {
   n_boundary_conditions = 0;
 
   if (semantics_tree && semantics_tree->bucket_list) {
-    BUCKET_REC *b_rover = semantics_tree->bucket_list;
+
+    BUCKET_REC* b_rover = semantics_tree->bucket_list;
 
     // Note that our math container carries an extra bucket here.
     //  It contains the ODEfunc.
-    BUCKET_REC *b_odefunc = b_rover->next;
+    BUCKET_REC* b_odefunc = b_rover->next;
     if (b_odefunc) {
       b_rover->next = NULL;
     }
 
     if (b_rover->first_child && b_rover->next == NULL) {
-      SEMANTICS_NODE *s_ODEsystem = b_rover->first_child;
 
-      SEMANTICS_NODE *s_save = NULL;
+      SEMANTICS_NODE* s_ODEsystem = b_rover->first_child;
+      SEMANTICS_NODE* s_save = NULL;
 
       if (s_ODEsystem->semantic_type == SEM_TYP_TABULATION) {
+
         if (s_ODEsystem->ncols == 1 && s_ODEsystem->nrows > 1) {
+
           s_ODEsystem->semantic_type = SEM_TYP_ODE_SYSTEM;
           delete[] s_ODEsystem->contents;
           s_save = s_ODEsystem;
 
           // loop thru lines in this tabulation,
           //   determine which lines are boundary conditions.
-          BUCKET_REC *b_rover = s_ODEsystem->bucket_list;
+          BUCKET_REC* b_rover = s_ODEsystem->bucket_list;
           while (b_rover) {
-            SEMANTICS_NODE *s_line = b_rover->first_child;
+            SEMANTICS_NODE* s_line = b_rover->first_child;
             if (IsBoundaryCondition(s_line)) {
               b_rover->bucket_ID = MB_BOUNDARY_CONDITION;
               n_boundary_conditions++;
@@ -1009,12 +1020,14 @@ void CompEngine::ConvertTreeToODE(SEMANTICS_NODE * semantics_tree,
           }
 
           if (b_odefunc)
-            s_ODEsystem->bucket_list =
-              AppendBucketRec(s_ODEsystem->bucket_list, b_odefunc);
+            s_ODEsystem->bucket_list = AppendBucketRec(s_ODEsystem->bucket_list, b_odefunc);
+
         } else
           TCI_ASSERT(0);
+
       } else {                  //    if ( s_ODEsystem->semantic_type == SEM_TYP_TABULATION )
-        SEMANTICS_NODE *s_ODE = CreateSemanticsNode();
+
+        SEMANTICS_NODE* s_ODE = CreateSemanticsNode();
         s_ODE->semantic_type = SEM_TYP_ODE_SYSTEM;
         s_save = s_ODE;
 
@@ -2047,10 +2060,22 @@ bool CompEngine::IsBoundaryCondition(SEMANTICS_NODE * s_tree)
   }
 
   if (s_tree->semantic_type == SEM_TYP_INFIX_OP) {
+
     if (s_tree->contents && !strcmp(s_tree->contents, "=")) {
-      BUCKET_REC *bl_operands = s_tree->bucket_list;
+      BUCKET_REC* bl_operands = s_tree->bucket_list;
       if (bl_operands && bl_operands->bucket_ID == MB_UNNAMED) {
-        SEMANTICS_NODE *s_func = bl_operands->first_child;
+        SEMANTICS_NODE* s_func = bl_operands->first_child;
+
+        if (s_func->semantic_type == SEM_TYP_INFIX_OP) {
+		   if (s_func->contents && !strcmp(s_func->contents, "&#x2062;")){ // invisible times
+		      rv = true;
+		      //BUCKET_REC* bl = s_func->bucket_list;
+              //if (bl && bl->first_child)
+              //   s_func = bl->first_child;
+              //else
+              //   TCI_ASSERT(0);
+		   } 
+        }
 
         if (s_func->semantic_type == SEM_TYP_PRECEDENCE_GROUP) {
           BUCKET_REC *bl = s_func->bucket_list;
@@ -2261,8 +2286,7 @@ void CompEngine::AddBasisVariables(MathServiceRequest & msr)
 // Search a semantics tree for "Solve Recursion".  Locate an instance
 // of the recursive function, and append a node that gives the function name.
 
-void CompEngine::AddRecurFuncNode(SEMANTICS_NODE * s_recur,
-                                  BUCKET_REC * parent_b)
+void CompEngine::AddRecurFuncNode(SEMANTICS_NODE* s_recur, BUCKET_REC* parent_b)
 {
 
   if (s_recur && s_recur->bucket_list && s_recur->bucket_list->first_child) {
