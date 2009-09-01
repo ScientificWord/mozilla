@@ -9,24 +9,24 @@
  Here's what happens.
 
   1) All chdata is scanned.  Named entities are converted
-	 to hex - &alpha; -> &#x03B1;
+     to hex - &alpha; -> &#x03B1;
 
   2) Enclosed lists are converted to fences.
 
-	 <mo>(</mo>
-	 <mrow>				   <mfenced ilk="enclosed-list">
-	   <mi>x</mi>            <mi>x</mi>
-	   <mo>,</mo>      =>    <mi>y</mi>
-	   <mi>y</mi>		   </mfenced>
-	 </mrow>
-	 <mo>)</mo>
+     <mo>(</mo>
+     <mrow>				   <mfenced ilk="enclosed-list">
+       <mi>x</mi>            <mi>x</mi>
+       <mo>,</mo>      =>    <mi>y</mi>
+       <mi>y</mi>		   </mfenced>
+     </mrow>
+     <mo>)</mo>
 
      (Converting implied objects to explicit objects makes
-	 semantic analysis easier.)
+     semantic analysis easier.)
 
      Enclosed lists start with a left fence delimiter,
-	 contain a single item or a comma separated list of items,
-	 and end with the matching right fence delimiter.
+     contain a single item or a comma separated list of items,
+     and end with the matching right fence delimiter.
 
   3) <mrow>s that contain a single element are removed.
 
@@ -50,10 +50,15 @@
 #include <string.h>
 
 
-Tree2StdMML::Tree2StdMML(Grammar * mml_grammar, Analyzer * analyzer) :
-   mml_entities(mml_grammar), my_analyzer(analyzer), mv_stack(NULL), lt_stack(NULL), mDisDerivative(true)
+Tree2StdMML::Tree2StdMML(Grammar* mml_grammar, Analyzer* analyzer) :
+     mml_entities(mml_grammar), 
+     my_analyzer(analyzer), 
+     mv_stack(NULL), 
+     lt_stack(NULL), 
+     mDisDerivative(true)
 {
 }
+
 
 Tree2StdMML::~Tree2StdMML()
 {
@@ -61,12 +66,13 @@ Tree2StdMML::~Tree2StdMML()
   TCI_ASSERT(lt_stack == NULL);
 }
 
+
 MNODE* Tree2StdMML::TreeToCanonicalForm(MNODE* dMML_tree,
                                         INPUT_NOTATION_REC* in_notation)
 {
   TCI_ASSERT(CheckLinks(dMML_tree));
 
-  MNODE *rv = ChDataToCanonicalForm(dMML_tree);
+  MNODE* rv = ChDataToCanonicalForm(dMML_tree);
   RemoveMixedNumbers(rv, in_notation);
   rv = FixMFENCEDs(rv);
   rv = InfixDivideToMFRAC(rv);
@@ -81,6 +87,8 @@ MNODE* Tree2StdMML::TreeToCanonicalForm(MNODE* dMML_tree,
   TCI_ASSERT(CheckLinks(rv));
   return rv;
 }
+
+
 
 MNODE* Tree2StdMML::TreeToInterpretForm(MNODE* dMML_tree,
                                         INPUT_NOTATION_REC* in_notation)
@@ -213,89 +221,107 @@ void Tree2StdMML::RemoveMixedNumbers(MNODE* dMML_tree,
   }
 }
 
-MNODE *Tree2StdMML::FixMFENCEDs(MNODE * dMML_tree)
+
+
+MNODE* Tree2StdMML::FixMFENCEDs(MNODE* dMML_tree)
 {
-  MNODE *rv = dMML_tree;
-  MNODE *rover = dMML_tree;
+  MNODE* rv = dMML_tree;
+  MNODE* rover = dMML_tree;
+
   while (rover) {
-    MNODE *the_next = rover->next;
+
+    MNODE* the_next = rover->next;
 
     if (rover->first_kid) {     // rover is a schemata
-      MNODE *c_list = FixMFENCEDs(rover->first_kid);
-      if (c_list != rover->first_kid) {
-        rover->first_kid = c_list;
-        c_list->parent = rover;
-      }
-    } else {                    // rover is elementary
-      if (ElementNameIs(rover, "mo") && !HasRequiredChildren(rover->parent)) {
-        if (IsFenceMO(rover)) {
-          GROUP_INFO gi;
-          GetFenceInfo(rover, gi);
 
-          if (IsGroup(gi)) {
-            MNODE *mfenced = PermuteTreeToMFENCED(rover, gi);
-            if (dMML_tree == rover)
-              rv = mfenced;
-            the_next = mfenced;
-            if (IsEnclosedList(gi)) {
-              ATTRIB_REC *ar_ilk = new ATTRIB_REC("ilk", "enclosed-list");
-              ar_ilk->next = mfenced->attrib_list;
-              mfenced->attrib_list->prev = ar_ilk;
-              mfenced->attrib_list = ar_ilk;
-            }
-          }
+        MNODE* c_list = FixMFENCEDs(rover->first_kid);
+        if (c_list != rover->first_kid) {
+          rover->first_kid = c_list;
+          c_list->parent = rover;
         }
-      }
+
+    } else {                    // rover is elementary
+    
+        if (ElementNameIs(rover, "mo") && !HasRequiredChildren(rover->parent)) {
+           if (IsFenceMO(rover)) {
+             GROUP_INFO gi;
+             GetFenceInfo(rover, gi);
+
+             if (IsGroup(gi)) {
+               MNODE* mfenced = PermuteTreeToMFENCED(rover, gi);
+               if (dMML_tree == rover)
+                 rv = mfenced;
+               the_next = mfenced;
+               if (IsEnclosedList(gi)) {
+                 ATTRIB_REC* ar_ilk = new ATTRIB_REC("ilk", "enclosed-list");
+                 ar_ilk->next = mfenced->attrib_list;
+                 mfenced->attrib_list->prev = ar_ilk;
+                 mfenced->attrib_list = ar_ilk;
+               }
+             }
+           }
+        }
+
     }
     rover = the_next;
   }
   return rv;
 }
 
+
 // Analyzer wants to see invisible fences marked as "I", but that's the wrong MathML
-void Tree2StdMML::FixInvisibleFences(MNODE * dMML_tree)
+void Tree2StdMML::FixInvisibleFences(MNODE* dMML_tree)
 {
-  MNODE *rover = dMML_tree;
+  MNODE* rover = dMML_tree;
+
   while (rover) {
+
     if (rover->first_kid) {     // rover is a schemata
       FixInvisibleFences(rover->first_kid);
     }
+
     if (ElementNameIs(rover, "mfenced")) {
-      const char *opener = GetATTRIBvalue(rover->attrib_list, "open");
-      if (opener[0] == 'I' && opener[1] == 0) {
-        ATTRIB_REC *ar_open = new ATTRIB_REC("open", "");
-        rover->attrib_list = MergeAttrsLists(rover->attrib_list, ar_open);
-      }
+
+        const char* opener = GetATTRIBvalue(rover->attrib_list, "open");
+        if (opener[0] == 'I' && opener[1] == 0) {
+          ATTRIB_REC* ar_open = new ATTRIB_REC("open", "");
+          rover->attrib_list = MergeAttrsLists(rover->attrib_list, ar_open);
+        }
+
     }
     rover = rover->next;
   }
 }
 
-void Tree2StdMML::AddOperatorInfo(MNODE * dMML_tree)
+void Tree2StdMML::AddOperatorInfo(MNODE* dMML_tree)
 {
-  MNODE *rover = dMML_tree;
+  MNODE* rover = dMML_tree;
+
   while (rover) {
     LookupMOInfo(rover);
     LookupEmbellishedMO(rover);
     rover = rover->next;
   }
+
 }
 
 // return precedence of mo according to the MathML Operator Dictionary
-void Tree2StdMML::LookupMOInfo(MNODE * mml_node)
+void Tree2StdMML::LookupMOInfo(MNODE* mml_node)
 {
   if (! ElementNameIs(mml_node, "mo"))
     return;
+
   int precedence = 0;
-  const char *accent_val = GetATTRIBvalue(mml_node->attrib_list, "accent");
-  const char *form_val = GetATTRIBvalue(mml_node->attrib_list, "form");
+  const char* accent_val = GetATTRIBvalue(mml_node->attrib_list, "accent");
+  const char* form_val = GetATTRIBvalue(mml_node->attrib_list, "form");
   OpIlk op_ilk = OP_none;
+
   if (form_val)
     op_ilk = StringToOpIlk(form_val);
+
   // look up via mml_entities
   const char* entity = mml_node->p_chdata;
   TCI_ASSERT(entity); //mo tags should always have character data!
-
   bool found_one = false;
   bool set_form = false;
   U32 ID, subID;
@@ -304,7 +330,7 @@ void Tree2StdMML::LookupMOInfo(MNODE * mml_node)
   if (mml_entities->GetRecordFromName("MATH", entity, strlen(entity), ID, subID, &p_data)) {
     if (p_data && *p_data) {
       if (strstr(p_data,"multiform,")) {
-	    set_form = true;
+        set_form = true;
         const char* str_ilk;
         if (op_ilk == OP_none && ((ContentIs(mml_node, "&#x2212;") || ContentIs(mml_node, "-")))) {
           if (mml_node->prev == 0 || (ContentIs(mml_node->prev, "&#x2212;") || ContentIs(mml_node->prev, "-"))) {  
@@ -337,24 +363,33 @@ void Tree2StdMML::LookupMOInfo(MNODE * mml_node)
     }
   }
   if (found_one) {
-    const char * str_ilk = p_data;
-    const char * str_prec = p_data;
+    const char* str_ilk = p_data;
+    const char* str_prec = p_data;
+
     while (str_prec && *str_prec != ',')
       str_prec++;
+
     if (*str_prec)
       str_prec++;
+
     TCI_ASSERT(*str_prec);
     if (!*str_prec)
       return;
-    const char * str_unicode = str_prec;
+
+    const char* str_unicode = str_prec;
+
     while (str_unicode && *str_unicode != ',')
       str_unicode++;
+
     if (*str_unicode)
       str_unicode++;
+
     TCI_ASSERT(*str_unicode);
     if (!*str_unicode)
       return;
+
     precedence = atoi(str_prec);
+
     if (op_ilk == OP_none) {
       // convert str_ilk .. str_prec to the code
       size_t ilk_len = str_prec - str_ilk - 1;
@@ -367,10 +402,12 @@ void Tree2StdMML::LookupMOInfo(MNODE * mml_node)
       op_ilk = new_ilk;
       delete tmp;
     }
+
     if (set_form) {
-      const char * str_ilk = OpIlkToString(op_ilk);
+      const char* str_ilk = OpIlkToString(op_ilk);
       mml_node->attrib_list = StackAttr(mml_node->attrib_list,"form",str_ilk);  // put form on node
     }
+
   } else {
     TCI_ASSERT(!"Lookup failed.");
   }
@@ -379,9 +416,10 @@ void Tree2StdMML::LookupMOInfo(MNODE * mml_node)
   mml_node->form = op_ilk;
 }
 
+
 //embellished operators need to participate in precedence resolution
 //we assume here that LookMOInfor has been performed on all subtrees
-void Tree2StdMML::LookupEmbellishedMO(MNODE * mml_node)
+void Tree2StdMML::LookupEmbellishedMO(MNODE* mml_node)
 {
   if (HasScriptChildren(mml_node)) {
     int precedence = 0;
@@ -393,7 +431,7 @@ void Tree2StdMML::LookupEmbellishedMO(MNODE * mml_node)
   }
 }
 
-bool Tree2StdMML::GetBasePrecedence(MNODE * mml_node, int &precedence, OpIlk &op_ilk)
+bool Tree2StdMML::GetBasePrecedence(MNODE* mml_node, int& precedence, OpIlk& op_ilk)
 {
   if (ElementNameIs(mml_node, "mo")) {
     precedence = mml_node->precedence;
@@ -406,10 +444,11 @@ bool Tree2StdMML::GetBasePrecedence(MNODE * mml_node, int &precedence, OpIlk &op
   }
 }
 
+
 //CapitalDifferentialD is a special kind of operator
-void Tree2StdMML::AddDDOperatorInfo(MNODE * dMML_tree)
+void Tree2StdMML::AddDDOperatorInfo(MNODE* dMML_tree)
 {
-  MNODE *rover = dMML_tree;
+  MNODE* rover = dMML_tree;
   while (rover) {
     if (ElementNameIs(rover, "msub")) {
       MNODE *base = rover->first_kid;
@@ -444,11 +483,11 @@ void Tree2StdMML::InsertApplyFunction(MNODE* dMML_list)
     }
     if (do_insert) {
       if (n_arg_nodes > 1) {
-        MNODE * end_arg;
+        MNODE* end_arg;
         for (end_arg = rover->next; n_arg_nodes > 1 && end_arg ; n_arg_nodes--)
           end_arg = end_arg->next;
         TCI_ASSERT(end_arg);
-        MNODE * new_row = MakeMROW(rover->next, end_arg);
+        MNODE* new_row = MakeMROW(rover->next, end_arg);
         FinishFixup(new_row->first_kid);
       }
       InsertAF(rover);
@@ -460,7 +499,7 @@ void Tree2StdMML::InsertApplyFunction(MNODE* dMML_list)
   }
 }
 
-void Tree2StdMML::InsertInvisibleTimes(MNODE * dMML_list)
+void Tree2StdMML::InsertInvisibleTimes(MNODE* dMML_list)
 {
   MNODE* rover = dMML_list;
   if (rover && rover->parent) {
@@ -469,9 +508,10 @@ void Tree2StdMML::InsertInvisibleTimes(MNODE * dMML_list)
           HasRequiredChildren(rover->parent))
     return;
   }
+
   while (rover) {
     bool do_insert = false;
-    MNODE * candidate = rover;
+    MNODE* candidate = rover;
     rover = rover->next;
     if (NodeIsNumber(candidate) || NodeIsFactor(candidate)) {
       if (!rover)
@@ -489,10 +529,10 @@ void Tree2StdMML::InsertInvisibleTimes(MNODE * dMML_list)
   }
 }
 
-MNODE * Tree2StdMML::BindByOpPrecedence(MNODE * dMML_list, int high, int low)
+MNODE* Tree2StdMML::BindByOpPrecedence(MNODE* dMML_list, int high, int low)
 {
   TCI_ASSERT(high>=low && low>0);
-  MNODE * rv = dMML_list;
+  MNODE* rv = dMML_list;
   bool skipped_an_infix_op = false;
 
   for (int curr_prec = high; curr_prec >= low; curr_prec--) {
@@ -500,64 +540,70 @@ MNODE * Tree2StdMML::BindByOpPrecedence(MNODE * dMML_list, int high, int low)
     while (rover) {
       MNODE* the_next = rover->next;
       if (rover->form != OP_none && rover->precedence == curr_prec) {
+        
         switch (rover->form) {
-          case OP_prefix:
-            if (rover->next ) {
-			  // If the next thing is also an infix op, skip this one till later
-			  // pass through loop.
-			  if (the_next->form != OP_none && the_next->precedence == curr_prec){
-			    skipped_an_infix_op = true;
-				rover = the_next;
-			  } else{
-              	MNODE * new_row = MakeMROW(rover, rover->next);
-              	if (new_row != rover) {
-                	the_next = new_row;
-                	if (rover == rv)
-                  	  rv = the_next;
-				}
-              }
-            }
-            break;
-          case OP_infix:
-            if (rover->prev && rover->next) {
-              MNODE * end = rover->next;
-              // scan forward until we hit one of different precedence
-              MNODE * inner = end;
-              while (inner) {
-                if (inner->form == OP_infix) {
-                  if (inner->precedence == curr_prec) {
-                    if (inner->next)
-                      inner = end = inner->next;
-                    else
-                      break;
-                  } else {
-                    break;
-                  }
-                } else if (inner->form != OP_none) {
-                  break;
-                } else {
-                  inner = inner->next;
+
+            case OP_prefix:
+              if (rover->next ) {
+            	  // If the next thing is also an infix op, skip this one till later
+            	  // pass through loop.
+            	  if (the_next->form != OP_none && the_next->precedence == curr_prec){
+            	    skipped_an_infix_op = true;
+            		rover = the_next;
+            	  } else{
+                	MNODE* new_row = MakeMROW(rover, rover->next);
+                	if (new_row != rover) {
+                  	the_next = new_row;
+                  	if (rover == rv)
+                    	  rv = the_next;
+            		}
                 }
               }
-              the_next = end;
-              MNODE * new_row = MakeMROW(rover->prev, end);
-              if (new_row != rover->prev) {
-                the_next = new_row;
-                if (rover->prev == rv)
-                  rv = the_next;
+              break;
+
+            case OP_infix:
+              if (rover->prev && rover->next) {
+                MNODE * end = rover->next;
+                // scan forward until we hit one of different precedence
+                MNODE * inner = end;
+                while (inner) {
+                  if (inner->form == OP_infix) {
+                    if (inner->precedence == curr_prec) {
+                      if (inner->next)
+                        inner = end = inner->next;
+                      else
+                        break;
+                    } else {
+                      break;
+                    }
+                  } else if (inner->form != OP_none) {
+                    break;
+                  } else {
+                    inner = inner->next;
+                  }
+                }
+                the_next = end;
+                MNODE* new_row = MakeMROW(rover->prev, end);
+                if (new_row != rover->prev) {
+                  the_next = new_row;
+                  if (rover->prev == rv)
+                    rv = the_next;
+                }
               }
-            }
-            break;
-          case OP_postfix:
-            if (rover->prev && rover->prev->form != OP_postfix && rover->prev->precedence != curr_prec) {
-              MNODE * new_row = MakeMROW(rover->prev, rover);
-              if (new_row != rover->prev) {
-                the_next = new_row;
-                if (rover->prev == rv)
-                  rv = the_next;
+              break;
+
+
+            case OP_postfix:
+              if (rover->prev && rover->prev->form != OP_postfix && rover->prev->precedence != curr_prec) {
+                MNODE* new_row = MakeMROW(rover->prev, rover);
+                if (new_row != rover->prev) {
+                  the_next = new_row;
+                  if (rover->prev == rv)
+                    rv = the_next;
+                }
               }
-            }
-            break;
+              break;
+
           default:
             TCI_ASSERT(!"This is impossible.");
         }
@@ -568,25 +614,30 @@ MNODE * Tree2StdMML::BindByOpPrecedence(MNODE * dMML_list, int high, int low)
   return rv;
 }
 
+
 //ApplyFunction binds right to left, unlike any other operator
-MNODE * Tree2StdMML::BindApplyFunction(MNODE * dMML_list)
+MNODE* Tree2StdMML::BindApplyFunction(MNODE* dMML_list)
 {
-  MNODE * rv = dMML_list;
+  MNODE* rv = dMML_list;
   int curr_prec = 65;
   MNODE* rover = rv;
+
   // find end of list
   while (rover && rover->next) {
     if (rover->next)
       rover = rover->next;
   }
+
   // scan for ApplyFunction, backwards
   while (rover) {
     MNODE* the_next = rover->prev;
     if (rover->form != OP_none && rover->precedence == curr_prec) {
+      
       switch (rover->form) {
+        
         case OP_infix:
           if (rover->prev && rover->next) {
-            MNODE * new_row = MakeMROW(rover->prev, rover->next);
+            MNODE* new_row = MakeMROW(rover->prev, rover->next);
             if (new_row != rover->prev) {
               the_next = new_row;
               if (rover->prev == rv)
@@ -594,6 +645,7 @@ MNODE * Tree2StdMML::BindApplyFunction(MNODE * dMML_list)
             }
           }
           break;
+
         default:
           TCI_ASSERT(!"Non-infix ApplyFunction is impossible.");
       }
@@ -604,109 +656,127 @@ MNODE * Tree2StdMML::BindApplyFunction(MNODE * dMML_list)
 }
 
 
+
 // change $3 . 4$ to $3.4$ as single mn
-MNODE *Tree2StdMML::FixAdjacentMNs(MNODE * dMML_tree)
+MNODE* Tree2StdMML::FixAdjacentMNs(MNODE* dMML_tree)
 {
-  MNODE *rv = dMML_tree;
-  MNODE *rover = dMML_tree;
+  MNODE* rv = dMML_tree;
+  MNODE* rover = dMML_tree;
+
   while (rover) {
-    MNODE *the_next = rover->next;
+    
+    MNODE* the_next = rover->next;
+    
     if (rover->first_kid) {     // rover is a schemata
-      FixAdjacentMNs(rover->first_kid);
+
+        FixAdjacentMNs(rover->first_kid);
+
     } else {                    // rover is elementary
-      if (IsNumberOrPeriod(rover) && !HasRequiredChildren(rover->parent)) {
-        MNODE * right = rover->next;
-        if (right && IsNumberOrPeriod(right)) {
-          // check to make sure we don't get two periods
-          if (!(HasPeriod(rover) && HasPeriod(right))) {
-            the_next = rover;
-            // glue together
-            if ( ! ElementNameIs(rover, "mn") )
-              SetElementName(rover, "mn");  // might have been mo
 
-            size_t ln = strlen(rover->p_chdata) + strlen(right->p_chdata);
-            char *tmp = new char[ln + 1];
-            strcpy(tmp, rover->p_chdata);
-            strcat(tmp, right->p_chdata);
-            delete rover->p_chdata;
-            rover->p_chdata = tmp;
+        if (IsNumberOrPeriod(rover) && !HasRequiredChildren(rover->parent)) {
 
-            rover->next = right->next;
-            if (right->next) {
-              right->next->prev = rover;
-              right->next = 0;
+          MNODE* right = rover->next;
+
+          if (right && IsNumberOrPeriod(right)) {
+            
+            // check to make sure we don't get two periods
+            if (!(HasPeriod(rover) && HasPeriod(right))) {
+              the_next = rover;
+              // glue together
+              if ( ! ElementNameIs(rover, "mn") )
+                SetElementName(rover, "mn");  // might have been mo
+
+              size_t ln = strlen(rover->p_chdata) + strlen(right->p_chdata);
+              char *tmp = new char[ln + 1];
+              strcpy(tmp, rover->p_chdata);
+              strcat(tmp, right->p_chdata);
+              delete rover->p_chdata;
+              rover->p_chdata = tmp;
+
+              rover->next = right->next;
+              if (right->next) {
+                right->next->prev = rover;
+                right->next = 0;
+              }
+              DisposeTNode(right);
             }
-            DisposeTNode(right);
           }
         }
-      }
+
     }
     rover = the_next;
   }
   return rv;
 }
 
+
 // change $( .. ) ..$ to $<mrow>( <mrow>..</mrow> )</mrow> ..$ so fixMFENCED can work
-void Tree2StdMML::BindDelimitedGroups(MNODE * dMML_tree)
+void Tree2StdMML::BindDelimitedGroups(MNODE* dMML_tree)
 {
-  MNODE *rover = dMML_tree;
+  MNODE* rover = dMML_tree;
+
   while (rover) {
-    MNODE *the_next = rover->next;
+    MNODE* the_next = rover->next;
     if (rover->first_kid) {     // rover is a schemata
-      BindDelimitedGroups(rover->first_kid);
+        BindDelimitedGroups(rover->first_kid);
     } else {                    // rover is elementary
-      if (ElementNameIs(rover, "mo") && !HasRequiredChildren(rover->parent)) {
-        if (IsLeftFenceMO(rover)) {
-          MNODE *lfence = rover;
-          GROUP_INFO gi;
-          MNODE *rfence = GetMatchingFenceInfo(lfence, gi);
-          if (IsGroup(gi)) {
-            MNODE *new_row = MakeMROW(lfence, rfence);
-            if (new_row != lfence)
-              the_next = new_row;  // tree structure morphed
-            if (lfence->next != rfence->prev && lfence->next != rfence)  // atomic content should be OK
-              MakeMROW(lfence->next, rfence->prev);
+        if (ElementNameIs(rover, "mo") && !HasRequiredChildren(rover->parent)) {
+          if (IsLeftFenceMO(rover)) {
+            MNODE* lfence = rover;
+            GROUP_INFO gi;
+            MNODE* rfence = GetMatchingFenceInfo(lfence, gi);
+            if (IsGroup(gi)) {
+              
+              MNODE* new_row = MakeMROW(lfence, rfence);
+              if (new_row != lfence)
+                the_next = new_row;  // tree structure morphed
+              
+              if (lfence->next != rfence->prev && lfence->next != rfence)  // atomic content should be OK
+                MakeMROW(lfence->next, rfence->prev);
+            }
           }
         }
-      }
     }
     rover = the_next;
   }
+
 }
 
 // change $( .. )^? ..$ to $<msup><mrow>( .. )</mrow>?</msup> ..$ so fixMFENCED can work
-void Tree2StdMML::BindScripts(MNODE * dMML_tree)
+void Tree2StdMML::BindScripts(MNODE* dMML_tree)
 {
-  MNODE *rover = dMML_tree;
+  MNODE* rover = dMML_tree;
+
   while (rover) {
-    MNODE *the_next = rover->next;
+    MNODE* the_next = rover->next;
     if (rover->first_kid) {     // rover is a schemata
-      BindScripts(rover->first_kid);
+        BindScripts(rover->first_kid);
     } else {                    // rover is elementary
-      if (ElementNameIs(rover, "mo") && !HasRequiredChildren(rover->parent)) {
-        if (IsLeftFenceMO(rover)) {
-          MNODE *lfence = rover;
-          GROUP_INFO gi;
-          MNODE *rscript = GetScriptedFenceInfo(lfence, gi);
-          if (IsFence(gi)) {
-            MNODE *rfence = GetBaseFence(rscript);
-            MNODE *new_script = MakeSCRIPT(lfence, rscript);
-            if (new_script != lfence)
-              the_next = new_script;  // tree structure morphed
-            if (lfence->next != rfence->prev)  // atomic content should be OK
-              MakeMROW(lfence->next, rfence->prev);
+        if (ElementNameIs(rover, "mo") && !HasRequiredChildren(rover->parent)) {
+          if (IsLeftFenceMO(rover)) {
+            MNODE* lfence = rover;
+            GROUP_INFO gi;
+            MNODE* rscript = GetScriptedFenceInfo(lfence, gi);
+            if (IsFence(gi)) {
+              MNODE* rfence = GetBaseFence(rscript);
+              MNODE* new_script = MakeSCRIPT(lfence, rscript);
+              if (new_script != lfence)
+                the_next = new_script;  // tree structure morphed
+              if (lfence->next != rfence->prev)  // atomic content should be OK
+                MakeMROW(lfence->next, rfence->prev);
+            }
           }
         }
-      }
     }
     rover = the_next;
   }
 }
 
-MNODE *Tree2StdMML::BindMixedNumbers(MNODE * dMML_list)
+MNODE* Tree2StdMML::BindMixedNumbers(MNODE * dMML_list)
 {
-  MNODE * rv = dMML_list;
+  MNODE* rv = dMML_list;
   MNODE* rover = rv;
+
   while (rover && rover->next) {
     MNODE* the_next = rover->next;
     if (NodeIsTrueNumber(rover) && NodeIsRationalFraction(rover->next)) {
@@ -724,9 +794,9 @@ MNODE *Tree2StdMML::BindMixedNumbers(MNODE * dMML_list)
 
 // \int ... dx
 
-MNODE *Tree2StdMML::BindDelimitedIntegrals(MNODE * dMML_list)
+MNODE* Tree2StdMML::BindDelimitedIntegrals(MNODE* dMML_list)
 {
-  MNODE * rv = dMML_list;
+  MNODE* rv = dMML_list;
   MNODE* rover = rv;
   while (rover) {
     MNODE* the_next = rover->next;
@@ -743,58 +813,63 @@ MNODE *Tree2StdMML::BindDelimitedIntegrals(MNODE * dMML_list)
   return rv;
 }
 
-MNODE *Tree2StdMML::BindIntegral(MNODE * dMML_list)
-{
-  MNODE * rv = dMML_list;
-  int n_integrals = GetIntegralCount(dMML_list);
 
+MNODE* Tree2StdMML::BindIntegral(MNODE* dMML_list)
+{
+  MNODE* rv = dMML_list;
+  int n_integrals = GetIntegralCount(dMML_list);
   bool is_delimited = false;
   bool done = false;
-
   MNODE* i_rover = dMML_list;
   MNODE* i_end = dMML_list;
+  
   while (i_rover && !done) {
     i_rover = i_rover->next;
     if (!i_rover)
       break;
 
     if (NodeIsIntegral(i_rover)) { // Handle nested integrals recursively
-      MNODE* tmp = BindIntegral(i_rover);
-	    if (tmp)
-	      i_rover = tmp;
-      i_end = i_rover;
-	  } else {	// non-nested integral clause
-		  bool in_row;
-      if (NodeIsDifferential(i_rover,in_row)) {
-        PermuteDifferential(i_rover);
-			  if (!in_row)
-				  i_rover = i_rover->next;
+
+        MNODE* tmp = BindIntegral(i_rover);
+          if (tmp)
+            i_rover = tmp;
         i_end = i_rover;
 
-        n_integrals--;
-  	    while (i_rover && n_integrals) {
-          i_rover = i_rover->next;
-          if (!i_rover)
-            break;
+    } else {	// non-nested integral clause
 
-			    if (NodeIsDifferential(i_rover,in_row)) {
-			      PermuteDifferential(i_rover);
-			      if (!in_row)
-				      i_rover = i_rover->next;
+        bool in_row;
+        if (NodeIsDifferential(i_rover,in_row)) {
+            PermuteDifferential(i_rover);
+            		  if (!in_row)
+            			  i_rover = i_rover->next;
             i_end = i_rover;
-			      n_integrals--;
-          }
-			  }
-        is_delimited = true;
-			  done = true;
-      }
+
+            n_integrals--;
+  	        while (i_rover && n_integrals) {
+
+              i_rover = i_rover->next;
+              if (!i_rover)
+                break;
+
+              if (NodeIsDifferential(i_rover,in_row)) {
+            	  PermuteDifferential(i_rover);
+            	  if (!in_row)
+            		i_rover = i_rover->next;
+                  i_end = i_rover;
+            	  n_integrals--;
+              }
+            }
+
+            is_delimited = true;
+            done = true;
+        }
     }
   }
 
   // At this point, we've spanned \int ... dx
   if (is_delimited) {		// we nest
-    MNODE *arg = dMML_list->next;
-    MNODE * new_row = MakeMROW(arg, i_end);  // bind integrand
+    MNODE* arg = dMML_list->next;
+    MNODE* new_row = MakeMROW(arg, i_end);  // bind integrand
     if (new_row != arg) {
       FinishFixup(new_row->first_kid);
     }
@@ -806,8 +881,10 @@ MNODE *Tree2StdMML::BindIntegral(MNODE * dMML_list)
   return rv;
 }
 
+
+
 // Recognize D_x as differential operator
-void Tree2StdMML::FixupCapitalD(MNODE * dMML_list)
+void Tree2StdMML::FixupCapitalD(MNODE* dMML_list)
 {
   MNODE* rover = dMML_list;
   while (rover) {
@@ -817,8 +894,9 @@ void Tree2StdMML::FixupCapitalD(MNODE * dMML_list)
   }
 }
 
+
 // Recognize d/dx as differential operator
-void Tree2StdMML::FixupSmalld(MNODE * dMML_list)
+void Tree2StdMML::FixupSmalld(MNODE* dMML_list)
 {
   MNODE* rover = dMML_list;
   while (rover) {
@@ -831,6 +909,7 @@ void Tree2StdMML::FixupSmalld(MNODE * dMML_list)
     rover = rover->next;
   }
 }
+
 
 
 // finish MathML bindings
@@ -880,6 +959,8 @@ MNODE* Tree2StdMML::FinishFixup(MNODE* dMML_tree)
   rv = BindByOpPrecedence(rv, 27, 2);
   return rv;
 }
+
+
 
 MNODE* Tree2StdMML::InfixDivideToMFRAC(MNODE* dMML_list)
 {
@@ -942,18 +1023,19 @@ MNODE* Tree2StdMML::InfixDivideToMFRAC(MNODE* dMML_list)
   return rv;
 }
 
+
 // f(x), sin 2x, g(f(x)), etc.
 
-bool Tree2StdMML::FunctionHasArg(MNODE * mml_func_node, int & n_arg_nodes, bool & is_delimited)
+bool Tree2StdMML::FunctionHasArg(MNODE* mml_func_node, int& n_arg_nodes, bool& is_delimited)
 {
   bool rv = false;
 
   n_arg_nodes = 1;              // assumed, set if otherwise
   is_delimited = false;
-  MNODE * base_node = GetBaseFunction(mml_func_node);
+  MNODE* base_node = GetBaseFunction(mml_func_node);
   bool do_trigargs = IsTrigArgFuncName(mml_entities,base_node->p_chdata);
 
-  MNODE *arg = mml_func_node->next;
+  MNODE* arg = mml_func_node->next;
   if (!arg)
     return false;
 
@@ -970,18 +1052,19 @@ bool Tree2StdMML::FunctionHasArg(MNODE * mml_func_node, int & n_arg_nodes, bool 
     n_arg_nodes = CountTrigargNodes(mml_func_node->next);
     return true;
   }
+
   return rv;
 }
 
 // Function to determine if the delimiters on a group
 //  are canonically matched. (a) {a} [a] |a| ||a|| <a> etc. 
 
-bool Tree2StdMML::MMLDelimitersMatch(GROUP_INFO & gi)
+bool Tree2StdMML::MMLDelimitersMatch(GROUP_INFO& gi)
 {
   bool rv = false;
 
-  const char *opener = gi.opening_delim;
-  const char *closer = gi.closing_delim;
+  const char* opener = gi.opening_delim;
+  const char* closer = gi.closing_delim;
 
   if (!opener[0] || !closer[0])
     return false;
@@ -1020,53 +1103,59 @@ bool Tree2StdMML::MMLDelimitersMatch(GROUP_INFO & gi)
     }
 
   } else if (zln_left == 2) {
-    if (zln_right == 2) {
-      if (opener[0] == '|' && closer[0] == '|')
-        if (opener[1] == '|' && closer[1] == '|')
-          rv = true;
-    }
+
+      if (zln_right == 2) {
+        if (opener[0] == '|' && closer[0] == '|')
+          if (opener[1] == '|' && closer[1] == '|')
+            rv = true;
+      }
 
   } else if (opener[0] == '&' && closer[0] == '&') {
-    U32 l_unicode = ASCII2U32(opener + 3, 16);
-    U32 r_unicode = ASCII2U32(closer + 3, 16);
 
-    if (l_unicode == 0x2308 && r_unicode == 0x2309)
-      rv = true;
-    else if (l_unicode == 0x2329 && r_unicode == 0x232A)
-      rv = true;
-    else if (l_unicode == 0x230A && r_unicode == 0x230B)
-      rv = true;
-    else if (l_unicode == 0x2191 && r_unicode == 0x2191)
-      rv = true;
-    else if (l_unicode == 0x2216 && r_unicode == 0x2216)
-      rv = true;
-    else if (l_unicode == 0xE850 && r_unicode == 0xE851)
-      rv = true;
-    else if (l_unicode == 0x21D1 && r_unicode == 0x21D1)
-      rv = true;
-    else if (l_unicode == 0x2018 && r_unicode == 0x2019)
-      rv = true;
-    else if (l_unicode == 0x21D3 && r_unicode == 0x21D3)
-      rv = true;
-    else if (l_unicode == 0x3008 && r_unicode == 0x3009)
-      rv = true;
-    else if (l_unicode == 0xF603 && r_unicode == 0xF604)
-      rv = true;
-    else if (l_unicode == 0x301A && r_unicode == 0x301B)
-      rv = true;
-    else if (l_unicode == 0x2016 && r_unicode == 0x2016)
-      rv = true;
-    else if (l_unicode == 0x201C && r_unicode == 0x201D)
-      rv = true;
-    else if (l_unicode == 0xF605 && r_unicode == 0xF606)
-      rv = true;
-    else
-      TCI_ASSERT(0);
+      U32 l_unicode = ASCII2U32(opener + 3, 16);
+      U32 r_unicode = ASCII2U32(closer + 3, 16);
+
+      if (l_unicode == 0x2308 && r_unicode == 0x2309)
+        rv = true;
+      else if (l_unicode == 0x2329 && r_unicode == 0x232A)
+        rv = true;
+      else if (l_unicode == 0x230A && r_unicode == 0x230B)
+        rv = true;
+      else if (l_unicode == 0x2191 && r_unicode == 0x2191)
+        rv = true;
+      else if (l_unicode == 0x2216 && r_unicode == 0x2216)
+        rv = true;
+      else if (l_unicode == 0xE850 && r_unicode == 0xE851)
+        rv = true;
+      else if (l_unicode == 0x21D1 && r_unicode == 0x21D1)
+        rv = true;
+      else if (l_unicode == 0x2018 && r_unicode == 0x2019)
+        rv = true;
+      else if (l_unicode == 0x21D3 && r_unicode == 0x21D3)
+        rv = true;
+      else if (l_unicode == 0x3008 && r_unicode == 0x3009)
+        rv = true;
+      else if (l_unicode == 0xF603 && r_unicode == 0xF604)
+        rv = true;
+      else if (l_unicode == 0x301A && r_unicode == 0x301B)
+        rv = true;
+      else if (l_unicode == 0x2016 && r_unicode == 0x2016)
+        rv = true;
+      else if (l_unicode == 0x201C && r_unicode == 0x201D)
+        rv = true;
+      else if (l_unicode == 0xF605 && r_unicode == 0xF606)
+        rv = true;
+      else
+        TCI_ASSERT(0);
+
   } else {
     TCI_ASSERT(0);
   }
+
   return rv;
 }
+
+
 
 // f(z), R(R<=5), d(a,b), etc.
 // We often need to know what's in a group
@@ -1076,7 +1165,7 @@ bool Tree2StdMML::MMLDelimitersMatch(GROUP_INFO & gi)
 //    3. parenthetic info         R(R>0)
 //    4. an interval            [0,10)
 
-void Tree2StdMML::GetFenceInfo(MNODE * MML_opener, GROUP_INFO & gi)
+void Tree2StdMML::GetFenceInfo(MNODE* MML_opener, GROUP_INFO& gi)
 {
   gi.opening_delim[0] = 0;
   gi.closing_delim[0] = 0;
@@ -1087,9 +1176,9 @@ void Tree2StdMML::GetFenceInfo(MNODE * MML_opener, GROUP_INFO & gi)
   gi.separator_count = 0;
   gi.n_interior_nodes = 0;
 
-  MNODE *rover = MML_opener;
+  MNODE* rover = MML_opener;
   if (rover) {
-    MNODE *lfence = rover;
+    MNODE* lfence = rover;
     // Extract the left delimiter - if it exists
     if (IsFenceMO(lfence)) {
       if (lfence->p_chdata)
@@ -1099,9 +1188,10 @@ void Tree2StdMML::GetFenceInfo(MNODE * MML_opener, GROUP_INFO & gi)
       rover = rover->next;
     }
 
-    MNODE *body = rover;
+    MNODE* body = rover;
     int n_interior_nodes = 0;
-    MNODE *rfence = rover;
+    MNODE* rfence = rover;
+    
     if (rfence) {
       if (IsFenceMO(rfence)) {
         body = NULL;
@@ -1127,10 +1217,11 @@ void Tree2StdMML::GetFenceInfo(MNODE * MML_opener, GROUP_INFO & gi)
         body = body->first_kid;
       GetGroupInsideInfo(body, rfence, gi);
     }
+
   }
 }
 
-MNODE *Tree2StdMML::GetMatchingFenceInfo(MNODE * MML_opener, GROUP_INFO & gi)
+MNODE *Tree2StdMML::GetMatchingFenceInfo(MNODE* MML_opener, GROUP_INFO& gi)
 {
   gi.opening_delim[0] = 0;
   gi.closing_delim[0] = 0;
@@ -1141,10 +1232,10 @@ MNODE *Tree2StdMML::GetMatchingFenceInfo(MNODE * MML_opener, GROUP_INFO & gi)
   gi.separator_count = 0;
   gi.n_interior_nodes = 0;
 
-  MNODE *rover = MML_opener;
-  MNODE *rfence = NULL;
+  MNODE* rover = MML_opener;
+  MNODE* rfence = NULL;
   if (rover) {
-    MNODE *lfence = rover;
+    MNODE* lfence = rover;
     // Extract the left delimiter - if it exists
     if (IsLeftFenceMO(lfence)) {
       if (lfence->p_chdata)
@@ -1154,7 +1245,7 @@ MNODE *Tree2StdMML::GetMatchingFenceInfo(MNODE * MML_opener, GROUP_INFO & gi)
       rover = rover->next;
     }
 
-    MNODE *body = rover;
+    MNODE* body = rover;
     int n_interior_nodes = 0;
     rfence = rover;
     if (rfence) {
@@ -1197,7 +1288,7 @@ MNODE *Tree2StdMML::GetMatchingFenceInfo(MNODE * MML_opener, GROUP_INFO & gi)
   return rfence;
 }
 
-MNODE *Tree2StdMML::GetScriptedFenceInfo(MNODE * MML_opener, GROUP_INFO & gi)
+MNODE* Tree2StdMML::GetScriptedFenceInfo(MNODE* MML_opener, GROUP_INFO& gi)
 {
   gi.opening_delim[0] = 0;
   gi.closing_delim[0] = 0;
@@ -1208,8 +1299,8 @@ MNODE *Tree2StdMML::GetScriptedFenceInfo(MNODE * MML_opener, GROUP_INFO & gi)
   gi.separator_count = 0;
   gi.n_interior_nodes = 0;
 
-  MNODE *rover = MML_opener;
-  MNODE *rfence = NULL;
+  MNODE* rover = MML_opener;
+  MNODE* rfence = NULL;
   if (rover) {
     MNODE *lfence = rover;
     // Extract the left delimiter - if it exists
@@ -1221,7 +1312,7 @@ MNODE *Tree2StdMML::GetScriptedFenceInfo(MNODE * MML_opener, GROUP_INFO & gi)
       rover = rover->next;
     }
 
-    MNODE *body = rover;
+    MNODE* body = rover;
     int n_interior_nodes = 0;
     rfence = rover;
     if (rfence) {
@@ -1262,10 +1353,10 @@ MNODE *Tree2StdMML::GetScriptedFenceInfo(MNODE * MML_opener, GROUP_INFO & gi)
   return rfence;
 }
 
-void Tree2StdMML::GetGroupInsideInfo(MNODE * MML_cont, MNODE * rfence, GROUP_INFO & gi)
+void Tree2StdMML::GetGroupInsideInfo(MNODE* MML_cont, MNODE* rfence, GROUP_INFO& gi)
 {
   // Iterate MML_list to see what's in this delimited group.
-  MNODE *rover = MML_cont;
+  MNODE* rover = MML_cont;
   while (rover) {
     if (rfence && rover == rfence)
       break;
@@ -1296,7 +1387,7 @@ void Tree2StdMML::GetGroupInsideInfo(MNODE * MML_cont, MNODE * rfence, GROUP_INF
 
 // Sadly, fence information isn't in our operator dictionary, so
 // we hardcode it here.
-bool Tree2StdMML::IsFenceMO(MNODE * mml_node)
+bool Tree2StdMML::IsFenceMO(MNODE* mml_node)
 {
   bool rv = false;
 
@@ -1341,7 +1432,7 @@ bool Tree2StdMML::IsFenceMO(MNODE * mml_node)
   return rv;
 }
 
-bool Tree2StdMML::IsLeftFenceMO(MNODE * mml_node)
+bool Tree2StdMML::IsLeftFenceMO(MNODE* mml_node)
 {
   bool rv = false;
   bool fence_true = false;
@@ -1392,7 +1483,7 @@ bool Tree2StdMML::IsLeftFenceMO(MNODE * mml_node)
   return rv;
 }
 
-bool Tree2StdMML::IsRightFenceMO(MNODE * mml_node)
+bool Tree2StdMML::IsRightFenceMO(MNODE* mml_node)
 {
   bool rv = false;
   bool fence_true = false;
@@ -1488,7 +1579,7 @@ bool Tree2StdMML::NodeIsNumber(MNODE* mml_node)
 }
 
 // Check for an integer w/o structure
-bool Tree2StdMML::NodeIsTrueNumber(MNODE * mml_node)
+bool Tree2StdMML::NodeIsTrueNumber(MNODE* mml_node)
 {
   int dummy;
   if (ElementNameIs(mml_node, "mn"))
@@ -1498,7 +1589,7 @@ bool Tree2StdMML::NodeIsTrueNumber(MNODE * mml_node)
 }
 
 // Check for n/m where n,m integers
-bool Tree2StdMML::NodeIsRationalFraction(MNODE * mml_node)
+bool Tree2StdMML::NodeIsRationalFraction(MNODE* mml_node)
 {
   if (ElementNameIs(mml_node, "mfrac")) {
     MNODE * rover = mml_node->first_kid;
@@ -1513,7 +1604,9 @@ bool Tree2StdMML::NodeIsRationalFraction(MNODE * mml_node)
   return false;
 }
 
-bool Tree2StdMML::NodeIsFunction(MNODE * mml_node)
+
+
+bool Tree2StdMML::NodeIsFunction(MNODE* mml_node)
 {
   // might be f^-1 or something, in which case the whole expr is the function
   if (HasScriptChildren(mml_node))
@@ -1527,8 +1620,10 @@ bool Tree2StdMML::NodeIsFunction(MNODE * mml_node)
   return false;
 }
 
+
+
 //assuming NodeIsFunction() true, find the actual function name node
-MNODE * Tree2StdMML::GetBaseFunction(MNODE * mml_node)
+MNODE * Tree2StdMML::GetBaseFunction(MNODE* mml_node)
 {
   if (ElementNameIs(mml_node, "mi"))
     return mml_node;
@@ -1538,12 +1633,16 @@ MNODE * Tree2StdMML::GetBaseFunction(MNODE * mml_node)
   return 0;
 }
 
-bool Tree2StdMML::FuncTakesTrigArgs(MNODE * mml_node)
+
+
+bool Tree2StdMML::FuncTakesTrigArgs(MNODE* mml_node)
 {
-  return IsTrigArgFuncName(mml_entities,mml_node->p_chdata);
+  return IsTrigArgFuncName(mml_entities, mml_node->p_chdata);
 }
 
-bool Tree2StdMML::NodeIsOperator(MNODE * mml_node)
+
+
+bool Tree2StdMML::NodeIsOperator(MNODE* mml_node)
 {
   //TODO look up in def. store and other places
   if (ElementNameIs(mml_node, "mo")) {
@@ -1563,13 +1662,17 @@ bool Tree2StdMML::NodeIsOperator(MNODE * mml_node)
   }
 }
 
-bool Tree2StdMML::NodeIsIntegral(MNODE * mml_node)
+
+
+bool Tree2StdMML::NodeIsIntegral(MNODE* mml_node)
 {
   return GetIntegralCount(mml_node) > 0;
 }
 
+
+
 // This looks a lot like Analyzer::GetBigOpType()
-int Tree2StdMML::GetIntegralCount(MNODE * mml_node)
+int Tree2StdMML::GetIntegralCount(MNODE* mml_node)
 {
   if (ElementNameIs(mml_node, "msubsup") ||
       ElementNameIs(mml_node, "munderover"))
@@ -1598,6 +1701,8 @@ int Tree2StdMML::GetIntegralCount(MNODE * mml_node)
   return 0;
 }
 
+
+
 //TODO check that it's followed by a variable
 
 bool Tree2StdMML::NodeIsDifferential(MNODE* mml_node, bool& nested)
@@ -1624,6 +1729,8 @@ bool Tree2StdMML::NodeIsDifferential(MNODE* mml_node, bool& nested)
   }
 }
 
+
+
 // Assuming NodeIsDifferential() is true, change d to &dd;
 void Tree2StdMML::PermuteDifferential(MNODE* mml_node)
 {
@@ -1631,11 +1738,13 @@ void Tree2StdMML::PermuteDifferential(MNODE* mml_node)
       (ElementNameIs(mml_node, "mo") && ContentIs(mml_node,"d"))) {
 
     SetElementName(mml_node, "mo");
-	SetContent(mml_node, "&#x2146;");
+    SetContent(mml_node, "&#x2146;");
     LookupMOInfo(mml_node);
 
   }
 }
+
+
 
 bool Tree2StdMML::NodeIsCapitalDifferential(MNODE* mml_node)
 {
@@ -1654,6 +1763,8 @@ bool Tree2StdMML::NodeIsCapitalDifferential(MNODE* mml_node)
   }
 }
 
+
+
 // Assuming NodeIsCapitalDifferential() is true, change D to &DD;
 void Tree2StdMML::PermuteCapitalDifferential(MNODE* mml_node)
 {
@@ -1665,10 +1776,12 @@ void Tree2StdMML::PermuteCapitalDifferential(MNODE* mml_node)
       (ElementNameIs(theD, "mo") && ContentIs(theD, "D"))) {
 
     SetElementName(theD, "mo");
-	SetContent(theD, "&#x2145;"); 
+    SetContent(theD, "&#x2145;"); 
     LookupMOInfo(theD);
   }
 }
+
+
 
 // Assuming NodeIsDiffNumerator() is true, change d to &dd;
 void Tree2StdMML::PermuteDiffNumerator(MNODE* mml_node)
@@ -1683,6 +1796,8 @@ void Tree2StdMML::PermuteDiffNumerator(MNODE* mml_node)
 
   PermuteDifferential(rover);
 }
+
+
 
 // Assuming NodeIsDiffDenominator() is true, change d to &dd;
 void Tree2StdMML::PermuteDiffDenominator(MNODE* mml_node)
@@ -1706,6 +1821,8 @@ void Tree2StdMML::PermuteDiffDenominator(MNODE* mml_node)
     PermuteDiffDenominator(rover);
 }
 
+
+
 bool Tree2StdMML::NodeIsDiffNumerator(MNODE* mml_node)
 {
   if (ElementNameIs(mml_node, "mrow") || ElementNameIs(mml_node, "msup")) {
@@ -1715,6 +1832,8 @@ bool Tree2StdMML::NodeIsDiffNumerator(MNODE* mml_node)
       return NodeIsDifferential(mml_node, nested);
   }
 }
+
+
 
 // dx dy or dx^3 or d^3x
 bool Tree2StdMML::NodeIsDiffDenominator(MNODE* mml_node)
@@ -1750,9 +1869,11 @@ bool Tree2StdMML::NodeIsDiffDenominator(MNODE* mml_node)
     return NodeIsDiffDenominator(rover);
 }
 
+
+
 //TODO: check the end of the list
 //TODO: decorated variables?
-bool Tree2StdMML::NodeIsVariableList(MNODE * mml_node)
+bool Tree2StdMML::NodeIsVariableList(MNODE* mml_node)
 {
   if (ElementNameIs(mml_node, "mi"))
     return true;
@@ -1762,8 +1883,10 @@ bool Tree2StdMML::NodeIsVariableList(MNODE * mml_node)
     return false;
 }
 
+
+
 // Quite different from the corresponding function in LTeX2MML.cpp
-bool Tree2StdMML::NodeIsFactor(MNODE * mml_node)
+bool Tree2StdMML::NodeIsFactor(MNODE* mml_node)
 {
   //NOTE assuming fences are all mfenced
   if (NodeIsOperator(mml_node))
@@ -1774,8 +1897,10 @@ bool Tree2StdMML::NodeIsFactor(MNODE * mml_node)
     return true;
 }
 
+
+
 // return first leaf child at base of msup
-MNODE * Tree2StdMML::GetBaseFence(MNODE * mml_node)
+MNODE* Tree2StdMML::GetBaseFence(MNODE* mml_node)
 {
   if (ElementNameIs(mml_node, "msup")) {
     return mml_node->first_kid;
@@ -1788,12 +1913,15 @@ MNODE * Tree2StdMML::GetBaseFence(MNODE * mml_node)
   }
 }
 
+
+
 char* Tree2StdMML::ChdataToString(const char* p_chdata)
 {
   char* rv = NULL;
   U32 rln = 0;
 
   if (p_chdata && *p_chdata) {
+    
     const char* ptr = p_chdata;
     while (*ptr) {
       U32 unicode = 0;
@@ -1813,17 +1941,16 @@ char* Tree2StdMML::ChdataToString(const char* p_chdata)
             ptr++;
         } else {
           // non-numeric entity - &theta;, &ApplyFunction;. etc.
-          const char *entity = ptr - 1;
+          const char* entity = ptr - 1;
           while (*ptr && *ptr != ';')
             ptr++;
           U32 ID, subID;
           size_t zln = ptr - entity + 1;
-          const char *p_data;
-          if (mml_entities->
-              GetRecordFromName("MATH", entity, zln, ID, subID, &p_data)) {
+          const char* p_data;
+          if (mml_entities->GetRecordFromName("MATH", entity, zln, ID, subID, &p_data)) {
             if (p_data && *p_data) {
               //&ApplyFunction;<uID3.5.6>infix,65,U02061
-              const char *ptr = strstr(p_data, ",U");
+              const char* ptr = strstr(p_data, ",U");
               if (ptr) {
                 unicode = ASCII2U32(ptr + 2, 16);
               } else {
@@ -1870,12 +1997,16 @@ char* Tree2StdMML::ChdataToString(const char* p_chdata)
   return rv;
 }
 
-bool Tree2StdMML::IsGroup(GROUP_INFO & gi)
+
+
+bool Tree2StdMML::IsGroup(GROUP_INFO& gi)
 {
   return (gi.opening_delim[0] && gi.closing_delim[0]);
 }
 
-bool Tree2StdMML::IsFence(GROUP_INFO & gi)
+
+
+bool Tree2StdMML::IsFence(GROUP_INFO& gi)
 {
   if (gi.opening_delim[0] && gi.closing_delim[0]) {
     if (gi.separator_count) {
@@ -1889,7 +2020,9 @@ bool Tree2StdMML::IsFence(GROUP_INFO & gi)
   return false;
 }
 
-bool Tree2StdMML::IsEnclosedList(GROUP_INFO & gi)
+
+
+bool Tree2StdMML::IsEnclosedList(GROUP_INFO& gi)
 {
   bool rv = false;
   if (MMLDelimitersMatch(gi)) {
@@ -1908,10 +2041,12 @@ bool Tree2StdMML::IsEnclosedList(GROUP_INFO & gi)
   return rv;
 }
 
-int Tree2StdMML::CountTrigargNodes(MNODE * mml_node)
+
+
+int Tree2StdMML::CountTrigargNodes(MNODE* mml_node)
 {
   int rv = 1;
-  MNODE * rover = mml_node;
+  MNODE* rover = mml_node;
   if (rover)
     rover = rover->next;  // first one always OK
   else
@@ -1932,8 +2067,10 @@ int Tree2StdMML::CountTrigargNodes(MNODE * mml_node)
   return rv;
 }
 
+
+
 // TODO review this list carefully
-bool Tree2StdMML::NodeInTrigargList(MNODE * mml_node, bool & is_op)
+bool Tree2StdMML::NodeInTrigargList(MNODE* mml_node, bool& is_op)
 {
   is_op = false;
   if (mml_node) {
@@ -1987,6 +2124,8 @@ bool Tree2StdMML::NodeInTrigargList(MNODE * mml_node, bool & is_op)
   return false;
 }
 
+
+
 MNODE* Tree2StdMML::RemoveRedundantMROWs(MNODE* MML_list)
 {
   MNODE* rv = MML_list;
@@ -1995,15 +2134,15 @@ MNODE* Tree2StdMML::RemoveRedundantMROWs(MNODE* MML_list)
   while (rover) {
     MNODE* the_next = rover->next;
     if (ElementNameIs(rover, "mrow")) {
-      MNODE *eldest = rover->first_kid;
+      MNODE* eldest = rover->first_kid;
       bool zerokids = !eldest;
       bool onekid = eldest && !eldest->next;
       if ((zerokids && !HasRequiredChildren(rover->parent)) || onekid) {
         if (rover == MML_list)
           rv = eldest;
-        MNODE *parent = rover->parent;
-        MNODE *left_anchor = rover->prev;
-        MNODE *right_anchor = rover->next;
+        MNODE* parent = rover->parent;
+        MNODE* left_anchor = rover->prev;
+        MNODE* right_anchor = rover->next;
 
         rover->first_kid = NULL;
         DelinkTNode(rover);
@@ -2043,30 +2182,34 @@ MNODE* Tree2StdMML::RemoveRedundantMROWs(MNODE* MML_list)
   return rv;
 }
 
-MNODE *Tree2StdMML::RemoveEmptyTags(MNODE * MML_list)
+
+
+MNODE* Tree2StdMML::RemoveEmptyTags(MNODE* MML_list)
 {
-  MNODE *rv = MML_list;
-  MNODE *rover = MML_list;
+  MNODE* rv = MML_list;
+  MNODE* rover = MML_list;
   while (rover) {
-    MNODE *the_next = rover->next;
+    MNODE* the_next = rover->next;
     if (rover->first_kid) {  // rover is a schemata
-      RemoveEmptyTags(rover->first_kid);
+        RemoveEmptyTags(rover->first_kid);
     } else {
-      if (IsEmptyMO(rover)
-          || ElementNameIs(rover, "mn")
-          || ElementNameIs(rover, "mi") ) {
-        if (!rover->p_chdata || !*rover->p_chdata) {
-          if (!HasRequiredChildren(rover->parent)) {
-            DelinkTNode(rover);
-            DisposeTNode(rover);
+        if (IsEmptyMO(rover)
+            || ElementNameIs(rover, "mn")
+            || ElementNameIs(rover, "mi") ) {
+          if (!rover->p_chdata || !*rover->p_chdata) {
+            if (!HasRequiredChildren(rover->parent)) {
+              DelinkTNode(rover);
+              DisposeTNode(rover);
+            }
           }
         }
-      }
     }
     rover = the_next;
   }
   return rv;
 }
+
+
 
 MNODE* Tree2StdMML::RemoveMPADDEDs(MNODE* MML_list)
 {
@@ -2078,9 +2221,9 @@ MNODE* Tree2StdMML::RemoveMPADDEDs(MNODE* MML_list)
     if (ElementNameIs(rover, "mpadded")) {
       MNODE *eldest = rover->first_kid;
       if (!eldest || !eldest->next) {
-        MNODE *parent = rover->parent;
-        MNODE *left_anchor = rover->prev;
-        MNODE *right_anchor = rover->next;
+        MNODE* parent = rover->parent;
+        MNODE* left_anchor = rover->prev;
+        MNODE* right_anchor = rover->next;
 
         if (rover == MML_list)
           rv = eldest;
@@ -2123,6 +2266,8 @@ MNODE* Tree2StdMML::RemoveMPADDEDs(MNODE* MML_list)
 
   return rv;
 }
+
+
 
 void Tree2StdMML::RemoveMSTYLEs(MNODE* MML_list)
 {
@@ -2182,7 +2327,7 @@ MNODE* Tree2StdMML::RemoveMatrixDelims(MNODE* MML_list,
         do_it = true;
       }
 
-      MNODE *eldest = rover->first_kid;
+      MNODE* eldest = rover->first_kid;
       if (do_it &&
           eldest && !eldest->next && ElementNameIs(eldest, "mtable")) {
         if (is_brackets)
@@ -2190,9 +2335,9 @@ MNODE* Tree2StdMML::RemoveMatrixDelims(MNODE* MML_list,
         else if (is_parens)
           in_notation->nparen_tables++;
 
-        MNODE *parent = rover->parent;
-        MNODE *left_anchor = rover->prev;
-        MNODE *right_anchor = rover->next;
+        MNODE* parent = rover->parent;
+        MNODE* left_anchor = rover->prev;
+        MNODE* right_anchor = rover->next;
 
         if (rover == MML_list)
           rv = eldest;
@@ -2225,7 +2370,9 @@ MNODE* Tree2StdMML::RemoveMatrixDelims(MNODE* MML_list,
   return rv;
 }
 
-MNODE *Tree2StdMML::PermuteTreeToMFENCED(MNODE * opening_mo, GROUP_INFO & gi)
+
+
+MNODE* Tree2StdMML::PermuteTreeToMFENCED(MNODE* opening_mo, GROUP_INFO& gi)
 {
   MNODE *mfenced = opening_mo;
 
@@ -2294,16 +2441,17 @@ MNODE *Tree2StdMML::PermuteTreeToMFENCED(MNODE * opening_mo, GROUP_INFO & gi)
 <mo>)</mo>
 */
 
-MNODE *Tree2StdMML::ExtractItems(MNODE * body,
+MNODE* Tree2StdMML::ExtractItems(MNODE* body,
                                  int n_interior_nodes,
-                                 int n_commas, MNODE * parent_mfenced)
+                                 int n_commas, 
+                                 MNODE* parent_mfenced)
 {
-  MNODE *rv = NULL;
+  MNODE* rv = NULL;
 
   if (body && n_commas) {
-    MNODE *new_list = NULL;
-    MNODE *new_tail;
-    MNODE *old_list = body;
+    MNODE* new_list = NULL;
+    MNODE* new_tail;
+    MNODE* old_list = body;
 
     // strip away possible enclosing <mrow>
     if (!body->next && ElementNameIs(body, "mrow")) {
@@ -2344,65 +2492,71 @@ MNODE *Tree2StdMML::ExtractItems(MNODE * body,
   } else if (body) {
     rv = body;
     // reparent body
-    for (MNODE *rover = body; rover; rover = rover->next) {
+    for (MNODE* rover = body; rover; rover = rover->next) {
       rover->parent = parent_mfenced;
     }
   }
   return rv;
 }
 
-MNODE *Tree2StdMML::MakeItem(MNODE * l_anchor, MNODE * r_anchor)
+
+
+MNODE* Tree2StdMML::MakeItem(MNODE* l_anchor, MNODE* r_anchor)
 {
-  MNODE *rv = l_anchor;
+  MNODE* rv = l_anchor;
 
   if (l_anchor == r_anchor) {
-    rv = MakeTNode(l_anchor->src_start_offset, 0, l_anchor->src_linenum);
-    SetElementName(rv, "mrow");
-  } else {
-    if (r_anchor) {             // , - remove
-      if (r_anchor->prev)
-        r_anchor->prev->next = NULL;
-      if (r_anchor->next)
-        r_anchor->next->prev = NULL;
-      r_anchor->prev = NULL;
-      r_anchor->next = NULL;
-      DisposeTNode(r_anchor);
-    }
-    if (l_anchor->next) {
-      rv = MakeTNode(l_anchor->src_start_offset,
-                     l_anchor->src_length, l_anchor->src_linenum);
+      rv = MakeTNode(l_anchor->src_start_offset, 0, l_anchor->src_linenum);
       SetElementName(rv, "mrow");
-      rv->first_kid = l_anchor;
-      while (l_anchor) {
-        l_anchor->parent = rv;
-        l_anchor = l_anchor->next;
+  } else {
+      if (r_anchor) {             // , - remove
+        if (r_anchor->prev)
+          r_anchor->prev->next = NULL;
+        if (r_anchor->next)
+          r_anchor->next->prev = NULL;
+        r_anchor->prev = NULL;
+        r_anchor->next = NULL;
+        DisposeTNode(r_anchor);
       }
-    } else {
-      l_anchor->prev = NULL;
-      l_anchor->next = NULL;
-      rv = l_anchor;
-    }
+
+      if (l_anchor->next) {
+          rv = MakeTNode(l_anchor->src_start_offset, l_anchor->src_length, l_anchor->src_linenum);
+          SetElementName(rv, "mrow");
+          rv->first_kid = l_anchor;
+        
+          while (l_anchor) {
+            l_anchor->parent = rv;
+            l_anchor = l_anchor->next;
+          }
+
+      } else {
+          l_anchor->prev = NULL;
+          l_anchor->next = NULL;
+          rv = l_anchor;
+      }
   }
   return rv;
 }
 
 // Put stuff between l_anchor and r_anchor inclusive into an mrow
-MNODE *Tree2StdMML::MakeMROW(MNODE * l_anchor, MNODE * r_anchor)
+MNODE* Tree2StdMML::MakeMROW(MNODE* l_anchor, MNODE* r_anchor)
 {
-  MNODE *rover = l_anchor;
+  MNODE* rover = l_anchor;
   while (rover && rover != r_anchor)
     rover = rover->next;
+
   if (!rover) {
     TCI_ASSERT(!"Anchors are not siblings!");
     return NULL;
   }
+
   bool inMrow = ElementNameIs(l_anchor->parent, "mrow")
                 || HasInferedMROW(l_anchor->parent);
+  
   if (inMrow && l_anchor->prev == NULL && r_anchor->next == NULL)
     return l_anchor;  // already is in mrow
   
-  MNODE *rv = MakeTNode(l_anchor->src_start_offset,
-                 l_anchor->src_length, l_anchor->src_linenum);
+  MNODE* rv = MakeTNode(l_anchor->src_start_offset, l_anchor->src_length, l_anchor->src_linenum);
   SetElementName(rv, "mrow");
 
   rv->first_kid = l_anchor;
@@ -2430,24 +2584,22 @@ MNODE *Tree2StdMML::MakeMROW(MNODE * l_anchor, MNODE * r_anchor)
 }
 
 // Like above, but r_anchor has a script
-MNODE *Tree2StdMML::MakeSCRIPT(MNODE * l_anchor, MNODE * r_anchor)
+MNODE* Tree2StdMML::MakeSCRIPT(MNODE* l_anchor, MNODE* r_anchor)
 {
-  MNODE *rover = l_anchor;
+  MNODE* rover = l_anchor;
   while (rover && rover != r_anchor)
     rover = rover->next;
+
   if (!rover) {
     TCI_ASSERT(!"Anchors are not siblings!");
     return NULL;
   }
   
-  MNODE *rv = MakeTNode(l_anchor->src_start_offset,
-                 l_anchor->src_length, l_anchor->src_linenum);
+  MNODE* rv = MakeTNode(l_anchor->src_start_offset, l_anchor->src_length, l_anchor->src_linenum);
   TCI_ASSERT(r_anchor->src_tok);
   SetElementName(rv, r_anchor->src_tok);  // msup, msub or msubsup
 
-  MNODE* base = MakeTNode(l_anchor->src_start_offset,
-                 l_anchor->src_length, l_anchor->src_linenum);
-
+  MNODE* base = MakeTNode(l_anchor->src_start_offset, l_anchor->src_length, l_anchor->src_linenum);
   SetElementName(base, "mrow");
 
   base->first_kid = l_anchor;
@@ -2512,6 +2664,8 @@ bool Tree2StdMML::IsAllDigits(MNODE* num, int& n_digits)
   return rv;
 }
 
+
+
 bool Tree2StdMML::IsNumberOrPeriod(MNODE* num)
 {
   const char* p = num->p_chdata;
@@ -2524,13 +2678,15 @@ bool Tree2StdMML::IsNumberOrPeriod(MNODE* num)
   }
 }
 
-bool Tree2StdMML::HasPeriod(MNODE * num)
+bool Tree2StdMML::HasPeriod(MNODE* num)
 {
   TCI_ASSERT(IsNumberOrPeriod(num));
   return num->p_chdata != 0 && strstr(num->p_chdata,".");
 }
 
-void Tree2StdMML::PermuteMixedNumber(MNODE * num)
+
+
+void Tree2StdMML::PermuteMixedNumber(MNODE* num)
 {
   U32 whole_num = ASCII2U32(num->p_chdata, 10);
   MNODE* frac = num->next;
@@ -2571,10 +2727,13 @@ void Tree2StdMML::PermuteMixedNumber(MNODE * num)
   SetContent(numerator, buffer);
 }
 
-ATTRIB_REC *Tree2StdMML::StackAttr(ATTRIB_REC * attr_stack,
-                                   const char *attr_nom, const char *attr_val)
+
+
+ATTRIB_REC* Tree2StdMML::StackAttr(ATTRIB_REC* attr_stack,
+                                   const char* attr_nom, 
+                                   const char* attr_val)
 {
-  ATTRIB_REC *a_new = new ATTRIB_REC(attr_nom, attr_val);
+  ATTRIB_REC* a_new = new ATTRIB_REC(attr_nom, attr_val);
   a_new->next = attr_stack;
   if (attr_stack)
     attr_stack->prev = a_new;
@@ -2582,9 +2741,11 @@ ATTRIB_REC *Tree2StdMML::StackAttr(ATTRIB_REC * attr_stack,
   return a_new;
 }
 
-ATTRIB_REC *Tree2StdMML::UnstackAttr(ATTRIB_REC * attr_stack)
+
+
+ATTRIB_REC* Tree2StdMML::UnstackAttr(ATTRIB_REC* attr_stack)
 {
-  ATTRIB_REC *rv = NULL;
+  ATTRIB_REC* rv = NULL;
 
   if (attr_stack) {
     ATTRIB_REC *del = attr_stack;
@@ -2594,6 +2755,8 @@ ATTRIB_REC *Tree2StdMML::UnstackAttr(ATTRIB_REC * attr_stack)
   }
   return rv;
 }
+
+
 
 void Tree2StdMML::MoveAttrsToChildren(MNODE* mml_list)
 {
@@ -2631,6 +2794,8 @@ void Tree2StdMML::MoveAttrsToChildren(MNODE* mml_list)
     rover = the_next;
   }
 }
+
+
 
 void Tree2StdMML::RemoveMSTYLEnode(MNODE* mstyle)
 {
@@ -2683,8 +2848,8 @@ void Tree2StdMML::RemoveMSTYLEnode(MNODE* mstyle)
 
   MNODE* p = eldest;
   while (p){
-	  p->parent = parent;
-	  p = p->next;
+      p->parent = parent;
+      p = p->next;
   }
 
 
@@ -2705,14 +2870,17 @@ void Tree2StdMML::RemoveMSTYLEnode(MNODE* mstyle)
   TCI_ASSERT(CheckLinks(parent));
 }
 
+
+
 void Tree2StdMML::InstallStackedAttr(MNODE * mml_node,
                                      ATTRIB_REC * attr_stack)
 {
-  char *targ_attr = attr_stack->zattr_nom;
+  char* targ_attr = attr_stack->zattr_nom;
 //  char *targ_aval = attr_stack->zattr_val;
 
   bool done = false;
-  ATTRIB_REC *arover = mml_node->attrib_list;
+  ATTRIB_REC* arover = mml_node->attrib_list;
+  
   while (arover) {
     if (!StringEqual(arover->zattr_nom, targ_attr)) {
       arover = arover->next;
@@ -2721,6 +2889,7 @@ void Tree2StdMML::InstallStackedAttr(MNODE * mml_node,
       break;
     }
   }
+
   if (!done) {
     ATTRIB_REC* a_new = new ATTRIB_REC(attr_stack->zattr_nom, attr_stack->zattr_val);
     a_new->next = mml_node->attrib_list;
@@ -2728,7 +2897,10 @@ void Tree2StdMML::InstallStackedAttr(MNODE * mml_node,
       mml_node->attrib_list->prev = a_new;
     mml_node->attrib_list = a_new;
   }
+
 }
+
+
 
 void Tree2StdMML::InsertAF(MNODE* func)
 {
@@ -2743,10 +2915,12 @@ void Tree2StdMML::InsertAF(MNODE* func)
     af->next->prev = af;
   af->parent = func->parent;
 }
+
+
           
-void Tree2StdMML::InsertIT(MNODE * term)
+void Tree2StdMML::InsertIT(MNODE* term)
 {
-  MNODE *it = MakeTNode(term->src_start_offset, 0, term->src_linenum);
+  MNODE* it = MakeTNode(term->src_start_offset, 0, term->src_linenum);
   SetElementName(it, "mo");
   SetContent(it, "&#x2062;");  // InvisibleTimes
 
@@ -2757,11 +2931,13 @@ void Tree2StdMML::InsertIT(MNODE * term)
     it->next->prev = it;
   it->parent = term->parent;
 }
+
+
           
 // deg/min/sec are additive units (sort of)
-void Tree2StdMML::InsertInvisibleAddSigns(MNODE * dMML_list)
+void Tree2StdMML::InsertInvisibleAddSigns(MNODE* dMML_list)
 {
-  MNODE *rover = dMML_list;
+  MNODE* rover = dMML_list;
   while (rover) {
     if (rover->first_kid) {     // rover is a schemata
       if (ElementNameIs(rover, "mrow")) {
@@ -2773,7 +2949,7 @@ void Tree2StdMML::InsertInvisibleAddSigns(MNODE * dMML_list)
                                   0, r_anchor->src_linenum);
           
           SetElementName(plus, "mo");
-		  SetContent(plus, "+");
+          SetContent(plus, "+");
 
           plus->prev = l_anchor;
           plus->next = r_anchor;
@@ -2788,7 +2964,7 @@ void Tree2StdMML::InsertInvisibleAddSigns(MNODE * dMML_list)
         }
 
       } else if (HasPositionalChildren(rover)) {
-        MNODE *child_list = rover->first_kid;
+        MNODE* child_list = rover->first_kid;
         // recurse into children
         InsertInvisibleAddSigns(child_list);
         child_list = child_list->next;
@@ -2808,7 +2984,10 @@ void Tree2StdMML::InsertInvisibleAddSigns(MNODE * dMML_list)
   }
 }
 
-bool Tree2StdMML::NeedsInvisiblePlus(MNODE * dMML_mrow)
+
+
+
+bool Tree2StdMML::NeedsInvisiblePlus(MNODE* dMML_mrow)
 {
   bool rv = false;
 
