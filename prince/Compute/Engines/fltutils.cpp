@@ -3,6 +3,7 @@
 #include "fltutils.h"
 #include "attriblist.h"
 #include "strutils.h"
+#include "dumputils.h"
 #include <string.h>
 #include <ctype.h>
 
@@ -48,108 +49,7 @@ VAR_REC* FindVarRec(VAR_REC * v_list, const char *targ_nom)
   return v_rover;
 }
 
-#ifdef ALLOW_DUMPS
-void JBM::DumpTNode(MNODE * t_node, int indent)
-{
-  if (t_node) {
-    // form the indentation string
-    char indent_str[128];
-    int ii = 0;
-    while (ii < indent && ii < 127)
-      indent_str[ii++] = ' ';
-    indent_str[ii] = 0;
 
-    char zzz[256];
-    sprintf(zzz, "%4lu %s<%s", t_node->src_linenum, indent_str, t_node->src_tok);
-    JBMLine(zzz);
-
-    ATTRIB_REC* rover = t_node->attrib_list;
-    while (rover) {
-      sprintf(zzz, " %s=\"%s\"", rover->zattr_nom, rover->zattr_val);
-      JBMLine(zzz);
-      rover = rover->next;
-    }
-
-    if (t_node->p_chdata && t_node->first_kid) {
-      sprintf(zzz, " name=\"%s\">", t_node->p_chdata);
-      JBMLine(zzz);
-
-      JBMLine("\n");
-      DumpTList(t_node->first_kid, indent + 2);
-      sprintf(zzz, "%4lu %s</%s>\n", t_node->src_linenum, indent_str,
-              t_node->src_tok);
-      JBMLine(zzz);
-    } else if (t_node->p_chdata) {
-      JBMLine(">");
-      JBMLine(t_node->p_chdata);
-      sprintf(zzz, "</%s>\n", t_node->src_tok);
-      JBMLine(zzz);
-    } else if (t_node->first_kid) {
-      JBMLine(">\n");
-      DumpTList(t_node->first_kid, indent + 2);
-      sprintf(zzz, "%4lu %s</%s>\n", t_node->src_linenum, indent_str,
-              t_node->src_tok);
-      JBMLine(zzz);
-    } else {
-      if (!strcmp(t_node->src_tok, "mspace")) {
-        JBMLine(">\n");
-      } else {
-        sprintf(zzz, "></%s>\n", t_node->src_tok);
-        JBMLine(zzz);
-      }
-    }
-  } else {
-    TCI_ASSERT(!"bad input t_node");
-  }
-}
-
-void JBM::DumpTList(MNODE * t_list, int indent)
-{
-  if (!indent)
-    JBMLine("\n");
-  while (t_list) {
-    DumpTNode(t_list, indent);
-    t_list = t_list->next;
-  }
-}
-#else
-void JBM::DumpTNode(MNODE * t_node, int indent) {}
-void JBM::DumpTList(MNODE * t_list, int indent) {}
-#endif
-
-#define JBM_FILENAME "/tmp/JBMLine.out"
-
-#ifdef DEBUG
-void JBM::JBMLine(const char *line)
-{
-  FILE *jbmfile = fopen(JBM_FILENAME, "a");
-  if (jbmfile) {
-    if (line) {
-      fputs(line, jbmfile);
-    }
-    fclose(jbmfile);
-  }
-}
-
-void JBM::DumpSList(const SEMANTICS_NODE * semantic_tree)
-{
-  char *sem_str = DumpSList(semantic_tree, 0);
-  if (sem_str) {
-    JBM::JBMLine(sem_str);
-    delete[] sem_str;
-  }
- }
-#else
-void JBM::JBMLine(const char *line) {}
-void JBM::DumpSList(const SEMANTICS_NODE * semantics_tree) {}
-#endif
-
-void JBM::ClearLog()
-{
-  FILE *jbmfile = fopen(JBM_FILENAME, "w");
-  if (jbmfile)
-    fclose(jbmfile);
-}
 
 
 
@@ -1366,7 +1266,7 @@ char* DumpSNode(const SEMANTICS_NODE* s_node, int indent)
   return zheap_str;
 }
 
-char* DumpSList(const SEMANTICS_NODE * s_list, int indent)
+char* DumpSList(const SEMANTICS_NODE* s_list, int indent)
 {
   char *zheap_str = NULL;
   U32 buffer_ln = 0;
@@ -1386,6 +1286,22 @@ char* DumpSList(const SEMANTICS_NODE * s_list, int indent)
 
   return zheap_str;
 }
+
+#ifdef ALLOW_DUMPS
+#ifdef DEBUG
+void JBM::DumpSList(const SEMANTICS_NODE* semantic_tree)
+{
+  char *sem_str = DumpSList(semantic_tree, 0);
+  if (sem_str) {
+    JBM::JBMLine(sem_str);
+    delete[] sem_str;
+  }
+}
+#else
+void JBM::DumpSList(const SEMANTICS_NODE * semantics_tree) {}
+#endif
+#endif
+
 
 #include "Grammar.h"
 

@@ -6,6 +6,7 @@
 */
 
 #include "Grammar.h"
+#include "strutils.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -823,3 +824,109 @@ void ExtractIDs(const char *num_str, U32 & rec_ID, U32 & rec_subID, Grammar* gra
   else
     rec_ID = val;
 }
+
+
+
+// Extract chars and unicodes from the ASCII string p_chdata.
+// Returns a count of the symbols processed, up to "limit".
+
+int ChData2Unicodes(const char* p_chdata, U32* unicodes, int limit, Grammar* mml_entities)
+{
+  int rv = 0;
+
+  if (p_chdata && *p_chdata) {
+    const char *ptr = p_chdata;
+    while (*ptr && rv < limit) {
+      if (*ptr == '&') {
+        ptr++;
+        if (*ptr == '#') {
+
+            // numeric entity - &#x201a;, &#9876;. etc.
+            ptr++;
+            U32 place_val = 10;
+            if (*ptr == 'x') {
+              place_val = 16;
+              ptr++;
+            }
+            unicodes[rv] = ASCII2U32(ptr, place_val);
+            rv++;
+
+            while (*ptr && *ptr != ';')
+              ptr++;
+
+        } else {
+
+            // non-numeric entity - &theta;, &ApplyFunction;. etc.
+            const char *entity = ptr - 1;
+            while (*ptr && *ptr != ';')
+              ptr++;
+
+            U32 ID, subID;
+            size_t zln = ptr - entity + 1;
+            const char* p_data;
+            if (mml_entities->GetRecordFromName("MATH", entity, zln, ID, subID, &p_data)) {
+
+                if (p_data && *p_data) {
+                  //&ApplyFunction;<uID3.5.6>infix,65,U02061
+                  const char* ptr = strstr(p_data, ",U");
+                  if (ptr) {
+                      unicodes[rv] = ASCII2U32(ptr + 2, 16);
+                      rv++;
+                  } else {
+                      TCI_ASSERT(0);
+                  }
+                } else {
+                    TCI_ASSERT(0);
+                }
+
+            } else {
+
+                while (entity <= ptr) {
+                  unicodes[rv] = *entity;
+                  rv++;
+                  entity++;
+                }
+            }
+
+        }
+
+      } else {
+        unicodes[rv] = *ptr;
+        rv++;
+      }
+      ptr++;
+    }
+  }
+  return rv;
+}
+
+
+void Contents2Buffer(char* zdest, const char* p_chdata, int lim, Grammar* mml_entities)
+{
+  if (p_chdata) {
+    U32 unicodes[128];
+    int n_chars = ChData2Unicodes(p_chdata, unicodes, 128, mml_entities);
+    if (n_chars < 128) {
+      size_t i = strlen(zdest);
+      int j = 0;
+      while (i < lim && j < n_chars) {
+        U32 ch = unicodes[j];
+        if (ch >= ' ' && ch <= '~') {
+          zdest[i] = ch;
+          i++;
+        } else {
+          sprintf(zdest + i, "&#x%x;", ch);
+          i = strlen(zdest);
+        }
+        j++;
+      }
+      zdest[i] = 0;
+    } else {
+      TCI_ASSERT(0);
+    }
+  }
+}
+
+
+
+
