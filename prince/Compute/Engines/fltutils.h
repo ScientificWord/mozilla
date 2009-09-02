@@ -104,10 +104,10 @@ struct ClientAliases_REC {
 
 struct MIC2MMLNODE_REC
 {                               // name -> node mapping record
-  MIC2MMLNODE_REC *next;
+  MIC2MMLNODE_REC* next;
   U32 owner_ID;
-  char *canonical_name;
-  char *mml_markup;
+  char* canonical_name;
+  char* mml_markup;
 };
 
 
@@ -117,24 +117,25 @@ BUCKET_REC* MakeBucketRec(U32 which_bucket, SEMANTICS_NODE* sem_child);
 BUCKET_REC* MakeParentBucketRec(U32 which_bucket, SEMANTICS_NODE* sem_child);
 
 
-BUCKET_REC *AppendBucketRec(BUCKET_REC * a_list, BUCKET_REC * new_a_rec);
-BUCKET_REC *FindBucketRec(BUCKET_REC * a_list, U32 bucket_ID);
-void DisposeBucketList(BUCKET_REC * arg_list);
+BUCKET_REC* AppendBucketRec(BUCKET_REC* a_list, BUCKET_REC* new_a_rec);
+BUCKET_REC* FindBucketRec(BUCKET_REC* a_list, U32 bucket_ID);
+void DisposeBucketList(BUCKET_REC* arg_list);
 
 SEMANTICS_NODE* CreateSemanticsNode();
 void DisposeSemanticsNode(SEMANTICS_NODE* del);
-void DisposeSList(SEMANTICS_NODE * s_list);
-char* DumpSNode(const SEMANTICS_NODE * s_node, int indent);
-char* DumpSList(const SEMANTICS_NODE * s_list, int indent);
-SEMANTICS_NODE *AppendSLists(SEMANTICS_NODE * s_list,
-                             SEMANTICS_NODE * new_tail);
+void DisposeSList(SEMANTICS_NODE* s_list);
+
+char* DumpSNode(const SEMANTICS_NODE* s_node, int indent);
+char* DumpSList(const SEMANTICS_NODE* s_list, int indent);
+
+SEMANTICS_NODE* AppendSLists(SEMANTICS_NODE* s_list, SEMANTICS_NODE* new_tail);
+
 int SemanticVariant2NumIntegrals(SemanticVariant var);
 
-const char *GetMarkupFromID(MIC2MMLNODE_REC * node_IDs_list,
-                            const char *targ_ID);
-void DisposeIDsList(MIC2MMLNODE_REC * node_IDs_list);
-MIC2MMLNODE_REC *JoinIDsLists(MIC2MMLNODE_REC * IDs_list,
-                              MIC2MMLNODE_REC * appender);
+const char* GetMarkupFromID(MIC2MMLNODE_REC* node_IDs_list, const char* targ_ID);
+void DisposeIDsList(MIC2MMLNODE_REC* node_IDs_list);
+
+MIC2MMLNODE_REC* JoinIDsLists(MIC2MMLNODE_REC* IDs_list, MIC2MMLNODE_REC* appender);
 
 
 
@@ -149,32 +150,27 @@ U32 NumericEntity2U32(const char *p_entity);
 int CountSymbols(const char *p_chdata, int &n_entities);
 
 
-INPUT_NOTATION_REC *CreateNotationRec();
+INPUT_NOTATION_REC* CreateNotationRec();
 
-SEMANTICS_NODE *PrefixToInfix(SEMANTICS_NODE * s_list);
-void SetInfixPrecedence(SEMANTICS_NODE * snode);
-SEMANTICS_NODE *NestInPGroup(SEMANTICS_NODE * s_list,
-                             BUCKET_REC * parent_bucket);
+SEMANTICS_NODE* PrefixToInfix(SEMANTICS_NODE* s_list);
+
+void SetInfixPrecedence(SEMANTICS_NODE* snode);
+
+SEMANTICS_NODE* NestInPGroup(SEMANTICS_NODE* s_list, BUCKET_REC* parent_bucket);
+
 void FunctionToInfix(SEMANTICS_NODE * snode, char *zop_str);
 
-char* NestInParens(char *z_expr, bool forced);
-char* NestInBrackets(char *z_expr);
-char* RemovezStrParens(char *z_expr);
+char* NestInParens(char* z_expr, bool forced);
+char* NestInBrackets(char* z_expr);
+char* RemovezStrParens(char* z_expr);
 
 char* WideToASCII(const U16* w_markup);
 U16* ASCIItoWide(const char* ascii, int& zlen);
 
-#ifdef DEBUG
-#define ALLOW_DUMPS
-#endif
 
 // dump utilities.  output sent to JBMline.out
 namespace JBM {
-  void JBMLine(const char *line);
-  void ClearLog();
-  void DumpTNode(MNODE * t_node, int indent);
-  void DumpTList(MNODE * t_list, int indent);
-  void DumpSList(const SEMANTICS_NODE * s_list);
+  void DumpSList(const SEMANTICS_NODE* s_list);
 }
 
 #endif

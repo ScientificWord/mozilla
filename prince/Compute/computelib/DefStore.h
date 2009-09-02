@@ -14,12 +14,17 @@ public:
 
   void      SetParentDefStore( DefStore* parent_store );
 
-  void      PushDefInfo( U32 engine_ID,const char* def_name,U32 def_type,
-                        const char* markup,const char* arg_list,
-                        U32 n_sub_args,
-                        const char* ASCII_src,const U16* WIDE_src );
-  DefInfo*  GetDefInfo( U32 engine_ID,const char* canonical_ID );
-  void      RemoveDef( U32 engine_ID,const char* targ_canon_nom );
+  void      PushDefInfo( U32 engine_ID, 
+                         const char* def_name,
+                         U32 def_type,
+                         const char* markup,
+                         const char* arg_list,
+                         U32 n_sub_args,
+                         const char* ASCII_src,
+                         const U16* WIDE_src );
+
+  DefInfo*  GetDefInfo( U32 engine_ID, const char* canonical_ID );
+  void      RemoveDef( U32 engine_ID, const char* targ_canon_nom );
 
   char*     GetDefList( U32 engine_ID );
   void      ClearDefs( U32 engine_ID );
@@ -29,6 +34,7 @@ public:
   int         SetPref( U32 pref_ID,const char* new_value );
   const char* GetPref( U32 pref_ID,int no_inherit );
   int         RemovePref( U32 pref_ID );
+
 
 private:
   DefInfo* GetLocalDefInfo( U32 engine_ID,const char* targ_canon_nom );

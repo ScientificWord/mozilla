@@ -148,10 +148,10 @@ struct DE_FUNC_REC
 
 
 
-SEMANTICS_NODE* GetSemanticsList(MNODE* dMML_list, BUCKET_REC * parent_bucket, Analyzer* pAnalyzer);
+SEMANTICS_NODE* GetSemanticsList(MNODE* dMML_list, BUCKET_REC* parent_bucket, Analyzer* pAnalyzer);
 
 SEMANTICS_NODE* GetSemanticsList(MNODE* dMML_list,
-                                 BUCKET_REC * parent_bucket,
+                                 BUCKET_REC* parent_bucket,
                                  int mml_node_lim,
                                  bool isLHSofDef,
                                  Analyzer* pAnalyzer);
@@ -166,115 +166,71 @@ SEMANTICS_NODE* SNodeFromMNodes(MNODE* mml_node, int& mml_nodes_done,
 
 void AnalyzeMN(MNODE* mml_mn, SEMANTICS_NODE* info, Analyzer* pAnalyzer);
 
-void AnalyzeMI(MNODE* self, SEMANTICS_NODE* info,
-               int& nodes_done, bool isLHSofDef, Analyzer* pAnalyzer);
+void AnalyzeMI(MNODE* self, SEMANTICS_NODE* info, int& nodes_done, bool isLHSofDef, Analyzer* pAnalyzer);
 
-void AnalyzeMO(MNODE* self, SEMANTICS_NODE* info, 
-               int& nodes_done, Analyzer* pAnalyzer);
+void AnalyzeMO(MNODE* self, SEMANTICS_NODE* info, int& nodes_done, Analyzer* pAnalyzer);
 
-void AnalyzeMTEXT(MNODE* mml_mtext_node, SEMANTICS_NODE * snode,
-                    int& nodes_done, Analyzer* pAnalyzer);
+void AnalyzeMTEXT(MNODE* mml_mtext_node, SEMANTICS_NODE* snode, int& nodes_done, Analyzer* pAnalyzer);
 
 
-void AnalyzeMFRAC(MNODE* mml_node, SEMANTICS_NODE* info,
-                    int& nodes_done, Analyzer* pAnalyzer);
+void AnalyzeMFRAC(MNODE* mml_node, SEMANTICS_NODE* info, int& nodes_done, Analyzer* pAnalyzer);
 
-void AnalyzeMSQRT(MNODE* mml_node, SEMANTICS_NODE* info,
-                    int& nodes_done, Analyzer* pAnalyzer);
+void AnalyzeMSQRT(MNODE* mml_node, SEMANTICS_NODE* info, int& nodes_done, Analyzer* pAnalyzer);
 
 
-void AnalyzeMROOT(MNODE* mml_node, SEMANTICS_NODE* info,
-                    int& nodes_done, Analyzer* pAnalyzer);
+void AnalyzeMROOT(MNODE* mml_node, SEMANTICS_NODE* info, int& nodes_done, Analyzer* pAnalyzer);
 
-void AnalyzeMFENCED(MNODE * mml_node, SEMANTICS_NODE* info,
-                      int& nodes_done, Analyzer* pAnalyzer);
+void AnalyzeMFENCED(MNODE * mml_node, SEMANTICS_NODE* info, int& nodes_done, Analyzer* pAnalyzer);
 
-void AnalyzeMSUP(MNODE* mml_msup_node, SEMANTICS_NODE* info,
-                   int& nodes_done, bool isLHSofDef, Analyzer* pAnalyzer);
+void AnalyzeMSUP(MNODE* mml_msup_node, SEMANTICS_NODE* info, int& nodes_done, bool isLHSofDef, Analyzer* pAnalyzer);
 
-void AnalyzeMSUB(MNODE * mml_msup_node, SEMANTICS_NODE* info,
-                   int& nodes_done, bool isLHSofDef, Analyzer* pAnalyzer);
+void AnalyzeMSUB(MNODE* mml_msup_node, SEMANTICS_NODE* info, int& nodes_done, bool isLHSofDef, Analyzer* pAnalyzer);
 
-void AnalyzeMUNDER(MNODE * mml_munder_node, SEMANTICS_NODE* info,
-                     int& nodes_done, bool isLHSofDef, Analyzer* pAnalyzer);
+void AnalyzeMUNDER(MNODE* mml_munder_node, SEMANTICS_NODE* info, int& nodes_done, bool isLHSofDef, Analyzer* pAnalyzer);
 
-void AnalyzeMOVER(MNODE * mml_munder_node, SEMANTICS_NODE* info,
-                    int& nodes_done, bool isLHSofDef, Analyzer* pAnalyzer);
+void AnalyzeMOVER(MNODE* mml_munder_node, SEMANTICS_NODE* info, int& nodes_done, bool isLHSofDef, Analyzer* pAnalyzer);
 
-void AnalyzeMTABLE(MNODE* mml_mtable_node,
-                     SEMANTICS_NODE* info, int& nodes_done, Analyzer* pAnalyzer);
+void AnalyzeMTABLE(MNODE* mml_mtable_node, SEMANTICS_NODE* info, int& nodes_done, Analyzer* pAnalyzer);
 
-void AnalyzeMUNDEROVER(MNODE* mml_munder_node, SEMANTICS_NODE* info,
-                         int& nodes_done, bool isLHSofDef, Analyzer* pAnalyzer);
+void AnalyzeMUNDEROVER(MNODE* mml_munder_node, SEMANTICS_NODE* info, int& nodes_done, bool isLHSofDef, Analyzer* pAnalyzer);
 
-void AnalyzeMSUBSUP(MNODE * mml_munder_node, SEMANTICS_NODE* info,
-                      int& nodes_done, bool isLHSofDef, Analyzer* pAnalyzer);
-
+void AnalyzeMSUBSUP(MNODE* mml_munder_node, SEMANTICS_NODE* info,  int& nodes_done, bool isLHSofDef, Analyzer* pAnalyzer);
 
 void AnalyzeMixedNum(MNODE* mml_mn, SEMANTICS_NODE* s_node, Analyzer* pAnalyzer);
 
-void AnalyzePrimed(MNODE* mml_msup, SEMANTICS_NODE* s_node,
-                     int& nodes_done, Analyzer* pAnalyzer);
+void AnalyzePrimed(MNODE* mml_msup, SEMANTICS_NODE* s_node, int& nodes_done, Analyzer* pAnalyzer);
 
-void AnalyzeDotDerivative(MNODE* mml_mover, int n_dots,
-                            SEMANTICS_NODE* s_node, int& nodes_done, Analyzer* pAnalyzer);
+void AnalyzeDotDerivative(MNODE* mml_mover, int n_dots, SEMANTICS_NODE* s_node, int& nodes_done, Analyzer* pAnalyzer);
 
-void AnalyzeSubscriptedFunc(MNODE* mml_msub_node,
-                              SEMANTICS_NODE* snode, int& nodes_done, Analyzer* pAnalyzer);
+void AnalyzeSubscriptedFunc(MNODE* mml_msub_node, SEMANTICS_NODE* snode, int& nodes_done, Analyzer* pAnalyzer);
 
-void AnalyzeSubscriptedArgFunc(MNODE* mml_msub_node,
-                                 SEMANTICS_NODE* snode, Analyzer* pAnalyzer);
+void AnalyzeSubscriptedArgFunc(MNODE* mml_msub_node, SEMANTICS_NODE* snode, Analyzer* pAnalyzer);
 
-void AnalyzeSubscriptedFence(MNODE* mml_msub_node,
-                               SEMANTICS_NODE* snode, int& nodes_done, Analyzer* pAnalyzer);
+void AnalyzeSubscriptedFence(MNODE* mml_msub_node, SEMANTICS_NODE* snode, int& nodes_done, Analyzer* pAnalyzer);
 
-void AnalyzeBesselFunc(MNODE* mml_msub_node, SEMANTICS_NODE* snode,
-                         int& nodes_done, Analyzer* pAnalyzer);
+void AnalyzeBesselFunc(MNODE* mml_msub_node, SEMANTICS_NODE* snode, int& nodes_done, Analyzer* pAnalyzer);
 
 
 
-IdentIlk GetMIilk(char *mml_content_str, MNODE * m_node, bool isLHSofDef, Analyzer* pAnalyzer);
-OpOrderIlk GetOpOrderIlk(SEMANTICS_NODE * relop);
-
-IdentIlk GetMSIilk(char *msi_class);
-
-bool IsWhiteText(const char *the_text);
-
-bool IsWholeNumber(MNODE * mml_mn);
-bool IsWholeFrac(MNODE * mml_frac);
-bool IsOperator(MNODE * mml_node);
-
-bool IdentIsConstant(IdentIlk ilk);
-
-int CountCols(MNODE * mml_mtr);
-bool IsWhiteSpace(MNODE * mml_node);
 
 
-
-MNODE* LocateOperator(MNODE * mml_list, OpIlk & op_ilk, int & advance);
-int ChData2Unicodes(const char *p_chdata, U32 * unicodes, int n_unicodes, Analyzer* pAnalyzer);
-
-DE_FUNC_REC *LocateFuncRec(DE_FUNC_REC* f_list, const char* canon_name,
-                             const char* src_name);
+DE_FUNC_REC* LocateFuncRec(DE_FUNC_REC* f_list, const char* canon_name, const char* src_name);
 
 bool IsInverseIndicator(MNODE * exp, Analyzer* pAnalyzer);
 
 
-void Contents2Buffer(char *zdest, const char *p_chdata, int lim, Analyzer* pAnalyzer);
 
-char* GetCanonicalIDforMathNode(MNODE * mml_node, Analyzer* pAnalyzer);
-
-
-int GetVarLimType(char *op_name, MNODE * base);
+int GetVarLimType(char* op_name, MNODE* base);
 
 
 
-void SetSnodeOwner(SEMANTICS_NODE * snode, Analyzer* pAnalyzer);
+void SetSnodeOwner(SEMANTICS_NODE* snode, Analyzer* pAnalyzer);
+
+char* GetCanonicalIDforMathNode(MNODE* mml_node, Grammar* mml_entities);
 
 
-
-char* GetFuncNameFromFrac(MNODE* mfrac, const char** src_name, Analyzer* pAnalyzer);
-char* GetFuncNameFromSub(MNODE* msub, const char** src_name, Analyzer* pAnalyzer);
+char* GetFuncNameFromFrac(MNODE* mfrac, const char** src_name, Grammar* mml_entities);
+char* GetFuncNameFromSub(MNODE* msub, const char** src_name, Grammar* mml_entities);
 char* GetFuncNameFromSup(MNODE* msup, const char** src_name, Analyzer* pAnalyzer);
 char* GetFuncNameFromSubSup(MNODE* msubsup, const char** src_name, Analyzer* pAnalyzer);
 
@@ -320,14 +276,14 @@ SemanticType GetBigOpType(const char* op_chdata, SemanticVariant & n_integs);
 
 void AppendNumber(SEMANTICS_NODE* snode, U32 bucket_ID, int num);
 
-void AddPrimesCount(SEMANTICS_NODE * snode, MNODE * primes);
+void AddPrimesCount(SEMANTICS_NODE* snode, MNODE* primes);
 
 BUCKET_REC* AddVarToBucket(U32 bucket_ID, SEMANTICS_NODE * ind_var_list, Analyzer* pAnalyzer);
 
 
-SEMANTICS_NODE* DetermineIndepVar(MNODE * dMML_tree, Analyzer* pAnalyzer);
-SEMANTICS_NODE* GetIndepVarFromSub(MNODE * msub, Analyzer* pAnalyzer);
-SEMANTICS_NODE* GetIndVarFromFrac(MNODE * mfrac, Analyzer* pAnalyzer);
+SEMANTICS_NODE* DetermineIndepVar(MNODE* dMML_tree, Analyzer* pAnalyzer);
+SEMANTICS_NODE* GetIndepVarFromSub(MNODE* msub, Analyzer* pAnalyzer);
+SEMANTICS_NODE* GetIndVarFromFrac(MNODE* mfrac, Analyzer* pAnalyzer);
 
 SEMANTICS_NODE* ExtractIndepVar(MNODE* rover, Analyzer* pAnalyzer);
 
@@ -368,8 +324,8 @@ SEMANTICS_NODE* LocateVarAndLimits(BUCKET_REC* l_bucket,
                                    bool& ll_is_inclusive,
                                    bool& ul_is_inclusive);
 
-SEMANTICS_NODE* LocateVarAndExpr(BUCKET_REC * l_bucket,
-                                 SEMANTICS_NODE ** s_expr, int & direction);
+SEMANTICS_NODE* LocateVarAndExpr(BUCKET_REC* l_bucket,
+                                 SEMANTICS_NODE** s_expr, int & direction);
 
 void SetVarAndIntervalLimit(BUCKET_REC * ll_bucket);
 void SetVarArrowExprLimit(BUCKET_REC * ll_bucket);
@@ -391,8 +347,6 @@ bool LocatePieces(BUCKET_REC* cell_list,
                   SEMANTICS_NODE ** s_domain);
 
 
-void FenceToMatrix(SEMANTICS_NODE * operand);
-void FenceToInterval(SEMANTICS_NODE * s_fence);
 void AddDefaultBaseToLOG(SEMANTICS_NODE * snode, Analyzer* pAnalyzer);
 void Patchdx(SEMANTICS_NODE * s_frac);
 bool IsArgDelimitingFence(MNODE * mml_node);
@@ -401,19 +355,37 @@ void CreateSubscriptedVar(MNODE * mml_msub_node,
 
 void CreatePowerForm(MNODE* base, MNODE* power, SEMANTICS_NODE* snode, Analyzer* pAnalyzer);
 
-bool SetODEvars(MathServiceRequest & msr, MathResult & mr,
-                      MNODE * dMML_tree, U32 UI_cmd_ID, Analyzer* pAnalyzer);
+bool SetODEvars(MathServiceRequest & msr, MathResult & mr, MNODE * dMML_tree, U32 UI_cmd_ID, Analyzer* pAnalyzer);
+
 bool SetIMPLICITvars(MathServiceRequest & msr, MathResult & mr, Analyzer* pAnalyzer) ;
 
   
-  SEMANTICS_NODE *CreateSTreeFromMML(const char *mml_str, Analyzer* pAnalyzer);
+SEMANTICS_NODE* CreateSTreeFromMML(const char *mml_str, Analyzer* pAnalyzer);
 
-  void TranslateEmbellishedOp(MNODE* mml_embellop_node,
+void TranslateEmbellishedOp(MNODE* mml_embellop_node,
                               SEMANTICS_NODE* snode, int& nodes_done, Analyzer* pAnalyzer);
 
 
 
-// Funcs
+// Candidates for move
+
+IdentIlk GetMIilk(char* mml_content_str, MNODE* m_node, bool isLHSofDef, Analyzer* pAnalyzer);
+
+OpOrderIlk GetOpOrderIlk(SEMANTICS_NODE* relop);
+
+IdentIlk GetMSIilk(char* msi_class);
+
+bool IsWhiteText(const char* the_text);
+
+bool IdentIsConstant(IdentIlk ilk);
+
+MNODE* LocateOperator(MNODE* mml_list, OpIlk& op_ilk, int& advance);
+
+void FenceToMatrix(SEMANTICS_NODE* operand);
+void FenceToInterval(SEMANTICS_NODE* s_fence);
+
+
+
 
 
 
@@ -691,9 +663,9 @@ void Analyzer::TreeToFixupForm(MNODE* dMML_tree)
 // Convenience method for Tree2StdMML to lookup a function.
 bool Analyzer::IsDefinedFunction(MNODE* mnode)
 {
-  char* mi_canonical_str = GetCanonicalIDforMathNode(mnode, this);
+  char* mi_canonical_str = GetCanonicalIDforMathNode(mnode, mml_entities);
   if (defstore && mi_canonical_str) {
-    DefInfo *di = defstore->GetDefInfo( CurrEngineID(), mi_canonical_str);
+    DefInfo* di = defstore->GetDefInfo( CurrEngineID(), mi_canonical_str);
     delete[] mi_canonical_str;
     if (di && di->def_type == DT_FUNCTION)
       return true;
@@ -769,7 +741,7 @@ void AnalyzeMI(MNODE* mml_mi_node,
     back to this object.
   */
 
-  char* mml_canonical_name = GetCanonicalIDforMathNode(mml_mi_node, pAnalyzer);
+  char* mml_canonical_name = GetCanonicalIDforMathNode(mml_mi_node, pAnalyzer->mml_entities);
 
   if (!mml_canonical_name) {
     snode->error_flag = 1;
@@ -939,7 +911,7 @@ void AnalyzeMTEXT(MNODE* mml_mtext_node,
       if (pAnalyzer -> CmdID() == CCID_PassThru) {
         snode->semantic_type = SEM_TYP_ENG_PASSTHRU;
       } else {
-        char* mml_canonical_name = GetCanonicalIDforMathNode(mml_mtext_node, pAnalyzer);
+        char* mml_canonical_name = GetCanonicalIDforMathNode(mml_mtext_node, pAnalyzer->mml_entities);
         snode->canonical_ID = mml_canonical_name;
         SetSnodeOwner(snode, pAnalyzer);
         // Store a name-to-node back mapping record for this object.
@@ -1110,7 +1082,7 @@ void AnalyzeMN(MNODE * mml_mn_node, SEMANTICS_NODE * snode, Analyzer* pAnalyzer)
       // For <mn>s that carry base 10 digits only, we don't need mapping info.
       // Other <mn>'s will probably pass thru computation as a symbolic
       //  alias, and will require mapping info.
-      char* mml_canonical_name = GetCanonicalIDforMathNode(mml_mn_node, pAnalyzer);
+      char* mml_canonical_name = GetCanonicalIDforMathNode(mml_mn_node, pAnalyzer->mml_entities);
       snode->canonical_ID = mml_canonical_name;
       SetSnodeOwner(snode, pAnalyzer);
       // Store a name-to-node back mapping record for this object.
@@ -1474,7 +1446,7 @@ void AnalyzeMSUP(MNODE * mml_msup_node, SEMANTICS_NODE * snode,
       case BT_FUNCTION:
       case BT_SUBARG_FUNCTION:{
           if (et == ET_INVERSE_INDICATOR) {
-            char* mml_canonical_name = GetCanonicalIDforMathNode(mml_msup_node, pAnalyzer);
+            char* mml_canonical_name = GetCanonicalIDforMathNode(mml_msup_node, pAnalyzer->mml_entities);
             if (!mml_canonical_name) {
               snode->error_flag = 1;
               return;
@@ -1495,7 +1467,7 @@ void AnalyzeMSUP(MNODE * mml_msup_node, SEMANTICS_NODE * snode,
             snode->contents = DuplicateString(base->p_chdata);
             snode->semantic_type = SEM_TYP_INVFUNCTION;
           } else if (et == ET_POWER || et == ET_DIRECTION) {
-            char* mml_canonical_name = GetCanonicalIDforMathNode(base, pAnalyzer);
+            char* mml_canonical_name = GetCanonicalIDforMathNode(base, pAnalyzer->mml_entities);
             if (!mml_canonical_name) {
               snode->error_flag = 1;
               return;
@@ -1561,7 +1533,7 @@ void AnalyzeMSUP(MNODE * mml_msup_node, SEMANTICS_NODE * snode,
           } else if (et == ET_PRIMES) {
 
             // Here we have a decorated variable
-            char* mml_canonical_name = GetCanonicalIDforMathNode(mml_msup_node, pAnalyzer);
+            char* mml_canonical_name = GetCanonicalIDforMathNode(mml_msup_node, pAnalyzer->mml_entities);
             if (!mml_canonical_name) {
               snode->error_flag = 1;
               return;
@@ -1591,7 +1563,7 @@ void AnalyzeMSUP(MNODE * mml_msup_node, SEMANTICS_NODE * snode,
 
       case BT_TRANSFORM:{
           if (et == ET_INVERSE_INDICATOR) {
-            char* mml_canonical_name = GetCanonicalIDforMathNode(mml_msup_node, pAnalyzer);
+            char* mml_canonical_name = GetCanonicalIDforMathNode(mml_msup_node, pAnalyzer->mml_entities);
             if (!mml_canonical_name) {
               snode->error_flag = 1;
               return;
@@ -1697,7 +1669,7 @@ void AnalyzeMSUB(MNODE * mml_msub_node, SEMANTICS_NODE * snode,
     case BT_FUNCTION:{
         // Note that \log_{n} is handled below
         if (sub_type == ET_NUMBER || sub_type == ET_DECORATION  || sub_type == ET_VARIABLE) {
-          char* mml_canonical_name = GetCanonicalIDforMathNode(mml_msub_node, pAnalyzer);
+          char* mml_canonical_name = GetCanonicalIDforMathNode(mml_msub_node, pAnalyzer->mml_entities);
           if (!mml_canonical_name) {
             snode->error_flag = 1;
             return;
@@ -1718,7 +1690,7 @@ void AnalyzeMSUB(MNODE * mml_msub_node, SEMANTICS_NODE * snode,
       break;
 
     case BT_SUBARG_FUNCTION:{
-        char* mml_canonical_name = GetCanonicalIDforMathNode(base, pAnalyzer);
+        char* mml_canonical_name = GetCanonicalIDforMathNode(base, pAnalyzer->mml_entities);
         if (!mml_canonical_name) {
           snode->error_flag = 1;
           return;
@@ -1736,7 +1708,7 @@ void AnalyzeMSUB(MNODE * mml_msub_node, SEMANTICS_NODE * snode,
 
     case BT_VARIABLE:{
         if (sub_type == ET_DECORATION) {
-          char* mml_canonical_name = GetCanonicalIDforMathNode(mml_msub_node, pAnalyzer);
+          char* mml_canonical_name = GetCanonicalIDforMathNode(mml_msub_node, pAnalyzer->mml_entities);
           if (!mml_canonical_name) {
             snode->error_flag = 1;
             return;
@@ -1852,7 +1824,7 @@ void AnalyzeMSUBSUP(MNODE* mml_msubsup_node,
           SEMANTICS_NODE *s_func = CreateSemanticsNode();
 
           if (bt == BT_SUBARG_FUNCTION) {
-            s_func->canonical_ID = GetCanonicalIDforMathNode(base, pAnalyzer);
+            s_func->canonical_ID = GetCanonicalIDforMathNode(base, pAnalyzer->mml_entities);
             AnalyzeSubscriptedArgFunc(mml_msubsup_node, s_func, pAnalyzer);
             BUCKET_REC* base_bucket = MakeParentBucketRec(MB_UNNAMED, s_func);
             snode->bucket_list =
@@ -1864,13 +1836,13 @@ void AnalyzeMSUBSUP(MNODE* mml_msubsup_node,
             U32 zh_ln = 0;
             mml_canonical_name =
               AppendStr2HeapStr(mml_canonical_name, zh_ln, "msub");
-            const char* tmp = GetCanonicalIDforMathNode(base, pAnalyzer);
+            const char* tmp = GetCanonicalIDforMathNode(base, pAnalyzer->mml_entities);
             if (tmp) {
               mml_canonical_name =
                 AppendStr2HeapStr(mml_canonical_name, zh_ln, tmp);
               delete[] tmp;
             }
-            tmp = GetCanonicalIDforMathNode(base->next, pAnalyzer);
+            tmp = GetCanonicalIDforMathNode(base->next, pAnalyzer->mml_entities);
             if (tmp) {
               mml_canonical_name =
                 AppendStr2HeapStr(mml_canonical_name, zh_ln, tmp);
@@ -1943,7 +1915,7 @@ void AnalyzeMSUBSUP(MNODE* mml_msubsup_node,
           SEMANTICS_NODE* s_func = CreateSemanticsNode();
 
           // Create a canonical name for "s_func".
-          s_func->canonical_ID = GetCanonicalIDforMathNode(f_name, pAnalyzer);
+          s_func->canonical_ID = GetCanonicalIDforMathNode(f_name, pAnalyzer->mml_entities);
           AnalyzeSubscriptedArgFunc(mml_msubsup_node, s_func, pAnalyzer);
           SetSnodeOwner(s_func, pAnalyzer);
 
@@ -2096,7 +2068,7 @@ void AnalyzeMOVER(MNODE * mml_mover_node, SEMANTICS_NODE * snode,
       }
 
       if (!done) {
-        char *mml_canonical_name = GetCanonicalIDforMathNode(mml_mover_node, pAnalyzer);
+        char *mml_canonical_name = GetCanonicalIDforMathNode(mml_mover_node, pAnalyzer->mml_entities);
         if (!mml_canonical_name) {
           snode->error_flag = 1;
           return;
@@ -2177,7 +2149,7 @@ void AnalyzeMUNDER(MNODE * mml_munder_node, SEMANTICS_NODE * snode,
       }
 
       if (!done) {
-        char *mml_canonical_name = GetCanonicalIDforMathNode(mml_munder_node, pAnalyzer);
+        char *mml_canonical_name = GetCanonicalIDforMathNode(mml_munder_node, pAnalyzer->mml_entities);
         if (!mml_canonical_name) {
           snode->error_flag = 1;
           return;
@@ -2295,13 +2267,12 @@ void AnalyzeMTABLE(MNODE * mml_mtable_node,
   info->bucket_list = cell_list;
 }
 
-IdentIlk GetMIilk(char *mi_canonical_str, MNODE * m_node,
-                            bool isLHSofDef, Analyzer* pAnalyzer)
+IdentIlk GetMIilk(char* mi_canonical_str, MNODE* m_node, bool isLHSofDef, Analyzer* pAnalyzer)
 {
   IdentIlk rv = MI_none;
 
   if (pAnalyzer -> defstore) {
-    DefInfo *di = pAnalyzer -> defstore->GetDefInfo(pAnalyzer -> CurrEngineID(), mi_canonical_str);
+    DefInfo* di = pAnalyzer -> defstore->GetDefInfo(pAnalyzer -> CurrEngineID(), mi_canonical_str);
     if (di) {
       if (isLHSofDef) {
         // Here, we're re-defining a symbol - the type of any previous def is irrelevent
@@ -2354,7 +2325,7 @@ IdentIlk GetMIilk(char *mi_canonical_str, MNODE * m_node,
     if (m_node->next && ElementNameIs(m_node->next, "mo")) {
       U32 unicodes[8];
       int content_tally =
-        ChData2Unicodes(m_node->next->p_chdata, unicodes, 8, pAnalyzer);
+        ChData2Unicodes(m_node->next->p_chdata, unicodes, 8, pAnalyzer->mml_entities);
       if (content_tally == 1 && unicodes[0] == 0x2061)
         rv = MI_function;
     }
@@ -2390,7 +2361,7 @@ BUCKET_REC* ArgsToBucket(MNODE * func_node, int& nodes_done, Analyzer* pAnalyzer
     // look for <mo>&ApplyFunction;</mo>
     if (mml_rover && ElementNameIs(mml_rover, "mo")) {
       U32 unicodes[8];
-      int content_tally = ChData2Unicodes(mml_rover->p_chdata, unicodes, 8, pAnalyzer);
+      int content_tally = ChData2Unicodes(mml_rover->p_chdata, unicodes, 8, pAnalyzer->mml_entities);
       if (content_tally == 1 && unicodes[0] == 0x2061) {
         found_ap = true;
         local_nodes_done++;
@@ -2476,13 +2447,13 @@ BUCKET_REC* GetParenedArgs(MNODE* mml_mo, int& nodes_done, Analyzer* pAnalyzer)
   int nodes_within_parens = 0;
 
   U32 unicodes[8];
-  int content_tally = ChData2Unicodes(mml_mo->p_chdata, unicodes, 8, pAnalyzer);
+  int content_tally = ChData2Unicodes(mml_mo->p_chdata, unicodes, 8, pAnalyzer->mml_entities);
   if (content_tally == 1 && unicodes[0] == '(') {
     local_nodes_done++;
     MNODE *rover = mml_mo->next;
     while (rover) {
       local_nodes_done++;
-      int content_tally = ChData2Unicodes(rover->p_chdata, unicodes, 8, pAnalyzer);
+      int content_tally = ChData2Unicodes(rover->p_chdata, unicodes, 8, pAnalyzer->mml_entities);
       if (content_tally == 1 && unicodes[0] == ')') {
         matched_parens = true;
         break;
@@ -2507,7 +2478,7 @@ BUCKET_REC* GetParenedArgs(MNODE* mml_mo, int& nodes_done, Analyzer* pAnalyzer)
       MNODE* arg_first_obj = arg_ptr;
       int nodes_in_arg = 0;
       while (arg_ptr) {
-        int content_tally = ChData2Unicodes(arg_ptr->p_chdata, unicodes, 8, pAnalyzer);
+        int content_tally = ChData2Unicodes(arg_ptr->p_chdata, unicodes, 8, pAnalyzer->mml_entities);
         if (content_tally == 1 && unicodes[0] == ',')
           break;
         else if (content_tally == 1 && unicodes[0] == ')') {
@@ -2562,99 +2533,6 @@ BUCKET_REC* GetFencedArgs(MNODE* mml_fence, Analyzer* pAnalyzer)
     }
   }
 
-  return rv;
-}
-
-/* Generate canonical IDs (names) for mml nodes that represent variables and functions.
-
-  In this design, these IDs are zstrings and are completely engine independent.
-
-  They must meet the following criteria
-
-  1. mml nodes that represent the same math object must be given
-     the same canonical name.
-     Note that in presentation MathML, the same math object can have
-     many different markups.  For example, a Greek letter may be represented
-     by a hex entity, a decimal entity, or one or more name entities.
-
-  2. mml nodes that represent different math objects must be given
-     different canonical names.
-	 Note that <mi>x</mi> represents a different math object
-	 when it is nested in an <mstyle mathvariant="fraktur"/>
-
-  Finding an algorithm that produces names that meet the above criteria
-  is not trivial.
-
-  The most general algorithm would involve traversing the tree from
-  the root to the node being named.  When schemata that affect the
-  semantics of target node are encountered, add something to the ID string
-  being created.  Example
-  <mstyle mathvariant="fraktur">
-    .
-	.
-	<subtree to be named>
-	</subtree to be named>
-    .
-  </mstyle>
-
-   When the <mstyle> is encountered, append something like mvFRAKTUR
-   to the ID.
-   Finally traverse the body of the subtree being named, appending
-   semantically relevent attributes and contents to the ID.
-
-   The following code doesn't implement the general algorithm completely.
-   It can be made more general as required.
-
-*/
-
-char* GetCanonicalIDforMathNode(MNODE* mml_node, Analyzer* pAnalyzer)
-{
-  char* rv = NULL;
-  TCI_ASSERT(CheckLinks(mml_node));
-  if (mml_node) {
-    char buffer[1024];
-    buffer[0] = 0;
-    const char* mml_element = mml_node->src_tok;
-
-    if (ElementNameIs(mml_node, "mi")) {
-
-      strcat(buffer, mml_element);
-      SemanticAttribs2Buffer(buffer, mml_node, 1024);
-      Contents2Buffer(buffer, mml_node->p_chdata, 1024, pAnalyzer);
-
-    } else if (ElementNameIs(mml_node, "mo")) {
-
-      strcat(buffer, mml_element);
-      Contents2Buffer(buffer, mml_node->p_chdata, 1024, pAnalyzer);
-
-    } else if (ElementNameIs(mml_node, "mn")) {
-
-      strcat(buffer, mml_element);
-      Contents2Buffer(buffer, mml_node->p_chdata, 1024, pAnalyzer);
-
-    } else if (ElementNameIs(mml_node, "mtext")) {
-
-      strcat(buffer, mml_element);
-      Contents2Buffer(buffer, mml_node->p_chdata, 1024, pAnalyzer);
-
-    } else {
-      if (mml_node->first_kid) {
-        if (strcmp(mml_element, "mrow"))
-          strcat(buffer, mml_element);
-        MNODE* rover = mml_node->first_kid;
-        while (rover) {
-          char* tmp = GetCanonicalIDforMathNode(rover, pAnalyzer);
-          if (tmp)
-            strcat(buffer, tmp);
-          delete[] tmp;
-          rover = rover->next;
-        }
-      }
-    }
-    if (buffer[0]) {
-	  rv = DuplicateString(buffer);
-    }
-  }
   return rv;
 }
 
@@ -3064,7 +2942,7 @@ void AnalyzeMixedNum(MNODE * mml_mn, SEMANTICS_NODE * s_node, Analyzer* pAnalyze
 ////////////////////////////// START SCRIPT HANDLING
 
 
-BaseType GetBaseType(MNODE * mml_script_schemata, bool isLHSofDef, Analyzer* pAnalyzer)
+BaseType GetBaseType(MNODE* mml_script_schemata, bool isLHSofDef, Analyzer* pAnalyzer)
 {
   BaseType rv = BT_UNKNOWN;
 
@@ -3082,9 +2960,9 @@ BaseType GetBaseType(MNODE * mml_script_schemata, bool isLHSofDef, Analyzer* pAn
       rv = BT_OPERATOR;
 
     if (!rv && !isLHSofDef) {
-      char *mi_canonical_str = GetCanonicalIDforMathNode(base, pAnalyzer);
+      char* mi_canonical_str = GetCanonicalIDforMathNode(base, pAnalyzer->mml_entities);
       if (pAnalyzer -> defstore  && mi_canonical_str) {
-        DefInfo *di = pAnalyzer -> defstore->GetDefInfo(pAnalyzer -> CurrEngineID(), mi_canonical_str);
+        DefInfo* di = pAnalyzer -> defstore -> GetDefInfo(pAnalyzer -> CurrEngineID(), mi_canonical_str);
         if (di && di->def_type == DT_FUNCTION) {
           if (di->n_subscripted_args)
             rv = BT_SUBARG_FUNCTION;
@@ -3341,7 +3219,7 @@ bool IsInverseIndicator(MNODE * mml_exp_node, Analyzer* pAnalyzer)
       MNODE *rover = mml_exp_node->first_kid;
       if (ElementNameIs(rover, "mo")) {
         U32 unicodes[8];
-        int content_tally = ChData2Unicodes(rover->p_chdata, unicodes, 8, pAnalyzer);
+        int content_tally = ChData2Unicodes(rover->p_chdata, unicodes, 8, pAnalyzer->mml_entities);
         if (content_tally == 1 &&
             (unicodes[0] == '-' || unicodes[0] == 0x2212)) {
           rover = rover->next;
@@ -3349,7 +3227,7 @@ bool IsInverseIndicator(MNODE * mml_exp_node, Analyzer* pAnalyzer)
             if (ElementNameIs(rover, "mn")) {
               U32 unicodes[8];
               int content_tally =
-                ChData2Unicodes(rover->p_chdata, unicodes, 8, pAnalyzer);
+                ChData2Unicodes(rover->p_chdata, unicodes, 8, pAnalyzer->mml_entities);
               if (content_tally == 1 && unicodes[0] == '1')
                 rv = true;
             }
@@ -4046,83 +3924,6 @@ void AnalyzeSubscriptedFence(MNODE* mml_msub_node,
 
 
 
-void Contents2Buffer(char *zdest, const char *p_chdata, int lim, Analyzer* pAnalyzer)
-{
-  if (p_chdata) {
-    U32 unicodes[128];
-    int n_chars = ChData2Unicodes(p_chdata, unicodes, 128, pAnalyzer);
-    if (n_chars < 128) {
-      size_t i = strlen(zdest);
-      int j = 0;
-      while (i < lim && j < n_chars) {
-        U32 ch = unicodes[j];
-        if (ch >= ' ' && ch <= '~') {
-          zdest[i] = ch;
-          i++;
-        } else {
-          sprintf(zdest + i, "&#x%x;", ch);
-          i = strlen(zdest);
-        }
-        j++;
-      }
-      zdest[i] = 0;
-    } else {
-      TCI_ASSERT(0);
-    }
-  }
-}
-
-
-
-bool IsWholeNumber(MNODE * mml_mn)
-{
-  bool rv = true;
-  if (mml_mn && mml_mn->p_chdata) {
-    const char *ptr = mml_mn->p_chdata;
-    while (*ptr) {
-      if (*ptr < '0' || *ptr > '9') {
-        rv = false;
-        break;
-      }
-      ptr++;
-    }
-  } else
-    TCI_ASSERT(0);
-  return rv;
-}
-
-bool IsOperator(MNODE * mml_node)
-{
-  bool rv = false;
-  if (mml_node && ElementNameIs(mml_node, "mo")) {
-    rv = true;
-  }
-
-  return rv;
-}
-
-bool IsWholeFrac(MNODE* mml_frac)
-{
-  bool num_OK = false;
-  bool den_OK = false;
-
-  if (mml_frac && ElementNameIs(mml_frac, "mfrac")) {
-    MNODE *rover = mml_frac->first_kid;
-    if (rover) {
-      if (ElementNameIs(rover, "mn") && IsWholeNumber(rover))
-        num_OK = true;
-
-      rover = rover->next;
-
-      if (rover) {
-        if (ElementNameIs(rover, "mn") && IsWholeNumber(rover))
-          den_OK = true;
-      }
-    }
-  }
-  return num_OK && den_OK;
-}
-
 
 BUCKET_REC* AddVarToBucket(U32 bucket_ID,
                             SEMANTICS_NODE* s_var_list, Analyzer* pAnalyzer)
@@ -4413,11 +4214,11 @@ void DetermineODEFuncNames(MNODE* dMML_tree, Analyzer* pAnalyzer)
 
     if (ElementNameIs(rover, "mfrac"))
 
-       f_name = GetFuncNameFromFrac(rover, &src_name, pAnalyzer);
+       f_name = GetFuncNameFromFrac(rover, &src_name, pAnalyzer->mml_entities);
 
     else if (ElementNameIs(rover, "msub"))
 
-      f_name = GetFuncNameFromSub(rover, &src_name, pAnalyzer);
+      f_name = GetFuncNameFromSub(rover, &src_name, pAnalyzer->mml_entities);
 
     else if (ElementNameIs(rover, "msup"))
 
@@ -4460,7 +4261,7 @@ void DeterminePDEFuncNames(MNODE * dMML_tree, Analyzer* pAnalyzer)
     char *f_name = NULL;
     const char *src_name = NULL;
     if (ElementNameIs(rover, "mfrac"))
-      f_name = GetFuncNameFromFrac(rover, &src_name, pAnalyzer);
+      f_name = GetFuncNameFromFrac(rover, &src_name, pAnalyzer->mml_entities);
     if (f_name) {
       char *new_src_name = NULL;
       if (src_name) {
@@ -4535,16 +4336,17 @@ DE_FUNC_REC* AppendFuncName(DE_FUNC_REC * f_list, char *f_name,
 
 // \frac{df}{dx}
 
-char* GetFuncNameFromFrac(MNODE* mfrac, const char **src_name, Analyzer* pAnalyzer)
+char* GetFuncNameFromFrac(MNODE* mfrac, const char **src_name, Grammar* mml_entities)
 {
   char* rv = NULL;
 
   MNODE* m_num_operand;
   MNODE* m_den_var_expr;
+
   if (IsDIFFOP(mfrac, &m_num_operand, &m_den_var_expr)) {
     if (m_num_operand) {
       if (ElementNameIs(m_num_operand, "mi")) {
-        rv = GetCanonicalIDforMathNode(m_num_operand, pAnalyzer);
+        rv = GetCanonicalIDforMathNode(m_num_operand, mml_entities);
         *src_name = m_num_operand->p_chdata;
       }
     }
@@ -4552,7 +4354,7 @@ char* GetFuncNameFromFrac(MNODE* mfrac, const char **src_name, Analyzer* pAnalyz
   return rv;
 }
 
-char* GetFuncNameFromSub(MNODE * msub, const char **src_name, Analyzer* pAnalyzer)
+char* GetFuncNameFromSub(MNODE * msub, const char **src_name, Grammar* mml_entities)
 {
   char *rv = NULL;
 
@@ -4560,13 +4362,13 @@ char* GetFuncNameFromSub(MNODE * msub, const char **src_name, Analyzer* pAnalyze
     MNODE *m_operand = msub->next;
     if (m_operand) {
       if (ElementNameIs(m_operand, "mi")) {
-        rv = GetCanonicalIDforMathNode(m_operand, pAnalyzer);
+        rv = GetCanonicalIDforMathNode(m_operand, mml_entities);
         *src_name = m_operand->p_chdata;
       } else if (ElementNameIs(m_operand, "msub")) {
         // D_{x}y_{1}
         MNODE *base = m_operand->first_kid;
         if (ElementNameIs(base, "mi")) {
-          rv = GetCanonicalIDforMathNode(m_operand, pAnalyzer);
+          rv = GetCanonicalIDforMathNode(m_operand, mml_entities);
           *src_name = base->p_chdata;
         }
       }
@@ -4575,17 +4377,17 @@ char* GetFuncNameFromSub(MNODE * msub, const char **src_name, Analyzer* pAnalyze
   return rv;
 }
 
-char* GetFuncNameFromSup(MNODE * msup, const char **src_name, Analyzer* pAnalyzer)
+char* GetFuncNameFromSup(MNODE* msup, const char **src_name, Analyzer* pAnalyzer)
 {
-  char *rv = NULL;
+  char* rv = NULL;
 
-  MNODE *base = msup->first_kid;
+  MNODE* base = msup->first_kid;
   BaseType bt = GetBaseType(msup, false, pAnalyzer);
   ExpType et = GetExpType(bt, base->next, pAnalyzer);
 
   if (et == ET_PRIMES) {
     if (ElementNameIs(base, "mi")) {
-      rv = GetCanonicalIDforMathNode(base, pAnalyzer);
+      rv = GetCanonicalIDforMathNode(base, pAnalyzer->mml_entities);
       *src_name = base->p_chdata;
     }
   }
@@ -4606,13 +4408,13 @@ char* GetFuncNameFromSubSup(MNODE * msubsup, const char **src_name, Analyzer* pA
     if (ElementNameIs(base, "mi")) {
       U32 zh_ln = 0;
       rv = AppendStr2HeapStr(rv, zh_ln, "msub");
-      char *tmp = GetCanonicalIDforMathNode(base, pAnalyzer);
+      char *tmp = GetCanonicalIDforMathNode(base, pAnalyzer->mml_entities);
       *src_name = base->p_chdata;
       if (tmp) {
         rv = AppendStr2HeapStr(rv, zh_ln, tmp);
         delete[] tmp;
       }
-      tmp = GetCanonicalIDforMathNode(sub, pAnalyzer);
+      tmp = GetCanonicalIDforMathNode(sub, pAnalyzer->mml_entities);
       if (tmp) {
         rv = AppendStr2HeapStr(rv, zh_ln, tmp);
         delete[] tmp;
@@ -4642,7 +4444,7 @@ PrefixOpIlk GetPrefixOpCode(const char *op_name, SemanticVariant & n_integs, Ana
   const char *ptr = strchr(op_name, '&');
   if (ptr) {
     U32 unicodes[8];
-    int char_tally = ChData2Unicodes(op_name, unicodes, 8, pAnalyzer);
+    int char_tally = ChData2Unicodes(op_name, unicodes, 8, pAnalyzer->mml_entities);
     if (char_tally && unicodes[0] == 0x2207) {  // nabla
       if (char_tally == 1) {
         rv = POI_gradient;
@@ -5743,11 +5545,11 @@ void CreateSubscriptedVar(MNODE * mml_msub_node,
 
     MNODE *rover = mml_msub_node->first_kid;
     if (rover) {
-      char *tmp = GetCanonicalIDforMathNode(rover, pAnalyzer);
+      char *tmp = GetCanonicalIDforMathNode(rover, pAnalyzer->mml_entities);
       if (tmp) {
         strcat(buffer, tmp);
         delete[] tmp;
-        tmp = GetCanonicalIDforMathNode(rover->next, pAnalyzer);
+        tmp = GetCanonicalIDforMathNode(rover->next, pAnalyzer->mml_entities);
         if (tmp) {
           strcat(buffer, tmp);
           delete[] tmp;
@@ -5756,7 +5558,7 @@ void CreateSubscriptedVar(MNODE * mml_msub_node,
     }
 	mml_canonical_name = DuplicateString(buffer);
   } else
-    mml_canonical_name = GetCanonicalIDforMathNode(mml_msub_node, pAnalyzer);
+    mml_canonical_name = GetCanonicalIDforMathNode(mml_msub_node, pAnalyzer->mml_entities);
   if (!mml_canonical_name) {
     snode->error_flag = 1;
     return;
@@ -5777,7 +5579,7 @@ void CreateSubscriptedVar(MNODE * mml_msub_node,
   snode->bucket_list = AppendBucketRec(snode->bucket_list, bucket);
   
 
-  char *base_canonical_name = GetCanonicalIDforMathNode(base, pAnalyzer);
+  char *base_canonical_name = GetCanonicalIDforMathNode(base, pAnalyzer->mml_entities);
   if (!base_canonical_name) {
     snode->error_flag = 1;
     return;
@@ -5865,7 +5667,7 @@ void AnalyzeBesselFunc(MNODE * mml_msub_node,
                                  SEMANTICS_NODE * snode, int& nodes_done, Analyzer* pAnalyzer)
 {
   nodes_done = 1;
-  char *mml_canonical_name = GetCanonicalIDforMathNode(mml_msub_node, pAnalyzer);
+  char *mml_canonical_name = GetCanonicalIDforMathNode(mml_msub_node, pAnalyzer->mml_entities);
 
   if (!mml_canonical_name) {
     TCI_ASSERT(0);
@@ -5900,78 +5702,6 @@ void AnalyzeBesselFunc(MNODE * mml_msub_node,
   }
 }
 
-// Extract chars and unicodes from the ASCII string p_chdata.
-// Returns a count of the symbols processed, up to "limit".
-
-int ChData2Unicodes(const char *p_chdata, U32 * unicodes, int limit, Analyzer* pAnalyzer)
-{
-  int rv = 0;
-
-  if (p_chdata && *p_chdata) {
-    const char *ptr = p_chdata;
-    while (*ptr && rv < limit) {
-      if (*ptr == '&') {
-        ptr++;
-        if (*ptr == '#') {
-
-            // numeric entity - &#x201a;, &#9876;. etc.
-            ptr++;
-            U32 place_val = 10;
-            if (*ptr == 'x') {
-              place_val = 16;
-              ptr++;
-            }
-            unicodes[rv] = ASCII2U32(ptr, place_val);
-            rv++;
-
-            while (*ptr && *ptr != ';')
-              ptr++;
-
-        } else {
-
-            // non-numeric entity - &theta;, &ApplyFunction;. etc.
-            const char *entity = ptr - 1;
-            while (*ptr && *ptr != ';')
-              ptr++;
-
-            U32 ID, subID;
-            size_t zln = ptr - entity + 1;
-            const char* p_data;
-            if (pAnalyzer ->mml_entities->GetRecordFromName("MATH", entity, zln, ID, subID, &p_data)) {
-
-                if (p_data && *p_data) {
-                  //&ApplyFunction;<uID3.5.6>infix,65,U02061
-                  const char* ptr = strstr(p_data, ",U");
-                  if (ptr) {
-                      unicodes[rv] = ASCII2U32(ptr + 2, 16);
-                      rv++;
-                  } else {
-                      TCI_ASSERT(0);
-                  }
-                } else {
-                    TCI_ASSERT(0);
-                }
-
-            } else {
-
-                while (entity <= ptr) {
-                  unicodes[rv] = *entity;
-                  rv++;
-                  entity++;
-                }
-            }
-
-        }
-
-      } else {
-        unicodes[rv] = *ptr;
-        rv++;
-      }
-      ptr++;
-    }
-  }
-  return rv;
-}
 
 bool SetODEvars(MathServiceRequest & msr, MathResult & mr,
                               MNODE * dMML_tree, U32 UI_cmd_ID, Analyzer* pAnalyzer)
@@ -6097,7 +5827,7 @@ AccentType GetAboveType(BaseType base_type, MNODE * accent, Analyzer* pAnalyzer)
 
   if (accent && ElementNameIs(accent, "mo")) {
     U32 unicodes[8];
-    int content_tally = ChData2Unicodes(accent->p_chdata, unicodes, 8, pAnalyzer);
+    int content_tally = ChData2Unicodes(accent->p_chdata, unicodes, 8, pAnalyzer->mml_entities);
     if (content_tally == 1) {
       switch (unicodes[0]) {
       case 0x0302:             // &Hat;    
@@ -6671,24 +6401,6 @@ bool IdentIsConstant(IdentIlk ilk)
   }
 }
 
-int CountCols(MNODE * mml_mtr)
-{
-  int rv = 0;
-  if (mml_mtr && mml_mtr->first_kid) {
-    MNODE *rover = mml_mtr->first_kid;
-    while (rover) {
-      if (ElementNameIs(rover, "mtd"))
-        rv++;
-      rover = rover->next;
-    }
-  }
-  return rv;
-}
-
-bool IsWhiteSpace(MNODE * mml_node)
-{
-  return false;
-}
 
 
 
@@ -6721,6 +6433,104 @@ bool IsWhiteText(const char *z_text)
 
   return rv;
 }
+
+
+
+
+/* Generate canonical IDs (names) for mml nodes that represent variables and functions.
+
+  In this design, these IDs are zstrings and are completely engine independent.
+
+  They must meet the following criteria
+
+  1. mml nodes that represent the same math object must be given
+     the same canonical name.
+     Note that in presentation MathML, the same math object can have
+     many different markups.  For example, a Greek letter may be represented
+     by a hex entity, a decimal entity, or one or more name entities.
+
+  2. mml nodes that represent different math objects must be given
+     different canonical names.
+	 Note that <mi>x</mi> represents a different math object
+	 when it is nested in an <mstyle mathvariant="fraktur"/>
+
+  Finding an algorithm that produces names that meet the above criteria
+  is not trivial.
+
+  The most general algorithm would involve traversing the tree from
+  the root to the node being named.  When schemata that affect the
+  semantics of target node are encountered, add something to the ID string
+  being created.  Example
+  <mstyle mathvariant="fraktur">
+    .
+	.
+	<subtree to be named>
+	</subtree to be named>
+    .
+  </mstyle>
+
+   When the <mstyle> is encountered, append something like mvFRAKTUR
+   to the ID.
+   Finally traverse the body of the subtree being named, appending
+   semantically relevent attributes and contents to the ID.
+
+   The following code doesn't implement the general algorithm completely.
+   It can be made more general as required.
+
+*/
+
+char* GetCanonicalIDforMathNode(MNODE* mml_node, Grammar* mml_entities)
+{
+  char* rv = NULL;
+  TCI_ASSERT(CheckLinks(mml_node));
+  if (mml_node) {
+    char buffer[1024];
+    buffer[0] = 0;
+    const char* mml_element = mml_node->src_tok;
+
+    if (ElementNameIs(mml_node, "mi")) {
+
+      strcat(buffer, mml_element);
+      SemanticAttribs2Buffer(buffer, mml_node, 1024);
+      Contents2Buffer(buffer, mml_node->p_chdata, 1024, mml_entities);
+
+    } else if (ElementNameIs(mml_node, "mo")) {
+
+      strcat(buffer, mml_element);
+      Contents2Buffer(buffer, mml_node->p_chdata, 1024, mml_entities);
+
+    } else if (ElementNameIs(mml_node, "mn")) {
+
+      strcat(buffer, mml_element);
+      Contents2Buffer(buffer, mml_node->p_chdata, 1024, mml_entities);
+
+    } else if (ElementNameIs(mml_node, "mtext")) {
+
+      strcat(buffer, mml_element);
+      Contents2Buffer(buffer, mml_node->p_chdata, 1024, mml_entities);
+
+    } else {
+      if (mml_node->first_kid) {
+        if (strcmp(mml_element, "mrow"))
+          strcat(buffer, mml_element);
+        MNODE* rover = mml_node->first_kid;
+        while (rover) {
+          char* tmp = GetCanonicalIDforMathNode(rover, mml_entities);
+          if (tmp)
+            strcat(buffer, tmp);
+          delete[] tmp;
+          rover = rover->next;
+        }
+      }
+    }
+    if (buffer[0]) {
+	  rv = DuplicateString(buffer);
+    }
+  }
+  return rv;
+}
+
+
 
 
 

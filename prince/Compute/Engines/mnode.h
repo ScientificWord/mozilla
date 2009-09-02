@@ -113,6 +113,13 @@ bool IsUnitsFraction(MNODE * mml_node);
 bool IsPositionalChild(MNODE * mml_node);
 bool IsSUBSTITUTION(MNODE * mml_msub_node);
 bool IsUSunit(const char *ptr);
+bool IsWholeNumber(MNODE* mml_mn);
+bool IsWholeFrac(MNODE* mml_frac);
+bool IsOperator(MNODE* mml_node);
+
+int  CountCols(MNODE* mml_mtr);
+bool IsWhiteSpace(MNODE* mml_node);
+
 
 
 OpMatrixIntervalType GetOpType(MNODE* mo);
@@ -120,6 +127,14 @@ OpMatrixIntervalType GetOpType(MNODE* mo);
 
 bool CheckLinks(MNODE* n);
 
+#ifdef DEBUG
+#define ALLOW_DUMPS
+#endif
 
+// dump utilities.  output sent to JBMline.out
+namespace JBM {
+  void DumpTNode(MNODE* t_node, int indent);
+  void DumpTList(MNODE* t_list, int indent);
+}
 
 #endif

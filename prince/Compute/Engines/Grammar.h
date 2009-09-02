@@ -27,11 +27,6 @@ public:
                          U32& uID, U32& usubID,
                          const char** d_ztemplate);
 
-
-  
-
-  
-   
   
   
   HASH_TABLE* LastTableHit() const { return m_last_table_hit;}
@@ -54,5 +49,8 @@ private:
   CONTEXT_ID* m_pContextIDs;
    
 };
+
+int ChData2Unicodes(const char* p_chdata, U32* unicodes, int limit, Grammar* mml_entities);
+void Contents2Buffer(char* zdest, const char* p_chdata, int lim, Grammar* mml_entities);
 
 #endif
