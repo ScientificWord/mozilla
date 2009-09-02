@@ -38,6 +38,7 @@
 #include "MML2Tree.h"
 #include "Analyzer.h"
 #include "STree2MML.h"
+#include "dumputils.h"
 
 #include "xpcom-config.h"
 #include "nsServiceManagerUtils.h"

@@ -32,6 +32,7 @@ include $(topsrcdir)/config/config.mk
 CPPSRCS = \
   strutils.cpp \
   attriblist.cpp \
+  dumputils.cpp \
   logmsg.cpp \
   mnode.cpp \
   Analyzer.cpp \
