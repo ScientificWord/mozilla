@@ -1,7 +1,9 @@
 #include "mnode.h"
 #include "strutils.h"
 #include "CmpTypes.h"
+#include "dumputils.h"
 #include <cstring>
+
 
 bool ElementNameIs(const MNODE* pNode, const char* str)
 {
@@ -777,7 +779,145 @@ OpMatrixIntervalType GetOpType(MNODE * mo)
 
 
 
+bool IsWholeNumber(MNODE* mml_mn)
+{
+  bool rv = true;
+  if (mml_mn && mml_mn->p_chdata) {
+    const char* ptr = mml_mn->p_chdata;
+    while (*ptr) {
+      if (*ptr < '0' || *ptr > '9') {
+        rv = false;
+        break;
+      }
+      ptr++;
+    }
+  } else
+    TCI_ASSERT(0);
+  return rv;
+}
 
+bool IsOperator(MNODE* mml_node)
+{
+  bool rv = false;
+  if (mml_node && ElementNameIs(mml_node, "mo")) {
+    rv = true;
+  }
+
+  return rv;
+}
+
+bool IsWholeFrac(MNODE* mml_frac)
+{
+  bool num_OK = false;
+  bool den_OK = false;
+
+  if (mml_frac && ElementNameIs(mml_frac, "mfrac")) {
+    MNODE *rover = mml_frac->first_kid;
+    if (rover) {
+      if (ElementNameIs(rover, "mn") && IsWholeNumber(rover))
+        num_OK = true;
+
+      rover = rover->next;
+
+      if (rover) {
+        if (ElementNameIs(rover, "mn") && IsWholeNumber(rover))
+          den_OK = true;
+      }
+    }
+  }
+  return num_OK && den_OK;
+}
+
+
+int CountCols(MNODE* mml_mtr)
+{
+  int rv = 0;
+  if (mml_mtr && mml_mtr->first_kid) {
+    MNODE *rover = mml_mtr->first_kid;
+    while (rover) {
+      if (ElementNameIs(rover, "mtd"))
+        rv++;
+      rover = rover->next;
+    }
+  }
+  return rv;
+}
+
+bool IsWhiteSpace(MNODE* mml_node)
+{
+  return false;
+}
+
+
+
+#ifdef ALLOW_DUMPS
+void JBM::DumpTNode(MNODE* t_node, int indent)
+{
+  if (t_node) {
+    // form the indentation string
+    char indent_str[128];
+    int ii = 0;
+    while (ii < indent && ii < 127)
+      indent_str[ii++] = ' ';
+    indent_str[ii] = 0;
+
+    char zzz[256];
+    sprintf(zzz, "%4lu %s<%s", t_node->src_linenum, indent_str, t_node->src_tok);
+    JBMLine(zzz);
+
+    ATTRIB_REC* rover = t_node->attrib_list;
+    while (rover) {
+      sprintf(zzz, " %s=\"%s\"", rover->zattr_nom, rover->zattr_val);
+      JBMLine(zzz);
+      rover = rover->next;
+    }
+
+    if (t_node->p_chdata && t_node->first_kid) {
+      sprintf(zzz, " name=\"%s\">", t_node->p_chdata);
+      JBMLine(zzz);
+
+      JBMLine("\n");
+      DumpTList(t_node->first_kid, indent + 2);
+      sprintf(zzz, "%4lu %s</%s>\n", t_node->src_linenum, indent_str,
+              t_node->src_tok);
+      JBMLine(zzz);
+    } else if (t_node->p_chdata) {
+      JBMLine(">");
+      JBMLine(t_node->p_chdata);
+      sprintf(zzz, "</%s>\n", t_node->src_tok);
+      JBMLine(zzz);
+    } else if (t_node->first_kid) {
+      JBMLine(">\n");
+      DumpTList(t_node->first_kid, indent + 2);
+      sprintf(zzz, "%4lu %s</%s>\n", t_node->src_linenum, indent_str,
+              t_node->src_tok);
+      JBMLine(zzz);
+    } else {
+      if (!strcmp(t_node->src_tok, "mspace")) {
+        JBMLine(">\n");
+      } else {
+        sprintf(zzz, "></%s>\n", t_node->src_tok);
+        JBMLine(zzz);
+      }
+    }
+  } else {
+    TCI_ASSERT(!"bad input t_node");
+  }
+}
+
+void JBM::DumpTList(MNODE * t_list, int indent)
+{
+  if (!indent)
+    JBMLine("\n");
+  while (t_list) {
+    DumpTNode(t_list, indent);
+    t_list = t_list->next;
+  }
+}
+#else
+void JBM::DumpTNode(MNODE * t_node, int indent) {}
+void JBM::DumpTList(MNODE * t_list, int indent) {}
+#endif
 
 
 
