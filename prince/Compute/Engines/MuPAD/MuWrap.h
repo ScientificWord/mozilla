@@ -8,6 +8,7 @@
 
 #include "CmpTypes.h"
 #include "fltutils.h"
+#include "mnode.h"
 #include "EngWrap.h"
 #include "nsILocalFile.h"
 

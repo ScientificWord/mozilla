@@ -179,8 +179,9 @@ char *MML1templates[] = {
   0
 };
 
-STree2MML::STree2MML(Grammar * mml_grammar, PrefsStore * up_store) :
-  mml_entities(mml_grammar), uprefs_store(up_store)
+STree2MML::STree2MML(Grammar* mml_grammar, PrefsStore* up_store) :
+  mml_entities(mml_grammar), 
+  uprefs_store(up_store)
 
 {
   src_markup = NULL;

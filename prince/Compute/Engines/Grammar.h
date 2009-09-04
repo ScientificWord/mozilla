@@ -21,11 +21,11 @@ public:
 
   bool GetRecordFromIDs(const char*  zcurr_env, U32 uID, U32 usubID,
                         const char** dest_zname,
-                        const char** dest_ztemplate);
+                        const char** dest_ztemplate) const;
 
   bool GetRecordFromName(const char* zcurr_env, const char* token, size_t ln,
                          U32& uID, U32& usubID,
-                         const char** d_ztemplate);
+                         const char** d_ztemplate) const;
 
   
   
@@ -50,7 +50,9 @@ private:
    
 };
 
-int ChData2Unicodes(const char* p_chdata, U32* unicodes, int limit, Grammar* mml_entities);
-void Contents2Buffer(char* zdest, const char* p_chdata, int lim, Grammar* mml_entities);
+int ChData2Unicodes(const char* p_chdata, U32* unicodes, int limit, const Grammar* mml_entities);
+void Contents2Buffer(char* zdest, const char* p_chdata, int lim, const Grammar* mml_entities);
+int GetLimitFormat(char* op_name, const Grammar* mml_entities);
+
 
 #endif

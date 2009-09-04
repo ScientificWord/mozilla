@@ -129,5 +129,12 @@ bool StringEqual(const char* str1, const char* str2)
 }
 
 
+bool StringNonEmpty(const char* str)
+{
+  return (str != NULL) && (strlen(str) > 0);
+}
+
+
+
 
 
