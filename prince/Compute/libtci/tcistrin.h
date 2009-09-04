@@ -3,14 +3,13 @@
 #ifndef   TCISTRING_H
 #define   TCISTRING_H
 
-#include "CmpTypes.h"
+#include "iCmpTypes.h"
 
 #include <string.h>
 #include <stdarg.h>
 
 #define TCICHAR  char
 #define TCIWCHAR  short
-typedef unsigned char U8;
 
 //#define ASSERT_HYPERACTIVE_STR
 

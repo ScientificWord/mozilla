@@ -4,6 +4,8 @@
 #define MML2Tree_H
 
 #include "fltutils.h"
+class MNODE;
+class ATTRIB_REC;
 
 class MML2Tree
 {
@@ -21,9 +23,9 @@ private:
   int GetElementHeader(const char *p_header,
                        MNODE * new_node, int &has_no_contents);
 
-  MNODE *GetElement(const char *z_src, int &advance);
+  MNODE* GetElement(const char *z_src, int &advance);
 
-  ATTRIB_REC *GetAttribute(const char *p_attr, int &bytesdone);
+  ATTRIB_REC* GetAttribute(const char* p_attr, int &bytesdone);
 
   int VerifyElementEnder(MNODE * mml_element, const char *needle);
 

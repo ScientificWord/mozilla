@@ -5,9 +5,10 @@
 
 #include "CmpTypes.h"
 #include "fltutils.h"
-
+#include "mnode.h"
 class Grammar;
 class Analyzer;
+
 
 typedef struct tagGROUP_INFO
 {
@@ -21,10 +22,12 @@ typedef struct tagGROUP_INFO
   int n_interior_nodes;
 } GROUP_INFO;
 
+
+
 class Tree2StdMML
 {
 public:
-  Tree2StdMML(Grammar * mml_grammar, Analyzer * analyzer);
+  Tree2StdMML(const Grammar* mml_grammar, Analyzer* analyzer);
   ~Tree2StdMML();
 
   MNODE *TreeToCanonicalForm(MNODE * dMML_tree,
@@ -130,14 +133,15 @@ protected:
 
   bool NeedsInvisiblePlus(MNODE * dMML_mrow);
 
-  ATTRIB_REC *StackAttr(ATTRIB_REC * attr_stack, const char *attr_nom,
-                        const char *attr_val);
-  ATTRIB_REC *UnstackAttr(ATTRIB_REC * attr_stack);
-  void MoveAttrsToChildren(MNODE * mml_list);
-  void InstallStackedAttr(MNODE * mml_node, ATTRIB_REC * attr_stack);
+  ATTRIB_REC* StackAttr(ATTRIB_REC* attr_stack, const char* attr_nom,
+                        const char* attr_val);
+  ATTRIB_REC* UnstackAttr(ATTRIB_REC * attr_stack);
+
+  void MoveAttrsToChildren(MNODE* mml_list);
+  void InstallStackedAttr(MNODE* mml_node, ATTRIB_REC * attr_stack);
 
 private:
-  Grammar *mml_entities;
+  const Grammar* const mml_entities;
   Analyzer *my_analyzer;
 
   ATTRIB_REC *mv_stack;

@@ -39,6 +39,7 @@
 #include "Analyzer.h"
 #include "STree2MML.h"
 #include "dumputils.h"
+#include "DefInfo.h"
 
 #include "xpcom-config.h"
 #include "nsServiceManagerUtils.h"
@@ -73,7 +74,7 @@ void AppendSubPath( nsILocalFile * file, const char * asciiPath )
 CompEngine::CompEngine(Grammar* ID_dBase, 
                        Grammar* NOM_dBase,
                        Grammar* mathml_grammar, 
-                       PrefsStore * up_store)
+					   PrefsStore * up_store)
 {
   id_dBase = ID_dBase;
   nom_dBase = NOM_dBase;
@@ -248,19 +249,23 @@ void CompEngine::ReleaseClient(U32 client_ID, U32 engine_ID, DefStore * ds)
   ds->ClearDefs(engine_ID);
 }
 
-void CompEngine::Execute(MathServiceRequest & msr, MathResult & mr)
+void CompEngine::Execute(MathServiceRequest& msr, MathResult& mr)
 {
   if (!wrapper) {
     mr.PutResultCode(CR_failure);
     TCI_ASSERT(!"No engine loaded.");
     return;
   }
+
   delete[] mml_VecBasisVars;
   mml_VecBasisVars = NULL;
-  DefStore *ds = msr.GetDefStore();
-  const char *defaultVecBasis = ds->GetPref(CLPF_Vector_basis, 0);
+
+  DefStore* ds = msr.GetDefStore();
+  const char* defaultVecBasis = ds->GetPref(CLPF_Vector_basis, 0);
+  
   if (!defaultVecBasis)
     defaultVecBasis = uprefs_store->GetPref(CLPF_Vector_basis);
+
   if (defaultVecBasis) {
     size_t zln = strlen(defaultVecBasis);
     mml_VecBasisVars = new char[zln + 1];
@@ -271,7 +276,7 @@ void CompEngine::Execute(MathServiceRequest & msr, MathResult & mr)
 
   U32 UI_cmd_ID = msr.GetOpID();
   if (!UI_cmd_ID) {
-    const char *cmd_template = NULL;
+    const char* cmd_template = NULL;
     U32 subID;
     if (GetdBaseNamedRecord("COMMANDS", msr.GetOpNamePtr(), &cmd_template, UI_cmd_ID, subID)) {
       msr.PutOpID(UI_cmd_ID);

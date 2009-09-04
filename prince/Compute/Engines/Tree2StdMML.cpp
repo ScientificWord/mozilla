@@ -50,7 +50,7 @@
 #include <string.h>
 
 
-Tree2StdMML::Tree2StdMML(Grammar* mml_grammar, Analyzer* analyzer) :
+Tree2StdMML::Tree2StdMML(const Grammar* mml_grammar, Analyzer* analyzer) :
      mml_entities(mml_grammar), 
      my_analyzer(analyzer), 
      mv_stack(NULL), 

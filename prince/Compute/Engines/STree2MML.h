@@ -5,6 +5,7 @@
 
 #include "CmpTypes.h"
 #include "fltutils.h"
+#include "mnode.h"
 
 // See SIBASEUNITS in .gmr file
 typedef int UnitIlk;

@@ -15,6 +15,7 @@ include $(topsrcdir)/config/config.mk
 
 CPPSRCS =				\
   DefStore.cpp  \
+  SNode.cpp \
   MRequest.cpp \
   MResult.cpp \
   PrefStor.cpp  \
