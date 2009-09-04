@@ -391,7 +391,7 @@ Grammar::Grammar(FILE * grammar_file, bool key_on_uids)
 
 Grammar::~Grammar()
 {
-  HASH_TABLE *del;
+  HASH_TABLE* del;
   while (HashTables()) {
     delete HashTables() -> zenv_names;
 
@@ -487,7 +487,7 @@ void Dump(FILE * df)
 
 bool Grammar::GetRecordFromIDs(const char *zcurr_env, U32 uID, U32 usubID,
                                    const char **dest_zname,
-                                   const char **dest_ztemplate)
+                                   const char **dest_ztemplate)	const
                                   
 {
   *dest_zname = NULL;
@@ -520,7 +520,7 @@ bool Grammar::GetRecordFromIDs(const char *zcurr_env, U32 uID, U32 usubID,
           if (curr_ID == uID && curr_sub == usubID) {
             *dest_zname = h_array[curr_slot].zname;
             *dest_ztemplate = h_array[curr_slot].ztemplate;
-            SetLastTableHit(curr_table);
+            //SetLastTableHit(curr_table);
             rv = true;
           } else {
             curr_slot++;
@@ -540,9 +540,12 @@ bool Grammar::GetRecordFromIDs(const char *zcurr_env, U32 uID, U32 usubID,
   return rv;
 }
 
-bool Grammar::GetRecordFromName(const char* zcurr_env, const char* token,
-                                    size_t ln, U32& uID, U32& usubID,
-                                    const char** d_ztemplate)
+bool Grammar::GetRecordFromName(const char* zcurr_env, 
+                                const char* token,
+                                size_t ln, 
+                                U32& uID, 
+                                U32& usubID,
+                                const char** d_ztemplate) const
 {
   bool rv = false;
   if ( HashedOnUIDs() ) {
@@ -596,7 +599,7 @@ bool Grammar::GetRecordFromName(const char* zcurr_env, const char* token,
               uID = h_array[curr_slot].ID;
               usubID = h_array[curr_slot].subID;
               *d_ztemplate = h_array[curr_slot].ztemplate;
-              SetLastTableHit(curr_table);
+              //SetLastTableHit(curr_table);
               rv = true;
             } else {
               curr_slot++;
@@ -830,7 +833,7 @@ void ExtractIDs(const char *num_str, U32 & rec_ID, U32 & rec_subID, Grammar* gra
 // Extract chars and unicodes from the ASCII string p_chdata.
 // Returns a count of the symbols processed, up to "limit".
 
-int ChData2Unicodes(const char* p_chdata, U32* unicodes, int limit, Grammar* mml_entities)
+int ChData2Unicodes(const char* p_chdata, U32* unicodes, int limit, const Grammar* mml_entities)
 {
   int rv = 0;
 
@@ -901,7 +904,7 @@ int ChData2Unicodes(const char* p_chdata, U32* unicodes, int limit, Grammar* mml
 }
 
 
-void Contents2Buffer(char* zdest, const char* p_chdata, int lim, Grammar* mml_entities)
+void Contents2Buffer(char* zdest, const char* p_chdata, int lim, const Grammar* mml_entities)
 {
   if (p_chdata) {
     U32 unicodes[128];
@@ -929,4 +932,17 @@ void Contents2Buffer(char* zdest, const char* p_chdata, int lim, Grammar* mml_en
 
 
 
+int GetLimitFormat(char* op_name, const Grammar* mml_entities)
+{
+  int rv = 0;
+
+  U32 ID, subID;
+  const char* p_data;
+  if (mml_entities -> GetRecordFromName("LIMFORMS", op_name, strlen(op_name), ID, subID, &p_data)) {
+    if (p_data && *p_data)
+      rv = atoi(p_data);
+  }
+
+  return rv;
+}
 

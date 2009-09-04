@@ -19,6 +19,7 @@
 #include "Grammar.h"
 #include "nsILocalFile.h"
 #include "strutils.h"
+#include "DefInfo.h"
 
 enum MaplePackages
 {

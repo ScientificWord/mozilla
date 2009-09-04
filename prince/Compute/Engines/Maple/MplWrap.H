@@ -14,6 +14,7 @@
 #include "CmpTypes.h"
 #include "EngWrap.h"
 #include "fltutils.h"
+#include "mnode.h"
 #include "nsILocalFile.h"
 
 class eAnalyzer;

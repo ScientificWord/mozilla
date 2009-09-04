@@ -29,6 +29,7 @@
 #include "attriblist.h"
 #include "mnode.h"
 #include "strutils.h"
+#include "DefInfo.h"
 
 #include <string.h>
 #include <ctype.h>
@@ -111,16 +112,7 @@ enum AccentType {
 };
 
 
-enum OpOrderIlk {
-  OOI_none,
-  OOI_lessthan,
-  OOI_lessorequal,
-  OOI_equal,
-  OOI_greaterthan,
-  OOI_greaterorequal,
-  OOI_element,
-  OOI_rightarrow
-};
+
 
 
 enum PrefixOpIlk {
@@ -138,12 +130,64 @@ enum PrefixOpIlk {
 };
 
 
-struct DE_FUNC_REC
+class DE_FUNC_REC
 {
-  DE_FUNC_REC *next;
-  char *zfunc_canon_name;
-  char *zfunc_src_name;
+  public:
+    DE_FUNC_REC *next;
+    char *zfunc_canon_name;
+    char *zfunc_src_name;
+
 };
+
+
+
+// Locate an DE_FUNC_REC by the function name it holds.
+bool  LocateFuncRec(const DE_FUNC_REC* f_list,
+                    const char* canon_name,
+                    const char* src_name)
+{
+  const DE_FUNC_REC* rover = f_list;
+  while (rover) {
+    
+    if (canon_name && rover->zfunc_canon_name &&
+        StringEqual(rover->zfunc_canon_name, canon_name))
+      break;
+
+    if (src_name && rover->zfunc_src_name &&
+        StringEqual(rover->zfunc_src_name, src_name))
+      break;
+
+    rover = rover->next;
+  }
+
+  return (rover != NULL);
+}
+
+// Append a function record to DE_func_names, provided
+//  that the function is not already in the list.
+//  Note that these are mml canonical names here - miy, etc.
+
+DE_FUNC_REC* AppendFuncName(DE_FUNC_REC* f_list, 
+                            char* f_name,
+                            char* src_name)
+{
+  DE_FUNC_REC* rv = f_list;
+
+  if (!LocateFuncRec(f_list, f_name, src_name)) {
+    DE_FUNC_REC* new_rec = new DE_FUNC_REC();
+    new_rec->next = const_cast<DE_FUNC_REC*> (f_list);
+    new_rec->zfunc_canon_name = f_name;
+    new_rec->zfunc_src_name = src_name;
+    rv = new_rec;
+  } else {
+    delete[] src_name;
+    delete[] f_name;
+  }
+
+  return rv;
+}
+
+
 
 
 
@@ -156,12 +200,16 @@ SEMANTICS_NODE* GetSemanticsList(MNODE* dMML_list,
                                  bool isLHSofDef,
                                  Analyzer* pAnalyzer);
 
-SEMANTICS_NODE* GetDefSList(MNODE* dMML_list, BUCKET_REC* parent,
-                            int mml_node_lim, int & error_code,
+SEMANTICS_NODE* GetDefSList(MNODE* dMML_list, 
+                            BUCKET_REC* parent,
+                            int mml_node_lim, 
+                            int& error_code,
                             Analyzer* pAnalyzer);
 
-SEMANTICS_NODE* SNodeFromMNodes(MNODE* mml_node, int& mml_nodes_done,
-                                bool isLHSofDef, Analyzer* pAnalyzer);
+SEMANTICS_NODE* SNodeFromMNodes(MNODE* mml_node, 
+                                int& mml_nodes_done,
+                                bool isLHSofDef, 
+                                Analyzer* pAnalyzer);
 
 
 void AnalyzeMN(MNODE* mml_mn, SEMANTICS_NODE* info, Analyzer* pAnalyzer);
@@ -172,11 +220,9 @@ void AnalyzeMO(MNODE* self, SEMANTICS_NODE* info, int& nodes_done, Analyzer* pAn
 
 void AnalyzeMTEXT(MNODE* mml_mtext_node, SEMANTICS_NODE* snode, int& nodes_done, Analyzer* pAnalyzer);
 
-
 void AnalyzeMFRAC(MNODE* mml_node, SEMANTICS_NODE* info, int& nodes_done, Analyzer* pAnalyzer);
 
 void AnalyzeMSQRT(MNODE* mml_node, SEMANTICS_NODE* info, int& nodes_done, Analyzer* pAnalyzer);
-
 
 void AnalyzeMROOT(MNODE* mml_node, SEMANTICS_NODE* info, int& nodes_done, Analyzer* pAnalyzer);
 
@@ -213,32 +259,12 @@ void AnalyzeBesselFunc(MNODE* mml_msub_node, SEMANTICS_NODE* snode, int& nodes_d
 
 
 
-
-DE_FUNC_REC* LocateFuncRec(DE_FUNC_REC* f_list, const char* canon_name, const char* src_name);
-
-bool IsInverseIndicator(MNODE * exp, Analyzer* pAnalyzer);
-
-
-
-int GetVarLimType(char* op_name, MNODE* base);
-
-
-
 void SetSnodeOwner(SEMANTICS_NODE* snode, Analyzer* pAnalyzer);
-
-char* GetCanonicalIDforMathNode(MNODE* mml_node, Grammar* mml_entities);
-
-
-char* GetFuncNameFromFrac(MNODE* mfrac, const char** src_name, Grammar* mml_entities);
-char* GetFuncNameFromSub(MNODE* msub, const char** src_name, Grammar* mml_entities);
-char* GetFuncNameFromSup(MNODE* msup, const char** src_name, Analyzer* pAnalyzer);
-char* GetFuncNameFromSubSup(MNODE* msubsup, const char** src_name, Analyzer* pAnalyzer);
-
+void SetSnodeOwner(SEMANTICS_NODE* snode, DefStore* ds, U32 eng_id, U32 client_id);
 
 BaseType GetBaseType(MNODE* base, bool isLHSofDef, Analyzer* pAnalyzer);
-ExpType GetExpType(BaseType base_type, MNODE* exp, Analyzer* pAnalyzer);
-ExpType GetSubScriptType(MNODE* script_schemata, BaseType base_type, MNODE* exp, Analyzer* pAnalyzer);
-AccentType GetAboveType(BaseType base_type, MNODE* accent, Analyzer* pAnalyzer);
+
+
 SEMANTICS_NODE* DefToSemanticsList(MNODE* dMML_tree, int& error_code, Analyzer* pAnalyzer);
 
 void CreateSubstBucket(MNODE * subst, SEMANTICS_NODE * snode,
@@ -257,6 +283,7 @@ MIC2MMLNODE_REC* AppendIDRec(MIC2MMLNODE_REC* node_IDs_list,
                              MNODE* mml_node, 
                              const char *zsrc);
 
+
 BUCKET_REC* ArgsToBucket(MNODE* func_node, int& nodes_done, Analyzer* pAnalyzer) ;
 
 
@@ -270,15 +297,12 @@ BUCKET_REC* ArgBucketFromMROW(MNODE* mml_next, Analyzer* pAnalyzer);
 BUCKET_REC* GetParenedArgs(MNODE* mml_mo, int& nodes_done, Analyzer* pAnalyzer);
 BUCKET_REC* GetFencedArgs(MNODE* mml_fence, Analyzer* pAnalyzer);
 
-SEMANTICS_NODE* GetSemanticsFromNode(MNODE * mml_node, BUCKET_REC * bucket, Analyzer* pAnalyzer);
+SEMANTICS_NODE* GetSemanticsFromNode(MNODE* mml_node, BUCKET_REC* bucket, Analyzer* pAnalyzer);
 
-SemanticType GetBigOpType(const char* op_chdata, SemanticVariant & n_integs);
-
-void AppendNumber(SEMANTICS_NODE* snode, U32 bucket_ID, int num);
 
 void AddPrimesCount(SEMANTICS_NODE* snode, MNODE* primes);
 
-BUCKET_REC* AddVarToBucket(U32 bucket_ID, SEMANTICS_NODE * ind_var_list, Analyzer* pAnalyzer);
+BUCKET_REC* AddVarToBucket(U32 bucket_ID, SEMANTICS_NODE* ind_var_list, Analyzer* pAnalyzer);
 
 
 SEMANTICS_NODE* DetermineIndepVar(MNODE* dMML_tree, Analyzer* pAnalyzer);
@@ -293,85 +317,50 @@ void DeterminePDEFuncNames(MNODE* dMML_tree, Analyzer* pAnalyzer);
 
 void DisposeODEFuncNames(DE_FUNC_REC* DE_func_names);
 
-bool IsVarInSLIST(SEMANTICS_NODE* s_var_list, char* var_nom);
-
-
-DE_FUNC_REC* AppendFuncName(DE_FUNC_REC* f_list, char* canon_name,
-                              char* src_name);
 
 void AppendODEfuncs(SEMANTICS_NODE* rv, DE_FUNC_REC* DE_func_names, Analyzer* pAnalyzer);
 
-void RemoveBucket(SEMANTICS_NODE * s_base, BUCKET_REC * targ);
+
 
 SEMANTICS_NODE* QualifierToSNODE(MNODE* sub, Analyzer* pAnalyzer);
 
-PrefixOpIlk GetPrefixOpCode(const char* op_name, SemanticVariant & n_integs, Analyzer* pAnalyzer);
-
-void ArgsToMatrix(SEMANTICS_NODE* snode, BUCKET_REC* br);
-
-bool OpArgIsMatrix(MNODE* mml_mi_node);
-
-SEMANTICS_NODE* RemoveParens(SEMANTICS_NODE* s_operand);
-
-
-void CreatePrefixForm(SEMANTICS_NODE* s_operator,
-                      SEMANTICS_NODE* l_operand,
-                      SEMANTICS_NODE* r_operand);
-
-SEMANTICS_NODE* LocateVarAndLimits(BUCKET_REC* l_bucket,
-                                   SEMANTICS_NODE** s_ll,
-                                   SEMANTICS_NODE** s_ul,
-                                   bool& ll_is_inclusive,
-                                   bool& ul_is_inclusive);
-
-SEMANTICS_NODE* LocateVarAndExpr(BUCKET_REC* l_bucket,
-                                 SEMANTICS_NODE** s_expr, int & direction);
-
-void SetVarAndIntervalLimit(BUCKET_REC * ll_bucket);
-void SetVarArrowExprLimit(BUCKET_REC * ll_bucket);
-
-int GetLimitFormat(char* op_name, Analyzer* pAnalyzer);
-
-SEMANTICS_NODE* RemoveInfixOps(SEMANTICS_NODE* s_var);
 
 void ExtractVariables(SEMANTICS_NODE * s_tree, Analyzer* pAnalyzer);
 
-void ConvertToPIECEWISElist(SEMANTICS_NODE * s_fence, Analyzer* pAnalyzer);
-
-SEMANTICS_NODE* CreateOnePiece(SEMANTICS_NODE* s_expression,
-                               SEMANTICS_NODE* s_domain);
-
-bool LocatePieces(BUCKET_REC* cell_list,
-                  U32 row_tally, U32 ncols,
-                  SEMANTICS_NODE ** s_expression,
-                  SEMANTICS_NODE ** s_domain);
 
 
-void AddDefaultBaseToLOG(SEMANTICS_NODE * snode, Analyzer* pAnalyzer);
-void Patchdx(SEMANTICS_NODE * s_frac);
-bool IsArgDelimitingFence(MNODE * mml_node);
-void CreateSubscriptedVar(MNODE * mml_msub_node,
+
+void CreateSubscriptedVar(MNODE* mml_msub_node,
                           bool remove_super, SEMANTICS_NODE * snode, Analyzer* pAnalyzer);
 
 void CreatePowerForm(MNODE* base, MNODE* power, SEMANTICS_NODE* snode, Analyzer* pAnalyzer);
 
-bool SetODEvars(MathServiceRequest & msr, MathResult & mr, MNODE * dMML_tree, U32 UI_cmd_ID, Analyzer* pAnalyzer);
+bool SetODEvars(MathServiceRequest& msr, MathResult& mr, MNODE * dMML_tree, U32 UI_cmd_ID, Analyzer* pAnalyzer);
 
-bool SetIMPLICITvars(MathServiceRequest & msr, MathResult & mr, Analyzer* pAnalyzer) ;
+bool SetIMPLICITvars(MathServiceRequest& msr, MathResult& mr, Analyzer* pAnalyzer) ;
 
   
-SEMANTICS_NODE* CreateSTreeFromMML(const char *mml_str, Analyzer* pAnalyzer);
+SEMANTICS_NODE* CreateSTreeFromMML(const char* mml_str, Analyzer* pAnalyzer);
 
 void TranslateEmbellishedOp(MNODE* mml_embellop_node,
-                              SEMANTICS_NODE* snode, int& nodes_done, Analyzer* pAnalyzer);
+                            SEMANTICS_NODE* snode, 
+                            int& nodes_done, 
+                            Analyzer* pAnalyzer);
 
 
 
 // Candidates for move
 
-IdentIlk GetMIilk(char* mml_content_str, MNODE* m_node, bool isLHSofDef, Analyzer* pAnalyzer);
+IdentIlk GetMIilk(char* mi_canonical_str, 
+                  DefInfo* di, 
+                  MNODE* m_node, 
+                  bool isLHSofDef, 
+                  const Grammar* mml_entities,
+                  bool i_is_imaginary,
+                  bool j_is_imaginary,
+                  bool e_is_Euler);
 
-OpOrderIlk GetOpOrderIlk(SEMANTICS_NODE* relop);
+
 
 IdentIlk GetMSIilk(char* msi_class);
 
@@ -379,44 +368,91 @@ bool IsWhiteText(const char* the_text);
 
 bool IdentIsConstant(IdentIlk ilk);
 
-MNODE* LocateOperator(MNODE* mml_list, OpIlk& op_ilk, int& advance);
 
-void FenceToMatrix(SEMANTICS_NODE* operand);
-void FenceToInterval(SEMANTICS_NODE* s_fence);
+char* GetCanonicalIDforMathNode(const MNODE* mml_node, const Grammar* mml_entities);
 
 
+char* GetFuncNameFromFrac(MNODE* mfrac, const char** src_name, const Grammar* mml_entities);
+char* GetFuncNameFromSub(MNODE* msub, const char** src_name, const Grammar* mml_entities);
+char* GetFuncNameFromSup(MNODE* msup, const char** src_name, Analyzer* pAnalyzer);
+char* GetFuncNameFromSubSup(MNODE* msubsup, const char** src_name, Analyzer* pAnalyzer);
+
+bool IsInverseIndicator(MNODE* exp, const Grammar* mml_entities);
+
+
+
+
+ExpType GetExpType(BaseType base_type, MNODE* exp, const Grammar* mml_entities);
+
+ExpType GetSubScriptType(MNODE* script_schemata, BaseType base_type, MNODE* exp);
+
+AccentType GetAboveType(BaseType base_type, MNODE* accent, const Grammar* mml_entities);
+
+PrefixOpIlk GetPrefixOpCode(const char* op_name, SemanticVariant& n_integs, const Grammar* mml_entities);
+
+
+
+int GetVarLimType(char* op_name, MNODE* base);
 
 
 
 
 
-			
 
 
-Analyzer::Analyzer(Grammar* mml_grammar, PrefsStore* up_store)
+DefInfo* GetDI(Analyzer* pAnalyzer, const char* canonical_id)
+{
+   if ( (pAnalyzer == NULL ) || (canonical_id == NULL) ) 
+      return NULL;
+
+    DefStore* ds = pAnalyzer -> GetDefStore();
+
+    if (ds == NULL)
+	  return NULL;
+
+    return  ds -> GetDefInfo(pAnalyzer -> CurrEngineID(), canonical_id);
+}
+
+
+
+DefInfo* GetDI(DefStore* ds, U32 eng_id, const char* canonical_id)
+{
+   if ( (ds == NULL ) || (canonical_id == NULL) ) 
+      return NULL;
+
+    return  ds -> GetDefInfo(eng_id, canonical_id);
+}
+
+
+
+
+
+Analyzer::Analyzer(const Grammar* mml_grammar, PrefsStore* up_store)
+  : mml_entities(mml_grammar)
 {
   SetScrStr( NULL );
-  mml_entities = mml_grammar;
-  uprefs_store = up_store;
+  SetPrefsStore( up_store );
 
-  defstore = NULL;
-  m_curr_client_ID = 0;
-  m_curr_engine_ID = 0;
+  SetDefStore( NULL );
+  SetCurrClientID( 0 );
+  SetCurrEngineID( 0 );
 
-  msg_list = NULL;
+  SetLogMsgList( NULL );
   m_node_IDs_list = NULL;
-  CanonicalTreeGen = new Tree2StdMML(mml_grammar,this);
-  DE_ind_vars = NULL;
+  SetCanonicalTreeGen ( new Tree2StdMML(mml_grammar,this) );
+  SetDE_ind_vars( NULL );
   SetDE_FuncNames( NULL );
-  IMPLDIFF_ind_var = NULL;
+  SetIMPLDIFF_ind_var( NULL );
   SetIMPLDIFF_FuncNames( NULL );
 
-  mml_tree_gen = new MML2Tree();
+  SetMMLTreeGen( new MML2Tree() );
 
-  i_is_imaginary = true;
-  j_is_imaginary = false;
-  e_is_Euler = true;
+  Set_i_is_imaginary( true );
+  Set_j_is_imaginary( false );
+  Set_e_is_Euler( true );
 }
+
+
 
 Analyzer::~Analyzer()
 {
@@ -424,7 +460,7 @@ Analyzer::~Analyzer()
   DisposeMsgs(msg_list);
   TCI_ASSERT(!NodeIDsList());
   DisposeIDsList( NodeIDsList() );
-  delete mml_tree_gen;
+  delete GetMMLTreeGen();
   delete CanonicalTreeGen;
   TCI_ASSERT( DE_ind_vars == NULL );
   TCI_ASSERT( DE_FuncNames() == NULL );
@@ -432,18 +468,22 @@ Analyzer::~Analyzer()
   TCI_ASSERT( IMPLDIFF_FuncNames() == NULL );
 }
 
-void Analyzer::SetInputPrefs(DefStore * ds, U32 engine_ID)
+
+
+void Analyzer::SetInputPrefs(DefStore* ds, U32 engine_ID)
 {
-  const char *pref_val = ds->GetPref(CLPF_log_is_base_e, 0);
+  const char* pref_val = ds->GetPref(CLPF_log_is_base_e, 0);
+  
   if (!pref_val)
     pref_val = uprefs_store->GetPref(CLPF_log_is_base_e);
+
   if (pref_val) {
     // log is base e<uID14.0>0
     int db_val = atoi(pref_val);
-    log_is_base10 = db_val ? false : true;
+    Set_log_is_base10( db_val ? false : true );
   } else {
     TCI_ASSERT(0);
-    log_is_base10 = false;
+    Set_log_is_base10( false );
   }
 
   pref_val = ds->GetPref(CLPF_Dot_derivative, 0);
@@ -452,10 +492,10 @@ void Analyzer::SetInputPrefs(DefStore * ds, U32 engine_ID)
   if (pref_val) {
     // Dot accent is derivative<uID19.0>1
     int db_val = atoi(pref_val);
-    dot_is_derivative = db_val ? true : false;
+    Set_dot_is_derivative( db_val ? true : false );
   } else {
     TCI_ASSERT(0);
-    dot_is_derivative = false;
+    Set_dot_is_derivative( false );
   }
 
   pref_val = ds->GetPref(CLPF_D_derivative, 0);
@@ -464,10 +504,10 @@ void Analyzer::SetInputPrefs(DefStore * ds, U32 engine_ID)
   if (pref_val) {
     // Dot accent is derivative<uID19.0>1
     int db_val = atoi(pref_val);
-    D_is_derivative = db_val ? true : false;
+    Set_D_is_derivative( db_val ? true : false );
   } else {
     TCI_ASSERT(0);
-    D_is_derivative = true;
+    Set_D_is_derivative( true );
   }
 
   pref_val = ds->GetPref(CLPF_Prime_derivative, 0);
@@ -475,10 +515,10 @@ void Analyzer::SetInputPrefs(DefStore * ds, U32 engine_ID)
     pref_val = uprefs_store->GetPref(CLPF_Prime_derivative);
   if (pref_val) {
     int db_val = atoi(pref_val);
-    prime_is_derivative = db_val ? true : false;
+    Set_prime_is_derivative( db_val ? true : false );
   } else {
     TCI_ASSERT(0);
-    prime_is_derivative = false;
+    Set_prime_is_derivative( false );
   }
 
   pref_val = ds->GetPref(CLPF_Overbar_conjugate, 0);
@@ -487,61 +527,63 @@ void Analyzer::SetInputPrefs(DefStore * ds, U32 engine_ID)
   if (pref_val) {
     // Overbar is conjugate<uID20.0>1
      int db_val = atoi(pref_val);
-    overbar_conj = db_val ? true : false;
+    Set_overbar_conj( db_val ? true : false );
   } else {
     TCI_ASSERT(0);
-    overbar_conj = false;
+    Set_overbar_conj( false );
   }
 
-  DefInfo *di = ds->GetDefInfo(engine_ID, "mii");
+  DefInfo* di = ds->GetDefInfo(engine_ID, "mii");
   if (di) {
-    i_is_imaginary = false;
+    Set_i_is_imaginary( false );
   } else {
     pref_val = ds->GetPref(CLPF_Input_i_Imaginary, 0);
     if (!pref_val)
       pref_val = uprefs_store->GetPref(CLPF_Input_i_Imaginary);
     if (pref_val) {
       int db_val = atoi(pref_val);
-      i_is_imaginary = db_val ? true : false;
+      Set_i_is_imaginary( db_val ? true : false );
     } else {
       TCI_ASSERT(0);
-      i_is_imaginary = true;
+      Set_i_is_imaginary( true );
     }
   }
 
   di = ds->GetDefInfo(engine_ID, "mij");
   if (di) {
-    j_is_imaginary = false;
+    Set_j_is_imaginary( false );
   } else {
     pref_val = ds->GetPref(CLPF_Input_j_Imaginary, 0);
     if (!pref_val)
       pref_val = uprefs_store->GetPref(CLPF_Input_j_Imaginary);
     if (pref_val) {
       int db_val = atoi(pref_val);
-      j_is_imaginary = db_val ? true : false;
+      Set_j_is_imaginary( db_val ? true : false );
     } else {
       TCI_ASSERT(0);
-      j_is_imaginary = false;
+      Set_j_is_imaginary( false );
     }
   }
 
   di = ds->GetDefInfo(engine_ID, "mie");
   if (di) {
-    e_is_Euler = false;
+    Set_e_is_Euler( false );
   } else {
     pref_val = ds->GetPref(CLPF_Input_e_Euler, 0);
     if (!pref_val)
       pref_val = uprefs_store->GetPref(CLPF_Input_e_Euler);
     if (pref_val) {
       int db_val = atoi(pref_val);
-      e_is_Euler = db_val ? true : false;
+      Set_e_is_Euler( db_val ? true : false );
     } else {
       TCI_ASSERT(0);
-      e_is_Euler = false;
+      Set_e_is_Euler( false );
     }
   }
 
 }
+
+
 
 // NOTE: The following function modifies it's dMML_tree parameter.
 // It converts the tree to a canonical form before starting the
@@ -561,7 +603,7 @@ SEMANTICS_NODE* Analyzer::BuildSemanticsTree(MathServiceRequest& msr,
 
   SetCmdID( curr_cmd_ID );
   SetScrStr( src_markup );
-  p_input_notation = in_notation;
+  SetInputNotation( in_notation );
 
   switch (curr_cmd_ID) {
     case CCID_Cleanup:
@@ -578,11 +620,12 @@ SEMANTICS_NODE* Analyzer::BuildSemanticsTree(MathServiceRequest& msr,
       break;
   }
 
-  defstore = msr.GetDefStore();
+  SetDefStore( msr.GetDefStore() );
   SetCurrClientID( msr.GetClientHandle() );
   SetCurrEngineID( msr.GetEngineID() );
 
   TCI_ASSERT(!IMPLDIFF_ind_var);
+
   if (curr_cmd_ID == CCID_Calculus_Implicit_Differentiation) {
     if (!SetIMPLICITvars(msr, mr, this)) {
       TCI_ASSERT(0);
@@ -591,6 +634,7 @@ SEMANTICS_NODE* Analyzer::BuildSemanticsTree(MathServiceRequest& msr,
   }
 
   TCI_ASSERT(!DE_ind_vars);
+
   if (curr_cmd_ID >= CCID_Solve_ODE_Exact && curr_cmd_ID <= CCID_Solve_ODE_Series) {  // Solve ODE
 
      // ODEs are indeed special - we have to decide both the function
@@ -601,15 +645,17 @@ SEMANTICS_NODE* Analyzer::BuildSemanticsTree(MathServiceRequest& msr,
   }
 
   if (curr_cmd_ID == CCID_Solve_PDE) {
-    SEMANTICS_NODE *s_indvar = DetermineIndepVar(dMML_tree, this);
+    SEMANTICS_NODE* s_indvar = DetermineIndepVar(dMML_tree, this);
     TCI_ASSERT(s_indvar);
     DeterminePDEFuncNames(dMML_tree, this);
   }
+
   TCI_ASSERT(CheckLinks(dMML_tree));
   JBM::DumpTList(dMML_tree, 0);
   TCI_ASSERT(!msg_list);
   DisposeMsgs(msg_list);
   msg_list = NULL;
+
   // We sometimes get here with ODEs.  Some analysis that generates
   //  name records may be done to determine the independent variable.
   DisposeIDsList( NodeIDsList() );
@@ -639,8 +685,8 @@ SEMANTICS_NODE* Analyzer::BuildSemanticsTree(MathServiceRequest& msr,
     DisposeODEFuncNames(IMPLDIFF_FuncNames());
     SetIMPLDIFF_FuncNames( NULL );
   }
-  DisposeSList(IMPLDIFF_ind_var);
-  IMPLDIFF_ind_var = NULL;
+  DisposeSList( GetIMPLDIFF_ind_var() );
+  SetIMPLDIFF_ind_var( NULL );
 
   return rv;
 }
@@ -664,13 +710,12 @@ void Analyzer::TreeToFixupForm(MNODE* dMML_tree)
 bool Analyzer::IsDefinedFunction(MNODE* mnode)
 {
   char* mi_canonical_str = GetCanonicalIDforMathNode(mnode, mml_entities);
-  if (defstore && mi_canonical_str) {
-    DefInfo* di = defstore->GetDefInfo( CurrEngineID(), mi_canonical_str);
-    delete[] mi_canonical_str;
-    if (di && di->def_type == DT_FUNCTION)
-      return true;
-  }
-  return false;
+
+  DefInfo* di = GetDI(this, mi_canonical_str);
+  delete[] mi_canonical_str;
+    
+  return (di != NULL && di->def_type == DT_FUNCTION);
+
 }
 
 
@@ -698,13 +743,13 @@ void AnalyzeMI(MNODE* mml_mi_node,
   zmsi_class[0] = 0;
   GetCurrAttribValue(mml_mi_node, false, "msiclass", zmsi_class, 256);
 
-  if (!strcmp(zclass, "msi_unit")) {
-    SEMANTICS_NODE *s_target = snode;
+  if (StringEqual(zclass, "msi_unit")) {
+
+    SEMANTICS_NODE* s_target = snode;
     // Semantically, I'm treating units as "factors" joined to the expression
     //  that they qualify by an invisible times. If &it; is NOT present
     //  in the source MML, it's semantic equivalent is generated here.
-    if (mml_mi_node->prev && !IsOperator(mml_mi_node->prev)
-        && !IsPositionalChild(mml_mi_node)) {
+    if (mml_mi_node->prev && !IsOperator(mml_mi_node->prev) && !IsPositionalChild(mml_mi_node)) {
       TCI_ASSERT(0);
       snode->semantic_type = SEM_TYP_INFIX_OP;
       
@@ -741,7 +786,7 @@ void AnalyzeMI(MNODE* mml_mi_node,
     back to this object.
   */
 
-  char* mml_canonical_name = GetCanonicalIDforMathNode(mml_mi_node, pAnalyzer->mml_entities);
+  char* mml_canonical_name = GetCanonicalIDforMathNode(mml_mi_node, pAnalyzer->GetGrammar());
 
   if (!mml_canonical_name) {
     snode->error_flag = 1;
@@ -762,7 +807,15 @@ void AnalyzeMI(MNODE* mml_mi_node,
     mi_ilk = GetMSIilk(zmsi_class);
     snode->msi_class = mi_ilk;
   } else {
-    mi_ilk = GetMIilk(mml_canonical_name, mml_mi_node, isLHSofDef, pAnalyzer);
+    
+    mi_ilk = GetMIilk(mml_canonical_name, 
+                      GetDI(pAnalyzer, mml_canonical_name), 
+                      mml_mi_node, 
+                      isLHSofDef, 
+                      pAnalyzer->GetGrammar(),
+                      pAnalyzer->Get_i_is_imaginary(),
+                      pAnalyzer->Get_j_is_imaginary(),
+                      pAnalyzer->Get_e_is_Euler());
   }
   if (mi_ilk) {
     if (IdentIsConstant(mi_ilk)) {
@@ -817,10 +870,9 @@ void AnalyzeMI(MNODE* mml_mi_node,
     bool is_IMPLDIFF_func = false;
 
     if (LocateFuncRec(pAnalyzer -> DE_FuncNames(), mml_canonical_name, NULL)) {
-      is_ODE_func = true;
-    } else
-      if (LocateFuncRec(pAnalyzer -> IMPLDIFF_FuncNames(), NULL, mml_mi_node->p_chdata)) {
-      is_IMPLDIFF_func = true;
+        is_ODE_func = true;
+    } else if (LocateFuncRec(pAnalyzer -> IMPLDIFF_FuncNames(), NULL, mml_mi_node->p_chdata)) {
+        is_IMPLDIFF_func = true;
     } else if (symbol_count == 1) {
       // an entity, maybe a Greek letter
       // ASCII letter 
@@ -854,18 +906,18 @@ void AnalyzeMI(MNODE* mml_mi_node,
       snode->semantic_type = SEM_TYP_FUNCTION;
 
       if (mml_mi_node->p_chdata && !strcmp(mml_mi_node->p_chdata, "log")) {
-        pAnalyzer -> p_input_notation->n_logs++;
-        AddDefaultBaseToLOG(snode, pAnalyzer);
+        pAnalyzer -> GetInputNotation() -> n_logs++;
+        AddDefaultBaseToLOG(snode, pAnalyzer->Get_log_is_base10());
       }
       
       int local_nodes_done;
       BUCKET_REC *bucket = ArgsToBucket(mml_mi_node, local_nodes_done, pAnalyzer);
       nodes_done += local_nodes_done;
       if (is_ODE_func && (!bucket || !bucket->first_child)) {
-        if (pAnalyzer -> DE_ind_vars) {
+        if (pAnalyzer -> GetDE_ind_vars()) {
           if (bucket)
             DisposeBucketList(bucket);
-          bucket = AddVarToBucket(MB_UNNAMED, pAnalyzer -> DE_ind_vars, pAnalyzer);
+          bucket = AddVarToBucket(MB_UNNAMED, pAnalyzer -> GetDE_ind_vars(), pAnalyzer);
         } else {
           TCI_ASSERT(0);
           if (!bucket)
@@ -874,10 +926,10 @@ void AnalyzeMI(MNODE* mml_mi_node,
       }
 
       if (is_IMPLDIFF_func && (!bucket || !bucket->first_child)) {
-        if (pAnalyzer -> IMPLDIFF_ind_var) {
+        if (pAnalyzer -> GetIMPLDIFF_ind_var()) {
           if (bucket)
             DisposeBucketList(bucket);
-          bucket = AddVarToBucket(MB_UNNAMED, pAnalyzer -> IMPLDIFF_ind_var, pAnalyzer);
+          bucket = AddVarToBucket(MB_UNNAMED, pAnalyzer -> GetIMPLDIFF_ind_var(), pAnalyzer);
         } else {
           TCI_ASSERT(0);
           if (!bucket)
@@ -911,7 +963,7 @@ void AnalyzeMTEXT(MNODE* mml_mtext_node,
       if (pAnalyzer -> CmdID() == CCID_PassThru) {
         snode->semantic_type = SEM_TYP_ENG_PASSTHRU;
       } else {
-        char* mml_canonical_name = GetCanonicalIDforMathNode(mml_mtext_node, pAnalyzer->mml_entities);
+        char* mml_canonical_name = GetCanonicalIDforMathNode(mml_mtext_node, pAnalyzer->GetGrammar());
         snode->canonical_ID = mml_canonical_name;
         SetSnodeOwner(snode, pAnalyzer);
         // Store a name-to-node back mapping record for this object.
@@ -936,7 +988,7 @@ void AnalyzeMO(MNODE* mml_mo_node,
   if (mml_mo_node->p_chdata) {
     SemanticVariant n_integs;
     const char *f_nom = mml_mo_node->p_chdata;
-    PrefixOpIlk op_ilk = GetPrefixOpCode(f_nom, n_integs, pAnalyzer);
+    PrefixOpIlk op_ilk = GetPrefixOpCode(f_nom, n_integs, pAnalyzer->GetGrammar());
 
     // Some <mo>s require special handling
     // These include all prefix operators, and operators that really
@@ -1082,7 +1134,7 @@ void AnalyzeMN(MNODE * mml_mn_node, SEMANTICS_NODE * snode, Analyzer* pAnalyzer)
       // For <mn>s that carry base 10 digits only, we don't need mapping info.
       // Other <mn>'s will probably pass thru computation as a symbolic
       //  alias, and will require mapping info.
-      char* mml_canonical_name = GetCanonicalIDforMathNode(mml_mn_node, pAnalyzer->mml_entities);
+      char* mml_canonical_name = GetCanonicalIDforMathNode(mml_mn_node, pAnalyzer->GetGrammar());
       snode->canonical_ID = mml_canonical_name;
       SetSnodeOwner(snode, pAnalyzer);
       // Store a name-to-node back mapping record for this object.
@@ -1095,6 +1147,8 @@ void AnalyzeMN(MNODE * mml_mn_node, SEMANTICS_NODE * snode, Analyzer* pAnalyzer)
 
   snode->semantic_type = SEM_TYP_NUMBER;
 }
+
+
 
 void AnalyzeMFRAC(MNODE * mml_mfrac, SEMANTICS_NODE * snode,
                             int& nodes_done, Analyzer* pAnalyzer)
@@ -1134,7 +1188,7 @@ void AnalyzeMFRAC(MNODE * mml_mfrac, SEMANTICS_NODE * snode,
     } else {
       TCI_ASSERT(0);
     }
-    pAnalyzer -> p_input_notation -> n_doverds++;
+    pAnalyzer -> GetInputNotation() -> n_doverds++;
     return;
   }
 
@@ -1156,17 +1210,17 @@ void AnalyzeMFRAC(MNODE * mml_mfrac, SEMANTICS_NODE * snode,
   BUCKET_REC *parts_list = NULL;
   MNODE *rover = mml_mfrac->first_kid;
   if (rover) {
-    BUCKET_REC *num_bucket = MakeBucketRec(MB_NUMERATOR, NULL);
+    BUCKET_REC* num_bucket = MakeBucketRec(MB_NUMERATOR, NULL);
     parts_list = AppendBucketRec(parts_list, num_bucket);
-    SEMANTICS_NODE *numer = GetSemanticsFromNode(rover, num_bucket, pAnalyzer);
+    SEMANTICS_NODE* numer = GetSemanticsFromNode(rover, num_bucket, pAnalyzer);
     num_bucket->first_child = numer;
     numer->parent = num_bucket;
 
     rover = rover->next;
     if (rover) {
-      BUCKET_REC *denom_bucket = MakeBucketRec(MB_DENOMINATOR, NULL);
+      BUCKET_REC* denom_bucket = MakeBucketRec(MB_DENOMINATOR, NULL);
       parts_list = AppendBucketRec(parts_list, denom_bucket);
-      SEMANTICS_NODE *denom = GetSemanticsFromNode(rover, denom_bucket, pAnalyzer);
+      SEMANTICS_NODE* denom = GetSemanticsFromNode(rover, denom_bucket, pAnalyzer);
       denom_bucket->first_child = denom;
       denom->parent = denom_bucket;
     }
@@ -1182,17 +1236,21 @@ void AnalyzeMFRAC(MNODE * mml_mfrac, SEMANTICS_NODE * snode,
     s_target->semantic_type = SEM_TYP_FRACTION;
 }
 
-void AnalyzeMSQRT(MNODE * mml_msqrt_node,
-                        SEMANTICS_NODE* snode, int& nodes_done, Analyzer* pAnalyzer)
+
+
+void AnalyzeMSQRT(MNODE* mml_msqrt_node,
+                  SEMANTICS_NODE* snode, 
+                  int& nodes_done, 
+                  Analyzer* pAnalyzer)
 {
   nodes_done = 1;
 
-  BUCKET_REC *parts_list = NULL;
-  MNODE *rover = mml_msqrt_node->first_kid;
+  BUCKET_REC* parts_list = NULL;
+  MNODE* rover = mml_msqrt_node->first_kid;
   if (rover) {
-    BUCKET_REC *bucket = MakeBucketRec(MB_ROOT_BASE, NULL);
+    BUCKET_REC* bucket = MakeBucketRec(MB_ROOT_BASE, NULL);
     parts_list = AppendBucketRec(parts_list, bucket);
-    SEMANTICS_NODE *contents = GetSemanticsList(rover, bucket, pAnalyzer);
+    SEMANTICS_NODE* contents = GetSemanticsList(rover, bucket, pAnalyzer);
     bucket->first_child = contents;
     contents->parent = bucket;
   }
@@ -1201,24 +1259,28 @@ void AnalyzeMSQRT(MNODE * mml_msqrt_node,
   snode->semantic_type = SEM_TYP_SQRT;
 }
 
-void AnalyzeMROOT(MNODE * mml_mroot_node,
-                  SEMANTICS_NODE * snode, int& nodes_done, Analyzer* pAnalyzer)
+
+
+void AnalyzeMROOT(MNODE* mml_mroot_node,
+                  SEMANTICS_NODE* snode, 
+                  int& nodes_done, 
+                  Analyzer* pAnalyzer)
 {
   nodes_done = 1;
 
-  BUCKET_REC *parts_list = NULL;
-  MNODE *rover = mml_mroot_node->first_kid;
+  BUCKET_REC* parts_list = NULL;
+  MNODE* rover = mml_mroot_node->first_kid;
   if (rover) {
-    BUCKET_REC *base_bucket = MakeBucketRec(MB_ROOT_BASE, NULL);
+    BUCKET_REC* base_bucket = MakeBucketRec(MB_ROOT_BASE, NULL);
     parts_list = AppendBucketRec(parts_list, base_bucket);
-    SEMANTICS_NODE *base = GetSemanticsFromNode(rover, base_bucket, pAnalyzer);
+    SEMANTICS_NODE* base = GetSemanticsFromNode(rover, base_bucket, pAnalyzer);
     base_bucket->first_child = base;
     base->parent = base_bucket;
     rover = rover->next;
     if (rover) {
-      BUCKET_REC *power_bucket = MakeBucketRec(MB_ROOT_EXPONENT, NULL);
+      BUCKET_REC* power_bucket = MakeBucketRec(MB_ROOT_EXPONENT, NULL);
       parts_list = AppendBucketRec(parts_list, power_bucket);
-      SEMANTICS_NODE *power = GetSemanticsFromNode(rover, power_bucket, pAnalyzer);
+      SEMANTICS_NODE* power = GetSemanticsFromNode(rover, power_bucket, pAnalyzer);
       power_bucket->first_child = power;
       power->parent = power_bucket;
     }
@@ -1238,18 +1300,18 @@ void AnalyzeMFENCED(MNODE* mml_mfenced_node,
   U32 r_unicode = ')';
 
   if (mml_mfenced_node->attrib_list) {
-    const char *ilk_value =
-      GetATTRIBvalue(mml_mfenced_node->attrib_list, "ilk");
-    const char *open_value =
-      GetATTRIBvalue(mml_mfenced_node->attrib_list, "open");
-    const char *close_value =
-      GetATTRIBvalue(mml_mfenced_node->attrib_list, "close");
+
+    const char* ilk_value = GetATTRIBvalue(mml_mfenced_node->attrib_list, "ilk");
+    const char* open_value = GetATTRIBvalue(mml_mfenced_node->attrib_list, "open");
+    const char* close_value = GetATTRIBvalue(mml_mfenced_node->attrib_list, "close");
+
     if (open_value) {
       if (*open_value == '&')
         l_unicode = ASCII2U32(open_value + 3, 16);
       else
         l_unicode = open_value[0];
     }
+
     if (close_value) {
       if (*close_value == '&')
         r_unicode = ASCII2U32(close_value + 3, 16);
@@ -1257,7 +1319,7 @@ void AnalyzeMFENCED(MNODE* mml_mfenced_node,
         r_unicode = close_value[0];
     }
 
-    char *key = NULL;
+    char* key = NULL;
     if (ilk_value && !strcmp(ilk_value, "enclosed-list")) {
       if (l_unicode == '(') {
         snode->semantic_type = SEM_TYP_PARENED_LIST;
@@ -1303,13 +1365,13 @@ void AnalyzeMFENCED(MNODE* mml_mfenced_node,
   } else {
     TCI_ASSERT(!"No attribute list.");
   }
-  BUCKET_REC *parts_list = NULL;
+  BUCKET_REC* parts_list = NULL;
   int num_children = 0;
-  MNODE *rover = mml_mfenced_node->first_kid;
+  MNODE* rover = mml_mfenced_node->first_kid;
   while (rover) {
-    BUCKET_REC *item_bucket = MakeBucketRec(MB_UNNAMED, NULL);
+    BUCKET_REC* item_bucket = MakeBucketRec(MB_UNNAMED, NULL);
     parts_list = AppendBucketRec(parts_list, item_bucket);
-    SEMANTICS_NODE *s_item = GetSemanticsFromNode(rover, item_bucket, pAnalyzer);
+    SEMANTICS_NODE* s_item = GetSemanticsFromNode(rover, item_bucket, pAnalyzer);
     item_bucket->first_child = s_item;
     if (s_item) {
       s_item->parent = item_bucket;
@@ -1322,14 +1384,14 @@ void AnalyzeMFENCED(MNODE* mml_mfenced_node,
   if (num_children == 1 && parts_list && parts_list->first_child) {
     SEMANTICS_NODE *s_child = parts_list->first_child;
     if (s_child->semantic_type == SEM_TYP_TABULATION) {
-      if (pAnalyzer -> p_input_notation) {
-        pAnalyzer -> p_input_notation -> n_tables++;
+      if (pAnalyzer -> GetInputNotation()) {
+        pAnalyzer -> GetInputNotation() -> n_tables++;
         if (l_unicode == '[')
-          pAnalyzer -> p_input_notation -> nbracket_tables++;
+          pAnalyzer -> GetInputNotation() -> nbracket_tables++;
         else if (l_unicode == '(')
-          pAnalyzer -> p_input_notation -> nparen_tables++;
+          pAnalyzer -> GetInputNotation() -> nparen_tables++;
         else if (l_unicode == '{')
-          pAnalyzer -> p_input_notation -> nbrace_tables++;
+          pAnalyzer -> GetInputNotation() -> nbrace_tables++;
       }    
 
       // \ matrix \ -> det \ matrix \ .
@@ -1348,7 +1410,7 @@ void AnalyzeMFENCED(MNODE* mml_mfenced_node,
   if (snode->semantic_type == SEM_TYP_PIECEWISE_FENCE) {
     // If this type of fence contains a TABULATION with 2 or 3 columns,
     //  we ASSUME that it represents a PIECEWISE function.
-    ConvertToPIECEWISElist(snode, pAnalyzer);
+    ConvertToPIECEWISElist(snode);
   }
 
   if (snode->semantic_type == SEM_TYP_NORM && snode->bucket_list) {
@@ -1364,6 +1426,8 @@ void AnalyzeMFENCED(MNODE* mml_mfenced_node,
   }
 }
 
+
+
 // Lot's more to do in the following
 
 void AnalyzeMSUP(MNODE * mml_msup_node, SEMANTICS_NODE * snode,
@@ -1374,7 +1438,7 @@ void AnalyzeMSUP(MNODE * mml_msup_node, SEMANTICS_NODE * snode,
   MNODE *base = mml_msup_node->first_kid;
   if (base) {
     BaseType bt = GetBaseType(mml_msup_node, isLHSofDef, pAnalyzer);
-    ExpType et = GetExpType(bt, base->next, pAnalyzer);
+    ExpType et = GetExpType(bt, base->next, pAnalyzer->GetGrammar());
     bool done = false;
 
     // First look for a superscript that dictates semantics
@@ -1415,9 +1479,9 @@ void AnalyzeMSUP(MNODE * mml_msup_node, SEMANTICS_NODE * snode,
       }
       break;
     case ET_PRIMES:{
-        if (pAnalyzer -> prime_is_derivative) {
+        if (pAnalyzer -> Get_prime_is_derivative()) {
           AnalyzePrimed(mml_msup_node, snode, nodes_done, pAnalyzer );
-          pAnalyzer -> p_input_notation -> n_primes++;
+          pAnalyzer -> GetInputNotation() -> n_primes++;
           done = true;
         } else {
           // Here I'm currently assuming that prime is just a decoration
@@ -1446,7 +1510,7 @@ void AnalyzeMSUP(MNODE * mml_msup_node, SEMANTICS_NODE * snode,
       case BT_FUNCTION:
       case BT_SUBARG_FUNCTION:{
           if (et == ET_INVERSE_INDICATOR) {
-            char* mml_canonical_name = GetCanonicalIDforMathNode(mml_msup_node, pAnalyzer->mml_entities);
+            char* mml_canonical_name = GetCanonicalIDforMathNode(mml_msup_node, pAnalyzer->GetGrammar());
             if (!mml_canonical_name) {
               snode->error_flag = 1;
               return;
@@ -1467,7 +1531,7 @@ void AnalyzeMSUP(MNODE * mml_msup_node, SEMANTICS_NODE * snode,
             snode->contents = DuplicateString(base->p_chdata);
             snode->semantic_type = SEM_TYP_INVFUNCTION;
           } else if (et == ET_POWER || et == ET_DIRECTION) {
-            char* mml_canonical_name = GetCanonicalIDforMathNode(base, pAnalyzer->mml_entities);
+            char* mml_canonical_name = GetCanonicalIDforMathNode(base, pAnalyzer->GetGrammar());
             if (!mml_canonical_name) {
               snode->error_flag = 1;
               return;
@@ -1501,11 +1565,9 @@ void AnalyzeMSUP(MNODE * mml_msup_node, SEMANTICS_NODE * snode,
                   RemoveBucket(snode, bucket);
                 SEMANTICS_NODE *s_var_list = NULL;
                 if (LocateFuncRec (pAnalyzer -> DE_FuncNames(), mml_canonical_name, base->p_chdata))
-                  s_var_list = pAnalyzer -> DE_ind_vars;
-                else
-                  if (LocateFuncRec (pAnalyzer -> IMPLDIFF_FuncNames(), mml_canonical_name,
-                       base->p_chdata))
-                  s_var_list = pAnalyzer -> IMPLDIFF_ind_var;
+                  s_var_list = pAnalyzer -> GetDE_ind_vars();
+                else if (LocateFuncRec (pAnalyzer -> IMPLDIFF_FuncNames(), mml_canonical_name, base->p_chdata))
+                  s_var_list = pAnalyzer -> GetIMPLDIFF_ind_var();
                 if (s_var_list) {
                   BUCKET_REC *fvar_bucket =
                     AddVarToBucket(MB_UNNAMED, s_var_list, pAnalyzer);
@@ -1519,7 +1581,7 @@ void AnalyzeMSUP(MNODE * mml_msup_node, SEMANTICS_NODE * snode,
             snode->contents = DuplicateString(base->p_chdata);
             snode->semantic_type = SEM_TYP_FUNCTION;
             if (base->p_chdata && !strcmp(base->p_chdata, "log"))
-              AddDefaultBaseToLOG(snode, pAnalyzer);
+              AddDefaultBaseToLOG(snode, pAnalyzer->Get_log_is_base10());
           } else if (et == ET_PRIMES) {
             TCI_ASSERT(0);
           } else
@@ -1533,7 +1595,7 @@ void AnalyzeMSUP(MNODE * mml_msup_node, SEMANTICS_NODE * snode,
           } else if (et == ET_PRIMES) {
 
             // Here we have a decorated variable
-            char* mml_canonical_name = GetCanonicalIDforMathNode(mml_msup_node, pAnalyzer->mml_entities);
+            char* mml_canonical_name = GetCanonicalIDforMathNode(mml_msup_node, pAnalyzer->GetGrammar());
             if (!mml_canonical_name) {
               snode->error_flag = 1;
               return;
@@ -1563,7 +1625,7 @@ void AnalyzeMSUP(MNODE * mml_msup_node, SEMANTICS_NODE * snode,
 
       case BT_TRANSFORM:{
           if (et == ET_INVERSE_INDICATOR) {
-            char* mml_canonical_name = GetCanonicalIDforMathNode(mml_msup_node, pAnalyzer->mml_entities);
+            char* mml_canonical_name = GetCanonicalIDforMathNode(mml_msup_node, pAnalyzer->GetGrammar());
             if (!mml_canonical_name) {
               snode->error_flag = 1;
               return;
@@ -1596,12 +1658,15 @@ void AnalyzeMSUP(MNODE * mml_msup_node, SEMANTICS_NODE * snode,
     TCI_ASSERT(0);
 }
 
-void AnalyzeMSUB(MNODE * mml_msub_node, SEMANTICS_NODE * snode,
-                           int& nodes_done, bool isLHSofDef, Analyzer* pAnalyzer)
+
+
+
+void AnalyzeMSUB(MNODE* mml_msub_node, SEMANTICS_NODE* snode,
+                 int& nodes_done, bool isLHSofDef, Analyzer* pAnalyzer)
 {
   nodes_done = 1;
 
-  MNODE *base = mml_msub_node->first_kid;
+  MNODE* base = mml_msub_node->first_kid;
   if (IsSUBSTITUTION(mml_msub_node)) {
     BUCKET_REC *base_bucket = MakeBucketRec(MB_UNNAMED, NULL);
     snode->bucket_list = AppendBucketRec(snode->bucket_list, base_bucket);
@@ -1648,7 +1713,7 @@ void AnalyzeMSUB(MNODE * mml_msub_node, SEMANTICS_NODE * snode,
 
     snode->semantic_type = SEM_TYP_DERIVATIVE;
     snode->contents = DuplicateString("differentiate");
-    pAnalyzer -> p_input_notation -> n_Dxs++;
+    pAnalyzer -> GetInputNotation() -> n_Dxs++;
     return;
   }
 
@@ -1659,7 +1724,7 @@ void AnalyzeMSUB(MNODE * mml_msub_node, SEMANTICS_NODE * snode,
 
   if (base) {
     BaseType bt = GetBaseType(mml_msub_node, isLHSofDef, pAnalyzer);
-    ExpType sub_type = GetSubScriptType(mml_msub_node, bt, base->next , pAnalyzer);
+    ExpType sub_type = GetSubScriptType(mml_msub_node, bt, base->next);
 
     switch (bt) {
     case BT_OPERATOR:
@@ -1669,7 +1734,7 @@ void AnalyzeMSUB(MNODE * mml_msub_node, SEMANTICS_NODE * snode,
     case BT_FUNCTION:{
         // Note that \log_{n} is handled below
         if (sub_type == ET_NUMBER || sub_type == ET_DECORATION  || sub_type == ET_VARIABLE) {
-          char* mml_canonical_name = GetCanonicalIDforMathNode(mml_msub_node, pAnalyzer->mml_entities);
+          char* mml_canonical_name = GetCanonicalIDforMathNode(mml_msub_node, pAnalyzer->GetGrammar());
           if (!mml_canonical_name) {
             snode->error_flag = 1;
             return;
@@ -1690,7 +1755,7 @@ void AnalyzeMSUB(MNODE * mml_msub_node, SEMANTICS_NODE * snode,
       break;
 
     case BT_SUBARG_FUNCTION:{
-        char* mml_canonical_name = GetCanonicalIDforMathNode(base, pAnalyzer->mml_entities);
+        char* mml_canonical_name = GetCanonicalIDforMathNode(base, pAnalyzer->GetGrammar());
         if (!mml_canonical_name) {
           snode->error_flag = 1;
           return;
@@ -1708,7 +1773,7 @@ void AnalyzeMSUB(MNODE * mml_msub_node, SEMANTICS_NODE * snode,
 
     case BT_VARIABLE:{
         if (sub_type == ET_DECORATION) {
-          char* mml_canonical_name = GetCanonicalIDforMathNode(mml_msub_node, pAnalyzer->mml_entities);
+          char* mml_canonical_name = GetCanonicalIDforMathNode(mml_msub_node, pAnalyzer->GetGrammar());
           if (!mml_canonical_name) {
             snode->error_flag = 1;
             return;
@@ -1724,7 +1789,7 @@ void AnalyzeMSUB(MNODE * mml_msub_node, SEMANTICS_NODE * snode,
           if (pAnalyzer -> CmdID() == CCID_Solve_Recursion) { // Solve Recursion
             // Generate a function call
             MSUB2FuncCall(mml_msub_node, snode, pAnalyzer);
-            pAnalyzer -> p_input_notation -> funcarg_is_subscript++;
+            pAnalyzer -> GetInputNotation() -> funcarg_is_subscript++;
           } else {
             // We generate a "qualified" variable here.  The engine is given enough info
             //  to treat this object as an ordinary variable, or something more complex
@@ -1789,8 +1854,8 @@ void AnalyzeMSUBSUP(MNODE* mml_msubsup_node,
 
   if (base) {
     BaseType bt = GetBaseType(mml_msubsup_node, isLHSofDef, pAnalyzer);
-    ExpType sub_type = GetSubScriptType(mml_msubsup_node, bt, base->next, pAnalyzer);
-    ExpType et = GetExpType(bt, base->next->next, pAnalyzer);
+    ExpType sub_type = GetSubScriptType(mml_msubsup_node, bt, base->next);
+    ExpType et = GetExpType(bt, base->next->next, pAnalyzer->GetGrammar());
 
     bool done = false;
 
@@ -1824,7 +1889,7 @@ void AnalyzeMSUBSUP(MNODE* mml_msubsup_node,
           SEMANTICS_NODE *s_func = CreateSemanticsNode();
 
           if (bt == BT_SUBARG_FUNCTION) {
-            s_func->canonical_ID = GetCanonicalIDforMathNode(base, pAnalyzer->mml_entities);
+            s_func->canonical_ID = GetCanonicalIDforMathNode(base, pAnalyzer->GetGrammar());
             AnalyzeSubscriptedArgFunc(mml_msubsup_node, s_func, pAnalyzer);
             BUCKET_REC* base_bucket = MakeParentBucketRec(MB_UNNAMED, s_func);
             snode->bucket_list =
@@ -1836,13 +1901,13 @@ void AnalyzeMSUBSUP(MNODE* mml_msubsup_node,
             U32 zh_ln = 0;
             mml_canonical_name =
               AppendStr2HeapStr(mml_canonical_name, zh_ln, "msub");
-            const char* tmp = GetCanonicalIDforMathNode(base, pAnalyzer->mml_entities);
+            const char* tmp = GetCanonicalIDforMathNode(base, pAnalyzer->GetGrammar());
             if (tmp) {
               mml_canonical_name =
                 AppendStr2HeapStr(mml_canonical_name, zh_ln, tmp);
               delete[] tmp;
             }
-            tmp = GetCanonicalIDforMathNode(base->next, pAnalyzer->mml_entities);
+            tmp = GetCanonicalIDforMathNode(base->next, pAnalyzer->GetGrammar());
             if (tmp) {
               mml_canonical_name =
                 AppendStr2HeapStr(mml_canonical_name, zh_ln, tmp);
@@ -1863,9 +1928,9 @@ void AnalyzeMSUBSUP(MNODE* mml_msubsup_node,
             base_bucket->first_child = s_func;
             
 
-            if (pAnalyzer -> DE_ind_vars) {
+            if (pAnalyzer -> GetDE_ind_vars()) {
               BUCKET_REC *dvar_bucket =
-                AddVarToBucket(MB_DIFF_VAR, pAnalyzer -> DE_ind_vars, pAnalyzer);
+                AddVarToBucket(MB_DIFF_VAR, pAnalyzer -> GetDE_ind_vars(), pAnalyzer);
               snode->bucket_list =
                 AppendBucketRec(snode->bucket_list, dvar_bucket);
             } else {
@@ -1915,7 +1980,7 @@ void AnalyzeMSUBSUP(MNODE* mml_msubsup_node,
           SEMANTICS_NODE* s_func = CreateSemanticsNode();
 
           // Create a canonical name for "s_func".
-          s_func->canonical_ID = GetCanonicalIDforMathNode(f_name, pAnalyzer->mml_entities);
+          s_func->canonical_ID = GetCanonicalIDforMathNode(f_name, pAnalyzer->GetGrammar());
           AnalyzeSubscriptedArgFunc(mml_msubsup_node, s_func, pAnalyzer);
           SetSnodeOwner(s_func, pAnalyzer);
 
@@ -1947,14 +2012,12 @@ void AnalyzeMSUBSUP(MNODE* mml_msubsup_node,
 
           // Create a semantic power form
           BUCKET_REC* base_bucket = MakeBucketRec(MB_SCRIPT_BASE, NULL);
-          snode->bucket_list =
-            AppendBucketRec(snode->bucket_list, base_bucket);
+          snode->bucket_list = AppendBucketRec(snode->bucket_list, base_bucket);
           base_bucket->first_child = s_fence;
           s_fence->parent = base_bucket;
 
           BUCKET_REC* power_bucket = MakeBucketRec(MB_SCRIPT_UPPER, NULL);
-          snode->bucket_list =
-            AppendBucketRec(snode->bucket_list, power_bucket);
+          snode->bucket_list =  AppendBucketRec(snode->bucket_list, power_bucket);
           SEMANTICS_NODE* s_power = GetSemanticsFromNode(f_exp, power_bucket, pAnalyzer);
           power_bucket->first_child = s_power;
           s_power->parent = power_bucket;
@@ -1978,15 +2041,20 @@ void AnalyzeMSUBSUP(MNODE* mml_msubsup_node,
     TCI_ASSERT(0);
 }
 
-void AnalyzeMOVER(MNODE * mml_mover_node, SEMANTICS_NODE * snode,
-                            int& nodes_done, bool isLHSofDef, Analyzer* pAnalyzer)
+
+
+void AnalyzeMOVER(MNODE* mml_mover_node, 
+                  SEMANTICS_NODE* snode,
+                  int& nodes_done, 
+                  bool isLHSofDef, 
+                  Analyzer* pAnalyzer)
 {
   nodes_done = 1;
 
-  MNODE *base = mml_mover_node->first_kid;
+  MNODE* base = mml_mover_node->first_kid;
   if (base) {
     BaseType bt = GetBaseType(mml_mover_node, isLHSofDef, pAnalyzer);
-    AccentType top_type = GetAboveType(bt, base->next, pAnalyzer);
+    AccentType top_type = GetAboveType(bt, base->next, pAnalyzer->GetGrammar());
 
     if (top_type == OT_BAR && base->p_chdata && !strcmp(base->p_chdata, "lim")) {
      	TranslateEmbellishedOp(mml_mover_node, snode, nodes_done, pAnalyzer);
@@ -2001,23 +2069,24 @@ void AnalyzeMOVER(MNODE * mml_mover_node, SEMANTICS_NODE * snode,
     case OT_DDOT:
     case OT_DDDOT:
     case OT_DDDDOT:
-      if (pAnalyzer -> dot_is_derivative) {
+      if (pAnalyzer -> Get_dot_is_derivative()) {
         int n_dots = top_type - OT_DOT + 1;
         AnalyzeDotDerivative(mml_mover_node, n_dots, snode, nodes_done, pAnalyzer);
-        pAnalyzer -> p_input_notation -> n_dotaccents++;
+        pAnalyzer -> GetInputNotation() -> n_dotaccents++;
         done = true;
       }
       break;
+
     case OT_BAR:
-      if (pAnalyzer -> overbar_conj) {
+      if (pAnalyzer -> Get_overbar_conj()) {
         BUCKET_REC *base_bucket = MakeBucketRec(MB_UNNAMED, NULL);
         snode->bucket_list = AppendBucketRec(snode->bucket_list, base_bucket);
-        SEMANTICS_NODE *s_base = GetSemanticsFromNode(base, base_bucket, pAnalyzer);
+        SEMANTICS_NODE* s_base = GetSemanticsFromNode(base, base_bucket, pAnalyzer);
         base_bucket->first_child = s_base;
         s_base->parent = base_bucket;
 
         snode->semantic_type = SEM_TYP_CONJUGATE;
-        pAnalyzer ->  p_input_notation -> n_overbars++;
+        pAnalyzer ->  GetInputNotation() -> n_overbars++;
         done = true;
       }
       break;
@@ -2068,7 +2137,7 @@ void AnalyzeMOVER(MNODE * mml_mover_node, SEMANTICS_NODE * snode,
       }
 
       if (!done) {
-        char *mml_canonical_name = GetCanonicalIDforMathNode(mml_mover_node, pAnalyzer->mml_entities);
+        char *mml_canonical_name = GetCanonicalIDforMathNode(mml_mover_node, pAnalyzer->GetGrammar());
         if (!mml_canonical_name) {
           snode->error_flag = 1;
           return;
@@ -2084,6 +2153,8 @@ void AnalyzeMOVER(MNODE * mml_mover_node, SEMANTICS_NODE * snode,
   } else
     TCI_ASSERT(0);
 }
+
+
 
 /* Much work remains in the following - currently it only handles
    something like "\limfunc{lim}_{x\rightarrow\infty}\frac{1}{x}"
@@ -2149,7 +2220,7 @@ void AnalyzeMUNDER(MNODE * mml_munder_node, SEMANTICS_NODE * snode,
       }
 
       if (!done) {
-        char *mml_canonical_name = GetCanonicalIDforMathNode(mml_munder_node, pAnalyzer->mml_entities);
+        char *mml_canonical_name = GetCanonicalIDforMathNode(mml_munder_node, pAnalyzer->GetGrammar());
         if (!mml_canonical_name) {
           snode->error_flag = 1;
           return;
@@ -2197,18 +2268,20 @@ void AnalyzeMUNDEROVER(MNODE * mml_munderover_node,
 
 // <mtable> (TABULATION) is used to carry a lot of different schemata
 
-void AnalyzeMTABLE(MNODE * mml_mtable_node,
-                             SEMANTICS_NODE * info, int& nodes_done, Analyzer* pAnalyzer)
+void AnalyzeMTABLE(MNODE* mml_mtable_node,
+                   SEMANTICS_NODE* info, 
+                   int& nodes_done, 
+                   Analyzer* pAnalyzer)
 {
   nodes_done = 1;
 
   int row_tally = 0;
   int max_cols = 0;
-  BUCKET_REC *cell_list = NULL;
+  BUCKET_REC* cell_list = NULL;
 
   if (mml_mtable_node->first_kid) {
     // count rows and columns
-    MNODE *row_rover = mml_mtable_node->first_kid;
+    MNODE* row_rover = mml_mtable_node->first_kid;
     while (row_rover) {
       int n_cols = CountCols(row_rover);
       if (n_cols > max_cols)
@@ -2222,11 +2295,11 @@ void AnalyzeMTABLE(MNODE * mml_mtable_node,
     row_rover = mml_mtable_node->first_kid;
     while (row_rover) {         // loop down thru rows
       if (row_rover->first_kid) {
-        MNODE *col_rover = row_rover->first_kid;
+        MNODE* col_rover = row_rover->first_kid;
 
         int col_counter = 0;
         while (col_counter < max_cols) {
-          MNODE *mml_cell = NULL;
+          MNODE* mml_cell = NULL;
           int nodes_in_arg = 0;
           if (col_rover) {
             mml_cell = col_rover;
@@ -2234,7 +2307,7 @@ void AnalyzeMTABLE(MNODE * mml_mtable_node,
             col_rover = col_rover->next;
           }
 
-          BUCKET_REC *cell_bucket = MakeBucketRec(MB_UNNAMED, NULL);
+          BUCKET_REC* cell_bucket = MakeBucketRec(MB_UNNAMED, NULL);
           cell_list = AppendBucketRec(cell_list, cell_bucket);
           col_counter++;
 
@@ -2267,12 +2340,19 @@ void AnalyzeMTABLE(MNODE * mml_mtable_node,
   info->bucket_list = cell_list;
 }
 
-IdentIlk GetMIilk(char* mi_canonical_str, MNODE* m_node, bool isLHSofDef, Analyzer* pAnalyzer)
-{
-  IdentIlk rv = MI_none;
 
-  if (pAnalyzer -> defstore) {
-    DefInfo* di = pAnalyzer -> defstore->GetDefInfo(pAnalyzer -> CurrEngineID(), mi_canonical_str);
+
+IdentIlk GetMIilk(char* mi_canonical_str, 
+                  DefInfo* di, 
+                  MNODE* m_node, 
+                  bool isLHSofDef, 
+                  const Grammar* mml_entities,
+                  bool i_is_imaginary,
+                  bool j_is_imaginary,
+                  bool e_is_Euler)
+{
+    IdentIlk rv = MI_none;
+
     if (di) {
       if (isLHSofDef) {
         // Here, we're re-defining a symbol - the type of any previous def is irrelevent
@@ -2286,53 +2366,50 @@ IdentIlk GetMIilk(char* mi_canonical_str, MNODE* m_node, bool isLHSofDef, Analyz
         return rv;
       }
     }
-  } else {
-    TCI_ASSERT(!"No def store!");
-    return rv;
-  }
+  
 
-  if (!strcmp(mi_canonical_str, "mi&#x3c0;")) {
-    rv = MI_pi;
+    if (StringEqual(mi_canonical_str, "mi&#x3c0;")) {
+      rv = MI_pi;
 
-  } else if (!strcmp(mi_canonical_str, "mii")) {  //  i
-      if (pAnalyzer -> i_is_imaginary)
+    } else if (StringEqual(mi_canonical_str, "mii")) {  //  i
+        if (i_is_imaginary)
+          rv = MI_imaginaryunit;
+
+    } else if (StringEqual(mi_canonical_str, "mi&#x2148;")) { // imaginary i
         rv = MI_imaginaryunit;
 
-  } else if (!strcmp(mi_canonical_str, "mi&#x2148;")) { // imaginary i
-      rv = MI_imaginaryunit;
+    } else if (StringEqual(mi_canonical_str, "mij")) {  //  j
+        if (j_is_imaginary)
+          rv = MI_imaginaryunit;
 
-  } else if (!strcmp(mi_canonical_str, "mij")) {  //  j
-      if (pAnalyzer -> j_is_imaginary)
-        rv = MI_imaginaryunit;
+    } else if (StringEqual(mi_canonical_str, "mie")) {
+      if (e_is_Euler)
+        rv = MI_Eulere;
 
-  } else if (!strcmp(mi_canonical_str, "mie")) {
-    if (pAnalyzer -> e_is_Euler)
-      rv = MI_Eulere;
-
-  } else if (!strcmp(mi_canonical_str, "mi&#x2147;")) {
-    rv = MI_Eulere;
-  } else if (!strcmp(mi_canonical_str, "mi&#x221e;")) {
-    rv = MI_infinity;
-  } else if (!strcmp(mi_canonical_str, "migamma")) {
-    rv = MI_Eulergamma;
-  } else if (!strcmp(mi_canonical_str, "mi&#x2112;")) {
-    rv = MI_Laplace;
-  } else if (!strcmp(mi_canonical_str, "mi&#x2131;")) {
-    rv = MI_Fourier;
-  }
-
-  if (IdentIsConstant(rv)) {
-    if (m_node->next && ElementNameIs(m_node->next, "mo")) {
-      U32 unicodes[8];
-      int content_tally =
-        ChData2Unicodes(m_node->next->p_chdata, unicodes, 8, pAnalyzer->mml_entities);
-      if (content_tally == 1 && unicodes[0] == 0x2061)
-        rv = MI_function;
+    } else if (StringEqual(mi_canonical_str, "mi&#x2147;")) {
+        rv = MI_Eulere;
+    } else if (StringEqual(mi_canonical_str, "mi&#x221e;")) {
+        rv = MI_infinity;
+    } else if (StringEqual(mi_canonical_str, "migamma")) {
+        rv = MI_Eulergamma;
+    } else if (StringEqual(mi_canonical_str, "mi&#x2112;")) {
+        rv = MI_Laplace;
+    } else if (StringEqual(mi_canonical_str, "mi&#x2131;")) {
+        rv = MI_Fourier;
     }
-  }
 
-  return rv;
+    if (IdentIsConstant(rv)) {
+      if (ElementNameIs(m_node->next, "mo")) {
+        U32 unicodes[8];
+        int content_tally = ChData2Unicodes(m_node->next->p_chdata, unicodes, 8, mml_entities);
+        if (content_tally == 1 && unicodes[0] == 0x2061)
+          rv = MI_function;
+      }
+    }
+
+    return rv;
 }
+
 
 
 /*
@@ -2341,14 +2418,14 @@ IdentIlk GetMIilk(char* mi_canonical_str, MNODE* m_node, bool isLHSofDef, Analyz
        <mml:mi>x</mml:mi>
 */
 
-BUCKET_REC* ArgsToBucket(MNODE * func_node, int& nodes_done, Analyzer* pAnalyzer)
+BUCKET_REC* ArgsToBucket(MNODE* func_node, int& nodes_done, Analyzer* pAnalyzer)
 {
   nodes_done = 0;
-  BUCKET_REC *a_rec = NULL;
+  BUCKET_REC* a_rec = NULL;
 
   int local_nodes_done = 0;
   if (func_node && func_node->next) {
-    MNODE *mml_rover = func_node->next;
+    MNODE* mml_rover = func_node->next;
 
     bool found_ap = false;
 
@@ -2361,7 +2438,7 @@ BUCKET_REC* ArgsToBucket(MNODE * func_node, int& nodes_done, Analyzer* pAnalyzer
     // look for <mo>&ApplyFunction;</mo>
     if (mml_rover && ElementNameIs(mml_rover, "mo")) {
       U32 unicodes[8];
-      int content_tally = ChData2Unicodes(mml_rover->p_chdata, unicodes, 8, pAnalyzer->mml_entities);
+      int content_tally = ChData2Unicodes(mml_rover->p_chdata, unicodes, 8, pAnalyzer->GetGrammar());
       if (content_tally == 1 && unicodes[0] == 0x2061) {
         found_ap = true;
         local_nodes_done++;
@@ -2394,7 +2471,7 @@ BUCKET_REC* ArgsToBucket(MNODE * func_node, int& nodes_done, Analyzer* pAnalyzer
       } else {                  // Here, the rest of the nodes in the list become the arg
         // sin &af; cos &af; x
         a_rec = MakeBucketRec(MB_UNNAMED, NULL);
-        SEMANTICS_NODE *s_arg = GetSemanticsList(mml_rover, a_rec, pAnalyzer);
+        SEMANTICS_NODE* s_arg = GetSemanticsList(mml_rover, a_rec, pAnalyzer);
         a_rec->first_child = s_arg;
         while (mml_rover) {
           local_nodes_done++;
@@ -2414,7 +2491,9 @@ BUCKET_REC* ArgsToBucket(MNODE * func_node, int& nodes_done, Analyzer* pAnalyzer
   return a_rec;
 }
 
-BUCKET_REC* ArgBucketFromMROW(MNODE * mml_mrow, Analyzer* pAnalyzer)
+
+
+BUCKET_REC* ArgBucketFromMROW(MNODE* mml_mrow, Analyzer* pAnalyzer)
 {
   BUCKET_REC *rv = NULL;
 
@@ -2422,19 +2501,27 @@ BUCKET_REC* ArgBucketFromMROW(MNODE * mml_mrow, Analyzer* pAnalyzer)
     MNODE *candidate = mml_mrow->first_kid;
 
     if (ElementNameIs(candidate, "mo")) {
-      int nodes_done;
-      rv = GetParenedArgs(candidate, nodes_done, pAnalyzer);
+
+        int nodes_done;
+        rv = GetParenedArgs(candidate, nodes_done, pAnalyzer);
+
     } else if (ElementNameIs(candidate, "mfenced")) {
-      rv = GetFencedArgs(candidate, pAnalyzer);
+
+        rv = GetFencedArgs(candidate, pAnalyzer);
+
     } else {
-      // we get here when processing trigargs, "sinh at"
-      rv = MakeBucketRec(MB_UNNAMED, NULL);
-      SEMANTICS_NODE *s_arg = GetSemanticsList(candidate, rv, pAnalyzer);
-      rv->first_child = s_arg;
+
+        // we get here when processing trigargs, "sinh at"
+        rv = MakeBucketRec(MB_UNNAMED, NULL);
+        SEMANTICS_NODE* s_arg = GetSemanticsList(candidate, rv, pAnalyzer);
+        rv->first_child = s_arg;
+
     }
   }
   return rv;
 }
+
+
 
 BUCKET_REC* GetParenedArgs(MNODE* mml_mo, int& nodes_done, Analyzer* pAnalyzer)
 {
@@ -2447,13 +2534,15 @@ BUCKET_REC* GetParenedArgs(MNODE* mml_mo, int& nodes_done, Analyzer* pAnalyzer)
   int nodes_within_parens = 0;
 
   U32 unicodes[8];
-  int content_tally = ChData2Unicodes(mml_mo->p_chdata, unicodes, 8, pAnalyzer->mml_entities);
+  int content_tally = ChData2Unicodes(mml_mo->p_chdata, unicodes, 8, pAnalyzer->GetGrammar());
+  
   if (content_tally == 1 && unicodes[0] == '(') {
     local_nodes_done++;
-    MNODE *rover = mml_mo->next;
+
+    MNODE* rover = mml_mo->next;
     while (rover) {
       local_nodes_done++;
-      int content_tally = ChData2Unicodes(rover->p_chdata, unicodes, 8, pAnalyzer->mml_entities);
+      int content_tally = ChData2Unicodes(rover->p_chdata, unicodes, 8, pAnalyzer->GetGrammar());
       if (content_tally == 1 && unicodes[0] == ')') {
         matched_parens = true;
         break;
@@ -2464,6 +2553,7 @@ BUCKET_REC* GetParenedArgs(MNODE* mml_mo, int& nodes_done, Analyzer* pAnalyzer)
   }
 
   if (matched_parens) {
+
     MNODE* arg_ptr = mml_mo->next;
 
     // descend into an mrow here if necessary
@@ -2471,6 +2561,7 @@ BUCKET_REC* GetParenedArgs(MNODE* mml_mo, int& nodes_done, Analyzer* pAnalyzer)
       if (ElementNameIs(arg_ptr, "mrow"))
         arg_ptr = arg_ptr->first_kid;
     }
+
     // traverse the first level nodes inside the parens
     bool done = false;
     while (!done) {
@@ -2478,7 +2569,7 @@ BUCKET_REC* GetParenedArgs(MNODE* mml_mo, int& nodes_done, Analyzer* pAnalyzer)
       MNODE* arg_first_obj = arg_ptr;
       int nodes_in_arg = 0;
       while (arg_ptr) {
-        int content_tally = ChData2Unicodes(arg_ptr->p_chdata, unicodes, 8, pAnalyzer->mml_entities);
+        int content_tally = ChData2Unicodes(arg_ptr->p_chdata, unicodes, 8, pAnalyzer->GetGrammar());
         if (content_tally == 1 && unicodes[0] == ',')
           break;
         else if (content_tally == 1 && unicodes[0] == ')') {
@@ -2493,8 +2584,7 @@ BUCKET_REC* GetParenedArgs(MNODE* mml_mo, int& nodes_done, Analyzer* pAnalyzer)
       BUCKET_REC* new_a_rec = MakeBucketRec(MB_UNNAMED, NULL);
       rv = AppendBucketRec(rv, new_a_rec);
 
-      SEMANTICS_NODE *s_arg =
-        GetSemanticsList(arg_first_obj, new_a_rec, nodes_in_arg, false, pAnalyzer);
+      SEMANTICS_NODE* s_arg = GetSemanticsList(arg_first_obj, new_a_rec, nodes_in_arg, false, pAnalyzer);
       
       new_a_rec->first_child = s_arg;
 
@@ -2513,6 +2603,8 @@ BUCKET_REC* GetParenedArgs(MNODE* mml_mo, int& nodes_done, Analyzer* pAnalyzer)
 
   return rv;
 }
+
+
 
 BUCKET_REC* GetFencedArgs(MNODE* mml_fence, Analyzer* pAnalyzer)
 {
@@ -2561,6 +2653,7 @@ SEMANTICS_NODE* GetSemanticsList(MNODE* dMML_list,
   int mml_nodes_done = 0;
   MNODE* rover = dMML_list;
   while (rover && mml_nodes_done < mml_node_lim) {
+
     SEMANTICS_NODE* new_node = NULL;
     // Look ahead in the MML list for an operator.
     OpIlk op_ilk;
@@ -2568,68 +2661,74 @@ SEMANTICS_NODE* GetSemanticsList(MNODE* dMML_list,
     MNODE* mo = LocateOperator(rover, op_ilk, advance);
 
     int mml_nodes_remaining = mml_node_lim - mml_nodes_done;
-    if (mo && mml_nodes_remaining > 1) {
-      if (mo->p_chdata && !strcmp(mo->p_chdata, "&#x2061;")) {
-        // ApplyFunction - translate the function call
-        int l_nodes_done = 0;
-        new_node = SNodeFromMNodes (rover, l_nodes_done, isLHSofDef, pAnalyzer);
-        while (l_nodes_done) {
-          mml_nodes_done++;
-          rover = rover->next;
-          l_nodes_done--;
-        }
-      } else {
-        SEMANTICS_NODE *l_operand = NULL;
-        SEMANTICS_NODE *r_operand = NULL;
 
-        if (op_ilk == OP_infix || op_ilk == OP_postfix) {
-          if (head) {
-            l_operand = head;
-            // Here we're assuming ALL operators in source MML list have
-            //  the same precedence (ie. well-formed MML), and are left-associative.
-          } else {
-            // translate the left operand
+    if (mo && mml_nodes_remaining > 1) {
+        
+        if (ContentIs(mo, "&#x2061;")) { // ApplyFunction - translate the function call
+
             int l_nodes_done = 0;
-            l_operand = SNodeFromMNodes (rover, l_nodes_done, isLHSofDef, pAnalyzer);
+            new_node = SNodeFromMNodes (rover, l_nodes_done, isLHSofDef, pAnalyzer);
+            
             while (l_nodes_done) {
               mml_nodes_done++;
               rover = rover->next;
               l_nodes_done--;
             }
-          }
-        }
-        // translate the operator
-        int op_nodes_done = 0;
-        new_node = SNodeFromMNodes(rover, op_nodes_done, isLHSofDef, pAnalyzer);
-        while (op_nodes_done) {
-          mml_nodes_done++;
-          rover = rover->next;
-          op_nodes_done--;
-        }
-        if (op_ilk == OP_prefix) {
-          TCI_ASSERT(l_operand == NULL);
-          // Note that the operand of a prefix operator is handled
-          //  when the operator is translated.
-          if (!new_node->bucket_list) {
-            // translate the right operand
-            int r_nodes_done = 0;
-            r_operand = SNodeFromMNodes(rover, r_nodes_done, isLHSofDef, pAnalyzer);
-            while (r_nodes_done) {
-              mml_nodes_done++;
-              rover = rover->next;
-              r_nodes_done--;
+
+        } else {
+
+          SEMANTICS_NODE* l_operand = NULL;
+          SEMANTICS_NODE* r_operand = NULL;
+
+          if (op_ilk == OP_infix || op_ilk == OP_postfix) {
+            if (head) {
+              l_operand = head;
+              // Here we're assuming ALL operators in source MML list have
+              //  the same precedence (ie. well-formed MML), and are left-associative.
+            } else {
+              // translate the left operand
+              int l_nodes_done = 0;
+              l_operand = SNodeFromMNodes (rover, l_nodes_done, isLHSofDef, pAnalyzer);
+              while (l_nodes_done) {
+                mml_nodes_done++;
+                rover = rover->next;
+                l_nodes_done--;
+              }
             }
-            // We can re-work operands here as required.
-            // For example, in (1,2,3)x(3,2,1) the parened fences
-            // probably represent vectors ( 1 row matrices ).
-            //In x \in (-1,3.5] the fence represents an interval
-            if (r_operand) {
-              OpMatrixIntervalType op_type = GetOpType(mo);
-              if (op_type == OMI_matrix)
-                FenceToMatrix(r_operand);
-            }
-            CreatePrefixForm(new_node, l_operand, r_operand);
           }
+          // translate the operator
+          int op_nodes_done = 0;
+          new_node = SNodeFromMNodes(rover, op_nodes_done, isLHSofDef, pAnalyzer);
+          while (op_nodes_done) {
+            mml_nodes_done++;
+            rover = rover->next;
+            op_nodes_done--;
+          }
+          if (op_ilk == OP_prefix) {
+            TCI_ASSERT(l_operand == NULL);
+            // Note that the operand of a prefix operator is handled
+            //  when the operator is translated.
+            if (!new_node->bucket_list) {
+              // translate the right operand
+              int r_nodes_done = 0;
+              r_operand = SNodeFromMNodes(rover, r_nodes_done, isLHSofDef, pAnalyzer);
+              while (r_nodes_done) {
+                mml_nodes_done++;
+                rover = rover->next;
+                r_nodes_done--;
+              }
+              // We can re-work operands here as required.
+              // For example, in (1,2,3)x(3,2,1) the parened fences
+              // probably represent vectors ( 1 row matrices ).
+              //In x \in (-1,3.5] the fence represents an interval
+              if (r_operand) {
+                OpMatrixIntervalType op_type = GetOpType(mo);
+                if (op_type == OMI_matrix)
+                  FenceToMatrix(r_operand);
+              }
+              CreatePrefixForm(new_node, l_operand, r_operand);
+            }
+
         } else if (op_ilk == OP_infix) {
           // translate the right operand
           int r_nodes_done = 0;
@@ -2704,35 +2803,44 @@ SEMANTICS_NODE* GetSemanticsList(MNODE* dMML_list,
   return head;
 }
 
-SEMANTICS_NODE* SNodeFromMNodes(MNODE * mml_node,
-                                          int& mml_nodes_done,
-                                          bool isLHSofDef, Analyzer* pAnalyzer)
+
+
+SEMANTICS_NODE* SNodeFromMNodes(MNODE* mml_node,
+                                int& mml_nodes_done,
+                                bool isLHSofDef, 
+                                Analyzer* pAnalyzer)
 {
-  SEMANTICS_NODE *rv = NULL;
-  TCI_ASSERT(CheckLinks(mml_node));
+  SEMANTICS_NODE* rv = NULL;
   if (mml_node) {
     int local_nodes_done = 1;
     rv = CreateSemanticsNode();
-
-    const char *mml_element = mml_node->src_tok;
+    const char* mml_element = mml_node->src_tok;
     size_t ln = strlen(mml_element);
+
     switch (ln) {
     case 2:{
-        if (!strcmp(mml_element, "mi")) {
-          AnalyzeMI(mml_node, rv, local_nodes_done, isLHSofDef, pAnalyzer);
-        } else if (!strcmp(mml_element, "mo")) {
-          AnalyzeMO(mml_node, rv, local_nodes_done, pAnalyzer);
-        } else if (!strcmp(mml_element, "mn")) {
-          bool do_mixed = false;
-          if (IsWholeNumber(mml_node)
-              && IsWholeFrac(mml_node->next)) {
-            do_mixed = !IsPositionalChild(mml_node);
-          }
-          if (do_mixed) {
-            AnalyzeMixedNum(mml_node, rv, pAnalyzer);
-            local_nodes_done++;
-          } else
-            AnalyzeMN(mml_node, rv, pAnalyzer);
+        if (StringEqual(mml_element, "mi")) {
+
+            AnalyzeMI(mml_node, rv, local_nodes_done, isLHSofDef, pAnalyzer);
+
+        } else if (StringEqual(mml_element, "mo")) {
+
+            AnalyzeMO(mml_node, rv, local_nodes_done, pAnalyzer);
+
+        } else if (StringEqual(mml_element, "mn")) {
+
+             bool do_mixed = false;
+
+             if (IsWholeNumber(mml_node) && IsWholeFrac(mml_node->next)) {
+               do_mixed = !IsPositionalChild(mml_node);
+             }
+
+             if (do_mixed) {
+               AnalyzeMixedNum(mml_node, rv, pAnalyzer);
+               local_nodes_done++;
+             } else
+               AnalyzeMN(mml_node, rv, pAnalyzer);
+
         } else {
           TCI_ASSERT(0);
         }
@@ -2740,48 +2848,63 @@ SEMANTICS_NODE* SNodeFromMNodes(MNODE * mml_node,
       break;
 
     case 3:{
-        if (!strcmp(mml_element, "mtd")) {
-          TCI_ASSERT(0);
-        } else if (!strcmp(mml_element, "mtr")) {
-          TCI_ASSERT(0);
+        if (StringEqual(mml_element, "mtd")) {
+
+            TCI_ASSERT(0);
+
+        } else if (StringEqual(mml_element, "mtr")) {
+            
+            TCI_ASSERT(0);
+
         } else {
-          TCI_ASSERT(0);
+
+            TCI_ASSERT(0);
         }
       }
       break;
 
     case 4:{
-        if (!strcmp(mml_element, "mrow")) {
-          rv->semantic_type = SEM_TYP_PRECEDENCE_GROUP;
-          if (mml_node->first_kid) {
-            BUCKET_REC *new_a_rec = MakeBucketRec(MB_UNNAMED, NULL);
-            rv->bucket_list = AppendBucketRec(NULL, new_a_rec);
-            SEMANTICS_NODE *s_node = GetSemanticsList(mml_node->first_kid, new_a_rec, pAnalyzer);
-            new_a_rec->first_child = s_node;
-            s_node->parent = new_a_rec;
-          }
-        } else if (!strcmp(mml_element, "msup")) {
-          AnalyzeMSUP(mml_node, rv, local_nodes_done, isLHSofDef, pAnalyzer);
-        } else if (!strcmp(mml_element, "msub")) {
-          AnalyzeMSUB(mml_node, rv, local_nodes_done, isLHSofDef, pAnalyzer);
-        } else if (!strcmp(mml_element, "math")) {
-          rv->semantic_type = SEM_TYP_MATH_CONTAINER;
-          if (mml_node->first_kid) {
-            MNODE *cont = mml_node->first_kid;
-            // descend into a redundant mrow, if it exists
-            while (cont && !cont->next && ElementNameIs(cont, "mrow"))
-              cont = cont->first_kid;
-            if (cont) {
-              BUCKET_REC *new_a_rec = MakeBucketRec(MB_UNNAMED, NULL);
+        if (StringEqual(mml_element, "mrow")) {
+
+            rv->semantic_type = SEM_TYP_PRECEDENCE_GROUP;
+            if (mml_node->first_kid) {
+              BUCKET_REC* new_a_rec = MakeBucketRec(MB_UNNAMED, NULL);
               rv->bucket_list = AppendBucketRec(NULL, new_a_rec);
-              SEMANTICS_NODE *s_node =
-                GetSemanticsList(cont, new_a_rec, ALL_NODES, isLHSofDef, pAnalyzer);
+              SEMANTICS_NODE* s_node = GetSemanticsList(mml_node->first_kid, new_a_rec, pAnalyzer);
               new_a_rec->first_child = s_node;
               s_node->parent = new_a_rec;
             }
-          }
+
+        } else if (StringEqual(mml_element, "msup")) {
+
+            AnalyzeMSUP(mml_node, rv, local_nodes_done, isLHSofDef, pAnalyzer);
+
+        } else if (StringEqual(mml_element, "msub")) {
+
+            AnalyzeMSUB(mml_node, rv, local_nodes_done, isLHSofDef, pAnalyzer);
+
+        } else if (StringEqual(mml_element, "math")) {
+
+            rv->semantic_type = SEM_TYP_MATH_CONTAINER;
+            if (mml_node->first_kid) {
+              MNODE* cont = mml_node->first_kid;
+              // descend into a redundant mrow, if it exists
+              while (cont && !cont->next && ElementNameIs(cont, "mrow"))
+                cont = cont->first_kid;
+
+              if (cont) {
+                BUCKET_REC* new_a_rec = MakeBucketRec(MB_UNNAMED, NULL);
+                rv->bucket_list = AppendBucketRec(NULL, new_a_rec);
+                SEMANTICS_NODE* s_node = GetSemanticsList(cont, new_a_rec, ALL_NODES, isLHSofDef, pAnalyzer);
+                new_a_rec->first_child = s_node;
+                s_node->parent = new_a_rec;
+              }
+            }
+
         } else {
+
           TCI_ASSERT(0);
+
         }
       }
       break;
@@ -2816,53 +2939,73 @@ SEMANTICS_NODE* SNodeFromMNodes(MNODE * mml_node,
       break;
 
     case 6:{
-        if (!strcmp(mml_element, "munder")) {
-          AnalyzeMUNDER(mml_node, rv, local_nodes_done, isLHSofDef, pAnalyzer);
-        } else if (!strcmp(mml_element, "mstyle")) {
-          TCI_ASSERT(0);
-        } else if (!strcmp(mml_element, "mtable")) {
-          AnalyzeMTABLE(mml_node, rv, local_nodes_done, pAnalyzer);
-        } else if (!strcmp(mml_element, "mspace")) {
+        if (StringEqual(mml_element, "munder")) {
+
+            AnalyzeMUNDER(mml_node, rv, local_nodes_done, isLHSofDef, pAnalyzer);
+
+        } else if (StringEqual(mml_element, "mstyle")) {
+
+            TCI_ASSERT(0);
+
+        } else if (StringEqual(mml_element, "mtable")) {
+
+            AnalyzeMTABLE(mml_node, rv, local_nodes_done, pAnalyzer);
+
+        } else if (StringEqual(mml_element, "mspace")) {
+
         } else {
-          TCI_ASSERT(0);
+
+            TCI_ASSERT(0);
         }
       }
       break;
 
     case 7:{
         if (!strcmp(mml_element, "mfenced")) {
-          AnalyzeMFENCED(mml_node, rv, local_nodes_done, pAnalyzer);
-        } else if (!strcmp(mml_element, "msubsup")) {
-          AnalyzeMSUBSUP(mml_node, rv, local_nodes_done, isLHSofDef, pAnalyzer);
-        } else if (!strcmp(mml_element, "mpadded")) {
-          rv->semantic_type = SEM_TYP_PRECEDENCE_GROUP;
-          if (mml_node->first_kid) {
-            BUCKET_REC *new_a_rec = MakeBucketRec(MB_UNNAMED, NULL);
-            rv->bucket_list = AppendBucketRec(NULL, new_a_rec);
 
-            SEMANTICS_NODE *s_node = GetSemanticsList(mml_node->first_kid, new_a_rec, pAnalyzer);
-            new_a_rec->first_child = s_node;
-            s_node->parent = new_a_rec;
-          }
+            AnalyzeMFENCED(mml_node, rv, local_nodes_done, pAnalyzer);
+
+        } else if (!strcmp(mml_element, "msubsup")) {
+
+            AnalyzeMSUBSUP(mml_node, rv, local_nodes_done, isLHSofDef, pAnalyzer);
+
+        } else if (!strcmp(mml_element, "mpadded")) {
+
+            rv->semantic_type = SEM_TYP_PRECEDENCE_GROUP;
+            if (mml_node->first_kid) {
+              BUCKET_REC *new_a_rec = MakeBucketRec(MB_UNNAMED, NULL);
+              rv->bucket_list = AppendBucketRec(NULL, new_a_rec);
+
+              SEMANTICS_NODE *s_node = GetSemanticsList(mml_node->first_kid, new_a_rec, pAnalyzer);
+              new_a_rec->first_child = s_node;
+              s_node->parent = new_a_rec;
+            }
+
         } else {
-          TCI_ASSERT(0);
+
+            TCI_ASSERT(0);
         }
       }
       break;
 
     case 10:{
-        if (!strcmp(mml_element, "munderover")) {
-          AnalyzeMUNDEROVER(mml_node, rv, local_nodes_done, isLHSofDef, pAnalyzer);
+        if (StringEqual(mml_element, "munderover")) {
+
+            AnalyzeMUNDEROVER(mml_node, rv, local_nodes_done, isLHSofDef, pAnalyzer);
+
         } else {
-          TCI_ASSERT(0);
+
+            TCI_ASSERT(0);
         }
       }
       break;
 
     case 11:{
-        if (!strcmp(mml_element, "maligngroup")) {
+        if (StringEqual(mml_element, "maligngroup")) {
+
         } else {
-          TCI_ASSERT(0);
+
+            TCI_ASSERT(0);
         }
       }
       break;
@@ -2883,7 +3026,7 @@ SEMANTICS_NODE* SNodeFromMNodes(MNODE * mml_node,
   return rv;
 }
 
-LOG_MSG_REC *Analyzer::GetMsgs()
+LOG_MSG_REC* Analyzer::GetMsgs()
 {
   LOG_MSG_REC *rv = msg_list;
   msg_list = NULL;
@@ -2916,23 +3059,22 @@ SEMANTICS_NODE* GetSemanticsFromNode(MNODE* mml_node, BUCKET_REC* bucket, Analyz
   return rv;
 }
 
-void AnalyzeMixedNum(MNODE * mml_mn, SEMANTICS_NODE * s_node, Analyzer* pAnalyzer)
+void AnalyzeMixedNum(MNODE* mml_mn, SEMANTICS_NODE* s_node, Analyzer* pAnalyzer)
 {
-  BUCKET_REC *whole_bucket = MakeBucketRec(MB_MN_WHOLE, NULL);
+  BUCKET_REC* whole_bucket = MakeBucketRec(MB_MN_WHOLE, NULL);
   s_node->bucket_list = AppendBucketRec(s_node->bucket_list, whole_bucket);
 
-  MNODE *save = mml_mn->next;
+  MNODE* save = mml_mn->next;
   mml_mn->next = NULL;
-  SEMANTICS_NODE *s_whole = GetSemanticsList(mml_mn, whole_bucket, 1, false, pAnalyzer);
+  SEMANTICS_NODE* s_whole = GetSemanticsList(mml_mn, whole_bucket, 1, false, pAnalyzer);
   mml_mn->next = save;
 
   whole_bucket->first_child = s_whole;
   s_whole->parent = whole_bucket;
 
-  BUCKET_REC *frac_bucket = MakeBucketRec(MB_MN_FRACTION, NULL);
+  BUCKET_REC* frac_bucket = MakeBucketRec(MB_MN_FRACTION, NULL);
   s_node->bucket_list = AppendBucketRec(s_node->bucket_list, frac_bucket);
-  SEMANTICS_NODE *s_frac =
-    GetSemanticsList(mml_mn->next, frac_bucket, 1, false, pAnalyzer);
+  SEMANTICS_NODE* s_frac = GetSemanticsList(mml_mn->next, frac_bucket, 1, false, pAnalyzer);
   frac_bucket->first_child = s_frac;
   s_frac->parent = frac_bucket;
 
@@ -2947,82 +3089,84 @@ BaseType GetBaseType(MNODE* mml_script_schemata, bool isLHSofDef, Analyzer* pAna
   BaseType rv = BT_UNKNOWN;
 
   MNODE* base = mml_script_schemata->first_kid;
-  //const char* base_element = base->src_tok;
 
   if (ElementNameIs(base, "mi")) {
-    if (ContentIs(base, "&#x2112;"))  // Laplace
-      rv = BT_TRANSFORM;
-    if (ContentIs(base, "&#x2131;"))  // Fourier
-      rv = BT_TRANSFORM;
-    if (ContentIs(base, "seq")) // sequence
-      rv = BT_OPERATOR;
-    if (ContentIs(base, "lim")) // varinjlim
-      rv = BT_OPERATOR;
+      if (ContentIs(base, "&#x2112;"))  // Laplace
+        rv = BT_TRANSFORM;
+      if (ContentIs(base, "&#x2131;"))  // Fourier
+        rv = BT_TRANSFORM;
+      if (ContentIs(base, "seq")) // sequence
+        rv = BT_OPERATOR;
+      if (ContentIs(base, "lim")) // varinjlim
+        rv = BT_OPERATOR;
 
-    if (!rv && !isLHSofDef) {
-      char* mi_canonical_str = GetCanonicalIDforMathNode(base, pAnalyzer->mml_entities);
-      if (pAnalyzer -> defstore  && mi_canonical_str) {
-        DefInfo* di = pAnalyzer -> defstore -> GetDefInfo(pAnalyzer -> CurrEngineID(), mi_canonical_str);
-        if (di && di->def_type == DT_FUNCTION) {
-          if (di->n_subscripted_args)
-            rv = BT_SUBARG_FUNCTION;
-          else
+      if (rv == BT_UNKNOWN && !isLHSofDef) {
+
+          char* mi_canonical_str = GetCanonicalIDforMathNode(base, pAnalyzer->GetGrammar());
+
+          DefInfo* di = GetDI(pAnalyzer, mi_canonical_str);
+          if (di && di->def_type == DT_FUNCTION) {
+            if (di->n_subscripted_args)
+              rv = BT_SUBARG_FUNCTION;
+            else
+              rv = BT_FUNCTION;
+          }
+          delete[] mi_canonical_str;
+      }
+  }
+
+  if (rv == BT_UNKNOWN && mml_script_schemata->next) {
+      MNODE* nn = mml_script_schemata->next;
+      const char* next_elem_nom = nn->src_tok;
+      if (StringEqual(next_elem_nom, "mo")) {
+        const char *ptr = strstr(nn->p_chdata, "&#x");
+        if (ptr) {
+          U32 unicode = ASCII2U32(ptr + 3, 16);
+          if (unicode == 0x2061) {  //&ApplyFunction;
             rv = BT_FUNCTION;
+          }
         }
-        delete[] mi_canonical_str;
+      }
+  }
+
+  if (rv == BT_UNKNOWN) {
+      if (ElementNameIs(base, "mo")) {
+          rv = BT_OPERATOR;
+      } else if (ElementNameIs(base, "mn")) {
+          rv = BT_NUMBER;
+      } else if (ElementNameIs(base, "mfenced")) {
+          rv = BT_FENCED;
+      } else if (ElementNameIs(base, "mtable")) {
+          rv = BT_MATRIX;
+      } else if (ElementNameIs(base, "mover")) {
+          rv = BT_MOVER;
+      } else if (ElementNameIs(base, "mi")) {
+          char zclass[256];
+          zclass[0] = 0;
+          GetCurrAttribValue(base, false, "class", zclass, 256);
+          if (StringEqual(zclass, "msi_unit")) {
+            rv = BT_UNIT;
+          } else {
+
+              int entity_count;
+              int symbol_count = CountSymbols(base->p_chdata, entity_count);
+              if (symbol_count == 1) {
+                rv = BT_VARIABLE;
+                if (LocateFuncRec(pAnalyzer -> DE_FuncNames(), NULL, base->p_chdata))
+                  rv = BT_FUNCTION;
+                else if (LocateFuncRec(pAnalyzer -> IMPLDIFF_FuncNames(), NULL, base->p_chdata))
+                  rv = BT_FUNCTION;
+              } else
+                rv = BT_FUNCTION;
+
+          }
+      } else if (ElementNameIs(base, "mrow")) {
+          rv = BT_ROW;
       } else {
-        TCI_ASSERT(0);
+          TCI_ASSERT(0);
       }
-    }
   }
-  if (!rv && mml_script_schemata->next) {
-    MNODE *nn = mml_script_schemata->next;
-    const char *next_elem_nom = nn->src_tok;
-    if (!strcmp(next_elem_nom, "mo")) {
-      const char *ptr = strstr(nn->p_chdata, "&#x");
-      if (ptr) {
-        U32 unicode = ASCII2U32(ptr + 3, 16);
-        if (unicode == 0x2061) {  //&ApplyFunction;
-          rv = BT_FUNCTION;
-        }
-      }
-    }
-  }
-  if (!rv) {
-    if (ElementNameIs(base, "mo")) {
-      rv = BT_OPERATOR;
-    } else if (ElementNameIs(base, "mn")) {
-      rv = BT_NUMBER;
-    } else if (ElementNameIs(base, "mfenced")) {
-      rv = BT_FENCED;
-    } else if (ElementNameIs(base, "mtable")) {
-      rv = BT_MATRIX;
-    } else if (ElementNameIs(base, "mover")) {
-      rv = BT_MOVER;
-    } else if (ElementNameIs(base, "mi")) {
-      char zclass[256];
-      zclass[0] = 0;
-      GetCurrAttribValue(base, false, "class", zclass, 256);
-      if (!strcmp(zclass, "msi_unit")) {
-        rv = BT_UNIT;
-      } else {
-        int entity_count;
-        int symbol_count = CountSymbols(base->p_chdata, entity_count);
-        if (symbol_count == 1) {
-          rv = BT_VARIABLE;
-          if (LocateFuncRec(pAnalyzer -> DE_FuncNames(), NULL, base->p_chdata))
-            rv = BT_FUNCTION;
-          else if (LocateFuncRec(pAnalyzer -> IMPLDIFF_FuncNames(), NULL, base->p_chdata))
-            rv = BT_FUNCTION;
-        } else
-          rv = BT_FUNCTION;
-      }
-    } else if (ElementNameIs(base, "mrow")) {
-      rv = BT_ROW;
-    } else {
-      TCI_ASSERT(0);
-    }
-  }
+
   return rv;
 }
 
@@ -3030,7 +3174,7 @@ BaseType GetBaseType(MNODE* mml_script_schemata, bool isLHSofDef, Analyzer* pAna
 // ..
 // define ET_CONJUGATE_INDICATOR   5
 
-ExpType GetExpType(BaseType base_type, MNODE* exp, Analyzer* pAnalyzer)
+ExpType GetExpType(BaseType base_type, MNODE* exp, const Grammar* mml_entities)
 {
   ExpType rv = ET_POWER;
 
@@ -3104,7 +3248,7 @@ ExpType GetExpType(BaseType base_type, MNODE* exp, Analyzer* pAnalyzer)
   }
   if (rv == ET_DIRECTION && exp->first_kid && exp->first_kid->next)
     rv = ET_POWER;  // -x or +x
-  if (IsInverseIndicator(exp, pAnalyzer))
+  if (IsInverseIndicator(exp, mml_entities))
     if (base_type == BT_FUNCTION
         || base_type == BT_SUBARG_FUNCTION || base_type == BT_TRANSFORM)
       rv = ET_INVERSE_INDICATOR;
@@ -3115,8 +3259,7 @@ ExpType GetExpType(BaseType base_type, MNODE* exp, Analyzer* pAnalyzer)
 //SLS seems like a risky heuristic...
 ExpType GetSubScriptType(MNODE* script_schemata,
                          BaseType base_type, 
-                         MNODE* sub, 
-                         Analyzer* pAnalyzer)
+                         MNODE* sub) 
 {
   ExpType rv = ET_DECORATION;
 
@@ -3142,64 +3285,9 @@ ExpType GetSubScriptType(MNODE* script_schemata,
   return rv;
 }
 
-SemanticType GetBigOpType(const char* op_chdata, SemanticVariant& n_integs)
-{
-  SemanticType rv = SEM_TYP_UNDEFINED;
-  n_integs = SNV_None;
-
-  if (op_chdata) {
-    const char *ptr = strstr(op_chdata, "&#x");
-    if (ptr) {
-      U32 unicode = ASCII2U32(ptr + 3, 16);
-      switch (unicode) {
-      case 0x222B:             //&int;<uID7.1.1>prefix,31,U0222B
-        n_integs = SNV_singleint;
-        rv = SEM_TYP_BIGOP_INTEGRAL;
-        break;
-      case 0x222C:             //&Int;<uID7.1.2>prefix,31,U0222C
-        n_integs = SNV_doubleint;
-        rv = SEM_TYP_BIGOP_INTEGRAL;
-        break;
-      case 0x222D:             //&tint;<uID7.1.3>prefix,31,U0222D
-        n_integs = SNV_tripleint;
-        rv = SEM_TYP_BIGOP_INTEGRAL;
-        break;
-      case 0x2A0C:             //&qint;<uID7.1.4>prefix,31,U02A0C
-        n_integs = SNV_quadint;
-        rv = SEM_TYP_BIGOP_INTEGRAL;
-        break;
-      //      case  0x2217  :     //&int;&ctdot;&int;<uID7.1.5>prefix,31,U0222B'U022EF'U0222B
-      case 0x222E:             //&conint;<uID7.1.6>prefix,31,U0222E
-        rv = SEM_TYP_BIGOP_INTEGRAL;
-        break;
-      case 0x2211:             //&sum;<uID7.1.7>prefix,29,    U02211
-      case 0x220F:             //&prod;<uID7.1.8>prefix,35,   U0220F
-      case 0x22C2:             //&xcap;<uID7.1.9>prefix,35,   U022C2
-      case 0x22C0:             //&xwedge;<uID7.1.10>prefix,35,U022C0
-      case 0x2295:             //&xoplus;<uID7.1.11>prefix,29,U02295
-      case 0x2A00:             //&xodot;<uID7.1.12>prefix,38, U02A00
-      case 0x2A06:             //&xsqcup;<uID7.1.13>prefix,29,U02A06
-      case 0x2210:             //&coprod;<uID7.1.14>prefix,35,U02210
-      case 0x22C3:             //&xcup;<uID7.1.15>prefix,29,  U022C3
-      case 0x22C1:             //&xvee;<uID7.1.16>prefix,29,  U022C1
-      case 0x2A02:             //&xotime;<uID7.1.17>prefix,35,U02A02
-      case 0x2A04:             //&xuplus;<uID7.1.18>prefix,29,U02A04
-        rv = SEM_TYP_BIGOP_SUM;
-        break;
-      case 0x2207:             //&nabla;
-        break;
-      default:
-        break;
-      }
-    }
-  }
-  return rv;
-}
-
-
 // Just enough done to test the "true" return route.
 
-bool IsInverseIndicator(MNODE * mml_exp_node, Analyzer* pAnalyzer)
+bool IsInverseIndicator(MNODE* mml_exp_node, const Grammar* mml_entities)
 {
 
   bool rv = false;
@@ -3219,7 +3307,7 @@ bool IsInverseIndicator(MNODE * mml_exp_node, Analyzer* pAnalyzer)
       MNODE *rover = mml_exp_node->first_kid;
       if (ElementNameIs(rover, "mo")) {
         U32 unicodes[8];
-        int content_tally = ChData2Unicodes(rover->p_chdata, unicodes, 8, pAnalyzer->mml_entities);
+        int content_tally = ChData2Unicodes(rover->p_chdata, unicodes, 8, mml_entities);
         if (content_tally == 1 &&
             (unicodes[0] == '-' || unicodes[0] == 0x2212)) {
           rover = rover->next;
@@ -3227,7 +3315,7 @@ bool IsInverseIndicator(MNODE * mml_exp_node, Analyzer* pAnalyzer)
             if (ElementNameIs(rover, "mn")) {
               U32 unicodes[8];
               int content_tally =
-                ChData2Unicodes(rover->p_chdata, unicodes, 8, pAnalyzer->mml_entities);
+                ChData2Unicodes(rover->p_chdata, unicodes, 8, mml_entities);
               if (content_tally == 1 && unicodes[0] == '1')
                 rv = true;
             }
@@ -3240,18 +3328,21 @@ bool IsInverseIndicator(MNODE * mml_exp_node, Analyzer* pAnalyzer)
   return rv;
 }
 
+
+
 // When the "base" of a MML schemata like <msup>, <mover>, etc.
 //  is an operator, the translation is handled here.
 
-void TranslateEmbellishedOp(MNODE * mml_embellop_node,
-                                      SEMANTICS_NODE * snode,
-                                      int& nodes_done,
-                                      Analyzer* pAnalyzer)
+void TranslateEmbellishedOp(MNODE* mml_embellop_node,
+                            SEMANTICS_NODE* snode,
+                            int& nodes_done,
+                            Analyzer* pAnalyzer)
 {
   nodes_done = 1;
   
   TCI_ASSERT(CheckLinks(mml_embellop_node));
-  MNODE *base = mml_embellop_node->first_kid;
+  MNODE* base = mml_embellop_node->first_kid;
+
   if (base) {                   // the underlying operator - \int, \sum, etc.
 
     char* tmp = DuplicateString(base->p_chdata);
@@ -3282,17 +3373,24 @@ void TranslateEmbellishedOp(MNODE * mml_embellop_node,
 
                 // Might have mapped "i" to "imaginaryi".
                 if (b_rover->first_child) {
-                  SEMANTICS_NODE *s_var = b_rover->first_child;
+                  SEMANTICS_NODE* s_var = b_rover->first_child;
                   if (s_var->semantic_type == SEM_TYP_UCONSTANT) {
-                    if (!strcmp(s_var->contents, "i")) {
-                      s_var->semantic_type = SEM_TYP_VARIABLE;
-                      pAnalyzer -> i_is_imaginary = false;
-                    } else if (!strcmp(s_var->contents, "j")) {
-                      s_var->semantic_type = SEM_TYP_VARIABLE;
-                      pAnalyzer -> j_is_imaginary = false;
-                    } else if (!strcmp(s_var->contents, "e")) {
-                      s_var->semantic_type = SEM_TYP_VARIABLE;
-                      pAnalyzer -> e_is_Euler = false;
+                    
+                    if (StringEqual(s_var->contents, "i")) {
+                        
+                        s_var->semantic_type = SEM_TYP_VARIABLE;
+                        pAnalyzer -> Set_i_is_imaginary( false );
+
+                    } else if (StringEqual(s_var->contents, "j")) {
+
+                        s_var->semantic_type = SEM_TYP_VARIABLE;
+                        pAnalyzer -> Set_j_is_imaginary( false );
+
+                    } else if (StringEqual(s_var->contents, "e")) {
+
+                        s_var->semantic_type = SEM_TYP_VARIABLE;
+                        pAnalyzer -> Set_e_is_Euler( false );
+
                     }
                   }
                 }
@@ -3319,10 +3417,10 @@ void TranslateEmbellishedOp(MNODE * mml_embellop_node,
           s_ll->parent = ll_bucket;
         }
         if (mml_ll->next) {     // the upper limit
-          MNODE *mml_ul = mml_ll->next;
-          BUCKET_REC *ul_bucket = MakeBucketRec(MB_UPPERLIMIT, NULL);
+          MNODE* mml_ul = mml_ll->next;
+          BUCKET_REC* ul_bucket = MakeBucketRec(MB_UPPERLIMIT, NULL);
           snode->bucket_list = AppendBucketRec(snode->bucket_list, ul_bucket);
-          SEMANTICS_NODE *s_ul = GetSemanticsFromNode(mml_ul, ul_bucket, pAnalyzer);
+          SEMANTICS_NODE* s_ul = GetSemanticsFromNode(mml_ul, ul_bucket, pAnalyzer);
           ul_bucket->first_child = s_ul;
           s_ul->parent = ul_bucket;
         }
@@ -3379,12 +3477,12 @@ void TranslateEmbellishedOp(MNODE * mml_embellop_node,
           BUCKET_REC *ll_bucket = MakeBucketRec(MB_LOWERLIMIT, NULL);
           snode->bucket_list = AppendBucketRec(snode->bucket_list, ll_bucket);
 
-          SEMANTICS_NODE *s_ll = GetSemanticsFromNode(mml_ll, ll_bucket, pAnalyzer);
+          SEMANTICS_NODE* s_ll = GetSemanticsFromNode(mml_ll, ll_bucket, pAnalyzer);
           ll_bucket->first_child = s_ll;
 
           // The embellished operator MAY be a standard math operator
           //  that takes a limit.  If so, we can further decompose the limit.
-          int req_limit_format = GetLimitFormat(snode->contents, pAnalyzer);
+          int req_limit_format = GetLimitFormat(snode->contents, pAnalyzer->GetGrammar());
           switch (req_limit_format) {
           case 1:              // the limiting expression is an interval
             SetVarAndIntervalLimit(ll_bucket);
@@ -3644,14 +3742,14 @@ void AnalyzePrimed(MNODE * mml_msup,
       if (bucket)
         RemoveBucket(s_base, bucket);
       s_base->bucket_list = AppendBucketRec(s_base->bucket_list, br);
-    } else if (pAnalyzer -> DE_ind_vars && (!bucket || !bucket->first_child)) {
+    } else if (pAnalyzer -> GetDE_ind_vars() && (!bucket || !bucket->first_child)) {
       if (bucket)
         RemoveBucket(s_base, bucket);
-      BUCKET_REC *fvar_bucket = AddVarToBucket(MB_UNNAMED, pAnalyzer -> DE_ind_vars, pAnalyzer);
+      BUCKET_REC *fvar_bucket = AddVarToBucket(MB_UNNAMED, pAnalyzer -> GetDE_ind_vars(), pAnalyzer);
       s_base->bucket_list = AppendBucketRec(s_base->bucket_list, fvar_bucket);
     } else {
-      DefInfo *di =
-        pAnalyzer -> defstore->GetDefInfo(pAnalyzer -> CurrEngineID(), s_base->canonical_ID);
+
+      DefInfo* di = GetDI(pAnalyzer, s_base->canonical_ID);
       if (di && di->arg_list) {
         char user_name[128];
         char canonical_ID[128];
@@ -3697,8 +3795,8 @@ void AnalyzePrimed(MNODE * mml_msup,
       }
     }
   } else {
-    if (pAnalyzer -> DE_ind_vars) {
-      BUCKET_REC *dvar_bucket = AddVarToBucket(MB_DIFF_VAR, pAnalyzer -> DE_ind_vars, pAnalyzer);
+    if (pAnalyzer -> GetDE_ind_vars()) {
+      BUCKET_REC *dvar_bucket = AddVarToBucket(MB_DIFF_VAR, pAnalyzer -> GetDE_ind_vars(), pAnalyzer);
       s_node->bucket_list = AppendBucketRec(s_node->bucket_list, dvar_bucket);
     } else
       TCI_ASSERT(0);
@@ -3743,14 +3841,14 @@ void AnalyzeDotDerivative(MNODE * mml_mover,
       if (bucket)
         RemoveBucket(s_base, bucket);
       s_base->bucket_list = AppendBucketRec(s_base->bucket_list, br);
-    } else if (pAnalyzer -> DE_ind_vars && (!bucket || !bucket->first_child)) {
+    } else if (pAnalyzer -> GetDE_ind_vars() && (!bucket || !bucket->first_child)) {
       if (bucket)
         RemoveBucket(s_base, bucket);
-      BUCKET_REC *fvar_bucket = AddVarToBucket(MB_UNNAMED, pAnalyzer -> DE_ind_vars, pAnalyzer);
+      BUCKET_REC *fvar_bucket = AddVarToBucket(MB_UNNAMED, pAnalyzer -> GetDE_ind_vars(), pAnalyzer);
       s_base->bucket_list = AppendBucketRec(s_base->bucket_list, fvar_bucket);
     } else {
-      DefInfo *di =
-        pAnalyzer -> defstore->GetDefInfo(pAnalyzer -> CurrEngineID(), s_base->canonical_ID);
+
+      DefInfo* di = GetDI(pAnalyzer, s_base->canonical_ID);
       if (di && di->arg_list) {
         char user_name[128];
         char canonical_ID[128];
@@ -3796,8 +3894,8 @@ void AnalyzeDotDerivative(MNODE * mml_mover,
       }
     }
   } else {
-    if (pAnalyzer -> DE_ind_vars) {
-      BUCKET_REC *dvar_bucket = AddVarToBucket(MB_DIFF_VAR, pAnalyzer -> DE_ind_vars, pAnalyzer);
+    if (pAnalyzer -> GetDE_ind_vars()) {
+      BUCKET_REC *dvar_bucket = AddVarToBucket(MB_DIFF_VAR, pAnalyzer -> GetDE_ind_vars(), pAnalyzer);
       s_node->bucket_list = AppendBucketRec(s_node->bucket_list, dvar_bucket);
     } else
       TCI_ASSERT(0);
@@ -3824,10 +3922,10 @@ void AnalyzeSubscriptedFunc(MNODE * mml_msub_node,
     if (bucket)
       RemoveBucket(snode, bucket);
     snode->bucket_list = AppendBucketRec(snode->bucket_list, br);
-  } else if (pAnalyzer -> DE_ind_vars && (!bucket || !bucket->first_child)) {
+  } else if (pAnalyzer -> GetDE_ind_vars() && (!bucket || !bucket->first_child)) {
     if (bucket)
       RemoveBucket(snode, bucket);
-    BUCKET_REC *fvar_bucket = AddVarToBucket(MB_UNNAMED, pAnalyzer -> DE_ind_vars, pAnalyzer);
+    BUCKET_REC *fvar_bucket = AddVarToBucket(MB_UNNAMED, pAnalyzer -> GetDE_ind_vars(), pAnalyzer);
     snode->bucket_list = AppendBucketRec(snode->bucket_list, fvar_bucket);
   }
 
@@ -3926,17 +4024,16 @@ void AnalyzeSubscriptedFence(MNODE* mml_msub_node,
 
 
 BUCKET_REC* AddVarToBucket(U32 bucket_ID,
-                            SEMANTICS_NODE* s_var_list, Analyzer* pAnalyzer)
+                           SEMANTICS_NODE* s_var_list, 
+                           Analyzer* pAnalyzer)
 {
   BUCKET_REC* head = NULL;
   BUCKET_REC* tail;
-
   char* buffer = NULL;
   U32 buffer_ln = 0;
+  SEMANTICS_NODE* sv_rover = s_var_list;
 
-  SEMANTICS_NODE *sv_rover = s_var_list;
-  if (sv_rover->semantic_type == SEM_TYP_MATH_CONTAINER
-      && sv_rover->bucket_list)
+  if (sv_rover->semantic_type == SEM_TYP_MATH_CONTAINER && sv_rover->bucket_list)
     sv_rover = sv_rover->bucket_list->first_child;
 
   while (sv_rover
@@ -3945,47 +4042,48 @@ BUCKET_REC* AddVarToBucket(U32 bucket_ID,
     sv_rover = sv_rover->bucket_list->first_child;
 
   while (sv_rover) {
-    SEMANTICS_NODE *s_curr_var = sv_rover;
+    SEMANTICS_NODE* s_curr_var = sv_rover;
     if (sv_rover->semantic_type == SEM_TYP_POWERFORM) {
-      BUCKET_REC *bucket =
-        FindBucketRec(sv_rover->bucket_list, MB_SCRIPT_BASE);
+      BUCKET_REC* bucket = FindBucketRec(sv_rover->bucket_list, MB_SCRIPT_BASE);
       s_curr_var = bucket->first_child;
     }
 
-    if (s_curr_var->semantic_type == SEM_TYP_VARIABLE
-        && s_curr_var->contents) {
-      bool do_it = true;
-      if (buffer) {
-        char *ptr = strstr(buffer, s_curr_var->contents);
-        if (ptr) {
-          do_it = false;
-        }
-      }
-
-      if (do_it) {
-        SEMANTICS_NODE *s_var = CreateSemanticsNode();
-        s_var->semantic_type = SEM_TYP_VARIABLE;
-
-        if (s_curr_var->canonical_ID) {
-          s_var->canonical_ID = DuplicateString(s_curr_var->canonical_ID);
-          SetSnodeOwner(s_var, pAnalyzer);
+    if (s_curr_var->semantic_type == SEM_TYP_VARIABLE && s_curr_var->contents) {
+      
+        bool do_it = true;
+        if (buffer) {
+          char *ptr = strstr(buffer, s_curr_var->contents);
+          if (ptr) {
+            do_it = false;
+          }
         }
 
-        char* tmp = DuplicateString(s_curr_var->contents);
-		s_var -> contents = tmp;
-        buffer = AppendStr2HeapStr(buffer, buffer_ln, tmp);
+        if (do_it) {
+          SEMANTICS_NODE* s_var = CreateSemanticsNode();
+          s_var->semantic_type = SEM_TYP_VARIABLE;
 
-        BUCKET_REC* fvar_bucket = MakeParentBucketRec(bucket_ID, s_var);
-        
+          if (s_curr_var->canonical_ID) {
+            s_var->canonical_ID = DuplicateString(s_curr_var->canonical_ID);
+            SetSnodeOwner(s_var, pAnalyzer);
+          }
 
-        if (!head)
-          head = fvar_bucket;
-        else
-          tail->next = fvar_bucket;
-        tail = fvar_bucket;
-      }
+          char* tmp = DuplicateString(s_curr_var->contents);
+	    	s_var -> contents = tmp;
+          buffer = AppendStr2HeapStr(buffer, buffer_ln, tmp);
+
+          BUCKET_REC* fvar_bucket = MakeParentBucketRec(bucket_ID, s_var);
+          
+
+          if (!head)
+            head = fvar_bucket;
+          else
+            tail->next = fvar_bucket;
+          tail = fvar_bucket;
+        }
+
     } else
-      TCI_ASSERT(0);
+        TCI_ASSERT(0);
+
     sv_rover = sv_rover->next;
   }
   delete[] buffer;
@@ -4144,60 +4242,31 @@ void AddPrimesCount(SEMANTICS_NODE* snode, MNODE* primes)
   int n_primes = 0;
 
   if (ElementNameIs(primes, "mfenced")) {
-    MNODE* cont = primes->first_kid;
-    if (ElementNameIs(cont, "mn")) {
-      n_primes = atoi(cont->p_chdata);
-      AppendNumber(snode, MB_NPRIMES, n_primes);
-    } else {
-      TCI_ASSERT(0);
-    }
+
+      MNODE* cont = primes->first_kid;
+      if (ElementNameIs(cont, "mn")) {
+        n_primes = atoi(cont->p_chdata);
+        AppendNumber(snode, MB_NPRIMES, n_primes);
+      } else {
+        TCI_ASSERT(0);
+      }
+
   } else {
-    MNODE* rover = primes;
-    if (ElementNameIs(rover, "mrow"))
-      rover = rover->first_kid;
-    // <mo form="postfix">&#x2032;</mo>
-    while (rover) {
-      if (ElementNameIs(rover, "mo"))
-        n_primes++;
-      rover = rover->next;
-    }
-    AppendNumber(snode, MB_NPRIMES, n_primes);
+
+      MNODE* rover = primes;
+      if (ElementNameIs(rover, "mrow"))
+        rover = rover->first_kid;
+      // <mo form="postfix">&#x2032;</mo>
+      while (rover) {
+        if (ElementNameIs(rover, "mo"))
+          n_primes++;
+        rover = rover->next;
+      }
+      AppendNumber(snode, MB_NPRIMES, n_primes);
+
   }
 }
 
-void AppendNumber(SEMANTICS_NODE * snode, U32 bucket_ID, int num)
-{
-  SEMANTICS_NODE *s_nprimes = CreateSemanticsNode();
-  BUCKET_REC* pr_bucket = MakeParentBucketRec(bucket_ID, s_nprimes);
-  snode->bucket_list = AppendBucketRec(snode->bucket_list, pr_bucket);
-  pr_bucket->first_child = s_nprimes;
-  
-
-  s_nprimes->semantic_type = SEM_TYP_NUMBER;
-  char buffer[32];
-  sprintf(buffer, "%d", num);
-  s_nprimes->contents = DuplicateString(buffer);
-}
-
-void RemoveBucket(SEMANTICS_NODE * s_base, BUCKET_REC * targ)
-{
-  BUCKET_REC *prev = NULL;
-  BUCKET_REC *rover = s_base->bucket_list;
-  while (rover) {
-    BUCKET_REC *del = rover;
-    rover = rover->next;
-    if (del == targ) {
-      if (del == s_base->bucket_list)
-        s_base->bucket_list = rover;
-      else
-        prev->next = rover;
-      del->next = NULL;
-      DisposeBucketList(del);
-      break;
-    } else
-      prev = del;
-  }
-}
 
 // Traverse an mml tree that represents an ODE, look for constructs
 // that represent derivatives.  Record the names of the functions
@@ -4214,11 +4283,11 @@ void DetermineODEFuncNames(MNODE* dMML_tree, Analyzer* pAnalyzer)
 
     if (ElementNameIs(rover, "mfrac"))
 
-       f_name = GetFuncNameFromFrac(rover, &src_name, pAnalyzer->mml_entities);
+       f_name = GetFuncNameFromFrac(rover, &src_name, pAnalyzer->GetGrammar());
 
     else if (ElementNameIs(rover, "msub"))
 
-      f_name = GetFuncNameFromSub(rover, &src_name, pAnalyzer->mml_entities);
+      f_name = GetFuncNameFromSub(rover, &src_name, pAnalyzer->GetGrammar());
 
     else if (ElementNameIs(rover, "msup"))
 
@@ -4261,7 +4330,7 @@ void DeterminePDEFuncNames(MNODE * dMML_tree, Analyzer* pAnalyzer)
     char *f_name = NULL;
     const char *src_name = NULL;
     if (ElementNameIs(rover, "mfrac"))
-      f_name = GetFuncNameFromFrac(rover, &src_name, pAnalyzer->mml_entities);
+      f_name = GetFuncNameFromFrac(rover, &src_name, pAnalyzer->GetGrammar());
     if (f_name) {
       char *new_src_name = NULL;
       if (src_name) {
@@ -4292,51 +4361,9 @@ void DisposeODEFuncNames(DE_FUNC_REC * func_names)
   }
 }
 
-// Locate an DE_FUNC_REC by the function name it holds.
-DE_FUNC_REC*  LocateFuncRec(DE_FUNC_REC * f_list,
-                                     const char *canon_name,
-                                     const char *src_name)
-{
-  DE_FUNC_REC *rover = f_list;
-  while (rover) {
-    if (canon_name && rover->zfunc_canon_name &&
-        !strcmp(rover->zfunc_canon_name, canon_name))
-      break;
-    if (src_name && rover->zfunc_src_name &&
-        !strcmp(rover->zfunc_src_name, src_name))
-      break;
-    rover = rover->next;
-  }
-
-  return rover;
-}
-
-// Append a function record to DE_func_names, provided
-//  that the function is not already in the list.
-//  Note that these are mml canonical names here - miy, etc.
-
-DE_FUNC_REC* AppendFuncName(DE_FUNC_REC * f_list, char *f_name,
-                                      char *src_name)
-{
-  DE_FUNC_REC *rv = f_list;
-
-  if (!LocateFuncRec(f_list, f_name, src_name)) {
-    DE_FUNC_REC *new_rec = new DE_FUNC_REC();
-    new_rec->next = f_list;
-    new_rec->zfunc_canon_name = f_name;
-    new_rec->zfunc_src_name = src_name;
-    rv = new_rec;
-  } else {
-    delete[] src_name;
-    delete[] f_name;
-  }
-
-  return rv;
-}
-
 // \frac{df}{dx}
 
-char* GetFuncNameFromFrac(MNODE* mfrac, const char **src_name, Grammar* mml_entities)
+char* GetFuncNameFromFrac(MNODE* mfrac, const char **src_name, const Grammar* mml_entities)
 {
   char* rv = NULL;
 
@@ -4354,7 +4381,7 @@ char* GetFuncNameFromFrac(MNODE* mfrac, const char **src_name, Grammar* mml_enti
   return rv;
 }
 
-char* GetFuncNameFromSub(MNODE * msub, const char **src_name, Grammar* mml_entities)
+char* GetFuncNameFromSub(MNODE * msub, const char **src_name, const Grammar* mml_entities)
 {
   char *rv = NULL;
 
@@ -4383,11 +4410,11 @@ char* GetFuncNameFromSup(MNODE* msup, const char **src_name, Analyzer* pAnalyzer
 
   MNODE* base = msup->first_kid;
   BaseType bt = GetBaseType(msup, false, pAnalyzer);
-  ExpType et = GetExpType(bt, base->next, pAnalyzer);
+  ExpType et = GetExpType(bt, base->next, pAnalyzer->GetGrammar());
 
   if (et == ET_PRIMES) {
     if (ElementNameIs(base, "mi")) {
-      rv = GetCanonicalIDforMathNode(base, pAnalyzer->mml_entities);
+      rv = GetCanonicalIDforMathNode(base, pAnalyzer->GetGrammar());
       *src_name = base->p_chdata;
     }
   }
@@ -4402,19 +4429,19 @@ char* GetFuncNameFromSubSup(MNODE * msubsup, const char **src_name, Analyzer* pA
   MNODE *sub = base->next;
   MNODE *exp = sub->next;
   BaseType bt = GetBaseType(msubsup, false, pAnalyzer);
-  ExpType et = GetExpType(bt, exp, pAnalyzer);
+  ExpType et = GetExpType(bt, exp, pAnalyzer->GetGrammar());
 
   if (et == ET_PRIMES) {
     if (ElementNameIs(base, "mi")) {
       U32 zh_ln = 0;
       rv = AppendStr2HeapStr(rv, zh_ln, "msub");
-      char *tmp = GetCanonicalIDforMathNode(base, pAnalyzer->mml_entities);
+      char *tmp = GetCanonicalIDforMathNode(base, pAnalyzer->GetGrammar());
       *src_name = base->p_chdata;
       if (tmp) {
         rv = AppendStr2HeapStr(rv, zh_ln, tmp);
         delete[] tmp;
       }
-      tmp = GetCanonicalIDforMathNode(sub, pAnalyzer->mml_entities);
+      tmp = GetCanonicalIDforMathNode(sub, pAnalyzer->GetGrammar());
       if (tmp) {
         rv = AppendStr2HeapStr(rv, zh_ln, tmp);
         delete[] tmp;
@@ -4436,15 +4463,16 @@ SEMANTICS_NODE* QualifierToSNODE(MNODE* sub, Analyzer* pAnalyzer)
 // The following bullshit arises because of the careless
 //  use of \limfunc in SWP help documents when \func is needed
 
-PrefixOpIlk GetPrefixOpCode(const char *op_name, SemanticVariant & n_integs, Analyzer* pAnalyzer)
+PrefixOpIlk GetPrefixOpCode(const char* op_name, SemanticVariant& n_integs, const Grammar* mml_entities)
 {
   PrefixOpIlk rv = POI_none;
   n_integs = SNV_None;
 
-  const char *ptr = strchr(op_name, '&');
+  const char* ptr = strchr(op_name, '&');
+
   if (ptr) {
     U32 unicodes[8];
-    int char_tally = ChData2Unicodes(op_name, unicodes, 8, pAnalyzer->mml_entities);
+    int char_tally = ChData2Unicodes(op_name, unicodes, 8, mml_entities);
     if (char_tally && unicodes[0] == 0x2207) {  // nabla
       if (char_tally == 1) {
         rv = POI_gradient;
@@ -4472,136 +4500,136 @@ PrefixOpIlk GetPrefixOpCode(const char *op_name, SemanticVariant & n_integs, Ana
   size_t ln = strlen(op_name);
   switch (ln) {
   case 3:
-    if (!strcmp(op_name, "gcd"))
+    if (StringEqual(op_name, "gcd"))
       rv = POI_listop;
-    else if (!strcmp(op_name, "lcm"))
+    else if (StringEqual(op_name, "lcm"))
       rv = POI_listop;
-    else if (!strcmp(op_name, "max"))
+    else if (StringEqual(op_name, "max"))
       rv = POI_listop;
-    else if (!strcmp(op_name, "min"))
+    else if (StringEqual(op_name, "min"))
       rv = POI_listop;
-    else if (!strcmp(op_name, "det"))
+    else if (StringEqual(op_name, "det"))
       rv = POI_det;
-    else if (!strcmp(op_name, "div"))
+    else if (StringEqual(op_name, "div"))
       rv = POI_divergence;
     break;
 
   case 4:
-    if (!strcmp(op_name, "FDen"))
+    if (StringEqual(op_name, "FDen"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "FInv"))
+    else if (StringEqual(op_name, "FInv"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "TDen"))
+    else if (StringEqual(op_name, "TDen"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "TInv"))
+    else if (StringEqual(op_name, "TInv"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "curl"))
+    else if (StringEqual(op_name, "curl"))
       rv = POI_curl;
-    else if (!strcmp(op_name, "grad"))
+    else if (StringEqual(op_name, "grad"))
       rv = POI_distribution;
     break;
 
   case 5:
-    if (!strcmp(op_name, "FDist"))
+    if (StringEqual(op_name, "FDist"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "TDist"))
+    else if (StringEqual(op_name, "TDist"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "Dirac"))
+    else if (StringEqual(op_name, "Dirac"))
       rv = POI_Dirac;
     break;
 
   case 7:
-    if (!strcmp(op_name, "BetaDen"))
+    if (StringEqual(op_name, "BetaDen"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "BetaInv"))
+    else if (StringEqual(op_name, "BetaInv"))
       rv = POI_distribution;
     break;
 
   case 8:
-    if (!strcmp(op_name, "GammaDen"))
+    if (StringEqual(op_name, "GammaDen"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "GammaInv"))
+    else if (StringEqual(op_name, "GammaInv"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "BetaDist"))
+    else if (StringEqual(op_name, "BetaDist"))
       rv = POI_distribution;
     break;
 
   case 9:
-    if (!strcmp(op_name, "GammaDist"))
+    if (StringEqual(op_name, "GammaDist"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "CauchyDen"))
+    else if (StringEqual(op_name, "CauchyDen"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "CauchyInv"))
+    else if (StringEqual(op_name, "CauchyInv"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "NormalDen"))
+    else if (StringEqual(op_name, "NormalDen"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "NormalInv"))
+    else if (StringEqual(op_name, "NormalInv"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "Heaviside"))
+    else if (StringEqual(op_name, "Heaviside"))
       rv = POI_Dirac;
     break;
 
   case 10:
-    if (!strcmp(op_name, "CauchyDist"))
+    if (StringEqual(op_name, "CauchyDist"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "NormalDist"))
+    else if (StringEqual(op_name, "NormalDist"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "PoissonDen"))
+    else if (StringEqual(op_name, "PoissonDen"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "PoissonInv"))
+    else if (StringEqual(op_name, "PoissonInv"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "UniformDen"))
+    else if (StringEqual(op_name, "UniformDen"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "UniformInv"))
+    else if (StringEqual(op_name, "UniformInv"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "WeibullDen"))
+    else if (StringEqual(op_name, "WeibullDen"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "WeibullInv"))
+    else if (StringEqual(op_name, "WeibullInv"))
       rv = POI_distribution;
     break;
 
   case 11:
-    if (!strcmp(op_name, "PoissonDist"))
+    if (StringEqual(op_name, "PoissonDist"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "UniformDist"))
+    else if (StringEqual(op_name, "UniformDist"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "WeibullDist"))
+    else if (StringEqual(op_name, "WeibullDist"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "BinomialDen"))
+    else if (StringEqual(op_name, "BinomialDen"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "BinomialInv"))
+    else if (StringEqual(op_name, "BinomialInv"))
       rv = POI_distribution;
     break;
 
   case 12:
-    if (!strcmp(op_name, "BinomialDist"))
+    if (StringEqual(op_name, "BinomialDist"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "ChiSquareDen"))
+    else if (StringEqual(op_name, "ChiSquareDen"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "ChiSquareInv"))
+    else if (StringEqual(op_name, "ChiSquareInv"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "HypergeomDen"))
+    else if (StringEqual(op_name, "HypergeomDen"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "HypergeomInv"))
+    else if (StringEqual(op_name, "HypergeomInv"))
       rv = POI_distribution;
     break;
 
   case 13:
-    if (!strcmp(op_name, "ChiSquareDist"))
+    if (StringEqual(op_name, "ChiSquareDist"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "HypergeomDist"))
+    else if (StringEqual(op_name, "HypergeomDist"))
       rv = POI_distribution;
     break;
 
   case 14:
-    if (!strcmp(op_name, "ExponentialDen"))
+    if (StringEqual(op_name, "ExponentialDen"))
       rv = POI_distribution;
-    else if (!strcmp(op_name, "ExponentialInv"))
+    else if (StringEqual(op_name, "ExponentialInv"))
       rv = POI_distribution;
     break;
 
   case 15:
-    if (!strcmp(op_name, "ExponentialDist"))
+    if (StringEqual(op_name, "ExponentialDist"))
       rv = POI_distribution;
     break;
 
@@ -4612,535 +4640,34 @@ PrefixOpIlk GetPrefixOpCode(const char *op_name, SemanticVariant & n_integs, Ana
   return rv;
 }
 
-void ArgsToMatrix(SEMANTICS_NODE * snode, BUCKET_REC * b_list)
+
+
+
+
+
+void ExtractVariables(SEMANTICS_NODE* s_tree, Analyzer* pAnalyzer)
 {
-  int n_rows = 1;
-  int n_cols = 0;
-  BUCKET_REC *brover = b_list;
-  while (brover) {
-    n_cols++;
-    brover = brover->next;
-  }
+  SEMANTICS_NODE* s_rover = s_tree;
 
-  if (n_cols > 1) {
-    SEMANTICS_NODE *s_matrix = CreateSemanticsNode();
-    s_matrix->semantic_type = SEM_TYP_TABULATION;
-    s_matrix->nrows = n_rows;
-    s_matrix->ncols = n_cols;
-    s_matrix->contents = DuplicateString("matrix");
-
-    BUCKET_REC* bucket = MakeParentBucketRec(MB_UNNAMED, s_matrix);
-    
-    s_matrix->bucket_list = AppendBucketRec(s_matrix->bucket_list, b_list);
-
-    snode->bucket_list = AppendBucketRec(snode->bucket_list, bucket);
-  } else
-    snode->bucket_list = AppendBucketRec(snode->bucket_list, b_list);
-}
-
-bool OpArgIsMatrix(MNODE * mml_mi_node)
-{
-  bool rv = false;
-  size_t ln = strlen(mml_mi_node->p_chdata);
-  switch (ln) {
-  case 3:
-    if (!strcmp("div", mml_mi_node->p_chdata))
-      rv = true;
-    break;
-  case 4:
-    if (!strcmp("curl", mml_mi_node->p_chdata))
-      rv = true;
-    break;
-  default:
-    break;
-  }
-
-  return rv;
-}
-
-// Here we nest operands under their operators
-//  ie. convert to a prefix (reverse Polish) data structure
-
-void CreatePrefixForm(SEMANTICS_NODE * s_operator,
-                      SEMANTICS_NODE * l_operand,
-                      SEMANTICS_NODE * r_operand)
-{
-  if (l_operand) {
-    l_operand = RemoveParens(l_operand);
-    BUCKET_REC* arg1_bucket = MakeParentBucketRec(MB_UNNAMED, l_operand);
-    s_operator->bucket_list =
-      AppendBucketRec(s_operator->bucket_list, arg1_bucket);
-    
-    l_operand->prev = NULL;
-    l_operand->next = NULL;
-  }
-  if (r_operand) {
-    r_operand = RemoveParens(r_operand);
-    BUCKET_REC* arg2_bucket = MakeParentBucketRec(MB_UNNAMED, r_operand);
-    s_operator->bucket_list =
-      AppendBucketRec(s_operator->bucket_list, arg2_bucket);
-    
-    r_operand->prev = NULL;
-    r_operand->next = NULL;
-  }
-}
-
-void SetVarAndIntervalLimit(BUCKET_REC * ll_bucket)
-{
-  SEMANTICS_NODE *s_ll;
-  SEMANTICS_NODE *s_ul;
-  bool ll_is_inclusive;
-  bool ul_is_inclusive;
-  SEMANTICS_NODE *s_var = LocateVarAndLimits(ll_bucket, &s_ll, &s_ul,
-                                             ll_is_inclusive,
-                                             ul_is_inclusive);
-  if (s_ll || s_ul) {
-    if (s_ll && s_ll->parent)
-      s_ll->parent->first_child = NULL;
-    if (s_ul && s_ul->parent)
-      s_ul->parent->first_child = NULL;
-    if (s_var && s_var->parent)
-      s_var->parent->first_child = NULL;
-
-    DisposeSList(ll_bucket->first_child);
-    ll_bucket->first_child = NULL;
-
-    SEMANTICS_NODE *interval = CreateSemanticsNode();
-    interval->semantic_type = SEM_TYP_INTERVAL;
-    interval->contents = DuplicateString("interval");
-
-    SemanticVariant interval_type;
-    if (ll_is_inclusive)
-      interval_type =
-        ul_is_inclusive ? SNV_InclInclInterval : SNV_InclExclInterval;
-    else
-      interval_type =
-        ul_is_inclusive ? SNV_ExclInclInterval : SNV_ExclExclInterval;
-    interval->variant = interval_type;
-
-    if (s_ll) {
-      BUCKET_REC* bucket = MakeParentBucketRec(MB_INTERVAL_START, s_ll);
-      interval->bucket_list = AppendBucketRec(interval->bucket_list, bucket);
-      
-    }
-    if (s_ul) {
-      BUCKET_REC *bucket = MakeParentBucketRec(MB_INTERVAL_END, s_ul);
-      interval->bucket_list = AppendBucketRec(interval->bucket_list, bucket);
-      
-    }
-
-    if (s_var) {
-      BUCKET_REC* bucket = MakeParentBucketRec(MB_INTERVAL_VAR, s_var);
-      interval->bucket_list = AppendBucketRec(interval->bucket_list, bucket);
-      
-    }
-    ll_bucket->first_child = interval;
-    interval->parent = ll_bucket;
-  } else
-    TCI_ASSERT(0);
-}
-
-void SetVarArrowExprLimit(BUCKET_REC * ll_bucket)
-{
-  SEMANTICS_NODE *s_expr;
-  int direction;
-  SEMANTICS_NODE *s_var = LocateVarAndExpr(ll_bucket, &s_expr,
-                                           direction);
-  if (s_var) {
-    BUCKET_REC* b_list = NULL;
-    BUCKET_REC* var_bucket = MakeBucketRec(MB_LL_VAR, s_var);
-    b_list = AppendBucketRec(b_list, var_bucket);
-    if (s_var->parent && s_var->parent->first_child == s_var)
-      s_var->parent->first_child = NULL;
-    s_var->parent = var_bucket;
-
-    if (s_expr) {
-      BUCKET_REC* bucket = MakeBucketRec(MB_LL_EXPR, s_expr);
-      b_list = AppendBucketRec(b_list, bucket);
-      if (s_expr->parent && s_expr->parent->first_child == s_expr)
-        s_expr->parent->first_child = NULL;
-      s_expr->parent = bucket;
-    }
-
-    SEMANTICS_NODE *s_direction_num = CreateSemanticsNode();
-    s_direction_num->semantic_type = SEM_TYP_NUMBER;
-    char* num_str = new char[2];
-    num_str[0] = direction + '0'; // '+' -> 1, '-' -> 2
-    num_str[1] = 0;
-    s_direction_num->contents = num_str;
-
-    BUCKET_REC* bucket = MakeParentBucketRec(MB_LL_DIRECTION, s_direction_num);
-    
-    b_list = AppendBucketRec(b_list, bucket);
-
-    DisposeSList(ll_bucket->first_child);
-    ll_bucket->first_child = NULL;
-
-    ll_bucket->parts = b_list;
-  }
-}
-
-int GetLimitFormat(char *op_name, Analyzer* pAnalyzer)
-{
-  int rv = 0;
-
-  U32 ID, subID;
-  const char *p_data;
-  if (pAnalyzer -> mml_entities->
-      GetRecordFromName("LIMFORMS", op_name, strlen(op_name), ID, subID,
-                        &p_data)) {
-    if (p_data && *p_data)
-      rv = atoi(p_data);
-  }
-
-  return rv;
-}
-
-SEMANTICS_NODE* LocateVarAndLimits(BUCKET_REC * l_bucket,
-                                             SEMANTICS_NODE ** s_ll,
-                                             SEMANTICS_NODE ** s_ul,
-                                             bool & ll_is_inclusive,
-                                             bool & ul_is_inclusive
-                                             )
-{
-  SEMANTICS_NODE *rv = NULL;
-  *s_ll = NULL;
-  *s_ul = NULL;
-  ll_is_inclusive = false;
-  ul_is_inclusive = false;
-
-  if (l_bucket && l_bucket->first_child) {
-    SEMANTICS_NODE *s_node = l_bucket->first_child;
-    if (s_node->semantic_type == SEM_TYP_INFIX_OP) {
-      BUCKET_REC *b_rover = s_node->bucket_list;
-      if (b_rover) {
-        SEMANTICS_NODE *e1_list = NULL;
-        SEMANTICS_NODE *relop1 = s_node;
-        SEMANTICS_NODE *e2_list = NULL;
-        SEMANTICS_NODE *relop2 = NULL;
-        SEMANTICS_NODE *e3_list = NULL;
-
-        OpOrderIlk op_order = GetOpOrderIlk(relop1);
-        if (op_order == OOI_element) {
-          e1_list = b_rover->first_child;
-          if (e1_list && e1_list->semantic_type == SEM_TYP_VARIABLE) {
-            rv = e1_list;
-
-            b_rover = b_rover->next;
-            s_node = b_rover->first_child;
-            if (s_node && s_node->bucket_list) {
-              if (s_node->semantic_type == SEM_TYP_BRACKETED_LIST) {
-                b_rover = s_node->bucket_list;
-                *s_ll = b_rover->first_child;
-                *s_ul = b_rover->next->first_child;
-                ll_is_inclusive = true;
-                ul_is_inclusive = true;
-              } else if (s_node->semantic_type == SEM_TYP_PARENED_LIST) {
-                b_rover = s_node->bucket_list;
-                *s_ll = b_rover->first_child;
-                *s_ul = b_rover->next->first_child;
-                ll_is_inclusive = false;
-                ul_is_inclusive = false;
-              } else if (s_node->semantic_type == SEM_TYP_INTERVAL) {
-                BUCKET_REC *b_ll =
-                  FindBucketRec(s_node->bucket_list, MB_INTERVAL_START);
-                if (b_ll) {
-                  if (s_node->variant == SNV_InclInclInterval
-                      || s_node->variant == SNV_InclExclInterval)
-                    ll_is_inclusive = true;
-                  else
-                    ll_is_inclusive = false;
-                  *s_ll = b_ll->first_child;
-                } else
-                  TCI_ASSERT(0);
-                BUCKET_REC *b_ul =
-                  FindBucketRec(s_node->bucket_list, MB_INTERVAL_END);
-                if (b_ul) {
-                  if (s_node->variant == SNV_ExclInclInterval
-                      || s_node->variant == SNV_InclInclInterval)
-                    ul_is_inclusive = true;
-                  else
-                    ul_is_inclusive = false;
-                  *s_ul = b_ul->first_child;
-                } else
-                  TCI_ASSERT(0);
-              } else
-                TCI_ASSERT(0);
-            } else
-              TCI_ASSERT(0);
-          } else
-            TCI_ASSERT(0);
-        } else if (op_order != OOI_none) { // relational
-          s_node = b_rover->first_child;
-          if (s_node->semantic_type == SEM_TYP_INFIX_OP) {
-            relop2 = s_node;
-            e3_list = b_rover->next->first_child;
-            b_rover = s_node->bucket_list;
-          }
-          e1_list = b_rover->first_child;
-          e2_list = b_rover->next->first_child;
-
-          if (e1_list && e1_list->semantic_type == SEM_TYP_VARIABLE) {
-            rv = e1_list;
-            if (op_order == OOI_lessthan || op_order == OOI_lessorequal) {
-              *s_ul = e2_list;
-              if (op_order == OOI_lessorequal)
-                ul_is_inclusive = true;
-            } else if (op_order == OOI_equal) { // equal
-              if (e2_list->semantic_type == SEM_TYP_INFIX_OP) { // n=1..4
-                BUCKET_REC *b_ll = e2_list->bucket_list;
-                if (b_ll
-                    && b_ll->first_child
-                    && b_ll->next && b_ll->next->first_child) {
-                  *s_ll = b_ll->first_child;
-                  *s_ul = b_ll->next->first_child;
-                } else
-                  TCI_ASSERT(0);
-              } else {
-                *s_ll = e2_list;
-                *s_ul = e2_list;
-              }
-            } else if (op_order == OOI_greaterthan || op_order == OOI_greaterorequal) {
-              *s_ll = e2_list;
-              if (op_order == OOI_greaterorequal)
-                ll_is_inclusive = true;
-            }
-          } else if (e2_list
-                     && e2_list->semantic_type == SEM_TYP_VARIABLE) {
-            rv = e2_list;
-            if (relop2) {
-              OpOrderIlk op_order2 = GetOpOrderIlk(relop2);
-              if (op_order == OOI_lessthan || op_order == OOI_lessorequal) {
-                *s_ll = e1_list;
-                if (op_order == OOI_lessorequal)
-                  ll_is_inclusive = true;
-                *s_ul = e3_list;
-                if (op_order2 == OOI_lessorequal)
-                  ul_is_inclusive = true;
-              } else if (op_order == OOI_equal) {
-                *s_ll = e1_list;
-                *s_ul = e3_list;
-              } else if (op_order == OOI_greaterthan || op_order == OOI_greaterorequal) {
-                *s_ll = e3_list;
-                if (op_order2 == OOI_greaterorequal)
-                  ll_is_inclusive = true;
-                *s_ul = e1_list;
-                if (op_order == OOI_greaterorequal)
-                  ul_is_inclusive = true;
-              }
-            } else {
-              if (op_order == OOI_lessthan || op_order == OOI_lessorequal) {
-                *s_ll = e1_list;
-                if (op_order == OOI_lessorequal)
-                  ll_is_inclusive = true;
-              } else if (op_order == OOI_equal) {
-                *s_ll = e1_list;
-                *s_ul = e1_list;
-              } else if (op_order == OOI_greaterthan || op_order == OOI_greaterorequal) {
-                *s_ul = e1_list;
-                if (op_order == OOI_greaterorequal)
-                  ul_is_inclusive = true;
-              }
-            }
-          } else {
-            TCI_ASSERT(0);
-          }
-        } else {
-          TCI_ASSERT(0);
-        }
-      } else {
-        TCI_ASSERT(0);
-      }
-    } else {
-      TCI_ASSERT(0);
-    }
-  } else {
-    TCI_ASSERT(0);
-  }
-  return rv;
-}
-
-SEMANTICS_NODE* LocateVarAndExpr(BUCKET_REC * l_bucket,
-                                           SEMANTICS_NODE ** s_expr,
-                                           int & direction)
-{
-  SEMANTICS_NODE *rv = NULL;
-  *s_expr = NULL;
-  direction = 0;
-
-  if (l_bucket && l_bucket->first_child) {
-    SEMANTICS_NODE *s_node = l_bucket->first_child;
-    if (s_node->semantic_type == SEM_TYP_INFIX_OP) {
-      BUCKET_REC *b_rover = s_node->bucket_list;
-      if (b_rover) {
-        SEMANTICS_NODE *e1_list = NULL;
-        SEMANTICS_NODE *relop = s_node;
-        SEMANTICS_NODE *e2_list = NULL;
-        SEMANTICS_NODE *expr = NULL;
-
-        OpOrderIlk op_order = GetOpOrderIlk(relop);
-        if (op_order == OOI_rightarrow) {
-          // descend to operands
-          e1_list = b_rover->first_child;
-          if (b_rover->next)
-            e2_list = b_rover->next->first_child;
-          else
-            TCI_ASSERT(0);
-
-          if (e1_list && e1_list->semantic_type == SEM_TYP_UCONSTANT) {
-            TCI_ASSERT(0);
-            // Might have mapped "i" to "imaginaryi".
-          }
-          if (e2_list && e2_list->semantic_type == SEM_TYP_UCONSTANT) {
-            // may be approaching \infty
-          }
-
-          if (e1_list && e1_list->semantic_type == SEM_TYP_VARIABLE) {
-            rv = e1_list;
-            expr = e2_list;
-          } else if (e2_list
-                     && e2_list->semantic_type == SEM_TYP_VARIABLE) {
-            rv = e2_list;
-            expr = e1_list;
-          } else {
-            TCI_ASSERT(0);
-          }
-          if (expr->semantic_type == SEM_TYP_POWERFORM) {
-            BUCKET_REC *base_bucket = FindBucketRec(expr->bucket_list,
-                                                    MB_SCRIPT_BASE);
-            BUCKET_REC *script_bucket = FindBucketRec(expr->bucket_list,
-                                                      MB_SCRIPT_UPPER);
-            if (base_bucket && base_bucket->first_child) {
-              if (script_bucket && script_bucket->first_child) {
-                SEMANTICS_NODE *s_super = script_bucket->first_child;
-                if (s_super->semantic_type == SEM_TYP_INFIX_OP
-                    || s_super->semantic_type == SEM_TYP_POSTFIX_OP) {
-                  char *key = s_super->contents;
-                  if (!strcmp(key, "+"))
-                    direction = 1;
-                  else if (!strcmp(key, "&#x2212;"))
-                    direction = 2;
-                  else
-                    TCI_ASSERT(0);
-                }
-              } else {
-                TCI_ASSERT(0);
-              }
-              *s_expr = base_bucket->first_child;
-            } else {
-              TCI_ASSERT(0);
-            }
-          } else {
-            *s_expr = expr;
-            // x -> 0+
-            if (expr->semantic_type == SEM_TYP_POSTFIX_OP) {
-              char *key = expr->contents;
-              if (!strcmp(key, "+"))
-                direction = 1;
-              else if (!strcmp(key, "&#x2212;"))
-                direction = 2;
-              else
-                TCI_ASSERT(0);
-              if (expr->bucket_list && expr->bucket_list->first_child) {
-                *s_expr = expr->bucket_list->first_child;
-              } else
-                TCI_ASSERT(0);
-            }
-          }
-        } else {
-          TCI_ASSERT(0);
-        }
-      } else {
-        TCI_ASSERT(0);
-      }
-    } else {
-      TCI_ASSERT(0);
-    }
-  } else {
-    TCI_ASSERT(0);
-  }
-  return rv;
-}
-
-
-SEMANTICS_NODE* RemoveInfixOps(SEMANTICS_NODE * s_var)
-{
-  SEMANTICS_NODE *rv = s_var;
-
-  SEMANTICS_NODE *s_rover = s_var;
   while (s_rover) {
-    SEMANTICS_NODE *save_next = s_rover->next;
 
-    if (s_rover->semantic_type == SEM_TYP_INFIX_OP
-        && s_rover->bucket_list) {
-      SEMANTICS_NODE *s_list = NULL;
-
-      BUCKET_REC *b_rover = s_rover->bucket_list;
-      while (b_rover) {
-        SEMANTICS_NODE *s_operand = b_rover->first_child;
-        if (s_operand) {
-          s_list = AppendSLists(s_list, s_operand);
-          b_rover->first_child = NULL;
-        }
-        b_rover = b_rover->next;
-      }
-      save_next = s_list;
-      SEMANTICS_NODE *l_anchor = NULL;
-      if (s_rover->prev)
-        l_anchor = s_rover->prev;
-      else
-        rv = s_list;
-      SEMANTICS_NODE *r_anchor = NULL;
-      if (s_rover->next)
-        r_anchor = s_rover->next;
-
-      BUCKET_REC *new_parent = s_rover->parent;
-      DisposeSemanticsNode(s_rover);
-
-      SEMANTICS_NODE *tail = s_list;
-      while (tail->next) {
-        tail->parent = new_parent;
-        tail = tail->next;
-      }
-      tail->parent = new_parent;
-
-      if (l_anchor) {
-        l_anchor->next = s_list;
-        s_list->prev = l_anchor;
-      }
-      if (r_anchor) {
-        tail->next = r_anchor;
-        r_anchor->prev = tail;
-      }
-    } else {
-    }
-    s_rover = save_next;
-  }
-
-  return rv;
-}
-
-void ExtractVariables(SEMANTICS_NODE * s_tree, Analyzer* pAnalyzer)
-{
-  SEMANTICS_NODE *s_rover = s_tree;
-  while (s_rover) {
     if (s_rover->semantic_type == SEM_TYP_VARIABLE) {
-      if (s_rover->contents) {
-        size_t zln = strlen(s_rover->contents);
-        if (zln) {
-          pAnalyzer -> SetIMPLDIFF_FuncNames(
-            AppendFuncName(pAnalyzer -> IMPLDIFF_FuncNames(), NULL, DuplicateString(s_rover->contents) ) );
+
+        if ( StringNonEmpty(s_rover->contents) ){
+            pAnalyzer -> SetIMPLDIFF_FuncNames( AppendFuncName(pAnalyzer -> IMPLDIFF_FuncNames(), NULL, DuplicateString(s_rover->contents) ) );
         }
-      }
+
     } else if (s_rover->bucket_list) {
-      BUCKET_REC *b_rover = s_rover->bucket_list;
-      while (b_rover) {
-        SEMANTICS_NODE *s_list = b_rover->first_child;
-        if (s_list) {
-          ExtractVariables(s_list, pAnalyzer);
+
+        BUCKET_REC* b_rover = s_rover->bucket_list;
+        while (b_rover) {
+          SEMANTICS_NODE* s_list = b_rover->first_child;
+          if (s_list) {
+            ExtractVariables(s_list, pAnalyzer);
+          }
+          b_rover = b_rover->next;
         }
-        b_rover = b_rover->next;
-      }
+
     }
 
     s_rover = s_rover->next;
@@ -5148,189 +4675,8 @@ void ExtractVariables(SEMANTICS_NODE * s_tree, Analyzer* pAnalyzer)
 
 }
 
-void ConvertToPIECEWISElist(SEMANTICS_NODE* s_fence, Analyzer* pAnalyzer)
-{ 
-  if (s_fence && s_fence->bucket_list && s_fence->bucket_list->first_child) {
-    SEMANTICS_NODE *s_matrix = s_fence->bucket_list->first_child;
-
-    if (s_matrix->semantic_type == SEM_TYP_TABULATION) {
-      U32 nrows = s_matrix->nrows;
-      U32 ncols = s_matrix->ncols;
-
-      if (ncols == 2 || ncols == 3) {
-        BUCKET_REC *cell_list = s_matrix->bucket_list;
-        BUCKET_REC *b_list = NULL;
-
-        int row_tally = 0;
-        while (row_tally < nrows) {
-          SEMANTICS_NODE *s_expression = NULL;
-          SEMANTICS_NODE *s_domain = NULL;
-
-          if (LocatePieces(cell_list, row_tally, ncols,
-                           &s_expression, &s_domain)) {
-            BUCKET_REC *new_b = MakeBucketRec(MB_UNNAMED, NULL);
-            b_list = AppendBucketRec(b_list, new_b);
-            SEMANTICS_NODE *s_onepiece =
-              CreateOnePiece(s_expression, s_domain);
-            new_b->first_child = s_onepiece;
-            s_onepiece->parent = new_b;
-          }
-          row_tally++;
-        }
-        DisposeBucketList(s_fence->bucket_list);
-
-        s_fence->bucket_list = b_list;
-        s_fence->semantic_type = SEM_TYP_PIECEWISE_LIST;
-      } else
-        TCI_ASSERT(0);
-    }
-  } else
-    TCI_ASSERT(0);
-}
-
-SEMANTICS_NODE* CreateOnePiece(SEMANTICS_NODE * s_expression,
-                                         SEMANTICS_NODE * s_domain)
-{
-  SEMANTICS_NODE* rv = CreateSemanticsNode();
-  rv->semantic_type = SEM_TYP_ONE_PIECE;
-
-  BUCKET_REC* b_list = MakeParentBucketRec(MB_PIECE_EXPR, rv);
-  b_list->first_child = s_expression;
-  
-
-  BUCKET_REC* new_b = MakeBucketRec(MB_UNNAMED, rv);
-  b_list = AppendBucketRec(b_list, new_b);
-  s_domain = PrefixToInfix(s_domain);
-  new_b->first_child = s_domain;
-  s_domain->parent = new_b;
-
-  rv->bucket_list = b_list;
-
-  return rv;
-}
-
-bool LocatePieces(BUCKET_REC * cell_list,
-                                U32 row_tally, U32 ncols,
-                                SEMANTICS_NODE ** s_expression,
-                                SEMANTICS_NODE ** s_domain)
-{
-  bool rv = false;
-
-  U32 targ = ncols * row_tally;
-  BUCKET_REC *b_rover = cell_list;
-  U32 tally = 0;
-  while (b_rover && tally < targ) {
-    tally++;
-    b_rover = b_rover->next;
-  }
-
-  if (b_rover) {
-    *s_expression = b_rover->first_child;
-    if (b_rover->first_child)
-      b_rover->first_child = NULL;
-    (*s_expression)->parent = NULL;
-    b_rover = b_rover->next;
-    if (b_rover) {
-      if (ncols == 3)
-        b_rover = b_rover->next;
-      if (b_rover) {
-        *s_domain = b_rover->first_child;
-        if (b_rover->first_child)
-          b_rover->first_child = NULL;
-        (*s_domain)->parent = NULL;
-        rv = true;
-      }
-    }
-  }
-  return rv;
-}
 
 
-void FenceToMatrix(SEMANTICS_NODE * operand)
-{
-  if (operand->semantic_type == SEM_TYP_PARENED_LIST
-      || operand->semantic_type == SEM_TYP_BRACKETED_LIST) {
-    int n_rows = 1;
-    int n_cols = 0;
-    BUCKET_REC *brover = operand->bucket_list;
-    while (brover) {
-      n_cols++;
-      brover = brover->next;
-    }
-
-    if (n_cols > 1) {
-      operand->semantic_type = SEM_TYP_TABULATION;
-      operand->nrows = n_rows;
-      operand->ncols = n_cols;
-
-      delete[] operand->contents;
-      operand->contents = DuplicateString("matrix");
-    }
-  }
-}
-
-void FenceToInterval(SEMANTICS_NODE * s_fence)
-{
-  SemanticVariant interval_type = SNV_None;
-  if (s_fence->semantic_type == SEM_TYP_PARENED_LIST) {
-    interval_type = SNV_ExclExclInterval;
-  } else if (s_fence->semantic_type == SEM_TYP_BRACKETED_LIST) {
-    interval_type = SNV_InclInclInterval;
-  } else if (s_fence->semantic_type == SEM_TYP_INTERVAL) {
-    interval_type = s_fence->variant;
-  } else if (s_fence->semantic_type == SEM_TYP_SET ||
-             s_fence->semantic_type == SEM_TYP_GENERIC_FENCE ||
-             s_fence->semantic_type == SEM_TYP_VARIABLE) {
-    return;
-  } else {
-    TCI_ASSERT(!"Unexpected semantic type on fence.");
-  }
-
-  int n_cols = 0;
-  BUCKET_REC *brover = s_fence->bucket_list;
-  while (brover) {
-    n_cols++;
-    brover = brover->next;
-  }
-
-  if (n_cols == 2) {
-    s_fence->semantic_type = SEM_TYP_INTERVAL;
-    s_fence->variant = interval_type;
-
-    delete[] s_fence->contents;
-    s_fence->contents = DuplicateString("interval");
-
-    BUCKET_REC *brover = s_fence->bucket_list;
-    brover->bucket_ID = MB_INTERVAL_START;
-    brover = brover->next;
-    brover->bucket_ID = MB_INTERVAL_END;
-  }
-}
-
-
-// The following must be called when the function "\log" is
-//  encountered and an explicit base is not given as a subscript
-
-void AddDefaultBaseToLOG(SEMANTICS_NODE* snode, Analyzer* pAnalyzer)
-{
-  BUCKET_REC* bucket = MakeBucketRec(MB_LOG_BASE, NULL);
-  snode->bucket_list = AppendBucketRec(snode->bucket_list, bucket);
-
-  SEMANTICS_NODE *log_base = CreateSemanticsNode();
-  bucket->first_child = log_base;
-  log_base->parent = bucket;
-
-  char *ptr;
-  if (pAnalyzer -> log_is_base10) {
-    ptr = "10";
-    log_base->semantic_type = SEM_TYP_NUMBER;
-  } else {
-    ptr = "&#x2147;";
-    log_base->semantic_type = SEM_TYP_UCONSTANT;
-  }
-
-  log_base->contents = DuplicateString(ptr);
-}
 
 // In the course of analyzing an ODE or PDE, the function we're solving
 //  for and the independent variable(s) are decided.  Here we add that
@@ -5338,9 +4684,10 @@ void AddDefaultBaseToLOG(SEMANTICS_NODE* snode, Analyzer* pAnalyzer)
 
 void AppendODEfuncs(SEMANTICS_NODE* rv, DE_FUNC_REC* ODE_fnames, Analyzer* pAnalyzer)
 {
-  DE_FUNC_REC *rover = ODE_fnames;
+  DE_FUNC_REC* rover = ODE_fnames;
+
   while (rover) {
-    SEMANTICS_NODE *s_odefunc = CreateSemanticsNode();
+    SEMANTICS_NODE* s_odefunc = CreateSemanticsNode();
     s_odefunc->semantic_type = SEM_TYP_FUNCTION;
 
     if (rover->zfunc_src_name) {
@@ -5354,12 +4701,13 @@ void AppendODEfuncs(SEMANTICS_NODE* rv, DE_FUNC_REC* ODE_fnames, Analyzer* pAnal
     } else
       TCI_ASSERT(0);
 
-    if (pAnalyzer -> DE_ind_vars) {
-      BUCKET_REC *arg_bucket = AddVarToBucket(MB_UNNAMED, pAnalyzer -> DE_ind_vars, pAnalyzer);
-      s_odefunc->bucket_list =
-        AppendBucketRec(s_odefunc->bucket_list, arg_bucket);
+    if (pAnalyzer -> GetDE_ind_vars()) {
+
+        BUCKET_REC* arg_bucket = AddVarToBucket(MB_UNNAMED, pAnalyzer -> GetDE_ind_vars(), pAnalyzer);
+        s_odefunc->bucket_list = AppendBucketRec(s_odefunc->bucket_list, arg_bucket);
+
     } else
-      TCI_ASSERT(0);
+        TCI_ASSERT(0);
 
     BUCKET_REC* bucket = MakeParentBucketRec(MB_ODEFUNC, s_odefunc);
     
@@ -5370,168 +4718,45 @@ void AppendODEfuncs(SEMANTICS_NODE* rv, DE_FUNC_REC* ODE_fnames, Analyzer* pAnal
 }
 
 
-void Patchdx(SEMANTICS_NODE * s_frac)
-{
-  if (s_frac
-      && s_frac->semantic_type == SEM_TYP_FRACTION
-      && s_frac->bucket_list && s_frac->bucket_list->first_child) {
-    BUCKET_REC *b_num = FindBucketRec(s_frac->bucket_list, MB_NUMERATOR);
-    if (b_num && b_num->first_child) {
-      SEMANTICS_NODE *s_num = b_num->first_child;
-
-      if (s_num->semantic_type == SEM_TYP_INFIX_OP && s_num->bucket_list) {
-        BUCKET_REC *b_rover = s_num->bucket_list;
-        while (b_rover) {
-          SEMANTICS_NODE *s_operand = b_rover->first_child;
-          if (s_operand
-              && s_operand->semantic_type == SEM_TYP_PRECEDENCE_GROUP
-              && s_operand->bucket_list) {
-            SEMANTICS_NODE *s_nest = s_operand->bucket_list->first_child;
-            if (s_nest
-                && s_nest->semantic_type == SEM_TYP_PREFIX_OP
-                && !strcmp(s_nest->contents, "&#x2146;")) {
-              s_num = s_nest;
-              break;
-            }
-          }
-          b_rover = b_rover->next;
-        }
-      }
-
-      if (s_num
-          && s_num->semantic_type == SEM_TYP_PREFIX_OP
-          && !strcmp(s_num->contents, "&#x2146;")) {
-        delete[] s_num->contents;
-        s_num->contents = DuplicateString("1");
-
-        s_num->semantic_type = SEM_TYP_NUMBER;
-        if (s_num->bucket_list) {
-          DisposeBucketList(s_num->bucket_list);
-          s_num->bucket_list = NULL;
-        }
-      } else
-        TCI_ASSERT(0);
-    } else
-      TCI_ASSERT(0);
-  } else
-    TCI_ASSERT(0);
-}
 
 SEMANTICS_NODE* ExtractIndepVar(MNODE * rover, Analyzer* pAnalyzer)
 {
   SEMANTICS_NODE *s_local = NULL;
 
   if (ElementNameIs(rover, "mi")) {
-    s_local = CreateSemanticsNode();
-    int nodes_done;
-    AnalyzeMI(rover, s_local, nodes_done, false, pAnalyzer);
+
+      s_local = CreateSemanticsNode();
+      int nodes_done;
+      AnalyzeMI(rover, s_local, nodes_done, false, pAnalyzer);
+
   } else if (ElementNameIs(rover, "msup")) {
-    MNODE *base = rover->first_kid;
-    s_local = CreateSemanticsNode();
-    BUCKET_REC *base_bucket = MakeBucketRec(MB_SCRIPT_BASE, NULL);
-    s_local->bucket_list = AppendBucketRec(s_local->bucket_list, base_bucket);
-    SEMANTICS_NODE *s_base = GetSemanticsFromNode(base, base_bucket, pAnalyzer);
-    base_bucket->first_child = s_base;
-    s_base->parent = base_bucket;
 
-    BUCKET_REC *power_bucket = MakeBucketRec(MB_SCRIPT_UPPER, NULL);
-    s_local->bucket_list =
-      AppendBucketRec(s_local->bucket_list, power_bucket);
-    SEMANTICS_NODE *s_power = GetSemanticsFromNode(base->next, power_bucket, pAnalyzer);
-    power_bucket->first_child = s_power;
-    s_power->parent = power_bucket;
+      MNODE* base = rover->first_kid;
+      s_local = CreateSemanticsNode();
+      BUCKET_REC* base_bucket = MakeBucketRec(MB_SCRIPT_BASE, NULL);
+      s_local->bucket_list = AppendBucketRec(s_local->bucket_list, base_bucket);
+      SEMANTICS_NODE* s_base = GetSemanticsFromNode(base, base_bucket, pAnalyzer);
+      base_bucket->first_child = s_base;
+      s_base->parent = base_bucket;
 
-    s_local->semantic_type = SEM_TYP_POWERFORM;
-  } else if (ElementNameIs(rover, "mo")
-             && rover->p_chdata && !strcmp(rover->p_chdata, "&#x2062;")) {
+      BUCKET_REC* power_bucket = MakeBucketRec(MB_SCRIPT_UPPER, NULL);
+      s_local->bucket_list = AppendBucketRec(s_local->bucket_list, power_bucket);
+      SEMANTICS_NODE* s_power = GetSemanticsFromNode(base->next, power_bucket, pAnalyzer);
+      power_bucket->first_child = s_power;
+      s_power->parent = power_bucket;
+      s_local->semantic_type = SEM_TYP_POWERFORM;
+
+  } else if (ElementNameIs(rover, "mo") && StringEqual(rover->p_chdata, "&#x2062;")) {
+
   } else
-    TCI_ASSERT(0);
+
+      TCI_ASSERT(0);
+
   return s_local;
 }
 
-// Currently not used
 
-bool IsVarInSLIST(SEMANTICS_NODE * s_var_list, char *var_nom)
-{
-  bool rv = false;
 
-  SEMANTICS_NODE *sv_rover = s_var_list;
-  while (sv_rover) {
-    SEMANTICS_NODE *s_var = sv_rover;
-    if (sv_rover->semantic_type == SEM_TYP_POWERFORM) {
-      BUCKET_REC *bucket =
-        FindBucketRec(sv_rover->bucket_list, MB_SCRIPT_BASE);
-      s_var = bucket->first_child;
-    }
-
-    if (s_var->semantic_type == SEM_TYP_VARIABLE && s_var->contents) {
-      if (!strcmp(var_nom, s_var->contents)) {
-        rv = true;
-        break;
-      }
-    }
-    sv_rover = sv_rover->next;
-  }
-  return rv;
-}
-
-SEMANTICS_NODE* RemoveParens(SEMANTICS_NODE * s_operand)
-{
-  SEMANTICS_NODE *rv = s_operand;
-  if (s_operand
-      && !s_operand->next
-      && s_operand->bucket_list && !s_operand->bucket_list->next) {
-    if (s_operand->semantic_type == SEM_TYP_GENERIC_FENCE
-        || s_operand->semantic_type == SEM_TYP_PRECEDENCE_GROUP) {
-      rv = s_operand->bucket_list->first_child;
-      s_operand->bucket_list->first_child = NULL;
-
-      BUCKET_REC *parent_bucket = s_operand->parent;
-      s_operand->parent = NULL;
-
-      DisposeSList(s_operand);
-
-      if (rv)
-        rv->parent = parent_bucket;
-      if (parent_bucket)
-        parent_bucket->first_child = rv;
-    }
-  }
-  return rv;
-}
-
-bool IsArgDelimitingFence(MNODE * mml_node)
-{
-  bool rv = false;
-
-  if (ElementNameIs(mml_node, "mfenced")) {
-    U32 l_unicode = '(';
-    U32 r_unicode = ')';
-    if (mml_node->attrib_list) {
-      const char *open_value =
-        GetATTRIBvalue(mml_node->attrib_list, "open");
-      const char *close_value =
-        GetATTRIBvalue(mml_node->attrib_list, "close");
-      if (open_value) {
-        if (*open_value == '&')
-          l_unicode = ASCII2U32(open_value + 3, 16);
-        else
-          l_unicode = open_value[0];
-      }
-      if (close_value) {
-        if (*close_value == '&')
-          r_unicode = ASCII2U32(close_value + 3, 16);
-        else
-          r_unicode = close_value[0];
-      }
-    }
-    if (l_unicode == '(' && r_unicode == ')')
-      rv = true;
-    else if (l_unicode == '[' && r_unicode == ']')
-      rv = true;
-  }
-  return rv;
-}
 
 void CreateSubscriptedVar(MNODE * mml_msub_node,
                                     bool remove_super,
@@ -5545,11 +4770,11 @@ void CreateSubscriptedVar(MNODE * mml_msub_node,
 
     MNODE *rover = mml_msub_node->first_kid;
     if (rover) {
-      char *tmp = GetCanonicalIDforMathNode(rover, pAnalyzer->mml_entities);
+      char *tmp = GetCanonicalIDforMathNode(rover, pAnalyzer->GetGrammar());
       if (tmp) {
         strcat(buffer, tmp);
         delete[] tmp;
-        tmp = GetCanonicalIDforMathNode(rover->next, pAnalyzer->mml_entities);
+        tmp = GetCanonicalIDforMathNode(rover->next, pAnalyzer->GetGrammar());
         if (tmp) {
           strcat(buffer, tmp);
           delete[] tmp;
@@ -5558,7 +4783,7 @@ void CreateSubscriptedVar(MNODE * mml_msub_node,
     }
 	mml_canonical_name = DuplicateString(buffer);
   } else
-    mml_canonical_name = GetCanonicalIDforMathNode(mml_msub_node, pAnalyzer->mml_entities);
+    mml_canonical_name = GetCanonicalIDforMathNode(mml_msub_node, pAnalyzer->GetGrammar());
   if (!mml_canonical_name) {
     snode->error_flag = 1;
     return;
@@ -5579,7 +4804,7 @@ void CreateSubscriptedVar(MNODE * mml_msub_node,
   snode->bucket_list = AppendBucketRec(snode->bucket_list, bucket);
   
 
-  char *base_canonical_name = GetCanonicalIDforMathNode(base, pAnalyzer->mml_entities);
+  char *base_canonical_name = GetCanonicalIDforMathNode(base, pAnalyzer->GetGrammar());
   if (!base_canonical_name) {
     snode->error_flag = 1;
     return;
@@ -5599,10 +4824,9 @@ void CreateSubscriptedVar(MNODE * mml_msub_node,
   
 }
 
-void CreatePowerForm(MNODE * mml_base, MNODE * mml_power,
-                               SEMANTICS_NODE * snode, Analyzer* pAnalyzer)
+void CreatePowerForm(MNODE* mml_base, MNODE* mml_power, SEMANTICS_NODE* snode, Analyzer* pAnalyzer)
 {
-  BUCKET_REC *base_bucket = MakeBucketRec(MB_SCRIPT_BASE, NULL);
+  BUCKET_REC* base_bucket = MakeBucketRec(MB_SCRIPT_BASE, NULL);
   snode->bucket_list = AppendBucketRec(snode->bucket_list, base_bucket);
   SEMANTICS_NODE* s_base = GetSemanticsFromNode(mml_base, base_bucket, pAnalyzer);
   base_bucket->first_child = s_base;
@@ -5617,6 +4841,8 @@ void CreatePowerForm(MNODE * mml_base, MNODE * mml_power,
   snode->semantic_type = SEM_TYP_POWERFORM;
 }
 
+
+
 /* As a MathML tree is processed, nodes that must be given
   a canonical ID may be encountered.  We keep a list that maps
   a canonical ID back to the mml node.  The following 3 functions
@@ -5624,11 +4850,12 @@ void CreatePowerForm(MNODE * mml_base, MNODE * mml_power,
 */
 
 MIC2MMLNODE_REC* AppendIDRec(MIC2MMLNODE_REC* node_IDs_list,
-                                       U32 client_ID,
-                                       char *obj_name, MNODE * mml_node,
-                                       const char *src_markup)
+                             U32 client_ID,
+                             char *obj_name, 
+                             MNODE* mml_node,
+                             const char *src_markup)
 {
-  MIC2MMLNODE_REC *rv = node_IDs_list;
+  MIC2MMLNODE_REC* rv = node_IDs_list;
 
   if (obj_name && mml_node) {
     // obj_name may already be in the list
@@ -5645,13 +4872,13 @@ MIC2MMLNODE_REC* AppendIDRec(MIC2MMLNODE_REC* node_IDs_list,
     new_node->next = NULL;
     new_node->owner_ID = client_ID;
     new_node->canonical_name = DuplicateString(obj_name);
-
     new_node->mml_markup = TNodeToStr(mml_node, NULL, 0);
+
     // Append the new record to the global list
     if (!node_IDs_list)
       rv = new_node;
     else {
-      MIC2MMLNODE_REC *rover = node_IDs_list;
+      MIC2MMLNODE_REC* rover = node_IDs_list;
       while (rover->next)
         rover = rover->next;
       rover->next = new_node;
@@ -5663,11 +4890,13 @@ MIC2MMLNODE_REC* AppendIDRec(MIC2MMLNODE_REC* node_IDs_list,
 }
 
 
+
+
 void AnalyzeBesselFunc(MNODE * mml_msub_node,
                                  SEMANTICS_NODE * snode, int& nodes_done, Analyzer* pAnalyzer)
 {
   nodes_done = 1;
-  char *mml_canonical_name = GetCanonicalIDforMathNode(mml_msub_node, pAnalyzer->mml_entities);
+  char *mml_canonical_name = GetCanonicalIDforMathNode(mml_msub_node, pAnalyzer->GetGrammar());
 
   if (!mml_canonical_name) {
     TCI_ASSERT(0);
@@ -5719,28 +4948,28 @@ bool SetODEvars(MathServiceRequest & msr, MathResult & mr,
     if (p_type == zPT_ASCII_text) {
       // i_var entered as "x"
       TCI_ASSERT(0);
-      pAnalyzer -> DE_ind_vars = CreateSemanticsNode();
-      pAnalyzer -> DE_ind_vars->semantic_type = SEM_TYP_VARIABLE;
-      pAnalyzer -> DE_ind_vars->contents = DuplicateString(i_var);
+      pAnalyzer -> SetDE_ind_vars( CreateSemanticsNode() );
+      pAnalyzer -> GetDE_ind_vars()->semantic_type = SEM_TYP_VARIABLE;
+      pAnalyzer -> GetDE_ind_vars()->contents = DuplicateString(i_var);
     } else if (p_type == zPT_ASCII_mmlmarkup) {
       // If "i_var" comes from a chambase dialog (as it should)
       //   it will contain something like "<mi>x</mi>"
-      pAnalyzer -> DE_ind_vars = CreateSTreeFromMML(i_var, pAnalyzer);
+      pAnalyzer -> SetDE_ind_vars( CreateSTreeFromMML(i_var, pAnalyzer) );
     } else {
       TCI_ASSERT(0);
     }
     mr.PutResultCode(CR_undefined);
   } else {
-    pAnalyzer -> DE_ind_vars = DetermineIndepVar(dMML_tree, pAnalyzer);
+    pAnalyzer -> SetDE_ind_vars( DetermineIndepVar(dMML_tree, pAnalyzer) );
 
-    if (!pAnalyzer -> DE_ind_vars) {
+    if (!pAnalyzer -> GetDE_ind_vars()) {
       if (UI_cmd_ID == CCID_Solve_ODE_Numeric) {
         char buffer[80];
         ChooseIndVar(dMML_tree, buffer);
 
-        pAnalyzer -> DE_ind_vars = CreateSemanticsNode();
-        pAnalyzer -> DE_ind_vars->semantic_type = SEM_TYP_VARIABLE;
-        pAnalyzer -> DE_ind_vars->contents = DuplicateString(buffer);
+        pAnalyzer -> SetDE_ind_vars( CreateSemanticsNode() );
+        pAnalyzer -> GetDE_ind_vars()->semantic_type = SEM_TYP_VARIABLE;
+        pAnalyzer -> GetDE_ind_vars()->contents = DuplicateString(buffer);
 
         mr.PutResultCode(CR_undefined);
       } else {
@@ -5767,14 +4996,14 @@ bool SetIMPLICITvars(MathServiceRequest & msr, MathResult & mr, Analyzer* pAnaly
     if (p_type == zPT_ASCII_text) {
       // i_var entered as "x"
       TCI_ASSERT(0);
-      TCI_ASSERT(!pAnalyzer -> IMPLDIFF_ind_var);  // global var - must be NULL here!
-      pAnalyzer -> IMPLDIFF_ind_var = CreateSemanticsNode();
-      pAnalyzer -> IMPLDIFF_ind_var->semantic_type = SEM_TYP_VARIABLE;
-      pAnalyzer -> IMPLDIFF_ind_var->contents = DuplicateString(i_var);
+      TCI_ASSERT(!pAnalyzer -> GetIMPLDIFF_ind_var());  // global var - must be NULL here!
+      pAnalyzer -> SetIMPLDIFF_ind_var( CreateSemanticsNode() );
+      pAnalyzer -> GetIMPLDIFF_ind_var()->semantic_type = SEM_TYP_VARIABLE;
+      pAnalyzer -> GetIMPLDIFF_ind_var()->contents = DuplicateString(i_var);
     } else if (p_type == zPT_ASCII_mmlmarkup) {
       // If "i_var" comes from a chambase dialog (as it should)
       //   it will contain something like "<mi>x</mi>"
-      pAnalyzer -> IMPLDIFF_ind_var = CreateSTreeFromMML(i_var, pAnalyzer);
+      pAnalyzer -> SetIMPLDIFF_ind_var( CreateSTreeFromMML(i_var, pAnalyzer) );
     } else
       TCI_ASSERT(0);
 
@@ -5808,10 +5037,10 @@ bool SetIMPLICITvars(MathServiceRequest & msr, MathResult & mr, Analyzer* pAnaly
 
 void SetSnodeOwner(SEMANTICS_NODE* snode, Analyzer* pAnalyzer)
 {
-  if (snode && snode->canonical_ID
-      && pAnalyzer -> defstore && pAnalyzer -> CurrClientID() && pAnalyzer -> CurrEngineID()) {
-    DefInfo *di = pAnalyzer -> defstore->GetDefInfo(pAnalyzer -> CurrEngineID(),
-                                       snode->canonical_ID);
+  if (snode) {
+    
+    DefInfo* di = GetDI(pAnalyzer, snode->canonical_ID);
+
     if (di)
       snode->owner_ID = di->owner_ID;
     else
@@ -5821,13 +5050,31 @@ void SetSnodeOwner(SEMANTICS_NODE* snode, Analyzer* pAnalyzer)
   }
 }
 
-AccentType GetAboveType(BaseType base_type, MNODE * accent, Analyzer* pAnalyzer)
+
+void SetSnodeOwner(SEMANTICS_NODE* snode, DefStore* ds, U32 eng_id, U32 client_id)
+{
+  if (snode) {
+    
+    DefInfo* di = GetDI(ds, eng_id, snode->canonical_ID);
+
+    if (di)
+      snode->owner_ID = di->owner_ID;
+    else
+      snode->owner_ID = client_id;
+  } else {
+    TCI_ASSERT(0);
+  }
+}
+
+
+
+AccentType GetAboveType(BaseType base_type, MNODE* accent, const Grammar* mml_entities)
 {
   AccentType rv = OT_NONE;
 
   if (accent && ElementNameIs(accent, "mo")) {
     U32 unicodes[8];
-    int content_tally = ChData2Unicodes(accent->p_chdata, unicodes, 8, pAnalyzer->mml_entities);
+    int content_tally = ChData2Unicodes(accent->p_chdata, unicodes, 8, mml_entities);
     if (content_tally == 1) {
       switch (unicodes[0]) {
       case 0x0302:             // &Hat;    
@@ -5915,7 +5162,7 @@ SEMANTICS_NODE* CreateSTreeFromMML(const char *mml_str, Analyzer* pAnalyzer)
   SEMANTICS_NODE *rv = NULL;
 
   if (mml_str) {
-    MNODE *var = pAnalyzer -> mml_tree_gen->MMLstr2Tree(mml_str);
+    MNODE *var = pAnalyzer -> GetMMLTreeGen() -> MMLstr2Tree(mml_str);
     if (var) {
       int nodes_done = 0;
       rv = SNodeFromMNodes(var, nodes_done, false, pAnalyzer);
@@ -5947,36 +5194,41 @@ void MSUB2FuncCall(MNODE * mml_msub_node, SEMANTICS_NODE * snode, Analyzer* pAna
   }
 }
 
-void OverridePrefsOnLHS(MNODE * dMML_tree, Analyzer* pAnalyzer)
+void OverridePrefsOnLHS(MNODE* dMML_tree, Analyzer* pAnalyzer)
 {
   if (dMML_tree) {
-    MNODE *m_rover = dMML_tree;
+    
+    MNODE* m_rover = dMML_tree;
+    
     if (ElementNameIs(dMML_tree, "math"))
       m_rover = dMML_tree->first_kid;
 
-    if (ElementNameIs(m_rover, "mrow")
-        && !m_rover->next)
+    if (ElementNameIs(m_rover, "mrow") && !m_rover->next)
       m_rover = m_rover->first_kid;
 
-    if (m_rover && ElementNameIs(m_rover, "mi")
-        && m_rover->next && ElementNameIs(m_rover->next, "mo")) {
+    if (ElementNameIs(m_rover, "mi") && m_rover->next && ElementNameIs(m_rover->next, "mo")) {
+      
       const char* src_token = m_rover->p_chdata;
-      if (!strcmp(src_token, "i"))
-        pAnalyzer -> i_is_imaginary = false;
-      else if (!strcmp(src_token, "j"))
-        pAnalyzer -> j_is_imaginary = false;
-      else if (!strcmp(src_token, "e"))
-        pAnalyzer -> e_is_Euler = false;
+      if (StringEqual(src_token, "i"))
+        pAnalyzer -> Set_i_is_imaginary( false );
+      else if (StringEqual(src_token, "j"))
+        pAnalyzer -> Set_j_is_imaginary( false );
+      else if (StringEqual(src_token, "e"))
+        pAnalyzer -> Set_e_is_Euler( false );
     }
   }
 }
+
+
 
 // Sometimes, Fixup will introduce InvisibleTimes when what was really meant is ApplyFunction.
 // (But Fixup doesn't know the context so it actually did the right thing.)
 void OverrideInvisibleTimesOnLHS(MNODE * dMML_tree, Analyzer* pAnalyzer)
 {
   if (dMML_tree) {
-    MNODE *m_rover = dMML_tree;
+
+    MNODE* m_rover = dMML_tree;
+
     if (ElementNameIs(dMML_tree, "math"))
       m_rover = dMML_tree->first_kid;
 
@@ -5987,10 +5239,9 @@ void OverrideInvisibleTimesOnLHS(MNODE * dMML_tree, Analyzer* pAnalyzer)
       m_rover = m_rover->first_kid;
 
     //TODO deal with embellished functions (non-SWP feature)
-    if (m_rover && ElementNameIs(m_rover, "mi")
-        && m_rover->next && ElementNameIs(m_rover->next, "mo")) {
+    if (ElementNameIs(m_rover, "mi") && ElementNameIs(m_rover->next, "mo")) {
       const char* src_token = m_rover->next->p_chdata;
-      if (src_token && !strcmp(src_token, "&#x2062;") && m_rover->next->next) {
+      if (StringEqual(src_token, "&#x2062;") && m_rover->next->next) {
         if (IsArgDelimitingFence(m_rover->next->next)) {
           //super ugly, but what else to do?
           delete m_rover->next->p_chdata;
@@ -6001,66 +5252,73 @@ void OverrideInvisibleTimesOnLHS(MNODE * dMML_tree, Analyzer* pAnalyzer)
   }
 }
 
-void CreateSubstBucket(MNODE * subst, SEMANTICS_NODE * snode,
-                                 bool is_lower, Analyzer* pAnalyzer)
+
+
+void CreateSubstBucket(MNODE* subst, SEMANTICS_NODE* snode, bool is_lower, Analyzer* pAnalyzer)
 {
   U32 b_ID = is_lower ? MB_SUBST_LOWER : MB_SUBST_UPPER;
 
   if (subst) {
     bool is_list = false;
-    MNODE *m_rover = subst;
+    MNODE* m_rover = subst;
     if (ElementNameIs(m_rover, "mrow")) {
-      MNODE* child1 = m_rover->first_kid;
-      if (child1 && child1->next
-          && child1->next->p_chdata && !strcmp(child1->next->p_chdata, ",")) {
-        m_rover = child1;
-        is_list = true;
-      }
+      
+        MNODE* child1 = m_rover->first_kid;
+        if (child1 && child1->next && ContentIs(child1->next, ",")) {
+          m_rover = child1;
+          is_list = true;
+        }
+
     }
 
     if (is_list) {
-      while (m_rover) {
+
+        while (m_rover) {
+          BUCKET_REC* subst_bucket = MakeBucketRec(b_ID, NULL);
+          snode->bucket_list = AppendBucketRec(snode->bucket_list, subst_bucket);
+          SEMANTICS_NODE* sl_subst = GetSemanticsFromNode(m_rover, subst_bucket, pAnalyzer);
+          subst_bucket->first_child = sl_subst;
+          sl_subst->parent = subst_bucket;
+
+          if (m_rover->next) {
+            m_rover = m_rover->next;
+            if (ElementNameIs(m_rover, "mo") && ContentIs(m_rover, ",")) {
+              m_rover = m_rover->next;
+            } else
+              break;
+          } else
+            break;
+        }
+
+    } else {
+
         BUCKET_REC *subst_bucket = MakeBucketRec(b_ID, NULL);
         snode->bucket_list = AppendBucketRec(snode->bucket_list, subst_bucket);
         SEMANTICS_NODE *sl_subst = GetSemanticsFromNode(m_rover, subst_bucket, pAnalyzer);
         subst_bucket->first_child = sl_subst;
         sl_subst->parent = subst_bucket;
 
-        if (m_rover->next) {
-          m_rover = m_rover->next;
-          if (ElementNameIs(m_rover, "mo")
-              && !strcmp(m_rover->p_chdata, ",")) {
-            m_rover = m_rover->next;
-          } else
-            break;
-        } else
-          break;
-      }
-    } else {
-      BUCKET_REC *subst_bucket = MakeBucketRec(b_ID, NULL);
-      snode->bucket_list = AppendBucketRec(snode->bucket_list, subst_bucket);
-      SEMANTICS_NODE *sl_subst = GetSemanticsFromNode(m_rover, subst_bucket, pAnalyzer);
-      subst_bucket->first_child = sl_subst;
-      sl_subst->parent = subst_bucket;
     }
   }
 }
 
 
-SEMANTICS_NODE* DefToSemanticsList(MNODE * dMML_tree,
-                                             int& error_code, Analyzer* pAnalyzer)
+
+
+// Called only in BuildSemanticsTree
+
+SEMANTICS_NODE* DefToSemanticsList(MNODE* dMML_tree, int& error_code, Analyzer* pAnalyzer)
 {
-  SEMANTICS_NODE *rv = NULL;
+  SEMANTICS_NODE* rv = NULL;
   error_code = 0;
 
   OverridePrefsOnLHS(dMML_tree, pAnalyzer);
   OverrideInvisibleTimesOnLHS(dMML_tree, pAnalyzer);
 
-
   if (ElementNameIs(dMML_tree, "math")) {
     rv = CreateSemanticsNode();
-
     rv->semantic_type = SEM_TYP_MATH_CONTAINER;
+
     if (dMML_tree->first_kid) {
       MNODE *cont = dMML_tree->first_kid;
       // descend into a redundant mrow, if it exists
@@ -6068,15 +5326,15 @@ SEMANTICS_NODE* DefToSemanticsList(MNODE * dMML_tree,
         cont = cont->first_kid;
 
       if (cont) {
-        BUCKET_REC *new_a_rec = MakeBucketRec(MB_UNNAMED, NULL);
+        BUCKET_REC* new_a_rec = MakeBucketRec(MB_UNNAMED, NULL);
         rv->bucket_list = AppendBucketRec(NULL, new_a_rec);
+        SEMANTICS_NODE* s_node = GetDefSList(cont, new_a_rec, ALL_NODES, error_code, pAnalyzer);
 
-        SEMANTICS_NODE *s_node =
-          GetDefSList(cont, new_a_rec, ALL_NODES, error_code, pAnalyzer);
         if (!error_code) {
           new_a_rec->first_child = s_node;
           s_node->parent = new_a_rec;
         }
+
       } else {
         error_code = 1;
       }
@@ -6091,31 +5349,35 @@ SEMANTICS_NODE* DefToSemanticsList(MNODE * dMML_tree,
   return rv;
 }
 
-SEMANTICS_NODE* GetDefSList(MNODE * dMML_list,
-                            BUCKET_REC * parent_bucket,
-                             int mml_node_lim, int& error_code, Analyzer* pAnalyzer)
+SEMANTICS_NODE* GetDefSList(MNODE* dMML_list,
+                            BUCKET_REC* parent_bucket,
+                            int mml_node_lim, 
+                            int& error_code, 
+                            Analyzer* pAnalyzer)
 {
-  SEMANTICS_NODE *head = NULL;
-  SEMANTICS_NODE *tail;
+  SEMANTICS_NODE* head = NULL;
+  SEMANTICS_NODE* tail;
 
   int mml_nodes_done = 0;
-  MNODE *rover = dMML_list;
+  MNODE* rover = dMML_list;
+
   while (rover && mml_nodes_done < mml_node_lim && !error_code) {
-    SEMANTICS_NODE *new_node = NULL;
+    SEMANTICS_NODE* new_node = NULL;
     // Look ahead in the MML list for an operator.
     OpIlk op_ilk;
     int advance;
-    MNODE *mo = LocateOperator(rover, op_ilk, advance);
+    MNODE* mo = LocateOperator(rover, op_ilk, advance);
+
     bool opIsAF = false;
-    if (mo && mo->p_chdata && !strcmp(mo->p_chdata,"&#x2061;"))
+    if (ContentIs(mo,"&#x2061;"))
       opIsAF = true;
 
     int mml_nodes_remaining = mml_node_lim - mml_nodes_done;
     if (mo && mml_nodes_remaining > 1  && !opIsAF) {
-      if (mo->p_chdata
-          && (!strcmp(mo->p_chdata, "=") || !strcmp(mo->p_chdata, ":="))) {
-        SEMANTICS_NODE *l_operand = NULL;
-        SEMANTICS_NODE *r_operand = NULL;
+      if ( (ContentIs(mo, "=") || ContentIs(mo, ":="))) {
+        
+        SEMANTICS_NODE* l_operand = NULL;
+        SEMANTICS_NODE* r_operand = NULL;
 
         if (op_ilk == OP_infix || op_ilk == OP_postfix) {
           if (head) {
@@ -6218,80 +5480,6 @@ SEMANTICS_NODE* GetDefSList(MNODE * dMML_list,
 // Utilities
 
 
-MNODE* LocateOperator(MNODE* mml_list, OpIlk &op_ilk, int& advance)
-{
-  MNODE *rv = NULL;
-  op_ilk = OP_none;
-  advance = 0;
-
-  MNODE* rover = mml_list;
-  while (rover) {
-    const char* mml_element = rover->src_tok;
-
-    size_t ln = strlen(mml_element);
-
-    bool embellished = true;
-    MNODE* key = NULL;
-    switch (ln) {
-    case 2:
-      if (!strcmp(mml_element, "mi")) {
-
-      } else if (!strcmp(mml_element, "mo")) {
-        key = rover;
-        embellished = false;
-      }
-      break;
-    case 4:
-      if (!strcmp(mml_element, "msup")) {
-        key = rover->first_kid;
-      } else if (!strcmp(mml_element, "msub")) {
-        key = rover->first_kid;
-      }
-      break;
-    case 5:
-      if (!strcmp(mml_element, "mover")) {
-        key = rover->first_kid;
-      }
-      break;
-    case 6:
-      if (!strcmp(mml_element, "munder")) {
-        key = rover->first_kid;
-      }
-      break;
-    case 7:
-      if (!strcmp(mml_element, "msubsup")) {
-        key = rover->first_kid;
-      }
-      break;
-    case 10:
-      if (!strcmp(mml_element, "munderover")) {
-        key = rover->first_kid;
-      }
-      break;
-    default:
-      break;
-    }
-
-    // Check the current node for the target attribute
-    if (key && ElementNameIs(key, "mo")) {
-
-       const char *attr_val = GetATTRIBvalue(key->attrib_list, "form");
-      if (attr_val)
-        op_ilk = StringToOpIlk(attr_val);
-      else
-        op_ilk = OP_infix;
-
-      rv = rover;
-      if (embellished && op_ilk != OP_prefix)
-        TCI_ASSERT(0);
-      break;
-    }
-    advance++;
-    rover = rover->next;
-  }
-  return rv;
-}
-
 
 
 int GetVarLimType(char *op_name, MNODE * base)
@@ -6327,50 +5515,6 @@ int GetVarLimType(char *op_name, MNODE * base)
   return rv;
 }
 
-
-OpOrderIlk GetOpOrderIlk(SEMANTICS_NODE* relop)
-{
-  OpOrderIlk rv = OOI_none;
-
-  if (relop && relop->contents) {
-    char *data = relop->contents;
-    U32 unicode = 0;
-    char *ptr = strstr(data, "&#x");
-    if (ptr)
-      unicode = ASCII2U32(ptr + 3, 16);
-    else
-      unicode = data[0];
-
-    switch (unicode) {
-    case 0x3c:
-      rv = OOI_lessthan;
-      break;
-    case 0x2264:
-      rv = OOI_lessorequal;
-      break;
-    case 0x3d:
-      rv = OOI_equal;
-      break;
-    case 0x3e:
-      rv = OOI_greaterthan;
-      break;
-    case 0x2265:
-      rv = OOI_greaterorequal;
-      break;
-    case 0x2208:
-      rv = OOI_element;
-      break;
-    case 0x2192:
-      rv = OOI_rightarrow;
-      break;
-    default:
-      break;
-    }
-  } else {
-    TCI_ASSERT(!"No operator contents.");
-  }
-  return rv;
-}
 
 
 IdentIlk GetMSIilk(char *msi_class)
@@ -6479,7 +5623,7 @@ bool IsWhiteText(const char *z_text)
 
 */
 
-char* GetCanonicalIDforMathNode(MNODE* mml_node, Grammar* mml_entities)
+char* GetCanonicalIDforMathNode(const MNODE* mml_node, const Grammar* mml_entities)
 {
   char* rv = NULL;
   TCI_ASSERT(CheckLinks(mml_node));
