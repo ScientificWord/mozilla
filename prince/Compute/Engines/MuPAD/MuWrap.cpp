@@ -31,6 +31,7 @@
 #include "nsILocalFile.h"
 #include "nsComponentManagerUtils.h"
 #include "strutils.h"
+#include "DefInfo.h"
 
 MuPADEngine *mupd_eng = NULL;
 

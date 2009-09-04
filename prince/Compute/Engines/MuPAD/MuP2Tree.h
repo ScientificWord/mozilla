@@ -4,6 +4,8 @@
 #define MuPAD2Tree_H
 
 #include "fltutils.h"
+#include "mnode.h"
+
 
 class MuPAD2Tree
 {

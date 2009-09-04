@@ -9,6 +9,7 @@
 #include "PrefStor.h"
 #include "CompEngine.h"
 #include "Grammar.h"
+#include "DefInfo.h"
 #include "fltutils.h"
 #include "xpcom-config.h"
 #include "nsStringAPI.h"

@@ -3,6 +3,7 @@
 #include "MML2Tree.h"
 #include "CmpTypes.h"
 #include "attriblist.h"
+#include "mnode.h"
 #include <string.h>
 #include <ctype.h>
 

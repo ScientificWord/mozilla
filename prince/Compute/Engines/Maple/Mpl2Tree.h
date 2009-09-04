@@ -4,6 +4,8 @@
 #define Maple2Tree_H
 
 #include "fltutils.h"
+#include "mnode.h"
+
 
 class Maple2Tree
 {

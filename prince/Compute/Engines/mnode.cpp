@@ -7,17 +7,24 @@
 
 bool ElementNameIs(const MNODE* pNode, const char* str)
 {
-  return StringEqual(pNode->src_tok, str);
+  if (pNode == NULL)
+    return false;
+  else
+    return StringEqual(pNode->src_tok, str);
 }
 
 void SetElementName(MNODE* pNode, const char* str)
 {
+  TCI_ASSERT( pNode != NULL );
   strcpy(pNode->src_tok, str);
 }
 
 bool ContentIs(const MNODE* pNode, const char* str)
 {
-  return StringEqual(pNode->p_chdata, str);
+  if (pNode == NULL)
+    return false;
+  else
+    return StringEqual(pNode->p_chdata, str);
 }
 
 void SetContent(MNODE* pNode, const char* str)
@@ -383,17 +390,17 @@ void CallDebugger()
 // Follows links associated with the node and
 // tries to crash if anyone has a bad pointer.
 
-bool CheckLinks(MNODE* me)
+bool CheckLinks(const MNODE* me)
 {
    if (me == 0) 
     return true;
    
-   MNODE* parent = me -> parent;    
-   MNODE* first = me -> first_kid;
+   const MNODE* parent = me -> parent;    
+   const MNODE* first = me -> first_kid;
 
    
    
-   MNODE* rover = first;
+   const MNODE* rover = first;
    while (rover != NULL){
      
      if (rover -> parent != me)	 
@@ -418,10 +425,11 @@ bool CheckLinks(MNODE* me)
 }
 
 
-void GetCurrAttribValue(MNODE* mml_node, 
-                       bool inherit,
-                       char* targ_attr_name, 
-                       char *buffer, int lim)
+void GetCurrAttribValue(const MNODE* mml_node, 
+                        bool inherit,
+                        const char* targ_attr_name, 
+                        char* buffer, 
+                        int lim)
 {
   // Check the current node for the target attribute
   const char *attr_val = GetATTRIBvalue(mml_node->attrib_list, targ_attr_name);
@@ -448,7 +456,7 @@ void GetCurrAttribValue(MNODE* mml_node,
 }
 
 
-void SemanticAttribs2Buffer(char* buffer, MNODE* mml_node, int lim)
+void SemanticAttribs2Buffer(char* buffer, const MNODE* mml_node, int lim)
 {
   TCI_ASSERT(CheckLinks(mml_node));
   GetCurrAttribValue(mml_node, true, "mathvariant", buffer, lim);
@@ -918,6 +926,140 @@ void JBM::DumpTList(MNODE * t_list, int indent)
 void JBM::DumpTNode(MNODE * t_node, int indent) {}
 void JBM::DumpTList(MNODE * t_list, int indent) {}
 #endif
+
+
+
+MNODE* LocateOperator(MNODE* mml_list, OpIlk &op_ilk, int& advance)
+{
+  MNODE* rv = NULL;
+  op_ilk = OP_none;
+  advance = 0;
+
+  MNODE* rover = mml_list;
+  while (rover) {
+    const char* mml_element = rover->src_tok;
+
+    size_t ln = strlen(mml_element);
+
+    bool embellished = true;
+    MNODE* key = NULL;
+    switch (ln) {
+    case 2:
+      if (StringEqual(mml_element, "mi")) {
+
+      } else if (StringEqual(mml_element, "mo")) {
+        key = rover;
+        embellished = false;
+      }
+      break;
+    case 4:
+      if (StringEqual(mml_element, "msup")) {
+        key = rover->first_kid;
+      } else if (StringEqual(mml_element, "msub")) {
+        key = rover->first_kid;
+      }
+      break;
+    case 5:
+      if (StringEqual(mml_element, "mover")) {
+        key = rover->first_kid;
+      }
+      break;
+    case 6:
+      if (StringEqual(mml_element, "munder")) {
+        key = rover->first_kid;
+      }
+      break;
+    case 7:
+      if (StringEqual(mml_element, "msubsup")) {
+        key = rover->first_kid;
+      }
+      break;
+    case 10:
+      if (StringEqual(mml_element, "munderover")) {
+        key = rover->first_kid;
+      }
+      break;
+    default:
+      break;
+    }
+
+    // Check the current node for the target attribute
+    if (ElementNameIs(key, "mo")) {
+
+      const char* attr_val = GetATTRIBvalue(key->attrib_list, "form");
+      if (attr_val)
+        op_ilk = StringToOpIlk(attr_val);
+      else
+        op_ilk = OP_infix;
+
+      rv = rover;
+      if (embellished && op_ilk != OP_prefix)
+        TCI_ASSERT(0);
+      break;
+    }
+    advance++;
+    rover = rover->next;
+  }
+  return rv;
+}
+
+
+
+bool OpArgIsMatrix(MNODE* mml_mi_node)
+{
+  bool rv = false;
+  size_t ln = strlen(mml_mi_node->p_chdata);
+  switch (ln) {
+  case 3:
+    if (StringEqual("div", mml_mi_node->p_chdata))
+      rv = true;
+    break;
+  case 4:
+    if (StringEqual("curl", mml_mi_node->p_chdata))
+      rv = true;
+    break;
+  default:
+    break;
+  }
+
+  return rv;
+}
+
+
+bool IsArgDelimitingFence(MNODE * mml_node)
+{
+  bool rv = false;
+
+  if (ElementNameIs(mml_node, "mfenced")) {
+    U32 l_unicode = '(';
+    U32 r_unicode = ')';
+    if (mml_node->attrib_list) {
+      const char *open_value =
+        GetATTRIBvalue(mml_node->attrib_list, "open");
+      const char *close_value =
+        GetATTRIBvalue(mml_node->attrib_list, "close");
+      if (open_value) {
+        if (*open_value == '&')
+          l_unicode = ASCII2U32(open_value + 3, 16);
+        else
+          l_unicode = open_value[0];
+      }
+      if (close_value) {
+        if (*close_value == '&')
+          r_unicode = ASCII2U32(close_value + 3, 16);
+        else
+          r_unicode = close_value[0];
+      }
+    }
+    if (l_unicode == '(' && r_unicode == ')')
+      rv = true;
+    else if (l_unicode == '[' && r_unicode == ']')
+      rv = true;
+  }
+  return rv;
+}
+
+
 
 
 
