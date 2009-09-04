@@ -119,62 +119,6 @@ void DisposeBucketList(BUCKET_REC* b_list)
   }
 }
 
-SEMANTICS_NODE* CreateSemanticsNode()
-{
-  SEMANTICS_NODE *rv = new SEMANTICS_NODE;
-  rv->next = NULL;
-  rv->prev = NULL;
-  rv->parent = NULL;
-
-  rv->owner_ID = 0;
-  rv->error_flag = 0;
-  rv->semantic_type = SEM_TYP_UNDEFINED;
-  rv->canonical_ID = NULL;
-  rv->contents = NULL;
-  rv->msi_class = 0;
-  rv->variant = SNV_None;
-  rv->infix_precedence = 0;
-  rv->subtree_type = 0;
-  rv->nrows = 0;
-  rv->ncols = 0;
-  rv->n_sub_args = 0;
-  rv->bucket_list = NULL;
-
-  return rv;
-}
-
-void DisposeSemanticsNode(SEMANTICS_NODE * del)
-{
-  delete[] del->canonical_ID;
-  delete[] del->contents;
-  DisposeBucketList(del->bucket_list);
-  delete del;
-}
-
-void DisposeSList(SEMANTICS_NODE * s_list)
-{
-  SEMANTICS_NODE *del;
-  while (s_list) {
-    del = s_list;
-    s_list = s_list->next;
-    DisposeSemanticsNode(del);
-  }
-}
-
-int SemanticVariant2NumIntegrals(SemanticVariant var)
-{
-  switch (var) {
-  case SNV_singleint:
-  default:
-    return 1;
-  case SNV_doubleint:
-    return 2;
-  case SNV_tripleint:
-    return 3;
-  case SNV_quadint:
-    return 4;
-  }
-}
 
 char *GetBucketName(U32 bucket_ID)
 {
@@ -453,23 +397,6 @@ INPUT_NOTATION_REC* CreateNotationRec()
   return new_struct;
 }
 
-SEMANTICS_NODE* AppendSLists(SEMANTICS_NODE* s_list,
-                             SEMANTICS_NODE* new_tail)
-{
-  if (!s_list) {
-    return new_tail;
-  } else {
-    SEMANTICS_NODE *s_rover = s_list;
-    while (s_rover->next)
-      s_rover = s_rover->next;
-
-    s_rover->next = new_tail;
-    if (new_tail)
-      new_tail->prev = s_rover;
-
-    return s_list;
-  }
-}
 
 
 SEMANTICS_NODE* NestInPGroup(SEMANTICS_NODE* s_list,
@@ -1305,7 +1232,7 @@ void JBM::DumpSList(const SEMANTICS_NODE * semantics_tree) {}
 
 #include "Grammar.h"
 
-bool IsTrigArgFuncName(Grammar* gmr, const char* nom)
+bool IsTrigArgFuncName(const Grammar* gmr, const char* nom)
 {
   U32 ID, subID;
   const char *p_data;
@@ -1319,7 +1246,7 @@ bool IsTrigArgFuncName(Grammar* gmr, const char* nom)
 }
   
 // See also FUNCTIONS section in engine grammar files.
-bool IsReservedFuncName(Grammar *gmr, const char *nom)
+bool IsReservedFuncName(const Grammar* gmr, const char *nom)
 {
   U32 ID, subID;
   const char *p_data;

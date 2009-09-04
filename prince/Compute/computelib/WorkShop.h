@@ -12,6 +12,7 @@ class CompEngine;
 class Grammar;
 class DefStore;
 class PrefsStore;
+class DefInfo;
 
 // Node for list of engines
 

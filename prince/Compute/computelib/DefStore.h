@@ -6,10 +6,12 @@
 #include "CmpTypes.h"
 #include "fltutils.h"
 
+class DefInfo;
+
 class DefStore {
 public:
 
-  DefStore( DefStore* parent_store,U32 client_handle );
+  DefStore( DefStore* parent_store, U32 client_handle );
   ~DefStore();
 
   void      SetParentDefStore( DefStore* parent_store );
