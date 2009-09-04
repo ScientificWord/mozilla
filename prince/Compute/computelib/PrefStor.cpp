@@ -56,9 +56,9 @@ PrefsStore::~PrefsStore()
     delete[] prefs[i];
 }
 
-const char *PrefsStore::GetPref(U32 pref_ID)
+const char* PrefsStore::GetPref(U32 pref_ID)
 {
-  const char *rv = NULL;
+  const char* rv = NULL;
 
   if (pref_ID && pref_ID < CLPF_last) {
     if (prefs[pref_ID])
@@ -71,7 +71,7 @@ const char *PrefsStore::GetPref(U32 pref_ID)
   return rv;
 }
 
-int PrefsStore::SetPref(U32 pref_ID, const char *new_value)
+int PrefsStore::SetPref(U32 pref_ID, const char* new_value)
 {
   int rv = 0;
 

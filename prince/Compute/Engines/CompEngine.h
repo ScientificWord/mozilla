@@ -5,6 +5,7 @@
 
 #include "CmpTypes.h"
 #include "fltutils.h"
+#include "mnode.h"
 #include "msiIEngineWrapper.h"
 #include "nsCOMPtr.h"
 #include "nsILocalFile.h"
@@ -25,6 +26,8 @@ class Analyzer;
 class STree2MML;
 class DefStore;
 class PrefsStore;
+
+
 
 class CompEngine
 {

@@ -4,6 +4,7 @@
 #define MREQUEST_H
 
 #include "CmpTypes.h"
+#include "SNode.h"
 #include <string.h>
 #include <vector>
 using std::vector;

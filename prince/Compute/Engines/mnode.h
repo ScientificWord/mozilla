@@ -5,6 +5,40 @@
 #include "logmsg.h"
 #include "CmpTypes.h"
 
+
+
+/*  As we parse LaTeX, a data structure called a "Parse Tree"
+is generated. Each node in this tree is a "MNODE" struct
+as defined below.
+  Note that this one struct is used for two proposes:
+
+  1. Each object that is represented explicitly by a token,
+     or command, or an environment in the LaTeX file is represented
+     in the parse tree by a MNODE.
+  2. Many implicit higher level container objects are also
+     represented in the parse tree by a MNODE.
+
+  Example:  $x+\frac 12$
+
+  Each node has a tag of the form <n.n.n>, identifying the object
+  represented by the node.
+
+<1.2.0>$ <-> <3.1.24>x <-> <3.13.60>+ <-> <5.1.0>\frac <-> <2.2.0>$
+											  \
+										      <5.1.1> <-> <5.1.2>
+												 \			 \
+									            <3.3.2>1    <3.3.3>2
+
+  There are 7 LaTeX tokens in the examples - note that "\frac" is one
+  token.  In the parse tree, a 2-node sublist appears below the \frac
+  node.  These nodes represent the implicit parts of a fraction,
+  numerator and denominator.  Sublists representing the explicit
+  contents of these parts appear below.
+*/
+
+
+
+
 enum OpIlk {
   OP_none,
   OP_prefix,
@@ -88,10 +122,13 @@ char* TNodeToStr(MNODE * mml_node, char *prefix, int indent);
 
 //void CheckMNODETallies();
 
-void GetCurrAttribValue(MNODE * mml_node, bool inherit,
-                        char *targ_attr, char *buffer, int lim);
+void GetCurrAttribValue(const MNODE* mml_node, 
+                        bool inherit,
+                        const char* targ_attr, 
+                        char* buffer, 
+                        int lim);
 
-void SemanticAttribs2Buffer(char *buffer, MNODE * mml_node, int lim);
+void SemanticAttribs2Buffer(char* buffer, const MNODE* mml_node, int lim);
 
 bool IsDIFFOP(MNODE* mml_frac_node,
               MNODE** m_num_operand, 
@@ -123,9 +160,15 @@ bool IsWhiteSpace(MNODE* mml_node);
 
 
 OpMatrixIntervalType GetOpType(MNODE* mo);
+bool OpArgIsMatrix(MNODE* mml_mi_node);
+bool IsArgDelimitingFence(MNODE* mml_node);
 
 
-bool CheckLinks(MNODE* n);
+MNODE* LocateOperator(MNODE* mml_list, OpIlk& op_ilk, int& advance);
+
+
+
+bool CheckLinks(const MNODE* n);
 
 #ifdef DEBUG
 #define ALLOW_DUMPS

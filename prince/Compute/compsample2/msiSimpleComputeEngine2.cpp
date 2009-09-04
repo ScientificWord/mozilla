@@ -10,6 +10,7 @@
 #include "ComputeDLL.h"
 #include "iCmpTypes.h"
 #include "iCmpIDs.h"
+#include "DefInfo.h"
 #include <stdio.h>
 #include <stdarg.h>
 
