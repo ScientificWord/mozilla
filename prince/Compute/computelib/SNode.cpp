@@ -294,7 +294,7 @@ void AddDefaultBaseToLOG(SEMANTICS_NODE* snode, bool log_is_base10)
   BUCKET_REC* bucket = MakeBucketRec(MB_LOG_BASE, NULL);
   snode->bucket_list = AppendBucketRec(snode->bucket_list, bucket);
 
-  SEMANTICS_NODE *log_base = CreateSemanticsNode();
+  SEMANTICS_NODE* log_base = CreateSemanticsNode();
   bucket->first_child = log_base;
   log_base->parent = bucket;
 
@@ -939,17 +939,14 @@ void CreatePrefixForm(SEMANTICS_NODE * s_operator,
   if (l_operand) {
     l_operand = RemoveParens(l_operand);
     BUCKET_REC* arg1_bucket = MakeParentBucketRec(MB_UNNAMED, l_operand);
-    s_operator->bucket_list =
-      AppendBucketRec(s_operator->bucket_list, arg1_bucket);
+    s_operator->bucket_list = AppendBucketRec(s_operator->bucket_list, arg1_bucket);
     
     l_operand->prev = NULL;
     l_operand->next = NULL;
   }
   if (r_operand) {
     r_operand = RemoveParens(r_operand);
-    BUCKET_REC* arg2_bucket = MakeParentBucketRec(MB_UNNAMED, r_operand);
-    s_operator->bucket_list =
-      AppendBucketRec(s_operator->bucket_list, arg2_bucket);
+    AppendBucketRecord(s_operator->bucket_list, MakeParentBucketRec(MB_UNNAMED, r_operand));
     
     r_operand->prev = NULL;
     r_operand->next = NULL;
