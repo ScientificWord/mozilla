@@ -515,7 +515,7 @@ function doComputeCommand(cmd, editorElement, cmdHandler)
       doComputeSolveRecursion(element, editorElement);
       break;
     case "cmd_compute_Collect":
-      doVarsEvalComputation(element,eng.collect,"<mo>=</mo>",GetComputeString("Collect.title"),"", editorElement, cmd, cmdHandler);
+      doVarsEvalComputation(element, eng.Polynomial_Collect, "<mo>=</mo>",GetComputeString("Collect.title"), "", editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_Divide":
       doComputeDivide(element, "", editorElement, cmd, cmdHandler);
@@ -1360,8 +1360,10 @@ function doVarsComputation(math, label, func, title, editorElement, cmd, cmdHand
 
 function finishVarsComputation(editorElement, o)
 {
+  dump("\n*** finishVarsComputation ***");
   if (o.Cancel)
     return;
+  dump("\n*** Cancel was false");
   var vars = o.vars;
   var mathstr = GetFixedMath(o.theMath);
 //  vars = runFixup(vars);
@@ -1369,7 +1371,8 @@ function finishVarsComputation(editorElement, o)
 
   ComputeCursor(editorElement);
   try {
-    var out = o.theFunc(mathstr,vars);
+    //var out = o.theFunc(mathstr,vars);
+	var out = GetCurrentEngine().perform(mathstr,o.theFunc);
     msiComputeLogger.Received(out);
     appendLabeledResult(out, o.theLabel, o.theMath, editorElement);
   } catch(e) {
@@ -1402,8 +1405,10 @@ function doVarsEvalComputation(math, func, joiner, title, label, editorElement, 
 
 function finishVarsEvalComputation(editorElement, o)
 {
+  dump("\n*** finishVarsEvalComputation ***");
   if (o.Cancel)
     return;
+  dump("\n*** Cancel was false");
   var vars = o.vars;
   var mathstr = GetFixedMath(o.theMath);
 //  vars = runFixup(vars);
@@ -1411,7 +1416,13 @@ function finishVarsEvalComputation(editorElement, o)
   
   ComputeCursor(editorElement);
   try {
-    var out = o.theFunc(mathstr,vars);
+    //var out = o.theFunc(mathstr,vars);
+	var eng = GetCurrentEngine();
+    if (o.theFunc == eng.Polynomial_Collect){
+	  var out = eng.collect(mathstr, vars);
+	}
+	   
+
     msiComputeLogger.Received(out);
     appendResult(out, o.theJoiner, o.theMath, editorElement);
   } catch(e) {
