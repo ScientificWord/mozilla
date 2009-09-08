@@ -93,6 +93,14 @@ BUCKET_REC* AppendBucketRec(BUCKET_REC* a_list, BUCKET_REC* list_to_append)
   }
 }
 
+
+
+void AppendBucketRecord(BUCKET_REC*& a_list, BUCKET_REC* new_a_rec)
+{
+  a_list = 	AppendBucketRec(a_list, new_a_rec);
+}
+
+
 BUCKET_REC* FindBucketRec(BUCKET_REC* a_list, U32 targ_bucket_ID)
 {
   BUCKET_REC *rover = a_list;
