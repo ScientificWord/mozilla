@@ -35,6 +35,7 @@ CPPSRCS = \
   dumputils.cpp \
   logmsg.cpp \
   mnode.cpp \
+  AnalyzerUtils.cpp \
   Analyzer.cpp \
   CompEngine.cpp \
   MML2Tree.cpp \
