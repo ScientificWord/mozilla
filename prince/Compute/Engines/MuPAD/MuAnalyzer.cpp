@@ -281,7 +281,7 @@ void MuAnalyzer::AnalyzePARENGROUP(MNODE* eng_node,
 
     MNODE* contents = eng_node->first_kid;
     BUCKET_REC* obj_bucket = MakeBucketRec(MB_UNNAMED, NULL);
-    item_list = AppendBucketRec(item_list, obj_bucket);
+    AppendBucketRecord(item_list, obj_bucket);
 
     SEMANTICS_NODE* s_cell = GetSemanticsList(contents, obj_bucket);
     obj_bucket->first_child = s_cell;
@@ -352,7 +352,7 @@ void MuAnalyzer::AnalyzeSURD(MNODE * func_node,
       if (item_rover->first_kid) {
         MNODE *contents = item_rover->first_kid;
         BUCKET_REC *item_bucket = MakeBucketRec(MB_ROOT_BASE, NULL);
-        item_list = AppendBucketRec(item_list, item_bucket);
+        AppendBucketRecord(item_list, item_bucket);
         SEMANTICS_NODE *s_cell = GetSemanticsList(contents, item_bucket);
         item_bucket->first_child = s_cell;
       }
@@ -362,7 +362,7 @@ void MuAnalyzer::AnalyzeSURD(MNODE * func_node,
         if (item_rover->first_kid) {
           MNODE *contents = item_rover->first_kid;
           BUCKET_REC *item_bucket = MakeBucketRec(MB_ROOT_EXPONENT, NULL);
-          item_list = AppendBucketRec(item_list, item_bucket);
+          AppendBucketRecord(item_list, item_bucket);
           SEMANTICS_NODE *s_cell = GetSemanticsList(contents, item_bucket);
           item_bucket->first_child = s_cell;
         }
@@ -399,7 +399,7 @@ void MuAnalyzer::AnalyzeBINOMIAL(MNODE * func_node,
       if (item_rover->first_kid) {
         MNODE *contents = item_rover->first_kid;
         BUCKET_REC *item_bucket = MakeBucketRec(MB_NUMERATOR, NULL);
-        item_list = AppendBucketRec(item_list, item_bucket);
+        AppendBucketRecord(item_list, item_bucket);
         SEMANTICS_NODE *s_cell = GetSemanticsList(contents, item_bucket);
         item_bucket->first_child = s_cell;
       }
@@ -409,7 +409,7 @@ void MuAnalyzer::AnalyzeBINOMIAL(MNODE * func_node,
         if (item_rover->first_kid) {
           MNODE *contents = item_rover->first_kid;
           BUCKET_REC *item_bucket = MakeBucketRec(MB_DENOMINATOR, NULL);
-          item_list = AppendBucketRec(item_list, item_bucket);
+          AppendBucketRecord(item_list, item_bucket);
 
           SEMANTICS_NODE *s_cell = GetSemanticsList(contents, item_bucket);
           item_bucket->first_child = s_cell;
@@ -439,7 +439,7 @@ void MuAnalyzer::AnalyzeINTERVAL(MNODE * func_node,
       MNODE *arg1 = args_list->first_kid;
       if (arg1->first_kid) {
         BUCKET_REC *bucket = MakeBucketRec(MB_INTERVAL_START, NULL);
-        snode->bucket_list = AppendBucketRec(snode->bucket_list, bucket);
+        AppendBucketRecord(snode->bucket_list, bucket);
 
         MNODE* contents = arg1->first_kid;
         if (ElementNameIs(contents, "blist")) {
@@ -457,7 +457,7 @@ void MuAnalyzer::AnalyzeINTERVAL(MNODE * func_node,
           MNODE *arg2 = arg1->next;
           if (arg2->first_kid) {
             BUCKET_REC *bucket = MakeBucketRec(MB_INTERVAL_END, NULL);
-            snode->bucket_list = AppendBucketRec(snode->bucket_list, bucket);
+            AppendBucketRecord(snode->bucket_list, bucket);
 
             MNODE* contents = arg2->first_kid;
             if (ElementNameIs(contents, "blist")) {
@@ -574,7 +574,7 @@ void MuAnalyzer::AnalyzeINTEGRAL(MNODE * func_Int_node,
       if (arg_rover->first_kid) {
         MNODE *contents = arg_rover->first_kid;
         BUCKET_REC *item_bucket = MakeBucketRec(MB_OPERAND, NULL);
-        item_list = AppendBucketRec(item_list, item_bucket);
+        AppendBucketRecord(item_list, item_bucket);
 
         SEMANTICS_NODE *s_cell = GetSemanticsList(contents, item_bucket);
         item_bucket->first_child = s_cell;
@@ -599,10 +599,10 @@ void MuAnalyzer::AnalyzeINTEGRAL(MNODE * func_Int_node,
 			          MB_LOWERLIMIT	MB_UPPERLIMIT	MB_OPERAND	 MB_INTEG_VAR
           */
           if (contents_rover) {
-            BUCKET_REC *item_bucket = MakeBucketRec(MB_INTEG_VAR, NULL);
-            item_list = AppendBucketRec(item_list, item_bucket);
+            BUCKET_REC* item_bucket = MakeBucketRec(MB_INTEG_VAR, NULL);
+            AppendBucketRecord(item_list, item_bucket);
 
-            SEMANTICS_NODE *s_cell = GetSemanticsList(contents_rover, item_bucket, 1);
+            SEMANTICS_NODE* s_cell = GetSemanticsList(contents_rover, item_bucket, 1);
             item_bucket->first_child = s_cell;
             contents_rover = contents_rover->next;
           } else
@@ -615,7 +615,7 @@ void MuAnalyzer::AnalyzeINTEGRAL(MNODE * func_Int_node,
             contents_rover = contents_rover->first_kid;
 
             BUCKET_REC *item_bucket = MakeBucketRec(MB_LOWERLIMIT, NULL);
-            item_list = AppendBucketRec(item_list, item_bucket);
+            AppendBucketRecord(item_list, item_bucket);
 
             SEMANTICS_NODE *s_cell = GetSemanticsList(contents_rover, item_bucket, 1);
             item_bucket->first_child = s_cell;
@@ -628,7 +628,7 @@ void MuAnalyzer::AnalyzeINTEGRAL(MNODE * func_Int_node,
 
             if (contents_rover) {
               BUCKET_REC *item_bucket = MakeBucketRec(MB_UPPERLIMIT, NULL);
-              item_list = AppendBucketRec(item_list, item_bucket);
+              AppendBucketRecord(item_list, item_bucket);
 
               SEMANTICS_NODE *s_cell = GetSemanticsList(contents_rover, item_bucket, 1);
               item_bucket->first_child = s_cell;
@@ -655,8 +655,8 @@ void MuAnalyzer::AnalyzeSUM(MNODE * func_sum_node,
       MNODE *arg_rover = args_list->first_kid;
       if (arg_rover->first_kid) {
         MNODE *sumand = arg_rover->first_kid;
-        BUCKET_REC *bucket = MakeBucketRec(MB_OPERAND, NULL);
-        snode->bucket_list = AppendBucketRec(snode->bucket_list, bucket);
+        BUCKET_REC* bucket = MakeBucketRec(MB_OPERAND, NULL);
+        AppendBucketRecord(snode->bucket_list, bucket);
 
         SEMANTICS_NODE *s_sumand = GetSemanticsList(sumand, bucket);
         bucket->first_child = s_sumand;
@@ -670,7 +670,7 @@ void MuAnalyzer::AnalyzeSUM(MNODE * func_sum_node,
           MNODE *limits_rover = arg_rover->first_kid;
           if (limits_rover) {
             BUCKET_REC *bucket = MakeBucketRec(MB_SUM_VAR, NULL);
-            snode->bucket_list = AppendBucketRec(snode->bucket_list, bucket);
+            AppendBucketRecord(snode->bucket_list, bucket);
             SEMANTICS_NODE *s_var = GetSemanticsList(limits_rover, bucket, 1);
             bucket->first_child = s_var;
             s_var->parent = bucket;
@@ -687,7 +687,7 @@ void MuAnalyzer::AnalyzeSUM(MNODE * func_sum_node,
             limits_rover = limits_rover->first_kid;
 
             BUCKET_REC *bucket = MakeBucketRec(MB_LOWERLIMIT, NULL);
-            snode->bucket_list = AppendBucketRec(snode->bucket_list, bucket);
+            AppendBucketRecord(snode->bucket_list, bucket);
             SEMANTICS_NODE *s_ll = GetSemanticsList(limits_rover, bucket, 1);
             bucket->first_child = s_ll;
             s_ll->parent = bucket;
@@ -701,8 +701,8 @@ void MuAnalyzer::AnalyzeSUM(MNODE * func_sum_node,
 
             if (limits_rover) {
               BUCKET_REC *bucket = MakeBucketRec(MB_UPPERLIMIT, NULL);
-              snode->bucket_list =
-                AppendBucketRec(snode->bucket_list, bucket);
+              
+              AppendBucketRecord(snode->bucket_list, bucket);
               SEMANTICS_NODE *s_ul = GetSemanticsList(limits_rover, bucket, 1);
               bucket->first_child = s_ul;
               s_ul->parent = bucket;
@@ -731,7 +731,7 @@ void MuAnalyzer::AnalyzeCONJUGATE(MNODE * func_node,
       if (item_rover->first_kid) {
         MNODE *contents = item_rover->first_kid;
         BUCKET_REC *item_bucket = MakeBucketRec(MB_UNNAMED, NULL);
-        item_list = AppendBucketRec(item_list, item_bucket);
+        AppendBucketRecord(item_list, item_bucket);
 
         SEMANTICS_NODE *s_cell = GetSemanticsList(contents, item_bucket);
         item_bucket->first_child = s_cell;
@@ -758,7 +758,7 @@ void MuAnalyzer::AnalyzeDERIVATIVE(MNODE* deriv_node,
     AnalyzeFUNCTION(func_node, s_func, local_nodes_done);
 
     BUCKET_REC *expr_bucket = MakeParentBucketRec(MB_UNNAMED, s_func);
-    snode->bucket_list = AppendBucketRec(snode->bucket_list, expr_bucket);
+    AppendBucketRecord(snode->bucket_list, expr_bucket);
     
 
     int n_primes = 1;
@@ -770,7 +770,7 @@ void MuAnalyzer::AnalyzeDERIVATIVE(MNODE* deriv_node,
     MNODE *m_diff_var = LocateDiffVar(deriv_node);
     if (m_diff_var) {
       BUCKET_REC *bucket = MakeBucketRec(MB_DIFF_VAR, NULL);
-      snode->bucket_list = AppendBucketRec(snode->bucket_list, bucket);
+      AppendBucketRecord(snode->bucket_list, bucket);
       SEMANTICS_NODE *s_var = GetSemanticsList(m_diff_var, bucket);
       bucket->first_child = s_var;
       s_var->parent = bucket;
@@ -819,8 +819,8 @@ void MuAnalyzer::AnalyzeEXPONENTIAL(MNODE * func_node,
 
           BUCKET_REC* b_list = NULL;
           BUCKET_REC* base_bucket = MakeParentBucketRec(MB_SCRIPT_BASE, s_base);
-          b_list = AppendBucketRec(b_list, base_bucket);
-          b_list = AppendBucketRec(b_list, script_bucket);
+          AppendBucketRecord(b_list, base_bucket);
+          AppendBucketRecord(b_list, script_bucket);
           snode->bucket_list = b_list;
         }
       }
@@ -882,9 +882,9 @@ void MuAnalyzer::AnalyzeARRAY(MNODE * array_node,
         }
       }
       if (cell_content) {       // q1x
-        BUCKET_REC *cell_bucket = MakeBucketRec(MB_UNNAMED, NULL);
-        cells_list = AppendBucketRec(cells_list, cell_bucket);
-        SEMANTICS_NODE *curr_cell = GetSemanticsList(cell_content, cell_bucket);
+        BUCKET_REC* cell_bucket = MakeBucketRec(MB_UNNAMED, NULL);
+        AppendBucketRecord(cells_list, cell_bucket);
+        SEMANTICS_NODE* curr_cell = GetSemanticsList(cell_content, cell_bucket);
         cell_bucket->first_child = curr_cell;
         curr_cell->parent = cell_bucket;
       } else
@@ -916,10 +916,10 @@ void MuAnalyzer::AnalyzeLIMIT(MNODE * func_node,
       if (arg1 && arg1->next) {
         MNODE *arg2 = arg1->next;
         if (arg1->first_kid) {
-          MNODE *contents = arg1->first_kid;
-          BUCKET_REC *bucket = MakeBucketRec(MB_UNNAMED, NULL);
-          SEMANTICS_NODE *s_cell = GetSemanticsList(contents, bucket);
-          snode->bucket_list = AppendBucketRec(snode->bucket_list, bucket);
+          MNODE* contents = arg1->first_kid;
+          BUCKET_REC* bucket = MakeBucketRec(MB_UNNAMED, NULL);
+          SEMANTICS_NODE* s_cell = GetSemanticsList(contents, bucket);
+          AppendBucketRecord(snode->bucket_list, bucket);
           bucket->first_child = s_cell;
         }
         if (arg2->first_kid) {
