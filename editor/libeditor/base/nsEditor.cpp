@@ -126,6 +126,32 @@
 static PRBool gNoisy = PR_FALSE;
 #endif
 
+void DumpDocumentNodeImpl( nsIDOMNode * pNode, PRUint32 indent)
+{
+  nsCOMPtr<nsIDOMNodeList> list;
+  if (!pNode) return;
+  nsresult res;
+  nsCOMPtr<nsIDOMNode> node;
+  nsAutoString name;
+  res = pNode->GetChildNodes(getter_AddRefs(list));
+  PRInt32 i;  
+  PRInt32 j;  
+  PRUint32 childCount=0;
+  list->GetLength(&childCount);
+  for (i = 0; i < childCount; i++)
+  {
+    res = list->Item(i, getter_AddRefs(node));
+    res = node->GetNodeName(name);
+    for (j = 0; j<indent; j++) printf("  ");
+    printf("%d %S (%x)\n", i, name.get(), node);
+    DumpDocumentNodeImpl(node, indent + 1);
+  }
+}
+
+void DumpDocumentNode( nsIDOMNode * pNode)
+{
+//  DumpDocumentNodeImpl(pNode, 0);
+}
 
 // Defined in nsEditorRegistration.cpp
 extern nsIParserService *sParserService;

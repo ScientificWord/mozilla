@@ -1850,7 +1850,7 @@ nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focu
                                  PRBool selecting, PRBool & preventDefault)
 {
 //BBM ToDo Check for other non-text, non-structure, non-para tags.
-  if (!focusNode || focusOffset > msiIMathMLEditingBC::LAST_VALID)
+ if (!focusNode || focusOffset > msiIMathMLEditingBC::LAST_VALID)
     return NS_ERROR_FAILURE;
   nsCOMPtr<msiISelection> msiSelection;
   GetMSISelection(msiSelection);
@@ -2834,7 +2834,7 @@ msiEditor::InitRules()
 
 
 NS_IMETHODIMP
-msiEditor::AdjustRange(nsIDOMRange * aRange)
+msiEditor::AdjustRange(nsIDOMRange * aRange, PRBool isForDeletion, PRUint32 direction)
 {
   nsresult res = NS_OK;
   nsCOMPtr<nsIDOMNode> startNode;
@@ -2851,7 +2851,7 @@ msiEditor::AdjustRange(nsIDOMRange * aRange)
   res = aRange->GetCommonAncestorContainer(getter_AddRefs(commonAncestor));
   while (startNode && (startNode != commonAncestor))
   {
-    startNode->GetNodeName(tagName);
+    startNode->GetLocalName(tagName);
     if (  tagName.EqualsLiteral("mfrac")    || tagName.EqualsLiteral("mroot") ||
           tagName.EqualsLiteral("mtable")    || tagName.EqualsLiteral("mtd") ||
           tagName.EqualsLiteral("mtr")    || tagName.EqualsLiteral("msub") ||
@@ -2868,7 +2868,7 @@ msiEditor::AdjustRange(nsIDOMRange * aRange)
   newContainer = nsnull;
   while (endNode && (endNode != commonAncestor))
   {
-    endNode->GetNodeName(tagName);
+    endNode->GetLocalName(tagName);
     if (  tagName.EqualsLiteral("mfrac")    || tagName.EqualsLiteral("mroot") ||
           tagName.EqualsLiteral("mtable")    || tagName.EqualsLiteral("mtd") ||
           tagName.EqualsLiteral("mtr")    || tagName.EqualsLiteral("msub") ||
@@ -2891,7 +2891,7 @@ msiEditor::AdjustRange(nsIDOMRange * aRange)
 
 
 NS_IMETHODIMP
-msiEditor::AdjustSelectionEnds()
+msiEditor::AdjustSelectionEnds(PRBool isForDeletion, PRUint32 direction)
 {
   nsresult res = NS_OK;
   PRInt32 rangeCount;
@@ -2910,7 +2910,7 @@ msiEditor::AdjustSelectionEnds()
   {
     sel->GetRangeAt(i, getter_AddRefs(range));
     range->CloneRange(getter_AddRefs(modrange));
-    AdjustRange(modrange);
+    AdjustRange(modrange, isForDeletion, direction);
     modrange->GetStartContainer(getter_AddRefs(nodeContainerStart));
     modrange->GetStartOffset(&offsetStart);
     modrange->GetEndContainer(getter_AddRefs(nodeContainerEnd));
