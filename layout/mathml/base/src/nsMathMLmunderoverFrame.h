@@ -78,6 +78,22 @@ public:
                    nsIAtom*        aAttribute,
                    PRInt32         aModType);
 
+  NS_IMETHOD
+  MoveOutToRight(nsIFrame* leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
+      PRBool* fBailingOut, PRInt32* fretValue);
+
+  NS_IMETHOD
+  MoveOutToLeft(nsIFrame* leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
+      PRBool* fBailingOut, PRInt32* fretValue);
+
+  NS_IMETHOD 
+  EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, 
+    PRInt32 count, PRBool *fBailingOut, PRInt32 *_retval);
+  
+  NS_IMETHOD 
+  EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, 
+    PRInt32 count, PRBool *fBailingOut, PRInt32 *_retval);
+
 protected:
   nsMathMLmunderoverFrame(nsStyleContext* aContext) : nsMathMLContainerFrame(aContext) {}
   virtual ~nsMathMLmunderoverFrame();

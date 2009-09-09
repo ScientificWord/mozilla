@@ -60,6 +60,7 @@
 #include "nsStyleUtil.h"
 #include "nsDisplayList.h"
 #include "nsAttrName.h"
+#include "nsMathCursorUtils.h"
 
 static NS_DEFINE_CID(kCSSStyleSheetCID, NS_CSS_STYLESHEET_CID);
 
@@ -579,6 +580,7 @@ PRBool IsMath( nsIFrame * aFrame )
 /*  static */ void
 nsMathMLFrame::DumpMathFrameData(nsIFrame* aFrame)
 {
+  return;
   nsIFrame * pNextFrame;
   nsIFrame * pFrame = aFrame;
   pNextFrame = pFrame->GetParent();
@@ -602,7 +604,18 @@ nsMathMLFrame::DumpFrameData(nsIFrame* aFrame, PRUint32 indent)
   printf("%p", aFrame);
   nsAutoString tagName;
   aFrame->GetContent()->Tag()->ToString(tagName);
-  printf(" Content: %S\n", tagName);
+  printf(" Content: %S", tagName);
+  if (tagName.EqualsLiteral("#text"))
+  {
+    nsString data;
+    nsCOMPtr<nsIContent> content;
+    nsCOMPtr<nsIDOMNode> node;
+    content = aFrame->GetContent();
+    node = do_QueryInterface(content);
+    node->GetNodeValue(data);
+    printf(": \"%S\"\n", data.get());
+  }
+  else printf("\n");
   nsIFrame * pNextFrame;
   nsIFrame * pFrame = aFrame->GetFirstChild(nsnull);
   while (pFrame)
