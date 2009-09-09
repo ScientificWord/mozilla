@@ -2973,7 +2973,7 @@ void nsHTMLEditor::FixMathematics( nsIDOMNode * nodelistNode, PRBool fLeftOnly, 
 {
   // When math objects are only partly copied, we may get anomalies like a fraction with
   // only one subnode instead of two. In those cases, we strip out the higher structure (such
-  // as the fraction. Since this happens only with partial copies, we need to check only the
+  // as the fraction). Since this happens only with partial copies, we need to check only the
   // end nodes of the fragment, and only the first nodes on the left side and the last nodes 
   // on the right side
   nsAutoString tagName;
