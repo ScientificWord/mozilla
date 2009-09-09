@@ -72,7 +72,7 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
   res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(startNode), &startOffset);
   if (NS_FAILED(res)) return res;
   if (!startNode) return NS_ERROR_FAILURE;
-  res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(endNode), &endOffset);
+  res = mHTMLEditor->GetEndNodeAndOffset(aSelection, address_of(endNode), &endOffset);
   if (NS_FAILED(res)) return res;
   if (!endNode) return NS_ERROR_FAILURE;
   if (bCollapsed) {
@@ -120,7 +120,7 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
   }
   printf("In msiEditRules::WillDeleteSelection(2)\n");
   DumpSelection(aSelection);
-  mMSIEditor->AdjustSelectionEnds();
+  mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
   printf("In msiEditRules::WillDeleteSelection(3)\n");
   DumpSelection(aSelection);
   return nsHTMLEditRules::WillDeleteSelection(aSelection, aAction, aCancel, aHandled);
