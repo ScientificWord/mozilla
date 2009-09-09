@@ -125,6 +125,17 @@ nsMathMLContainerFrame::ReflowError(nsIRenderingContext& aRenderingContext,
   return NS_OK;
 }
 
+
+NS_IMETHODIMP
+nsMathMLContainerFrame::GetOffsets(PRInt32 &start, PRInt32 &end) const
+{
+  start = 0;
+  nsIFrame* k1 = GetFirstChild(nsnull);
+  end = nsContainerFrame::LengthOf(k1);
+  return NS_OK;
+}
+  
+
 class nsDisplayMathMLError : public nsDisplayItem {
 public:
   nsDisplayMathMLError(nsIFrame* aFrame)

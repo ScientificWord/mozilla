@@ -108,6 +108,10 @@ public:
   void
   SetIncrementScriptLevel(PRInt32 aChildIndex, PRBool aIncrement);
 
+  NS_IMETHOD
+  GetOffsets(PRInt32 &start, PRInt32 &end) const;
+  
+
   // --------------------------------------------------------------------------
   // Overloaded nsHTMLContainerFrame methods -- see documentation in nsIFrame.h
 
