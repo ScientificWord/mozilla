@@ -51,6 +51,7 @@
 
 #include "nsMathMLmunderoverFrame.h"
 #include "nsMathMLmsubsupFrame.h"
+#include "nsMathCursorUtils.h"
 
 //
 // <munderover> -- attach an underscript-overscript pair to a base - implementation
@@ -482,3 +483,143 @@ nsMathMLmunderoverFrame::Place(nsIRenderingContext& aRenderingContext,
   }
   return NS_OK;
 }
+
+//  munderover has three non-trivial children: base, under, over in that order.  Find them.
+
+PRBool FindChildren( nsIFrame * parent, nsIFrame** base, nsIFrame** under, nsIFrame** over)
+{
+  if (!parent || !base || !under || !over) return PR_FALSE;
+  nsIFrame * pFrame = parent->GetFirstChild(nsnull);
+  if (pFrame) *base = pFrame;
+  else return PR_FALSE;
+  pFrame = pFrame->GetNextSibling();
+  if (pFrame) *under = pFrame;
+  else return PR_FALSE;
+  pFrame = pFrame->GetNextSibling();
+  if (pFrame) *over = pFrame;
+  else return PR_FALSE;
+  pFrame = pFrame->GetNextSibling();
+  if (pFrame) return PR_FALSE; // too many frames!
+  return PR_TRUE;
+}
+
+
+nsresult
+nsMathMLmunderoverFrame::MoveOutToRight(nsIFrame* leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
+    PRBool* fBailingOut, PRInt32* fRetValue)
+{
+  nsIFrame * pParent;
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  printf("munderoverFrame: moveouttoright, count = %d\n", count);
+  pParent = GetParent();
+
+  if (pParent)
+  {
+    pMCM = do_QueryInterface(pParent);
+    if (pMCM) {
+      count = 0;
+      pMCM->MoveOutToRight(this, aOutFrame, aOutOffset, count, fBailingOut, fRetValue);
+    }
+    else // we have gone out of math.  Put the cursor at the end of the math if count == 0
+         // and after the math if count == 1 
+    {                                                                        
+      if (count == 0)
+      {
+        PlaceCursorAfter(this, PR_TRUE, aOutFrame, aOutOffset, count);
+      }
+      else  //bail out so that the default Mozilla code takes over
+      {
+        PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
+  //      *fBailingOut = PR_TRUE;
+      }
+      *fRetValue = 0;
+    }
+  } 
+  return NS_OK;  
+}
+
+nsresult
+nsMathMLmunderoverFrame::MoveOutToLeft(nsIFrame* leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
+    PRBool* fBailingOut, PRInt32* fRetValue)
+{
+  nsIFrame * pParent;
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  printf("munderoverFrame: moveouttoleft, count = %d\n", count);
+  pParent = GetParent();
+  pMCM = do_QueryInterface(pParent);
+  if (pMCM) 
+  {
+    count = 0;
+    pMCM->MoveOutToLeft(this, aOutFrame, aOutOffset, count, fBailingOut, fRetValue);
+  }
+  else // we have gone out of math.  Put the cursor at the beginning of the math if count == 0
+       // and before the math if count == 1 
+  {                                                                        
+    if (count == 0)
+    {
+      PlaceCursorBefore(this, PR_TRUE, aOutFrame, aOutOffset, count);
+    }
+    else  //bail out so that the default Mozilla code takes over
+    {
+      PlaceCursorBefore(this, PR_FALSE, aOutFrame, aOutOffset, count);
+//      *fBailingOut = PR_TRUE;
+    }
+    *fRetValue = 0;
+  }
+  return NS_OK;  
+}  
+
+
+
+nsresult 
+nsMathMLmunderoverFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, 
+    PRInt32 count, PRBool *fBailingOut, PRInt32 *_retval)
+{
+  nsIFrame* base;
+  nsIFrame* under;
+  nsIFrame* over;
+  if (!FindChildren(this, &base, &under, &over)) return NS_ERROR_FAILURE;
+
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  if (over)
+  {
+    pMCM = do_QueryInterface(over);
+    count = 0;
+    if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut,  _retval);
+    else // over frame is not a math frame. Probably a text frame. We'll assume this for now
+    {
+      PlaceCursorAfter(over, PR_TRUE, aOutFrame, aOutOffset, count);
+      *_retval = 0;
+      return NS_OK;
+    }
+  }
+  return NS_OK;
+}
+  
+nsresult 
+nsMathMLmunderoverFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, 
+    PRInt32 count, PRBool *fBailingOut, PRInt32 *_retval)
+{
+  nsIFrame* base;
+  nsIFrame* under;
+  nsIFrame* over;
+  printf("munderover EnterFromLeft, count = %d\n", count);
+  if (FindChildren(this, &base, &under, &over))
+  {
+    nsCOMPtr<nsIMathMLCursorMover> pMCM;
+    if (over)
+    {
+      pMCM = do_QueryInterface(over);
+      count = 0;
+      if (pMCM) pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailingOut,  _retval);
+      else // child frame is not a math frame. Probably a text frame. We'll assume this for now
+      {
+        PlaceCursorBefore(over, PR_TRUE, aOutFrame, aOutOffset, count);
+        *_retval = 0;
+        return NS_OK;
+      }
+    }
+  }
+  return NS_OK;  
+}
+
