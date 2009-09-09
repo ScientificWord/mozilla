@@ -36,4 +36,20 @@ nsIFrame * GetLastTextFrame( nsIFrame * pFrame );
 
 nsIFrame * GetLastTextFrameBeforeFrame( nsIFrame * pFrame );
 
+// DOM tree navigation routines that pass over ignorable white space.
+// See the "Whitespace in the DOM" article on the MDC
+
+PRBool IsAllWS( nsIDOMNode * node);
+
+PRBool IsIgnorable( nsIDOMNode * node);
+
+nsIDOMNode * NodeBefore( nsIDOMNode * node);
+
+nsIDOMNode * NodeAfter( nsIDOMNode * node);
+
+nsIDOMNode * FirstChild( nsIDOMNode * parent);
+
+nsIDOMNode * LastChild( nsIDOMNode * parent);
+
+
 #endif /* nsMathCursorUtils_h___ */
