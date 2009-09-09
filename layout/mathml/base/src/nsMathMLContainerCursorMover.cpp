@@ -186,7 +186,7 @@ nsMathMLContainerCursorMover::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **
     {
       pContent = m_pMyFrame->GetContent();
       *aOutOffset = pContent->GetChildCount();
-      *aOutFrame = pTempFrame; 
+      *aOutFrame = m_pMyFrame; 
       *_retval = count;
     }
     return NS_OK;
@@ -194,7 +194,7 @@ nsMathMLContainerCursorMover::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **
   else // this frame has no children
   {
     pMCM = do_QueryInterface(pFrame->GetParent());
-    if (pMCM) pMCM->MoveOutToLeft(pFrame, aOutFrame, 0, count, fBailingOut, _retval);
+    if (pMCM) pMCM->MoveOutToLeft(pFrame, aOutFrame, aOutOffset, count, fBailingOut, _retval);
     else // we have gone out of math 
     {
       if (!count)

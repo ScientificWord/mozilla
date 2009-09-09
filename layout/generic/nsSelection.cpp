@@ -1331,7 +1331,7 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
   {
     nsIFrame *tempFrame;
     nsCOMPtr<nsIContent> tempContent;
-    PRInt32 SaveOffsetused = offsetused;
+    PRInt32 SaveOffsetUsed = offsetused;
 
     if (IsMathFrame(frame) || IsParentMathFrame(frame)) // the returned frame was math or contained in math (a text frame), so undo the GetPrimaryFrameForFocusNode.
     {
@@ -1342,8 +1342,15 @@ nsFrameSelection::MoveCaret(PRUint32          aKeycode,
       if (tempFrame)
       {
         frame = tempFrame;
-        // BBM: isn't this next line redundant?
-		offsetused = SaveOffsetused;
+        // adjust offset to account for ignorable whitespace nodes.
+        for (PRInt32 i = 0; i < SaveOffsetUsed; i++)
+        {
+          nsCOMPtr<nsIContent> childNode = tempContent->GetChildAt(i);
+          if (childNode && childNode->TextIsOnlyWhitespace())
+          {
+            offsetused--;
+          }
+        }
 //		if (aKeycode == nsIDOMKeyEvent::DOM_VK_LEFT) offsetused--;
       }
     }
@@ -2668,7 +2675,13 @@ nsFrameSelection::GetFrameForNodeOffset(nsIContent *aNode,
     }
     
     if (childIndex > 0 || numChildren > 0) {
+
       nsCOMPtr<nsIContent> childNode = theNode->GetChildAt(childIndex);
+      while (childIndex > 0 && childNode && childNode->TextIsOnlyWhitespace())
+      {
+        childIndex--;
+        childNode = theNode->GetChildAt(childIndex);
+      }
 
       if (!childNode)
         return nsnull;
@@ -2702,22 +2715,27 @@ nsFrameSelection::GetFrameForNodeOffset(nsIContent *aNode,
       // Check to see if theNode is a text node. If it is, translate
       // aOffset into an offset into the text node.
 
+      nsCOMPtr<nsIContent> pContent;
       nsCOMPtr<nsIDOMText> textNode = do_QueryInterface(theNode);
 
       if (textNode)
       {
-        if (aOffset > childIndex)
+        pContent = do_QueryInterface(theNode);
+        if (!pContent->TextIsOnlyWhitespace())
         {
-          PRUint32 textLength = 0;
+          if (aOffset > childIndex)
+          {
+            PRUint32 textLength = 0;
 
-          nsresult rv = textNode->GetLength(&textLength);
-          if (NS_FAILED(rv))
-            return nsnull;
+            nsresult rv = textNode->GetLength(&textLength);
+            if (NS_FAILED(rv))
+              return nsnull;
 
-          *aReturnOffset = (PRInt32)textLength;
+            *aReturnOffset = (PRInt32)textLength;
+          }
+          else
+            *aReturnOffset = 0;
         }
-        else
-          *aReturnOffset = 0;
       }
     }
   }
