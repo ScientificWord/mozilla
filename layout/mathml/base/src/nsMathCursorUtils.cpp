@@ -72,11 +72,10 @@ PRBool PlaceCursorBefore( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFram
       pChild = GetLastTextFrameBeforeFrame(pFrame);
       *aOutFrame = pChild;
       *aOutOffset = (pChild->GetContent())->TextLength() - count;
-      }
+     }
   }
   return PR_TRUE;
 }
-
 
 
 nsIFrame * GetFirstTextFrame( nsIFrame * pFrame )
@@ -85,7 +84,7 @@ nsIFrame * GetFirstTextFrame( nsIFrame * pFrame )
   nsIAtom* type = pFrame->GetType();
   nsIFrame * pRet = nsnull;
   nsIFrame * pChild = nsnull; 
-  if (type == nsGkAtoms::textFrame) 
+  if (type == nsGkAtoms::textFrame )
     return pFrame;
   else
   {
@@ -135,20 +134,30 @@ nsIFrame * GetFirstTextFramePastFrame( nsIFrame * pFrame )
 nsIFrame * GetLastTextFrame( nsIFrame * pFrame )
 {
   if (!pFrame) return nsnull;
+  nsAutoString textContents;
   nsIAtom* type = pFrame->GetType();
   nsIFrame * pRet = nsnull;
   nsIFrame * pChild = nsnull; 
+  nsIContent * pContent = nsnull;
   if (type == nsGkAtoms::textFrame) 
     return pFrame;
   else
   {
     pChild = GetLastChild(pFrame);
-    while (pChild && !(pRet = GetLastTextFrame(pChild)))
+    while (PR_TRUE)
     {
-      pChild = GetPrevSib(pChild);
-      pRet = GetLastTextFrame( pChild);
+      while (pChild && !(pRet = GetLastTextFrame(pChild)))
+      {
+        pChild = GetPrevSib(pChild);
+        pRet = GetLastTextFrame( pChild);
+      }
+      if (pRet)
+      {
+        pContent = pRet->GetContent();
+        if (!pContent->TextIsOnlyWhitespace()) return pRet;
+      }
+      else return pRet;
     }
-    return pRet;
   }
 }											   
 
@@ -170,3 +179,72 @@ nsIFrame * GetLastTextFrameBeforeFrame( nsIFrame * pFrame )
 }
 
 											   
+// DOM tree navigation routines that pass over ignorable white space.
+// See the "Whitespace in the DOM" article on the MDC
+/*
+
+PRBool IsAllWS( nsIDOMNode * node)
+{
+  nsCOMPtr<nsIContent> pContent = do_QueryInterface(node);
+  if (pContent)
+    return pContent->TextIsOnlyWhitespace();
+  return PR_FALSE;
+}
+
+
+PRBool IsIgnorable( nsIDOMNode * node)
+{
+  PRUint16 aType;
+  node->GetNodeType(&aType);
+  if (aType == (PRUint16)nsIDOMNode::TEXT_NODE)
+    return IsAllWS(node);
+  else if (aType == (PRUint16)nsIDOMNode::COMMENT_NODE)
+    return PR_TRUE;
+  return PR_FALSE;
+}
+
+
+nsIDOMNode * NodeBefore( nsIDOMNode * node)
+{
+  nsCOMPtr<nsIDOMNode> sibling(node);
+  do 
+  {
+     sibling->GetPreviousSibling(getter_AddRefs(sibling));
+  } while (sibling && IsIgnorable(sibling));
+  return sibling;
+}
+
+nsIDOMNode * NodeAfter( nsIDOMNode * node)
+{
+  nsCOMPtr<nsIDOMNode> sibling(node);
+  do 
+  {
+     sibling->GetNextSibling(getter_AddRefs(sibling));
+  } while (sibling && IsIgnorable(sibling));
+  return sibling;
+}
+
+nsIDOMNode * FirstChild( nsIDOMNode * parent)
+{
+  nsCOMPtr<nsIDOMNode> sibling;
+  parent->GetFirstChild(getter_AddRefs(sibling));
+  while (sibling && IsIgnorable(sibling))
+  {
+     sibling->GetNextSibling(getter_AddRefs(sibling));
+  }
+  return sibling;
+}
+
+nsIDOMNode * LastChild( nsIDOMNode * parent)
+{
+  nsCOMPtr<nsIDOMNode> sibling;
+  parent->GetLastChild(getter_AddRefs(sibling));
+  while (sibling && IsIgnorable(sibling))
+  {
+     sibling->GetPreviousSibling(getter_AddRefs(sibling));
+  }
+  return sibling;
+}
+
+
+*/
