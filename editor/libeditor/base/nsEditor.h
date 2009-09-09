@@ -94,6 +94,8 @@ class nsIDOMEventTarget;
 #define kMOZEditorBogusNodeAttr NS_LITERAL_STRING("_moz_editor_bogus_node")
 #define kMOZEditorBogusNodeValue NS_LITERAL_STRING("TRUE")
 
+void DumpDocumentNode( nsIDOMNode * pNode);
+
 /** implementation of an editor object.  it will be the controller/focal point 
  *  for the main editor services. i.e. the GUIManager, publishing, transaction 
  *  manager, event interfaces. the idea for the event interfaces is to have them 
