@@ -533,10 +533,10 @@ function doComputeCommand(cmd, editorElement, cmdHandler)
       doComputeCompanionMatrix(element, "", editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_ByParts":
-      doVarsEvalComputation(element,eng.byParts,"<mo>=</mo>",GetComputeString("ByParts.title"),GetComputeString("ByParts.remark"), editorElement, cmd, cmdHandler);
+      doVarsEvalComputation(element,eng.Calculus_Integrate_by_Parts,"<mo>=</mo>",GetComputeString("ByParts.title"),GetComputeString("ByParts.remark"), editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_ChangeVariable":
-      doVarsEvalComputation(element,eng.changeVar,"<mo>=</mo>",GetComputeString("ChangeVar.title"),GetComputeString("ChangeVar.remark"), editorElement, cmd, cmdHandler);
+      doVarsEvalComputation(element,eng.Calculus_Change_Variable,"<mo>=</mo>",GetComputeString("ChangeVar.title"),GetComputeString("ChangeVar.remark"), editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_ApproxIntegral":
       doComputeApproxIntegral(element, editorElement);
@@ -1397,18 +1397,23 @@ function doVarsEvalComputation(math, func, joiner, title, label, editorElement, 
     };
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
   try {
-    theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
+    theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVariables.xul", 
+                                      "_blank", 
+                                      "chrome,close,titlebar,resizable,dependent",
                                       editorElement, cmd, cmdHandler, o);
-  } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doVarsEvalComputation: [" + e + "]"); return;}
+
+  } catch(e) {
+      AlertWithTitle("Error in computeOverlay.js", "Exception in doVarsEvalComputation: [" + e + "]"); 
+      return;
+  }
 //  parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
 }
 
 function finishVarsEvalComputation(editorElement, o)
 {
-  dump("\n*** finishVarsEvalComputation ***");
   if (o.Cancel)
     return;
-  dump("\n*** Cancel was false");
+
   var vars = o.vars;
   var mathstr = GetFixedMath(o.theMath);
 //  vars = runFixup(vars);
@@ -1417,10 +1422,16 @@ function finishVarsEvalComputation(editorElement, o)
   ComputeCursor(editorElement);
   try {
     //var out = o.theFunc(mathstr,vars);
+	var out = "";
 	var eng = GetCurrentEngine();
     if (o.theFunc == eng.Polynomial_Collect){
-	  var out = eng.collect(mathstr, vars);
+	  out = eng.collect(mathstr, vars);
+	} else if (o.theFunc == eng.Calculus_Integrate_by_Parts) {
+	  out = eng.byParts(mathstr, vars);
+	} else if (o.theFunc == eng.Calculus_Change_Variable) {
+	  out = eng.changeVar(mathstr, vars);
 	}
+
 	   
 
     msiComputeLogger.Received(out);
