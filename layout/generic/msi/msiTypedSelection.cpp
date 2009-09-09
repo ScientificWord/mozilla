@@ -452,7 +452,7 @@ msiTypedSelection::Adjust()
   {
     GetRangeAt(i, getter_AddRefs(range));
     range->CloneRange(getter_AddRefs(modrange));
-    res = ((msiIMathMLEditor *)m_msiEditor)->AdjustRange(modrange);
+    res = ((msiIMathMLEditor *)m_msiEditor)->AdjustRange(modrange, PR_FALSE, 0);
     modrange->GetStartContainer(getter_AddRefs(nodeContainerStart));
     modrange->GetStartOffset(&offsetStart);
     modrange->GetEndContainer(getter_AddRefs(nodeContainerEnd));
