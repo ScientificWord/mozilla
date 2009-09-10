@@ -1286,9 +1286,9 @@ void AppendODEfuncs(SEMANTICS_NODE* rv, DE_FUNC_REC* ODE_fnames, AnalyzerData* p
 
 MIC2MMLNODE_REC* AppendIDRec(MIC2MMLNODE_REC* node_IDs_list,
                              U32 client_ID,
-                             char *obj_name, 
+                             char* obj_name, 
                              MNODE* mml_node,
-                             const char *src_markup)
+                             const char* src_markup)
 {
   MIC2MMLNODE_REC* rv = node_IDs_list;
 
