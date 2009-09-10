@@ -52,6 +52,8 @@ public:
   MIC2MMLNODE_REC* NodeIDsList() const { return m_node_IDs_list; }
   void SetNodeIDsList( MIC2MMLNODE_REC* p) { m_node_IDs_list = p; }
 
+  void AppendIDList(char* mml_canonical_name, MNODE* mml_node);
+
 
 
 
