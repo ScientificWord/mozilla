@@ -5,7 +5,7 @@
 #include "DefInfo.h"
 #include "mnode.h"
 #include "strutils.h"
-#include "grammar.h"
+#include "Grammar.h"
 
 
 
