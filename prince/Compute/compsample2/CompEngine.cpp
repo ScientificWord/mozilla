@@ -952,14 +952,14 @@ void CompEngine::ConvertTreeToPDE(SEMANTICS_NODE * semantics_tree)
       b_rover->next = NULL;
 
     if (b_rover->first_child && b_rover->next == NULL) {
-      SEMANTICS_NODE *s_PDE = b_rover->first_child;
+      SEMANTICS_NODE* s_PDE = b_rover->first_child;
 
-      SEMANTICS_NODE *s_save = NULL;
+      SEMANTICS_NODE* s_save = NULL;
       if (s_PDE->semantic_type == SEM_TYP_TABULATION) {
         TCI_ASSERT(0);
       } else {                  //    if ( s_PDE->semantic_type == SEM_TYP_TABULATION )
-        SEMANTICS_NODE *s_ODE = CreateSemanticsNode();
-        s_ODE->semantic_type = SEM_TYP_PDE;
+        SEMANTICS_NODE* s_ODE = CreateSemanticsNode(SEM_TYP_PDE);
+        //s_ODE->semantic_type = SEM_TYP_PDE;
         s_save = s_ODE;
 
         BUCKET_REC* b_list = MakeParentBucketRec(MB_UNNAMED, s_PDE);
@@ -1033,8 +1033,8 @@ void CompEngine::ConvertTreeToODE(SEMANTICS_NODE* semantics_tree,
 
       } else {                  //    if ( s_ODEsystem->semantic_type == SEM_TYP_TABULATION )
 
-        SEMANTICS_NODE* s_ODE = CreateSemanticsNode();
-        s_ODE->semantic_type = SEM_TYP_ODE_SYSTEM;
+        SEMANTICS_NODE* s_ODE = CreateSemanticsNode(SEM_TYP_ODE_SYSTEM);
+        //s_ODE->semantic_type = SEM_TYP_ODE_SYSTEM;
         s_save = s_ODE;
 
         BUCKET_REC* b_list = MakeParentBucketRec(MB_UNNAMED, s_ODEsystem);
@@ -1089,8 +1089,8 @@ void CompEngine::ConvertTreeToRecursion(SEMANTICS_NODE * semantics_tree,
     if (s_child->semantic_type == SEM_TYP_INFIX_OP) {
       BUCKET_REC *parent_buc = s_child->parent;
 
-      SEMANTICS_NODE *s_recur = CreateSemanticsNode();
-      s_recur->semantic_type = SEM_TYP_RECURSION;
+      SEMANTICS_NODE *s_recur = CreateSemanticsNode(SEM_TYP_RECURSION);
+      //s_recur->semantic_type = SEM_TYP_RECURSION;
       s_save = s_recur;
 
       BUCKET_REC* b_list = MakeParentBucketRec(MB_RECUR_EQN, s_child);
@@ -1698,8 +1698,8 @@ bool CompEngine::AdjustSemTree(MathServiceRequest& msr,
           //We create a table from a list here - major tree manipulation
           BUCKET_REC *b_l = ExtractCommaList(s_rover, NULL);
           if (b_l) {
-            SEMANTICS_NODE *s_node = CreateSemanticsNode();
-            s_node->semantic_type = SEM_TYP_TABULATION;
+            SEMANTICS_NODE *s_node = CreateSemanticsNode(SEM_TYP_TABULATION);
+            //s_node->semantic_type = SEM_TYP_TABULATION;
             s_node->bucket_list = b_l;
 
             parent_bucket->first_child = s_node;
@@ -2303,8 +2303,8 @@ void CompEngine::AddRecurFuncNode(SEMANTICS_NODE* s_recur, BUCKET_REC* parent_b)
   //  that the recursion function is found.
     SEMANTICS_NODE *s_func = LocateRecurFuncInEqn(s_equal);
     if (s_func) {
-      SEMANTICS_NODE *s_clone = CreateSemanticsNode();
-      s_clone->semantic_type = SEM_TYP_FUNCTION;
+      SEMANTICS_NODE *s_clone = CreateSemanticsNode(SEM_TYP_FUNCTION);
+      //s_clone->semantic_type = SEM_TYP_FUNCTION;
       parent_b->first_child = s_clone;
       s_clone->parent = parent_b;
 
@@ -2900,8 +2900,8 @@ SEMANTICS_NODE *CompEngine::InsertPGroup(SEMANTICS_NODE * s_math)
   SEMANTICS_NODE *s_pgroup = NULL;
 
   if (s_math) {
-    s_pgroup = CreateSemanticsNode();
-    s_pgroup->semantic_type = SEM_TYP_PRECEDENCE_GROUP;
+    s_pgroup = CreateSemanticsNode(SEM_TYP_PRECEDENCE_GROUP);
+    //s_pgroup->semantic_type = SEM_TYP_PRECEDENCE_GROUP;
     if (s_math->bucket_list) {
       s_pgroup->bucket_list = s_math->bucket_list;
       s_math->bucket_list = NULL;

@@ -30,6 +30,7 @@
 #include "mnode.h"
 #include "strutils.h"
 #include "DefInfo.h"
+#include "MResult.h"
 
 #include <string.h>
 #include <ctype.h>
@@ -721,14 +722,15 @@ void AnalyzeMI(MNODE* mml_mi_node,
     if (is_function || is_ODE_func || is_IMPLDIFF_func) {
       snode->semantic_type = SEM_TYP_FUNCTION;
 
-      if (mml_mi_node->p_chdata && !strcmp(mml_mi_node->p_chdata, "log")) {
+      if (ContentIs(mml_mi_node, "log")) {
         pAnalyzer -> GetAnalyzerData()  -> GetInputNotation() -> n_logs++;
         AddDefaultBaseToLOG(snode, pAnalyzer->Get_log_is_base10());
       }
       
       int local_nodes_done;
-      BUCKET_REC *bucket = ArgsToBucket(mml_mi_node, local_nodes_done, pAnalyzer);
+      BUCKET_REC* bucket = ArgsToBucket(mml_mi_node, local_nodes_done, pAnalyzer);
       nodes_done += local_nodes_done;
+      
       if (is_ODE_func && (!bucket || !bucket->first_child)) {
         if (pAnalyzer -> GetAnalyzerData() -> GetDE_ind_vars()) {
           if (bucket)
@@ -3223,8 +3225,8 @@ void AnalyzePrimed(MNODE * mml_msup,
           } else
             strcpy(canonical_ID, ptr);
 
-          SEMANTICS_NODE *s_var = CreateSemanticsNode();
-          s_var->semantic_type = SEM_TYP_VARIABLE;
+          SEMANTICS_NODE *s_var = CreateSemanticsNode(SEM_TYP_VARIABLE);
+          //s_var->semantic_type = SEM_TYP_VARIABLE;
 
           if (canonical_ID) {
             s_var->canonical_ID = DuplicateString(canonical_ID);
@@ -3262,98 +3264,109 @@ void AnalyzePrimed(MNODE * mml_msup,
 
 
 
-void AnalyzeDotDerivative(MNODE * mml_mover,
-                                    int n_dots,
-                                    SEMANTICS_NODE * s_node, int & nodes_done, Analyzer* pAnalyzer)
+void AnalyzeDotDerivative(MNODE* mml_mover,
+                          int n_dots,
+                          SEMANTICS_NODE* s_node, 
+                          int& nodes_done, 
+                          Analyzer* pAnalyzer)
 {
   nodes_done = 1;
 
   s_node->semantic_type = SEM_TYP_DERIVATIVE;
   s_node->contents = DuplicateString("differentiate");
 
-  MNODE *base = mml_mover->first_kid;
-//  MNODE *dots = base->next;
+  MNODE* base = mml_mover->first_kid;
 
-  BUCKET_REC *base_bucket = MakeBucketRec(MB_UNNAMED, NULL);
-  AppendBucketRecord(s_node->bucket_list, base_bucket);
-  SEMANTICS_NODE *s_base = GetSemanticsFromNode(base, base_bucket, pAnalyzer);
-  base_bucket->first_child = s_base;
-  s_base->parent = base_bucket;
+  // BUCKET_REC* base_bucket = MakeBucketRec(MB_UNNAMED, NULL);
+  // AppendBucketRecord(s_node->bucket_list, base_bucket);
+  // SEMANTICS_NODE *s_base = GetSemanticsFromNode(base, base_bucket, pAnalyzer);
+  // base_bucket->first_child = s_base;
+  // s_base->parent = base_bucket;
 
+  SEMANTICS_NODE* s_base = AppendNewBucketRecord(MB_UNNAMED, NULL, s_node, base, true, pAnalyzer);
 
   if (s_base->semantic_type == SEM_TYP_FUNCTION
       || s_base->semantic_type == SEM_TYP_VARIABLE) {
+
     s_base->semantic_type = SEM_TYP_FUNCTION;
 
     // see if an argument bucket has been generated
-    BUCKET_REC *bucket = FindBucketRec(s_base->bucket_list, MB_UNNAMED);
+    BUCKET_REC* bucket = FindBucketRec(s_base->bucket_list, MB_UNNAMED);
 
     // If arguments exist, process them
     int local_nodes_done;
-    BUCKET_REC *br = ArgsToBucket(mml_mover, local_nodes_done, pAnalyzer);
+    BUCKET_REC* br = ArgsToBucket(mml_mover, local_nodes_done, pAnalyzer);
     nodes_done += local_nodes_done;
 
     if (br) {
-      if (bucket)
-        RemoveBucket(s_base, bucket);
-      AppendBucketRecord(s_base->bucket_list, br);
+
+        if (bucket)
+          RemoveBucket(s_base, bucket);
+
+        AppendBucketRecord(s_base->bucket_list, br);
+
     } else if (pAnalyzer -> GetAnalyzerData() -> GetDE_ind_vars() && (!bucket || !bucket->first_child)) {
-      if (bucket)
-        RemoveBucket(s_base, bucket);
-      BUCKET_REC *fvar_bucket = AddVarToBucket(MB_UNNAMED, pAnalyzer -> GetAnalyzerData() -> GetDE_ind_vars(), pAnalyzer -> GetAnalyzerData());
-      AppendBucketRecord(s_base->bucket_list, fvar_bucket);
+
+        if (bucket)
+          RemoveBucket(s_base, bucket);
+
+        BUCKET_REC* fvar_bucket = AddVarToBucket(MB_UNNAMED, pAnalyzer -> GetAnalyzerData() -> GetDE_ind_vars(), pAnalyzer -> GetAnalyzerData());
+        AppendBucketRecord(s_base->bucket_list, fvar_bucket);
+
     } else {
 
-      DefInfo* di = GetDI(pAnalyzer->GetAnalyzerData(), s_base->canonical_ID);
-      if (di && di->arg_list) {
-        char user_name[128];
-        char canonical_ID[128];
-        char *ptr = strchr(di->arg_list, ',');
-        if (ptr) {              // 
-          size_t zln = ptr - di->arg_list;
-          strncpy(user_name, di->arg_list, zln);
-          user_name[zln] = 0;
+        DefInfo* di = GetDI(pAnalyzer->GetAnalyzerData(), s_base->canonical_ID);
 
-          ptr++;
-          char *ptr1 = strchr(ptr, ',');
-          if (ptr1) {           // more than 1 variable??
-            TCI_ASSERT(0);
-            size_t zln = ptr - ptr1;
-            strncpy(canonical_ID, ptr, zln);
-            canonical_ID[zln] = 0;
+        if (di && di->arg_list) {
+          char user_name[128];
+          char canonical_ID[128];
+          char* ptr = strchr(di->arg_list, ',');
+          if (ptr) {              // 
+            size_t zln = ptr - di->arg_list;
+            strncpy(user_name, di->arg_list, zln);
+            user_name[zln] = 0;
+
+            ptr++;
+            char *ptr1 = strchr(ptr, ',');
+            if (ptr1) {           // more than 1 variable??
+              TCI_ASSERT(0);
+              size_t zln = ptr - ptr1;
+              strncpy(canonical_ID, ptr, zln);
+              canonical_ID[zln] = 0;
+            } else
+              strcpy(canonical_ID, ptr);
+
+            SEMANTICS_NODE* s_var = CreateSemanticsNode(SEM_TYP_VARIABLE);
+            //s_var->semantic_type = SEM_TYP_VARIABLE;
+
+            if (canonical_ID) {
+              s_var->canonical_ID = DuplicateString(canonical_ID);
+              SetSnodeOwner(s_var, pAnalyzer -> GetAnalyzerData());
+            }
+
+            s_var->contents = DuplicateString(user_name);
+
+            BUCKET_REC* dvar_bucket = AddVarToBucket(MB_DIFF_VAR, s_var, pAnalyzer -> GetAnalyzerData());
+            AppendBucketRecord(s_node->bucket_list, dvar_bucket);
+
+            if (bucket)
+              RemoveBucket(s_base, bucket);
+
+            BUCKET_REC* fvar_bucket = AddVarToBucket(MB_UNNAMED, s_var, pAnalyzer -> GetAnalyzerData());
+            
+            AppendBucketRecord(s_base->bucket_list, fvar_bucket);
+
+            DisposeSList(s_var);
           } else
-            strcpy(canonical_ID, ptr);
-
-          SEMANTICS_NODE *s_var = CreateSemanticsNode();
-          s_var->semantic_type = SEM_TYP_VARIABLE;
-
-          if (canonical_ID) {
-            s_var->canonical_ID = DuplicateString(canonical_ID);
-            SetSnodeOwner(s_var, pAnalyzer -> GetAnalyzerData());
-          }
-
-          s_var->contents = DuplicateString(user_name);
-
-          BUCKET_REC *dvar_bucket = AddVarToBucket(MB_DIFF_VAR, s_var, pAnalyzer -> GetAnalyzerData());
-          AppendBucketRecord(s_node->bucket_list, dvar_bucket);
-
-          if (bucket)
-            RemoveBucket(s_base, bucket);
-          BUCKET_REC *fvar_bucket = AddVarToBucket(MB_UNNAMED, s_var, pAnalyzer -> GetAnalyzerData());
-          
-          AppendBucketRecord(s_base->bucket_list, fvar_bucket);
-
-          DisposeSList(s_var);
-        } else
-          TCI_ASSERT(0);
-      }
+            TCI_ASSERT(0);
+        }
     }
   } else {
     if (pAnalyzer -> GetAnalyzerData() -> GetDE_ind_vars()) {
-      BUCKET_REC *dvar_bucket = AddVarToBucket(MB_DIFF_VAR, pAnalyzer -> GetAnalyzerData() -> GetDE_ind_vars(), pAnalyzer -> GetAnalyzerData());
-      AppendBucketRecord(s_node->bucket_list, dvar_bucket);
+        BUCKET_REC *dvar_bucket = AddVarToBucket(MB_DIFF_VAR, pAnalyzer -> GetAnalyzerData() -> GetDE_ind_vars(), pAnalyzer -> GetAnalyzerData());
+        AppendBucketRecord(s_node->bucket_list, dvar_bucket);
     } else
-      TCI_ASSERT(0);
+       TCI_ASSERT(0);
   }
 
   AppendNumber(s_node, MB_NPRIMES, n_dots);
@@ -3392,11 +3405,12 @@ void AnalyzeSubscriptedFunc(MNODE * mml_msub_node,
   if (base->p_chdata && !strcmp(base->p_chdata, "log")) {
     if (base->next) {
       
-      BUCKET_REC *bucket = MakeBucketRec(MB_LOG_BASE, NULL);
-      AppendBucketRecord(snode->bucket_list, bucket);
-      SEMANTICS_NODE *log_base = GetSemanticsFromNode(base->next, bucket, pAnalyzer);
-      bucket->first_child = log_base;
-      log_base->parent = bucket;
+      // BUCKET_REC *bucket = MakeBucketRec(MB_LOG_BASE, NULL);
+      // AppendBucketRecord(snode->bucket_list, bucket);
+      // SEMANTICS_NODE *log_base = GetSemanticsFromNode(base->next, bucket, pAnalyzer);
+      // bucket->first_child = log_base;
+      // log_base->parent = bucket;
+	  AppendNewBucketRecord(MB_LOG_BASE, NULL, snode, base->next, true, pAnalyzer);
 
     } else
       TCI_ASSERT(0);
@@ -3462,11 +3476,12 @@ void AnalyzeSubscriptedFence(MNODE* mml_msub_node,
       }
       if (base->next) {
         
-        BUCKET_REC* bucket = MakeBucketRec(MB_NORM_NUMBER, NULL);
-        AppendBucketRecord(snode->bucket_list, bucket);
-        SEMANTICS_NODE* norm_num = GetSemanticsFromNode(base->next, bucket, pAnalyzer);
-        bucket->first_child = norm_num;
-        norm_num->parent = bucket;
+        // BUCKET_REC* bucket = MakeBucketRec(MB_NORM_NUMBER, NULL);
+        // AppendBucketRecord(snode->bucket_list, bucket);
+        // SEMANTICS_NODE* norm_num = GetSemanticsFromNode(base->next, bucket, pAnalyzer);
+        // bucket->first_child = norm_num;
+        // norm_num->parent = bucket;
+		AppendNewBucketRecord(MB_NORM_NUMBER, NULL, snode, base->next, true, pAnalyzer);
 
       } else {
         TCI_ASSERT(!"The subscript is missing? - bad MathML");
@@ -3655,21 +3670,22 @@ SEMANTICS_NODE* ExtractIndepVar(MNODE * rover, Analyzer* pAnalyzer)
   } else if (ElementNameIs(rover, "msup")) {
 
       MNODE* base = rover->first_kid;
-      s_local = CreateSemanticsNode();
-	  s_local->semantic_type = SEM_TYP_POWERFORM;
+      s_local = CreateSemanticsNode(SEM_TYP_POWERFORM);
+	  //s_local->semantic_type = SEM_TYP_POWERFORM;
       
-      BUCKET_REC* base_bucket = MakeBucketRec(MB_SCRIPT_BASE, NULL);
-      AppendBucketRecord(s_local->bucket_list, base_bucket);
-      SEMANTICS_NODE* s_base = GetSemanticsFromNode(base, base_bucket, pAnalyzer);
-      base_bucket->first_child = s_base;
-      s_base->parent = base_bucket;
+      // BUCKET_REC* base_bucket = MakeBucketRec(MB_SCRIPT_BASE, NULL);
+      // AppendBucketRecord(s_local->bucket_list, base_bucket);
+      // SEMANTICS_NODE* s_base = GetSemanticsFromNode(base, base_bucket, pAnalyzer);
+      // base_bucket->first_child = s_base;
+      // s_base->parent = base_bucket;
+	  AppendNewBucketRecord(MB_SCRIPT_BASE, NULL, s_local, base, true, pAnalyzer);
 
-      BUCKET_REC* power_bucket = MakeBucketRec(MB_SCRIPT_UPPER, NULL);
-      AppendBucketRecord(s_local->bucket_list, power_bucket);
-      SEMANTICS_NODE* s_power = GetSemanticsFromNode(base->next, power_bucket, pAnalyzer);
-      power_bucket->first_child = s_power;
-      s_power->parent = power_bucket;
-      
+      // BUCKET_REC* power_bucket = MakeBucketRec(MB_SCRIPT_UPPER, NULL);
+      // AppendBucketRecord(s_local->bucket_list, power_bucket);
+      // SEMANTICS_NODE* s_power = GetSemanticsFromNode(base->next, power_bucket, pAnalyzer);
+      // power_bucket->first_child = s_power;
+      // s_power->parent = power_bucket;
+      AppendNewBucketRecord(MB_SCRIPT_UPPER, NULL, s_local, base->next, true, pAnalyzer);
 
   } else if (ElementNameIs(rover, "mo") && StringEqual(rover->p_chdata, "&#x2062;")) {
 
@@ -3736,6 +3752,7 @@ void CreateSubscriptedVar(MNODE* mml_msub_node,
     snode->error_flag = 1;
     return;
   }
+
   s_var->canonical_ID = base_canonical_name;
   SetSnodeOwner(s_var, pAnalyzer -> GetAnalyzerData());
   // pAnalyzer -> SetNodeIDsList( AppendIDRec(pAnalyzer -> NodeIDsList(), pAnalyzer ->GetAnalyzerData()-> CurrClientID(),
@@ -3802,11 +3819,12 @@ void AnalyzeBesselFunc(MNODE * mml_msub_node,
 
     MNODE *sub = base->next;
     if (sub) {
-      BUCKET_REC *sub_bucket = MakeBucketRec(MB_UNNAMED, NULL);
-      AppendBucketRecord(snode->bucket_list, sub_bucket);
-      SEMANTICS_NODE *s_sub = GetSemanticsFromNode(sub, sub_bucket, pAnalyzer);
-      sub_bucket->first_child = s_sub;
-      s_sub->parent = sub_bucket;
+	  AppendNewBucketRecord(MB_UNNAMED, NULL, snode, sub, true, pAnalyzer);
+      // BUCKET_REC *sub_bucket = MakeBucketRec(MB_UNNAMED, NULL);
+      // AppendBucketRecord(snode->bucket_list, sub_bucket);
+      // SEMANTICS_NODE *s_sub = GetSemanticsFromNode(sub, sub_bucket, pAnalyzer);
+      // sub_bucket->first_child = s_sub;
+      // s_sub->parent = sub_bucket;
     }
 
     int local_nodes_done;
@@ -3834,8 +3852,8 @@ bool SetODEvars(MathServiceRequest & msr, MathResult & mr,
     if (p_type == zPT_ASCII_text) {
       // i_var entered as "x"
       TCI_ASSERT(0);
-      pAnalyzer -> GetAnalyzerData() -> SetDE_ind_vars( CreateSemanticsNode() );
-      pAnalyzer -> GetAnalyzerData() -> GetDE_ind_vars()->semantic_type = SEM_TYP_VARIABLE;
+      pAnalyzer -> GetAnalyzerData() -> SetDE_ind_vars( CreateSemanticsNode(SEM_TYP_VARIABLE) );
+      //pAnalyzer -> GetAnalyzerData() -> GetDE_ind_vars()->semantic_type = SEM_TYP_VARIABLE;
       pAnalyzer -> GetAnalyzerData() -> GetDE_ind_vars()->contents = DuplicateString(i_var);
     } else if (p_type == zPT_ASCII_mmlmarkup) {
       // If "i_var" comes from a chambase dialog (as it should)
@@ -3857,8 +3875,8 @@ bool SetODEvars(MathServiceRequest & msr, MathResult & mr,
         char buffer[80];
         ChooseIndVar(dMML_tree, buffer);
 
-        pAnalyzer -> GetAnalyzerData() -> SetDE_ind_vars( CreateSemanticsNode() );
-        pAnalyzer -> GetAnalyzerData() -> GetDE_ind_vars()->semantic_type = SEM_TYP_VARIABLE;
+        pAnalyzer -> GetAnalyzerData() -> SetDE_ind_vars( CreateSemanticsNode(SEM_TYP_VARIABLE) );
+        //pAnalyzer -> GetAnalyzerData() -> GetDE_ind_vars()->semantic_type = SEM_TYP_VARIABLE;
         pAnalyzer -> GetAnalyzerData() -> GetDE_ind_vars()->contents = DuplicateString(buffer);
 
         mr.PutResultCode(CR_undefined);
@@ -3887,8 +3905,8 @@ bool SetIMPLICITvars(MathServiceRequest & msr, MathResult & mr, Analyzer* pAnaly
       // i_var entered as "x"
       TCI_ASSERT(0);
       TCI_ASSERT(!pAnalyzer -> GetIMPLDIFF_ind_var());  // global var - must be NULL here!
-      pAnalyzer -> SetIMPLDIFF_ind_var( CreateSemanticsNode() );
-      pAnalyzer -> GetIMPLDIFF_ind_var()->semantic_type = SEM_TYP_VARIABLE;
+      pAnalyzer -> SetIMPLDIFF_ind_var( CreateSemanticsNode(SEM_TYP_VARIABLE) );
+      //pAnalyzer -> GetIMPLDIFF_ind_var()->semantic_type = SEM_TYP_VARIABLE;
       pAnalyzer -> GetIMPLDIFF_ind_var()->contents = DuplicateString(i_var);
     } else if (p_type == zPT_ASCII_mmlmarkup) {
       // If "i_var" comes from a chambase dialog (as it should)
@@ -4059,8 +4077,8 @@ SEMANTICS_NODE* DefToSemanticsList(MNODE* dMML_tree, int& error_code, Analyzer* 
   OverrideInvisibleTimesOnLHS(dMML_tree);
 
   if (ElementNameIs(dMML_tree, "math")) {
-    rv = CreateSemanticsNode();
-    rv->semantic_type = SEM_TYP_MATH_CONTAINER;
+    rv = CreateSemanticsNode(SEM_TYP_MATH_CONTAINER);
+    //rv->semantic_type = SEM_TYP_MATH_CONTAINER;
 
     if (dMML_tree->first_kid) {
       MNODE *cont = dMML_tree->first_kid;
