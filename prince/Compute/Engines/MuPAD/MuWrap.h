@@ -6,10 +6,11 @@
 #ifndef MuPADWrapper_H
 #define MuPADWrapper_H
 
-#include "CmpTypes.h"
-#include "fltutils.h"
-#include "mnode.h"
 #include "EngWrap.h"
+#include "iCmpTypes.h"
+
+#include "fltutils.h"
+
 #include "nsILocalFile.h"
 
 class MuAnalyzer;
@@ -18,6 +19,10 @@ class MathServiceRequest;
 class PlotServiceRequest;
 class MathResult;
 class MuPAD2Tree;
+class MNODE;
+class SEMANTICS_NODE;
+struct ClientAliases_REC;
+struct NAME2AKA_REC;
 
 
 class MuPADWrapper {

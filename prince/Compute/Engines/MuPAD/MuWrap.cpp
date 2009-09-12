@@ -26,6 +26,10 @@
 #include "MuP2Tree.h"
 #include "MuAnalyzer.h"
 #include "Grammar.h"
+#include "CmpTypes.h"
+#include "fltutils.h"
+#include "mnode.h"
+
 #include "xpcom-config.h"
 #include "nsStringAPI.h"
 #include "nsILocalFile.h"
