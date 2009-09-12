@@ -3,7 +3,7 @@
 #ifndef MRESULT_H
 #define MRESULT_H
 
-#include "CmpTypes.h"
+#include "iCmpTypes.h"
 #include "fltutils.h"
 
 // used to be an overloaded PARAM_REC
@@ -70,6 +70,7 @@ public:
     DisposeMsgs(msg_list);
     msg_list = new_msgs;
   }
+  
   LOG_MSG_REC *GetMsgs()
   {
     return msg_list;

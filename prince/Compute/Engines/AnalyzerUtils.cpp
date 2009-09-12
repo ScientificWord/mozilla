@@ -701,8 +701,8 @@ BUCKET_REC* AddVarToBucket(U32 bucket_ID,
         }
 
         if (do_it) {
-          SEMANTICS_NODE* s_var = CreateSemanticsNode();
-          s_var->semantic_type = SEM_TYP_VARIABLE;
+          SEMANTICS_NODE* s_var = CreateSemanticsNode(SEM_TYP_VARIABLE);
+          //s_var->semantic_type = SEM_TYP_VARIABLE;
 
           if (s_curr_var->canonical_ID) {
             s_var->canonical_ID = DuplicateString(s_curr_var->canonical_ID);
@@ -1243,8 +1243,8 @@ void AppendODEfuncs(SEMANTICS_NODE* rv, DE_FUNC_REC* ODE_fnames, AnalyzerData* p
   DE_FUNC_REC* rover = ODE_fnames;
 
   while (rover) {
-    SEMANTICS_NODE* s_odefunc = CreateSemanticsNode();
-    s_odefunc->semantic_type = SEM_TYP_FUNCTION;
+    SEMANTICS_NODE* s_odefunc = CreateSemanticsNode(SEM_TYP_FUNCTION);
+    //s_odefunc->semantic_type = SEM_TYP_FUNCTION;
 
     if (rover->zfunc_src_name) {
       s_odefunc->contents = DuplicateString(rover->zfunc_src_name);

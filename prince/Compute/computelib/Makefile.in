@@ -19,20 +19,17 @@ CPPSRCS =				\
   MRequest.cpp \
   MResult.cpp \
   PrefStor.cpp  \
-  WorkShop.cpp  \
-	$(NULL)
+  $(NULL)
 
 REQUIRES = \
   string \
   xpcom \
-  enginewrapper \
   $(NULL)
 
 
 LOCAL_INCLUDES = -I$(srcdir)/../libtci	\
 			-I$(srcdir)/../Engines	\
       -I$(srcdir)/../compsample2 \
-      -I$(srcdir)/../wrappers \
 			$(NULL)
 
 # we don't want the shared lib, but we want to force the creation of a static lib.

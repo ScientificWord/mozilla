@@ -1,6 +1,7 @@
 // Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
 
 #include "MResult.h"
+#include "snode.h"
 #include <string.h>
 
 
