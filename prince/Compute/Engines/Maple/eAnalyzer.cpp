@@ -35,6 +35,7 @@ typedef struct tagClientVariables_REC {	//
 */
 
 #include "eAnalyzer.h"
+#include "SNode.h"
 #include <string.h>
 #include <ctype.h>
 
@@ -752,10 +753,10 @@ void eAnalyzer::AnalyzeDERIVATIVE(MNODE * deriv_node,
   local_nodes_done = 1;
   snode->semantic_type = SEM_TYP_DERIVATIVE;
 
-  MNODE *func_node = deriv_node->first_kid;
-  if (func_node && ElementNameIs(func_node, "function")) {
-    SEMANTICS_NODE *s_func = CreateSemanticsNode();
-    s_func->semantic_type = SEM_TYP_FUNCTION;
+  MNODE* func_node = deriv_node->first_kid;
+  if (ElementNameIs(func_node, "function")) {
+    SEMANTICS_NODE* s_func = CreateSemanticsNode(SEM_TYP_FUNCTION);
+    //s_func->semantic_type = SEM_TYP_FUNCTION;
     AnalyzeFUNCTION(func_node, s_func, local_nodes_done);
 
     BUCKET_REC* expr_bucket = MakeParentBucketRec(MB_UNNAMED, s_func);
@@ -810,8 +811,8 @@ void eAnalyzer::AnalyzeEXPONENTIAL(MNODE * func_node,
           SEMANTICS_NODE *s_exp_list = GetSemanticsList(exp_contents, script_bucket);
           script_bucket->first_child = s_exp_list;
 
-          SEMANTICS_NODE *s_base = CreateSemanticsNode();
-          s_base->semantic_type = SEM_TYP_UCONSTANT;
+          SEMANTICS_NODE *s_base = CreateSemanticsNode(SEM_TYP_UCONSTANT);
+          //s_base->semantic_type = SEM_TYP_UCONSTANT;
           char *tmp = new char[10];
           strcpy(tmp, "&#x2147;");  // exponential "e"
           s_base->contents = tmp;
@@ -937,8 +938,8 @@ void eAnalyzer::AnalyzeLIMIT(MNODE * func_node,
             if (arg3->first_kid) {
               MNODE *variable = arg3->first_kid;
 
-              SEMANTICS_NODE *s_num = CreateSemanticsNode();
-              s_num->semantic_type = SEM_TYP_NUMBER;
+              SEMANTICS_NODE* s_num = CreateSemanticsNode(SEM_TYP_NUMBER);
+              //s_num->semantic_type = SEM_TYP_NUMBER;
               char *tmp = new char[2];
               if (!strcmp(variable->p_chdata, "right"))
                 strcpy(tmp, "1");
@@ -1252,19 +1253,19 @@ void eAnalyzer::AnalyzeFRACTION(MNODE * fraction_node,
                                 SEMANTICS_NODE * snode,
                                 int & local_nodes_done)
 {
-  MNODE *numerator_node = fraction_node->first_kid;
-  SEMANTICS_NODE *numerator = CreateSemanticsNode();
+  MNODE* numerator_node = fraction_node->first_kid;
+  SEMANTICS_NODE* numerator = CreateSemanticsNode();
   SNodeFromOneMNode(numerator, numerator_node, local_nodes_done);
   numerator = RemoveRedundantPrecGroups(numerator);
 
-  SEMANTICS_NODE *denominator = CreateSemanticsNode();
+  SEMANTICS_NODE* denominator = CreateSemanticsNode();
   if (numerator_node->next) {
     SNodeFromOneMNode(denominator, numerator_node->next, local_nodes_done);
     denominator = RemoveRedundantPrecGroups(denominator);
   } else
     TCI_ASSERT(0);
 
-  BUCKET_REC *num_bucket = MakeBucketRec(MB_NUMERATOR, NULL);
+  BUCKET_REC* num_bucket = MakeBucketRec(MB_NUMERATOR, NULL);
   snode->bucket_list = AppendBucketRec(snode->bucket_list, num_bucket);
   num_bucket->first_child = numerator;
   numerator->parent = num_bucket;
@@ -1280,9 +1281,9 @@ void eAnalyzer::AnalyzeFRACTION(MNODE * fraction_node,
   snode->semantic_type = SEM_TYP_FRACTION;
 }
 
-void eAnalyzer::AnalyzeMIXEDNUM(MNODE * mixnum_node,
-                                SEMANTICS_NODE * snode,
-                                int & local_nodes_done)
+void eAnalyzer::AnalyzeMIXEDNUM(MNODE* mixnum_node,
+                                SEMANTICS_NODE* snode,
+                                int& local_nodes_done)
 {
   MNODE *whole_node = mixnum_node->first_kid;
   SEMANTICS_NODE *s_whole = CreateSemanticsNode();

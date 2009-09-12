@@ -19,6 +19,7 @@ MODULE_NAME	= msiSimpleComputeEngine2Module
 REQUIRES = \
   string \
   xpcom \
+  enginewrapper \
   simplecomputeengine \
   $(NULL)
 
@@ -26,6 +27,8 @@ CPPSRCS = \
   msiSimpleComputeEngine2.cpp	   \
   msiSimpleComputeEngine2Module.cpp \
   ComputeDLL.cpp \
+  WorkShop.cpp  \
+  CompEngine.cpp \
   $(NULL)
 
 XPIDLSRCS	= msiISimpleComputeEngine.idl
@@ -49,7 +52,8 @@ EXTRA_DSO_LDOPTS = \
 
 include $(topsrcdir)/config/rules.mk
 
-LOCAL_INCLUDES = -I$(srcdir)/../computelib -I$(srcdir)/../libtci   -I$(srcdir)/../Engines
+      
+LOCAL_INCLUDES = -I$(srcdir)/../computelib -I$(srcdir)/../libtci   -I$(srcdir)/../Engines -I$(srcdir)/../wrappers
 
 
 libs:: $(TARGETS)

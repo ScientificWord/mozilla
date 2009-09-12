@@ -4,6 +4,7 @@
 #include "attriblist.h"
 #include "strutils.h"
 #include "dumputils.h"
+#include "snode.h"
 #include <string.h>
 #include <ctype.h>
 
@@ -410,9 +411,9 @@ INPUT_NOTATION_REC* CreateNotationRec()
 SEMANTICS_NODE* NestInPGroup(SEMANTICS_NODE* s_list,
                              BUCKET_REC* parent_bucket)
 {
-  SEMANTICS_NODE *rv = CreateSemanticsNode();
+  SEMANTICS_NODE *rv = CreateSemanticsNode(SEM_TYP_PRECEDENCE_GROUP);
 
-  rv->semantic_type = SEM_TYP_PRECEDENCE_GROUP;
+  //rv->semantic_type = SEM_TYP_PRECEDENCE_GROUP;
   rv->parent = parent_bucket;
   rv->bucket_list = MakeBucketRec(MB_UNNAMED, s_list);
 
@@ -774,8 +775,8 @@ void FunctionToInfix(SEMANTICS_NODE * s_func, char *zop_str)
       }
       b1->next = NULL;
 
-      SEMANTICS_NODE *s_op = CreateSemanticsNode();
-      s_op->semantic_type = SEM_TYP_INFIX_OP;
+      SEMANTICS_NODE *s_op = CreateSemanticsNode(SEM_TYP_INFIX_OP);
+      //s_op->semantic_type = SEM_TYP_INFIX_OP;
       size_t zln = strlen(zop_str);
       char *tmp = new char[zln + 1];
       strcpy(tmp, zop_str);

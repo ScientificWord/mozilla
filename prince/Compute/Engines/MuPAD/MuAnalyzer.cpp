@@ -21,6 +21,12 @@
 
 #include "MuAnalyzer.h"
 #include "MuWrap.h"
+
+#include "CmpTypes.h"
+#include "fltutils.h"
+#include "mnode.h"
+#include "SNode.h"
+
 #include "strutils.h"
 #include <string.h>
 #include <ctype.h>
@@ -752,12 +758,12 @@ void MuAnalyzer::AnalyzeDERIVATIVE(MNODE* deriv_node,
 
   MNODE *func_node = deriv_node->first_kid;
   if (ElementNameIs(func_node, "function")) {
-    SEMANTICS_NODE* s_func = CreateSemanticsNode();
-    s_func->semantic_type = SEM_TYP_FUNCTION;
+    SEMANTICS_NODE* s_func = CreateSemanticsNode(SEM_TYP_FUNCTION);
+    //s_func->semantic_type = SEM_TYP_FUNCTION;
 
     AnalyzeFUNCTION(func_node, s_func, local_nodes_done);
 
-    BUCKET_REC *expr_bucket = MakeParentBucketRec(MB_UNNAMED, s_func);
+    BUCKET_REC* expr_bucket = MakeParentBucketRec(MB_UNNAMED, s_func);
     AppendBucketRecord(snode->bucket_list, expr_bucket);
     
 
@@ -767,13 +773,14 @@ void MuAnalyzer::AnalyzeDERIVATIVE(MNODE* deriv_node,
     else
       TCI_ASSERT(0);
 
-    MNODE *m_diff_var = LocateDiffVar(deriv_node);
+    MNODE* m_diff_var = LocateDiffVar(deriv_node);
     if (m_diff_var) {
-      BUCKET_REC *bucket = MakeBucketRec(MB_DIFF_VAR, NULL);
+      BUCKET_REC* bucket = MakeBucketRec(MB_DIFF_VAR, NULL);
       AppendBucketRecord(snode->bucket_list, bucket);
       SEMANTICS_NODE *s_var = GetSemanticsList(m_diff_var, bucket);
       bucket->first_child = s_var;
       s_var->parent = bucket;
+
     }
     AddPrimesCount(snode, n_primes);
   } else
@@ -811,8 +818,8 @@ void MuAnalyzer::AnalyzeEXPONENTIAL(MNODE * func_node,
           SEMANTICS_NODE *s_exp_list = GetSemanticsList(exp_contents, script_bucket);
           script_bucket->first_child = s_exp_list;
 
-          SEMANTICS_NODE *s_base = CreateSemanticsNode();
-          s_base->semantic_type = SEM_TYP_UCONSTANT;
+          SEMANTICS_NODE *s_base = CreateSemanticsNode(SEM_TYP_UCONSTANT);
+          //s_base->semantic_type = SEM_TYP_UCONSTANT;
           char *tmp = new char[10];
           strcpy(tmp, "&#x2147;");
           s_base->contents = tmp;
@@ -949,8 +956,8 @@ void MuAnalyzer::AnalyzeLIMIT(MNODE * func_node,
             if (arg3->first_kid) {
               MNODE *variable = arg3->first_kid;
 
-              SEMANTICS_NODE *s_num = CreateSemanticsNode();
-              s_num->semantic_type = SEM_TYP_NUMBER;
+              SEMANTICS_NODE* s_num = CreateSemanticsNode(SEM_TYP_NUMBER);
+              //s_num->semantic_type = SEM_TYP_NUMBER;
               char *tmp = new char[2];
               if (!strcmp(variable->p_chdata, "Right"))
                 strcpy(tmp, "1");
@@ -1353,12 +1360,12 @@ void MuAnalyzer::AnalyzeFRACTION(MNODE * fraction_node,
                                  SEMANTICS_NODE * snode,
                                  int & local_nodes_done)
 {
-  MNODE *numerator_node = fraction_node->first_kid;
-  SEMANTICS_NODE *numerator = CreateSemanticsNode();
+  MNODE* numerator_node = fraction_node->first_kid;
+  SEMANTICS_NODE* numerator = CreateSemanticsNode();
   SNodeFromOneMNode(numerator, numerator_node, local_nodes_done);
   numerator = RemoveRedundantPrecGroups(numerator);
 
-  SEMANTICS_NODE *denominator = CreateSemanticsNode();
+  SEMANTICS_NODE* denominator = CreateSemanticsNode();
   if (numerator_node->next) {
     SNodeFromOneMNode(denominator, numerator_node->next, local_nodes_done);
     denominator = RemoveRedundantPrecGroups(denominator);
@@ -1386,12 +1393,12 @@ void MuAnalyzer::AnalyzeMIXEDNUM(MNODE * mixnum_node,
                                  int & local_nodes_done)
 {
 
-  MNODE *whole_node = mixnum_node->first_kid;
-  SEMANTICS_NODE *s_whole = CreateSemanticsNode();
+  MNODE* whole_node = mixnum_node->first_kid;
+  SEMANTICS_NODE* s_whole = CreateSemanticsNode();
   SNodeFromOneMNode(s_whole, whole_node, local_nodes_done);
   s_whole = RemoveRedundantPrecGroups(s_whole);
 
-  SEMANTICS_NODE *s_fraction = CreateSemanticsNode();
+  SEMANTICS_NODE* s_fraction = CreateSemanticsNode();
   if (whole_node->next) {
     SNodeFromOneMNode(s_fraction, whole_node->next, local_nodes_done);
     s_fraction = RemoveRedundantPrecGroups(s_fraction);
@@ -1524,8 +1531,8 @@ void MuAnalyzer::AnalyzeVARIABLE(MNODE * eng_node, SEMANTICS_NODE * snode,
           BUCKET_REC* obj_bucket = MakeBucketRec(MB_UNNAMED, snode);
           snode->bucket_list = AppendBucketRec(snode->bucket_list, obj_bucket);
 
-          SEMANTICS_NODE *s_sub = CreateSemanticsNode();
-          s_sub->semantic_type = SEM_TYP_NUMBER;
+          SEMANTICS_NODE *s_sub = CreateSemanticsNode(SEM_TYP_NUMBER);
+          //s_sub->semantic_type = SEM_TYP_NUMBER;
           char *tmp = new char[zln];
           strcpy(tmp, var_nom + 1);
           s_sub->contents = tmp;
@@ -2059,8 +2066,8 @@ void MuAnalyzer::FixMapleJordanForm(SEMANTICS_NODE * s_list)
 
 SEMANTICS_NODE *MuAnalyzer::FixMapleEigenVect(SEMANTICS_NODE * s_list)
 {
-  SEMANTICS_NODE *rv = CreateSemanticsNode();
-  rv->semantic_type = SEM_TYP_EIGENVECTORSET;
+  SEMANTICS_NODE *rv = CreateSemanticsNode(SEM_TYP_EIGENVECTORSET);
+  //rv->semantic_type = SEM_TYP_EIGENVECTORSET;
 
   SEMANTICS_NODE *rover = s_list;
   while (rover) {
@@ -2130,13 +2137,13 @@ SEMANTICS_NODE *MuAnalyzer::FixMapleSimplexDual(SEMANTICS_NODE * s_list)
     SEMANTICS_NODE *s_comma = s_list->next;
     SEMANTICS_NODE *s_set = s_comma->next;
 
-    s_simplex = CreateSemanticsNode();
-    s_simplex->semantic_type = SEM_TYP_SIMPLEX;
-    char *name = "Simplex Dual";
-    size_t zln = strlen(name);
-    char *tmp = new char[zln + 1];
-    strcpy(tmp, name);
-    s_simplex->contents = tmp;
+    s_simplex = CreateSemanticsNode(SEM_TYP_SIMPLEX);
+    //s_simplex->semantic_type = SEM_TYP_SIMPLEX;
+    // char *name = "Simplex Dual";
+    // size_t zln = strlen(name);
+    // char *tmp = new char[zln + 1];
+    // strcpy(tmp, name);
+    s_simplex->contents = DuplicateString("Simplex Dual");
 
     BUCKET_REC* expr_bucket = MakeBucketRec(MB_SIMPLEX_EXPR, s_simplex);
     s_simplex->bucket_list = AppendBucketRec(s_simplex->bucket_list, expr_bucket);
@@ -2177,31 +2184,30 @@ void MuAnalyzer::FixMapleSimplexStandardize(SEMANTICS_NODE * s_list)
 
 SEMANTICS_NODE *MuAnalyzer::FixQuantileResult(SEMANTICS_NODE * s_list)
 {
-  SEMANTICS_NODE *s_qresult = s_list;
+  SEMANTICS_NODE* s_qresult = s_list;
 
   if (s_list && s_list->next && s_list->next->next) {
-    SEMANTICS_NODE *s_percent = s_list;
-    SEMANTICS_NODE *s_comma = s_list->next;
-    SEMANTICS_NODE *s_answer = s_comma->next;
+    SEMANTICS_NODE* s_percent = s_list;
+    SEMANTICS_NODE* s_comma = s_list->next;
+    SEMANTICS_NODE* s_answer = s_comma->next;
 
-    s_qresult = CreateSemanticsNode();
-    s_qresult->semantic_type = SEM_TYP_QUANTILE_RESULT;
-    char *name = "Quantile Result";
-    size_t zln = strlen(name);
-    char *tmp = new char[zln + 1];
-    strcpy(tmp, name);
-    s_qresult->contents = tmp;
+    s_qresult = CreateSemanticsNode(SEM_TYP_QUANTILE_RESULT);
+    //s_qresult->semantic_type = SEM_TYP_QUANTILE_RESULT;
+    // char *name = "Quantile Result";
+    // size_t zln = strlen(name);
+    // char *tmp = new char[zln + 1];
+    // strcpy(tmp, name);
+    s_qresult->contents = DuplicateString("Quantile Result");
 
-    BUCKET_REC *percent_bucket = MakeBucketRec(MB_WHICH_QUANTILE, NULL);
-    s_qresult->bucket_list =
-      AppendBucketRec(s_qresult->bucket_list, percent_bucket);
+    BUCKET_REC* percent_bucket = MakeBucketRec(MB_WHICH_QUANTILE, NULL);
+    s_qresult->bucket_list =  AppendBucketRec(s_qresult->bucket_list, percent_bucket);
     percent_bucket->first_child = s_percent;
     s_percent->parent = percent_bucket;
 
     s_percent->next = NULL;
     s_comma->prev = NULL;
 
-    if (strcmp(s_comma->contents, ","))
+    if (!StringEqual(s_comma->contents, ","))
       TCI_ASSERT(0);
 
     s_comma->next = NULL;
@@ -2209,8 +2215,7 @@ SEMANTICS_NODE *MuAnalyzer::FixQuantileResult(SEMANTICS_NODE * s_list)
     DisposeSList(s_comma);
 
     BUCKET_REC *answer_bucket = MakeBucketRec(MB_UNNAMED, NULL);
-    s_qresult->bucket_list =
-      AppendBucketRec(s_qresult->bucket_list, answer_bucket);
+    s_qresult->bucket_list =  AppendBucketRec(s_qresult->bucket_list, answer_bucket);
     answer_bucket->first_child = s_answer;
     s_answer->parent = answer_bucket;
   }
@@ -2218,7 +2223,7 @@ SEMANTICS_NODE *MuAnalyzer::FixQuantileResult(SEMANTICS_NODE * s_list)
   return s_qresult;
 }
 
-SEMANTICS_NODE *MuAnalyzer::RemoveParens(SEMANTICS_NODE * expr)
+SEMANTICS_NODE* MuAnalyzer::RemoveParens(SEMANTICS_NODE * expr)
 {
   SEMANTICS_NODE *rv = expr;
 
@@ -2472,22 +2477,22 @@ void MuAnalyzer::AnalyzeDIFF(MNODE * func_node,
             s_curr_var->parent = item_bucket;
           } else {
             // multiple instances of the variable of differentiation
-            SEMANTICS_NODE *s_power = CreateSemanticsNode();
-            s_power->semantic_type = SEM_TYP_POWERFORM;
+            SEMANTICS_NODE *s_power = CreateSemanticsNode(SEM_TYP_POWERFORM);
+            //s_power->semantic_type = SEM_TYP_POWERFORM;
             item_bucket->first_child = s_power;
             s_power->parent = item_bucket;
 
             BUCKET_REC* base_bucket = MakeParentBucketRec(MB_SCRIPT_BASE, s_curr_var);
             s_power->bucket_list = AppendBucketRec(s_power->bucket_list, base_bucket);
             
-            SEMANTICS_NODE *s_sup = CreateSemanticsNode();
-            s_sup->semantic_type = SEM_TYP_NUMBER;
+            SEMANTICS_NODE* s_sup = CreateSemanticsNode(SEM_TYP_NUMBER);
+            //s_sup->semantic_type = SEM_TYP_NUMBER;
             char buffer[32];
             StrFromInt(cv_tally, buffer);
-            size_t zln = strlen(buffer);
-            char *tmp = new char[zln + 1];
-            strcpy(tmp, buffer);
-            s_sup->contents = tmp;
+            // size_t zln = strlen(buffer);
+            // char *tmp = new char[zln + 1];
+            // strcpy(tmp, buffer);
+            s_sup->contents = DuplicateString(buffer);
 
             BUCKET_REC* script_bucket = MakeParentBucketRec(MB_SCRIPT_UPPER, s_sup);
             s_power->bucket_list = AppendBucketRec(s_power->bucket_list, script_bucket);
