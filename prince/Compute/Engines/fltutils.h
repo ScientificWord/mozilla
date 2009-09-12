@@ -4,7 +4,7 @@
 #define FilterUtils_h
 
 #include "CmpTypes.h"
-#include "SNode.h"
+//#include "SNode.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -12,6 +12,8 @@
 #include "logmsg.h"
 
 class Grammar;
+class SEMANTICS_NODE;
+struct BUCKET_REC;
 
 
 
@@ -23,8 +25,7 @@ struct PARAM_REC
   char* ztext;
 };
 
-PARAM_REC* AppendParam(PARAM_REC* curr_list, U32 p_ID, U32 p_type,
-                       const char* zdata);
+PARAM_REC* AppendParam(PARAM_REC* curr_list, U32 p_ID, U32 p_type, const char* zdata);
 
 void DisposeParamList(PARAM_REC * p_list);
 

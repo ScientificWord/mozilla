@@ -37,7 +37,6 @@ CPPSRCS = \
   mnode.cpp \
   AnalyzerUtils.cpp \
   Analyzer.cpp \
-  CompEngine.cpp \
   MML2Tree.cpp \
   STree2MML.cpp \
   Tree2StdMML.cpp \

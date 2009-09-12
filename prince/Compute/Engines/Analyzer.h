@@ -6,7 +6,7 @@
 #include "CmpTypes.h"
 #include "fltutils.h"
 #include "MRequest.h"
-#include "MResult.h"
+//#include "MResult.h"
 
 #include <limits.h>
 
@@ -22,6 +22,7 @@ class DE_FUNC_REC;
 
 
 class AnalyzerData;
+class MathResult;
 
 
 
