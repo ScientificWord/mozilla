@@ -220,6 +220,8 @@ class SEMANTICS_NODE
 
 
 SEMANTICS_NODE* CreateSemanticsNode();
+SEMANTICS_NODE* CreateSemanticsNode(SemanticType type);
+
 void DisposeSemanticsNode(SEMANTICS_NODE* del);
 void DisposeSList(SEMANTICS_NODE* s_list);
 

@@ -30,6 +30,7 @@
 #include "MResult.h"
 #include "DefStore.h"
 #include "PrefStor.h"
+#include "SNode.h"
 #include "attriblist.h"
 #include "strutils.h"
 #include <string.h>

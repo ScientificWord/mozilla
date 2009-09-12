@@ -29,6 +29,15 @@ SEMANTICS_NODE* CreateSemanticsNode()
   return rv;
 }
 
+
+SEMANTICS_NODE* CreateSemanticsNode(SemanticType type)
+{
+  SEMANTICS_NODE *rv = CreateSemanticsNode();
+  rv -> semantic_type = type;
+  return rv;
+}
+
+
 void DisposeSemanticsNode(SEMANTICS_NODE * del)
 {
   delete[] del->canonical_ID;
