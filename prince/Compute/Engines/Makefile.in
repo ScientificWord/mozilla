@@ -36,6 +36,7 @@ CPPSRCS = \
   logmsg.cpp \
   mnode.cpp \
   AnalyzerUtils.cpp \
+  AnalyzerData.cpp \
   Analyzer.cpp \
   MML2Tree.cpp \
   STree2MML.cpp \

@@ -274,6 +274,22 @@ void RemoveBucket(SEMANTICS_NODE* s_base, BUCKET_REC* targ);
 
 
 
+BUCKET_REC* MakeBucketRec(U32 which_bucket, SEMANTICS_NODE* sem_child);
+BUCKET_REC* MakeParentBucketRec(U32 which_bucket, SEMANTICS_NODE* sem_child);
+
+
+BUCKET_REC* AppendBucketRec(BUCKET_REC* a_list, BUCKET_REC* new_a_rec);
+void AppendBucketRecord(BUCKET_REC*& a_list, BUCKET_REC* new_a_rec);
+
+
+BUCKET_REC* FindBucketRec(BUCKET_REC* a_list, U32 bucket_ID);
+void DisposeBucketList(BUCKET_REC* arg_list);
+
+SEMANTICS_NODE* PrefixToInfix(SEMANTICS_NODE* s_list);
+
+SEMANTICS_NODE* NestInPGroup(SEMANTICS_NODE* s_list, BUCKET_REC* parent_bucket);
+
+char* GetBucketName(U32 bucket_ID);
 
 
 

@@ -31,6 +31,8 @@
 #include "DefStore.h"
 #include "PrefStor.h"
 #include "SNode.h"
+#include "grammar.h"
+#include "fltutils.h"
 #include "attriblist.h"
 #include "strutils.h"
 #include <string.h>

@@ -50,9 +50,21 @@ private:
    
 };
 
+bool GetdBaseNamedRecord(const Grammar* gmr, 
+                         const char* bin_name,
+                         const char* op_name,
+                         const char** eng_dbase_rec,
+                         U32& ID, 
+                         U32& subID);
+
+
 int ChData2Unicodes(const char* p_chdata, U32* unicodes, int limit, const Grammar* mml_entities);
 void Contents2Buffer(char* zdest, const char* p_chdata, int lim, const Grammar* mml_entities);
 int GetLimitFormat(char* op_name, const Grammar* mml_entities);
+bool IsTrigArgFuncName(const Grammar* mml_entities, const char* f_nom);
+bool IsReservedFuncName(const Grammar* mml_entities, const char* f_nom);
+
+
 
 
 #endif
