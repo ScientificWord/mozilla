@@ -80,27 +80,16 @@ struct ClientAliases_REC {
 
 
 
-struct MIC2MMLNODE_REC
-{                               // name -> node mapping record
-  MIC2MMLNODE_REC* next;
-  U32 owner_ID;
-  char* canonical_name;
-  char* mml_markup;
+class MIC2MMLNODE_REC
+{
+  public:                       // name -> node mapping record
+    MIC2MMLNODE_REC* next;
+    U32 owner_ID;
+    char* canonical_name;
+    char* mml_markup;
 };
 
 
-
-
-BUCKET_REC* MakeBucketRec(U32 which_bucket, SEMANTICS_NODE* sem_child);
-BUCKET_REC* MakeParentBucketRec(U32 which_bucket, SEMANTICS_NODE* sem_child);
-
-
-BUCKET_REC* AppendBucketRec(BUCKET_REC* a_list, BUCKET_REC* new_a_rec);
-void AppendBucketRecord(BUCKET_REC*& a_list, BUCKET_REC* new_a_rec);
-
-
-BUCKET_REC* FindBucketRec(BUCKET_REC* a_list, U32 bucket_ID);
-void DisposeBucketList(BUCKET_REC* arg_list);
 
 
 const char* GetMarkupFromID(MIC2MMLNODE_REC* node_IDs_list, const char* targ_ID);
@@ -110,9 +99,6 @@ MIC2MMLNODE_REC* JoinIDsLists(MIC2MMLNODE_REC* IDs_list, MIC2MMLNODE_REC* append
 
 
 
-bool IsTrigArgFuncName(const Grammar* mml_entities, const char* f_nom);
-bool IsReservedFuncName(const Grammar* mml_entities, const char* f_nom);
-
 
 U32 NumericEntity2U32(const char *p_entity);
 int CountSymbols(const char *p_chdata, int &n_entities);
@@ -120,11 +106,9 @@ int CountSymbols(const char *p_chdata, int &n_entities);
 
 INPUT_NOTATION_REC* CreateNotationRec();
 
-SEMANTICS_NODE* PrefixToInfix(SEMANTICS_NODE* s_list);
 
 void SetInfixPrecedence(SEMANTICS_NODE* snode);
 
-SEMANTICS_NODE* NestInPGroup(SEMANTICS_NODE* s_list, BUCKET_REC* parent_bucket);
 
 void FunctionToInfix(SEMANTICS_NODE* snode, char* zop_str);
 

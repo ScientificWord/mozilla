@@ -4,10 +4,9 @@
 #define TREE2STDMML_H
 
 #include "CmpTypes.h"
-#include "fltutils.h"
 #include "mnode.h"
 class Grammar;
-class Analyzer;
+class AnalyzerData;
 
 
 typedef struct tagGROUP_INFO
@@ -27,7 +26,7 @@ typedef struct tagGROUP_INFO
 class Tree2StdMML
 {
 public:
-  Tree2StdMML(const Grammar* mml_grammar, Analyzer* analyzer);
+  Tree2StdMML(const Grammar* mml_grammar, AnalyzerData* analyzer_data);
   ~Tree2StdMML();
 
   MNODE *TreeToCanonicalForm(MNODE * dMML_tree,
@@ -142,7 +141,7 @@ protected:
 
 private:
   const Grammar* const mml_entities;
-  Analyzer *my_analyzer;
+  AnalyzerData* my_analyzer_data;
 
   ATTRIB_REC *mv_stack;
   ATTRIB_REC *lt_stack;

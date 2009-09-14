@@ -44,15 +44,15 @@
 
 #include "Tree2StdMML.h"
 #include "Grammar.h"
-#include "Analyzer.h"
+#include "AnalyzerData.h"
 #include "attriblist.h"
 #include "strutils.h"
 #include <string.h>
 
 
-Tree2StdMML::Tree2StdMML(const Grammar* mml_grammar, Analyzer* analyzer) :
+Tree2StdMML::Tree2StdMML(const Grammar* mml_grammar, AnalyzerData* analyzer_data) :
      mml_entities(mml_grammar), 
-     my_analyzer(analyzer), 
+     my_analyzer_data(analyzer_data), 
      mv_stack(NULL), 
      lt_stack(NULL), 
      mDisDerivative(true)
@@ -1614,7 +1614,7 @@ bool Tree2StdMML::NodeIsFunction(MNODE* mml_node)
   else if (ElementNameIs(mml_node, "mi"))
     if (IsTrigArgFuncName(mml_entities,mml_node->p_chdata) ||
         IsReservedFuncName(mml_entities,mml_node->p_chdata) ||
-        my_analyzer->IsDefinedFunction(mml_node))
+        my_analyzer_data->IsDefinedFunction(mml_node))
       return true;
 
   return false;
