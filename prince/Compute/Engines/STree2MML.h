@@ -4,9 +4,10 @@
 #define STREE2MML_H
 
 #include "CmpTypes.h"
-#include "fltutils.h"
 #include "mnode.h"
-#include "snode.h"
+#include "SNode.h"
+
+
 
 // See SIBASEUNITS in .gmr file
 typedef int UnitIlk;
@@ -33,6 +34,7 @@ class PrefsStore;
 class Grammar;
 class MML2Tree;
 class MathResult;
+class MIC2MMLNODE_REC;
 
 class STree2MML
 {
