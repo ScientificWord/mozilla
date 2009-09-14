@@ -1,6 +1,6 @@
 
 #include "Analyzer.h"
-
+#include "AnalyzerData.h"
 #include "DefStore.h"
 #include "DefInfo.h"
 #include "mnode.h"
@@ -9,25 +9,13 @@
 
 
 
-DefInfo* GetDI(AnalyzerData* pData, const char* canonical_id)
-{
-   if ( (pData == NULL ) || (canonical_id == NULL) ) 
-      return NULL;
-
-    DefStore* ds = pData -> GetDefStore();
-
-    if (ds == NULL)
-	  return NULL;
-
-    return  ds -> GetDefInfo(pData -> CurrEngineID(), canonical_id);
-}
 
 
 void SetSnodeOwner(SEMANTICS_NODE* snode, AnalyzerData* pData)
 {
   if (snode) {
     
-    DefInfo* di = GetDI(pData, snode->canonical_ID);
+    DefInfo* di = pData ->GetDI (snode->canonical_ID);
 
     if (di)
       snode->owner_ID = di->owner_ID;
@@ -58,7 +46,7 @@ BaseType GetBaseType(MNODE* mml_script_schemata, bool isLHSofDef, AnalyzerData* 
 
           char* mi_canonical_str = GetCanonicalIDforMathNode(base, pData -> GetGrammar());
 
-          DefInfo* di = GetDI(pData, mi_canonical_str);
+          DefInfo* di = pData ->GetDI (mi_canonical_str);
           if (di && di->def_type == DT_FUNCTION) {
             if (di->n_subscripted_args)
               rv = BT_SUBARG_FUNCTION;
@@ -124,105 +112,6 @@ BaseType GetBaseType(MNODE* mml_script_schemata, bool isLHSofDef, AnalyzerData* 
   return rv;
 }
 
-
-
-/* Generate canonical IDs (names) for mml nodes that represent variables and functions.
-
-  In this design, these IDs are zstrings and are completely engine independent.
-
-  They must meet the following criteria
-
-  1. mml nodes that represent the same math object must be given
-     the same canonical name.
-     Note that in presentation MathML, the same math object can have
-     many different markups.  For example, a Greek letter may be represented
-     by a hex entity, a decimal entity, or one or more name entities.
-
-  2. mml nodes that represent different math objects must be given
-     different canonical names.
-	 Note that <mi>x</mi> represents a different math object
-	 when it is nested in an <mstyle mathvariant="fraktur"/>
-
-  Finding an algorithm that produces names that meet the above criteria
-  is not trivial.
-
-  The most general algorithm would involve traversing the tree from
-  the root to the node being named.  When schemata that affect the
-  semantics of target node are encountered, add something to the ID string
-  being created.  Example
-  <mstyle mathvariant="fraktur">
-    .
-	.
-	<subtree to be named>
-	</subtree to be named>
-    .
-  </mstyle>
-
-   When the <mstyle> is encountered, append something like mvFRAKTUR
-   to the ID.
-   Finally traverse the body of the subtree being named, appending
-   semantically relevent attributes and contents to the ID.
-
-   The following code doesn't implement the general algorithm completely.
-   It can be made more general as required.
-
-*/
-
-char* GetCanonicalIDforMathNode(const MNODE* mml_node, const Grammar* mml_entities)
-{
-  char* rv = NULL;
-  TCI_ASSERT(CheckLinks(mml_node));
-  if (mml_node) {
-    char buffer[1024];
-    buffer[0] = 0;
-    const char* mml_element = mml_node->src_tok;
-
-    if (ElementNameIs(mml_node, "mi")) {
-
-      strcat(buffer, mml_element);
-      SemanticAttribs2Buffer(buffer, mml_node, 1024);
-      Contents2Buffer(buffer, mml_node->p_chdata, 1024, mml_entities);
-
-    } else if (ElementNameIs(mml_node, "mo")) {
-
-      strcat(buffer, mml_element);
-      Contents2Buffer(buffer, mml_node->p_chdata, 1024, mml_entities);
-
-    } else if (ElementNameIs(mml_node, "mn")) {
-
-      strcat(buffer, mml_element);
-      Contents2Buffer(buffer, mml_node->p_chdata, 1024, mml_entities);
-
-    } else if (ElementNameIs(mml_node, "mtext")) {
-
-      strcat(buffer, mml_element);
-      Contents2Buffer(buffer, mml_node->p_chdata, 1024, mml_entities);
-
-    } else {
-
-        if (mml_node->first_kid) {
-          if (!StringEqual(mml_element, "mrow"))
-            strcat(buffer, mml_element);
-
-          MNODE* rover = mml_node->first_kid;
-          while (rover) {
-            char* tmp = GetCanonicalIDforMathNode(rover, mml_entities);
-            if (tmp)
-              strcat(buffer, tmp);
-            delete[] tmp;
-            rover = rover->next;
-          }
-        }
-
-    }
-
-    if (buffer[0] != 0)
-	  rv = DuplicateString(buffer);
-    
-
-  }
-  return rv;
-}
 
 
 // Locate an DE_FUNC_REC by the function name it holds.
@@ -765,13 +654,13 @@ void ExtractVariables(SEMANTICS_NODE* s_tree, AnalyzerData* pData)
 }
 
 
-char* GetFuncNameFromSubSup(MNODE * msubsup, const char **src_name, AnalyzerData* pData)
+char* GetFuncNameFromSubSup(MNODE* msubsup, const char** src_name, AnalyzerData* pData)
 {
-  char *rv = NULL;
+  char* rv = NULL;
 
-  MNODE *base = msubsup->first_kid;
-  MNODE *sub = base->next;
-  MNODE *exp = sub->next;
+  MNODE* base = msubsup->first_kid;
+  MNODE* sub = base->next;
+  MNODE* exp = sub->next;
   BaseType bt = GetBaseType(msubsup, false, pData);
   ExpType et = GetExpType(bt, exp, pData -> GetGrammar());
 
@@ -779,7 +668,7 @@ char* GetFuncNameFromSubSup(MNODE * msubsup, const char **src_name, AnalyzerData
     if (ElementNameIs(base, "mi")) {
       U32 zh_ln = 0;
       rv = AppendStr2HeapStr(rv, zh_ln, "msub");
-      char *tmp = GetCanonicalIDforMathNode(base, pData -> GetGrammar());
+      char* tmp = GetCanonicalIDforMathNode(base, pData -> GetGrammar());
       *src_name = base->p_chdata;
       if (tmp) {
         rv = AppendStr2HeapStr(rv, zh_ln, tmp);
@@ -796,7 +685,7 @@ char* GetFuncNameFromSubSup(MNODE * msubsup, const char **src_name, AnalyzerData
 }
 
 
-char* GetFuncNameFromFrac(MNODE* mfrac, const char **src_name, const Grammar* mml_entities)
+char* GetFuncNameFromFrac(MNODE* mfrac, const char** src_name, const Grammar* mml_entities)
 {
   char* rv = NULL;
 
@@ -814,19 +703,19 @@ char* GetFuncNameFromFrac(MNODE* mfrac, const char **src_name, const Grammar* mm
   return rv;
 }
 
-char* GetFuncNameFromSub(MNODE * msub, const char **src_name, const Grammar* mml_entities)
+char* GetFuncNameFromSub(MNODE* msub, const char** src_name, const Grammar* mml_entities)
 {
-  char *rv = NULL;
+  char* rv = NULL;
 
   if (IsDDIFFOP(msub)) {
-    MNODE *m_operand = msub->next;
+    MNODE* m_operand = msub->next;
     if (m_operand) {
       if (ElementNameIs(m_operand, "mi")) {
         rv = GetCanonicalIDforMathNode(m_operand, mml_entities);
         *src_name = m_operand->p_chdata;
       } else if (ElementNameIs(m_operand, "msub")) {
         // D_{x}y_{1}
-        MNODE *base = m_operand->first_kid;
+        MNODE* base = m_operand->first_kid;
         if (ElementNameIs(base, "mi")) {
           rv = GetCanonicalIDforMathNode(m_operand, mml_entities);
           *src_name = base->p_chdata;
@@ -839,7 +728,7 @@ char* GetFuncNameFromSub(MNODE * msub, const char **src_name, const Grammar* mml
 
 
 
-char* GetFuncNameFromSup(MNODE* msup, const char **src_name, AnalyzerData* pData)
+char* GetFuncNameFromSup(MNODE* msup, const char** src_name, AnalyzerData* pData)
 {
   char* rv = NULL;
 

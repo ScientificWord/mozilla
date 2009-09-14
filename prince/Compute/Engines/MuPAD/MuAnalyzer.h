@@ -5,13 +5,16 @@
 
 #include "CmpTypes.h"
 #include "fltutils.h"
-#include "MuWrap.h"
+//#include "MuWrap.h"
 #include <limits.h>
+
+class MuPADWrapper;
+class MNODE;
 
 class MuAnalyzer
 {
 public:
-  MuAnalyzer(MuPADWrapper * the_parent);
+  MuAnalyzer(Grammar* theGrammar);
   ~MuAnalyzer();
 
   SEMANTICS_NODE *BuildSemanticsTree(MNODE * dMML_tree, U32 cmd_ID,
@@ -115,9 +118,9 @@ private:
   bool IsDerivative(MNODE * func_node, int & n_primes);
   MNODE *LocateDiffVar(MNODE * deriv_node);
 
-  MuPADWrapper *parent;
-  ClientAliases_REC *mangle_info;
-  LOG_MSG_REC *msg_list;
+  Grammar* myGrammar;
+  ClientAliases_REC* mangle_info;
+  LOG_MSG_REC* msg_list;
   U32 curr_cmd_ID;
 };
 

@@ -51,7 +51,7 @@
 // users may try to use one of the token delimiters in their input strings.
 
 #include "MuPADPlot.h"
-#include "MuWrap.h"
+//#include "MuWrap.h"
 #include "EngWrap.h"
 #include "mupd_eng.h"
 #include "MRequest.h"
@@ -101,7 +101,7 @@ int PlotVarsNeeded (string dim, string ptype, string animate) {
 }  
 
 
-MuPADPlot::MuPADPlot ( MuPADWrapper * const thismpw, PlotServiceRequest * thispsr, int thisplot_no ): mpw(thismpw) {
+MuPADPlot::MuPADPlot (MuPADWrapper* thismpw,  PlotServiceRequest * thispsr, int thisplot_no ): mpw(thismpw) {
   this->psr = thispsr;
   this->plotno = thisplot_no;
   

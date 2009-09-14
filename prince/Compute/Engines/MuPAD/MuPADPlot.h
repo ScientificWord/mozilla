@@ -18,7 +18,7 @@ class PlotServiceRequest;
 // relate a token with a function that generates a string to replace a token
 class MuPADPlot {
 public:
-  MuPADPlot ( MuPADWrapper * const thismpw, PlotServiceRequest * thispsr, int thisplot_no );
+  MuPADPlot (MuPADWrapper* thismpw, PlotServiceRequest* thispsr, int thisplot_no );
   ~MuPADPlot ();
   string ToString (string cmdstr);
   static string ExtendedReplace (string target, string oldstr, string newstr);
@@ -31,7 +31,7 @@ private:
     string (*fp)(MuPADPlot* T);
   } REPTOKFN;
 
-  MuPADWrapper * const mpw;
+  MuPADWrapper* const mpw;
   PlotServiceRequest * psr;
   int plotno;
   static  REPTOKFN tokenfns[];

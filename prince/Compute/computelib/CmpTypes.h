@@ -16,20 +16,21 @@ enum MarkupType
 #define OUTFORMAT_MML                  1
 #define OUTFORMAT_LATEX                2
 
-typedef struct tagINPUT_NOTATION_REC
+class INPUT_NOTATION_REC
 {
-  int nbracket_tables;
-  int nparen_tables;
-  int nbrace_tables;
-  int n_tables;
-  int nmixed_numbers;
-  int funcarg_is_subscript;
-  int n_primes;
-  int n_doverds;                // d/dx
-  int n_overbars;
-  int n_dotaccents;
-  int n_Dxs;
-  int n_logs;
-} INPUT_NOTATION_REC;
+  public:
+    int nbracket_tables;
+    int nparen_tables;
+    int nbrace_tables;
+    int n_tables;
+    int nmixed_numbers;
+    int funcarg_is_subscript;
+    int n_primes;
+    int n_doverds;                // d/dx
+    int n_overbars;
+    int n_dotaccents;
+    int n_Dxs;
+    int n_logs;
+};
 
 #endif
