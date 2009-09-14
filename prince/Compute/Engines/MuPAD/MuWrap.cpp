@@ -37,9 +37,9 @@
 #include "strutils.h"
 #include "DefInfo.h"
 
-MuPADEngine *mupd_eng = NULL;
+MuPADEngine* mupd_eng = NULL;
 
-MuPADWrapper::MuPADWrapper(void *ID_dBase, void *NOM_dBase)
+MuPADWrapper::MuPADWrapper(void* ID_dBase, void* NOM_dBase)
 {
   id_dBase = (Grammar *) ID_dBase;
   nom_dBase = (Grammar *) NOM_dBase;
@@ -50,7 +50,7 @@ MuPADWrapper::MuPADWrapper(void *ID_dBase, void *NOM_dBase)
 
   MuPAD_parser = new MuPAD2Tree();
   out_tree = NULL;
-  engstr_analyzer = new MuAnalyzer(this);
+  engstr_analyzer = new MuAnalyzer(nom_dBase);
 
   msg_list = NULL;
   curr_msr = NULL;

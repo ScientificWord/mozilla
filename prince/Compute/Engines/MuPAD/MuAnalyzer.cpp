@@ -20,10 +20,11 @@
 */
 
 #include "MuAnalyzer.h"
-#include "MuWrap.h"
+//#include "MuWrap.h"
 
 #include "CmpTypes.h"
 #include "fltutils.h"
+#include "grammar.h"
 #include "mnode.h"
 #include "SNode.h"
 
@@ -31,9 +32,9 @@
 #include <string.h>
 #include <ctype.h>
 
-MuAnalyzer::MuAnalyzer(MuPADWrapper * the_parent)
+MuAnalyzer::MuAnalyzer(Grammar* the_grammar)
 {
-  parent = the_parent;
+  myGrammar = the_grammar;
   msg_list = NULL;
   mangle_info = NULL;
 }
@@ -1468,8 +1469,8 @@ void MuAnalyzer::AnalyzeVARIABLE(MNODE * eng_node, SEMANTICS_NODE * snode,
   if (vln > 2 && !strcmp(v_str + vln - 2, "QU")) {
     const char *db_production;
     U32 ID, subID;
-    if (parent->
-        GetdBaseNamedRecord("SIBASEUNITS", v_str, &db_production, ID,
+    if (
+        GetdBaseNamedRecord(myGrammar, "SIBASEUNITS", v_str, &db_production, ID,
                             subID)) {
       if (db_production && *db_production) {
         size_t zln = strlen(db_production);
@@ -1697,8 +1698,8 @@ void MuAnalyzer::AnalyzeCONSTANT(MNODE * eng_node,
     if (zln > 2 && !strcmp(c_str + zln - 2, "QU")) {
       const char *db_production;
       U32 ID, subID;
-      if (parent->
-          GetdBaseNamedRecord("SIBASEUNITS", c_str, &db_production, ID,
+      if (
+          GetdBaseNamedRecord(myGrammar,"SIBASEUNITS", c_str, &db_production, ID,
                               subID)) {
         if (db_production && *db_production) {
           size_t zln = strlen(db_production);
