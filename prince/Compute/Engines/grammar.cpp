@@ -619,6 +619,29 @@ bool Grammar::GetRecordFromName(const char* zcurr_env,
   return rv;
 }
 
+
+
+bool GetdBaseNamedRecord(const Grammar* gmr, 
+                         const char* bin_name,
+                         const char* op_name,
+                         const char** eng_dbase_rec,
+                         U32& ID, 
+                         U32& subID)
+{
+  if (op_name && *op_name) {
+    const char *d_ztemplate;
+    if (gmr->
+        GetRecordFromName(bin_name, op_name, strlen(op_name), ID, subID,
+                          &d_ztemplate)) {
+      *eng_dbase_rec = d_ztemplate;
+      return true;
+    }
+  }
+  return false;
+}
+
+
+
 // private functions
 
 // The following call reads in the grammar file.  As lines are read
@@ -946,3 +969,32 @@ int GetLimitFormat(char* op_name, const Grammar* mml_entities)
   return rv;
 }
 
+
+
+
+bool IsTrigArgFuncName(const Grammar* gmr, const char* nom)
+{
+  U32 ID, subID;
+  const char *p_data;
+  if (gmr->GetRecordFromName("TRIGARGFUNCS", nom, strlen(nom), ID, subID, &p_data)) {
+    if (p_data && *p_data)
+      int rhs = atoi(p_data); // unused
+    return true;
+  }
+
+  return false;
+}
+  
+// See also FUNCTIONS section in engine grammar files.
+bool IsReservedFuncName(const Grammar* gmr, const char *nom)
+{
+  U32 ID, subID;
+  const char *p_data;
+  if (gmr->GetRecordFromName("RESERVEDFUNCS", nom, strlen(nom), ID, subID, &p_data)) {
+    if (p_data && *p_data)
+      int rhs = atoi(p_data); // unused
+    return true;
+  }
+
+  return false;
+}

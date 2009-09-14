@@ -219,7 +219,7 @@ Analyzer::Analyzer(const Grammar* mml_grammar, PrefsStore* up_store)
 
   GetAnalyzerData() -> SetLogMsgList( NULL );
   m_node_IDs_list = NULL;
-  SetCanonicalTreeGen ( new Tree2StdMML(mml_grammar,this) );
+  SetCanonicalTreeGen ( new Tree2StdMML(mml_grammar, GetAnalyzerData()) );
   GetAnalyzerData() -> SetDE_ind_vars( NULL );
   GetAnalyzerData() -> SetDE_FuncNames( NULL );
   SetIMPLDIFF_ind_var( NULL );
@@ -517,17 +517,6 @@ void Analyzer::TreeToFixupForm(MNODE* dMML_tree)
 
 
 
-// Convenience method for Tree2StdMML to lookup a function.
-bool Analyzer::IsDefinedFunction(MNODE* mnode)
-{
-  char* mi_canonical_str = GetCanonicalIDforMathNode(mnode, GetAnalyzerData() -> GetGrammar() );
-
-  DefInfo* di = GetDI(GetAnalyzerData(), mi_canonical_str);
-  delete[] mi_canonical_str;
-    
-  return (di != NULL && di->def_type == DT_FUNCTION);
-
-}
 
 
 
@@ -626,7 +615,7 @@ void AnalyzeMI(MNODE* mml_mi_node,
   } else {
     
     mi_ilk = GetMIilk(mml_canonical_name, 
-                      GetDI(pAnalyzer->GetAnalyzerData(), mml_canonical_name), 
+                      pAnalyzer->GetAnalyzerData() ->GetDI ( mml_canonical_name), 
                       mml_mi_node, 
                       isLHSofDef, 
                       pAnalyzer-> GetAnalyzerData() -> GetGrammar(),
@@ -3205,7 +3194,7 @@ void AnalyzePrimed(MNODE * mml_msup,
       AppendBucketRecord(s_base->bucket_list, fvar_bucket);
     } else {
 
-      DefInfo* di = GetDI(pAnalyzer->GetAnalyzerData(), s_base->canonical_ID);
+      DefInfo* di = pAnalyzer->GetAnalyzerData() ->GetDI ( s_base->canonical_ID);
       if (di && di->arg_list) {
         char user_name[128];
         char canonical_ID[128];
@@ -3315,7 +3304,7 @@ void AnalyzeDotDerivative(MNODE* mml_mover,
 
     } else {
 
-        DefInfo* di = GetDI(pAnalyzer->GetAnalyzerData(), s_base->canonical_ID);
+        DefInfo* di = pAnalyzer->GetAnalyzerData() ->GetDI ( s_base->canonical_ID);
 
         if (di && di->arg_list) {
           char user_name[128];
