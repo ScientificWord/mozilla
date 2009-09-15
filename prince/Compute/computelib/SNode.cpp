@@ -1,6 +1,7 @@
 #include "SNode.h"
 //#include "fltutils.h"
 #include "strutils.h"
+#include <stdio.h>
 #include <cstring>
 
 
