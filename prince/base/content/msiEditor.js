@@ -2817,10 +2817,10 @@ function msiEditorGetObjectForProperties(editorElement)
 function msiCreatePropertiesObjectDataFromSelection(aSelection, editorElement)
 {
   var retObj = null;
-//  var container = msiNavigationUtils.getCommonAncestorForSelection(editor.selection);
-  var containerData = msiGetSelectionContainer(editorElement);
-  var container = containerData.node;
   var editor = msiGetEditor(editorElement);
+  var container = msiNavigationUtils.getCommonAncestorForSelection(editor.selection);
+//  var containerData = msiGetSelectionContainer(editorElement);
+//  var container = containerData.node;
   var theRange = null;
   var theText = null;
 
@@ -4642,9 +4642,12 @@ var msiPropertiesObjectDataBase =
   {
     this.setEditorElement(editorElement);
     var theEditor = msiGetEditor(this.mEditorElement);
-    var containerData = msiGetSelectionContainer(editorElement);
-    if (containerData)
-      this.mNode = containerData.node;
+    var container = msiNavigationUtils.getCommonAncestorForSelection(theEditor.selection);
+    if (container)
+      this.mNode = container;
+//    var containerData = msiGetSelectionContainer(editorElement);
+//    if (containerData)
+//      this.mNode = containerData.node;
     this.mSelection = [];
     if (theEditor)
     {
@@ -4974,12 +4977,14 @@ msiCharPropertiesObjectData.prototype =
   initFromSelection : function(aSelection, editorElement)
   {
     this.setEditorElement(editorElement);
-    var containerData = msiGetSelectionContainer(editorElement);
-    var container = containerData ? containerData.node : null;
+    var editor = msiGetEditor(editorElement);
+    var container = msiNavigationUtils.getCommonAncestorForSelection(editor.selection);
+//    var containerData = msiGetSelectionContainer(editorElement);
+//    var container = containerData ? containerData.node : null;
     this.mNode = container;
     if (aSelection.rangeCount == 1)
     {
-      theRange = aSelection.getRangeAt(0);
+      var theRange = aSelection.getRangeAt(0);
       if ( (theRange.startContainer == container) && (theRange.endContainer == container) )  //are there any other cases to consider?
       {
         this.mText = container.textContent.substr(theRange.startOffset, theRange.endOffset - theRange.startOffset);
@@ -5093,6 +5098,9 @@ msiTablePropertiesObjectData.prototype =
   menuStrings: [],
   commandStrings : [],
   scriptStrings : [],
+  mRowSelectionArray : [],
+  mColSelectionArray : [],
+
 
   matrixStrArray : ["MatrixCell", "MatrixCellGroup", "MatrixRow", "MatrixColumn", "Matrix"],
   tableStrArray : ["TableCell", "TableCellGroup", "TableRow", "TableColumn", "Table"],
@@ -5266,6 +5274,126 @@ msiTablePropertiesObjectData.prototype =
         return false;
       break;
     }
+  },
+
+  getSelectionType : function(commandStr)
+  {
+    var retStr = "";
+    switch(commandStr)
+    {
+      case "cmd_MSIreviseMatrixCellCmd":
+      case "cmd_editTableCell":
+        return "Cell";
+      break;
+      case "cmd_MSIreviseMatrixCellGroupCmd":
+      case "cmd_editTableCellGroup":
+        return "CellGroup";
+      break;
+      case "cmd_MSIreviseMatrixRowsCmd":
+      case "cmd_editTableRows":
+        return "Row";
+      break;
+      case "cmd_MSIreviseMatrixColsCmd":
+      case "cmd_editTableCols":
+        return "Col";
+      break;
+      case "cmd_MSIreviseMatrixCmd":
+      case "cmd_editTable":
+        return "Table";
+      break;
+      default:
+        //The default case is what happens below - not sure whether there's a good case for expecting this to happen or not.
+      break;
+    }
+    if (this.mCell != null)
+      retStr = "Cell";
+    else if (this.mSelection)
+    {
+      if (this.mSelection == this.mRowSelection)
+        retStr = "Row";
+      else if (this.mSelection == this.mColSelection)
+        retStr = "Col";
+      if (this.allCellsSelected())
+        retStr = "Table";
+      if (!retStr.length)
+        retStr = "CellGroup";
+    }
+    return retStr;
+  },
+
+  getTableDims : function()
+  {
+    var tableDims = {nRows : 0, nCols : 0};
+    if (!this.mTableInfo)
+    {
+      dump("In in msiEditor.js, msiTablePropertiesObject.getTableDims() called without having mTableInfo set!\n");
+      tableDims = msiGetEnclosingTableOrMatrixDimensions(this.mEditorElement, this.mTableElement);
+    }
+    else
+    {
+      tableDims.nRows = this.mTableInfo.m_nRows;
+      tableDims.nCols = this.mTableInfo.m_nCols;
+    }
+    return tableDims;
+  },
+
+  beginSelectedCellIteration : function(selectionMode)
+  {
+    var retIter = { mSelMode: selectionMode, nRow : 0, nCol : 0, mRowContinuation : 0, mColContinuation : 0};
+    return retIter;
+  },
+
+  getNextSelectedCell : function(cellIter)
+  {
+    var bFound = false;
+    var ix = cellIter.nRow;
+    var jx = cellIter.nCol;
+    var theCell = null;
+    for (; !bFound && (ix < this.mTableInfo.m_nRows); ++ix)
+    {
+      for (; !bFound && (jx < this.mTableInfo.cellInfoArray[ix].length); ++jx)
+      {
+        if (this.cellIsInSelection(ix, jx, cellIter.mSelMode))
+//        if ( this.mTableInfo.cellInfoArray[ix][jx] && (this.mTableInfo.cellInfoArray[ix][jx].mSelected == msiPropertiesObjectDataBase.Selected_SomeSelected))
+        {
+          cellIter.nRow = ix;
+          cellIter.nCol = jx;
+          cellIter.mRowContinuation = this.mTableInfo.cellInfoArray[ix][jx].mRowContinuation;
+          cellIter.mColContinuation = this.mTableInfo.cellInfoArray[ix][jx].mColContinuation;
+          cellIter.mCell = this.mTableInfo.cellInfoArray[ix][jx].mNode;
+          bFound = true;
+        }
+      }
+    }
+    cellIter.mCell = theCell;
+    return theCell;
+  },
+
+  cellIsInSelection : function(nRow, nCol, modeStr)
+  {
+    switch(modeStr)
+    {
+      case "Row":
+        return (this.mRowSelectionArray.indexOf(nRow) >= 0);
+      break;
+      case "Col":
+        return (this.mColSelectionArray.indexOf(nCol) >= 0);
+      break;
+      case "Cell":
+      case "CellGroup":
+        return ( this.mTableInfo.cellInfoArray[nRow][nCol] && (this.mTableInfo.cellInfoArray[nRow][nCol].mSelected == msiPropertiesObjectDataBase.Selected_SomeSelected) );
+      break;
+      case "Table":
+        return true;
+      break;
+    }
+  },
+
+  getCellExtent : function(nRow, nCol)
+  {
+    var retDims = {mRowContinuation : this.mTableInfo.cellInfoArray[nRow][nCol].mRowContinuation,
+                   mColContinuation : this.mTableInfo.cellInfoArray[nRow][nCol].mColContinuation};
+    return retDims;
   },
 
 //Implementation (non-interface) methods:
@@ -5820,6 +5948,7 @@ msiTablePropertiesObjectData.prototype =
       extraRowsArray = getExtraRows(this.mTableInfo, extraRowsArray, addRowsArray);
       msiMergeArrayIntoArray( addRowsArray, extraRowsArray, function(a,b) {return (a-b);} );
     } while (extraRowsArray.length > 0);  //since this can only keep iterating if it's finding new rows, it has to terminate after nRows iterations at most
+    this.mRowSelectionArray = addRowsArray;
 
     if (addRowsArray.length != nRows)  //Not all rows are to be selected!
     {
@@ -5947,6 +6076,7 @@ msiTablePropertiesObjectData.prototype =
 
 
 //    if (bNeedExpandSel)
+    this.mColSelectionArray = addColsArray;
     if (addColsArray.length != nCols)  //Not all columns are to be selected!
     {
 //      if (addColsArray.length == nCols)  //all columns are to be selected! Has to be the whole table
