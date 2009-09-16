@@ -204,6 +204,10 @@ tree.list {
   list-style-image: url("chrome://global/skin/arrow/arrow-down.gif");
 }
 
+#BordersPreview td {
+  border 1px #CCCCCC;
+}
+
 /* ::::: spelling dialog ::::: */
 
 #MisspelledWord {
