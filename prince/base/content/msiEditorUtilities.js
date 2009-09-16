@@ -4294,7 +4294,41 @@ var msiCSSUnitConversions =
 };
 
 var msiCSSUnitsList = new msiUnitsList(msiCSSUnitConversions);
-msiCSSUnitsList.defaultUnit = function() {return "pt";}
+msiCSSUnitsList.defaultUnit = function() {return "pt";};
+
+//Question remains of what to do with percent values??
+function msiCSSWithFontUnitsList(fontSize, fontUnits)
+{
+  this.mUnitFactors = new Object();
+  for (var aUnit in msiCSSUnitConversions)
+    this.mUnitFactors[aUnit] = msiCSSUnitConversions[aUnit];
+  if (fontSize && fontUnits)
+    this.mUnitFactors.em = msiCSSUnitsList.convertUnits(fontSize, fontUnits, "mm");
+  else
+    this.mUnitFactors.em = 12 * msiCSSUnitConversions.pt;  //wild-ass guess
+  this.mUnitFactors.ex = .5 * this.mUnitFactors.em;
+  this.mUnitFactors.px = .75 * msiCSSUnitConversions.pt;  //generic guess is that a pixel is 3/4 of a point
+  this.mUnitFactors.pc = 12 * msiCSSUnitConversions.pt;
+  this.defaultUnit = function() {return "pt";};
+  this.fontSizeInPoints = function() 
+    {return Math.round( this.convertUnits(1, "em", "pt") );}
+  ;
+}
+
+msiCSSWithFontUnitsList.prototype = new msiUnitsList;
+
+function msiCreateCSSUnitsListForElement(anElement)
+{
+  var defView = anElement.ownerDocument.defaultView;
+  var docCSS = defView.QueryInterface(Components.interfaces.nsIDOMViewCSS);
+  var theStyle = docCSS.getComputedStyle(anElement, "");
+  var theFontHtStr = theStyle.getPropertyCSSValue("font-size");
+  var fontHtValue = msiCSSUnitsList.getNumberAndUnitFromString(theFontHtStr);
+  if (fontHtValue && fontHtValue.unit && fontHtValue.number)
+    return new msiCSSWithFontUnitsList(fontHtValue.number, fontHtValue,units);
+  else
+    return new msiCSSWithFontUnitsList(12 * msiCSSUnitConversions.pt, "mm");
+}
 
 function msiGetNumberAndLengthUnitFromString (valueStr)
 {
