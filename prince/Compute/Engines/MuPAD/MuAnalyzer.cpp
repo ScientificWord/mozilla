@@ -24,7 +24,7 @@
 
 #include "CmpTypes.h"
 #include "fltutils.h"
-#include "grammar.h"
+#include "Grammar.h"
 #include "mnode.h"
 #include "SNode.h"
 
