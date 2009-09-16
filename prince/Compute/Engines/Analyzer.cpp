@@ -3853,27 +3853,23 @@ bool SetODEvars(MathServiceRequest & msr, MathResult & mr,
     }
     mr.PutResultCode(CR_undefined);
   } else {
-      pAnalyzer -> GetAnalyzerData() -> SetDE_ind_vars( CreateSTreeFromMML(i_var, pAnalyzer) );
-      pAnalyzer -> GetAnalyzerData() -> SetDE_ind_vars( CreateSTreeFromMML(i_var, pAnalyzer) );
-      pAnalyzer -> GetAnalyzerData() -> SetDE_ind_vars( CreateSTreeFromMML(i_var, pAnalyzer) );
       pAnalyzer -> GetAnalyzerData() -> SetDE_ind_vars( DetermineIndepVar(dMML_tree, pAnalyzer) );
 
-      pAnalyzer -> GetAnalyzerData() -> SetDE_ind_vars( CreateSTreeFromMML(i_var, pAnalyzer) );
-    if (!pAnalyzer -> GetAnalyzerData() -> GetDE_ind_vars()) {
-      if (UI_cmd_ID == CCID_Solve_ODE_Numeric) {
-        char buffer[80];
-        ChooseIndVar(dMML_tree, buffer);
+      if (!pAnalyzer -> GetAnalyzerData() -> GetDE_ind_vars()) {
+        if (UI_cmd_ID == CCID_Solve_ODE_Numeric) {
+          char buffer[80];
+          ChooseIndVar(dMML_tree, buffer);
 
-        pAnalyzer -> GetAnalyzerData() -> SetDE_ind_vars( CreateSemanticsNode(SEM_TYP_VARIABLE) );
-        //pAnalyzer -> GetAnalyzerData() -> GetDE_ind_vars()->semantic_type = SEM_TYP_VARIABLE;
-        pAnalyzer -> GetAnalyzerData() -> GetDE_ind_vars()->contents = DuplicateString(buffer);
+          pAnalyzer -> GetAnalyzerData() -> SetDE_ind_vars( CreateSemanticsNode(SEM_TYP_VARIABLE) );
+          //pAnalyzer -> GetAnalyzerData() -> GetDE_ind_vars()->semantic_type = SEM_TYP_VARIABLE;
+          pAnalyzer -> GetAnalyzerData() -> GetDE_ind_vars()->contents = DuplicateString(buffer);
 
-        mr.PutResultCode(CR_undefined);
-      } else {
-        mr.PutResultCode(CR_queryindepvar);
-        return false;
+          mr.PutResultCode(CR_undefined);
+        } else {
+          mr.PutResultCode(CR_queryindepvar);
+          return false;
+        }
       }
-    }
   }
 
   // Identify the function we're solving for in the ODE.
