@@ -2073,13 +2073,17 @@ bool CompEngine::IsBoundaryCondition(SEMANTICS_NODE * s_tree)
         SEMANTICS_NODE* s_func = bl_operands->first_child;
 
         if (s_func->semantic_type == SEM_TYP_INFIX_OP) {
-		   if (s_func->contents && !strcmp(s_func->contents, "&#x2062;")){ // invisible times
-		      rv = true;
-		      //BUCKET_REC* bl = s_func->bucket_list;
-              //if (bl && bl->first_child)
-              //   s_func = bl->first_child;
-              //else
-              //   TCI_ASSERT(0);
+		   if (StringEqual(s_func->contents, "&#x2062;")){ // invisible times
+		      //delete[] s_func -> contents;
+		      //s_func->contents	= DuplicateString("&#x2061;"); // function app
+
+		      BUCKET_REC* bl = s_func->bucket_list;
+              if (bl && bl->first_child) {
+                 s_func = bl->first_child;
+				 
+              } else
+                 TCI_ASSERT(0);
+
 		   } 
         }
 
@@ -2100,9 +2104,9 @@ bool CompEngine::IsBoundaryCondition(SEMANTICS_NODE * s_tree)
         }
 
         if (s_func->semantic_type == SEM_TYP_FUNCTION) {
-          BUCKET_REC *arg_b = s_func->bucket_list;
+          BUCKET_REC* arg_b = s_func->bucket_list;
           if (arg_b && arg_b->bucket_ID == MB_UNNAMED && !arg_b->next) {
-            SEMANTICS_NODE *s_num = arg_b->first_child;
+            SEMANTICS_NODE* s_num = arg_b->first_child;
             if (s_num->semantic_type == SEM_TYP_NUMBER)
               rv = true;
           }
