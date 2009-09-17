@@ -167,6 +167,8 @@ void CreateSubscriptedVar(MNODE* mml_msub_node,
 void CreatePowerForm(MNODE* base, MNODE* power, SEMANTICS_NODE* snode, Analyzer* pAnalyzer);
 
 bool SetODEvars(MathServiceRequest& msr, MathResult& mr, MNODE * dMML_tree, U32 UI_cmd_ID, Analyzer* pAnalyzer);
+void FixInvisibleTimesAfterFunction(MNODE* dMML_tree, AnalyzerData* pData);
+
 
 bool SetIMPLICITvars(MathServiceRequest& msr, MathResult& mr, Analyzer* pAnalyzer) ;
 
@@ -2145,11 +2147,11 @@ BUCKET_REC* ArgsToBucket(MNODE* func_node, int& nodes_done, Analyzer* pAnalyzer)
       mml_rover = mml_rover->next;
     }
 
-    // look for <mo>&ApplyFunction;</mo>
+    // look for <mo>&ApplyFunction;</mo>  or invisible times
     if (mml_rover && ElementNameIs(mml_rover, "mo")) {
       U32 unicodes[8];
       int content_tally = ChData2Unicodes(mml_rover->p_chdata, unicodes, 8, pAnalyzer-> GetAnalyzerData() -> GetGrammar());
-      if (content_tally == 1 && unicodes[0] == 0x2061) {
+      if (content_tally == 1 && (unicodes[0] == 0x2061 || unicodes[0] == 0x2062) ) {
         found_ap = true;
         local_nodes_done++;
         mml_rover = mml_rover->next;
@@ -2383,8 +2385,7 @@ SEMANTICS_NODE* GetSemanticsList(MNODE* dMML_list,
               rover = rover->next;
               l_nodes_done--;
             }
-
-        } else {
+		} else {
 
           SEMANTICS_NODE* l_operand = NULL;
           SEMANTICS_NODE* r_operand = NULL;
@@ -3825,8 +3826,11 @@ void AnalyzeBesselFunc(MNODE * mml_msub_node,
 }
 
 
-bool SetODEvars(MathServiceRequest & msr, MathResult & mr,
-                              MNODE * dMML_tree, U32 UI_cmd_ID, Analyzer* pAnalyzer)
+bool SetODEvars(MathServiceRequest& msr, 
+                MathResult& mr,
+                MNODE* dMML_tree, 
+                U32 UI_cmd_ID, 
+                Analyzer* pAnalyzer)
 {
   U32 p_type;
   U32 p_ID;
@@ -3842,7 +3846,6 @@ bool SetODEvars(MathServiceRequest & msr, MathResult & mr,
       // i_var entered as "x"
       TCI_ASSERT(0);
       pAnalyzer -> GetAnalyzerData() -> SetDE_ind_vars( CreateSemanticsNode(SEM_TYP_VARIABLE) );
-      //pAnalyzer -> GetAnalyzerData() -> GetDE_ind_vars()->semantic_type = SEM_TYP_VARIABLE;
       pAnalyzer -> GetAnalyzerData() -> GetDE_ind_vars()->contents = DuplicateString(i_var);
     } else if (p_type == zPT_ASCII_mmlmarkup) {
       // If "i_var" comes from a chambase dialog (as it should)
@@ -3861,7 +3864,6 @@ bool SetODEvars(MathServiceRequest & msr, MathResult & mr,
           ChooseIndVar(dMML_tree, buffer);
 
           pAnalyzer -> GetAnalyzerData() -> SetDE_ind_vars( CreateSemanticsNode(SEM_TYP_VARIABLE) );
-          //pAnalyzer -> GetAnalyzerData() -> GetDE_ind_vars()->semantic_type = SEM_TYP_VARIABLE;
           pAnalyzer -> GetAnalyzerData() -> GetDE_ind_vars()->contents = DuplicateString(buffer);
 
           mr.PutResultCode(CR_undefined);
@@ -3875,8 +3877,58 @@ bool SetODEvars(MathServiceRequest & msr, MathResult & mr,
   // Identify the function we're solving for in the ODE.
   DetermineODEFuncNames(dMML_tree, pAnalyzer -> GetAnalyzerData());
 
+
+  FixInvisibleTimesAfterFunction(dMML_tree, pAnalyzer -> GetAnalyzerData());
+
   return true;
 }
+
+
+
+// A function to replace InvisibleTimes after known function  (Used for diff eqs)
+
+void FixInvisibleTimesAfterFunction(MNODE* dMML_tree, AnalyzerData* pData)
+{
+   MNODE* rover = dMML_tree;
+
+   // Look for <mi>'s
+   // Use LocateFuncRec to see if they are function names
+   // See if following operator is InvisibleTimes and replace with ApplyFunc
+
+   while (rover) {
+      
+      if ( ElementNameIs(rover, "mi" ) ) {  // an <mi>
+         
+         char* mml_canonical_name = GetCanonicalIDforMathNode(rover, pData -> GetGrammar());
+
+		 if (LocateFuncRec(pData -> DE_FuncNames(), mml_canonical_name, NULL)) {
+             
+             // Look ahead in the MML list for an operator.
+             OpIlk op_ilk;
+             int advance;
+             rover = LocateOperator(rover, op_ilk, advance);
+	        
+			 if ( ContentIs(rover,"&#x2062;") ){
+                delete rover->p_chdata;
+                rover->p_chdata = DuplicateString("&#x2061;"); // ApplyFunction
+			 }
+			 
+		 }
+	  } else if (rover->first_kid) {
+	     // recursive descent
+		 FixInvisibleTimesAfterFunction(rover->first_kid, pData);
+	  }
+
+      if (rover) 
+	     rover = rover -> next;
+   }
+
+}
+
+
+
+
+
 
 bool SetIMPLICITvars(MathServiceRequest & msr, MathResult & mr, Analyzer* pAnalyzer)
 {
