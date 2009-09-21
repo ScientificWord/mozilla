@@ -107,7 +107,7 @@ static NS_DEFINE_CID( kXMLHttpRequestCID, NS_XMLHTTPREQUEST_CID );
 NS_IMETHODIMP msiAutosub::Initialize(const nsAString & fileURI)
 {
   nsresult rv;
-  PRBool b;
+//  PRBool b;
   nsCOMPtr<nsIDOMXMLDocument> docAutosubs;
   nsCOMPtr<nsIDOMDocument> domdocAutosubs;
   PRUint32 autosubCount = 0;
@@ -125,6 +125,7 @@ NS_IMETHODIMP msiAutosub::Initialize(const nsAString & fileURI)
   nsCOMPtr<nsIDOMNodeList> dataTags, contextTags, infoTags;
   nsCOMPtr<nsIDOMNode> subsNode;
   nsCOMPtr<nsIDOMElement> subsElement;
+  nsCOMPtr<nsIDOMElement> docElement;
   nsCOMPtr<nsIDOM3Node> textNode; 
   nsCOMPtr<nsIDOMNode> patternNode;
   nsCOMPtr<nsIDOMNode> dataNode, contextNode, infoNode;
@@ -156,6 +157,11 @@ NS_IMETHODIMP msiAutosub::Initialize(const nsAString & fileURI)
     lastIndex = autosubCount - 1;
     autosubarray = new autosubentry[autosubCount];
     arraylength = autosubCount;
+    docAutosubs->GetDocumentElement(getter_AddRefs(docElement));
+    textNode = do_QueryInterface(docElement);
+    textNode->GetTextContent(data);
+    printf("%S\n", data.get());
+
     for (PRUint32 i = 0; i < autosubCount; i++)
     {
       subsTags->Item(i, (nsIDOMNode **)getter_AddRefs(subsNode));
@@ -207,11 +213,17 @@ NS_IMETHODIMP msiAutosub::Initialize(const nsAString & fileURI)
     }
     NS_QuickSort(autosubarray, arraylength, sizeof(autosubentry), compare, nsnull);
     isInitialized = PR_TRUE;
+    autosubentry entry;
+    for (PRUint32 i = 0; i < autosubCount; i++)
+    {
+      entry = autosubarray[i];
+      printf("%d: %d %S %S\n", i, entry.context, entry.pattern.get(), entry.data.get());
+    } 
   }
   return NS_OK;
 }
 
-/* boolean addEntry (in string pattern, in long ctt, in long action, in string data); */
+/* boolean addEntry (in string pattern, in long ctx, in long action, in string data); */
 NS_IMETHODIMP msiAutosub::AddEntry(const nsAString & pattern, PRInt32 ctx, PRInt32 action, const nsAString & data, 
   const nsAString & pasteContext, const nsAString & pasteInfo, PRBool *_retval)
 {
@@ -276,8 +288,15 @@ NS_IMETHODIMP msiAutosub::GetCurrentData(PRInt32 *ctx, PRInt32 *action, nsAStrin
     return NS_OK;
 }
 
+PRBool CtxMatches(PRInt32 ctx, PRBool inMath)
+{
+  if (inMath) return (ctx != msiIAutosub::CONTEXT_TEXTONLY);
+  else return (ctx != msiIAutosub::CONTEXT_MATHONLY);
+}
+
+
 /* long nextChar (in wchar ch); */
-NS_IMETHODIMP msiAutosub::NextChar(PRUnichar ch, PRInt32 *_retval)
+NS_IMETHODIMP msiAutosub::NextChar(PRBool inMath, PRUnichar ch, PRInt32 *_retval)
 {
   if (!isInitialized)
   {
@@ -297,12 +316,12 @@ NS_IMETHODIMP msiAutosub::NextChar(PRUnichar ch, PRInt32 *_retval)
   }
   while (lastIndex - startIndex > 0)
   {
-    if (autosubarray[startIndex] == (patternSoFar))
+    if ((autosubarray[startIndex] == (patternSoFar)))
     {
       // we might have hit something that starts with patternSoFar. We need to back up to see if there
       // is a shorter string that starts with patternSoFar.
       while (startIndex > 0 && autosubarray[startIndex-1] == (patternSoFar)) startIndex--;
-      if (nsCRT::strncmp(autosubarray[startIndex].pattern.BeginReading(), patternSoFar.BeginReading(), autosubarray[startIndex].pattern.Length())==0) 
+      if (CtxMatches(autosubarray[startIndex].context, inMath) && nsCRT::strncmp(autosubarray[startIndex].pattern.BeginReading(), patternSoFar.BeginReading(), autosubarray[startIndex].pattern.Length())==0) 
       {
         lastSuccessIndex = startIndex;
         *_retval = msiIAutosub::STATE_SUCCESS;
@@ -315,7 +334,8 @@ NS_IMETHODIMP msiAutosub::NextChar(PRUnichar ch, PRInt32 *_retval)
     {
       // we might have hit something that starts with patternSoFar again
       while (lastIndex > 0 && autosubarray[lastIndex-1] == (patternSoFar)) lastIndex--;
-      if (nsCRT::strncmp(autosubarray[lastIndex].pattern.BeginReading(), patternSoFar.BeginReading(), autosubarray[lastIndex].pattern.Length())==0)
+      if ((nsCRT::strncmp(autosubarray[lastIndex].pattern.BeginReading(), patternSoFar.BeginReading(), autosubarray[lastIndex].pattern.Length())==0)
+        && CtxMatches(autosubarray[lastIndex].context, inMath))
       {
         lastSuccessIndex = lastIndex;
         while (lastIndex < arraylength-1 && autosubarray[lastIndex+1] == (patternSoFar)) lastIndex++;
