@@ -120,7 +120,9 @@ function dumpMath()
   var focNode = sel.focusNode;
   var focOffset = sel.focusOffset;
   var indent = 0;
-  dump("Selection: node="+selNode.nodeType == Node.TEXT_NODE?"text":selNode.localName+", offset="+selOffset+"\n");
+  dump(selNode.toString() + " " + focNode.toString()+"\n");
+  dump("Selection: selNode="+selNode.nodeType == Node.TEXT_NODE?"text":selNode.localName+", offset="+selOffset+"\n");
+  dump("           focusNode="+focNode.nodeType == Node.TEXT_NODE?"text":focNode.localName+", offset="+focOffset+"\n");
   dumpNodeMarkingSel(rootnode, selNode, selOffset, focNode, focOffset, indent);
 }
 
@@ -137,7 +139,7 @@ function dumpNodeMarkingSel(node, selnode, seloffset, focnode, focoffset, indent
   if (node.nodeType == Node.ELEMENT_NODE)
   {
     doIndent(indent);
-    dump("<"+((node.localName!="null")?node.localName:"text")+"> \n");
+    dump("<"+node.localName+"> \n");
     for (var i = 0; i < len; i++)
     {    
       if (node==selnode && i==seloffset)
@@ -152,7 +154,7 @@ function dumpNodeMarkingSel(node, selnode, seloffset, focnode, focoffset, indent
       }
       dumpNodeMarkingSel(node.childNodes[i],selnode,seloffset, focnode, focoffset, indent+1);
     }
-    if (node==selnode && offset==len) 
+    if (node==selnode && seloffset==len) 
     {
       for (var j = 0; j<= indent; j++) dump("**"); 
       dump("<selection anchor>\n");
@@ -191,6 +193,7 @@ function dumpNodeMarkingSel(node, selnode, seloffset, focnode, focoffset, indent
           doIndent(indent);
           dump(r+'\n');
         }
+        else dump("whitespace node\n");
       }
     }  
   }
