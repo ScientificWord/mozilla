@@ -107,10 +107,26 @@ mml|mi[tempinput="true"]{
 
 msiframe { background-color: rgb(240,240,240); }
 
-mml|mrow[id]:after {
-  content: "(" attr(id) ")" ;
-  text-align: right;
-  color: black;
-  padding: 0 0 0 100%;
+mml|mrow[id] {
+  position: fixed;  
+  top: auto; 
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  z-index: 0;
 
 }
+mml|mrow[id]:after {
+  content: "[#" attr(id) "]" ;
+  position: fixed;  
+  top: auto; 
+  right: 0em;
+  margin-right: 0em;
+  z-index: 1;
+  left: auto; 
+  color: black;
+  background-color:rgb(180,180,180);
+
+}
+
