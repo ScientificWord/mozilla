@@ -56,7 +56,7 @@ interface msiIAutosub : nsISupports
    * STATE_SUCCESS once.
    */
    
-  long nextChar( in wchar ch );
+  long nextChar( in boolean inMath, in wchar ch );
 
   /* 
    * Resets the state of the lookup engine. Generally this will be done each time a character
