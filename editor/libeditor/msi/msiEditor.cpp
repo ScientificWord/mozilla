@@ -2638,7 +2638,7 @@ nsresult msiEditor::AdjustCaret(nsIDOMEvent * aMouseEvent, nsCOMPtr<nsIDOMNode> 
 
 
 nsresult 
-msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode ** nodeOut, PRUint32& offsetOut, PRUnichar prevChar, 
+msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode ** nodeOut, PRUint32& offsetOut, PRBool inMath, PRUnichar prevChar, 
  PRInt32 & _result)
 {
   nsCOMPtr<nsIDOM3Node> textNode;
@@ -2656,7 +2656,7 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
     {
       while (prevChar == ' ' && theText[offset] == ' ') --offset;
       prevChar = theText[offset];
-      m_autosub->NextChar(prevChar,& _result);
+      m_autosub->NextChar(inMath, prevChar, & _result);
       if (_result == msiIAutosub::STATE_SUCCESS)
       {
         *nodeOut = nodeIn;
@@ -2685,7 +2685,7 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
     while (--length >= 0)
     {
       nodeList->Item(length, getter_AddRefs(node2));
-      GetNextCharacter(node2, offset2, nodeOut, offsetOut, prevChar, _result);
+      GetNextCharacter(node2, offset2, nodeOut, offsetOut, prevChar, inMath,  _result);
       if (_result == msiIAutosub::STATE_FAIL)
         return NS_OK;
     }
@@ -2710,7 +2710,7 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
     }
   }
   offset2 = (PRUint32)(-1);
-  if (node2) GetNextCharacter(node2, offset2, nodeOut, offsetOut, prevChar, _result); 
+  if (node2) GetNextCharacter(node2, offset2, nodeOut, offsetOut, prevChar, inMath, _result); 
   return NS_OK;
 }
   
@@ -2746,7 +2746,7 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
 //    textNode->GetTextContent(theText);
 //  }
   PRUint32 originalOffset = offset;
-  GetNextCharacter(originalNode, originalOffset, getter_AddRefs(node), offset, ch, lookupResult);
+  GetNextCharacter(originalNode, originalOffset, getter_AddRefs(node), offset, ch, inmath, lookupResult);
   if (node)  // there was success somewhere
   {
     m_autosub->GetCurrentData(&ctx, &action, pasteContext, pasteInfo, data);

@@ -126,7 +126,7 @@ nsresult CreateTxnForDeleteInsertionPoint(msiSelectionManager & msiSelMan,
                                           PRUint32 index, 
                                           nsIEditor::EDirection aAction,
                                           EditAggregateTxn     *aTxn);
-nsresult GetNextCharacter( nsIDOMNode * nodeIn, PRUint32 offsetIn, nsIDOMNode ** pnodeOut, PRUint32& offsetOut, PRUnichar prevChar, PRInt32 & _result);
+nsresult GetNextCharacter( nsIDOMNode * nodeIn, PRUint32 offsetIn, nsIDOMNode ** pnodeOut, PRUint32& offsetOut, PRBool inMath, PRUnichar prevChar, PRInt32 & _result);
 nsresult CheckForAutoSubstitute(PRBool inmath);
 
 };
