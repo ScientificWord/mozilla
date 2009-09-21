@@ -2405,10 +2405,6 @@ toolbar[iconsize="small"] #javascriptButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/v_reset-disabled.png");
 }
 
-
-
-
-
 toolbox textbox { 
   -moz-appearance: none;
   min-height : 25px;
