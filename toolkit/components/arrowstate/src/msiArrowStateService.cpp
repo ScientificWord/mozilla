@@ -256,7 +256,7 @@ msiArrowStateService::ArrowKeyUp( PRUint32 keyCode)
   {
     mCurrArrowCode = 0;
 	  misRepeating = PR_FALSE;
-  	mstrFindBuffer.Truncate(0);
+//  	mstrFindBuffer.Truncate(0);
   }
 	return NS_OK;
 }
