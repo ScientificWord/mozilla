@@ -10,7 +10,8 @@
 %dialogDTD;
 ]>
 
-<dialog title="&useWIP.title;"
+<dialog id="workinprogress" persist="width height screenx screeny"
+    title="&useWIP.title;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     buttons="accept,cancel" 
     width="300px" height="200px"
