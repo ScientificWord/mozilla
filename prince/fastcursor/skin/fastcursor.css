@@ -60,7 +60,7 @@
   -moz-image-region: rect(32px 32px 48px 16px) !important;
 }
 
-/* highlight button */
+/* highlight button
 
 #highlight {
   list-style-image: url("chrome://prince/skin/find.png");
@@ -82,14 +82,7 @@
 #highlight[checked="true"]:hover {
   -moz-image-region: rect(64px 48px 80px 32px);
 }
-
-#fastcursor-status-icon
-{
-  list-style-image: none;
-  margin: 2px 0px 0px 12px;
-  width: 16px;
-  height: 16px;
-}
+ */
 
 #fastcursor-status
 {
@@ -97,22 +90,18 @@
   padding: 2px;
 }
 
-#fastcursor-status-icon[status="notfound"]
-{
-  list-style-image: url("chrome://prince/skin/notfound.png");
-}
-
 #fastcursor-field
 {
   -moz-appearance: none;
   border: none;
-  margin: 0px;
+  margin: 0px 3px;
+  width: 100px;
 }
 
 #fastcursor-field[status="notfound"]
 {
   background-color: #FF6666;
-  color: #FFFFFF;
+  color: #FF0000;
 }
 
 #FindToolbar[flash="true"]  > #fastcursor-field-container > #fastcursor-field
@@ -120,12 +109,52 @@
   background-color: yellow;
 }
 
-#fastcursor-status-icon[status="wrapped"]
-{
-  list-style-image: url("chrome://prince/skin/wrap.png");
-}
-
 #fastcursor-field-container
 {
   -moz-appearance: textfield;
 }
+
+/****************/
+#fastcursor-dir{
+  list-style-image: url("chrome://global/skin/icons/find.png");
+  -moz-image-region: rect(0px,16px,16px,0px);
+}
+
+#fastcursor-dir[up="true"] {
+  list-style-image: url("chrome://global/skin/icons/find.png");
+  -moz-image-region: rect(0px,32px,16px,16px);
+}
+
+#find-previous {
+  list-style-image: url("chrome://global/skin/icons/find.png");
+  -moz-image-region: rect(0px,32px,16px,16px);
+}
+
+#find-next {
+  list-style-image: url("chrome://global/skin/icons/find.png");
+  -moz-image-region: rect(0px,16px,16px,0px);
+}
+
+#highlight {
+  list-style-image: url("chrome://global/skin/icons/find.png");
+  -moz-image-region: rect(0px,48px,16px,32px);
+}
+
+#fastcursor-closebutton {
+  list-style-image: url("chrome://global/skin/icons/close.png");
+  -moz-image-region: rect(0px,16px,16px,0px);
+}
+
+
+#fastcursor-status-icon{
+  list-style-image: url("chrome://global/skin/icons/notfound.png");
+}
+
+#fastcursor-status-icon[status="wrapped"]
+{
+  list-style-image: url("chrome://prince/skin/wrap.png");
+  margin: 2px 0px 0px 12px;
+  width: 16px;
+  height: 16px;
+}
+
