@@ -67,7 +67,11 @@
   <script type="application/x-javascript" src="chrome://global/content/printUtils.js"/>
   <script type="application/x-javascript" src="chrome://venkman/content/venkman-overlay.js"/>
   <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
-  <stringbundleset id="stringbundleset"/>
+  <stringbundleset id="stringbundleset">
+    <stringbundle id="bundle_FastCursorBar">
+      NotFound=Not found
+    </stringbundle>
+  </stringbundleset>
   <popupset id="msiEditorContentContextSet"/>
   <popupset id="mainPopupSet"/>
   <popup id="sidebarPopup"/>
@@ -202,26 +206,29 @@
     </statusbarpanel>
     <statusbarpanel id="fastCursorPanel" hidden="true">
       <toolbar id="FastCursorToolbar" align="center" fullscreentoolbar="true">
-      <toolbarbutton id="fastcursor-closebutton" tooltiptext="&fastcursorCloseButton.tooltip;"
-                     hidden="true" oncommand="closeFastCursorBar();"/>  
 
+      <image id="fastcursor-dir" up="false"/>
       <label value="&fastcursor.label;"/>
       <hbox id="fastcursor-field-container">
-        <textbox id="fastcursor-field" oninput="fastcursor(this.value);" onfocus="onFastCursorBarFocus();"
-                onkeypress="onFastCursorBarKeyPress(event);" onblur="onFastCursorBarBlur();"/>
+        <textbox id="fastcursor-field"/>
       </hbox>
-      <toolbarbutton id="find-next" label="&fastcursorNext.label;" tooltiptext="&fastcursorNext.tooltip;"
-                     oncommand="onFindAgainCmd();" disabled="false"/>
-      <toolbarbutton id="find-previous" label="&fastcursorPrevious.label;" tooltiptext="&fastcursorPrevious.tooltip;"
-                     oncommand="onFindPreviousCmd();" disabled="false"/>
-      <toolbarbutton id="highlight" label="&highlight.label;" tooltiptext="&highlight.tooltip;"
-                     oncommand="toggleHighlight(!this.checked);
-                                if (gFindMode != FIND_NORMAL) setFastCursorCloseTimeout();"
-                     type="checkbox" disabled="false"/>
-      <checkbox id="fastcursor-case-sensitive" oncommand="toggleCaseSensitivity(this.checked);"
-                hidden="true" label="&caseSensitiveCheckbox.label;" accesskey="&caseSensitiveCheckbox.accesskey;"/>
+      <separator width="4px"/>
+      <toolbarbutton id="find-next" tooltiptext="&fastcursorNext.tooltip;"
+                     oncommand="findNext();" disabled="false"/>
+      <separator/>
+      <toolbarbutton id="find-previous" tooltiptext="&fastcursorPrevious.tooltip;"
+                     oncommand="findPrevious();" disabled="false"/>
+      <separator/>
+      <toolbarbutton type="checkbox" checked="false" id="highlight" tooltiptext="&highlight.tooltip;"
+                     oncommand="toggleHighlight(this.checked);"
+                     disabled="false"/>
+      <separator/>
+      <!--toolbarbutton id="fastcursor-case-sensitive" type="checkbox" oncommand="toggleCaseSensitivity(this.checked);"
+                label="&caseSensitiveCheckbox.label;" accesskey="&caseSensitiveCheckbox.accesskey;"/ -->
       <image id="fastcursor-status-icon"/>
       <label id="fastcursor-status"/>
+      <toolbarbutton id="fastcursor-closebutton" tooltiptext="&fastcursorCloseButton.tooltip;"
+                     oncommand="hideFastCursorBar();"/>  
     </toolbar>
     </statusbarpanel>
 

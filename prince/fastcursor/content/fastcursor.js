@@ -88,24 +88,22 @@ var gFastCursorPrefs = {
   }
 };
 
-function initFastCursorBar()
+
+
+// Fastcursorbar state
+//
+// During initialization, event listeners are added to the main editor.
+// Various buffers are initialized.
+//
+// At the beginning of a search, buffers are re-initialized, which wipes
+// out the results of the previous search.
+//
+// When the user presses Escape or clicks the fastcursor close box or starts 
+// another search, the fastcursorbar is hidden. (It will show again if the 
+// user proceeds with a new search).
+
+function addListeners()
 {
-  // Get the xul <editor> element:
-  var editorElement = document.getElementById("content-source");  
-  try {
-    // get the find service, which stores global find state
-      gFindService = Components.classes["@mozilla.org/find/find_service;1"]
-                           .getService(Components.interfaces.nsIFindService);
-  } catch(e) { gFindService = 0; }
-
-  try {
-    // get the arrow state service, which stores global arrow state
-      gArrowStateService = Components.classes["@mackichan.com/arrowstate/arrowstate_service;1"].createInstance();
-      gArrowStateService.QueryInterface(Components.interfaces.msiIArrowStateService);
-  } catch(e) { gArrowStateService = 0; }
-
-  // this doesn't seem to work when initFastCursorBar is called from its present
-  // position.  I'll have to try to delay the call.
   try {
 	  var normaleditor = document.getElementById("content-frame");
     if (normaleditor)
@@ -123,43 +121,13 @@ function initFastCursorBar()
       sourceeditor.addEventListener("keydown", onBrowserKeyDown, false);
       sourceeditor.addEventListener("keyup", onBrowserKeyUp, false);
     }
-  } catch(e) {  }
-  
-  var prefService = Components.classes["@mozilla.org/preferences-service;1"]
-                              .getService(Components.interfaces.nsIPrefBranch);
-
-  var pbi = prefService.QueryInterface(Components.interfaces.nsIPrefBranch2);
-
-  gFlashFastCursorBar = prefService.getIntPref("fastcursor.flashbar");
-
+  } catch(e) { dump("Error: "+e.message + "\n"); }
 }
 
-function Find(pattern)
+
+function removeListeners()
 {
-  var editorElement = msiGetActiveEditorElement();
-  var pat = pattern;
-  if (!pat) pat = document.getElementById("fastcursor-field").value;
-//  if (!gFindInst) 
-    gFindInst = editorElement.webBrowserFind;
-  gFindService.searchString = pat;
-  
-  
-  gFindInst.searchString  = pat;
-  gFindInst.matchCase     = gFindService.matchCase;
-  gFindInst.wrapFind      = false;
-  gFindInst.findBackwards = gFindService.findBackwards;
-  var result = gFindInst.findNext();
-  return result;
-}
-
-function uninitFastCursorBar()
-{
-   var prefService = Components.classes["@mozilla.org/preferences-service;1"]
-                               .getService(Components.interfaces.nsIPrefBranch);
-
-   var pbi = prefService.QueryInterface(Components.interfaces.nsIPrefBranch2);
-   pbi.removeObserver(gTypeAheadFind.useFCPref, gFastCursor);
-
+  dump("Removing listeners\n");
   var normaleditor = document.getElementById("content-frame");
   if (normaleditor)
   {
@@ -178,8 +146,58 @@ function uninitFastCursorBar()
   }
 }
 
+
+function initFastCursorBar()
+{
+  // Get the xul <editor> element:
+  dump("initFastCursorBar\n");
+  var editorElement = document.getElementById("content-source");  
+  try {
+    // get the find service, which stores global find state
+      gFindService = Components.classes["@mozilla.org/find/find_service;1"]
+                           .getService(Components.interfaces.nsIFindService);
+  } catch(e) { gFindService = 0; }
+
+  try {
+    // get the arrow state service, which stores global arrow state
+      gArrowStateService = Components.classes["@mackichan.com/arrowstate/arrowstate_service;1"].createInstance();
+      gArrowStateService.QueryInterface(Components.interfaces.msiIArrowStateService);
+  } catch(e) { gArrowStateService = 0; }
+
+  addListeners(); 
+  // get preferences 
+  var prefService = Components.classes["@mozilla.org/preferences-service;1"]
+                              .getService(Components.interfaces.nsIPrefBranch);
+
+  var pbi = prefService.QueryInterface(Components.interfaces.nsIPrefBranch2);
+
+  gFlashFastCursorBar = prefService.getIntPref("fastcursor.flashbar");
+
+}
+
+function Find(pattern)
+{
+  if (!pattern) pattern = document.getElementById("fastcursor-field").value;
+  if (!gFindInst){
+    var editorElement = msiGetActiveEditorElement();
+    gFindInst = editorElement.webBrowserFind;
+  }
+  gFindService.searchString = pattern;
+  
+  
+  gFindInst.searchString  = pattern;
+  gFindInst.matchCase     = gFindService.matchCase;
+  gFindInst.wrapFind      = false;
+  gFindInst.findBackwards = gFindService.findBackwards;
+  var result = gFindInst.findNext();
+  return result;
+}
+
+// Highlighting section
+
 function toggleHighlight(aHighlight)
 {
+  dump("toggleHighlight "+aHighlight+"\n");
   var word = document.getElementById("fastcursor-field").value;
   if (aHighlight) {
     highlightDoc('yellow', word);
@@ -280,7 +298,7 @@ function highlightText(word, baseNode)
   var finder = Components.classes["@mozilla.org/embedcomp/rangefind;1"].createInstance()
                          .QueryInterface(Components.interfaces.nsIFind);
 
-  finder.caseSensitive = document.getElementById("fastcursor-case-sensitive").checked;
+  finder.caseSensitive = false;
 
   while((retRange = finder.Find(word, searchRange, startPt, endPt))) {
     // Highlight
@@ -307,6 +325,8 @@ function highlight(range, node)
   return node;
 }
 
+// End of highlighting section
+
 function getSelectionControllerForFastCursorToolbar(ds)
 {
   var display = ds.QueryInterface(Components.interfaces.nsIInterfaceRequestor).getInterface(Components.interfaces.nsISelectionDisplay);
@@ -315,27 +335,22 @@ function getSelectionControllerForFastCursorToolbar(ds)
   return display.QueryInterface(Components.interfaces.nsISelectionController);
 }
 
-function toggleCaseSensitivity(aCaseSensitive)
+function changeSelectionColor(aAttention)  // see if we actually need this.
 {
-  gFindService.matchCase = aCaseSensitive;
-}
-  
-function changeSelectionColor(aAttention)
-{
-//  var ds = getBrowser().docShell;
-//  var dsEnum = ds.getDocShellEnumerator(Components.interfaces.nsIDocShellTreeItem.typeContent,
-//                                        Components.interfaces.nsIDocShell.ENUMERATE_FORWARDS);
-//  while (dsEnum.hasMoreElements()) {
-//    ds = dsEnum.getNext().QueryInterface(Components.interfaces.nsIDocShell);
-//    var controller = getSelectionControllerForFastCursorToolbar(ds);
-//    if (!controller)
-//      continue;
-//    const selCon = Components.interfaces.nsISelectionController;
-//    controller.setDisplaySelection(aAttention? selCon.SELECTION_ATTENTION : selCon.SELECTION_ON);
-//  }
+  var ds = getBrowser().docShell;
+  var dsEnum = ds.getDocShellEnumerator(Components.interfaces.nsIDocShellTreeItem.typeContent,
+                                        Components.interfaces.nsIDocShell.ENUMERATE_FORWARDS);
+  while (dsEnum.hasMoreElements()) {
+    ds = dsEnum.getNext().QueryInterface(Components.interfaces.nsIDocShell);
+    var controller = getSelectionControllerForFastCursorToolbar(ds);
+    if (!controller)
+      continue;
+    const selCon = Components.interfaces.nsISelectionController;
+    controller.setDisplaySelection(aAttention? selCon.SELECTION_ATTENTION : selCon.SELECTION_ON);
+  }
 }
 
-function openFastCursorBar()
+function openFastCursorBar(isUp)  
 {
   if (!gNotFoundStr) {
     var bundle = document.getElementById("bundle_FastCursorBar");
@@ -343,82 +358,89 @@ function openFastCursorBar()
   }
 
   var FastCursorToolbar = document.getElementById("fastCursorPanel");
-//  if (FastCursorToolbar.hidden) {
-    FastCursorToolbar.hidden = false;
-  
-    var statusIcon = document.getElementById("fastcursor-status-icon");
-    var statusText = document.getElementById("fastcursor-status");
-    var FastCursorField = document.getElementById("fastcursor-field");
-    FastCursorField.removeAttribute("status");
-    statusIcon.removeAttribute("status");
-    statusText.value = "";
+  FastCursorToolbar.hidden = false;
+  var statusIcon = document.getElementById("fastcursor-status-icon");
+  var statusText = document.getElementById("fastcursor-status");
+  var FastCursorField = document.getElementById("fastcursor-field");
+  FastCursorField.value="";
+  gArrowStateService.findBuffer ="";
+  FastCursorField.removeAttribute("status");
+  statusIcon.removeAttribute("status");
+  statusText.value = "";
+  var diricon = document.getElementById("fastcursor-dir");
+  if (isUp) diricon.setAttribute("up","true");
+  else diricon.removeAttribute("up");
+  diricon.setAttribute("hidden", "false");
 
-    return true;
+  return true;
+}
+
+//function focusFastCursorBar() -- not called
+//{
+////  var FastCursorField = document.getElementById("fastcursor-field");
+////  FastCursorField.focus();    
+//}
+//
+//function selectFastCursorBar() -- not called
+//{
+//  var FastCursorField = document.getElementById("fastcursor-field");
+//  FastCursorField.select();    
+//}
+//
+function hideFastCursorBar()
+{
+//  var FastCursorField = document.getElementById("fastcursor-field");
+//  var ww = Components.classes["@mozilla.org/embedcomp/window-watcher;1"]
+//                     .getService(Components.interfaces.nsIWindowWatcher);
+//  if (window == ww.activeWindow && document.commandDispatcher.focusedElement &&
+//      document.commandDispatcher.focusedElement.parentNode.parentNode == FastCursorField) {
+//    _content.focus();
 //  }
-//  return false;
+//
+  dump("hideFastCursorBar\n");
+  var FastCursorToolbar = document.getElementById("fastCursorPanel");
+  FastCursorToolbar.hidden = true;
+  document.getElementById("fastcursor-field").value="";
+  gArrowStateService.findBuffer ="";
+////  removeListeners();
+//  gTypeAheadFindBuffer = "";
+//  changeSelectionColor(false);
+//  if (gQuickFindTimeout) {
+//    clearTimeout(gQuickFindTimeout);
+//    gQuickFindTimeout = null;    
+//  } 
 }
 
-function focusFastCursorBar()
-{
-  var FastCursorField = document.getElementById("fastcursor-field");
-  FastCursorField.focus();    
-}
+//function shouldFastFastCursor(evt)
+//{
+//  if (evt.ctrlKey || evt.altKey || evt.metaKey || evt.getPreventDefault())
+//    return false;
+//    
+//  var elt = document.commandDispatcher.focusedElement;
+//  if (elt) {
+//    var ln = elt.localName.toLowerCase();
+//    if (ln == "input" || ln == "textarea" || ln == "select" || ln == "button" || ln == "isindex")
+//      return false;
+//  }
+//  
+//  var win = document.commandDispatcher.focusedWindow;
+//  if (win && win.document.designMode == "on") 
+//    return false;
+//  else
+//    return true;
+//}
 
-function selectFastCursorBar()
-{
-  var FastCursorField = document.getElementById("fastcursor-field");
-  FastCursorField.select();    
-}
+//function onFastCursorBarFocus() -- not called
+//{
+////  toggleLinkFocus(false);
+//}
 
-function closeFastCursorBar()
-{
-  var FastCursorField = document.getElementById("fastcursor-field");
-  var ww = Components.classes["@mozilla.org/embedcomp/window-watcher;1"]
-                     .getService(Components.interfaces.nsIWindowWatcher);
-  if (window == ww.activeWindow && document.commandDispatcher.focusedElement &&
-      document.commandDispatcher.focusedElement.parentNode.parentNode == FastCursorField) {
-    _content.focus();
-  }
+//function onFastCursorBarBlur() -- not called
+//{
+////  toggleLinkFocus(true);
+// // changeSelectionColor(false);
+//}
 
-  var fastCursorToolbar = document.getElementById("fastCursorPanel");
-  fastCursorToolbar.hidden = true;
-  gTypeAheadFindBuffer = "";
-  changeSelectionColor(false);
-  if (gQuickFindTimeout) {
-    clearTimeout(gQuickFindTimeout);
-    gQuickFindTimeout = null;    
-  } 
-}
-
-function shouldFastFastCursor(evt)
-{
-  if (evt.ctrlKey || evt.altKey || evt.metaKey || evt.getPreventDefault())
-    return false;
-    
-  var elt = document.commandDispatcher.focusedElement;
-  if (elt) {
-    var ln = elt.localName.toLowerCase();
-    if (ln == "input" || ln == "textarea" || ln == "select" || ln == "button" || ln == "isindex")
-      return false;
-  }
-  
-  var win = document.commandDispatcher.focusedWindow;
-  if (win && win.document.designMode == "on") 
-    return false;
-  else
-    return true;
-}
-
-function onFastCursorBarFocus()
-{
-  toggleLinkFocus(false);
-}
-
-function onFastCursorBarBlur()
-{
-  toggleLinkFocus(true);
-  changeSelectionColor(false);
-}
 
 function dumpglobals()
 {
@@ -433,11 +455,13 @@ function dumpglobals()
   dump("selection.anchorOffset="+selection.anchorOffset+", selection.focusOffset="+selection.focusOffset+"\n");
 }
 
+
+
 function onBrowserMouseDown(evt)
 {
   var fastcursorToolbar = document.getElementById("fastCursorPanel");
   if (!fastcursorToolbar.hidden && gFindMode != FIND_NORMAL)
-    closeFastCursorBar();
+    hideFastCursorBar();
 }
 
 var startFocusNode;
@@ -547,6 +571,7 @@ function onBrowserKeyDown(evt)
   if (!keyCode.value) return 0;
   if (isArrow.value)
   {
+    hideFastCursorBar();
     gArrowStateService.findArrowKeyState(wasArrow, arrowKeyCode, isRepeating,
       isVertical, isForward, keyCode.value, isFirstArrowPress);
     if (!wasArrow.value) // if an arrow is being pressed so that it changes the state, check the shift key
@@ -560,6 +585,11 @@ function onBrowserKeyDown(evt)
       searchStartOffset = selection.focusOffset;
       startAnchorNode = selection.anchorNode;
       startAnchorOffset = selection.anchorOffset;
+      var direction = document.getElementById("fastcursor-dir");
+      if (isVertical && !isForward) 
+        direction.setAttribute("up", "true");
+      else direction.removeAttribute("up");
+      
       
     }
     gArrowStateService.arrowKeyDown( keyCode.value );
@@ -577,15 +607,16 @@ function onBrowserKeyUp(evt)
   var isForward = new Boolean();
   var isFirstArrowPress = new Boolean();
   gArrowStateService.findKeyCode(evt, keyCode, isArrow);
+  dump("onBrowserKeyUp: "+keyCode.value +", "+isArrow.value+"\n");
   if (!keyCode.value) return 0;
   if (isArrow.value) {
     gArrowStateService.arrowKeyUp( keyCode.value );
-    //  If there are no more arrows down, hide the FastCursorBar
     gArrowStateService.findArrowKeyState(isArrow, arrowKeyCode, isRepeating,
       isVertical, isForward, keyCode.value, isFirstArrowPress);
+    dump("Now isArrow="+isArrow.value+" and isVertical="+isVertical.value+"\n");
     if (!isArrow.value) {
-      var fastcursorToolbar = document.getElementById("fastCursorPanel");
-      fastcursorToolbar.hidden = true;
+      var fastcursorDir = document.getElementById("fastcursor-dir");
+      fastcursorDir.setAttribute("hidden", "true");
     }
   }
   return 0;
@@ -618,9 +649,10 @@ function onBrowserKeyPress(evt)
   var res;
   var selection;
   gArrowStateService.findKeyCode(evt, keyCode, isArrow);
-  if (!isArrow.value) {
+  if (!isArrow.value)
+  {
     if (keyCode.value == KeyEvent.DOM_VK_ESCAPE) {
-      document.getElementById("fastCursorPanel").hidden =true;
+      hideFastCursorBar();
     }
     gArrowStateService.nonArrowKeyPress(keyCode.value, evt.charCode);
     // if we are deleting, we want to search again from the beginning
@@ -637,7 +669,13 @@ function onBrowserKeyPress(evt)
       gFindService.findBackwards = !(isForward.value); 
       selection = window._content.getSelection();     
       if (isVertical.value)  {
-        if (findField.value.length > 0) document.getElementById("fastCursorPanel").hidden = false;
+        if (findField.value.length > 0){
+          var diricon = document.getElementById("fastcursor-dir");
+          if (!isForward.value) diricon.setAttribute("up","true");
+          else diricon.removeAttribute("up");
+          diricon.setAttribute("hidden", "false");
+          document.getElementById("fastCursorPanel").hidden = false;
+        }
         if (!fFindInitialized && (findField.value.length == 1)) { // this is the first find in this incremental search; save cursor position
           selection = window._content.getSelection();
           searchStartNode = selection.focusNode;
@@ -663,8 +701,6 @@ function onBrowserKeyPress(evt)
   return 0;
 }
   
-        
-        
         
       
   
@@ -729,7 +765,7 @@ function onBrowserKeyPress(evt)
 //function toggleLinkFocus(aFocusLinks)
 //{
 //}
-//
+
 //function onFastCursorBarKeyPress(evt)
 //{
 //  if (evt.keyCode == KeyEvent.DOM_VK_RETURN) {
@@ -767,10 +803,11 @@ function onBrowserKeyPress(evt)
 //    window.top._content.scrollByLines(1);
 //    evt.preventDefault();
 //  }
-
+//
 //} 
 
-function enableFastCursorButtons(aEnable)								
+function enableFastCursorButtons(aEnable)	
+// this is not used (yet) but I'll keep it for while.							
 {
   var findNext = document.getElementById("find-next");
   var findPrev = document.getElementById("find-previous");  
@@ -781,7 +818,7 @@ function enableFastCursorButtons(aEnable)
 function setUpFindInst()
 {
   gFindInst.searchString  = document.getElementById("fastcursor-field").value;
-  gFindInst.matchCase     = document.getElementById("fastcursor-case-sensitive").checked;
+  gFindInst.matchCase     = false;
   gFindInst.wrapFind      = PR_FALSE;
   gFindInst.findBackwards = PR_FALSE;	   // change this later
 }
@@ -816,8 +853,8 @@ function find(val)
   enableFindButtons(val);
  
   var highlightBtn = document.getElementById("highlight");
-  if (highlightBtn.checked)
-    setHighlightTimeout();
+//  if (highlightBtn.checked)
+//    setHighlightTimeout();
         
   changeSelectionColor(true);
   var res = Find(val);
@@ -837,45 +874,46 @@ function flashFastCursorBar()
   return true;
 }
 
-function onFindCmd()
-{
-  gFindMode = FIND_NORMAL;
-  openFastCursorBar();
-  if (gFlashFastCursorBar) {
-    gFlashFastCursorBarTimeout = setInterval(flashFastCursorBar, 500);
-    var prefService = Components.classes["@mozilla.org/preferences-service;1"]
-                                .getService(Components.interfaces.nsIPrefBranch);
-
-    prefService.setIntPref("fastcursor.flashbar", --gFlashFastCursorBar);
-  }
-  selectFastCursorBar();
-  focusFastCursorBar();
-}
-
-function onFindAgainCmd()
-{
-	var res = Find(null);
-  if (!res) {
-    if (openFastCursorBar()) {
-      focusFastCursorBar();
-      selectFastCursorBar();
-      updateStatus(res);
-    }
-  }
-}
-
-function onFindPreviousCmd()
-{
-  gFindService.findBackwards = true;
-  var res = Find();
-  if (!res) {
-    if (openFastCursorBar()) {
-      focusFastCursorBar();
-      selectFastCursorBar();
-      updateStatus(res);
-    }
-  }
-}
+//function onFindCmd()
+//{
+//  gFindMode = FIND_NORMAL;
+//  openFastCursorBar();
+//  gFlashFastCursorBar = 10;
+//  if (gFlashFastCursorBar) {
+//    gFlashFastCursorBarTimeout = setInterval(flashFastCursorBar, 500);
+//    var prefService = Components.classes["@mozilla.org/preferences-service;1"]
+//                                .getService(Components.interfaces.nsIPrefBranch);
+//
+//    prefService.setIntPref("fastcursor.flashbar", --gFlashFastCursorBar);
+//  }
+//  selectFastCursorBar();
+//  focusFastCursorBar();
+//}
+//
+//function onFindAgainCmd()
+//{
+//	var res = Find(null);
+//  if (!res) {
+//    if (openFastCursorBar()) {
+//      focusFastCursorBar();
+//      selectFastCursorBar();
+//      updateStatus(res);
+//    }
+//  }
+//}
+//
+//function onFindPreviousCmd()
+//{
+//  gFindService.findBackwards = true;
+//  var res = Find();
+//  if (!res) {
+//    if (openFastCursorBar()) {
+//      focusFastCursorBar();
+//      selectFastCursorBar();
+//      updateStatus(res);
+//    }
+//  }
+//}
 
 function setHighlightTimeout()
 {
@@ -918,21 +956,23 @@ function updateStatus(res)
   switch(res) {
     case false:
       statusIcon.setAttribute("status", "notfound");
-      statusText.value = gNotFoundStr;
+      statusIcon.setAttribute("hidden", "false");
+      statusText.value = "Not found!";
       field.setAttribute("status", "notfound");      
       break;
     case true:
     default:
       statusIcon.removeAttribute("status");      
+      statusIcon.setAttribute("hidden", "true");
       statusText.value = "";
       field.removeAttribute("status");
       break;
   }
 }
 
-function setFastCursorCloseTimeout()
-{
-  if (gQuickFindTimeout)
-    clearTimeout(gQuickFindTimeout);
-  gQuickFindTimeout = setTimeout(function() { if (gFindMode != FIND_NORMAL) closeFastCursorBar(); }, gQuickFindTimeoutLength);
-}
+//function setFastCursorCloseTimeout()
+//{
+//  if (gQuickFindTimeout)
+//    clearTimeout(gQuickFindTimeout);
+//  gQuickFindTimeout = setTimeout(function() { if (gFindMode != FIND_NORMAL) closeFastCursorBar(); }, gQuickFindTimeoutLength);
+//}
