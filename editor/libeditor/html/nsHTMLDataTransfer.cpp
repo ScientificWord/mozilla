@@ -1037,6 +1037,8 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
   {
     res = SplitNodeDeep(splitNode,splitpointNode,splitpointOffset,
       &outOffset, PR_FALSE, &outLeftNode, &outRightNode); 
+    FixMathematics(outLeftNode, PR_FALSE, PR_FALSE);
+    FixMathematics(outRightNode, PR_FALSE, PR_FALSE);
     if (outRightNode) mtagListManager->FixTagsAfterSplit( outLeftNode, (nsIDOMNode **)&outRightNode);
   }
   return res;
@@ -3429,7 +3431,7 @@ nsHTMLEditor::ScanForListAndTableStructure( PRBool aEnd,
         if (bList)
           *outReplaceNode = structureNode;
         else
-          *outReplaceNode = structureNode; // BBM- this seemed really strange to me -- pNode;
+          *outReplaceNode = structureNode; // BBM- this seems really strange to me -- pNode;
         break;
       }
     }
