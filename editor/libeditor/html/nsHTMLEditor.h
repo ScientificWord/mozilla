@@ -1008,11 +1008,11 @@ protected:
 
   void     AddMouseClickListener(nsIDOMElement * aElement);
   void     RemoveMouseClickListener(nsIDOMElement * aElement);
-  void     FixMathematics( nsIDOMNode * fragNode, PRBool fLeftOnly, PRBool fRightOnly);
   void     RemoveNode( nsIDOMNode * aNode);
   nsCOMPtr<nsILinkHandler> mLinkHandler;
 
 public:
+  void     FixMathematics( nsIDOMNode * fragNode, PRBool fLeftOnly, PRBool fRightOnly);
 
 // friends
 friend class nsHTMLEditRules;
