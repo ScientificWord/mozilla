@@ -48,6 +48,7 @@
 #include "nsINameSpaceManager.h"
 #include "nsIRenderingContext.h"
 #include "nsIFontMetrics.h"
+#include "nsMathCursorUtils.h"
 
 #include "nsMathMLmunderFrame.h"
 #include "nsMathMLmsubFrame.h"
@@ -360,3 +361,124 @@ nsMathMLmunderFrame::Place(nsIRenderingContext& aRenderingContext,
   return NS_OK;
 }
 
+
+
+nsresult
+nsMathMLmunderFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing,
+    PRInt32 *_retval)
+{
+  printf("munder EnterFromLeft, count = %d\n", count);
+  nsIFrame * pFrame = GetFirstChild(nsnull);
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  if (pFrame)
+  {
+    pMCM = do_QueryInterface(pFrame);
+    if (pMCM) pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailing,  _retval);
+    else // child frame is not a math frame. Probably a text frame. We'll assume this for now
+    {
+      PlaceCursorBefore(pFrame, PR_TRUE, aOutFrame, aOutOffset, count);
+      *_retval = 0;
+      return NS_OK;
+    }
+  }
+  else 
+  {
+    printf("Found mmunder frame with no children\n");
+  }
+  return NS_OK;  
+}
+
+nsresult
+nsMathMLmunderFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
+    PRBool* fBailingOut, PRInt32 *_retval)
+{
+  printf("munder EnterFromRight, count = %d\n", count);
+  if (count > 0)
+  {
+    nsIFrame * pFrame = GetFirstChild(nsnull); // the base
+    pFrame = pFrame->GetNextSibling();
+    nsCOMPtr<nsIMathMLCursorMover> pMCM;
+    if (pFrame)
+    {
+      pMCM = do_QueryInterface(pFrame);
+      count--;
+      if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+      else // child frame is not a math frame. Probably a text frame. We'll assume this for now
+      {
+        PlaceCursorAfter(pFrame, PR_TRUE, aOutFrame, aOutOffset, count);
+        *_retval = 0;
+        return NS_OK;
+      }
+    }
+    else 
+    {
+      printf("Found munder frame with no superscript\n");
+    }
+  }
+  else
+  {
+    printf("munder EnterFromRight called with count == 0\n");
+    PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
+  }
+  return NS_OK;  
+}
+
+                            
+nsresult
+nsMathMLmunderFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
+    PRBool* fBailingOut, PRInt32 *_retval)
+{
+  printf("munder MoveOutToRight, count = %d\n", count);
+  // if the cursor is leaving either of its children, the cursor goes past the end of the fraction if count > 0
+  nsIFrame * pChild = GetFirstChild(nsnull);
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  if (leavingFrame != pChild)
+  {
+    // leaving superscript. Count = 0
+    PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
+    *_retval = 0;
+    return NS_OK;
+  }
+  else
+  {
+    // leaving base 
+    count= 0;
+    pChild = pChild->GetNextSibling();
+    pMCM = do_QueryInterface(pChild);
+    if (pMCM) pMCM->EnterFromLeft(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+    else printf("munder MoveOutToRight: no under symbol\n");
+   *_retval = 0;
+  }
+  return NS_OK;  
+}
+
+nsresult
+nsMathMLmunderFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
+    PRBool* fBailingOut, PRInt32 *_retval)
+{                
+  printf("munder MoveOutToLeft, count = %d\n", count);
+  // if the cursor is leaving either of its children, the cursor goes past the end of the fraction if count > 0
+  nsIFrame * pChild = GetFirstChild(nsnull);
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  if (leavingFrame == nsnull || leavingFrame == pChild)
+  {
+    nsIFrame * pParent = GetParent();
+    pMCM = do_QueryInterface(pParent);
+    if (pMCM) pMCM->MoveOutToLeft(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+    else  // parent isn't math??? shouldn't happen
+    {
+      *_retval = count;
+      *aOutFrame = nsnull;  // should allow default Mozilla code to take over
+      return NS_OK;
+    }
+  }
+  else
+  {
+    // leaving undersymbol. Place the cursor just after the base.
+    count= 0;
+    pMCM = do_QueryInterface(pChild);
+    if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+   *_retval = 0;
+  }
+  return NS_OK;  
+}  
