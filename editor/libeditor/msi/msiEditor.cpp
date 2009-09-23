@@ -1135,8 +1135,12 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
           {
             res = HandleArrowKeyPress(nsIDOMKeyEvent::DOM_VK_TAB, isShift, ctrlKey, altKey, metaKey, preventDefault); 
           }
-          else
+          else if (symbol == '\'')
           {
+            res = InsertSymbol(L'\x2032');
+            preventDefault = PR_TRUE;
+          }
+          else {
             res = InsertSymbol(symbol);
             preventDefault = PR_TRUE;
             if (NS_SUCCEEDED(res))
