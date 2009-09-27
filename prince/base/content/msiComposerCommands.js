@@ -6324,11 +6324,13 @@ var msiObjectPropertiesCommand =
           break;
 
           case 'table':
-            msiEditorInsertOrEditTable(false, editorElement, "cmd_objectProperties", this);
+            msiGoDoCommandParams("cmd_editTable", cmdParams, editorElement);
+//            msiEditorInsertOrEditTable(false, editorElement, "cmd_objectProperties", this, nodeData);
           break;
           case 'td':
           case 'th':
-            msiEditorTableCellProperties(editorElement);
+            msiGoDoCommandParams("cmd_editTableCell", cmdParams, editorElement);
+//            msiEditorTableCellProperties(editorElement);
           break;
 
           case 'ol':
@@ -6383,7 +6385,7 @@ var msiObjectPropertiesCommand =
   // Should be no Properties dialog available for these cases? SWP has none...
           break;
 
-          case 'mmatrix':
+          case 'mtable':
             msiGoDoCommandParams("cmd_MSIreviseMatrixCmd", cmdParams, editorElement);
           break;
 
@@ -6882,7 +6884,7 @@ var msiEditTableCommand =
 
     if (tableNodeData != null && editorElement != null)
     {
-      msiEditorInsertOrEditTable(false, editorElement, aCommand, this);
+      msiEditorInsertOrEditTable(false, editorElement, aCommand, this, tableNodeData);
 //      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/msiEdTableProps.xul", "_blank", "chrome,close,titlebar,dependent",
 //                                                     editorElement, "cmd_editTable", tableNode);
     }
