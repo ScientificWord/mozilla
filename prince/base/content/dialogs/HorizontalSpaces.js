@@ -98,9 +98,10 @@ function setCustomControls()
   document.getElementById("typesetRadioGroup").value= data.customSpaceData.typesetChoice;
   var unitsListBox = document.getElementById("fixedSizeUnitsbox");
   var unitsControlGroup = [document.getElementById("fixedSizeTextbox")];
-  unitsListBox.mUnitsController = new msiUnitsListbox(unitsListBox, unitsControlGroup);
+//  unitsListBox.mUnitsController = new msiUnitsListbox(unitsListBox, unitsControlGroup);
+  var unitsController = new msiUnitsListbox(unitsListBox, unitsControlGroup);
   var unitsValueGroup = [String(data.customSpaceData.fixedData.size) + data.customSpaceData.fixedData.units];
-  unitsListBox.mUnitsController.setUp(data.customSpaceData.fixedData.units, unitsValueGroup);
+  unitsController.setUp(data.customSpaceData.fixedData.units, unitsValueGroup);
 //  if (data.customSpaceData.customType == "fixed")
 //  {
 //    document.getElementById("fixedSizeUnitsbox").value= data.customSpaceData.fixedData.units;
