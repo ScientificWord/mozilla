@@ -88,9 +88,10 @@ function setCustomControls()
   document.getElementById("typesetRadioGroup").value= data.customBreakData.typesetChoice;
   var unitsListBox = document.getElementById("sizeUnitsbox");
   var unitsControlGroup = [document.getElementById("depthSizeTextbox")];
-  unitsListBox.mUnitsController = new msiUnitsListbox(unitsListBox, unitsControlGroup);
+  var unitsController = new msiUnitsListbox(unitsListBox, unitsControlGroup);
+//  unitsListBox.mUnitsController = new msiUnitsListbox(unitsListBox, unitsControlGroup);
   var unitsValueGroup = [String(data.customBreakData.sizeData.size) + data.customBreakData.sizeData.units];
-  unitsListBox.mUnitsController.setUp(data.customBreakData.sizeData.units, unitsValueGroup);
+  unitsController.setUp(data.customBreakData.sizeData.units, unitsValueGroup);
 //  checkInaccessibleAcceleratorKeys(document.documentElement);
 
 //  gDialog.tabOrderArray = new Array( gDialog.limitsSpecGroup, gDialog.sizeSpecGroup, gDialog.OperatorsGroup,
