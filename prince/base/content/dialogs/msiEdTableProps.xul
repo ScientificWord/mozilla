@@ -26,10 +26,11 @@
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/msiMathDlgStyle.css" type="text/css"?>
 
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
 
-<!DOCTYPE dialog SYSTEM "chrome://editor/locale/EditorTableProperties.dtd">
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/msiEditorTableProperties.dtd">
 
 <dialog title="&tableWindow.title;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -41,6 +42,7 @@
     ondialoghelp="return doHelpButton();">
 
   <!-- Methods common to all editor dialogs -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
@@ -63,37 +65,38 @@
       <vbox>
         <!-- Table Alignment and Caption -->
         <hbox flex="1" align="center">
-        <groupbox orient="vertical" align="start">
-          <caption control="ColumnAlignRadioGroup"
-                   label="&columnAlignment.label;"
-                   accesskey="&columnAlignment.accesskey;"/>
-          <radiogroup id="ColumnAlignRadioGroup">
-            <radio label="&AlignLeft.label;"   group="ColumnAlignRadioGroup" value="left" id="ColAlignLeftRadio" accesskey="&AlignLeft.accesskey;"/>
-            <radio label="&AlignCenter.label;" group="ColumnAlignRadioGroup" value="center" id="ColAlignCenterRadio" accesskey="&AlignCenter.accesskey;"/>
-            <radio label="&AlignRight.label;"  group="ColumnAlignRadioGroup" value="right" id="ColAlignRightRadio" accesskey="&AlignRight.accesskey;"/>
-          </radiogroup>
-        </groupbox>
-        <spacer class="spacer"/>
-        <groupbox orient="vertical" align="start">
-          <caption control="RowAlignRadioGroup" label="&rowAlignment.label;" accesskey="&rowAlignment.accesskey;"/>
-          <radiogroup id="RowAlignRadioGroup">
-            <radio label="&AlignTop.label;"    group="RowAlignRadioGroup" value="top" id="RowAlignTopRadio" accesskey="&AlignTop.accesskey;"/>
-            <radio label="&AlignMiddle.label;" group="RowAlignRadioGroup" value="middle" id="RowAlignMiddleRadio" accesskey="&AlignMiddle.accesskey;"/>
-            <radio label="&AlignBottom.label;" group="RowAlignRadioGroup" value="bottom" id="RowAlignBottomRadio" accesskey="&AlignBottom.accesskey;"/>
-          </radiogroup>
-        </groupbox>
+          <groupbox orient="vertical" align="start">
+            <caption control="ColumnAlignRadioGroup"
+                     label="&columnAlignment.label;"
+                     accesskey="&columnAlignment.accesskey;"/>
+            <radiogroup id="ColumnAlignRadioGroup" oncommand="AlignmentChanged(this.id);">
+              <radio label="&AlignLeft.label;"   group="ColumnAlignRadioGroup" value="left" id="ColAlignLeftRadio" accesskey="&AlignLeft.accesskey;"/>
+              <radio label="&AlignCenter.label;" group="ColumnAlignRadioGroup" value="center" id="ColAlignCenterRadio" accesskey="&AlignCenter.accesskey;"/>
+              <radio label="&AlignRight.label;"  group="ColumnAlignRadioGroup" value="right" id="ColAlignRightRadio" accesskey="&AlignRight.accesskey;"/>
+            </radiogroup>
+          </groupbox>
+          <spacer class="spacer"/>
+          <groupbox orient="vertical" align="start">
+            <caption control="RowAlignRadioGroup" label="&rowAlignment.label;" accesskey="&rowAlignment.accesskey;"/>
+            <radiogroup id="RowAlignRadioGroup" oncommand="AlignmentChanged(this.id);">
+              <radio label="&AlignTop.label;"    group="RowAlignRadioGroup" value="top" id="RowAlignTopRadio" accesskey="&AlignTop.accesskey;"/>
+              <radio label="&AlignMiddle.label;" group="RowAlignRadioGroup" value="middle" id="RowAlignMiddleRadio" accesskey="&AlignMiddle.accesskey;"/>
+              <radio label="&AlignBottom.label;" group="RowAlignRadioGroup" value="bottom" id="RowAlignBottomRadio" accesskey="&AlignBottom.accesskey;"/>
+            </radiogroup>
+          </groupbox>
         </hbox>
         <spacer class="spacer"/>
         <hbox>
         <groupbox orient="vertical" align="center">
           <caption control="BaselineRadioGroup" label="&tableBaseline.label;" accesskey="&tableBaseline.accesskey;"/>
-          <radiogroup id="TableBaselineRadioGroup">
+          <radiogroup id="TableBaselineRadioGroup" oncommand="TablePropertyChanged(this.id);">
               <radio label="&BaselineTopRow.label;" group="TableBaselineRadioGroup" value="topRow" id="BaselineTopRowRadio" accesskey="&BaselineTopRow.accesskey;"/>
               <radio label="&BaselineVerticalCenter.label;" group="TableBaselineRadioGroup" value="vertCenter" id="BaselineVerticalCenterRadio" accesskey="&BaselineVerticalCenter.accesskey;"/>
               <radio label="&BaselineBottomRow.label;" group="TableBaselineRadioGroup" value="bottomRow" id="BaselineBottomRowRadio" accesskey="&BaselineBottomRow.accesskey;"/>
           </radiogroup>
         </groupbox>
         </hbox>
+      </vbox>
       </tabpanel>
 
         <!-- separator class="groove"/>
@@ -121,8 +124,9 @@
         <vbox>
           <hbox>
             <vbox>
-              <menulist id="BorderSideSelectionList">
+              <menulist id="BorderSideSelectionList" value="all" oncommand="setCurrSide(this.value);">
                 <menupopup>
+                  <menuitem label="&borderSelectAll.label;"  value="all"/>
                   <menuitem label="&borderSelectTop.label;"  value="top"/>
                   <menuitem label="&borderSelectRight.label;"  value="top"/>
                   <menuitem label="&borderSelectBottom.label;"  value="top"/>
@@ -142,7 +146,7 @@
               <description id="BordersPreview" class="MSISample"	flex="1"
                   xmlns:xhtml="http://www.w3.org/1999/xhtml"
                   xmlns:mml="http://www.w3.org/1998/Math/MathML">
-                <p><table style="table-layout: fixed; width: 15em; height: 15em; font-size: 150%; overflow: hidden; text-align: center; vertical-align: middle">
+                <p><table style="table-layout: fixed; empty-cells: show; width: 15em; height: 15em; font-size: 150%; overflow: hidden; text-align: center; vertical-align: middle">
                   <tr>
                     <td> </td>
                     <td> </td>
@@ -166,13 +170,13 @@
                 <label control="cellBorderStyleList"
                        value="&cellBorderStyleList.label;"
                        accesskey="&cellBorderStyleList.accesskey;"/>
-                <menulist id="cellBorderStyleList">
+                <menulist id="cellBorderStyleList" oncommand="checkPreviewChanges(this.id);">
                   <menupopup>
                     <menuitem label="&borderStyleNone.label;"  value="none"/>
                     <menuitem label="&borderStyleHidden.label;"  value="hidden"/>
+                    <menuitem label="&borderStyleSolid.label;"  value="solid"/>
                     <menuitem label="&borderStyleDotted.label;"  value="dotted"/>
                     <menuitem label="&borderStyleDashed.label;"  value="dashed"/>
-                    <menuitem label="&borderStyleSolid.label;"  value="solid"/>
                     <menuitem label="&borderStyleDouble.label;"  value="double"/>
                     <menuitem label="&borderStyleGroove.label;"  value="groove"/>
                     <menuitem label="&borderStyleRidge.label;"  value="ridge"/>
@@ -185,7 +189,7 @@
                        accesskey="&tableBorderWidth.accesskey;"/>
                 <!-- textbox class="narrow" id="BorderWidthInput" oninput="forceInteger(this.id);"/>
                 <label align="left" value="&pixels.label;"/ -->
-                <menulist id="cellBorderWidthList">
+                <menulist id="cellBorderWidthList" oncommand="checkPreviewChanges(this.id);">
                   <menupopup>
                     <menuitem label="&borderWidthNone.label;" value="none"/>
                     <menuitem label="&borderWidthThin.label;" value="thin"/>
@@ -203,23 +207,24 @@
                 </button>
                 <spacer class="spacer"/>
               </hbox>
+              <separator class="groove"/>
+              <groupbox orient="horizontal" align="center">
+                <caption control="BackgroundSelectionRadioGroup" label="&backgroundColor.label;" accesskey="&backgroundColor.accesskey;"/>
+                <!-- checkbox id="BackgroundColorCheckbox" label="&backgroundColor.label;" accesskey="&backgroundColor.accesskey;"/ -->
+                <radiogroup orient="vertical" id="BackgroundSelectionRadioGroup">
+                    <radio label="&BackgroundSelectionWholeTable.label;" group="BackgroundSelectionRadioGroup" value="table" accesskey="&BackgroundSelectionWholeTable.accesskey;"/>
+                    <radio label="&BackgroundSelectionSelectedCells.label;" group="BackgroundSelectionRadioGroup" value="selection" accesskey="&BackgroundSelectionSelectedCells.accesskey;"/>
+                </radiogroup>
+                <button class="color-button" oncommand="GetColorAndUpdate('BackgroundCW');">
+                  <spacer id="BackgroundCW" class="color-well"/>
+                </button>
+                <spacer class="spacer"/>
+                <!-- label id="BackgroundInheritColor" value="&backgroundInheritColor.label;" collapsed="true"/ -->
+              </groupbox>
             </vbox>
             <!-- label id="CellInheritColor" value="&cellInheritColor.label;" collapsed="true"/ -->
           </hbox>
         </vbox>
-        <separator class="groove"/>
-        <hbox align="center">
-          <!-- checkbox id="BackgroundColorCheckbox" label="&backgroundColor.label;" accesskey="&backgroundColor.accesskey;"/ -->
-          <radiogroup id="BackgroundSelectionRadioGroup">
-              <radio label="&BackgroundSelectionWholeTable.label;" group="BackgroundSelectionRadioGroup" value="table" accesskey="&BackgroundSelectionWholeTable.accesskey;"/>
-              <radio label="&BackgroundSelectionSelectedCells.label;" group="BackgroundSelectionRadioGroup" value="selection" accesskey="&BackgroundSelectionSelectedCells.accesskey;"/>
-          </radiogroup>
-          <button class="color-button" oncommand="GetColorAndUpdate('BackgroundCW');">
-            <spacer id="BackgroundCW" class="color-well"/>
-          </button>
-          <spacer class="spacer"/>
-          <label id="BackgroundInheritColor" value="&backgroundInheritColor.label;" collapsed="true"/>
-        </hbox>
       </tabpanel>
 
       <!-- Size and Layout PANEL -->
@@ -254,16 +259,16 @@
               <columns><column/><column/><column flex="1"/></columns>
               <rows>
                 <row align="center">
-                  <checkbox id="CellHeightCheckbox" label="&tableHeight.label;" accesskey="&tableHeight.accesskey;"/>
+                  <checkbox id="CellHeightCheckbox" label="&tableHeight.label;" accesskey="&tableHeight.accesskey;" oncommand="CheckboxChanged(this.id);"/>
                   <textbox class="narrow" id="CellHeightInput"
-                           oninput="ChangeIntTextbox(this.id,'CellHeightCheckbox');"/>
-                  <menulist id="CellHeightUnits" oncommand="SetCheckbox('CellHeightCheckbox');"/>
+                           oninput="ChangeCellSize(this.id);"/>
+                  <menulist id="CellHeightUnits" />
                 </row>
                 <row align="center">
-                  <checkbox id="CellWidthCheckbox" label="&tableWidth.label;" accesskey="&tableWidth.accesskey;"/>
+                  <checkbox id="CellWidthCheckbox" label="&tableWidth.label;" accesskey="&tableWidth.accesskey;" oncommand="CheckboxChanged(this.id);"/>
                   <textbox class="narrow" id="CellWidthInput"
-                           oninput="ChangeIntTextbox(this.id,'CellWidthCheckbox');"/>
-                  <menulist id="CellWidthUnits" oncommand="SetCheckbox('CellWidthCheckbox');"/>
+                           oninput="ChangeCellSize(this.id);"/>
+                  <menulist id="CellWidthUnits" />
                 </row>
               </rows>
             </grid>
@@ -309,16 +314,16 @@
             </menupopup>
           </menulist>
           <spacer class="bigspacer"/ -->
-          <checkbox id="TextWrapCheckbox" label="&cellTextWrap.label;" accesskey="&cellTextWrap.accesskey;"/>
-          <menulist id="TextWrapList" oncommand="SetCheckbox('TextWrapCheckbox');">
+          <checkbox id="TextWrapCheckbox" label="&cellWrap.label;" accesskey="&cellWrap.accesskey;" oncommand="CheckboxChanged(this.id);"/>
+          <!-- menulist id="TextWrapList" oncommand="SetCheckbox('TextWrapCheckbox');">
             <menupopup>
               <menuitem label="&cellWrap.label;" value="wrap"/>
               <menuitem label="&cellNoWrap.label;" value="nowrap"/>
             </menupopup>
-          </menulist>
+          </menulist -->
           <groupbox orient="vertical" align="center">
             <caption control="TableCaptionList" label="&tableCaption.label;" accesskey="&tableCaption.accesskey;"/>
-            <menulist id="TableCaptionList">
+            <menulist id="TableCaptionList" oncommand="TablePropertyChanged(this.id);">
               <menupopup>
                 <menuitem label="&tableCaptionNone.label;"  value=""/>
                 <menuitem label="&tableCaptionAbove.label;" value="top"/>
