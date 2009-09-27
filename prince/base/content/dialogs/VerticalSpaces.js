@@ -88,9 +88,10 @@ function setCustomControls()
   document.getElementById("typesetRadioGroup").value= data.customSpaceData.typesetChoice;
   var unitsListBox = document.getElementById("fixedSizeUnitsbox");
   var unitsControlGroup = [document.getElementById("fixedSizeTextbox")];
-  unitsListBox.mUnitsController = new msiUnitsListbox(unitsListBox, unitsControlGroup);
+//  unitsListBox.mUnitsController = new msiUnitsListbox(unitsListBox, unitsControlGroup);
+  var unitsController = new msiUnitsListbox(unitsListBox, unitsControlGroup);
   var unitsValueGroup = [String(data.customSpaceData.sizeData.size) + data.customSpaceData.sizeData.units];
-  unitsListBox.mUnitsController.setUp(data.customSpaceData.sizeData.units, unitsValueGroup);
+  unitsController.setUp(data.customSpaceData.sizeData.units, unitsValueGroup);
 //  checkInaccessibleAcceleratorKeys(document.documentElement);
 
 //  gDialog.tabOrderArray = new Array( gDialog.limitsSpecGroup, gDialog.sizeSpecGroup, gDialog.OperatorsGroup,

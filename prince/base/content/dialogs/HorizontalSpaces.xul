@@ -91,7 +91,8 @@
               </hbox>
               <hbox>
                 <label control="fixedSizeUnitsbox" value="&fixedSizeUnits.label;"	accesskey="&fixedSizeUnits.accesskey;"/>
-                <menulist id="fixedSizeUnitsbox"  oncommand="changeUnits(this);"  >
+                <menulist id="fixedSizeUnitsbox" >
+                <!-- menulist id="fixedSizeUnitsbox"  oncommand="changeUnits(this);"  -->
                    <menupopup>
                    </menupopup>
                  </menulist>
