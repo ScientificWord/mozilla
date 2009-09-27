@@ -80,11 +80,12 @@ function setUnitsAndPositionControls()
   var unitsListBox = document.getElementById("sizeUnitsbox");
   var unitsControlGroup = [document.getElementById("liftSizeTextbox"), document.getElementById("widthSizeTextbox"),
                              document.getElementById("heightSizeTextbox")];
-  unitsListBox.mUnitsController = new msiUnitsListbox(unitsListBox, unitsControlGroup);
+  var unitsController = new msiUnitsListbox(unitsListBox, unitsControlGroup);
+//  unitsListBox.mUnitsController = new msiUnitsListbox(unitsListBox, unitsControlGroup);
   var unitsValueGroup = new Array(3);
   for (var ix = 0; ix < dataComponents.length; ++ix)
     unitsValueGroup[ix] = String(data[dataComponents[ix]].size) + data[dataComponents[ix]].units;
-  unitsListBox.mUnitsController.setUp(data[dataComponents[0]].units, unitsValueGroup);
+  unitsController.setUp(data[dataComponents[0]].units, unitsValueGroup);
 //  checkInaccessibleAcceleratorKeys(document.documentElement);
 
 //  gDialog.tabOrderArray = new Array( gDialog.limitsSpecGroup, gDialog.sizeSpecGroup, gDialog.OperatorsGroup,

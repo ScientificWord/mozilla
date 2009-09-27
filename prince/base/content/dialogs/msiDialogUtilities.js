@@ -559,6 +559,16 @@ function msiUnitRound(size, whichUnit)
   return Math.round(size*places)/places;
 }
 
+function onMSIUnitsListboxChange(listbox)
+{
+  if (!("mUnitsController" in listbox))
+    return;
+  if (listbox.selectedItem == undefined || listbox.selectedItem.value == undefined)
+    dump("In msiDialogUtilities.js, onMSIUnitsListboxchange; selectedItem.value is undefined!\n");
+  else
+    listbox.mUnitsController.changeUnits(listbox.selectedItem.value);
+}
+
 //Following constructs an object to manage units listboxes and associated textboxes.
 function msiUnitsListbox(listBox, controlGroup, theUnitsList)
 {
@@ -568,6 +578,13 @@ function msiUnitsListbox(listBox, controlGroup, theUnitsList)
     theUnitsList = msiDlgUnitsList;
   this.mUnitsList = theUnitsList;
   this.mCurrUnit = theUnitsList.defaultUnit();
+  listBox.mUnitsController = this;
+  this.setAdditionalCommand = function(aCommandStr)
+  {
+    this.mPostCommandStr = aCommandStr;
+    this.mListbox.oncommand = "onMSIUnitsListboxChange(this);" + aCommandStr;
+    //This is set up this way so it doesn't matter whether setAdditionalCommand is called first or not.
+  }
   this.setUp = function(initialUnit, valueArray)
   {
     this.mCurrUnit = initialUnit;
@@ -584,6 +601,9 @@ function msiUnitsListbox(listBox, controlGroup, theUnitsList)
       else
         this.mControlArray[ix].value = "0";
     }
+    this.mListbox.oncommand = "onMSIUnitsListboxChange(this);";
+    if (this.mPostCommandStr)
+      this.mListbox.oncommand += this.mPostCommandStr;
   };
 
   this.fillListBox = function(initialUnit)
@@ -615,6 +635,20 @@ function msiUnitsListbox(listBox, controlGroup, theUnitsList)
       this.mControlArray[ix].value = newNumber;
     }
     this.mCurrUnit = newUnit;
+  };
+  this.getValue = function(whichControl, whichUnit)
+  {
+    var valNumber = whichControl.value;
+    if (whichUnit)
+      return this.mUnitsList.convertUnits(valNumber, this.mCurrUnit, whichUnit);
+    return valNumber;
+  };
+  this.getValueString = function(whichControl, whichUnit)
+  {
+    var valNumber = this.getValue(whichControl, whichUnit);
+    if (!whichUnit)
+      whichUnit = this.mCurrUnit;
+    return (String(valNumber) + whichUnit);
   };
 }
 
