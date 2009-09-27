@@ -86,12 +86,23 @@
 <!-- !ENTITY cellPercent.label                "percent of table" -->
 
 <!ENTITY borderSideSelection.label        "Selected side:">
+<!ENTITY borderSelectAll.label            "All">
 <!ENTITY borderSelectTop.label            "Top">
 <!ENTITY borderSelectRight.label          "Right">
 <!ENTITY borderSelectBottom.label         "Bottom">
 <!ENTITY borderSelectLeft.label           "Left">
 <!ENTITY cellBorderStyleList.label        "Border style">
 <!ENTITY cellBorderStyleList.accesskey    "y">
+
+<!ENTITY borderStyleNone.label  "None">
+<!ENTITY borderStyleHidden.label "Hidden">
+<!ENTITY borderStyleDotted.label "Dotted">
+<!ENTITY borderStyleDashed.label "Dashed">
+<!ENTITY borderStyleSolid.label "Solid">
+<!ENTITY borderStyleDouble.label "Double">
+<!ENTITY borderStyleGroove.label "Groove">
+<!ENTITY borderStyleRidge.label "Ridge">
+<!ENTITY borderColor.label "Border color"> 
 
 <!ENTITY cellSelection.label              "Selection">
 <!ENTITY cellSelectCell.label             "Cell">
@@ -119,10 +130,11 @@
 <!ENTITY cellStyle.accesskey              "C">
 <!ENTITY cellNormal.label                 "Normal">
 <!ENTITY cellHeader.label                 "Header">
-<!ENTITY cellTextWrap.label               "Text Wrap:">
-<!ENTITY cellTextWrap.accesskey           "T">
-<!ENTITY cellWrap.label                   "Wrap">
-<!ENTITY cellNoWrap.label                 "Don't wrap">
+<!-- !ENTITY cellTextWrap.label               "Text Wrap:">
+<!ENTITY cellTextWrap.accesskey           "T" -->
+<!ENTITY cellWrap.label                   "Wrap Text">
+<!ENTITY cellWrap.accesskey               "W">
+<!-- !ENTITY cellNoWrap.label                 "Don't wrap" -->
 
 <!ENTITY AlignTop.label                   "Top">
 <!ENTITY AlignTop.accesskey               "T">
