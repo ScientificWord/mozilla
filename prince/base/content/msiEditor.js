@@ -3939,6 +3939,7 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
       case "mtable":
       case "mtr":
       case "mlabeledtr":
+      case "mtd":
         propsData = new msiTablePropertiesObjectData();
         propsData.initFromNode(coreElement, editorElement);
       break;
@@ -5394,6 +5395,16 @@ msiTablePropertiesObjectData.prototype =
     var retDims = {mRowContinuation : this.mTableInfo.cellInfoArray[nRow][nCol].mRowContinuation,
                    mColContinuation : this.mTableInfo.cellInfoArray[nRow][nCol].mColContinuation};
     return retDims;
+  },
+
+  getColsInSelection : function()
+  {
+    return mColSelectionArray;
+  },
+
+  getRowsInSelection : function()
+  {
+    return mRowSelectionArray;
   },
 
 //Implementation (non-interface) methods:
@@ -7203,16 +7214,22 @@ function msiIsSelectionInOneCell(editorElement)
 //  just to revise the existing ones to apply to different editors.
 // Call this with insertAllowed = true to allow inserting if not in existing table,
 //   else use false to do nothing if not in a table
-function msiEditorInsertOrEditTable(insertAllowed, editorElement, command, commandHandler)
+function msiEditorInsertOrEditTable(insertAllowed, editorElement, command, commandHandler, reviseObjectData)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
-  if (msiIsInTable(editorElement))
+  if (!reviseObjectData && msiIsInTable(editorElement))
   {
-    // Edit properties of existing table
-//    msiOpenModelessDialog("chrome://editor/content/EdTableProps.xul", "_blank", "chrome,close,titlebar,dependent", editorElement,
-//                                         command, commandHandler, "", "TablePanel");
-    window.openDialog("chrome://editor/content/EdTableProps.xul", "_blank", "chrome,close,titlebar,modal", "","TablePanel");
+    reviseObjectData = new msiTablePropertiesObjectData();
+    reviseObjectData.initFromSelection(editor.selection, editorElement);
+  }
+  if (reviseObjectData != null)
+  {
+      // Edit properties of existing table
+    var theData = {reviseCommand : command, reviseData : reviseObjectData};
+    msiOpenModelessDialog("chrome://prince/content/msiEdTableProps.xul", "_blank", "chrome,close,titlebar,dependent", editorElement,
+                                         command, commandHandler, theData);
+//      window.openDialog("chrome://editor/content/EdTableProps.xul", "_blank", "chrome,close,titlebar,modal", "","TablePanel");
     editorElement.contentWindow.focus();
   } 
   else if (insertAllowed)

@@ -93,6 +93,7 @@ en-US.jar:
   locale/gotoparagraph.dtd                (dialogs/gotoparagraph.dtd)
   locale/paragraphProperties.dtd          (dialogs/paragraphProperties.dtd)
   locale/sourceparseerror.dtd          (dialogs/sourceparseerror.dtd)
+  locale/msiEditorTableProperties.dtd     (dialogs/msiEditorTableProperties.dtd)
 
 
 
