@@ -45,7 +45,7 @@
 /* ::::: toolbox ::::: */
 
 toolbox {
-  -moz-appearance: toolbox;
+/*  -moz-appearance: toolbox;  */
   background-color: -moz-Dialog;
   border-top: 2px solid;
   -moz-border-top-colors: ThreeDShadow ThreeDHighlight;
@@ -53,9 +53,6 @@ toolbox {
 
 /* ::::: toolbar & menubar ::::: */
 
-toolbar, menubar {
-  -moz-appearance: toolbar;
-}
 
 toolbar {
   min-width: 1px;
