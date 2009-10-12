@@ -15,6 +15,7 @@ ac_add_app_options prince --enable-extensions=default,inspector,venkman,spellche
 
 ac_add_options --disable-javaxpcom
 ac_add_options --disable-activex
+ac_add_options --disable-accessibility
 ac_add_options --disable-activex-scripting
 ac_add_options --disable-tests
 ac_add_options --disable-mochitest
