@@ -5,18 +5,29 @@
 toolbox
 {
   min-height: 0;
-  background-image: url("chrome://prince/skin/icons/background.png");
-  background-repeat: repeat;
+/*  background-image: url("chrome://prince/skin/icons/background.png");
+  background-repeat: repeat;  */
 }
 
 toolbar
 {
   background-color: transparent;
+  background-image: url("chrome://prince/skin/icons/background.png");
+  background-repeat: repeat;  
 }
 
-toolbox[iconsize="small"]
+menubar
 {
+  background-color: transparent;
   background-image: url("chrome://prince/skin/icons/background-sm.png");
+  background-repeat: repeat;  
+}
+
+toolbox[iconsize="small"] toolbar
+{
+  background-color: transparent;
+  background-image: url("chrome://prince/skin/icons/background-sm.png");
+  background-repeat: repeat;  
 }
 
 
