@@ -158,7 +158,7 @@ msiEditRules::DidSplitNode(nsIDOMNode *aExistingRightNode,
                               nsIDOMNode *aNewLeftNode, 
                               nsresult aResult)
 {
-  printf("msiEditRules:DidSplitNode\n");
+//  printf("msiEditRules:DidSplitNode\n");
  return nsHTMLEditRules::DidSplitNode(aExistingRightNode,aOffset,aNewLeftNode,aResult);
 }
 

@@ -74,12 +74,13 @@ textbox.padded {
 
 .textbox-input-box {
   margin: 0 3px;
-  -moz-box-align: center;
+  -moz-box-align: center;	
 }
 
 toolbar *.textbox-input-box {
   margin: 0px;
-  -moz-box-align: center;
+  border-top: 1px;
+  -moz-box-align: top;	
 }
 
 /* ::::: autocomplete popups ::::: */

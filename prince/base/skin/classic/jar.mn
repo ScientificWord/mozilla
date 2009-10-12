@@ -597,6 +597,8 @@ classic.jar:
 	skin/classic/icons/dropmarker-active.png	   (icons/dropmarker-active.png)
 	skin/classic/icons/dropmarker-hover.png		   (icons/dropmarker-hover.png)
 	skin/classic/icons/dropmarker.png			   (icons/dropmarker.png)
+	skin/classic/icons/dropmarker-active-sm.png	   (icons/dropmarker-active-sm.png)
+	skin/classic/icons/dropmarker-hover-sm.png		   (icons/dropmarker-hover-sm.png)
 	skin/classic/icons/dropmarker-sm.png		   (icons/dropmarker-sm.png)
 	skin/classic/icons/redarrowtransp.png		   (icons/redarrowtransp.png)
 	skin/classic/icons/dropmarkertb-active.png	   (icons/dropmarkertb-active.png)
