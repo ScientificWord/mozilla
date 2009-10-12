@@ -106,6 +106,19 @@ toolbarbutton *.toolbarbutton-menubutton-dropmarker {
   list-style-image: url(chrome://prince/skin/icons/dropmarkertb-active.png);
 }
 
+
+toolbar[iconsize="small"] toolbarbutton *.toolbarbutton-menubutton-dropmarker {
+  list-style-image: url(chrome://prince/skin/icons/dropmarkertb-sm.png);
+}
+
+toolbar[iconsize="small"] *.toolbarbutton-menubutton-dropmarker:hover {
+  list-style-image: url(chrome://prince/skin/icons/dropmarkertb-hover-sm.png);
+}
+
+toolbar[iconsize="small"] *.toolbarbutton-menubutton-dropmarker:active {
+  list-style-image: url(chrome://prince/skin/icons/dropmarkertb-active-sm.png);
+}
+
 toolbarbutton[disabled="true"] *.toolbarbutton-menubutton-dropmarker[disabled="true"] {
   padding: 0 !important;
 }

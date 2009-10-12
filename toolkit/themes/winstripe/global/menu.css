@@ -125,9 +125,9 @@ menuitem.menuitem-iconic > .menu-iconic-left {
 /* ..... menu arrow box ..... */
 
 .menu-right {
-  -moz-appearance: menuarrow;
+/*  -moz-appearance: menuarrow;	  looks gross on Linux */
   -moz-margin-end: -2px;
-  list-style-image: none;
+  list-style-image: url("chrome://global/skin/arrow/arrow-rit-sharp.gif");
 }
 
 /* ::::: menu/menuitems in menubar ::::: */
@@ -140,8 +140,8 @@ menubar > menu[_moz-menuactive="true"][open="true"] {
 }
 menubar > menu[_moz-menuactive="true"],
 menubar > menu[_moz-menuactive="true"][open="true"] {
-  background-color: -moz-menuhover;
-  color: -moz-menubarhovertext;
+  /* background-color: -moz-menuhover; */
+  color: black; /* -moz-menubarhovertext;  */
 }
 
 /* ..... internal content .... */
