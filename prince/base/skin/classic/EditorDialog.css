@@ -205,7 +205,7 @@ tree.list {
 }
 
 #BordersPreview td {
-  border 1px #CCCCCC;
+  border: 1px #CCCCCC;
 }
 
 /* ::::: spelling dialog ::::: */
