@@ -3,6 +3,7 @@
 #include "nsIServiceManager.h"
 #include "nsIRange.h"
 #include "msiEditor.h"
+#include "msiUtils.h"
 
 /********************************************************
  *  routine for making new rules instance
@@ -76,6 +77,40 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
   if (NS_FAILED(res)) return res;
   if (!endNode) return NS_ERROR_FAILURE;
   if (bCollapsed) {
+      
+	  nsCOMPtr<msiIMathMLEditingBC> editingBC; 
+      PRUint32 dontcare(0);
+	  PRUint32 mathmltype;
+
+      if ( msiUtils::hasMMLType(mHTMLEditor, startNode, msiIMathMLEditingBC::MATHML_MROWFENCE) )	{      
+		     nsCOMPtr<nsIDOMNode> parent;
+             endNode->GetParentNode(getter_AddRefs(parent));
+		  
+		     msiUtils::GetMathMLEditingBC(mHTMLEditor, parent, dontcare, editingBC);
+	         mathmltype = msiUtils::GetMathmlNodeType(editingBC);
+			 
+			 *aHandled = PR_TRUE;
+			 
+			 nsresult res;
+             res = mHTMLEditor -> SimpleDeleteNode(startNode);
+			 if (NS_FAILED(res)) return res;
+
+			 //res = mHTMLEditor -> SimpleDeleteNode(endNode);
+			 //if (NS_FAILED(res)) return res;
+
+		     //res = mHTMLEditor->RemoveContainer(parent);
+			 //if (NS_FAILED(res)) return res;
+
+
+
+
+			 return res;
+
+		  //}
+		  
+	  } else {
+      	  aSelection->Extend( endNode, endOffset-1 );
+	  }
   }  
   if (mMSIEditor->NodeInMath(startNode)||mMSIEditor->NodeInMath(endNode))
   {
@@ -86,32 +121,37 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
     nsCOMPtr<nsIDOMRange> range;
     mMSIEditor->GetMathParent(startNode, mathNode);
     mathElement = do_QueryInterface(mathNode);
-    mathElement->GetFirstChild(getter_AddRefs(firstChildNode));
-    mathElement->GetLastChild(getter_AddRefs(lastChildNode));
-    PRBool partlyContained = PR_FALSE;
+	PRBool partlyContained = PR_FALSE;
     PRBool containsNode;
-    aSelection->ContainsNode(firstChildNode, partlyContained, &containsNode);
-    if (containsNode)
-    {
-      aSelection->ContainsNode(lastChildNode, partlyContained, &containsNode);
-      if (containsNode) // all children of the math node are in the selection
+
+	if (mathNode){
+      mathElement->GetFirstChild(getter_AddRefs(firstChildNode));
+      mathElement->GetLastChild(getter_AddRefs(lastChildNode));
+      aSelection->ContainsNode(firstChildNode, partlyContained, &containsNode);
+      if (containsNode)
       {
-        aSelection->GetRangeAt(0, getter_AddRefs(range));
-        range->SelectNode(mathNode);
+        aSelection->ContainsNode(lastChildNode, partlyContained, &containsNode);
+        if (containsNode) // all children of the math node are in the selection
+        {
+          aSelection->GetRangeAt(0, getter_AddRefs(range));
+          range->SelectNode(mathNode);
+        }
       }
     } 
     mMSIEditor->GetMathParent(endNode, mathNode);
     mathElement = do_QueryInterface(mathNode);
-    mathElement->GetFirstChild(getter_AddRefs(firstChildNode));
-    mathElement->GetLastChild(getter_AddRefs(lastChildNode));
-    aSelection->ContainsNode(firstChildNode, partlyContained, &containsNode);
-    if (containsNode)
-    {
-      aSelection->ContainsNode(lastChildNode, partlyContained, &containsNode);
-      if (containsNode) // all children of the math node are in the selection
+	if (mathNode){
+      mathElement->GetFirstChild(getter_AddRefs(firstChildNode));
+      mathElement->GetLastChild(getter_AddRefs(lastChildNode));
+      aSelection->ContainsNode(firstChildNode, partlyContained, &containsNode);
+      if (containsNode)
       {
-        aSelection->GetRangeAt(0, getter_AddRefs(range));
-        range->SelectNode(mathNode);
+        aSelection->ContainsNode(lastChildNode, partlyContained, &containsNode);
+        if (containsNode) // all children of the math node are in the selection
+        {
+          aSelection->GetRangeAt(0, getter_AddRefs(range));
+          range->SelectNode(mathNode);
+        }
       }
     } 
 
