@@ -306,6 +306,9 @@ public:
                            nsIDOMNode * node);       
                                                  
   static PRBool IsInputbox(nsISupports * isupports);
+
+  static PRBool hasMMLType(nsIEditor * editor,	nsIDOMNode * node, 	unsigned short mmlType);
+
   
   static PRBool IsMrow(nsIEditor* editor,
                        nsIDOMNode * node);       

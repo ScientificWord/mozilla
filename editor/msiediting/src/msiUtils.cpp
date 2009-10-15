@@ -1850,6 +1850,25 @@ PRBool msiUtils::IsMrow(nsISupports * isupports)
   return (mathmltype == msiIMathMLEditingBC::MATHML_MROW);
 }
 
+
+// A more general version of previous functions
+PRBool msiUtils::hasMMLType(nsIEditor * editor,	nsIDOMNode * node, 	unsigned short mmlType)
+{
+  PRBool rv(PR_FALSE);
+  if (editor && node)
+  {
+    nsCOMPtr<msiIMathMLEditingBC> editingBC; 
+    PRUint32 dontcare(0);
+    GetMathMLEditingBC(editor, node, dontcare, editingBC);
+    if (editingBC) {
+	  PRUint32 mathmltype = GetMathmlNodeType(editingBC);
+
+      rv = (mathmltype == mmlType);
+	}
+  }    
+  return rv;
+}
+
 nsresult msiUtils::GetTableCell(nsIEditor * editor,
                                 nsIDOMNode * node,
                                 nsCOMPtr<nsIDOMNode> & mtdCell)
