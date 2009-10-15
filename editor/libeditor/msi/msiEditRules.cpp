@@ -95,18 +95,15 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
              res = mHTMLEditor -> SimpleDeleteNode(startNode);
 			 if (NS_FAILED(res)) return res;
 
-			 //res = mHTMLEditor -> SimpleDeleteNode(endNode);
-			 //if (NS_FAILED(res)) return res;
+			 res = mHTMLEditor -> SimpleDeleteNode(endNode);
+			 if (NS_FAILED(res)) return res;
 
-		     //res = mHTMLEditor->RemoveContainer(parent);
-			 //if (NS_FAILED(res)) return res;
-
-
+		     res = mHTMLEditor->RemoveContainer(parent);
+			 if (NS_FAILED(res)) return res;
 
 
 			 return res;
 
-		  //}
 		  
 	  } else {
       	  aSelection->Extend( endNode, endOffset-1 );
