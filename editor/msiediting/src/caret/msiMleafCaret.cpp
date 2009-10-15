@@ -84,7 +84,7 @@ msiMleafCaret::AdjustNodeAndOffsetFromMouseEvent(nsIEditor *editor, nsIPresShell
   {
     leafRect = leafFrame->GetScreenRectExternal();
     textFrame = leafFrame->GetFirstChild(nsnull);
-    NS_ASSERTION(textFrame && textFrame->GetType() == msiEditingAtoms::textFrame, "child of leaf is not textframe");
+    //NS_ASSERTION(textFrame && textFrame->GetType() == msiEditingAtoms::textFrame, "child of leaf is not textframe");
     if (textFrame && textFrame->GetType() == msiEditingAtoms::textFrame)
     {
       textRect = textFrame->GetScreenRectExternal();
