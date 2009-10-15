@@ -4,6 +4,7 @@
 #include "nsIRange.h"
 #include "msiEditor.h"
 #include "msiUtils.h"
+#include "nsIDOMNodeList.h"
 
 /********************************************************
  *  routine for making new rules instance
@@ -81,24 +82,34 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
 	  nsCOMPtr<msiIMathMLEditingBC> editingBC; 
       PRUint32 dontcare(0);
 	  PRUint32 mathmltype;
+	  
 
-      if ( msiUtils::hasMMLType(mHTMLEditor, startNode, msiIMathMLEditingBC::MATHML_MROWFENCE) )	{      
-		     nsCOMPtr<nsIDOMNode> parent;
-             endNode->GetParentNode(getter_AddRefs(parent));
+      if ( msiUtils::hasMMLType(mHTMLEditor, startNode, msiIMathMLEditingBC::MATHML_MROWFENCE) )	{
+             
+             nsCOMPtr<nsIDOMNodeList> children;
+             startNode->GetChildNodes(getter_AddRefs(children));
+			 PRUint32 number;
+			 msiUtils::GetNumberofChildren(startNode, number);
+                   
+		     //nsCOMPtr<nsIDOMNode> parent;
+             //endNode->GetParentNode(getter_AddRefs(parent));
 		  
-		     msiUtils::GetMathMLEditingBC(mHTMLEditor, parent, dontcare, editingBC);
-	         mathmltype = msiUtils::GetMathmlNodeType(editingBC);
+		     //msiUtils::GetMathMLEditingBC(mHTMLEditor, parent, dontcare, editingBC);
+	         //mathmltype = msiUtils::GetMathmlNodeType(editingBC);
 			 
 			 *aHandled = PR_TRUE;
 			 
-			 nsresult res;
-             res = mHTMLEditor -> SimpleDeleteNode(startNode);
-			 if (NS_FAILED(res)) return res;
+             //res = mHTMLEditor -> SimpleDeleteNode(startNode);
+			 nsCOMPtr<nsIDOMNode>  removedChild;
+			 res = msiUtils::RemoveChildNode(startNode, number-1, removedChild);
+			 res = msiUtils::RemoveChildNode(startNode, 0, removedChild);
 
-			 res = mHTMLEditor -> SimpleDeleteNode(endNode);
+			 
 			 if (NS_FAILED(res)) return res;
+			  
 
-		     res = mHTMLEditor->RemoveContainer(parent);
+
+		     res = mHTMLEditor->RemoveContainer(startNode);
 			 if (NS_FAILED(res)) return res;
 
 
