@@ -1851,6 +1851,15 @@ PRBool msiUtils::IsMrow(nsISupports * isupports)
 }
 
 
+
+PRBool msiUtils::IsEmpty(nsIDOMNode* pNode)
+{
+  PRUint32 number;
+  GetNumberofChildren(pNode, number);
+  return (number == 0);
+}
+
+
 // A more general version of previous functions
 PRBool msiUtils::hasMMLType(nsIEditor * editor,	nsIDOMNode * node, 	unsigned short mmlType)
 {
