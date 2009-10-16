@@ -136,6 +136,24 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
 			 *aHandled = PR_TRUE;
 			 return res;
 
+	  } else if ( mathmltype == msiIMathMLEditingBC::MATHML_MSUP || mathmltype == msiIMathMLEditingBC::MATHML_MSUB) {
+	         // remove the superscript	or subscript
+	         nsCOMPtr<nsIDOMNode>  removedChild;
+			 res = msiUtils::RemoveChildNode(endNode, 1, removedChild);
+			 // Remove the msup (or msub) container 
+		     res = mHTMLEditor->RemoveContainer(endNode);
+			 *aHandled = PR_TRUE;
+			 return res;
+	  }  else if ( mathmltype == msiIMathMLEditingBC::MATHML_MSUBSUP ) {
+	         // remove the superscript	and subscript
+	         nsCOMPtr<nsIDOMNode>  removedChild;
+			 res = msiUtils::RemoveChildNode(endNode, 2, removedChild);
+			 res = msiUtils::RemoveChildNode(endNode, 1, removedChild);
+			 // Remove the msubsup container 
+		     res = mHTMLEditor->RemoveContainer(endNode);
+			 *aHandled = PR_TRUE;
+			 return res;
+
 	  } else {
       	  aSelection->Extend( endNode, endOffset-1 );
 	  }
