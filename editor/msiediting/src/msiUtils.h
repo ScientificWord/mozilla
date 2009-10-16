@@ -321,6 +321,11 @@ public:
                                                  
   static PRBool IsMleaf(nsISupports* isupports,
                         PRBool allowInputbox);
+
+  static PRBool IsEmpty(nsIDOMNode* pNode);
+  
+
+
                         
   static nsresult GetMathmlNodeType(nsIEditor * editor,
                                     nsIDOMNode * node,
