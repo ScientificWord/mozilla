@@ -42,6 +42,8 @@
 */
 
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+@namespace xhtml url("http://www.w3.org/1999/xhtml");
+
 
 /* The defaults are WAY to big! */
 groupbox {
@@ -204,8 +206,12 @@ tree.list {
   list-style-image: url("chrome://global/skin/arrow/arrow-down.gif");
 }
 
-#BordersPreview td {
+#BordersPreview xhtml|td {
   border: 1px #CCCCCC;
+}
+
+#BordersPreview xhtml|td xhtml|* {
+  visibility: hidden;
 }
 
 /* ::::: spelling dialog ::::: */

@@ -5348,11 +5348,13 @@ msiTablePropertiesObjectData.prototype =
   {
     var bFound = false;
     var ix = cellIter.nRow;
-    var jx = cellIter.nCol;
+    var startJ = cellIter.nCol;
+    if (cellIter.mCell)
+      ++startJ;
     var theCell = null;
     for (; !bFound && (ix < this.mTableInfo.m_nRows); ++ix)
     {
-      for (; !bFound && (jx < this.mTableInfo.cellInfoArray[ix].length); ++jx)
+      for (var jx = startJ; !bFound && (jx < this.mTableInfo.cellInfoArray[ix].length); ++jx)
       {
         if (this.cellIsInSelection(ix, jx, cellIter.mSelMode))
 //        if ( this.mTableInfo.cellInfoArray[ix][jx] && (this.mTableInfo.cellInfoArray[ix][jx].mSelected == msiPropertiesObjectDataBase.Selected_SomeSelected))
@@ -5361,10 +5363,11 @@ msiTablePropertiesObjectData.prototype =
           cellIter.nCol = jx;
           cellIter.mRowContinuation = this.mTableInfo.cellInfoArray[ix][jx].mRowContinuation;
           cellIter.mColContinuation = this.mTableInfo.cellInfoArray[ix][jx].mColContinuation;
-          cellIter.mCell = this.mTableInfo.cellInfoArray[ix][jx].mNode;
+          theCell = this.mTableInfo.cellInfoArray[ix][jx].mNode;
           bFound = true;
         }
       }
+      startJ = 0;
     }
     cellIter.mCell = theCell;
     return theCell;

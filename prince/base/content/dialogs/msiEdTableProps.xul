@@ -33,6 +33,7 @@
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/msiEditorTableProperties.dtd">
 
 <dialog title="&tableWindow.title;"
+    xmlns:xhtml="http://www.w3.org/1999/xhtml"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload="Startup()"
     buttons="accept,extra1,cancel,help"
@@ -124,15 +125,18 @@
         <vbox>
           <hbox>
             <vbox>
-              <menulist id="BorderSideSelectionList" value="all" oncommand="setCurrSide(this.value);">
-                <menupopup>
-                  <menuitem label="&borderSelectAll.label;"  value="all"/>
-                  <menuitem label="&borderSelectTop.label;"  value="top"/>
-                  <menuitem label="&borderSelectRight.label;"  value="top"/>
-                  <menuitem label="&borderSelectBottom.label;"  value="top"/>
-                  <menuitem label="&borderSelectLeft.label;"  value="top"/>
-                </menupopup>
-              </menulist>
+              <hbox>
+                <label control="BorderSideSelectionList" value="&borderSideSelection.label;" accesskey="&borderSideSelection.accesskey;" />
+                <menulist id="BorderSideSelectionList" value="all" oncommand="setCurrSide(this.value);">
+                  <menupopup>
+                    <menuitem label="&borderSelectAll.label;"  value="all"/>
+                    <menuitem label="&borderSelectTop.label;"  value="top"/>
+                    <menuitem label="&borderSelectRight.label;"  value="right"/>
+                    <menuitem label="&borderSelectBottom.label;"  value="bottom"/>
+                    <menuitem label="&borderSelectLeft.label;"  value="left"/>
+                  </menupopup>
+                </menulist>
+              </hbox>
               <!--menulist id="BorderSelectionList">
                 <menupopup>
                   <menuitem label="&cellSelectCell.label;"  value="cell"/>
@@ -146,23 +150,23 @@
               <description id="BordersPreview" class="MSISample"	flex="1"
                   xmlns:xhtml="http://www.w3.org/1999/xhtml"
                   xmlns:mml="http://www.w3.org/1998/Math/MathML">
-                <p><table style="table-layout: fixed; empty-cells: show; width: 15em; height: 15em; font-size: 150%; overflow: hidden; text-align: center; vertical-align: middle">
-                  <tr>
-                    <td> </td>
-                    <td> </td>
-                    <td> </td>
-                  </tr>
-                  <tr>
-                    <td> </td>
-                    <td id="BordersPreviewCenterCell" style="border: 2px" > </td>
-                    <td> </td>
-                  </tr>
-                  <tr>
-                    <td> </td>
-                    <td> </td>
-                    <td> </td>
-                  </tr>
-                </table></p>
+                <p><xhtml:table style="table-layout: fixed; empty-cells: show; width: 15em; height: 15em; font-size: 150%; overflow: hidden; text-align: center; vertical-align: middle">
+                  <xhtml:tr>
+                    <xhtml:td><xhtml:span>text</xhtml:span></xhtml:td>
+                    <xhtml:td><xhtml:span>text</xhtml:span></xhtml:td>
+                    <xhtml:td><xhtml:span>text</xhtml:span></xhtml:td>
+                  </xhtml:tr>
+                  <xhtml:tr>
+                    <xhtml:td><xhtml:span>text</xhtml:span></xhtml:td>
+                    <xhtml:td id="BordersPreviewCenterCell" style="border: 2px" ><xhtml:span>text</xhtml:span></xhtml:td>
+                    <xhtml:td><xhtml:span>text</xhtml:span></xhtml:td>
+                  </xhtml:tr>
+                  <xhtml:tr>
+                    <xhtml:td><xhtml:span>text</xhtml:span></xhtml:td>
+                    <xhtml:td><xhtml:span>text</xhtml:span></xhtml:td>
+                    <xhtml:td><xhtml:span>text</xhtml:span></xhtml:td>
+                  </xhtml:tr>
+                </xhtml:table></p>
               </description>
             </vbox>
             <vbox>
@@ -180,6 +184,8 @@
                     <menuitem label="&borderStyleDouble.label;"  value="double"/>
                     <menuitem label="&borderStyleGroove.label;"  value="groove"/>
                     <menuitem label="&borderStyleRidge.label;"  value="ridge"/>
+                    <menuitem label="&borderStyleInset.label;"  value="inset"/>
+                    <menuitem label="&borderStyleOutset.label;"  value="outset"/>
                   </menupopup>
                 </menulist>
               </hbox>
