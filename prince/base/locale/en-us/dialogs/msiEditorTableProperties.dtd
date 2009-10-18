@@ -86,12 +86,13 @@
 <!-- !ENTITY cellPercent.label                "percent of table" -->
 
 <!ENTITY borderSideSelection.label        "Selected side:">
+<!ENTITY borderSideSelection.accesskey    "s">
 <!ENTITY borderSelectAll.label            "All">
 <!ENTITY borderSelectTop.label            "Top">
 <!ENTITY borderSelectRight.label          "Right">
 <!ENTITY borderSelectBottom.label         "Bottom">
 <!ENTITY borderSelectLeft.label           "Left">
-<!ENTITY cellBorderStyleList.label        "Border style">
+<!ENTITY cellBorderStyleList.label        "Border Style">
 <!ENTITY cellBorderStyleList.accesskey    "y">
 
 <!ENTITY borderStyleNone.label  "None">
@@ -102,6 +103,9 @@
 <!ENTITY borderStyleDouble.label "Double">
 <!ENTITY borderStyleGroove.label "Groove">
 <!ENTITY borderStyleRidge.label "Ridge">
+<!ENTITY borderStyleInset.label "Inset">
+<!ENTITY borderStyleOutset.label "Outset">
+
 <!ENTITY borderColor.label "Border color"> 
 
 <!ENTITY cellSelection.label              "Selection">
@@ -148,10 +152,10 @@
 <!-- !ENTITY cellUseCheckboxHelp.label        "Use checkboxes to determine which properties are applied to all selected cells" -->
 
 <!-- Used in both Table and Cell panels  -->
-<!ENTITY tableBorderWidth.label           "Border:">
+<!ENTITY tableBorderWidth.label           "Border Width:">
 <!ENTITY tableBorderWidth.accesskey       "B">
 <!ENTITY borderWidthNone.label            "None">
-<!ENTITY borderWidthThin.label            "None">
+<!ENTITY borderWidthThin.label            "Thin">
 <!ENTITY borderWidthMedium.label          "Medium">
 <!ENTITY borderWidthThick.label           "Thick">
 <!ENTITY size.label                       "Size">
