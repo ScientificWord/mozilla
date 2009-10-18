@@ -3972,6 +3972,149 @@ function msiGetHTMLOrCSSStyleValue(editorElement, element, attrName, cssProperty
   return value;
 }
 
+//This list (copied here from the Cascades code) represents the base HTML named colors.
+var msiHTMLNamedColorsList = 
+{  aqua : "#00ffff", black : "#000000", blue : "#0000ff", fuchsia : "#ff00ff",
+   gray : "#808080", green : "#008000", lime : "#00ff00", maroon : "#800000",
+   navy : "#000080", olive : "#808000", purple : "#800080", red : "#ff0000",
+   silver : "#c0c0c0", teal : "#008080", white : "#ffffff", yellow : "#ffff00"
+};
+
+function msiNamedColors(aNameSet)
+{
+  this.mColorNames = aNameSet;
+  this.hexRegExp = /(#?)([0-9a-f]{6})/i;
+
+  this.namedColorToHexRGBString = function(colorName)
+  {
+    if (colorName in this.mColorNames)
+      return this.mColorNames[colorName];
+    return "";
+  };
+
+  this.colorStringToHexRGBString = function(aColorDesc)
+  {
+    var hexStr = "";
+    var targStr = ConvertRGBColorIntoHEXColor(aColorDesc);
+    var theMatch = this.hexRegExp.exec(targStr);
+    if (theMatch && theMatch[2])
+      hexStr = "#" + theMatch[2].toLowerCase();
+    else
+      hexStr = this.namedColorToHexRGBString(targStr);
+    return hexStr;
+  };
+
+  this.hexRGBStringToNamedColor = function(hexString)
+  {
+    var colorName = "";
+    var theMatch = this.hexRegExp.exec(hexString);
+    if (theMatch && theMatch[2])
+    {
+      var searchStr = "#" + theMatch[2].toLowerCase();
+      for (var aName in this.mColorNames)
+      {
+        if (this.mColorNames[aName] == searchStr)
+        {
+          colorName = aName;
+          break;
+        }
+      }
+    }
+    return colorName;
+  };
+}
+
+var msiHTMLNamedColors = new msiNamedColors(msiHTMLNamedColorsList);
+
+var msiCSSUtils = 
+{
+  getLengthWithUnitsStringFromCSSPrimitiveValue : function(cssValue)
+  {
+    var lengthAndUnits = this.getLengthWithUnitsFromCSSPrimitiveValue(cssValue);
+    return lengthAndUnits.mString;
+  },
+
+  getLengthWithUnitsFromCSSPrimitiveValue : function(cssValue)
+  {
+    var retValue = {number : 0.0, unit : "", mString : ""};
+    switch(cssValue.primitiveType)
+    {
+      case nsICSSPrimitive.CSS_CM:
+        if (!theUnitStr.length)
+          retValue.unit = "cm";
+      case nsICSSPrimitive.CSS_EMS:
+        if (!retValue.unit.length)
+          retValue.unit = "em";
+      case nsICSSPrimitive.CSS_EXS:
+        if (!retValue.unit.length)
+          retValue.unit = "ex";
+      case nsICSSPrimitive.CSS_IN:
+        if (!retValue.unit.length)
+          retValue.unit = "in";
+      case nsICSSPrimitive.CSS_MM:
+        if (!retValue.unit.length)
+          retValue.unit = "mm";
+      case nsICSSPrimitive.CSS_PC:
+        if (!retValue.unit.length)
+          retValue.unit = "pc";
+      case nsICSSPrimitive.CSS_PT:
+        if (!retValue.unit.length)
+          retValue.unit = "pt";
+      case nsICSSPrimitive.CSS_PX:
+        if (!retValue.unit.length)
+          retValue.unit = "px";
+      case nsICSSPrimitive.CSS_PERCENTAGE:
+        if (!retValue.unit.length)
+          retValue.unit = "%";
+        retValue.number = cssValue.getFloatValue(cssValue.primitiveType);
+        retValue.mString = String(retValue.number) + retValue.unit;
+      break;
+      case nsICSSPrimitive.CSS_DIMENSION:
+      case nsICSSPrimitive.CSS_NUMBER:
+        retValue.number = cssValue.getFloatValue(cssValue.primitiveType);
+        retValue.mString = String(retValue.number);
+      break;
+      case nsICSSPrimitive.CSS_STRING:
+      case nsICSSPrimitive.CSS_IDENT:
+      case nsICSSPrimitive.CSS_ATTR:
+        retValue.mString = cssValue.getStringValue();
+      break;
+      default:
+      break;
+    }
+    return retValue;
+  },
+
+  getRGBColorValFromCSSPrimitive : function(cssValue)
+  {
+    var retStr = "";
+    switch(cssValue.primitiveType)
+    {
+      case nsICSSPrimitive.CSS_RGBCOLOR:
+//        retStr = String(cssValue.getRGBColorValue());
+        var theColor = cssValue.getRGBColorValue();
+        var r = theColor.red.getFloatValue(nsICSSPrimitive.CSS_NUMBER).toString(16);
+        if (r.length == 1) r = "0"+r;
+        var g = theColor.green.getFloatValue(nsICSSPrimitive.CSS_NUMBER).toString(16);
+        if (g.length == 1) g = "0"+g;
+        var b = theColor.blue.getFloatValue(nsICSSPrimitive.CSS_NUMBER).toString(16);
+        if (b.length == 1) b = "0"+b;
+        retStr = "#"+r+g+b;
+      break;
+      case nsICSSPrimitive.CSS_STRING:
+      case nsICSSPrimitive.CSS_IDENT:
+      case nsICSSPrimitive.CSS_ATTR:
+        retStr = cssValue.getStringValue();
+        if ( (retStr != "transparent") && (retStr != "inherit") )
+          retStr = msiHTMLNamedColors.colorStringToHexRGBString(retStr);
+      break;
+      default:
+      break;
+    }
+    return retStr;
+  }
+};
+
 /************* Miscellaneous ***************/
 //Fix This!
 //Following needs to be filled in meaningfully - but for now, just return a default.
@@ -4322,10 +4465,14 @@ function msiCreateCSSUnitsListForElement(anElement)
   var defView = anElement.ownerDocument.defaultView;
   var docCSS = defView.QueryInterface(Components.interfaces.nsIDOMViewCSS);
   var theStyle = docCSS.getComputedStyle(anElement, "");
-  var theFontHtStr = theStyle.getPropertyCSSValue("font-size");
-  var fontHtValue = msiCSSUnitsList.getNumberAndUnitFromString(theFontHtStr);
-  if (fontHtValue && fontHtValue.unit && fontHtValue.number)
-    return new msiCSSWithFontUnitsList(fontHtValue.number, fontHtValue,units);
+  var theFontHtVal = theStyle.getPropertyCSSValue("font-size");
+  var fontHtNumberAndUnits = null;
+  if (theFontHtVal)
+    fontHtNumberAndUnits = msiCSSUtils.getLengthWithUnitsFromCSSPrimitiveValue(theFontHtVal);
+  if (fontHtNumberAndUnits && fontHtNumberAndUnits.unit && fontHtNumberAndUnits.number)
+    return new msiCSSWithFontUnitsList(fontHtNumberAndUnits.number, fontHtNumberAndUnits.units);
+  else if (fontHtNumberAndUnits.number)
+    return new msiCSSWithFontUnitsList(fontHtNumberAndUnits.number, "px");
   else
     return new msiCSSWithFontUnitsList(12 * msiCSSUnitConversions.pt, "mm");
 }
@@ -6367,6 +6514,7 @@ function msiKludgeLogString(logStr, keyArray)
   var keysInUse = [];
 #if DEBUG_Ron
   keysInUse.push("search");
+  keysInUse.push("tableEdit");
 #endif
 
   var bDoIt = false;
