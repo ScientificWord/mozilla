@@ -559,19 +559,23 @@ function msiUnitRound(size, whichUnit)
   return Math.round(size*places)/places;
 }
 
-function onMSIUnitsListboxChange(listbox)
+function onMSIUnitsListboxChange(event)
 {
+  var listbox = event.currentTarget;
   if (!("mUnitsController" in listbox))
     return;
   if (listbox.selectedItem == undefined || listbox.selectedItem.value == undefined)
     dump("In msiDialogUtilities.js, onMSIUnitsListboxchange; selectedItem.value is undefined!\n");
   else
     listbox.mUnitsController.changeUnits(listbox.selectedItem.value);
+  if (listbox.mUnitsController.mPostCommandStr)
+    eval(listbox.mUnitsController.mPostCommandStr);
 }
 
 //Following constructs an object to manage units listboxes and associated textboxes.
 function msiUnitsListbox(listBox, controlGroup, theUnitsList)
 {
+  this.mbSetUp = false;
   this.mListbox = listBox;
   this.mControlArray = controlGroup;
   if (!theUnitsList)
@@ -582,13 +586,18 @@ function msiUnitsListbox(listBox, controlGroup, theUnitsList)
   this.setAdditionalCommand = function(aCommandStr)
   {
     this.mPostCommandStr = aCommandStr;
-    this.mListbox.oncommand = "onMSIUnitsListboxChange(this);" + aCommandStr;
+//    this.mListbox.oncommand = "onMSIUnitsListboxChange(this);" + aCommandStr;
     //This is set up this way so it doesn't matter whether setAdditionalCommand is called first or not.
-  }
+  };
+
   this.setUp = function(initialUnit, valueArray)
   {
     this.mCurrUnit = initialUnit;
     this.fillListBox(initialUnit);
+
+    this.mListbox.addEventListener('command', onMSIUnitsListboxChange, false);
+    this.mbSetUp = true;
+
     if ( (valueArray == null) || (this.mControlArray.length == null) || !("length" in valueArray) )
       return;
     for (var ix = 0; ix < valueArray.length; ++ix)
@@ -601,9 +610,6 @@ function msiUnitsListbox(listBox, controlGroup, theUnitsList)
       else
         this.mControlArray[ix].value = "0";
     }
-    this.mListbox.oncommand = "onMSIUnitsListboxChange(this);";
-    if (this.mPostCommandStr)
-      this.mListbox.oncommand += this.mPostCommandStr;
   };
 
   this.fillListBox = function(initialUnit)
@@ -636,6 +642,7 @@ function msiUnitsListbox(listBox, controlGroup, theUnitsList)
     }
     this.mCurrUnit = newUnit;
   };
+
   this.getValue = function(whichControl, whichUnit)
   {
     var valNumber = whichControl.value;
