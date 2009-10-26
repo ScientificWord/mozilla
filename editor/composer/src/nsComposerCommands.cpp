@@ -1,4 +1,3 @@
-/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -60,7 +59,8 @@
 #include "msiITagListManager.h"
 
 //prototype
-nsresult GetListState(nsIEditor *aEditor, PRBool *aMixed, PRUnichar **tagStr);
+nsresult GetListState(nsIEditor *aEditor, nsString &itemTag, PRBool *aMixed, nsString & _retval);
+
 nsresult RemoveOneProperty(nsIHTMLEditor *aEditor,const nsString& aProp,
                            const nsString &aAttr);
 nsresult RemoveTextProperty(nsIEditor *aEditor, const PRUnichar *prop,
@@ -94,8 +94,8 @@ NS_IMPL_ISUPPORTS1(nsBaseComposerCommand, nsIControllerCommand)
 
 nsBaseStateUpdatingCommand::nsBaseStateUpdatingCommand(const char* aTagName)
 : nsBaseComposerCommand()
-, mTagName(aTagName)
 {
+  mTagName.AssignWithConversion(aTagName);
 }
 
 nsBaseStateUpdatingCommand::~nsBaseStateUpdatingCommand()
@@ -198,7 +198,7 @@ nsBaseTagUpdatingCommand::DoCommandParams(const char *aCommandName,
     else
       rv = aParams->GetStringValue(STATE_ATTRIBUTE, tagName);
   }
-  return ToggleState(editor, NS_ConvertUTF16toUTF8(tagName).get());
+  return ToggleState(editor, tagName);
 }
 
 NS_IMETHODIMP
@@ -214,7 +214,7 @@ nsBaseTagUpdatingCommand::GetCommandStateParams(const char *aCommandName,
 }
 
 nsresult
-nsBaseTagUpdatingCommand::GetCurrentTagState(nsIEditor *aEditor, const char *aTagClass, 
+nsBaseTagUpdatingCommand::GetCurrentTagState(nsIEditor *aEditor, nsString& aTagClass, 
                                         nsICommandParams *aParams)
 {
   NS_ASSERTION(aEditor, "Need editor here");
@@ -223,13 +223,12 @@ nsBaseTagUpdatingCommand::GetCurrentTagState(nsIEditor *aEditor, const char *aTa
   
   nsresult rv = NS_OK;
   nsString strTagName;
-  NS_ConvertASCIItoUTF16 tagClass(aTagClass);
 
   PRBool firstOfSelectionHasProp = PR_TRUE;
   PRBool anyOfSelectionHasProp = PR_TRUE;
   PRBool allOfSelectionHasProp = PR_TRUE;
 
-  rv = htmlEditor->GetInnermostTag(  tagClass, 
+  rv = htmlEditor->GetInnermostTag(  aTagClass, 
                                      &firstOfSelectionHasProp, 
                                      &anyOfSelectionHasProp, 
                                      &allOfSelectionHasProp,
@@ -243,6 +242,12 @@ nsBaseTagUpdatingCommand::GetCurrentTagState(nsIEditor *aEditor, const char *aTa
   aParams->SetBooleanValue(STATE_BEGIN, firstOfSelectionHasProp);
   aParams->SetBooleanValue(STATE_END, allOfSelectionHasProp);//not completely accurate
   return NS_OK;
+}
+
+
+nsParaTagUpdatingCommand::nsParaTagUpdatingCommand(void)
+: nsBaseTagUpdatingCommand()
+{
 }
 
 nsresult
@@ -263,7 +268,7 @@ nsParaTagUpdatingCommand::DoCommand(const char *aCommandName,
   nsCOMPtr<nsIEditor> editor = do_QueryInterface(refCon);
   if (!editor) return NS_ERROR_NOT_INITIALIZED;
 
-  return SetState(editor, (nsAutoString&)mTagName);
+  return SetState(editor, mTagName);
 }
 
 NS_IMETHODIMP
@@ -283,7 +288,147 @@ nsParaTagUpdatingCommand::DoCommandParams(const char *aCommandName,
     else
       rv = aParams->GetStringValue(STATE_ATTRIBUTE, tagName);
   }
+ // if (!tagName.
   return SetState(editor, tagName);
+}
+
+
+
+nsListTagUpdatingCommand::nsListTagUpdatingCommand(void)
+: nsBaseTagUpdatingCommand()
+{
+}
+
+
+nsresult
+nsListTagUpdatingCommand::GetCurrentState(nsIEditor *aEditor,
+                               nsICommandParams *aParams)
+{
+  NS_ASSERTION(aEditor, "Need editor here");
+
+  PRBool bMixed;
+  nsAutoString tagStr;
+  nsresult rv = GetListState(aEditor, mTagName, &bMixed, tagStr);
+  if (NS_FAILED(rv)) return rv;
+
+  // Need to use mTagName????    
+  PRBool inList = tagStr.Equals(mTagName);
+  aParams->SetBooleanValue(STATE_ALL, !bMixed && inList);
+  aParams->SetBooleanValue(STATE_MIXED, bMixed);
+  aParams->SetBooleanValue(STATE_ENABLED, PR_TRUE);
+  return NS_OK;
+}
+
+
+
+nsresult
+nsListTagUpdatingCommand::SetState(nsIEditor *aEditor, nsString& newState)
+{
+  NS_ASSERTION(aEditor, "Need editor here");
+  nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface(aEditor);
+  if (!htmlEditor) return NS_ERROR_NOT_INITIALIZED;
+
+  PRBool inList;
+  nsresult rv;
+  nsCOMPtr<nsICommandParams> params =
+      do_CreateInstance(NS_COMMAND_PARAMS_CONTRACTID,&rv);
+  if (NS_FAILED(rv) || !params)
+    return rv;
+  rv = GetCurrentState(aEditor, /*newState,*/ params);
+  rv = params->GetBooleanValue(STATE_ALL,&inList);
+  if (NS_FAILED(rv)) 
+    return rv;
+  if (NS_FAILED(rv)) return rv;
+  
+  if (inList)
+  {
+    // To remove a list, first get what kind of list we're in
+    PRBool bMixed;
+    nsAutoString tagStr;
+    nsAutoString itemTagName;
+    rv = GetListState(aEditor, mTagName, &bMixed, tagStr);
+    if (NS_FAILED(rv)) return rv; 
+    if (!tagStr.IsEmpty())
+    {
+      if (!bMixed)
+      {
+        rv = htmlEditor->RemoveList(nsDependentString(tagStr));    
+      }
+    }
+  }
+  else
+  {
+    nsAutoString itemType; itemType.Assign(mTagName);
+    // Set to the requested paragraph type
+    //XXX Note: This actually doesn't work for "LI",
+    //    but we currently don't use this for non DL lists anyway.
+    // Problem: won't this replace any current block paragraph style?
+    rv = htmlEditor->SetParagraphFormat(itemType);
+  }
+    
+  return rv;
+}
+
+nsresult
+nsListTagUpdatingCommand::ToggleState(nsIEditor *aEditor, nsString & aTagName)
+{
+  nsCOMPtr<nsIHTMLEditor> editor = do_QueryInterface(aEditor);
+  if (!editor)
+    return NS_NOINTERFACE;
+  PRBool inList;
+  // Need to use mTagName????
+  nsresult rv;
+  nsCOMPtr<nsICommandParams> params =
+      do_CreateInstance(NS_COMMAND_PARAMS_CONTRACTID,&rv);
+  if (NS_FAILED(rv) || !params)
+    return rv;
+
+  rv = GetCurrentState(aEditor, params);
+//  rv = GetCurrentState(aEditor, mTagName, params);//
+  rv = params->GetBooleanValue(STATE_ALL,&inList);
+  if (NS_FAILED(rv)) 
+    return rv;
+
+  if (inList)
+    rv = editor->RemoveList(mTagName);    
+  else
+  {
+    rv = editor->MakeOrChangeList(mTagName, PR_FALSE, EmptyString());
+  }
+  
+  return rv;
+}
+
+
+
+NS_IMETHODIMP
+nsListTagUpdatingCommand::DoCommand(const char *aCommandName,
+                                      nsISupports *refCon)
+{
+  nsCOMPtr<nsIEditor> editor = do_QueryInterface(refCon);
+  if (!editor) return NS_ERROR_NOT_INITIALIZED;
+  return ToggleState(editor,mTagName);
+}
+
+NS_IMETHODIMP
+nsListTagUpdatingCommand::DoCommandParams(const char *aCommandName,
+                                            nsICommandParams *aParams,
+                                            nsISupports *refCon)
+{
+  nsXPIDLString tagName;
+  nsresult rv;
+  nsCOMPtr<nsIEditor> editor = do_QueryInterface(refCon);
+  if (!editor) return NS_ERROR_NOT_INITIALIZED;
+  if (aParams) {
+    nsXPIDLCString s;
+    rv = aParams->GetCStringValue(STATE_ATTRIBUTE, getter_Copies(s));
+    if (NS_SUCCEEDED(rv))
+      tagName.AssignWithConversion(s);
+    else
+      rv = aParams->GetStringValue(STATE_ATTRIBUTE, tagName);
+  }
+  mTagName.Assign(tagName);
+  return ToggleState(editor, tagName);
 }
 
 nsStructTagUpdatingCommand::nsStructTagUpdatingCommand(void)
@@ -298,7 +443,7 @@ nsStructTagUpdatingCommand::DoCommand(const char *aCommandName,
   nsCOMPtr<nsIEditor> editor = do_QueryInterface(refCon);
   if (!editor) return NS_ERROR_NOT_INITIALIZED;
 
-  return SetState(editor, (nsAutoString&)mTagName);
+  return SetState(editor, mTagName);
 }
 
 NS_IMETHODIMP
@@ -322,6 +467,14 @@ nsStructTagUpdatingCommand::DoCommandParams(const char *aCommandName,
 }
 
 nsresult
+nsEnvTagUpdatingCommand::ToggleState(nsIEditor *aEditor, nsString& aTagName)
+{
+  printf("nsEnvTagUpdatingCommand::ToggleState(%S)\n",aTagName.get());
+  return NS_OK;
+}
+
+
+nsresult
 nsStructTagUpdatingCommand::SetState(nsIEditor *aEditor, nsString& newState)
 {
   NS_ASSERTION(aEditor, "Need an editor here");
@@ -332,6 +485,51 @@ nsStructTagUpdatingCommand::SetState(nsIEditor *aEditor, nsString& newState)
   return NS_OK; //BBM should be bad data
 }
 
+nsEnvTagUpdatingCommand::nsEnvTagUpdatingCommand(void)
+: nsBaseTagUpdatingCommand()
+{
+}
+
+NS_IMETHODIMP
+nsEnvTagUpdatingCommand::DoCommand(const char *aCommandName,
+                                      nsISupports *refCon)
+{
+  nsCOMPtr<nsIEditor> editor = do_QueryInterface(refCon);
+  if (!editor) return NS_ERROR_NOT_INITIALIZED;
+
+  return SetState(editor, mTagName);
+}
+
+NS_IMETHODIMP
+nsEnvTagUpdatingCommand::DoCommandParams(const char *aCommandName,
+                                            nsICommandParams *aParams,
+                                            nsISupports *refCon)
+{
+  nsXPIDLString tagName;
+  nsresult rv;
+  nsCOMPtr<nsIEditor> editor = do_QueryInterface(refCon);
+  if (!editor) return NS_ERROR_NOT_INITIALIZED;
+  if (aParams) {
+    nsXPIDLCString s;
+    rv = aParams->GetCStringValue(STATE_ATTRIBUTE, getter_Copies(s));
+    if (NS_SUCCEEDED(rv))
+      tagName.AssignWithConversion(s);
+    else
+      rv = aParams->GetStringValue(STATE_ATTRIBUTE, tagName);
+  }
+  return SetState(editor, tagName);
+}
+
+nsresult
+nsEnvTagUpdatingCommand::SetState(nsIEditor *aEditor, nsString& newState)
+{
+  NS_ASSERTION(aEditor, "Need an editor here");
+  nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface(aEditor);
+  if (!htmlEditor) return NS_ERROR_FAILURE;
+
+  if (newState.Length() > 0) return htmlEditor->SetEnvTag(newState);
+  return NS_OK; //BBM should be bad data
+}
 
 NS_IMETHODIMP
 nsPasteNoFormattingCommand::IsCommandEnabled(const char * aCommandName, 
@@ -399,7 +597,7 @@ nsTextTagUpdatingCommand::nsTextTagUpdatingCommand(void)
 
 
 nsresult
-nsTextTagUpdatingCommand::ToggleState(nsIEditor *aEditor, const char* aTagName)
+nsTextTagUpdatingCommand::ToggleState(nsIEditor *aEditor, nsString & aTagName)
 {
   nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface(aEditor);
   if (!htmlEditor)
@@ -414,10 +612,9 @@ nsTextTagUpdatingCommand::ToggleState(nsIEditor *aEditor, const char* aTagName)
 
   // tags "href" and "name" are special cases in the core editor 
   // they are used to remove named anchor/link and shouldn't be used for insertion
-  nsAutoString tagName; tagName.AssignWithConversion(aTagName);
   PRBool doTagRemoval;
-  if (tagName.Equals(NS_LITERAL_STRING("href")) ||
-      tagName.Equals(NS_LITERAL_STRING("name")))
+  if (aTagName.Equals(NS_LITERAL_STRING("href")) ||
+      aTagName.Equals(NS_LITERAL_STRING("name")))
     doTagRemoval = PR_TRUE;
   else
   {
@@ -430,29 +627,28 @@ nsTextTagUpdatingCommand::ToggleState(nsIEditor *aEditor, const char* aTagName)
 //      return rv;
     nsCOMPtr<msiITagListManager> taglistManager;
     htmlEditor->GetTagListManager( getter_AddRefs(taglistManager));
-    if (taglistManager) taglistManager->SelectionContainedInTag( tagName, nsnull, &doTagRemoval );
-  }
+    if (taglistManager) taglistManager->SelectionContainedInTag( aTagName, nsnull, &doTagRemoval );  }
 
   if (doTagRemoval)
-    rv = RemoveTextProperty(aEditor, tagName.get(), nsnull);
+    rv = RemoveTextProperty(aEditor, aTagName.get(), nsnull);
   else
   {
     // Superscript and Subscript styles are mutually exclusive
     nsAutoString removeName; 
     aEditor->BeginTransaction();
 
-    if (tagName.Equals(NS_LITERAL_STRING("sub")))
+    if (aTagName.EqualsLiteral("sub"))
     {
       removeName.AssignWithConversion("sup");
-      rv = RemoveTextProperty(aEditor,tagName.get(), nsnull);
+      rv = RemoveTextProperty(aEditor ,aTagName.get(), nsnull);
     } 
-    else if (tagName.Equals(NS_LITERAL_STRING("sup")))
+    else if (aTagName.EqualsLiteral("sup"))
     {
       removeName.AssignWithConversion("sub");
-      rv = RemoveTextProperty(aEditor, tagName.get(), nsnull);
+      rv = RemoveTextProperty(aEditor, aTagName.get(), nsnull);
     }
     if (NS_SUCCEEDED(rv)) 
-      rv = SetTextProperty(aEditor,tagName.get(), nsnull, nsnull);
+      rv = SetTextProperty(aEditor,aTagName.get(), nsnull, nsnull);
 
     aEditor->EndTransaction();
   }
@@ -460,16 +656,9 @@ nsTextTagUpdatingCommand::ToggleState(nsIEditor *aEditor, const char* aTagName)
   return rv;
 }
 
-nsParaTagUpdatingCommand::nsParaTagUpdatingCommand(void)
-: nsBaseTagUpdatingCommand()
-{
-}
-
-
-
 
 nsresult
-nsStructTagUpdatingCommand::ToggleState(nsIEditor *aEditor, const char* aTagName)
+nsStructTagUpdatingCommand::ToggleState(nsIEditor *aEditor, nsString & aTagName)
 {
   nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface(aEditor);
   if (!htmlEditor)
@@ -484,10 +673,9 @@ nsStructTagUpdatingCommand::ToggleState(nsIEditor *aEditor, const char* aTagName
 
   // tags "href" and "name" are special cases in the core editor 
   // they are used to remove named anchor/link and shouldn't be used for insertion
-  nsAutoString tagName; tagName.AssignWithConversion(aTagName);
   PRBool doTagRemoval;
-  if (tagName.Equals(NS_LITERAL_STRING("href")) ||
-      tagName.Equals(NS_LITERAL_STRING("name")))
+  if (aTagName.Equals(NS_LITERAL_STRING("href")) ||
+      aTagName.Equals(NS_LITERAL_STRING("name")))
     doTagRemoval = PR_TRUE;
   else
   {
@@ -501,25 +689,25 @@ nsStructTagUpdatingCommand::ToggleState(nsIEditor *aEditor, const char* aTagName
   }
 
   if (doTagRemoval)
-    rv = RemoveTextProperty(aEditor, tagName.get(), nsnull);
+    rv = RemoveTextProperty(aEditor, aTagName.get(), nsnull);
   else
   {
     // Superscript and Subscript styles are mutually exclusive
     nsAutoString removeName; 
     aEditor->BeginTransaction();
 
-    if (tagName.Equals(NS_LITERAL_STRING("sub")))
+    if (aTagName.Equals(NS_LITERAL_STRING("sub")))
     {
       removeName.AssignWithConversion("sup");
-      rv = RemoveTextProperty(aEditor,tagName.get(), nsnull);
+      rv = RemoveTextProperty(aEditor,aTagName.get(), nsnull);
     } 
-    else if (tagName.Equals(NS_LITERAL_STRING("sup")))
+    else if (aTagName.Equals(NS_LITERAL_STRING("sup")))
     {
       removeName.AssignWithConversion("sub");
-      rv = RemoveTextProperty(aEditor, tagName.get(), nsnull);
+      rv = RemoveTextProperty(aEditor, aTagName.get(), nsnull);
     }
     if (NS_SUCCEEDED(rv))
-      rv = SetTextProperty(aEditor,tagName.get(), nsnull, nsnull);
+      rv = SetTextProperty(aEditor,aTagName.get(), nsnull, nsnull);
 
     aEditor->EndTransaction();
   }
@@ -534,7 +722,7 @@ nsOtherTagUpdatingCommand::nsOtherTagUpdatingCommand(void)
 
 
 nsresult
-nsOtherTagUpdatingCommand::ToggleState(nsIEditor *aEditor, const char* aTagName)
+nsOtherTagUpdatingCommand::ToggleState(nsIEditor *aEditor, nsString & aTagName)
 {
   nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface(aEditor);
   if (!htmlEditor)
@@ -549,10 +737,9 @@ nsOtherTagUpdatingCommand::ToggleState(nsIEditor *aEditor, const char* aTagName)
 
   // tags "href" and "name" are special cases in the core editor 
   // they are used to remove named anchor/link and shouldn't be used for insertion
-  nsAutoString tagName; tagName.AssignWithConversion(aTagName);
   PRBool doTagRemoval;
-  if (tagName.Equals(NS_LITERAL_STRING("href")) ||
-      tagName.Equals(NS_LITERAL_STRING("name")))
+  if (aTagName.Equals(NS_LITERAL_STRING("href")) ||
+      aTagName.Equals(NS_LITERAL_STRING("name")))
     doTagRemoval = PR_TRUE;
   else
   {
@@ -566,25 +753,25 @@ nsOtherTagUpdatingCommand::ToggleState(nsIEditor *aEditor, const char* aTagName)
   }
 
   if (doTagRemoval)
-    rv = RemoveTextProperty(aEditor, tagName.get(), nsnull);
+    rv = RemoveTextProperty(aEditor, aTagName.get(), nsnull);
   else
   {
     // Superscript and Subscript styles are mutually exclusive
     nsAutoString removeName; 
     aEditor->BeginTransaction();
 
-    if (tagName.Equals(NS_LITERAL_STRING("sub")))
+    if (aTagName.Equals(NS_LITERAL_STRING("sub")))
     {
       removeName.AssignWithConversion("sup");
-      rv = RemoveTextProperty(aEditor,tagName.get(), nsnull);
+      rv = RemoveTextProperty(aEditor,aTagName.get(), nsnull);
     } 
-    else if (tagName.Equals(NS_LITERAL_STRING("sup")))
+    else if (aTagName.Equals(NS_LITERAL_STRING("sup")))
     {
       removeName.AssignWithConversion("sub");
-      rv = RemoveTextProperty(aEditor, tagName.get(), nsnull);
+      rv = RemoveTextProperty(aEditor, aTagName.get(), nsnull);
     }
     if (NS_SUCCEEDED(rv))
-      rv = SetTextProperty(aEditor,tagName.get(), nsnull, nsnull);
+      rv = SetTextProperty(aEditor,aTagName.get(), nsnull, nsnull);
 
     aEditor->EndTransaction();
   }
@@ -600,7 +787,7 @@ nsStyleUpdatingCommand::nsStyleUpdatingCommand(const char* aTagName)
 
 nsresult
 nsStyleUpdatingCommand::GetCurrentState(nsIEditor *aEditor, 
-                                        const char* aTagName,
+                                        nsString & aTagName,
                                         nsICommandParams *aParams)
 {
   NS_ASSERTION(aEditor, "Need editor here");
@@ -631,7 +818,7 @@ nsStyleUpdatingCommand::GetCurrentState(nsIEditor *aEditor,
 }
 
 nsresult
-nsStyleUpdatingCommand::ToggleState(nsIEditor *aEditor, const char* aTagName)
+nsStyleUpdatingCommand::ToggleState(nsIEditor *aEditor, nsString & aTagName)
 {
   nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface(aEditor);
   if (!htmlEditor)
@@ -646,7 +833,8 @@ nsStyleUpdatingCommand::ToggleState(nsIEditor *aEditor, const char* aTagName)
 
   // tags "href" and "name" are special cases in the core editor 
   // they are used to remove named anchor/link and shouldn't be used for insertion
-  nsAutoString tagName; tagName.AssignWithConversion(aTagName);
+  nsAutoString tagName;
+  tagName.Assign(aTagName);
   PRBool doTagRemoval;
   if (tagName.EqualsLiteral("href") ||
       tagName.EqualsLiteral("name"))
@@ -698,28 +886,26 @@ nsListCommand::nsListCommand(const char* aTagName)
 }
 
 nsresult
-nsListCommand::GetCurrentState(nsIEditor *aEditor, const char* aTagName,
+nsListCommand::GetCurrentState(nsIEditor *aEditor, nsString& aTagName,
                                nsICommandParams *aParams)
 {
   NS_ASSERTION(aEditor, "Need editor here");
 
   PRBool bMixed;
-  PRUnichar *tagStr;
-  nsresult rv = GetListState(aEditor,&bMixed, &tagStr);
+  nsAutoString tagStr;
+  nsresult rv = GetListState(aEditor, mTagName, &bMixed, tagStr);
   if (NS_FAILED(rv)) return rv;
 
   // Need to use mTagName????
-  PRBool inList = (0 == nsCRT::strcmp(tagStr,
-                   NS_ConvertASCIItoUTF16(mTagName).get()));
+  PRBool inList = mTagName.Equals(aTagName);
   aParams->SetBooleanValue(STATE_ALL, !bMixed && inList);
   aParams->SetBooleanValue(STATE_MIXED, bMixed);
   aParams->SetBooleanValue(STATE_ENABLED, PR_TRUE);
-  if (tagStr) NS_Free(tagStr);
   return NS_OK;
 }
 
 nsresult
-nsListCommand::ToggleState(nsIEditor *aEditor, const char* aTagName)
+nsListCommand::ToggleState(nsIEditor *aEditor, nsString & aTagName)
 {
   nsCOMPtr<nsIHTMLEditor> editor = do_QueryInterface(aEditor);
   if (!editor)
@@ -737,12 +923,11 @@ nsListCommand::ToggleState(nsIEditor *aEditor, const char* aTagName)
   if (NS_FAILED(rv)) 
     return rv;
 
-  nsAutoString listType; listType.AssignWithConversion(mTagName);
   if (inList)
-    rv = editor->RemoveList(listType);    
+    rv = editor->RemoveList(mTagName);    
   else
   {
-    rv = editor->MakeOrChangeList(listType, PR_FALSE, EmptyString());
+    rv = editor->MakeOrChangeList(mTagName, PR_FALSE, EmptyString());
   }
   
   return rv;
@@ -758,7 +943,7 @@ nsListItemCommand::nsListItemCommand(const char* aTagName)
 }
 
 nsresult
-nsListItemCommand::GetCurrentState(nsIEditor *aEditor, const char* aTagName,
+nsListItemCommand::GetCurrentState(nsIEditor *aEditor, nsString& aTagName,
                                    nsICommandParams *aParams)
 {
   NS_ASSERTION(aEditor, "Need editor here");
@@ -774,9 +959,9 @@ nsListItemCommand::GetCurrentState(nsIEditor *aEditor, const char* aTagName,
   PRBool inList = PR_FALSE;
   if (!bMixed)
   {
-    if (bLI) inList = (0 == nsCRT::strcmp(mTagName, "li"));
-    else if (bDT) inList = (0 == nsCRT::strcmp(mTagName, "dt"));
-    else if (bDD) inList = (0 == nsCRT::strcmp(mTagName, "dd"));
+    if (bLI) inList = mTagName.EqualsLiteral("li");
+    else if (bDT) inList =  mTagName.EqualsLiteral("dt");
+    else if (bDD) inList =  mTagName.EqualsLiteral("dd");
   }
 
   aParams->SetBooleanValue(STATE_ALL, !bMixed && inList);
@@ -786,7 +971,7 @@ nsListItemCommand::GetCurrentState(nsIEditor *aEditor, const char* aTagName,
 }
 
 nsresult
-nsListItemCommand::ToggleState(nsIEditor *aEditor, const char* aTagName)
+nsListItemCommand::ToggleState(nsIEditor *aEditor, nsString& aTagName)
 {
   NS_ASSERTION(aEditor, "Need editor here");
   nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface(aEditor);
@@ -809,26 +994,24 @@ nsListItemCommand::ToggleState(nsIEditor *aEditor, const char* aTagName)
   {
     // To remove a list, first get what kind of list we're in
     PRBool bMixed;
-    PRUnichar *tagStr;
-    rv = GetListState(aEditor,&bMixed, &tagStr);
+    nsAutoString   tagStr;
+    rv = GetListState(aEditor,mTagName, &bMixed, tagStr);
     if (NS_FAILED(rv)) return rv; 
-    if (tagStr)
+    if (!tagStr.IsEmpty())
     {
       if (!bMixed)
       {
         rv = htmlEditor->RemoveList(nsDependentString(tagStr));    
       }
-      NS_Free(tagStr);
     }
   }
   else
   {
-    nsAutoString itemType; itemType.AssignWithConversion(mTagName);
     // Set to the requested paragraph type
     //XXX Note: This actually doesn't work for "LI",
     //    but we currently don't use this for non DL lists anyway.
     // Problem: won't this replace any current block paragraph style?
-    rv = htmlEditor->SetParagraphFormat(itemType);
+    rv = htmlEditor->SetParagraphFormat(mTagName);
   }
     
   return rv;
@@ -848,13 +1031,12 @@ nsRemoveListCommand::IsCommandEnabled(const char * aCommandName,
   {
     // It is enabled if we are in any list type
     PRBool bMixed;
-    PRUnichar *tagStr;
-    nsresult rv = GetListState(editor, &bMixed, &tagStr);
-    if (NS_FAILED(rv)) return rv;
+    nsAutoString tagStr;
+// BBM must fix this!!!    nsresult rv = GetListState(editor, mTagName, &bMixed, tagStr);
+//    if (NS_FAILED(rv)) return rv;
 
-    *outCmdEnabled = bMixed ? PR_TRUE : (tagStr && *tagStr);
+    *outCmdEnabled = bMixed ? PR_TRUE : (!tagStr.IsEmpty());
     
-    if (tagStr) NS_Free(tagStr);
   }
   else
     *outCmdEnabled = PR_FALSE;
@@ -1500,7 +1682,7 @@ nsAbsolutePositioningCommand::IsCommandEnabled(const char * aCommandName,
 }
 
 nsresult
-nsAbsolutePositioningCommand::GetCurrentState(nsIEditor *aEditor, const char* aTagName, nsICommandParams *aParams)
+nsAbsolutePositioningCommand::GetCurrentState(nsIEditor *aEditor, nsString& aTagName, nsICommandParams *aParams)
 {
   NS_ASSERTION(aEditor, "Need an editor here");
   
@@ -1530,7 +1712,7 @@ nsAbsolutePositioningCommand::GetCurrentState(nsIEditor *aEditor, const char* aT
 }
 
 nsresult
-nsAbsolutePositioningCommand::ToggleState(nsIEditor *aEditor, const char* aTagName)
+nsAbsolutePositioningCommand::ToggleState(nsIEditor *aEditor, nsString& aTagName)
 {
   NS_ASSERTION(aEditor, "Need an editor here");
   
@@ -1884,7 +2066,7 @@ NS_IMPL_ISUPPORTS_INHERITED0(nsInsertTagCommand, nsBaseComposerCommand)
 
 nsInsertTagCommand::nsInsertTagCommand(const char* aTagName)
 : nsBaseComposerCommand()
-, mTagName(aTagName)
+, mTagName(NS_ConvertASCIItoUTF16(aTagName))
 {
 }
 
@@ -1908,7 +2090,7 @@ nsInsertTagCommand::IsCommandEnabled(const char * aCommandName,
 NS_IMETHODIMP
 nsInsertTagCommand::DoCommand(const char *aCmdName, nsISupports *refCon)
 {
-  if (0 == nsCRT::strcmp(mTagName, "hr"))
+  if (mTagName.EqualsLiteral("hr"))
   {
     nsCOMPtr<nsIHTMLEditor> editor = do_QueryInterface(refCon);
     if (!editor)
@@ -1916,7 +2098,7 @@ nsInsertTagCommand::DoCommand(const char *aCmdName, nsISupports *refCon)
 
     nsCOMPtr<nsIDOMElement> domElem;
     nsresult rv;
-    rv = editor->CreateElementWithDefaults(NS_ConvertASCIItoUTF16(mTagName),
+    rv = editor->CreateElementWithDefaults(mTagName,
                                            getter_AddRefs(domElem));
     if (NS_FAILED(rv))
       return rv;
@@ -1935,7 +2117,7 @@ nsInsertTagCommand::DoCommandParams(const char *aCommandName,
   NS_ENSURE_ARG_POINTER(refCon);
 
   // inserting an hr shouldn't have an parameters, just call DoCommand for that
-  if (0 == nsCRT::strcmp(mTagName, "hr"))
+  if (mTagName.EqualsLiteral("hr"))
     return DoCommand(aCommandName, refCon);
 
   NS_ENSURE_ARG_POINTER(aParams);
@@ -1955,16 +2137,16 @@ nsInsertTagCommand::DoCommandParams(const char *aCommandName,
 
   // filter out tags we don't know how to insert
   nsAutoString attributeType;
-  if (0 == nsCRT::strcmp(mTagName, "a")) {
+  if (mTagName.EqualsLiteral("a")) {
     attributeType.AssignLiteral("href");
-  } else if (0 == nsCRT::strcmp(mTagName, "img")) {
+  } else if (mTagName.EqualsLiteral("img")) {
     attributeType.AssignLiteral("src");
   } else {
     return NS_ERROR_NOT_IMPLEMENTED;
   }
 
   nsCOMPtr<nsIDOMElement> domElem;
-  rv = editor->CreateElementWithDefaults(NS_ConvertASCIItoUTF16(mTagName),
+  rv = editor->CreateElementWithDefaults(mTagName,
                                          getter_AddRefs(domElem));
   if (NS_FAILED(rv))
     return rv;
@@ -1974,7 +2156,7 @@ nsInsertTagCommand::DoCommandParams(const char *aCommandName,
     return rv;
 
   // do actual insertion
-  if (0 == nsCRT::strcmp(mTagName, "a"))
+  if (mTagName.EqualsLiteral("a"))
     return editor->InsertLinkAroundSelection(domElem);
 
   return editor->InsertElementAtSelection(domElem, PR_TRUE);
@@ -2002,11 +2184,10 @@ nsInsertTagCommand::GetCommandStateParams(const char *aCommandName,
 /****************************/
 
 nsresult
-GetListState(nsIEditor *aEditor, PRBool *aMixed, PRUnichar **_retval)
+GetListState(nsIEditor *aEditor, nsString & itemTagName, PRBool *aMixed, nsString &_retval)
 {
-  if (!aMixed || !_retval || !aEditor) 
+  if (!aMixed || !aEditor) 
     return NS_ERROR_NULL_POINTER;
-  *_retval = nsnull;
   *aMixed = PR_FALSE;
 
   nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface(aEditor);
@@ -2019,15 +2200,14 @@ GetListState(nsIEditor *aEditor, PRBool *aMixed, PRUnichar **_retval)
     {
       if (!*aMixed)
       {
-        nsAutoString tagStr;
-        if (bOL) 
-          tagStr.AssignLiteral("ol");
-        else if (bUL) 
-          tagStr.AssignLiteral("ul");
-        else if (bDL) 
-          tagStr.AssignLiteral("dl");
-        *_retval = ToNewUnicode(tagStr);
-      }
+        nsCOMPtr<msiITagListManager> manager;
+        htmlEditor->GetTagListManager(getter_AddRefs(manager));
+        nsAutoString  htmllistparent;
+        manager->GetStringPropertyForTag( itemTagName, nsnull, NS_LITERAL_STRING("htmllistparent"), htmllistparent);
+        if (htmllistparent.Length() >0)
+          _retval = htmllistparent;
+        
+      }                                              
     }  
   }
   return err;

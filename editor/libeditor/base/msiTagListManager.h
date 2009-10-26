@@ -26,6 +26,8 @@ public:
   nsString titleTag;
   nsString nextTag;
   nsString level;
+  nsString htmllistparent;
+  nsString htmllist;
   nsString prefsub;
   PRBool   discardEmptyBlock;
   PRBool   inclusion;
