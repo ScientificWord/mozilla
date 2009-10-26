@@ -69,18 +69,18 @@ textbox.padded {
 }
 
 .autocomplete-textbox-container {
-  -moz-box-align: center;
+  -moz-box-align: start;
 }
 
 .textbox-input-box {
   margin: 0 3px;
-  -moz-box-align: center;	
+  -moz-box-align: start;	
 }
 
 toolbar *.textbox-input-box {
   margin: 0px;
   border-top: 1px;
-  -moz-box-align: top;	
+  -moz-box-align: start;	
 }
 
 /* ::::: autocomplete popups ::::: */
