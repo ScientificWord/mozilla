@@ -138,7 +138,7 @@ nsComposerController::RegisterHTMLEditorCommands(
   NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_em", "em");
   NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_strong", "strong");
   NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_cite", "cite");
-  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_abbr", "abbr");
+  NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_abbr", "abbr");                        
   NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_acronym", "acronym");
   NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_code", "code");
   NS_REGISTER_STYLE_COMMAND(nsStyleUpdatingCommand, "cmd_samp", "samp");
@@ -147,11 +147,13 @@ nsComposerController::RegisterHTMLEditorCommands(
   // swp
   NS_REGISTER_ONE_COMMAND(nsTextTagUpdatingCommand, "cmd_texttag");
   NS_REGISTER_ONE_COMMAND(nsParaTagUpdatingCommand, "cmd_paratag");
+  NS_REGISTER_ONE_COMMAND(nsListTagUpdatingCommand, "cmd_listtag");
   NS_REGISTER_ONE_COMMAND(nsStructTagUpdatingCommand, "cmd_structtag");
+  NS_REGISTER_ONE_COMMAND(nsEnvTagUpdatingCommand, "cmd_envtag");
   NS_REGISTER_ONE_COMMAND(nsOtherTagUpdatingCommand, "cmd_othertag");
 
   // lists
-  NS_REGISTER_STYLE_COMMAND(nsListCommand,     "cmd_ol", "ol");
+  NS_REGISTER_STYLE_COMMAND(nsListCommand,"cmd_ol", "ol");
   NS_REGISTER_STYLE_COMMAND(nsListCommand,     "cmd_ul", "ul");
   NS_REGISTER_STYLE_COMMAND(nsListItemCommand, "cmd_dt", "dt");
   NS_REGISTER_STYLE_COMMAND(nsListItemCommand, "cmd_dd", "dd");
