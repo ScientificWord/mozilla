@@ -382,6 +382,7 @@ public:
                               nsresult aStatus);
 
   /* ------------ Utility Routines, not part of public API -------------- */
+  NS_IMETHOD GetListForListItem(const nsAString& listItem, nsAString& listName);
   NS_IMETHOD TypedText(const nsAString& aString, PRInt32 aAction);
   nsresult InsertNodeAtPoint( nsIDOMNode *aNode, 
                               nsCOMPtr<nsIDOMNode> *ioParent, 
