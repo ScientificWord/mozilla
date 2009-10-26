@@ -12,17 +12,22 @@ body {
 
 pre, verbatim { font-family: Courier; white-space: pre }
 
-item { margin: 0pt 0pt 0pt 0pt; 
+numberedlistitem,
+bulletlistitem,
+descriptionlistitem { margin: 0pt 0pt 0pt 0pt; 
        padding: 10pt 0pt 0pt 20pt; 
-       display: list-item }
+       display: list-item;}
 
-item:before { content: counters(item, ".") ":  ";
-  counter-increment: item;
-} 
- 
-enumerate { counter-reset: item; }
+numberedlist {list-style-type: decimal;
+}
 
-description { counter-reset: item; }
+bulletlist {list-style-type: disc;
+}
+
+bulletlistitem { margin-left: 2em; }
+
+
+numberedlistitem {  margin-left: 2em; }
 
 theorem {
   display: block;
@@ -39,10 +44,6 @@ proof:before {
   font-weight: bold;
 }
   
-
-itemize { list-style: disc; 
-  counter-reset: item; }
-
 img { display: inline;} 
 
 quote { display: block; }
