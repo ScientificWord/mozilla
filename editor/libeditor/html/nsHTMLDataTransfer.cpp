@@ -58,6 +58,7 @@
 #include "nsIDOMComment.h"
 #include "nsISelection.h"
 #include "nsISelectionPrivate.h"
+#include "nsIDOMHTMLHtmlElement.h"
 #include "nsIDOMHTMLAnchorElement.h"
 #include "nsIDOMHTMLImageElement.h"
 #include "nsISelectionController.h"
@@ -885,7 +886,7 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
     ||strTagName.Equals(NS_LITERAL_STRING("#document"))) {
   // there is no paragraph or section node.  We probably should put in the default
   // paragraph node (defined in the editbehavior file) to enclose as much text as possible.
-  // For the moment, we put in a <br/>
+  // For the moment, we put in a <br/>  --BBM review this
     nsCOMPtr<nsIDOMNode> brNode;
     return InsertBR(address_of(brNode));  // only inserts a br node
   }
@@ -938,7 +939,7 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
 		 }
    }
        
-  }
+  }                           
   if (fFancy && isEmpty && fDiscardNode && isAtEnd)
   {  
     nsIAtom * atomNS = nsnull;
@@ -1022,7 +1023,7 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
       {
         nsAutoString tagClass;
         mtagListManager->GetClassOfTag(strTagName, nsAtom, tagClass);
-  		  fCanContain = (tagClass.EqualsLiteral("structtag")||tagClass.EqualsLiteral("envtag"));
+  		  fCanContain = (tagClass.EqualsLiteral("structtag")||tagClass.EqualsLiteral("envtag")||tagClass.EqualsLiteral("listtag"));
       }
 	    if (fCanContain)
 	    {
@@ -3203,7 +3204,6 @@ nsresult nsHTMLEditor::CreateTagStack(nsTArray<nsAutoString> &aTagStack, nsIDOMN
   nsresult res = NS_OK;
   nsCOMPtr<nsIDOMNode> node= aNode;
   PRBool bSeenBody = PR_FALSE;
-  PRUint32 index, count;
   
   while (node) 
   {

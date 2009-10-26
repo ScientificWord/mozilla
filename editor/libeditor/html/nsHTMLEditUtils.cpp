@@ -67,6 +67,12 @@ nsHTMLEditUtils::IsInlineStyle(nsIDOMNode *node, msiITagListManager * manager)
 {
   NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsInlineStyle");
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
+  NS_PRECONDITION(nodeAtom, "node with null tag passed to nsHTMLEditUtils::IsInlineStyle");
+  nsAutoString tagName;
+  nodeAtom->ToString(tagName);
+  PRBool isTextTag;
+  manager->GetTagInClass (NS_LITERAL_STRING("texttag"), tagName, nsnull, &isTextTag);
+  if (isTextTag) return PR_TRUE;
   return (nodeAtom == nsEditProperty::b)
       || (nodeAtom == nsEditProperty::i)
       || (nodeAtom == nsEditProperty::u)
@@ -82,13 +88,19 @@ nsHTMLEditUtils::IsInlineStyle(nsIDOMNode *node, msiITagListManager * manager)
 }
 
 ///////////////////////////////////////////////////////////////////////////
-// IsFormatNode true if node is a format node
+// IsFormatNode true if node is a format node  // we count para nodes as format nodes
 // 
 PRBool
 nsHTMLEditUtils::IsFormatNode(nsIDOMNode *node, msiITagListManager * manager)
 {
   NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsFormatNode");
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
+  NS_PRECONDITION(nodeAtom, "node with null tag passed to nsHTMLEditUtils::IsFormatNode");
+  nsAutoString tagName;
+  nodeAtom->ToString(tagName);
+  PRBool isParaTag;
+  manager->GetTagInClass (NS_LITERAL_STRING("paratag"), tagName, nsnull, &isParaTag);
+  if (isParaTag) return PR_TRUE;
   return (nodeAtom == nsEditProperty::p)
       || (nodeAtom == nsEditProperty::pre)
       || (nodeAtom == nsEditProperty::h1)
@@ -108,6 +120,12 @@ nsHTMLEditUtils::IsNodeThatCanOutdent(nsIDOMNode *node, msiITagListManager * man
 {
   NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsNodeThatCanOutdent");
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
+  NS_PRECONDITION(nodeAtom, "node with null tag passed to nsHTMLEditUtils::IsNodeThatCanOutdent");
+  nsAutoString tagName;
+  nodeAtom->ToString(tagName);
+  PRBool isListTag;
+  manager->GetTagInClass (NS_LITERAL_STRING("listtag"), tagName, nsnull, &isListTag);
+  if (isListTag) return PR_TRUE;
   return (nodeAtom == nsEditProperty::ul)
       || (nodeAtom == nsEditProperty::ol)
       || (nodeAtom == nsEditProperty::dl)
@@ -138,6 +156,8 @@ nsHTMLEditUtils::IsHeader(nsIDOMNode *node, msiITagListManager * manager)
 {
   NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsHeader");
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
+  NS_PRECONDITION(nodeAtom, "node with null tag passed to nsHTMLEditUtils::IsHeader");
+  // we could look for a paragraph tag that is the first child of a section tag -- TODO if needed
   return (nodeAtom == nsEditProperty::h1)
       || (nodeAtom == nsEditProperty::h2)
       || (nodeAtom == nsEditProperty::h3)
@@ -163,6 +183,7 @@ nsHTMLEditUtils::IsParagraph(nsIDOMNode *node, msiITagListManager * manager)
 PRBool 
 nsHTMLEditUtils::IsHR(nsIDOMNode *node, msiITagListManager * manager)
 {
+// How to handle this?  TODO
   return nsEditor::NodeIsType(node, nsEditProperty::hr);
 }
 
@@ -175,10 +196,20 @@ nsHTMLEditUtils::IsListItem(nsIDOMNode *node, msiITagListManager * manager)
 {
   NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsListItem");
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
-  if  ((nodeAtom == nsEditProperty::li)
+  NS_PRECONDITION(nodeAtom, "node with null tag passed to nsHTMLEditUtils:IsListItem:");
+  PRBool isListTag;
+  nsAutoString tagName;
+  nodeAtom->ToString(tagName);
+  manager->GetTagInClass (NS_LITERAL_STRING("listtag"), tagName, nsnull, &isListTag);
+  if (isListTag) // list tag can be a list or a listitem. Check that we have a listitem.
+  {
+    nsAutoString htmlparent;
+    manager->GetStringPropertyForTag(tagName, nsnull, NS_LITERAL_STRING("htmllistparent"), htmlparent);
+    if (htmlparent.Length() > 0) return PR_TRUE;
+  }
+  return  ((nodeAtom == nsEditProperty::li)
       || (nodeAtom == nsEditProperty::dd)
-      || (nodeAtom == nsEditProperty::dt)) return true;
-  return nsEditor::NodeIsTypeString(node, NS_LITERAL_STRING("listtag"), manager);
+      || (nodeAtom == nsEditProperty::dt));
 }
 
 
@@ -190,6 +221,7 @@ nsHTMLEditUtils::IsTableElement(nsIDOMNode *node, msiITagListManager * manager)
 {
   NS_PRECONDITION(node, "null node passed to nsHTMLEditor::IsTableElement");
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
+  NS_PRECONDITION(nodeAtom, "node with null tag passed to nsHTMLEditUtils::IsTableElement");
   return (nodeAtom == nsEditProperty::table)
       || (nodeAtom == nsEditProperty::tr)
       || (nodeAtom == nsEditProperty::td)
@@ -208,6 +240,7 @@ nsHTMLEditUtils::IsTableElementButNotTable(nsIDOMNode *node, msiITagListManager 
 {
   NS_PRECONDITION(node, "null node passed to nsHTMLEditor::IsTableElementButNotTable");
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
+  NS_PRECONDITION(nodeAtom, "node with null tag passed to nsHTMLEditUtils::IsTableElementButNotTable");
   return (nodeAtom == nsEditProperty::tr)
       || (nodeAtom == nsEditProperty::td)
       || (nodeAtom == nsEditProperty::th)
@@ -244,6 +277,7 @@ nsHTMLEditUtils::IsTableCell(nsIDOMNode *node, msiITagListManager * manager)
 {
   NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsTableCell");
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
+  NS_PRECONDITION(nodeAtom, "node with null tag passed to nsHTMLEditUtils::IsTableCell");
   return (nodeAtom == nsEditProperty::td)
       || (nodeAtom == nsEditProperty::th);
 }
@@ -257,6 +291,7 @@ nsHTMLEditUtils::IsTableCellOrCaption(nsIDOMNode *node, msiITagListManager * man
 {
   NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsTableCell");
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
+  NS_PRECONDITION(nodeAtom, "node with null tag passed to nsHTMLEditUtils::IsTableCell");
   return (nodeAtom == nsEditProperty::td)
       || (nodeAtom == nsEditProperty::th)
       || (nodeAtom == nsEditProperty::caption);
@@ -271,6 +306,17 @@ nsHTMLEditUtils::IsList(nsIDOMNode *node, msiITagListManager * manager)
 {
   NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsList");
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
+  NS_PRECONDITION(nodeAtom, "node with null tag passed to nsHTMLEditUtils::IsList");
+  PRBool isListTag;
+  nsAutoString tagName;
+  nodeAtom->ToString(tagName);
+  manager->GetTagInClass (NS_LITERAL_STRING("listtag"), tagName, nsnull, &isListTag);
+  if (isListTag) // list tag can be a list or a listitem. Check that we have a list.
+  {
+    nsAutoString htmllist;
+    manager->GetStringPropertyForTag(tagName, nsnull, NS_LITERAL_STRING("htmllist"), htmllist);
+    if (htmllist.Length() > 0) return PR_TRUE;
+  }
   return (nodeAtom == nsEditProperty::ul)
       || (nodeAtom == nsEditProperty::ol)
       || (nodeAtom == nsEditProperty::dl);
@@ -283,6 +329,19 @@ nsHTMLEditUtils::IsList(nsIDOMNode *node, msiITagListManager * manager)
 PRBool 
 nsHTMLEditUtils::IsOrderedList(nsIDOMNode *node, msiITagListManager * manager)
 {
+  NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsOrderedList");
+  nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
+  NS_PRECONDITION(nodeAtom, "node with null tag passed to nsHTMLEditUtils::IsOrderedList");
+  PRBool isListTag;
+  nsAutoString tagName;
+  nodeAtom->ToString(tagName);
+  manager->GetTagInClass (NS_LITERAL_STRING("listtag"), tagName, nsnull, &isListTag);
+  if (isListTag) // list tag can be a list or a listitem. Check that we have a list.
+  {
+    nsAutoString htmllist;
+    manager->GetStringPropertyForTag(tagName, nsnull, NS_LITERAL_STRING("htmllist"), htmllist);
+    if (htmllist.EqualsLiteral("ol")) return PR_TRUE;
+  }
   return nsEditor::NodeIsType(node, nsEditProperty::ol);
 }
 
@@ -293,6 +352,19 @@ nsHTMLEditUtils::IsOrderedList(nsIDOMNode *node, msiITagListManager * manager)
 PRBool 
 nsHTMLEditUtils::IsUnorderedList(nsIDOMNode *node, msiITagListManager * manager)
 {
+  NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsOrderedList");
+  nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
+  NS_PRECONDITION(nodeAtom, "node with null tag passed to nsHTMLEditUtils::IsOrderedList");
+  PRBool isListTag;
+  nsAutoString tagName;
+  nodeAtom->ToString(tagName);
+  manager->GetTagInClass (NS_LITERAL_STRING("listtag"), tagName, nsnull, &isListTag);
+  if (isListTag) // list tag can be a list or a listitem. Check that we have a list.
+  {
+    nsAutoString htmllist;
+    manager->GetStringPropertyForTag(tagName, nsnull, NS_LITERAL_STRING("htmllist"), htmllist);
+    if (htmllist.EqualsLiteral("ul")) return PR_TRUE;
+  }
   return nsEditor::NodeIsType(node, nsEditProperty::ul);
 }
 
@@ -430,6 +502,7 @@ nsHTMLEditUtils::IsFormWidget(nsIDOMNode *node, msiITagListManager * manager)
 {
   NS_PRECONDITION(node, "null node passed to nsHTMLEditUtils::IsFormWidget");
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
+  NS_PRECONDITION(nodeAtom, "node with null tag passed to nsHTMLEditUtils::IsFormWidget");
   return (nodeAtom == nsEditProperty::textarea)
       || (nodeAtom == nsEditProperty::select)
       || (nodeAtom == nsEditProperty::button)
@@ -441,6 +514,13 @@ nsHTMLEditUtils::SupportsAlignAttr(nsIDOMNode * aNode, msiITagListManager * mana
 {
   NS_PRECONDITION(aNode, "null node passed to nsHTMLEditUtils::SupportsAlignAttr");
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(aNode);
+  NS_PRECONDITION(nodeAtom, "node with null tag passed to nsHTMLEditUtils::SupportsAlignAttr");
+  nsAutoString tagName;
+  nodeAtom->ToString(tagName);
+  nsAutoString tagClass;
+  manager->GetClassOfTag (tagName, nsnull, tagClass);
+  if (tagClass.EqualsLiteral("paratag")||tagClass.EqualsLiteral("structtag")||tagClass.EqualsLiteral("listtag")||tagClass.EqualsLiteral("envtag"))
+    return PR_TRUE;
   return (nodeAtom == nsEditProperty::hr)
       || (nodeAtom == nsEditProperty::table)
       || (nodeAtom == nsEditProperty::tbody)
@@ -480,6 +560,7 @@ nsHTMLEditUtils::IsTextNode(nsIDOMNode *aNode, msiITagListManager * manager)
   return IsNodeType(aNode, NS_LITERAL_STRING("texttag"), manager); 
 }
 
+
 PRBool 
 nsHTMLEditUtils::IsParaNode(nsIDOMNode *aNode, msiITagListManager * manager)
 {
@@ -492,6 +573,20 @@ nsHTMLEditUtils::IsStructNode(nsIDOMNode *aNode, msiITagListManager * manager)
 {
   NS_PRECONDITION(aNode, "null node passed to nsHTMLEditUtils::IsStructNode");
   return IsNodeType(aNode, NS_LITERAL_STRING("structtag"), manager); 
+}
+
+PRBool 
+nsHTMLEditUtils::IsListNode(nsIDOMNode *aNode, msiITagListManager * manager)
+{
+  NS_PRECONDITION(aNode, "null node passed to nsHTMLEditUtils::IsListNode");
+  return IsNodeType(aNode, NS_LITERAL_STRING("listtag"), manager); 
+}
+
+PRBool 
+nsHTMLEditUtils::IsEnvNode(nsIDOMNode *aNode, msiITagListManager * manager)
+{
+  NS_PRECONDITION(aNode, "null node passed to nsHTMLEditUtils::IsEnvNode");
+  return IsNodeType(aNode, NS_LITERAL_STRING("envtag"), manager); 
 }
 
 PRBool 

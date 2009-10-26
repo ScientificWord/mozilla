@@ -360,6 +360,8 @@ interface nsIHTMLEditor : nsISupports
    * @param aSectionTag  
    */
   void setStructureTag(in AString aSectionTag);
+  void setListFormat(in AString aListTag);
+  void setEnvTag(in AString aEnvTag);
 
  /**
    * getParagraphState returns what block tag paragraph format is in

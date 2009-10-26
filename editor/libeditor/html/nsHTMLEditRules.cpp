@@ -3001,15 +3001,21 @@ nsHTMLEditRules::WillMakeList(nsISelection *aSelection,
   *aHandled = PR_FALSE;
 
   // deduce what tag to use for list items
+  
   nsAutoString itemType;
-  if (aItemType) 
+  nsAutoString listType;
+  if (aItemType)
+  {
+    listType = *aListType;
     itemType = *aItemType;
-  else if (aListType->EqualsLiteral("dl"))
-    itemType.AssignLiteral("dd");
+  }
   else
-    itemType.AssignLiteral("li");
-    
-  // convert the selection ranges into "promoted" selection ranges:
+  {
+    itemType.Assign(*aListType);
+    mHTMLEditor->GetListForListItem( itemType, listType);
+  }
+  if (listType.IsEmpty()) return NS_ERROR_NULL_POINTER;    
+  // convert t.he selection ranges into "promoted" selection ranges:
   // this basically just expands the range to include the immediate
   // block parent, and then further expands to include any ancestors
   // whose children are all in the range
@@ -3063,7 +3069,7 @@ nsHTMLEditRules::WillMakeList(nsISelection *aSelection,
     // make sure we can put a list here
     res = SplitAsNeeded(aListType, address_of(parent), &offset);
     if (NS_FAILED(res)) return res;
-    res = mHTMLEditor->CreateNode(*aListType, parent, offset, getter_AddRefs(theList));
+    res = mHTMLEditor->CreateNode(listType, parent, offset, getter_AddRefs(theList));
     if (NS_FAILED(res)) return res;
     res = mHTMLEditor->CreateNode(itemType, theList, 0, getter_AddRefs(theListItem));
     if (NS_FAILED(res)) return res;
@@ -3241,7 +3247,7 @@ nsHTMLEditRules::WillMakeList(nsISelection *aSelection,
     {
       res = SplitAsNeeded(aListType, address_of(curParent), &offset);
       if (NS_FAILED(res)) return res;
-      res = mHTMLEditor->CreateNode(*aListType, curParent, offset, getter_AddRefs(curList));
+      res = mHTMLEditor->CreateNode(listType, curParent, offset, getter_AddRefs(curList));
       if (NS_FAILED(res)) return res;
       // remember our new block for postprocessing
       mNewBlock = curList;
@@ -3263,11 +3269,11 @@ nsHTMLEditRules::WillMakeList(nsISelection *aSelection,
       else
       {
         // don't wrap li around a paragraph.  instead replace paragraph with li
-        if (nsHTMLEditUtils::IsParagraph(curNode, mtagListManager))
-        {
-          res = mHTMLEditor->ReplaceContainer(curNode, address_of(listItem), itemType);
-        }
-        else
+//         if (nsHTMLEditUtils::IsParagraph(curNode, mtagListManager))
+//         {
+//           res = mHTMLEditor->ReplaceContainer(curNode, address_of(listItem), itemType);
+//         }
+//         else
         {
           res = mHTMLEditor->InsertContainerAbove(curNode, address_of(listItem), itemType);
         }
