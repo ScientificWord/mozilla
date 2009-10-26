@@ -174,29 +174,50 @@
       <contains>line</contains>
       <contains>a</contains>
 			<tags>
-				<tag nm="sw:itemizedlistitem">
-          <description>Bulleted list item</description>
+				<tag nm="sw:bulletlist" hidden="1">
+          <description>Bullet list</description>
+          <htmllist>ul</htmllist>
+          <discardemptyblock>true</discardemptyblock>
+        </tag>
+				<tag nm="sw:numberedlist" hidden="1">
+          <description>Numbered list</description>
+          <htmllist>ol</htmllist>
+          <discardemptyblock>true</discardemptyblock>
+        </tag>
+				<tag nm="sw:descriptionlist" hidden="1">
+          <description>Description list</description>
+          <htmllist>dl</htmllist>
+          <discardemptyblock>true</discardemptyblock>
+        </tag>
+				<tag nm="sw:bulletlistitem">
+          <description>Bullet list item</description>
+          <htmllistparent>bulletlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
               <para><cursor/></para>
               ]]>
           </initialcontents>
+          <nextafteremptyblock>bulletlist</nextafteremptyblock>
         </tag>
-				<tag nm="sw:orderedlistitem">
+				<tag nm="sw:numberedlistitem">
           <description>Numbered list item</description>
+          <htmllistparent>numberedlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
               <para><cursor/></para>
               ]]>
           </initialcontents>
+          <nextafteremptyblock>numberedlist</nextafteremptyblock>
         </tag>
-				<tag nm="sw:simplelistitem">
-          <description>Simple list item</description>
+				<tag nm="sw:descriptionlistitem">
+          <description>Description list item</description>
+          <htmllistparent>descriptionlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
               <para><cursor/></para>
               ]]>
           </initialcontents>
+          <nextafteremptyblock>descriptionlist</nextafteremptyblock>
         </tag>
 	  </tags>
 		</tagclass>
@@ -245,7 +266,7 @@
         </tag>
 				<tag nm="sw:subsection">
           <level>3</level>
-          <description>Subsubsection</description>
+          <description>Subsection</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
           <initialcontents> <![CDATA[<sectiontitle><cursor/><br temp="1"/></sectiontitle>]]>
