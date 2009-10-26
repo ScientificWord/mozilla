@@ -85,6 +85,8 @@ public:
   static PRBool IsNodeType(nsIDOMNode *aNode, nsString strClassName, msiITagListManager * manager);
   static PRBool IsTextNode(nsIDOMNode *aNode, msiITagListManager * manager);
   static PRBool IsParaNode(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsListNode(nsIDOMNode *aNode, msiITagListManager * manager);
+  static PRBool IsEnvNode(nsIDOMNode *aNode, msiITagListManager * manager);
   static PRBool IsStructNode(nsIDOMNode *aNode, msiITagListManager * manager);
   static PRBool IsOtherNode(nsIDOMNode *aNode, msiITagListManager * manager);
   static PRBool CanContain(PRInt32 aParent, PRInt32 aChild, msiITagListManager * manager);
