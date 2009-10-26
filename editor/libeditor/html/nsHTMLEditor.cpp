@@ -71,6 +71,7 @@
 #include "nsIDOMHTMLAnchorElement.h"
 #include "nsISelectionController.h"
 #include "nsIDOMHTMLHtmlElement.h"
+#include "nsIDOMNSHTMLElement.h"
 #include "nsGUIEvent.h"
 #include "nsIDOMEventGroup.h"
 #include "nsILinkHandler.h"
@@ -2463,6 +2464,24 @@ nsHTMLEditor::SetParagraphFormat(const nsAString& aParagraphFormat)
   }
 }
 
+
+nsresult 
+nsHTMLEditor::SetListFormat(const nsAString& newState)
+{
+   printf("SetListFormat(%S);\n", newState);
+   return NS_OK;
+}
+
+
+
+nsresult 
+nsHTMLEditor::SetEnvTag(const nsAString& newState)
+{
+   printf("SetEnvTag(%S)\n;", newState);
+   return NS_OK;
+}
+
+
 // XXX: ERROR_HANDLING -- this method needs a little work to ensure all error codes are 
 //                        checked properly, all null pointers are checked, and no memory leaks occur
 NS_IMETHODIMP 
@@ -2840,9 +2859,18 @@ nsHTMLEditor::GetIndentState(PRBool *aCanIndent, PRBool *aCanOutdent)
 NS_IMETHODIMP
 nsHTMLEditor::MakeOrChangeList(const nsAString& aListType, PRBool entireList, const nsAString& aBulletType)
 {
+  nsAutoString listType;
+  //  aListType is really a list item type. We get the list type from the tag definitions file
+  GetListForListItem( aListType, listType);
+  if (listType.IsEmpty()) 
+  { return  NS_ERROR_NOT_INITIALIZED;}
+  
   nsresult res;
-  if (!mRules) { return NS_ERROR_NOT_INITIALIZED; }
-
+  if (!mRules) { return NS_ERROR_NOT_INITIALIZED; }  
+  nsAutoString strContents;
+  nsCOMPtr<nsIDOMNSHTMLElement> newHTMLElement;
+  
+      
   nsCOMPtr<nsISelection> selection;
   PRBool cancel, handled;
 
@@ -2900,12 +2928,19 @@ nsHTMLEditor::MakeOrChangeList(const nsAString& aListType, PRBool entireList, co
 
       // make a list
       nsCOMPtr<nsIDOMNode> newList;
-      res = CreateNode(aListType, parent, offset, getter_AddRefs(newList));
+      res = CreateNode(listType, parent, offset, getter_AddRefs(newList));
       if (NS_FAILED(res)) return res;
       // make a list item
       nsCOMPtr<nsIDOMNode> newItem;
-      res = CreateNode(NS_LITERAL_STRING("li"), newList, 0, getter_AddRefs(newItem));
+      res = CreateNode(aListType, newList, 0, getter_AddRefs(newItem));
+      res = mtagListManager->GetStringPropertyForTag(aListType, nsnull, NS_LITERAL_STRING("initialcontents"), strContents);
       if (NS_FAILED(res)) return res;
+      // put in new content
+      if (strContents.Length() > 0)
+      {
+         newHTMLElement = do_QueryInterface(newItem);
+         if (newHTMLElement) newHTMLElement->SetInnerHTML(strContents);
+      }
       res = selection->Collapse(newItem,0);
       if (NS_FAILED(res)) return res;
     }
@@ -3226,6 +3261,15 @@ nsHTMLEditor::InsertStructureNS(const nsAString& aStructType, nsIAtom * namespac
   return res;
 }
 
+NS_IMETHODIMP
+nsHTMLEditor::GetListForListItem(const nsAString& listItem, nsAString& listName)
+{
+      nsCOMPtr<msiITagListManager> taglistManager;
+      GetTagListManager( getter_AddRefs(taglistManager));
+  if (taglistManager) taglistManager->GetStringPropertyForTag(listItem, nsnull, NS_LITERAL_STRING("htmllistparent"), listName );
+  return NS_OK;
+}
+
 
 
 NS_IMETHODIMP
@@ -3237,7 +3281,7 @@ nsHTMLEditor::Indent(const nsAString& aIndent)
   PRBool cancel, handled;
   PRInt32 theAction = nsTextEditRules::kIndent;
   PRInt32 opID = kOpIndent;
-  if (aIndent.LowerCaseEqualsLiteral("outdent"))
+  if (aIndent.LowerCaseEqualsLiteral("outdent"))                                              
   {
     theAction = nsTextEditRules::kOutdent;
     opID = kOpOutdent;

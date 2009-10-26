@@ -421,6 +421,10 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
             GetStringProperty(NS_LITERAL_STRING("nextafteremptyblock"), tagNameElement);
           pdata->titleTag =
             GetStringProperty(NS_LITERAL_STRING("titletag"), tagNameElement);
+          pdata->htmllist =
+            GetStringProperty(NS_LITERAL_STRING("htmllist"), tagNameElement);
+          pdata->htmllistparent =
+            GetStringProperty(NS_LITERAL_STRING("htmllistparent"), tagNameElement);
           if (strClassName.EqualsLiteral("structtag"))
           {
             pdata->level =
@@ -922,7 +926,11 @@ NS_IMETHODIMP msiTagListManager::GetStringPropertyForTag(const nsAString & strTa
     else if (propertyName.EqualsLiteral("nextafteremptyblock"))
       _retval = data->nextAfterEmptyBlock;
     else if (propertyName.EqualsLiteral("titletag"))
-      _retval = data->titleTag;
+       _retval = data->titleTag;
+    else if (propertyName.EqualsLiteral("htmllist"))
+       _retval = data->htmllist;
+    else if (propertyName.EqualsLiteral("htmllistparent"))
+       _retval = data->htmllistparent;
     else if (propertyName.EqualsLiteral("level"))
       _retval = data->level;
     else if (propertyName.EqualsLiteral("prefsub"))

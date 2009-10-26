@@ -84,7 +84,7 @@ class nsBaseStateUpdatingCommand : public nsBaseComposerCommand
 {
 public:
 
-              nsBaseStateUpdatingCommand(const char* aTagName);
+              nsBaseStateUpdatingCommand(const char * aTagName);
   virtual     ~nsBaseStateUpdatingCommand();
     
   NS_DECL_ISUPPORTS_INHERITED
@@ -94,14 +94,14 @@ public:
 protected:
 
   // get the current state (on or off) for this style or block format
-  virtual nsresult  GetCurrentState(nsIEditor *aEditor, const char* aTagName, nsICommandParams *aParams) = 0;
+  virtual nsresult  GetCurrentState(nsIEditor *aEditor, nsString & aTagName, nsICommandParams *aParams) = 0;
   
   // add/remove the style
-  virtual nsresult  ToggleState(nsIEditor *aEditor, const char* aTagName) = 0;
+  virtual nsresult  ToggleState(nsIEditor *aEditor, nsString& aTagName) = 0;
 
 protected:
 
-  const char* mTagName;
+  nsString mTagName;
 };
 
 
@@ -111,15 +111,15 @@ class nsStyleUpdatingCommand : public nsBaseStateUpdatingCommand
 {
 public:
 
-            nsStyleUpdatingCommand(const char* aTagName);
+            nsStyleUpdatingCommand(const char * aTagName);
            
 protected:
 
   // get the current state (on or off) for this style or block format
-  virtual nsresult  GetCurrentState(nsIEditor *aEditor, const char* aTagName, nsICommandParams *aParams);
+  virtual nsresult  GetCurrentState(nsIEditor *aEditor, nsString & aTagName, nsICommandParams *aParams);
   
   // add/remove the style
-  virtual nsresult  ToggleState(nsIEditor *aEditor, const char* aTagName);
+  virtual nsresult  ToggleState(nsIEditor *aEditor, nsString& aTagName);
   
 };
 
@@ -142,12 +142,12 @@ protected:
   virtual nsresult  GetCurrentState(nsIEditor *aEditor, nsICommandParams *aParams) = 0;
   
   // add/remove the style
-  virtual nsresult  ToggleState(nsIEditor *aEditor, const char* aTagName) = 0;
+  virtual nsresult  ToggleState(nsIEditor *aEditor, nsString& aTagName) = 0;
   virtual nsresult SetState(nsIEditor *aEditor, nsString& newState) = 0;
 
 protected:
-  virtual nsresult GetCurrentTagState(nsIEditor *aEditor, const char * aTagClass, nsICommandParams *aParams);
-  const char* mTagName;
+  virtual nsresult GetCurrentTagState(nsIEditor *aEditor, nsString& aTagClass, nsICommandParams *aParams);
+  nsString mTagName;
 };
 
 // Shared class for text tags.  Based on original nsStyleUpdatingCommand
@@ -160,12 +160,13 @@ public:
 protected:
 
   virtual nsresult  GetCurrentState(nsIEditor *aEditor, nsICommandParams *aParams)
-  { return GetCurrentTagState( aEditor, "texttag", aParams);}
+  { nsAutoString tagclassname;
+  tagclassname.AssignLiteral("texttag");
+  return GetCurrentTagState( aEditor, tagclassname, aParams);}
   
-  // add/remove the style
-    
+  // add/remove the style			  
   virtual nsresult SetState(nsIEditor *aEditor, nsString& newState) { return NS_ERROR_NOT_IMPLEMENTED;}
-  virtual nsresult  ToggleState(nsIEditor *aEditor, const char* aTagName);
+  virtual nsresult  ToggleState(nsIEditor *aEditor, nsString & aTagName);
   
 };
 // Shared class for para tags.  
@@ -179,17 +180,44 @@ protected:
 
   // get the current state (on or off) for this style or block format
   virtual nsresult  GetCurrentState(nsIEditor *aEditor, nsICommandParams *aParams)
-  { return GetCurrentTagState( aEditor, "paratag", aParams);}
+  { nsAutoString tagclassname;
+  tagclassname.AssignLiteral("paratag");
+  return GetCurrentTagState( aEditor, tagclassname, aParams);}
   
   // add/remove the style
   virtual nsresult  SetState(nsIEditor *aEditor, nsString& newState);
     
-  virtual nsresult  ToggleState(nsIEditor *aEditor, const char* aTagName) {return NS_ERROR_NOT_IMPLEMENTED;}
+  virtual nsresult  ToggleState(nsIEditor *aEditor, nsString & aTagName) {return NS_ERROR_NOT_IMPLEMENTED;}
   NS_IMETHOD DoCommand(const char * aCommandName, nsISupports *aCommandRefCon);
   NS_IMETHOD DoCommandParams(const char *aCommandName,
                                             nsICommandParams *aParams,
                                             nsISupports *refCon);  
 };
+
+
+// Shared class for list tags.  
+class nsListTagUpdatingCommand : public nsBaseTagUpdatingCommand
+{
+public:
+
+  nsListTagUpdatingCommand(void);
+           
+protected:
+  // get the current state (on or off) for this style or block format
+  virtual nsresult  GetCurrentState(nsIEditor *aEditor, nsICommandParams *aParams);
+//  { return GetCurrentTagState( aEditor, "listtag", aParams);}
+  
+  // add/remove the style
+  virtual nsresult  SetState(nsIEditor *aEditor, nsString& newState);
+    
+  virtual nsresult  ToggleState(nsIEditor *aEditor, nsString & aTagName);
+  NS_IMETHOD DoCommand(const char * aCommandName, nsISupports *aCommandRefCon);
+  NS_IMETHOD DoCommandParams(const char *aCommandName,
+                                            nsICommandParams *aParams,
+                                            nsISupports *refCon);  
+};
+
+
 // Shared class for structure tags.
 class nsStructTagUpdatingCommand : public nsBaseTagUpdatingCommand
 {
@@ -200,10 +228,35 @@ public:
 protected:
 
   virtual nsresult  GetCurrentState(nsIEditor *aEditor, nsICommandParams *aParams)
-  { return GetCurrentTagState( aEditor, "structtag", aParams);}
+  { nsAutoString tagclassname;
+  tagclassname.AssignLiteral("structtag");
+  return GetCurrentTagState( aEditor, tagclassname, aParams);}
   
   // add/remove the style
-  virtual nsresult  ToggleState(nsIEditor *aEditor, const char* aTagName);
+  virtual nsresult  ToggleState(nsIEditor *aEditor, nsString & aTagName);
+  virtual nsresult SetState(nsIEditor *aEditor, nsString& newState);
+  NS_IMETHOD DoCommand(const char * aCommandName, nsISupports *aCommandRefCon);
+  NS_IMETHOD DoCommandParams(const char *aCommandName,
+                                            nsICommandParams *aParams,
+                                            nsISupports *refCon);  
+};                                            
+
+// Shared class for env tags.
+class nsEnvTagUpdatingCommand : public nsBaseTagUpdatingCommand
+{
+public:
+
+  nsEnvTagUpdatingCommand(void);
+           
+protected:
+
+  virtual nsresult  GetCurrentState(nsIEditor *aEditor, nsICommandParams *aParams)
+  { nsAutoString tagclassname;
+  tagclassname.AssignLiteral("envtag");
+  return GetCurrentTagState( aEditor, tagclassname, aParams);}
+  
+  // add/remove the style
+  virtual nsresult  ToggleState(nsIEditor *aEditor, nsString & aTagName);
   virtual nsresult SetState(nsIEditor *aEditor, nsString& newState);
   NS_IMETHOD DoCommand(const char * aCommandName, nsISupports *aCommandRefCon);
   NS_IMETHOD DoCommandParams(const char *aCommandName,
@@ -217,13 +270,15 @@ class nsOtherTagUpdatingCommand : public nsBaseTagUpdatingCommand
 public:
 
   nsOtherTagUpdatingCommand(void);
-  virtual nsresult  ToggleState(nsIEditor *aEditor, const char* aTagName);
+  virtual nsresult  ToggleState(nsIEditor *aEditor, nsString & aTagName);
   virtual nsresult  SetState(nsIEditor *aEditor, nsString& newState){return NS_ERROR_NOT_IMPLEMENTED;}
            
 protected:
 
   virtual nsresult  GetCurrentState(nsIEditor *aEditor, nsICommandParams *aParams)
-  { return GetCurrentTagState( aEditor, "othertag", aParams);}
+  { nsAutoString tagclassname;
+  tagclassname.AssignLiteral("othertag");
+  return GetCurrentTagState( aEditor, tagclassname, aParams);}
   
 };
 
@@ -232,7 +287,7 @@ class nsInsertTagCommand : public nsBaseComposerCommand
 {
 public:
 
-              nsInsertTagCommand(const char* aTagName);
+              nsInsertTagCommand(const char * aTagName);
   virtual     ~nsInsertTagCommand();
     
   NS_DECL_ISUPPORTS_INHERITED
@@ -241,7 +296,7 @@ public:
 
 protected:
 
-  const char* mTagName;
+  nsString & mTagName;
 };
 
 
@@ -249,30 +304,30 @@ class nsListCommand : public nsBaseStateUpdatingCommand
 {
 public:
 
-            nsListCommand(const char* aTagName);
+            nsListCommand(const char * aTagName);
 
 protected:
 
   // get the current state (on or off) for this style or block format
-  virtual nsresult  GetCurrentState(nsIEditor *aEditor, const char* aTagName, nsICommandParams *aParams);
+  virtual nsresult  GetCurrentState(nsIEditor *aEditor, nsString & aTagName, nsICommandParams *aParams);
   
   // add/remove the style
-  virtual nsresult  ToggleState(nsIEditor *aEditor, const char* aTagName);
+  virtual nsresult  ToggleState(nsIEditor *aEditor, nsString & aTagName);
 };
 
 class nsListItemCommand : public nsBaseStateUpdatingCommand
 {
 public:
 
-            nsListItemCommand(const char* aTagName);
+            nsListItemCommand(const char * aTagName);
 
 protected:
 
   // get the current state (on or off) for this style or block format
-  virtual nsresult  GetCurrentState(nsIEditor *aEditor, const char* aTagName, nsICommandParams *aParams);
+  virtual nsresult  GetCurrentState(nsIEditor *aEditor, nsString & aTagName, nsICommandParams *aParams);
   
   // add/remove the style
-  virtual nsresult  ToggleState(nsIEditor *aEditor, const char* aTagName);
+  virtual nsresult  ToggleState(nsIEditor *aEditor, nsString & aTagName);
 };
 
 // Base class for commands whose state consists of a string (e.g. para format)
@@ -382,8 +437,8 @@ public:
 protected:
 
   NS_IMETHOD IsCommandEnabled(const char *aCommandName, nsISupports *aCommandRefCon, PRBool *_retval);
-  virtual nsresult  GetCurrentState(nsIEditor *aEditor, const char* aTagName, nsICommandParams *aParams);
-  virtual nsresult  ToggleState(nsIEditor *aEditor, const char* aTagName);
+  virtual nsresult  GetCurrentState(nsIEditor *aEditor, nsString & aTagName, nsICommandParams *aParams);
+  virtual nsresult  ToggleState(nsIEditor *aEditor, nsString & aTagName);
 };
 
 // composer commands
