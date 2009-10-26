@@ -339,7 +339,9 @@ function msiGoUpdateCommandState(command, editorElement)
 
       case "cmd_texttag":
       case "cmd_paratag":
+      case "cmd_listag":
       case "cmd_structtag":
+      case "cmd_envtag":
       case "cmd_othertag":
         msiPokeTagStateUI(command, params);
         break;
@@ -594,9 +596,11 @@ function msiPokeTagStateUI(uiID, cmdParams)
       textboxName = "TextTagSelections";
       break;
     case "cmd_paratag":
+    case "cmd_listtag":
       textboxName = "ParaTagSelections";
       break;
     case "cmd_secttag":
+    case "cmd_envtag":
       textboxName = "SectTagSelections";
       break;
     case "cmd_othertag":
@@ -636,11 +640,20 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  var tagmanager = editor.tagListManager;
+  if (commandID == 'cmd_paratag') // both lists and paragraph tags come in as 'paratags'
+  { 
+    if (tagmanager && tagmanager.getTagInClass("listtag", newState, null)) commandID = 'cmd_listtag';
+  } else if (commandID == 'cmd_structtag')
+  { 
+    if (tagmanager && tagmanager.getTagInClass("envtag", newState, null)) commandID = 'cmd_envtag';
+  }   
   var docList = msiGetUpdatableItemContainers(commandID, editorElement);
   for (var i = 0; i < docList.length; ++i)
   {
     var commandNode = docList[i].getElementById(commandID);
-    if (commandNode)
+    if (commandNode)     
       commandNode.setAttribute("state", newState);
   }
 
@@ -666,7 +679,9 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
     {
       case "cmd_texttag":
       case "cmd_paratag":
+      case "cmd_listtag":
       case "cmd_structtag":
+      case "cmd_envtag":
       case "cmd_othertag":
         msiPokeTagStateUI(commandID, cmdParams);
         break;
