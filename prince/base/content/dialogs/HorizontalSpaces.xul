@@ -12,11 +12,12 @@
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/HorizontalSpaces.dtd">
 
-<dialog title="&windowTitle.label;"
+<dialog id="horizontalspaces" title="&windowTitle.label;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload="Startup()"
     ondialogaccept="return onAccept();"
-    ondialogcancel="return onCancel();">
+    ondialogcancel="return onCancel();"
+    persist="screenX screenY width height">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
@@ -54,20 +55,20 @@
 				  </rows>
 				  <columns>
 				    <column>
-              <radio label="&normalSpace.label;" value="normalSpace" group="spacesRadioGroup"/>
-              <radio label="&requiredSpace.label;" value="requiredSpace" group="spacesRadioGroup"/>
-              <radio label="&nonBreakingSpace.label;" value="nonBreakingSpace" group="spacesRadioGroup"/>
-              <radio label="&emSpace.label;" value="emSpace" group="spacesRadioGroup"/>
-              <radio label="&twoEmSpace.label;" value="twoEmSpace" group="spacesRadioGroup"/>
-              <radio label="&thinSpace.label;" value="thinSpace" group="spacesRadioGroup"/>
+              <radio label="&normalSpace.label;" accesskey="&normalSpace.accesskey;" value="normalSpace" group="spacesRadioGroup"/>
+              <radio label="&requiredSpace.label;" accesskey="&requiredSpace.accesskey;" value="requiredSpace" group="spacesRadioGroup"/>
+              <radio label="&nonBreakingSpace.label;" accesskey="&nonBreakingSpace.accesskey;" value="nonBreakingSpace" group="spacesRadioGroup"/>
+              <radio label="&emSpace.label;" accesskey="&emSpace.accesskey;" value="emSpace" group="spacesRadioGroup"/>
+              <radio label="&twoEmSpace.label;" accesskey="&twoEmSpace.accesskey;" value="twoEmSpace" group="spacesRadioGroup"/>
+              <radio label="&thinSpace.label;" accesskey="&thinSpace.accesskey;" value="thinSpace" group="spacesRadioGroup"/>
 				    </column>
 				    <column>
-              <radio label="&thickSpace.label;" value="thickSpace" group="spacesRadioGroup"/>
-              <radio label="&italicCorrectionSpace.label;" value="italicCorrectionSpace" group="spacesRadioGroup"/>
-              <radio label="&negativeThinSpace.label;" value="negativeThinSpace" group="spacesRadioGroup"/>
-              <radio label="&zeroSpace.label;" value="zeroSpace" group="spacesRadioGroup"/>
-              <radio label="&noIndent.label;" value="noIndent" group="spacesRadioGroup"/>
-              <radio label="&customSpace.label;" value="customSpace" group="spacesRadioGroup"/>
+              <radio label="&thickSpace.label;" accesskey="&thickSpace.accesskey;" value="thickSpace" group="spacesRadioGroup"/>
+              <radio label="&italicCorrectionSpace.label;" accesskey="&italicCorrectionSpace.accesskey;" value="italicCorrectionSpace" group="spacesRadioGroup"/>
+              <radio label="&negativeThinSpace.label;" accesskey="&negativeThinSpace.accesskey;" value="negativeThinSpace" group="spacesRadioGroup"/>
+              <radio label="&zeroSpace.label;" accesskey="&zeroSpace.accesskey;" value="zeroSpace" group="spacesRadioGroup"/>
+              <radio label="&noIndent.label;" accesskey="&noIndent.accesskey;" value="noIndent" group="spacesRadioGroup"/>
+              <radio label="&customSpace.label;" accesskey="&customSpace.accesskey;" value="customSpace" group="spacesRadioGroup"/>
 					  </column>
 				  </columns>
 			  </grid>
