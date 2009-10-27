@@ -14,11 +14,13 @@ pre, verbatim { font-family: Courier; white-space: pre }
 
 numberedlistitem,
 bulletlistitem,
-descriptionlistitem { margin: 0pt 0pt 0pt 0pt; 
-       padding: 10pt 0pt 0pt 20pt; 
+descriptionlistitem { margin: 0pt; 
+       padding: 0pt; 
        display: list-item;}
 
-numberedlist {list-style-type: decimal;
+numberedlist {list-style-type: none;
+  list-style-position: outside;
+  counter-reset: numberedlist;
 }
 
 bulletlist {list-style-type: disc;
@@ -26,8 +28,13 @@ bulletlist {list-style-type: disc;
 
 bulletlistitem { margin-left: 2em; }
 
+numberedlistitem>para:first-child:before { content: '(' counter(numberedlist) ')';
+  counter-increment: numberedlist;
+  width: 2em;
+}
 
-numberedlistitem {  margin-left: 2em; }
+numberedlistitem>para:first-child:first-line { content: '  ';
+}
 
 theorem {
   display: block;
