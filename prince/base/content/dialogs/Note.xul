@@ -46,9 +46,9 @@
      <separator/>
      <hbox>
 		   <!--label value="&HideNote.label;"/-->
-		   <checkbox id="hidenote" label="&HideNote.label;"/>
+		   <checkbox id="hidenote" label="&HideNote.label;" accesskey="&HideNote.accesskey;"/>
        <separator flex="1" />
-       <msibutton id="optionsButton" label="&Options.label;" oncommand="launchOptionsDialog();" />
+       <msibutton id="optionsButton" label="&Options.label;" accesskey="&Options.accesskey;" oncommand="launchOptionsDialog();"/>
      </hbox>
     </vbox>
 	</hbox>
