@@ -12,12 +12,12 @@
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/msiRulesDialog.dtd">
 
-<dialog title="&windowTitle.label;"
+<dialog id="msiRulesDialog" title="&windowTitle.label;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload="Startup()"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();"
-    persist="left top width height">
+    persist="screenX screenY width height">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
@@ -33,7 +33,6 @@
     <key id="sw.accept-key" keycode="VK_RETURN" oncommand="doOKButton();"/>
   </keyset>
 
-  <dialogheader title="Lines or rules" description="Enter rules or rectangles" />
   <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
 
   <vbox>
@@ -47,19 +46,19 @@
         <rows>
           <row>
             <label control="liftSizeTextbox" value="&liftSize.label;"	accesskey="&liftSize.accesskey;"/>
-            <textbox id="liftSizeTextbox" />
+            <textbox id="liftSizeTextbox"/>
           </row>
           <row>
             <label control="widthSizeTextbox" value="&widthSize.label;"	accesskey="&widthSize.accesskey;"/>
-            <textbox id="widthSizeTextbox" />
+            <textbox id="widthSizeTextbox"/>
           </row>
           <row>
             <label control="heightSizeTextbox" value="&heightSize.label;"	accesskey="&heightSize.accesskey;"/>
-            <textbox id="heightSizeTextbox" />
+            <textbox id="heightSizeTextbox"/>
           </row>
           <row>
             <label control="sizeUnitsbox" value="&sizeUnits.label;"	accesskey="&sizeUnits.accesskey;"/>
-            <menulist id="sizeUnitsbox" >
+            <menulist id="sizeUnitsbox">
             <!-- menulist id="sizeUnitsbox"  oncommand="changeUnits(this);"  -->
                <menupopup>
                </menupopup>
