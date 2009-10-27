@@ -12,11 +12,12 @@
 %dialogDTD;
 ]>
 
-<dialog title="&fontsizetitle.label;"
+<dialog id="fontsize" title="&fontsizetitle.label;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     ondialogaccept="return onAccept();"
     buttons="apply,accept,cancel" 
-    width="300px" height="200px">
+    width="300px" height="200px"
+    persist="screenX screenY width height">
 
   <!-- Following scripts are needed by any MSI dialog brought up by an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
@@ -25,15 +26,15 @@
   <label>Generally you should use the tags such as large, huge, and small to change font size. Use this dialog sparingly.</label>
   <hbox>
     <vbox>
-      <label value="&fontsize.label;" control="otfont.fontsize" />
+      <label value="&fontsize.label;" control="otfont.fontsize" 	accesskey="&fontsize.accesskey;"/>
       <textbox id="otfont.fontsize" style="width: 3.5em" onkeypress="handleChar(event,this);"
        max="200" min="5" increment="1" tooltip="&fontsize.tooltip;"/>
-      <label value="&leading.label;" control="leading" />
+      <label value="&leading.label;" control="leading" 	accesskey="&leading.accesskey;"/>
       <textbox id="leading" style="width: 3.5em" onkeypress="handleChar(event,this);"
        max="200" min="5" increment="1" tooltip="&leading.tooltip;"/>
     </vbox>
     <vbox align="center">
-     <label value="&units.label;"/>
+     <label value="&units.label;" accesskey="units.label"/>
      <menulist id="otfont.units">
        <menupopup>
          <menuitem id="otfont.pt" label="pt" value="pt"/>
