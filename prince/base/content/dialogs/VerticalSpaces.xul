@@ -12,11 +12,12 @@
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/VerticalSpaces.dtd">
 
-<dialog title="&windowTitle.label;"
+<dialog id="verticalspaces" title="&windowTitle.label;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload="Startup()"
     ondialogaccept="return onAccept();"
-    ondialogcancel="return onCancel();">
+    ondialogcancel="return onCancel();"
+    persist="screenX screenY width height">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
@@ -51,14 +52,14 @@
 				  </rows>
 				  <columns>
 				    <column>
-              <radio label="&smallSkip.label;" value="smallSkip" group="spacesRadioGroup"/>
-              <radio label="&mediumSkip.label;" value="mediumSkip" group="spacesRadioGroup"/>
-              <radio label="&bigSkip.label;" value="bigSkip" group="spacesRadioGroup"/>
+              <radio label="&smallSkip.label;" accesskey="&smallSkip.accesskey;" value="smallSkip" group="spacesRadioGroup"/>
+              <radio label="&mediumSkip.label;" accesskey="&mediumSkip.accesskey;" value="mediumSkip" group="spacesRadioGroup"/>
+              <radio label="&bigSkip.label;"  accesskey="&bigSkip.accesskey;" value="bigSkip" group="spacesRadioGroup"/>
 				    </column>
 				    <column>
-              <radio label="&strut.label;" value="strut" group="spacesRadioGroup"/>
-              <radio label="&mathStrut.label;" value="mathStrut" group="spacesRadioGroup"/>
-              <radio label="&customSpace.label;" value="customSpace" group="spacesRadioGroup"/>
+              <radio label="&strut.label;"  accesskey="&strut.accesskey;" value="strut" group="spacesRadioGroup"/>
+              <radio label="&mathStrut.label;" accesskey="&mathStrut.accesskey;" value="mathStrut" group="spacesRadioGroup"/>
+              <radio label="&customSpace.label;" accesskey="&customSpace.accesskey;" value="customSpace" group="spacesRadioGroup"/>
 					  </column>
 				  </columns>
 			  </grid>
