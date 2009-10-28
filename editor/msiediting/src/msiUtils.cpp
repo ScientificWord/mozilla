@@ -1673,7 +1673,27 @@ nsresult msiUtils::RemoveChildNode(nsIDOMNode * parent,
   else
    res = NS_ERROR_NULL_POINTER;
   return res; 
+}
+
+nsresult msiUtils::RemoveIndexedChildNode(nsIEditor * editor,
+                                   nsIDOMNode * parent,
+                                   PRUint32 indexOfChild,
+                                   nsCOMPtr<nsIDOMNode> & removedChild)
+{
+  nsresult res(NS_ERROR_FAILURE);
+  removedChild = nsnull;
+  nsCOMPtr<nsIDOMNode> kid;
+  if (parent)
+  {
+    res  = GetChildNode(parent, indexOfChild, kid);
+    if (NS_SUCCEEDED(res) && kid)
+      editor->DeleteNode(kid);
+  }
+  else
+   res = NS_ERROR_NULL_POINTER;
+  return res; 
 }                 
+                 
 
 nsresult msiUtils::ReplaceChildNode(nsIDOMNode * parent,
                                     PRUint32 indexOfChild,
