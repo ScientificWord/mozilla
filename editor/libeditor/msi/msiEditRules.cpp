@@ -117,8 +117,9 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
 			 
 			 			 
 			 nsCOMPtr<nsIDOMNode>  removedChild;
-			 res = msiUtils::RemoveChildNode(endNode, number-1, removedChild);
-			 res = msiUtils::RemoveChildNode(endNode, 0, removedChild);
+			 res = msiUtils::RemoveIndexedChildNode(mHTMLEditor, endNode, number-1, removedChild);
+			 res = msiUtils::RemoveIndexedChildNode(mHTMLEditor, endNode, 0, removedChild);
+
 			 if (NS_FAILED(res)) return res;
 			 
 			 // Remove the mrow container 
@@ -130,7 +131,7 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
 
 			 return res;
 
-	  } else if ( mathmltype == msiIMathMLEditingBC::MATHML_MSQRT) {
+	  } else if ( mathmltype == msiIMathMLEditingBC::MATHML_MSQRT ) {
 			 // Remove the msqrt container 
 		     res = mHTMLEditor->RemoveContainer(endNode);
 			 *aHandled = PR_TRUE;
@@ -139,7 +140,8 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
 	  } else if ( mathmltype == msiIMathMLEditingBC::MATHML_MSUP || mathmltype == msiIMathMLEditingBC::MATHML_MSUB) {
 	         // remove the superscript	or subscript
 	         nsCOMPtr<nsIDOMNode>  removedChild;
-			 res = msiUtils::RemoveChildNode(endNode, 1, removedChild);
+			 res = msiUtils::RemoveIndexedChildNode(mHTMLEditor, endNode, 1, removedChild);
+			 
 			 // Remove the msup (or msub) container 
 		     res = mHTMLEditor->RemoveContainer(endNode);
 			 *aHandled = PR_TRUE;
@@ -147,8 +149,10 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
 	  }  else if ( mathmltype == msiIMathMLEditingBC::MATHML_MSUBSUP ) {
 	         // remove the superscript	and subscript
 	         nsCOMPtr<nsIDOMNode>  removedChild;
-			 res = msiUtils::RemoveChildNode(endNode, 2, removedChild);
-			 res = msiUtils::RemoveChildNode(endNode, 1, removedChild);
+			 //res = msiUtils::RemoveChildNode(endNode, 2, removedChild);
+			 //res = msiUtils::RemoveChildNode(endNode, 1, removedChild);
+			 res = msiUtils::RemoveIndexedChildNode(mHTMLEditor, endNode, 2, removedChild);
+			 res = msiUtils::RemoveIndexedChildNode(mHTMLEditor, endNode, 1, removedChild);
 			 // Remove the msubsup container 
 		     res = mHTMLEditor->RemoveContainer(endNode);
 			 *aHandled = PR_TRUE;

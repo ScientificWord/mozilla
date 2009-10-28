@@ -263,6 +263,13 @@ public:
   static nsresult RemoveChildNode(nsIDOMNode * parent,
                                   PRUint32 indexOfChild,
                                   nsCOMPtr<nsIDOMNode> & removedChild);
+
+
+  static nsresult RemoveIndexedChildNode(nsIEditor * editor,
+                                   nsIDOMNode * parent,
+                                   PRUint32 indexOfChild,
+                                   nsCOMPtr<nsIDOMNode> & removedChild);
+
                                   
   static nsresult ReplaceChildNode(nsIDOMNode * parent,
                                    PRUint32 indexOfChild,
