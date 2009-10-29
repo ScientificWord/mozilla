@@ -172,7 +172,6 @@ function msiEditorOnLoad()
     editorElement.mSourceContentWindow.contentWindow.controllers.insertControllerAt(0, controller);
     var commandTable = controller.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
                                  .getInterface(Components.interfaces.nsIControllerCommandTable);
-                                 dump("\n13");
     commandTable.registerCommand("cmd_find",        msiFindCommand);
     commandTable.registerCommand("cmd_findNext",    msiFindAgainCommand);
     commandTable.registerCommand("cmd_findPrev",    msiFindAgainCommand);

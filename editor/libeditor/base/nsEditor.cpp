@@ -126,6 +126,7 @@
 static PRBool gNoisy = PR_FALSE;
 #endif
 
+#ifdef DEBUG_Barry
 void DumpDocumentNodeImpl( nsIDOMNode * pNode, PRUint32 indent)
 {
   nsCOMPtr<nsIDOMNodeList> list;
@@ -152,7 +153,7 @@ void DumpDocumentNode( nsIDOMNode * pNode)
 {
 //  DumpDocumentNodeImpl(pNode, 0);
 }
-
+#endif
 // Defined in nsEditorRegistration.cpp
 extern nsIParserService *sParserService;
 
@@ -257,6 +258,7 @@ NS_IMPL_ISUPPORTS5(nsEditor, nsIEditor, nsIEditorIMESupport,
 #pragma mark -
 #endif
 
+//#ifdef DEBUG_Barry||DEBUG_barry
 void
 nsEditor::DumpNode(nsIDOMNode *aNode, PRInt32 indent)
 {
@@ -288,7 +290,7 @@ nsEditor::DumpNode(nsIDOMNode *aNode, PRInt32 indent)
     aNode->GetFirstChild(getter_AddRefs(child));
     for (i=0; i<numChildren; i++)
     {
-      DumpNode(child, indent+1);
+//      DumpNode(child, indent+1);
       child->GetNextSibling(getter_AddRefs(tmp));
       child = tmp;
     }
@@ -304,6 +306,7 @@ nsEditor::DumpNode(nsIDOMNode *aNode, PRInt32 indent)
     printf("<textnode> %s\n", cstr.get());
   }
 }
+//#endif
 
 /** returns PR_TRUE if aNode is of the type implied by aTag */
 PRBool nsEditor::NodeIsType(nsIDOMNode *aNode, nsIAtom *aTag, msiITagListManager * manager)
@@ -5328,7 +5331,7 @@ nsEditor::CreateTxnForDeleteInsertionPoint(nsIDOMRange          *aRange,
         }
         else
         { // XXX: can you have an empty text node?  If so, what do you do?
-          printf("ERROR: found a text node with 0 characters\n");
+          //printf("ERROR: found a text node with 0 characters\n");
           result = NS_ERROR_UNEXPECTED;
         }
       }
@@ -5370,7 +5373,7 @@ nsEditor::CreateTxnForDeleteInsertionPoint(nsIDOMRange          *aRange,
         }
         else
         { // XXX: can you have an empty text node?  If so, what do you do?
-          printf("ERROR: found a text node with 0 characters\n");
+          //printf("ERROR: found a text node with 0 characters\n");
           result = NS_ERROR_UNEXPECTED;
         }
       }
