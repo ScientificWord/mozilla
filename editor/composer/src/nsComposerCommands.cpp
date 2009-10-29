@@ -469,7 +469,7 @@ nsStructTagUpdatingCommand::DoCommandParams(const char *aCommandName,
 nsresult
 nsEnvTagUpdatingCommand::ToggleState(nsIEditor *aEditor, nsString& aTagName)
 {
-  printf("nsEnvTagUpdatingCommand::ToggleState(%S)\n",aTagName.get());
+//  printf("nsEnvTagUpdatingCommand::ToggleState(%S)\n",aTagName.get());
   return NS_OK;
 }
 

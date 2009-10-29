@@ -1960,7 +1960,7 @@ nsHTMLEditor::RebuildDocumentFromSource(const nsAString& aSourceString, nsAStrin
     res = docEncoder->Init(domdoc, NS_LITERAL_STRING("text/plain"), 0);
     NS_ENSURE_SUCCESS(res, res);
     docEncoder->EncodeToString(errMsg);
-    printf("Result:\n%S\n",errMsg);
+//    printf("Result:\n%S\n",errMsg);
     _retval.Assign(errMsg);
     return NS_OK;
   }
@@ -2468,7 +2468,9 @@ nsHTMLEditor::SetParagraphFormat(const nsAString& aParagraphFormat)
 nsresult 
 nsHTMLEditor::SetListFormat(const nsAString& newState)
 {
+#ifdef DEBUG_Barry
    printf("SetListFormat(%S);\n", newState);
+#endif
    return NS_OK;
 }
 
@@ -2477,7 +2479,9 @@ nsHTMLEditor::SetListFormat(const nsAString& newState)
 nsresult 
 nsHTMLEditor::SetEnvTag(const nsAString& newState)
 {
+#ifdef DEBUG_Barry
    printf("SetEnvTag(%S)\n;", newState);
+#endif
    return NS_OK;
 }
 
@@ -3718,11 +3722,16 @@ nsHTMLEditor::GetSelectedElement(const nsAString& aTagName, nsIDOMElement** aRet
         } else {
           // Should never get here?
           isCollapsed = PR_TRUE;
+#ifdef DEBUG_Barry
           printf("isCollapsed was FALSE, but no elements found in selection\n");
+#endif
         }
-      } else {
+      } 
+#ifdef DEBUG_Barry
+      else {
         printf("Could not create enumerator for GetSelectionProperties\n");
       }
+#endif
     }
   }
   if (bNodeFound)
@@ -3836,7 +3845,9 @@ nsHTMLEditor::InsertLinkAroundSelection(nsIDOMElement* aAnchorElement)
   
   if (isCollapsed)
   {
+#ifdef DEBUG_Barry
     printf("InsertLinkAroundSelection called but there is no selection!!!\n");     
+#endif
     res = NS_OK;
   } else {
     // Be sure we were given an anchor element

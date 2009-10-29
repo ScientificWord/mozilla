@@ -1095,12 +1095,16 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
               {
                 sr->SetCtx(m_window);
                 sr->Eval(script, error);
-                if (error.Length() > 0) printf("Error in Eval: %S\n", error.BeginReading());
+#ifdef DEBUG_Barry
+                                if (error.Length() > 0) printf("Error in Eval: %S\n", error.BeginReading());
+#endif
                 aKeyEvent->PreventDefault();
                 return NS_OK;
               }
             }
+#ifdef DEBUG_Barry
             else printf("key %d is reserved\n", keyCode);
+#endif
           }  
         }
       }
@@ -1176,13 +1180,9 @@ msiEditor::DeleteSelectionImpl(nsIEditor::EDirection aAction)
 {
   nsCOMPtr<nsISelection>selection;
   nsresult res = GetSelection(getter_AddRefs(selection));
-  printf("1\n");
-  DumpSelection(selection);
   if (NS_FAILED(res)) 
     return res;
   msiSelectionManager msiSelMan(selection, this);
-  printf("2\n");
-  DumpSelection(selection);
   mRangeUpdater.RegisterSelectionState(msiSelMan);
   EditAggregateTxn *txn;
   res = CreateTxnForDeleteSelection(aAction, msiSelMan, &txn);
@@ -1200,8 +1200,6 @@ msiEditor::DeleteSelectionImpl(nsIEditor::EDirection aAction)
     for (i = 0; i < mActionListeners.Count(); i++)
     {
       listener = (nsIEditActionListener *)mActionListeners[i];
-      printf("3\n");
-      DumpSelection(selection);
       if (listener)
         listener->WillDeleteSelection(selection);
     }
@@ -1211,8 +1209,6 @@ msiEditor::DeleteSelectionImpl(nsIEditor::EDirection aAction)
     for (i = 0; i < mActionListeners.Count(); i++)
     {
       listener = (nsIEditActionListener *)mActionListeners[i];
-      printf("4\n");
-      DumpSelection(selection);
       if (listener)
         listener->DidDeleteSelection(selection);
     }
@@ -1351,7 +1347,9 @@ msiEditor::CreateTxnForDeleteInsertionPoint(msiSelectionManager & msiSelMan,
         }
         else
         { // XXX: can you have an empty text node?  If so, what do you do?
+#ifdef DEBUG_Barry
           printf("ERROR: found a text node with 0 characters\n");
+#endif
           result = NS_ERROR_UNEXPECTED;
         }
       }
@@ -1389,7 +1387,9 @@ msiEditor::CreateTxnForDeleteInsertionPoint(msiSelectionManager & msiSelMan,
         }
         else
         { // XXX: can you have an empty text node?  If so, what do you do?
+#ifdef DEBUG_Barry
           printf("ERROR: found a text node with 0 characters\n");
+#endif
           result = NS_ERROR_UNEXPECTED;
         }
       }
@@ -2768,7 +2768,9 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
         {
           sr->SetCtx(m_window);
           sr->Eval(data, error);
+#ifdef DEBUG_Barry
           if (error.Length() > 0) printf("Error in Eval: %S\n", error.BeginReading());
+#endif
         }
       }
     }

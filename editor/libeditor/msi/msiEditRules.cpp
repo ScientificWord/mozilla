@@ -69,8 +69,6 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
   
   nsCOMPtr<nsIDOMNode> startNode, endNode;
   PRInt32 startOffset, endOffset;
-  printf("In msiEditRules::WillDeleteSelection\n");
-  DumpSelection(aSelection);
   res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(startNode), &startOffset);
   if (NS_FAILED(res)) return res;
   if (!startNode) return NS_ERROR_FAILURE;
@@ -208,11 +206,7 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
     /* do something special here (based on direction) */;
     
   }
-  printf("In msiEditRules::WillDeleteSelection(2)\n");
-  DumpSelection(aSelection);
   mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
-  printf("In msiEditRules::WillDeleteSelection(3)\n");
-  DumpSelection(aSelection);
   return nsHTMLEditRules::WillDeleteSelection(aSelection, aAction, aCancel, aHandled);
 }
 
@@ -230,14 +224,12 @@ msiEditRules::DidReplaceNode(nsIDOMNode *aNewNode,
                              nsIDOMNode *aParent, 
                              nsresult    aResult)
 {
-  printf("msiEditRules:DidReplaceNode\n");
  return NS_OK; //nsHTMLEditRules::DidReplaceNode(aNewNode,aOldNode,aParent,aResult);
 }
 
 NS_IMETHODIMP 
 msiEditRules::DidDeleteNode(nsIDOMNode *aChild, nsresult aResult)
 {
-  printf("msiEditRules:DidDeleteNode\n");
   return nsHTMLEditRules::DidDeleteNode(aChild, aResult);  
 }
 
@@ -259,7 +251,6 @@ msiEditRules::DidDeleteText(nsIDOMCharacterData *aTextNode,
                                   PRInt32 aLength, 
                                   nsresult aResult)
 {
-  printf("msiEditRules:DidDeleteText\n");
   return nsHTMLEditRules::DidDeleteText(aTextNode, aOffset, aLength, aResult);  
 }
 
@@ -267,7 +258,6 @@ msiEditRules::DidDeleteText(nsIDOMCharacterData *aTextNode,
 NS_IMETHODIMP
 msiEditRules::DidDeleteRange(nsIDOMRange *aRange)
 {
-  printf("msiEditRules:DidDeleteRange\n");
   return nsHTMLEditRules::DidDeleteRange(aRange);
 }
 
@@ -275,7 +265,6 @@ msiEditRules::DidDeleteRange(nsIDOMRange *aRange)
 NS_IMETHODIMP
 msiEditRules::DidDeleteSelection(nsISelection *aSelection)
 {
-  printf("msiEditRules:DidDeleteSelection\n");
   return nsHTMLEditRules::DidDeleteSelection(aSelection);
 }
 

@@ -318,7 +318,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
                                    &streamStartOffset,
                                    &streamEndOffset);
   NS_ENSURE_SUCCESS(res, res);
-  DumpNode(fragmentAsNode);
+//  DumpNode(fragmentAsNode);
   nsCOMPtr<nsIDOMNode> targetNode, tempNode;
   PRInt32 targetOffset=0;
 
@@ -378,21 +378,23 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   // make a list of what nodes in docFrag we need to move
   PRInt32 j;
   nsCOMArray<nsIDOMNode> nodeList;
-  DumpNode(fragmentAsNode);
+//  DumpNode(fragmentAsNode);
   res = CreateListOfNodesToPaste(fragmentAsNode, nodeList,
                                  streamStartParent, streamStartOffset,
                                  streamEndParent, streamEndOffset);
   NS_ENSURE_SUCCESS(res, res);
   PRInt32 listCount = nodeList.Count();
+#ifdef DEBUG_Barry
   for (j=0; j<listCount; j++)
   {
     printf("%d\n", j);
     DumpNode(nodeList[j]);
   }
- // FixMathematics(nodeList[0], PR_FALSE, PR_FALSE, PR_FALSE);
+// FixMathematics(nodeList[0], PR_FALSE, PR_FALSE, PR_FALSE);
 //  if (listCount > 1) FixMathematics(nodeList[listCount-1], PR_FALSE, PR_FALSE, PR_FALSE);
   listCount = nodeList.Count();
-  if (nodeList.Count() == 0)
+#endif
+  if (listCount == 0)
     return NS_OK;
 //  DumpNode();
   
@@ -667,8 +669,8 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
       {
         
         // try to insert
-        DumpNode(curNode); 
 #if DEBUG_barry || DEBUG_Barry
+    DumpNode(curNode); 
     DebExamineNode(curNode);
     DebExamineNode(parentNode);
 #endif
@@ -2761,8 +2763,8 @@ void RemoveContextNodes(nsAutoTArray<nsAutoString, 32> &tagStack, nsIDOMNode * f
 {
   if (!fragNode) 
     return;
-  printf("Entering RemoveContextNodes\n");
-  nsHTMLEditor::DumpNode(fragNode);
+ // printf("Entering RemoveContextNodes\n");
+//  nsHTMLEditor::DumpNode(fragNode);
   nsCOMPtr<nsIDOMNode> tmp, next, child, lastchild, base;  
   PRInt32 L = tagStack.Length();
   PRInt32 i = L-1;
@@ -2790,8 +2792,8 @@ void RemoveContextNodes(nsAutoTArray<nsAutoString, 32> &tagStack, nsIDOMNode * f
     }
     fragNode->RemoveChild(base, getter_AddRefs(tmp));
   }
-  printf("============\n");
-  nsHTMLEditor::DumpNode(fragNode);
+//  printf("============\n");
+//  nsHTMLEditor::DumpNode(fragNode);
 }
 
 
