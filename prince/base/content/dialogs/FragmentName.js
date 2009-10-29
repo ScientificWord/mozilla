@@ -5,6 +5,7 @@ function onAccept()
 {
   var data = window.arguments[0];
   data.filename = document.getElementById("fragment-name").value;
+  data.description = document.getElementById("fragment-description").value;
 }
 
 function onCancel()
@@ -20,6 +21,11 @@ function initialize()
   var broadcasters = document.getElementsByTagName("broadcaster");
   var j;
   for (j=0; j< broadcasters.length; j++) broadcasters[j].setAttribute("hidden","true");
-  if (data.role) document.getElementById(data.role).setAttribute("hidden","false");
+  if (data.role) document.getElementById(data.role).setAttribute("hidden","false"); 
+  if (data.role=='newfrag' || data.role == 'renamefrag') 
+  {
+    document.getElementById("fragdescription").setAttribute("hidden", "false");
+    document.getElementById("fragment-description").value = data.description;
+  }
 }
 
