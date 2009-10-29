@@ -621,8 +621,9 @@ nsHTMLEditRules::WillDoAction(nsISelection *aSelection,
   }
 
   nsCOMPtr<nsIDOMRange> domRange;
-  printf("A\n");
+#ifdef DEBUG_Barry
   DumpSelection(aSelection);
+#endif
   nsresult rv = aSelection->GetRangeAt(0, getter_AddRefs(domRange));
   NS_ENSURE_SUCCESS(rv, rv);
 
@@ -677,8 +678,10 @@ nsHTMLEditRules::WillDoAction(nsISelection *aSelection,
     case kInsertBreak:
       return WillInsertBreak(aSelection, aCancel, aHandled);
     case kDeleteSelection:
+#ifdef DEBUG_Barry
       printf("B\n");
       DumpSelection(aSelection);
+#endif
       return WillDeleteSelection(aSelection, info->collapsedAction, aCancel, aHandled);
     case kMakeList:
       return WillMakeList(aSelection, info->blockType, info->entireList, info->bulletType, aCancel, aHandled);
@@ -1434,8 +1437,9 @@ nsHTMLEditRules::WillInsertText(PRInt32          aAction,
     res = element->GetElementsByTagName(defPara, getter_AddRefs(nodelist));
     res = nodelist->Item(0, getter_AddRefs(selNode)); // now selNode is the new selection node.
     aSelection->Collapse(selNode,0);
-    
+#ifdef DEBUG_Barry
     printf("Just inserted default paragraph (%s) here\n", defPara.BeginReading());
+#endif
   }
 
   // we need to get the doc
@@ -5129,8 +5133,9 @@ nsHTMLEditRules::CheckForEmptyBlock(nsIDOMNode *aStartNode,
       res = element->GetElementsByTagName(defPara, getter_AddRefs(nodelist));
       res = nodelist->Item(0, getter_AddRefs(blockParent)); // now selNode is the new selection node.
       aSelection->Collapse(blockParent,0);
-    
+#ifdef DEBUG_Barry
       printf("Just inserted default paragraph (%S) here\n", defPara.BeginReading());
+#endif
     }
     *aHandled = PR_TRUE;
   }
@@ -7566,7 +7571,9 @@ nsHTMLEditRules::ApplyEnvironment(nsCOMArray<nsIDOMNode>& arrayOfNodes, const ns
        
       res = mHTMLEditor->MoveNode( curNode, curEnvironment, destOffset++);
       res = mHTMLEditor->InsertNode( curEnvironment, newParent, offset);
+#ifdef DEBUG_Barry
       printf("New environment tag inserted: \n");
+#endif
       // POSSIBLE TO-DO: remove any instances of aEnvironmentTag that may be contained in curNode.
       curParent = newParent;
     }
@@ -7587,7 +7594,9 @@ void MoveNodesFromRight( nsHTMLEditor * editor, nsIDOMNode * startNode, nsIDOMNo
 {
   nsCOMPtr<nsIDOMNode> node;
   nsCOMPtr<nsIDOMNode> ptr(startNode);
+#ifdef DEBUG_Barry
   printf("Starting MoveNodesFromRight\n");
+#endif
   ptr->GetNextSibling(getter_AddRefs(node));
   ptr = node;
   while (ptr)
