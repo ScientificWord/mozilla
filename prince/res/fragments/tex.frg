@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fragment>
   <data>
 	<![CDATA[<latex>T<sub>E</sub>X</latex>]]>
@@ -9,4 +9,5 @@
 <body><para></para></body></html>]]>
   </context>
   <info><![CDATA[0,0]]></info>
+  <description><![CDATA[The TeX logo]]></description>
 </fragment>
