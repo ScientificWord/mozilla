@@ -86,7 +86,7 @@ function buildTOC()
   re = /##TAG##/g
   stylestring = stylestring.replace(re, ""+(doTag?"html:"+tagArr.join("|html:"):"html:xxx"));
 
-dump( stylestring+"\n");
+//dump( stylestring+"\n");
 
   var parser = new DOMParser();
   var dom = parser.parseFromString(stylestring, "text/xml");

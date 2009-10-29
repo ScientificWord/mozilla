@@ -150,7 +150,6 @@ function removeListeners()
 function initFastCursorBar()
 {
   // Get the xul <editor> element:
-  dump("initFastCursorBar\n");
   var editorElement = document.getElementById("content-source");  
   try {
     // get the find service, which stores global find state
@@ -607,13 +606,11 @@ function onBrowserKeyUp(evt)
   var isForward = new Boolean();
   var isFirstArrowPress = new Boolean();
   gArrowStateService.findKeyCode(evt, keyCode, isArrow);
-  dump("onBrowserKeyUp: "+keyCode.value +", "+isArrow.value+"\n");
   if (!keyCode.value) return 0;
   if (isArrow.value) {
     gArrowStateService.arrowKeyUp( keyCode.value );
     gArrowStateService.findArrowKeyState(isArrow, arrowKeyCode, isRepeating,
       isVertical, isForward, keyCode.value, isFirstArrowPress);
-    dump("Now isArrow="+isArrow.value+" and isVertical="+isVertical.value+"\n");
     if (!isArrow.value) {
       var fastcursorDir = document.getElementById("fastcursor-dir");
       fastcursorDir.setAttribute("hidden", "true");

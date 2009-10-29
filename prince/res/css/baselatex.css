@@ -23,6 +23,7 @@ numberedlist {list-style-type: none;
   counter-reset: numberedlist;
 }
 
+
 bulletlist {list-style-type: disc;
 }
 

@@ -160,7 +160,7 @@ NS_IMETHODIMP msiAutosub::Initialize(const nsAString & fileURI)
     docAutosubs->GetDocumentElement(getter_AddRefs(docElement));
     textNode = do_QueryInterface(docElement);
     textNode->GetTextContent(data);
-    printf("%S\n", data.get());
+//    printf("%S\n", data.get());
 
     for (PRUint32 i = 0; i < autosubCount; i++)
     {
@@ -214,11 +214,11 @@ NS_IMETHODIMP msiAutosub::Initialize(const nsAString & fileURI)
     NS_QuickSort(autosubarray, arraylength, sizeof(autosubentry), compare, nsnull);
     isInitialized = PR_TRUE;
     autosubentry entry;
-    for (PRUint32 i = 0; i < autosubCount; i++)
-    {
-      entry = autosubarray[i];
-      printf("%d: %d %S %S\n", i, entry.context, entry.pattern.get(), entry.data.get());
-    } 
+//     for (PRUint32 i = 0; i < autosubCount; i++)
+//     {
+//       entry = autosubarray[i];
+//       printf("%d: %d %S %S\n", i, entry.context, entry.pattern.get(), entry.data.get());
+//     } 
   }
   return NS_OK;
 }

@@ -115,8 +115,7 @@
       flex = "1"
       tbalign="center" 
       context="toolbar-context-menu"
-      defaultset="newButton,openButton,saveButton,printButton,printPreviewButton,mathtextButton,TextTags,
-        ParaTags,StructTags,OtherTags" 
+      defaultset="newButton,openButton,saveButton,printButton,printPreviewButton,mathtextButton,TextTags,ParaTags,StructTags,OtherTags" 
       mode="icons" 
       customizable="true"
       iconsize="small" />
