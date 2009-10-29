@@ -2,5 +2,10 @@
 <!ENTITY  fragmentname.fragmentname         "Fragment Name">
 <!ENTITY  fragmentname.renamefragment         "Rename Fragment To">
 <!ENTITY  fragmentname.foldername         "New Folder Name">
+<!ENTITY  fragmentname.description         "Fragment Description">
 <!ENTITY  executejs.label	"Enter JavaScript to execute">
 <!ENTITY  executejs.title	"Execute JavaScript">
+
+
+
+
