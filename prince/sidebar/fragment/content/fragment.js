@@ -18,6 +18,24 @@ function refresh(tree)
 {
   buildFragmentArray();
   tree.builder.rebuild();
+  fixAttributes(tree);
+}
+
+function fixAttributes(tree)
+{
+//  var tree = document.getElementById("frag-tree");
+  // strangely, attributes of the treechildren node are not preserved, so we have to set it now.
+  var i;
+  var  kids = tree.getElementsByTagName("treechildren");
+  if (!kids || kids.length != 2) alert("Strange number of 'treechildren' in tree");
+  var generated = kids[1];
+  var attrs = kids[0].attributes;
+  {
+    for (i = 0; i < attrs.length; i++) 
+    { 
+      generated.setAttribute(attrs[i].name, attrs[i].value);
+    }
+  }
 }
 
 function initSidebar()
@@ -29,13 +47,142 @@ function initSidebar()
     dir1 = getUserResourceFile("fragments","");
     var dirpath = dir1.path + "/";
     var fragmentsBaseDirectory = msiFileURLFromAbsolutePath( dirpath );
-    document.getElementById("frag-tree").setAttribute("ref", fragmentsBaseDirectory);
-    document.getElementById("frag-tree").builder.rebuild();
+    var tree = document.getElementById("frag-tree");
+    tree.setAttribute("ref", fragmentsBaseDirectory);
+    tree.builder.rebuild();
+    fixAttributes(tree);
     //
   }
   catch(e) {
     dump("Exception in initSidebar() = "+e.toString());
   }
+}
+
+function descriptionOfItem( row )
+{
+  var i = row;
+  var tree = document.getElementById("frag-tree");
+  var namecol = tree.columns.getNamedColumn('Name');
+  var s = tree.view.getCellText( i,namecol);
+  while (tree.view.getParentIndex(i) >= 0)
+    {           
+      i = tree.view.getParentIndex(i);
+      s = tree.view.getCellText(i,namecol)+ pathSeparator + s;
+  }
+  s = tree.getAttribute("ref") + "/" +s;
+  // s is now the path of the clicked file relative to the fragment root.
+  dump("showDescription: pathname = "+s+"\n");
+  try 
+  {
+    var request = Components.
+                  classes["@mozilla.org/xmlextras/xmlhttprequest;1"].
+                  createInstance();
+    request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
+    request.open("GET", s, false);
+    request.send(null);
+                                
+    var xmlDoc = request.responseXML; 
+    if (xmlDoc)
+    {
+      var node;
+      node = xmlDoc.getElementsByTagName("description").item(0);
+      if (node)
+      {
+        node = node.firstChild;
+        while (node && node.nodeType != node.CDATA_SECTION_NODE) node = node.nextSibling;
+        if (node) return node.nodeValue;
+      }
+    }
+  }
+  catch (e)
+  {
+    dump("Error is fragments.js, showDescription: "+e.message+"\n");
+  }
+  return "";
+}
+
+function writeDescriptionOfItem(row, desc)
+{
+  var i = row;
+  var tree = document.getElementById("frag-tree");
+  var namecol = tree.columns.getNamedColumn('Name');
+  var s = tree.view.getCellText( i,namecol);
+  var outfile = getUserResourceFile("fragments","");
+  while (tree.view.getParentIndex(i) >= 0)
+  {           
+    i = tree.view.getParentIndex(i);
+    s = tree.view.getCellText(i,namecol)+pathSeparator+s;
+  }
+  // s is now the path of the clicked file relative to the fragment root.
+  var pieces = s.split(pathSeparator);
+  var j;
+  for (j = 0; j < pieces.length; j++) outfile.append(pieces[j]);
+  s = tree.getAttribute("ref") +s;
+  dump("showDescription: pathname = "+s+"\n");
+  try 
+  {
+    var request = Components.
+                  classes["@mozilla.org/xmlextras/xmlhttprequest;1"].
+                  createInstance();
+    request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
+    request.open("GET", s, false);
+    request.send(null);
+                                
+    var xmlDoc = request.responseXML; 
+    if (xmlDoc)
+    {
+      var node;
+      node = xmlDoc.getElementsByTagName("description").item(0);
+      if (!node)
+      {
+        node = xmlDoc.createElement("description");
+        var cdata = xmlDoc.createCDATASection("");
+        node.appendChild(cdata);
+        node = xmlDoc.documentElement.appendChild(node);
+      }
+      if (node)
+      {
+        node = node.firstChild;
+        while (node && node.nodeType != node.CDATA_SECTION_NODE) node = node.nextSibling;
+        if (node && node.textContent != desc)
+        {
+          node.textContent = desc;
+          // write the file again
+          var ser = new XMLSerializer();
+          var str = ser.serializeToString(xmlDoc);
+
+
+          var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+          fos.init(outfile, -1, -1, false);
+          var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+            .createInstance(Components.interfaces.nsIConverterOutputStream);
+          os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
+          os.writeString(str);
+          os.close();
+          fos.close();
+        }
+      }
+    }
+  }
+  catch (e)
+  {
+    dump("Error is fragments.js, writeDescriptionOfItem: "+e.message+"\n");
+  }
+}
+
+function showDescription(event, tooltip)
+{
+  var tree = document.getElementById("frag-tree");
+  tooltip.setAttribute("label","");
+  var row = {};
+  var col = {};
+  var obj = {};
+  var b = tree.treeBoxObject;
+  b.getCellAt(event.clientX, event.clientY, row, col, obj);
+//  if (!row.value) return false;
+  var description = descriptionOfItem(row.value);
+  tooltip.setAttribute("label",description);
+  return description.length > 0;
 }
 
 function insertFragmentContents( pathname)
@@ -143,29 +290,41 @@ function renameFragment(tree)
   var namecol = tree.columns.getNamedColumn('Name');
   var i = tree.currentIndex;
   if (i < 0) return;
+  var row = i;
   var s = tree.view.getCellText( i,namecol);
   var data = new Object();
+  var savedata = new Object();
+  savedata.filename = s;
   data.filename = s;
   data.role = "renamefrag";
+  savedata.description = data.description = descriptionOfItem(row);
   dump('found item '+s+'\n');
   window.openDialog("chrome://prince/content/fragmentname.xul", "", "modal,chrome,resizable=yes", data);
-  if (data.filename.length > 0)
+  var nameChanged = ((data.filename.length > 0) && (savedata.filename != data.filename));
+  var descChanged = (data.description != savedata.description);
+  if (!nameChanged && !descChanged) return;
+  if (descChanged) writeDescriptionOfItem(row, data.description);
+  var file = getUserResourceFile("fragments","");
+  var newname = data.filename;
+  var oldname = s;
+  if (nameChanged)
   {
     dump('new name is '+data.filename+'\n');
-    var file = getUserResourceFile("fragments","");
     var regexp = /\.frg$/i;
-    var newname = data.filename;
+    newname = data.filename;
     if (!regexp.test(newname)) newname += '.frg';
-      while (tree.view.getParentIndex(i) >= 0)
-      {           
-        i = tree.view.getParentIndex(i);
-        s = tree.view.getCellText(i,namecol)+pathSeparator+s;
-      }
-    var pieces = s.split(pathSeparator);
-    var j;
-    for (j = 0; j < pieces.length; j++) file.append(pieces[j]);
+  }
+  while (tree.view.getParentIndex(i) >= 0)
+  {           
+    i = tree.view.getParentIndex(i);
+    s = tree.view.getCellText(i,namecol)+pathSeparator+s;
+  }
+  var pieces = s.split(pathSeparator);
+  var j;
+  for (j = 0; j < pieces.length; j++) file.append(pieces[j]);
+  if (nameChanged) {
     file.moveTo(null, newname);
-    refresth(tree);
+    refresh(tree);
   }
 }
 
@@ -417,6 +576,7 @@ var fragObserver =
     {
       var data = new Object();
       data.role = "newfrag";
+      data.description = "Enter a short description of what the fragment does."
       window.openDialog("chrome://prince/content/fragmentname.xul", "", "modal,chrome,resizable=yes", data);
       if (data.filename.length > 0)
       {
@@ -452,7 +612,8 @@ var fragObserver =
         var sFileContent = '<?xml version="1.0"?>\n<fragment>\n  <data>\n    <![CDATA[' +mimetypes.kHTMLMime+
           ']]>\n  </data>\n  <context>\n    <![CDATA[' +mimetypes.kHTMLContext+
           ']]>\n  </context>\n  <info>\n    <![CDATA[' +mimetypes.kHTMLInfo+
-          ']]>\n  </info>\n</fragment>';
+          ']]>\n  </info>\n  <description>\n    <![CDATA[' + data.description +
+          ']]>\n  </description>\n</fragment>';
         var filepath = pathbase + path + data.filename;
         if (filepath.search(/.frg/) == -1) filepath += ".frg";
 #ifdef XP_WIN32

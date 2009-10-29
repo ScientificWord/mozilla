@@ -20,13 +20,19 @@
   <broadcaster id="newfrag" hidden="false"/>
   <broadcaster id="renamefrag" hidden="true"/>
   <broadcaster id="newfolder" hidden="true"/>
+  <broadcaster id="fragdescription" hidden="true"/>
   
   <script type="application/x-javascript" src="chrome://prince/content/fragmentname.js"/>
   
+  <spacer flex="1"/>
   <label value = "&fragmentname.fragmentname;" observes="newfrag"/>
   <label value = "&fragmentname.renamefragment;" observes="renamefrag"/>
   <label value = "&fragmentname.foldername;" observes="newfolder"/>
   
-  <spacer flex="1"/>
   <textbox id = "fragment-name"/>
+  <spacer flex="1"/>
+  <label value = "&fragmentname.description;" observes="fragdescription"/>
+  <textbox id = "fragment-description" multiline="true" width="200" observes="fragdescription"/>
+  <spacer flex="1"/>
+                                                          
 </dialog>
