@@ -19,6 +19,9 @@
       <treecol id="tocColumn" label="Name" primary="true" flex="1" />
     </treecols>
 	<treechildren>
+		<xsl:attribute name="ondblclick">
+		  jump();
+		</xsl:attribute>
 		<xsl:apply-templates/>	
 	</treechildren>
   </tree>
@@ -30,9 +33,6 @@
 		<xsl:attribute name="container">true</xsl:attribute>
 		<xsl:attribute name="open">true</xsl:attribute>
 	  <treerow>
-			<xsl:attribute name="ondblclick">
-			  jump();
-			</xsl:attribute>
 		  <treecell>
 			<xsl:attribute name="label">
 			  <xsl:value-of select="*[1]"/>
