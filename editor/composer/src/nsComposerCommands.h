@@ -296,7 +296,7 @@ public:
 
 protected:
 
-  nsString & mTagName;
+  nsString mTagName;
 };
 
 
