@@ -176,16 +176,19 @@
 			<tags>
 				<tag nm="sw:bulletlist" hidden="1">
           <description>Bullet list</description>
+					<nexttag>sw:para</nexttag>
           <htmllist>ul</htmllist>
           <discardemptyblock>true</discardemptyblock>
         </tag>
 				<tag nm="sw:numberedlist" hidden="1">
           <description>Numbered list</description>
+					<nexttag>sw:para</nexttag>
           <htmllist>ol</htmllist>
           <discardemptyblock>true</discardemptyblock>
         </tag>
 				<tag nm="sw:descriptionlist" hidden="1">
           <description>Description list</description>
+					<nexttag>sw:para</nexttag>
           <htmllist>dl</htmllist>
           <discardemptyblock>true</discardemptyblock>
         </tag>
@@ -194,7 +197,7 @@
           <htmllistparent>bulletlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para><cursor/></para>
+              <para><cursor/><br temp="1"/></para>
               ]]>
           </initialcontents>
           <nextafteremptyblock>bulletlist</nextafteremptyblock>
@@ -204,7 +207,7 @@
           <htmllistparent>numberedlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para><cursor/></para>
+              <para><cursor/><br temp="1"/></para>
               ]]>
           </initialcontents>
           <nextafteremptyblock>numberedlist</nextafteremptyblock>
@@ -214,7 +217,7 @@
           <htmllistparent>descriptionlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para><cursor/></para>
+              <para><cursor/><br temp="1"/></para>
               ]]>
           </initialcontents>
           <nextafteremptyblock>descriptionlist</nextafteremptyblock>
@@ -379,7 +382,7 @@
           <description>Note</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para><br/></para>
+              <para><cursor/><br temp="1"/></para>
               ]]>
           </initialcontents>
 	  		  <inclusion>true</inclusion>
@@ -389,7 +392,7 @@
           <description>Frame</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para><br/></para>
+              <para><cursor/><br temp="1"/></para>
               ]]>
           </initialcontents>
 	  		  <inclusion>true</inclusion>
