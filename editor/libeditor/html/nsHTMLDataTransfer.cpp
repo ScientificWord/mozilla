@@ -998,6 +998,7 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
       PRUint32 nodeCount;
       nsCOMPtr<nsISelection>selection;
       res = GetSelection(getter_AddRefs(selection));
+      /// The following should be a procedure
       res = newElement->GetElementsByTagName(NS_LITERAL_STRING("cursor"), getter_AddRefs(nodeList));
       if (nodeList) nodeList->GetLength(&nodeCount);
 
@@ -1010,6 +1011,7 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
         res = selection->Collapse(newsplitpointNode, newsplitpointOffset);
       }
       nsEditor::DeleteNode(splitNode);
+      //end of procedure
       return res;
     }
     else 

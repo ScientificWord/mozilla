@@ -66,6 +66,7 @@
 #include "nsIDOMNSRange.h"
 #include "nsIRangeUtils.h"
 #include "nsIDOMCharacterData.h"
+#include "nsIDOMNSHTMLElement.h"
 #include "nsIEnumerator.h"
 #include "nsIPresShell.h"
 #include "nsIPrefBranch.h"
@@ -3026,46 +3027,46 @@ nsHTMLEditRules::WillMakeList(nsISelection *aSelection,
   
   *aHandled = PR_TRUE;
 
-  res = NormalizeSelection(aSelection);
-  if (NS_FAILED(res)) return res;
-  nsAutoSelectionReset selectionResetter(aSelection, mHTMLEditor);
-  
-  nsCOMArray<nsIDOMNode> arrayOfNodes;
-  res = GetListActionNodes(arrayOfNodes, aEntireList);
-  if (NS_FAILED(res)) return res;
-  
-  PRInt32 listCount = arrayOfNodes.Count();
-  
-  // check if all our nodes are <br>s, or empty inlines
-  PRBool bOnlyBreaks = PR_TRUE;
-  PRInt32 j;
-  for (j=0; j<listCount; j++)
-  {
-    nsIDOMNode* curNode = arrayOfNodes[j];
-    // if curNode is not a Break or empty inline, we're done
-    if ( (!nsTextEditUtils::IsBreak(curNode)) && (!IsEmptyInline(curNode)) )
-    {
-      bOnlyBreaks = PR_FALSE;
-      break;
-    }
-  }
-  
-  // if no nodes, we make empty list.  Ditto if the user tried to make a list of some # of breaks.
-  if (!listCount || bOnlyBreaks) 
-  {
+//  res = NormalizeSelection(aSelection);
+//  if (NS_FAILED(res)) return res;
+//  nsAutoSelectionReset selectionResetter(aSelection, mHTMLEditor);
+//  
+//  nsCOMArray<nsIDOMNode> arrayOfNodes;
+//  res = GetListActionNodes(arrayOfNodes, aEntireList);
+//  if (NS_FAILED(res)) return res;
+//  
+//  PRInt32 listCount = arrayOfNodes.Count();
+//  
+//  // check if all our nodes are <br>s, or empty inlines
+//  PRBool bOnlyBreaks = PR_TRUE;
+//  PRInt32 j;
+//  for (j=0; j<listCount; j++)
+//  {
+//    nsIDOMNode* curNode = arrayOfNodes[j];
+//    // if curNode is not a Break or empty inline, we're done
+//    if ( (!nsTextEditUtils::IsBreak(curNode)) && (!IsEmptyInline(curNode)) )
+//    {
+//      bOnlyBreaks = PR_FALSE;
+//      break;
+//    }
+//  }
+//  
+//  // if no nodes, we make empty list.  Ditto if the user tried to make a list of some # of breaks.
+//  if (!listCount || bOnlyBreaks) 
+//  {
     nsCOMPtr<nsIDOMNode> parent, theList, theListItem;
     PRInt32 offset;
-
-    // if only breaks, delete them
-    if (bOnlyBreaks)
-    {
-      for (j=0; j<(PRInt32)listCount; j++)
-      {
-        res = mHTMLEditor->DeleteNode(arrayOfNodes[j]);
-        if (NS_FAILED(res)) return res;
-      }
-    }
-    
+//
+//    // if only breaks, delete them
+//    if (bOnlyBreaks)
+//    {
+//      for (j=0; j<(PRInt32)listCount; j++)
+//      {
+//        res = mHTMLEditor->DeleteNode(arrayOfNodes[j]);
+//        if (NS_FAILED(res)) return res;
+//      }
+//    }
+//    
     // get selection location
     res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(parent), &offset);
     if (NS_FAILED(res)) return res;
@@ -3077,11 +3078,34 @@ nsHTMLEditRules::WillMakeList(nsISelection *aSelection,
     if (NS_FAILED(res)) return res;
     res = mHTMLEditor->CreateNode(itemType, theList, 0, getter_AddRefs(theListItem));
     if (NS_FAILED(res)) return res;
+    nsAutoString strContents;
+    res = mtagListManager->GetStringPropertyForTag(itemType, nsnull, NS_LITERAL_STRING("initialcontentsforempty"), strContents);
+    if (strContents.Length() == 0) 
+      res = mtagListManager->GetStringPropertyForTag(itemType, nsnull, NS_LITERAL_STRING("initialcontents"), strContents);
+    nsCOMPtr<nsIDOMNSHTMLElement> listElement(do_QueryInterface(theListItem));
+    if (strContents.Length() > 0) listElement->SetInnerHTML(strContents);
+    
+    
     // remember our new block for postprocessing
     mNewBlock = theListItem;
     // put selection in new list item
-    res = aSelection->Collapse(theListItem,0);
-    selectionResetter.Abort();  // to prevent selection reseter from overriding us.
+    nsCOMPtr<nsIDOMNodeList> nodeList;
+    nsCOMPtr<nsIDOMNode> node, newCursorNode;
+    PRUint32 nodeCount;
+    PRInt32 newCursorOffset;
+    nsCOMPtr<nsIDOMElement> listDOMElement(do_QueryInterface(theListItem));
+    res = listDOMElement->GetElementsByTagName(NS_LITERAL_STRING("cursor"), getter_AddRefs(nodeList));
+    if (nodeList) nodeList->GetLength(&nodeCount);
+
+    if (nodeCount > 0)
+    {
+      nodeList->Item(0, getter_AddRefs(node));
+      mHTMLEditor->GetNodeLocation(node, address_of(newCursorNode), &newCursorOffset);
+      mHTMLEditor->DeleteNode(node);
+      //selPriv->SetInterlinePosition(PR_TRUE);
+      res = aSelection->Collapse(newCursorNode, newCursorOffset);
+    }
+//    selectionResetter.Abort();  // to prevent selection reseter from overriding us.
     *aHandled = PR_TRUE;
     return res;
   }
@@ -3089,220 +3113,220 @@ nsHTMLEditRules::WillMakeList(nsISelection *aSelection,
   // if there is only one node in the array, and it is a list, div, or blockquote,
   // then look inside of it until we find inner list or content.
 
-  res = LookInsideDivBQandList(arrayOfNodes);
-  if (NS_FAILED(res)) return res;                                 
-
-  // Ok, now go through all the nodes and put then in the list, 
-  // or whatever is approriate.  Wohoo!
-
-  listCount = arrayOfNodes.Count();
-  nsCOMPtr<nsIDOMNode> curParent;
-  nsCOMPtr<nsIDOMNode> curList;
-  nsCOMPtr<nsIDOMNode> prevListItem;
-  
-  PRInt32 i;
-  for (i=0; i<listCount; i++)
-  {
-    // here's where we actually figure out what to do
-    nsCOMPtr<nsIDOMNode> newBlock;
-    nsCOMPtr<nsIDOMNode> curNode = arrayOfNodes[i];
-    PRInt32 offset;
-    res = nsEditor::GetNodeLocation(curNode, address_of(curParent), &offset);
-    if (NS_FAILED(res)) return res;
-  
-    // make sure we don't assemble content that is in different table cells into the same list.
-    // respect table cell boundaries when listifying.
-    if (curList)
-    {
-      PRBool bInDifTblElems;
-      res = InDifferentTableElements(curList, curNode, &bInDifTblElems);
-      if (NS_FAILED(res)) return res;
-      if (bInDifTblElems)
-        curList = nsnull;
-    }
-    
-    // if curNode is a Break, delete it, and quit remembering prev list item
-    if (nsTextEditUtils::IsBreak(curNode)) 
-    {
-      res = mHTMLEditor->DeleteNode(curNode);
-      if (NS_FAILED(res)) return res;
-      prevListItem = 0;
-      continue;
-    }
-    // if curNode is an empty inline container, delete it
-    else if (IsEmptyInline(curNode)) 
-    {
-      res = mHTMLEditor->DeleteNode(curNode);
-      if (NS_FAILED(res)) return res;
-      continue;
-    }
-    
-    if (nsHTMLEditUtils::IsList(curNode, mtagListManager))
-    {
-      nsAutoString existingListStr;
-      res = mHTMLEditor->GetTagString(curNode, existingListStr);
-     // ToLowerCase(existingListStr);
-      // do we have a curList already?
-      if (curList && !nsEditorUtils::IsDescendantOf(curNode, curList))
-      {
-        // move all of our children into curList.
-        // cheezy way to do it: move whole list and then
-        // RemoveContainer() on the list.
-        // ConvertListType first: that routine
-        // handles converting the list item types, if needed
-        res = mHTMLEditor->MoveNode(curNode, curList, -1);
-        if (NS_FAILED(res)) return res;
-        res = ConvertListType(curNode, address_of(newBlock), *aListType, itemType);
-        if (NS_FAILED(res)) return res;
-        res = mHTMLEditor->RemoveBlockContainer(newBlock);
-        if (NS_FAILED(res)) return res;
-      }
-      else
-      {
-        // replace list with new list type
-        res = ConvertListType(curNode, address_of(newBlock), *aListType, itemType);
-        if (NS_FAILED(res)) return res;
-        curList = newBlock;
-      }
-      prevListItem = 0;
-      continue;
-    }
-
-    if (nsHTMLEditUtils::IsListItem(curNode, mtagListManager))
-    {
-      nsAutoString existingListStr;
-      res = mHTMLEditor->GetTagString(curParent, existingListStr);
-     // ToLowerCase(existingListStr);
-      if ( existingListStr != *aListType )
-      {
-        // list item is in wrong type of list.  
-        // if we don't have a curList, split the old list
-        // and make a new list of correct type.
-        if (!curList || nsEditorUtils::IsDescendantOf(curNode, curList))
-        {
-          res = mHTMLEditor->SplitNode(curParent, offset, getter_AddRefs(newBlock));
-          if (NS_FAILED(res)) return res;
-          nsCOMPtr<nsIDOMNode> p;
-          PRInt32 o;
-          res = nsEditor::GetNodeLocation(curParent, address_of(p), &o);
-          if (NS_FAILED(res)) return res;
-          res = mHTMLEditor->CreateNode(*aListType, p, o, getter_AddRefs(curList));
-          if (NS_FAILED(res)) return res;
-        }
-        // move list item to new list
-        res = mHTMLEditor->MoveNode(curNode, curList, -1);
-        if (NS_FAILED(res)) return res;
-        // convert list item type if needed
-        if (!mHTMLEditor->NodeIsTypeString(curNode,itemType))
-        {
-          res = mHTMLEditor->ReplaceContainer(curNode, address_of(newBlock), itemType);
-          if (NS_FAILED(res)) return res;
-        }
-      }
-      else
-      {
-        // item is in right type of list.  But we might still have to move it.
-        // and we might need to convert list item types.
-        if (!curList)
-          curList = curParent;
-        else
-        {
-          if (curParent != curList)
-          {
-            // move list item to new list
-            res = mHTMLEditor->MoveNode(curNode, curList, -1);
-            if (NS_FAILED(res)) return res;
-          }
-        }
-        if (!mHTMLEditor->NodeIsTypeString(curNode,itemType))
-        {
-          res = mHTMLEditor->ReplaceContainer(curNode, address_of(newBlock), itemType);
-          if (NS_FAILED(res)) return res;
-        }
-      }
-      nsCOMPtr<nsIDOMElement> curElement = do_QueryInterface(curNode);
-      NS_NAMED_LITERAL_STRING(typestr, "type");
-      if (aBulletType && !aBulletType->IsEmpty()) {
-        res = mHTMLEditor->SetAttribute(curElement, typestr, *aBulletType);
-      }
-      else {
-        res = mHTMLEditor->RemoveAttribute(curElement, typestr);
-      }
-      if (NS_FAILED(res)) return res;
-      continue;
-    }
-    
-    // if we hit a div clear our prevListItem, insert divs contents
-    // into our node array, and remove the div
-    if (nsHTMLEditUtils::IsDiv(curNode, mtagListManager))
-    {
-      prevListItem = nsnull;
-      PRInt32 j=i+1;
-      res = GetInnerContent(curNode, arrayOfNodes, &j);
-      if (NS_FAILED(res)) return res;
-      res = mHTMLEditor->RemoveContainer(curNode);
-      if (NS_FAILED(res)) return res;
-      listCount = arrayOfNodes.Count();
-      continue;
-    }
-      
-    // need to make a list to put things in if we haven't already,
-    if (!curList)
-    {
-      res = SplitAsNeeded(aListType, address_of(curParent), &offset);
-      if (NS_FAILED(res)) return res;
-      res = mHTMLEditor->CreateNode(listType, curParent, offset, getter_AddRefs(curList));
-      if (NS_FAILED(res)) return res;
-      // remember our new block for postprocessing
-      mNewBlock = curList;
-      // curList is now the correct thing to put curNode in
-      prevListItem = 0;
-    }
-  
-    // if curNode isn't a list item, we must wrap it in one
-    nsCOMPtr<nsIDOMNode> listItem;
-    if (!nsHTMLEditUtils::IsListItem(curNode, mtagListManager))
-    {
-      if (IsInlineNode(curNode) && prevListItem)
-      {
-        // this is a continuation of some inline nodes that belong together in
-        // the same list item.  use prevListItem
-        res = mHTMLEditor->MoveNode(curNode, prevListItem, -1);
-        if (NS_FAILED(res)) return res;
-      }
-      else
-      {
-        // don't wrap li around a paragraph.  instead replace paragraph with li
-//         if (nsHTMLEditUtils::IsParagraph(curNode, mtagListManager))
+//   res = LookInsideDivBQandList(arrayOfNodes);
+//   if (NS_FAILED(res)) return res;                                 
+// 
+//   // Ok, now go through all the nodes and put then in the list, 
+//   // or whatever is approriate.  Wohoo!
+// 
+//   listCount = arrayOfNodes.Count();
+//   nsCOMPtr<nsIDOMNode> curParent;
+//   nsCOMPtr<nsIDOMNode> curList;
+//   nsCOMPtr<nsIDOMNode> prevListItem;
+//   
+//   PRInt32 i;
+//   for (i=0; i<listCount; i++)
+//   {
+//     // here's where we actually figure out what to do
+//     nsCOMPtr<nsIDOMNode> newBlock;
+//     nsCOMPtr<nsIDOMNode> curNode = arrayOfNodes[i];
+//     PRInt32 offset;
+//     res = nsEditor::GetNodeLocation(curNode, address_of(curParent), &offset);
+//     if (NS_FAILED(res)) return res;
+//   
+//     // make sure we don't assemble content that is in different table cells into the same list.
+//     // respect table cell boundaries when listifying.
+//     if (curList)
+//     {
+//       PRBool bInDifTblElems;
+//       res = InDifferentTableElements(curList, curNode, &bInDifTblElems);
+//       if (NS_FAILED(res)) return res;
+//       if (bInDifTblElems)
+//         curList = nsnull;
+//     }
+//     
+//     // if curNode is a Break, delete it, and quit remembering prev list item
+//     if (nsTextEditUtils::IsBreak(curNode)) 
+//     {
+//       res = mHTMLEditor->DeleteNode(curNode);
+//       if (NS_FAILED(res)) return res;
+//       prevListItem = 0;
+//       continue;
+//     }
+//     // if curNode is an empty inline container, delete it
+//     else if (IsEmptyInline(curNode)) 
+//     {
+//       res = mHTMLEditor->DeleteNode(curNode);
+//       if (NS_FAILED(res)) return res;
+//       continue;
+//     }
+//     
+//     if (nsHTMLEditUtils::IsList(curNode, mtagListManager))
+//     {
+//       nsAutoString existingListStr;
+//       res = mHTMLEditor->GetTagString(curNode, existingListStr);
+//      // ToLowerCase(existingListStr);
+//       // do we have a curList already?
+//       if (curList && !nsEditorUtils::IsDescendantOf(curNode, curList))
+//       {
+//         // move all of our children into curList.
+//         // cheezy way to do it: move whole list and then
+//         // RemoveContainer() on the list.
+//         // ConvertListType first: that routine
+//         // handles converting the list item types, if needed
+//         res = mHTMLEditor->MoveNode(curNode, curList, -1);
+//         if (NS_FAILED(res)) return res;
+//         res = ConvertListType(curNode, address_of(newBlock), *aListType, itemType);
+//         if (NS_FAILED(res)) return res;
+//         res = mHTMLEditor->RemoveBlockContainer(newBlock);
+//         if (NS_FAILED(res)) return res;
+//       }
+//       else
+//       {
+//         // replace list with new list type
+//         res = ConvertListType(curNode, address_of(newBlock), *aListType, itemType);
+//         if (NS_FAILED(res)) return res;
+//         curList = newBlock;
+//       }
+//       prevListItem = 0;
+//       continue;
+//     }
+// 
+//     if (nsHTMLEditUtils::IsListItem(curNode, mtagListManager))
+//     {
+//       nsAutoString existingListStr;
+//       res = mHTMLEditor->GetTagString(curParent, existingListStr);
+//      // ToLowerCase(existingListStr);
+//       if ( existingListStr != *aListType )
+//       {
+//         // list item is in wrong type of list.  
+//         // if we don't have a curList, split the old list
+//         // and make a new list of correct type.
+//         if (!curList || nsEditorUtils::IsDescendantOf(curNode, curList))
 //         {
-//           res = mHTMLEditor->ReplaceContainer(curNode, address_of(listItem), itemType);
+//           res = mHTMLEditor->SplitNode(curParent, offset, getter_AddRefs(newBlock));
+//           if (NS_FAILED(res)) return res;
+//           nsCOMPtr<nsIDOMNode> p;
+//           PRInt32 o;
+//           res = nsEditor::GetNodeLocation(curParent, address_of(p), &o);
+//           if (NS_FAILED(res)) return res;
+//           res = mHTMLEditor->CreateNode(*aListType, p, o, getter_AddRefs(curList));
+//           if (NS_FAILED(res)) return res;
 //         }
+//         // move list item to new list
+//         res = mHTMLEditor->MoveNode(curNode, curList, -1);
+//         if (NS_FAILED(res)) return res;
+//         // convert list item type if needed
+//         if (!mHTMLEditor->NodeIsTypeString(curNode,itemType))
+//         {
+//           res = mHTMLEditor->ReplaceContainer(curNode, address_of(newBlock), itemType);
+//           if (NS_FAILED(res)) return res;
+//         }
+//       }
+//       else
+//       {
+//         // item is in right type of list.  But we might still have to move it.
+//         // and we might need to convert list item types.
+//         if (!curList)
+//           curList = curParent;
 //         else
-        {
-          res = mHTMLEditor->InsertContainerAbove(curNode, address_of(listItem), itemType);
-        }
-        if (NS_FAILED(res)) return res;
-        if (IsInlineNode(curNode)) 
-          prevListItem = listItem;
-        else
-          prevListItem = nsnull;
-      }
-    }
-    else
-    {
-      listItem = curNode;
-    }
-  
-    if (listItem)  // if we made a new list item, deal with it
-    {
-      // tuck the listItem into the end of the active list
-      res = mHTMLEditor->MoveNode(listItem, curList, -1);
-      if (NS_FAILED(res)) return res;
-    }
-  }
-
-  return res;
-}
+//         {
+//           if (curParent != curList)
+//           {
+//             // move list item to new list
+//             res = mHTMLEditor->MoveNode(curNode, curList, -1);
+//             if (NS_FAILED(res)) return res;
+//           }
+//         }
+//         if (!mHTMLEditor->NodeIsTypeString(curNode,itemType))
+//         {
+//           res = mHTMLEditor->ReplaceContainer(curNode, address_of(newBlock), itemType);
+//           if (NS_FAILED(res)) return res;
+//         }
+//       }
+//       nsCOMPtr<nsIDOMElement> curElement = do_QueryInterface(curNode);
+//       NS_NAMED_LITERAL_STRING(typestr, "type");
+//       if (aBulletType && !aBulletType->IsEmpty()) {
+//         res = mHTMLEditor->SetAttribute(curElement, typestr, *aBulletType);
+//       }
+//       else {
+//         res = mHTMLEditor->RemoveAttribute(curElement, typestr);
+//       }
+//       if (NS_FAILED(res)) return res;
+//       continue;
+//     }
+//     
+//     // if we hit a div clear our prevListItem, insert divs contents
+//     // into our node array, and remove the div
+//     if (nsHTMLEditUtils::IsDiv(curNode, mtagListManager))
+//     {
+//       prevListItem = nsnull;
+//       PRInt32 j=i+1;
+//       res = GetInnerContent(curNode, arrayOfNodes, &j);
+//       if (NS_FAILED(res)) return res;
+//       res = mHTMLEditor->RemoveContainer(curNode);
+//       if (NS_FAILED(res)) return res;
+//       listCount = arrayOfNodes.Count();
+//       continue;
+//     }
+//       
+//     // need to make a list to put things in if we haven't already,
+//     if (!curList)
+//     {
+//       res = SplitAsNeeded(aListType, address_of(curParent), &offset);
+//       if (NS_FAILED(res)) return res;
+//       res = mHTMLEditor->CreateNode(listType, curParent, offset, getter_AddRefs(curList));
+//       if (NS_FAILED(res)) return res;
+//       // remember our new block for postprocessing
+//       mNewBlock = curList;
+//       // curList is now the correct thing to put curNode in
+//       prevListItem = 0;
+//     }
+//   
+//     // if curNode isn't a list item, we must wrap it in one
+//     nsCOMPtr<nsIDOMNode> listItem;
+//     if (!nsHTMLEditUtils::IsListItem(curNode, mtagListManager))
+//     {
+//       if (IsInlineNode(curNode) && prevListItem)
+//       {
+//         // this is a continuation of some inline nodes that belong together in
+//         // the same list item.  use prevListItem
+//         res = mHTMLEditor->MoveNode(curNode, prevListItem, -1);
+//         if (NS_FAILED(res)) return res;
+//       }
+//       else
+//       {
+//         // don't wrap li around a paragraph.  instead replace paragraph with li
+// //         if (nsHTMLEditUtils::IsParagraph(curNode, mtagListManager))
+// //         {
+// //           res = mHTMLEditor->ReplaceContainer(curNode, address_of(listItem), itemType);
+// //         }
+// //         else
+//         {
+//           res = mHTMLEditor->InsertContainerAbove(curNode, address_of(listItem), itemType);
+//         }
+//         if (NS_FAILED(res)) return res;
+//         if (IsInlineNode(curNode)) 
+//           prevListItem = listItem;
+//         else
+//           prevListItem = nsnull;
+//       }
+//     }
+//     else
+//     {
+//       listItem = curNode;
+//     }
+//   
+//     if (listItem)  // if we made a new list item, deal with it
+//     {
+//       // tuck the listItem into the end of the active list
+//       res = mHTMLEditor->MoveNode(listItem, curList, -1);
+//       if (NS_FAILED(res)) return res;
+//     }
+//   }
+// 
+//   return res;
+//}
 
 
 nsresult
