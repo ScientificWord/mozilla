@@ -142,7 +142,7 @@ toolbar[iconsize="small"] html|*.textbox-input {
   padding-bottom: 4px !important;
   background-image: url("chrome://prince/skin/icons/combobox-middle-sm.png");
   background-repeat: repeat-x;
-  background-position: 0px 1px;
+  background-position: 0px 0px;
 }
 
 
