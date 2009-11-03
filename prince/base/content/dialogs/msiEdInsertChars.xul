@@ -16,7 +16,8 @@
         buttonlabelaccept="&insertButton.label;"
         buttonlabelcancel="&closeButton.label;"
         ondialogaccept = "return onAccept();"
-        ondialogcancel = "return onClose();">
+        ondialogcancel = "return onClose();"
+        persist="screenX screenY width height">
 
   <!-- Methods common to all editor dialogs -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>

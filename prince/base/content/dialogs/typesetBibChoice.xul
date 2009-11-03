@@ -12,12 +12,14 @@
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/typesetBibChoice.dtd">
 
 <dialog title="&windowTitle.label;"
+    id="typesetBibChoiceDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload="Startup()"
     width = "200"
     height = "150"
     ondialogaccept="return onAccept();"
-    ondialogcancel="return onCancel();">
+    ondialogcancel="return onCancel();"
+    persist="screenX screenY width height">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>

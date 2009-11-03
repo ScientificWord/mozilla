@@ -33,6 +33,7 @@
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/msiEditorTableProperties.dtd">
 
 <dialog title="&tableWindow.title;"
+    id="msiEdTablePropsDlg"
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload="Startup()"
@@ -40,7 +41,8 @@
     ondialogaccept="return onAccept();"
     ondialogextra1="return Apply();"
     ondialogcancel="return onCancel();"
-    ondialoghelp="return doHelpButton();">
+    ondialoghelp="return doHelpButton();"
+    persist="screenX screenY width height">
 
   <!-- Methods common to all editor dialogs -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
