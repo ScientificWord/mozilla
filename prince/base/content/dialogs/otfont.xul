@@ -12,25 +12,26 @@
 %dialogDTD;
 ]>
 
-<dialog title="&windowTitle.label;"
+<dialog id="otfontdlg" title="&windowTitle.label;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload = "return startup();"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();"
     buttons="apply,accept,cancel" 
-    width="300px" height="200px">
+    width="300px" height="200px"
+    persist="screenX screenY width height">
 
   <!-- Following scripts are needed by any MSI dialog brought up by an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/otfont.js"/>
-  <label>Generally you should use the tags such as emph, sf, large, and small to change font characteristics. Use this dialog sparingly.</label>
+  <label value="&label.generaluse;" accesskey="&label.generaluse.accesskey;" control="otfontlist"/>
   <menulist id="otfontlist" oncommand="">
     <menupopup id="systemfontlist">
-      <menuitem id="otfont.instruction" label="(Select a font)"/>
+      <menuitem id="otfont.instruction" label="&menuitem.select.a.font;"/>
     </menupopup>
   </menulist>
-  <label value="Advanced"/>
+  <label value="&advanced.label;" accesskey="&advanced.accesskey;" control="otfont.advanced"/>
   <textbox id="otfont.advanced" />
   <!-- hbox>
     <vbox>
