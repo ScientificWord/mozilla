@@ -24,12 +24,14 @@
 
 <!-- dialog containing a control requiring initial setup -->
 <dialog title="&windowTitle.label;"
+    id="ComputeMomentDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload = "Startup()"
     onunload="ShutdownEditorsForWindow()"
     ondialogaccept = "OK()"
     ondialogcancel = "Cancel()"
-    buttons="accept,cancel">
+    buttons="accept,cancel"
+    persist="screenX screenY width height">
 
   <!-- Methods common to all editor dialogs -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
@@ -114,8 +116,8 @@
         <caption label="&origin.label;"/>
         <hbox>
         <radiogroup id="origin" orient="vertical" oncommand="checkEnableControls();">
-          <radio label="&mean.label;" id="last" selected="true"/>
-          <radio label="&giveorigin.label;" id="first" selected="false"/>
+          <radio label="&mean.label;" accesskey="&mean.label.accesskey;" id="last" selected="true"/>
+          <radio label="&giveorigin.label;" accesskey="&giveorigin.label.accesskey;" id="first" selected="false"/>
         </radiogroup>
         <editor editortype="html" type="content" context="msiEditorContentContext" flex="1" height="60" width="100" id="origin-frame" onblur="checkEnableControls"/>
         </hbox>
