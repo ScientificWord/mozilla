@@ -23,7 +23,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/fontsize.js"/>
-  <label>Generally you should use the tags such as large, huge, and small to change font size. Use this dialog sparingly.</label>
+  <label>&fontsize.generalinfo;</label>
   <hbox>
     <vbox>
       <label value="&fontsize.label;" control="otfont.fontsize" 	accesskey="&fontsize.accesskey;"/>
@@ -37,10 +37,10 @@
      <label value="&units.label;" accesskey="units.label"/>
      <menulist id="otfont.units">
        <menupopup>
-         <menuitem id="otfont.pt" label="pt" value="pt"/>
-         <menuitem id="otfont.cm" label="cm" value="cm"/>
-         <menuitem id="otfont.mm" label="mm" value="mm"/>
-         <menuitem id="otfont.inch" label="in" value="in"/>
+         <menuitem id="otfont.pt" label="&pt.menuitem;" value="pt"/>
+         <menuitem id="otfont.cm" label="&cm.menuitem;" value="cm"/>
+         <menuitem id="otfont.mm" label="&mm.menuitem;" value="mm"/>
+         <menuitem id="otfont.inch" label="&in.menuitem;" value="in"/>
        </menupopup>
      </menulist>
      <hbox flex="1"/>
