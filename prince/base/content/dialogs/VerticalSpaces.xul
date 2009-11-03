@@ -12,7 +12,7 @@
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/VerticalSpaces.dtd">
 
-<dialog id="verticalspaces" title="&windowTitle.label;"
+<dialog id="VerticalSpacesDlg" title="&windowTitle.label;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload="Startup()"
     ondialogaccept="return onAccept();"

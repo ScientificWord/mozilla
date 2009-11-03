@@ -24,11 +24,13 @@
 ]>
 
 <dialog title="&windowTitle.label;"
+    id="typesetFrontMatterDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload="Startup();"
 		onunload="ShutdownAllEditors();"
     ondialogaccept="return onAccept();"
-    ondialogcancel="return onCancel();">
+    ondialogcancel="return onCancel();"
+    persist="screenX screenY width height">
 
   <!-- Methods common to all editor dialogs -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
