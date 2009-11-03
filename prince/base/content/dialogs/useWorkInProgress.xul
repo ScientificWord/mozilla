@@ -10,7 +10,7 @@
 %dialogDTD;
 ]>
 
-<dialog id="workinprogress" persist="width height screenx screeny"
+<dialog id="workinprogress" 
     title="&useWIP.title;"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     buttons="accept,cancel" 
@@ -18,7 +18,8 @@
     buttonlabelcancel="&useWIP.cancel;"
     buttonlabelaccept="&useWIP.accept;"
     ondialogaccept="window.arguments[0].value=true; return;"
-    ondialogcancel="close(); return;">
+    ondialogcancel="close(); return;"
+    persist="screenX screenY width height">
 
   <script type="application/x-javascript" src="chrome://prince/content/useWorkInProgress.js"/>
   <description>&useWIP.description;</description>   
