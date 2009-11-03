@@ -3,7 +3,20 @@
 
 <!ENTITY fontsizetitle.label "Set font size and spacing">
 <!ENTITY fontsize.label "Font size">
+<!ENTITY fontsize.accesskey "F">
 <!ENTITY fontsize.tooltip "The size of the font">
 <!ENTITY units.label "Units">
+<!ENTITY units.accesskey "U">
 <!ENTITY leading.tooltip "The line spacing for the font">
 <!ENTITY leading.label "Line spacing">
+<!ENTITY leading.accesskey "L">
+<!ENTITY advanced.label "Advanced">
+<!ENTITY advanced.accesskey "A">
+<!ENTITY pt.menuitem  "pt">
+<!ENTITY cm.menuitem  "cm">
+<!ENTITY mm.menuitem  "mm">
+<!ENTITY in.menuitem  "in">
+<!ENTITY label.generaluse "Generally you should use the tags such as emph, sf, large, and small to change font characteristics. Use this dialog sparingly.">
+<!ENTITY label.generaluse.accesskey "G">
+<!ENTITY menuitem.select.a.font "(Select a font)">
+<!ENTITY fontsize.generalinfo "Generally you should use the tags such as large, huge, and small to change font size. Use this dialog sparingly.">
