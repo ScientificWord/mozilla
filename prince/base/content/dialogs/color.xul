@@ -13,12 +13,14 @@
 ]>
 
 <dialog title="&windowTitle.label;"
+    id="colorDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload = "return startup();"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();"
     buttons="apply,accept,cancel" 
-    width="300px" height="200px">
+    width="300px" height="200px"
+    persist="screenX screenY width height">
 
   <!-- Following scripts are needed by any MSI dialog brought up by an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>

@@ -15,13 +15,14 @@
 ]>
 
 <dialog title="Document style sheets"
+    id="DocumentStyleDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     xmlns:html="http://www.w3.org/1999/xhtml"
     onload = "startup();"
     buttons="accept,cancel"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();"
-    persist="width height screenx screeny">
+    persist="width height screenX screenY">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript"  src="chrome://prince/content/msiEditorUtilities.js"/>

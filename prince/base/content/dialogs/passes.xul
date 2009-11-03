@@ -10,14 +10,16 @@
 %dialogDTD;
 ]>
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-    title="LaTeX passes" buttons="cancel"
+    title="LaTeX passes" 
+    id="passesDlg"
+    buttons="cancel"
     buttonlabelcancel="Cancel"
     ondialogcancel="onCancel();"
     onload="Init();"
     width="400px"
     height="200px"
     persist="screenX screenY width height"
-    id="dialog">
+    >
   <!-- Following scripts are needed by any MSI dialog brought up by an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
