@@ -12,13 +12,14 @@
 ]>
 
 <dialog title="&windowTitle.label;"
+    id="tagkeyassignmentsDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload = "startUp();"
     ondialogaccept="return onAccept();"
     buttons="accept,cancel"
     buttonlabelaccept="Save changes to file"
     buttonlabelcancel="Done" 
-    persist="height width" >
+    persist="screenX screenY height width" >
 
   <!-- Following scripts are needed by any MSI dialog brought up by an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
