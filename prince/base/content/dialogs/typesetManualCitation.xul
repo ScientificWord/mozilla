@@ -25,10 +25,12 @@
 ]>
 
 <dialog title="&windowTitle.label;"
+    id="typesetManualCitationDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload="Startup();"
     ondialogaccept="return onAccept();"
-    ondialogcancel="return onCancel();">
+    ondialogcancel="return onCancel();"
+    persist="screenX screenY width height">
 
   <!-- Following scripts are needed by any MSI dialog brought up by an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
