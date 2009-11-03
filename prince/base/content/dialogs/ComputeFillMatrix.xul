@@ -26,12 +26,14 @@
 
 <!-- dialog containing a control requiring initial setup -->
 <dialog title="&windowTitle.label;"
+    id="ComputeFillMatrixDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload = "Startup()"
     onunload="ShutdownEditorsForWindow()"
     ondialogaccept = "return OK()"
     ondialogcancel = "return Cancel()"
-    buttons="accept,cancel">
+    buttons="accept,cancel"
+    persist="screenX screenY width height">
 
   <!-- Following scripts are needed by any MSI dialog brought up by an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>

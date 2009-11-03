@@ -22,6 +22,7 @@
   ondialogaccept="return onAccept();"
   ondialogcancel="return onCancel();"
   onload="startUp();"
+  persist="screenX screenY width height"
 >
 
   <!-- Scripts specific to this dialog -->

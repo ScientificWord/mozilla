@@ -14,7 +14,8 @@
 <dialog id="ChamTestWindow"
         title="ChamTestWindow" modal="false"
         onload = "Startup()" onclick="offButtonClick();"
-        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        persist="screenX screenY width height">
 
   <script type="application/x-javascript" src="chrome://prince/content/editor.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/chamtest.js"/>
