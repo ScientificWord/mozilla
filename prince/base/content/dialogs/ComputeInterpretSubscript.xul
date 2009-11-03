@@ -11,11 +11,13 @@
 
 <!-- dialog containing a control requiring initial setup -->
 <dialog title="&windowTitle.label;"
+    id="ComputeInterpretSubscriptDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload = "Startup()"
     ondialogaccept = "OK()"
     ondialogcancel = "Cancel()"
-    buttons="accept,cancel">
+    buttons="accept,cancel"
+    persist="screenX screenY width height">
 
   <!-- Methods common to all editor dialogs -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
@@ -27,8 +29,8 @@
   <hbox id="outer-box" flex="1">
     <vbox>
       <radiogroup id="subscript">
-        <radio label="&name.label;"     id="name"     selected="true"/>
-        <radio label="&function.label;" id="function" selected="false"/>
+        <radio label="&name.label;" accesskey="&name.label.accesskey;"    id="name"     selected="true"/>
+        <radio label="&function.label;" accesskey="&function.label.accesskey;" id="function" selected="false"/>
       </radiogroup>
     </vbox>
   </hbox>

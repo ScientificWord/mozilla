@@ -7,4 +7,6 @@
 
 <!ENTITY origin.label "Choose Origin:">
 <!ENTITY giveorigin.label "Give origin:">
+<!ENTITY giveorigin.label.accesskey "G">
 <!ENTITY mean.label "Compute moment about the mean.">
+<!ENTITY mean.label.accesskey "C">
