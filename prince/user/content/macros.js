@@ -73,6 +73,12 @@ function insertSectionTag( tagname, delSelection )
   msiDoStatefulCommand('cmd_structtag', tagname );
 }
 
+function insertListItem( tagname, delSelection )
+{
+  if (delSelection) deleteSelection();
+  msiDoStatefulCommand('cmd_paratag', tagname );
+}
+
 function yell ( textString, delSelection )
 {
   if (delSelection) deleteSelection();
