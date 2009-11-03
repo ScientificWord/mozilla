@@ -14,7 +14,9 @@
   ondialogaccept="return onAccept();"
   ondialogcancel="return onCancel();"
   persist="width height screenX screenY"
-  title="&windowTitle.label;">
+  title="&windowTitle.label;"
+  id="paragraphPropertiesDlg">
+
 <tabbox id="tabboxid" flex="1">
   <tabs>
     <tab label="&tab.indents.spacing;" />
