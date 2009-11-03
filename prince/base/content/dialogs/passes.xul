@@ -16,20 +16,20 @@
     onload="Init();"
     width="400px"
     height="200px"
-    persist="top left width height"
+    persist="screenX screenY width height"
     id="dialog">
   <!-- Following scripts are needed by any MSI dialog brought up by an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/passes.js"/>
-  <dialogheader title="LaTeX passes" description="Set the number of LaTeX passes"/>  
-  <label hidden="true" id="passStatusTemplate" value="Making pass #n of #m"/>
+  
+  <label hidden="true" id="passStatusTemplate" value="&passcount;"/>
   <label id="passStatus" value = ""/>
   <separator/>
   <hbox>
     <vbox>
-      <label control="numpasses" accesskey="n" value="New number of passes"/>
+      <label control="numpasses" accesskey="n" value="&newnumpass;"/>
       <textbox id="numpasses" type="number" persist="width" style="width:25px;" value="3" onchange="newPasses();"/>
     </vbox>
     <vbox flex="1"/>
