@@ -54,7 +54,7 @@
     </vbox> 
     <vbox style="width:2in" >
       <label value="Shell Files:"/>
-      <listbox flex = "1" id="dircontents" oncommand="return onAccept();" value=""/>
+      <listbox flex = "1" id="dircontents" oncommand="return onAccept();" ondblclick="acceptDialog();" value=""/>
     </vbox>
   </hbox>
 
