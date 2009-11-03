@@ -14,10 +14,12 @@
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/Binomial.dtd">
 
 <dialog title="&windowTitle.label;"
+    id="BinomialDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload="Startup()"
     ondialogaccept="return onAccept();"
-    ondialogcancel="return onCancel();">
+    ondialogcancel="return onCancel();"
+    persist="screenX screenY width height">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
