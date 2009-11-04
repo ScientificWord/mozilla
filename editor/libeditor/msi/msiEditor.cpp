@@ -69,7 +69,7 @@ void DumpRange( nsIRange * range)
 
 void DumpSelection( nsISelection * sel)
 {
-  nsresult res;
+//  nsresult res;
   //nsCOMPtr<nsIDOMNode> aAnchorNode;
   //PRInt32 anchorOffset;
   //nsString anchorName;
@@ -1024,14 +1024,14 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
 // Commenting the next block of code removes Larry's cursor handling code and restores
 // (since preventDefault is not called) the Mozilla cursor handling
 //
-    if //(keyCode == nsIDOMKeyEvent::DOM_VK_LEFT  ||  keyCode == nsIDOMKeyEvent::DOM_VK_RIGHT ||
-        (keyCode == nsIDOMKeyEvent::DOM_VK_UP    ||  keyCode == nsIDOMKeyEvent::DOM_VK_DOWN)
+    if (keyCode == nsIDOMKeyEvent::DOM_VK_LEFT  ||  keyCode == nsIDOMKeyEvent::DOM_VK_RIGHT ||
+        (keyCode == nsIDOMKeyEvent::DOM_VK_UP    ||  keyCode == nsIDOMKeyEvent::DOM_VK_DOWN))
    {
      PRBool preventDefault(PR_FALSE);
      res = HandleArrowKeyPress(keyCode, isShift, ctrlKey, altKey, metaKey, preventDefault); 
      if (NS_SUCCEEDED(res) && preventDefault)
        aKeyEvent->PreventDefault();
-     return NS_OK;
+     if (preventDefault) return NS_OK;
    }
     // Check for mapped characters -- function keys or one-shot mapping
     
@@ -1141,7 +1141,9 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
           }
           else if (symbol == '\'')
           {
-            res = InsertSymbol(L'\x2032');
+            res = InsertSuperscript();
+            res = InsertSymbol(L'\x2032');  // need 'big prime'
+            res = HandleArrowKeyPress(nsIDOMKeyEvent::DOM_VK_RIGHT, isShift, ctrlKey, altKey, metaKey, preventDefault); 
             preventDefault = PR_TRUE;
           }
           else {
@@ -2212,118 +2214,119 @@ msiEditor::HandleArrowKeyPress(PRUint32 keyCode, PRBool isShift, PRBool ctrlDown
     if (caretOp == msiIMathMLCaret::TAB_LEFT)  // SLS this seems really ugly
       isShift = PR_FALSE;
     res = GetNodeAndOffsetFromMMLCaretOp(caretOp, currNode, currOffset, newFocus, newOffset);
+    if ((newFocus) && (newFocus != msiFocus || newOffset != msiFocusOff)) preventDefault = PR_TRUE;
   }
   else
   {
-    //TODO -- I don't like this code. It uses nsEditor's GetNextNode and GetPriorNode to get a text node
-    //  and then I check if this node is in math -- kinda hacky and not robust.
-    nsCOMPtr<nsIDOMNode> testNode;
-    PRUint32 flags(msiIMathMLCaret::FLAGS_NONE);
-    if (keyCode == nsIDOMKeyEvent::DOM_VK_RIGHT)
-    {
-      if (IsTextContentNode(currNode))
-      {
-        nsCOMPtr<nsIDOMCharacterData> chardata(do_QueryInterface(currNode));
-        PRUint32 length(0);
-        if (chardata)
-        {
-          chardata->GetLength(&length);
-          if (length > 0)
-          {
-            if (currOffset == length)
-            {
-              nsCOMPtr<nsIDOMNode> nextnode;
-              GetNextNode(currNode, PR_FALSE, address_of(nextnode), PR_FALSE); 
-              if (nextnode)
-              {
-                testNode = nextnode;
-                newFocus = nextnode;
-                newOffset = 1;
-              }
-            }
-            else 
-            {
-              newFocus = currNode;
-              newOffset = currOffset+1;
-            }
-          }  
-        }  
-      }
-      else
-      {
-        nsCOMPtr<nsIDOMNode> nextnode;
-        GetNextNode(currNode, currOffset, PR_FALSE, address_of(nextnode), PR_FALSE); 
-        if (nextnode)
-        {
-          testNode = nextnode;
-          newFocus = currNode;
-          newOffset = 1;
-        }
-      }
-    }  
-    else if (keyCode == nsIDOMKeyEvent::DOM_VK_LEFT)
-    {
-      if (IsTextContentNode(currNode))
-      {
-        if (currOffset == 0)
-        {
-          nsCOMPtr<nsIDOMNode> priornode;
-          GetPriorNode(currNode, PR_FALSE, address_of(priornode), PR_FALSE); 
-          if (priornode)
-          {
-            testNode = priornode;
-            newFocus = currNode;
-            newOffset = 0; // BBM fix this
-          } 
-        }
-        else 
-        {
-          newFocus = currNode;
-          newOffset = currOffset-1;
-        }
-      }
-      else
-      {
-        nsCOMPtr<nsIDOMNode> priornode;
-        GetPriorNode(currNode, currOffset, PR_FALSE, address_of(priornode), PR_FALSE); 
-        if (priornode)
-          testNode = priornode;
-      }
-    }
-    if (testNode && NodeInMath(testNode))
-    {
-      nsCOMPtr<msiIMathMLCaret> mathmlEditing;
-      PRUint32 offset(msiIMathMLEditingBC::INVALID);
-      nsCOMPtr<nsIDOMNode> mathParent;
-      GetMathParent(testNode, mathParent);
-      if (mathParent)
-      {
-        if (keyCode == nsIDOMKeyEvent::DOM_VK_LEFT)
-        {
-          PRUint32 number(0);
-          nsCOMPtr<nsIDOMNodeList> childNodes;
-          res = mathParent->GetChildNodes(getter_AddRefs(childNodes));
-          if (NS_SUCCEEDED(res) && childNodes)
-            res = childNodes->GetLength(&number);
-          offset = number;  
-        }
-        else
-          offset = 0;
-        GetMathMLCaretInterface(mathParent, offset, getter_AddRefs(mathmlEditing));
-      }
-      if (mathmlEditing)
-      {
-        PRUint32 flags = keyCode == nsIDOMKeyEvent::DOM_VK_RIGHT ? msiIMathMLCaret::FROM_LEFT : msiIMathMLCaret::FROM_RIGHT;
-        res = mathmlEditing->Accept(this, flags, getter_AddRefs(newFocus), &newOffset);
-      }
-    }  
+    preventDefault = PR_FALSE;
+    return NS_OK;
+//    //TODO -- I don't like this code. It uses nsEditor's GetNextNode and GetPriorNode to get a text node
+//    //  and then I check if this node is in math -- kinda hacky and not robust.
+//    nsCOMPtr<nsIDOMNode> testNode;
+//    PRUint32 flags(msiIMathMLCaret::FLAGS_NONE);
+//    if (keyCode == nsIDOMKeyEvent::DOM_VK_RIGHT)
+//    {
+//      if (IsTextContentNode(currNode))
+//      {
+//        nsCOMPtr<nsIDOMCharacterData> chardata(do_QueryInterface(currNode));
+//        PRUint32 length(0);
+//        if (chardata)
+//        {
+//          chardata->GetLength(&length);
+//          if (length > 0)
+//          {
+//            if (currOffset == length)
+//            {
+//              nsCOMPtr<nsIDOMNode> nextnode;
+//              GetNextNode(currNode, PR_FALSE, address_of(nextnode), PR_FALSE); 
+//              if (nextnode)
+//              {
+//                testNode = nextnode;
+//                newFocus = nextnode;
+//                newOffset = 1;
+//              }
+//            }
+//            else 
+//            {
+//              newFocus = currNode;
+//              newOffset = currOffset+1;
+//            }
+//          }  
+//        }  
+//      }
+//      else
+//      {
+//        nsCOMPtr<nsIDOMNode> nextnode;
+//        GetNextNode(currNode, currOffset, PR_FALSE, address_of(nextnode), PR_FALSE); 
+//        if (nextnode)
+//        {
+//          testNode = nextnode;
+//          newFocus = currNode;
+//          newOffset = 1;
+//        }
+//      }
+//    }  
+//    else if (keyCode == nsIDOMKeyEvent::DOM_VK_LEFT)
+//    {
+//      if (IsTextContentNode(currNode))
+//      {
+//        if (currOffset == 0)
+//        {
+//          nsCOMPtr<nsIDOMNode> priornode;
+//          GetPriorNode(currNode, PR_FALSE, address_of(priornode), PR_FALSE); 
+//          if (priornode)
+//          {
+//            testNode = priornode;
+//            newFocus = currNode;
+//            newOffset = 0; // BBM fix this
+//          } 
+//        }
+//        else 
+//        {
+//          newFocus = currNode;
+//          newOffset = currOffset-1;
+//        }
+//      }
+//      else
+//      {
+//        nsCOMPtr<nsIDOMNode> priornode;
+//        GetPriorNode(currNode, currOffset, PR_FALSE, address_of(priornode), PR_FALSE); 
+//        if (priornode)
+//          testNode = priornode;
+//      }
+//    }
+//    if (testNode && NodeInMath(testNode))
+//    {
+//      nsCOMPtr<msiIMathMLCaret> mathmlEditing;
+//      PRUint32 offset(msiIMathMLEditingBC::INVALID);
+//      nsCOMPtr<nsIDOMNode> mathParent;
+//      GetMathParent(testNode, mathParent);
+//      if (mathParent)
+//      {
+//        if (keyCode == nsIDOMKeyEvent::DOM_VK_LEFT)
+//        {
+//          PRUint32 number(0);
+//          nsCOMPtr<nsIDOMNodeList> childNodes;
+//          res = mathParent->GetChildNodes(getter_AddRefs(childNodes));
+//          if (NS_SUCCEEDED(res) && childNodes)
+//            res = childNodes->GetLength(&number);
+//          offset = number;  
+//        }
+//        else
+//          offset = 0;
+//        GetMathMLCaretInterface(mathParent, offset, getter_AddRefs(mathmlEditing));
+//      }
+//      if (mathmlEditing)
+//      {
+//        PRUint32 flags = keyCode == nsIDOMKeyEvent::DOM_VK_RIGHT ? msiIMathMLCaret::FROM_LEFT : msiIMathMLCaret::FROM_RIGHT;
+//        res = mathmlEditing->Accept(this, flags, getter_AddRefs(newFocus), &newOffset);
+//      }
+//    }  
   }
   if (NS_SUCCEEDED(res))
   {
     if (newFocus && newOffset <= msiIMathMLEditingBC::LAST_VALID)
       res = SetSelection(newFocus, newOffset, isShift, preventDefault); 
-    else
-      preventDefault = PR_TRUE;
   }
   return res;  
 }
@@ -2799,7 +2802,7 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
 //  if (!originalNode) return res;
 //  selection->GetFocusOffset( &intOffset );
 //  offset = (PRUint32)intOffset;
-//  PRUint32 originalOffset = offset;
+//  PRUint32 originalOffset =ffset;
 //  GetNextCharacter(originalNode, originalOffset, getter_AddRefs(node), offset, ch, lookupResult);
 //  if (node)  // there was success somewhere
 //  {
