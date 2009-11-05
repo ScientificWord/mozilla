@@ -14,11 +14,11 @@ pref("toolkit.scrollbar.clickToScroll.scrollDelay", 100);
 pref("toolkit.scrollbar.scrollIncrement", 20);
 pref("toolkit.scrollbar.smoothscroll", true);
 
-pref("swp.defaultShell", "articles/StdArticleShell.sci");
+pref("swp.defaultShell", "articles/Standard_LaTeX_Article.sci");
 pref("swp.defaultDialogShell", "chrome://prince/content/StdDialogShell.xhtml");
 pref("swp.saveintervalminutes",2);
 pref("swp.prefDocumentDir","SWPDocs");
-pref("editor.author",                       "");
+pref("editor.author",                      "");
 
 pref("editor.text_color",                   "#000000");
 pref("editor.link_color",                   "#0000FF");
@@ -37,7 +37,7 @@ pref("editor.hrule.align",                  1);
 
 pref("editor.table.maintain_structure", true);
 
-pref("editor.prettyprint", true);
+pref("editor.prettyprint", true);                        i
 
 pref("editor.throbber.url","chrome://editor-region/locale/region.properties");
 
