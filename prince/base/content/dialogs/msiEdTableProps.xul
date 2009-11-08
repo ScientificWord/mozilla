@@ -67,7 +67,7 @@
       <tabpanel>
       <vbox>
         <!-- Table Alignment and Caption -->
-        <hbox flex="1" align="center">
+        <hbox flex="1" align="start">
           <groupbox orient="vertical" align="start">
             <caption control="ColumnAlignRadioGroup"
                      label="&columnAlignment.label;"
@@ -78,7 +78,8 @@
               <radio label="&AlignRight.label;"  group="ColumnAlignRadioGroup" value="right" id="ColAlignRightRadio" accesskey="&AlignRight.accesskey;"/>
             </radiogroup>
           </groupbox>
-          <spacer class="spacer"/>
+          <!-- spacer class="spacer"/ -->
+          <spacer flex="1"/>
           <groupbox orient="vertical" align="start">
             <caption control="RowAlignRadioGroup" label="&rowAlignment.label;" accesskey="&rowAlignment.accesskey;"/>
             <radiogroup id="RowAlignRadioGroup" oncommand="AlignmentChanged(this.id);">
@@ -88,9 +89,10 @@
             </radiogroup>
           </groupbox>
         </hbox>
-        <spacer class="spacer"/>
+        <spacer flex="1"/>
+        <!-- spacer class="spacer"/ -->
         <hbox>
-        <groupbox orient="vertical" align="center">
+        <groupbox orient="vertical" align="start">
           <caption control="BaselineRadioGroup" label="&tableBaseline.label;" accesskey="&tableBaseline.accesskey;"/>
           <radiogroup id="TableBaselineRadioGroup" oncommand="TablePropertyChanged(this.id);">
               <radio label="&BaselineTopRow.label;" group="TableBaselineRadioGroup" value="topRow" id="BaselineTopRowRadio" accesskey="&BaselineTopRow.accesskey;"/>
@@ -99,6 +101,7 @@
           </radiogroup>
         </groupbox>
         </hbox>
+        <spacer class="spacer"/>
       </vbox>
       </tabpanel>
 
@@ -267,13 +270,13 @@
               <columns><column/><column/><column flex="1"/></columns>
               <rows>
                 <row align="center">
-                  <checkbox id="CellHeightCheckbox" label="&tableHeight.label;" accesskey="&tableHeight.accesskey;" oncommand="CheckboxChanged(this.id);"/>
+                  <checkbox id="CellHeightCheckbox" label="&tableRowHeight.label;" accesskey="&tableRowHeight.accesskey;" oncommand="CheckboxChanged(this.id);"/>
                   <textbox class="narrow" id="CellHeightInput"
                            oninput="ChangeCellSize(this.id);"/>
                   <menulist id="CellHeightUnits" />
                 </row>
                 <row align="center">
-                  <checkbox id="CellWidthCheckbox" label="&tableWidth.label;" accesskey="&tableWidth.accesskey;" oncommand="CheckboxChanged(this.id);"/>
+                  <checkbox id="CellWidthCheckbox" label="&tableColumnWidth.label;" accesskey="&tableColumnWidth.accesskey;" oncommand="CheckboxChanged(this.id);"/>
                   <textbox class="narrow" id="CellWidthInput"
                            oninput="ChangeCellSize(this.id);"/>
                   <menulist id="CellWidthUnits" />
