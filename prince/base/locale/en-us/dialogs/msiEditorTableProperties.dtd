@@ -48,10 +48,10 @@
 <!ENTITY tableColumns.label               "Columns:">
 <!ENTITY tableColumns.accesskey           "C" -->
 
-<!ENTITY tableHeight.label                "Height:">
-<!ENTITY tableHeight.accesskey            "G">
-<!ENTITY tableWidth.label                 "Width:">
-<!ENTITY tableWidth.accesskey             "W">
+<!ENTITY tableRowHeight.label             "Row Height:">
+<!ENTITY tableRowHeight.accesskey         "H">
+<!ENTITY tableColumnWidth.label           "Column Width:">
+<!ENTITY tableColumnWidth.accesskey       "W">
 
 <!-- !ENTITY tableBorderSpacing.label         "Borders and Spacing">
 <!ENTITY tableSpacing.label               "Spacing:">
