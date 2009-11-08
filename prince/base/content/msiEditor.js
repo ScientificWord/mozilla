@@ -5402,12 +5402,12 @@ msiTablePropertiesObjectData.prototype =
 
   getColsInSelection : function()
   {
-    return mColSelectionArray;
+    return this.mColSelectionArray;
   },
 
   getRowsInSelection : function()
   {
-    return mRowSelectionArray;
+    return this.mRowSelectionArray;
   },
 
 //Implementation (non-interface) methods:

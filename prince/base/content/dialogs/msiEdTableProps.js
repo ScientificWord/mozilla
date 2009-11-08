@@ -103,6 +103,9 @@ From C++:
 var gOurCellData;
 var gInitialCellData;
 var gCollatedCellData;  //This starts out as the same as the previous, but changes as the user makes selections in the dialog.
+var gColElementArray;
+var gRowElementArray;
+
 var gTableColor;
 var gTableCaptionPlacement;
 var gTableBaseline = "baseline";
@@ -390,8 +393,15 @@ function UseCSSForCellProp(propName)
   switch(propName)
   {
     case "border-style":
-    case "width":
       return (!gIsMatrix);
+    break;
+
+    case "width":
+//      return (!gIsMatrix && !ShouldSetWidthOnCols());
+      return false;
+    break;
+    case "height":
+      return (!gIsMatrix && !ShouldSetHeightOnRows());
     break;
   }
   return true;
@@ -400,11 +410,13 @@ function UseCSSForCellProp(propName)
 function ShouldSetWidthOnCols()
 {
   return gIsMatrix;
+//  return true;
 }
 
 function ShouldSetHeightOnRows()
 {
-  return gIsMatrix;
+//  return gIsMatrix;
+  return true;
 }
 
 function translateSelectionTypeString(selTypeStr)
@@ -1356,7 +1368,10 @@ function ValidateData()
 //rwa     globalElement = globalTableElement;
 //rwa   else
 //rwa     globalElement = globalCellElement;
-//rwa 
+//rwa
+  gCellWidthUnit = gDialog.CellWidthUnits.value;
+  gCellHeightUnit = gDialog.CellHeightUnits.value;
+
   return true;
 }
 
@@ -1396,11 +1411,17 @@ function CheckboxChanged(checkID)
   {
     case "CellWidthCheckbox":
       gCellChangeData.size.width = true;
+      gCellWidthUnit = gDialog.CellWidthUnits.value;
       gCollatedCellData.size.bWidthSet = gDialog.CellWidthCheckbox.checked;
+      if (gCollatedCellData.size.bWidthSet)
+        gCollatedCellData.size.width = gWidthUnitsController.getValue(gDialog.CellWidthInput, gCellWidthUnit);
     break;
     case "CellHeightCheckbox":
       gCellChangeData.size.height = true;
-      gCollatedCellData.size.bHeightSet = gDialog.CellWidthCheckbox.checked;
+      gCellHeightUnit = gDialog.CellHeightUnits.value;
+      gCollatedCellData.size.bHeightSet = gDialog.CellHeightCheckbox.checked;
+      if (gCollatedCellData.size.bHeightSet)
+        gCollatedCellData.size.height = gHeightUnitsController.getValue(gDialog.CellHeightInput, gCellHeightUnit);
     break;
     case "TextWrapCheckbox":
       gCellChangeData.wrap = true;
@@ -1415,11 +1436,13 @@ function ChangeCellSize(textID)
   {
     case "CellWidthInput":
       gCellChangeData.size.width = true;
-      gCollatedCellData.size.width = gWidthUnitsController.getValue(textID);
+      gCellWidthUnit = gDialog.CellWidthUnits.value;
+      gCollatedCellData.size.width = gWidthUnitsController.getValue(gDialog.CellWidthInput, gCellWidthUnit);
     break;
     case "CellHeightInput":
       gCellChangeData.size.height = true;
-      gCollatedCellData.size.height = gHeightUnitsController.getValue(textID);
+      gCellHeightUnit = gDialog.CellHeightUnits.value;
+      gCollatedCellData.size.height = gHeightUnitsController.getValue(gDialog.CellHeightInput, gCellHeightUnit);
     break;
   }
 }
@@ -1563,6 +1586,7 @@ function DoStyleChangesForACell(destCell)
   globalCellElement = destCell.cloneNode(false);
   globalCellElement.setAttribute("style", destCell.getAttribute("style"));
   var borderProps = ["style", "width", "color"];
+  var logStr = "";
   for (var nProp = 0; nProp < borderProps.length; ++nProp)
   {
     theProp = borderProps[nProp];
@@ -1578,14 +1602,24 @@ function DoStyleChangesForACell(destCell)
   if (gCellChangeData.size.width)
   {
     if (gCollatedCellData.size.bWidthSet && UseCSSForCellProp("width"))
-      globalCellElement.style.setProperty("width", String(gCollatedCellData.size.width) + gCellWidthUnit, "");
+    {
+      logStr = "In msiEdTableProps.js, DoStyleChangesForACell(); cell width string should be [" + String(gCollatedCellData.size.width) + gCellWidthUnit + "]\n";
+      msiKludgeLogString(logStr, ["tableEdit"]);
+//      globalCellElement.style.setProperty("width", String(gCollatedCellData.size.width) + gCellWidthUnit, "");  this should be what works, but apparently it's necessary to use pixels in Mozilla??
+      globalCellElement.style.setProperty("width", gWidthUnitsController.getValueString(gDialog.CellWidthInput, "px"), "");
+    }
     else
       globalCellElement.style.removeProperty("width");
   }
   if (gCellChangeData.size.height)
   {
     if (gCollatedCellData.size.bHeightSet && UseCSSForCellProp("height"))
-      globalCellElement.style.setProperty("height", String(gCollatedCellData.size.height) + gCellHeightUnit, "");
+    {
+      logStr = "In msiEdTableProps.js, DoStyleChangesForACell(); cell height string should be [" + String(gCollatedCellData.size.height) + gCellHeightUnit + "]\n";
+      msiKludgeLogString(logStr, ["tableEdit"]);
+//      globalCellElement.style.setProperty("height", String(gCollatedCellData.size.height) + gCellHeightUnit, "");  this should be what works, but apparently it's necessary to use pixels in Mozilla??
+      globalCellElement.style.setProperty("height", gHeightUnitsController.getValueString(gDialog.CellHeightInput, "px"), "");
+    }
     else
       globalCellElement.style.removeProperty("height");
   }
@@ -1614,7 +1648,7 @@ function DoStyleChangesForACell(destCell)
   }
   var theStyle = globalCellElement.getAttribute("style");
   gActiveEditor.setAttribute(destCell, "style", theStyle);
-  var logStr = "In msiEdTableProps.js, DoStyleChangesForACell(); set attribute [style] on cell element to [" + theStyle + "]\n";
+  logStr = "In msiEdTableProps.js, DoStyleChangesForACell(); set attribute [style] on cell element to [" + theStyle + "]\n";
   msiKludgeLogString(logStr, ["tableEdit"]);
 }
 
@@ -1895,10 +1929,365 @@ function ApplyTableAttributes()
 //  gCellDataChanged = false;
 //}
 
+function getColElements()
+{
+  if (!gColElementArray)
+    gColElementArray = findColElementsInNode(gTableElement);
+  return gColElementArray;
+}
+
+function getRowElements()
+{
+  if (!gRowElementArray)
+    gRowElementArray = findRowElementsInNode(gTableElement);
+  return gRowElementArray;
+}
+
+function getColNodeForColumn(nCol)
+{
+  var colArray = getColElements();
+  if (colArray && colArray.length > nCol)
+    return colArray[nCol].mNode;
+  return null;
+}
+
+function getRowNodeForRow(nRow)
+{
+  var rowArray = getRowElements();
+  if (rowArray && rowArray.length > nRow)
+    return rowArray[nRow];
+  return null;
+}
+
+//Here we don't rely on getElementsByTagName() since it would do the wrong thing in the case of tables inside table cells.
+function findColElementsInNode(aNode)
+{
+  var colList = [];
+  var subList = null;
+  var childList = msiNavigationUtils.getSignificantContents(aNode);
+  var bDone = false;
+  var theSpan = 1;
+  var spanAttr = "";
+  for (var ix = 0; !bDone && ix < childList.length; ++ix)
+  {
+    theSpan = 1;
+    switch(childList[ix].nodeName)
+    {
+      case "colgroup":
+        subList = findColElementsInNode(childList[ix]);
+        if (subList.length > 0)
+        {
+          colList = colList.concat(subList);
+          break;  //otherwise continue to the "col" case
+        }
+      case "col":
+        spanAttr = childList[ix].getAttribute("span");
+        if (spanAttr && spanAttr.length)
+          theSpan = Number(spanAttr);
+        colList.push( {mNode : childList[ix], mSpan : theSpan} );
+        for (var jx = 1; jx < theSpan; ++jx)
+          colList.push( {mNode : childList[ix], mSpan : -jx} );
+      break;
+      case "tr":
+      case "td":
+      case "th":
+        bDone = true;   //If we got this far without finding the cols, we aren't going to
+      break;
+      default: //just continue for anything else
+      break;
+    }
+  }
+
+  return colList;
+}
+
+//If there is no <colgroup> element and no <col> element, we want to insert them. If they exist, they must already be
+//  the right number, when counted with spans, so we want to insert nothing.
+//After insertion, the grouping may have to be altered according to the selected cells.
+function insertColElementsInTable(tableElement, numCols)
+{
+  var colList = [];
+  var insertPos = 0;
+  var colGroupNode = null;
+  for (var ix = 0; ix < tableElement.childNodes.length; ++ix)
+  {
+    switch(tableElement.childNodes[ix].nodeName)
+    {
+      case "caption":  //in this case just continue on
+      break;
+
+      case "colgroup":
+        colGroupNode = tableElement.childNodes[ix];
+      break;
+
+      default:
+        insertPos = ix;  //we found something not a caption, so we assume this is a good place to insert a <colgroup>?
+      break;
+    }
+  }
+  if (colGroupNode)
+    return findColElementsInNode(colGroupNode);
+ 
+  colGroupNode = gActiveEditor.createNode("colgroup", tableElement, insertPos);
+  gActiveEditor.setAttribute(colGroupNode, "span", String(numCols));
+  colList.push( {mNode : colGroupNode, mSpan : numCols} );
+  for (ix = 1; ix < numCols; ++ix)
+    colList.push( {mNode : colGroupNode, mSpan : -ix} );
+  return colList;
+}
+
+function findRowElementsInNode(aNode)
+{
+  var rowList = [];
+  var childList = msiNavigationUtils.getSignificantContents(aNode);
+  var bDone = false;
+  for (var ix = 0; !bDone && ix < childList.length; ++ix)
+  {
+    switch(childList[ix].nodeName)
+    {
+      case "thead":
+      case "tbody":
+      case "tfoot":
+        rowList = rowList.concat(findRowElementsInNode(childList[ix]));
+      break;
+      case "tr":
+        rowList.push(childList[ix]);
+      break;
+      case "td": 
+      case "th":
+         //What to do here? If we encounter a <td> where we're looking for a <tr>, it means there aren't any <tr>'s in this node. However,
+        //  there is an implied one - if we are a <tbody>, <thead>, or <tfoot> we should probably return it??
+        if (rowList.length == 0)
+        {
+          rowList.push(aNode);
+          bDone = true;
+        }
+      break;
+      default:
+      break;
+    }
+  }
+  return rowList;
+}
+
+
+//This function currently just applies column widths and row heights
 function ApplyColAndRowAttributes()
 {
   if (gIsMatrix)
+  {
     ApplyMatrixColAndRowAttributes();
+    return;
+  }
+
+  var tableDims = data.reviseData.getTableDims();
+
+  var colsInSelection = data.reviseData.getColsInSelection();
+  var colElements = getColElements();
+
+  if (!colElements.length && gCollatedCellData.size.bWidthSet && ShouldSetWidthOnCols())
+    colElements = insertColElementsInTable(gTableElement, tableDims.nCols);
+  msiKludgeLogString("In msiEdTableProps.js, ApplyColAndRowAttributes(), colElements contains [" + colElements.length + "] elements.\n", ["tableEdit"]);
+
+  if (gCellChangeData.size.width && colElements && colElements.length)
+  {
+    var theWidth = "";
+    var contiguousSelectedCols = 1;
+    var currSelectedCol = -1;
+//    theWidth = String(gCollatedCellData.size.width) + gCellWidthUnit;  we should be using something more like this...
+    if (gCollatedCellData.size.bWidthSet)
+      theWidth = gWidthUnitsController.getValueString(gDialog.CellWidthInput, "px");
+
+    function getEndsOfSpanContaining(aColIndex, colElementArray)
+    {
+      var theSpan = {mStart : aColIndex, mEnd : aColIndex};
+      if (colElementArray[aColIndex] == null)
+      {
+        dump("In msiEdTableProps.js, ApplyColAndRowAttributes(), getEndsOfSpanContaining() called with aColIndex = [" + aColIndex + "]; array element not found!\n");
+      }  
+      if (colElementArray[aColIndex].mSpan < 0)
+        theSpan.mStart += colElementArray[aColIndex].mSpan;
+      theSpan.mEnd = theSpan.mStart + colElementArray[theSpan.mStart].mSpan - 1;
+      return theSpan;
+    }
+
+    function separateAColNode(firstCol, splitCol, colElementArray)
+    {
+      var originalCol = colElementArray[firstCol].mNode;
+      var newCol = null;
+      var oldStart = firstCol;
+      var insertPos = 0;
+      if (colElementArray[firstCol].mSpan < 0)
+      {
+        dump("In msiEdTableProps.js, ApplyColAndRowAttributes(), separateAColNode() called on middle of a col node!\n");
+        return null;
+      }
+      var lastCol = firstCol + colElementArray[firstCol].mSpan - 1;
+      var retVal = {mOriginalNode : originalCol, mNewNode : null};
+      if (msiGetBaseNodeName(originalCol) != "col")
+      {
+        retVal.mOriginalNode = originalCol.ownerDocument.createElement("col");
+        gActiveEditor.insertNode(retVal.mOriginalNode, originalCol, 0);
+        gActiveEditor.removeAttribute(originalCol, "span");
+        originalCol = retVal.mOriginalNode;
+        gActiveEditor.setAttribute(originalCol, "span", String(splitCol - firstCol));
+        colElementArray[firstCol].mNode = originalCol;
+        for (var kk = firstCol + 1; kk < splitCol; ++kk)
+        {
+          colElements[kk].mNode = originalCol;
+          colElements[kk].mSpan = firstCol - kk;
+        }
+      }
+      retVal.mNewNode = originalCol.ownerDocument.createElement("col");
+      newCol = retVal.mNewNode;
+      msiCopyElementAttributes(newCol, originalCol, gActiveEditor);
+      insertPos = msiNavigationUtils.offsetInParent(originalCol) + 1;
+      gActiveEditor.insertNode(newCol, originalCol.parentNode, insertPos);
+      gActiveEditor.setAttribute( newCol, "span", String(lastCol - splitCol + 1) );
+      colElementArray[firstCol].mSpan = splitCol - firstCol;
+      colElementArray[splitCol].mNode = newCol;
+      colElementArray[splitCol].mSpan = lastCol - splitCol + 1;
+      for (kk = splitCol + 1; kk <= lastCol; ++kk)
+      {
+        colElementArray[kk].mNode = newCol;
+        colElementArray[kk].mSpan = splitCol - kk;
+      }
+      return retVal;
+    }
+
+    var insertPos = 0;
+    var kk = 0;
+    var preCols, ourCols, postCols, splitCols;
+
+    for (var ix = 0; ix < colsInSelection.length; ++ix)  //This loop should be thought of as operating over the contiguous blocks in colsInSelection.
+    {
+      startCol = colsInSelection[ix];
+      endCol = startCol;
+      for (ix = ix+1; ix < colsInSelection.length; ++ix)
+      {
+        if (colsInSelection[ix] != endCol + 1)  //Have we arrived at a gap in the selection?
+        {
+          --ix;  //set it back to the last value without a gap
+          break;
+        }
+        ++endCol;
+      }
+      msiKludgeLogString("In msiEdTableProps.js, ApplyColAndRowAttributes(), startCol is [" + startCol + "] and endCol is [" + endCol + "].\n", ["tableEdit"]);
+
+      //There are three things that must be done each time through:
+      //  First, if startCol isn't the start of a <col> or <colgroup> - that is, is in the middle of one - we have to split it and insert a new <col>
+      //    Note here that if colRecord.mNode is a <colgroup> (can anything else occur here?), it needs to be replaced by a new <col> child node.
+      //  Then we apply the width attribute to (or remove it from) the newly created <col>.
+      //  Finally, if endCol < endSpan, we have to create a new <col> to hold the remaining columns.
+      //After this is done, we reset ix, and thus startCol and startSpan, and go through the outer loop again. Though there should
+      //  only be multiple passes through the outer loop if the columns in the selection aren't contiguous. (Does <ctrl-click> work to select in tables?)
+      colRecord = colElements[startCol];
+      ourStart = startCol;
+
+      //When we're done with the following loop, we'll have split the <col> nodes covering the contiguous selected columns 
+      //  from startCol to endCol into appropriate ones and applied the width attribute (and whatever we need to apply).
+      for (var ourStart = startCol; ourStart <= endCol; ++ourStart)
+      {
+        preCols = null;
+        ourCols = null;
+        postCols = null;
+        theSpan = getEndsOfSpanContaining(ourStart, colElements);
+        msiKludgeLogString("In msiEdTableProps.js, ApplyColAndRowAttributes(), inner loop, theSpan is [" + theSpan.mStart + "," + theSpan.mEnd + "].\n", ["tableEdit"]);
+        if (theSpan.mStart < ourStart)  //We must split off the columns before ours
+        {
+          splitCols = separateAColNode(theSpan.mStart, ourStart, colElements);
+          preCols = splitCols.mOriginalNode;
+          ourCols = splitCols.mNewNode;
+
+//          if (msiGetBaseNodeName(preCols) != "col")  //if we only have a <colgroup> we should split it up, so create <col> element
+//          {
+//            ourCols = preCols.ownerDocument.createElement("col");
+//            gActiveEditor.insertNode(ourCols, preCols, 0);
+//            preCols = ourCols;
+//            colElements[theSpan.mStart].mNode = preCols;
+//            colElements[theSpan.mStart].mSpan = ourStart - theSpan.mStart;
+//            for (kk = theSpan.mStart + 1; kk < ourStart; ++kk)
+//            {
+//              colElements[kk].mNode = preCols;
+//              colElements[kk].mSpan = theSpan.mStart - kk;
+//            }
+//          }
+//          gActiveEditor.setAttribute(preCols, "span", String(ourStart - theSpan.mStart));
+//          ourCols = preCols.ownerDocument.createElement("col");
+//          msiCopyElementAttributes(ourCols, preCols, gActiveEditor);
+//          insertPos = msiNavigationUtils.offsetInParent(preCols) + 1;
+//          gActiveEditor.insertNode(ourCols, colRecord.mNode.parentNode, insertPos);
+//          gActiveEditor.setAttribute(ourCols, "span", String(theSpan.mEnd - ourStart + 1));
+//          colElements[ourStart].mNode = ourCols;
+//          for (kk = ourStart + 1; kk <= theSpan.mEnd; ++kk)
+//          {
+//            colElements[kk].mNode = ourCols;
+//            colElements[kk].mSpan = ourStart - kk;
+//          }
+        }
+        else    //Otherwise, preCols is null and the first is ourCols.
+          ourCols = colElements[theSpan.mStart].mNode;
+
+        if (theSpan.mEnd > endCol)  //in this case we have to separate off the columns that come after
+        {
+          msiKludgeLogString("In msiEdTableProps.js, ApplyColAndRowAttributes(), inner loop, calling separateAColNode with ourStart [" + ourStart + "] and endCol [" + endCol + "].\n", ["tableEdit"]);
+          splitCols = separateAColNode(ourStart, endCol + 1, colElements);
+          ourCols = splitCols.mOriginalNode;
+          ourStart = endCol;
+          msiKludgeLogString("In msiEdTableProps.js, ApplyColAndRowAttributes(), inner loop, after calling separateAColNode; now ourStart is [" + ourStart + "]; splitCols.mNewNode has span [" + splitCols.mNewNode.getAttribute("span") + "].\n", ["tableEdit"]);
+        }
+        else
+          ourStart = theSpan.mEnd;
+
+        if (theWidth.length)
+          gActiveEditor.setAttribute(ourCols, "width", theWidth);
+        else
+          gActiveEditor.removeAttribute(ourCols, "width");
+      }
+    }
+  }
+
+  var theRowElements = getRowElements();
+  var rowsInSelection = data.reviseData.getRowsInSelection();
+  if (gCellChangeData.size.height && ShouldSetHeightOnRows())
+  {
+    var theHeight = "";
+    if (gCollatedCellData.size.bHeightSet)
+      theHeight = gHeightUnitsController.getValueString(gDialog.CellHeightInput, "px");
+    var theRowNode, newNode;
+
+    for (var ix = 0; ix < rowsInSelection.length; ++ix)
+    {
+      theRowNode = theRowElements[rowsInSelection[ix]];
+      switch(msiGetBaseNodeName(theRowNode))
+      {
+        case "thead":
+        case "tfoot":
+        case "tbody":
+          newNode = theRowNode.ownerDocument.createElement("tr");
+          gActiveEditor.insertNode(newNode, theRowNode, theRowNode.childNodes.length);
+          theRowNode = newNode;
+        break;
+        case "td":
+        case "th":
+          newNode = theRowNode.ownerDocument.createElement("tr");
+          insertPos = msiNavigationUtils.offsetInParent(theRowNode);
+          gActiveEditor.insertNode(newNode, theRowNode.parentNode, insertPos);
+          gActiveEditor.deleteNode(theRowNode);
+          gActiveEditor.insertNode(theRowNode, newNode, 0);
+          theRowNode = newNode;
+        break;
+        default:
+        break;
+      }
+
+      if (theHeight.length)
+        gActiveEditor.setAttribute(theRowNode, "height", theHeight);
+      else
+        gActiveEditor.removeAttribute(theRowNode, "height");
+    }
+  }
+
 }
 
 function ApplyMatrixColAndRowAttributes()
@@ -1919,7 +2308,8 @@ function ApplyMatrixColAndRowAttributes()
   var colsInSelection = data.reviseData.getColsInSelection();
   var theWidth = "auto";
   if (gCollatedCellData.size.bWidthSet)
-    theWidth = String(gCollatedCellData.size.width) + gCellWidthUnit;
+    theWidth = gWidthUnitsController.getValueString(gDialog.CellWidthInput, "px");
+//    theWidth = String(gCollatedCellData.size.width) + gCellWidthUnit;
   for (var ix = 0; ix < colsInSelection.length; ++ix)
     colWidths[colsInSelection[ix]] = theWidth;
 
@@ -2122,14 +2512,16 @@ function ApplyAttributesToOneCell(destElement, nRow, nCol)
   if (gCellChangeData.size.height)
   {
     if (gCollatedCellData.size.bHeightSet && !UseCSSForCellProp("height") && !ShouldSetHeightOnRows())
-      theValStr = String(gCollatedCellData.size.height) + gCellHeightUnit;
+      theValStr = gHeightUnitsController.getValueString(gDialog.CellHeightInput, "px");
+//      theValStr = String(gCollatedCellData.size.height) + gCellHeightUnit;
     SetAnAttribute(destElement, "height", theValStr);
   }
 
   if (gCellChangeData.size.width)
   {
     if (gCollatedCellData.size.bWidthSet && !UseCSSForCellProp("width") && !ShouldSetWidthOnCols())
-      theValStr = String(gCollatedCellData.size.width) + gCellWidthUnit;
+      theValStr = gWidthUnitsController.getValueString(gDialog.CellWidthInput, "px");
+//      theValStr = String(gCollatedCellData.size.width) + gCellWidthUnit;
     SetAnAttribute(destElement, "width", theValStr);
   }
 
@@ -2623,7 +3015,7 @@ function collateCellSizeData(ourCellData, reviseData)
     if (theCellData.size.height != null)
     {
       if (!heightUnitFound)
-        heightUnitFound = theCellData.size.width.unit;
+        heightUnitFound = theCellData.size.height.unit;
       if (theCellData.size.height.unit in heightUnitsCount)
         ++heightUnitsCount[theCellData.size.height.unit];
       theHeight = interpretCSSSizeValue(theCellData.size.height.number, theCellData.size.height.unit, heightUnitFound, theCellData);
@@ -2959,10 +3351,27 @@ function getSizeDataForCell(aCell, nRow, nCol, elementUnitsList)
     return getSizeDataForMatrixCell(aCell, nRow, ncol);
 
   var sizeData = { width : null, height : null };
-  var theValue = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, aCell, "width", "width");
+  var theValue = "";
+  var anotherValue = "";
+
+  var theCol = getColNodeForColumn(nCol);
+  if (theCol)
+    theValue = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, theCol, "width", "width");
+  anotherValue = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, aCell, "width", "width");
+  if (anotherValue && anotherValue.length)
+    theValue = anotherValue;
   if (theValue)
     sizeData.width = msiGetNumberAndLengthUnitFromString(theValue);
-  theValue = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, aCell, "height", "height");
+
+
+  theValue = "";
+  anotherValue = "";
+  var theRow = getRowNodeForRow(nRow);
+  if (theRow)
+    theValue = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, theRow, "height", "height");
+  anotherValue = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, aCell, "height", "height");
+  if (anotherValue && anotherValue.length)
+    theValue = anotherValue;
   if (theValue)
     sizeData.height = msiGetNumberAndLengthUnitFromString(theValue);
   return sizeData;
