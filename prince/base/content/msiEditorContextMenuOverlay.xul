@@ -155,6 +155,9 @@
    <menuitem id="structSelect"     label="&structSelect.label;"
                                    accesskey="&structSelect.accesskey;"
                                    oncommand="StructSelectTag()"/>
+   <menuitem id="structSelectInner"     label="&structSelectInner.label;"
+                                   accesskey="&structSelectInner.accesskey;"
+                                   oncommand="StructSelectTagContents()"/>
    <menuseparator/>
    <menuitem id="structRemoveTag"  label="&structRemoveTag.label;"
                                    accesskey="&structRemoveTag.accesskey;"
