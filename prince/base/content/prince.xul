@@ -142,10 +142,11 @@
   </toolbox>
   
 <sidebaritems id="sidebaritems">
-  <sidebaritem id="sidebaritem-MSI" name="MSI" src="http://www.mackichan.com/whatsnew/whatsnew_sidebar.html" title="MSI What's new"/>
+  <!--sidebaritem id="sidebaritem-MSI" name="MSI" src="http://www.mackichan.com/whatsnew/whatsnew_sidebar.html" title="MSI What's new"/-->
   <sidebaritem id="sidebaritem-ajarfile"   name="jarfile" src="jar:file:///C:/Documents and Settings/Barry/My Documents/SWPDocs/guided tour of prince.sci!/main.xhtml" title="Guide"/>
+  <sidebaritem id="sidebaritem-firefox"   name="firefox" src="jar:file:///C:/Program%20Files%20%28x86%29/Mozilla%20Firefox/chrome/browser.jar!/content/browser/browser.xul" title="Firefox"/>
   <sidebaritem id="sidebaritem-fragments"   name="fragments" src="chrome://prince/content/fragment.xul" title="Fragments"/>
-  <sidebaritem id="sidebaritem-toc"   name="toc" src="chrome://prince/content/toc.xul" title="TOC"/>
+  <sidebaritem id="sidebaritem-toc"   name="toc" src="chrome://prince/content/toc.xul" title="TOC"/>                              
   <sidebaritem id="sidebaritem-symbols"   height="244" name="symbols" src="chrome://prince/content/symbols.xul" title="Symbols"/>
 </sidebaritems>
 
