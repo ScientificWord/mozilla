@@ -158,7 +158,15 @@ function StructSelectTag()
 {
   var editorElement = msiGetActiveEditorElement();
 //  msiSelectFocusNodeAncestor(gContextMenuFiringDocumentElement);
-  msiSelectFocusNodeAncestor(editorElement, gContextMenuFiringDocumentElement);
+  msiSelectFocusNodeAncestor(editorElement, gContextMenuFiringDocumentElement,false);
+}
+
+
+function StructSelectTagContents()
+{
+  var editorElement = msiGetActiveEditorElement();
+//  msiSelectFocusNodeAncestor(gContextMenuFiringDocumentElement);
+  msiSelectFocusNodeAncestor(editorElement, gContextMenuFiringDocumentElement, true);
 }
 
 function OpenAdvancedProperties()
