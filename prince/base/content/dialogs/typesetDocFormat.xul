@@ -237,10 +237,11 @@
                   </menulist>
                 </vbox>
                 <vbox align="center" style="width: 9em;" >
-                  <label value= "Theorem environments" style="display: none;"/>
+                  <label value= "Theorem environments"/>
                   <!-- this is pointless unless we can make the menulist multi-select -->
-                  <menulist style="display: none;">
-                    <listbox seltype="multiple">
+                  <menulist>
+                  <menupopup>
+                  <listbox seltype="multiple">
                       <listitem value="theorem" label="Theorem"/>
                       <listitem value="acknowledgement" label="Acknowledgement"/>
                       <listitem value="algorithm" label="Algorithm"/>
@@ -262,7 +263,8 @@
                       <listitem value="remark" label="Remark"/>
                       <listitem value="solution" label="Solution"/>
                       <listitem value="summary" label="Summary"/>
-                    </listbox>
+                  </listbox>
+                    </menupopup>
                   </menulist>
                 </vbox>
                 <vbox  style="width: 9em;" />

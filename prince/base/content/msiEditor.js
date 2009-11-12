@@ -7571,16 +7571,24 @@ function msiUpdateStructToolbar(editorElement)
   } while (element && (tmp != bodyElement) && (tag != "body"));
 }
 
-function msiSelectFocusNodeAncestor(editorElement, element)
+function msiSelectFocusNodeAncestor(editorElement, element, inner)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   if (editor) {
-    if (element == msiGetBodyElement(editorElement))
-      editor.selectAll();
+    if (inner)
+    {
+      editor.selection.collapse(element,0);
+      editor.selection.extend(element, element.childNodes.length);
+    }
     else
-      editor.selectElement(element);
+    {
+      if (element == msiGetBodyElement(editorElement))
+        editor.selectAll();
+      else
+        editor.selectElement(element);
+    }
   }
   msiResetStructToolbar(editorElement);
 }

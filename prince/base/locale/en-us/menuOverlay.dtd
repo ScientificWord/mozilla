@@ -713,6 +713,8 @@
 <!-- Structure Toolbar Context Menu items -->
 <!ENTITY structSelect.label         "Select">
 <!ENTITY structSelect.accesskey     "s">
+<!ENTITY structSelectInner.label         "Select inner">
+<!ENTITY structSelectInner.accesskey     "i">
 <!ENTITY structSelectParent.label         "Select parent">
 <!ENTITY structSelectParent.accesskey     "p">
 <!ENTITY structRemoveTag.label      "Remove tag">
