@@ -109,7 +109,7 @@
         <hbox id="customFillAndTypesetControlBlock">
           <groupbox id="fillWithGroupbox">
             <caption label="&fillWithGroup.label;"/>
-            <radiogroup id="fillWithRadioGroup" orient="vertical">
+            <radiogroup id="fillWithRadioGroup" orient="vertical"  oncommand="checkEnableControls();">
               <radio label="&fillNothing.label;" value="fillNothing" accesskey="&fillNothing.accesskey;"/>
               <radio label="&fillLine.label;" value="fillLine" accesskey="&fillLine.accesskey;"/>
               <radio label="&fillDots.label;" value="fillDots" accesskey="&fillDots.accesskey;"/>
