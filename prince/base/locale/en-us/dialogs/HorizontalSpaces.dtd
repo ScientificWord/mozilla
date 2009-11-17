@@ -19,13 +19,13 @@
 <!ENTITY thickSpace.label "Thick space">
 <!ENTITY thickSpace.accesskey "h">
 <!ENTITY italicCorrectionSpace.label "Italic correction">
-<!ENTITY italicCorrectionSpace.accesskey "I">
+<!ENTITY italicCorrectionSpace.accesskey "r">
 <!ENTITY negativeThinSpace.label "Negative thin space">
 <!ENTITY negativeThinSpace.accesskey "g">
 <!ENTITY zeroSpace.label "Zero space">
 <!ENTITY zeroSpace.accesskey "Z">
 <!ENTITY noIndent.label "No indent">
-<!ENTITY noIndent.accesskey "d">
+<!ENTITY noIndent.accesskey "i">
 <!ENTITY customSpace.label "Custom">
 <!ENTITY customSpace.accesskey "C">
 
@@ -44,7 +44,7 @@
 
 <!ENTITY fillWithGroup.label "Fill with">
 <!ENTITY fillNothing.label "Nothing">
-<!ENTITY fillNothing.accesskey "N">
+<!ENTITY fillNothing.accesskey "O">
 <!ENTITY fillLine.label "Line">
 <!ENTITY fillLine.accesskey "L">
 <!ENTITY fillDots.label "Dots">
