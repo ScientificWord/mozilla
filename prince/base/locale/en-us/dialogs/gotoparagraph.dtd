@@ -5,9 +5,13 @@
 <!ENTITY movement.label   "Movement is">
 <!ENTITY absolute.label   "Absolute">
 <!ENTITY relative.label   "Relative">
+<!ENTITY absolute.accesskey   "A">
+<!ENTITY relative.accesskey   "R">
 
 <!ENTITY absparanumber.label "Go to paragraph #">
 <!ENTITY relparanumber.label "Move this many paragraphs:">
+<!ENTITY absparanumber.accesskey "G">
+<!ENTITY relparanumber.accesskey "M">
 
 <!ENTITY wcWindowTitle.label "Document word count">
 <!ENTITY words.label "words">
