@@ -24,8 +24,8 @@
   <hbox><label value="&lastParagraph.label;"/><label id="total" value="0"/></hbox>
   <separator/>
   <hbox align="center">
-        <label id="abslabel" value="&absparanumber.label;" control="paragraphnumber" accesskey=""/>
-        <label id="rellabel" value="&relparanumber.label;" hidden="true" control="paragraphnumber" accesskey=""/>
+        <label id="abslabel" value="&absparanumber.label;" control="paragraphnumber" accesskey="&absparanumber.accesskey;"/>
+        <label id="rellabel" value="&relparanumber.label;" hidden="true" control="paragraphnumber" accesskey="&relparanumber.accesskey;"/>
         <textbox id="paragraphnumber" type="number" width="60px" /></hbox>
   <separator/>
   <hbox align="center">
@@ -33,8 +33,8 @@
     <caption label="&movement.label;"/>
   <!-- label control="mode" accesskey="" value="&movement.label;"/ -->
     <radiogroup id="mode" orient="horizontal" oncommand="setmode();">
-        <radio label="&absolute.label;" value="abs" selected="true" persist="selected"/>
-        <radio label="&relative.label;" value="rel" persist="selected" />
+        <radio label="&absolute.label;" value="abs" selected="true" persist="selected" accesskey="&absolute.accesskey;"/>
+        <radio label="&relative.label;" value="rel" persist="selected"  accesskey="&relative.accesskey;"/>
   </radiogroup>
   </groupbox>
   </hbox>
