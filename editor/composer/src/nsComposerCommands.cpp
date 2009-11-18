@@ -2066,7 +2066,7 @@ NS_IMPL_ISUPPORTS_INHERITED0(nsInsertTagCommand, nsBaseComposerCommand)
 
 nsInsertTagCommand::nsInsertTagCommand(const char* aTagName)
 : nsBaseComposerCommand()
-, mTagName(NS_ConvertUTF8toUTF16(aTagName))
+, mTagName(NS_ConvertUTF8toUTF16(nsDependentCString(aTagName)))
 {
 }
 
