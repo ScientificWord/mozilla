@@ -3464,6 +3464,7 @@ function msiSetDisplayMode(editorElement, mode)
     {
       if (pdfModCount < editor.getModificationCount())
       {
+        dump("Doucment changed, recompiling\n");
         printTeX(true, true);
       }
       else
@@ -3479,12 +3480,17 @@ function msiSetDisplayMode(editorElement, mode)
         pdffile = pdffile.parent; // and now it points to the working directory
         pdffile.append("tex");
         pdffile.append(currPDFfileLeaf);
+        dump("Trying to display current PDF file "+pdffile.path+"\n");
         if (pdffile.exists())
         {
+          dump("Displaying PDF file\n");
           document.getElementById("preview-frame").loadURI(msiFileURLFromAbsolutePath(pdffile.path));
         }
         else
-          document.getElementById("preview-frame").loadURI("about:blank");
+        { 
+          dump("PDF file not found\n");
+          printTeX(true, true);
+        }
       }
     }
     if ("gSourceContentWindow" in window)
