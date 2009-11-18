@@ -22,7 +22,7 @@
 <!ENTITY fixedDepth.label "Depth">
 <!ENTITY fixedDepth.accesskey "D">
 <!ENTITY fixedSizeUnits.label "Units">
-<!ENTITY fixedSizeUnits.accesskey "U">
+<!ENTITY fixedSizeUnits.accesskey "n">
 
 <!ENTITY typesetGroup.label "Typeset behavior">
 <!ENTITY typesetDiscardAtLineEnd.label "Discard at line end">
