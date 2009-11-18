@@ -94,7 +94,7 @@ en-US.jar:
   locale/paragraphProperties.dtd          (dialogs/paragraphProperties.dtd)
   locale/sourceparseerror.dtd          (dialogs/sourceparseerror.dtd)
   locale/msiEditorTableProperties.dtd     (dialogs/msiEditorTableProperties.dtd)
-
+  locale/passes.dtd                       (dialogs/passes.dtd)
 
 
 
