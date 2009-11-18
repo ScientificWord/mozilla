@@ -191,7 +191,8 @@ tier_toolkit_dirs += embedding/minimo/chromelite
 endif
 endif
 
-tier_toolkit_dirs += profile toolkit/crashreporter
+tier_toolkit_dirs += profile
+# tier_toolkit_dirs += toolkit/crashreporter
 
 # This must preceed xpfe
 ifdef MOZ_JPROF
