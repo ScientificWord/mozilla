@@ -13,7 +13,7 @@
 
 <dialog title="&fragmentname.title;"
     id="FragmentNameDlg"
-    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" persist="height width"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" 
     onload="initialize();"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();"
