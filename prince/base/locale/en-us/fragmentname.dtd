@@ -1,4 +1,4 @@
-<!ENTITY  fragmentname.title         "New Fragment Name">
+<!ENTITY  fragmentname.title         "Fragment Name and Description">
 <!ENTITY  fragmentname.fragmentname         "Fragment Name">
 <!ENTITY  fragmentname.renamefragment         "Rename Fragment To">
 <!ENTITY  fragmentname.foldername         "New Folder Name">
