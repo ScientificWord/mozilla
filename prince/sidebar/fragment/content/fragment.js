@@ -7,9 +7,11 @@ var pathSeparator =
     "/"
 #endif
 
+
+
 function focusOnEditor()
 {
-  var editWindow = document.getElementById('content-frame');
+  var editWindow = msiGetActiveEditorElement();
   if (!editWindow && opener) editWindow = opener.document.getElementById('content-frame');
   if (editWindow) editWindow.contentWindow.focus();         
 }
@@ -191,7 +193,7 @@ function insertFragmentContents( pathname)
   dump("insertFragmentContents: pathname = "+pathname+"\n");
   try 
   {
-    var editorElement = document.getElementById("content-frame");
+    var editorElement = msiGetActiveEditorElement();
     var editor = msiGetEditor(editorElement);
     var request = Components.
                   classes["@mozilla.org/xmlextras/xmlhttprequest;1"].
@@ -395,7 +397,7 @@ function insertDataAtCursor( arrayElement )
     }
     else
     {
-      var editorElement = document.getElementById("content-frame");
+      var editorElement = msiGetActiveEditorElement();
       var editor = msiGetEditor(editorElement);
       editor.insertHTMLWithContext(arrayElement.data,
                                    arrayElement.context, arrayElement.info, "text/xml",
