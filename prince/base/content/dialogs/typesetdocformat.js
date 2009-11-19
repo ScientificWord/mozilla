@@ -48,11 +48,15 @@ function stripPath(element, index, array)
  
 function initializeFontFamilyList(force)
 {
+  var prefs = GetPrefs();
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
-  var dir = dsprops.get("resource:app", Components.interfaces.nsIFile);
+  var dir = dsprops.get("ProfD", Components.interfaces.nsIFile);
+  var texbindir;
   var outfile;
   outfile = dir.clone();
   outfile.append("fontfamilies.txt");
+  try { texbindir= prefs.getCharPref("swp.tex.bindir"); }
+  catch(exc) {texbindir = exefile.parent.path;}
   if (!force)
   { 
     if (outfile.exists()) return;
@@ -60,14 +64,14 @@ function initializeFontFamilyList(force)
   var listfile = dir.clone(); 
   listfile.append("bigfontlist.txt");
   if (listfile.exists()) listfile.remove(false);
-  var exefile = dir.clone();
+  var exefile = dsprops.get("resource:app", Components.interfaces.nsIFile);;
   exefile.append("BuildFontFamilyList.cmd");
 
   try 
   {
     var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
     theProcess.init(exefile);
-    var args =[exefile.parent.path,listfile.parent.path];
+    var args =[texbindir,listfile.parent.path];
     theProcess.run(true, args, args.length);
   } 
   catch (ex) 
@@ -1492,7 +1496,7 @@ function  getOTFontlist()
     try 
     {
       var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
-      var fontlistfile=dsprops.get("resource:app", Components.interfaces.nsIFile);
+      var fontlistfile=dsprops.get("ProfD", Components.interfaces.nsIFile);
       fontlistfile.append("fontfamilies.txt");
       var stream;
       stream = Components.classes["@mozilla.org/network/file-input-stream;1"];
