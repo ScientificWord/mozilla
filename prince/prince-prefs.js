@@ -1,15 +1,15 @@
 pref("toolkit.defaultChromeURI", "chrome://prince/content/prince.xul");
 pref("general.useragent.extra.prince", "Prince/0.1");
 
-/* debugging prefs */
+/* debugging prefs 
 pref("browser.dom.window.dump.enabled", true);
 pref("javascript.options.showInConsole", true);
 pref("javascript.options.strict", true);
 pref("nglayout.debug.disable_xul_cache", true);
-pref("nglayout.debug.disable_xul_fastload", true);
+pref("nglayout.debug.disable_xul_fastload", true); */
 
-pref("javascript.enabled",                  true);
 
+pref("javascript.enabled",                  true);   
 pref("toolkit.scrollbar.clickToScroll.scrollDelay", 100);
 pref("toolkit.scrollbar.scrollIncrement", 20);
 pref("toolkit.scrollbar.smoothscroll", true);
@@ -18,6 +18,7 @@ pref("swp.defaultShell", "articles/Standard_LaTeX_Article.sci");
 pref("swp.defaultDialogShell", "chrome://prince/content/StdDialogShell.xhtml");
 pref("swp.saveintervalminutes",2);
 pref("swp.prefDocumentDir","SWPDocs");
+pref("swp.tex.bindir","%programfiles%\texlive\2009\bin\win32");  /* for windows */
 pref("editor.author",                      "");
 
 pref("editor.text_color",                   "#000000");
