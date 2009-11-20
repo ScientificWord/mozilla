@@ -158,7 +158,7 @@ Section
   WriteRegStr HKLM "SOFTWARE\Classes\SciWordDocument\Shell"  ""  "Open"
   WriteRegDWORD HKLM "SOFTWARE\Classes\SciWordDocument\Shell\find"  "SuppressionPolicy"  80
   WriteRegExpandStr HKLM "SOFTWARE\Classes\SciWordDocument\Shell\find\command" "" "%windir%\explore.exe"
-  WriteRegStr HKLM "SOFTWARE\Classes\SciWordDocument\Shell\Open\command" "" '${INSTDIR}\${exec} -edit "%1"'
+  WriteRegStr HKLM "SOFTWARE\Classes\SciWordDocument\Shell\Open\command" "" '${INSTDIR}\${exec} "%1"'
   WriteRegStr HKLM "SOFTWARE\Classes\SciWordDocument\ShellEx\ContextMenuHandlers\{b8cdcb65-b1bf-4b42-9428-1dfdb7ee92af}" "" "Compressed (zipped) Folder Menu"
   WriteRegStr HKLM "SOFTWARE\Classes\SciWordDocument\ShellEx\DropHandler" "" "{ed9d80b9-d157-457b-9192-0e7280313bf0}"
   WriteRegStr HKLM "SOFTWARE\Classes\SciWordDocument\ShellEx\StorageHandler" "" "{E88DCCE0-B7B3-11d1-A9F0-00AA0060FA31}"
