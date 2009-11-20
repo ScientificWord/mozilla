@@ -80,25 +80,45 @@ nsComposerCmdLineHandler.prototype = {
 
   /* nsICommandLineHandler */
   handle : function handle(cmdLine) {
+    dump("Prince command line handler\n");
     var args = Components.classes["@mozilla.org/supports-string;1"]
                          .createInstance(nsISupportsString);
+    var features = "chrome,all,dialog=no";
+    try {
+      var width = cmdLine.handleFlagWithParam("width", false);
+      if (width != null)
+        features += ",width=" + width;
+    } catch (e) {
+    }
+    try {
+      var height = cmdLine.handleFlagWithParam("height", false);
+      if (height != null)
+        features += ",height=" + height;
+    } catch (e) {
+    }
+    dump("Features is '"+features+"'\n");
     try {
       var uristr = cmdLine.handleFlagWithParam("edit", false);
+      dump("1. UriStr is '"+uristr+"'\n");
       if (uristr == null) {
         // Try the editor flag (used for general.startup.* prefs)
         uristr = cmdLine.handleFlagWithParam("editor", false);
-        if (uristr == null)
-          return;
       }
+      dump("2. UriStr is '"+uristr+"'\n");
 
-      try {
-        args.data = cmdLine.resolveURI(uristr).spec;
-      }
-      catch (e) {
-        return;
-      }
+      if (!uristr && !cmdLine.preventDefault && cmdLine.length) {
+        uristr = cmdLine.getArgument(0);
+        dump("3. UriStr is '"+uristr+"'\n");
+        
+        if (!/^-/.test(uristr)) {
+          try {
+            args.data = cmdLine.resolveURI(uristr).spec;
+          } catch (e) {
+          }
+        }
+      } else args.data = uristr;
     }
-    catch (e) {
+    catch (e){
       // One of the flags is present but no data, so set default arg.
       args.data = "";
     }
@@ -107,12 +127,16 @@ nsComposerCmdLineHandler.prototype = {
                            .getService(nsIWindowWatcher);
     dump("+++ Opening prince window with args = " + args.data+"\n");
     wwatch.openWindow(null, "chrome://prince/content/prince.xul", "_blank",
-                      "chrome,dialog=no,all", args);
+                      features, args);
     cmdLine.preventDefault = true;
   },
 
-  helpInfo : "  -edit <path>          Open document for editing.\n"
-};
+  helpInfo : "  -edit <path>          Open document for editing.\n" +       
+             "  <path>                Open document for editing.\n" +
+             "  -width <integer>      Set width of window in pixels.\n"+
+             "  -height <integer>     Set height of window in pixels.\n"
+  
+};                
 
 function nsComposerCmdLineHandlerFactory() {
 }
