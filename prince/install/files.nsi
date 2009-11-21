@@ -5,7 +5,6 @@ File ${srcdir}\*.mu
 File ${srcdir}\*.m
 File ${srcdir}\Query.exe
 File ${srcdir}\Transform.exe
-File ${srcdir}\otfinfo.exe
 File ${srcdir}\pretex.exe
 File ${srcdir}\application.ini
 File ${srctree}\prince\install\license.txt
