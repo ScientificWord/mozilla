@@ -102,11 +102,8 @@ function Startup()
 
   // Get a single selected image element
   var tagName = "object";
-  if ("arguments" in window && window.arguments[0])
-  {
-    imageElement = window.arguments[0];
-  }
-  else
+  imageElement = window.arguments[0];
+  if (!imageElement)
   {
     // First check for <input type="image">
     // Does this ever get run?
@@ -179,7 +176,7 @@ function Startup()
   window.mMSIDlgManager.configureDialog();
 
   // Start in "Link" tab if 2nd arguement is true
-  if (gDialog.linkTab && "arguments" in window && window.arguments[1])
+  if (gDialog.linkTab && (window.arguments.length > 1) && window.arguments[1])
   {
     document.getElementById("TabBox").selectedTab = gDialog.linkTab;
     SetTextboxFocus(gDialog.hrefInput);
@@ -363,7 +360,7 @@ function onAccept()
 
   if (ValidateData())
   {
-    if ("arguments" in window && window.arguments[0])
+    if (window.arguments[0] != null)
     {
       SaveWindowLocation();
       return true;

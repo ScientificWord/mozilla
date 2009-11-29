@@ -3955,11 +3955,24 @@ function ConvertRGBColorIntoHEXColor(color)
 
 function msiGetHTMLOrCSSStyleValue(editorElement, element, attrName, cssPropertyName)
 {
+  if (!element)
+  {
+    dump("In msiEditorUtilities.js, msiGetHTMLOrCSSStyleValue() called with null element!\n");
+    return "";
+  }  
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
   var prefs = GetPrefs();
   var IsCSSPrefChecked = prefs.getBoolPref("editor.use_css");
   var value;
+  var elemStyle = element.style;
+  while (!elemStyle)
+  {
+    element = element.parentNode;
+    if (!element)
+      return "";
+    elemStyle = element.style;
+  }
   if (IsCSSPrefChecked && msiIsHTMLEditor(editorElement))
     value = element.style.getPropertyValue(cssPropertyName);
 
@@ -6387,6 +6400,49 @@ var msiSpaceUtils =
     return retData;
   },
 
+  getSpaceInfoFromNode : function(aNode)
+  {
+    var retData = null;
+    var spaceTypes = ["hspace", "vspace", "msibreak"];
+    var spaceInfoTypes = ["hSpaceInfo", "vSpaceInfo", "breaksInfo"];
+    var nodeName = msiGetBaseNodeName(aNode);
+    var nodeType = aNode.getAttribute("type");
+    var valStr = "";
+    switch(nodeName)
+    {
+      case "hspace":
+      case 'vspace':
+      case 'msibreak':
+        retData = {theType : nodeName, theSpace : nodeType};
+        if ((nodeType == "custom") || (nodeType == "stretchySpace"))  //second shouldn't be necessary, but heretofore was apparently what we produced
+        {
+          retData.thespace = "custom";  //just in case it came in anomalously
+          valStr = aNode.getAttribute("dim");
+          if (valStr && valStr.length)
+            retData.theDim = valStr;
+          if (aNode.getAttribute("class") == "stretchySpace")
+          {
+            retData.customType = "stretchy";
+            valStr = aNode.getAttribute("flex");
+            if (valStr && valStr.length)
+              retData.stretchFactor = valStr;
+            valStr = aNode.getAttribute("fillWith");
+            if (valStr && valStr.length)
+              retData.fillWith = valStr;
+          }
+          else
+            retData.customType = "fixed";
+          valStr = aNode.getAttribute("atEnd");
+          if (valStr && valStr.length)
+            retData.atEnd = valStr;
+        }
+      break;
+      default:
+      break;
+    }
+    return retData;
+  },
+
   getHSpaceDims : function(spaceName)
   {
     var retDims = null;
@@ -6515,6 +6571,7 @@ function msiKludgeLogString(logStr, keyArray)
 #if DEBUG_Ron
   keysInUse.push("search");
   keysInUse.push("tableEdit");
+  keysInUse.push("spaces");
 #endif
 
   var bDoIt = false;

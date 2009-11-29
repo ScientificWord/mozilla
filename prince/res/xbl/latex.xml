@@ -69,7 +69,7 @@
         {
           var spaceObj = document.getAnonymousNodes(this)[1];
           var spanObj = document.createElement("span");
-          spanObj.setAttribute("style","width: " + theDim + ";");
+          spanObj.setAttribute("style","width: " + theDim + "; min-width: " + theDim + ";");
           spaceObj.appendChild(spanObj);
         }
         else

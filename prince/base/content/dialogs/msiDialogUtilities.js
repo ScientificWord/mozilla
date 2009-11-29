@@ -710,7 +710,7 @@ function msiDialogConfigManager(theDialogWindow)
         reviseTitle = this.mDlgWindow.getPropertiesDialogTitle();
       if (reviseTitle == null)
       {
-        var reviseTitleElement = this.mDlgWindow.getElementById("msiDialogPropertiesTitle");
+        var reviseTitleElement = this.mDlgWindow.document.getElementById("msiDialogPropertiesTitle");
         if (reviseTitleElement != null)
           reviseTitle = reviseTitleElement.value;
       }
