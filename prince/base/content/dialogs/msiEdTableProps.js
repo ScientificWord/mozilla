@@ -397,11 +397,11 @@ function UseCSSForCellProp(propName)
     break;
 
     case "width":
-//      return (!gIsMatrix && !ShouldSetWidthOnCols());
-      return false;
+      return (!gIsMatrix && !ShouldSetWidthOnCols());
     break;
     case "height":
-      return (!gIsMatrix && !ShouldSetHeightOnRows());
+      return (gIsMatrix || !ShouldSetHeightOnRows());
+//      return (!gIsMatrix && !ShouldSetHeightOnRows());
     break;
   }
   return true;
@@ -451,6 +451,8 @@ function Startup()
     return;
   }
 
+  setVariablesForControls();
+
   data = window.arguments[0];
   var theCommand = "cmd_editTable";
   if (data)
@@ -466,8 +468,6 @@ function Startup()
       return;
     }
   }
-
-  setVariablesForControls();
 
 //  if (!gSelection)  //should get set in "setDataFromReviseData" call
 //  {
@@ -1510,6 +1510,7 @@ function EnableDisableControls()
     break;
   }
 
+  var anItem;
   if (gIsMatrix)
   {
     for (var ii = gDialog.CellBorderStyleList.itemCount-1; ii >= 0; --ii)
@@ -1584,9 +1585,26 @@ function SetAnAttribute(destElement, attr, attrValue)
 function DoStyleChangesForACell(destCell)
 {
   globalCellElement = destCell.cloneNode(false);
-  globalCellElement.setAttribute("style", destCell.getAttribute("style"));
+  var destStyle = destCell.getAttribute("style");
+  var bEmptyStyle = false;
+  if (destStyle && destStyle.length)
+    globalCellElement.setAttribute("style", destStyle);
+  if (!globalCellElement.style)
+    bEmptyStyle = true;
   var borderProps = ["style", "width", "color"];
   var logStr = "";
+  var theStyle = "";
+
+  function doSetStyleAttr(styleProp, styleVal)
+  {
+    if (bEmptyStyle)
+      theStyle += styleProp + ": " + styleVal + ";";
+    else if ((styleVal != null) && styleVal.length)
+      globalCellElement.style.setProperty( styleProp, styleVal, "");
+    else
+      globalCellElement.style.removeProperty( styleProp );
+  }
+
   for (var nProp = 0; nProp < borderProps.length; ++nProp)
   {
     theProp = borderProps[nProp];
@@ -1595,7 +1613,7 @@ function DoStyleChangesForACell(destCell)
       for (var ix = 0; ix < gCellChangeData.border[theProp].length; ++ix)
       {
         theSide = gCellChangeData.border[theProp][ix];
-        globalCellElement.style.setProperty( getBorderSideAttrString(theSide, theProp), gCollatedCellData.border[theProp][theSide], "");
+        doSetStyleAttr( getBorderSideAttrString(theSide, theProp), gCollatedCellData.border[theProp][theSide] );
       }
     }
   }
@@ -1606,10 +1624,14 @@ function DoStyleChangesForACell(destCell)
       logStr = "In msiEdTableProps.js, DoStyleChangesForACell(); cell width string should be [" + String(gCollatedCellData.size.width) + gCellWidthUnit + "]\n";
       msiKludgeLogString(logStr, ["tableEdit"]);
 //      globalCellElement.style.setProperty("width", String(gCollatedCellData.size.width) + gCellWidthUnit, "");  this should be what works, but apparently it's necessary to use pixels in Mozilla??
-      globalCellElement.style.setProperty("width", gWidthUnitsController.getValueString(gDialog.CellWidthInput, "px"), "");
+      doSetStyleAttr("width", gWidthUnitsController.getValueString(gDialog.CellWidthInput, "px"));
+      doSetStyleAttr("min-width", gWidthUnitsController.getValueString(gDialog.CellWidthInput, "px"));
     }
     else
-      globalCellElement.style.removeProperty("width");
+    {
+      doSetStyleAttr("width", null);
+      doSetStyleAttr("min-width", null);
+    }
   }
   if (gCellChangeData.size.height)
   {
@@ -1618,23 +1640,23 @@ function DoStyleChangesForACell(destCell)
       logStr = "In msiEdTableProps.js, DoStyleChangesForACell(); cell height string should be [" + String(gCollatedCellData.size.height) + gCellHeightUnit + "]\n";
       msiKludgeLogString(logStr, ["tableEdit"]);
 //      globalCellElement.style.setProperty("height", String(gCollatedCellData.size.height) + gCellHeightUnit, "");  this should be what works, but apparently it's necessary to use pixels in Mozilla??
-      globalCellElement.style.setProperty("height", gHeightUnitsController.getValueString(gDialog.CellHeightInput, "px"), "");
+      doSetStyleAttr("height", gHeightUnitsController.getValueString(gDialog.CellHeightInput, "px"));
     }
     else
-      globalCellElement.style.removeProperty("height");
+      doSetStyleAttr("height", null);
   }
 
   if (gCellChangeData.align.halign && UseCSSForCellProp("halign"))
-    globalCellElement.style.setProperty("text-align", gCollatedCellData.align.halign, "");
+    doSetStyleAttr("text-align", gCollatedCellData.align.halign);
   if (gCellChangeData.align.valign && UseCSSForCellProp("valign"))
-    globalCellElement.style.setProperty("vertical-align", gCollatedCellData.align.valign, "");
+    doSetStyleAttr("vertical-align", gCollatedCellData.align.valign);
   if (gCellChangeData.wrap && UseCSSForCellProp("wrap"))
   {
     if (gCollatedCellData.wrap == "nowrap")
-      globalCellElement.style.setProperty("white-space", "nowrap", "");
+      doSetStyleAttr("white-space", "nowrap");
     else
     {
-      var currWhiteSpace = globalCellElement.style.getProperty("white-space");
+      var currWhiteSpace = globalCellElement.style ? globalCellElement.style.getProperty("white-space") : null;
       if (currWhiteSpace && currWhiteSpace == "nowrap")
         globalCellElement.style.removeProperty("white-space");
     }
@@ -1642,11 +1664,12 @@ function DoStyleChangesForACell(destCell)
   if (gCellChangeData.background)
   {
     if (gCollatedCellData.background == "transparent")
-      globalCellElement.style.removeProperty("background-color");
+      doSetStyleAttr("background-color", null);
     else
-      globalCellElement.style.setProperty("background-color", gCollatedCellData.background, "");
+      doSetStyleAttr("background-color", gCollatedCellData.background);
   }
-  var theStyle = globalCellElement.getAttribute("style");
+  if (!bEmptyStyle)
+    theStyle = globalCellElement.getAttribute("style");
   gActiveEditor.setAttribute(destCell, "style", theStyle);
   logStr = "In msiEdTableProps.js, DoStyleChangesForACell(); set attribute [style] on cell element to [" + theStyle + "]\n";
   msiKludgeLogString(logStr, ["tableEdit"]);
@@ -1716,25 +1739,37 @@ function ApplyTableAttributes()
   }
 
   logStr = "";
+  var bEmptyStyle = (!globalTableElement.style);
+  var theStyleString = "";
+  function doSetStyleAttr(styleProp, styleVal)
+  {
+    if (bEmptyStyle)
+      theStyleString += styleProp + ": " + styleVal + ";";
+    else if ((styleVal!=null) && styleVal.length)
+      globalTableElement.style.setProperty(styleProp, styleVal, "");
+    else
+      globalTableElement.style.removeProperty(styleProp);
+  }
   if (gTableChangeData.baseline)
   {
-    globalTableElement.style.setProperty("vertical-align", gTableBaseline, "");
+    doSetStyleAttr("vertical-align", gTableBaseline);
 //    logStr = "In msiEdTableProps.js, ApplyTableAttributes(); set attribute [vertical-align] on table element style to [" + gTableBaseline + "]\n";
   }
   if (gTableChangeData.background)
   {
-    globalTableElement.style.setProperty("background-color", gTableColor, "");
+    doSetStyleAttr("background-color", gTableColor);
 //    logStr += "In msiEdTableProps.js, ApplyTableAttributes(); set attribute [background-color] on table element style to [" + gTableColor + "]\n";
   }
   if (gTableChangeData.borderCollapse)
   {
-    globalTableElement.style.setProperty("border-collapse", gBorderCollapse, "");
+    doSetStyleAttr("border-collapse", gBorderCollapse);
   }
 //  if (gTableChangeData.size.width)
 //    globalTableElement.style.setProperty("width", widthStr);
 //  if (gTableChangeData.size.height)
 //    globalTableElement.style.setProperty("height", heightStr);
-  var theStyleString = globalTableElement.getAttribute("style");
+  if (!bEmptyStyle)
+    theStyleString = globalTableElement.getAttribute("style");
   gActiveEditor.setAttribute(gTableElement, "style", theStyleString);
   logStr = "In msiEdTableProps.js, ApplyTableAttributes(); set attribute [style] on table element to [" + theStyleString + "]\n";
   msiKludgeLogString(logStr, ["tableEdit"]);
@@ -2300,7 +2335,7 @@ function ApplyMatrixColAndRowAttributes()
     colWidths = colWidthsStr.split(whiteSpace);
   var tableDims = data.reviseData.getTableDims();
   var bAllAuto = false;
-  if (colWidhts.length > 0)
+  if (colWidths.length > 0)
     defColWidth = colWidths[colWidths.length - 1];
   for (var nCol = colWidths.length; nCol < tableDims.nCols; ++nCol)
     colWidths[nCol] = defColWidth;
@@ -2443,6 +2478,7 @@ function ApplyMatrixAlignment()
   if (!bDoHAlign && !bDoVAlign)
     return;
 
+  var whiteSpace = /(^\s+)/;
   var tableDims = data.reviseData.getTableDims();
   var matrixHAlignVals = [];
   var matrixVAlignVals = [];
@@ -3272,7 +3308,7 @@ function getBorderDataForCell(aCell, nRow, nCol, elementUnitsList, computedStyle
 {
   var borderData = null;
   if (gIsMatrix)
-    borderData = getBorderDataForMatrixCell(aCell, nRow, ncol, elementUnitsList);
+    borderData = getBorderDataForMatrixCell(aCell, nRow, nCol, elementUnitsList);
   else
     borderData = createCellBorderData();
   var aValue, attrName;
@@ -3307,7 +3343,7 @@ function getBorderDataForMatrixCell(aCell, nRow, nCol, elementUnitsList)
 {
   var whiteSpace = /(^\s+)/;
   var borderData = createCellBorderData();
-  var matixColLines, matrixRowLines;
+  var matrixColLines, matrixRowLines;
   var matrixColLinesStr = gTableElement.getAttribute("columnlines");
   if (matrixColLinesStr)
     matrixColLines = matrixColLinesStr.split(whiteSpace);
@@ -3348,7 +3384,7 @@ function getBorderDataForMatrixCell(aCell, nRow, nCol, elementUnitsList)
 function getSizeDataForCell(aCell, nRow, nCol, elementUnitsList)
 {
   if (gIsMatrix)
-    return getSizeDataForMatrixCell(aCell, nRow, ncol);
+    return getSizeDataForMatrixCell(aCell, nRow, nCol);
 
   var sizeData = { width : null, height : null };
   var theValue = "";
@@ -3356,8 +3392,16 @@ function getSizeDataForCell(aCell, nRow, nCol, elementUnitsList)
 
   var theCol = getColNodeForColumn(nCol);
   if (theCol)
+  {
     theValue = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, theCol, "width", "width");
+    anotherValue = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, theCol, "min-width", "width");
+    if (anotherValue && anotherValue.length)
+      theValue = anotherValue;
+  }
   anotherValue = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, aCell, "width", "width");
+  if (anotherValue && anotherValue.length)
+    theValue = anotherValue;
+  anotherValue = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, aCell, "width", "min-width");
   if (anotherValue && anotherValue.length)
     theValue = anotherValue;
   if (theValue)

@@ -17,9 +17,9 @@ function startUp()
     window.close();
     return;
   }
-  if ("arguments" in window && window.arguments[0])
+  data = window.arguments[0];
+  if (data != null)
   {
-    data = window.arguments[0];
     if (data.element && ("localName" in data.element))
     { 
       if (data.element.localName != "msiframe")

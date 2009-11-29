@@ -205,6 +205,10 @@ tree.list {
   list-style-image: url("chrome://global/skin/arrow/arrow-down.gif");
 }
 
+#Borders-Preview xhtml|table {
+  border-collapse: collapse;
+}
+
 #BordersPreview xhtml|td {
   border: 1px solid #CCCCCC;
 }

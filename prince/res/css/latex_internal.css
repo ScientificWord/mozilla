@@ -24,6 +24,7 @@ sw|button [class="texbutton"] {
 
 sw|space {
   display: -moz-inline-box;
+  display: inline-block;
   vertical-align: baseline;
 }
   

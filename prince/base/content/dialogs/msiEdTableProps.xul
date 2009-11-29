@@ -89,7 +89,7 @@
             </radiogroup>
           </groupbox>
         </hbox>
-        <spacer flex="1"/>
+        <spacer/>
         <!-- spacer class="spacer"/ -->
         <hbox>
         <groupbox orient="vertical" align="start">
@@ -155,21 +155,21 @@
               <description id="BordersPreview" class="MSISample"	flex="1"
                   xmlns:xhtml="http://www.w3.org/1999/xhtml"
                   xmlns:mml="http://www.w3.org/1998/Math/MathML">
-                <p><xhtml:table style="table-layout: fixed; empty-cells: show; width: 15em; height: 15em; font-size: 150%; overflow: hidden; text-align: center; vertical-align: middle">
-                  <xhtml:tr>
+                <p><xhtml:table style="table-layout: auto; empty-cells: show; width: 15em; height: 15em; font-size: 100%; overflow: hidden; text-align: center; vertical-align: middle">
+                  <xhtml:tr height="15%">
+                    <xhtml:td style="border-left-style: none; border-top-style: none;"><xhtml:span>te</xhtml:span></xhtml:td>
                     <xhtml:td><xhtml:span>text</xhtml:span></xhtml:td>
-                    <xhtml:td><xhtml:span>text</xhtml:span></xhtml:td>
-                    <xhtml:td><xhtml:span>text</xhtml:span></xhtml:td>
+                    <xhtml:td style="border-right-style: none; border-top-style: none;"><xhtml:span>xt</xhtml:span></xhtml:td>
                   </xhtml:tr>
                   <xhtml:tr>
-                    <xhtml:td><xhtml:span>text</xhtml:span></xhtml:td>
+                    <xhtml:td style="border-left-style: none;"><xhtml:span>te</xhtml:span></xhtml:td>
                     <xhtml:td id="BordersPreviewCenterCell" style="border: 2px" ><xhtml:span>text</xhtml:span></xhtml:td>
-                    <xhtml:td><xhtml:span>text</xhtml:span></xhtml:td>
+                    <xhtml:td style="border-right-style: none;"><xhtml:span>xt</xhtml:span></xhtml:td>
                   </xhtml:tr>
-                  <xhtml:tr>
+                  <xhtml:tr height="15%">
+                    <xhtml:td style="border-left-style: none; border-bottom-style: none;"><xhtml:span>te</xhtml:span></xhtml:td>
                     <xhtml:td><xhtml:span>text</xhtml:span></xhtml:td>
-                    <xhtml:td><xhtml:span>text</xhtml:span></xhtml:td>
-                    <xhtml:td><xhtml:span>text</xhtml:span></xhtml:td>
+                    <xhtml:td style="border-right-style: none; border-bottom-style: none;"><xhtml:span>xt</xhtml:span></xhtml:td>
                   </xhtml:tr>
                 </xhtml:table></p>
               </description>

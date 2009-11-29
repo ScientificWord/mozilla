@@ -24,10 +24,11 @@ function Startup()
   }
 
   doSetOKCancel(onAccept, onCancel);
-  if (("arguments" in window) && window.arguments !=  null)
-    data = window.arguments[0];
-  else
+  data = window.arguments[0];
+  if (!data)
     data = new Object();
+  if ("reviseData" in data)
+    setDataFromReviseData(data.reviseData);
   data.Cancel = false;
 
   InitDialog();
@@ -50,6 +51,56 @@ function InitDialog()
 
   setCustomControls();
   checkEnableControls();
+}
+
+function isReviseDialog()
+{
+  if (data && ("reviseData" in data) && (data.reviseData!=null))
+    return true;
+  return false;
+}
+
+function setDataFromReviseData(reviseData)
+{
+  var revSpaceInfo = reviseData.getSpaceInfo();
+  if (revSpaceInfo)
+  {
+    data.spaceType = revSpaceInfo.theSpace;
+    if (revSpaceInfo.theSpace == "custom")
+      data.customSpaceData = setCustomSpaceDataFromReviseSpaceData(revSpaceInfo);
+  }
+}
+
+function setCustomSpaceDataFromReviseSpaceData(spaceInfo)
+{
+  var customSpaceData = {customType : spaceInfo.customType, typesetChoice : "always"};
+  if (("atEnd" in spaceInfo) && spaceInfo.atEnd == "false")
+    customSpaceData.typesetChoice = "discardAtLineEnd";
+  customSpaceData.stretchData = {factor : 1.00, fillWith : "fillNothing"};
+  customSpaceData.fixedData = {units : "in", size : 0.00};
+  if (spaceInfo.customType == "stretchy")
+  {
+    if (spaceInfo.stretchFactor)
+      customSpaceData.stretchData.factor = Number(spaceInfo.stretchFactor);
+    if (spaceInfo.fillWith)
+    {
+      switch(spaceInfo.fillWith)
+      {
+        case "line": customSpaceData.stretchData.fillWith = "fillLine";      break;
+        case "dots": customSpaceData.stretchData.fillWith = "fillDots";      break;
+        default:                                                             break;
+      }
+    }
+  }
+  else  //"fixed"
+  {
+    if (("theDim" in spaceInfo) && spaceInfo.theDim.length)
+    {
+      var theSize = msiCSSUnitsList.getNumberAndUnitFromString(spaceInfo.theDim);
+      customSpaceData.fixedData.units = theSize.unit;
+      customSpaceData.fixedData.value = theSize.number;
+    }
+  }
 }
 
 function setUpCustomSpaceData(inData)
@@ -193,9 +244,18 @@ function onAccept()
 
   var editorElement = msiGetParentEditorElementForDialog(window);
   var theWindow = window.opener;
-  if (!theWindow || !("msiInsertHorizontalSpace" in theWindow))
-    theWindow = msiGetTopLevelWindow();
-  theWindow.msiInsertHorizontalSpace(data, editorElement);
+  if (isReviseDialog())
+  {
+    if (!theWindow || !("msiReviseHorizontalSpace" in theWindow))
+      theWindow = msiGetTopLevelWindow();
+    theWindow.msiReviseHorizontalSpace(data.reviseData, data, editorElement);
+  }
+  else
+  {
+    if (!theWindow || !("msiInsertHorizontalSpace" in theWindow))
+      theWindow = msiGetTopLevelWindow();
+    theWindow.msiInsertHorizontalSpace(data, editorElement);
+  }
 
   SaveWindowLocation();
   return true;

@@ -207,7 +207,7 @@ tree.list {
 }
 
 #BordersPreview xhtml|td {
-  border: 1px #CCCCCC;
+  border: 1px solid #CCCCCC;
 }
 
 #BordersPreview xhtml|td xhtml|* {

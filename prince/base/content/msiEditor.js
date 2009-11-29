@@ -4764,9 +4764,27 @@ var msiPropertiesObjectDataBase =
     return null;
   },
 
+  getSpaceInfo : function()
+  {
+    var retInfo = null;
+    if (this.mNode)
+      retInfo = msiSpaceUtils.getSpaceInfoFromNode(this.mNode);
+    return retInfo;
+  },
+
   hasReviseData : function(iter)
   {
     return ((iter == 0) && this.menuStr);
+  },
+
+  isTextReviseData : function()
+  {
+    return false;
+  },
+
+  getTextLength : function()
+  {
+    return 0;  //is this the right thing to do? Hopefully won't come up...
   },
 
 //Implementation (non-interface) methods:
@@ -4959,6 +4977,7 @@ msiCharPropertiesObjectData.prototype =
 //Data:
   mOffset : null,
   mText : null,
+  mLength : 1,
 
 //Interface:
   //Note that in this function the text to be possibly modified is to the LEFT of "anOffset".
@@ -4994,7 +5013,8 @@ msiCharPropertiesObjectData.prototype =
       var theRange = aSelection.getRangeAt(0);
       if ( (theRange.startContainer == container) && (theRange.endContainer == container) )  //are there any other cases to consider?
       {
-        this.mText = container.textContent.substr(theRange.startOffset, theRange.endOffset - theRange.startOffset);
+        this.mLength = theRange.endOffset - theRange.startOffset;
+        this.mText = container.textContent.substr(theRange.startOffset, this.mLength);
         this.mOffset = theRange.startOffset;
       }
     }
@@ -5036,6 +5056,24 @@ msiCharPropertiesObjectData.prototype =
   {
     //do nothing - the setting of appropriate strings should have taken place during the examineText() function
     dump("In msiEditor.js, msiCharPropertiesObjectData.setStrings() was called - this shouldn't happen!\n");
+  },
+
+  getSpaceInfo : function()
+  {
+    var retVal = null;
+    if (this.mText)
+      retVal = msiSpaceUtils.spaceInfoFromChars(this.mText);
+    return retVal;
+  },
+
+  isTextReviseData : function()
+  {
+    return true;
+  },
+
+  getTextLength : function()
+  {
+    return this.mLength;
   },
 
   examineText : function()
@@ -5391,7 +5429,7 @@ msiTablePropertiesObjectData.prototype =
       break;
       case "Cell":
       case "CellGroup":
-        return ( this.mTableInfo.cellInfoArray[nRow][nCol] && (this.mTableInfo.cellInfoArray[nRow][nCol].mSelected == msiPropertiesObjectDataBase.Selected_SomeSelected) );
+        return ( this.mTableInfo.cellInfoArray[nRow][nCol] && ("mSelected" in this.mTableInfo.cellInfoArray[nRow][nCol]) && (this.mTableInfo.cellInfoArray[nRow][nCol].mSelected == msiPropertiesObjectDataBase.Selected_SomeSelected) );
       break;
       case "Table":
         return true;
@@ -7236,7 +7274,7 @@ function msiEditorInsertOrEditTable(insertAllowed, editorElement, command, comma
   {
       // Edit properties of existing table
     var theData = {reviseCommand : command, reviseData : reviseObjectData};
-    msiOpenModelessDialog("chrome://prince/content/msiEdTableProps.xul", "_blank", "chrome,close,titlebar,dependent", editorElement,
+    msiOpenModelessDialog("chrome://prince/content/msiEdTableProps.xul", "_blank", "chrome,resizable,close,titlebar,dependent", editorElement,
                                          command, commandHandler, theData);
 //      window.openDialog("chrome://editor/content/EdTableProps.xul", "_blank", "chrome,close,titlebar,modal", "","TablePanel");
     editorElement.contentWindow.focus();
