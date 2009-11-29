@@ -24,9 +24,8 @@ function Startup()
   }
 
   doSetOKCancel(onAccept, onCancel);
-  if (("arguments" in window) && window.arguments !=  null)
-    data = window.arguments[0];
-  else
+  data = window.arguments[0];
+  if (!data)
     data = new Object();
   data.Cancel = false;
 
