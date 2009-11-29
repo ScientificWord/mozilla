@@ -4439,12 +4439,15 @@ var msiReviseHorizontalSpacesCommand =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement();
-    var hspaceNode = msiGetReviseObjectFromCommandParams(aParams);
-    if (hspaceNode != null && editorElement != null)
+//    var hspaceNode = msiGetReviseObjectFromCommandParams(aParams);
+    var hSpaceReviseData = msiGetPropertiesDataFromCommandParams(aParams);
+    var hSpaceData = new Object();
+    hSpaceData.reviseData = hSpaceReviseData;
+    if (hSpaceReviseData != null && editorElement != null)
     {
-      AlertWithTitle("msiComposerCommands.js", "In msiReviseHorizontalSpacesCommand, trying to revise a horizontal space, dialog not yet implemented.");
-//      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/HorizontalSpaces.xul", "_blank", "chrome,close,titlebar,dependent",
-//                                                     editorElement, "cmd_reviseHorizontalSpaces", hspaceNode);
+//      AlertWithTitle("msiComposerCommands.js", "In msiReviseHorizontalSpacesCommand, trying to revise a horizontal space, dialog not yet implemented.");
+      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/HorizontalSpaces.xul", "_blank", "chrome,close,titlebar,dependent",
+                                                     editorElement, "cmd_reviseHorizontalSpaces", this, hSpaceData);
     }
     editorElement.focus();
   },
@@ -4513,12 +4516,14 @@ function msiInsertHorizontalSpace(dialogData, editorElement)
   }
   else if (dialogData.customSpaceData.customType == "stretchy")
   {
-    spaceStr += "stretchySpace\" class=\"stretchySpace\" flex=\"";
+    spaceStr += "customSpace\" class=\"stretchySpace\" flex=\"";
+//    spaceStr += "stretchySpace\" class=\"stretchySpace\" flex=\"";
     spaceStr += String(dialogData.customSpaceData.stretchData.factor);
     if (dialogData.customSpaceData.stretchData.fillWith == "fillLine")
       spaceStr += "\" fillWith=\"line";
     else if (dialogData.customSpaceData.stretchData.fillWith == "fillDots")
       spaceStr += "\" fillWith=\"dots";
+    spaceStr += "\" atEnd=\"" + (dialogData.customSpaceData.typesetChoice=="always"?"true":"false");
   }
   contentStr = msiSpaceUtils.getHSpaceCharContent(dialogData.spaceType);
   if (contentStr)
@@ -4530,6 +4535,200 @@ function msiInsertHorizontalSpace(dialogData, editorElement)
   dump("In msiInsertHorizontalSpace, inserting space: [" + spaceStr + "].\n");
 //  editor.insertHTMLWithContext(spaceStr, "", "", "", null, parentNode, insertPos, false);
   insertXMLAtCursor(editor, spaceStr, true, false);
+}
+
+function msiReviseHorizontalSpace(reviseData, dialogData, editorElement)
+{
+  var editor = msiGetEditor(editorElement);
+  editor.beginTransaction();
+  var spaceInfo = reviseData.getSpaceInfo();
+  var bWasText = reviseData.isTextReviseData();
+  var bIsText = (dialogData.spaceType == "normalSpace");
+  var contentStr = msiSpaceUtils.getHSpaceCharContent(dialogData.spaceType);
+  var cntNodeList = null;
+  var logStr = "";
+  if (contentStr && contentStr.length)
+  {
+    var parser = new DOMParser();
+    contentStr = "<body>" + contentStr + "</body>";
+    msiKludgeLogString("In msiComposerCommands.js, in msiReviseHorizontalSpace, retrieving content string and got [" + contentStr + "].\n", ["spaces"]);
+    var cntDoc = parser.parseFromString(contentStr,"application/xhtml+xml");
+    cntNodeList = cntDoc.documentElement.childNodes;
+  }
+  logStr = "In msiComposerCommands.js, in msiReviseHorizontalSpace; bIsText is [";
+  if (bIsText)
+    logStr += "true], and bWasText is [";
+  else
+    logStr += "false], and bWasText is [";
+  if (bWasText)
+    logStr += "true].\n";
+  else
+    logStr += "false].\n";
+  msiKludgeLogString(logStr, ["spaces"]);
+
+  var currentNode = reviseData.getReferenceNode();
+  var aParentNode = currentNode.parentNode;;
+  if (bIsText)
+  {
+    //If the type has changed, need to get the proper text and insert it - just a space?
+    if (dialogData.spaceType != spaceInfo.theSpace)
+    {
+      var insertPos = msiNavigationUtils.offsetInParent(currentNode);
+      if (!cntNodeList)
+      {
+        var spaceNode = currentNode.ownerDocument.createTextNode(" ");
+        cntNodeList = [spaceNode];
+      }
+      logStr = "In msiComposerCommands.js, in msiReviseHorizontalSpace() inside bIsText case; currentNode is [" + currentNode.nodeName + "] and parent contains [" + aParentNode.childNodes.length + "] children.\n  Inserting following nodes: ";
+      for (jx = 0; jx < cntNodeList.length; ++jx)
+      {
+        editor.insertNode(cntNodeList[jx], currentNode.parentNode, insertPos + jx);
+        if (jx > 0)
+          logStr += ", [" + cntNodeList[jx].nodeName + "]";
+        else
+          logStr += "[" + cntNodeList[jx].nodeName + "]";
+      }
+      editor.deleteNode(currentNode);
+      logStr += "and deleting currentNode. Parent now has [" + aParentNode.childNodes.length + "] children and text content of [" + aParentNode.textContent + "].\n";
+      msiKludgeLogString(logStr, ["spaces"]);
+    }
+    editor.endTransaction();
+    return;
+  }
+  
+  //If we get here, bIsText is false, so we want an <hspace> object. Do we already have one? Otherwise create one?
+  var ourNode = null;
+  var bNeedInsert = false;
+  var dimsStr = msiSpaceUtils.getHSpaceDims(dialogData.spaceType);
+
+  if (bWasText)
+  {
+    ourNode = editor.document.createElement("hspace");
+    bNeedInsert = true;
+  }
+  else
+    ourNode = currentNode;
+
+  if ( (dialogData.spaceType != spaceInfo.theSpace) || (dialogData.spaceType == "customSpace") )
+  {
+    msiKludgeLogString("Inside the spaceType different clause.\n", ["spaces"]);
+    if (dialogData.spaceType != spaceInfo.theSpace)
+      editor.setAttribute(ourNode, "type", dialogData.spaceType);
+    if (dimsStr && dimsStr.length)
+      editor.setAttribute(ourNode, "dim", dimsStr);
+    else if (dialogData.spaceType != "customSpace")
+      editor.removeAttribute(ourNode, "dim");
+    if (contentStr != msiSpaceUtils.getHSpaceCharContent(spaceInfo.theSpace))
+    {
+      msiKludgeLogString("Inside the contentStr different clause.\n", ["spaces"]);
+      for (var ix = ourNode.childNodes.length-1; ix >= 0; --ix)  //Note that the anonymous generated (XBL) content shouldn't be affected by this
+        editor.deleteNode(ourNode.childNodes[ix]);
+      if (cntNodeList)
+      {
+//        var parser = new DOMParser();
+//        var cntDoc = parser.parseFromString(contentStr,"application/xhtml+xml");
+//        var cntNodeList = cntDoc.documentElement.childNodes;
+        for (ix = 0; ix < cntNodeList.length; ++ix)
+          editor.insertNode(cntNodeList[ix], ourNode, ix);
+      }
+    }
+    if (dialogData.spaceType == "customSpace")  //more to do
+    {
+      var atEndAttr = (dialogData.customSpaceData.typesetChoice=="always") ? "true" : "false";
+      if (!("atEnd" in spaceInfo) || (spaceInfo.atEnd != atEndAttr))
+        editor.setAttribute(ourNode, "atEnd", atEndAttr);
+      msiKludgeLogString("Inside the custom spaceType clause; customType is [" + dialogData.customSpaceData.customType + "].\n", ["spaces"]);
+
+      if (dialogData.customSpaceData.customType == "fixed")
+      {
+        dimsStr = String(dialogData.customSpaceData.fixedData.size) + dialogData.customSpaceData.fixedData.units;
+        msiKludgeLogString("Inside the customType fixed clause, dimsStr is [" + dimsStr + "].\n", ["spaces"]);
+        if (ourNode.getAttribute("dim") != dimsStr)
+          editor.setAttribute(ourNode, "dim", dimsStr);
+        if (ourNode.getAttribute("class") == "stretchySpace")
+          editor.removeAttribute(ourNode, "class");
+        if ( ("customType" in spaceInfo) && (spaceInfo.customType != "fixed") )
+        {
+          if (ourNode.getAttribute("flex").length)
+            editor.removeAttribute(ourNode, "flex");
+          if (ourNode.getAttribute("fillWith").length)
+            editor.removeAttribute(ourNode, "fillWith");
+        }
+      }
+      else // if (dialogData.customSpaceData.customType == "stretchy")
+      {
+        if (ourNode.getAttribute("class") != "stretchySpace")
+          editor.setAttribute(ourNode, "class", "stretchySpace");
+        editor.removeAttribute(ourNode, "dim");
+        if ( !("stretchFactor" in spaceInfo) || (Number(spaceInfo.stretchFactor) != dialogData.customSpaceData.stretchData.factor) )
+          editor.setAttribute(ourNode, "flex", String(dialogData.customSpaceData.stretchData.factor));
+        var fillAttr = "";
+        if (dialogData.customSpaceData.stretchData.fillWith && dialogData.customSpaceData.stretchData.fillWith.length)
+        {
+          switch(dialogData.customSpaceData.stretchData.fillWith)
+          {
+            case "fillDots":             fillAttr = "dots";              break;
+            case "fillLine":             fillAttr = "line";              break;
+            default:                                                     break;
+          }
+        }
+        if (fillAttr.length)
+        {
+          if ( !("fillWith" in spaceInfo) || (spaceInfo.fillWith != fillAttr) )
+            editor.setAttribute(ourNode, "fillWith", fillAttr);
+        }
+        else if (ourNode.getAttribute("fillWith").length)
+          editor.removeAttribute(ourNode, "fillWith");
+      }
+
+    }
+  }
+  
+  logStr = "After the spaceType different clause; bNeedInsert is [";
+  if (bNeedInsert)
+    logStr += "true].\n";
+  else
+    logStr += "false].\n";
+  msiKludgeLogString(logStr, ["spaces"]);
+
+  if (bNeedInsert) //only if bWasText is true
+  {
+    var newLeftNode = editor.document.createTextNode("");
+    var nOffset = reviseData.mOffset;
+    aParentNode = reviseData.getReferenceNode();
+    logStr = "In msiComposerCommands.js, in msiReviseHorizontalSpace() inside bNeedInsert clause; surrounding node is [" + aParentNode.nodeName + "] and contains text [" + aParentNode.textContent + "], and its parent has [" + aParentNode.parentNode.childNodes.length + " children.\n";
+    msiKludgeLogString(logStr, ["spaces"]);
+    editor.splitNode(aParentNode, nOffset, newLeftNode);  //after this call, aParentNode does hold the right end of the split, but newLeftNode isn't reliable
+    logStr = "  After split, parent node is [" + aParentNode.nodeName + "] and contains text [" + aParentNode.textContent + "], and its parent has [" + aParentNode.parentNode.childNodes.length + " children.\n";
+    for (var kk = 0; kk < aParentNode.parentNode.childNodes.length; ++kk)
+      logStr += "    Child [" + kk + "] is a [" + aParentNode.parentNode.childNodes[kk].nodeName + "] with content [" + aParentNode.parentNode.childNodes[kk].textContent + "]\n";
+    logStr += "  The newLeftNode is [" + newLeftNode.nodeName + "] with text [" + newLeftNode.textContent + "] and shows parent node [";
+    if (newLeftNode.parentNode)
+      logStr += newLeftNode.parentNode.nodeName + "].\n";
+    else
+      logStr += "null].\n";
+    msiKludgeLogString(logStr, ["spaces"]);
+    var newLeftNodeAgain = editor.document.createTextNode("");
+    editor.splitNode(aParentNode, reviseData.getTextLength(), newLeftNodeAgain);  //getTextLength is normally 1 - we're just separating the existing space from its surrounding text
+    logStr = "  After second split, parent node is [" + aParentNode.nodeName + "] and contains text [" + aParentNode.textContent + "], and its parent has [" + aParentNode.parentNode.childNodes.length + " children.\n";
+    for (var kk = 0; kk < aParentNode.parentNode.childNodes.length; ++kk)
+      logStr += "    Child [" + kk + "] is a [" + aParentNode.parentNode.childNodes[kk].nodeName + "] with content [" + aParentNode.parentNode.childNodes[kk].textContent + "]\n";
+    logStr += "  The newLeftNode is [" + newLeftNode.nodeName + "] with text [" + newLeftNode.textContent + "] and shows parent node [";
+    if (newLeftNodeAgain.parentNode)
+      logStr += newLeftNodeAgain.parentNode.nodeName + "].\n";
+    else
+      logStr += "null].\n";
+    msiKludgeLogString(logStr, ["spaces"]);
+    nOffset = msiNavigationUtils.offsetInParent(aParentNode);
+    if (nOffset > 0)
+      editor.deleteNode(aParentNode.parentNode.childNodes[--nOffset]);
+    msiKludgeLogString("Got past the deleteNode call\n", ["spaces"]);
+    editor.insertNode(ourNode, aParentNode.parentNode, nOffset);
+    logStr = "  After insertion of new node, parent node is [" + aParentNode.parentNode.nodeName + "] and contains text [" + aParentNode.textContent + "], and its parent has [" + aParentNode.parentNode.childNodes.length + " children.\n";
+    msiKludgeLogString(logStr, ["spaces"]);
+  }
+
+  editor.endTransaction();
 }
 
 //-----------------------------------------------------------------------------------
