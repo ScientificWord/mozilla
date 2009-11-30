@@ -49,6 +49,7 @@
 #include "nsContentUtils.h"
 #include "nsMathCursorUtils.h"
 #include "nsIDOMText.h"
+#include "nsDisplayList.h"
 
 #include "nsMathMLmoFrame.h"
 
@@ -128,6 +129,7 @@ nsMathMLmoFrame::BuildDisplayList(nsDisplayListBuilder*   aBuilder,
 {
   nsresult rv = NS_OK;
   PRBool useMathMLChar = UseMathMLChar();
+  nsIFrame* firstChild;
 
   if (!useMathMLChar) {
     // let the base class do everything
@@ -141,22 +143,25 @@ nsMathMLmoFrame::BuildDisplayList(nsDisplayListBuilder*   aBuilder,
     PRBool isSelected = PR_FALSE;
     nsRect selectedRect;
   // BBM: experiment
-    nsIFrame* firstChild = mFrames.FirstChild();
-    if (IsFrameInSelection(this)) {
-      selectedRect = firstChild->GetRect();
-//      selectedRect = GetRect();
+    firstChild = mFrames.FirstChild();
+    while (firstChild->GetFirstChild(nsnull)) firstChild = firstChild->GetFirstChild(nsnull);
+//    // drill down to the text child
+//    
+    if (IsFrameInSelection(firstChild)) {
       isSelected = PR_TRUE;
     }
-//    if (IsFrameInSelection(firstChild)) {
-//      isSelected = PR_TRUE;
-//      }
-    rv = mMathMLChar.Display(aBuilder, this, aLists, isSelected ? &selectedRect : nsnull, isSelected ); //, isSelected ? &selectedRect : nsnull);
+    rv = mMathMLChar.Display(aBuilder, this, aLists, nsnull, isSelected); //, isSelected ? &selectedRect : nsnull);
     NS_ENSURE_SUCCESS(rv, rv);
   
 #if defined(NS_DEBUG) && defined(SHOW_BOUNDING_BOX)
     // for visual debug
     rv = DisplayBoundingMetrics(aBuilder, this, mReference, mBoundingMetrics, aLists);
 #endif
+    if (firstChild == aBuilder->GetCaretFrame())
+    {
+      this->DisplayCaret(aBuilder, aDirtyRect, aLists);
+    }
+
   }
 //BBM
   DisplaySelectionUnderlay(aBuilder,aLists);
