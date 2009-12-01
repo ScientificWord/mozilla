@@ -91,6 +91,8 @@ REQUIRES	= xpcom \
 		  keymap \
 		  thebes \
 		  autosub \
+		  compute \
+		  wrappers \
 		  pref \
 		  unicharutil \
 		  xultmpl \
