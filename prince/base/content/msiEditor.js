@@ -1604,12 +1604,12 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
   var sciurlstring = msiFindOriginalDocname(htmlurlstring);
   var leafregex = /.*\/([^\/]+$)/;
   var arr = leafregex.exec(sciurlstring);
-  if (arr && arr.length >1) title = arr[1];
-  if (!title) title="untitled document";
+  if (arr && arr.length >1) document.title = arr[1];
+  if (!document.title) document.title="untitled document";
 
   var dialogTitle = GetString(doPublish ? "PublishPage" : "SaveDocument");
   var dialogMsg = GetString(doPublish ? "PublishPrompt" : "SaveFilePrompt");
-  dialogMsg = (dialogMsg.replace(/%title%/,title)).replace(/%reason%/,reasonToSave);
+  dialogMsg = (dialogMsg.replace(/%title%/,document.title)).replace(/%reason%/,reasonToSave);
 
   var promptService = msiGetPromptService();
   if (!promptService)
