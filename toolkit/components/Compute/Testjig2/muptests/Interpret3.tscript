@@ -1,0 +1,2895 @@
+;Test script for "Comptest.exe". Variation of health2.tscript using Interpret.
+
+SetClientPref     1,use_mfenced,1
+
+Test ID     101
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>3</mml:mn>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mn>4</mml:mn>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     102
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mn>2</mml:mn>
+         <mml:mn>3</mml:mn>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     103
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msqrt>
+         <mml:mn>2.36</mml:mn>
+       </mml:msqrt>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     104
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mn>0.16</mml:mn>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:mo form="prefix">&minus;</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     105
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix">&minus;</mml:mo>
+         <mml:mn>11.9</mml:mn>
+       </mml:mrow>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     106
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&LeftCeiling;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix">&minus;</mml:mo>
+         <mml:mn>11.9</mml:mn>
+       </mml:mrow>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&RightCeiling;</mml:mo>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     107
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&LeftFloor;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix">&minus;</mml:mo>
+         <mml:mn>11.9</mml:mn>
+       </mml:mrow>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&RightFloor;</mml:mo>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     108
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mstyle displaystyle="true" scriptlevel="0">
+           <mml:mfrac>
+             <mml:mn>2</mml:mn>
+             <mml:mn>3</mml:mn>
+           </mml:mfrac>
+         </mml:mstyle>
+       </mml:mrow>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:mrow>
+         <mml:mstyle displaystyle="true" scriptlevel="0">
+           <mml:mfrac>
+             <mml:mn>8</mml:mn>
+             <mml:mn>7</mml:mn>
+           </mml:mfrac>
+         </mml:mstyle>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     109
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>2</mml:mn>
+       <mml:mo form="infix">&midast;</mml:mo>
+       <mml:mfrac>
+         <mml:mn>7</mml:mn>
+         <mml:mn>8</mml:mn>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     110
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:mn>71</mml:mn>
+         <mml:mn>8</mml:mn>
+       </mml:mfrac>
+       <mml:mo form="infix">&sdot;</mml:mo>
+       <mml:mn>5</mml:mn>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     111
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mn>2</mml:mn>
+         <mml:mn>3</mml:mn>
+       </mml:msup>
+;      <mml:mo form="infix">&times;</mml:mo>
+       <mml:mo form="infix">&#x00D7;</mml:mo>
+       <mml:msup>
+         <mml:mn>3</mml:mn>
+         <mml:mn>2</mml:mn>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     112
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">sin</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mi>&pi;</mml:mi>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     113
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mi mathcolor="gray">sin</mml:mi>
+         <mml:mn>3</mml:mn>
+       </mml:msup>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mfrac>
+         <mml:mi>&pi;</mml:mi>
+         <mml:mn>4</mml:mn>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     114
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mi mathcolor="gray">sin</mml:mi>
+         <mml:mrow>
+           <mml:mo form="prefix">&minus;</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+       </mml:msup>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mfrac>
+         <mml:mi>&pi;</mml:mi>
+         <mml:mn>4</mml:mn>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     115
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:munderover>
+         <mml:mo form="prefix" movablelimits="true" largeop="true">&sum;</mml:mo>
+         <mml:mrow>
+           <mml:mi>i</mml:mi>
+           <mml:mo form="infix">=</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+         <mml:mn>9</mml:mn>
+       </mml:munderover>
+       <mml:mfrac>
+         <mml:mn>1</mml:mn>
+         <mml:mrow>
+           <mml:mn>1</mml:mn>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:msup>
+             <mml:mi>i</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+         </mml:mrow>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     115prod1
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:munderover>
+         <mml:mo form="prefix" movablelimits="true" largeop="true">&prod;</mml:mo>
+         <mml:mrow>
+           <mml:mi>i</mml:mi>
+           <mml:mo form="infix">=</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+         <mml:mn>9</mml:mn>
+       </mml:munderover>
+       <mml:mfrac>
+         <mml:mn>1</mml:mn>
+         <mml:mrow>
+           <mml:mn>1</mml:mn>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:msup>
+             <mml:mi>i</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+         </mml:mrow>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     115prod2
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:munderover>
+         <mml:mo form="prefix" movablelimits="true" largeop="true">&prod;</mml:mo>
+         <mml:mrow>
+           <mml:mi>i</mml:mi>
+           <mml:mo form="infix">=</mml:mo>
+           <mml:mn>2</mml:mn>
+         </mml:mrow>
+         <mml:mi>&infin;</mml:mi>
+       </mml:munderover>
+       <mml:mfrac>
+         <mml:msup>
+           <mml:mi>i</mml:mi>
+           <mml:mn>2</mml:mn>
+         </mml:msup>
+         <mml:mrow>
+           <mml:msup>
+             <mml:mi>i</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+           <mml:mo form="infix">-</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     116
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:mrow>
+           <mml:mi>&Gamma;</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+             <mml:mfrac>
+               <mml:mn>5</mml:mn>
+               <mml:mn>3</mml:mn>
+             </mml:mfrac>
+             <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+           </mml:mrow>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:mi>&Gamma;</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+             <mml:mfrac>
+               <mml:mn>1</mml:mn>
+               <mml:mn>2</mml:mn>
+             </mml:mfrac>
+             <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+           </mml:mrow>
+         </mml:mrow>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     117
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>50</mml:mn>
+       <mml:mo form="postfix">!</mml:mo>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     118
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mn>2</mml:mn>
+         <mml:mn>1234</mml:mn>
+       </mml:msup>
+       <mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+       <mml:mn>3</mml:mn>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     119
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:msup>
+           <mml:mi>x</mml:mi>
+           <mml:mn>12</mml:mn>
+         </mml:msup>
+         <mml:mo form="infix">+</mml:mo>
+         <mml:mn>1</mml:mn>
+       </mml:mrow>
+       <mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+       <mml:mrow>
+         <mml:msup>
+           <mml:mi>x</mml:mi>
+           <mml:mn>2</mml:mn>
+         </mml:msup>
+         <mml:mo form="infix">+</mml:mo>
+         <mml:mn>1</mml:mn>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     120
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mn>2</mml:mn>
+         <mml:mn>1234</mml:mn>
+       </mml:msup>
+       <mml:mo form="infix" lspace="0.5em" rspace="thickmathspace" mathcolor="gray">mod</mml:mo>
+       <mml:mn>3</mml:mn>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     121
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>&zeta;</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mn>12</mml:mn>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     122
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true">(</mml:mo>
+       <mml:mfrac linethickness="0">
+         <mml:mn>12</mml:mn>
+         <mml:mn>4</mml:mn>
+       </mml:mfrac>
+       <mml:mo form="postfix" fence="true" stretchy="true">)</mml:mo>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     123
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true">(</mml:mo>
+       <mml:mfrac linethickness="0">
+         <mml:mi>p</mml:mi>
+         <mml:mi>q</mml:mi>
+       </mml:mfrac>
+       <mml:mo form="postfix" fence="true" stretchy="true">)</mml:mo>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     124
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo mathcolor="gray" form="prefix">gcd</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>35</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>25</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>65</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     125
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">lcm</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>35</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>25</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>65</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     126
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo mathcolor="gray" form="prefix">max</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>35</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>25</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>65</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     127
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:munder>
+         <mml:mo mathcolor="gray" form="prefix" movablelimits="true">max</mml:mo>
+         <mml:mrow>
+           <mml:mn>1</mml:mn>
+           <mml:mo form="infix">&le;</mml:mo>
+           <mml:mi>n</mml:mi>
+           <mml:mo form="infix">&le;</mml:mo>
+           <mml:mn>10</mml:mn>
+         </mml:mrow>
+       </mml:munder>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">sin</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>n</mml:mi>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     128
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo mathcolor="gray" form="prefix">min</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>35</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>25</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>65</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     129
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">log</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mi>e</mml:mi>
+       </mml:mrow>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">ln</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mn>2</mml:mn>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     130
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mi mathcolor="gray">log</mml:mi>
+         <mml:mn>2</mml:mn>
+       </mml:msub>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mi>x</mml:mi>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     131
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mi mathcolor="gray">log</mml:mi>
+         <mml:mn>2</mml:mn>
+       </mml:msub>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:msup>
+         <mml:mi>x</mml:mi>
+         <mml:mn>2</mml:mn>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     132
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">sin</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mi>x</mml:mi>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mi>y</mml:mi>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     133
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">sin</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mrow>
+           <mml:mn>2</mml:mn>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">cos</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mrow>
+           <mml:mn>3</mml:mn>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mi>y</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     134
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msubsup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+           <mml:mrow>
+             <mml:mi mathcolor="gray">sin</mml:mi>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:msup>
+               <mml:mi>x</mml:mi>
+               <mml:mn>2</mml:mn>
+             </mml:msup>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+         </mml:mrow>
+         <mml:mn>1</mml:mn>
+         <mml:mn>2</mml:mn>
+       </mml:msubsup>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     135
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msubsup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true"></mml:mo>
+           <mml:mrow>
+             <mml:mi mathcolor="gray">sin</mml:mi>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:msup>
+               <mml:mi>x</mml:mi>
+               <mml:mn>2</mml:mn>
+             </mml:msup>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+         </mml:mrow>
+         <mml:mn>1</mml:mn>
+         <mml:mn>2</mml:mn>
+       </mml:msubsup>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     136
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msubsup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true"></mml:mo>
+           <mml:mrow>
+             <mml:mi mathcolor="gray">sin</mml:mi>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:msup>
+               <mml:mi>x</mml:mi>
+               <mml:mn>2</mml:mn>
+             </mml:msup>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:mi>x</mml:mi>
+           <mml:mo form="infix">=</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+         <mml:mn>2</mml:mn>
+       </mml:msubsup>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+;<h2 class="subsection">200 - Calculus</h2>
+
+Test ID     201
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:munder>
+         <mml:mo mathcolor="gray" form="prefix" movablelimits="true">lim</mml:mo>
+         <mml:mrow>
+           <mml:mi>n</mml:mi>
+           <mml:mo form="infix">&rarr;</mml:mo>
+           <mml:mi>&infin;</mml:mi>
+         </mml:mrow>
+       </mml:munder>
+       <mml:mfrac>
+         <mml:mrow>
+           <mml:msup>
+             <mml:mi>n</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+           <mml:mo form="infix">&minus;</mml:mo>
+           <mml:mi>n</mml:mi>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:msup>
+             <mml:mi>n</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+           <mml:mo form="infix">&minus;</mml:mo>
+           <mml:mn>81</mml:mn>
+         </mml:mrow>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     202
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:munder>
+         <mml:mo mathcolor="gray" form="prefix" movablelimits="true">lim</mml:mo>
+         <mml:mrow>
+           <mml:mi>x</mml:mi>
+           <mml:mo form="infix">&rarr;</mml:mo>
+           <mml:msup>
+             <mml:mn>0</mml:mn>
+             <mml:mo>&minus;</mml:mo>
+           </mml:msup>
+         </mml:mrow>
+       </mml:munder>
+       <mml:mrow>
+         <mml:mstyle displaystyle="true" scriptlevel="0">
+           <mml:mfrac>
+             <mml:mi>x</mml:mi>
+             <mml:mrow>
+               <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+               <mml:mi>x</mml:mi>
+               <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mml:mo>
+             </mml:mrow>
+           </mml:mfrac>
+         </mml:mstyle>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     203
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:munder>
+         <mml:mo mathcolor="gray" form="prefix" movablelimits="true">lim</mml:mo>
+         <mml:mrow>
+           <mml:mi>t</mml:mi>
+           <mml:mo form="infix">&rarr;</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+       </mml:munder>
+       <mml:mrow>
+         <mml:mstyle displaystyle="true" scriptlevel="0">
+           <mml:mfrac>
+             <mml:mrow>
+               <mml:mrow>
+                 <mml:mi mathcolor="gray">tan</mml:mi>
+                 <mml:mo>&ApplyFunction;</mml:mo>
+                 <mml:mi>t</mml:mi>
+               </mml:mrow>
+               <mml:mo form="infix">&minus;</mml:mo>
+               <mml:mrow>
+                 <mml:mi mathcolor="gray">tan</mml:mi>
+                 <mml:mo>&ApplyFunction;</mml:mo>
+                 <mml:mn>1</mml:mn>
+               </mml:mrow>
+             </mml:mrow>
+             <mml:mrow>
+               <mml:mi>t</mml:mi>
+               <mml:mo form="infix">&minus;</mml:mo>
+               <mml:mn>1</mml:mn>
+             </mml:mrow>
+           </mml:mfrac>
+         </mml:mstyle>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     204
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:munder>
+         <mml:mo mathcolor="gray" form="prefix" movablelimits="true">lim</mml:mo>
+         <mml:mrow>
+           <mml:mi>n</mml:mi>
+           <mml:mo form="infix">&rarr;</mml:mo>
+           <mml:mn>5</mml:mn>
+         </mml:mrow>
+       </mml:munder>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">sin</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mi>n</mml:mi>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     205
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:msup>
+             <mml:mi>e</mml:mi>
+             <mml:msup>
+               <mml:mi>x</mml:mi>
+               <mml:mn>2</mml:mn>
+             </mml:msup>
+           </mml:msup>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     206
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mfrac>
+           <mml:msup>
+             <mml:mo form="prefix">&dd;</mml:mo>
+             <mml:mn>4</mml:mn>
+           </mml:msup>
+           <mml:mrow>
+             <mml:mo form="prefix">&dd;</mml:mo>
+             <mml:msup>
+               <mml:mi>x</mml:mi>
+               <mml:mn>4</mml:mn>
+             </mml:msup>
+           </mml:mrow>
+         </mml:mfrac>
+       </mml:mrow>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>3</mml:mn>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:msup>
+             <mml:mi>x</mml:mi>
+             <mml:mn>8</mml:mn>
+           </mml:msup>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     207
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mo form="prefix">&DD;</mml:mo>
+         <mml:msup>
+           <mml:mi>x</mml:mi>
+           <mml:mn>4</mml:mn>
+         </mml:msup>
+       </mml:msub>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mn>3</mml:mn>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:msup>
+             <mml:mi>x</mml:mi>
+             <mml:mn>8</mml:mn>
+           </mml:msup>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     208
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mstyle displaystyle="true" scriptlevel="0">
+           <mml:mfrac>
+             <mml:mo form="prefix">&PartialD;</mml:mo>
+             <mml:mrow>
+               <mml:mo form="prefix">&PartialD;</mml:mo>
+               <mml:mi>x</mml:mi>
+             </mml:mrow>
+           </mml:mfrac>
+         </mml:mstyle>
+       </mml:mrow>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mrow>
+             <mml:msup>
+               <mml:mi mathcolor="gray">sin</mml:mi>
+               <mml:mn>2</mml:mn>
+             </mml:msup>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:mi>x</mml:mi>
+           </mml:mrow>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mrow>
+             <mml:mi mathcolor="gray">cos</mml:mi>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:mrow>
+               <mml:mi>x</mml:mi>
+               <mml:mo>&InvisibleTimes;</mml:mo>
+               <mml:mi>y</mml:mi>
+             </mml:mrow>
+           </mml:mrow>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     209
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mstyle displaystyle="true" scriptlevel="0">
+           <mml:mfrac>
+             <mml:msup>
+               <mml:mo form="prefix">&PartialD;</mml:mo>
+               <mml:mn>2</mml:mn>
+             </mml:msup>
+             <mml:mrow>
+               <mml:mrow>
+                 <mml:mo form="prefix">&PartialD;</mml:mo>
+                 <mml:mi>x</mml:mi>
+               </mml:mrow>
+               <mml:mo>&InvisibleTimes;</mml:mo>
+               <mml:mrow>
+                 <mml:mo form="prefix">&PartialD;</mml:mo>
+                 <mml:mi>y</mml:mi>
+               </mml:mrow>
+             </mml:mrow>
+           </mml:mfrac>
+         </mml:mstyle>
+       </mml:mrow>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mrow>
+             <mml:msup>
+               <mml:mi mathcolor="gray">sin</mml:mi>
+               <mml:mn>2</mml:mn>
+             </mml:msup>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:mi>x</mml:mi>
+           </mml:mrow>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mrow>
+             <mml:mi mathcolor="gray">cos</mml:mi>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:mrow>
+               <mml:mi>x</mml:mi>
+               <mml:mo>&InvisibleTimes;</mml:mo>
+               <mml:mi>y</mml:mi>
+             </mml:mrow>
+           </mml:mrow>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     210
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mo form="prefix">&DD;</mml:mo>
+         <mml:mi>x</mml:mi>
+       </mml:msub>
+       <mml:msup>
+         <mml:mi>x</mml:mi>
+         <mml:mi>a</mml:mi>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     211
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mo form="prefix">&DD;</mml:mo>
+         <mml:mrow>
+           <mml:mi>x</mml:mi>
+           <mml:mo>&InvisibleComma;</mml:mo>
+           <mml:mi>y</mml:mi>
+         </mml:mrow>
+       </mml:msub>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mrow>
+             <mml:msup>
+               <mml:mi mathcolor="gray">sin</mml:mi>
+               <mml:mn>2</mml:mn>
+             </mml:msup>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:mi>x</mml:mi>
+           </mml:mrow>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mrow>
+             <mml:mi mathcolor="gray">cos</mml:mi>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:mrow>
+               <mml:mi>x</mml:mi>
+               <mml:mo>&InvisibleTimes;</mml:mo>
+               <mml:mi>y</mml:mi>
+             </mml:mrow>
+           </mml:mrow>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     212
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+       <mml:mrow>
+         <mml:msqrt>
+           <mml:mn>1</mml:mn>
+           <mml:mo form="infix">&minus;</mml:mo>
+           <mml:mrow>
+             <mml:msup>
+               <mml:mi mathcolor="gray">sin</mml:mi>
+               <mml:mn>2</mml:mn>
+             </mml:msup>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:mi>x</mml:mi>
+           </mml:mrow>
+         </mml:msqrt>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     213
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" largeop="true">&Int;</mml:mo>
+       <mml:mrow>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mrow>
+             <mml:mi>y</mml:mi>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mrow>
+               <mml:mi mathcolor="gray">sin</mml:mi>
+               <mml:mo>&ApplyFunction;</mml:mo>
+               <mml:mi>x</mml:mi>
+             </mml:mrow>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>y</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     214
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msubsup>
+         <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+         <mml:mn>1</mml:mn>
+         <mml:mn>2</mml:mn>
+       </mml:msubsup>
+       <mml:mfrac>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:msup>
+             <mml:mi>x</mml:mi>
+             <mml:mn>5</mml:mn>
+           </mml:msup>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     215
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msubsup>
+         <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+         <mml:mn>1</mml:mn>
+         <mml:mn>2</mml:mn>
+       </mml:msubsup>
+       <mml:mfrac>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:msup>
+             <mml:mi>x</mml:mi>
+             <mml:mn>6</mml:mn>
+           </mml:msup>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:mi>x</mml:mi>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:mn>2</mml:mn>
+         </mml:mrow>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     216
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msubsup>
+         <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+         <mml:mn>0</mml:mn>
+         <mml:mi>&infin;</mml:mi>
+       </mml:msubsup>
+       <mml:mrow>
+         <mml:msup>
+           <mml:mi>e</mml:mi>
+           <mml:msup>
+             <mml:mi>x</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+         </mml:msup>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     217
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:mo form="prefix">&dd;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mfrac>
+       <mml:mrow>
+         <mml:msubsup>
+           <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+           <mml:mn>0</mml:mn>
+           <mml:mi>x</mml:mi>
+         </mml:msubsup>
+         <mml:mrow>
+           <mml:mrow>
+             <mml:mi mathcolor="gray">tan</mml:mi>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:msup>
+               <mml:mi>t</mml:mi>
+               <mml:mn>3</mml:mn>
+             </mml:msup>
+           </mml:mrow>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix">&dd;</mml:mo>
+             <mml:mi>t</mml:mi>
+           </mml:mrow>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+;<h2 class="subsection">300 - Complex Numbers</h2>
+
+Test ID     301
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mrow>
+             <mml:mn>3</mml:mn>
+             <mml:mo form="infix">&minus;</mml:mo>
+             <mml:mi>i</mml:mi>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mn>2</mml:mn>
+       </mml:msup>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mn>9</mml:mn>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     302
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">Im</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mi>a</mml:mi>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:mrow>
+             <mml:mi>b</mml:mi>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>i</mml:mi>
+           </mml:mrow>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     303
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">Re</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:msup>
+             <mml:mrow>
+               <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+               <mml:mrow>
+                 <mml:mn>3</mml:mn>
+                 <mml:mo form="infix">&minus;</mml:mo>
+                 <mml:mi>i</mml:mi>
+               </mml:mrow>
+               <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+             </mml:mrow>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+           <mml:mo form="infix">&minus;</mml:mo>
+           <mml:mn>9</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     304
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mrow>
+             <mml:mi>x</mml:mi>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>y</mml:mi>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mo form="infix">*</mml:mo>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     305
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mrow>
+             <mml:mi>a</mml:mi>
+             <mml:mo form="infix">+</mml:mo>
+             <mml:mrow>
+               <mml:mi>b</mml:mi>
+               <mml:mo>&InvisibleTimes;</mml:mo>
+               <mml:mi>i</mml:mi>
+             </mml:mrow>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mo form="infix">&midast;</mml:mo>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     306
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mrow>
+             <mml:mn>2</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mrow>
+               <mml:mi mathcolor="gray">sin</mml:mi>
+               <mml:mo>&ApplyFunction;</mml:mo>
+               <mml:mi>y</mml:mi>
+             </mml:mrow>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mo form="infix">&midast;</mml:mo>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     307
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mtable align="axis">
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>1</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>2</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>3</mml:mn>
+                 <mml:mo form="infix">&minus;</mml:mo>
+                 <mml:mi>i</mml:mi>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mi>i</mml:mi>
+               </mml:mtd>
+             </mml:mtr>
+           </mml:mtable>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mo form="infix">&midast;</mml:mo>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     308
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mover>
+         <mml:mrow>
+           <mml:mi>x</mml:mi>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mi>y</mml:mi>
+         </mml:mrow>
+         <mml:mo stretchy="true" accent="true">&#x00AF;</mml:mo>
+       </mml:mover>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     309
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mover>
+         <mml:mrow>
+           <mml:mi>a</mml:mi>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:mrow>
+             <mml:mi>b</mml:mi>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>i</mml:mi>
+           </mml:mrow>
+         </mml:mrow>
+         <mml:mo stretchy="true" accent="true">&OverBar;</mml:mo>
+       </mml:mover>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     310
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mover>
+         <mml:mrow>
+           <mml:mn>2</mml:mn>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mrow>
+             <mml:mi mathcolor="gray">sin</mml:mi>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:mi>y</mml:mi>
+           </mml:mrow>
+         </mml:mrow>
+         <mml:mo stretchy="true" accent="true">&OverBar;</mml:mo>
+       </mml:mover>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     311
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mover>
+         <mml:mtable align="axis">
+           <mml:mtr>
+             <mml:mtd>
+               <mml:mn>1</mml:mn>
+             </mml:mtd>
+             <mml:mtd>
+               <mml:mn>2</mml:mn>
+             </mml:mtd>
+           </mml:mtr>
+           <mml:mtr>
+             <mml:mtd>
+               <mml:mn>3</mml:mn>
+               <mml:mo form="infix">&minus;</mml:mo>
+               <mml:mi>i</mml:mi>
+             </mml:mtd>
+             <mml:mtd>
+               <mml:mi>i</mml:mi>
+             </mml:mtd>
+           </mml:mtr>
+         </mml:mtable>
+         <mml:mo stretchy="true" accent="true">&OverBar;</mml:mo>
+       </mml:mover>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+;<h2 class="subsection">400 - Matrices</h2>
+
+Test ID     401
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">det</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mtable align="axis">
+           <mml:mtr>
+             <mml:mtd>
+               <mml:mn>1</mml:mn>
+             </mml:mtd>
+             <mml:mtd>
+               <mml:mfrac>
+                 <mml:mn>1</mml:mn>
+                 <mml:mn>2</mml:mn>
+               </mml:mfrac>
+             </mml:mtd>
+             <mml:mtd>
+               <mml:mfrac>
+                 <mml:mn>1</mml:mn>
+                 <mml:mn>3</mml:mn>
+               </mml:mfrac>
+             </mml:mtd>
+           </mml:mtr>
+           <mml:mtr>
+             <mml:mtd>
+               <mml:mfrac>
+                 <mml:mn>1</mml:mn>
+                 <mml:mn>2</mml:mn>
+               </mml:mfrac>
+             </mml:mtd>
+             <mml:mtd>
+               <mml:mfrac>
+                 <mml:mn>1</mml:mn>
+                 <mml:mn>3</mml:mn>
+               </mml:mfrac>
+             </mml:mtd>
+             <mml:mtd>
+               <mml:mfrac>
+                 <mml:mn>1</mml:mn>
+                 <mml:mn>4</mml:mn>
+               </mml:mfrac>
+             </mml:mtd>
+           </mml:mtr>
+           <mml:mtr>
+             <mml:mtd>
+               <mml:mfrac>
+                 <mml:mn>1</mml:mn>
+                 <mml:mn>3</mml:mn>
+               </mml:mfrac>
+             </mml:mtd>
+             <mml:mtd>
+               <mml:mfrac>
+                 <mml:mn>1</mml:mn>
+                 <mml:mn>4</mml:mn>
+               </mml:mfrac>
+             </mml:mtd>
+             <mml:mtd>
+               <mml:mfrac>
+                 <mml:mn>1</mml:mn>
+                 <mml:mn>5</mml:mn>
+               </mml:mfrac>
+             </mml:mtd>
+           </mml:mtr>
+         </mml:mtable>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     402
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mtable align="axis">
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>1</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>2</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>3</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>4</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+           </mml:mtable>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:mo form="prefix">&minus;</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     403
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mtable align="axis">
+           <mml:mtr>
+             <mml:mtd>
+               <mml:mn>1</mml:mn>
+             </mml:mtd>
+             <mml:mtd>
+               <mml:mn>2</mml:mn>
+             </mml:mtd>
+           </mml:mtr>
+           <mml:mtr>
+             <mml:mtd>
+               <mml:mn>3</mml:mn>
+             </mml:mtd>
+             <mml:mtd>
+               <mml:mn>4</mml:mn>
+             </mml:mtd>
+           </mml:mtr>
+         </mml:mtable>
+         <mml:mrow>
+           <mml:mo form="prefix">&minus;</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     404
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+           <mml:mtable align="axis">
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>1</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>2</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>3</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>4</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+           </mml:mtable>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:mo form="prefix">&minus;</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     405
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mtable align="axis">
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>1</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>2</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>i</mml:mi>
+               </mml:mtd>
+             </mml:mtr>
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>3</mml:mn>
+                 <mml:mo form="infix">&minus;</mml:mo>
+                 <mml:mi>i</mml:mi>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mi>i</mml:mi>
+                 <mml:mo form="infix">&minus;</mml:mo>
+                 <mml:mn>4</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+           </mml:mtable>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mi>T</mml:mi>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     406
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+           <mml:mtable align="axis">
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>1</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>2</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>i</mml:mi>
+               </mml:mtd>
+             </mml:mtr>
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>3</mml:mn>
+                 <mml:mo form="infix">&minus;</mml:mo>
+                 <mml:mi>i</mml:mi>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mi>i</mml:mi>
+                 <mml:mo form="infix">&minus;</mml:mo>
+                 <mml:mn>4</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+           </mml:mtable>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+         </mml:mrow>
+         <mml:mi>H</mml:mi>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+;<h2 class="subsection">500 - Vector Calculus</h2>
+
+Test ID     501
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix">&nabla;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mi>x</mml:mi>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mi>y</mml:mi>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mi>z</mml:mi>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     502
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix">&nabla;&sdot;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+         <mml:mrow>
+           <mml:mrow>
+             <mml:mi>x</mml:mi>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>z</mml:mi>
+           </mml:mrow>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mrow>
+             <mml:mn>2</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>y</mml:mi>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>z</mml:mi>
+           </mml:mrow>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:msup>
+             <mml:mi>z</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     503
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix">&nabla;&times;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+         <mml:mrow>
+           <mml:mrow>
+             <mml:mi>y</mml:mi>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>z</mml:mi>
+           </mml:mrow>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mrow>
+             <mml:mn>2</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>x</mml:mi>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>z</mml:mi>
+           </mml:mrow>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mrow>
+             <mml:mi>x</mml:mi>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>y</mml:mi>
+           </mml:mrow>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     504
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mo form="prefix">&nabla;</mml:mo>
+         <mml:mn>2</mml:mn>
+       </mml:msup>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mi>x</mml:mi>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:msup>
+             <mml:mi>y</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:mrow>
+             <mml:mn>2</mml:mn>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:msup>
+               <mml:mi>z</mml:mi>
+               <mml:mn>3</mml:mn>
+             </mml:msup>
+           </mml:mrow>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+;<h1 class="section">600 - Norms</h1>
+
+Test ID     601
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+             <mml:mrow>
+               <mml:mi>a</mml:mi>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mi>b</mml:mi>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mi>c</mml:mi>
+             </mml:mrow>
+             <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+         </mml:mrow>
+         <mml:mn>1</mml:mn>
+       </mml:msub>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     602
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mi>a</mml:mi>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mi>b</mml:mi>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mi>c</mml:mi>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     603
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+             <mml:mrow>
+               <mml:mi>a</mml:mi>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mi>b</mml:mi>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mi>c</mml:mi>
+             </mml:mrow>
+             <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+         </mml:mrow>
+         <mml:mn>3</mml:mn>
+       </mml:msub>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     604
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+             <mml:mrow>
+               <mml:mrow>
+                 <mml:mo form="prefix">&minus;</mml:mo>
+                 <mml:mn>1</mml:mn>
+               </mml:mrow>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mn>2</mml:mn>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mn>1</mml:mn>
+             </mml:mrow>
+             <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+         </mml:mrow>
+         <mml:mn>5</mml:mn>
+       </mml:msub>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     605
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+             <mml:mrow>
+               <mml:mi>a</mml:mi>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mi>b</mml:mi>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mi>c</mml:mi>
+             </mml:mrow>
+             <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+         </mml:mrow>
+         <mml:mi>&infin;</mml:mi>
+       </mml:msub>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     606
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+             <mml:mrow>
+               <mml:mn>8</mml:mn>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mrow>
+                 <mml:mo form="prefix">&minus;</mml:mo>
+                 <mml:mn>10</mml:mn>
+               </mml:mrow>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mn>2</mml:mn>
+             </mml:mrow>
+             <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+         </mml:mrow>
+         <mml:mi>&infin;</mml:mi>
+       </mml:msub>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     607
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+           <mml:mrow>
+             <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+             <mml:mrow>
+               <mml:mi>a</mml:mi>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mi>b</mml:mi>
+               <mml:mo form="infix">,</mml:mo>
+               <mml:mi>c</mml:mi>
+             </mml:mrow>
+             <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+         </mml:mrow>
+         <mml:mn>4</mml:mn>
+       </mml:msub>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     608
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+       <mml:mtable align="axis">
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>0.2</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>0.3</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>0.5</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>0.7</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+       </mml:mtable>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     609
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+           <mml:mtable align="axis">
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>5</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>7</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mo form="prefix">&minus;</mml:mo>
+                 <mml:mn>13</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>6</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+           </mml:mtable>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+         </mml:mrow>
+         <mml:mn>1</mml:mn>
+       </mml:msub>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     610
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+           <mml:mtable align="axis">
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>5</mml:mn>
+                 <mml:mo form="infix">+</mml:mo>
+                 <mml:mrow>
+                   <mml:mn>3</mml:mn>
+                   <mml:mo>&InvisibleTimes;</mml:mo>
+                   <mml:mi>i</mml:mi>
+                 </mml:mrow>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>7</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mo form="prefix">&minus;</mml:mo>
+                 <mml:mn>13</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>6</mml:mn>
+                 <mml:mo form="infix">&minus;</mml:mo>
+                 <mml:mrow>
+                   <mml:mn>5</mml:mn>
+                   <mml:mo>&InvisibleTimes;</mml:mo>
+                   <mml:mi>i</mml:mi>
+                 </mml:mrow>
+               </mml:mtd>
+             </mml:mtr>
+           </mml:mtable>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+         </mml:mrow>
+         <mml:mi>&infin;</mml:mi>
+       </mml:msub>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     611
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msub>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+           <mml:mtable align="axis">
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>5</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>7</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+             <mml:mtr>
+               <mml:mtd>
+                 <mml:mn>13</mml:mn>
+               </mml:mtd>
+               <mml:mtd>
+                 <mml:mn>6</mml:mn>
+               </mml:mtd>
+             </mml:mtr>
+           </mml:mtable>
+           <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mml:mo>
+         </mml:mrow>
+         <mml:mi>F</mml:mi>
+       </mml:msub>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+;<h1 class="section">700 - Transforms</h1>
+
+Test ID     701
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>&Fscr;</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mfrac>
+           <mml:mn>1</mml:mn>
+           <mml:mi>x</mml:mi>
+         </mml:mfrac>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     702
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>&Fscr;</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:msup>
+             <mml:mi>e</mml:mi>
+             <mml:mrow>
+               <mml:mn>2</mml:mn>
+               <mml:mo>&InvisibleTimes;</mml:mo>
+               <mml:mi>&pi;</mml:mi>
+               <mml:mo>&InvisibleTimes;</mml:mo>
+               <mml:mi>i</mml:mi>
+               <mml:mo>&InvisibleTimes;</mml:mo>
+               <mml:mi>t</mml:mi>
+             </mml:mrow>
+           </mml:msup>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mi>t</mml:mi>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mi>w</mml:mi>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     703
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mi>&Fscr;</mml:mi>
+         <mml:mrow>
+           <mml:mo form="prefix">&minus;</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+       </mml:msup>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mrow>
+             <mml:mo form="prefix">&minus;</mml:mo>
+             <mml:mfrac>
+               <mml:mrow>
+                 <mml:mn>2</mml:mn>
+                 <mml:mo>&InvisibleTimes;</mml:mo>
+                 <mml:mi>i</mml:mi>
+               </mml:mrow>
+               <mml:mi>&omega;</mml:mi>
+             </mml:mfrac>
+           </mml:mrow>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mi>&omega;</mml:mi>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mi>t</mml:mi>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     704
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>&Lscr;</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mi>t</mml:mi>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:msup>
+             <mml:mi>e</mml:mi>
+             <mml:mi>t</mml:mi>
+           </mml:msup>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     705
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>&Lscr;</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mrow>
+             <mml:mrow>
+               <mml:mi mathcolor="gray">sin</mml:mi>
+               <mml:mo>&ApplyFunction;</mml:mo>
+               <mml:mrow>
+                 <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+                 <mml:mrow>
+                   <mml:mi>&omega;</mml:mi>
+                   <mml:mo>&InvisibleTimes;</mml:mo>
+                   <mml:mi>t</mml:mi>
+                 </mml:mrow>
+                 <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+               </mml:mrow>
+             </mml:mrow>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mrow>
+               <mml:mi mathcolor="gray">Heaviside</mml:mi>
+               <mml:mo>&ApplyFunction;</mml:mo>
+               <mml:mrow>
+                 <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+                 <mml:mi>t</mml:mi>
+                 <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+               </mml:mrow>
+             </mml:mrow>
+           </mml:mrow>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mi>t</mml:mi>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mi>u</mml:mi>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     706
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mi>&Lscr;</mml:mi>
+         <mml:mrow>
+           <mml:mo form="prefix">&minus;</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+       </mml:msup>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mfrac>
+           <mml:mn>1</mml:mn>
+           <mml:msup>
+             <mml:mrow>
+               <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+               <mml:mrow>
+                 <mml:mi>s</mml:mi>
+                 <mml:mo form="infix">+</mml:mo>
+                 <mml:mi>&alpha;</mml:mi>
+               </mml:mrow>
+               <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+             </mml:mrow>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+         </mml:mfrac>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+;<h2 class="subsection">800 - Mixed Numbers</h2>
+
+Test ID     801
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>193</mml:mn>
+       <mml:mfrac>
+         <mml:mn>87</mml:mn>
+         <mml:mn>94</mml:mn>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     802
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mn>3</mml:mn>
+         <mml:mfrac>
+           <mml:mn>1</mml:mn>
+           <mml:mn>4</mml:mn>
+         </mml:mfrac>
+       </mml:mrow>
+       <mml:mo form="infix">+</mml:mo>
+       <mml:mrow>
+         <mml:mn>4</mml:mn>
+         <mml:mfrac>
+           <mml:mn>1</mml:mn>
+           <mml:mn>3</mml:mn>
+         </mml:mfrac>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     803
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mn>3</mml:mn>
+         <mml:mfrac>
+           <mml:mn>1</mml:mn>
+           <mml:mn>4</mml:mn>
+         </mml:mfrac>
+       </mml:mrow>
+       <mml:mo form="infix">&#x00F7;</mml:mo>
+       <mml:mrow>
+         <mml:mn>4</mml:mn>
+         <mml:mfrac>
+           <mml:mn>1</mml:mn>
+           <mml:mn>3</mml:mn>
+         </mml:mfrac>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+;<h1 class="section">900 - Set Operations</h1>
+
+Test ID     901
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+         <mml:mrow>
+           <mml:mn>1</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>2</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>3</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+       </mml:mrow>
+       <mml:mo form="infix">&setmn;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+         <mml:mrow>
+           <mml:mn>2</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>3</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     902
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+         <mml:mrow>
+           <mml:mn>1</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>2</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>3</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+       </mml:mrow>
+       <mml:mo form="infix">\</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+         <mml:mrow>
+           <mml:mn>1</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>2</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>3</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     903
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+         <mml:mrow>
+           <mml:mn>1</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>2</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>3</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+       </mml:mrow>
+       <mml:mo form="infix">&cap;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+         <mml:mrow>
+           <mml:mn>2</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>3</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     904
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+         <mml:mrow>
+           <mml:mn>1</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>2</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>3</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+       </mml:mrow>
+       <mml:mo form="infix">&cup;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mml:mo>
+         <mml:mrow>
+           <mml:mn>2</mml:mn>
+           <mml:mo form="infix">,</mml:mo>
+           <mml:mn>3</mml:mn>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+;<h1 class="section">A00 - Text Style</h1>
+
+Test ID     A01
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mi>x</mml:mi>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mstyle fontweight="bold" fontstyle="upright">
+             <mml:mi>x</mml:mi>
+           </mml:mstyle>
+         </mml:mrow>
+       </mml:mrow>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:msup>
+         <mml:mi>x</mml:mi>
+         <mml:mn>2</mml:mn>
+       </mml:msup>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     A02
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mfrac>
+         <mml:mrow>
+           <mml:mi fontstyle="upright">&pfr;</mml:mi>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mi fontstyle="upright">&qfr;</mml:mi>
+         </mml:mrow>
+         <mml:mrow>
+           <mml:mi>p</mml:mi>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mi>q</mml:mi>
+         </mml:mrow>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     A03
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>a</mml:mi>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:mover accent="true">
+         <mml:mi>a</mml:mi>
+         <mml:mo form="postfix" accent="true">&dot;</mml:mo>
+       </mml:mover>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:mover accent="true">
+         <mml:mi>a</mml:mi>
+         <mml:mo form="postfix" accent="true">&die;</mml:mo>
+       </mml:mover>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:mover accent="true">
+         <mml:mi>a</mml:mi>
+         <mml:mo form="postfix" accent="true">&macr;</mml:mo>
+       </mml:mover>
+       <mml:mo>&InvisibleTimes;</mml:mo>
+       <mml:mover accent="true">
+         <mml:mi>a</mml:mi>
+         <mml:mo form="postfix" accent="true">&#x20D7;</mml:mo>
+       </mml:mover>
+     </mml:mrow>
+   </mml:math>
+End of test

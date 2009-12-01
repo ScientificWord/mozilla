@@ -1,0 +1,25 @@
+# Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
+
+DEPTH		= ../../../..
+topsrcdir	= @top_srcdir@
+srcdir		= @srcdir@
+VPATH		= @srcdir@
+
+include $(DEPTH)/config/autoconf.mk
+
+MODULE		    = compute
+XPIDL_MODULE	= compute
+
+XPIDLSRCS	= msiISimpleComputeEngine.idl
+
+
+include $(topsrcdir)/config/config.mk
+
+include $(topsrcdir)/config/rules.mk
+
+
+msiISimpleComputeEngine.idl:: msiISimpleComputeEngine.idl.c iCmpIDs.h
+	$(CPP) -I"Compute/computelib" $<  | sed "s/^IDLinclude/#include/" > msiISimpleComputeEngine.idl
+
+
+                 

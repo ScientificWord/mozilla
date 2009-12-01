@@ -1,0 +1,1162 @@
+;This file contains scripts for computations that require parameters
+
+InstallEngine     Maple5
+
+SetEngineState    Maple5,SeriesOrder,5
+SetEngineState    Maple5,Digits,10
+SetEngineState    Maple5,MaxDegree,3
+SetEngineState    Maple5,PvalOnly,0
+
+SetClientPref     1,use_mfenced,1
+
+
+Test ID     #100
+Comment     NeedVar Dialog - Solve ax = 1
+Client ID   1
+Engine      Maple5
+Command ID	Solve Exact
+Param       PID_needvarresult, zPT_ASCII_mmlmarkup,<mi>x</mi>
+<math display="inline">
+  <mrow>
+    <mrow>
+      <mi>a</mi>
+      <mo>&InvisibleTimes;</mo>
+      <mi>x</mi>
+    </mrow>
+    <mo form="infix">=</mo>
+    <mn>1</mn>
+  </mrow>
+</math>
+End of test
+
+
+;IDD_INDEPVARBOX  as used in Solve ODE Exact for y'=2
+Test ID     #200
+Comment     ODE Independent Variable - Solve ODE Exact for y'=2
+Client ID   1
+Engine      Maple5
+Command ID	Solve ODE Exact
+Param       PID_independentvar,zPT_ASCII_mmlmarkup,<mml:math><mml:mi>t</mml:mi></mml:math>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msup>
+         <mml:mi>y</mml:mi>
+         <mml:mo form="postfix">&prime;</mml:mo>
+       </mml:msup>
+       <mml:mo form="infix">=</mml:mo>
+       <mml:mn>2</mml:mn>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+
+;IDD_RESHAPEBOX
+Test ID     #300
+Comment     Matrix Reshape...
+Client ID   1
+Engine      Maple5
+Command ID	Reshape...
+Param       PID_ncolsReshape,zPT_ASCII_mmlmarkup,<mml:math><mml:mn>3</mml:mn></mml:math>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mtable align="axis">
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>1</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>2</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>3</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>4</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>5</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mspace width="veryverythinmathspace" />
+           </mml:mtd>
+         </mml:mtr>
+       </mml:mtable>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     #300d
+Comment     Defining n = 23
+Client ID   1
+Engine      Maple5
+Command ID	Define
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>n</mml:mi>
+       <mml:mo form="infix">=</mml:mo>
+       <mml:mn>23</mml:mn>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+
+;IDD_RESHAPEBOX
+Test ID     #301
+Comment     Matrix Reshape...
+Client ID   1
+Engine      Maple5
+Command ID	Reshape...
+Param       PID_ncolsReshape,zPT_ASCII_mmlmarkup,<mml:math><mml:mrow><mml:msqrt><mml:mi>n</mml:mi></mml:msqrt><mml:mo form="infix">&minus;</mml:mo><mml:mn>1</mml:mn></mml:mrow></mml:math>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mtable align="axis">
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>1</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>2</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>3</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>4</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>5</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mspace width="veryverythinmathspace" />
+           </mml:mtd>
+         </mml:mtr>
+       </mml:mtable>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+;IDD_CALCCVARBOX
+Test ID     #400
+Comment     Calculus Change Variable...
+Client ID   1
+Engine      Maple5
+Command ID	Calculus Change Variable...
+Param       PID_CalcChangeVar,zPT_ASCII_mmlmarkup,<mml:math display="inline"><mml:mrow><mml:mi>u</mml:mi><mml:mo form="infix">=</mml:mo><mml:msup><mml:mi>x</mml:mi><mml:mn>2</mml:mn></mml:msup></mml:mrow></mml:math>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+       <mml:mrow>
+         <mml:mi>x</mml:mi>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">sin</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:msup>
+             <mml:mi>x</mml:mi>
+             <mml:mn>2</mml:mn>
+           </mml:msup>
+         </mml:mrow>
+         <mml:mspace width="thinmathspace" />
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+;IDD_CALCCBYPARTSBOX
+Test ID     #500
+Comment     Calculus Integrate by Parts...
+Client ID   1
+Engine      Maple5
+Command ID	Calculus Integrate by Parts...
+Param       PID_CalcByPartsVar,zPT_ASCII_mmlmarkup,<mml:math><mml:mi mathcolor="gray">ln</mml:mi><mml:mo>&ApplyFunction;</mml:mo><mml:mi>x</mml:mi></mml:math>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+       <mml:mrow>
+         <mml:mi>x</mml:mi>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">ln</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mspace width="thinmathspace" />
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+;IDD_SOLVEFORSUBBOX
+;Test ID     #600
+;Client ID   1
+;Engine      Maple5
+;Command ID	Solve for Subexpression...
+;Param       PID_SolveForSubExpr,zPT_ASCII_mmlmarkup,
+;End of test
+
+;IDD_POLYCOLLECTVARBOX
+Test ID     #700
+Comment     Polynomial Collect...
+Client ID   1
+Engine      Maple5
+Command ID	Polynomial Collect...
+Param       PID_PolyCollectVar,zPT_ASCII_mmlmarkup,<mi>t</mi>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mn>5</mml:mn>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:msup>
+           <mml:mi>t</mml:mi>
+           <mml:mn>2</mml:mn>
+         </mml:msup>
+       </mml:mrow>
+       <mml:mo form="infix">+</mml:mo>
+       <mml:mrow>
+         <mml:mn>2</mml:mn>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mi>t</mml:mi>
+       </mml:mrow>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:mn>16</mml:mn>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:msup>
+           <mml:mi>t</mml:mi>
+           <mml:mn>5</mml:mn>
+         </mml:msup>
+       </mml:mrow>
+       <mml:mo form="infix">+</mml:mo>
+       <mml:msup>
+         <mml:mi>t</mml:mi>
+         <mml:mn>3</mml:mn>
+       </mml:msup>
+       <mml:mo form="infix">&minus;</mml:mo>
+       <mml:mrow>
+         <mml:mn>2</mml:mn>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:msup>
+           <mml:mi>t</mml:mi>
+           <mml:mn>2</mml:mn>
+         </mml:msup>
+       </mml:mrow>
+       <mml:mo form="infix">+</mml:mo>
+       <mml:mn>9</mml:mn>
+       <mml:mo form="infix">+</mml:mo>
+       <mml:mrow>
+         <mml:mi>a</mml:mi>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:msup>
+           <mml:mi>t</mml:mi>
+           <mml:mn>2</mml:mn>
+         </mml:msup>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+
+;IDD_INPUTVARIABLEBOX
+;Test ID     #800
+;Client ID   1
+;Engine      Maple5
+;Command ID	Solve Exact
+;Param       PID_needvarresult,zPT_ASCII_mmlmarkup,
+;End of test
+
+
+;IDD_IMPLICITDIFFBOX
+Test ID     #901
+Comment     <mml:math><mml:mrow><mml:mrow><mml:mi>b</mml:mi><mml:mo form="infix">+</mml:mo><mml:msup><mml:mi>y</mml:mi><mml:mo form="postfix">&prime;</mml:mo></mml:msup></mml:mrow><mml:mo form="infix">=</mml:mo><mml:mn>0</mml:mn></mml:mrow></mml:math>
+Client ID   1
+Engine      Maple5
+Command ID	Calculus Implicit Differentiation...
+Param       PID_ImplDiffIndepVar,zPT_ASCII_mmlmarkup,<mi>x</mi>
+Param       PID_ImplDiffDepVars,zPT_ASCII_mmlmarkup,<mi>y</mi>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mrow>
+           <mml:mi>b</mml:mi>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mo form="infix">+</mml:mo>
+         <mml:mi>y</mml:mi>
+       </mml:mrow>
+       <mml:mo form="infix">=</mml:mo>
+       <mml:mn>0</mml:mn>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     #902
+Comment     <mml:math><mml:mrow><mml:mrow><mml:mi>b</mml:mi><mml:mo form="infix">+</mml:mo><mml:msup><mml:mi>y</mml:mi><mml:mo form="postfix">&prime;</mml:mo></mml:msup><mml:mo form="infix">+</mml:mo><mml:mrow><mml:mi>x</mml:mi><mml:mo>&InvisibleTimes;</mml:mo><mml:msup><mml:mi>b</mml:mi><mml:mo form="postfix">&prime;</mml:mo></mml:msup></mml:mrow></mml:mrow><mml:mo form="infix">=</mml:mo><mml:mn>0</mml:mn></mml:mrow></mml:math>
+Client ID   1
+Engine      Maple5
+Command ID	Calculus Implicit Differentiation...
+Param       PID_ImplDiffIndepVar,zPT_ASCII_mmlmarkup,<mi>x</mi>
+Param       PID_ImplDiffDepVars,zPT_ASCII_mmlmarkup,<math><mi>y</mi><mo>,</mo><mi>b</mi></math>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mrow>
+           <mml:mi>b</mml:mi>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mo form="infix">+</mml:mo>
+         <mml:mi>y</mml:mi>
+       </mml:mrow>
+       <mml:mo form="infix">=</mml:mo>
+       <mml:mn>0</mml:mn>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+
+;IDD_SERIESEXPANDBOX
+Test ID     #1000
+Comment     Power Series...
+Client ID   1
+Engine      Maple5
+Command ID	Power Series...
+Param       PID_seriesorder,zPT_ASCII_mmlmarkup,<mml:math><mml:mn>5</mml:mn></mml:math>
+Param       PID_seriesvar,zPT_ASCII_mmlmarkup,<mml:mi>x</mml:mi>
+Param       PID_seriesabout,zPT_ASCII_mmlmarkup,<mml:mn>1</mml:mn>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi mathcolor="gray">ln</mml:mi>
+       <mml:mo>&ApplyFunction;</mml:mo>
+       <mml:mi>x</mml:mi>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+
+;IDD_CALCAPPROXINTBOX
+Test ID     #1101
+Comment     Calculus Approximate Integral... Left Boxes, 10
+Client ID   1
+Engine      Maple5
+Command ID  Calculus Approximate Integral...
+Param       PID_approxintform,zPT_ASCII_natural,1
+Param       PID_approxintnsubs,zPT_ASCII_mmlmarkup,<mml:mn>10</mml:mn>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msubsup>
+         <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+         <mml:mn>0</mml:mn>
+         <mml:mrow>
+           <mml:mi>&pi;</mml:mi>
+           <mml:mo form="infix">/</mml:mo>
+           <mml:mn>2</mml:mn>
+         </mml:mrow>
+       </mml:msubsup>
+       <mml:mrow>
+         <mml:mi>x</mml:mi>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">sin</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mspace width="thinmathspace" />
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+
+Test ID     #1101d
+Comment     Defining n = 8
+Client ID   1
+Engine      Maple5
+Command ID	Define
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>n</mml:mi>
+       <mml:mo form="infix">=</mml:mo>
+       <mml:mn>8</mml:mn>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+
+;IDD_CALCAPPROXINTBOX
+Test ID     #1101a
+Comment     Calculus Approximate Integral... Left Boxes, n
+Client ID   1
+Engine      Maple5
+Command ID  Calculus Approximate Integral...
+Param       PID_approxintform,zPT_ASCII_natural,1
+Param       PID_approxintnsubs,zPT_ASCII_mmlmarkup,<math><mi>n</mi></math>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msubsup>
+         <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+         <mml:mn>0</mml:mn>
+         <mml:mrow>
+           <mml:mi>&pi;</mml:mi>
+           <mml:mo form="infix">/</mml:mo>
+           <mml:mn>2</mml:mn>
+         </mml:mrow>
+       </mml:msubsup>
+       <mml:mrow>
+         <mml:mi>x</mml:mi>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">sin</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mspace width="thinmathspace" />
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+
+;IDD_CALCAPPROXINTBOX
+Test ID     #1102
+Comment     Calculus Approximate Integral... Midpoint, 10
+Client ID   1
+Engine      Maple5
+Command ID  Calculus Approximate Integral...
+Param       PID_approxintform,zPT_ASCII_natural,2
+Param       PID_approxintnsubs,zPT_ASCII_mmlmarkup,<mml:mn>10</mml:mn>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msubsup>
+         <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+         <mml:mn>0</mml:mn>
+         <mml:mi>&pi;</mml:mi>
+       </mml:msubsup>
+       <mml:mrow>
+         <mml:mi>x</mml:mi>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">sin</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mspace width="thinmathspace" />
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+
+;IDD_CALCAPPROXINTBOX
+Test ID     #1103
+Comment     Calculus Approximate Integral... Right Boxes, 10
+Client ID   1
+Engine      Maple5
+Command ID  Calculus Approximate Integral...
+Param       PID_approxintform,zPT_ASCII_natural,3
+Param       PID_approxintnsubs,zPT_ASCII_mmlmarkup,<mml:mn>10</mml:mn>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msubsup>
+         <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+         <mml:mn>0</mml:mn>
+         <mml:mrow>
+           <mml:mi>&pi;</mml:mi>
+           <mml:mo form="infix">/</mml:mo>
+           <mml:mn>2</mml:mn>
+         </mml:mrow>
+       </mml:msubsup>
+       <mml:mrow>
+         <mml:mi>x</mml:mi>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">sin</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mspace width="thinmathspace" />
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+
+;IDD_CALCAPPROXINTBOX
+Test ID     #1103
+Comment     Calculus Approximate Integral... Simpson, 10
+Client ID   1
+Engine      Maple5
+Command ID  Calculus Approximate Integral...
+Param       PID_approxintform,zPT_ASCII_natural,4
+Param       PID_approxintnsubs,zPT_ASCII_mmlmarkup,<mml:mn>10</mml:mn>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msubsup>
+         <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+         <mml:mn>0</mml:mn>
+         <mml:mi>&pi;</mml:mi>
+       </mml:msubsup>
+       <mml:mrow>
+         <mml:mi>x</mml:mi>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">sin</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mspace width="thinmathspace" />
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+
+;IDD_CALCAPPROXINTBOX
+Test ID     #1105
+Comment     Calculus Approximate Integral... Trapezoid, 10
+Client ID   1
+Engine      Maple5
+Command ID  Calculus Approximate Integral...
+Param       PID_approxintform,zPT_ASCII_natural,5
+Param       PID_approxintnsubs,zPT_ASCII_mmlmarkup,<mml:mn>10</mml:mn>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:msubsup>
+         <mml:mo form="prefix" largeop="true">&int;</mml:mo>
+         <mml:mn>0</mml:mn>
+         <mml:mi>&pi;</mml:mi>
+       </mml:msubsup>
+       <mml:mrow>
+         <mml:mi>x</mml:mi>
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mi mathcolor="gray">sin</mml:mi>
+           <mml:mo>&ApplyFunction;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+         <mml:mspace width="thinmathspace" />
+         <mml:mo>&InvisibleTimes;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix">&dd;</mml:mo>
+           <mml:mi>x</mml:mi>
+         </mml:mrow>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+
+Test ID     #1201
+Comment     Defining f(x) = cos(x)
+Client ID   1
+Engine      Maple5
+Command ID	Define
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mi>f</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+           <mml:mi>x</mml:mi>
+           <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+         </mml:mrow>
+       </mml:mrow>
+       <mml:mo form="infix">=</mml:mo>
+       <mml:mrow>
+         <mml:mi mathcolor="gray">cos</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mi>x</mml:mi>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+
+;IDD_ITERATEBOX
+Test ID     #1202
+Comment     Calculus Iterate...
+Client ID   1
+Engine      Maple5
+Command ID  Calculus Iterate...
+Param       PID_iterfunc,zPT_ASCII_mmlmarkup,<mi>f</mi>
+Param       PID_iterstart,zPT_ASCII_mmlmarkup,<mml:mn>1.0</mml:mn>
+Param       PID_itercount,zPT_ASCII_mmlmarkup,<mml:mn>10</mml:mn>
+End of test
+
+SetClientPref     0,Vector_basis,<math><mi>u</mi><mo>,</mo><mi>v</mi><mo>,</mo><mi>w</mi></math>
+
+Test ID     #1301
+Comment     <mml:math><mml:mrow><mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo><mml:mtable align="axis"><mml:mtr><mml:mtd><mml:mi>c</mml:mi><mml:mo>&InvisibleTimes;</mml:mo><mml:mi>v</mml:mi></mml:mtd></mml:mtr><mml:mtr><mml:mtd><mml:mrow><mml:mi>c</mml:mi><mml:mo>&InvisibleTimes;</mml:mo><mml:mi>u</mml:mi></mml:mrow><mml:mo form="infix">+</mml:mo><mml:mrow><mml:mn>2</mml:mn><mml:mo>&InvisibleTimes;</mml:mo><mml:mi>v</mml:mi><mml:mo>&InvisibleTimes;</mml:mo><mml:mi>w</mml:mi></mml:mrow></mml:mtd></mml:mtr><mml:mtr><mml:mtd><mml:msup><mml:mi>v</mml:mi><mml:mn>2</mml:mn></mml:msup></mml:mtd></mml:mtr></mml:mtable><mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo></mml:mrow></mml:math>
+Client ID   1
+Engine      Maple5
+Command ID	Evaluate
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix">&nabla;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mrow>
+             <mml:mi>c</mml:mi>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>u</mml:mi>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>v</mml:mi>
+           </mml:mrow>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:mrow>
+             <mml:msup>
+               <mml:mi>v</mml:mi>
+               <mml:mn>2</mml:mn>
+             </mml:msup>
+             <mml:mo>&InvisibleTimes;</mml:mo>
+             <mml:mi>w</mml:mi>
+           </mml:mrow>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+SetClientPref     0,Vector_basis,<math><mi>x</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>z</mi></math>
+
+Test ID     #1303
+Comment     <mml:math><mml:mrow><mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo><mml:mtable align="axis"><mml:mtr><mml:mtd><mml:mi>y</mml:mi></mml:mtd></mml:mtr><mml:mtr><mml:mtd><mml:mi>x</mml:mi></mml:mtd></mml:mtr><mml:mtr><mml:mtd><mml:mn>0</mml:mn></mml:mtd></mml:mtr></mml:mtable><mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo></mml:mrow></mml:math>
+Client ID   1
+Engine      Maple5
+Command ID	Evaluate
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix">&nabla;</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+         <mml:mrow>
+           <mml:mi>x</mml:mi>
+           <mml:mo>&InvisibleTimes;</mml:mo>
+           <mml:mi>y</mml:mi>
+         </mml:mrow>
+         <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+       </mml:mrow>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+
+;IDD_MOMENTBOX
+Test ID     #1400
+Comment     Moment...
+Client ID   1
+Engine      Maple5
+Command ID	Moment...
+Param       PID_moment_num,zPT_ASCII_mmlmarkup,<mml:mn>1</mml:mn>
+Param       PID_moment_origin,zPT_ASCII_mmlmarkup,<math display="inline"><mrow><mn>0.0</mn></mrow></math>
+Param       PID_moment_meanisorigin,zPT_ASCII_natural,1
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+       <mml:mrow>
+         <mml:mn>0.1</mml:mn>
+         <mml:mo form="infix">,</mml:mo>
+         <mml:mn>0.5</mml:mn>
+         <mml:mo form="infix">,</mml:mo>
+         <mml:mn>0.8</mml:mn>
+         <mml:mo form="infix">,</mml:mo>
+         <mml:mn>0.4</mml:mn>
+       </mml:mrow>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+;IDD_QUANTILEBOX
+Test ID     #1500
+Comment     Quantile...
+Client ID   1
+Engine      Maple5
+Command ID	Quantile...
+Param       PID_quantile,zPT_ASCII_mmlmarkup,<mml:mn>0.87</mml:mn>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>1</mml:mn>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mn>2</mml:mn>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mn>3</mml:mn>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mn>4</mml:mn>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mn>5</mml:mn>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mn>6</mml:mn>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mn>7</mml:mn>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mn>8</mml:mn>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mn>9</mml:mn>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mn>10</mml:mn>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+
+;IDD_ENGINESETTINGSBOX
+;Test ID     #1600
+;Client ID   1
+;Engine      Maple5
+;Command ID	 Solve Exact
+;Param       PID_needvarresult,zPT_ASCII_mmlmarkup,
+;End of test
+
+
+;IDD_CURVEFITBOX
+Test ID     #1700
+Comment     Fit Curve to Data...
+Client ID   1
+Engine      Maple5
+Command ID	Fit Curve to Data...
+Param       PID_dependcolumn,zPT_ASCII_natural,0
+Param       PID_regressdegree,zPT_ASCII_mmlmarkup,<mml:mn>1</mml:mn>
+Param       PID_regresscode,zPT_ASCII_natural,1
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+       <mml:mtable align="axis">
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mi>y</mml:mi>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mi>x</mml:mi>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>0</mml:mn>
+             <mml:mtext>&ThickSpace;&ThickSpace;</mml:mtext>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>1.1</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>0.5</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>1.5</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>1</mml:mn>
+             <mml:mtext>&ThickSpace;&ThickSpace;</mml:mtext>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>1.9</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>1.5</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>2.4</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>2</mml:mn>
+             <mml:mtext>&ThickSpace;&ThickSpace;</mml:mtext>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>2.9</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+       </mml:mtable>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+
+;IDD_RANDOMMATRIXBOX
+Test ID     #1801
+Comment     Random Matrix...Unrestricted 3x4, (-100 t0 100)
+Client ID   1
+Engine      Maple5
+Command ID	Random Matrix...
+; 1 - Unrestricted, 2 - Symmetric, 3 - Antisymmetric, 4 - Triangular
+Param       PID_RandMatrixType,zPT_ASCII_natural,1
+Param       PID_RandMatrixnRows,zPT_ASCII_mmlmarkup,<mml:mn>3</mml:mn>
+Param       PID_RandMatrixnCols,zPT_ASCII_mmlmarkup,<mml:mn>4</mml:mn>
+Param       PID_RandMatrixLLim,zPT_ASCII_mmlmarkup,<mml:mn>-100</mml:mn>
+Param       PID_RandMatrixULim,zPT_ASCII_mmlmarkup,<mml:mn>100</mml:mn>
+End of test
+
+
+;IDD_RANDOMMATRIXBOX
+Test ID     #1802
+Comment     Random Matrix...Symmetric 3x3
+Client ID   1
+Engine      Maple5
+Command ID	Random Matrix...
+; 1 - Unrestricted, 2 - Symmetric, 3 - Antisymmetric, 4 - Triangular
+Param       PID_RandMatrixType,zPT_ASCII_natural,2
+Param       PID_RandMatrixnRows,zPT_ASCII_mmlmarkup,<mml:mn>3</mml:mn>
+Param       PID_RandMatrixnCols,zPT_ASCII_mmlmarkup,<mml:mn>3</mml:mn>
+Param       PID_RandMatrixLLim,zPT_ASCII_mmlmarkup,<mml:mn>-100</mml:mn>
+Param       PID_RandMatrixULim,zPT_ASCII_mmlmarkup,<mml:mn>100</mml:mn>
+End of test
+
+
+;IDD_RANDOMMATRIXBOX
+Test ID     #1803
+Comment     Random Matrix...Antisymmetric 4x4
+Client ID   1
+Engine      Maple5
+Command ID	Random Matrix...
+; 1 - Unrestricted, 2 - Symmetric, 3 - Antisymmetric, 4 - Triangular
+Param       PID_RandMatrixType,zPT_ASCII_natural,3
+Param       PID_RandMatrixnRows,zPT_ASCII_mmlmarkup,<mml:mn>4</mml:mn>
+Param       PID_RandMatrixnCols,zPT_ASCII_mmlmarkup,<mml:mn>4</mml:mn>
+Param       PID_RandMatrixLLim,zPT_ASCII_mmlmarkup,<mml:mn>-100</mml:mn>
+Param       PID_RandMatrixULim,zPT_ASCII_mmlmarkup,<mml:mn>100</mml:mn>
+End of test
+
+
+;IDD_RANDOMMATRIXBOX
+Test ID     #1804
+Comment     Random Matrix...Triangular 3x4, (0 to 10)
+Client ID   1
+Engine      Maple5
+Command ID	Random Matrix...
+; 1 - Unrestricted, 2 - Symmetric, 3 - Antisymmetric, 4 - Triangular
+Param       PID_RandMatrixType,zPT_ASCII_natural,4
+Param       PID_RandMatrixnRows,zPT_ASCII_mmlmarkup,<mml:mn>3</mml:mn>
+Param       PID_RandMatrixnCols,zPT_ASCII_mmlmarkup,<mml:mn>4</mml:mn>
+Param       PID_RandMatrixLLim,zPT_ASCII_mmlmarkup,<mml:mn>-0</mml:mn>
+Param       PID_RandMatrixULim,zPT_ASCII_mmlmarkup,<mml:mn>10</mml:mn>
+End of test
+
+
+;IDD_RANDOMNUMBERBOX
+Test ID     #1901
+Comment     Random Numbers, 10, Beta, 3, 7
+Client ID   1
+Engine      Maple5
+Command ID	Random Numbers...
+; 0 - Beta,  1 - Binomial, 2 - Cauchy,   3 - Chi-Square,   4 - Exponential, 5 - F,
+; 6 - Gamma, 7 - Normal,   8 - Poisson,  9 - Student's t, 10 - Uniform,    11 - Weibull
+Param       PID_RandomNumDist,zPT_ASCII_natural,0
+Param       PID_RandomNumTally,zPT_ASCII_mmlmarkup,<mml:mn>10</mml:mn>
+Param       PID_RandomNumParam1,zPT_ASCII_mmlmarkup,<mml:mn>3</mml:mn>
+Param       PID_RandomNumParam2,zPT_ASCII_mmlmarkup,<mml:mn>7</mml:mn>
+End of test
+
+;IDD_RANDOMNUMBERBOX
+Test ID     #1902
+Comment     Random Numbers, 10, Binomial, 10, 0.5
+Client ID   1
+Engine      Maple5
+Command ID	Random Numbers...
+; 0 - Beta,  1 - Binomial, 2 - Cauchy,   3 - Chi-Square,   4 - Exponential, 5 - F,
+; 6 - Gamma, 7 - Normal,   8 - Poisson,  9 - Student's t, 10 - Uniform,    11 - Weibull
+Param       PID_RandomNumDist,zPT_ASCII_natural,1
+Param       PID_RandomNumTally,zPT_ASCII_mmlmarkup,<mml:mn>10</mml:mn>
+Param       PID_RandomNumParam1,zPT_ASCII_mmlmarkup,<mml:mn>10</mml:mn>
+Param       PID_RandomNumParam2,zPT_ASCII_mmlmarkup,<mml:mn>0.5</mml:mn>
+End of test
+
+;IDD_RANDOMNUMBERBOX
+Test ID     #1903
+Comment     Random Numbers, 10, Cauchy, 10, 5
+Client ID   1
+Engine      Maple5
+Command ID	Random Numbers...
+; 0 - Beta,  1 - Binomial, 2 - Cauchy,   3 - Chi-Square,   4 - Exponential, 5 - F,
+; 6 - Gamma, 7 - Normal,   8 - Poisson,  9 - Student's t, 10 - Uniform,    11 - Weibull
+Param       PID_RandomNumDist,zPT_ASCII_natural,2
+Param       PID_RandomNumTally,zPT_ASCII_mmlmarkup,<mml:mn>10</mml:mn>
+Param       PID_RandomNumParam1,zPT_ASCII_mmlmarkup,<mml:mn>10</mml:mn>
+Param       PID_RandomNumParam2,zPT_ASCII_mmlmarkup,<mml:mn>5</mml:mn>
+End of test
+
+;IDD_RANDOMNUMBERBOX
+Test ID     #1904
+Comment     Random Numbers, 10, Chi-Square, 3
+Client ID   1
+Engine      Maple5
+Command ID	Random Numbers...
+; 0 - Beta,  1 - Binomial, 2 - Cauchy,   3 - Chi-Square,   4 - Exponential, 5 - F,
+; 6 - Gamma, 7 - Normal,   8 - Poisson,  9 - Student's t, 10 - Uniform,    11 - Weibull
+Param       PID_RandomNumDist,zPT_ASCII_natural,3
+Param       PID_RandomNumTally,zPT_ASCII_mmlmarkup,<mml:mn>10</mml:mn>
+Param       PID_RandomNumParam1,zPT_ASCII_mmlmarkup,<mml:mn>3</mml:mn>
+End of test
+
+;IDD_RANDOMNUMBERBOX
+Test ID     #1905
+Comment     Random Numbers, 10, Exponential, 10
+Client ID   1
+Engine      Maple5
+Command ID	Random Numbers...
+; 0 - Beta,  1 - Binomial, 2 - Cauchy,   3 - Chi-Square,   4 - Exponential, 5 - F,
+; 6 - Gamma, 7 - Normal,   8 - Poisson,  9 - Student's t, 10 - Uniform,    11 - Weibull
+Param       PID_RandomNumDist,zPT_ASCII_natural,4
+Param       PID_RandomNumTally,zPT_ASCII_mmlmarkup,<mml:mn>10</mml:mn>
+Param       PID_RandomNumParam1,zPT_ASCII_mmlmarkup,<mml:mn>10</mml:mn>
+End of test
+
+;IDD_RANDOMNUMBERBOX
+Test ID     #1906
+Comment     Random Numbers, 10, F, 1, 3
+Client ID   1
+Engine      Maple5
+Command ID	Random Numbers...
+; 0 - Beta,  1 - Binomial, 2 - Cauchy,   3 - Chi-Square,   4 - Exponential, 5 - F,
+; 6 - Gamma, 7 - Normal,   8 - Poisson,  9 - Student's t, 10 - Uniform,    11 - Weibull
+Param       PID_RandomNumDist,zPT_ASCII_natural,5
+Param       PID_RandomNumTally,zPT_ASCII_mmlmarkup,<mml:mn>10</mml:mn>
+Param       PID_RandomNumParam1,zPT_ASCII_mmlmarkup,<mml:mn>1</mml:mn>
+Param       PID_RandomNumParam2,zPT_ASCII_mmlmarkup,<mml:mn>3</mml:mn>
+End of test
+
+;IDD_RANDOMNUMBERBOX
+Test ID     #1907
+Comment     Random Numbers, 10, Gamma, 3, 1
+Client ID   1
+Engine      Maple5
+Command ID	Random Numbers...
+; 0 - Beta,  1 - Binomial, 2 - Cauchy,   3 - Chi-Square,   4 - Exponential, 5 - F,
+; 6 - Gamma, 7 - Normal,   8 - Poisson,  9 - Student's t, 10 - Uniform,    11 - Weibull
+Param       PID_RandomNumDist,zPT_ASCII_natural,6
+Param       PID_RandomNumTally,zPT_ASCII_mmlmarkup,<mml:mn>10</mml:mn>
+Param       PID_RandomNumParam1,zPT_ASCII_mmlmarkup,<mml:mn>3</mml:mn>
+Param       PID_RandomNumParam2,zPT_ASCII_mmlmarkup,<mml:mn>1</mml:mn>
+End of test
+
+;IDD_RANDOMNUMBERBOX
+Test ID     #1908
+Comment     Random Numbers, 10, Normal, 3, 7
+Client ID   1
+Engine      Maple5
+Command ID	Random Numbers...
+; 0 - Beta,  1 - Binomial, 2 - Cauchy,   3 - Chi-Square,   4 - Exponential, 5 - F,
+; 6 - Gamma, 7 - Normal,   8 - Poisson,  9 - Student's t, 10 - Uniform,    11 - Weibull
+Param       PID_RandomNumDist,zPT_ASCII_natural,7
+Param       PID_RandomNumTally,zPT_ASCII_mmlmarkup,<mml:mn>10</mml:mn>
+Param       PID_RandomNumParam1,zPT_ASCII_mmlmarkup,<mml:mn>3</mml:mn>
+Param       PID_RandomNumParam2,zPT_ASCII_mmlmarkup,<mml:mn>7</mml:mn>
+End of test
+
+;IDD_RANDOMNUMBERBOX
+Test ID     #1909
+Comment     Random Numbers, 10, Poisson, 4
+Client ID   1
+Engine      Maple5
+Command ID	Random Numbers...
+; 0 - Beta,  1 - Binomial, 2 - Cauchy,   3 - Chi-Square,   4 - Exponential, 5 - F,
+; 6 - Gamma, 7 - Normal,   8 - Poisson,  9 - Student's t, 10 - Uniform,    11 - Weibull
+Param       PID_RandomNumDist,zPT_ASCII_natural,8
+Param       PID_RandomNumTally,zPT_ASCII_mmlmarkup,<mml:mn>10</mml:mn>
+Param       PID_RandomNumParam1,zPT_ASCII_mmlmarkup,<mml:mn>4</mml:mn>
+End of test
+
+;IDD_RANDOMNUMBERBOX
+Test ID     #1910
+Comment     Random Numbers, 10, Student's t, 7
+Client ID   1
+Engine      Maple5
+Command ID	Random Numbers...
+; 0 - Beta,  1 - Binomial, 2 - Cauchy,   3 - Chi-Square,   4 - Exponential, 5 - F,
+; 6 - Gamma, 7 - Normal,   8 - Poisson,  9 - Student's t, 10 - Uniform,    11 - Weibull
+Param       PID_RandomNumDist,zPT_ASCII_natural,9
+Param       PID_RandomNumTally,zPT_ASCII_mmlmarkup,<mml:mn>10</mml:mn>
+Param       PID_RandomNumParam1,zPT_ASCII_mmlmarkup,<mml:mn>7</mml:mn>
+End of test
+
+;IDD_RANDOMNUMBERBOX
+Test ID     #1911
+Comment     Rdom Numbers, 10, Uniform, 0, 20
+Client ID   1
+Engine      Maple5
+Command ID	Random Numbers...
+; 0 - Beta,  1 - Binomial, 2 - Cauchy,   3 - Chi-Square,   4 - Exponential, 5 - F,
+; 6 - Gamma, 7 - Normal,   8 - Poisson,  9 - Student's t, 10 - Uniform,    11 - Weibull
+Param       PID_RandomNumDist,zPT_ASCII_natural,10
+Param       PID_RandomNumTally,zPT_ASCII_mmlmarkup,<mml:mn>10</mml:mn>
+Param       PID_RandomNumParam1,zPT_ASCII_mmlmarkup,<mml:mn>0</mml:mn>
+Param       PID_RandomNumParam2,zPT_ASCII_mmlmarkup,<mml:mn>20</mml:mn>
+End of test
+
+;IDD_RANDOMNUMBERBOX
+Test ID     #1912
+Comment     Random Numbers, 10, Weibull, 5, 3
+Client ID   1
+Engine      Maple5
+Command ID	Random Numbers...
+; 0 - Beta,  1 - Binomial, 2 - Cauchy,   3 - Chi-Square,   4 - Exponential, 5 - F,
+; 6 - Gamma, 7 - Normal,   8 - Poisson,  9 - Student's t, 10 - Uniform,    11 - Weibull
+Param       PID_RandomNumDist,zPT_ASCII_natural,11
+Param       PID_RandomNumTally,zPT_ASCII_mmlmarkup,<mml:mn>10</mml:mn>
+Param       PID_RandomNumParam1,zPT_ASCII_mmlmarkup,<mml:mn>5</mml:mn>
+Param       PID_RandomNumParam2,zPT_ASCII_mmlmarkup,<mml:mn>3</mml:mn>
+End of test
+
+;IDD_FILLMATRIXBOX
+Test ID     #2001
+Comment     Fill Matrix... 4x2, Zero
+Client ID   1
+Engine      Maple5
+Command ID	Fill Matrix...
+; 1 - Zero, 2 - Identity, 3 - Random, 4 - Jordan Block*, 5 - by Function*, 6 - Band*
+Param       PID_FillMatrixIlk,zPT_ASCII_natural,1
+Param       PID_FillMatrixnRows,zPT_ASCII_mmlmarkup,<mml:mn>4</mml:mn>
+Param       PID_FillMatrixnCols,zPT_ASCII_mmlmarkup,<mml:mn>2</mml:mn>
+End of test
+
+;IDD_FILLMATRIXBOX - Identity
+Test ID     #2002
+Comment     Fill Matrix... 3x3, Identity
+Client ID   1
+Engine      Maple5
+Command ID	Fill Matrix...
+; 1 - Zero, 2 - Identity, 3 - Random, 4 - Jordan Block*, 5 - by Function*, 6 - Band*
+Param       PID_FillMatrixIlk,zPT_ASCII_natural,2
+Param       PID_FillMatrixnRows,zPT_ASCII_mmlmarkup,<mml:mn>3</mml:mn>
+Param       PID_FillMatrixnCols,zPT_ASCII_mmlmarkup,<mml:mn>3</mml:mn>
+End of test
+
+;IDD_FILLMATRIXBOX - Random
+Test ID     #2003
+Comment     Fill Matrix... 2x5, Random
+Client ID   1
+Engine      Maple5
+Command ID	Fill Matrix...
+; 1 - Zero, 2 - Identity, 3 - Random, 4 - Jordan Block*, 5 - by Function*, 6 - Band*
+Param       PID_FillMatrixIlk,zPT_ASCII_natural,3
+Param       PID_FillMatrixnRows,zPT_ASCII_mmlmarkup,<mml:mn>2</mml:mn>
+Param       PID_FillMatrixnCols,zPT_ASCII_mmlmarkup,<mml:mn>5</mml:mn>
+End of test
+
+;IDD_FILLMATRIXBOX - Jordan Block
+Test ID     #2004
+Comment     Fill Matrix... 2x2, Jordan Block*
+Client ID   1
+Engine      Maple5
+Command ID	Fill Matrix...
+; 1 - Zero, 2 - Identity, 3 - Random, 4 - Jordan Block*, 5 - by Function*, 6 - Band*
+Param       PID_FillMatrixIlk,zPT_ASCII_natural,4
+Param       PID_FillMatrixnRows,zPT_ASCII_mmlmarkup,<mml:mn>2</mml:mn>
+Param       PID_FillMatrixnCols,zPT_ASCII_mmlmarkup,<mml:mn>2</mml:mn>
+Param       PID_FillMatrixExtra,zPT_ASCII_mmlmarkup,<mi>&#x3BB;</mi>
+End of test
+
+Test ID     #2005
+Comment     Defining f
+Client ID   1
+Engine      Maple5
+Command ID	Define
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mrow>
+         <mml:mi>f</mml:mi>
+         <mml:mo>&ApplyFunction;</mml:mo>
+         <mml:mrow>
+           <mml:mo form="prefix" fence="true" stretchy="false">(</mml:mo>
+           <mml:mrow>
+             <mml:mi>i</mml:mi>
+             <mml:mo form="infix">,</mml:mo>
+             <mml:mi>j</mml:mi>
+           </mml:mrow>
+           <mml:mo form="postfix" fence="true" stretchy="false">)</mml:mo>
+         </mml:mrow>
+       </mml:mrow>
+       <mml:mo form="infix">=</mml:mo>
+       <mml:mfrac>
+         <mml:mn>1</mml:mn>
+         <mml:mrow>
+           <mml:mi>i</mml:mi>
+           <mml:mo form="infix">+</mml:mo>
+           <mml:mi>j</mml:mi>
+           <mml:mo form="infix">&minus;</mml:mo>
+           <mml:mn>1</mml:mn>
+         </mml:mrow>
+       </mml:mfrac>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+;IDD_FILLMATRIXBOX - by Function
+Test ID     #2006
+Comment     Fill Matrix... 3x3, by Function*
+Client ID   1
+Engine      Maple5
+Command ID	Fill Matrix...
+; 1 - Zero, 2 - Identity, 3 - Random, 4 - Jordan Block*, 5 - by Function*, 6 - Band*
+Param       PID_FillMatrixIlk,zPT_ASCII_natural,5
+Param       PID_FillMatrixnRows,zPT_ASCII_mmlmarkup,<mml:mn>3</mml:mn>
+Param       PID_FillMatrixnCols,zPT_ASCII_mmlmarkup,<mml:mn>3</mml:mn>
+Param       PID_FillMatrixExtra,zPT_ASCII_mmlmarkup,<mi>f</mi>
+End of test
+
+;IDD_FILLMATRIXBOX - Band
+Test ID     #2007
+Comment     Fill Matrix... 5x8, Band*
+Client ID   1
+Engine      Maple5
+Command ID	Fill Matrix...
+; 1 - Zero, 2 - Identity, 3 - Random, 4 - Jordan Block*, 5 - by Function*, 6 - Band*
+Param       PID_FillMatrixIlk,zPT_ASCII_natural,6
+Param       PID_FillMatrixnRows,zPT_ASCII_mmlmarkup,<mml:mn>5</mml:mn>
+Param       PID_FillMatrixnCols,zPT_ASCII_mmlmarkup,<mml:mn>8</mml:mn>
+Param       PID_FillMatrixExtra,zPT_ASCII_mmlmarkup,<mml:math><mml:mrow><mml:mi>a</mml:mi><mml:mo form="infix">,</mml:mo><mml:mi>b</mml:mi><mml:mo form="infix">,</mml:mo><mml:mi>c</mml:mi></mml:mrow></mml:math>
+End of test
+
