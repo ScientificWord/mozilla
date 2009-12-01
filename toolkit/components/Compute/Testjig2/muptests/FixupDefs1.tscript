@@ -1,0 +1,993 @@
+;Test script for "Comptest.exe". Roughly based on TestDefines.xml
+; This version has minimal markup and is meant to mimic how defines work
+; in the presence of the Fixup command.
+
+SetClientPref     1,use_mfenced,1
+
+Passthru    <h2>Define f(x)</h2>
+Test ID     201 fixup before define
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>f</mi>
+     <mo>(</mo>
+     <mn>5</mn>
+     <mo>)</mo>
+   </math>
+End of test
+
+Test ID     201 eval of fixup before define
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>f</mi>
+       <mo>&#x2062;</mo>
+       <mrow>
+         <mo>(</mo>
+           <mn>5</mn>
+         <mo>)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     201 fixup the definition
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>f</mi>
+     <mo>(</mo>
+     <mi>m</mi>
+     <mo>)</mo>
+     <mo>=</mo>
+     <mfrac>
+       <mn>1</mn>
+       <mrow>
+         <mn>1</mn>
+         <mo>+</mo>
+         <mi>m</mi>
+       </mrow>
+     </mfrac>
+   </math>
+End of test
+
+Test ID     201 define fixup result
+Client ID   1
+Engine      MuPAD
+Command ID	Define
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mrow>
+         <mi>f</mi>
+         <mo>&#x2062;</mo>
+         <mrow>
+           <mo>(</mo>
+           <mi>m</mi>
+           <mo>)</mo>
+         </mrow>
+       </mrow>
+       <mo>=</mo>
+       <mfrac>
+         <mn>1</mn>
+         <mrow>
+           <mn>1</mn>
+           <mo>+</mo>
+           <mi>m</mi>
+         </mrow>
+       </mfrac>
+     </mrow>
+   </math>
+End of test
+
+Test ID     201 fixup after define
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>f</mi>
+     <mo>(</mo>
+     <mn>5</mn>
+     <mo>)</mo>
+   </math>
+End of test
+
+Test ID     201 eval of fixup after define
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>f</mi>
+       <mo>&#x2061;</mo>
+       <mrow>
+         <mo>(</mo>
+           <mn>5</mn>
+         <mo>)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     201 fixup the definition for undefine
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>f</mi>
+     <mo>(</mo>
+     <mi>m</mi>
+     <mo>)</mo>
+     <mo>=</mo>
+     <mfrac>
+       <mn>1</mn>
+       <mrow>
+         <mn>1</mn>
+         <mo>+</mo>
+         <mi>m</mi>
+       </mrow>
+     </mfrac>
+   </math>
+End of test
+
+Test ID     201 undefine fixup result
+Client ID   1
+Engine      MuPAD
+Command ID	Undefine
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mrow>
+         <mi>f</mi>
+         <mo>&#x2061;</mo>
+         <mrow>
+           <mo>(</mo>
+           <mi>m</mi>
+           <mo>)</mo>
+         </mrow>
+       </mrow>
+       <mo>=</mo>
+       <mfrac>
+         <mn>1</mn>
+         <mrow>
+           <mn>1</mn>
+           <mo>+</mo>
+           <mi>m</mi>
+         </mrow>
+       </mfrac>
+     </mrow>
+   </math>
+End of test
+
+Test ID     201 fixup after undefine
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>f</mi>
+     <mo>(</mo>
+     <mn>5</mn>
+     <mo>)</mo>
+   </math>
+End of test
+
+Test ID     201 eval of fixup after undefine
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>f</mi>
+       <mo>&#x2062;</mo>
+       <mrow>
+         <mo>(</mo>
+           <mn>5</mn>
+         <mo>)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Passthru    <h2>Generically define f(x)</h2>
+Test ID     202 fixup before define
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>f</mi>
+     <mo>(</mo>
+     <mn>5</mn>
+     <mo>)</mo>
+   </math>
+End of test
+
+Test ID     202 eval of fixup before define
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>f</mi>
+       <mo>&#x2062;</mo>
+       <mrow>
+         <mo>(</mo>
+           <mn>5</mn>
+         <mo>)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     202 fixup the definition
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>f</mi>
+     <mo>(</mo>
+     <mi>m</mi>
+     <mo>)</mo>
+   </math>
+End of test
+
+Test ID     202 define fixup result
+Client ID   1
+Engine      MuPAD
+Command ID	Define
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>f</mi>
+       <mo>&#x2062;</mo>
+       <mrow>
+         <mo>(</mo>
+         <mi>m</mi>
+         <mo>)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     202 fixup after define
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>f</mi>
+     <mo>(</mo>
+     <mn>5</mn>
+     <mo>)</mo>
+   </math>
+End of test
+
+Test ID     202 eval of fixup after define
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>f</mi>
+       <mo>&#x2061;</mo>
+       <mrow>
+         <mo>(</mo>
+           <mn>5</mn>
+         <mo>)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     202 fixup the definition for undefine
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>f</mi>
+     <mo>(</mo>
+     <mi>m</mi>
+     <mo>)</mo>
+   </math>
+End of test
+
+Test ID     202 undefine fixup result
+Client ID   1
+Engine      MuPAD
+Command ID	Undefine
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>f</mi>
+       <mo>&#x2061;</mo>
+       <mrow>
+         <mo>(</mo>
+         <mi>m</mi>
+         <mo>)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     202 fixup after undefine
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>f</mi>
+     <mo>(</mo>
+     <mn>5</mn>
+     <mo>)</mo>
+   </math>
+End of test
+
+Test ID     202 eval of fixup after undefine
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>f</mi>
+       <mo>&#x2062;</mo>
+       <mrow>
+         <mo>(</mo>
+           <mn>5</mn>
+         <mo>)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+; Define f to be a formula
+
+Test ID     203 fixup before define
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>f</mi>
+     <mo>(</mo>
+     <mn>5</mn>
+     <mo>)</mo>
+   </math>
+End of test
+
+Test ID     203 eval of fixup before define
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>f</mi>
+       <mo>&#x2062;</mo>
+       <mrow>
+         <mo>(</mo>
+           <mn>5</mn>
+         <mo>)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     203 fixup the definition
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>f</mi>
+     <mo>=</mo>
+     <mfrac>
+       <mn>1</mn>
+       <mrow>
+         <mn>1</mn>
+         <mo>+</mo>
+         <mi>m</mi>
+       </mrow>
+     </mfrac>
+   </math>
+End of test
+
+Test ID     203 define fixup result
+Client ID   1
+Engine      MuPAD
+Command ID	Define
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>f</mi>
+       <mo>=</mo>
+       <mfrac>
+         <mn>1</mn>
+         <mrow>
+           <mn>1</mn>
+           <mo>+</mo>
+           <mi>m</mi>
+         </mrow>
+       </mfrac>
+     </mrow>
+   </math>
+End of test
+
+Test ID     203 fixup after define
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>f</mi>
+     <mo>(</mo>
+     <mn>5</mn>
+     <mo>)</mo>
+   </math>
+End of test
+
+Test ID     203 eval of fixup after define
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>f</mi>
+       <mo>&#x2062;</mo>
+       <mrow>
+         <mo>(</mo>
+           <mn>5</mn>
+         <mo>)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     203 fixup the definition for undefine
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>f</mi>
+     <mo>=</mo>
+     <mfrac>
+       <mn>1</mn>
+       <mrow>
+         <mn>1</mn>
+         <mo>+</mo>
+         <mi>m</mi>
+       </mrow>
+     </mfrac>
+   </math>
+End of test
+
+Test ID     203 undefine fixup result
+Client ID   1
+Engine      MuPAD
+Command ID	Undefine
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>f</mi>
+       <mo>=</mo>
+       <mfrac>
+         <mn>1</mn>
+         <mrow>
+           <mn>1</mn>
+           <mo>+</mo>
+           <mi>m</mi>
+         </mrow>
+       </mfrac>
+     </mrow>
+   </math>
+End of test
+
+Test ID     203 fixup after undefine
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>f</mi>
+     <mo>(</mo>
+     <mn>5</mn>
+     <mo>)</mo>
+   </math>
+End of test
+
+Test ID     203 eval of fixup after undefine
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>f</mi>
+       <mo>&#x2062;</mo>
+       <mrow>
+         <mo>(</mo>
+           <mn>5</mn>
+         <mo>)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+; Define f_m to be a function ==================================
+
+Test ID     204 fixup before define
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msub>
+       <mi>f</mi>
+       <mn>5</mn>
+     </msub>
+   </math>
+End of test
+
+Test ID     204 eval of fixup before define
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msub>
+       <mi>f</mi>
+       <mn>5</mn>
+     </msub>
+   </math>
+End of test
+
+Test ID     204 fixup the definition
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msub>
+       <mi>f</mi>
+       <mi>m</mi>
+     </msub>
+     <mo>=</mo>
+     <mfrac>
+       <mn>1</mn>
+       <mrow>
+         <mn>1</mn>
+         <mo>+</mo>
+         <mi>m</mi>
+       </mrow>
+     </mfrac>
+   </math>
+End of test
+
+Test ID     204 define fixup result
+Client ID   1
+Engine      MuPAD
+Command ID	Define
+Param       PID_subInterpretation,zPT_ASCII_natural,2
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msub>
+       <mi>f</mi>
+       <mi>m</mi>
+     </msub>
+     <mo>=</mo>
+     <mfrac>
+       <mn>1</mn>
+       <mrow>
+         <mn>1</mn>
+         <mo>+</mo>
+         <mi>m</mi>
+       </mrow>
+     </mfrac>
+   </math>
+End of test
+
+Test ID     204 fixup after define
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msub>
+       <mi>f</mi>
+       <mn>5</mn>
+     </msub>
+   </math>
+End of test
+
+Test ID     204 eval of fixup after define
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msub>
+       <mi>f</mi>
+       <mn>5</mn>
+     </msub>
+   </math>
+End of test
+
+Test ID     204 fixup the definition for undefine
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msub>
+       <mi>f</mi>
+       <mi>m</mi>
+     </msub>
+     <mo>=</mo>
+     <mfrac>
+       <mn>1</mn>
+       <mrow>
+         <mn>1</mn>
+         <mo>+</mo>
+         <mi>m</mi>
+       </mrow>
+     </mfrac>
+   </math>
+End of test
+
+Test ID     204 undefine fixup result
+Client ID   1
+Engine      MuPAD
+Command ID	Undefine
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msub>
+       <mi>f</mi>
+       <mi>m</mi>
+     </msub>
+     <mo>=</mo>
+     <mfrac>
+       <mn>1</mn>
+       <mrow>
+         <mn>1</mn>
+         <mo>+</mo>
+         <mi>m</mi>
+       </mrow>
+     </mfrac>
+   </math>
+End of test
+
+Test ID     204 fixup after undefine
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msub>
+       <mi>f</mi>
+       <mn>5</mn>
+     </msub>
+   </math>
+End of test
+
+Test ID     204 eval of fixup after undefine
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msub>
+       <mi>f</mi>
+       <mn>5</mn>
+     </msub>
+   </math>
+End of test
+
+; Define f_m to be an expression ==================================
+
+Test ID     205 fixup before define
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msub>
+       <mi>f</mi>
+       <mn>5</mn>
+     </msub>
+   </math>
+End of test
+
+Test ID     205 eval of fixup before define
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msub>
+       <mi>f</mi>
+       <mn>5</mn>
+     </msub>
+   </math>
+End of test
+
+Test ID     205 fixup the definition
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msub>
+       <mi>f</mi>
+       <mi>m</mi>
+     </msub>
+     <mo>=</mo>
+     <mfrac>
+       <mn>1</mn>
+       <mrow>
+         <mn>1</mn>
+         <mo>+</mo>
+         <mi>m</mi>
+       </mrow>
+     </mfrac>
+   </math>
+End of test
+
+Test ID     205 define fixup result
+Client ID   1
+Engine      MuPAD
+Command ID	Define
+Param       PID_subInterpretation,zPT_ASCII_natural,1
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msub>
+       <mi>f</mi>
+       <mi>m</mi>
+     </msub>
+     <mo>=</mo>
+     <mfrac>
+       <mn>1</mn>
+       <mrow>
+         <mn>1</mn>
+         <mo>+</mo>
+         <mi>m</mi>
+       </mrow>
+     </mfrac>
+   </math>
+End of test
+
+Test ID     205 fixup after define
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msub>
+       <mi>f</mi>
+       <mn>5</mn>
+     </msub>
+   </math>
+End of test
+
+Test ID     205 eval of fixup after define
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msub>
+       <mi>f</mi>
+       <mn>5</mn>
+     </msub>
+   </math>
+End of test
+
+Test ID     205 fixup after define
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msub>
+       <mi>f</mi>
+       <mi>m</mi>
+     </msub>
+   </math>
+End of test
+
+Test ID     205 eval of fixup after define
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msub>
+       <mi>f</mi>
+       <mi>m</mi>
+     </msub>
+   </math>
+End of test
+
+Test ID     205 fixup the definition for undefine
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msub>
+       <mi>f</mi>
+       <mi>m</mi>
+     </msub>
+     <mo>=</mo>
+     <mfrac>
+       <mn>1</mn>
+       <mrow>
+         <mn>1</mn>
+         <mo>+</mo>
+         <mi>m</mi>
+       </mrow>
+     </mfrac>
+   </math>
+End of test
+
+Test ID     205 undefine fixup result
+Client ID   1
+Engine      MuPAD
+Command ID	Undefine
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msub>
+       <mi>f</mi>
+       <mi>m</mi>
+     </msub>
+     <mo>=</mo>
+     <mfrac>
+       <mn>1</mn>
+       <mrow>
+         <mn>1</mn>
+         <mo>+</mo>
+         <mi>m</mi>
+       </mrow>
+     </mfrac>
+   </math>
+End of test
+
+Test ID     205 fixup after undefine
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msub>
+       <mi>f</mi>
+       <mn>5</mn>
+     </msub>
+   </math>
+End of test
+
+Test ID     205 eval of fixup after undefine
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msub>
+       <mi>f</mi>
+       <mn>5</mn>
+     </msub>
+   </math>
+End of test
+
+Test ID     205 fixup after undefine
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msub>
+       <mi>f</mi>
+       <mi>m</mi>
+     </msub>
+   </math>
+End of test
+
+Test ID     205 eval of fixup after undefine
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msub>
+       <mi>f</mi>
+       <mi>m</mi>
+     </msub>
+   </math>
+End of test
+
+; Generically define f
+
+Test ID     206 fixup before define
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>f</mi>
+     <mo>(</mo>
+     <mn>5</mn>
+     <mo>)</mo>
+   </math>
+End of test
+
+Test ID     206 eval of fixup before define
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>f</mi>
+       <mo>&#x2062;</mo>
+       <mrow>
+         <mo>(</mo>
+           <mn>5</mn>
+         <mo>)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     206 fixup the definition
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>f</mi>
+   </math>
+End of test
+
+Test ID     206 define fixup result
+Client ID   1
+Engine      MuPAD
+Command ID	Define
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>f</mi>
+   </math>
+End of test
+
+Test ID     206 fixup after define
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>f</mi>
+     <mo>(</mo>
+     <mn>5</mn>
+     <mo>)</mo>
+   </math>
+End of test
+
+Test ID     206 eval of fixup after define
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>f</mi>
+       <mo>&#x2062;</mo>
+       <mrow>
+         <mo>(</mo>
+           <mn>5</mn>
+         <mo>)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     206 fixup the definition for undefine
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>f</mi>
+   </math>
+End of test
+
+Test ID     206 undefine fixup result
+Client ID   1
+Engine      MuPAD
+Command ID	Undefine
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>f</mi>
+   </math>
+End of test
+
+Test ID     206 fixup after undefine
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>f</mi>
+     <mo>(</mo>
+     <mn>5</mn>
+     <mo>)</mo>
+   </math>
+End of test
+
+Test ID     206 eval of fixup after undefine
+Client ID   1
+Engine      MuPAD
+Command ID	Evaluate
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>f</mi>
+       <mo>&#x2062;</mo>
+       <mrow>
+         <mo>(</mo>
+           <mn>5</mn>
+         <mo>)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
