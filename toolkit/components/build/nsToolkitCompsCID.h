@@ -118,6 +118,14 @@
 #define MSI_AUTOSUBSTITUTE_CONTRACTID \
     "@mozilla.org/autosubstitute;1"
 
+#define MSI_SIMPLECOMPUTEENGINE2_CONTRACTID \
+    "@mackichan.com/simplecomputeengine;2"
+
+
+#define MSI_MUPADENGINEWRAPPER_CONTRACTID \
+    "@mackichan.com/mupadenginewrapper;1"
+
+
 /////////////////////////////////////////////////////////////////////////////
 
 // {A0CCAAF8-09DA-44D8-B250-9AC3E93C8117}
@@ -212,3 +220,11 @@
 
 #define MSI_AUTOSUBSTITUTE_CID \
 { 0xfe4847ee, 0x9b9b, 0x4025, { 0x95, 0x62, 0x88, 0x27, 0xbb, 0x20, 0xcd, 0x21} }
+
+#define MSI_SIMPLECOMPUTEENGINE2_CID \
+{ 0xa3f85155, 0x6cb7, 0x46aa, { 0x9f, 0xa4, 0x35, 0x10, 0x8f, 0x69, 0x61, 0x31 } }
+
+#define MSI_MUPADENGINEWRAPPER_CID \
+{ 0xa3f85155, 0x6cb7, 0x46aa, { 0x9f, 0xa4, 0x35, 0x10, 0x8f, 0x69, 0x61, 0x30 } }
+
+

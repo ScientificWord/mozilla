@@ -37,6 +37,8 @@
 
 #include "nsIGenericFactory.h"
 #include "nsAppStartup.h"
+#include "msiSimpleComputeEngine2.h"
+#include "msiMuPadEngineWrapper.h"
 #include "msiAutosub.h"
 #include "msiArrowStateService.h"
 #include "msiKeyMap.h"
@@ -69,6 +71,8 @@
 #include "nsScriptableUnescapeHTML.h"
 #endif
 
+NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiSimpleComputeEngine2, msiSimpleComputeEngine2::GetInstance)
+NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiMuPADEngineWrapper, msiMuPADEngineWrapper::GetInstance)
 NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiAutosub, msiAutosub::GetInstance)
 NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiArrowStateService, msiArrowStateService::GetInstance)
 NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiKeyMap, msiKeyMap::GetInstance)
@@ -136,6 +140,18 @@ static const nsModuleComponentInfo components[] =
     MSI_AUTOSUBSTITUTE_CID ,
     MSI_AUTOSUBSTITUTE_CONTRACTID,
     msiAutosubConstructor },
+
+  { "SimpleComputeEngine",
+    MSI_SIMPLECOMPUTEENGINE2_CID ,
+    MSI_SIMPLECOMPUTEENGINE2_CONTRACTID,
+    msiSimpleComputeEngine2Constructor },
+
+  { "MuPADEngineWrapper",
+    MSI_MUPADENGINEWRAPPER_CID ,
+    MSI_MUPADENGINEWRAPPER_CONTRACTID,
+    msiMuPADEngineWrapperConstructor },
+
+
 
   { 
     "Arrow state Service",

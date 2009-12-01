@@ -1,0 +1,23 @@
+
+DEPTH = ../../../..
+
+topsrcdir	= @top_srcdir@
+srcdir		= @srcdir@
+VPATH		= @srcdir@
+
+
+include $(DEPTH)/config/autoconf.mk
+
+MODULE		    = wrappers
+XPIDL_MODULE	= wrappers
+
+XPIDLSRCS	= msiIEngineWrapper.idl
+
+
+include $(topsrcdir)/config/config.mk
+
+include $(topsrcdir)/config/rules.mk
+
+
+
+                 

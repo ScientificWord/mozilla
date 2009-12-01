@@ -1,0 +1,74 @@
+# Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
+
+DEPTH		= ../../../..
+topsrcdir	= @top_srcdir@
+srcdir		= @srcdir@
+VPATH		= @srcdir@
+
+include $(DEPTH)/config/autoconf.mk
+
+#IS_COMPONENT	= 1
+MODULE		    = simplecomputeengine
+LIBRARY_NAME	= simplecomputeengine
+#XPIDL_MODULE	= simplecomputeengine
+SHORT_LIBNAME	= compeng2
+#GRE_MODULE      = 1
+LIBXUL_LIBRARY = 1
+
+#MODULE_NAME	= msiSimpleComputeEngine2Module
+
+REQUIRES = \
+  compute \
+  string \
+  xpcom \
+  editor \
+  $(NULL)
+
+CPPSRCS = \
+  msiSimpleComputeEngine2.cpp	   \
+  msiSimpleComputeEngine2Module.cpp \
+  ComputeDLL.cpp \
+  WorkShop.cpp  \
+  CompEngine.cpp \
+  $(NULL)
+
+ 
+
+
+#TESTCPPSRCS	= msiTestSample2.cpp
+#
+#CPPSRCS += $(TESTCPPSRCS)
+#
+#SIMPLE_PROGRAMS	= $(TESTCPPSRCS:.cpp=$(BIN_SUFFIX))
+
+include $(topsrcdir)/config/config.mk
+
+# separate libraries linked in.
+EXTRA_DSO_LDOPTS += \
+	$(DIST)/lib/$(LIB_PREFIX)computelib_s.$(LIB_SUFFIX) \
+	$(DIST)/lib/$(LIB_PREFIX)enginelib_s.$(LIB_SUFFIX) \
+	$(DIST)/lib/$(LIB_PREFIX)libtci_s.$(LIB_SUFFIX) \
+ 	$(MOZ_UNICHARUTIL_LIBS) \
+	$(MOZ_COMPONENT_LIBS) \
+	$(NULL)
+
+include $(topsrcdir)/config/rules.mk
+
+      
+LOCAL_INCLUDES = -I$(srcdir)/../computelib \
+                 -I$(srcdir)/../libtci \
+                 -I$(srcdir)/../Engines \
+                 -I$(srcdir)/../public \
+				 -I$(srcdir)/../Engines/MuPAD \
+				 -I$(DIST)/include/wrappers \
+				 $(NULL)
+
+
+#libs:: $(TARGETS)
+#	$(INSTALL) $(srcdir)/simplecompute2.html $(FINAL_TARGET)/res/samples
+#
+#install:: $(TARGETS)
+#	$(SYSINSTALL) $(IFLAGS1) $(srcdir)/simplecompute2 $(FINAL_TARGET)/res/samples
+
+
+                 
