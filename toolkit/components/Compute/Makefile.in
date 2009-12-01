@@ -1,0 +1,22 @@
+
+DEPTH = ../../..
+topsrcdir = @top_srcdir@
+srcdir = @srcdir@
+VPATH = @srcdir@
+
+include $(DEPTH)/config/autoconf.mk
+
+# MODULE		= compute
+
+DIRS		= \
+	public \
+	src \
+	computelib \
+	libtci \
+	Engines \
+	$(NULL)
+
+
+include $(topsrcdir)/config/rules.mk
+
+#INCLUDES += $(srcdir)/public

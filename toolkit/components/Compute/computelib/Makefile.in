@@ -1,0 +1,75 @@
+# Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
+
+DEPTH		= ../../../..
+topsrcdir	= @top_srcdir@
+srcdir		= @srcdir@
+VPATH		= @srcdir@
+
+include $(DEPTH)/config/autoconf.mk
+
+MODULE = compute
+LIBRARY_NAME = computelib_s
+DIST_INSTALL = 1
+
+include $(topsrcdir)/config/config.mk
+
+CPPSRCS =				\
+  DefStore.cpp  \
+  SNode.cpp \
+  MRequest.cpp \
+  MResult.cpp \
+  PrefStor.cpp  \
+  $(NULL)
+
+REQUIRES = \
+  string \
+  xpcom \
+  compute \
+  $(NULL)
+
+
+LOCAL_INCLUDES = -I$(srcdir)/../libtci	\
+			     -I$(srcdir)/../Engines	\
+                 -I$(srcdir)/../src \
+				 -I$(srcdir)/../public \
+			      $(NULL)
+
+# we don't want the shared lib, but we want to force the creation of a static lib.
+FORCE_STATIC_LIB = 1
+
+SupportFiles	:= \
+			$(srcdir)/swfcns.mu \
+			$(NULL)
+
+ifeq ($(OS_ARCH),WINNT)
+MuPADlib	:= \
+			$(srcdir)/../MuPAD/lib/lib.tar \
+			$(srcdir)/../MuPAD/lib/lib.toc \
+			$(srcdir)/../MuPAD/lib/sysinit.mu \
+			$(wildcard $(srcdir)/../MuPAD/lib/xmlprint.*) \
+			$(NULL)
+
+endif
+
+ifeq ($(OS_ARCH),WINNT)
+SupportFiles	+= \
+			$(srcdir)/../MuPAD/win32/mupkernel.dll \
+			$(srcdir)/tcifcns.m \
+			$(NULL)
+endif
+
+GMR_FILES := \
+      $(srcdir)/MMLents.gmr \
+      $(NULL)
+
+
+include $(topsrcdir)/config/rules.mk
+
+ifeq ($(OS_ARCH),WINNT)
+export:: $(MuPADlib)
+	$(INSTALL) $(MuPADlib)$(FINAL_TARGET)/MuPAD/lib
+endif
+
+export:: $(SupportFiles) $(GMR_FILES)
+	$(INSTALL) $(SupportFiles) $(GMR_FILES) $(FINAL_TARGET)
+
