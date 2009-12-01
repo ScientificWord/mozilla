@@ -1111,6 +1111,7 @@ function GetCurrentEngine()
       var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
       var inifile = dsprops.get("resource:app", Components.interfaces.nsIFile);
 //      var inifile = dsprops.get("GreD", Components.interfaces.nsIFile);
+      inifile.append("xulrunner");
       inifile.append("mupInstall.gmr");
       compsample.startup(inifile);
       compengine = 2;
