@@ -1,0 +1,173 @@
+;; Computation commands  -- edit only the .gmx file (and possibly iCmpIDs.h)
+
+#include "iCmpIDs.h"
+
+<START_CONTEXT_COMMANDS>
+<UID(CCID_Evaluate,0)>Evaluate
+
+<UID(CCID_Evaluate,0)>Evaluate Numerically
+<UID(CCID_Evaluate_Numerically,0)>Simplify
+<UID(CCID_Combine_Exponentials,0)>Combine Exponentials
+<UID(CCID_Combine_Logs,0)>Combine Logs
+<UID(CCID_Combine_Powers,0)>Combine Powers
+<UID(CCID_Combine_Trig_Functions,0)>Combine Trig Functions
+<UID(CCID_Combine_Arctan,0)>Combine Arctan
+<UID(CCID_Combine_Hyp_Trig_Functions,0)>Combine Hyperbolic Trig Functions
+<UID(CCID_Factor,0)>Factor
+<UID(CCID_Expand,0)>Expand
+<UID(CCID_Rewrite_Rational,0)>Rewrite Rational
+<UID(CCID_Rewrite_Float,0)>Rewrite Float
+<UID(CCID_Rewrite_Mixed,0)>Rewrite Mixed
+<UID(CCID_Rewrite_Exponential,0)>Rewrite Exponential
+<UID(CCID_Rewrite_Factorial,0)>Rewrite Factorial
+<UID(CCID_Rewrite_Gamma,0)>Rewrite Gamma
+<UID(CCID_Rewrite_Logarithm,0)>Rewrite Logarithm
+<UID(CCID_Rewrite_sin_and_cos,0)>Rewrite sin and cos
+<UID(CCID_Rewrite_sinh_and_cosh,0)>Rewrite sinh and cosh
+<UID(CCID_Rewrite_sin,0)>Rewrite sin
+<UID(CCID_Rewrite_cos,0)>Rewrite cos
+<UID(CCID_Rewrite_tan,0)>Rewrite tan
+<UID(CCID_Rewrite_arcsin,0)>Rewrite arcsin
+<UID(CCID_Rewrite_arccos,0)>Rewrite arccos
+<UID(CCID_Rewrite_arctan,0)>Rewrite arctan
+<UID(CCID_Rewrite_arccot,0)>Rewrite arccot
+<UID(CCID_Rewrite_Polar,0)>Rewrite Polar
+<UID(CCID_Rewrite_Rectangular,0)>Rewrite Rectangular
+<UID(CCID_Rewrite_Normal_Form,0)>Rewrite Normal Form
+<UID(CCID_Rewrite_Equations_as_Matrix,0)>Rewrite Equations as Matrix
+<UID(CCID_Rewrite_Matrix_as_Equations,0)>Rewrite Matrix as Equations
+<UID(CCID_Check_Equality,0)>Check Equality
+<UID(CCID_Solve_Exact,0)>Solve Exact
+<UID(CCID_Solve_Integer,0)>Solve Integer
+<UID(CCID_Solve_Numeric,0)>Solve Numeric
+<UID(CCID_Solve_Recursion,0)>Solve Recursion
+
+<UID(CCID_Polynomial_Collect,0)>Polynomial Collect...
+<UID(CCID_Polynomial_Divide,0)>Polynomial Divide
+<UID(CCID_Polynomial_Partial_Fractions,0)>Polynomial Partial Fractions
+<UID(CCID_Polynomial_Roots,0)>Polynomial Roots
+<UID(CCID_Polynomial_Sort,0)>Polynomial Sort
+<UID(CCID_Polynomial_Companion_Matrix,0)>Polynomial Companion Matrix
+<UID(CCID_Calculus_Integrate_by_Parts,0)>Calculus Integrate by Parts...
+<UID(CCID_Calculus_Change_Variable,0)>Calculus Change Variable...
+<UID(CCID_Calculus_Partial_Fractions,0)>Calculus Partial Fractions
+<UID(CCID_Calculus_Approximate_Integral,0)>Calculus Approximate Integral...
+<UID(CCID_Calculus_Plot_Approximate_Integral,0)>Calculus Plot Approximate Integral
+<UID(CCID_Calculus_Find_Extrema,0)>Calculus Find Extrema
+<UID(CCID_Calculus_Iterate,0)>Calculus Iterate...
+<UID(CCID_Calculus_Implicit_Differentiation,0)>Calculus Implicit Differentiation...
+
+<UID(CCID_Power_Series,0)>Power Series...
+<UID(CCID_Solve_PDE,0)>Solve PDE
+<UID(CCID_Solve_ODE_Exact,0)>Solve ODE Exact
+<UID(CCID_Solve_ODE_Laplace,0)>Solve ODE Laplace
+<UID(CCID_Solve_ODE_Numeric,0)>Solve ODE Numeric
+<UID(CCID_Solve_ODE_Series,0)>Solve ODE Series
+<UID(CCID_Fourier_Transform,0)>Fourier Transform
+<UID(CCID_Inverse_Fourier_Transform,0)>Inverse Fourier Transform
+<UID(CCID_Laplace_Transform,0)>Laplace Transform
+<UID(CCID_Inverse_Laplace_Transform,0)>Inverse Laplace Transform
+<UID(CCID_Gradient,0)>Gradient
+<UID(CCID_Divergence,0)>Divergence
+<UID(CCID_Curl,0)>Curl
+<UID(CCID_Laplacian,0)>Laplacian
+<UID(CCID_Jacobian,0)>Jacobian
+<UID(CCID_Hessian,0)>Hessian
+<UID(CCID_Wronskian,0)>Wronskian
+<UID(CCID_Scalar_Potential,0)>Scalar Potential
+<UID(CCID_Vector_Potential,0)>Vector Potential
+
+<UID(CCID_Adjugate,0)>Adjugate
+<UID(CCID_Characteristic_Polynomial,0)>Characteristic Polynomial
+<UID(CCID_Cholesky_Decomposition,0)>Cholesky Decomposition
+<UID(CCID_Column_Basis,0)>Column Basis
+<UID(CCID_Concatenate,0)>Concatenate
+<UID(CCID_Condition_Number,0)>Condition Number
+<UID(CCID_Definiteness_Tests,0)>Definiteness Tests
+<UID(CCID_Determinant,0)>Determinant
+<UID(CCID_Eigenvalues,0)>Eigenvalues
+<UID(CCID_Eigenvectors,0)>Eigenvectors
+<UID(CCID_Fill_Matrix,0)>Fill Matrix...
+<UID(CCID_Fraction_Free_Gaussian_Elimination,0)>Fraction-Free Gaussian Elimination
+<UID(CCID_Gaussian_Elimination,0)>Gaussian Elimination
+<UID(CCID_Hermite_Normal_Form,0)>Hermite Normal Form
+<UID(CCID_Hermitian_Transpose,0)>Hermitian Transpose
+<UID(CCID_Inverse,0)>Inverse
+<UID(CCID_Jordan_Form,0)>Jordan Form
+<UID(CCID_Map_Entries,0)>Map Entries...
+<UID(CCID_Minimal_Polynomial,0)>Minimal Polynomial
+<UID(CCID_Norm,0)>Norm
+<UID(CCID_Nullspace_Basis,0)>Nullspace Basis
+<UID(CCID_Orthogonality_Test,0)>Orthogonality Test
+<UID(CCID_Permanent,0)>Permanent
+<UID(CCID_PLU_Decomposition,0)>PLU Decomposition
+<UID(CCID_QR_Decomposition,0)>QR Decomposition
+<UID(CCID_Random_Matrix,0)>Random Matrix...
+<UID(CCID_Rank,0)>Rank
+<UID(CCID_Rational_Canonical_Form,0)>Rational Canonical Form
+<UID(CCID_Reduced_Row_Echelon_Form,0)>Reduced Row Echelon Form
+<UID(CCID_Reshape,0)>Reshape...
+<UID(CCID_Row_Basis,0)>Row Basis
+<UID(CCID_Singular_Values,0)>Singular Values
+<UID(CCID_Smith_Normal_Form,0)>Smith Normal Form
+<UID(CCID_Spectral_Radius,0)>Spectral Radius
+<UID(CCID_Stack,0)>Stack
+<UID(CCID_SVD,0)>SVD
+<UID(CCID_Trace,0)>Trace
+<UID(CCID_Transpose,0)>Transpose
+
+<UID(CCID_Simplex_Dual,0)>Simplex Dual
+<UID(CCID_Simplex_Feasible,0)>Simplex Feasible
+<UID(CCID_Simplex_Maximize,0)>Simplex Maximize
+<UID(CCID_Simplex_Minimize,0)>Simplex Minimize
+<UID(CCID_Simplex_Standardize,0)>Simplex Standardize
+<UID(CCID_Fit_Curve_to_Data,0)>Fit Curve to Data...
+<UID(CCID_Random_Numbers,0)>Random Numbers...
+<UID(CCID_Mean,0)>Mean
+<UID(CCID_Median,0)>Median
+<UID(CCID_Mode,0)>Mode
+<UID(CCID_Correlation,0)>Correlation
+<UID(CCID_Covariance,0)>Covariance
+<UID(CCID_Geometric_Mean,0)>Geometric Mean
+<UID(CCID_Harmonic_Mean,0)>Harmonic Mean
+<UID(CCID_Mean_Deviation,0)>Mean Deviation
+<UID(CCID_Moment,0)>Moment...
+<UID(CCID_Quantile,0)>Quantile...
+<UID(CCID_Standard_Deviation,0)>Standard Deviation
+<UID(CCID_Variance,0)>Variance
+
+<UID(CCID_Factor_in_ring,0)>Factor in ring
+<UID(CCID_Solve_for_Subexpression,0)>Solve for Subexpression...
+<UID(CCID_Solve_System,0)>Solve System
+<UID(CCID_PassThru,0)>Pass Thru
+
+<UID(CCID_Define,0)>Define
+<UID(CCID_Undefine,0)>Undefine
+<UID(CCID_Cleanup,0)>Cleanup							  
+<UID(CCID_Fixup,0)>Fixup							  
+<UID(CCID_Interpret,0)>Interpret							  
+
+<UID(CCID_PlotFunc2d,0)>Plot Function 2d 
+<UID(CCID_PlotFunc3d,0)>Plot Function 3d 
+<UID(CCID_PlotFuncCmd,0)>Plot Function 3d 
+<UID(CCID_Last,0)>END_OF_LIST
+
+
+;<uID1001.0>Plot 2D Rectangular
+;<uID1002.0>Plot 2D Polar
+;<uID1002.0>Plot 2D Implicit
+;<uID1003.0>Plot 2D Parametric
+;<uID1004.0>Plot 2D Conformal
+;<uID1005.0>Plot 2D Gradient
+;<uID1006.0>Plot 2D Vector Field
+;<uID1007.0>Plot 2D ODE
+;<uID1008.0>Plot 2D Phase Plane
+;<uID1009.0>Plot 3D Rectangular
+;<uID1010.0>Plot 3D Cylindrical
+;<uID1011.0>Plot 3D Spherical
+;<uID1012.0>Plot 3D Implicit
+;<uID1013.0>Plot 3D Tube
+;<uID1014.0>Plot 3D Gradient
+;<uID1015.0>Plot 3D Vector Field
+
+<END_CONTEXT_COMMANDS>

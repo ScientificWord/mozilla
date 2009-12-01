@@ -1,0 +1,482 @@
+;Test script for "Comptest.exe". Built from test file Statistics1.tex
+;...I'm only doing the first example from each section for now...
+
+SetEngineState    MuPAD,Digits,20
+SetClientPref     1,use_mfenced,1
+
+Test ID     101
+Comment     <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>y</mi><mo form="infix">=</mo><mrow><mi>x</mi><mo form="infix">+</mo><mfrac><mn>2</mn><mn>3</mn></mfrac></mrow></mrow></math>
+Client ID   1
+Engine      MuPAD
+Command ID	Fit Curve to Data...
+; multiple regression, last column
+Param       PID_regresscode,zPT_ASCII_natural,1
+Param       PID_dependcolumn,zPT_ASCII_natural,1
+Param       PID_regressdegree,zPT_ASCII_mmlmarkup,<mml:mn>0</mml:mn>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+       <mml:mtable align="axis">
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mi>x</mml:mi>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mi>y</mml:mi>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>1</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>2</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>2</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>2</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>3</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>4</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+       </mml:mtable>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     201
+Comment     ? insert random numbers here
+Client ID   1
+Engine      MuPAD
+Command ID	Random Numbers...
+; Beta count 10 order 2 order 3
+Param       PID_RandomNumDist,zPT_ASCII_natural,0
+Param       PID_RandomNumTally,zPT_ASCII_mmlmarkup,<mml:mn>10</mml:mn>
+Param       PID_RandomNumParam1,zPT_ASCII_mmlmarkup,<math display="inline"><mrow><mn>2</mn></mrow></math>
+Param       PID_RandomNumParam2,zPT_ASCII_mmlmarkup,<math display="inline"><mrow><mn>3</mn></mrow></math>
+End of test
+
+Test ID     301
+Comment     <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mrow><mfrac><mn>1</mn><mn>3</mn></mfrac><mo>&InvisibleTimes;</mo><mi>a</mi></mrow><mo form="infix">+</mo><mrow><mfrac><mn>1</mn><mn>3</mn></mfrac><mo>&InvisibleTimes;</mo><mi>b</mi></mrow><mo form="infix">+</mo><mrow><mfrac><mn>1</mn><mn>3</mn></mfrac><mo>&InvisibleTimes;</mo><mi>c</mi></mrow></mrow></math>
+Client ID   1
+Engine      MuPAD
+Command ID	Mean
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>a</mml:mi>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mi>b</mml:mi>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mi>c</mml:mi>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     401
+Comment     <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>5</mn></mrow></math>
+Client ID   1
+Engine      MuPAD
+Command ID	Median
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>23</mml:mn>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mn>5</mml:mn>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix">&minus;</mml:mo>
+         <mml:mn>6</mml:mn>
+       </mml:mrow>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mn>18</mml:mn>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mn>23</mml:mn>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mrow>
+         <mml:mo form="prefix">&minus;</mml:mo>
+         <mml:mn>22</mml:mn>
+       </mml:mrow>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mn>5</mml:mn>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     501
+Comment     <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mrow><mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mo><mrow><mi>a</mi><mo form="infix">,</mo><mi>b</mi><mo form="infix">,</mo><mi>c</mi></mrow><mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mo></mrow><mo form="infix">,</mo><mn>1</mn></mrow></math>
+Client ID   1
+Engine      MuPAD
+Command ID	Mode
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>a</mml:mi>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mi>b</mml:mi>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mi>c</mml:mi>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     601
+Comment     <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mo><mtable align="axis"><mtr><mtd><mn>1.0</mn></mtd><mtd><mn>7.&ThinSpace;483&ThinSpace;1</mn><mo form="infix">&times;</mo><msup><mn>10</mn><mrow><mo form="prefix">&minus;</mo><mn>2</mn></mrow></msup></mtd></mtr><mtr><mtd><mn>7.&ThinSpace;483&ThinSpace;1</mn><mo form="infix">&times;</mo><msup><mn>10</mn><mrow><mo form="prefix">&minus;</mo><mn>2</mn></mrow></msup></mtd><mtd><mn>1.0</mn></mtd></mtr></mtable><mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mo></mrow></math>
+Client ID   1
+Engine      MuPAD
+Command ID	Correlation
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+       <mml:mtable align="axis" columnalign="right right">
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>43</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mo form="prefix">&minus;</mml:mo>
+             <mml:mn>62</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>77</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>66</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>54</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mo form="prefix">&minus;</mml:mo>
+             <mml:mn>5</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>99</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mo form="prefix">&minus;</mml:mo>
+             <mml:mn>61</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+       </mml:mtable>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     701
+Comment     <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mo><mtable align="axis"><mtr><mtd><mn>2.&ThinSpace;333&ThinSpace;3</mn></mtd><mtd><mn>1.&ThinSpace;166&ThinSpace;7</mn></mtd></mtr><mtr><mtd><mn>1.&ThinSpace;166&ThinSpace;7</mn></mtd><mtd><mn>2.&ThinSpace;333&ThinSpace;3</mn></mtd></mtr></mtable><mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mo></mrow></math>
+Client ID   1
+Engine      MuPAD
+Command ID	Covariance
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+       <mml:mtable align="axis">
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>1</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>2</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>3</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>5</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>4</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>3</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+       </mml:mtable>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     801
+Comment     <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mroot><mn>4704</mn><mn>4</mn></mroot></mrow></math>
+Client ID   1
+Engine      MuPAD
+Command ID	Geometric Mean
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>3</mml:mn>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mn>56</mml:mn>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mn>14</mml:mn>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mn>2</mml:mn>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     901
+Comment     <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mfrac><mn>3</mn><mrow><mfrac><mn>1</mn><mi>a</mi></mfrac><mo form="infix">+</mo><mfrac><mn>1</mn><mi>b</mi></mfrac><mo form="infix">+</mo><mfrac><mn>1</mn><mi>c</mi></mfrac></mrow></mfrac></mrow></math>   
+Client ID   1
+Engine      MuPAD
+Command ID	Harmonic Mean
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mi>a</mml:mi>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mi>b</mml:mi>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mi>c</mml:mi>
+     </mml:mrow>
+   </mml:math>
+End of test
+   
+Test ID     1001
+Comment     <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mfrac><mn>6</mn><mn>5</mn></mfrac></mrow></math>
+Client ID   1
+Engine      MuPAD
+Command ID	Mean Deviation
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>1</mml:mn>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mn>2</mml:mn>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mn>3</mml:mn>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mn>4</mml:mn>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mn>5</mml:mn>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     1101
+Comment     <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo>&#x2212;</mo><mn>5.0</mn><mo>&#xd7;</mo><msup><mn>10</mn><mn>-2</mn></msup></mrow></math>
+Client ID   1
+Engine      MuPAD
+Command ID  Moment...
+; moment 1 origin 0.5
+Param       PID_moment_num,zPT_ASCII_mmlmarkup,<mml:mn>1</mml:mn>
+Param       PID_moment_meanisorigin,zPT_ASCII_natural,0
+Param       PID_moment_origin,zPT_ASCII_mmlmarkup,<math display="inline"><mrow><mn>0.5</mn></mrow></math>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+       <mml:mrow>
+         <mml:mn>0.1</mml:mn>
+         <mml:mo form="infix">,</mml:mo>
+         <mml:mn>0.5</mml:mn>
+         <mml:mo form="infix">,</mml:mo>
+         <mml:mn>0.8</mml:mn>
+         <mml:mo form="infix">,</mml:mo>
+         <mml:mn>0.4</mml:mn>
+       </mml:mrow>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     1101b
+Comment     <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mn>7.&ThinSpace;888&ThinSpace;6</mn><mo form="infix">&times;</mo><msup><mn>10</mn><mrow><mo form="prefix">&minus;</mo><mn>30</mn></mrow></msup></mrow></math>
+Client ID   1
+Engine      MuPAD
+Command ID  Moment...
+; moment 1 about mean
+Param       PID_moment_num,zPT_ASCII_mmlmarkup,<mml:mn>1</mml:mn>
+Param       PID_moment_meanisorigin,zPT_ASCII_natural,1
+Param       PID_moment_origin,zPT_ASCII_mmlmarkup,<math display="inline"><mrow><mn>0.5</mn></mrow></math>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+       <mml:mrow>
+         <mml:mn>0.1</mml:mn>
+         <mml:mo form="infix">,</mml:mo>
+         <mml:mn>0.5</mml:mn>
+         <mml:mo form="infix">,</mml:mo>
+         <mml:mn>0.8</mml:mn>
+         <mml:mo form="infix">,</mml:mo>
+         <mml:mn>0.4</mml:mn>
+       </mml:mrow>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+     </mml:mrow>
+   </mml:math>
+End of test
+   
+Test ID     1201
+Comment     <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mo><mrow><mn>1</mn><mo form="infix">,</mo><mn>2</mn></mrow><mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mo></mrow></math>
+Client ID   1
+Engine      MuPAD
+Command ID  Quantile...
+Param       PID_quantile,zPT_ASCII_mmlmarkup,<math display="inline"><mrow><mn>0.1</mn></mrow></math>
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+       <mml:mtable align="axis">
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>1</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>2</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mn>3</mml:mn>
+           </mml:mtd>
+           <mml:mtd>
+             <mml:mn>4</mml:mn>
+           </mml:mtd>
+         </mml:mtr>
+       </mml:mtable>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+     </mml:mrow>
+   </mml:math>
+End of test
+   
+Test ID     1301
+Comment     <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mfrac><mn>1</mn><mn>21</mn></mfrac><mo>&InvisibleTimes;</mo><msqrt><mn>21</mn></msqrt><mo>&InvisibleTimes;</mo><msqrt><mn>21&ThinSpace;055</mn></msqrt></mrow></math>
+Client ID   1
+Engine      MuPAD
+Command ID  Standard Deviation
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">[</mml:mo>
+       <mml:mrow>
+         <mml:mn>5</mml:mn>
+         <mml:mo form="infix">,</mml:mo>
+         <mml:mn>1</mml:mn>
+         <mml:mo form="infix">,</mml:mo>
+         <mml:mn>89</mml:mn>
+         <mml:mo form="infix">,</mml:mo>
+         <mml:mn>4</mml:mn>
+         <mml:mo form="infix">,</mml:mo>
+         <mml:mn>29</mml:mn>
+         <mml:mo form="infix">,</mml:mo>
+         <mml:mn>47</mml:mn>
+         <mml:mo form="infix">,</mml:mo>
+         <mml:mn>18</mml:mn>
+       </mml:mrow>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">]</mml:mo>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+Test ID     1401
+Comment     <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mfrac><mn>21&ThinSpace;055</mn><mn>21</mn></mfrac></mrow></math>
+Client ID   1
+Engine      MuPAD
+Command ID  Variance
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mn>5</mml:mn>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mn>1</mml:mn>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mn>89</mml:mn>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mn>4</mml:mn>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mn>29</mml:mn>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mn>47</mml:mn>
+       <mml:mo form="infix">,</mml:mo>
+       <mml:mn>18</mml:mn>
+     </mml:mrow>
+   </mml:math>
+End of test
+
+; distribution functions
+Test ID     1501
+Comment     <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo><mtable align="axis"><mtr><mtd><mn>0.687&ThinSpace;5</mn></mtd></mtr><mtr><mtd><mn>0.5</mn></mtd></mtr><mtr><mtd><mn>1.&ThinSpace;5</mn></mtd></mtr></mtable><mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo></mrow></math>
+Client ID   1
+Engine      MuPAD
+Command ID  Evaluate
+   <mml:math display="inline">
+     <mml:mrow>
+       <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+       <mml:mtable align="axis">
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mi mathcolor="gray">BetaDist</mml:mi>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:mrow>
+               <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+               <mml:mrow>
+                 <mml:mn>0.5</mml:mn>
+                 <mml:mo form="infix">;</mml:mo>
+                 <mml:mrow>
+                   <mml:mn>2</mml:mn>
+                   <mml:mo form="infix">,</mml:mo>
+                   <mml:mn>3</mml:mn>
+                 </mml:mrow>
+               </mml:mrow>
+               <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mi mathcolor="gray">BetaInv</mml:mi>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:mrow>
+               <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+               <mml:mrow>
+                 <mml:mn>0.6875</mml:mn>
+                 <mml:mo form="infix">;</mml:mo>
+                 <mml:mrow>
+                   <mml:mn>2</mml:mn>
+                   <mml:mo form="infix">,</mml:mo>
+                   <mml:mn>3</mml:mn>
+                 </mml:mrow>
+               </mml:mrow>
+               <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+         <mml:mtr>
+           <mml:mtd>
+             <mml:mi mathcolor="gray">BetaDen</mml:mi>
+             <mml:mo>&ApplyFunction;</mml:mo>
+             <mml:mrow>
+               <mml:mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mml:mo>
+               <mml:mrow>
+                 <mml:mn>0.5</mml:mn>
+                 <mml:mo form="infix">;</mml:mo>
+                 <mml:mrow>
+                   <mml:mn>2</mml:mn>
+                   <mml:mo form="infix">,</mml:mo>
+                   <mml:mn>3</mml:mn>
+                 </mml:mrow>
+               </mml:mrow>
+               <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+             </mml:mrow>
+           </mml:mtd>
+         </mml:mtr>
+       </mml:mtable>
+       <mml:mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mml:mo>
+     </mml:mrow>
+   </mml:math>
+End of test
