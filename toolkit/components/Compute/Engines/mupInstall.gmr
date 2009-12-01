@@ -1,0 +1,11 @@
+; All paths in this file will be relative to the xulrunner directory of the program 
+; installation.
+<START_CONTEXT_ENGINFO>
+MuPAD<uID1.0>
+engpath<uID2.0>
+libp<uID3.0>MuPAD/lib
+wrapperDLL<uID5.0>@mackichan.com/mupadenginewrapper;1
+eng_dbase<uID6.0>MuPAD.gmr
+entity_dbase<uID7.0>MMLents.gmr
+vcampath<uID8.0>vcam/VCamNG.exe
+<END_CONTEXT_ENGINFO>

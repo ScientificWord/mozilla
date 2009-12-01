@@ -1,0 +1,5170 @@
+;Test script for "Comptest.exe".
+;
+;Mostly, this is a copy of Interpret.tscript.  Some of the comments
+; have not been corrected.
+
+SetClientPref     1,use_mfenced,1
+
+Test ID     101
+Comment     trivial
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mn>3</mn>
+       <mo form="infix">&minus;</mo>
+       <mn>4</mn>
+     </mrow>
+   </math>
+End of test
+
+Test ID     102
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mrow>
+         <mi mathcolor="gray">sin</mi>
+         <mo>&ApplyFunction;</mo>
+         <mi>a</mi>
+       </mrow>
+       <mo form="infix">/</mo>
+       <mrow>
+         <mi mathcolor="gray">sin</mi>
+         <mo>&ApplyFunction;</mo>
+         <mi>b</mi>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     103
+Comment     should bind args, build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mi mathcolor="gray">sin</mi>
+       <mo>&ApplyFunction;</mo>
+       <mrow>
+         <mi>x</mi>
+         <mo form="infix">/</mo>
+         <mi>y</mi>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     107
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mrow>
+         <mrow>
+           <mn>1</mn>
+           <mo form="infix">/</mo>
+           <mn>3</mn>
+         </mrow>
+         <mo>&InvisibleTimes;</mo>
+         <mi>x</mi>
+       </mrow>
+       <mo form="infix">+</mo>
+       <mn>4</mn>
+     </mrow>
+   </math>
+End of test
+
+Test ID     108a
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mn>1</mn>
+       <mo form="infix">/</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+         <mrow>
+           <mrow>
+             <mn>3</mn>
+             <mo>&InvisibleTimes;</mo>
+             <mi>x</mi>
+           </mrow>
+           <mo form="infix">+</mo>
+           <mn>4</mn>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     108b
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mn>1</mn>
+       <mo form="infix">/</mo>
+       <msup>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+           <mrow>
+             <mrow>
+               <mn>3</mn>
+               <mo>&InvisibleTimes;</mo>
+               <mi>x</mi>
+             </mrow>
+             <mo form="infix">+</mo>
+             <mn>4</mn>
+           </mrow>
+           <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+         </mrow>
+         <mn>2</mn>
+       </msup>
+     </mrow>
+   </math>
+End of test
+
+Test ID     109
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mrow>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+           <mrow>
+             <mn>1</mn>
+             <mo form="infix">/</mo>
+             <mn>3</mn>
+           </mrow>
+           <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+         </mrow>
+         <mo>&InvisibleTimes;</mo>
+         <mi>x</mi>
+       </mrow>
+       <mo form="infix">+</mo>
+       <mn>4</mn>
+     </mrow>
+   </math>
+End of test
+
+Test ID     110
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mrow>
+         <mn>1</mn>
+         <mo form="infix">/</mo>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+           <mrow>
+             <mn>3</mn>
+             <mo>&InvisibleTimes;</mo>
+             <mi>x</mi>
+           </mrow>
+           <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+         </mrow>
+       </mrow>
+       <mo form="infix">+</mo>
+       <mn>4</mn>
+     </mrow>
+   </math>
+End of test
+
+Test ID     111
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mrow>
+         <mn>1</mn>
+         <mo form="infix">/</mo>
+         <mn>3</mn>
+       </mrow>
+       <mo>&InvisibleTimes;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+         <mrow>
+           <mi>x</mi>
+           <mo form="infix">+</mo>
+           <mn>4</mn>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     112
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mi>x</mi>
+       <mo>&InvisibleTimes;</mo>
+       <mrow>
+         <mi>y</mi>
+         <mo form="infix">/</mo>
+         <mi>z</mi>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     120
+Comment     should insert InvisibleTimes
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mn>2</mn>
+       <mo>&InvisibleTimes;</mo>
+       <mi>x</mi>
+     </mrow>
+   </math>
+End of test
+
+Test ID     121a
+Comment     should insert InvisibleTimes
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>x</mi>
+       <mo>&InvisibleTimes;</mo>
+       <mn>2</mn>
+     </mrow>
+   </math>
+End of test
+
+Test ID     121b
+Comment     should insert InvisibleTimes
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>x</mi>
+       <mo>&InvisibleTimes;</mo>
+       <mi>y</mi>
+     </mrow>
+   </math>
+End of test
+
+Test ID     122a
+Comment     inert
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>x</mi>
+       <mo form="infix">+</mo>
+       <mi>y</mi>
+     </mrow>
+   </math>
+End of test
+
+Test ID     122b
+Comment     outer fence removed!
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="false">(</mo>
+       <mrow>
+         <mi>x</mi>
+         <mo form="infix">+</mo>
+         <mi>y</mi>
+       </mrow>
+       <mo form="postfix" fence="true" stretchy="false">)</mo>
+     </mrow>
+   </math>
+End of test
+
+Test ID     122c
+Comment     should insert InvisibleTimes
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <msup>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="false">(</mo>
+           <mrow>
+             <mi>x</mi>
+             <mo form="infix">+</mo>
+             <mi>y</mi>
+           </mrow>
+           <mo form="postfix" fence="true" stretchy="false">)</mo>
+         </mrow>
+         <mn>2</mn>
+       </msup>
+     </mrow>
+   </math>
+End of test
+
+Test ID     122d
+Comment     should insert InvisibleTimes
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <msup>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="false">(</mo>
+           <mrow>
+             <mi>x</mi>
+             <mo form="infix">+</mo>
+             <mi>y</mi>
+           </mrow>
+           <mo form="postfix" fence="true" stretchy="false">)</mo>
+         </mrow>
+         <mrow>
+           <mo form="prefix">&minus;</mo>
+           <mn>1</mn>
+         </mrow>
+       </msup>
+     </mrow>
+   </math>
+End of test
+
+Test ID     122e
+Comment     should insert InvisibleTimes
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <msup>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="false">(</mo>
+           <mrow>
+             <mi>x</mi>
+             <mo form="infix">+</mo>
+             <mi>y</mi>
+           </mrow>
+           <mo form="postfix" fence="true" stretchy="false">)</mo>
+         </mrow>
+         <mrow>
+           <mo form="prefix">&minus;</mo>
+           <mn>2</mn>
+         </mrow>
+       </msup>
+     </mrow>
+   </math>
+End of test
+
+Test ID     123
+Comment     should insert InvisibleTimes
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mn>2</mn>
+       <mo>&InvisibleTimes;</mo>
+       <mi>x</mi>
+       <mo>&InvisibleTimes;</mo>
+       <mi>y</mi>
+     </mrow>
+   </math>
+End of test
+
+Test ID     124a
+Comment     should insert InvisibleTimes
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mn>2</mn>
+       <mo>&InvisibleTimes;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mrow>
+           <mi>x</mi>
+           <mo>&InvisibleTimes;</mo>
+           <mi>y</mi>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     124b
+Comment     should insert InvisibleTimes
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mn>2</mn>
+       <mo>&InvisibleTimes;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mrow>
+           <mi>x</mi>
+           <mo form="infix">+</mo>
+           <mi>y</mi>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     125
+Comment     should insert InvisibleTimes
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mn>2</mn>
+       <mo>&InvisibleTimes;</mo>
+       <msup>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="false">(</mo>
+           <mrow>
+             <mi>x</mi>
+             <mo form="infix">+</mo>
+             <mi>y</mi>
+           </mrow>
+           <mo form="postfix" fence="true" stretchy="false">)</mo>
+         </mrow>
+         <mn>2</mn>
+       </msup>
+     </mrow>
+   </math>
+End of test
+
+Test ID     126
+Comment     should resolve precedence
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mn>1</mn>
+       <mo form="infix">+</mo>
+       <mn>2</mn>
+       <mo form="infix">&minus;</mo>
+       <mrow>
+         <mn>3</mn>
+         <mo form="infix">&midast;</mo>
+         <mrow>
+           <mn>4</mn>
+           <mo form="infix">/</mo>
+           <mrow>
+             <mn>5</mn>
+             <mo form="postfix">!</mo>
+           </mrow>
+         </mrow>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     127a
+Comment     should group
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mn>9</mn>
+       <mo form="infix">&minus;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mrow>
+           <mn>8</mn>
+           <mo form="infix">&minus;</mo>
+           <mn>7</mn>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+       <mo form="infix">&minus;</mo>
+       <mn>6</mn>
+     </mrow>
+   </math>
+End of test
+
+Test ID     127a-
+Comment     should group
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mn>9</mn>
+       <mo form="infix">-</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mrow>
+           <mn>8</mn>
+           <mo form="infix">-</mo>
+           <mn>7</mn>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+       <mo form="infix">-</mo>
+       <mn>6</mn>
+     </mrow>
+   </math>
+End of test
+
+Test ID     127b
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mn>9</mn>
+       <mo form="infix">&minus;</mo>
+       <msup>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="false">(</mo>
+           <mrow>
+             <mn>8</mn>
+             <mo form="infix">&minus;</mo>
+             <mn>7</mn>
+           </mrow>
+           <mo form="postfix" fence="true" stretchy="false">)</mo>
+         </mrow>
+         <mn>2</mn>
+       </msup>
+       <mo form="infix">&minus;</mo>
+       <mn>6</mn>
+     </mrow>
+   </math>
+End of test
+
+Test ID     127c
+Comment     should group
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mn>9</mn>
+       <mo form="infix">&minus;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mrow>
+           <mn>8</mn>
+           <mo form="infix">&minus;</mo>
+           <mrow>
+             <mo form="prefix" fence="true" stretchy="false">(</mo>
+             <mrow>
+               <mn>7</mn>
+               <mo form="infix">&minus;</mo>
+               <mn>6</mn>
+             </mrow>
+             <mo form="postfix" fence="true" stretchy="false">)</mo>
+           </mrow>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     127d
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mn>9</mn>
+       <mo form="infix">&minus;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mrow>
+           <mn>8</mn>
+           <mo form="infix">&minus;</mo>
+           <msup>
+             <mrow>
+               <mo form="prefix" fence="true" stretchy="false">(</mo>
+               <mrow>
+                 <mn>7</mn>
+                 <mo form="infix">&minus;</mo>
+                 <mn>6</mn>
+               </mrow>
+               <mo form="postfix" fence="true" stretchy="false">)</mo>
+             </mrow>
+             <mn>2</mn>
+           </msup>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     127e
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mn>9</mn>
+       <mo form="infix">&minus;</mo>
+       <msup>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="false">(</mo>
+           <mrow>
+             <mn>8</mn>
+             <mo form="infix">&minus;</mo>
+             <mrow>
+               <mo form="prefix" fence="true" stretchy="false">(</mo>
+               <mrow>
+                 <mn>7</mn>
+                 <mo form="infix">&minus;</mo>
+                 <mn>6</mn>
+               </mrow>
+               <mo form="postfix" fence="true" stretchy="false">)</mo>
+             </mrow>
+           </mrow>
+           <mo form="postfix" fence="true" stretchy="false">)</mo>
+         </mrow>
+         <mn>2</mn>
+       </msup>
+     </mrow>
+   </math>
+End of test
+
+Test ID     128a
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mn>9</mn>
+       <mo form="infix">&minus;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mrow>
+           <mrow>
+             <mo form="prefix" fence="true" stretchy="false">(</mo>
+             <mrow>
+               <mn>8</mn>
+               <mo form="infix">&minus;</mo>
+               <mn>7</mn>
+             </mrow>
+             <mo form="postfix" fence="true" stretchy="false">)</mo>
+           </mrow>
+           <mo form="infix">&minus;</mo>
+           <mn>6</mn>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     128b
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mn>9</mn>
+       <mo form="infix">&minus;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mrow>
+           <msup>
+             <mrow>
+               <mo form="prefix" fence="true" stretchy="false">(</mo>
+               <mrow>
+                 <mn>8</mn>
+                 <mo form="infix">&minus;</mo>
+                 <mn>7</mn>
+               </mrow>
+               <mo form="postfix" fence="true" stretchy="false">)</mo>
+             </mrow>
+             <mn>2</mn>
+           </msup>
+           <mo form="infix">&minus;</mo>
+           <mn>6</mn>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     128c
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mn>9</mn>
+       <mo form="infix">&minus;</mo>
+       <msup>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="false">(</mo>
+           <mrow>
+             <mrow>
+               <mo form="prefix" fence="true" stretchy="false">(</mo>
+               <mrow>
+                 <mn>8</mn>
+                 <mo form="infix">&minus;</mo>
+                 <mn>7</mn>
+               </mrow>
+               <mo form="postfix" fence="true" stretchy="false">)</mo>
+             </mrow>
+             <mo form="infix">&minus;</mo>
+             <mn>6</mn>
+           </mrow>
+           <mo form="postfix" fence="true" stretchy="false">)</mo>
+         </mrow>
+         <mn>2</mn>
+       </msup>
+     </mrow>
+   </math>
+End of test
+
+Test ID     130
+Comment     should resolve precedence
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mrow>
+         <mn>3.141592</mn>
+         <mo form="infix">&times;</mo>
+         <msup>
+           <mn>10</mn>
+           <mrow>
+             <mo form="prefix">&minus;</mo>
+             <mn>2</mn>
+           </mrow>
+         </msup>
+       </mrow>
+       <mo form="infix">+</mo>
+       <mrow>
+         <mn>1.11</mn>
+         <mo form="infix">&times;</mo>
+         <msup>
+           <mn>10</mn>
+           <mrow>
+             <mo form="prefix">&minus;</mo>
+             <mn>3</mn>
+           </mrow>
+         </msup>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     131
+Comment     should resolve precedence
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mrow>
+         <mo form="prefix">&minus;</mo>
+         <mn>3.141592</mn>
+       </mrow>
+       <mo form="infix">&times;</mo>
+       <msup>
+         <mn>10</mn>
+         <mrow>
+           <mo form="prefix">&minus;</mo>
+           <mn>2</mn>
+         </mrow>
+       </msup>
+     </mrow>
+   </math>
+End of test
+
+Test ID     132
+Comment     should resolve precedence, collect fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mo>
+         <mrow>
+           <mn>1</mn>
+           <mo form="infix">,</mo>
+           <mn>2</mn>
+           <mo form="infix">,</mo>
+           <mn>3</mn>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mo>
+       </mrow>
+       <mo form="infix">&cap;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="true" symmetric="true">{</mo>
+         <mrow>
+           <mn>2</mn>
+           <mo form="infix">,</mo>
+           <mn>3</mn>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="true" symmetric="true">}</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     133
+Comment     should resolve precedence, collect fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mrow>
+           <mi>a</mi>
+           <mo form="infix">,</mo>
+           <mi>b</mi>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+       <mo form="infix">&cap;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mrow>
+           <mi>g</mi>
+           <mo form="infix">,</mo>
+           <mi>h</mi>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     134
+Comment     should resolve precedence, collect fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mrow>
+           <mn>1</mn>
+           <mo form="infix">,</mo>
+           <mn>3</mn>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="false">]</mo>
+       </mrow>
+       <mo form="infix">&cap;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">[</mo>
+         <mrow>
+           <mn>2</mn>
+           <mo form="infix">,</mo>
+           <mn>4</mn>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     135
+Comment     should insert ApplyFunction
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>&Gamma;</mi>
+       <mo>&ApplyFunction;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mn>4</mn>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     136
+Comment     should insert ApplyFunction
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi>&zeta;</mi>
+       <mo>&ApplyFunction;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mn>4</mn>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     140
+Comment     should bind arg
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mrow>
+         <mi mathcolor="gray">sin</mi>
+         <mo>&ApplyFunction;</mo>
+         <mi>a</mi>
+       </mrow>
+       <mo>&InvisibleTimes;</mo>
+       <mrow>
+         <mi mathcolor="gray">sin</mi>
+         <mo>&ApplyFunction;</mo>
+         <mi>b</mi>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     141
+Comment     should insert ApplyFunction
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi mathcolor="gray">sin</mi>
+       <mo>&ApplyFunction;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mrow>
+           <mi>a</mi>
+           <mo>&InvisibleTimes;</mo>
+           <mrow>
+             <mi mathcolor="gray">sin</mi>
+             <mo>&ApplyFunction;</mo>
+             <mi>b</mi>
+           </mrow>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     142
+Comment     should insert ApplyFunction
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi mathcolor="gray">sin</mi>
+       <mo>&ApplyFunction;</mo>
+       <mrow>
+         <mi>x</mi>
+         <mo>&InvisibleTimes;</mo>
+         <mi>y</mi>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     143
+Comment     should insert ApplyFunction, bind args
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi mathcolor="gray">sin</mi>
+       <mo>&ApplyFunction;</mo>
+       <mrow>
+         <mi>x</mi>
+         <mo>&InvisibleTimes;</mo>
+         <msqrt>
+           <mi>y</mi>
+         </msqrt>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     144
+Comment     should insert ApplyFunction, bind args
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi mathcolor="gray">sin</mi>
+       <mo>&ApplyFunction;</mo>
+       <mrow>
+         <mi>x</mi>
+         <mo>&InvisibleTimes;</mo>
+         <mfrac>
+           <mi>y</mi>
+           <mi>z</mi>
+         </mfrac>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     145
+Comment     should insert ApplyFunction, bind args
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi mathcolor="gray">sin</mi>
+       <mo>&ApplyFunction;</mo>
+       <mrow>
+         <mi>x</mi>
+         <mo>&InvisibleTimes;</mo>
+         <msup>
+           <mi>y</mi>
+           <mn>2</mn>
+         </msup>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     146
+Comment     should insert ApplyFunction, bind args
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi mathcolor="gray">sin</mi>
+       <mo>&ApplyFunction;</mo>
+       <mrow>
+         <mi>x</mi>
+         <mo>&InvisibleTimes;</mo>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+           <mrow>
+             <mi>y</mi>
+             <mo form="infix">+</mo>
+             <mi>z</mi>
+           </mrow>
+           <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+         </mrow>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     147
+Comment     should insert ApplyFunction, bind args
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi mathcolor="gray">sin</mi>
+       <mo>&ApplyFunction;</mo>
+       <mrow>
+         <mn>2</mn>
+         <mo>&InvisibleTimes;</mo>
+         <msqrt>
+           <mi>y</mi>
+         </msqrt>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     148
+Comment     should insert ApplyFunction, bind args
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi mathcolor="gray">sin</mi>
+       <mo>&ApplyFunction;</mo>
+       <mrow>
+         <mn>2</mn>
+         <mo>&InvisibleTimes;</mo>
+         <mfrac>
+           <mi>y</mi>
+           <mi>z</mi>
+         </mfrac>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     149
+Comment     should insert ApplyFunction, bind args
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi mathcolor="gray">sin</mi>
+       <mo>&ApplyFunction;</mo>
+       <mrow>
+         <mn>2</mn>
+         <mo>&InvisibleTimes;</mo>
+         <msup>
+           <mi>y</mi>
+           <mn>2</mn>
+         </msup>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     150
+Comment     should insert ApplyFunction, bind args
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi mathcolor="gray">sin</mi>
+       <mo>&ApplyFunction;</mo>
+       <mrow>
+         <mn>2</mn>
+         <mo>&InvisibleTimes;</mo>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+           <mrow>
+             <mi>y</mi>
+             <mo form="infix">+</mo>
+             <mi>z</mi>
+           </mrow>
+           <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+         </mrow>
+       </mrow>
+     </mrow>
+   </math>
+End of test
+
+Test ID     151
+Comment     should insert ApplyFunction, bind args
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <msup>
+         <mi mathcolor="gray">sin</mi>
+         <mrow>
+           <mo form="prefix">&minus;</mo>
+           <mn>1</mn>
+         </mrow>
+       </msup>
+       <mo>&ApplyFunction;</mo>
+       <mi>y</mi>
+     </mrow>
+   </math>
+End of test
+
+Test ID     152
+Comment     should insert ApplyFunction, bind args
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <msup>
+         <mi mathcolor="gray">sin</mi>
+         <mn>2</mn>
+       </msup>
+       <mo>&ApplyFunction;</mo>
+       <msup>
+         <mi>y</mi>
+         <mn>2</mn>
+       </msup>
+     </mrow>
+   </math>
+End of test
+
+Test ID     153
+Comment     this one is nonsense
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <mi mathcolor="gray">sin</mi>
+       <mo form="infix">/</mo>
+       <mi>y</mi>
+     </mrow>
+   </math>
+End of test
+
+Test ID     160
+Comment     should deal with fence
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <msub>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+           <mtable align="axis">
+             <mtr>
+               <mtd>
+                 <mn>1</mn>
+               </mtd>
+               <mtd>
+                 <mn>2</mn>
+               </mtd>
+             </mtr>
+             <mtr>
+               <mtd>
+                 <mn>3</mn>
+               </mtd>
+               <mtd>
+                 <mn>4</mn>
+               </mtd>
+             </mtr>
+           </mtable>
+           <mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+         </mrow>
+         <mn>2</mn>
+       </msub>
+     </mrow>
+   </math>
+End of test
+
+Test ID     161
+Comment     should deal with fence, exponent
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <msubsup>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+           <mtable align="axis">
+             <mtr>
+               <mtd>
+                 <mn>1</mn>
+               </mtd>
+               <mtd>
+                 <mn>2</mn>
+               </mtd>
+             </mtr>
+             <mtr>
+               <mtd>
+                 <mn>3</mn>
+               </mtd>
+               <mtd>
+                 <mn>4</mn>
+               </mtd>
+             </mtr>
+           </mtable>
+           <mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+         </mrow>
+         <mn>1</mn>
+         <mn>2</mn>
+       </msubsup>
+     </mrow>
+   </math>
+End of test
+
+Test ID     162
+Comment     should deal with fence, exponent
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <msubsup>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+           <mtable align="axis">
+             <mtr>
+               <mtd>
+                 <mn>1</mn>
+               </mtd>
+               <mtd>
+                 <mn>2</mn>
+               </mtd>
+             </mtr>
+             <mtr>
+               <mtd>
+                 <mn>3</mn>
+               </mtd>
+               <mtd>
+                 <mn>4</mn>
+               </mtd>
+             </mtr>
+           </mtable>
+           <mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+         </mrow>
+         <msup>
+           <mn>1</mn>
+           <mn>2</mn>
+         </msup>
+         <msup>
+           <mn>2</mn>
+           <mn>2</mn>
+         </msup>
+       </msubsup>
+     </mrow>
+   </math>
+End of test
+
+Test ID     163
+Comment     should deal with fence
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <msub>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+           <mi>x</mi>
+           <mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+         </mrow>
+         <mi>p</mi>
+       </msub>
+     </mrow>
+   </math>
+End of test
+
+Test ID     164
+Comment     should deal with fence, exponent
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <msubsup>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+           <mi>x</mi>
+           <mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+         </mrow>
+         <mi>p</mi>
+         <mi>q</mi>
+       </msubsup>
+     </mrow>
+   </math>
+End of test
+
+Test ID     165
+Comment     should deal with fence, subscript (non-SWP notation)
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mrow>
+       <msub>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="true" symmetric="true">|</mo>
+           <mi>x</mi>
+           <mo form="postfix" fence="true" stretchy="true" symmetric="true">|</mo>
+         </mrow>
+         <mi>p</mi>
+       </msub>
+     </mrow>
+   </math>
+End of test
+
+;Some random tests.
+Test ID     1000
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mn>3</mn>
+       <mo>/</mo>
+       <mn>4</mn>
+     </mrow>
+   </math>
+End of test
+
+Test ID     1001
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mi>x</mi>
+       <mo>/</mo>
+       <mi>y</mi>
+     </mrow>
+   </math>
+End of test
+
+Test ID     1002
+Comment     none
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mi>x</mi>
+       <mo>*</mo>
+       <mi>y</mi>
+     </mrow>
+   </math>
+End of test
+
+Test ID     1003
+Comment     insert InvisibleTimes
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mi>x</mi>
+       <mi>y</mi>
+     </mrow>
+   </math>
+End of test
+
+;The above section with a little less markup
+Test ID     201
+Comment     - to &amp;minus;?
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mn>3</mn>
+       <mo>-</mo>
+       <mn>4</mn>
+     </mrow>
+   </math>
+End of test
+
+Test ID     202
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+       <mrow>
+         <mi mathcolor="gray">sin</mi>
+         <mo>&ApplyFunction;</mo>
+         <mi>a</mi>
+       </mrow>
+       <mo form="infix">/</mo>
+       <mrow>
+         <mi mathcolor="gray">sin</mi>
+         <mo>&ApplyFunction;</mo>
+         <mi>b</mi>
+       </mrow>
+   </math>
+End of test
+
+Test ID     203
+Comment     should bind args, build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+       <mi mathcolor="gray">sin</mi>
+       <mo>&ApplyFunction;</mo>
+       <mrow>
+         <mi>x</mi>
+         <mo form="infix">/</mo>
+         <mi>y</mi>
+       </mrow>
+   </math>
+End of test
+
+Test ID     207
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+       <mrow>
+         <mrow>
+           <mn>1</mn>
+           <mo form="infix">/</mo>
+           <mn>3</mn>
+         </mrow>
+         <mo>&InvisibleTimes;</mo>
+         <mi>x</mi>
+       </mrow>
+       <mo form="infix">+</mo>
+       <mn>4</mn>
+   </math>
+End of test
+
+Test ID     208
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+       <mn>1</mn>
+       <mo form="infix">/</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+         <mrow>
+           <mrow>
+             <mn>3</mn>
+             <mo>&InvisibleTimes;</mo>
+             <mi>x</mi>
+           </mrow>
+           <mo form="infix">+</mo>
+           <mn>4</mn>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+       </mrow>
+   </math>
+End of test
+
+Test ID     209
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+       <mrow>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+           <mrow>
+             <mn>1</mn>
+             <mo form="infix">/</mo>
+             <mn>3</mn>
+           </mrow>
+           <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+         </mrow>
+         <mo>&InvisibleTimes;</mo>
+         <mi>x</mi>
+       </mrow>
+       <mo form="infix">+</mo>
+       <mn>4</mn>
+   </math>
+End of test
+
+Test ID     210
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+       <mrow>
+         <mn>1</mn>
+         <mo form="infix">/</mo>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+           <mrow>
+             <mn>3</mn>
+             <mo>&InvisibleTimes;</mo>
+             <mi>x</mi>
+           </mrow>
+           <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+         </mrow>
+       </mrow>
+       <mo form="infix">+</mo>
+       <mn>4</mn>
+   </math>
+End of test
+
+Test ID     211
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+       <mrow>
+         <mn>1</mn>
+         <mo form="infix">/</mo>
+         <mn>3</mn>
+       </mrow>
+       <mo>&InvisibleTimes;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+         <mrow>
+           <mi>x</mi>
+           <mo form="infix">+</mo>
+           <mn>4</mn>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+       </mrow>
+   </math>
+End of test
+
+Test ID     212
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+       <mi>x</mi>
+       <mo>&InvisibleTimes;</mo>
+       <mrow>
+         <mi>y</mi>
+         <mo form="infix">/</mo>
+         <mi>z</mi>
+       </mrow>
+   </math>
+End of test
+
+Test ID     222a
+Comment     inert
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>x</mi>
+     <mo form="infix">+</mo>
+     <mi>y</mi>
+   </math>
+End of test
+
+Test ID     222b
+Comment     outer fence removed!
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mrow>
+       <mi>x</mi>
+       <mo form="infix">+</mo>
+       <mi>y</mi>
+     </mrow>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+   </math>
+End of test
+
+Test ID     222c
+Comment     should build mfenced
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msup>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mrow>
+           <mi>x</mi>
+           <mo form="infix">+</mo>
+           <mi>y</mi>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+       <mn>2</mn>
+     </msup>
+   </math>
+End of test
+
+Test ID     222d
+Comment     should build mfenced
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msup>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mrow>
+           <mi>x</mi>
+           <mo form="infix">+</mo>
+           <mi>y</mi>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+       <mrow>
+         <mo form="prefix">&minus;</mo>
+         <mn>1</mn>
+       </mrow>
+     </msup>
+   </math>
+End of test
+
+Test ID     222e
+Comment     should build mfenced
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msup>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mrow>
+           <mi>x</mi>
+           <mo form="infix">+</mo>
+           <mi>y</mi>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+       <mrow>
+         <mo form="prefix">&minus;</mo>
+         <mn>2</mn>
+       </mrow>
+     </msup>
+   </math>
+End of test
+
+Test ID     227a
+Comment     should group
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="false">(</mo>
+       <mrow>
+         <mn>8</mn>
+         <mo form="infix">&minus;</mo>
+         <mn>7</mn>
+       </mrow>
+       <mo form="postfix" fence="true" stretchy="false">)</mo>
+     </mrow>
+     <mo form="infix">&minus;</mo>
+     <mn>6</mn>
+   </math>
+End of test
+
+Test ID     227a-
+Comment     should group
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">-</mo>
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="false">(</mo>
+       <mrow>
+         <mn>8</mn>
+         <mo form="infix">-</mo>
+         <mn>7</mn>
+       </mrow>
+       <mo form="postfix" fence="true" stretchy="false">)</mo>
+     </mrow>
+     <mo form="infix">-</mo>
+     <mn>6</mn>
+   </math>
+End of test
+
+Test ID     227bi
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <msup>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mrow>
+           <mn>8</mn>
+           <mo form="infix">&minus;</mo>
+           <mn>7</mn>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+       <mn>2</mn>
+     </msup>
+     <mo form="infix">&minus;</mo>
+     <mn>6</mn>
+   </math>
+End of test
+
+Test ID     227bii
+Comment     should bind fences, exponent
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="false">(</mo>
+       <mrow>
+         <mn>8</mn>
+         <mo form="infix">&minus;</mo>
+         <mn>7</mn>
+       </mrow>
+       <msup>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+         <mn>2</mn>
+       </msup>
+     </mrow>
+     <mo form="infix">&minus;</mo>
+     <mn>6</mn>
+   </math>
+End of test
+
+Test ID     227c
+Comment     should group
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="false">(</mo>
+       <mrow>
+         <mn>8</mn>
+         <mo form="infix">&minus;</mo>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="false">(</mo>
+           <mrow>
+             <mn>7</mn>
+             <mo form="infix">&minus;</mo>
+             <mn>6</mn>
+           </mrow>
+           <mo form="postfix" fence="true" stretchy="false">)</mo>
+         </mrow>
+       </mrow>
+       <mo form="postfix" fence="true" stretchy="false">)</mo>
+     </mrow>
+   </math>
+End of test
+
+Test ID     227di
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="false">(</mo>
+       <mrow>
+         <mn>8</mn>
+         <mo form="infix">&minus;</mo>
+         <msup>
+           <mrow>
+             <mo form="prefix" fence="true" stretchy="false">(</mo>
+             <mrow>
+               <mn>7</mn>
+               <mo form="infix">&minus;</mo>
+               <mn>6</mn>
+             </mrow>
+             <mo form="postfix" fence="true" stretchy="false">)</mo>
+           </mrow>
+           <mn>2</mn>
+         </msup>
+       </mrow>
+       <mo form="postfix" fence="true" stretchy="false">)</mo>
+     </mrow>
+   </math>
+End of test
+
+Test ID     227dii
+Comment     should bind fences, exponents
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="false">(</mo>
+       <mrow>
+         <mn>8</mn>
+         <mo form="infix">&minus;</mo>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="false">(</mo>
+           <mrow>
+             <mn>7</mn>
+             <mo form="infix">&minus;</mo>
+             <mn>6</mn>
+           </mrow>
+           <msup>
+             <mo form="postfix" fence="true" stretchy="false">)</mo>
+             <mn>2</mn>
+           </msup>
+         </mrow>
+       </mrow>
+       <mo form="postfix" fence="true" stretchy="false">)</mo>
+     </mrow>
+   </math>
+End of test
+
+Test ID     227ei
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <msup>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mrow>
+           <mn>8</mn>
+           <mo form="infix">&minus;</mo>
+           <mrow>
+             <mo form="prefix" fence="true" stretchy="false">(</mo>
+             <mrow>
+               <mn>7</mn>
+               <mo form="infix">&minus;</mo>
+               <mn>6</mn>
+             </mrow>
+             <mo form="postfix" fence="true" stretchy="false">)</mo>
+           </mrow>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+       <mn>2</mn>
+     </msup>
+   </math>
+End of test
+
+Test ID     227eii
+Comment     should bind fences, exponents
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="false">(</mo>
+       <mrow>
+         <mn>8</mn>
+         <mo form="infix">&minus;</mo>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="false">(</mo>
+           <mrow>
+             <mn>7</mn>
+             <mo form="infix">&minus;</mo>
+             <mn>6</mn>
+           </mrow>
+           <mo form="postfix" fence="true" stretchy="false">)</mo>
+         </mrow>
+       </mrow>
+       <msup>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+         <mn>2</mn>
+       </msup>
+     </mrow>
+   </math>
+End of test
+
+Test ID     228a
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="false">(</mo>
+       <mrow>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="false">(</mo>
+           <mrow>
+             <mn>8</mn>
+             <mo form="infix">&minus;</mo>
+             <mn>7</mn>
+           </mrow>
+           <mo form="postfix" fence="true" stretchy="false">)</mo>
+         </mrow>
+         <mo form="infix">&minus;</mo>
+         <mn>6</mn>
+       </mrow>
+       <mo form="postfix" fence="true" stretchy="false">)</mo>
+     </mrow>
+   </math>
+End of test
+
+Test ID     228bi
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="false">(</mo>
+       <mrow>
+         <msup>
+           <mrow>
+             <mo form="prefix" fence="true" stretchy="false">(</mo>
+             <mrow>
+               <mn>8</mn>
+               <mo form="infix">&minus;</mo>
+               <mn>7</mn>
+             </mrow>
+             <mo form="postfix" fence="true" stretchy="false">)</mo>
+           </mrow>
+           <mn>2</mn>
+         </msup>
+         <mo form="infix">&minus;</mo>
+         <mn>6</mn>
+       </mrow>
+       <mo form="postfix" fence="true" stretchy="false">)</mo>
+     </mrow>
+   </math>
+End of test
+
+Test ID     228bii
+Comment     should bind fences, exponents
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="false">(</mo>
+       <mrow>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="false">(</mo>
+           <mrow>
+             <mn>8</mn>
+             <mo form="infix">&minus;</mo>
+             <mn>7</mn>
+           </mrow>
+           <msup>
+             <mo form="postfix" fence="true" stretchy="false">)</mo>
+             <mn>2</mn>
+           </msup>
+         </mrow>
+         <mo form="infix">&minus;</mo>
+         <mn>6</mn>
+       </mrow>
+       <mo form="postfix" fence="true" stretchy="false">)</mo>
+     </mrow>
+   </math>
+End of test
+
+Test ID     228ci
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <msup>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mrow>
+           <mrow>
+             <mo form="prefix" fence="true" stretchy="false">(</mo>
+             <mrow>
+               <mn>8</mn>
+               <mo form="infix">&minus;</mo>
+               <mn>7</mn>
+             </mrow>
+             <mo form="postfix" fence="true" stretchy="false">)</mo>
+           </mrow>
+           <mo form="infix">&minus;</mo>
+           <mn>6</mn>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+       <mn>2</mn>
+     </msup>
+   </math>
+End of test
+
+Test ID     228cii
+Comment     should bind fences, exponents
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="false">(</mo>
+       <mrow>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="false">(</mo>
+           <mrow>
+             <mn>8</mn>
+             <mo form="infix">&minus;</mo>
+             <mn>7</mn>
+           </mrow>
+           <mo form="postfix" fence="true" stretchy="false">)</mo>
+         </mrow>
+         <mo form="infix">&minus;</mo>
+         <mn>6</mn>
+       </mrow>
+       <msup>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+         <mn>2</mn>
+       </msup>
+     </mrow>
+   </math>
+End of test
+
+Test ID     251
+Comment     should insert ApplyFunction, bind args
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msup>
+       <mi mathcolor="gray">sin</mi>
+       <mrow>
+         <mo form="prefix">&minus;</mo>
+         <mn>1</mn>
+       </mrow>
+     </msup>
+     <mo>&ApplyFunction;</mo>
+     <mi>y</mi>
+   </math>
+End of test
+
+Test ID     260
+Comment     should deal with fence
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msub>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+         <mtable align="axis">
+           <mtr>
+             <mtd>
+               <mn>1</mn>
+             </mtd>
+             <mtd>
+               <mn>2</mn>
+             </mtd>
+           </mtr>
+           <mtr>
+             <mtd>
+               <mn>3</mn>
+             </mtd>
+             <mtd>
+               <mn>4</mn>
+             </mtd>
+           </mtr>
+         </mtable>
+         <mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+       </mrow>
+       <mn>2</mn>
+     </msub>
+   </math>
+End of test
+
+Test ID     261
+Comment     should deal with fence, exponent
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msubsup>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+         <mtable align="axis">
+           <mtr>
+             <mtd>
+               <mn>1</mn>
+             </mtd>
+             <mtd>
+               <mn>2</mn>
+             </mtd>
+           </mtr>
+           <mtr>
+             <mtd>
+               <mn>3</mn>
+             </mtd>
+             <mtd>
+               <mn>4</mn>
+             </mtd>
+           </mtr>
+         </mtable>
+         <mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+       </mrow>
+       <mn>1</mn>
+       <mn>2</mn>
+     </msubsup>
+   </math>
+End of test
+
+Test ID     262
+Comment     should deal with fence, exponent
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msubsup>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+         <mtable align="axis">
+           <mtr>
+             <mtd>
+               <mn>1</mn>
+             </mtd>
+             <mtd>
+               <mn>2</mn>
+             </mtd>
+           </mtr>
+           <mtr>
+             <mtd>
+               <mn>3</mn>
+             </mtd>
+             <mtd>
+               <mn>4</mn>
+             </mtd>
+           </mtr>
+         </mtable>
+         <mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+       </mrow>
+       <msup>
+         <mn>1</mn>
+         <mn>2</mn>
+       </msup>
+       <msup>
+         <mn>2</mn>
+         <mn>2</mn>
+       </msup>
+     </msubsup>
+   </math>
+End of test
+
+Test ID     263
+Comment     should deal with fence
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msub>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+         <mi>x</mi>
+         <mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+       </mrow>
+       <mi>p</mi>
+     </msub>
+   </math>
+End of test
+
+Test ID     264
+Comment     should deal with fence, exponent
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msubsup>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+         <mi>x</mi>
+         <mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+       </mrow>
+       <mi>p</mi>
+       <mi>q</mi>
+     </msubsup>
+   </math>
+End of test
+
+;The above section with a little less markup
+Test ID     301
+Comment     - to &amp;minus?;
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mrow>
+       <mn>3</mn>
+       <mo>-</mo>
+       <mn>4</mn>
+     </mrow>
+   </math>
+End of test
+
+Test ID     302a
+Comment     arg has mrow
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi mathcolor="gray">sin</mi>
+     <mo>&ApplyFunction;</mo>
+     <mrow>
+       <mi>a</mi>
+       <mo form="infix">&InvisibleTimes;</mo>
+       <mi>b</mi>
+     </mrow>
+   </math>
+End of test
+
+Test ID     302b
+Comment     arg missing mrow
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi mathcolor="gray">sin</mi>
+     <mo>&ApplyFunction;</mo>
+     <mi>a</mi>
+     <mo form="infix">&InvisibleTimes;</mo>
+     <mi>b</mi>
+   </math>
+End of test
+
+Test ID     302c
+Comment     arg has mrow
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi mathcolor="gray">sin</mi>
+     <mo>&ApplyFunction;</mo>
+     <mrow>
+       <mi>a</mi>
+       <mo form="infix">/</mo>
+       <mi>b</mi>
+     </mrow>
+   </math>
+End of test
+
+Test ID     302d
+Comment     arg missing mrow
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi mathcolor="gray">sin</mi>
+     <mo>&ApplyFunction;</mo>
+     <mi>a</mi>
+     <mo form="infix">/</mo>
+     <mi>b</mi>
+   </math>
+End of test
+
+Test ID     302e
+Comment     arg has mrow
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi mathcolor="gray">sin</mi>
+     <mo>&ApplyFunction;</mo>
+     <mrow>
+       <mi>a</mi>
+       <mo form="infix">+</mo>
+       <mi>b</mi>
+     </mrow>
+   </math>
+End of test
+
+Test ID     302f
+Comment     arg missing mrow
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi mathcolor="gray">sin</mi>
+     <mo>&ApplyFunction;</mo>
+     <mi>a</mi>
+     <mo form="infix">+</mo>
+     <mi>b</mi>
+   </math>
+End of test
+
+Test ID     302g
+Comment     arg has mrow
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi mathcolor="gray">sin</mi>
+     <mo>&ApplyFunction;</mo>
+     <mrow>
+       <mi>a</mi>
+       <mo form="infix">-</mo>
+       <mi>b</mi>
+     </mrow>
+   </math>
+End of test
+
+Test ID     302h
+Comment     arg missing mrow
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi mathcolor="gray">sin</mi>
+     <mo>&ApplyFunction;</mo>
+     <mi>a</mi>
+     <mo form="infix">-</mo>
+     <mi>b</mi>
+   </math>
+End of test
+
+Test ID     303
+Comment     should build mfrac, resolve trigargs
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi mathcolor="gray">sin</mi>
+     <mo>&ApplyFunction;</mo>
+     <mi>a</mi>
+     <mo form="infix">/</mo>
+     <mi mathcolor="gray">sin</mi>
+     <mo>&ApplyFunction;</mo>
+     <mi>b</mi>
+   </math>
+End of test
+
+Test ID     307
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+         <mrow>
+           <mn>1</mn>
+           <mo form="infix">/</mo>
+           <mn>3</mn>
+         </mrow>
+         <mo>&InvisibleTimes;</mo>
+         <mi>x</mi>
+       <mo form="infix">+</mo>
+       <mn>4</mn>
+   </math>
+End of test
+
+Test ID     308
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+       <mn>1</mn>
+       <mo form="infix">/</mo>
+         <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+         <mrow>
+           <mrow>
+             <mn>3</mn>
+             <mo>&InvisibleTimes;</mo>
+             <mi>x</mi>
+           </mrow>
+           <mo form="infix">+</mo>
+           <mn>4</mn>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+   </math>
+End of test
+
+Test ID     309
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+           <mrow>
+             <mn>1</mn>
+             <mo form="infix">/</mo>
+             <mn>3</mn>
+           </mrow>
+           <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+         </mrow>
+         <mo>&InvisibleTimes;</mo>
+         <mi>x</mi>
+       <mo form="infix">+</mo>
+       <mn>4</mn>
+   </math>
+End of test
+
+Test ID     310
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mn>1</mn>
+     <mo form="infix">/</mo>
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+       <mrow>
+         <mn>3</mn>
+         <mo>&InvisibleTimes;</mo>
+         <mi>x</mi>
+       </mrow>
+       <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+     </mrow>
+     <mo form="infix">+</mo>
+     <mn>4</mn>
+   </math>
+End of test
+
+Test ID     311
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mn>1</mn>
+     <mo form="infix">/</mo>
+     <mn>3</mn>
+     <mo>&InvisibleTimes;</mo>
+     <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+     <mrow>
+       <mi>x</mi>
+       <mo form="infix">+</mo>
+       <mn>4</mn>
+     </mrow>
+     <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+   </math>
+End of test
+
+Test ID     312
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mi>x</mi>
+     <mo>&InvisibleTimes;</mo>
+     <mi>y</mi>
+     <mo form="infix">/</mo>
+     <mi>z</mi>
+   </math>
+End of test
+
+Test ID     322a
+Comment     inert
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>x</mi>
+     <mo form="infix">+</mo>
+     <mi>y</mi>
+   </math>
+End of test
+
+Test ID     322b
+Comment     outer fence removed!
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mi>x</mi>
+     <mo form="infix">+</mo>
+     <mi>y</mi>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+   </math>
+End of test
+
+Test ID     322c1i
+Comment     should build mfenced
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msup>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mrow>
+           <mi>x</mi>
+           <mo form="infix">+</mo>
+           <mi>y</mi>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+       <mn>2</mn>
+     </msup>
+   </math>
+End of test
+
+Test ID     322c1ii
+Comment     should build mfenced
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msup>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mi>x</mi>
+         <mo form="infix">+</mo>
+         <mi>y</mi>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+       <mn>2</mn>
+     </msup>
+   </math>
+End of test
+
+Test ID     322c2i
+Comment     should bind superscript, build mfenced
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mrow>
+       <mi>x</mi>
+       <mo form="infix">+</mo>
+       <mi>y</mi>
+     </mrow>
+     <msup>
+       <mo form="postfix" fence="true" stretchy="false">)</mo>
+       <mn>2</mn>
+     </msup>
+   </math>
+End of test
+
+Test ID     322c2ii
+Comment     should bind superscript, build mfenced
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mi>x</mi>
+     <mo form="infix">+</mo>
+     <mi>y</mi>
+     <msup>
+       <mo form="postfix" fence="true" stretchy="false">)</mo>
+       <mn>2</mn>
+     </msup>
+   </math>
+End of test
+
+Test ID     322d1
+Comment     should build mfenced
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msup>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mi>x</mi>
+         <mo form="infix">+</mo>
+         <mi>y</mi>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+       <mrow>
+         <mo form="prefix">&minus;</mo>
+         <mn>1</mn>
+       </mrow>
+     </msup>
+   </math>
+End of test
+
+Test ID     322d2
+Comment     should build mfenced
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mi>x</mi>
+     <mo form="infix">+</mo>
+     <mi>y</mi>
+     <msup>
+       <mo form="postfix" fence="true" stretchy="false">)</mo>
+       <mrow>
+         <mo form="prefix">&minus;</mo>
+         <mn>1</mn>
+       </mrow>
+     </msup>
+   </math>
+End of test
+
+Test ID     322e1
+Comment     should build mfenced
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msup>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mi>x</mi>
+         <mo form="infix">+</mo>
+         <mi>y</mi>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+       <mrow>
+         <mo form="prefix">&minus;</mo>
+         <mn>2</mn>
+       </mrow>
+     </msup>
+   </math>
+End of test
+
+Test ID     322e2
+Comment     should build mfenced
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mi>x</mi>
+     <mo form="infix">+</mo>
+     <mi>y</mi>
+     <msup>
+       <mo form="postfix" fence="true" stretchy="false">)</mo>
+       <mrow>
+         <mo form="prefix">&minus;</mo>
+         <mn>2</mn>
+       </mrow>
+     </msup>
+   </math>
+End of test
+
+Test ID     327a
+Comment     should group
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mrow>
+       <mn>8</mn>
+       <mo form="infix">&minus;</mo>
+       <mn>7</mn>
+     </mrow>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+     <mo form="infix">&minus;</mo>
+     <mn>6</mn>
+   </math>
+End of test
+
+Test ID     327a-
+Comment     should group
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">-</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mrow>
+       <mn>8</mn>
+       <mo form="infix">-</mo>
+       <mn>7</mn>
+     </mrow>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+     <mo form="infix">-</mo>
+     <mn>6</mn>
+   </math>
+End of test
+
+Test ID     327b1
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <msup>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mn>8</mn>
+         <mo form="infix">&minus;</mo>
+         <mn>7</mn>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+       <mn>2</mn>
+     </msup>
+     <mo form="infix">&minus;</mo>
+     <mn>6</mn>
+   </math>
+End of test
+
+Test ID     327b2
+Comment     should bind fences, exponents
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="false">(</mo>
+       <mn>8</mn>
+       <mo form="infix">&minus;</mo>
+       <mn>7</mn>
+       <msup>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+         <mn>2</mn>
+       </msup>
+     </mrow>
+     <mo form="infix">&minus;</mo>
+     <mn>6</mn>
+   </math>
+End of test
+
+Test ID     327c
+Comment     should group
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mrow>
+       <mn>8</mn>
+       <mo form="infix">&minus;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mrow>
+           <mn>7</mn>
+           <mo form="infix">&minus;</mo>
+           <mn>6</mn>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+     </mrow>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+   </math>
+End of test
+
+Test ID     327d1
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mrow>
+       <mn>8</mn>
+       <mo form="infix">&minus;</mo>
+       <msup>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="false">(</mo>
+           <mrow>
+             <mn>7</mn>
+             <mo form="infix">&minus;</mo>
+             <mn>6</mn>
+           </mrow>
+           <mo form="postfix" fence="true" stretchy="false">)</mo>
+         </mrow>
+         <mn>2</mn>
+       </msup>
+     </mrow>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+   </math>
+End of test
+
+Test ID     327d2
+Comment     should bind fences, exponent
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mrow>
+       <mn>8</mn>
+       <mo form="infix">&minus;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mrow>
+           <mn>7</mn>
+           <mo form="infix">&minus;</mo>
+           <mn>6</mn>
+         </mrow>
+         <msup>
+           <mo form="postfix" fence="true" stretchy="false">)</mo>
+           <mn>2</mn>
+         </msup>
+       </mrow>
+     </mrow>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+   </math>
+End of test
+
+Test ID     327e1
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <msup>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mn>8</mn>
+         <mo form="infix">&minus;</mo>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="false">(</mo>
+           <mrow>
+             <mn>7</mn>
+             <mo form="infix">&minus;</mo>
+             <mn>6</mn>
+           </mrow>
+           <mo form="postfix" fence="true" stretchy="false">)</mo>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+       <mn>2</mn>
+     </msup>
+   </math>
+End of test
+
+Test ID     327e2
+Comment     should bind fences, exponent
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="false">(</mo>
+       <mn>8</mn>
+       <mo form="infix">&minus;</mo>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mrow>
+           <mn>7</mn>
+           <mo form="infix">&minus;</mo>
+           <mn>6</mn>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+       <msup>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+         <mn>2</mn>
+       </msup>
+     </mrow>
+   </math>
+End of test
+
+Test ID     328a
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mrow>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mrow>
+           <mn>8</mn>
+           <mo form="infix">&minus;</mo>
+           <mn>7</mn>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+       <mo form="infix">&minus;</mo>
+       <mn>6</mn>
+     </mrow>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+   </math>
+End of test
+
+Test ID     328b1
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mrow>
+       <msup>
+         <mrow>
+           <mo form="prefix" fence="true" stretchy="false">(</mo>
+           <mrow>
+             <mn>8</mn>
+             <mo form="infix">&minus;</mo>
+             <mn>7</mn>
+           </mrow>
+           <mo form="postfix" fence="true" stretchy="false">)</mo>
+         </mrow>
+         <mn>2</mn>
+       </msup>
+       <mo form="infix">&minus;</mo>
+       <mn>6</mn>
+     </mrow>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+   </math>
+End of test
+
+Test ID     328b2
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mrow>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mrow>
+           <mn>8</mn>
+           <mo form="infix">&minus;</mo>
+           <mn>7</mn>
+         </mrow>
+         <msup>
+           <mo form="postfix" fence="true" stretchy="false">)</mo>
+           <mn>2</mn>
+         </msup>
+       </mrow>
+       <mo form="infix">&minus;</mo>
+       <mn>6</mn>
+     </mrow>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+   </math>
+End of test
+
+Test ID     328c1
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+	 <mn>9</mn>
+	 <mo form="infix">&minus;</mo>
+	 <msup>
+	   <mrow>
+		 <mo form="prefix" fence="true" stretchy="false">(</mo>
+		 <mrow>
+		   <mo form="prefix" fence="true" stretchy="false">(</mo>
+		   <mrow>
+			 <mn>8</mn>
+			 <mo form="infix">&minus;</mo>
+			 <mn>7</mn>
+		   </mrow>
+		   <mo form="postfix" fence="true" stretchy="false">)</mo>
+		 </mrow>
+		 <mo form="infix">&minus;</mo>
+		 <mn>6</mn>
+		 <mo form="postfix" fence="true" stretchy="false">)</mo>
+	   </mrow>
+	   <mn>2</mn>
+	 </msup>
+   </math>
+End of test
+
+Test ID     328c2
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+	 <mn>9</mn>
+	 <mo form="infix">&minus;</mo>
+	 <mrow>
+	   <mo form="prefix" fence="true" stretchy="false">(</mo>
+	   <mrow>
+		 <mo form="prefix" fence="true" stretchy="false">(</mo>
+		 <mrow>
+		   <mn>8</mn>
+		   <mo form="infix">&minus;</mo>
+		   <mn>7</mn>
+		 </mrow>
+		 <mo form="postfix" fence="true" stretchy="false">)</mo>
+	   </mrow>
+	   <mo form="infix">&minus;</mo>
+	   <mn>6</mn>
+	   <msup>
+		 <mo form="postfix" fence="true" stretchy="false">)</mo>
+	     <mn>2</mn>
+	   </msup>
+	 </mrow>
+   </math>
+End of test
+
+Test ID     360
+Comment     should deal with fence
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+     <mtable align="axis">
+       <mtr>
+         <mtd>
+           <mn>1</mn>
+         </mtd>
+         <mtd>
+           <mn>2</mn>
+         </mtd>
+       </mtr>
+       <mtr>
+         <mtd>
+           <mn>3</mn>
+         </mtd>
+         <mtd>
+           <mn>4</mn>
+         </mtd>
+       </mtr>
+     </mtable>
+     <msub>
+       <mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+       <mn>2</mn>
+     </msub>
+   </math>
+End of test
+
+Test ID     361
+Comment     should deal with fence, exponent
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+     <mtable align="axis">
+       <mtr>
+         <mtd>
+           <mn>1</mn>
+         </mtd>
+         <mtd>
+           <mn>2</mn>
+         </mtd>
+       </mtr>
+       <mtr>
+         <mtd>
+           <mn>3</mn>
+         </mtd>
+         <mtd>
+           <mn>4</mn>
+         </mtd>
+       </mtr>
+     </mtable>
+     <msubsup>
+       <mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+       <mn>1</mn>
+       <mn>2</mn>
+     </msubsup>
+   </math>
+End of test
+
+Test ID     362
+Comment     should deal with fence, exponent
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+     <mtable align="axis">
+       <mtr>
+         <mtd>
+           <mn>1</mn>
+         </mtd>
+         <mtd>
+           <mn>2</mn>
+         </mtd>
+       </mtr>
+       <mtr>
+         <mtd>
+           <mn>3</mn>
+         </mtd>
+         <mtd>
+           <mn>4</mn>
+         </mtd>
+       </mtr>
+     </mtable>
+     <msubsup>
+       <mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+       <msup>
+         <mn>1</mn>
+         <mn>2</mn>
+       </msup>
+       <msup>
+         <mn>2</mn>
+         <mn>2</mn>
+       </msup>
+     </msubsup>
+   </math>
+End of test
+
+Test ID     363
+Comment     should deal with fence
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+     <mi>x</mi>
+     <msub>
+       <mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+       <mi>p</mi>
+     </msub>
+   </math>
+End of test
+
+Test ID     364
+Comment     should deal with fence, exponent
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mo form="prefix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+     <mi>x</mi>
+     <msubsup>
+       <mo form="postfix" fence="true" stretchy="true" symmetric="true">&Verbar;</mo>
+       <mi>p</mi>
+       <mi>q</mi>
+     </msubsup>
+   </math>
+End of test
+
+;The above section with a little less markup
+Test ID     402a
+Comment     should bind args
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi mathcolor="gray">sin</mi>
+     <mo>&ApplyFunction;</mo>
+     <mi>a</mi>
+     <mo form="infix">&InvisibleTimes;</mo>
+     <mi>b</mi>
+   </math>
+End of test
+
+Test ID     402c
+Comment     should bind args
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi mathcolor="gray">sin</mi>
+     <mo>&ApplyFunction;</mo>
+     <mi>a</mi>
+     <mo form="infix">/</mo>
+     <mi>b</mi>
+   </math>
+End of test
+
+Test ID     402e
+Comment     should bind args
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi mathcolor="gray">sin</mi>
+     <mo>&ApplyFunction;</mo>
+     <mi>a</mi>
+     <mo form="infix">+</mo>
+     <mi>b</mi>
+   </math>
+End of test
+
+Test ID     402h
+Comment     should bind args
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi mathcolor="gray">sin</mi>
+     <mo>&ApplyFunction;</mo>
+     <mi>a</mi>
+     <mo form="infix">-</mo>
+     <mi>b</mi>
+   </math>
+End of test
+
+Test ID     403
+Comment     should build mfrac, bind args
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi mathcolor="gray">sin</mi>
+     <mi>a</mi>
+     <mo form="infix">/</mo>
+     <mi mathcolor="gray">sin</mi>
+     <mi>b</mi>
+   </math>
+End of test
+
+Test ID     407
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mn>1</mn>
+     <mo form="infix">/</mo>
+     <mn>3</mn>
+     <mo>&InvisibleTimes;</mo>
+     <mi>x</mi>
+     <mo form="infix">+</mo>
+     <mn>4</mn>
+   </math>
+End of test
+
+Test ID     408
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mn>1</mn>
+     <mo form="infix">/</mo>
+     <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+     <mrow>
+       <mn>3</mn>
+       <mo>&InvisibleTimes;</mo>
+       <mi>x</mi>
+     </mrow>
+     <mo form="infix">+</mo>
+     <mn>4</mn>
+     <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+   </math>
+End of test
+
+Test ID     409a
+Comment     should build mfrac w/ parens
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+     <mrow>
+       <mn>1</mn>
+       <mo form="infix">/</mo>
+       <mn>3</mn>
+     </mrow>
+     <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+   </math>
+End of test
+
+Test ID     409b
+Comment     should build mfrac 
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+     <mrow>
+       <mn>1</mn>
+       <mo form="infix">/</mo>
+       <mn>3</mn>
+     </mrow>
+     <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+     <mo>&InvisibleTimes;</mo>
+     <mi>x</mi>
+   </math>
+End of test
+
+Test ID     409c
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+     <mrow>
+       <mn>1</mn>
+       <mo form="infix">/</mo>
+       <mn>3</mn>
+     </mrow>
+     <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+     <mo form="infix">+</mo>
+     <mn>4</mn>
+   </math>
+End of test
+
+Test ID     409d
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+     <mrow>
+       <mn>1</mn>
+       <mo form="infix">/</mo>
+       <mn>3</mn>
+     </mrow>
+     <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+     <mo>&InvisibleTimes;</mo>
+     <mi>x</mi>
+     <mo form="infix">+</mo>
+     <mn>4</mn>
+   </math>
+End of test
+
+Test ID     410a
+Comment     should resolve binding
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mn>3</mn>
+     <mo form="infix">&InvisibleTimes;</mo>
+     <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+     <mrow>
+       <mn>1</mn>
+       <mo>+</mo>
+       <mi>2</mi>
+     </mrow>
+     <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+   </math>
+End of test
+
+Test ID     410b
+Comment     should resolve binding
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mn>3</mn>
+     <mo form="infix">&InvisibleTimes;</mo>
+     <mfenced open="(" close=")">
+       <mrow>
+         <mn>1</mn>
+         <mo>+</mo>
+         <mi>2</mi>
+       </mrow>
+     </mfenced>
+   </math>
+End of test
+
+Test ID     410c
+Comment     should resolve binding
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+     <mrow>
+       <mn>1</mn>
+       <mo>+</mo>
+       <mi>2</mi>
+     </mrow>
+     <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+     <mo form="infix">+</mo>
+     <mn>4</mn>
+   </math>
+End of test
+
+Test ID     410d
+Comment     should resolve binding
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mfenced open="(" close=")">
+       <mrow>
+         <mn>1</mn>
+         <mo>+</mo>
+         <mi>2</mi>
+       </mrow>
+     </mfenced>
+     <mo form="infix">+</mo>
+     <mn>4</mn>
+   </math>
+End of test
+
+Test ID     410e
+Comment     should resolve binding
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+     <mrow>
+       <mn>1</mn>
+     </mrow>
+     <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+     <mo form="infix">+</mo>
+     <mn>4</mn>
+   </math>
+End of test
+
+Test ID     410f
+Comment     should change to mfenced
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+     <mrow>
+       <mn>1</mn>
+     </mrow>
+     <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+   </math>
+End of test
+
+Test ID     410g
+Comment     should change to mfenced
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+     <mrow>
+       <mn>1</mn>
+       <mo>,</mo>
+       <mn>2</mn>
+       <mo>,</mo>
+       <mn>3</mn>
+     </mrow>
+     <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+   </math>
+End of test
+
+Test ID     410h
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mn>1</mn>
+     <mo form="infix">/</mo>
+     <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+     <mrow>
+       <mn>3</mn>
+       <mo>&InvisibleTimes;</mo>
+       <mi>x</mi>
+     </mrow>
+     <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+     <mo form="infix">+</mo>
+     <mn>4</mn>
+   </math>
+End of test
+
+Test ID     411
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mn>1</mn>
+     <mo form="infix">/</mo>
+     <mn>3</mn>
+     <mo>&InvisibleTimes;</mo>
+     <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+     <mi>x</mi>
+     <mo form="infix">+</mo>
+     <mn>4</mn>
+     <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+   </math>
+End of test
+
+Test ID     412
+Comment     should build mfrac and insert InvisibleTimes
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mi>x</mi>
+     <mi>y</mi>
+     <mo form="infix">/</mo>
+     <mi>z</mi>
+   </math>
+End of test
+
+Test ID     422a
+Comment     inert
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi>x</mi>
+     <mo>+</mo>
+     <mi>y</mi>
+   </math>
+End of test
+
+Test ID     422b
+Comment     outer fence removed!
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mo>(</mo>
+     <mi>x</mi>
+     <mo>+</mo>
+     <mi>y</mi>
+     <mo>)</mo>
+   </math>
+End of test
+
+Test ID     422c1
+Comment     should build mfenced
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msup>
+       <mrow>
+         <mo>(</mo>
+         <mi>x</mi>
+         <mo>+</mo>
+         <mi>y</mi>
+         <mo>)</mo>
+       </mrow>
+       <mn>2</mn>
+     </msup>
+   </math>
+End of test
+
+Test ID     422c2
+Comment     should bind superscript, build mfenced
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mo>(</mo>
+     <mi>x</mi>
+     <mo>+</mo>
+     <mi>y</mi>
+     <msup>
+       <mo>)</mo>
+       <mn>2</mn>
+     </msup>
+   </math>
+End of test
+
+Test ID     422d1
+Comment     should build mfenced
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msup>
+       <mrow>
+         <mo>(</mo>
+         <mi>x</mi>
+         <mo>+</mo>
+         <mi>y</mi>
+         <mo>)</mo>
+       </mrow>
+       <mrow>
+         <mo>&minus;</mo>
+         <mn>1</mn>
+       </mrow>
+     </msup>
+   </math>
+End of test
+
+Test ID     422d2
+Comment     should build mfenced
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mo>(</mo>
+     <mi>x</mi>
+     <mo>+</mo>
+     <mi>y</mi>
+     <msup>
+       <mo>)</mo>
+       <mrow>
+         <mo>&minus;</mo>
+         <mn>1</mn>
+       </mrow>
+     </msup>
+   </math>
+End of test
+
+Test ID     422e1
+Comment     should build mfenced
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <msup>
+       <mrow>
+         <mo>(</mo>
+         <mi>x</mi>
+         <mo>+</mo>
+         <mi>y</mi>
+         <mo>)</mo>
+       </mrow>
+       <mrow>
+         <mo>&minus;</mo>
+         <mn>2</mn>
+       </mrow>
+     </msup>
+   </math>
+End of test
+
+Test ID     422e2
+Comment     should build mfenced
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mo>(</mo>
+     <mi>x</mi>
+     <mo>+</mo>
+     <mi>y</mi>
+     <msup>
+       <mo>)</mo>
+       <mrow>
+         <mo>&minus;</mo>
+         <mn>2</mn>
+       </mrow>
+     </msup>
+   </math>
+End of test
+
+Test ID     427a
+Comment     should group
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mn>8</mn>
+     <mo form="infix">&minus;</mo>
+     <mn>7</mn>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+     <mo form="infix">&minus;</mo>
+     <mn>6</mn>
+   </math>
+End of test
+
+Test ID     427a-
+Comment     should group
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">-</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mn>8</mn>
+     <mo form="infix">-</mo>
+     <mn>7</mn>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+     <mo form="infix">-</mo>
+     <mn>6</mn>
+   </math>
+End of test
+
+Test ID     427b
+Comment     should bind fences, exponents
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mn>8</mn>
+     <mo form="infix">&minus;</mo>
+     <mn>7</mn>
+     <msup>
+       <mo form="postfix" fence="true" stretchy="false">)</mo>
+       <mn>2</mn>
+     </msup>
+     <mo form="infix">&minus;</mo>
+     <mn>6</mn>
+   </math>
+End of test
+
+Test ID     427c
+Comment     should group
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mn>8</mn>
+     <mo form="infix">&minus;</mo>
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="false">(</mo>
+       <mrow>
+         <mn>7</mn>
+         <mo form="infix">&minus;</mo>
+         <mn>6</mn>
+       </mrow>
+       <mo form="postfix" fence="true" stretchy="false">)</mo>
+     </mrow>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+   </math>
+End of test
+
+Test ID     427d1
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mn>8</mn>
+     <mo form="infix">&minus;</mo>
+     <msup>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mrow>
+           <mn>7</mn>
+           <mo form="infix">&minus;</mo>
+           <mn>6</mn>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+       <mn>2</mn>
+     </msup>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+   </math>
+End of test
+
+Test ID     427d2
+Comment     should bind fences, exponent
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mn>8</mn>
+     <mo form="infix">&minus;</mo>
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="false">(</mo>
+       <mrow>
+         <mn>7</mn>
+         <mo form="infix">&minus;</mo>
+         <mn>6</mn>
+       </mrow>
+       <msup>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+         <mn>2</mn>
+       </msup>
+     </mrow>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+   </math>
+End of test
+
+Test ID     427e1
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <msup>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mn>8</mn>
+         <mo form="infix">&minus;</mo>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mrow>
+           <mn>7</mn>
+           <mo form="infix">&minus;</mo>
+           <mn>6</mn>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+       <mn>2</mn>
+     </msup>
+   </math>
+End of test
+
+Test ID     427e2
+Comment     should bind fences, exponent
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mn>8</mn>
+     <mo form="infix">&minus;</mo>
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="false">(</mo>
+       <mrow>
+         <mn>7</mn>
+         <mo form="infix">&minus;</mo>
+         <mn>6</mn>
+       </mrow>
+       <mo form="postfix" fence="true" stretchy="false">)</mo>
+     </mrow>
+     <msup>
+       <mo form="postfix" fence="true" stretchy="false">)</mo>
+       <mn>2</mn>
+     </msup>
+   </math>
+End of test
+
+Test ID     428a
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="false">(</mo>
+       <mrow>
+         <mn>8</mn>
+         <mo form="infix">&minus;</mo>
+         <mn>7</mn>
+       </mrow>
+       <mo form="postfix" fence="true" stretchy="false">)</mo>
+     </mrow>
+     <mo form="infix">&minus;</mo>
+     <mn>6</mn>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+   </math>
+End of test
+
+Test ID     428b1
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <msup>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mrow>
+           <mn>8</mn>
+           <mo form="infix">&minus;</mo>
+           <mn>7</mn>
+         </mrow>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+       <mn>2</mn>
+     </msup>
+     <mo form="infix">&minus;</mo>
+     <mn>6</mn>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+   </math>
+End of test
+
+Test ID     428b2
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="false">(</mo>
+       <mrow>
+         <mn>8</mn>
+         <mo form="infix">&minus;</mo>
+         <mn>7</mn>
+       </mrow>
+       <msup>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+         <mn>2</mn>
+       </msup>
+     </mrow>
+     <mo form="infix">&minus;</mo>
+     <mn>6</mn>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+   </math>
+End of test
+
+Test ID     428c1
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+	 <mn>9</mn>
+	 <mo form="infix">&minus;</mo>
+	 <msup>
+	   <mrow>
+		 <mo form="prefix" fence="true" stretchy="false">(</mo>
+		 <mo form="prefix" fence="true" stretchy="false">(</mo>
+		 <mrow>
+		   <mn>8</mn>
+		   <mo form="infix">&minus;</mo>
+		   <mn>7</mn>
+		 </mrow>
+		 <mo form="postfix" fence="true" stretchy="false">)</mo>
+		 <mo form="infix">&minus;</mo>
+		 <mn>6</mn>
+		 <mo form="postfix" fence="true" stretchy="false">)</mo>
+	   </mrow>
+	   <mn>2</mn>
+	 </msup>
+   </math>
+End of test
+
+Test ID     428c2
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+	 <mn>9</mn>
+	 <mo form="infix">&minus;</mo>
+	 <mo form="prefix" fence="true" stretchy="false">(</mo>
+	 <mrow>
+	   <mo form="prefix" fence="true" stretchy="false">(</mo>
+	   <mrow>
+	     <mn>8</mn>
+		 <mo form="infix">&minus;</mo>
+		 <mn>7</mn>
+	   </mrow>
+	   <mo form="postfix" fence="true" stretchy="false">)</mo>
+	 </mrow>
+	 <mo form="infix">&minus;</mo>
+	 <mn>6</mn>
+	 <msup>
+	   <mo form="postfix" fence="true" stretchy="false">)</mo>
+	   <mn>2</mn>
+	 </msup>
+   </math>
+End of test
+
+Test ID     502a
+Comment     should bind args
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi mathcolor="gray">sin</mi>
+     <mi>a</mi>
+     <mo form="infix">&InvisibleTimes;</mo>
+     <mi>b</mi>
+   </math>
+End of test
+
+Test ID     502c
+Comment     should bind args
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi mathcolor="gray">sin</mi>
+     <mi>a</mi>
+     <mo form="infix">/</mo>
+     <mi>b</mi>
+   </math>
+End of test
+
+Test ID     502e
+Comment     should bind args
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi mathcolor="gray">sin</mi>
+     <mi>a</mi>
+     <mo form="infix">+</mo>
+     <mi>b</mi>
+   </math>
+End of test
+
+Test ID     502h
+Comment     should bind args
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi mathcolor="gray">sin</mi>
+     <mi>a</mi>
+     <mo form="infix">-</mo>
+     <mi>b</mi>
+   </math>
+End of test
+
+Test ID     503
+Comment     should build mfrac, bind args
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi mathcolor="gray">sin</mi>
+     <mi>a</mi>
+     <mo>/</mo>
+     <mi mathcolor="gray">sin</mi>
+     <mi>b</mi>
+   </math>
+End of test
+
+Test ID     507
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mn>1</mn>
+     <mo form="infix">/</mo>
+     <mn>3</mn>
+     <mi>x</mi>
+     <mo form="infix">+</mo>
+     <mn>4</mn>
+   </math>
+End of test
+
+Test ID     508
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mn>1</mn>
+     <mo form="infix">/</mo>
+     <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+     <mn>3</mn>
+     <mi>x</mi>
+     <mo form="infix">+</mo>
+     <mn>4</mn>
+     <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+   </math>
+End of test
+
+Test ID     509
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+     <mn>1</mn>
+     <mo form="infix">/</mo>
+     <mn>3</mn>
+     <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+     <mi>x</mi>
+     <mo form="infix">+</mo>
+     <mn>4</mn>
+   </math>
+End of test
+
+Test ID     510a
+Comment     should resolve binding
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mn>3</mn>
+     <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+     <mrow>
+       <mn>1</mn>
+       <mo>+</mo>
+       <mi>2</mi>
+     </mrow>
+     <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+   </math>
+End of test
+
+Test ID     510b
+Comment     should resolve binding
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mn>3</mn>
+     <mfenced open="(" close=")">
+       <mn>1</mn>
+       <mo>+</mo>
+       <mi>2</mi>
+     </mfenced>
+   </math>
+End of test
+
+Test ID     510c
+Comment     should resolve binding
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+     <mrow>
+       <mn>1</mn>
+       <mo>+</mo>
+       <mi>2</mi>
+     </mrow>
+     <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+     <mi>a</mi>
+   </math>
+End of test
+
+Test ID     510d
+Comment     should resolve binding
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mfenced open="(" close=")">
+       <mn>1</mn>
+       <mo>+</mo>
+       <mi>2</mi>
+     </mfenced>
+     <mi>a</mi>
+   </math>
+End of test
+
+Test ID     510e
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mn>1</mn>
+     <mo form="infix">/</mo>
+     <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+     <mn>3</mn>
+     <mi>x</mi>
+     <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+     <mo form="infix">+</mo>
+     <mn>4</mn>
+   </math>
+End of test
+
+Test ID     511
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mn>1</mn>
+     <mo form="infix">/</mo>
+     <mn>3</mn>
+     <mo form="prefix" fence="true" stretchy="true" symmetric="true">(</mo>
+     <mi>x</mi>
+     <mo form="infix">+</mo>
+     <mn>4</mn>
+     <mo form="postfix" fence="true" stretchy="true" symmetric="true">)</mo>
+   </math>
+End of test
+
+Test ID     512
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mi>x</mi>
+     <mi>y</mi>
+     <mo>/</mo>
+     <mi>z</mi>
+   </math>
+End of test
+
+Test ID     527c
+Comment     should group
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mn>8</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mrow>
+       <mn>7</mn>
+       <mo form="infix">&minus;</mo>
+       <mn>6</mn>
+     </mrow>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+   </math>
+End of test
+
+Test ID     527d1
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mn>8</mn>
+     <mo form="infix">&minus;</mo>
+     <msup>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mn>7</mn>
+         <mo form="infix">&minus;</mo>
+         <mn>6</mn>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+       <mn>2</mn>
+     </msup>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+   </math>
+End of test
+
+Test ID     527d2
+Comment     should bind fences, exponent
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mn>8</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mrow>
+       <mn>7</mn>
+       <mo form="infix">&minus;</mo>
+       <mn>6</mn>
+     </mrow>
+     <msup>
+       <mo form="postfix" fence="true" stretchy="false">)</mo>
+       <mn>2</mn>
+     </msup>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+   </math>
+End of test
+
+Test ID     527e1
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <msup>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mn>8</mn>
+         <mo form="infix">&minus;</mo>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mn>7</mn>
+         <mo form="infix">&minus;</mo>
+         <mn>6</mn>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+       <mn>2</mn>
+     </msup>
+   </math>
+End of test
+
+Test ID     527e2
+Comment     should bind fences, exponent
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mn>8</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mrow>
+       <mn>7</mn>
+       <mo form="infix">&minus;</mo>
+       <mn>6</mn>
+      </mrow>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+     <msup>
+       <mo form="postfix" fence="true" stretchy="false">)</mo>
+       <mn>2</mn>
+     </msup>
+   </math>
+End of test
+
+Test ID     528a
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mrow>
+       <mn>8</mn>
+       <mo form="infix">&minus;</mo>
+       <mn>7</mn>
+     </mrow>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+     <mo form="infix">&minus;</mo>
+     <mn>6</mn>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+   </math>
+End of test
+
+Test ID     528b1
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <msup>
+       <mrow>
+         <mo form="prefix" fence="true" stretchy="false">(</mo>
+         <mn>8</mn>
+         <mo form="infix">&minus;</mo>
+         <mn>7</mn>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+       </mrow>
+       <mn>2</mn>
+     </msup>
+     <mo form="infix">&minus;</mo>
+     <mn>6</mn>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+   </math>
+End of test
+
+Test ID     528b2
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mrow>
+       <mo form="prefix" fence="true" stretchy="false">(</mo>
+       <mn>8</mn>
+       <mo form="infix">&minus;</mo>
+       <mn>7</mn>
+       <msup>
+         <mo form="postfix" fence="true" stretchy="false">)</mo>
+         <mn>2</mn>
+       </msup>
+     </mrow>
+     <mo form="infix">&minus;</mo>
+     <mn>6</mn>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+   </math>
+End of test
+
+Test ID     528c1
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+	 <mn>9</mn>
+	 <mo form="infix">&minus;</mo>
+	 <msup>
+	   <mrow>
+		 <mo form="prefix" fence="true" stretchy="false">(</mo>
+		 <mo form="prefix" fence="true" stretchy="false">(</mo>
+		 <mn>8</mn>
+		 <mo form="infix">&minus;</mo>
+		 <mn>7</mn>
+		 <mo form="postfix" fence="true" stretchy="false">)</mo>
+		 <mo form="infix">&minus;</mo>
+		 <mn>6</mn>
+		 <mo form="postfix" fence="true" stretchy="false">)</mo>
+	   </mrow>
+	   <mn>2</mn>
+	 </msup>
+   </math>
+End of test
+
+Test ID     528c2
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+	 <mn>9</mn>
+	 <mo form="infix">&minus;</mo>
+	 <mo form="prefix" fence="true" stretchy="false">(</mo>
+	 <mo form="prefix" fence="true" stretchy="false">(</mo>
+	 <mrow>
+	   <mn>8</mn>
+	   <mo form="infix">&minus;</mo>
+	   <mn>7</mn>
+	 </mrow>
+	 <mo form="postfix" fence="true" stretchy="false">)</mo>
+	 <mo form="infix">&minus;</mo>
+	 <mn>6</mn>
+	 <msup>
+	   <mo form="postfix" fence="true" stretchy="false">)</mo>
+	   <mn>2</mn>
+	 </msup>
+   </math>
+End of test
+
+Test ID     602a
+Comment     should bind args
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi mathcolor="gray">sin</mi>
+     <mi>a</mi>
+     <mi>b</mi>
+   </math>
+End of test
+
+Test ID     602b
+Comment     should bind args
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi mathcolor="gray">sin</mi>
+     <mi>a</mi>
+     <mo>&times;</mo>
+     <mi>b</mi>
+   </math>
+End of test
+
+Test ID     602c
+Comment     should bind args
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi mathcolor="gray">sin</mi>
+     <mi>a</mi>
+     <mo>/</mo>
+     <mi>b</mi>
+   </math>
+End of test
+
+Test ID     602e
+Comment     should bind args
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi mathcolor="gray">sin</mi>
+     <mi>a</mi>
+     <mo>+</mo>
+     <mi>b</mi>
+   </math>
+End of test
+
+Test ID     602g
+Comment     should bind args
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi mathcolor="gray">sin</mi>
+     <mi>a</mi>
+     <mo>-</mo>
+     <mi>b</mi>
+   </math>
+End of test
+
+Test ID     602h
+Comment     should bind args
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mi mathcolor="gray">sin</mi>
+     <mi>a</mi>
+     <mo>&minus;</mo>
+     <mi>b</mi>
+   </math>
+End of test
+
+Test ID     607
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mn>1</mn>
+     <mo>/</mo>
+     <mn>3</mn>
+     <mi>x</mi>
+     <mo>+</mo>
+     <mn>4</mn>
+   </math>
+End of test
+
+Test ID     608
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mn>1</mn>
+     <mo>/</mo>
+     <mo>(</mo>
+     <mn>3</mn>
+     <mi>x</mi>
+     <mo>+</mo>
+     <mn>4</mn>
+     <mo>)</mo>
+   </math>
+End of test
+
+Test ID     609
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo>(</mo>
+     <mn>1</mn>
+     <mo>/</mo>
+     <mn>3</mn>
+     <mo>)</mo>
+     <mi>x</mi>
+     <mo>+</mo>
+     <mn>4</mn>
+   </math>
+End of test
+
+Test ID     610
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mn>1</mn>
+     <mo>/</mo>
+     <mo>(</mo>
+     <mn>3</mn>
+     <mi>x</mi>
+     <mo>)</mo>
+     <mo>+</mo>
+     <mn>4</mn>
+   </math>
+End of test
+
+Test ID     611
+Comment     should build mfrac
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mn>1</mn>
+     <mo>/</mo>
+     <mn>3</mn>
+     <mo>(</mo>
+     <mi>x</mi>
+     <mo>+</mo>
+     <mn>4</mn>
+     <mo>)</mo>
+   </math>
+End of test
+
+Test ID     627c
+Comment     should group
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mn>8</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mn>7</mn>
+     <mo form="infix">&minus;</mo>
+     <mn>6</mn>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+   </math>
+End of test
+
+Test ID     627d2
+Comment     should bind fences, exponent
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mn>8</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mn>7</mn>
+     <mo form="infix">&minus;</mo>
+     <mn>6</mn>
+     <msup>
+       <mo form="postfix" fence="true" stretchy="false">)</mo>
+       <mn>2</mn>
+     </msup>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+   </math>
+End of test
+
+Test ID     627e2
+Comment     should bind fences, exponent
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mn>8</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mn>7</mn>
+     <mo form="infix">&minus;</mo>
+     <mn>6</mn>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+     <msup>
+       <mo form="postfix" fence="true" stretchy="false">)</mo>
+       <mn>2</mn>
+     </msup>
+   </math>
+End of test
+
+Test ID     628a
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mn>8</mn>
+     <mo form="infix">&minus;</mo>
+     <mn>7</mn>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+     <mo form="infix">&minus;</mo>
+     <mn>6</mn>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+   </math>
+End of test
+
+Test ID     628b2
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+     <mn>9</mn>
+     <mo form="infix">&minus;</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mo form="prefix" fence="true" stretchy="false">(</mo>
+     <mn>8</mn>
+     <mo form="infix">&minus;</mo>
+     <mn>7</mn>
+     <msup>
+       <mo form="postfix" fence="true" stretchy="false">)</mo>
+       <mn>2</mn>
+     </msup>
+     <mo form="infix">&minus;</mo>
+     <mn>6</mn>
+     <mo form="postfix" fence="true" stretchy="false">)</mo>
+   </math>
+End of test
+
+Test ID     628c2
+Comment     should bind fences
+Client ID   1
+Engine      MuPAD
+Command ID	Interpret
+   <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline">
+	 <mn>9</mn>
+	 <mo form="infix">&minus;</mo>
+	 <mo form="prefix" fence="true" stretchy="false">(</mo>
+	 <mo form="prefix" fence="true" stretchy="false">(</mo>
+	 <mn>8</mn>
+	 <mo form="infix">&minus;</mo>
+	 <mn>7</mn>
+	 <mo form="postfix" fence="true" stretchy="false">)</mo>
+	 <mo form="infix">&minus;</mo>
+	 <mn>6</mn>
+	 <msup>
+	   <mo form="postfix" fence="true" stretchy="false">)</mo>
+	   <mn>2</mn>
+	 </msup>
+   </math>
+End of test
+
+;;;;;;;;;;;;;;;;;;;;;;;; robustness testing
+
+Test ID     10001
+Comment     nonsense ... gigo (but preserve it!)
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo>(</mo>
+     <mn>2</mn>
+     <mo>(</mo>
+     <mo>)</mo>
+   </math>
+End of test
+
+Test ID     10002
+Comment     nonsense ... gigo (but preserve it!)
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo>[</mo>
+     <mn>2</mn>
+     <mo>[</mo>
+     <mo>]</mo>
+   </math>
+End of test
+
+Test ID     10003
+Comment     nonsense ... gigo (but preserve it!)
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo>{</mo>
+     <mn>2</mn>
+     <mo>{</mo>
+     <mo>}</mo>
+   </math>
+End of test
+
+Test ID     10004
+Comment     nonsense ... gigo (but preserve it!)
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo>(</mo>
+     <mn>2</mn>
+     <mo>)</mo>
+     <mo>)</mo>
+   </math>
+End of test
+
+Test ID     10005
+Comment     nonsense ... gigo (but preserve it!)
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo>[</mo>
+     <mn>2</mn>
+     <mo>]</mo>
+     <mo>]</mo>
+   </math>
+End of test
+
+Test ID     10006
+Comment     nonsense ... gigo (but preserve it!)
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo>{</mo>
+     <mn>2</mn>
+     <mo>}</mo>
+     <mo>}</mo>
+   </math>
+End of test
+
+Test ID     10011
+Comment     nonsense ... gigo (but preserve it!)
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <msup>
+       <mo>(</mo>
+       <mn>2</mn>
+     </msup>
+   </math>
+End of test
+
+Test ID     10012
+Comment     nonsense ... gigo (but preserve it!)
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <msup>
+       <mn>2</mn>
+       <mo>(</mo>
+     </msup>
+   </math>
+End of test
+
+Test ID     10013
+Comment     nonsense ... gigo (but preserve it!)
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <msup>
+       <mo>)</mo>
+       <mn>2</mn>
+     </msup>
+   </math>
+End of test
+
+Test ID     10014
+Comment     nonsense ... gigo (but preserve it!)
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <msup>
+       <mn>2</mn>
+       <mo>)</mo>
+     </msup>
+   </math>
+End of test
+
+Test ID     10015
+Comment     nonsense ... gigo (but preserve it!)
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <msup>
+       <mo>(</mo>
+       <mo>)</mo>
+     </msup>
+   </math>
+End of test
+
+Test ID     10016
+Comment     nonsense ... gigo (but preserve it!)
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <msubsup>
+       <mn>2</mn>
+       <mo>(</mo>
+       <mo>)</mo>
+     </msubsup>
+   </math>
+End of test
+
+Test ID     10017
+Comment     nonsense ... gigo (but preserve it!)
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <msubsup>
+       <mo>(</mo>
+       <mn>2</mn>
+       <mo>)</mo>
+     </msubsup>
+   </math>
+End of test
+
+Test ID     10018
+Comment     nonsense ... gigo (but preserve it!)
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <msup>
+       <mo>{</mo>
+       <mo>}</mo>
+     </msup>
+   </math>
+End of test
+
+Test ID     10019
+Comment     nonsense ... gigo (but preserve it!)
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <msubsup>
+       <mn>2</mn>
+       <mo>[</mo>
+       <mo>]</mo>
+     </msubsup>
+   </math>
+End of test
+
+Test ID     10020
+Comment     trivial
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <msqrt></msqrt>
+   </math>
+End of test
+
+Test ID     10021
+Comment     trivial
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mroot>
+       <msqrt></msqrt>
+       <msqrt></msqrt>
+     </mroot>
+   </math>
+End of test
+
+Test ID     10022
+Comment     trivial
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <msqrt>
+       <mroot>
+         <msqrt></msqrt>
+         <msqrt></msqrt>
+       </mroot>
+     </msqrt>
+   </math>
+End of test
+
+Test ID     10023
+Comment     trivial
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mtable>
+       <mtr>
+         <mtd><mn>1</mn></mtd>
+         <mtd><mn>2</mn></mtd>
+       </mtr>
+       <mtr>
+         <mtd><mn>3</mn></mtd>
+       </mtr>
+     </mtable>
+   </math>
+End of test
+
+Test ID     10024
+Comment     trivial
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mroot>
+       <mo>+</mo>
+       <mo>*</mo>
+     </mroot>
+   </math>
+End of test
+
+Test ID     10030
+Comment     trivial
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mi>a</mi>
+     <mo>+</mo>
+   </math>
+End of test
+
+Test ID     10031
+Comment     trivial
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo>*</mo>
+     <mi>a</mi>
+   </math>
+End of test
+
+Test ID     10032
+Comment     trivial
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mo>/</mo>
+     <mn>3</mn>
+   </math>
+End of test
+
+Test ID     10033
+Comment     trivial
+Client ID   1
+Engine      MuPAD
+Command ID	Fixup
+   <math xmlns="http://www.w3.org/1998/Math/MathML">
+     <mi>a</mi>
+     <mo>+</mo>
+     <mo>-</mo>
+     <mo>&times;</mo>
+     <mo>&divide;</mo>
+     <mi>b</mi>
+   </math>
+End of test
+
