@@ -32,6 +32,6 @@
 <!ENTITY typesetDiscardAtLineEnd.label "Discard at line end">
 <!ENTITY typesetDiscardAtLineEnd.accesskey "e">
 <!ENTITY typesetAlways.label "Always">
-<!ENTITY typesetAlways.accesskey "A">
+<!ENTITY typesetAlways.accesskey "w">
 
 <!-- <!ENTITY .tooltip "">  -->
