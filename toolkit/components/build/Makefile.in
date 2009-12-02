@@ -103,6 +103,10 @@ LOCAL_INCLUDES = \
 	-I$(srcdir)/../url-classifier/src \
 	-I$(srcdir)/../feeds/src \
 	-I$(srcdir)/../Compute/src \
+	-I$(srcdir)/../Compute/Engines/MuPAD \
+	-I$(srcdir)/../Compute/Engines \
+	-I$(srcdir)/../Compute/public \
+    -I$(srcdir)/../Compute/computelib \
 	-I$(srcdir)/../Wrappers/src \
 	-I$(srcdir)/../autosub/src \
 	-I$(srcdir)/../keymap/src \

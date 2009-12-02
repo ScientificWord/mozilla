@@ -2,6 +2,7 @@
 #include "strutils.h"
 #include "CmpTypes.h"
 #include "dumputils.h"
+#include "stdio.h"
 #include <cstring>
 
 
