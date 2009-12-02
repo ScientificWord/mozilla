@@ -99,8 +99,8 @@ ifdef MOZ_XUL
 DIRS += \
 	autocomplete \
 	autosub \
-	compute \
-	wrappers \
+	Compute \
+	Wrappers \
 	keymap \
 	scriptrunner \
 	arrowstate \
