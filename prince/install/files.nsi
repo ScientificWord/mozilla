@@ -2,7 +2,7 @@ File ${srcdir}\*.cmd
 File ${srcdir}\*.dll
 File ${srcdir}\*.gmr
 File ${srcdir}\*.mu
-File ${srcdir}\*.m
+;File ${srcdir}\*.m
 File ${srcdir}\Query.exe
 File ${srcdir}\Transform.exe
 File ${srcdir}\pretex.exe
