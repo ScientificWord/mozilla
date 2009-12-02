@@ -10,12 +10,12 @@ include $(DEPTH)/config/autoconf.mk
 
 ifneq ($(OS_ARCH),WINNT)
 # ie gcc
-CPPEXTRAARGS = -x c
+CPPEXTRAARGS = -x c	
 endif
 
 %.gmr: %.gmx
 	echo Building $*.gmr
-	$(CPP) $(CPPEXTRAARGS) $(_VPATH_SRCS)  | sed "/^$$/d" | sed "/^#.*$$/d" > $*.gmr
+	$(CPP) $(CPPEXTRAARGS) -I$(srcdir)/../public $(_VPATH_SRCS)  | sed "/^$$/d" | sed "/^#.*$$/d" > $*.gmr
 
 MODULE = compute
 LIBRARY_NAME = enginelib_s
@@ -72,4 +72,4 @@ GMR_FILES := \
 include $(topsrcdir)/config/rules.mk
 
 export:: $(GMR_FILES)
-	$(INSTALL) -I$(srcdir)/../public $(GMR_FILES) $(FINAL_TARGET)
+	$(INSTALL)  $(GMR_FILES) $(FINAL_TARGET)
