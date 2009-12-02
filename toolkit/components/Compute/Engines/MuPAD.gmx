@@ -1,6 +1,6 @@
 ;; MuPAD commands  -- edit only the .gmx file (and possibly iCmpIDs.h)
 
-#include "../computelib/iCmpIDs.h"
+#include "iCmpIDs.h"
 
 <START_CONTEXT_RESET>
 ;SetSeriesOrder 1..1000
