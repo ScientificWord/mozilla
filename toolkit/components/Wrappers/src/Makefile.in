@@ -1,3 +1,4 @@
+
 # Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 
 DEPTH		= ../../../..
@@ -53,12 +54,12 @@ LOCAL_INCLUDES = -I$(srcdir)/../computelib \
                  -I$(srcdir)/../libtci \
                  -I$(srcdir)/../Engines \
                  -I$(srcdir)/../public \
-				 -I$(srcdir)/../../compute/Engines/MuPAD \
-				 -I$(srcdir)/../../compute/Engines \
-				 -I$(srcdir)/../../compute/public \
-				 -I$(srcdir)/../../compute/computelib \
-				 -I$(DIST)/include/wrapper \
-				 $(NULL)
+		 -I$(srcdir)/../../Compute/Engines/MuPAD \
+		 -I$(srcdir)/../../Compute/Engines \
+		 -I$(srcdir)/../../Compute/public \
+		 -I$(srcdir)/../../Compute/computelib \
+		 -I$(DIST)/include/wrapper \
+		 $(NULL)
 
 
                  
