@@ -10,7 +10,7 @@ include $(DEPTH)/config/autoconf.mk
 
 ifneq ($(OS_ARCH),WINNT)
 # ie gcc
-CPPEXTRAARGS = -x c	
+CPPEXTRAARGS = -x c
 endif
 
 %.gmr: %.gmx
