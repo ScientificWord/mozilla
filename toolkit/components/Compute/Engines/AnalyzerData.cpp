@@ -6,7 +6,7 @@
 #include "DefInfo.h"
 #include "DefStore.h"
 #include "strutils.h"
-
+#include <cstring>
 
 char* GetCanonicalIDforMathNode(const MNODE* mml_node, const Grammar* mml_entities);
 
