@@ -128,7 +128,6 @@ ifdef MOZ_MSI_PRINCE
 SHARED_LIBRARY_LIBS += \
 	../autosub/src/$(LIB_PREFIX)tkautosub.$(LIB_SUFFIX) \
 	../Compute/src/$(LIB_PREFIX)simplecomputeengine.$(LIB_SUFFIX) \
-	$(srcdir)/../Compute/MuPAD/win32/mupkernel.$(LIB_SUFFIX) \
 	../Wrappers/src/$(LIB_PREFIX)wrappers.$(LIB_SUFFIX) \
 	../keymap/src/$(LIB_PREFIX)keymap.$(LIB_SUFFIX) \
 	../arrowstate/src/$(LIB_PREFIX)arrowstate.$(LIB_SUFFIX) \
@@ -138,6 +137,15 @@ SHARED_LIBRARY_LIBS += \
 	$(DIST)/lib/$(LIB_PREFIX)MuPWrapperDLL_s.$(LIB_SUFFIX) \
 	$(NULL)
 endif
+
+ifeq ($(OS_ARCH),WINNT)
+SHARED_LIBRARY_LIBS += 	$(srcdir)/../Compute/MuPAD/win32/$(LIBPREFIX)mupkernel.$(LIB_SUFFIX)
+endif
+
+ifeq ($(OS_ARCH),Linux)
+SHARED_LIBRARY_LIBS += 	$(srcdir)/../Compute/MuPAD/linux/$(LIBPREFIX)mupudskernel.$(LIB_SUFFIX) 
+endif
+
 
 
 
