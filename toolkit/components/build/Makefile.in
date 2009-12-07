@@ -139,11 +139,11 @@ SHARED_LIBRARY_LIBS += \
 endif
 
 ifeq ($(OS_ARCH),WINNT)
-SHARED_LIBRARY_LIBS += 	$(srcdir)/../Compute/MuPAD/win32/$(LIBPREFIX)mupkernel.$(LIB_SUFFIX)
+SHARED_LIBRARY_LIBS += 	$(srcdir)/../Compute/MuPAD/win32/$(LIB_PREFIX)mupkernel.$(LIB_SUFFIX)
 endif
 
 ifeq ($(OS_ARCH),Linux)
-SHARED_LIBRARY_LIBS += 	$(srcdir)/../Compute/MuPAD/linux/$(LIBPREFIX)mupudskernel.$(LIB_SUFFIX) 
+SHARED_LIBRARY_LIBS += 	$(srcdir)/../Compute/MuPAD/linux/$(LIB_PREFIX)mupudskernel.$(LIB_SUFFIX) 
 endif
 
 
