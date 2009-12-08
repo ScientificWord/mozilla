@@ -17,11 +17,15 @@ separators are specified in attributes.  Defaults are ( and ) and ,
 <!-- WARNING: translations of mfenced and mfrac are inter-related. -->
 
   <xsl:template match="mml:mfenced">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
 <!-- Variable to examine the content of mfenced.
   If the content is a single mml:mfrac and the delimiters can be built
   into a LaTeX fraction, the mfenced has no direct translation.
-  It will be handleded by the mml:mfrac template in it's contents.
+  It will be handled by the mml:mfrac template in it's contents.
 -->
 
     <xsl:variable name="mfenced-content.tr">
@@ -55,7 +59,7 @@ separators are specified in attributes.  Defaults are ( and ) and ,
         </xsl:choose>
       </right-can-be-absorbed>
     </xsl:variable>
-    <xsl:variable name="mfenced-content" select="$mfenced-content.tr"/>
+    <xsl:variable name="mfenced-content" select="exsl:node-set($mfenced-content.tr)"/>
 
 
     <xsl:choose>
@@ -126,6 +130,10 @@ separators are specified in attributes.  Defaults are ( and ) and ,
 
 
   <xsl:template match="mml:mfenced" mode="in-text">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:text>$</xsl:text>
     <xsl:apply-templates select="."/>
     <xsl:text>$</xsl:text>
@@ -145,6 +153,10 @@ separators are specified in attributes.  Defaults are ( and ) and ,
   <xsl:template name="do-delimiter">
     <xsl:param name="is-left"/>
     <xsl:param name="mml-delim-str"/>
+  
+#ifdef DEBUG
+    <xsl:message>do-delimiter: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
 	<xsl:choose>
       <xsl:when test="$mml-delim-str='('">
@@ -241,6 +253,10 @@ separators are specified in attributes.  Defaults are ( and ) and ,
   <xsl:template name="do-fence-delim">
     <xsl:param name="is-left"/>
     <xsl:param name="delimiting-attr-val"/>
+  
+#ifdef DEBUG
+    <xsl:message>do-fence-delim: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
 <!-- Note that the call to "do-delimiter" that follows
       always scripts a LaTeX fence symbol.  -->
@@ -268,6 +284,10 @@ separators are specified in attributes.  Defaults are ( and ) and ,
     <xsl:param name="item-tally"/>
     <xsl:param name="item-number"/>
     <xsl:param name="separator-list"/>
+  
+#ifdef DEBUG
+    <xsl:message>do-fenced-items: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:apply-templates select="*[position()=$item-number]"/>
 

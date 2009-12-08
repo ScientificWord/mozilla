@@ -42,6 +42,10 @@ fontstyle   - inheriting
 -->
 
   <xsl:template match="mml:mtext">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:variable name="LaTeX-contents">
       <xsl:call-template name="do-chars-in-TEXT">
@@ -146,6 +150,10 @@ fontstyle   - inheriting
 
 
   <xsl:template match="mml:mtext" mode="in-text">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:variable name="LaTeX-contents">
       <xsl:call-template name="do-chars-in-TEXT">
@@ -242,6 +250,10 @@ fontstyle   - inheriting
 <!-- LaTeX text can be bold, italic, etc.  -->
 
   <xsl:template name="get-LaTeX-style-from-mathvariant">
+  
+#ifdef DEBUG
+    <xsl:message>get-LaTeX-style-from-mathvariant: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:choose>
 
