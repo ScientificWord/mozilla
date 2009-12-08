@@ -42,6 +42,10 @@ after \allowbreak.  More \LBo's can be scripted as needed.
 **************************************************************************** -->
 
   <xsl:template match="comment()">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     
     <xsl:choose>
       <xsl:when test="contains(string(.),'MSICOMMENTLINE:')">
@@ -57,11 +61,15 @@ after \allowbreak.  More \LBo's can be scripted as needed.
 
 
   <xsl:template match="msi:p">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:variable name="psuedo-LaTeX.tr">
       <xsl:apply-templates/>
     </xsl:variable>
-    <xsl:variable name="psuedo-LaTeX" select="$psuedo-LaTeX.tr"/>
+    <xsl:variable name="psuedo-LaTeX" select="$exsl:node-set(psuedo-LaTeX.tr)"/>
 
 <!-- The children of "psuedo-LaTeX" are mixture of generic text nodes, 
      <comment-line> and <stream-with-break-tokens> nodes.
@@ -232,6 +240,10 @@ after \allowbreak.  More \LBo's can be scripted as needed.
 
   <xsl:template name="break-next-LaTeX-frag">
     <xsl:param name="remainder-from-last-node"/>
+  
+#ifdef DEBUG
+    <xsl:message>break-next-LaTeX-frag: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
 <!-- Get the LaTeX string for the current node in the text-math list -->
 
@@ -328,6 +340,10 @@ after \allowbreak.  More \LBo's can be scripted as needed.
     <xsl:param name="left-overs"/>
     <xsl:param name="curr-LaTeX-frag"/>
     <xsl:param name="next-is-math"/>
+  
+#ifdef DEBUG
+    <xsl:message>make-lines: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:choose>
 <!-- Break MATH and form lines -->
@@ -344,7 +360,7 @@ after \allowbreak.  More \LBo's can be scripted as needed.
             <xsl:with-param name="LaTeX-run" select="$curr-LaTeX-frag"/>
           </xsl:call-template>
         </xsl:variable>
-        <xsl:variable name="math-atom-list" select="$math-atom-list.tr"/>
+        <xsl:variable name="math-atom-list" select="exsl:node-set($math-atom-list.tr)"/>
 
 <!-- Initiate a series of recursive calls to catenate
       the contents of the <math-atom> nodes in our list. -->
@@ -455,6 +471,10 @@ after \allowbreak.  More \LBo's can be scripted as needed.
 
   <xsl:template name="join-words">
     <xsl:param name="line-so-far"/>
+  
+#ifdef DEBUG
+    <xsl:message>join-words: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:variable name="join-char">
     <xsl:choose>
@@ -514,6 +534,10 @@ after \allowbreak.  More \LBo's can be scripted as needed.
 
   <xsl:template name="make-words">
     <xsl:param name="LaTeX-run"/>
+  
+#ifdef DEBUG
+    <xsl:message>make-words: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:choose>
       <xsl:when test="contains($LaTeX-run,' ')">
@@ -549,6 +573,10 @@ after \allowbreak.  More \LBo's can be scripted as needed.
 
   <xsl:template name="join-math-atoms">
     <xsl:param name="line-so-far"/>
+  
+#ifdef DEBUG
+    <xsl:message>join-math-atoms: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:variable name="line-after-join">
       <xsl:choose>
@@ -617,7 +645,10 @@ after \allowbreak.  More \LBo's can be scripted as needed.
 
   <xsl:template name="make-math-atoms">
     <xsl:param name="LaTeX-run"/>
-
+  
+#ifdef DEBUG
+    <xsl:message>make-math-atoms: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:choose>
       <xsl:when test="contains($LaTeX-run,'\LB')">
 
@@ -672,6 +703,10 @@ after \allowbreak.  More \LBo's can be scripted as needed.
 <!-- ENTITY % ul "(li)+" -->
 
   <xsl:template match="msi:ul">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:text xml:space="preserve">\begin{itemize}&lt;EOLN/&gt;</xsl:text>
     <xsl:apply-templates/>
     <xsl:text xml:space="preserve">\end{itemize}&lt;EOLN/&gt;</xsl:text>
@@ -682,6 +717,10 @@ after \allowbreak.  More \LBo's can be scripted as needed.
 
 <!-- ENTITY % ol "(li)+" -->
   <xsl:template match="msi:ol">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:text xml:space="preserve">\begin{enumerate}&lt;EOLN/&gt;</xsl:text>
     <xsl:apply-templates/>
     <xsl:text xml:space="preserve">\end{enumerate}&lt;EOLN/&gt;</xsl:text>
@@ -692,6 +731,10 @@ after \allowbreak.  More \LBo's can be scripted as needed.
 
 <!-- ENTITY % li "(p)+" -->
   <xsl:template match="msi:li">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:text xml:space="preserve">\item </xsl:text>
     <xsl:apply-templates/>
   </xsl:template>
@@ -699,6 +742,10 @@ after \allowbreak.  More \LBo's can be scripted as needed.
 
 <!-- ENTITY % dl "(dt*, dd)+" -->
   <xsl:template match="msi:dl">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:text xml:space="preserve">\begin{description}&lt;EOLN/&gt;</xsl:text>
     <xsl:apply-templates/>
     <xsl:text xml:space="preserve">\end{description}&lt;EOLN/&gt;</xsl:text>
@@ -709,6 +756,10 @@ after \allowbreak.  More \LBo's can be scripted as needed.
 
 <!-- ENTITY % dt "(#PCDATA)" -->
   <xsl:template match="msi:dt">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:text xml:space="preserve">\item[</xsl:text>
     <xsl:apply-templates/>
     <xsl:text xml:space="preserve">] </xsl:text>
@@ -717,34 +768,58 @@ after \allowbreak.  More \LBo's can be scripted as needed.
 
 <!-- ENTITY % dd "(p)" -->
   <xsl:template match="msi:dd">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="msi:h1">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:call-template name="do-section-cmd">
       <xsl:with-param name="nom" select="@class"/>
     </xsl:call-template>
   </xsl:template>
 
   <xsl:template match="msi:h2">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:call-template name="do-section-cmd">
       <xsl:with-param name="nom" select="@class"/>
     </xsl:call-template>
   </xsl:template>
 
   <xsl:template match="msi:h3">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:call-template name="do-section-cmd">
       <xsl:with-param name="nom" select="@class"/>
     </xsl:call-template>
   </xsl:template>
 
   <xsl:template match="msi:h4">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:call-template name="do-section-cmd">
       <xsl:with-param name="nom" select="@class"/>
     </xsl:call-template>
   </xsl:template>
 
   <xsl:template match="msi:h5">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:call-template name="do-section-cmd">
       <xsl:with-param name="nom" select="@class"/>
     </xsl:call-template>
@@ -753,6 +828,10 @@ after \allowbreak.  More \LBo's can be scripted as needed.
 
   <xsl:template name="do-section-cmd">
     <xsl:param name="nom"/>
+  
+#ifdef DEBUG
+    <xsl:message>do-section-cmd: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:call-template name="do-text-bucket">
       <xsl:with-param name="LaTeX-run-nom" select="concat('\',$nom,'{')"/>
@@ -763,6 +842,10 @@ after \allowbreak.  More \LBo's can be scripted as needed.
 
 
   <xsl:template match="msi:em">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:call-template name="do-text-bucket">
       <xsl:with-param name="LaTeX-run-nom" select="'\emph{'"/>
     </xsl:call-template>
@@ -770,6 +853,10 @@ after \allowbreak.  More \LBo's can be scripted as needed.
 
 
   <xsl:template match="msi:strong">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:call-template name="do-text-bucket">
       <xsl:with-param name="LaTeX-run-nom" select="'\textbf{'"/>
     </xsl:call-template>
@@ -780,6 +867,10 @@ after \allowbreak.  More \LBo's can be scripted as needed.
   <xsl:template name="remove-breaking-token">
     <xsl:param name="LaTeX-zstr"/>
     <xsl:param name="token"/>
+  
+#ifdef DEBUG
+    <xsl:message>remove-breaking-token: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:choose>
       <xsl:when test="contains($LaTeX-zstr,$token)">
@@ -803,6 +894,10 @@ after \allowbreak.  More \LBo's can be scripted as needed.
 
   <xsl:template name="do-text-bucket">
     <xsl:param name="LaTeX-run-nom"/>
+  
+#ifdef DEBUG
+    <xsl:message>do-text-bucket: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:variable name="psuedo-LaTeX.tr">
       <xsl:apply-templates/>
@@ -857,6 +952,10 @@ after \allowbreak.  More \LBo's can be scripted as needed.
 <!-- a href="osc02__note.htm#Note_1" -->
 
   <xsl:template match="msi:a">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 <anchor>
     <xsl:choose>
       <xsl:when test="string-length(@ID) &gt; 0">
@@ -896,6 +995,10 @@ after \allowbreak.  More \LBo's can be scripted as needed.
 
 
   <xsl:template match="msi:span">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:choose>
       <xsl:when test="substring(@class,1,4)='QTO:'">
 <tagged-text>
@@ -1060,6 +1163,10 @@ after \allowbreak.  More \LBo's can be scripted as needed.
 The \texttt{\TEXTsymbol{\backslash}text}  ->  The <msi:code>\text</msi:code>
 -->
   <xsl:template match="msi:code">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:choose>
       <xsl:when test="@class='tt'">
 <tagged-text>
@@ -1083,12 +1190,20 @@ The \texttt{\TEXTsymbol{\backslash}text}  ->  The <msi:code>\text</msi:code>
 
 <!-- ENTITY % img "(#PCDATA)"  ATTLIST  img  src ID #IMPLIED, alt ID #IMPLIED -->
   <xsl:template match="msi:img">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
   </xsl:template>
 
 
 <!-- ENTITY % hr EMPTY  ATTLIST  hr class ID #REQUIRED -->
 
   <xsl:template match="msi:hr">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 <hr>
     <xsl:choose>
       <xsl:when test="@class='hrulefill'">
@@ -1104,6 +1219,10 @@ The \texttt{\TEXTsymbol{\backslash}text}  ->  The <msi:code>\text</msi:code>
 
 
   <xsl:template match="msi:br">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 <br>
     <xsl:text xml:space="preserve">\smallskip </xsl:text>
 </br>
@@ -1112,6 +1231,10 @@ The \texttt{\TEXTsymbol{\backslash}text}  ->  The <msi:code>\text</msi:code>
 
 
   <xsl:template match="msi:pre">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 <pre>
     <xsl:text>\begin{verbatim}</xsl:text>
       <xsl:value-of select="string(.)"/>
@@ -1123,6 +1246,10 @@ The \texttt{\TEXTsymbol{\backslash}text}  ->  The <msi:code>\text</msi:code>
 
 
   <xsl:template match="msi:div">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:if test="string-length(@class)&gt;0">
       <xsl:text>\begin{</xsl:text>
@@ -1157,6 +1284,10 @@ The \texttt{\TEXTsymbol{\backslash}text}  ->  The <msi:code>\text</msi:code>
 
 
   <xsl:template match="msi:table">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
 <stream-with-break-tokens>
 
@@ -1229,6 +1360,10 @@ The \texttt{\TEXTsymbol{\backslash}text}  ->  The <msi:code>\text</msi:code>
 
 
   <xsl:template name="column-counter">
+  
+#ifdef DEBUG
+    <xsl:message>column-counter: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:variable name="column-counts.tr">
       <xsl:for-each select="msi:thead|msi:tbody|msi:tfoot">
@@ -1264,6 +1399,10 @@ The \texttt{\TEXTsymbol{\backslash}text}  ->  The <msi:code>\text</msi:code>
   <xsl:template name="do-table-block">
     <xsl:param name="rows-done"/>
     <xsl:param name="nrows-in-table"/>
+  
+#ifdef DEBUG
+    <xsl:message>do-table-block: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:if test="self::msi:thead|self::msi:tbody|self::msi:tfoot">
 

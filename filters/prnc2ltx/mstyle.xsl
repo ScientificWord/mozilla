@@ -72,6 +72,10 @@ veryverythickmathspace  number h-unit                      0.388889em
 -->
 
   <xsl:template match="mml:mstyle">
+  
+#ifdef DEBUG
+    <xsl:message>1 <xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:variable name="switch-name">
       <xsl:call-template name="get-LaTeX-size-from-attribs"/>
     </xsl:variable>
@@ -141,6 +145,10 @@ veryverythickmathspace  number h-unit                      0.388889em
 
 
   <xsl:template match="mml:mstyle" mode="in-text">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:text>$</xsl:text>
     <xsl:apply-templates select="."/>
     <xsl:text>$</xsl:text>
@@ -149,6 +157,10 @@ veryverythickmathspace  number h-unit                      0.388889em
 
 
   <xsl:template name="get-LaTeX-size-from-attribs">
+  
+#ifdef DEBUG
+    <xsl:message>get-LaTeX-size-from-attribs: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
 	<xsl:choose>
 
@@ -242,6 +254,10 @@ veryverythickmathspace  number h-unit                      0.388889em
   <xsl:template name="MML-attr-to-LaTeX-size">
     <xsl:param name="value"/>
     <xsl:param name="unit"/>
+  
+#ifdef DEBUG
+    <xsl:message>MML-attr-to-LaTeX-size: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
 	<xsl:choose>
 
@@ -318,6 +334,10 @@ veryverythickmathspace  number h-unit                      0.388889em
       </xsl:when>
 
       <xsl:otherwise>
+		
+#ifdef DEBUG
+    <xsl:message>Unable to set font size in MML-attr-to-LaTeX-size</xsl:message>
+#endif
       </xsl:otherwise>
 	</xsl:choose>
 

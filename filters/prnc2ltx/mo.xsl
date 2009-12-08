@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
 <xsl:stylesheet 
       xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
       xmlns:exsl="http://exslt.org/common"
+      xmlns:regexp="http://exslt.org/regular-expressions" 
       xmlns:mml="http://www.w3.org/1998/Math/MathML"
       version="1.1">
 
@@ -26,7 +26,10 @@
 -->
 
   <xsl:template match="mml:mo">
-
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:if test="string-length(@lspace)&gt;0">
 
@@ -403,6 +406,10 @@
 -->
   
   <xsl:template match="mml:mo" mode="in-text">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/>, mode="in-text"</xsl:message>
+#endif
     <xsl:text>$</xsl:text>
     <xsl:apply-templates select="."/>
     <xsl:text>$</xsl:text>
@@ -412,6 +419,10 @@
   
   <xsl:template name="bigop">
     <xsl:param name="LaTeX-nom"/>
+  
+#ifdef DEBUG
+    <xsl:message>bigop: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:choose>
       <xsl:when test="(@largeop='true' or @stretchy='true')
         and     ancestor::mml:mstyle[@displaystyle='false']">
@@ -442,120 +453,22 @@
 
   <xsl:template name="is-ASCII">
     <xsl:param name="unicode-cdata"/>
-    <xsl:variable name="first-char" select="substring($unicode-cdata,1,1)"/>
-
+  
+#ifdef DEBUG
+    <xsl:message>is-ASCII: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:choose>
-      <xsl:when test="
-         $first-char = ' '
-      or $first-char = '!'
-      or $first-char = '&#x22;'
-      or $first-char = '#'
-      or $first-char = '&#x24;'
-      or $first-char = '&amp;'
-      or $first-char = '%'
-      or $first-char = '('
-      or $first-char = ')'
-      or $first-char = '*'
-      or $first-char = '+'
-      or $first-char = ','
-      or $first-char = '-'
-      or $first-char = '.'
-      or $first-char = '/'
-      or $first-char = '0'
-      or $first-char = '1'
-      or $first-char = '2'
-      or $first-char = '3'
-      or $first-char = '4'
-      or $first-char = '5'
-      or $first-char = '6'
-      or $first-char = '7'
-      or $first-char = '8'
-      or $first-char = '9'
-      or $first-char = ':'
-      or $first-char = ';'
-      or $first-char = '&lt;'
-      or $first-char = '='
-      or $first-char = '&gt;'
-      or $first-char = '?'
-      or $first-char = '@'
-      or $first-char = 'A'
-      or $first-char = 'B'
-      or $first-char = 'C'
-      or $first-char = 'D'
-      or $first-char = 'E'
-      or $first-char = 'F'
-      or $first-char = 'G'
-      or $first-char = 'H'
-      or $first-char = 'I'
-      or $first-char = 'J'
-      or $first-char = 'K'
-      or $first-char = 'L'
-      or $first-char = 'M'
-      or $first-char = 'N'
-      or $first-char = 'O'
-      or $first-char = 'P'
-      or $first-char = 'Q'
-      or $first-char = 'R'
-      or $first-char = 'S'
-      or $first-char = 'T'
-      or $first-char = 'U'
-      or $first-char = 'V'
-      or $first-char = 'W'
-      or $first-char = 'X'
-      or $first-char = 'Y'
-      or $first-char = 'Z'
-      or $first-char = '['
-      or $first-char = '\'
-      or $first-char = ']'
-      or $first-char = '^'
-      or $first-char = '_'
-      or $first-char = '`'
-      or $first-char = 'a'
-      or $first-char = 'b'
-      or $first-char = 'c'
-      or $first-char = 'd'
-      or $first-char = 'e'
-      or $first-char = 'f'
-      or $first-char = 'g'
-      or $first-char = 'h'
-      or $first-char = 'i'
-      or $first-char = 'j'
-      or $first-char = 'k'
-      or $first-char = 'l'
-      or $first-char = 'm'
-      or $first-char = 'n'
-      or $first-char = 'o'
-      or $first-char = 'p'
-      or $first-char = 'q'
-      or $first-char = 'r'
-      or $first-char = 's'
-      or $first-char = 't'
-      or $first-char = 'u'
-      or $first-char = 'v'
-      or $first-char = 'w'
-      or $first-char = 'x'
-      or $first-char = 'y'
-      or $first-char = 'z'
-      or $first-char = '{'
-      or $first-char = '|'
-      or $first-char = '}'
-      or $first-char = '~'">
-        <xsl:choose>
-          <xsl:when test="string-length($unicode-cdata)&gt;1">
-            <xsl:call-template name="is-ASCII">
-              <xsl:with-param name="unicode-cdata" select="substring($unicode-cdata,2)"/>
-            </xsl:call-template>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:text>true</xsl:text>
-          </xsl:otherwise>
-        </xsl:choose>
+      <xsl:when test="regexp:test(normalize-space(string($unicode-cdata)),'[\x01-\xFF]+','g')">
+         <xsl:text>true</xsl:text>
       </xsl:when>
-
       <xsl:otherwise>
-        <xsl:text>false</xsl:text>
+         <xsl:text>false</xsl:text>
       </xsl:otherwise>
-    </xsl:choose>
+	</xsl:choose>
+	
+#ifdef DEBUG
+    <xsl:message>leaving is-ASCII </xsl:message>
+#endif
 
   </xsl:template>
 
@@ -563,6 +476,10 @@
   <xsl:template name="count-letters">
     <xsl:param name="unicode-cdata"/>
     <xsl:param name="letters-found"/>
+  
+#ifdef DEBUG
+    <xsl:message>count-letters: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:variable name="first-char" select="substring($unicode-cdata,1,1)"/>
 
@@ -637,13 +554,28 @@
         <xsl:value-of select="$letters-found"/>
       </xsl:otherwise>
     </xsl:choose>
-
+  
+#ifdef DEBUG
+    <xsl:message>Leaving count-letters: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
   </xsl:template>
 
 
   <xsl:template name="is-all-caps">
     <xsl:param name="unicode-cdata"/>
-    <xsl:variable name="first-char" select="substring($unicode-cdata,1,1)"/>
+  
+#ifdef DEBUG
+    <xsl:message>is-all-caps: <xsl:value-of select="name(.)"/></xsl:message>
+pri
+    <xsl:choose>
+      <xsl:when test="regexp:test(normalize-space(string($unicode-cdata)),'[^A-Z]+','g')">
+         <xsl:text>false</xsl:text>
+      </xsl:when>
+      <xsl:otherwise>
+         <xsl:text>true</xsl:text>
+      </xsl:otherwise>
+	</xsl:choose>
+    <!--xsl:variable name="first-char" select="substring($unicode-cdata,1,1)"/>
 
     <xsl:choose>
       <xsl:when test="
@@ -688,7 +620,7 @@
       <xsl:otherwise>
         <xsl:text>false</xsl:text>
       </xsl:otherwise>
-    </xsl:choose>
+    </xsl:choose-->
 
   </xsl:template>
 

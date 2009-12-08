@@ -12,32 +12,22 @@
      The caller assigns the output to an xsl:variable -->
 
   <xsl:template name="is-LaTeX-bigop">
+  
+#ifdef DEBUG
+    <xsl:message>is-LaTeX-bigop: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:choose>
-      <xsl:when test="*[1][self::mml:mo][
-          normalize-space(string())='&#x222B;'
-      or  normalize-space(string())='&#x222C;'
-      or  normalize-space(string())='&#x222D;'
-      or  normalize-space(string())='&#xE378;'
-      or  normalize-space(string())='&#x222B;&#x22EF;&#x222B;'
-      or  normalize-space(string())='&#x222E;'
-      or  normalize-space(string())='&#x2211;'
-      or  normalize-space(string())='&#x220F;'
-      or  normalize-space(string())='&#x22C2;'
-      or  normalize-space(string())='&#x22C0;'
-      or  normalize-space(string())='&#x2295;'
-      or  normalize-space(string())='&#x2299;'
-      or  normalize-space(string())='&#x2294;'
-      or  normalize-space(string())='&#x2210;'
-      or  normalize-space(string())='&#x22C3;'
-      or  normalize-space(string())='&#x22C1;'
-      or  normalize-space(string())='&#x2297;'
-      or  normalize-space(string())='&#x228E;'  ]">
+      <xsl:when test="*[1][self::mml:mo][normalize-space(string())='&#x222B;' or  normalize-space(string())='&#x222C;' or  normalize-space(string())='&#x222D;' or  normalize-space(string())='&#xE378;' or  normalize-space(string())='&#x222B;&#x22EF;&#x222B;' or  normalize-space(string())='&#x222E;' or  normalize-space(string())='&#x2211;' or  normalize-space(string())='&#x220F;' or  normalize-space(string())='&#x22C2;' or  normalize-space(string())='&#x22C0;' or  normalize-space(string())='&#x2295;' or  normalize-space(string())='&#x2299;' or  normalize-space(string())='&#x2294;' or  normalize-space(string())='&#x2210;' or  normalize-space(string())='&#x22C3;' or  normalize-space(string())='&#x22C1;' or  normalize-space(string())='&#x2297;' or  normalize-space(string())='&#x228E;'  ]">
         <xsl:value-of select="*[1]"/>
       </xsl:when>
 	  <xsl:otherwise>
         <xsl:text>false</xsl:text>
 	  </xsl:otherwise>
     </xsl:choose>
+  
+#ifdef DEBUG
+    <xsl:message>Leaving is-LaTeX-bigop: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
   </xsl:template>
 
 
@@ -45,6 +35,10 @@
 <!-- mtable, used for a multiline script, calls the following -->
 
   <xsl:template name="substack">
+  
+#ifdef DEBUG
+    <xsl:message>substack: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:text>\substack{</xsl:text>
 
     <xsl:for-each select="mml:mtr">
@@ -63,6 +57,10 @@
 
 
   <xsl:template match="mml:msub">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:variable name="is-big-op">
 <!-- msub may contain an embellished BigOp, \int, \iint, etc. -->
@@ -90,6 +88,10 @@
   </xsl:template>
 
   <xsl:template match="mml:msub" mode="in-text">
+  
+#ifdef DEBUG
+    <xsl:message>Mode = in-text: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:text>$</xsl:text>
     <xsl:apply-templates select="."/>
     <xsl:text>$</xsl:text>
@@ -97,11 +99,23 @@
 
 
   <xsl:template match="mml:msup">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:variable name="is-big-op">
 <!-- msup may contain an embellished BigOp, \int, \iint, etc. -->
+  
+#ifdef DEBUG
+    <xsl:message>calling is-LaTeX-bigop</xsl:message>
+#endif
       <xsl:call-template name="is-LaTeX-bigop"/>
     </xsl:variable>
+  
+#ifdef DEBUG
+    <xsl:message>is-big-op: <xsl:value-of select="$is-big-op"/></xsl:message>
+#endif
 
     <xsl:choose>
       <xsl:when test="$is-big-op!='false'">
@@ -120,16 +134,32 @@
         <xsl:text>}</xsl:text>
 	  </xsl:otherwise>
     </xsl:choose>
+  
+#ifdef DEBUG
+    <xsl:message>Leaving<xsl:value-of select="name(.)"/></xsl:message>
+#endif
   </xsl:template>
 
   <xsl:template match="mml:msup" mode="in-text">
+  
+#ifdef DEBUG
+    <xsl:message>Mode: in-text <xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:text>$</xsl:text>
     <xsl:apply-templates select="."/>
     <xsl:text>$</xsl:text>
+  
+#ifdef DEBUG
+    <xsl:message>Leaving <xsl:value-of select="name(.)"/></xsl:message>
+#endif
   </xsl:template>
 
 
   <xsl:template match="mml:msubsup">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:variable name="is-big-op">
 <!-- msubsup may contain an embellished BigOp, \int, \iint, etc. -->
@@ -160,6 +190,10 @@
   </xsl:template>
 
   <xsl:template match="mml:msubsup" mode="in-text">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:text>$</xsl:text>
     <xsl:apply-templates select="."/>
     <xsl:text>$</xsl:text>

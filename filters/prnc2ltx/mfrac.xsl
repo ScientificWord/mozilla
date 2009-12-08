@@ -6,6 +6,10 @@
       version="1.1">
 
   <xsl:template match="mml:mfrac">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
 <!-- The translation of mfrac is context sensitive.
 
@@ -441,7 +445,7 @@
       </right-mfence>
 
     </xsl:variable>
-    <xsl:variable name="frac-context" select="$frac-context.tr"/>
+    <xsl:variable name="frac-context" select="exsl:node-set($frac-context.tr)"/>
 
 
 <!-- The following variable uses info in the variables above to define values
@@ -490,7 +494,7 @@
       </xsl:choose>
 
     </xsl:variable>
-    <xsl:variable name="frac-delims" select="$frac-delims.tr"/>
+    <xsl:variable name="frac-delims" select="exsl:node-set($frac-delims.tr)"/>
 
 
     <xsl:variable name="frac-linethickness">
@@ -694,6 +698,10 @@
 
 
   <xsl:template match="mml:mfrac" mode="in-text">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:text>$</xsl:text>
     <xsl:apply-templates select="."/>
     <xsl:text>$</xsl:text>
@@ -707,6 +715,10 @@
 
   <xsl:template name="get-LaTeX-depth">
     <xsl:param name="lthick-attr-val"/>
+  
+#ifdef DEBUG
+    <xsl:message>get-LaTeX-depth: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:choose>
       <xsl:when test="$lthick-attr-val='thin'">
