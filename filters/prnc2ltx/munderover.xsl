@@ -8,12 +8,20 @@
 
   
   <xsl:template match="mml:munderover" mode="in-text">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:text>$</xsl:text>
     <xsl:apply-templates select="."/>
     <xsl:text>$</xsl:text>
   </xsl:template>
 
   <xsl:template match="mml:munderover">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:variable name="munderover-contents.tr">
 
@@ -60,7 +68,7 @@ A\xleftarrow{n+\mu-1}B \xrightarrow[T]{n\pm i-1}C
       </movablelimits>
 
     </xsl:variable>
-    <xsl:variable name="munderover-contents" select="$munderover-contents.tr"/>
+    <xsl:variable name="munderover-contents" select="exsl:node-set($munderover-contents.tr)"/>
 
 
     <xsl:variable name="limits">

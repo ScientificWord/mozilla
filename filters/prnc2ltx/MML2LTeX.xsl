@@ -3,6 +3,7 @@
       xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
       xmlns:exsl="http://exslt.org/common"
       xmlns:mml="http://www.w3.org/1998/Math/MathML"
+      extension-element-prefixes="regexp"
       version="1.1">
 
   <xsl:variable name="output-mode">
@@ -27,6 +28,10 @@
 
 
   <xsl:template match="mml:math">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
      <xsl:variable name="the-math">
         <xsl:choose>
            <xsl:when test="count(*)=1">
@@ -38,11 +43,15 @@
            </xsl:otherwise>
         </xsl:choose>
      </xsl:variable>
-     <xsl:apply-templates select="$the-math"/>
+     <xsl:apply-templates select="exsl:node-set($the-math)"/>
   </xsl:template>
 
 
   <xsl:template match="sw-domath">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     
   <!-- Record some info about the top level structure of the math -->
 
@@ -57,6 +66,10 @@
             <!-- if structure is math/mrow/mstyle, examine objects within the mstyle -->
 
 	          <xsl:when test="./mml:mrow[1]/*[1][self::mml:mstyle] and count(./mml:mrow[1]/*)=1">
+  
+#ifdef DEBUG
+    <xsl:message>1: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
               <xsl:for-each select="./*[1]">
                 <xsl:for-each select="./*[1]">
@@ -77,6 +90,10 @@
 
 	          <xsl:otherwise>
 <!-- if math/mrow look at objects within the mrow -->
+  
+#ifdef DEBUG
+    <xsl:message>2: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
               <displaystyle>
                 <xsl:text>false</xsl:text>
               </displaystyle>
@@ -94,6 +111,10 @@
 
         <xsl:otherwise>
 <!-- if math/1 container object,  look at the object -->
+  
+#ifdef DEBUG
+    <xsl:message>3: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 		      <displaystyle>
                 <xsl:text>false</xsl:text>
           </displaystyle>
@@ -109,8 +130,7 @@
 		    </xsl:otherwise>
 	    </xsl:choose>
     </xsl:variable>
-    
-    <xsl:variable name="math-structure" select="$math-structure.tr"/>
+    <xsl:variable name="math-structure" select="exsl:node-set($math-structure.tr)"/>
 
     <!-- Decide if inline OR display.  The <mml:math> tag should contain
          contain a "display" tag with a value of 'inline' or 'block' -->
@@ -150,7 +170,9 @@
     </xsl:variable>
     <xsl:variable name="is-display" select="$is-display.tr"/>
 
-
+#ifdef DEBUG
+    <xsl:message>is-display is <xsl:copy-of select="$is-display"/></xsl:message>
+#endif
 
 
 <!--
@@ -177,11 +199,18 @@
         <xsl:choose>
 
           <xsl:when test="$math-structure/n-children=0">
+  
+#ifdef DEBUG
+    <xsl:message>n-children = 0; <xsl:value-of select="name(.)"/><xsl:value-of select="$math-structure/n-children"/></xsl:message>
+#endif
             <xsl:text xml:space="preserve">\[&#xA; \]</xsl:text>
           </xsl:when>
 
           <xsl:when test="$math-structure/n-children=1">
-
+  
+#ifdef DEBUG
+    <xsl:message>n-children = 1; <xsl:value-of select="name(.)"/><xsl:value-of select="$math-structure/n-children"/></xsl:message>
+#endif
 <!--   single object in the display -->
 
             <xsl:choose>
@@ -259,7 +288,7 @@
                 </xsl:variable>
 
 
-                <xsl:variable name="table-structure" select="$table-structure.tr"/>
+                <xsl:variable name="table-structure" select="exsl:node-set($table-structure.tr)"/>
                 <xsl:choose>
 <!-- mtables with 1 cell per row -->
 
@@ -330,6 +359,10 @@
 
               <xsl:otherwise>
 <!-- not an mtable, n-children = 1 -->
+                
+#ifdef DEBUG
+    <xsl:message>A</xsl:message>
+#endif
                 <xsl:text xml:space="preserve">\[&#xA;</xsl:text>
                 <xsl:apply-templates/>
                 <xsl:text xml:space="preserve">&#xA;\]</xsl:text>
@@ -354,8 +387,16 @@
 
       <xsl:when test="$is-display='false'">
 <!-- known to be inline math -->
+  
+#ifdef DEBUG
+    <xsl:message>inline math</xsl:message>
+#endif
         <xsl:if test="$math-structure/n-children&gt;0">
         <xsl:text>$</xsl:text>
+  
+#ifdef DEBUG
+    <xsl:message>apply templates to <xsl:copy-of select="*"/></xsl:message>
+#endif
           <xsl:apply-templates/>
         <xsl:text>$</xsl:text>
         </xsl:if>
@@ -365,7 +406,20 @@
 <!-- Here <math> doesn't give it's "display " attribute and doesn't 
   contain an <mstyle displaystyle"whatever"> as it's only child
   so we don't know if it's inline or display. -->
+  
+#ifdef DEBUG
+    <xsl:message>display??</xsl:message>
+#endif
         <xsl:text>$</xsl:text>
+  
+#ifdef DEBUG
+    <xsl:message>****
+    <xsl:for-each select="*">
+      <xsl:value-of select="name(.)"/> /
+    </xsl:for-each>
+	***
+  </xsl:message>
+#endif
         <xsl:apply-templates/>
         <xsl:text>$</xsl:text>
       </xsl:otherwise>
@@ -388,6 +442,10 @@
 <!-- mspace is a leaf node - not finished -->
 
   <xsl:template match="mml:mspace">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
 <!--
 $ab\ c~d\quad e\qquad f\,g\;h$\/$i\!j{}k$\noindent $l\hspace{1in}mnop$
@@ -448,21 +506,33 @@ no indent - disregarded completely
   </xsl:template>
 
   <xsl:template match="mml:mspace" mode="in-text">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:apply-templates select="."/>
   </xsl:template>
 
 
   <xsl:template match="mml:mrow">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="mml:mrow" mode="in-text">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:variable name="LaTeX-contents.tr">
 	  <raw-LaTeX>
         <xsl:apply-templates mode="in-text"/>
 	  </raw-LaTeX>
     </xsl:variable>
-    <xsl:variable name="LaTeX-contents" select="$LaTeX-contents.tr"/>
+    <xsl:variable name="LaTeX-contents" select="exsl:node-set($LaTeX-contents.tr)"/>
 
     <xsl:call-template name="remove-dollar-dollar">
       <xsl:with-param name="LaTeX-zstr" select="$LaTeX-contents/raw-LaTeX"/>
@@ -471,10 +541,18 @@ no indent - disregarded completely
 
 
   <xsl:template match="mml:maligngroup">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <!-- xsl:text xml:space="preserve"> &amp; </xsl:text -->
   </xsl:template>
 
   <xsl:template match="mml:maligngroup" mode="in-text">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 <xsl:text xml:space="preserve">maligngroup in text??</xsl:text>
     <!-- xsl:text xml:space="preserve"> &amp; </xsl:text -->
   </xsl:template>
@@ -488,12 +566,20 @@ no indent - disregarded completely
 
 
   <xsl:template match="mml:msqrt">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:text>\sqrt{</xsl:text>
     <xsl:call-template name="do-implied-mrow"/>
     <xsl:text>}</xsl:text>
   </xsl:template>
 
   <xsl:template match="mml:msqrt" mode="in-text">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:text>$</xsl:text>
     <xsl:apply-templates select="."/>
     <xsl:text>$</xsl:text>
@@ -501,6 +587,10 @@ no indent - disregarded completely
 
 
   <xsl:template match="mml:mroot">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:text>\sqrt[{</xsl:text>
     <xsl:call-template name="do-positional-arg">
       <xsl:with-param name="arg-num" select="2"/>
@@ -513,6 +603,10 @@ no indent - disregarded completely
   </xsl:template>
 
   <xsl:template match="mml:mroot" mode="in-text">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:text>$</xsl:text>
     <xsl:apply-templates select="."/>
     <xsl:text>$</xsl:text>
@@ -520,26 +614,46 @@ no indent - disregarded completely
 
 
   <xsl:template match="mml:merror">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:text xml:space="preserve">merror </xsl:text>
   </xsl:template>
 
   <xsl:template match="mml:merror" mode="in-text">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:text xml:space="preserve">merror in text</xsl:text>
   </xsl:template>
 
 
   <xsl:template match="mml:mpadded">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:apply-templates/>
     <xsl:call-template name="do-vspace"/>
   </xsl:template>
 
   <xsl:template match="mml:mpadded" mode="in-text">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:apply-templates mode="in-text"/>
     <xsl:call-template name="do-vspace"/>
   </xsl:template>
 
 
   <xsl:template name="do-vspace">
+  
+#ifdef DEBUG
+    <xsl:message>do-vspace: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
 <!--
 <mml:mpadded depth="0.100000in" height="0.200000in">  \rule[-0.1in]{0in}{0.3in}
@@ -636,18 +750,30 @@ no indent - disregarded completely
 
 
   <xsl:template match="mml:mphantom">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:text>\phantom{</xsl:text>
     <xsl:apply-templates/>
     <xsl:text>}</xsl:text>
   </xsl:template>
 
   <xsl:template match="mml:mphantom" mode="in-text">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:text xml:space="preserve">mphantom in text</xsl:text>
     <xsl:apply-templates mode="in-text"/>
   </xsl:template>
 
 
   <xsl:template match="mml:maction">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 <!--
       <mml:maction actiontype="toggle" selection="2">
         <mml:mrow>
@@ -713,6 +839,10 @@ no indent - disregarded completely
   </xsl:template>
 
   <xsl:template match="mml:maction" mode="in-text">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:text>$</xsl:text>
     <xsl:apply-templates select="."/>
     <xsl:text>$</xsl:text>
@@ -728,11 +858,19 @@ no indent - disregarded completely
 
 
   <xsl:template match="mml:mprescripts">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:text xml:space="preserve">mprescripts </xsl:text>
     <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="mml:mprescripts" mode="in-text">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:text>$</xsl:text>
     <xsl:apply-templates select="."/>
     <xsl:text>$</xsl:text>
@@ -740,11 +878,19 @@ no indent - disregarded completely
 
 
   <xsl:template match="mml:mmultiscripts">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:text xml:space="preserve">mmultiscripts </xsl:text>
     <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="mml:mmultiscripts" mode="in-text">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:text>$</xsl:text>
     <xsl:apply-templates select="."/>
     <xsl:text>$</xsl:text>
@@ -752,16 +898,24 @@ no indent - disregarded completely
 
 
   <xsl:template match="mml:mtr">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="mml:mtr" mode="in-text">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:variable name="LaTeX-contents.tr">
 	  <raw-LaTeX>
         <xsl:apply-templates mode="in-text"/>
 	  </raw-LaTeX>
     </xsl:variable>
-    <xsl:variable name="LaTeX-contents" select="$LaTeX-contents.tr"/>
+    <xsl:variable name="LaTeX-contents" select="exsl:node-set($LaTeX-contents.tr)"/>
 
     <xsl:call-template name="remove-dollar-dollar">
       <xsl:with-param name="LaTeX-zstr" select="$LaTeX-contents/raw-LaTeX"/>
@@ -770,16 +924,24 @@ no indent - disregarded completely
 
 
   <xsl:template match="mml:mtd">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:apply-templates/>
   </xsl:template>
 
   <xsl:template match="mml:mtd" mode="in-text">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:variable name="LaTeX-contents.tr">
 	  <raw-LaTeX>
         <xsl:apply-templates mode="in-text"/>
 	  </raw-LaTeX>
     </xsl:variable>
-    <xsl:variable name="LaTeX-contents" select="$LaTeX-contents.tr"/>
+    <xsl:variable name="LaTeX-contents" select="exsl:node-set($LaTeX-contents.tr)"/>
 
     <xsl:call-template name="remove-dollar-dollar">
       <xsl:with-param name="LaTeX-zstr" select="$LaTeX-contents/raw-LaTeX"/>
@@ -789,13 +951,17 @@ no indent - disregarded completely
 
   <xsl:template name="frame-or-fbox">
     <xsl:param name="LaTeX-nom"/>
+  
+#ifdef DEBUG
+    <xsl:message>frame-or-fbox: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:variable name="LaTeX-contents.tr">
 	  <raw-LaTeX>
         <xsl:apply-templates mode="in-text"/>
 	  </raw-LaTeX>
     </xsl:variable>
-    <xsl:variable name="LaTeX-contents" select="$LaTeX-contents.tr"/>
+    <xsl:variable name="LaTeX-contents" select="exsl:node-set($LaTeX-contents.tr)"/>
 
     <xsl:value-of select="$LaTeX-nom"/>
     <xsl:call-template name="remove-dollar-dollar">
@@ -812,6 +978,10 @@ no indent - disregarded completely
 
 
   <xsl:template match="mml:mtable" mode="eqnarray">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:variable name="table-structure.tr">
 	  <n-mtr>
@@ -836,7 +1006,7 @@ no indent - disregarded completely
       </xsl:for-each>
     </xsl:variable>
 
-    <xsl:variable name="table-structure" select="$table-structure.tr"/>
+    <xsl:variable name="table-structure" select="exsl:node-set($table-structure.tr)"/>
 
 <!-- mtables with 1 cell per row -->
 
@@ -934,6 +1104,10 @@ no indent - disregarded completely
 <!-- 1 column, 1 labeled row, 0 plain rows -->
 
   <xsl:template match="mml:mtable" mode="labeled-equation">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:text>\begin{equation}&#xA;</xsl:text>
     <xsl:for-each select="mml:mlabeledtr">
 
@@ -958,6 +1132,10 @@ no indent - disregarded completely
 
 
   <xsl:template match="mml:mtable" mode="in-text">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 	<xsl:choose>
       <xsl:when test="@frame!='' or @rowlines!='' or @columnlines!=''">
         <xsl:call-template name="tabular"/>
@@ -990,6 +1168,10 @@ no indent - disregarded completely
 
 
   <xsl:template match="mml:mtable">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:variable name="table-structure.tr">
 	  <n-mtr>
@@ -1017,7 +1199,7 @@ no indent - disregarded completely
         </n-internal-aligns>
       </xsl:for-each>
     </xsl:variable>
-    <xsl:variable name="table-structure" select="$table-structure.tr"/>
+    <xsl:variable name="table-structure" select="$exsl:node-set(table-structure.tr)"/>
 
 
     <xsl:choose>
@@ -1059,7 +1241,7 @@ no indent - disregarded completely
           </xsl:choose>
 	    </LaTeX-env>
         </xsl:variable>
-        <xsl:variable name="env-info" select="$env-info.tr"/>
+        <xsl:variable name="env-info" select="exsl:node-set($env-info.tr)"/>
 
 
         <xsl:choose>
@@ -1142,6 +1324,10 @@ no indent - disregarded completely
 
   <xsl:template name="do-positional-arg">
     <xsl:param name="arg-num"/>
+  
+#ifdef DEBUG
+    <xsl:message>do-positional-arg: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:choose>
       <xsl:when test="./*[$arg-num][self::mml:mtext][string()='&#x200B;']">
         <xsl:text>{}</xsl:text>
@@ -1150,6 +1336,10 @@ no indent - disregarded completely
         <xsl:apply-templates select="./*[$arg-num]"/>
       </xsl:otherwise>
     </xsl:choose>
+  
+#ifdef DEBUG
+    <xsl:message>Exiting do-positional-arg: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
   </xsl:template>
 
 
@@ -1164,6 +1354,10 @@ no indent - disregarded completely
 -->
 
   <xsl:template name="do-implied-mrow">
+  
+#ifdef DEBUG
+    <xsl:message>do-implied-mrow: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:choose>
       <xsl:when test="./*[1][self::mml:mtext][string()='&#x200B;']
       and            count(./*)=1">
@@ -1194,7 +1388,7 @@ no indent - disregarded completely
         <xsl:apply-templates mode="in-text"/>
 	  </raw-LaTeX>
     </xsl:variable>
-    <xsl:variable name="LaTeX-contents" select="$LaTeX-contents.tr"/>
+    <xsl:variable name="LaTeX-contents" select="exsl:node-set($LaTeX-contents.tr)"/>
 
     <xsl:call-template name="remove-dollar-dollar">
       <xsl:with-param name="LaTeX-zstr" select="$LaTeX-contents/raw-LaTeX"/>
@@ -1205,6 +1399,10 @@ no indent - disregarded completely
 
   <xsl:template name="remove-dollar-dollar">
     <xsl:param name="LaTeX-zstr"/>
+  
+#ifdef DEBUG
+    <xsl:message>remove-dollar-dollar: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:choose>
       <xsl:when test="contains($LaTeX-zstr,'$$')">
@@ -1242,6 +1440,10 @@ no indent - disregarded completely
   <xsl:template name="operator-lrspace-2LaTeX">
     <xsl:param name="value"/>
     <xsl:param name="unit"/>
+  
+#ifdef DEBUG
+    <xsl:message>operator-lrspace-2LaTeX: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 	<xsl:choose>
       <xsl:when test="$unit='em'">
 	    <xsl:choose>

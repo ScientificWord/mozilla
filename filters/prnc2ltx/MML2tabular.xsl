@@ -11,6 +11,10 @@
     <xsl:param name="columns-to-do"/>
     <xsl:param name="columnlines"/>
     <xsl:param name="columnalign"/>
+  
+#ifdef DEBUG
+    <xsl:message>do-cols: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
 <!-- xsl:value-of select="$columns-to-do"/ -->
 
@@ -85,6 +89,10 @@
   <xsl:template name="script-hline">
     <xsl:param name="current-row"/>
     <xsl:param name="rowlines"/>
+  
+#ifdef DEBUG
+    <xsl:message>script-hline: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:choose>
       <xsl:when test="$current-row = 1">
@@ -114,6 +122,10 @@
     <xsl:param name="current-row"/>
     <xsl:param name="last-row"/>
     <xsl:param name="rowlines"/>
+  
+#ifdef DEBUG
+    <xsl:message>end-table-row: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:if test="$current-row &lt; $last-row">
       <xsl:text xml:space="preserve"> \\</xsl:text>
@@ -131,6 +143,10 @@
 
 
   <xsl:template name="cell-counter">
+  
+#ifdef DEBUG
+    <xsl:message>cell-counter: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 <!--
     <xsl:for-each select="mml:mtr|mml:mlabeledtr">
       <xsl:sort select="count(*)"/>
@@ -154,7 +170,7 @@
       </n-columns>
       </xsl:for-each>
     </xsl:variable>
-    <xsl:variable name="column-counts" select="$column-counts.tr"/>
+    <xsl:variable name="column-counts" select="exsl:node-set($column-counts.tr)"/>
 
     <xsl:for-each select="$column-counts/*">
       <xsl:sort select="."/>
@@ -171,11 +187,15 @@
     <xsl:param name="columnlines" select="normalize-space(@columnlines)"/>
     <xsl:param name="columnalign" select="normalize-space(@columnalign)"/>
     <xsl:param name="rowlines"    select="normalize-space(@rowlines)"/>
+  
+#ifdef DEBUG
+    <xsl:message>tabular: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:variable name="column-counts.tr">
       <xsl:call-template name="cell-counter"/>
     </xsl:variable>
-    <xsl:variable name="column-counts" select="$column-counts.tr"/>
+    <xsl:variable name="column-counts" select="exsl:node-set($column-counts.tr)"/>
 
 <!-- xsl:value-of select="$column-counts/ncols[position()=last()]"/ -->
 
@@ -250,7 +270,7 @@ columnlines="none solid solid solid" columnalign="center right left center cente
                     <xsl:apply-templates mode="in-text"/>
 				  </raw-LaTeX>
                 </xsl:variable>
-                <xsl:variable name="LaTeX-contents" select="$LaTeX-contents.tr"/>
+                <xsl:variable name="LaTeX-contents" select="exsl:node-set($LaTeX-contents.tr)"/>
 
 				<xsl:if test="@columnspan&gt;1">
                   <xsl:text>\multicolumn{</xsl:text>
@@ -274,7 +294,7 @@ columnlines="none solid solid solid" columnalign="center right left center cente
                     <xsl:apply-templates mode="in-text"/>
 				  </raw-LaTeX>
                 </xsl:variable>
-                <xsl:variable name="LaTeX-contents" select="$LaTeX-contents.tr"/>
+                <xsl:variable name="LaTeX-contents" select="exsl:node-set($LaTeX-contents.tr)"/>
                 <xsl:call-template name="remove-dollar-dollar">
                   <xsl:with-param name="LaTeX-zstr" select="$LaTeX-contents/raw-LaTeX"/>
                 </xsl:call-template>
@@ -293,7 +313,7 @@ columnlines="none solid solid solid" columnalign="center right left center cente
               <xsl:apply-templates mode="in-text"/>
 		    </raw-LaTeX>
           </xsl:variable>
-          <xsl:variable name="LaTeX-contents" select="$LaTeX-contents.tr"/>
+          <xsl:variable name="LaTeX-contents" select="exsl:node-set($LaTeX-contents.tr)"/>
 
 		  <xsl:if test="@columnspan&gt;1">
             <xsl:text>\multicolumn{</xsl:text>
@@ -317,7 +337,7 @@ columnlines="none solid solid solid" columnalign="center right left center cente
               <xsl:apply-templates mode="in-text"/>
 		    </raw-LaTeX>
           </xsl:variable>
-          <xsl:variable name="LaTeX-contents" select="$LaTeX-contents.tr"/>
+          <xsl:variable name="LaTeX-contents" select="exsl:node-set($LaTeX-contents.tr)"/>
           <xsl:call-template name="remove-dollar-dollar">
             <xsl:with-param name="LaTeX-zstr" select="$LaTeX-contents/raw-LaTeX"/>
           </xsl:call-template>
@@ -333,7 +353,7 @@ columnlines="none solid solid solid" columnalign="center right left center cente
             <xsl:apply-templates mode="in-text" select="*[position()=1]"/>
 		  </raw-LaTeX>
         </xsl:variable>
-        <xsl:variable name="LaTeX-contents" select="$LaTeX-contents.tr"/>
+        <xsl:variable name="LaTeX-contents" select="exsl:node-set($LaTeX-contents.tr)"/>
 
 	    <xsl:if test="$output-mode='SW-LaTeX'">
           <xsl:text xml:space="preserve"> \TCItag{</xsl:text>

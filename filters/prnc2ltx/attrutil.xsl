@@ -11,6 +11,10 @@
 
   <xsl:template name="is-TeX-unit">
     <xsl:param name="unit-nom"/>
+  
+#ifdef DEBUG
+    <xsl:message>is-TeX-unit: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:choose>
       <xsl:when test="$unit-nom = 'cm'
@@ -35,6 +39,10 @@
 
   <xsl:template name="get-number-chars">
     <xsl:param name="attrib-cdata"/>
+  
+#ifdef DEBUG
+    <xsl:message>get-number-chars: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:variable name="first-char" select="substring($attrib-cdata,1,1)"/>
 
     <xsl:if test="$first-char = '0'
@@ -66,6 +74,10 @@
     <xsl:param name="unit1"/>
     <xsl:param name="value2"/>
     <xsl:param name="unit2"/>
+  
+#ifdef DEBUG
+    <xsl:message>add-dimens: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
 <!-- For now, I'm assuming that unit1 and unit2 are the same. -->
     <xsl:choose>
@@ -88,6 +100,10 @@
   <xsl:template name="get-mo-attr-val">
     <xsl:param name="mo-nom"/>
     <xsl:param name="attr-nom"/>
+  
+#ifdef DEBUG
+    <xsl:message>get-mo-attr-val: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:choose>
       <xsl:when test="$mo-nom='('
@@ -207,6 +223,10 @@
 
   <xsl:template name="get-last-list-entry">
     <xsl:param name="list"/>
+  
+#ifdef DEBUG
+    <xsl:message>get-last-list-entry: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:choose>
       <xsl:when test="contains($list,',')">
         <xsl:call-template name="get-last-list-entry">
@@ -236,6 +256,10 @@ Several attributes related to text formatting are provided on all token elements
 
   <xsl:template name="get-inherited-attr-value">
     <xsl:param name="attr-nom"/>
+  
+#ifdef DEBUG
+    <xsl:message>get-inherited-attr-value: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:variable name="value-list">
       <xsl:choose>

@@ -57,10 +57,18 @@
 
 
 <xsl:template match="html:preamble">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
   <xsl:for-each select="$packagelist/*">
     <xsl:sort select="@pri" data-type="number"/>
 \usepackage<xsl:if test="@options">[<xsl:value-of select="@options"/>]</xsl:if>{<xsl:value-of select="@package"/>}  %% <xsl:value-of select="@pri"/></xsl:for-each>
   <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="html:preambleTeX">
+  <xsl:value-of select="."/>
 </xsl:template>
 
 <!-- use docformat information to call the crop package -->
@@ -89,47 +97,85 @@
 </xsl:template>
 
 <xsl:template match="html:page">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
   paper=<xsl:value-of select="@paper"/>paper,
   twoside=<xsl:value-of select="@twoside"/>,
   landscape=<xsl:value-of select="@landscape"/>,</xsl:template>
 
 <xsl:template match="html:page[@paper='screen']">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
   paper=screen,
   twoside=false,
   landscape=false,</xsl:template>
 
 <xsl:template match="html:page[@paper='other']">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
   paperwidth=<xsl:value-of select="@width"/>,
   paperheight=<xsl:value-of select="@height"/>, </xsl:template>
 
 <xsl:template match="html:textregion">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
   textwidth=<xsl:value-of select="@width"/>,		    
   textheight=<xsl:value-of select="@height"/>, </xsl:template>
 
 <xsl:template match="html:margin">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
   left=<xsl:value-of select="@left"/>,
   top=<xsl:value-of select="@top"/>, </xsl:template>
 
 <xsl:template match="html:header">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
   headheight=<xsl:value-of select="@height"/>,
   headsep=<xsl:value-of select="@sep"/>, </xsl:template>
 
 <xsl:template match="html:columns[@count='2']">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
   twocolumn=true,
   columnsep=<xsl:value-of select="@sep"/>, </xsl:template>
 
 <xsl:template match="html:marginnote[@hidden='false']">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
   marginparwidth=<xsl:value-of select="@width"/>,
   marginparsep=<xsl:value-of select="@sep"/>,	</xsl:template>
 
 <xsl:template match="html:footer">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
   footskip=<xsl:value-of 
   select="concat(number(substring(@height,1,string-length(@height)-2))+number(substring(@sep,1,string-length(@sep)-2)),substring(@sep,string-length(@sep)-2))"/></xsl:template>
 
 
 <xsl:template match="html:fontchoices">
-\usepackage{fontspec}
-\usepackage{xunicode}
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 \usepackage{xltxtra}
 \TeXXeTstate=1
 <!-- \defaultfontfeatures{Scale=MatchLowercase,Mapping=tex-text} -->
@@ -137,42 +183,94 @@
 <xsl:apply-templates/></xsl:template>  
 
 <xsl:template match="html:mainfont">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 \setmainfont[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
 
 <xsl:template match="html:mainfont[@name='Default']"></xsl:template>
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
 <xsl:template match="html:sansfont">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 \setsansfont[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
 
 <xsl:template match="html:sansfont[@name='']"></xsl:template>
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
 <xsl:template match="html:fixedfont">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 \setmonofont[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
 
 <xsl:template match="html:fixedfont[@name='']"></xsl:template>
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
 <xsl:template match="html:x1font">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 \newfontfamily\<xsl:value-of select="@internalname"/>[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
 
 <xsl:template match="html:x2font">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 \newfontfamily\<xsl:value-of select="@internalname"/>[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
 
 <xsl:template match="html:x3font">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 \newfontfamily\<xsl:value-of select="@internalname"/>[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
 
 <!-- section headings redefined. Requires package titlesec -->
 <xsl:template match="html:sectitleformat" >
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 \newcommand{\msi<xsl:value-of select="@level"/>}[1]{<xsl:apply-templates/>}
 \titleformat{\<xsl:value-of select="@level"/>}[hang]{}{}{0pt}{\msi<xsl:value-of select="@level"/>}{}
 </xsl:template>						  
 
 <xsl:template match="html:titleprototype"><xsl:apply-templates/></xsl:template>
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
 <xsl:template match="html:dialogbase">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="sw:dialogbase">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 <xsl:apply-templates/>
 </xsl:template>
 

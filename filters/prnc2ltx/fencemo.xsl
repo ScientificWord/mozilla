@@ -12,6 +12,10 @@
 
   <xsl:template name="translate-fencing-mo">
     <xsl:param name="LaTeX-fence-token"/>
+  
+#ifdef DEBUG
+    <xsl:message>translate-fencing-mo: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:variable name="right-mo1-is-fence">
       <xsl:choose>
@@ -219,7 +223,7 @@
 		    </xsl:choose>
           </is-left-absorbed>
         </xsl:variable>
-        <xsl:variable name="fenced-content" select="$fenced-content.tr"/>
+        <xsl:variable name="fenced-content" select="exsl:node-set($fenced-content.tr)"/>
 
         <xsl:choose>
           <xsl:when test="$fenced-content/is-left-absorbed='true'">
@@ -268,8 +272,8 @@
           </is-right-absorbed>
 
         </xsl:variable>
-        <xsl:variable name="fenced-content" select="$fenced-content.tr"/>
-
+        <xsl:variable name="fenced-content" select="exsl:node-set($fenced-content.tr)"/>
+																					 
         <xsl:choose>
           <xsl:when test="$fenced-content/is-right-absorbed='true'">
           </xsl:when>
@@ -310,6 +314,10 @@
 
   <xsl:template name="mo-is-LaTeX-fence">
     <xsl:param name="op-nom"/>
+  
+#ifdef DEBUG
+    <xsl:message>mo-is-LaTeX-fence: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
 	<xsl:choose>
       <xsl:when test="

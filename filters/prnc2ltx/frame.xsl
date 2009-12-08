@@ -7,6 +7,10 @@
 >
 
 <xsl:template match="html:msiframe">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 	<!--xsl:if test="@position='inner' || @position='outer'" -->				
 \begin{wrapfigure}
 <xsl:choose>
