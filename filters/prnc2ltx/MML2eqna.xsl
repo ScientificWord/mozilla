@@ -16,6 +16,10 @@
 
   <xsl:template name="extract-row-spaces">
     <xsl:param name="rowspacing-list"/>
+  
+#ifdef DEBUG
+    <xsl:message>extract-row-spaces: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:choose>
       <xsl:when test="string-length($rowspacing-list)=0">
@@ -48,6 +52,10 @@
 
   <xsl:template name="set-eqn-row-space">
     <xsl:param name="current-space"/>
+  
+#ifdef DEBUG
+    <xsl:message>set-eqn-row-space<xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:choose>
       <xsl:when test="string-length($current-space)=0">
       </xsl:when>
@@ -72,6 +80,10 @@
   <xsl:template name="end-eqn-row">
     <xsl:param name="current-row"/>
     <xsl:param name="last-row"/>
+  
+#ifdef DEBUG
+    <xsl:message>end-eqn-row: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:if test="$current-row &lt; $last-row">
       <xsl:text xml:space="preserve"> \\</xsl:text>
@@ -85,6 +97,10 @@
 
   <xsl:template name="check-tag-str">
     <xsl:param name="tag-str"/>
+  
+#ifdef DEBUG
+    <xsl:message>check-tag-str: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:choose>
       <xsl:when test="
 	    string-length($tag-str)&gt;2
@@ -111,7 +127,11 @@
   <xsl:template name="eqnarray">
     <xsl:param name="n-rows"/>
     <xsl:param name="n-labeledrows"/>
-    <xsl:param name="n-aligns"/>
+    <xsl:param name="n-aligns"/>								 pp
+  
+#ifdef DEBUG
+    <xsl:message>eqnarray: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:variable name="eqn-info.tr">
       <xsl:choose>
@@ -202,7 +222,7 @@
       </xsl:if>
 
     </xsl:variable>
-    <xsl:variable name="eqn-info" select="$eqn-info.tr"/>
+    <xsl:variable name="eqn-info" select="exsl:node-set($eqn-info.tr)"/>
 
 <!-- begin scripting LaTeX output -->
 
@@ -281,7 +301,7 @@
           <xsl:apply-templates select="./*[1]" mode="in-text"/>
 		</tag-text>
         </xsl:variable>
-        <xsl:variable name="tag-info" select="$tag-info.tr"/>
+        <xsl:variable name="tag-info" select="exsl:node-set($tag-info.tr)"/>
 
         <xsl:variable name="tag-is-digits.tr">
 		<is-eqn-number>
@@ -290,7 +310,7 @@
           </xsl:call-template>
 		</is-eqn-number>
         </xsl:variable>
-        <xsl:variable name="tag-is-digits" select="$tag-is-digits.tr"/>
+        <xsl:variable name="tag-is-digits" select="exsl:node-set($tag-is-digits.tr)"/>
 
         <xsl:if test="$tag-is-digits/is-eqn-number='false'">
           <xsl:if test="$output-mode='SW-LaTeX'">
