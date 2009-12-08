@@ -56,7 +56,7 @@ function initializeFontFamilyList(force)
   outfile = dir.clone();
   outfile.append("fontfamilies.txt");
   try { texbindir= prefs.getCharPref("swp.tex.bindir"); }
-  catch(exc) {texbindir = exefile.parent.path;}
+  catch(exc) {dump("texbindir not set in preference\n");}
   if (!force)
   { 
     if (outfile.exists()) return;
@@ -71,6 +71,7 @@ function initializeFontFamilyList(force)
   {
     var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
     theProcess.init(exefile);
+    dump("TexBinDir is "+texbindir+"\n");
     var args =[texbindir,listfile.parent.path];
     theProcess.run(true, args, args.length);
   } 
@@ -109,6 +110,12 @@ function initializeFontFamilyList(force)
   os.close();
   fos.close();
 //  dump(str);
+  initSystemFontMenu("mainfontlist");
+  initSystemFontMenu("sansfontlist");
+  initSystemFontMenu("fixedfontlist");
+  initSystemFontMenu("x1fontlist");
+  initSystemFontMenu("x2fontlist");
+  initSystemFontMenu("x3fontlist");
 }
 
 function Startup()
