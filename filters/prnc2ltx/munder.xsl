@@ -48,6 +48,10 @@
   
   <xsl:template name="under-struct">
     <xsl:param name="LaTeX-acc"/>
+  
+#ifdef DEBUG
+    <xsl:message>under-struct: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:value-of select="$LaTeX-acc"/>
     <xsl:text>{</xsl:text>
     <xsl:call-template name="do-positional-arg">
@@ -59,6 +63,10 @@
 
   
   <xsl:template match="mml:munder" mode="in-text">
+  
+#ifdef DEBUG
+    <xsl:message>mode=in-text: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:text>$</xsl:text>
     <xsl:apply-templates select="."/>
     <xsl:text>$</xsl:text>
@@ -66,6 +74,10 @@
 
 
   <xsl:template name="check-under-accent">
+  
+#ifdef DEBUG
+    <xsl:message>check-under-accent: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:choose>
 <!--
       <xsl:if test="*[2][self::mml:mo][@accent='true']">
@@ -99,6 +111,10 @@
   </xsl:template>
 
   <xsl:template name="check-under-decoration">
+  
+#ifdef DEBUG
+    <xsl:message>check-under-decoration: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:choose>
 <!--
       <xsl:if test="*[2][self::mml:mo][@stretchy='true']">
@@ -129,6 +145,10 @@
 
 
   <xsl:template match="mml:munder">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:variable name="munder-structure.tr">
       <is-accent>
@@ -191,7 +211,7 @@
       </movablelimits>
 
     </xsl:variable>
-    <xsl:variable name="munder-structure" select="$munder-structure.tr"/>
+    <xsl:variable name="munder-structure" select="exsl:node-set($munder-structure.tr)"/>
 
     <xsl:variable name="limits">
       <xsl:if test="*[1][self::mml:mo]">
