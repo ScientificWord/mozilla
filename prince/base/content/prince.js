@@ -418,7 +418,7 @@ function openTeX()
   }                       
 }
 
-// #define INTERNAL_XSLT
+#define INTERNAL_XSLT
 
 // documentAsTeXFile writes the document out as TeX. It uses XSLT transformations from 'xslSheet'.
 // Returns true if the TeX file was created.
@@ -451,14 +451,10 @@ function documentAsTeXFile( document, xslSheet, outTeXfile )
     outTeXfile.append(bareleaf + ".tex");
   }
   var outfileTeXPath = outTeXfile.target;
-  var stylefile = dsprops.get("resource:app", Components.interfaces.nsIFile);
-  stylefile.append("res");
-  stylefile.append("xsl");
-  stylefile.append(xslSheet);
-  var xslPath = stylefile.target;
-  
+  var stylefile;
+  var xslPath;
 #ifdef INTERNAL_XSLT
-
+  var xslPath = "chrome://prnc2ltx/content/"+xslSheet;
   var str = documentToTeXString(document, xslPath);
 
 //  dump("\n"+str);
@@ -475,6 +471,11 @@ function documentAsTeXFile( document, xslSheet, outTeXfile )
   os.close();
   fos.close();
 #else
+  stylefile = dsprops.get("resource:app", Components.interfaces.nsIFile);
+  stylefile.append("res");
+  stylefile.append("xsl");
+  stylefile.append(xslSheet);
+  xslPath = stylefile.path;
   var exefile = dsprops.get("resource:app", Components.interfaces.nsIFile);
   exefile.append("Transform.exe");
 
@@ -620,8 +621,7 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
 //    There was some commented code here for using the pipe-console object from the enigmail project. We are not 
 //    using it in 6.0, and XulRunner is getting a better implementation, which we will use later.
   // check for a dvi or pdf file
-  var compiledFileLeaf = "SWP";
-  var outfileLeaf = compiledFileLeaf;
+  var compiledFileLeaf = "SWP";                                                                               var outfileLeaf = compiledFileLeaf;
   if (passData.pdftex)
     outfileLeaf += ".pdf";
   else
@@ -1008,10 +1008,6 @@ function documentToTeXString(document, xslPath)
   var stylesheetElement=/<xsl:stylesheet[^>]*>/;
   var includeFileRegEx = /<xsl:include\s+href\s*=\s*\"([^\"]*)\"\/>/;
   var leafname = /[^\/]*$/;
-#ifdef XP_WIN32
-  path ="/"+  path.replace("\\","/","g");
-#endif
-  path = "file://" + path;
   var xsltProcessor = new XSLTProcessor();
   var myXMLHTTPRequest = new XMLHttpRequest();
   myXMLHTTPRequest.open("GET", path, false);
@@ -1030,18 +1026,24 @@ function documentToTeXString(document, xslPath)
     // match[1] should have the file name of the incusion 
     if (filesSeen.indexOf(match[1]) < 0)
     {
-      path = path.replace(leafname,match[1]);
-      myXMLHTTPRequest.open("GET", path, false);
-      myXMLHTTPRequest.send(null);
-      contents = myXMLHTTPRequest.responseText;
-      if (contents)
-      {
-        // strip out the xml and xsl declarations
-        contents = contents.replace('<?xml version="1.0"?>','');
-        contents = contents.replace("</xsl:stylesheet>","");
-        contents = contents.replace(stylesheetElement,"");
+      try {
+        path = path.replace(leafname,match[1]);
+        myXMLHTTPRequest.open("GET", path, false);
+        myXMLHTTPRequest.send(null);
+        contents = myXMLHTTPRequest.responseText;
+        if (contents)
+        {
+          // strip out the xml and xsl declarations
+          contents = contents.replace('<?xml version="1.0"?>','');
+          contents = contents.replace("</xsl:stylesheet>","");
+          contents = contents.replace(stylesheetElement,"");
+        }
+        filesSeen.push(match[1]);
       }
-      filesSeen.push(match[1]);
+      catch(e)
+      {
+        dump("Reading include file, got "+e.message+"\n");
+      }
     }
     else {
       dump("\n\n\n" + str+"\n\n\n");
@@ -1057,7 +1059,7 @@ function documentToTeXString(document, xslPath)
   resultString += str;
   // BBM: for debugging purposes, let's write the string out
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
-  var outputfile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+  var outputfile = dsprops.get("ProfD", Components.interfaces.nsILocalFile);
   outputfile.append("composite.xsl");
   var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
   fos.init(outputfile, -1, -1, false);
