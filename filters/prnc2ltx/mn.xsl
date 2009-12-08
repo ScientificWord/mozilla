@@ -14,6 +14,10 @@
 -->
 
   <xsl:template match="mml:mn">
+  
+#ifdef DEBUG
+    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:variable name="LaTeX-symbols">
       <xsl:call-template name="chars-to-LaTeX-Math">
@@ -101,6 +105,10 @@
 -->
 
   <xsl:template match="mml:mn" mode="in-text">
+  
+#ifdef DEBUG
+    <xsl:message>Mode=in-text: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
     <xsl:text>$</xsl:text>
     <xsl:apply-templates select="."/>
     <xsl:text>$</xsl:text>

@@ -8,11 +8,15 @@
 
   <xsl:template name="array">
     <xsl:param name="LaTeX-env"/>
+  
+#ifdef DEBUG
+    <xsl:message>array: <xsl:value-of select="name(.)"/></xsl:message>
+#endif
 
     <xsl:variable name="column-counts.tr">
       <xsl:call-template name="cell-counter"/>
     </xsl:variable>
-    <xsl:variable name="column-counts" select="$column-counts.tr"/>
+    <xsl:variable name="column-counts" select="exsl:node-set($column-counts.tr)"/>
 
 <!--
 <xsl:for-each select="$column-counts/ncols">
