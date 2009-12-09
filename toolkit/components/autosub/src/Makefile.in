@@ -6,11 +6,11 @@ VPATH=@srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE = autosub
+MODULE_NAME = tkautosubModule
 LIBRARY_NAME = tkautosub
 SHORT_LIBNAME = tkautosub
 FORCE_STATIC_LIB = 1
 # IS_COMPONENT = 1
-# MODULE_NAME = tkautosub
 LIBXUL_LIBRARY = 1
 
 REQUIRES	= dom \
