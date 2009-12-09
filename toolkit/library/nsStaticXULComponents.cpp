@@ -230,7 +230,10 @@
 #define XULENABLED_MODULES                   \
     MODULE(tkAutoCompleteModule)             \
     MODULE(satchel)                          \
-    MODULE(PKI)
+    MODULE(PKI)                              \
+    MODULE(tkautosubModule)                 \
+    MODULE(keymapModule)                 \
+    MODULE(arrowstateModule)                 
 #else
 #define XULENABLED_MODULES
 #endif
