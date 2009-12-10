@@ -71,7 +71,6 @@
 #include "nsScriptableUnescapeHTML.h"
 #endif
 
-NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiSimpleComputeEngine2, msiSimpleComputeEngine2::GetInstance)
 NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiMuPADEngineWrapper, msiMuPADEngineWrapper::GetInstance)
 NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiAutosub, msiAutosub::GetInstance)
 NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiArrowStateService, msiArrowStateService::GetInstance)
@@ -140,11 +139,11 @@ static const nsModuleComponentInfo components[] =
     MSI_AUTOSUBSTITUTE_CID ,
     MSI_AUTOSUBSTITUTE_CONTRACTID,
     msiAutosubConstructor },
-
-  { "SimpleComputeEngine",
-    MSI_SIMPLECOMPUTEENGINE2_CID ,
-    MSI_SIMPLECOMPUTEENGINE2_CONTRACTID,
-    msiSimpleComputeEngine2Constructor },
+//
+//  { "SimpleComputeEngine",
+//    MSI_SIMPLECOMPUTEENGINE2_CID ,
+//    MSI_SIMPLECOMPUTEENGINE2_CONTRACTID,
+//    msiSimpleComputeEngine2Constructor },
 
   { "MuPADEngineWrapper",
     MSI_MUPADENGINEWRAPPER_CID ,
