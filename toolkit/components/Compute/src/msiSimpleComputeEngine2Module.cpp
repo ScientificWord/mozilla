@@ -68,8 +68,10 @@
  * Components to be registered
  */
 #include "msiSimpleComputeEngine2.h"
+
+NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiSimpleComputeEngine2, msiSimpleComputeEngine2::GetInstance)
 	
-NS_GENERIC_FACTORY_CONSTRUCTOR(msiSimpleComputeEngine2)
+//NS_GENERIC_FACTORY_CONSTRUCTOR(msiSimpleComputeEngine2)
 NS_DECL_CLASSINFO(msiSimpleComputeEngine2)
 	
 //----------------------------------------------------------
