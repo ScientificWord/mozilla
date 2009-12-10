@@ -354,11 +354,11 @@
       <menuseparator/>
       <menu id="chooseDefPrinter" label="&chooseDefPrinter.label;" >
 	      <menupopup id="menuChooseDefPrinterPopup">
-	        <menuitem id="directMode" label="&direct;" checked="true"  persist="default"
+	        <menuitem id="directMode" label="&direct;" persist="default"
             oncommand="return setDefaultPrinter('direct',event);" for="direct" onbroadcast="setDefault(this);">
             <observes id="pmitb7" element="defaultCompiler" attribute="defcomp" />
           </menuitem>
-	        <menuitem id="pdfMode" label="&pdf;"   persist="default"
+	        <menuitem id="pdfMode" label="&pdf;"   persist="default"  checked="true"  
             oncommand="return setDefaultPrinter('pdf',event);" for="pdf" onbroadcast="setDefault(this);">
             <observes id="pmitb8" element="defaultCompiler" attribute="defcomp" />
           </menuitem>
