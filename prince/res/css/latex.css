@@ -130,3 +130,23 @@ mml|mrow[id]:after {
 
 }
 
+.expander {
+  margin-right: 1em;
+  display: inline-block;
+  text-align: center;
+  font-size: large;
+  height: 1.5em;
+  width: 3em;
+}
+  
+
+.collapsible {
+  -moz-binding: url("resource://app/res/xbl/latex.xml#collapsible");
+}
+
+
+
+
+chapter sectiontitle {
+  -moz-binding: url("resource://app/res/xbl/latex.xml#collapsible");
+}
