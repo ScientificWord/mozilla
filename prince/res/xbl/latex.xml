@@ -588,7 +588,118 @@
     </xbl:implementation>
   </xbl:binding>
 
+	<xbl:binding id="collapsible">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button"  class="expander" onclick="document.getBindingParent(this).toggle();">&#x2212;</html:button>
+      <xbl:children />
+    </xbl:content>
+    <xbl:implementation>
+      <xbl:property name="open" readonly="false">
+        <xbl:getter><![CDATA[
+          if (!this.parentNode.hasAttribute("open")) return true;
+          return (this.parentNode.getAttribute("open") == "true");
+          ]]>
+        </xbl:getter>
+        <xbl:setter><![CDATA[
+          this.parentNode.setAttribute("open",val);
+          var buttonsymbol = this.open?"&#x2212;":"+";
+          if (this.parentNode.hasAttribute("subdoc"))
+          {
+            var fname = this.parentNode.getAttribute("subdoc");
+            if (fname.length == 0)
+            {
+              fname = this.textContent.replace(" ","_");
+              dump('fname = '+fname+'\n');
+              this.parentNode.setAttribute("subdoc",fname);
+            }
+           // document.getAnonymousNodes(this)[0].innerHTML=buttonsymbol;
+            if (!this.open) this.saveToDisk(fname);
+            else this.getFromDisk(fname);
+          }
+          ]]>
+        </xbl:setter>
+      </xbl:property>
+      <xbl:method name="toggle">
+        <xbl:body>
+        <![CDATA[
+          if (this.open) this.open = "false";
+          else this.open = "true";
+        ]]>
+        </xbl:body>
+      </xbl:method>
+      <xbl:method name="saveToDisk">
+        <xbl:parameter name="fname"/>
+        <xbl:body>
+        <![CDATA[
+          netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
+          var serializer = new XMLSerializer();
+          var node = this.parentNode;
+          var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"]
+                         .createInstance(Components.interfaces.nsIFileOutputStream);
+          var ioService = Components.classes['@mozilla.org/network/io-service;1']  
+                .getService(Components.interfaces.nsIIOService);  
+          var fileHandler = ioService.getProtocolHandler('file')  
+                  .QueryInterface(Components.interfaces.nsIFileProtocolHandler);  
+          var file = fileHandler.getFileFromURLSpec(node.baseURI);  
+          file = file.parent; // and now it points to the working directory
+          file.append(fname+".xml");
+          if (file.exists()) file.remove(false); 
+          foStream.init(file, 0x02 | 0x08 | 0x20, 0664, 0);   // write, create, truncate
+          serializer.serializeToStream(node, foStream, "");   
+          foStream.close();
+          // need to delete what we have saved
+          // Remove all nodes after the "this" node
+          var nextnode = this.nextSibling;
+          while (nextnode)
+          {
+            node.removeChild(nextnode);
+            nextnode=this.nextSibling;
+          }
+        ]]>
+        </xbl:body>
+      </xbl:method>
+      <xbl:method name="getFromDisk">
+        <xbl:parameter name="fname"/>
+        <xbl:body>
+        <![CDATA[
+          dump("time to load "+fname+"\n");
+          netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
+          var node = this.parentNode;
+          var ioService = Components.classes['@mozilla.org/network/io-service;1']  
+                .getService(Components.interfaces.nsIIOService);  
+          var fileHandler = ioService.getProtocolHandler('file')  
+                  .QueryInterface(Components.interfaces.nsIFileProtocolHandler);  
+          var file = fileHandler.getFileFromURLSpec(node.baseURI);  
+          file = file.parent; // and now it points to the working directory
+          file.append(fname+".xml");
+          // now convert to URL
+          var url = ioService.newFileURI(file);  
+          var fileURL = url.spec;  
 
+          var req = new XMLHttpRequest();
+          req.open("GET", fileURL, false); 
+          req.send(null);
+          // print the name of the root element or error message
+          var dom = req.responseXML;
+          dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" : dom.documentElement.nodeName);
+          var loadedNode = dom.documentElement;
+          var firstChild = loadedNode.firstChild;
+          var importNode = firstChild.nextSibling;
+          while (importNode)
+          {
+            node.appendChild(document.adoptNode(importNode));
+            importNode = firstChild.nextSibling;
+          } 
+          file.remove(false);
+        ]]>
+        </xbl:body>
+      </xbl:method>
+    </xbl:implementation>
+  </xbl:binding>
+  
 </xbl:bindings>
 
 			
