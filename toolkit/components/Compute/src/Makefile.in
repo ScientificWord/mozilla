@@ -7,11 +7,11 @@ VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-MODULE		    = simplecomputeengine
-MODULE_NAME = simplecomputeengineModule
-LIBRARY_NAME	= simplecomputeengine
+MODULE		    = simplecomputeengine2
+MODULE_NAME = simplecomputeengineModule2
+LIBRARY_NAME	= simplecomputeengine2
 SHORT_LIBNAME	= compeng2
-IS_COMPONENT	= 1
+#IS_COMPONENT	= 1
 #EXPORT_LIBRARY = 1
 FORCE_STATIC_LIB = 1
 LIBXUL_LIBRARY = 1
