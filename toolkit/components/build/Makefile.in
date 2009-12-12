@@ -127,7 +127,7 @@ ifdef MOZ_MSI_PRINCE
 # SHARED_LIBRARY_LIBS += ../autocomplete/src/$(LIB_PREFIX)tkautocomplete.$(LIB_SUFFIX) 
 SHARED_LIBRARY_LIBS += \
 	../autosub/src/$(LIB_PREFIX)tkautosub.$(LIB_SUFFIX) \
-	../Compute/src/$(LIB_PREFIX)simplecomputeengine.$(LIB_SUFFIX) \
+	../Compute/src/$(LIB_PREFIX)compeng2.$(LIB_SUFFIX) \
 	../Wrappers/src/$(LIB_PREFIX)wrappers.$(LIB_SUFFIX) \
 	../keymap/src/$(LIB_PREFIX)keymap.$(LIB_SUFFIX) \
 	../arrowstate/src/$(LIB_PREFIX)arrowstate.$(LIB_SUFFIX) \
