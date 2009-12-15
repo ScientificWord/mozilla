@@ -1356,7 +1356,7 @@ function doVarsComputation(math, label, func, title, editorElement, cmd, cmdHand
     theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
                                       editorElement, cmd, cmdHandler, o);
   } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doVarsComputation: [" + e + "]"); return;}
-//  parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+//  parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevariables", "chrome,close,titlebar,modal", o);
 }
 
 function finishVarsComputation(editorElement, o)
@@ -1407,7 +1407,7 @@ function doVarsEvalComputation(math, func, joiner, title, label, editorElement, 
       AlertWithTitle("Error in computeOverlay.js", "Exception in doVarsEvalComputation: [" + e + "]"); 
       return;
   }
-//  parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+//  parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevariables", "chrome,close,titlebar,modal", o);
 }
 
 function finishVarsEvalComputation(editorElement, o)
@@ -1488,7 +1488,7 @@ function doComputeSolveExact(math, vars, editorElement, cmd, cmdHandler)
           theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
                                             editorElement, cmd, cmdHandler, o);
         } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeSolveExact: [" + e + "]"); return;}
-//        parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+//        parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevariables", "chrome,close,titlebar,modal", o);
 //        if (o.Cancel)
 //          return;
 //        vars = runFixup(o.vars);
@@ -1581,7 +1581,7 @@ function doComputePartialFractions(math, vars, editorElement, cmd, cmdHandler)
         } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeSolveExact: [" + e + "]"); return;}
 
 //        var parentWin = msiGetParentWindowForNewDialog(editorElement);
-//        parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+//        parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevariables", "chrome,close,titlebar,modal", o);
 //        if (o.Cancel)
 //          return;
 //        vars = runFixup(o.vars);
@@ -1632,7 +1632,7 @@ function doComputeDivide(math, vars, editorElement, cmd, cmdHandler)
         } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeDivide: [" + e + "]"); return;}
 
 //        var parentWin = msiGetParentWindowForNewDialog(editorElement);
-//        parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+//        parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevariables", "chrome,close,titlebar,modal", o);
         if (o.Cancel)
           return;
         vars = runFixup(o.vars);
@@ -1679,7 +1679,7 @@ function doComputeSort(math, vars, editorElement, cmd, cmdHandler)
       } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeSort: [" + e + "]"); return;}
 
 //      var parentWin = msiGetParentWindowForNewDialog(editorElement);
-//      parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+//      parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevariables", "chrome,close,titlebar,modal", o);
 //        if (o.Cancel)
 //          return;
 //        vars = runFixup(o.vars);
@@ -1725,7 +1725,7 @@ function doComputeCompanionMatrix(math, vars, editorElement, cmd, cmdHandler)
       } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeCompanionMatrix: [" + e + "]"); return;}
 
 //        var parentWin = msiGetParentWindowForNewDialog(editorElement);
-//        parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+//        parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevariables", "chrome,close,titlebar,modal", o);
 //        if (o.Cancel)
 //          return;
 //        vars = runFixup(o.vars);
@@ -1741,7 +1741,7 @@ function doComputeApproxIntegral(math, editorElement)
   o.intervals = 10;
   o.form = 1;
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  parentWin.openDialog("chrome://prince/content/ComputeApproxIntegral.xul", "_blank", "chrome,close,titlebar,modal", o);
+  parentWin.openDialog("chrome://prince/content/ComputeApproxIntegral.xul", "approxint", "chrome,close,titlebar,modal", o);
   if (o.Cancel) {
     return;
   }
@@ -1779,7 +1779,7 @@ function doComputeIterate(editorElement, cmdHandler)
     msiOpenModelessDialog("chrome://prince/content/ComputeMathMLArgDialog.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
                                       editorElement, "cmd_compute_Iterate", cmdHandler, o);
   } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeIterate: [" + e + "]"); return;}
-//  parentWin.openDialog("chrome://prince/content/ComputeMathMLArgDialog.xul", "_blank",  
+//  parentWin.openDialog("chrome://prince/content/ComputeMathMLArgDialog.xul", "mathmlarg",  
 //                    "chrome,close,titlebar,modal", o);
 }
 
@@ -1816,7 +1816,7 @@ function doComputeImplicitDiff(math, editorElement, cmdHandler)
   var o = new Object();
   o.theMath = math;
 //  var parentWin = msiGetParentWindowForNewDialog(editorElement);
-//  parentWin.openDialog("chrome://prince/content/ComputeImplicitDiff.xul", "_blank", "chrome,close,titlebar,modal", o);
+//  parentWin.openDialog("chrome://prince/content/ComputeImplicitDiff.xul", "implicitdiff", "chrome,close,titlebar,modal", o);
   try {
     msiOpenModelessDialog("chrome://prince/content/ComputeImplicitDiff.xul", "_blank", "chrome,close,titlebar,dependent",
                                       editorElement, "cmd_MSIComputeImplicitDiff", cmdHandler, o);
@@ -1886,7 +1886,7 @@ function doComputeSolveODE(math,labelID,func,titleID, vars, editorElement, cmd, 
       } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeSolveODE: [" + e + "]"); return;}
 
 //      var parentWin = msiGetParentWindowForNewDialog(editorElement);
-//      parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+//      parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevariables", "chrome,close,titlebar,modal", o);
 //      if (o.Cancel)
 //        return;
 //      vars = runFixup(o.vars);
@@ -1904,7 +1904,7 @@ function doComputeSolveODESeries(math, editorElement)
   o.title = GetComputeString("ODESeries.title");
 
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  parentWin.openDialog("chrome://prince/content/ComputePowerSeries.xul", "_blank", "chrome,close,titlebar,modal", o);
+  parentWin.openDialog("chrome://prince/content/ComputePowerSeries.xul", "powerseries", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
   var mathstr = GetFixedMath(math);
@@ -1945,7 +1945,7 @@ function doComputePowerSeries(math, editorElement, cmdHandler)
                                       editorElement, "cmd_MSIComputePowerSeries", cmdHandler, o);
   } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputePowerSeries: [" + e + "]"); return;}
 
-//  parentWin.openDialog("chrome://prince/content/ComputeMathMLArgDialog.xul", "_blank", 
+//  parentWin.openDialog("chrome://prince/content/ComputeMathMLArgDialog.xul", "mathmlarg"
 //                    "chrome,close,titlebar,modal", o);
 }
 
@@ -2007,7 +2007,7 @@ function doComputeWronskian(math, vars, editorElement, cmd, cmdHandler)
       } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeWronskian: [" + e + "]"); return;}
 
 //      var parentWin = msiGetParentWindowForNewDialog(editorElement);
-//      parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+//      parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevars", "chrome,close,titlebar,modal", o);
 //      if (o.Cancel)
 //        return;
 //      vars = runFixup(o.vars);
@@ -2052,7 +2052,7 @@ function doComputeCharPoly(math, vars, editorElement, cmd, cmdHandler)
       } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeCharPoly: [" + e + "]"); return;}
 
 //      var parentWin = msiGetParentWindowForNewDialog(editorElement);
-//      parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+//      parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevars", "chrome,close,titlebar,modal", o);
 //      if (o.Cancel)
 //        return;
 //      vars = runFixup(o.vars);
@@ -2072,7 +2072,7 @@ function doComputeFillMatrix(editorElement, cmdHandler)
     msiOpenModelessDialog("chrome://prince/content/ComputeFillMatrix.xul", "_blank", "chrome,close,titlebar,dependent",
                                       editorElement, "cmd_MSIComputeFillMatrix", cmdHandler, o);
   } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeFillMatrix: [" + e + "]"); return;}
-//  parentWin.openDialog("chrome://prince/content/ComputeFillMatrix.xul", "_blank", "chrome,close,titlebar,modal", o);
+//  parentWin.openDialog("chrome://prince/content/ComputeFillMatrix.xul", "fillmatrix", "chrome,close,titlebar,modal", o);
 //  if (o.Cancel)
 //    return;
 
@@ -2112,7 +2112,7 @@ function doComputeMap(math, editorElement, cmd, cmdHandler)
   } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeMap: [" + e + "]"); return;}
 
 //  var parentWin = msiGetParentWindowForNewDialog(editorElement);
-//  parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+//  parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computervars", "chrome,close,titlebar,modal", o);
 }
 
 function finishComputeMap(editorElement, o)
@@ -2170,7 +2170,7 @@ function doComputeMinPoly(math, vars, editorElement, cmd, cmdHandler)
       } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeMinPoly: [" + e + "]"); return;}
 
 //      var parentWin = msiGetParentWindowForNewDialog(editorElement);
-//      parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+//      parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevars", "chrome,close,titlebar,modal", o);
 //      if (o.Cancel)
 //        return;
 //      vars = runFixup(o.vars);
@@ -2188,7 +2188,7 @@ function doComputeRandomMatrix(editorElement)
   o.min  = "-9";
   o.max  = "9";
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  parentWin.openDialog("chrome://prince/content/ComputeRandomMatrix.xul", "_blank", "chrome,close,titlebar,modal", o);
+  parentWin.openDialog("chrome://prince/content/ComputeRandomMatrix.xul", "randommatrix", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
   var mRows = GetNumAsMathML(o.rows);
@@ -2215,7 +2215,7 @@ function doComputeReshape(math, editorElement)
   var o = new Object();
   o.ncols = "2";  // sticky?
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  parentWin.openDialog("chrome://prince/content/ComputeReshape.xul", "_blank", "chrome,close,titlebar,modal", o);
+  parentWin.openDialog("chrome://prince/content/ComputeReshape.xul", "reshape", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
   var mCols = GetNumAsMathML(o.ncols);
@@ -2242,7 +2242,7 @@ function doComputeFitCurve(math, editorElement)
   o.column = 1;
   o.degree = 2;
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  parentWin.openDialog("chrome://prince/content/ComputeFitCurve.xul", "_blank", "chrome,close,titlebar,modal", o);
+  parentWin.openDialog("chrome://prince/content/ComputeFitCurve.xul", "fitcurve", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
   var mathstr = GetFixedMath(math);
@@ -2274,7 +2274,7 @@ function doComputeRandomNumbers(editorElement)
   o.param1     = "";
   o.param2     = "";
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  parentWin.openDialog("chrome://prince/content/ComputeRandomNumbers.xul", "_blank", "chrome,close,titlebar,modal", o);
+  parentWin.openDialog("chrome://prince/content/ComputeRandomNumbers.xul", "randomnumbers", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
   var mTally    = GetNumAsMathML(o.tally);
@@ -2308,7 +2308,7 @@ function doComputeMoment(math, editorElement, cmdHandler)
                                       editorElement, "cmd_MSIComputeMoment", cmdHandler, o);
   } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeMoment: [" + e + "]"); return;}
 
-//  parentWin.openDialog("chrome://prince/content/ComputeMoment.xul", "_blank", "chrome,close,titlebar,modal", o);
+//  parentWin.openDialog("chrome://prince/content/ComputeMoment.xul", "moment", "chrome,close,titlebar,modal", o);
 }
 
 function finishComputeMoment(editorElement, o)
@@ -2353,7 +2353,7 @@ function doComputeQuantile(math, editorElement, cmd, cmdHandler)
   } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeQuantile: [" + e + "]"); return;}
 
 //  var parentWin = msiGetParentWindowForNewDialog(editorElement);
-//  parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,modal", o);
+//  parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevars", "chrome,close,titlebar,modal", o);
 }
 
 function finishComputeQuantile(editorElement, o)
@@ -2396,7 +2396,7 @@ function doComputeDefine(math, editorElement)
       if (ex.result == compsample.needsubinterp) {
         var o = new Object();
         var parentWin = msiGetParentWindowForNewDialog(editorElement);
-        parentWin.openDialog("chrome://prince/content/ComputeInterpretSubscript.xul", "_blank", "chrome,close,titlebar,modal", o);
+        parentWin.openDialog("chrome://prince/content/ComputeInterpretSubscript.xul", "interpretsub", "chrome,close,titlebar,modal", o);
         if (o.Cancel) {
           return;
         }
@@ -2435,7 +2435,7 @@ function doComputeShowDefs(editorElement)
   var o = new Object();
   o.val = out;
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  parentWin.openDialog("chrome://prince/content/ComputeShowDefs.xul", "_blank", "chrome,close,titlebar,modal", o);
+  parentWin.openDialog("chrome://prince/content/ComputeShowDefs.xul", "showdefs", "chrome,close,titlebar,modal", o);
 }
 
 function doComputeClearDefs()
@@ -2469,7 +2469,7 @@ function doComputeSetBasisVars(editorElement, cmd)
   } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeMinPoly: [" + e + "]"); return;}
 
 //  var parentWin = msiGetParentWindowForNewDialog(editorElement);
-//  parentWin.openDialog("chrome://prince/content/ComputeVarList.xul", "_blank", "chrome,close,titlebar,modal", o);
+//  parentWin.openDialog("chrome://prince/content/ComputeVarList.xul", "varlist", "chrome,close,titlebar,modal", o);
 //  if (o.Cancel) {
 //    return;
 //  }
@@ -2512,7 +2512,7 @@ function doComputeUserSettings()
   o.j_imaginary  = compsample.getUserPref(compsample.Input_j_Imaginary);
   o.e_exp        = compsample.getUserPref(compsample.Input_e_Euler);
   
-  window.openDialog("chrome://prince/content/ComputeUserSettings.xul", "_blank", "chrome,close,titlebar,modal", o);
+  window.openDialog("chrome://prince/content/ComputeUserSettings.xul", "computeusersettings", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
 
@@ -2555,7 +2555,7 @@ function doComputeSettings()
   o.logReceived = msiComputeLogger.logMMLReceived;
   o.engSent     = msiComputeLogger.logEngSent;
   o.engReceived = msiComputeLogger.logEngReceived;
-  window.openDialog("chrome://prince/content/ComputeSettings.xul", "_blank", "chrome,close,titlebar,modal", o);
+  window.openDialog("chrome://prince/content/ComputeSettings.xul", "computesettings", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
 
@@ -2575,7 +2575,7 @@ function doComputeSwitchEngines()
 
   var o = new Object();
   o.engine      = compengine;
-  window.openDialog("chrome://prince/content/ComputeSwitchEngines.xul", "_blank", "chrome,close,titlebar,modal", o);
+  window.openDialog("chrome://prince/content/ComputeSwitchEngines.xul", "switchengines", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
 

@@ -796,7 +796,7 @@ function GetGraphColor (attributeName)
      colorObj.TextColor = oldcolor;
      colorObj.PageColor = oldcolor;
   }
-  window.openDialog("chrome://editor/content/EdColorPicker.xul", "_blank", "chrome,close,titlebar,modal", "", colorObj);
+  window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "chrome,close,titlebar,modal", "", colorObj);
 
   // User canceled the dialog
   if (colorObj.Cancel)
