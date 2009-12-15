@@ -498,7 +498,7 @@ function graphObjectClickEvent ()
         graph.extractGraphAttributes (element);
         // non-modal dialog, the return is immediate
         window.openDialog ("chrome://prince/content/ComputeVcamSettings.xul",
-                           "", "chrome,close,titlebar,dependent", graph, element, currentDOMGs);
+                           "vcamsettings", "chrome,close,titlebar,dependent", graph, element, currentDOMGs);
       }
     }
   }

@@ -492,7 +492,7 @@ var msiInsertSubdocument =
 function doDocFormatDlg()
 {
   var editorElement = document.getElementById("content-frame");
-  window.openDialog("chrome://prince/content/typesetDocFormat.xul", "_blank", 
+  window.openDialog("chrome://prince/content/typesetDocFormat.xul", "docformat", 
     "chrome,close,resizable, titlebar", editorElement);
 //  if (!doDocFormatData.Cancel)
 //  {
@@ -538,7 +538,7 @@ function doPreambleDlg()
   preambleData.preambleText = preambleTeXNode.textContent;
 
 
-  window.openDialog("chrome://prince/content/typesetPreamble.xul", "_blank", "chrome,close,titlebar,modal", preambleData);
+  window.openDialog("chrome://prince/content/typesetPreamble.xul", "preamble", "chrome,close,titlebar,modal", preambleData);
   
   if (!preambleData.Cancel)
   {
@@ -558,7 +558,7 @@ function doBibChoiceDlg()
   bibChoiceData.bBibTeX = false;
   if (gBibChoice == "BibTeX")  //a kludge - must get hooked up to editor to really work
     bibChoiceData.bBibTeX = true;
-  window.openDialog("chrome://prince/content/typesetBibChoice.xul", "_blank", "chrome,close,titlebar,modal", bibChoiceData);
+  window.openDialog("chrome://prince/content/typesetBibChoice.xul", "bibchoice", "chrome,close,titlebar,modal", bibChoiceData);
   if (!bibChoiceData.Cancel)
   {
     var choiceStr = "manual bibliography";
@@ -579,7 +579,7 @@ function doOptionsAndPackagesDlg()
   options.docClassName = "sebase";  //hard-wired, for now
   options.docClassOptions = "";
   options.packages = new Array();
-  window.openDialog("chrome://prince/content/typesetOptionsAndPackages.xul", "_blank", "chrome,close,titlebar,modal", options);
+  window.openDialog("chrome://prince/content/typesetOptionsAndPackages.xul", "optionsandpackages", "chrome,close,titlebar,modal", options);
   if (!options.Cancel)
   {
     var packagesOptionsStr = options.docClassName;
@@ -601,7 +601,7 @@ function doOutputChoiceDlg()
 {
   var outputChoiceData = new Object();
   outputChoiceData.outputChoice = "dvi";
-  window.openDialog("chrome://prince/content/typesetOutputChoice.xul", "_blank", "chrome,close,titlebar,modal", outputChoiceData);
+  window.openDialog("chrome://prince/content/typesetOutputChoice.xul", "outputchoice", "chrome,close,titlebar,modal", outputChoiceData);
   if (!outputChoiceData.Cancel)
   {
     alert("Output Choice Dialog returned " + outputChoiceData.outputChoice + "; needs to be hooked up to do something!");
@@ -679,7 +679,7 @@ function doInsertCitation(editorElement, command, commandHandler)
     bibCiteData.bBibEntryOnly = false;
     var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibTeXCitation.xul", "_blank", "chrome,close,titlebar,dependent",
                                                      editorElement, "cmd_MSIinsertCitationCmd", commandHandler, bibCiteData);
-//    window.openDialog("chrome://prince/content/typesetBibTeXCitation.xul", "_blank", "chrome,close,titlebar,modal", bibCiteData);
+//    window.openDialog("chrome://prince/content/typesetBibTeXCitation.xul", "bibtexcitation", "chrome,close,titlebar,modal", bibCiteData);
 //    if (!bibCiteData.Cancel)
 //    {
 //      alert("BibTeX Citation Dialog returned key: [" + bibCiteData.key + "] from file [" + bibCiteData.databaseFile + "], remark: [" + bibCiteData.remark + "]; needs to be hooked up to do something!");
@@ -697,7 +697,7 @@ function doInsertCitation(editorElement, command, commandHandler)
 
     var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetManualCitation.xul", "_blank", "chrome,close,titlebar,dependent",
                                                            editorElement, "cmd_MSIinsertCitationCmd", commandHandler, manualCiteData);
-//    window.openDialog("chrome://editor/content/typesetManualCitation.xul", "_blank", "chrome,close,titlebar,modal", manualCiteData);
+//    window.openDialog("chrome://editor/content/typesetManualCitation.xul", "manualcitation", "chrome,close,titlebar,modal", manualCiteData);
 //    if (!manualCiteData.Cancel)
 //    {
 //      alert("Manual Citation Dialog returned key: [" + manualCiteData.key + "], remark: [" + manualCiteData.remark + "]; needs to be hooked up to do something!");
@@ -724,7 +724,7 @@ function doInsertBibliography()
   var bibliographyData = new Object();
   bibliographyData.databaseFile = "";
   bibliographyData.styleFile = "";
-  window.openDialog("chrome://prince/content/typesetBibTeXBibliography.xul", "_blank", "chrome,close,titlebar,modal", bibliographyData);
+  window.openDialog("chrome://prince/content/typesetBibTeXBibliography.xul", "bibtexbiblio", "chrome,close,titlebar,modal", bibliographyData);
   if (!bibliographyData.Cancel)
   {
     alert("BibTeX Bibliography Dialog returned bibliography file: [" + bibliographyData.databaseFile + "], style file: [" + bibliographyData.styleFile + "]; needs to be hooked up to do something!");

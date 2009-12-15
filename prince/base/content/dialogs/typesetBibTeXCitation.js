@@ -210,7 +210,7 @@ function doViewKeys()
   keysData.key = gDialog.key;  //a string
   keysData.baseDirectory = gDialog.bibTeXDir;
 
-  window.openDialog("chrome://prince/content/typesetBibTeXKeys.xul", "_blank", "chrome,close,titlebar,modal", keysData);
+  window.openDialog("chrome://prince/content/typesetBibTeXKeys.xul", "bibtexkeys", "chrome,close,titlebar,modal", keysData);
   if (!keysData.Cancel)
   {
     gDialog.key = keysData.key;

@@ -107,7 +107,7 @@ function doGoNative()
 {
   var optionsData = new Object();
   optionsData.options = gDialog.selectedOptionsArray;
-  window.openDialog("chrome://prince/content/typesetNativeStyleOptions.xul", "_blank", "chrome,close,titlebar,modal", optionsData);
+  window.openDialog("chrome://prince/content/typesetNativeStyleOptions.xul", "nativestyleoptions", "chrome,close,titlebar,modal", optionsData);
   if (!optionsData.Cancel)
   {
     gDialog.selectedOptionsArray = optionsData.options;
