@@ -225,3 +225,6 @@ static const nsModuleComponentInfo components[] =
 };
 
 NS_IMPL_NSGETMODULE(nsToolkitCompsModule, components)
+NS_IMPL_NSGETMODULE(arrowstate, components)
+NS_IMPL_NSGETMODULE(tkAutosubModule, components)
+NS_IMPL_NSGETMODULE(keymap, components)
