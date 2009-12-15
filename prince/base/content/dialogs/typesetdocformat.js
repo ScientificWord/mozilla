@@ -1915,7 +1915,7 @@ function textEditor()
   sectitleformat.refresh = refresh;
   sectitleformat.destNode = getBaseNodeForIFrame();
   sectitleformat.currentLevel = secname.toLowerCase();
-  window.openDialog("chrome://prince/content/sectiontext.xul", "_blank", "modal,chrome,close,titlebar,alwaysRaised", sectitleformat,
+  window.openDialog("chrome://prince/content/sectiontext.xul", "sectiontext", "modal,chrome,close,titlebar,alwaysRaised", sectitleformat,
       secname, units);																									 
   displayTextForSectionHeader();
 }
@@ -2091,7 +2091,7 @@ function addrule()
   nextbox.setAttribute("role","rule");
   nextbox.setAttribute("hidden","false");
   nextbox.setAttribute("style","height:3px;background-color:black;");
-  window.openDialog("chrome://prince/content/addruleforsection.xul", "_blank", "chrome,close,titlebar,alwaysRaised",nextbox, "black", sectionUnit);
+  window.openDialog("chrome://prince/content/addruleforsection.xul", "addruleforsection", "chrome,close,titlebar,alwaysRaised",nextbox, "black", sectionUnit);
 }
 
 
@@ -2114,7 +2114,7 @@ function addspace()
   nextbox.setAttribute("hidden","false");
   nextbox.setAttribute("style","height:6px;background-color:silver;");
 	window.openDialog("chrome://prince/content/vspaceforsection.xul", 
-	  "_blank", "chrome,close,titlebar,alwaysRaised",nextbox, sectionUnit);
+	  "vspaceforsection", "chrome,close,titlebar,alwaysRaised",nextbox, sectionUnit);
 }
 
 function removeruleorspace()
@@ -2137,10 +2137,10 @@ function reviseruleorspace(element)
 {
   if (element.getAttribute("role")=="rule")
     window.openDialog("chrome://prince/content/addruleforsection.xul", 
-      "_blank", "chrome,close,titlebar,alwaysRaised",element, element.getAttribute("color"), sectionUnit);
+      "addruleforsection", "chrome,close,titlebar,alwaysRaised",element, element.getAttribute("color"), sectionUnit);
   else if (element.getAttribute("role")=="vspace")
     window.openDialog("chrome://prince/content/vspaceforsection.xul", 
-      "_blank", "chrome,close,titlebar,alwaysRaised",element, sectionUnit);
+      "vspaceforsection", "chrome,close,titlebar,alwaysRaised",element, sectionUnit);
 }                                                                                                          
   
     

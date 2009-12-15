@@ -1713,7 +1713,7 @@ function msiEditorNewPlaintext()
     var editorElement = msiGetActiveEditorElement();
     var parentWindow = msiGetWindowContainingEditor(editorElement);
     parentWindow.openDialog( "chrome://editor/content/TextEditorAppShell.xul",
-                             "_blank",
+                             "plaintext",
                              "chrome,dialog=no,all",
                              "about:blank");
   }
@@ -2482,7 +2482,7 @@ function msiEditorSelectColor(colorType, mouseEvent, editorElement)
 
     // Launch the ColorPicker dialog
     // TODO: Figure out how to position this under the color buttons on the toolbar
-    window.openDialog("chrome://editor/content/EdColorPicker.xul", "_blank", "chrome,close,titlebar,modal", "", editorElement.mColorObj);
+    window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "chrome,close,titlebar,modal", "", editorElement.mColorObj);
 
     // User canceled the dialog
     if (editorElement.mColorObj.Cancel)
@@ -3171,7 +3171,7 @@ function handleSourceParseError(errorMsg) // returns true if the user wants to g
     var data = {msg: errorMsg,
                 result: false };
     parentWindow.openDialog( "chrome://prince/content/sourceparseerror.xul",
-                             "_blank",
+                             "parseerror",
                              "chrome,resizable,titlebar,modal",
                              data);
     return data.result;
@@ -7276,7 +7276,7 @@ function msiEditorInsertOrEditTable(insertAllowed, editorElement, command, comma
     var theData = {reviseCommand : command, reviseData : reviseObjectData};
     msiOpenModelessDialog("chrome://prince/content/msiEdTableProps.xul", "_blank", "chrome,resizable,close,titlebar,dependent", editorElement,
                                          command, commandHandler, theData);
-//      window.openDialog("chrome://editor/content/EdTableProps.xul", "_blank", "chrome,close,titlebar,modal", "","TablePanel");
+//      window.openDialog("chrome://editor/content/EdTableProps.xul", "tableprops", "chrome,close,titlebar,modal", "","TablePanel");
     editorElement.contentWindow.focus();
   } 
   else if (insertAllowed)
@@ -7305,7 +7305,7 @@ function msiEditorInsertTable(editorElement, command, commandHandler)
 //  msiOpenModelessDialog("chrome://editor/content/EdInsertTable.xul", "_blank", "chrome,close,titlebar,dependent", editorElement, 
 //                                         command, commandHandler, "")
 
-  window.openDialog("chrome://editor/content/EdInsertTable.xul", "_blank", "chrome,close,titlebar,modal", "");
+  window.openDialog("chrome://editor/content/EdInsertTable.xul", "inserttable", "chrome,close,titlebar,modal", "");
   editorElement.focus();
 }
 
@@ -7324,7 +7324,7 @@ function msiEditorTableCellProperties(editorElement)
     if (cell) {
       // Start Table Properties dialog on the "Cell" panel
       //HERE USE MODELESS DIALOG FUNCTIONALITY!
-      window.openDialog("chrome://editor/content/EdTableProps.xul", "_blank", "chrome,close,titlebar,modal", "", "CellPanel");
+      window.openDialog("chrome://editor/content/EdTableProps.xul", "tableprops", "chrome,close,titlebar,modal", "", "CellPanel");
       editorElement.focus();
     }
   } catch (e) {}
@@ -7471,7 +7471,7 @@ function msiGetNumberOfContiguousSelectedColumns(editorElement)
 //    else
 //    {
 //      // The dialog will set window.InsertCharWindow to itself
-//      window.openDialog("chrome://editor/content/EdInsertChars.xul", "_blank", "chrome,close,titlebar", "");
+//      window.openDialog("chrome://editor/content/EdInsertChars.xul", "insertchars", "chrome,close,titlebar", "");
 //    }
 //  }
 //}
@@ -8582,7 +8582,7 @@ function openStructureTagDialog(tagname)
 {
  var structureData= {tagName: tagname};
  openDialog( "chrome://prince/content/structureProperties.xul",
-                             "",
+                             "structureproperties",
                              "",
                              structureData);
 }
@@ -8591,7 +8591,7 @@ function openParaTagDialog(tagname)
 {
  var paragraphData= {tagName: tagname};
   openDialog( "chrome://prince/content/paragraphProperties.xul",
-                             "",
+                             "paraproperties",
                              "",
                              paragraphData);
 }
