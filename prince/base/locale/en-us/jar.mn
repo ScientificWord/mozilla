@@ -27,6 +27,7 @@ en-US.jar:
   locale/typesetOutputChoice.dtd          (dialogs/typesetOutputChoice.dtd)
   locale/typesetPreamble.dtd              (dialogs/typesetPreamble.dtd)
   locale/typesetStyleOptions.dtd          (dialogs/typesetStyleOptions.dtd)
+  locale/structureProperties.dtd          (dialogs/structureProperties.dtd)
   locale/typesetDialogs.properties        (typesetDialogs.properties)
   locale/Binomial.dtd                     (dialogs/Binomial.dtd)
   locale/Brackets.dtd                     (dialogs/Brackets.dtd)
