@@ -339,7 +339,7 @@ function onAdvancedEdit()
     window.AdvancedEditOK = false;
     // Open the AdvancedEdit dialog, passing in the element to be edited
     //  (the copy named "globalElement")
-    window.openDialog("chrome://editor/content/EdAdvancedEdit.xul", "_blank", "chrome,close,titlebar,modal,resizable=yes", "", globalElement);
+    window.openDialog("chrome://editor/content/EdAdvancedEdit.xul", "advancededit", "chrome,close,titlebar,modal,resizable=yes", "", globalElement);
     window.focus();
     if (window.AdvancedEditOK)
     {
