@@ -155,15 +155,18 @@ function addSectionProperties(editorElement, contextMenuNode)
 //        createContextPropertiesItem(tag,"Properties of "+tag,tag, contextMenuNode,"paratag");
       }
     }
+
     for (i = 0, length = parentTagArray.length; i < length; i++)
     {
       tag = parentTagArray[i].replace(/\s-\s\w*$/,"");
+      dump("tag = "+tag+", element.localName = "+element.localName+"\n");
       if (/\w/.test(tag) && editor.tagListManager.getTagInClass("structtag", tag, null))
       {
         labelString = labelString.replace(/%tagname%/, tag);
-        createContextPropertiesItem(tag, labelString, tag, contextMenuNode, "structtag");
+        createContextPropertiesItem(tag, labelString, element, contextMenuNode, "structtag");
 //        createContextPropertiesItem(tag,"Properties of "+tag,tag, contextMenuNode, "structtag");
       }
+      element = element.parentNode;
     }
   }
 }

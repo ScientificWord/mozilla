@@ -1,12 +1,26 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://editor/skin/" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/structureproperties.dtd">
+
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-    id="structurePropertiesDlg"
+    title="&windowTitle.label;"
+    id="structurepropertiesdlg"
+    onload="startup();"
     buttons="accept,cancel"
     buttonlabelcancel="Cancel" buttonlabelaccept="OK"
-    ondialogaccept="{accept action}" ondialogcancel="{cancel action}"
+    ondialogaccept="return onAccept();" ondialogcancel="return onCancel();"
     persist="screenX screenY width height">
-  <label>Section Properties for ##</label>
+
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/structureproperties.js"/>
+
  
   <tabbox id="tabboxid" flex="1">
     <tabs>
@@ -16,8 +30,13 @@
     <tabpanels flex="1">
       <tabpanel>
         <vbox>
-          <checkbox id="subdocCheckbox" label="Keep as an included subdocument?" checked="false" persist="checked"/>
-          <checkbox id="numberedCheckbox" label="Number this section?" checked="true" persist="checked"/>          
+          <hbox flex="1"/>
+          <checkbox id="subdocCheckbox" checked="true" label="&subdocCheckBox.label;" tooltip="&subdocCheckBox.tooltip;" 
+            oncommand="subdocCheckChanged(this);"/>
+          <label id="textboxlabel" disabled="true" control="subdocFileName" value="&subdocFileName.label;"/>
+          <textbox id="subdocFileName" disabled="true" onchange="filenameChanged(this);"/>
+          <checkbox id="numberedCheckbox" label="&numberedCheckbox.label;" checked="true" /> 
+          <hbox flex="4"/>         
         </vbox>        
       </tabpanel>        
       <tabpanel>
