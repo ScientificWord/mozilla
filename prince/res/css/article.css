@@ -40,6 +40,10 @@ chapter[open="false"]>* {
   display: none;
 }
 
+section[open="false"]>* {
+  display: none;
+}
+
 chapter sectiontitle, chapter[open="true"] sectiontitle, chapter[open="false"] sectiontitle {
   display: block;
   font-size: x-large;
@@ -65,7 +69,7 @@ section {
   counter-reset: theorem;
 }  
 
-section>*:first-child {
+section sectiontitle, section[open="true"] sectiontitle, section[open="false"] sectiontitle {
   display: block;
   margin: 10pt 10pt 0pt 0pt;
   margin-left: 10pt;
