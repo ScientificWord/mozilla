@@ -1,0 +1,9 @@
+<!-- Copyright (c) 2009 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "## properties">
+<!ENTITY structureproperties.label "## properties">
+<!ENTITY subdocCheckBox.label "Keep as an included subdocument">
+<!ENTITY subdocCheckBox.tooltip "">
+<!ENTITY subdocFileName.label "File name for subdocument">
+<!ENTITY numberedCheckbox.label "Number this ##">
+
