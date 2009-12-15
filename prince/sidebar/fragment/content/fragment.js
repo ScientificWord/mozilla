@@ -301,7 +301,7 @@ function renameFragment(tree)
   data.role = "renamefrag";
   savedata.description = data.description = descriptionOfItem(row);
   dump('found item '+s+'\n');
-  window.openDialog("chrome://prince/content/fragmentname.xul", "", "modal,chrome,resizable=yes", data);
+  window.openDialog("chrome://prince/content/fragmentname.xul", "fragmentname", "modal,chrome,resizable=yes", data);
   var nameChanged = ((data.filename.length > 0) && (savedata.filename != data.filename));
   var descChanged = (data.description != savedata.description);
   if (!nameChanged && !descChanged) return;
@@ -371,7 +371,7 @@ function newFragmentFolder()
   for (j = 0; j < pieces.length; j++) file.append(pieces[j]);
   var data = new Object();
   data.role = "newfolder";
-  window.openDialog("chrome://prince/content/fragmentname.xul", "", "modal,chrome,resizable=yes", data);
+  window.openDialog("chrome://prince/content/fragmentname.xul", "fragmentname", "modal,chrome,resizable=yes", data);
   if (data.filename.length > 0)
   {
     dump('new name is '+data.filename+'\n');
@@ -579,7 +579,7 @@ var fragObserver =
       var data = new Object();
       data.role = "newfrag";
       data.description = "Enter a short description of what the fragment does."
-      window.openDialog("chrome://prince/content/fragmentname.xul", "", "modal,chrome,resizable=yes", data);
+      window.openDialog("chrome://prince/content/fragmentname.xul", "fragmentname", "modal,chrome,resizable=yes", data);
       if (data.filename.length > 0)
       {
 // Now we collect several data formats

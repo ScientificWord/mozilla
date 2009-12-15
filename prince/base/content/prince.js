@@ -9,7 +9,7 @@ var currPDFfileLeaf = "main.pdf";
 Components.utils.import("resource://app/modules/macroArrays.jsm");
 
 function goAboutDialog() {
-  window.openDialog("chrome://prince/content/aboutDialog.xul", GetString("About"), "modal,chrome,resizable=yes");
+  window.openDialog("chrome://prince/content/aboutDialog.xul", "about", "modal,chrome,resizable=yes");
 }
 
 function getBrowser()
@@ -616,7 +616,7 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
   passData.passCount = 3;  // replace this with a realistic guess.
   var i;
   dump("Opening dialog\n");
-  window.openDialog("chrome://prince/content/passes.xul", GetString("About"), "chrome,modal=yes,resizable=yes,alwaysRaised=yes",
+  window.openDialog("chrome://prince/content/passes.xul","about", "chrome,modal=yes,resizable=yes,alwaysRaised=yes",
     passData);
 //    There was some commented code here for using the pipe-console object from the enigmail project. We are not 
 //    using it in 6.0, and XulRunner is getting a better implementation, which we will use later.

@@ -108,7 +108,7 @@ function goNative()
 {
   var packagesData = new Object();
   packagesData.packages = gDialog.packages;
-  window.openDialog("chrome://prince/content/typesetNativePackages.xul", "_blank", "chrome,close,titlebar,modal", packagesData);
+  window.openDialog("chrome://prince/content/typesetNativePackages.xul", "nativepackages", "chrome,close,titlebar,modal", packagesData);
   if (!packagesData.Cancel)
   {
     gDialog.packages = packagesData.packages;
@@ -123,7 +123,7 @@ function doModifyDialog()
 //  gDialog.selectedOptionsStr = data.optionsStr;
 
   classOptionData.options = gDialog.docClassOptions;
-  window.openDialog("chrome://prince/content/typesetStyleOptions.xul", "_blank", "chrome,close,titlebar,modal", classOptionData);
+  window.openDialog("chrome://prince/content/typesetStyleOptions.xul", "styleoptions", "chrome,close,titlebar,modal", classOptionData);
   if (!classOptionData.Cancel)
   {
     gDialog.docClassOptions = classOptionData.options;
@@ -169,7 +169,7 @@ function addPackage()
   var addPackageData = new Object();
   addPackageData.packages = gDialog.packages;
   addPackageData.docClassName = gDialog.docClassName;
-  window.openDialog("chrome://prince/content/typesetAddPackage.xul", "_blank", "chrome,close,titlebar,modal", addPackageData);
+  window.openDialog("chrome://prince/content/typesetAddPackage.xul", "addpackage", "chrome,close,titlebar,modal", addPackageData);
   if (!addPackageData.Cancel)
   {
     var newPackage = addPackageData.newPackage;
@@ -219,7 +219,7 @@ function modifyPackage(packageName)
     packageData.theName = gDialog.packages[whichPackage].packageName;
   }
 
-  window.openDialog("chrome://prince/content/typesetStyleOptions.xul", "_blank", "chrome,close,titlebar,modal", packageData);
+  window.openDialog("chrome://prince/content/typesetStyleOptions.xul", "styleoptions", "chrome,close,titlebar,modal", packageData);
   if (!packageData.Cancel)
   {
     gDialog.packages[whichPackage].setOptions( packageData.options );

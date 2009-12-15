@@ -2115,8 +2115,8 @@ function doMathnameDlg(editorElement, commandID, commandHandler)
 {
   var o = new Object();
   o.val = "";
-//  window.openDialog("chrome://prince/content/MathmlMathname.xul", "_blank", "chrome,close,titlebar,modal", o);
-  msiOpenModelessDialog("chrome://prince/content/mathmlMathName.xul", "_blank", "chrome,close,titlebar,dependent",
+//  window.openDialog("chrome://prince/content/MathmlMathname.xul", "mathname", "chrome,close,titlebar,modal", o);
+  msiOpenModelessDialog("chrome://prince/content/mathmlMathName.xul", "mathname", "chrome,close,titlebar,dependent",
                                         editorElement, commandID, commandHandler, o);
 }
 
@@ -2209,7 +2209,7 @@ function doMatrixDlg(editorElement)
   o.rows = 0;
   o.cols = 0;
   o.rowsignature = "";
-  window.openDialog("chrome://prince/content/mathmlMatrix.xul", "_blank", "chrome,close,titlebar,modal", o);
+  window.openDialog("chrome://prince/content/mathmlMatrix.xul", "matrix", "chrome,close,titlebar,modal", o);
   if (o.rows > 0 && o.cols > 0)
     insertmatrix(o.rows, o.cols, o.rowsignature, editorElement);
 }
@@ -2469,7 +2469,7 @@ function doColorsDlg(editorElement)
     editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
 
-  window.openDialog("chrome://prince/content/MathColors.xul", "_blank", "chrome,close,titlebar,modal", msiColorObj);
+  window.openDialog("chrome://prince/content/MathColors.xul", "mathcolors", "chrome,close,titlebar,modal", msiColorObj);
   if (msiColorObj.Cancel)
     return;
 
@@ -2503,8 +2503,8 @@ function doBracketsDlg(leftBrack, rightBrack, sep, commandID, editorElement, com
   bracketData.leftBracket = ""; //leftBrack;
   bracketData.rightBracket = ""; //rightBrack;
   bracketData.separator = sep;
-//  window.openDialog("chrome://prince/content/Brackets.xul", "_blank", "chrome,close,titlebar,modal", bracketData);
-  msiOpenModelessDialog("chrome://prince/content/Brackets.xul", "_blank", "chrome,close,titlebar,dependent",
+//  window.openDialog("chrome://prince/content/Brackets.xul", "brackets", "chrome,close,titlebar,modal", bracketData);
+  msiOpenModelessDialog("chrome://prince/content/Brackets.xul", "brackets", "chrome,close,titlebar,dependent",
                                         editorElement, commandID, commandHandler, bracketData);
 //  if (bracketData.Cancel)
 //    return;
@@ -2523,8 +2523,8 @@ function doBinomialsDlg(leftBrack, rightBrack, line, size, commandID, editorElem
     binomialData.withDelimiters = true;
   binomialData.lineSpec = line;
   binomialData.sizeSpec = size;
-//  window.openDialog("chrome://prince/content/Binomial.xul", "_blank", "chrome,close,titlebar,modal", binomialData);
-  msiOpenModelessDialog("chrome://prince/content/Binomial.xul", "_blank", "chrome,close,titlebar,dependent",
+//  window.openDialog("chrome://prince/content/Binomial.xul", "binomial", "chrome,close,titlebar,modal", binomialData);
+  msiOpenModelessDialog("chrome://prince/content/Binomial.xul", "binomial", "chrome,close,titlebar,dependent",
                                         editorElement, commandID, commandHandler, binomialData);
 //  if (binomialData.Cancel)
 //    return;
@@ -2548,7 +2548,7 @@ function doOperatorsDlg(operatorStr, limitPlacement, size, commandID, editorElem
   operatorData.sizeSpec = size;
   msiOpenModelessDialog("chrome://prince/content/Operators.xul", "_blank", "chrome,close,titlebar,dependent",
                                         editorElement, commandID, commandHandler, operatorData);
-//  window.openDialog("chrome://prince/content/Operators.xul", "_blank", "chrome,close,titlebar,modal", operatorData);
+//  window.openDialog("chrome://prince/content/Operators.xul", "operators", "chrome,close,titlebar,modal", operatorData);
 //  if (operatorData.Cancel)
 //    return;
 //  insertOperator(operatorData.operator, operatorData.limitsSpec, operatorData.sizeSpec, editorElement);
@@ -2563,7 +2563,7 @@ function doDecorationsDlg(decorationAboveStr, decorationBelowStr, decorationArou
   decorationData.decorationAroundStr = decorationAroundStr;
   msiOpenModelessDialog("chrome://prince/content/Decorations.xul", "_blank", "chrome,close,titlebar,dependent",
                                         editorElement, commandID, commandHandler, decorationData);
-//  window.openDialog("chrome://prince/content/Decorations.xul", "_blank", "chrome,close,titlebar,modal", decorationData);
+//  window.openDialog("chrome://prince/content/Decorations.xul", "decorations", "chrome,close,titlebar,modal", decorationData);
 //  if (decorationData.Cancel)
 //    return;
 //  insertDecoration(decorationData.decorationAboveStr, decorationData.decorationBelowStr, decorationData.decorationAroundStr, editorElement);

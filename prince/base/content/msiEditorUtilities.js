@@ -3137,7 +3137,7 @@ function createWorkingDirectory(documentfile)
 ///          var result = prompts.confirmEx(window, GetString("useWIP.title"), "Que pasa?",//GetString("useWIP.desription"),
 ///              buttonflags, GetString("useWIP.accept"), GetString("useWIP.cancel"),null, null, check);
         var data = {value: false};
-        var result = window.openDialog("chrome://prince/content/useWorkInProgress.xul", "_blank", "chrome,titlebar,modal", data);
+        var result = window.openDialog("chrome://prince/content/useWorkInProgress.xul", "workinprogress", "chrome,titlebar,modal", data);
   //      alert("Dialog returned "+result+"\n");
         if (data.value)
         {
