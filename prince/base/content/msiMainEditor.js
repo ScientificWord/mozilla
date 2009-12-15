@@ -611,7 +611,7 @@ function msiEditorWindowOnFocus(event)
 function UpdateTOC()
 {
   window.openDialog("chrome://editor/content/EdInsertTOC.xul",
-                    "_blank", "chrome,close,modal,titlebar");
+                    "inserttoc", "chrome,close,modal,titlebar");
   window._content.focus();
 }
 
