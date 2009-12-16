@@ -1,3 +1,8 @@
+# Copyright (C) 2007 MacKichan Software, Inc. All
+# Rights Reserved.
+#
+# Contributor(s): 
+#
 
 DEPTH = ../../..
 topsrcdir = @top_srcdir@
