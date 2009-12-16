@@ -9,6 +9,8 @@
 #include "nsIPrefBranch.h"
 #include "nsIPrefBranchInternal.h"
 #include "nsIPrefService.h"
+#include "nsIGenericFactory.h"
+#include "nsToolkitCompsCID.h"
 
 
 PRUint32 msiArrowStateService::minArrowCode = (PRUint32)nsIDOMKeyEvent::DOM_VK_LEFT;
@@ -311,3 +313,18 @@ NS_IMETHODIMP msiArrowStateService::SetFindBuffer(const nsAString & aFindBuffer)
     mstrFindBuffer = aFindBuffer;
     return NS_OK;
 }
+
+
+NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiArrowStateService, msiArrowStateService::GetInstance)
+
+static const nsModuleComponentInfo gComponents[] =
+{
+  { 
+    "Arrow state Service",
+    MSI_ARROWSTATE_SERVICE_CID,
+    MSI_ARROWSTATE_SERVICE_CONTRACTID,
+    msiArrowStateServiceConstructor
+  }
+};
+
+NS_IMPL_NSGETMODULE(arrowstateModule, gComponents)
