@@ -9,13 +9,15 @@
 #include "nsILocalFile.h"
 #include "nsIConverterOutputStream.h"
 #include "nsComponentManagerUtils.h"
-#include "nsComponentManagerUtils.h"
 #include "nsDirectoryServiceUtils.h"
+#include "nsIGenericFactory.h"
+#include "nsToolkitCompsCID.h"
 
 #define NS_XMLDOCUMENT_CID                        \
 { /* a6cf9063-15b3-11d2-932e-00805f8add32 */      \
  0xa6cf9063, 0x15b3, 0x11d2,                      \
  {0x93, 0x2e, 0x00, 0x80, 0x5f, 0x8a, 0xdd, 0x32}}
+ 
  
 msiKeyMap* msiKeyMap::sInstance = NULL;
 
@@ -45,6 +47,20 @@ msiKeyMap::GetInstance()
 
   return sInstance;
 }
+
+NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiKeyMap, msiKeyMap::GetInstance)
+
+static const nsModuleComponentInfo components[] =
+{
+  { 
+    "Key Mapping Service",
+    MSI_KEYMAP_CID,
+    MSI_KEYMAP_CONTRACTID,
+    msiKeyMapConstructor
+  }
+};
+
+NS_IMPL_NSGETMODULE(keymapModule, components)
 
 void 
 msiKeyMap::ReleaseInstance()
@@ -677,4 +693,3 @@ NS_IMETHODIMP msiKeyMap::GetTableKeys(const nsAString & mapname, nsAString & _re
     }
     return NS_OK;
 }
-

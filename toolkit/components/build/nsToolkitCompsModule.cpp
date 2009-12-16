@@ -72,9 +72,6 @@
 #endif
 
 NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiMuPADEngineWrapper, msiMuPADEngineWrapper::GetInstance)
-NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiAutosub, msiAutosub::GetInstance)
-NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiArrowStateService, msiArrowStateService::GetInstance)
-NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiKeyMap, msiKeyMap::GetInstance)
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -135,10 +132,6 @@ static const nsModuleComponentInfo components[] =
     NS_APPSTARTUP_CONTRACTID,
     nsAppStartupConstructor },
   
-  { "Autosubstitute",
-    MSI_AUTOSUBSTITUTE_CID ,
-    MSI_AUTOSUBSTITUTE_CONTRACTID,
-    msiAutosubConstructor },
 //
 //  { "SimpleComputeEngine",
 //    MSI_SIMPLECOMPUTEENGINE2_CID ,
@@ -150,21 +143,6 @@ static const nsModuleComponentInfo components[] =
     MSI_MUPADENGINEWRAPPER_CONTRACTID,
     msiMuPADEngineWrapperConstructor },
 
-
-
-  { 
-    "Arrow state Service",
-    MSI_ARROWSTATE_SERVICE_CID,
-    MSI_ARROWSTATE_SERVICE_CONTRACTID,
-    msiArrowStateServiceConstructor
-  },
-
-  { 
-    "Key Mapping Service",
-    MSI_KEYMAP_CID,
-    MSI_KEYMAP_CONTRACTID,
-    msiKeyMapConstructor
-  },
  
   { "User Info Service",
     NS_USERINFO_CID,
@@ -225,6 +203,3 @@ static const nsModuleComponentInfo components[] =
 };
 
 NS_IMPL_NSGETMODULE(nsToolkitCompsModule, components)
-NS_IMPL_NSGETMODULE(arrowstate, components)
-NS_IMPL_NSGETMODULE(tkAutosubModule, components)
-NS_IMPL_NSGETMODULE(keymap, components)

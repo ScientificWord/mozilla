@@ -483,3 +483,13 @@ msiAutosub::GetInstance()
   return sMsiAutosub;
 }
 
+NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiAutosub, msiAutosub::GetInstance)
+
+static const nsModuleComponentInfo components[] =
+{
+  { "Autosubstitute",
+    MSI_AUTOSUBSTITUTE_CID ,
+    MSI_AUTOSUBSTITUTE_CONTRACTID,
+    msiAutosubConstructor }
+};
+NS_IMPL_NSGETMODULE(tkautosubModule, components)
