@@ -8581,7 +8581,7 @@ function OpenExtensions(aOpenMode)
 function openStructureTagDialog(tagname)
 {
  var structureData= {tagName: tagname};
- openDialog( "chrome://prince/content/structureProperties.xul",
+ openDialog( "chrome://prince/content/structureproperties.xul",
                              "structureproperties",
                              "",
                              structureData);
@@ -8590,7 +8590,7 @@ function openStructureTagDialog(tagname)
 function openParaTagDialog(tagname)
 {
  var paragraphData= {tagName: tagname};
-  openDialog( "chrome://prince/content/paragraphProperties.xul",
+  openDialog( "chrome://prince/content/paragraphproperties.xul",
                              "paraproperties",
                              "",
                              paragraphData);
