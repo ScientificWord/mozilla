@@ -687,6 +687,8 @@
           dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" : dom.documentElement.nodeName);
           var loadedNode = dom.documentElement;
           var firstChild = loadedNode.firstChild;
+          while (firstChild.nodeType != Node.ELEMENT_NODE)
+            firstChild = firstChild.nextSibling;
           var importNode = firstChild.nextSibling;
           while (importNode)
           {
