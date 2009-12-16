@@ -14,14 +14,6 @@ part>*:first-child {
 }
 
 
-*[class="showinvis"] sectiontitle:after {
-  content: "\B6";
-  display: inline;
-  font-family: Courier New;
-  color: green;
-  font-weight: bold;
-}
-
 
 part>*:first-child:before {
   content: "Part " counter(part,upper-roman);
@@ -34,14 +26,6 @@ chapter {
   display: block;
   counter-increment: chapter;
   counter-reset: section;
-}
-
-chapter[open="false"]>* {
-  display: none;
-}
-
-section[open="false"]>* {
-  display: none;
 }
 
 chapter sectiontitle, chapter[open="true"] sectiontitle, chapter[open="false"] sectiontitle {
@@ -61,6 +45,9 @@ chapter>*:first-child:before {
   text-align: center;
 }
 
+chapter[nonum="true"]>*:first-child:before {
+  content: "";
+}
 
 section {
   display: block;
@@ -150,14 +137,6 @@ p {
   margin: 10pt 10pt 5pt 5pt;
 }
 
-*[class="showinvis"] p:after {
-  content: "\B6";
-  display: inline;
-  font-family: Courier New;
-  color: green;
-  font-weight: bold;
-}
-
 para {
   display: block;
   margin: 10pt 10pt 5pt 5pt;
@@ -170,27 +149,10 @@ rtlpara {
   margin: 10pt 10pt 5pt 5pt;
 }
 
-
-*[class="showinvis"] para:after {
-  content: "\B6";
-  display: inline;
-  font-family: Courier New;
-  color: green;
-  font-weight: bold;
-}
-
 mathp {
   display: block;
   margin: 10pt 10pt 5pt 5pt;
   color: rgb(0,128,64);
-}
-
-*[class="showinvis"] mathp:after {
-  content: "\B6";
-  display: inline;
-  font-family: Courier New;
-  color: green;
-  font-weight: bold;
 }
 
 author {
@@ -218,29 +180,11 @@ title {
   margin-top: 12pt;
   text-align: center;
 }
-
-*[class="showinvis"] title:after {
-  content: "\B6";
-  display: inline;
-  font-family: Courier New;
-  color: green;
-  font-weight: bold;
-}
-
 quote {
   display: block; 
   margin-left: 20pt;
   margin-right: 20pt;
 }
-
-*[class="showinvis"] quote:after {
-  content: "\B6";
-  display: inline;
-  font-family: Courier New;
-  color: green;
-  font-weight: bold;
-}
-
 quotation {
   display: block; 
   margin-left: 20pt;
