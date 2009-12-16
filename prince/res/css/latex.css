@@ -149,3 +149,85 @@ chapter sectiontitle {
 section sectiontitle {
   -moz-binding: url("resource://app/res/xbl/latex.xml#collapsible");
 }
+
+
+chapter[nonum="true"] {
+  counter-increment: none;
+}
+
+chapter[open="false"]>* {
+  display: none;
+}
+
+section[nonum="true"] {
+  counter-increment: none;
+}
+
+section[open="false"]>* {
+  display: none;
+}
+
+subsection[nonum="true"] {
+  counter-increment: none;
+}
+
+subsubsection[nonum="true"] {
+  counter-increment: none;
+}
+
+paragraph[nonum="true"] {
+  counter-increment: none;
+}
+
+*[class="showinvis"] sectiontitle:after {
+  content: "\B6";
+  display: inline;
+  font-family: Courier New;
+  color: green;
+  font-weight: bold;
+}
+
+
+*[class="showinvis"] p:after {
+  content: "\B6";
+  display: inline;
+  font-family: Courier New;
+  color: green;
+  font-weight: bold;
+}
+
+
+*[class="showinvis"] para:after {
+  content: "\B6";
+  display: inline;
+  font-family: Courier New;
+  color: green;
+  font-weight: bold;
+}
+
+*[class="showinvis"] mathp:after {
+  content: "\B6";
+  display: inline;
+  font-family: Courier New;
+  color: green;
+  font-weight: bold;
+}
+
+
+*[class="showinvis"] title:after {
+  content: "\B6";
+  display: inline;
+  font-family: Courier New;
+  color: green;
+  font-weight: bold;
+}
+
+
+*[class="showinvis"] quote:after {
+  content: "\B6";
+  display: inline;
+  font-family: Courier New;
+  color: green;
+  font-weight: bold;
+}
+
