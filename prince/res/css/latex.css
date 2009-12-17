@@ -155,12 +155,21 @@ chapter[nonum="true"] {
   counter-increment: none;
 }
 
+chapter[nonum="true"]>*:first-child:before {
+  content: "";
+}
+
 chapter[open="false"]>* {
   display: none;
 }
 
 section[nonum="true"] {
   counter-increment: none;
+}
+
+
+section[nonum="true"]>*:first-child:before {
+  content: "";
 }
 
 section[open="false"]>* {
@@ -171,12 +180,25 @@ subsection[nonum="true"] {
   counter-increment: none;
 }
 
+subsection[nonum="true"]>*:first-child:before {
+  content: "";
+}
+
 subsubsection[nonum="true"] {
   counter-increment: none;
 }
 
+subsubsection[nonum="true"] {
+  content: "";
+}
+
+
 paragraph[nonum="true"] {
   counter-increment: none;
+}
+
+paragraph[nonum="true"] {
+  content: "";
 }
 
 *[class="showinvis"] sectiontitle:after {
