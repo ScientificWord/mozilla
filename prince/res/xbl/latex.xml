@@ -605,20 +605,16 @@
         </xbl:getter>
         <xbl:setter><![CDATA[
           this.parentNode.setAttribute("open",val);
-          var buttonsymbol = this.open?"&#x2212;":"+";
+          var buttonsymbol = this.open?"−":"+";
           if (this.parentNode.hasAttribute("subdoc"))
           {
             var fname = this.parentNode.getAttribute("subdoc");
-            if (fname.length == 0)
-            {
-              fname = this.textContent.replace(" ","_");
-              dump('fname = '+fname+'\n');
-              this.parentNode.setAttribute("subdoc",fname);
-            }
-           // document.getAnonymousNodes(this)[0].innerHTML=buttonsymbol;
             if (!this.open) this.saveToDisk(fname);
             else this.getFromDisk(fname);
           }
+          //debugger;
+          document.getAnonymousNodes(this)[0].textContent=buttonsymbol;
+          
           ]]>
         </xbl:setter>
       </xbl:property>
