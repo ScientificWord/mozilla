@@ -21,33 +21,29 @@
 <xsl:include href="frame.xsl"/>
 
 <xsl:template match="/">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
   <xsl:apply-templates/>
 </xsl:template>
 
-<xsl:template match="*"><!-- Matches everything but the root -->
-  
+<xsl:template match="*">%<!-- Matches everything but the root -->
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 </xsl:template>
 
 <xsl:template match="html:html">
-	
 #ifdef DEBUG
     <xsl:message>Into html:html</xsl:message>
 #endif
 	<xsl:apply-templates/>
-	
 #ifdef DEBUG
     <xsl:message>Out of html:html</xsl:message>
 #endif
 </xsl:template>
+
 <xsl:template match="html:head">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
@@ -63,13 +59,11 @@
 
 <xsl:template match="latex">\LaTeX{}</xsl:template>
     <xsl:message><xsl:value-of select="."/></xsl:message>
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 
 <xsl:template match="html:hspace">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
@@ -80,7 +74,6 @@
 </xsl:template>
  
 <xsl:template match="html:documentclass">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
@@ -88,7 +81,6 @@
 </xsl:template>
 
 <xsl:template match="//html:docformat">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
@@ -96,14 +88,12 @@
 </xsl:template>
 
 <xsl:template match="html:usepackage">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 \usepackage{<xsl:value-of select="@package"/>}</xsl:template>
 
 <xsl:template match="html:newtheorem">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
@@ -111,7 +101,6 @@
 
 
 <xsl:template match="html:body">
-	
 #ifdef DEBUG
     <xsl:message>Into html:body</xsl:message>
 #endif
@@ -130,21 +119,18 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:br[@hard='1']">\\
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 </xsl:template>
 
 <xsl:template match="html:br[@temp]">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 </xsl:template>
 
 <xsl:template match="html:title">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
@@ -152,32 +138,27 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:author">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 \author{<xsl:value-of select="child::text()"/>}</xsl:template>
 
 <xsl:template match="html:address">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 \address{<xsl:apply-templates/>}</xsl:template>
 
 <xsl:template match="html:abstract">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 \begin{abstract}
 <xsl:apply-templates/>
 \end{abstract}
-\maketitle
-</xsl:template>
+\maketitle</xsl:template>
 
 <xsl:template match="html:maketitle">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
@@ -185,7 +166,6 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:chapter">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
@@ -193,7 +173,6 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:section">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
@@ -201,7 +180,6 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:subsection">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
@@ -209,7 +187,6 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:subsubsection">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
@@ -217,7 +194,6 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:paragraph">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
@@ -225,7 +201,6 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:subparagraph">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
@@ -234,16 +209,15 @@ should not be done under some conditions -->
 
 
 <xsl:template match="html:para">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
-<xsl:apply-templates/>\par </xsl:template>
+<xsl:apply-templates/>\par 
+</xsl:template>
 
 
 
 <xsl:template match="html:sectiontitle">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
@@ -265,12 +239,10 @@ should not be done under some conditions -->
 <xsl:if test="name(..)='subparagraph'">
 \subparagraph{<xsl:apply-templates/>}
 </xsl:if>
-
 </xsl:template>
 
 
 <xsl:template match="html:drop">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
@@ -279,7 +251,6 @@ should not be done under some conditions -->
 
 
 <xsl:template match="html:enumerate">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
@@ -289,7 +260,6 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:itemize">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
@@ -299,7 +269,6 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:description">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
@@ -309,7 +278,6 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:item">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
@@ -385,7 +353,6 @@ should not be done under some conditions -->
 
 
 <xsl:template match="html:theorem">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
@@ -395,7 +362,6 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:pre">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
@@ -405,7 +371,6 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:p">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
@@ -422,149 +387,122 @@ should not be done under some conditions -->
 #endif
 </xsl:template>
 <xsl:template match="html:bold">\textbf{<xsl:apply-templates/>}
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 </xsl:template>
 <xsl:template match="html:it">\textit{<xsl:apply-templates/>}
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 </xsl:template>
 <xsl:template match="html:rm">\textrm{<xsl:apply-templates/>}
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 </xsl:template>
 <xsl:template match="html:sf">\textsf{<xsl:apply-templates/>}
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 </xsl:template>
 <xsl:template match="html:sl">\textsl{<xsl:apply-templates/>}
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 </xsl:template>
 <xsl:template match="html:sc">\textsc{<xsl:apply-templates/>}
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 </xsl:template>
 <xsl:template match="html:tt">\texttt{<xsl:apply-templates/>}
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 </xsl:template>
 <xsl:template match="html:em">\emph{<xsl:apply-templates/>}
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 </xsl:template>
 <xsl:template match="html:upper">\uppercase{<xsl:apply-templates/>}
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 </xsl:template>
 <xsl:template match="html:lower">\lowercase{<xsl:apply-templates/>}
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 </xsl:template>
 <xsl:template match="html:hebrew">{\hebrew\beginR <xsl:apply-templates/> \endR} 
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 </xsl:template>
 
 <xsl:template match="html:tiny">{\tiny <xsl:apply-templates/>}
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 </xsl:template>
 <xsl:template match="html:scriptsize">{\scriptsize <xsl:apply-templates/>}
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 </xsl:template>
 <xsl:template match="html:footnotesize">{\footnotesize <xsl:apply-templates/>}
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 </xsl:template>
 <xsl:template match="html:small">{\small <xsl:apply-templates/>}
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 </xsl:template>
 <xsl:template match="html:normalsize">{\normalsize <xsl:apply-templates/>}
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 </xsl:template>
 
 <xsl:template match="html:large">{\large <xsl:apply-templates/>}
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 </xsl:template>
 <xsl:template match="html:Large">{\Large <xsl:apply-templates/>}
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 </xsl:template>
 <xsl:template match="html:LARGE">{\LARGE <xsl:apply-templates/>}
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 </xsl:template>
 <xsl:template match="html:huge">{\huge <xsl:apply-templates/>}
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 </xsl:template>
 <xsl:template match="html:Huge">{\Huge <xsl:apply-templates/>}
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 </xsl:template>
 <xsl:template match="html:fontsize">
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
-  
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
-  <xsl:variable name="fontsize" select="@size"/>
-  <xsl:variable name="units" select="substring-after($fontsize,' ')"/>
+  <xsl:variable name="fontsize" select="@size"/>%
+  <xsl:variable name="units" select="substring-after($fontsize,' ')"/>%
   <xsl:if test="number(substring-before($fontsize,'/'))>0">
     {\fontsize{<xsl:value-of select="concat(substring-before($fontsize,'/'),$units)"/>}{<xsl:choose><xsl:when test="number(substring-before(substring-after($fontsize,'/'),' '))>0"><xsl:value-of select="concat(substring-before(substring-after($fontsize,'/'),' '),$units)"/></xsl:when><xsl:otherwise><xsl:value-of select="concat(substring-before($fontsize,'/'),$units)"/></xsl:otherwise></xsl:choose>}\selectfont </xsl:if>
     <xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:fontcolor">\textcolor[HTML]{<xsl:value-of select="substring(./@color,2,8)"/>}{<xsl:apply-templates/>}</xsl:template>
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
@@ -572,25 +510,21 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:tex">\TeX{}
-  
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 </xsl:template>
-<xsl:template match="html:textquotedblleft">\textquotedblleft 
-  
+<xsl:template match="html:textquotedblleft">\textquotedblleft% 
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 </xsl:template>
-<xsl:template match="html:textquotedblright">\textquotedblright 
-  
+<xsl:template match="html:textquotedblright">\textquotedblright% 
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 </xsl:template>
-<xsl:template match="html:textbackslash">\textbackslash 
-  
+<xsl:template match="html:textbackslash">\textbackslash% 
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
