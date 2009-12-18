@@ -310,7 +310,9 @@
     UNIXPROXY_MODULE                         \
     MODULE(tkautosubModule)                  \
     MODULE(keymapModule)                     \
-    MODULE(arrowstateModule)                 
+    MODULE(arrowstateModule)                 \
+	MODULE(simplecomputeengine2Module)		 \
+	MODULE(wrappers)						 \
     /* end of list */
 
 #define MODULE(_name) \
