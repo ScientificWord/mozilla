@@ -8,15 +8,14 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE		    = simplecomputeengine2
-MODULE_NAME = simplecomputeengineModule2
+MODULE_NAME = simplecomputeengine2Module
 LIBRARY_NAME	= compeng2
 SHORT_LIBNAME	= compeng2
-#IS_COMPONENT	= 1
-#EXPORT_LIBRARY = 1
+IS_COMPONENT	= 1
+EXPORT_LIBRARY = 1
 FORCE_STATIC_LIB = 1
 LIBXUL_LIBRARY = 1
 
-#MODULE_NAME	= msiSimpleComputeEngine2Module
 
 MOZILLA_INTERNAL_API = 1
 
@@ -31,7 +30,6 @@ CPPSRCS = \
   msiSimpleComputeEngine2.cpp	   \
   ComputeDLL.cpp \
   WorkShop.cpp  \
-  msiSimpleComputeEngine2Module.cpp \
   CompEngine.cpp \
   $(NULL)
 

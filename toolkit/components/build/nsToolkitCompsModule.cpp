@@ -37,11 +37,11 @@
 
 #include "nsIGenericFactory.h"
 #include "nsAppStartup.h"
-#include "msiSimpleComputeEngine2.h"
-#include "msiMuPADEngineWrapper.h"
-#include "msiAutosub.h"
-#include "msiArrowStateService.h"
-#include "msiKeyMap.h"
+//#include "msiSimpleComputeEngine2.h"
+//#include "msiMuPADEngineWrapper.h"
+//#include "msiAutosub.h"
+//#include "msiArrowStateService.h"
+//#include "msiKeyMap.h"
 #include "nsUserInfo.h"
 #include "nsXPFEComponentsCID.h"
 #include "nsToolkitCompsCID.h"
@@ -71,7 +71,6 @@
 #include "nsScriptableUnescapeHTML.h"
 #endif
 
-NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiMuPADEngineWrapper, msiMuPADEngineWrapper::GetInstance)
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -131,17 +130,6 @@ static const nsModuleComponentInfo components[] =
     NS_TOOLKIT_APPSTARTUP_CID,
     NS_APPSTARTUP_CONTRACTID,
     nsAppStartupConstructor },
-  
-//
-//  { "SimpleComputeEngine",
-//    MSI_SIMPLECOMPUTEENGINE2_CID ,
-//    MSI_SIMPLECOMPUTEENGINE2_CONTRACTID,
-//    msiSimpleComputeEngine2Constructor },
-
-  { "MuPADEngineWrapper",
-    MSI_MUPADENGINEWRAPPER_CID ,
-    MSI_MUPADENGINEWRAPPER_CONTRACTID,
-    msiMuPADEngineWrapperConstructor },
 
  
   { "User Info Service",

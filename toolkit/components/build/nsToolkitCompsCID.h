@@ -56,8 +56,6 @@
 #define MSI_KEYMAP_CONTRACTID \
  "@mackichan.com/keymap/keymap_service;1"
 
-#define MSI_ARROWSTATE_SERVICE_CONTRACTID \
- "@mackichan.com/arrowstate/arrowstate_service;1"
 
 #define NS_DOWNLOADMANAGER_CONTRACTID \
   "@mozilla.org/download-manager;1"
@@ -126,6 +124,8 @@
     "@mackichan.com/mupadenginewrapper;1"
 
 
+
+
 /////////////////////////////////////////////////////////////////////////////
 
 // {A0CCAAF8-09DA-44D8-B250-9AC3E93C8117}
@@ -148,9 +148,6 @@
 #define NS_STRINGARRAYAUTOCOMPLETE_CID \
 { 0xf45ef03a, 0x94fd, 0x466c, { 0x97, 0xac, 0xac, 0xcf, 0xcb, 0xb6, 0xad, 0x5e} }
 
-// {97A343E0-E01A-4f84-8586-9D90E124811D}
-#define MSI_ARROWSTATE_SERVICE_CID \
-{ 0x97a343e0, 0xe01a, 0x4f84, { 0x85, 0x86, 0x9d, 0x90, 0xe1, 0x24, 0x81, 0x1d } }
 
 // {0176db9d-bae7-4b42-82af-6da0269bdd2f}
 #define MSI_KEYMAP_CID \

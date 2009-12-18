@@ -2,6 +2,7 @@
 
 //#include "MuWrap.h"
 #include "msiMuPADEngineWrapper.h"
+#include "nsIGenericFactory.h"
 
 
 #include "MRequest.h"
@@ -108,3 +109,16 @@ NS_IMETHODIMP msiMuPADEngineWrapper::ReleaseClient(PRInt32 client_ID, const char
   MuPAD_wrapper->iReleaseClient(client_ID, def_list);
   return NS_OK;
 }
+
+
+NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiMuPADEngineWrapper, msiMuPADEngineWrapper::GetInstance)
+
+static const nsModuleComponentInfo gComponents[] =
+{
+  { "MuPADEngineWrapper",
+    MSI_MUPADENGINEWRAPPER_CID ,
+    MSI_MUPADENGINEWRAPPER_CONTRACTID,
+    msiMuPADEngineWrapperConstructor }
+};
+
+NS_IMPL_NSGETMODULE(wrappers, gComponents)
