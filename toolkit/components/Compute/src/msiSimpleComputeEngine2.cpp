@@ -6,6 +6,9 @@
 #include "xpcom-config.h"
 #include "nsIClassInfoImpl.h"
 #include "nsString.h"
+#include "nsIGenericFactory.h"
+#include "nsIClassInfoImpl.h"
+
 
 #include "ComputeDLL.h"
 #include "iCmpTypes.h"
@@ -969,3 +972,28 @@ PRUnichar *msiSimpleComputeEngine2::GetResultStrs(PRUint32 trans_ID)
 
   return res;
 }
+
+
+NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiSimpleComputeEngine2, msiSimpleComputeEngine2::GetInstance)
+NS_DECL_CLASSINFO(msiSimpleComputeEngine2)
+
+static const nsModuleComponentInfo gComponents[] =
+{
+
+  { "SimpleComputeEngine",
+    MSI_SIMPLECOMPUTEENGINE2_CID ,
+    MSI_SIMPLECOMPUTEENGINE2_CONTRACTID,
+    msiSimpleComputeEngine2Constructor,
+    nsnull,
+    nsnull,
+    nsnull,
+    NS_CI_INTERFACE_GETTER_NAME(msiSimpleComputeEngine2),
+    nsnull,
+    &NS_CLASSINFO_NAME(msiSimpleComputeEngine2),
+    0 
+  }
+};
+
+NS_IMPL_NSGETMODULE(simplecomputeengine2Module, gComponents)
+
+
