@@ -9,8 +9,10 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE		    = wrappers
+MODULE_NAME     = wrappers
 LIBRARY_NAME	= wrappers
 SHORT_LIBNAME	= wrappers
+IS_COMPONENT    = 1
 FORCE_STATIC_LIB = 1
 LIBXUL_LIBRARY = 1
 
