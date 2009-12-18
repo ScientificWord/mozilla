@@ -8,6 +8,15 @@
 #include "prinrval.h"
 #include "msiIArrowStateService.h"
 
+// {97A343E0-E01A-4f84-8586-9D90E124811D}
+#define MSI_ARROWSTATE_SERVICE_CID \
+{ 0x97a343e0, 0xe01a, 0x4f84, { 0x85, 0x86, 0x9d, 0x90, 0xe1, 0x24, 0x81, 0x1d } }
+
+#define MSI_ARROWSTATE_SERVICE_CONTRACTID \
+ "@mackichan.com/arrowstate/arrowstate_service;1"
+
+
+
 
 class msiArrowStateService : msiIArrowStateService, nsIObserver {
 public:
