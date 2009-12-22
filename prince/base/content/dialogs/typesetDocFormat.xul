@@ -807,34 +807,44 @@
         </tabpanel>
      <tabpanel id="docformatFontsPanel">
         <vbox>
-          <hbox><checkbox id="useOpenType" label="&docformatUseOpenType;" />
+          <hbox><checkbox id="useOpenType" label="&docformatUseOpenType;" oncommand="changeOpenType();" />
             <separator/>
             <msibutton label="Refresh font list" oncommand="initializeFontFamilyList(true);"/>
           </hbox>
-          <broadcaster id="opentypeok" observes="useOpenType" />
+          <broadcaster id="opentypeok" hidden="false" />
           <groupbox>
             <caption label="&mainFontsGroup;"/>
             <hbox>
               <vbox>
+                <label align="right" value="&docformatMath;"/>
+                <menulist id="mathfontlist" oncommand="" >
+                  <menupopup>
+                    <menuitem id="mathfontdefault" label="&docformatDefault;" />
+                    <menuseparator/>
+                  </menupopup>
+             </menulist>
+              </vbox>
+            </hbox>
+            <hbox>
+              <vbox>
                 <label align="right" value="&docformatRoman;"/>
                 <menulist id="mainfontlist" oncommand="" >
-                  <menupopup id="systemfontlist">
-                    <menuitem id="romanfontdefault" label="&docformatDefault;" />
-                    <menuseparator/>
+                  <menupopup>
+                    <menuitem id="mainfontdefault" label="&docformatDefault;" />
                     <menuseparator/>
                   </menupopup>
                 </menulist>
               </vbox>
-              <vbox>
+              <vbox observes="opentypeok">
                 <label align="center" value="Old style nums"/>
                 <checkbox id="romanoldstylenums" oncommand="onCheck(this);"/>
               </vbox>
-              <vbox>
+              <vbox observes="opentypeok">
                 <label align="center" value="Swash"/>
                 <checkbox id="romanswash" oncommand="onCheck(this);"/>
               </vbox>
             </hbox>
-            <hbox>
+            <hbox observes="opentypeok">
               <label value="Click to go native" onclick="var elt=getElementById('bcroman'); elt.hidden=!(elt.hidden);"/>
               <textbox multiline="true" flex="1" observes="bcroman" id="romannative" onchange="onOptionTextChanged(this);"/>
               <broadcaster id="bcroman" hidden="true"/>
@@ -844,23 +854,22 @@
                 <label value="&docformatSans;"/>
                 <menulist id="sansfontlist" 
                   oncommand="" >
-                  <menupopup >
+                  <menupopup>
                     <menuitem id="sansfontdefault" label="&docformatDefault;" />
                     <menuseparator/>
-                    <menuseparator/>
                   </menupopup>
-                </menulist>
+               </menulist>
               </vbox>
-              <vbox>
+              <vbox observes="opentypeok">
                 <label align="center" value="Old style nums"/>
                 <checkbox label="" id="sansoldstylenums" oncommand="onCheck(this);"/>
               </vbox>
-              <vbox>
+              <vbox observes="opentypeok">
                 <label align="center" value="Swash"/>
                 <checkbox label="" id="sansswash" oncommand="onCheck(this);"/>
               </vbox>
             </hbox>
-            <hbox>
+            <hbox observes="opentypeok">
               <label value="Click to go native" onclick="var elt=getElementById('bcsans'); elt.hidden=!(elt.hidden);"/>
               <textbox multiline="true" flex="1" observes="bcsans" id="sansnative"/>
               <broadcaster id="bcsans" hidden="true"/>
@@ -868,31 +877,29 @@
             <hbox>
               <vbox>
                 <label value="&docformatFixed;"/>
-                <menulist id="fixedfontlist" label="&docformatFixed;"
-                  oncommand=""  >
-                  <menupopup >
+                <menulist id="fixedfontlist" label="&docformatFixed;" >
+                  <menupopup>
                     <menuitem id="fixedfontdefault" label="&docformatDefault;" />
                     <menuseparator/>
-                    <menuseparator/>
                   </menupopup>
-                </menulist>
+               </menulist>
               </vbox>
-              <vbox>
+              <vbox observes="opentypeok">
                 <label align="center" value="Old style nums"/>
                 <checkbox label="" id="fixedoldstylenums" oncommand="onCheck(this);"/>
               </vbox>
-              <vbox>
+              <vbox observes="opentypeok">
                 <label align="center" value="Swash"/>
                 <checkbox label="" id="fixedswash" oncommand="onCheck(this);"/>
               </vbox>
             </hbox>
-            <hbox>
+            <hbox observes="opentypeok">
               <label value="Click to go native" onclick="var elt=getElementById('bcfixed'); elt.hidden=!(elt.hidden);"/>
               <textbox multiline="true" flex="1" observes="bcfixed" id="fixednative"/>
               <broadcaster id="bcfixed" hidden="true"/>
             </hbox>
           </groupbox>
-          <groupbox>
+          <groupbox observes="opentypeok">
             <caption label="Additional fonts"/>
             <hbox><label value="Internal font name"/><textbox id="f1name"/></hbox>
             <hbox>
@@ -902,11 +909,10 @@
                   <menupopup>
                     <menuitem id="x1fontdefault" label="&docformatDefault;" />
                     <menuseparator/>
-                    <menuseparator/>
                   </menupopup>
                 </menulist>
               </vbox>
-              <vbox>
+              <vbox >
                 <label align="center" value="Old style nums"/>
                 <checkbox label="" id="x1oldstylenums" oncommand="onCheck(this);"/>
               </vbox>
@@ -928,7 +934,6 @@
                   <menupopup>
                     <menuitem id="x2fontdefault" label="&docformatDefault;" />
                     <menuseparator/>                                               
-                    <menuseparator/>
                   </menupopup>
                 </menulist>
               </vbox>
@@ -953,7 +958,6 @@
                 <menulist id="x3fontlist" oncommand=""  >
                   <menupopup>
                     <menuitem id="x3fontdefault" label="&docformatDefault;" />
-                    <menuseparator/>
                     <menuseparator/>
                   </menupopup>
                 </menulist>
