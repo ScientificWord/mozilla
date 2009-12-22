@@ -32,17 +32,17 @@
       <groupbox>
         <caption label="&caption.indent;" />
         <hbox align="center">
-          <label value="&label.before.text;" />
+          <label value="&label.before.text;" accesskey="&accesskey.before.text;" />
           <spacer flex="1" />
           <textbox id="beforetext" type="number" width="40px" />    
          </hbox>
         <hbox align="center">
-          <label value="&label.after.text;" />
+          <label value="&label.after.text;" accesskey="&accesskey.after.text;" />
           <spacer flex="1" />
           <textbox id="aftertext" type="number" width="40px" />   
          </hbox>
         <hbox align="center">
-          <label value="&label.first.line;" />
+          <label value="&label.first.line;" accesskey="&accesskey.first.line;"/>
           <spacer flex="1" />
           <textbox id="firstline" type="number" width="40px" />   
          </hbox>
@@ -50,12 +50,12 @@
       <groupbox>
         <caption label="&caption.spacing;" />      
         <hbox align="center">
-          <label value="&label.above.paragraph;" />
+          <label value="&label.above.paragraph;" accesskey="&accesskey.above.paragraph;"/>
           <spacer flex="1" />
           <textbox id="aboveparagraph" type="number" width="40px" />   
          </hbox>
         <hbox align="center">
-          <label value="&label.below.paragraph;" />
+          <label value="&label.below.paragraph;" accesskey="&accesskey.below.paragraph;" />
           <spacer flex="1" />
           <textbox id="belowparagraph" type="number" width="40px" />  
         </hbox>
