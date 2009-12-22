@@ -4,6 +4,8 @@
 <!ENTITY windowTitle.label	"Matrix">
 
 <!ENTITY rows.label "Rows">
+<!ENTITY rows.accesskey "R">
 <!ENTITY cols.label "Columns">
+<!ENTITY cols.accesskey "C">
 
 
