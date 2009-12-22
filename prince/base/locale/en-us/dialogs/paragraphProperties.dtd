@@ -7,14 +7,19 @@
 <!ENTITY tab.background "Background">
 <!ENTITY caption.indent "Indent">
 <!ENTITY label.before.text "Before text">
+<!ENTITY accesskey.before.text "B">
 <!ENTITY label.after.text "After text">
+<!ENTITY accesskey.after.text "A">
 <!ENTITY label.first.line "First line">
+<!ENTITY accesskey.first.line "F">
 <!ENTITY caption.spacing "Spacing">
 <!ENTITY label.above.paragraph "Above paragraph">
+<!ENTITY accesskey.above.paragraph "V">
 <!ENTITY label.below.paragraph "Below paragraph">
+<!ENTITY accesskey.below.paragraph "L">
 <!ENTITY caption.line.spacing "Line spacing">
 <!ENTITY menuitem.single "Single">
 <!ENTITY menuitem.1.5.lines "1.5 lines">
 <!ENTITY menuitem.double "Double">
 <!ENTITY menuitem.leading "Leading">
-<!ENTITY label.units "units">
+<!ENTITY label.units "Units">
