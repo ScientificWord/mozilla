@@ -35,6 +35,7 @@
                   observes="cmd_openRemote"/>
       <menuitem observes="cmd_openTeX" label="Import TeX ..."/>
       <menuitem observes="cmd_exportTeX" label="Export TeX ..."/>
+      <menuitem observes="cmd_exportToWeb" label="Export to Web ..."/>
       <menu id="menu_RecentFiles" accesskey="&filerecentmenu.accesskey;" label="&fileRecentMenu.label;"
             onpopupshowing="BuildRecentFilesMenu();">
         <menupopup id="menupopup_RecentFiles" oncommand="msiEditPage(event.target.getAttribute('value'), window, false);"/>
@@ -594,6 +595,8 @@
 -->
     <command id="cmd_openTeX" oncommand="openTeX();" />
     <command id="cmd_exportTeX" oncommand="exportTeX();" />
+    <command id="cmd_exportToWeb" oncommand="exportToWeb();" />
+    
     <command id="cmd_printDirect"    oncommand="msiGoDoCommand('cmd_printDirect');event.stopPropagation();"/>
     <command id="cmd_printPdf"    oncommand="msiGoDoCommand('cmd_printPdf');;event.stopPropagation();"/>
     <command id="cmd_printDvi"    oncommand="msiGoDoCommand('cmd_printDvi');;event.stopPropagation();"/>

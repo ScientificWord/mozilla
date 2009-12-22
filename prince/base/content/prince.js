@@ -575,6 +575,33 @@ function exportTeX()
    
 }
 
+
+function exportToWeb()
+{
+  dump("\nExport to Web\n");
+
+  if (currentFileName().length < 0) return;
+  var editor = GetCurrentEditor();
+  if (!editor) return;
+
+   var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
+   fp.init(window, "Export to Web", msIFilePicker.modeSave);
+   fp.appendFilter("Compressed zip file", "*.zip");
+   fp.appendFilter("Directory", "");
+   try 
+   {
+     var dialogResult = fp.show();
+     if (dialogResult != msIFilePicker.returnCancel)
+       if (!saveforweb(editor.document, false, fp.file ))
+         AlertWithTitle("Export", "Web file not created.");
+   }
+   catch (ex) 
+   {
+     dump("filePicker threw an exception in exportToWeb: "+ex.message+"\n");
+   }
+}
+
+
 /* ==== */
 /* = 
 compileTeXFile:
