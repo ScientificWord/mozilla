@@ -48,6 +48,8 @@ function stripPath(element, index, array)
  
 function initializeFontFamilyList(force)
 {
+  var OTOk = document.getElementById("useOpenType").checked;
+  changeOpenType();
   var prefs = GetPrefs();
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var dir = dsprops.get("ProfD", Components.interfaces.nsIFile);
@@ -110,12 +112,13 @@ function initializeFontFamilyList(force)
   os.close();
   fos.close();
 //  dump(str);
-  initSystemFontMenu("mainfontlist");
-  initSystemFontMenu("sansfontlist");
-  initSystemFontMenu("fixedfontlist");
-  initSystemFontMenu("x1fontlist");
-  initSystemFontMenu("x2fontlist");
-  initSystemFontMenu("x3fontlist");
+  initSystemFontMenu("mathfontlist", false);
+  initSystemFontMenu("mainfontlist", OTOk);
+  initSystemFontMenu("sansfontlist", OTOk);
+  initSystemFontMenu("fixedfontlist", OTOk);
+  initSystemFontMenu("x1fontlist", OTOk);
+  initSystemFontMenu("x2fontlist", OTOk);
+  initSystemFontMenu("x3fontlist", OTOk);
 }
 
 function Startup()
@@ -124,7 +127,7 @@ function Startup()
   var editorElement = msiGetParentEditorElementForDialog(window);
   editor = msiGetEditor(editorElement);
   if (!editor) {
-    window.close();
+    window.close();                                               
     return;
   }
   widthElements=new Array("lmargin","bodywidth","colsep", "mnsep","mnwidth","computedrmargin",
@@ -150,6 +153,7 @@ function Startup()
   //now we can load the docformat information from the document to override 
   //all or part of the initial state
   OnWindowSizeReset(true);
+  initSystemFontMenu("mathfontlist");
   initSystemFontMenu("mainfontlist");
   initSystemFontMenu("sansfontlist");
   initSystemFontMenu("fixedfontlist");
@@ -1125,18 +1129,67 @@ function setTwosidedState(elt)
 }
 
 // font section
+
+function putFontNode(fontname, fontNode, menuId, elementId, nodecounter)
+{
+  if (fontname && fontname.length>0) {
+    var options;
+    var node = editor.createNode(menuId, fontNode, nodecounter++);
+    if (/{/.test(fontname))
+    { // fontname in this case is something like "[options]{packagename} [options2]{package2}
+      dump("Fontname is "+fontname+"\n");
+      var arr = fontname.split(':');
+      var match;
+      var re = /\[?([\w\,\=\ ]*)\]?\{([\w\,\ ]+)\}/;
+      var i;
+      var pri;
+      for (i = 0; i < arr.length; i++)
+      {
+        match = re.exec(arr[i]);
+        dump(menuId+", pattern is "+arr[i]+"\n");//+" match is "+match?match.toString():"null"+"\n");
+        if (match)
+        {
+          if (match[1])
+          {
+            node.setAttribute("options",match[1]);
+            dump("options are "+match[1]+"\n");
+          }
+          if (match[2])
+          {
+            node.setAttribute("package",match[2]);
+            dump("package name is "+match[2]+"\n");
+          }
+          if (menuId=="mathfont") pri = 50;
+          else pri = 60;
+          node.setAttribute("pri",pri);
+        } else dump("Match is null\n");
+      }
+    }
+    else if (elementId.length > 0) {
+      node.setAttribute('name',fontname);
+      options = document.getElementById('elementId').value;
+      node.setAttribute('options',options)
+      node.setAttribute('ot',"1");
+    }
+  }
+}
+
+
+
 function saveFontSpecs(docFormatNode)
 {
   // we don't want to generate anything unless at least one font was defined.
   var fontspecList = docFormatNode.getElementsByTagName('fontchoices');
   var i;
+  var node;
+  var options;
   if (fontspecList) 
   {
     for (i = fontspecList.length - 1; i >= 0; i--)
       editor.deleteNode(fontspecList[i])
   }
-  var fontids = ["mainfontlist","sansfontlist","fixedfontlist","f1name","f2name","f3name"];
-  var fontchoices = ["","","","","",""];
+  var fontids = ["mathfontlist","mainfontlist","sansfontlist","fixedfontlist","f1name","f2name","f3name"];
+  var fontchoices = ["","","","","","",""];
   var goahead = false;
   for (i = 0; i < fontids.length; i++)
   {
@@ -1147,32 +1200,18 @@ function saveFontSpecs(docFormatNode)
   
   var fontNode = editor.createNode('fontchoices', docFormatNode,0);
   var nodecounter = 0;
-  var options;
   var internalname;
   var fontname;
   fontname = fontchoices[0];
-  var node;
-  if (fontname && fontname.length>0) {
-    node = editor.createNode('mainfont', fontNode, nodecounter++);
-    node.setAttribute('name',fontname);
-    options = document.getElementById('romannative').value;
-    node.setAttribute('options',options);
-  }
+// putFontNode(fontname,, menuId, elementId, nodecounter)  
+  putFontNode(fontname, fontNode, "mathfont", "", nodecounter)
   fontname = fontchoices[1];
-  if (fontname && fontname.length>0) {
-    node = editor.createNode('sansfont', fontNode, nodecounter++);
-    node.setAttribute('name',fontname);
-    options = document.getElementById('sansnative').value;
-    node.setAttribute('options',options);
-  }
+  putFontNode(fontname, fontNode, "mainfont", "romannative", nodecounter)
   fontname = fontchoices[2];
-  if (fontname && fontname.length>0) {
-    node = editor.createNode('fixedfont', fontNode, nodecounter++);
-    node.setAttribute('name', fontname);
-    options = document.getElementById('fixednative').value;
-    node.setAttribute('options',options);
-  }
+  putFontNode(fontname, fontNode, "sansfont", "sansnative", nodecounter)
   fontname = fontchoices[3];
+  putFontNode(fontname, fontNode, "fixedfont", "fixednative", nodecounter)
+  fontname = fontchoices[4];
   internalname = document.getElementById('f1name').value;
   if (fontname.length > 0 && internalname.length > 0)
   {
@@ -1181,8 +1220,9 @@ function saveFontSpecs(docFormatNode)
     node.setAttribute('name', fontname);
     options = document.getElementById('x1native').value;
     node.setAttribute('options',options);
+    node.setAttribute('ot',"1");
   }
-  fontname = fontchoices[4];
+  fontname = fontchoices[5];
   internalname = document.getElementById('f2name').value;
   if (fontname.length > 0 && internalname.length > 0)
   {
@@ -1191,8 +1231,9 @@ function saveFontSpecs(docFormatNode)
     node.setAttribute('name', fontname);
     options = document.getElementById('x2native').value;
     node.setAttribute('options',options);
+    node.setAttribute('ot',"1");
   }
-  fontname = fontchoices[5];
+  fontname = fontchoices[6];
   internalname = document.getElementById('f3name').value;
   if (fontname.length > 0 && internalname.length > 0)
   {
@@ -1201,6 +1242,7 @@ function saveFontSpecs(docFormatNode)
     node.setAttribute('name', fontname);
     options = document.getElementById('x3native').value;
     node.setAttribute('options',options);
+    node.setAttribute('ot',"1");
   }
 }
 
@@ -1216,12 +1258,14 @@ function getFontSpecs(node)
     document.getElementById('mainfontlist').value = subnode.getAttribute('name');
     options = subnode.getAttribute('options');
     if (options)
-      options = trimBlanks(options);
-    if (options.length > 0)
     {
-      textbox = document.getElementById('romannative');
-      textbox.value = options;
-      onOptionTextChanged( textbox );
+      options = trimBlanks(options);
+      if (options.length > 0)
+      {
+        textbox = document.getElementById('romannative');
+        textbox.value = options;
+        onOptionTextChanged( textbox );
+      }
     }
     subnode = node.getElementsByTagName('sansfont')[0];
     if (subnode)
@@ -1229,12 +1273,14 @@ function getFontSpecs(node)
       document.getElementById('sansfontlist').value = subnode.getAttribute('name');
       options = subnode.getAttribute('options');
       if (options)
-        options = trimBlanks(options);
-      if (options.length > 0)
       {
-        textbox = document.getElementById('sansnative');
-        textbox.value = options;
-        onOptionTextChanged( textbox );
+        options = trimBlanks(options);
+        if (options.length > 0)
+        {
+          textbox = document.getElementById('sansnative');
+          textbox.value = options;
+          onOptionTextChanged( textbox );
+        }
       }
     }   
     subnode = node.getElementsByTagName('fixedfont')[0];
@@ -1243,12 +1289,14 @@ function getFontSpecs(node)
       document.getElementById('fixedfontlist').value = subnode.getAttribute('name');
       options = subnode.getAttribute('options');
       if (options)
-        options = trimBlanks(options);
-      if (options.length > 0)
       {
-        textbox = document.getElementById('fixednative');
-        textbox.value = options;
-        onOptionTextChanged( textbox );
+        options = trimBlanks(options);
+        if (options.length > 0)
+        {
+          textbox = document.getElementById('fixednative');
+          textbox.value = options;
+          onOptionTextChanged( textbox );
+        }
       }
     }   
     subnode = node.getElementsByTagName('x1font')[0];
@@ -1258,12 +1306,14 @@ function getFontSpecs(node)
       document.getElementById('x1fontlist').value = subnode.getAttribute('name');
       options = subnode.getAttribute('options');
       if (options)
-        options = trimBlanks(options);
-      if (options.length > 0)
       {
-        textbox = document.getElementById('x1native');
-        textbox.value = options;
-        onOptionTextChanged( textbox );
+        options = trimBlanks(options);
+        if (options.length > 0)
+        {
+          textbox = document.getElementById('x1native');
+          textbox.value = options;
+          onOptionTextChanged( textbox );
+        }
       }
     }   
     subnode = node.getElementsByTagName('x2font')[0];
@@ -1273,12 +1323,14 @@ function getFontSpecs(node)
       document.getElementById('x2fontlist').value = subnode.getAttribute('name');
       options = subnode.getAttribute('options');
       if (options)
-        options = trimBlanks(options);
-      if (options.length > 0)
       {
-        textbox = document.getElementById('x2native');
-        textbox.value = options;
-        onOptionTextChanged( textbox );
+        options = trimBlanks(options);
+        if (options.length > 0)
+        {
+          textbox = document.getElementById('x2native');
+          textbox.value = options;
+          onOptionTextChanged( textbox );
+        }
       }
     }   
     subnode = node.getElementsByTagName('x3font')[0];
@@ -1288,12 +1340,14 @@ function getFontSpecs(node)
       document.getElementById('x3fontlist').value = subnode.getAttribute('name');
       options = subnode.getAttribute('options');
       if (options)
-        options = trimBlanks(options);
-      if (options.length > 0)
       {
-        textbox = document.getElementById('x3native');
-        textbox.value = options;
-        onOptionTextChanged( textbox );
+        options = trimBlanks(options);
+        if (options.length > 0)
+        {
+          textbox = document.getElementById('x3native');
+          textbox.value = options;
+          onOptionTextChanged( textbox );
+        }
       }
     }   
   } 
@@ -1522,9 +1576,8 @@ function  getOTFontlist()
     }
   }
 }
-    
 
-function initSystemFontMenu(menuPopupId)
+function initSystemFontMenu(menuPopupId, fUseOpenType)
 {
   try
   {
@@ -1532,10 +1585,23 @@ function initSystemFontMenu(menuPopupId)
     // fill in the menu only once...
     if (gFontMenuInitialized[menuPopupId ])
       return;
-    gFontMenuInitialized[menuPopupId ] = menuPopupId ;
-
+    gFontMenuInitialized[menuPopupId ] = menuPopupId;
+    var fonttype = "textfonts";
+    var filter;
   
-    if (menuPopupId == "mainfontlist")
+    if (menuPopupId == "sansfontlist")
+    {
+      filter = "sans";
+    } else if (menuPopupId == "fixedfontlist")
+    {
+      filter = "fixed";
+    } else if (menuPopupId == "mathfontlist")
+    {
+      fonttype = "mathfonts";
+      filter = "";
+    } else filter = "main";
+    initSystemOldFontMenu(menuPopup, fonttype, filter);
+    if (fUseOpenType)
     {
       getOTFontlist();
       for (var i = 0; i < gSystemFontCount; ++i)
@@ -1548,11 +1614,6 @@ function initSystemFontMenu(menuPopupId)
           menuPopup.appendChild(itemNode);
         }
       }
-    }
-    else
-    {
-      var newnode = document.getElementById("systemfontlist").cloneNode(true);
-      document.getElementById(menuPopupId).replaceChild(newnode, menuPopup);
     }
   }
   catch(e)
@@ -2141,6 +2202,45 @@ function reviseruleorspace(element)
   else if (element.getAttribute("role")=="vspace")
     window.openDialog("chrome://prince/content/vspaceforsection.xul", 
       "vspaceforsection", "chrome,close,titlebar,alwaysRaised",element, sectionUnit);
-}                                                                                                          
-  
+}                                
+
+function initSystemOldFontMenu(menuPopup, fonttype, filter)
+{    
+  var path = "resource://app/res/xml/mathfonts.xml";
+  var myXMLHTTPRequest = new XMLHttpRequest();
+  myXMLHTTPRequest.open("GET", path, false);
+  myXMLHTTPRequest.send(null);
+  var doc = myXMLHTTPRequest.responseXML;
+  if (!doc) return;
+  var ptr = doc.documentElement.getElementsByTagName(fonttype)[0];
+  if (!ptr) return;
+  ptr = ptr.firstChild;
+  while (ptr)
+  {
+    while (ptr && (ptr.nodeType != 1))
+    {
+      ptr = ptr.nextSibling;
+    }
+    if (!ptr) break;
+    if (filter.length > 0 && !ptr.hasAttribute(filter))
+    {
+      ptr = ptr.nextSibling;
+      continue;
+    }                                                
+    var itemNode = document.createElementNS(XUL_NS, "menuitem");
+    itemNode.setAttribute("label", ptr.getAttribute("name"));
+    itemNode.setAttribute("value", ptr.getAttribute("package"));
+    itemNode.setAttribute("tooltip", ptr.getAttribute("description"));                                                                 
+    menuPopup.appendChild(itemNode);
+    ptr = ptr.nextSibling;
+  }
+  var separator = document.createElementNS(XUL_NS, "menuseparator");
+  menuPopup.appendChild(separator);
+}
+
+function changeOpenType()
+{
+  document.getElementById("opentypeok").setAttribute("hidden", 
+    document.getElementById("useOpenType").checked?"false":"true");                                                                      
+}  
     
