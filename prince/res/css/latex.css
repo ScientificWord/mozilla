@@ -131,7 +131,8 @@ mml|mrow[id]:after {
 }
 
 .expander {
-  margin-right: 1em;
+  margin-right: .3em;
+  margin-left: .3em;
   display: inline-block;
   text-align: center;
   font-size: large;

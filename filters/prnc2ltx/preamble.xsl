@@ -13,10 +13,26 @@
   
 
 <xsl:variable name="requiredpackages.tf">
-  <xsl:for-each select="//html:requirespackage">
+  <xsl:for-each select="//*[@package]">
     <xsl:sort select="@package"/>
 	<xsl:copy-of select="."/>
   </xsl:for-each>
+  <!--xsl:for-each select="//mainfont[@package]">
+    <xsl:sort select="@package"/>
+	<xsl:copy-of select="."/>
+  </xsl:for-each>
+  <xsl:for-each select="//mathfont[@package]">
+    <xsl:sort select="@package"/>
+	<xsl:copy-of select="."/>
+  </xsl:for-each>
+  <xsl:for-each select="//sansfont[@package]">
+    <xsl:sort select="@package"/>
+	<xsl:copy-of select="."/>
+  </xsl:for-each>
+  <xsl:for-each select="//fixedfont[@package]">
+    <xsl:sort select="@package"/>
+	<xsl:copy-of select="."/>
+  </xsl:for-each -->
 </xsl:variable>
 
 <xsl:variable name="requiredpackages" select ="exsl:node-set($requiredpackages.tf)"/>
@@ -159,11 +175,11 @@
   marginparsep=<xsl:value-of select="@sep"/>,%
 </xsl:template>
 
-<xsl:template match="html:footer">%%%
+<!--xsl:template match="html:footer">%%%
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
-  footskip=<xsl:value-of select="concat(number(substring(@height,1,string-length(@height)-2))+number(substring(@sep,1,string-length(@sep-2)),substring(@sep,string-length(@sep)-2))"/>%</xsl:template>
+  footskip=<xsl:value-of select="concat(number(substring(@height,1,string-length(@height)-2))+number(substring(@sep,1,string-length(@sep-2)),substring(@sep,string-length(@sep)-2))"/>%</xsl:template -->
 																																	 
 <xsl:template match="html:fontchoices">
 #ifdef DEBUG
@@ -175,7 +191,7 @@
 \defaultfontfeatures{Mapping=tex-text}%
 <xsl:apply-templates/></xsl:template>  
 
-<xsl:template match="html:mainfont">
+<xsl:template match="html:mainfont[@ot='1']">
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
@@ -186,7 +202,7 @@
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
 
-<xsl:template match="html:sansfont">
+<xsl:template match="html:sansfont[@ot='1']">
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
@@ -194,7 +210,7 @@
 
 <xsl:template match="html:sansfont[@name='']"></xsl:template>
 
-<xsl:template match="html:fixedfont">
+<xsl:template match="html:fixedfont[@ot='1']">
 #ifdef DEBUG
     <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
 #endif
