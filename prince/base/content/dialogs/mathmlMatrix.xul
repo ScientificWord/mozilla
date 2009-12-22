@@ -166,13 +166,13 @@
    <rows>
      <row align="center">
        <label control="rowsInput" class="align-right"
-              value="&rows.label;"/>
+              value="&rows.label;" accesskey="&rows.accesskey;"/>
        <textbox id="rowsInput" value="2" persist="value" onchange="SelectSizeFromText();"/>
        <spacer/>
      </row>
      <row align="center">
        <label control="columnsInput" class="align-right"
-              value="&cols.label;"/>
+              value="&cols.label;" accesskey="&cols.accesskey;"/>
        <textbox id="columnsInput"  value="2" persist="value" onchange="SelectSizeFromText();"/>
        <spacer/>
      </row>
