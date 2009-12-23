@@ -37,11 +37,6 @@
 
 #include "nsIGenericFactory.h"
 #include "nsAppStartup.h"
-//#include "msiSimpleComputeEngine2.h"
-//#include "msiMuPADEngineWrapper.h"
-//#include "msiAutosub.h"
-//#include "msiArrowStateService.h"
-//#include "msiKeyMap.h"
 #include "nsUserInfo.h"
 #include "nsXPFEComponentsCID.h"
 #include "nsToolkitCompsCID.h"

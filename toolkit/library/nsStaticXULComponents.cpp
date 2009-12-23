@@ -307,12 +307,13 @@
     SPELLCHECK_MODULE                        \
     XMLEXTRAS_MODULE                         \
     LAYOUT_DEBUG_MODULE                      \
-    UNIXPROXY_MODULE                         \
-    MODULE(tkautosubModule)                  \
-    MODULE(keymapModule)                     \
-    MODULE(arrowstateModule)                 \
-	MODULE(simplecomputeengine2Module)		 \
-	MODULE(wrappers)						 \
+    UNIXPROXY_MODULE                         
+
+ //   MODULE(tkautosubModule)                  \
+ //   MODULE(keymapModule)                     \
+ //   MODULE(arrowstateModule)                 \
+ //   MODULE(simplecomputeengine2Module)		 \
+ //   MODULE(wrappers)						 \
     /* end of list */
 
 #define MODULE(_name) \
