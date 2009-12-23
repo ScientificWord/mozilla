@@ -983,14 +983,14 @@ static const nsModuleComponentInfo gComponents[] =
   { "SimpleComputeEngine",
     MSI_SIMPLECOMPUTEENGINE2_CID ,
     MSI_SIMPLECOMPUTEENGINE2_CONTRACTID,
-    msiSimpleComputeEngine2Constructor,
-    nsnull,
-    nsnull,
-    nsnull,
-    NS_CI_INTERFACE_GETTER_NAME(msiSimpleComputeEngine2),
-    nsnull,
-    &NS_CLASSINFO_NAME(msiSimpleComputeEngine2),
-    0 
+    msiSimpleComputeEngine2Constructor
+//     nsnull,
+//     nsnull,
+//     nsnull,
+//     NS_CI_INTERFACE_GETTER_NAME(msiSimpleComputeEngine2),
+//     nsnull,
+//     &NS_CLASSINFO_NAME(msiSimpleComputeEngine2),
+//     0 
   }
 };
 
