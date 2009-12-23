@@ -15,10 +15,18 @@ File /r ${srcdir}\defaults
 File /r ${srcdir}\dictionaries
 File /r ${srcdir}\extensions
 File /r ${srcdir}\modules
-File /r ${srcdir}\MuPAD
 File /r ${srcdir}\plugins
 File /r ${srcdir}\ptdata
 File /r ${srcdir}\res
 File /r ${srcdir}\samples
 File /r ${srcdir}\shells
 File /r ${srcdir}\xulrunner
+File /r ${srcdir}\xulrunner\MuPAD
+File /r ${srcdir}\xulrunner\*.gmr
+File /r ${srcdir}\xulrunner\*.mu
+File /r ${srcdir}\xulrunner\*.m
+
+
+
+
+
