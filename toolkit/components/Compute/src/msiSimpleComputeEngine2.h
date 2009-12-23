@@ -2,12 +2,12 @@
 
 #include "msiISimpleComputeEngine.h"
 
-#include "../../build/nsToolkitCompsCID.h"
 
-// #define MSI_SIMPLECOMPUTEENGINE2_CID \
-// { 0xa3f85155, 0x6cb7, 0x46aa, { 0x9f, 0xa4, 0x35, 0x10, 0x8f, 0x69, 0x61, 0x31 } }
-// 
-// #define MSI_SIMPLECOMPUTEENGINE2_CONTRACTID "@mackichan.com/simplecomputeengine;2"
+
+#define MSI_SIMPLECOMPUTEENGINE2_CID \
+{ 0xa3f85155, 0x6cb7, 0x46aa, { 0x9f, 0xa4, 0x35, 0x10, 0x8f, 0x69, 0x61, 0x31 } }
+
+#define MSI_SIMPLECOMPUTEENGINE2_CONTRACTID "@mackichan.com/simplecomputeengine;2"
 
 
 class msiSimpleComputeEngine2 : public msiISimpleComputeEngine

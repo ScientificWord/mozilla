@@ -13,7 +13,6 @@ MODULE_NAME     = wrappers
 LIBRARY_NAME	= wrappers
 SHORT_LIBNAME	= wrappers
 IS_COMPONENT    = 1
-FORCE_STATIC_LIB = 1
 LIBXUL_LIBRARY = 1
 
 
@@ -26,7 +25,7 @@ REQUIRES = \
 
 CPPSRCS = \
   msiMuPADEngineWrapper.cpp \
-  msiMuPADEngineWrapperModule.cpp \
+#  msiMuPADEngineWrapperModule.cpp \
   $(NULL)
 
  
@@ -45,6 +44,8 @@ EXTRA_DSO_LDOPTS += \
 	$(DIST)/lib/$(LIB_PREFIX)computelib_s.$(LIB_SUFFIX) \
 	$(DIST)/lib/$(LIB_PREFIX)enginelib_s.$(LIB_SUFFIX) \
 	$(DIST)/lib/$(LIB_PREFIX)libtci_s.$(LIB_SUFFIX) \
+	$(DIST)/lib/$(LIB_PREFIX)mupwrapperlib_s.$(LIB_SUFFIX) \
+	$(srcdir)/../../Compute/MuPAD/win32/$(LIB_PREFIX)mupkernel.$(LIB_SUFFIX) \
  	$(MOZ_UNICHARUTIL_LIBS) \
 	$(MOZ_COMPONENT_LIBS) \
 	$(NULL)
