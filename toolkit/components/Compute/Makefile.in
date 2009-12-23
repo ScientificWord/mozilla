@@ -10,11 +10,11 @@ include $(DEPTH)/config/autoconf.mk
 MOZILLA_INTERNAL_API = 1
 
 DIRS		= \
-	public \
-	src \
 	computelib \
 	libtci \
 	Engines \
+	public \
+	src \
 	$(NULL)
 
 
