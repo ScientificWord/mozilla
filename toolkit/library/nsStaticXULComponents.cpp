@@ -230,7 +230,12 @@
 #define XULENABLED_MODULES                   \
     MODULE(tkAutoCompleteModule)             \
     MODULE(satchel)                          \
-    MODULE(PKI)                              
+    MODULE(PKI)								 \
+    MODULE(tkautosubModule)                  \
+    MODULE(keymapModule)                     \
+    MODULE(arrowstateModule)                 \
+    MODULE(simplecomputeengine2Module)		 \
+    MODULE(wrappers)						                                   
 #else
 #define XULENABLED_MODULES
 #endif
@@ -309,11 +314,6 @@
     LAYOUT_DEBUG_MODULE                      \
     UNIXPROXY_MODULE                         
 
- //   MODULE(tkautosubModule)                  \
- //   MODULE(keymapModule)                     \
- //   MODULE(arrowstateModule)                 \
- //   MODULE(simplecomputeengine2Module)		 \
- //   MODULE(wrappers)						 \
     /* end of list */
 
 #define MODULE(_name) \
