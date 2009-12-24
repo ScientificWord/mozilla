@@ -257,6 +257,11 @@ COMPONENT_LIBS += \
 	tkautocomplete \
 	satchel \
 	pippki \
+	compeng2 \
+	wrappers \
+	tkautosub \
+	arrowstate \
+	keymap \
 	$(NULL)
 endif
 
