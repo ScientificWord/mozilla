@@ -3076,8 +3076,8 @@ function msiFindRevisableObjectToLeft(aNode, anOffset, editorElement)
 
   if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
   {
-    if (msiNavigationUtils.isMathname(aNode.parentNode) || msiNavigationUtils.isUnit(aNode.parentNode) 
-        || msiNavigationUtils.isBigOperator(aNode.parentNode))
+    if ( msiNavigationUtils.isMathname(aNode.parentNode) || msiNavigationUtils.isUnit(aNode.parentNode) 
+         || msiNavigationUtils.isBigOperator(aNode.parentNode) || msiNavigationUtils.isSpacingObject(aNode.parentNode) )
     {
       retObj = msiCreatePropertiesObjectDataFromNode(aNode.parentNode, editorElement);
 //      returnVal.theNode = aNode.parentNode;

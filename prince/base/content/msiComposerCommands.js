@@ -4496,23 +4496,24 @@ function msiInsertHorizontalSpace(dialogData, editorElement)
 //  {
 //    noIndent:          "&#x2190;"  //left arrow
 //  };
-  var spaceStr = "<hspace type=\"";
+  var spaceStr = "<xhtml:hspace xmlns:xhtml=\"" + xhtmlns + "\" type=\"";
   var dimsStr = null;
   var contentStr = null;
+  var invisContent = null;
   if (dialogData.spaceType != "customSpace")
   {
     spaceStr += dialogData.spaceType;
     dimsStr = msiSpaceUtils.getHSpaceDims(dialogData.spaceType);
     if (dimsStr)
-      spaceStr += "\" dim=\"" + dimsStr;
-//    if (dialogData.spaceType in dimensionsFromSpaceType)
-//      spaceStr += "\" dim=\"" + dimensionsFromSpaceType[dialogData.spaceType];
+      spaceStr += "\" dim=\"" + dimsStr + "\"";
   }
   else if (dialogData.customSpaceData.customType == "fixed")
   {
     spaceStr += "customSpace\" dim=\"";
-    spaceStr += String(dialogData.customSpaceData.fixedData.size) + dialogData.customSpaceData.fixedData.units;
-    spaceStr += "\" atEnd=\"" + (dialogData.customSpaceData.typesetChoice=="always"?"true":"false");
+    dimsStr = String(dialogData.customSpaceData.fixedData.size) + dialogData.customSpaceData.fixedData.units;
+    spaceStr += dimsStr + "\"";
+    spaceStr += " atEnd=\"" + (dialogData.customSpaceData.typesetChoice=="always"?"true\"":"false\"");
+    spaceStr += " style=\"min-width: " + dimsStr + ";\"";
   }
   else if (dialogData.customSpaceData.customType == "stretchy")
   {
@@ -4523,15 +4524,24 @@ function msiInsertHorizontalSpace(dialogData, editorElement)
       spaceStr += "\" fillWith=\"line";
     else if (dialogData.customSpaceData.stretchData.fillWith == "fillDots")
       spaceStr += "\" fillWith=\"dots";
-    spaceStr += "\" atEnd=\"" + (dialogData.customSpaceData.typesetChoice=="always"?"true":"false");
+    spaceStr += "\" atEnd=\"" + (dialogData.customSpaceData.typesetChoice=="always"?"true\"":"false\"");
   }
-  contentStr = msiSpaceUtils.getHSpaceCharContent(dialogData.spaceType);
+  contentStr = msiSpaceUtils.getHSpaceDisplayableContent(dialogData.spaceType);
+//  invisContent = msiSpaceUtils.getHSpaceShowInvis(dialogData.spaceType);  Now returned as part of above call
+//  if (invisContent)
+//  {
+//    if (contentStr)
+//      contentStr += "<sw:invis>" + contentStr + "</sw:invis>";
+//    else
+//      contentStr = "<sw:invis>" + contentStr + "</sw:invis>";
+//  }
   if (contentStr)
-    spaceStr += "\">" + contentStr + "</hspace>";
+    spaceStr += ">" + contentStr + "</xhtml:hspace>";
+
 //  if (dialogData.spaceType in contentFromSpaceType)
 //    spaceStr += "\">" + contentFromSpaceType[dialogData.spaceType] + "</hspace>";
   else
-    spaceStr += "\"/>";
+    spaceStr += "/>";
   dump("In msiInsertHorizontalSpace, inserting space: [" + spaceStr + "].\n");
 //  editor.insertHTMLWithContext(spaceStr, "", "", "", null, parentNode, insertPos, false);
   insertXMLAtCursor(editor, spaceStr, true, false);
@@ -4544,7 +4554,8 @@ function msiReviseHorizontalSpace(reviseData, dialogData, editorElement)
   var spaceInfo = reviseData.getSpaceInfo();
   var bWasText = reviseData.isTextReviseData();
   var bIsText = (dialogData.spaceType == "normalSpace");
-  var contentStr = msiSpaceUtils.getHSpaceCharContent(dialogData.spaceType);
+  var contentStr = msiSpaceUtils.getHSpaceDisplayableContent(dialogData.spaceType);
+//  var invisContent = msiSpaceUtils.getHSpaceShowInvis(dialogData.spaceType);
   var cntNodeList = null;
   var logStr = "";
   if (contentStr && contentStr.length)
@@ -4603,7 +4614,7 @@ function msiReviseHorizontalSpace(reviseData, dialogData, editorElement)
 
   if (bWasText)
   {
-    ourNode = editor.document.createElement("hspace");
+    ourNode = editor.document.createElementNS(xhtmlns, "hspace");
     bNeedInsert = true;
   }
   else
@@ -4617,8 +4628,9 @@ function msiReviseHorizontalSpace(reviseData, dialogData, editorElement)
     if (dimsStr && dimsStr.length)
       editor.setAttribute(ourNode, "dim", dimsStr);
     else if (dialogData.spaceType != "customSpace")
+//    if (dialogData.spaceType != "customSpace")
       editor.removeAttribute(ourNode, "dim");
-    if (contentStr != msiSpaceUtils.getHSpaceCharContent(spaceInfo.theSpace))
+    if (contentStr != msiSpaceUtils.getHSpaceDisplayableContent(spaceInfo.theSpace))
     {
       msiKludgeLogString("Inside the contentStr different clause.\n", ["spaces"]);
       for (var ix = ourNode.childNodes.length-1; ix >= 0; --ix)  //Note that the anonymous generated (XBL) content shouldn't be affected by this
@@ -4634,6 +4646,7 @@ function msiReviseHorizontalSpace(reviseData, dialogData, editorElement)
     }
     if (dialogData.spaceType == "customSpace")  //more to do
     {
+      var minWidthExpr = /min-width:\s*[^;]+;?/;
       var atEndAttr = (dialogData.customSpaceData.typesetChoice=="always") ? "true" : "false";
       if (!("atEnd" in spaceInfo) || (spaceInfo.atEnd != atEndAttr))
         editor.setAttribute(ourNode, "atEnd", atEndAttr);
@@ -4644,7 +4657,17 @@ function msiReviseHorizontalSpace(reviseData, dialogData, editorElement)
         dimsStr = String(dialogData.customSpaceData.fixedData.size) + dialogData.customSpaceData.fixedData.units;
         msiKludgeLogString("Inside the customType fixed clause, dimsStr is [" + dimsStr + "].\n", ["spaces"]);
         if (ourNode.getAttribute("dim") != dimsStr)
+        {
+          var styleStr = ourNode.getAttribute("style");
+          if (!styleStr)
+            styleStr = "";
+          if (styleStr.match(minWidthExpr))
+            styleStr = styleStr.replace(minWidthExpr, "min-width: " + dimsStr + ";");
+          else
+            styleStr += "min-width: " + dimsStr + ";";
           editor.setAttribute(ourNode, "dim", dimsStr);
+          editor.setAttribute(ourNode, "style", styleStr);
+        }
         if (ourNode.getAttribute("class") == "stretchySpace")
           editor.removeAttribute(ourNode, "class");
         if ( ("customType" in spaceInfo) && (spaceInfo.customType != "fixed") )
@@ -4693,39 +4716,8 @@ function msiReviseHorizontalSpace(reviseData, dialogData, editorElement)
 
   if (bNeedInsert) //only if bWasText is true
   {
-    var newLeftNode = editor.document.createTextNode("");
-    var nOffset = reviseData.mOffset;
     aParentNode = reviseData.getReferenceNode();
-    logStr = "In msiComposerCommands.js, in msiReviseHorizontalSpace() inside bNeedInsert clause; surrounding node is [" + aParentNode.nodeName + "] and contains text [" + aParentNode.textContent + "], and its parent has [" + aParentNode.parentNode.childNodes.length + " children.\n";
-    msiKludgeLogString(logStr, ["spaces"]);
-    editor.splitNode(aParentNode, nOffset, newLeftNode);  //after this call, aParentNode does hold the right end of the split, but newLeftNode isn't reliable
-    logStr = "  After split, parent node is [" + aParentNode.nodeName + "] and contains text [" + aParentNode.textContent + "], and its parent has [" + aParentNode.parentNode.childNodes.length + " children.\n";
-    for (var kk = 0; kk < aParentNode.parentNode.childNodes.length; ++kk)
-      logStr += "    Child [" + kk + "] is a [" + aParentNode.parentNode.childNodes[kk].nodeName + "] with content [" + aParentNode.parentNode.childNodes[kk].textContent + "]\n";
-    logStr += "  The newLeftNode is [" + newLeftNode.nodeName + "] with text [" + newLeftNode.textContent + "] and shows parent node [";
-    if (newLeftNode.parentNode)
-      logStr += newLeftNode.parentNode.nodeName + "].\n";
-    else
-      logStr += "null].\n";
-    msiKludgeLogString(logStr, ["spaces"]);
-    var newLeftNodeAgain = editor.document.createTextNode("");
-    editor.splitNode(aParentNode, reviseData.getTextLength(), newLeftNodeAgain);  //getTextLength is normally 1 - we're just separating the existing space from its surrounding text
-    logStr = "  After second split, parent node is [" + aParentNode.nodeName + "] and contains text [" + aParentNode.textContent + "], and its parent has [" + aParentNode.parentNode.childNodes.length + " children.\n";
-    for (var kk = 0; kk < aParentNode.parentNode.childNodes.length; ++kk)
-      logStr += "    Child [" + kk + "] is a [" + aParentNode.parentNode.childNodes[kk].nodeName + "] with content [" + aParentNode.parentNode.childNodes[kk].textContent + "]\n";
-    logStr += "  The newLeftNode is [" + newLeftNode.nodeName + "] with text [" + newLeftNode.textContent + "] and shows parent node [";
-    if (newLeftNodeAgain.parentNode)
-      logStr += newLeftNodeAgain.parentNode.nodeName + "].\n";
-    else
-      logStr += "null].\n";
-    msiKludgeLogString(logStr, ["spaces"]);
-    nOffset = msiNavigationUtils.offsetInParent(aParentNode);
-    if (nOffset > 0)
-      editor.deleteNode(aParentNode.parentNode.childNodes[--nOffset]);
-    msiKludgeLogString("Got past the deleteNode call\n", ["spaces"]);
-    editor.insertNode(ourNode, aParentNode.parentNode, nOffset);
-    logStr = "  After insertion of new node, parent node is [" + aParentNode.parentNode.nodeName + "] and contains text [" + aParentNode.textContent + "], and its parent has [" + aParentNode.parentNode.childNodes.length + " children.\n";
-    msiKludgeLogString(logStr, ["spaces"]);
+    msiEditorReplaceTextWithNode(editor, aParentNode, reviseData.mOffset, reviseData.mOffset + reviseData.getTextLength(), ourNode);
   }
 
   editor.endTransaction();
@@ -4764,13 +4756,16 @@ var msiReviseVerticalSpacesCommand =
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
+
     var editorElement = msiGetActiveEditorElement();
-    var vspaceNode = aParams.getISupportsValue("reviseObject");
-    if (vspaceNode != null && editorElement != null)
+    var vSpaceReviseData = msiGetPropertiesDataFromCommandParams(aParams);
+    var vSpaceData = new Object();
+    vSpaceData.reviseData = vSpaceReviseData;
+    if (vSpaceReviseData != null && editorElement != null)
     {
-      AlertWithTitle("msiComposerCommands.js", "In msiReviseVerticalSpacesCommand, trying to revise a vertical space, dialog not yet implemented.");
-//      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/VerticalSpaces.xul", "_blank", "chrome,close,titlebar,dependent",
-//                                                     editorElement, "cmd_reviseVerticalSpaces", vspaceNode);
+//      AlertWithTitle("msiComposerCommands.js", "In msiReviseVerticalSpacesCommand, trying to revise a vertical space, dialog not yet implemented.");
+      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/VerticalSpaces.xul", "_blank", "chrome,close,titlebar,dependent",
+                                                     editorElement, "cmd_reviseVerticalSpaces", this, vSpaceData);
     }
     editorElement.focus();
   },
@@ -4806,7 +4801,8 @@ function msiInsertVerticalSpace(dialogData, editorElement)
 //  {
 //    strut:          ""  //
 //  };
-  var spaceStr = "<vspace type=\"";
+  var spaceStr = "<xhtml:vspace xmlns:xhtml=\"" + xhtmlns + "\" type=\"";
+  var styleStr = "";
   if (dialogData.spaceType != "customSpace")
   {
     spaceStr += dialogData.spaceType;
@@ -4817,30 +4813,131 @@ function msiInsertVerticalSpace(dialogData, editorElement)
 //    else if (dialogData.spaceType in lineHeightFromSpaceType)
 //      spaceStr += "\" lineHt=\"" + lineHeightFromSpaceType[dialogData.spaceType];
     if (dimStr)
+    {
       spaceStr += "\" dim=\"" + dimStr;
+//      styleStr += "padding-bottom: " + dimStr + ";";
+    }
     else
     {
       lineHtStr = msiSpaceUtils.getVSpaceLineHeight(dialogData.spaceType);
       if (lineHtStr)
-      spaceStr += "\" lineHt=\"" + lineHtStr;
+      {
+        spaceStr += "\" lineHt=\"" + lineHtStr;
+//        styleStr += "line-height: " + lineHtStr + ";";
+      }
     }
+//    if (styleStr.length)
+//      spaceStr += "\" style=\"" + styleStr; //The last closing quote gets put on below?
   }
   else
   {
     spaceStr += "customSpace\" dim=\"";
-    spaceStr += String(dialogData.customSpaceData.sizeData.size) + dialogData.customSpaceData.sizeData.units;
+    var dimStr = String(dialogData.customSpaceData.sizeData.size) + dialogData.customSpaceData.sizeData.units;
+    var vAlignStr = String(-(dialogData.customSpaceData.sizeData.size)) + dialogData.customSpaceData.sizeData.units;
+    spaceStr += dimStr;
     spaceStr += "\" atEnd=\"" + (dialogData.customSpaceData.typesetChoice=="always"?"true":"false");
+    spaceStr += "\" style=\"height: " + dimStr + "; vertical-align: " + vAlignStr + ";";
   }
 //  if (dialogData.spaceType in contentFromSpaceType)
 //    spaceStr += "\">" + contentFromSpaceType[dialogData.spaceType] + "</vspace>";
-  var contentStr = msiSpaceUtils.getVSpaceCharContent(dialogData.spaceType);
+  var contentStr = msiSpaceUtils.getVSpaceDisplayableContent(dialogData.spaceType);
   if (contentStr)
-    spaceStr += "\">" + contentStr + "</vspace>";
+    spaceStr += "\">" + contentStr + "</xhtml:vspace>";
   else
     spaceStr += "\"/>";
   dump("In msiInsertVerticalSpace, inserting space: [" + spaceStr + "].\n");
 //  editor.insertHTMLWithContext(spaceStr, "", "", "", null, parentNode, insertPos, false);
   insertXMLAtCursor(editor, spaceStr, true, false);
+}
+
+function msiReviseVerticalSpace(reviseData, dialogData, editorElement)
+{
+  var editor = msiGetEditor(editorElement);
+  editor.beginTransaction();
+  var spaceInfo = reviseData.getSpaceInfo();
+  var contentStr = msiSpaceUtils.getVSpaceDisplayableContent(dialogData.spaceType);
+//  var invisContent = msiSpaceUtils.getHSpaceShowInvis(dialogData.spaceType);
+  var cntNodeList = null;
+  var logStr = "";
+  if (contentStr && contentStr.length)
+  {
+    var parser = new DOMParser();
+    contentStr = "<body>" + contentStr + "</body>";
+    msiKludgeLogString("In msiComposerCommands.js, in msiReviseVerticalSpace, retrieving content string and got [" + contentStr + "].\n", ["spaces"]);
+    var cntDoc = parser.parseFromString(contentStr,"application/xhtml+xml");
+    cntNodeList = cntDoc.documentElement.childNodes;
+  }
+
+  var currentNode = reviseData.getReferenceNode();
+  var aParentNode = currentNode.parentNode;;
+  var ourNode = currentNode;
+  var dimsStr = msiSpaceUtils.getVSpaceDims(dialogData.spaceType);
+  var lineHtStr = msiSpaceUtils.getVSpaceLineHeight(dialogData.spaceType);
+
+  if ( (dialogData.spaceType != spaceInfo.theSpace) || (dialogData.spaceType == "customSpace") )
+  {
+    msiKludgeLogString("Inside the vertical spaceType different clause.\n", ["spaces"]);
+    if (dialogData.spaceType != spaceInfo.theSpace)
+      editor.setAttribute(ourNode, "type", dialogData.spaceType);
+    if (dimsStr && dimsStr.length)
+      editor.setAttribute(ourNode, "dim", dimsStr);
+    else if (dialogData.spaceType != "customSpace")
+//    if (dialogData.spaceType != "customSpace")
+      editor.removeAttribute(ourNode, "dim");
+    if (contentStr != msiSpaceUtils.getVSpaceDisplayableContent(spaceInfo.theSpace))
+    {
+      msiKludgeLogString("Inside the contentStr different clause.\n", ["spaces"]);
+      for (var ix = ourNode.childNodes.length-1; ix >= 0; --ix)  //Note that the anonymous generated (XBL) content shouldn't be affected by this
+        editor.deleteNode(ourNode.childNodes[ix]);
+      if (cntNodeList)
+      {
+//        var parser = new DOMParser();
+//        var cntDoc = parser.parseFromString(contentStr,"application/xhtml+xml");
+//        var cntNodeList = cntDoc.documentElement.childNodes;
+        for (ix = 0; ix < cntNodeList.length; ++ix)
+          editor.insertNode(cntNodeList[ix], ourNode, ix);
+      }
+    }
+    if (dialogData.spaceType == "customSpace")  //more to do
+    {
+      var heightExpr = /height:\s*[^;]+;?/;
+      var vertAlignExpr = /vertical-align:\s*[^;]+;?/;
+      var atEndAttr = (dialogData.customSpaceData.typesetChoice=="always") ? "true" : "false";
+      if (!("atEnd" in spaceInfo) || (spaceInfo.atEnd != atEndAttr))
+        editor.setAttribute(ourNode, "atEnd", atEndAttr);
+      msiKludgeLogString("Inside the custom vertical spaceType clause.\n", ["spaces"]);
+
+      if ( (dialogData.customSpaceData.customType != null) && (dialogData.customSpaceData.customType != "fixed") )
+        dump("Problem in msiComposerCommands.js, msiReviseVerticalSpace; dialog reported a stretchy vertical space?\n");
+      //Then go ahead and pretend it's a fixed custom space.
+      dimsStr = String(dialogData.customSpaceData.sizeData.size) + dialogData.customSpaceData.sizeData.units;
+      msiKludgeLogString("Inside the customType fixed clause, dimsStr is [" + dimsStr + "].\n", ["spaces"]);
+      if (ourNode.getAttribute("dim") != dimsStr)
+      {
+        var styleStr = ourNode.getAttribute("style");
+        if (!styleStr)
+          styleStr = "";
+        if (styleStr.match(heightExpr))
+          styleStr = styleStr.replace(heightExpr, "height: " + dimsStr + ";");
+        else
+          styleStr += "height: " + dimsStr + ";";
+        if (dimsStr[0] == "-")
+          dimsStr = dimsStr.substr(1);
+        else
+          dimsStr = "-" + dimsStr;
+        if (styleStr.match(vertAlignExpr))
+          styleStr = styleStr.replace(vertAlignExpr, "vertical-align: " + dimsStr + ";");
+        else
+          styleStr += "vertical-align: " + dimsStr + ";";
+        editor.setAttribute(ourNode, "dim", dimsStr);
+        editor.setAttribute(ourNode, "style", styleStr);
+      }
+      if (ourNode.getAttribute("class") == "stretchySpace")
+        editor.removeAttribute(ourNode, "class");
+    }
+  }
+  
+  editor.endTransaction();
 }
 
 
@@ -4877,12 +4974,14 @@ var msiReviseRulesCommand =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement();
-    var ruleNode = msiGetReviseObjectFromCommandParams(aParams);
-    if (ruleNode != null && editorElement != null)
+    var ruleReviseData = msiGetPropertiesDataFromCommandParams(aParams);
+    var ruleData = new Object();
+    ruleData.reviseData = ruleReviseData;
+    if (ruleReviseData != null && editorElement != null)
     {
-      AlertWithTitle("msiComposerCommands.js", "In msiReviseRulesCommand, trying to revise a rule, dialog not yet implemented.");
-//      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/msiRulesDialog.xul", "_blank", "chrome,close,titlebar,dependent",
-//                                                     editorElement, "cmd_msiReviseRules", ruleNode);
+//      AlertWithTitle("msiComposerCommands.js", "In msiReviseRulesCommand, trying to revise a rule, dialog not yet implemented.");
+      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/msiRulesDialog.xul", "_blank", "chrome,close,titlebar,dependent",
+                                                     editorElement, "cmd_msiReviseRules", this, ruleData);
     }
     editorElement.focus();
   },
@@ -4895,18 +4994,92 @@ function msiInsertRules(dialogData, editorElement)
   var editor = msiGetEditor(editorElement);
 //  var parentNode = editor.selection.anchorNode;
 //  var insertPos = editor.selection.anchorOffset;
-  var ruleStr = "<msirule ";
-  ruleStr += "lift=\"";
-  ruleStr += String(dialogData.lift.size) + dialogData.lift.units;
-  ruleStr += "\" width=\"";
-  ruleStr += String(dialogData.width.size) + dialogData.width.units;
-  ruleStr += "\" height=\"";
-  ruleStr += String(dialogData.height.size) + dialogData.height.units;
+  var styleStr = "";
+  var ruleStr = "<xhtml:msirule xmlns:xhtml=\"" + xhtmlns + "\" ";
+  var liftStr = String(dialogData.lift.size) + dialogData.lift.units;
+  var widthStr = String(dialogData.width.size) + dialogData.width.units;
+  var heightStr = String(dialogData.height.size) + dialogData.height.units;
+  ruleStr += "lift=\"" + liftStr;
+  styleStr += "vertical-align: " + liftStr;
+  ruleStr += "\" width=\"" + widthStr;
+  styleStr += "; width: " + widthStr;
+  ruleStr += "\" height=\"" + heightStr;
+  styleStr += "; height: " + heightStr;
   ruleStr += "\" color=\"" + dialogData.ruleColor;
-  ruleStr += "\"/>";
+  styleStr += "; background-color: " + dialogData.ruleColor + ";";
+  ruleStr += "\" style=\"" + styleStr + "\" > </xhtml:msirule>";
   dump("In msiInsertRules, inserting rule: [" + ruleStr + "].\n");
 //  editor.insertHTMLWithContext(spaceStr, "", "", "", null, parentNode, insertPos, false);
   insertXMLAtCursor(editor, ruleStr, true, false);
+}
+
+function msiReviseRules(reviseData, dialogData, editorElement)
+{
+  var editor = msiGetEditor(editorElement);
+  editor.beginTransaction();
+//  var parentNode = editor.selection.anchorNode;
+//  var insertPos = editor.selection.anchorOffset;
+
+  var currentNode = reviseData.getReferenceNode();
+  var aParentNode = currentNode.parentNode;;
+  var ourNode = currentNode;
+
+  var vAlignExpr = /vertical-align:\s*[^;]+;?/;
+  var htExpr = /height:\s*[^;]+;?/;
+  var wdthExpr = /width:\s*[^;]+;?/;
+  var bkExpr = /background\-color:\s*[^;]+;?/;
+//      msiKludgeLogString("Inside the custom newline breakType clause; customType is [" + dialogData.customBreakData.customType + "].\n", ["spaces"]);
+
+  var styleStr = ourNode.getAttribute("style");
+  var liftStr = String(dialogData.lift.size) + dialogData.lift.units;
+  var widthStr = String(dialogData.width.size) + dialogData.width.units;
+  var heightStr = String(dialogData.height.size) + dialogData.height.units;
+  var bSetStyle = false;
+//      msiKludgeLogString("Inside the custom NewLine clause, dimsStr is [" + dimsStr + "].\n", ["spaces"]);
+  if (ourNode.getAttribute("lift") != liftStr)
+  {
+    editor.setAttribute(ourNode, "lift", liftStr);
+    if (!styleStr)
+      styleStr = "";
+    if (styleStr.match(vAlignExpr))
+      styleStr = styleStr.replace(vAlignExpr, "vertical-align: " + liftStr + ";");
+    else
+      styleStr += "vertical-align: " + liftStr + ";";
+    bSetStyle = true;
+  }
+  if (ourNode.getAttribute("width") != widthStr)
+  {
+    editor.setAttribute(ourNode, "width", widthStr);
+    if (!styleStr)
+      styleStr = "";
+    if (styleStr.match(wdthExpr))
+      styleStr = styleStr.replace(wdthExpr, "width: " + widthStr + ";");
+    else
+      styleStr += "width: " + widthStr + ";";
+    bSetStyle = true;
+  }
+  if (ourNode.getAttribute("height") != heightStr)
+  {
+    editor.setAttribute(ourNode, "height", heightStr);
+    if (styleStr.match(htExpr))
+      styleStr = styleStr.replace(htExpr, "height: " + heightStr + ";");
+    else
+      styleStr += "height: " + heightStr + ";";
+    bSetStyle = true;
+  }
+  if (ourNode.getAttribute("color") != dialogData.ruleColor)
+  {
+    editor.setAttribute(ourNode, "color", dialogData.ruleColor);
+    if (styleStr.match(bkExpr))
+      styleStr = styleStr.replace(bkExpr, "background-color: " + dialogData.ruleColor + ";");
+    else
+      styleStr += "background-color: " + dialogData.ruleColor + ";";
+    bSetStyle = true;
+  }
+  if (bSetStyle)
+    editor.setAttribute(ourNode, "style", styleStr);
+
+  editor.endTransaction();
 }
 
 
@@ -4943,12 +5116,14 @@ var msiReviseBreaksCommand =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement();
-    var breakNode = msiGetReviseObjectFromCommandParams(aParams);
-    if (breakNode != null && editorElement != null)
+    var breakReviseData = msiGetPropertiesDataFromCommandParams(aParams);
+    var breakData = new Object();
+    breakData.reviseData = breakReviseData;
+    if (breakReviseData != null && editorElement != null)
     {
-      AlertWithTitle("msiComposerCommands.js", "In msiReviseBreaksCommand, trying to revise a break, dialog not yet implemented.");
-//      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/msiBreaksDialog.xul", "_blank", "chrome,close,titlebar,dependent",
-//                                                     editorElement, "cmd_msiReviseBreaks", breakNode);
+      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/msiBreaksDialog.xul", "_blank", "chrome,close,titlebar,dependent",
+                                                     editorElement, "cmd_msiReviseBreaks", this, breakData);
+//      AlertWithTitle("msiComposerCommands.js", "In msiReviseBreaksCommand, trying to revise a break, dialog not yet implemented.");
     }
     editorElement.focus();
   },
@@ -4985,11 +5160,16 @@ function msiInsertBreaks(dialogData, editorElement)
 
   var invisStr = msiSpaceUtils.getBreakShowInvis(dialogData.breakType);
   var contentStr = msiSpaceUtils.getBreakCharContent(dialogData.breakType);
-  var breakStr = "<msibreak type=\"";
+  var breakStr = "<xhtml:msibreak xmlns:xhtml=\"" + xhtmlns + "\" type=\"";
   if (dialogData.breakType == "customNewLine")
   {
     breakStr += "customNewLine\" dim=\"";
-    breakStr += String(dialogData.customBreakData.sizeData.size) + dialogData.customBreakData.sizeData.units;
+    var dimsStr = String(dialogData.customBreakData.sizeData.size) + dialogData.customBreakData.sizeData.units;
+    var vAlignStr = String(-(dialogData.customBreakData.sizeData.size)) + dialogData.customBreakData.sizeData.units;
+    breakStr += dimsStr;
+    if (!contentStr)
+      contentStr = "";
+    contentStr = "<xhtml:custNL style=\"vertical-align: " + vAlignStr + "; height: " + dimsStr + ";\"></xhtml:custNL>" + contentStr;
   }
 
   else
@@ -5004,13 +5184,102 @@ function msiInsertBreaks(dialogData, editorElement)
 //  if (dialogData.breakType in contentFromBreakType)
 //    breakStr += "\">" + contentFromBreakType[dialogData.breakType] + "</msibreak>";
   if (contentStr)
-    breakStr += "\">" + contentStr + "</msibreak>";
+    breakStr += "\">" + contentStr + "</xhtml:msibreak>";
 //    breakStr += "\"/>" + contentFromBreakType[dialogData.breakType];
   else
     breakStr += "\"/>";
 
   dump("In msiInsertBreaks, inserting break: [" + breakStr + "].\n");
   insertXMLAtCursor(editor, breakStr, true, false);
+}
+
+function msiReviseBreaks(reviseData, dialogData, editorElement)
+{
+  var editor = msiGetEditor(editorElement);
+  editor.beginTransaction();
+  var breakInfo = reviseData.getSpaceInfo();
+
+  var contentStr = msiSpaceUtils.getBreakDisplayableContent(dialogData.breakType);
+//  var invisContent = msiSpaceUtils.getHSpaceShowInvis(dialogData.spaceType);
+  var cntNodeList = null;
+  var logStr = "";
+  if (contentStr && contentStr.length)
+  {
+    var parser = new DOMParser();
+    contentStr = "<body>" + contentStr + "</body>";
+    msiKludgeLogString("In msiComposerCommands.js, in msiReviseBreaks, retrieving content string and got [" + contentStr + "].\n", ["spaces"]);
+    var cntDoc = parser.parseFromString(contentStr,"application/xhtml+xml");
+    cntNodeList = cntDoc.documentElement.childNodes;
+  }
+
+  var currentNode = reviseData.getReferenceNode();
+  var aParentNode = currentNode.parentNode;;
+  var ourNode = currentNode;
+//  var lineHtStr = msiSpaceUtils.getVSpaceLineHeight(dialogData.spaceType);
+
+  if ( (dialogData.breakType != breakInfo.theSpace) || (dialogData.breakType == "customNewLine") )
+  {
+    msiKludgeLogString("Inside the breakType different clause.\n", ["spaces"]);
+    if (dialogData.breakType != breakInfo.theSpace)
+      editor.setAttribute(ourNode, "type", dialogData.breakType);
+//    if (dimsStr && dimsStr.length)
+//      editor.setAttribute(ourNode, "dim", dimsStr);
+//    else if (dialogData.spaceType != "customSpace")
+////    if (dialogData.spaceType != "customSpace")
+//      editor.removeAttribute(ourNode, "dim");
+    if (contentStr != msiSpaceUtils.getBreakDisplayableContent(breakInfo.theSpace))
+    {
+      msiKludgeLogString("Inside the contentStr different clause.\n", ["spaces"]);
+      for (var ix = ourNode.childNodes.length-1; ix >= 0; --ix)  //Note that the anonymous generated (XBL) content shouldn't be affected by this
+        editor.deleteNode(ourNode.childNodes[ix]);
+      if (cntNodeList)
+      {
+//        var parser = new DOMParser();
+//        var cntDoc = parser.parseFromString(contentStr,"application/xhtml+xml");
+//        var cntNodeList = cntDoc.documentElement.childNodes;
+        for (ix = 0; ix < cntNodeList.length; ++ix)
+          editor.insertNode(cntNodeList[ix], ourNode, ix);
+      }
+    }
+    if (dialogData.breakType == "customNewLine")  //more to do
+    {
+      var interiorNode = null;
+      var intNodes = ourNode.getElementsByTagNameNS(xhtmlns, "custNL");
+      if (intNodes && intNodes.length)
+        interiorNode = intNodes[0];
+      else
+      {
+        interiorNode = editor.document.createElementNS(xhtmlns, "custNL");
+        editor.insertNode(interiorNode, ourNode, 0);
+      }
+      var vertAlignExpr = /vertical-align:\s*[^;]+;?/;
+      var htExpr = /height:\s*[^;]+;?/;
+//      msiKludgeLogString("Inside the custom newline breakType clause; customType is [" + dialogData.customBreakData.customType + "].\n", ["spaces"]);
+
+      //Then go ahead and pretend it's a fixed custom space.
+      var dimsStr = String(dialogData.customBreakData.sizeData.size) + dialogData.customBreakData.sizeData.units;
+      var vAlignStr = String(-(dialogData.customBreakData.sizeData.size)) + dialogData.customBreakData.sizeData.units;
+      msiKludgeLogString("Inside the custom NewLine clause, dimsStr is [" + dimsStr + "].\n", ["spaces"]);
+      if (ourNode.getAttribute("dim") != dimsStr)
+      {
+        editor.setAttribute(ourNode, "dim", dimsStr);
+        var styleStr = interiorNode.getAttribute("style");
+        if (!styleStr)
+          styleStr = "";
+        if (styleStr.match(vertAlignExpr))
+          styleStr = styleStr.replace(vertAlignExpr, "vertical-align: " + vAlignStr + ";");
+        else
+          styleStr += "vertical-align: " + vAlignStr + ";";
+        if (styleStr.match(htExpr))
+          styleStr = styleStr.replace(htExpr, "height: " + dimsStr + ";");
+        else
+          styleStr += "height: " + dimsStr + ";";
+        editor.setAttribute(interiorNode, "style", styleStr);
+      }
+    }
+  }
+  
+  editor.endTransaction();
 }
 
 
