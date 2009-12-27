@@ -27,6 +27,8 @@ function Startup()
   data = window.arguments[0];
   if (data == null)
     data = new Object();
+  if ("reviseData" in data)
+    setDataFromReviseData(data.reviseData);
   data.Cancel = false;
 
   InitDialog();
@@ -49,6 +51,39 @@ function InitDialog()
 
   setCustomControls();
   checkEnableControls();
+}
+
+function isReviseDialog()
+{
+  if (data && ("reviseData" in data) && (data.reviseData!=null))
+    return true;
+  return false;
+}
+
+function setDataFromReviseData(reviseData)
+{
+  var revBreakInfo = reviseData.getSpaceInfo();
+  if (revBreakInfo)
+  {
+    data.breakType = revBreakInfo.theSpace;
+    if (revBreakInfo.theSpace == "customNewLine")
+      data.customBreakData = setCustomBreakDataFromReviseBreakData(revBreakInfo);
+  }
+}
+
+function setCustomBreakDataFromReviseBreakData(breakInfo)
+{
+  var customBreakData = {typesetChoice : "always"};
+  if (("atEnd" in breakInfo) && breakInfo.atEnd == "false")
+    customBreakData.typesetChoice = "discardAtLineEnd";
+  customBreakData.sizeData = {units : "in", size : 0.00};
+  if (("theDim" in breakInfo) && breakInfo.theDim.length)
+  {
+    var theSize = msiCSSUnitsList.getNumberAndUnitFromString(breakInfo.theDim);
+    customBreakData.sizeData.units = theSize.unit;
+    customBreakData.sizeData.size = theSize.number;
+  }
+  return customBreakData;
 }
 
 function setUpCustomBreakData(inData)
@@ -149,9 +184,18 @@ function onAccept()
 
   var editorElement = msiGetParentEditorElementForDialog(window);
   var theWindow = window.opener;
-  if (!theWindow || !("msiInsertBreaks" in theWindow))
-    theWindow = msiGetTopLevelWindow();
-  theWindow.msiInsertBreaks(data, editorElement);
+  if (isReviseDialog())
+  {
+    if (!theWindow || !("msiReviseBreaks" in theWindow))
+      theWindow = msiGetTopLevelWindow();
+    theWindow.msiReviseBreaks(data.reviseData, data, editorElement);
+  }
+  else
+  {
+    if (!theWindow || !("msiInsertBreaks" in theWindow))
+      theWindow = msiGetTopLevelWindow();
+    theWindow.msiInsertBreaks(data, editorElement);
+  }
 
   SaveWindowLocation();
   return true;
