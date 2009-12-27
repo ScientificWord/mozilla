@@ -12,6 +12,7 @@ var gBodyElement;
 //var customMathColor;
 
 var data;
+var mUnitsList = null;
 
 // dialog initialization code
 function Startup()
@@ -27,6 +28,8 @@ function Startup()
   data = window.arguments[0];
   if (!data)
     data = new Object();
+  if ("reviseData" in data)
+    setDataFromReviseData(data.reviseData);
   data.Cancel = false;
 
   InitDialog();
@@ -47,6 +50,37 @@ function InitDialog()
   setUpData();
   setUnitsAndPositionControls();
   setColorWell("colorWell", data.ruleColor);
+}
+
+function isReviseDialog()
+{
+  if (data && ("reviseData" in data) && (data.reviseData!=null))
+    return true;
+  return false;
+}
+
+function setDataFromReviseData(reviseData)
+{
+  var ruleNode = reviseData.getReferenceNode();
+  if (ruleNode)
+  {
+    mUnitsList = msiCreateCSSUnitsListForElement(ruleNode);
+
+    var valStr = null;
+    var theVal = null;
+    for (var ix = 0; ix < dataComponents.length; ++ix)
+    {
+      var valStr = ruleNode.getAttribute(dataComponents[ix]);
+      if (valStr && valStr.length)
+      {
+        theVal = mUnitsList.getNumberAndUnitFromString(valStr);
+        data[dataComponents[ix]] = {units: theVal.unit, size: theVal.number};
+      }
+    }
+    valStr = ruleNode.getAttribute("color");
+    if (valStr)
+      data.ruleColor = msiHTMLNamedColors.colorStringToHexRGBString(valStr);
+  }
 }
 
 function setUpData()
@@ -79,7 +113,7 @@ function setUnitsAndPositionControls()
   var unitsListBox = document.getElementById("sizeUnitsbox");
   var unitsControlGroup = [document.getElementById("liftSizeTextbox"), document.getElementById("widthSizeTextbox"),
                              document.getElementById("heightSizeTextbox")];
-  var unitsController = new msiUnitsListbox(unitsListBox, unitsControlGroup);
+  var unitsController = new msiUnitsListbox(unitsListBox, unitsControlGroup, mUnitsList);
 //  unitsListBox.mUnitsController = new msiUnitsListbox(unitsListBox, unitsControlGroup);
   var unitsValueGroup = new Array(3);
   for (var ix = 0; ix < dataComponents.length; ++ix)
@@ -125,9 +159,18 @@ function onAccept()
 
   var editorElement = msiGetParentEditorElementForDialog(window);
   var theWindow = window.opener;
-  if (!theWindow || !("msiInsertRules" in theWindow))
-    theWindow = msiGetTopLevelWindow();
-  theWindow.msiInsertRules(data, editorElement);
+  if (isReviseDialog())
+  {
+    if (!theWindow || !("msiReviseRules" in theWindow))
+      theWindow = msiGetTopLevelWindow();
+    theWindow.msiReviseRules(data.reviseData, data, editorElement);
+  }
+  else
+  {
+    if (!theWindow || !("msiInsertRules" in theWindow))
+      theWindow = msiGetTopLevelWindow();
+    theWindow.msiInsertRules(data, editorElement);
+  }
 
   SaveWindowLocation();
   return true;

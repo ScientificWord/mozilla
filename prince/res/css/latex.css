@@ -1,4 +1,5 @@
 @namespace mml url("http://www.w3.org/1998/Math/MathML");
+@namespace sw url("http://www.sciword.com/namespaces/sciword");
 
 latex {
   font-family: Times, "Times New Roman", serif;	
@@ -23,28 +24,167 @@ latex sub {
 }
 
 hspace {
-  -moz-binding: url("resource://app/res/xbl/latex.xml#hspace");
+/*  -moz-binding: url("resource://app/res/xbl/latex.xml#hspace"); */
+  display: inline-block;
 }
 
+hspace * {
+  visibility: hidden;
+}
+
+*[showinvis="true"] hspace {
+  visibility: visible;
+  color: green;
+  border-bottom: thin solid;
+}
+
+hspace[type="emSpace"] {
+  min-width: 1em;
+}
+
+hspace[type="twoEmSpace"] {
+  min-width: 2em;
+}
+
+hspace[type="thinSpace"] {
+  min-width: 0.17em;
+}
+
+hspace[type="thickSpace"] {
+  min-width: 0.5em;
+}
+
+hspace[type="italicCorrectionSpace"] {
+  min-width: 0.083em;
+}
+
+hspace[type="requiredSpace"] {
+  display: inline;
+}
+
+hspace[type="nonBreakingSpace"] {
+  display: inline;
+  white-space: nowrap;
+}
+
+/*
+hspace[type="negativeThinSpace"] {
+  min-width: 0.0em;
+}
+
+hspace[type="zeroSpace"] {
+  min-width: 0.0em;
+}
+
+hspace[type="noIndent"] {
+  min-width: 0.0em;
+} */
+
 vspace {
-  -moz-binding: url("resource://app/res/xbl/latex.xml#vspace");
+/*  -moz-binding: url("resource://app/res/xbl/latex.xml#vspace"); */
+  display: inline-block;
+	max-width: 2px;
+/*  overflow: hidden;  */
+  max-width: 1px;
+  white-space: pre;
+/*  position: relative;  */
+}
+
+vspace[type="smallSkip"] {
+  height: 3pt;
+	vertical-align: -3pt;
+}
+
+vspace[type="mediumSkip"] {
+  height: 6pt;
+	vertical-align: -6pt;
+}
+
+vspace[type="bigSkip"] {
+  height: 12pt;
+	vertical-align: -12pt;
+}
+
+vpsace[type="strut"] {
+  line-height: 100%;
+}
+
+vspace[type="mathStrut"] {
+  line-height: 100%;
+}
+
+vspace[type="customSpace"] {
+  vertical-align: -100%;
+}
+
+
+*[showinvis="true"] vspace {
+  border-left: thin solid green;
 }
 
 msirule {
-  -moz-binding: url("resource://app/res/xbl/latex.xml#msirule");
+/*  -moz-binding: url("resource://app/res/xbl/latex.xml#msirule"); */
+  display: inline-block;
 }
 
 msibreak {
-  -moz-binding: url("resource://app/res/xbl/latex.xml#msibreak");
+/*  -moz-binding: url("resource://app/res/xbl/latex.xml#msibreak"); */
+}
+
+msibreak[type="customNewLine"]:after {
+  white-space: pre;
+  content: "\A";
+}
+
+msibreak[type="customNewLine"] custNL {
+	display: inline-block;
+	width: 1px;
+}
+
+*[showinvis="true"] msibreak {
+	width: 3px;
+	border-right: 1px solid green;
+	border-bottom: 1px solid green;
+}
+
+*[showinvis="true"] msibreak[type="customNewLine"] {
+  width:0px;
+  border-right: none;
+  border-bottom: none;
+}
+
+*[showinvis="true"] msibreak[type="customNewLine"] custNL {
+	width: 3px;
+	border-right: 1px solid green;
+	border-bottom: 1px solid green;
 }
 
 mml|math msibreak {
-  -moz-binding: url("resource://app/res/xbl/latex.xml#mathmsibreak");
+/*  -moz-binding: url("resource://app/res/xbl/latex.xml#mathmsibreak"); */
 }
 
-invis {
+msibreak[type="newPage"]:after {
+  white-space: pre;
+  content: "\A";
+}
+
+newPageRule {
+	display: inline-block;
+	position: absolute;
+	left: 0px;
+	bottom: auto;
+	height: 1px;
+	width: 100%;
+	border-bottom: 2px dashed green;
+}
+
+/* invis {
   display: none;
 }
+
+*[showinvis="true"] sw|invis {
+  display: inline;
+}  */
 
 otfont {
   -moz-binding: url("resource://app/res/xbl/latex.xml#otfont");
