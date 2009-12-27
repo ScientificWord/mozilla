@@ -2544,20 +2544,27 @@ function ApplyCellAttributes()
 
 function ApplyAttributesToOneCell(destElement, nRow, nCol)
 {
+  var theVal = null;
   var theValStr = "";
   if (gCellChangeData.size.height)
   {
     if (gCollatedCellData.size.bHeightSet && !UseCSSForCellProp("height") && !ShouldSetHeightOnRows())
-      theValStr = gHeightUnitsController.getValueString(gDialog.CellHeightInput, "px");
-//      theValStr = String(gCollatedCellData.size.height) + gCellHeightUnit;
+    {
+      theVal = gHeightUnitsController.getValueString(gDialog.CellHeightInput, "px");
+      if (theVal)
+        theValStr = theVal;
+    }
     SetAnAttribute(destElement, "height", theValStr);
   }
 
   if (gCellChangeData.size.width)
   {
     if (gCollatedCellData.size.bWidthSet && !UseCSSForCellProp("width") && !ShouldSetWidthOnCols())
-      theValStr = gWidthUnitsController.getValueString(gDialog.CellWidthInput, "px");
-//      theValStr = String(gCollatedCellData.size.width) + gCellWidthUnit;
+    {
+      theVal = gWidthUnitsController.getValueString(gDialog.CellWidthInput, "px");
+      if (theVal)
+        theValStr = theVal;
+    }
     SetAnAttribute(destElement, "width", theValStr);
   }
 
