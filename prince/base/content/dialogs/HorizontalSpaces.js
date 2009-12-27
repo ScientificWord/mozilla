@@ -66,7 +66,7 @@ function setDataFromReviseData(reviseData)
   if (revSpaceInfo)
   {
     data.spaceType = revSpaceInfo.theSpace;
-    if (revSpaceInfo.theSpace == "custom")
+    if (revSpaceInfo.theSpace == "customSpace")
       data.customSpaceData = setCustomSpaceDataFromReviseSpaceData(revSpaceInfo);
   }
 }
@@ -98,9 +98,10 @@ function setCustomSpaceDataFromReviseSpaceData(spaceInfo)
     {
       var theSize = msiCSSUnitsList.getNumberAndUnitFromString(spaceInfo.theDim);
       customSpaceData.fixedData.units = theSize.unit;
-      customSpaceData.fixedData.value = theSize.number;
+      customSpaceData.fixedData.size = theSize.number;
     }
   }
+  return customSpaceData;
 }
 
 function setUpCustomSpaceData(inData)
