@@ -23,7 +23,7 @@ sw|button [class="texbutton"] {
 
 
 sw|space {
-  display: -moz-inline-box;
+/*  display: -moz-inline-box;  */
   display: inline-block;
   vertical-align: baseline;
 }
@@ -32,6 +32,10 @@ sw|space {
   border-bottom-width: thin;
   border-bottom-style: solid;
   border-bottom-color: green;
+}
+
+*[showinvis="true"] sw|invis {
+  display: inline;
 }
 
 *[showinvis="true"] sw|space[type="noIndent"] {

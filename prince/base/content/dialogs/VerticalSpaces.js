@@ -27,6 +27,8 @@ function Startup()
   data = window.arguments[0];
   if (!data)
     data = new Object();
+  if ("reviseData" in data)
+    setDataFromReviseData(data.reviseData);
   data.Cancel = false;
 
   InitDialog();
@@ -49,6 +51,48 @@ function InitDialog()
 
   setCustomControls();
   checkEnableControls();
+}
+
+function isReviseDialog()
+{
+  if (data && ("reviseData" in data) && (data.reviseData!=null))
+    return true;
+  return false;
+}
+
+function setDataFromReviseData(reviseData)
+{
+  var revSpaceInfo = reviseData.getSpaceInfo();
+  if (revSpaceInfo)
+  {
+    data.spaceType = revSpaceInfo.theSpace;
+    if (revSpaceInfo.theSpace == "customSpace")
+      data.customSpaceData = setCustomSpaceDataFromReviseSpaceData(revSpaceInfo);
+  }
+}
+
+function setCustomSpaceDataFromReviseSpaceData(spaceInfo)
+{
+  var customSpaceData = {customType : spaceInfo.customType, typesetChoice : "always"};
+  if (("atEnd" in spaceInfo) && spaceInfo.atEnd == "false")
+    customSpaceData.typesetChoice = "discardAtLineEnd";
+//  customSpaceData.stretchData = {factor : 1.00, fillWith : "fillNothing"};
+  customSpaceData.sizeData = {units : "in", size : 0.00};
+//  if (spaceInfo.customType == "stretchy")
+//  {
+//    if (spaceInfo.stretchFactor)
+//      customSpaceData.stretchData.factor = Number(spaceInfo.stretchFactor);
+//  }
+//  else  //"fixed"
+//  {
+    if (("theDim" in spaceInfo) && spaceInfo.theDim.length)
+    {
+      var theSize = msiCSSUnitsList.getNumberAndUnitFromString(spaceInfo.theDim);
+      customSpaceData.sizeData.units = theSize.unit;
+      customSpaceData.sizeData.size = theSize.number;
+    }
+//  }
+  return customSpaceData;
 }
 
 function setUpCustomSpaceData(inData)
@@ -149,9 +193,19 @@ function onAccept()
 
   var editorElement = msiGetParentEditorElementForDialog(window);
   var theWindow = window.opener;
-  if (!theWindow || !("msiInsertVerticalSpace" in theWindow))
-    theWindow = msiGetTopLevelWindow();
-  theWindow.msiInsertVerticalSpace(data, editorElement);
+
+  if (isReviseDialog())
+  {
+    if (!theWindow || !("msiReviseVerticalSpace" in theWindow))
+      theWindow = msiGetTopLevelWindow();
+    theWindow.msiReviseVerticalSpace(data.reviseData, data, editorElement);
+  }
+  else
+  {
+    if (!theWindow || !("msiInsertVerticalSpace" in theWindow))
+      theWindow = msiGetTopLevelWindow();
+    theWindow.msiInsertVerticalSpace(data, editorElement);
+  }
 
   SaveWindowLocation();
 //  return false;
