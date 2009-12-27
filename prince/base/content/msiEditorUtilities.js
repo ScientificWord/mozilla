@@ -1509,6 +1509,8 @@ function msiElementCanHaveAttribute(elementNode, attribName)
 {
   var retVal = true;  //by default, prevent nothing
   var elementName = msiGetBaseNodeName(elementNode);
+  if (elementNode.nodeType == nsIDOMNode.TEXT_NODE)
+    return false;
 
   switch( attribName.toLowerCase() )  //copy attributes we always need
   {
@@ -1572,13 +1574,15 @@ function msiEnsureElementAttribute(elementNode, attribName, attribValue)
   return retVal;
 }
 
-function msiCopyElementAttributes(newElement, oldElement, editor)
+function msiCopyElementAttributes(newElement, oldElement, editor, bSuppressID)
 {
   var theAttrs = oldElement.attributes;
   for (var jx = 0; jx < theAttrs.length; ++jx)
   {
 //    var attrName = msiGetBaseNodeName(theAttrs.item(jx));
     var attrName = theAttrs.item(jx).nodeName;
+    if (bSuppressID && theAttrs.item(jx).isId)
+      continue;
     switch(attrName)
     {
       case '_moz-dirty':
@@ -1620,6 +1624,120 @@ function msiEditorMoveChildren(toElement, fromElement, editor)
   }
   catch(exc) {dump("Exception in msiEditorUtilities.js, msiEditorMoveChildren; exception is [" + exc + "].\n");}
 }
+
+
+function msiEditorReplaceTextWithNode(theEditor, textNode, startOffset, endOffset, replaceNode)
+{
+//  What can we use to split a node when that function (editor.splitNode) doesn't work properly? I'm guessing just replace the nodes, if we can
+//    isolate the case...
+  if (!textNode || (textNode.nodeType != nsIDOMNode.TEXT_NODE))
+  {
+    dump("Problem in msiEditorUtilities.js, msiEditorReplaceTextWithNode() - null textNode passed in!\n");
+    return;
+  }
+  if (textNode.nodeType != nsIDOMNode.TEXT_NODE)
+  {
+    dump("Problem in msiEditorUtilities.js, msiEditorReplaceTextWithNode() - non-text textNode [" + textNode.nodeName + "] passed in!\n");
+    return;
+  }
+  theEditor.beginTransaction();
+  var logStr = "";
+
+  var leftTextNode = null;
+//  var deleteNode = null;
+  var rightTextNode = null;
+  var theText = textNode.textContent;
+  var leftText = theText.substring(0, startOffset);
+  var midText = theText.substring(startOffset, endOffset);
+  var rightText = theText.substring(endOffset);
+  var nTextLen = theText.length;
+  var theParentNode = textNode.parentNode;
+  var nStartPos = msiNavigationUtils.offsetInParent(textNode);
+  var nParentLen = theParentNode.childNodes.length;
+//  var dummyLeftNode = theEditor.document.createTextNode("");
+//  if ( (startOffset > 0) && (endOffset < nTextLen) )
+//  {
+//    msiKludgeLogString("In msiEditorUtilities.js, in msiEditorReplaceTextWithNode(); before the first splitNode.\n", ["spaces"]);
+//    theEditor.splitNode(textNode, startOffset, dummyLeftNode);
+//    if (theParentNode.childNodes.length != nParentLen + 1)  //this means the split simply failed! fix it by hand
+//    {
+//      logStr = "In msiEditorUtilities.js, in msiEditorReplaceTextWithNode(); after the first splitNode, inside the trouble clause; textNode ";
+//      if (textNode)
+//        logStr += "has content [" + textNode.textContent + "].\n";
+//      else
+//        logStr += "is null.\n", 
+//      msiKludgeLogString(logStr, ["spaces"]);
+//      theEditor.deleteNode(textNode);
+//      msiKludgeLogString("In msiEditorUtilities.js, in msiEditorReplaceTextWithNode(); after the first splitNode, inside the trouble clause, after the deleteNode.\n", ["spaces"]);
+//      leftTextNode = theEditor.document.createTextNode(leftText);
+//      theEditor.insertNode(leftTextNode, theParentNode, nStartPos);
+//      msiKludgeLogString("In msiEditorUtilities.js, in msiEditorReplaceTextWithNode(); after the first splitNode, inside the trouble clause, after the first insertNode.\n", ["spaces"]);
+//      textNode = theEditor.document.createTextNode(midText + rightText)
+//      theEditor.insertNode(textNode, theParentNode, ++nStartPos);  //nStartPos tracks the offset at which we want to replace
+//      msiKludgeLogString("In msiEditorUtilities.js, in msiEditorReplaceTextWithNode(); after the first splitNode, inside the trouble clause, after the second insertNode.\n", ["spaces"]);
+//    }
+//    else
+//    {
+//      ++nStartPos;
+//      leftTextNode = textNode.prevSibling;
+//    }
+//    deleteNode = textNode;
+//    nParentLen = theParentNode.childNodes.length;  //reset this now
+//
+//    var secondDummy = theEditor.document.createTextNode("");
+////    logStr = "In msiEditorUtilities.js, in msiEditorReplaceTextWithNode(); inside before the second splitNode.\n  textNode contains [";
+////    logStr += textNode.textContent + "], leftText is [" + leftText + "] and rightText is [" + rightText + "].\n";
+////    msiKludgeLogString(logStr, ["spaces"]);
+//    msiKludgeLogNodeContents(theParentNode, ["spaces"], "In msiEditorUtilities.js, in msiEditorReplaceTextWithNode(); inside before the second splitNode.\n  theParentNode ");
+//    theEditor.splitNode(textNode, endOffset - startOffset, secondDummy);
+//    if (theParentNode.childNodes.length != nParentLen + 1)  //this means the split simply failed! fix it by hand
+//    {
+//      msiKludgeLogString("In msiEditorUtilities.js, in msiEditorReplaceTextWithNode(); after the second splitNode, inside the trouble clause; theParentNode.childNodes.length is [" + theParentNode.childNodes.length + "] and nParentLen is [" + nParentLen + "].\n", ["spaces"]);
+//      theEditor.deleteNode(textNode);
+//      deleteNode = theEditor.document.createTextNode(midText)
+//      theEditor.insertNode(deleteNode, theParentNode, nStartPos);
+//      rightTextNode = theEditor.document.createTextNode(rightText);
+//      theEditor.insertNode(rightTextNode, theParentNode, ++nStartPos);  //nStartPos tracks the offset at which we want to replace
+//    }
+//    else
+//    {
+//      rightTextNode = textNode;
+//      deleteNode = textNode.prevSibling;
+//      msiKludgeLogNodeContents(theParentNode, ["spaces"], "In msiEditorUtilities.js, in msiEditorReplaceTextWithNode(); inside before the second splitNode.\n  theParentNode ");
+//
+//      logStr = "In msiEditorUtilities.js, in msiEditorReplaceTextWithNode(); after the second splitNode, in the okay clause.\n  deleteNode contains [";
+//      if (deleteNode)
+//        logStr += deleteNode.textContent;
+//      logStr += "], rightTextNode contains [" + rightTextNode.textContent + "].\n  theParentNode";
+//      msiKludgeLogNodeContents(theParentNode, ["spaces"], logStr);
+////      msiKludgeLogString(logStr, ["spaces"]);
+//    }
+//  }
+//  else 
+//Forget all the splitNode calls - just try to hammer it in the crude way:
+//  {
+    logStr = "In msiEditorUtilities.js, in msiEditorReplaceTextWithNode(); inside the trouble clause, before deleting and inserting.\n  textNode contains [";
+    logStr += textNode.textContent + "], leftText is [" + leftText + "and rightText is [" + rightText + "].\n";
+    msiKludgeLogString(logStr, ["spaces"]);
+    //Add stuff to copy any attributes on the text nodes!
+    if (leftText && leftText.length)
+    {
+      leftTextNode = theEditor.document.createTextNode(leftText);
+      theEditor.insertNode(leftTextNode, theParentNode, nStartPos++);
+    }
+    if (rightText && rightText.length)
+    {
+      rightTextNode = theEditor.document.createTextNode(rightText);
+      theEditor.insertNode(rightTextNode, theParentNode, nStartPos);
+    }
+    theEditor.deleteNode(textNode);
+//  }
+//  if (deleteNode)
+//    theEditor.deleteNode(deleteNode);
+  theEditor.insertNode(replaceNode, theParentNode, nStartPos);
+  theEditor.endTransaction();
+}
+
 
 //NOTE!! This is to get around a bug in Mozilla. When the bug is fixed, this function should just read:
 //  theElement.textContent = newText; 
@@ -6225,6 +6343,24 @@ var msiNavigationUtils =
     return retVal;
   },
 
+  isSpacingObject : function(aNode)
+  {
+    var retVal = false;
+    switch(msiGetBaseNodeName(aNode))
+    {
+      case "invis":
+      case "hspace":
+      case "vspace":
+      case "msibreak":
+      case "msirule":
+        retVal = true;
+      break;
+      default:
+      break;
+    }
+    return retVal;
+  },
+
   cannotSelectNodeForProperties : function(aNode)
   {
     if (this.nodeIsPieceOfUnbreakable(aNode))
@@ -6344,9 +6480,16 @@ var msiNavigationUtils =
 
 var msiSpaceUtils = 
 {
+//How to properly use the "charContent" fields in the following is unclear. Where there are "dimensions" they provide a much more
+//  straightforward way to produce the effects desired without undesirable editing effects (like cursors in the middle of spaces).
+//  The current plan is to use the charContent (via CSS rules) only where the dimensions are missing, and in those cases NOT to wrap
+//  them in <sw:invis> nodes.
+
   hSpaceInfo : {
-    requiredSpace :         {charContent: "&#x205f;"},  //MEDIUM MATHEMATICAL SPACE in Unicode?
-    nonBreakingSpace :      {charContent: "&#x00a0;"},
+//    requiredSpace :         {charContent: "&#x205f;"},  //MEDIUM MATHEMATICAL SPACE in Unicode?
+    requiredSpace :         {charContent: " "},  //MEDIUM MATHEMATICAL SPACE in Unicode?
+//    nonBreakingSpace :      {charContent: "&#x00a0;"},
+    nonBreakingSpace :      {charContent: " "},
     emSpace :               {dimensions: "1em", charContent: "&#x2003;"},
     twoEmSpace :            {dimensions: "2em", charContent: "&#x2001;"}, //EM QUAD
     thinSpace :             {dimensions: "0.17em", charContent: "&#x2009;"},
@@ -6369,8 +6512,8 @@ var msiSpaceUtils =
     allowBreak :            {charContent: "&#x200b;"},  //this is the zero-width space  -   showInvisibleChars:  "|"?
     discretionaryHyphen :   {charContent: "&#x00ad;", showInvisibleChars: "-"},
     noBreak:                {charContent: "&#x2060;", showInvisibleChars: "~"},
-    pageBreak:              {charContent: "&#x000c;"},  //formfeed?  - showInvisibleChars: "&#x21b5;"?
-    newPage:                {charContent: "&#x000c;"},  //formfeed?  - showInvisibleChars: "&#x21b5;"?
+    pageBreak:              {charContent: "<newPageRule></newPageRule>"},  //formfeed?  - showInvisibleChars: "&#x21b5;"?
+    newPage:                {charContent: "<newPageRule/>"},  //formfeed?  - showInvisibleChars: "&#x21b5;"?
     lineBreak:              {charContent: "<br xmlns=\"http://www.w3.org/1999/xhtml\"></br>", showInvisibleChars: "&#x21b5;"},
     newLine:                {charContent: "<br xmlns=\"http://www.w3.org/1999/xhtml\"></br>", showInvisibleChars: "&#x21b5;"}
 //    lineBreak:              {charContent: "<br xmlns=\"" + xhtmlns + "\"></br>", showInvisibleChars: "&#x21b5;"},
@@ -6412,11 +6555,11 @@ var msiSpaceUtils =
     {
       case "hspace":
       case 'vspace':
-      case 'msibreak':
+//      case 'msibreak':
         retData = {theType : nodeName, theSpace : nodeType};
-        if ((nodeType == "custom") || (nodeType == "stretchySpace"))  //second shouldn't be necessary, but heretofore was apparently what we produced
+        if ((nodeType == "customSpace") || (nodeType == "stretchySpace"))  //second shouldn't be necessary, but heretofore was apparently what we produced
         {
-          retData.thespace = "custom";  //just in case it came in anomalously
+          retData.theSpace = "customSpace";  //just in case it came in anomalously
           valStr = aNode.getAttribute("dim");
           if (valStr && valStr.length)
             retData.theDim = valStr;
@@ -6435,6 +6578,15 @@ var msiSpaceUtils =
           valStr = aNode.getAttribute("atEnd");
           if (valStr && valStr.length)
             retData.atEnd = valStr;
+        }
+      break;
+      case 'msibreak':
+        retData = {theType : nodeName, theSpace : nodeType};
+        if (nodeType == "customNewLine")
+        {
+          valStr = aNode.getAttribute("dim");
+          if (valStr && valStr.length)
+            retData.theDim = valStr;
         }
       break;
       default:
@@ -6475,12 +6627,46 @@ var msiSpaceUtils =
     return theContent;
   },
 
+  getHSpaceDisplayableContent : function(spaceName)
+  {
+    var retStr = null;
+    if (this.getHSpaceDims(spaceName) == null)
+    {
+      retStr = this.getHSpaceCharContent(spaceName);
+      var invisContent = this.getHSpaceShowInvis(spaceName);
+      if (invisContent && invisContent.length)
+      {
+        if (!retStr)
+          retStr = "";
+        retStr += "<sw:invis>" + invisContent + "</sw:invis>";
+      }
+    }
+    return retStr;
+  },
+
   getVSpaceCharContent : function(spaceName)
   {
     var theContent = null;
     if ( (spaceName in this.vSpaceInfo) && ("charContent" in this.vSpaceInfo[spaceName]) )
       theContent = this.vSpaceInfo[spaceName].charContent;
     return theContent;
+  },
+
+  getVSpaceDisplayableContent : function(spaceName)
+  {
+    var retStr = null;
+    if ( (this.getVSpaceDims(spaceName) == null) && (this.getVSpaceLineHeight(spaceName) == null) )
+    {
+      retStr = this.getVSpaceCharContent(spaceName);
+      var invisContent = this.getVSpaceShowInvis(spaceName);
+      if (invisContent && invisContent.length)
+      {
+        if (!retStr)
+          retStr = "";
+        retStr += "<sw:invis>" + invisContent + "</sw:invis>";
+      }
+    }
+    return retStr;
   },
 
   getBreakCharContent : function(breakName)
@@ -6513,6 +6699,19 @@ var msiSpaceUtils =
     if ( (breakName in this.breaksInfo) && ("showInvisibleChars" in this.breaksInfo[breakName]) )
       theInvisChars = this.breaksInfo[breakName].showInvisibleChars;
     return theInvisChars;
+  },
+
+  getBreakDisplayableContent : function(breakName)
+  {
+    var retStr = this.getBreakCharContent(breakName);
+    var invisContent = this.getBreakShowInvis(breakName);
+    if (invisContent && invisContent.length)
+    {
+      if (!retStr)
+        retStr = "";
+      retStr += "<sw:invis>" + invisContent + "</sw:invis>";
+    }
+    return retStr;
   }
 
 };
@@ -6565,7 +6764,7 @@ function msiDumpWithID(str, element)
   dump( str.replace("@", replStr) );
 }
 
-function msiKludgeLogString(logStr, keyArray)
+function msiKludgeTestKeys(keyArray)
 {
   var keysInUse = [];
 #if DEBUG_Ron
@@ -6586,8 +6785,36 @@ function msiKludgeLogString(logStr, keyArray)
       }
     }
   }
+  return bDoIt;
+}
+
+function msiKludgeLogString(logStr, keyArray)
+{
+  var bDoIt = msiKludgeTestKeys(keyArray);
   if (bDoIt)
     dump(logStr);
+}
+
+function msiKludgeLogNodeContents(aNode, keyArray, prefaceStr)
+{
+  var bDoIt = msiKludgeTestKeys(keyArray);
+  if (!bDoIt)
+    return;
+  var retStr = "Node";
+  if (prefaceStr && prefaceStr.length)
+    retStr = prefaceStr;
+  if (msiNavigationUtils.isTextNode(aNode))
+    retStr += " is a text node, with content [" + aNode.textContent + "].\n";
+  else
+  {
+    retStr += " is a [" + aNode.nodeName + "] node with [" + aNode.childNodes.length + "] children:";
+    for (var ix = 0; ix < aNode.childNodes.length; ++ix)
+    {
+      retStr += "\n  child [" + ix + "] is a [" + aNode.childNodes[ix].nodeName + "] + with text content [" + aNode.childNodes[ix].textContent + "]";
+    }
+    retStr += "\n";
+  }
+  dump(retStr);
 }
 
 function msiAuxDirFromDocPath(documentURI)
