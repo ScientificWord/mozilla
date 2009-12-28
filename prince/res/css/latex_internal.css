@@ -118,3 +118,13 @@ span {
   display: inline;
 }
 
+.expander {
+  margin-right: .3em;
+  margin-left: .3em;
+  text-align: center;
+  font-size: large;
+  height: 1em;
+  width: 2em;
+  display: inline;
+  -moz-user-select: -moz-none;
+}

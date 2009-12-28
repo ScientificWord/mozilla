@@ -28,25 +28,39 @@ chapter {
   counter-reset: section;
 }
 
-chapter sectiontitle, chapter[open="true"] sectiontitle, chapter[open="false"] sectiontitle {
+chapter sectiontitle{
   display: block;
-  font-size: x-large;
+  font-size: large;
   font-weight: bold;
   line-height: 24pt;
   text-align: center;
 }
 
-chapter>*:first-child:before {
+chapter sectiontitle {
+  display: inline;
+  font-size: large;
+  font-weight: bold;
+  margin-top: .5em;
+  margin-bottom: .5em;
+  font-family: sans-serif;
+  text-align: left;
+}
+ 
+chapter>sectiontitle:before, chapter[open="true"]>sectiontitle:before  {
   content: "Chapter " counter(chapter,upper-roman);
-  display: block;								   
-  font-size: x-large;
+  display: block;
+  font-size: large;
   font-weight: bold;
   line-height: 24pt;
   text-align: center;
 }
 
-chapter[nonum="true"]>*:first-child:before {
-  content: "";
+chapter[open="false"]>sectiontitle:before{
+  content: "Chapter " counter(chapter);
+  font-family: sans-serif;
+  font-size: large;
+  font-weight: bold;
+  display: inline;
 }
 
 section {
@@ -64,6 +78,7 @@ section sectiontitle, section[open="true"] sectiontitle, section[open="false"] s
   font-weight: bold;
 }
 
+section 
 section>*:first-child:before {
   content: counter(section) ".  ";
 }
