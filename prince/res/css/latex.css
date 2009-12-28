@@ -270,46 +270,53 @@ mml|mrow[id]:after {
 
 }
 
-.expander {
-  margin-right: .3em;
-  margin-left: .3em;
-  display: inline-block;
-  text-align: center;
-  font-size: large;
-  height: 1.5em;
-  width: 3em;
-}
 
 .collapsible {
   -moz-binding: url("resource://app/res/xbl/latex.xml#collapsible");
 }
 
-chapter sectiontitle {
-  -moz-binding: url("resource://app/res/xbl/latex.xml#collapsible");
-}
-section sectiontitle {
+/* The following is a generic set of rules to control opening and closing
+   sections. They are repeated for each structure than can be closed. Also
+   implement the switch between numbered and not numbered*/
+
+chapter {
   -moz-binding: url("resource://app/res/xbl/latex.xml#collapsible");
 }
 
+/* Keep counters from incrementing on unnumbered structures */
 
 chapter[nonum="true"] {
   counter-increment: none;
 }
 
-chapter[nonum="true"]>*:first-child:before {
+/* Suppress	title for nonnumbered sections */
+chapter[nonum="true"]>sectiontitle:before {
   content: "";
 }
-
+																 
 chapter[open="false"]>* {
   display: none;
 }
+
+chapter[open="false"]>sectiontitle {
+  display: block;
+}
+
+chapter[open='false']>button.expander {
+  display: inline;
+}
+
+section {
+  -moz-binding: url("resource://app/res/xbl/latex.xml#collapsible");
+}
+
 
 section[nonum="true"] {
   counter-increment: none;
 }
 
 
-section[nonum="true"]>*:first-child:before {
+section[nonum="true"]>sectiontitle:before {
   content: "";
 }
 
@@ -317,11 +324,15 @@ section[open="false"]>* {
   display: none;
 }
 
+section[open="false"] *.expander {
+  display: inline-block;
+}
+
 subsection[nonum="true"] {
   counter-increment: none;
 }
 
-subsection[nonum="true"]>*:first-child:before {
+subsection[nonum="true"]>sectiontitle:before {
   content: "";
 }
 
