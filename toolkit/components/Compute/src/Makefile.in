@@ -61,6 +61,10 @@ LOCAL_INCLUDES = -I$(srcdir)/../computelib \
 				 -I$(DIST)/include/wrappers \
 				 $(NULL)
 
+EXTRA_DSO_LDOPTS += \
+	$(MOZ_UNICHARUTIL_LIBS) \
+	$(MOZ_COMPONENT_LIBS) \
+	$(NULL)
 
 #libs:: $(TARGETS)
 #	$(INSTALL) $(srcdir)/simplecompute2.html $(FINAL_TARGET)/res/samples
