@@ -930,6 +930,7 @@
       "chrome,close,titlebar,resizable,modal=false");' /> 
     <menuitem label="Charset" oncommand="msiGoDoCommand('cmd_saveAndChangeEncoding');"/>
     <menuitem label="Test XPath Find" oncommand="msiTestSearch();"/>
+    <menuitem label="Open all subdocs" oncommand="openAllSubdocs();"/>
     </menupopup>
   </menu>
   <!-- end DEBUG only -->
