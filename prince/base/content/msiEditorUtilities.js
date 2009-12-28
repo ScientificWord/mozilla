@@ -7273,6 +7273,69 @@ function goDown(id)
   element.value = unitRound(value);
 }
 
-           
+ 
+function openAllSubdocs()
+{
+  netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
+  var editorElement = msiGetActiveEditorElement();
+  var editor;
+  var tagarray;
+  if (editorElement) editor = msiGetEditor(editorElement);
+  if (!editor) return;
+  try {
+    var doc = editor.document;
+    var theTagManager = editor.tagListManager;
+    if (!theTagManager) return;
+    var taglist;
+    var list;
+    taglist = theTagManager.getTagsInClass('structtag',',',false); 
+    tagarray = taglist.split(',');
+    var i,j;
+    for (i=0; i<tagarray.length; i++)
+    {
+      list=doc.getElementsByTagName(tagarray[i]);
+      for (j=0; j<list.length; j++)
+      {                          
+        if (list[j].hasAttribute("subdoc") && list[j].hasAttribute("open")
+          && list[j].getAttribute("open") == "false")
+        {
+          var node = list[j];
+          var fname = node.getAttribute("subdoc");
+          var ioService = Components.classes['@mozilla.org/network/io-service;1']  
+                .getService(Components.interfaces.nsIIOService);  
+          var fileHandler = ioService.getProtocolHandler('file')  
+                  .QueryInterface(Components.interfaces.nsIFileProtocolHandler);  
+          var file = fileHandler.getFileFromURLSpec(node.baseURI);  
+          file = file.parent; // and now it points to the working directory
+          file.append(fname+".xml");
+          // now convert to URL
+          var url = ioService.newFileURI(file);  
+          var fileURL = url.spec;  
+          var req = new XMLHttpRequest();
+          req.open("GET", fileURL, false); 
+          req.send(null);
+          // print the name of the root element or error message
+          var dom = req.responseXML;
+          dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" : dom.documentElement.nodeName);
+          if (dom.documentElement.nodeName == "parseerror") break;
+          var loadedNode = dom.documentElement;
+          var children = loadedNode.childNodes;
+          var i = 0;
+          while (children[i].nodeType != Node.ELEMENT_NODE) i++;
+          i++;
+          while (i < children.length){
+            node.appendChild(doc.adoptNode(children[i]));
+          } 
+          list[j].setAttribute("open","true");
+          file.remove(false);
+        }
+      }
+    }
+  }
+  catch(e)
+  {
+    dump(e.message+"\n");
+  }
+}          
  
   

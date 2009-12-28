@@ -593,22 +593,23 @@
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 	  </xbl:resources>
 	  <xbl:content>
-      <html:button type="button"  class="expander" onclick="document.getBindingParent(this).toggle();">&#x2212;</html:button>
+      <html:button type="button"  class="expander" 
+        onclick="document.getBindingParent(this).toggle();">&#x2212;</html:button>
       <xbl:children />
     </xbl:content>
     <xbl:implementation>
       <xbl:property name="open" readonly="false">
         <xbl:getter><![CDATA[
-          if (!this.parentNode.hasAttribute("open")) return true;
-          return (this.parentNode.getAttribute("open") == "true");
+          if (!this.hasAttribute("open")) return true;
+          return (this.getAttribute("open") == "true");
           ]]>
         </xbl:getter>
         <xbl:setter><![CDATA[
-          this.parentNode.setAttribute("open",val);
+          this.setAttribute("open",val);
           var buttonsymbol = this.open?"−":"+";
-          if (this.parentNode.hasAttribute("subdoc"))
+          if (this.hasAttribute("subdoc"))
           {
-            var fname = this.parentNode.getAttribute("subdoc");
+            var fname = this.getAttribute("subdoc");
             if (!this.open) this.saveToDisk(fname);
             else this.getFromDisk(fname);
           }
@@ -632,7 +633,7 @@
         <![CDATA[
           netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
           var serializer = new XMLSerializer();
-          var node = this.parentNode;
+          var node = this;
           var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"]
                          .createInstance(Components.interfaces.nsIFileOutputStream);
           var ioService = Components.classes['@mozilla.org/network/io-service;1']  
@@ -648,11 +649,11 @@
           foStream.close();
           // need to delete what we have saved
           // Remove all nodes after the "this" node
-          var nextnode = this.nextSibling;
+          var nextnode = this.firstChild.nextSibling;
           while (nextnode)
           {
             node.removeChild(nextnode);
-            nextnode=this.nextSibling;
+            nextnode=this.firstChild.nextSibling;
           }
         ]]>
         </xbl:body>
@@ -661,9 +662,8 @@
         <xbl:parameter name="fname"/>
         <xbl:body>
         <![CDATA[
-          dump("time to load "+fname+"\n");
           netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
-          var node = this.parentNode;
+          var node = this;
           var ioService = Components.classes['@mozilla.org/network/io-service;1']  
                 .getService(Components.interfaces.nsIIOService);  
           var fileHandler = ioService.getProtocolHandler('file')  
