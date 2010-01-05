@@ -117,14 +117,29 @@ sw|breakobj {
 span {
   display: inline;
 }
-
+					  
 .expander {
+
+  background-image: url("chrome://prince/skin/icons/minimize.gif");
+  background-position: center center;
+  background-repeat: no-repeat;
   margin-right: .3em;
   margin-left: .3em;
-  text-align: center;
-  font-size: large;
   height: 1em;
   width: 2em;
-  display: inline;
+  display: block;
+  position: absolute;
+  top: 0; 
+  left: -2em;
   -moz-user-select: -moz-none;
+}
+
+
+
+*[open="true"]>button.expander {
+  background-image: url("chrome://prince/skin/icons/minimize.gif");
+}
+
+*[open="false"]>button.expander {
+  background-image: url("chrome://prince/skin/icons/restore.gif");
 }
