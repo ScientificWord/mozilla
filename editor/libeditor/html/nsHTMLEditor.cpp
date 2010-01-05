@@ -3178,7 +3178,6 @@ nsHTMLEditor::InsertBasicBlockNS(const nsAString& aBlockType, nsIAtom * namespac
 nsresult
 nsHTMLEditor::InsertStructureNS(const nsAString& aStructType, nsIAtom * namespaceAtom)
 
-// TODO: Change this from inserting a block to putting in a structure tag.z
 {
   nsresult res;
   if (!mRules) { return NS_ERROR_NOT_INITIALIZED; }
