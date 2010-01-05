@@ -600,16 +600,16 @@
     <xbl:implementation>
       <xbl:property name="open" readonly="false">
         <xbl:getter><![CDATA[
-          if (!this.hasAttribute("open")) return true;
-          return (this.getAttribute("open") == "true");
+          if (!this.parentNode.hasAttribute("open")) return true;
+          return (this.parentNode.getAttribute("open") == "true");
           ]]>
         </xbl:getter>
         <xbl:setter><![CDATA[
-          this.setAttribute("open",val);
-          var buttonsymbol = this.open?"−":"+";
-          if (this.hasAttribute("subdoc"))
+          this.parentNode.setAttribute("open",val);
+          var buttonsymbol = this.parentNode.open?"−":"+";
+          if (this.parentNode.hasAttribute("subdoc"))
           {
-            var fname = this.getAttribute("subdoc");
+            var fname = this.parentNode.getAttribute("subdoc");
             if (!this.open) this.saveToDisk(fname);
             else this.getFromDisk(fname);
           }
@@ -633,14 +633,14 @@
         <![CDATA[
           netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
           var serializer = new XMLSerializer();
-          var node = this;
+          var node = this.parentNode;
           var foStream = Components.classes["@mozilla.org/network/file-output-stream;1"]
                          .createInstance(Components.interfaces.nsIFileOutputStream);
           var ioService = Components.classes['@mozilla.org/network/io-service;1']  
                 .getService(Components.interfaces.nsIIOService);  
           var fileHandler = ioService.getProtocolHandler('file')  
                   .QueryInterface(Components.interfaces.nsIFileProtocolHandler);  
-          var file = fileHandler.getFileFromURLSpec(node.baseURI);  
+          var file = fileHandler.getFileFromURLSpec(this.baseURI);  
           file = file.parent; // and now it points to the working directory
           file.append(fname+".xml");
           if (file.exists()) file.remove(false); 
@@ -649,13 +649,16 @@
           foStream.close();
           // need to delete what we have saved
           // Remove all nodes after the "this" node
-          var nextnode = this.firstChild.nextSibling;
+          var nextnode = node.firstChild;
+          while (nextnode.nodeType != Node.ELEMENT_NODE) nextnode = nextnode.nextSibling;
+          var lastNodeToKeep = nextnode;
+          nextnode = nextnode.nextSibling;
           while (nextnode)
           {
-            node.removeChild(nextnode);
-            nextnode=this.firstChild.nextSibling;
+            node.removeChild(nextnode);              
+            nextnode=lastNodeToKeep.nextSibling;
           }
-        ]]>
+        ]]>                                                                                         
         </xbl:body>
       </xbl:method>
       <xbl:method name="getFromDisk">
@@ -663,12 +666,12 @@
         <xbl:body>
         <![CDATA[
           netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
-          var node = this;
+          var node = this.parentNode;
           var ioService = Components.classes['@mozilla.org/network/io-service;1']  
                 .getService(Components.interfaces.nsIIOService);  
           var fileHandler = ioService.getProtocolHandler('file')  
                   .QueryInterface(Components.interfaces.nsIFileProtocolHandler);  
-          var file = fileHandler.getFileFromURLSpec(node.baseURI);  
+          var file = fileHandler.getFileFromURLSpec(this.baseURI);  
           file = file.parent; // and now it points to the working directory
           file.append(fname+".xml");
           // now convert to URL
@@ -683,8 +686,7 @@
           dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" : dom.documentElement.nodeName);
           var loadedNode = dom.documentElement;
           var firstChild = loadedNode.firstChild;
-          while (firstChild.nodeType != Node.ELEMENT_NODE)
-            firstChild = firstChild.nextSibling;
+          while (firstChild.nodeType != Node.ELEMENT_NODE) firstChild = firstChild.nextSibling;
           var importNode = firstChild.nextSibling;
           while (importNode)
           {

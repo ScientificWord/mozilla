@@ -1032,7 +1032,7 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
 	    if (fCanContain)
 	    {
 		    nsEditor::DeleteNode(splitNode);
-        res = mtagListManager->GetStringPropertyForTag(strTagName, atomNS, NS_LITERAL_STRING("inclusion"), s2);
+            res = mtagListManager->GetStringPropertyForTag(strTagName, atomNS, NS_LITERAL_STRING("inclusion"), s2);
 	      if (!s2.EqualsLiteral("true"))
           res = InsertReturnAt(newsplitpointNode, newsplitpointOffset, fFancy);  
 	    }
@@ -2983,6 +2983,7 @@ void nsHTMLEditor::FixMathematics( nsIDOMNode * nodelistNode, PRBool fLeftOnly, 
   // as the fraction). Since this happens only with partial copies, we need to check only the
   // end nodes of the fragment, and only the first nodes on the left side and the last nodes 
   // on the right side
+  if (!nodelistNode) return;
   nsAutoString tagName;
   nsAutoString tagNamespace;
 //  nsAutoString nsprefix;
