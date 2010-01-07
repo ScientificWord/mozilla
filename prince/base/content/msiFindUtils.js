@@ -325,6 +325,7 @@ var msiSearchUtils =
             case "listtag":
             case "paratag":
             case "envtag":
+            case "frontmtag":
               retType = "blockContainer";
             break;
 

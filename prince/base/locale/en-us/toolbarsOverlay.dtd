@@ -32,8 +32,8 @@
 <!ENTITY secttagselect.tooltip "Apply a structure or environment tag" >
 <!ENTITY secttagselect.label "Structure tags" >
 
-<!ENTITY othertagselect.tooltip "Apply a miscellaneous tag" >
-<!ENTITY othertagselect.label "Misc. tags" >
+<!ENTITY frontmtagselect.tooltip "Apply a front matter tag" >
+<!ENTITY frontmtagselect.label "Front matter tags" >
 
 
 <!ENTITY mathtextButton.tooltip "Toggle between math and text" >

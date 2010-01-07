@@ -447,4 +447,58 @@ preface {
   color: green;
 }
 
+/* front matter tags */
+frontmatter>address {
+  display:block;
+  text-align: left;
+}
 
+frontmatter>address:before {
+  display: inline-block;
+  font-family: sans-serif;
+  width: 10em;
+  content: "Address:";
+  background-color: white;
+  -moz-user-modify: read-only;
+}			 
+
+
+frontmatter>author {
+  display:block;
+  text-align: left;
+}
+
+frontmatter>author:before {
+  display: inline-block;
+  font-family: sans-serif;
+  width: 10em;
+  content: "Author:";
+  background-color: white;
+}			 
+
+frontmatter>date {
+  display:block;
+  text-align: left;
+}
+
+frontmatter>date:before {
+  display: inline-block;
+  font-family: sans-serif;
+  width: 10em;
+  content: "Date:";
+  background-color: white;
+}			 
+
+
+frontmatter>title {
+  display:block;
+  text-align: left;
+}
+
+frontmatter>title:before {
+  display: inline-block;
+  font-family: sans-serif;
+  width: 10em;
+  content: "Title:";
+  background-color: white;
+}			 
