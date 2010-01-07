@@ -342,7 +342,7 @@ function msiGoUpdateCommandState(command, editorElement)
       case "cmd_listag":
       case "cmd_structtag":
       case "cmd_envtag":
-      case "cmd_othertag":
+      case "cmd_frontmtag":
         msiPokeTagStateUI(command, params);
         break;
 
@@ -603,8 +603,8 @@ function msiPokeTagStateUI(uiID, cmdParams)
     case "cmd_envtag":
       textboxName = "SectTagSelections";
       break;
-    case "cmd_othertag":
-      textboxName = "OtherTagSelections";
+    case "cmd_frontmtag":
+      textboxName = "FrontMTagSelections";
       break;
     default:
       break;
@@ -682,7 +682,7 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
       case "cmd_listtag":
       case "cmd_structtag":
       case "cmd_envtag":
-      case "cmd_othertag":
+      case "cmd_frontmtag":
         msiPokeTagStateUI(commandID, cmdParams);
         break;
       default:
@@ -704,9 +704,9 @@ function getNextTagWindow(commandID)
       idNext = "StructTagSelections";
       break;
     case "cmd_structtag":
-      idNext = "OtherTagSelections";
+      idNext = "FrontMTagSelections";
       break;
-    case "cmd_othertag":
+    case "cmd_frontmtag":
       idNext = "TextTagSelections";
       break;
     default:
@@ -721,7 +721,7 @@ function getPrevTagWindow(commandID)
   switch (commandID)
   {
     case "cmd_texttag":
-      idPrev = "OtherTagSelections";
+      idPrev = "FrontMTagSelections";
       break;
     case "cmd_paratag":
       idPrev = "TextTagSelections";
@@ -729,7 +729,7 @@ function getPrevTagWindow(commandID)
     case "cmd_structtag":
       idPrev = "ParaTagSelections";
       break;
-    case "cmd_othertag":
+    case "cmd_frontmtag":
       idPrev = "StructTagSelections";
       break;
     default:
