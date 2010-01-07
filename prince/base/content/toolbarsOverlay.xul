@@ -103,7 +103,7 @@
       <toolbaritem id="TextTags" title="&texttagselect.label;"><textbox id="TextTagSelections"/></toolbaritem>
       <toolbaritem id="ParaTags" title="&paratagselect.label;"><textbox id="ParaTagSelections"/></toolbaritem>
       <toolbaritem id="StructTags" title="&secttagselect.label;"><textbox id="StructTagSelections"/></toolbaritem>
-      <toolbaritem id="OtherTags" title="&othertagselect.label;"><textbox id="OtherTagSelections"/></toolbaritem>
+      <toolbaritem id="FrontMTags" title="&frontmtagselect.label;"><textbox id="FrontMTagSelections"/></toolbaritem>
       <toolbaritem id="zoomer" title="Zoom setting" ><textbox id="zoomValue" label="Zoom %" type="number" observes="cmd_textZoomSet"/></toolbaritem>
       
     </toolbarpalette>
@@ -115,7 +115,7 @@
       flex = "1"
       tbalign="center" 
       context="toolbar-context-menu"
-      defaultset="newButton,openButton,saveButton,printButton,printPreviewButton,mathtextButton,TextTags,ParaTags,StructTags,OtherTags" 
+      defaultset="newButton,openButton,saveButton,printButton,printPreviewButton,mathtextButton,TextTags,ParaTags,StructTags,FrontMTags" 
       mode="icons" 
       customizable="true"
       iconsize="small" />
@@ -474,12 +474,12 @@
     onfocus="this.select();"
     ontextentered="msiDoStatefulCommand('cmd_structtag',this.value);" />
 
-  <textbox id="OtherTagSelections" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
-    completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="othertag"
-		tooltiptext="&othertagselect.tooltip;" onkeypress="doTagKeyCommand(event,'cmd_othertag',this.value);"
-		label="&othertagselect.label;"
+  <textbox id="FrontMTagSelections" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
+    completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="frontmtag"
+		tooltiptext="&frontmtagselect.tooltip;" onkeypress="doTagKeyCommand(event,'cmd_paratag',this.value);"
+		label="&frontmtagselect.label;"
     onfocus="this.select();"
-    ontextentered="msiDoStatefulCommand('cmd_othertag',this.value);" />
+    ontextentered="msiDoStatefulCommand('cmd_paratag',this.value);" />
 
   <menu id="viewShowHide">
 <!-- the order here should match the order at the top of the screen -->

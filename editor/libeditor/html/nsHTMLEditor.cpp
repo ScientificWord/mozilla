@@ -799,7 +799,7 @@ nsHTMLEditor::NodeIsBlock(nsIDOMNode *aNode, PRBool *aIsBlock)
   tagAtom->ToString(strTagName);
   mtagListManager->GetClassOfTag(strTagName, namespaceAtom, strTagClass);
   if (strTagClass.EqualsLiteral("paratag")||strTagClass.EqualsLiteral("structtag")||
-      strTagClass.EqualsLiteral("envtag")||strTagClass.EqualsLiteral("listtag"))
+      strTagClass.EqualsLiteral("envtag")||strTagClass.EqualsLiteral("listtag")||strTagClass.EqualsLiteral("frontmtag"))
   {
    *aIsBlock = PR_TRUE;
    return NS_OK;

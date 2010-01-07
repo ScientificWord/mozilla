@@ -42,7 +42,7 @@
         <hbox>
           <radio id = "taglistradio" group="keyresult" label="&tagradio.label;" selected="true" value="alltaglist" oncommand="radioswitched(event, this);"/>
           <textbox timeout="50" id="alltaglist" type="autocomplete" enablehistory="true" minresultsforpopup="1"
-            completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="texttag paratag structtag envtag othertag" 
+            completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="texttag paratag structtag envtag frontmtag" 
 	          tooltiptext="&alltaglist.tooltip;"
  	          label="&alltaglist.label;"   
             ontextentered="assignTag(this);" />

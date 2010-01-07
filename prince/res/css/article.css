@@ -162,7 +162,7 @@ frontmatter {
 }
 
 
-*[showinvis="true"]frontmatter:before {
+*[showinvis="true"] frontmatter:before {
   content: "Front Matter";
   color: green;
   display: block;
@@ -193,17 +193,17 @@ mathp {
 }
 
 author {
-  text-align: center;
   font-weight: normal;
   display: block;
   padding-top: 10pt;
+  text-align: center;
 }
 
 date {
-  text-align: center;
   font-weight: normal;
   display: block;
   padding-top: 2pt;
+  text-align: center;
 }
 
 address {
@@ -217,6 +217,7 @@ title {
   margin-top: 12pt;
   text-align: center;
 }
+
 quote {
   display: block; 
   margin-left: 20pt;
