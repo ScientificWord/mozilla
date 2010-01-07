@@ -20,6 +20,7 @@ class TagData // other fields can be added to this
 public:
   nsString description;
   nsString tagClass;
+  nsString realTagClass;
   nsString initialContentsForEmpty;
   nsString initialContents;
   nsString nextAfterEmptyBlock;
