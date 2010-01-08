@@ -118,28 +118,27 @@ span {
   display: inline;
 }
 					  
-.expander {
-
-  background-image: url("chrome://prince/skin/icons/minimize.gif");
-  background-position: center center;
-  background-repeat: no-repeat;
-  margin-right: .3em;
-  margin-left: .3em;
-  height: 1em;
-  width: 2em;
-  display: block;
+button.expander {
   position: absolute;
-  top: 0; 
-  left: -2em;
-  -moz-user-select: -moz-none;
+  background-image: url("chrome://global/skin/tree/twisty-open.png");
+  background-repeat: no-repeat;
+  border: none;
+  top: 0pt; 
+  left: -12px; 
+  height: 9px;
+  width: 9px;
 }
 
 
 
-*[open="true"]>button.expander {
-  background-image: url("chrome://prince/skin/icons/minimize.gif");
-}
 
-*[open="false"]>button.expander {
-  background-image: url("chrome://prince/skin/icons/restore.gif");
+*[open="false"] .expander {
+  position: absolute;
+  background-image: url("chrome://global/skin/tree/twisty-clsd.png");
+  background-repeat: no-repeat;
+  border: none;
+  top: 0pt; 
+  left: -12px; 
+  height: 9px;
+  width: 9px;
 }
