@@ -593,8 +593,7 @@
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 	  </xbl:resources>
 	  <xbl:content>
-      <html:button type="button"  class="expander" 
-        onclick="document.getBindingParent(this).toggle();">&#x2212;</html:button>
+      <html:button class="expander" image="chrome://global/skin/tree/twisty-clsd.png" onclick="document.getBindingParent(this).toggle();"/>
       <xbl:children />
     </xbl:content>
     <xbl:implementation>
