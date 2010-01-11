@@ -142,6 +142,8 @@ abstract {
   margin-top: 30pt;
   margin-left: 50pt;
   margin-right: 50pt;
+  padding-left: 15pt;
+  padding-right: 15pt;
   font-size: small;
   border: thin solid black; 
   background-color: #CC9966;
