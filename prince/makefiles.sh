@@ -51,5 +51,5 @@ add_makefiles "
 	prince/dictionaries/Makefile
 	prince/user/Makefile
 	prince/saxon/Makefile
-# 	prince/Compute/Makefile
 "
+# 	prince/Compute/Makefile

@@ -852,9 +852,9 @@ if [ "$MOZ_ZIPWRITER" ]; then
   "
 fi
 
+#    db/sqlite3/src/Makefile
 if [ "$MOZ_STORAGE" ]; then
   add_makefiles "
-#    db/sqlite3/src/Makefile
     db/morkreader/Makefile
     storage/Makefile
     storage/public/Makefile
