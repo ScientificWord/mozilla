@@ -265,7 +265,7 @@ protected:
 };                                            
 
 // Shared class for other tags.
-class nsOtherTagUpdatingCommand : public nsBaseTagUpdatingCommand
+/*class nsOtherTagUpdatingCommand : public nsBaseTagUpdatingCommand
 {
 public:
 
@@ -280,7 +280,7 @@ protected:
   tagclassname.AssignLiteral("othertag");
   return GetCurrentTagState( aEditor, tagclassname, aParams);}
   
-};
+}; */
 
 
 class nsInsertTagCommand : public nsBaseComposerCommand
