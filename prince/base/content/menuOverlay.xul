@@ -787,7 +787,7 @@
     <command id="cmd_texttag"          state=""   />
     <command id="cmd_paratag"          state=""   />
     <command id="cmd_structtag"        state=""     />
-    <command id="cmd_othertag"         state=""    />
+    <!--command id="cmd_othertag"         state=""    / -->
   </commandset>
 
   <commandset id="princegotoitems">
