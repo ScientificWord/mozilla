@@ -136,35 +136,6 @@ requestimplementation {
 
 requestimplementation:before {content: "Support Me: "}
 
-maketitle { display:block;
-  min-height: 10pt;
-}
-
-maketitle:before { content: "Title page goes here";
-  color: green;
-}
-
-tableofcontents { display:block;
-}
-
-tableofcontents:before { content: "Table of contents goes here";
-  color: green;
-}
-
-listoffigures { display:block;
-}
-
-listoffigures:before { content: "List of figures goes here";
-  color: green;
-}
-
-listoftables { display:block;
-}
-
-listoftables:before { content: "List of tables goes here";
-  color: green;
-}
-
 											
 styledata {
   display: none;
