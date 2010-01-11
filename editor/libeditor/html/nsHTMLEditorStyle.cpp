@@ -158,8 +158,9 @@ NS_IMETHODIMP nsHTMLEditor::SetInlineProperty(nsIAtom *aProperty,
   
   nsAutoEditBatch batchIt(this);
   nsAutoRules beginRulesSniffing(this, kOpInsertElement, nsIEditor::eNext);
-  nsAutoSelectionReset selectionResetter(selection, this);
-  nsAutoTxnsConserveSelection dontSpazMySelection(this);
+  nsEditor::SetShouldTxnSetSelection(PR_FALSE);
+//  nsAutoSelectionReset selectionResetter(selection, this);
+//  nsAutoTxnsConserveSelection dontSpazMySelection(this);
   
   PRBool cancel, handled;
   nsTextRulesInfo ruleInfo(nsTextEditRules::kSetTextProperty);
@@ -372,6 +373,7 @@ nsHTMLEditor::SetTextTagNode( nsIDOMCharacterData *aTextNode,
     // we need to split off front of text node
     res = SplitNode(node, aStartOffset, getter_AddRefs(tmp));
     if (NS_FAILED(res)) return res;
+//    node = tmp;
   }
   
   // look for siblings that are correct type of node
