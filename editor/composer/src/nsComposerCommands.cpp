@@ -717,7 +717,7 @@ nsStructTagUpdatingCommand::ToggleState(nsIEditor *aEditor, nsString & aTagName)
   return rv;
 }
 
-nsOtherTagUpdatingCommand::nsOtherTagUpdatingCommand(void)
+/* nsOtherTagUpdatingCommand::nsOtherTagUpdatingCommand(void)
 : nsBaseTagUpdatingCommand()
 {
 }
@@ -780,7 +780,7 @@ nsOtherTagUpdatingCommand::ToggleState(nsIEditor *aEditor, nsString & aTagName)
 
   return rv;
 }
-
+*/
 
 nsStyleUpdatingCommand::nsStyleUpdatingCommand(const char* aTagName)
 : nsBaseStateUpdatingCommand(aTagName)
