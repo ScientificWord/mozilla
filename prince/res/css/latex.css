@@ -498,3 +498,51 @@ frontmatter>title:before {
   width: 10em;
   content: "Title:";
 }			 
+
+frontmatter>maketoc {
+  display:block;
+  text-align: left;
+}
+
+frontmatter>maketoc:before {
+  display: inline-block;
+  font-family: sans-serif;
+  width: 10em;
+  content: "Table of contents here:";
+}			 
+
+frontmatter>makelof {
+  display:block;
+  text-align: left;
+}
+
+frontmatter>makelof:before {
+  display: inline-block;
+  font-family: sans-serif;
+  width: 10em;
+  content: "List of figures here:";
+}			 
+
+frontmatter>makelot {
+  display:block;
+  text-align: left;
+}
+
+frontmatter>makelot:before {
+  display: inline-block;
+  font-family: sans-serif;
+  width: 10em;
+  content: "List of tables here:";
+}			 
+
+frontmatter>maketitle {
+  display:block;
+  text-align: left;
+}
+
+frontmatter>maketitle:before {
+  display: inline-block;
+  font-family: sans-serif;
+  width: 10em;
+  content: "Make title page here:";
+}			 
