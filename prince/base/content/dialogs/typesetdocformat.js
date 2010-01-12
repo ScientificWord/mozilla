@@ -87,7 +87,7 @@ function initializeFontFamilyList(force)
     dump("Failed to create bigfontlist.txt\n");
     return;
   }
-  var path = "file://"+listfile.target;
+  var path = msiFileURLFromAbsolutePath( listfile.target )
   var myXMLHTTPRequest = new XMLHttpRequest();
   myXMLHTTPRequest.overrideMimeType("text/plain");
   myXMLHTTPRequest.open("GET", path, false);
@@ -95,13 +95,14 @@ function initializeFontFamilyList(force)
   var str = myXMLHTTPRequest.responseText;
   var lines = str.split(/[\n\r]*[a-z]:[^:]*:/i);
   var i;
-  var limiit
+  var limit;
   lines = lines.sort();
   var unique = lines.filter(newValue);
+  limit = unique.length;
 // output the result
   str = "";
   if (outfile.exists()) outfile.remove(false);
-  for (i =0, limit=unique.length; i < limit; i++)
+  for (i =0; i < limit; i++)
     str += unique[i] + "\n";
   var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
   fos.init(outfile, -1, -1, false);
@@ -1585,7 +1586,7 @@ function initSystemFontMenu(menuPopupId, fUseOpenType)
     // fill in the menu only once...
     if (gFontMenuInitialized[menuPopupId ])
       return;
-    gFontMenuInitialized[menuPopupId ] = menuPopupId;
+    if (fUseOpenType) gFontMenuInitialized[menuPopupId ] = menuPopupId;
     var fonttype = "textfonts";
     var filter;
   
@@ -1600,7 +1601,7 @@ function initSystemFontMenu(menuPopupId, fUseOpenType)
       fonttype = "mathfonts";
       filter = "";
     } else filter = "main";
-    initSystemOldFontMenu(menuPopup, fonttype, filter);
+//    initSystemOldFontMenu(menuPopup, fonttype, filter);
     if (fUseOpenType)
     {
       getOTFontlist();
