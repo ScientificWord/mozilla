@@ -1168,7 +1168,7 @@ function putFontNode(fontname, fontNode, menuId, elementId, nodecounter)
     }
     else if (elementId.length > 0) {
       node.setAttribute('name',fontname);
-      options = document.getElementById('elementId').value;
+      options = document.getElementById(elementId).value;
       node.setAttribute('options',options)
       node.setAttribute('ot',"1");
     }
@@ -1601,7 +1601,7 @@ function initSystemFontMenu(menuPopupId, fUseOpenType)
       fonttype = "mathfonts";
       filter = "";
     } else filter = "main";
-//    initSystemOldFontMenu(menuPopup, fonttype, filter);
+    initSystemOldFontMenu(menuPopup, fonttype, filter);
     if (fUseOpenType)
     {
       getOTFontlist();
