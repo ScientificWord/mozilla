@@ -4680,6 +4680,7 @@ var msiBaseMathNameList =
     var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
     ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
     var nameNodesList = this.namesDoc.getElementsByTagName("mathname");
+    // BBM: should we initialize this list??
     for (var ix = 0; ix < nameNodesList.length; ++ix)
     {
       var theId = nameNodesList[ix].getAttribute("id");
@@ -4806,7 +4807,7 @@ var msiBaseMathNameList =
     var result = Components.interfaces.msiIAutosub.STATE_INIT;
     for (var ix = aName.length - 1; ix >= 0; --ix)
     {
-      result = autosub.nextChar(aName.charAt(ix));
+      result = autosub.nextChar(true,aName.charAt(ix));
       if (result == Components.interfaces.msiIAutosub.STATE_FAIL)
         return false;
     }
@@ -5152,7 +5153,11 @@ var msiBaseMathUnitsList =
     {
       result = autosub.nextChar(unitStr.charAt(ix));
       if (result == Components.interfaces.msiIAutosub.STATE_FAIL)
-        return false;
+      {
+        result = autosub.nextChar(true,aName.charAt(ix));
+        if (result == Components.interfaces.msiIAutosub.STATE_FAIL)
+          return false;
+      }
     }
     return (result == Components.interfaces.msiIAutosub.STATE_SUCCESS);
   },
