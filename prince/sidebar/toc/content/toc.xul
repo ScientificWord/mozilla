@@ -25,7 +25,7 @@
 
   <broadcaster id="taglist" taglist="note firstdef"/>
     
-  <toolbar >
+  <toolbox >
     <menubar id="toctoolbar" class="chromeclass-menubar">
     <menuitem label="Refresh" accesskey="r" flex="0" command="cmd_build_toc"/>
     <menuitem id="TOC" label="TOC" tooltip="Show table of contents" checked="true"
@@ -36,12 +36,12 @@
        flex="0" oncommand="toggleChecked(this);buildTOC();" persist="checked"/>
     <menuitem id="Tag" label="Tag" tooltip="Show tag occurrences" checked="false"
        flex="0" oncommand="toggleChecked(this);buildTOC();" persist="checked"/>
-    </menubar>
-    <scale id="toc-level-scale" min="0" max="7" width="50px"
+    <scale id="toc-level-scale" min="0" max="7" width="50px" height="15px"
       increment="1" pageIncrement="1" onchange="setTOCLevel(this.value);"
       value="0" 
       persist="value"/>
+    </menubar>
     <spacer flex="1"/>
-  </toolbar>
+  </toolbox>
   <command id="cmd_build_toc" oncommand="buildTOC();"/>
 </page>
