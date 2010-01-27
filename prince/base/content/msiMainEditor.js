@@ -243,16 +243,16 @@ function UpdateWindowTitle()
     var docUrl = msiGetEditorURL(editorElement); //docUrl is a string
     if (docUrl) // && !IsUrlAboutBlank(docUrl))
     {
-//      docUrl = msiFindOriginalDocname(docUrl);
+      docUrl = msiFindOriginalDocname(docUrl);
       var path = unescape(docUrl);
       var regEx = /\.sci$/i;  // BBM: localize this
       if (regEx.test(path))
       {
-        var parentDirRegEx = /(.*\/)([^\/]*)\/([^\/]*).sci$/i; //BBM: localize this
+        var parentDirRegEx = /(.*\/)([^\/]*).sci$/i; //BBM: localize this
         var arr = parentDirRegEx.exec(path);
-        if (arr && (arr.length > 2) && arr[3].length > 0)
+        if (arr && (arr.length > 2) && arr[2].length > 0)
         {
-          docUrl = arr[1]+arr[2]+arr[3]+".sci";
+          docUrl = arr[1]+arr[2]+".sci";
         }
       }
 
