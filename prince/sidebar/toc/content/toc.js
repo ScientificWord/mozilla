@@ -42,10 +42,10 @@ function buildTOC()
   var tagArr = otherTags.split(" ");
   var otherTagArray = tagArr;
   var doLOF, doLOT, doTOC, doTag;
-  doTOC = document.getElementById("TOC").hasAttribute('checked');
-  doLOF = document.getElementById("LOF").hasAttribute('checked');
-  doLOT = document.getElementById("LOT").hasAttribute('checked');
-  doTag = document.getElementById("Tag").hasAttribute('checked');
+  doTOC = (document.getElementById("TOC").getAttribute('checked')=='true');
+  doLOF = (document.getElementById("LOF").hasAttribute('checked')=='true');
+  doLOT = (document.getElementById("LOT").hasAttribute('checked')=='true');
+  doTag = (document.getElementById("Tag").hasAttribute('checked')=='true');
   if (doLOF)
     otherTagArray.concat("img");
   if (doLOT)
@@ -194,3 +194,7 @@ function setTOCLevel(level)
   }
 }
 
+function toggleChecked(item)
+{
+  item.setAttribute("checked", (item.getAttribute("checked")=="true")?"false":"true");
+}
