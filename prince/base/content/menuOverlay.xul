@@ -46,10 +46,20 @@
       <menuseparator/>
       <menuitem id="saveMenuitem" accesskey="&filesave.accesskey;" key="savekb" observes="cmd_save"
         label="&saveCmd.label;" />
-      <menuitem accesskey="&filesaveas.accesskey;" observes="cmd_saveAs"
-        label="&saveAsCmd.label;"/>
-      <menuitem accesskey="&filesavecopyas.accesskey;" observes="cmd_saveCopyAs"
-        label="&saveCopyAsCmd.label;"/>
+      <menu accesskey="&filesaveas.accesskey;" 
+        label="&saveAsCmd.label;">
+        <menupopup>
+          <menuitem label="Save to sci file" observes="cmd_saveAs"/>
+          <menuitem label="Save to directory" observes="cmd_saveAsDir"/>
+        </menupopup>
+      </menu>
+      <menu accesskey="&filesavecopyas.accesskey;" 
+        label="&saveCopyAsCmd.label;">
+        <menupopup>
+          <menuitem label="Save to sci file" observes="cmd_saveCopyAs"/>
+          <menuitem label="Save to directory" observes="cmd_saveCopyAsDir"/>
+        </menupopup>
+      </menu>
       <menuitem accesskey="&filerevert.accesskey;" observes="cmd_revert"
         label="&fileRevert.label;" />
       <menuseparator/>
@@ -694,9 +704,11 @@
           events="create, save"
           oncommandupdate="msiGoUpdateComposerMenuItems(this)"
   >
-    <command id="cmd_save"           label="&saveCmd.label;"           oncommand="msiGoDoCommand('cmd_save')"/>
-    <command id="cmd_saveAs"         label="&saveAsCmd.label;"         oncommand="msiGoDoCommand('cmd_saveAs')"/>
-    <command id="cmd_saveCopyAs"     label="&saveCopyAsCmd.label;"     oncommand="msiGoDoCommand('cmd_saveCopyAs')"/>
+    <command id="cmd_save"           oncommand="msiGoDoCommand('cmd_save')"/>
+    <command id="cmd_saveAs"         oncommand="msiGoDoCommand('cmd_saveAs')"/>
+    <command id="cmd_saveCopyAs"     oncommand="msiGoDoCommand('cmd_saveCopyAs')"/>
+    <command id="cmd_saveAsDir"      oncommand="msiGoDoCommand('cmd_saveAsDir')"/>
+    <command id="cmd_saveCopyAsDir"  oncommand="msiGoDoCommand('cmd_saveCopyAsDir')"/>
     <command id="cmd_exportToText"   label="&exportToTextCmd.label;"   oncommand="msiGoDoCommand('cmd_exportToText')"/>
     <command id="cmd_saveAndChangeEncoding"  label="&saveAndChangeEncodingCmd.label;"  oncommand="msiGoDoCommand('cmd_saveAndChangeEncoding')"/>
     <command id="cmd_publish"        label="&publishCmd.label;"        oncommand="msiGoDoCommand('cmd_publish')"/>
