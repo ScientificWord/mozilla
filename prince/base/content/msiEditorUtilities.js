@@ -3146,7 +3146,7 @@ function zipDirectory(aZipWriter, currentpath, sourceDirectory)
   {
     f = e.getNext().QueryInterface(Components.interfaces.nsIFile);
     var leaf = f.leafName;
-    var path
+    var path;
     if (currentpath.length > 0) path = currentpath + "/" + leaf;
     else path = leaf;
     if (f.isDirectory())
@@ -3159,6 +3159,48 @@ function zipDirectory(aZipWriter, currentpath, sourceDirectory)
       if (aZipWriter.hasEntry(path))
         aZipWriter.removeEntry(path,true);
       aZipWriter.addEntryFile(path, 0, f, false);
+    }
+  }
+}
+
+// copyDirectory is called recursively. sourceDirectory is the directory
+// we are copying, and destDirectory is the directory we are copyint to.
+                         
+function copyDirectory(destDirectory, sourceDirectory)
+{
+  var e;
+  var f;
+  var dest = destDirectory.clone();
+  var dest2;
+  if (!dest.exists())
+  {
+    dest.create(1,0755);
+  }
+  e = sourceDirectory.directoryEntries;
+  while (e.hasMoreElements())
+  {                       
+    f = e.getNext().QueryInterface(Components.interfaces.nsIFile);
+    var leaf;
+    if (f) {
+      leaf = f.leafName;
+      dest2 = dest.clone();
+      dest2.append(leaf);
+  //    var path;
+      if (f.isDirectory())
+      {
+  // skip temp directory
+        if (leaf != 'temp')
+        {       
+          if (!dest2.exists()) {
+            dest2.create(1, 0755);
+          }
+          copyDirectory(dest2.clone(), f.clone());
+        }
+      }
+      else
+      {
+        f.copyTo(destDirectory, null);
+      }
     }
   }
 }
@@ -3218,7 +3260,7 @@ function createWorkingDirectory(documentfile)
                           .createInstance(Components.interfaces.nsIZipReader);
     if (isShell(documentfile.path))
     {
-      // if we are opening a shell document, we create the working directory but skit the backup
+      // if we are opening a shell document, we create the working directory but skip the backup
       // file and change the document leaf name to "untitledxxx"
       dir =  msiDefaultNewDocDirectory();
       bakfilename = getUntitledName(dir);
@@ -4680,6 +4722,7 @@ var msiBaseMathNameList =
     var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
     ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
     var nameNodesList = this.namesDoc.getElementsByTagName("mathname");
+    // BBM: should we initialize this list??
     for (var ix = 0; ix < nameNodesList.length; ++ix)
     {
       var theId = nameNodesList[ix].getAttribute("id");
@@ -4806,7 +4849,7 @@ var msiBaseMathNameList =
     var result = Components.interfaces.msiIAutosub.STATE_INIT;
     for (var ix = aName.length - 1; ix >= 0; --ix)
     {
-      result = autosub.nextChar(aName.charAt(ix));
+      result = autosub.nextChar(true,aName.charAt(ix));
       if (result == Components.interfaces.msiIAutosub.STATE_FAIL)
         return false;
     }
@@ -5152,7 +5195,11 @@ var msiBaseMathUnitsList =
     {
       result = autosub.nextChar(unitStr.charAt(ix));
       if (result == Components.interfaces.msiIAutosub.STATE_FAIL)
-        return false;
+      {
+        result = autosub.nextChar(true,aName.charAt(ix));
+        if (result == Components.interfaces.msiIAutosub.STATE_FAIL)
+          return false;
+      }
     }
     return (result == Components.interfaces.msiIAutosub.STATE_SUCCESS);
   },
