@@ -77,7 +77,7 @@ function filepickerLoad() {
   textInput = document.getElementById("textInput");
   okButton = document.documentElement.getButton("accept");
   treeView = Components.classes[NS_FILEVIEW_CONTRACTID].createInstance(nsIFileView);
-
+  dump("Loading file picker \n");
   if (window.arguments) {
     var o = window.arguments[0];
     retvals = o.retvals; /* set this to a global var so we can set return values */
