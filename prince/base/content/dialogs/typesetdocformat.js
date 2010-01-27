@@ -49,7 +49,6 @@ function stripPath(element, index, array)
 function initializeFontFamilyList(force)
 {
   var OTOk = document.getElementById("useOpenType").checked;
-  changeOpenType();
   var prefs = GetPrefs();
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var dir = dsprops.get("ProfD", Components.interfaces.nsIFile);
@@ -87,7 +86,7 @@ function initializeFontFamilyList(force)
     dump("Failed to create bigfontlist.txt\n");
     return;
   }
-  var path = "file://"+listfile.target;
+  var path = msiFileURLFromAbsolutePath( listfile.target )
   var myXMLHTTPRequest = new XMLHttpRequest();
   myXMLHTTPRequest.overrideMimeType("text/plain");
   myXMLHTTPRequest.open("GET", path, false);
@@ -95,13 +94,14 @@ function initializeFontFamilyList(force)
   var str = myXMLHTTPRequest.responseText;
   var lines = str.split(/[\n\r]*[a-z]:[^:]*:/i);
   var i;
-  var limiit
+  var limit;
   lines = lines.sort();
   var unique = lines.filter(newValue);
+  limit = unique.length;
 // output the result
   str = "";
   if (outfile.exists()) outfile.remove(false);
-  for (i =0, limit=unique.length; i < limit; i++)
+  for (i =0; i < limit; i++)
     str += unique[i] + "\n";
   var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
   fos.init(outfile, -1, -1, false);
@@ -112,13 +112,6 @@ function initializeFontFamilyList(force)
   os.close();
   fos.close();
 //  dump(str);
-  initSystemFontMenu("mathfontlist", false);
-  initSystemFontMenu("mainfontlist", OTOk);
-  initSystemFontMenu("sansfontlist", OTOk);
-  initSystemFontMenu("fixedfontlist", OTOk);
-  initSystemFontMenu("x1fontlist", OTOk);
-  initSystemFontMenu("x2fontlist", OTOk);
-  initSystemFontMenu("x3fontlist", OTOk);
 }
 
 function Startup()
@@ -153,13 +146,25 @@ function Startup()
   //now we can load the docformat information from the document to override 
   //all or part of the initial state
   OnWindowSizeReset(true);
-  initSystemFontMenu("mathfontlist");
-  initSystemFontMenu("mainfontlist");
-  initSystemFontMenu("sansfontlist");
-  initSystemFontMenu("fixedfontlist");
-  initSystemFontMenu("x1fontlist");
-  initSystemFontMenu("x2fontlist");
-  initSystemFontMenu("x3fontlist");
+  var useOT = false;
+  document.getElementById("opentypeok").setAttribute("hidden", 
+    useOT?"false":"true"); 
+  addOldFontsToMenu("mathfontlist");
+  addOldFontsToMenu("mainfontlist");
+  addOldFontsToMenu("sansfontlist");
+  addOldFontsToMenu("fixedfontlist");
+  addOldFontsToMenu("x1fontlist");
+  addOldFontsToMenu("x2fontlist");
+  addOldFontsToMenu("x3fontlist");
+
+  if (useOT) {
+    addOTFontsToMenu("mainfontlist");
+    addOTFontsToMenu("sansfontlist");
+    addOTFontsToMenu("fixedfontlist");
+    addOTFontsToMenu("x1fontlist");
+    addOTFontsToMenu("x2fontlist");
+    addOTFontsToMenu("x3fontlist");
+  }
   if (!(docFormatNodeList && docFormatNodeList.length>=1)) node=null;
   else node = docFormatNodeList[0].getElementsByTagName('fontchoices')[0];
   getFontSpecs(node);
@@ -1167,7 +1172,7 @@ function putFontNode(fontname, fontNode, menuId, elementId, nodecounter)
     }
     else if (elementId.length > 0) {
       node.setAttribute('name',fontname);
-      options = document.getElementById('elementId').value;
+      options = document.getElementById(elementId).value;
       node.setAttribute('options',options)
       node.setAttribute('ot',"1");
     }
@@ -1572,47 +1577,28 @@ function  getOTFontlist()
       gSystemFontCount = gSystemFonts.length;
     }
     catch(e) { 
-       3+5;
+       dump("Error in getOTFontList: "+e.message+"\n");
     }
   }
 }
 
-function initSystemFontMenu(menuPopupId, fUseOpenType)
+function addOTFontsToMenu(menuPopupId)
 {
   try
   {
-    var menuPopup = document.getElementById(menuPopupId).firstChild;
-    // fill in the menu only once...
-    if (gFontMenuInitialized[menuPopupId ])
-      return;
-    gFontMenuInitialized[menuPopupId ] = menuPopupId;
-    var fonttype = "textfonts";
-    var filter;
-  
-    if (menuPopupId == "sansfontlist")
+    var menuPopup = document.getElementById(menuPopupId).getElementsByTagName("menupopup")[0];
+    getOTFontlist();
+    var separator = document.createElementNS(XUL_NS, "menuseparator");
+    separator.setAttribute("id","startOpenType");
+    menuPopup.appendChild(separator);
+    for (var i = 0; i < gSystemFontCount; ++i)
     {
-      filter = "sans";
-    } else if (menuPopupId == "fixedfontlist")
-    {
-      filter = "fixed";
-    } else if (menuPopupId == "mathfontlist")
-    {
-      fonttype = "mathfonts";
-      filter = "";
-    } else filter = "main";
-    initSystemOldFontMenu(menuPopup, fonttype, filter);
-    if (fUseOpenType)
-    {
-      getOTFontlist();
-      for (var i = 0; i < gSystemFontCount; ++i)
-      {
-        if (gSystemFonts[i] != "")
-        {
-          var itemNode = document.createElementNS(XUL_NS, "menuitem");
-          itemNode.setAttribute("label", gSystemFonts[i]);
-          itemNode.setAttribute("value", gSystemFonts[i]);
-          menuPopup.appendChild(itemNode);
-        }
+      if (gSystemFonts[i] != "")
+      {                                                                             
+        var itemNode = document.createElementNS(XUL_NS, "menuitem");
+        itemNode.setAttribute("label", gSystemFonts[i]);
+        itemNode.setAttribute("value", gSystemFonts[i]);
+        menuPopup.appendChild(itemNode);
       }
     }
   }
@@ -2204,8 +2190,26 @@ function reviseruleorspace(element)
       "vspaceforsection", "chrome,close,titlebar,alwaysRaised",element, sectionUnit);
 }                                
 
-function initSystemOldFontMenu(menuPopup, fonttype, filter)
+// add "old style" fonts (those with TeX metrics) to the menu. We get them from a file mathfonts.xml
+function addOldFontsToMenu(menuPopupId)
 {    
+    // fill in the menu only once unless forcerefresh is set...
+  var menuPopup = document.getElementById(menuPopupId).getElementsByTagName("menupopup")[0];
+  dump("initSystemOldFontMenu("+menuPopupId+", "+fonttype+", "+filter+");\n");
+  var fonttype = "textfonts";
+  var filter;
+
+  if (menuPopupId == "sansfontlist")
+  {
+    filter = "sans";
+  } else if (menuPopupId == "fixedfontlist")
+  {
+    filter = "fixed";
+  } else if (menuPopupId == "mathfontlist")
+  {
+    fonttype = "mathfonts";
+    filter = "";
+  } else filter = "main";
   var path = "resource://app/res/xml/mathfonts.xml";
   var myXMLHTTPRequest = new XMLHttpRequest();
   myXMLHTTPRequest.open("GET", path, false);
@@ -2234,13 +2238,42 @@ function initSystemOldFontMenu(menuPopup, fonttype, filter)
     menuPopup.appendChild(itemNode);
     ptr = ptr.nextSibling;
   }
-  var separator = document.createElementNS(XUL_NS, "menuseparator");
-  menuPopup.appendChild(separator);
+  dump("Leaving initSystemOldFontMenu\n");
 }
 
 function changeOpenType()
 {
+  var useOT = document.getElementById("useOpenType").checked;
+  dump("Entering changeOpenType, useOT is now "+useOT+"\n");
   document.getElementById("opentypeok").setAttribute("hidden", 
-    document.getElementById("useOpenType").checked?"false":"true");                                                                      
+    useOT?"false":"true"); 
+  if (useOT) {
+    // add opentype families to the menus 
+    addOTFontsToMenu("mainfontlist");
+    addOTFontsToMenu("sansfontlist");
+    addOTFontsToMenu("fixedfontlist");
+    addOTFontsToMenu("x1fontlist");
+    addOTFontsToMenu("x2fontlist");
+    addOTFontsToMenu("x3fontlist");
+  }
+  else {
+    deleteOTFontsFromMenu("mainfontlist");
+    deleteOTFontsFromMenu("sansfontlist");
+    deleteOTFontsFromMenu("fixedfontlist");
+    deleteOTFontsFromMenu("x1fontlist");
+    deleteOTFontsFromMenu("x2fontlist");
+    deleteOTFontsFromMenu("x3fontlist");
+  }
 }  
+
     
+function deleteOTFontsFromMenu(menuID)
+{
+  var menuPopup = document.getElementById(menuID).getElementsByTagName("menupopup")[0];
+  var ch = menuPopup.lastChild;
+  while (ch && ch.id != "startOpenType") {
+    menuPopup.removeChild(ch);
+    ch = menuPopup.lastChild; 
+  }
+  if (ch && ch.id ==="startOpenType") menuPopup.removeChild(ch);
+}                                           
