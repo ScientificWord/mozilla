@@ -132,7 +132,7 @@ button.expander {
 
 
 
-*[open="false"] .expander {
+*[open="false"] button.expander {
   position: absolute;
   background-image: url("chrome://global/skin/tree/twisty-clsd.png");
   background-repeat: no-repeat;

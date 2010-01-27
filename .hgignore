@@ -7,3 +7,4 @@ glob:confdefs.h
 glob:config.cache
 glob:*.err
 glob:*.log
+glob:*.orig
