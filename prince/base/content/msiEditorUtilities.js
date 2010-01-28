@@ -3235,14 +3235,16 @@ function msiFindOriginalDocname(docUrlString)
 
 
 //  createWorkingDirectory does the following: 
-//  if the file parameter is something like foo.sci, it knows that the file is a jar file.
-//  It creates a directory, foo_work, and unpacks the contents of foo.sci into the new directory.
-//  The return value is an nsILocalFile which is the main xhtml file in the .sci file, usually named
-//  main.xhtml.
+// It creates a directory, foo_work, and unpacks the contents of foo.sci into the new directory.
+// The return value is an nsILocalFile which is the main xhtml file in the .sci file, usually named
+// if the file parameter is something like foo.sci, it knows that the file is a jar file.
+// main.xhtml.
 //
-//  If the file parameter is not a zip file, then it creates the directory and 
-//  copies, e.g., foo.xhtml to foo_work/main.xhtml. It does not create any of the other subdirectories
-//  It returns the nsILocalFile for foo_work/main.xhtml.
+// If the file parameter is not a zip file, then it creates the directory and 
+// copies, e.g., foo.xhtml to foo_work/main.xhtml. If the directory containing the file looks like a .sci
+// directory (has the .sci extension, the file is called main.xhtml, or there are only one xhtml and zero 
+// or more xml files in the directory, plus other files with junk extensions (such as.bak)) then it
+// clones the drectory and its contents. It returns the nsILocalFile for foo_work/main.xhtml.
 //
 
 function createWorkingDirectory(documentfile)
@@ -3254,11 +3256,24 @@ function createWorkingDirectory(documentfile)
   var str;
   var savedLeafname;
   var skipBackup;
+  var regEx=/\.sci$/i;
+  var doc; // this will be the file (documentfile for zipped files or for files not in a .sci
+   //directory) or directory (for .sci directories), that we use to get the name of the working dir.
+  var isZipped = regEx.test(documentfile.path);
+  var isInSciDirectory = false;
+  if (!isZipped) isInSciDirectory = regEx.test(documentfile.parent.path);
+  if (isZipped) doc = documentfile.clone();
+  else if (isInSciDirectory) doc = documentfile.parent.clone();
+  else doc = documentfile.clone();
+  
+  
+  var zr;
+  if (isZipped) zr = Components.classes["@mozilla.org/libjar/zip-reader;1"]
+    .createInstance(Components.interfaces.nsIZipReader);
+
   try
   {
-    var zr = Components.classes["@mozilla.org/libjar/zip-reader;1"]
-                          .createInstance(Components.interfaces.nsIZipReader);
-    if (isShell(documentfile.path))
+    if (isShell(doc.path))
     {
       // if we are opening a shell document, we create the working directory but skip the backup
       // file and change the document leaf name to "untitledxxx"
@@ -3268,8 +3283,8 @@ function createWorkingDirectory(documentfile)
     }
     else
     { 
-      dir = documentfile.parent.clone();
-      bakfilename = documentfile.leafName;
+      dir = doc.parent.clone();
+      bakfilename = doc.leafName;
     }
     i = bakfilename.lastIndexOf(".");
     if (i > 0) 
@@ -3279,10 +3294,10 @@ function createWorkingDirectory(documentfile)
     }
     else
     {
+      savedLeafname = bakfilename;
       bakfilename += ".bak";
     }
     // first create a working directory for the extracted files
-    var dir;
     dir.append(savedLeafname+"_work");
     if (dir.exists())
     {
@@ -3315,24 +3330,37 @@ function createWorkingDirectory(documentfile)
       var bakfile = dir.clone();
       bakfile.append(bakfilename);
       if (bakfile.exists()) bakfile.remove(false);
-      documentfile.copyTo(dir,bakfilename);
+      if (doc.isDirectory())
+      {
+        var bakdir = doc.parent.clone();
+        bakdir.append(bakfilename);
+        bakdir.createUnique(1, 0755);
+        copyDirectory(bakdir,doc);
+      } else
+        documentfile.copyTo(dir, bakfilename);
       // now the file, no matter whether it is a zip file or not, is backed up.
     }
-    var fIsZip = true;
-    try {
-      zr.open(documentfile);
-    }
-    catch(e)
+    if (isZipped)
     {
-      fIsZip = false;
+      try {
+        zr.open(documentfile);
+      }
+      catch(e)
+      {
+        isZipped = false;
+      }
     }
-    if (fIsZip)  // if our file is a zip file, extract it to the directory dir
+    if (isZipped)  // if our file is a zip file, extract it to the directory dir
     {
       extractZipTree(zr, dir);
     }
-    else // not a zip file. Just copy it to the directory dir as main.xhtml
+    else if (isInSciDirectory)
     {
-      documentfile.copyTo(dir, "main.xhtml");
+      copyDirectory(dir, doc);
+    }
+    else
+    {
+      doc.copyTo(dir, "main.xhtml");
     }
   }
   catch( e) {
