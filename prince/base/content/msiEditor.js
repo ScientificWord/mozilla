@@ -1108,9 +1108,11 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
     if (url.length == 0)
     {
       var isSciRegEx = /\.sci$/i;
+      var isXHTMLRegEx = /\.xhtml$/i;
       var isSci = isSciRegEx.test(doc.leafName);
+      if (!isSci) isSci = isSciRegEx.test(doc.parent.leafName);
       var newdoc;
-      if (isSci) 
+      if (isSci || isXHTMLRegEx.test(doc.leafName)) 
         newdoc = createWorkingDirectory(doc);
       else 
         newdoc = doc;
