@@ -2594,7 +2594,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
 //   Rename B.tempsci to B.sci.
 //   Delete directory D if not going back to edit.
 //
-      if (!saveAs)
+      if (!aSaveAs)
       {
         tempfile = zipfile.clone();
           // rename A.bak to A.tempbak
