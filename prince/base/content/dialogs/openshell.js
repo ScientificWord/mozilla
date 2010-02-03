@@ -4,17 +4,9 @@ function initialize()
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
   var dir =dsprops.get("resource:app", Components.interfaces.nsIFile);
   dir.append("shells");
-  url = dir.path;
-  // is this platform independent?
-#ifdef XP_WIN32
-  url.replace("\\","/","g");
-#endif
-  if (url.charAt(0) === '/')
-    url = "file://"+url;
-  else
-    url = "file:///"+url;
+  url = msiFileURLFromFile(dir);
   var tree = document.getElementById("dir-tree");
-  tree.setAttribute("ref", url);
+  tree.setAttribute("ref", url.spec);
   tree.currentIndex = 0;
   showShellsInDir(tree);
 }                           
@@ -30,18 +22,11 @@ function showShellsInDir(tree)
     i = tree.view.getParentIndex(i);
     leafname = tree.view.getCellText(i,namecol)+ "/" + leafname;
   }
-  var directory = Components.classes["@mozilla.org/file/local;1"].           
-  createInstance(Components.interfaces.nsILocalFile);
-  var path= tree.getAttribute("ref")+"/"+leafname;
-  //convert URL to path
-  path = msiPathFromFileURL( path );
-  //for windows
-#ifdef XP_WIN32
-  path = path.replace("/",'\\','g');
-#endif
+  var directory;
+  var dirurl = msiURIFromString(tree.getAttribute("ref"));
   try {
-    directory.initWithPath(path);
-//    directory.append(leafname);
+    directory = msiFileFromFileURL(dirurl);
+    directory.append(leafname);
     var items = directory.directoryEntries;
     var name;  
     var listbox = document.getElementById("dircontents");

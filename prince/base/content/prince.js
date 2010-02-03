@@ -704,7 +704,7 @@ function printPDFFile(infilePath)
   }
 }
 
-// compileDocument compiles the current document of the current editor and converts it to TeX and then to DVI or PDF,
+// compileDocument compiles the current document of the current editor; it converts it to TeX and then to DVI or PDF,
 // depending on the value of pdftex. Returns true if everything succeeded. 
 function compileDocument( pdftex )
 {
