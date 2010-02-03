@@ -4201,6 +4201,7 @@ MOZ_URL_CLASSIFIER=
 MOZ_USE_NATIVE_UCONV=
 MOZ_V1_STRING_ABI=
 MOZ_VIEW_SOURCE=1
+MSI_COMPUTING=1
 MOZ_WEBSERVICES=
 MOZ_XMLEXTRAS=1
 MOZ_XPFE_COMPONENTS=1
@@ -5019,6 +5020,16 @@ if test "$MOZ_VIEW_SOURCE"; then
     AC_DEFINE(MOZ_VIEW_SOURCE)
 fi
 
+dnl ========================================================
+dnl msi computing support on by default
+dnl ========================================================
+MOZ_ARG_DISABLE_BOOL(msi-computing,
+[  --disable-msi-computing Disable MSI MuPAD support (on by default)],
+    MSI_COMPUTING=,
+    MSI_COMPUTING=1 )
+if test "$MSI_COMPUTING"; then
+    AC_DEFINE(MSI_COMPUTING)
+fi
 
 dnl ========================================================
 dnl accessibility support on by default on all platforms 
@@ -7584,6 +7595,7 @@ AC_SUBST(MOZ_UNIVERSALCHARDET)
 AC_SUBST(ACCESSIBILITY)
 AC_SUBST(MOZ_XPINSTALL)
 AC_SUBST(MOZ_VIEW_SOURCE)
+AC_SUBST(MSI_COMPUTING)
 AC_SUBST(MOZ_SPELLCHECK)
 AC_SUBST(MOZ_XPFE_COMPONENTS)
 AC_SUBST(MOZ_USER_DIR)
