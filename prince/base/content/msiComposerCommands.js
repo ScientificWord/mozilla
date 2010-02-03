@@ -905,15 +905,13 @@ var msiOpenCommand =
       if ((fp.file) && (fp.file.path.length > 0)) 
       {
         dump("Ready to edit page: " + fp.fileURL.spec +"\n");
-        var documentfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-        documentfile.initWithPath( fp.file.path );
         var regexp = /\.sci$/i;
         var newdocumentfile;
         if (regexp.test(fp.file.path))
-          newdocumentfile = createWorkingDirectory(documentfile);
-        else newdocumentfile = documentfile;
-        msiEditPage(newdocumentfile.path, window, false);
-        msiSaveFilePickerDirectoryEx(fp, documentfile.parent.path, MSI_EXTENSION);
+          newdocumentfile = createWorkingDirectory(fp.file);
+        else newdocumentfile = fp.file;
+        msiEditPage(msiFileURLFromFile(newdocumentfile), window, false);
+        msiSaveFilePickerDirectoryEx(fp, fp.file.parent.path, MSI_EXTENSION);
       }
     } 
     catch (e) 
@@ -2327,16 +2325,18 @@ function msiSoftSave( editor, editorElement)
   if (aMimeType != "text/html" && aMimeType != "application/xhtml+xml" && aMimeType != "text/xml" && !saveAsTextFile)
     throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
 
+  var urlstring = msiGetEditorURL(editorElement);
+  var url = msiURIFromString(urlstring);
+  var currentFile = msiFileFromFileURL(url);
   if (saveAsTextFile)
     aMimeType = "text/plain";
-  var urlstring = msiGetEditorURL(editorElement);
-  var currentFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-  var currFilePath = GetFilepath(urlstring);
-  // for Windows
-#ifdef XP_WIN32
-      currFilePath = currFilePath.replace("/","\\","g");
-#endif
-  currentFile.initWithPath( currFilePath );
+  else if (GetBoolPref("swp.generateTeXonsave"))
+  {
+    var file = currentFile.parent;
+    file.append("TeX");
+    file.append("main.tex");
+    documentAsTeXFile(editorDoc, "latex.xsl", file );
+  }
   var success;
   success = msiOutputFileWithPersistAPI(editorDoc, currentFile, null, aMimeType, editorElement);
   if (success) editor.contentsMIMEType = aMimeType;
@@ -2349,25 +2349,21 @@ function deleteWorkingDirectory(editorElement)
 {
   var htmlurlstring = msiGetEditorURL(editorElement); 
   if (!htmlurlstring || htmlurlstring.length == 0) return;
-  var workingDir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-  var htmlpath = GetFilepath(htmlurlstring);
+  var htmlurl = msiURIFromString(htmlurlstring);
+  var workingDir = msiFileFromFileURL(htmlurl);
 // we know we shouldn't delete the directory unless it really is a working directory; i.e., unless it 
 // ends with "_work/main.xhtml"
   var regEx = /_work\/main.xhtml$/i;  // BBM: localize this
-  if (regEx.test(htmlpath))
+  if (regEx.test(htmlurlstring))
   {
     try
     {
-#ifdef XP_WIN32
-      htmlpath = htmlpath.replace("/","\\","g");
-#endif
-      workingDir.initWithPath( htmlpath );  
       workingDir = workingDir.parent;
       if (workingDir.exists())
         workingDir.remove(1);
     } catch(exc) { msiDumpWithID("In deleteWorkingDirectory for editorElement [@], trying to delete directory [" + htmlpath + "]; exception is [" + exc + "].\n", editorElement); }
   }
-  else alert("Trying to remove 'work directory': "+htmlpath+"\n");
+  else alert("Trying to remove 'work directory': "+htmlpath+"\n"); // eventually get rid of this
 }
 
 
@@ -2418,6 +2414,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   // currentSciFilePath = /somepath/DocName.sci (can be a directory)
 
   var htmlurlstring = msiGetEditorURL(editorElement); // this is the url of the file in the directory D. It was updated by the soft save.
+  var htmlurl = msiURIFromString(htmlurlstring);
   var sciurlstring = msiFindOriginalDocname(htmlurlstring); // this is the uri of A.sci
   var mustShowFileDialog = (aSaveAs || aSaveCopy || IsUrlUntitled(sciurlstring) || (sciurlstring == ""));
 
@@ -2438,21 +2435,13 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   var leafname;
   var isSciFile;
   
-  var workingDir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-  currentSciFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-  var htmlpath = GetFilepath(htmlurlstring);
-  var currentSciFilePath = GetFilepath(sciurlstring);  // the path for A.sci
+  currentSciFile = msiFileFromFileURL(sciurlstring);
+  
   var regEx = /_work\/main.xhtml$/i;  // BBM: localize this
-  isSciFile = regEx.test(htmlpath);
-// for Windows
-#ifdef XP_WIN32
-  htmlpath = htmlpath.replace("/","\\","g");
-  currentSciFilePath = currentSciFilePath.replace("/","\\","g");
-#endif
-  currentSciFile.initWithPath( currentSciFilePath );  // now = A.sci (can be a directory)
+  isSciFile = regEx.test(htmlurlstring);
   if (isSciFile) 
   {
-    workingDir.initWithPath( htmlpath );  // now = the path of the xhtml file in the working dir D
+    workingDir = msiFileFromFileURL(htmlurl);  // now = the path of the xhtml file in the working dir D
     workingDir = workingDir.parent;       // now = the directory D
   }
 
@@ -3057,16 +3046,12 @@ var msiRevertCommand =
       {
         msiCancelHTMLSource(editorElement);
         var urlstring = msiGetEditorURL(editorElement);
-        var documentfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+        var url = msiGetURIFromString(urlstring);
+        var documentfile = msiFileFromFileURL(url);
         var currFilePath = GetFilepath(urlstring);
-        var scifilepath = msiFindOriginalDocname(currFilePath);
-        var scifile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-        scifile.initWithPath(scifilepath);
-// for Windows
-#ifdef XP_WIN32
-      currFilePath = currFilePath.replace("/","\\","g");
-#endif
-        documentfile.initWithPath( currFilePath );
+        var scifileUrlString = msiFindOriginalDocname(currFilePath);
+        var scifileurl = msiURIFromString(scifileUrlString);
+        var scifile = msiFileFromFileURL(scifileurl);;
         msiRevertFile( true, documentfile, false );
         createWorkingDirectory(scifile);
         msiEditorLoadUrl(editorElement, msiGetEditorURL(editorElement));
@@ -7283,7 +7268,7 @@ var msiEditLinkCommand =
     {
       var element = msiGetEditor(editorElement).getSelectedElement("href");
       if (element)
-        msiEditPage(element.href, window, false);
+        msiEditPage(msiURIFromString(element.href), window, false);
     }
     catch (exc) {AlertWithTitle("Error in msiComposerCommands.js", "Error in msiEditLinkCommand.doCommand: " + exc);}
     editorElement.contentWindow.focus();
