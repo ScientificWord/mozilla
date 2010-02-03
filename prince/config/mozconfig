@@ -20,4 +20,4 @@ ac_add_options --disable-activex-scripting
 ac_add_options --disable-tests
 ac_add_options --disable-mochitest
 ac_add_options --disable-installer
-
+ac_add_options --disable-xpconnect-idispatch
