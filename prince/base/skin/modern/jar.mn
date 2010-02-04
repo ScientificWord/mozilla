@@ -22,6 +22,8 @@ modern.jar:
   skin/modern/icons/background.png      (icons/background.png)
   skin/modern/icons/background-sm.png   (icons/background-sm.png)
   skin/modern/icons/copy.png            (icons/copy.png)
+  skin/classic/icons/Minimize.gif            (icons/Minimize.gif)
+  skin/classic/icons/Restore.gif            (icons/Restore.gif)
   skin/modern/icons/copy-active.png     (icons/copy-active.png)
   skin/modern/icons/copy-active-sm.png  (icons/copy-active-sm.png)
   skin/modern/icons/copy-disabled.png   (icons/copy-disabled.png)
