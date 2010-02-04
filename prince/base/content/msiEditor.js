@@ -722,7 +722,9 @@ function msiEditorDocumentObserver(editorElement)
           return; 
 
         //BBM get this from prefs
-        editorElement.softsavetimer = new SS_Timer(2*60*1000, editor, editorElement);
+        var seconds = GetIntPref("swp.saveintervalseconds"); 
+        if (!seconds) seconds = 120;
+        editorElement.softsavetimer = new SS_Timer(seconds*1000, editor, editorElement);
         if (!("InsertCharWindow" in window))
           window.InsertCharWindow = null;
 
@@ -732,6 +734,7 @@ function msiEditorDocumentObserver(editorElement)
           var dirs;
           var file;
           var path;
+          var fileurl;
           var i;
           // check the document for tagdef processing instructions
           var tagdeflist = processingInstructionsList(editor.document, "sw-tagdefs");
@@ -744,8 +747,8 @@ function msiEditorDocumentObserver(editorElement)
             {
               dirs = match[1].split("/");
               file = getUserResourceFile( dirs[1], dirs[0]);
-              path = msiFileURLFromAbsolutePath( file.path );
-              editor.addTagInfo(path);
+              fileurl = msiFileURLFromAbsolutePath( file.path );
+              editor.addTagInfo(fileurl.spec);
             }
             else    
               editor.addTagInfo(tagdeflist[i]);
@@ -836,9 +839,9 @@ function msiEditorDocumentObserver(editorElement)
           try {
             var autosub = Components.classes["@mozilla.org/autosubstitute;1"].getService(Components.interfaces.msiIAutosub);
             var autosubsfile = getUserResourceFile("autosubs.xml", "xml");
-            var path;
-            path = msiFileURLFromAbsolutePath( autosubsfile.path );
-            autosub.initialize(path);
+            var fileurl = msiFileURLFromFile(autosubsfile);
+            dump("Opening autosubs file, path is: "+autosubsfile.path+"\n");
+            autosub.initialize(fileurl.spec);
           }
           catch(e) {
             dump(e+"\n");
@@ -1049,83 +1052,105 @@ function EditorStartupForEditorElement(editorElement)
 }
 
   // Get url for editor content and load it.
-  // the editor gets instantiated by the editingSession when the URL has finished loading.
+  // The editor gets instantiated by the editingSession when the URL has finished loading.
+  
+  // orphaned lines of code:
+  //  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
+  //  dir = doc.parent;
+  
 function msiLoadInitialDocument(editorElement, bTopLevel)
 {
   try {
     var prefs = GetPrefs();
     var theArgs = document.getElementById("args");
+    var needToCreateDirectory = false;
     var n = 1;
     var url = "";
-    var docname = "";
+    var docurlstring;
+    var docurl;
+    var docpath="";
     var docdir;
     var shelldir;
     var doc;
     var dir;
     var charset = "";
+    charset = document.getElementById("args").getAttribute("charset")
+    dump("1\n");
     if (theArgs)
     {
-      docname = document.getElementById("args").getAttribute("value");
-      if ( (docname.indexOf("file://") == 0) || (docname.indexOf("about:") == 0) )
-        docname = GetFilepath(docname);
-#ifdef XP_WIN32
-      docname = docname.replace("/","\\","g");
-#endif
-      charset = document.getElementById("args").getAttribute("charset")
+      docurlstring = document.getElementById("args").getAttribute("value");
+      if (docurlstring.length > 0)
+        docurl = msiURIFromString(docurlstring);
+      if (docurl) dump("Url in args is "+docurl.spec+"\n");
     };
-    var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
-    if (docname.length == 0)
-    {
+// Two cases: if (docurl), then the url of a doc to load was passed. It might be for a shell.
+//            if (!docurl), nothing was passed. Load the default shell. 
+
+    dump("2\n");
+    if (!docurl)
+    {   
       if (!bTopLevel)
       {
-        try { docname = prefs.getCharPref("swp.defaultDialogShell"); }
-        catch(exc) {docname = "";}
+        try { 
+          docurlstring = prefs.getCharPref("swp.defaultDialogShell");   //BBM: check this later
+          if (docurlstring.length > 0)
+            docurl = msiURIFromString(docurlstring);
+          dump("Doc Url from defaultDialogShell is "+docurl.spec+"\n");
+        }  
+        catch(exc) {
+          docurl = null;
+          return;
+        }
       }
-      if (docname.length == 0)
-        docname = prefs.getCharPref("swp.defaultShell");
-      if ((docname.length > 0) && (docname.toLowerCase().indexOf("chrome:") >= 0))
-        url = docname;
       else
       {
-        doc = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
-// BBM: "shells" should be localizable
+    dump("3\n");
+        docurlstring = prefs.getCharPref("swp.defaultShell");
+        // docurlstring is *relative* to the shells directory.
+        if (docurlstring.length == 0)
+          docurlstring = "articles/Standard_LaTeX_Article.sci";
+        var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
+        var doc = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
         doc.append("shells");
-        var dirs = docname.split(/\//);
+        var dirs = docurlstring.split(/\//);
         var i;
-        for (i = 0; i<dirs.length; i++) doc.append(dirs[i]);
+        for (i = 0; i<dirs.length; i++) if (dirs[i].length >0) doc.append(dirs[i]);
+        docpath = doc.path;
+    dump("4\n");
+        docurl = msiFileURLFromAbsolutePath(docpath); // this converts docurl to a file URL
+          dump("Doc Url from defaultShell is "+docurl.spec+"\n");
+        needToCreateDirectory = true;
       }
-      dir = null; // should be the default document directory
     }
-    else 
+    if (!docurl) 
     {
-      doc = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-      doc.initWithPath(docname);
-      dir = doc.parent;
+      dump("Unable to find Doc Url\n");
+      return;
     }
+// now we have a url for the doc.
+         
+    if (docurl && (docurl.schemeIs("chrome")||docurl.schemeIs("resource")))
+    {
+      // convert to a file URL
+      docpath = msiPathFromFileURL( docurl );
+      docurl = msiFileURLFromAbsolutePath(docpath); // this converts docurl to a file URL
+      dump("Doc Url converted to file:// is "+docurl.spec + "\n");
+      
+    }
+    doc = msiFileFromFileURL(docurl);
+    dir = doc.parent;
+
     // in cases where the user has gone through a dialog, such a File/New or File/Open, the working directory
     // has already been created and the document name changed. When starting up, or starting with a file on the
     // command line we still need to call "createWorkingDirectory."
-    if (url.length == 0)
+    var isSciRegEx = /\.sci$/i;
+    var isSci = isSciRegEx.test(docurl.spec);
+    if (isSci)
     {
-      var isSciRegEx = /\.sci$/i;
-      var isXHTMLRegEx = /\.xhtml$/i;
-      var isSci = isSciRegEx.test(doc.leafName);
-      if (!isSci) isSci = isSciRegEx.test(doc.parent.leafName);
       var newdoc;
-      if (isSci || isXHTMLRegEx.test(doc.leafName)) 
-        newdoc = createWorkingDirectory(doc);
-      else 
-        newdoc = doc;
-      docname = newdoc.path;
-      url = docname;
-#ifdef XP_WIN32
-      docname = docname.replace("\\","/","g");
-#endif
-      var dotIndex = doc.leafName.lastIndexOf(".");
-      var lastSlash = docname.lastIndexOf("/")+1;
-      var theFilename = document.getElementById("filename");
-      if (theFilename != null)
-        theFilename.value = dotIndex == -1?docname.slice(lastSlash):docname.slice(lastSlash,dotIndex);
+      newdoc = createWorkingDirectory(doc);
+      // newdoc is an nsIFile
+      docurl = msiFileURLFromFile(newdoc);
     }
 
     var contentViewer = null;
@@ -1137,9 +1162,11 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
       contentViewer.defaultCharacterSet = charset;
       contentViewer.forceCharacterSet = charset;
     }
-    msiEditorLoadUrl(editorElement, url);
+    dump("Trying to load editor with url = "+docurl.spec+"\n");
+    msiEditorLoadUrl(editorElement, docurl);
+  }
 //    msiDumpWithID("Back from call to msiEditorLoadUrl for editor [@].\n", editorElement);
-  } catch (e) {
+  catch (e) {
     dump("Error in loading URL in msiLoadInitialDocument: [" + e + "]\n");
   }
 }
@@ -1355,9 +1382,10 @@ function msiFinishInitDialogEditor(editorElement, parentEditorElement)
 
 function msiEditorLoadUrl(editorElement, url)
 {
+  dump("msiEditorLoadUrl: url.spec= "+url.spec+"\n");
   try {
     if (url)
-      editorElement.webNavigation.loadURI(url, // uri string
+      editorElement.webNavigation.loadURI(url.spec, // uri string
              msIWebNavigation.LOAD_FLAGS_BYPASS_CACHE,     // load flags
              null,                                         // referrer
              null,                                         // post-data stream
@@ -1689,13 +1717,8 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
 function doRevert(aContinueEditing, editorElement, del)
 {
   var urlstring = msiGetEditorURL(editorElement);
-  var documentfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-  var currFilePath = GetFilepath(urlstring);
-// for Windows
-#ifdef XP_WIN32
-  currFilePath = currFilePath.replace("/","\\","g");
-#endif
-  documentfile.initWithPath( currFilePath );
+  var url = msiUIRFromString(urlstring);
+  var documentfile = msiFileFromFileURL(url);
   msiRevertFile( aContinueEditing, documentfile, del );
 }
 // --------------------------- File menu ---------------------------
@@ -3471,14 +3494,9 @@ function msiSetDisplayMode(editorElement, mode)
       }
       else
       {
-        var docUrl = msiGetEditorURL(editorElement);
-        var docPath = GetFilepath(docUrl);
-        var pdffile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-          // for Windows
-#ifdef XP_WIN32
-        docPath = docPath.replace("/","\\","g");
-#endif
-        pdffile.initWithPath( docPath ); // pdffile now points to our document file
+        var docUrlString = msiGetEditorURL(editorElement);
+        var url = msiURIFromString(docUrlString);
+        var pdffile = msiFileFromFileURL(url);
         pdffile = pdffile.parent; // and now it points to the working directory
         pdffile.append("tex");
         pdffile.append(currPDFfileLeaf);

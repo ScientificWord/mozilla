@@ -1,12 +1,5 @@
 Components.utils.import("resource://app/modules/macroArrays.jsm");
 
-var pathSeparator = 
-#ifdef XP_WIN32
-    "\\";
-#else
-    "/"
-#endif
-
 
 
 function focusOnEditor()
@@ -47,14 +40,14 @@ function initSidebar()
   try {
     var dir1;
     dir1 = getUserResourceFile("fragments","");
-    var dirpath = dir1.path + "/";
-    var fragmentsBaseDirectory = msiFileURLFromAbsolutePath( dirpath );
+    var dirspec = msiFileURLFromFile(dir1).spec;
     var tree = document.getElementById("frag-tree");
-    tree.setAttribute("ref", fragmentsBaseDirectory);
+    dump("Setting 'ref' attribute to "+dirspec+"\n");
+    tree.setAttribute("ref", dirspec);
     tree.builder.rebuild();
     fixAttributes(tree);
     //
-  }
+  }      
   catch(e) {
     dump("Exception in initSidebar() = "+e.toString());
   }
@@ -62,6 +55,11 @@ function initSidebar()
 
 function descriptionOfItem( row )
 {
+  if (row < 0)
+  {
+    dump("Calling descriptionOfItem with row ="+row+"\n");
+    return;
+  }
   var i = row;
   var tree = document.getElementById("frag-tree");
   var namecol = tree.columns.getNamedColumn('Name');
@@ -71,13 +69,13 @@ function descriptionOfItem( row )
       i = tree.view.getParentIndex(i);
       s = tree.view.getCellText(i,namecol)+ pathSeparator + s;
   }
-  s = tree.getAttribute("ref") + "/" +s;
+  s = tree.getAttribute("ref")+s;
   // s is now the path of the clicked file relative to the fragment root.
   dump("showDescription: pathname = "+s+"\n");
   try 
   {
     var request = Components.
-                  classes["@mozilla.org/xmlextras/xmlhttprequest;1"].
+                  classes["@mozilla.org/xmlextras/xmlnequest;1"].
                   createInstance();
     request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
     request.open("GET", s, false);
@@ -187,10 +185,10 @@ function showDescription(event, tooltip)
   return description.length > 0;
 }
 
-function insertFragmentContents( pathname)
+function insertFragmentContents( fileurl )
 {
-  // pathname is now the path of the clicked file relative to the fragment root.
-  dump("insertFragmentContents: pathname = "+pathname+"\n");
+  // fileurl is now the absolute file url of the clicked file relative to the fragment root.
+  dump("insertFragmentContents: fileurl.spec = "+fileurl.spec+"\n");
   try 
   {
     var editorElement = msiGetActiveEditorElement();
@@ -199,7 +197,8 @@ function insertFragmentContents( pathname)
                   classes["@mozilla.org/xmlextras/xmlhttprequest;1"].
                   createInstance();
     request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
-    request.open("GET", pathname, false);
+    dump("insertFragmentContents: "+fileurl.spec+"\n");
+    request.open("GET", fileurl.spec, false);
     request.send(null);
                                 
     var xmlDoc = request.responseXML; 
@@ -255,8 +254,10 @@ function loadFragment(event,tree)
       i = tree.view.getParentIndex(i);
       s = tree.view.getCellText(i,namecol)+ pathSeparator + s;
     }
-  s = tree.getAttribute("ref") + "/" +s;
-  insertFragmentContents(s);
+  if (!tree.hasAttribute("ref")) return;
+  s = tree.getAttribute("ref") +s ;
+  var url = msiURIFromString(s);
+  insertFragmentContents(url);
   focusOnEditor();
 }
 
@@ -423,12 +424,10 @@ function onMacroOrFragmentEntered( aString )
     if (s)
     {
       var dirpath = s.dirpath;
-#ifdef XP_WIN32
-      dirpath = dirpath.replace("\\","/","g");
-#endif
-      dirpath = msiFileURLFromAbsolutePath(  dirpath ) + "/" + aString + ".frg";      
-      dump('calling insertFragmentContents('+dirpath+'\n');
-      insertFragmentContents( dirpath );
+      var dirurlstring = msiFileURLFromAbsolutePath(dirpath).spec + aString + ".frg";      
+      dump('calling insertFragmentContents('+dirurlstring+'\n');
+      var url = msiURIFromString(dirurlstring);
+      insertFragmentContents( url );
     }
   }
   var macrofragmentStatusPanel = document.getElementById('macroEntryPanel');
@@ -467,11 +466,8 @@ var fragObserver =
                     classes["@mozilla.org/xmlextras/xmlhttprequest;1"].
                     createInstance();
       request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
-      var path = tree.getAttribute("ref") + s;
-#ifdef XP_WIN32
-      path = path.replace("\\","/","g");
-#endif
-      request.open("GET", path, false);
+      var urlstring = tree.getAttribute("ref") + s;
+      request.open("GET", urlstring, false);
       request.send(null);
                           
       var xmlDoc = request.responseXML; 
@@ -532,14 +528,8 @@ var fragObserver =
     var tree = evt.currentTarget;
     var bo = tree.treeBoxObject;
     var namecol = tree.columns.getNamedColumn('Name');
-    var saveref = tree.getAttribute("ref");
-    var pathbase = saveref + "/";
-#ifdef XP_WIN32
-    pathbase = pathbase.substr(8); // omit "path:///" at the start
-#else
-    pathbase = pathbase.substr(7); // omit "path:///" at the start
-#endif
-    var path="";
+    var saveurlstring = tree.getAttribute("ref");
+    varp path;
     var row = new Object;
     var column = new Object;
     var part = new Object;
