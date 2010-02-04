@@ -33,6 +33,7 @@ REQUIRES = xpcom \
            autosub \
 		   scriptrunner \
 		   keymap \
+		   compute \
 		   $(NULL)
 
 

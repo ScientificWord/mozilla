@@ -15,6 +15,7 @@ latex sup {
   margin-right: -0.15em;
 }
 
+
 latex sub {
   text-transform: uppercase;
   vertical-align: -0.5ex;
@@ -245,7 +246,12 @@ mml|mi[tempinput="true"]{
   list-style-image: url("chrome://prince/skin/icons/vc-rotateleft.png");
 }
 
-msiframe { background-color: rgb(240,240,240); }
+msiframe, frame { 
+  display: block;
+  background-color: rgb(240,240,240);
+  border: medium solid black;
+  -moz-border-radius: 20px;
+}
 
 mml|mrow[id] {
   position: fixed;  
@@ -270,19 +276,20 @@ mml|mrow[id]:after {
 
 }
 
-
+ 
 .collapsible {
   -moz-binding: url("resource://app/res/xbl/latex.xml#collapsible");
 }
-
+ 
 /* The following is a generic set of rules to control opening and closing
    sections. They are repeated for each structure than can be closed. Also
    implement the switch between numbered and not numbered*/
 
-chapter {
+ 
+chapter>sectiontitle {
   -moz-binding: url("resource://app/res/xbl/latex.xml#collapsible");
 }
-
+ 
 /* Keep counters from incrementing on unnumbered structures */
 
 chapter[nonum="true"] {
@@ -306,10 +313,9 @@ chapter[open='false']>button.expander {
   display: inline;
 }
 
-section {
+section>sectiontitle {
   -moz-binding: url("resource://app/res/xbl/latex.xml#collapsible");
 }
-
 
 section[nonum="true"] {
   counter-increment: none;
@@ -324,8 +330,13 @@ section[open="false"]>* {
   display: none;
 }
 
-section[open="false"] *.expander {
-  display: inline-block;
+
+section[open="false"]>sectiontitle {
+  display: block;
+}
+
+section[open="false"]>button.expander {
+  display: inline;
 }
 
 subsection[nonum="true"] {
@@ -405,3 +416,89 @@ paragraph[nonum="true"] {
   font-weight: bold;
 }
 
+
+frontmatter {
+  display: block;
+  border: thin solid black; 
+  background-color: #DDBB88;
+}
+
+*[showinvis="true"] frontmatter:before {
+  content: "Front Matter";
+  display: block;
+  font-size: medium; font-weight: bold;
+  color: green;
+}
+
+
+preface {
+  display: block;
+  margin-top: 30pt;
+  border: thin solid black; 
+  background-color: #CC6666;
+  -moz-border-radius: 20px;
+}
+
+
+*[showinvis="true"] preface:before {
+  content: "Preface";
+  display: block;
+  font-size: medium; font-weight: bold;
+  color: green;
+}
+
+/* front matter tags */
+frontmatter>address {
+  display:block;
+  text-align: left;
+}
+
+frontmatter>address:before {
+  display: inline-block;
+  font-family: sans-serif;
+  width: 10em;
+  content: "Address:";
+  background-color: white;
+  -moz-user-modify: read-only;
+}			 
+
+
+frontmatter>author {
+  display:block;
+  text-align: left;
+}
+
+frontmatter>author:before {
+  display: inline-block;
+  font-family: sans-serif;
+  width: 10em;
+  content: "Author:";
+  background-color: white;
+}			 
+
+frontmatter>date {
+  display:block;
+  text-align: left;
+}
+
+frontmatter>date:before {
+  display: inline-block;
+  font-family: sans-serif;
+  width: 10em;
+  content: "Date:";
+  background-color: white;
+}			 
+
+
+frontmatter>title {
+  display:block;
+  text-align: left;
+}
+
+frontmatter>title:before {
+  display: inline-block;
+  font-family: sans-serif;
+  width: 10em;
+  content: "Title:";
+  background-color: white;
+}			 
