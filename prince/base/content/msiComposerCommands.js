@@ -4336,7 +4336,7 @@ var msiInsertCharsCommand =
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement();
-    var dlgWindow = msiOpenModelessDialog("chrome://editor/content/msiEdInsertChars.xul", "_blank", "chrome,close,titlebar,dependent",
+    var dlgWindow = msiOpenModelessDialog("chrome://editor/content/msiEdReviseChars.xul", "_blank", "chrome, resizable, close, titlebar, dependent",
                                                                                                      editorElement, "cmd_insertChars", this);
 //    msiEditorFindOrCreateInsertCharWindow(editorElement);
   }
@@ -4349,19 +4349,81 @@ var msiReviseCharsCommand =
   doCommandParams: function(aCommand, aParams, aRefCon)
   {
     var editorElement = msiGetActiveEditorElement();
-    var charsObject = msiGetReviseObjectFromCommandParams(aParams);
-    if (charsObject != null && editorElement != null)
+    var charReviseData = msiGetPropertiesDataFromCommandParams(aParams);
+    var charData = new Object();
+    charData.reviseData = charReviseData;
+    if (charReviseData != null && editorElement != null)
     {
-      AlertWithTitle("msiComposerCommands.js", "In msiReviseCharsCommand, trying to revise a character, dialog not yet implemented.");
-//      var dlgWindow = msiDoModelessPropertiesDialog("chrome://editor/content/msiEdInsertChars.xul", "_blank", "chrome,close,titlebar,dependent",
-//                                                     editorElement, "cmd_reviseChars", charsObject??);
-
+//      AlertWithTitle("msiComposerCommands.js", "In msiReviseCharsCommand, trying to revise a character, dialog not yet implemented.");
+      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/msiEdReviseChars.xul", "_blank", "chrome, resizable, close, titlebar, dependent",
+                                                     editorElement, "cmd_reviseChars", this, charData);
     }
     editorElement.focus();
   },
 
   doCommand: function(aCommand, dummy)  {}
 };
+
+function msiReviseChars(reviseData, newCharStr, editorElement)
+{
+  var editor = msiGetEditor(editorElement);
+  editor.beginTransaction();
+  var rightNode = reviseData.getReferenceNode();
+  var theParentNode = rightNode.parentNode;
+  var leftNodeObj = new Object();
+  var midNodeObj = new Object();
+  var newTextNode = editor.document.createTextNode(newCharStr);
+  try
+  {
+    if (reviseData.mOffset > 0)
+      editor.splitNode(rightNode, reviseData.mOffset, leftNodeObj);
+    editor.splitNode(rightNode, reviseData.mLength, midNodeObj);
+    var logStr = "In msiComposerCommands.js, in msiReviseChars, after splitNode calls; leftNode is [";
+    if (leftNodeObj && leftNodeObj.value)
+      logStr += leftNodeObj.value.textContent;
+    logStr += "], midNode is [";
+    if (midNodeObj && midNodeObj.value)
+      logStr += midNodeObj.value.textContent;
+    logStr += "], and rightNode is [";
+    if (rightNode && rightNode.textContent)
+      logStr += rightNode.textContent;
+    logStr += "].\n";
+    msiKludgeLogString(logStr, ["reviseChars"]);
+    var insertPos = msiNavigationUtils.offsetInParent(midNodeObj.value);
+    editor.deleteNode(midNodeObj.value);
+    logStr = "In msiComposerCommands.js, in msiReviseChars, after deleteNode, parent node has [" + theParentNode.childNodes.length + "] children.\n";
+    msiKludgeLogString(logStr, ["reviseChars"]);
+    editor.insertNode(newTextNode, theParentNode, insertPos);
+
+    logStr = "In msiComposerCommands.js, in msiReviseChars, after insertNode, parent node has [" + theParentNode.childNodes.length + "] children; \n";
+    msiKludgeLogString(logStr, ["reviseChars"]);
+    msiKludgeLogNodeContents(newTextNode, ["reviseChars"], "  newTextNode", true);
+    msiKludgeLogNodeContents(rightNode, ["reviseChars"], "  rightNode", true);
+    if (!newTextNode.parentNode || (newTextNode.parentNode != theParentNode))
+      msiKludgeLogNodeContents(theParentNode.childNodes[insertPos], ["reviseChars"], "  The node at position [" + insertPos + "] in theParentNode");
+    if (leftNodeObj && leftNodeObj.value)
+    {
+      editor.joinNodes(leftNodeObj.value, newTextNode, theParentNode);
+      --insertPos;
+    }
+    msiKludgeLogString("In msiComposerCommands.js, in msiReviseChars, after the first joinNode.\n", ["reviseChars"]);
+    msiKludgeLogNodeContents(newTextNode, ["reviseChars"], "  newTextNode", true);
+    if (!newTextNode.parentNode || (newTextNode.parentNode != theParentNode))
+      msiKludgeLogNodeContents(theParentNode.childNodes[insertPos], ["reviseChars"], "  The node at position [" + insertPos + "] in theParentNode");
+    msiKludgeLogNodeContents(leftNodeObj.value, ["reviseChars"], "  leftNode", true);
+    if (rightNode && rightNode.textContent)
+    {
+      logStr = "  Now parent node has [" + theParentNode.childNodes.length + "] children; ";
+      msiKludgeLogString(logStr, ["reviseChars"]);
+      msiKludgeLogNodeContents(newTextNode, ["reviseChars"], "  newTextNode", true);
+      msiKludgeLogNodeContents(rightNode, ["reviseChars"], "  rightNode", true);
+      editor.joinNodes(leftNodeObj.value, rightNode, theParentNode);
+    }
+    msiKludgeLogString("In msiComposerCommands.js, in msiReviseChars, after the second joinNode.\n", ["reviseChars"]);
+  } catch(exc) {dump("Problem in msiComposerCommands.js in msiReviseChars(); exception is [" + exc + "].\n");}
+  editor.endTransaction();
+}
+
 //-----------------------------------------------------------------------------------
 var msiInsertBreakCommand =
 {
@@ -6733,24 +6795,25 @@ var msiObjectPropertiesCommand =
 
     if (element)
     {
-//      if (element.nodeType == nsIDOMNode.TEXT_NODE)
-//      {
-//        if (nodeData.theOffset != null)
-//        {
-//          //Need to bring up the ReviseCharacter dialog. Not yet implemented.
-//          var theCharacter = element.data.charAt(nodeData.theOffset);
-//        }
-//        else
-//        {
-//          dump("No offset specified in text node for Properties dialog! Aborting.\n");
-//          return;
-//        }
-//      }
       var cmdParams = newCommandParams();
       if (!cmdParams)
       {
         dump("Trouble in msiObjectPropertiesCommand.doCommand! Can't create new CommandParams - aborting.\n");
         return;
+      }
+      if (element.nodeType == nsIDOMNode.TEXT_NODE)
+      {
+        if (nodeData.theOffset != null)
+        {
+          //Need to bring up the ReviseCharacter dialog. Not yet implemented.
+//          var theCharacter = element.data.charAt(nodeData.theOffset);
+          cmdString = "cmd_reviseChars";
+        }
+        else
+        {
+          dump("No offset specified in text node for Properties dialog! Aborting.\n");
+          return;
+        }
       }
 
 //      var name = msiGetBaseNodeName(element).toLowerCase();
