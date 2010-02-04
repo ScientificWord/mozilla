@@ -124,14 +124,15 @@ function remove(id)
 
 function add(listboxid, textboxid, extension)
 {
-  var newurl, listbox, textbox, docurl, docfilepath, docfile, selectedfile, selectedfilepath;
+  var newurl, newurlstring, listbox, textbox, docurl, docurlstring, docfilepath, docfile, selectedfile, selectedfilepath;
   listbox = document.getElementById(listboxid);
   textbox = document.getElementById(textboxid);
   if (!(listboxid && textboxid)) return;
-  newurl = textbox.value;
+  newurlstring = textbox.value; 
+  newurl = msiURIFromString(newurlstring);
 // this is all we do when the url is "resource://app/... but in other cases we need to create
 // a css or xml directory in the document working directory and copy the file into it.
-  if (!newurl || newurl.length <= 5) ret8urn;
+  if (!newurl || newurl.spec.length <= 5) return;
   switch (GetScheme(newurl))
   {
     case "file": break;
@@ -146,26 +147,16 @@ function add(listboxid, textboxid, extension)
       return;
     default: return;
   }
-  docurl = editordoc.URL;
+  docurlstring = editordoc.URL;
+  docurl = msiURIFromString(docurlstring);
   if (docurl)
   {
-    docfilepath = GetFilepath(docurl);
-    docfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-  // for Windows
-#ifdef XP_WIN32
-    docfilepath = docfilepath.replace("/","\\","g");
-#endif
-    docfile.initWithPath( docfilepath ); // docfile now points to our document file
+    docfile = msiFileFromFileURL(docurl);
     docfile = docfile.parent; // docfile is now the working directory
     docfile.append(extension);
     if (!docfile.exists()) docfile.create(nsIFile::DIRECTORY_TYPE,0755);
     // now open the existing file and copy it.
-    selectedfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-    selectedfilepath = GetFilepath(newurl)// for Windows
-#ifdef XP_WIN32
-    selectedfilepath = selectedfilepath.replace("/","\\","g");
-#endif
-    selectedfile.initWithPath( selectedfilepath ); // selectedfile now points to the selected file
+    selectedfile = msiFileFromFileURL(newurl);
     if (!selectedfile.exists()) return; //BBM need some feedback to the user here
     // check to see if a file with the destination name already exists.
     appendlistitem(listbox, extension+"/"+selectedfile.leafName);
