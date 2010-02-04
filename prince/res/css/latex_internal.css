@@ -117,14 +117,28 @@ sw|breakobj {
 span {
   display: inline;
 }
+					  
+button.expander {
+  position: absolute;
+  background-image: url("chrome://global/skin/tree/twisty-open.png");
+  background-repeat: no-repeat;
+  border: none;
+  top: 0pt; 
+  left: -12px; 
+  height: 9px;
+  width: 9px;
+}
 
-.expander {
-  margin-right: .3em;
-  margin-left: .3em;
-  text-align: center;
-  font-size: large;
-  height: 1em;
-  width: 2em;
-  display: inline;
-  -moz-user-select: -moz-none;
+
+
+
+*[open="false"] .expander {
+  position: absolute;
+  background-image: url("chrome://global/skin/tree/twisty-clsd.png");
+  background-repeat: no-repeat;
+  border: none;
+  top: 0pt; 
+  left: -12px; 
+  height: 9px;
+  width: 9px;
 }

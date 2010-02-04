@@ -799,7 +799,7 @@ nsHTMLEditor::NodeIsBlock(nsIDOMNode *aNode, PRBool *aIsBlock)
   tagAtom->ToString(strTagName);
   mtagListManager->GetClassOfTag(strTagName, namespaceAtom, strTagClass);
   if (strTagClass.EqualsLiteral("paratag")||strTagClass.EqualsLiteral("structtag")||
-      strTagClass.EqualsLiteral("envtag")||strTagClass.EqualsLiteral("listtag"))
+      strTagClass.EqualsLiteral("envtag")||strTagClass.EqualsLiteral("listtag")||strTagClass.EqualsLiteral("frontmtag"))
   {
    *aIsBlock = PR_TRUE;
    return NS_OK;
@@ -3178,7 +3178,6 @@ nsHTMLEditor::InsertBasicBlockNS(const nsAString& aBlockType, nsIAtom * namespac
 nsresult
 nsHTMLEditor::InsertStructureNS(const nsAString& aStructType, nsIAtom * namespaceAtom)
 
-// TODO: Change this from inserting a block to putting in a structure tag.z
 {
   nsresult res;
   if (!mRules) { return NS_ERROR_NOT_INITIALIZED; }
