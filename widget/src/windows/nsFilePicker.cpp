@@ -162,7 +162,7 @@ NS_IMETHODIMP nsFilePicker::ShowW(PRInt16 *aReturnVal)
     browserInfo.pidlRoot       = nsnull;
     browserInfo.pszDisplayName = (LPWSTR)dirBuffer;
     browserInfo.lpszTitle      = mTitle.get();
-    browserInfo.ulFlags        = BIF_USENEWUI | BIF_RETURNONLYFSDIRS;
+    browserInfo.ulFlags        = BIF_NEWDIALOGSTYLE | BIF_RETURNONLYFSDIRS;
     if (initialDir.Length())
     {
       // the dialog is modal so that |initialDir.get()| will be valid in 

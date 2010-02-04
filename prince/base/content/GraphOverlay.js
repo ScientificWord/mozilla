@@ -628,13 +628,8 @@ function insertGraph (siblingElement, graph, editorElement) {
     var docauxdirectory;
     var currdocdirectory;
     var urlstring = msiGetEditorURL(editorElement);
-    var documentfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-    var currFilePath = GetFilepath(urlstring);
-  // for Windows
-#ifdef XP_WIN32
-    currFilePath = currFilePath.replace("/","\\","g");
-#endif
-    documentfile.initWithPath( currFilePath );
+    var url = msiURIFromString(urlstring);
+    var documentfile = msiFileFromFileURL(url);
 
     currdocdirectory = documentfile.parent.clone();
     docauxdirectory = currdocdirectory.clone();

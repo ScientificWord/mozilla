@@ -300,25 +300,17 @@ function chooseFile()
   if (gTimerID)
     clearTimeout(gTimerID);
   // Get a local file, converted into URL format
-  var fileName = GetLocalFileURL("img");
+  var fileName = GetLocalFileURL("img"); // return a URLString
   if (fileName)
   {
+    var url = msiURIFromString(fileName);
     if (gDialog.import) // copy the file into the graphics directory
     {
       try {
-        var file = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-        var path = GetFilepath(fileName);
-#ifdef XP_WIN
-        path=path.replace("/","\\","g");
-#endif
-        file.initWithPath(path);
-        var docUrl = msiGetDocumentBaseUrl();
-        var dir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-        var dirpath = GetFilepath(docUrl);
-#ifdef XP_WIN
-        dirpath=dirpath.replace("/","\\","g");
-#endif
-        dir.initWithPath(dirpath);
+        var file = msiFileFromFileURL(url);
+        var docUrlString = msiGetDocumentBaseUrl();
+        var docurl = msiURIFromString(docUrlString);
+        var dir = msiFileFromFileURL(docurl);
         dir = dir.parent;
         dir.append("graphics");
         if (!dir.exists()) dir.create(1, 0755);
