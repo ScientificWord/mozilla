@@ -150,7 +150,7 @@ nsComposerController::RegisterHTMLEditorCommands(
   NS_REGISTER_ONE_COMMAND(nsListTagUpdatingCommand, "cmd_listtag");
   NS_REGISTER_ONE_COMMAND(nsStructTagUpdatingCommand, "cmd_structtag");
   NS_REGISTER_ONE_COMMAND(nsEnvTagUpdatingCommand, "cmd_envtag");
-  NS_REGISTER_ONE_COMMAND(nsOtherTagUpdatingCommand, "cmd_othertag");
+//  NS_REGISTER_ONE_COMMAND(nsOtherTagUpdatingCommand, "cmd_othertag");
 
   // lists
   NS_REGISTER_STYLE_COMMAND(nsListCommand,"cmd_ol", "ol");

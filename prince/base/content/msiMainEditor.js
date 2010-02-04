@@ -245,13 +245,15 @@ function UpdateWindowTitle()
     {
       docUrl = msiFindOriginalDocname(docUrl);
       var path = unescape(docUrl);
-      var regEx = /\/main.xhtml$/i;  // BBM: localize this
+      var regEx = /\.sci$/i;  // BBM: localize this
       if (regEx.test(path))
       {
-        var parentDirRegEx = /(.*\/)([^\/]*)_work\/main.xhtml$/i; //BBM: localize this
+        var parentDirRegEx = /(.*\/)([^\/]*).sci$/i; //BBM: localize this
         var arr = parentDirRegEx.exec(path);
-        if ((arr.length > 2) && arr[2].length > 0)
+        if (arr && (arr.length > 2) && arr[2].length > 0)
+        {
           docUrl = arr[1]+arr[2]+".sci";
+        }
       }
 
       var scheme = GetScheme(docUrl);
