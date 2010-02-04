@@ -1717,13 +1717,8 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
 function doRevert(aContinueEditing, editorElement, del)
 {
   var urlstring = msiGetEditorURL(editorElement);
-  var documentfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-  var currFilePath = GetFilepath(urlstring);
-// for Windows
-#ifdef XP_WIN32
-  currFilePath = currFilePath.replace("/","\\","g");
-#endif
-  documentfile.initWithPath( currFilePath );
+  var url = msiUIRFromString(urlstring);
+  var documentfile = msiFileFromFileURL(url);
   msiRevertFile( aContinueEditing, documentfile, del );
 }
 // --------------------------- File menu ---------------------------
@@ -3499,14 +3494,9 @@ function msiSetDisplayMode(editorElement, mode)
       }
       else
       {
-        var docUrl = msiGetEditorURL(editorElement);
-        var docPath = GetFilepath(docUrl);
-        var pdffile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-          // for Windows
-#ifdef XP_WIN32
-        docPath = docPath.replace("/","\\","g");
-#endif
-        pdffile.initWithPath( docPath ); // pdffile now points to our document file
+        var docUrlString = msiGetEditorURL(editorElement);
+        var url = msiURIFromString(docUrlString);
+        var pdffile = msiFileFromFileURL(url);
         pdffile = pdffile.parent; // and now it points to the working directory
         pdffile.append("tex");
         pdffile.append(currPDFfileLeaf);
