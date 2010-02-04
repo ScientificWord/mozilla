@@ -413,6 +413,7 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
           tagNameElement->HasAttribute(NS_LITERAL_STRING("hidden"),&(pdata->hidden));              
           pdata->tagClass = strClassName;
           pdata->description = GetStringProperty(NS_LITERAL_STRING("description"), tagNameElement);
+          pdata->realTagClass = GetStringProperty(NS_LITERAL_STRING("realtagclass"), tagNameElement);
           pdata->initialContentsForEmpty = 
             GetStringProperty(NS_LITERAL_STRING("initialcontentsforempty"), tagNameElement);
           pdata->initialContents =
@@ -452,7 +453,7 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
   BuildStringArray(NS_LITERAL_STRING("listtag"));
   BuildStringArray(NS_LITERAL_STRING("structtag"));
   BuildStringArray(NS_LITERAL_STRING("envtag"));
-  BuildStringArray(NS_LITERAL_STRING("othertag"));
+  BuildStringArray(NS_LITERAL_STRING("frontmtag"));
   pACSSA->SortArrays();
   return PR_TRUE;
 }
@@ -680,6 +681,13 @@ nsString msiTagListManager::PrefixFromNameSpaceAtom(nsIAtom * atomNS)
 /* AString getClassOfTag (in AString strTag, in nsIAtom atomNS); */
 NS_IMETHODIMP msiTagListManager::GetClassOfTag(const nsAString & strTag, nsIAtom *atomNS, nsAString & _retval)
 {
+  nsAutoString rv;
+  GetStringPropertyForTag(strTag, atomNS, NS_LITERAL_STRING("realtagclass"), rv);
+  if (rv.Length() > 0)
+  {
+    _retval = rv;
+    return NS_OK;
+  } 
   return GetStringPropertyForTag(strTag, atomNS, NS_LITERAL_STRING("tagclass"), _retval);
 }  
  

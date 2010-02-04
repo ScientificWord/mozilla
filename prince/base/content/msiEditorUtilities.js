@@ -5495,9 +5495,9 @@ var msiNavigationUtils =
 //      case "structtag":
 //      case "envtag":
         return true;
-      case "othertag":
+      case "frontmtag":
       default:
-      break;
+      break;                          
     }
     switch(msiGetBaseNodeName(node))
     {
