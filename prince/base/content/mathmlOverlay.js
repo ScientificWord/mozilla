@@ -2192,16 +2192,19 @@ function insertMathnameObject(mathNameObj, editorElement)
 
 function doInsertMathName(aName, editorElement)
 {
-  var mathNameObj = msiBaseMathNameList.getMathNameData(aName);
-  if (mathNameObj == null)
-  {
-    mathNameObj = new Object();
-    mathNameObj.type = "function";
-    mathNameObj.val = aName;
-    mathNameObj.enginefunction = false;
-  }
-  insertMathnameObject(mathNameObj, editorElement);
+  var editor = msiGetEditor(editorElement);
+  editor.InsertMathname(aName);
 }
+//  var mathNameObj = msiBaseMathNameList.getMathNameData(aName);
+//  if (mathNameObj == null)
+//  {
+//    mathNameObj = new Object();
+//    mathNameObj.type = "function";
+//    mathNameObj.val = aName;
+//    mathNameObj.enginefunction = false;
+//  }
+//  insertMathnameObject(mathNameObj, editorElement);
+//}
 
 function doMatrixDlg(editorElement)
 {
