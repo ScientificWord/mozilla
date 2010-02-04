@@ -623,21 +623,22 @@ MAKEFILES_embedding="
   embedding/tests/cocoaEmbed/Makefile
   embedding/tests/winEmbed/Makefile
 "
+#  These were removed from MAKEFILES_xulapp because crashreporter doesn't build on Mac
+#  toolkit/crashreporter/Makefile
+#  toolkit/crashreporter/client/Makefile
+#  toolkit/crashreporter/google-breakpad/src/client/Makefile
+#  toolkit/crashreporter/google-breakpad/src/client/mac/handler/Makefile
+#  toolkit/crashreporter/google-breakpad/src/client/windows/Makefile
+#  toolkit/crashreporter/google-breakpad/src/client/windows/handler/Makefile
+#  toolkit/crashreporter/google-breakpad/src/client/windows/sender/Makefile
+#  toolkit/crashreporter/google-breakpad/src/common/Makefile
+#  toolkit/crashreporter/google-breakpad/src/common/mac/Makefile
+#  toolkit/crashreporter/google-breakpad/src/common/windows/Makefile
+#  toolkit/crashreporter/google-breakpad/src/tools/mac/dump_syms/Makefile
 
 MAKEFILES_xulapp="
   toolkit/Makefile
   toolkit/library/Makefile
-  toolkit/crashreporter/Makefile
-  toolkit/crashreporter/client/Makefile
-  toolkit/crashreporter/google-breakpad/src/client/Makefile
-  toolkit/crashreporter/google-breakpad/src/client/mac/handler/Makefile
-  toolkit/crashreporter/google-breakpad/src/client/windows/Makefile
-  toolkit/crashreporter/google-breakpad/src/client/windows/handler/Makefile
-  toolkit/crashreporter/google-breakpad/src/client/windows/sender/Makefile
-  toolkit/crashreporter/google-breakpad/src/common/Makefile
-  toolkit/crashreporter/google-breakpad/src/common/mac/Makefile
-  toolkit/crashreporter/google-breakpad/src/common/windows/Makefile
-  toolkit/crashreporter/google-breakpad/src/tools/mac/dump_syms/Makefile
   toolkit/content/Makefile
   toolkit/content/buildconfig.html
   toolkit/obsolete/Makefile
@@ -852,9 +853,9 @@ if [ "$MOZ_ZIPWRITER" ]; then
   "
 fi
 
+#    db/sqlite3/src/Makefile
 if [ "$MOZ_STORAGE" ]; then
   add_makefiles "
-#    db/sqlite3/src/Makefile
     db/morkreader/Makefile
     storage/Makefile
     storage/public/Makefile
