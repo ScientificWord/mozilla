@@ -59,7 +59,7 @@ function msiEditPageOrFrame()
 function msiEditPage(url, launchWindow, delay)
 {
   // Always strip off "view-source:" and #anchors
-  url = url.replace(/^view-source:/, "").replace(/#.*/, "");
+  var urlstring = url.spec.replace(/^view-source:/, "").replace(/#.*/, "");
 
   // User may not have supplied a window
   if (!launchWindow)
@@ -85,7 +85,7 @@ function msiEditPage(url, launchWindow, delay)
     charsetArg = "charset=" + launchWindow.content.document.characterSet;
 
   try {
-    var uri = msiCreateURI(url, null, null);
+    var uri = msiCreateURI(urlstring, null, null);
 
     var windowManager = Components.classes['@mozilla.org/appshell/window-mediator;1'].getService();
     var windowManagerInterface = windowManager.QueryInterface( Components.interfaces.nsIWindowMediator);
@@ -140,7 +140,7 @@ function msiEditPage(url, launchWindow, delay)
       launchWindow.delayedOpenWindow("chrome://prince/content", "chrome,all,dialog=no", url);
     }
     else
-      launchWindow.openDialog("chrome://prince/content", "_blank", "chrome,all,dialog=no", url, charsetArg);
+      launchWindow.openDialog("chrome://prince/content", "_blank", "chrome,all,dialog=no", url.spec, charsetArg);
 
   } catch(e) {}
 }

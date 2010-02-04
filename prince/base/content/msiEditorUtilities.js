@@ -3424,15 +3424,13 @@ function msiDefaultNewDocDirectory()
   }  
   var dirkey;
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
-#ifdef XP_WIN
-  dirkey = "Pers";
-#else
-#ifdef XP_MACOSX
-  dirkey = "UsrDocs";
-#else
-  dirkey = "Home";
-#endif
-#endif
+  var os = msiGetOS();
+  if (os==="win")
+    dirkey = "Pers";
+  else if (os=="osx")
+    dirkey = "UsrDocs";
+  else
+    dirkey = "Home";
   // if we can't find the one in the prefs, get the default
   docdir = dsprops.get(dirkey, Components.interfaces.nsILocalFile);
   if (!docdir.exists()) docdir.create(1,0755);
@@ -3533,13 +3531,10 @@ function msiRevertFile (aContinueEditing, documentfile, del) // an nsILocalFile
 
     var tempfile;
     var leafname;    
-    var path = documentfile.path;
-#ifdef XP_WIN32
-    path = path.replace("\\","/","g");
-#endif
-    path = msiFindOriginalDocname(path);
+    var url = msiFileURLFromFile(documentfile);
+    var docUrlString = msiFindOriginalDocname(url.spec);
     var leafregex = /.*\/([^\/\.]+)\.sci$/i;
-    var arr = leafregex.exec(path);
+    var arr = leafregex.exec(docUrlString);
     if (arr && arr.length >1) leafname = arr[1];
 
     var dir = documentfile.parent.clone();
@@ -3676,17 +3671,13 @@ function msiMakeUrlRelativeTo(inputUrl, baseUrl, editorElement)
 
 
   // Get just the file path part of the urls
-  // XXX Should we use GetCurrentEditor().documentCharacterSet for 2nd param ?
-  var basePath = IOService.newURI(baseUrl, msiGetEditor(editorElement).documentCharacterSet, null).path;
-  var urlPath = IOService.newURI(inputUrl, msiGetEditor(editorElement).documentCharacterSet, null).path;
+  var basePath = IOService.newURI(baseUrl, null, null).path;
+  var urlPath = IOService.newURI(inputUrl, null, null).path;
 
   // We only return "urlPath", so we can convert
   //  the entire basePath for case-insensitive comparisons
-//  var os = GetOS();
-  var doCaseInsensitive = true; //(baseScheme == "file" && os == msigWin);
-#ifdef XP_WIN
-  doCaseInsensitive = false;
-#endif
+  var os = msiGetOS();
+  var doCaseInsensitive = (os != "win");
   if (doCaseInsensitive)
     basePath = basePath.toLowerCase();
 
@@ -3929,7 +3920,7 @@ function GetFilename(urlspec)
   return filename ? filename : "";
 }
 
-function GetFilepath(urlspec)
+function GetFilepath(urlspec) // BBM: I believe this can be simplified
 {
   if (!urlspec || IsUrlAboutBlank(urlspec))
     return "";
@@ -3946,11 +3937,12 @@ function GetFilepath(urlspec)
     {
       var url = uri.QueryInterface(Components.interfaces.nsIURL);
       if (url)
-#ifdef XP_WIN32
-        filepath = decodeURIComponent(url.path.substr(1));
-#else
-        filepath = decodeURIComponent(url.path);
-#endif
+      {
+        if (msiGetOS()=="win")
+          filepath = decodeURIComponent(url.path.substr(1));
+        else
+           filepath = decodeURIComponent(url.path);
+      }
     }
   } catch (e) {}
 
@@ -6892,25 +6884,15 @@ function msiKludgeLogNodeContents(aNode, keyArray, prefaceStr)
   dump(retStr);
 }
 
-function msiAuxDirFromDocPath(documentURI)
+function msiAuxDirFromDocPath(documentURIString)
 {
-  var spec = unescape(documentURI);
+  var spec = unescape(documentURIString);
   var i = spec.lastIndexOf(".");
   if (i > 0) spec = spec.substr(0,i);
   dump("spec is " + spec + "\n");
   spec = spec+"_files";
-  var dir = Components.classes["@mozilla.org/file/local;1"].
-    createInstance(Components.interfaces.nsILocalFile);
-  var url = Components.classes["@mozilla.org/network/simple-uri;1"].
-    createInstance(Components.interfaces.nsIURI);
-  url.spec = spec;
-  var path = unescape(url.path);
-  while (path.charAt(0)=="/".charAt(0)) path=path.substr(1);
-  // for Windows
-#ifdef XP_WIN32
-   path = path.replace("/","\\","g");
-#endif
-  dir.initWithPath(path);
+  var url = msiURIFromString(spec);
+  var dir = msiFileFromFileURL(url);
   if (!dir.exists()) dir.create(1, 0755);
   return dir.clone();
 }
@@ -6964,7 +6946,7 @@ function SS_Timer(delayMS, editor, editorElement) {
 
   var pbi = prefService.QueryInterface(Components.interfaces.nsIPrefBranch2);
 
-  var interval = prefService.getIntPref("swp.saveintervalminutes");
+  var interval = prefService.getIntPref("swp.saveintervalseconds");
   if (!interval || interval == 0) return;
   this.timer_ = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
 //  this.observerService_ = new G_ObserverServiceObserver(
@@ -6973,7 +6955,7 @@ function SS_Timer(delayMS, editor, editorElement) {
 
   // Ask the timer to use nsITimerCallback (.notify()) when ready
   // Interval is the time between saves in minutes
-  this.timer_.initWithCallback(this, interval*60*1000, 1);
+  this.timer_.initWithCallback(this, interval*1000, 1);
 }
 
 SS_Timer.prototype.callback_ = function()
@@ -7249,25 +7231,87 @@ function gotoFirstNonspaceInElement( editor, node )
     false);
 }
 
+// msiFileURLFromAbsolutePath
+// Takes an absolute path (the direction of the slashes is OS-dependent) and
+// produces a file URL
+
 function msiFileURLFromAbsolutePath( absPath )
 {
-#ifdef XP_WIN32
-  var path = absPath;
-  path = path.replace("\\","/","g");
-  var url = "file:///"+absPath;
-  url = url.replace("\\","/","g");
-#else
-  var url = "file://"+absPath;
-#endif
-  return url;
-}
+  try {
+    var file = Components.classes["@mozilla.org/file/local;1"].  
+                         createInstance(Components.interfaces.nsILocalFile);  
+    file.initWithPath( absPath );
+    return msiFileURLFromFile( file );
+  }
+  catch (e)
+  {
+    dump("//// error in msiFileURLFromAbsolutePath: "+e.message+"\n");
+  }
+}                       
 
-function msiPathFromFileURL( url )
+
+function msiFileURLFromFile( file )
 {
-  var dirpath = GetFilepath( url );
-  return dirpath
+  // file is nsIFile  
+  var ios = Components.classes["@mozilla.org/network/io-service;1"].  
+                      getService(Components.interfaces.nsIIOService);  
+  return ios.newFileURI(file);  
 }
 
+function msiURIFromString(str)
+{
+  var ios = Components.classes["@mozilla.org/network/io-service;1"].  
+                      getService(Components.interfaces.nsIIOService);  
+  return ios.newURI(str, null, null);  
+}
+  
+function msiFileURLStringFromFile( file )
+{
+  return  msiFileURLFromFile( file ).spec;
+}
+
+function msiFileFromFileURL(url)
+{
+  try {
+    return url.QueryInterface(Components.interfaces.nsIFileURL).file;
+  }
+  catch (e)
+  {
+    dump("Error in msiFileFromFileURL: url = "+url.spec+" "+e.message+"\n");
+  }
+}
+  
+function msiPathFromFileURL( url )     // redundant BBM: remove instances of this or of GetFilePath
+{
+  //return GetFilepath( url );
+  // or
+  return msiFileFromFileURL(url).path; 
+}
+
+
+function msiGetOS()
+{
+  var os;
+
+  switch(navigator.platform)
+  {
+  case 'Win32':
+   os = 'win';
+   break;
+  case 'MacPPC':
+  case 'MacIntel':
+   os = 'osx';
+   break;
+  case 'Linux i686':
+  case 'Linux i686 (x86_64)':
+   os = 'linux';
+   break;
+  default:
+   dump('Error: Unknown OS ' + navigator.platform);
+   os = "??";
+  }
+  return os;
+}
 
 // since the onkeypress event gets called *before* the value of a text box is updated,
 // we handle the updating here. This function takes a textbox element and an event and sets
