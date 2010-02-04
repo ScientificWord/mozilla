@@ -139,6 +139,8 @@
 #include "nsIWindowWatcher.h"
 #include "../../../content/base/src/nsAttrName.h"
 
+#define DEBUG_barry	1
+
 const PRUnichar nbsp = 160;
 
 static NS_DEFINE_CID(kCParserCID,     NS_PARSER_CID);
