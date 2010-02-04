@@ -90,7 +90,7 @@ REQUIRES += 	\
 		compute \
 		wrappers \
 		$(NULL)
-
+endif
 ifdef ALERTS_SERVICE
 REQUIRES	+= alerts
 endif
