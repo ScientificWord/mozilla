@@ -23,6 +23,7 @@
 #include "nsGUIEvent.h"
 #include "nsIServiceManager.h"
 
+
 #include "msiUtils.h"
 #include "msiIMMLEditDefines.h"
 #include "msiIMathMLInsertion.h"
