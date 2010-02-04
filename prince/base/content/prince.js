@@ -352,22 +352,22 @@ function openTeX()
     catch (e)
     {
       var dirkey;
-#ifdef XP_WIN
+      if (msiGetOS() == "win")
         dirkey = "Pers";
-#else
-#ifdef XP_MACOSX
+      else
+      if (msiGetOS() =="osx")
         dirkey = "UsrDocs";
-#else
+      else
         dirkey = "Home";
-#endif
-#endif
       // if we can't find the one in the prefs, get the default
       docdir = dsprops.get(dirkey, Components.interfaces.nsILocalFile);
       if (!docdir.exists()) docdir.create(1,0755);
-      docdir.append(GetString("DefaultDocDir"));
+      var defdocdirstring = GetStringPref("swp.prefDocumentDir");
+      if (defdocdirstring.length == 0) defdocdirstring = "SWPDocs";
+      docdir.append(defdocdirstring);
       if (!docdir.exists()) docdir.create(1,0755);
-      dump("default document directory is "+docdir.target+"\n");
-    }
+      dump("default document directory is "+docdir.path+"\n");
+    }                                                                
 
     var outdir = docdir.clone();
     outdir.append(filename + "_work");
@@ -431,15 +431,10 @@ function documentAsTeXFile( document, xslSheet, outTeXfile )
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
 
   var documentPath = document.documentURI;
-  documentPath = GetFilepath(documentPath);    //TODO: write msiGetFilepath that takes care of platform dependencies.
-  // for Windows
-#ifdef XP_WIN32
-  documentPath = documentPath.replace("/","\\","g");
-#endif
+  var docurl = msiURIFromString(documentPath);                                      
   var workingDir;
   var outTeX;
-  workingDir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-  workingDir.initWithPath( documentPath ); 
+  workingDir = msiFileFromFileURL(docurl);
   var bareleaf = workingDir.leafName; // This is the leaf of the document.
   workingDir = workingDir.parent;
   if (outTeXfile == null  || outTeXfile.target.length == 0)
