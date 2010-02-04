@@ -6361,6 +6361,61 @@ var msiNavigationUtils =
     return retVal;
   },
 
+  isCombiningCharacter : function(aChar)
+  {
+    //The following is strictly ad hoc - should actually reference functionality in the intl/unicharutil directory somehow
+    switch(aChar)
+    {
+      case "\u0302":
+      case "\u030c":
+      case "\u0303":
+      case "\u0301":
+      case "\u0300":
+      case "\u0306":
+      case "\u0305":
+      case "\u030b":
+      case "\u030a":
+      case "\u0307":
+      case "\u0308":
+      case "\u20db":
+      case "\u20dc":
+      case "\u20d7":
+      case "\u0327":
+      case "\u0328":
+      case "\u0323":
+      case "\u0332":
+      case "\u0338":
+        return true;
+      break;
+    }
+    return false;
+  },
+
+  isSingleCharacter : function(someText)
+  {
+    if (!someText.length)
+      return false;
+    var rv = true;
+    for (var ix = someText.length - 1; rv && (ix > 0); --ix)
+    {
+      if (!this.isCombiningCharacter(someText[ix]))
+        rv = false;
+    }
+    return rv;
+  },
+
+  findSingleCharStart : function(someText, nOffset)
+  {
+    if (!nOffset || (nOffset >= someText.length))
+      return nOffset;
+    for (var ix = nOffset - 1; ix > 0; --ix)
+    {
+      if (!this.isCombiningCharacter(someText[ix]))
+        return ix;
+    }
+    return 0;
+  },
+
   cannotSelectNodeForProperties : function(aNode)
   {
     if (this.nodeIsPieceOfUnbreakable(aNode))
@@ -6771,6 +6826,7 @@ function msiKludgeTestKeys(keyArray)
   keysInUse.push("search");
   keysInUse.push("tableEdit");
   keysInUse.push("spaces");
+  keysInUse.push("reviseChars");
 #endif
 
   var bDoIt = false;
@@ -6795,7 +6851,7 @@ function msiKludgeLogString(logStr, keyArray)
     dump(logStr);
 }
 
-function msiKludgeLogNodeContents(aNode, keyArray, prefaceStr)
+function msiKludgeLogNodeContents(aNode, keyArray, prefaceStr, bIncludePosInParent)
 {
   var bDoIt = msiKludgeTestKeys(keyArray);
   if (!bDoIt)
@@ -6803,6 +6859,13 @@ function msiKludgeLogNodeContents(aNode, keyArray, prefaceStr)
   var retStr = "Node";
   if (prefaceStr && prefaceStr.length)
     retStr = prefaceStr;
+  if (bIncludePosInParent)
+  {
+    if (aNode.parentNode)
+      retStr += " is at position [" + msiNavigationUtils.offsetInParent(aNode) + "] in its parent, and";
+    else
+      retStr += " has no parent node, and";
+  }
   if (msiNavigationUtils.isTextNode(aNode))
     retStr += " is a text node, with content [" + aNode.textContent + "].\n";
   else
