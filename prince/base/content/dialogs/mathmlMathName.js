@@ -4,13 +4,15 @@ var inputData;
 var target;
 
 function parseBool(s){
-  if (s == "true")
-    return true;
-  else
-    return false;
-}
+  return (s==="true"); }
+//  if (s == "true")
+//    return true;
+//  else
+//    return false;
+//}
 
 function Startup() {
+  try {
   inputData = window.arguments[0];
   var bIsRevise = false;
   if ("reviseObject" in inputData)
@@ -74,6 +76,10 @@ function Startup() {
   // ACSA = autocomplete string array
 //  var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
 //  ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+  }
+  catch(e){
+    dump("Error: "+e.toString()+"\n");
+  }
 }
 
 function isPropertiesDialog()
