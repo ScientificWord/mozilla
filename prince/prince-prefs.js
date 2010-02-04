@@ -16,8 +16,10 @@ pref("toolkit.scrollbar.smoothscroll", true);
 
 pref("swp.defaultShell", "articles/Standard_LaTeX_Article.sci");
 pref("swp.defaultDialogShell", "chrome://prince/content/StdDialogShell.xhtml");
-pref("swp.saveintervalminutes",2);
+pref("swp.saveintervalseconds",10);
+pref("swp.generateTeXonsave", true);
 pref("swp.prefDocumentDir","SWPDocs");
+pref("swp.viewPDF","fixAcrobat.cmd %1");
 pref("swp.tex.bindir","%programfiles%\texlive\2009\bin\win32");  /* for windows */
 pref("editor.author",                      "");
 

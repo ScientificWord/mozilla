@@ -106,16 +106,13 @@
 <!-- use docformat information to call the geometry package -->
 <xsl:template match="html:pagelayout[@latex='true']">
 <xsl:variable name="unit"><xsl:value-of select="@unit"/></xsl:variable>
-\usepackage[ <xsl:apply-templates/>]{geometry}
+\usepackage[ <xsl:apply-templates/>]{geometry}%
 </xsl:template>
 
-<xsl:template match="html:page">
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
+<xsl:template match="html:page">%
   paper=<xsl:value-of select="@paper"/>paper,%
   twoside=<xsl:value-of select="@twoside"/>,%
-  landscape=<xsl:value-of select="@landscape"/>,%
+<!--  landscape=<xsl:value-of select="@landscape"/>,-->%
 </xsl:template>
 
 <xsl:template match="html:page[@paper='screen']">
@@ -128,49 +125,31 @@
 </xsl:template>
 
 <xsl:template match="html:page[@paper='other']">
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
   paperwidth=<xsl:value-of select="@width"/>,%
   paperheight=<xsl:value-of select="@height"/>,%
 </xsl:template>
 
 <xsl:template match="html:textregion">%%
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
   textwidth=<xsl:value-of select="@width"/>,%		    
   textheight=<xsl:value-of select="@height"/>,%
 </xsl:template>
 
 <xsl:template match="html:margin">%
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
   left=<xsl:value-of select="@left"/>,%
   top=<xsl:value-of select="@top"/>,%
 </xsl:template>
 
 <xsl:template match="html:header">%
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
   headheight=<xsl:value-of select="@height"/>,%
   headsep=<xsl:value-of select="@sep"/>,%
 </xsl:template>
 
 <xsl:template match="html:columns[@count='2']">%
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
   twocolumn=true,%
   columnsep=<xsl:value-of select="@sep"/>,%
 </xsl:template>
 
 <xsl:template match="html:marginnote[@hidden='false']">%
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
   marginparwidth=<xsl:value-of select="@width"/>,%
   marginparsep=<xsl:value-of select="@sep"/>,%
 </xsl:template>
@@ -182,9 +161,6 @@
   footskip=<xsl:value-of select="concat(number(substring(@height,1,string-length(@height)-2))+number(substring(@sep,1,string-length(@sep-2)),substring(@sep,string-length(@sep)-2))"/>%</xsl:template -->
 																																	 
 <xsl:template match="html:fontchoices">
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
 \usepackage{xltxtra}%
 \TeXXeTstate=1%
 <!-- \defaultfontfeatures{Scale=MatchLowercase,Mapping=tex-text} -->
