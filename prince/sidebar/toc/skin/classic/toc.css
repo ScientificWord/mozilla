@@ -1,9 +1,50 @@
 /* */
 
+#toctoolbar menuitem {
+  -moz-binding:	url(chrome://global/content/bindings/menu.xml#menuitem);
+/*  -moz-appearance: menuitem; */
+  -moz-box-align: center;
+  padding: 0px  3px;				
+  -moz-padding-end: 3px;
+  -moz-padding-start: 3px;
+  color: MenuText;
+  font: menu;
+  height: 18px;
+  text-align: start;
+  list-style-image: none;
+  -moz-image-region: auto;
+}
 
+#toctoolbar menuitem .menu-text {
+  padding: 0px !important;	
+  -moz-appearance: none !important;			
+  -moz-padding-end: 0px !important;
+  -moz-padding-start: 0px !important;
+}
 
+#toctoolbar menuitem .menu-accel {
+  padding: 0px !important;
+  margin: 0px !important;	
+  -moz-appearance: none !important;			
+  -moz-padding-end: 0px !important;
+  -moz-padding-start: 0px !important;
+}
 
+#toctoolbar>menuitem[checked="true"]{
+  color: red;
+}
 
+#toctoolbar > menuitem {
+  border: 2px solid transparent;
+}
+#toctoolbar > menuitem[_moz-menuactive="true"][open="true"] {
+  border-width: 3px 1px 1px 3px;
+}
+#toctoolbar > menuitem[_moz-menuactive="true"],
+#toctoolbar > menuitem[_moz-menuactive="true"][open="true"] {
+  /* background-color: -moz-menuhover; */
+  color: black; /* -moz-menubarhovertext;  */
+}
 
 
 

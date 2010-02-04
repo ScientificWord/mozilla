@@ -3,4 +3,8 @@ glob:NONE
 glob:*.bak
 glob:security/manager/.nss.checkout
 glob:config/Expression.pyc
+glob:confdefs.h
+glob:config.cache
+glob:*.err
 glob:*.log
+glob:*.orig
