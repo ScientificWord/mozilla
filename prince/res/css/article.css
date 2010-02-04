@@ -24,6 +24,7 @@ part>*:first-child:before {
 
 chapter {
   display: block;
+  position: relative;
   counter-increment: chapter;
   counter-reset: section;
   counter-reset: theorem;
@@ -38,8 +39,9 @@ chapter>sectiontitle{
 
  
 chapter>sectiontitle:before, chapter[open="true"]>sectiontitle:before  {
-  content: "Chapter " counter(chapter,upper-roman);
+  content: "Chapter " counter(chapter,upper-roman) " ";
   display: block;
+  margin-left: .2in;
   font-size: large;
   font-weight: bold;
   line-height: 24pt;
@@ -142,6 +144,8 @@ abstract {
   margin-top: 30pt;
   margin-left: 50pt;
   margin-right: 50pt;
+  padding-left: 15pt;
+  padding-right: 15pt;
   font-size: small;
   border: thin solid black; 
   background-color: #CC9966;

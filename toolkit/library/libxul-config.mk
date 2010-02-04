@@ -257,12 +257,16 @@ COMPONENT_LIBS += \
 	tkautocomplete \
 	satchel \
 	pippki \
-	compeng2 \
-	wrappers \
-	tkautosub \
 	arrowstate \
 	keymap \
 	$(NULL)
+ifdef MSI_COMPUTING
+COMPONENT_LIBS += \
+	compeng2 \
+	wrappers \
+	tkautosub \
+	$(NULL)
+endif
 endif
 
 ifdef MOZ_MATHML

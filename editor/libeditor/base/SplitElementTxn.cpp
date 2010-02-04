@@ -98,7 +98,7 @@ NS_IMETHODIMP SplitElementTxn::DoTransaction(void)
     mEditor->GetSelection(getter_AddRefs(selection));
     if (NS_FAILED(result)) return result;
     if (!selection) return NS_ERROR_NULL_POINTER;
-    result = selection->Collapse(mNewLeftNode, mOffset);
+//    result = selection->Collapse(mNewLeftNode, mOffset);
   }
   else {
     result = NS_ERROR_NOT_IMPLEMENTED;
