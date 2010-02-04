@@ -8,7 +8,12 @@
 #include "nsIDOMSerializer.h"
 #include "nsIComponentRegistrar.h"
 #include "msiISimpleComputeEngine.h"
+#include "msiEditingAtoms.h"
+#include "nsIDOMText.h"
 
+
+
+void DebExamineNode(nsIDOMNode * aNode);
 
 
 
@@ -108,6 +113,41 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
   return res;
 }  
 
+void DebDisplaySelection(const char* str, nsISelection *aSelection, msiEditor* editor)
+{
+  printf("%s\n", str);
+
+  nsCOMPtr<nsIDOMNode> startNode, endNode;
+  nsCOMPtr<nsIDOMNode> endParent;
+  nsCOMPtr<nsIDOMNode> startParent;
+
+  PRInt32 startOffset, endOffset;
+  
+  editor->GetStartNodeAndOffset(aSelection, address_of(startNode), &startOffset);
+  editor->GetEndNodeAndOffset(aSelection, address_of(endNode), &endOffset);
+  startNode->GetParentNode(getter_AddRefs(startParent));
+  endNode->GetParentNode(getter_AddRefs(endParent));
+
+  printf("===startNode: ");
+  editor->DumpNode(startNode);
+  DebExamineNode(startNode);
+
+  printf("===start parent node: ");
+  editor->DumpNode(startParent);
+  DebExamineNode(startParent);
+
+  
+  printf("===endNode: ");
+  editor->DumpNode(endNode);
+  DebExamineNode(endNode);
+
+  printf("===end parent node: ");
+  editor->DumpNode(endParent);
+  DebExamineNode(endParent);
+
+
+
+}
 
 nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection, 
                                  nsIEditor::EDirection aAction, 
@@ -135,8 +175,13 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
   mathElement = do_QueryInterface(mathNode);
   if (!mathElement) return NS_ERROR_FAILURE;
 
+  DebDisplaySelection("Initial", aSelection, mMSIEditor);
+
 
   if (bCollapsed) {
+      // const nsAFlatString& empty = EmptyString();
+	  // mMSIEditor -> InsertHTMLWithContext(NS_LITERAL_STRING("45"), empty, empty, empty,
+      //                         nsnull, endNode,  endOffset, PR_FALSE);
       
 	  nsCOMPtr<msiIMathMLEditingBC> editingBC; 
       PRUint32 dontcare(0);
@@ -156,7 +201,7 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
 			 msiUtils::GetNumberofChildren(endNode, number);
 			 msiUtils::GetChildNode(endNode, number-1, rightmostChild);
 
-             endNode = rightmostChild;
+             endNode = rightmostChild;             
 
 		     msiUtils::GetMathMLEditingBC(mHTMLEditor, endNode, dontcare, editingBC);
              if (editingBC) {
@@ -221,8 +266,13 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
       	  aSelection->Extend( endNode, endOffset-1 );
 		  //mHTMLEditor->DeleteSelection(aAction);
 	  }
-  }  
-  if (!*aHandled){  
+  }
+
+   
+  if (!*aHandled){
+
+     DebDisplaySelection("Not handled" , aSelection, mMSIEditor);
+       
      nsCOMPtr<nsIDOMNode> firstChildNode;
      nsCOMPtr<nsIDOMNode> lastChildNode;
      nsCOMPtr<nsIDOMRange> range;
@@ -257,12 +307,43 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
      }
 
      mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
+	 DebDisplaySelection("Pre-will delete" , aSelection, mMSIEditor);
      nsHTMLEditRules::WillDeleteSelection(aSelection, aAction, aCancel, aHandled);
+	 DebDisplaySelection("Post-will delete" , aSelection, mMSIEditor);
 	 mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
-  } 
-    //else
-    // return res;
+
+  }
+  
+   
   mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
+
+  DebDisplaySelection("Pre-mark insertion", aSelection, mMSIEditor);
+
+
+  nsCOMPtr<nsIDOMElement> leafElement;
+  PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
+
+  res = msiUtils::CreateMathMLLeafElement(mMSIEditor, 
+                                          NS_LITERAL_STRING("@@CURSOR@@"), 
+                                          msiIMathMLEditingBC::MATHML_MTEXT,
+                                          0,
+                                          flags, 
+                                          leafElement);
+
+  if (NS_SUCCEEDED(res) && leafElement){
+      nsCOMPtr<nsIDOMDocument> domDoc;
+      
+      mMSIEditor->GetDocument(getter_AddRefs(domDoc));
+      NS_ASSERTION(domDoc, "Editor GetDocument return Null DOMDocument!");
+      
+      nsCOMPtr<nsIDOMNode> parent;
+	  nsCOMPtr<nsIDOMNode> resultNode;
+      res = endNode->GetParentNode(getter_AddRefs(parent));
+      res = parent -> AppendChild(leafElement, getter_AddRefs(resultNode));      
+  }    
+      
+
+
   nsCOMPtr<nsIDOMSerializer> ds = do_CreateInstance(NS_XMLSERIALIZER_CONTRACTID);
   NS_ENSURE_STATE(ds);
 
@@ -270,7 +351,6 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
   nsresult rv = ds->SerializeToString(mathNode, text);
   NS_ENSURE_SUCCESS(rv, rv);
   
-
   nsCOMPtr<nsIProperties> fileLocator(do_GetService("@mozilla.org/file/directory_service;1"));
   nsCOMPtr<nsILocalFile> iniFile;
   fileLocator->Get("resource:app", NS_GET_IID(nsIFile), getter_AddRefs(iniFile));
@@ -283,11 +363,16 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
   const PRUnichar* inp;
   text.GetData(&inp);
 
+  printf("\nSending for cleanup: %ls\n" , inp);
   engine->Perform(inp, 152, &result); // Cleanup function
+  printf("\nBack from cleanup: %ls\n", result);
 
-  //res = mHTMLEditor->RemoveContainer(endNode);
-  mHTMLEditor->DeleteNode(mathElement );
+  mHTMLEditor->DeleteNode(mathElement);
+
+  DebDisplaySelection("Pre-result insertion", aSelection, mMSIEditor);
+  
   mMSIEditor -> InsertHTML(nsString(result, wcslen(result)));
+  // Need to place cursor.
   *aHandled = PR_TRUE;
 
   return res;
