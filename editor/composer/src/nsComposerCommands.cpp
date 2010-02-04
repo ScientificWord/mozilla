@@ -527,7 +527,9 @@ nsEnvTagUpdatingCommand::SetState(nsIEditor *aEditor, nsString& newState)
   nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface(aEditor);
   if (!htmlEditor) return NS_ERROR_FAILURE;
 
-  if (newState.Length() > 0) return htmlEditor->SetEnvTag(newState);
+  // We call SetStructureTag because environments are very close to structures, and the code forks based on
+  // the actual tag type.
+  if (newState.Length() > 0) return htmlEditor->SetStructureTag(newState);
   return NS_OK; //BBM should be bad data
 }
 

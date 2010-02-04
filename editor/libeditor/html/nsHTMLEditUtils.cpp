@@ -589,6 +589,15 @@ nsHTMLEditUtils::IsEnvNode(nsIDOMNode *aNode, msiITagListManager * manager)
   return IsNodeType(aNode, NS_LITERAL_STRING("envtag"), manager); 
 }
 
+
+PRBool 
+nsHTMLEditUtils::IsFrontMNode(nsIDOMNode *aNode, msiITagListManager * manager)
+{
+  NS_PRECONDITION(aNode, "null node passed to nsHTMLEditUtils::IsFrontMNode");
+  return IsNodeType(aNode, NS_LITERAL_STRING("frontmtag"), manager); 
+}
+
+
 PRBool 
 nsHTMLEditUtils::IsOtherNode(nsIDOMNode *aNode, msiITagListManager * manager)
 {

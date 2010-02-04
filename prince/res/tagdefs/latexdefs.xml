@@ -88,12 +88,6 @@
       <contains>line</contains>
       <contains>a</contains>
 			<tags>
-				<tag nm="sw:address">
-          <nexttag>sw:para</nexttag>
-          <description>Author address</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]></initialcontentsforempty>
-        </tag>
 				<tag id="defaultparagraph" nm="sw:para">
 					<description>Default body text paragraph</description>
           <discardemptyblock>true</discardemptyblock>
@@ -106,12 +100,6 @@
           <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]>
           </initialcontentsforempty>
 				</tag>
-				<tag nm="sw:author">
-          <nexttag>sw:para</nexttag>
-          <description>Author name</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]></initialcontentsforempty>
-        </tag>
 				<tag nm="html:p">
 					<description>HTML paragraph</description>
           <discardemptyblock>true</discardemptyblock>
@@ -324,10 +312,10 @@
 			<contains>structtag</contains>
 			<contains>a</contains>
 			<tags>
-				<tag nm="sw:abstract">
+				<tag nm="sw:frontmatter">
           <level>*</level>
           <nexttag>para</nexttag>
-          <description>Abstract</description>
+          <description>Front Matter</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[ <para><cursor/><br/></para>]]>
           </initialcontents>
@@ -400,12 +388,67 @@
    		</tags>
 		</tagclass>
 		<tagclass>
-			<tagclassname>othertag</tagclassname>
+			<tagclassname>frontmtag</tagclassname>
 			<tags>
-				<tag nm="sw:xref"><description>An instance of an "other" tag</description></tag>
-        <tag nm="sw:latex"><description>LaTeX logo</description></tag>
-        <tag nm="sw:tex"><description>TeX logo</description></tag>
-        <tag nm="sw:maketitle"><description>Make title here</description></tag>
+				<tag nm="sw:abstract"><description>Abstract</description>
+          <realtagclass>envtag</realtagclass>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]>
+          </initialcontentsforempty>
+        </tag>
+        <tag nm="sw:address"><description>Address</description>y
+          <realtagclass>paratag</realtagclass>
+					<nexttag>sw:para</nexttag>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]>
+          </initialcontentsforempty>
+        </tag>
+        <tag nm="sw:author"><description>Author</description>
+          <realtagclass>paratag</realtagclass>
+					<nexttag>sw:para</nexttag>
+          <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]>
+          </initialcontentsforempty>
+        </tag>
+        <tag nm="sw:date"><description>Date</description>
+          <realtagclass>paratag</realtagclass>
+					<nexttag>sw:para</nexttag>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]>
+          </initialcontentsforempty>
+        </tag>
+        <tag nm="sw:makelof"><description>Make list of figures</description>
+          <realtagclass>paratag</realtagclass>
+					<nexttag>sw:para</nexttag>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]>
+          </initialcontentsforempty>
+        </tag>
+        <tag nm="sw:makelot"><description>Make list of tables</description>
+          <realtagclass>paratag</realtagclass>
+					<nexttag>sw:para</nexttag>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]>
+          </initialcontentsforempty>
+        </tag>
+        <tag nm="sw:maketitle"><description>Make title</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]>
+          </initialcontentsforempty>
+        </tag>
+        <tag nm="sw:maketoc"><description>Make table of contents</description>
+          <realtagclass>paratag</realtagclass>
+					<nexttag>sw:para</nexttag>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]>
+          </initialcontentsforempty>
+        </tag>
+        <tag nm="sw:title"><description>Title</description>
+          <realtagclass>paratag</realtagclass>
+					<nexttag>sw:para</nexttag>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]>
+          </initialcontentsforempty>
+        </tag>
 			</tags>
 		</tagclass>
 	</tagclasses>
