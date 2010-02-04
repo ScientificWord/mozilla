@@ -37,8 +37,11 @@ function saveforweb( doc, usedirectory, dir )
     var serializer = new XMLSerializer();
     var prettyString = serializer.serializeToString(doc2);
     // find the name of the starting .sci file. Start with the working directory.
-    var explodedPath = doc.location.pathname.split("/");
-    var name = explodedPath[explodedPath.length - 2].replace("_work","");
+    var docurlstring = doc.URL;
+    var url = msiURIFromString(docurlstring);
+    var srcfile = msiFileFromFileURL(url);
+    var srcdir = srcfile.parent.clone();
+    var name = srcdir.leafName.replace("_work","");
     var destfile = dir.clone();
     destfile.append(name+".xhtml");
     var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
@@ -50,15 +53,6 @@ function saveforweb( doc, usedirectory, dir )
     os.writeString(prettyString);
     os.close();
     // Now copy subdocuments
-    var srcdir = Components.classes["@mozilla.org/file/local;1"].
-                         createInstance(Components.interfaces.nsILocalFile);
-    var p = msiPathFromFileURL(doc.URL);
-#ifdef XP_WIN32
-    p = p.replace("\\","/","g");
-#endif
-    srcdir.initWithPath(p);
-    srcdir = srcdir.parent;
-    
     var entries = srcdir.directoryEntries;
     var isXml = /\.xml$/i;
     while(entries.hasMoreElements())

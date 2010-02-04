@@ -466,11 +466,8 @@ var fragObserver =
                     classes["@mozilla.org/xmlextras/xmlhttprequest;1"].
                     createInstance();
       request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
-      var path = tree.getAttribute("ref") + s;
-#ifdef XP_WIN32
-      path = path.replace("\\","/","g");
-#endif
-      request.open("GET", path, false);
+      var urlstring = tree.getAttribute("ref") + s;
+      request.open("GET", urlstring, false);
       request.send(null);
                           
       var xmlDoc = request.responseXML; 
@@ -531,14 +528,8 @@ var fragObserver =
     var tree = evt.currentTarget;
     var bo = tree.treeBoxObject;
     var namecol = tree.columns.getNamedColumn('Name');
-    var saveref = tree.getAttribute("ref");
-    var pathbase = saveref + "/";
-#ifdef XP_WIN32
-    pathbase = pathbase.substr(8); // omit "path:///" at the start
-#else
-    pathbase = pathbase.substr(7); // omit "path:///" at the start
-#endif
-    var path="";
+    var saveurlstring = tree.getAttribute("ref");
+    varp path;
     var row = new Object;
     var column = new Object;
     var part = new Object;
