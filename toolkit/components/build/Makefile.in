@@ -64,8 +64,6 @@ REQUIRES = 	\
 		intl \
 		docshell \
 		autosub \
-		compute \
-		wrappers \
 		keymap \
 		editor \
 		appcomps \
@@ -87,6 +85,11 @@ REQUIRES = 	\
 		feeds \
 		storage \
 		$(NULL)
+ifdef MSI_COMPUTING
+REQUIRES += 	\
+		compute \
+		wrappers \
+		$(NULL)
 
 ifdef ALERTS_SERVICE
 REQUIRES	+= alerts
@@ -102,12 +105,12 @@ LOCAL_INCLUDES = \
 	-I$(srcdir)/../typeaheadfind/src \
 	-I$(srcdir)/../url-classifier/src \
 	-I$(srcdir)/../feeds/src \
-	-I$(srcdir)/../Compute/src \
-	-I$(srcdir)/../Compute/Engines/MuPAD \
-	-I$(srcdir)/../Compute/Engines \
-	-I$(srcdir)/../Compute/public \
-    -I$(srcdir)/../Compute/computelib \
-	-I$(srcdir)/../Wrappers/src \
+#	-I$(srcdir)/../Compute/src \
+#	-I$(srcdir)/../Compute/Engines/MuPAD \
+#	-I$(srcdir)/../Compute/Engines \
+#	-I$(srcdir)/../Compute/public \
+#    -I$(srcdir)/../Compute/computelib \
+#	-I$(srcdir)/../Wrappers/src \
 	-I$(srcdir)/../autosub/src \
 	-I$(srcdir)/../keymap/src \
 	-I$(srcdir)/../arrowstate/src \
@@ -126,9 +129,9 @@ SHARED_LIBRARY_LIBS = \
 ifdef MOZ_MSI_PRINCE
 # SHARED_LIBRARY_LIBS += ../autocomplete/src/$(LIB_PREFIX)tkautocomplete.$(LIB_SUFFIX) 
 SHARED_LIBRARY_LIBS += \
-#	../autosub/src/$(LIB_PREFIX)tkautosub.$(LIB_SUFFIX) \
-	../Compute/src/$(LIB_PREFIX)compeng2.$(LIB_SUFFIX) \
-	../Wrappers/src/$(LIB_PREFIX)wrappers.$(LIB_SUFFIX) \
+	../autosub/src/$(LIB_PREFIX)tkautosub.$(LIB_SUFFIX) \
+#	../Compute/src/$(LIB_PREFIX)simplecomputeengine.$(LIB_SUFFIX) \
+#	../Wrappers/src/$(LIB_PREFIX)wrappers.$(LIB_SUFFIX) \
 	../keymap/src/$(LIB_PREFIX)keymap.$(LIB_SUFFIX) \
 	../arrowstate/src/$(LIB_PREFIX)arrowstate.$(LIB_SUFFIX) \
 	$(DIST)/lib/$(LIB_PREFIX)computelib_s.$(LIB_SUFFIX) \
@@ -143,11 +146,7 @@ SHARED_LIBRARY_LIBS += 	$(srcdir)/../Compute/MuPAD/win32/$(LIB_PREFIX)mupkernel.
 endif
 
 ifeq ($(OS_ARCH),Linux)
-SHARED_LIBRARY_LIBS +=  $(srcdir)/../Compute/MuPAD/linux/$(LIB_PREFIX)mupudskernel.$(LIB_SUFFIX) \
-	$(srcdir)/../Compute/MuPAD/linux/$(LIB_PREFIX)libstream.$(LIB_SUFFIX) \
-	$(srcdir)/../Compute/MuPAD/linux/$(LIB_PREFIX)mut.$(LIB_SUFFIX) \
-	$(srcdir)/../Compute/MuPAD/linux/$(LIB_PREFIX)expat.$(LIB_SUFFIX) \
-	$(srcdir)/../Compute/MuPAD/linux/$(LIB_PREFIX)z.$(LIB_SUFFIX)
+#SHARED_LIBRARY_LIBS += 	$(srcdir)/../Compute/MuPAD/linux/$(LIB_PREFIX)mupudskernel.$(LIB_SUFFIX) 
 endif
 
 

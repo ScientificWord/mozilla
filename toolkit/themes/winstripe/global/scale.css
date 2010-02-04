@@ -29,13 +29,13 @@
   -moz-border-left-colors: ThreeDLightShadow ThreeDHighlight;
   background-color: -moz-Dialog;
   min-width: 30px;
-  min-height: 15px;
+  min-height: 10px;
 }
 
 .scale-thumb[orient="vertical"] {
   -moz-appearance: scalethumb-vertical;
-  min-width: 15px;
-  min-height: 30px;
+  min-width: 10px;
+  min-height: 15px;
 }
 
 .scale-thumb[disabled="true"] {

@@ -3146,7 +3146,7 @@ function zipDirectory(aZipWriter, currentpath, sourceDirectory)
   {
     f = e.getNext().QueryInterface(Components.interfaces.nsIFile);
     var leaf = f.leafName;
-    var path
+    var path;
     if (currentpath.length > 0) path = currentpath + "/" + leaf;
     else path = leaf;
     if (f.isDirectory())
@@ -3159,6 +3159,48 @@ function zipDirectory(aZipWriter, currentpath, sourceDirectory)
       if (aZipWriter.hasEntry(path))
         aZipWriter.removeEntry(path,true);
       aZipWriter.addEntryFile(path, 0, f, false);
+    }
+  }
+}
+
+// copyDirectory is called recursively. sourceDirectory is the directory
+// we are copying, and destDirectory is the directory we are copyint to.
+                         
+function copyDirectory(destDirectory, sourceDirectory)
+{
+  var e;
+  var f;
+  var dest = destDirectory.clone();
+  var dest2;
+  if (!dest.exists())
+  {
+    dest.create(1,0755);
+  }
+  e = sourceDirectory.directoryEntries;
+  while (e.hasMoreElements())
+  {                       
+    f = e.getNext().QueryInterface(Components.interfaces.nsIFile);
+    var leaf;
+    if (f) {
+      leaf = f.leafName;
+      dest2 = dest.clone();
+      dest2.append(leaf);
+  //    var path;
+      if (f.isDirectory())
+      {
+  // skip temp directory
+        if (leaf != 'temp')
+        {       
+          if (!dest2.exists()) {
+            dest2.create(1, 0755);
+          }
+          copyDirectory(dest2.clone(), f.clone());
+        }
+      }
+      else
+      {
+        f.copyTo(destDirectory, null);
+      }
     }
   }
 }
@@ -3193,14 +3235,16 @@ function msiFindOriginalDocname(docUrlString)
 
 
 //  createWorkingDirectory does the following: 
-//  if the file parameter is something like foo.sci, it knows that the file is a jar file.
-//  It creates a directory, foo_work, and unpacks the contents of foo.sci into the new directory.
-//  The return value is an nsILocalFile which is the main xhtml file in the .sci file, usually named
-//  main.xhtml.
+// It creates a directory, foo_work, and unpacks the contents of foo.sci into the new directory.
+// The return value is an nsILocalFile which is the main xhtml file in the .sci file, usually named
+// if the file parameter is something like foo.sci, it knows that the file is a jar file.
+// main.xhtml.
 //
-//  If the file parameter is not a zip file, then it creates the directory and 
-//  copies, e.g., foo.xhtml to foo_work/main.xhtml. It does not create any of the other subdirectories
-//  It returns the nsILocalFile for foo_work/main.xhtml.
+// If the file parameter is not a zip file, then it creates the directory and 
+// copies, e.g., foo.xhtml to foo_work/main.xhtml. If the directory containing the file looks like a .sci
+// directory (has the .sci extension, the file is called main.xhtml, or there are only one xhtml and zero 
+// or more xml files in the directory, plus other files with junk extensions (such as.bak)) then it
+// clones the drectory and its contents. It returns the nsILocalFile for foo_work/main.xhtml.
 //
 
 function createWorkingDirectory(documentfile)
@@ -3212,13 +3256,26 @@ function createWorkingDirectory(documentfile)
   var str;
   var savedLeafname;
   var skipBackup;
+  var regEx=/\.sci$/i;
+  var doc; // this will be the file (documentfile for zipped files or for files not in a .sci
+   //directory) or directory (for .sci directories), that we use to get the name of the working dir.
+  var isZipped = regEx.test(documentfile.path);
+  var isInSciDirectory = false;
+  if (!isZipped) isInSciDirectory = regEx.test(documentfile.parent.path);
+  if (isZipped) doc = documentfile.clone();
+  else if (isInSciDirectory) doc = documentfile.parent.clone();
+  else doc = documentfile.clone();
+  
+  
+  var zr;
+  if (isZipped) zr = Components.classes["@mozilla.org/libjar/zip-reader;1"]
+    .createInstance(Components.interfaces.nsIZipReader);
+
   try
   {
-    var zr = Components.classes["@mozilla.org/libjar/zip-reader;1"]
-                          .createInstance(Components.interfaces.nsIZipReader);
-    if (isShell(documentfile.path))
+    if (isShell(doc.path))
     {
-      // if we are opening a shell document, we create the working directory but skit the backup
+      // if we are opening a shell document, we create the working directory but skip the backup
       // file and change the document leaf name to "untitledxxx"
       dir =  msiDefaultNewDocDirectory();
       bakfilename = getUntitledName(dir);
@@ -3226,8 +3283,8 @@ function createWorkingDirectory(documentfile)
     }
     else
     { 
-      dir = documentfile.parent.clone();
-      bakfilename = documentfile.leafName;
+      dir = doc.parent.clone();
+      bakfilename = doc.leafName;
     }
     i = bakfilename.lastIndexOf(".");
     if (i > 0) 
@@ -3237,10 +3294,10 @@ function createWorkingDirectory(documentfile)
     }
     else
     {
+      savedLeafname = bakfilename;
       bakfilename += ".bak";
     }
     // first create a working directory for the extracted files
-    var dir;
     dir.append(savedLeafname+"_work");
     if (dir.exists())
     {
@@ -3273,24 +3330,37 @@ function createWorkingDirectory(documentfile)
       var bakfile = dir.clone();
       bakfile.append(bakfilename);
       if (bakfile.exists()) bakfile.remove(false);
-      documentfile.copyTo(dir,bakfilename);
+      if (doc.isDirectory())
+      {
+        var bakdir = doc.parent.clone();
+        bakdir.append(bakfilename);
+        bakdir.createUnique(1, 0755);
+        copyDirectory(bakdir,doc);
+      } else
+        documentfile.copyTo(dir, bakfilename);
       // now the file, no matter whether it is a zip file or not, is backed up.
     }
-    var fIsZip = true;
-    try {
-      zr.open(documentfile);
-    }
-    catch(e)
+    if (isZipped)
     {
-      fIsZip = false;
+      try {
+        zr.open(documentfile);
+      }
+      catch(e)
+      {
+        isZipped = false;
+      }
     }
-    if (fIsZip)  // if our file is a zip file, extract it to the directory dir
+    if (isZipped)  // if our file is a zip file, extract it to the directory dir
     {
       extractZipTree(zr, dir);
     }
-    else // not a zip file. Just copy it to the directory dir as main.xhtml
+    else if (isInSciDirectory)
     {
-      documentfile.copyTo(dir, "main.xhtml");
+      copyDirectory(dir, doc);
+    }
+    else
+    {
+      doc.copyTo(dir, "main.xhtml");
     }
   }
   catch( e) {
@@ -3354,15 +3424,13 @@ function msiDefaultNewDocDirectory()
   }  
   var dirkey;
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].getService(Components.interfaces.nsIProperties);
-#ifdef XP_WIN
-  dirkey = "Pers";
-#else
-#ifdef XP_MACOSX
-  dirkey = "UsrDocs";
-#else
-  dirkey = "Home";
-#endif
-#endif
+  var os = msiGetOS();
+  if (os==="win")
+    dirkey = "Pers";
+  else if (os=="osx")
+    dirkey = "UsrDocs";
+  else
+    dirkey = "Home";
   // if we can't find the one in the prefs, get the default
   docdir = dsprops.get(dirkey, Components.interfaces.nsILocalFile);
   if (!docdir.exists()) docdir.create(1,0755);
@@ -3463,13 +3531,10 @@ function msiRevertFile (aContinueEditing, documentfile, del) // an nsILocalFile
 
     var tempfile;
     var leafname;    
-    var path = documentfile.path;
-#ifdef XP_WIN32
-    path = path.replace("\\","/","g");
-#endif
-    path = msiFindOriginalDocname(path);
+    var url = msiFileURLFromFile(documentfile);
+    var docUrlString = msiFindOriginalDocname(url.spec);
     var leafregex = /.*\/([^\/\.]+)\.sci$/i;
-    var arr = leafregex.exec(path);
+    var arr = leafregex.exec(docUrlString);
     if (arr && arr.length >1) leafname = arr[1];
 
     var dir = documentfile.parent.clone();
@@ -3606,17 +3671,13 @@ function msiMakeUrlRelativeTo(inputUrl, baseUrl, editorElement)
 
 
   // Get just the file path part of the urls
-  // XXX Should we use GetCurrentEditor().documentCharacterSet for 2nd param ?
-  var basePath = IOService.newURI(baseUrl, msiGetEditor(editorElement).documentCharacterSet, null).path;
-  var urlPath = IOService.newURI(inputUrl, msiGetEditor(editorElement).documentCharacterSet, null).path;
+  var basePath = IOService.newURI(baseUrl, null, null).path;
+  var urlPath = IOService.newURI(inputUrl, null, null).path;
 
   // We only return "urlPath", so we can convert
   //  the entire basePath for case-insensitive comparisons
-//  var os = GetOS();
-  var doCaseInsensitive = true; //(baseScheme == "file" && os == msigWin);
-#ifdef XP_WIN
-  doCaseInsensitive = false;
-#endif
+  var os = msiGetOS();
+  var doCaseInsensitive = (os != "win");
   if (doCaseInsensitive)
     basePath = basePath.toLowerCase();
 
@@ -3859,7 +3920,7 @@ function GetFilename(urlspec)
   return filename ? filename : "";
 }
 
-function GetFilepath(urlspec)
+function GetFilepath(urlspec) // BBM: I believe this can be simplified
 {
   if (!urlspec || IsUrlAboutBlank(urlspec))
     return "";
@@ -3876,11 +3937,12 @@ function GetFilepath(urlspec)
     {
       var url = uri.QueryInterface(Components.interfaces.nsIURL);
       if (url)
-#ifdef XP_WIN32
-        filepath = decodeURIComponent(url.path.substr(1));
-#else
-        filepath = decodeURIComponent(url.path);
-#endif
+      {
+        if (msiGetOS()=="win")
+          filepath = decodeURIComponent(url.path.substr(1));
+        else
+           filepath = decodeURIComponent(url.path);
+      }
     }
   } catch (e) {}
 
@@ -4680,6 +4742,7 @@ var msiBaseMathNameList =
     var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
     ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
     var nameNodesList = this.namesDoc.getElementsByTagName("mathname");
+    // BBM: should we initialize this list??
     for (var ix = 0; ix < nameNodesList.length; ++ix)
     {
       var theId = nameNodesList[ix].getAttribute("id");
@@ -4806,7 +4869,7 @@ var msiBaseMathNameList =
     var result = Components.interfaces.msiIAutosub.STATE_INIT;
     for (var ix = aName.length - 1; ix >= 0; --ix)
     {
-      result = autosub.nextChar(aName.charAt(ix));
+      result = autosub.nextChar(true,aName.charAt(ix));
       if (result == Components.interfaces.msiIAutosub.STATE_FAIL)
         return false;
     }
@@ -5152,7 +5215,11 @@ var msiBaseMathUnitsList =
     {
       result = autosub.nextChar(unitStr.charAt(ix));
       if (result == Components.interfaces.msiIAutosub.STATE_FAIL)
-        return false;
+      {
+        result = autosub.nextChar(true,aName.charAt(ix));
+        if (result == Components.interfaces.msiIAutosub.STATE_FAIL)
+          return false;
+      }
     }
     return (result == Components.interfaces.msiIAutosub.STATE_SUCCESS);
   },
@@ -6817,25 +6884,15 @@ function msiKludgeLogNodeContents(aNode, keyArray, prefaceStr)
   dump(retStr);
 }
 
-function msiAuxDirFromDocPath(documentURI)
+function msiAuxDirFromDocPath(documentURIString)
 {
-  var spec = unescape(documentURI);
+  var spec = unescape(documentURIString);
   var i = spec.lastIndexOf(".");
   if (i > 0) spec = spec.substr(0,i);
   dump("spec is " + spec + "\n");
   spec = spec+"_files";
-  var dir = Components.classes["@mozilla.org/file/local;1"].
-    createInstance(Components.interfaces.nsILocalFile);
-  var url = Components.classes["@mozilla.org/network/simple-uri;1"].
-    createInstance(Components.interfaces.nsIURI);
-  url.spec = spec;
-  var path = unescape(url.path);
-  while (path.charAt(0)=="/".charAt(0)) path=path.substr(1);
-  // for Windows
-#ifdef XP_WIN32
-   path = path.replace("/","\\","g");
-#endif
-  dir.initWithPath(path);
+  var url = msiURIFromString(spec);
+  var dir = msiFileFromFileURL(url);
   if (!dir.exists()) dir.create(1, 0755);
   return dir.clone();
 }
@@ -6889,7 +6946,7 @@ function SS_Timer(delayMS, editor, editorElement) {
 
   var pbi = prefService.QueryInterface(Components.interfaces.nsIPrefBranch2);
 
-  var interval = prefService.getIntPref("swp.saveintervalminutes");
+  var interval = prefService.getIntPref("swp.saveintervalseconds");
   if (!interval || interval == 0) return;
   this.timer_ = Components.classes["@mozilla.org/timer;1"].createInstance(Components.interfaces.nsITimer);
 //  this.observerService_ = new G_ObserverServiceObserver(
@@ -6898,7 +6955,7 @@ function SS_Timer(delayMS, editor, editorElement) {
 
   // Ask the timer to use nsITimerCallback (.notify()) when ready
   // Interval is the time between saves in minutes
-  this.timer_.initWithCallback(this, interval*60*1000, 1);
+  this.timer_.initWithCallback(this, interval*1000, 1);
 }
 
 SS_Timer.prototype.callback_ = function()
@@ -7174,25 +7231,87 @@ function gotoFirstNonspaceInElement( editor, node )
     false);
 }
 
+// msiFileURLFromAbsolutePath
+// Takes an absolute path (the direction of the slashes is OS-dependent) and
+// produces a file URL
+
 function msiFileURLFromAbsolutePath( absPath )
 {
-#ifdef XP_WIN32
-  var path = absPath;
-  path = path.replace("\\","/","g");
-  var url = "file:///"+absPath;
-  url = url.replace("\\","/","g");
-#else
-  var url = "file://"+absPath;
-#endif
-  return url;
-}
+  try {
+    var file = Components.classes["@mozilla.org/file/local;1"].  
+                         createInstance(Components.interfaces.nsILocalFile);  
+    file.initWithPath( absPath );
+    return msiFileURLFromFile( file );
+  }
+  catch (e)
+  {
+    dump("//// error in msiFileURLFromAbsolutePath: "+e.message+"\n");
+  }
+}                       
 
-function msiPathFromFileURL( url )
+
+function msiFileURLFromFile( file )
 {
-  var dirpath = GetFilepath( url );
-  return dirpath
+  // file is nsIFile  
+  var ios = Components.classes["@mozilla.org/network/io-service;1"].  
+                      getService(Components.interfaces.nsIIOService);  
+  return ios.newFileURI(file);  
 }
 
+function msiURIFromString(str)
+{
+  var ios = Components.classes["@mozilla.org/network/io-service;1"].  
+                      getService(Components.interfaces.nsIIOService);  
+  return ios.newURI(str, null, null);  
+}
+  
+function msiFileURLStringFromFile( file )
+{
+  return  msiFileURLFromFile( file ).spec;
+}
+
+function msiFileFromFileURL(url)
+{
+  try {
+    return url.QueryInterface(Components.interfaces.nsIFileURL).file;
+  }
+  catch (e)
+  {
+    dump("Error in msiFileFromFileURL: url = "+url.spec+" "+e.message+"\n");
+  }
+}
+  
+function msiPathFromFileURL( url )     // redundant BBM: remove instances of this or of GetFilePath
+{
+  //return GetFilepath( url );
+  // or
+  return msiFileFromFileURL(url).path; 
+}
+
+
+function msiGetOS()
+{
+  var os;
+
+  switch(navigator.platform)
+  {
+  case 'Win32':
+   os = 'win';
+   break;
+  case 'MacPPC':
+  case 'MacIntel':
+   os = 'osx';
+   break;
+  case 'Linux i686':
+  case 'Linux i686 (x86_64)':
+   os = 'linux';
+   break;
+  default:
+   dump('Error: Unknown OS ' + navigator.platform);
+   os = "??";
+  }
+  return os;
+}
 
 // since the onkeypress event gets called *before* the value of a text box is updated,
 // we handle the updating here. This function takes a textbox element and an event and sets

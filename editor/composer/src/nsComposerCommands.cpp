@@ -56,6 +56,8 @@
 #include "nsICommandParams.h"
 #include "nsComponentManagerUtils.h"
 #include "nsCRT.h"
+#include "nsISelection.h"
+#include "nsISelectionController.h"
 #include "msiITagListManager.h"
 
 //prototype
@@ -654,7 +656,12 @@ nsTextTagUpdatingCommand::ToggleState(nsIEditor *aEditor, nsString & aTagName)
 
     aEditor->EndTransaction();
   }
-
+  
+  // The next few lines shouldn't be necessary -- BBM
+  nsCOMPtr<nsISelectionController>selCon;
+  aEditor->GetSelectionController(getter_AddRefs(selCon));
+  if (selCon)
+    selCon->RepaintSelection(nsISelectionController::SELECTION_NORMAL);
   return rv;
 }
 
@@ -717,7 +724,7 @@ nsStructTagUpdatingCommand::ToggleState(nsIEditor *aEditor, nsString & aTagName)
   return rv;
 }
 
-nsOtherTagUpdatingCommand::nsOtherTagUpdatingCommand(void)
+/* nsOtherTagUpdatingCommand::nsOtherTagUpdatingCommand(void)
 : nsBaseTagUpdatingCommand()
 {
 }
@@ -780,7 +787,7 @@ nsOtherTagUpdatingCommand::ToggleState(nsIEditor *aEditor, nsString & aTagName)
 
   return rv;
 }
-
+*/
 
 nsStyleUpdatingCommand::nsStyleUpdatingCommand(const char* aTagName)
 : nsBaseStateUpdatingCommand(aTagName)

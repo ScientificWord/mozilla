@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<tfmfonts>
+  <textfonts>
+    <font main="1" name="Palatino" package="mathpazo" description="Palatino font"/>
+  </textfonts>
+  <mathfonts>
+    <font name="Math Pazo" package="mathpazo" description="Palatino-like symbols"/>
+  </mathfonts>
+</tfmfonts>
+

@@ -54,7 +54,7 @@ ifeq (WINNT,$(OS_ARCH))
 DIRS = win32
 endif
 
-DIRS += pgo
+# DIRS += pgo
 
 include $(topsrcdir)/config/rules.mk
 
