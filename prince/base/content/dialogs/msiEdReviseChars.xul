@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/msiMathDlgStyle.css" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> 
+
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/msiEdReviseChars.dtd">
+
+<dialog id="insertCharsDlg" title="&windowTitle.label;"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        onload = "Startup()"
+        onfocus = "onFocus()"
+        buttons="accept,extra1,cancel,help"
+        ondialogaccept = "return onAccept();"
+        ondialogextra1="return Apply();"
+        ondialogcancel = "return onClose();"
+        persist="screenX screenY width height">
+
+  <!-- Methods common to all editor dialogs -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdReviseChars.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiButtonGroup.js"/>
+
+  <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
+  <broadcaster id="args" value=""/>
+
+  <groupbox orient="vertical" id="AccentAboveButtonGroup" oncommand="toggleSelection(this, event.target);" onfocus="radioGroupSetFocus(this,event.target);"
+            xmlns:mml="http://www.w3.org/1998/Math/MathML">
+    <caption label="&accentAbove.label;" accesskey="&accentAbove.accesskey;" />
+    <grid>
+      <columns><column/><column/><column/><column/><column/><column/><column/></columns>
+      <rows>
+        <row>
+          <msibutton group="AccentAboveButtonGroup" autoCheck="false" value="&#x0302;">^</msibutton>
+          <msibutton group="AccentAboveButtonGroup" autoCheck="false" value="&#x030c;">&#x02c7;</msibutton>
+          <msibutton group="AccentAboveButtonGroup" autoCheck="false" value="&#x0303;">~</msibutton>
+          <msibutton group="AccentAboveButtonGroup" autoCheck="false" value="&#x0301;">&#x00b4;</msibutton>
+          <msibutton group="AccentAboveButtonGroup" autoCheck="false" value="&#x0300;">&#x0060;</msibutton>
+          <msibutton group="AccentAboveButtonGroup" autoCheck="false" value="&#x0306;">&#x02d8;</msibutton>
+          <msibutton group="AccentAboveButtonGroup" autoCheck="false" value="&#x0305;">&#x00af;</msibutton>
+        </row>
+        <row>
+          <msibutton group="AccentAboveButtonGroup" autoCheck="false" value="&#x030b;">&#x02dd;</msibutton>
+          <msibutton group="AccentAboveButtonGroup" autoCheck="false" value="&#x030a;">&#x02da;</msibutton>
+          <msibutton group="AccentAboveButtonGroup" autoCheck="false" value="&#x0307;">&#x02d9;</msibutton>
+          <msibutton group="AccentAboveButtonGroup" autoCheck="false" value="&#x0308;">&#x00a8;</msibutton>
+          <msibutton group="AccentAboveButtonGroup" autoCheck="false" value="&#x20db;">
+            <description>
+              <mml:math display="inline">
+                <mml:mrow>
+                  <mml:mover accent="true">
+                    <mml:mrow class="phantomBox">
+                      <mml:mphantom>
+                        <mml:mi>X</mml:mi>
+                      </mml:mphantom>
+                    </mml:mrow>
+                    <mml:mo stretchy="false">&#x20db;</mml:mo>
+                  </mml:mover>
+                </mml:mrow>
+              </mml:math>
+            </description>
+          </msibutton>
+          <msibutton group="AccentAboveButtonGroup" autoCheck="false" value="&#x20dc;">
+            <description>
+              <mml:math display="inline">
+                <mml:mrow>
+                  <mml:mover accent="true">
+                    <mml:mrow class="phantomBox">
+                      <mml:mphantom>
+                        <mml:mi>X</mml:mi>
+                      </mml:mphantom>
+                    </mml:mrow>
+                    <mml:mo stretchy="false">&#x20dc;</mml:mo>
+                  </mml:mover>
+                </mml:mrow>
+              </mml:math>
+            </description>
+          </msibutton>
+          <msibutton group="AccentAboveButtonGroup" autoCheck="false" value="&#x20d7;">
+            <description>
+              <mml:math display="inline">
+                <mml:mrow>
+                  <mml:mover accent="true">
+                    <mml:mrow class="phantomBox">
+                      <mml:mphantom>
+                        <mml:mi>X</mml:mi>
+                      </mml:mphantom>
+                    </mml:mrow>
+                    <mml:mo stretchy="false">&#x20d7;</mml:mo>
+                  </mml:mover>
+                </mml:mrow>
+              </mml:math>
+            </description>
+          </msibutton>
+        </row>
+      </rows>
+    </grid>
+  </groupbox>
+  <separator />
+  <hbox>
+    <groupbox orient="horizontal" id="AccentBelowButtonGroup" oncommand="toggleSelection(this, event.target);" onfocus="radioGroupSetFocus(this,event.target);">
+      <caption label="&accentBelow.label;" accesskey="&accentBelow.accesskey;" />
+      <msibutton group="AccentBelowButtonGroup" autoCheck="false" value="&#x0327;">&#x00b8;</msibutton>
+      <msibutton group="AccentBelowButtonGroup" autoCheck="false" value="&#x0328;">&#x02db;</msibutton>
+      <msibutton group="AccentBelowButtonGroup" autoCheck="false" value="&#x0323;">&#x02d3;</msibutton>
+      <msibutton group="AccentBelowButtonGroup" autoCheck="false" value="&#x0332;">&#x005f;</msibutton>
+    </groupbox>
+    <checkbox id="NegatedCheckbox" label="&negateCheck.label;" accesskey="&negateCheck.accesskey;" />
+  </hbox>
+  <separator class="groove"/>
+</dialog>
