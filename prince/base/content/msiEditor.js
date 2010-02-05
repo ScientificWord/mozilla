@@ -3504,7 +3504,7 @@ function msiSetDisplayMode(editorElement, mode)
         if (pdffile.exists())
         {
           dump("Displaying PDF file\n");
-          document.getElementById("preview-frame").loadURI(msiFileURLFromAbsolutePath(pdffile.path));
+          document.getElementById("preview-frame").loadURI(msiFileURLStringFromFile(pdffile));
         }
         else
         { 
