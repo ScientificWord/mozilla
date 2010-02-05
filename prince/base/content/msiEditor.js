@@ -1717,7 +1717,7 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
 function doRevert(aContinueEditing, editorElement, del)
 {
   var urlstring = msiGetEditorURL(editorElement);
-  var url = msiUIRFromString(urlstring);
+  var url = msiURIFromString(urlstring);
   var documentfile = msiFileFromFileURL(url);
   msiRevertFile( aContinueEditing, documentfile, del );
 }
