@@ -679,7 +679,7 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
 }
 
 
-function printPDFFile(infilePath)
+function printPDFFile(infile)
 {
   // the following requires that the printpdf batch file (or a hard link to it) be in xpi-stage/prince/TeX/bin/printpdf.cmd 
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
@@ -690,7 +690,7 @@ function printPDFFile(infilePath)
   {
     var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
     theProcess.init(exefile);
-    var args = [infilePath];
+    var args = [infile.path];
     theProcess.run(true, args, args.length);
   } 
   catch (ex) {
@@ -784,12 +784,12 @@ function printTeX( pdftex, preview )
     {
       if (preview)
       {
-        document.getElementById("preview-frame").loadURI(msiFileURLFromAbsolutePath(dvipdffile.target));
+        document.getElementById("preview-frame").loadURI(msiFileURLStringFromFile(dvipdffile));
         // Switch to the preview pane (third in the deck)
         goDoCommand("cmd_PreviewMode"); 
       } 
       else
-        printPDFFile(dvipdffile.target);
+        printPDFFile(dvipdffile);
     }
   }
   catch(e) {
