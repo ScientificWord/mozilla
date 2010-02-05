@@ -12,6 +12,7 @@ var gBodyElement;
 //var customMathColor;
 
 var data;
+var bStartUpWithCustomControls = false;
 
 // dialog initialization code
 function Startup()
@@ -48,7 +49,8 @@ function InitDialog()
   if (!data.spaceType || !data.spaceType.length)
     theSpaceType = "normalSpace";
   document.getElementById("spacesRadioGroup").value = theSpaceType;
-
+  if (document.getElementById("customControls").getAttribute("collapsed") != "true")
+    bStartUpWithCustomControls = true;
   setCustomControls();
   checkEnableControls();
 }
@@ -176,11 +178,21 @@ function setCustomControls()
 var typesetControlGroup = ["typesetRadioGroup", "typesetDiscardAtLineEnd", "typesetAlways"];
 //var fillWithControlGroup = [
 
+function checkShowCustomControls()
+{
+  if (bStartUpWithCustomControls)
+  {
+    bStartUpWithCustomControls = false;
+    return true;
+  }
+  return (data.spaceType == "customSpace" && data.customSpaceData && (data.customSpaceData != null));
+}
+
 function checkEnableControls()
 {
   data.spaceType = document.getElementById("spacesRadioGroup").value;
   var customControlGroup = document.getElementById("customControls");
-  if (data.spaceType == "customSpace" && data.customSpaceData && (data.customSpaceData != null))
+  if (checkShowCustomControls())
   {
     if (customControlGroup.hasAttribute("collapsed"))
     {

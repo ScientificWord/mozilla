@@ -75,7 +75,7 @@
         </radiogroup>
       </groupbox>
     </hbox>
-    <hbox id="customControls" collapsed="true">
+    <hbox id="customControls" collapsed="true" persist="collapsed">
       <vbox>
         <hbox id="customSizeControlBlock">
           <groupbox id="sizeGroupbox" orient="horizontal">
