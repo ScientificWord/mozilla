@@ -87,7 +87,7 @@ REQUIRES = 	\
 		feeds \
 		storage \
 		$(NULL)
-endif
+
 ifdef ALERTS_SERVICE
 REQUIRES	+= alerts
 endif
