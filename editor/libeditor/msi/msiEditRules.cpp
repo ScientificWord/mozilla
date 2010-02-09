@@ -10,10 +10,14 @@
 #include "msiISimpleComputeEngine.h"
 #include "msiEditingAtoms.h"
 #include "nsIDOMText.h"
+#include "nsIDocumentEncoder.h"
+#include "nsIDOM3Node.h"
 
 
 
 void DebExamineNode(nsIDOMNode * aNode);
+PRInt32 FindCursorIndex(nsIEditor* editor, nsCOMPtr<nsIDOMNode> node, nsCOMPtr<nsIDOMNode> caretNode, PRInt32 caretOffset, bool& done);
+
 
 
 
@@ -149,6 +153,8 @@ void DebDisplaySelection(const char* str, nsISelection *aSelection, msiEditor* e
 
 }
 
+
+
 nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection, 
                                  nsIEditor::EDirection aAction, 
                                  PRBool *aCancel,
@@ -173,6 +179,7 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
 
   mMSIEditor->GetMathParent(startNode, mathNode);
   mathElement = do_QueryInterface(mathNode);
+
   if (!mathElement) return NS_ERROR_FAILURE;
 
   DebDisplaySelection("Initial", aSelection, mMSIEditor);
@@ -316,34 +323,10 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
   
    
   mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
+  res = mHTMLEditor->GetEndNodeAndOffset(aSelection, address_of(endNode), &endOffset);
 
-  DebDisplaySelection("Pre-mark insertion", aSelection, mMSIEditor);
-
-
-  nsCOMPtr<nsIDOMElement> leafElement;
-  PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
-
-  res = msiUtils::CreateMathMLLeafElement(mMSIEditor, 
-                                          NS_LITERAL_STRING("@@CURSOR@@"), 
-                                          msiIMathMLEditingBC::MATHML_MTEXT,
-                                          0,
-                                          flags, 
-                                          leafElement);
-
-  if (NS_SUCCEEDED(res) && leafElement){
-      nsCOMPtr<nsIDOMDocument> domDoc;
-      
-      mMSIEditor->GetDocument(getter_AddRefs(domDoc));
-      NS_ASSERTION(domDoc, "Editor GetDocument return Null DOMDocument!");
-      
-      nsCOMPtr<nsIDOMNode> parent;
-	  nsCOMPtr<nsIDOMNode> resultNode;
-      res = endNode->GetParentNode(getter_AddRefs(parent));
-      res = parent -> AppendChild(leafElement, getter_AddRefs(resultNode));      
-  }    
-      
-
-
+  bool b = false;
+  int i = FindCursorIndex(mMSIEditor, mathNode, endNode, endOffset, b);
   nsCOMPtr<nsIDOMSerializer> ds = do_CreateInstance(NS_XMLSERIALIZER_CONTRACTID);
   NS_ENSURE_STATE(ds);
 
@@ -376,6 +359,50 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
   *aHandled = PR_TRUE;
 
   return res;
+}
+
+
+
+PRInt32 FindCursorIndex(nsIEditor* editor, nsCOMPtr<nsIDOMNode> node, nsCOMPtr<nsIDOMNode> caretNode, PRInt32 caretOffset, bool& done)
+{
+  if (msiUtils::IsMleaf(editor, node, true)){
+      if (caretNode == node){
+	      done = true;
+	      return caretOffset;
+	  } else { 
+          nsString str;
+          nsCOMPtr<nsIDOM3Node> m;
+          m = do_QueryInterface(node);
+          m->GetTextContent(str);
+	      return str.Length();
+	}
+  }	else {
+
+      nsCOMPtr<nsIDOMNodeList> children;
+	  PRUint32 number;
+	  nsCOMPtr<nsIDOMNode> child;
+
+      node->GetChildNodes(getter_AddRefs(children));
+	  msiUtils::GetNumberofChildren(node, number);
+	  
+	  int lastChildIndex = number;
+
+	  if (node == caretNode){
+	     lastChildIndex = caretOffset;
+	  }
+
+	  int count = 0;
+
+	  for (int i = 0; i < lastChildIndex; ++i){
+	    msiUtils::GetChildNode(node, i, child);
+		count += FindCursorIndex(editor, child, caretNode, caretOffset, done);
+		if (done)
+		  break;
+	  }
+	  return count;
+
+  }
+      
 }
 
 
