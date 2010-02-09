@@ -73,7 +73,7 @@ function initializeFontFamilyList(force)
     var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
     theProcess.init(exefile);
     dump("TexBinDir is "+texbindir+"\n");
-    var args =[texbindir,listfile.parent.path];
+    var args =[listfile.parent.path, texbindir];
     theProcess.run(true, args, args.length);
   } 
   catch (ex) 
@@ -86,10 +86,10 @@ function initializeFontFamilyList(force)
     dump("Failed to create bigfontlist.txt\n");
     return;
   }
-  var path = msiFileURLFromAbsolutePath( listfile.target )
+  var uri = msiFileURLFromAbsolutePath( listfile.path )
   var myXMLHTTPRequest = new XMLHttpRequest();
   myXMLHTTPRequest.overrideMimeType("text/plain");
-  myXMLHTTPRequest.open("GET", path, false);
+  myXMLHTTPRequest.open("GET", uri.spec, false);
   myXMLHTTPRequest.send(null);
   var str = myXMLHTTPRequest.responseText;
   var lines = str.split(/[\n\r]*[a-z]:[^:]*:/i);

@@ -45,3 +45,17 @@ description.MSISample > mml|* mml|*{
 description.MSISample  mml|*[tempinput="true"] {
   color: green;
 }
+
+#AccentAboveButtonGroup msibutton[group] {
+  font-size: 200%;
+  min-width: 1.5em;
+  max-height: 2em;
+  text-align: center;
+}
+
+#AccentBelowButtonGroup msibutton[group] {
+  font-size: 200%;
+  min-width: 1.5em;
+  max-height: 2em;
+  text-align: center;
+}

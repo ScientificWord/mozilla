@@ -529,7 +529,7 @@ var fragObserver =
     var bo = tree.treeBoxObject;
     var namecol = tree.columns.getNamedColumn('Name');
     var saveurlstring = tree.getAttribute("ref");
-    varp path;
+    var path;
     var row = new Object;
     var column = new Object;
     var part = new Object;
