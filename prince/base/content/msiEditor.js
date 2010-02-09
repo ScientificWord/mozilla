@@ -1717,7 +1717,7 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
 function doRevert(aContinueEditing, editorElement, del)
 {
   var urlstring = msiGetEditorURL(editorElement);
-  var url = msiUIRFromString(urlstring);
+  var url = msiURIFromString(urlstring);
   var documentfile = msiFileFromFileURL(url);
   msiRevertFile( aContinueEditing, documentfile, del );
 }
@@ -3504,7 +3504,7 @@ function msiSetDisplayMode(editorElement, mode)
         if (pdffile.exists())
         {
           dump("Displaying PDF file\n");
-          document.getElementById("preview-frame").loadURI(msiFileURLFromAbsolutePath(pdffile.path));
+          document.getElementById("preview-frame").loadURI(msiFileURLStringFromFile(pdffile));
         }
         else
         { 
@@ -5012,10 +5012,11 @@ msiCharPropertiesObjectData.prototype =
     this.setEditorElement(editorElement);
     this.mNode = aNode;
     if (anOffset > 0)
-      this.mOffset = anOffset - 1;
+      this.mOffset = msiNavigationUtils.findSingleCharStart(aNode.textContent, anOffset);
     else
       this.mOffset = 0;
-    this.mText = aNode.textContent.substr(this.mOffset, 1);
+    this.mText = aNode.textContent.substring(this.mOffset, anOffset);
+    this.mLength = this.mText.length;
     this.examineText();
     this.setTopNode();
   },
@@ -5096,6 +5097,11 @@ msiCharPropertiesObjectData.prototype =
     return this.mLength;
   },
 
+  getText : function()
+  {
+    return this.mText;
+  },
+
   examineText : function()
   {
     var objStr;
@@ -5128,7 +5134,8 @@ msiCharPropertiesObjectData.prototype =
           break;
         }
       }
-      else if (this.mText.length == 1)
+//      else if (this.mText.length == 1)
+      else if (msiNavigationUtils.isSingleCharacter(this.mText))
       {
 //        objStr = GetString("Character");
         objStr = "Character";
