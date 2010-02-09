@@ -350,11 +350,13 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
   engine->Perform(inp, 152, &result); // Cleanup function
   printf("\nBack from cleanup: %ls\n", result);
 
+  nsString resString(result);
+
   mHTMLEditor->DeleteNode(mathElement);
 
   DebDisplaySelection("Pre-result insertion", aSelection, mMSIEditor);
   
-  mMSIEditor -> InsertHTML(nsString(result, wcslen(result)));
+  mMSIEditor -> InsertHTML(nsString(result, resString.Length()));
   // Need to place cursor.
   *aHandled = PR_TRUE;
 
