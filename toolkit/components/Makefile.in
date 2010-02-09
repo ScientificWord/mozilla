@@ -99,17 +99,13 @@ ifdef MOZ_XUL
 DIRS += \
 	autocomplete \
 	autosub \
+	Compute \
+	Wrappers \
 	keymap \
 	scriptrunner \
 	arrowstate \
 	satchel \
 	$(NULL)
-ifdef MSI_COMPUTING
-DIRS += \
-	Compute \
-	Wrappers \
-	$(NULL)
-endif
 endif # MOZ_XUL
 
 ifdef MOZ_SUITE
