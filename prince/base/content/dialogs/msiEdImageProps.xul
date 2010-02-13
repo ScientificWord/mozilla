@@ -63,7 +63,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdImageProps.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEdImageOverlay.js"/>
+  <!--script type="application/x-javascript" src="chrome://prince/content/msiEdImageOverlay.js"/ -->
   <script type="application/x-javascript" src="chrome://prince/content/msiFrameOverlay.js" />
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
  
@@ -108,7 +108,7 @@
           <msibutton id="ChooseFile"  tabindex="3"/>
         </hbox>
         <spacer class="spacer"/>
-        <vbox id = "msiFrameSize"/>
+        <vbox id="msiFrameSize"/>
       </vbox>
       <vbox id="msiPlacement"/>
       <vbox id="msiFrame"/>
