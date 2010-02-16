@@ -46,8 +46,23 @@ SHARED_LIBRARY_LIBS += \
 	$(DIST)/lib/$(LIB_PREFIX)enginelib_s.$(LIB_SUFFIX) \
 	$(DIST)/lib/$(LIB_PREFIX)libtci_s.$(LIB_SUFFIX) \
 	$(DIST)/lib/$(LIB_PREFIX)mupwrapperlib_s.$(LIB_SUFFIX) \
+	$(NULL)
+
+ifeq ($(OS_ARCH),WINNT)
+SHARED_LIBRARY_LIBS += \
 	$(srcdir)/../../Compute/MuPAD/win32/$(LIB_PREFIX)mupkernel.$(LIB_SUFFIX) \
 	$(NULL)
+endif
+ifeq ($(OS_ARCH),Linux)
+SHARED_LIBRARY_LIBS += \
+	$(srcdir)/../../Compute/MuPAD/linux/$(LIB_PREFIX)mupudskernel.$(LIB_SUFFIX) \
+	$(NULL)
+endif
+ifeq ($(OS_ARCH),Darwin)
+SHARED_LIBRARY_LIBS += \
+	$(srcdir)/../../Compute/MuPAD/Darwin/$(LIB_PREFIX)mupudskernel.$(LIB_SUFFIX) \
+	$(NULL)
+endif
 
 include $(topsrcdir)/config/rules.mk
 
