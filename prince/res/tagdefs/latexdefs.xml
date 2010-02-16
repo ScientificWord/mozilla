@@ -451,5 +451,14 @@
         </tag>
 			</tags>
 		</tagclass>
+		<tagclass>
+			<tagclassname>othertag</tagclassname>
+			<tags>
+				<tag nm="object"><description>Object</description>
+        </tag>
+        <tag nm="msiframe"><description>Frame</description>y
+        </tag>
+			</tags>
+		</tagclass>
 	</tagclasses>
 </tagproperties>
