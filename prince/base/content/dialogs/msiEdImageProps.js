@@ -43,7 +43,7 @@
 // var gDialog;
 var globalElement;
 Components.utils.import("resource://app/modules/unitHandler.jsm");
-var imageUnitHandler = new UnitHandler();
+//var imageUnitHandler = new UnitHandler();
 var frameTabDlg = new Object();
 
 var gConstrainWidth  = 0;
@@ -91,10 +91,6 @@ function Startup()
   gDialog.srcInput          = document.getElementById( "srcInput" );
   gDialog.relativeURL       = document.getElementById( "makeRelativeCheckbox" ).checked;
   gDialog.altTextInput      = document.getElementById( "altTextInput" );
-  gDialog.actual            = document.getElementById( "actual" );
-  gDialog.iconic            = document.getElementById( "iconic" );
-  gDialog.custom            = document.getElementById( "custom" );
-  gDialog.constrainCheckbox = document.getElementById( "constrainCheckbox" );
  // frame and placement tabs
  // labeling tab
   gDialog.ImageHolder       = document.getElementById( "preview-image-holder" );
@@ -182,7 +178,7 @@ function Startup()
   gOriginalSrc = gDialog.srcInput.value;
 
   // By default turn constrain on, but both width and height must be in pixels
-  gDialog.constrainCheckbox.checked = true;
+  frameTabDlg.constrainCheckbox.checked = true;
 
   window.mMSIDlgManager = new msiDialogConfigManager(window);
   window.mMSIDlgManager.configureDialog();
@@ -398,19 +394,19 @@ function LoadPreviewImage()
 function  SetSizeWidgets(width, height)
 {
   if (!(width || height) || (gActualWidth && gActualHeight && width == gActualWidth && height == gActualHeight))
-    gDialog.actual.radioGroup.selectedItem = gDialog.actual;
+    frameTabDlg.actual.radioGroup.selectedItem = frameTabDlg.actual;
 
-  if (!gDialog.actual.selected)
+  if (!frameTabDlg.actual.selected)
   {
-    gDialog.actual.radioGroup.selectedItem = gDialog.custom;
+    frameTabDlg.actual.radioGroup.selectedItem = frameTabDlg.custom;
 
     // Decide if user's sizes are in the same ratio as actual sizes
     if (gActualWidth && gActualHeight)
     {
       if (gActualWidth > gActualHeight)
-        gDialog.constrainCheckbox.checked = (Math.round(gActualHeight * width / gActualWidth) == height);
+        frameTabDlg.constrainCheckbox.checked = (Math.round(gActualHeight * width / gActualWidth) == height);
       else
-        gDialog.constrainCheckbox.checked = (Math.round(gActualWidth * height / gActualHeight) == width);
+        frameTabDlg.constrainCheckbox.checked = (Math.round(gActualWidth * height / gActualHeight) == width);
     }
   }
 }
@@ -459,6 +455,7 @@ function ValidateData()
 //   accessible to AdvancedEdit() [in msiEdDialogCommon.js]
 function ValidateImage()
 {
+  dump("in ValidateImage\n");
   var editorElement = msiGetParentEditorElementForDialog(window);
   var editor = msiGetEditor(editorElement);
 //  var editor = GetCurrentEditor();
@@ -493,15 +490,15 @@ function ValidateImage()
   var height = "";
 
   gValidateTab = gDialog.tabDimensions;
-  if (!gDialog.actual.selected)
+  if (!frameTabDlg.actual.selected)
   {
     // Get user values for width and height
-    width = msiValidateNumber(gDialog.widthInput, gDialog.widthUnitsMenulist, 1, gMaxPixels, 
+    width = msiValidateNumber(frameTabDlg.widthInput, gDialog.widthUnitsMenulist, 1, gMaxPixels, 
                            globalElement, "width", false, true);
     if (gValidationError)
       return false;
 
-    height = msiValidateNumber(gDialog.heightInput, gDialog.heightUnitsMenulist, 1, gMaxPixels, 
+    height = msiValidateNumber(frameTabDlg.heightInput, gDialog.heightUnitsMenulist, 1, gMaxPixels, 
                             globalElement, "height", false, true);
     if (gValidationError)
       return false;
@@ -706,10 +703,19 @@ function LoadPreviewImage()
 
 function SetActualSize()
 {
-  gDialog.widthInput.value = gActualWidth ? gActualWidth : "";
-  gDialog.heightInput.value = gActualHeight ? gActualHeight : "";
+  frameTabDlg.widthInput.value = gActualWidth ? gActualWidth : "";
+  frameTabDlg.heightInput.value = gActualHeight ? gActualHeight : "";
   frameTabDlg.unitList.selectedIndex = 0;
   doDimensionEnabling();
+}
+
+function setContentSize(width, height)  // width and height are the size of the image in pixels
+{
+  scaledWidth = Math.round(scale*width);
+  scaledHeight = Math.round(scale*height);
+  setStyleAttributeByID("content", "width", scaledWidth + "px");
+  setStyleAttributeByID("content", "height", scaledHeight + "px");
+  updateDiagram("margin");
 }
 
 function ChangeImageSrc()
@@ -727,7 +733,7 @@ function ChangeImageSrc()
 function doDimensionEnabling()
 {
   // Enabled only if "Custom" is selected
-  var enable = (gDialog.custom.selected);
+  var enable = (frameTabDlg.custom.selected);
 
   // BUG 74145: After input field is disabled,
   //   setting it enabled causes blinking caret to appear
@@ -745,7 +751,7 @@ function doDimensionEnabling()
 //         && ( gDialog.heightUnitsMenulist.selectedIndex == 0 );
 
   SetElementEnabledById( "constrainCheckbox", constrainEnable );
-  imageUnitHandler.setCurrentUnit(frameTabDlg.unitList.value);
+//  imageUnitHandler.setCurrentUnit(frameTabDlg.unitList.value);
 
 }
 
@@ -761,12 +767,12 @@ function ToggleConstrain()
 {
   // If just turned on, save the current width and height as basis for constrain ratio
   // Thus clicking on/off lets user say "Use these values as aspect ration"
-  if (gDialog.constrainCheckbox.checked && !gDialog.constrainCheckbox.disabled) ;
+  if (frameTabDlg.constrainCheckbox.checked && !frameTabDlg.constrainCheckbox.disabled) ;
 //     && (gDialog.widthUnitsMenulist.selectedIndex == 0)
 //     && (gDialog.heightUnitsMenulist.selectedIndex == 0))
   {
-    gConstrainWidth = Number(TrimString(gDialog.widthInput.value));
-    gConstrainHeight = Number(TrimString(gDialog.heightInput.value));
+    gConstrainWidth = Number(TrimString(frameTabDlg.widthInput.value));
+    gConstrainHeight = Number(TrimString(frameTabDlg.heightInput.value));
   }
 }
 
@@ -784,7 +790,7 @@ function constrainProportions( srcID, destID, event )
   forceInteger(srcID);
 
   if (gActualWidth && gActualHeight &&
-      (gDialog.constrainCheckbox.checked && !gDialog.constrainCheckbox.disabled))
+      (frameTabDlg.constrainCheckbox.checked && !frameTabDlg.constrainCheckbox.disabled))
   {
 //  // double-check that neither width nor height is in percent mode; bail if so!
 //  if ( (gDialog.widthUnitsMenulist.selectedIndex != 0)
@@ -808,7 +814,7 @@ function constrainProportions( srcID, destID, event )
   else
     destElement.value = Math.round( srcElement.value * gConstrainWidth / gConstrainHeight );
 */
-  setContentSize(imageUnitHandler.getValueAs(gDialog.widthInput.value,"px"), imageUnitHandler.getValueAs(gDialog.heightInput.value,"px"));
+  setContentSize(frameUnitHandler.getValueAs(frameTabDlg.widthInput.value,"px"), frameUnitHandler.getValueAs(gDialog.heightInput.value,"px"));
 }
 
 //function editImageMap()
@@ -844,13 +850,15 @@ function SwitchToValidatePanel()
 //   accessible to AdvancedEdit() [in msiEdDialogCommon.js]
 function ValidateImage()
 {
+  dump("in ValidateImage()\n");
   var editorElement = msiGetParentEditorElementForDialog(window);
   var editor = msiGetEditor(editorElement);
 //  var editor = GetCurrentEditor();
   if (!editor)
     return false;
 
-  gValidateTab = gDialog.tabLocation;
+//  gValidateTab = gDialog.tabLocation;
+  dump("1\n");
   if (!gDialog.srcInput.value)
   {
     AlertWithTitle(null, GetString("MissingImageError"));
@@ -861,6 +869,7 @@ function ValidateImage()
 
   //TODO: WE NEED TO DO SOME URL VALIDATION HERE, E.G.:
   // We must convert to "file:///" or "http://" format else image doesn't load!
+  dump("2\n");
   var src = TrimString(gDialog.srcInput.value);
   globalElement.setAttribute("src", src);
 
@@ -872,16 +881,17 @@ function ValidateImage()
 
   alt = ""; //TrimString(gDialog.altTextInput.value);
 
+  dump("3\n");
   globalElement.setAttribute("alt", alt);
 
   var width = "";
   var height = "";
 
-  gValidateTab = gDialog.tabDimensions;
-  if (!gDialog.actual.selected)
+//  gValidateTab = gDialog.tabDimensions;
+  if (!frameTabDlg.actual.selected)
   {
     // Get user values for width and height
-//    width = msiValidateNumber(gDialog.widthInput, gDialog.widthUnitsMenulist, 1, gMaxPixels, 
+//    width = msiValidateNumber(frameTabDlg.widthInput, gDialog.widthUnitsMenulist, 1, gMaxPixels, 
 //                           globalElement, "width", false, true);
 //    if (gValidationError)
 //      return false;
@@ -898,6 +908,7 @@ function ValidateImage()
     width = gActualWidth;
   if (!height)
     height = gActualHeight;
+  dump("4\n");
 
   // Remove existing width and height only if source changed
   //  and we couldn't obtain actual dimensions
@@ -913,40 +924,43 @@ function ValidateImage()
     editor.removeAttributeOrEquivalent(globalElement, "height", true);
 
   // spacing attributes
-  gValidateTab = gDialog.tabBorder;
-  msiValidateNumber(gDialog.imagelrInput, null, 0, gMaxPixels, 
-                 globalElement, "hspace", false, true, true);
-  if (gValidationError)
-    return false;
+//  gValidateTab = gDialog.tabBorder;
+  dump("5\n");
+//  msiValidateNumber(gDialog.imagelrInput, null, 0, gMaxPixels, 
+//                 globalElement, "hspace", false, true, true);
+//  if (gValidationError)
+//    return false;
 
-  msiValidateNumber(gDialog.imagetbInput, null, 0, gMaxPixels, 
-                 globalElement, "vspace", false, true);
-  if (gValidationError)
-    return false;
+//  msiValidateNumber(gDialog.imagetbInput, null, 0, gMaxPixels, 
+//                 globalElement, "vspace", false, true);
+//  if (gValidationError)
+//    return false;
 
   // note this is deprecated and should be converted to stylesheets
-  msiValidateNumber(gDialog.border, null, 0, gMaxPixels, 
-                 globalElement, "border", false, true);
-  if (gValidationError)
-    return false;
+//  msiValidateNumber(gDialog.border, null, 0, gMaxPixels, 
+//                 globalElement, "border", false, true);
+//  if (gValidationError)
+//    return false;
+  dump("6\n");
 
   // Default or setting "bottom" means don't set the attribute
   // Note that the attributes "left" and "right" are opposite
   //  of what we use in the UI, which describes where the TEXT wraps,
   //  not the image location (which is what the HTML describes)
-  switch ( gDialog.alignTypeSelect.value )
-  {
-    case "top":
-    case "middle":
-    case "right":
-    case "left":
-      globalElement.setAttribute( "align", gDialog.alignTypeSelect.value );
-      break;
-    default:
-      try {
-        editor.removeAttributeOrEquivalent(globalElement, "align", true);
-      } catch (e) {}
-  }
+//  switch ( gDialog.alignTypeSelect.value )
+//  {
+//    case "top":
+//    case "middle":
+//    case "right":
+//    case "left":
+//      globalElement.setAttribute( "align", gDialog.alignTypeSelect.value );
+//      break;
+//    default:
+//      try {
+//        editor.removeAttributeOrEquivalent(globalElement, "align", true);
+//      } catch (e) {}
+//  }
+  dump("7\n");
 
   return true;
 }
@@ -961,10 +975,22 @@ function onAccept()
 {
   // Use this now (default = false) so Advanced Edit button dialog doesn't trigger error message
   gDoAltTextError = true;
-
+  dump("**************************************************************************\n");
+  dump("in onAccept\n");
   if (ValidateData())
   {
-    if (window.arguments[0] != null)
+    if (imageElement && imageElement.localName) {
+      dump("<"+imageElement.localName);
+      var i;
+      for (i=0; i < imageElement.attributes[i].length; i++)
+      {
+        dump(imageElement.attributes[i]+"="+imageElement.getAttribute(imageElement.attributes[i])+" ");
+      }
+      dump("/>\n");
+    }
+    else dump("imageElement doesn't look like an element\n");
+      
+    if (window.arguments && window.arguments[0] != null)
     {
       SaveWindowLocation();
       return true;
@@ -972,12 +998,18 @@ function onAccept()
 
     var editorElement = msiGetParentEditorElementForDialog(window);
     var editor = msiGetEditor(editorElement);
-//    var editor = GetCurrentEditor();
 
-//    editor.beginTransaction();
-//
-//    try
-//    {
+    editor.beginTransaction();
+
+    try
+    {
+      var tagname="object";
+      imageElement = editor.createElementWithDefaults(tagname);
+      imageElement.setAttribute("data",gDialog.srcInput.value);
+      
+      var frameElement = editor.createElementWithDefaults("msiframe");
+      setFrameAttributes(frameElement);
+      frameElement.appendChild(imageElement);
 //      if (gRemoveImageMap)
 //      {
 //        globalElement.removeAttribute("usemap");
@@ -1033,18 +1065,23 @@ function onAccept()
 //        else
 //          globalElement.setAttribute("border", "0");
 //      }
-//
+//      dump("Making new image object\n");
 //      if (gInsertNewImage)
 //      {
 //        if (href) {
+//          dump("Inserting linkElement\n");
 //          var linkElement = editor.createElementWithDefaults("a");
 //          linkElement.setAttribute("href", href);
 //          linkElement.appendChild(imageElement);
 //          editor.insertElementAtSelection(linkElement, true);
 //        }
 //        else
-//          // 'true' means delete the selection before inserting
-//          editor.insertElementAtSelection(imageElement, true);
+//        {
+          // 'true' means delete the selection before inserting
+          dump("Inserting imageElement\n");
+          editor.insertElementAtSelection(frameElement, true);
+//        }
+          
 //      }
 //
 //      // Check to see if the link was to a heading
@@ -1073,17 +1110,18 @@ function onAccept()
 //        editor.insertNode(gImageMap, body, 0);
 //        editor.setShouldTxnSetSelection(true);
 //      }
-//    }
-//    catch (e)
-//    {
-//      dump(e);
-//    }
-//
-//    editor.endTransaction();
+    }
+    catch (e)
+    {
+      dump(e);
+    }
+
+    editor.endTransaction();
 
     SaveWindowLocation();
     return true;
   }
+  else dump("Validation FAILED\n");
 
   gDoAltTextError = false;
 

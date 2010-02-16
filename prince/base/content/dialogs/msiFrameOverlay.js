@@ -29,6 +29,10 @@ function initFrameTab(dg, element, newElement)
   dg.autoWidthCheck       = document.getElementById("autoWidth");
   dg.frameUnitMenulist    = document.getElementById("frameUnitMenulist");
   dg.unitList             = document.getElementById("unitList");
+  dg.actual               = document.getElementById( "actual" );
+  dg.iconic               = document.getElementById( "iconic" );
+  dg.custom               = document.getElementById( "custom" );
+  dg.constrainCheckbox    = document.getElementById( "constrainCheckbox" );
   dg.marginInput          = {left:   document.getElementById("marginLeftInput"),
                                     right: document.getElementById("marginRightInput"),
                                     top:   document.getElementById("marginTopInput"),
@@ -368,7 +372,7 @@ function removeStyleAttributeFamilyOnNode( node, att)
 
 function setStyleAttributeByID( id, att, value)
 {
-  setStyleAttributeOnNode(document.getElementById(id));
+  setStyleAttributeOnNode(document.getElementById(id), att, value);
 }
 
 function enableHere( )
@@ -498,7 +502,9 @@ function setFrameAttributes(frameNode)
   var arr = bgcolor.match(/background-color\s*:([a-zA-Z\ \,0-9\(\)]+)\s*;\s*/,"");
   setStyleAttributeOnNode(frameNode, "border-color", arr[1]);
   frameNode.setAttribute("border-color", arr[1]);  
-  setStyleAttributeOnNode(frameNode, "display", "block");
+  if (document.getElementById("inline").selected)
+    setStyleAttributeOnNode(frameNode, "display", "inline");
+  else setStyleAttributeOnNode(frameNode, "display", "blcck");
   var placeLocation="";
   var isHere = false;
   if (gFrameTab.placeForceHereCheck.checked)
