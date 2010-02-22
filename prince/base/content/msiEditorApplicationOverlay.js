@@ -58,9 +58,14 @@ function msiEditPageOrFrame()
 //   and we need a delay to let dialog close)
 function msiEditPage(url, launchWindow, delay)
 {
-  // Always strip off "view-source:" and #anchors
-  var urlstring = url.spec.replace(/^view-source:/, "").replace(/#.*/, "");
-
+  // Always strip off "view-source:" and #anchors; kludge: accept string url or nsIURI url.
+  var urlstring;
+  try {
+    urlstring = url.spec.replace(/^view-source:/, "").replace(/#.*/, "");
+  }
+  catch(e) {
+    urlstring = url.replace(/^view-source:/, "").replace(/#.*/, "");
+  }
   // User may not have supplied a window
   if (!launchWindow)
   {
