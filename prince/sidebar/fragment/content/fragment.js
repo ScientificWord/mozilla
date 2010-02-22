@@ -74,9 +74,7 @@ function descriptionOfItem( row )
   dump("showDescription: pathname = "+s+"\n");
   try 
   {
-    var request = Components.
-                  classes["@mozilla.org/xmlextras/xmlnequest;1"].
-                  createInstance();
+    var request = new XMLHttpRequest();
     request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
     request.open("GET", s, false);
     request.send(null);
