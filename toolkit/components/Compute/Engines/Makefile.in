@@ -52,11 +52,11 @@ REQUIRES = \
 
 LOCAL_INCLUDES = \
     -I$(srcdir)/../libtci	\
-	-I$(srcdir)/../Engines	\
-	-I$(srcdir)/../computelib \
-	-I$(srcdir)/../src \
-	-I$(srcdir)/../public \
-	$(NULL)
+    -I$(srcdir)/../Engines	\
+    -I$(srcdir)/../computelib \
+    -I$(srcdir)/../src \
+    -I$(srcdir)/../public \
+     $(NULL)
 
 # we don't want the shared lib, but we want to force the creation of a static lib.
 FORCE_STATIC_LIB = 1

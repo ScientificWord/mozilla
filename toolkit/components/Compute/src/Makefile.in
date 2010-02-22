@@ -57,9 +57,9 @@ LOCAL_INCLUDES = -I$(srcdir)/../computelib \
                  -I$(srcdir)/../libtci \
                  -I$(srcdir)/../Engines \
                  -I$(srcdir)/../public \
-				 -I$(srcdir)/../Engines/MuPAD \
-				 -I$(DIST)/include/wrappers \
-				 $(NULL)
+		 -I$(srcdir)/../Engines/MuPAD \
+		 -I$(DIST)/include/wrappers \
+		 $(NULL)
 
 EXTRA_DSO_LDOPTS += \
 	$(MOZ_UNICHARUTIL_LIBS) \
