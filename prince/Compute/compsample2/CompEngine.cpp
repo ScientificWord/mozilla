@@ -130,8 +130,7 @@ bool CompEngine::InitUnderlyingEngine(Grammar * install_dbase, nsILocalFile * ba
   
   const char *eng_name;
   const char *eRecord;
-  if (install_dbase->
-      GetRecordFromIDs("ENGINFO", ENG_wrapperDLL, 0, &eng_name, &eRecord))
+  if (install_dbase-> GetRecordFromIDs("ENGINFO", ENG_wrapperDLL, 0, &eng_name, &eRecord))
     strcpy(path, eRecord);
     // the path now is actually "@mackichan.com/mupadenginewrapper;1"
     // so we don't need to make it absolute
