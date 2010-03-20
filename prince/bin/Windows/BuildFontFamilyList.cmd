@@ -1,6 +1,6 @@
 fc-cache
-%1\otfinfo -a %windir%\fonts\*.?tf >%2\bigfontlist.txt
-
+cd %2 %3 %4
+otfinfo -a %windir%\fonts\*.?tf >%1\bigfontlist.txt
 
 
 
