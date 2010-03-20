@@ -103,11 +103,11 @@ LOCAL_INCLUDES = \
 	-I$(srcdir)/../url-classifier/src \
 	-I$(srcdir)/../feeds/src \
 	-I$(srcdir)/../Compute/src \
-	-I$(srcdir)/../Compute/Engines/MuPAD \
-	-I$(srcdir)/../Compute/Engines \
-	-I$(srcdir)/../Compute/public \
-    -I$(srcdir)/../Compute/computelib \
 	-I$(srcdir)/../Wrappers/src \
+	# -I$(srcdir)/../Compute/Engines/MuPAD \
+	# -I$(srcdir)/../Compute/Engines \
+	# -I$(srcdir)/../Compute/public \
+        # -I$(srcdir)/../Compute/computelib \
 	-I$(srcdir)/../autosub/src \
 	-I$(srcdir)/../keymap/src \
 	-I$(srcdir)/../arrowstate/src \
@@ -142,13 +142,6 @@ ifeq ($(OS_ARCH),WINNT)
 SHARED_LIBRARY_LIBS += 	$(srcdir)/../Compute/MuPAD/win32/$(LIB_PREFIX)mupkernel.$(LIB_SUFFIX)
 endif
 
-ifeq ($(OS_ARCH),Linux)
-SHARED_LIBRARY_LIBS +=  $(srcdir)/../Compute/MuPAD/linux/$(LIB_PREFIX)mupudskernel.$(LIB_SUFFIX) \
-	$(srcdir)/../Compute/MuPAD/linux/$(LIB_PREFIX)libstream.$(LIB_SUFFIX) \
-	$(srcdir)/../Compute/MuPAD/linux/$(LIB_PREFIX)mut.$(LIB_SUFFIX) \
-	$(srcdir)/../Compute/MuPAD/linux/$(LIB_PREFIX)expat.$(LIB_SUFFIX) \
-	$(srcdir)/../Compute/MuPAD/linux/$(LIB_PREFIX)z.$(LIB_SUFFIX)
-endif
 
 
 

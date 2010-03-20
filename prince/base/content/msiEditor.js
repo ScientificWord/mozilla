@@ -3102,7 +3102,8 @@ function msiFindRevisableObjectToLeft(aNode, anOffset, editorElement)
   if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
   {
     if ( msiNavigationUtils.isMathname(aNode.parentNode) || msiNavigationUtils.isUnit(aNode.parentNode) 
-         || msiNavigationUtils.isBigOperator(aNode.parentNode) || msiNavigationUtils.isSpacingObject(aNode.parentNode) )
+         || msiNavigationUtils.isBigOperator(aNode.parentNode) || msiNavigationUtils.isSpacingObject(aNode.parentNode)
+         || msiNavigationUtils.isMathMLLeafNode(aNode.parentNode) )
     {
       retObj = msiCreatePropertiesObjectDataFromNode(aNode.parentNode, editorElement);
 //      returnVal.theNode = aNode.parentNode;
@@ -3895,6 +3896,7 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
   var fixedName = null;
   var theMenuStr = null;
   var propsData = null;
+  var containingNodeData = null;
 
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
@@ -4086,6 +4088,12 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
           objStr = GetString("Operator");
           commandStr = "cmd_MSIreviseOperatorsCmd";
         }
+        else if (containingNodeData = msiNavigationUtils.getTopMathNodeAsAccentedCharacter(wrappedChildElement))
+        {
+          objStr = GetString("Character");
+          commandStr = "cmd_reviseChars";
+          coreElement = containingNodeData.mNode;
+        }
         else
         {
           objStr = GetString("Decoration");
@@ -4127,6 +4135,12 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
         {
           objStr = GetString("MathName");
           commandStr = "cmd_MSIreviseMathnameCmd";
+        }
+        else if (containingNodeData = msiNavigationUtils.getTopMathNodeAsAccentedCharacter(wrappedChildElement))
+        {
+          objStr = GetString("Character");
+          commandStr = "cmd_reviseChars";
+          coreElement = containingNodeData.mNode;
         }
       break;
 
@@ -5011,11 +5025,13 @@ msiCharPropertiesObjectData.prototype =
   {
     this.setEditorElement(editorElement);
     this.mNode = aNode;
-    if (anOffset > 0)
-      this.mOffset = msiNavigationUtils.findSingleCharStart(aNode.textContent, anOffset);
-    else
-      this.mOffset = 0;
-    this.mText = aNode.textContent.substring(this.mOffset, anOffset);
+    var aRange = msiNavigationUtils.getCharacterRange(aNode.textContent, anOffset);
+//    if (anOffset > 0)
+//      this.mOffset = msiNavigationUtils.findSingleCharStart(aNode.textContent, anOffset);
+//    else
+//      this.mOffset = 0;
+    this.mText = aNode.textContent.substring(aRange.mStart, aRange.mEnd);
+    this.mOffset = aRange.mStart;
     this.mLength = this.mText.length;
     this.examineText();
     this.setTopNode();
@@ -5097,6 +5113,11 @@ msiCharPropertiesObjectData.prototype =
     return this.mLength;
   },
 
+  getTextOffset : function()
+  {
+    return this.mOffset;
+  },
+
   getText : function()
   {
     return this.mText;
@@ -5138,7 +5159,7 @@ msiCharPropertiesObjectData.prototype =
       else if (msiNavigationUtils.isSingleCharacter(this.mText))
       {
 //        objStr = GetString("Character");
-        objStr = "Character";
+        objStr = GetString("Character");
         this.commandStr = "cmd_reviseChars";
       }
 
