@@ -227,7 +227,6 @@
 #endif    
 
 #ifdef MOZ_XUL
-#ifdef MSI_COMPUTING	
 #define XULENABLED_MODULES                   \
     MODULE(tkAutoCompleteModule)             \
     MODULE(satchel)                          \
@@ -236,16 +235,7 @@
     MODULE(keymapModule)                     \
     MODULE(arrowstateModule)                 \
     MODULE(simplecomputeengine2Module)		 \
-    MODULE(wrappers)
-#else
-#define XULENABLED_MODULES                   \
-    MODULE(tkAutoCompleteModule)             \
-    MODULE(satchel)                          \
-    MODULE(PKI)								 \
-    MODULE(tkautosubModule)                  \
-    MODULE(keymapModule)                     \
-    MODULE(arrowstateModule)                 
-#endif
+    MODULE(wrappers)						                                   
 #else
 #define XULENABLED_MODULES
 #endif

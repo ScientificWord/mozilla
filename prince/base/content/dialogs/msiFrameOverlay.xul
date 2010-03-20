@@ -205,7 +205,7 @@
   <vbox id = "msiFrameSize">
     <groupbox>
       <caption label="Size"/>
-      <vbox observes="hasNaturalSize">
+      <!-- vbox observes="hasNaturalSize" -->
         <radiogroup id="sizeRadio">
           <hbox flex="1">
             <vbox>
@@ -264,7 +264,7 @@
             </menupopup>
           </menulist>
         </hbox>
-      </vbox>
+      <!-- /vbox -->
     </groupbox>
   </vbox>
 
