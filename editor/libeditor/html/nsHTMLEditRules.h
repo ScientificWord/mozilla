@@ -271,7 +271,10 @@ protected:
   nsresult InsertStructure(nsIDOMNode *inNode, nsIDOMNode **outNode, 
                            const nsAString &aStructureType, nsIAtom * atomNamespace );
   nsresult ApplyStructure(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsAString *aStructureTag);
+
+  nsresult RemoveStructure(nsIDOMNode *node, const nsAString & notThisTag);
   nsresult ApplyEnvironment(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsAString *aEnvironmentTag);
+  nsresult RemoveEnvironment(nsCOMArray<nsIDOMNode>& arrayOfNodes);
   nsresult MakeBlockquote(nsCOMArray<nsIDOMNode>& arrayOfNodes);
   nsresult SplitAsNeeded(const nsAString *aTag, nsCOMPtr<nsIDOMNode> *inOutParent, PRInt32 *inOutOffset);
   nsresult AddTerminatingBR(nsIDOMNode *aBlock);
@@ -306,6 +309,8 @@ protected:
   nsresult MakeSureElemStartsOrEndsOnCR(nsIDOMNode *aNode, PRBool aStarts);
   nsresult AlignBlock(nsIDOMElement * aElement, const nsAString * aAlignType, PRBool aContentsOnly);
   nsresult RelativeChangeIndentationOfElementNode(nsIDOMNode *aNode, PRInt8 aRelativeChange);
+  nsresult GetStructNodeFromNode(nsIDOMNode *inNode, nsIDOMElement ** structNode, const nsAString& notThisTag);
+  
 
 // data members
 protected:
