@@ -40,7 +40,7 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-// var gDialog;
+var gDialog;
 var globalElement;
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 //var imageUnitHandler = new UnitHandler();
@@ -49,7 +49,7 @@ var frameTabDlg = new Object();
 var gConstrainWidth  = 0;
 var gConstrainHeight = 0;
 var imageElement;
-var gImageMap = 0;
+//var gImageMap = 0;
 //var gCanRemoveImageMap = false;
 //var gRemoveImageMap = false;
 //var gImageMapDisabled = false;
@@ -57,8 +57,8 @@ var gActualWidth = "";
 var gActualHeight = "";
 var gOriginalSrc = "";
 var gHaveDocumentUrl = false;
-var gTimerID;
-var gValidateTab;
+//var gTimerID;
+//var gValidateTab;
 
 // These must correspond to values in EditorDialog.css for each theme
 // (unfortunately, setting "style" attribute here doesn't work!)
@@ -70,7 +70,7 @@ var gPreviewImageHeight = 50;
 
 function Startup()
 {
-  debugger;
+//  debugger;
   var editorElement = msiGetParentEditorElementForDialog(window);
   var editor = msiGetEditor(editorElement);
   if (!editor)
@@ -101,11 +101,6 @@ function Startup()
   gDialog.herePlacementRadioGroup   = document.getElementById("herePlacementRadioGroup");
   gDialog.OkButton          = document.documentElement.getButton("accept");
   
-//  var imageSizeFieldList = [gFrameTab.widthInput, gFrameTab.heightInput];
-//  imageUnitHandler.setEditFieldList(imageSizeFieldList);
-//  imageUnitHandler.initCurrentUnit("px");
-//  initImageUnitList(document.getElementById(gFrameTab.unitMenuList));
-//  imageUnitHandler.setCurrentUnit("px");
   // Get a single selected image element
   var tagName = "object";
   imageElement = null;
@@ -136,7 +131,12 @@ function Startup()
       gInsertNewImage = false;
       gActualWidth  = imageElement.naturalWidth;
       gActualHeight = imageElement.naturalHeight;
-    }
+    } else if (imageElement.hasAttribute("data"))
+    {
+      gInsertNewImage = false;
+      gActualWidth  = imageElement.offsetWidth;
+      gActualHeight = imageElement.offsetHeight;
+     }
   }
   else
   {
@@ -178,7 +178,7 @@ function Startup()
   gOriginalSrc = gDialog.srcInput.value;
 
   // By default turn constrain on, but both width and height must be in pixels
-  frameTabDlg.constrainCheckbox.checked = true;
+//  frameTabDlg.constrainCheckbox.checked = true;
 
   window.mMSIDlgManager = new msiDialogConfigManager(window);
   window.mMSIDlgManager.configureDialog();
@@ -212,6 +212,7 @@ function stripPx(s, index, array) // strip "px" from a string if it is there
   else if (s=="medium") return 3;
   else if (s=="thick") return 5;
 }
+
 var gBorderdesc = ["border-top-width","border-right-width","border-bottom-width","border-left-width"];
 function fillInValue(element, index, array)
 {
@@ -378,7 +379,7 @@ function LoadPreviewImage()
   if (gDialog.ImageHolder.firstChild)
     gDialog.ImageHolder.removeChild(gDialog.ImageHolder.firstChild);
     
-  gDialog.PreviewImage = document.createElementNS("http://www.w3.org/1999/xhtml", "html:img");
+  gDialog.PreviewImage = document.createElementNS("http://www.w3.org/1999/xhtml", "html:object");
   if (gDialog.PreviewImage)
   {
     // set the src before appending to the document -- see bug 198435 for why
@@ -466,7 +467,7 @@ function ValidateImage()
   if (!gDialog.srcInput.value)
   {
     AlertWithTitle(null, GetString("MissingImageError"));
-    SwitchToValidatePanel();
+//    SwitchToValidatePanel();
     gDialog.srcInput.focus();
     return false;
   }
@@ -489,7 +490,7 @@ function ValidateImage()
   var width = "";
   var height = "";
 
-  gValidateTab = gDialog.tabDimensions;
+//  gValidateTab = gDialog.tabDimensions;
   if (!frameTabDlg.actual.selected)
   {
     // Get user values for width and height
@@ -563,6 +564,8 @@ function ValidateImage()
   return true;
 }
 
+
+var isSVGFile;
 function chooseFile()
 {
 //  if (gTimerID)
@@ -576,15 +579,19 @@ function chooseFile()
     {
       try {
         var file = msiFileFromFileURL(url);
+        isSVGFile = /\.svg$/.test(file.leafName);
         var docUrlString = msiGetDocumentBaseUrl();
         var docurl = msiURIFromString(docUrlString);
         var dir = msiFileFromFileURL(docurl);
         dir = dir.parent;
         dir.append("graphics");
         if (!dir.exists()) dir.create(1, 0755);
-        file.copyTo(dir,"");    // BBM todo: check for name clashes
         file.permissions = 0755;
         fileName = "graphics/"+file.leafName;
+        var newFile = dir.clone();
+        newFile.append(file.leafName);
+        if (newFile.exists()) newFile.delete(false);
+        file.copyTo(dir,"");    
       }
       catch(e)
       {
@@ -614,8 +621,8 @@ function PreviewImageLoaded()
   if (gDialog.PreviewImage)
   {
     // Image loading has completed -- we can get actual width
-    gActualWidth  = gDialog.PreviewImage.naturalWidth;
-    gActualHeight = gDialog.PreviewImage.naturalHeight;
+    gActualWidth  = gDialog.PreviewImage.offsetWidth;
+    gActualHeight = gDialog.PreviewImage.offsetHeight;
 
     if (gActualWidth && gActualHeight)
     {
@@ -647,6 +654,35 @@ function PreviewImageLoaded()
 
     if (frameTabDlg.actual.selected)
       SetActualSize();
+
+    // if the image is svg, we need to modify it to make it resizable.
+    if (isSVGFile)
+    {
+      var svg = gDialog.PreviewImage.contentDocument.documentElement;
+      if (svg.hasAttribute("height") && svg.hasAttribute("width") && !svg.hasAttribute("viewBox"))
+      {
+        var currentUnit = frameUnitHandler.currentUnit;
+        var width = svg.getAttribute("height");
+        var numregexp = /(\d+\.*\d*)([A-Za-z]*$)/;
+        var arr = numregexp.exec(width);
+        if (arr) {
+          frameUnitHandler.setCurrentUnit(arr[2]);
+          width = frameUnitHandler.getValueAs(arr[1],"px");
+          width = Math.round(width);
+        }
+        var height = svg.getAttribute("width");
+        var arr = numregexp.exec(height);
+        if (arr) 
+        {
+          frameUnitHandler.setCurrentUnit(arr[2]);
+          height = frameUnitHandler.getValueAs(arr[1],"px");
+          height = Math.round(height);
+        }
+        svg.setAttribute("viewBox", "0 0 "+height+" "+width);
+        svg.setAttribute("width","100%");
+        svg.setAttribute("height","100%");
+      }
+    }
   }
 }
 
@@ -690,13 +726,13 @@ function LoadPreviewImage()
   if (gDialog.ImageHolder.firstChild)
     gDialog.ImageHolder.removeChild(gDialog.ImageHolder.firstChild);
     
-  gDialog.PreviewImage = document.createElementNS("http://www.w3.org/1999/xhtml", "html:img");
+  gDialog.PreviewImage = document.createElementNS("http://www.w3.org/1999/xhtml", "html:object");
   if (gDialog.PreviewImage)
   {
     // set the src before appending to the document -- see bug 198435 for why
     // this is needed.
     gDialog.PreviewImage.addEventListener("load", PreviewImageLoaded, true);
-    gDialog.PreviewImage.src = imageSrc;
+    gDialog.PreviewImage.data = imageSrc;
     gDialog.ImageHolder.appendChild(gDialog.PreviewImage);
   }
 }
@@ -718,17 +754,17 @@ function setContentSize(width, height)  // width and height are the size of the 
   updateDiagram("margin");
 }
 
-function ChangeImageSrc()
-{
+//function ChangeImageSrc()
+//{
 //  if (gTimerID)
 //    clearTimeout(gTimerID);
 //
 //  gTimerID = setTimeout("LoadPreviewImage()", 800);
-
-  InitImage();
-  msiSetRelativeCheckbox();
-  doOverallEnabling();
-}
+//
+//  InitImage();
+//  msiSetRelativeCheckbox();
+//  doOverallEnabling();
+//}
 
 function doDimensionEnabling()
 {
@@ -751,7 +787,6 @@ function doDimensionEnabling()
 //         && ( gDialog.heightUnitsMenulist.selectedIndex == 0 );
 
   SetElementEnabledById( "constrainCheckbox", constrainEnable );
-//  imageUnitHandler.setCurrentUnit(frameTabDlg.unitList.value);
 
 }
 
@@ -840,11 +875,11 @@ function constrainProportions( srcID, destID, event )
 //  SetElementEnabledById("removeImageMap", false);
 //}
 
-function SwitchToValidatePanel()
-{
-  if (gDialog.tabBox && gValidateTab && gDialog.tabBox.selectedTab != gValidateTab)
-    gDialog.tabBox.selectedTab = gValidateTab;
-}
+//function SwitchToValidatePanel()
+//{
+//  if (gDialog.tabBox && gDialog.tabBox.selectedTab != gValidateTab)
+//    gDialog.tabBox.selectedTab = gValidateTab;
+//}
 
 // Get data from widgets, validate, and set for the global element
 //   accessible to AdvancedEdit() [in msiEdDialogCommon.js]
@@ -862,7 +897,7 @@ function ValidateImage()
   if (!gDialog.srcInput.value)
   {
     AlertWithTitle(null, GetString("MissingImageError"));
-    SwitchToValidatePanel();
+//    SwitchToValidatePanel();
     gDialog.srcInput.focus();
     return false;
   }
@@ -965,10 +1000,42 @@ function ValidateImage()
   return true;
 }
 
-function doHelpButton()
+//function doHelpButton()
+//{
+//  openHelp("image_properties");
+//  return true;
+//}
+
+function imageLoaded(event)
 {
-  openHelp("image_properties");
-  return true;
+  if (isSVGFile)
+  {
+    var svg = event.target.contentDocument.documentElement;
+    if (svg.hasAttribute("height") && svg.hasAttribute("width") && !svg.hasAttribute("viewBox"))
+    {
+      var currentUnit = frameUnitHandler.currentUnit;
+      var width = svg.getAttribute("height");
+      var numregexp = /(\d+\.*\d*)([A-Za-z]*$)/;
+      var arr = numregexp.exec(width);
+      if (arr) {
+        frameUnitHandler.setCurrentUnit(arr[2]);
+        width = frameUnitHandler.getValueAs(arr[1],"px");
+        width = Math.round(width);
+      }
+      var height = svg.getAttribute("width");
+      var arr = numregexp.exec(height);
+      if (arr) 
+      {
+        frameUnitHandler.setCurrentUnit(arr[2]);
+        height = frameUnitHandler.getValueAs(arr[1],"px");
+        height = Math.round(height);
+      }
+      svg.setAttribute("viewBox", "0 0 "+height+" "+width);
+      svg.setAttribute("width","100%");
+      svg.setAttribute("height","100%");
+    }
+  }
+
 }
 
 function onAccept()
@@ -1005,10 +1072,11 @@ function onAccept()
     {
       var tagname="object";
       imageElement = editor.createElementWithDefaults(tagname);
+      imageElement.addEventListener("load", imageLoaded, true);
       imageElement.setAttribute("data",gDialog.srcInput.value);
       
       var frameElement = editor.createElementWithDefaults("msiframe");
-      setFrameAttributes(frameElement);
+      setFrameAttributes(imageElement);
       frameElement.appendChild(imageElement);
 //      if (gRemoveImageMap)
 //      {
@@ -1079,7 +1147,7 @@ function onAccept()
 //        {
           // 'true' means delete the selection before inserting
           dump("Inserting imageElement\n");
-          editor.insertElementAtSelection(frameElement, true);
+          editor.insertElementAtSelection(imageElement, true);
 //        }
           
 //      }
