@@ -1616,6 +1616,8 @@ function msiEditorMoveChild(newParent, childNode, editor)
 //This function appends the significant children of "fromElement" to the children of "toElement"
 function msiEditorMoveChildren(toElement, fromElement, editor)
 {
+  if (msiNavigationUtils.isMathTemplate(toElement) || msiNavigationUtils.isMathTemplate(fromElement))
+    return msiEditorMoveCorrespondingContents(toElement, fromElement, editor);
   var theChildren = msiNavigationUtils.getSignificantContents(fromElement);
   try
   {
@@ -1625,6 +1627,268 @@ function msiEditorMoveChildren(toElement, fromElement, editor)
   catch(exc) {dump("Exception in msiEditorUtilities.js, msiEditorMoveChildren; exception is [" + exc + "].\n");}
 }
 
+function msiEditorMoveCorrespondingContents(targNode, srcNode, editor)
+{
+  var childContentTable = 
+  {
+    mover : { base : 1, sup : 2 },
+    munder : { base : 1, sub : 2 },
+    munderover : { base : 1, sub : 2, sup : 3 },
+    msup : { base : 1, sup : 2 },
+    msub : { base : 1, sub : 2 },
+    msubsup : { base : 1, sub : 2, sup : 3 },
+    menclose : { base : -1 }
+  };
+  function positionToContentName(aNodeName, nPos)
+  {
+    if (! (aNodeName in childContentTable) )
+      return null;
+    for (var aChild in childContentTable[aNodeName])
+    {
+      if (childContentTable[aNodeName][aChild] == nPos)
+        return aChild;
+    }
+    return null;
+  }
+  function lastChildPosition(aNodeName)
+  {
+    var nPos = 0;
+    if (aNodeName in childContentTable)
+    {
+      for (var aChild in childContentTable[aNodeName])
+      {
+        if (childContentTable[aNodeName][aChild] > nPos)
+          nPos = childContentTable[aNodeName][aChild];
+      }
+    }
+    return nPos;
+  }
+
+  var newName = msiGetBaseNodeName(targNode);
+  var oldName = msiGetBaseNodeName(srcNode);
+  var childNode = null;
+  var newPos, oldPos;
+  var aPosition = null;
+  aPosition = positionToContentName(newName, -1);
+  if (aPosition)  //so this one has all children together in one place
+  {
+    if (aPosition in childContentTable[oldName])
+    {
+      oldPos = childContentTable[oldName][aPosition];
+      if (oldPos > 0)  //moving it from a specified position - may be wrapped in an mrow
+      {
+        childNode = msiNavigationUtils.getIndexedSignificantChild(srcNode, oldPos - 1);
+        if (childNode)
+        {
+          if (msiNavigationUtils.isOrdinaryMRow(childNode))
+            msiEditorMoveChildren(targNode, childNode, editor);
+          else  //just a regular single node
+          {
+            editor.deleteNode(childNode);
+            editor.insertNode(childNode, targNode, 0);
+          }
+        }
+      }
+      else
+      {
+        childNode = msiNavigationUtils.getIndexedSignificantChild(srcNode, 0);  //We're using "childNode" as a marker for success, so set it to the first child
+        if (childNode)
+          msiEditorMoveChildren(targNode, srcNode);
+      }
+    }
+    if (!childNode)
+    {
+      childNode = newbox(editor);  //create an input box at this position
+      editor.insertNode(childNode, targNode, 0);
+    }
+    return targNode;  //Since all of the child nodes are at unspecified positions, there can be nothing else to do.
+  }
+  for (var nn = 1; nn <= lastChildPosition(newName); ++nn)
+  {
+    aPosition = positionToContentName(newName, nn);
+    if (aPosition)
+    {
+      if ( (oldName in childContentTable) && (aPosition in childContentTable[oldName]) )
+      {
+        oldPos = childContentTable[oldName][aPosition];
+        if (oldPos < 0)  //this means we're moving all the children of srcNode to the desired position in targNode
+        {
+          childNode = srcNode.ownerDocument.createElementNS(mmlns, "mrow");
+          editor.insertNode(childNode, targNode, nn - 1);
+          msiEditorMoveChildren(childNode, srcNode, editor);
+        }
+        else  //so the old node had a specified position
+        {
+          childNode = msiNavigationUtils.getIndexedSignificantChild(srcNode, oldPos - 1);
+          editor.deleteNode(childNode);
+          editor.insertNode(childNode, targNode, nn - 1);
+          editor.insertNode( newbox(editor), srcNode, oldPos - 1 );  //Do this to keep the child count of srcNode intact
+        }
+      }
+      if (!childNode)
+      {
+        childNode = newbox(editor);
+        editor.insertNode(childNode, targNode, nn - 1);
+      }
+    }
+  }
+}
+
+function msiEditorReplaceTextWithText(editor, textNode, startOffset, endOffset, replaceText)
+{
+  var newTextNode = editor.document.createTextNode(replaceText);
+  var theParentNode = textNode.parentNode;
+  var nOrigLen = textNode.textContent.length;
+  msiEditorReplaceTextWithNode2(editor, textNode, startOffset, endOffset, newTextNode);
+  var insertPos = msiNavigationUtils.offsetInParent(newTextNode);
+  var joinedNode = newTextNode;
+
+  if (startOffset > 0)
+  {
+    if ( (insertPos < 1) || !msiNavigationUtils.isTextNode(theParentNode.childNodes[insertPos-1]) )
+      dump("Error in msiEditorUtilities.js, in msiEditorReplaceTextWithText; newTextNode's previous sibling isn't a text node although startOffset>0!\n");
+    else
+    {
+      joinedNode = theParentNode.childNodes[insertPos - 1];
+      editor.joinNodes(joinedNode, newTextNode, theParentNode);
+      --insertPos;
+    }
+  }
+  msiKludgeLogString("In msiEditorUtilities.js, in msiEditorReplaceTextWithText, after the first joinNode.\n", ["reviseChars"]);
+  msiKludgeLogNodeContents(joinedNode, ["reviseChars"], "  joinedNode", true);
+  if (!joinedNode.parentNode || (joinedNode.parentNode != theParentNode))
+    msiKludgeLogNodeContents(theParentNode.childNodes[insertPos], ["reviseChars"], "  The node at position [" + insertPos + "] in theParentNode");
+  if (endOffset < nOrigLen)
+  {
+    var logStr = "  Now parent node has [" + theParentNode.childNodes.length + "] children; ";
+    if ( (insertPos+1 >= theParentNode.childNodes.length) || !msiNavigationUtils.isTextNode(theParentNode.childNodes[insertPos+1]) )
+      dump("Error in msiEditorUtilities.js, in msiEditorReplaceTextWithText; newTextNode's next sibling isn't a text node although endOffset<origLen!\n");
+    else
+    {
+      var rightNode = theParentNode.childNodes[insertPos+1];
+      msiKludgeLogString(logStr, ["reviseChars"]);
+      msiKludgeLogNodeContents(joinedNode, ["reviseChars"], "  joinedNode", true);
+      msiKludgeLogNodeContents(rightNode, ["reviseChars"], "  rightNode", true);
+      editor.joinNodes(joinedNode, rightNode, theParentNode);
+    }
+  }
+  msiKludgeLogString("In msiEditorUtilities.js, in msiEditorReplaceTextWithText, after the second joinNode.\n", ["reviseChars"]);
+}
+
+function msiEditorPrepareForInsertion(editor, nodeToInsert, insertPosition)
+{
+  msiKludgeLogString("Inside msiEditorPrepareForInsertion\n", ["reviseChars"]);
+  var theParentNode = insertPosition.mNode;
+  var theInsertPos = insertPosition.mOffset;
+
+  function encloseNode(childToEnclose, enclosingNodeName, enclosingNodeNameSpace)
+  {
+    var newNode = null;
+    if (enclosingNodeNameSpace)
+      newNode = editor.document.createElementNS(enclosingNodeNameSpace, enclosingNodeName);
+    else
+      newNode = editor.document.createElement(enclosingNodeName);
+    var posInParent = msiNavigationUtils.offsetInParent(childToEnclose);
+    var theParent = childToEnclose.parentNode;
+    editor.deleteNode(childToEnclose);
+    editor.insertNode(newNode, theParent, posInParent);
+    editor.insertNode(childToEnclose, newNode, 0);
+    return newNode;
+  }
+
+  while (theParentNode && !msiNavigationUtils.nodeCanBeChild(nodeToInsert, theParentNode, editor))
+  {
+    msiKludgeLogNodeContents(nodeToInsert, ["reviseChars"], "Inside msiEditorPrepareForInsertion(), nodeToInsert can't be child of parent node.\n  nodeToInsert", false);
+    msiKludgeLogNodeContents(theParentNode, ["reviseChars"], "  theParentNode", true);
+
+    if (msiNavigationUtils.isMathTemplate(theParentNode.parentNode))
+      theParentNode = encloseNode(theParentNode, "mrow", mmlns);
+    if (msiNavigationUtils.positionIsAtStart(theParentNode, theInsertPos))  //in this case insert in parent's parent before parent
+      theInsertPos = msiNavigationUtils.offsetInParent(theParentNode);
+    else if (msiNavigationUtils.positionIsAtEnd(theParentNode, theInsertPos))  //in this case insert in parent's parent after parent
+      theInsertPos = msiNavigationUtils.offsetInParent(theParentNode) + 1;
+    else  //do the split at the parent level
+    {
+      var aLeftNodeObj = new Object();
+      editor.splitNode(theParentNode, theInsertPos, aLeftNodeObj);
+      theInsertPos = msiNavigationUtils.offsetInParent(theParentNode);  //set up to insert at the split
+    }
+    theParentNode = theParentNode.parentNode;
+  }
+  if (msiNavigationUtils.isMathTemplate(theParentNode.parentNode))
+    theParentNode = encloseNode(theParentNode, "mrow", mmlns);
+  insertPosition.mNode = theParentNode;
+  insertPosition.mOffset = theInsertPos;
+  msiKludgeLogString("Ending msiEditorPrepareForInsertion\n", ["reviseChars"]);
+  return (theParentNode != null);
+}
+
+function msiEditorReplaceTextWithNode2(editor, textNode, startOffset, endOffset, replaceNode)
+{
+  var rightNode = textNode;
+  var leftNodeObj = new Object();
+  var midNodeObj = new Object();
+  var deleteNode = rightNode;
+  var nOrigLen = textNode.textContent.length;
+  var theParentNode = textNode.parentNode;
+  if (startOffset > 0)
+    editor.splitNode(rightNode, startOffset, leftNodeObj);
+  if ((endOffset > startOffset) && (endOffset < nOrigLen))
+  {
+    editor.splitNode(rightNode, endOffset - startOffset, midNodeObj);
+    deleteNode = midNodeObj.value;
+  }
+
+  var logStr = "In msiEditorUtilities.js, in msiEditorReplaceTextWithNode, after splitNode calls; leftNode is [";
+  if (leftNodeObj && leftNodeObj.value)
+    logStr += leftNodeObj.value.textContent;
+  logStr += "], midNode is [";
+  if (midNodeObj && midNodeObj.value)
+    logStr += midNodeObj.value.textContent;
+  logStr += "], and rightNode is [";
+  if (rightNode && rightNode.textContent)
+    logStr += rightNode.textContent;
+  logStr += "].\n";
+  msiKludgeLogString(logStr, ["reviseChars"]);
+
+  var insertPos = msiNavigationUtils.offsetInParent(deleteNode);
+  editor.deleteNode(deleteNode);
+  logStr = "In msiEditorUtilities.js, in msiEditorReplaceTextWithNode, after deleteNode, parent node has [" + theParentNode.childNodes.length + "] children.\n";
+  msiKludgeLogString(logStr, ["reviseChars"]);
+
+  var insertNode = replaceNode;
+  if (msiNavigationUtils.isMathNode(replaceNode) && !findmathparent(theParentNode) && (msiGetBaseNodeName(replaceNode) != "math"))
+  {
+    var mathNode = editor.document.createElementNS(mmlns, "math");
+    if (msiGetBaseNodeName(replaceNode) != "mrow")
+    {
+      insertNode = editor.document.createElementNS(mmlns, "mrow");
+      insertNode.appendChild(replaceNode);
+    }
+    mathNode.appendChild(insertNode);
+    insertNode = mathNode;
+  }
+
+//HOW TO DEAL WITH MATH TEMPLATES? Example: We want to replace part of the text in a math leaf. The leaf node does not allow
+//  inserting anything other than text, and so we try to split it into two adjacent leaf nodes and insert the appropriate node.
+//  But this (or even the first step?) may force the introduction of an mrow - how do we check???
+//THE OTHER ISSUE may involve math leaf nodes which will lose their text content and thus need to be replaced. In this case,
+//  we should see the insertNode unable to be a child of the leaf, so the algorithm would split the leaf, leaving a null (left?)
+//  piece and an empty right one. In this case we should delete the remaining empty node!
+//Code moved to msiEditorPrepareForInsertion() function above.
+  var insertPosition = {mNode : theParentNode, mOffset : insertPos};
+  if (msiEditorPrepareForInsertion(editor, insertNode, insertPosition))
+    editor.insertNode(insertNode, insertPosition.mNode, insertPosition.mOffset);
+
+  logStr = "In msiEditorUtilities.js, in msiEditorReplaceTextWithNode, after insertNode, parent node has [" + theParentNode.childNodes.length + "] children; \n";
+  msiKludgeLogString(logStr, ["reviseChars"]);
+  msiKludgeLogNodeContents(replaceNode, ["reviseChars"], "  replaceNode", true);
+  if (replaceNode != insertNode)
+    msiKludgeLogNodeContents(insertNode, ["reviseChars"], "  insertNode", true);
+  msiKludgeLogNodeContents(rightNode, ["reviseChars"], "  rightNode", true);
+  if (!replaceNode.parentNode || (replaceNode.parentNode != theParentNode))
+    msiKludgeLogNodeContents(theParentNode.childNodes[insertPos], ["reviseChars"], "  The node at position [" + insertPos + "] in theParentNode");
+}
 
 function msiEditorReplaceTextWithNode(theEditor, textNode, startOffset, endOffset, replaceNode)
 {
@@ -5974,6 +6238,18 @@ var msiNavigationUtils =
     return retList;
   },
 
+  isMathNode : function(aNode)
+  {
+    var mathNS = this.mAtomService.getAtom(mmlns);
+    var nodeNS = null;
+    if (aNode.namespaceURI && aNode.namespaceURI.length)
+      nodeNS = this.mAtomService.getAtom(aNode.namespaceURI);
+    if (nodeNS == mathNS)
+      return true;
+//    return (msiGetBaseNodeName(aNode) == "math");  //Why add this?
+    return false;
+  },
+
   isBoundFence : function(node)
   {
 //    if (msiGetBaseNodeName(node) == 'mstyle' && node.childNodes.length == 1)
@@ -6328,6 +6604,84 @@ var msiNavigationUtils =
     return null;
   },
 
+  //What seems to be needed is a generic way to go coherently "up the ladder". If we find that this node satisfies the conditions,
+  //  we'd like to test our parent to see if it does as well. The problem is that part of the check involves testing child nodes,
+  //  so we keep getting into a loop.
+  //Cases to consider:
+  //  Obvious ones: <mi>
+  //  An <mstyle> wrapping only a qualifying node.
+  //  An <mrow> wrapping a qualifying node, but only if it's an (unnecessary) <mrow> representing a child of a <mover>, <munder>, or <munderover>,
+  //    or the only child of an <mstyle>.
+  //Maybe the key is to do a simple test recursively - a test which would never pass to the parent node - and repeatedly apply the
+  //  test to successive parents as long as it succeeds. This separation of the test from the overall function (getTopMathNodeAsAccentedCharacter, below), 
+  //  which does have the responsibility to find the topmost qualifying node, may finally solve this stupidity.
+  treatMathNodeAsAccentedCharacter : function(aNode, bDontCheckKids)
+  {
+    msiKludgeLogNodeContents(aNode, ["reviseChars"], "In msiEditorUtilities.js, in msiNavigationUtils.treatMathNodeAsAccentedCharacter, with node", false);
+
+    var ourData = null;
+    var aboveText, belowText, baseText;
+
+    switch(msiGetBaseNodeName(aNode))
+    {
+      case "mover":
+        baseText = this.getLeafNodeText( this.getIndexedSignificantChild(aNode, 0) );
+        aboveText = this.getLeafNodeText( this.getIndexedSignificantChild(aNode, 1) );
+      break;
+
+      case "munder":
+        baseText = this.getLeafNodeText( this.getIndexedSignificantChild(aNode, 0) );
+        belowText = this.getLeafNodeText( this.getIndexedSignificantChild(aNode, 1) );
+      break;
+
+      case "munderover":
+        baseText = this.getLeafNodeText( this.getIndexedSignificantChild(aNode, 0) );
+        belowText = this.getLeafNodeText( this.getIndexedSignificantChild(aNode, 1) );
+        aboveText = this.getLeafNodeText( this.getIndexedSignificantChild(aNode, 2) );
+      break;
+
+      case "mi":
+        baseText = this.getLeafNodeText(aNode);
+      break;
+
+      case "mstyle":  //is this the only time we want to do this?
+      case "mrow":
+//      case "mphantom":  ???
+        var kid = this.getSingleWrappedChild(aNode);
+        if (kid != null && !bDontCheckKids)
+          return this.treatMathNodeAsAccentedCharacter(kid, false);
+      break;
+
+      default:
+      break;
+    }
+
+    if (baseText && this.isSingleCharacter(baseText))
+    {
+      if (!aboveText || this.isCombiningAboveAccent(aboveText))
+      {
+        if (!belowText || this.isCombiningBelowAccent(belowText))
+
+          return {mNode : aNode, mBaseText : baseText, mAboveText : aboveText, mBelowText : belowText};
+      }
+    }
+
+    return null;
+  },
+
+  getTopMathNodeAsAccentedCharacter : function(aNode)
+  {
+    var nextResult, ourResult;
+    var nextTestNode = aNode;
+    do
+    {
+      ourResult = nextResult;
+      nextResult = this.treatMathNodeAsAccentedCharacter(nextTestNode, true);
+      nextTestNode = nextTestNode.parentNode;
+    } while ((nextResult != null) && (nextTestNode != null));
+    return ourResult;
+  },
+
   getSingleTextNodeContent : function(aNode)
   {
     if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
@@ -6431,27 +6785,84 @@ var msiNavigationUtils =
   isCombiningCharacter : function(aChar)
   {
     //The following is strictly ad hoc - should actually reference functionality in the intl/unicharutil directory somehow
+    if (this.isCombiningAboveAccent(aChar) || this.isCombiningBelowAccent(aChar))
+      return true;
+
     switch(aChar)
     {
+      case "\u0338":   //The negating slash
+        return true;
+      break;
+    }
+    return false;
+  },
+
+  isCombiningAboveAccent : function(aChar)
+  {
+    switch(aChar)
+    {
+      case "^":
       case "\u0302":
+      case "\u02c7":
       case "\u030c":
+      case "~":
       case "\u0303":
+      case "\u00b4":
       case "\u0301":
+      case "\u0060":
       case "\u0300":
+      case "\u02d8":
       case "\u0306":
+      case "\u00af":
       case "\u0305":
+      case "\u02dd":
       case "\u030b":
+      case "\u02da":
       case "\u030a":
+      case "\u02d9":
       case "\u0307":
+      case "\u00a8":
       case "\u0308":
       case "\u20db":
       case "\u20dc":
       case "\u20d7":
+        return true;
+      break;
+    }
+    return false;
+  },
+
+  isCombiningBelowAccent: function(aChar)
+  {
+    switch(aChar)
+    {
+      case "\u00b8":
+      case "\u0327":
+      case "\u02db":
+      case "\u0328":
+      case "\u02d3":
+      case "\u0323":
+      case "\u005f":
+      case "\u0332":
+        return true;
+      break;
+    }
+    return false;
+  },
+
+  upperAccentCombinesWithCharInMath : function(aChar)
+  {
+    return false;
+  },
+
+  lowerAccentCombinesWithCharInMath : function(aChar)
+  {
+    switch(aChar)
+    {
       case "\u0327":
       case "\u0328":
       case "\u0323":
       case "\u0332":
-      case "\u0338":
         return true;
       break;
     }
@@ -6481,6 +6892,41 @@ var msiNavigationUtils =
         return ix;
     }
     return 0;
+  },
+
+  getCharacterRange : function(someText, nOffset)
+  {
+    if (!nOffset || (nOffset > someText.length))
+      return {mStart : nOffset, mEnd : nOffset};
+    for (var ix = nOffset - 1; ix > 0; --ix)
+    {
+      if (!this.isCombiningCharacter(someText[ix]))
+        break;
+    }
+    for (var jx = nOffset; jx < someText.length; ++jx)
+    {
+      if (!this.isCombiningCharacter(someText[jx]))
+        break;
+    }
+    return {mStart : ix, mEnd : jx};
+  },
+
+  upperAccentForcesMath : function(aChar)
+  {
+    switch(aChar)
+    {
+      case "\u20db":
+      case "\u20dc":
+      case "\u20d7":
+        return true;
+      break;
+    }
+    return false;
+  },
+
+  lowerAccentForcesMath : function(aChar)
+  {
+    return false;
   },
 
   cannotSelectNodeForProperties : function(aNode)
@@ -6579,6 +7025,45 @@ var msiNavigationUtils =
     for (var ix = 0; ix < aSelection.rangeCount; ++ix)
       parentNodes.push( aSelection.getRangeAt(ix).commonAncestorContainer );
     return this.findCommonAncestor(parentNodes);
+  },
+
+  canContainTextNode : function(aNode, editor)
+  {
+    switch(msiGetBaseNodeName(aNode))
+    {
+      case "br":
+      case "hr":
+      case "hspace":
+      case "vspace":
+        return false;
+      break;
+    }
+    return true;
+  },
+
+  nodeCanBeChild : function(aNode, aParent, editor)
+  {
+    if (this.isMathMLLeafNode(aParent))
+      return this.isTextNode(aNode);
+    if (this.isTextNode(aNode))
+      return this.canContainTextNode(aParent, editor);
+    switch(msiGetBaseNodeName(aParent))
+    {
+      case "mtext":
+        return this.isTextNode(aNode);
+      break;
+      case "hspace":
+      case "vspace":
+      case "br":
+      case "hr":
+        return false;
+      break;
+    }
+
+    var tagManager = editor ? editor.tagListManager : null;
+    if (tagManager && !tagManager.nodeCanContainNode( aParent, aNode))
+      return false;
+    return true;
   }
 
 };
