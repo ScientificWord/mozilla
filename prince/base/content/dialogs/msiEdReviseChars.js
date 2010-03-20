@@ -1,7 +1,6 @@
 //Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
 
 var data;
-var mNormalizer;
 
 // dialog initialization code
 function Startup()
@@ -22,15 +21,17 @@ function Startup()
   data = window.arguments[0];
   if (!data)
     data = new Object();
-  if (!mNormalizer)
+  if (!data.mNormalizer)
   {
-    mNormalizer = Components.classes["@mozilla.org/intl/unicodenormalizer;1"]
+    data.mNormalizer = Components.classes["@mozilla.org/intl/unicodenormalizer;1"]
                                .createInstance(Components.interfaces.nsIUnicodeNormalizer);
   }
   if ("reviseData" in data)
     setDataFromReviseData(data.reviseData);
 
   initDialog();
+  window.mMSIDlgManager = new msiDialogConfigManager(window);
+  window.mMSIDlgManager.configureDialog();
   // Set a variable on the opener window so we
   //  can track ownership of close this window with it
 //  window.opener.InsertCharWindow = window;
@@ -62,9 +63,60 @@ function isReviseDialog()
 
 function setDataFromReviseData(reviseData)
 {
-  data.mText = reviseData.getText();
+  if (reviseData.isTextReviseData())
+    setDataFromTextReviseData(reviseData);
+  else
+    setDataFromMathReviseData(reviseData);
+}
+
+function setDataFromMathReviseData(reviseData)
+{
+  var topNode = reviseData.getReferenceNode();
+  var textComponents = msiNavigationUtils.treatMathNodeAsAccentedCharacter(topNode);
+  var baseText = textComponents.mBaseText;
+  data.mUpperAccent = textComponents.mAboveText;
+  if (data.mUpperAccent)
+    data.mUpperAccent = isRecognizedUpperAccent(data.mUpperAccent); //Convert it to the form (combining vs. stand-alone) we expect
+  data.mLowerAccent = textComponents.mBelowText;
+  if (data.mLowerAccent)
+    data.mLowerAccent = isRecognizedLowerAccent(data.mLowerAccent); //Convert it to the form (combining vs. stand-alone) we expect
+  data.mNegated = false;  //Is this always right? The assumption is that negated operators and relations in Math are single characters.
   var decomposed = new Object();
-  mNormalizer.NormalizeUnicodeNFD(data.mText, decomposed);
+  data.mNormalizer.NormalizeUnicodeNFD(baseText, decomposed);
+  if (decomposed.value && decomposed.value.length)
+  {
+    data.mBaseChar = "";
+    for (var ix = decomposed.value.length - 1; ix > 0; --ix)
+    {
+      if (upperAccent = isRecognizedUpperAccent(decomposed.value[ix]))
+      {
+        if (data.mUpperAccent)  //we've already identified one - put this one with the base character
+          data.mBaseChar = upperAccent + data.mBaseChar;
+//          data.mBaseChar = decomposed.value[ix] + data.mBaseChar;
+        else
+          data.mUpperAccent = decomposed.value[ix];
+      }
+      else if (lowerAccent = isRecognizedLowerAccent(decomposed.value[ix]))
+      {
+        if (data.mLowerAccent)  //we've already identified one - put this one with the base character
+          data.mBaseChar = lowerAccent + data.mBaseChar;
+//          data.mBaseChar = decomposed.value[ix] + data.mBaseChar;
+        else
+          data.mLowerAccent = lowerAccent;
+      }
+      else if (strikeOut = isOverstrike(decomposed.value[ix]))
+        data.mNegated = true;
+    }
+    data.mBaseChar = decomposed.value[0] + data.mBaseChar;
+  }
+
+}
+
+function setDataFromTextReviseData(reviseData)
+{
+  var theText = reviseData.getText();
+  var decomposed = new Object();
+  data.mNormalizer.NormalizeUnicodeNFD(theText, decomposed);
   var upperAccent, lowerAccent, strikeOut;
   if (decomposed.value && decomposed.value.length)
   {
@@ -94,18 +146,119 @@ function setDataFromReviseData(reviseData)
   }
 }
 
-function doComposeCharacter()
+function collectDialogData()
 {
-  var theCharStr = data.mBaseChar;
   data.mUpperAccent = gDialog.AccentAboveButtonGroup.valueStr;
+  data.mUpperAccentStandAlone = getStandAloneForm(data.mUpperAccent);
   data.mLowerAccent = gDialog.AccentBelowButtonGroup.valueStr;
-  theCharStr += data.mUpperAccent + data.mLowerAccent;
+  data.mLowerAccentStandAlone = getStandAloneForm(data.mLowerAccent);
   data.mNegated = gDialog.NegatedCheckbox.checked;
+  var theCharStr = data.mBaseChar;
+  if (msiNavigationUtils.upperAccentCombinesWithCharInMath(data.mLowerAccent))
+  {
+    theCharStr += data.mUpperAccent;
+    data.mUpperAccentStandAlone = null;
+  }
+  if (msiNavigationUtils.lowerAccentCombinesWithCharInMath(data.mLowerAccent))
+  {
+    theCharStr += data.mLowerAccent;
+    data.mLowerAccentStandAlone = null;
+  }
+  if (data.mNegated)
+    theCharStr += "\u0338";
+  var baseComposed = new Object();
+  data.mNormalizer.NormalizeUnicodeNFC(theCharStr, baseComposed);
+  data.mCompiledBaseChar = baseComposed.value;
+  theCharStr = data.mBaseChar + data.mUpperAccent + data.mLowerAccent;
   if (data.mNegated)
     theCharStr += "\u0338";
   var composed = new Object();
-  mNormalizer.NormalizeUnicodeNFC(theCharStr, composed);
-  return composed.value;
+  data.mNormalizer.NormalizeUnicodeNFC(theCharStr, composed);
+  data.mCompiledText = composed.value;
+}
+
+function getStandAloneForm(aUniChar)
+{
+  var retVal = null;
+  switch(aUniChar)
+  {
+    case "^":
+    case "\u0302":
+      retVal = "^";
+    break;
+    case "\u02c7":
+    case "\u030c":
+      retVal =  "\u02c7";
+    break;
+    case "~":
+    case "\u0303":
+      retVal = "~";
+    break;
+    case "\u00b4":
+    case "\u0301":
+      retVal = "\u00b4";
+    break;
+    case "\u0060":
+    case "\u0300":
+      retVal = "\u0060";
+    break;
+    case "\u02d8":
+    case "\u0306":
+      retVal = "\u02d8";
+    break;
+    case "\u00af":
+    case "\u0305":
+      retVal = "\u00af";
+    break;
+
+    case "\u02dd":
+    case "\u030b":
+      retVal = "\u02dd";
+    break;
+    case "\u02da":
+    case "\u030a":
+      retVal = "\u02da";
+    break;
+    case "\u02d9":
+    case "\u0307":
+      retVal = "\u02d9";
+    break;
+    case "\u00a8":
+    case "\u0308":
+      retVal = "\u00a8";
+    break;
+    case "\u20db":
+      retVal = "\u20db";
+    break;
+    case "\u20dc":
+      retVal = "\u20dc";
+    break;
+    case "\u20d7":
+      retVal = "\u20d7";
+    break;
+
+    case "\u00b8":
+    case "\u0327":
+      retVal = "\u00b8";
+    break;
+    case "\u02db":
+    case "\u0328":
+      retVal = "\u02db";
+    break;
+    case "\u02d3":
+    case "\u0323":
+      retVal = "\u02d3";
+    break;
+    case "\u005f":
+    case "\u0332":
+      retVal = "\u005f";
+    break;
+
+    default:
+      retVal = aUniChar;  //Just return what was passed in
+    break;
+  }
+  return retVal;
 }
 
 function isRecognizedUpperAccent(aUniChar)
@@ -214,14 +367,14 @@ function Apply()
 {
   // Revise the character
   var editorElement = msiGetParentEditorElementForDialog(window);
-  var newCharStr = doComposeCharacter();
+  collectDialogData();
     
   var theWindow = window.opener;
   if (isReviseDialog())
   {
     if (!theWindow || !("msiReviseChars" in theWindow))
       theWindow = msiGetTopLevelWindow();
-    theWindow.msiReviseChars(data.reviseData, newCharStr, editorElement);
+    theWindow.msiReviseChars(data.reviseData, data, editorElement);
   }
     
 //  try {
@@ -230,8 +383,8 @@ function Apply()
   // Set persistent attributes to save?
   
   // Don't close the dialog
-  return false;
-//  return true;
+//  return false;
+  return true;
 }
 
 // Don't allow inserting in HTML Source Mode
