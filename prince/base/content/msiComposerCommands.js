@@ -4388,63 +4388,125 @@ var msiReviseCharsCommand =
   doCommand: function(aCommand, dummy)  {}
 };
 
-function msiReviseChars(reviseData, newCharStr, editorElement)
+function msiReviseChars(reviseData, dialogData, editorElement)
 {
   var editor = msiGetEditor(editorElement);
   editor.beginTransaction();
-  var rightNode = reviseData.getReferenceNode();
-  var theParentNode = rightNode.parentNode;
-  var leftNodeObj = new Object();
-  var midNodeObj = new Object();
-  var newTextNode = editor.document.createTextNode(newCharStr);
-  try
-  {
-    if (reviseData.mOffset > 0)
-      editor.splitNode(rightNode, reviseData.mOffset, leftNodeObj);
-    editor.splitNode(rightNode, reviseData.mLength, midNodeObj);
-    var logStr = "In msiComposerCommands.js, in msiReviseChars, after splitNode calls; leftNode is [";
-    if (leftNodeObj && leftNodeObj.value)
-      logStr += leftNodeObj.value.textContent;
-    logStr += "], midNode is [";
-    if (midNodeObj && midNodeObj.value)
-      logStr += midNodeObj.value.textContent;
-    logStr += "], and rightNode is [";
-    if (rightNode && rightNode.textContent)
-      logStr += rightNode.textContent;
-    logStr += "].\n";
-    msiKludgeLogString(logStr, ["reviseChars"]);
-    var insertPos = msiNavigationUtils.offsetInParent(midNodeObj.value);
-    editor.deleteNode(midNodeObj.value);
-    logStr = "In msiComposerCommands.js, in msiReviseChars, after deleteNode, parent node has [" + theParentNode.childNodes.length + "] children.\n";
-    msiKludgeLogString(logStr, ["reviseChars"]);
-    editor.insertNode(newTextNode, theParentNode, insertPos);
 
-    logStr = "In msiComposerCommands.js, in msiReviseChars, after insertNode, parent node has [" + theParentNode.childNodes.length + "] children; \n";
-    msiKludgeLogString(logStr, ["reviseChars"]);
-    msiKludgeLogNodeContents(newTextNode, ["reviseChars"], "  newTextNode", true);
-    msiKludgeLogNodeContents(rightNode, ["reviseChars"], "  rightNode", true);
-    if (!newTextNode.parentNode || (newTextNode.parentNode != theParentNode))
-      msiKludgeLogNodeContents(theParentNode.childNodes[insertPos], ["reviseChars"], "  The node at position [" + insertPos + "] in theParentNode");
-    if (leftNodeObj && leftNodeObj.value)
+  var refNode = reviseData.getReferenceNode();
+  var theParentNode = refNode.parentNode;
+//  var leftNodeObj = new Object();
+//  var midNodeObj = new Object();
+  var bForceMath = (dialogData.mUpperAccent && msiNavigationUtils.upperAccentForcesMath(dialogData.mUpperAccent));
+  bForceMath = bForceMath || (dialogData.mLowerAccent && msiNavigationUtils.lowerAccentForcesMath(dialogData.mLowerAccent));
+  var bIsText = msiNavigationUtils.isTextNode(refNode);
+
+  var theUpperAccent = dialogData.mUpperAccent;
+  var theLowerAccent = dialogData.mLowerAccent;
+  var newNode = null;
+  var currNodeName = msiGetBaseNodeName(refNode)
+  var newNodeName = "";
+  var startOffset, endOffset;
+  if (bIsText)
+  {
+    startOffset = reviseData.getTextOffset();
+    endOffset = startOffset + reviseData.getTextLength();
+  }
+  if (!bIsText || bForceMath)  //this is the case where we're creating a (complex) non-text node
+  {
+//    if (msiNavigationUtils.upperAccentCombinesWithCharInMath(theUpperAccent))
+//      theUpperAccent = null;
+//    else
+      theUpperAccent = dialogData.mUpperAccentStandAlone;
+//    if (msiNavigationUtils.lowerAccentCombinesWithCharInMath(theLowerAccent))
+//      theLowerAccent = null;
+//    else
+      theLowerAccent = dialogData.mLowerAccentStandAlone;
+    if (theUpperAccent)
     {
-      editor.joinNodes(leftNodeObj.value, newTextNode, theParentNode);
-      --insertPos;
+      if (theLowerAccent)
+        newNodeName = "munderover";
+      else
+        newNodeName = "mover";
     }
-    msiKludgeLogString("In msiComposerCommands.js, in msiReviseChars, after the first joinNode.\n", ["reviseChars"]);
-    msiKludgeLogNodeContents(newTextNode, ["reviseChars"], "  newTextNode", true);
-    if (!newTextNode.parentNode || (newTextNode.parentNode != theParentNode))
-      msiKludgeLogNodeContents(theParentNode.childNodes[insertPos], ["reviseChars"], "  The node at position [" + insertPos + "] in theParentNode");
-    msiKludgeLogNodeContents(leftNodeObj.value, ["reviseChars"], "  leftNode", true);
-    if (rightNode && rightNode.textContent)
+    else if (theLowerAccent)
+      newNodeName = "munder";
+    else if (bForceMath && bIsText)
+      newNodeName = "mi";
+    if (newNodeName.length && (currNodeName != newNodeName))
+      newNode = editor.document.createElementNS(mmlns, newNodeName);
+  }
+
+  var aLogStr = "In msiComposerCommands.js, msiReviseChars(); bIsText is [";
+  aLogStr += bIsText ? "true" : "false";
+  aLogStr += "] and bForceMath is [";
+  aLogStr += bForceMath ? "true" : "false";
+  aLogStr += "], while theUpperAccent is [" + theUpperAccent + "] and theLowerAccent is [" + theLowerAccent + "]; refNode";
+  msiKludgeLogNodeContents(refNode, ["reviseChars"], aLogStr, true);
+
+  if (newNode)  //get the node inserted
+  {
+    if (!bIsText)
     {
-      logStr = "  Now parent node has [" + theParentNode.childNodes.length + "] children; ";
-      msiKludgeLogString(logStr, ["reviseChars"]);
-      msiKludgeLogNodeContents(newTextNode, ["reviseChars"], "  newTextNode", true);
-      msiKludgeLogNodeContents(rightNode, ["reviseChars"], "  rightNode", true);
-      editor.joinNodes(leftNodeObj.value, rightNode, theParentNode);
+      msiEditorMoveChildren(newNode, refNode, editor)
+      msiCopyElementAttributes(newNode, refNode, editor);
+//    var oldParts = msiNavigationUtils.treatMathNodeAsAccentedCharacter(refNode);
+      editor.replaceNode(newNode, refNode, theParentNode);
+      refNode = newNode;
     }
-    msiKludgeLogString("In msiComposerCommands.js, in msiReviseChars, after the second joinNode.\n", ["reviseChars"]);
-  } catch(exc) {dump("Problem in msiComposerCommands.js in msiReviseChars(); exception is [" + exc + "].\n");}
+    else
+    {
+      msiEditorReplaceTextWithNode2(editor, refNode, startOffset, endOffset, newNode);
+      refNode = newNode;
+    }
+  }
+
+  function checkChild(parent, index, mathNodeName, newText)
+  {
+    var ourLogStr = "  Inside checkChild(), with index [" + index + "], parent";
+    msiKludgeLogNodeContents(parent, ["reviseChars"], ourLogStr, false);
+    if ((parent.childNodes.length <= index) || (parent.childNodes[index] == null))
+    {
+      var newChild = editor.document.createElementNS(mmlns, mathNodeName);
+      editor.insertNode(newChild, parent, index);
+      msiKludgeLogNodeContents(parent, ["reviseChars"], "    In checkChild, inside the insertNode clause after inserting parent", false);
+    }
+    if (parent.childNodes[index].textContent != newText)
+    {
+      var newTextNode = editor.document.createTextNode(newText);
+      if (parent.childNodes[index].childNodes.length)
+        editor.replaceNode(newTextNode, parent.childNodes[index].childNodes[0], parent.childNodes[index]);
+      else
+        editor.insertNode(newTextNode, parent.childNodes[index], 0);
+    }
+  }
+
+  function checkContents(mathNode, baseText, lowerAccent, upperAccent)
+  {
+    checkChild(mathNode, 0, "mi", baseText);
+    switch(msiGetBaseNodeName(mathNode))
+    {
+      case "mi":
+      break;
+      case "mover":
+        checkChild(mathNode, 1, "mi", upperAccent);
+      break;
+      case "munder":
+        checkChild(mathNode, 1, "mi", lowerAccent);
+      break;
+      case "munderover":
+        checkChild(mathNode, 1, "mi", lowerAccent);
+        checkChild(mathNode, 2, "mi", upperAccent);
+      break;
+    }
+  }
+
+  msiKludgeLogString("In msiComposerCommands.js, msiReviseChars, before checkContents or msiEditorReplaceTextWithText call.\n", ["reviseChars"]);
+  if (bIsText && !bForceMath)
+      msiEditorReplaceTextWithText(editor, refNode, startOffset, endOffset, dialogData.mCompiledText);
+  else
+    checkContents(refNode, dialogData.mCompiledBaseChar, theLowerAccent, theUpperAccent);
+
   editor.endTransaction();
 }
 
