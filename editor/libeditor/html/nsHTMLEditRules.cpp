@@ -7434,8 +7434,18 @@ nsHTMLEditRules::ApplyStructure(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsAS
     // get the node to act on, and its location
     curNode = arrayOfNodes[i];
     res = GetStructNodeFromNode(curNode, getter_AddRefs(structureNode), *aStructureTag);
-    if (structureNode != nsnull) printf("Need to remove existing structure node\n");
-
+    if (structureNode != nsnull)
+    {
+      nsAutoString structNodeTag;
+      nsEditor::GetTagString(structureNode, structNodeTag);
+      if (aStructureTag->Equals(structNodeTag)) // replacing a tag with itself. Just quit.
+        return NS_OK;
+      // before removing structureNode, make sure it is not curNode. If it is, set curNode to the first 
+      // paratag child of structureNode.
+      if (curNode == structureNode) 
+        res = structureNode->GetFirstChild(getter_AddRefs(curNode));
+      RemoveStructure(structureNode, *aStructureTag);
+    }
     res = nsEditor::GetNodeLocation(curNode, address_of(curParent), &offset);
     if (NS_FAILED(res)) return res;
     nsAutoString curNodeTag;
@@ -7609,7 +7619,7 @@ nsHTMLEditRules::GetStructNodeFromNode(nsIDOMNode *node, nsIDOMElement ** struct
             return NS_OK;
           }
         }
-        else
+        else if (curNode != nsnull)
         {
           res = curNode->GetParentNode(getter_AddRefs(curNode));
           if (res == NS_OK && (curNode != nsnull)) {
