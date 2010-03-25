@@ -3361,8 +3361,9 @@ function msiSetEditMode(mode, editorElement)
         editor.transactionManager.maxTransactionCount = -1;
       } catch (e) {}
     }
-    if (!msiSetDisplayMode(editorElement, mode))
-      return;
+    msiSetDisplayMode(editorElement, mode);
+//    if (!msiSetDisplayMode(editorElement, mode))
+//      return;
 
     // Clear out the string buffers
     var sourceContentWindow = msiGetHTMLSourceTextWindow(editorElement);
