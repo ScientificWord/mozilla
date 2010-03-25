@@ -257,5 +257,6 @@
   <commandset id="MSImathMenuCommands"/>
   <commandset id="tagsMenuCommands"/>
   <commandset id="princegotoitems"/>
+  <commandset id="mainCommandSet"/> <!-- from MozRepl-->
 </window>
 
