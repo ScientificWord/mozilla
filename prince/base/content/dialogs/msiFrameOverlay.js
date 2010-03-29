@@ -3,12 +3,11 @@ Components.utils.import("resource://app/modules/unitHandler.jsm");
 var frameUnitHandler = new UnitHandler();
 var sides = ["Top", "Right", "Bottom", "Left"]; // do not localize -- visible to code only
 var gFrameTab={};
-var currentFrame;
 var scale = 0.25;
 var scaledWidth = 50; 
 var scaledHeight = 40;
 var position = 0;  // left = 1, right = 2, neither = 0
-var unit;
+//var unit;
 
 
 
@@ -22,7 +21,7 @@ function initFrameTab(dg, element, newElement)
     return null;
   }
   // For convenience, map dialog elements to an object
-  currentFrame = element;
+//  currentFrame = element;
   dg.widthInput           = document.getElementById("frameWidthInput");
   dg.heightInput          = document.getElementById("frameHeightInput");
   dg.autoHeightCheck      = document.getElementById("autoHeight");
@@ -134,7 +133,7 @@ function initFrameTab(dg, element, newElement)
     // TODO: color
   }
 // Now initialize the UI, including the diagram
-  unit = "pt"; //dg.unitList.selectedItem.value;
+  unit = 'px'; //dg.unitList.selectedItem.value;
   frameUnitHandler.initCurrentUnit(unit);
   var placement = 0;
   if (/left|inside/.test(placeLocation)) placement=1;

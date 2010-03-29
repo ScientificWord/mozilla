@@ -313,7 +313,7 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
   // we allow resizers only around images, tables, and absolutely positioned
   // elements. If we don't have image/table, let's look at the latter case.
   if (!resizeRequested && nsEditProperty::img != focusTagAtom &&
-      nsEditProperty::table != focusTagAtom)
+      nsEditProperty::table != focusTagAtom && nsEditProperty::object != focusTagAtom)
     focusElement = absPosElement;
 
   // at this point, focusElement  contains the element for Resizing,
