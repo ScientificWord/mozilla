@@ -7642,6 +7642,8 @@ nsHTMLEditRules::GetStructNodeFromNode(nsIDOMNode *node, nsIDOMElement ** struct
     }
   }
 }
+
+
 ///////////////////////////////////////////////////////////////////////////
 // RemoveStructure:  
 //   For each of the nodes in arrayOfNodes, do nothing unless the node is a structure                 
@@ -7674,7 +7676,6 @@ nsHTMLEditRules::RemoveStructure(nsIDOMNode *node, const nsAString& notThisTag)
   res = GetStructNodeFromNode( node, getter_AddRefs(structElement), notThisTag);
   if (structElement != nsnull)
   {
-    printf("Remove structure node now\n");
     curNode = structElement;
     while (curNode && !done)
     {
