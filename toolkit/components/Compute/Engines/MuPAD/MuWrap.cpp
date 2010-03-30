@@ -2205,12 +2205,12 @@ char* MuPADWrapper::INTEGRALtoEstr(SEMANTICS_NODE* bigop_snode, int& error_code)
     TCI_ASSERT(db_production);
 
     size_t bln = strlen(db_production);
-    if (integrand_str)
-      bln += strlen(integrand_str);
-    if (lower_str)
-      bln += strlen(lower_str);
-    if (upper_str)
-      bln += strlen(upper_str);
+//    if (integrand_str)
+//      bln += strlen(integrand_str);
+//    if (lower_str)
+//      bln += strlen(lower_str);
+//    if (upper_str)
+//      bln += strlen(upper_str);
 //     if (var_str)
 //       bln += strlen(var_str);
 
@@ -2227,16 +2227,16 @@ char* MuPADWrapper::INTEGRALtoEstr(SEMANTICS_NODE* bigop_snode, int& error_code)
 
     } else {
 
-      StrReplace(rv, bln, "%lower%", lower_str);
-      StrReplace(rv, bln, "%upper%", upper_str);
+      //StrReplace(rv, bln, "%lower%", lower_str);
+      //StrReplace(rv, bln, "%upper%", upper_str);
     }
 
     //StrReplace(rv, bln, "%variable%", var_str);
   }
 
   //delete[] integrand_str;
-  delete[] lower_str;
-  delete[] upper_str;
+  //delete[] lower_str;
+  //delete[] upper_str;
   delete[] var_str;
 
   // We may be processing a multiple integral
@@ -2289,7 +2289,10 @@ char* MuPADWrapper::INTEGRALtoEstr(SEMANTICS_NODE* bigop_snode, int& error_code)
 	     if (!used_x) {
 		    var_str = DuplicateString("q1x");
 			used_x = true;
-		 } else if (!used_y){
+            ClientAliases_REC* curr_client = GetClientAliasesRec(client_ID);
+            curr_client->AKAs_list = PushNamingRecord("q1x", "mix", "x", Ilk_Var, curr_client->AKAs_list);
+                     
+  		 } else if (!used_y){
 		    var_str = DuplicateString("q1y");
 			used_y = true;
 		 } else if (!used_z) {
@@ -2306,18 +2309,37 @@ char* MuPADWrapper::INTEGRALtoEstr(SEMANTICS_NODE* bigop_snode, int& error_code)
          bln += strlen(rv);
        if (var_str)
          bln += strlen(var_str);
+       if (integrand_str)
+         bln += strlen(integrand_str);
+       if (lower_str)
+         bln += strlen(lower_str);
+       if (upper_str)
+         bln += strlen(upper_str);
+
 
        char* new_rv = new char[bln + 1];
        strcpy(new_rv, db_production);
 
        if (nTimes == n_integs){
+            // First time 
 
-	       StrReplace(new_rv, bln, "%integrand%", integrand_str);	  // First time
+	       StrReplace(new_rv, bln, "%integrand%", integrand_str);	 
+           StrReplace(new_rv, bln, "%lower%", lower_str);
+           StrReplace(new_rv, bln, "%upper%", upper_str);
+
 		   delete[] integrand_str;
+		   integrand_str = 0;    
+           delete[] lower_str;
+		   lower_str = 0;
+           delete[] upper_str;
+		   upper_str = 0;
+
 
 	   } else {
-           StrReplace(new_rv, bln, "%integrand%", rv); 		  // Subsequent times...
-	   }
+	       // Subsequent times...
+
+           StrReplace(new_rv, bln, "%integrand%", rv); 		  
+       }
 
        StrReplace(new_rv, bln, "%comma%", ",");
        StrReplace(new_rv, bln, "%variable%", var_str);
