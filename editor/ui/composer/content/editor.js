@@ -1839,9 +1839,9 @@ function SetEditMode(mode)
 
       editor.beginTransaction();
       try {
+        source = gSourceTextEditor.outputToString(kTextMimeType, 1024); // OutputLFLineBreak
         // We are coming from edit source mode,
         //   so transfer that back into the document
-        source = gSourceTextEditor.outputToString(kTextMimeType, 1024); // OutputLFLineBreak
         editor.rebuildDocumentFromSource(source);
 
         // Get the text for the <title> from the newly-parsed document
