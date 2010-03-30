@@ -410,6 +410,8 @@ function openTeX()
     catch (ex) 
     {
          dump("\nUnable to open TeX:\n");
+		 dump("\nexe  = "  + exefile);
+         dump("\narg paths = " + dataDir.target + "\n   " + fp.file.target + "\n    " + outfile.target + "\n     " + outdir.target);
          dump(ex+"\n");
     }      
 //  TODO BBM todo: we may need to run a merge program to bring in processing instructions for specifying tag property files
