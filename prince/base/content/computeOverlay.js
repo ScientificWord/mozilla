@@ -39,42 +39,48 @@ var msiDefineCommand =
   }
 };
 
+function jsdump(str)
+{
+  Components.classes['@mozilla.org/consoleservice;1']
+            .getService(Components.interfaces.nsIConsoleService)
+            .logEngineStringMessage(str);
+}
 /////////////////////////
 var msiComputeLogger = 
 {
   Sent: function(name,expr)
   {
     if (this.logMMLSent)
-      dump("compsample " + name + ": ======================================\n" + expr + "\n");
+      jsdump("To engine: " + name + ": ======================================\n" + expr + "\n");
   },
   Sent4: function(name,expr,arg1,arg2)
   {
     if (this.logMMLSent)
-      dump("compsample " + name + ": ======================================\n" + expr + "\n" + arg1 + "\n" + arg2 + "\n");
+      jsdump("To engine: " + name + ": ======================================\n" + expr + "\n" + arg1 + "\n" + arg2 + "\n");
   },
   LogEngineStrs: function()
   {
     if (this.logEngSent)
-      dump("compsample sent:  ===> " + GetCurrentEngine().getEngineSent() + "\n");
+      jsdump("To engine: sent:  ===> " + GetCurrentEngine().getEngineSent() + "\n");
     if (this.logEngReceived)
-      dump("compsample rcvd: <===  " + GetCurrentEngine().getEngineReceived() + "\n");
+      jsdump("From engine: rcvd: <===  " + GetCurrentEngine().getEngineReceived() + "\n");
   },
   Received: function(expr)
   {
     this.LogEngineStrs();
     if (this.logMMLReceived)
-      dump("compsample result: ======================================\n" + expr + "\n");
+      jsdump("Engine result: ======================================\n" + expr + "\n");
   },
   Exception: function(e)
   {
     this.LogEngineStrs();
     if (this.logMMLReceived) {
-      dump("compsample exception: !!!!!!!!!!!!\n");
+      dujsdumpmp("Compute exception: !!!!!!!!!!!!\n");
     }
-    dump(e);
+    jsdump(e);
     // separate pref for errors?
-    dump("\ncompsample engine:  " + GetCurrentEngine());
-    dump("\n           errors:  " + GetCurrentEngine().getEngineErrors() + "\n");
+    jsdump("\Compute engine:  " + GetCurrentEngine());
+    jsdump("\n           errors:  " + GetCurrentEngine().getEngineErrors() + "\n");
   },
   Init: function()
   {
@@ -82,25 +88,25 @@ var msiComputeLogger =
       this.logMMLSent = gPrefs.getBoolPref("swp.MuPAD.log_mathml_sent");
     }
     catch(ex) {
-      dump("\nfailed to get MuPAD.log_mathml_sent pref!\n");
+      jsdump("\nfailed to get MuPAD.log_mathml_sent pref!\n");
     }
     try {
       this.logMMLReceived = gPrefs.getBoolPref("swp.MuPAD.log_mathml_received");
     }
     catch(ex) {
-      dump("\nfailed to get MuPAD.log_mathml_received pref!\n");
+      jsdump("\nfailed to get MuPAD.log_mathml_received pref!\n");
     }
     try {
       this.engMMLSent = gPrefs.getBoolPref("swp.MuPAD.log_engine_sent");
     }
     catch(ex) {
-      dump("\nfailed to get MuPAD.log_engine_sent pref!\n");
+      jsdump("\nfailed to get MuPAD.log_engine_sent pref!\n");
     }
     try {
       this.engMMLReceived = gPrefs.getBoolPref("swp.MuPAD.log_engine_received");
     }
     catch(ex) {
-      dump("\nfailed to get MuPAD.log_engine_received pref!\n");
+      jsdump("\nfailed to get MuPAD.log_engine_received pref!\n");
     }
   },
   LogMMLSent: function(log)
