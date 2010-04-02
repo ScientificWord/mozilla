@@ -35,24 +35,24 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#ifndef __nsconsolemessage_h__
-#define __nsconsolemessage_h__
+#ifndef __nsenginemessage_h__
+#define __nsenginemessage_h__
 
-#include "nsIConsoleMessage.h"
+#include "nsIEngineMessage.h"
 #include "nsString.h"
 
-class nsConsoleMessage : public nsIConsoleMessage {
+class nsEngineMessage : public nsIEngineMessage {
 public:
-    nsConsoleMessage();
-    nsConsoleMessage(const PRUnichar *message);
+    nsEngineMessage();
+    nsEngineMessage(const PRUnichar *message);
 
     NS_DECL_ISUPPORTS
     NS_DECL_NSICONSOLEMESSAGE
 
-protected:
-    ~nsConsoleMessage() {}
+private:
+    ~nsEngineMessage() {}
 
     nsString mMessage;
 };
 
-#endif /* __nsconsolemessage_h__ */
+#endif /* __nsenginemessage_h__ */

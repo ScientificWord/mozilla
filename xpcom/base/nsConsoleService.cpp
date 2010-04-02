@@ -51,6 +51,7 @@
 
 #include "nsConsoleService.h"
 #include "nsConsoleMessage.h"
+#include "nsEngineMessage.h"
 #include "nsIClassInfoImpl.h"
 
 NS_IMPL_THREADSAFE_ADDREF(nsConsoleService)
@@ -203,6 +204,13 @@ NS_IMETHODIMP
 nsConsoleService::LogStringMessage(const PRUnichar *message)
 {
     nsConsoleMessage *msg = new nsConsoleMessage(message);
+    return this->LogMessage(msg);
+}
+
+NS_IMETHODIMP
+nsConsoleService::LogEngineStringMessage(const PRUnichar *message)
+{
+    nsEngineMessage *msg = new nsEngineMessage(message);
     return this->LogMessage(msg);
 }
 

@@ -3206,6 +3206,21 @@ function handleSourceParseError(errorMsg) // returns true if the user wants to g
   return false;
 }
 
+function msiClearSource(editorElement)
+{
+  var sourceContentWindow = msiGetHTMLSourceTextWindow(editorElement);
+  var sourceTextEditor = msiGetHTMLSourceEditor(editorElement);
+  if (sourceContentWindow && sourceTextEditor)
+  {
+    sourceContentWindow.commandManager.removeCommandObserver(editorElement.mSourceTextObserver, "cmd_undo");
+    sourceTextEditor.removeDocumentStateListener(editorElement.mSourceTextListener);
+    sourceTextEditor.enableUndo(false);
+    sourceTextEditor.selectAll();
+    sourceTextEditor.deleteSelection(sourceTextEditor.eNone);
+    sourceTextEditor.resetModificationCount();
+  }
+}
+
 function msiSetEditMode(mode, editorElement)
 {
   if (!editorElement)
@@ -3327,6 +3342,7 @@ function msiSetEditMode(mode, editorElement)
         source = sourceTextEditor.outputToString(kTextMimeType, 1024); // OutputLFLineBreak
         try {
           errMsg = editor.rebuildDocumentFromSource(source);
+          msiSetDocumentEditable(true, editorElement)
         }
         catch(e){}
         if (errMsg.length >0) // there was a parsing failure
@@ -3335,6 +3351,7 @@ function msiSetEditMode(mode, editorElement)
           if (willReturn)
           {
             editor.endTransaction();
+            msiSetDisplayMode(editorElement, kDisplayModeSource)
             return;
           }             
         }
@@ -3366,17 +3383,7 @@ function msiSetEditMode(mode, editorElement)
 //      return;
 
     // Clear out the string buffers
-    var sourceContentWindow = msiGetHTMLSourceTextWindow(editorElement);
-    var sourceTextEditor = msiGetHTMLSourceEditor(editorElement);
-    if (sourceContentWindow && sourceTextEditor)
-    {
-      sourceContentWindow.commandManager.removeCommandObserver(editorElement.mSourceTextObserver, "cmd_undo");
-      sourceTextEditor.removeDocumentStateListener(editorElement.mSourceTextListener);
-      sourceTextEditor.enableUndo(false);
-      sourceTextEditor.selectAll();
-      sourceTextEditor.deleteSelection(sourceTextEditor.eNone);
-      sourceTextEditor.resetModificationCount();
-    }
+    msiClearSource(editorElement);
     editorElement.contentWindow.focus();
   }
 }
