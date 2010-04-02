@@ -49,7 +49,7 @@ public:
     NS_DECL_ISUPPORTS
     NS_DECL_NSICONSOLEMESSAGE
 
-private:
+protected:
     ~nsConsoleMessage() {}
 
     nsString mMessage;

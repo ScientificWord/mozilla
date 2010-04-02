@@ -147,6 +147,7 @@
   <!--sidebaritem id="sidebaritem-ajarfile"   name="jarfile" src="jar:file:///C:/Documents and Settings/Barry/My Documents/SWPDocs/guided tour of prince.sci!/main.xhtml" title="Guide"/-->
   <sidebaritem id="sidebaritem-fragments"   name="fragments" src="chrome://prince/content/fragment.xul" title="Fragments"/>
   <sidebaritem id="sidebaritem-toc"   name="toc" src="chrome://prince/content/toc.xul" title="TOC"/>                              
+  <sidebaritem id="sidebaritem-log"   name="compute log" src="chrome://global/content/engineconsole.xul" title="Engine log"/>                              
   <sidebaritem id="sidebaritem-symbols"   height="244" name="symbols" src="chrome://prince/content/symbols.xul" title="Symbols"/>
 </sidebaritems>
 
