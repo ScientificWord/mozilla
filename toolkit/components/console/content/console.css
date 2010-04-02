@@ -13,7 +13,8 @@
   -moz-binding: url("chrome://global/content/consoleBindings.xml#error");
 }
 
-.console-row[type="message"] {
+.console-row[type="message"],
+.console-row[type="enginemsg"] {
   -moz-binding: url("chrome://global/content/consoleBindings.xml#message");
 }
 
@@ -34,6 +35,8 @@
 
 .console-box[mode="Warnings"] > .console-box-internal > .console-rows 
     > .console-row[type="error"],
+.console-box[mode="Engine messages"] > .console-box-internal > .console-rows 
+    > .console-row[type="error"],
 .console-box[mode="Messages"] > .console-box-internal > .console-rows 
     > .console-row[type="error"]
 {
@@ -41,6 +44,8 @@
 }
 
 .console-box[mode="Errors"] > .console-box-internal > .console-rows 
+    > .console-row[type="warning"],
+.console-box[mode="Engine messages"] > .console-box-internal > .console-rows 
     > .console-row[type="warning"],
 .console-box[mode="Messages"] > .console-box-internal > .console-rows 
     > .console-row[type="warning"]
@@ -51,7 +56,19 @@
 .console-box[mode="Errors"] > .console-box-internal > .console-rows 
     > .console-row[type="message"],
 .console-box[mode="Warnings"] > .console-box-internal > .console-rows 
+    > .console-row[type="message"],
+.console-box[mode="Engine messages"] > .console-box-internal > .console-rows 
     > .console-row[type="message"]
+{
+  display: none;
+}
+
+.console-box[mode="Errors"] > .console-box-internal > .console-rows 
+    > .console-row[type="enginemsg"],
+.console-box[mode="Warnings"] > .console-box-internal > .console-rows 
+    > .console-row[type="enginemsg"],
+.console-box[mode="Messages"] > .console-box-internal > .console-rows 
+    > .console-row[type="enginemsg"]
 {
   display: none;
 }
