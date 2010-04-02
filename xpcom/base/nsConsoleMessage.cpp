@@ -40,6 +40,7 @@
  */
 
 #include "nsConsoleMessage.h"
+#include "nsEngineMessage.h"
 #include "nsReadableUtils.h"
 
 NS_IMPL_THREADSAFE_ISUPPORTS1(nsConsoleMessage, nsIConsoleMessage)
@@ -66,4 +67,25 @@ nsConsoleMessage::GetMessageMoz(PRUnichar **result) {
 //      mMessage = ToNewUnicode(newMessage);
 //      return NS_OK;
 //  }
+
+
+
+NS_IMPL_THREADSAFE_ISUPPORTS2(nsEngineMessage, nsIEngineMessage, nsIConsoleMessage)
+
+nsEngineMessage::nsEngineMessage() 
+{
+}
+
+nsEngineMessage::nsEngineMessage(const PRUnichar *message) 
+{
+	mMessage.Assign(message);
+}
+
+
+NS_IMETHODIMP
+nsEngineMessage::GetMessageMoz(PRUnichar **result) {
+    *result = ToNewUnicode(mMessage);
+
+    return NS_OK;
+}
 
