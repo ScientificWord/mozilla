@@ -2111,10 +2111,9 @@ char *MuPADWrapper::BIGOPtoEstr(SEMANTICS_NODE * bigop_snode,
   return rv;
 }
 
-char *MuPADWrapper::INTEGRALtoEstr(SEMANTICS_NODE * bigop_snode,
-                                   int& error_code)
+char* MuPADWrapper::INTEGRALtoEstr(SEMANTICS_NODE* bigop_snode, int& error_code)
 {
-  char *rv = NULL;
+  char* rv = NULL;
   error_code = 0;
 
   //eval        integral<uID5.1>tciint(%integrand%,%variable%,%lower%,%upper%)
@@ -2123,25 +2122,30 @@ char *MuPADWrapper::INTEGRALtoEstr(SEMANTICS_NODE * bigop_snode,
   //indefinite  integral<uID5.4>hold(int)(%integrand%%comma%%variable%)
   //approximate integral<uID5.5>%integrand%,%variable%,%lower%..%upper%
 
-  char *lower_str = NULL;
-  char *upper_str = NULL;
-  char *integrand_str = NULL;
-  char *var_str = NULL;
+  char* lower_str = NULL;
+  char* upper_str = NULL;
+  char* integrand_str = NULL;
+  char* var_str = NULL;
 
-  BUCKET_REC *l_bucket =
-    FindBucketRec(bigop_snode->bucket_list, MB_LOWERLIMIT);
+  BUCKET_REC* l_bucket = FindBucketRec(bigop_snode->bucket_list, MB_LOWERLIMIT);
+
   if (l_bucket && l_bucket->first_child) {
+    
     lower_str = ProcessSemList(l_bucket->first_child, NULL, error_code);
+    
     if (error_code) {
       delete[] lower_str;
       return NULL;
     }
+
   }
 
-  BUCKET_REC *u_bucket =
-    FindBucketRec(bigop_snode->bucket_list, MB_UPPERLIMIT);
+  BUCKET_REC* u_bucket = FindBucketRec(bigop_snode->bucket_list, MB_UPPERLIMIT);
+
   if (u_bucket && u_bucket->first_child) {
+
     upper_str = ProcessSemList(u_bucket->first_child, NULL, error_code);
+
     if (error_code) {
       delete[] upper_str;
       delete[] lower_str;
@@ -2149,11 +2153,12 @@ char *MuPADWrapper::INTEGRALtoEstr(SEMANTICS_NODE * bigop_snode,
     }
   }
 
-  BUCKET_REC *operand_bucket =
-    FindBucketRec(bigop_snode->bucket_list, MB_OPERAND);
+  BUCKET_REC* operand_bucket = FindBucketRec(bigop_snode->bucket_list, MB_OPERAND);
+
   if (operand_bucket && operand_bucket->first_child) {
-    integrand_str = ProcessSemList(operand_bucket->first_child,
-                                   NULL, error_code);
+
+    integrand_str = ProcessSemList(operand_bucket->first_child, NULL, error_code);
+
     if (error_code) {
       delete[] upper_str;
       delete[] lower_str;
@@ -2162,108 +2167,199 @@ char *MuPADWrapper::INTEGRALtoEstr(SEMANTICS_NODE * bigop_snode,
     }
   }
 
-  BUCKET_REC *v_bucket =
-    FindBucketRec(bigop_snode->bucket_list, MB_INTEG_VAR);
-  if (v_bucket && v_bucket->first_child) {
-    var_str = ProcessSemList(v_bucket->first_child, NULL, error_code);
-    if (error_code) {
-      delete[] upper_str;
-      delete[] lower_str;
-      delete[] integrand_str;
-      delete[] var_str;
-      return NULL;
-    }
-  }
+//   BUCKET_REC* v_bucket = FindBucketRec(bigop_snode->bucket_list, MB_INTEG_VAR);
+// 
+//   if (v_bucket && v_bucket->first_child) {
+//     var_str = ProcessSemList(v_bucket->first_child, NULL, error_code);
+// 
+//     if (error_code) {
+//       delete[] upper_str;
+//       delete[] lower_str;
+//       delete[] integrand_str;
+//       delete[] var_str;
+//       return NULL;
+//     }
+//   }
 
   U32 ID = 5;
   U32 subID = 1;
   if (l_bucket || u_bucket) {   // definite integral
     if (context_cmdtype == CC_APPROXINTEGRAL)
       subID = 5;
-    else if (context_cmdtype == CC_HOLDINTEGRAL
-             || context_cmdtype == CC_DEFINITION)
+    else if (context_cmdtype == CC_HOLDINTEGRAL || context_cmdtype == CC_DEFINITION)
       subID = 2;
     else
       subID = 1;
   } else {                      // indefinite integral
-    if (context_cmdtype == CC_HOLDINTEGRAL
-        || context_cmdtype == CC_DEFINITION)
+    if (context_cmdtype == CC_HOLDINTEGRAL || context_cmdtype == CC_DEFINITION)
       subID = 4;
     else
       subID = 3;
   }
 
-  const char *db_production;
+  const char* db_production;
   char name_buffer[80];
+
   if (GetdBaseIDRecord("BIGOPS", ID, subID, &db_production, name_buffer, 80)) {
+
     TCI_ASSERT(db_production);
 
     size_t bln = strlen(db_production);
-    if (integrand_str)
-      bln += strlen(integrand_str);
-    if (lower_str)
-      bln += strlen(lower_str);
-    if (upper_str)
-      bln += strlen(upper_str);
-    if (var_str)
-      bln += strlen(var_str);
+//    if (integrand_str)
+//      bln += strlen(integrand_str);
+//    if (lower_str)
+//      bln += strlen(lower_str);
+//    if (upper_str)
+//      bln += strlen(upper_str);
+//     if (var_str)
+//       bln += strlen(var_str);
+
     rv = new char[bln + 1];
+
     strcpy(rv, db_production);
-    StrReplace(rv, bln, "%integrand%", integrand_str);
+
+//    StrReplace(rv, bln, "%integrand%", integrand_str);
+
     if (subID == 3 || subID == 4) {
-      const char *comma = var_str ? "," : "";
-      StrReplace(rv, bln, "%comma%", comma);
+      
+      //const char* comma = var_str ? "," : "";
+      //StrReplace(rv, bln, "%comma%", comma);
+
     } else {
-      StrReplace(rv, bln, "%lower%", lower_str);
-      StrReplace(rv, bln, "%upper%", upper_str);
+
+      //StrReplace(rv, bln, "%lower%", lower_str);
+      //StrReplace(rv, bln, "%upper%", upper_str);
     }
-    StrReplace(rv, bln, "%variable%", var_str);
+
+    //StrReplace(rv, bln, "%variable%", var_str);
   }
 
-  delete[] integrand_str;
-  delete[] lower_str;
-  delete[] upper_str;
+  //delete[] integrand_str;
+  //delete[] lower_str;
+  //delete[] upper_str;
   delete[] var_str;
 
   // We may be processing a multiple integral
+  // n_integs = # of integral signs
   int n_integs = SemanticVariant2NumIntegrals(bigop_snode->variant);
-  if (n_integs > 1 && v_bucket) {
-    while (n_integs > 1) {
-      v_bucket = FindBucketRec(v_bucket->next, MB_INTEG_VAR);
-      //indefinite integral<uID5.3>tciint(%integrand%%comma%%variable%)
-      if (v_bucket && v_bucket->first_child) {
-        char *var_str = ProcessSemList(v_bucket->first_child,
-                                       NULL, error_code);
-        if (error_code) {
-          delete[] rv;
-          delete[] var_str;
-          return NULL;
-        }
 
-        size_t bln = strlen(db_production);
-        if (rv)
-          bln += strlen(rv);
-        if (var_str)
-          bln += strlen(var_str);
-        char *new_rv = new char[bln + 1];
-        strcpy(new_rv, db_production);
-        StrReplace(new_rv, bln, "%integrand%", rv);
-        StrReplace(new_rv, bln, "%comma%", ",");
-        StrReplace(new_rv, bln, "%variable%", var_str);
+  if (n_integs > 0 ) {
 
-        delete[] rv;
-        delete[] var_str;
-        rv = new_rv;
-        n_integs--;
-      } else
-        break;
+    // nExplicitDiffs = # of explicit differentials    
+    int nExplicitDiffs = 0;
+	BUCKET_REC* v_bucket = FindBucketRec(bigop_snode->bucket_list, MB_INTEG_VAR);
+	BUCKET_REC* tmp = v_bucket;
+	while (tmp){
+       tmp = FindBucketRec(tmp -> next, MB_INTEG_VAR);
+	   ++nExplicitDiffs;
+	}
+	//--nExplicitDiffs;
+
+    bool used_x = false;
+    bool used_y = false;
+    bool used_z = false;
+
+	int nTimes = n_integs;
+
+    while (n_integs > 0) {
+       //indefinite integral<uID5.3>tciint(%integrand%%comma%%variable%)
+	   char* var_str = NULL;
+
+       if (nExplicitDiffs > 0){
+
+         if (v_bucket->first_child) {
+            var_str = ProcessSemList(v_bucket->first_child, NULL, error_code);
+
+            if (error_code) {
+              delete[] rv;
+              delete[] var_str;
+              return NULL;
+            }
+
+			v_bucket = FindBucketRec(v_bucket -> next, MB_INTEG_VAR);
+
+            if (StringEqual(var_str, "q1x"))
+		       used_x = true;
+		    else if (StringEqual(var_str, "q1y"))
+		       used_y = true;
+		    else if (StringEqual(var_str, "q1z"))
+		       used_z = true;
+		 }
+	   } else {
+	     if (!used_x) {
+		    var_str = DuplicateString("q1x");
+			used_x = true;
+            ClientAliases_REC* curr_client = GetClientAliasesRec(client_ID);
+            curr_client->AKAs_list = PushNamingRecord("q1x", "mix", "x", Ilk_Var, curr_client->AKAs_list);
+                     
+  		 } else if (!used_y){
+		    var_str = DuplicateString("q1y");
+			used_y = true;
+		 } else if (!used_z) {
+		    var_str = DuplicateString("q1z");
+			used_z = true;
+		 }
+	   }
+		   
+
+
+	   
+       size_t bln = strlen(db_production);
+       if (rv)
+         bln += strlen(rv);
+       if (var_str)
+         bln += strlen(var_str);
+       if (integrand_str)
+         bln += strlen(integrand_str);
+       if (lower_str)
+         bln += strlen(lower_str);
+       if (upper_str)
+         bln += strlen(upper_str);
+
+
+       char* new_rv = new char[bln + 1];
+       strcpy(new_rv, db_production);
+
+       if (nTimes == n_integs){
+            // First time 
+
+	       StrReplace(new_rv, bln, "%integrand%", integrand_str);	 
+           StrReplace(new_rv, bln, "%lower%", lower_str);
+           StrReplace(new_rv, bln, "%upper%", upper_str);
+
+		   delete[] integrand_str;
+		   integrand_str = 0;    
+           delete[] lower_str;
+		   lower_str = 0;
+           delete[] upper_str;
+		   upper_str = 0;
+
+
+	   } else {
+	       // Subsequent times...
+
+           StrReplace(new_rv, bln, "%integrand%", rv); 		  
+       }
+
+       StrReplace(new_rv, bln, "%comma%", ",");
+       StrReplace(new_rv, bln, "%variable%", var_str);
+
+       delete[] rv;
+       delete[] var_str;
+
+       rv = new_rv;
+
+       n_integs--;
+	   nExplicitDiffs--;
+
     }                           // loop thru multiple integral
+
   }
 
   return rv;
 }
 
-char *MuPADWrapper::OPERATORtoEstr(SEMANTICS_NODE * sem_op_node,
+char* MuPADWrapper::OPERATORtoEstr(SEMANTICS_NODE * sem_op_node,
                                    const char *modulus, bool & is_infix,
                                    int& error_code)
 {
