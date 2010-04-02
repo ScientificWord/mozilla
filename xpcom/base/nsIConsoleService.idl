@@ -51,6 +51,11 @@ interface nsIConsoleService : nsISupports
     void logStringMessage(in wstring message);
 
     /**
+     * Convenience method for logging simple engine messages.
+     */
+    void logEngineStringMessage(in wstring message);
+
+    /**
      * Get an array of all the messages logged so far.  If no messages
      * are logged, this function will return a count of 0, but still
      * will allocate one word for messages, so as to show up as a
