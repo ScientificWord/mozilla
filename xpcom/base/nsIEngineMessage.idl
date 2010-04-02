@@ -1,4 +1,4 @@
-/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -35,24 +35,20 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#ifndef __nsconsolemessage_h__
-#define __nsconsolemessage_h__
+#include "nsISupports.idl"
+#include "nsIConsoleMessage.idl"
 
-#include "nsIConsoleMessage.h"
-#include "nsString.h"
 
-class nsConsoleMessage : public nsIConsoleMessage {
-public:
-    nsConsoleMessage();
-    nsConsoleMessage(const PRUnichar *message);
-
-    NS_DECL_ISUPPORTS
-    NS_DECL_NSICONSOLEMESSAGE
-
-protected:
-    ~nsConsoleMessage() {}
-
-    nsString mMessage;
+[scriptable, uuid(BA8BAD43-F480-40b0-9D4B-80B3A6C786CE)]
+interface nsIEngineMessage : nsIConsoleMessage
+{
+ //   [binaryname(MessageMoz)] readonly attribute wstring message;
 };
 
-#endif /* __nsconsolemessage_h__ */
+%{ C++
+#define NS_ENGINEMESSAGE_CID \
+{ 0xba8bad43, 0xf480, 0x40b0, { 0x9d, 0x4b, 0x80, 0xb3, 0xa6, 0xc7, 0x86, 0xce } }
+#define NS_ENGINEMESSAGE_CONTRACTID "@mozilla.org/enginemessage;1"
+%}
+
+

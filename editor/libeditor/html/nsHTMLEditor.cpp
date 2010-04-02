@@ -1,4 +1,3 @@
-/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -1935,8 +1934,8 @@ nsHTMLEditor::RebuildDocumentFromSource(const nsAString& aSourceString, nsAStrin
   res = rootElement->GetParentNode(getter_AddRefs(htmlNode));
   htmlElement = do_QueryInterface(htmlNode);
   nsCOMPtr<nsIDOMDocument> domdoc;
-  nsCOMPtr<nsIDOMDocument> origDocNode;
-  res = htmlNode->GetOwnerDocument(getter_AddRefs(origDocNode));
+  nsCOMPtr<nsIDOMDocument> origDoc;
+  res = htmlNode->GetOwnerDocument(getter_AddRefs(origDoc));
 
 
   parser = do_CreateInstance(kDOMParserCID, &res);
@@ -1963,26 +1962,50 @@ nsHTMLEditor::RebuildDocumentFromSource(const nsAString& aSourceString, nsAStrin
     _retval.Assign(errMsg);
     return NS_OK;
   }
+  nsAutoEditBatch beginBatching(this);
   PRInt32 htmlOffset = 0;
   nsCOMPtr<nsIDOMNode> child;
-  nsCOMPtr<nsIDOM3Document> doc = do_QueryInterface(origDocNode);
+  nsCOMPtr<nsIDOM3Document> doc = do_QueryInterface(origDoc);
   res = doc->AdoptNode(newHtmlNode, getter_AddRefs(child));
   newHtmlNode = child;
-  res = origDocNode->GetFirstChild(getter_AddRefs(child));
-  while (child && child != htmlNode)
+  res = origDoc->GetFirstChild(getter_AddRefs(child));
+  nsAutoString tagName;
+  res = child->GetLocalName(tagName);
+  while (child && !tagName.EqualsLiteral("html"))
   {
     htmlOffset++;
     res = child->GetNextSibling(getter_AddRefs(child));
+    res = child->GetLocalName(tagName);
   }
   if (child)
   {
-    res = DeleteNode(htmlNode);
-    NS_ENSURE_SUCCESS(res, res);
-    res = InsertNode(newHtmlNode, origDocNode, htmlOffset);
-    NS_ENSURE_SUCCESS(res, res);
-    return BeginningOfDocument();
+    nsCOMPtr<nsIDOMNode> oldHtmlNode(child);
+//    res = DeleteNode(child);
+    res = oldHtmlNode->GetFirstChild(getter_AddRefs(child));
+    while (child)
+    {
+      DeleteNode(child);
+      res = oldHtmlNode->GetFirstChild(getter_AddRefs(child));
+    }
+
+    if (res == NS_OK)
+    {
+//      res = InsertNode(newHtmlNode, origDoc, htmlOffset);
+      PRInt32 offset = 0;
+      newHtmlNode->GetFirstChild(getter_AddRefs(child));
+      while (child)
+      {
+        res = InsertNode(child, oldHtmlNode, offset++);
+        if (NS_FAILED(res)) return res;
+        newHtmlNode->GetFirstChild(getter_AddRefs(child));
+      }
+      res = SelectAll();
+      // diagnostics only. Remove soon.  BBM
+//      res = newHtmlNode->GetParentNode(getter_AddRefs(htmlNode));
+//      res = newHtmlNode->GetOwnerDocument(getter_AddRefs(origDoc));
+    }
   } 
-  return NS_ERROR_FAILURE;
+  return BeginningOfDocument();
 }
 
 void
