@@ -4180,8 +4180,14 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
 
     if (!objStr && !propsData)
     {
-      var textChild = msiNavigationUtils.getSingleTextNodeContent(wrappedChildElement);
-      if (textChild)
+      var textChild = null;
+      if (containingNodeData = msiNavigationUtils.getTopMathNodeAsAccentedCharacter(wrappedChildElement))
+      {
+        objStr = GetString("Character");
+        commandStr = "cmd_reviseChars";
+        coreElement = containingNodeData.mNode;
+      }
+      else if (textChild = msiNavigationUtils.getSingleTextNodeContent(wrappedChildElement))
       {
         propsData = new msiCharPropertiesObjectData();
         propsData.initFromNode(textChild, editorElement);
