@@ -2316,12 +2316,15 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
       if (IsBlockNode(leftNode))
         leftParent = leftNode;
       else
+      {
         leftParent = mHTMLEditor->GetBlockNodeParent(leftNode);
+      }
       if (IsBlockNode(rightNode))
         rightParent = rightNode;
       else
+      {
         rightParent = mHTMLEditor->GetBlockNodeParent(rightNode);
-      
+      } // BBM: need to refine this.
       // sanity checks
       if (!leftParent || !rightParent)
         return NS_ERROR_NULL_POINTER;  
@@ -7407,6 +7410,7 @@ nsHTMLEditRules::ApplyStructure(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsAS
   nsresult res = NS_OK;
   
   nsCOMPtr<nsIDOMNode> curNode, curParent, curBlock, newBlock;
+  nsCOMPtr<nsIDOMElement> structureNode;
   PRInt32 offset;
   PRInt32 listCount = arrayOfNodes.Count();
   nsString tString(*aStructureTag);////MJUDGE SCC NEED HELP
@@ -7427,8 +7431,21 @@ nsHTMLEditRules::ApplyStructure(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsAS
   PRInt32 i;
   for (i=0; i<listCount; i++)
   {
-    // get the node to act on, and it's location
+    // get the node to act on, and its location
     curNode = arrayOfNodes[i];
+    res = GetStructNodeFromNode(curNode, getter_AddRefs(structureNode), *aStructureTag);
+    if (structureNode != nsnull)
+    {
+      nsAutoString structNodeTag;
+      nsEditor::GetTagString(structureNode, structNodeTag);
+      if (aStructureTag->Equals(structNodeTag)) // replacing a tag with itself. Just quit.
+        return NS_OK;
+      // before removing structureNode, make sure it is not curNode. If it is, set curNode to the first 
+      // paratag child of structureNode.
+      if (curNode == structureNode) 
+        res = structureNode->GetFirstChild(getter_AddRefs(curNode));
+      RemoveStructure(structureNode, *aStructureTag);
+    }
     res = nsEditor::GetNodeLocation(curNode, address_of(curParent), &offset);
     if (NS_FAILED(res)) return res;
     nsAutoString curNodeTag;
@@ -7550,6 +7567,152 @@ nsHTMLEditRules::ApplyStructure(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsAS
 }
 
 
+nsresult 
+nsHTMLEditRules::GetStructNodeFromNode(nsIDOMNode *node, nsIDOMElement ** structNode,
+  const nsAString& notThisTag)
+
+{
+  nsresult res;
+  nsCOMPtr<nsIDOMNode> curNode;
+  nsCOMPtr<nsIDOMElement> element, nullElement;
+  nsCOMPtr<nsIDOMElement> rovingElement;
+  nsCOMPtr<nsIDOMElement> structElement = nsnull;
+  nsAutoString tagName;
+  PRBool isStructure;
+  PRBool isPara;
+  NS_NAMED_LITERAL_STRING(strPara, "paratag");
+  NS_NAMED_LITERAL_STRING(strStruct, "structtag");
+  curNode = node;
+  element = do_QueryInterface(curNode);
+  element->GetLocalName(tagName);
+// Should eventually include Name Space atom
+//    nsAutoString strNS;
+//    element->GetNamespaceURI(strNS);
+//    nsCOMPtr<nsIAtom> atomNS = NS_NewAtom(strNS);
+  nsCOMPtr<nsIAtom> atomNS = nsnull;
+  if (!tagName.IsEmpty())
+  {
+    res = mtagListManager->GetTagInClass(strStruct, tagName, atomNS, &isStructure);
+    if (isStructure)
+    {
+      // element is a structure tag, but if its tag name is equal to notThisTag, we return nsnull
+      if (notThisTag.Equals(tagName)) *structNode = nullElement;
+      else *structNode = element;
+      return NS_OK; 
+    }
+    res = mtagListManager->GetTagInClass(strPara, tagName, atomNS, &isPara);
+    if (isPara)
+    // now isPara is true, so we go left and up in the tree until we find a struct.
+    // If we encounter a para first, then node is not the first para in the structure and we
+    // return nsnull.
+    {
+      curNode = element;
+      while (curNode != nsnull)
+      {
+        res = curNode->GetPreviousSibling(getter_AddRefs(curNode));
+        if (res == NS_OK && curNode) {
+          curNode ->GetLocalName(tagName);
+          res = mtagListManager->GetTagInClass(strPara, tagName, atomNS, &isPara);
+          if (isPara) 
+          {  // the node is not the first paragraph node in the section
+            *structNode = nullElement;
+            return NS_OK;
+          }
+        }
+        else if (curNode != nsnull)
+        {
+          res = curNode->GetParentNode(getter_AddRefs(curNode));
+          if (res == NS_OK && (curNode != nsnull)) {
+            curNode ->GetLocalName(tagName);
+            res = mtagListManager->GetTagInClass(strPara, tagName, atomNS, &isStructure);
+            // curNode is a structure tag, but if its tag name is equal to notThisTag, we return nsnull
+          }
+          if (isStructure)
+          {
+            if (notThisTag.Equals(tagName)) *structNode = nullElement;
+            else 
+            {
+              element=do_QueryInterface(curNode);
+              (*structNode) = element;
+              return NS_OK; 
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+///////////////////////////////////////////////////////////////////////////
+// RemoveStructure:  
+//   For each of the nodes in arrayOfNodes, do nothing unless the node is a structure                 
+//   node or the first paragraph node in a structure (and probably is a sectiontitle node
+//   but this is not necessary).
+//
+//   For one of these nodes, we delete the node and put its children in the preceding
+//   structure node of lower or equal level, or if there is none, in the parent structure.
+//   If we are deleting a structure node of the lowest possible level, we put the contained
+ //  paragraphs in the body.
+ 
+  
+                     
+nsresult 
+nsHTMLEditRules::RemoveStructure(nsIDOMNode *node, const nsAString& notThisTag)
+{
+  nsresult res;
+  nsCOMPtr<nsIDOMElement> structElement;
+  nsCOMPtr<nsIDOMElement> destElement;
+  nsCOMPtr<nsIDOMNode> curNode;
+  nsAutoString tagName;
+  PRBool done = PR_FALSE;
+  PRBool destIsParent = PR_FALSE;
+  PRBool isStruct;
+  PRUint16 nodeType;
+  nsCOMPtr<nsIAtom> atomNS;
+
+  NS_NAMED_LITERAL_STRING(strPara, "paratag");
+  NS_NAMED_LITERAL_STRING(strStruct, "structtag");
+  res = GetStructNodeFromNode( node, getter_AddRefs(structElement), notThisTag);
+  if (structElement != nsnull)
+  {
+    curNode = structElement;
+    while (curNode && !done)
+    {
+      res = curNode->GetPreviousSibling(getter_AddRefs(curNode));
+      if (res == NS_OK && curNode)
+      { 
+        curNode->GetNodeType(&nodeType);
+        if (nodeType == 1) 
+          done = PR_TRUE;
+      }
+    }
+    // if curNode exists, it is an element
+    if (curNode)
+    {
+      curNode->GetLocalName(tagName);
+      res = mtagListManager->GetTagInClass(strStruct, tagName, atomNS, &isStruct);
+      if (isStruct) 
+      {  
+        destElement = do_QueryInterface(curNode);
+      }
+    }
+    PRInt32 offset;
+    if (!destElement) 
+    {
+      nsEditor::GetNodeLocation(node, address_of(curNode), &offset);
+      destElement = do_QueryInterface(curNode);
+      MoveContents(structElement, destElement, &offset);
+    }
+    else
+    {
+      PRUint32 uoffset;
+      nsEditor::GetLengthOfDOMNode( destElement, uoffset);
+      MoveContents(structElement, destElement, (PRInt32 *)&uoffset);
+    }
+  }
+  return NS_OK;
+}
 
 ///////////////////////////////////////////////////////////////////////////
 // ApplyEnvironment:  Apply an environment tag to a list of nodes. An environment tag has paragraphs
@@ -7611,6 +7774,14 @@ nsHTMLEditRules::ApplyEnvironment(nsCOMArray<nsIDOMNode>& arrayOfNodes, const ns
   }
   return res;
 }
+
+
+nsresult 
+nsHTMLEditRules::RemoveEnvironment(nsCOMArray<nsIDOMNode>& arrayOfNodes)
+{
+  return NS_OK;
+}
+
 
 
 // helper function
@@ -7675,6 +7846,8 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
   PRInt32 offset;
   PRBool fCanContain = PR_FALSE;
   PRBool fReplaceContainer = PR_FALSE;
+
+  RemoveStructure(inNode, aStructureType);
  
   res = nsEditor::GetNodeLocation(inNode, address_of(sourceParentNode), &sourceOffset);
 // BBM Consider the following:
