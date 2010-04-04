@@ -4405,6 +4405,27 @@ function msiReviseChars(reviseData, dialogData, editorElement)
   var theLowerAccent = dialogData.mLowerAccent;
   var newNode = null;
   var currNodeName = msiGetBaseNodeName(refNode)
+  var baseNodeName = "mi";
+
+  function getBaseNode(aTopNode)
+  {
+    switch(msiGetBaseNodeName(aTopNode))
+    {
+      case "mover":
+      case "munder":
+      case "munderover":
+        return getBaseNode(msiNavigationUtils.getIndexedSignificantChild(refNode, 0));
+      break;
+      default:
+        return aTopNode;
+      break;
+    }
+  }
+
+  var theBaseNode = getBaseNode(refNode);
+  if (msiNavigationUtils.isMathMLLeafNode(theBaseNode))
+    baseNodeName = msiGetBaseNodeName(theBaseNode);
+
   var newNodeName = "";
   var startOffset, endOffset;
   if (bIsText)
@@ -4431,8 +4452,10 @@ function msiReviseChars(reviseData, dialogData, editorElement)
     }
     else if (theLowerAccent)
       newNodeName = "munder";
-    else if (bForceMath && bIsText)
-      newNodeName = "mi";
+//    else if (bForceMath && bIsText)
+    else
+//      newNodeName = "mi";
+      newNodeName = baseNodeName;
     if (newNodeName.length && (currNodeName != newNodeName))
       newNode = editor.document.createElementNS(mmlns, newNodeName);
   }
@@ -4442,16 +4465,31 @@ function msiReviseChars(reviseData, dialogData, editorElement)
   aLogStr += "] and bForceMath is [";
   aLogStr += bForceMath ? "true" : "false";
   aLogStr += "], while theUpperAccent is [" + theUpperAccent + "] and theLowerAccent is [" + theLowerAccent + "]; refNode";
-  msiKludgeLogNodeContents(refNode, ["reviseChars"], aLogStr, true);
+  msiKludgeLogNodeContentsAndAllAttributes(refNode, ["reviseChars"], aLogStr, true);
+  if (newNode)
+    msiKludgeLogNodeContentsAndAllAttributes(newNode, ["reviseChars"], "  while newNode", true);
 
   if (newNode)  //get the node inserted
   {
     if (!bIsText)
     {
-      msiEditorMoveChildren(newNode, refNode, editor)
+      if (msiNavigationUtils.isMathTemplate(newNode) && msiNavigationUtils.isMathTemplate(refNode))
+        msiEditorMoveChildren(newNode, refNode, editor)
       msiCopyElementAttributes(newNode, refNode, editor);
 //    var oldParts = msiNavigationUtils.treatMathNodeAsAccentedCharacter(refNode);
       editor.replaceNode(newNode, refNode, theParentNode);
+      msiKludgeLogNodeContentsAndAllAttributes(refNode, ["reviseChars"], "After msiEditorMoveChildren and editor.replaceNode calls, refNode", true);
+      if (msiNavigationUtils.isMathMLLeafNode(refNode))
+      {
+        switch(newNodeName)
+        {
+          case "mover":
+          case "munder":
+          case "munderover":
+            editor.insertNode(refNode, newNode, 0);
+          break;
+        }
+      }
       refNode = newNode;
     }
     else
@@ -4469,24 +4507,45 @@ function msiReviseChars(reviseData, dialogData, editorElement)
     {
       var newChild = editor.document.createElementNS(mmlns, mathNodeName);
       editor.insertNode(newChild, parent, index);
-      msiKludgeLogNodeContents(parent, ["reviseChars"], "    In checkChild, inside the insertNode clause after inserting parent", false);
+      msiKludgeLogNodeContentsAndAllAttributes(parent, ["reviseChars"], "    In checkChild, inside the insertNode clause after inserting, parent", false);
     }
     if (parent.childNodes[index].textContent != newText)
     {
       var newTextNode = editor.document.createTextNode(newText);
+      msiKludgeLogNodeContentsAndAllAttributes(parent.childNodes[index], ["reviseChars"], "    In checkChild, before replacing or inserting text, child", false);
       if (parent.childNodes[index].childNodes.length)
         editor.replaceNode(newTextNode, parent.childNodes[index].childNodes[0], parent.childNodes[index]);
       else
         editor.insertNode(newTextNode, parent.childNodes[index], 0);
     }
+    msiKludgeLogNodeContentsAndAllAttributes(parent.childNodes[index], ["reviseChars"], "    In checkChild, after inserting and before end, child node", true);
+  }
+
+  function checkLeaf(leafNode, newText)
+  {
+    if (leafNode.textContent != newText)
+    {
+      var newTextNode = editor.document.createTextNode(newText);
+      msiKludgeLogNodeContentsAndAllAttributes(leafNode, ["reviseChars"], "    In checkLeaf, before replacing or inserting text, child", false);
+      if (leafNode.childNodes.length)
+        editor.replaceNode(newTextNode, leafNode.childNodes[0], leafNode);
+      else
+        editor.insertNode(newTextNode, leafNode, 0);
+    }
   }
 
   function checkContents(mathNode, baseText, lowerAccent, upperAccent)
   {
-    checkChild(mathNode, 0, "mi", baseText);
+    if (msiNavigationUtils.isMathMLLeafNode(mathNode))
+      return checkLeaf(mathNode, baseText);
+
+//    checkChild(mathNode, 0, "mi", baseText);
+    checkChild(mathNode, 0, baseNodeName, baseText);
     switch(msiGetBaseNodeName(mathNode))
     {
       case "mi":
+      case "mo":
+      case "mn":
       break;
       case "mover":
         checkChild(mathNode, 1, "mi", upperAccent);
