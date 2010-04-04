@@ -117,6 +117,11 @@ pref("fastcursor.flashbar", 1);
 pref("fastcursor.tapsforrepeat", 1);
 pref("fastcursor.millisecondsfortaps", 500);
 
+pref("swp.MuPAD.log_mathml_sent", true);
+pref("swp.MuPAD.log_mathml_received", true);
+pref("swp.MuPAD.log_engine_sent", true);
+pref("swp.MuPAD.log_engine_received", true);
+
 pref("swp.zoom_factor",            "1.0");
 pref("swp.graph.XTickCount", "0");
 pref("swp.graph.YTickCount", "0");
