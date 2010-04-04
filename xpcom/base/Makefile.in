@@ -119,6 +119,7 @@ SDK_HEADERS     = \
 XPIDLSRCS	= \
 		nsIConsoleListener.idl \
 		nsIConsoleMessage.idl \
+		nsIEngineMessage.idl \
 		nsIConsoleService.idl \
 		nsIErrorService.idl \
 		nsIException.idl \

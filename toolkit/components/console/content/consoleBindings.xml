@@ -147,17 +147,27 @@
               return;
  
             this.appendError(scriptError);
-          } catch (ex) {
+          } 
+          catch (ex) {
             try {
-              // Try to QI it to a console message
-              var msg = aObject.QueryInterface(Components.interfaces.nsIConsoleMessage);
+              // Try to QI it to an engine message
+              var msg = aObject.QueryInterface(Components.interfaces.nsIEngineMessage);
               if (msg.message)
-                this.appendMessage(msg.message);
-              else // observed a null/"clear" message
-                this.clearConsole();
-            } catch (ex2) {
-              // Give up and append the object itself as a string
-              this.appendMessage(aObject);
+                this.appendMessage(msg.message,"enginemsg");
+            } 
+            catch (ex2) {
+              try {
+                // Try to QI it to an console message
+                var msg = aObject.QueryInterface(Components.interfaces.nsIConsoleMessage);
+                if (msg.message)
+                  this.appendMessage(msg.message);
+                else // observed a null/"clear" message
+                  this.clearConsole();
+              }
+              catch (ex3) {
+                // Give up and append the object itself as a string
+                this.appendMessage(aObject);
+              }
             }
           }
         ]]></body>
