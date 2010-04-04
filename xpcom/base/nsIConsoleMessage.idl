@@ -54,3 +54,4 @@ interface nsIConsoleMessage : nsISupports
 
 #define NS_CONSOLEMESSAGE_CONTRACTID "@mozilla.org/consolemessage;1"
 %}
+
