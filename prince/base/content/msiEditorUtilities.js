@@ -1637,7 +1637,10 @@ function msiEditorMoveCorrespondingContents(targNode, srcNode, editor)
     msup : { base : 1, sup : 2 },
     msub : { base : 1, sub : 2 },
     msubsup : { base : 1, sub : 2, sup : 3 },
-    menclose : { base : -1 }
+    menclose : { base : -1 },
+    msqrt : { base : -1 },
+    mroot : { base : 1, index : 2},
+    mfrac : { num : 1, denom : 2}
   };
   function positionToContentName(aNodeName, nPos)
   {
@@ -1672,7 +1675,7 @@ function msiEditorMoveCorrespondingContents(targNode, srcNode, editor)
   aPosition = positionToContentName(newName, -1);
   if (aPosition)  //so this one has all children together in one place
   {
-    if (aPosition in childContentTable[oldName])
+    if ((oldName in childContentTable) && (aPosition in childContentTable[oldName]))
     {
       oldPos = childContentTable[oldName][aPosition];
       if (oldPos > 0)  //moving it from a specified position - may be wrapped in an mrow
@@ -1777,9 +1780,10 @@ function msiEditorReplaceTextWithText(editor, textNode, startOffset, endOffset, 
 
 function msiEditorPrepareForInsertion(editor, nodeToInsert, insertPosition)
 {
-  msiKludgeLogString("Inside msiEditorPrepareForInsertion\n", ["reviseChars"]);
   var theParentNode = insertPosition.mNode;
   var theInsertPos = insertPosition.mOffset;
+  var oldParent = null;
+  msiKludgeLogString("Inside msiEditorPrepareForInsertion, with passed-in insertPosition.mNode [" + insertPosition.mNode.nodeName + "] and insertPosition.mOffset [" + insertPosition.mOffset + "]\n", ["reviseChars"]);
 
   function encloseNode(childToEnclose, enclosingNodeName, enclosingNodeNameSpace)
   {
@@ -1801,25 +1805,34 @@ function msiEditorPrepareForInsertion(editor, nodeToInsert, insertPosition)
     msiKludgeLogNodeContents(nodeToInsert, ["reviseChars"], "Inside msiEditorPrepareForInsertion(), nodeToInsert can't be child of parent node.\n  nodeToInsert", false);
     msiKludgeLogNodeContents(theParentNode, ["reviseChars"], "  theParentNode", true);
 
+    oldParent = theParentNode;
     if (msiNavigationUtils.isMathTemplate(theParentNode.parentNode))
       theParentNode = encloseNode(theParentNode, "mrow", mmlns);
-    if (msiNavigationUtils.positionIsAtStart(theParentNode, theInsertPos))  //in this case insert in parent's parent before parent
-      theInsertPos = msiNavigationUtils.offsetInParent(theParentNode);
-    else if (msiNavigationUtils.positionIsAtEnd(theParentNode, theInsertPos))  //in this case insert in parent's parent after parent
-      theInsertPos = msiNavigationUtils.offsetInParent(theParentNode) + 1;
+    if (msiNavigationUtils.positionIsAtStart(oldParentNode, theInsertPos))  //in this case insert in parent's parent before parent
+      theInsertPos = msiNavigationUtils.offsetInParent(oldParentNode);
+    else if (msiNavigationUtils.positionIsAtEnd(oldParentNode, theInsertPos))  //in this case insert in parent's parent after parent
+      theInsertPos = msiNavigationUtils.offsetInParent(oldParentNode) + 1;
     else  //do the split at the parent level
     {
       var aLeftNodeObj = new Object();
-      editor.splitNode(theParentNode, theInsertPos, aLeftNodeObj);
-      theInsertPos = msiNavigationUtils.offsetInParent(theParentNode);  //set up to insert at the split
+      editor.splitNode(oldParentNode, theInsertPos, aLeftNodeObj);
+      theInsertPos = msiNavigationUtils.offsetInParent(oldParentNode);  //set up to insert at the split
     }
-    theParentNode = theParentNode.parentNode;
+    if (oldParent == theParentNode)
+      theParentNode = theParentNode.parentNode;
   }
-  if (msiNavigationUtils.isMathTemplate(theParentNode.parentNode))
-    theParentNode = encloseNode(theParentNode, "mrow", mmlns);
+//  if (msiNavigationUtils.isMathTemplate(theParentNode.parentNode))  //This surely was wrong
+  if (msiNavigationUtils.isMathTemplate(theParentNode))
+  {
+    var replaceChild = msiNavigationUtils.getIndexedSignificantChild(theParentNode, theInsertPos);
+    if (replaceChild != null)
+      theParentNode = encloseNode(replaceChild, "mrow", mmlns);
+    msiKludgeLogString("Inside msiEditorPrepareForInsertion, isMathTemplate() returned true for theParentNode [" + theParentNode.nodeName + "]\n", ["reviseChars"]);
+//    theParentNode = encloseNode(theParentNode, "mrow", mmlns);  //This surely was wrong
+  }
   insertPosition.mNode = theParentNode;
   insertPosition.mOffset = theInsertPos;
-  msiKludgeLogString("Ending msiEditorPrepareForInsertion\n", ["reviseChars"]);
+  msiKludgeLogString("Ending msiEditorPrepareForInsertion, returning insertPosition.mNode [" + insertPosition.mNode.nodeName + "] and insertPosition.mOffset [" + insertPosition.mOffset + "]\n", ["reviseChars"]);
   return (theParentNode != null);
 }
 
@@ -6167,6 +6180,8 @@ var msiNavigationUtils =
     var nodeName = msiGetBaseNodeName(node);
 //    if (nodeName == 'mstyle' && node.childNodes.length == 1)
 //      return this.isFence(node.childNodes[0]);
+    if (nodeName == 'mfenced')
+      return true;
 
     if (nodeName == 'mrow' || nodeName == 'mstyle')
     {
@@ -6301,7 +6316,7 @@ var msiNavigationUtils =
       case 'mover':
       case 'munderover':
       case 'mroot':
-      case 'msqrt':
+//      case 'msqrt':   shouldn't include this one!
         return true;
       break;
       case 'mrow':
@@ -6641,6 +6656,8 @@ var msiNavigationUtils =
       break;
 
       case "mi":
+      case "mo":
+      case "mn":
         baseText = this.getLeafNodeText(aNode);
       break;
 
@@ -7047,16 +7064,29 @@ var msiNavigationUtils =
       return this.isTextNode(aNode);
     if (this.isTextNode(aNode))
       return this.canContainTextNode(aParent, editor);
+    if (this.isMathTemplate(aParent))
+      return true;
+    if (this.isFence(aParent))
+      return true;
     switch(msiGetBaseNodeName(aParent))
     {
       case "mtext":
         return this.isTextNode(aNode);
+      break;
+      case "mrow":
+      case "mstyle":
+      case "mphantom":
+      case "msqrt":
+      case "menclose":
+        return true;
       break;
       case "hspace":
       case "vspace":
       case "br":
       case "hr":
         return false;
+      break;
+      default:
       break;
     }
 
@@ -7405,6 +7435,41 @@ function msiKludgeLogString(logStr, keyArray)
 
 function msiKludgeLogNodeContents(aNode, keyArray, prefaceStr, bIncludePosInParent)
 {
+  return msiKludgeLogNodeContentsAndAttributes(aNode, keyArray, prefaceStr, bIncludePosInParent, []);
+//  var bDoIt = msiKludgeTestKeys(keyArray);
+//  if (!bDoIt)
+//    return;
+//  var retStr = "Node";
+//  if (prefaceStr && prefaceStr.length)
+//    retStr = prefaceStr;
+//  if (bIncludePosInParent)
+//  {
+//    if (aNode.parentNode)
+//      retStr += " is at position [" + msiNavigationUtils.offsetInParent(aNode) + "] in its parent, and";
+//    else
+//      retStr += " has no parent node, and";
+//  }
+//  if (msiNavigationUtils.isTextNode(aNode))
+//    retStr += " is a text node, with content [" + aNode.textContent + "].\n";
+//  else
+//  {
+//    retStr += " is a [" + aNode.nodeName + "] node with [" + aNode.childNodes.length + "] children:";
+//    for (var ix = 0; ix < aNode.childNodes.length; ++ix)
+//    {
+//      retStr += "\n  child [" + ix + "] is a [" + aNode.childNodes[ix].nodeName + "] + with text content [" + aNode.childNodes[ix].textContent + "]";
+//    }
+//    retStr += "\n";
+//  }
+//  dump(retStr);
+}
+
+function msiKludgeLogNodeContentsAndAllAttributes(aNode, keyArray, prefaceStr, bIncludePosInParent)
+{
+  return msiKludgeLogNodeContentsAndAttributes(aNode, keyArray, prefaceStr, bIncludePosInParent, [], true);
+}
+
+function msiKludgeLogNodeContentsAndAttributes(aNode, keyArray, prefaceStr, bIncludePosInParent, attribList, bAllAttrs)
+{
   var bDoIt = msiKludgeTestKeys(keyArray);
   if (!bDoIt)
     return;
@@ -7422,7 +7487,28 @@ function msiKludgeLogNodeContents(aNode, keyArray, prefaceStr, bIncludePosInPare
     retStr += " is a text node, with content [" + aNode.textContent + "].\n";
   else
   {
-    retStr += " is a [" + aNode.nodeName + "] node with [" + aNode.childNodes.length + "] children:";
+    retStr += " is a [" + aNode.nodeName + "] node with [" + aNode.childNodes.length + "] children.";
+    var thisAttr = null;
+    if (bAllAttrs)
+    {
+      var attList = aNode.attributes;
+      for (ix = 0; ix < attList.length; ++ix)
+      {
+        thisAttr = attList.item(ix);
+        retStr += "\n    attribute [" + thisAttr.name + "] has value [" + thisAttr.value + "];";
+      }
+    }
+    else
+    {
+      for (ix = 0; ix < attribList.length; ++ix)
+      {
+        retStr += "\n    attribute [" + attribList[ix];
+        if (aNode.hasAttribute(attribList[ix]))
+          retStr += "has value [" + aNode.getAttribute(attribList[ix]) + "];";
+        else
+          retStr += "] is not present;";
+      }
+    }
     for (var ix = 0; ix < aNode.childNodes.length; ++ix)
     {
       retStr += "\n  child [" + ix + "] is a [" + aNode.childNodes[ix].nodeName + "] + with text content [" + aNode.childNodes[ix].textContent + "]";
