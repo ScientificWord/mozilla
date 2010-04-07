@@ -38,6 +38,7 @@ locale  firebug zh-CN       locale/zh-CN/
 locale  firebug zh-TW       locale/zh-TW/
 
 overlay chrome://browser/content/browser.xul         chrome://firebug/content/browserOverlay.xul
+overlay chrome://prince/content/prince.xul         chrome://firebug/content/browserOverlay.xul
 overlay chrome://global/content/customizeToolbar.xul         chrome://firebug/content/customizeToolbarOverlay.xul
 overlay chrome://mozapps/content/extensions/about.xul         chrome://firebug/content/aboutOverlay.xul
 
