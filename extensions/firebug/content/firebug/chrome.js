@@ -45,6 +45,7 @@ var enableSystemPagesLink = null;
 var enableAlwaysLink = null;
 // ************************************************************************************************
 
+
 top.FirebugChrome =
 {
     window: window, 
@@ -1393,35 +1394,6 @@ function getRealObject(object)
     var realObject = rep ? rep.getRealObject(object, FirebugContext) : null;
     return realObject ? realObject : object;
 }
-
-
-// Firebug is designed for a tabbed browser. SWP doesn't have tabbed editors, yet,
-// so we build a stub for a tabbed browser
-
-var msiTabBrowser = function(editor) {
-  if (editor == undefined) throw new Error("Tabbed browser constructor needs an editor.");
-  this.browsers = [];
-  this.mEditor = editor;
-  this.selectedBrowser = editor;
-  this.currentURI = editor.currentDocument.baseURIObject;
-  this.browsers.push(editor);
-};
-
-msiTabBrowser.prototype.getBrowserIndexForDocument = function( doc ) {
-  if (doc == this.mEditor.currentDocument) return 0;
-  return -1;
-};
-
-msiTabBrowser.prototype.getBrowserForDocument = function( doc ) {
-  if (doc == this.mEditor.currentDocument) return this.mEditor;
-  return null;
-};
-
-msiTabBrowser.prototype.getBrowser = function() {
-  return this.mEditor;
-};
-
-
 
 // ************************************************************************************************
 // Utils (duplicated from lib.js)
