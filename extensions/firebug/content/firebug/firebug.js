@@ -165,7 +165,7 @@ top.Firebug =
 
     stringCropLength: 50,
 
-    tabBrowser: tabBrowser,
+    tabBrowser: new msiTabBrowser($('content-frame')),
     originalChrome: FirebugChrome,
     chrome: FirebugChrome,
 
