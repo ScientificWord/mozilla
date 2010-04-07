@@ -129,4 +129,42 @@
                       command="cmd_clearActivationList"/>
         </menupopup>
     </statusbar>
+<!--*********************************************************************************************-->
+    <!-- SWP page context menu -->
+    <popup id="msiEditorContentContext">
+        <!-- TODO Firebug.Editors. -->
+        <menu label="&firebug.OpenWith;" id="menu_firebugOpenWithEditor"
+              insertbefore="context-viewsource">
+            <menupopup id="menu_firebugOpenWith" onpopupshowing="return FirebugChrome.onEditorsShowing(this);">
+                <menuitem label="&firebug.ConfigureEditors;..." command="cmd_openFirebugEditors"/>
+            </menupopup>
+        </menu>
+        <menuseparator/>
+        <menuitem id="menu_firebugInspect" label="&firebug.InspectElement;"
+                  class="menuitem-iconic" image="chrome://firebug/skin/Templarian_inspector.png"
+                  command="cmd_inspect" />
+    </popup>
+    <!-- SWP View menu -->
+    <menupopup id="viewMenuPopup">
+        <menuitem id="menu_viewToggleFirebug" insertbefore="toggle_taskbar"
+                  label="&firebug.Firebug;" type="checkbox"
+                  key="key_toggleFirebug" command="cmd_toggleFirebug"/>
+    </menupopup>
+    <!-- SWP Tools menu -->
+    <menupopup id="toolbars-menu-popup">
+        <menu id="menu_firebug" class="menuitem-iconic" image="chrome://firebug/skin/firebug16.png"
+              label="&firebug.Firebug;" insertbefore="javascriptConsole">
+              <!-- Content comes from fbFirebugMenuPopup -->
+        </menu>
+    </menupopup>
+    <!-- Buttons for SWP Customize Toolbar dialog -->
+    <toolbarpalette id="ToolbarPalette">
+        <toolbarbutton id="inspector-button" label="&firebug.Inspect;"
+                       class="toolbarbutton-1 chromeclass-toolbar-additional"
+                       observes="cmd_toggleInspecting" tooltiptext="&firebug.InspectElement;"/>
+        <toolbarbutton id="firebug-button" label="&firebug.Firebug;"
+                       class="toolbarbutton-1 chromeclass-toolbar-additional"
+                       observes="cmd_toggleDetachFirebug" tooltiptext="&firebug.DetachFirebug;"/>
+    </toolbarpalette>
+    <!-- Firebug panel -->
 </overlay>
