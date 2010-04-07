@@ -618,7 +618,7 @@ function registerFrameListener(browser)
         return;
 
     browser.frameListener = FrameProgressListener;  // just a mark saying we've registered. TODO remove!
-    browser.addProgressListener(FrameProgressListener, NOTIFY_STATE_DOCUMENT);
+//    browser.editingSession.addProgressListener(FrameProgressListener, NOTIFY_STATE_DOCUMENT);
 
 }
 
@@ -846,3 +846,5 @@ var TraceListener =
 // ************************************************************************************************
 
 }});
+
+           
