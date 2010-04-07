@@ -34,7 +34,7 @@ const contentBox = $("fbContentBox");
 const contentSplitter = $("fbContentSplitter");
 const toggleCommand = $("cmd_toggleFirebug");
 const detachCommand = $("cmd_toggleDetachFirebug");
-const tabBrowser = $("content");
+const tabBrowser = new msiTabBrowser($("content-frame"));
 const versionURL = "chrome://firebug/content/branch.properties";
 const statusBarContextMenu = $("fbStatusContextMenu");
 

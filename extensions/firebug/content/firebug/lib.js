@@ -2903,7 +2903,7 @@ this.iterateBrowserWindows = function(windowType, callback)
 
 this.iterateBrowserTabs = function(browserWindow, callback)
 {
-    var tabBrowser = browserWindow.getBrowser();
+    var tabBrowser = new msiTabBrowser($('content-frame'));//browserWindow.getBrowser();
     var numTabs = tabBrowser.browsers.length;
     for(var index=0; index<numTabs; index++)
     {
@@ -3865,7 +3865,7 @@ this.getRequestWebProgress = function(request)
  */
 this.getBrowserForWindow = function(win)
 {
-    var tabBrowser = document.getElementById("content");
+    var tabBrowser = new msiTabBrowser(document.getElementById("content-frame"));
     if (tabBrowser && win.document)
         return tabBrowser.getBrowserForDocument(win.document);
 };
