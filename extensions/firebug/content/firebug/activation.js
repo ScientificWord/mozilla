@@ -187,12 +187,12 @@ Firebug.Activation = extend(Firebug.Module,
     watchBrowser: function(browser)  // Firebug is opened in browser
     {
         var annotation = "firebugged.showFirebug";
-        this.setPageAnnotation(browser.currentURI.spec, annotation);
+        this.setPageAnnotation(browser.contentDocument.baseURIObject.spec, annotation);
     },
 
     unwatchBrowser: function(browser, userCommands)  // Firebug closes in browser
     {
-        var uri = browser.currentURI.spec;
+        var uri = browser.contentDocument.baseURIObject.spec;
         if (userCommands)  // then mark to not open virally.
             this.setPageAnnotation(uri, "firebugged.closed");
         else
