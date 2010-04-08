@@ -136,7 +136,7 @@ top.TabWatcher = extend(new Firebug.Listener(),
         // This is one of two places that loaded is set. The other is in watchLoadedTopWindow
         if (context && !context.loaded)
         {
-            context.loaded = !context.browser.webProgress.isLoadingDocument;
+            context.loaded = !context.browser.editingSession.isLoadingDocument;
 
             // If the loaded flag is set, the proper event should be dispatched.
             if (context.loaded)
