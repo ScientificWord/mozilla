@@ -145,7 +145,7 @@ function msiEditPage(url, launchWindow, delay)
       launchWindow.delayedOpenWindow("chrome://prince/content", "chrome,all,dialog=no", url);
     }
     else
-      launchWindow.openDialog("chrome://prince/content", "_blank", "chrome,all,dialog=no", url.spec, charsetArg);
+      launchWindow.openDialog("chrome://prince/content", "_blank", "chrome,all,dialog=no", uri.spec, charsetArg);
 
   } catch(e) {}
 }
