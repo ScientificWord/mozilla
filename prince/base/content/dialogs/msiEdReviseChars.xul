@@ -116,5 +116,8 @@
     </groupbox>
     <checkbox id="NegatedCheckbox" label="&negateCheck.label;" accesskey="&negateCheck.accesskey;" />
   </hbox>
+  <!-- hbox>
+      <button autoCheck="false" label="Fake Apply" oncommand="doFakeApply();"/>
+  </hbox -->
   <separator class="groove"/>
 </dialog>
