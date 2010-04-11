@@ -49,7 +49,8 @@
            xmlns:mml="http://www.w3.org/1998/Math/MathML">
     <label id="propertiesTitle" hidden="true" value="&windowPropertiesTitle.label;" />
     <spacer flex="1"/>
-    <groupbox orient="horizontal" id="decorationsAboveButtonGroup" oncommand="toggleSelection(this, event.target);" onfocus="radioGroupSetFocus(this,event.target);">
+    <groupbox orient="horizontal" id="decorationsAboveButtonGroup" oncommand="toggleSelection(this, event.target);" 
+        align="baseline" onfocus="radioGroupSetFocus(this,event.target);">
       <observes element="enableDecorationsAboveBelow" attribute="disabled" onbroadcast="buttonGroupEnable(this.parentNode, this.parentNode.getAttribute('disabled') != 'true');"/>
       <caption label="&decorationsAboveButtonGroup.label;" accesskey="&decorationsAboveButtonGroup.accesskey;"/>
       <msibutton group="decorationsAboveButtonGroup" autoCheck="false" value="&#x00AF;">
@@ -191,7 +192,8 @@
   <vbox xmlns:xhtml="http://www.w3.org/1999/xhtml"
            xmlns:mml="http://www.w3.org/1998/Math/MathML">
     <spacer flex="1"/>
-    <groupbox orient="horizontal" id="decorationsBelowButtonGroup" oncommand="toggleSelection(this, event.target);" onfocus="radioGroupSetFocus(this,event.target);">
+    <groupbox orient="horizontal" id="decorationsBelowButtonGroup" oncommand="toggleSelection(this, event.target);" 
+        align="baseline" onfocus="radioGroupSetFocus(this,event.target);">
       <observes element="enableDecorationsAboveBelow" attribute="disabled" onbroadcast="buttonGroupEnable(this.parentNode, this.parentNode.getAttribute('disabled') != 'true');"/>
       <caption label="&decorationsBelowButtonGroup.label;" accesskey="&decorationsBelowButtonGroup.accesskey;"/>
       <msibutton group="decorationsBelowButtonGroup" autoCheck="false" value="&#x0332;">
@@ -301,37 +303,38 @@
   <vbox xmlns:xhtml="http://www.w3.org/1999/xhtml"
            xmlns:mml="http://www.w3.org/1998/Math/MathML">
     <spacer flex="1"/>
-    <groupbox orient="horizontal" id="decorationsAroundButtonGroup" oncommand="toggleSelection(this, event.target);" onfocus="radioGroupSetFocus(this,event.target);">
+    <groupbox orient="horizontal" id="decorationsAroundButtonGroup" oncommand="toggleSelection(this, event.target);" 
+        align="baseline" onfocus="radioGroupSetFocus(this,event.target);">
       <observes element="enableDecorationsAround" attribute="disabled" onbroadcast="buttonGroupEnable(this.parentNode, this.parentNode.getAttribute('disabled') != 'true');"/>
       <caption label="&decorationsAroundButtonGroup.label;" accesskey="&decorationsAroundButtonGroup.accesskey;"/>
       <msibutton group="decorationsAroundButtonGroup" autoCheck="false" value="fbox">
-        <description class="fbox">
-          <mml:math display="inline">
+        <description>
+          <mml:math display="inline" class="fbox">
             <mml:mrow class="phantomBox">
               <mml:mphantom>
-                <mml:mi>abc</mml:mi>
+                <mml:mi>abcX</mml:mi>
               </mml:mphantom>
             </mml:mrow>
           </mml:math>
         </description>
       </msibutton>
       <msibutton group="decorationsAroundButtonGroup" autoCheck="false" value="frame">
-        <description class="framebox">
-          <mml:math display="inline">
+        <description >
+          <mml:math display="inline" class="framebox">
             <mml:mrow class="phantomBox">
               <mml:mphantom>
-                <mml:mi>abc</mml:mi>
+                <mml:mi>abcX</mml:mi>
               </mml:mphantom>
             </mml:mrow>
           </mml:math>
         </description>
       </msibutton>
       <msibutton group="decorationsAroundButtonGroup" autoCheck="false" value="roundedbox">
-        <description class="roundedbox">
-          <mml:math display="inline">
+        <description>
+          <mml:math display="inline" class="roundedbox">
             <mml:mrow class="phantomBox">
               <mml:mphantom>
-                <mml:mi>abc</mml:mi>
+                <mml:mi>abcX</mml:mi>
               </mml:mphantom>
             </mml:mrow>
           </mml:math>
