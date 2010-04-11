@@ -75,6 +75,8 @@
   </stringbundleset>
   <popupset id="msiEditorContentContextSet"/>
   <popupset id="mainPopupSet"/>
+  <commandset id="baseMenuCommandSet"/>
+  <keyset id="baseMenuKeyset"/>
   <popup id="sidebarPopup"/>
 
   <commandset id="tasksCommands">
@@ -116,6 +118,7 @@
     <key id="MSIevalKey" key="&MSIComputeEvalCmd.keybinding;" observes="cmd_MSIComputeEval"  modifiers="accel"  />        
     <key id="keyhelpcontents" keycode="&helpmenuContents.keybinding;" observes="cmd_unimp"/>>
   </keyset>
+  <keyset id="mainKeyset"/> <!-- for extensions-->
 
   <toolbox class="toolbox-top" id="EditorToolbox">
     <menubar id="main-menubar" class="chromeclass-menubar" persist="collapsed" grippyhidden="false">
