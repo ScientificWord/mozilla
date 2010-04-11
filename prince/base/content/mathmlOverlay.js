@@ -981,7 +981,7 @@ var msiReviseDecorationsCmd =
 //    AlertWithTitle("mathmlOverlay.js", "In msiReviseDecorationsCmd, trying to revise decoration, dialog unimplemented.");
 ////    reviseFraction(editorElement, theFrac);
 
-    var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/Decorations.xul", "_blank", "chrome,close,titlebar,dependent",
+    var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/Decorations.xul", "_blank", "chrome,resizable, close,titlebar,dependent",
                                                      editorElement, "msiReviseDecorationsCmd", theDecoration, decorationData);
   },
 
@@ -2564,7 +2564,7 @@ function doDecorationsDlg(decorationAboveStr, decorationBelowStr, decorationArou
   decorationData.decorationAboveStr = decorationAboveStr;
   decorationData.decorationBelowStr = decorationBelowStr;
   decorationData.decorationAroundStr = decorationAroundStr;
-  msiOpenModelessDialog("chrome://prince/content/Decorations.xul", "_blank", "chrome,close,titlebar,dependent",
+  msiOpenModelessDialog("chrome://prince/content/Decorations.xul", "_blank", "chrome,close,titlebar,resizable, dependent",
                                         editorElement, commandID, commandHandler, decorationData);
 //  window.openDialog("chrome://prince/content/Decorations.xul", "decorations", "chrome,close,titlebar,modal", decorationData);
 //  if (decorationData.Cancel)
