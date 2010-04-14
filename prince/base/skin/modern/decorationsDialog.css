@@ -7,36 +7,52 @@
 @namespace xul url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 @namespace mml url("http://www.w3.org/1998/Math/MathML");
 
-button[group] {
+   
+msibutton[checked] *[class="phantomBox"] {
+  background-color: rgb(255,180,180);
+}
+
+#DecorationsDlg msibutton[checked] {
+  color: red;
+}
+   
+msibutton[group] {
   max-width: 4.0em;
 }
 
 
-button[group] > .button-box {
+msibutton[group] > .button-box {
   max-width: 3.5em;
 }
 
-button[group] mml|*[class="phantomBox"], *[class="phantomBox"] {
-  border: 1px dotted ThreeDDarkShadow;
-  padding: 1px;
-  margin: 2px 1px 2px 1px;
+
+msibutton[group] mml|*[class="phantomBox"], *[class="phantomBox"] {
+  border: 1px dotted black;
 }
 
+#decorationsAboveButtonGroup box.fbox,
+#decorationsBelowButtonGroup box.framebox,
+#decorationsAroundButtonGroup box.roundedbox,
+{
+  margin: 3px;
+}
+
+
 *[class="fbox"] {
-  border: 1px solid ThreeDDarkShadow;
-  padding: 1px 1px 1px 1px;
-  margin: 1px 1px 1px 1px;
+  border: 1px solid black;
+  padding: 3px;
+  margin: 1px;
 }
 
 *[class="framebox"] {
-  border: 1px solid ;
-  padding: 2px 3px 2px 3px;
+  border: 1px solid black;
+  padding: 3px;
   margin: 1px;
 }
 
 *[class="roundedbox"] {
-  border: 1px solid;
-  padding: 2px 3px 2px 3px;
+  border: 1px solid black;
+  padding: 3px;
   margin: 1px;
   -moz-border-radius: 5px
 }
