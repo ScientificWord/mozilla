@@ -387,6 +387,22 @@ function Apply()
   return true;
 }
 
+//function doFakeApply()
+//{
+//  var editorElement = msiGetParentEditorElementForDialog(window);
+//  collectDialogData();
+//    
+//  var theWindow = window.opener;
+//  if (isReviseDialog())
+//  {
+//    if (!theWindow || !("msiReviseChars" in theWindow))
+//      theWindow = msiGetTopLevelWindow();
+//    theWindow.msiReviseChars(data.reviseData, data, editorElement);
+//  }
+//    
+//  return false;
+//}
+
 // Don't allow inserting in HTML Source Mode
 function onFocus()
 {
