@@ -564,6 +564,8 @@ NS_IMETHODIMP nsAutoCompleteResultStringArray::GetStyleAt(PRInt32 index, nsAStri
 {
 	nsAutoString strValue;
 	nsString str;
+  nsString start;
+  nsString endsWithSpace;
   if (!pMarkedTags) return NS_OK;
 	GetValueAt(index, strValue);
 	if (!strValue.IsEmpty())
@@ -571,7 +573,9 @@ NS_IMETHODIMP nsAutoCompleteResultStringArray::GetStyleAt(PRInt32 index, nsAStri
 	  for (int i = 0; i < pMarkedTags->Count(); i++)
 	  {
 	 	  pMarkedTags->StringAt(i, str);
-	    if (strValue.Equals(str))
+      str.Left(start, strValue.Length()+1);
+      endsWithSpace = strValue + NS_LITERAL_STRING(" ");
+	    if (endsWithSpace.Equals(start))
 	 	  {
 	       _retval = NS_LITERAL_STRING("sw_checked");
 	       return NS_OK;
