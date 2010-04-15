@@ -103,7 +103,8 @@ public:
     kRemoveAbsolutePosition = 3016,
     kDecreaseZIndex      = 3017,
     kIncreaseZIndex      = 3018,
-    kMakeStructure       = 3019
+    kMakeStructure       = 3019,
+    kRemoveStructure     = 3020
   };
   
 public:

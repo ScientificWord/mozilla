@@ -670,9 +670,12 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
     var editor = msiGetEditor(editorElement);
     var ns = new Object;
     if (commandID=="cmd_texttag" && editor && editor.tagListManager && editor.tagListManager.getClearTextTag(ns) == newState)
-
     {
       msiGoDoCommand('cmd_removeStyles');
+    }
+    else if (commandID=="cmd_structtag" && editor && editor.tagListManager && editor.tagListManager.getClearStructTag(ns) == newState)
+    {
+      msiGoDoCommand('cmd_removestruct');
     }
     else
       msiGoDoCommandParams(commandID, cmdParams, editorElement);
