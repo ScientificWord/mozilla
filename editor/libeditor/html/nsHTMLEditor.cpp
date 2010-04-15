@@ -6418,3 +6418,13 @@ NS_IMETHODIMP nsHTMLEditor::ReturnAString(const nsAString & thisone, nsAString &
     _retval = thisone;
     return NS_OK;
 }
+
+
+NS_IMETHODIMP nsHTMLEditor::RemoveStructureAboveSelection(nsISelection * selection)
+{
+  PRBool cancel, handled;
+  nsTextRulesInfo ruleInfo(nsTextEditRules::kRemoveStructure);
+//  ruleInfo.namespaceAtom = namespaceAtom;
+  nsresult res = mRules->WillDoAction(selection, &ruleInfo, &cancel, &handled);
+  return res;
+}
