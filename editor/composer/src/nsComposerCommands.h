@@ -194,6 +194,31 @@ protected:
                                             nsISupports *refCon);  
 };
 
+// Shared class for front matter tags.  
+class nsFrontMTagUpdatingCommand : public nsBaseTagUpdatingCommand
+{
+public:
+
+  nsFrontMTagUpdatingCommand(void);
+           
+protected:
+
+  // get the current state (on or off) for this style or block format
+  virtual nsresult  GetCurrentState(nsIEditor *aEditor, nsICommandParams *aParams)
+  { nsAutoString tagclassname;
+  tagclassname.AssignLiteral("frontmtag");
+  return GetCurrentTagState( aEditor, tagclassname, aParams);}
+  
+  // add/remove the style
+  virtual nsresult  SetState(nsIEditor *aEditor, nsString& newState);
+    
+  virtual nsresult  ToggleState(nsIEditor *aEditor, nsString & aTagName) {return NS_ERROR_NOT_IMPLEMENTED;}
+  NS_IMETHOD DoCommand(const char * aCommandName, nsISupports *aCommandRefCon);
+  NS_IMETHOD DoCommandParams(const char *aCommandName,
+                                            nsICommandParams *aParams,
+                                            nsISupports *refCon);  
+};
+
 
 // Shared class for list tags.  
 class nsListTagUpdatingCommand : public nsBaseTagUpdatingCommand
