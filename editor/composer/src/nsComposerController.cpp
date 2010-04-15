@@ -147,6 +147,7 @@ nsComposerController::RegisterHTMLEditorCommands(
   // swp
   NS_REGISTER_ONE_COMMAND(nsTextTagUpdatingCommand, "cmd_texttag");
   NS_REGISTER_ONE_COMMAND(nsParaTagUpdatingCommand, "cmd_paratag");
+  NS_REGISTER_ONE_COMMAND(nsFrontMTagUpdatingCommand, "cmd_frontmtag");
   NS_REGISTER_ONE_COMMAND(nsListTagUpdatingCommand, "cmd_listtag");
   NS_REGISTER_ONE_COMMAND(nsStructTagUpdatingCommand, "cmd_structtag");
   NS_REGISTER_ONE_COMMAND(nsEnvTagUpdatingCommand, "cmd_envtag");
