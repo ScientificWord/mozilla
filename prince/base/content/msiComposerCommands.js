@@ -601,9 +601,9 @@ function msiPokeTagStateUI(uiID, cmdParams)
     case "cmd_listtag":
       textboxName = "ParaTagSelections";
       break;
-    case "cmd_secttag":
+    case "cmd_structtag":
     case "cmd_envtag":
-      textboxName = "SectTagSelections";
+      textboxName = "StructTagSelections";
       break;
     case "cmd_frontmtag":
       textboxName = "FrontMTagSelections";
