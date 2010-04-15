@@ -219,6 +219,7 @@
 			<contains>sw:xref</contains>
 			<contains>html:br</contains>
 			<tags>
+				<tag nm="sw:(removesection)" id="clearsectiontag" ><description>Remove innermost section-like tag</description></tag>
 				<tag nm="sw:set">
         	<level>-3</level>
           <description>Set of books</description>
