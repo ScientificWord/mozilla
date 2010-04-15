@@ -1915,6 +1915,60 @@ nsRemoveStylesCommand::GetCommandStateParams(const char *aCommandName,
 #pragma mark -
 #endif
 
+
+NS_IMETHODIMP
+nsRemoveStructCommand::IsCommandEnabled(const char * aCommandName,
+                                        nsISupports *refCon,
+                                        PRBool *outCmdEnabled)
+{
+  nsCOMPtr<nsIEditor> editor = do_QueryInterface(refCon);
+  // test if we have any styles?
+  *outCmdEnabled = editor ? PR_TRUE : PR_FALSE;
+  return NS_OK;
+}
+
+
+
+NS_IMETHODIMP
+nsRemoveStructCommand::DoCommand(const char *aCommandName,
+                                 nsISupports *refCon)
+{
+  nsCOMPtr<nsIEditor> editor = do_QueryInterface(refCon);
+  nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface(editor);
+  nsCOMPtr<nsISelection> selection;
+  editor->GetSelection(getter_AddRefs(selection));
+
+  nsresult rv = NS_OK;
+  if (editor)
+  {
+    rv = htmlEditor->RemoveStructureAboveSelection(selection);
+  }
+  
+  return rv;  
+}
+
+NS_IMETHODIMP
+nsRemoveStructCommand::DoCommandParams(const char *aCommandName,
+                                       nsICommandParams *aParams,
+                                       nsISupports *refCon)
+{
+  return DoCommand(aCommandName, refCon);
+}
+
+NS_IMETHODIMP
+nsRemoveStructCommand::GetCommandStateParams(const char *aCommandName,
+                                             nsICommandParams *aParams,
+                                             nsISupports *refCon)
+{
+  PRBool outCmdEnabled = PR_FALSE;
+  IsCommandEnabled(aCommandName, refCon, &outCmdEnabled);
+  return aParams->SetBooleanValue(STATE_ENABLED,outCmdEnabled);
+}
+
+#ifdef XP_MAC
+#pragma mark -
+#endif
+
 NS_IMETHODIMP
 nsIncreaseFontSizeCommand::IsCommandEnabled(const char * aCommandName,
                                             nsISupports *refCon,
