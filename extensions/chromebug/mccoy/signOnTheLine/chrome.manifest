@@ -1,0 +1,3 @@
+# http://developer.mozilla.org/en/docs/Chrome_Registration
+content 	signOnTheLine 				content/
+overlay chrome://mozzipper/content/overlayMccoy.xul         chrome://signOnTheLine/content/overlayMccoy.xul

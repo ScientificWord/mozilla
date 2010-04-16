@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+    <script type="application/x-javascript" src="chrome://signOnTheLine/content/sign.js"></script>
+<script type="application/x-javascript">
+try {
+var appShellService = Components.classes["@mozilla.org/appshell/appShellService;1"].
+            getService(Components.interfaces.nsIAppShellService);
+
+var hiddenWindow = appShellService.hiddenDOMWindow;
+hiddenWindow.dump("overlayMccoy signon\n");
+if (hiddenWindow.signOnTheLineFileName)
+{
+    window.addEventListener("load", function signOnLoad(event)
+    {
+        var filename = hiddenWindow.signOnTheLineFileName;  // from command line handler in components
+        var addOnFileName  = hiddenWindow.signOnTheLineAddOnFileName;
+        var keyName = hiddenWindow.signOnTheLineKey;
+        doSign(filename, addOnFileName, keyName);
+    }, false);
+}
+else // we are registered as a Zipper extension
+{
+    //window.addEventListener("load", function signOnLoad(event)
+    //{
+        window.keyName = hiddenWindow.signOnTheLineKey;
+        window.dump("signOnLoad registering with keyName:"+window.keyName+"\n");
+        Zipper.registerExtension(SignZipperExtension);
+   // }, false);
+
+}
+} catch (exc) {
+    window.dump(exc+"\n");
+}
+</script>
+</overlay>
