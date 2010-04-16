@@ -378,12 +378,22 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
   mMSIEditor -> InsertHTML(nsString(result, resString.Length()));
 
   msiUtils::GetChildNode(parentOfMath, mathOffset, newMath);
+ 
+  printf("\nNew Math\n ");
+  mHTMLEditor->DumpNode(newMath, 0, true);
 
   DebDisplaySelection("Post result insertion", aSelection, mMSIEditor, true);
   
   nsCOMPtr<nsIDOMNode> theNode;
   PRInt32 theOffset;
   FindCursorNodeAndOffset(mHTMLEditor, newMath, idx, theNode, theOffset);
+
+  nsIDOMRange* range;
+  aSelection->GetRangeAt(0, &range);
+
+  range->SetStart(theNode, theOffset);
+  aSelection->CollapseToStart();
+
   *aHandled = PR_TRUE;
 
   return res;
