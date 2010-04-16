@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<RDF:RDF xmlns:em="http://www.mozilla.org/2004/em-rdf#"
+         xmlns:NC="http://home.netscape.com/NC-rdf#"
+         xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <RDF:Description RDF:about="rdf:#$p3k5F2"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="1.5"
+                   em:maxVersion="3.6.*" />
+  <RDF:Description RDF:about="urn:mozilla:install-manifest"
+                   em:id="mozzipper@johnjbarton.com"
+                   em:version="1.0"
+                   em:type="2"
+                   em:name="MozZipper"
+                   em:description="Web Development Evolved. (See http://fireclipse.xucia.com for updates)"
+                   em:creator="Joe Hewitt"
+                   em:iconURL="chrome://firebug/content/firebug.png"
+                   em:homepageURL="http://www.getfirebug.com/"
+                   em:updateURL="http://www.johnjbarton.com/update.rdf"
+                   em:updateKey="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDA6eg5lT8wHTQsSn+ml+Njwm8p3iCgPAHMxfqGlZl6Zg70mLzZo0Drna6gyHfqSuQ4BfWvQ1fIxIdH5tHGIsXpY9R7igHt2Rv3CGRDbIm3Ic+oHnLytnMZc3Gu0imORZAHLSejQEnqZ4OqdT534QyRXi3aEZXCjvLZ7+cfTaMn1QIDAQAB">
+    <em:targetApplication RDF:resource="rdf:#$p3k5F2"/>
+    <em:contributor>1.1 enhancements: John J. Barton (IBM Almaden)</em:contributor>
+    <em:contributor>Max Stepanov (Aptana Inc.)</em:contributor>
+  </RDF:Description>
+</RDF:RDF>
