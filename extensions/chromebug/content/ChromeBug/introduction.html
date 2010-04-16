@@ -1,0 +1,54 @@
+<html>
+<head>
+    <title>ChromeBug: Firebug For Chrome</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="chrome://chromebug/content/categoryBrowser.css" type="text/css"/>
+    <script>
+    var mainWindow = window.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+                   .getInterface(Components.interfaces.nsIWebNavigation)
+                   .QueryInterface(Components.interfaces.nsIDocShellTreeItem)
+                   .rootTreeItem
+                   .QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+                   .getInterface(Components.interfaces.nsIDOMWindow);
+    function toggleIntroduction()
+    {
+        mainWindow.Firebug.Chromebug.toggleIntroduction();
+    }
+    function toggleIntroductionTrue()
+    {
+        mainWindow.Firebug.Chromebug.toggleIntroductionTrue();
+    }
+    </script>
+</head>
+<body class="panelNode panelNode-html" id="categoryBrowserBody">
+<h1>ChromeBug: XUL chrome development evolved</h1>
+<button onclick="toggleIntroduction()">Ok, Let me at it!</button><button onclick="toggleIntroductionTrue()">Don't Show This Next Time</button>
+
+<p>ChromeBug debugs the XUL and contents of Firefox extensions. It can be used on Thunderbird and other
+XUL applications to some degree.
+Chromebug runs as a XUL application in 2nd window of the same runtime as eg Firefox.
+It has access to the entire layout, DOM, and resources of Firefox.
+ChromeBug can be used to debug extensions, test XPCOM logic,
+and learn about the internals of Firefox and FireBug.
+The FireBug development team uses ChromeBug as their principal debugging tool to debug the debugger.</p>
+
+<b id="versionWarning">Chromebug requires Firebug to be installed and their version numbers must be the same.</b>
+
+<h2>Quickstart:</h2>
+<p>The Firebug toolbar (Console, HTML, CSS, etc) apply to the current 'context', typically a top-level
+nsIDOMWindow like Firefox's browser.xul. You can set the context from the list on the top right.
+Or use the <b>Filter:</b> in the ChromeBug menu
+to select the context for your debugging.
+Normally you will choose your extension.
+Or use the <b>File:</b> list to pick a source file and thus set the context.
+Once a context is set, you can select your JS files and set breakpoints,
+use the watch window to inspect your data, etc. in the Firebug panels.
+Note: Because most extensions merge their main XUL into the browser.xul,
+ChromeBug will not present your XUL as a debug component.
+To debug javascript inside of your XUL, you will be setting breakpoints in browser.xul.
+</p>
+
+<a target="_blank" href="http://getfirebug.com/wiki/index.php/Chromebug_User_Guide>Chromebug User Guide</a>
+
+</body>
+</html>
