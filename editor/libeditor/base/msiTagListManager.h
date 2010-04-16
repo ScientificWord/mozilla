@@ -79,6 +79,7 @@ protected:
   nsClassHashtable<nsStringHashKey, TagData> msiTagHashtable;
   TagKey mdefaultParagraph;
   TagKey mclearTextTag;
+  TagKey mclearStructTag;
   TagKeyListHead * pContainsList;
 };
 
