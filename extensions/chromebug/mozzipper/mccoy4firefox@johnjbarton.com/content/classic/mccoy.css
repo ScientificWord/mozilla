@@ -1,0 +1,75 @@
+#menu-changepassword {
+  list-style-image: url(chrome://mccoy/skin/database_key.png);
+}
+
+#tb-createkey, #menu-createkey {
+  list-style-image: url(chrome://mccoy/skin/key_add.png);
+}
+
+#menu-deletekey, #context-deletekey {
+  list-style-image: url(chrome://mccoy/skin/key_delete.png);
+}
+
+#menu-deletekey[disabled] {
+  list-style-image: url(chrome://mccoy/skin/key_delete_disabled.png);
+}
+
+#menu-copypublic, #context-copypublic {
+  list-style-image: url(chrome://mccoy/skin/key_go.png);
+}
+
+#menu-copypublic[disabled] {
+  list-style-image: url(chrome://mccoy/skin/key_go_disabled.png);
+}
+
+#menu-renamekey, #context-renamekey {
+  list-style-image: url(chrome://mccoy/skin/pencil.png);
+}
+
+#menu-renamekey[disabled] {
+  list-style-image: url(chrome://mccoy/skin/pencil-disabled.png);
+}
+
+#tb-addtoinstall, #menu-addtoinstall {
+  list-style-image: url(chrome://mccoy/skin/script_key.png);
+}
+
+#tb-addtoinstall[disabled], #menu-addtoinstall[disabled] {
+  list-style-image: url(chrome://mccoy/skin/script_key_disabled.png);
+}
+
+#tb-signupdate, #menu-signupdate {
+  list-style-image: url(chrome://mccoy/skin/rosette.png);
+}
+
+#tb-signupdate[disabled], #menu-signupdate[disabled] {
+  list-style-image: url(chrome://mccoy/skin/rosette_disabled.png);
+}
+
+#tb-verifykey, #menu-verifykey {
+  list-style-image: url(chrome://mccoy/skin/tick.png);
+}
+
+#tb-verifykey[disabled], #menu-verifykey[disabled] {
+  list-style-image: url(chrome://mccoy/skin/tick_disabled.png);
+}
+
+#tb-help, #menu-help {
+  list-style-image: url(chrome://mccoy/skin/help.png);
+}
+
+richlistitem {
+  -moz-binding: url(chrome://mccoy/content/mccoy.xml#key);
+}
+
+.keyicon {
+  list-style-image: url(chrome://mccoy/skin/key.png);
+}
+
+.keyname {
+  font-weight: bold;
+}
+
+.keytype {
+  color: GrayText;
+}
