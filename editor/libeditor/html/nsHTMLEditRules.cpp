@@ -710,6 +710,8 @@ nsHTMLEditRules::WillDoAction(nsISelection *aSelection,
       return WillRelativeChangeZIndex(aSelection, 1, aCancel, aHandled);
     case kMakeStructure:
       return WillMakeStructure(aSelection, info->blockType, aCancel, aHandled);
+    case kRemoveStructure:
+      return WillRemoveStructure(aSelection, aCancel, aHandled);
   }
   return nsTextEditRules::WillDoAction(aSelection, aInfo, aCancel, aHandled);
 }
@@ -7429,11 +7431,13 @@ nsHTMLEditRules::ApplyStructure(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsAS
   listCount = arrayOfNodes.Count();
   
   PRInt32 i;
+  nsAutoString nullString;
   for (i=0; i<listCount; i++)
   {
     // get the node to act on, and its location
     curNode = arrayOfNodes[i];
-    res = GetStructNodeFromNode(curNode, getter_AddRefs(structureNode), *aStructureTag);
+    
+    res = GetStructNodeFromNode(curNode, getter_AddRefs(structureNode), nullString);
     if (structureNode != nsnull)
     {
       nsAutoString structNodeTag;
@@ -7567,6 +7571,8 @@ nsHTMLEditRules::ApplyStructure(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsAS
 }
 
 
+// GetStructNodeFromNode returns a structure node if the input node is a structure,
+// or the first paragraph of a structure.
 nsresult 
 nsHTMLEditRules::GetStructNodeFromNode(nsIDOMNode *node, nsIDOMElement ** structNode,
   const nsAString& notThisTag)
@@ -7606,9 +7612,11 @@ nsHTMLEditRules::GetStructNodeFromNode(nsIDOMNode *node, nsIDOMElement ** struct
     // If we encounter a para first, then node is not the first para in the structure and we
     // return nsnull.
     {
+      nsCOMPtr<nsIDOMNode> node2;
       curNode = element;
       while (curNode != nsnull)
       {
+        node2 = curNode;
         res = curNode->GetPreviousSibling(getter_AddRefs(curNode));
         if (res == NS_OK && curNode) {
           curNode ->GetLocalName(tagName);
@@ -7619,17 +7627,23 @@ nsHTMLEditRules::GetStructNodeFromNode(nsIDOMNode *node, nsIDOMElement ** struct
             return NS_OK;
           }
         }
-        else if (curNode != nsnull)
+        else if (node2 != nsnull)
         {
+          curNode = node2;
+          isStructure = PR_FALSE;
           res = curNode->GetParentNode(getter_AddRefs(curNode));
           if (res == NS_OK && (curNode != nsnull)) {
             curNode ->GetLocalName(tagName);
-            res = mtagListManager->GetTagInClass(strPara, tagName, atomNS, &isStructure);
+            res = mtagListManager->GetTagInClass(strStruct, tagName, atomNS, &isStructure);
             // curNode is a structure tag, but if its tag name is equal to notThisTag, we return nsnull
           }
           if (isStructure)
           {
-            if (notThisTag.Equals(tagName)) *structNode = nullElement;
+            if (notThisTag.Equals(tagName)) 
+            {
+              *structNode = nullElement;
+              return NS_OK; //?
+            }
             else 
             {
               element=do_QueryInterface(curNode);
@@ -7637,7 +7651,7 @@ nsHTMLEditRules::GetStructNodeFromNode(nsIDOMNode *node, nsIDOMElement ** struct
               return NS_OK; 
             }
           }
-        }
+        } 
       }
     }
   }
@@ -7712,6 +7726,47 @@ nsHTMLEditRules::RemoveStructure(nsIDOMNode *node, const nsAString& notThisTag)
     }
   }
   return NS_OK;
+}
+
+                     
+nsresult 
+nsHTMLEditRules::RemoveStructureAboveSelection(nsISelection *selection)
+{
+  printf("RemoveStructureAboveSelection\n");
+  nsCOMPtr<nsIDOMRange> domRange;
+  nsresult rv = selection->GetRangeAt(0, getter_AddRefs(domRange));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  nsCOMPtr<nsIRange> range = do_QueryInterface(domRange);
+  nsCOMPtr<nsIDOMNode> ancestor =
+    do_QueryInterface(range->GetCommonAncestor());
+  // Now go up the tree until we get to a structure tag
+  nsCOMPtr<msiITagListManager> tagListManager;
+  mHTMLEditor->GetTagListManager(getter_AddRefs(tagListManager));
+  nsAutoString tagName;
+  nsAutoString nullString;
+  PRBool isStructure;
+  ancestor->GetLocalName(tagName);
+  rv = tagListManager->GetTagInClass(NS_LITERAL_STRING("structtag"), tagName, nsnull, &isStructure);
+  while (!isStructure && !tagName.EqualsLiteral("body") && !tagName.EqualsLiteral("html"))
+  {
+    ancestor->GetParentNode(getter_AddRefs(ancestor));
+    ancestor->GetLocalName(tagName);
+    rv = tagListManager->GetTagInClass(NS_LITERAL_STRING("structtag"), tagName, nsnull, &isStructure);
+  }
+  if (isStructure)
+  {
+    return RemoveStructure(ancestor, nullString);
+  }
+  return NS_OK; //BBM should be some error
+}
+
+nsresult 
+nsHTMLEditRules::WillRemoveStructure(nsISelection *aSelection, PRBool *aCancel, PRBool *aHandled)
+{
+  *aCancel = PR_FALSE;
+  *aHandled = PR_TRUE;
+  return RemoveStructureAboveSelection(aSelection);
 }
 
 ///////////////////////////////////////////////////////////////////////////

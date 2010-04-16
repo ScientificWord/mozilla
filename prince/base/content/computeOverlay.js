@@ -75,7 +75,7 @@ var msiComputeLogger =
   {
     this.LogEngineStrs();
     if (this.logMMLReceived) {
-      dujsdumpmp("Compute exception: !!!!!!!!!!!!\n");
+      jsdump("Compute exception: !!!!!!!!!!!!\n");
     }
     jsdump(e);
     // separate pref for errors?

@@ -167,6 +167,8 @@ classic.jar:
         skin/classic/aero/global/icons/Question.png                      (icons/Question.png)        
         skin/classic/luna/global/icons/Restore.gif                       (icons/Restore.gif)
         skin/classic/aero/global/icons/Restore.gif                       (icons/Restore.gif)
+        skin/classic/luna/global/icons/thumb.png                         (icons/thumb.png)
+        skin/classic/aero/global/icons/thumb.png                         (icons/thumb.png)
         skin/classic/luna/global/icons/Warning.png                       (icons/Warning.png)
         skin/classic/aero/global/icons/Warning.png                       (icons/Warning.png)
         skin/classic/luna/global/icons/warning-large.png                 (icons/warning-large.png)
