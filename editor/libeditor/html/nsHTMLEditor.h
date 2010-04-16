@@ -127,7 +127,8 @@ public:
     kOpRemoveAbsolutePosition = 3016,
     kOpDecreaseZIndex      = 3017,
     kOpIncreaseZIndex      = 3018,
-    kOpMakeStructure       = 3019
+    kOpMakeStructure       = 3019,
+    kOpRemoveStructure     = 3020
   };
 
   enum ResizingRequestID
