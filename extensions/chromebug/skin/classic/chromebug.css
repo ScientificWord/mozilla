@@ -1,0 +1,16 @@
+
+.windowInfoTitle {
+    padding-left: 18px;
+    max-width: 100%;
+    font-weight: bold;
+    background-color: #8F8;
+}
+
+.windowLabel {
+    -moz-box-sizing: padding-box;
+    overflow: hidden;
+    padding-left: 18px;
+    max-width: 100%;
+    font-weight: bold;
+}
+
