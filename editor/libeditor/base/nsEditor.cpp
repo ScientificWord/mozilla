@@ -260,7 +260,7 @@ NS_IMPL_ISUPPORTS5(nsEditor, nsIEditor, nsIEditorIMESupport,
 
 //#ifdef DEBUG_Barry||DEBUG_barry
 void
-nsEditor::DumpNode(nsIDOMNode *aNode, PRInt32 indent)
+nsEditor::DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse /* = false */)
 {
   PRInt32 i;
   for (i=0; i<indent; i++)
@@ -275,25 +275,27 @@ nsEditor::DumpNode(nsIDOMNode *aNode, PRInt32 indent)
     {
       nsAutoString tag;
       element->GetTagName(tag);
-      printf("<%s>\n", NS_LossyConvertUTF16toASCII(tag).get());
+      printf("<%s>    %x\n", NS_LossyConvertUTF16toASCII(tag).get(), aNode);
     }
     else
     {
       printf("<document fragment>\n");
     }
-    nsCOMPtr<nsIDOMNodeList> childList;
-    aNode->GetChildNodes(getter_AddRefs(childList));
-    if (!childList) return; // NS_ERROR_NULL_POINTER;
-    PRUint32 numChildren;
-    childList->GetLength(&numChildren);
-    nsCOMPtr<nsIDOMNode> child, tmp;
-    aNode->GetFirstChild(getter_AddRefs(child));
-    for (i=0; i<numChildren; i++)
-    {
-//      DumpNode(child, indent+1);
-      child->GetNextSibling(getter_AddRefs(tmp));
-      child = tmp;
-    }
+	if (recurse){
+       nsCOMPtr<nsIDOMNodeList> childList;
+       aNode->GetChildNodes(getter_AddRefs(childList));
+       if (!childList) return; // NS_ERROR_NULL_POINTER;
+       PRUint32 numChildren;
+       childList->GetLength(&numChildren);
+       nsCOMPtr<nsIDOMNode> child, tmp;
+       aNode->GetFirstChild(getter_AddRefs(child));
+       for (i=0; i<numChildren; i++)
+       {
+         DumpNode(child, indent+2, true);
+         child->GetNextSibling(getter_AddRefs(tmp));
+         child = tmp;
+       }
+	}
   }
   else if (IsTextNode(aNode))
   {
