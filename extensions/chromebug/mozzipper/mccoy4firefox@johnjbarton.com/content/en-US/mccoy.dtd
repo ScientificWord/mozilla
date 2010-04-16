@@ -1,0 +1,39 @@
+<!ENTITY mccoy.title                "&brandFullName;">
+<!ENTITY mccoy.size                 "width: 35em; height: 25em;">
+
+<!ENTITY changepassword.label       "Change Password">
+<!ENTITY changepassword.accesskey   "h">
+<!ENTITY createkey.label            "Create">
+<!ENTITY createkey.accesskey        "C">
+<!ENTITY createkey.tooltip          "Create New Key">
+<!ENTITY renamekey.label            "Rename Key">
+<!ENTITY renamekey.accesskey        "R">
+<!ENTITY deletekey.label            "Delete">
+<!ENTITY deletekey.accesskey        "D">
+<!ENTITY deletekey.tooltip          "Delete Key">
+<!ENTITY copypublic.label           "Copy Public Key">
+<!ENTITY copypublic.accesskey       "P">
+<!ENTITY signupdate.label           "Sign">
+<!ENTITY signupdate.accesskey       "S">
+<!ENTITY signupdate.tooltip         "Sign Update Manifest">
+<!ENTITY addtoinstall.label         "Install">
+<!ENTITY addtoinstall.accesskey     "A">
+<!ENTITY addtoinstall.tooltip       "Add Key to Install Manifest">
+<!ENTITY verifykey.label            "Verify">
+<!ENTITY verifykey.accesskey        "V">
+<!ENTITY verifykey.tooltip          "Verify Update Manifest Against Key">
+<!ENTITY verifyinstall.label        "Verify Against Install">
+<!ENTITY help.label                 "Help">
+<!ENTITY help.accesskey             "H">
+<!ENTITY help.tooltip               "How to use">
+<!ENTITY about.label                "About &brandShortName;">
+<!ENTITY about.accesskey            "A">
+
+<!ENTITY keymenu.label              "Keys">
+<!ENTITY keymenu.accesskey          "K">
+<!ENTITY extensionmenu.label        "Extension">
+<!ENTITY extensionmenu.accesskey    "E">
+<!ENTITY updatemenu.label           "Update">
+<!ENTITY updatemenu.accesskey       "U">
+<!ENTITY helpmenu.label             "Help">
+<!ENTITY helpmenu.accesskey         "H">
