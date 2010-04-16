@@ -8,3 +8,4 @@ glob:config.cache
 glob:*.err
 glob:*.log
 glob:*.orig
+glob:*/Thumbs.db
