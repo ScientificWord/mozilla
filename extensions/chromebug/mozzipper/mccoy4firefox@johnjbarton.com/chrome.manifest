@@ -1,0 +1,7 @@
+# http://developer.mozilla.org/en/docs/Chrome_Registration
+content 	mccoy 				content/
+locale mccoy en-US content/en-US/
+skin mccoy classic/1.0 content/classic/
+content branding content/mccoy/branding/
+locale branding en-US content/mccoy/branding/
+overlay chrome://mccoy/content/mccoy.xul         chrome://mccoy/content/overlayMccoy.xul
