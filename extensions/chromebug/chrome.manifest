@@ -1,0 +1,19 @@
+content chromebug content/ChromeBug/
+skin	chromebug	classic/1.0	skin/classic/
+
+content fb4cb fb4cb/content/firebug/
+
+# Add Firebug command set to ChromeBug, but because we use fb4cb we don't allow Firebug overlays on us.
+overlay chrome://chromebug/content/chromebug.xul        chrome://fb4cb/content/firebugOverlay.xul
+# Add Modify Firebug UI
+overlay  chrome://chromebug/content/chromebug.xul        chrome://chromebug/content/firebugOverlayOverlay.xul
+
+# Add ChromeBug menu items to Firebug Menu in FF Tools
+overlay chrome://firebug/content/browserOverlay.xul 	chrome://chromebug/content/ChromeBugMenuOverlay.xul
+
+content   chromebuglister                               chrome://chromelist/content/
+skin      chromebuglister      modern/1.0               chrome://chromelist/skin/
+locale    chromebuglister      en-US                   chrome://chromelist/locale/
+
+overlay chrome://explorer/content/tools/extension-project.xul chrome://chromebug/content/overlays/extension-project.xul
+

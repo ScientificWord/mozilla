@@ -1531,6 +1531,8 @@ function ShutdownAnEditor(editorElement)
     SetUnicharPref("swp.zoom_factor", msiGetMarkupDocumentViewer(editorElement).textZoom);
   } catch(e) { dump( "In ShutdownAnEditor, setting unicharpref, error: " + e + "\n" ); }
   if (editorElement.softsavetimer) editorElement.softsavetimer.cancel();
+  var enginelog = document.getElementById("EngineConsoleBox");
+  if (enginelog) enginelog.destroy();
   try
   {
     msiRemoveActiveEditor(editorElement);

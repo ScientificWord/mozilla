@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+    <script type="application/x-javascript" src="chrome://mozzipper/content/zipit.js"></script>
+    <script type="application/x-javascript" src="chrome://mozzipper/content/trace.js"></script>
+<script type="application/x-javascript">
+var appShellService = Components.classes["@mozilla.org/appshell/appShellService;1"].
+            getService(Components.interfaces.nsIAppShellService);
+
+var hiddenWindow = appShellService.hiddenDOMWindow;
+hiddenWindow.dump("mozzipper.overlayMcCoy source: "+ hiddenWindow.zipperSourceDirectory+"\n");
+
+if (hiddenWindow.zipperSourceDirectory)
+{
+    window.addEventListener("load", zipOnLoad, false);
+}
+function zipOnLoad(event)
+    {
+        var source = hiddenWindow.zipperSourceDirectory;  // from command line handler in components
+        var addOnFileName  = hiddenWindow.zipperXPIFileName;
+        dump("mozzipper.zipOnLoad source: "+ source+"\n");
+        dump("mozzipper.zipOnLoad xpi: "+ addOnFileName+"\n");
+
+        try
+        {
+            Zipper.zipit(source, addOnFileName);
+        }
+        catch (exc)
+        {
+            FBTrace.sysout("mozziper FAILS", exc);
+        }
+        FBTrace.sysout("zipOnLoad complete\n");
+    }
+</script>
+
+    <menupopup id="extensionmenu_popup">
+        <menuitem id="menu-zip" command="cmd_zip"
+                  label="Zip" class="menuitem-iconic"
+                  accesskey="zip.accesskey;"/>
+    </menupopup>
+    <commandset id="mainCommands">
+        <command id="cmd_zip"  oncommand="zipOnLoad()" />
+    </commandset>
+
+</overlay>
