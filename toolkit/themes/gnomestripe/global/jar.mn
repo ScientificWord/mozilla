@@ -31,6 +31,7 @@ classic.jar:
 +  skin/classic/global/icons/find.png                          (icons/find.png)
 +  skin/classic/global/icons/folder-item.png                   (icons/folder-item.png)
 +  skin/classic/global/icons/notfound.png                      (icons/notfound.png)
++  skin/classic/global/icons/thumb.png                         (icons/thumb.png)
 +  skin/classic/global/icons/wrap.png                          (icons/wrap.png)
 +  skin/classic/global/menu/Menu-arrow.png                     (menu/Menu-arrow.png)
 +  skin/classic/global/menu/Menu-arrow-rtl.png                 (menu/Menu-arrow-rtl.png)

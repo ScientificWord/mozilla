@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+    <script type="application/x-javascript" src="chrome://detrace/content/detrace.js"></script>
+ <script type="application/x-javascript">
+ window.addEventListener("load", function signOnLoad(event)
+ {
+    window.dump("detrace registering NoSvnZipperExtension\n");
+    Zipper.registerExtension(NoSvnZipperExtension);
+    
+     var appShellService = Components.classes["@mozilla.org/appshell/appShellService;1"].
+                getService(Components.interfaces.nsIAppShellService);
+            hiddenWindow = appShellService.hiddenDOMWindow;
+     
+    if (hiddenWindow.detrace)
+    {
+        window.dump("detrace registering DetraceZipperExtension\n");
+        Zipper.registerExtension(DetraceZipperExtension);
+    }
+    else
+        window.dump("detrace no detrace\n");
+ }, false);
+ </script>
+</overlay>

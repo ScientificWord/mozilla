@@ -1,0 +1,3 @@
+# http://developer.mozilla.org/en/docs/Chrome_Registration
+content 	detrace 				content/
+overlay chrome://mccoy/content/mccoy.xul         chrome://detrace/content/overlayMccoy.xul
