@@ -294,6 +294,54 @@ nsParaTagUpdatingCommand::DoCommandParams(const char *aCommandName,
   return SetState(editor, tagName);
 }
 
+/*****/
+
+nsFrontMTagUpdatingCommand::nsFrontMTagUpdatingCommand(void)
+: nsBaseTagUpdatingCommand()
+{
+}
+
+nsresult
+nsFrontMTagUpdatingCommand::SetState(nsIEditor *aEditor, nsString& newState)
+{
+  NS_ASSERTION(aEditor, "Need an editor here");
+  nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface(aEditor);
+  if (!htmlEditor) return NS_ERROR_FAILURE;
+
+  if (newState.Length() > 0) return htmlEditor->SetParagraphFormat(newState);
+  return NS_OK; //BBM should be bad data
+}
+
+NS_IMETHODIMP
+nsFrontMTagUpdatingCommand::DoCommand(const char *aCommandName,
+                                      nsISupports *refCon)
+{
+  nsCOMPtr<nsIEditor> editor = do_QueryInterface(refCon);
+  if (!editor) return NS_ERROR_NOT_INITIALIZED;
+
+  return SetState(editor, mTagName);
+}
+
+NS_IMETHODIMP
+nsFrontMTagUpdatingCommand::DoCommandParams(const char *aCommandName,
+                                            nsICommandParams *aParams,
+                                            nsISupports *refCon)
+{
+  nsXPIDLString tagName;
+  nsresult rv;
+  nsCOMPtr<nsIEditor> editor = do_QueryInterface(refCon);
+  if (!editor) return NS_ERROR_NOT_INITIALIZED;
+  if (aParams) {
+    nsXPIDLCString s;
+    rv = aParams->GetCStringValue(STATE_ATTRIBUTE, getter_Copies(s));
+    if (NS_SUCCEEDED(rv))
+      tagName.AssignWithConversion(s);
+    else
+      rv = aParams->GetStringValue(STATE_ATTRIBUTE, tagName);
+  }
+ // if (!tagName.
+  return SetState(editor, tagName);
+}
 
 
 nsListTagUpdatingCommand::nsListTagUpdatingCommand(void)
@@ -1903,6 +1951,60 @@ nsRemoveStylesCommand::DoCommandParams(const char *aCommandName,
 
 NS_IMETHODIMP
 nsRemoveStylesCommand::GetCommandStateParams(const char *aCommandName,
+                                             nsICommandParams *aParams,
+                                             nsISupports *refCon)
+{
+  PRBool outCmdEnabled = PR_FALSE;
+  IsCommandEnabled(aCommandName, refCon, &outCmdEnabled);
+  return aParams->SetBooleanValue(STATE_ENABLED,outCmdEnabled);
+}
+
+#ifdef XP_MAC
+#pragma mark -
+#endif
+
+
+NS_IMETHODIMP
+nsRemoveStructCommand::IsCommandEnabled(const char * aCommandName,
+                                        nsISupports *refCon,
+                                        PRBool *outCmdEnabled)
+{
+  nsCOMPtr<nsIEditor> editor = do_QueryInterface(refCon);
+  // test if we have any styles?
+  *outCmdEnabled = editor ? PR_TRUE : PR_FALSE;
+  return NS_OK;
+}
+
+
+
+NS_IMETHODIMP
+nsRemoveStructCommand::DoCommand(const char *aCommandName,
+                                 nsISupports *refCon)
+{
+  nsCOMPtr<nsIEditor> editor = do_QueryInterface(refCon);
+  nsCOMPtr<nsIHTMLEditor> htmlEditor = do_QueryInterface(editor);
+  nsCOMPtr<nsISelection> selection;
+  editor->GetSelection(getter_AddRefs(selection));
+
+  nsresult rv = NS_OK;
+  if (editor)
+  {
+    rv = htmlEditor->RemoveStructureAboveSelection(selection);
+  }
+  
+  return rv;  
+}
+
+NS_IMETHODIMP
+nsRemoveStructCommand::DoCommandParams(const char *aCommandName,
+                                       nsICommandParams *aParams,
+                                       nsISupports *refCon)
+{
+  return DoCommand(aCommandName, refCon);
+}
+
+NS_IMETHODIMP
+nsRemoveStructCommand::GetCommandStateParams(const char *aCommandName,
                                              nsICommandParams *aParams,
                                              nsISupports *refCon)
 {

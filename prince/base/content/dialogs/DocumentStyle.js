@@ -191,6 +191,7 @@ function browse( extension )// extension is 'css', 'js', 'xml', 'xsl' or somethi
     
   }
   var chosenURL;
+  if (fp.file == null) return;
   if (basedir.contains(fp.file, true)) // we need to change the uri to use "resource://app/"
   {
     chosenURL = "resource://app";
