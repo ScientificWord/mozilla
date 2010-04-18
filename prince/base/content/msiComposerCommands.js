@@ -601,9 +601,9 @@ function msiPokeTagStateUI(uiID, cmdParams)
     case "cmd_listtag":
       textboxName = "ParaTagSelections";
       break;
-    case "cmd_secttag":
+    case "cmd_structtag":
     case "cmd_envtag":
-      textboxName = "SectTagSelections";
+      textboxName = "StructTagSelections";
       break;
     case "cmd_frontmtag":
       textboxName = "FrontMTagSelections";
@@ -670,9 +670,12 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
     var editor = msiGetEditor(editorElement);
     var ns = new Object;
     if (commandID=="cmd_texttag" && editor && editor.tagListManager && editor.tagListManager.getClearTextTag(ns) == newState)
-
     {
       msiGoDoCommand('cmd_removeStyles');
+    }
+    else if (commandID=="cmd_structtag" && editor && editor.tagListManager && editor.tagListManager.getClearStructTag(ns) == newState)
+    {
+      msiGoDoCommand('cmd_removestruct');
     }
     else
       msiGoDoCommandParams(commandID, cmdParams, editorElement);
