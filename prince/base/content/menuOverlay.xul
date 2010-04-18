@@ -393,7 +393,7 @@
   <menu id="MSITypesetMenu"/>
   <menu id="MSIComputeMenu"/> 
   <menu id="toolsMenu" label="Tools" >
-    <menupopup id="toolPopup">
+    <menupopup id="menu_ToolsPopup">
       <menuitem label="JavaScript debugger" 
                 id="venkmanName" 
                 oncommand="start_venkman();"/>
@@ -799,6 +799,7 @@
     <command id="cmd_texttag"          state=""   />
     <command id="cmd_paratag"          state=""   />
     <command id="cmd_structtag"        state=""     />
+    <command id="cmd_frontmtag"        state=""     />
     <!--command id="cmd_othertag"         state=""    / -->
   </commandset>
 

@@ -41,7 +41,7 @@ nsIAtom * msiTagListManager::htmlnsAtom = nsnull;
 
 msiTagListManager::msiTagListManager()
 :  meditor(nsnull), mparentTags(nsnull), mInitialized(PR_FALSE), plookup(nsnull), pContainsList(nsnull),
-    mdefaultParagraph(NS_LITERAL_STRING("")), mclearTextTag(NS_LITERAL_STRING("")) 
+    mdefaultParagraph(NS_LITERAL_STRING("")), mclearTextTag(NS_LITERAL_STRING("")), mclearStructTag(NS_LITERAL_STRING("")) 
 {
   nsresult rv;
   if (!htmlnsAtom) htmlnsAtom  = NS_NewAtom(NS_LITERAL_STRING("http://www.w3.org/1999/xhtml"));
@@ -234,6 +234,7 @@ msiTagListManager::AddTagInfo(const nsAString & strTagInfoPath, PRBool *_retval)
   nsCOMPtr<nsIDOMElement> nodeElement;
   nsString strDefPara;
   nsString strClearTextTag;
+  nsString strClearSectionTag;
   rv = docTagInfo->GetElementById(NS_LITERAL_STRING("defaultparagraph"), getter_AddRefs(nodeElement));
   if (rv == NS_OK && nodeElement)
     rv = nodeElement->GetAttribute(NS_LITERAL_STRING("nm"), strDefPara);
@@ -242,6 +243,10 @@ msiTagListManager::AddTagInfo(const nsAString & strTagInfoPath, PRBool *_retval)
   if (rv == NS_OK && nodeElement)
     rv = nodeElement->GetAttribute(NS_LITERAL_STRING("nm"), strClearTextTag);
   if (rv==NS_OK) mclearTextTag.key.Assign(strClearTextTag);
+  rv = docTagInfo->GetElementById(NS_LITERAL_STRING("clearsectiontag"), getter_AddRefs(nodeElement));
+  if (rv == NS_OK && nodeElement)
+    rv = nodeElement->GetAttribute(NS_LITERAL_STRING("nm"), strClearSectionTag);
+  if (rv==NS_OK) mclearStructTag.key.Assign(strClearSectionTag);
   // build the name space list
   nsCOMPtr<nsIDOMNodeList> nodeList;
   nsString strNameSpace;
@@ -1138,6 +1143,13 @@ NS_IMETHODIMP msiTagListManager::GetClearTextTag(nsIAtom **atomNamespace, nsAStr
   return NS_OK;
 }
 
+
+NS_IMETHODIMP msiTagListManager::GetClearStructTag(nsIAtom **atomNamespace, nsAString & _retval)
+{
+  _retval = mclearStructTag.localName();
+  *atomNamespace = NS_NewAtom(mclearStructTag.prefix());
+  return NS_OK;
+}
 
 
 /* boolean selectionContainedInTag (in AString strTag, in nsIAtom atomNS); */

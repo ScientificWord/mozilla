@@ -171,6 +171,8 @@ interface nsIHTMLEditor : nsISupports
    */
   void removeAllInlineProperties();
 
+  void removeStructureAboveSelection(in nsISelection selection);
+
 
   /**
    * removeInlineProperty() deletes the properties from all text in the current
