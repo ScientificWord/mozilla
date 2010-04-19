@@ -5830,6 +5830,9 @@ var msiNavigationUtils =
     if (node.nodeType == nsIDOMNode.TEXT_NODE)
       return true;
 
+    if (this.isMathMLLeafNode(node))
+      return !(this.isMathname(node) || this.isUnit(node));
+
     switch( this.getTagClass( node, editor) )
     {
       case "texttag":
@@ -7409,6 +7412,7 @@ function msiKludgeTestKeys(keyArray)
   keysInUse.push("tableEdit");
   keysInUse.push("spaces");
   keysInUse.push("reviseChars");
+  keysInUse.push("editorFocus");
 #endif
 
   var bDoIt = false;
@@ -7883,6 +7887,31 @@ function msiFileURLFromAbsolutePath( absPath )
   }
 }                       
 
+function msiFileURLFromChromeURI( chromePath )  //chromePath is a nsURI
+{
+  var retPath;
+  if (!chromePath || !(/^chrome:/.test(chromePath)))
+  {
+    dump("In msiFileURLFromChrome, path [" + chromePath + "] isn't a chrome URL! Returning null.\n");
+    return retPath;
+  }
+   
+  var ios = Components.classes['@mozilla.org/network/io-service;1'].getService(Components.interfaces.nsIIOService);
+  var uri = ios.newURI(chromePath, "UTF-8", null);
+  var cr = Components.classes['@mozilla.org/chrome/chrome-registry;1'].getService(Components.interfaces.nsIChromeRegistry);
+  retPath = cr.convertChromeURL(uri);
+  var pathStr = retPath.spec;
+
+  if (/^jar:/.test(pathStr))
+    pathStr = pathStr.substr(4);  //after the "jar:"
+  if (!(/^file:/.test(pathStr)))
+    pathStr = "file://" + pathStr;
+  if (pathStr != retPath.spec)
+    retPath = msiURIFromString(pathStr);
+  retPath = msiFileURLFromAbsolutePath(retPath.path);
+
+  return retPath;
+}
 
 function msiFileURLFromFile( file )
 {

@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE window [
+<!ENTITY % firebugDTD SYSTEM "chrome://firebug/locale/firebug.dtd">
+%firebugDTD;
+]>
+
+<!-- overlays firebugOverlay.xul to change some items -->
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+    <script type="application/x-javascript" src="chrome://chromebug/content/scandocuments.js"/>
+
+    <commandset id="mainCommandSet">
+        <command id="cmd_toggleInspecting" oncommand="Chromebug.DocumentScanner.toggleScanningDocuments(FirebugContext)" />
+        <command id="cmd_clearTrace" oncommand="Firebug.Chromebug.TraceConsoleModule.clearPanel(FirebugContext)" />
+        <command id="cmd_refreshFirebugCache" oncommand="Firebug.Chromebug.FBCacheModule.refresh(FirebugContext)"/>
+    </commandset>
+
+    <!-- overlay the Firebug inspect button -->
+    <hbox id="fbPanelBar1-buttons" >
+        <toolbarbutton id="fbInspectButton" label="Inspect"
+            tooltiptext="Mouse over a window to inspect its XUL"
+            command="cmd_toggleInspecting"/>
+    </hbox>
+
+    <!-- Key shortcuts -->
+    <keyset id="mainKeyset">
+        <key id="key_toggleInspecting" key="c" modifiers="accel,shift" class="fbOnlyKey" command="cmd_toggleInspecting"/>
+        <key id="key_toggleFirebug" keycode="VK_F12" command="cmd_clearTrace"/>
+        <key id="key_detachFirebug" keycode="VK_F12" modifiers="accel" command="cmd_clearTrace"/>
+        <key id="key_clearConsole" key="r" modifiers="accel,shift" command="cmd_clearConsole" class="fbOnlyKey"/>
+    </keyset>
+
+    <!-- Toolbars definition -->
+    <hbox id="fbToolbarInner">
+
+        <hbox insertbefore="fbHTMLButtons" id="cbTraceButtons" collapsed="false">
+            <toolbarbutton label="Clear" class="toolbar-text-button"
+                tooltiptext="&firebug.ClearTooltip;" command="cmd_clearTracePanel"/>
+        </hbox>
+
+        <hbox insertbefore="fbHTMLButtons" id="cbFBCacheButtons" collapsed="false">
+            <toolbarbutton label="Refresh" class="toolbar-text-button"
+                tooltiptext="Refresh" command="cmd_refreshFirebugCache"/>
+        </hbox>
+
+        <hbox insertbefore="fbHTMLButtons" id="cbWindowButtons" collapsed="false">
+            <toolbarbutton label="Refresh" class="toolbar-text-button"
+                tooltiptext="Refresh" command="cmd_refreshWindows"/>
+        </hbox>
+    </hbox>
+
+</overlay>

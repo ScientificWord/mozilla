@@ -1,0 +1,8 @@
+.aboutbox {
+  -moz-box-align: center;
+  padding-bottom: 1em;
+}
+
+#version {
+  color: GrayText;
+}
