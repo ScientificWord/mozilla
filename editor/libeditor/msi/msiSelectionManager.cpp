@@ -14,8 +14,10 @@ PRUint32 msiSelectionManager::m_nodeID = 1;
 msiSelectionManager::msiSelectionManager(nsISelection * selection, msiEditor * msiEditor)
 :  nsSelectionState(), m_msiEditor(msiEditor)
 {
-  NS_NAMED_LITERAL_STRING(m_attributeName, "msiSelectionManagerID");
-  NS_NAMED_LITERAL_STRING(m_surrogateAttributeName, "msiSelectionManagerSurrogateID");
+  //NS_NAMED_LITERAL_STRING(m_attributeName, "msiSelectionManagerID");
+  //NS_NAMED_LITERAL_STRING(m_surrogateAttributeName, "msiSelectionManagerSurrogateID");
+  m_attributeName = NS_LITERAL_STRING("msiSelectionManagerID");
+  m_surrogateAttributeName = NS_LITERAL_STRING("msiSelectionManagerSurrogateID");
   nsVoidArray  rangeData;
   NormalizeSelection(selection, rangeData);
   InitalizeRangeStore(rangeData);
