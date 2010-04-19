@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+
+  <Description about="urn:mozilla:install-manifest">
+    <em:id>chromebug@johnjbarton.com</em:id>
+    <em:version>1.6.0a7</em:version>
+    <em:type>2</em:type>
+
+    <!-- ScientificWorkPlace@mackichan.com-->
+    <em:targetApplication>
+      <Description>
+        <em:id>ScientificWorkPlace@mackichan.com</em:id>
+        <em:minVersion>0.5</em:minVersion>
+        <em:maxVersion>99.0.0.*</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+
+    <!-- toolkit@mozilla.org -->
+    <em:targetApplication>
+      <Description>
+        <em:id>toolkit@mozilla.org</em:id>
+        <em:minVersion>1.9.0.11</em:minVersion>
+        <em:maxVersion>99.0.0.*</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+
+
+    <em:name>ChromeBug</em:name>
+    <em:description>ChromeBug: Firebug for Chrome</em:description>
+    <em:creator>johnjbarton@johnjbarton.com</em:creator>
+    <em:contributor>Thanks to Gijs Kruitbosch for creating ChromeList, used in Files panel</em:contributor>
+    <em:homepageURL>http://getfirebug.com/chromebug/index.html</em:homepageURL>
+    <em:updateURL>http://getfirebug.com/releases/chromebug/update.rdf</em:updateURL>
+    <em:updateKey>MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDaUpU1OwjaqcuOYEQmo7GZ1tn1MGcJoPO3/udJ/tVaPddGZe1GXZwxSN2S1cAndc4weli2j6pq0ppjeCqI/y7p4g1u3FpZ6OE+rL+JvmuY1KWhhNHzXtCem+RzltPzzzZYL+4eTULYz32U7lVsU2Qm0TdWzWw+l8byO84qgSsnzwIDAQAB</em:updateKey>
+  </Description>
+</RDF>

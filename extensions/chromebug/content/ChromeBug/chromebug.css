@@ -1,0 +1,96 @@
+/* See license.txt for terms of usage */
+
+@import "chrome://chromebug/skin/chromebug.css";
+@import "chrome://browser/skin/browser.css";
+
+
+/* Lightup the text, eg on the Script tab when stopped on a breakpoint */
+#wrapper-cbContextList > label {
+    color: #FF9933;
+}
+
+.fbURLMenuItem[highlight="true"] {
+    color: #FF9933;
+}
+
+#cbContextList {
+    /* This triggers initialize() calls , see bindings.xml */
+    -moz-binding: url("chrome://firebug/content/bindings.xml#panelFileList");
+}
+
+#cbPackageList {
+    /* This triggers initialize() calls , see bindings.xml */
+    -moz-binding: url("chrome://firebug/content/bindings.xml#panelFileList");
+}
+
+#cbAllFilesList {
+    /* This triggers initialize() calls , see bindings.xml */
+    -moz-binding: url("chrome://firebug/content/bindings.xml#panelFileList");
+}
+
+#cbContextList > .toolbarbutton-text.label,
+#cbPackageList > .toolbarbutton-text.label,
+#cbAllFilesList > .toolbarbutton-text.label {
+    font-weight: bold;
+}
+
+#cbGlobalScopeList {
+    /* This triggers initialize() calls , see bindings.xml */
+    -moz-binding: url("chrome://firebug/content/bindings.xml#panelFileList");
+     font-weight: bold;
+     color: blue;
+}
+#cbWindowList {
+    -moz-binding: url("chrome://firebug/content/bindings.xml#panelFileList");
+     font-weight: bold;
+     color: blue;
+}
+#cbInterfaceList {
+    -moz-binding: url("chrome://firebug/content/bindings.xml#panelFileList");
+     font-weight: bold;
+     color: blue;
+}
+#cbExtensionList {
+    -moz-binding: url("chrome://firebug/content/bindings.xml#panelFileList");
+     font-weight: bold;
+     color: blue;
+}
+#cbOverlayList {
+    -moz-binding: url("chrome://firebug/content/bindings.xml#panelFileList");
+     font-weight: bold;
+     color: blue;
+}
+#cbComponentList {
+    -moz-binding: url("chrome://firebug/content/bindings.xml#panelFileList");
+     font-weight: bold;
+     color: blue;
+}
+#cbJSContextList {
+    -moz-binding: url("chrome://firebug/content/bindings.xml#panelFileList");
+     font-weight: bold;
+     color: blue;
+}
+
+#cbPathList {
+    -moz-binding: url("chrome://firebug/content/bindings.xml#panelFileList");
+     font-weight: bold;
+     color: blue;
+}
+
+#cbDocumentLabel {
+    font-weight: bold;
+}
+#cbPackageLabel {
+    font-weight: bold;
+}
+#cbContextLabel {
+    font-weight: bold;
+}
+
+#profile-directory-name {
+    cursor: pointer;
+    font-weight: bold;
+}
+#fbStatusText {
+    visibility: collapse;
+}
