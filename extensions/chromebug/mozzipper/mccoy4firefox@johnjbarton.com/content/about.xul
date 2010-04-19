@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://mccoy/skin/about.css" type="text/css"?>
+
+<!DOCTYPE dialog [
+<!ENTITY % brandDTD SYSTEM "chrome://branding/locale/brand.dtd" >
+%brandDTD;
+<!ENTITY % dialogDTD SYSTEM "chrome://mccoy/locale/about.dtd" >
+%dialogDTD;
+]>
+
+<dialog title="&about.title;" style="&about.size;" buttons="accept"
+        windowtype="McCoy:About" onload="startup()"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <script src="about.js"/>
+
+  <stringbundle id="strings" src="chrome://mccoy/locale/about.properties"/>
+
+  <vbox class="aboutbox">
+    <image src="chrome://branding/locale/icon64.png"/>
+  </vbox>
+
+  <vbox flex="1" class="aboutbox">
+    <label id="version"/>
+    <spacer flex="1"/>
+    <description style="text-align: center">&iconattribution;</description>
+    <label href="http://www.famfamfam.com/lab/icons/silk/"
+           value="FAMFAMFAM" class="text-link"/>
+  </vbox>
+
+</dialog>
