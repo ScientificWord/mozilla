@@ -1,0 +1,226 @@
+/* See license.txt for terms of usage */
+
+/************************************************************************************************/
+
+/* List of existing caches (there is one cache per tab) */
+.cacheListTable {
+    width: 100%;
+    overflow: hidden;
+    font-family: Lucida Grande, Tahoma, sans-serif;
+    font-size: 11px;
+}
+
+.cacheListCol {
+}
+
+.cacheListRow {
+    background: white;
+    height:17px;
+}
+
+.opened > .cacheListCol > .cacheNameCol {
+    background-image: url(chrome://firebug/skin/win/twistyOpen.png);
+}
+
+.cacheListTable .cacheName {
+    background-image: url(chrome://firebug/skin/win/twistyClosed.png);
+    background-repeat: no-repeat;
+    background-position: 2px 1px;
+    padding-left: 18px;
+    cursor:pointer;
+}
+
+.cacheListTable .cacheName:hover {
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
+}
+
+.cacheListTable .cacheSize {
+    padding-left: 15px;
+    color: gray;
+}
+
+.cacheBodyCol {
+    padding-left: 18px;
+}
+
+/************************************************************************************************/
+
+/* Summary info */
+.cacheListTable .summaryRow {
+    background: #BBBBBB !important;
+    font-weight: bold;
+}
+
+.cacheListTable .summaryRow > .summaryCol {
+    border-top: 1px solid #999999;
+    border-bottom: 2px solid;
+    -moz-border-bottom-colors: #EFEFEF #999999;
+    padding-top: 1px;
+    padding-bottom: 2px;
+}
+
+.cacheListTable .summaryRow > .totalSize {
+    padding-left: 18px;
+}
+
+/************************************************************************************************/
+
+/* Cache styles */
+.fbCacheTable {
+    width: 100%;
+    border-left: 1px solid #EFEFEF;
+    border-top: 1px solid #EFEFEF;
+}
+
+.fbCacheTable .cacheEntryRow {
+    background: white;
+    height:17px;
+}
+
+.fbCacheTable .cacheEntryRow:hover {
+    background: #EFEFEF;
+}
+
+.fbCacheTable .cacheEntryCol {
+    padding: 0;
+    vertical-align: top;
+    border-bottom: 1px solid #EFEFEF;  
+    white-space: nowrap;
+}
+
+.fbCacheTable .cacheEntryLabel {
+    overflow: hidden;
+    min-width: 70px;
+    padding: 1px 0 2px 18px !important;
+}
+
+.opened > .cacheEntryCol > .cacheEntryURL {
+    background-image: url(chrome://firebug/skin/win/twistyOpen.png);
+}
+
+.cacheEntryURL {
+    background-image: url(chrome://firebug/skin/win/twistyClosed.png);
+    background-repeat: no-repeat;
+    background-position: 2px 2px;
+    padding-left: 18px;
+}
+
+.cacheEntryURL:hover {
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
+}
+
+.cacheEntrySize {
+    color: gray;
+}
+
+/************************************************************************************************/
+
+/* Custom styles for tabView bodies */
+.tabDataBody {
+    padding: 5px 0 5px 10px;
+}
+
+/************************************************************************************************/
+
+/* Tab view styles */
+.tabView {
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background-color: #FFFFFF;
+    color: #000000;
+}
+
+.tabViewCol {
+    border-top: 1px solid #EEEEEE;
+    background: url(chrome://firebug/skin/group.gif) repeat-x #FFFFFF;
+    vertical-align:top;
+    height:100%;
+}
+
+.tabViewBody {
+    margin: 10px 0 4px 10px;
+    /*margin: 10px 0px 0px 0px;*/
+    height:100%;
+}
+
+.tabBar {
+    position: relative;
+    padding-left: 14px;
+}
+
+.tab {
+    position: relative;
+    top: -3px;
+    margin-top: 10px;
+    padding: 4px 6px;
+    border: 1px solid transparent;
+    border-bottom: none;
+    font-weight: bold;
+    color: #565656;
+}
+
+.tab:hover {
+    cursor: pointer;
+}
+
+.tab[selected="true"] {
+    cursor: default !important;
+    border-color: #D7D7D7;
+    -moz-border-radius: 4px 4px 0 0;
+    background-color: #FFFFFF;
+}
+
+.tabBody {
+    display: none;
+    margin: 0;
+    border: 1px solid #D7D7D7;
+    background-color: #FFFFFF;
+    font-family: Monaco, monospace;
+    overflow: hidden;
+}
+
+.previewContent {
+    margin: 8px;
+    height:100%;
+}
+
+.tabBody[selected="true"] {
+    display: block;
+}
+
+.collapsed,
+[collapsed="true"] {
+    display: none;
+}
+
+/************************************************************************************************/
+
+/* User Messages */
+.fbCacheMessageTable {
+    width: 100%;
+    height: 100%;
+    font-size: 13px;
+    font-family: Lucida Grande, Tahoma, sans-serif;
+}
+
+.fbCacheMessageRow {
+    vertical-align:middle;
+}
+
+.fbCacheMessageCol {
+    text-align:center;
+    color: gray;
+}
+
+.fbCacheRefreshBtn {
+    margin-top: 15px;
+}
+
+/************************************************************************************************/
+
