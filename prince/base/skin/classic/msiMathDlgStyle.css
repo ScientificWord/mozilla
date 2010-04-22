@@ -46,6 +46,10 @@ description.MSISample  mml|*[tempinput="true"] {
   color: green;
 }
 
+mml|mphantom.vertStrut {
+  max-width: 1px;
+}
+
 #AccentAboveButtonGroup msibutton[group] {
   font-size: 200%;
   min-width: 1.5em;
