@@ -156,8 +156,8 @@
 <!ENTITY xrefButton.tooltip "Cross reference" >
 <!ENTITY xrefButton.label "Cross reference" >
 
-<!ENTITY texfieldButton.tooltip "Tex field" >
-<!ENTITY texfieldButton.label "Tex field" >
+<!ENTITY texfieldButton.tooltip "TeX field" >
+<!ENTITY texfieldButton.label "TeX field" >
 
 <!ENTITY subdocButton.tooltip "Subdocument" >
 <!ENTITY subdocButton.label "Subdocument" >
