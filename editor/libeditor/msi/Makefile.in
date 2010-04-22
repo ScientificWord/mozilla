@@ -34,6 +34,7 @@ REQUIRES = xpcom \
 		   scriptrunner \
 		   keymap \
 		   compute \
+		   arrowstate \
 		   $(NULL)
 
 
