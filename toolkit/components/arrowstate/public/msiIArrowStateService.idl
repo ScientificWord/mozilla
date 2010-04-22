@@ -1,0 +1,83 @@
+ 
+#include "nsISupports.idl"
+#include "nsIDOMEvent.idl"
+
+/// 
+/// The arrow state service supports the fast cursor feature.  It keeps track 
+/// which arrow keys, if any, are currently down and whether the arrow key should
+/// be automatically repeating (after a tap and press).  
+/// 
+   
+[scriptable, uuid(97A343E0-E01A-4f84-8586-9D90E124811D)]
+interface msiIArrowStateService : nsISupports
+{
+///  
+///  FindKeyCode is a utility routine that determines the keyCode associated to a keyboard 
+///  event and sets a boolean out parameter to true if the keyCode is for an arrow key.    
+///                                                                                        
+///  @param aEvent is the keyboard event                                                   
+///  @param keyCode is an out parameter, set to the keyCode of the event                   
+///  @param isArrow is set to true if the key is one of the arrow keys, false otherwise
+///  @result NS_OK if no errors    
+///  
+
+void  findKeyCode( in nsIDOMEvent aEvent, out unsigned long keyCode, out boolean isArrow); 
+///  
+///  Returns enough state to the caller to determine if the key should be processed normally, 
+///  or whether the normal key processing should be prevented, in which case the FastCursor 
+///  code will do its processing.
+///  @param isArrowActive returns whether the arrow key is down and so normal processing should
+///  be prevented.  The remaining out parameters are relevant only if isArrowActive is true.
+///  @param arrowKeyCode gives the arrow key that is currently down, if isArrowActive is true.
+///  @param isAcceptingAutoRepeats tells if the arrow keys are allowed to repeat.  The common
+///  scheme is to not let arrow keys repeat until the arrow key is pressed, released, and pressed
+///  again within a fixed time, which defaults to 500 ms.
+///  @param isVertical is true if and only if the up arrow or down arrow is the currently pressed 
+///  arrow key
+///  @param isForward is true if and only if	the left or right arrow is the currently pressed arrow key.
+///  @param keyCode is the keyCode of the arrow key, if isArrowActive is true.
+///  @param isFirstArrowPress is true the first time this function is called after an arrow key is
+///  pressed. We want to process a single arrow key press when the arrow key is first pressed, and 
+///  then to suppress the automatically generated "key presses" when the arrow key is held down.
+///  This parameter lets the code distinguish between these two cases.  When the arrow key is first
+///  pressed, there is a KeyDown event which causes arrowKeyDown to be called. The next event (always)
+///  is a KeyPress event.  The code in nsEditorEventListeners.cpp contains the first call to 
+///  findArrowKeyState, and it is that code that has to decide to let the first arrow press go through
+///  or not.
+///  @result NS_Ok if no error
+///  
+
+void findArrowKeyState(out boolean isArrowActive, out unsigned long arrowKeyCode, 
+	out boolean isAcceptingAutoRepeats, out boolean isVertical, out boolean isForward, 
+	in unsigned long keyCode, out boolean isFirstArrowPress );
+///  
+///  arrowKeyDown should be called once by a function that processes the KeyDown event. Currently that
+///  is done in nsEditorEventListeners.cpp
+///  @param keyCode, the key code of the arrow key that has been pressed
+///  
+
+void arrowKeyDown( in unsigned long keyCode );
+///  
+///  arrowKeyUp should be called once by a function that processes the KeyUp event. Currently that
+///  is done in nsEditorEventListeners.cpp
+///  @param keyCode, the key code of the arrow key that has been released
+///  
+
+void arrowKeyUp( in unsigned long keyCode);
+
+
+
+void nonArrowKeyPress( in unsigned long keyCode, in unsigned long charCode);
+
+void wasKeySearched ( out boolean wasSearched );
+/** This returns whether a visible (searchable) character was pressed 
+    while the arrow was down. If we delay cursor movement until the 
+    arrow keys are released, the answer to this question affects whether
+    the cursor should move when the arrow key is released. **/
+
+void reset();
+/** Call this when the arrow state should be reset to its initial sate,
+    for example, when the editing window loses focus. **/    
+
+    attribute AString findBuffer;
+};								    
