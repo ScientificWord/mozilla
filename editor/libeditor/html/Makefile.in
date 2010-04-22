@@ -67,6 +67,7 @@ REQUIRES	= xpcom \
 		  webshell \
 		  scriptrunner \
 		  keymap \
+		  arrowstate \
 		  $(NULL)
 
 # Building the full blown HTML Editor  so add its source files and objects:
