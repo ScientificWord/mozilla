@@ -656,6 +656,7 @@ MAKEFILES_xulapp="
   toolkit/components/keymap/public/Makefile
   toolkit/components/keymap/src/Makefile
   toolkit/components/arrowstate/Makefile
+  toolkit/components/arrowstate/public/Makefile
   toolkit/components/arrowstate/src/Makefile
   toolkit/components/Makefile
   toolkit/components/build/Makefile
