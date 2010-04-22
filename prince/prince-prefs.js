@@ -20,7 +20,7 @@ pref("swp.saveintervalseconds",10);
 pref("swp.generateTeXonsave", true);
 pref("swp.prefDocumentDir","SWPDocs");
 pref("swp.viewPDF","fixAcrobat.cmd %1");
-pref("swp.tex.bindir","%programfiles%\texlive\2009\bin\win32");  /* for windows */
+pref("swp.tex.bindir","%programfiles%\\texlive\\2009\\bin\\win32");  /* for windows */
 pref("editor.author",                      "");
 
 pref("editor.text_color",                   "#000000");
