@@ -170,7 +170,7 @@ void dumpTagStack( nsAutoTArray<nsAutoString, 32> sa)
 {
   printf("Tag Stack: \n");
   int L = sa.Length();
-  for (int i=0; i < L; i++) printf("%S\n",sa[i].get());
+  for (int i=0; i < L; i++) printf("   %S\n",sa[i].get());
 }
 #endif
 
@@ -3084,14 +3084,14 @@ nsresult nsHTMLEditor::CreateDOMFragmentFromPaste(const nsAString &aInputString,
   res = ParseFragment(aInputString, tagStack, doc, outFragNode);
 #if DEBUG_barry || DEBUG_Barry
   dumpTagStack(tagStack);
-  DumpNode(*outFragNode);
+  DumpNode(*outFragNode, 0, true);
 #endif
   NS_ENSURE_SUCCESS(res, res);
   NS_ENSURE_TRUE(*outFragNode, NS_ERROR_FAILURE);
   RemoveContextNodes(tagStack, *outFragNode);
   RemoveBodyAndHead(*outFragNode);
 #if DEBUG_barry || DEBUG_Barry
-  DumpNode(*outFragNode);
+  DumpNode(*outFragNode, 0, true);
 #endif
 #if DEBUG_barry || DEBUG_Barry
   printf("Calling FixMath: +++++++++++\n");
