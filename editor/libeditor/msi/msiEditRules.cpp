@@ -281,7 +281,7 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
    
   if (!*aHandled){
 
-     DebDisplaySelection("\nNot handled" , aSelection, mMSIEditor);
+     DebDisplaySelection("\nDeletion not handled. Current selection:" , aSelection, mMSIEditor);
        
      nsCOMPtr<nsIDOMNode> firstChildNode;
      nsCOMPtr<nsIDOMNode> lastChildNode;
@@ -317,9 +317,9 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
      }
 
      mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
-	 DebDisplaySelection("\nPre-will delete" , aSelection, mMSIEditor);
+	 DebDisplaySelection("\nSelection before WillDeleteSelection" , aSelection, mMSIEditor);
      nsHTMLEditRules::WillDeleteSelection(aSelection, aAction, aCancel, aHandled);
-	 DebDisplaySelection("\nPost-will delete" , aSelection, mMSIEditor);
+	 DebDisplaySelection("\nSelection after WillDeleteSelection" , aSelection, mMSIEditor);
 	 mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
 
   }
@@ -335,8 +335,7 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
   if (NS_FAILED(res)) return res;
   if (!endNode) return NS_ERROR_FAILURE;
 
-  DebDisplaySelection("\nPre FindCursor" , aSelection, mMSIEditor);
-
+  DebDisplaySelection("\nSelection before calling FindCursor" , aSelection, mMSIEditor);
 
   bool b = false;
   int idx = FindCursorIndex(mMSIEditor, mathNode, endNode, endOffset, b);
@@ -367,7 +366,7 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
 
   mHTMLEditor->DeleteNode(mathElement);
 
-  DebDisplaySelection("Pre result insertion", aSelection, mMSIEditor, true);
+  DebDisplaySelection("\nSelection before inserting new math", aSelection, mMSIEditor, true);
 
   nsCOMPtr<nsIDOMNode> parentOfMath;
   nsCOMPtr<nsIDOMNode> newMath;
@@ -379,10 +378,10 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
 
   msiUtils::GetChildNode(parentOfMath, mathOffset, newMath);
  
-  printf("\nNew Math\n ");
+  printf("\nThe New Math\n ");
   mHTMLEditor->DumpNode(newMath, 0, true);
 
-  DebDisplaySelection("Post result insertion", aSelection, mMSIEditor, true);
+  DebDisplaySelection("\nSelection after inserting new math", aSelection, mMSIEditor, true);
   
   nsCOMPtr<nsIDOMNode> theNode;
   PRInt32 theOffset;
@@ -393,6 +392,8 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
 
   range->SetStart(theNode, theOffset);
   aSelection->CollapseToStart();
+
+  DebDisplaySelection("\nFinal selection", aSelection, mMSIEditor, true);
 
   *aHandled = PR_TRUE;
 
