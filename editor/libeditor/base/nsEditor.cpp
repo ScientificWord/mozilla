@@ -265,6 +265,11 @@ nsEditor::DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse /* = false */
   PRInt32 i;
   for (i=0; i<indent; i++)
     printf("  ");
+
+  if (aNode == 0){
+    printf("!NULL!\n");
+	return;
+  }
   
   nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aNode);
   nsCOMPtr<nsIDOMDocumentFragment> docfrag = do_QueryInterface(aNode);
