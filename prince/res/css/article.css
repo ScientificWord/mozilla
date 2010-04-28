@@ -401,5 +401,30 @@ subparagraph defaulttitletag:after {
   color: gray;
 }
 
+button[class="eqnnum"]{
+  position: absolute;
+  right: 0px;
+}
+
+button[class="eqnnum"]:after{
+  content: "  " counter(section) "." counter(eqnnum);
+  counter-increment: eqnnum;
+  counter-reset: subeqnnum;
+  font-style: normal; 
+  color: red;
+}
+
+button[class="subeqnnum"]:after{
+  content: "  " counter(section) "." counter(eqnnum) "." counter(subeqnnum,lower-latin);
+  counter-increment: subeqnnum;
+  font-style: normal; 
+  color: blue;
+}
+
+
+button[class="subeqnnum"]{
+  position: absolute;
+  right: 20px;
+}
 
 

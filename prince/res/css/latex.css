@@ -25,7 +25,7 @@ latex sub {
 }
 
 hspace {
-/*  -moz-binding: url("resource://app/res/xbl/latex.xml#hspace"); */
+/*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#hspace"); */
   display: inline-block;
 }
 
@@ -82,7 +82,7 @@ hspace[type="noIndent"] {
 } */
 
 vspace {
-/*  -moz-binding: url("resource://app/res/xbl/latex.xml#vspace"); */
+/*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#vspace"); */
   display: inline-block;
 	max-width: 2px;
 /*  overflow: hidden;  */
@@ -124,12 +124,12 @@ vspace[type="customSpace"] {
 }
 
 msirule {
-/*  -moz-binding: url("resource://app/res/xbl/latex.xml#msirule"); */
+/*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msirule"); */
   display: inline-block;
 }
 
 msibreak {
-/*  -moz-binding: url("resource://app/res/xbl/latex.xml#msibreak"); */
+/*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msibreak"); */
 }
 
 msibreak[type="customNewLine"]:after {
@@ -161,7 +161,7 @@ msibreak[type="customNewLine"] custNL {
 }
 
 mml|math msibreak {
-/*  -moz-binding: url("resource://app/res/xbl/latex.xml#mathmsibreak"); */
+/*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#mathmsibreak"); */
 }
 
 msibreak[type="newPage"]:after {
@@ -188,15 +188,15 @@ newPageRule {
 }  */
 
 otfont {
-  -moz-binding: url("resource://app/res/xbl/latex.xml#otfont");
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#otfont");
 }
 
 fontsize {
-  -moz-binding: url("resource://app/res/xbl/latex.xml#fontsize");
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#fontsize");
 }
 
 fontcolor {
-  -moz-binding: url("resource://app/res/xbl/latex.xml#fontcolor");
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#fontcolor");
 }
 
 
@@ -207,7 +207,7 @@ img {
 
 
 graph {
-  -moz-binding: url("resource://app/res/xbl/latex.xml#graph");
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#graph");
 }
 
 graph {
@@ -271,7 +271,7 @@ mml|mrow[id]:after {
 
  
 .collapsible {
-  -moz-binding: url("resource://app/res/xbl/latex.xml#collapsible");
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
 }
  
 /* The following is a generic set of rules to control opening and closing
@@ -280,7 +280,7 @@ mml|mrow[id]:after {
 
  
 chapter>sectiontitle {
-  -moz-binding: url("resource://app/res/xbl/latex.xml#collapsible");
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
 }
  
 /* Keep counters from incrementing on unnumbered structures */
@@ -307,7 +307,7 @@ chapter[open='false']>button.expander {
 }
 
 section>sectiontitle {
-  -moz-binding: url("resource://app/res/xbl/latex.xml#collapsible");
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
 }
 
 section[nonum="true"] {
@@ -539,3 +539,9 @@ frontmatter>maketitle:before {
   width: 10em;
   content: "Make title page here:";
 }			 
+
+msidisplay {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplay");
+  position: relative;
+  display: block;
+}
