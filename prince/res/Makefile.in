@@ -10,14 +10,12 @@ include $(topsrcdir)/config/rules.mk
 
 CSS_RESOURCES := $(wildcard	$(srcdir)/css/*.css)
 # ICON_RESOURCES := $(wildcard $(srcdir)/css/*.png)
-XBL_RESOURCES := $(wildcard $(srcdir)/xbl/*.xml)
 XML_RESOURCES := $(wildcard $(srcdir)/xml/*.xml)
 TAGDEF_RESOURCES := $(wildcard $(srcdir)/tagdefs/*.xml)
 FRAG_RESOURCES := $(wildcard $(srcdir)/fragments/*.frg)
 
 libs::	$(CSS_RESOURCES) $(XBL_RESOURCES)
 	$(INSTALL)	$(CSS_RESOURCES)	$(FINAL_TARGET)/res/css
-	$(INSTALL)	$(XBL_RESOURCES)	$(FINAL_TARGET)/res/xbl
 	$(INSTALL)	$(TAGDEF_RESOURCES)	$(FINAL_TARGET)/res/tagdefs
 	$(INSTALL)	$(XML_RESOURCES)	$(FINAL_TARGET)/res/xml
 	$(INSTALL)	$(FRAG_RESOURCES)	$(FINAL_TARGET)/res/fragments
