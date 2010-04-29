@@ -67,6 +67,7 @@ REQUIRES = 	\
 		compute \
 		wrappers \
 		keymap \
+		arrowstate \
 		editor \
 		appcomps \
 		downloads \

@@ -72,11 +72,11 @@ display: table-cell
 
 texb {
 /*  font-size: small; */
-  -moz-binding: url("resource://app/res/xbl/latex.xml#texb");
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#texb");
 }
 
 latexstyleb {
-  -moz-binding: url("resource://app/res/xbl/latex.xml#latexstyleb");
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#latexstyleb");
 }
 
 
@@ -287,3 +287,4 @@ mml|menclose[notation~="roundedbox"] {
   border-color : black;
   -moz-border-radius : 0.5em
 }
+
