@@ -51,6 +51,9 @@
             <mo fence="true" id="leftBracketSample" form="prefix" stretchy="true">(</mo>
             <mi> </mi>
             <mo fence="true" id="rightBracketSample" form="postfix" stretchy="true">)</mo>
+            <mphantom class="vertStrut">
+              <mo fence="true" form="prefix" stretchy="true">&#x2329;</mo>
+            </mphantom>
 			    </mrow>
           <!-- /xhtml:div -->
         </mml:math>
