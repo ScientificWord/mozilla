@@ -572,7 +572,7 @@ function msiEditorOnFocus(event)
     }
   }
   logStr += "].\n";
-  msiKludgeLogString(logStr);
+  msiKludgeLogString(logStr, "editorFocus");
 //End logging
   msiSetActiveEditor(editorElement, true);
 }
@@ -596,7 +596,7 @@ function msiEditorOnBlur(event)
   else
   {
     logStr += ", doing nothing (not the current active editor).\n";
-    msiKludgeLogString(logStr);
+    msiKludgeLogString(logStr, "editorFocus");
   }
 //End logging
 }
@@ -1074,11 +1074,12 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
     var doc;
     var dir;
     var charset = "";
-    charset = document.getElementById("args").getAttribute("charset")
+//    charset = document.getElementById("args").getAttribute("charset")
     dump("1\n");
     if (theArgs)
     {
-      docurlstring = document.getElementById("args").getAttribute("value");
+      charset = theArgs.getAttribute("charset")
+      docurlstring = theArgs.getAttribute("value");
       if (docurlstring.length > 0)
         docurl = msiURIFromString(docurlstring);
       if (docurl) dump("Url in args is "+docurl.spec+"\n");
@@ -1129,16 +1130,20 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
     }
 // now we have a url for the doc.
          
-    if (docurl && (docurl.schemeIs("chrome")||docurl.schemeIs("resource")))
-    {
+//    if (docurl && (docurl.schemeIs("chrome") || docurl.schemeIs("resource")))
+    if (docurl && docurl.schemeIs("resource"))
+    { 
       // convert to a file URL
       docpath = msiPathFromFileURL( docurl );
       docurl = msiFileURLFromAbsolutePath(docpath); // this converts docurl to a file URL
       dump("Doc Url converted to file:// is "+docurl.spec + "\n");
-      
     }
-    doc = msiFileFromFileURL(docurl);
-    dir = doc.parent;
+
+    if (!docurl.schemeIs("chrome"))
+    {
+      doc = msiFileFromFileURL(docurl);
+      dir = doc.parent;
+    }
 
     // in cases where the user has gone through a dialog, such a File/New or File/Open, the working directory
     // has already been created and the document name changed. When starting up, or starting with a file on the
@@ -3103,16 +3108,17 @@ function msiFindRevisableObjectToLeft(aNode, anOffset, editorElement)
 
   if (aNode.nodeType == nsIDOMNode.TEXT_NODE)
   {
-    if ( msiNavigationUtils.isMathname(aNode.parentNode) || msiNavigationUtils.isUnit(aNode.parentNode) 
-         || msiNavigationUtils.isBigOperator(aNode.parentNode) || msiNavigationUtils.isSpacingObject(aNode.parentNode)
-         || msiNavigationUtils.isMathMLLeafNode(aNode.parentNode) )
-    {
-      retObj = msiCreatePropertiesObjectDataFromNode(aNode.parentNode, editorElement);
-//      returnVal.theNode = aNode.parentNode;
-      return retObj;
-    }
     if (anOffset > 0)
     {
+      if ( msiNavigationUtils.isMathname(aNode.parentNode) || msiNavigationUtils.isUnit(aNode.parentNode) 
+           || msiNavigationUtils.isBigOperator(aNode.parentNode) || msiNavigationUtils.isSpacingObject(aNode.parentNode)
+           || msiNavigationUtils.isMathMLLeafNode(aNode.parentNode) )
+      {
+        retObj = msiCreatePropertiesObjectDataFromNode(aNode.parentNode, editorElement);
+  //      returnVal.theNode = aNode.parentNode;
+        return retObj;
+      }
+
       //What do we return to say we want the character to the left?
       retObj = new msiCharPropertiesObjectData();
       retObj.initFromNodeAndOffset(aNode, anOffset, editorElement);
