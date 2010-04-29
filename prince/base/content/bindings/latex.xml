@@ -7,6 +7,75 @@
   xmlns:html="http://www.w3.org/1999/xhtml" 
   xmlns:mml="http://www.w3.org/1998/Math/MathML" >
 
+	<xbl:binding id="msidisplay">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+    <xbl:content>
+      <html:button type="button" xbl:inherits="xbl:text=id" class="eqnnum" onclick="this.init()"/>
+      <xbl:children/>
+    </xbl:content>
+
+    <xbl:implementation>
+      <xbl:constructor>
+        this.init();
+      </xbl:constructor>
+      
+      <xbl:method name="init">
+      <xbl:body>
+        <![CDATA[
+        var dispnode = this; 
+        var subnode;
+        var crect;
+        var crect2;
+        var button;
+        var newtop;
+        var tw = document.createTreeWalker(  
+          dispnode,  
+          NodeFilter.SHOW_ELEMENT,  
+          { acceptNode: function(node) { return NodeFilter.FILTER_ACCEPT; } },  
+          false); 
+        while (subnode = tw.nextNode()) {
+          if (subnode.hasAttribute("eqnnum"))
+          {
+            crect = subnode.getClientRects();
+            if (crect.length > 0)
+            {
+              crect = crect[0];
+              if (crect) {
+                button = document.getAnonymousElementByAttribute(this, "class", "eqnnum");
+                newtop = (crect.bottom - crect.top)/2 -10;
+                if (button) button.setAttribute("style", "top:" + newtop + "px;");
+              }
+            }
+          }
+        }
+        tw = document.createTreeWalker(  
+          dispnode,  
+          NodeFilter.SHOW_ELEMENT,  
+          { acceptNode: function(node) { return NodeFilter.FILTER_ACCEPT; } },  
+          false); 
+        while (subnode = tw.nextNode()) {
+          if (subnode.hasAttribute("subeqnnum"))
+          {
+            crect = subnode.getClientRects();
+            if (crect.length > 0)
+            {
+              crect = crect[0];
+              if (crect) {
+//                button = document.getAnonymousElementByAttribute(this, "class", "eqnnum");
+
+//                if (button) button.setAttribute("style", "top:"+Number((crect.top+crect.bottom)/2) +"px;");
+              }
+            }
+          }
+        }
+        ]]>
+      </xbl:body>
+      </xbl:method>
+    </xbl:implementation>
+  </xbl:binding>
+
 	<xbl:binding id="texb">
 	  <xbl:resources>
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
@@ -91,7 +160,6 @@
             /*  sepObj.setAttribute("style", theStyle);
               spaceObj.appendChild(sepObj); */
           }
-          dump("XBL hspace content doesn't have dim attribute!\n");
         }
         ]]>
       </xbl:constructor>

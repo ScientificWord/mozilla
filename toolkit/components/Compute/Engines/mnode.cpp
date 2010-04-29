@@ -305,8 +305,9 @@ char* TNodeToStr(MNODE * mml_node, char *prefix, int indent)
     // form the indentation string
     char indent_str[128];
     int ii = 0;
-    while (ii < indent && ii < 127)
-      indent_str[ii++] = ' ';
+	// Take out pretty printing -- not useful at this stage
+    // jcs while (ii < indent && ii < 127)
+    // jcs   indent_str[ii++] = ' ';
     indent_str[ii] = 0;
 
     char element[80];
@@ -327,8 +328,7 @@ char* TNodeToStr(MNODE * mml_node, char *prefix, int indent)
         (!"I don't MML will ever allow both chdata and children on the same node");
       sprintf(zzz, " name=\"%s\">", mml_node->p_chdata);
       buffer = AppendStr2HeapStr(buffer, bln, zzz);
-
-      buffer = AppendStr2HeapStr(buffer, bln, "\n");
+	
       MNODE *t_list = mml_node->first_kid;
       while (t_list) {
         char *tmp = TNodeToStr(t_list, l_prefix, indent + 2);
@@ -337,16 +337,21 @@ char* TNodeToStr(MNODE * mml_node, char *prefix, int indent)
         t_list = t_list->next;
       }
       FUSetPrefix(mml_node->src_tok, l_prefix, element);
-      sprintf(zzz, "%s</%s>\n", indent_str, element);
+	  
+	  sprintf(zzz, "%s</%s>", indent_str, element);
+
       buffer = AppendStr2HeapStr(buffer, bln, zzz);
     } else if (mml_node->p_chdata) {
       buffer = AppendStr2HeapStr(buffer, bln, ">");
       buffer = AppendStr2HeapStr(buffer, bln, mml_node->p_chdata);
       FUSetPrefix(mml_node->src_tok, l_prefix, element);
-      sprintf(zzz, "</%s>\n", element);
+	  sprintf(zzz, "</%s>", element);
+
       buffer = AppendStr2HeapStr(buffer, bln, zzz);
     } else if (mml_node->first_kid) {
-      buffer = AppendStr2HeapStr(buffer, bln, ">\n");
+	  
+	  buffer = AppendStr2HeapStr(buffer, bln, ">");
+
       MNODE *t_list = mml_node->first_kid;
       while (t_list) {
         char *tmp = TNodeToStr(t_list, l_prefix, indent + 2);
@@ -355,14 +360,15 @@ char* TNodeToStr(MNODE * mml_node, char *prefix, int indent)
         t_list = t_list->next;
       }
       FUSetPrefix(mml_node->src_tok, l_prefix, element);
-      sprintf(zzz, "%s</%s>\n", indent_str, element);
+      sprintf(zzz, "%s</%s>", indent_str, element);
       buffer = AppendStr2HeapStr(buffer, bln, zzz);
     } else {
       if (!strcmp(mml_node->src_tok, "mspace")) {
-        buffer = AppendStr2HeapStr(buffer, bln, ">\n");
+	    buffer = AppendStr2HeapStr(buffer, bln, ">");
+	    
       } else {
         FUSetPrefix(mml_node->src_tok, l_prefix, element);
-        sprintf(zzz, "></%s>\n", element);
+        sprintf(zzz, "></%s>", element);
         buffer = AppendStr2HeapStr(buffer, bln, zzz);
       }
     }
