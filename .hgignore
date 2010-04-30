@@ -8,3 +8,8 @@ glob:config.cache
 glob:*.err
 glob:*.log
 glob:*.orig
+glob:*/Thumbs.db
+glob:.cproject
+glob:.project
+glob:.settings/org.eclipse.core.runtime.prefs
+glob:.settings/org.eclipse.core.resources.prefs
