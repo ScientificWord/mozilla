@@ -189,6 +189,7 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
   printf("\nMath node:\n");
   mHTMLEditor -> DumpNode(mathNode, 0, true);
 
+
   if (!mathElement) return NS_ERROR_FAILURE;
 
   DebDisplaySelection("\nInitial selection", aSelection, mMSIEditor, true);
@@ -199,9 +200,19 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
 	  nsCOMPtr<msiIMathMLEditingBC> editingBC; 
       PRUint32 dontcare(0);
 	  PRUint32 mathmltype;
+
+      nsCOMPtr<nsIDOMNodeList> children;
+	  PRUint32 number;
+	  nsCOMPtr<nsIDOMNode> rightmostChild;
+	  mathNode->GetChildNodes(getter_AddRefs(children));
+	  msiUtils::GetNumberofChildren(mathNode, number);
+	  msiUtils::GetChildNode(mathNode, startOffset-1, rightmostChild);
+
 	  
-	  printf("\nendNode:\n");
-      mHTMLEditor -> DumpNode(endNode, 0, true);
+	  printf("\nPoint of deletion:\n");
+      mHTMLEditor -> DumpNode(rightmostChild, 0, true);
+
+      endNode = rightmostChild;
 
 	  msiUtils::GetMathMLEditingBC(mHTMLEditor, endNode, dontcare, editingBC);
       if (editingBC) {
@@ -303,13 +314,13 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
    
   mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
 
-  // jcs  res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(startNode), &startOffset);
-  // jcs  if (NS_FAILED(res)) return res;
-  // jcs  if (!startNode) return NS_ERROR_FAILURE;
-  // jcs 
-  // jcs  res = mHTMLEditor->GetEndNodeAndOffset(aSelection, address_of(endNode), &endOffset);
-  // jcs  if (NS_FAILED(res)) return res;
-  // jcs  if (!endNode) return NS_ERROR_FAILURE;
+  res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(startNode), &startOffset);
+  if (NS_FAILED(res)) return res;
+  if (!startNode) return NS_ERROR_FAILURE;
+  
+  res = mHTMLEditor->GetEndNodeAndOffset(aSelection, address_of(endNode), &endOffset);
+  if (NS_FAILED(res)) return res;
+  if (!endNode) return NS_ERROR_FAILURE;
 
   DebDisplaySelection("\nSelection before calling FindCursor" , aSelection, mMSIEditor, true);
 
@@ -347,12 +358,17 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
  
   printf("\nThe New Math\n ");
   mHTMLEditor->DumpNode(newMath, 0, true);
+  printf("\nCursor idx = %d\n", idx);
 
   DebDisplaySelection("\nSelection after inserting new math", aSelection, mMSIEditor, true);
   
   nsCOMPtr<nsIDOMNode> theNode;
   PRInt32 theOffset;
   FindCursorNodeAndOffset(mHTMLEditor, newMath, idx, theNode, theOffset);
+
+  printf("\nThe indicated node\n ");
+  mHTMLEditor->DumpNode(theNode, 0, true);
+  printf("\nOffset = %d\n", theOffset);
 
   nsIDOMRange* range;
   aSelection->GetRangeAt(0, &range);
