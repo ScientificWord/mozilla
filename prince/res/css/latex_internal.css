@@ -1,4 +1,5 @@
 @namespace sw url("http://www.sciword.com/namespaces/sciword");
+@namespace html url("http:/www.w3.org/1999/xhtml");
 
 sw|invis {
   display: none;
