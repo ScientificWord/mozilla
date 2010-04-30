@@ -27,52 +27,61 @@ include $(DEPTH)/config/autoconf.mk
 	@$(PERL) $(srcdir)/SWP2Mozilla.pl < $(_VPATH_SRCS) > $*.xhtml
 
 SAMPLES	:= \
-			$(srcdir)/DebugEvaluate.xhtml \
-			$(srcdir)/ForPrinceImport.xhtml \
-			$(srcdir)/shell.xhtml \
-			$(srcdir)/TestFAncy.xhtml	\
-			$(srcdir)/img.xhtml	\
-			$(srcdir)/img.xml	\
-			$(srcdir)/TestPlotsWithImages.xhtml \
-			$(srcdir)/TestPlotsExtended.xhtml \
-			$(srcdir)/TestPlotsVcam.xhtml \
-			$(srcdir)/TestPlotsAnimated.xhtml \
-			$(srcdir)/TestPlotsAnimatedVcam.xhtml \
-			$(srcdir)/vcamdemo.xhtml \
-            $(wildcard $(srcdir)/TestPlot*.png) \
-			$(srcdir)/simpledocbook.xhtml \
-			$(wildcard) $(srcdir)/*.jvx \
-			$(wildcard) $(srcdir)/*.jvd \
-			$(wildcard) $(srcdir)/*.jpg \
-			$(wildcard $(srcdir)/*.css) \
-			$(wildcard $(srcdir)/*.gif) \
-			$(wildcard $(srcdir)/*.xvz) \
-			$(wildcard $(srcdir)/*.pdf) \
 			$(NULL)
 
-SWP_SAMPLES	:= \
-			TestComputation.xhtml \
-			TestCalculus.xhtml \
-			TestDefines.xhtml \
-			TestEngineFunctions.xhtml \
-			TestEnginePrefs.xhtml \
-			TestEvaluate.xhtml \
-			TestExternalFunctions.xhtml \
-			TestMatrix.xhtml \
-			TestNames.xhtml \
-			TestPolynomials.xhtml \
-			TestPowerSeries.xhtml \
-			TestODE.xhtml \
-			TestRewrite.xhtml \
-			TestSimplex.xhtml \
-			TestSimplifyExpand.xhtml \
-			TestSolve.xhtml \
-			TestStatistics.xhtml \
-			TestTransforms.xhtml \
-			TestUnits.xhtml \
-			TestUserPrefs.xhtml \
-			TestVectorCalculus.xhtml \
+#			$(srcdir)/DebugEvaluate.xhtml \
+#			$(srcdir)/ForPrinceImport.xhtml \
+#			$(srcdir)/shell.xhtml \
+#			$(srcdir)/TestFAncy.xhtml	\
+#			$(srcdir)/img.xhtml	\
+#			$(srcdir)/img.xml	\
+#			$(srcdir)/TestPlotsWithImages.xhtml \
+#			$(srcdir)/TestPlotsExtended.xhtml \
+#			$(srcdir)/TestPlotsVcam.xhtml \
+#			$(srcdir)/TestPlotsAnimated.xhtml \
+#			$(srcdir)/TestPlotsAnimatedVcam.xhtml \
+#			$(srcdir)/vcamdemo.xhtml \
+#            $(wildcard $(srcdir)/TestPlot*.png) \
+#			$(srcdir)/simpledocbook.xhtml \
+#			$(wildcard) $(srcdir)/*.jvx \
+#			$(wildcard) $(srcdir)/*.jvd \
+#			$(wildcard) $(srcdir)/*.jpg \
+#			$(wildcard $(srcdir)/*.css) \
+#			$(wildcard $(srcdir)/*.gif) \
+#			$(wildcard $(srcdir)/*.xvz) \
+#			$(wildcard $(srcdir)/*.pdf) \
+
+
+SWP_SAMPLES_SCI	:= \
+			$(srcdir)/OregonTrail.sci \
 			$(NULL)
+
+
+SWP_SAMPLES_DIR	:= \
+			$(srcdir)/test-eqn-numbers.sci \
+			$(NULL)
+
+#			TestComputation.xhtml \
+#			TestCalculus.xhtml \
+#			TestDefines.xhtml \
+#			TestEngineFunctions.xhtml \
+#			TestEnginePrefs.xhtml \
+#			TestEvaluate.xhtml \
+#			TestExternalFunctions.xhtml \
+#			TestMatrix.xhtml \
+#			TestNames.xhtml \
+#			TestPolynomials.xhtml \
+#			TestPowerSeries.xhtml \
+#			TestODE.xhtml \
+#			TestRewrite.xhtml \
+#			TestSimplex.xhtml \
+#			TestSimplifyExpand.xhtml \
+#			TestSolve.xhtml \
+#			TestStatistics.xhtml \
+#			TestTransforms.xhtml \
+#			TestUnits.xhtml \
+#			TestUserPrefs.xhtml \
+#			TestVectorCalculus.xhtml \
 
 MUPAD_SAMPLES	:= $(srcdir)/myfuncs.mu
 
@@ -80,9 +89,12 @@ GRAPHICS_SAMPLES  := $(wildcard $(srcdir)/graphics/TestPlot*.png)
 
 include $(topsrcdir)/config/rules.mk
 
-libs::	$(SAMPLES) $(SWP_SAMPLES) $(MUPAD_SAMPLES)
-	$(INSTALL) $(SAMPLES) $(FINAL_TARGET)/samples
-	$(INSTALL) $(SWP_SAMPLES) $(FINAL_TARGET)/samples
-	$(INSTALL) $(MUPAD_SAMPLES) $(DIST)/bin
-	$(INSTALL) $(GRAPHICS_SAMPLES) $(FINAL_TARGET)/samples/graphics
+libs::	$(SWP_SAMPLES_SCI) $(SWP_SAMPLES_DIR)
+	$(INSTALL) $(SWP_SAMPLES_SCI) $(FINAL_TARGET)/samples
+	cp -r $(SWP_SAMPLES_DIR) $(FINAL_TARGET)/samples
+
+#libs::	$(SAMPLES)  $(MUPAD_SAMPLES)
+#	$(INSTALL) $(SAMPLES) $(FINAL_TARGET)/samples
+#	$(INSTALL) $(MUPAD_SAMPLES) $(DIST)/bin
+#	$(INSTALL) $(GRAPHICS_SAMPLES) $(FINAL_TARGET)/samples/graphics
 
