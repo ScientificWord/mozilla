@@ -1,0 +1,5 @@
+test.jar:
+% skin prince test %skin/test/	
+  skin/test/aboutDialog.css       (aboutDialog.css)
+  skin/test/binomialsDialog.css       (binomialsDialog.css)
+  skin/test/combobox-middle.png       (icons/combobox-middle.png)
