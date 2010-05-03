@@ -1,0 +1,15 @@
+DEPTH		= ../../../..
+topsrcdir	= /c/users/barry.msi/prince2/mozilla
+srcdir	    = /c/users/barry.msi/prince2/mozilla/prince/base/skin/test
+VPATH		= /c/users/barry.msi/prince2/mozilla/prince/base/skin/test
+
+
+cssfiles := aboutDialog.css	\
+			binomialsDialog.css \
+			$(NULL)
+
+MY_RULES = $(srcdir)/myrules.mk
+
+include $(DEPTH)/config/autoconf.mk
+
+include $(topsrcdir)/config/rules.mk
