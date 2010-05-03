@@ -1,0 +1,18 @@
+
+// basic dialog constants for consistency
+
+#msiDialog {
+  background-color: 	#ffb4b4;
+  font-size: 			100%;
+  font-family: 			Arial;
+  color:				#000;
+
+  .rounded-corners (@radius: 5px) {
+    -moz-border-radius: @radius;
+  }
+ 
+  .disabled-is-hidden {
+    visibility: visible;
+    [disabled="true"] { visibility: hidden; }
+  }	
+}						
