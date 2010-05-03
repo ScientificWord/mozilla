@@ -319,6 +319,12 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
                                    address_of(streamEndParent),
                                    &streamStartOffset,
                                    &streamEndOffset);
+
+#if DEBUG_barry || DEBUG_Barry
+  printf("\nFragment As Node:\n");
+  DumpNode(fragmentAsNode, 0, true);
+#endif
+  
   NS_ENSURE_SUCCESS(res, res);
 //  DumpNode(fragmentAsNode);
   nsCOMPtr<nsIDOMNode> targetNode, tempNode;
@@ -386,11 +392,11 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
                                  streamEndParent, streamEndOffset);
   NS_ENSURE_SUCCESS(res, res);
   PRInt32 listCount = nodeList.Count();
-#ifdef DEBUG_Barry
+#if DEBUG_barry || DEBUG_Barry
   for (j=0; j<listCount; j++)
   {
-    printf("%d\n", j);
-    DumpNode(nodeList[j]);
+    printf("\nnodeList[%d]\n", j);
+    DumpNode(nodeList[j],0,true);
   }
 // FixMathematics(nodeList[0], PR_FALSE, PR_FALSE, PR_FALSE);
 //  if (listCount > 1) FixMathematics(nodeList[listCount-1], PR_FALSE, PR_FALSE, PR_FALSE);
@@ -552,7 +558,16 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
     }
 // Now fix up fragments internal to the math node
     endNode = nodeList[0];
+	#if DEBUG_barry || DEBUG_Barry
+	  printf("\nendNode before FixMath\n");
+	  DumpNode(endNode, 0, true);
+	#endif
     FixMathematics(endNode, length > 1, PR_FALSE);
+	#if DEBUG_barry || DEBUG_Barry
+	  printf("\nendNode after FixMath\n");
+	  DumpNode(endNode, 0, true);
+	#endif
+
     if (length > 1) 
     {
       endNode = nodeList[length-1];
@@ -672,7 +687,8 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
         
         // try to insert
 #if DEBUG_barry || DEBUG_Barry
-    DumpNode(curNode); 
+    printf("\nTry to insert\n");
+    DumpNode(curNode, 0, true); 
     DebExamineNode(curNode);
     DebExamineNode(parentNode);
 #endif
@@ -3006,8 +3022,8 @@ void nsHTMLEditor::FixMathematics( nsIDOMNode * nodelistNode, PRBool fLeftOnly, 
     isMathNode = tagNamespace.Equals(strMathMLNs);
 //    element->GetPrefix(nsprefix);
     if (isMathNode && (tagName.EqualsLiteral("mfrac")||tagName.EqualsLiteral("msup")||
-      tagName.EqualsLiteral("msub")||tagName.EqualsLiteral("mroot")||
-      tagName.EqualsLiteral("msqrt")||tagName.EqualsLiteral("msubsup")))
+      tagName.EqualsLiteral("msub")  || tagName.EqualsLiteral("mroot")||
+      /*tagName.EqualsLiteral("msqrt") ||*/ tagName.EqualsLiteral("msubsup")))
     { 
       // count the children of element. If there are too few, delete element
       nodelistNode->GetChildNodes(getter_AddRefs(pNodeList));
@@ -3095,12 +3111,12 @@ nsresult nsHTMLEditor::CreateDOMFragmentFromPaste(const nsAString &aInputString,
 #endif
 #if DEBUG_barry || DEBUG_Barry
   printf("Calling FixMath: +++++++++++\n");
-  DumpNode(*outFragNode);
+  DumpNode(*outFragNode, 0, true);
 #endif
  // FixMathematics(*outFragNode, PR_FALSE, PR_FALSE, PR_FALSE);
 #if DEBUG_barry || DEBUG_Barry
   printf("Out of FixMath: ------------\n");
-  DumpNode(*outFragNode);
+  DumpNode(*outFragNode, 0, true);
 #endif
   if (contextAsNode)
   {
@@ -3110,7 +3126,7 @@ nsresult nsHTMLEditor::CreateDOMFragmentFromPaste(const nsAString &aInputString,
   }
 #if DEBUG_barry || DEBUG_Barry
   printf("contextAsNode: ------------\n");
-  DumpNode(contextAsNode);
+  DumpNode(contextAsNode, 0, true);
 #endif
 
   res = StripFormattingNodes(*outFragNode, PR_TRUE);
@@ -3129,6 +3145,12 @@ nsresult nsHTMLEditor::CreateDOMFragmentFromPaste(const nsAString &aInputString,
     *outEndNode = *outStartNode = *outFragNode;
 
   *outStartOffset = 0;
+
+#if DEBUG_barry || DEBUG_Barry
+  printf("outEndNode: ------------\n");
+  DumpNode(*outEndNode,0,true);
+#endif
+  
 
   // get the infoString contents
   nsAutoString numstr1, numstr2;
@@ -3158,6 +3180,10 @@ nsresult nsHTMLEditor::CreateDOMFragmentFromPaste(const nsAString &aInputString,
       tmp.swap(*outEndNode);
     }
   }
+#if DEBUG_barry || DEBUG_Barry
+  printf("outEndNode: ------------\n");
+  DumpNode(*outEndNode,0,true);
+#endif
 
   GetLengthOfDOMNode(*outEndNode, (PRUint32&)*outEndOffset);
   return res;
