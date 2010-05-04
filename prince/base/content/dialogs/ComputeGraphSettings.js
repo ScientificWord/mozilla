@@ -38,7 +38,9 @@ function Startup(){
   editorControl.mInitialDocObserver = new Array(docObserver);
 //  editorControl.mInitialDocCreatedObserver = msiEditorDocumentObserverG;
   editorControl.overrideStyleSheets = new Array("chrome://prince/skin/MathVarsDialog.css");
-  msiInitializeEditorForElement(editorControl, "", true);
+
+  var theStringSource = GetComputeString("Math.emptyForInput");
+  msiInitializeEditorForElement(editorControl, theStringSource, true);
 
 //   //SLS the following copied from editor.js
 //  gSourceContentWindow = document.getElementById("plotDlg-content-frame");
