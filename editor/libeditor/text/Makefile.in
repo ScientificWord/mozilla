@@ -62,6 +62,7 @@ REQUIRES	= xpcom \
 		  thebes \
 		  widget \
 		  unicharutil \
+		  arrowstate \
 		  $(NULL)
 
 CPPSRCS		=                           \
