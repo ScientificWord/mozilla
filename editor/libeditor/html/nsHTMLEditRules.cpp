@@ -7669,7 +7669,37 @@ nsHTMLEditRules::GetStructNodeFromNode(nsIDOMNode *node, nsIDOMElement ** struct
 //   If we are deleting a structure node of the lowest possible level, we put the contained
  //  paragraphs in the body.
  
-  
+nsresult GetLastElement(nsIDOMNode * aNode, nsIDOMElement ** element)
+{
+  nsCOMPtr<nsIDOMNode> lastChild;
+  nsCOMPtr<nsIDOMElement> lastElement;
+  aNode->GetLastChild(getter_AddRefs(lastChild));
+  PRUint16 nodetype;
+  *element = nsnull;
+  lastChild->GetNodeType(&nodetype);
+  if (nodetype == 1) {
+    lastElement = do_QueryInterface(lastChild);
+    *element = lastElement;
+  }
+  while (nodetype != 1)
+  {
+    lastChild->GetPreviousSibling(getter_AddRefs(lastChild));
+    if (lastChild && lastChild->GetNodeType(&nodetype) == NS_OK)
+    {
+        if (nodetype == 1)
+        {
+          lastElement = do_QueryInterface(lastChild);
+          *element = lastElement;
+        }
+    }
+    else { //escape
+      nodetype = 1;
+      *element = nsnull;
+    }
+  }
+  return NS_OK;    
+}
+    
                      
 nsresult 
 nsHTMLEditRules::RemoveStructure(nsIDOMNode *node, const nsAString& notThisTag)
@@ -7677,12 +7707,15 @@ nsHTMLEditRules::RemoveStructure(nsIDOMNode *node, const nsAString& notThisTag)
   nsresult res;
   nsCOMPtr<nsIDOMElement> structElement;
   nsCOMPtr<nsIDOMElement> destElement;
+  nsCOMPtr<nsIDOMElement> tempElement;
   nsCOMPtr<nsIDOMNode> curNode;
+  nsCOMPtr<nsIDOMNode> destNode;
   nsAutoString tagName;
   PRBool done = PR_FALSE;
   PRBool destIsParent = PR_FALSE;
   PRBool isStruct;
   PRUint16 nodeType;
+  PRInt32 offset;
   nsCOMPtr<nsIAtom> atomNS;
 
   NS_NAMED_LITERAL_STRING(strPara, "paratag");
@@ -7691,7 +7724,7 @@ nsHTMLEditRules::RemoveStructure(nsIDOMNode *node, const nsAString& notThisTag)
   if (structElement != nsnull)
   {
     curNode = structElement;
-    while (curNode && !done)
+    while (curNode && !done) //get previous element
     {
       res = curNode->GetPreviousSibling(getter_AddRefs(curNode));
       if (res == NS_OK && curNode)
@@ -7706,24 +7739,34 @@ nsHTMLEditRules::RemoveStructure(nsIDOMNode *node, const nsAString& notThisTag)
     {
       curNode->GetLocalName(tagName);
       res = mtagListManager->GetTagInClass(strStruct, tagName, atomNS, &isStruct);
-      if (isStruct) 
+      while (isStruct) 
       {  
         destElement = do_QueryInterface(curNode);
+        res = GetLastElement(curNode, getter_AddRefs(tempElement));
+        curNode = do_QueryInterface(tempElement);
+        curNode->GetLocalName(tagName);
+        res = mtagListManager->GetTagInClass(strStruct, tagName, atomNS, &isStruct);
+      }
+      if (!destElement) 
+      {
+        nsEditor::GetNodeLocation(node, address_of(curNode), &offset);
+        destElement = do_QueryInterface(curNode);
+        MoveContents(structElement, destElement, &offset);
+      }
+      else
+      {
+        PRUint32 uoffset;
+        nsEditor::GetLengthOfDOMNode( destElement, uoffset);
+        MoveContents(structElement, destElement, (PRInt32 *)&uoffset);
       }
     }
-    PRInt32 offset;
-    if (!destElement) 
-    {
-      nsEditor::GetNodeLocation(node, address_of(curNode), &offset);
-      destElement = do_QueryInterface(curNode);
+    else {
+      nsEditor::GetNodeLocation(structElement, address_of(destNode), &offset);
+      destElement = do_QueryInterface(destNode);
       MoveContents(structElement, destElement, &offset);
     }
-    else
-    {
-      PRUint32 uoffset;
-      nsEditor::GetLengthOfDOMNode( destElement, uoffset);
-      MoveContents(structElement, destElement, (PRInt32 *)&uoffset);
-    }
+    mHTMLEditor->DeleteNode(structElement);
+
   }
   return NS_OK;
 }
