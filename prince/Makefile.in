@@ -7,7 +7,7 @@ VPATH		= @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-DIRS		= base samples res plugins helpfiles bin sidebar shells TeX dictionaries user saxon \
+DIRS		= base samples res plugins helpfiles bin sidebar shells TeX dictionaries user  \
 	fastcursor modules \
 	$(NULL)
 
