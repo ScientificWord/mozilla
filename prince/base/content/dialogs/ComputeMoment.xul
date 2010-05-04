@@ -58,7 +58,7 @@
 
   <popupset id="msiEditorContentContextSet"/>
 
-  <broadcaster id="args" value="about:blank"/>
+  <!-- broadcaster id="args" value="about:blank"/ -->
 
   <commandset id="tasksCommands">
     <commandset id="globalEditMenuItems"/>
