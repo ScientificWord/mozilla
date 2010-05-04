@@ -136,6 +136,7 @@ tier_gecko_dirs	+= \
 		toolkit/components/scriptrunner \
 		toolkit/components/autocomplete/public \
 		toolkit/components/autosub/public \
+		toolkit/components/arrowstate/public \
 		toolkit/components/Compute/public \
 	    toolkit/components/Wrappers/public \
 		toolkit/components/keymap/public \
