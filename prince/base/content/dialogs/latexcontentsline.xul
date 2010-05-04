@@ -44,6 +44,7 @@
   <script type="application/x-javascript" src="chrome://editor/content/StructBarContextMenu.js"/>
   <script type="application/x-javascript" src="chrome://editor/content/editorApplicationOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js" />
+  <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
 
   <script type="application/x-javascript" src="chrome://editor/content/ComputeUtils.js" />
   <script type="application/x-javascript" src="chrome://editor/content/ComputeOverlay.js" />
@@ -53,7 +54,7 @@
 
 
   <vbox>
-    <broadcaster id="args" value="about:blank"/>
+    <!-- broadcaster id="args" value="about:blank"/ -->
     <commandset id="tasksCommands">
       <commandset id="globalEditMenuItems"/>
       <commandset id="selectEditMenuItems"/>
