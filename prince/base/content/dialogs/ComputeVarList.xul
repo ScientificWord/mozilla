@@ -52,11 +52,12 @@
 
   <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
   <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/ -->
 
   <popupset id="msiEditorContentContextSet"/>
 
-  <broadcaster id="args" value="about:blank"/>
+  <!-- broadcaster id="args" value="about:blank"/ -->
 
   <commandset id="tasksCommands">
     <commandset id="globalEditMenuItems"/>

@@ -57,7 +57,7 @@
   <!-- If the dialog has a toolbox, need: -->
   <script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/>
 
-  <broadcaster id="args" value="about:blank"/>
+  <!-- broadcaster id="args" value="about:blank"/ -->
 
   <popupset id="msiEditorContentContextSet"/>
 
