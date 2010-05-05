@@ -989,47 +989,22 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
   {
     meditor->ReplaceContainer(*secondNode, address_of(aNewNode), str, nsnull, nsnull, PR_TRUE);
     *secondNode = aNewNode;
-	NS_ADDREF((nsIDOMNode *)aNewNode);
+	  NS_ADDREF((nsIDOMNode *)aNewNode);
    	meditor->MarkNodeDirty(*secondNode);
   }
   // Gecko does not display empty paragraphs, so we need to put in a BR, maybe with an attribute
   PRBool isEmpty;
   nsCOMPtr<nsISelection>selection;
   rv = meditor->GetSelection(getter_AddRefs(selection));
-  nsCOMPtr<nsIDOMNode> pnode;
   nsHTMLEditor * editor = static_cast<nsHTMLEditor*>(meditor);  
   editor->IsEmptyNode( firstNode, &isEmpty);
   nsCOMPtr<nsIDOMDocument> doc;
   editor->GetDocument(getter_AddRefs(doc));  
   if (isEmpty)
   {
-    nsAutoString strContents;
-    rv = GetStringPropertyForTag(firstNodeName, dummyatom, NS_LITERAL_STRING("initialcontents"), strContents);
-    if (strContents.Length() == 0)
-      rv = GetStringPropertyForTag(firstNodeName, dummyatom, NS_LITERAL_STRING("initialcontentsforempty"), strContents);
-    if (strContents.Length() > 0)
-    {
-      PRUint32 count, i;
-      nsCOMPtr<nsIDOMNode> newNode;
-//      nsCOMPtr<nsIDOMNode> parentNode;
-//      firstNode->GetParentNode(getter_AddRefs(parentNode));
-      rv = firstNode->CloneNode(PR_FALSE, getter_AddRefs(newNode));
-      nsCOMPtr<nsIDOMNSHTMLElement> appendElement(do_QueryInterface(newNode));
-      if (appendElement) appendElement->SetInnerHTML(strContents);
-//      NS_ADDREF((nsIDOMNode *)newNode);
-      nsCOMPtr<nsIDOMNodeList> children;
-      nsCOMPtr<nsIDOMNode> node;
-      nsCOMPtr<nsIDOMNode> node2;
-      rv = newNode->GetChildNodes(getter_AddRefs(children));
-      rv = children->GetLength(&count);
-      for (i = 0; i < count; i++)
-      {
-        rv = children->Item(i, getter_AddRefs(node)); 
-        firstNode->AppendChild( node, getter_AddRefs(node2));
-      }
-      meditor->MarkNodeDirty(firstNode);
-      pnode = newNode;
-    }
+    nsCOMPtr<nsIDOMNode> brNode;
+    rv = editor->CreateBR(firstNode, 0, address_of(brNode));
+
   }
   editor->IsEmptyNode( *secondNode, &isEmpty);
   nsAutoString strContents;
@@ -1038,65 +1013,13 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
   rv = GetTagOfNode(*secondNode, &nsAtomSecond, secondNodeName);
   if (isEmpty)
   {
-    rv = GetStringPropertyForTag(secondNodeName, dummyatom, NS_LITERAL_STRING("initialcontentsforempty"), strContents);
+    nsCOMPtr<nsIDOMNode> brNode;
+    rv = editor->CreateBR(*secondNode, 0, address_of(brNode));
   }
-  if (strContents.Length() == 0)
-  {
-    rv = GetStringPropertyForTag(secondNodeName, dummyatom, NS_LITERAL_STRING("initialcontents"), strContents);
-  }
-  if (strContents.Length() > 0)
-  {
-    // to make this operation undoable, we create a new node for and call
-    // ReplaceNode, which is transactioned.
-    nsCOMPtr<nsIDOMNode> newNode;
-    nsCOMPtr<nsIDOMNode> parentNode;
-    (*secondNode)->GetParentNode(getter_AddRefs(parentNode));
-    rv = (*secondNode)->CloneNode(PR_FALSE, getter_AddRefs(newNode));
-    nsCOMPtr<nsIDOMNSHTMLElement> secondElement(do_QueryInterface(newNode));
-    secondElement->SetInnerHTML(strContents);
-//    NS_ADDREF((nsIDOMNode *)newNode);
-    meditor->ReplaceNode(newNode, *secondNode, parentNode);
-    *secondNode = newNode;
-    meditor->MarkNodeDirty(newNode);
-  }
-  if (!pnode) pnode = *secondNode;
-#if DEBUG_barry || DEBUG_Barry
-  editor->DumpNode(pnode,0);
-#endif                                                                                                                                        
 
-  nsCOMPtr<nsISelectionPrivate> selPriv(do_QueryInterface(selection));
-  if (pnode)
-  {
-    nsCOMPtr<nsIDOMElement> element;
-    nsCOMPtr<nsIDOMNodeList> nodeList;
-    nsCOMPtr<nsIDOMNode> node, selNode;
-    PRUint32 nodeCount;
-    PRInt32 selOffset; 
-    element = do_QueryInterface(pnode);
-    rv = element->GetElementsByTagName(NS_LITERAL_STRING("cursor"), getter_AddRefs(nodeList));
-    if (nodeList) nodeList->GetLength(&nodeCount);
-    if (nodeCount > 0)
-    {
-      nodeList->Item(0, getter_AddRefs(node));
-      nsEditor::GetNodeLocation(node, address_of(selNode), &selOffset);
-      editor->DeleteNode(node);
-      selPriv->SetInterlinePosition(PR_TRUE);
-      rv = selection->Collapse(selNode, selOffset);
-//      rv = selection->Extend( selNode, selOffset+1 );
-#if DEBUG_barry || DEBUG_Barry
-      editor->DumpNode(selNode,0);
-#endif
-      //return NS_OK;
-      goto diagnostics;
-    }
-  }
-    
-  // now want to set the selection to (outRightNode, 0)
-  // Do we want to go down the full depth?
-  selPriv->SetInterlinePosition(PR_TRUE);
   rv = selection->Collapse(*secondNode, 0);
 diagnostics:
-#if DEBUG_barryNo || DEBUG_BarryNo
+#if DEBUG_barry || DEBUG_Barry
   printf("==Leaving: firstNode: \n");
   editor->DumpNode(firstNode);
   printf("==*secondNode:\n");
