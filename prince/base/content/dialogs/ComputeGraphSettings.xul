@@ -144,7 +144,7 @@
             </hbox>
           </groupbox>
 
-  	      <broadcaster id="args" value="about:blank"/>
+  	      <!-- broadcaster id="args" value="about:blank"/ -->
           <commandset id="tasksCommands">
             <commandset id="globalEditMenuItems"/>
             <commandset id="selectEditMenuItems"/>

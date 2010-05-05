@@ -16,8 +16,8 @@
 
 
 void DebExamineNode(nsIDOMNode * aNode);
-PRInt32 FindCursorIndex(nsIEditor* editor, nsCOMPtr<nsIDOMNode> node, nsCOMPtr<nsIDOMNode> caretNode, PRInt32 caretOffset, bool& done);
-void FindCursorNodeAndOffset(nsIEditor* editor, nsCOMPtr<nsIDOMNode> node, PRInt32 charCount, nsCOMPtr<nsIDOMNode>& theNode, PRInt32& theOffset);
+PRInt32 FindCursorIndex(nsHTMLEditor* editor, nsIDOMNode* node, nsIDOMNode* caretNode, PRInt32 caretOffset, bool& done, PRInt32 level);
+void FindCursorNodeAndOffset(nsHTMLEditor* editor, nsCOMPtr<nsIDOMNode> node, PRInt32 charCount, nsCOMPtr<nsIDOMNode>& theNode, PRInt32& theOffset);
 
 nsCOMPtr<msiISimpleComputeEngine> GetEngine();
 nsString SerializeMathNode(nsCOMPtr<nsIDOMNode> mathNode);
@@ -183,7 +183,7 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
   if (NS_FAILED(res)) return res;
   if (!endNode) return NS_ERROR_FAILURE;
 
-  mMSIEditor->GetMathParent(startNode, mathNode);
+  mMSIEditor->GetMathParent(endNode, mathNode);
   mathElement = do_QueryInterface(mathNode);
 
   printf("\nMath node:\n");
@@ -192,7 +192,7 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
 
   if (!mathElement) return NS_ERROR_FAILURE;
 
-  DebDisplaySelection("\nInitial selection", aSelection, mMSIEditor, true);
+  //DebDisplaySelection("\nInitial selection", aSelection, mMSIEditor, true);
 
 
   if (bCollapsed) {
@@ -201,18 +201,18 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
       PRUint32 dontcare(0);
 	  PRUint32 mathmltype;
 
-      nsCOMPtr<nsIDOMNodeList> children;
-	  PRUint32 number;
-	  nsCOMPtr<nsIDOMNode> rightmostChild;
-	  mathNode->GetChildNodes(getter_AddRefs(children));
-	  msiUtils::GetNumberofChildren(mathNode, number);
-	  msiUtils::GetChildNode(mathNode, startOffset-1, rightmostChild);
+      //nsCOMPtr<nsIDOMNodeList> children;
+	  //PRUint32 number;
+	  //nsCOMPtr<nsIDOMNode> rightmostChild;
+	  //mathNode->GetChildNodes(getter_AddRefs(children));
+	  //msiUtils::GetNumberofChildren(mathNode, number);
+	  //msiUtils::GetChildNode(mathNode, endOffset-1, rightmostChild);
 
 	  
 	  printf("\nPoint of deletion:\n");
-      mHTMLEditor -> DumpNode(rightmostChild, 0, true);
+      mHTMLEditor -> DumpNode(endNode, 0, true);
 
-      endNode = rightmostChild;
+      //endNode = rightmostChild;
 
 	  msiUtils::GetMathMLEditingBC(mHTMLEditor, endNode, dontcare, editingBC);
       if (editingBC) {
@@ -296,14 +296,14 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
   if (!*aHandled){
      bDeleteEntireMath = bSelectionContainsTheEntireMathNode(mathNode, aSelection);
 	 
-     DebDisplaySelection("\nDeletion not handled yet. Extend selection to:" , aSelection, mMSIEditor, true);
+     //DebDisplaySelection("\nDeletion not handled yet. Extend selection to:" , aSelection, mMSIEditor, true);
 
      mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
-	 DebDisplaySelection("\nSelection before calling nsHTMLEditRules::WillDeleteSelection" , aSelection, mMSIEditor, true);
+	 //DebDisplaySelection("\nSelection before calling nsHTMLEditRules::WillDeleteSelection" , aSelection, mMSIEditor, true);
 
      nsHTMLEditRules::WillDeleteSelection(aSelection, aAction, aCancel, aHandled);
 
-	 DebDisplaySelection("\nSelection after calling nsHTMLEditRules::WillDeleteSelection" , aSelection, mMSIEditor, true);
+	 //DebDisplaySelection("\nSelection after calling nsHTMLEditRules::WillDeleteSelection" , aSelection, mMSIEditor, true);
 	 mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
 
      if (bDeleteEntireMath)
@@ -325,7 +325,9 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
   DebDisplaySelection("\nSelection before calling FindCursor" , aSelection, mMSIEditor, true);
 
   bool b = false;
-  int idx = FindCursorIndex(mMSIEditor, mathNode, endNode, endOffset, b);
+  int idx = FindCursorIndex(mMSIEditor, mathNode, endNode, endOffset, b, 0);
+
+  printf("\nidx is %d\n", idx);
   
   nsString text = SerializeMathNode(mathNode);
     
@@ -447,17 +449,29 @@ PRInt32 CharLength(nsCOMPtr<nsIDOMNode> node)
 	return str.Length();
 }
 
-PRInt32 FindCursorIndex(nsIEditor* editor, nsCOMPtr<nsIDOMNode> node, nsCOMPtr<nsIDOMNode> caretNode, PRInt32 caretOffset, bool& done)
+
+
+PRInt32 FindCursorIndex(nsHTMLEditor* editor, 
+                        nsIDOMNode* node, 
+                        nsIDOMNode* caretNode, 
+                        PRInt32 caretOffset, 
+                        bool& done,
+                        PRInt32 level)
 {
+  printf("\nFindCursor\n");
+  editor->DumpNode(node, 2*level, true);
+
   if (msiUtils::IsMleaf(editor, node, true)) {
       if (caretNode == node) {
 	      done = true;
+		  printf("\nReturn caret offset %d", caretOffset);
 	      return caretOffset;
 	  } else {
+	      printf("\nReturn char length %d", CharLength(node));
 	      return CharLength(node); 
 	  }
   }	else {
-
+      
       nsCOMPtr<nsIDOMNodeList> children;
 	  PRUint32 number;
 	  nsCOMPtr<nsIDOMNode> child;
@@ -465,20 +479,21 @@ PRInt32 FindCursorIndex(nsIEditor* editor, nsCOMPtr<nsIDOMNode> node, nsCOMPtr<n
       node->GetChildNodes(getter_AddRefs(children));
 	  msiUtils::GetNumberofChildren(node, number);
 	  
-	  int lastChildIndex = number;
+	  //int lastChildIndex = number;
 
 	  if (node == caretNode){
-	     lastChildIndex = caretOffset;
+	     number = caretOffset;
 	  }
 
 	  int count = 0;
 
-	  for (int i = 0; i < lastChildIndex; ++i) {
+	  for (int i = 0; i < number; ++i) {
 	    msiUtils::GetChildNode(node, i, child);
-		count += FindCursorIndex(editor, child, caretNode, caretOffset, done);
+		count += FindCursorIndex(editor, child, caretNode, caretOffset, done, level+1);
 		if (done)
 		  break;
 	  }
+	  printf("\nReturn sum %d", count);
 	  return count;
 
   }
@@ -486,7 +501,7 @@ PRInt32 FindCursorIndex(nsIEditor* editor, nsCOMPtr<nsIDOMNode> node, nsCOMPtr<n
 }
 
 
-void FindCursorNodeAndOffset(nsIEditor* editor, nsCOMPtr<nsIDOMNode> node, PRInt32 charCount, nsCOMPtr<nsIDOMNode>& theNode, PRInt32& theOffset)
+void FindCursorNodeAndOffset(nsHTMLEditor* editor, nsCOMPtr<nsIDOMNode> node, PRInt32 charCount, nsCOMPtr<nsIDOMNode>& theNode, PRInt32& theOffset)
 {
      if (msiUtils::IsMleaf(editor, node, true)) {
 		   theNode = node;
