@@ -56,9 +56,10 @@ function Startup(){
   captionControl.label = data.prompt[2];
 
   // Initialize our source text <editor>s
-  var theStringSource1 = "";
-  var theStringSource2 = "";
-  var theStringSource3 = "";
+  var emptyStringSource = GetComputeString("Math.emptyForInput");
+  var theStringSource1 = emptyStringSource;
+  var theStringSource2 = emptyStringSource;
+  var theStringSource3 = emptyStringSource;
   if ( data && ("initialvalue" in data) && (data.initialvalue.length > 0) )
   {
     theStringSource1 = data.initialvalue[0];
