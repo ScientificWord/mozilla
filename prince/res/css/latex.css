@@ -412,23 +412,17 @@ paragraph[nonum="true"] {
 
 frontmatter {
   display: block;
+  position: relative;
+  margin-left: 100px;
+  padding: 10px 0px;
   border: thin solid black; 
-  background-color: #EEDDCC;
+  background-color: #DDD099;
 }
-
-*[showinvis="true"] frontmatter:before {
-  content: "Front Matter";
-  display: block;
-  font-size: medium; font-weight: bold;
-  color: green;
-}
-
 
 preface {
   display: block;
   margin-top: 30pt;
   border: thin solid black; 
-  background-color: #CC6666;
   -moz-border-radius: 20px;
 }
 
@@ -443,105 +437,64 @@ preface {
 /* front matter tags */
 frontmatter>address {
   display:block;
-  text-align: left;
+  text-align: center;
 }
-
-frontmatter>address:before {
-  display: inline-block;
-  font-family: sans-serif;
-  width: 10em;
-  content: "Address:";
-  -moz-user-modify: read-only;
-}			 
-
 
 frontmatter>author {
   display:block;
-  text-align: left;
+  text-align: center;
 }
-
-frontmatter>author:before {
-  display: inline-block;
-  font-family: sans-serif;
-  width: 10em;
-  content: "Author:";
-}			 
 
 frontmatter>date {
   display:block;
-  text-align: left;
+  text-align: center;
 }
-
-frontmatter>date:before {
-  display: inline-block;
-  font-family: sans-serif;
-  width: 10em;
-  content: "Date:";
-}			 
-
 
 frontmatter>title {
   display:block;
-  text-align: left;
+  text-align: center;
 }
-
-frontmatter>title:before {
-  display: inline-block;
-  font-family: sans-serif;
-  width: 10em;
-  content: "Title:";
-}			 
 
 frontmatter>maketoc {
   display:block;
   text-align: left;
 }
 
-frontmatter>maketoc:before {
-  display: inline-block;
-  font-family: sans-serif;
-  width: 10em;
-  content: "Table of contents here:";
-}			 
-
 frontmatter>makelof {
   display:block;
   text-align: left;
 }
-
-frontmatter>makelof:before {
-  display: inline-block;
-  font-family: sans-serif;
-  width: 10em;
-  content: "List of figures here:";
-}			 
 
 frontmatter>makelot {
   display:block;
   text-align: left;
 }
 
-frontmatter>makelot:before {
-  display: inline-block;
-  font-family: sans-serif;
-  width: 10em;
-  content: "List of tables here:";
-}			 
-
 frontmatter>maketitle {
   display:block;
-  text-align: left;
+  text-align: center;
 }
-
-frontmatter>maketitle:before {
-  display: inline-block;
-  font-family: sans-serif;
-  width: 10em;
-  content: "Make title page here:";
-}			 
 
 msidisplay {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplay");
   position: relative;
   display: block;
 }
+
+frontmatter>title {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-title");
+}
+
+frontmatter>author {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-author");
+}
+
+frontmatter>address {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-address");
+}
+
+frontmatter>date {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-date");
+}
+
+
