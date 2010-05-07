@@ -17,7 +17,7 @@
 
 void DebExamineNode(nsIDOMNode * aNode);
 PRInt32 FindCursorIndex(nsHTMLEditor* editor, nsIDOMNode* node, nsIDOMNode* caretNode, PRInt32 caretOffset, bool& done, PRInt32 level);
-void FindCursorNodeAndOffset(nsHTMLEditor* editor, nsCOMPtr<nsIDOMNode> node, PRInt32 charCount, nsCOMPtr<nsIDOMNode>& theNode, PRInt32& theOffset);
+void FindCursorNodeAndOffset(nsHTMLEditor* editor, nsIDOMNode* node, PRInt32& charCount, nsCOMPtr<nsIDOMNode>& theNode, PRInt32& theOffset);
 
 nsCOMPtr<msiISimpleComputeEngine> GetEngine();
 nsString SerializeMathNode(nsCOMPtr<nsIDOMNode> mathNode);
@@ -364,8 +364,8 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
 
   DebDisplaySelection("\nSelection after inserting new math", aSelection, mMSIEditor, true);
   
-  nsCOMPtr<nsIDOMNode> theNode;
-  PRInt32 theOffset;
+  nsCOMPtr<nsIDOMNode> theNode = 0;
+  PRInt32 theOffset = 0;
   FindCursorNodeAndOffset(mHTMLEditor, newMath, idx, theNode, theOffset);
 
   printf("\nThe indicated node\n ");
@@ -461,7 +461,7 @@ PRInt32 FindCursorIndex(nsHTMLEditor* editor,
   printf("\nFindCursor\n");
   editor->DumpNode(node, 2*level, true);
 
-  if (msiUtils::IsMleaf(editor, node, true)) {
+  if (editor->IsTextNode(node)) {
       if (caretNode == node) {
 	      done = true;
 		  printf("\nReturn caret offset %d", caretOffset);
@@ -472,6 +472,15 @@ PRInt32 FindCursorIndex(nsHTMLEditor* editor,
 	  }
   }	else {
       
+      nsCOMPtr<msiIMathMLEditingBC> editingBC; 
+      PRUint32 dontcare(0);
+	  PRUint32 mathmltype;
+
+	  msiUtils::GetMathMLEditingBC(editor, node, dontcare, editingBC);
+      if (editingBC) {
+	    mathmltype = msiUtils::GetMathmlNodeType(editingBC);
+	  }
+
       nsCOMPtr<nsIDOMNodeList> children;
 	  PRUint32 number;
 	  nsCOMPtr<nsIDOMNode> child;
@@ -489,6 +498,9 @@ PRInt32 FindCursorIndex(nsHTMLEditor* editor,
 
 	  for (int i = 0; i < number; ++i) {
 	    msiUtils::GetChildNode(node, i, child);
+		if (mathmltype == msiIMathMLEditingBC::MATHML_MFRAC && i == 1){
+		  count += 1;  // to distinguish numerator from denominator
+		}
 		count += FindCursorIndex(editor, child, caretNode, caretOffset, done, level+1);
 		if (done)
 		  break;
@@ -501,13 +513,36 @@ PRInt32 FindCursorIndex(nsHTMLEditor* editor,
 }
 
 
-void FindCursorNodeAndOffset(nsHTMLEditor* editor, nsCOMPtr<nsIDOMNode> node, PRInt32 charCount, nsCOMPtr<nsIDOMNode>& theNode, PRInt32& theOffset)
+void FindCursorNodeAndOffset(nsHTMLEditor* editor, nsIDOMNode* node, PRInt32& charCount, nsCOMPtr<nsIDOMNode>& theNode, PRInt32& theOffset)
 {
-     if (msiUtils::IsMleaf(editor, node, true)) {
-		   theNode = node;
-		   theOffset = charCount;
-     
-     }  else { 
+     printf("\nFindNodeAndOffset of char %d in node\n", charCount);
+     editor->DumpNode(node, 0, true);
+
+     if (editor->IsTextNode(node)) {
+	       PRInt32 len = CharLength(node);
+
+	       if (len >= charCount){
+
+		       theNode = node;
+		       theOffset = charCount;
+			   charCount = 0;
+     	       printf("\nFound\n");
+
+		   } else {
+
+		       charCount -= len;
+		   }
+
+     }  else {
+      
+           nsCOMPtr<msiIMathMLEditingBC> editingBC; 
+           PRUint32 dontcare(0);
+	       PRUint32 mathmltype;
+
+	       msiUtils::GetMathMLEditingBC(editor, node, dontcare, editingBC);
+           if (editingBC) {
+	         mathmltype = msiUtils::GetMathmlNodeType(editingBC);
+	       }
            
            nsCOMPtr<nsIDOMNodeList> children;
 	       PRUint32 number;
@@ -517,15 +552,17 @@ void FindCursorNodeAndOffset(nsHTMLEditor* editor, nsCOMPtr<nsIDOMNode> node, PR
 	       msiUtils::GetNumberofChildren(node, number);
 
 		   for (PRUint32 i = 0; i < number; ++i) {
-	          
+	          printf("\nGet child %d\n", i);
 	          msiUtils::GetChildNode(node, i, child);
 
-			  if (CharLength(child) < charCount) {
-			     charCount -= CharLength(child);
-			  } else {
-			     FindCursorNodeAndOffset(editor, child, charCount, theNode, theOffset);
-				 break;
-			  }
+			  //printf("\nCharLength is %d\n", CharLength(child));
+		      if (mathmltype == msiIMathMLEditingBC::MATHML_MFRAC && i == 1){
+		        charCount -= 1;  // to distinguish numerator from denominator
+		      }
+
+			  FindCursorNodeAndOffset(editor, child, charCount, theNode, theOffset);
+			  if (charCount == 0)
+			    break;
 			}
 	  }
 }
