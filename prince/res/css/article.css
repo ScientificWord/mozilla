@@ -159,20 +159,6 @@ abstract:before {
   font-size: medium; font-weight: bold;
 }
 
-frontmatter {
-  display: block;
-  border: thin solid black; 
-  background-color: #EEBB88;
-}
-
-
-*[showinvis="true"] frontmatter:before {
-  content: "Front Matter";
-  color: green;
-  display: block;
-  font-size: medium; font-weight: bold;
-}
-
 p {
   display: block;
   margin: 10pt 10pt 5pt 5pt;
@@ -428,3 +414,8 @@ button[class="subeqnnum"]{
 }
 
 
+
+button[class="frontmattertag"]{
+  position: absolute;
+  left: -100px;
+}
