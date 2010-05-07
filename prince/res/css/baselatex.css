@@ -288,3 +288,11 @@ mml|menclose[notation~="roundedbox"] {
   -moz-border-radius : 0.5em
 }
 
+
+button [class="frontmattertag"] {
+  position: absolute;
+  left: -160px;
+  font-family: sans-serif;
+  font-style: normal;
+}
+
