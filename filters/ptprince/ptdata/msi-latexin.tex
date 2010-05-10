@@ -440,7 +440,14 @@
 \let\repeat=\fi
 \chardef\%=`\%
 \chardef\&=`\&
-\chardef\#=`\#
+%\chardef\#=`\#
+\def\#{%
+  \ifmmode
+    \string\#
+  \else
+    \char`\#
+  \fi}
+
 \def\leavevmode{\unhbox\voidb@x}
 \def\mathhexbox#1#2#3{\mbox{$\m@th \mathchar"#1#2#3$}}
 \def\ialign{\everycr{}\tabskip\z@skip\halign} % initialized \halign
