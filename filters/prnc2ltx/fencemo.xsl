@@ -12,11 +12,6 @@
 
   <xsl:template name="translate-fencing-mo">
     <xsl:param name="LaTeX-fence-token"/>
-  
-#ifdef DEBUG
-    <xsl:message>translate-fencing-mo: <xsl:value-of select="name(.)"/></xsl:message>
-#endif
-
     <xsl:variable name="right-mo1-is-fence">
       <xsl:choose>
         <xsl:when test="following-sibling::mml:mo[1]">
@@ -314,11 +309,6 @@
 
   <xsl:template name="mo-is-LaTeX-fence">
     <xsl:param name="op-nom"/>
-  
-#ifdef DEBUG
-    <xsl:message>mo-is-LaTeX-fence: <xsl:value-of select="name(.)"/></xsl:message>
-#endif
-
 	<xsl:choose>
       <xsl:when test="
          $op-nom=')'
