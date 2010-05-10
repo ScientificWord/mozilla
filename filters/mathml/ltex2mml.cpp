@@ -2607,7 +2607,7 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
 
 	  case 298  : 	// \U<uID5.298.0>!\U!REQPARAM(5.298.2,NONLATEX)
 	  case 299  : {	// \UNICODE<uID5.299.0>!\UNICODE!REQPARAM(5.299.2,NONLATEX)
-      TCI_ASSERT(0);    // Should never get here - \U{}s converted to symbols earlier
+      //TCI_ASSERT(0);    // Should never get here - \U{}s converted to symbols earlier
         mml_rv  =  Unicode2MML( obj_node );
         tex_nodes_done  =  1;
 	  }
