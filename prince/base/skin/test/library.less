@@ -1,18 +1,61 @@
 
 // basic dialog constants for consistency
+// MSI dialog gray
+@msidialoggray: #ffb4b4;
+@msidialogfont: Arial;
+@msidialogboxframe: {
+  margin-top: 6px;
+  margin-bottom: 6px;
+  border: groove thin black;
+}
 
+// Defaults for our dialogs
 #msiDialog {
-  background-color: 	#ffb4b4;
+  background-color: 	@msidialoggray;
   font-size: 			100%;
-  font-family: 			Arial;
+  font-family: 			@msidialogfont;
   color:				#000;
-
-  .rounded-corners (@radius: 5px) {
-    -moz-border-radius: @radius;
-  }
- 
   .disabled-is-hidden {
-    visibility: visible;
-    [disabled="true"] { visibility: hidden; }
+    [disabled="true"] { visibility: hidden; }	  // this may not work
   }	
-}						
+}
+
+.rounded-corners(@radius: 5px) {
+-moz-border-radius: @radius;
+}
+
+.msigroupboxmargins {
+  margin:			2px 5px;
+  padding-top:      2px;
+  padding-bottom:   4px;
+} 
+
+//short cuts for font charactistics
+  
+.normal { font-weight: normal; font-style: normal; font-size: 100%; }
+.bold { font-weight: bold; }
+.italic { font-style: italic; }
+.larger { font-size: 120%;}
+.narrow { width: 3em; }
+.medwidth {	width: 4.5em; }
+.wrap {	width: 1em; }
+
+//short cuts for arrow list-style-images
+  
+.left-lsi {list-style-image: url("chrome://global/skin/arrow/arrow-lft.gif");}
+.right-lsi {list-style-image: url("chrome://global/skin/arrow/arrow-rit.gif");}  
+.up-lsi {list-style-image: url("chrome://global/skin/arrow/arrow-up.gif");}  
+.down-lsi {list-style-image: url("chrome://global/skin/arrow/arrow-down.gif");}  
+
+
+
+// Toolbar button group macros
+.btn(@base: filebase)    { list-style-image: url("chrome://prince/skin/icons/" @base ".png");}
+.btn_h(@base: filename)  { list-style-image: url("chrome://prince/skin/icons/" @base "-hover.png");}
+.btn_a(@base: filename)  { list-style-image: url("chrome://prince/skin/icons/" @base "-active.png"); }
+.btn_d(@base: filename)  { list-style-image: url("chrome://prince/skin/icons/" @base "-disabled.png"); }
+.sbtn(@base: filename)   { list-style-image: url("chrome://prince/skin/icons/" @base "-sm.png"); }
+.sbtn_a(@base: filename) { list-style-image: url("chrome://prince/skin/icons/" @base "-hover-sm.png"); }
+.sbtn_h(@base: filename) { list-style-image: url("chrome://prince/skin/icons/" @base "-active-sm.png"); }
+.sbtn_d(@base: filename) { list-style-image: url("chrome://prince/skin/icons/" @base "-disabled-sm.png"); }
+

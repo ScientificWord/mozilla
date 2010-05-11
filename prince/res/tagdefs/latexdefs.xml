@@ -91,19 +91,17 @@
 				<tag id="defaultparagraph" nm="sw:para">
 					<description>Default body text paragraph</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]>
-          </initialcontentsforempty>
 				</tag>
 				<tag nm="sw:rtlpara">
 					<description>Right to left body text paragraph</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]>
+          <initialcontentsforempty> <![CDATA[<br temp="1"/>]]>
           </initialcontentsforempty>
 				</tag>
 				<tag nm="html:p">
 					<description>HTML paragraph</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/>]]>
+          <initialcontentsforempty> <![CDATA[]]>
           </initialcontentsforempty>
 				</tag>
 				<tag nm="sw:mathp">

@@ -320,10 +320,10 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
                                    &streamStartOffset,
                                    &streamEndOffset);
 
-#if DEBUG_barry || DEBUG_Barry
-  printf("\nFragment As Node:\n");
-  DumpNode(fragmentAsNode, 0, true);
-#endif
+// #if DEBUG_barry || DEBUG_Barry
+//   printf("\nFragment As Node:\n");
+//   DumpNode(fragmentAsNode, 0, true);
+// #endif
   
   NS_ENSURE_SUCCESS(res, res);
 //  DumpNode(fragmentAsNode);
@@ -393,11 +393,11 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   NS_ENSURE_SUCCESS(res, res);
   PRInt32 listCount = nodeList.Count();
 #if DEBUG_barry || DEBUG_Barry
-  for (j=0; j<listCount; j++)
-  {
-    printf("\nnodeList[%d]\n", j);
-    DumpNode(nodeList[j],0,true);
-  }
+  // for (j=0; j<listCount; j++)
+  // {
+  //   printf("\nnodeList[%d]\n", j);
+  //   DumpNode(nodeList[j],0,true);
+  // }
 // FixMathematics(nodeList[0], PR_FALSE, PR_FALSE, PR_FALSE);
 //  if (listCount > 1) FixMathematics(nodeList[listCount-1], PR_FALSE, PR_FALSE, PR_FALSE);
   listCount = nodeList.Count();
@@ -558,15 +558,15 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
     }
 // Now fix up fragments internal to the math node
     endNode = nodeList[0];
-	#if DEBUG_barry || DEBUG_Barry
-	  printf("\nendNode before FixMath\n");
-	  DumpNode(endNode, 0, true);
-	#endif
+	// #if DEBUG_barry || DEBUG_Barry
+	//   printf("\nendNode before FixMath\n");
+	//   DumpNode(endNode, 0, true);
+	// #endif
     FixMathematics(endNode, length > 1, PR_FALSE);
-	#if DEBUG_barry || DEBUG_Barry
-	  printf("\nendNode after FixMath\n");
-	  DumpNode(endNode, 0, true);
-	#endif
+	// #if DEBUG_barry || DEBUG_Barry
+	//   printf("\nendNode after FixMath\n");
+	//   DumpNode(endNode, 0, true);
+	// #endif
 
     if (length > 1) 
     {
@@ -686,12 +686,12 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
       {
         
         // try to insert
-#if DEBUG_barry || DEBUG_Barry
-    printf("\nTry to insert\n");
-    DumpNode(curNode, 0, true); 
-    DebExamineNode(curNode);
-    DebExamineNode(parentNode);
-#endif
+// #if DEBUG_barry || DEBUG_Barry
+//     printf("\nTry to insert\n");
+//     DumpNode(curNode, 0, true); 
+//     DebExamineNode(curNode);
+//     DebExamineNode(parentNode);
+// #endif
         res = InsertNodeAtPoint(curNode, address_of(parentNode), &offsetOfNewNode, PR_TRUE);
         if (NS_SUCCEEDED(res)) 
         {
@@ -705,9 +705,9 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
         while (NS_FAILED(res) && curNode)
         {
           curNode->GetParentNode(getter_AddRefs(parent));
-#if DEBUG_barry || DEBUG_Barry
-    DebExamineNode(parent);
-#endif
+// #if DEBUG_barry || DEBUG_Barry
+//     DebExamineNode(parent);
+// #endif
           if (parent && !nsTextEditUtils::IsBody(parent))
           {
             res = InsertNodeAtPoint(parent, address_of(parentNode), &offsetOfNewNode, PR_TRUE);
@@ -3076,13 +3076,13 @@ nsresult nsHTMLEditor::CreateDOMFragmentFromPaste(const nsAString &aInputString,
 
     res = StripFormattingNodes(contextAsNode);
     NS_ENSURE_SUCCESS(res, res);
-#if DEBUG_barry || DEBUG_Barry
-    DumpNode(contextAsNode);
-#endif    
+// #if DEBUG_barry || DEBUG_Barry
+//     DumpNode(contextAsNode);
+// #endif    
     RemoveBodyAndHead(contextAsNode);
-#if DEBUG_barry || DEBUG_Barry
-    DumpNode(contextAsNode);
-#endif
+// #if DEBUG_barry || DEBUG_Barry
+//     DumpNode(contextAsNode);
+// #endif
     res = FindTargetNode(contextAsNode, contextLeaf);
     if (res == NS_FOUND_TARGET)
       res = NS_OK;
@@ -3098,45 +3098,45 @@ nsresult nsHTMLEditor::CreateDOMFragmentFromPaste(const nsAString &aInputString,
 
   // create fragment for pasted html
   res = ParseFragment(aInputString, tagStack, doc, outFragNode);
-#if DEBUG_barry || DEBUG_Barry
-  dumpTagStack(tagStack);
-  DumpNode(*outFragNode, 0, true);
-#endif
+// #if DEBUG_barry || DEBUG_Barry
+//   dumpTagStack(tagStack);
+//   DumpNode(*outFragNode, 0, true);
+// #endif
   NS_ENSURE_SUCCESS(res, res);
   NS_ENSURE_TRUE(*outFragNode, NS_ERROR_FAILURE);
   RemoveContextNodes(tagStack, *outFragNode);
   RemoveBodyAndHead(*outFragNode);
-#if DEBUG_barry || DEBUG_Barry
-  DumpNode(*outFragNode, 0, true);
-#endif
-#if DEBUG_barry || DEBUG_Barry
-  printf("Calling FixMath: +++++++++++\n");
-  DumpNode(*outFragNode, 0, true);
-#endif
+// #if DEBUG_barry || DEBUG_Barry
+//   DumpNode(*outFragNode, 0, true);
+// #endif
+// #if DEBUG_barry || DEBUG_Barry
+//   printf("Calling FixMath: +++++++++++\n");
+//   DumpNode(*outFragNode, 0, true);
+// #endif
  // FixMathematics(*outFragNode, PR_FALSE, PR_FALSE, PR_FALSE);
-#if DEBUG_barry || DEBUG_Barry
-  printf("Out of FixMath: ------------\n");
-  DumpNode(*outFragNode, 0, true);
-#endif
+// #if DEBUG_barry || DEBUG_Barry
+//   printf("Out of FixMath: ------------\n");
+//   DumpNode(*outFragNode, 0, true);
+// #endif
   if (contextAsNode)
   {
     // unite the two trees
     contextLeaf->AppendChild(*outFragNode, getter_AddRefs(junk));
     *outFragNode = contextAsNode;
   }
-#if DEBUG_barry || DEBUG_Barry
-  printf("contextAsNode: ------------\n");
-  DumpNode(contextAsNode, 0, true);
-#endif
+// #if DEBUG_barry || DEBUG_Barry
+//   printf("contextAsNode: ------------\n");
+//   DumpNode(contextAsNode, 0, true);
+// #endif
 
   res = StripFormattingNodes(*outFragNode, PR_TRUE);
   NS_ENSURE_SUCCESS(res, res);
 
 //  FixMathematics(contextAsNode, PR_FALSE, PR_FALSE, PR_FALSE);
-#if DEBUG_barry || DEBUG_Barry
-  printf("contextAsNode: ------------\n");
-  DumpNode(contextAsNode);
-#endif
+// #if DEBUG_barry || DEBUG_Barry
+//   printf("contextAsNode: ------------\n");
+//   DumpNode(contextAsNode);
+// #endif
   // If there was no context, then treat all of the data we did get as the
   // pasted data.
   if (contextLeaf)
@@ -3146,10 +3146,10 @@ nsresult nsHTMLEditor::CreateDOMFragmentFromPaste(const nsAString &aInputString,
 
   *outStartOffset = 0;
 
-#if DEBUG_barry || DEBUG_Barry
-  printf("outEndNode: ------------\n");
-  DumpNode(*outEndNode,0,true);
-#endif
+// #if DEBUG_barry || DEBUG_Barry
+//   printf("outEndNode: ------------\n");
+//   DumpNode(*outEndNode,0,true);
+// #endif
   
 
   // get the infoString contents
@@ -3180,10 +3180,10 @@ nsresult nsHTMLEditor::CreateDOMFragmentFromPaste(const nsAString &aInputString,
       tmp.swap(*outEndNode);
     }
   }
-#if DEBUG_barry || DEBUG_Barry
-  printf("outEndNode: ------------\n");
-  DumpNode(*outEndNode,0,true);
-#endif
+// #if DEBUG_barry || DEBUG_Barry
+//   printf("outEndNode: ------------\n");
+//   DumpNode(*outEndNode,0,true);
+// #endif
 
   GetLengthOfDOMNode(*outEndNode, (PRUint32&)*outEndOffset);
   return res;
