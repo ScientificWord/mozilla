@@ -75,6 +75,46 @@
       </xbl:method>
     </xbl:implementation>
   </xbl:binding>
+  
+  <xbl:binding id="fmtag-title"> /*front matter label*/
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button" class="frontmattertag" onclick="">Title</html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
+  <xbl:binding id="fmtag-author"> /*front matter label*/
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button" class="frontmattertag" onclick="">Author</html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
+  <xbl:binding id="fmtag-address"> /*front matter label*/
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button" class="frontmattertag" onclick="">Address</html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
+  <xbl:binding id="fmtag-date"> /*front matter label*/
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button" class="frontmattertag" onclick="">Date</html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
 
 	<xbl:binding id="texb">
 	  <xbl:resources>

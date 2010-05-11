@@ -396,7 +396,7 @@ function hideFastCursorBar()
 //    _content.focus();
 //  }
 //
-  dump("hideFastCursorBar\n");
+//  dump("hideFastCursorBar\n");
   var FastCursorToolbar = document.getElementById("fastCursorPanel");
   FastCursorToolbar.hidden = true;
   document.getElementById("fastcursor-field").value="";
