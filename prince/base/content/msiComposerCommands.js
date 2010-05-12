@@ -2437,8 +2437,9 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   var workingDir = null;
   var leafname;
   var isSciFile;
-  
-  currentSciFile = msiFileFromFileURL(sciurlstring);
+  var fileurl = msiURIFromString(sciurlstring);
+  currentSciFile = msiFileFromFileURL(fileurl);
+  currentSciFilePath = msiPathFromFileURL(fileurl); 
   
   var regEx = /_work\/main.xhtml$/i;  // BBM: localize this
   isSciFile = regEx.test(htmlurlstring);
@@ -2503,7 +2504,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
     }
   }  // mustShowDialog
   else { // if we didn't show the File Save dialog, we need destLocalFile to be A.sci
-   currentSciFile.initWithPath( currentSciFilePath );  // now = A.sci
+//   currentSciFile.initWithPath( currentSciFilePath );  // now = A.sci
    destLocalFile = currentSciFile.clone();       
   }
 
