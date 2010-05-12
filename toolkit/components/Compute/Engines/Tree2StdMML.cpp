@@ -1646,19 +1646,35 @@ bool Tree2StdMML::NodeIsOperator(MNODE* mml_node)
 {
   //TODO look up in def. store and other places
   if (ElementNameIs(mml_node, "mo")) {
-    return true;
+
+      return true;
+
   } else if (ElementNameIs(mml_node, "mi")) {
-    //XXX  might be max/lim/lcm etc.
-    return false;
+
+      //XXX  might be max/lim/lcm etc.
+	  if ( ContentIs(mml_node, "lim") || ContentIs(mml_node, "max") ||
+	       ContentIs(mml_node, "min") ||	ContentIs(mml_node, "lcm") ||
+		   ContentIs(mml_node, "gcd") ) {
+	    return true;
+	  }	else {
+        return false;
+	  }
+
   } else if (HasScriptChildren(mml_node) || ElementNameIs(mml_node, "mfrac")) {
-    return NodeIsOperator(mml_node->first_kid);
-  } else if (ElementNameIs(mml_node, "mrow")) {
-    if (mml_node->first_kid->next)
-      return false;
-    else
+	  
       return NodeIsOperator(mml_node->first_kid);
+
+  } else if (ElementNameIs(mml_node, "mrow")) {
+
+      if (mml_node->first_kid->next)
+        return false;
+      else
+        return NodeIsOperator(mml_node->first_kid);
+  
   } else {
+
     return false;
+
   }
 }
 
