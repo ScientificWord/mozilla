@@ -471,6 +471,13 @@
      \msiextproc[jbm][\begin{align*}#1\end{align*}]%
      \msiclosetag[mml][</mml:math>]
   ]  
+  \gdef\@scan@align#1\end{align}[%
+     \egroup
+     \@make@braces@normal
+     \msiopentag[mml][<mml:math class="displayedmathml" mode="display" display="block">]%
+     \msiextproc[jbm][\begin{align}#1\end{align}]%
+     \msiclosetag[mml][</mml:math>]
+  ]
   \gdef\@scan@gather@star#1\end{gather*}[%
      \egroup
      \@make@braces@normal
@@ -548,6 +555,7 @@
 
 
 \@namedef{msi@begin@align*}{\ \@make@braces@other\relax\@scan@align@star}
+\@namedef{msi@begin@align}{\ \@make@braces@other\relax\@scan@align}
 \@namedef{msi@begin@gather*}{\ \@make@braces@other\relax\@scan@gather@star}
 
 \@namedef{msi@begin@equation*}{\ \@make@braces@other\relax\@scan@equation@star}
@@ -778,7 +786,13 @@
 }
 
 \def\ {\msihmode{ }}
-\def~{\msihmode\msitag{<hspace type="nonBreakingSpace">}\@hex{a0}\msitag{</hspace>}}
+
+\def~{%
+  \ifmmode
+  \else
+    \msihmode\msitag{<hspace type="nonBreakingSpace">}\@hex{a0}\msitag{</hspace>}%
+  \fi}
+
 \def\/{\msihmode\msitag{<hspace dim="0.083en" type="italicCorrectionSpace">}\@hex{200a}\msitag{</hspace>}}
 
 \bgroup
