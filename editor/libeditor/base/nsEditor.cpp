@@ -310,7 +310,7 @@ nsEditor::DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse /* = false */
     nsCAutoString cstr;
     LossyCopyUTF16toASCII(str, cstr);
     cstr.ReplaceChar('\n', ' ');
-    printf("<textnode> %s\n", cstr.get());
+    printf("<textnode> %s     %x\n", cstr.get(), aNode);
   }
 }
 //#endif
