@@ -2353,7 +2353,7 @@ var msiColorObj =
 //Following doesn't belong here at all. Move this functionality.
 //Additionally, implementation of hiding "helper lines" should be via putting a "not([hideHelperLines])" at the outside?
 //Probably not - just making an overriding rule.
-  FormatStyleSheet : function(editorElement)
+  FormatStyleSheet : function(editorElement, bNoHeader)
   {
     if (!editorElement)
       editorElement = msiGetActiveEditorElement();
@@ -2381,7 +2381,9 @@ var msiColorObj =
       return ["mi[tempinput=\"true\"]"];
     }
 
-    var res = "data:text/css,";
+    var res = "";
+    if (!bNoHeader)
+      res = "data:text/css,";
     if (this.mathColor.length > 0)
       res += "math { color: "+this.mathColor+"; } ";
     if (this.mathnameColor.length > 0)
