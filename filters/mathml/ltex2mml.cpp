@@ -869,16 +869,16 @@ TCI_BOOL LaTeX2MMLTree::IsMultiTeXSymOp( TNODE* tex_sym_node,
           advance =  advance1 + advance2;
           rv  =  TRUE;
 		} else {
-          if ( !strncmp((char*)TeX_token_zstr,"\\not",4) )
-            TCI_ASSERT(0);                                                          
+          // jcs if ( !strncmp((char*)TeX_token_zstr,"\\not",4) )
+          // jcs   TCI_ASSERT(0);                                                          
 		}
 
 	  }
 
 	}		// if ( GetLaTeXOpSymbol(nn,TeX_token_zstr,advance2) )
 
-  } else
-    TCI_ASSERT(0);
+  }// jcs  else
+   // jcs  TCI_ASSERT(0);
 
   return rv;
 }
@@ -2607,7 +2607,7 @@ TNODE* LaTeX2MMLTree::MathStructureToMML( TNODE* obj_node,
 
 	  case 298  : 	// \U<uID5.298.0>!\U!REQPARAM(5.298.2,NONLATEX)
 	  case 299  : {	// \UNICODE<uID5.299.0>!\UNICODE!REQPARAM(5.299.2,NONLATEX)
-      TCI_ASSERT(0);    // Should never get here - \U{}s converted to symbols earlier
+      //TCI_ASSERT(0);    // Should never get here - \U{}s converted to symbols earlier
         mml_rv  =  Unicode2MML( obj_node );
         tex_nodes_done  =  1;
 	  }
@@ -5998,8 +5998,8 @@ void LaTeX2MMLTree::InsertApplyFunction( TNODE* MML_list ) {
 		  }
 	    }
 	  } else {		// known function without any args
-        if ( mml_rover->next )
-	      TCI_ASSERT(0);
+        //jcs if ( mml_rover->next )
+	    //jcs  TCI_ASSERT(0);
 	  }
 
 	} else if ( MMLNodeIsOperator(mml_rover) ) {
@@ -6152,7 +6152,7 @@ void LaTeX2MMLTree::InsertInvisibleTimes( TNODE* MML_list ) {
             op_nom  =  (U8*)entity_it;
             op_uni  =  (U8*)entity_it_unicode;
 	        op_precedence  =  39;
-		    TCI_ASSERT(0);
+		    //TCI_ASSERT(0);
 		  }
         } else if ( mml_rover->details
 		&&          mml_rover->details->space_width != UNDEFINED_DETAIL ) {
@@ -11786,8 +11786,8 @@ void LaTeX2MMLTree::GetScriptedFuncName( TNODE* mml_node,U16 stype,
   	          cont  =  cont->next;
   	        }
   	      }
-        } else		// un-handled object in script
-          TCI_ASSERT(0);
+        } // jcs else		// un-handled object in script
+          // jcs TCI_ASSERT(0);
       }
 
 	    if ( sup_bucket && sup_bucket->contents ) {
