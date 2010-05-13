@@ -79,7 +79,7 @@ function doQuit() {
 //    var gmrfile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
 //    gmrfile.append("mupInstall.gmr");
 //    try {
-//      compsample.startup(gmrfile.target);
+//      compsample.startup(gmrfile.path);
 //      compengine = 2;
 //    } catch(e) {
 //      var msg_key;
@@ -318,7 +318,7 @@ function openTeX()
   // note that we have to test the native path length
   // since file.URL will be "file:///" if no filename picked (Cancel button used)
   
-  if (fp.file && fp.file.target.length > 0) {
+  if (fp.file && fp.file.path.length > 0) {
    
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //      Prepare to run pretex.exe. We need to send it some directories:                                       //
@@ -333,7 +333,7 @@ function openTeX()
     
     msiSaveFilePickerDirectory(fp, "tex");
     var filename = fp.file.leafName.substring(0,fp.file.leafName.lastIndexOf("."));
-    var infile =  "\""+fp.file.target+"\"";
+    var infile =  "\""+fp.file.path+"\"";
     dump("Open Tex: " + infile+"\n");
 
 // Get the directory for the result from the preferences, or default to the SWPDocs directory
@@ -390,13 +390,13 @@ function openTeX()
     exefile.append("pretex.exe");
     var dataDir = dsprops.get("resource:app", Components.interfaces.nsIFile);
     dataDir.append("ptdata");
-    dump("\n\nExe="+exefile.target);
-    dump("\noutdir=\""+outdir.target);
-    dump("\noutfile=\""+outfile.target);
-    dump("\ninfile=\""+fp.file.target);
-    dump("\ndataDir=\""+dataDir.target);
-    dump("\nmmldir=\""+mmldir.target+"\n");
-	dump("\nargs =['-i', "+dataDir.target+", '-f', 'latex2xml.tex', '-o', "+outdir.target+", '-m',"+ mmldir.target+", "+fp.file.target+", "+outfile.target);
+    dump("\n\nExe="+exefile.path);
+    dump("\noutdir=\""+outdir.path);
+    dump("\noutfile=\""+outfile.path);
+    dump("\ninfile=\""+fp.file.path);
+    dump("\ndataDir=\""+dataDir.path);
+    dump("\nmmldir=\""+mmldir.path+"\n");
+	dump("\nargs =['-i', "+dataDir.path+", '-f', 'latex2xml.tex', '-o', "+outdir.path+", '-m',"+ mmldir.path+", "+fp.file.path+", "+outfile.path);
 
     // run pretex.exe
     
@@ -404,19 +404,19 @@ function openTeX()
     {
       var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
       theProcess.init(exefile);
-      var args =['-i', dataDir.target, '-f', 'latex2xml.tex', '-o', outdir.target, '-m', mmldir.target, fp.file.target, outfile.target];
+      var args =['-i', dataDir.path, '-f', 'latex2xml.tex', '-o', outdir.path, '-m', mmldir.path, fp.file.path, outfile.path];
       theProcess.run(true, args, args.length);
     } 
     catch (ex) 
     {
          dump("\nUnable to open TeX:\n");
 		 dump("\nexe  = "  + exefile);
-         dump("\narg paths = " + dataDir.target + "\n   " + fp.file.target + "\n    " + outfile.target + "\n     " + outdir.target);
+         dump("\narg paths = " + dataDir.path + "\n   " + fp.file.path + "\n    " + outfile.path + "\n     " + outdir.path);
          dump(ex+"\n");
     }      
 //  TODO BBM todo: we may need to run a merge program to bring in processing instructions for specifying tag property files
     
-    msiEditPage("file:///" + outfile.target.replace(/\\/g,"/"), window, false);
+    msiEditPage("file:///" + outfile.path.replace(/\\/g,"/"), window, false);
   }                       
 }
 
@@ -439,7 +439,7 @@ function documentAsTeXFile( document, xslSheet, outTeXfile )
   workingDir = msiFileFromFileURL(docurl);
   var bareleaf = workingDir.leafName; // This is the leaf of the document.
   workingDir = workingDir.parent;
-  if (outTeXfile == null  || outTeXfile.target.length == 0)
+  if (outTeXfile == null  || outTeXfile.path.length == 0)
   {
     outTeX = workingDir.clone();
     outTeX.append("tex");
@@ -447,7 +447,7 @@ function documentAsTeXFile( document, xslSheet, outTeXfile )
     outTeXfile = outTeX;
     outTeXfile.append(bareleaf + ".tex");
   }
-  var outfileTeXPath = outTeXfile.target;
+  var outfileTeXPath = outTeXfile.path;
   var stylefile;
   var xslPath;
 #ifdef INTERNAL_XSLT
@@ -493,7 +493,7 @@ function documentAsTeXFile( document, xslSheet, outTeXfile )
   }
   outfile.append(bareleaf + ".xml");
       
-  dump("\nOutput file = " + outfile.target+"\n");
+  dump("\nOutput file = " + outfile.path+"\n");
   var s = new XMLSerializer();
   var str = s.serializeToString(document);
 
@@ -506,7 +506,7 @@ function documentAsTeXFile( document, xslSheet, outTeXfile )
   os.writeString(str);
   os.close();
   fos.close();
-  var outfilePath = outfile.target;
+  var outfilePath = outfile.path;
   while (xslPath.charAt(0) == "/".charAt(0)) xslPath = xslPath.substr(1);
   // for Windows
 #ifdef XP_WIN32
@@ -632,7 +632,7 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
     exefile.append("pdflatex."+extension);
   else
     exefile.append("latex."+extension);
-  dump("\nexecutable file: "+exefile.target+"\n");
+  dump("\nexecutable file: "+exefile.path+"\n");
   passData.file = exefile;
   passData.pdftex = pdftex;
   passData.outputDir = outputDir;
@@ -674,7 +674,7 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
   if (tempOutputfile.exists())
   {
     tempOutputfile.moveTo(null, leaf);     // BBM: allow for .xdv ??
-    dump("\nFinal output filename: "+tempOutputfile.target+"\n");
+    dump("\nFinal output filename: "+tempOutputfile.path+"\n");
     return true;
   }
   else return false;    
@@ -687,7 +687,7 @@ function printPDFFile(infile)
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
   exefile.append("printpdf.cmd");
-  dump("\nexecutable file: "+exefile.target+"\n");
+  dump("\nexecutable file: "+exefile.path+"\n");
   try 
   {
     var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
@@ -742,11 +742,11 @@ function compileDocument( pdftex )
     outputfile.append("main.tex");
     if (outputfile.exists()) outputfile.remove(false);
     
-    dump("\TeX file="+outputfile.target + "\n");
-//    dump("DVI/PDF file is " + dvipdffile.target + "\n"); 
+    dump("\TeX file="+outputfile.path + "\n");
+//    dump("DVI/PDF file is " + dvipdffile.path + "\n"); 
     if (documentAsTeXFile(editor.document, "latex.xsl", outputfile ))
     {
-      if (compileTeXFile(pdftex, "main", outputfile.target, dvipdffile.target, 1))
+      if (compileTeXFile(pdftex, "main", outputfile.path, dvipdffile.path, 1))
       {
         if (!currPDFfileLeaf) currPDFfileLeaf = "main.pdf";
         dump("currPDFfileLeaf is "+currPDFfileLeaf+"\n");
@@ -758,7 +758,7 @@ function compileDocument( pdftex )
         }
         else 
         {
-          dump("outputfile to be launched: "+dvipdffile.target+"\n");
+          dump("outputfile to be launched: "+dvipdffile.path+"\n");
           return dvipdffile;
         }
       }
@@ -835,7 +835,7 @@ function compileTeX(pdftex)
     dvipdffile.append(outleaf+ (pdftex?".pdf":".dvi"));
     if (dvipdffile.exists()) dvipdffile.remove(false);
     
-    dump("TeX file="+outputfile.target)+"\n";  
+    dump("TeX file="+outputfile.path)+"\n";  
     var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
     fp.init(window, "Save "+(pdftex?"PDF":"DVI")+" file", msIFilePicker.modeSave);
 
@@ -868,7 +868,7 @@ function compileTeX(pdftex)
       goDoCommand("cmd_showXSLTLog");
     } else
     {
-      if (compileTeXFile(pdftex, outleaf, outputfile.target, dvipdffile.parent.target, 1))
+      if (compileTeXFile(pdftex, outleaf, outputfile.path, dvipdffile.parent.path, 1))
       {
         if (!dvipdffile.exists())
         {
