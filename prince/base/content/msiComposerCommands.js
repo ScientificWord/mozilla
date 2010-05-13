@@ -3640,7 +3640,7 @@ var msiValidateCommand =
   },
   validateFilePageLoaded: function(event)
   {
-    event.target.forms[0].uploaded_file.value = URL2Validate;
+    event.path.forms[0].uploaded_file.value = URL2Validate;
   }
 };
 
