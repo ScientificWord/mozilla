@@ -27,16 +27,8 @@
 
   <xsl:template name="chars-to-LaTeX-Math">
       <xsl:param name="unicode-cdata"/>
-  
-#ifdef DEBUG
-    <xsl:message>chars-to-LaTeX-Math: <xsl:value-of select="name(.)"/></xsl:message>
-#endif
-    <xsl:variable name="first-char" select="substring($unicode-cdata,1,1)"/>
-  
-#ifdef DEBUG
-    <xsl:message>chars-to-LaTeX-Math: <xsl:copy-of select="$first-char"/></xsl:message>
-#endif
-    <xsl:choose>
+      <xsl:variable name="first-char" select="substring($unicode-cdata,1,1)"/>
+      <xsl:choose>
       <xsl:when test="$first-char = '0'
       or              $first-char = '1'
       or              $first-char = '2'
@@ -117,11 +109,7 @@
       or              $first-char = '['
       or              $first-char = ']'
       or              $first-char = '|'">
-		  
-#ifdef DEBUG
-    <xsl:message>chars-to-LaTeX-Math: first-char is<xsl:value-of select="$first-char"/></xsl:message>
-#endif
-        <xsl:value-of select="$first-char"/>
+		          <xsl:value-of select="$first-char"/>
       </xsl:when>
 
       <xsl:when test="$first-char=''">
@@ -135,11 +123,7 @@
       <xsl:when test="ms:string-compare($first-char,'&#x80') = -1">
 -->
 
-  
-#ifdef DEBUG
-    <xsl:message>chars-to-LaTeX-Math: first-char is <xsl:copy-of select="$first-char"/></xsl:message>
-#endif
-        <xsl:choose>
+          <xsl:choose>
           <xsl:when test="$first-char='&#x0020;'">
             <xsl:text xml:space="preserve">\ </xsl:text>
           </xsl:when>
@@ -2701,11 +2685,7 @@
         <xsl:with-param name="unicode-cdata" select="substring($unicode-cdata,2)"/>
       </xsl:call-template>
     </xsl:if>
-  
-#ifdef DEBUG
-    <xsl:message>Leaving chars-to-LaTeX-Math</xsl:message>
-#endif
-  </xsl:template>
+    </xsl:template>
 
 
 </xsl:stylesheet>
