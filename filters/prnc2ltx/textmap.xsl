@@ -17,11 +17,7 @@
 
   <xsl:template name="do-chars-in-TEXT">
     <xsl:param name="unicode-cdata"/>
-  
-#ifdef DEBUG
-    <xsl:message>do-chars-in-TEXT: <xsl:value-of select="name(.)"/></xsl:message>
-#endif
-    <xsl:variable name="first-char" select="substring($unicode-cdata,1,1)"/>
+      <xsl:variable name="first-char" select="substring($unicode-cdata,1,1)"/>
 
     <xsl:choose>
       <xsl:when test="$first-char = ' '">
