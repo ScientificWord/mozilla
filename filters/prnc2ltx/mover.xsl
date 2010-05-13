@@ -15,11 +15,7 @@
     <xsl:param name="limits-flag"/>
     <xsl:param name="j1"/>
     <xsl:param name="j2"/>
-  
-#ifdef DEBUG
-    <xsl:message>do-embellished-bigop: <xsl:value-of select="name(.)"/></xsl:message>
-#endif
-<!-- \sum \limits OR \nolimits 
+  <!-- \sum \limits OR \nolimits 
      _{
      x=10
      }^{
@@ -99,11 +95,7 @@
   
   <xsl:template name="math-accent">
     <xsl:param name="LaTeX-acc"/>
-  
-#ifdef DEBUG
-    <xsl:message>math-accent: <xsl:value-of select="name(.)"/></xsl:message>
-#endif
-    <xsl:value-of select="$LaTeX-acc"/>
+      <xsl:value-of select="$LaTeX-acc"/>
     <xsl:text>{</xsl:text>
     <xsl:call-template name="do-positional-arg">
       <xsl:with-param name="arg-num" select="1"/>
@@ -113,22 +105,14 @@
 
   
   <xsl:template match="mml:mover" mode="in-text">
-  
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
-    <xsl:text>$</xsl:text>
+      <xsl:text>$</xsl:text>
     <xsl:apply-templates select="."/>
     <xsl:text>$</xsl:text>
   </xsl:template>
 
 
   <xsl:template name="check-decoration">
-  
-#ifdef DEBUG
-    <xsl:message>check-decoration: <xsl:value-of select="name(.)"/></xsl:message>
-#endif
-    <xsl:choose>
+      <xsl:choose>
 <!--
       <xsl:when test="*[2][@stretchy='true']">
         <xsl:text>true</xsl:text>
@@ -165,11 +149,7 @@
   </xsl:template>
 
   <xsl:template name="check-accent">
-  
-#ifdef DEBUG
-    <xsl:message>check-accent: <xsl:value-of select="name(.)"/></xsl:message>
-#endif
-    <xsl:choose>
+      <xsl:choose>
 <!--
       <xsl:when test="*[2][@accent='true']">
         <xsl:text>true</xsl:text>
@@ -228,10 +208,6 @@
 
   <xsl:template match="mml:mover">
   
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
-
     <xsl:variable name="mover-structure.tr">
       <is-accent>
         <xsl:call-template name="check-accent"/>
