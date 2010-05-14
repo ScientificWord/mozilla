@@ -1,3 +1,5 @@
+\chardef\active=13 
+
 
 \catcode`\{=1 % left brace is begin-group character
 \catcode`\}=2 % right brace is end-group character
@@ -7,13 +9,12 @@
 \catcode`\^=7 % circumflex and uparrow are for superscripts
 \catcode`\_=8 % underline and downarrow are for subscripts
 \catcode`\^^I=10 % ascii tab is a blank space
-\chardef\active=13 
 \catcode`\~=\active % tilde is active
 \catcode`\^^L=\active \outer\def^^L{\par}% ascii form-feed is \outer\par
 \catcode`@=11
+
 %\def~{\nobreakspace{}}
 
-\chardef\active=13
 
 \def\@makeother#1{\catcode`#112\relax}
 
@@ -26,6 +27,7 @@
 \let\bgroup={ \let\egroup=}
 \def\makeatletter{\catcode`\@=11}
 \def\makeatother{\catcode`\@=12}
+
 
 
 \def\scantospace#1 {\def\@temp{#1}\@gobbletoend}%
