@@ -961,7 +961,7 @@ int GetLimitFormat(char* op_name, const Grammar* mml_entities)
 
   U32 ID, subID;
   const char* p_data;
-  if (mml_entities -> GetRecordFromName("LIMFORMS", op_name, strlen(op_name), ID, subID, &p_data)) {
+  if (op_name && mml_entities -> GetRecordFromName("LIMFORMS", op_name, strlen(op_name), ID, subID, &p_data)) {
     if (p_data && *p_data)
       rv = atoi(p_data);
   }
@@ -976,7 +976,7 @@ bool IsTrigArgFuncName(const Grammar* gmr, const char* nom)
 {
   U32 ID, subID;
   const char *p_data;
-  if (gmr->GetRecordFromName("TRIGARGFUNCS", nom, strlen(nom), ID, subID, &p_data)) {
+  if (nom && gmr->GetRecordFromName("TRIGARGFUNCS", nom, strlen(nom), ID, subID, &p_data)) {
     if (p_data && *p_data)
       int rhs = atoi(p_data); // unused
     return true;
@@ -990,7 +990,8 @@ bool IsReservedFuncName(const Grammar* gmr, const char *nom)
 {
   U32 ID, subID;
   const char *p_data;
-  if (gmr->GetRecordFromName("RESERVEDFUNCS", nom, strlen(nom), ID, subID, &p_data)) {
+
+  if (nom && gmr->GetRecordFromName("RESERVEDFUNCS", nom, strlen(nom), ID, subID, &p_data)) {
     if (p_data && *p_data)
       int rhs = atoi(p_data); // unused
     return true;
