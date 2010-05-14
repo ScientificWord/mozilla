@@ -43,10 +43,6 @@ fontstyle   - inheriting
 
   <xsl:template match="mml:mtext">
   
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
-
     <xsl:variable name="LaTeX-contents">
       <xsl:call-template name="do-chars-in-TEXT">
         <xsl:with-param name="unicode-cdata" select="normalize-space(string())"/>
@@ -151,10 +147,6 @@ fontstyle   - inheriting
 
   <xsl:template match="mml:mtext" mode="in-text">
   
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
-
     <xsl:variable name="LaTeX-contents">
       <xsl:call-template name="do-chars-in-TEXT">
         <xsl:with-param name="unicode-cdata" select="normalize-space(string())"/>
@@ -251,10 +243,6 @@ fontstyle   - inheriting
 
   <xsl:template name="get-LaTeX-style-from-mathvariant">
   
-#ifdef DEBUG
-    <xsl:message>get-LaTeX-style-from-mathvariant: <xsl:value-of select="name(.)"/></xsl:message>
-#endif
-
     <xsl:choose>
 
       <xsl:when test="@mathvariant">
