@@ -979,7 +979,8 @@ nsresult msiEditingManager::DetermineParentLeftRight(nsIDOMNode * node,
           }  
         } 
         if (0 < offset)
-          offset = index + 1; 
+          offset = index + 1;
+        else (offset = index); 
       }
       else
         parent = nsnull;  

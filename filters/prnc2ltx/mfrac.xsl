@@ -7,10 +7,6 @@
 
   <xsl:template match="mml:mfrac">
   
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
-
 <!-- The translation of mfrac is context sensitive.
 
   In MathML, the size is controlled by nesting the fraction
@@ -698,11 +694,7 @@
 
 
   <xsl:template match="mml:mfrac" mode="in-text">
-  
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
-    <xsl:text>$</xsl:text>
+      <xsl:text>$</xsl:text>
     <xsl:apply-templates select="."/>
     <xsl:text>$</xsl:text>
   </xsl:template>
@@ -716,10 +708,6 @@
   <xsl:template name="get-LaTeX-depth">
     <xsl:param name="lthick-attr-val"/>
   
-#ifdef DEBUG
-    <xsl:message>get-LaTeX-depth: <xsl:value-of select="name(.)"/></xsl:message>
-#endif
-
     <xsl:choose>
       <xsl:when test="$lthick-attr-val='thin'">
         <xsl:text>0.5pt</xsl:text>

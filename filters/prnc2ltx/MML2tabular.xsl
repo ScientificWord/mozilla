@@ -12,10 +12,6 @@
     <xsl:param name="columnlines"/>
     <xsl:param name="columnalign"/>
   
-#ifdef DEBUG
-    <xsl:message>do-cols: <xsl:value-of select="name(.)"/></xsl:message>
-#endif
-
 <!-- xsl:value-of select="$columns-to-do"/ -->
 
 <!-- script l or r or c	-->
@@ -90,10 +86,6 @@
     <xsl:param name="current-row"/>
     <xsl:param name="rowlines"/>
   
-#ifdef DEBUG
-    <xsl:message>script-hline: <xsl:value-of select="name(.)"/></xsl:message>
-#endif
-
     <xsl:choose>
       <xsl:when test="$current-row = 1">
         <xsl:if test="starts-with($rowlines,'solid')">
@@ -123,10 +115,6 @@
     <xsl:param name="last-row"/>
     <xsl:param name="rowlines"/>
   
-#ifdef DEBUG
-    <xsl:message>end-table-row: <xsl:value-of select="name(.)"/></xsl:message>
-#endif
-
     <xsl:if test="$current-row &lt; $last-row">
       <xsl:text xml:space="preserve"> \\</xsl:text>
 
@@ -143,11 +131,7 @@
 
 
   <xsl:template name="cell-counter">
-  
-#ifdef DEBUG
-    <xsl:message>cell-counter: <xsl:value-of select="name(.)"/></xsl:message>
-#endif
-<!--
+  <!--
     <xsl:for-each select="mml:mtr|mml:mlabeledtr">
       <xsl:sort select="count(*)"/>
 	  <ncols>
@@ -188,10 +172,6 @@
     <xsl:param name="columnalign" select="normalize-space(@columnalign)"/>
     <xsl:param name="rowlines"    select="normalize-space(@rowlines)"/>
   
-#ifdef DEBUG
-    <xsl:message>tabular: <xsl:value-of select="name(.)"/></xsl:message>
-#endif
-
     <xsl:variable name="column-counts.tr">
       <xsl:call-template name="cell-counter"/>
     </xsl:variable>
