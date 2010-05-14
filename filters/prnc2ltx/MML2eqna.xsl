@@ -17,10 +17,6 @@
   <xsl:template name="extract-row-spaces">
     <xsl:param name="rowspacing-list"/>
   
-#ifdef DEBUG
-    <xsl:message>extract-row-spaces: <xsl:value-of select="name(.)"/></xsl:message>
-#endif
-
     <xsl:choose>
       <xsl:when test="string-length($rowspacing-list)=0">
 	    <!-- Nothing to do here. -->
@@ -52,11 +48,7 @@
 
   <xsl:template name="set-eqn-row-space">
     <xsl:param name="current-space"/>
-  
-#ifdef DEBUG
-    <xsl:message>set-eqn-row-space<xsl:value-of select="name(.)"/></xsl:message>
-#endif
-    <xsl:choose>
+      <xsl:choose>
       <xsl:when test="string-length($current-space)=0">
       </xsl:when>
       <xsl:when test="$current-space='2.000000ex'">
@@ -81,10 +73,6 @@
     <xsl:param name="current-row"/>
     <xsl:param name="last-row"/>
   
-#ifdef DEBUG
-    <xsl:message>end-eqn-row: <xsl:value-of select="name(.)"/></xsl:message>
-#endif
-
     <xsl:if test="$current-row &lt; $last-row">
       <xsl:text xml:space="preserve"> \\</xsl:text>
     </xsl:if>
@@ -97,11 +85,7 @@
 
   <xsl:template name="check-tag-str">
     <xsl:param name="tag-str"/>
-  
-#ifdef DEBUG
-    <xsl:message>check-tag-str: <xsl:value-of select="name(.)"/></xsl:message>
-#endif
-    <xsl:choose>
+      <xsl:choose>
       <xsl:when test="
 	    string-length($tag-str)&gt;2
 	    and substring($tag-str,1,1)='('
@@ -129,10 +113,6 @@
     <xsl:param name="n-labeledrows"/>
     <xsl:param name="n-aligns"/>								 pp
   
-#ifdef DEBUG
-    <xsl:message>eqnarray: <xsl:value-of select="name(.)"/></xsl:message>
-#endif
-
     <xsl:variable name="eqn-info.tr">
       <xsl:choose>
 <!-- multline or gather -->
