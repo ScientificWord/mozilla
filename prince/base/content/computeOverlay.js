@@ -2441,7 +2441,7 @@ function doComputeShowDefs(editorElement)
   var o = new Object();
   o.val = out;
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  parentWin.openDialog("chrome://prince/content/ComputeShowDefs.xul", "showdefs", "chrome,close,titlebar,modal", o);
+  parentWin.openDialog("chrome://prince/content/ComputeShowDefs.xul", "showdefs", "chrome,close,titlebar,resizable,dependent", o);
 }
 
 function doComputeClearDefs()

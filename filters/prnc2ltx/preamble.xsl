@@ -72,11 +72,7 @@
 <xsl:variable name="endnotes" select="count(//html:endnotes)"/>
 
 
-<xsl:template match="html:preamble">
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
-  <xsl:for-each select="$packagelist/*">
+<xsl:template match="html:preamble">  <xsl:for-each select="$packagelist/*">
     <xsl:sort select="@pri" data-type="number"/>
 \usepackage<xsl:if test="@options">[<xsl:value-of select="@options"/>]</xsl:if>{<xsl:value-of select="@package"/>}  %% <xsl:value-of select="@pri"/></xsl:for-each>
   <xsl:apply-templates/>
@@ -115,11 +111,7 @@
 <!--  landscape=<xsl:value-of select="@landscape"/>,-->%
 </xsl:template>
 
-<xsl:template match="html:page[@paper='screen']">
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
-  paper=screen,%
+<xsl:template match="html:page[@paper='screen']">  paper=screen,%
   twoside=false,%
   landscape=false,%
 </xsl:template>
@@ -154,11 +146,7 @@
   marginparsep=<xsl:value-of select="@sep"/>,%
 </xsl:template>
 
-<!--xsl:template match="html:footer">%%%
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
-  footskip=<xsl:value-of select="concat(number(substring(@height,1,string-length(@height)-2))+number(substring(@sep,1,string-length(@sep-2)),substring(@sep,string-length(@sep)-2))"/>%</xsl:template -->
+<!--xsl:template match="html:footer">%%%  footskip=<xsl:value-of select="concat(number(substring(@height,1,string-length(@height)-2))+number(substring(@sep,1,string-length(@sep-2)),substring(@sep,string-length(@sep)-2))"/>%</xsl:template -->
 																																	 
 <xsl:template match="html:fontchoices">
 \usepackage{xltxtra}%
@@ -167,79 +155,35 @@
 \defaultfontfeatures{Mapping=tex-text}%
 <xsl:apply-templates/></xsl:template>  
 
-<xsl:template match="html:mainfont[@ot='1']">
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
-\setmainfont[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
+<xsl:template match="html:mainfont[@ot='1']">\setmainfont[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
 
 <xsl:template match="html:mainfont[@name='Default']"></xsl:template>
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
-
-<xsl:template match="html:sansfont[@ot='1']">
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
-\setsansfont[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
+<xsl:template match="html:sansfont[@ot='1']">\setsansfont[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
 
 <xsl:template match="html:sansfont[@name='']"></xsl:template>
 
-<xsl:template match="html:fixedfont[@ot='1']">
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
-\setmonofont[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
+<xsl:template match="html:fixedfont[@ot='1']">\setmonofont[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
 
 <xsl:template match="html:fixedfont[@name='']"></xsl:template>
   
-<xsl:template match="html:x1font">
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
-\newfontfamily\<xsl:value-of select="@internalname"/>[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
+<xsl:template match="html:x1font">\newfontfamily\<xsl:value-of select="@internalname"/>[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
 
-<xsl:template match="html:x2font">
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
-\newfontfamily\<xsl:value-of select="@internalname"/>[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
+<xsl:template match="html:x2font">\newfontfamily\<xsl:value-of select="@internalname"/>[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
 
-<xsl:template match="html:x3font">
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
-\newfontfamily\<xsl:value-of select="@internalname"/>[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
+<xsl:template match="html:x3font">\newfontfamily\<xsl:value-of select="@internalname"/>[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
 
 <!-- section headings redefined. Requires package titlesec -->
-<xsl:template match="html:sectitleformat" >
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
-\newcommand{\msi<xsl:value-of select="@level"/>}[1]{<xsl:apply-templates/>}
+<xsl:template match="html:sectitleformat" >\newcommand{\msi<xsl:value-of select="@level"/>}[1]{<xsl:apply-templates/>}
 \titleformat{\<xsl:value-of select="@level"/>}[hang]{}{}{0pt}{\msi<xsl:value-of select="@level"/>}{}
 </xsl:template>						  
 
 <xsl:template match="html:titleprototype"><xsl:apply-templates/></xsl:template>
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
-
 <xsl:template match="html:dialogbase">
-  
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
-<xsl:apply-templates/>
+  <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="sw:dialogbase">
-  
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
-<xsl:apply-templates/>
+  <xsl:apply-templates/>
 </xsl:template>
 
 <!-- end of section headings -->
