@@ -43,6 +43,19 @@
         <spacer flex="1"/>
         <textbox id="intervals" style="width: 3em"/>
       </hbox>
+
+      <hbox>
+        <description>Lower Bound</description>
+        <spacer flex="1"/>
+        <textbox id="lowerBound" style="width: 3em"/>
+      </hbox>
+
+      <hbox>
+        <description>Upper Bound</description>
+        <spacer flex="1"/>
+        <textbox id="upperBound" style="width: 3em"/>
+      </hbox>
+
     </vbox>
   </hbox>
 
