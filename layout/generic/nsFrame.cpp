@@ -5377,7 +5377,7 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
   // The above code has found a selectable frame (presumably a text frame) that is the "next" in the sense 
   // Mozilla uses; that means it is a leaf. For mathematics, we need to check to see if we should instead
   // choose a parent of this frame.
-  printf("Moving to a new frame; check to see if we are in math\n");
+  //  printf("Moving to a new frame; check to see if we are in math\n");
   nsIFrame* pFrame = IsMathFrame(this)?this:nsnull;  // will succeed if "this" is a math frame.
   nsIFrame* pFrameChild;
   nsIFrame * pChild;
@@ -5524,7 +5524,7 @@ bailedOut:
 #endif
   if (*fBailing) *aMath = PR_FALSE;
   if (!*aMath) *aOutFrame = traversedFrame;
-  printf("Exit 2, aMath = %s, aOutFrame = %x\n", *aMath?"true":"false", *aOutFrame);
+//  printf("Exit 2, aMath = %s, aOutFrame = %x\n", *aMath?"true":"false", *aOutFrame);
   return NS_OK;
 }
 
