@@ -20,6 +20,13 @@ function OK(){
 
   var form = document.getElementById("form");
   data.form = form.selectedIndex + 1;
+
+  var lowerBound = document.getElementById("lowerBound");
+  data.lowerBound = parseInt(lowerBOund.value, 10);
+
+  var upperBound = document.getElementById("upperBound");
+  data.upperBound = parseInt(upperBound.value, 10);
+
 }
 
 function Cancel(){
