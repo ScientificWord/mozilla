@@ -296,15 +296,17 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
   if (!*aHandled){
      bDeleteEntireMath = bSelectionContainsTheEntireMathNode(mathNode, aSelection);
 	 
-     //DebDisplaySelection("\nDeletion not handled yet. Extend selection to:" , aSelection, mMSIEditor, true);
+     DebDisplaySelection("\nDeletion not handled yet. Extend selection to:" , aSelection, mMSIEditor, true);
 
      mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
-	 //DebDisplaySelection("\nSelection before calling nsHTMLEditRules::WillDeleteSelection" , aSelection, mMSIEditor, true);
+	 
+	 DebDisplaySelection("\nSelection before calling nsHTMLEditRules::WillDeleteSelection" , aSelection, mMSIEditor, true);
 
      nsHTMLEditRules::WillDeleteSelection(aSelection, aAction, aCancel, aHandled);
 
-	 //DebDisplaySelection("\nSelection after calling nsHTMLEditRules::WillDeleteSelection" , aSelection, mMSIEditor, true);
 	 mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
+	 DebDisplaySelection("\nSelection after calling nsHTMLEditRules::WillDeleteSelection" , aSelection, mMSIEditor, true);
+
 
      if (bDeleteEntireMath)
 	   return NS_OK;
