@@ -465,6 +465,7 @@ var fragObserver =
                     createInstance();
       request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
       var urlstring = tree.getAttribute("ref") + s;
+      var path = msiPathFromFileURL( msiURIFromString(urlstring));
       request.open("GET", urlstring, false);
       request.send(null);
                           
@@ -512,7 +513,9 @@ var fragObserver =
         transferData.data.addDataForFlavour("text/_moz_htmlinfo",infoString);
       }
     }
-    catch(e) {}
+    catch(e) {
+      dump("Error: "+e.message+"\n");
+    }
     focusOnEditor();
   },
   
