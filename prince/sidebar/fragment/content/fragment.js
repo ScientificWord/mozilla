@@ -67,7 +67,7 @@ function descriptionOfItem( row )
   while (tree.view.getParentIndex(i) >= 0)
     {           
       i = tree.view.getParentIndex(i);
-      s = tree.view.getCellText(i,namecol)+ pathSeparator + s;
+      s = tree.view.getCellText(i,namecol)+ "/" + s;
   }
   s = tree.getAttribute("ref")+s;
   // s is now the path of the clicked file relative to the fragment root.
@@ -94,7 +94,7 @@ function descriptionOfItem( row )
   }
   catch (e)
   {
-    dump("Error is fragments.js, showDescription: "+e.message+"\n");
+    dump("Error in fragments.js, showDescription: "+e.message+"\n");
   }
   return "";
 }
@@ -109,10 +109,10 @@ function writeDescriptionOfItem(row, desc)
   while (tree.view.getParentIndex(i) >= 0)
   {           
     i = tree.view.getParentIndex(i);
-    s = tree.view.getCellText(i,namecol)+pathSeparator+s;
+    s = tree.view.getCellText(i,namecol)+"/"+s;
   }
   // s is now the path of the clicked file relative to the fragment root.
-  var pieces = s.split(pathSeparator);
+  var pieces = s.split("/");
   var j;
   for (j = 0; j < pieces.length; j++) outfile.append(pieces[j]);
   s = tree.getAttribute("ref") +s;
@@ -250,7 +250,7 @@ function loadFragment(event,tree)
     while (tree.view.getParentIndex(i) >= 0)
     {           
       i = tree.view.getParentIndex(i);
-      s = tree.view.getCellText(i,namecol)+ pathSeparator + s;
+      s = tree.view.getCellText(i,namecol)+ "/" + s;
     }
   if (!tree.hasAttribute("ref")) return;
   s = tree.getAttribute("ref") +s ;
@@ -270,9 +270,9 @@ function deleteFragment(tree)
     while (tree.view.getParentIndex(i) >= 0)
     {           
       i = tree.view.getParentIndex(i);
-      s = tree.view.getCellText(i,namecol)+pathSeparator+s;
+      s = tree.view.getCellText(i,namecol)+"/"+s;
     }
-  var pieces = s.split(pathSeparator);
+  var pieces = s.split("/");
   var j;
   for (j = 0; j < pieces.length; j++) file.append(pieces[j]);
   dump('found file  '+file.path+'\n');
@@ -318,9 +318,9 @@ function renameFragment(tree)
   while (tree.view.getParentIndex(i) >= 0)
   {           
     i = tree.view.getParentIndex(i);
-    s = tree.view.getCellText(i,namecol)+pathSeparator+s;
+    s = tree.view.getCellText(i,namecol)+"/"+s;
   }
-  var pieces = s.split(pathSeparator);
+  var pieces = s.split("/");
   var j;
   for (j = 0; j < pieces.length; j++) file.append(pieces[j]);
   if (nameChanged) {
@@ -363,9 +363,9 @@ function newFragmentFolder()
   while (tree.view.getParentIndex(i) >= 0)
   {           
     i = tree.view.getParentIndex(i);
-    s = tree.view.getCellText(i,namecol)+pathSeparator+s;
+    s = tree.view.getCellText(i,namecol)+"/"+s;
   }
-  var pieces = s.split(pathSeparator);
+  var pieces = s.split("/");
   var j;
   for (j = 0; j < pieces.length; j++) file.append(pieces[j]);
   var data = new Object();
@@ -530,7 +530,8 @@ var fragObserver =
     var bo = tree.treeBoxObject;
     var namecol = tree.columns.getNamedColumn('Name');
     var saveurlstring = tree.getAttribute("ref");
-    var path;
+    var path = "";
+    var urlbasestring = tree.getAttribute("ref");
     var row = new Object;
     var column = new Object;
     var part = new Object;
@@ -546,7 +547,7 @@ var fragObserver =
         path = tree.view.getCellText(i,namecol)+ "/" + path;
       }
     }
-//    dump("New fragment file path is "+pathbase + path + "\n");
+//    dump("New fragment file URL is " + urlbasestring + path + "\n");
     if (session.isDataFlavorSupported("privatefragmentfile"))
     {
       var origPath = dropData.first.first.data.substr(8);  //This HAS to be fixed BBM:
@@ -607,11 +608,9 @@ var fragObserver =
           ']]>\n  </context>\n  <info>\n    <![CDATA[' +mimetypes.kHTMLInfo+
           ']]>\n  </info>\n  <description>\n    <![CDATA[' + data.description +
           ']]>\n  </description>\n</fragment>';
-        var filepath = pathbase + path + data.filename;
+        var urlstring = urlbasestring + path + "/" + data.filename;
+        var filepath = msiPathFromFileURL( msiURIFromString(urlstring));        
         if (filepath.search(/.frg/) == -1) filepath += ".frg";
-#ifdef XP_WIN32
-        filepath = filepath.replace("/","\\","g");
-#endif
         try
         {
           var file = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
