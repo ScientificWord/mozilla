@@ -2336,7 +2336,7 @@ function msiSoftSave( editor, editorElement)
   else if (GetBoolPref("swp.generateTeXonsave"))
   {
     var file = currentFile.parent;
-    file.append("TeX");
+    file.append("tex");
     file.append("main.tex");
     documentAsTeXFile(editorDoc, "latex.xsl", file );
   }
