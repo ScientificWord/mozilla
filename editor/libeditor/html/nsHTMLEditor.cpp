@@ -2208,27 +2208,29 @@ nsHTMLEditor::InsertNodeAtPoint(nsIDOMNode *aNode,
   
   nsresult res = NS_OK;
   nsAutoString tagName;
+  nsAutoString tagclass;
   aNode->GetNodeName(tagName);
- // ToLowerCase(tagName);
   nsCOMPtr<nsIDOMNode> parent = *ioParent;
   nsCOMPtr<nsIDOMNode> topChild = *ioParent;
   nsCOMPtr<nsIDOMNode> tmp;
   PRInt32 offsetOfInsert = *ioOffset;
    
-  // Search up the parent chain to find a suitable container      
-  while (!CanContainTag(parent, tagName))
-  {
-    // If the current parent is a root (body or table element)
-    // then go no further - we can't insert
-    if (nsTextEditUtils::IsBody(parent) || nsHTMLEditUtils::IsTableElement(parent, mtagListManager))
-      return NS_ERROR_FAILURE;
-    // Get the next parent
-    parent->GetParentNode(getter_AddRefs(tmp));
-    NS_ENSURE_TRUE(tmp, NS_ERROR_FAILURE);
-    topChild = parent;
-    parent = tmp;
-  }
-  if (parent != topChild)
+  mtagListManager->GetClassOfTag(tagName, nsnull, tagclass);
+  if (!tagclass.IsEmpty()) {  // tags not known to the tag manager get a free pass.
+    // Search up the parent chain to find a suitable container      
+    while (!CanContainTag(parent, tagName))
+    {
+      // If the current parent is a root (body or table element)
+      // then go no further - we can't insert
+      if (nsTextEditUtils::IsBody(parent) || nsHTMLEditUtils::IsTableElement(parent, mtagListManager))
+        return NS_ERROR_FAILURE;
+      // Get the next parent
+      parent->GetParentNode(getter_AddRefs(tmp));
+      NS_ENSURE_TRUE(tmp, NS_ERROR_FAILURE);
+      topChild = parent;
+      parent = tmp;
+    }
+  }if (parent != topChild)
   {
     // we need to split some levels above the original selection parent
     res = SplitNodeDeep(topChild, *ioParent, *ioOffset, &offsetOfInsert, aNoEmptyNodes);
