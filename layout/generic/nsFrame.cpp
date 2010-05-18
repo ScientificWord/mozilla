@@ -5388,8 +5388,9 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
   PRInt32 count = 1;
   if (pFrame) // 'this' is a math frame
   {
-    printf("Starting in a math frame\n");
-    nsMathMLFrame::DumpMathFrameData(pFrame);
+//    printf("Starting in a math frame\n");
+//    nsMathMLFrame::DumpMathFrameData(pFrame);
+
 //    *aMath = PR_TRUE;
     // the cursor is in a math tag, not in a text tag that is in mathematics, and we are leaving or entering
     // BBM: Fix this. Counting in the frame tree is unreliable. We should be doing it in the DOM tree.
