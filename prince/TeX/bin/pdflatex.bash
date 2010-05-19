@@ -7,7 +7,7 @@ while [ $j -lt $passes ]
 do
 	let k=j+1
 	echo Pass $k > sentinel
-	xelatex $infile
+	xelatex -jobname $4 $infile
 	let j=j+1
 done
 echo done > sentinel
