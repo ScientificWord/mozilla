@@ -171,12 +171,13 @@ function writeDescriptionOfItem(row, desc)
 function showDescription(event, tooltip)
 {
   var tree = document.getElementById("frag-tree");
-  tooltip.setAttribute("label","");
   var row = {};
   var col = {};
   var obj = {};
   var b = tree.treeBoxObject;
   b.getCellAt(event.clientX, event.clientY, row, col, obj);
+  if (tree.view.isContainer(row.value)) return false;                                                       
+  tooltip.setAttribute("label","");
 //  if (!row.value) return false;
   var description = descriptionOfItem(row.value);
   tooltip.setAttribute("label",description);
@@ -245,6 +246,7 @@ function loadFragment(event,tree)
 {
   var namecol = tree.columns.getNamedColumn('Name');
   var i = tree.currentIndex;
+  if (tree.view.isContainer(i)) return;
   var s = tree.view.getCellText( i,namecol);
   if (event.type=="keypress" && event.keyCode!=event.DOM_VK_RETURN) return;
     while (tree.view.getParentIndex(i) >= 0)
@@ -448,14 +450,12 @@ var fragObserver =
     var tree = evt.currentTarget;
     var namecol = tree.columns.getNamedColumn('Name');
     var i = tree.currentIndex;
+    if (tree.view.isContainer(i)) return;
     var s = tree.view.getCellText( i,namecol);
-    if (!tree.view.isContainer(i))
-    {  
-      while (tree.view.getParentIndex(i) >= 0)
-      {           
-        i = tree.view.getParentIndex(i);
-        s = tree.view.getCellText(i,namecol)+ "/" + s;
-      }
+    while (tree.view.getParentIndex(i) >= 0)
+    {           
+      i = tree.view.getParentIndex(i);
+      s = tree.view.getCellText(i,namecol)+ "/" + s;
     }
     // s is now the path of the clicked file relative to the fragment root.
     try 
@@ -550,11 +550,7 @@ var fragObserver =
 //    dump("New fragment file URL is " + urlbasestring + path + "\n");
     if (session.isDataFlavorSupported("privatefragmentfile"))
     {
-      var origPath = dropData.first.first.data.substr(8);  //This HAS to be fixed BBM:
-#ifdef XP_WIN32
-      origPath = origPath.replace("/","\\","g");
-#endif
-      // now move origPath to path
+      var origPath = dropData.first.first.data;
       var file = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
       file.QueryInterface(Components.interfaces.nsIFile);
       file.initWithPath( origPath );
