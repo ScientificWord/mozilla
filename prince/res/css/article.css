@@ -20,6 +20,7 @@ part>*:first-child:before {
   display: block;
   font-size: large;
   font-weight: bold;
+  -moz-user-select: -moz-none;
 }
 
 chapter {
@@ -46,6 +47,7 @@ chapter>sectiontitle:before, chapter[open="true"]>sectiontitle:before  {
   font-weight: bold;
   line-height: 24pt;
   text-align: center;
+  -moz-user-select: -moz-none;
 }
 
 chapter[open="false"]>sectiontitle:before{
@@ -55,6 +57,7 @@ chapter[open="false"]>sectiontitle:before{
   font-weight: bold;
   text-align: center;
   display: block;
+  -moz-user-select: -moz-none;
 }
 
 section {
@@ -87,6 +90,7 @@ section>sectiontitle[open="false"]{
  
 section>sectiontitle:before, section[open="true"]>sectiontitle:before  {
   content: counter(section) ".  ";
+  -moz-user-select: -moz-none;
 }
 
 subsection {
@@ -104,6 +108,7 @@ subsection>*:first-child {
 
 subsection>*:first-child:before {
   content: counter(section) "." counter(subsection) ".  ";
+  -moz-user-select: -moz-none;
 }
 
 subsubsection {
@@ -122,6 +127,7 @@ subsubsection>*:first-child {
 
 subsubsection>*:first-child:before {
   content: counter(section) "." counter(subsection) "." counter(subsubsection) ".  ";
+  -moz-user-select: -moz-none;
 }
 
 paragraph {
@@ -137,6 +143,7 @@ paragraph>*:first-child {
 
 paragraph>*:first-child:before {
   content: counter(section) "." counter(subsection) "." counter(subsubsection) "." counter(paragraph) ".  "; 
+  -moz-user-select: -moz-none;
 }
 
 abstract {
@@ -157,6 +164,7 @@ abstract:before {
   display: block;
   text-align: center;
   font-size: medium; font-weight: bold;
+  -moz-user-select: -moz-none;
 }
 
 p {
@@ -225,6 +233,7 @@ quotation {
   font-family: Courier New;
   color: green;
   font-weight: bold;
+  -moz-user-select: -moz-none;
 }
 
 center {
@@ -360,6 +369,7 @@ theorem {
 
 theorem:before {
   content:  "Theorem " counter(section) "."  counter(theorem) ". " ;
+  -moz-user-select: -moz-none;
 }
 
 section defaulttitletag:after {
@@ -398,6 +408,7 @@ button[class="eqnnum"]:after{
   counter-reset: subeqnnum;
   font-style: normal; 
   color: red;
+  -moz-user-select: -moz-none;
 }
 
 button[class="subeqnnum"]:after{
@@ -405,6 +416,7 @@ button[class="subeqnnum"]:after{
   counter-increment: subeqnnum;
   font-style: normal; 
   color: blue;
+  -moz-user-select: -moz-none;
 }
 
 
