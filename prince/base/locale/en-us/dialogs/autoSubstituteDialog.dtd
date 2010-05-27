@@ -30,9 +30,7 @@
 <!ENTITY enableUnitSubs.accesskey "i">
 <!ENTITY enableMathNameSubs.label "Math Names">
 <!ENTITY enableMathNameSubs.accesskey "M">
-<!ENTITY addButton.label "Add">
-<!ENTITY addButton.accesskey "A">
-<!ENTITY modifyButton.label "Modify">
-<!ENTITY modifyButton.accesskey "M">
+<!ENTITY saveButton.label "Save">
+<!ENTITY saveButton.accesskey "S">
 <!ENTITY removeButton.label "Remove">
 <!ENTITY removeButton.accesskey "R">
