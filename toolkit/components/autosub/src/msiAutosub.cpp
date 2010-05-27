@@ -229,14 +229,25 @@ NS_IMETHODIMP msiAutosub::AddEntry(const nsAString & pattern, PRInt32 ctx, PRInt
 {
     autosubentry * newArray = new autosubentry[arraylength+1];
     nsAutoString p(pattern);
+    nsAutoString rp = p;
+    reverse(rp);                     
     nsAutoString d(data);
     nsAutoString pc(pasteContext);
     nsAutoString pi(pasteInfo);
-    PRUint32 i;
+    PRUint32 i;  
+    autosubentry newentry(rp, ctx, action, d, pc, pi);
+    for (i = 0; i<arraylength; i++)
+    {
+      if (autosubarray[i] == rp) 
+      {
+        autosubarray[i] = newentry;
+        *_retval = PR_TRUE;
+        return NS_OK;
+      }
+    }
     for (i = 0; i<arraylength; i++)
       newArray[i] = autosubarray[i];
-    reverse(p);
-    newArray[arraylength++] = autosubentry(p, ctx, action, d, pc, pi);
+    newArray[arraylength++] = newentry;
     autosubentry * oldArray = autosubarray;
     autosubarray = newArray;
     delete[] oldArray;
