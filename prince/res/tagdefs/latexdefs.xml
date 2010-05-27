@@ -91,6 +91,8 @@
 				<tag id="defaultparagraph" nm="sw:para">
 					<description>Default body text paragraph</description>
           <discardemptyblock>true</discardemptyblock>
+          <initialcontentsforempty> <![CDATA[<br temp="1"/>]]>
+          </initialcontentsforempty>
 				</tag>
 				<tag nm="sw:rtlpara">
 					<description>Right to left body text paragraph</description>
