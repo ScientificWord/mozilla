@@ -30,13 +30,16 @@
 <dialog id="AutoSubstitutionDlg"
   title="&windowTitle.label;"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  defaultbutton="accept"
+  buttons="accept,cancel,help"
   ondialogaccept="return onOK();"
   ondialogcancel="return onCancel();"
-  onunload="ShutdownAllEditors();"
+  ondialoghelp="return onOK();"
   onload="Startup();"
   persist="screenX screenY width height"
 >
-
+<!--  onunload="ShutdownAllEditors();" -->
+                                   
  <!-- script src="chrome://global/content/dialogOverlay.js" / -->
   <!-- Methods common to all editor dialogs -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
@@ -85,7 +88,7 @@
   </keyset>
 
   <hbox>  
-    <vbox flex="1">
+    <vbox>
       <description>&keystrokesBox.label;</description>
       <separator class="thin"/>
       <hbox>
@@ -94,6 +97,7 @@
 		      tooltiptext="&keystrokesBox.tooltip;" label="&keystrokesBox.label;"
           onkeypress="checkKeyPressEvent(this, event);"
           onfocus="this.select();"
+          onsearchcomplete="changePattern(this.value);"
           ontextentered="changePattern(this.value);" 
           ontextcommand="changePattern(this.value);" />
       </hbox>
@@ -116,13 +120,15 @@
       </hbox>
     </vbox>
     <vbox>
-      <groupbox>
+      <deck id="thedeck" selectedIndex="0">
         <!-- caption id="replacementLabel" label="&substitution.label;" accesskey="&substitution.accesskey;"/ -->
-        <label id="substitutionLabel" control="substitution-frame" value="&substitution.label;" accesskey="&substitution.accesskey;"/>
+        <vbox><label id="substitutionLabel" control="substitution-frame" value="&substitution.label;" accesskey="&substitution.accesskey;"/>
         <editor editortype="html" type="content" width="200" height="100" context="msiEditorContentContext" id="subst-frame"/>
-        <label id="scriptLabel" control="scriptTextbox" value="&script.label;"	accesskey="&script.accesskey;"/>
-        <textbox id="scriptTextbox" size="60"  onkeypress="checkScriptControl(this);"/>
-      </groupbox>
+        </vbox>
+        <vbox><label id="scriptLabel" control="scriptTextbox" value="&script.label;"	accesskey="&script.accesskey;"/>
+        <textbox id="scriptTextbox" size="60" width="100" height="100"  onkeypress="checkScriptControl(this);"/>
+        </vbox>
+      </deck>
       <spacer flex="1"/>
       <groupbox>
         <caption label="&enableDisableAutosubs.label;"/>
@@ -134,10 +140,9 @@
       </groupbox>
     </vbox>
     <vbox>
-      <msibutton id="addOrModifyButton" label="&addButton.label;" accesskey="&addButton.accesskey;" oncommand="saveCurrentSub();" />
-      <label id="addButtonLabel" value="&addButton.label;" accesskey="&addButton.accesskey;" hidden="true"/>
-      <label id="modifyButtonLabel" value="&modifyButton.label;" accesskey="&modifyButton.accesskey;" hidden="true"/>
+      <msibutton id="saveButton" label="&saveButton.label;" accesskey="&saveButton.accesskey;" oncommand="saveCurrentSub();" />
       <msibutton id="removeButton" label="&removeButton.label;" accesskey="&removeButton.accesskey;" oncommand="removeCurrentSub();" />
+      <msibutton id="testButton" label="Test;" accesskey="&removeButton.accesskey;" oncommand="onOK();" />
     </vbox>
   </hbox>  
 </dialog>
