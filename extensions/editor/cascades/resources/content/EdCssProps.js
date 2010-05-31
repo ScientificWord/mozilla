@@ -244,76 +244,30 @@ function CleanSheetsTree(sheetsTreeChildren)
 
 function AddSheetEntryToTree(sheetsTree, ownerNode)
 {
-  if (ownerNode.nodeType == Node.ELEMENT_NODE ||) 
-    ownerNode.nodeType == Node.PROCESSING_INSTRUCTION_NODE) {
-    var ownerTag  = ownerNode.nodeName.toLowerCase()
-    try {
-      var relType   = ownerNode.getAttribute("rel");
-      if (relType) relType = relType.toLowerCase();
-    } catch(e) {}
-    try {
-      if (ownerTag == "style" || ownerNode.nodeType == Node.PROCESSING_INSTRUCTION_NODE
-           && ownerTag =="xml-stylesheet" ||
-          (ownerTag == "link" && relType.indexOf("stylesheet") != -1)) {
+  try {
+    var treeitem  = document.createElementNS(XUL_NS, "treeitem");
+    var treerow   = document.createElementNS(XUL_NS, "treerow");
+    var treecell  = document.createElementNS(XUL_NS, "treecell");
+    var regexp = /href\=[\'\"]([^\'\"]*)/i;
+    var a = regexp(ownerNode.textContent);
+    treecell.setAttribute("label", a[1]);
+    // add a new entry to the tree
+    var o = newObject( treeitem, true, 1, ownerNode.sheet, false, 0 );
+    PushInObjectsArray(o);
+  
+    treerow.appendChild(treecell);
+    treeitem.appendChild(treerow);
+    treeitem.setAttribute("container", "true");
+    // add enties to the tree for the rules in the current stylesheet
+    var rules = null;
+    if (ownerNode.sheet)
+      rules = ownerNode.sheet.cssRules;
+    AddRulesToTreechildren(treeitem, rules, true, 1);
 
-        var treeitem  = document.createElementNS(XUL_NS, "treeitem");
-        var treerow   = document.createElementNS(XUL_NS, "treerow");
-        var treecell  = document.createElementNS(XUL_NS, "treecell");
-
-        // what kind of owner node do we have here ?
-        // a style element indicates an embedded stylesheet,
-        // while a link element or processing instruction indicates an external stylesheet;
-        // the case of an XML Processing Instruction is not handled, we
-        // are supposed to be in HTML 4
-        var external = false;
-        if (ownerTag == "style") {
-          treecell.setAttribute("label", "internal stylesheet");
-        }
-        else if (ownerTag == "link") {
-          // external stylesheet, let's present its URL to user
-          treecell.setAttribute("label", ownerNode.href);
-          external = true;
-          if ( /(\w*):.*/.test(ownerNode.href) ) {
-            if (RegExp.$1 == "file") {
-              external = false;
-            }
-          }
-          else
-            external = false;
-        }
-        else if (ownerTag == "xml-stylesheet") {
-          var stringarray = ownerNode.data.split(" ");
-          var strarr2;
-          var i;
-          for (i=0; i<stringarray.length; i++)
-          {
-            strarr2 = stringarray[i].split("=");
-            if (strarr2[0] == "href") {
-              treecell.setAttribute("label", strarr2[1]);
-              external = true;
-              break;
-            }
-          }
-        }
-        // add a new entry to the tree
-        var o = newObject( treeitem, external, SHEET, ownerNode.sheet, false, 0 );
-        PushInObjectsArray(o);
-      
-        treerow.appendChild(treecell);
-        treeitem.appendChild(treerow);
-        treeitem.setAttribute("container", "true");
-        // add enties to the tree for the rules in the current stylesheet
-        var rules = null;
-        if (ownerNode.sheet)
-          rules = ownerNode.sheet.cssRules;
-        AddRulesToTreechildren(treeitem, rules, external, 1);
-
-        sheetsTree.appendChild(treeitem);
-      }
-    }
-    catch (e) {
-      dump(e+"\n");
-    }
+    sheetsTree.appendChild(treeitem);
+  }
+  catch (e) {
+    dump(e+"\n");
   }
 }
 
@@ -336,42 +290,29 @@ function InitSheetsTree(sheetsTree)
   // remove all entries in the tree
   CleanSheetsTree(sheetsTree);
   // Look for the stylesheets attached to the current document
-  // Get them from the STYLE and LINK elements because of async sheet loading :
-  // the LINK element is always here while the corresponding sheet might be
+  // Get them from the xml-stylesheet processing instructions since they are
+  // always here while the corresponding sheet might be
   // delayed by network
-  editor = getCurrentEditor();
-  var headNode = editor.document;
+//  editor = getCurrentEditor();
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  var editor = msiGetEditor(editorElement);
+  var editordoc = editor.document;
   var ssn;
   var i;
-  var ownerNode;
+  var node;
   try {
-    if ( headNode && headNode.hasChildNodes() ) {
-      ssn = headNode.childNodes.length;
-      objectsArray = new Array();
-      if (ssn) {
-        gInsertIndex = -1;
-        for (i=0; i<ssn; i++) {
-          ownerNode = headNode.childNodes[i];
-          AddSheetEntryToTree(sheetsTree, ownerNode); 
-        }
+    var stylesheetInstrs = processingInstructionsList(editordoc, "xml-stylesheet", true);
+    ssn = stylesheetInstrs.length;
+    objectsArray = new Array();
+    if (ssn) {
+      gInsertIndex = -1;
+      for (i=0; i<ssn; i++) {
+        node = stylesheetInstrs[i];
+        AddSheetEntryToTree(sheetsTree, node); 
       }
     }
   }
   catch (e) { }
-  try {
-    headNode = GetHeadElement();
-    if ( headNode && headNode.hasChildNodes() ) {
-      ssn = headNode.childNodes.length;
-  //    objectsArray = new Array();
-      if (ssn) {
-        gInsertIndex = -1;
-        for (i=0; i<ssn; i++) {
-          ownerNode = headNode.childNodes[i];
-          AddSheetEntryToTree(sheetsTree, ownerNode); 
-        }
-      }
-    }
-  }catch (e) {}
 }
 
 // * create a new "object" corresponding to an entry in the tree
@@ -1409,8 +1350,8 @@ function onConfirmCreateNewObject()
         if (gDialog.newTitle != "") {
           newSheetOwnerNode.setAttribute("title", gDialog.newTitle);
         }
-        headNode = GetHeadElement();
-        headNode.appendChild(newSheetOwnerNode);
+//        headNode = GetHeadElement();
+//        headNode.appendChild(newSheetOwnerNode);
         AddSheetEntryToTree(gDialog.sheetsTreechildren, newSheetOwnerNode);
 
         selectTreeItem(objectsArray[objectsArray.length - 1].xulElt);
