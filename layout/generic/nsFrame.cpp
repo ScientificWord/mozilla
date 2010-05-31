@@ -4840,7 +4840,7 @@ nsIFrame::PeekOffset(nsPeekOffsetStruct* aPos)
       if (math)
       {
         aPos->mResultFrame = current;
-        aPos->mResultContent = current->GetContent();
+        aPos->mResultContent = current?current->GetContent():nsnull;
         aPos->mContentOffset = offset;
       }
       else
