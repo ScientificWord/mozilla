@@ -8025,7 +8025,8 @@ nsHTMLEditRules::InsertStructure(nsIDOMNode *inNode,
       break;
     } 
     currentNode = parent;
-    res = currentNode->GetParentNode(getter_AddRefs(parent));
+    if (!currentNode) break;
+   res = currentNode->GetParentNode(getter_AddRefs(parent));
 #if DEBUG_BarryNo || DEBUG_BarryNo
    DebExamineNode(parent);
 #endif
