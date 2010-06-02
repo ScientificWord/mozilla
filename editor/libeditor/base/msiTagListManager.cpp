@@ -722,7 +722,7 @@ NS_IMETHODIMP msiTagListManager::TagCanContainTag(const nsAString & strTagOuter,
   nsresult rv = GetClassOfTag(strTagOuter, atomNSOuter, classOuter);
   nsAutoString classInner;
   rv = GetClassOfTag(strTagInner, atomNSInner, classInner);
-  
+  if (classInner.Length() == 0) classInner.AssignLiteral("texttag");
   // structtags are different: the level determines what can contain what.
   if (classOuter.Equals(classInner) && classOuter.EqualsLiteral("structtag"))
   {
