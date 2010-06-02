@@ -101,6 +101,9 @@ nsHTMLEditUtils::IsFormatNode(nsIDOMNode *node, msiITagListManager * manager)
   PRBool isParaTag;
   manager->GetTagInClass (NS_LITERAL_STRING("paratag"), tagName, nsnull, &isParaTag);
   if (isParaTag) return PR_TRUE;
+  PRBool isFrontMTag;
+  manager->GetTagInClass (NS_LITERAL_STRING("frontmtag"), tagName, nsnull, &isFrontMTag);
+  if (isFrontMTag) return PR_TRUE;
   return (nodeAtom == nsEditProperty::p)
       || (nodeAtom == nsEditProperty::pre)
       || (nodeAtom == nsEditProperty::h1)
@@ -519,7 +522,7 @@ nsHTMLEditUtils::SupportsAlignAttr(nsIDOMNode * aNode, msiITagListManager * mana
   nodeAtom->ToString(tagName);
   nsAutoString tagClass;
   manager->GetClassOfTag (tagName, nsnull, tagClass);
-  if (tagClass.EqualsLiteral("paratag")||tagClass.EqualsLiteral("structtag")||tagClass.EqualsLiteral("listtag")||tagClass.EqualsLiteral("envtag"))
+  if (tagClass.EqualsLiteral("frontmtag")||tagClass.EqualsLiteral("structtag")||tagClass.EqualsLiteral("paratag")||tagClass.EqualsLiteral("structtag")||tagClass.EqualsLiteral("listtag")||tagClass.EqualsLiteral("envtag"))
     return PR_TRUE;
   return (nodeAtom == nsEditProperty::hr)
       || (nodeAtom == nsEditProperty::table)
