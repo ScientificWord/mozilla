@@ -655,12 +655,10 @@ nsHTMLEditor::NodeIsBlockStatic(nsIDOMNode *aNode, PRBool *aIsBlock)
   // to do to implement namespaces: get the namespace atom of aNode
   tagAtom->ToString(strTagName);
   mtagListManager->GetTagInClass(NS_LITERAL_STRING("paratag"), strTagName, namespaceAtom, &found);
-  if (found)
-  {
-   *aIsBlock = PR_TRUE;
-   return NS_OK;
-  }
-  mtagListManager->GetTagInClass(NS_LITERAL_STRING("structtag"), strTagName , namespaceAtom, &found);
+  if (!found)
+    mtagListManager->GetTagInClass(NS_LITERAL_STRING("frontmtag"), strTagName, namespaceAtom, &found);
+  if (!found)
+    mtagListManager->GetTagInClass(NS_LITERAL_STRING("structtag"), strTagName , namespaceAtom, &found);
   if (found)
   {
    *aIsBlock = PR_TRUE;
@@ -1642,8 +1640,7 @@ NS_IMETHODIMP nsHTMLEditor::CreateBRImpl(nsCOMPtr<nsIDOMNode> *aInOutParent,
   if (!aInOutParent || !*aInOutParent || !aInOutOffset || !outBRNode) return NS_ERROR_NULL_POINTER;
   *outBRNode = nsnull;
   nsresult res;
-  
-  // we need to insert a br.  unfortunately, we may have to split a text node to do it.
+                                                                                                               // we need to insert a br.  unfortunately, we may have to split a text node to do it.
   nsCOMPtr<nsIDOMNode> node = *aInOutParent;
   PRInt32 theOffset = *aInOutOffset;
   nsCOMPtr<nsIDOMCharacterData> nodeAsText = do_QueryInterface(node);
@@ -4598,6 +4595,8 @@ nsHTMLEditor::IsContainer(nsIDOMNode *aNode)
     mtagListManager->GetTagInClass(NS_LITERAL_STRING("structtag"),stringTag, nsnull, &fRet);
     if (fRet) return PR_TRUE;
     mtagListManager->GetTagInClass(NS_LITERAL_STRING("envtag"),stringTag, nsnull, &fRet);
+    if (fRet) return PR_TRUE;
+    mtagListManager->GetTagInClass(NS_LITERAL_STRING("frontmtag"),stringTag, nsnull, &fRet);
     if (fRet) return PR_TRUE;
   }
   PRInt32 tagEnum;
