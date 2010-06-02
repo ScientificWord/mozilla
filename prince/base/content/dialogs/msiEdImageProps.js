@@ -571,7 +571,7 @@ function chooseFile()
 //  if (gTimerID)
 //    clearTimeout(gTimerID);
   // Get a local file, converted into URL format
-  var fileName = GetLocalFileURL("img"); // return a URLString
+  var fileName = GetLocalFileURL(["img"]); // return a URLString
   if (fileName)
   {
     var url = msiURIFromString(fileName);
