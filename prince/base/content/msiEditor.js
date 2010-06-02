@@ -7845,7 +7845,7 @@ function FillInHTMLTooltip(tooltip)
  
 // handle events on prince-specific elements here, or call the default goDoCommand() 
 function goDoPrinceCommand (cmdstr, element, editorElement) 
-{ dump ("SMR msiEditor.js got doPrinceCommand " +  element.localName + " " + element.getAttribute("msigraph") + "\n");
+{ 
   try
   {
     if (!editorElement)
@@ -7862,6 +7862,10 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     else if (elementName == "note")
     {
       msiNote(element,editorElement);
+    }
+    else if (elementName == "a")
+    {
+      msiGoDoCommand("cmd_msiReviseHyperlink", editorElement);
     }
     else if (elementName == "subdoc")
     {
