@@ -396,7 +396,12 @@ function onMoreFewer()
     gDialog.MoreFewerButton.setAttribute("label",GetString("FewerProperties"));
     SeeMore = true;
   }
-  window.sizeToContent();
+  try {
+    window.sizeToContent();
+  }
+  catch (e) {
+    dump("Error in msiEdDialogCommon, onMoreFewer: "+e.message+"\n");
+  }
 }
 
 function SwitchToValidatePanel()
@@ -407,12 +412,12 @@ function SwitchToValidatePanel()
 
 const nsIFilePicker = Components.interfaces.nsIFilePicker;
 
-function GetLocalFileURL(filterType)
+function GetLocalFileURL(filterArray)
 {
   var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(nsIFilePicker);
-  var fileType = "html";
+  var fileType = "xhtml";
 
-  if (filterType == "img")
+  if (filterArray[0] == "img")
   {
     fp.init(window, GetString("SelectImageFile"), nsIFilePicker.modeOpen);
     fp.appendFilters(nsIFilePicker.filterImgObjects);
@@ -420,19 +425,15 @@ function GetLocalFileURL(filterType)
   }
   // Current usage of this is in Link dialog,
   //  where we always want HTML first
-  else if (filterType.indexOf("html") == 0)
+  else if (filterArray[0].indexOf("xhtml") == 0)
   {
     fp.init(window, GetString("OpenHTMLFile"), nsIFilePicker.modeOpen);
 
     // When loading into Composer, direct user to prefer HTML files and text files,
     //   so we call separately to control the order of the filter list
-    fp.appendFilters(nsIFilePicker.filterHTML);
-    fp.appendFilters(nsIFilePicker.filterText);
-
-    // Link dialog also allows linking to images
-    if (filterType.indexOf("img") > 0)
-      fp.appendFilters(nsIFilePicker.filterImages);
-
+    var i;
+    for (i = 1; i < filterArray.length; i++)
+      fp.appendFilter(filterArray[i], "*."+filterArray[i]);
   }
   // Default or last filter is "All Files"
   fp.appendFilters(nsIFilePicker.filterAll);
@@ -1082,7 +1083,7 @@ function createMenuItem(aMenuPopup, aLabel)
 function chooseLinkFile()
 {
   // Get a local file, converted into URL format
-  var fileName = GetLocalFileURL("html, img");
+  var fileName = GetLocalFileURL(["xhtml", "sci", "html", "img"]);
   if (fileName) 
   {
     // Always try to relativize local file URLs
