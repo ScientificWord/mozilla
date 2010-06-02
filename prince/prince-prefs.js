@@ -20,6 +20,7 @@ pref("swp.saveintervalseconds",10);
 pref("swp.generateTeXonsave", true);
 pref("swp.prefDocumentDir","SWPDocs");
 pref("swp.viewPDF","fixAcrobat.cmd %1");
+pref("swp.fancyreturn",false);
 #ifdef XP_WIN32
 pref("swp.tex.bindir","%programfiles%\\texlive\\2009\\bin\\win32");  /* for windows */
 #else
