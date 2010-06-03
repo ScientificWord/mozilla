@@ -27,7 +27,7 @@ function jump()
 
 function truefunc(x) {return x.indexOf("(")==0?false:true;}  // don't copy tags that start with "("
 // they aren't real tags and they break the XSL code.
-
+ 
 function buildTOC()
 {
 //  BBM todo: build the above from the taglist manager list of structure tags
