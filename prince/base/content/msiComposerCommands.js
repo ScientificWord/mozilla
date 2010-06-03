@@ -2336,7 +2336,7 @@ function msiSoftSave( editor, editorElement)
   else if (GetBoolPref("swp.generateTeXonsave"))
   {
     var file = currentFile.parent;
-    file.append("TeX");
+    file.append("tex");
     file.append("main.tex");
     documentAsTeXFile(editorDoc, "latex.xsl", file );
   }
@@ -3443,7 +3443,7 @@ var msiAutoSubDlgCommand =
 //    AlertWithTitle("Unimplemented", "AutoSubstitution dialog not yet available.");
     var editorElement = msiGetActiveEditorElement();
     try {
-      msiOpenModelessDialog("chrome://prince/content/autoSubstituteDialog.xul", "_blank", "chrome,close,titlebar,dependent",
+      msiOpenModelessDialog("chrome://prince/content/autoSubstituteDialog.xul", "_blank", "chrome,resizable=yes,close,titlebar,dependent",
                                         editorElement, "cmd_MSIAutoSubDlg", this, editorElement);
 //      window.openDialog("chrome://editor/content/EdReplace.xul", "replace",
 //                        "chrome,modal,titlebar", editorElement);

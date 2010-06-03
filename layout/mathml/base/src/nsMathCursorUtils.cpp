@@ -124,8 +124,9 @@ nsIFrame * GetFirstTextFramePastFrame( nsIFrame * pFrame )
     {
       pTemp = pTemp->GetParent();
     }
-    pTemp = pTemp = pTemp->GetNextSibling();
-    pTextFrame = GetFirstTextFrame(pTemp);
+    if (pTemp) pTemp = pTemp->GetNextSibling();
+    if (pTemp) pTextFrame = GetFirstTextFrame(pTemp);
+    else return nsnull;
   }
   return pTextFrame;
 }
