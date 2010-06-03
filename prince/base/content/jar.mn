@@ -75,6 +75,8 @@ prince.jar:
 * content/EdSpellCheck.js       (dialogs/EdSpellCheck.js)
 * content/EdDictionary.xul       (dialogs/EdDictionary.xul)
 * content/EdDictionary.js       (dialogs/EdDictionary.js)
+* content/EdLinkProps.js       (dialogs/EdLinkProps.js)
+* content/EdLinkProps.xul       (dialogs/EdLinkProps.xul)
 * content/RealTimeSpell.js       (RealTimeSpell.js)
   content/fragmentname.xul           (dialogs/FragmentName.xul)
   content/fragmentname.js           (dialogs/FragmentName.js)
