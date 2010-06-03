@@ -737,7 +737,7 @@ function msiEditorDocumentObserver(editorElement)
           var fileurl;
           var i;
           // check the document for tagdef processing instructions
-          var tagdeflist = processingInstructionsList(editor.document, "sw-tagdefs");
+          var tagdeflist = processingInstructionsList(editor.document, "sw-tagdefs", false);
           //  if nothing returned, use the default tagdefs
           if (tagdeflist.length < 1) tagdeflist = ["resource://app/res/tagdefs/latexdefs.xml"];
           for (i = 0; i < tagdeflist.length; i++)
