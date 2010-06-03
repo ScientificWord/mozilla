@@ -4239,11 +4239,11 @@ var msiLinkCommand =
     // If selected element is an image, launch that dialog instead 
     // since last tab panel handles 
     var editorElement = msiGetActiveEditorElement();
-    var element = msiGetObjectForProperties(editorElement);
+    var element = msiGetObjectDataForProperties(editorElement);
     if (element && msiGetBaseNodeName(element) == "img")
-      window.openDialog("chrome://prince/content/msiEdImageProps.xul","imageprops", "chrome,close,titlebar,modal", null, true);
+      window.openDialog("chrome://prince/content/msiEdImageProps.xul","imageprops", "resizable=true,chrome,close,titlebar", null, true);
     else
-      window.openDialog("chrome://editor/content/EdLinkProps.xul","linkprops", "chrome,close,titlebar,modal");
+      window.openDialog("chrome://prince/content/EdLinkProps.xul","linkprops", "resizable=true,chrome,close,titlebar");
     editorElement.focus();
   }
 };
@@ -4258,8 +4258,7 @@ var msiReviseHyperlinkCommand =
     var linkNode = msiGetReviseObjectFromCommandParams(aParams);
     if (linkNode != null && editorElement != null)
     {
-      AlertWithTitle("msiComposerCommands.js", "In msiReviseHyperlinkCommand, trying to revise a hyperlink, dialog not implemented.");
-//      window.openDialog("chrome://editor/content/EdNamedAnchorProps.xul", "anchorprops", "chrome,close,titlebar,modal", "", editorElement);
+      window.openDialog("chrome://prince/content/EdLinkProps.xul","linkprops", "resizable=true,chrome,close,titlebar");
     }
     editorElement.focus();
   },
