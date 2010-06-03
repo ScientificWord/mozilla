@@ -91,17 +91,19 @@
 				<tag id="defaultparagraph" nm="sw:para">
 					<description>Default body text paragraph</description>
           <discardemptyblock>true</discardemptyblock>
+          <initialcontentsforempty> <![CDATA[<br type="_moz"/>]]>
+          </initialcontentsforempty>
 				</tag>
 				<tag nm="sw:rtlpara">
 					<description>Right to left body text paragraph</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<br temp="1"/>]]>
+          <initialcontentsforempty> <![CDATA[<br type="_moz"/>]]>
           </initialcontentsforempty>
 				</tag>
 				<tag nm="html:p">
 					<description>HTML paragraph</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[]]>
+          <initialcontentsforempty> <![CDATA[<br type="_moz"/>]]>
           </initialcontentsforempty>
 				</tag>
 				<tag nm="sw:mathp">
@@ -133,19 +135,19 @@
 				<tag nm="sw:title">
 					<nexttag>sw:para</nexttag>
 					<description>Title</description>
-          <initialcontents> <![CDATA[<defaulttitletag/><cursor/><br temp="1"/>]]>
+          <initialcontents> <![CDATA[<defaulttitletag/><cursor/><br type="_moz"/>]]>
           </initialcontents>
 				</tag>
 				<tag nm="sw:line">
 					<nexttag>sw:line</nexttag>
 					<description>Line</description>
-          <initialcontents> <![CDATA[<cursor/><br temp="1"/>]]>
+          <initialcontents> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontents>
 				</tag>
 				<tag nm="sw:dialogbase" hidden="1">
 					<nexttag>sw:para</nexttag>
 					<description>Hidden dialog base</description>
-          <initialcontents> <![CDATA[<cursor/><br temp="1"/>]]>
+          <initialcontents> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontents>
 				</tag>
 			</tags>
@@ -183,7 +185,7 @@
           <htmllistparent>bulletlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para><cursor/><br temp="1"/></para>
+              <para><cursor/><br type="_moz"/></para>
               ]]>
           </initialcontents>
           <nextafteremptyblock>bulletlist</nextafteremptyblock>
@@ -193,7 +195,7 @@
           <htmllistparent>numberedlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para><cursor/><br temp="1"/></para>
+              <para><cursor/><br type="_moz"/></para>
               ]]>
           </initialcontents>
           <nextafteremptyblock>numberedlist</nextafteremptyblock>
@@ -203,7 +205,7 @@
           <htmllistparent>descriptionlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para><cursor/><br temp="1"/></para>
+              <para><cursor/><br type="_moz"/></para>
               ]]>
           </initialcontents>
           <nextafteremptyblock>descriptionlist</nextafteremptyblock>
@@ -240,7 +242,7 @@
           <description>Chapter</description>
           <titletag>sectiontitle</titletag>
           <discardemptyblock>false</discardemptyblock>
-          <initialcontents> <![CDATA[<sectiontitle><cursor/><br temp="1"/></sectiontitle>]]>
+          <initialcontents> <![CDATA[<sectiontitle><cursor/><br type="_moz"/></sectiontitle>]]>
           </initialcontents>
           <prefsub>section</prefsub>
         </tag>
@@ -249,7 +251,7 @@
           <description>Section</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
-          <initialcontents> <![CDATA[<sectiontitle><cursor/><br temp="1"/></sectiontitle>]]>
+          <initialcontents> <![CDATA[<sectiontitle><cursor/><br type="_moz"/></sectiontitle>]]>
           </initialcontents>
           <nextafteremptyblock>chapter</nextafteremptyblock>
           <prefsub>subsection</prefsub>
@@ -259,7 +261,7 @@
           <description>Subsection</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
-          <initialcontents> <![CDATA[<sectiontitle><cursor/><br temp="1"/></sectiontitle>]]>
+          <initialcontents> <![CDATA[<sectiontitle><cursor/><br type="_moz"/></sectiontitle>]]>
           </initialcontents>
           <nextafteremptyblock>section</nextafteremptyblock>
           <prefsub>subsubsection</prefsub>
@@ -269,7 +271,7 @@
           <description>Subsubsection</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
-          <initialcontents> <![CDATA[<sectiontitle><cursor/><br temp="1"/></sectiontitle>]]>
+          <initialcontents> <![CDATA[<sectiontitle><cursor/><br type="_moz"/></sectiontitle>]]>
           </initialcontents>
           <nextafteremptyblock>subsection</nextafteremptyblock>
           <prefsub>paragraph</prefsub>
@@ -279,7 +281,7 @@
           <description>Subsubsubsubsection</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
-          <initialcontents> <![CDATA[<sectiontitle><cursor/><br temp="1"/></sectiontitle> ]]>
+          <initialcontents> <![CDATA[<sectiontitle><cursor/><br type="_moz"/></sectiontitle> ]]>
           </initialcontents>
           <nextafteremptyblock>subsubsection</nextafteremptyblock>
           <prefsub>subparagraph</prefsub>
@@ -289,7 +291,7 @@
           <description>Section (dynamic level)</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
-          <initialcontents> <![CDATA[<sectiontitle><cursor/><br temp="1"/></sectiontitle>]]>
+          <initialcontents> <![CDATA[<sectiontitle><cursor/><br type="_moz"/></sectiontitle>]]>
           </initialcontents>
           <nextafteremptyblock>paragraph</nextafteremptyblock>
         </tag>
@@ -325,7 +327,7 @@
           <description>Dedication</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para><cursor/><br temp="1"/></para>
+              <para><cursor/><br type="_moz"/></para>
               ]]>
           </initialcontents>
         </tag>
@@ -369,7 +371,7 @@
           <description>Note</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para><cursor/><br temp="1"/></para>
+              <para><cursor/><br type="_moz"/></para>
               ]]>
           </initialcontents>
 	  		  <inclusion>true</inclusion>
@@ -379,7 +381,7 @@
           <description>Frame</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para><cursor/><br temp="1"/></para>
+              <para><cursor/><br type="_moz"/></para>
               ]]>
           </initialcontents>
 	  		  <inclusion>true</inclusion>
@@ -392,60 +394,60 @@
 				<tag nm="sw:abstract"><description>Abstract</description>
           <realtagclass>envtag</realtagclass>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]>
+          <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontentsforempty>
         </tag>
         <tag nm="sw:address"><description>Address</description>y
           <realtagclass>paratag</realtagclass>
 					<nexttag>sw:para</nexttag>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]>
+          <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontentsforempty>
         </tag>
         <tag nm="sw:author"><description>Author</description>
           <realtagclass>paratag</realtagclass>
 					<nexttag>sw:para</nexttag>
-          <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]>
+          <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontentsforempty>
         </tag>
         <tag nm="sw:date"><description>Date</description>
           <realtagclass>paratag</realtagclass>
 					<nexttag>sw:para</nexttag>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]>
+          <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontentsforempty>
         </tag>
         <tag nm="sw:makelof"><description>Make list of figures</description>
           <realtagclass>paratag</realtagclass>
 					<nexttag>sw:para</nexttag>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]>
+          <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontentsforempty>
         </tag>
         <tag nm="sw:makelot"><description>Make list of tables</description>
           <realtagclass>paratag</realtagclass>
 					<nexttag>sw:para</nexttag>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]>
+          <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontentsforempty>
         </tag>
         <tag nm="sw:maketitle"><description>Make title</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]>
+          <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontentsforempty>
         </tag>
         <tag nm="sw:maketoc"><description>Make table of contents</description>
           <realtagclass>paratag</realtagclass>
 					<nexttag>sw:para</nexttag>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]>
+          <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontentsforempty>
         </tag>
         <tag nm="sw:title"><description>Title</description>
           <realtagclass>paratag</realtagclass>
 					<nexttag>sw:para</nexttag>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]>
+          <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontentsforempty>
         </tag>
 			</tags>
