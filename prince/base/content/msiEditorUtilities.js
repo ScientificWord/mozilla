@@ -4982,7 +4982,7 @@ var msiBaseMathNameList =
 
     var request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"].createInstance();
     request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
-    var thePath = msiFileURLFromAbsolutePath( mathNameFile.target );
+    var thePath = msiFileURLFromAbsolutePath( mathNameFile.target ).spec;
     try {
       request.open("GET", thePath, false);
       request.send(null);
@@ -5299,7 +5299,7 @@ var msiBaseMathUnitsList =
 
     var request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"].createInstance();
     request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
-    var thePath = msiFileURLFromAbsolutePath( unitNameFile.target );
+    var thePath = msiFileURLFromAbsolutePath( unitNameFile.target ).spec;
     try {
       request.open("GET", thePath, false);
       request.send(null);
@@ -5673,7 +5673,7 @@ var msiAutosubstitutionList =
 
     var request = Components.classes["@mozilla.org/xmlextras/xmlhttprequest;1"].createInstance();
     request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
-    var thePath = msiFileURLFromAbsolutePath( autosubsFile.target );
+    var thePath = msiFileURLFromAbsolutePath( autosubsFile.target ).spec;
     try {
       request.open("GET", thePath, false);
       request.send(null);
@@ -7648,7 +7648,7 @@ SS_Timer.prototype.QueryInterface = function(iid) {
   throw Components.results.NS_ERROR_NO_INTERFACE;
 }
 
-function processingInstructionsList( doc, target )
+function processingInstructionsList( doc, target, fNodes )
 {
   var list =[];
   var regexp;
@@ -7667,8 +7667,14 @@ function processingInstructionsList( doc, target )
    regexp = /href\=[\'\"]([^\'\"]*)/i;
    try {
     while(treeWalker.nextNode()){
-      a = regexp(treeWalker.currentNode.textContent);
-      list.push(a[1])
+      if (fNodes)
+      {
+        list.push(treeWalker.currentNode);
+      }
+      else {
+        a = regexp(treeWalker.currentNode.textContent);
+        list.push(a[1])
+      }
     }
   }
   catch(e) {
