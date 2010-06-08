@@ -1,6 +1,4 @@
 <?xml version="1.0"?>
-<!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
-
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://editor/skin/" type="text/css"?>
 
@@ -12,11 +10,12 @@
 
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     title="&windowTitle.label;"
-    id="TeXButtonContentsDlg"
-    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    buttons="accept,cancel"
+    buttonlabelcancel="Cancel" buttonlabelaccept="OK"
     onload="Startup();"
-    ondialogaccept="return onAccept();"
-    ondialogcancel="return onCancel();"
+    ondialogaccept="return onAccept();" ondialogcancel="return onCancel();"
+    width="400"
+    height="500"
     persist="screenX screenY width height">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
@@ -25,23 +24,25 @@
   <script type="application/x-javascript" src="chrome://prince/content/texbuttoncontents.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
 
-  <!-- keyset>
-    <key id="sw.tab-key" keycode="VK_TAB" oncommand="msiTabForward(event);"/>
-    <key id="sw.shift-tab-key" keycode="VK_TAB" modifiers="shift" oncommand="msiTabBack(event);"/>
-    <key id="sw.accept-key" keycode="VK_ENTER" oncommand="doOKButton();"/>
-    <key id="sw.accept-key" keycode="VK_RETURN" oncommand="doOKButton();"/>
-  </keyset -->
-
-
-  <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
-    
-  <vbox>
-    <groupbox>
+   <groupbox>
       <caption label='&warning.label;'/>
-      <textbox multiline='true' cols='60' rows='3' readonly='true' value='&warningText.label;'/>
-    </groupbox>
-    <spacer flex='1'/>
-    <textbox id='texbuttonTextbox' multiline='true' cols='80' rows='15'/>
-  </vbox>
-
+      <label multiline='true' cols='60' rows='3' readonly='true' value='&warningText.label;'/>
+   </groupbox>
+   <checkbox label="Encapsulated" checked="false"/>
+    <vbox>
+      <label control="name" accesskey="N" value="Name"/>
+      <textbox id="name" value=""/>
+    </vbox>
+    <hbox>
+    <vbox>
+      <label control="req" accesskey="p" value="Requires package"/>
+      <textbox id="req" value=""/>
+    </vbox>
+    <spacer width="30px"/>
+    <vbox>
+      <label control="opt" accesskey="O" value="Options"/>
+      <textbox id="opt" value=""/>
+    </vbox>
+  </hbox>
+  <textbox id="texbuttonTextbox" multiline="true" flex="1"  value=""/>
 </dialog>
