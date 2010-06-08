@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    title="Cross reference" buttons="accept,cancel"
+    buttonlabelcancel="Cancel" buttonlabelaccept="OK"
+    ondialogaccept="return onAccept();" ondialogcancel="return onCancel();"
+    width="300"
+    height="200"
+    persist="screenX screenY width height">
+
+<label control="key}" accesskey="K" value="Key"/>
+  <textbox id="refinput" timeout="50" type="autocomplete" minresultsforpopup="1"
+    completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys"
+    tooltiptext="Enter a key name"
+    onfocus=""
+    ontextentered="" />
+
+<spacer flex="1"/>
+<groupbox>
+    <caption label="Print"/>
+  <radiogroup>
+    <radio label="Page number" selected="true"/>
+    <radio label="Object counter" selected="false"/>
+  </radiogroup>
+</groupbox>
+</dialog>
