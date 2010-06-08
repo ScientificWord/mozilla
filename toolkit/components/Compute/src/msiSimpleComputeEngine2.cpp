@@ -80,7 +80,8 @@ NS_IMETHODIMP msiSimpleComputeEngine2::Startup(nsILocalFile *engFile)
   nsresult rv = NS_OK;
   
   if (didInit)
-    Shutdown();
+    return rv;
+  //  Shutdown();
   
   if (rv == NS_OK) {
     ComputeDLL::InitCompDLL();  //check return?
