@@ -176,7 +176,7 @@ function Startup()
     {
       // We get here if selection is exactly around a link node
       // Check if selection has some text - use that first
-      selectedText = GetSelectionAsText();
+      selectedText = msiGetSelectionAsText();
       if (!selectedText) 
       {
         // No text, look for first image in the selection
@@ -185,7 +185,7 @@ function Startup()
         {
           for(var i=0; i < children.length; i++) 
           {
-            var nodeName = children.item(i).nodeName.toLowerCase();
+            var nodeName = children.item(i).nodeName;
             if (nodeName == "img")
             {
               imageElement = children.item(i);

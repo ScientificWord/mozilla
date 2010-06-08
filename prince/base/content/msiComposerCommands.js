@@ -65,8 +65,8 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_insertVerticalSpaces", msiInsertVerticalSpacesCommand);
   commandTable.registerCommand("cmd_msiInsertRules", msiInsertRulesCommand);
   commandTable.registerCommand("cmd_msiInsertBreaks", msiInsertBreaksCommand);
-                                              
-
+  commandTable.registerCommand("cmd_insertHTMLField", msiInsertHTMLFieldCommand);
+  commandTable.registerCommand("cmd_marker",             msiMarkerCommand);
   commandTable.registerCommand("cmd_table",              msiInsertOrEditTableCommand);
   commandTable.registerCommand("cmd_editTable",          msiEditTableCommand);
   commandTable.registerCommand("cmd_editTableCell",      msiEditTableCommand);
@@ -5492,8 +5492,51 @@ function msiReviseBreaks(reviseData, dialogData, editorElement)
   editor.endTransaction();
 }
 
+//----------------------------------------------------
+var msiMarkerCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement));
+  },
 
-//-----------------------------------------------------------------------------------
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    try {
+      // more goes here
+      window.openDialog("chrome://prince/content/marker.xul", "Insert marker", "resizable=yes,chrome,close,titlebar");
+
+    } catch (e) {}
+  }
+};
+//----------------------------------------------------
+var msiInsertHTMLFieldCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement));
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    try {
+      // more goes here
+      window.openDialog("chrome://prince/content/htmlfield.xul", "HTML field", "resizable=yes,chrome,close,titlebar");
+
+    } catch (e) {}
+  }
+};
+//----------------------------------------------------
 var msiInsertReturnFancyCommand =
 {
   isCommandEnabled: function(aCommand, dummy)

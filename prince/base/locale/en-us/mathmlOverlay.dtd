@@ -116,6 +116,19 @@
 <!ENTITY insertmenuHyperlink.accesskey "h">
 <!ENTITY insertmenuCitation.label "Citation...">
 <!ENTITY insertmenuCitation.accesskey "c">
+<!ENTITY MSIInsertTypesetObjectMenu.label "Typeset Object">
+<!ENTITY MSIInsertTypesetObjectMenu.accesskey "y">
+
+<!ENTITY MSIinsertIndexEntry.label "Index Entry">
+<!ENTITY MSIinsertIndexEntry.accesskey "I">
+<!ENTITY MSIinsertCrossReference.label "Cross Reference">
+<!ENTITY MSIinsertCrossReference.accesskey "R">
+<!ENTITY MSIinsertCitation.label "Citation">
+<!ENTITY MSIinsertCitation.accesskey "C">
+<!ENTITY MSIinsertBibliography.label "Bibliography">
+<!ENTITY MSIinsertBibliography.accesskey "B">
+<!ENTITY MSIinsertTeXField.label "TeX Field">
+<!ENTITY MSIinsertTeXField.accesskey "T">
 
 <!ENTITY MSISymbolTabLCGreek     "Lowercase Greek">
 <!ENTITY MSISymbolTabCCGreek     "Uppercase Greek">

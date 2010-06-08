@@ -932,7 +932,11 @@ nsresult   msiSimpleComputeEngine2::DoTransaction(PRUint32 trans_ID, PRUnichar *
 #ifdef DEBUG
     printf("msiSimpleComputeEngine::DoTransaction() some other error: %d\n", res);
 #endif
-    rv = NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_GENERAL, res);
+    if (res == 1) {
+      rv = NS_OK; // why is this necessary?
+    }
+    else
+      rv = NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_GENERAL, res);
   }
   *result = GetResultStrs(trans_ID);
 
