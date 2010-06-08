@@ -660,12 +660,34 @@ function doRunMakeIndex()
 
 function doInsertIndexEntry()
 {
-  alert("Insert index entry not implemented!");
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  gActiveEditor = msiGetEditor(editorElement);
+  if (!gActiveEditor)
+  {
+    dump("Failed to get active editor!\n");
+    window.close();
+    return;
+  }
+  var index = gActiveEditor.getSelectedElement("index");
+  var data = new Object();
+  data.primary = index?index.nodeValue:"";
+  window.openDialog("chrome://prince/content/indexentry.xul", "Index Entry", "chrome,resizable=yes, close,titlebar", data);
 }
 
 function doInsertCrossReference()
 {
-  alert("Insert cross reference not implemented!");
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  gActiveEditor = msiGetEditor(editorElement);
+  if (!gActiveEditor)
+  {
+    dump("Failed to get active editor!\n");
+    window.close();
+    return;
+  }
+  var xref = gActiveEditor.getSelectedElement("xref");
+  var data = new Object();
+  data.primary = xref?xref.nodeValue:"";
+  window.openDialog("chrome://prince/content/xref.xul", "Cross reference", "chrome,resizable=yes, close,titlebar", data);
 }
 
 function doInsertCitation(editorElement, command, commandHandler)
@@ -677,7 +699,7 @@ function doInsertCitation(editorElement, command, commandHandler)
     bibCiteData.key = "";  //a string
     bibCiteData.remark = "";  //this should become arbitrary markup - a Document Fragment perhaps?
     bibCiteData.bBibEntryOnly = false;
-    var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibTeXCitation.xul", "_blank", "chrome,close,titlebar,dependent",
+    var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibTeXCitation.xul", "_blank", "resizable=yes, chrome,close,titlebar,dependent",
                                                      editorElement, "cmd_MSIinsertCitationCmd", commandHandler, bibCiteData);
 //    window.openDialog("chrome://prince/content/typesetBibTeXCitation.xul", "bibtexcitation", "chrome,close,titlebar,modal", bibCiteData);
 //    if (!bibCiteData.Cancel)
@@ -733,8 +755,21 @@ function doInsertBibliography()
 
 function doInsertTeXField()
 {
-  alert("Insert TeX field not implemented!");
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  gActiveEditor = msiGetEditor(editorElement);
+  if (!gActiveEditor)
+  {
+    dump("Failed to get active editor!\n");
+    window.close();
+    return;
+  }
+  var tbutton = gActiveEditor.getSelectedElement("texb");
+  if (!tbutton) tbutton = gActiveEditor.getSelectedElement("texbutton");
+  var data = new Object();
+  data.tex = tbutton?tbutton.nodeValue:"";
+  window.openDialog("chrome://prince/content/texbuttoncontents.xul", "TeX field", "resizable=yes,chrome,close,titlebar", data);
 }
+
 
 function doInsertSubdocument()
 {
