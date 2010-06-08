@@ -1645,9 +1645,9 @@ bool Tree2StdMML::FuncTakesTrigArgs(MNODE* mml_node)
 bool Tree2StdMML::NodeIsOperator(MNODE* mml_node)
 {
   
-  if (ElementNameIs(mml_node, "mo")) {
+  if (ElementNameIs(mml_node, "mo") ||  NodeIsFunction(mml_node)) {
 
-      return true;
+        return true;
 
   } else if (ElementNameIs(mml_node, "mi")) {
 
@@ -1672,7 +1672,7 @@ bool Tree2StdMML::NodeIsOperator(MNODE* mml_node)
         return false;
       else
         return NodeIsOperator(mml_node->first_kid);
-  
+
   } else {
 
     return false;

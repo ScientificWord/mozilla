@@ -6631,7 +6631,8 @@ bool MuPADWrapper::QueryEngineIsMatrix(SEMANTICS_NODE * s_expr)
       }
     }
 
-#ifdef DO_WE_REALLY_NEED_THIS_ON_MUPAD
+//#ifdef DO_WE_REALLY_NEED_THIS_ON_MUPAD
+//jcs -- apparently we do
     if (!done) {
       int err_code;
       char *v_str = ProcessSemList(s_expr, NULL, err_code);
@@ -6666,7 +6667,7 @@ bool MuPADWrapper::QueryEngineIsMatrix(SEMANTICS_NODE * s_expr)
         TCI_ASSERT(0);
       delete[] v_str;
     }
-#endif
+//#endif
   }
 
   if (rv)
