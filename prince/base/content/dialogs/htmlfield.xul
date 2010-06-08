@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://editor/skin/" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/texbuttoncontents.dtd">
+
+<dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    title="HTML field"
+    buttons="accept,cancel"
+    buttonlabelcancel="Cancel" buttonlabelaccept="OK"
+    onload="Startup();"
+    ondialogaccept="return onAccept();" ondialogcancel="return onCancel();"
+    width="400"
+    height="500"
+    persist="screenX screenY width height">
+
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/htmlfield.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
+
+  <vbox>
+    <label control="name" accesskey="N" value="Name"/>
+    <textbox id="name" value=""/>
+  </vbox>
+  <textbox id="texbuttonTextbox" multiline="true" flex="1"  value=""/>
+</dialog>
