@@ -669,9 +669,7 @@ function doInsertIndexEntry()
     return;
   }
   var index = gActiveEditor.getSelectedElement("index");
-  var data = new Object();
-  data.primary = index?index.nodeValue:"";
-  window.openDialog("chrome://prince/content/indexentry.xul", "Index Entry", "chrome,resizable=yes, close,titlebar", data);
+  window.openDialog("chrome://prince/content/indexentry.xul", "Index Entry", "chrome,resizable=yes, close,titlebar", index);
 }
 
 function doInsertCrossReference()
