@@ -2,36 +2,56 @@
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   title="Index Entry"
-  buttons="accept,cancel, extra1"
-  buttonlabelcancel="Cancel" buttonlabelaccept="OK" buttonlabelextra1="Apply"
+  buttons="accept,cancel"
+  buttonlabelcancel="Cancel" buttonlabelaccept="OK" 
+  width="300"
+  height="400"
+  screenX="400"
+  screenY="400"
+  onload = "startup();"
   persist="screenX screenY width height"
   ondialogaccept="return onAccept();" ondialogcancel="return onCancel();"
 >
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/indexentry.js"/>
+
 
   <label control="primary" accesskey="P" value="Primary Index Entry"/>
-  <textbox id="primary" value=""/>
-  <checkbox label="Use special appearance for primary entry" checked="false"/>
+  <textbox id="primary" value="" oninput="keypress(event, this,'prispec');"/>
+  <checkbox id="prispec" disabled="true" label="Use special appearance for primary entry" checked="false"
+    oncommand="checkboxchanged(event, this,'prispecapp');"/>
+  <textbox id="prispecapp" value="" hidden="true"/>
   <spacer flex="1"/>
   <label control="secondary" accesskey="S" value="Secondary Index Entry"/>
-  <textbox id="secondary" value=""/>
-  <checkbox label="Use special appearance for secondary entry" checked="false"/>
+  <textbox id="secondary" value="" oninput="keypress(event, this,'secspec');"/>
+  <checkbox id="secspec" disabled="true" label="Use special appearance for secondary entry" checked="false"
+    oncommand="checkboxchanged(event, this,'secspecapp');"/>
+  <textbox id="secspecapp" value="" hidden="true"/>
   <spacer flex="1"/>
   <label control="tertiary" accesskey="T" value="Tertiary Index Entry"/>
-  <textbox id="tertiary" value=""/>
-  <checkbox label="Use special appearance for tertiary entry" checked="false"/>
+  <textbox id="tertiary" value="" oninput="keypress(event, this,'terspec');"/>
+  <checkbox id="terspec" disabled="true" label="Use special appearance for tertiary entry" checked="false"
+    oncommand="checkboxchanged(event, this,'terspecapp');"/>
+  <textbox id="terspecapp" value="" hidden="true"/>
   <spacer flex="1"/>
 
   <groupbox>
-    <caption label="Locater"/>
-  <radiogroup id="locator" align="center" orient="horizontal">
-    <radio id="pn" label="Page number" selected="true"/>
-    <radio id="xr" label="Index cross-reference" selected="false"/>
-  </radiogroup>
-  <radiogroup id="format" align="center" orient="horizontal">
-    <radio id="normal" label="Normal" accesskey="N" selected="true"/>
-    <radio id="bold" label="Bold" accesskey="B" selected="false"/>
-    <radio id="it" label="Italics" accesskey="I" selected="false"/>
-  </radiogroup>
+    <caption label="Locator"/>
+    <radiogroup id="locator" align="center" orient="horizontal">
+      <radio id="pn" label="Page number" selected="true"/>
+      <radio id="xr" label="Index cross-reference" selected="false"/>
+    </radiogroup>
+    <deck id="thedeck">
+      <radiogroup id="format" align="center" orient="horizontal">
+        <radio id="normal" label="Normal" accesskey="N" selected="true"/>
+        <radio id="bold" label="Bold" accesskey="B" selected="false"/>
+        <radio id="it" label="Italics" accesskey="I" selected="false"/>
+      </radiogroup>
+      <vbox id="xreftext">
+        <label control="xref" accesskey="C" value="Cross-references(s)"/>
+        <textbox id="xref" value=""/>
+      </vbox>
+    </deck>
   </groupbox>
 
 
