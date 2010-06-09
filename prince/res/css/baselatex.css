@@ -110,7 +110,7 @@ TBTeX {
 
 
 
-index {
+indexitem {
   -moz-appearance: button;
   color: green;
   font-size: 12pt;
@@ -121,7 +121,7 @@ index {
 
 }
 
-index:before {content:"Index: "}
+indexitem:before {content:"Index: "}
 
 requestimplementation {
   -moz-appearance: button;
