@@ -5,6 +5,7 @@ VPATH   = @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
+MODULE = autosub
 DIRS = \
 	public \
 	src \
