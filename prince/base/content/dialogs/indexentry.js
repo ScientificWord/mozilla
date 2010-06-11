@@ -120,11 +120,9 @@ function onAccept()
   var newnode = !node; 
   if (newnode) 
   {
-    dumpln(1);
     node = domdoc.createElement("indexitem");
   }
   var v = primary.value;
-    dumpln(2);
   if (v && v.length > 0)
     node.setAttribute("pri",v);
   else node.removeAttribute("pri");
@@ -139,30 +137,29 @@ function onAccept()
   if (node.parentNode) dump(node.parentNode.innerHTML+"\n");
   else dump(node.innerHTML+"\n");
   // remove subnodes, if any
-  while(node.firstChild) editor.removeNode(node.firstChild);
+  while(node.firstChild) editor.removeChild(node.firstChild);
   v = prispecapp.value;
   if (prispec.checked && v && v.length > 0) {
     var prispecnode;
     prispecnode = domdoc.createElement("prispec");
     prispecnode.textContent = v;
-    node.appendNode(prispecnode);
+    node.appendChild(prispecnode);
   }
   v = secspecapp.value;
   if (secspec.checked && v && v.length > 0) {
     var secspecnode;
     secspecnode = domdoc.createElement("secspec");
     secspecnode.textContent = v;
-    node.appendNode(secspecnode);
+    node.appendChild(secspecnode);
   }
   v = terspecapp.value;
   if (terspec.checked && v && v.length > 0) {
     var terspecnode;
     terspecnode = domdoc.createElement("terspec");
     terspecnode.textContent = v;
-    node.appendNode(terspecnode);
+    node.appendChild(terspecnode);
   }
   if (newnode) editor.insertElementAtSelection(node, true);
-    dumpln(4);
 }
 
 
