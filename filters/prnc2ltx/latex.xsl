@@ -97,7 +97,7 @@ should not be done under some conditions -->
 \begin{abstract}
 <xsl:apply-templates/>
 \end{abstract}
-\maketitle</xsl:template>
+</xsl:template>
 
 <xsl:template match="html:maketitle">
 \maketitle
