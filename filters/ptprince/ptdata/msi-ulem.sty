@@ -1,0 +1,57 @@
+%% msi-ulem.sty
+
+% Add ulem.css to my.css
+\edef\classcss{\classcss ^^J@import url("resource://app/res/css/ulem.css");}
+
+% Handle native forms
+% \MSITextElement[XML name (output)]{LaTeX name (input)}
+\MSITextElement{uline}
+\MSITextElement{uuline}
+\MSITextElement{uwave}
+\MSITextElement{sout}
+\MSITextElement{xout}
+
+% Handle SW created forms such as:
+% \QTR{QQQuuline}{Double underlined (Double underlined)}
+
+
+%%-----------------------------------------
+% From: msi-hard.tex
+%\def\QTR#1#2{\string\QTR\@brace{#1}\@brace{#2}}
+%
+%%-----------------------------------------
+%
+
+\def\QTR#1{%
+   \let\@temp=\relax
+   \ifmmode
+      \string\QTR\@brace{#1}%
+      \let\@temp=\QTRa
+   \else
+      \msihmode
+      \msiopentag{QTR}{<QTR type="#1">}%
+      \let\@temp=\QTRb   
+   \fi
+   \@temp
+}
+
+\def\QTRa#1{\@brace{#1}}
+
+\def\QTRb{% gobble the brace and start QTRc
+    \afterassignment\QTRc
+    \let\junk
+}
+   
+\def\QTRc{% process the stuff inside the second param to QTR
+    \bgroup
+    \aftergroup\QTRd
+}
+
+\def\QTRd{%
+   \msiclosetag{QTR}{</QTR>}%
+}
+
+%%-----------------------------------------
+%
+
+\endinput
