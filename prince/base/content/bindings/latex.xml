@@ -122,12 +122,13 @@
 	  </xbl:resources>
 
 	  <xbl:content>
-      <sw:button class="texbutton" >
-        <html:label>
-          <sw:tex2>T<sw:texe>E</sw:texe>X</sw:tex2>
-        </html:label>
-      </sw:button>
+      <html:button type="button" class="inline" oncommand="">
+        <html:latex>T<html:sub>E</html:sub>X</html:latex>: <html:label xbl:inherits="xbl:text=name"/>
+          <!--sw:tex2>T<sw:texe>E</sw:texe>X</sw:tex2 -->
+      </html:button>
+      <html:span style="display:none">
       <xbl:children/>
+      </html:span>
     </xbl:content>
     
     <xbl:implementation>
@@ -136,6 +137,22 @@
       <xbl:property name="role" readonly="true"  onget="return 'texbutton';"/>
 
     </xbl:implementation>    
+  </xbl:binding>
+
+	<xbl:binding id="indexitem">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+
+	  <xbl:content>
+      <html:button type="button" class="inline" oncommand="">
+        Index: <html:label xbl:inherits="xbl:text=pri"/>
+          <!--sw:tex2>T<sw:texe>E</sw:texe>X</sw:tex2 -->
+      </html:button>
+      <html:span style="display:none">
+      <xbl:children/>
+      </html:span>
+    </xbl:content>
   </xbl:binding>
 
 	<xbl:binding id="latexstyleb">

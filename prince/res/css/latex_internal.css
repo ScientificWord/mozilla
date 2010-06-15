@@ -9,20 +9,6 @@ sw|texbdata {
   display: none;
 }
 
-sw|button [class="texbutton"] {
-  -moz-appearance: button;
-  margin: 0px 5px 0px 5px;
-  min-width: 6.3em;
-  border: 3px solid;
-  -moz-border-top-colors: transparent ThreeDHighlight ThreeDLightShadow;
-  -moz-border-right-colors: transparent ThreeDDarkShadow ThreeDShadow;
-  -moz-border-bottom-colors: transparent ThreeDDarkShadow ThreeDShadow;
-  -moz-border-left-colors: transparent ThreeDHighlight ThreeDLightShadow;
-  background-color: ThreeDFace;
-  -moz-user-select: none;
-}
-
-
 sw|space {
 /*  display: -moz-inline-box;  */
   display: inline-block;
@@ -130,7 +116,11 @@ button.expander {
   width: 9px;
 }
 
-
+button.inline {
+  font-size: 90%;
+  margin-top: -5px;
+  margin-bottom: -8px;
+}
 
 
 *[open="false"] button.expander {
