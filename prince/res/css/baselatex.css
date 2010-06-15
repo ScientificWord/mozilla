@@ -121,7 +121,8 @@ indexitem {
 
 }
 
-indexitem:before {content:"Index: "}
+indexitem:before {content:"Index: " attr(pri); }
+indexitem * { display: none; }
 
 requestimplementation {
   -moz-appearance: button;
