@@ -71,9 +71,13 @@ display: table-cell
 
 
 texb {
-/*  font-size: small; */
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#texb");
 }
+
+texb * {
+  display: none;
+}
+
 
 latexstyleb {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#latexstyleb");
@@ -92,6 +96,11 @@ texb, latexstyleb {
   -moz-border-left-colors: transparent ThreeDHighlight ThreeDLightShadow;
   background-color: ThreeDFace;
   -moz-user-select: all;	  
+}
+
+xref {
+  content: attr(key);
+  -moz-appearance: button;
 }
 
 TBLabel {
