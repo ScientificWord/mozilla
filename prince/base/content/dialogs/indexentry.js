@@ -34,30 +34,43 @@ function startup()
   format = document.getElementById("format");
   thedeck = document.getElementById("thedeck");
   xreftext = document.getElementById("xref");
+  var specnode;
   var node = window.arguments[0]; //current index entry if not void or null
-  node = null;
   if (node)
   {
+    if (node.tagName != "indexitem") alert("Wrong node passed to indexentry.js!");
     if (node.hasAttribute("pri")) {
       primary.value = node.getAttribute("pri");
-      prispec.checked = node.hasAttribute("prispec");
-      if (prispec.checked) {
-        prispecapp.value = node.getAttribute("prispec");
-      }
+      prispec.disabled = primary.value.length == 0;
+      specnode = node.getElementsByTagName("prispec")[0];
+      if (specnode && specnode.textContent.length >0)
+      { 
+        prispecapp.value = specnode.textContent;
+        prispec.checked = true;
+      } else prispec.checked = false;
+      prispecapp.setAttribute("hidden",!prispec.checked);
     }
     if (node.hasAttribute("sec")) {
       secondary.value = node.getAttribute("sec");
-      secspec.checked = node.hasAttribute("secspec");
-      if (secspec.checked) {
-        secspecapp.value = node.getAttribute("secspec");
-      }
+      secspec.disabled = secondary.value.length == 0;
+      specnode = node.getElementsByTagName("secspec")[0];
+      if (specnode && specnode.textContent.length >0) 
+      {
+         secspecapp.value = specnode.textContent;
+         secspec.checked = true;
+      } else secspec.checked = false;
+      secspecapp.setAttribute("hidden",!secspec.checked);
     }
     if (node.hasAttribute("ter")) {
       tertiary.value = node.getAttribute("ter");
-      terspec.checked = node.hasAttribute("terspec");
-      if (terspec.checked) {
-        terspecapp.value = node.getAttribute("terspec");
-      }
+      terspec.disabled = tertiary.value.length == 0;
+      specnode = node.getElementsByTagName("terspec")[0];
+      if (specnode && specnode.textContent.length >0)
+      { 
+        terspecapp.value = specnode.textContent;
+        terspec.checked = true;
+      } else terspec.checked = false;
+      terspecapp.setAttribute("hidden",!terspec.checked);
     }
     if (node.hasAttribute("xreftext") ){
       locator.selectedIndex = 1;
@@ -94,6 +107,11 @@ function checkboxchanged(event, checkbox, appearanceid)
   document.getElementById(appearanceid).setAttribute("hidden",!(checkbox.checked));
 }
 
+function locatorchange(event, radiogroup)
+{
+  if (radiogroup.selectedIndex == 0) thedeck.selectedIndex = 0;
+  else thedeck.selectedIndex = 1;
+}
 
 function stop()
 {
@@ -120,11 +138,9 @@ function onAccept()
   var newnode = !node; 
   if (newnode) 
   {
-    dumpln(1);
     node = domdoc.createElement("indexitem");
   }
   var v = primary.value;
-    dumpln(2);
   if (v && v.length > 0)
     node.setAttribute("pri",v);
   else node.removeAttribute("pri");
@@ -139,30 +155,29 @@ function onAccept()
   if (node.parentNode) dump(node.parentNode.innerHTML+"\n");
   else dump(node.innerHTML+"\n");
   // remove subnodes, if any
-  while(node.firstChild) editor.removeNode(node.firstChild);
+  while(node.firstChild) node.removeChild(node.firstChild);
   v = prispecapp.value;
   if (prispec.checked && v && v.length > 0) {
     var prispecnode;
     prispecnode = domdoc.createElement("prispec");
     prispecnode.textContent = v;
-    node.appendNode(prispecnode);
+    node.appendChild(prispecnode);
   }
   v = secspecapp.value;
   if (secspec.checked && v && v.length > 0) {
     var secspecnode;
     secspecnode = domdoc.createElement("secspec");
     secspecnode.textContent = v;
-    node.appendNode(secspecnode);
+    node.appendChild(secspecnode);
   }
   v = terspecapp.value;
   if (terspec.checked && v && v.length > 0) {
     var terspecnode;
     terspecnode = domdoc.createElement("terspec");
     terspecnode.textContent = v;
-    node.appendNode(terspecnode);
+    node.appendChild(terspecnode);
   }
   if (newnode) editor.insertElementAtSelection(node, true);
-    dumpln(4);
 }
 
 
