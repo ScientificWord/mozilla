@@ -668,7 +668,7 @@ function doInsertIndexEntry()
     window.close();
     return;
   }
-  var index = gActiveEditor.getSelectedElement("index");
+  var index = gActiveEditor.getSelectedElement("indexitem");
   window.openDialog("chrome://prince/content/indexentry.xul", "Index Entry", "chrome,resizable=yes, close,titlebar", index);
 }
 
