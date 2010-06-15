@@ -5,7 +5,7 @@
   buttons="accept,cancel"
   buttonlabelcancel="Cancel" buttonlabelaccept="OK" 
   width="300"
-  height="400"
+  height="450"
   screenX="400"
   screenY="400"
   onload = "startup();"
@@ -37,7 +37,7 @@
 
   <groupbox>
     <caption label="Locator"/>
-    <radiogroup id="locator" align="center" orient="horizontal">
+    <radiogroup id="locator" align="center" orient="horizontal" oncommand="locatorchange(event,this);">
       <radio id="pn" label="Page number" selected="true"/>
       <radio id="xr" label="Index cross-reference" selected="false"/>
     </radiogroup>
