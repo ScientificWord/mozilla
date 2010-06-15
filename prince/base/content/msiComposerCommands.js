@@ -7347,8 +7347,7 @@ function msiDoAdvancedProperties(element, editorElement)
         // as a role, and currently that role is played by texb tags, but any other tag
         // could play this role as well. 
           try {
-            data.tex = element.firstChild.nodeValue;
-            dlgParentWindow.openDialog("chrome://prince/content/texbuttoncontents.xul","texbutton","chrome,close,titlebar,resizable=yes,modal", data);
+            dlgParentWindow.openDialog("chrome://prince/content/texbuttoncontents.xul","texbutton","chrome,close,titlebar,resizable=yes,modal", element);
             editorElement.contentWindow.focus();
             if (!data.Cancel)
             {

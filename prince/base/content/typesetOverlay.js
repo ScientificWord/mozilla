@@ -683,9 +683,7 @@ function doInsertCrossReference()
     return;
   }
   var xref = gActiveEditor.getSelectedElement("xref");
-  var data = new Object();
-  data.primary = xref?xref.nodeValue:"";
-  window.openDialog("chrome://prince/content/xref.xul", "Cross reference", "chrome,resizable=yes, close,titlebar", data);
+  window.openDialog("chrome://prince/content/xref.xul", "Cross reference", "chrome, resizable=yes, close, titlebar", xref);
 }
 
 function doInsertCitation(editorElement, command, commandHandler)
@@ -763,9 +761,7 @@ function doInsertTeXField()
   }
   var tbutton = gActiveEditor.getSelectedElement("texb");
   if (!tbutton) tbutton = gActiveEditor.getSelectedElement("texbutton");
-  var data = new Object();
-  data.tex = tbutton?tbutton.nodeValue:"";
-  window.openDialog("chrome://prince/content/texbuttoncontents.xul", "TeX field", "resizable=yes,chrome,close,titlebar", data);
+  window.openDialog("chrome://prince/content/texbuttoncontents.xul", "TeX field", "resizable=yes,chrome,close,titlebar", tbutton);
 }
 
 
