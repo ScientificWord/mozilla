@@ -455,7 +455,7 @@ function documentAsTeXFile( document, xslSheet, outTeXfile )
   var str = documentToTeXString(document, xslPath);
 
 //  dump("\n"+str);
-  if (str.length < 3) return false;
+  if (!str || str.length < 3) return false;
   if (outTeXfile.exists()) 
     outTeXfile.remove(false);
   outTeXfile.create(0, 0755);

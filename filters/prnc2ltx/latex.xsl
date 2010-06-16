@@ -1,4 +1,12 @@
 <?xml version="1.0"?>
+
+<!-- NOTE:
+
+  The funny spacing and line breaks come from the need to keep the XSL from putting blank lines in the
+  generated TeX. This could be done by having each template definition all on one line, but that would be
+  unreadable. The compromise is to make all of most of the line breaks in this document fall *inside* the 
+  xsl tags. This is why many lines start with the ">" character. -->
+
 <xsl:stylesheet version="1.1" 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:mml="http://www.w3.org/1998/Math/MathML"
@@ -42,16 +50,17 @@
 
 
 
-<xsl:template match="latex">\LaTeX{}</xsl:template>
+<xsl:template match="latex">\LaTeX{}</xsl:template>  <!-- soon to change to texlogo-->
 
-<xsl:template match="html:hspace">
-  <xsl:choose>
-    <xsl:when test="@dim='2em'">\qquad </xsl:when>
-	<xsl:otherwise> </xsl:otherwise>
-  </xsl:choose>
-</xsl:template>
+<xsl:template match="html:hspace"
+  ><xsl:choose
+    ><xsl:when test="@dim='2em'">\qquad </xsl:when
+  ><xsl:otherwise> </xsl:otherwise
+  ></xsl:choose
+  ></xsl:template>
  
 <xsl:template match="html:documentclass">
+
 \documentclass{<xsl:value-of select="@class"/>}
 </xsl:template>
 
@@ -65,23 +74,25 @@
 <xsl:template match="html:newtheorem">
 \newtheorem{<xsl:value-of select="@name"/>}<xsl:if test="not(not(@counter))">[<xsl:value-of select="@counter"/>]</xsl:if>{<xsl:value-of select="@label"/>}</xsl:template>
 
-
 <xsl:template match="html:body">
-<!--\input tcilatex.tex   
+<!--\input tcilatex.tex  
 should not be done under some conditions -->
 \begin{document}
 <xsl:apply-templates/>
 <xsl:if test="$endnotes &gt; 0">
 \theendnotes
 </xsl:if>
+<!--xsl:if test="$indexentries &gt; 0">
+\printindex
+</xsl:if -->
 \end{document}
 </xsl:template>
 
 <xsl:template match="html:br[@hard='1']">\\
 </xsl:template>
 
-<xsl:template match="html:br[@temp]">
-</xsl:template>
+<xsl:template match="html:br[@temp]"
+></xsl:template>
 
 <xsl:template match="html:title">
 \title{<xsl:apply-templates/>}
@@ -97,7 +108,7 @@ should not be done under some conditions -->
 \begin{abstract}
 <xsl:apply-templates/>
 \end{abstract}
-\maketitle</xsl:template>
+</xsl:template>
 
 <xsl:template match="html:maketitle">
 \maketitle
@@ -161,25 +172,33 @@ should not be done under some conditions -->
 </xsl:template>
 
 
-<xsl:template match="html:enumerate">
+<xsl:template match="html:numberedlist">
 \begin{enumerate}
 <xsl:apply-templates/>
 \end{enumerate}
 </xsl:template>
 
-<xsl:template match="html:itemize">
+<xsl:template match="html:bulletlist">
 \begin{itemize}
 <xsl:apply-templates/>
 \end{itemize}
 </xsl:template>
 
-<xsl:template match="html:description">
+<xsl:template match="html:descriptionlist">
 \begin{description}
 <xsl:apply-templates/>
 \end{description}
 </xsl:template>
 
-<xsl:template match="html:item">
+<xsl:template match="html:numberedlistitem">
+\item <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="html:bulletlistitem">
+\item <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="html:descriptionlistitem">
 \item <xsl:apply-templates/>
 </xsl:template>
 
@@ -188,9 +207,28 @@ should not be done under some conditions -->
 \cite<xsl:if test="@label">[<xsl:value-of select="@label"/>]</xsl:if>{<xsl:apply-templates/>}</xsl:template>
 
 
-<xsl:template match="html:ref">\ref{<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="html:xref">
+<xsl:choose>
+  <xsl:when test="@reftype='page'">\vpageref%%</xsl:when>
+  <xsl:otherwise>\vref</xsl:otherwise>
+</xsl:choose>
+{<xsl:value-of select="@key"/>}%%
+</xsl:template>
   
-<xsl:template match="html:pageref">\pageref{<xsl:apply-templates/>}</xsl:template>
+
+<xsl:template match="html:prispec">@<xsl:value-of select="."/></xsl:template>
+<xsl:template match="html:secspec">@<xsl:value-of select="."/></xsl:template>
+<xsl:template match="html:terspec">@<xsl:value-of select="."/></xsl:template>
+
+<xsl:template match="html:indexitem">
+\index<xsl:if test="@pri"
+  >{<xsl:value-of select="@pri"/><xsl:apply-templates select="html:prispec"/></xsl:if
+  ><xsl:if test="@sec">!<xsl:value-of select="@sec"/><xsl:apply-templates select="html:secspec"/></xsl:if
+  ><xsl:if test="@ter">!<xsl:value-of select="@ter"/><xsl:apply-templates select="html:terspec"/></xsl:if
+  ><xsl:if test="@xreftext">|see {<xsl:value-of select="@reftext"/>}</xsl:if
+  ><xsl:if test="@pnformat='bold'">|textbf</xsl:if
+  ><xsl:if test="@pnformat='italics'">|textit</xsl:if>}
+</xsl:template>
   
 
 <xsl:template match="html:notewrapper"><xsl:apply-templates/></xsl:template>
@@ -239,78 +277,77 @@ should not be done under some conditions -->
 \end{verbatim}
 </xsl:template>
 
-<xsl:template match="html:p">
-<xsl:text>
-
-</xsl:text>
-<xsl:apply-templates/>
+<xsl:template match="html:p">\par<xsl:apply-templates/>
 </xsl:template>
 
-<xsl:template match="html:alt">{\addfontfeatures{RawFeature=+salt}<xsl:apply-templates/>}
-  
-</xsl:template>
-<xsl:template match="html:bold">\textbf{<xsl:apply-templates/>}
-</xsl:template>
-<xsl:template match="html:it">\textit{<xsl:apply-templates/>}
-</xsl:template>
-<xsl:template match="html:rm">\textrm{<xsl:apply-templates/>}
-</xsl:template>
-<xsl:template match="html:sf">\textsf{<xsl:apply-templates/>}
-</xsl:template>
-<xsl:template match="html:sl">\textsl{<xsl:apply-templates/>}
-</xsl:template>
-<xsl:template match="html:sc">\textsc{<xsl:apply-templates/>}
-</xsl:template>
-<xsl:template match="html:tt">\texttt{<xsl:apply-templates/>}
-</xsl:template>
-<xsl:template match="html:em">\emph{<xsl:apply-templates/>}
-</xsl:template>
-<xsl:template match="html:upper">\uppercase{<xsl:apply-templates/>}
-</xsl:template>
-<xsl:template match="html:lower">\lowercase{<xsl:apply-templates/>}
-</xsl:template>
-<xsl:template match="html:hebrew">{\hebrew\beginR <xsl:apply-templates/> \endR} 
-</xsl:template>
+<xsl:template match="html:alt">{\addfontfeatures{RawFeature=+salt}<xsl:apply-templates
+  />}</xsl:template>
+<xsl:template match="html:bold">\textbf{<xsl:apply-templates
+  />}</xsl:template>
+<xsl:template match="html:it">\textit{<xsl:apply-templates
+  />}</xsl:template>
+<xsl:template match="html:rm">\textrm{<xsl:apply-templates
+  />}</xsl:template>
+<xsl:template match="html:sf">\textsf{<xsl:apply-templates
+  />}</xsl:template>
+<xsl:template match="html:sl">\textsl{<xsl:apply-templates
+  />}</xsl:template>
+<xsl:template match="html:sc">\textsc{<xsl:apply-templates
+  />}</xsl:template>
+<xsl:template match="html:tt">\texttt{<xsl:apply-templates
+  />}</xsl:template>
+<xsl:template match="html:em">\emph{<xsl:apply-templates
+  />}</xsl:template>
+<xsl:template match="html:upper">\uppercase{<xsl:apply-templates
+  />}</xsl:template>
+<xsl:template match="html:lower">\lowercase{<xsl:apply-templates
+  />}</xsl:template>
+<xsl:template match="html:hebrew">{\hebrew\beginR <xsl:apply-templates
+  /> \endR} </xsl:template>
+<xsl:template match="html:tiny">{\tiny <xsl:apply-templates
+  />}</xsl:template>
+<xsl:template match="html:scriptsize">{\scriptsize <xsl:apply-templates
+  />}</xsl:template>
+<xsl:template match="html:footnotesize">{\footnotesize <xsl:apply-templates
+  />}</xsl:template>
+<xsl:template match="html:small">{\small <xsl:apply-templates
+  />}</xsl:template>
+<xsl:template match="html:normalsize">{\normalsize <xsl:apply-templates
+  />}</xsl:template>
+<xsl:template match="html:large">{\large <xsl:apply-templates
+  />}</xsl:template>
+<xsl:template match="html:Large">{\Large <xsl:apply-templates
+  />}</xsl:template>
+<xsl:template match="html:LARGE">{\LARGE <xsl:apply-templates
+  />}</xsl:template>
+<xsl:template match="html:huge">{\huge <xsl:apply-templates
+  />}</xsl:template>
+<xsl:template match="html:Huge">{\Huge <xsl:apply-templates
+  />}</xsl:template>
+<xsl:template match="html:fontsize"
+  ><xsl:variable name="fontsize" select="@size"
+    /><xsl:variable name="units" select="substring-after($fontsize,' ')"
+    /><xsl:if test="number(substring-before($fontsize,'/'))>0"
+    >{\fontsize{<xsl:value-of select="concat(substring-before($fontsize,'/'),$units)"/>}{<xsl:choose
+    ><xsl:when test="number(substring-before(substring-after($fontsize,'/'),' '))>0"
+    ><xsl:value-of select="concat(substring-before(substring-after($fontsize,'/'),' '),$units)"
+    /></xsl:when><xsl:otherwise><xsl:value-of select="concat(substring-before($fontsize,'/'),$units)"
+    /></xsl:otherwise></xsl:choose>}\selectfont </xsl:if
+    ><xsl:apply-templates/>}</xsl:template>
+<xsl:template match="html:fontcolor">\textcolor[HTML]{<xsl:value-of select="substring(./@color,2,8)"
+  />}{<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="html:otfont">{\fontspec{<xsl:value-of select="@fontname"
+  />}<xsl:apply-templates
+  />}</xsl:template>
 
-<xsl:template match="html:tiny">{\tiny <xsl:apply-templates/>}
-</xsl:template>
-<xsl:template match="html:scriptsize">{\scriptsize <xsl:apply-templates/>}
-</xsl:template>
-<xsl:template match="html:footnotesize">{\footnotesize <xsl:apply-templates/>}
-</xsl:template>
-<xsl:template match="html:small">{\small <xsl:apply-templates/>}
-</xsl:template>
-<xsl:template match="html:normalsize">{\normalsize <xsl:apply-templates/>}
-</xsl:template>
-
-<xsl:template match="html:large">{\large <xsl:apply-templates/>}
-</xsl:template>
-<xsl:template match="html:Large">{\Large <xsl:apply-templates/>}
-</xsl:template>
-<xsl:template match="html:LARGE">{\LARGE <xsl:apply-templates/>}
-</xsl:template>
-<xsl:template match="html:huge">{\huge <xsl:apply-templates/>}
-</xsl:template>
-<xsl:template match="html:Huge">{\Huge <xsl:apply-templates/>}
-</xsl:template>
-<xsl:template match="html:fontsize">
-  <xsl:variable name="fontsize" select="@size"/>%
-  <xsl:variable name="units" select="substring-after($fontsize,' ')"/>%
-  <xsl:if test="number(substring-before($fontsize,'/'))>0">
-    {\fontsize{<xsl:value-of select="concat(substring-before($fontsize,'/'),$units)"/>}{<xsl:choose><xsl:when test="number(substring-before(substring-after($fontsize,'/'),' '))>0"><xsl:value-of select="concat(substring-before(substring-after($fontsize,'/'),' '),$units)"/></xsl:when><xsl:otherwise><xsl:value-of select="concat(substring-before($fontsize,'/'),$units)"/></xsl:otherwise></xsl:choose>}\selectfont </xsl:if>
-    <xsl:apply-templates/>}</xsl:template>
-<xsl:template match="html:fontcolor">\textcolor[HTML]{<xsl:value-of select="substring(./@color,2,8)"/>}{<xsl:apply-templates/>}</xsl:template>
-<xsl:template match="html:otfont">{\fontspec{<xsl:value-of select="@fontname"/>}<xsl:apply-templates/>}
-</xsl:template>
-
-<xsl:template match="html:tex">\TeX{}
-</xsl:template>
-<xsl:template match="html:textquotedblleft">\textquotedblleft% 
-</xsl:template>
-<xsl:template match="html:textquotedblright">\textquotedblright% 
-</xsl:template>
-<xsl:template match="html:textbackslash">\textbackslash% 
-</xsl:template>
+<xsl:template match="html:tex"
+  >\TeX{}</xsl:template>
+<xsl:template match="html:textquotedblleft"
+  >\textquotedblleft</xsl:template>
+<xsl:template match="html:textquotedblright"
+  >\textquotedblright</xsl:template>
+<xsl:template match="html:textbackslash"
+  >\textbackslash</xsl:template>
 
 <xsl:template match="html:TeXButton">
   
@@ -339,28 +376,15 @@ should not be done under some conditions -->
 \cite<xsl:if test="@label">[<xsl:value-of select="@label"/>]</xsl:if>{<xsl:apply-templates/>}
 </xsl:template>
 
-<xsl:template match="html:index">\index{<xsl:apply-templates/>}
-  
-</xsl:template>
-
-<xsl:template match="html:ref">\ref{<xsl:apply-templates/>}
-  
-</xsl:template>
-<xsl:template match="html:pageref">\pageref{<xsl:apply-templates/>}
-  
-</xsl:template>
-
 
 <xsl:template match="html:marker">\label{<xsl:value-of select="@id"/>}
   
 </xsl:template>
 
 <xsl:template match="a">\ref{<xsl:apply-templates/>}
-  
 </xsl:template>
 
 <xsl:template match="html:requestimplementation">[ NEED TO IMPLEMENT: \verb+<xsl:apply-templates/>+] 
-  
 </xsl:template>
 
 <xsl:template match="html:Note">
@@ -395,11 +419,6 @@ should not be done under some conditions -->
 \par
 
 </xsl:template>
-
-
-
-
-
 
 </xsl:stylesheet>
 
