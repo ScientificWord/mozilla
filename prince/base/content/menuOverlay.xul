@@ -858,7 +858,7 @@
   <commandset id="tagsMenuCommands">
     <command id="cmd_otfont" oncommand="callOTFontDialog();"/>
     <command id="cmd_fontsize" oncommand="callFontSizeDialog();"/>
-    <command id="cmd_color" oncommand="callColorDialog();"/>
+    <command id="cmd_color" oncommand="msiGoDoCommand('cmd_fontcolor');"/>
     <command id="cmd_tagkeyassignments" oncommand="callFunctionKeyDialog();"/>
   </commandset>
 

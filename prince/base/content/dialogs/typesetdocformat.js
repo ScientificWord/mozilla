@@ -179,12 +179,19 @@ function Startup()
   getSectionFormatting(sectitlenodelist, sectitleformat);
 }
 
+//var serializer;
 
 function lineend(node, spacecount)
 {
+//  if (!serializer) 
+//    serializer = Components.classes["@mozilla.org/xmlextras/xmlserializer;1"].createInstance(Components.interfaces.nsIDOMSerializer);
   var spacer = "\n";
   for (var i = 0; i < spacecount; i++) 
     spacer = spacer + "  ";
+//  var stringnode = serializer.serializeToString(node);
+//  dump("stringnode=("+stringnode+")\n");
+//  var regexp1 = /\/>$/;
+//  var regexp2 = />$/;
   node.appendChild(node.ownerDocument.createTextNode(spacer));
 }
   
@@ -2138,7 +2145,8 @@ function addrule()
   nextbox.setAttribute("role","rule");
   nextbox.setAttribute("hidden","false");
   nextbox.setAttribute("style","height:3px;background-color:black;");
-  window.openDialog("chrome://prince/content/addruleforsection.xul", "addruleforsection", "chrome,close,titlebar,alwaysRaised",nextbox, "black", sectionUnit);
+  window.openDialog("chrome://prince/content/addruleforsection.xul", "addruleforsection", 
+    "resizable=yes,chrome,close,titlebar,alwaysRaised", nextbox, "black", sectionUnit);
 }
 
 
@@ -2161,7 +2169,7 @@ function addspace()
   nextbox.setAttribute("hidden","false");
   nextbox.setAttribute("style","height:6px;background-color:silver;");
 	window.openDialog("chrome://prince/content/vspaceforsection.xul", 
-	  "vspaceforsection", "chrome,close,titlebar,alwaysRaised",nextbox, sectionUnit);
+	  "vspaceforsection", "resizable=yes, chrome,close,titlebar,alwaysRaised",nextbox, sectionUnit);
 }
 
 function removeruleorspace()
