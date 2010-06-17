@@ -264,6 +264,20 @@ should not be done under some conditions -->
 \end{quotation}
 </xsl:template>
 
+<xsl:template match="html:centered">
+  
+\begin{center}
+<xsl:apply-templates/>
+\end{center}
+</xsl:template>
+
+<xsl:template match="html:center">
+  
+\begin{center}
+\par
+<xsl:apply-templates/>
+\end{center}
+</xsl:template>
 
 <xsl:template match="html:theorem">
 \begin{<xsl:value-of select="@type"/>}
@@ -314,6 +328,8 @@ should not be done under some conditions -->
   />}</xsl:template>
 <xsl:template match="html:normalsize">{\normalsize <xsl:apply-templates
   />}</xsl:template>
+<xsl:template match="html:phantom">\phantom {<xsl:apply-templates
+  />}</xsl:template>
 <xsl:template match="html:large">{\large <xsl:apply-templates
   />}</xsl:template>
 <xsl:template match="html:Large">{\Large <xsl:apply-templates
@@ -334,7 +350,7 @@ should not be done under some conditions -->
     /></xsl:when><xsl:otherwise><xsl:value-of select="concat(substring-before($fontsize,'/'),$units)"
     /></xsl:otherwise></xsl:choose>}\selectfont </xsl:if
     ><xsl:apply-templates/>}</xsl:template>
-<xsl:template match="html:fontcolor">\textcolor[HTML]{<xsl:value-of select="substring(./@color,2,8)"
+<xsl:template match="html:fontcolor">\textcolor[HTML]{<xsl:value-of select="translate(substring(./@color,2,8),'abcdef','ABCDEF')"
   />}{<xsl:apply-templates/>}</xsl:template>
 <xsl:template match="html:otfont">{\fontspec{<xsl:value-of select="@fontname"
   />}<xsl:apply-templates
