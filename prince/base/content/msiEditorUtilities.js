@@ -3075,7 +3075,7 @@ function msiEditorSetTextProperty(editorElement, property, attribute, value)
   try {
     if (!gAtomService) GetAtomService();
     var propAtom = gAtomService.getAtom(property);
-
+    dump("msiEditorSetTextProperty for "+editorElement.id+", property = "+property+", attribute = " + attribute + ", value = "+value+"\n");
     msiGetEditor(editorElement).setInlineProperty(propAtom, attribute, value);
     if (!msiCurrEditorSetFocus(window) && "gContentWindow" in window)
       window.gContentWindow.focus();

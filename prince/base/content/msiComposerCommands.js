@@ -154,6 +154,7 @@ function msiSetupTextEditorCommands(editorElement)
   commandTable.registerCommand("cmd_insertChars", msiInsertCharsCommand);
   commandTable.registerCommand("cmd_oneshotGreek", msiOneShotGreek);
   commandTable.registerCommand("cmd_oneshotSymbol", msiOneShotSymbol);
+  commandTable.registerCommand("cmd_fontcolor", msiFontColor);
 }
 
 function msiSetupComposerWindowCommands(editorElement)
@@ -3403,6 +3404,39 @@ var msiOneShotSymbol =
   }
 };
 
+
+
+//-----------------------------------------------------------------------------------
+var msiFontColor =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon)
+  {
+  },
+  doCommandParams: function(aCommand, aParams, aRefCon) 
+  {
+  },
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement();
+//    var editor = msiGetEditor(editorElement);
+//    var htmleditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
+    var colorObj = { NoDefault:true, Type:"Font", TextColor:"black", PageColor:0, Cancel:false };
+
+    window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "resizable=yes, chrome,close,titlebar,modal", 
+    "", colorObj);
+
+    // User canceled the dialog
+    if (colorObj.Cancel)
+      return;
+    
+    msiEditorSetTextProperty(editorElement, "fontcolor", "color", colorObj.TextColor);
+  }
+};
 
 
 //-----------------------------------------------------------------------------------
@@ -8527,17 +8561,15 @@ function callColorDialog()
   if (colorObj.Cancel)
     return;
     
-  var editorElement = msiGetParentEditorElementForDialog(window);
-  if (!editorElement)
-  {
-    AlertWithTitle("Error", "No editor in otfont.OnAccept!");
-  }
-  var theWindow = window.opener;
-  if (!theWindow || !("msiEditorSetTextProperty" in theWindow))
-    theWindow = msiGetTopLevelWindow();
-  theWindow.msiRequirePackage(editorElement, "xcolor", null);
-  theWindow.msiEditorSetTextProperty(editorElement, "fontcolor", "color", colorObj.TextColor);
+  var cmdParams = newCommandParams();
+  if (!cmdParams) return;
+
+  var editorElement = msiGetActiveEditorElement();
+  dump("EditorElement has name "+editorElement.id+"\n");
+  cmdParams.setStringValue("color", colorObj.TextColor);
   editorElement.contentWindow.focus();
+  msiGoDoCommandParams("cmd_fontcolor", cmdParams, editorElement);
+//  theWindow.msiRequirePackage(editorElement, "xcolor", null);
 }
 
 var msiShowTeXLogCommand =
