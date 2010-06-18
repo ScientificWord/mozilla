@@ -180,7 +180,11 @@
 
 <!-- section headings redefined. Requires package titlesec -->
 <xsl:template match="html:sectitleformat" >\newcommand{\msi<xsl:value-of select="@level"/>}[1]{<xsl:apply-templates/>}
-\titleformat{\<xsl:value-of select="@level"/>}[<xsl:value-of select="@sectStyle"/>]{}{}{0pt}{\msi<xsl:value-of select="@level"
+\titleformat{\<xsl:value-of select="@level"/>}[<xsl:value-of select="@sectStyle"/>]{<xsl:choose
+  ><xsl:when test="@align='l'">\filright</xsl:when
+  ><xsl:when test="@align='c'">\center</xsl:when
+  ><xsl:otherwise>\filleft</xsl:otherwise
+  ></xsl:choose>}{}{0pt}{\msi<xsl:value-of select="@level"
 />}</xsl:template>
 						  
 <xsl:template match="html:dialogbase">
