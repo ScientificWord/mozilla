@@ -1640,9 +1640,8 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
   var i;
   var node;
   var level;
-  var dialogbase;
+  var templatebase;
   var xmlcode;
-  var sw = "http://www.sciword.com/namespaces/sciword";
   if (sectitlenodelist)
   {
     for (i=0; i< sectitlenodelist.length; i++)
@@ -1651,22 +1650,15 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
       level = node.getAttribute("level");
       sectitleformat[level] = new Object();
       try {
-        dialogbase = node.getElementsByTagNameNS(sw,"dialogbase")[0];
-        if (dialogbase)
+        templatebase = node.getElementsByTagName("titleprototype")[0];
+        if (templatebase)
         {
           var ser = new XMLSerializer();
-          xmlcode = ser.serializeToString(dialogbase);
+          xmlcode = ser.serializeToString(templatebase);
           xmlcode = xmlcode.replace(/#1/,"#T");
           var pattern = "\\the"+level;
           xmlcode = xmlcode.replace(pattern, "#N");
         }
-//        var re=/<sw:dialogbase[^>]*>/;
-//        var l;
-//        do
-//        {
-//          l = xmlcode.length;
-//          xmlcode = xmlcode.replace(re,"").replace("</sw:dialogbase>",'');
-//        } while (xmlcode.length > 0 && xmlcode.length < l);
         if (!xmlcode) xmlcode="";
         sectitleformat[level].proto = xmlcode;
         sectitleformat[level].newPage = (node.getAttribute("newPage")=="true");
@@ -1862,7 +1854,7 @@ function getBaseNodeForIFrame( )
   var iframe = document.getElementById("sectiontextarea");
   if (!iframe) return;
   var doc = iframe.contentDocument;
-  var theNodes = doc.getElementsByTagNameNS(sw,"dialogbase");
+  var theNodes = doc.getElementsByTagNameNS(sw,"templatebase");
   var theNode;
   if (theNodes) theNode = theNodes[0]; 
   else 
