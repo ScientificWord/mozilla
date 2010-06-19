@@ -6,31 +6,31 @@
     xmlns:exsl="http://exslt.org/common"
 >
 
-
-<!-- Package handling. Packages are not inserted directly, but with requirespackage tags. We collect them and remove
+<!-- Package handling. Packages are not inserted directly, but with requirespackage tags and other
+  tags with the 'req' and 'opt' attributes. We collect them and remove
   duplicates, and then sort according to the pri attribute -->
 <xsl:variable name="masterpackagelist" select="document('packages.xml',.)"/>
   
 
 <xsl:variable name="requiredpackages.tf">
-  <xsl:for-each select="//*[@package]">
-    <xsl:sort select="@package"/>
+  <xsl:for-each select="//*[@req]">
+    <xsl:sort select="@req"/>
 	<xsl:copy-of select="."/>
   </xsl:for-each>
-  <!--xsl:for-each select="//mainfont[@package]">
-    <xsl:sort select="@package"/>
+  <!--xsl:for-each select="//mainfont[@req]">
+    <xsl:sort select="@req"/>
 	<xsl:copy-of select="."/>
   </xsl:for-each>
-  <xsl:for-each select="//mathfont[@package]">
-    <xsl:sort select="@package"/>
+  <xsl:for-each select="//mathfont[@req]">
+    <xsl:sort select="@req"/>
 	<xsl:copy-of select="."/>
   </xsl:for-each>
-  <xsl:for-each select="//sansfont[@package]">
-    <xsl:sort select="@package"/>
+  <xsl:for-each select="//sansfont[@req]">
+    <xsl:sort select="@req"/>
 	<xsl:copy-of select="."/>
   </xsl:for-each>
-  <xsl:for-each select="//fixedfont[@package]">
-    <xsl:sort select="@package"/>
+  <xsl:for-each select="//fixedfont[@req]">
+    <xsl:sort select="@req"/>
 	<xsl:copy-of select="."/>
   </xsl:for-each -->
 </xsl:variable>
@@ -40,19 +40,19 @@
 <xsl:variable name="packagelist.tf"> 
   <xsl:for-each select="$requiredpackages/*">
     <xsl:variable name="pos" select="position()"/>
-	  <xsl:variable name="currentpackage" select="@package"/>
+	  <xsl:variable name="currentpackage" select="@req"/>
 	  <xsl:if
-	    test="$pos=1 or not($currentpackage=$requiredpackages/*[$pos - 1]/@package)">
+	    test="$pos=1 or not($currentpackage=$requiredpackages/*[$pos - 1]/@req)">
 	    <xsl:element name="requiredpackage" >
-	      <xsl:attribute name="package"><xsl:value-of select="@package"/></xsl:attribute>
-	      <xsl:if test="@options"><xsl:attribute name="options"><xsl:value-of select="@options"/></xsl:attribute></xsl:if>
+	      <xsl:attribute name="package"><xsl:value-of select="@req"/></xsl:attribute>
+	      <xsl:if test="@opt"><xsl:attribute name="options"><xsl:value-of select="@opt"/></xsl:attribute></xsl:if>
 	      <xsl:attribute name="pri">
 	  	    <xsl:choose>
 	  	      <xsl:when test="@pri">
 	  	        <xsl:value-of select="@pri"/>
 	  	      </xsl:when>
-	  		  <xsl:otherwise>
-              <xsl:variable name="pkg" select="@package"/>
+   	  		  <xsl:otherwise>
+              <xsl:variable name="pkg" select="@req"/>
               <xsl:variable name="pri" select="$masterpackagelist/packages/package[@name=$pkg]/@pri"/>
               <xsl:choose>
                 <xsl:when test="$pri"><xsl:value-of select="$pri"/></xsl:when>
@@ -69,18 +69,18 @@
  
 <xsl:variable name="packagelist" select ="exsl:node-set($packagelist.tf)"/>
 
-<xsl:variable name="endnotes" select="count(//html:endnotes)"/>
-<xsl:variable name="indexitems" select="count(//html:indexitem)"/>
-
 
 <xsl:template match="html:preamble">
+<xsl:if test="count(//html:indexitem) &gt; 0"
+  >\usepackage{makeidx}
+\makeindex</xsl:if>
   <xsl:for-each select="$packagelist/*"
   ><xsl:sort select="@pri" data-type="number"/>
 \usepackage<xsl:if test="@options"
     >[<xsl:value-of select="@options"/>]</xsl:if
     >{<xsl:value-of select="@package"/>}  %% <xsl:value-of select="@pri"/></xsl:for-each
   ><xsl:apply-templates
-/></xsl:template>
+  /></xsl:template>
 
 <xsl:template match="html:preambleTeX">
   <xsl:value-of select="."/>
