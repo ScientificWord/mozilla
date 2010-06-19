@@ -2332,6 +2332,7 @@ function msiSoftSave( editor, editorElement)
   var urlstring = msiGetEditorURL(editorElement);
   var url = msiURIFromString(urlstring);
   var currentFile = msiFileFromFileURL(url);
+  var compileInfo = new Object();
   if (saveAsTextFile)
     aMimeType = "text/plain";
   else if (GetBoolPref("swp.generateTeXonsave"))
@@ -2339,7 +2340,7 @@ function msiSoftSave( editor, editorElement)
     var file = currentFile.parent;
     file.append("tex");
     file.append("main.tex");
-    documentAsTeXFile(editorDoc, "latex.xsl", file );
+    documentAsTeXFile(editorDoc, "latex.xsl", file, compileInfo);
   }
   var success;
   success = msiOutputFileWithPersistAPI(editorDoc, currentFile, null, aMimeType, editorElement);
