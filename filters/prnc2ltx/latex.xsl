@@ -17,10 +17,14 @@
     xmlns:exsl="http://exslt.org/common"
     extension-element-prefixes="regexp">
 
+<xsl:param name="endnotes" select="count(//html:endnotes)"/>
+<xsl:param name="indexitems" select="count(//html:indexitem)"/>
+
 <xsl:output method="text" encoding="UTF-8"/>
 <xsl:strip-space elements="*"/>
 <xsl:preserve-space elements="pre"/>
 <xsl:import href="regexp.xsl" />
+
 
 
 <xsl:include href="mml2ltex.xsl"/>
@@ -50,7 +54,8 @@
 
 
 
-<xsl:template match="latex">\LaTeX{}</xsl:template>  <!-- soon to change to texlogo-->
+<xsl:template match="latex">
+<xsl:value-of select="."/> and \LaTeX{}</xsl:template>  <!-- soon to change to texlogo-->
 
 <xsl:template match="html:hspace"
   ><xsl:choose
@@ -82,10 +87,14 @@ should not be done under some conditions -->
 <xsl:if test="$endnotes &gt; 0">
 \theendnotes
 </xsl:if>
-<!--xsl:if test="$indexentries &gt; 0">
-\printindex
-</xsl:if -->
+<xsl:if test="$indexitems &gt; 0"
+><xsl:if test="count(//html:printindex) = 0"
+>\printindex</xsl:if></xsl:if>
 \end{document}
+</xsl:template>
+
+<xsl:template match="html:printindex">
+\printindex
 </xsl:template>
 
 <xsl:template match="html:br[@hard='1']">\\
@@ -214,7 +223,7 @@ should not be done under some conditions -->
 </xsl:choose>
 {<xsl:value-of select="@key"/>}%%
 </xsl:template>
-  
+
 
 <xsl:template match="html:prispec">@<xsl:value-of select="."/></xsl:template>
 <xsl:template match="html:secspec">@<xsl:value-of select="."/></xsl:template>
@@ -435,6 +444,22 @@ should not be done under some conditions -->
 \par
 
 </xsl:template>
+
+<xsl:template match="html:minpasses">
+%% minpasses=<xsl:value-of select="@num"/>
+</xsl:template>
+
+
+<xsl:template match="html:texb"
+  ><xsl:if test="@enc='1'">
+%TCIMACRO{\TeXButton{<xsl:value-of select="@name"/>}{<xsl:apply-templates/>}}%
+%Package required: [<xsl:value-of select="@opt"/>]{<xsl:value-of select="@req"/>}
+%BeginExpansion
+</xsl:if
+  ><xsl:apply-templates/><xsl:if test="@enc='1'">
+%EndExpansion</xsl:if>
+</xsl:template>
+
 
 </xsl:stylesheet>
 

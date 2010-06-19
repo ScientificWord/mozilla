@@ -426,7 +426,7 @@ function openTeX()
 // Returns true if the TeX file was created.
 // outTeXfile is an nsILocalFile. If it is null, create main.tex in the document's 'tex' directory.
 
-function documentAsTeXFile( document, xslSheet, outTeXfile )
+function documentAsTeXFile( document, xslSheet, outTeXfile, compileInfo )
 {
   dump("\nDocument as TeXFile\n");
   if (!document) return false;
@@ -453,6 +453,22 @@ function documentAsTeXFile( document, xslSheet, outTeXfile )
 #ifdef INTERNAL_XSLT
   var xslPath = "chrome://prnc2ltx/content/"+xslSheet;
   var str = documentToTeXString(document, xslPath);
+  compileInfo.runMakeIndex = /\\makeindex/.test(str);
+  compileInfo.passCount = 1;
+  var runcount = 1;
+  if (/\\tableofcontents|\\listoffigures|\\listoftables/.test(str)) runcount = 3;
+  if (compileInfo.passCount < runcount) compileInfo.passCount = runcount;
+  if (/\\xref|\\pageref|\\vxref|\\vpageref/.test(str)) runcount = 2;
+  if (compileInfo.passCount < runcount) compileInfo.passCount = runcount;
+  var matcharr = /%% *minpasses *= *(\d+)/.exec(str);
+  if (matcharr && matcharr.length > 1) 
+  {
+    runcount = matcharr[1];
+    if (compileInfo.passCount < runcount) compileInfo.passCount = runcount;
+  }
+  if (compileInfo.runMakeIndex) {
+    if (compileInfo.passCount < 2) compileInfo.passCount = 2;
+  }
 
 //  dump("\n"+str);
   if (!str || str.length < 3) return false;
@@ -556,11 +572,12 @@ function exportTeX()
    fp.appendFilter("TeX files", "*.tex; *.ltx");
    fp.appendFilters(msIFilePicker.filterText);
    fp.defaultExtension = ".tex";
+   compileInfo = new Object();
    try 
    {
      var dialogResult = fp.show();
      if (dialogResult != msIFilePicker.returnCancel)
-       if (!documentAsTeXFile(editor.document, "latex.xsl", fp.file ))
+       if (!documentAsTeXFile(editor.document, "latex.xsl", fp.file, compileInfo ))
          AlertWithTitle("XSLT Error", "TeX file not created. Click on View/XSLT Log to see the log file");
 
    }
@@ -606,7 +623,7 @@ compileTeXFile:
   infileLeaf -- the name of the input TeX file without '.tex' or the initial part of the path 
   infilePath -- the full name of the input TeX file, including the path and 'tex'
   outputDir -- the directory in which to put the resulting file
-  passCount -- the number of passes with LaTeX needed
+  compileInfo -- an object for storing the required # of passes, whether makeindex needs to be called, etc.
   
   returns -- a boolean to indicate whether the expected file appears where it is supposed to
   
@@ -615,11 +632,12 @@ compileTeXFile:
 
 var passData;
 
-function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
+function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, compileInfo )
 {
   // the following requires that the pdflatex program (or a hard link to it) be in TeX/bin/pdflatex 
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+  var indexexe = exefile.clone();
   var extension;
   var compiledFileLeaf = "SWP";
   passData = new Object;
@@ -632,12 +650,15 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, passCount )
     exefile.append("pdflatex."+extension);
   else
     exefile.append("latex."+extension);
+  indexexe.append("makeindex."+extension);
   dump("\nexecutable file: "+exefile.path+"\n");
   passData.file = exefile;
+  passData.indexexe = indexexe;
   passData.pdftex = pdftex;
   passData.outputDir = outputDir;
-  passData.args = ["-output-directory", outputDir, infileLeaf, compiledFileLeaf, 1];
-  passData.passCount = 3;  // replace this with a realistic guess.
+  passData.args = ["-output-directory", outputDir, infileLeaf, compiledFileLeaf];
+  passData.passCount = compileInfo.passCount;
+  passData.runMakeIndex = compileInfo.runMakeIndex;
   var i;
   dump("Opening dialog\n");
   window.openDialog("chrome://prince/content/passes.xul","about", "chrome,modal=yes,resizable=yes,alwaysRaised=yes",
@@ -744,9 +765,10 @@ function compileDocument( pdftex )
     
     dump("\TeX file="+outputfile.path + "\n");
 //    dump("DVI/PDF file is " + dvipdffile.path + "\n"); 
-    if (documentAsTeXFile(editor.document, "latex.xsl", outputfile ))
+    var compileInfo = new Object();  // an object to hold pass counts and whether makeindex needs to run.
+    if (documentAsTeXFile(editor.document, "latex.xsl", outputfile, compileInfo ))
     {
-      if (compileTeXFile(pdftex, "main", outputfile.path, dvipdffile.path, 1))
+      if (compileTeXFile(pdftex, "main", outputfile.path, dvipdffile.path, compileInfo))
       {
         if (!currPDFfileLeaf) currPDFfileLeaf = "main.pdf";
         dump("currPDFfileLeaf is "+currPDFfileLeaf+"\n");
@@ -847,7 +869,7 @@ function compileTeX(pdftex)
       fp.show();
       // need to handle cancel (uncaught exception at present) 
     }
-    catch (ex) 
+    catch (ex)                                                                      
     {
       dump("filePicker threw an exception\n");
       return;
@@ -861,14 +883,15 @@ function compileTeX(pdftex)
 //    os.writeString(str);
 //    os.close();
   //   fos.close();
-    documentAsTeXFile(editor.document, "latex.xsl", outputfile );
+    var compileInfo = new Object();
+    documentAsTeXFile(editor.document, "latex.xsl", outputfile, compileInfo );
     if (!outputfile.exists())
     {
       AlertWithTitle("XSLT Error", "Need to offer to show log");
       goDoCommand("cmd_showXSLTLog");
     } else
     {
-      if (compileTeXFile(pdftex, outleaf, outputfile.path, dvipdffile.parent.path, 1))
+      if (compileTeXFile(pdftex, outleaf, outputfile.path, dvipdffile.parent.path, compileInfo))
       {
         if (!dvipdffile.exists())
         {

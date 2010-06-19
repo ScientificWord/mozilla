@@ -1,5 +1,6 @@
 
 var theProcess;
+var theIndexProcess;
 var passData;
 var sentinel;
 var timer = Components.classes["@mozilla.org/timer;1"]
@@ -19,7 +20,13 @@ var timerCallback =
        {
          setProgressStatement(false);
          sentinel.remove(false);
-         theProcess.run(false, passData.args, passData.args.length);
+         if (passData.runMakeIndex){
+           theIndexProcess.run(false, passData.args, passData.args.length);
+           passData.runMakeIndex = false;
+         }
+         else {
+           theProcess.run(false, passData.args, passData.args.length);
+         }
        }
        else{
          setProgressStatement(true);
@@ -35,6 +42,7 @@ function Init()
   
   passData = window.arguments[0];
   passData.passCounter = 0;
+  document.getElementById("numpasses").value = passData.passCount;
   sentinel = Components.classes["@mozilla.org/file/local;1"].
       createInstance(Components.interfaces.nsILocalFile);
   sentinel.initWithPath(passData.outputDir);
@@ -42,6 +50,11 @@ function Init()
   if (sentinel.exists()) sentinel.remove(false);
   theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
   theProcess.init(passData.file);
+  if (passData.runMakeIndex) {
+    theIndexProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+    theIndexProcess.init(passData.indexexe);
+    passData.passCount ++; // since running makeindex will count as a pass.
+  }
   Components.utils.reportError("in Init\n");
   // set up the first pass
   setProgressStatement(false);

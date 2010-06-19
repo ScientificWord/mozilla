@@ -1814,8 +1814,8 @@ function saveSectionFormatting( docFormatNode, sectitleformat )
       {
         bRequiresPackage = false;
         reqpackageNode = editor.createNode('requirespackage',docFormatNode, 0);
-        reqpackageNode.setAttribute('package',"titlesec");
-        reqpackageNode.setAttribute('options',"calcwidth");
+        reqpackageNode.setAttribute('req',"titlesec");
+        reqpackageNode.setAttribute('opt',"calcwidth");
       } 
       lineend(docFormatNode, 1);
       sectiondata = sectitleformat[name]; 
