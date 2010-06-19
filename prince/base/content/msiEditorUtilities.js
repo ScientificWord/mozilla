@@ -1020,9 +1020,9 @@ function msiRequirePackage(editorElement, packagename, options)
     var doc = editor.document;
     var preamble = doc.getElementsByTagName("preamble")[0];
     var reqpkg = doc.createElement("requirespackage");
-    reqpkg.setAttribute("package", packagename);
+    reqpkg.setAttribute("req", packagename);
     if (options && options.length > 0)
-      reqpkg.setAttribute("options", options);
+      reqpkg.setAttribute("opt", options);
     preamble.appendChild(reqpkg);
   }
   catch(e)
