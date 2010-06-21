@@ -3392,6 +3392,7 @@ function msiSetEditMode(mode, editorElement)
 
     // Clear out the string buffers
     msiClearSource(editorElement);
+    editorElement.makeEditable("html");
     editorElement.contentWindow.focus();
   }
 }
