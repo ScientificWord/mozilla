@@ -69,7 +69,7 @@ function descriptionOfItem( row )
       i = tree.view.getParentIndex(i);
       s = tree.view.getCellText(i,namecol)+ "/" + s;
   }
-  s = tree.getAttribute("ref")+s;
+  s = decodeURIComponent(tree.getAttribute("ref")+s);
   // s is now the path of the clicked file relative to the fragment root.
   dump("showDescription: pathname = "+s+"\n");
   try 
@@ -86,9 +86,7 @@ function descriptionOfItem( row )
       node = xmlDoc.getElementsByTagName("description").item(0);
       if (node)
       {
-        node = node.firstChild;
-        while (node && node.nodeType != node.CDATA_SECTION_NODE) node = node.nextSibling;
-        if (node) return node.nodeValue;
+        return decodeURIComponent(node.textContent);
       }
     }
   }
@@ -134,15 +132,11 @@ function writeDescriptionOfItem(row, desc)
       if (!node)
       {
         node = xmlDoc.createElement("description");
-        var cdata = xmlDoc.createCDATASection("");
-        node.appendChild(cdata);
         node = xmlDoc.documentElement.appendChild(node);
       }
       if (node)
       {
-        node = node.firstChild;
-        while (node && node.nodeType != node.CDATA_SECTION_NODE) node = node.nextSibling;
-        if (node && node.textContent != desc)
+        if (node.textContent != desc)
         {
           node.textContent = desc;
           // write the file again
@@ -187,6 +181,7 @@ function showDescription(event, tooltip)
 function insertFragmentContents( fileurl )
 {
   // fileurl is now the absolute file url of the clicked file relative to the fragment root.
+  fileurl.spec = decodeURIComponent(fileurl.spec);
   dump("insertFragmentContents: fileurl.spec = "+fileurl.spec+"\n");
   try 
   {
@@ -210,24 +205,18 @@ function insertFragmentContents( fileurl )
       node = xmlDoc.getElementsByTagName("data").item(0);
       if (node)
       {
-        node = node.firstChild;
-        while (node && node.nodeType != node.CDATA_SECTION_NODE) node = node.nextSibling;
-        if (node) dataString = node.nodeValue;
+        dataString =  decodeURIComponent(node.textContent);
       }
       if (dataString.length == 0) return;
       node = xmlDoc.getElementsByTagName("context").item(0);
       if (node) 
       {
-        node = node.firstChild;
-        while (node && node.nodeType != node.CDATA_SECTION_NODE) node = node.nextSibling;
-        if (node) contextString = node.nodeValue;
+        contextString =  decodeURIComponent(node.textContent);
       }
       node  = xmlDoc.getElementsByTagName("info").item(0);
       if (node)
       {
-        node = node.firstChild;
-        while (node && node.nodeType != node.CDATA_SECTION_NODE) node = node.nextSibling;
-        if (node) infoString = node.nodeValue;
+        infoString =  decodeURIComponent(node.textContent);
       }
       focusOnEditor();
       editor.insertHTMLWithContext(dataString,
@@ -437,7 +426,6 @@ function onMacroOrFragmentEntered( aString )
 }
 
 
-
 var fragObserver = 
 { 
   canHandleMultipleItems: function ()
@@ -464,7 +452,7 @@ var fragObserver =
                     classes["@mozilla.org/xmlextras/xmlhttprequest;1"].
                     createInstance();
       request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
-      var urlstring = tree.getAttribute("ref") + s;
+      var urlstring = decodeURIComponent(tree.getAttribute("ref") + s);
       var path = msiPathFromFileURL( msiURIFromString(urlstring));
       request.open("GET", urlstring, false);
       request.send(null);
@@ -483,9 +471,7 @@ var fragObserver =
         if (nodelist.length > 0) node = nodelist.item(0);
         if (node)
         {
-          node = node.firstChild;
-          while (node && node.nodeType != node.CDATA_SECTION_NODE) node = node.nextSibling;
-          if (node) dataString = node.nodeValue;
+          dataString = decodeURIComponent(node.textContent);
         }
         if (dataString.length == 0) return;  // no point in going on in this case
         node = null;
@@ -493,18 +479,14 @@ var fragObserver =
         if (nodelist.length > 0) node = nodelist.item(0);
         if (node)
         {
-          node = node.firstChild;
-          while (node && node.nodeType != node.CDATA_SECTION_NODE) node = node.nextSibling;
-          if (node) contextString = node.nodeValue;
+          contextString =  decodeURIComponent(node.textContent);
         }
         node = null;
         nodelist = xmlDoc.getElementsByTagName("info");
         if (nodelist.length > 0) node = nodelist.item(0);
         if (node)
         {
-          node = node.firstChild;
-          while (node && node.nodeType != node.CDATA_SECTION_NODE) node = node.nextSibling;
-          if (node) infoString = node.nodeValue;
+          infoString =  decodeURIComponent(node.textContent);
         }
         transferData.data = new TransferData();
         transferData.data.addDataForFlavour("privatefragmentfile", path);
@@ -599,11 +581,11 @@ var fragObserver =
           trans.removeDataFlavor(flavour);
         }
         
-        var sFileContent = '<?xml version="1.0"?>\n<fragment>\n  <data>\n    <![CDATA[' +mimetypes.kHTMLMime+
-          ']]>\n  </data>\n  <context>\n    <![CDATA[' +mimetypes.kHTMLContext+
-          ']]>\n  </context>\n  <info>\n    <![CDATA[' +mimetypes.kHTMLInfo+
-          ']]>\n  </info>\n  <description>\n    <![CDATA[' + data.description +
-          ']]>\n  </description>\n</fragment>';
+        var sFileContent = '<?xml version="1.0"?>\n<fragment>\n  <data>\n    ' + encodeURIComponent(mimetypes.kHTMLMime) +
+          '\n  </data>\n  <context>\n    ' + encodeURIComponent(+mimetypes.kHTMLContext) +
+          '\n  </context>\n  <info>\n    ' + encodeURIComponent(mimetypes.kHTMLInfo) +
+          '\n  </info>\n  <description>\n    ' +  encodeURIComponent(data.description) +
+          '\n  </description>\n</fragment>';
         var urlstring = urlbasestring + path + "/" + data.filename;
         var filepath = msiPathFromFileURL( msiURIFromString(urlstring));        
         if (filepath.search(/.frg/) == -1) filepath += ".frg";
@@ -649,3 +631,94 @@ var fragObserver =
     return flavours;
   }
 }  
+
+function createFragmentFromClip()
+{
+    var tree = document.getElementById("frag-tree");
+    var namecol = tree.columns.getNamedColumn('Name');
+    var saveurlstring = tree.getAttribute("ref");
+    var path = "";
+    var urlbasestring = tree.getAttribute("ref");
+    var row = new Object;
+    row.value = 0;
+    var column = new Object;
+    var part = new Object;
+    var i = row.value;
+    if (i >= 0)
+    {
+      if (tree.view.isContainer(i)) 
+        path = tree.view.getCellText(i,namecol);
+      while (tree.view.getParentIndex(i) >= 0)
+      {           
+        i = tree.view.getParentIndex(i);
+        path = tree.view.getCellText(i,namecol)+ "/" + path;
+      }
+    }
+//    dump("New fragment file URL is " + urlbasestring + path + "\n");
+    var clip = Components.classes["@mozilla.org/widget/clipboard;1"].
+      getService(Components.interfaces.nsIClipboard); 
+    if (!clip) return false; 
+    var trans = Components.classes["@mozilla.org/widget/transferable;1"].
+      createInstance(Components.interfaces.nsITransferable); 
+    if (!trans) return false; 
+    var data = new Object();
+    data.role = "newfrag";
+    data.description = "Enter a short description of what the fragment does."
+    window.openDialog("chrome://prince/content/fragmentname.xul", "fragmentname", "modal,chrome,resizable=yes", data);
+    if (data.filename.length > 0)
+    {
+// Now we collect several data formats
+      var mimetypes = new Object();
+      mimetypes.kHTMLMime                    = "text/html";
+      mimetypes.kHTMLContext                 = "text/_moz_htmlcontext";
+      mimetypes.kHTMLInfo                    = "text/_moz_htmlinfo";
+      for (var i in mimetypes)
+      {
+        var flavour = mimetypes[i];
+        trans.addDataFlavor(flavour);
+        clip.getData(trans,clip.kGlobalClipboard); 
+        var str = new Object();
+        var strLength = new Object();
+        try
+        {
+          trans.getTransferData(flavour,str,strLength);
+          if (str) str = str.value.QueryInterface(Components.interfaces.nsISupportsString); 
+          if (str) mimetypes[i] = str.data.substring(0,strLength.value / 2);
+        }
+        catch (e)
+        {
+          dump("  "+flavour+" not supported\n\n");
+          mimetypes[i] = "";
+        }
+        trans.removeDataFlavor(flavour);
+      }
+      
+      var sFileContent = '<?xml version="1.0"?>\n<fragment>\n  <data>\n    ' + encodeURIComponent(mimetypes.kHTMLMime) +
+        '\n  </data>\n  <context>\n    ' + encodeURIComponent(mimetypes.kHTMLContext) +
+        '\n  </context>\n  <info>\n    ' + encodeURIComponent(mimetypes.kHTMLInfo) +
+        '\n  </info>\n  <description>\n    ' + encodeURIComponent(data.description) +
+        '\n  </description>\n</fragment>';
+      var urlstring = urlbasestring + path + "/" + data.filename;
+      var filepath = msiPathFromFileURL( msiURIFromString(urlstring));        
+      if (filepath.search(/.frg/) == -1) filepath += ".frg";
+      try
+      {
+        var file = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+        file.QueryInterface(Components.interfaces.nsIFile);
+        file.initWithPath( filepath );
+        if( file.exists() == true ) file.remove( false );
+        var strm = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+        strm.QueryInterface(Components.interfaces.nsIOutputStream);
+        strm.QueryInterface(Components.interfaces.nsISeekableStream);
+        strm.init( file, 0x04 | 0x08, 420, 0 );
+        strm.write( sFileContent, sFileContent.length );
+        strm.flush();
+        strm.close();
+      }
+      catch(ex)
+      {
+        window.alert(ex.message);
+      } 
+      refresh(tree);
+    }
+}
