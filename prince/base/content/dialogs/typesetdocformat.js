@@ -177,6 +177,7 @@ function Startup()
 	dump ("initializing sectitleformat\n");
   sectitleformat = new Object();
   getSectionFormatting(sectitlenodelist, sectitleformat);
+  getClassOptionsEtc();
 }
 
 //var serializer;
@@ -421,6 +422,7 @@ function onAccept()
     saveFontSpecs(newNode);
     saveSectionFormatting(newNode, sectitleformat);
   }
+  saveClassOptionsEtc();
 }  
 
 
@@ -2277,3 +2279,118 @@ function deleteOTFontsFromMenu(menuID)
   }
   if (ch && ch.id ==="startOpenType") menuPopup.removeChild(ch);
 }                                           
+
+function saveClassOptionsEtc()
+{
+  var doc = editor.document;
+  var documentclass = doc.documentElement.getElementsByTagName('documentclass')[0];
+  if (!documentclass) {
+    dump("No documentclass in document\n");
+    return;
+  }
+  var preamble = doc.documentElement.getElementsByTagName('preamble')[0];
+  if (!preamble) {
+    dump("No preamble in document\n");
+    return;
+  }
+  var nodelist = doc.getElementsByTagName("colist");
+  var optionNode;
+  var newnode = false;
+  if (nodelist.length == 0) 
+  {
+    newnode = true;
+    optionNode = doc.createElement("colist");
+  }
+  else optionNode = nodelist[0];
+  // convention: default values are starred at the end.
+  var widget;
+  widget = document.getElementById("pgorient").selectedItem;
+  if (widget.hasAttribute("def")) optionNode.removeAttribute("pgorient")
+  else optionNode.setAttribute("pgorient", widget.value);
+  
+  widget = document.getElementById("papersize").selectedItem;
+  if (widget.hasAttribute("def")) optionNode.removeAttribute("papsize")
+  else optionNode.setAttribute("papsize", widget.value);
+
+  widget = document.getElementById("sides").selectedItem;
+  if (widget.hasAttribute("def")) optionNode.removeAttribute("sides")
+  else optionNode.setAttribute("sides", widget.value);
+
+  widget = document.getElementById("qual").selectedItem;
+  if (widget.hasAttribute("def")) optionNode.removeAttribute("qual")
+  else optionNode.setAttribute("qual", widget.value);
+
+  widget = document.getElementById("columns").selectedItem;
+  if (widget.hasAttribute("def")) optionNode.removeAttribute("columns")
+  else optionNode.setAttribute("columns", widget.value);
+
+  widget = document.getElementById("textsize").selectedItem;
+  if (widget.hasAttribute("def")) optionNode.removeAttribute("textsize")
+  else optionNode.setAttribute("textsize", widget.value);
+
+  widget = document.getElementById("eqnnopos").selectedItem;
+  if (widget.hasAttribute("def")) optionNode.removeAttribute("eqnnopos")
+  else optionNode.setAttribute("eqnnopos", widget.value);
+
+  widget = document.getElementById("eqnnopos").selectedItem;
+  if (widget.hasAttribute("def")) optionNode.removeAttribute("eqnnopos")
+  else optionNode.setAttribute("eqnnopos", widget.value);
+
+  widget = document.getElementById("eqnpos").selectedItem;
+  if (widget.hasAttribute("def")) optionNode.removeAttribute("eqnpos")
+  else optionNode.setAttribute("eqnpos", widget.value);
+
+  widget = document.getElementById("titlepage").selectedItem;
+  if (widget.hasAttribute("def")) optionNode.removeAttribute("titlepage")
+  else optionNode.setAttribute("titlepage", widget.value);
+
+  if (newnode) documentclass.appendChild(optionNode);
+
+  widget = document.getElementById("leading").value;
+  nodelist = preamble.getElementsByTagName("leading");
+  var leading;
+  var i;
+  if (widget > 0)
+  {
+    if (nodelist.length == 0)
+      leading = editor.createNode("leading",preamble,1000);
+    else leading = nodelist[0];
+    leading.setAttribute("val", widget+"pt")
+    leading.setAttribute("req","leading")
+  }
+  else for (i = 0; i < nodelist.length; i++) editor.deleteNode(nodelist[i]);
+    
+  widget = document.getElementById("showkeys").selectedItem;
+  nodelist = preamble.getElementsByTagName("showkeys");
+  var showkeys;
+  var i;
+  if (widget.hasAttribute("def")) 
+   for (i = 0; i < nodelist.length; i++) editor.deleteNode(nodelist[i]);
+  else
+  {
+    if (nodelist.length == 0)
+      showkeys = editor.createNode("showkeys", preamble, 1000);
+    else showkeys = nodelist[0];
+    showkeys.setAttribute("req", "showkeys")
+  }
+    
+  widget = document.getElementById("showidx").selectedItem;
+  nodelist = preamble.getElementsByTagName("showidx");
+  var showidx;
+  var i;
+  if (widget.hasAttribute("def")) 
+   for (i = 0; i < nodelist.length; i++) editor.deleteNode(nodelist[i]);
+  else
+  {
+    if (nodelist.length == 0)
+      showidx = editor.createNode("showidx", preamble, 1000);
+    else showidx = nodelist[0];
+    showidx.setAttribute("req", "showidx")
+  }
+    
+    
+}
+
+function getClassOptionsEtc()
+{
+}
