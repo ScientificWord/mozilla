@@ -194,11 +194,22 @@
 <xsl:template match="html:titleprototype"><xsl:apply-templates/>
 </xsl:template>
 
-<xsl:template match="sw:dialogbase">
+<xsl:template match="html:dialogbase">
   <xsl:apply-templates/>
 </xsl:template>
 
 <!-- end of section headings -->
 
+<!-- class options   -->
+<xsl:template match="html:colist"
+  ><xsl:for-each select="@*"
+    ><xsl:value-of select="."/>, </xsl:for-each
+  ></xsl:template>
 
+<!-- leading -->
+<xsl:template match="html:leading"
+    >\leading{<xsl:value-of select="@val"
+  />}</xsl:template>
+
+    
 </xsl:stylesheet>
