@@ -66,7 +66,7 @@
  
 <xsl:template match="html:documentclass">
 
-\documentclass{<xsl:value-of select="@class"/>}
+\documentclass[<xsl:apply-templates/>]{<xsl:value-of select="@class"/>}
 </xsl:template>
 
 <xsl:template match="//html:docformat">
