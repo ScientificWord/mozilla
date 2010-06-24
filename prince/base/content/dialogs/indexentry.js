@@ -140,6 +140,7 @@ function onAccept()
   {
     node = domdoc.createElement("indexitem");
   }
+  node.setAttribute("req","varioref");
   var v = primary.value;
   if (v && v.length > 0)
     node.setAttribute("pri",v);
