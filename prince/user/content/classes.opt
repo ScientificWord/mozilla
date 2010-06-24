@@ -1,0 +1,1844 @@
+[aa]
+1=Body text point size
+1.1=10pt - default,10pt
+1.2=11pt,11pt
+1.3=12pt,12pt
+2=Paper size
+2.1=8.5x11,letterpaper
+2.2=a4 - default,a4paper
+2.3=Legal size,legalpaper
+2.4=Executive size,executivepaper
+3=Quality
+3.1=Final - default,final
+3.2=Draft,draft
+4=Columns
+4.1=One column,onecolumn
+4.2=Two columns - default,twocolumn
+5=Equation numbering
+5.1=Numbers on left,leqno
+5.2=Numbers on right - default,
+6=Displayed equations
+6.1=Centered - default,
+6.2=Flush left,fleqn
+7=Bibliography style
+7.1=Compressed - default,
+7.2=Open,openbib
+8=Running headers
+8.1=No,
+8.2=Yes - default,runningheads
+9=Number theorems by section 
+9.1=No - default,
+9.2=Yes,envcountsect
+10=Referee format
+10.1=No - default,
+10.2=Yes,referee
+
+[aastex]
+1=Body text point size
+1.1=10pt,10pt
+1.2=11pt,11pt
+1.3=12pt,12pt
+
+2=Paper size
+2.1=8.5x11 - default,letterpaper
+2.2=a4,a4paper
+2.3=a5,a5paper
+2.4=b5,b5paper
+2.5=Legal size,legalpaper
+2.6=Executive size,executivepaper
+
+3=Orientation
+3.1=Portrait - default,
+3.2=Landscape,landscape
+
+4=Print side
+4.1=Print one side - default,oneside
+4.2=Print both sides,twoside
+
+5=Quality
+5.1=Final - default,final
+5.2=Draft,draft
+
+6=Title page
+6.1=Title page,titlepage
+6.2=No title page - default,notitlepage
+
+7=Columns
+7.1=One column - default,onecolumn
+7.2=Two columns,twocolumn
+
+8=Equation numbering
+8.1=Numbers on left,leqno
+8.2=Numbers on right - default,
+
+9=Displayed equations
+9.1=Centered - default,
+9.2=Flush left,fleqn
+
+10=Bibliography style
+10.1=Compressed - default,
+10.2=Open,openbib
+
+11=Paper type
+11.1=Manuscript - default,manuscript
+11.2=Preprint one-column,preprint
+11.3=Preprint two-column,preprint2
+
+12=Equation numbering
+12.1=Continuous - default,
+12.2=Reset each section,eqsecnum
+
+13=Long abstract
+13.1=No - default,
+13.2=Yes,longabstract
+
+[afthesis]
+1=Body text point size
+1.1=10pt - default,
+1.2=11pt,11pt
+1.3=12pt,12pt
+
+2=Paper size
+2.1=8.5x11 - default,letterpaper
+2.2=a4,a4paper
+2.3=a5,a5paper
+2.4=b5,b5paper
+2.5=Legal size,legalpaper
+2.6=Executive size,executivepaper
+
+3=Orientation
+3.1=Portrait - default,
+3.2=Landscape,landscape
+
+4=Print side
+4.1=Print one side - default,oneside
+4.2=Print both sides,twoside
+
+5=Quality
+5.1=Final - default,final
+5.2=Draft,draft
+
+7=Columns
+7.1=One column - default,onecolumn
+7.2=Two columns,twocolumn
+
+8=Start chapter on left
+8.1=No,openright
+8.2=Yes - default,openany
+
+9=Equation numbering
+9.1=Numbers on left,leqno
+9.2=Numbers on right - default,
+
+10=Displayed equations
+10.1=Centered - default,
+10.2=Flush left,fleqn
+
+11=Bibliography style
+11.1=Compressed - default,
+11.2=Open,openbib
+
+[aiaa-tc]
+1=Body text point size
+1.1=10pt - default,
+1.2=11pt,11pt
+1.3=12pt,12pt
+
+2=Paper size
+2.1=8.5x11 - default,letterpaper
+2.2=a4,a4paper
+2.3=a5,a5paper
+2.4=b5,b5paper
+2.5=Legal size,legalpaper
+2.6=Executive size,executivepaper
+
+3=Orientation
+3.1=Portrait - default,
+3.2=Landscape,landscape
+
+4=Print side
+4.1=Print one side - default,oneside
+4.2=Print both sides,twoside
+
+5=Quality
+5.1=Final - default,final
+5.2=Draft,draft
+
+6=Title page
+6.1=Title page,titlepage
+6.2=No title page - default,notitlepage
+
+7=Columns
+7.1=One column - default,onecolumn
+7.2=Two columns,twocolumn
+
+8=Equation numbering
+8.1=Numbers on left,leqno
+8.2=Numbers on right - default,
+
+9=Displayed equations
+9.1=Centered - default,
+9.2=Flush left,fleqn
+
+10=Bibliography style
+10.1=Compressed - default,
+10.2=Open,openbib
+
+11=Formatting
+11.1='Loose papers' conference,handcarry
+11.2=Journal submission,submit
+
+[amsart]
+1=Body text point size
+1.1=8pt,8pt
+1.2=9pt,9pt
+1.3=10pt - default,
+1.4=11pt,11pt
+1.5=12pt,12pt
+
+2=Paper size
+2.1=8.5x11 - default,letterpaper
+2.2=a4,a4paper
+
+3=Orientation
+3.1=Portrait - default,portrait
+3.2=Landscape,landscape
+
+4=Print side
+4.1=Print one side,oneside
+4.2=Print both sides - default,twoside
+
+5=Quality
+5.1=Final - default,final
+5.2=Draft,draft
+
+6=Title page
+6.1=Title page,titlepage
+6.2=No title page - default,notitlepage
+
+8=Columns
+8.1=One column - default,onecolumn
+8.2=Two columns,twocolumn
+
+9=Nomath
+9.1=Omit extra math features,nomath
+
+10=AMSFonts
+10.1=No AMSFonts available,noamsfonts
+
+11=PSAMSFonts
+11.1=Fewer AMSFonts sizes,psamsfonts
+
+12=Equation numbering
+12.1=Numbers on left - default,leqno
+12.2=Numbers on right,reqno
+
+13=Equation centering
+13.1=Number centered - default,centertags
+13.2=Number top/bottom,tbtags
+
+14=Displayed equations
+14.1=Centered - default,
+14.2=Flush left,fleqn
+
+15=E-only journal
+15.1=Electronic-only journal,e-only
+
+[amsbook]
+1=Body text point size
+1.1=8pt,8pt
+1.2=9pt,9pt
+1.3=10pt - default,
+1.4=11pt,11pt
+1.5=12pt,12pt
+
+2=Paper size
+2.1=8.5x11 - default,letterpaper
+2.2=a4,a4paper
+
+3=Orientation
+3.1=Portrait - default,portrait
+3.2=Landscape,landscape
+
+4=Print side
+4.1=Print one side,oneside
+4.2=Print both sides - default,twoside
+
+5=Quality
+5.1=Final - default,final
+5.2=Draft,draft
+
+6=Title page
+6.1=Title page - default,titlepage
+6.2=No title page,notitlepage
+
+7=Start chapter on left
+7.1=No - default,openright
+7.2=Yes,openany
+
+8=Columns
+8.1=One column - default,onecolumn
+8.2=Two columns,twocolumn
+
+9=Nomath
+9.1=Omit extra math features,nomath
+
+10=AMSFonts
+10.1=No AMSFonts available,noamsfonts
+
+11=PSAMSFonts
+11.1=Fewer AMSFonts sizes,psamsfonts
+
+12=Equation numbering
+12.1=Numbers on left - default,leqno
+12.2=Numbers on right,reqno
+
+13=Equation centering
+13.1=Number centered - default,centertags
+13.2=Number top/bottom,tbtags
+
+14=Displayed equations
+14.1=Centered - default,
+14.2=Flush left,fleqn
+
+[amsproc]
+1=Body text point size
+1.1=8pt,8pt
+1.2=9pt,9pt
+1.3=10pt - default,
+1.4=11pt,11pt
+1.5=12pt,12pt
+
+2=Paper size
+2.1=8.5x11 - default,letterpaper
+2.2=a4,a4paper
+
+3=Orientation
+3.1=Portrait - default,portrait
+3.2=Landscape,landscape
+
+4=Print side
+4.1=Print one side,oneside
+4.2=Print both sides - default,twoside
+
+5=Quality
+5.1=Final - default,final
+5.2=Draft,draft
+
+6=Title page
+6.1=Title page,titlepage
+6.2=No title page - default,notitlepage
+
+8=Columns
+8.1=One column - default,onecolumn
+8.2=Two columns,twocolumn
+
+9=Nomath
+9.1=Omit extra math features,nomath
+
+10=AMSFonts
+10.1=No AMSFonts available,noamsfonts
+
+11=PSAMSFonts
+11.1=Fewer AMSFonts sizes,psamsfonts
+
+12=Equation numbering
+12.1=Numbers on left - default,leqno
+12.2=Numbers on right,reqno
+
+13=Equation centering
+13.1=Number centered - default,centertags
+13.2=Number top/bottom,tbtags
+
+14=Displayed equations
+14.1=Centered - default,
+14.2=Flush left,fleqn
+
+[apjrnl]
+1=Journal
+1.1=none selected,none
+1.2=Advances in Appl. Math.,aama
+1.3=Advances in Math.,aima
+1.4=Annals of Physics,aphy
+1.5=Appl. Comp. Harmon. Anal.,acha
+1.6=Comput. Vision Image Understanding,cviu
+1.7=Develop. Review (APA),drev
+1.8=Explorations in Econ. History,exeh
+1.9=Finite Fields Appl.,ffta
+1.10=Games Econom. Behav.,game
+1.11=Graphical Models,gmod
+1.12=Inform. and Computation,inco
+1.13=J. Algebra,jabr
+1.14=J. Algorithms,jagm
+1.15=J. Approximation Theory,jath
+1.16=J. Comparative Economics,jcec
+1.17=J. Complexity,jcom
+1.18=J. Comput. System Sci.,jcss
+1.19=J. Combinat. Theory Ser. A,jcta
+1.20=J. Combinat. Theory Ser. B,jctb
+1.21=J. Differential Equations,jdeq
+1.22=J. Economic Theory,jeth
+1.23=J. Functional Analysis,jfan
+1.24=J. Financial Intermediation,jfin
+1.25=J. Housing Economics,jhec
+1.26=J. Japan. Internat. Economies,jjie
+1.27=J. Math. Anal. and Appl.,jmaa
+1.28=J. Math. Psychology (APA),jmps
+1.29=J. Multivariate Analysis,jmva
+1.30=J. Number Theory,jnth
+1.31=J. Parallel Distrib. Comput.,jpdc
+1.32=J. Urban Economics,juec
+1.33=J. Vocational Behav. (APA),jvbe
+1.34=J. Vis. Comm. Image Represent.,jvic
+1.35=Metabolic Engineering,mben
+1.36=Optical Fiber Technology,ofte
+1.37=Rev. of Econom. Dynamics,redy
+1.38=Social Science Research,ssre
+1.39=*Digital Signal Processing,dspr
+1.40=*J. Catalysis,jcat
+1.41=*J. Colloid Interface Sci.,jcis
+1.42=*J. Computational Physics,jcph
+1.43=*J. Magnetic Resonance,jmre
+1.44=*J. Solid State Chemistry,jssc
+
+2=Quality
+2.1=Final - default,
+2.2=Draft,draft
+
+3=Paper size
+3.1=8.5x11 - default,letterpaper
+3.2=a4,a4paper
+3.3=a5,a5paper
+3.4=b5,b5paper
+3.5=Legal size,legalpaper
+3.6=Executive size,executivepaper
+
+[article]
+1=Body text point size
+1.1=10pt - default,
+1.2=11pt,11pt
+1.3=12pt,12pt
+
+2=Paper size
+2.1=8.5x11 - default,letterpaper
+2.2=a4,a4paper
+2.3=a5,a5paper
+2.4=b5,b5paper
+2.5=Legal size,legalpaper
+2.6=Executive size,executivepaper
+
+3=Orientation
+3.1=Portrait - default,
+3.2=Landscape,landscape
+
+4=Print side
+4.1=Print one side - default,oneside
+4.2=Print both sides,twoside
+
+5=Quality
+5.1=Final - default,final
+5.2=Draft,draft
+
+6=Title page
+6.1=Title page,titlepage
+6.2=No title page - default,notitlepage
+
+7=Columns
+7.1=One column - default,onecolumn
+7.2=Two columns,twocolumn
+
+8=Equation numbering
+8.1=Numbers on left,leqno
+8.2=Numbers on right - default,
+
+9=Displayed equations
+9.1=Centered - default,
+9.2=Flush left,fleqn
+
+10=Bibliography style
+10.1=Compressed - default,
+10.2=Open,openbib
+
+[asaetr]
+1=Document layout
+1.1=Final layout - default,
+1.2=Submission layout,asaesub
+
+[book]
+1=Body text point size
+1.1=10pt - default,
+1.2=11pt,11pt
+1.3=12pt,12pt
+
+2=Paper size
+2.1=8.5x11 - default,letterpaper
+2.2=a4,a4paper
+2.3=a5,a5paper
+2.4=b5,b5paper
+2.5=Legal size,legalpaper
+2.6=Executive size,executivepaper
+
+3=Orientation
+3.1=Portrait - default,
+3.2=Landscape,landscape
+
+4=Print side
+4.1=Print one side,oneside
+4.2=Print both sides - default,twoside
+
+5=Quality
+5.1=Final - default,final
+5.2=Draft,draft
+
+6=Title page
+6.1=Title page - default,titlepage
+6.2=No title page,notitlepage
+
+7=Columns
+7.1=One column - default,onecolumn
+7.2=Two columns,twocolumn
+
+8=Start chapter on left
+8.1=No - default,openright
+8.2=Yes,openany
+
+9=Equation numbering
+9.1=Numbers on left,leqno
+9.2=Numbers on right - default,
+
+10=Displayed equations
+10.1=Centered - default,
+10.2=Flush left,fleqn
+
+11=Bibliography style
+11.1=Compressed - default,
+11.2=Open,openbib
+
+[csart]
+1=Body text point size
+1.1=10pt - default,
+1.2=11pt,11pt
+1.3=12pt,12pt
+
+2=Print side
+2.1=Print one side - default,oneside
+2.2=Print both sides,twoside
+
+3=Quality
+3.1=Final - default,final
+3.2=Draft,draft
+
+[deproc]
+1=Body text point size
+1.1=10pt - default,
+1.2=11pt,11pt
+1.3=12pt,12pt
+
+2=Paper size
+2.1=8.5x11 - default,letterpaper
+2.2=a4,a4paper
+2.3=a5,a5paper
+2.4=b5,b5paper
+2.5=Legal size,legalpaper
+2.6=Executive size,executivepaper
+
+3=Orientation
+3.1=Portrait - default,
+3.2=Landscape,landscape
+
+4=Print side
+4.1=Print one side - default,oneside
+4.2=Print both sides,twoside
+
+5=Quality
+5.1=Final - default,final
+5.2=Draft,draft
+
+7=Columns
+7.1=One column - default,onecolumn
+7.2=Two columns,twocolumn
+
+8=Equation numbering
+8.1=Numbers on left,leqno
+8.2=Numbers on right - default,
+
+9=Displayed equations
+9.1=Centered - default,
+9.2=Flush left,fleqn
+
+10=Bibliography style
+10.1=Compressed - default,
+10.2=Open,openbib
+
+[dinbrief]
+1=Body text point size
+1.1=10pt - default,10pt
+1.2=11pt,11pt
+1.3=12pt,12pt
+1.4=DIN 2107; 2142,norm
+
+2=Paper size
+2.1=8.5x11,letterpaper
+2.2=a4 - default,a4paper
+2.3=a5,a5paper
+2.4=b5,b5paper
+2.5=Legal size,legalpaper
+2.6=Executive size,executivepaper
+
+3=Print side
+3.1=Print one side - default,
+3.2=Print both sides,twoside
+
+4=DIN676 letter layout
+4.1=Form A,addresshigh
+4.2=Form B - default,addressstd
+
+5=Quality
+5.1=Final - default,final
+5.2=Draft,draft
+
+6=Columns
+6.1=One column - default,onecolumn
+6.2=Two columns,twocolumn
+
+[elsart]
+1=Body text point size
+1.1=12pt - default,12pt
+2=Print side
+2.1=Print one side - default,oneside
+2.2=Print both sides,twoside
+3=Columns
+3.1=One column - default,onecolumn
+3.2=Two columns,twocolumn
+4=Quality
+4.1=Final - default,final
+4.2=Draft,draft
+5=Line Spacing
+5.1=Single spacing - default,
+5.2=Double spacing,doublespacing
+6=Equation numbering
+6.1=Continuous - default,
+6.2=Reset each section,seceqn
+7=Theorem numbering
+7.1=Continuous - default,
+7.2=Reset each section,secthm
+8=Use amsthm package
+8.1=No - default,
+8.2=Yes,amsthm
+9=Show bibliography label
+9.1=No,nameyear
+9.2=Yes - default,
+
+[gatech-thesis]
+1=Body text point size
+1.1=10pt - default,
+1.2=11pt,11pt
+1.3=12pt,12pt
+
+2=Paper size
+2.1=8.5x11 - default,letterpaper
+2.2=a4,a4paper
+2.3=a5,a5paper
+2.4=b5,b5paper
+2.5=Legal size,legalpaper
+2.6=Executive size,executivepaper
+
+3=Orientation
+3.1=Portrait - default,
+3.2=Landscape,landscape
+
+4=Print side
+4.1=Print one side - default,oneside
+4.2=Print both sides,twoside
+
+5=Quality
+5.1=Final - default,final
+5.2=Draft,draft
+
+6=Title page
+6.1=Title page - default,titlepage
+6.2=No title page,notitlepage
+
+7=Columns
+7.1=One column - default,onecolumn
+7.2=Two columns,twocolumn
+
+8=Start chapter on left
+8.1=No,openright
+8.2=Yes - default,openany
+
+9=Equation numbering
+9.1=Numbers on left,leqno
+9.2=Numbers on right - default,
+
+10=Displayed equations
+10.1=Centered - default,
+10.2=Flush left,fleqn
+
+11=Bibliography style
+11.1=Compressed - default,
+11.2=Open,openbib
+
+12=Line spacing
+12.1=Single spaced - default,singlespaced
+12.2=One and a half spaced,oneandahalfspaced
+12.3=Double spaced,doublespaced
+
+13=Notes line spacing
+13.1=Single spaced - default,
+13.2=Same as document body,spacednotes
+
+14=Margin sizes
+14.1=Normal - default,normalmargins
+14.2=Narrow,narrowmargins
+14.3=Wide,widemargins
+14.4=Extra wide,extrawidemargins
+14.5=Obsolete,oldmargins
+
+15=Hyperref package
+15.1=No - default,
+15.2=Yes,hyperref
+
+[IEEEtran]
+1=Body text point size
+1.1= 9pt,9pt
+1.2=10pt - default,
+1.3=11pt,11pt
+1.4=12pt,12pt
+
+2=Quality
+2.1=Final - default,final
+2.2=Draft (including packages),draft
+2.3=Draft (this class only),draftcls
+2.4=Draft (this class-no footnotes),draftclsnofoot
+
+3=Paper type
+3.1=Journal article - default,journal
+3.2=Conference article,conference
+3.3=Technical note,technote
+3.4=Peer review article,peerreview
+3.5=Peer review w/author names,peerreviewca
+
+4=Paper size
+4.1=8.5x11 - default,letterpaper
+4.2=a4,a4paper
+
+5=Print side
+5.1=Print one side - default,oneside
+5.2=Print both sides,twoside
+
+6=Columns
+6.1=One column,onecolumn
+6.2=Two columns - default,twocolumn
+
+7=Font tuning
+7.1=No,nofonttune
+7.2=Yes - default,
+
+[ifacmtg]
+1=Paper size
+1.1=8.5x11,letterpaper
+1.2=a4 - default,a4paper
+
+[jjap]
+1=Document layout
+1.1=Final layout - default,
+1.2=Submission layout,jjapprn
+
+5=Equation numbering
+5.1=Continuous - default,
+5.2=Reset each section,seceq
+
+[jltp]
+1=Body text point size
+1.2=11pt - default,11pt
+1.3=12pt,12pt
+
+2=Paper size
+2.1=8.5x11 - default,letterpaper
+2.2=a4,a4paper
+2.3=a5,a5paper
+2.4=b5,b5paper
+2.5=Legal size,legalpaper
+2.6=Executive size,executivepaper
+
+3=Orientation
+3.1=Portrait - default,
+3.2=Landscape,landscape
+
+4=Print side
+4.1=Print one side,oneside
+4.2=Print both sides - default,twoside
+
+5=Quality
+5.1=Final - default,final
+5.2=Draft,draft
+
+8=Equation numbering
+8.1=Numbers on left,leqno
+8.2=Numbers on right - default,
+
+9=Displayed equations
+9.1=Centered - default,
+9.2=Flush left,fleqn
+
+10=Bibliography style
+10.1=Compressed - default,
+10.2=Open,openbib
+
+[kluwer]
+1=Body text point size
+1.1=9pt,9pt
+1.2=10pt,10pt
+1.3=11pt - default,11pt
+1.4=12pt,12pt
+
+2=Paper size
+2.1=8.5x11,letterpaper
+2.2=a4 - default,a4paper
+2.3=a5,a5paper
+2.4=b5,b5paper
+2.5=Legal size,legalpaper
+2.6=Executive size,executivepaper
+
+3=Orientation
+3.1=Portrait - default,
+3.2=Landscape,landscape
+
+4=Print side
+4.1=Print one side,oneside
+4.2=Print both sides - default,twoside
+
+5=Quality
+5.1=Final - default,final
+5.2=Draft,draft
+
+6=Columns
+6.1=One column - default,onecolumn
+6.2=Two columns,twocolumn
+
+7=Start chapter/section on left
+7.1=No - default,openright
+7.2=Yes,openany
+
+8=Displayed equations
+8.1=Centered - default,
+8.2=Flush left,fleqn
+
+9=Equation numbering
+9.1=Continuous - default,
+9.2=Reset each chapter,mathchap
+9.3=Reset each section,mathsec
+
+10=Equation number position
+10.1=Numbers on left,leqno
+10.2=Numbers on right - default,
+
+11=Bibliography style
+11.1=Compressed - default,
+11.2=Open,openbib
+
+12=Bibliography naming
+12.1=Named references,namedreferences
+12.2=Numbered references,numreferences
+
+13=Use chapters
+13.1=No - default,
+13.2=Yes,chapter
+
+[letter]
+1=Body text point size
+1.1=10pt - default,
+1.2=11pt,11pt
+1.3=12pt,12pt
+
+2=Paper size
+2.1=8.5x11 - default,letterpaper
+2.2=a4,a4paper
+2.3=a5,a5paper
+2.4=b5,b5paper
+2.5=Legal size,legalpaper
+2.6=Executive size,executivepaper
+
+3=Print side
+3.1=Print one side - default,oneside
+3.2=Print both sides,twoside
+
+4=Quality
+4.1=Final - default,final
+4.2=Draft,draft
+
+5=Columns
+5.1=One column - default,onecolumn
+5.2=Two columns,twocolumn
+
+
+[llncs]
+
+1=Body text point size
+1.1=10pt - default,
+1.2=11pt,11pt
+1.3=12pt,12pt
+
+2=Paper size
+2.1=8.5x11 - default,letterpaper
+2.2=a4,a4paper
+2.3=a5,a5paper
+2.4=b5,b5paper
+2.5=Legal size,legalpaper
+2.6=Executive size,executivepaper
+
+3=Orientation
+3.1=Portrait - default,
+3.2=Landscape,landscape
+
+4=Print side
+4.1=Print one side,oneside
+4.2=Print both sides - default,twoside
+
+5=Quality
+5.1=Final - default,final
+5.2=Draft,draft
+
+6=Title page
+6.1=Title page,titlepage
+6.2=No title page - default,notitlepage
+
+7=Columns
+7.1=One column - default,onecolumn
+7.2=Two columns,twocolumn
+
+8=Equation numbering
+8.1=Numbers on left,leqno
+8.2=Numbers on right - default,
+
+9=Displayed equations
+9.1=Centered - default,
+9.2=Flush left,fleqn
+
+10=Running headers
+10.1=Off - default,
+10.2=On,runningheads
+
+11=Theorem numbering
+11.1=Common,envcountsame
+11.2=Independent - default,
+
+12=Theorem numbering reset
+12.1=None - default,
+12.2=Reset each section,envcountreset
+
+13=Citation format
+13.1=Numbered - default,
+13.2=Author-year,citeauthoryear
+
+14=Bibliography format
+14.1=Original (use with BibTeX),oribibl
+
+15=Vector typesetting
+15.1=Bold italic - default,
+15.2=Original LaTeX,orivec
+
+16=Bibliography style
+16.1=Compressed - default,
+16.2=Open,openbib
+
+[memoir]
+1=Body text point size
+1.1= 9pt,9pt
+1.2=10pt - default,10pt
+1.3=11pt,11pt
+1.4=12pt,12pt
+1.5=14pt,14pt
+1.6=17pt,17pt
+2=Paper size
+2.1=8.5x11 - default,letterpaper
+2.2=a3,a3paper
+2.3=a4,a4paper
+2.4=a5,a5paper
+2.5=a6,a6paper
+2.6=b3,b3paper
+2.7=b4,b4paper
+2.8=b5,b5paper
+2.9=b6,b6paper
+2.10=Legal size,legalpaper
+2.11=Executive size,executivepaper
+2.12=Ebook,ebook
+3=Orientation
+3.1=Portrait - default,
+3.2=Landscape,landscape
+4=Print side
+4.1=Print one side,oneside
+4.2=Print both sides - default,twoside
+5=Columns
+5.1=One column - default,onecolumn
+5.2=Two columns,twocolumn
+6=Start chapter on left
+6.1=No (never) - default,openright
+6.2=Yes (always),openleft
+6.2=Yes (as needed),openany
+7=Quality
+7.1=Final - default,final
+7.2=Draft,draft
+7.3=Typewriter mode,ms
+8=Show crop marks
+8.1=No - default,
+8.2=Yes,showtrims
+9=Equation numbering
+9.1=Numbers on left,leqno
+9.2=Numbers on right - default,
+10=Displayed equations
+10.1=Centered - default,
+10.2=Flush left,fleqn
+11=Bibliography style
+11.1=Compressed - default,
+11.2=Open,openbib
+12=Article document type
+12.1=No - default,
+12.2=Yes,article
+13=Old font commands allowed
+13.1=No - default,
+13.2=Yes,oldfontcommands
+
+[mn]
+1=Columns
+1.1=One column,onecolumn
+1.2=Two columns - default,twocolumn
+
+2=Line Spacing
+2.1=Single spacing - default,
+2.2=Double spacing,doublespacing
+
+3=Quality
+3.1=Final - default,final
+3.2=Draft,draft
+
+4=Referee format
+4.1=Off - default,
+4.2=On,referee
+
+5=Galley format
+5.1=Off - default,
+5.2=On,galley
+
+6=Orientation
+6.1=Portrait - default,
+6.2=Landscape,landscape
+
+[nuthesis]
+1=Body text point size
+1.1=8pt,8pt
+1.2=9pt,9pt
+1.3=10pt - default,
+1.4=11pt,11pt
+1.5=12pt,12pt
+
+2=Paper size
+2.1=8.5x11 - default,letterpaper
+2.2=a4,a4paper
+
+3=Orientation
+3.1=Portrait - default,portrait
+3.2=Landscape,landscape
+
+4=Print side
+4.1=Print one side,oneside
+4.2=Print both sides - default,twoside
+
+5=Quality
+5.1=Final - default,final
+5.2=Draft,draft
+
+6=Title page
+6.1=Title page - default,titlepage
+6.2=No title page,notitlepage
+
+7=Start chapter on left
+7.1=No - default,openright
+7.2=Yes,openany
+
+8=Columns
+8.1=One column - default,onecolumn
+8.2=Two columns,twocolumn
+
+9=Nomath
+9.1=Omit extra math features,nomath
+
+10=AMSFonts
+10.1=No AMSFonts available,noamsfonts
+
+11=PSAMSFonts
+11.1=Fewer AMSFonts sizes,psamsfonts
+
+12=Equation numbering
+12.1=Numbers on left - default,leqno
+12.2=Numbers on right,reqno
+
+13=Equation centering
+13.1=Number centered - default,centertags
+13.2=Number top/bottom,tbtags
+
+14=Displayed equations
+14.1=Centered - default,
+14.2=Flush left,fleqn
+
+[pittetd]
+1=Body text point size
+1.1=10pt,10pt
+1.2=11pt,11pt
+1.3=12pt - default,12pt
+
+2=Stage
+2.1=Final,final
+2.2=Semi-final - default,semifinal
+2.3=Draft,draft
+
+3=Type
+3.1=PhD dissertation - default,phd
+3.2=M.S.’s thesis,ms
+3.3=M.A.’s thesis,ma
+
+4=Equation numbering
+4.1=Numbers on left,leqno
+4.2=Numbers on right - default,
+
+5=Displayed equations
+5.1=Centered - default,
+5.2=Flush left,fleqn
+
+6=Bibliography style
+6.1=Compressed - default,
+6.2=Open,openbib
+
+7=Section numbering
+7.1=Numbers - default,sectionnumbers
+7.2=Letters,sectionletters
+
+8=PDF production
+8.1=dvipdfm,dvipdfm
+8.2=pdftex,pdftex
+8.3=nohyperref,nohyperref
+
+[proc]
+1=Body text point size
+1.1=10pt - default,
+1.2=11pt,11pt
+1.3=12pt,12pt
+
+2=Paper size
+2.1=8.5x11 - default,letterpaper
+2.2=a4,a4paper
+2.3=Legal size,legalpaper
+2.4=Executive size,executivepaper
+
+3=Orientation
+3.1=Portrait - default,
+3.2=Landscape,landscape
+
+4=Print side
+4.1=Print one side - default,oneside
+4.2=Print both sides,twoside
+
+5=Quality
+5.1=Final - default,final
+5.2=Draft,draft
+
+8=Equation numbering
+8.1=Numbers on left,leqno
+8.2=Numbers on right - default,
+
+9=Displayed equations
+9.1=Centered - default,
+9.2=Flush left,fleqn
+
+10=Bibliography style
+10.1=Compressed - default,
+10.2=Open,openbib
+
+[refart]
+1=Body text point size
+1.1=10pt - default,
+1.2=11pt,11pt
+1.3=12pt,12pt
+
+2=Paper size
+2.1=8.5x11 - default,letterpaper
+2.2=a4,a4paper
+2.3=a5,a5paper
+2.4=b5,b5paper
+2.5=Legal size,legalpaper
+2.6=Executive size,executivepaper
+
+3=Orientation
+3.1=Portrait - default,
+3.2=Landscape,landscape
+
+4=Print side
+4.1=Print one side - default,oneside
+4.2=Print both sides,twoside
+
+5=Quality
+5.1=Final - default,final
+5.2=Draft,draft
+
+6=Title page
+6.1=Title page,titlepage
+6.2=No title page - default,notitlepage
+
+7=Text formatting
+7.1=Square (width equals height),square
+
+8=Equation numbering
+8.1=Numbers on left,leqno
+8.2=Numbers on right - default,
+
+9=Displayed equations
+9.1=Centered - default,
+9.2=Flush left,fleqn
+
+10=Bibliography style
+10.1=Compressed - default,
+10.2=Open,openbib
+
+[refrep]
+1=Body text point size
+1.1=10pt - default,
+1.2=11pt,11pt
+1.3=12pt,12pt
+
+2=Paper size
+2.1=8.5x11 - default,letterpaper
+2.2=a4,a4paper
+2.3=a5,a5paper
+2.4=b5,b5paper
+2.5=Legal size,legalpaper
+2.6=Executive size,executivepaper
+
+3=Orientation
+3.1=Portrait - default,
+3.2=Landscape,landscape
+
+4=Print side
+4.1=Print one side - default,oneside
+4.2=Print both sides,twoside
+
+5=Quality
+5.1=Final - default,final
+5.2=Draft,draft
+
+6=Title page
+6.1=Title page - default,titlepage
+6.2=No title page,notitlepage
+
+7=Text formatting
+7.1=Square (width equals height),square
+
+8=Start chapter on left
+8.1=No,openright
+8.2=Yes - default,openany
+
+9=Equation numbering
+9.1=Numbers on left,leqno
+9.2=Numbers on right - default,
+
+10=Displayed equations
+10.1=Centered - default,
+10.2=Flush left,fleqn
+
+11=Bibliography style
+11.1=Compressed - default,
+11.2=Open,openbib
+
+[report]
+1=Body text point size
+1.1=10pt - default,
+1.2=11pt,11pt
+1.3=12pt,12pt
+
+2=Paper size
+2.1=8.5x11 - default,letterpaper
+2.2=a4,a4paper
+2.3=a5,a5paper
+2.4=b5,b5paper
+2.5=Legal size,legalpaper
+2.6=Executive size,executivepaper
+
+3=Orientation
+3.1=Portrait - default,
+3.2=Landscape,landscape
+
+4=Print side
+4.1=Print one side - default,oneside
+4.2=Print both sides,twoside
+
+5=Quality
+5.1=Final - default,final
+5.2=Draft,draft
+
+6=Title page
+6.1=Title page - default,titlepage
+6.2=No title page,notitlepage
+
+7=Columns
+7.1=One column - default,onecolumn
+7.2=Two columns,twocolumn
+
+8=Start chapter on left
+8.1=No,openright
+8.2=Yes - default,openany
+
+9=Equation numbering
+9.1=Numbers on left,leqno
+9.2=Numbers on right - default,
+
+10=Displayed equations
+10.1=Centered - default,
+10.2=Flush left,fleqn
+
+11=Bibliography style
+11.1=Compressed - default,
+11.2=Open,openbib
+
+[revtex4]
+1=Document Substyle
+1.1=American Physical Society,aps
+1.2=Physical Review A,pra
+1.3=Physical Review B,prb
+1.4=Physical Review C,prc
+1.5=Physical Review D,prd
+1.6=Physical Review E,pre
+1.7=Physical Review Letters,prl
+1.8=Spec Topics-Accel and Beams,prstab
+1.9=Reviews of Modern Physics,rmp
+1.10=OSA(unimplemented, beta 3),osa
+
+2=Body text point size
+2.1=10pt - default,10pt
+2.2=11pt,11pt
+2.3=12pt,12pt
+
+3=Paper size
+3.1=8.5x11 - default,letterpaper
+3.2=a4,a4paper
+3.3=a5,a5paper
+3.4=b5,b5paper
+3.5=Legal size,legalpaper
+3.6=Executive size,executivepaper
+
+4=Orientation
+4.1=Portrait - default,
+4.2=Landscape,landscape
+
+5=AMS Fonts
+5.1=Load AMS fonts,amsfonts
+5.2=Do not load AMS fonts,noamsfonts
+
+6=AMS Symbols
+6.1=Load AMS symbols,amssymb
+6.2=Do not load AMS symbols,noamssymb
+
+7=Authors and Addresses
+7.1=List addresses separately,groupedaddress
+7.2=List authors in order specified,unsortedaddress
+7.3=Authors listed in one paragraph,runinaddress
+7.4=List all authors in a single list,superscriptaddress
+
+8=Columns
+8.1=One column - default,onecolumn
+8.2=Two columns,twocolumn
+
+9=Typeset Format
+9.1=Preprint - default,preprint
+9.2=Galley,galley
+
+10=Quality
+10.1=Final - default,final
+10.2=Draft,draft
+
+11=Spacing
+11.1=Normal - default,
+11.2=Tighten line spacing,tightenlines
+
+12=Length Check
+12.1=Off - default,
+12.2=On,lengthcheck
+
+13=Display PACS
+13.1=Off - default,noshowpacs
+13.2=On,showpacs
+
+14=Display keywords
+14.1=Off - default,noshowkeys
+14.2=On,showkeys
+
+15=Typeset by REVTeX
+15.1=Off - default,
+15.2=On,byrevtex
+
+16=Title page notes
+16.1=Footnotes on title page,nobibnotes
+16.2=At begining of bibliography,bibnotes
+
+17=Footnotes position
+17.1=Bottom of page,nofootinbib
+17.2=At end of bibliography,footinbib
+
+18=Bibliography Numbers
+18.1=Numbers in square brackets,
+18.2=Numbers as superscripts,superbib
+
+19=Equation numbering
+19.1=Continuous - default,
+19.2=Reset each section,eqsecnum
+
+20=Displayed equations
+20.1=Centered - default,
+20.2=Flush left,fleqn
+
+21=Section Numbering
+21.1=Arabic numbering,secnumarabic
+
+22=Placement of Floats
+22.1=Throughout document,floats
+22.2=At end of document,endfloats
+
+23=Two-column balancing
+23.1=Off,nobalancelastpage
+23.2=On - default,balancelastpage
+
+24=Title page
+24.1=Title page,titlepage
+24.2=No title page - default,notitlepage
+
+25=Print side
+25.1=Print one side,oneside
+25.2=Print both sides - default,twoside
+
+26=Hypertext Option
+26.1=Off - default
+26.2=On,hyperref
+
+[sebase]
+
+2=Hyperref Option
+2.1=Off - default
+2.2=On,hyper
+
+[siamltex]
+
+1=Quality
+1.1=Final,final
+1.2=Draft - default,draft
+
+2=Equation numbers
+2.1=Reset each section - default,
+2.2=Continuous,oneeqnum
+
+3=Table numbers
+3.1=Reset each section - default,
+3.2=Continuous,onetabnum
+
+4=Figure numbers
+4.1=Reset each section - default,
+4.2=Continuous,onefignum
+
+5=Theorem numbers
+5.1=Reset each section - default,
+5.2=Continuous,onethmnum
+
+[spie]
+1=Body text point size
+1.1=10pt - default,
+1.2=11pt,11pt
+1.3=12pt,12pt
+
+2=Paper size
+2.1=8.5x11 - default,letterpaper
+2.2=a4,a4paper
+2.3=a5,a5paper
+2.4=b5,b5paper
+2.5=Legal size,legalpaper
+2.6=Executive size,executivepaper
+
+3=Orientation
+3.1=Portrait - default,
+3.2=Landscape,landscape
+
+4=Print side
+4.1=Print one side - default,oneside
+4.2=Print both sides,twoside
+
+5=Quality
+5.1=Final - default,final
+5.2=Draft,draft
+
+6=Title page
+6.1=Title page,titlepage
+6.2=No title page - default,notitlepage
+
+7=Columns
+7.1=One column - default,onecolumn
+7.2=Two columns,twocolumn
+
+8=Equation numbering
+8.1=Numbers on left,leqno
+8.2=Numbers on right - default,
+
+9=Displayed equations
+9.1=Centered - default,
+9.2=Flush left,fleqn
+
+10=Bibliography style
+10.1=Compressed - default,
+10.2=Open,openbib
+
+[svjour]
+
+1=Journal (required)
+1.1=Unspecified,global
+
+2=Body text point size
+2.1=10pt - default,10pt
+
+3=Paper size
+3.1=a4 - default,a4paper
+
+4=Print side
+4.1=Print both sides - default,twoside
+
+5=Quality
+5.1=Final - default,final
+5.2=Draft,draft
+5.3=Referee,referee
+
+6=Columns
+6.1=One column - default,onecolumn
+6.2=Two columns,twocolumn
+
+7=Displayed equations
+7.1=Centered - default,
+7.2=Flush left,fleqn
+
+8=Numbering
+8.1=Preface with section,numbook
+
+9=Theorem Numbering
+9.1=Preface with section,envcountsect
+
+10=Theorem Numbering
+10.1=Independent - default
+10.2=Common,envcountsame
+
+11=Theorem Numbering
+11.1=Reset each section
+
+12=Bibliography style
+12.1=Compressed - default,
+12.2=Open,openbib
+
+13=Language
+13.1=English - default,
+13.2=French,francais
+13.3=German,deutsch
+
+[ua-thesis]
+1=Body text point size
+1.1=10pt - default,
+1.2=11pt,11pt
+1.3=12pt,12pt
+
+2=Paper size
+2.1=8.5x11 - default,letterpaper
+2.2=a4,a4paper
+2.3=a5,a5paper
+2.4=b5,b5paper
+2.5=Legal size,legalpaper
+2.6=Executive size,executivepaper
+
+3=Orientation
+3.1=Portrait - default,
+3.2=Landscape,landscape
+
+4=Print side
+4.1=Print one side - default,oneside
+4.2=Print both sides,twoside
+
+5=Quality
+5.1=Final - default,final
+5.2=Draft,draft
+
+6=Title page
+6.1=Title page - default,titlepage
+6.2=No title page,notitlepage
+
+7=Columns
+7.1=One column - default,onecolumn
+7.2=Two columns,twocolumn
+
+8=Start chapter on left
+8.1=No,openright
+8.2=Yes - default,openany
+
+9=Equation numbering
+9.1=Numbers on left,leqno
+9.2=Numbers on right - default,
+
+10=Displayed equations
+10.1=Centered - default,
+10.2=Flush left,fleqn
+
+11=Bibliography style
+11.1=Compressed - default,
+11.2=Open,openbib
+
+[ucthesis]
+1=Body text point size
+1.1=10pt,10pt
+1.2=11pt - default,11pt
+1.3=12pt,12pt
+
+4=Print side
+4.1=Print one side - default,oneside
+4.2=Print both sides,twoside
+
+5=Quality
+5.1=Final - default,final
+5.2=Draft,draft
+
+[unhthesis]
+1=Body text point size
+1.1=10pt,10pt
+1.2=11pt,11pt
+1.3=12pt - default,12pt
+
+2=Paper size
+2.1=8.5x11 - default,letterpaper
+2.2=a4,a4paper
+2.3=a5,a5paper
+2.4=b5,b5paper
+2.5=Legal size,legalpaper
+2.6=Executive size,executivepaper
+
+3=Orientation
+3.1=Portrait - default,
+3.2=Landscape,landscape
+
+4=Print side
+4.1=Print one side - default,oneside
+4.2=Print both sides,twoside
+
+5=Quality
+5.1=Final - default,final
+5.2=Draft,draft
+
+6=Title page
+6.1=Title page - default,titlepage
+6.2=No title page,notitlepage
+
+7=Columns
+7.1=One column - default,onecolumn
+7.2=Two columns,twocolumn
+
+8=Start chapter on left
+8.1=No,openright
+8.2=Yes - default,openany
+
+9=Equation numbering
+9.1=Numbers on left,leqno
+9.2=Numbers on right - default,
+
+10=Displayed equations
+10.1=Centered - default,
+10.2=Flush left,fleqn
+
+11=Bibliography style
+11.1=Compressed - default,
+11.2=Open,openbib
+
+12=Line spacing
+12.1=Double space - default,doublespace
+12.2=Single space,singlespace
+
+[unmeethesis]
+1=Body text point size
+1.1=10pt,10pt
+1.2=11pt,11pt
+1.3=12pt - default,12pt
+
+2=Paper size
+2.1=8.5x11 - default,letterpaper
+2.2=a4,a4paper
+2.3=a5,a5paper
+2.4=b5,b5paper
+2.5=Legal size,legalpaper
+2.6=Executive size,executivepaper
+
+3=Orientation
+3.1=Portrait - default,
+3.2=Landscape,landscape
+
+4=Print side
+4.1=Print one side - default,oneside
+4.2=Print both sides,twoside
+
+5=Quality
+5.1=Final,final
+5.2=Draft - default,draft
+
+6=Start chapter on left
+6.1=No - default,openright
+6.2=Yes,openany
+
+7=Equation numbering
+7.1=Numbers on left,leqno
+7.2=Numbers on right - default,
+
+8=Bibliography style
+8.1=Compressed - default,
+8.2=Open,openbib
+
+9=Page number position
+9.1=Top right - default,
+9.2=Bottom center,botnum
+
+10=Box around title pages
+10.1=No,nobox
+10.2=Yes - default,
+
+[unswthesis]
+1=Body text point size
+1.1=10pt,10pt
+1.2=11pt - default,11pt
+1.3=12pt,12pt
+
+2=Paper size
+2.1=8.5x11,letterpaper
+2.2=a4 - default,a4paper
+2.3=a5,a5paper
+2.4=b5,b5paper
+2.5=Legal size,legalpaper
+2.6=Executive size,executivepaper
+
+3=Orientation
+3.1=Portrait - default,
+3.2=Landscape,landscape
+
+4=Print side
+4.1=Print one side - default,oneside
+4.2=Print both sides,twoside
+
+5=Quality
+5.1=Final - default,final
+5.2=Draft,draft
+
+6=Line spacing
+6.1=Single,singlespacing
+6.2=Double - default,doublespacing
+
+7=Columns
+7.1=One column - default,onecolumn
+7.2=Two columns,twocolumn
+
+8=Start chapter on left
+8.1=No,openright
+8.2=Yes - default,openany
+
+9=Equation numbering
+9.1=Numbers on left,leqno
+9.2=Numbers on right - default,
+
+10=Displayed equations
+10.1=Centered - default,
+10.2=Flush left,fleqn
+
+11=Bibliography style
+11.1=Compressed - default,
+11.2=Open,openbib
+
+[uwthesis]
+1=Body text point size
+1.1=10pt,10pt
+1.2=11pt,11pt
+1.3=12pt - default,12pt
+
+2=Paper size
+2.1=8.5x11 - default,letterpaper
+2.2=a4,a4paper
+2.3=a5,a5paper
+2.4=b5,b5paper
+2.5=Legal size,legalpaper
+2.6=Executive size,executivepaper
+
+3=Orientation
+3.1=Portrait - default,
+3.2=Landscape,landscape
+
+4=Print side
+4.1=Print one side,oneside
+4.2=Print both sides - default,twoside
+
+5=Quality
+5.1=Final - default,final
+5.2=Draft,draft
+
+6=Title page
+6.1=Title page - default,titlepage
+6.2=No title page,notitlepage
+
+7=Columns
+7.1=One column - default,onecolumn
+7.2=Two columns,twocolumn
+
+8=Equation numbering
+8.1=Numbers on left,leqno
+8.2=Numbers on right - default,
+
+9=Displayed equations
+9.1=Centered - default,
+9.2=Flush left,fleqn
+
+10=Footnote positions
+10.1=Bottom of page - default,footnotes
+10.2=End of chapter,chapternotes
+10.3=End of document,endnotes
+
+11=Bibliography style
+11.1=Compressed - default,
+11.2=Open,openbib
+
+[ws-book9x6]
+1=Quality
+1.1=Final - default,final
+1.2=Draft,draft
+
+[ws-book975x65]
+1=Quality
+1.1=Final - default,final
+1.2=Draft,draft
+
+[ws-procs9x6]
+1=Quality
+1.1=Final - default,final
+1.2=Draft,draft
+
+[ws-procs975x65]
+1=Quality
+1.1=Final - default,final
+1.2=Draft,draft
+
+[ws-procs10x7]
+1=Quality
+1.1=Final - default,final
+1.2=Draft,draft
+2=Print side
+2.1=Print one side,oneside
+2.2=Print both sides - default,twoside
+
+[ws-procs11x85]
+1=Quality
+1.1=Final - default,final
+1.2=Draft,draft
+2=Print side
+2.1=Print one side,oneside
+2.2=Print both sides - default,twoside
+
