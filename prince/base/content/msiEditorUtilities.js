@@ -1016,7 +1016,7 @@ function msiGetEditorURL(editorElement)
 function msiRequirePackage(editorElement, packagename, options)
 {
   try {
-    var editor = msiGetEditor(editorElement);
+    var editor = msiGetEditor(editorElement); // BBM: NO, get main editor.
     var doc = editor.document;
     var preamble = doc.getElementsByTagName("preamble")[0];
     var reqpkg = doc.createElement("requirespackage");
