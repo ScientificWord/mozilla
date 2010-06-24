@@ -46,6 +46,7 @@
 	  <tabs>
 		  <tab label="&classOptionsTab.label;"/>
 		  <tab label="&packageOptionsTab.label;"/>
+		  <!-- tab label="Test page"/ -->
 		</tabs>
 		<tabpanels>
 		  <tabpanel id="classOptionsPage">
@@ -63,7 +64,7 @@
 				<vbox>
 			  <groupbox orient="horizontal">
 				  <caption label="&packagesInUse.label;" accesskey="&packagesInUse.accesskey;"/>
-					<listbox id="packagesInUseListbox" onselect="selectPackage(this.selectedItem.label);"/>
+					<listbox id="packagesInUseListbox" onselect="onSelectPackage();"/>
 					<spacer flex="1"/>
 					<vbox>
 						<msibutton id="moveUpButton" label="&moveUpButton.label;" accesskey="&moveUpButton.accesskey;" oncommand="movePackage(true);"/>
@@ -81,6 +82,16 @@
 				</groupbox>
 				</vbox>
 			</tabpanel>
+		  <!-- tabpanel id="testPage">
+			  <vbox>
+					<description value='Enter starting array:'/>
+				  <textbox id="resetPriorityTestBox" size='60'/>
+					<description value="Processed array:"/>
+				  <textbox id="resetPriorityResultBox" size='60' readonly='true'/>
+					<button id="resetPriorityTestButton" label="Process array" oncommand="doTestResetPriorities();"/>
+					<button id="dialogAcceptTestButton" label="Test dialog" oncommand="doTestDialog();"/>
+				</vbox>
+			</tabpanel -->
 		</tabpanels>
 	</tabbox>
 
