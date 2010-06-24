@@ -27,10 +27,6 @@
 
   <xsl:template match="mml:mo">
   
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
-
     <xsl:if test="string-length(@lspace)&gt;0">
 
       <xsl:variable name="ls-value">
@@ -406,11 +402,7 @@
 -->
   
   <xsl:template match="mml:mo" mode="in-text">
-  
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/>, mode="in-text"</xsl:message>
-#endif
-    <xsl:text>$</xsl:text>
+      <xsl:text>$</xsl:text>
     <xsl:apply-templates select="."/>
     <xsl:text>$</xsl:text>
   </xsl:template>
@@ -419,11 +411,7 @@
   
   <xsl:template name="bigop">
     <xsl:param name="LaTeX-nom"/>
-  
-#ifdef DEBUG
-    <xsl:message>bigop: <xsl:value-of select="name(.)"/></xsl:message>
-#endif
-    <xsl:choose>
+      <xsl:choose>
       <xsl:when test="(@largeop='true' or @stretchy='true')
         and     ancestor::mml:mstyle[@displaystyle='false']">
         <xsl:text xml:space="preserve">\d</xsl:text>
@@ -453,11 +441,7 @@
 
   <xsl:template name="is-ASCII">
     <xsl:param name="unicode-cdata"/>
-  
-#ifdef DEBUG
-    <xsl:message>is-ASCII: <xsl:value-of select="name(.)"/></xsl:message>
-#endif
-    <xsl:choose>
+      <xsl:choose>
       <xsl:when test="regexp:test(normalize-space(string($unicode-cdata)),'[\x01-\xFF]+','g')">
          <xsl:text>true</xsl:text>
       </xsl:when>
@@ -466,10 +450,6 @@
       </xsl:otherwise>
 	</xsl:choose>
 	
-#ifdef DEBUG
-    <xsl:message>leaving is-ASCII </xsl:message>
-#endif
-
   </xsl:template>
 
 
@@ -477,10 +457,6 @@
     <xsl:param name="unicode-cdata"/>
     <xsl:param name="letters-found"/>
   
-#ifdef DEBUG
-    <xsl:message>count-letters: <xsl:value-of select="name(.)"/></xsl:message>
-#endif
-
     <xsl:variable name="first-char" select="substring($unicode-cdata,1,1)"/>
 
     <xsl:choose>
@@ -554,20 +530,12 @@
         <xsl:value-of select="$letters-found"/>
       </xsl:otherwise>
     </xsl:choose>
-  
-#ifdef DEBUG
-    <xsl:message>Leaving count-letters: <xsl:value-of select="name(.)"/></xsl:message>
-#endif
   </xsl:template>
 
 
   <xsl:template name="is-all-caps">
     <xsl:param name="unicode-cdata"/>
-  
-#ifdef DEBUG
-    <xsl:message>is-all-caps: <xsl:value-of select="name(.)"/></xsl:message>
-pri
-    <xsl:choose>
+      <xsl:choose>
       <xsl:when test="regexp:test(normalize-space(string($unicode-cdata)),'[^A-Z]+','g')">
          <xsl:text>false</xsl:text>
       </xsl:when>
