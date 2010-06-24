@@ -2,7 +2,7 @@
 
 var gBodyElement;
 
-var ourRDFRoot = "urn:texoptions:__Type__:__Name__:options";
+//var ourRDFRoot = "urn:texoptions:__Type__:__Name__:options";
 
 const emptyElementStr=" ";
 
@@ -25,22 +25,25 @@ function Startup()
   doSetOKCancel(onAccept, onCancel);
   data = window.arguments[0];
   data.Cancel = false;
+  gDialog.bInternalMessage = false;
   gDialog.isPackage = data.isPackage;
   gDialog.theName = data.theName;
+  gDialog.theOptions = data.optionSet;
 //  gDialog.selectedOptionsStr = data.optionsStr;
 
   gDialog.selectedOptionsArray = data.options;
+  removeEmptyElements(gDialog.selectedOptionsArray);
   gDialog.currSelectedChoices = new Array();
 
   gDialog.optionsListbox = document.getElementById("categoryListbox");
   gDialog.choicesListbox = document.getElementById("optionsListbox");
   gDialog.currentOptionsDescription = document.getElementById("selectedOptionsDescription");
 
-  if (gDialog.isPackage)
-    ourRDFRoot = ourRDFRoot.replace("__Type__", "package");
-  else
-    ourRDFRoot = ourRDFRoot.replace("__Type__", "class");
-  ourRDFRoot = ourRDFRoot.replace("__Name__", gDialog.theName);
+//  if (gDialog.isPackage)
+//    ourRDFRoot = ourRDFRoot.replace("__Type__", "package");
+//  else
+//    ourRDFRoot = ourRDFRoot.replace("__Type__", "class");
+//  ourRDFRoot = ourRDFRoot.replace("__Name__", gDialog.theName);
 
   InitDialog();
 
@@ -56,7 +59,7 @@ function InitDialog()
   fillOptionsListbox();
   if (gDialog.optionsListbox.getRowCount() > 0)
   {
-	gDialog.optionsListbox.selectedIndex = 0;
+	  gDialog.optionsListbox.selectedIndex = 0;
     changeOptionSelection();
   }
 //  checkDisabledControls();
@@ -98,7 +101,7 @@ function setWindowTitle(packageName)
   theTitle = theTitle.replace(replaceNameStr, gDialog.theName);
   var typeStr = strBundle.getString("ClassTypeString");
   if (gDialog.isPackage)
-	typeStr = strBundle.getString("PackageTypeString");
+	  typeStr = strBundle.getString("PackageTypeString");
   theTitle = theTitle.replace(replaceTypeStr, typeStr);
   document.documentElement.setAttribute("title", theTitle);
 }
@@ -114,14 +117,22 @@ function doGoNative()
   }
 }
 
+function itemIsDefaultChoice(anItem)
+{
+  var bDefault = false;
+  if (anItem.label.search(/\s*\-\s*default/i) >= 0)
+    bDefault = true;
+  else if (anItem.value.length <= 0)
+    bDefault = true;
+  return bDefault;
+}
+
 function findDefaultOption()
 {
   var nDefault = -1;
   for (var i = 0; (nDefault < 0) && (i < gDialog.choicesListbox.getRowCount()); ++i)
   {
-    if (gDialog.choicesListbox.getItemAtIndex(i).value.length <= 0)
-      nDefault = i;
-    else if (gDialog.choicesListbox.getItemAtIndex(i).label.search(/\s*\-\s*default/i) >= 0)
+    if ( itemIsDefaultChoice(gDialog.choicesListbox.getItemAtIndex(i)) )
       nDefault = i;
   }
   return nDefault;
@@ -132,6 +143,7 @@ function setSelectedOptionChoice()
   var nFound = -1;
   var nMatched = -1;
   var bFound = false;
+  var nDefault = findDefaultOption();
   for (var i = 0; i < gDialog.choicesListbox.getRowCount(); ++i)
   {
     var thisItem = gDialog.choicesListbox.getItemAtIndex(i);
@@ -139,19 +151,19 @@ function setSelectedOptionChoice()
     {
       nFound = findInArray(gDialog.selectedOptionsArray, thisItem.value);
       if (nFound >= 0)
-	  {
-		bFound = true;
-        gDialog.currSelectedChoices.push( thisItem.value );
-		gDialog.choicesListbox.addItemToSelection(thisItem);
-	  }
+	    {
+		    bFound = true;
+        if ( !itemIsDefaultChoice(thisItem) && (gDialog.currSelectedChoices.indexOf(thisItem.value) < 0) )
+          gDialog.currSelectedChoices.push( thisItem.value );
+		    gDialog.choicesListbox.addItemToSelection(thisItem);
+	    }
     }
   }
   if (!bFound)
   {
-    nFound = findDefaultOption();
-    if (nFound >= 0)
+    if (nDefault >= 0)
     {
-	  var theItem = gDialog.choicesListbox.getItemAtIndex(nFound);
+	    var theItem = gDialog.choicesListbox.getItemAtIndex(nDefault);
       //gDialog.currSelectedChoices.push( theItem.value );	if this is the default option, we don't want to add anything to the string
       gDialog.choicesListbox.addItemToSelection( theItem );
     }
@@ -168,23 +180,40 @@ function changeOptionSelection()
 //This should be called only once per invocation of the dialog, during initialization. (What if this dialog is modeless?)
 function fillOptionsListbox()
 {
-  gDialog.optionsListbox.setAttribute("ref", ourRDFRoot);	 //global variable defined at top
-  gDialog.optionsListbox.builder.rebuild();  //Need this??
+  gDialog.bInternalMessage = true;
+  var items = gDialog.optionsListbox.getElementsByTagName("listitem");
+  for (var i = items.length - 1; i >= 0; --i)
+    gDialog.optionsListbox.removeChild(items[i]);
+  for (var anOption in gDialog.theOptions)
+  {
+    gDialog.optionsListbox.appendItem(anOption, anOption);
+  }
+//  gDialog.optionsListbox.setAttribute("ref", ourRDFRoot);	 //global variable defined at top
+//  gDialog.optionsListbox.builder.rebuild();  //Need this??
+  gDialog.bInternalMessage = false;
 }
 
 function fillChoicesListbox()
 {
+  gDialog.bInternalMessage = true;
   var selItem = gDialog.optionsListbox.getSelectedItem(0);
-  var newRDFRoot = ourRDFRoot;
-  newRDFRoot += ":" + selItem.value + ":values";
-  if (newRDFRoot == gDialog.choicesListbox.getAttribute("ref"))
-    return;
+  var nFound = -1;
+  var anOption;
 
   gDialog.currSelectedChoices.splice(0, gDialog.currSelectedChoices.length);  //empty the "currSelectedChoices" array
-  if (newRDFRoot.length <= 0)
-    alert("Empty value string for option " + selItem.label);
-  gDialog.choicesListbox.setAttribute("ref", newRDFRoot);
-  gDialog.choicesListbox.builder.rebuild();
+  var items = gDialog.choicesListbox.getElementsByTagName("listitem");
+  for (var i = items.length - 1; i >= 0; --i)
+    gDialog.choicesListbox.removeChild(items[i]);
+
+  for (var aChoice in gDialog.theOptions[selItem.label].mChoices)
+  {
+    anOption = gDialog.theOptions[selItem.label].mChoices[aChoice];
+    gDialog.choicesListbox.appendItem(aChoice, anOption.mChoiceData);
+    nFound = findInArray(gDialog.selectedOptionsArray, anOption.mChoiceData);
+    if (nFound >= 0)
+      gDialog.currSelectedChoices.push( anOption.mChoiceData );
+  }
+  gDialog.bInternalMessage = false;
 }
 
 //function removeStringFromArray(theArray, theString)
@@ -197,36 +226,64 @@ function fillChoicesListbox()
 //  }
 //}
 
+function diffArrays(oldArray, newArray)
+{
+  var retObj = {removeArray : [], addArray : []};
+  for (var jx = 0; jx < newArray.length; ++jx)
+    retObj.addArray.push( newArray[jx] );
+  var foundInNew = -1;
+  for (var ix = 0; ix < oldArray.length; ++ix)
+  {
+    if ((foundInNew = retObj.addArray.indexOf(oldArray[ix])) < 0)
+      retObj.removeArray.push( oldArray[ix] );  //Does need to be removed
+    else
+      retObj.addArray.splice( foundInNew, 1 );  //Doesn't need to be added
+  }
+  return retObj;
+}
+
+function removeEmptyElements(stringArray)
+{
+  for (var ix = stringArray.length - 1; ix >= 0; --ix)
+  {
+    if (!stringArray[ix] || stringArray.length == 0)
+      stringArray.splice(ix, 1);
+  }
+}
+
 function replaceStringsInArray(theArray, oldStrings, newStrings)
 {
   var bFound = false;
+  var removePos = -1;
   var newArray = new Array();
-  for (var i = 0; i < theArray.length; ++i)
+  var diffObj = diffArrays(oldStrings, newStrings);
+  for (var i = theArray.length - 1; (i >= 0) && (diffObj.removeArray.length > 0); --i)
   {
-	if (findInArray(oldStrings, theArray[i]) >= 0)  //we've arrived at where the old ones were
-	{
-	  if (!bFound)	//insert the replacement strings here
+	  if ( (removePos = diffObj.removeArray.indexOf(theArray[i])) >= 0 )  //we've arrived at one to remove   
 	  {
-		bFound = true;
-		newArray = newArray.concat(newStrings);
+      if (diffObj.addArray.length > 0)
+      {
+        theArray.splice( i, 1, diffObj.addArray[0] );
+        diffObj.addArray.splice( 0, 1 );
+      }
+      else
+        theArray.splice( i, 1 );
+      diffObj.removeArray.splice( removePos, 1 );
 	  }
-	}
-	else
-	  newArray.push(theArray[i]);
   }
-  if (!bFound)
-    theArray = newArray.concat(newStrings);
-  else
-    theArray = newArray;
+  theArray = theArray.concat( diffObj.addArray );
   return theArray;
 }
 
 function changeOptionChoice()
 {
+  if (gDialog.bInternalMessage)
+    return;
+
   var stringArray = new Array();
   for (var i = 0; i < gDialog.choicesListbox.selectedItems.length; ++i)
   {
-	if (gDialog.choicesListbox.selectedItems[i].value.length > 0)
+	  if (!(itemIsDefaultChoice(gDialog.choicesListbox.selectedItems[i])) && (gDialog.choicesListbox.selectedItems[i].value.length > 0))
       stringArray.push(gDialog.choicesListbox.selectedItems[i].value);
   }
   gDialog.selectedOptionsArray = replaceStringsInArray(gDialog.selectedOptionsArray, gDialog.currSelectedChoices, stringArray);

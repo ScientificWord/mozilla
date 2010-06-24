@@ -1,0 +1,1595 @@
+;Multi-select options are allowed by adding a comma (,) to 
+;the end of the category name.
+
+[accents]
+1=Use only with \accentset
+1.1=No - default,
+1.2=Yes,single
+2=Use only in text and display modes
+2.1=No - default,
+2.2=Yes,nonscript
+
+[achemso]
+1=Note Style
+1.1=Off - default,
+1.2=On,note
+2=List Style
+2.1=Off - default,
+2.2=On,list
+3=Number Style
+3.1=Off - default,
+3.2=On,number
+
+[acronym]
+1=Expand acronyms
+1.1=In document body - default,
+1.2=As footnotes,footnote
+2=Acronyms to include
+2.1=All - default,
+2.2=Only those used,printonlyused
+3=Hyperlinks with hyperref present
+3.1=No,nohyperlinks
+3.2=Yes - default,
+
+[afterpage]
+1=None available
+
+[algorithm]
+1=Appearance
+1.1=Ruled - default,ruled
+1.2=Boxed,boxed
+1.3=Plain,plain
+2=Number by
+2.1=Continuous - default,nothing
+2.2=By part,part
+2.3=By chapter,chapter
+2.4=By section,section
+2.5=By subsection,subsection
+2.6=By subsubsection,subsubsection
+
+[algorithmic]
+1=Print end statements
+1.1=No,noend
+1.2=Yes - default,
+
+[alltt]
+1=None available
+
+[amsmath]
+1=Split equation numbering
+1.1=Center tags - default,centertags
+1.2=Align top/bottom,tbtags
+2=Summation symbol limits
+2.1=Above/below - default,sumlimits
+2.2=On right,nosumlimits
+3=Integral symbol limits
+3.1=Above/below,intlimits
+3.2=On right - default,nointlimits
+4=Operator name limits
+4.1=Below - default,namelimits
+4.2=On right,nonamelimits
+5=Equation numbers
+5.1=On left,leqno
+5.2=On right - default,reqno
+6=Equation placement
+6.1=Centered - default,
+6.2=Indent from left margin,fleqn
+
+[amssymb]
+1=None available
+
+[answers]
+1=Solution Files
+1.1=Create solution files - default,
+1.2=Do not create solution files,nosolutionfiles
+
+[apacite]
+1=Fix accents in names
+1.1=No,noaccentfix
+1.2=Yes - default,accentfix
+2=Indexing
+2.1=Off - default,noindex
+2.2=On,index
+2.3=On with std environment,stdindex
+2.4=On with TOC listing,tocindex
+2.5=On with TOC and two columns,emindex
+3=Bibliography division numbered
+3.1=No,unnumberedbib
+3.2=Yes,numberedbib
+4=Bibliography division
+4.1=Section,sectionbib
+4.2=Chapter,nosectionbib
+5=Bibliography in TOC
+5.1=No,notocbib
+5.2=Yes - default,tocbib
+6=Start on new page
+6.1=No - default,nobibnewpage
+6.2=Yes,bibnewpage
+7=Hyperref compatibility
+7.1=No - default,nohyper
+7.2=Yes,hyper   
+8=Backwards compatiblilty
+8.1=No - default,
+8.2=Yes,BCAY
+
+[apalike]
+1=None available
+
+[apalike-plus]
+1=None available
+
+[appendix]
+1=Header in ToC
+1.1=Off - default,
+1.2=On,toc
+2=Title at start
+2.1=Off - default,
+2.2=On,page
+3=Chapter/section header
+3.1=Off - default,
+3.2=On,title
+4=Chapter/section ToC header
+4.1=Off - default,
+4.2=On,titletoc
+5=Add to page headers
+5.1=Off - default,
+5.2=On,header
+
+[array]
+1=None available
+
+[authordate1-4]
+1=None available
+
+[babel]
+1=Afrikaans
+1.1=Include Afrikaans,afrikaans
+1.2=Exclude Afrikaans,
+2=Bahasa
+2.1=Include Bahasa,bahasa
+2.2=Exclude Bahasa,
+3=Breton
+3.1=Include Breton,breton
+3.2=Exclude Breton,
+4=Catalan
+4.1=Include Catalan,catalan
+4.2=Exclude Catalan,
+5=Croatian
+5.1=Include Croation,croation
+5.2=Exclude Croation,
+6=Czech
+6.1=Include Czech,czech
+6.2=Exclude Czech,
+7=Danish
+7.1=Include Danish,danish
+7.2=Exclude Danish,
+8=Dutch
+8.1=Include Dutch,dutch
+8.2=Exclude Dutch,
+9=English
+9.1=english,english
+9.2=US English,USenglish
+9.3=American,american
+9.4=UK English,UKenglish
+9.5=British,british
+9.6=None of the above,
+10=Esperanto
+10.1=Include Esperanto,esperanto
+10.2=Exclude Esperanto,
+11=Estonian
+11.1=Include Estonian,estonian
+11.2=Exclude Estonian,
+12=Finnish
+12.1=Include Finnish,finnish
+12.2=Exclude Finnish,
+13=French
+13.1=Use french,french
+13.2=Use francais,francais
+13.3=None of the above,
+14=Galician
+14.1=Include Galician,galician
+14.2=Exclude Galician,
+15=German
+15.1=Austrian,austrian
+15.2=Austrian new orthography,naustrian
+15.3=German,german
+15.4=German new orthography,ngerman
+15.5=GermanB,germanb
+15.6=None of the above,
+16=Greek
+16.1=Greek,greek
+16.2=Polutroniko,polutronikogreek
+16.3=None of the above,
+17=Hungarian
+17.1=Magyar,magyar
+17.2=Hungarian,hungarian
+17.3=None of the above,
+18=Irish Gaelic
+18.1=Include Irish Gaelic,irish
+18.2=Exclude Irish Gaelic,
+19=Italian
+19.1=Include Italian,italian
+19.2=Exclude Italian,
+20=Lower Sorbian
+20.1=Include Lower Sorbian,lowersorbian
+20.2=Exclude Lower Sorbian,
+21=Norwegian
+21.1=Norsk,norsk
+21.2=Nynorsk,nynorsk
+21.3=None of the above,
+22=Polish
+22.1=Include Polish,polish
+22.2=Exclude Polish,
+23=Portuguese
+23.1=Portuges,portuges
+23.2=Portuguese,portuguese
+23.3=Brazilian,brazilian
+23.4=Brazil,brazil
+23.5=None of the above,
+24=Romanian
+24.1=Include Romanian,romanian
+24.2=Exclude Romanian,
+25=Russian
+25.1=Include Russian,russian
+25.2=Exclude Russian,
+26=Scottish Gaelic
+26.1=Include Scottish Gaelic,scottish
+26.2=Exclude Scottish Gaelic,
+27=Spanish
+27.1=Include Spanish,spanish
+27.2=Exclude Spanish,
+28=Slovakian
+28.1=Include Slovakian,slovak
+28.2=Exclude Slovakian,
+29=Slovenian
+29.1=Include Slovenian,slovene
+29.2=Exclude Slovenian,
+30=Swedish
+30.1=Include Swedish,swedish
+30.2=Exclude Swedish,
+31=Turkish
+31.1=Include Turkish,turkish
+31.2=Exclude Turkish,
+32=Ukrainian
+32.1=Include Ukrainian,ukrainian
+32.2=Exclude Ukrainian,
+33=Upper Sorbian
+33.1=Include Upper Sorbian,uppersorbian
+33.2=Exclude Upper Sorbian,
+34=Welsh
+34.1=Include Welsh,welsh
+34.2=Exclude Welsh,
+
+[bibmods]
+1=None available
+
+[blkarray]
+1=None available
+
+[boxedminipage]
+1=None available
+
+[breakcites]
+1=None available
+
+[caption]
+1=Caption alignment
+1.1=Normal - default,format=default
+1.2=Hanging,format=hang
+2=Label format
+2.1=Empty,labelformat=empty
+2.2=Simple - default,labelformat=simple
+2.3=Inside parentheses,labelformat=parens
+3=Label separation
+3.1=None,labelsep=none
+3.2=Colon - default,labelsep=colon
+3.3=Period,labelsep=period
+3.4=Space,labelsep=space
+3.5=Em space,labelsep=quad
+3.6=New line,labelsep=newline
+4=Caption justification
+4.1=Full - default,justification=justified
+4.2=Center all,justification=centering
+4.3=Center last,justification=centerlast
+4.4=Center first,justification=centerfirst
+4.5=Left,justification=raggedright
+4.6=Left with word breaking,justification=RaggedRight
+4.7=Right,justification=raggedleft
+5=Center short caption
+5.1=No,singlelinecheck=false
+5.2=Yes - default,singlelinecheck=true
+6=Caption and label font attributes
+6.1=Scriptsize,font={scriptsize}
+6.2=Footnotesize,font={footnotesize}
+6.3=Small,font={small}
+6.4=Normalsize,font={normalsize}
+6.5=large,font={large}
+6.6=Large,font={Large}
+6.7=Upright,font={up}
+6.8=Italic,font={it}
+6.9=Slanted,font={sl}
+6.10=Small caps,font={sc}
+6.11=Medium weight,font={md}
+6.12=Bold weight,font={bf}
+6.13=Roman,font={rm}
+6.14=Sans serif,font={sf}
+6.15=Typewriter,font={tt}
+6.16=Combinations use Go Native
+7=Label font attributes
+7.1=Scriptsize,labelfont={scriptsize}
+7.2=Footnotesize,labelfont={footnotesize}
+7.3=Small,labelfont={small}
+7.4=Normalsize,labelfont={normalsize}
+7.5=large,labelfont={large}
+7.6=Large,labelfont={Large}
+7.7=Upright,labelfont={up}
+7.8=Italic,labelfont={it}
+7.9=Slanted,labelfont={sl}
+7.10=Small caps,labelfont={sc}
+7.11=Medium weight,labelfont={md}
+7.12=Bold weight,labelfont={bf}
+7.13=Roman,labelfont={rm}
+7.14=Sans serif,labelfont={sf}
+7.15=Typewriter,labelfont={tt}
+7.16=Combinations use Go Native
+8=Caption font attributes
+8.1=Scriptsize,textfont={scriptsize}
+8.2=Footnotesize,textfont={footnotesize}
+8.3=Small,textfont={small}
+8.4=Normalsize,textfont={normalsize}
+8.5=large,textfont={large}
+8.6=Large,textfont={Large}
+8.7=Upright,textfont={up}
+8.8=Italic,textfont={it}
+8.9=Slanted,textfont={sl}
+8.10=Small caps,textfont={sc}
+8.11=Medium weight,textfont={md}
+8.12=Bold weight,textfont={bf}
+8.13=Roman,textfont={rm}
+8.14=Sans serif,textfont={sf}
+8.15=Typewriter,textfont={tt}
+8.16=Combinations use Go Native
+9=Additional settings
+9.1=See package documentation
+
+[chapterbib]
+1=Bibliography title as section
+1.1=No - default,
+1.2=Yes,sectionbib
+2=Draft
+2.1=No - default,
+2.2=Yes,draft
+3=Create document bibliography
+3.1=No - default,
+3.2=Yes,rootbib
+4=Repeat at end
+4.1=No - default,
+4.2=Yes,duplicate
+5=Gather at end
+5.1=No - default
+5.2=Yes,gather
+
+[chbibref]
+1=None available
+
+[chicago]
+1=None available
+
+[cite]
+1=Superscript citations
+1.1=No - default,
+1.2=Yes,superscript
+2=Repeat undefinded warnings
+2.1=No - default,
+2.2=Yes,verbose
+3=Use "Ref." in citation
+3.1=No - default,
+3.2=Yes,ref
+4=Space after commas
+4.1=No,nospace
+4.2=Yes - default,space
+5=Sort citations
+5.1=No,nosort
+5.2=Yes - default,sort
+6=Move trailing punctuation
+6.1=No,nomove
+6.2=Yes - default,move
+7=Adjust space before citation
+7.1=No,noadjust
+7.2=Yes - default,adjust
+8=Compress consecutive citations
+8.1=No,nocompress
+8.2=Yes - default,compress
+9=Superscript bibliography item numbers
+9.1=No - default,
+9.2=Yes,biblabel
+
+[color]
+1=Driver
+1.1=tcidvi,tcidvi
+1.2=TrueTeX,truetex
+1.3=dvipdf,dvipdf
+1.4=dvipdfm,dvipdfm
+1.5=dvips,dvips
+1.6=dvipsnam,dvipsnam
+1.7=dvipsone,dvipsone
+1.8=dviwindo,dviwindo
+1.9=dviwin,dviwin
+1.10=EmTeX,emtex
+1.11=OzTeX,oztex    
+1.12=pctex32,pctex32
+1.13=pctexhp,pctexhp
+1.14=pctexps,pctexps
+1.15=pctexwin,pctexwin
+1.16=pdftex,pdftex
+1.17=Textures,textures
+1.18=VTeX,vtex
+1.19=xdvi,xdvi
+2=Monochrome only
+2.1=No - default,
+2.2=Yes,monochrome
+3=Use dvips names
+3.1=No,nodvipsnames
+3.2=Yes,dvipsnames
+4=Use named model
+4.1=No - default,
+4.2=Yes,usenames
+5=Debug mode
+5.1=Off - default,
+5.2=On,debugshow
+
+;The colortbl passes options to the color package, so use the same options
+[colortbl]
+1=Driver
+1.1=tcidvi,tcidvi
+1.2=TrueTeX,truetex
+1.3=dvipdf,dvipdf
+1.4=dvipdfm,dvipdfm
+1.5=dvips,dvips
+1.6=dvipsnam,dvipsnam
+1.7=dvipsone,dvipsone
+1.8=dviwindo,dviwindo
+1.9=dviwin,dviwin
+1.10=EmTeX,emtex
+1.11=OzTeX,oztex    
+1.12=pctex32,pctex32
+1.13=pctexhp,pctexhp
+1.14=pctexps,pctexps
+1.15=pctexwin,pctexwin
+1.16=pdftex,pdftex
+1.17=Textures,textures
+1.18=VTeX,vtex
+1.19=xdvi,xdvi
+2=Monochrome only
+2.1=No - default,
+2.2=Yes,monochrome
+3=Use dvips names
+3.1=No,nodvipsnames
+3.2=Yes,dvipsnames
+4=Use named model
+4.1=No - default,
+4.2=Yes,usenames
+5=Debug mode
+5.1=Off - default,
+5.2=On,debugshow
+
+[comma]
+1=None available
+
+[dcolumn]
+1=None available
+
+[delarray]
+1=None available
+
+[doublespace]
+1=None available
+
+[drftcite]
+1=Keep track of order
+1.1=No,nocitecount
+1.2=Yes - default,
+2=Use typewriter font
+2.1=No - default,
+2.2=Yes,tt
+3=Multiple undefined warnings
+3.1=No - default,
+3.2=Yes,verbose
+4=Space after comma
+4.1=No,nospace
+4.2=Yes - default,
+5=Break to fit margins
+5.1=No - default,
+5.2=Yes,breakcites
+
+;Use the color list of drivers, plus other
+[dropping]
+1=Driver
+1.1=tcidvi,tcidvi
+1.2=TrueTeX,truetex
+1.3=dvipdf,dvipdf
+1.4=dvipdfm,dvipdfm
+1.5=dvips,dvips
+1.6=dvipsnam,dvipsnam
+1.7=dvipsone,dvipsone
+1.8=dviwindo,dviwindo
+1.9=dviwin,dviwin
+1.10=EmTeX,emtex
+1.11=OzTeX,oztex    
+1.12=pctex32,pctex32
+1.13=pctexhp,pctexhp
+1.14=pctexps,pctexps
+1.15=pctexwin,pctexwin
+1.16=pdftex,pdftex
+1.17=Textures,textures
+1.18=VTeX,vtex
+1.19=xdvi,xdvi
+1.20=other,other
+
+[endnotes]
+1=None available
+
+[enumerate]
+1=None available
+
+[euler]
+1=Bold math uses Euler bold
+1.1=No - default,
+1.2=Yes,mathbf
+2=Calligraphic uses Euler script
+2.1=No - default,
+2.2=Yes,mathcal
+3=Use hat accent from text font
+3.1=No - default,
+3.2=Yes,text-hat-accent
+
+[eurosym]
+1=Style
+1.1=official - default
+1.2=gen,gen
+1.3=gennarrow,gennarrow 
+1.4=genwide,genwide
+2=Placement
+2.1=left - default
+2.2=right,right
+
+[everysel]
+1=None available
+
+[exscale]
+1=None available
+
+[fancybox]
+1=None available
+
+[fancyhdr]
+1=None available
+
+[fancyvrb]
+1=None available
+
+[fix2col]
+1=None available
+
+[flafter]
+1=None available
+
+[float]
+1=None available
+
+[fncychap]
+1=Chapter style
+1.1=Sonny,Sonny
+1.2=Lenny,Lenny
+1.3=Glenn,Glenn
+1.4=Conny,Conny
+1.5=Rejne,Rejne
+1.6=Bjarne,Bjarne
+
+[footmisc]
+1=Numbering
+1.1=Normal - default,
+1.2=Reset each page,perpage
+2=As a single paragraph
+2.1=No - default,
+2.2=Yes,para
+3=Side placement
+3.1=No - default,
+3.2=Yes,side
+4=Justification
+4.1=Full - default,
+4.2=Ragged right,ragged
+5=Footnote mark
+5.1=Numbers - default,
+5.2=Symbols,symbol
+5.3=Symbols (single paragraph option used),symbol*
+6=Force to bottom
+6.1=No - default
+6.2=Yes,bottom
+7=Number placement
+7.1=Marginal,marginal
+7.1=Flush marginal,flushmargin
+8=Hang
+8.1=No - default,
+8.2=Yes,hang
+9=Rules
+9.1=No rule,norule
+9.2=Split rule,splitrule
+10=Stable option
+10.1=Off - default,
+10.2=On,stable
+11=Multiple option
+11.1=Off - default,
+11.2=On,multiple
+
+[ftnright]
+1=None available
+
+[geometry]
+1=Paper size
+1.1=US letter - default,letterpaper
+1.2=US legal,legalpaper
+1.3=Executive,executivepaper
+1.4=Screen,screen
+1.5=A0,a0paper
+1.6=A1,a1paper
+1.7=A2,a2paper
+1.8=A3,a3paper
+1.9=A4,a4paper
+1.10=A5,a5paper
+1.11=A6,a6paper
+1.12=B0,b0paper
+1.13=B1,b1paper
+1.14=B2,b2paper
+1.15=B3,b3paper
+1.16=B4,b4paper
+1.17=B5,b5paper
+1.18=B6,b6paper
+2=Orientation
+2.1=Portrait - default,portrait
+2.2=Landscape,landscape
+3=Sides
+3.1=One side - default,
+3.2=Two sided,twoside
+3.3=Asymmetric,asymmetric
+4=Columns
+4.1=One column - default,twocolumn=false
+4.2=Two column,twocolumn
+5=Margin computation
+5.1=Include head,includehead
+5.2=Include foot,includefoot
+5.3=Include head+foot,includeheadfoot
+5.4=Include margin note,includemp
+5.5=Include all,includeall
+5.6=Ignore head,ignorehead
+5.7=Ignore foot,ignorefoot
+5.8=Ignore head+foot,ignoreheadfoot
+5.9=Ignore margin note,ignoremp
+5.10=Ignore all,ignoreall
+6=Header/footer space
+6.1=Normal - default,
+6.2=No header space,nohead
+6.3=No footer space,nofoot
+6.4=No header or footer space,noheadfoot
+7=Margin note space
+7.1=Normal - default,
+7.2=None,nomarginpar
+8=Margin note placement
+8.1=On right - default,
+8.2=On left,reversemp
+9=Drivers
+9.1=dvips,dvips
+9.2=dvipdfm,dvipdfm
+9.3=pdftex,pdftex
+9.4=vtex,vtex
+10=Reporting
+10.1=No -  default,
+10.2=Yes,verbose
+11=Reset parameters
+11.1=No,
+11.2=Yes,reset
+11.3=Ignore geometry,pass
+12=Magnification
+12.1=magstepzero - default,mag=1000
+12.2=magstephalf,mag=1095
+12.3=magstepone,mag=1200
+12.3=magsteptwo,mag=1440
+12.3=magstepthree,mag=1728
+12.3=magstepfour,mag=2074
+12.3=magstepfive,mag=2488
+13=Show frames
+13.1=No - default,
+13.2=Yes,showframe
+14=Version 2.3 compatibility
+14.1=No - default,
+14.2=Yes,compat2
+
+;Same list of drivers as the color package
+[graphicx]
+1=Driver
+1.1=tcidvi,tcidvi
+1.2=TrueTeX,truetex
+1.3=dvipdf,dvipdf
+1.4=dvipdfm,dvipdfm
+1.5=dvips,dvips
+1.6=dvipsnam,dvipsnam
+1.7=dvipsone,dvipsone
+1.8=dviwindo,dviwindo
+1.9=dviwin,dviwin
+1.10=EmTeX,emtex
+1.11=OzTeX,oztex    
+1.12=pctex32,pctex32
+1.13=pctexhp,pctexhp
+1.14=pctexps,pctexps
+1.15=pctexwin,pctexwin
+1.16=pdftex,pdftex
+1.17=Textures,textures
+1.18=VTeX,vtex
+1.19=xdvi,xdvi
+2=Quality
+2.1=Final - default,final
+2.2=Draft,draft
+3=Use HiResBoundingBox
+3.1=No - default,
+3.2=Yes,hiresbb
+4=Debug mode
+4.1=Off - default,
+4.2=On,debugshow
+5=Hide rotated text
+5.1=No - default,
+5.2=Yes,hiderotate
+6=Hide scaled text
+6.1=No - default,
+6.2=Yes,hidescale
+
+[harvard]
+1=Citation mode
+1.1=Full,full
+1.2=Abbreviated,abbr
+1.3=Full then abbreviated - default,default
+2=Parenthesis style
+2.1=Round - default,round
+2.2=Curly,curly
+2.3=Angle,angle
+2.4=Square,square
+2.5=None,none
+3=Citation style
+3.1=AGSM - default,agsmcite
+3.2=DCU,dcucite
+4=Bibliography style
+4.1=AGSM - default,agsm
+4.2=APSR,apsr
+4.3=DCU,dcu
+4.4=JMR,jmr
+4.5=J Physics B,jphysicsB
+4.6=Kluwer,kluwer
+4.7=Dutch,nederlands
+
+[hhline]
+1=None available
+
+[hyperref]
+1=Paper size
+1.1=8.5x11,letterpaper
+1.2=a4 - default,a4paper
+1.3=a5,a5paper
+1.4=b5,b5paper
+1.5=Legal size,legalpaper
+1.6=Executive size,executivepaper
+2=Draft mode
+2.1=Off - default,
+2.2=On,draft
+3=Debugging
+3.1=Off - default,
+3.2=On,debug
+4=Driver
+4.1=dvips,dvips
+4.2=dvipsone,dvipsone
+4.3=dviwindo,dviwindo
+4.4=Ghostscript's PDF writer,ps2pdf
+4.5=HyperTeX,hypertex
+4.6=latex2html,latex2html
+4.7=pdftex,pdftex
+4.8=VTeX,vtex
+
+[hyphenat]
+1=Hyphenation
+1.1=Normal - default,
+1.2=None,none
+2=Typewriter font
+2.1=Normal - default,
+2.2=Hyphenate typewriter font,htt
+
+[indentfirst]
+1=None available
+
+[inputenc]
+1=Code Page
+1.1=None - default,
+1.2=Windows ANSI,ansinew
+1.3=Apple Macintosh,applemac
+1.4=DEC Multinational,decmulti
+1.5=Next Computer,next
+1.6=ISO Latin-1,latin1
+1.7=ISO Latin-2,latin2
+1.8=ISO Latin-3,latin3
+1.9=ISO Latin-4,latin4
+1.10=ISO Latin-5,latin5
+1.11=ISO Latin-9,latin9
+1.12=ISO Latin-10,latin10
+1.13=Code Page 437,cp437
+1.14=Code Page 437 (German),cp437de
+1.15=Code Page 850,cp850
+1.16=Code Page 852,cp852
+1.17=Code Page 858 (850 with euro),cp858
+1.18=Code Page 865,cp865
+1.19=Code Page 1250,cp1250
+1.20=Code Page 1252 (Windows ANSI),cp1252
+1.21=Code Page 1257,cp1257
+1.22=Code Page 866,cp866
+
+[lastpage]
+1=None available
+
+[latexsym]
+1=None available
+
+[layout]
+1=Language
+1.1=Dutch,dutch
+1.2=English - default,english
+1.3=French,french
+1.4=Spanish,spahish
+1.5=Portuguese,portuguese
+1.6=Brazilian,brazilian
+2=Debug mode
+2.1=Off - default,silent
+2.2=On,verbose
+3=Truncate parameter values
+3.1=No,reals
+3.2=Yes - default,integers
+
+[lineno]
+1=Left/right number position
+1.1=Left margin - default,left
+1.2=Right margin,right
+2=Outter/inner margin number position
+2.1=Outer margin,switch
+2.2=Inner margin,switch*
+3=Two column mode
+3.1=No - default,
+3.2=Yes,columnwise
+4=Numbering mode
+4.1=Running - default,running
+4.2=Per page,pagewise
+5=Lines to number
+5.1=Every line - default,
+5.2=Every 5 lines,modulo
+6=Number displays
+6.1=No - default,
+6.2=Yes,displaymath
+7=Math numbering in linenomath
+7.1=No - default,
+7.2=Yes,mathlines
+8=Line referencing in math
+8.1=No - default,
+8.2=Yes,mathrefs
+9=Line referencing in tabular
+9.1=No - default,
+9.2=Yes, edtable
+9.3=Yes - with longtable,longtable
+10=Use longtable patch
+10.1=No - default,
+10.2=Yes,nolongtablepatch
+
+[longtable]
+1=Debug - warnings only in .log file
+1.1=No - default,
+1.2=Yes,errorshow
+2=Stop with warning
+2.1=No - default,
+2.2=Yes,pausing
+
+;uses same options as graphicx
+[lscape]
+1=Driver
+1.1=tcidvi,tcidvi
+1.2=TrueTeX,truetex
+1.3=dvipdf,dvipdf
+1.4=dvipdfm,dvipdfm
+1.5=dvips,dvips
+1.6=dvipsnam,dvipsnam
+1.7=dvipsone,dvipsone
+1.8=dviwindo,dviwindo
+1.9=dviwin,dviwin
+1.10=EmTeX,emtex
+1.11=OzTeX,oztex    
+1.12=pctex32,pctex32
+1.13=pctexhp,pctexhp
+1.14=pctexps,pctexps
+1.15=pctexwin,pctexwin
+1.16=pdftex,pdftex
+1.17=Textures,textures
+1.18=VTeX,vtex
+1.19=xdvi,xdvi
+2=Quality
+2.1=Final - default,final
+2.2=Draft,draft
+3=Use %%HiResBoundingBox
+3.1=No - default,
+3.2=Yes,hiresbb
+4=Debug mode
+4.1=Off - default,
+4.2=On,debugshow
+5=Hide rotated text
+5.1=No - default,
+5.2=Yes,hiderotate
+6=Hide scaled text
+6.1=No - default,
+6.2=Yes,hidescale
+
+[ltxtable]
+1=None available
+
+[makeidx]
+1=None available
+
+[manyfoot]
+1=Extra footnote rule
+1.1=No - default,
+1.2=Yes,ruled
+2=Footnote para style
+2.1=Normal indentation,para
+2.2=Suppress indentation,para*
+
+[mathtime]
+1=Encoding options
+1.1=No TS1,noTS1
+1.2=OT1,OT1
+1.3=T1,T1
+1.4=Y&Y texansi,LY1
+2=Bold
+2.1=No bold - default,nobold
+2.2=Computer Modern,cmbold
+2.3=Math Time Plus,mtbold
+2.4=Heavy,heavybold
+3=Greek
+3.1=Lowercase slanted - default,slantedgreek
+3.2=Lowercase upright,uprightgreek
+4=Subscript Correction
+4.1=Add for jpf,subscriptcorrection
+4.2=Disable - default,nosubscriptcorrection
+5=Calligraphic
+5.1=Computer Modern - default,cmcal
+5.2=Math Time Plus,mtpluscal
+5.3=Lucida,lucidcal
+6=Math Script
+6.1=Lucida,lucidascr
+6.2=Math Time Plus,mtplusscr
+7=Error Reports
+7.1=Font errors only - default,errorshow
+7.2=Font warnings,warningshow
+7.3=Suppress all,nofontinfo
+7.4=Default,
+
+[minitoc]
+1=Use short file extension names
+1.1=No - default,
+1.2=Yes,shortect
+2=Line spacing in mini-tables
+2.1=Loose - default,loose
+2.2=Tight,tight
+3=Use leader dots
+3.1=No - default,undotted
+3.2=Yes,dotted
+4=Keep floats within sections
+4.1=No - default,
+4.2=Yes,insection
+5=Debug mode
+5.1=Off - default,nohints
+5.2=On,hints
+
+[multicol]
+1=Debug level
+1.1=None - default,
+1.2=Level one,errorshow
+1.3=Level two,balancingshow
+1.4=Level three,markshow
+1.5=All,debugshow
+
+[natbib]
+1=Punctuation for citations
+1.1=Round parentheses - default,round
+1.2=Square brackets,square
+1.3=Curly braces,curly
+1.4=Angle brackets,angle
+2=Multiple citation separation
+2.1=Separated by colon - default,colon
+2.2=Separated by comma,comma
+3=Citation format
+3.1=Author-year citations,authoryear
+3.2=Numerical citations,numbers
+4=Superscript citations
+4.1=No - default,
+4.2=Yes,super
+5=Sorting
+5.1=None - default,
+5.2=Sort,sort
+5.3=Sort and compress,sort&compress
+6=First citation full author list
+6.1=No - default,
+6.2=Yes,longnamesfirst
+7=Bibliography heading
+7.1=As section,sectionbib
+7.2=As chapter - default,
+
+[newapa]
+1=None available
+
+[newpnts]
+1=None available
+
+[nomencl]
+1=Add equation references
+1.1=No - default,norefeq
+1.2=Yes,refeq
+2=Add page references
+2.1=No - default,norefpage
+2.2=Yes,refpage
+3=Use prefix sort key
+3.1=No,noprefix
+3.2=Yes - default,prefix
+4=Use configuration file
+4.1=No,nocfg
+4.2=Yes - default,cfg
+5=Add to table of contents
+5.1=No - default,notintoc
+5.2=Yes,intoc
+6=Compatibility mode
+6.1=No - default,noncompatible
+6.2=Yes,compatible
+7=Language
+7.1=Croation,croatian
+7.2=Danish,danish
+7.3=English - default,english
+7.4=French,french
+7.5=German,german
+7.6=Italian,italian
+7.7=Polish,polish
+7.8=Portuguese,portuguese
+7.9=Russian,russian
+7.10=Spanish,spanish
+7.11=Ukranian,ukranian
+
+[nopageno]
+1=None available
+
+[numinsec]
+1=None available
+
+[overcite]
+1=Obsolete
+2=Use cite package with
+3=superscript option
+
+[paralist]
+1=Use configuration file
+1.1=No,nocfg
+1.2=Yes - default,cfg
+2=Numbered list
+2.1=Trailing period,pointedenum
+2.2=No trailing period,pointlessenum
+3=Position for labels
+3.1=Flush right - default,flushright
+3.2=Flush left,flushleft
+4=Adjust label width
+4.1=Always,alwaysadjust
+4.2=Never,neveradjust
+5=If adjusting label width
+5.1=Never decrease width,neverdecrease
+
+[parallel]
+1=Reporting
+1.1=No - default,
+1.2=Yes,Verbose
+2=Separately number left/right footnotes
+2.1=No - default,
+2.2=Yes,SeparatedFootnotes
+3=Footnote number style
+3.1=Old style numbers,OldStyleNums
+3.2=Raised numbers,RaiseNums
+3.3=Italic numbers,ItalicNums
+3.4=Roman numbers,RomanNums
+
+[picins]
+1=None available
+
+[pict2e]
+1=Driver
+1.1=dvips,dvips
+1.2=xdvi,xdvi
+1.3=dvipdf,dvipdf
+1.4=dvipdfm,dvipdfm
+1.5=pdftex,pdftex
+1.6=dvipsone,dvipsone
+1.7=dviwindo,dviwindo
+1.8=oztex,oztex
+1.9=textures,textures
+1.10=pctexps,pctexps
+1.11=pctex32,pctex32
+1.12=vtex,vtex
+2=Arrows-head style
+2.1=LaTeX style vectors - default,ltxarrows
+2.2=PSTricks style vectore,pstarrows
+3=Debug options,
+3.1=Suppress new definitions,original
+3.2=Suppress compressing pdfTeX output,debug
+3.3=Suppress all graphics output,hide
+
+[placeins]
+1=Barrier at section
+1.1=No - default,
+1.2=Yes,section
+2=Allow above section
+2.1=No - default,
+2.2=Yes,above
+3=Allow below section
+3.1=No - default,
+3.2=Yes,below
+4=Debug mode
+4.1=Off - default,
+4.2=On,verbose
+
+[points]
+1=None available
+
+[portland]
+1=None available
+
+[ragged2e]
+1=Commands in effect
+1.1=Original LaTeX - default,originalcommands
+1.2=New ragged2e,newcommands
+2=Parameters in effect
+2.1=Original LaTeX,originalparameters
+2.2=New ragged2e - default,newparameters
+3=Ragged right inside boxes
+3.1=No - default,
+3.2=Yes,raggedrightboxes
+4=Ragged right footnotes
+4.1=No - default,
+4.2=Yes,footnotes
+5=Complete document ragged right
+5.1=No - default,
+5.2=Yes,document
+
+[relsize]
+1=None available
+
+[remreset]
+1=None available
+
+;same options as graphic(s|x) plus two
+[rotating]
+1=Driver
+1.1=tcidvi,tcidvi
+1.2=TrueTeX,truetex
+1.3=dvipdf,dvipdf
+1.4=dvipdfm,dvipdfm
+1.5=dvips,dvips
+1.6=dvipsnam,dvipsnam
+1.7=dvipsone,dvipsone
+1.8=dviwindo,dviwindo
+1.9=dviwin,dviwin
+1.10=EmTeX,emtex
+1.11=OzTeX,oztex    
+1.12=pctex32,pctex32
+1.13=pctexhp,pctexhp
+1.14=pctexps,pctexps
+1.15=pctexwin,pctexwin
+1.16=pdftex,pdftex
+1.17=Textures,textures
+1.18=VTeX,vtex
+1.19=xdvi,xdvi
+2=Quality
+2.1=Final - default,final
+2.2=Draft,draft
+3=Use %%HiResBoundingBox
+3.1=No - default,
+3.2=Yes,hiresbb
+4=Debug mode
+4.1=Off - default,
+4.2=On,debugshow
+5=Hide rotated text
+5.1=No - default,
+5.2=Yes,hiderotate
+6=Hide scaled text
+6.1=No - default,
+6.2=Yes,hidescale
+7=Rotate direction
+7.1=Clockwise - default,clockwise
+7.2=Counterclockwise,counterclockwise
+8=Figure placement
+8.1=Left,figuresleft
+8.2=Right - default,figuresright
+
+[scalefnt]
+1=None available
+
+[sectsty]
+1=None available
+
+[setspace]
+1=Line spacing
+1.1=Single spacing - default,singlespacing
+1.2=One and a half spacing,onehalfspacing
+1.3=Double spacing,doublespacing
+
+[showidx]
+1=None available
+
+[showkeys]
+1=Show reference labels
+1.1=No,notref
+1.2=Yes - default,
+2=Show citation labels
+2.1=No,notcite
+2.2=Yes - default,
+3=Labels in color
+3.1=No - default,
+3.2=Yes,color
+4=Display labels
+4.1=No,final
+4.2=Yes - default,draft
+
+[showlabels]
+1=Placement
+1.1=Outer - default,outer
+1.2=Inner,inner
+2=Show labels
+2.1=No,nolabel
+2.2=Yes - default,
+3=Position
+3.1=Marginal - default,marginal
+3.2=Inline,inline
+4=Disable package features
+4.1=No - default,draft
+4.2=Yes,final
+
+[sidecap]
+1=Caption position
+1.1=Outside margin - default,outercaption
+1.2=Inside margin,innercaption
+1.3=Left side,leftcaption
+1.4=Right side,rightcaption
+2=Extend into margin
+2.1=No - default,
+2.2=Yes,wide
+3=Justification for small captions
+3.1=Default - default,ragged
+3.2=Ragged left,raggedleft
+3.3=Ragged right,raggedright
+
+[slashed]
+1=None available
+
+[subfig]
+1=Subfig package options
+2=List subcaptions type
+2.1=Empty,empty
+2.2=Simple,simple
+2.3=Parens - default,parens
+2.4=Subsimple,subsimple
+2.5=Subparens,subparens
+3=Additional settings
+3.1=Use Go Native - see documentation
+4=Caption package options
+5=Caption alignment
+5.1=Normal - default,format=default
+5.2=Hanging,format=hang
+10=Label format
+10.1=Empty,labelformat=empty
+10.2=Simple - default,labelformat=simple
+10.3=Inside parentheses,labelformat=parens
+11=Label separation
+11.1=None,labelsep=none
+11.2=Colon - default,labelsep=colon
+11.3=Period,labelsep=period
+11.4=Space,labelsep=space
+11.5=Em space,labelsep=quad
+11.6=New line,labelsep=newline
+12=Caption justification
+12.1=Full - default,justification=justified
+12.2=Center all,justification=centering
+12.3=Center last,justification=centerlast
+12.4=Center first,justification=centerfirst
+12.5=Left,justification=raggedright
+12.6=Left with word breaking,justification=RaggedRight
+12.7=Right,justification=raggedleft
+13=Center short caption
+13.1=No,singlelinecheck=false
+13.2=Yes - default,singlelinecheck=true
+10=Caption and label font attributes
+10.1=Scriptsize,font={scriptsize}
+10.2=Footnotesize,font={footnotesize}
+10.3=Small,font={small}
+10.4=Normalsize,font={normalsize}
+10.5=large,font={large}
+10.6=Large,font={Large}
+10.7=Upright,font={up}
+10.8=Italic,font={it}
+10.9=Slanted,font={sl}
+10.10=Small caps,font={sc}
+10.11=Medium weight,font={md}
+10.12=Bold weight,font={bf}
+10.13=Roman,font={rm}
+10.14=Sans serif,font={sf}
+10.15=Typewriter,font={tt}
+10.16=Combinations use Go Native
+11=Label font attributes
+11.1=Scriptsize,labelfont={scriptsize}
+11.2=Footnotesize,labelfont={footnotesize}
+11.3=Small,labelfont={small}
+11.4=Normalsize,labelfont={normalsize}
+11.5=large,labelfont={large}
+11.6=Large,labelfont={Large}
+11.7=Upright,labelfont={up}
+11.8=Italic,labelfont={it}
+11.9=Slanted,labelfont={sl}
+11.10=Small caps,labelfont={sc}
+11.11=Medium weight,labelfont={md}
+11.12=Bold weight,labelfont={bf}
+11.13=Roman,labelfont={rm}
+11.14=Sans serif,labelfont={sf}
+11.15=Typewriter,labelfont={tt}
+11.16=Combinations use Go Native
+12=Caption font attributes
+12.1=Scriptsize,textfont={scriptsize}
+12.2=Footnotesize,textfont={footnotesize}
+12.3=Small,textfont={small}
+12.4=Normalsize,textfont={normalsize}
+12.5=large,textfont={large}
+12.6=Large,textfont={Large}
+12.7=Upright,textfont={up}
+12.8=Italic,textfont={it}
+12.9=Slanted,textfont={sl}
+12.10=Small caps,textfont={sc}
+12.11=Medium weight,textfont={md}
+12.12=Bold weight,textfont={bf}
+12.13=Roman,textfont={rm}
+12.14=Sans serif,textfont={sf}
+12.15=Typewriter,textfont={tt}
+12.16=Combinations use Go Native
+13=Additional settings
+13.1=See package documentation
+
+[subfigure]
+1=Alignment
+1.1=Normal - default,normal
+1.2=Hanging,hang
+1.3=Centered,center
+1.4=Center last,centerlast
+1.5=Center one line,nooneline
+1.6=Ragged right,raggedright
+2=Caption font size
+2.1=script,scriptsize
+2.2=footnote,footnotesize
+2.3=small,small
+2.4=normal,normalsize
+2.5=large,large
+2.6=Large,Large
+3=Caption label attribute,
+3.1=Roman,rm
+3.2=Sans serif,sf
+3.3=Typewriter,tt
+3.4=Medium,md
+3.5=Bold,bf
+3.6=Upright,up
+3.7=Italic,it
+3.8=Slanted,sl
+3.9=Small caps,sc
+4=Caption text attribute,
+4.1=Roman,RM
+4.2=Sans serif,SF
+4.3=Typewriter,TT
+4.4=Medium,MD
+4.5=Bold,BF
+4.6=Upright,UP
+4.7=Italic,IT
+4.8=Slanted,SL
+4.9=Small caps,SC
+5=Figure caption position
+5.1=Above figure,FIGTOPCAP
+5.2=Below figure,FIGBOTCAP
+6=Subfigure caption position
+6.1=Above subfigure,figtopcap
+6.2=Below subfigure,figbotcap
+7=Table caption position
+7.1=Above table,TABTOPCAP
+7.2=Below table,TABBOTCAP
+8=Subtable caption position
+8.1=Above subtable,tabtopcap
+8.2=Below subtable,tabbotcap
+9=Spacing
+9.1=Loose - default,loose
+9.2=Tight,tight
+
+[subfloat]
+1=Count subfloats within main float
+1.1=No - default,nocountmax
+1.2=Yes,countmax
+
+[supertabular]
+1=Error logging
+1.1=None - default,errorshow
+1.2=Page break decisions,pageshow
+1.3=Full error info,debugshow
+
+[tabularx]
+1=Debug mode
+1.1=Off - default,
+1.2=On,debugshow
+
+[textcase]
+1=Redefine standard case macros
+1.1=No - default,
+1.2=Yes,overload
+
+[theorem]
+1=None available
+
+[times]
+1=None available
+
+[titlesec]
+1=Font shape,
+1.1=Roman,rm
+1.2=Sans serif,sf
+1.3=Typewriter,tt
+1.4=Medium weight,md
+1.5=Bold,bf
+1.6=Upright,up
+1.7=Italic,it
+1.8=Slanted,sl
+1.9=Small caps,sc
+2=Font size
+2.1=Big,big
+2.2=Medium,medium
+2.3=Small,small
+2.4=Tiny,tiny
+3=Alignment
+3.1=Ragged left,raggedleft
+3.2=Centered,center
+3.3=Ragged right,raggedright
+4=Compact spacing
+4.1=No - default,
+4.2=Yes,compact
+5=By-pass sectionioning commands
+5.1=Indent after,indentafter
+5.2=Do not indent after,noindentafter
+6=Space after chapter titles
+6.1=Rigid,rigidchapters
+6.2=Rubber - default,rubberchapters
+7=Titles close to bottom of page
+7.1=No,nobottomtitles
+7.2=No (more accurate computations),nobottomtitles*
+7.3=Yes - default,bottomtitles
+8=Consecutive title separation
+8.1=Default seperation - default,aftersep
+8.2=Largest separation,largestsep
+9=Calculate title widths
+9.1=No
+9.2=Yes,calcwidth
+10=Use new part toc method
+10.1=No - default,oldparttoc
+10.2=Yes,newparttoc
+11=Headings on empty pages
+11.1=No,clearempty
+11.2=Yes,
+12=All commands from scratch
+12.1=No,
+12.2=Yes,loadonly
+13=Custom page styles
+13.1=No,
+13.2=Yes,pagestyles
+14=Headers on float pages
+14.1=No,
+14.2=Yes,floatps
+15=Headers location
+15.1=Top,topmarks
+15.2=Bottom,botmarks
+15.3=Inside - default,innermarks
+15.4=Outside,outermarks
+
+[titletoc]
+1=Label alignment
+1.1=Left - default,leftlabels
+1.2=Right,rightlabels
+2=Dot after label
+2.1=No - default,nodotinlabels
+2.2=Yes,dotinlabels
+
+[tocbibind]
+1=Exclude bibliography
+1.1=No - default,
+1.2=Yes,notbib
+2=Exclude index
+2.1=No - default,
+2.2=Yes,notindex
+3=Exclude table of contents
+3.1=No - default,
+3.2=Yes,nottoc
+4=Exclude list of tables
+4.1=No - default,
+4.2=Yes,notlot
+5=Exclude list of figures
+5.1=No - default,
+5.2=Yes,notlof
+6=Use chapter headings, if possible
+6.1=No - default,
+6.2=Yes,chapter
+7=Use section headings, if possible
+7.1=No - default,
+7.2=Yes,section
+8=Number bibliography heading
+8.1=No - default,
+8.2=Yes,numbib
+9=Number index heading
+9.1=No - default,
+9.2=Yes,numindex
+10=Disable everything
+10.1=No - default,
+10.2=Yes,none
+
+[tocloft]
+1=Default LaTeX titles
+1.1=No - default,
+1.2=Yes,titles
+2=Use with subfigure package
+2.1=No - default,
+2.2=Yes,subfigure
+
+[ulem]
+1=Emphasized as underlined
+1.1=No,normalem
+1.2=Yes - default,ULforem
+2=Bold as wavey underline
+2.1=No - default,normalbf
+2.2=Yes,UWforbf
+
+[url]
+1=Obey spaces
+1.1=No - default,
+1.2=Yes,obeyspaces
+2=Allow breaks at hyphens
+2.1=No - default,
+2.2=Yes,hyphens
+3=Allow breaks at spaces
+3.1=No - default,
+3.2=Yes,spaces
+4=Font encoding
+4.1=OT1 - default,
+4.2=T1,T1
+4.3=LY1,LY1
+
+[varioref]
+1=Errors as warnings
+1.1=No - default,final
+1.2=Yes,draft
+
+[verbatim]
+1=None available
+
+[wrapfig]
+1=Additional info in .log file
+1.1=No - default,
+1.2=Yes,verbose
+
+[xr]
+1=None available
+
+[xtab]
+1=Debug options
+1.1=None - default,errorshow
+1.2=Page breaks,pageshow
+1.3=Line information,debugshow
