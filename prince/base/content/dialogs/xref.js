@@ -18,7 +18,7 @@ function Startup()
     window.close();
     return;
   }
-  gKey   = document.getElementById("key");
+  gKey   = document.getElementById("keylist");
   gReftype = document.getElementById("reftype");
   refnode = window.arguments[0];
   newNode = !(refnode);
@@ -47,6 +47,7 @@ function onAccept()
     else refnode.removeAttribute("key");
     dumpln("key = " + gKey.value);
     refnode.setAttribute("reftype", (gReftype.selectedIndex == 0)?"page":"obj");
+    refnode.setAttribute("req", "varioref");
     dumpln("reftype = "+refnode.getAttribute("reftype"));
     SaveWindowLocation();
   }
@@ -94,11 +95,11 @@ function initKeyList()
   }  
   var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
   ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
-  ACSA.resetArray("keys");
+  ACSA.resetArray("key");
   for (i=0, len=keys.length; i<len; i++)
   {
     if (keys[i].length > 0) 
-      ACSA.addString("keys",keys[i]);
+      ACSA.addString("key",keys[i]);
   }
   dump("Keys are : "+keys.join()+"\n");    
 }
