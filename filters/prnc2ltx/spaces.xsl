@@ -7,11 +7,7 @@
 >
 
 <xsl:template match="hspace">
-  
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
-	<xsl:choose>
+  	<xsl:choose>
 	  <xsl:when test="@type='normal'"> </xsl:when>
 	  <xsl:when test="@type='requiredSpace'">\ </xsl:when>
 	  <xsl:when test="@type='emSpace'">\quad </xsl:when>
@@ -38,11 +34,7 @@
 
 		 
 <xsl:template match="vspace">
-  
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
-	<xsl:choose>
+  	<xsl:choose>
 	  <xsl:when test="@type='smallSkip'">\smallskip </xsl:when>
 	  <xsl:when test="@type='mediumSkip'">\medskip </xsl:when>
 	  <xsl:when test="@type='bigSkip'">\bigskip </xsl:when>
@@ -54,11 +46,7 @@
 </xsl:template>
 
 <xsl:template match="msirule">
-  
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
-<xsl:if test="@color"> \textcolor[HTML]{<xsl:value-of select="substring(./@color,2,8)"/>}{</xsl:if>
+  <xsl:if test="@color"> \textcolor[HTML]{<xsl:value-of select="substring(./@color,2,8)"/>}{</xsl:if>
 \rule[<xsl:value-of select="@lift"/>]{<xsl:value-of select="@width"/>}{<xsl:value-of select="@height"/>}
 <xsl:if test="@color">}</xsl:if>
 

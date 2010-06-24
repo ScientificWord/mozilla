@@ -1,51 +1,84 @@
-// Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
+// Copyright (c) 2010 MacKichan Software, Inc.  All Rights Reserved.
 
 //const xhtmlns  = "http://www.w3.org/1999/xhtml";
 
-var data;
+var texnode;
+var editor;
+var gIsEnc;
+var gName;
+var gReq;  
+var gOpt;  
+var gTeX;  
+var newNode;
 
 // dialog initialization code
 function Startup()
 {
+  var childnode;
   var editorElement = msiGetParentEditorElementForDialog(window);
-  var editor = msiGetEditor(editorElement);
+  editor = msiGetEditor(editorElement);
   if (!editor) {
     window.close();
     return;
   }
-  doSetOKCancel(onAccept, onCancel);
-  data = window.arguments[0];
-  data.Cancel = false;
-  gDialog.texbuttonText = data.tex;
+  gIsEnc = document.getElementById("enc");
+  gName  = document.getElementById("name");
+  gReq   = document.getElementById("req");
+  gOpt   = document.getElementById("opt");
+  gTeX   = document.getElementById("texbuttonTextbox");
+  texnode = window.arguments[0];
+  newNode = !(texnode);
+  if (texnode) {
+    if (texnode.hasAttribute("enc")) gIsEnc.checked = texnode.getAttribute("enc") == 1;
+    if (texnode.hasAttribute("name")) gName.value = texnode.getAttribute("name");
+    if (texnode.hasAttribute("req")) gReq.value = texnode.getAttribute("req");
+    if (texnode.hasAttribute("opt")) gOpt.value = texnode.getAttribute("opt");
+    childnode = texnode.firstChild;
+    while (childnode && childnode.nodeType != Node.CDATA_SECTION_NODE) {
+      childnode = childnode.nextSibling;
+    }
+    if (childnode) 
+      gTeX.value = childnode.textContent;
+  }
+  else texnode = editor.document.createElement("texb");
 
-  InitDialog();
+// TeX buttons looks like:
+// <texb enc="0/1" name=" " req = " " opt = " ">,<![CDATA[[texbutton contents]]></texb>  
 
 //  document.getElementById("texbuttonTextbox").focus();
-  msiSetInitialDialogFocus(document.getElementById("texbuttonTextbox"));
-
+  msiSetInitialDialogFocus(gTeX);
   SetWindowLocation();
-}
-
-function InitDialog()
-{
-  document.getElementById("texbuttonTextbox").value = gDialog.texbuttonText;
-
-  document.documentElement.getButton("accept").setAttribute("default", true);
 }
 
 function onAccept()
 {
-  data.tex = document.getElementById("texbuttonTextbox").value;
-  SaveWindowLocation();
+  try {
+    while (texnode.firstChild)
+    {
+      texnode.removeChild(texnode.firstChild);
+    }
+    var newCData = editor.document.createCDATASection(gTeX.value);
+    texnode.appendChild(newCData);
+    if (gIsEnc.checked) texnode.setAttribute("enc", "1")
+    else texnode.removeAttribute("enc");
+    if (gName.value.length > 0) texnode.setAttribute("name", gName.value)
+    else texnode.removeAttribute("name");
+    if (gReq.value.length > 0) texnode.setAttribute("req", gReq.value)
+    else texnode.removeAttribute("req");
+    if (gOpt.value.length > 0) texnode.setAttribute("opt", gOpt.value)
+    else texnode.removeAttribute("opt");
+
+    SaveWindowLocation();
+  }
+  catch(e) {
+    dump("Exception: "+e.message+"\n");
+  }
+  if (newNode) editor.insertElementAtSelection(texnode, true);
   return true;
 }
 
 function onCancel()
 {
-  data.Cancel = true;
+  return true;
 }
 
-function doAccept()
-{
-  document.documentElement.getButton('accept').oncommand();
-}

@@ -135,6 +135,7 @@ msibreak {
 msibreak[type="customNewLine"]:after {
   white-space: pre;
   content: "\A";
+  -moz-user-select: -moz-none;
 }
 
 msibreak[type="customNewLine"] custNL {
@@ -167,6 +168,15 @@ mml|math msibreak {
 msibreak[type="newPage"]:after {
   white-space: pre;
   content: "\A";
+  -moz-user-select: -moz-none;
+}
+
+phantom {
+  color: transparent;
+}
+
+center, centered {
+  text-align: center;
 }
 
 newPageRule {
@@ -240,6 +250,7 @@ mml|mi[tempinput="true"]::before {  content: "[";}
 mml|mi[tempinput="true"]::after {  content: "]";}
 mml|mi[tempinput="true"]{
   letter-spacing: 0; /*-0.015em;*/
+  -moz-user-select: -moz-none;
 }
 
 #rotateleft{
@@ -266,7 +277,7 @@ mml|mrow[id]:after {
   left: auto; 
   color: black;
   background-color:rgb(180,180,180);
-
+  -moz-user-select: -moz-none;
 }
 
  
@@ -363,6 +374,7 @@ paragraph[nonum="true"] {
   font-family: Courier New;
   color: green;
   font-weight: bold;
+  -moz-user-select: -moz-none;
 }
 
 
@@ -372,6 +384,7 @@ paragraph[nonum="true"] {
   font-family: Courier New;
   color: green;
   font-weight: bold;
+  -moz-user-select: -moz-none;
 }
 
 
@@ -381,6 +394,7 @@ paragraph[nonum="true"] {
   font-family: Courier New;
   color: green;
   font-weight: bold;
+  -moz-user-select: -moz-none;
 }
 
 *[class="showinvis"] mathp:after {
@@ -389,6 +403,7 @@ paragraph[nonum="true"] {
   font-family: Courier New;
   color: green;
   font-weight: bold;
+  -moz-user-select: -moz-none;
 }
 
 
@@ -398,6 +413,7 @@ paragraph[nonum="true"] {
   font-family: Courier New;
   color: green;
   font-weight: bold;
+  -moz-user-select: -moz-none;
 }
 
 
@@ -407,6 +423,7 @@ paragraph[nonum="true"] {
   font-family: Courier New;
   color: green;
   font-weight: bold;
+  -moz-user-select: -moz-none;
 }
 
 
@@ -432,7 +449,24 @@ preface {
   display: block;
   font-size: medium; font-weight: bold;
   color: green;
+  -moz-user-select: -moz-none;
 }
+
+/* Selection rules */
+
+body {
+  -moz-user-select: -moz-none; /* -moz-none can be overridden */
+}
+
+/* selection is possible in paragraph and front matter tags */
+
+para, rtlpara, p, mathp, sectiontitle, quote, quotation, title, line, 
+  dialogbase, bulletlistitem, numberedlistitem, descriptionlistitem, verbatim,
+  abstract, address, author, dte, makelof, makelot, maketitle, maketoc, title {
+  -moz-user-select: text;
+}
+  
+
 
 /* front matter tags */
 frontmatter>address {

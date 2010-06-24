@@ -9,11 +9,10 @@ function dlgAutoSubsList()
   {
     if (subsName in this.names)
       return false;
-    // (else)
     return true;
   };
 
-  this.addSub = function(theSub, theType, theContext, theData, contextMarkupStr, appearanceList)
+  this.saveSub = function(theSub, theType, theContext, theData, contextMarkupStr, appearanceList)
   {
     var autosub = Components.classes["@mozilla.org/autosubstitute;1"].getService(Components.interfaces.msiIAutosub);
     var context = Components.interfaces.msiIAutosub.CONTEXT_MATHANDTEXT;
@@ -33,11 +32,12 @@ function dlgAutoSubsList()
       var serialize = new XMLSerializer();
       theData = "";
       for (var ix = 0; ix < appearanceList.length; ++ix)
-        theData += serialize.serializeToString(appearanceList[ix]);
+        if (!((appearanceList[ix].tagName == "br") && appearanceList[ix].hasAttribute("temp")))
+          theData += serialize.serializeToString(appearanceList[ix],'UTF-8');
     }
     var bAdded = false;
     try { bAdded = autosub.addEntry( theSub, context, action, theData, contextMarkupStr, ""); }
-    catch(exc) {dump("Error in autoSubstituteDialog.js, in dlgAutoSubsList.addSub; error is [" + exc + "].\n"); bAdded = false;}
+    catch(exc) {dump("Error in autoSubstituteDialog.js, in dlgAutoSubsList.saveSub; error is [" + exc + "].\n"); bAdded = false;}
 //    dump("In autoSubstituteDialog.js, dlgAutoSubsList.addSub; adding [" + theSub + "], with data: [" + theData + "]; bAdded is [" + bAdded + "].\n");
     if (bAdded)
     {
@@ -71,12 +71,12 @@ function dlgAutoSubsList()
     }
   };
 
-  this.modifySub = function(theSub, theType, theContext, theData, contextMarkupStr, appearanceList)
-  {
-    if (theSub in this.names)
-      this.removeSub(theSub);
-    this.addSub(theSub, theType, theContext, theData, contextMarkupStr, appearanceList);
-  };
+//  this.modifySub = function(theSub, theType, theContext, theData, contextMarkupStr, appearanceList)
+//  {
+//    if (theSub in this.names)
+//      this.removeSub(theSub);
+//    this.addSub(theSub, theType, theContext, theData, contextMarkupStr, appearanceList);
+//  };
 
   this.removeSub = function(theSub)
   {
@@ -90,7 +90,8 @@ function dlgAutoSubsList()
       ACSA.deleteString("autosubstitution", theSub);
     }
     catch(exc) {dump("Error in autoSubstituteDialog.js, in dlgAutoSubsList.removeSub; error is [" + exc + "].\n"); bRemoved = false;}
-    delete(this.names[theSub]);
+    document.getElementById("keystrokesBox").value = "";
+    changePattern("");
     this.bModified = this.bModified || bRemoved;
   };
 
@@ -193,19 +194,19 @@ function Startup() {
   {
     gDialog.bIsNew = false;
     theType = gDialog.subsList.names[currPattern].type;
-    theContext = gDialog.subsList.names[currPattern].mathContext;
+
     if (theType == "substitution")
       substitutionStr = gDialog.subsList.names[currPattern].data;
   }
   else
     gDialog.bIsNew = true;
-  if (theContext == "math")
-  {
-    if (substitutionStr.length == 0)
-      substitutionStr = GetComputeString("Math.emptyForInput");
-    else
-      substitutionStr = "<math>" + substitutionStr + "</math>";
-  }
+//  if (theContext == "math")
+//  {
+//    if (substitutionStr.length == 0)
+//      substitutionStr = GetComputeString("Math.emptyForInput");
+//    else
+//      substitutionStr = "<math>" + substitutionStr + "</math>";
+//  }
   document.getElementById("autosubTypeRadioGroup").value = theType;
   document.getElementById("autosubContextRadioGroup").value = theContext;
 
@@ -238,7 +239,7 @@ function Startup() {
 //  var autosubsFilename = "autosubs.xml";
 //  var autosubsFile = basedir;
 //  autosubsFile.append("tagdefs");
-//  autosubsFile.append(autosubsFilename);
+//  autosubsFile.append(autosubsFilename);                                                               ke
 //  var subsDoc = document.implementation.createDocument("", "subs", null);
 //  subsDoc.async = false;
 //  if (!subsDoc.load("file:///" + autosubsFile.path))
@@ -353,21 +354,10 @@ function enableControls()
   var bCurrentItemModified = (gDialog.bDataModified || gDialog.bTypeModified || gDialog.bContextModified);
 
   var bActionEnabled = gDialog.bDataNonEmpty && gDialog.bNameOK;
-  var actionControl = document.getElementById("addOrModifyButton");
-  var addLabel = document.getElementById("addButtonLabel");
-  var modifyLabel = document.getElementById("modifyButtonLabel");
-  if (gDialog.bIsNew)
-  {
-    actionControl.label = addLabel.value;
-    actionControl.accesskey = addLabel.accesskey;
-  }
-  else
+  if (!gDialog.bIsNew)
   {
     bActionEnabled = gDialog.bDataNonEmpty && gDialog.bNameOK && bCurrentItemModified;
-    actionControl.label = modifyLabel.value;
-    actionControl.accesskey = modifyLabel.accesskey;
   }
-  enableControlsByID(["addOrModifyButton"], bActionEnabled);
   enableControlsByID(["deleteButton"], (gDialog.bNameOK && !gDialog.bIsNew));
 
   dumpStr += " canAdd returned [" + gDialog.bIsNew + "]; while gDialog.bDataNonEmpty is [" + gDialog.bDataNonEmpty + "] ";
@@ -471,7 +461,7 @@ function setControlsForSubstitution()
 {
   msiEnableEditorControl(document.getElementById("subst-frame"), true);
 //  document.getElementById("subst-frame").disabled = false;
-  document.getElementById("scriptTextbox").disabled = true;
+  document.getElementById("thedeck").selectedIndex=0;
   
 //  var labelToShow = document.getElementById("substitutionLabel");
 //  var theCaption = document.getElementById("replacementLabel");
@@ -488,7 +478,7 @@ function setControlsForScript()
 {
 //  document.getElementById("subst-frame").disabled = true;
   msiEnableEditorControl(document.getElementById("subst-frame"), false);
-  document.getElementById("scriptTextbox").disabled = false;
+  document.getElementById("thedeck").selectedIndex=1;
 //  var labelToShow = document.getElementById("scriptLabel");
 //  var theCaption = document.getElementById("replacementLabel");
 //  theCaption.label = labelToShow.value;
@@ -776,10 +766,10 @@ function saveCurrentSub()
 //  var bAutoSubStr = bAutoSubstitute ? "true" : "false";
 //  alert("Calling to add name: [" + currName + "], of type [" + theType + "], with bEngineFunction [" + bEngFuncStr + "] and bAutoSubstitute [" + bAutoSubStr + "].\n");
   var contextMarkupStr = "";  //this gets expanded in addSub to <math xmlns=...> if "theContext" is "math".
-  if (gDialog.bIsNew)
-    gDialog.subsList.addSub(currSub, theType, theContext, theData, contextMarkupStr, appearanceList);
-  else
-    gDialog.subsList.modifySub(currSub, theType, theContext, theData, contextMarkupStr, appearanceList);
+//  if (gDialog.bIsNew)
+    gDialog.subsList.saveSub(currSub, theType, theContext, theData, contextMarkupStr, appearanceList);
+//  else
+//    gDialog.subsList.modifySub(currSub, theType, theContext, theData, contextMarkupStr, appearanceList);
 
   changePattern(currSub);
 }
@@ -797,9 +787,12 @@ function removeCurrentSub()
 function getEditControlContentNodes(editorElement, bMathOnly)
 {
   var doc = editorElement.contentDocument;
-  var target = msiGetRealBodyElement(doc);
-  if (target == null)
-    target = doc;
+//  var target = msiGetRealBodyElement(doc);
+  var target = doc.getElementsByTagName("dialogbase")[0];
+  var returnlist;
+  if (!target) target = doc.getElementsByTagName("para")[0];
+  if (!target)
+    return null;
   if (bMathOnly)
   {
     var mathList = target.getElementsByTagName("math");
@@ -809,12 +802,23 @@ function getEditControlContentNodes(editorElement, bMathOnly)
       target = null;
   }
   if (target != null)
-    return target.childNodes;
+  {
+    returnlist = target.childNodes;
+    return returnlist;
+  }
   else
+  
     return null;
 }
 
+
+function dumpln(s)
+{
+  dump(s+"\n");
+}
+
 function onOK() {
+  dumpln("a");
   var bActionEnabled = gDialog.bDataNonEmpty && gDialog.bNameOK;
   if (!gDialog.bIsNew)
     bActionEnabled = gDialog.bDataNonEmpty && gDialog.bNameOK && gDialog.bCurrentItemModified;
@@ -822,7 +826,7 @@ function onOK() {
     saveCurrentSub();
   gDialog.subsList.saveToFile();
   SaveWindowLocation();
-  return false;
+  return true;
 }
 
 function onCancel() {
