@@ -9,10 +9,6 @@
   <xsl:template name="array">
     <xsl:param name="LaTeX-env"/>
   
-#ifdef DEBUG
-    <xsl:message>array: <xsl:value-of select="name(.)"/></xsl:message>
-#endif
-
     <xsl:variable name="column-counts.tr">
       <xsl:call-template name="cell-counter"/>
     </xsl:variable>

@@ -103,35 +103,40 @@
               <row align="end" style="height: 3em">
                 <vbox align="center">
                   <label value="Page orientation"/>
-                  <menulist minwidth="6em">
+                  <menulist id="pgorient" minwidth="6em">
                     <menupopup style="width: 9em" >
-                      <menuitem value="port" label="Portrait"/>
-                      <menuitem value="land" label="Landscape"/>
+                      <menuitem value="port" label="*Portrait" def="1"/>
+                      <menuitem value="landscape" label="Landscape"/>
                     </menupopup>
                   </menulist>
                 </vbox>
                 <vbox align="center">
-                  <label value="Page size"/>
-                  <menulist>
+                  <label value="Paper size"/>
+                  <menulist id="papersize">
                     <menupopup style="width: 9em" >
-                      <menuitem value="custom" label="Custom"/>
+                      <menuitem value="letter" label="*8.5x11 in." def="1"/>
+                      <menuitem value="a4paper" label="A4"/>
+                      <menuitem value="a5paper" label="A5"/>
+                      <menuitem value="b5paper" label="B5"/>
+                      <menuitem value="legalpaper" label="Legal"/>
+                      <menuitem value="executivepaper" label="Executive"/>
                     </menupopup>
                   </menulist>
                 </vbox>
                 <vbox align="center">
                   <label value="Sides"/>
-                  <menulist>
+                  <menulist id="sides">
                     <menupopup style="width: 9em" >
-                      <menuitem value="1" label="One"/>
-                      <menuitem value="2" label="Two"/>
+                      <menuitem value="oneside" label="*One" def="1"/>
+                      <menuitem value="twoside" label="Two"/>
                     </menupopup>
                   </menulist>
                 </vbox>
                 <vbox align="center">
                   <label value="Quality"/>
-                  <menulist style="width: 9em" >
+                  <menulist id="qual" style="width: 9em" >
                     <menupopup>
-                      <menuitem value="final" label="Final"/>
+                      <menuitem value="final" label="*Final" def="1"/>
                       <menuitem value="draft" label="Draft"/>
                     </menupopup>
                   </menulist>
@@ -142,32 +147,33 @@
                   <label value="Columns"/>
                   <menulist id="columns">
                     <menupopup style="width: 9em" oncommand="broadcastColCount();" >
-                      <menuitem value="1" label="One"/>
-                      <menuitem value="2" label="Two"/>
-                      <menuitem value="3" label="Three"/>
-                      <menuitem value="4" label="Four"/>
+                      <menuitem value="onecolumn" label="*One" def="1"/>
+                      <menuitem value="twocolumn" label="Two"/>
                     </menupopup>
                   </menulist>
                 </vbox>
                 <vbox align="center">
                   <label value="Body text font size"/>
-                  <menulist >
+                  <menulist id="textsize" >
                     <menupopup style="width: 9em" >
-                      <menuitem value="10" label="10 pt"/>
-                      <menuitem value="11" label="11 pt"/>
-                      <menuitem value="12" label="12 pt"/>
+                      <menuitem value="10pt" label="*10 pt" def="1"/>
+                      <menuitem value="11pt" label="11 pt"/>
+                      <menuitem value="12pt" label="12 pt"/>
                     </menupopup>
                   </menulist>
                 </vbox>
                 <vbox align="center">
                   <label value="Leading in points"/>
-                  <textbox style="width: 9em" value="12"/>
+                  <textbox type="number" decimalplaces="1" min="0" increment="0.1" id="leading" style="width: 9em" value=""/>
                 </vbox>
                 <vbox align="center">
-                  <label value="Babel language"/>
+                  <deck>
+                    <label value="Babel language"/>
+                    <label value="Polyglossia language"/>
+                  </deck>
                   <menulist>
                     <menupopup style="width: 9em" >
-                      <menuitem value="USenglish" label="US English"/>
+                      <menuitem value="USenglish" label="*US English" def="1"/>
                       <menuitem value="UKenglish" label="UK English"/>
                       <menuitem value="acadian" label="Acadian"/>
                       <menuitem value="albanian" label="Albanian"/>
@@ -258,19 +264,19 @@
               <row align="end" style="height: 3em">
                 <vbox align="center">
                   <label value="Eqn number position"/>
-                  <menulist>
+                  <menulist id="eqnnopos">
                     <menupopup style="width: 9em" >
-                      <menuitem value="left" label="On the left"/>
-                      <menuitem value="right" label="On the right"/>
+                      <menuitem value="reqno" label="*On the right" def="1"/>
+                      <menuitem value="leqno" label="On the left"/>
                     </menupopup>
                   </menulist>
                 </vbox>
                 <vbox align="center">
                   <label value="Displayed eqn position"/>
-                  <menulist>
+                  <menulist id="eqnpos">
                     <menupopup style="width: 9em" >
-                      <menuitem value="left" label="Flush left"/>
-                      <menuitem value="center" label="Centered"/>
+                      <menuitem value="ceqn" label="*Centered" def="1"/>
+                      <menuitem value="fleqn" label="Flush left"/>
                     </menupopup>
                   </menulist>
                 </vbox>
@@ -324,9 +330,10 @@
               <row align="end" style="height: 3em">
                 <vbox align="center">
                   <label value="Title page"/>
-                  <menulist>
+                  <menulist id="titlepage">
                     <menupopup style="width: 9em" >
-                      <menuitem value="title" label="Yes"/>
+                      <menuitem value="notitlepage" label="No" def="1"/>
+                      <menuitem value="titlepage" label="Yes"/>
                     </menupopup>
                   </menulist>
                 </vbox>
@@ -373,10 +380,10 @@
                 </vbox>
                 <vbox align="center">
                   <label value="Bibliography style"/>
-                  <menulist>
+                  <menulist id="bibstyle">
                     <menupopup style="width: 9em" >
-                      <menuitem value="comp" label="Compressed"/>
-                      <menuitem value="open" label="Open"/>
+                      <menuitem value="compbib" label="*Compressed" def="1"/>
+                      <menuitem value="openbib" label="Open"/>
                     </menupopup>
                   </menulist>
                 </vbox>
@@ -398,10 +405,10 @@
               <row align="end" style="height: 3em">
                 <vbox align="center">
                   <label value="Show keys"/>
-                  <menulist>
+                  <menulist id="showkeys" >
                     <menupopup style="width: 9em" >
+                      <menuitem value="no" label="*No" def="1"/>
                       <menuitem value="yes" label="Yes"/>
-                      <menuitem value="no" label="No"/>
                     </menupopup>
                   </menulist>
                 </vbox>
@@ -416,10 +423,10 @@
                 </vbox>
                 <vbox align="center">
                   <label value="Show index entries"/>
-                  <menulist>
+                  <menulist id="showidx">
                     <menupopup style="width: 9em" >
+                      <menuitem value="no" label="*No" def="1"/>
                       <menuitem value="yes" label="Yes"/>
-                      <menuitem value="no" label="No"/>
                     </menupopup>
                   </menulist>
                 </vbox>

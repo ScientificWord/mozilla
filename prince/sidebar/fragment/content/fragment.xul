@@ -21,6 +21,7 @@
  <popup id="fragmentContext"
    onpopupshowing="fixFragmentContextMenu()"
    onpopuphiding="restoreFragmentContextMenu()"> 
+    <menuitem id="fragment_paste" label="Paste" accesskey="P" oncommand="createFragmentFromClip();"/>
     <menuitem id="fragment_delete"   label="Delete" barelabel="Delete" accesskey="D" oncommand="deleteFragment();"/>
     <menuitem id="fragment_rename"   label="Change name/description of" barelabel = "Change name/description" accesskey="R" oncommand="renameFragment();"/>
     <menuitem id="fragment_newfolder"   label="New folder" accesskey="N" oncommand="newFragmentFolder();"/>

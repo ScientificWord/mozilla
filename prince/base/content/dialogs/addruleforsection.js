@@ -70,6 +70,7 @@ function onAccept()
 
 function onCancel()
 {
+  return true;
 }
 
 function handleChar(a,b)

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    title="Cross reference" 
+    buttons="accept,cancel"
+    buttonlabelcancel="Cancel" buttonlabelaccept="OK"
+    onload = "Startup();"
+    ondialogaccept="return onAccept();" ondialogcancel="return onCancel();"
+    width="300"
+    height="200"
+    persist="screenX screenY width height">
+
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/xref.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogComman.js"/>
+
+<label control="key" accesskey="K" value="Key"/>
+<textbox id="key" timeout="50" type="autocomplete" minresultsforpopup="1"
+  completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys"
+  tooltiptext="Enter a key name"
+  onfocus=""
+  ontextentered="" />
+
+<spacer flex="1"/>
+<groupbox>
+  <caption label="Print"/>
+  <radiogroup id="reftype" selectedItem="0" orient="horizontal">
+    <radio label="Page number" />
+    <radio label="Object counter" />
+  </radiogroup>
+</groupbox>
+</dialog>

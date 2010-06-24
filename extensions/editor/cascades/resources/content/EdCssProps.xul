@@ -56,9 +56,9 @@
     onclose="FlushChanges();">
 
   <!-- Methods common to all editor dialogs -->
-  <script type="application/x-javascript" src="chrome://prince/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
 
-  <script type="application/x-javascript" src="chrome://prince/content/EdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://cascades/content/compatibility.js"/>
   <script type="application/x-javascript" src="chrome://cascades/content/commonCssProps.js"/>

@@ -1044,7 +1044,7 @@ PRBool nsHTMLEditor::IsOnlyAttribute(nsIDOMNode *aNode,
     name->LocalName()->ToString(attrString);
     // if it's the attribute we know about, or a special _moz attribute,
     // keep looking
-    if (!attrString.Equals(*aAttribute, nsCaseInsensitiveStringComparator()) &&
+    if (!attrString.Equals(*aAttribute, nsCaseInsensitiveStringComparator()) &&    // BBM comparisons should be case-sensitive
         !StringBeginsWith(attrString, NS_LITERAL_STRING("_moz"))) {
       return PR_FALSE;
     }

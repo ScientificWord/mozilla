@@ -46,7 +46,7 @@ function startup()
     appendlistitem(cssList, arr[i]);
   var tagdefsArr;
   arr=[];
-  tagdefsArr = processingInstructionsList(editordoc, "sw-tagdefs");
+  tagdefsArr = processingInstructionsList(editordoc, "sw-tagdefs", false);
   for (i = tagdefsArr.length - 1; i>= 0;  i--)
   {
     uri = tagdefsArr[i]; 
