@@ -1,6 +1,6 @@
 rem @echo off
 pushd %2
-set path="%programfiles%\texlive\2009\bin\win32"
+set path="%MSITEXBIN%"
 makeindex %4
 echo done > sentinel
 popd
