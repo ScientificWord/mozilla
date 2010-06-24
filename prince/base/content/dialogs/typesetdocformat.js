@@ -1915,35 +1915,40 @@ function sectSetDecimalPlaces() // and increments
 
 function displayTextForSectionHeader()
 {
-  var secname = document.getElementById("sections.name").label.toLowerCase();
-  var basepara;
-//	var width;
-	var height;
-  basepara = getBaseNodeForIFrame();
-  var strContents;
-  if (sectitleformat[secname]) strContents = sectitleformat[secname].proto;
-	if (strContents && strContents.length > 0)
-	{
-	  var parser = new DOMParser();
-	  var doc = parser.parseFromString(strContents,"application/xhtml+xml");
-	  basepara.parentNode.replaceChild(doc.documentElement, basepara);
-		basepara = getBaseNodeForIFrame();
-		var htmlNode=basepara.parentNode.parentNode;
-		var boxObject=htmlNode.ownerDocument.getBoxObjectFor(htmlNode);
-//		width = boxObject.width;
-		height = boxObject.height;
-    document.getElementById("tso_template").setAttribute("selectedIndex","1");
-	}
-	else
-	{
-	  height = 20;
-    document.getElementById("tso_template").setAttribute("selectedIndex","0");
-//		width = 200;
+  try {
+    var secname = document.getElementById("sections.name").label.toLowerCase();
+    var basepara;
+  //	var width;
+	  var height;
+    basepara = getBaseNodeForIFrame();
+    var strContents;
+    if (sectitleformat[secname]) strContents = sectitleformat[secname].proto;
+	  if (strContents && strContents.length > 0)
+	  {
+	    var parser = new DOMParser();
+	    var doc = parser.parseFromString(strContents,"application/xhtml+xml");
+	    basepara.parentNode.replaceChild(doc.documentElement, basepara);
+		  basepara = getBaseNodeForIFrame();
+		  var htmlNode=basepara.parentNode.parentNode;
+		  var boxObject=htmlNode.ownerDocument.getBoxObjectFor(htmlNode);
+  //		width = boxObject.width;
+		  height = boxObject.height;
+      document.getElementById("tso_template").setAttribute("selectedIndex","1");
+	  }
+	  else
+	  {
+	    height = 20;
+      document.getElementById("tso_template").setAttribute("selectedIndex","0");
+  //		width = 200;
+    }
+	  var iframecontainer = document.getElementById("sectiontextareacontainer");
+  //	setStyleAttributeOnNode(iframecontainer,"height",Number(height)+"px");
+  //	setStyleAttribute(iframecontainer,"width",width+sectionUnit);
+	  setStyleAttribute(iframecontainer,"height",Number(height)+"px");
   }
-	var iframecontainer = document.getElementById("sectiontextareacontainer");
-//	setStyleAttributeOnNode(iframecontainer,"height",Number(height)+"px");
-//	setStyleAttribute(iframecontainer,"width",width+sectionUnit);
-	setStyleAttribute(iframecontainer,"height",Number(height)+"px");
+  catch(e) {
+    dump("displayTextForSectionHeader exception: "+e.message+"\n");
+  }
 }
 
 
@@ -2309,8 +2314,8 @@ function saveClassOptionsEtc()
   else optionNode.setAttribute("pgorient", widget.value);
   
   widget = document.getElementById("papersize").selectedItem;
-  if (widget.hasAttribute("def")) optionNode.removeAttribute("papsize")
-  else optionNode.setAttribute("papsize", widget.value);
+  if (widget.hasAttribute("def")) optionNode.removeAttribute("papersize")
+  else optionNode.setAttribute("papersize", widget.value);
 
   widget = document.getElementById("sides").selectedItem;
   if (widget.hasAttribute("def")) optionNode.removeAttribute("sides")
@@ -2332,10 +2337,6 @@ function saveClassOptionsEtc()
   if (widget.hasAttribute("def")) optionNode.removeAttribute("eqnnopos")
   else optionNode.setAttribute("eqnnopos", widget.value);
 
-  widget = document.getElementById("eqnnopos").selectedItem;
-  if (widget.hasAttribute("def")) optionNode.removeAttribute("eqnnopos")
-  else optionNode.setAttribute("eqnnopos", widget.value);
-
   widget = document.getElementById("eqnpos").selectedItem;
   if (widget.hasAttribute("def")) optionNode.removeAttribute("eqnpos")
   else optionNode.setAttribute("eqnpos", widget.value);
@@ -2343,6 +2344,10 @@ function saveClassOptionsEtc()
   widget = document.getElementById("titlepage").selectedItem;
   if (widget.hasAttribute("def")) optionNode.removeAttribute("titlepage")
   else optionNode.setAttribute("titlepage", widget.value);
+
+  widget = document.getElementById("bibstyle").selectedItem;
+  if (widget.hasAttribute("def")) optionNode.removeAttribute("bibstyle")
+  else optionNode.setAttribute("bibstyle", widget.value);
 
   if (newnode) documentclass.appendChild(optionNode);
 
@@ -2391,6 +2396,68 @@ function saveClassOptionsEtc()
     
 }
 
+function setMenulistSelection(menulist, value)
+{
+  var index = 0;
+  var item = menulist.getItemAtIndex(index);
+  while (item) {
+    if (item.value == value) 
+    {
+      menulist.selectedIndex = index;
+      break;
+    }
+    item = menulist.getItemAtIndex(++index);
+  }
+}
+
 function getClassOptionsEtc()
 {
+  var valuetypes = ["pgorient",
+    "papersize",
+    "sides",
+    "qual",
+    "columns",
+    "textsize",
+    "eqnnopos",
+    "eqnpos",
+    "titlepage",
+    "bibstyle"];
+
+  var doc = editor.document;
+  var documentclass = doc.documentElement.getElementsByTagName('documentclass')[0];
+  if (!documentclass) {
+    dump("No documentclass in document\n");
+    return;
+  }
+  var preamble = doc.documentElement.getElementsByTagName('preamble')[0];
+  if (!preamble) {
+    dump("No preamble in document\n");
+    return;
+  }
+  var nodelist = doc.getElementsByTagName("colist");
+  var node;
+  if (nodelist.length == 0) return; // leaves all values at the defaults, as defined
+  // in the XUL file
+  var colist = nodelist[0];
+  for each (s in valuetypes) {
+    if (colist.hasAttribute(s)) setMenulistSelection(document.getElementById(s),
+      colist.getAttribute(s));
+  }
+  nodelist = preamble.getElementsByTagName("leading");
+  if (nodelist.length > 0)
+  {
+    node = nodelist[0];
+    if (node.hasAttribute("val")) document.getElementById("leading").value =
+      (node.getAttribute("val")).replace(/pt/,"");
+  }
+  nodelist = preamble.getElementsByTagName("showkeys");
+  if (nodelist.length > 0)
+  {
+    document.getElementById("showkeys").selectedIndex = 1;
+  }
+  nodelist = preamble.getElementsByTagName("showidx");
+  if (nodelist.length > 0)
+  {
+    document.getElementById("showidx").selectedIndex = 1;
+  }
 }
