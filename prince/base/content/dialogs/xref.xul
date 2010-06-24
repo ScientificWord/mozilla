@@ -14,12 +14,14 @@
   <script type="application/x-javascript" src="chrome://prince/content/xref.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogComman.js"/>
 
-<label control="key" accesskey="K" value="Key"/>
-<textbox id="key" timeout="50" type="autocomplete" minresultsforpopup="1"
-  completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys"
-  tooltiptext="Enter a key name"
-  onfocus=""
-  ontextentered="" />
+<label control="keylist" accesskey="K" value="Key"/>
+  <textbox id="keylist" timeout="50" type="autocomplete" minresultsforpopup="1" enablehistory="true" 
+    forcecomplete="true"
+    completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="key"
+    tooltiptext="Enter a key name"
+    maxrows="3"
+    onfocus="this.select()"
+    ontextentered="" />
 
 <spacer flex="1"/>
 <groupbox>
