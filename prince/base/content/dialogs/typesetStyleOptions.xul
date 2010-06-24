@@ -15,7 +15,6 @@
 <dialog title="&windowTitle.label;"
   id="typesetStyleOptionsDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     onload="Startup()"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();"
@@ -48,20 +47,11 @@
       <hbox>
         <vbox>
           <description value='&categoryDescription.label;' accesskey='&categoryDescription.accesskey;'/>
-          <listbox id='categoryListbox' datasources='chrome://prince/content/texOptions.rdf' ref='' onselect='changeOptionSelection(this.selectedItem);'>
-            <template>
-              <!-- listitem uri="rdf:*" label='rdf:http://www.sciword.com/namespaces/texoptions-rdf#displayText' value='rdf:http://www.sciword.com/namespaces/texoptions-rdf#optionValues'/ -->
-              <listitem uri="rdf:*" label="rdf:http://www.sciword.com/namespaces/texoptions-rdf#displayText" value="rdf:http://www.sciword.com/namespaces/texoptions-rdf#optionID"/>
-            </template>
-          </listbox>
+          <listbox id='categoryListbox' onselect='changeOptionSelection(this.selectedItem);' />
         </vbox>
         <vbox>
           <description value='&optionsDescription.label;' accesskey='&optionsDescription.accesskey;'/>
-          <listbox id='optionsListbox' datasources='chrome://prince/content/texOptions.rdf' ref='' onselect='changeOptionChoice();'>
-            <template>
-              <listitem uri="rdf:*" label="rdf:http://www.sciword.com/namespaces/texoptions-rdf#displayText" value="rdf:http://www.sciword.com/namespaces/texoptions-rdf#latexString"/>
-            </template>
-          </listbox>
+          <listbox id='optionsListbox' onselect='changeOptionChoice();' />
           </vbox>
       </hbox>
       <hbox>
