@@ -71,7 +71,9 @@
 		<command id="cmd_MSIoperatorsCmd"     oncommand="msiGoDoCommand('cmd_MSIoperatorsCmd')"/>
 		<command id="cmd_MSIdecorationsCmd"   oncommand="msiGoDoCommand('cmd_MSIdecorationsCmd')"/>
     <command id="cmd_MSIunitsCommand"     oncommand="msiGoDoCommand('cmd_MSIunitsCommand')"/>
-  </commandset>
+    <command id="cmd_insertHTMLField" oncommand="msiGoDoCommand('cmd_insertHTMLField')"/>
+    <command id="cmd_marker" oncommand="msiGoDoCommand('cmd_marker')"/>
+</commandset>
 
   <commandset id="MSImathReviseCommands"
                   commandupdater="true"
@@ -96,6 +98,8 @@
     <command id="cmd_MSImathtext"   state="false"     oncommand="msiGoDoCommand('cmd_MSIinlineMathCmd')"/>
   </commandset>
 
+ >
+    
 
 
   <menu id="insertMenu" label="Insert" accesskey="&insertmenu.accesskey;">
@@ -124,19 +128,41 @@
 	    </menupopup>
       </menu>
       <menuitem id="insertmenuMarker" label="&insertmenuMarker.label;"
-        accesskey="&insertmenuMarker.accesskey;" observes="cmd_unimp" />
+        accesskey="&insertmenuMarker.accesskey;" observes="cmd_marker" />
       <menuitem id="insertmenuNote" label="&insertmenuNote.label;"
         accesskey="&insertmenuNote.accesskey;" observes="cmd_note" />
       <menu id="insertmenuTypesetObject" label="&insertmenuTSO.label;" accesskey="&insertmenuTSO.accesskey;" >
           <menupopup>
-               <menuitem id="insertmenuCitation" label="&insertmenuCitation.label;"
-                    accesskey="&insertmenuCitation.accesskey;" observes="cmd_citation" />
-          </menupopup>
+          <menuitem id="MSIinsertIndexEntry"         
+            label="&MSIinsertIndexEntry.label;"         
+            accesskey="&MSIinsertIndexEntry.accesskey;"         
+            command="cmd_MSIinsertIndexEntryCmd"/>
+          <menuitem id="MSIinsertCrossReference"     
+            label="&MSIinsertCrossReference.label;"     
+            accesskey="&MSIinsertCrossReference.accesskey;"     
+            command="cmd_MSIinsertCrossReferenceCmd"/>
+          <menuitem id="MSIinsertCitation"           
+            label="&MSIinsertCitation.label;"           
+            accesskey="&MSIinsertCitation.accesskey;"           
+            command="cmd_MSIinsertCitationCmd"/>
+          <menuitem id="MSIinsertBibliography"       
+            label="&MSIinsertBibliography.label;"       
+            accesskey="&MSIinsertBibliography.accesskey;"       
+            command="cmd_MSIinsertBibliographyCmd"/>
+          <menuitem id="MSIinsertTeXField"           
+            label="&MSIinsertTeXField.label;"           
+            accesskey="&MSIinsertTeXField.accesskey;"           
+            command="cmd_MSIinsertTeXFieldCmd"/>
+          <!--menuitem id="MSIinsertSubdocument"        
+            label="&MSIinsertSubdocument.label;"        
+            accesskey="&MSIinsertSubdocument.accesskey;"        
+            command="cmd_MSIinsertSubdocumentCmd"/ -->
+        </menupopup>
       </menu>
       <menuitem id="insertmenuHyperlink" label="&insertmenuHyperlink.label;"
         accesskey="&insertmenuHyperlink.accesskey;" observes="cmd_link" />
       <menuitem id="insertmenuHTMLField" label="&insertmenuHTMLField.label;"
-        accesskey="&insertmenuHTMLField.accesskey;" observes="cmd_unimp" />
+        accesskey="&insertmenuHTMLField.accesskey;" command="cmd_insertHTMLField" />
       <!--menuitem label="&MSIColorsCmd.label;" accesskey="&MSIColorsCmd.accesskey;" command="cmd_MSIColorsCmd"/ -->
      </menupopup>
    </menu>

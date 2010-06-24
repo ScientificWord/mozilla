@@ -97,6 +97,6 @@ en-US.jar:
   locale/msiEditorTableProperties.dtd     (dialogs/msiEditorTableProperties.dtd)
   locale/passes.dtd                       (dialogs/passes.dtd)
   locale/msiEdReviseChars.dtd			  (dialogs/msiEdReviseChars.dtd)
-
+  locale/EditorLinkProperties.dtd			  (dialogs/EditorLinkProperties.dtd)
 
 

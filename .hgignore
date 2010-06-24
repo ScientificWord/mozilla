@@ -13,3 +13,10 @@ glob:.cproject
 glob:.project
 glob:.settings/org.eclipse.core.runtime.prefs
 glob:.settings/org.eclipse.core.resources.prefs
+glob:extensions/addon-*.*
+glob:*.less
+glob:*.stackdump
+glob:extensions/firebut/*.*
+glob:*.rej
+glob:extensions/firebug/*
+glob:extensions/chromebug/*

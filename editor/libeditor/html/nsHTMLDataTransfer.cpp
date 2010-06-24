@@ -843,7 +843,14 @@ PRBool IsWhiteSpaceOnly( nsString str )
 nsresult
 nsHTMLEditor::InsertReturn( )
 {
-  return InsertReturnImpl( PR_FALSE );
+  nsresult result;  
+  PRBool bfancy;
+  nsCOMPtr<nsIPrefBranch> prefBranch =
+    do_GetService(NS_PREFSERVICE_CONTRACTID, &result);
+  if (NS_SUCCEEDED(result) && prefBranch)
+    result = prefBranch->GetBoolPref("swp.fancyreturn", &bfancy);
+  if (NS_FAILED(result)) bfancy = PR_FALSE;
+  return InsertReturnImpl(bfancy );
 }
 
 // InsertReturnFancy -- usually splits a paragraph

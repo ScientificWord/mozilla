@@ -2600,7 +2600,7 @@ nsPluginStreamListenerPeer::VisitHeader(const nsACString &header, const nsACStri
 nsPluginHostImpl::nsPluginHostImpl()
 {
   mPluginsLoaded = PR_FALSE;
-  mDontShowBadPluginMessage = PR_FALSE;
+  mDontShowBadPluginMessage = PR_TRUE;
   mIsDestroyed = PR_FALSE;
   mOverrideInternalTypes = PR_FALSE;
   mAllowAlienStarHandler = PR_FALSE;

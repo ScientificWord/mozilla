@@ -281,7 +281,7 @@ NS_IMETHODIMP nsAutoCompleteSearchStringArrayImp::AddString(const nsAString & st
   }
   else
   {
-    *_retval = PR_FALSE;
+    *_retval = (psa!=nsnull);  // this is the case where IndexOf(strAdd) >= 0)
   }
   return NS_OK;
 }

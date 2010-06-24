@@ -722,7 +722,7 @@ NS_IMETHODIMP msiTagListManager::TagCanContainTag(const nsAString & strTagOuter,
   nsresult rv = GetClassOfTag(strTagOuter, atomNSOuter, classOuter);
   nsAutoString classInner;
   rv = GetClassOfTag(strTagInner, atomNSInner, classInner);
-  
+  if (classInner.Length() == 0) classInner.AssignLiteral("texttag");
   // structtags are different: the level determines what can contain what.
   if (classOuter.Equals(classInner) && classOuter.EqualsLiteral("structtag"))
   {
@@ -1013,8 +1013,64 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
   rv = GetTagOfNode(*secondNode, &nsAtomSecond, secondNodeName);
   if (isEmpty)
   {
-    nsCOMPtr<nsIDOMNode> brNode;
-    rv = editor->CreateBR(*secondNode, 0, address_of(brNode));
+    rv = GetStringPropertyForTag(secondNodeName, dummyatom, NS_LITERAL_STRING("initialcontentsforempty"), strContents);
+    if (strContents.Length() == 0)
+    {
+      rv = GetStringPropertyForTag(secondNodeName, dummyatom, NS_LITERAL_STRING("initialcontents"), strContents);
+    }
+    if (strContents.Length() > 0)
+    {
+      // to make this operation undoable, we create a new node and copy its contents
+      nsCOMPtr<nsIDOMNode> newNode;
+      nsCOMPtr<nsIDOMNode> parentNode;
+      rv = (*secondNode)->CloneNode(PR_FALSE, getter_AddRefs(newNode));
+      nsCOMPtr<nsIDOMNSHTMLElement> secondElement(do_QueryInterface(newNode));
+      (secondElement)->SetInnerHTML(strContents);
+      nsCOMPtr<nsIDOMNode> child;
+      PRBool bHasMoreChildren;
+      newNode->HasChildNodes(&bHasMoreChildren);
+      while (bHasMoreChildren)
+      {
+        newNode->GetFirstChild(getter_AddRefs(child));
+        rv =meditor->DeleteNode(child);
+//        if (NS_FAILED(rv)) return rv;
+
+        rv = meditor->InsertNode(child, *secondNode, -1);
+        if (NS_FAILED(rv)) return rv;
+        newNode->HasChildNodes(&bHasMoreChildren);
+      }
+      meditor->MarkNodeDirty(*secondNode);
+    }
+  }
+//  if (!pnode) pnode = *secondNode;
+//#if DEBUG_barry || DEBUG_Barry
+//  editor->DumpNode(pnode,0);
+//#endif        
+  nsCOMPtr<nsIDOMNode> pnode = *secondNode;
+  nsCOMPtr<nsISelectionPrivate> selPriv(do_QueryInterface(selection));
+  if (pnode)
+  {
+    nsCOMPtr<nsIDOMElement> element;
+    nsCOMPtr<nsIDOMNodeList> nodeList;
+    nsCOMPtr<nsIDOMNode> node, selNode;
+    PRUint32 nodeCount;
+    PRInt32 selOffset; 
+    element = do_QueryInterface(pnode);
+    rv = element->GetElementsByTagName(NS_LITERAL_STRING("cursor"), getter_AddRefs(nodeList));
+    if (nodeList) nodeList->GetLength(&nodeCount);
+    if (nodeCount > 0)
+    {
+      nodeList->Item(0, getter_AddRefs(node));
+      nsEditor::GetNodeLocation(node, address_of(selNode), &selOffset);
+      editor->DeleteNode(node);
+      selPriv->SetInterlinePosition(PR_TRUE);
+      rv = selection->Collapse(selNode, selOffset);
+//      rv = selection->Extend( selNode, selOffset+1 );
+#if DEBUG_barry || DEBUG_Barry
+      editor->DumpNode(selNode,0);
+#endif
+      return NS_OK;
+    }
   }
 
   rv = selection->Collapse(*secondNode, 0);

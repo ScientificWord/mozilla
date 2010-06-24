@@ -65,8 +65,8 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_insertVerticalSpaces", msiInsertVerticalSpacesCommand);
   commandTable.registerCommand("cmd_msiInsertRules", msiInsertRulesCommand);
   commandTable.registerCommand("cmd_msiInsertBreaks", msiInsertBreaksCommand);
-                                              
-
+  commandTable.registerCommand("cmd_insertHTMLField", msiInsertHTMLFieldCommand);
+  commandTable.registerCommand("cmd_marker",             msiMarkerCommand);
   commandTable.registerCommand("cmd_table",              msiInsertOrEditTableCommand);
   commandTable.registerCommand("cmd_editTable",          msiEditTableCommand);
   commandTable.registerCommand("cmd_editTableCell",      msiEditTableCommand);
@@ -154,6 +154,7 @@ function msiSetupTextEditorCommands(editorElement)
   commandTable.registerCommand("cmd_insertChars", msiInsertCharsCommand);
   commandTable.registerCommand("cmd_oneshotGreek", msiOneShotGreek);
   commandTable.registerCommand("cmd_oneshotSymbol", msiOneShotSymbol);
+  commandTable.registerCommand("cmd_fontcolor", msiFontColor);
 }
 
 function msiSetupComposerWindowCommands(editorElement)
@@ -2331,14 +2332,15 @@ function msiSoftSave( editor, editorElement)
   var urlstring = msiGetEditorURL(editorElement);
   var url = msiURIFromString(urlstring);
   var currentFile = msiFileFromFileURL(url);
+  var compileInfo = new Object();
   if (saveAsTextFile)
     aMimeType = "text/plain";
   else if (GetBoolPref("swp.generateTeXonsave"))
   {
     var file = currentFile.parent;
-    file.append("TeX");
+    file.append("tex");
     file.append("main.tex");
-    documentAsTeXFile(editorDoc, "latex.xsl", file );
+    documentAsTeXFile(editorDoc, "latex.xsl", file, compileInfo);
   }
   var success;
   success = msiOutputFileWithPersistAPI(editorDoc, currentFile, null, aMimeType, editorElement);
@@ -2437,8 +2439,9 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   var workingDir = null;
   var leafname;
   var isSciFile;
-  
-  currentSciFile = msiFileFromFileURL(sciurlstring);
+  var fileurl = msiURIFromString(sciurlstring);
+  currentSciFile = msiFileFromFileURL(fileurl);
+  currentSciFilePath = msiPathFromFileURL(fileurl); 
   
   var regEx = /_work\/main.xhtml$/i;  // BBM: localize this
   isSciFile = regEx.test(htmlurlstring);
@@ -2503,7 +2506,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
     }
   }  // mustShowDialog
   else { // if we didn't show the File Save dialog, we need destLocalFile to be A.sci
-   currentSciFile.initWithPath( currentSciFilePath );  // now = A.sci
+//   currentSciFile.initWithPath( currentSciFilePath );  // now = A.sci
    destLocalFile = currentSciFile.clone();       
   }
 
@@ -3405,6 +3408,39 @@ var msiOneShotSymbol =
 
 
 //-----------------------------------------------------------------------------------
+var msiFontColor =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon)
+  {
+  },
+  doCommandParams: function(aCommand, aParams, aRefCon) 
+  {
+  },
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement();
+//    var editor = msiGetEditor(editorElement);
+//    var htmleditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
+    var colorObj = { NoDefault:true, Type:"Font", TextColor:"black", PageColor:0, Cancel:false };
+
+    window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "resizable=yes, chrome,close,titlebar,modal", 
+    "", colorObj);
+
+    // User canceled the dialog
+    if (colorObj.Cancel)
+      return;
+    
+    msiEditorSetTextProperty(editorElement, "fontcolor", "color", colorObj.TextColor);
+  }
+};
+
+
+//-----------------------------------------------------------------------------------
 //msiQuitCommand not even implemented - the comments in the original nsQuitCommand remain relevant, and it's left alone.
 var nsQuitCommand =
 {
@@ -3442,7 +3478,7 @@ var msiAutoSubDlgCommand =
 //    AlertWithTitle("Unimplemented", "AutoSubstitution dialog not yet available.");
     var editorElement = msiGetActiveEditorElement();
     try {
-      msiOpenModelessDialog("chrome://prince/content/autoSubstituteDialog.xul", "_blank", "chrome,close,titlebar,dependent",
+      msiOpenModelessDialog("chrome://prince/content/autoSubstituteDialog.xul", "_blank", "chrome,resizable=yes,close,titlebar,dependent",
                                         editorElement, "cmd_MSIAutoSubDlg", this, editorElement);
 //      window.openDialog("chrome://editor/content/EdReplace.xul", "replace",
 //                        "chrome,modal,titlebar", editorElement);
@@ -3639,7 +3675,7 @@ var msiValidateCommand =
   },
   validateFilePageLoaded: function(event)
   {
-    event.target.forms[0].uploaded_file.value = URL2Validate;
+    event.path.forms[0].uploaded_file.value = URL2Validate;
   }
 };
 
@@ -4238,11 +4274,11 @@ var msiLinkCommand =
     // If selected element is an image, launch that dialog instead 
     // since last tab panel handles 
     var editorElement = msiGetActiveEditorElement();
-    var element = msiGetObjectForProperties(editorElement);
+    var element = msiGetObjectDataForProperties(editorElement);
     if (element && msiGetBaseNodeName(element) == "img")
-      window.openDialog("chrome://prince/content/msiEdImageProps.xul","imageprops", "chrome,close,titlebar,modal", null, true);
+      window.openDialog("chrome://prince/content/msiEdImageProps.xul","imageprops", "resizable=true,chrome,close,titlebar", null, true);
     else
-      window.openDialog("chrome://editor/content/EdLinkProps.xul","linkprops", "chrome,close,titlebar,modal");
+      window.openDialog("chrome://prince/content/EdLinkProps.xul","linkprops", "resizable=true,chrome,close,titlebar");
     editorElement.focus();
   }
 };
@@ -4257,8 +4293,7 @@ var msiReviseHyperlinkCommand =
     var linkNode = msiGetReviseObjectFromCommandParams(aParams);
     if (linkNode != null && editorElement != null)
     {
-      AlertWithTitle("msiComposerCommands.js", "In msiReviseHyperlinkCommand, trying to revise a hyperlink, dialog not implemented.");
-//      window.openDialog("chrome://editor/content/EdNamedAnchorProps.xul", "anchorprops", "chrome,close,titlebar,modal", "", editorElement);
+      window.openDialog("chrome://prince/content/EdLinkProps.xul","linkprops", "resizable=true,chrome,close,titlebar");
     }
     editorElement.focus();
   },
@@ -5492,8 +5527,51 @@ function msiReviseBreaks(reviseData, dialogData, editorElement)
   editor.endTransaction();
 }
 
+//----------------------------------------------------
+var msiMarkerCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement));
+  },
 
-//-----------------------------------------------------------------------------------
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    try {
+      // more goes here
+      window.openDialog("chrome://prince/content/marker.xul", "Insert marker", "resizable=yes,chrome,close,titlebar");
+
+    } catch (e) {}
+  }
+};
+//----------------------------------------------------
+var msiInsertHTMLFieldCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement));
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    try {
+      // more goes here
+      window.openDialog("chrome://prince/content/htmlfield.xul", "HTML field", "resizable=yes,chrome,close,titlebar");
+
+    } catch (e) {}
+  }
+};
+//----------------------------------------------------
 var msiInsertReturnFancyCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
@@ -7304,8 +7382,7 @@ function msiDoAdvancedProperties(element, editorElement)
         // as a role, and currently that role is played by texb tags, but any other tag
         // could play this role as well. 
           try {
-            data.tex = element.firstChild.nodeValue;
-            dlgParentWindow.openDialog("chrome://prince/content/texbuttoncontents.xul","texbutton","chrome,close,titlebar,resizable=yes,modal", data);
+            dlgParentWindow.openDialog("chrome://prince/content/texbuttoncontents.xul","texbutton","chrome,close,titlebar,resizable=yes,modal", element);
             editorElement.contentWindow.focus();
             if (!data.Cancel)
             {
@@ -8485,17 +8562,15 @@ function callColorDialog()
   if (colorObj.Cancel)
     return;
     
-  var editorElement = msiGetParentEditorElementForDialog(window);
-  if (!editorElement)
-  {
-    AlertWithTitle("Error", "No editor in otfont.OnAccept!");
-  }
-  var theWindow = window.opener;
-  if (!theWindow || !("msiEditorSetTextProperty" in theWindow))
-    theWindow = msiGetTopLevelWindow();
-  theWindow.msiRequirePackage(editorElement, "xcolor", null);
-  theWindow.msiEditorSetTextProperty(editorElement, "fontcolor", "color", colorObj.TextColor);
+  var cmdParams = newCommandParams();
+  if (!cmdParams) return;
+
+  var editorElement = msiGetActiveEditorElement();
+  dump("EditorElement has name "+editorElement.id+"\n");
+  cmdParams.setStringValue("color", colorObj.TextColor);
   editorElement.contentWindow.focus();
+  msiGoDoCommandParams("cmd_fontcolor", cmdParams, editorElement);
+//  theWindow.msiRequirePackage(editorElement, "xcolor", null);
 }
 
 var msiShowTeXLogCommand =

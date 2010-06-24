@@ -737,7 +737,7 @@ function msiEditorDocumentObserver(editorElement)
           var fileurl;
           var i;
           // check the document for tagdef processing instructions
-          var tagdeflist = processingInstructionsList(editor.document, "sw-tagdefs");
+          var tagdeflist = processingInstructionsList(editor.document, "sw-tagdefs", false);
           //  if nothing returned, use the default tagdefs
           if (tagdeflist.length < 1) tagdeflist = ["resource://app/res/tagdefs/latexdefs.xml"];
           for (i = 0; i < tagdeflist.length; i++)
@@ -3392,6 +3392,7 @@ function msiSetEditMode(mode, editorElement)
 
     // Clear out the string buffers
     msiClearSource(editorElement);
+    editorElement.makeEditable("html");
     editorElement.contentWindow.focus();
   }
 }
@@ -7845,7 +7846,7 @@ function FillInHTMLTooltip(tooltip)
  
 // handle events on prince-specific elements here, or call the default goDoCommand() 
 function goDoPrinceCommand (cmdstr, element, editorElement) 
-{ dump ("SMR msiEditor.js got doPrinceCommand " +  element.localName + " " + element.getAttribute("msigraph") + "\n");
+{ 
   try
   {
     if (!editorElement)
@@ -7862,6 +7863,10 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     else if (elementName == "note")
     {
       msiNote(element,editorElement);
+    }
+    else if (elementName == "a")
+    {
+      msiGoDoCommand("cmd_msiReviseHyperlink", editorElement);
     }
     else if (elementName == "subdoc")
     {

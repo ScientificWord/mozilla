@@ -90,13 +90,10 @@
     </menupopup>
   </menu>
 
-  <menu id="MSIMathMenu">
-    <menupopup id="MSIMathPopup">
-      <menu id="MSIInsertTypesetObjectMenu" 
-        label="&MSIInsertTypesetObjectMenu.label;" 
-        accesskey="&MSIInsertTypesetObjectMenu.accesskey;">
-        
-        <menupopup onpopupshowing="InitTypesetObjectMenu()">
+  <!---menu id="insertMenu">
+    <menupopup id="insertMenuPopup" >
+      <menu id="insertTypesetObjectMenu">
+        <menupopup oonpopupshowing="InitTypesetObjectMenu()">
           <menuitem id="MSIinsertIndexEntry"         
             label="&MSIinsertIndexEntry.label;"         
             accesskey="&MSIinsertIndexEntry.accesskey;"         
@@ -124,6 +121,6 @@
         </menupopup>
       </menu>
     </menupopup>
-  </menu>
+  </menu -->
 
 </overlay>
