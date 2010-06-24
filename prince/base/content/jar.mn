@@ -90,6 +90,7 @@ prince.jar:
 * content/latexpagenumberstyle.js       (dialogs/latexpagenumberstyle.js)
 * content/latexpagenumberstyle.xul      (dialogs/latexpagenumberstyle.xul)
 * content/marker.xul                (dialogs/marker.xul)
+* content/marker.js                 (dialogs/marker.js)
 * content/MathColors.js     (dialogs/MathColors.js)
 * content/MathColors.xul        (dialogs/MathColors.xul)
 * content/mathmlMathName.js     (dialogs/mathmlMathName.js)
