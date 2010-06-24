@@ -221,7 +221,7 @@ should not be done under some conditions -->
   <xsl:when test="@reftype='page'">\vpageref%%</xsl:when>
   <xsl:otherwise>\vref</xsl:otherwise>
 </xsl:choose>
-{<xsl:value-of select="@key"/>}%%
+{<xsl:value-of select="@key"/>}{}%%
 </xsl:template>
 
 
@@ -448,6 +448,11 @@ should not be done under some conditions -->
 <xsl:template match="html:minpasses">
 %% minpasses=<xsl:value-of select="@num"/>
 </xsl:template>
+
+<!-- labels -->
+<xsl:template match="html:a[@name]"
+ >\label{<xsl:value-of select="@name"
+ />}</xsl:template> 
 
 
 <xsl:template match="html:texb"
