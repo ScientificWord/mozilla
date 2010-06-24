@@ -12,16 +12,8 @@
 
   <xsl:template match="mml:mi">
   
-#ifdef DEBUG
-    <xsl:message>1 <xsl:value-of select="name(.)"/></xsl:message>
-#endif
-
     <xsl:variable name="LaTeX-symbols">
-  
-#ifdef DEBUG
-    <xsl:message>defining LaTeX-symbols: <xsl:value-of select="normalize-space(string())"/></xsl:message>
-#endif
-      <xsl:call-template name="chars-to-LaTeX-Math">
+        <xsl:call-template name="chars-to-LaTeX-Math">
         <xsl:with-param name="unicode-cdata" select="normalize-space(string())"/>
       </xsl:call-template>
     </xsl:variable>
@@ -42,12 +34,7 @@
 
 
     <xsl:choose>
-      <xsl:when test="string-length(normalize-space(string())) = 1">
-
-#ifdef DEBUG
-    <xsl:message>mi is length 1</xsl:message>
-#endif
-        <xsl:choose>
+      <xsl:when test="string-length(normalize-space(string())) = 1">        <xsl:choose>
           <xsl:when test="$tag!='false'">
 		    <xsl:if test="$output-mode='Portable-LaTeX'">
               <xsl:value-of select="$tag"/>
@@ -92,19 +79,9 @@
           <xsl:otherwise>
             <xsl:value-of select="$LaTeX-symbols"/>
           </xsl:otherwise>
-        </xsl:choose>
+        </xsl:choose>      </xsl:when>
 
-#ifdef DEBUG
-    <xsl:message>exiting mi is length 1</xsl:message>
-#endif
-      </xsl:when>
-
-      <xsl:when test="string-length(normalize-space(string())) = 2">
-
-#ifdef DEBUG
-    <xsl:message>mi is length 2</xsl:message>
-#endif
-        <xsl:if test="$tag!='false'">
+      <xsl:when test="string-length(normalize-space(string())) = 2">        <xsl:if test="$tag!='false'">
           <xsl:value-of select="$tag"/>
         </xsl:if>
         <xsl:choose>
@@ -457,10 +434,6 @@
   <xsl:template name="get-tag">
     <xsl:param name="raw-LaTeX"/>
   
-#ifdef DEBUG
-    <xsl:message>get-tag: <xsl:value-of select="name(.)"/></xsl:message>
-#endif
-
     <xsl:choose>
       <xsl:when test="@mathvariant='bold'
       or              ancestor::mml:mstyle[@fontweight='bold']">
@@ -527,19 +500,11 @@
       </xsl:otherwise>
 
     </xsl:choose>
-	
-#ifdef DEBUG
-    <xsl:message>leaving get-tag </xsl:message>
-#endif
-  </xsl:template>
+	  </xsl:template>
 
 <!-- JCS
   <xsl:template match="mml:mi" >
-  
-#ifdef DEBUG
-    <xsl:message><xsl:value-of select="name(.)"/></xsl:message>
-#endif
-    <xsl:text>$</xsl:text>
+      <xsl:text>$</xsl:text>
     <xsl:apply-templates select="."/>
     <xsl:text>$</xsl:text>
   </xsl:template>

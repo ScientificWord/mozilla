@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+
+<!-- ***** BEGIN LICENSE BLOCK *****
+   - Version: MPL 1.1/GPL 2.0/LGPL 2.1
+   -
+   - The contents of this file are subject to the Mozilla Public License Version
+   - 1.1 (the "License"); you may not use this file except in compliance with
+   - the License. You may obtain a copy of the License at
+   - http://www.mozilla.org/MPL/
+   -
+   - Software distributed under the License is distributed on an "AS IS" basis,
+   - WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+   - for the specific language governing rights and limitations under the
+   - License.
+   -
+   - The Original Code is Mozilla Communicator client code, released
+   - March 31, 1998.
+   -
+   - The Initial Developer of the Original Code is
+   - Netscape Communications Corporation.
+   - Portions created by the Initial Developer are Copyright (C) 1998-2003
+   - the Initial Developer. All Rights Reserved.
+   -
+   - Contributor(s):
+   -   Daniel Glazman (glazman@disruptive-innovations.com), on behalf of Linspire Inc.
+   -
+   - Alternatively, the contents of this file may be used under the terms of
+   - either the GNU General Public License Version 2 or later (the "GPL"), or
+   - the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+   - in which case the provisions of the GPL or the LGPL are applicable instead
+   - of those above. If you wish to allow use of your version of this file only
+   - under the terms of either the GPL or the LGPL, and not to allow others to
+   - use your version of this file under the terms of the MPL, indicate your
+   - decision by deleting the provisions above and replace them with the notice
+   - and other provisions required by the LGPL or the GPL. If you do not delete
+   - the provisions above, a recipient may use your version of this file under
+   - the terms of any one of the MPL, the GPL or the LGPL.
+   -
+   - ***** END LICENSE BLOCK ***** -->
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/EdDialogOverlay.xul"?> 
+
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/EditorLinkProperties.dtd">
+
+<dialog id="linkDlg" title="&windowTitle.label;"
+   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+   buttons="accept,cancel,help"
+   onload = "Startup()"
+   ondialogaccept="return onAccept();"
+   ondialogcancel="return onCancel();"
+   ondialoghelp="return onAccept();">
+
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/EdLinkProps.js"/>
+  <script type="application/x-javascript" src="chrome://help/content/contextHelp.js"/>
+
+  <broadcaster id="args" value=""/>
+  <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
+
+  <vbox style="min-width: 35em">
+    <groupbox><caption id="linkTextCaption"/>
+      <vbox>
+        <label id="linkTextMessage" control="linkTextInput"/>
+        <textbox id="linkTextInput"/>
+      </vbox>
+    </groupbox>
+
+    <groupbox><caption label="&LinkURLBox.label;"/>
+      <vbox id="LinkLocationBox">
+        <label control="hrefInput" accesskey="&LinkURLEditField.accessKey;" width="1">&LinkURLEditField.label;</label>
+        <textbox id="hrefInput" timeout="50" maxrows="6"
+                 class="uri-element"
+                 oninput="ChangeLinkLocation();">
+          <menupopup class="autocomplete-history-popup"
+                     popupalign="topleft" popupanchor="bottomleft"
+                     oncommand="this.parentNode.value = event.target.getAttribute('label');"/>
+        </textbox>
+        <hbox align="center">
+          <!-- from EdDialogOverlay.xul 'for' identifies the textfield to get URL from -->
+          <checkbox id="MakeRelativeCheckbox"
+                    for="hrefInput"
+                    label="&makeUrlRelative.label;"
+                    accesskey="&makeUrlRelative.accessKey;"
+                    oncommand="MakeInputValueRelativeOrAbsolute(this);"
+                    tooltiptext="&makeUrlRelative.tooltip;"/>
+          <spacer flex="1"/>
+          <button label="&chooseButton.label;" accesskey="&chooseFileLink.accessKey;" oncommand="chooseLinkFile();"/>
+        </hbox>
+      </vbox>  
+
+    </groupbox>
+    <groupbox><caption label="Marker or anchor"/>
+      <hbox>
+        <textbox id="hrefInput" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
+          completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys"
+          tooltiptext="Enter a new key name"
+          onfocus=""
+          ontextentered="" />
+          <button id="MoreFewerButton" oncommand="onMoreFewer();" persist="more"/>
+      </hbox>
+    </groupbox>
+
+  </vbox>
+
+
+  <vbox id="MoreSection">
+    <groupbox><caption label="&targetBox.label;"/>
+      <checkbox id="userDefinedTargetCheckbox" label="&userDefinedTarget.label;" oncommand="TargetToggled();"/>
+      <radiogroup orient="vertical" class="indent" id="targetRadiogroup">
+        <radio id="topRadio"
+               label="&topRadio.label;"
+               value="_top"
+               oncommand="ToggleTargetValue('_top')"/>
+        <radio id="blankRadio"
+               label="&blankRadio.label;"
+               value="_blank"
+               oncommand="ToggleTargetValue('_blank')"
+               selected="true"/>
+        <radio id="parentRadio"
+               label="&parentRadio.label;"
+               value="_parent"
+               oncommand="ToggleTargetValue('_parent')"/>
+        <radio id="selfRadio"
+               label="&selfRadio.label;"
+               value="_self"
+               oncommand="ToggleTargetValue('_self')"/>
+        <radio id="userdefRadio"
+               label="&userDefinedRadio.label;"
+               value="user-defined"
+               oncommand="ToggleTargetValue('user-defined')"/>
+        <textbox id="userDefinedTarget" class="indent"/>
+      </radiogroup>
+    </groupbox>
+
+  </vbox>
+  <!-- from EdDialogOverlay -->
+  <vbox id="AdvancedEdit"/>
+</dialog>

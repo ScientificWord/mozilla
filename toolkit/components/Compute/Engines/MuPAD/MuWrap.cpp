@@ -260,13 +260,19 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
           plotOK = (rv == NS_OK);
           if (plotOK)
           {
+              printf("plotOK is true\n");
               plotfile = do_CreateInstance("@mozilla.org/file/local;1", &rv);
-              rv = engOutput->InitWithNativePath( nsDependentCString(zeng_output) );
+              for (int i =0; i<100000;i++);
+                rv = engOutput->InitWithNativePath( nsDependentCString(zeng_output) );
+                if (rv) printf("engOutput->InitWithNativePath failed: %h\n", rv);
               rv = plotfile->InitWithNativePath( nsDependentCString(plotfilename) );
+              if (rv) printf("plotfile->InitWithNativePath failed\n");
               plotfile->GetParent( getter_AddRefs(destdirectory));
               plotfile->GetLeafName( strLeafName );
-              plotfile->Remove(PR_FALSE);
+              rv = plotfile->Remove(PR_FALSE);
+              if (rv) printf("plotfile->Remove failed\n");              
               rv = engOutput->CopyTo( destdirectory, strLeafName );
+              if (rv != NS_OK) printf("File not ready to copy!\n");
               plotOK = (rv == NS_OK);
           }   
           // plotOK = RenderPlot(zeng_output, plotfilename);
@@ -287,9 +293,9 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
               tmp[zln - 2] = 0;
               delete[] zeng_output;
               zeng_output = tmp;
-			} else {
-              TCI_ASSERT(0);
-			}
+			      } else {
+                    TCI_ASSERT(0);
+			      }
           }
 
           MNODE *eng_tree = MuPAD_parser->MuPADStr2Tree(zeng_output);
@@ -6625,7 +6631,8 @@ bool MuPADWrapper::QueryEngineIsMatrix(SEMANTICS_NODE * s_expr)
       }
     }
 
-#ifdef DO_WE_REALLY_NEED_THIS_ON_MUPAD
+//#ifdef DO_WE_REALLY_NEED_THIS_ON_MUPAD
+//jcs -- apparently we do
     if (!done) {
       int err_code;
       char *v_str = ProcessSemList(s_expr, NULL, err_code);
@@ -6660,7 +6667,7 @@ bool MuPADWrapper::QueryEngineIsMatrix(SEMANTICS_NODE * s_expr)
         TCI_ASSERT(0);
       delete[] v_str;
     }
-#endif
+//#endif
   }
 
   if (rv)
