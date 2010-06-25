@@ -19,7 +19,6 @@ function startup()
   node = activeEditor.getSelectedElement("a");
   if (node)
   {
-    if (node.tagName != "a") alert("Wrong node passed to indexentry.js!");
     if (node.hasAttribute("name")) 
       document.getElementById("keylist").value = node.getAttribute("name");
   }
