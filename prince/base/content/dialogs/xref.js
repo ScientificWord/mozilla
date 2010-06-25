@@ -7,7 +7,7 @@ var refnode;
 var editor;
 var gKey;
 var gReftype;
-var newNode;
+var isNewNode;
 
 // dialog initialization code
 function Startup()
@@ -18,10 +18,10 @@ function Startup()
     window.close();
     return;
   }
+  refnode = editor.getSelectedElement("xref");
   gKey   = document.getElementById("keylist");
   gReftype = document.getElementById("reftype");
-  refnode = window.arguments[0];
-  newNode = !(refnode);
+  isNewNode = !(refnode);
   if (refnode) {
     if (refnode.hasAttribute("key")) gKey.value = refnode.getAttribute("key");
     if (refnode.hasAttribute("reftype")) gReftype.selectedIndex = 
@@ -54,8 +54,8 @@ function onAccept()
   catch(e) {
     dump("Exception: "+e.message+"\n");
   }
-  dumpln("newNode is "+newNode);
-  if (newNode) editor.insertElementAtSelection(refnode, true);
+  dumpln("isNewNode is "+isNewNode);
+  if (isNewNode) editor.insertElementAtSelection(refnode, true);
   return true;
 }
 
