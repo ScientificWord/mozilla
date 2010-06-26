@@ -25,7 +25,9 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/otfont.js"/>
-  <label value="&label.generaluse;" accesskey="&label.generaluse.accesskey;" control="otfontlist"/>
+  <description>
+    &label.generaluse; 
+  </description>
   <menulist id="otfontlist" oncommand="">
     <menupopup id="systemfontlist">
       <menuitem id="otfont.instruction" label="&menuitem.select.a.font;"/>
