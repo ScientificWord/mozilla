@@ -9,7 +9,7 @@ var gName;
 var gReq;  
 var gOpt;  
 var gTeX;  
-var newNode;
+var isNewNode;
 
 // dialog initialization code
 function Startup()
@@ -21,13 +21,13 @@ function Startup()
     window.close();
     return;
   }
+  texnode = editor.getSelectedElement("texb");
   gIsEnc = document.getElementById("enc");
   gName  = document.getElementById("name");
   gReq   = document.getElementById("req");
   gOpt   = document.getElementById("opt");
   gTeX   = document.getElementById("texbuttonTextbox");
-  texnode = window.arguments[0];
-  newNode = !(texnode);
+  isNewNode = !(texnode);
   if (texnode) {
     if (texnode.hasAttribute("enc")) gIsEnc.checked = texnode.getAttribute("enc") == 1;
     if (texnode.hasAttribute("name")) gName.value = texnode.getAttribute("name");
@@ -73,7 +73,7 @@ function onAccept()
   catch(e) {
     dump("Exception: "+e.message+"\n");
   }
-  if (newNode) editor.insertElementAtSelection(texnode, true);
+  if (isNewNode) editor.insertElementAtSelection(texnode, true);
   return true;
 }
 
