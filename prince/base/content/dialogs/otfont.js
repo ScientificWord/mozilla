@@ -66,7 +66,7 @@ function onAccept()
 	var theWindow = window.opener;
 	if (!theWindow || !("msiEditorSetTextProperty" in theWindow))
 	  theWindow = msiGetTopLevelWindow();
-    theWindow.msiRequirePackage(editorElement, "fontspec", null);
+    theWindow.msiRequirePackage(editorElement, "xltxtra", null);
     theWindow.msiEditorSetTextProperty(editorElement, "otfont", "fontname", fontname);
   }
   editorElement.contentWindow.focus();
