@@ -2312,7 +2312,7 @@ function msiSoftSave( editor, editorElement)
   if (!msiIsTopLevelEditor(editorElement))
     return false;
   //if (!editor) 
-    editor = msiGetEditor(editorElement);
+  editor = msiGetEditor(editorElement);
   var aMimeType = editor.contentsMIMEType;
   var editorDoc = editor.document;
   if (!editorDoc)
@@ -3436,6 +3436,8 @@ var msiFontColor =
       return;
     
     msiEditorSetTextProperty(editorElement, "fontcolor", "color", colorObj.TextColor);
+	  var theWindow = msiGetTopLevelWindow();
+    theWindow.msiRequirePackage(editorElement, "xcolor", null);
   }
 };
 
@@ -6986,7 +6988,7 @@ var msiFrameCommand =
     var editorElement = msiGetActiveEditorElement();
     //temporary
     // need to get current note if it exists -- if none, initialize as follows 
-    msiFrame(null, editorElement);
+    msiFrame(editorElement);
   }
 };
 
@@ -8449,51 +8451,36 @@ function msiNote(currNode, editorElement)
   }
 }
 
-function msiFrame(currNode, editorElement)
+function msiFrame(editorElement)
 {
-  var data= new Object();
-  data.editorElement = editorElement;
   var editor = msiGetEditor(editorElement);
-  var currNodeTag = "";
-  data.newElement = true; 
-  if (currNode) {
-    data.newElement = false;
-    data.element = currNode;
-  }
-  else
-  {
-    data.element = null;
-  }
   editor.beginTransaction();
-  window.openDialog("chrome://prince/content/Frame.xul","frame", "chrome,close,titlebar,resizable=yes,modal=yes", data);
-  // data comes back altered
-  var editor = msiGetEditor(editorElement);
-  dump("data.newElement is "+data.newElement+"\n");
-  if (data.newElement)
-  {
-    try
-    {
-      var namespace = new Object();                      
-      var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace);
-      msiRequirePackage(editorElement, "wrapfig", null);
-      msiRequirePackage(editorElement, "boxedminipage", null);
-      var selection = editor.selection;
-      selection.getRangeAt(0).insertNode(data.element);
-      if (!selection.isCollapsed) editor.deleteSelection(0);
-      try
-      {
-        var defpara = "para";
-        var para = editor.document.createElement(defpara);
-        var br = editor.document.createElement("br");
-        data.element.appendChild(para);
-        para.appendChild(br);
-      }
-      catch(e) {
-      }
-    }
-    catch(e) {
-    }
-  } 
+  window.openDialog("chrome://prince/content/Frame.xul","frame", "chrome,close,titlebar,resizable=yes");
+//  if (data.newElement)
+//  {
+//    try
+//    {
+//      var namespace = new Object();                      
+//      var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace);
+//      msiRequirePackage(editorElement, "wrapfig", null);
+//      msiRequirePackage(editorElement, "boxedminipage", null);
+//      var selection = editor.selection;
+//      selection.getRangeAt(0).insertNode(data.element);
+//      if (!selection.isCollapsed) editor.deleteSelection(0);
+//      try
+//      {
+//        var defpara = "para";
+//        var para = editor.document.createElement(defpara);
+//        var br = editor.document.createElement("br");
+//        data.element.appendChild(para);
+//        para.appendChild(br);
+//      }
+//      catch(e) {
+//      }
+//    }
+//    catch(e) {
+//    }
+//  } 
   editor.endTransaction();
 }
 
