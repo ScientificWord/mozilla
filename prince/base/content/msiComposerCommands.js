@@ -3436,6 +3436,8 @@ var msiFontColor =
       return;
     
     msiEditorSetTextProperty(editorElement, "fontcolor", "color", colorObj.TextColor);
+	  var theWindow = msiGetTopLevelWindow();
+    theWindow.msiRequirePackage(editorElement, "xcolor", null);
   }
 };
 
