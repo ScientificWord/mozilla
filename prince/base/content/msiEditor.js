@@ -3444,10 +3444,10 @@ function msiFinishHTMLSource(editorElement)
         throw Components.results.NS_ERROR_FAILURE;
       }
     }
-  }
 
-  // Switch edit modes -- converts source back into DOM document
-  msiSetEditMode(msiGetPreviousNonSourceDisplayMode(editorElement), editorElement);
+    // Switch edit modes -- converts source back into DOM document
+    msiSetEditMode(msiGetPreviousNonSourceDisplayMode(editorElement), editorElement);
+  }
 }
 
 
@@ -7864,9 +7864,13 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     {
       msiNote(element,editorElement);
     }
-    else if (elementName == "a")
+    else if (elementName == "a" && element.hasAttribute("key"))
     {
-      msiGoDoCommand("cmd_msiReviseHyperlink", editorElement);
+      msiGoDoCommand("cmd_marker", editorElement);
+    }
+    else if (elementName == "texb")
+    {
+      msiDoAdvancedProperties(element, editorElement);
     }
     else if (elementName == "subdoc")
     {
