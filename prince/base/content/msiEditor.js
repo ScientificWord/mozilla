@@ -7877,14 +7877,14 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     {
       msiFrame(element,editorElement);
     }
-    else if ((elementName == "img") || (elementName=="graph"))
+    else if ((elementName == "img") || (elementName=="graph") || elementName=="plotwrapper")
     {
-      var bIsGraph = (element.getAttribute("msigraph") == "true");
+      var bIsGraph = (element.tagName == "plotwrapper");                   
       if (!bIsGraph)
       {
         for (var ix = 0; !bIsGraph && (ix < element.childNodes.length); ++ix)
         {
-          if (element.childNodes[ix].getAttribute("msigraph") == "true")
+          if (element.childNodes[ix].tagName == "plotwrapper")
             bIsGraph = true;
         }
       }
