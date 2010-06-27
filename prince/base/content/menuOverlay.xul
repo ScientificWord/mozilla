@@ -391,7 +391,6 @@
   </menu>
   <menu id="tableMenu"/>  
   <menu id="MSITypesetMenu"/>
-  <menu id="MSIComputeMenu"/> 
   <menu id="toolsMenu" label="Tools" >
     <menupopup id="menu_ToolsPopup">
       <menuitem label="JavaScript debugger" 
