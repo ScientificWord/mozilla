@@ -118,6 +118,7 @@ CompEngine::~CompEngine()
 bool CompEngine::InitUnderlyingEngine(Grammar* install_dbase, nsILocalFile* baseDir, 
                                           MathResult & mr)
 {
+
   bool rv = false;
 
   char path[500];
@@ -138,6 +139,8 @@ bool CompEngine::InitUnderlyingEngine(Grammar* install_dbase, nsILocalFile* base
   else
     TCI_ASSERT(!"Failed to lookup ENGINFO/wrapperDLL");
 
+  printf("\n\n  jcs Loading enigne wrapper %s\n", path);
+
   if (LoadEngWrapperDLL(path)) {
 
     const char *dest_zname;
@@ -155,6 +158,7 @@ bool CompEngine::InitUnderlyingEngine(Grammar* install_dbase, nsILocalFile* base
 
     if (install_dbase->
         GetRecordFromIDs("ENGINFO", ENG_libp, 0, &dest_zname, &eRecord)) {
+
       res = baseDir->Clone(getter_AddRefs(bd));
       libFile = do_QueryInterface(bd);
       AppendSubPath(libFile,eRecord);
@@ -162,10 +166,10 @@ bool CompEngine::InitUnderlyingEngine(Grammar* install_dbase, nsILocalFile* base
       TCI_ASSERT(!"Failed to lookup ENGINFO/libp");
       //libpath = "C:\\swp50\\Maple";
     }
-
+   
     int inner_rv;
     res = wrapper->LoadStrsAndDLL(engFile, libFile, (void *)id_dBase, (void *)nom_dBase, &inner_rv);
-
+   
     if (NS_SUCCEEDED(res) && inner_rv) {
       if (install_dbase->
           GetRecordFromIDs("ENGINFO", ENG_vcampath, 0, &dest_zname,
@@ -178,7 +182,7 @@ bool CompEngine::InitUnderlyingEngine(Grammar* install_dbase, nsILocalFile* base
         //vcampath =
         //  "C:\\Program Files\\SciFace\\MuPAD Pro 3.1\\bin\\VCamNG.exe";
       }
-
+      printf("\n\n  jcs Calling wrapper->Initialize\n");
       res = wrapper->Initialize(libFile, baseDir, vcamFile, &inner_rv);
       if (NS_SUCCEEDED(res) && inner_rv) {
         rv = true;
@@ -187,8 +191,9 @@ bool CompEngine::InitUnderlyingEngine(Grammar* install_dbase, nsILocalFile* base
         rv = false;
       }
     }
-
     RetrieveEngineStrs(mr);
+
+    return rv;
   }
 
   return rv;
