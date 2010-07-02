@@ -32,9 +32,9 @@
 <dialog title="&windowTitle.label;"
     id="ComputeGraphSettingsDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-    onload = "Startup()"
-    ondialogaccept = "OK()"
-    ondialogcancel = "Cancel()"
+    onload = "Startup();"
+    ondialogaccept = "OK();"
+    ondialogcancel = "Cancel();"
     buttons="accept,cancel"
     persist="screenX screenY width height">
 

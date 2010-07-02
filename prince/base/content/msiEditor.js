@@ -3392,6 +3392,7 @@ function msiSetEditMode(mode, editorElement)
 
     // Clear out the string buffers
     msiClearSource(editorElement);
+    editorElement.makeEditable("html");
     editorElement.contentWindow.focus();
   }
 }
@@ -3443,10 +3444,10 @@ function msiFinishHTMLSource(editorElement)
         throw Components.results.NS_ERROR_FAILURE;
       }
     }
-  }
 
-  // Switch edit modes -- converts source back into DOM document
-  msiSetEditMode(msiGetPreviousNonSourceDisplayMode(editorElement), editorElement);
+    // Switch edit modes -- converts source back into DOM document
+    msiSetEditMode(msiGetPreviousNonSourceDisplayMode(editorElement), editorElement);
+  }
 }
 
 
@@ -7863,9 +7864,13 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     {
       msiNote(element,editorElement);
     }
-    else if (elementName == "a")
+    else if (elementName == "a" && element.hasAttribute("key"))
     {
-      msiGoDoCommand("cmd_msiReviseHyperlink", editorElement);
+      msiGoDoCommand("cmd_marker", editorElement);
+    }
+    else if (elementName == "texb")
+    {
+      msiDoAdvancedProperties(element, editorElement);
     }
     else if (elementName == "subdoc")
     {
@@ -7876,14 +7881,14 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     {
       msiFrame(element,editorElement);
     }
-    else if ((elementName == "img") || (elementName=="graph"))
+    else if ((elementName == "img") || (elementName=="graph") || elementName=="plotwrapper")
     {
-      var bIsGraph = (element.getAttribute("msigraph") == "true");
+      var bIsGraph = (element.tagName == "plotwrapper");                   
       if (!bIsGraph)
       {
         for (var ix = 0; !bIsGraph && (ix < element.childNodes.length); ++ix)
         {
-          if (element.childNodes[ix].getAttribute("msigraph") == "true")
+          if (element.childNodes[ix].tagName == "plotwrapper")
             bIsGraph = true;
         }
       }

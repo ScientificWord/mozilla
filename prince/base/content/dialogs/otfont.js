@@ -1,6 +1,4 @@
 
-const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
-
 var gSystemFonts;
 var gSystemFontCount;
 
@@ -12,7 +10,7 @@ function  getOTFontlist()
     try 
     {
       var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
-      var fontlistfile=dsprops.get("resource:app", Components.interfaces.nsIFile);
+      var fontlistfile=dsprops.get("ProfD", Components.interfaces.nsIFile);
       fontlistfile.append("fontfamilies.txt");
       var stream;
       stream = Components.classes["@mozilla.org/network/file-input-stream;1"];
@@ -68,7 +66,7 @@ function onAccept()
 	var theWindow = window.opener;
 	if (!theWindow || !("msiEditorSetTextProperty" in theWindow))
 	  theWindow = msiGetTopLevelWindow();
-    theWindow.msiRequirePackage(editorElement, "fontspec", null);
+    theWindow.msiRequirePackage(editorElement, "xltxtra", null);
     theWindow.msiEditorSetTextProperty(editorElement, "otfont", "fontname", fontname);
   }
   editorElement.contentWindow.focus();
