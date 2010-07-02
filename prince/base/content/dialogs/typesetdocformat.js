@@ -19,7 +19,6 @@ var editor;
 var sectitleformat;
 var sectScale = 1;
 
-var menuObject = { menulist: []};
 
 
 function InitializeUnits()
@@ -87,28 +86,7 @@ function Startup()
   if (docCompilerNodeList.length == 0) useOT = false;
   else
     useOT = (docCompilerNodeList[0].getAttribute("prog") == "xelatex"); 
-  addOldFontsToMenu("mathfontlist");
-  addOldFontsToMenu("mainfontlist");
-  addOldFontsToMenu("sansfontlist");
-  addOldFontsToMenu("fixedfontlist");
-  addOldFontsToMenu("x1fontlist");
-  addOldFontsToMenu("x2fontlist");
-  addOldFontsToMenu("x3fontlist");
-
-  if (useOT) {
-    menuObject.menulist = document.getElementById("mainfontlist");
-    addOTFontsToMenu(menuObject);
-    menuObject.menulist = document.getElementById("sansfontlist");
-    addOTFontsToMenu(menuObject);
-    menuObject.menulist = document.getElementById("fixedfontlist");
-    addOTFontsToMenu(menuObject);
-    menuObject.menulist = document.getElementById("x1fontlist");
-    addOTFontsToMenu(menuObject);
-    menuObject.menulist = document.getElementById("x2fontlist");
-    addOTFontsToMenu(menuObject);
-    menuObject.menulist = document.getElementById("x3fontlist");
-    addOTFontsToMenu(menuObject);
-  }
+  buildFontMenus( useOT );
   if (!(docFormatNodeList && docFormatNodeList.length>=1)) node=null;
   else node = docFormatNodeList[0].getElementsByTagName('fontchoices')[0];
   getFontSpecs(node);
@@ -123,6 +101,20 @@ function Startup()
   getSectionFormatting(sectitlenodelist, sectitleformat);
   getClassOptionsEtc();
 }
+
+function buildFontMenus( useOT )
+{
+  addOldFontsToMenu("mathfontlist");
+  addOldFontsToMenu("mainfontlist");
+  addOldFontsToMenu("sansfontlist");
+  addOldFontsToMenu("fixedfontlist");
+  addOldFontsToMenu("x1fontlist");
+  addOldFontsToMenu("x2fontlist");
+  addOldFontsToMenu("x3fontlist");
+
+  changeOpenType(useOT);
+}
+
 
 //var serializer;
 
@@ -2131,12 +2123,9 @@ function addOldFontsToMenu(menuPopupId)
   dump("Leaving initSystemOldFontMenu\n");
 }
 
-function changeOpenType()
+function changeOpenType( useOT )
 {
-  var useOT = document.getElementById("useOpenType").checked;
-  dump("Entering changeOpenType, useOT is now "+useOT+"\n");
-  document.getElementById("opentypeok").setAttribute("hidden", 
-    useOT?"false":"true"); 
+  var menuObject = { menulist: []};
   if (useOT) {
     // add opentype families to the menus 
     menuObject.menulist = document.getElementById("mainfontlist");
@@ -2166,7 +2155,10 @@ function changeOpenType()
 function deleteOTFontsFromMenu(menuID)
 {
   var menuPopup = document.getElementById(menuID).getElementsByTagName("menupopup")[0];
-  var ch = menuPopup.lastChild;
+  var ch = menuPopup.firstChild;
+  while (ch && ch.id != 'startOpenType') ch = ch.nextSibling;
+  if (!ch) return;
+  ch = menuPopup.lastChild;
   while (ch && ch.id != "startOpenType") {
     menuPopup.removeChild(ch);
     ch = menuPopup.lastChild; 
@@ -2375,10 +2367,12 @@ function setCompiler(compilername)
   {
     document.getElementById("xelatex").setAttribute("hidden",false)
     document.getElementById("pdflatex").setAttribute("hidden",true);
+    changeOpenType(true);
   }
   else
   { 
     document.getElementById("xelatex").setAttribute("hidden",true);
     document.getElementById("pdflatex").setAttribute("hidden",false);
+    changeOpenType(false);
   }    
 }
