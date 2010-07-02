@@ -128,17 +128,28 @@ static void MUP_CALLBACK on_kernel_ready(MUP_Kernel kernel)
 static void MUP_CALLBACK on_init_wanted(MUP_Kernel kernel)
 {
   MuPADMssgHandler* client = (MuPADMssgHandler*)MUP_get_client_data(kernel);
+
 #ifdef XP_WIN
+  
   char path[MAX_PATH];
   strcpy(path, static_cast<const TCICHAR *>(client->libStr));
+
   const char *argv[4] = {
     "/l", path,
     "/m", path
   };
-  MUP_send_init(kernel, 4, argv);
+  MUP_send_init(kernel, 4, argv); 
 #else
-  MUP_send_init(kernel, 0, 0);
+
+  char path[8000];
+  strcpy(path, static_cast<const TCICHAR *>(client->libStr));
+
+  const char *argv[4] = {
+    "-l", path
+  };
+  MUP_send_init(kernel, 2, argv);
 #endif
+
 }
 
 // an output from the kernel
@@ -268,34 +279,42 @@ int MuPADEngine::GetEngStrPtr(int str_ID, const char **engstr, int *engstr_ln)
 
 bool MuPADEngine::LoadStrsAndDLL(nsILocalFile *engpath, nsILocalFile *libpath)
 {
+  printf("\n\n  jcs mupd_eng.cpp LoadStrsAndDLL\n");
   bool rv = false;
   TCIString ErrorMessage;
-  TCIString pathLib;
-  TCIString pathEng;
+  //TCIString pathLib;
+  //TCIString pathEng;
+  const char* pathLib;
+  const char* pathEng;
 
   nsAutoString temp;
   engpath->GetPath(temp);
   pathEng = NS_LossyConvertUTF16toASCII(temp).get();
+  printf("\n\n  jcs pathEng = %s\n", pathEng);
+
   libpath->GetPath(temp);
   pathLib = NS_LossyConvertUTF16toASCII(temp).get();
-  TCI_ASSERT(m_client == 0);
+  printf("\n\n  jcs pathLib = %s\n", pathLib);
+  
   m_client = new MuPADMssgHandler();
   if (!m_client)
     return rv;
   m_client->SetLibPath(pathLib);
-
   MUP_set_event_handler(Stop_MuPAD, 0);
-
+  
   TCI_ASSERT(m_kernel == 0);
+  
 #ifdef XP_WIN
   m_kernel = MUP_get_lib_kernel(pathLib);
 #else
+  printf("\n\n  jcs Check 1\n");
   m_kernel = MUP_get_uds_kernel(pathEng,NULL,1);
+  printf("\n\n  jcs Check 2\n");
 #endif
   if (m_kernel) {
+    printf("\n\n  jcs Check 3\n");
     MUP_set_event_handler(Stop_MuPAD, m_kernel);
     MUP_set_fatal_exit_handler(Cleanup_MuPAD);
-
     // Set client data for kernel.
     MUP_set_client_data(m_kernel, m_client);
 
@@ -306,39 +325,40 @@ bool MuPADEngine::LoadStrsAndDLL(nsILocalFile *engpath, nsILocalFile *libpath)
     MUP_set_on_finished_handler(m_kernel, &on_finished);
     MUP_set_on_status_handler(m_kernel, &on_status);
     MUP_set_on_plot_result_file_handler(m_kernel, &on_plot_result_file);
-    
     if (MUP_send_new_client(m_kernel, 0, 0, MUP_cf_can_plot)) {
       WaitToStart();
+      
       if (m_client->Error()) {
         ErrorMessage = m_client->GetError();
         m_client->ClearError();
       } else {
         rv = true;
       }
+
       m_client->ClearReturn();
     }
   }
-
   if (!rv) {
     TCI_ASSERT(!"MSG_MuPADStartupError");
     MUP_delete_kernel(m_kernel);
     m_kernel = 0;
   }
-
+  printf("\n\n  jcs Check End, %d\n", rv);
   return rv;
 }
 
 int MuPADEngine::Initialize(nsILocalFile *libpath, nsILocalFile *champath)
 {
-  TCIString pathCham;
+  printf("\n\n  jcs MuPADEngine::Initialize\n");
+  const char* pathCham;
   nsAutoString temp;
   champath->GetPath(temp);
   pathCham = NS_LossyConvertUTF16toASCII(temp).get();
-  
+
   // set output formatting
   MUP_send_pretty_print(m_kernel,0);
   MUP_send_textwidth(m_kernel,0x7fffffff); // 2^31-1
-
+  
   return PrepareProcessor(pathCham);
 }
 
@@ -371,7 +391,7 @@ int MuPADEngine::PrepareProcessor(const char *champath)
   // Do we need to load our special functions?
   if (!fcnsloaded) {
     TCIString packba;
-    TCIString path(champath);
+    TCIString path (champath);
     path += "/swfcns.mu";
     if (FileSys_Exists(path)) {
       TCIString fcnsPath(path);
@@ -416,9 +436,9 @@ bool MuPADEngine::Exec(TCIString & cmd)
   eng_instr += cmd;
 
   const MUP_Char *p = static_cast<const MUP_Char*>(cmd);
-#ifdef DEBUG_Steve
-  printf("..MuPADEngine::Exec(%s)\n", p);
-#endif
+
+  printf("\n\n  jcs MuPADEngine::Exec(%s)\n", p);
+
   // send command
   int send_cmd_ret = setjmp(mupad_mark);
   if (send_cmd_ret == 0) {
