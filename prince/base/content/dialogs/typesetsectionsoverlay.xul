@@ -13,7 +13,7 @@
     onload="sectStartup(); setalign('left');" >
 
   <tabpanel id="docformatSectionsPanel" orient="vertical">
-    <script type="application/x-javascript" src="chrome://prince/content/typesetSectionsOverlay.js"/>
+    <script type="application/x-javascript" src="chrome://prince/content/typesetsectionsoverlay.js"/>
     <broadcasterset>
       <broadcaster id="atpagetop" hidden="false"/>
       <broadcaster id="leftalignment" msicollapsed="false"/>
