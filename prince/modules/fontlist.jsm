@@ -119,7 +119,7 @@ function addOTFontsToMenu(menu)
   {
     getOTFontlist();
     var separator = menu.menulist.ownerDocument.createElementNS(XUL_NS, "menuseparator");
-	var popup = menu.menulist.getElementsByTagName("menupopup")[0];
+	  var popup = menu.menulist.getElementsByTagName("menupopup")[0];
     separator.setAttribute("id","startOpenType");
     popup.appendChild(separator);
     for (var i = 0; i < gSystemFonts.count; ++i)
