@@ -102,7 +102,8 @@
 
 <!-- use docformat information to call the geometry package -->
 <xsl:template match="html:pagelayout[@latex='true']">
-<xsl:variable name="unit"><xsl:value-of select="@unit"/></xsl:variable>
+<xsl:variable name="unit"><xsl:value-of select="@unit"
+/></xsl:variable>
 \usepackage[ <xsl:apply-templates/>]{geometry}
 </xsl:template>
 
@@ -140,7 +141,7 @@
 <xsl:template match="html:marginnote[@hidden='false']"
   >marginparwidth=<xsl:value-of select="@width"
   />, marginparsep=<xsl:value-of select="@sep"
-/> </xsl:template>
+/>, </xsl:template>
 
 <xsl:template match="html:marginnote[@hidden!='false']"
   ></xsl:template>
