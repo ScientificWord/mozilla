@@ -1016,13 +1016,13 @@ function msiGetEditorURL(editorElement)
 function msiRequirePackage(editorElement, packagename, options)
 {
   try {
-    var editor = msiGetEditor(editorElement);
+    var editor = msiGetEditor(editorElement); // BBM: NO, get main editor.
     var doc = editor.document;
     var preamble = doc.getElementsByTagName("preamble")[0];
     var reqpkg = doc.createElement("requirespackage");
-    reqpkg.setAttribute("package", packagename);
+    reqpkg.setAttribute("req", packagename);
     if (options && options.length > 0)
-      reqpkg.setAttribute("options", options);
+      reqpkg.setAttribute("opt", options);
     preamble.appendChild(reqpkg);
   }
   catch(e)
@@ -2547,6 +2547,25 @@ function msiEditorSupportsCommand(editorElement, commandStr)
   return false;
 }
 
+function msiSetEditorSinglePara(editorElement, bSet)
+{
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  if (editor && editor.document)
+  {
+    try {
+      var flags = editor.flags;
+      editor.flags = bSet ?  
+            flags | nsIPlaintextEditor.eEditorSingleLineMask :
+            flags & ~nsIPlaintextEditor.eEditorSingleLineMask;
+    } catch(e) {}
+
+    // update all commands
+    window.updateCommands("create");
+  }  
+}
+
 function msiLaunchSingleInstanceDialog(chromeUrl, dlgName, options, targetEditor, commandID, extraArgsArray)
 {
   var parentWindow = msiGetWindowContainingEditor(targetEditor);
@@ -3075,7 +3094,7 @@ function msiEditorSetTextProperty(editorElement, property, attribute, value)
   try {
     if (!gAtomService) GetAtomService();
     var propAtom = gAtomService.getAtom(property);
-
+    dump("msiEditorSetTextProperty for "+editorElement.id+", property = "+property+", attribute = " + attribute + ", value = "+value+"\n");
     msiGetEditor(editorElement).setInlineProperty(propAtom, attribute, value);
     if (!msiCurrEditorSetFocus(window) && "gContentWindow" in window)
       window.gContentWindow.focus();
@@ -6571,6 +6590,60 @@ var msiNavigationUtils =
       return retVal;
     }
     return false;
+  },
+
+  isSingleSignificantChild : function(aNode)
+  {
+    var aParent = aNode.parentNode;
+    return (aNode == this.getSingleSignificantChild(aParent, true));
+  },
+
+  isEquationArray : function(editorElement, aTable)
+  {
+    if (aTable.getAttribute("type") == "eqnarray")
+      return true;
+    var tableDims = msiGetEnclosingTableOrMatrixDimensions(editorElement, tableElement);
+    if (tableDims.nCols != 1)
+      return false;
+    var topNode = this.findWrappingNode(aTable);  //inside displays we often see nested <mstyle> and <mrow>s
+    var isOK = true;
+    while (isOK && topNode)
+    {
+      switch(msiGetBaseNodeName(topNode))
+      {
+        case "msidisplay":  //Success! Return true
+          return true;
+        break;
+        case "math":
+        break;
+        default:
+          isOK = false;
+        break;
+      }
+      if (!this.isSingleSignificantChild(topNode))
+        isOK = false;
+      topNode = topNode.parentNode;
+    }
+    return false;
+  },
+
+  getEnclosingDisplay : function(aNode)
+  {
+    var topNode = this.findWrappingNode(aNode);  //inside displays we often see nested <mstyle> and <mrow>s
+    var isOK = true;
+    while (isOK && topNode)
+    {
+      switch(msiGetBaseNodeName(topNode))
+      {
+        case "msidisplay":  //Success! Return true
+          return topNode;
+        break;
+        default:
+        break;
+      }
+      topNode = topNode.parentNode;
+    }
+    return null;
   },
 
   isUnnecessaryMStyle : function(aNode)
