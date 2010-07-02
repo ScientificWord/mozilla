@@ -76,7 +76,7 @@
     </xbl:implementation>
   </xbl:binding>
   
-  <xbl:binding id="fmtag-title"> /*front matter label*/
+  <xbl:binding id="fmtag-title"> /*front matter   */
 	  <xbl:resources>
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 	  </xbl:resources>
@@ -122,12 +122,12 @@
 	  </xbl:resources>
 
 	  <xbl:content>
-      <sw:button class="texbutton" >
-        <html:label>
-          <sw:tex2>T<sw:texe>E</sw:texe>X</sw:tex2>
-        </html:label>
-      </sw:button>
+      <html:button type="button" class="inline" oncommand="">
+        <html:latex>T<html:sub>E</html:sub>X</html:latex>: <html:label xbl:inherits="xbl:text=name"/>
+      </html:button>
+      <html:span style="display:none">
       <xbl:children/>
+      </html:span>
     </xbl:content>
     
     <xbl:implementation>
@@ -136,6 +136,82 @@
       <xbl:property name="role" readonly="true"  onget="return 'texbutton';"/>
 
     </xbl:implementation>    
+  </xbl:binding>
+
+	<xbl:binding id="indexitem">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+
+	  <xbl:content>
+      <html:button type="button" class="inline" oncommand="">
+        Index: <html:label xbl:inherits="xbl:text=pri"/>
+      </html:button>
+      <html:span style="display:none">
+      <xbl:children/>
+      </html:span>
+    </xbl:content>
+  </xbl:binding>
+
+	<xbl:binding id="printindex">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+
+	  <xbl:content>
+      <html:button type="button" class="inline" oncommand="">
+        Print index here
+      </html:button>
+      <html:span style="display:none">
+      <xbl:children/>
+      </html:span>
+    </xbl:content>
+  </xbl:binding>
+
+	<xbl:binding id="minpasses">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+
+	  <xbl:content>
+      <html:button type="button" class="inline" oncommand="">
+        Minimum number of LaTeX passes = <html:label xbl:inherits="xbl:text=num"/>
+      </html:button>
+      <html:span style="display:none">
+      <xbl:children/>
+      </html:span>
+    </xbl:content>
+  </xbl:binding>
+
+	<xbl:binding id="label">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+
+	  <xbl:content>
+      <html:button type="button" class="inline" oncommand="">
+        Marker: <html:label xbl:inherits="xbl:text=name"/>
+      </html:button>
+      <html:span style="display:none">
+      <xbl:children/>
+      </html:span>
+    </xbl:content>
+  </xbl:binding>
+
+
+	<xbl:binding id="xref">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+
+	  <xbl:content>
+      <html:button type="button" class="inline" oncommand="">
+        Cross reference: <html:label xbl:inherits="xbl:text=key"/>
+      </html:button>
+      <html:span style="display:none">
+      <xbl:children/>
+      </html:span>
+    </xbl:content>
   </xbl:binding>
 
 	<xbl:binding id="latexstyleb">
