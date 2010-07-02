@@ -42,6 +42,7 @@ add_makefiles "
 	prince/samples/Makefile
 	prince/res/Makefile
 	prince/plugins/Makefile
+	prince/modules/Makefile
 	prince/helpfiles/Makefile
 	prince/bin/Makefile
 	prince/sidebar/Makefile
