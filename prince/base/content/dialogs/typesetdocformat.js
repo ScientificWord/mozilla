@@ -1,4 +1,6 @@
- 
+Components.utils.import("resource://app/modules/fontlist.jsm"); 
+Components.utils.import("resource://app/modules/pathutils.jsm"); 
+
 var currentUnit;
 var sectionUnit;
 var unitConversions;
@@ -16,6 +18,8 @@ var scale = 0.5;
 var editor;
 var sectitleformat;
 var sectScale = 1;
+
+var menuObject = { menulist: []};
 
 
 function InitializeUnits()
@@ -46,74 +50,6 @@ function stripPath(element, index, array)
   array[index] = re.exec(element)[1];
 }
  
-function initializeFontFamilyList(force)
-{
-  var OTOk = document.getElementById("useOpenType").checked;
-  var prefs = GetPrefs();
-  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
-  var dir = dsprops.get("ProfD", Components.interfaces.nsIFile);
-  var texbindir;
-  var outfile;
-  outfile = dir.clone();
-  outfile.append("fontfamilies.txt");
-  try { texbindir= prefs.getCharPref("swp.tex.bindir"); }
-  catch(exc) {dump("texbindir not set in preference\n");}
-  if (!force)
-  { 
-    if (outfile.exists()) return;
-  }
-  var listfile = dir.clone(); 
-  listfile.append("bigfontlist.txt");
-  if (listfile.exists()) listfile.remove(false);
-  var exefile = dsprops.get("resource:app", Components.interfaces.nsIFile);;
-  exefile.append("BuildFontFamilyList.cmd");
-
-  try 
-  {
-    var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
-    theProcess.init(exefile);
-    dump("TexBinDir is "+texbindir+"\n");
-    var args =[listfile.parent.path, texbindir];
-    theProcess.run(true, args, args.length);
-  } 
-  catch (ex) 
-  {
-       dump("\nUnable to run OtfInfo.exe\n");
-       dump(ex+"\n");
-  }      
-  if (!listfile.exists())
-  {
-    dump("Failed to create bigfontlist.txt\n");
-    return;
-  }
-  var uri = msiFileURLFromAbsolutePath( listfile.path )
-  var myXMLHTTPRequest = new XMLHttpRequest();
-  myXMLHTTPRequest.overrideMimeType("text/plain");
-  myXMLHTTPRequest.open("GET", uri.spec, false);
-  myXMLHTTPRequest.send(null);
-  var str = myXMLHTTPRequest.responseText;
-  var lines = str.split(/[\n\r]*[a-z]:[^:]*:/i);
-  var i;
-  var limit;
-  lines = lines.sort();
-  var unique = lines.filter(newValue);
-  limit = unique.length;
-// output the result
-  str = "";
-  if (outfile.exists()) outfile.remove(false);
-  for (i =0; i < limit; i++)
-    str += unique[i] + "\n";
-  var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-  fos.init(outfile, -1, -1, false);
-  var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
-    .createInstance(Components.interfaces.nsIConverterOutputStream);
-  os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
-  os.writeString(str);
-  os.close();
-  fos.close();
-//  dump(str);
-}
-
 function Startup()
 {
   initializeFontFamilyList(false);
@@ -146,9 +82,11 @@ function Startup()
   //now we can load the docformat information from the document to override 
   //all or part of the initial state
   OnWindowSizeReset(true);
-  var useOT = false;
-  document.getElementById("opentypeok").setAttribute("hidden", 
-    useOT?"false":"true"); 
+  var useOT;;
+  var docCompilerNodeList = preamble.getElementsByTagName('texprogram');
+  if (docCompilerNodeList.length == 0) useOT = false;
+  else
+    useOT = (docCompilerNodeList[0].getAttribute("prog") == "xelatex"); 
   addOldFontsToMenu("mathfontlist");
   addOldFontsToMenu("mainfontlist");
   addOldFontsToMenu("sansfontlist");
@@ -158,12 +96,18 @@ function Startup()
   addOldFontsToMenu("x3fontlist");
 
   if (useOT) {
-    addOTFontsToMenu("mainfontlist");
-    addOTFontsToMenu("sansfontlist");
-    addOTFontsToMenu("fixedfontlist");
-    addOTFontsToMenu("x1fontlist");
-    addOTFontsToMenu("x2fontlist");
-    addOTFontsToMenu("x3fontlist");
+    menuObject.menulist = document.getElementById("mainfontlist");
+    addOTFontsToMenu(menuObject);
+    menuObject.menulist = document.getElementById("sansfontlist");
+    addOTFontsToMenu(menuObject);
+    menuObject.menulist = document.getElementById("fixedfontlist");
+    addOTFontsToMenu(menuObject);
+    menuObject.menulist = document.getElementById("x1fontlist");
+    addOTFontsToMenu(menuObject);
+    menuObject.menulist = document.getElementById("x2fontlist");
+    addOTFontsToMenu(menuObject);
+    menuObject.menulist = document.getElementById("x3fontlist");
+    addOTFontsToMenu(menuObject);
   }
   if (!(docFormatNodeList && docFormatNodeList.length>=1)) node=null;
   else node = docFormatNodeList[0].getElementsByTagName('fontchoices')[0];
@@ -1557,66 +1501,6 @@ function onCheck( checkbox ) // the checkbox is for old style nums or swashes
   document.getElementById(base+"native").value = stringFrom(objarray);
 }
   
-
-// font section
-var gFontMenuInitialized = new Object;
-var gSystemFonts;
-var gSystemFontCount;
-
-function  getOTFontlist() 
-{ 
-  if (!gSystemFonts)
-  {
-    // Build list of all system fonts once per editor
-    try 
-    {
-      var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
-      var fontlistfile=dsprops.get("ProfD", Components.interfaces.nsIFile);
-      fontlistfile.append("fontfamilies.txt");
-      var stream;
-      stream = Components.classes["@mozilla.org/network/file-input-stream;1"];
-      stream = stream.createInstance(Components.interfaces.nsIFileInputStream);
-      stream.init(fontlistfile,1,0,0);
-      var s2 = Components.classes["@mozilla.org/scriptableinputstream;1"];
-      s2 = s2.createInstance(Components.interfaces.nsIScriptableInputStream);
-      s2.init(stream);
-      var bytes = s2.available();
-      var buffer = s2.read(bytes);
-      gSystemFonts = buffer.split("\n");
-      gSystemFontCount = gSystemFonts.length;
-    }
-    catch(e) { 
-       dump("Error in getOTFontList: "+e.message+"\n");
-    }
-  }
-}
-
-function addOTFontsToMenu(menuPopupId)
-{
-  try
-  {
-    var menuPopup = document.getElementById(menuPopupId).getElementsByTagName("menupopup")[0];
-    getOTFontlist();
-    var separator = document.createElementNS(XUL_NS, "menuseparator");
-    separator.setAttribute("id","startOpenType");
-    menuPopup.appendChild(separator);
-    for (var i = 0; i < gSystemFontCount; ++i)
-    {
-      if (gSystemFonts[i] != "")
-      {                                                                             
-        var itemNode = document.createElementNS(XUL_NS, "menuitem");
-        itemNode.setAttribute("label", gSystemFonts[i]);
-        itemNode.setAttribute("value", gSystemFonts[i]);
-        menuPopup.appendChild(itemNode);
-      }
-    }
-  }
-  catch(e)
-  {
-    dump(e + "\n");
-  }
-}
-    
   
 //function onMenulistFocus(menulist)
 //{
@@ -2202,7 +2086,6 @@ function addOldFontsToMenu(menuPopupId)
 {    
     // fill in the menu only once unless forcerefresh is set...
   var menuPopup = document.getElementById(menuPopupId).getElementsByTagName("menupopup")[0];
-  dump("initSystemOldFontMenu("+menuPopupId+", "+fonttype+", "+filter+");\n");
   var fonttype = "textfonts";
   var filter;
 
@@ -2238,7 +2121,7 @@ function addOldFontsToMenu(menuPopupId)
       ptr = ptr.nextSibling;
       continue;
     }                                                
-    var itemNode = document.createElementNS(XUL_NS, "menuitem");
+    var itemNode = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "menuitem");
     itemNode.setAttribute("label", ptr.getAttribute("name"));
     itemNode.setAttribute("value", ptr.getAttribute("package"));
     itemNode.setAttribute("tooltip", ptr.getAttribute("description"));                                                                 
@@ -2256,12 +2139,18 @@ function changeOpenType()
     useOT?"false":"true"); 
   if (useOT) {
     // add opentype families to the menus 
-    addOTFontsToMenu("mainfontlist");
-    addOTFontsToMenu("sansfontlist");
-    addOTFontsToMenu("fixedfontlist");
-    addOTFontsToMenu("x1fontlist");
-    addOTFontsToMenu("x2fontlist");
-    addOTFontsToMenu("x3fontlist");
+    menuObject.menulist = document.getElementById("mainfontlist");
+    addOTFontsToMenu(menuObject);
+    menuObject.menulist = document.getElementById("sansfontlist");
+    addOTFontsToMenu(menuObject);
+    menuObject.menulist = document.getElementById("fixedfontlist");
+    addOTFontsToMenu(menuObject);
+    menuObject.menulist = document.getElementById("x1fontlist");
+    addOTFontsToMenu(menuObject);
+    menuObject.menulist = document.getElementById("x2fontlist");
+    addOTFontsToMenu(menuObject);
+    menuObject.menulist = document.getElementById("x3fontlist");
+    addOTFontsToMenu(menuObject);
   }
   else {
     deleteOTFontsFromMenu("mainfontlist");
@@ -2394,6 +2283,16 @@ function saveClassOptionsEtc()
   }
     
     
+  widget = document.getElementById("texprogram").selectedItem;
+  dump("a\n");
+  nodelist = preamble.getElementsByTagName("texprogram");
+  dump("b\n");
+  var texprogram;
+  if (nodelist.length == 0)
+    texprogram = editor.createNode("texprogram", preamble, 1000);
+  else texprogram = nodelist[0];
+  dump("c"+widget.value+"\n");
+  texprogram.setAttribute("prog", widget.value)
 }
 
 function setMenulistSelection(menulist, value)
@@ -2460,4 +2359,26 @@ function getClassOptionsEtc()
   {
     document.getElementById("showidx").selectedIndex = 1;
   }
+  nodelist = preamble.getElementsByTagName("texprogram");
+  if (nodelist.length > 0)
+  {
+    var value =  nodelist[0].getAttribute("prog");
+    document.getElementById("texprogram").value = value;
+    dump("texprogrm value is "+value+"\n");
+    setCompiler("xelatex");
+  }
+}
+
+function setCompiler(compilername)
+{
+  if (compilername=="xelatex")
+  {
+    document.getElementById("xelatex").setAttribute("hidden",false)
+    document.getElementById("pdflatex").setAttribute("hidden",true);
+  }
+  else
+  { 
+    document.getElementById("xelatex").setAttribute("hidden",true);
+    document.getElementById("pdflatex").setAttribute("hidden",false);
+  }    
 }

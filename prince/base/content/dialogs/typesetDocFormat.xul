@@ -18,7 +18,7 @@
 <!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/typesetDocFormat.dtd" >
 %dialogDTD;
 <!ENTITY % menuOverlayDTD SYSTEM "chrome://prince/locale/menuOverlay.dtd" >
-%menuOverlayDTD;
+%menuOverlayDTD;                        
 ]>
 
 <dialog title="&windowTitle.label;"
@@ -89,6 +89,17 @@
           <label class="heading" value="General document options"/>
           <label value="Warning goes here"/>
         </vbox> 
+        <groupbox>
+          <caption label="TeX implementation"/>
+          <radiogroup id="texprogram" selectedIndex="0" value="pdflatex">
+            <radio label="pdfLaTeX -- the classic" value="pdflatex" oncommand="setCompiler('pdflatex');"/>
+            <radio value="xelatex" 
+              label="XeLaTeX -- a unicode ehancement of TeX for non-western languages, uses opentype fonts" 
+              oncommand="setCompiler('xelatex');"/>
+          </radiogroup>
+          <broadcaster id="xelatex" hidden="true"/>
+          <broadcaster id="pdflatex" hidden="false" />
+        </groupbox>
         <groupbox>
           <caption label="Basic layout"/>
           <grid>
@@ -167,12 +178,13 @@
                   <textbox type="number" decimalplaces="1" min="0" increment="0.1" id="leading" style="width: 9em" value=""/>
                 </vbox>
                 <vbox align="center">
-                  <deck>
-                    <label value="Babel language"/>
-                    <label value="Polyglossia language"/>
-                  </deck>
+                  <deck id="babelpoly">
+                    <label value="Babel language" observes="pdflatex"/>
+                    <label value="Polyglossia language" observes="xelatex"/>
+                  </deck>      
                   <menulist>
                     <menupopup style="width: 9em" >
+                      <!-- if some of these are not supported in polyglossia, add 'observes="pdftex"'-->
                       <menuitem value="USenglish" label="*US English" def="1"/>
                       <menuitem value="UKenglish" label="UK English"/>
                       <menuitem value="acadian" label="Acadian"/>
@@ -814,11 +826,8 @@
         </tabpanel>
      <tabpanel id="docformatFontsPanel">
         <vbox>
-          <hbox><checkbox id="useOpenType" label="&docformatUseOpenType;" oncommand="changeOpenType();" />
-            <separator/>
-            <msibutton label="Refresh font list" oncommand="initializeFontFamilyList(true);"/>
-          </hbox>
-          <broadcaster id="opentypeok" hidden="false" />
+            <msibutton label="Refresh font list" oncommand="initializeFontFamilyList(true);" observes="xelatex"/>
+          <broadcaster id="opentypeok" observes="xetex" />
           <groupbox>
             <caption label="&mainFontsGroup;"/>
             <hbox>
