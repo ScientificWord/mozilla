@@ -15,36 +15,30 @@
         title="&aboutDialog.title;"
         persist="screenX screenY width height">
 
-    <script type="application/x-javascript">
-      <![CDATA[
-        function onLoad() {
-          var versionField = document.getElementById("versionField");
-          var hidversionField = document.getElementById("hidversionField");
-          var brandShortNameEl = document.getElementById("brandShortName");          
-          hidversionField.value = brandShortNameEl.firstChild.nodeValue + ' ' + navigator.vendorSub + ' (' + navigator.productSub + ')';
-          versionField.value = hidversionField.value;
-          versionField.width = hidversionField.width;
-        }
-      ]]>
-    </script>
+  <script type="application/x-javascript" src="chrome://prince/content/about.js"/>
 
-    <vbox flex="1" id="clientBox">
-      <image src="chrome://prince/content/aboutPrince.png"/>
+    <deck id="aboutdeck" selectedIndex="0">
+      <vbox flex="1" id="clientBox">
+        <image src="chrome://prince/content/aboutPrince.png"/>
 
-      <vbox id="detailsBox" align="center" flex="1">
-        <separator class="thin"/>
+        <vbox id="detailsBox" align="center" flex="1">
+          <separator class="thin"/>
 
-        <hbox>
-          <vbox>
-            <label id="hidversionField" style="padding: 0px; visibility: hidden; font-weight: bold;"/>
-            <textbox id="versionField" readonly="true" class="plain" style="padding-left: 6px !important;" tabindex="2"/>
-          </vbox>
-        </hbox>
+          <hbox>
+            <vbox>
+              <label id="hidversionField" style="padding: 0px; visibility: hidden; font-weight: bold;"/>
+              <textbox id="versionField" readonly="true" class="plain" style="padding-left: 6px !important;" tabindex="2"/>
+            </vbox>
+          </hbox>
+        </vbox>
       </vbox>
-    </vbox>
+      <iframe id="aboutframe" type="content" flex="1" src="chrome://prince/content/credits.xhtml"/>
+    </deck>
     
     <separator class="groove" id="groove"/>
-    
+    <msibutton type="checkbox" id="lic" label="Licenses" oncommand="showLicenses();" checked="false"/>
+    <msibutton type="checkbox" id="cred" label="Credits" oncommand="showCredits();" checked="false"/>
+
     <!-- Localizable strings (from .dtd) -->
     <strings style="display:none;">
       <string id="brandShortName">Scientific WorkPlace</string>

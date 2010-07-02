@@ -154,6 +154,7 @@ function msiSetupTextEditorCommands(editorElement)
   commandTable.registerCommand("cmd_insertChars", msiInsertCharsCommand);
   commandTable.registerCommand("cmd_oneshotGreek", msiOneShotGreek);
   commandTable.registerCommand("cmd_oneshotSymbol", msiOneShotSymbol);
+  commandTable.registerCommand("cmd_fontcolor", msiFontColor);
 }
 
 function msiSetupComposerWindowCommands(editorElement)
@@ -2311,7 +2312,7 @@ function msiSoftSave( editor, editorElement)
   if (!msiIsTopLevelEditor(editorElement))
     return false;
   //if (!editor) 
-    editor = msiGetEditor(editorElement);
+  editor = msiGetEditor(editorElement);
   var aMimeType = editor.contentsMIMEType;
   var editorDoc = editor.document;
   if (!editorDoc)
@@ -2331,6 +2332,7 @@ function msiSoftSave( editor, editorElement)
   var urlstring = msiGetEditorURL(editorElement);
   var url = msiURIFromString(urlstring);
   var currentFile = msiFileFromFileURL(url);
+  var compileInfo = new Object();
   if (saveAsTextFile)
     aMimeType = "text/plain";
   else if (GetBoolPref("swp.generateTeXonsave"))
@@ -2338,7 +2340,7 @@ function msiSoftSave( editor, editorElement)
     var file = currentFile.parent;
     file.append("tex");
     file.append("main.tex");
-    documentAsTeXFile(editorDoc, "latex.xsl", file );
+    documentAsTeXFile(editorDoc, "latex.xsl", file, compileInfo);
   }
   var success;
   success = msiOutputFileWithPersistAPI(editorDoc, currentFile, null, aMimeType, editorElement);
@@ -3403,6 +3405,41 @@ var msiOneShotSymbol =
   }
 };
 
+
+
+//-----------------------------------------------------------------------------------
+var msiFontColor =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon)
+  {
+  },
+  doCommandParams: function(aCommand, aParams, aRefCon) 
+  {
+  },
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement();
+//    var editor = msiGetEditor(editorElement);
+//    var htmleditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
+    var colorObj = { NoDefault:true, Type:"Font", TextColor:"black", PageColor:0, Cancel:false };
+
+    window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "resizable=yes, chrome,close,titlebar,modal", 
+    "", colorObj);
+
+    // User canceled the dialog
+    if (colorObj.Cancel)
+      return;
+    
+    msiEditorSetTextProperty(editorElement, "fontcolor", "color", colorObj.TextColor);
+	  var theWindow = msiGetTopLevelWindow();
+    theWindow.msiRequirePackage(editorElement, "xcolor", null);
+  }
+};
 
 
 //-----------------------------------------------------------------------------------
@@ -6951,7 +6988,7 @@ var msiFrameCommand =
     var editorElement = msiGetActiveEditorElement();
     //temporary
     // need to get current note if it exists -- if none, initialize as follows 
-    msiFrame(null, editorElement);
+    msiFrame(editorElement);
   }
 };
 
@@ -7347,8 +7384,7 @@ function msiDoAdvancedProperties(element, editorElement)
         // as a role, and currently that role is played by texb tags, but any other tag
         // could play this role as well. 
           try {
-            data.tex = element.firstChild.nodeValue;
-            dlgParentWindow.openDialog("chrome://prince/content/texbuttoncontents.xul","texbutton","chrome,close,titlebar,resizable=yes,modal", data);
+            dlgParentWindow.openDialog("chrome://prince/content/texbuttoncontents.xul","texbutton","chrome,close,titlebar,resizable=yes,modal", element);
             editorElement.contentWindow.focus();
             if (!data.Cancel)
             {
@@ -8415,51 +8451,36 @@ function msiNote(currNode, editorElement)
   }
 }
 
-function msiFrame(currNode, editorElement)
+function msiFrame(editorElement)
 {
-  var data= new Object();
-  data.editorElement = editorElement;
   var editor = msiGetEditor(editorElement);
-  var currNodeTag = "";
-  data.newElement = true; 
-  if (currNode) {
-    data.newElement = false;
-    data.element = currNode;
-  }
-  else
-  {
-    data.element = null;
-  }
   editor.beginTransaction();
-  window.openDialog("chrome://prince/content/Frame.xul","frame", "chrome,close,titlebar,resizable=yes,modal=yes", data);
-  // data comes back altered
-  var editor = msiGetEditor(editorElement);
-  dump("data.newElement is "+data.newElement+"\n");
-  if (data.newElement)
-  {
-    try
-    {
-      var namespace = new Object();                      
-      var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace);
-      msiRequirePackage(editorElement, "wrapfig", null);
-      msiRequirePackage(editorElement, "boxedminipage", null);
-      var selection = editor.selection;
-      selection.getRangeAt(0).insertNode(data.element);
-      if (!selection.isCollapsed) editor.deleteSelection(0);
-      try
-      {
-        var defpara = "para";
-        var para = editor.document.createElement(defpara);
-        var br = editor.document.createElement("br");
-        data.element.appendChild(para);
-        para.appendChild(br);
-      }
-      catch(e) {
-      }
-    }
-    catch(e) {
-    }
-  } 
+  window.openDialog("chrome://prince/content/Frame.xul","frame", "chrome,close,titlebar,resizable=yes");
+//  if (data.newElement)
+//  {
+//    try
+//    {
+//      var namespace = new Object();                      
+//      var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace);
+//      msiRequirePackage(editorElement, "wrapfig", null);
+//      msiRequirePackage(editorElement, "boxedminipage", null);
+//      var selection = editor.selection;
+//      selection.getRangeAt(0).insertNode(data.element);
+//      if (!selection.isCollapsed) editor.deleteSelection(0);
+//      try
+//      {
+//        var defpara = "para";
+//        var para = editor.document.createElement(defpara);
+//        var br = editor.document.createElement("br");
+//        data.element.appendChild(para);
+//        para.appendChild(br);
+//      }
+//      catch(e) {
+//      }
+//    }
+//    catch(e) {
+//    }
+//  } 
   editor.endTransaction();
 }
 
@@ -8528,17 +8549,15 @@ function callColorDialog()
   if (colorObj.Cancel)
     return;
     
-  var editorElement = msiGetParentEditorElementForDialog(window);
-  if (!editorElement)
-  {
-    AlertWithTitle("Error", "No editor in otfont.OnAccept!");
-  }
-  var theWindow = window.opener;
-  if (!theWindow || !("msiEditorSetTextProperty" in theWindow))
-    theWindow = msiGetTopLevelWindow();
-  theWindow.msiRequirePackage(editorElement, "xcolor", null);
-  theWindow.msiEditorSetTextProperty(editorElement, "fontcolor", "color", colorObj.TextColor);
+  var cmdParams = newCommandParams();
+  if (!cmdParams) return;
+
+  var editorElement = msiGetActiveEditorElement();
+  dump("EditorElement has name "+editorElement.id+"\n");
+  cmdParams.setStringValue("color", colorObj.TextColor);
   editorElement.contentWindow.focus();
+  msiGoDoCommandParams("cmd_fontcolor", cmdParams, editorElement);
+//  theWindow.msiRequirePackage(editorElement, "xcolor", null);
 }
 
 var msiShowTeXLogCommand =

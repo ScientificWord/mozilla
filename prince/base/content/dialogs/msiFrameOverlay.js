@@ -496,7 +496,6 @@ function setFrameAttributes(frameNode)
   frameNode.setAttribute("crop", getCompositeMeasurement("crop",unit, false));  
   var pos = document.getElementById("placementRadioGroup").selectedItem;
   frameNode.setAttribute("pos", pos?pos.getAttribute("id"):"");
-
   var bgcolor = gFrameTab.colorWell.getAttribute("style");
   var arr = bgcolor.match(/background-color\s*:([a-zA-Z\ \,0-9\(\)]+)\s*;\s*/,"");
   setStyleAttributeOnNode(frameNode, "border-color", arr[1]);
@@ -555,12 +554,15 @@ function setFrameAttributes(frameNode)
 }
 
 
+
 function frameHeightChanged(input)
 {
-  scaledHeight = toPixels(input.value*scale);
+  scaledHeight = toPixels(input.value);
+  setStyleAttributeByID("content", "height", scaledHeight + "px");
 }
 
 function frameWidthChanged(input)
 {
-  scaledWidth = toPixels(input.value*scale);
+  scaledWidth = toPixels(input.value);
+  setStyleAttributeByID("content", "width", scaledWidth + "px");
 }

@@ -177,14 +177,22 @@ function Startup()
 	dump ("initializing sectitleformat\n");
   sectitleformat = new Object();
   getSectionFormatting(sectitlenodelist, sectitleformat);
+  getClassOptionsEtc();
 }
 
+//var serializer;
 
 function lineend(node, spacecount)
 {
+//  if (!serializer) 
+//    serializer = Components.classes["@mozilla.org/xmlextras/xmlserializer;1"].createInstance(Components.interfaces.nsIDOMSerializer);
   var spacer = "\n";
   for (var i = 0; i < spacecount; i++) 
     spacer = spacer + "  ";
+//  var stringnode = serializer.serializeToString(node);
+//  dump("stringnode=("+stringnode+")\n");
+//  var regexp1 = /\/>$/;
+//  var regexp2 = />$/;
   node.appendChild(node.ownerDocument.createTextNode(spacer));
 }
   
@@ -414,6 +422,7 @@ function onAccept()
     saveFontSpecs(newNode);
     saveSectionFormatting(newNode, sectitleformat);
   }
+  saveClassOptionsEtc();
 }  
 
 
@@ -1633,9 +1642,8 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
   var i;
   var node;
   var level;
-  var dialogbase;
+  var templatebase;
   var xmlcode;
-  var sw = "http://www.sciword.com/namespaces/sciword";
   if (sectitlenodelist)
   {
     for (i=0; i< sectitlenodelist.length; i++)
@@ -1644,22 +1652,15 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
       level = node.getAttribute("level");
       sectitleformat[level] = new Object();
       try {
-        dialogbase = node.getElementsByTagNameNS(sw,"dialogbase")[0];
-        if (dialogbase)
+        templatebase = node.getElementsByTagName("titleprototype")[0];
+        if (templatebase)
         {
           var ser = new XMLSerializer();
-          xmlcode = ser.serializeToString(dialogbase);
+          xmlcode = ser.serializeToString(templatebase);
           xmlcode = xmlcode.replace(/#1/,"#T");
           var pattern = "\\the"+level;
           xmlcode = xmlcode.replace(pattern, "#N");
         }
-//        var re=/<sw:dialogbase[^>]*>/;
-//        var l;
-//        do
-//        {
-//          l = xmlcode.length;
-//          xmlcode = xmlcode.replace(re,"").replace("</sw:dialogbase>",'');
-//        } while (xmlcode.length > 0 && xmlcode.length < l);
         if (!xmlcode) xmlcode="";
         sectitleformat[level].proto = xmlcode;
         sectitleformat[level].newPage = (node.getAttribute("newPage")=="true");
@@ -1815,8 +1816,8 @@ function saveSectionFormatting( docFormatNode, sectitleformat )
       {
         bRequiresPackage = false;
         reqpackageNode = editor.createNode('requirespackage',docFormatNode, 0);
-        reqpackageNode.setAttribute('package',"titlesec");
-        reqpackageNode.setAttribute('options',"calcwidth");
+        reqpackageNode.setAttribute('req',"titlesec");
+        reqpackageNode.setAttribute('opt',"calcwidth");
       } 
       lineend(docFormatNode, 1);
       sectiondata = sectitleformat[name]; 
@@ -1855,7 +1856,7 @@ function getBaseNodeForIFrame( )
   var iframe = document.getElementById("sectiontextarea");
   if (!iframe) return;
   var doc = iframe.contentDocument;
-  var theNodes = doc.getElementsByTagNameNS(sw,"dialogbase");
+  var theNodes = doc.getElementsByTagNameNS(sw,"templatebase");
   var theNode;
   if (theNodes) theNode = theNodes[0]; 
   else 
@@ -1914,35 +1915,40 @@ function sectSetDecimalPlaces() // and increments
 
 function displayTextForSectionHeader()
 {
-  var secname = document.getElementById("sections.name").label.toLowerCase();
-  var basepara;
-//	var width;
-	var height;
-  basepara = getBaseNodeForIFrame();
-  var strContents;
-  if (sectitleformat[secname]) strContents = sectitleformat[secname].proto;
-	if (strContents && strContents.length > 0)
-	{
-	  var parser = new DOMParser();
-	  var doc = parser.parseFromString(strContents,"application/xhtml+xml");
-	  basepara.parentNode.replaceChild(doc.documentElement, basepara);
-		basepara = getBaseNodeForIFrame();
-		var htmlNode=basepara.parentNode.parentNode;
-		var boxObject=htmlNode.ownerDocument.getBoxObjectFor(htmlNode);
-//		width = boxObject.width;
-		height = boxObject.height;
-    document.getElementById("tso_template").setAttribute("selectedIndex","1");
-	}
-	else
-	{
-	  height = 20;
-    document.getElementById("tso_template").setAttribute("selectedIndex","0");
-//		width = 200;
+  try {
+    var secname = document.getElementById("sections.name").label.toLowerCase();
+    var basepara;
+  //	var width;
+	  var height;
+    basepara = getBaseNodeForIFrame();
+    var strContents;
+    if (sectitleformat[secname]) strContents = sectitleformat[secname].proto;
+	  if (strContents && strContents.length > 0)
+	  {
+	    var parser = new DOMParser();
+	    var doc = parser.parseFromString(strContents,"application/xhtml+xml");
+	    basepara.parentNode.replaceChild(doc.documentElement, basepara);
+		  basepara = getBaseNodeForIFrame();
+		  var htmlNode=basepara.parentNode.parentNode;
+		  var boxObject=htmlNode.ownerDocument.getBoxObjectFor(htmlNode);
+  //		width = boxObject.width;
+		  height = boxObject.height;
+      document.getElementById("tso_template").setAttribute("selectedIndex","1");
+	  }
+	  else
+	  {
+	    height = 20;
+      document.getElementById("tso_template").setAttribute("selectedIndex","0");
+  //		width = 200;
+    }
+	  var iframecontainer = document.getElementById("sectiontextareacontainer");
+  //	setStyleAttributeOnNode(iframecontainer,"height",Number(height)+"px");
+  //	setStyleAttribute(iframecontainer,"width",width+sectionUnit);
+	  setStyleAttribute(iframecontainer,"height",Number(height)+"px");
   }
-	var iframecontainer = document.getElementById("sectiontextareacontainer");
-//	setStyleAttributeOnNode(iframecontainer,"height",Number(height)+"px");
-//	setStyleAttribute(iframecontainer,"width",width+sectionUnit);
-	setStyleAttribute(iframecontainer,"height",Number(height)+"px");
+  catch(e) {
+    dump("displayTextForSectionHeader exception: "+e.message+"\n");
+  }
 }
 
 
@@ -2138,7 +2144,8 @@ function addrule()
   nextbox.setAttribute("role","rule");
   nextbox.setAttribute("hidden","false");
   nextbox.setAttribute("style","height:3px;background-color:black;");
-  window.openDialog("chrome://prince/content/addruleforsection.xul", "addruleforsection", "chrome,close,titlebar,alwaysRaised",nextbox, "black", sectionUnit);
+  window.openDialog("chrome://prince/content/addruleforsection.xul", "addruleforsection", 
+    "resizable=yes,chrome,close,titlebar,alwaysRaised", nextbox, "black", sectionUnit);
 }
 
 
@@ -2161,7 +2168,7 @@ function addspace()
   nextbox.setAttribute("hidden","false");
   nextbox.setAttribute("style","height:6px;background-color:silver;");
 	window.openDialog("chrome://prince/content/vspaceforsection.xul", 
-	  "vspaceforsection", "chrome,close,titlebar,alwaysRaised",nextbox, sectionUnit);
+	  "vspaceforsection", "resizable=yes, chrome,close,titlebar,alwaysRaised",nextbox, sectionUnit);
 }
 
 function removeruleorspace()
@@ -2277,3 +2284,180 @@ function deleteOTFontsFromMenu(menuID)
   }
   if (ch && ch.id ==="startOpenType") menuPopup.removeChild(ch);
 }                                           
+
+function saveClassOptionsEtc()
+{
+  var doc = editor.document;
+  var documentclass = doc.documentElement.getElementsByTagName('documentclass')[0];
+  if (!documentclass) {
+    dump("No documentclass in document\n");
+    return;
+  }
+  var preamble = doc.documentElement.getElementsByTagName('preamble')[0];
+  if (!preamble) {
+    dump("No preamble in document\n");
+    return;
+  }
+  var nodelist = doc.getElementsByTagName("colist");
+  var optionNode;
+  var newnode = false;
+  if (nodelist.length == 0) 
+  {
+    newnode = true;
+    optionNode = doc.createElement("colist");
+  }
+  else optionNode = nodelist[0];
+  // convention: default values are starred at the end.
+  var widget;
+  widget = document.getElementById("pgorient").selectedItem;
+  if (widget.hasAttribute("def")) optionNode.removeAttribute("pgorient")
+  else optionNode.setAttribute("pgorient", widget.value);
+  
+  widget = document.getElementById("papersize").selectedItem;
+  if (widget.hasAttribute("def")) optionNode.removeAttribute("papersize")
+  else optionNode.setAttribute("papersize", widget.value);
+
+  widget = document.getElementById("sides").selectedItem;
+  if (widget.hasAttribute("def")) optionNode.removeAttribute("sides")
+  else optionNode.setAttribute("sides", widget.value);
+
+  widget = document.getElementById("qual").selectedItem;
+  if (widget.hasAttribute("def")) optionNode.removeAttribute("qual")
+  else optionNode.setAttribute("qual", widget.value);
+
+  widget = document.getElementById("columns").selectedItem;
+  if (widget.hasAttribute("def")) optionNode.removeAttribute("columns")
+  else optionNode.setAttribute("columns", widget.value);
+
+  widget = document.getElementById("textsize").selectedItem;
+  if (widget.hasAttribute("def")) optionNode.removeAttribute("textsize")
+  else optionNode.setAttribute("textsize", widget.value);
+
+  widget = document.getElementById("eqnnopos").selectedItem;
+  if (widget.hasAttribute("def")) optionNode.removeAttribute("eqnnopos")
+  else optionNode.setAttribute("eqnnopos", widget.value);
+
+  widget = document.getElementById("eqnpos").selectedItem;
+  if (widget.hasAttribute("def")) optionNode.removeAttribute("eqnpos")
+  else optionNode.setAttribute("eqnpos", widget.value);
+
+  widget = document.getElementById("titlepage").selectedItem;
+  if (widget.hasAttribute("def")) optionNode.removeAttribute("titlepage")
+  else optionNode.setAttribute("titlepage", widget.value);
+
+  widget = document.getElementById("bibstyle").selectedItem;
+  if (widget.hasAttribute("def")) optionNode.removeAttribute("bibstyle")
+  else optionNode.setAttribute("bibstyle", widget.value);
+
+  if (newnode) documentclass.appendChild(optionNode);
+
+  widget = document.getElementById("leading").value;
+  nodelist = preamble.getElementsByTagName("leading");
+  var leading;
+  var i;
+  if (widget > 0)
+  {
+    if (nodelist.length == 0)
+      leading = editor.createNode("leading",preamble,1000);
+    else leading = nodelist[0];
+    leading.setAttribute("val", widget+"pt")
+    leading.setAttribute("req","leading")
+  }
+  else for (i = 0; i < nodelist.length; i++) editor.deleteNode(nodelist[i]);
+    
+  widget = document.getElementById("showkeys").selectedItem;
+  nodelist = preamble.getElementsByTagName("showkeys");
+  var showkeys;
+  var i;
+  if (widget.hasAttribute("def")) 
+   for (i = 0; i < nodelist.length; i++) editor.deleteNode(nodelist[i]);
+  else
+  {
+    if (nodelist.length == 0)
+      showkeys = editor.createNode("showkeys", preamble, 1000);
+    else showkeys = nodelist[0];
+    showkeys.setAttribute("req", "showkeys")
+  }
+    
+  widget = document.getElementById("showidx").selectedItem;
+  nodelist = preamble.getElementsByTagName("showidx");
+  var showidx;
+  var i;
+  if (widget.hasAttribute("def")) 
+   for (i = 0; i < nodelist.length; i++) editor.deleteNode(nodelist[i]);
+  else
+  {
+    if (nodelist.length == 0)
+      showidx = editor.createNode("showidx", preamble, 1000);
+    else showidx = nodelist[0];
+    showidx.setAttribute("req", "showidx")
+  }
+    
+    
+}
+
+function setMenulistSelection(menulist, value)
+{
+  var index = 0;
+  var item = menulist.getItemAtIndex(index);
+  while (item) {
+    if (item.value == value) 
+    {
+      menulist.selectedIndex = index;
+      break;
+    }
+    item = menulist.getItemAtIndex(++index);
+  }
+}
+
+function getClassOptionsEtc()
+{
+  var valuetypes = ["pgorient",
+    "papersize",
+    "sides",
+    "qual",
+    "columns",
+    "textsize",
+    "eqnnopos",
+    "eqnpos",
+    "titlepage",
+    "bibstyle"];
+
+  var doc = editor.document;
+  var documentclass = doc.documentElement.getElementsByTagName('documentclass')[0];
+  if (!documentclass) {
+    dump("No documentclass in document\n");
+    return;
+  }
+  var preamble = doc.documentElement.getElementsByTagName('preamble')[0];
+  if (!preamble) {
+    dump("No preamble in document\n");
+    return;
+  }
+  var nodelist = doc.getElementsByTagName("colist");
+  var node;
+  if (nodelist.length == 0) return; // leaves all values at the defaults, as defined
+  // in the XUL file
+  var colist = nodelist[0];
+  for each (s in valuetypes) {
+    if (colist.hasAttribute(s)) setMenulistSelection(document.getElementById(s),
+      colist.getAttribute(s));
+  }
+  nodelist = preamble.getElementsByTagName("leading");
+  if (nodelist.length > 0)
+  {
+    node = nodelist[0];
+    if (node.hasAttribute("val")) document.getElementById("leading").value =
+      (node.getAttribute("val")).replace(/pt/,"");
+  }
+  nodelist = preamble.getElementsByTagName("showkeys");
+  if (nodelist.length > 0)
+  {
+    document.getElementById("showkeys").selectedIndex = 1;
+  }
+  nodelist = preamble.getElementsByTagName("showidx");
+  if (nodelist.length > 0)
+  {
+    document.getElementById("showidx").selectedIndex = 1;
+  }
+}
