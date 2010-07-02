@@ -827,7 +827,6 @@
      <tabpanel id="docformatFontsPanel">
         <vbox>
             <msibutton label="Refresh font list" oncommand="initializeFontFamilyList(true);" observes="xelatex"/>
-          <broadcaster id="opentypeok" observes="xetex" />
           <groupbox>
             <caption label="&mainFontsGroup;"/>
             <hbox>
@@ -851,16 +850,16 @@
                   </menupopup>
                 </menulist>
               </vbox>
-              <vbox observes="opentypeok">
+              <vbox observes="xelatex">
                 <label align="center" value="Old style nums"/>
                 <checkbox id="romanoldstylenums" oncommand="onCheck(this);"/>
               </vbox>
-              <vbox observes="opentypeok">
+              <vbox observes="xelatex">
                 <label align="center" value="Swash"/>
                 <checkbox id="romanswash" oncommand="onCheck(this);"/>
               </vbox>
             </hbox>
-            <hbox observes="opentypeok">
+            <hbox observes="xelatex">
               <label value="Click to go native" onclick="var elt=getElementById('bcroman'); elt.hidden=!(elt.hidden);"/>
               <textbox multiline="true" flex="1" observes="bcroman" id="romannative" onchange="onOptionTextChanged(this);"/>
               <broadcaster id="bcroman" hidden="true"/>
@@ -876,16 +875,16 @@
                   </menupopup>
                </menulist>
               </vbox>
-              <vbox observes="opentypeok">
+              <vbox observes="xelatex">
                 <label align="center" value="Old style nums"/>
                 <checkbox label="" id="sansoldstylenums" oncommand="onCheck(this);"/>
               </vbox>
-              <vbox observes="opentypeok">
+              <vbox observes="xelatex">
                 <label align="center" value="Swash"/>
                 <checkbox label="" id="sansswash" oncommand="onCheck(this);"/>
               </vbox>
             </hbox>
-            <hbox observes="opentypeok">
+            <hbox observes="xelatex">
               <label value="Click to go native" onclick="var elt=getElementById('bcsans'); elt.hidden=!(elt.hidden);"/>
               <textbox multiline="true" flex="1" observes="bcsans" id="sansnative"/>
               <broadcaster id="bcsans" hidden="true"/>
@@ -900,22 +899,22 @@
                   </menupopup>
                </menulist>
               </vbox>
-              <vbox observes="opentypeok">
+              <vbox observes="xelatex">
                 <label align="center" value="Old style nums"/>
                 <checkbox label="" id="fixedoldstylenums" oncommand="onCheck(this);"/>
               </vbox>
-              <vbox observes="opentypeok">
+              <vbox observes="xelatex">
                 <label align="center" value="Swash"/>
                 <checkbox label="" id="fixedswash" oncommand="onCheck(this);"/>
               </vbox>
             </hbox>
-            <hbox observes="opentypeok">
+            <hbox observes="xelatex">
               <label value="Click to go native" onclick="var elt=getElementById('bcfixed'); elt.hidden=!(elt.hidden);"/>
               <textbox multiline="true" flex="1" observes="bcfixed" id="fixednative"/>
               <broadcaster id="bcfixed" hidden="true"/>
             </hbox>
           </groupbox>
-          <groupbox observes="opentypeok">
+          <groupbox observes="xelatex">
             <caption label="Additional fonts"/>
             <hbox><label value="Internal font name"/><textbox id="f1name"/></hbox>
             <hbox>
