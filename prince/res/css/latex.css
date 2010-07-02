@@ -171,6 +171,14 @@ msibreak[type="newPage"]:after {
   -moz-user-select: -moz-none;
 }
 
+phantom {
+  color: transparent;
+}
+
+center, centered {
+  text-align: center;
+}
+
 newPageRule {
 	display: inline-block;
 	position: absolute;

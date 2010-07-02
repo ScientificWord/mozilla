@@ -10,12 +10,12 @@ function Startup() {
   units = window.arguments[2];
   units = units.toLowerCase();
   dump("units = "+units+"\n");
-  var initialStr="";
-  if (titleformat[seclevel]) initialStr = titleformat[seclevel];
-  var re = /<sw:dialogbase[^>]*>/;
-  var s = initialStr.replace(re, "");
-  var re2 = /<\/sw:dialogbase>/;
-  initialStr = s.replace(re2,"");
+  var initialStr="<dialogbase><br/></dialogbase>";
+  if (titleformat[seclevel]) initialStr = titleformat[seclevel].proto;
+//  var re = /<dialogbase[^>]*>/;
+//  var s = initialStr.replace(re, "");
+//  var re2 = /<\/dialogbase>/;
+//  initialStr = s.replace(re2,"");
   gDialog.bDataModified = false;
   gDialog.bEditorReady = false;
 
@@ -25,27 +25,26 @@ function Startup() {
                       
 function getBaseNode( )
 {
-  var sw = "http://www.sciword.com/namespaces/sciword";
   var editElement = document.getElementById("sectiontitle-frame");
   var doc = editElement.contentDocument;
-  var theNodes = doc.getElementsByTagNameNS(sw,"dialogbase");
+  var theNodes = doc.getElementsByTagName("dialogbase");
   var theNode;
   if (theNodes) theNode = theNodes[0]; 
   else 
   {
-    theNodes = doc.getElementsByTagNameNS(sw,"para");
+    theNodes = doc.getElementsByTagName("para");
     if (theNodes) theNode = theNodes[0]; 
   }
-  if (!theNode)
-  {
-    var bodies = doc.getElementsByTagName("body");
-    if (bodies) for ( var i = 0; i < bodies.length; i++)
-    {
-      theNode = bodies[i];
-      if (theNode.nodeType == theNode.ELEMENT_NODE)
-        return theNode;
-     }
-  }
+//  if (!theNode)
+//  {
+//    var bodies = doc.getElementsByTagName("body");
+//    if (bodies) for ( var i = 0; i < bodies.length; i++)
+//    {
+//      theNode = bodies[i];
+//      if (theNode.nodeType == theNode.ELEMENT_NODE)
+//        return theNode;
+//     }
+//  }
   return theNode;
 }
 
@@ -55,11 +54,7 @@ function stashTitlePrototype()
   if (!sourceNode) return;
   var ser = new XMLSerializer();
   var xmlcode = ser.serializeToString(sourceNode);
-//  var re = /<sw:dialogbase[^>]*>/;
-//  var s = xmlcode.replace(re, "");
-//  var re2 = /<\/sw:dialogbase>/;
-//  titleformat[seclevel] = s.replace(re2,"");
-  titleformat[seclevel] = xmlcode;
+  titleformat[seclevel].proto = xmlcode;
   titleformat.refresh(titleformat.destNode);
   dump("***** saving '"+titleformat[seclevel]+"'\n");
 // we still need to replace the text of the section title area in the main dialog.
