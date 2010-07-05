@@ -2376,3 +2376,19 @@ function setCompiler(compilername)
     changeOpenType(false);
   }    
 }
+
+function enableDisableReformat(checkbox)
+{
+  var bcaster = document.getElementById("reformatok");
+  if (checkbox.checked)
+    bcaster.setAttribute("disabled","false");
+  else bcaster.setAttribute("disabled","true");
+}
+     
+function enableDisablePageLayout(checkbox)    
+{
+  var bcaster = document.getElementById("pagelayoutok");
+  if (checkbox.checked)
+    bcaster.setAttribute("disabled","false");
+  else bcaster.setAttribute("disabled","true");
+}
