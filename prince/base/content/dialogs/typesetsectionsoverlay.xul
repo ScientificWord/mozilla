@@ -22,12 +22,13 @@
       <broadcaster id="toporbottommargin" disabled="true"/>
       <broadcaster id="notmargin" disabled="true"/>
     </broadcasterset>  
-    <label>Hello!</label>
     <hbox>
+      <checkbox id="allowsectionheaders" checked="false" label="Allow redefinition of section headers"/>
+      <broadcaster id="headerredefok" disabled="true"/>
       <vbox flex="1"/>
       <vbox align="center">
        <label>Section type</label>
-       <menulist id="sections.name" oncommand="switchSectionType();" persist="value" >
+       <menulist id="sections.name" oncommand="switchSectionType();" observes="headerredefok" persist="value" >
          <menupopup>
            <menuitem id="sections.part" label="Part" value="-1"/>
            <menuitem id="sections.chapter" label="Chapter" value="0"/>
