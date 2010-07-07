@@ -1,4 +1,5 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
+Components.utils.import("resource://app/modules/pathutils.jsm"); 
 
 const msiEditorJS_duplicateTest = "Bad";
 
