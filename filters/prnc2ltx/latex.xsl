@@ -57,13 +57,6 @@
 <xsl:template match="latex">
 <xsl:value-of select="."/> and \LaTeX{}</xsl:template>  <!-- soon to change to texlogo-->
 
-<xsl:template match="html:hspace"
-  ><xsl:choose
-    ><xsl:when test="@dim='2em'">\qquad </xsl:when
-  ><xsl:otherwise> </xsl:otherwise
-  ></xsl:choose
-  ></xsl:template>
- 
 <xsl:template match="html:documentclass">
 
 \documentclass[<xsl:apply-templates/>]{<xsl:value-of select="@class"/>}
