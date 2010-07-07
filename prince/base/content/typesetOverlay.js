@@ -573,28 +573,163 @@ function doBibChoiceDlg()
   }
 }
 
-function doOptionsAndPackagesDlg()
+function doOptionsAndPackagesDlg(editorElement)
 {
-  var options = new Object();
-  options.docClassName = "sebase";  //hard-wired, for now
-  options.docClassOptions = "";
-  options.packages = new Array();
+//  var options = new Object();
+//  options.docClassName = "sebase";  //hard-wired, for now
+//  options.docClassOptions = "";
+//  options.packages = new Array();
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  var document = editor.document;
+  var options = msiGetPackagesAndOptionsDataForDocument(document);
   window.openDialog("chrome://prince/content/typesetOptionsAndPackages.xul", "optionsandpackages", "chrome,close,titlebar,modal", options);
-  if (!options.Cancel)
-  {
-    var packagesOptionsStr = options.docClassName;
-    if (options.docClassOptions.length > 0)
-      packagesOptionsStr += "[" + options.docClassOptions + "]";
-    for (var i = 0; i < options.packages.length; ++i)
+//  if (!options.Cancel)
+//  {
+//    var packagesOptionsStr = options.docClassName;
+//    if (options.docClassOptions.length > 0)
+//      packagesOptionsStr += "[" + options.docClassOptions + "]";
+//    for (var i = 0; i < options.packages.length; ++i)
+//    {
+//      var packageStr = "\n";
+//      if (options.packages[i].packageOptions.length)
+//        packageStr += "[" + options.packages[i].packageOptions + "]";
+//      packageStr += "{" + options.packages[i].packageName + "}";
+//      packagesOptionsStr += packageStr;
+//    }
+//    alert("Options and packages dialog returned; needs to be hooked up to do something! Options and packages are:\n" + packagesOptionsStr);
+//  }
+}
+
+function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
+{
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  var aDocument = editor.document;
+  var isDocStyleOrPackage = {
+    acceptNode: function(aNode)
     {
-      var packageStr = "\n";
-      if (options.packages[i].packageOptions.length)
-        packageStr += "[" + options.packages[i].packageOptions + "]";
-      packageStr += "{" + options.packages[i].packageName + "}";
-      packagesOptionsStr += packageStr;
+      switch(msiGetBaseNodeName(aNode))
+      {
+        case "requirespackage":
+        case "documentclass":
+          return NodeFilter.FILTER_ACCEPT;
+        break;
+        default:
+        break;
+      }
+      return NodeFilter.FILTER_SKIP;
     }
-    alert("Options and packages dialog returned; needs to be hooked up to do something! Options and packages are:\n" + packagesOptionsStr);
+  };
+
+  function findPackageInData(packageList, aName)
+  {
+    for (var ix = 0; ix < packageList.length; ++ix)
+    {
+      if (packageList[ix].packageName == aName)
+        return ix;
+    }
+    return null;
   }
+
+  function copyPackageData(srcPkg)
+  {
+    var retVal = {packageName : srcPkg.packageName};
+//    var logStr = "In reviseLaTeXPackagesAndOptions(), copyPackageData; packagename is [" + retVal.packageName + "]";
+    if ("packageOptions" in srcPkg)
+//    {
+      retVal.packageOptions = srcPkg.packageOptions;
+//      logStr += ", packageOptions are [" + retVal.packageOptions + "]";
+//    }
+    if ("packagePriority" in srcPkg)
+//    {
+      retVal.packagePriority = srcPkg.packagePriority;
+//      logStr += ", and packagePriority is [" + retVal.packagePriority + "].";
+//    }
+//    dump(logStr + "\n");
+    return retVal;
+  }
+
+  var pkgArray = [];
+  for (var ii = 0; ii < dlgData.packages.length; ++ii)
+  {
+    pkgArray.push( copyPackageData(dlgData.packages[ii]) );
+  }
+  var startNode = aDocument.documentElement;
+  var heads = aDocument.getElementsByTagName("head");
+  if (heads.length)
+    startNode = heads[0];
+  var currPreambleWalker = aDocument.createTreeWalker(startNode, NodeFilter.SHOW_ELEMENT, isDocStyleOrPackage, true);
+  var pkgObject, pkgName, newNode;
+  var pkgIndex = -1;
+  var insertPos = 0;
+  var insertParent, insertNewAfter;
+
+  if (currPreambleWalker)
+  {
+    var nextNode;
+    while (nextNode = currPreambleWalker.nextNode())
+    {
+      switch(msiGetBaseNodeName(nextNode))
+      {
+        case "requirespackage":
+          if (!insertParent)
+            insertParent = nextNode.parentNode;
+          pkgName = nextNode.getAttribute("package");
+          pkgIndex = findPackageInData(pkgArray, pkgName);
+          pkgObject = pkgArray[pkgIndex];
+          if (pkgObject)
+          {
+            if (pkgObject.packageOptions && pkgObject.packageOptions.length)
+              msiEditorEnsureElementAttribute(nextNode, "options", pkgObject.packageOptions, editor)
+            else
+              msiEditorEnsureElementAttribute(nextNode, "options", null, editor)
+            if ("packagePriority" in pkgObject)
+              msiEditorEnsureElementAttribute(nextNode, "pri", String(pkgObject.packagePriority), editor)
+            else
+              msiEditorEnsureElementAttribute(nextNode, "pri", null, editor)
+            insertNewAfter = nextNode;
+            pkgArray.splice( pkgIndex, 1 );  //Now that it's taken care of, remove it
+          }
+          else
+          {
+            if (!insertNewAfter)
+              insertNewAfter = nextNode.previousSibling;
+            editor.deleteNode(nextNode);
+          }
+        break;
+        case "documentclass":
+          if ("docClassOptions" in dlgData)
+            msiEditorEnsureElementAttribute(nextNode, "options", dlgData.docClassOptions, editor)
+          else
+            msiEditorEnsureElementAttribute(nextNode, "options", null, editor)
+        break;
+        default:
+        break;
+      }
+    }
+
+//    dump("In reviseLaTeXPackagesAndOptions(), before inserting new nodes.\n");
+    var insertPos = 0;
+    if (insertNewAfter)
+      insertPos = msiNavigationUtils.offsetInParent(insertNewAfter) + 1;
+    for (var jx = 0; jx < pkgArray.length; ++jx)
+    {
+      newNode = aDocument.createElement("requirespackage");
+      pkgObject = pkgArray[jx];
+      editor.insertNode( newNode, insertParent, insertPos++);
+      msiEditorEnsureElementAttribute(newNode, "package", pkgObject.packageName, editor);
+      if (pkgObject.packageOptions && pkgObject.packageOptions.length)
+        msiEditorEnsureElementAttribute(newNode, "options", pkgObject.packageOptions, editor)
+      if ("packagePriority" in pkgObject)
+        msiEditorEnsureElementAttribute(newNode, "pri", String(pkgObject.packagePriority), editor)
+      if (!insertParent)
+        insertParent = startNode;  //should be the preamble!
+    }
+  }
+
 }
 
 function doOutputChoiceDlg()
@@ -668,7 +803,7 @@ function doInsertIndexEntry()
     window.close();
     return;
   }
-  var index = gActiveEditor.getSelectedElement("index");
+  var index = gActiveEditor.getSelectedElement("indexitem");
   window.openDialog("chrome://prince/content/indexentry.xul", "Index Entry", "chrome,resizable=yes, close,titlebar", index);
 }
 
@@ -683,9 +818,7 @@ function doInsertCrossReference()
     return;
   }
   var xref = gActiveEditor.getSelectedElement("xref");
-  var data = new Object();
-  data.primary = xref?xref.nodeValue:"";
-  window.openDialog("chrome://prince/content/xref.xul", "Cross reference", "chrome,resizable=yes, close,titlebar", data);
+  window.openDialog("chrome://prince/content/xref.xul", "Cross reference", "chrome, resizable=yes, close, titlebar", xref);
 }
 
 function doInsertCitation(editorElement, command, commandHandler)
@@ -763,15 +896,67 @@ function doInsertTeXField()
   }
   var tbutton = gActiveEditor.getSelectedElement("texb");
   if (!tbutton) tbutton = gActiveEditor.getSelectedElement("texbutton");
-  var data = new Object();
-  data.tex = tbutton?tbutton.nodeValue:"";
-  window.openDialog("chrome://prince/content/texbuttoncontents.xul", "TeX field", "resizable=yes,chrome,close,titlebar", data);
+  window.openDialog("chrome://prince/content/texbuttoncontents.xul", "TeX field", "resizable=yes,chrome,close,titlebar", tbutton);
 }
 
 
 function doInsertSubdocument()
 {
   alert("Insert subdocument not implemented!");
+}
+
+
+function msiGetPackagesAndOptionsDataForDocument(aDocument)
+{
+  var isDocStyleOrPackage = {
+    acceptNode: function(aNode)
+    {
+      switch(msiGetBaseNodeName(aNode))
+      {
+        case "requirespackage":
+        case "documentclass":
+          return NodeFilter.FILTER_ACCEPT;
+        break;
+        default:
+        break;
+      }
+      return NodeFilter.FILTER_SKIP;
+    }
+  };
+
+  var retObj = { docClassName : "article", docClassOptions : "", packages : [] };
+  var pkgName = null;
+  var pkgPriority = 0;
+  var options = null;
+  var startNode = aDocument.documentElement;
+  var heads = aDocument.getElementsByTagName("head");
+  if (heads.length)
+    startNode = heads[0];
+  var currPreambleWalker = aDocument.createTreeWalker(startNode, NodeFilter.SHOW_ELEMENT, isDocStyleOrPackage, true);
+  if (currPreambleWalker)
+  {
+    var nextNode;
+    while (nextNode = currPreambleWalker.nextNode())
+    {
+      switch(msiGetBaseNodeName(nextNode))
+      {
+        case "requirespackage":
+          pkgName = nextNode.getAttribute("package");
+          pkgPriority = Number( nextNode.getAttribute("pri") );
+          options = nextNode.getAttribute("options");
+          retObj.packages.push( {packageName : pkgName, packageOptions : options, packagePriority : pkgPriority} );
+        break;
+        case "documentclass":
+          retObj.docClassName = nextNode.getAttribute("class");
+          retObj.docClassOptions = nextNode.getAttribute("options");
+        break;
+        default:
+        break;
+      }
+    }
+  }
+
+  return retObj;
 }
 
 

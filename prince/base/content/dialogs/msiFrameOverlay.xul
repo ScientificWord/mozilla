@@ -10,7 +10,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiFrameOverlay.js"/>
   <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/ -->
   <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/ -->
-  <!-- script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/ -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <tab id="msiFrameTab" label="Frame"/>
   <tab id="msiPlacementTab" label="Placement"/>
   <vbox id="units" >

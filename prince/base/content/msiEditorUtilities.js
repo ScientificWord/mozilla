@@ -1,5 +1,5 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
-
+Components.utils.import("resource://app/modules/pathutils.jsm");
 
 const msiEditorUtilitiesJS_duplicateTest = "Bad";
 
@@ -1016,13 +1016,13 @@ function msiGetEditorURL(editorElement)
 function msiRequirePackage(editorElement, packagename, options)
 {
   try {
-    var editor = msiGetEditor(editorElement);
+    var editor = msiGetEditor(editorElement); // BBM: NO, get main editor.
     var doc = editor.document;
     var preamble = doc.getElementsByTagName("preamble")[0];
     var reqpkg = doc.createElement("requirespackage");
-    reqpkg.setAttribute("package", packagename);
+    reqpkg.setAttribute("req", packagename);
     if (options && options.length > 0)
-      reqpkg.setAttribute("options", options);
+      reqpkg.setAttribute("opt", options);
     preamble.appendChild(reqpkg);
   }
   catch(e)
@@ -2547,6 +2547,25 @@ function msiEditorSupportsCommand(editorElement, commandStr)
   return false;
 }
 
+function msiSetEditorSinglePara(editorElement, bSet)
+{
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  if (editor && editor.document)
+  {
+    try {
+      var flags = editor.flags;
+      editor.flags = bSet ?  
+            flags | nsIPlaintextEditor.eEditorSingleLineMask :
+            flags & ~nsIPlaintextEditor.eEditorSingleLineMask;
+    } catch(e) {}
+
+    // update all commands
+    window.updateCommands("create");
+  }  
+}
+
 function msiLaunchSingleInstanceDialog(chromeUrl, dlgName, options, targetEditor, commandID, extraArgsArray)
 {
   var parentWindow = msiGetWindowContainingEditor(targetEditor);
@@ -3075,7 +3094,7 @@ function msiEditorSetTextProperty(editorElement, property, attribute, value)
   try {
     if (!gAtomService) GetAtomService();
     var propAtom = gAtomService.getAtom(property);
-
+    dump("msiEditorSetTextProperty for "+editorElement.id+", property = "+property+", attribute = " + attribute + ", value = "+value+"\n");
     msiGetEditor(editorElement).setInlineProperty(propAtom, attribute, value);
     if (!msiCurrEditorSetFocus(window) && "gContentWindow" in window)
       window.gContentWindow.focus();
@@ -6573,6 +6592,60 @@ var msiNavigationUtils =
     return false;
   },
 
+  isSingleSignificantChild : function(aNode)
+  {
+    var aParent = aNode.parentNode;
+    return (aNode == this.getSingleSignificantChild(aParent, true));
+  },
+
+  isEquationArray : function(editorElement, aTable)
+  {
+    if (aTable.getAttribute("type") == "eqnarray")
+      return true;
+    var tableDims = msiGetEnclosingTableOrMatrixDimensions(editorElement, tableElement);
+    if (tableDims.nCols != 1)
+      return false;
+    var topNode = this.findWrappingNode(aTable);  //inside displays we often see nested <mstyle> and <mrow>s
+    var isOK = true;
+    while (isOK && topNode)
+    {
+      switch(msiGetBaseNodeName(topNode))
+      {
+        case "msidisplay":  //Success! Return true
+          return true;
+        break;
+        case "math":
+        break;
+        default:
+          isOK = false;
+        break;
+      }
+      if (!this.isSingleSignificantChild(topNode))
+        isOK = false;
+      topNode = topNode.parentNode;
+    }
+    return false;
+  },
+
+  getEnclosingDisplay : function(aNode)
+  {
+    var topNode = this.findWrappingNode(aNode);  //inside displays we often see nested <mstyle> and <mrow>s
+    var isOK = true;
+    while (isOK && topNode)
+    {
+      switch(msiGetBaseNodeName(topNode))
+      {
+        case "msidisplay":  //Success! Return true
+          return topNode;
+        break;
+        default:
+        break;
+      }
+      topNode = topNode.parentNode;
+    }
+    return null;
+  },
+
   isUnnecessaryMStyle : function(aNode)
   {
     var bUnnecessary = false;
@@ -7875,88 +7948,6 @@ function gotoFirstNonspaceInElement( editor, node )
     false);
 }
 
-// msiFileURLFromAbsolutePath
-// Takes an absolute path (the direction of the slashes is OS-dependent) and
-// produces a file URL
-
-function msiFileURLFromAbsolutePath( absPath )
-{
-  try {
-    var file = Components.classes["@mozilla.org/file/local;1"].  
-                         createInstance(Components.interfaces.nsILocalFile);  
-    file.initWithPath( absPath );
-    return msiFileURLFromFile( file );
-  }
-  catch (e)
-  {
-    dump("//// error in msiFileURLFromAbsolutePath: "+e.message+"\n");
-  }
-}                       
-
-function msiFileURLFromChromeURI( chromePath )  //chromePath is a nsURI
-{
-  var retPath;
-  if (!chromePath || !(/^chrome:/.test(chromePath)))
-  {
-    dump("In msiFileURLFromChrome, path [" + chromePath + "] isn't a chrome URL! Returning null.\n");
-    return retPath;
-  }
-   
-  var ios = Components.classes['@mozilla.org/network/io-service;1'].getService(Components.interfaces.nsIIOService);
-  var uri = ios.newURI(chromePath, "UTF-8", null);
-  var cr = Components.classes['@mozilla.org/chrome/chrome-registry;1'].getService(Components.interfaces.nsIChromeRegistry);
-  retPath = cr.convertChromeURL(uri);
-  var pathStr = retPath.spec;
-
-  if (/^jar:/.test(pathStr))
-    pathStr = pathStr.substr(4);  //after the "jar:"
-  if (!(/^file:/.test(pathStr)))
-    pathStr = "file://" + pathStr;
-  if (pathStr != retPath.spec)
-    retPath = msiURIFromString(pathStr);
-  retPath = msiFileURLFromAbsolutePath(retPath.path);
-
-  return retPath;
-}
-
-function msiFileURLFromFile( file )
-{
-  // file is nsIFile  
-  var ios = Components.classes["@mozilla.org/network/io-service;1"].  
-                      getService(Components.interfaces.nsIIOService);  
-  return ios.newFileURI(file);  
-}
-
-function msiURIFromString(str)
-{
-  var ios = Components.classes["@mozilla.org/network/io-service;1"].  
-                      getService(Components.interfaces.nsIIOService);  
-  return ios.newURI(str, null, null);  
-}
-  
-function msiFileURLStringFromFile( file )
-{
-  return  msiFileURLFromFile( file ).spec;
-}
-
-function msiFileFromFileURL(url)
-{
-  try {
-    return url.QueryInterface(Components.interfaces.nsIFileURL).file;
-  }
-  catch (e)
-  {
-    dump("Error in msiFileFromFileURL: url = "+url.spec+" "+e.message+"\n");
-  }
-}
-  
-function msiPathFromFileURL( url )     // redundant BBM: remove instances of this or of GetFilePath
-{
-  //return GetFilepath( url );
-  // or
-  return msiFileFromFileURL(url).path; 
-}
-
 
 function msiGetOS()
 {
@@ -8060,6 +8051,89 @@ function goDown(id)
   value = Math.max(min,value);
   element.value = unitRound(value);
 }
+
+// msiFileURLFromAbsolutePath
+// Takes an absolute path (the direction of the slashes is OS-dependent) and
+// produces a file URL
+
+function msiFileURLFromAbsolutePath( absPath )
+{
+  try {
+    var file = Components.classes["@mozilla.org/file/local;1"].  
+                         createInstance(Components.interfaces.nsILocalFile);  
+    file.initWithPath( absPath );
+    return msiFileURLFromFile( file );
+  }
+  catch (e)
+  {
+    dump("//// error in msiFileURLFromAbsolutePath: "+e.message+"\n");
+  }
+}                       
+
+function msiFileURLFromChromeURI( chromePath )  //chromePath is a nsURI
+{
+  var retPath;
+  if (!chromePath || !(/^chrome:/.test(chromePath)))
+  {
+    dump("In msiFileURLFromChrome, path [" + chromePath + "] isn't a chrome URL! Returning null.\n");
+    return retPath;
+  }
+   
+  var ios = Components.classes['@mozilla.org/network/io-service;1'].getService(Components.interfaces.nsIIOService);
+  var uri = ios.newURI(chromePath, "UTF-8", null);
+  var cr = Components.classes['@mozilla.org/chrome/chrome-registry;1'].getService(Components.interfaces.nsIChromeRegistry);
+  retPath = cr.convertChromeURL(uri);
+  var pathStr = retPath.spec;
+
+  if (/^jar:/.test(pathStr))
+    pathStr = pathStr.substr(4);  //after the "jar:"
+  if (!(/^file:/.test(pathStr)))
+    pathStr = "file://" + pathStr;
+  if (pathStr != retPath.spec)
+    retPath = msiURIFromString(pathStr);
+  retPath = msiFileURLFromAbsolutePath(retPath.path);
+
+  return retPath;
+}
+
+function msiFileURLFromFile( file )
+{
+  // file is nsIFile  
+  var ios = Components.classes["@mozilla.org/network/io-service;1"].  
+                      getService(Components.interfaces.nsIIOService);  
+  return ios.newFileURI(file);  
+}
+
+function msiURIFromString(str)
+{
+  var ios = Components.classes["@mozilla.org/network/io-service;1"].  
+                      getService(Components.interfaces.nsIIOService);  
+  return ios.newURI(str, null, null);  
+}
+  
+function msiFileURLStringFromFile( file )
+{
+  return  msiFileURLFromFile( file ).spec;
+}
+
+function msiFileFromFileURL(url)
+{
+  try {
+    return url.QueryInterface(Components.interfaces.nsIFileURL).file;
+  }
+  catch (e)
+  {
+    dump("Error in msiFileFromFileURL: url = "+url.spec+" "+e.message+"\n");
+  }
+}
+  
+function msiPathFromFileURL( url )     // redundant BBM: remove instances of this or of GetFilePath
+{
+  //return GetFilepath( url );
+  // or
+  return msiFileFromFileURL(url).path; 
+}
+
 
  
 function openAllSubdocs()

@@ -171,6 +171,14 @@ msibreak[type="newPage"]:after {
   -moz-user-select: -moz-none;
 }
 
+phantom {
+  color: transparent;
+}
+
+center, centered {
+  text-align: center;
+}
+
 newPageRule {
 	display: inline-block;
 	position: absolute;
@@ -242,7 +250,7 @@ mml|mi[tempinput="true"]::before {  content: "[";}
 mml|mi[tempinput="true"]::after {  content: "]";}
 mml|mi[tempinput="true"]{
   letter-spacing: 0; /*-0.015em;*/
-  -moz-user-select: -moz-none;
+  -moz-user-select: text;
 }
 
 #rotateleft{
