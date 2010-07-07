@@ -485,7 +485,7 @@
       </tabpanel>   
         <tabpanel id="docformatPageLayoutPanel" style="overflow:auto">
           <vbox>
-            <checkbox id="enablepagelayout" label="Allow overwriting page layout"
+            <checkbox id="enablepagelayout" label="Enable overriding page layout"
               oncommand="enableDisablePageLayout(this);"/>                 
             <broadcaster id="pagelayoutok" disabled="true"/>
             <hbox>
@@ -921,14 +921,19 @@
         </tabpanel>
      <tabpanel id="docformatFontsPanel">
         <vbox>
-          <checkbox id="allowfontchoice" label="Allow overriding font selection"/>  
-          <msibutton label="Refresh font list" oncommand="initializeFontFamilyList(true);" observes="xelatex"/>
+          <checkbox id="allowfontchoice" label="Enable overriding font selection" oncommand="enableDisableFonts(this);"/>
+          <broadcaster id="fontdefok" disabled="true"/> 
+          <msibutton label="Refresh font list" oncommand="initializeFontFamilyList(true);" observes="xelatex">
+            <observes element="fontdefok" attribute="disabled"/> 
+          </msibutton>
           <groupbox>
-            <caption label="&mainFontsGroup;"/>
+            <caption>
+              <label observes="fontdefok" value="&mainFontsGroup;"/>
+            </caption>
             <hbox>
               <vbox>
-                <label align="right" value="&docformatMath;"/>
-                <menulist id="mathfontlist" oncommand="" >
+                <label observes="fontdefok" align="right" value="&docformatMath;"/>
+                <menulist observes="fontdefok" id="mathfontlist" oncommand="" >
                   <menupopup>
                     <menuitem id="mathfontdefault" label="&docformatDefault;" />
                     <menuseparator/>
@@ -938,8 +943,8 @@
             </hbox>
             <hbox>
               <vbox>
-                <label align="right" value="&docformatRoman;"/>
-                <menulist id="mainfontlist" oncommand="" >
+                <label observes="fontdefok" align="right" value="&docformatRoman;"/>
+                <menulist id="mainfontlist" observes="fontdefok" oncommand="" >
                   <menupopup>
                     <menuitem id="mainfontdefault" label="&docformatDefault;" />
                     <menuseparator/>
@@ -947,23 +952,25 @@
                 </menulist>
               </vbox>
               <vbox observes="xelatex">
-                <label align="center" value="Old style nums"/>
-                <checkbox id="romanoldstylenums" oncommand="onCheck(this);"/>
+                <label observes="fontdefok" align="center" value="Old style nums"/>
+                <checkbox observes="fontdefok" id="romanoldstylenums" oncommand="onCheck(this);"/>
               </vbox>
               <vbox observes="xelatex">
-                <label align="center" value="Swash"/>
-                <checkbox id="romanswash" oncommand="onCheck(this);"/>
+                <label observes="fontdefok" align="center" value="Swash"/>
+                <checkbox observes="fontdefok" id="romanswash" oncommand="onCheck(this);"/>
               </vbox>
             </hbox>
             <hbox observes="xelatex">
-              <label value="Click to go native" onclick="var elt=getElementById('bcroman'); elt.hidden=!(elt.hidden);"/>
-              <textbox multiline="true" flex="1" observes="bcroman" id="romannative" onchange="onOptionTextChanged(this);"/>
+              <label observes="fontdefok" value="Click to go native" onclick="var elt=getElementById('bcroman'); elt.hidden=!(elt.hidden);"/>
+              <textbox multiline="true" flex="1" observes="bcroman" id="romannative" onchange="onOptionTextChanged(this);">
+                <observes element="fontdefok" attribute="disabled"/>
+              </textbox>
               <broadcaster id="bcroman" hidden="true"/>
             </hbox>
             <hbox>
               <vbox>
-                <label value="&docformatSans;"/>
-                <menulist id="sansfontlist" 
+                <label observes="fontdefok" value="&docformatSans;"/>
+                <menulist observes="fontdefok" id="sansfontlist" 
                   oncommand="" >
                   <menupopup>
                     <menuitem id="sansfontdefault" label="&docformatDefault;" />
@@ -972,23 +979,25 @@
                </menulist>
               </vbox>
               <vbox observes="xelatex">
-                <label align="center" value="Old style nums"/>
-                <checkbox label="" id="sansoldstylenums" oncommand="onCheck(this);"/>
+                <label observes="fontdefok" align="center" value="Old style nums"/>
+                <checkbox observes="fontdefok" label="" id="sansoldstylenums" oncommand="onCheck(this);"/>
               </vbox>
               <vbox observes="xelatex">
-                <label align="center" value="Swash"/>
-                <checkbox label="" id="sansswash" oncommand="onCheck(this);"/>
+                <label observes="fontdefok" align="center" value="Swash"/>
+                <checkbox observes="fontdefok" label="" id="sansswash" oncommand="onCheck(this);"/>
               </vbox>
             </hbox>
             <hbox observes="xelatex">
-              <label value="Click to go native" onclick="var elt=getElementById('bcsans'); elt.hidden=!(elt.hidden);"/>
-              <textbox multiline="true" flex="1" observes="bcsans" id="sansnative"/>
+              <label observes="fontdefok" value="Click to go native" onclick="var elt=getElementById('bcsans'); elt.hidden=!(elt.hidden);"/>
+              <textbox multiline="true" flex="1" observes="bcsans" id="sansnative">
+                <observes element="fontdefok" attribute="disabled"/>
+              </textbox>
               <broadcaster id="bcsans" hidden="true"/>
             </hbox>
             <hbox>
               <vbox>
-                <label value="&docformatFixed;"/>
-                <menulist id="fixedfontlist" label="&docformatFixed;" >
+                <label observes="fontdefok" value="&docformatFixed;"/>
+                <menulist observes="fontdefok" id="fixedfontlist" label="&docformatFixed;" >
                   <menupopup>
                     <menuitem id="fixedfontdefault" label="&docformatDefault;" />
                     <menuseparator/>
@@ -996,27 +1005,31 @@
                </menulist>
               </vbox>
               <vbox observes="xelatex">
-                <label align="center" value="Old style nums"/>
-                <checkbox label="" id="fixedoldstylenums" oncommand="onCheck(this);"/>
+                <label observes="fontdefok" align="center" value="Old style nums"/>
+                <checkbox observes="fontdefok" label="" id="fixedoldstylenums" oncommand="onCheck(this);"/>
               </vbox>
               <vbox observes="xelatex">
-                <label align="center" value="Swash"/>
-                <checkbox label="" id="fixedswash" oncommand="onCheck(this);"/>
+                <label observes="fontdefok" align="center" value="Swash"/>
+                <checkbox observes="fontdefok" label="" id="fixedswash" oncommand="onCheck(this);"/>
               </vbox>
             </hbox>
             <hbox observes="xelatex">
-              <label value="Click to go native" onclick="var elt=getElementById('bcfixed'); elt.hidden=!(elt.hidden);"/>
-              <textbox multiline="true" flex="1" observes="bcfixed" id="fixednative"/>
+              <label observes="fontdefok" value="Click to go native" onclick="var elt=getElementById('bcfixed'); elt.hidden=!(elt.hidden);"/>
+              <textbox multiline="true" flex="1" observes="bcfixed" id="fixednative">
+                <observes element="fontdefok" attribute="disabled"/>
+              </textbox>
               <broadcaster id="bcfixed" hidden="true"/>
             </hbox>
           </groupbox>
           <groupbox observes="xelatex">
-            <caption label="Additional fonts"/>
-            <hbox><label value="Internal font name"/><textbox id="f1name"/></hbox>
+            <caption>
+              <label observes="fontdefok" value="Additional fonts"/>
+            </caption>
+            <hbox><label observes="fontdefok" value="Internal font name"/><textbox observes="fontdefok" id="f1name"/></hbox>
             <hbox>
               <vbox>
-                <label align="right" value="Extra font 1"/>
-                <menulist id="x1fontlist" oncommand=""  >
+                <label observes="fontdefok" align="right" value="Extra font 1"/>
+                <menulist observes="fontdefok" id="x1fontlist" oncommand=""  >
                   <menupopup>
                     <menuitem id="x1fontdefault" label="&docformatDefault;" />
                     <menuseparator/>
@@ -1024,24 +1037,26 @@
                 </menulist>
               </vbox>
               <vbox >
-                <label align="center" value="Old style nums"/>
-                <checkbox label="" id="x1oldstylenums" oncommand="onCheck(this);"/>
+                <label observes="fontdefok" align="center" value="Old style nums"/>
+                <checkbox observes="fontdefok" label="" id="x1oldstylenums" oncommand="onCheck(this);"/>
               </vbox>
               <vbox>
-                <label align="center" value="Swash"/>
-                <checkbox label="" id="x1swash" oncommand="onCheck(this);"/>
+                <label observes="fontdefok" align="center" value="Swash"/>
+                <checkbox observes="fontdefok" label="" id="x1swash" oncommand="onCheck(this);"/>
               </vbox>
             </hbox>
             <hbox>
-              <label value="Click to go native" onclick="var elt=getElementById('bcx1'); elt.hidden=!(elt.hidden);"/>
-              <textbox multiline="true" flex="1" observes="bcx1" id="x1native"/>
+              <label observes="fontdefok" value="Click to go native" onclick="var elt=getElementById('bcx1'); elt.hidden=!(elt.hidden);"/>
+              <textbox multiline="true" flex="1" observes="bcx1" id="x1native">
+                <observes element="fontdefok" attribute="disabled"/>
+              </textbox>
               <broadcaster id="bcx1" hidden="true"/>
             </hbox>
-            <hbox><label value="Internal font name"/><textbox id="f2name"/></hbox>
+            <hbox><label observes="fontdefok" value="Internal font name"/><textbox observes="fontdefok" id="f2name"/></hbox>
             <hbox>
               <vbox>
-                <label align="right" value="Extra font 2"/>
-                <menulist id="x2fontlist" oncommand=""  >
+                <label observes="fontdefok" align="right" value="Extra font 2"/>
+                <menulist observes="fontdefok" id="x2fontlist" oncommand=""  >
                   <menupopup>
                     <menuitem id="x2fontdefault" label="&docformatDefault;" />
                     <menuseparator/>                                               
@@ -1049,24 +1064,26 @@
                 </menulist>
               </vbox>
               <vbox>
-                <label align="center" value="Old style nums"/>
-                <checkbox label="" id="x2oldstylenums" oncommand="onCheck(this);"/>
+                <label observes="fontdefok" align="center" value="Old style nums"/>
+                <checkbox observes="fontdefok" label="" id="x2oldstylenums" oncommand="onCheck(this);"/>
               </vbox>
               <vbox>
-                <label align="center" value="Swash"/>
-                <checkbox label="" id="x2swash" oncommand="onCheck(this);"/>
+                <label observes="fontdefok" align="center" value="Swash"/>
+                <checkbox observes="fontdefok" label="" id="x2swash" oncommand="onCheck(this);"/>
               </vbox>
             </hbox>
             <hbox>
-              <label value="Click to go native" onclick="var elt=getElementById('bcx2'); elt.hidden=!(elt.hidden);"/>
-              <textbox multiline="true" flex="1" observes="bcx2" id="x2name"/>
+              <label observes="fontdefok" value="Click to go native" onclick="var elt=getElementById('bcx2'); elt.hidden=!(elt.hidden);"/>
+              <textbox multiline="true" flex="1" observes="bcx2" id="x2name">
+                <observes element="fontdefok" attribute="disabled"/>
+              </textbox>
               <broadcaster id="bcx2" hidden="true"/>
             </hbox>
-            <hbox><label value="Internal font name"/><textbox id="f3name"/></hbox>
+            <hbox><label observes="fontdefok" value="Internal font name"/><textbox observes="fontdefok" id="f3name"/></hbox>
             <hbox>
               <vbox>
-                <label align="right" value="Extra font 3"/>
-                <menulist id="x3fontlist" oncommand=""  >
+                <label observes="fontdefok" align="right" value="Extra font 3"/>
+                <menulist observes="fontdefok" id="x3fontlist" oncommand=""  >
                   <menupopup>
                     <menuitem id="x3fontdefault" label="&docformatDefault;" />
                     <menuseparator/>
@@ -1074,17 +1091,19 @@
                 </menulist>
               </vbox>
               <vbox>
-                <label align="center" value="Old style nums"/>
-                <checkbox label="" id="x3oldstylenums" oncommand="onCheck(this);"/>
+                <label observes="fontdefok" align="center" value="Old style nums"/>
+                <checkbox observes="fontdefok" label="" id="x3oldstylenums" oncommand="onCheck(this);"/>
               </vbox>
               <vbox>
-                <label align="center" value="Swash"/>
-                <checkbox label="" id="x3swash" oncommand="onCheck(this);"/>
+                <label observes="fontdefok" align="center" value="Swash"/>
+                <checkbox observes="fontdefok" label="" id="x3swash" oncommand="onCheck(this);"/>
               </vbox>
             </hbox>
             <hbox>
-              <label value="Click to go native" onclick="var elt=getElementById('bcx3'); elt.hidden=!(elt.hidden);"/>
-              <textbox multiline="true" flex="1" observes="bcx3" id="x3name"/>
+              <label observes="fontdefok" value="Click to go native" onclick="var elt=getElementById('bcx3'); elt.hidden=!(elt.hidden);"/>
+              <textbox multiline="true" flex="1" observes="bcx3" id="x3name">
+                <observes element="fontdefok" attribute="disabled"/>
+              </textbox>
               <broadcaster id="bcx3" hidden="true"/>
             </hbox>
           </groupbox>
