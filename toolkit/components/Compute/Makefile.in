@@ -6,8 +6,8 @@ VPATH = @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-# MODULE		= compute
-MOZILLA_INTERNAL_API = 1
+MODULE		= compute
+# MOZILLA_INTERNAL_API = 1
 
 DIRS		= \
 	computelib \

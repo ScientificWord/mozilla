@@ -29,7 +29,7 @@ function Package()
     };
   this.setOptionsFromStr = function(optionStr)
     {
-      if (optionStr.length > 0)
+      if (optionStr && optionStr.length > 0)
         this.setOptions(optionStr.split(","));
       else if (this.packageOptions.length)
         this.packageOptions = new Array();
