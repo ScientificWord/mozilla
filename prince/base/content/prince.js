@@ -1051,59 +1051,74 @@ function documentToTeXString(document, xslPath)
   if (xslPath.length == 0) return resultString;
   var contents = "";
   var match;
-  var path = xslPath;
-  var stylesheetElement=/<xsl:stylesheet[^>]*>/;
-  var includeFileRegEx = /<xsl:include\s+href\s*=\s*\"([^\"]*)\"\/>/;
-  var leafname = /[^\/]*$/;
   var xsltProcessor = new XSLTProcessor();
-  var myXMLHTTPRequest = new XMLHttpRequest();
-  myXMLHTTPRequest.open("GET", path, false);
-  myXMLHTTPRequest.send(null);
-
-  str = myXMLHTTPRequest.responseText;
-// a bug in the Mozilla XSLT processor causes problems with included stylesheets, so
-// we do the inclusions ourselves 
-  var filesSeen= []; 
-  while (match = includeFileRegEx.exec(str))
+  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+  var outputfile = dsprops.get("ProfD", Components.interfaces.nsILocalFile);
+  outputfile.append("composite.xsl");
+  // we cache the xsl file as composite.xsl in the user's profile
+  
+  if (outputfile.exists())
   {
-    resultString += str.slice(0, match.index);
-    str = str.slice(match.index);
-    str = str.replace(match[0],""); // get rid of the matched pattern. Why does lastIndex not work?
-    dump("File "+match[1]+"found at index = "+match.index+ "\n");
-    // match[1] should have the file name of the incusion 
-    if (filesSeen.indexOf(match[1]) < 0)
-    {
-      try {
-        path = path.replace(leafname,match[1]);
-        myXMLHTTPRequest.open("GET", path, false);
-        myXMLHTTPRequest.send(null);
-        contents = myXMLHTTPRequest.responseText;
-        if (contents)
-        {
-          // strip out the xml and xsl declarations
-          contents = contents.replace('<?xml version="1.0"?>','');
-          contents = contents.replace("</xsl:stylesheet>","");
-          contents = contents.replace(stylesheetElement,"");
-        }
-        filesSeen.push(match[1]);
-      }
-      catch(e)
-      {
-        dump("Reading include file, got "+e.message+"\n");
-      }
-    }
-    else {
-      dump("\n\n\n" + str+"\n\n\n");
-      dump("Already saw " + match[1] +"\n");
-      contents="";
-      break;
-    }                         
-    // now replace the include command with the contents of the file
-//    includeFileRegEx.lastIndex = includeFileRegEx.index;
-    str = contents + str;
-    // and continue  
+    path=msiFileURLFromFile( outputfile );
+    var myXMLHTTPRequest = new XMLHttpRequest();
+    myXMLHTTPRequest.open("GET", path.spec, false);
+    myXMLHTTPRequest.send(null);
+    resultString = myXMLHTTPRequest.responseText;
   }
-  resultString += str;
+  else {
+    var path = xslPath;
+    var stylesheetElement=/<xsl:stylesheet[^>]*>/;
+    var includeFileRegEx = /<xsl:include\s+href\s*=\s*\"([^\"]*)\"\/>/;
+    var leafname = /[^\/]*$/;
+    var myXMLHTTPRequest = new XMLHttpRequest();
+    myXMLHTTPRequest.open("GET", path, false);
+    myXMLHTTPRequest.send(null);
+
+    str = myXMLHTTPRequest.responseText;
+  // a bug in the Mozilla XSLT processor causes problems with included stylesheets, so
+  // we do the inclusions ourselves 
+    var filesSeen= []; 
+    while (match = includeFileRegEx.exec(str))
+    {
+      resultString += str.slice(0, match.index);
+      str = str.slice(match.index);
+      str = str.replace(match[0],""); // get rid of the matched pattern. Why does lastIndex not work?
+      dump("File "+match[1]+"found at index = "+match.index+ "\n");
+      // match[1] should have the file name of the incusion 
+      if (filesSeen.indexOf(match[1]) < 0)
+      {
+        try {
+          path = path.replace(leafname,match[1]);
+          myXMLHTTPRequest.open("GET", path, false);
+          myXMLHTTPRequest.send(null);
+          contents = myXMLHTTPRequest.responseText;
+          if (contents)
+          {
+            // strip out the xml and xsl declarations
+            contents = contents.replace('<?xml version="1.0"?>','');
+            contents = contents.replace("</xsl:stylesheet>","");
+            contents = contents.replace(stylesheetElement,"");
+          }
+          filesSeen.push(match[1]);
+        }
+        catch(e)
+        {
+          dump("Reading include file, got "+e.message+"\n");
+        }
+      }
+      else {
+        dump("\n\n\n" + str+"\n\n\n");
+        dump("Already saw " + match[1] +"\n");
+        contents="";
+        break;
+      }                         
+      // now replace the include command with the contents of the file
+  //    includeFileRegEx.lastIndex = includeFileRegEx.index;
+      str = contents + str;
+      // and continue  
+    }
+    resultString += str;
+  }
   // BBM: for debugging purposes, let's write the string out
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var outputfile = dsprops.get("ProfD", Components.interfaces.nsILocalFile);
