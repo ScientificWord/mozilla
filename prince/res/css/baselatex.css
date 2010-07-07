@@ -71,16 +71,34 @@ display: table-cell
 
 
 texb {
-/*  font-size: small; */
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#texb");
+}
+
+xref {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#xref");
+}
+
+printindex {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#printindex");
+}
+
+minpasses {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#minpasses");
+}
+
+indexitem {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#indexitem");
 }
 
 latexstyleb {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#latexstyleb");
 }
 
+a[name]{
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#label");
+}
 
-texb, latexstyleb { 
+latexstyleb { 
   color: red;
   -moz-appearance: button;
   padding: 2px 10px;
@@ -94,34 +112,10 @@ texb, latexstyleb {
   -moz-user-select: all;	  
 }
 
-TBLabel {
-    -moz-appearance: button;
-    color: gray;
-    border: 1px solid;
-    padding: 1px 2px;
-    min-width: 6.3em;
-    font-size: 10pt;
-
-}
-
-TBTeX {
-   display: none;
-}
-
-
-
-indexitem {
+xref {
+  content: attr(key);
   -moz-appearance: button;
-  color: green;
-  font-size: 12pt;
-  border: 1px solid;
-  padding: 1px 2px;
-  min-width: 6.3em;
-  font-size: 10pt;
-
 }
-
-indexitem:before {content:"Index: "}
 
 requestimplementation {
   -moz-appearance: button;
@@ -296,3 +290,7 @@ button [class="frontmattertag"] {
   font-style: normal;
 }
 
+texb button {
+  font-family: sans-serif;
+  font-style: normal;
+}
