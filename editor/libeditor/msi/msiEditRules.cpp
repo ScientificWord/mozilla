@@ -210,35 +210,35 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
 
 	  
 	  printf("\nPoint of deletion:\n");
-      mHTMLEditor -> DumpNode(endNode, 0, true);
+    mHTMLEditor -> DumpNode(endNode, 0, true);
 
       //endNode = rightmostChild;
 
 	  msiUtils::GetMathMLEditingBC(mHTMLEditor, endNode, dontcare, editingBC);
-      if (editingBC) {
+    if (editingBC) {
 	    mathmltype = msiUtils::GetMathmlNodeType(editingBC);
 	  }
 	  
 	  if (mathmltype ==  msiIMathMLEditingBC::MATHML_MATH){
 	     if (! msiUtils::IsEmpty(endNode)){
-		     nsCOMPtr<nsIDOMNodeList> children;
-			 PRUint32 number;
-		     nsCOMPtr<nsIDOMNode> rightmostChild;
-		     endNode->GetChildNodes(getter_AddRefs(children));
-			 msiUtils::GetNumberofChildren(endNode, number);
-			 msiUtils::GetChildNode(endNode, number-1, rightmostChild);
+		       nsCOMPtr<nsIDOMNodeList> children;
+			     PRUint32 number;
+		       nsCOMPtr<nsIDOMNode> rightmostChild;
+		       endNode->GetChildNodes(getter_AddRefs(children));
+			     msiUtils::GetNumberofChildren(endNode, number);
+			     msiUtils::GetChildNode(endNode, number-1, rightmostChild);
 
-             endNode = rightmostChild;             
+           endNode = rightmostChild;             
 
-		     msiUtils::GetMathMLEditingBC(mHTMLEditor, endNode, dontcare, editingBC);
-             if (editingBC) {
+		       msiUtils::GetMathMLEditingBC(mHTMLEditor, endNode, dontcare, editingBC);
+           if (editingBC) {
 	           mathmltype = msiUtils::GetMathmlNodeType(editingBC);
 	         }
 
-		 }
-      }
+		   }
+     }
 
-      if (mathmltype ==  msiIMathMLEditingBC::MATHML_MROWFENCE){      
+     if (mathmltype ==  msiIMathMLEditingBC::MATHML_MROWFENCE){      
 			 // Remove the first and last children of the mrow -- they should be fences.
              nsCOMPtr<nsIDOMNodeList> children;
 			 PRUint32 number;
@@ -300,18 +300,18 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
 
      mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
 	 
-	 DebDisplaySelection("\nSelection before calling nsHTMLEditRules::WillDeleteSelection" , aSelection, mMSIEditor, true);
+	   DebDisplaySelection("\nSelection before calling nsHTMLEditRules::WillDeleteSelection" , aSelection, mMSIEditor, true);
 
      nsHTMLEditRules::WillDeleteSelection(aSelection, aAction, aCancel, aHandled);
 
-	 mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
-	 DebDisplaySelection("\nSelection after calling nsHTMLEditRules::WillDeleteSelection" , aSelection, mMSIEditor, true);
+	   mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
+	   DebDisplaySelection("\nSelection after calling nsHTMLEditRules::WillDeleteSelection" , aSelection, mMSIEditor, true);
 
 
      if (bDeleteEntireMath)
-	   return NS_OK;
+	      return NS_OK;
 
-  }
+  }                          
   
    
   mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);

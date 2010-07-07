@@ -24,7 +24,8 @@ function Startup()
   data = window.arguments[0];
   data.Cancel = false;
   gDialog.docClassName = data.docClassName;
-  gDialog.packages = data.packages;  //this should be an array of objects; each object will have a package name and an array of options (strings)
+  gDialog.packagesInUse = data.packages;  //this should be an array of package objects
+  gDialog.packagesAvailable = data.packagesAvailable;
 
   gDialog.packagesListbox = document.getElementById("packagesListbox");
 
@@ -39,9 +40,8 @@ function Startup()
 function InitDialog()
 {
   document.getElementById("classNameDescription").text = gDialog.docClassName;
-  var rdfRef = gDialog.packagesListbox.getAttribute('ref');
-  gDialog.packagesListbox.setAttribute('ref', rdfRef.replace('__className__', gDialog.docClassName));
-  removePackagesInUseFromListbox()
+  fillPackagesAvailableListbox();
+  removePackagesInUseFromListbox();
   checkDisabledControls();
 
 //  checkInaccessibleAcceleratorKeys(document.documentElement);
@@ -86,13 +86,33 @@ function findPackageByName(packageList, packageName)
   return theIndex;
 }
 
+function fillPackagesAvailableListbox()
+{
+  var lcComp = function(a,b)
+  { return a.toLowerCase().localeCompare(b.toLowerCase());  };
+
+  gDialog.packagesAvailable.sort(lcComp);
+
+  var items = gDialog.packagesListbox.getElementsByTagName("listitem");
+  for (var i = items.length - 1; i >= 0; --i)
+    gDialog.packagesListbox.removeChild(items[i]);
+
+  for (var ix = 0; ix < gDialog.packagesAvailable.length; ++ix)
+    gDialog.packagesListbox.appendItem(gDialog.packagesAvailable[ix]);
+}
+
 function removePackagesInUseFromListbox()
 {
   var nPackages = gDialog.packagesListbox.getRowCount();
+  var pkgName;
   for (var i = nPackages-1; i >= 0; --i)  //traverse in reverse so as not to access already deleted items
   {
-    if (findPackageByName(gDialog.packagesInUse, gDialog.packagesListbox.getItem(i).label) >= 0)
-      gDialog.packagesListbox.deleteItem(i);
+    if (gDialog.packagesListbox.getItemAtIndex(i))
+    {
+      pkgName = gDialog.packagesListbox.getItemAtIndex(i).label;
+      if (findPackageByName(gDialog.packagesInUse, pkgName) >= 0)
+        gDialog.packagesListbox.removeItemAt(i);
+    }
   }
 }
 

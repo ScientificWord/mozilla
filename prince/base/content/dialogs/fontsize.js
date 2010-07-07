@@ -1,6 +1,3 @@
-
-const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
-
 function onAccept()
 {
   var size=Number(document.getElementById("otfont.fontsize").value);
