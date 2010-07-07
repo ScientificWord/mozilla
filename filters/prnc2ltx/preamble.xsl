@@ -69,6 +69,8 @@
  
 <xsl:variable name="packagelist" select ="exsl:node-set($packagelist.tf)"/>
 
+<xsl:variable name="formattingok" select="//html:colist[@enabled='true']"/>
+<xsl:variable name="pagelayoutok" select="//html:pagelayout[@enabled='true']"/>
 
 <xsl:template match="html:preamble">
 <xsl:if test="count(//html:indexitem) &gt; 0"
@@ -88,7 +90,8 @@
 
 <!-- use docformat information to call the crop package -->
 <xsl:template match="html:crop">
-  <xsl:variable name="unit"><xsl:value-of select="@unit"/></xsl:variable
+  <xsl:if test="$pagelayoutok"
+  ><xsl:variable name="unit"><xsl:value-of select="@unit"/></xsl:variable
   >\usepackage[<xsl:value-of select="@type"/><xsl:text>, </xsl:text
   ><xsl:choose
     ><xsl:when test="@paper='other'"
@@ -98,38 +101,41 @@
     <xsl:otherwise
       ><xsl:value-of select="@paper"/><xsl:text>, </xsl:text> 
     </xsl:otherwise> <!-- you can add any crop options you want here, separated with commas --></xsl:choose
-  > center]{crop}</xsl:template>
+  > center]{crop}</xsl:if
+></xsl:template>
 
 <!-- use docformat information to call the geometry package -->
-<xsl:template match="html:pagelayout[@latex='true']">
-<xsl:variable name="unit"><xsl:value-of select="@unit"
+<xsl:template match="html:pagelayout[@latex='true']"><xsl:if test="$pagelayoutok"
+><xsl:variable name="unit"><xsl:value-of select="@unit"
 /></xsl:variable>
 \usepackage[ <xsl:apply-templates/>]{geometry}
-</xsl:template>
+</xsl:if
+></xsl:template>
 
-<xsl:template match="html:page">
+<xsl:template match="html:page"><xsl:if test="$pagelayoutok">
   paper=<xsl:value-of select="@paper"/>paper, twoside=<xsl:value-of select="@twoside"
-  />, <!--landscape=<xsl:value-of select="@landscape"/>, --> </xsl:template>
+  />, <!--landscape=<xsl:value-of select="@landscape"/>, --> </xsl:if></xsl:template>
 
-<xsl:template match="html:page[@paper='screen']">  paper=screen, twoside=false, landscape=false,</xsl:template>
+<xsl:template match="html:page[@paper='screen']"><xsl:if test="$pagelayoutok"
+ >  paper=screen, twoside=false, landscape=false,</xsl:if></xsl:template>
 
-<xsl:template match="html:page[@paper='other']">
+<xsl:template match="html:page[@paper='other']"><xsl:if test="$pagelayoutok">
   paperwidth=<xsl:value-of select="@width"
   />, paperheight=<xsl:value-of select="@height"
-/>, </xsl:template>
+/>, </xsl:if></xsl:template>
 
-<xsl:template match="html:textregion">
+<xsl:template match="html:textregion"><xsl:if test="$pagelayoutok">
   textwidth=<xsl:value-of select="@width"/>, textheight=<xsl:value-of select="@height"
-/>, </xsl:template>
+/>, </xsl:if></xsl:template>
 
-<xsl:template match="html:margin">
+<xsl:template match="html:margin"><xsl:if test="$pagelayoutok">
   left=<xsl:value-of select="@left"/>, top=<xsl:value-of select="@top"
-/>, </xsl:template>
+/>, </xsl:if></xsl:template>
 
-<xsl:template match="html:header">
+<xsl:template match="html:header"><xsl:if test="$pagelayoutok">
   headheight=<xsl:value-of select="@height"
   />, headsep=<xsl:value-of select="@sep"
-/>, </xsl:template>
+/>, </xsl:if></xsl:template>
 
 <xsl:template match="html:columns[@count='2']"
   >twocolumn=true, columnsep=<xsl:value-of select="@sep"
@@ -139,9 +145,9 @@
   ></xsl:template>
 
 <xsl:template match="html:marginnote[@hidden='false']"
-  >marginparwidth=<xsl:value-of select="@width"
+  ><xsl:if test="$pagelayoutok">marginparwidth=<xsl:value-of select="@width"
   />, marginparsep=<xsl:value-of select="@sep"
-/>, </xsl:template>
+/>, </xsl:if></xsl:template>
 
 <xsl:template match="html:marginnote[@hidden!='false']"
   ></xsl:template>
@@ -180,20 +186,20 @@
 <xsl:template match="html:x3font">\newfontfamily\<xsl:value-of select="@internalname"/>[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
 
 <!-- section headings redefined. Requires package titlesec -->
-<xsl:template match="html:sectitleformat" >\newcommand{\msi<xsl:value-of select="@level"/>}[1]{<xsl:apply-templates/>}
+<xsl:template match="html:sectitleformat" ><xsl:if test="starts-with(@enabled,'true')">\newcommand{\msi<xsl:value-of select="@level"/>}[1]{<xsl:apply-templates/>}
 \titleformat{\<xsl:value-of select="@level"/>}[<xsl:value-of select="@sectStyle"/>]{<xsl:choose
   ><xsl:when test="@align='l'">\filright</xsl:when
   ><xsl:when test="@align='c'">\center</xsl:when
   ><xsl:otherwise>\filleft</xsl:otherwise
   ></xsl:choose>}{}{0pt}{\msi<xsl:value-of select="@level"
-/>}</xsl:template>
+/>}</xsl:if></xsl:template>
 						  
 <xsl:template match="html:dialogbase">
   <xsl:apply-templates/>
 </xsl:template>
 
-<xsl:template match="html:titleprototype"><xsl:apply-templates/>
-</xsl:template>
+<xsl:template match="html:titleprototype"><xsl:if test="starts-with(@enabled,'true')"><xsl:apply-templates/>
+</xsl:if></xsl:template>
 
 <xsl:template match="html:dialogbase">
   <xsl:apply-templates/>
@@ -203,14 +209,14 @@
 
 <!-- class options   -->
 <xsl:template match="html:colist"
-  ><xsl:for-each select="@*"
+  ><xsl:if test="$formattingok"><xsl:for-each select="@*"
     ><xsl:value-of select="."/>, </xsl:for-each
-  ></xsl:template>
+  ></xsl:if></xsl:template>
 
 <!-- leading -->
 <xsl:template match="html:leading"
-    >\leading{<xsl:value-of select="@val"
-  />}</xsl:template>
+    ><xsl:if test="$formattingok">\leading{<xsl:value-of select="@val"
+  />}</xsl:if></xsl:template>
 
     
 </xsl:stylesheet>
