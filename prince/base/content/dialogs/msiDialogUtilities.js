@@ -511,6 +511,20 @@ function enableControlsByID(theControls, bEnable)
   }
 }
 
+function enableControls(theControls, bEnable)
+{
+  for (var ix = 0; ix < theControls.length; ++ix)
+  {
+    if (theControls[ix] != null)
+    {
+      if (!bEnable)
+        theControls[ix].disabled = true;
+      else if (bEnable && theControls[ix].disabled)
+        theControls[ix].disabled = false;
+    }
+  }
+}
+
 
 //The following are taken from Barry's typesetDocFormat.js. They are put here for general use by dialogs involving units.
 var msiDlgUnitConversions =

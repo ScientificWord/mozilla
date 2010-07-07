@@ -1120,8 +1120,10 @@ msiMCaretBase::FracRootSetupDelTxns(nsIEditor * editor,
 {
   if (!topNode || !editor || !transactionList || !coalesceNode || !coalesceOffset )
     return NS_ERROR_FAILURE;
+
   if (!start || !end || !(IS_VALID_NODE_OFFSET(startOffset)) || !(IS_VALID_NODE_OFFSET(endOffset)))
     return NS_ERROR_FAILURE;
+
   nsCOMPtr<msiIMathMLEditor> msiEditor(do_QueryInterface(editor));
   if (!msiEditor)
     return NS_ERROR_FAILURE;
@@ -1179,8 +1181,14 @@ msiMCaretBase::FracRootSetupDelTxns(nsIEditor * editor,
     res = msiUtils::GetChildNode(topNode, leftOffsetInTop, oldKid);
     if (NS_SUCCEEDED(res) && oldKid)
       res = msiEditor->CreateReplaceTransaction(newKid, oldKid, topNode, getter_AddRefs(transaction));
-    if (NS_SUCCEEDED(res) && transaction)
-      res = mutableTxnArray->AppendElement(transaction, PR_FALSE);
+    if (NS_SUCCEEDED(res) && transaction) {
+       res = mutableTxnArray->AppendElement(transaction, PR_FALSE);
+      
+       nsCOMPtr<nsISelection> aSelection;
+       editor -> GetSelection(getter_AddRefs(aSelection));
+       aSelection -> Collapse(newKid, 0);
+      
+    }
     else
       res = NS_ERROR_FAILURE;
   }

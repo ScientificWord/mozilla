@@ -58,6 +58,7 @@
 				<tag nm="sw:large"><description>large</description></tag>
 				<tag nm="sw:lower"><description>Lower case</description></tag>
 				<tag nm="sw:normalsize"><description>normalsize</description></tag>
+				<tag nm="sw:phantom"><description>phantom</description></tag>
 				<tag nm="sw:rm"><description>Roman</description></tag>
 				<tag nm="sw:sf"><description>Sans Serif</description></tag>
 				<tag nm="sw:scriptsize"><description>Scriptsize</description></tag>
@@ -141,6 +142,12 @@
 				<tag nm="sw:line">
 					<nexttag>sw:line</nexttag>
 					<description>Line</description>
+          <initialcontents> <![CDATA[<cursor/><br type="_moz"/>]]>
+          </initialcontents>
+				</tag>
+				<tag nm="sw:center">
+					<nexttag>sw:center</nexttag>
+					<description>Centered paragraph</description>
           <initialcontents> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontents>
 				</tag>
@@ -330,6 +337,16 @@
               <para><cursor/><br type="_moz"/></para>
               ]]>
           </initialcontents>
+        </tag>
+				<tag nm="sw:centered">
+          <level>*</level>
+          <description>Centered</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <para><cursor/><br type="_moz"/></para>
+              ]]>
+          </initialcontents>
+          <nextafteremptyblock>para</nextafteremptyblock>
         </tag>
 				<tag nm="sw:preface">
           <level>0</level>

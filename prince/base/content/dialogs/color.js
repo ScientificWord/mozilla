@@ -36,6 +36,7 @@ function onAccept()
 	  theWindow = msiGetTopLevelWindow();
     theWindow.msiRequirePackage(editorElement, "xcolor", null);
     theWindow.msiEditorSetTextProperty(editorElement, "otfont", "fontname", fontname);
+    msiRequirePackage(editorElement,"xcolor","");
   }
   editorElement.contentWindow.focus();
 }
