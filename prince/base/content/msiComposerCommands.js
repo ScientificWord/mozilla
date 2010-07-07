@@ -4707,12 +4707,7 @@ function msiInsertHorizontalSpace(dialogData, editorElement)
   var editor = msiGetEditor(editorElement);
   var parentNode = editor.selection.anchorNode;
   var insertPos = editor.selection.anchorOffset;
-  if (dialogData.spaceType == "normalSpace")
-  {
-    editor.insertHTMLWithContext(" ", "", "", "", null, parentNode, insertPos, false);
-    dump("In msiInsertHorizontalSpace, inserting normal space.\n");
-    return;
-  }
+  if (dialogData.spaceType == "normalSpace") editor.insertText(" ");
 //  var dimensionsFromSpaceType = 
 //  {
 ////    requiredSpace:
@@ -4743,55 +4738,47 @@ function msiInsertHorizontalSpace(dialogData, editorElement)
 //  {
 //    noIndent:          "&#x2190;"  //left arrow
 //  };
-  var spaceStr = "<xhtml:hspace xmlns:xhtml=\"" + xhtmlns + "\" type=\"";
-  var dimsStr = null;
-  var contentStr = null;
+  
+ // editor.deleteSelection(1);
+  var parent = editor.selection.focusNode;
+  var offset = editor.selection.focusOffset;
+  try {
+    var node = editor.document.createElement('hspace');
+  }
+  catch (e) {
+    dump("Unable to create node in msiInsertHorizontalSpace: "+e.message+"\n");
+  }
   var invisContent = null;
   if (dialogData.spaceType != "customSpace")
   {
-    spaceStr += dialogData.spaceType;
+    node.setAttribute('type',dialogData.spaceType);
     dimsStr = msiSpaceUtils.getHSpaceDims(dialogData.spaceType);
     if (dimsStr)
-      spaceStr += "\" dim=\"" + dimsStr + "\"";
+      node.setAttribute('dim',dimsStr);
   }
   else if (dialogData.customSpaceData.customType == "fixed")
   {
-    spaceStr += "customSpace\" dim=\"";
+    node.setAttribute('type','customSpace');
     dimsStr = String(dialogData.customSpaceData.fixedData.size) + dialogData.customSpaceData.fixedData.units;
-    spaceStr += dimsStr + "\"";
-    spaceStr += " atEnd=\"" + (dialogData.customSpaceData.typesetChoice=="always"?"true\"":"false\"");
-    spaceStr += " style=\"min-width: " + dimsStr + ";\"";
+    node.setAttribute('dim',dimsStr);
+    node.setAttribute('atEnd',(dialogData.customSpaceData.typesetChoice=='always'?'true':'false'));
+    node.setAttribute('style','min-width: ' + dimsStr);
   }
   else if (dialogData.customSpaceData.customType == "stretchy")
   {
-    spaceStr += "customSpace\" class=\"stretchySpace\" flex=\"";
-//    spaceStr += "stretchySpace\" class=\"stretchySpace\" flex=\"";
-    spaceStr += String(dialogData.customSpaceData.stretchData.factor);
+    node.setAttribute('type','customSpace');
+    node.setAttribute('class','stretchySpace');
+    node.setAttribute('flex', String(dialogData.customSpaceData.stretchData.factor));
     if (dialogData.customSpaceData.stretchData.fillWith == "fillLine")
-      spaceStr += "\" fillWith=\"line";
+      node.setAttribute('fillWith','line');
     else if (dialogData.customSpaceData.stretchData.fillWith == "fillDots")
-      spaceStr += "\" fillWith=\"dots";
-    spaceStr += "\" atEnd=\"" + (dialogData.customSpaceData.typesetChoice=="always"?"true\"":"false\"");
+      node.setAttribute('fillWith','dots');
+    node.setAttribute('atEnd',(dialogData.customSpaceData.typesetChoice=='always'?'true':'false'));
   }
   contentStr = msiSpaceUtils.getHSpaceDisplayableContent(dialogData.spaceType);
-//  invisContent = msiSpaceUtils.getHSpaceShowInvis(dialogData.spaceType);  Now returned as part of above call
-//  if (invisContent)
-//  {
-//    if (contentStr)
-//      contentStr += "<sw:invis>" + contentStr + "</sw:invis>";
-//    else
-//      contentStr = "<sw:invis>" + contentStr + "</sw:invis>";
-//  }
   if (contentStr)
-    spaceStr += ">" + contentStr + "</xhtml:hspace>";
-
-//  if (dialogData.spaceType in contentFromSpaceType)
-//    spaceStr += "\">" + contentFromSpaceType[dialogData.spaceType] + "</hspace>";
-  else
-    spaceStr += "/>";
-  dump("In msiInsertHorizontalSpace, inserting space: [" + spaceStr + "].\n");
-//  editor.insertHTMLWithContext(spaceStr, "", "", "", null, parentNode, insertPos, false);
-  insertXMLAtCursor(editor, spaceStr, true, false);
+    node.textContent=contentStr;
+  editor.insertElementAtSelection(node,true);
 }
 
 function msiReviseHorizontalSpace(reviseData, dialogData, editorElement)
@@ -5023,78 +5010,38 @@ var msiReviseVerticalSpacesCommand =
 function msiInsertVerticalSpace(dialogData, editorElement)
 {
   var editor = msiGetEditor(editorElement);
-//  var parentNode = editor.selection.anchorNode;
-//  var insertPos = editor.selection.anchorOffset;
-//  var dimensionsFromSpaceType = 
-//  {
-////    requiredSpace:
-////    nonBreakingSpace:
-//    smallSkip:        "3pt",
-//    mediumSkip:       "6pt",
-//    bigSkip:         "12pt"
-//  };
-//  var lineHeightFromSpaceType = 
-//  {
-//    strut:     "100%",
-//    mathStrut: "100%"   //not really right, but for the moment
-//  };
-//  var contentFromSpaceType = 
-//  {
-////    zeroSpace:          "&#x200b;"
-//////    negativeThinSpace:
-//////    noIndent:
-//  };
-//  var specialShowInvisibleChars = 
-//  {
-//    strut:          ""  //
-//  };
-  var spaceStr = "<xhtml:vspace xmlns:xhtml=\"" + xhtmlns + "\" type=\"";
-  var styleStr = "";
+  var styleStr;
+  var node = editor.document.createElement('vspace',true);
   if (dialogData.spaceType != "customSpace")
   {
-    spaceStr += dialogData.spaceType;
+    node.setAttribute('type',dialogData.spaceType);
     var dimStr = msiSpaceUtils.getVSpaceDims(dialogData.spaceType);
     var lineHtStr = null;
-//    if (dialogData.spaceType in dimensionsFromSpaceType)
-//      spaceStr += "\" dim=\"" + dimensionsFromSpaceType[dialogData.spaceType];
-//    else if (dialogData.spaceType in lineHeightFromSpaceType)
-//      spaceStr += "\" lineHt=\"" + lineHeightFromSpaceType[dialogData.spaceType];
     if (dimStr)
     {
-      spaceStr += "\" dim=\"" + dimStr;
-//      styleStr += "padding-bottom: " + dimStr + ";";
+      node.setAttribute('dim',dimStr);
     }
     else
     {
       lineHtStr = msiSpaceUtils.getVSpaceLineHeight(dialogData.spaceType);
       if (lineHtStr)
       {
-        spaceStr += "\" lineHt=\"" + lineHtStr;
-//        styleStr += "line-height: " + lineHtStr + ";";
+        node.setAttribute('lineHt',lineHtStr);
       }
     }
-//    if (styleStr.length)
-//      spaceStr += "\" style=\"" + styleStr; //The last closing quote gets put on below?
   }
   else
   {
-    spaceStr += "customSpace\" dim=\"";
-    var dimStr = String(dialogData.customSpaceData.sizeData.size) + dialogData.customSpaceData.sizeData.units;
+    node.setAttribute('type','customSpace');
+    node.setAttribute('dim',String(dialogData.customSpaceData.sizeData.size) + dialogData.customSpaceData.sizeData.units);
     var vAlignStr = String(-(dialogData.customSpaceData.sizeData.size)) + dialogData.customSpaceData.sizeData.units;
-    spaceStr += dimStr;
-    spaceStr += "\" atEnd=\"" + (dialogData.customSpaceData.typesetChoice=="always"?"true":"false");
-    spaceStr += "\" style=\"height: " + dimStr + "; vertical-align: " + vAlignStr + ";";
+    node.setAttribute('atEnd=',(dialogData.customSpaceData.typesetChoice=="always"?"true":"false"));
+    node.setAttribute('style','height: ' + dimStr + '; vertical-align: ' + vAlignStr + ';');
   }
-//  if (dialogData.spaceType in contentFromSpaceType)
-//    spaceStr += "\">" + contentFromSpaceType[dialogData.spaceType] + "</vspace>";
   var contentStr = msiSpaceUtils.getVSpaceDisplayableContent(dialogData.spaceType);
   if (contentStr)
-    spaceStr += "\">" + contentStr + "</xhtml:vspace>";
-  else
-    spaceStr += "\"/>";
-  dump("In msiInsertVerticalSpace, inserting space: [" + spaceStr + "].\n");
-//  editor.insertHTMLWithContext(spaceStr, "", "", "", null, parentNode, insertPos, false);
-  insertXMLAtCursor(editor, spaceStr, true, false);
+    node.textContent =contentStr;
+  editor.insertElementAtSelection(node,true);
 }
 
 function msiReviseVerticalSpace(reviseData, dialogData, editorElement)
