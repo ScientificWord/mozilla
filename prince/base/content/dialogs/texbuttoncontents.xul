@@ -26,9 +26,9 @@
 
    <groupbox>
       <caption label='&warning.label;'/>
-      <label multiline='true' cols='60' rows='3' readonly='true' value='&warningText.label;'/>
+      <textbox multiline='true' cols='60' rows='3' readonly='true' value = '&warningText.label;' />
    </groupbox>
-   <checkbox label="Encapsulated" checked="false"/>
+   <checkbox id = "enc" label="Encapsulated" checked="false"/>
     <vbox>
       <label control="name" accesskey="N" value="Name"/>
       <textbox id="name" value=""/>

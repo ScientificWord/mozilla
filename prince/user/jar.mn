@@ -10,3 +10,6 @@ user.jar:
   content/slider.js					(../../dom/tests/mochitest/ajax/scriptaculous/src/slider.js)
   content/sound.js					(../../dom/tests/mochitest/ajax/scriptaculous/src/sound.js)
   content/unittest.js				(../../dom/tests/mochitest/ajax/scriptaculous/src/unittest.js)
+  content/classes.opt				(content/classes.opt)
+  content/classes.pkg				(content/classes.pkg)
+  content/packgs.opt				(content/packgs.opt)
