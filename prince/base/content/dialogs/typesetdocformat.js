@@ -141,6 +141,7 @@ function savePageLayout(docFormatNode)
   pfNode.setAttribute('latex',true);
   units=document.getElementById('docformat.units').value;
   pfNode.setAttribute('unit',units);
+  pfNode.setAttribute('enabled', document.getElementById('enablepagelayout').checked);
   lineend(pfNode, 2);
   nodecounter++;
   node = editor.createNode('page', pfNode, nodecounter++);
@@ -246,6 +247,10 @@ function getPageLayout(node)
       currentUnit = value;
       document.getElementById('docformat.units').value = currentUnit;
     }
+    value = node.getAttribute("enabled");
+    value = (value?true:false);
+    document.getElementById('enablepagelayout').checked = value;
+    document.getElementById('pagelayoutok').setAttribute('disabled',value?'false':'true');
     subnode = node.getElementsByTagName('page')[0];
     if (subnode)
     {
@@ -357,13 +362,15 @@ function onAccept()
     savePageLayout(newNode);
     saveFontSpecs(newNode);
     saveSectionFormatting(newNode, sectitleformat);
+    saveClassOptionsEtc(newNode);
   }
-  saveClassOptionsEtc();
+  return true;
 }  
 
 
 function onCancel()
 {
+ return true;
 }
 
 function disableMarginNotes()
@@ -1524,6 +1531,7 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
   {
     for (i=0; i< sectitlenodelist.length; i++)
     {
+      dump("getSectionFormatting, i = "+i+"\n");
       node = sectitlenodelist[i];
       level = node.getAttribute("level");
       sectitleformat[level] = new Object();
@@ -1539,6 +1547,7 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
         }
         if (!xmlcode) xmlcode="";
         sectitleformat[level].proto = xmlcode;
+        sectitleformat[level].enabled = (node.getAttribute("enabled")=="true");
         sectitleformat[level].newPage = (node.getAttribute("newPage")=="true");
         sectitleformat[level].sectStyle = node.getAttribute("sectStyle");
         sectitleformat[level].align = node.getAttribute("align");
@@ -1603,6 +1612,8 @@ function switchSectionTypeImp(from, to)
   {
     if (!sectitleformat[from]) sectitleformat[from] = new Object();
     var sec = sectitleformat[from];
+    sec.enabled = document.getElementById("allowsectionheaders").checked;
+    document.getElementById("secredefok").setAttribute("disabled", sec.enabled?"false":"true");
     sec.newPage = document.getElementById("sectionstartnewpage").checked;
     sec.sectStyle = document.getElementById("sections.style").value;
     sec.align = document.getElementById("sections.align").value; 
@@ -1624,6 +1635,8 @@ function switchSectionTypeImp(from, to)
       sec = sectitleformat[to];
       var newpage = sec.newPage
       if (!newpage) newpage = false;
+      document.getElementById("allowsectionheaders").checked = sec.enabled;
+      document.getElementById("secredefok").setAttribute("disabled", sec.enabled?"false":"true");
       document.getElementById("sectionstartnewpage").checked = newpage;
       document.getElementById("sections.style").value = sec.sectStyle;
       document.getElementById("sections.align").value = sec.align; 
@@ -1668,7 +1681,7 @@ function switchSectionTypeImp(from, to)
 
 function saveSectionFormatting( docFormatNode, sectitleformat )
 {
-  // get the list of section-like objects
+  dump("saveSectionFormattin\n"); // get the list of section-like objects
   var menulist = document.getElementById("sections.name");
   var itemlist = menulist.getElementsByTagName("menuitem");
   var sectiondata;
@@ -1698,6 +1711,11 @@ function saveSectionFormatting( docFormatNode, sectitleformat )
       lineend(docFormatNode, 1);
       sectiondata = sectitleformat[name]; 
       var stNode = editor.createNode('sectitleformat', docFormatNode,0);
+      var enabled = "false";
+      dump(1);
+      if (sectiondata && sectiondata.enabled) enabled = "true";
+      stNode.setAttribute('enabled', enabled);
+      dump(2);
       stNode.setAttribute('level', name);
       stNode.setAttribute('sectStyle', sectiondata.sectStyle);
       stNode.setAttribute('align', sectiondata.align);
@@ -2166,7 +2184,7 @@ function deleteOTFontsFromMenu(menuID)
   if (ch && ch.id ==="startOpenType") menuPopup.removeChild(ch);
 }                                           
 
-function saveClassOptionsEtc()
+function saveClassOptionsEtc(docformatnode)
 {
   var doc = editor.document;
   var documentclass = doc.documentElement.getElementsByTagName('documentclass')[0];
@@ -2185,7 +2203,7 @@ function saveClassOptionsEtc()
   if (nodelist.length == 0) 
   {
     newnode = true;
-    optionNode = doc.createElement("colist");
+    optionNode = editor.createNode("colist", docformatnode, 0);
   }
   else optionNode = nodelist[0];
   // convention: default values are starred at the end.
@@ -2207,7 +2225,7 @@ function saveClassOptionsEtc()
   else optionNode.setAttribute("qual", widget.value);
 
   widget = document.getElementById("columns").selectedItem;
-  if (widget.hasAttribute("def")) optionNode.removeAttribute("columns")
+  if (!widget || widget.hasAttribute("def")) optionNode.removeAttribute("columns")
   else optionNode.setAttribute("columns", widget.value);
 
   widget = document.getElementById("textsize").selectedItem;
@@ -2325,7 +2343,7 @@ function getClassOptionsEtc()
     dump("No preamble in document\n");
     return;
   }
-  var nodelist = doc.getElementsByTagName("colist");
+  var nodelist = doc.getElementsByTagName("colist");// class option list
   var node;
   if (nodelist.length == 0) return; // leaves all values at the defaults, as defined
   // in the XUL file
@@ -2334,6 +2352,13 @@ function getClassOptionsEtc()
     if (colist.hasAttribute(s)) setMenulistSelection(document.getElementById(s),
       colist.getAttribute(s));
   }
+  var value;
+  if (colist.hasAttribute('enabled'))
+    value = colist.getAttribute('enabled');
+  else value='false';
+  document.getElementById('enablereformat').checked = (value=='true');
+  document.getElementById('reformatok').setAttribute('disabled', (value=='true')?'false':'true');
+
   nodelist = preamble.getElementsByTagName("leading");
   if (nodelist.length > 0)
   {
@@ -2388,6 +2413,23 @@ function enableDisableReformat(checkbox)
 function enableDisablePageLayout(checkbox)    
 {
   var bcaster = document.getElementById("pagelayoutok");
+  if (checkbox.checked)
+    bcaster.setAttribute("disabled","false");
+  else bcaster.setAttribute("disabled","true");
+}
+
+     
+function enableDisableSectFormat(checkbox)    
+{
+  var bcaster = document.getElementById("secredefok");
+  if (checkbox.checked)
+    bcaster.setAttribute("disabled","false");
+  else bcaster.setAttribute("disabled","true");
+}
+
+function enableDisableFonts(checkbox)
+{
+  var bcaster = document.getElementById("fontdefok");
   if (checkbox.checked)
     bcaster.setAttribute("disabled","false");
   else bcaster.setAttribute("disabled","true");
