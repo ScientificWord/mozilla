@@ -2,6 +2,15 @@
 <tfmfonts>
   <textfonts>
     <font main="1" name="Palatino" package="mathpazo" description="Palatino font"/>
+    <font main="1" name="Times" package="mathptmx" description="Times Roman font"/>
+    <font main="1" name="Charter" package="charter" description="Charter font"/>
+    <font main="1" name="Utopia" package="utopia" description="Utopia font"/>
+    <font sans="1" name="Helvetica" package="helvet" description="Helvetica sans-serif font"/>
+    <font sans="1" name="Avant Garde" package="avant" description="Avant Garde sans-serif font"/>
+    <font fixed="1" name="Courier" package="courier" description="Courier monospaced font"/>
+    <font main="1" name="Bookman" package="bookman" description="Bookman and Avant Garde font"/>
+    <font main="1" name="New Century Schoolbook" package="newcent" description="New Century font"/>
+    <font main="1" name="Minion Pro" package="minion" description="Minion Pro font"/>
   </textfonts>
   <mathfonts>
     <font name="Math Pazo" package="mathpazo" description="Palatino-like symbols"/>
