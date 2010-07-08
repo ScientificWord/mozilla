@@ -1050,12 +1050,14 @@ function documentToTeXString(document, xslPath)
   var resultString = "";
   if (xslPath.length == 0) return resultString;
   var contents = "";
+  var leafname = /[^\/]*$/;
   var match;
   var xsltProcessor = new XSLTProcessor();
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var outputfile = dsprops.get("ProfD", Components.interfaces.nsILocalFile);
-  outputfile.append("composite.xsl");
-  // we cache the xsl file as composite.xsl in the user's profile
+  var matcharray = leafname.exec(xslPath);
+  outputfile.append("comp-"+matcharray[0]);
+  // we cache the xsl file as comp-???.xsl in the user's profile
   
   if (outputfile.exists())
   {
@@ -1069,7 +1071,6 @@ function documentToTeXString(document, xslPath)
     var path = xslPath;
     var stylesheetElement=/<xsl:stylesheet[^>]*>/;
     var includeFileRegEx = /<xsl:include\s+href\s*=\s*\"([^\"]*)\"\/>/;
-    var leafname = /[^\/]*$/;
     var myXMLHTTPRequest = new XMLHttpRequest();
     myXMLHTTPRequest.open("GET", path, false);
     myXMLHTTPRequest.send(null);
@@ -1122,7 +1123,7 @@ function documentToTeXString(document, xslPath)
   // BBM: for debugging purposes, let's write the string out
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var outputfile = dsprops.get("ProfD", Components.interfaces.nsILocalFile);
-  outputfile.append("composite.xsl");
+  outputfile.append("comp-"+matcharray[0]);
   var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
   fos.init(outputfile, -1, -1, false);
   var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
