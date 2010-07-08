@@ -1908,9 +1908,20 @@ function doComputeSolveODESeries(math, editorElement)
   var o = new Object();
   o.order = "5";  // sticky? But really, should be general content
   o.title = GetComputeString("ODESeries.title");
+  o.fieldcount      = 3;
+  o.prompt = new Array(o.fieldcount);
+  o.initialvalue = new Array(o.fieldcount);
+  o.prompt[0] 		= GetComputeString("PowerSeries.varprompt");
+  o.initialvalue[0] 	= GetComputeString("PowerSeries.vardefault");
+  o.prompt[1] 		= GetComputeString("PowerSeries.centerprompt");
+  o.initialvalue[1] = GetComputeString("PowerSeries.centerdefault");
+  o.prompt[2] 		= GetComputeString("PowerSeries.termsprompt");
+  o.initialvalue[2] = GetComputeString("PowerSeries.termsdefault");
+  o.theMath = math;
+
 
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  parentWin.openDialog("chrome://prince/content/ComputePowerSeries.xul", "powerseries", "chrome,close,titlebar,modal", o);
+  parentWin.openDialog("chrome://prince/content/ComputePowerSeriesArgDialog.xul", "powerseries", "chrome,close,titlebar,modal", o);
   if (o.Cancel)
     return;
   var mathstr = GetFixedMath(math);
