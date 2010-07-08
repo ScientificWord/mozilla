@@ -10,12 +10,16 @@ function Startup() {
   units = window.arguments[2];
   units = units.toLowerCase();
   dump("units = "+units+"\n");
-  var initialStr="<dialogbase><br/></dialogbase>";
-  if (titleformat[seclevel]) initialStr = titleformat[seclevel].proto;
-//  var re = /<dialogbase[^>]*>/;
-//  var s = initialStr.replace(re, "");
-//  var re2 = /<\/dialogbase>/;
-//  initialStr = s.replace(re2,"");
+  var initialStr;
+  if (titleformat[seclevel].proto) initialStr = titleformat[seclevel].proto;
+  if (initialStr) {
+    var re = /<titleprototype[^>]*>/;
+    var s = initialStr.replace(re, "");
+    var re2 = /<\/titleprototype>/;
+    initialStr = s.replace(re2,"");
+  }
+  if (!(initialStr && initialStr.length > 0))
+    initialStr="<dialogbase><br/></dialogbase>";
   gDialog.bDataModified = false;
   gDialog.bEditorReady = false;
 
@@ -30,11 +34,12 @@ function getBaseNode( )
   var theNodes = doc.getElementsByTagName("dialogbase");
   var theNode;
   if (theNodes) theNode = theNodes[0]; 
-  else 
-  {
-    theNodes = doc.getElementsByTagName("para");
-    if (theNodes) theNode = theNodes[0]; 
-  }
+  else return null;
+//  else 
+//  {
+//    theNodes = doc.getElementsByTagName("para");
+//    if (theNodes) theNode = theNodes[0]; 
+//  }
 //  if (!theNode)
 //  {
 //    var bodies = doc.getElementsByTagName("body");
@@ -50,14 +55,17 @@ function getBaseNode( )
 
 function stashTitlePrototype()
 {
-  var sourceNode = getBaseNode();
-  if (!sourceNode) return;
-  var ser = new XMLSerializer();
-  var xmlcode = ser.serializeToString(sourceNode);
-  titleformat[seclevel].proto = xmlcode;
-  titleformat.refresh(titleformat.destNode);
-  dump("***** saving '"+titleformat[seclevel]+"'\n");
-// we still need to replace the text of the section title area in the main dialog.
+  try {
+    var sourceNode = getBaseNode();
+    if (!sourceNode) return;
+    var ser = new XMLSerializer();
+    var xmlcode = ser.serializeToString(sourceNode);
+    titleformat[seclevel].proto = xmlcode;
+    titleformat.refresh(titleformat.destNode);
+  }
+  catch(e) {
+    dump("***** saving '"+titleformat[seclevel]+"'\n"+e.message);
+  }
 }
 
 function onOK() {
