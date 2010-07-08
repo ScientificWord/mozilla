@@ -1555,7 +1555,7 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
         sectitleformat[level].lhindent = node.getAttribute("lhindent");
         sectitleformat[level].rhindent = node.getAttribute("rhindent");
         // now check for rules and spaces
-        var rulenodelist = node.getElementsByTagName("toprules");
+        var rulenodelist = node.getElementsByTagName("toprule");
         var color;
         if (rulenodelist && rulenodelist.length >0)
         {
@@ -1570,7 +1570,7 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
             sectitleformat[level].toprules[i].color = color;
           }
         }
-        rulenodelist = node.getElementsByTagName("bottomrules");
+        rulenodelist = node.getElementsByTagName("bottomrule");
         if (rulenodelist && rulenodelist.length >0)
         {
           sectitleformat[level].bottomrules = new Array(rulenodelist.length);
@@ -1608,6 +1608,8 @@ function switchSectionTypeImp(from, to)
   var i;
   currentSectionType = to;
   var boxlist;
+  var box;
+  var boxdata;
   if (from)
   {
     if (!sectitleformat[from]) sectitleformat[from] = new Object();
@@ -1620,6 +1622,33 @@ function switchSectionTypeImp(from, to)
     sec.units = document.getElementById("secoverlay.units").value; 
     sec.lhindent = document.getElementById("tbsectleftheadingmargin").value; 
     sec.rhindent = document.getElementById("tbsectrightheadingmargin").value; 
+    boxlist = document.getElementById("toprules").getElementsByTagName("vbox");
+    sec.toprules = [];
+    for (i=0; i< boxlist.length; i++) {
+      if (!sec.toprules[i]) sec.toprules[i] = {}
+      boxdata = sec.toprules[i];
+      box = boxlist[i];
+      if (!box.hidden) {
+        boxdata.role = box.getAttribute("role");
+        boxdata.width = box.getAttribute("width");
+        boxdata.height = box.getAttribute("height");
+        boxdata.color = box.getAttribute("color");
+      }
+    }
+    boxlist = document.getElementById("bottomrules").getElementsByTagName("vbox");
+    sec.bottomrules = [];
+    for (i=0; i< boxlist.length; i++) {
+      if (!sec.toprules[i]) sec.bottomrules[i] = {}
+      boxdata = sec.bottomrules[i];
+      box = boxlist[i];
+      if (!box.hidden) {
+        boxdata.role = box.getAttribute("role");
+        boxdata.width = box.getAttribute("width");
+        boxdata.height = box.getAttribute("height");
+        boxdata.color = box.getAttribute("color");
+      }
+    }
+    
     //toprules, bottomrules, and proto, if they have been changed, have been updated by subdialogs 
   }
   //Now initialize for the new section type
@@ -1729,16 +1758,48 @@ function saveSectionFormatting( docFormatNode, sectitleformat )
       if (fragment)
       {
         // replace #N with \the(section, subsection, etc) and #T with #1
-        fragment = fragment.replace(/#N/,"\\the"+name);
-        fragment = fragment.replace(/#T/,"#1");
+        fragment = fragment.replace(/#N/,"\\the"+name,'g');
+        fragment = fragment.replace(/#T/,"#1",'g');
+        fragment = fragment.replace(/<dialogbase[^>]*>/,"",'g');
+        fragment = fragment.replace(/<\/dialogbase[^>]*>/,"",'g');
         dump("Contents being saved as section title prototype: "+fragment+"\n");
         var parser = new DOMParser();
         var doc = parser.parseFromString(fragment,"application/xhtml+xml");
         proto.appendChild(doc.documentElement);
       }
-      // stNode.setAttribute( -- find the section format type: hang, runin, etc.
       docFormatNode.appendChild(stNode);
-      // to do: the rule lists
+      var rulelistlength = 0;
+      var rulenode;
+      var rule;
+      var j;
+      if (sectitleformat[name].toprules) rulelistlength = sectitleformat[name].toprules.length;
+      for (j=0; j < rulelistlength; j++) {
+        rule = sectitleformat[name].toprules[j];
+        if (!rule.hidden)
+        {
+          rulenode = editor.createNode('toprule', stNode, 0);
+          rulenode.setAttribute("height",rule.height);
+          rulenode.setAttribute("width",rule.width);
+          rulenode.setAttribute("role",rule.role);
+          rulenode.setAttribute("color","black");
+          if (rule.color)
+            rulenode.setAttribute("color",rule.color);
+        }
+      }
+      rulelistlength = 0;
+      if (sectitleformat[name].bottomrules) rulelistlength = sectitleformat[name].bottomrules.length;
+      for (j=0; j < rulelistlength; j++) {
+        rule = sectitleformat[name].bottomrules[j];
+        if (!rule.hidden) {
+          rulenode = editor.createNode('bottomrule', stNode, 1000);
+          rulenode.setAttribute("height",rule.height);
+          rulenode.setAttribute("width",rule.width);
+          rulenode.setAttribute("role",rule.role);
+          rulenode.setAttribute("color","black");
+          if (rule.color)
+            rulenode.setAttribute("color",rule.color);
+        }
+      }
     }
   }  
 }
@@ -1746,28 +1807,27 @@ function saveSectionFormatting( docFormatNode, sectitleformat )
 
 function getBaseNodeForIFrame( )
 {
-  var sw = "http://www.sciword.com/namespaces/sciword";
   var iframe = document.getElementById("sectiontextarea");
   if (!iframe) return;
   var doc = iframe.contentDocument;
-  var theNodes = doc.getElementsByTagNameNS(sw,"templatebase");
+  var theNodes = doc.getElementsByTagName("dialogbase");
   var theNode;
   if (theNodes) theNode = theNodes[0]; 
-  else 
-  {
-    theNodes = doc.getElementsByTagNameNS(sw,"para");
-    if (theNodes) theNode = theNodes[0]; 
-  }
-  if (!theNode)
-  {
-    var bodies = doc.getElementsByTagName("body");
-    if (bodies) for ( var i = 0; i < bodies.length; i++)
-    {
-      theNode = bodies[i];
-      if (theNode.nodeType == theNode.ELEMENT_NODE)
-        return theNode;
-     }
-  }
+//  else 
+//  {
+//    theNodes = doc.getElementsByTagName("para");
+//    if (theNodes) theNode = theNodes[0]; 
+//  }
+//  if (!theNode)
+//  {
+//    var bodies = doc.getElementsByTagName("body");
+//    if (bodies) for ( var i = 0; i < bodies.length; i++)
+//    {
+//      theNode = bodies[i];
+//      if (theNode.nodeType == theNode.ELEMENT_NODE)
+//        return theNode;
+//     }
+//  }
   return theNode;
 }
 
@@ -1823,10 +1883,8 @@ function displayTextForSectionHeader()
 	    var doc = parser.parseFromString(strContents,"application/xhtml+xml");
 	    basepara.parentNode.replaceChild(doc.documentElement, basepara);
 		  basepara = getBaseNodeForIFrame();
-		  var htmlNode=basepara.parentNode.parentNode;
-		  var boxObject=htmlNode.ownerDocument.getBoxObjectFor(htmlNode);
-  //		width = boxObject.width;
-		  height = boxObject.height;
+		  var boxObject=basepara.getBoundingClientRect();
+		  height = boxObject.bottom - boxObject.top;
       document.getElementById("tso_template").setAttribute("selectedIndex","1");
 	  }
 	  else
@@ -1839,6 +1897,7 @@ function displayTextForSectionHeader()
   //	setStyleAttributeOnNode(iframecontainer,"height",Number(height)+"px");
   //	setStyleAttribute(iframecontainer,"width",width+sectionUnit);
 	  setStyleAttribute(iframecontainer,"height",Number(height)+"px");
+	  setStyleAttribute(iframecontainer,"scale",0.33);
   }
   catch(e) {
     dump("displayTextForSectionHeader exception: "+e.message+"\n");
@@ -2067,7 +2126,7 @@ function addspace()
 
 function removeruleorspace()
 {
-  // find which is selected
+  onAccept();// find which is selected
   if (!lastselected) return;
   var boxlist = lastselected.getElementsByTagName("vbox");
   var lastbox;
@@ -2131,7 +2190,7 @@ function addOldFontsToMenu(menuPopupId)
       ptr = ptr.nextSibling;
       continue;
     }                                                
-    var itemNode = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "menuitem");
+    var itemNode = document.createElement("menuitem");
     itemNode.setAttribute("label", ptr.getAttribute("name"));
     itemNode.setAttribute("value", ptr.getAttribute("package"));
     itemNode.setAttribute("tooltip", ptr.getAttribute("description"));                                                                 
