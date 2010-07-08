@@ -186,25 +186,34 @@
 <xsl:template match="html:x3font">\newfontfamily\<xsl:value-of select="@internalname"/>[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
 
 <!-- section headings redefined. Requires package titlesec -->
-<xsl:template match="html:sectitleformat" ><xsl:if test="starts-with(@enabled,'true')">\newcommand{\msi<xsl:value-of select="@level"/>}[1]{<xsl:apply-templates/>}
+<xsl:template match="html:sectitleformat" ><xsl:if test="@enabled='true'">\newcommand{\msi<xsl:value-of select="@level"/>}[1]{<xsl:apply-templates select="html:titleprototype"/>}
 \titleformat{\<xsl:value-of select="@level"/>}[<xsl:value-of select="@sectStyle"/>]{<xsl:choose
   ><xsl:when test="@align='l'">\filright</xsl:when
   ><xsl:when test="@align='c'">\center</xsl:when
   ><xsl:otherwise>\filleft</xsl:otherwise
-  ></xsl:choose>}{}{0pt}{\msi<xsl:value-of select="@level"
-/>}</xsl:if></xsl:template>
+  ></xsl:choose><xsl:apply-templates select="html:toprule"/>}{}{0pt}{\msi<xsl:value-of select="@level"
+/>}[<xsl:apply-templates select="html:bottomrule"/>]</xsl:if></xsl:template>
 						  
 <xsl:template match="html:dialogbase">
   <xsl:apply-templates/>
 </xsl:template>
 
-<xsl:template match="html:titleprototype"><xsl:if test="starts-with(@enabled,'true')"><xsl:apply-templates/>
-</xsl:if></xsl:template>
+<xsl:template match="html:titleprototype"><xsl:apply-templates/>
+</xsl:template>
 
-<xsl:template match="html:dialogbase">
+<xsl:template match="html:templatebase">
   <xsl:apply-templates/>
 </xsl:template>
 
+<xsl:template match="html:toprule"
+  ><xsl:choose
+  ><xsl:when test="@role='rule'">
+\titleline*[<xsl:value-of select="../@align"/>]{\titlerule[<xsl:value-of select="@height"/>]}</xsl:when
+  ><xsl:when test="@role='vspace'">
+\vspace{<xsl:value-of select="@height"/>}</xsl:when
+  ></xsl:choose
+></xsl:template>
+  
 <!-- end of section headings -->
 
 <!-- class options   -->
