@@ -156,7 +156,7 @@
                     <hbox >
                       <label class="gray_instruction" value="Click here to enter rules below the heading"/>
                     </hbox>
-                    <vbox pack="start">
+                    <vbox id="bottomrules" pack="start">
                       <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
 	                      height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
 	                    <vbox size="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"
