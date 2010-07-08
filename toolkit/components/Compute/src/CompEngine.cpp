@@ -1286,13 +1286,19 @@ const char *CompEngine::ConvertTreeToDef(MathServiceRequest & msr,
           TCI_ASSERT(!"Op in definition not assignment.");
           error_code = CR_baddefformat;
         }
-      } else if (assign_op->semantic_type == SEM_TYP_FUNCTION &&
-                 !assign_op->next && assign_op->bucket_list) {
+      } else if (assign_op->semantic_type == SEM_TYP_FUNCTION  && !assign_op->next && assign_op->bucket_list) {
         generic_def = true;
         rv = assign_op->canonical_ID;
-      } else if (assign_op->semantic_type == SEM_TYP_VARIABLE &&
-                 !assign_op->next) {
+      } else if (assign_op->semantic_type == SEM_TYP_VARIABLE &&  !assign_op->next) {
         generic_def = true;
+        rv = assign_op->canonical_ID;
+      } else if (assign_op->semantic_type == SEM_TYP_QUALIFIED_VAR && !assign_op -> next) {
+        U32 p_type;
+        const char *p_str = msr.GetParam(PID_subInterpretation, p_type);
+        if (!p_type) {
+          generic_def = true;
+          error_code = CR_NeedSubInterp;
+        }
         rv = assign_op->canonical_ID;
       } else {
         TCI_ASSERT(!"No content for definition.");
