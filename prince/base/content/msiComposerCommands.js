@@ -5352,39 +5352,51 @@ function msiInsertBreaks(dialogData, editorElement)
 //    newLine:                "&#x21b5;"
 //  };
 
-  var invisStr = msiSpaceUtils.getBreakShowInvis(dialogData.breakType);
-  var contentStr = msiSpaceUtils.getBreakCharContent(dialogData.breakType);
-  var breakStr = "<xhtml:msibreak xmlns:xhtml=\"" + xhtmlns + "\" type=\"";
+  var contentNode;              
+  var contentStr;
+  switch(dialogData.breakType) {
+    case "lineBreak":
+    case "newLine": 
+      contentNode=editor.document.createElement('br',true);
+      break;
+    case "newPage":
+    case "pageBreak":
+      contentNode = editor.document.createElement('newPageRule');
+      break;
+    default:
+      contentStr = msiSpaceUtils.getBreakCharContent(dialogData.breakType);
+      break;
+  }
+  var node = editor.document.createElement('msibreak',true);
+  var innerNode;
+  //  var breakStr = "<xhtml:msibreak xmlns:xhtml=\"" + xhtmlns + "\" type=\"";
   if (dialogData.breakType == "customNewLine")
   {
-    breakStr += "customNewLine\" dim=\"";
-    var dimsStr = String(dialogData.customBreakData.sizeData.size) + dialogData.customBreakData.sizeData.units;
+    node.setAttribute('type','customNewLine');
+    var dimStr=String(dialogData.customBreakData.sizeData.size) + dialogData.customBreakData.sizeData.units;
+    node.setAttribute('dim', dimStr);
     var vAlignStr = String(-(dialogData.customBreakData.sizeData.size)) + dialogData.customBreakData.sizeData.units;
-    breakStr += dimsStr;
-    if (!contentStr)
+    innerNode = editor.document.createElement('custNL',true);   
+    innerNode.setAttribute('style','vertical-align: '+vAlignStr+'; height: '+ dimStr);
+    editor.insertNode(innerNode,node,0);
+    if (!contentStr)                             
       contentStr = "";
-    contentStr = "<xhtml:custNL style=\"vertical-align: " + vAlignStr + "; height: " + dimsStr + ";\"></xhtml:custNL>" + contentStr;
+    node.textContent = contentStr;
   }
-
   else
   {
-    breakStr += dialogData.breakType;
+    node.setAttribute('type',dialogData.breakType);
   }
-
-//  if (dialogData.breakType in alternateContentFromBreakType)
-//    breakStr += "\" invisDisplay=\"" + alternateContentFromBreakType[dialogData.breakType];
+  var invisStr = msiSpaceUtils.getBreakShowInvis(dialogData.breakType);
   if (invisStr)
-    breakStr += "\" invisDisplay=\"" + invisStr;
-//  if (dialogData.breakType in contentFromBreakType)
-//    breakStr += "\">" + contentFromBreakType[dialogData.breakType] + "</msibreak>";
+    node.setAttribute('invisDisplay',invisStr);
   if (contentStr)
-    breakStr += "\">" + contentStr + "</xhtml:msibreak>";
-//    breakStr += "\"/>" + contentFromBreakType[dialogData.breakType];
-  else
-    breakStr += "\"/>";
-
-  dump("In msiInsertBreaks, inserting break: [" + breakStr + "].\n");
-  insertXMLAtCursor(editor, breakStr, true, false);
+    node.textContent = contentStr;
+  editor.insertElementAtSelection(node,true);
+  if (contentNode)
+    editor.insertNode(contentNode,node,0);
+  if (innerNode)
+    editor.insertNode(innerNode,node,0);
 }
 
 function msiReviseBreaks(reviseData, dialogData, editorElement)
