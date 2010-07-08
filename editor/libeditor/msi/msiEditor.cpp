@@ -1028,13 +1028,13 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
         (keyCode == nsIDOMKeyEvent::DOM_VK_UP    ||  keyCode == nsIDOMKeyEvent::DOM_VK_DOWN))
    {
      PRBool preventDefault(PR_FALSE);
-     if (keyCode == nsIDOMKeyEvent::DOM_VK_UP    ||  keyCode == nsIDOMKeyEvent::DOM_VK_DOWN) 
-     {
+     //if (keyCode == nsIDOMKeyEvent::DOM_VK_UP    ||  keyCode == nsIDOMKeyEvent::DOM_VK_DOWN) 
+     //{
        res = HandleArrowKeyPress(keyCode, isShift, ctrlKey, altKey, metaKey, preventDefault); 
        if (NS_SUCCEEDED(res) && preventDefault)
          aKeyEvent->PreventDefault();
        if (preventDefault) return NS_OK;
-     }
+     //}
    }
     // Check for mapped characters -- function keys or one-shot mapping
     
