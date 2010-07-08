@@ -49,7 +49,21 @@
   <xsl:if test="@color"> \textcolor[HTML]{<xsl:value-of select="substring(./@color,2,8)"/>}{</xsl:if>
 \rule[<xsl:value-of select="@lift"/>]{<xsl:value-of select="@width"/>}{<xsl:value-of select="@height"/>}
 <xsl:if test="@color">}</xsl:if>
+</xsl:template>
 
+
+<xsl:template match="html:msibreak">
+  <xsl:choose>
+    <xsl:when test="@type='allowBreak'">\allowbreak </xsl:when>
+    <xsl:when test="@type='pageBreak'">\pagebreak </xsl:when>
+    <xsl:when test="@type='newPage'">\newpage </xsl:when>
+    <xsl:when test="@type='discretionaryHyphen'">\-</xsl:when>
+    <xsl:when test="@type='lineBreak'">\linebreak </xsl:when>
+    <xsl:when test="@type='noBreak'">\nolinebreak </xsl:when>
+    <xsl:when test="@type='newLine'">\newline </xsl:when>
+	<xsl:when test="@type='customNewLine'">\\[<xsl:value-of	select="@dim"/>] </xsl:when>
+	<xsl:otherwise/>										
+ </xsl:choose>
 </xsl:template>
 
 </xsl:stylesheet>
