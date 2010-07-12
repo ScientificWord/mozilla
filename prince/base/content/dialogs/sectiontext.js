@@ -19,7 +19,9 @@ function Startup() {
     initialStr = s.replace(re2,"");
   }
   if (!(initialStr && initialStr.length > 0))
-    initialStr="<dialogbase><br/></dialogbase>";
+  {
+    initialStr="<dialogbase xmlns='http://www.w3.org/1999/xhtml'></dialogbase>";
+  }
   gDialog.bDataModified = false;
   gDialog.bEditorReady = false;
 
@@ -32,24 +34,12 @@ function getBaseNode( )
   var editElement = document.getElementById("sectiontitle-frame");
   var doc = editElement.contentDocument;
   var theNodes = doc.getElementsByTagName("dialogbase");
-  var theNode;
-  if (theNodes) theNode = theNodes[0]; 
-  else return null;
-//  else 
-//  {
-//    theNodes = doc.getElementsByTagName("para");
-//    if (theNodes) theNode = theNodes[0]; 
-//  }
-//  if (!theNode)
-//  {
-//    var bodies = doc.getElementsByTagName("body");
-//    if (bodies) for ( var i = 0; i < bodies.length; i++)
-//    {
-//      theNode = bodies[i];
-//      if (theNode.nodeType == theNode.ELEMENT_NODE)
-//        return theNode;
-//     }
-//  }
+  var theNode = null;
+  while (theNodes && theNodes.length>0) {
+    theNode = theNodes[0];
+    theNodes = theNode.getElementsByTagName("dialogbase");
+  }  // this is a workaround for a bug which causes <dialogbase> to be nested in a chain.
+  // The better solution is to keep this from happening  
   return theNode;
 }
 
@@ -68,8 +58,9 @@ function stashTitlePrototype()
   }
 }
 
-function onOK() {
-// Copy the contents of the editor to the section header form
+
+function onAccept()
+{
   stashTitlePrototype();
   SaveWindowLocation();
   close();

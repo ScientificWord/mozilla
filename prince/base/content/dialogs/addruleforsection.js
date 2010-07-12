@@ -1,24 +1,57 @@
+Components.utils.import("resource://app/modules/unitHandler.jsm"); 
+
 var color;
 var ruleElement;
 var ruleUnits;
+var unitHandler = new UnitHandler();
 
 
 function startUp()
 {
   ruleElement= window.arguments[0];
   if (!ruleElement) return;
-  color = window.arguments[1];
-  if (!color) color = ruleElement.getAttribute("color");
+//  color = window.arguments[1];
+  color = ruleElement.getAttribute("color");
+  if (!color) color = "black";
   setColorWell("colorWell",color);
-  ruleUnits = window.arguments[2];
-  var size = ruleElement.getAttribute("size");
-  document.getElementById("ruleUnits").setAttribute("value",ruleUnits);
-  var size = ruleElement.getAttribute("size");
-  if (size == "wide" || size == "narrow") document.getElementById("rulesize").selectedIndex=(size=="wide"?0:1);
-  else {
-    document.getElementById("rulesize").selectedIndex=2;
-    document.getElementById("ruleWidth").setAttribute("value",size);
+  ruleUnits = window.arguments[1];
+  unitHandler.initCurrentUnit(ruleUnits);
+  document.getElementById("ruleUnits").setAttribute("value",unitHandler.currentUnit);
+  var numberAndUnit;
+  var tlheight = ruleElement.getAttribute("tlheight"); 
+  var ht;
+  numberAndUnit = unitHandler.getNumberAndUnitFromString(tlheight);
+  if (numberAndUnit)
+    ht = unitHandler.getValueOf(numberAndUnit.number, numberAndUnit.unit);
+  else ht = "";
+  document.getElementById("ruleHeight").setAttribute("value",ht);
+  var tlwidth = ruleElement.getAttribute("tlwidth");
+  var size; // tlwidth recoded for the dialog
+  var radio = document.getElementById("rulelength");
+  switch (tlwidth) {
+    case "-": size = "wide";
+      radio.selectedIndex = 0;
+      break;
+    case "*": size = "narrow";
+      radio.selectedIndex = 1;
+      break;
+    default: numberAndUnit = unitHandler.getNumberAndUnitFromString(tlwidth);
+      if (numberAndUnit)
+        size = unitHandler.getValueOf(numberAndUnit.number, numberAndUnit.unit);
+      else size = "";
+      radio.selectedIndex = 2;
+      document.getElementById("ruleWidth").setAttribute("value",size);
+      break;
   }
+  var tlalign = ruleElement.getAttribute("tlalign");
+  var selectedIndex;
+  switch (tlalign) {
+    case "l": selectedIndex = 0; break;
+    case "c": selectedIndex = 1; break;
+    case "r": selectedIndex = 2; break;
+    default: selectedIndex = 0; break;
+  }
+  document.getElementById("rulealign").selectedIndex = selectedIndex;
 }
 
 
@@ -50,17 +83,27 @@ function onAccept()
     // element is now the deck.
     // should check for validity.
   if (n>0) {
-    ruleElement.setAttribute("height", n+ruleUnits);
-    ruleElement.setAttribute("color", color);
     var style= "background-color:"+color +"; height:"+n+ruleUnits;
-    var size = document.getElementById("rulesize").value+ruleUnits;
-    if (size=="other") 
-    {
-      size = document.getElementById("ruleWidth").value+ruleUnits;
-      style += ";width:"+size;
+    var tlwidth = document.getElementById("rulelength").value;
+    switch (tlwidth) {
+      case "other": 
+      {
+        tlwidth = document.getElementById("ruleWidth").value+ruleUnits;
+        break;
+      }
+      case "narrow":
+        tlwidth = "*";
+        break;
+      case "wide":
+        tlwidth = "-";
+        break;
     }
-    ruleElement.setAttribute("size",size);
+    var align = document.getElementById("rulealign").selectedItem.value;
+    ruleElement.setAttribute("tlalign",align);
+    ruleElement.setAttribute("tlwidth",tlwidth);
     ruleElement.setAttribute("style", style);
+    ruleElement.setAttribute("tlheight", n+ruleUnits);
+    ruleElement.setAttribute("color", color);
     element.setAttribute("selectedIndex", "1");
   }
   else

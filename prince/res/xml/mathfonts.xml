@@ -10,7 +10,7 @@
     <font fixed="1" name="Courier" package="courier" description="Courier monospaced font"/>
     <font main="1" name="Bookman" package="bookman" description="Bookman and Avant Garde font"/>
     <font main="1" name="New Century Schoolbook" package="newcent" description="New Century font"/>
-    <font main="1" name="Minion Pro" package="minion" description="Minion Pro font"/>
+    <font main="1" name="Minion" package="minion" description="Minion font"/>
   </textfonts>
   <mathfonts>
     <font name="Math Pazo" package="mathpazo" description="Palatino-like symbols"/>
