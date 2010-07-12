@@ -800,10 +800,9 @@ function msiSearchManager(targEditorElement, searchDocFragment, searchFlags)
 
   this.isNonDefaultNode = function(aNode)
   {
-    switch(aNode.nodeName)
+    switch(aNode.localName)
     {
       case "dialogbase":
-      case "sw:dialogbase":
         return false;
       break;
 
