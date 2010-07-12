@@ -5186,14 +5186,12 @@ var msiReviseRulesCommand =
 function msiInsertRules(dialogData, editorElement)
 {
   var editor = msiGetEditor(editorElement);
-//  var parentNode = editor.selection.anchorNode;
-//  var insertPos = editor.selection.anchorOffset;
+  var node = editor.document.createElement('msirule');
   var styleStr = "";
-  var ruleStr = "<xhtml:msirule xmlns:xhtml=\"" + xhtmlns + "\" ";
   var liftStr = String(dialogData.lift.size) + dialogData.lift.units;
   var widthStr = String(dialogData.width.size) + dialogData.width.units;
   var heightStr = String(dialogData.height.size) + dialogData.height.units;
-  ruleStr += "lift=\"" + liftStr;
+  node.setAttribute('lift', liftStr);
   styleStr += "vertical-align: " + liftStr;
   ruleStr += "\" width=\"" + widthStr;
   styleStr += "; width: " + widthStr;
@@ -5201,10 +5199,8 @@ function msiInsertRules(dialogData, editorElement)
   styleStr += "; height: " + heightStr;
   ruleStr += "\" color=\"" + dialogData.ruleColor;
   styleStr += "; background-color: " + dialogData.ruleColor + ";";
-  ruleStr += "\" style=\"" + styleStr + "\" > </xhtml:msirule>";
-  dump("In msiInsertRules, inserting rule: [" + ruleStr + "].\n");
-//  editor.insertHTMLWithContext(spaceStr, "", "", "", null, parentNode, insertPos, false);
-  insertXMLAtCursor(editor, ruleStr, true, false);
+  node.setAttribute('style',styleStr);
+  editor.insertElementAtSelection(node,true);
 }
 
 function msiReviseRules(reviseData, dialogData, editorElement)
@@ -8400,13 +8396,18 @@ function msiNote(currNode, editorElement)
   }
   else
   {
-    var namespace = new Object();
-    var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace);
-    var xml = "<notewrapper xmlns='http://www.w3.org/1999/xhtml'" + ((data.type=='footnote')?" type='footnote'":"")+
-      "><note type='"+data.type+"'"+ ((data.hidenote)?" hide='true'":"")
-     +"><"+paraTag+"><br/></"+paraTag+"></note></notewrapper>"; 
-    editor.deleteSelection(0);
-    insertXMLAtCursor(editor,xml,true,false);
+    var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace); 
+    var wrapperNode = editor.document.createElement('notewrapper');
+    var node = editor.document.createElement('note');
+    if (data.type == 'footnote') wrapperNode.setAttribute('type','footnote');
+    node.setAttribute('type',data.type);
+    if (data.hidenote) node.setAttribute('hide','true');
+    var paranode = editor.document.createElement(paraTag);
+    editor.insertElementAtSelection(wrapperNode, true);
+    if (node)
+      editor.insertNode(node,wrapperNode,0);
+    if (paranode)
+      editor.insertNode(paranode,node,0);
   }
 }
 

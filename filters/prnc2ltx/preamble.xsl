@@ -186,13 +186,18 @@
 <xsl:template match="html:x3font">\newfontfamily\<xsl:value-of select="@internalname"/>[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
 
 <!-- section headings redefined. Requires package titlesec -->
-<xsl:template match="html:sectitleformat" ><xsl:if test="@enabled='true'">\newcommand{\msi<xsl:value-of select="@level"/>}[1]{<xsl:apply-templates select="html:titleprototype"/>}
+<xsl:template match="html:sectitleformat">
+<xsl:if test="@enabled='true'">
+<xsl:if test="@newPage='true'">
+\newcommand\<xsl:value-of select="@level"/>break{\clearpage}</xsl:if>
+\newcommand{\msi<xsl:value-of select="@level"
+/>}[1]{<xsl:apply-templates select="html:titleprototype"/>}
 \titleformat{\<xsl:value-of select="@level"/>}[<xsl:value-of select="@sectStyle"/>]{<xsl:choose
   ><xsl:when test="@align='l'">\filright</xsl:when
   ><xsl:when test="@align='c'">\center</xsl:when
   ><xsl:otherwise>\filleft</xsl:otherwise
   ></xsl:choose><xsl:apply-templates select="html:toprule"/>}{}{0pt}{\msi<xsl:value-of select="@level"
-/>}[<xsl:apply-templates select="html:bottomrule"/>]</xsl:if></xsl:template>
+/>}[{<xsl:apply-templates select="html:bottomrule"/>}]</xsl:if></xsl:template>
 						  
 <xsl:template match="html:dialogbase">
   <xsl:apply-templates/>
@@ -205,15 +210,49 @@
   <xsl:apply-templates/>
 </xsl:template>
 
-<xsl:template match="html:toprule"
-  ><xsl:choose
-  ><xsl:when test="@role='rule'">
-\titleline*[<xsl:value-of select="../@align"/>]{\titlerule[<xsl:value-of select="@height"/>]}</xsl:when
-  ><xsl:when test="@role='vspace'">
-\vspace{<xsl:value-of select="@height"/>}</xsl:when
-  ></xsl:choose
-></xsl:template>
+<xsl:template match="html:toprule">
+  <xsl:choose>
+    <xsl:when test="@role='rule'">\titleline<xsl:if test="@tlwidth='*'"
+      >*</xsl:if>[<xsl:value-of select="@tlalign"
+      />]{<xsl:if test="@color"
+      >\textcolor<xsl:choose
+	   	><xsl:when test="substring(./@color,1,1)='#'">[HTML]{<xsl:value-of select="translate(substring(./@color,2,8),'abcdef','ABCDEF')"
+   		/></xsl:when
+   		><xsl:otherwise>{<xsl:value-of select="./@color"/></xsl:otherwise
+   	  ></xsl:choose
+      >}{</xsl:if
+      ><xsl:choose>
+        <xsl:when test="@tlwidth='-'">\titlerule[<xsl:value-of select="@tlheight"/>]}</xsl:when>
+        <xsl:when test="@tlwidth='*'">\titlerule[<xsl:value-of select="@tlheight"/>]}</xsl:when>
+        <xsl:otherwise>\rule{<xsl:value-of select="@tlwidth"/>}{<xsl:value-of select="@tlheight"/>}}</xsl:otherwise>
+      </xsl:choose>
+      <xsl:if test="@color">}</xsl:if>
+    </xsl:when>
+    <xsl:when test="@role='vspace'">\vspace{<xsl:value-of select="@tlheight"/>}</xsl:when>
+  </xsl:choose>
+</xsl:template>
   
+<xsl:template match="html:bottomrule">
+  <xsl:choose>
+    <xsl:when test="@role='rule'">\titleline<xsl:if test="@tlwidth='*'"
+      >*</xsl:if>[<xsl:value-of select="@tlalign"
+      />]{<xsl:if test="@color"
+      >\textcolor<xsl:choose
+	   	><xsl:when test="substring(./@color,1,1)='#'">[HTML]{<xsl:value-of select="translate(substring(./@color,2,8),'abcdef','ABCDEF')"
+   		/></xsl:when
+   		><xsl:otherwise>{<xsl:value-of select="./@color"/></xsl:otherwise
+   	  ></xsl:choose
+      >}{</xsl:if
+      ><xsl:choose>
+        <xsl:when test="@tlwidth='-'">\titlerule[<xsl:value-of select="@tlheight"/>]}</xsl:when>
+        <xsl:when test="@tlwidth='*'">\titlerule[<xsl:value-of select="@tlheight"/>]}</xsl:when>
+        <xsl:otherwise>\rule{<xsl:value-of select="@tlwidth"/>}{<xsl:value-of select="@tlheight"/>}}</xsl:otherwise>
+      </xsl:choose>
+      <xsl:if test="@color">}</xsl:if>
+    </xsl:when>
+    <xsl:when test="@role='vspace'">\vspace{<xsl:value-of select="@tlheight"/>}</xsl:when>
+  </xsl:choose>
+</xsl:template>
 <!-- end of section headings -->
 
 <!-- class options   -->
