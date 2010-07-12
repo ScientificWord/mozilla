@@ -30,7 +30,7 @@
 <dialog id="SectionTextDlg"
   title="&windowTitle.label;"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-  ondialogaccept="return onOK();"
+  ondialogaccept="return onAccept();"
   ondialogcancel="return onCancel();"
   onunload="ShutdownAllEditors();"
   onload="Startup();"
@@ -90,7 +90,6 @@
         &sectionCodeDescription.label;
       </label>
 	    <editor editortype="html" type="content" width="400" height="100" context="msiEditorContentContext" id="sectiontitle-frame"/>
-  <button label="stuffit" oncommand="stashTitlePrototype();"/>
 	  </groupbox>
 	  <spacer flex="1"/>
 	</vbox>
