@@ -5152,8 +5152,8 @@
 \def\bibitem{\@ifnextchar[\@lbibitem\@bibitem}
 
 \def\@lbibitem[#1]#2{%
-   \@temptoksa{#1}%
-   \out@bibitemA[{\the\temptoksa}]{#2}}
+   \toks200{#1}%
+   \out@bibitemA[{\the\toks200}]{#2}}
 
 \def\@bibitem#1{\out@bibitemB{#1}}
 
