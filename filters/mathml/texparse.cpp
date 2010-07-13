@@ -137,10 +137,6 @@ JBMLine( zzz );
   rv  =  RunToList( 0,end_off,0,bytesdone,exclude_ender,
   	  										error_flag,TRUE );
 
-  if ( error_flag ) {
-    TCI_ASSERT(0);
-  } else {
-  }
 
   if ( curr_context[0] ) {
     PopContext();
