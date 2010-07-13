@@ -4,7 +4,9 @@
 
 #include <assert.h>
 // debugging help, should switch each to NS_ASSERTION
-#define TCI_ASSERT(expr)  assert(expr)
+//#define TCI_ASSERT(expr)  assert(expr)
+
+#define TCI_ASSERT(expr)
 
 
 typedef unsigned char U8;
