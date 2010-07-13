@@ -5146,11 +5146,15 @@
  \endgroup
  \@esphack}
 \def\glossary{\@bsphack\begingroup\@sanitize\@index}
-%%% From File: ltbibl.dtx
-\message{bibliography,}
+
+
+
 \def\bibitem{\@ifnextchar[\@lbibitem\@bibitem}
 
-\def\@lbibitem[#1]#2{\out@bibitemA[{#1}]{#2}}
+\def\@lbibitem[#1]#2{%
+   \@temptoksa{#1}%
+   \out@bibitemA[{\the\temptoksa}]{#2}}
+
 \def\@bibitem#1{\out@bibitemB{#1}}
 
 
