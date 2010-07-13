@@ -11,24 +11,23 @@
 
 %% Environments
 
-%\newenvironment{center}
-%\newenvironment{flushleft}
-%\newenvironment{flushright}
-%\newenvironment{quote}
-%\newenvironment{quotation}
-%% Handled separately? (gp) {verbatim}
-%% Handled separately? (gp) {verbatim*}
-%\newenvironment{enumerate}
-%\newenvironment{itemize}
-%\newenvironment{description}
-%\newenvironment{verse}
-%\newenvironment{figure}
-%\newenvironment{figure*}
-%\newenvironment{table}
-%\newenvironment{table*}
-%\newenvironment{titlepage}
-%\newenvironment{thebibliography}
-%\newenvironment{theindex}
+
+%%
+
+\MSIMathQuote{sun}
+\MSIMathQuote{earth}
+
+
+\MSIEmptyElement{micron}
+\MSIEmptyElement{sbond}
+\MSIEmptyElement{dbond}
+\MSIEmptyElement{tbond}
+
+
+\MSITextElement{object}
+\MSITextElement{objectname}
+
+
 
 
 
