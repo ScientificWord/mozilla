@@ -3,6 +3,7 @@ Components.utils.import("resource://app/modules/pathutils.jsm");
 Components.utils.import("resource://app/modules/unitHandler.jsm"); 
 
 var unitHandler = new UnitHandler();
+var gNumStyles={};
 var currentUnit;
 var sectionUnit;
 var unitConversions;
@@ -102,6 +103,7 @@ function Startup()
   sectitleformat = new Object();
   getSectionFormatting(sectitlenodelist, sectitleformat);
   getClassOptionsEtc();
+  getNumStyles(preamble);
 }
 
 function buildFontMenus( useOT )
@@ -115,6 +117,55 @@ function buildFontMenus( useOT )
   addOldFontsToMenu("x3fontlist");
 
   changeOpenType(useOT);
+}
+
+var sectionlist =["part","chapter", "section", "subsection", "subsubsection", "paragraph", "subparagraph"];
+
+function getNumStyles(preambleNode)
+{
+  var nodeList = preambleNode.getElementsByTagName("numberstyles");
+  if (nodeList.length == 0) return;
+  var sect;
+  var node;
+  var i;
+  node = nodeList[0];
+  for (i=0; i<sectionlist.length; i++){
+    sect = sectionlist[i];
+    if (node.hasAttribute(sect)) gNumStyles[sect]=node.getAttribute(sect);
+  }
+}
+
+function saveNumStyles(preambleNode)
+{
+  var sect;
+  var node;
+  var i;
+  var bHasStyle = false;
+  for (i=0; i< sectionlist.length; i++) {
+    dump("saveNumStyles\n");
+    sect = sectionlist[i];
+    if (gNumStyles[sect]) 
+    {
+      dump("checking "+sect+"\n");
+      bHasStyle = true;
+      break;
+    }
+  }
+  if (bHasStyle) {
+    node = editor.createNode("numberstyles",preambleNode,0);
+    dump("adding attribute for "+sect+"\n");
+    for (i=0; i< sectionlist.length; i++) {
+      sect = sectionlist[i];
+      if (gNumStyles[sect]) node.setAttribute(sect,gNumStyles[sect]);
+    }
+  }
+}
+
+function setNumStyle(menulist)
+{                                                                
+    var sectionmenu = document.getElementById("sections.name");
+    var sect = sectionmenu.selectedItem.id.replace("sections.","");
+    gNumStyles[sect] = menulist.value;
 }
 
 
@@ -365,6 +416,7 @@ function onAccept()
     saveFontSpecs(newNode);
     saveSectionFormatting(newNode, sectitleformat);
     saveClassOptionsEtc(newNode);
+    saveNumStyles(preamble);
   }
   return true;
 }  
@@ -1518,7 +1570,6 @@ function onCheck( checkbox ) // the checkbox is for old style nums or swashes
 
 // functions for typesetsectionsoverlay
 
-var sectionUnits;
 
 
 function getSectionFormatting(sectitlenodelist, sectitleformat)
@@ -1618,7 +1669,7 @@ function switchSectionType()
 {
   var from = currentSectionType;
   var to = document.getElementById("sections.name").label.toLowerCase();
-  return switchSectionTypeImp(from, to);
+  return switchSectionTypeImp(from, to);          
 }
 
 function buildStyleForRule(displayVbox)
@@ -1706,6 +1757,7 @@ function switchSectionTypeImp(from, to)
   {
     if (from != to)
     {
+      document.getElementById("sections.numstyle").value=(gNumStyles[to]?gNumStyles[to]:"");
       if (!sectitleformat[to])
       {
         sectitleformat[to] = new Object();
@@ -1723,7 +1775,7 @@ function switchSectionTypeImp(from, to)
       document.getElementById("sections.style").value = sec.sectStyle;
       document.getElementById("sections.align").value = sec.align; 
       document.getElementById("secoverlay.units").value = sec.units;
-      sectionUnits = sec.units; 
+      sectionUnit = sec.units; 
       document.getElementById("tbsectleftheadingmargin").value = sec.lhindent; 
       document.getElementById("tbsectrightheadingmargin").value = sec.rhindent; 
       if (sec.toprules && sec.toprules.length > 0)
@@ -2000,7 +2052,7 @@ function textEditor()
   sectitleformat.refresh = refresh;
   sectitleformat.destNode = getBaseNodeForIFrame();
   sectitleformat.currentLevel = secname.toLowerCase();
-  window.openDialog("chrome://prince/content/sectiontext.xul", "sectiontext", "modal,chrome,close,titlebar,alwaysRaised", sectitleformat,
+  window.openDialog("chrome://prince/content/sectiontext.xul", "sectiontext", "modal,resizable=true,chrome,close,titlebar,alwaysRaised", sectitleformat,
       secname, units);																									 
   displayTextForSectionHeader();
 }
@@ -2178,7 +2230,7 @@ function addrule()
   nextbox.hidden=false;
   nextbox.setAttribute("style","height:3px;background-color:black;");
   window.openDialog("chrome://prince/content/addruleforsection.xul", "addruleforsection", 
-    "resizable=yes,chrome,close,titlebar,alwaysRaised", nextbox, sectionUnit);
+    "resizable=yes,chrome,close,titlebar,resizable=true,alwaysRaised", nextbox, sectionUnit);
   boxlist[i] = nextbox;
 }
 
