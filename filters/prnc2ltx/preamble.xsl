@@ -80,9 +80,9 @@
   ><xsl:sort select="@pri" data-type="number"/>
 \usepackage<xsl:if test="@options"
     >[<xsl:value-of select="@options"/>]</xsl:if
-    >{<xsl:value-of select="@package"/>}  %% <xsl:value-of select="@pri"/></xsl:for-each
-  ><xsl:apply-templates
-  /></xsl:template>
+    >{<xsl:value-of select="@package"/>}  %% <xsl:value-of select="@pri"/></xsl:for-each>
+  <xsl:apply-templates/>
+</xsl:template>
 
 <xsl:template match="html:preambleTeX">
   <xsl:value-of select="."/>
@@ -266,5 +266,59 @@
     ><xsl:if test="$formattingok">\leading{<xsl:value-of select="@val"
   />}</xsl:if></xsl:template>
 
-    
+<!-- section numbering style -->
+<xsl:template match="html:numberstyles">
+
+  <xsl:if test="@part">
+  	<xsl:choose>
+    	<xsl:when test="@part='none'">
+    	  \renewcommand\thepart{}</xsl:when>
+    	<xsl:otherwise>
+    	  \renewcommand\thepart{\<xsl:value-of select="@part"/>{part}}</xsl:otherwise> 
+	</xsl:choose></xsl:if>
+  <xsl:if test="@chapter">
+  	<xsl:choose>
+    	<xsl:when test="@chapter='none'">
+    	  \renewcommand\thechapter{}</xsl:when
+    	><xsl:otherwise>
+    	  \renewcommand\thechapter{\<xsl:value-of select="@chapter"/>{chapter}}</xsl:otherwise> 
+	</xsl:choose></xsl:if>
+  <xsl:if test="@section">
+  	<xsl:choose>
+    	<xsl:when test="@section='none'">
+    	\renewcommand\thesection{}</xsl:when
+    	><xsl:otherwise>
+    	\renewcommand\thesection{\<xsl:value-of select="@section"/>{section}}</xsl:otherwise> 
+	</xsl:choose></xsl:if>
+  <xsl:if test="@subsection">
+  	<xsl:choose>
+    	<xsl:when test="@subsection='none'">
+    	\renewcommand\thesubsection{}</xsl:when
+    	><xsl:otherwise>
+    	\renewcommand\thesubsection{\thesection.\<xsl:value-of select="@subsection"/>{subsection}}</xsl:otherwise> 
+	</xsl:choose></xsl:if>
+  <xsl:if test="@subsubsection">
+  	<xsl:choose>
+    	<xsl:when test="@subsubsection='none'">
+    	\renewcommand\thesubsubsection{}</xsl:when
+    	><xsl:otherwise>
+    	\renewcommand\subsubsection{\thesubsection.\<xsl:value-of select="@thesubsubsection"/>{subsubsection}}</xsl:otherwise> 
+	</xsl:choose></xsl:if>
+  <xsl:if test="@paragraph">
+  	<xsl:choose>
+    	<xsl:when test="@paragraph='none'">
+    	\renewcommand\theparagraph{}</xsl:when
+    	><xsl:otherwise>
+    	\renewcommand\paragraph{\thesubbsusection.\<xsl:value-of select="@paragraph"/>{paragraph}}</xsl:otherwise> 
+	</xsl:choose></xsl:if>
+  <xsl:if test="@subparagraph">
+  	<xsl:choose>
+    	<xsl:when test="@subparagraph='none'">
+    	\renewcommand\thesubparagraph{}</xsl:when
+    	><xsl:otherwise>
+    	\renewcommand\subparagraph{\theparagraph.\<xsl:value-of select="@subparagraph"/>{subparagraph}}</xsl:otherwise> 
+	</xsl:choose></xsl:if>
+</xsl:template>
+
 </xsl:stylesheet>
+
