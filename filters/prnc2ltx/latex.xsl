@@ -352,8 +352,14 @@ should not be done under some conditions -->
     /></xsl:when><xsl:otherwise><xsl:value-of select="concat(substring-before($fontsize,'/'),$units)"
     /></xsl:otherwise></xsl:choose>}\selectfont </xsl:if
     ><xsl:apply-templates/>}</xsl:template>
-<xsl:template match="html:fontcolor">\textcolor[HTML]{<xsl:value-of select="translate(substring(./@color,2,8),'abcdef','ABCDEF')"
-  />}{<xsl:apply-templates/>}</xsl:template>
+
+<xsl:template match="html:fontcolor">\textcolor<xsl:choose
+   ><xsl:when test="substring(./@color,1,1)='#'">[HTML]{<xsl:value-of select="translate(substring(./@color,2,8),'abcdef','ABCDEF')"
+   /></xsl:when
+   ><xsl:otherwise>{<xsl:value-of select="./@color"/></xsl:otherwise
+   ></xsl:choose
+   >}{<xsl:apply-templates/>}</xsl:template>
+
 <xsl:template match="html:otfont">{\fontspec{<xsl:value-of select="@fontname"
   />}<xsl:apply-templates
   />}</xsl:template>
