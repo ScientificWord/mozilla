@@ -8502,11 +8502,7 @@ function msiDialogEditorContentFilter(anEditorElement)
     {
       var rootNode = msiGetRealBodyElement(doc);
       var initialParaNode = null;
-      var initialParaList = rootNode.getElementsByTagNameNS("sw", "dialogbase");
-      if (initialParaList.length == 0)
-        initialParaList = rootNode.getElementsByTagName("sw:dialogbase");
-      if (initialParaList.length == 0)
-        initialParaList = rootNode.getElementsByTagName("dialogbase");
+      var initialParaList = rootNode.getElementsByTagName("dialogbase");
       if (initialParaList.length > 0)
         initialParaNode = initialParaList[0];
       else

@@ -1,4 +1,4 @@
-var EXPORTED_SYMBOLS = ["UnitHandler"];
+var EXPORTED_SYMBOLS = ["UnitHandler" ];
 
 
 function UnitHandler()
@@ -34,6 +34,14 @@ function UnitHandler()
     if (!(unit in this.units)){ return null;}
     if (unit === this.currentUnit) { return value; }
     return (value/this.units[unit].size)*this.units[this.currentUnit].size;
+  };
+
+  this.getValueOf = function( value, unit )  // given a measurement that is 'value' in the unit "unit"
+    // return it in the current unit.
+  { 
+    if (!(unit in this.units)){ return null;}
+    if (unit === this.currentUnit) { return value; }
+    return value*this.units[unit].size/this.units[this.currentUnit].size;
   };
 
   this.setCurrentUnit = function( unit ) // returns the previous value

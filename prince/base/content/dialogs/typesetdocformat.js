@@ -1,6 +1,9 @@
 Components.utils.import("resource://app/modules/fontlist.jsm"); 
 Components.utils.import("resource://app/modules/pathutils.jsm"); 
+Components.utils.import("resource://app/modules/unitHandler.jsm"); 
 
+var unitHandler = new UnitHandler();
+var gNumStyles={};
 var currentUnit;
 var sectionUnit;
 var unitConversions;
@@ -100,6 +103,7 @@ function Startup()
   sectitleformat = new Object();
   getSectionFormatting(sectitlenodelist, sectitleformat);
   getClassOptionsEtc();
+  getNumStyles(preamble);
 }
 
 function buildFontMenus( useOT )
@@ -113,6 +117,55 @@ function buildFontMenus( useOT )
   addOldFontsToMenu("x3fontlist");
 
   changeOpenType(useOT);
+}
+
+var sectionlist =["part","chapter", "section", "subsection", "subsubsection", "paragraph", "subparagraph"];
+
+function getNumStyles(preambleNode)
+{
+  var nodeList = preambleNode.getElementsByTagName("numberstyles");
+  if (nodeList.length == 0) return;
+  var sect;
+  var node;
+  var i;
+  node = nodeList[0];
+  for (i=0; i<sectionlist.length; i++){
+    sect = sectionlist[i];
+    if (node.hasAttribute(sect)) gNumStyles[sect]=node.getAttribute(sect);
+  }
+}
+
+function saveNumStyles(preambleNode)
+{
+  var sect;
+  var node;
+  var i;
+  var bHasStyle = false;
+  for (i=0; i< sectionlist.length; i++) {
+    dump("saveNumStyles\n");
+    sect = sectionlist[i];
+    if (gNumStyles[sect]) 
+    {
+      dump("checking "+sect+"\n");
+      bHasStyle = true;
+      break;
+    }
+  }
+  if (bHasStyle) {
+    node = editor.createNode("numberstyles",preambleNode,0);
+    dump("adding attribute for "+sect+"\n");
+    for (i=0; i< sectionlist.length; i++) {
+      sect = sectionlist[i];
+      if (gNumStyles[sect]) node.setAttribute(sect,gNumStyles[sect]);
+    }
+  }
+}
+
+function setNumStyle(menulist)
+{                                                                
+    var sectionmenu = document.getElementById("sections.name");
+    var sect = sectionmenu.selectedItem.id.replace("sections.","");
+    gNumStyles[sect] = menulist.value;
 }
 
 
@@ -212,7 +265,7 @@ function saveCropMarks(docFormatNode)
 function centerCropmarks(value)
 {
   var broadcaster = document.getElementById("pageonpapercentered");
-  broadcaster.setAttribute("hidden", (value=="center"?"false":"true"));
+  broadcaster.hidden=(value=="center"?"false":"true");
 }
 
 function getNumberValue(numberwithunit)
@@ -363,6 +416,7 @@ function onAccept()
     saveFontSpecs(newNode);
     saveSectionFormatting(newNode, sectitleformat);
     saveClassOptionsEtc(newNode);
+    saveNumStyles(preamble);
   }
   return true;
 }  
@@ -627,8 +681,8 @@ function getCropInfo(node)
     document.getElementById("useCropmarks").checked=false;
     document.getElementById("cropGroup").value = "cam";
     document.getElementById("bc.papersize").setAttribute("disabled","true");
-    broadcaster.setAttribute("hidden",true);
-    broadcaster2.setAttribute("hidden",true);
+    broadcaster.hidden=true;
+    broadcaster2.hidden=true;
   }
   else
   {
@@ -947,7 +1001,7 @@ function cropmarkRequest(checkbox)
   if (checkbox.checked)
     broadcaster.removeAttribute("hidden");
   else {
-    broadcaster.setAttribute("hidden","true");
+    broadcaster.hidden=true;
     centerCropmarks("");
   }
 }
@@ -1075,8 +1129,8 @@ function goDown(id)
 function broadcastColCount()
 {
   var multicolumns = document.getElementById("columncount").value > 1;
-  document.getElementById("multicolumn").setAttribute("hidden", !multicolumns);
-  document.getElementById("singlecolumn").setAttribute("hidden", multicolumns);
+  document.getElementById("multicolumn").hidden=!multicolumns;
+  document.getElementById("singlecolumn").hidden=multicolumns;
 }
 
 function setTwosidedState(elt)
@@ -1516,7 +1570,6 @@ function onCheck( checkbox ) // the checkbox is for old style nums or swashes
 
 // functions for typesetsectionsoverlay
 
-var sectionUnits;
 
 
 function getSectionFormatting(sectitlenodelist, sectitleformat)
@@ -1557,30 +1610,48 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
         // now check for rules and spaces
         var rulenodelist = node.getElementsByTagName("toprule");
         var color;
+        var toprule;
+        var bottomrule;
         if (rulenodelist && rulenodelist.length >0)
         {
-          sectitleformat[level].toprules = new Array(rulenodelist.length);
-          for (i>0; i < rulenodelist.length; i--)
+          sectitleformat[level].toprules = new Array();
+          for (i=0; i < rulenodelist.length; i++)
           {
-            sectitleformat[level].toprules[i].height = rulenodelist[i].getAttribute("height");
-            sectitleformat[level].toprules[i].width = rulenodelist[i].getAttribute("width");
-            sectitleformat[level].toprules[i].role = rulenodelist[i].getAttribute("role");
-            color = rulenodelist[i].getAttribute("color");
-            if (!color) color = "black";
-            sectitleformat[level].toprules[i].color = color;
+            toprule = new Object();
+            toprule.role = rulenodelist[i].getAttribute("role");
+            toprule.tlheight = rulenodelist[i].getAttribute("tlheight");
+            if (toprule.role == "rule")
+            {
+              toprule.tlwidth = rulenodelist[i].getAttribute("tlwidth");
+              toprule.tlalign = rulenodelist[i].getAttribute("tlalign");
+              color = rulenodelist[i].getAttribute("color");
+              if (!color) color = "black";
+              toprule.color = color;
+            }
+            toprule.style = buildStyleForRule(rulenodelist[i]);
+            sectitleformat[level].toprules.push(toprule);
           }
         }
         rulenodelist = node.getElementsByTagName("bottomrule");
         if (rulenodelist && rulenodelist.length >0)
         {
-          sectitleformat[level].bottomrules = new Array(rulenodelist.length);
-          for (i>0; i < rulenodelist.length; i--)
+          sectitleformat[level].bottomrules = new Array();
+          for (i=0; i < rulenodelist.length; i++)
           {
-            sectitleformat[level].bottomrules[i].height = rulenodelist[i].getAttribute("height");
-            sectitleformat[level].bottomrules[i].width = rulenodelist[i].getAttribute("width");
-            color = rulenodelist[i].getAttribute("color");
-            if (!color) color = "black";
-            sectitleformat[level].bottomrules[i].color = color;
+            bottomrule = new Object;
+            bottomrule.role = rulenodelist[i].getAttribute("role");
+            bottomrule.tlheight = rulenodelist[i].getAttribute("tlheight");
+            if (bottomrule.role == "rule")
+            {
+              bottomrule.tlwidth = rulenodelist[i].getAttribute("tlwidth");
+              bottomrule.tlalign = rulenodelist[i].getAttribute("tlalign");
+              bottomrule.style = buildStyleForRule(rulenodelist[i]);
+              color = rulenodelist[i].getAttribute("color");
+              if (!color) color = "black";
+              bottomrule.color = color;
+            }
+            bottomrule.style = buildStyleForRule(rulenodelist[i]);
+            sectitleformat[level].bottomrules.push(bottomrule);
           }
         }
       }
@@ -1591,7 +1662,6 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
     }
   }
   switchSectionTypeImp(null, document.getElementById("sections.name").label.toLowerCase());
-  displayTextForSectionHeader();
 }
 
 var currentSectionType = "";
@@ -1599,9 +1669,36 @@ function switchSectionType()
 {
   var from = currentSectionType;
   var to = document.getElementById("sections.name").label.toLowerCase();
-  return switchSectionTypeImp(from, to);
+  return switchSectionTypeImp(from, to);          
 }
 
+function buildStyleForRule(displayVbox)
+{
+  var scale = 0.5
+  var style="";
+  if(displayVbox.getAttribute('role') == "rule")
+    style += "background-color: "+displayVbox.getAttribute('color')+"; ";
+  var tlheight = displayVbox.getAttribute('tlheight');
+  var ht;  //tlheight in pixels
+  var oldunit = unitHandler.currentUnit;
+  unitHandler.initCurrentUnit("px");
+  var numberAndUnit = unitHandler.getNumberAndUnitFromString(tlheight);
+  if (numberAndUnit)
+  {
+    ht = unitHandler.getValueOf(numberAndUnit.number, numberAndUnit.unit);
+  } else ht = 0;
+  if (oldunit) unitHandler.initCurrentUnit(oldunit);
+  
+  if (ht > 0) {
+    ht = scale*ht;
+    if (ht <2) ht = 2;
+    if (ht > 20) ht = 20;
+    style += "height: "+Math.round(ht)+"px;";
+  }
+  return style;
+}  
+  
+  
 
 function switchSectionTypeImp(from, to)
 {
@@ -1609,7 +1706,7 @@ function switchSectionTypeImp(from, to)
   currentSectionType = to;
   var boxlist;
   var box;
-  var boxdata;
+  var boxdata={};
   if (from)
   {
     if (!sectitleformat[from]) sectitleformat[from] = new Object();
@@ -1625,27 +1722,31 @@ function switchSectionTypeImp(from, to)
     boxlist = document.getElementById("toprules").getElementsByTagName("vbox");
     sec.toprules = [];
     for (i=0; i< boxlist.length; i++) {
-      if (!sec.toprules[i]) sec.toprules[i] = {}
-      boxdata = sec.toprules[i];
       box = boxlist[i];
       if (!box.hidden) {
+        boxdata = new Object();
         boxdata.role = box.getAttribute("role");
-        boxdata.width = box.getAttribute("width");
-        boxdata.height = box.getAttribute("height");
+        boxdata.tlwidth = box.getAttribute("tlwidth");
+        boxdata.tlheight = box.getAttribute("tlheight");
         boxdata.color = box.getAttribute("color");
+        boxdata.tlalign = box.getAttribute("tlalign");
+        boxdata.style = box.getAttribute("style");
+        sec.toprules.push(boxdata);
       }
     }
     boxlist = document.getElementById("bottomrules").getElementsByTagName("vbox");
     sec.bottomrules = [];
     for (i=0; i< boxlist.length; i++) {
-      if (!sec.toprules[i]) sec.bottomrules[i] = {}
-      boxdata = sec.bottomrules[i];
       box = boxlist[i];
       if (!box.hidden) {
+        boxdata = new Object();
         boxdata.role = box.getAttribute("role");
-        boxdata.width = box.getAttribute("width");
-        boxdata.height = box.getAttribute("height");
+        boxdata.tlwidth = box.getAttribute("tlwidth");
+        boxdata.tlheight = box.getAttribute("tlheight");
         boxdata.color = box.getAttribute("color");
+        boxdata.tlalign = box.getAttribute("tlalign");
+        boxdata.style = box.getAttribute("style");
+        sec.bottomrules.push(boxdata);
       }
     }
     
@@ -1656,6 +1757,7 @@ function switchSectionTypeImp(from, to)
   {
     if (from != to)
     {
+      document.getElementById("sections.numstyle").value=(gNumStyles[to]?gNumStyles[to]:"");
       if (!sectitleformat[to])
       {
         sectitleformat[to] = new Object();
@@ -1664,44 +1766,53 @@ function switchSectionTypeImp(from, to)
       sec = sectitleformat[to];
       var newpage = sec.newPage
       if (!newpage) newpage = false;
+      var rawlabel = document.getElementById("rawlabel").getAttribute("label");
+      document.getElementById("allowsectionheaders").setAttribute("label", rawlabel.replace("##",to));
+        // for localizability, we should look up a string valued function of "to"
       document.getElementById("allowsectionheaders").checked = sec.enabled;
       document.getElementById("secredefok").setAttribute("disabled", sec.enabled?"false":"true");
       document.getElementById("sectionstartnewpage").checked = newpage;
       document.getElementById("sections.style").value = sec.sectStyle;
       document.getElementById("sections.align").value = sec.align; 
       document.getElementById("secoverlay.units").value = sec.units;
-      sectionUnits = sec.units; 
+      sectionUnit = sec.units; 
       document.getElementById("tbsectleftheadingmargin").value = sec.lhindent; 
       document.getElementById("tbsectrightheadingmargin").value = sec.rhindent; 
       if (sec.toprules && sec.toprules.length > 0)
       {
+        document.getElementById("tso_toprules").selectedIndex="1";
         boxlist = document.getElementById("toprules").getElementsByTagName("vbox");
-        for (i=0; i < Math.min(boxlist.length, sec.toprules.length); i++)
+        for (i=0; i < sec.toprules.length; i++)
         {
-          boxlist[i].setAttribute("hidden", "false");
+          boxlist[i].hidden=false;
           boxlist[i].setAttribute("role", sec.toprules[i].role);
-          boxlist[i].setAttribute("width", sec.toprules[i].width);
-          boxlist[i].setAttribute("height", sec.toprules[i].height);
+          boxlist[i].setAttribute("tlwidth", sec.toprules[i].tlwidth);
+          boxlist[i].setAttribute("tlheight", sec.toprules[i].tlheight);
+          boxlist[i].setAttribute("tlalign", sec.toprules[i].tlalign);
           boxlist[i].setAttribute("color", sec.toprules[i].color);
+          boxlist[i].setAttribute("style", buildStyleForRule(boxlist[i]));
         }
         for (i = sec.toprules.length; i<boxlist.length; i++);
-          boxlist[i].setAttribute("hidden", "true");
+          boxlist[i].hidden=true;
       }
       if (sec.bottomrules && sec.bottomrules.length > 0)
       {
+        document.getElementById("tso_bottomrules").selectedIndex="1";
         boxlist = document.getElementById("bottomrules").getElementsByTagName("vbox");
-        for (i=0; i < Math.min(boxlist.length, sec.bottomrules.length); i++)
+        for (i=0; i < sec.bottomrules.length; i++)
         {
-          boxlist[i].setAttribute("hidden", "false");
+          boxlist[i].hidden=false;
           boxlist[i].setAttribute("role", sec.bottomrules[i].role);
-          boxlist[i].setAttribute("width", sec.bottomrules[i].width);
-          boxlist[i].setAttribute("height", sec.bottomrules[i].height);
+          boxlist[i].setAttribute("tlwidth", sec.bottomrules[i].tlwidth);
+          boxlist[i].setAttribute("tlheight", sec.bottomrules[i].tlheight);
+          boxlist[i].setAttribute("tlalign", sec.bottomrules[i].tlalign);
           boxlist[i].setAttribute("color", sec.bottomrules[i].color);
+          boxlist[i].setAttribute("style", buildStyleForRule(boxlist[i]));
         }
         for (i = sec.bottomrules.length; i<boxlist.length; i++);
-          boxlist[i].setAttribute("hidden", "true");
+          boxlist[i].hidden=true;
       }
-      displayTextForSectionHeader();
+      displayTextForSectionHeader(to);
       setalign(sec.align);
       settopofpage(document.getElementById("sectionstartnewpage"));
     }
@@ -1736,6 +1847,8 @@ function saveSectionFormatting( docFormatNode, sectitleformat )
         reqpackageNode = editor.createNode('requirespackage',docFormatNode, 0);
         reqpackageNode.setAttribute('req',"titlesec");
         reqpackageNode.setAttribute('opt',"calcwidth");
+        reqpackageNode = editor.createNode('requirespackage',docFormatNode, 0);
+        reqpackageNode.setAttribute('req',"xcolor");
       } 
       lineend(docFormatNode, 1);
       sectiondata = sectitleformat[name]; 
@@ -1760,11 +1873,12 @@ function saveSectionFormatting( docFormatNode, sectitleformat )
         // replace #N with \the(section, subsection, etc) and #T with #1
         fragment = fragment.replace(/#N/,"\\the"+name,'g');
         fragment = fragment.replace(/#T/,"#1",'g');
-        fragment = fragment.replace(/<dialogbase[^>]*>/,"",'g');
-        fragment = fragment.replace(/<\/dialogbase[^>]*>/,"",'g');
         dump("Contents being saved as section title prototype: "+fragment+"\n");
         var parser = new DOMParser();
         var doc = parser.parseFromString(fragment,"application/xhtml+xml");
+        if (doc.documentElement.tagName == 'parserror') {
+          dump('Parse error parsing "'+fragment+'", error is '+doc.documentElement.textContent);
+        }
         proto.appendChild(doc.documentElement);
       }
       docFormatNode.appendChild(stNode);
@@ -1773,31 +1887,42 @@ function saveSectionFormatting( docFormatNode, sectitleformat )
       var rule;
       var j;
       if (sectitleformat[name].toprules) rulelistlength = sectitleformat[name].toprules.length;
+      dump("SectionTitle "+name+ " has "+rulelistlength+" top rules. \n");
       for (j=0; j < rulelistlength; j++) {
         rule = sectitleformat[name].toprules[j];
-        if (!rule.hidden)
+        if (rule.tlheight)
         {
           rulenode = editor.createNode('toprule', stNode, 0);
-          rulenode.setAttribute("height",rule.height);
-          rulenode.setAttribute("width",rule.width);
+          dump("In saveSectionFormatting, toprule["+j+"] has role "+rule.role+" and color "+rule.color+"\n");
           rulenode.setAttribute("role",rule.role);
-          rulenode.setAttribute("color","black");
-          if (rule.color)
+          rulenode.setAttribute("tlheight",rule.tlheight);
+          if (rule.role == "rule")
+          {
+            rulenode.setAttribute("tlwidth",rule.tlwidth);
+            rulenode.setAttribute("tlalign",rule.tlalign);
+            if (!rule.color) rule.color = "black";
             rulenode.setAttribute("color",rule.color);
+          }
         }
       }
+      dump("Done with toprules\n");
       rulelistlength = 0;
       if (sectitleformat[name].bottomrules) rulelistlength = sectitleformat[name].bottomrules.length;
+      dump("There are"+rulelistlength+"bottom rules\n");
       for (j=0; j < rulelistlength; j++) {
         rule = sectitleformat[name].bottomrules[j];
-        if (!rule.hidden) {
+        dump(j+"\n");
+        if (rule.tlheight) {
           rulenode = editor.createNode('bottomrule', stNode, 1000);
-          rulenode.setAttribute("height",rule.height);
-          rulenode.setAttribute("width",rule.width);
           rulenode.setAttribute("role",rule.role);
-          rulenode.setAttribute("color","black");
-          if (rule.color)
+          rulenode.setAttribute("tlheight",rule.tlheight);
+          if (rule.role == "rule")
+          {
+            rulenode.setAttribute("tlwidth",rule.tlwidth);
+            rulenode.setAttribute("tlalign",rule.tlalign);
+           if (!rule.color) rule.color = "black";
             rulenode.setAttribute("color",rule.color);
+          }
         }
       }
     }
@@ -1811,8 +1936,12 @@ function getBaseNodeForIFrame( )
   if (!iframe) return;
   var doc = iframe.contentDocument;
   var theNodes = doc.getElementsByTagName("dialogbase");
-  var theNode;
-  if (theNodes) theNode = theNodes[0]; 
+  var theNode = null;
+  if (theNodes && theNodes.length > 0)
+  {
+    theNode = theNodes[0];
+    theNodes = theNode.getElementsByTagName("dialogbase"); 
+  }
 //  else 
 //  {
 //    theNodes = doc.getElementsByTagName("para");
@@ -1867,10 +1996,12 @@ function sectSetDecimalPlaces() // and increments
 }    
 
 
-function displayTextForSectionHeader()
+function displayTextForSectionHeader(name)
 {
   try {
-    var secname = document.getElementById("sections.name").label.toLowerCase();
+    var secname;
+    if (name && name.length > 0) secname = name;
+    else secname = document.getElementById("sections.name").label.toLowerCase();
     var basepara;
   //	var width;
 	  var height;
@@ -1921,7 +2052,7 @@ function textEditor()
   sectitleformat.refresh = refresh;
   sectitleformat.destNode = getBaseNodeForIFrame();
   sectitleformat.currentLevel = secname.toLowerCase();
-  window.openDialog("chrome://prince/content/sectiontext.xul", "sectiontext", "modal,chrome,close,titlebar,alwaysRaised", sectitleformat,
+  window.openDialog("chrome://prince/content/sectiontext.xul", "sectiontext", "modal,resizable=true,chrome,close,titlebar,alwaysRaised", sectitleformat,
       secname, units);																									 
   displayTextForSectionHeader();
 }
@@ -2082,6 +2213,7 @@ function secSetWidth(box, dim)
 function addrule()
 {
   // find which is selected
+  var i;
   if (!lastselected) return;
   var boxlist = lastselected.getElementsByTagName("vbox");
   var nextbox;
@@ -2095,10 +2227,11 @@ function addrule()
   }
   if (!nextbox) return;
   nextbox.setAttribute("role","rule");
-  nextbox.setAttribute("hidden","false");
+  nextbox.hidden=false;
   nextbox.setAttribute("style","height:3px;background-color:black;");
   window.openDialog("chrome://prince/content/addruleforsection.xul", "addruleforsection", 
-    "resizable=yes,chrome,close,titlebar,alwaysRaised", nextbox, "black", sectionUnit);
+    "resizable=yes,chrome,close,titlebar,resizable=true,alwaysRaised", nextbox, sectionUnit);
+  boxlist[i] = nextbox;
 }
 
 
@@ -2118,7 +2251,7 @@ function addspace()
   }
   if (!nextbox) return;
   nextbox.setAttribute("role","vspace");
-  nextbox.setAttribute("hidden","false");
+  nextbox.hidden=false;
   nextbox.setAttribute("style","height:6px;background-color:silver;");
 	window.openDialog("chrome://prince/content/vspaceforsection.xul", 
 	  "vspaceforsection", "resizable=yes, chrome,close,titlebar,alwaysRaised",nextbox, sectionUnit);
@@ -2137,14 +2270,14 @@ function removeruleorspace()
     else break;
   }
   if (!lastbox) return;
-  lastbox.setAttribute("hidden","true");
+  lastbox.hidden=true;
 }
 
 function reviseruleorspace(element)
 {
   if (element.getAttribute("role")=="rule")
     window.openDialog("chrome://prince/content/addruleforsection.xul", 
-      "addruleforsection", "chrome,close,titlebar,alwaysRaised",element, element.getAttribute("color"), sectionUnit);
+      "addruleforsection", "chrome,close,titlebar,alwaysRaised",element, sectionUnit);
   else if (element.getAttribute("role")=="vspace")
     window.openDialog("chrome://prince/content/vspaceforsection.xul", 
       "vspaceforsection", "chrome,close,titlebar,alwaysRaised",element, sectionUnit);
@@ -2449,14 +2582,14 @@ function setCompiler(compilername)
 {
   if (compilername=="xelatex")
   {
-    document.getElementById("xelatex").setAttribute("hidden",false)
-    document.getElementById("pdflatex").setAttribute("hidden",true);
+    document.getElementById("xelatex").hidden=false;
+    document.getElementById("pdflatex").hidden=true;
     changeOpenType(true);
   }
   else
   { 
-    document.getElementById("xelatex").setAttribute("hidden",true);
-    document.getElementById("pdflatex").setAttribute("hidden",false);
+    document.getElementById("xelatex").hidden=true;
+    document.getElementById("pdflatex").hidden=false;
     changeOpenType(false);
   }    
 }
