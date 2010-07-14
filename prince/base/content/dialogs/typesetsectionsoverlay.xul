@@ -23,21 +23,38 @@
       <broadcaster id="toporbottommargin" disabled="true"/>
       <broadcaster id="notmargin" disabled="true"/>
     </broadcasterset>  
-    <vbox align="center">
-     <label>Section type</label>
-     <menulist id="sections.name" oncommand="switchSectionType();" persist="value" >
-       <menupopup>
-         <menuitem id="sections.part" label="Part" value="-1"/>
-         <menuitem id="sections.chapter" label="Chapter" value="0"/>
-         <menuitem id="sections.section" selected="true" label="Section" value="1"/>
-         <menuitem id="sections.subsection" label="Subsection" value="2"/>
-         <menuitem id="sections.subsubsection" label="Subsubsection" value="3"/>
-         <menuitem id="sections.paragraph" label="Paragraph" value="4"/>
-         <menuitem id="sections.subparagraph" label="Subparagraph" value="5"/>
-       </menupopup>
-     </menulist>
-    </vbox>
+     <hbox>
+       <vbox align="center">
+         <label>Section type</label>
+         <menulist id="sections.name" oncommand="switchSectionType();" persist="value" >
+           <menupopup>
+             <menuitem id="sections.part" label="Part" value="-1"/>
+             <menuitem id="sections.chapter" label="Chapter" value="0"/>
+             <menuitem id="sections.section" selected="true" label="Section" value="1"/>
+             <menuitem id="sections.subsection" label="Subsection" value="2"/>
+             <menuitem id="sections.subsubsection" label="Subsubsection" value="3"/>
+             <menuitem id="sections.paragraph" label="Paragraph" value="4"/>
+             <menuitem id="sections.subparagraph" label="Subparagraph" value="5"/>
+           </menupopup>
+         </menulist>
+       </vbox>
+       <vbox align="center">
+         <label>Number style</label>
+         <menulist id="sections.numstyle" persist="value" oncommand="setNumStyle(this);" >
+           <menupopup>
+             <menuitem id="default" selected="true" label="Default" value=""/>
+             <menuitem id="none" label="Don't show" value="none"/>
+             <menuitem id="arabic" label="Arabic" value="arabic"/>
+             <menuitem id="roman" label="Lowercase Roman" value="roman"/>
+             <menuitem id="Roman" label="Uppercase Roman" value="Roman"/>
+             <menuitem id="Alpha" label="Uppercase letters" value="Alph"/>
+             <menuitem id="alpha" label="Lowercase letters" value="alph"/>
+           </menupopup>
+         </menulist>
+       </vbox>
+     </hbox>
     <separator class="groove"/>
+      <rawlabel id="rawlabel" label = "Enable overriding ## header formats"/>
       <checkbox id="allowsectionheaders" checked="false" label="Enable overriding ## header formats"
         oncommand="enableDisableSectFormat(this);"/>
       <broadcaster id="secredefok" disabled="true"/>
@@ -120,20 +137,13 @@
                     <label class="gray_instruction" value="Click here to enter rules above the heading"/>
                   </hbox>
                   <vbox id = "toprules" pack="start" dir="reverse">                
-	                  <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)" 
-	                      height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
-	                  <vbox size="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"
-	                    height="3" style="background-color: red; overflow: visible; height:3px; width:10in;"/>  
-	                  <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
-	                    height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
-	                  <vbox size="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"
-	                    height="3" style="background-color: black; overflow: visible; height:3px; width:10in;"/>  
-	                  <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
-	                    height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
-	                  <vbox size="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"
-	                    height="3" style="background-color: black; overflow: visible; height:3px; width:10in;"/>  
-	                  <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
-	                    height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
+	                  <vbox tlwidth="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"/>  
+	                  <vbox tlwidth="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"/>  
+	                  <vbox tlwidth="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"/>  
+	                  <vbox tlwidth="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"/>  
+	                  <vbox tlwidth="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"/>  
+	                  <vbox tlwidth="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"/>  
+	                  <vbox tlwidth="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"/>  
 	                </vbox>
 	              </deck>
                 </vbox>
@@ -152,25 +162,18 @@
 	                style="min-height:20px; min-width:200px;" /-->
 	              <vbox id="bottommargin" role="sectionlayer" pack="start" tooltiptext="Click to set top margin or to enter text"
 	                style="height:20px; width:200px; overflow:visible" onclick="toggleselection(this);">
-	                <deck id="tso_toprules" selectedIndex="0">
+	                <deck id="tso_bottomrules" selectedIndex="0">
                     <hbox >
                       <label class="gray_instruction" value="Click here to enter rules below the heading"/>
                     </hbox>
                     <vbox id="bottomrules" pack="start">
-                      <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
-	                      height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
-	                    <vbox size="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"
-	                      height="3" style="background-color: red; overflow: visible; height:3px; width:10in;"/>  
-	                    <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
-	                      height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
-	                    <vbox size="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"
-	                      height="3" style="background-color: black; overflow: visible; height:3px; width:10in;"/>  
-	                    <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
-	                      height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
-	                    <vbox size="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"
-	                      height="3" style="background-color: black; overflow: visible; height:3px; width:10in;"/>  
-	                    <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
-	                      height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/> 
+	                  <vbox tlwidth="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"/>  
+	                  <vbox tlwidth="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"/>  
+	                  <vbox tlwidth="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"/>  
+	                  <vbox tlwidth="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"/>  
+	                  <vbox tlwidth="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"/>  
+	                  <vbox tlwidth="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"/>  
+	                  <vbox tlwidth="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"/>  
                     </vbox>
                   </deck> 
 	              </vbox>

@@ -1238,13 +1238,7 @@ function msiDeleteBodyContents(editor)
   var DOMUtils = Components.classes["@mozilla.org/inspector/dom-utils;1"].createInstance(Components.interfaces.inIDOMUtils);
   function useNodeForSelection(aNode)
   {
-    switch (aNode.nodeName)
-    {
-      case "dialogbase":
-      case "sw:dialogbase":
-        return true;
-      break;
-    }
+    if (aNode.nodeName=="dialogbase")return true;
     if (aNode.nodeType == Components.interfaces.nsIDOMNode.TEXT_NODE)
       return !DOMUtils.isIgnorableWhitespace(aNode);
     return true;
@@ -1466,13 +1460,8 @@ function msiGetBlockNodeParent(editor, aNode)
   {
     if (editor.nodeIsBlock(theParent))
       return theParent;
-    switch(theParent.nodeName)
-    {
-      case "dialogbase":
-      case "sw:dialogbase":
-        return theParent;
-      break;
-    }
+    if (theParent.nodeName=="dialogbase")
+      return theParent;
   }
   return null;
 }
