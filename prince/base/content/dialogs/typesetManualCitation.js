@@ -85,7 +85,7 @@ function onAccept()
     theWindow.updateEditorBibItemList(editor, data.keyList);
 
   var dd =editorControl.contentDocument;
-  var elts = dd.getElementsByTagName("sw:dialogbase");
+  var elts = dd.getElementsByTagName("dialogbase");
   var elt = elts.item(0);
   var str1 = serializer.serializeToString(elt);
   var str = "<citation>" + str1 + "</citation>";
