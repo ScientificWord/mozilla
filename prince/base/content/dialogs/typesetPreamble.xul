@@ -18,6 +18,8 @@
     onload="Startup()"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();"
+    width="400px"
+    height="350px"
     persist="screenX screenY width height">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
@@ -40,10 +42,10 @@
   <vbox>
     <groupbox>
       <caption label='&warning.label;'/>
-      <textbox multiline='true' cols='60' rows='3' readonly='true' value='&warningText.label;'/>
+      <description style="width: 80%">&warningText.label;</description>
     </groupbox>
     <spacer flex='1'/>
-    <textbox id='preambleTextbox' multiline='true' cols='80' rows='15'/>
+    <textbox id='preambleTextbox' multiline='true' cols='80' rows='10'/>
   </vbox>
 
 </dialog>
