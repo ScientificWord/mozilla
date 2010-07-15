@@ -727,7 +727,7 @@
 
 \@ifundefined{mathletters}{%
   %\def\theequation{\arabic{equation}}
-  \newcounter{equationnumber}  
+  \MSICounter{equationnumber}  
   \def\mathletters{%
      \addtocounter{equation}{1}
      \edef\@currentlabel{\theequation}%
