@@ -54,9 +54,6 @@
       <menuitem label="&MSIDocFormatCmd.label;"            
         accesskey="&MSIDocFormatCmd.accesskey;"          
         command="cmd_MSIDocFormatCmd"/>
-      <menuitem label="&MSIfrontMatterCmd.label;"            
-        accesskey="&MSIfrontMatterCmd.accesskey;"          
-        command="cmd_MSIfrontMatterCmd"/>
       <menuitem label="&MSIpreambleCmd.label;"               
         accesskey="&MSIpreambleCmd.accesskey;"             
         command="cmd_MSIpreambleCmd"/>
@@ -70,17 +67,9 @@
         accesskey="&MSItypesetOutputChoiceCmd.accesskey;"  
         command="cmd_MSItypesetOutputChoiceCmd"/>
       <menuseparator/>
-      <menu label="&MSItypesetToolsMenu.label;"              
-        accesskey="&MSItypesetToolsMenu.accesskey;">        
-        <menupopup id="MSItypesetToolsPopup">
-          <menuitem label="&MSIrunBibTeXCmd.label;"          
-            accesskey="&MSIrunBibTeXCmd.accesskey;"            
-            command="cmd_MSIrunBibTeXCmd"/>
-          <menuitem label="&MSIrunMakeIndexCmd.label;"       
-            accesskey="&MSIrunMakeIndexCmd.accesskey;"         
-            command="cmd_MSIrunBibTeXCmd"/>
-        </menupopup>
-      </menu>
+      <menuitem label="&MSIrunBibTeXCmd.label;"          
+        accesskey="&MSIrunBibTeXCmd.accesskey;"            
+        command="cmd_MSIrunBibTeXCmd"/>
       <menuitem label="&MSItypesetGenSettingsCmd.label;"     
         accesskey="&MSItypesetGenSettingsCmd.accesskey;"   
         command="cmd_MSIColorsCmd"/>
