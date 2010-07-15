@@ -527,29 +527,13 @@ function doPreambleDlg()
 
   var preambleTeXNodeSet = preambleNode.getElementsByTagName("preambleTeX");
   if (preambleTeXNodeSet.length == 0){
-     preambleTeXNode = document.createElement("preambleTeX");
-     preambleNode.appendChild(preambleTeXNode);
+     preambleTeXNode = null;
   } else {
      preambleTeXNode = preambleTeXNodeSet[0];
   }
   
-  var preambleData = new Object();
 
-  preambleData.preambleText = preambleTeXNode.textContent;
-
-
-  window.openDialog("chrome://prince/content/typesetPreamble.xul", "preamble", "chrome,close,titlebar,modal", preambleData);
-  
-  if (!preambleData.Cancel)
-  {
-      preambleNode.removeChild(preambleTeXNode);
-      preambleTeXNode = document.createElement("preambleTeX");
-
-      // may need to insert multiple cdata
-      var cdataNode = document.createCDATASection(preambleData.preambleText)
-      preambleTeXNode.appendChild(cdataNode);
-      preambleNode.appendChild(preambleTeXNode);
-  }
+  window.openDialog("chrome://prince/content/typesetPreamble.xul", "preamble", "resizable,chrome,close,titlebar,modal", preambleTeXNode);
 }
 
 function doBibChoiceDlg()
