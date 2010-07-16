@@ -357,14 +357,14 @@ void CompEngine::Execute(MathServiceRequest& msr, MathResult& mr)
       }   
       if (ptr && ((strncmp("graphSpec", ptr->src_tok, 9)) == 0)) {
         // grab and save the graph attributes
-        for (ATTRIB_REC* aptr = ptr->attrib_list; aptr != NULL; aptr = aptr->next) {
+        for (ATTRIB_REC* aptr = ptr->attrib_list; aptr != NULL; aptr = aptr->GetNext()) {
           psr->StorePlotParam (aptr->zattr_nom, aptr->zattr_val, zPT_ASCII_text);
         }
         U32 plotno = 0;
         for (ptr = ptr->first_kid; ptr != NULL; ptr=ptr->next) {
            if ( (strcmp("plot", ptr->src_tok) ) == 0) {
              ++plotno;
-             for (ATTRIB_REC *aptr = ptr->attrib_list; aptr != NULL; aptr = aptr->next) {
+             for (ATTRIB_REC *aptr = ptr->attrib_list; aptr != NULL; aptr = aptr->GetNext()) {
               psr->StorePlotParam (plotno, aptr->zattr_nom, aptr->zattr_val, zPT_ASCII_text);
              }
              for (MNODE *child = ptr->first_kid; child != NULL; child = child->next) {
