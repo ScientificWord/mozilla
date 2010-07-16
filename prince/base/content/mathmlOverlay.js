@@ -2328,137 +2328,19 @@ var msiColorObj =
   Format: function()
   {
     var res = "data:text/css,";
-    if (this.mathColor.length > 0)
+    if (this.mathColor && this.mathColor.length > 0)
       res += "math { color: "+this.mathColor+"; } ";
-    if (this.mathnameColor.length > 0)
+    if (this.mathnameColor && this.mathnameColor.length > 0)
       res += "mi[msiMathname=\"true\"] { color: "+this.mathnameColor+"; } ";
-    if (this.unitColor.length > 0)
-      res += "mi[class=\"msi_unit\"], mstyle[class=\"msi_unit\"] { color: "+this.unitColor+"; font-style: normal; } ";
-    if (this.mtextColor.length > 0)
+    if (this.unitColor && this.unitColor.length > 0)
+      res += "[class=\"msi_unit\"]{ color: "+this.unitColor+";} ";
+    if (this.mtextColor && this.mtextColor.length > 0)
       res += "mtext { color: "+this.mtextColor+"; } ";
-    if (this.matrixColor.length > 0) {
-      res += "mi[tempinput=\"true\"] { color: "+this.matrixColor+"; } ";
-//      res += "mtable[border=\"0\"], mtable:not([border]) {borderwidth: 0 1px 1px 0;\n" +
-//        "borderstyle: solid; bordercolor: " + "red;}" + //this.matrixColor+";}\n" + 
-//        "mtable[border=\"0\"] > mtr > mtd, mtable:not([border]) > mtr > mtd  \n" + 
-//        " {borderwidth: 1px 0 0 1px; borderstyle: solid; bordercolor: " + "blue;}" //this.matrixColor+";}\n";
+    if (this.matrixColor && this.matrixColor.length > 0) {
+      res += "mtd { border-color: "+this.matrixColor+"; } ";
     }
-    res += "mi[msiclass=\"enginefunction\"] { text-decoration: underline; } ";
-    res += "p[class=\"msi_passthrough\"] { padding-left: 2em; } ";
-
     return res;
   },
-
-
-//Following doesn't belong here at all. Move this functionality.
-  FormatStyleSheet : function(editorElement, bNoHeader)
-  {
-    if (!editorElement)
-      editorElement = msiGetActiveEditorElement();
-    var editor = msiGetEditor(editorElement);
-    var theTagManager = editor ? editor.tagListManager : null;
-
-    function getParaTagList(tagManager)
-    {
-      return ["para","p","mathp", "*|dialogbase"];
-    }
-    function getMarkerTagList(tagManager)
-    {
-      return ["marker"];  //what should this be?
-    }
-    function getIndexTagList(tagManager)
-    {
-      return ["indexEntry"];  //what should this be?
-    }
-    function getHelperLineSelectors(tagManager)
-    {
-      return [];
-    }
-    function getInputBoxSelectors(tagManager)
-    {
-      return ["mi[tempinput=\"true\"]"];
-    }
-
-    var res = "";
-    if (!bNoHeader)
-      res = "data:text/css,";
-    if (this.mathColor.length > 0)
-      res += "math { color: "+this.mathColor+"; } ";
-    if (this.mathnameColor.length > 0)
-      res += "mi[msiMathname=\"true\"] { color: "+this.mathnameColor+"; } ";
-    if (this.unitColor.length > 0)
-      res += "mi[class=\"msi_unit\"], mstyle[class=\"msi_unit\"] { color: "+this.unitColor+"; font-style: normal; } ";
-    if (this.mtextColor.length > 0)
-      res += "mtext { color: "+this.mtextColor+"; } ";
-    if (this.matrixColor.length > 0) {
-      res += "mi[tempinput=\"true\"] { color: "+this.matrixColor+"; } ";
-    }
-    res += "mi[msiclass=\"enginefunction\"] { text-decoration: underline; } ";
-    res += "p[class=\"msi_passthrough\"] { padding-left: 2em; } ";
-
-    var invisColorStr = "green";
-    var paraSelectors = getParaTagList(theTagManager);
-    for (var ix = 0; ix < paraSelectors.length; ++ix)
-    {
-      if (ix > 0)
-        res += ", ";
-      res += "[showinvis=\"true\"] " + paraSelectors[ix] + ":after"
-    }
-    res +=  " {content: \"\\B6\"; display: inline; font-family: Courier New; color: " + invisColorStr + "; font-weight: bold;} ";
-
-    var markerTags = getMarkerTagList(theTagManager);
-    for (var ix = 0; ix < markerTags.length; ++ix)
-    {
-      if (ix > 0)
-        res += ", ";
-      res += "[hidemarkers=\"true\"] " + markerTags[ix];
-    }
-    res += " {display: none;} ";
-
-    var indexEntryTags = getIndexTagList(theTagManager);
-    for (var ix = 0; ix < indexEntryTags.length; ++ix)
-    {
-      if (ix > 0)
-        res += ", "
-      res += "[hideindexentries=\"true\"] " + indexEntryTags[ix];
-    }
-    res += " {display: none;} ";
-
-    var helperLineSelectors = getHelperLineSelectors(theTagManager);
-    for (var ix = 0; ix < helperLineSelectors.length; ++ix)
-    {
-      if (ix > 0)
-        res += ", ";
-      res += "[hideHelperLines=\"true\"] " + helperLineSelectors[ix];
-    }
-    var inputBoxTags = getInputBoxSelectors(theTagManager);
-    for (var ix = 0; ix < inputBoxTags.length; ++ix)
-    {
-      if (ix > 0)
-        res += ", ";
-      res += "[hideInputBoxes=\"true\"] " + inputBoxTags[ix];
-    }
-    res += " {visibility: hidden}";
-
-    return res;
-
-  },
-
-
-  Init: function()
-  {
-    dump("\Init() not implemented!\n");
-  },
-  Persist: function()
-  {
-    dump("\nPersist() not implemented!\n");
-  },
-
-  mathColor: "#FF0000",
-  mathnameColor: "#888888",
-  unitColor:   "#009900",
-  mtextColor:  "#000000",
-  matrixColor: "#00CC00"
 };
 
 // Run color dialog.
