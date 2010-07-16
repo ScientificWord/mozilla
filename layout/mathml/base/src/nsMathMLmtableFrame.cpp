@@ -51,6 +51,7 @@
 #include "nsTableOuterFrame.h"
 #include "nsTableFrame.h"
 #include "nsTableCellFrame.h"
+#include "nsMathCursorUtils.h"
 
 #include "nsMathMLmtableFrame.h"
 
@@ -350,7 +351,7 @@ ListMathMLTree(nsIFrame* atLeast)
 
 NS_IMPL_ADDREF_INHERITED(nsMathMLmtableOuterFrame, nsMathMLFrame)
 NS_IMPL_RELEASE_INHERITED(nsMathMLmtableOuterFrame, nsMathMLFrame)
-NS_IMPL_QUERY_INTERFACE_INHERITED1(nsMathMLmtableOuterFrame, nsTableOuterFrame, nsMathMLFrame)
+NS_IMPL_QUERY_INTERFACE_INHERITED2(nsMathMLmtableOuterFrame, nsTableOuterFrame, nsMathMLFrame, nsMathMLContainerCursorMover)
 
 nsIFrame*
 NS_NewMathMLmtableOuterFrame (nsIPresShell* aPresShell, nsStyleContext* aContext)
@@ -683,12 +684,145 @@ nsMathMLmtableFrame::RestyleTable()
     PostRestyleEvent(mContent, eReStyle_Self, nsChangeHint_ReflowFrame);
 }
 
+
+nsresult
+nsMathMLmtableFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing,
+    PRInt32 *_retval)
+{
+  printf("mtable EnterFromLeft, count = %d\n", count);
+  nsIFrame * pFrame = GetFirstChild(nsnull);
+  nsCOMPtr<nsIContent> pContent;
+  nsCOMPtr<nsIDOMNode> pNode;
+  nsAutoString tagName;
+  NS_NAMED_LITERAL_STRING(mtrName,"mtr");
+  while (pFrame) {
+    pContent = pFrame->GetContent();
+    pNode = do_QueryInterface(pContent);
+    pNode->GetNodeName(tagName);
+    if (tagName.Equals(mtrName)) break;
+    pFrame = pFrame->GetNextSibling();
+  }
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  if (pFrame)
+  {
+    pMCM = do_QueryInterface(pFrame);
+    if (pMCM) pMCM->EnterFromLeft(nsnull, aOutFrame, aOutOffset, count, fBailing,  _retval);
+    else // child frame is not a math frame. Probably a text frame. We'll assume this for now
+    {
+      PlaceCursorBefore(pFrame, PR_TRUE, aOutFrame, aOutOffset, count);
+      *_retval = 0;
+      return NS_OK;
+    }
+  }
+  else 
+  {
+    printf("Found mtable frame with no mtr children\n");
+  }
+  return NS_OK;  
+}
+
+nsresult
+nsMathMLmtableFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
+    PRBool* fBailingOut, PRInt32 *_retval)
+{
+  printf("matable EnterFromRight, count = %d\n", count);
+  if (count > 0)
+  {
+    nsIFrame * pFrame = GetFirstChild(nsnull); // the base
+    pFrame = pFrame->GetNextSibling();
+    nsCOMPtr<nsIMathMLCursorMover> pMCM;
+    if (pFrame)
+    {
+      pMCM = do_QueryInterface(pFrame);
+      count--;
+      if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+      else // child frame is not a math frame. Probably a text frame. We'll assume this for now
+      {
+        PlaceCursorAfter(pFrame, PR_TRUE, aOutFrame, aOutOffset, count);
+        *_retval = 0;
+        return NS_OK;
+      }
+    }
+    else 
+    {
+      printf("Found msup frame with no superscript\n");
+    }
+  }
+  else
+  {
+    printf("msub EnterFromRight called with count == 0\n");
+    PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
+  }
+  return NS_OK;  
+}
+
+                            
+nsresult
+nsMathMLmtableFrame::MoveOutToRight(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
+    PRBool* fBailingOut, PRInt32 *_retval)
+{
+  printf("mtable MoveOutToRight, count = %d\n", count);
+  // if the cursor is leaving either of its children, the cursor goes past the end of the fraction if count > 0
+  nsIFrame * pChild = GetFirstChild(nsnull);
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  if (leavingFrame != pChild)
+  {
+    // leaving mtable. Count = 0
+    PlaceCursorAfter(this, PR_FALSE, aOutFrame, aOutOffset, count);
+    *_retval = 0;
+    return NS_OK;
+  }
+  else
+  {
+    // leaving base 
+    count= 0;
+    pChild = pChild->GetNextSibling();
+    pMCM = do_QueryInterface(pChild);
+    if (pMCM) pMCM->EnterFromLeft(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+    else printf("mtable MoveOutToRight: n\n");
+   *_retval = 0;
+  }
+  return NS_OK;  
+}
+
+nsresult
+nsMathMLmtableFrame::MoveOutToLeft(nsIFrame * leavingFrame, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32 count,
+    PRBool* fBailingOut, PRInt32 *_retval)
+{                
+  printf("mtable MoveOutToLeft, count = %d\n", count);
+  // if the cursor is leaving either of its children, the cursor goes past the end of the fraction if count > 0
+  nsIFrame * pChild = GetFirstChild(nsnull);
+  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+  if (leavingFrame == nsnull || leavingFrame == pChild)
+  {
+    nsIFrame * pParent = GetParent();
+    pMCM = do_QueryInterface(pParent);
+    if (pMCM) pMCM->MoveOutToLeft(this, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+    else  // parent isn't math??? shouldn't happen
+    {
+      *_retval = count;
+      *aOutFrame = nsnull;  // should allow default Mozilla code to take over
+      return NS_OK;
+    }
+  }
+  else
+  {
+    // leaving superscript. Place the cursor just after the base.
+    count= 0;
+    pMCM = do_QueryInterface(pChild);
+    if (pMCM) pMCM->EnterFromRight(nsnull, aOutFrame, aOutOffset, count, fBailingOut, _retval);
+   *_retval = 0;
+  }
+  return NS_OK;  
+}  
+
+
 // --------
 // implementation of nsMathMLmtrFrame
 
 NS_IMPL_ADDREF_INHERITED(nsMathMLmtrFrame, nsTableRowFrame)
 NS_IMPL_RELEASE_INHERITED(nsMathMLmtrFrame, nsTableRowFrame)
-NS_IMPL_QUERY_INTERFACE_INHERITED0(nsMathMLmtrFrame, nsTableRowFrame)
+NS_IMPL_QUERY_INTERFACE_INHERITED1(nsMathMLmtrFrame, nsTableRowFrame, nsMathMLContainerCursorMover)
 
 nsIFrame*
 NS_NewMathMLmtrFrame(nsIPresShell* aPresShell, nsStyleContext* aContext)
@@ -749,7 +883,7 @@ nsMathMLmtrFrame::AttributeChanged(PRInt32  aNameSpaceID,
 
 NS_IMPL_ADDREF_INHERITED(nsMathMLmtdFrame, nsTableCellFrame)
 NS_IMPL_RELEASE_INHERITED(nsMathMLmtdFrame, nsTableCellFrame)
-NS_IMPL_QUERY_INTERFACE_INHERITED0(nsMathMLmtdFrame, nsTableCellFrame)
+NS_IMPL_QUERY_INTERFACE_INHERITED1(nsMathMLmtdFrame, nsTableCellFrame, nsMathMLContainerCursorMover)
 
 nsIFrame*
 NS_NewMathMLmtdFrame(nsIPresShell* aPresShell, nsStyleContext* aContext)
@@ -829,12 +963,13 @@ nsMathMLmtdFrame::AttributeChanged(PRInt32  aNameSpaceID,
   return NS_OK;
 }
 
+
 // --------
 // implementation of nsMathMLmtdInnerFrame
 
 NS_IMPL_ADDREF_INHERITED(nsMathMLmtdInnerFrame, nsMathMLFrame)
 NS_IMPL_RELEASE_INHERITED(nsMathMLmtdInnerFrame, nsMathMLFrame)
-NS_IMPL_QUERY_INTERFACE_INHERITED1(nsMathMLmtdInnerFrame, nsBlockFrame, nsMathMLFrame)
+NS_IMPL_QUERY_INTERFACE_INHERITED2(nsMathMLmtdInnerFrame, nsBlockFrame, nsMathMLFrame, nsMathMLContainerCursorMover)
 
 nsIFrame*
 NS_NewMathMLmtdInnerFrame(nsIPresShell* aPresShell, nsStyleContext* aContext)
