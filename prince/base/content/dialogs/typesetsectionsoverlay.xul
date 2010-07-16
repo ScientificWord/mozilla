@@ -40,13 +40,15 @@
        </vbox>
        <vbox align="center">
          <label>Number style</label>
-         <menulist id="sections.numstyle" persist="value" >
+         <menulist id="sections.numstyle" persist="value" oncommand="setNumStyle(this);" >
            <menupopup>
-             <menuitem id="arabic" selected="true" label="Arabic" value="arabic"/>
+             <menuitem id="default" selected="true" label="Default" value=""/>
+             <menuitem id="none" label="Don't show" value="none"/>
+             <menuitem id="arabic" label="Arabic" value="arabic"/>
              <menuitem id="roman" label="Lowercase Roman" value="roman"/>
              <menuitem id="Roman" label="Uppercase Roman" value="Roman"/>
-             <menuitem id="Alpha" label="Uppercase letters" value="Alpha"/>
-             <menuitem id="alpha" label="Lowercase letters" value="alpha"/>
+             <menuitem id="Alpha" label="Uppercase letters" value="Alph"/>
+             <menuitem id="alpha" label="Lowercase letters" value="alph"/>
            </menupopup>
          </menulist>
        </vbox>
