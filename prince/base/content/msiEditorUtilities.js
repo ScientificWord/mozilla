@@ -5375,7 +5375,7 @@ var msiBaseMathUnitsList =
       this.initialize();
     var theNode = this.namesDoc.getElementById(aName);
     if (theNode != null)
-      return this.copyDataToObject(theNode)
+      return this.copyDataToObject(theNode);
     return null;
   },
 
@@ -5497,13 +5497,15 @@ var msiBaseMathUnitsList =
     autosub.Reset();
     var result = Components.interfaces.msiIAutosub.STATE_INIT;
     for (var ix = unitStr.length - 1; ix >= 0; --ix)
-    {
-      result = autosub.nextChar(unitStr.charAt(ix));
+    { 
+      result = autosub.nextChar(true, unitStr.charAt(ix));
       if (result == Components.interfaces.msiIAutosub.STATE_FAIL)
       {
-        result = autosub.nextChar(true,aName.charAt(ix));
+        result = autosub.nextChar(true, aName.charAt(ix));
         if (result == Components.interfaces.msiIAutosub.STATE_FAIL)
+        {
           return false;
+        }
       }
     }
     return (result == Components.interfaces.msiIAutosub.STATE_SUCCESS);
