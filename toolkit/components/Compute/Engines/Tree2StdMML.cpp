@@ -254,8 +254,10 @@ MNODE* Tree2StdMML::FixMFENCEDs(MNODE* dMML_tree)
                the_next = mfenced;
                if (IsEnclosedList(gi)) {
                  ATTRIB_REC* ar_ilk = new ATTRIB_REC("ilk", "enclosed-list");
-                 ar_ilk->next = mfenced->attrib_list;
-                 mfenced->attrib_list->prev = ar_ilk;
+                 InsertAttribute(ar_ilk, mfenced->attrib_list);
+
+                 //ar_ilk->next = mfenced->attrib_list;
+                 //mfenced->attrib_list->prev = ar_ilk;
                  mfenced->attrib_list = ar_ilk;
                }
              }
@@ -1395,7 +1397,7 @@ bool Tree2StdMML::IsFenceMO(MNODE* mml_node)
     ATTRIB_REC *arover = mml_node->attrib_list;
     while (arover) {
       if (!StringEqual(arover->zattr_nom, "fence")) {
-        arover = arover->next;
+        arover = arover->GetNext();
       } else {
         if (StringEqual("true", arover->zattr_val))
           rv = true;
@@ -1455,7 +1457,7 @@ bool Tree2StdMML::IsLeftFenceMO(MNODE* mml_node)
         else
           prefix_false = true;
       }
-      arover = arover->next;
+      arover = arover->GetNext();
     }
     if (fence_true && prefix_true)
       return true;
@@ -1506,7 +1508,7 @@ bool Tree2StdMML::IsRightFenceMO(MNODE* mml_node)
         else
           postfix_false = true;
       }
-      arover = arover->next;
+      arover = arover->GetNext();
     }
     if (fence_true && postfix_true)
       return true;
@@ -1562,7 +1564,7 @@ bool Tree2StdMML::IsEmptyMO(MNODE* mml_node)
     if (StringEqual(arover->zattr_nom, "fence"))
       if (StringEqual("true", arover->zattr_val))
         return false;
-    arover = arover->next;
+    arover = arover->GetNext();
   }
   return true;
 }
@@ -2438,10 +2440,11 @@ MNODE* Tree2StdMML::PermuteTreeToMFENCED(MNODE* opening_mo, GROUP_INFO& gi)
         mfenced->first_kid->prev = NULL;
     }
 
-    ATTRIB_REC *ar_open = new ATTRIB_REC("open", gi.opening_delim);
-    ATTRIB_REC *ar_close = new ATTRIB_REC("close", gi.closing_delim);
-    ar_open->next = ar_close;
-    ar_close->prev = ar_open;
+    ATTRIB_REC* ar_open = new ATTRIB_REC("open", gi.opening_delim);
+    ATTRIB_REC* ar_close = new ATTRIB_REC("close", gi.closing_delim);
+    InsertAttribute(ar_open, ar_close);
+    //ar_open->next = ar_close;
+    //ar_close->prev = ar_open;
     mfenced->attrib_list = ar_open;
   } else {
     TCI_ASSERT(0);
@@ -2746,15 +2749,17 @@ void Tree2StdMML::PermuteMixedNumber(MNODE* num)
 }
 
 
-
+// These should move to attriblist.
 ATTRIB_REC* Tree2StdMML::StackAttr(ATTRIB_REC* attr_stack,
                                    const char* attr_nom, 
                                    const char* attr_val)
 {
+  attr_stack = RemoveAttr(attr_stack, attr_nom);
   ATTRIB_REC* a_new = new ATTRIB_REC(attr_nom, attr_val);
-  a_new->next = attr_stack;
-  if (attr_stack)
-    attr_stack->prev = a_new;
+  InsertAttribute(a_new, attr_stack);
+  //  a_new->next = attr_stack;
+ //   if (attr_stack)
+ //     attr_stack->prev = a_new;
 
   return a_new;
 }
@@ -2766,11 +2771,12 @@ ATTRIB_REC* Tree2StdMML::UnstackAttr(ATTRIB_REC* attr_stack)
   ATTRIB_REC* rv = NULL;
 
   if (attr_stack) {
-    ATTRIB_REC *del = attr_stack;
-    rv = attr_stack->next;
-    del->next = NULL;
+    ATTRIB_REC* del = attr_stack;
+    rv = attr_stack->GetNext();
+    del->SetNext(NULL);
     DisposeAttribs(del);
   }
+
   return rv;
 }
 
@@ -2901,7 +2907,7 @@ void Tree2StdMML::InstallStackedAttr(MNODE * mml_node,
   
   while (arover) {
     if (!StringEqual(arover->zattr_nom, targ_attr)) {
-      arover = arover->next;
+      arover = arover->GetNext();
     } else {
       done = true;
       break;
@@ -2910,9 +2916,9 @@ void Tree2StdMML::InstallStackedAttr(MNODE * mml_node,
 
   if (!done) {
     ATTRIB_REC* a_new = new ATTRIB_REC(attr_stack->zattr_nom, attr_stack->zattr_val);
-    a_new->next = mml_node->attrib_list;
+    a_new->SetNext(mml_node->attrib_list);
     if (mml_node->attrib_list)
-      mml_node->attrib_list->prev = a_new;
+      mml_node->attrib_list->SetPrev(a_new);
     mml_node->attrib_list = a_new;
   }
 
