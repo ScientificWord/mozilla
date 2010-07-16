@@ -2338,10 +2338,10 @@ var msiColorObj =
       res += "mtext { color: "+this.mtextColor+"; } ";
     if (this.matrixColor.length > 0) {
       res += "mi[tempinput=\"true\"] { color: "+this.matrixColor+"; } ";
-      res += "mtable[border=\"0\"], mtable:not([border]) {borderwidth: 0 1px 1px 0;\n" +
-        "borderstyle: solid; bordercolor: " + "red;}" + //this.matrixColor+";}\n" + 
-        "mtable[border=\"0\"] > mtr > mtd, mtable:not([border]) > mtr > mtd  \n" + 
-        " {borderwidth: 1px 0 0 1px; borderstyle: solid; bordercolor: " + "blue;}" //this.matrixColor+";}\n";
+//      res += "mtable[border=\"0\"], mtable:not([border]) {borderwidth: 0 1px 1px 0;\n" +
+//        "borderstyle: solid; bordercolor: " + "red;}" + //this.matrixColor+";}\n" + 
+//        "mtable[border=\"0\"] > mtr > mtd, mtable:not([border]) > mtr > mtd  \n" + 
+//        " {borderwidth: 1px 0 0 1px; borderstyle: solid; bordercolor: " + "blue;}" //this.matrixColor+";}\n";
     }
     res += "mi[msiclass=\"enginefunction\"] { text-decoration: underline; } ";
     res += "p[class=\"msi_passthrough\"] { padding-left: 2em; } ";
@@ -2351,8 +2351,6 @@ var msiColorObj =
 
 
 //Following doesn't belong here at all. Move this functionality.
-//Additionally, implementation of hiding "helper lines" should be via putting a "not([hideHelperLines])" at the outside?
-//Probably not - just making an overriding rule.
   FormatStyleSheet : function(editorElement, bNoHeader)
   {
     if (!editorElement)
@@ -2374,7 +2372,7 @@ var msiColorObj =
     }
     function getHelperLineSelectors(tagManager)
     {
-      return ["mtable[border=\"0\"]", "mtable[border=\"0\"] > mtr > mtd", "mtable:not([border])", "mtable:not([border]) > mtr > mtd"];
+      return [];
     }
     function getInputBoxSelectors(tagManager)
     {
@@ -2394,7 +2392,6 @@ var msiColorObj =
       res += "mtext { color: "+this.mtextColor+"; } ";
     if (this.matrixColor.length > 0) {
       res += "mi[tempinput=\"true\"] { color: "+this.matrixColor+"; } ";
-      res += "mtable[border=\"0\"], mtable[border=\"0\"] > mtr > mtd, mtable:not([border]), mtable:not([border]) > mtr > mtd { border: 1px solid "+this.matrixColor+"; } ";
     }
     res += "mi[msiclass=\"enginefunction\"] { text-decoration: underline; } ";
     res += "p[class=\"msi_passthrough\"] { padding-left: 2em; } ";
@@ -2414,7 +2411,7 @@ var msiColorObj =
     {
       if (ix > 0)
         res += ", ";
-      res += "[hideMarkers=\"true\"] " + markerTags[ix];
+      res += "[hidemarkers=\"true\"] " + markerTags[ix];
     }
     res += " {display: none;} ";
 
@@ -2423,7 +2420,7 @@ var msiColorObj =
     {
       if (ix > 0)
         res += ", "
-      res += "[hideIndexEntries=\"true\"] " + indexEntryTags[ix];
+      res += "[hideindexentries=\"true\"] " + indexEntryTags[ix];
     }
     res += " {display: none;} ";
 
@@ -2434,8 +2431,6 @@ var msiColorObj =
         res += ", ";
       res += "[hideHelperLines=\"true\"] " + helperLineSelectors[ix];
     }
-    res += " {border: 0px;} ";
-
     var inputBoxTags = getInputBoxSelectors(theTagManager);
     for (var ix = 0; ix < inputBoxTags.length; ++ix)
     {
