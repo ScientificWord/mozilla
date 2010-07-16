@@ -49,6 +49,10 @@
 #include "nsMathCursorUtils.h"
 #include "nsMathMLTokenFrame.h"
 
+NS_IMPL_ADDREF_INHERITED(nsMathMLTokenFrame, nsMathMLFrame)
+NS_IMPL_RELEASE_INHERITED(nsMathMLTokenFrame, nsMathMLFrame)
+NS_IMPL_QUERY_INTERFACE_INHERITED1(nsMathMLTokenFrame, nsMathMLFrame, nsMathMLContainerCursorMover)
+
 nsIFrame*
 NS_NewMathMLTokenFrame(nsIPresShell* aPresShell, nsStyleContext* aContext)
 {
@@ -433,61 +437,61 @@ nsMathMLTokenFrame::SetQuotes()
     SetQuote(rightFrame, value);
   }
 }
-
-/* long moveOutToRight (in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count); */
-NS_IMETHODIMP 
-nsMathMLTokenFrame::MoveOutToRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
-{
-  nsIFrame * pParent = GetParent();
-  nsCOMPtr<nsIMathMLCursorMover> pMCM;
-  pMCM = do_QueryInterface(pParent);
-  if (pMCM) pMCM->MoveOutToRight(this, aOutFrame, aOutOffset, count, fBailing, _retval);
-  return NS_OK;
-}
-
-/* long moveOutToLeft (in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count); */
-NS_IMETHODIMP 
-nsMathMLTokenFrame::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
-{
-  nsIFrame * pParent = GetParent();
-  nsCOMPtr<nsIMathMLCursorMover> pMCM;
-  pMCM = do_QueryInterface(pParent);
-  if (pMCM) pMCM->MoveOutToLeft(this, aOutFrame, aOutOffset, count, fBailing, _retval);
-  return NS_OK;
-}
-
-/* long enterFromRight (in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count); */
-NS_IMETHODIMP 
-nsMathMLTokenFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
-{
-    *_retval = count;
-    if (count == 0)  //BBM: if this code stays unchanged, this test is redundant
-    {
-      PlaceCursorAfter(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
-    }
-    else
-    {
-      *_retval = 0;
-      PlaceCursorBefore(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
-    }
-    *_retval = 0;
-    return NS_OK;
-}
-
-/* long enterFromLeft (in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count); */
-NS_IMETHODIMP 
-nsMathMLTokenFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
-{
-    *_retval = count;
-    if (count > 0)  //BBM: if this code stays unchanged, this test is redundant
-    {
-      PlaceCursorAfter(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
-    }
-    else
-    {
-      *_retval = 0;
-      PlaceCursorBefore(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
-    }
-    *_retval = 0;
-    return NS_OK;
-}
+//
+///* long moveOutToRight (in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count); */
+//NS_IMETHODIMP 
+//nsMathMLTokenFrame::MoveOutToRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
+//{
+//  nsIFrame * pParent = GetParent();
+//  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+//  pMCM = do_QueryInterface(pParent);
+//  if (pMCM) pMCM->MoveOutToRight(this, aOutFrame, aOutOffset, count, fBailing, _retval);
+//  return NS_OK;
+//}
+//
+///* long moveOutToLeft (in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count); */
+//NS_IMETHODIMP 
+//nsMathMLTokenFrame::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
+//{
+//  nsIFrame * pParent = GetParent();
+//  nsCOMPtr<nsIMathMLCursorMover> pMCM;
+//  pMCM = do_QueryInterface(pParent);
+//  if (pMCM) pMCM->MoveOutToLeft(this, aOutFrame, aOutOffset, count, fBailing, _retval);
+//  return NS_OK;
+//}
+//
+///* long enterFromRight (in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count); */
+//NS_IMETHODIMP 
+//nsMathMLTokenFrame::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
+//{
+//    *_retval = count;
+//    if (count == 0)  //BBM: if this code stays unchanged, this test is redundant
+//    {
+//      PlaceCursorAfter(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
+//    }
+//    else
+//    {
+//      *_retval = 0;
+//      PlaceCursorBefore(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
+//    }
+//    *_retval = 0;
+//    return NS_OK;
+//}
+//
+///* long enterFromLeft (in nsIFrame leavingFrame, out nsIFrame aOutFrame, out long aOutOffset, in long count); */
+//NS_IMETHODIMP 
+//nsMathMLTokenFrame::EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32 *aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval)
+//{
+//    *_retval = count;
+//    if (count > 0)  //BBM: if this code stays unchanged, this test is redundant
+//    {
+//      PlaceCursorAfter(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
+//    }
+//    else
+//    {
+//      *_retval = 0;
+//      PlaceCursorBefore(this, PR_TRUE, aOutFrame, aOutOffset, *_retval);
+//    }
+//    *_retval = 0;
+//    return NS_OK;
+//}
