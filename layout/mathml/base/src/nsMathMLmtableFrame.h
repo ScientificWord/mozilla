@@ -48,7 +48,7 @@
 
 class nsMathMLmtableOuterFrame : public nsTableOuterFrame,
                                  public nsMathMLFrame,
-                                  nsMathMLContainerCursorMover
+                                 public nsMathMLContainerCursorMover
 {
 public:
   friend nsIFrame* NS_NewMathMLmtableOuterFrame(nsIPresShell* aPresShell, nsStyleContext* aContext);
@@ -154,6 +154,19 @@ public:
   // safer (albeit grossly suboptimal) to just relayout the whole thing.
   void RestyleTable();
 
+
+  NS_IMETHOD 
+  MoveOutToRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval);
+
+  NS_IMETHOD 
+  MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval);
+
+  NS_IMETHOD 
+  EnterFromLeft(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval);
+
+  NS_IMETHOD 
+  EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailing, PRInt32 *_retval);
+
 protected:
   nsMathMLmtableFrame(nsStyleContext* aContext) : nsTableFrame(aContext) {}
   virtual ~nsMathMLmtableFrame();
@@ -161,7 +174,8 @@ protected:
 
 // --------------
 
-class nsMathMLmtrFrame : public nsTableRowFrame
+class nsMathMLmtrFrame : public nsTableRowFrame,
+                         public nsMathMLContainerCursorMover  
 {
 public:
   friend nsIFrame* NS_NewMathMLmtrFrame(nsIPresShell* aPresShell, nsStyleContext* aContext);
@@ -219,13 +233,15 @@ public:
   }
 
 protected:
-  nsMathMLmtrFrame(nsStyleContext* aContext) : nsTableRowFrame(aContext) {}
+  nsMathMLmtrFrame(nsStyleContext* aContext) : nsTableRowFrame(aContext),nsMathMLContainerCursorMover(this) {}
   virtual ~nsMathMLmtrFrame();
 }; // class nsMathMLmtrFrame
 
 // --------------
 
-class nsMathMLmtdFrame : public nsTableCellFrame
+class nsMathMLmtdFrame : public nsTableCellFrame,
+                         public nsMathMLContainerCursorMover  
+                         
 {
 public:
   friend nsIFrame* NS_NewMathMLmtdFrame(nsIPresShell* aPresShell, nsStyleContext* aContext);
@@ -246,15 +262,18 @@ public:
     return nsTableCellFrame::IsFrameOfType(aFlags & ~(nsIFrame::eMathML));
   }
 
+
 protected:
-  nsMathMLmtdFrame(nsStyleContext* aContext) : nsTableCellFrame(aContext) {}
+  nsMathMLmtdFrame(nsStyleContext* aContext) : nsTableCellFrame(aContext),nsMathMLContainerCursorMover(this) {}
   virtual ~nsMathMLmtdFrame();
 }; // class nsMathMLmtdFrame
 
 // --------------
 
 class nsMathMLmtdInnerFrame : public nsBlockFrame,
-                              public nsMathMLFrame {
+                              public nsMathMLFrame,
+                              public nsMathMLContainerCursorMover  
+                              {
 public:
   friend nsIFrame* NS_NewMathMLmtdInnerFrame(nsIPresShell* aPresShell, nsStyleContext* aContext);
 
@@ -291,8 +310,9 @@ public:
     return nsBlockFrame::IsFrameOfType(aFlags & ~(nsIFrame::eMathML));
   }
 
+
 protected:
-  nsMathMLmtdInnerFrame(nsStyleContext* aContext) : nsBlockFrame(aContext) {}
+  nsMathMLmtdInnerFrame(nsStyleContext* aContext) : nsBlockFrame(aContext),nsMathMLContainerCursorMover(this)  {}
   virtual ~nsMathMLmtdInnerFrame();
 
   virtual PRIntn GetSkipSides() const { return 0; }
