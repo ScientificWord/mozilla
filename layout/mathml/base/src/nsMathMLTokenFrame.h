@@ -46,8 +46,12 @@
 // Base class to handle token elements
 //
 
-class nsMathMLTokenFrame : public nsMathMLContainerFrame {
+class nsMathMLTokenFrame : public nsMathMLContainerFrame,
+                           public nsMathMLContainerCursorMover
+{
 public:
+  NS_DECL_ISUPPORTS_INHERITED
+
   friend nsIFrame* NS_NewMathMLTokenFrame(nsIPresShell* aPresShell, nsStyleContext* aContext);
 
   virtual eMathMLFrameType GetMathMLFrameType();
@@ -86,7 +90,7 @@ public:
     return nsMathMLContainerFrame::ChildListChanged(aModType);
   }
 
-  NS_IMETHOD 
+/*  NS_IMETHOD 
   MoveOutToRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailingOut, PRInt32 *_retval);
 
   NS_IMETHOD 
@@ -97,10 +101,10 @@ public:
 
   NS_IMETHOD 
   EnterFromRight(nsIFrame *leavingFrame, nsIFrame **aOutFrame, PRInt32* aOutOffset, PRInt32 count, PRBool* fBailingOut, PRInt32 *_retval);
-
+*/
 
 protected:
-  nsMathMLTokenFrame(nsStyleContext* aContext) : nsMathMLContainerFrame(aContext) {}
+  nsMathMLTokenFrame(nsStyleContext* aContext) : nsMathMLContainerFrame(aContext), nsMathMLContainerCursorMover(this) {}
   virtual ~nsMathMLTokenFrame();
 
   virtual PRIntn GetSkipSides() const { return 0; }
