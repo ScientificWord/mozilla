@@ -367,10 +367,6 @@
                 id="tagmenuFunctionKeys" 
                 observes="cmd_tagkeyassignments" 
                 accesskey="&tagmenuFunctionKeys.accesskey;"/>
-      <menuitem label="&tagmenuApply.label;" 
-                id="tagmenuApply" 
-                observes="cmd_unimp" 
-                accesskey="&tagmenuApply.accesskey;"/>
       <menu id="menutagadvanced" label="Advanced">
         <menupopup>
           <menuitem label="&tagmenuFont.label;" 
@@ -406,9 +402,6 @@
       <menuitem label="Themes" 
                 id="menu_themes" 
                 observes="Tools:Themes"/>
-      <menuitem label="Tag appearance" 
-                id="cascades" 
-                observes="Cascades"/>
       <menuseparator id="toolsMenuSeparator"/>
       <menuitem label="&autoSubstituteDlg.label;" 
                 accesskey="&autoSubstituteDlg.accesskey;" 
@@ -497,10 +490,6 @@
                 accesskey="&viewTeXLog.accesskey;"    
                 observes="cmd_showTeXLog" 
                 label="&viewTeXLog.label;"/>
-      <menuitem id="viewXSLTLog"  
-                accesskey="&viewXSLTLog.accesskey;"    
-                observes="cmd_showXSLTLog"
-                label="&viewXSLTLog.label;"/>
       <menuseparator/>
       <menu id="sidebar-menu" label="Sidebars" >
         <menupopup>
