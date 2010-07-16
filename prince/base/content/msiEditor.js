@@ -3699,13 +3699,13 @@ function msiEditorDoShowInvisibles(editorElement, viewSettings)
   else
     theBody.removeAttribute("hideInputBoxes");
   if (!viewSettings.showIndexEntries)
-    theBody.setAttribute("hideIndexEntries", "true");
+    theBody.setAttribute("hideindexentries", "true");
   else
-    theBody.removeAttribute("hideIndexEntries");
+    theBody.removeAttribute("hideindexentries");
   if (!viewSettings.showMarkers)
-    theBody.setAttribute("hideMarkers", "true");
+    theBody.setAttribute("hidemarkers", "true");
   else
-    theBody.removeAttribute("hideMarkers");
+    theBody.removeAttribute("hidemarkers");
   if (!viewSettings.showFootnotes)
     theBody.setAttribute("hideFootnotes", "true");
   else
@@ -3716,7 +3716,7 @@ function msiEditorDoShowInvisibles(editorElement, viewSettings)
     theBody.removeAttribute("hideOtherNotes");
 
   //  var dumpStr = "Element [" + theBody.nodeName + "] now has settings: [";
-  //  var attribNames = ["showinvis", "hideHelperLines", "hideInputBoxes", "hideIndexEntries", "hideMarkers"];
+  //  var attribNames = ["showinvis", "hideHelperLines", "hideInputBoxes", "hideindexentries", "hidemarkers"];
   //  for (var ix = 0; ix < attribNames.length; ++ix)
   //  {
   //    if (ix > 0)
@@ -3764,10 +3764,10 @@ function msiGetViewSettingsFromDocument(editorElement)
     retVal.showHelperLines = (theBody.getAttribute("hideHelperLines")!="true");
   if (theBody.hasAttribute("hideInputBoxes"))
     retVal.showInputBoxes = (theBody.getAttribute("hideInputBoxes")!="true");
-  if (theBody.hasAttribute("hideIndexEntries"))
-    retVal.showIndexEntries = (theBody.getAttribute("hideIndexEntries")!="true");
-  if (theBody.hasAttribute("hideMarkers"))
-    retVal.showMarkers = (theBody.getAttribute("hideMarkers")!="true");
+  if (theBody.hasAttribute("hideindexentries"))
+    retVal.showIndexEntries = (theBody.getAttribute("hideindexentries")!="true");
+  if (theBody.hasAttribute("hidemarkers"))
+    retVal.showMarkers = (theBody.getAttribute("hidemarkers")!="true");
 
   return retVal;
 }
