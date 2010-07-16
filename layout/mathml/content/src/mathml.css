@@ -314,7 +314,7 @@ mtd {
   padding-bottom: 0.5ex; /* half of rowspacing[rowindex] */
   padding-top: 0.5ex;    /* half of rowspacing[rowindex-1] */
 }
-/* turn off the spacing at the periphery of boundary cells */
+/* turn off the spacing at the periphery of boundary cells -- taken out by BBM
 mtr:first-child > mtd {
   padding-top: 0ex;
 }
@@ -326,7 +326,7 @@ mtd:first-child {
 }
 mtd:last-child {
   padding-right: 0em;
-}
+}                         */
 /* re-instate the spacing if the table has a surrounding frame */
 mtable[frame="solid"] > mtr:first-child > mtd,
 mtable[frame="dashed"] > mtr:first-child > mtd {
