@@ -3363,7 +3363,7 @@ function getUntitledName(destinationDirectory)
     fdir.append("main.xhtml");
     if (!ffile.exists() && !fdir.exists()) return ffile.leafName;
   }
-  alert("too many files called 'untitledxx.sci' in directory "); // BBM: fix this up
+  alert("too many files called 'untitledxx.sci' in directory "+destinationDirectory.path); // BBM: fix this up
   return "";
 };
     
@@ -4608,10 +4608,10 @@ function msiViewSettings(viewFlags)
   this.showInvisibles = ((viewFlags & this.hideInvisiblesFlag) == 0);
   this.showHelperLines = ((viewFlags & this.hideHelperLinesFlag) == 0);
   this.showInputBoxes = ((viewFlags & this.hideInputBoxesFlag) == 0);
-  this.showMarkers = ((viewFlags & this.hideMarkersFlag) == 0);
+  this.showMarkers = ((viewFlags & this.hidemarkersFlag) == 0);
   this.showFootnotes = ((viewFlags & this.hideFootnotesFlag) == 0);
   this.showOtherNotes = ((viewFlags & this.hideOtherNotesFlag) == 0);
-  this.showIndexEntries = ((viewFlags & this.hideIndexEntriesFlag) == 0);
+  this.showIndexEntries = ((viewFlags & this.hideindexentriesFlag) == 0);
 
   this.match = function(otherSettings)
   {
@@ -4642,9 +4642,9 @@ function msiViewSettings(viewFlags)
     if (!this.showInputBoxes)
       theFlags |= this.hideInputBoxesFlag;
     if (!this.showMarkers)
-      theFlags |= this.hideMarkersFlag;
+      theFlags |= this.hidemarkersFlag;
     if (!this.showIndexEntries)
-      theFlags |= this.hideIndexEntriesFlag;
+      theFlags |= this.hideindexentriesFlag;
     if (!this.showFootnotes)
       theFlags |= this.hideFootnotesFlag;
     if (!this.showOtherNotes)
@@ -4659,8 +4659,8 @@ var msiViewSettingsBase =
   hideInvisiblesFlag   :  1,
   hideHelperLinesFlag  :  2,
   hideInputBoxesFlag   :  4,
-  hideMarkersFlag      :  8,
-  hideIndexEntriesFlag : 16,
+  hidemarkersFlag      :  8,
+  hideindexentriesFlag : 16,
   hideFootnotesFlag    : 32,
   hideOtherNotesFlag   : 64
 };
