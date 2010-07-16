@@ -527,18 +527,14 @@ msiEditor::InsertSymbol(PRUint32 symbol)
       PRInt32 theOffset(0);
       if (!bCollapsed)
       {
-        res = NS_ERROR_FAILURE;
-        // TODO add stuff so that selected stuff is changed to become the base  or the script ?
+        res = DeleteSelection(nsIEditor::eNone);        // TODO add stuff so that selected stuff is changed to become the base  or the script ?
         // current SWP behavoir is to make it the script, but this may not be correct in light
         // of the fact that sub and sup have a well defined base in mathml.
         // Also need to deal with the case where we are not in math, or part of the selection is not
         // in math.
       }
-      else
-      {
-        theNode = startNode;
-        theOffset = startOffset;
-      }
+      theNode = startNode;
+      theOffset = startOffset;
       if (NS_SUCCEEDED(res))
         res = InsertSymbolEx(selection, theNode, theOffset, symbol);
     }
@@ -1028,13 +1024,13 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
         (keyCode == nsIDOMKeyEvent::DOM_VK_UP    ||  keyCode == nsIDOMKeyEvent::DOM_VK_DOWN))
    {
      PRBool preventDefault(PR_FALSE);
-     //if (keyCode == nsIDOMKeyEvent::DOM_VK_UP    ||  keyCode == nsIDOMKeyEvent::DOM_VK_DOWN) 
-     //{
+     if (keyCode == nsIDOMKeyEvent::DOM_VK_UP    ||  keyCode == nsIDOMKeyEvent::DOM_VK_DOWN) 
+     {
        res = HandleArrowKeyPress(keyCode, isShift, ctrlKey, altKey, metaKey, preventDefault); 
        if (NS_SUCCEEDED(res) && preventDefault)
          aKeyEvent->PreventDefault();
        if (preventDefault) return NS_OK;
-     //}
+     }
    }
     // Check for mapped characters -- function keys or one-shot mapping
     

@@ -264,6 +264,19 @@ IncludeSubdoc>TeX {
   display: none;
 }
 
+
+button [class="frontmattertag"] {
+  position: absolute;
+  left: -160px;
+  font-family: sans-serif;
+  font-style: normal;
+}
+
+texb button {
+  font-family: sans-serif;
+  font-style: normal;
+}
+
 mml|menclose[notation~="box"] {
   border-style : solid;
   border-width : thin;
@@ -283,14 +296,49 @@ mml|menclose[notation~="roundedbox"] {
 }
 
 
-button [class="frontmattertag"] {
-  position: absolute;
-  left: -160px;
-  font-family: sans-serif;
-  font-style: normal;
+*[hideIndexEntries="true"] indexitem {
+  display: none;
 }
 
-texb button {
-  font-family: sans-serif;
-  font-style: normal;
+*[hideindexentries="true"] indexitem {
+  display: none;
 }
+
+*[hidemarkers] a[key] {
+  display: none !important;
+}
+
+*[hideMarkers] a[key] {
+  display: none !important;
+}
+
+
+*[hideHelperLines="true"] mml|mtd {
+  border-style : none;
+}
+
+mml|mtd {
+  border-color: green;
+  border-width: 0 1px 1px 0;
+  border-style: solid;
+}
+
+mml|mtr > mml|mtd:first-child {
+  border-left-width: 1px;
+}
+
+  
+mml|mtr:first-child > mml|mtd {
+  border-top-width: 1px;
+}
+
+[hideInputBoxes="true"] mml|*[tempinput="true"] {
+  display:none;
+
+}
+
+mml|*[tempinput="true"] {
+  display: inline;
+  color: green;
+}
+
