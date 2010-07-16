@@ -3,24 +3,30 @@
 //const mmlns    = "http://www.w3.org/1998/Math/MathML";
 //const xhtmlns  = "http://www.w3.org/1999/xhtml";
 
-var data;
+var node;
+var newNode = false;
+var editor;  
+var preamble;
 
 // dialog initialization code
 function Startup()
 {
 //  var editor = GetCurrentEditor();
   var editorElement = msiGetParentEditorElementForDialog(window);
-  var editor = msiGetEditor(editorElement);
+  editor = msiGetEditor(editorElement);
   if (!editor) {
     window.close();
     return;
   }
-
+  preamble = editor.document.getElementsByTagName('preamble')[0];
   doSetOKCancel(onAccept, onCancel);
-  data = window.arguments[0];
-  data.Cancel = false;
-  gDialog.preambleText = data.preambleText;
-
+  node = window.arguments[0];
+  if (!node)
+  {
+    newNode=true;
+    node=editor.createNode('preambleTeX',preamble,1000); 
+  }
+  document.getElementById("preambleTextbox").value = node.textContent;
   InitDialog();
 
 //  document.getElementById("preambleTextbox").focus();
@@ -31,8 +37,6 @@ function Startup()
 
 function InitDialog()
 {
-  document.getElementById("preambleTextbox").value = gDialog.preambleText;
-
 //  checkInaccessibleAcceleratorKeys(document.documentElement);
 
 //  gDialog.tabOrderArray = new Array( gDialog.positionSpecGroup,
@@ -44,15 +48,27 @@ function InitDialog()
 
 function onAccept()
 {
-  data.preambleText = document.getElementById("preambleTextbox").value;
+  try {
+    var value = document.getElementById("preambleTextbox").value;
+    var cdata = node.ownerDocument.createCDATASection(value);
+    while (node.firstChild) 
+    {
+      node.removeChild(node.firstCchild);
+    }
+    node.appendChild(cdata);
 
-  SaveWindowLocation();
-  return true;
+    SaveWindowLocation();
+    return true;
+  }
+  catch(e){
+    dump("error in onAccept: "+e.message);
+  }
+
 }
 
 function onCancel()
 {
-  data.Cancel = true;
+  return true;
 }
 
 function doAccept()
