@@ -320,7 +320,7 @@ char* TNodeToStr(MNODE * mml_node, char *prefix, int indent)
     while (rover) {
       sprintf(zzz, " %s=\"%s\"", rover->zattr_nom, rover->zattr_val);
       buffer = AppendStr2HeapStr(buffer, bln, zzz);
-      rover = rover->next;
+      rover = rover->GetNext();
     }
 
     if (mml_node->p_chdata && mml_node->first_kid) {
@@ -884,7 +884,7 @@ void JBM::DumpTNode(MNODE* t_node, int indent)
     while (rover) {
       sprintf(zzz, " %s=\"%s\"", rover->zattr_nom, rover->zattr_val);
       JBMLine(zzz);
-      rover = rover->next;
+      rover = rover->GetNext();
     }
 
     if (t_node->p_chdata && t_node->first_kid) {
