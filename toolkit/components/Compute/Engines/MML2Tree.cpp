@@ -91,8 +91,9 @@ MNODE* MML2Tree::GetElementList(const char* z_src,
 
     if (*needle == '<') {       // found a token start
       if (*(needle + 1) == '/') { // we're at the end of the parent element
-        if (!VerifyElementEnder(parent, needle + 1))
+        if (!VerifyElementEnder(parent, needle + 1)){
           TCI_ASSERT(0);
+        }
         break;
       } else {                  
         // we're at the start of one of the siblings in the current list
@@ -253,7 +254,7 @@ int MML2Tree::GetElementHeader(const char* p_header,
   
   // handle attributes
   ATTRIB_REC* a_list = NULL;
-  ATTRIB_REC* tail;
+  ATTRIB_REC* tail = NULL;
 
   while (1) {
     while (*needle && *needle <= ' ') {
@@ -268,9 +269,8 @@ int MML2Tree::GetElementHeader(const char* p_header,
       needle += bytesdone;
 
       if (new_attr) {
-        if (a_list) {
-          tail->next = new_attr;
-          new_attr->prev = tail;
+        if (tail) {
+          InsertAttribute(tail, new_attr);
         } else
           a_list = new_attr;
         tail = new_attr;
