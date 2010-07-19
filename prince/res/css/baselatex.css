@@ -1,5 +1,18 @@
 @namespace mml url("http://www.w3.org/1998/Math/MathML");
 
+/* This section gives the default colors for a range 
+of items. The user can override these colors using a dialog. 
+In that case in internal style sheet will rewrite these rules. */
+
+mml|math { color: red;}
+[msimathname="true"] { color: gray; }
+mml|*[class="msi_unit"] { color: green; font-style: normal;}
+mml|mtd {border-color: green; }
+mml|mtext { color: black; }  
+[msiclass="msi_passthrough"] {color: orange; }
+mml|mi[msiclass="enginefunction"] {text-decoration: underline; }
+
+
 body { 
   display: block;
   font-family: Georgia;
@@ -318,7 +331,6 @@ mml|menclose[notation~="roundedbox"] {
 }
 
 mml|mtd {
-  border-color: green;
   border-width: 0 1px 1px 0;
   border-style: solid;
 }
