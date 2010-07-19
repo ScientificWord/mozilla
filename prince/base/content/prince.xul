@@ -17,7 +17,7 @@
 <?xul-overlay href="chrome://prince/content/MathmlOverlay.xul" ?>
 <?xul-overlay href="chrome://prince/content/ComputeOverlay.xul" ?>
 <?xul-overlay href="chrome://prince/content/typesetOverlay.xul" ?>
-<?xul-overlay href="chrome://cascades/content/cascadesOverlay.xul" ?>
+<!--?xul-overlay href="chrome://cascades/content/cascadesOverlay.xul" ? -->
 
 <!DOCTYPE window [
 <!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
