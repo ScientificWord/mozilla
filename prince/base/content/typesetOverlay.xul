@@ -63,10 +63,10 @@
       <menuitem label="&MSItypesetOptionsAndPackagesCmd.label;" 
         accesskey="&MSItypesetOptionsAndPackagesCmd.accesskey;" 
         command="cmd_MSItypesetOptionsAndPackagesCmd"/>
-      <menuitem label="&MSItypesetOutputChoiceCmd.label;"    
+      <!--menuitem label="&MSItypesetOutputChoiceCmd.label;"    
         accesskey="&MSItypesetOutputChoiceCmd.accesskey;"  
         command="cmd_MSItypesetOutputChoiceCmd"/>
-      <menuseparator/>
+      <menuseparator/ -->
       <menuitem label="&MSIrunBibTeXCmd.label;"          
         accesskey="&MSIrunBibTeXCmd.accesskey;"            
         command="cmd_MSIrunBibTeXCmd"/>
