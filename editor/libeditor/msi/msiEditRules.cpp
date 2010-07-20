@@ -364,23 +364,27 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
   mHTMLEditor->DumpNode(newMath, 0, true);
   printf("\nCursor idx = %d\n", idx);
 
-  DebDisplaySelection("\nSelection after inserting new math", aSelection, mMSIEditor, true);
+  if (newMath != NULL){
+ 
+
+     DebDisplaySelection("\nSelection after inserting new math", aSelection, mMSIEditor, true);
   
-  nsCOMPtr<nsIDOMNode> theNode = 0;
-  PRInt32 theOffset = 0;
-  FindCursorNodeAndOffset(mHTMLEditor, newMath, idx, theNode, theOffset);
+     nsCOMPtr<nsIDOMNode> theNode = 0;
+     PRInt32 theOffset = 0;
+     FindCursorNodeAndOffset(mHTMLEditor, newMath, idx, theNode, theOffset);
 
-  printf("\nThe indicated node\n ");
-  mHTMLEditor->DumpNode(theNode, 0, true);
-  printf("\nOffset = %d\n", theOffset);
+     printf("\nThe indicated node\n ");
+     mHTMLEditor->DumpNode(theNode, 0, true);
+     printf("\nOffset = %d\n", theOffset);
 
-  nsIDOMRange* range;
-  aSelection->GetRangeAt(0, &range);
+     nsIDOMRange* range;
+     aSelection->GetRangeAt(0, &range);
 
-  range->SetStart(theNode, theOffset);
-  aSelection->CollapseToStart();
+     range->SetStart(theNode, theOffset);
+     aSelection->CollapseToStart();
 
-  DebDisplaySelection("\nFinal selection", aSelection, mMSIEditor, true);
+     DebDisplaySelection("\nFinal selection", aSelection, mMSIEditor, true);
+  }
 
   *aHandled = PR_TRUE;
 
@@ -448,7 +452,7 @@ PRInt32 CharLength(nsCOMPtr<nsIDOMNode> node)
     nsCOMPtr<nsIDOM3Node> m;
     m = do_QueryInterface(node);
     m->GetTextContent(str);
-	return str.Length();
+	  return str.Length();
 }
 
 
@@ -476,18 +480,18 @@ PRInt32 FindCursorIndex(nsHTMLEditor* editor,
       
       nsCOMPtr<msiIMathMLEditingBC> editingBC; 
       PRUint32 dontcare(0);
-	  PRUint32 mathmltype;
+	    PRUint32 mathmltype;
 
-	  msiUtils::GetMathMLEditingBC(editor, node, dontcare, editingBC);
+	    msiUtils::GetMathMLEditingBC(editor, node, dontcare, editingBC);
       if (editingBC) {
-	    mathmltype = msiUtils::GetMathmlNodeType(editingBC);
+	      mathmltype = msiUtils::GetMathmlNodeType(editingBC);
 	  }
 
-      nsCOMPtr<nsIDOMNodeList> children;
+    nsCOMPtr<nsIDOMNodeList> children;
 	  PRUint32 number;
 	  nsCOMPtr<nsIDOMNode> child;
 
-      node->GetChildNodes(getter_AddRefs(children));
+    node->GetChildNodes(getter_AddRefs(children));
 	  msiUtils::GetNumberofChildren(node, number);
 	  
 	  //int lastChildIndex = number;
