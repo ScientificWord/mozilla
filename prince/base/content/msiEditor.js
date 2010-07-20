@@ -33,6 +33,8 @@ const msiEditorJS_duplicateTest = "Bad";
 //var gComputeToolbar;
 //var gViewFormatToolbar;
 
+var dynAllTagsStyleSheet;
+
 function aColorObj(editorElement) 
 {
   this.mEditorElement = editorElement;
@@ -753,7 +755,40 @@ function msiEditorDocumentObserver(editorElement)
             }
             else    
               editor.addTagInfo(tagdeflist[i]);
+            
           }
+// Now build the style sheet for the AllTagsView
+          var tagclasses = ["texttag","paratag","listtag","structtag","envtag","frontmtag"];
+          var colors     = ['yellow', 'pink',    'lightblue', 'green', 'gray', 'red'];
+          var j;
+          var taglist;
+          var i;
+          var str = "";
+          for (j = 0; j < tagclasses.length; j++)
+          {
+            taglist = (editor.tagListManager.getTagsInClass(tagclasses[j]," ", false)).split(" ");
+            for (i = 0; i < taglist.length; i++)
+            {
+              if (taglist[i][0] != "(")
+                str += "\n"+taglist[i]+":before {\n  content: '"+taglist[i]+"';\n  background-color: "+colors[j]+";\n}\n";
+            }
+          }
+          var htmlurlstring = msiGetEditorURL(this.mEditorElement); 
+          var htmlurl = msiURIFromString(htmlurlstring);
+          var cssFile = msiFileFromFileURL(htmlurl).parent; 
+          cssFile.append("css");
+          if (!cssFile.exists()) cssFile.create(1, 0755); 
+          cssFile.append("msi_Tags.css");
+          dynAllTagsStyleSheet= msiFileURLStringFromFile(cssFile);
+          var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+          fos.init(cssFile, -1, -1, false);
+          var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+            .createInstance(Components.interfaces.nsIConverterOutputStream);
+          os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
+          os.writeString(str);
+          os.close();
+          fos.close();
+    
           try {
             editorElement.mgMathStyleSheet = msiColorObj.FormatStyleSheet(editorElement);
 //            dump("Internal style sheet contents: \n\n" + editorElement.mgMathStyleSheet + "\n\n");
@@ -3546,6 +3581,7 @@ function msiSetDisplayMode(editorElement, mode)
     // Load/unload appropriate override style sheet
     try {
       var editor = msiGetEditor(editorElement);
+      var url;
       editor.QueryInterface(nsIEditorStyleSheets);
       editor instanceof Components.interfaces.nsIHTMLObjectResizer;
 
@@ -3557,7 +3593,7 @@ function msiSetDisplayMode(editorElement, mode)
           if (editorElement.mgMathStyleSheet != null)
             editor.enableStyleSheet(editorElement.mgMathStyleSheet, false);
           editor.enableStyleSheet(gMathStyleSheet, false);
-          editor.enableStyleSheet(kAllTagsStyleSheet, false);
+          editor.enableStyleSheet(dynAllTagsStyleSheet, false);
           editor.isImageResizingEnabled = true;
           break;
 
@@ -3568,7 +3604,7 @@ function msiSetDisplayMode(editorElement, mode)
           else
             editor.addOverrideStyleSheet(gMathStyleSheet);
           // Disable ShowAllTags mode
-          editor.enableStyleSheet(kAllTagsStyleSheet, false);
+          editor.enableStyleSheet(dynAllTagsStyleSheet, false);
           editor.isImageResizingEnabled = true;
           editor.enableTagMananger();
         break;
@@ -3579,7 +3615,7 @@ function msiSetDisplayMode(editorElement, mode)
             editor.addOverrideStyleSheet(editorElement.mgMathStyleSheet);
           else
             editor.addOverrideStyleSheet(gMathStyleSheet);
-          editor.addOverrideStyleSheet(kAllTagsStyleSheet);
+          editor.addOverrideStyleSheet(dynAllTagsStyleSheet);
           // don't allow resizing in AllTags mode because the visible tags
           // change the computed size of images and tables...
           editor.enableTagMananger();
@@ -3589,7 +3625,9 @@ function msiSetDisplayMode(editorElement, mode)
           editor.isImageResizingEnabled = false;
           break;
       }
-    } catch(e) {}
+    } catch(e) {
+        dump("Exception in msiSetDisplayMode: "+e.message+"\n");
+      }
 
     // Switch to the normal editor (first in the deck)
     if ("gContentWindowDeck" in window)
