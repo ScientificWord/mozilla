@@ -35,7 +35,7 @@
    -
    - ***** END LICENSE BLOCK ***** -->
 
-<!ENTITY windowTitle.label "Link Properties">
+<!ENTITY windowTitle.label "Hyperlink">
 <!ENTITY LinkURLBox.label "Link Location">
 <!ENTITY LinkURLEditField.label "Enter a web page location, a local file or select a marker from the popup list">
 <!ENTITY LinkURLEditField.accessKey "URL is relative to document location">
