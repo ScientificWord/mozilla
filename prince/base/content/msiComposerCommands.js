@@ -2309,12 +2309,16 @@ function msiSoftSave( editor, editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
+
   if (!msiIsTopLevelEditor(editorElement))
     return false;
+
   //if (!editor) 
   editor = msiGetEditor(editorElement);
+  
   var aMimeType = editor.contentsMIMEType;
   var editorDoc = editor.document;
+
   if (!editorDoc)
     throw Components.results.NS_ERROR_NOT_INITIALIZED;
 
@@ -2324,6 +2328,25 @@ function msiSoftSave( editor, editorElement)
 //      && editorType != "htmlmail" && editorType != "textmail")
 //    throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
 //
+  
+  // Get the current definitions from compute engine and place in preamble.
+  var defnListString = "<body>" + GetCurrentEngine().getDefinitions() + "</body>";
+
+  var preamble = editorDoc.getElementsByTagName("preamble")[0];
+
+  var oldDefnList = editorDoc.getElementsByTagName("definitionlist")[0];
+
+  if (oldDefnList)
+     oldDefnList.parentNode.removeChild(oldDefnList);
+     
+
+  var defnList = editorDoc.createElement("definitionlist");
+
+  insertXML(editor, defnListString, defnList, 0, true);
+
+  preamble.appendChild(defnList);
+
+
   var saveAsTextFile = msiIsSupportedTextMimeType(aMimeType);
   // check if the file is to be saved is a format we don't understand; if so, bail
   if (aMimeType != "text/html" && aMimeType != "application/xhtml+xml" && aMimeType != "text/xml" && !saveAsTextFile)
