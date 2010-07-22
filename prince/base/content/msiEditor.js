@@ -758,19 +758,52 @@ function msiEditorDocumentObserver(editorElement)
             
           }
 // Now build the style sheet for the AllTagsView
-          var tagclasses = ["texttag","paratag","listtag","structtag","envtag","frontmtag"];
-          var colors     = ['yellow', 'pink',    'lightblue', 'green', 'gray', 'red'];
+          var templatefile = msiFileFromFileURL(msiURIFromString("resource://app/res/css/tagtemplate.css"));
+          var data = "";  
+          var fstream = Components.classes["@mozilla.org/network/file-input-stream;1"].  
+                                  createInstance(Components.interfaces.nsIFileInputStream);  
+          var cstream = Components.classes["@mozilla.org/intl/converter-input-stream;1"].  
+                                  createInstance(Components.interfaces.nsIConverterInputStream);  
+          fstream.init(templatefile, -1, 0, 0);  
+          cstream.init(fstream, "UTF-8", 0, 0);  
+  
+          let (templatestr = {}) {  
+            cstream.readString(-1, templatestr); // read the whole file and put it in str.value  
+            data = templatestr.value;  
+          }  
+          cstream.close(); // this closes fstream  
+          var classtemplates = data.split(/\-{4,}/);
           var j;
+          for (j = 0; j < classtemplates.length; j++) classtemplates[j]=classtemplates[j].replace(/^\s*/,"");
+
+
+          var tagclasses = ["texttag","paratag","listtag","structtag","envtag","frontmtag"];
           var taglist;
           var i;
+          var k;
           var str = "";
+          var ok;
+          var classname;
+          var classtemplate;
           for (j = 0; j < tagclasses.length; j++)
           {
-            taglist = (editor.tagListManager.getTagsInClass(tagclasses[j]," ", false)).split(" ");
+            ok = false;
+            classname= tagclasses[j];
+            for (k = 0; k < classtemplates.length; k++)
+            {
+              if (classtemplates[k].indexOf(classname)==0) 
+              {
+                classtemplate = classtemplates[k];
+                ok = true;
+                break;
+              }
+            }
+
+            taglist = (editor.tagListManager.getTagsInClass(classname," ", false)).split(" ");
             for (i = 0; i < taglist.length; i++)
             {
               if (taglist[i][0] != "(")
-                str += "\n"+taglist[i]+":before {\n  content: '"+taglist[i]+"';\n  background-color: "+colors[j]+";\n}\n";
+                str += classtemplate.replace(classname,taglist[i],"g")+"\n";
             }
           }
           var htmlurlstring = msiGetEditorURL(this.mEditorElement); 

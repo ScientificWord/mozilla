@@ -1,0 +1,37 @@
+texttag:before {
+  content: 'texttag';
+  background-color: yellow;
+  border: thin solid black;
+  padding: 2px;
+  -moz-border-radius: 4px;
+}
+
+------
+paratag:before {
+  content: 'paratag';
+  background-color: fuchsia;
+}
+
+------
+listtag:before {
+  content: 'listtag';
+  background-color: silver;
+}
+
+------
+structtag:before {
+  content: 'structtag';
+  background-color: green;
+}
+
+------
+envtag:before {
+  content: 'envtag';
+  background-color: teal;
+}
+
+------
+frontmtag:before {
+  content: 'frontmtag';
+  background-color: gray;
+}
