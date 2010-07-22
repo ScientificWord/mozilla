@@ -38,7 +38,7 @@
 <!-- These strings are for use specifically in the editor's image and form image dialogs. -->
 
 <!-- Window title -->
-<!ENTITY windowTitle.label "Image Properties">
+<!ENTITY windowTitle.label "Image">
 
 <!ENTITY pixelsPopup.value "pixels">
 <!ENTITY percentPopup.value "percent">
