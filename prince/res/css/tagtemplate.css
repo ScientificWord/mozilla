@@ -1,5 +1,6 @@
 texttag:before {
   content: 'texttag';
+  font: bold small sans-serif;
   background-color: yellow;
   border: thin solid black;
   padding: 2px;
@@ -9,29 +10,51 @@ texttag:before {
 ------
 paratag:before {
   content: 'paratag';
-  background-color: fuchsia;
+  background-color: rgb(255,200,200);
+  font: bold small sans-serif;
+  border: thin solid black;
+  padding: 2px;
+  -moz-border-radius: 4px;
 }
 
 ------
 listtag:before {
   content: 'listtag';
   background-color: silver;
+  font: bold small sans-serif;
+  border: thin solid black;
+  padding: 2px;
+  -moz-border-radius: 4px;
 }
 
 ------
 structtag:before {
   content: 'structtag';
-  background-color: green;
+  color: green;
+  background-color: silver;
+  font: bold small sans-serif;
+  border: thin solid black;
+  padding: 2px;
+  -moz-border-radius: 4px;
 }
 
 ------
 envtag:before {
   content: 'envtag';
-  background-color: teal;
+  color: teal;
+  background-color: silver;
+  font: bold small sans-serif;
+  border: thin solid black;
+  padding: 2px;
+  -moz-border-radius: 4px;
 }
 
 ------
 frontmtag:before {
   content: 'frontmtag';
-  background-color: gray;
+  background-color: silver;
+  font: bold small sans-serif;
+  border: thin solid black;
+  padding: 2px;
+  -moz-border-radius: 4px;
 }
