@@ -1,0 +1,60 @@
+texttag:before {
+  content: 'texttag';
+  font: bold small sans-serif;
+  background-color: yellow;
+  border: thin solid black;
+  padding: 2px;
+  -moz-border-radius: 4px;
+}
+
+------
+paratag:before {
+  content: 'paratag';
+  background-color: rgb(255,200,200);
+  font: bold small sans-serif;
+  border: thin solid black;
+  padding: 2px;
+  -moz-border-radius: 4px;
+}
+
+------
+listtag:before {
+  content: 'listtag';
+  background-color: silver;
+  font: bold small sans-serif;
+  border: thin solid black;
+  padding: 2px;
+  -moz-border-radius: 4px;
+}
+
+------
+structtag:before {
+  content: 'structtag';
+  color: green;
+  background-color: silver;
+  font: bold small sans-serif;
+  border: thin solid black;
+  padding: 2px;
+  -moz-border-radius: 4px;
+}
+
+------
+envtag:before {
+  content: 'envtag';
+  color: teal;
+  background-color: silver;
+  font: bold small sans-serif;
+  border: thin solid black;
+  padding: 2px;
+  -moz-border-radius: 4px;
+}
+
+------
+frontmtag:before {
+  content: 'frontmtag';
+  background-color: silver;
+  font: bold small sans-serif;
+  border: thin solid black;
+  padding: 2px;
+  -moz-border-radius: 4px;
+}
