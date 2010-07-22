@@ -1,6 +1,6 @@
 <!-- Copyright (c) 2007 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label "Function key assignments">
+<!ENTITY windowTitle.label "Function Keys">
 <!ENTITY newKey.label "Press a function key">
 <!ENTITY newKey.tooltip "Enter the combination of keys to use">
 <!ENTITY tagradio.label "Apply tag">
