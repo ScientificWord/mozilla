@@ -58,3 +58,21 @@ frontmtag:before {
   padding: 2px;
   -moz-border-radius: 4px;
 }
+
+------
+How this works:
+Since the actual list of tags used in a document is dynamically determined by the tagdef files used, we have to construct the
+CSS file for showing tag symbols dynamically. This file provides a template for each class of tag. For example, the CSS rules for
+text tags is given by taking the template for texttags (the first in this file) and replacing each occurrence of 'texttag' in that 
+template by the name of the particular text tag. Thus, 'bold' is a text tag, so the CSS rule for the bold tag is
+
+bold:before {
+  content: 'bold';
+  font: bold small sans-serif;
+  background-color: yellow;
+  border: thin solid black;
+  padding: 2px;
+  -moz-border-radius: 4px;
+}
+
+This scheme allows for different colors for the various tag classes, but it also allows for much more variation in appearance, if that is desired.
