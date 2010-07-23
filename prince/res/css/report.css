@@ -1,3 +1,7 @@
+math {
+  direction: ltr;
+}
+
 part {
   display: block;
   counter-increment: part;
@@ -108,6 +112,27 @@ paragraph>sectiontitle:before {
 }
 */
 
+abstract {
+  display: block;
+  margin-top: 30pt;
+  margin-left: 50pt;
+  margin-right: 50pt;
+  padding-left: 15pt;
+  padding-right: 15pt;
+  font-size: small;
+  border: thin solid black; 
+  background-color: #DDBC9B;
+  -moz-border-radius: 20px;
+}
+
+abstract:before {
+  content: "Abstract";
+  display: block;
+  text-align: center;
+  font-size: medium; font-weight: bold;
+  -moz-user-select: -moz-none;
+}
+
 p {
   display: block;
   margin: 10pt 10pt 5pt 5pt;
@@ -120,21 +145,22 @@ mathp {
 }
 
 author {
-  text-align: center;
   font-weight: normal;
   display: block;
   padding-top: 10pt;
+  text-align: center;
 }
 
 date {
-  text-align: center;
   font-weight: normal;
   display: block;
   padding-top: 2pt;
+  text-align: center;
 }
 
 address {
   display: block;
+  text-align: center;
 }
 
 title {
@@ -231,7 +257,7 @@ em span.inlineMath {
 }
 
 rm {
-  font-family: Times New Roman;
+  font-family: Times New Roman, serif;
   color: rgb(0,0,255)
 }
 
@@ -241,6 +267,14 @@ cal, *[mathvariant="script"] {
 }
 
 bold {
+  font-weight: 700
+}
+
+bbold {
+  font-weight: 700
+}
+
+fraktur {
   font-weight: 700
 }
 
