@@ -48,7 +48,7 @@ proof {
 
 proof:before {
   content: "Proof. ";
-  background-color: gray;
+  background-color: lightgray;
   font-weight: bold;
 }
   
