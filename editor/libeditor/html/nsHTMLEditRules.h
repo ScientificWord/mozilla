@@ -100,6 +100,10 @@ public:
   NS_IMETHOD GetAlignment(PRBool *aMixed, nsIHTMLEditor::EAlignment *aAlign);
   NS_IMETHOD GetParagraphState(PRBool *aMixed, nsAString &outFormat);
   NS_IMETHOD MakeSureElemStartsOrEndsOnCR(nsIDOMNode *aNode);
+  NS_IMETHOD GetNodesFromSelection(nsISelection *selection,
+                                 PRInt32 operation,
+                                 nsCOMArray<nsIDOMNode>& arrayOfNodes,
+                                 PRBool aDontTouchContent=PR_FALSE);
 
   // nsIEditActionListener methods
   
@@ -254,10 +258,6 @@ protected:
                              PRInt32 operation,
                              nsCOMArray<nsIDOMNode>& arrayOfNodes,
                              PRBool dontTouchContent);
-  nsresult GetNodesFromSelection(nsISelection *selection,
-                                 PRInt32 operation,
-                                 nsCOMArray<nsIDOMNode>& arrayOfNodes,
-                                 PRBool aDontTouchContent=PR_FALSE);
   nsresult GetListActionNodes(nsCOMArray<nsIDOMNode> &outArrayOfNodes, PRBool aEntireList, PRBool aDontTouchContent=PR_FALSE);
   nsresult GetDefinitionListItemTypes(nsIDOMNode *aNode, PRBool &aDT, PRBool &aDD);
   nsresult GetParagraphFormatNodes(nsCOMArray<nsIDOMNode>& outArrayOfNodes, PRBool aDontTouchContent=PR_FALSE);
@@ -328,6 +328,8 @@ protected:
   nsCOMPtr<nsIDOMNode>    mNewBlock;
   nsRangeStore            mRangeItem;
   StyleCache              mCachedStyles[SIZE_STYLE_TABLE];
+
+  friend class nsHTMLEditor;
 };
 
 nsresult NS_NewHTMLEditRules(nsIEditRules** aInstancePtrResult);
