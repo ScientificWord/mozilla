@@ -186,11 +186,11 @@
                 </vbox>
                 <vbox align="center">
                   <deck id="babelpoly">
-                    <label>Babel language"
+                    <label>Babel language
                       <observes element="pdflatex" attribute="hidden"/>
                       <observes element="reformatok" attribute="disabled"/>
                     </label>
-                    <label>Polyglossia language"
+                    <label>Polyglossia language
                       <observes element="xelatex" attribute="hidden"/>
                       <observes element="reformatok" attribute="disabled"/>
                     </label>
@@ -199,6 +199,87 @@
                     <menupopup style="width: 9em" >
                       <!-- if some of these are not supported in polyglossia, add 'observes="pdftex"'-->
                       <menuitem value="USenglish" label="*US English" def="1"/>
+                      <menuitem value="UKenglish" label="UK English"/>
+                      <menuitem value="acadian" label="Acadian"/>
+                      <menuitem value="albanian" label="Albanian"/>
+                      <menuitem value="afrikaans" label="Afrikaans"/>
+                      <menuitem value="american" label="American"/>
+                      <menuitem value="australian" label="Australian"/>
+                      <menuitem value="austrian" label="Austrian"/>
+                      <menuitem value="bahasa" label="Bahasa"/>
+                      <menuitem value="indonesian" label="Indonesian"/>
+                      <menuitem value="indon" label="indon"/>
+                      <menuitem value="bahasai" label="Bahasa Indonesian"/>
+                      <menuitem value="malay" label="Malay"/>
+                      <menuitem value="meyalu" label="Meyalu"/>
+                      <menuitem value="bahasam" label="Bahasa Malaysia"/>
+                      <menuitem value="basque" label="Basque"/>
+                      <menuitem value="brazil" label="Brazil"/>
+                      <menuitem value="brazilian" label="Brazilian"/>
+                      <menuitem value="breton" label="Breton"/>
+                      <menuitem value="british" label="British"/>
+                      <menuitem value="bulgarian" label="Bulgarian"/>
+                      <menuitem value="canadian" label="Canadian"/>
+                      <menuitem value="canadien" label="Canadien"/>
+                      <menuitem value="catalan" label="Catalan"/>
+                      <menuitem value="croatian" label="Croatian"/>
+                      <menuitem value="czech" label="Czech"/>
+                      <menuitem value="danish" label="Danish"/>
+                      <menuitem value="dutch" label="Dutch"/>
+                      <menuitem value="english" label="English"/>
+                      <menuitem value="esperanto" label="Esperanto"/>
+                      <menuitem value="estonian" label="Estonian"/>
+                      <menuitem value="finnish" label="Finnish"/>
+                      <menuitem value="francais" label="Francais"/>
+                      <menuitem value="frenchb" label="Frenchb"/>
+                      <menuitem value="french" label="French"/>
+                      <menuitem value="galician" label="Galician"/>
+                      <menuitem value="german" label="German"/>
+                      <menuitem value="germanb" label="Germanb"/>
+                      <menuitem value="greek" label="Greek"/>
+                      <menuitem value="polutonikogreek" label="Polutoniko Greek"/>
+                      <menuitem value="hebrew" label="Hebrew"/>
+                      <menuitem value="hungarian" label="Hungarian"/>
+                      <menuitem value="icelandic" label="Icelandic"/>
+                      <menuitem value="interlingua" label="Interlingua"/>
+                      <menuitem value="irish" label="Irish"/>
+                      <menuitem value="italian" label="Italian"/>
+                      <menuitem value="latin" label="Latin"/>
+                      <menuitem value="lowersorbian" label="Lower Sorbian"/>
+                      <menuitem value="magyar" label="Magyar"/>
+                      <menuitem value="naustrian" label="NAustrian"/>
+                      <menuitem value="newzealand" label="New Zealand"/>
+                      <menuitem value="ngerman" label="NGerman"/>
+                      <menuitem value="norsk" label="Norsk"/>
+                      <menuitem value="samin" label="Samin"/>
+                      <menuitem value="nynorsk" label="Nynorsk"/>
+                      <menuitem value="polish" label="Polish"/>
+                      <menuitem value="portuges" label="Portuges"/>
+                      <menuitem value="portuguese" label="Portuguese"/>
+                      <menuitem value="romanian" label="Romanian"/>
+                      <menuitem value="russian" label="Russian"/>
+                      <menuitem value="scottish" label="Scottish"/>
+                      <menuitem value="serbian" label="Serbian"/>
+                      <menuitem value="slovak" label="Slovak"/>
+                      <menuitem value="slovene" label="Slovene"/>
+                      <menuitem value="spanish" label="Spanish"/>
+                      <menuitem value="swedish" label="Swedish"/>
+                      <menuitem value="turkish" label="Turkish"/>
+                      <menuitem value="ukrainian" label="Ukrainian"/>
+                      <menuitem value="uppersorbian" label="Upper Sorbian"/>
+                      <menuitem value="welsh" label="Welsh"/>
+                    </menupopup>
+                  </menulist>
+                </vbox>
+              </row>
+              <row>
+                <vbox align="center">
+                  <label>Second language</label>
+                  <menulist observes="reformatok" >
+                    <menupopup style="width: 9em" >
+                      <!-- if some of these are not supported in polyglossia, add 'observes="pdftex"'-->
+                      <menuitem value="none" label="*None" def="1"/>
+                      <menuitem value="USenglish" label="US English"/>
                       <menuitem value="UKenglish" label="UK English"/>
                       <menuitem value="acadian" label="Acadian"/>
                       <menuitem value="albanian" label="Albanian"/>
@@ -304,37 +385,6 @@
                     <menupopup style="width: 9em" >
                       <menuitem value="ceqn" label="*Centered" def="1"/>
                       <menuitem value="fleqn" label="Flush left"/>
-                    </menupopup>
-                  </menulist>
-                </vbox>
-                <vbox align="center" style="width: 9em;" >
-                  <label observes="reformatok" value= "Theorem environments"/>
-                  <!-- this is pointless unless we can make the menulist multi-select -->
-                  <menulist observes="reformatok" >
-                  <menupopup>
-                  <listbox seltype="multiple">
-                      <listitem value="theorem" label="Theorem"/>
-                      <listitem value="acknowledgement" label="Acknowledgement"/>
-                      <listitem value="algorithm" label="Algorithm"/>
-                      <listitem value="axiom" label="Axiom"/>
-                      <listitem value="case" label="Case"/>
-                      <listitem value="claim" label="Claim"/>
-                      <listitem value="conclusion" label="Conclusion"/>
-                      <listitem value="condition" label="Condition"/>
-                      <listitem value="conjecture" label="Conjecture"/>
-                      <listitem value="corollary" label="Corollary"/>
-                      <listitem value="criterion" label="Criterion"/>
-                      <listitem value="definition" label="Definition"/>
-                      <listitem value="example" label="Example"/>
-                      <listitem value="exercise" label="Exercise"/>
-                      <listitem value="lemma" label="Lemma"/>
-                      <listitem value="notation" label="Notation"/>
-                      <listitem value="problem" label="Problem"/>
-                      <listitem value="proposition" label="Proposition"/>
-                      <listitem value="remark" label="Remark"/>
-                      <listitem value="solution" label="Solution"/>
-                      <listitem value="summary" label="Summary"/>
-                  </listbox>
                     </menupopup>
                   </menulist>
                 </vbox>
