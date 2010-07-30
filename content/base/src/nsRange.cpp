@@ -56,6 +56,8 @@
 #include "nsIDOMNodeList.h"
 #include "nsGkAtoms.h"
 #include "nsContentUtils.h"
+#include "nsIMutableArray.h"
+#include "nsIComponentManager.h"
 
 nsresult NS_NewContentIterator(nsIContentIterator** aInstancePtrResult);
 nsresult NS_NewContentSubtreeIterator(nsIContentIterator** aInstancePtrResult);
@@ -1799,3 +1801,29 @@ nsRange::CreateContextualFragment(const nsAString& aFragment,
     ? nsContentUtils::CreateContextualFragment(start, aFragment, aReturn)
     : NS_ERROR_FAILURE;
 }
+
+
+
+NS_IMETHODIMP
+nsRangeUtils::NodesInRange(nsIDOMRange *aRange, 
+  nsIArray **_retval) 
+{
+  RangeSubtreeIterator iter;
+
+  nsresult rv;
+  nsCOMPtr<nsIDOMNode> node;
+
+  PRInt32 i;
+  nsCOMPtr<nsIMutableArray> array = do_CreateInstance("@mozilla.org/array;1");
+  rv = iter.Init(aRange);
+  if (NS_FAILED(rv)) return rv;
+
+  while (!iter.IsDone())
+  {
+    node = iter.GetCurrentNode();
+    array->AppendElement(node, PR_FALSE);
+    iter.Next();
+  }
+  NS_ADDREF(*_retval = array);
+} 
+
