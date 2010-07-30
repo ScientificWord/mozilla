@@ -46,6 +46,7 @@ interface nsISupportsArray;
 interface nsISelection;
 interface nsIContentFilter;
 interface msiITagListManager;
+interface nsIArray;
 
 %{C++
 #define NS_EDITOR_ELEMENT_NOT_FOUND \
@@ -644,5 +645,7 @@ interface nsIHTMLEditor : nsISupports
   void addTagInfo( in AString strPath );
   void setOneShotTranslation( in AString tablename );
   AString returnAString( in AString thisone);
+  void mathToText(in nsISelection selection);
+  nsIArray nodesInRange( in nsIDOMRange aRange);
 };
 
