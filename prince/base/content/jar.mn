@@ -26,6 +26,7 @@ prince.jar:
 * content/typesetOverlay.xul        (typesetOverlay.xul)
 * content/menuOverlay.xul           (menuOverlay.xul)
 * content/mainCore.js               (mainCore.js)
+* content/math2text.xsl             (math2text.xsl)
 * content/Binomial.js       (dialogs/Binomial.js)
 * content/Binomial.xul      (dialogs/Binomial.xul)
 * content/Brackets.js       (dialogs/brackets.js)
