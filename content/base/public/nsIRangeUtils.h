@@ -48,6 +48,7 @@
 class nsIDOMRange;
 class nsIDOMNode;
 class nsIContent;
+class nsIArray;
 
 // IID for the nsIRangeUtils interface
 #define NS_IRANGEUTILS_IID       \
@@ -64,6 +65,8 @@ public:
                                 nsIDOMRange* aRange,
                                 PRBool *outNodeBefore,
                                 PRBool *outNodeAfter) = 0;
+
+  NS_IMETHOD NodesInRange(nsIDOMRange *aRange, nsIArray **_retval) = 0;
 };
 
 NS_DEFINE_STATIC_IID_ACCESSOR(nsIRangeUtils, NS_IRANGEUTILS_IID)

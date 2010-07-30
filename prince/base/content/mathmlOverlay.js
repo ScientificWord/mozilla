@@ -201,7 +201,10 @@ var msiToggleMathText =
 
   doCommand: function(aCommand)
   {
+    var editorElement = msiGetActiveEditorElement(window);
+    var editor = msiGetEditor(editorElement);
     insertinlinemath();
+    toggleMathText(editor);
     dump("called msiToggleMathText\n");
     //dump("Clearing math mode is not implemented.\n");
     return;
@@ -2848,3 +2851,124 @@ function inputboxselected(node)
   else
     return false;
 } 
+
+
+
+function postProcessMathML(frag)
+{
+  frag.normalize();
+  var j;
+  var mathnodes=[];
+  for (j=0; j<frag.childNodes.length; j++)
+  {
+    if (frag.childNodes[j].localName!="math")
+      mathnodes = frag.childNodes[j].getElementsByTagName("mml:math");
+    var i;
+    var mnode;
+    var textNode;
+    var savedNode;
+    var isFirst;
+    var text;
+    for (i=0; i<Math.max(1,mathnodes.length); i++)
+    {
+      if (mathnodes.length > 0) mnode = mathnodes[i];
+      else mnode = frag.childNodes[j];
+      // find all textnodes that are not whitespace only
+      // if it is not in mi, mn, mo, or mtext, 
+      // then if it is the first or last real text, pull it out of <math>
+      // otherwise wrap it in an mtext.
+      var tw = mnode.ownerDocument.createTreeWalker(mnode,4, //show text nodes
+        null, true);
+      var n;
+      tw.nextNode();
+      isFirst = true;
+      n = tw.currentNode;
+      while (n)
+      {
+        text = n.textContent;
+        if (/\S/.test(text))
+        {
+          //non-whitespace
+          parentName = n.parentNode.localName;
+          if (/^mi$|^mo$|^mn$|^mtext$/.test(parentName)) break;
+          textNode = frag.ownerDocument.createElement("mtext");
+          textNode = n.parentNode.insertBefore(textNode, n);
+          textNode.appendChild(n.cloneNode(false));
+          savedNode = n;
+          n = tw.nextNode();
+          savedNode.parentNode.removeChild(savedNode);
+          isFirst = false;
+        }
+      }
+    }
+  }
+}
+
+
+function mathNodeToText(editor, node)
+{
+  var frag = gProcessor.transformToFragment(node,editor.document);   
+  postProcessMathML(frag);
+  editor.replaceNode(frag,node,node.parentNode);
+}
+
+
+var gProcessor;
+function mathToText(editor)
+{
+  var i;
+  var j;
+  var range;
+  var nodeArray;
+  var docfrag;
+  var children;
+  var enumerator;
+  var node;
+  if (editor.selection.collapsed)
+  {
+    dump("here we check to see if we can get out of math mode\n");
+    return;
+  }
+  editor.beginTransaction();
+  try
+  {
+    if (!gProcessor) gProcessor = new XSLTProcessor();
+    else gProcessor.reset();
+    var req = new XMLHttpRequest();
+
+    req.open("GET", "chrome://prince/content/math2text.xsl", false); 
+    req.send(null);
+    // print the name of the root element or error message
+    var xsldom = req.responseXML;
+    gProcessor.importStylesheet(xsldom);
+  
+    for (i=0; i< editor.selection.rangeCount; i++)
+    {
+      //BBM: we have to work to make this undoable
+      range = editor.selection.getRangeAt(i);
+      nodeArray = editor.nodesInRange(range);
+      dump(nodeArray.length+" nodes\n");
+      enumerator = nodeArray.enumerate();
+      while (enumerator.hasMoreElements())
+      {
+        node = enumerator.getNext();
+        mathNodeToText(editor,node);
+      }
+    }
+  }
+  catch(e) {
+    dump("error in MathNodeToText: "+e.message+"\n");
+  }
+  editor.endTransaction();
+}
+
+
+function toggleMathText(editor)
+{
+  try {
+    mathToText(editor);
+  }
+  catch(e) {
+    dump("Exception in toggleMathText: "+e.message+"\n");
+  }
+}
