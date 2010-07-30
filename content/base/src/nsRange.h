@@ -70,6 +70,8 @@ public:
                                 nsIDOMRange* aRange,
                                 PRBool *outNodeBefore,
                                 PRBool *outNodeAfter);
+
+  NS_IMETHOD NodesInRange(nsIDOMRange *aRange, nsIArray **_retval); 
 };
 
 // -------------------------------------------------------------------------------
