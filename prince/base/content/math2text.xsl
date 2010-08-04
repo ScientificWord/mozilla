@@ -27,6 +27,32 @@
 	</xsl:copy>
 </xsl:template>
 
+<xsl:template match="mml:mtable" mode="active">
+  <table>
+    <tbody>
+		  <xsl:apply-templates select="@*|node()" mode="active"/>
+    </tbody>
+  </table>
+</xsl:template>
+
+<xsl:template match="mml:mtr" mode="active">
+  <tr>
+		<xsl:apply-templates select="@*|node()" mode="active"/>
+  </tr>
+</xsl:template>
+
+<xsl:template match="mml:mtd" mode="active">
+  <td>
+		<xsl:apply-templates select="@*|node()" mode="active"/>
+  </td>
+</xsl:template>
+
+<xsl:template match="mml:mtable" mode="active">
+  <table>
+		<xsl:apply-templates select="@*|node()" mode="active"/>
+  </table>
+</xsl:template>
+
 <xsl:template match="mml:munderover" mode="active">
 	<xsl:copy>
 		<xsl:apply-templates select="@*"/>
@@ -55,7 +81,7 @@
 	</xsl:copy>
 </xsl:template>  
 
-<xsl:template match="msub" mode="active">
+<xsl:template match="mml:msub" mode="active">
 	<xsl:copy>
 		<xsl:apply-templates select="@*"/>
 		<xsl:apply-templates mode="inactive"/>
@@ -70,6 +96,20 @@
 </xsl:template>  
 
 <xsl:template match="mml:mfrac" mode="active">
+	<xsl:copy>
+		<xsl:apply-templates select="@*"/>
+		<xsl:apply-templates mode="inactive"/>
+	</xsl:copy>
+</xsl:template>  
+
+<xsl:template match="mml:msqrt" mode="active">
+	<xsl:copy>
+		<xsl:apply-templates select="@*"/>
+		<xsl:apply-templates mode="inactive"/>
+	</xsl:copy>
+</xsl:template>  
+
+<xsl:template match="mml:mroot" mode="active">
 	<xsl:copy>
 		<xsl:apply-templates select="@*"/>
 		<xsl:apply-templates mode="inactive"/>
