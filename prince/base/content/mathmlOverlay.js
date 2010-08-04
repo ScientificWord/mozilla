@@ -2861,29 +2861,101 @@ function postProcessMathML(frag)
   var mathnodes=[];
   for (j=0; j<frag.childNodes.length; j++)
   {
-    if (frag.childNodes[j].localName!="math")
-      mathnodes = frag.childNodes[j].getElementsByTagName("mml:math");
+    if (frag.childNodes[j].nodeType == Node.TEXT_NODE) break;
+    else if (frag.childNodes.item(j).localName!="math") {
+      mathnodes = frag.childNodes.item(j).getElementsByTagName("mml:math");
+    }
     var i;
     var mnode;
+    var p;
     var textNode;
     var savedNode;
     var isFirst;
     var text;
     for (i=0; i<Math.max(1,mathnodes.length); i++)
     {
-      if (mathnodes.length > 0) mnode = mathnodes[i];
-      else mnode = frag.childNodes[j];
+      if (mathnodes.length > 0) mnode = mathnodes.item(i);
+      else mnode = frag.childNodes.item(j);
       // find all textnodes that are not whitespace only
       // if it is not in mi, mn, mo, or mtext, 
       // then if it is the first or last real text, pull it out of <math>
       // otherwise wrap it in an mtext.
+      var n;
+      var highwaterLeft = null;
+      var highwaterRight = null;
       var tw = mnode.ownerDocument.createTreeWalker(mnode,4, //show text nodes
         null, true);
-      var n;
       tw.nextNode();
       isFirst = true;
       n = tw.currentNode;
-      while (n)
+      while (n && isFirst)
+      {
+        tw = mnode.ownerDocument.createTreeWalker(mnode,4, //show text nodes
+            null, true);        
+        tw.nextNode();
+        n = tw.currentNode;
+        text = n.textContent;
+        if (/\S/.test(text))
+        {
+          //non-whitespace
+          parentName = n.parentNode.localName;
+          if (/^mi$|^mo$|^mn$|^mtext$/.test(parentName))
+          {
+            isFirst = false;
+            highwaterLeft = n;
+          }
+          else {
+            p = n;
+            while (!msiNavigationUtils.isMathNode(p.parentNode)) p = p.parentNode;
+            textNode = mnode.parentNode.insertBefore(p.cloneNode(true),mnode);
+            savedNode = p;
+            n = tw.nextNode();
+            savedNode.parentNode.removeChild(savedNode);
+          }
+        }
+        else n = tw.nextNode();
+      }
+      if (!n) 
+      {  //we came to the end while peeling stuff out of mnode. Check to see if mNode is now empty
+        if (mnode.textContent.length == 0) mnode.parentNode.removeChild(mnode);
+        break;
+      }
+      tw = mnode.ownerDocument.createTreeWalker(mnode,4, //show text nodes
+        null, true);      
+      n = tw.lastChild();
+      var isLast = true;
+      while (n && isLast)
+      {
+        tw = mnode.ownerDocument.createTreeWalker(mnode,4, //show text nodes
+          null, true);      
+        n = tw.lastChild();
+        text = n.textContent;
+        if (/\S/.test(text))
+        {
+          //non-whitespace
+          parentName = n.parentNode.localName;
+          if (/^mi$|^mo$|^mn$|^mtext$/.test(parentName))
+          {
+            isLast = false;
+            highwaterRight = n;
+          }
+          else {
+            p = n;
+            while (!msiNavigationUtils.isMathNode(p.parentNode)) p = p.parentNode;
+            textNode = mnode.parentNode.insertBefore(p.cloneNode(true),mnode);
+            savedNode = p;
+            n = tw.previousNode();
+            savedNode.parentNode.removeChild(savedNode);
+          }
+        }
+        else n = tw.nextNode();
+      }
+      if (!highwaterLeft) break;
+      tw.currentNode = highwaterLeft;
+      var limit = null;
+      if (highwaterRight) limit = highwaterRight.nextSibling;
+      n = highwaterLeft;
+      while (n && n != limit)
       {
         text = n.textContent;
         if (/\S/.test(text))
@@ -2891,14 +2963,16 @@ function postProcessMathML(frag)
           //non-whitespace
           parentName = n.parentNode.localName;
           if (/^mi$|^mo$|^mn$|^mtext$/.test(parentName)) break;
-          textNode = frag.ownerDocument.createElement("mtext");
-          textNode = n.parentNode.insertBefore(textNode, n);
-          textNode.appendChild(n.cloneNode(false));
-          savedNode = n;
-          n = tw.nextNode();
-          savedNode.parentNode.removeChild(savedNode);
-          isFirst = false;
+          else {
+            textNode = frag.ownerDocument.createElement("mtext");
+            textNode = n.parentNode.insertBefore(textNode, n);
+            textNode.appendChild(n.cloneNode(true));
+            savedNode = n;
+            n = tw.nextNode();
+            savedNode.parentNode.removeChild(savedNode);
+          }
         }
+        else n = tw.nextNode();
       }
     }
   }
