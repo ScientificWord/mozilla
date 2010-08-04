@@ -6274,7 +6274,6 @@ var msiNavigationUtils =
       nodeNS = this.mAtomService.getAtom(aNode.namespaceURI);
     if (nodeNS == mathNS)
       return true;
-//    return (msiGetBaseNodeName(aNode) == "math");  //Why add this?
     return false;
   },
 
