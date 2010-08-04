@@ -7,7 +7,9 @@ var editor;
 var gIsEnc;
 var gName;
 var gReq;  
-var gOpt;  
+var gOpt;
+var gPre;
+var gOrd;  
 var gTeX;  
 var isNewNode;
 
@@ -26,6 +28,8 @@ function Startup()
   gName  = document.getElementById("name");
   gReq   = document.getElementById("req");
   gOpt   = document.getElementById("opt");
+  gPre   = document.getElementById("pre");
+  gOrd   = document.getElementById("ord");
   gTeX   = document.getElementById("texbuttonTextbox");
   isNewNode = !(texnode);
   if (texnode) {
@@ -33,6 +37,9 @@ function Startup()
     if (texnode.hasAttribute("name")) gName.value = texnode.getAttribute("name");
     if (texnode.hasAttribute("req")) gReq.value = texnode.getAttribute("req");
     if (texnode.hasAttribute("opt")) gOpt.value = texnode.getAttribute("opt");
+    if (texnode.hasAttribute("ord")) gOrd.value = texnode.getAttribute("ord");
+    if (texnode.hasAttribute("pre")) gPre.checked = texnode.getAttribute("pre")==1;
+    putInPreamble();
     childnode = texnode.firstChild;
     while (childnode && childnode.nodeType != Node.CDATA_SECTION_NODE) {
       childnode = childnode.nextSibling;
@@ -49,6 +56,14 @@ function Startup()
   msiSetInitialDialogFocus(gTeX);
   SetWindowLocation();
 }
+
+
+function putInPreamble()
+{
+  document.getElementById("ord").disabled=!document.getElementById("pre").checked;
+  document.getElementById("ordlabel").disabled=!document.getElementById("pre").checked;
+}
+
 
 function onAccept()
 {
@@ -67,6 +82,9 @@ function onAccept()
     else texnode.removeAttribute("req");
     if (gOpt.value.length > 0) texnode.setAttribute("opt", gOpt.value)
     else texnode.removeAttribute("opt");
+    if (gPre.checked) texnode.setAttribute("pre", "1")
+    if (gOrd.value.length > 0) texnode.setAttribute("ord", gOrd.value)
+    else texnode.removeAttribute("ord");
 
     SaveWindowLocation();
   }

@@ -15,27 +15,21 @@
 <xsl:variable name="requiredpackages.tf">
   <xsl:for-each select="//*[@req]">
     <xsl:sort select="@req"/>
-	<xsl:copy-of select="."/>
+	  <xsl:copy-of select="."/>
   </xsl:for-each>
-  <!--xsl:for-each select="//mainfont[@req]">
-    <xsl:sort select="@req"/>
-	<xsl:copy-of select="."/>
-  </xsl:for-each>
-  <xsl:for-each select="//mathfont[@req]">
-    <xsl:sort select="@req"/>
-	<xsl:copy-of select="."/>
-  </xsl:for-each>
-  <xsl:for-each select="//sansfont[@req]">
-    <xsl:sort select="@req"/>
-	<xsl:copy-of select="."/>
-  </xsl:for-each>
-  <xsl:for-each select="//fixedfont[@req]">
-    <xsl:sort select="@req"/>
-	<xsl:copy-of select="."/>
-  </xsl:for-each -->
 </xsl:variable>
 
+<xsl:variable name="preambletexbuttons.tf">
+  <xsl:for-each select="//*[@pre]">
+    <xsl:sort select="@ord"/>
+	  <xsl:copy-of select="."/>
+  </xsl:for-each>
+</xsl:variable>
+
+
+
 <xsl:variable name="requiredpackages" select ="exsl:node-set($requiredpackages.tf)"/>
+<xsl:variable name="preambletexbuttons" select ="exsl:node-set($preambletexbuttons.tf)"/>
  
 <xsl:variable name="packagelist.tf"> 
   <xsl:for-each select="$requiredpackages/*">
@@ -82,6 +76,8 @@
     >[<xsl:value-of select="@options"/>]</xsl:if
     >{<xsl:value-of select="@package"/>}  %% <xsl:value-of select="@pri"/></xsl:for-each>
   <xsl:apply-templates/>
+  <xsl:for-each select="$preambletexbuttons/*"
+  ><xsl:if test="@pre='1'"><xsl:apply-templates/></xsl:if></xsl:for-each>
 </xsl:template>
 
 <xsl:template match="html:preambleTeX">
