@@ -727,6 +727,9 @@ protected:
                            const nsAString *aAttribute = nsnull,
                            const nsAString *aValue = nsnull );
                                        
+  virtual nsresult InsertReturnInMath( nsIDOMNode * splitpointNode, 
+                                       PRInt32 splitpointOffset, 
+                                       PRBool* bHandled);
                                        
 
   /* helper routines for inline style */
