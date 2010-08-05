@@ -5413,8 +5413,8 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
       }
       else 
       {
-        pMathCM = GetMathCursorMover(pFrame);
-        pMathCM->MoveOutToRight(pLastChild, aOutFrame, aOutOffset, count, fBailing, &count);
+        if (pMathCM = GetMathCursorMover(pFrame))
+          pMathCM->MoveOutToRight(pLastChild, aOutFrame, aOutOffset, count, fBailing, &count);
       }
     }
     else {

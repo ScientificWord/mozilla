@@ -12,7 +12,10 @@ var terspecapp;
 var locator;
 var format;
 var thedeck;
-var xreftext
+var xreftext;
+var node;
+var isNewnode = false;
+var activeEditor;
 
 function dumpln(s)
 {
@@ -21,6 +24,14 @@ function dumpln(s)
 
 function startup()
 {
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  activeEditor = msiGetEditor(editorElement);
+  if (!activeEditor)
+  {
+    dump("Failed to get active editor!\n");
+    window.close();
+    return;
+  }
   primary = document.getElementById("primary");
   prispec = document.getElementById("prispec");
   prispecapp = document.getElementById("prispecapp");
@@ -35,10 +46,9 @@ function startup()
   thedeck = document.getElementById("thedeck");
   xreftext = document.getElementById("xref");
   var specnode;
-  var node = window.arguments[0]; //current index entry if not void or null
+  node = activeEditor.getSelectedElement("indexitem");
   if (node)
   {
-    if (node.tagName != "indexitem") alert("Wrong node passed to indexentry.js!");
     if (node.hasAttribute("pri")) {
       primary.value = node.getAttribute("pri");
       prispec.disabled = primary.value.length == 0;
@@ -88,6 +98,10 @@ function startup()
       }
     }
   }
+  else {
+    isNewnode = true;
+    node = activeEditor.document.createElement("indexitem");
+  }
 }
 
 
@@ -131,15 +145,7 @@ function stop()
 
 function onAccept()
 {
-  var node =  window.arguments[0];
-  var editorElement = msiGetParentEditorElementForDialog(window);
-  var editor = msiGetEditor(editorElement);
-  var domdoc = editor.document;
-  var newnode = !node; 
-  if (newnode) 
-  {
-    node = domdoc.createElement("indexitem");
-  }
+  node.setAttribute("req","varioref");
   var v = primary.value;
   if (v && v.length > 0)
     node.setAttribute("pri",v);
@@ -177,7 +183,7 @@ function onAccept()
     terspecnode.textContent = v;
     node.appendChild(terspecnode);
   }
-  if (newnode) editor.insertElementAtSelection(node, true);
+  if (isNewnode) activeEditor.insertElementAtSelection(node, true);
 }
 
 

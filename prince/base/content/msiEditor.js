@@ -1,4 +1,5 @@
 // Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
+Components.utils.import("resource://app/modules/pathutils.jsm"); 
 
 const msiEditorJS_duplicateTest = "Bad";
 
@@ -31,6 +32,8 @@ const msiEditorJS_duplicateTest = "Bad";
 //var gTagSelectBar;
 //var gComputeToolbar;
 //var gViewFormatToolbar;
+
+var dynAllTagsStyleSheet;
 
 function aColorObj(editorElement) 
 {
@@ -752,7 +755,73 @@ function msiEditorDocumentObserver(editorElement)
             }
             else    
               editor.addTagInfo(tagdeflist[i]);
+            
           }
+// Now build the style sheet for the AllTagsView
+          var templatefile = msiFileFromFileURL(msiURIFromString("resource://app/res/css/tagtemplate.css"));
+          var data = "";  
+          var fstream = Components.classes["@mozilla.org/network/file-input-stream;1"].  
+                                  createInstance(Components.interfaces.nsIFileInputStream);  
+          var cstream = Components.classes["@mozilla.org/intl/converter-input-stream;1"].  
+                                  createInstance(Components.interfaces.nsIConverterInputStream);  
+          fstream.init(templatefile, -1, 0, 0);  
+          cstream.init(fstream, "UTF-8", 0, 0);  
+  
+          let (templatestr = {}) {  
+            cstream.readString(-1, templatestr); // read the whole file and put it in str.value  
+            data = templatestr.value;  
+          }  
+          cstream.close(); // this closes fstream  
+          var classtemplates = data.split(/\-{4,}/);
+          var j;
+          for (j = 0; j < classtemplates.length; j++) classtemplates[j]=classtemplates[j].replace(/^\s*/,"");
+
+
+          var tagclasses = ["texttag","paratag","listtag","structtag","envtag","frontmtag"];
+          var taglist;
+          var i;
+          var k;
+          var str = "";
+          var ok;
+          var classname;
+          var classtemplate;
+          for (j = 0; j < tagclasses.length; j++)
+          {
+            ok = false;
+            classname= tagclasses[j];
+            for (k = 0; k < classtemplates.length; k++)
+            {
+              if (classtemplates[k].indexOf(classname)==0) 
+              {
+                classtemplate = classtemplates[k];
+                ok = true;
+                break;
+              }
+            }
+
+            taglist = (editor.tagListManager.getTagsInClass(classname," ", false)).split(" ");
+            for (i = 0; i < taglist.length; i++)
+            {
+              if (taglist[i][0] != "(")
+                str += classtemplate.replace(classname,taglist[i],"g")+"\n";
+            }
+          }
+          var htmlurlstring = msiGetEditorURL(this.mEditorElement); 
+          var htmlurl = msiURIFromString(htmlurlstring);
+          var cssFile = msiFileFromFileURL(htmlurl).parent; 
+          cssFile.append("css");
+          if (!cssFile.exists()) cssFile.create(1, 0755); 
+          cssFile.append("msi_Tags.css");
+          dynAllTagsStyleSheet= msiFileURLStringFromFile(cssFile);
+          var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+          fos.init(cssFile, -1, -1, false);
+          var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+            .createInstance(Components.interfaces.nsIConverterOutputStream);
+          os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
+          os.writeString(str);
+          os.close();
+          fos.close();
+    
           try {
             editorElement.mgMathStyleSheet = msiColorObj.FormatStyleSheet(editorElement);
 //            dump("Internal style sheet contents: \n\n" + editorElement.mgMathStyleSheet + "\n\n");
@@ -3444,10 +3513,10 @@ function msiFinishHTMLSource(editorElement)
         throw Components.results.NS_ERROR_FAILURE;
       }
     }
-  }
 
-  // Switch edit modes -- converts source back into DOM document
-  msiSetEditMode(msiGetPreviousNonSourceDisplayMode(editorElement), editorElement);
+    // Switch edit modes -- converts source back into DOM document
+    msiSetEditMode(msiGetPreviousNonSourceDisplayMode(editorElement), editorElement);
+  }
 }
 
 
@@ -3545,6 +3614,7 @@ function msiSetDisplayMode(editorElement, mode)
     // Load/unload appropriate override style sheet
     try {
       var editor = msiGetEditor(editorElement);
+      var url;
       editor.QueryInterface(nsIEditorStyleSheets);
       editor instanceof Components.interfaces.nsIHTMLObjectResizer;
 
@@ -3556,7 +3626,7 @@ function msiSetDisplayMode(editorElement, mode)
           if (editorElement.mgMathStyleSheet != null)
             editor.enableStyleSheet(editorElement.mgMathStyleSheet, false);
           editor.enableStyleSheet(gMathStyleSheet, false);
-          editor.enableStyleSheet(kAllTagsStyleSheet, false);
+          editor.enableStyleSheet(dynAllTagsStyleSheet, false);
           editor.isImageResizingEnabled = true;
           break;
 
@@ -3567,7 +3637,7 @@ function msiSetDisplayMode(editorElement, mode)
           else
             editor.addOverrideStyleSheet(gMathStyleSheet);
           // Disable ShowAllTags mode
-          editor.enableStyleSheet(kAllTagsStyleSheet, false);
+          editor.enableStyleSheet(dynAllTagsStyleSheet, false);
           editor.isImageResizingEnabled = true;
           editor.enableTagMananger();
         break;
@@ -3578,7 +3648,7 @@ function msiSetDisplayMode(editorElement, mode)
             editor.addOverrideStyleSheet(editorElement.mgMathStyleSheet);
           else
             editor.addOverrideStyleSheet(gMathStyleSheet);
-          editor.addOverrideStyleSheet(kAllTagsStyleSheet);
+          editor.addOverrideStyleSheet(dynAllTagsStyleSheet);
           // don't allow resizing in AllTags mode because the visible tags
           // change the computed size of images and tables...
           editor.enableTagMananger();
@@ -3588,7 +3658,9 @@ function msiSetDisplayMode(editorElement, mode)
           editor.isImageResizingEnabled = false;
           break;
       }
-    } catch(e) {}
+    } catch(e) {
+        dump("Exception in msiSetDisplayMode: "+e.message+"\n");
+      }
 
     // Switch to the normal editor (first in the deck)
     if ("gContentWindowDeck" in window)
@@ -3698,13 +3770,13 @@ function msiEditorDoShowInvisibles(editorElement, viewSettings)
   else
     theBody.removeAttribute("hideInputBoxes");
   if (!viewSettings.showIndexEntries)
-    theBody.setAttribute("hideIndexEntries", "true");
+    theBody.setAttribute("hideindexentries", "true");
   else
-    theBody.removeAttribute("hideIndexEntries");
+    theBody.removeAttribute("hideindexentries");
   if (!viewSettings.showMarkers)
-    theBody.setAttribute("hideMarkers", "true");
+    theBody.setAttribute("hidemarkers", "true");
   else
-    theBody.removeAttribute("hideMarkers");
+    theBody.removeAttribute("hidemarkers");
   if (!viewSettings.showFootnotes)
     theBody.setAttribute("hideFootnotes", "true");
   else
@@ -3715,7 +3787,7 @@ function msiEditorDoShowInvisibles(editorElement, viewSettings)
     theBody.removeAttribute("hideOtherNotes");
 
   //  var dumpStr = "Element [" + theBody.nodeName + "] now has settings: [";
-  //  var attribNames = ["showinvis", "hideHelperLines", "hideInputBoxes", "hideIndexEntries", "hideMarkers"];
+  //  var attribNames = ["showinvis", "hideHelperLines", "hideInputBoxes", "hideindexentries", "hidemarkers"];
   //  for (var ix = 0; ix < attribNames.length; ++ix)
   //  {
   //    if (ix > 0)
@@ -3763,10 +3835,10 @@ function msiGetViewSettingsFromDocument(editorElement)
     retVal.showHelperLines = (theBody.getAttribute("hideHelperLines")!="true");
   if (theBody.hasAttribute("hideInputBoxes"))
     retVal.showInputBoxes = (theBody.getAttribute("hideInputBoxes")!="true");
-  if (theBody.hasAttribute("hideIndexEntries"))
-    retVal.showIndexEntries = (theBody.getAttribute("hideIndexEntries")!="true");
-  if (theBody.hasAttribute("hideMarkers"))
-    retVal.showMarkers = (theBody.getAttribute("hideMarkers")!="true");
+  if (theBody.hasAttribute("hideindexentries"))
+    retVal.showIndexEntries = (theBody.getAttribute("hideindexentries")!="true");
+  if (theBody.hasAttribute("hidemarkers"))
+    retVal.showMarkers = (theBody.getAttribute("hidemarkers")!="true");
 
   return retVal;
 }
@@ -7864,9 +7936,13 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     {
       msiNote(element,editorElement);
     }
-    else if (elementName == "a")
+    else if (elementName == "a" && element.hasAttribute("key"))
     {
-      msiGoDoCommand("cmd_msiReviseHyperlink", editorElement);
+      msiGoDoCommand("cmd_marker", editorElement);
+    }
+    else if (elementName == "texb")
+    {
+      msiDoAdvancedProperties(element, editorElement);
     }
     else if (elementName == "subdoc")
     {
@@ -7877,14 +7953,14 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     {
       msiFrame(element,editorElement);
     }
-    else if ((elementName == "img") || (elementName=="graph"))
+    else if ((elementName == "img") || (elementName=="graph") || elementName=="plotwrapper")
     {
-      var bIsGraph = (element.getAttribute("msigraph") == "true");
+      var bIsGraph = (element.tagName == "plotwrapper");                   
       if (!bIsGraph)
       {
         for (var ix = 0; !bIsGraph && (ix < element.childNodes.length); ++ix)
         {
-          if (element.childNodes[ix].getAttribute("msigraph") == "true")
+          if (element.childNodes[ix].tagName == "plotwrapper")
             bIsGraph = true;
         }
       }
@@ -8497,11 +8573,7 @@ function msiDialogEditorContentFilter(anEditorElement)
     {
       var rootNode = msiGetRealBodyElement(doc);
       var initialParaNode = null;
-      var initialParaList = rootNode.getElementsByTagNameNS("sw", "dialogbase");
-      if (initialParaList.length == 0)
-        initialParaList = rootNode.getElementsByTagName("sw:dialogbase");
-      if (initialParaList.length == 0)
-        initialParaList = rootNode.getElementsByTagName("dialogbase");
+      var initialParaList = rootNode.getElementsByTagName("dialogbase");
       if (initialParaList.length > 0)
         initialParaNode = initialParaList[0];
       else

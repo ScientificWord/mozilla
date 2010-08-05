@@ -43,7 +43,7 @@
       </vbox>
       <vbox>
         <label>&ruleWidth.label;</label>
-        <radiogroup id="rulesize" orient="vertical">
+        <radiogroup id="rulelength" orient="vertical">
           <radio id="wide" label="&wide.label;" value="wide" accesskey="&wide.accesskey;" selected="true" oncommand=""/>
           <radio id="narrow" label="&narrow.label;" value="narrow" accesskey="&narrow.accesskey;" oncommand=""/>
           <hbox>
@@ -55,12 +55,19 @@
       </vbox>
     </groupbox>
     <spacer flex="1"/>
+    <hbox>
+      <radiogroup id="rulealign" label="Rule alignment">
+        <radio id="left" label="Left" selected = "true" value="l" accesskey="L" />
+        <radio id="center" label="Center" value="c" accesskey="C" />
+        <radio id="right" label="Right" value="r" accesskey="R" />
+      </radiogroup>
+    </hbox>
+    <hbox>
+      <label control="colorButton" value="&ruleColor.label;"	accesskey="&ruleColor.accesskey;"/>
+      <button id="colorButton" class="color-button" oncommand="getColorAndUpdate();">
+        <spacer id="colorWell" class="color-well"/>
+      </button>
+      <spacer flex="1"/>
+    </hbox>
   </vbox>
-  <hbox>
-    <label control="colorButton" value="&ruleColor.label;"	accesskey="&ruleColor.accesskey;"/>
-    <button id="colorButton" class="color-button" oncommand="getColorAndUpdate();">
-      <spacer id="colorWell" class="color-well"/>
-    </button>
-    <spacer flex="1"/>
-  </hbox>
 </dialog>
