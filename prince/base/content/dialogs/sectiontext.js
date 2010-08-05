@@ -10,12 +10,18 @@ function Startup() {
   units = window.arguments[2];
   units = units.toLowerCase();
   dump("units = "+units+"\n");
-  var initialStr="<dialogbase><br/></dialogbase>";
-  if (titleformat[seclevel]) initialStr = titleformat[seclevel].proto;
-//  var re = /<dialogbase[^>]*>/;
-//  var s = initialStr.replace(re, "");
-//  var re2 = /<\/dialogbase>/;
-//  initialStr = s.replace(re2,"");
+  var initialStr;
+  if (titleformat[seclevel].proto) initialStr = titleformat[seclevel].proto;
+  if (initialStr) {
+    var re = /<titleprototype[^>]*>/;
+    var s = initialStr.replace(re, "");
+    var re2 = /<\/titleprototype>/;
+    initialStr = s.replace(re2,"");
+  }
+  if (!(initialStr && initialStr.length > 0))
+  {
+    initialStr="<dialogbase xmlns='http://www.w3.org/1999/xhtml'></dialogbase>";
+  }
   gDialog.bDataModified = false;
   gDialog.bEditorReady = false;
 
@@ -28,40 +34,33 @@ function getBaseNode( )
   var editElement = document.getElementById("sectiontitle-frame");
   var doc = editElement.contentDocument;
   var theNodes = doc.getElementsByTagName("dialogbase");
-  var theNode;
-  if (theNodes) theNode = theNodes[0]; 
-  else 
-  {
-    theNodes = doc.getElementsByTagName("para");
-    if (theNodes) theNode = theNodes[0]; 
-  }
-//  if (!theNode)
-//  {
-//    var bodies = doc.getElementsByTagName("body");
-//    if (bodies) for ( var i = 0; i < bodies.length; i++)
-//    {
-//      theNode = bodies[i];
-//      if (theNode.nodeType == theNode.ELEMENT_NODE)
-//        return theNode;
-//     }
-//  }
+  var theNode = null;
+  while (theNodes && theNodes.length>0) {
+    theNode = theNodes[0];
+    theNodes = theNode.getElementsByTagName("dialogbase");
+  }  // this is a workaround for a bug which causes <dialogbase> to be nested in a chain.
+  // The better solution is to keep this from happening  
   return theNode;
 }
 
 function stashTitlePrototype()
 {
-  var sourceNode = getBaseNode();
-  if (!sourceNode) return;
-  var ser = new XMLSerializer();
-  var xmlcode = ser.serializeToString(sourceNode);
-  titleformat[seclevel].proto = xmlcode;
-  titleformat.refresh(titleformat.destNode);
-  dump("***** saving '"+titleformat[seclevel]+"'\n");
-// we still need to replace the text of the section title area in the main dialog.
+  try {
+    var sourceNode = getBaseNode();
+    if (!sourceNode) return;
+    var ser = new XMLSerializer();
+    var xmlcode = ser.serializeToString(sourceNode);
+    titleformat[seclevel].proto = xmlcode;
+    titleformat.refresh(titleformat.destNode);
+  }
+  catch(e) {
+    dump("***** saving '"+titleformat[seclevel]+"'\n"+e.message);
+  }
 }
 
-function onOK() {
-// Copy the contents of the editor to the section header form
+
+function onAccept()
+{
   stashTitlePrototype();
   SaveWindowLocation();
   close();

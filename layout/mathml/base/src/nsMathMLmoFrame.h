@@ -86,6 +86,10 @@ public:
                    nsIAtom*        aAttribute,
                    PRInt32         aModType);
 
+  NS_IMETHOD
+  GetPointFromOffset(PRInt32 inOffset,
+                    nsPoint* outPoint);
+                    
   // This method is called by the parent frame to ask <mo> 
   // to stretch itself.
   NS_IMETHOD

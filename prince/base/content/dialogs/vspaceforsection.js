@@ -1,12 +1,21 @@
+Components.utils.import("resource://app/modules/unitHandler.jsm"); 
+
 var spaceElement;
 var unit;
+var unitHandler = new UnitHandler();
 
 function startUp()
 {
   spaceElement= window.arguments[0];
   if (!spaceElement) return;
   unit = window.arguments[1];
-  document.getElementById("spaceHeight").setAttribute("value",spaceElement.getAttribute("height"));
+  var spaceHeight = ruleElement.getAttribute("tlheight"); 
+  var ht;
+  numberAndUnit = unitHandler.getNumberAndUnitFromString(spaceHeight);
+  if (numberAndUnit)
+    ht = unitHandler.getValueOf(numberAndUnit.number, numberAndUnit.unit);
+  else ht = "";
+  document.getElementById("spaceHeight").setAttribute("value",ht);
   document.getElementById("vspaceUnits").setAttribute("value",unit);
 }
 
@@ -19,16 +28,16 @@ function onAccept()
     // element is now the deck.
   // should check for validity.
   if (n>0) {
-    spaceElement.setAttribute("height", n+unit);
+    spaceElement.setAttribute("tlheight", n+unit);
     element.setAttribute("selectedIndex", "1");
   }
-  else
-    element.setAttribute("selectedIndex", "0");
+  return true;
 }
 
 
 function onCancel()
 {
+  return true;
 }
 
 function handleChar(a,b)

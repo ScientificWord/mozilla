@@ -56,6 +56,10 @@ public:
   NS_IMETHOD GetAlignment(PRBool *aMixed, nsIHTMLEditor::EAlignment *aAlign)=0;
   NS_IMETHOD GetParagraphState(PRBool *aMixed, nsAString &outFormat)=0;
   NS_IMETHOD MakeSureElemStartsOrEndsOnCR(nsIDOMNode *aNode)=0;
+  NS_IMETHOD GetNodesFromSelection(nsISelection *selection,
+                                 PRInt32 operation,
+                                 nsCOMArray<nsIDOMNode>& arrayOfNodes,
+                                 PRBool aDontTouchContent=PR_FALSE)=0;
 };
 
 NS_DEFINE_STATIC_IID_ACCESSOR(nsIHTMLEditRules, NS_IHTMLEDITRULES_IID)

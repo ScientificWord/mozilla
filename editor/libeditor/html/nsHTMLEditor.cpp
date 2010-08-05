@@ -40,6 +40,7 @@
 
 #include "nsReadableUtils.h"
 #include "nsUnicharUtils.h"
+#include "nsIMutableArray.h"
 
 #include "nsHTMLEditor.h"
 #include "nsHTMLEditRules.h"
@@ -6428,4 +6429,22 @@ NS_IMETHODIMP nsHTMLEditor::RemoveStructureAboveSelection(nsISelection * selecti
 //  ruleInfo.namespaceAtom = namespaceAtom;
   nsresult res = mRules->WillDoAction(selection, &ruleInfo, &cancel, &handled);
   return res;
+}
+
+/* nsIDOMNodeList NodesFromSelection (in nsISelection selection); */
+NS_IMETHODIMP nsHTMLEditor::MathToText(nsISelection *selection)
+{
+  nsCOMArray<nsIDOMNode> arrayOfNodes; 
+  nsresult res;
+  nsCOMPtr<nsIHTMLEditRules> htmlRules = do_QueryInterface(mRules);
+  if (!htmlRules) return NS_ERROR_FAILURE;
+  
+  res = htmlRules->GetNodesFromSelection(selection, 0, arrayOfNodes, PR_TRUE);
+  PRInt32 length = arrayOfNodes.Count();
+}
+
+
+NS_IMETHODIMP nsHTMLEditor::NodesInRange(nsIDOMRange *aRange, nsIArray** _retval)
+{
+  return sRangeHelper->NodesInRange(aRange, _retval);
 }

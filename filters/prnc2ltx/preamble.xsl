@@ -15,27 +15,21 @@
 <xsl:variable name="requiredpackages.tf">
   <xsl:for-each select="//*[@req]">
     <xsl:sort select="@req"/>
-	<xsl:copy-of select="."/>
+	  <xsl:copy-of select="."/>
   </xsl:for-each>
-  <!--xsl:for-each select="//mainfont[@req]">
-    <xsl:sort select="@req"/>
-	<xsl:copy-of select="."/>
-  </xsl:for-each>
-  <xsl:for-each select="//mathfont[@req]">
-    <xsl:sort select="@req"/>
-	<xsl:copy-of select="."/>
-  </xsl:for-each>
-  <xsl:for-each select="//sansfont[@req]">
-    <xsl:sort select="@req"/>
-	<xsl:copy-of select="."/>
-  </xsl:for-each>
-  <xsl:for-each select="//fixedfont[@req]">
-    <xsl:sort select="@req"/>
-	<xsl:copy-of select="."/>
-  </xsl:for-each -->
 </xsl:variable>
 
+<xsl:variable name="preambletexbuttons.tf">
+  <xsl:for-each select="//*[@pre]">
+    <xsl:sort select="@ord"/>
+	  <xsl:copy-of select="."/>
+  </xsl:for-each>
+</xsl:variable>
+
+
+
 <xsl:variable name="requiredpackages" select ="exsl:node-set($requiredpackages.tf)"/>
+<xsl:variable name="preambletexbuttons" select ="exsl:node-set($preambletexbuttons.tf)"/>
  
 <xsl:variable name="packagelist.tf"> 
   <xsl:for-each select="$requiredpackages/*">
@@ -69,6 +63,8 @@
  
 <xsl:variable name="packagelist" select ="exsl:node-set($packagelist.tf)"/>
 
+<xsl:variable name="formattingok" select="//html:colist[@enabled='true']"/>
+<xsl:variable name="pagelayoutok" select="//html:pagelayout[@enabled='true']"/>
 
 <xsl:template match="html:preamble">
 <xsl:if test="count(//html:indexitem) &gt; 0"
@@ -78,9 +74,11 @@
   ><xsl:sort select="@pri" data-type="number"/>
 \usepackage<xsl:if test="@options"
     >[<xsl:value-of select="@options"/>]</xsl:if
-    >{<xsl:value-of select="@package"/>}  %% <xsl:value-of select="@pri"/></xsl:for-each
-  ><xsl:apply-templates
-  /></xsl:template>
+    >{<xsl:value-of select="@package"/>}  %% <xsl:value-of select="@pri"/></xsl:for-each>
+  <xsl:apply-templates/>
+  <xsl:for-each select="$preambletexbuttons/*"
+  ><xsl:if test="@pre='1'"><xsl:apply-templates/></xsl:if></xsl:for-each>
+</xsl:template>
 
 <xsl:template match="html:preambleTeX">
   <xsl:value-of select="."/>
@@ -88,7 +86,8 @@
 
 <!-- use docformat information to call the crop package -->
 <xsl:template match="html:crop">
-  <xsl:variable name="unit"><xsl:value-of select="@unit"/></xsl:variable
+  <xsl:if test="$pagelayoutok"
+  ><xsl:variable name="unit"><xsl:value-of select="@unit"/></xsl:variable
   >\usepackage[<xsl:value-of select="@type"/><xsl:text>, </xsl:text
   ><xsl:choose
     ><xsl:when test="@paper='other'"
@@ -98,37 +97,41 @@
     <xsl:otherwise
       ><xsl:value-of select="@paper"/><xsl:text>, </xsl:text> 
     </xsl:otherwise> <!-- you can add any crop options you want here, separated with commas --></xsl:choose
-  > center]{crop}</xsl:template>
+  > center]{crop}</xsl:if
+></xsl:template>
 
 <!-- use docformat information to call the geometry package -->
-<xsl:template match="html:pagelayout[@latex='true']">
-<xsl:variable name="unit"><xsl:value-of select="@unit"/></xsl:variable>
+<xsl:template match="html:pagelayout[@latex='true']"><xsl:if test="$pagelayoutok"
+><xsl:variable name="unit"><xsl:value-of select="@unit"
+/></xsl:variable>
 \usepackage[ <xsl:apply-templates/>]{geometry}
-</xsl:template>
+</xsl:if
+></xsl:template>
 
-<xsl:template match="html:page">
+<xsl:template match="html:page"><xsl:if test="$pagelayoutok">
   paper=<xsl:value-of select="@paper"/>paper, twoside=<xsl:value-of select="@twoside"
-  />, <!--landscape=<xsl:value-of select="@landscape"/>, --> </xsl:template>
+  />, <!--landscape=<xsl:value-of select="@landscape"/>, --> </xsl:if></xsl:template>
 
-<xsl:template match="html:page[@paper='screen']">  paper=screen, twoside=false, landscape=false,</xsl:template>
+<xsl:template match="html:page[@paper='screen']"><xsl:if test="$pagelayoutok"
+ >  paper=screen, twoside=false, landscape=false,</xsl:if></xsl:template>
 
-<xsl:template match="html:page[@paper='other']">
+<xsl:template match="html:page[@paper='other']"><xsl:if test="$pagelayoutok">
   paperwidth=<xsl:value-of select="@width"
   />, paperheight=<xsl:value-of select="@height"
-/>, </xsl:template>
+/>, </xsl:if></xsl:template>
 
-<xsl:template match="html:textregion">
+<xsl:template match="html:textregion"><xsl:if test="$pagelayoutok">
   textwidth=<xsl:value-of select="@width"/>, textheight=<xsl:value-of select="@height"
-/>, </xsl:template>
+/>, </xsl:if></xsl:template>
 
-<xsl:template match="html:margin">
+<xsl:template match="html:margin"><xsl:if test="$pagelayoutok">
   left=<xsl:value-of select="@left"/>, top=<xsl:value-of select="@top"
-/>, </xsl:template>
+/>, </xsl:if></xsl:template>
 
-<xsl:template match="html:header">
+<xsl:template match="html:header"><xsl:if test="$pagelayoutok">
   headheight=<xsl:value-of select="@height"
   />, headsep=<xsl:value-of select="@sep"
-/>, </xsl:template>
+/>, </xsl:if></xsl:template>
 
 <xsl:template match="html:columns[@count='2']"
   >twocolumn=true, columnsep=<xsl:value-of select="@sep"
@@ -138,9 +141,9 @@
   ></xsl:template>
 
 <xsl:template match="html:marginnote[@hidden='false']"
-  >marginparwidth=<xsl:value-of select="@width"
+  ><xsl:if test="$pagelayoutok">marginparwidth=<xsl:value-of select="@width"
   />, marginparsep=<xsl:value-of select="@sep"
-/> </xsl:template>
+/>, </xsl:if></xsl:template>
 
 <xsl:template match="html:marginnote[@hidden!='false']"
   ></xsl:template>
@@ -179,13 +182,18 @@
 <xsl:template match="html:x3font">\newfontfamily\<xsl:value-of select="@internalname"/>[<xsl:value-of select="@options"/>]{<xsl:value-of select="@name"/>}</xsl:template>
 
 <!-- section headings redefined. Requires package titlesec -->
-<xsl:template match="html:sectitleformat" >\newcommand{\msi<xsl:value-of select="@level"/>}[1]{<xsl:apply-templates/>}
+<xsl:template match="html:sectitleformat">
+<xsl:if test="@enabled='true'">
+<xsl:if test="@newPage='true'">
+\newcommand\<xsl:value-of select="@level"/>break{\clearpage}</xsl:if>
+\newcommand{\msi<xsl:value-of select="@level"
+/>}[1]{<xsl:apply-templates select="html:titleprototype"/>}
 \titleformat{\<xsl:value-of select="@level"/>}[<xsl:value-of select="@sectStyle"/>]{<xsl:choose
   ><xsl:when test="@align='l'">\filright</xsl:when
   ><xsl:when test="@align='c'">\center</xsl:when
   ><xsl:otherwise>\filleft</xsl:otherwise
-  ></xsl:choose>}{}{0pt}{\msi<xsl:value-of select="@level"
-/>}</xsl:template>
+  ></xsl:choose><xsl:apply-templates select="html:toprule"/>}{}{0pt}{\msi<xsl:value-of select="@level"
+/>}[{<xsl:apply-templates select="html:bottomrule"/>}]</xsl:if></xsl:template>
 						  
 <xsl:template match="html:dialogbase">
   <xsl:apply-templates/>
@@ -194,22 +202,119 @@
 <xsl:template match="html:titleprototype"><xsl:apply-templates/>
 </xsl:template>
 
-<xsl:template match="html:dialogbase">
+<xsl:template match="html:templatebase">
   <xsl:apply-templates/>
 </xsl:template>
 
+<xsl:template match="html:toprule">
+  <xsl:choose>
+    <xsl:when test="@role='rule'">\titleline<xsl:if test="@tlwidth='*'"
+      >*</xsl:if>[<xsl:value-of select="@tlalign"
+      />]{<xsl:if test="@color"
+      >\textcolor<xsl:choose
+	   	><xsl:when test="substring(./@color,1,1)='#'">[HTML]{<xsl:value-of select="translate(substring(./@color,2,8),'abcdef','ABCDEF')"
+   		/></xsl:when
+   		><xsl:otherwise>{<xsl:value-of select="./@color"/></xsl:otherwise
+   	  ></xsl:choose
+      >}{</xsl:if
+      ><xsl:choose>
+        <xsl:when test="@tlwidth='-'">\titlerule[<xsl:value-of select="@tlheight"/>]}</xsl:when>
+        <xsl:when test="@tlwidth='*'">\titlerule[<xsl:value-of select="@tlheight"/>]}</xsl:when>
+        <xsl:otherwise>\rule{<xsl:value-of select="@tlwidth"/>}{<xsl:value-of select="@tlheight"/>}}</xsl:otherwise>
+      </xsl:choose>
+      <xsl:if test="@color">}</xsl:if>
+    </xsl:when>
+    <xsl:when test="@role='vspace'">\vspace{<xsl:value-of select="@tlheight"/>}</xsl:when>
+  </xsl:choose>
+</xsl:template>
+  
+<xsl:template match="html:bottomrule">
+  <xsl:choose>
+    <xsl:when test="@role='rule'">\titleline<xsl:if test="@tlwidth='*'"
+      >*</xsl:if>[<xsl:value-of select="@tlalign"
+      />]{<xsl:if test="@color"
+      >\textcolor<xsl:choose
+	   	><xsl:when test="substring(./@color,1,1)='#'">[HTML]{<xsl:value-of select="translate(substring(./@color,2,8),'abcdef','ABCDEF')"
+   		/></xsl:when
+   		><xsl:otherwise>{<xsl:value-of select="./@color"/></xsl:otherwise
+   	  ></xsl:choose
+      >}{</xsl:if
+      ><xsl:choose>
+        <xsl:when test="@tlwidth='-'">\titlerule[<xsl:value-of select="@tlheight"/>]}</xsl:when>
+        <xsl:when test="@tlwidth='*'">\titlerule[<xsl:value-of select="@tlheight"/>]}</xsl:when>
+        <xsl:otherwise>\rule{<xsl:value-of select="@tlwidth"/>}{<xsl:value-of select="@tlheight"/>}}</xsl:otherwise>
+      </xsl:choose>
+      <xsl:if test="@color">}</xsl:if>
+    </xsl:when>
+    <xsl:when test="@role='vspace'">\vspace{<xsl:value-of select="@tlheight"/>}</xsl:when>
+  </xsl:choose>
+</xsl:template>
 <!-- end of section headings -->
 
 <!-- class options   -->
 <xsl:template match="html:colist"
-  ><xsl:for-each select="@*"
+  ><xsl:if test="$formattingok"><xsl:for-each select="@*"
     ><xsl:value-of select="."/>, </xsl:for-each
-  ></xsl:template>
+  ></xsl:if></xsl:template>
 
 <!-- leading -->
 <xsl:template match="html:leading"
-    >\leading{<xsl:value-of select="@val"
-  />}</xsl:template>
+    ><xsl:if test="$formattingok">\leading{<xsl:value-of select="@val"
+  />}</xsl:if></xsl:template>
 
-    
+<!-- section numbering style -->
+<xsl:template match="html:numberstyles">
+
+  <xsl:if test="@part">
+  	<xsl:choose>
+    	<xsl:when test="@part='none'">
+    	  \renewcommand\thepart{}</xsl:when>
+    	<xsl:otherwise>
+    	  \renewcommand\thepart{\<xsl:value-of select="@part"/>{part}}</xsl:otherwise> 
+	</xsl:choose></xsl:if>
+  <xsl:if test="@chapter">
+  	<xsl:choose>
+    	<xsl:when test="@chapter='none'">
+    	  \renewcommand\thechapter{}</xsl:when
+    	><xsl:otherwise>
+    	  \renewcommand\thechapter{\<xsl:value-of select="@chapter"/>{chapter}}</xsl:otherwise> 
+	</xsl:choose></xsl:if>
+  <xsl:if test="@section">
+  	<xsl:choose>
+    	<xsl:when test="@section='none'">
+    	\renewcommand\thesection{}</xsl:when
+    	><xsl:otherwise>
+    	\renewcommand\thesection{\<xsl:value-of select="@section"/>{section}}</xsl:otherwise> 
+	</xsl:choose></xsl:if>
+  <xsl:if test="@subsection">
+  	<xsl:choose>
+    	<xsl:when test="@subsection='none'">
+    	\renewcommand\thesubsection{}</xsl:when
+    	><xsl:otherwise>
+    	\renewcommand\thesubsection{\thesection.\<xsl:value-of select="@subsection"/>{subsection}}</xsl:otherwise> 
+	</xsl:choose></xsl:if>
+  <xsl:if test="@subsubsection">
+  	<xsl:choose>
+    	<xsl:when test="@subsubsection='none'">
+    	\renewcommand\thesubsubsection{}</xsl:when
+    	><xsl:otherwise>
+    	\renewcommand\subsubsection{\thesubsection.\<xsl:value-of select="@thesubsubsection"/>{subsubsection}}</xsl:otherwise> 
+	</xsl:choose></xsl:if>
+  <xsl:if test="@paragraph">
+  	<xsl:choose>
+    	<xsl:when test="@paragraph='none'">
+    	\renewcommand\theparagraph{}</xsl:when
+    	><xsl:otherwise>
+    	\renewcommand\paragraph{\thesubbsusection.\<xsl:value-of select="@paragraph"/>{paragraph}}</xsl:otherwise> 
+	</xsl:choose></xsl:if>
+  <xsl:if test="@subparagraph">
+  	<xsl:choose>
+    	<xsl:when test="@subparagraph='none'">
+    	\renewcommand\thesubparagraph{}</xsl:when
+    	><xsl:otherwise>
+    	\renewcommand\subparagraph{\theparagraph.\<xsl:value-of select="@subparagraph"/>{subparagraph}}</xsl:otherwise> 
+	</xsl:choose></xsl:if>
+</xsl:template>
+
 </xsl:stylesheet>
+
