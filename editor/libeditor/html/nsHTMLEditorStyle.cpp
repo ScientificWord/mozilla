@@ -151,8 +151,8 @@ NS_IMETHODIMP nsHTMLEditor::SetInlineProperty(nsIAtom *aProperty,
   if (isCollapsed)
   {
     // manipulating text attributes on a collapsed selection only sets state for the next text insertion
-    nsString tAttr(aAttribute);//MJUDGE SCC NEED HELP
-    nsString tVal(aValue);//MJUDGE SCC NEED HELP
+    nsString tAttr(aAttribute);
+    nsString tVal(aValue);
     return mTypeInState->SetProp(aProperty, tAttr, tVal);
   }
   

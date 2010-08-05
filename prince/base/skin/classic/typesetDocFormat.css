@@ -93,3 +93,8 @@
 *[hidden="true"] {
   display: none;
 }
+
+
+msibutton[disabled="true"] label {
+  color: gray;
+}

@@ -3,7 +3,8 @@
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="resource://res/css/baselatex.css" type="text/css"?>
 <?xml-stylesheet href="resource://res/css/article.css" type="text/css"?>
-<?xml-stylesheet href="resource://res/css/latex.css.css" type="text/css"?>
+<?xml-stylesheet href="resource://res/css/latex.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/typesetDocFormat.css" type="text/css"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/typesetDocFormat.dtd">
 
@@ -13,7 +14,7 @@
     onload="sectStartup(); setalign('left');" >
 
   <tabpanel id="docformatSectionsPanel" orient="vertical">
-    <script type="application/x-javascript" src="chrome://prince/content/typesetSectionsOverlay.js"/>
+    <script type="application/x-javascript" src="chrome://prince/content/typesetsectionsoverlay.js"/>
     <broadcasterset>
       <broadcaster id="atpagetop" hidden="false"/>
       <broadcaster id="leftalignment" msicollapsed="false"/>
@@ -22,30 +23,51 @@
       <broadcaster id="toporbottommargin" disabled="true"/>
       <broadcaster id="notmargin" disabled="true"/>
     </broadcasterset>  
-    <label>Hello!</label>
+     <hbox>
+       <vbox align="center">
+         <label>Section type</label>
+         <menulist id="sections.name" oncommand="switchSectionType();" persist="value" >
+           <menupopup>
+             <menuitem id="sections.part" label="Part" value="-1"/>
+             <menuitem id="sections.chapter" label="Chapter" value="0"/>
+             <menuitem id="sections.section" selected="true" label="Section" value="1"/>
+             <menuitem id="sections.subsection" label="Subsection" value="2"/>
+             <menuitem id="sections.subsubsection" label="Subsubsection" value="3"/>
+             <menuitem id="sections.paragraph" label="Paragraph" value="4"/>
+             <menuitem id="sections.subparagraph" label="Subparagraph" value="5"/>
+           </menupopup>
+         </menulist>
+       </vbox>
+       <vbox align="center">
+         <label>Number style</label>
+         <menulist id="sections.numstyle" persist="value" oncommand="setNumStyle(this);" >
+           <menupopup>
+             <menuitem id="default" selected="true" label="Default" value=""/>
+             <menuitem id="none" label="Don't show" value="none"/>
+             <menuitem id="arabic" label="Arabic" value="arabic"/>
+             <menuitem id="roman" label="Lowercase Roman" value="roman"/>
+             <menuitem id="Roman" label="Uppercase Roman" value="Roman"/>
+             <menuitem id="Alpha" label="Uppercase letters" value="Alph"/>
+             <menuitem id="alpha" label="Lowercase letters" value="alph"/>
+           </menupopup>
+         </menulist>
+       </vbox>
+     </hbox>
+    <separator class="groove"/>
+      <rawlabel id="rawlabel" label = "Enable overriding ## header formats"/>
+      <checkbox id="allowsectionheaders" checked="false" label="Enable overriding ## header formats"
+        oncommand="enableDisableSectFormat(this);"/>
+      <broadcaster id="secredefok" disabled="true"/>
+    <separator class="groove"/>
     <hbox>
       <vbox flex="1"/>
       <vbox align="center">
-       <label>Section type</label>
-       <menulist id="sections.name" oncommand="switchSectionType();" persist="value" >
-         <menupopup>
-           <menuitem id="sections.part" label="Part" value="-1"/>
-           <menuitem id="sections.chapter" label="Chapter" value="0"/>
-           <menuitem id="sections.section" selected="true" label="Section" value="1"/>
-           <menuitem id="sections.subsection" label="Subsection" value="2"/>
-           <menuitem id="sections.subsubsection" label="Subsubsection" value="3"/>
-           <menuitem id="sections.paragraph" label="Paragraph" value="4"/>
-           <menuitem id="sections.subparagraph" label="Subparagraph" value="5"/>
-         </menupopup>
-       </menulist>
+        <label observes="secredefok">Start new page</label>
+        <checkbox observes="secredefok" id="sectionstartnewpage" persist="checked" oncommand="settopofpage(this);"/>
       </vbox>
       <vbox align="center">
-        <label>Start new page</label>
-        <checkbox id="sectionstartnewpage" persist="checked" oncommand="settopofpage(this);"/>
-      </vbox>
-      <vbox align="center">
-       <label>&docformatUnits;</label>
-       <menulist id="secoverlay.units" persist="value" 
+       <label observes="secredefok">&docformatUnits;</label>
+       <menulist observes="secredefok" id="secoverlay.units" persist="value" 
               oncommand="switchSectionUnits();"  >
          <menupopup style="width: 4em;">
            <menuitem id="secoverlay.inch" label="&docformatInch;" value="in"/>
@@ -62,8 +84,8 @@
     <hbox>
       <vbox flex="1"/>
       <vbox align="center">
-       <label>Header style</label>
-       <menulist id="sections.style" persist="value" >
+       <label observes="secredefok">Header style</label>
+       <menulist observes="secredefok" id="sections.style" persist="value" >
          <menupopup style="width: 6em;">
            <menuitem id="sections.hang" selected="true" label="Hang" value="hang"/>
            <menuitem id="sections.runin" label="Runin" value="runin"/>
@@ -76,11 +98,11 @@
        </menulist>
       </vbox>
       <vbox align="center">
-       <label>Alignment</label>
+       <label observes="secredefok">Alignment</label>
        <radiogroup id="sections.align" orient="horizontal">
-         <radio id="sectionleft" label="left" value="l" selected="true" oncommand="setalign('l');"/>
-         <radio id="sectioncenter" label="center" value="c" oncommand="setalign('c');"/>
-         <radio id="sectionright" label="right" value="r" oncommand="setalign('r');"/>
+         <radio observes="secredefok" id="sectionleft" label="left" value="l" selected="true" oncommand="setalign('l');"/>
+         <radio observes="secredefok" id="sectioncenter" label="center" value="c" oncommand="setalign('c');"/>
+         <radio observes="secredefok" id="sectionright" label="right" value="r" oncommand="setalign('r');"/>
        </radiogroup>
       </vbox>
       <vbox flex="1"/>
@@ -115,20 +137,13 @@
                     <label class="gray_instruction" value="Click here to enter rules above the heading"/>
                   </hbox>
                   <vbox id = "toprules" pack="start" dir="reverse">                
-	                  <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)" 
-	                      height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
-	                  <vbox size="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"
-	                    height="3" style="background-color: red; overflow: visible; height:3px; width:10in;"/>  
-	                  <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
-	                    height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
-	                  <vbox size="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"
-	                    height="3" style="background-color: black; overflow: visible; height:3px; width:10in;"/>  
-	                  <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
-	                    height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
-	                  <vbox size="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"
-	                    height="3" style="background-color: black; overflow: visible; height:3px; width:10in;"/>  
-	                  <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
-	                    height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
+	                  <vbox tlwidth="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"/>  
+	                  <vbox tlwidth="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"/>  
+	                  <vbox tlwidth="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"/>  
+	                  <vbox tlwidth="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"/>  
+	                  <vbox tlwidth="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"/>  
+	                  <vbox tlwidth="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"/>  
+	                  <vbox tlwidth="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"/>  
 	                </vbox>
 	              </deck>
                 </vbox>
@@ -147,25 +162,18 @@
 	                style="min-height:20px; min-width:200px;" /-->
 	              <vbox id="bottommargin" role="sectionlayer" pack="start" tooltiptext="Click to set top margin or to enter text"
 	                style="height:20px; width:200px; overflow:visible" onclick="toggleselection(this);">
-	                <deck id="tso_toprules" selectedIndex="0">
+	                <deck id="tso_bottomrules" selectedIndex="0">
                     <hbox >
                       <label class="gray_instruction" value="Click here to enter rules below the heading"/>
                     </hbox>
-                    <vbox pack="start">
-                      <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
-	                      height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
-	                    <vbox size="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"
-	                      height="3" style="background-color: red; overflow: visible; height:3px; width:10in;"/>  
-	                    <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
-	                      height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
-	                    <vbox size="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"
-	                      height="3" style="background-color: black; overflow: visible; height:3px; width:10in;"/>  
-	                    <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
-	                      height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/>  
-	                    <vbox size="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"
-	                      height="3" style="background-color: black; overflow: visible; height:3px; width:10in;"/>  
-	                    <vbox size="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"
-	                      height="10" style="background-color: rgb(200,265,200); overflow: visible; width:10in;"/> 
+                    <vbox id="bottomrules" pack="start">
+	                  <vbox tlwidth="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"/>  
+	                  <vbox tlwidth="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"/>  
+	                  <vbox tlwidth="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"/>  
+	                  <vbox tlwidth="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"/>  
+	                  <vbox tlwidth="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"/>  
+	                  <vbox tlwidth="narrow" hidden="true" role="rule" onclick="reviseruleorspace(this)"/>  
+	                  <vbox tlwidth="narrow" hidden="true" role="vspace" onclick="reviseruleorspace(this)"/>  
                     </vbox>
                   </deck> 
 	              </vbox>
@@ -192,19 +200,32 @@
     <hbox id="marginsection" observes="notcenteralignment" align="center" onkeypress="sectHandleChar(event);">
       <vbox flex="1"/>
       <vbox align="center">
-        <label observes="leftalignment" value="Left heading indent"> <observes element="leftalignment"	attribute="msicollapsed"/></label>
+        <label value="Left heading indent">
+          <observes element="secredefok" attribute="disabled"/>
+          <observes element="leftalignment"	attribute="msicollapsed"/>
+        </label>
         <textbox id="tbsectleftheadingmargin" type="number" style="width:5em" min="-300" increment="1"
-          tooltip="The left indent for the heading" observes="leftalignment" value="0" onfocus="toggleselection(document.getElementById('sectleftheadingmargin'));">
+          tooltip="The left indent for the heading" value="0" onfocus="toggleselection(document.getElementById('sectleftheadingmargin'));">
+          <observes element="secredefok" attribute="disabled"/>
+          <observes element="leftalignment" attribute="hidden"/>
         </textbox>
         <observes element="leftalignment"	attribute="msicollapsed"/>
       </vbox>
       <spacer/>
-      <label observes="notcenteralignment">Use negative size to outdent</label>
+      <label observes="notcenteralignment">
+        Use negative size to outdent
+        <observes element="secredefok" attribute="disabled"/>
+      </label>
       <spacer/>
       <vbox align="center">
-        <label value="Right heading indent" ><observes element="rightalignment"	attribute="msicollapsed"/></label>
+        <label value="Right heading indent" >
+          <observes element="secredefok" attribute="disabled"/>
+          <observes element="rightalignment"	attribute="msicollapsed"/>
+        </label>
         <textbox id="tbsectrightheadingmargin" type="number" style="width:5em" min="-300" increment="1" 
-          tooltip="The right indent for the heading" observes="rightalignment" value="30" onfocus="toggleselection(document.getElementById('sectrightheadingmargin'));">
+          tooltip="The right indent for the heading" value="30" onfocus="toggleselection(document.getElementById('sectrightheadingmargin'));">
+          <observes element="secredefok" attribute="disabled"/>
+          <observes element="rightalignment" attribute="hidden"/>
         </textbox>
         <observes element="rightalignment"	attribute="msicollapsed"/>
       </vbox>
@@ -214,18 +235,26 @@
     <spacer/>
     <hbox align="center">
       <vbox flex="1"/>
-      <msibutton observes="toporbottommargin" label="Add rule" oncommand='addrule();'/>
+      <msibutton label="Add rule" oncommand='addrule();'>
+        <observes element="secredefok" attribute="disabled"/>
+        <observes element="toporbottommargin" attribute="disabled"/>
+      </msibutton>
       <spacer/>
-      <msibutton observes="toporbottommargin" label="Add vertical space" oncommand="addspace();" />
+      <msibutton label="Add vertical space" oncommand="addspace();" >
+        <observes element="secredefok" attribute="disabled"/>
+        <observes element="toporbottommargin" attribute="disabled"/>
+      </msibutton>
       <spacer/>
-      <msibutton observes="toporbottommargin" label="Remove top rule or space" oncommand="removeruleorspace();"/>
+      <msibutton label="Remove top rule or space" oncommand="removeruleorspace();">
+        <observes element="secredefok" attribute="disabled"/>
+        <observes element="toporbottommargin" attribute="disabled"/>
+      </msibutton>
       <spacer/>
-      <msibutton observes="notmargin" label="Insert text" oncommand= 'textEditor();' />
+      <msibutton label="Insert text" oncommand= 'textEditor();' >
+        <observes element="secredefok" attribute="disabled"/>
+        <observes element="notmargin" attribute="disabled"/>
+      </msibutton>
       <vbox flex="1"/>
     </hbox>
   </tabpanel>
-
-
-
-
 </overlay>

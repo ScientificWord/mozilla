@@ -750,7 +750,7 @@ TNODE* LaTeX2MMLTree::TranslateMathList( TNODE* LaTeX_list,
       break;
 
       default :
-		TCI_ASSERT(0);
+		//TCI_ASSERT(0);
       break;
 
     }       // switch ( uobjtype )
@@ -7443,7 +7443,7 @@ TCI_ASSERT(0);  // Shouldn't get here - unicodes all mapped to symbols earlier
 		break;
 
 		default :
-          TCI_ASSERT(0);    // un-expected object in a \unit{}
+          //TCI_ASSERT(0);    // un-expected object in a \unit{}
 		break;
 	  }
 

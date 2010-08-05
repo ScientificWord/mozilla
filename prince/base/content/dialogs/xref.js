@@ -7,7 +7,7 @@ var refnode;
 var editor;
 var gKey;
 var gReftype;
-var newNode;
+var isNewNode;
 
 // dialog initialization code
 function Startup()
@@ -18,10 +18,10 @@ function Startup()
     window.close();
     return;
   }
-  gKey   = document.getElementById("key");
+  refnode = editor.getSelectedElement("xref");
+  gKey   = document.getElementById("keylist");
   gReftype = document.getElementById("reftype");
-  refnode = window.arguments[0];
-  newNode = !(refnode);
+  isNewNode = !(refnode);
   if (refnode) {
     if (refnode.hasAttribute("key")) gKey.value = refnode.getAttribute("key");
     if (refnode.hasAttribute("reftype")) gReftype.selectedIndex = 
@@ -47,14 +47,15 @@ function onAccept()
     else refnode.removeAttribute("key");
     dumpln("key = " + gKey.value);
     refnode.setAttribute("reftype", (gReftype.selectedIndex == 0)?"page":"obj");
+    refnode.setAttribute("req", "varioref");
     dumpln("reftype = "+refnode.getAttribute("reftype"));
     SaveWindowLocation();
   }
   catch(e) {
     dump("Exception: "+e.message+"\n");
   }
-  dumpln("newNode is "+newNode);
-  if (newNode) editor.insertElementAtSelection(refnode, true);
+  dumpln("isNewNode is "+isNewNode);
+  if (isNewNode) editor.insertElementAtSelection(refnode, true);
   return true;
 }
 
@@ -94,11 +95,11 @@ function initKeyList()
   }  
   var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
   ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
-  ACSA.resetArray("keys");
+  ACSA.resetArray("key");
   for (i=0, len=keys.length; i<len; i++)
   {
     if (keys[i].length > 0) 
-      ACSA.addString("keys",keys[i]);
+      ACSA.addString("key",keys[i]);
   }
   dump("Keys are : "+keys.join()+"\n");    
 }

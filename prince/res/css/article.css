@@ -426,8 +426,16 @@ button[class="subeqnnum"]{
 }
 
 
-
 button[class="frontmattertag"]{
   position: absolute;
   left: -100px;
+}
+
+
+[hideindexentries="true"] indexitem {
+  display: none;
+}
+
+[hidemarkers] a[key] {
+  display: none;
 }

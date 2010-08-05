@@ -11,6 +11,12 @@ function deleteSelection()
   msiGoDoCommand('cmd_delete');
 }
 
+function getCurrentEditorElement()
+{
+  var theEditorElement = msiGetActiveEditorElement();
+}
+
+
 function insertMathSymbol( s, delSelection )
 {
   if (delSelection) deleteSelection();
@@ -20,20 +26,20 @@ function insertMathSymbol( s, delSelection )
 function insertMathunit( unit, delSelection )
 {
   if (delSelection) deleteSelection();
-  var editorElement = document.getElementById("content-frame");
+  var editorElement = getCurrentEditorElement();
   insertmathunit(unit, editorElement);
 }
 
 function insertMathname( name, delSelection )
 {
   if (delSelection) deleteSelection();
-  var editorElement = document.getElementById("content-frame");
+  var editorElement = getCurrentEditorElement();
   doInsertMathName(name, editorElement);
 }
 
 function insertTag( name, delSelection )
 {
-  var editorElement = document.getElementById("content-frame");
+  var editorElement = getCurrentEditorElement();
   var editor = msiGetEditor(editorElement);
   var HTMLEditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
   if (delSelection) deleteSelection();
@@ -43,7 +49,7 @@ function insertTag( name, delSelection )
 
 function insertText ( textString )
 {
-  var editorElement = document.getElementById("content-frame");
+  var editorElement = getCurrentEditorElement();
   var editor = msiGetEditor(editorElement);
   var plaintextEditor = editor.QueryInterface(Components.interfaces.nsIPlaintextEditor);
   plaintextEditor.insertText( textString);
@@ -110,7 +116,7 @@ function previewDVI(delSelection)
 
 function dumpMath()
 {
-  var editorElement = document.getElementById("content-frame");
+  var editorElement = getCurrentEditorElement();
   var editor = msiGetEditor(editorElement);
   var HTMLEditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
   var rootnode = HTMLEditor.getSelectionContainer();

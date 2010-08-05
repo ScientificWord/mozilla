@@ -250,7 +250,7 @@ mml|mi[tempinput="true"]::before {  content: "[";}
 mml|mi[tempinput="true"]::after {  content: "]";}
 mml|mi[tempinput="true"]{
   letter-spacing: 0; /*-0.015em;*/
-  -moz-user-select: -moz-none;
+  -moz-user-select: text;
 }
 
 #rotateleft{

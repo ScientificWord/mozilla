@@ -5524,8 +5524,9 @@ ATTRIB_REC *STree2MML::VariantToStyleAtts(const char *mathvariant,
   case 4:{                     // mathvariant =  "bold";
       rv = new ATTRIB_REC("fontweight", "bold");
       ATTRIB_REC *ar2 = new ATTRIB_REC("fontstyle", "upright");
-      rv->next = ar2;
-      ar2->prev = rv;
+      InsertAttribute(rv, ar2);
+      //rv->next = ar2;
+      //ar2->prev = rv;
     }
     break;
   case 6:
@@ -5553,8 +5554,10 @@ ATTRIB_REC *STree2MML::VariantToStyleAtts(const char *mathvariant,
   case 11:{                    // mathvariant =  "bold-italic";
       rv = new ATTRIB_REC("fontweight", "bold");
       ATTRIB_REC *ar2 = new ATTRIB_REC("fontstyle", "italic");
-      rv->next = ar2;
-      ar2->prev = rv;
+      InsertAttribute(rv, ar2);
+
+      // rv->next = ar2;
+      // ar2->prev = rv;
     }
     break;
   case 13:                     // mathvariant =  "double-struck";
