@@ -882,10 +882,23 @@ nsHTMLEditor::InsertReturnImpl( PRBool fFancy )
   nsCOMPtr<nsISelection>selection;
   res = GetSelection(getter_AddRefs(selection));
   res = GetStartNodeAndOffset(selection, address_of(splitpointNode), &splitpointOffset);
+  PRBool bHandled = PR_FALSE;
+  res = InsertReturnInMath(splitpointNode, splitpointOffset, &bHandled);
+  if (NS_FAILED(res)) return res;
+  else if (bHandled)
+    return res;
+
   res = InsertReturnAt(splitpointNode, splitpointOffset, fFancy);
   return res;
 }
-  
+
+nsresult
+nsHTMLEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOffset, PRBool* bHandled)
+{
+  *bHandled = PR_FALSE;
+  return NS_OK;
+}
+
 // InsertReturnAt -- usually splits a paragraph; may call itself recursively
 nsresult
 nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOffset, PRBool fFancy)
