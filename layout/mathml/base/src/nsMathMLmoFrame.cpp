@@ -113,6 +113,20 @@ nsMathMLmoFrame::IsFrameInSelection(nsIFrame* aFrame)
   return PR_TRUE;
 }
 
+NS_IMETHODIMP
+nsMathMLmoFrame::GetPointFromOffset(PRInt32 inOffset,
+                                nsPoint* outPoint)
+{
+  outPoint->x = 0;
+  outPoint->y = 0;
+  if (inOffset > 0)
+  {
+    outPoint->x = mRect.width;
+  }
+  return NS_OK;
+}
+
+                                
 PRBool
 nsMathMLmoFrame::UseMathMLChar()
 {

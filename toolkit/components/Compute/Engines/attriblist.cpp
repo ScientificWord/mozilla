@@ -16,17 +16,11 @@ ATTRIB_REC::ATTRIB_REC(const char* attr_nom, const char* attr_val)
   prev = NULL;
 
   if (attr_nom) {
-    //size_t zln = strlen(attr_nom);
-    //char *tmp = new char[zln + 1];
-    //strcpy(tmp, attr_nom);
     zattr_nom = DuplicateString(attr_nom);
   } else {
     zattr_nom = NULL;
   }
   if (attr_val) {               // we have a STR value for the attribute
-    //size_t zln = strlen(attr_val);
-    //char *tmp = new char[zln + 1];
-    //strcpy(tmp, attr_val);
     zattr_val = DuplicateString(attr_val);
   } else {
     zattr_val = NULL;
@@ -38,7 +32,7 @@ void DisposeAttribs(ATTRIB_REC * alist)
   ATTRIB_REC *arover = alist;
   while (arover) {
     ATTRIB_REC *adel = arover;
-    arover = arover->next;
+    arover = arover->GetNext();
     delete[] adel->zattr_nom;
     delete[] adel->zattr_val;
     delete adel;
@@ -53,22 +47,22 @@ const char *GetATTRIBvalue(ATTRIB_REC * a_list, const char *targ_name)
     if (!strcmp(targ_name, rover->zattr_nom)) {
       return rover->zattr_val;
     }
-    rover = rover->next;
+    rover = rover->GetNext();
   }
 
   return NULL;
 }
 
 
-const char* GetATTRIBvalue(const AttribList& aList, const char* targ_name)
-{
-   AttribList::const_iterator it = aList.begin();
-   while (it != aList.end()){
-     if (!strcmp(targ_name, (*it).zattr_nom))
-	   return (*it).zattr_val;
-   }
-   return NULL;
-}
+// const char* GetATTRIBvalue(const AttribList& aList, const char* targ_name)
+// {
+//    AttribList::const_iterator it = aList.begin();
+//    while (it != aList.end()){
+//      if (!strcmp(targ_name, (*it).zattr_nom))
+// 	   return (*it).zattr_val;
+//    }
+//    return NULL;
+// }
 
 
 // largeop="true" stretchy="true"  lspace="0em" rspace="0em"
@@ -110,7 +104,7 @@ ATTRIB_REC* ExtractAttrs(char *zattrs)
                   if (!head)
                     head = arp;
                   else
-                    tail->next = arp;
+                    tail->SetNext( arp );
                   tail = arp;
                 } else {
                   TCI_ASSERT(0);
@@ -137,7 +131,7 @@ ATTRIB_REC* ExtractAttrs(char *zattrs)
   return head;
 }
 
-ATTRIB_REC *MergeAttrsLists(ATTRIB_REC * dest_list, ATTRIB_REC * new_attrs)
+ATTRIB_REC* MergeAttrsLists(ATTRIB_REC* dest_list, ATTRIB_REC* new_attrs)
 {
   ATTRIB_REC *rv = NULL;
 
@@ -148,9 +142,9 @@ ATTRIB_REC *MergeAttrsLists(ATTRIB_REC * dest_list, ATTRIB_REC * new_attrs)
   } else {
     rv = dest_list;
 
-    ATTRIB_REC *rover = new_attrs;
+    ATTRIB_REC* rover = new_attrs;
     while (rover) {
-      ATTRIB_REC *d_rover = dest_list;
+      ATTRIB_REC* d_rover = dest_list;
       while (d_rover) {
         if (!strcmp(d_rover->zattr_nom, rover->zattr_nom)) {
           delete[] d_rover->zattr_val;
@@ -161,24 +155,24 @@ ATTRIB_REC *MergeAttrsLists(ATTRIB_REC * dest_list, ATTRIB_REC * new_attrs)
             d_rover->zattr_val = NULL;
           }
           ATTRIB_REC *ender = rover;
-          rover = rover->next;
-          ender->next = NULL;
-          ender->prev = NULL;
+          rover = rover->GetNext();
+          ender->SetNext(NULL);
+          ender->SetPrev(NULL);
           if (rover)
-            rover->prev = NULL;
+            rover->SetPrev(NULL);
           DisposeAttribs(ender);
           break;
         } else {
-          if (d_rover->next) {
-            d_rover = d_rover->next;
+          if (d_rover->GetNext()) {
+            d_rover = d_rover->GetNext();
           } else {
-            d_rover->next = rover;
-            rover->prev = d_rover;
+            d_rover->SetNext(rover);
+            rover->SetPrev( d_rover);
             ATTRIB_REC *ender = rover;
-            rover = rover->next;
-            ender->next = NULL;
+            rover = rover->GetNext();
+            ender->SetNext(NULL);
             if (rover)
-              rover->prev = NULL;
+              rover->SetPrev(NULL);
             break;
           }
         }
@@ -189,36 +183,44 @@ ATTRIB_REC *MergeAttrsLists(ATTRIB_REC * dest_list, ATTRIB_REC * new_attrs)
   return rv;
 }
 
-ATTRIB_REC *RemoveAttr(ATTRIB_REC * a_list, const char *attr_nom)
+ATTRIB_REC* RemoveAttr(ATTRIB_REC* a_list, const char* attr_nom)
 {
-  ATTRIB_REC *rv = NULL;
-  ATTRIB_REC *tail;
+  ATTRIB_REC* rv = NULL;
+  ATTRIB_REC* tail;
 
   if (a_list) {
     ATTRIB_REC *a_rover = a_list;
     while (a_rover) {
       if (!strcmp(a_rover->zattr_nom, attr_nom)) {
         ATTRIB_REC *ender = a_rover;
-        a_rover = a_rover->next;
-        ender->next = NULL;
-        ender->prev = NULL;
+        a_rover = a_rover->GetNext();
+        ender->SetNext(NULL);
+        ender->SetPrev(NULL);
         DisposeAttribs(ender);
         if (a_rover)
-          a_rover->prev = NULL;
+          a_rover->SetPrev(NULL);
       } else {
         if (!rv) {
           rv = a_rover;
         } else {
-          tail->next = a_rover;
-          a_rover->prev = tail;
+          tail->SetNext(a_rover);
+          a_rover->SetPrev(tail);
         }
         tail = a_rover;
-        a_rover = a_rover->next;
-        tail->next = NULL;
-        a_rover->prev = NULL;
+        a_rover = a_rover->GetNext();
+        tail->SetNext(NULL);
+        a_rover->SetPrev(NULL);
       }
     }
   }
 
   return rv;
 }
+
+
+void InsertAttribute(ATTRIB_REC* tail, ATTRIB_REC* new_attr)
+{
+    if (tail) tail->SetNext(new_attr);
+    if (new_attr) new_attr->SetPrev(tail);
+}
+

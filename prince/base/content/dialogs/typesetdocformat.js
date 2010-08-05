@@ -1,4 +1,9 @@
- 
+Components.utils.import("resource://app/modules/fontlist.jsm"); 
+Components.utils.import("resource://app/modules/pathutils.jsm"); 
+Components.utils.import("resource://app/modules/unitHandler.jsm"); 
+
+var unitHandler = new UnitHandler();
+var gNumStyles={};
 var currentUnit;
 var sectionUnit;
 var unitConversions;
@@ -16,6 +21,7 @@ var scale = 0.5;
 var editor;
 var sectitleformat;
 var sectScale = 1;
+
 
 
 function InitializeUnits()
@@ -46,74 +52,6 @@ function stripPath(element, index, array)
   array[index] = re.exec(element)[1];
 }
  
-function initializeFontFamilyList(force)
-{
-  var OTOk = document.getElementById("useOpenType").checked;
-  var prefs = GetPrefs();
-  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
-  var dir = dsprops.get("ProfD", Components.interfaces.nsIFile);
-  var texbindir;
-  var outfile;
-  outfile = dir.clone();
-  outfile.append("fontfamilies.txt");
-  try { texbindir= prefs.getCharPref("swp.tex.bindir"); }
-  catch(exc) {dump("texbindir not set in preference\n");}
-  if (!force)
-  { 
-    if (outfile.exists()) return;
-  }
-  var listfile = dir.clone(); 
-  listfile.append("bigfontlist.txt");
-  if (listfile.exists()) listfile.remove(false);
-  var exefile = dsprops.get("resource:app", Components.interfaces.nsIFile);;
-  exefile.append("BuildFontFamilyList.cmd");
-
-  try 
-  {
-    var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
-    theProcess.init(exefile);
-    dump("TexBinDir is "+texbindir+"\n");
-    var args =[listfile.parent.path, texbindir];
-    theProcess.run(true, args, args.length);
-  } 
-  catch (ex) 
-  {
-       dump("\nUnable to run OtfInfo.exe\n");
-       dump(ex+"\n");
-  }      
-  if (!listfile.exists())
-  {
-    dump("Failed to create bigfontlist.txt\n");
-    return;
-  }
-  var uri = msiFileURLFromAbsolutePath( listfile.path )
-  var myXMLHTTPRequest = new XMLHttpRequest();
-  myXMLHTTPRequest.overrideMimeType("text/plain");
-  myXMLHTTPRequest.open("GET", uri.spec, false);
-  myXMLHTTPRequest.send(null);
-  var str = myXMLHTTPRequest.responseText;
-  var lines = str.split(/[\n\r]*[a-z]:[^:]*:/i);
-  var i;
-  var limit;
-  lines = lines.sort();
-  var unique = lines.filter(newValue);
-  limit = unique.length;
-// output the result
-  str = "";
-  if (outfile.exists()) outfile.remove(false);
-  for (i =0; i < limit; i++)
-    str += unique[i] + "\n";
-  var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-  fos.init(outfile, -1, -1, false);
-  var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
-    .createInstance(Components.interfaces.nsIConverterOutputStream);
-  os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
-  os.writeString(str);
-  os.close();
-  fos.close();
-//  dump(str);
-}
-
 function Startup()
 {
   initializeFontFamilyList(false);
@@ -146,25 +84,12 @@ function Startup()
   //now we can load the docformat information from the document to override 
   //all or part of the initial state
   OnWindowSizeReset(true);
-  var useOT = false;
-  document.getElementById("opentypeok").setAttribute("hidden", 
-    useOT?"false":"true"); 
-  addOldFontsToMenu("mathfontlist");
-  addOldFontsToMenu("mainfontlist");
-  addOldFontsToMenu("sansfontlist");
-  addOldFontsToMenu("fixedfontlist");
-  addOldFontsToMenu("x1fontlist");
-  addOldFontsToMenu("x2fontlist");
-  addOldFontsToMenu("x3fontlist");
-
-  if (useOT) {
-    addOTFontsToMenu("mainfontlist");
-    addOTFontsToMenu("sansfontlist");
-    addOTFontsToMenu("fixedfontlist");
-    addOTFontsToMenu("x1fontlist");
-    addOTFontsToMenu("x2fontlist");
-    addOTFontsToMenu("x3fontlist");
-  }
+  var useOT;;
+  var docCompilerNodeList = preamble.getElementsByTagName('texprogram');
+  if (docCompilerNodeList.length == 0) useOT = false;
+  else
+    useOT = (docCompilerNodeList[0].getAttribute("prog") == "xelatex"); 
+  buildFontMenus( useOT );
   if (!(docFormatNodeList && docFormatNodeList.length>=1)) node=null;
   else node = docFormatNodeList[0].getElementsByTagName('fontchoices')[0];
   getFontSpecs(node);
@@ -178,7 +103,71 @@ function Startup()
   sectitleformat = new Object();
   getSectionFormatting(sectitlenodelist, sectitleformat);
   getClassOptionsEtc();
+  getNumStyles(preamble);
 }
+
+function buildFontMenus( useOT )
+{
+  addOldFontsToMenu("mathfontlist");
+  addOldFontsToMenu("mainfontlist");
+  addOldFontsToMenu("sansfontlist");
+  addOldFontsToMenu("fixedfontlist");
+  addOldFontsToMenu("x1fontlist");
+  addOldFontsToMenu("x2fontlist");
+  addOldFontsToMenu("x3fontlist");
+
+  changeOpenType(useOT);
+}
+
+var sectionlist =["part","chapter", "section", "subsection", "subsubsection", "paragraph", "subparagraph"];
+
+function getNumStyles(preambleNode)
+{
+  var nodeList = preambleNode.getElementsByTagName("numberstyles");
+  if (nodeList.length == 0) return;
+  var sect;
+  var node;
+  var i;
+  node = nodeList[0];
+  for (i=0; i<sectionlist.length; i++){
+    sect = sectionlist[i];
+    if (node.hasAttribute(sect)) gNumStyles[sect]=node.getAttribute(sect);
+  }
+}
+
+function saveNumStyles(preambleNode)
+{
+  var sect;
+  var node;
+  var i;
+  var bHasStyle = false;
+  for (i=0; i< sectionlist.length; i++) {
+    dump("saveNumStyles\n");
+    sect = sectionlist[i];
+    if (gNumStyles[sect]) 
+    {
+      dump("checking "+sect+"\n");
+      bHasStyle = true;
+      break;
+    }
+  }
+  if (bHasStyle) {
+    node = editor.createNode("numberstyles",preambleNode,0);
+    dump("adding attribute for "+sect+"\n");
+    for (i=0; i< sectionlist.length; i++) {
+      sect = sectionlist[i];
+      if (gNumStyles[sect]) node.setAttribute(sect,gNumStyles[sect]);
+    }
+  }
+}
+
+function setNumStyle(menulist)
+{                                                                
+    var sectionmenu = document.getElementById("sections.name");
+    var sect = sectionmenu.selectedItem.id.replace("sections.","");
+    gNumStyles[sect] = menulist.value;
+}
+
 
 //var serializer;
 
@@ -205,6 +194,7 @@ function savePageLayout(docFormatNode)
   pfNode.setAttribute('latex',true);
   units=document.getElementById('docformat.units').value;
   pfNode.setAttribute('unit',units);
+  pfNode.setAttribute('enabled', document.getElementById('enablepagelayout').checked);
   lineend(pfNode, 2);
   nodecounter++;
   node = editor.createNode('page', pfNode, nodecounter++);
@@ -275,7 +265,7 @@ function saveCropMarks(docFormatNode)
 function centerCropmarks(value)
 {
   var broadcaster = document.getElementById("pageonpapercentered");
-  broadcaster.setAttribute("hidden", (value=="center"?"false":"true"));
+  broadcaster.hidden=(value=="center"?"false":"true");
 }
 
 function getNumberValue(numberwithunit)
@@ -310,6 +300,10 @@ function getPageLayout(node)
       currentUnit = value;
       document.getElementById('docformat.units').value = currentUnit;
     }
+    value = node.getAttribute("enabled");
+    value = (value?true:false);
+    document.getElementById('enablepagelayout').checked = value;
+    document.getElementById('pagelayoutok').setAttribute('disabled',value?'false':'true');
     subnode = node.getElementsByTagName('page')[0];
     if (subnode)
     {
@@ -421,13 +415,16 @@ function onAccept()
     savePageLayout(newNode);
     saveFontSpecs(newNode);
     saveSectionFormatting(newNode, sectitleformat);
+    saveClassOptionsEtc(newNode);
+    saveNumStyles(preamble);
   }
-  saveClassOptionsEtc();
+  return true;
 }  
 
 
 function onCancel()
 {
+ return true;
 }
 
 function disableMarginNotes()
@@ -684,8 +681,8 @@ function getCropInfo(node)
     document.getElementById("useCropmarks").checked=false;
     document.getElementById("cropGroup").value = "cam";
     document.getElementById("bc.papersize").setAttribute("disabled","true");
-    broadcaster.setAttribute("hidden",true);
-    broadcaster2.setAttribute("hidden",true);
+    broadcaster.hidden=true;
+    broadcaster2.hidden=true;
   }
   else
   {
@@ -1004,7 +1001,7 @@ function cropmarkRequest(checkbox)
   if (checkbox.checked)
     broadcaster.removeAttribute("hidden");
   else {
-    broadcaster.setAttribute("hidden","true");
+    broadcaster.hidden=true;
     centerCropmarks("");
   }
 }
@@ -1132,8 +1129,8 @@ function goDown(id)
 function broadcastColCount()
 {
   var multicolumns = document.getElementById("columncount").value > 1;
-  document.getElementById("multicolumn").setAttribute("hidden", !multicolumns);
-  document.getElementById("singlecolumn").setAttribute("hidden", multicolumns);
+  document.getElementById("multicolumn").hidden=!multicolumns;
+  document.getElementById("singlecolumn").hidden=multicolumns;
 }
 
 function setTwosidedState(elt)
@@ -1557,66 +1554,6 @@ function onCheck( checkbox ) // the checkbox is for old style nums or swashes
   document.getElementById(base+"native").value = stringFrom(objarray);
 }
   
-
-// font section
-var gFontMenuInitialized = new Object;
-var gSystemFonts;
-var gSystemFontCount;
-
-function  getOTFontlist() 
-{ 
-  if (!gSystemFonts)
-  {
-    // Build list of all system fonts once per editor
-    try 
-    {
-      var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
-      var fontlistfile=dsprops.get("ProfD", Components.interfaces.nsIFile);
-      fontlistfile.append("fontfamilies.txt");
-      var stream;
-      stream = Components.classes["@mozilla.org/network/file-input-stream;1"];
-      stream = stream.createInstance(Components.interfaces.nsIFileInputStream);
-      stream.init(fontlistfile,1,0,0);
-      var s2 = Components.classes["@mozilla.org/scriptableinputstream;1"];
-      s2 = s2.createInstance(Components.interfaces.nsIScriptableInputStream);
-      s2.init(stream);
-      var bytes = s2.available();
-      var buffer = s2.read(bytes);
-      gSystemFonts = buffer.split("\n");
-      gSystemFontCount = gSystemFonts.length;
-    }
-    catch(e) { 
-       dump("Error in getOTFontList: "+e.message+"\n");
-    }
-  }
-}
-
-function addOTFontsToMenu(menuPopupId)
-{
-  try
-  {
-    var menuPopup = document.getElementById(menuPopupId).getElementsByTagName("menupopup")[0];
-    getOTFontlist();
-    var separator = document.createElementNS(XUL_NS, "menuseparator");
-    separator.setAttribute("id","startOpenType");
-    menuPopup.appendChild(separator);
-    for (var i = 0; i < gSystemFontCount; ++i)
-    {
-      if (gSystemFonts[i] != "")
-      {                                                                             
-        var itemNode = document.createElementNS(XUL_NS, "menuitem");
-        itemNode.setAttribute("label", gSystemFonts[i]);
-        itemNode.setAttribute("value", gSystemFonts[i]);
-        menuPopup.appendChild(itemNode);
-      }
-    }
-  }
-  catch(e)
-  {
-    dump(e + "\n");
-  }
-}
-    
   
 //function onMenulistFocus(menulist)
 //{
@@ -1633,7 +1570,6 @@ function addOTFontsToMenu(menuPopupId)
 
 // functions for typesetsectionsoverlay
 
-var sectionUnits;
 
 
 function getSectionFormatting(sectitlenodelist, sectitleformat)
@@ -1648,6 +1584,7 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
   {
     for (i=0; i< sectitlenodelist.length; i++)
     {
+      dump("getSectionFormatting, i = "+i+"\n");
       node = sectitlenodelist[i];
       level = node.getAttribute("level");
       sectitleformat[level] = new Object();
@@ -1663,6 +1600,7 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
         }
         if (!xmlcode) xmlcode="";
         sectitleformat[level].proto = xmlcode;
+        sectitleformat[level].enabled = (node.getAttribute("enabled")=="true");
         sectitleformat[level].newPage = (node.getAttribute("newPage")=="true");
         sectitleformat[level].sectStyle = node.getAttribute("sectStyle");
         sectitleformat[level].align = node.getAttribute("align");
@@ -1670,32 +1608,50 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
         sectitleformat[level].lhindent = node.getAttribute("lhindent");
         sectitleformat[level].rhindent = node.getAttribute("rhindent");
         // now check for rules and spaces
-        var rulenodelist = node.getElementsByTagName("toprules");
+        var rulenodelist = node.getElementsByTagName("toprule");
         var color;
+        var toprule;
+        var bottomrule;
         if (rulenodelist && rulenodelist.length >0)
         {
-          sectitleformat[level].toprules = new Array(rulenodelist.length);
-          for (i>0; i < rulenodelist.length; i--)
+          sectitleformat[level].toprules = new Array();
+          for (i=0; i < rulenodelist.length; i++)
           {
-            sectitleformat[level].toprules[i].height = rulenodelist[i].getAttribute("height");
-            sectitleformat[level].toprules[i].width = rulenodelist[i].getAttribute("width");
-            sectitleformat[level].toprules[i].role = rulenodelist[i].getAttribute("role");
-            color = rulenodelist[i].getAttribute("color");
-            if (!color) color = "black";
-            sectitleformat[level].toprules[i].color = color;
+            toprule = new Object();
+            toprule.role = rulenodelist[i].getAttribute("role");
+            toprule.tlheight = rulenodelist[i].getAttribute("tlheight");
+            if (toprule.role == "rule")
+            {
+              toprule.tlwidth = rulenodelist[i].getAttribute("tlwidth");
+              toprule.tlalign = rulenodelist[i].getAttribute("tlalign");
+              color = rulenodelist[i].getAttribute("color");
+              if (!color) color = "black";
+              toprule.color = color;
+            }
+            toprule.style = buildStyleForRule(rulenodelist[i]);
+            sectitleformat[level].toprules.push(toprule);
           }
         }
-        rulenodelist = node.getElementsByTagName("bottomrules");
+        rulenodelist = node.getElementsByTagName("bottomrule");
         if (rulenodelist && rulenodelist.length >0)
         {
-          sectitleformat[level].bottomrules = new Array(rulenodelist.length);
-          for (i>0; i < rulenodelist.length; i--)
+          sectitleformat[level].bottomrules = new Array();
+          for (i=0; i < rulenodelist.length; i++)
           {
-            sectitleformat[level].bottomrules[i].height = rulenodelist[i].getAttribute("height");
-            sectitleformat[level].bottomrules[i].width = rulenodelist[i].getAttribute("width");
-            color = rulenodelist[i].getAttribute("color");
-            if (!color) color = "black";
-            sectitleformat[level].bottomrules[i].color = color;
+            bottomrule = new Object;
+            bottomrule.role = rulenodelist[i].getAttribute("role");
+            bottomrule.tlheight = rulenodelist[i].getAttribute("tlheight");
+            if (bottomrule.role == "rule")
+            {
+              bottomrule.tlwidth = rulenodelist[i].getAttribute("tlwidth");
+              bottomrule.tlalign = rulenodelist[i].getAttribute("tlalign");
+              bottomrule.style = buildStyleForRule(rulenodelist[i]);
+              color = rulenodelist[i].getAttribute("color");
+              if (!color) color = "black";
+              bottomrule.color = color;
+            }
+            bottomrule.style = buildStyleForRule(rulenodelist[i]);
+            sectitleformat[level].bottomrules.push(bottomrule);
           }
         }
       }
@@ -1706,7 +1662,6 @@ function getSectionFormatting(sectitlenodelist, sectitleformat)
     }
   }
   switchSectionTypeImp(null, document.getElementById("sections.name").label.toLowerCase());
-  displayTextForSectionHeader();
 }
 
 var currentSectionType = "";
@@ -1714,25 +1669,87 @@ function switchSectionType()
 {
   var from = currentSectionType;
   var to = document.getElementById("sections.name").label.toLowerCase();
-  return switchSectionTypeImp(from, to);
+  return switchSectionTypeImp(from, to);          
 }
 
+function buildStyleForRule(displayVbox)
+{
+  var scale = 0.5
+  var style="";
+  if(displayVbox.getAttribute('role') == "rule")
+    style += "background-color: "+displayVbox.getAttribute('color')+"; ";
+  var tlheight = displayVbox.getAttribute('tlheight');
+  var ht;  //tlheight in pixels
+  var oldunit = unitHandler.currentUnit;
+  unitHandler.initCurrentUnit("px");
+  var numberAndUnit = unitHandler.getNumberAndUnitFromString(tlheight);
+  if (numberAndUnit)
+  {
+    ht = unitHandler.getValueOf(numberAndUnit.number, numberAndUnit.unit);
+  } else ht = 0;
+  if (oldunit) unitHandler.initCurrentUnit(oldunit);
+  
+  if (ht > 0) {
+    ht = scale*ht;
+    if (ht <2) ht = 2;
+    if (ht > 20) ht = 20;
+    style += "height: "+Math.round(ht)+"px;";
+  }
+  return style;
+}  
+  
+  
 
 function switchSectionTypeImp(from, to)
 {
   var i;
   currentSectionType = to;
   var boxlist;
+  var box;
+  var boxdata={};
   if (from)
   {
     if (!sectitleformat[from]) sectitleformat[from] = new Object();
     var sec = sectitleformat[from];
+    sec.enabled = document.getElementById("allowsectionheaders").checked;
+    document.getElementById("secredefok").setAttribute("disabled", sec.enabled?"false":"true");
     sec.newPage = document.getElementById("sectionstartnewpage").checked;
     sec.sectStyle = document.getElementById("sections.style").value;
     sec.align = document.getElementById("sections.align").value; 
     sec.units = document.getElementById("secoverlay.units").value; 
     sec.lhindent = document.getElementById("tbsectleftheadingmargin").value; 
     sec.rhindent = document.getElementById("tbsectrightheadingmargin").value; 
+    boxlist = document.getElementById("toprules").getElementsByTagName("vbox");
+    sec.toprules = [];
+    for (i=0; i< boxlist.length; i++) {
+      box = boxlist[i];
+      if (!box.hidden) {
+        boxdata = new Object();
+        boxdata.role = box.getAttribute("role");
+        boxdata.tlwidth = box.getAttribute("tlwidth");
+        boxdata.tlheight = box.getAttribute("tlheight");
+        boxdata.color = box.getAttribute("color");
+        boxdata.tlalign = box.getAttribute("tlalign");
+        boxdata.style = box.getAttribute("style");
+        sec.toprules.push(boxdata);
+      }
+    }
+    boxlist = document.getElementById("bottomrules").getElementsByTagName("vbox");
+    sec.bottomrules = [];
+    for (i=0; i< boxlist.length; i++) {
+      box = boxlist[i];
+      if (!box.hidden) {
+        boxdata = new Object();
+        boxdata.role = box.getAttribute("role");
+        boxdata.tlwidth = box.getAttribute("tlwidth");
+        boxdata.tlheight = box.getAttribute("tlheight");
+        boxdata.color = box.getAttribute("color");
+        boxdata.tlalign = box.getAttribute("tlalign");
+        boxdata.style = box.getAttribute("style");
+        sec.bottomrules.push(boxdata);
+      }
+    }
+    
     //toprules, bottomrules, and proto, if they have been changed, have been updated by subdialogs 
   }
   //Now initialize for the new section type
@@ -1740,6 +1757,7 @@ function switchSectionTypeImp(from, to)
   {
     if (from != to)
     {
+      document.getElementById("sections.numstyle").value=(gNumStyles[to]?gNumStyles[to]:"");
       if (!sectitleformat[to])
       {
         sectitleformat[to] = new Object();
@@ -1748,42 +1766,53 @@ function switchSectionTypeImp(from, to)
       sec = sectitleformat[to];
       var newpage = sec.newPage
       if (!newpage) newpage = false;
+      var rawlabel = document.getElementById("rawlabel").getAttribute("label");
+      document.getElementById("allowsectionheaders").setAttribute("label", rawlabel.replace("##",to));
+        // for localizability, we should look up a string valued function of "to"
+      document.getElementById("allowsectionheaders").checked = sec.enabled;
+      document.getElementById("secredefok").setAttribute("disabled", sec.enabled?"false":"true");
       document.getElementById("sectionstartnewpage").checked = newpage;
       document.getElementById("sections.style").value = sec.sectStyle;
       document.getElementById("sections.align").value = sec.align; 
       document.getElementById("secoverlay.units").value = sec.units;
-      sectionUnits = sec.units; 
+      sectionUnit = sec.units; 
       document.getElementById("tbsectleftheadingmargin").value = sec.lhindent; 
       document.getElementById("tbsectrightheadingmargin").value = sec.rhindent; 
       if (sec.toprules && sec.toprules.length > 0)
       {
+        document.getElementById("tso_toprules").selectedIndex="1";
         boxlist = document.getElementById("toprules").getElementsByTagName("vbox");
-        for (i=0; i < Math.min(boxlist.length, sec.toprules.length); i++)
+        for (i=0; i < sec.toprules.length; i++)
         {
-          boxlist[i].setAttribute("hidden", "false");
+          boxlist[i].hidden=false;
           boxlist[i].setAttribute("role", sec.toprules[i].role);
-          boxlist[i].setAttribute("width", sec.toprules[i].width);
-          boxlist[i].setAttribute("height", sec.toprules[i].height);
+          boxlist[i].setAttribute("tlwidth", sec.toprules[i].tlwidth);
+          boxlist[i].setAttribute("tlheight", sec.toprules[i].tlheight);
+          boxlist[i].setAttribute("tlalign", sec.toprules[i].tlalign);
           boxlist[i].setAttribute("color", sec.toprules[i].color);
+          boxlist[i].setAttribute("style", buildStyleForRule(boxlist[i]));
         }
         for (i = sec.toprules.length; i<boxlist.length; i++);
-          boxlist[i].setAttribute("hidden", "true");
+          boxlist[i].hidden=true;
       }
       if (sec.bottomrules && sec.bottomrules.length > 0)
       {
+        document.getElementById("tso_bottomrules").selectedIndex="1";
         boxlist = document.getElementById("bottomrules").getElementsByTagName("vbox");
-        for (i=0; i < Math.min(boxlist.length, sec.bottomrules.length); i++)
+        for (i=0; i < sec.bottomrules.length; i++)
         {
-          boxlist[i].setAttribute("hidden", "false");
+          boxlist[i].hidden=false;
           boxlist[i].setAttribute("role", sec.bottomrules[i].role);
-          boxlist[i].setAttribute("width", sec.bottomrules[i].width);
-          boxlist[i].setAttribute("height", sec.bottomrules[i].height);
+          boxlist[i].setAttribute("tlwidth", sec.bottomrules[i].tlwidth);
+          boxlist[i].setAttribute("tlheight", sec.bottomrules[i].tlheight);
+          boxlist[i].setAttribute("tlalign", sec.bottomrules[i].tlalign);
           boxlist[i].setAttribute("color", sec.bottomrules[i].color);
+          boxlist[i].setAttribute("style", buildStyleForRule(boxlist[i]));
         }
         for (i = sec.bottomrules.length; i<boxlist.length; i++);
-          boxlist[i].setAttribute("hidden", "true");
+          boxlist[i].hidden=true;
       }
-      displayTextForSectionHeader();
+      displayTextForSectionHeader(to);
       setalign(sec.align);
       settopofpage(document.getElementById("sectionstartnewpage"));
     }
@@ -1792,7 +1821,7 @@ function switchSectionTypeImp(from, to)
 
 function saveSectionFormatting( docFormatNode, sectitleformat )
 {
-  // get the list of section-like objects
+  dump("saveSectionFormattin\n"); // get the list of section-like objects
   var menulist = document.getElementById("sections.name");
   var itemlist = menulist.getElementsByTagName("menuitem");
   var sectiondata;
@@ -1818,10 +1847,17 @@ function saveSectionFormatting( docFormatNode, sectitleformat )
         reqpackageNode = editor.createNode('requirespackage',docFormatNode, 0);
         reqpackageNode.setAttribute('req',"titlesec");
         reqpackageNode.setAttribute('opt',"calcwidth");
+        reqpackageNode = editor.createNode('requirespackage',docFormatNode, 0);
+        reqpackageNode.setAttribute('req',"xcolor");
       } 
       lineend(docFormatNode, 1);
       sectiondata = sectitleformat[name]; 
       var stNode = editor.createNode('sectitleformat', docFormatNode,0);
+      var enabled = "false";
+      dump(1);
+      if (sectiondata && sectiondata.enabled) enabled = "true";
+      stNode.setAttribute('enabled', enabled);
+      dump(2);
       stNode.setAttribute('level', name);
       stNode.setAttribute('sectStyle', sectiondata.sectStyle);
       stNode.setAttribute('align', sectiondata.align);
@@ -1835,16 +1871,60 @@ function saveSectionFormatting( docFormatNode, sectitleformat )
       if (fragment)
       {
         // replace #N with \the(section, subsection, etc) and #T with #1
-        fragment = fragment.replace(/#N/,"\\the"+name);
-        fragment = fragment.replace(/#T/,"#1");
+        fragment = fragment.replace(/#N/,"\\the"+name,'g');
+        fragment = fragment.replace(/#T/,"#1",'g');
         dump("Contents being saved as section title prototype: "+fragment+"\n");
         var parser = new DOMParser();
         var doc = parser.parseFromString(fragment,"application/xhtml+xml");
+        if (doc.documentElement.tagName == 'parserror') {
+          dump('Parse error parsing "'+fragment+'", error is '+doc.documentElement.textContent);
+        }
         proto.appendChild(doc.documentElement);
       }
-      // stNode.setAttribute( -- find the section format type: hang, runin, etc.
       docFormatNode.appendChild(stNode);
-      // to do: the rule lists
+      var rulelistlength = 0;
+      var rulenode;
+      var rule;
+      var j;
+      if (sectitleformat[name].toprules) rulelistlength = sectitleformat[name].toprules.length;
+      dump("SectionTitle "+name+ " has "+rulelistlength+" top rules. \n");
+      for (j=0; j < rulelistlength; j++) {
+        rule = sectitleformat[name].toprules[j];
+        if (rule.tlheight)
+        {
+          rulenode = editor.createNode('toprule', stNode, 0);
+          dump("In saveSectionFormatting, toprule["+j+"] has role "+rule.role+" and color "+rule.color+"\n");
+          rulenode.setAttribute("role",rule.role);
+          rulenode.setAttribute("tlheight",rule.tlheight);
+          if (rule.role == "rule")
+          {
+            rulenode.setAttribute("tlwidth",rule.tlwidth);
+            rulenode.setAttribute("tlalign",rule.tlalign);
+            if (!rule.color) rule.color = "black";
+            rulenode.setAttribute("color",rule.color);
+          }
+        }
+      }
+      dump("Done with toprules\n");
+      rulelistlength = 0;
+      if (sectitleformat[name].bottomrules) rulelistlength = sectitleformat[name].bottomrules.length;
+      dump("There are"+rulelistlength+"bottom rules\n");
+      for (j=0; j < rulelistlength; j++) {
+        rule = sectitleformat[name].bottomrules[j];
+        dump(j+"\n");
+        if (rule.tlheight) {
+          rulenode = editor.createNode('bottomrule', stNode, 1000);
+          rulenode.setAttribute("role",rule.role);
+          rulenode.setAttribute("tlheight",rule.tlheight);
+          if (rule.role == "rule")
+          {
+            rulenode.setAttribute("tlwidth",rule.tlwidth);
+            rulenode.setAttribute("tlalign",rule.tlalign);
+           if (!rule.color) rule.color = "black";
+            rulenode.setAttribute("color",rule.color);
+          }
+        }
+      }
     }
   }  
 }
@@ -1852,28 +1932,31 @@ function saveSectionFormatting( docFormatNode, sectitleformat )
 
 function getBaseNodeForIFrame( )
 {
-  var sw = "http://www.sciword.com/namespaces/sciword";
   var iframe = document.getElementById("sectiontextarea");
   if (!iframe) return;
   var doc = iframe.contentDocument;
-  var theNodes = doc.getElementsByTagNameNS(sw,"templatebase");
-  var theNode;
-  if (theNodes) theNode = theNodes[0]; 
-  else 
+  var theNodes = doc.getElementsByTagName("dialogbase");
+  var theNode = null;
+  if (theNodes && theNodes.length > 0)
   {
-    theNodes = doc.getElementsByTagNameNS(sw,"para");
-    if (theNodes) theNode = theNodes[0]; 
+    theNode = theNodes[0];
+    theNodes = theNode.getElementsByTagName("dialogbase"); 
   }
-  if (!theNode)
-  {
-    var bodies = doc.getElementsByTagName("body");
-    if (bodies) for ( var i = 0; i < bodies.length; i++)
-    {
-      theNode = bodies[i];
-      if (theNode.nodeType == theNode.ELEMENT_NODE)
-        return theNode;
-     }
-  }
+//  else 
+//  {
+//    theNodes = doc.getElementsByTagName("para");
+//    if (theNodes) theNode = theNodes[0]; 
+//  }
+//  if (!theNode)
+//  {
+//    var bodies = doc.getElementsByTagName("body");
+//    if (bodies) for ( var i = 0; i < bodies.length; i++)
+//    {
+//      theNode = bodies[i];
+//      if (theNode.nodeType == theNode.ELEMENT_NODE)
+//        return theNode;
+//     }
+//  }
   return theNode;
 }
 
@@ -1913,37 +1996,43 @@ function sectSetDecimalPlaces() // and increments
 }    
 
 
-function displayTextForSectionHeader()
+function displayTextForSectionHeader(name)
 {
-  var secname = document.getElementById("sections.name").label.toLowerCase();
-  var basepara;
-//	var width;
-	var height;
-  basepara = getBaseNodeForIFrame();
-  var strContents;
-  if (sectitleformat[secname]) strContents = sectitleformat[secname].proto;
-	if (strContents && strContents.length > 0)
-	{
-	  var parser = new DOMParser();
-	  var doc = parser.parseFromString(strContents,"application/xhtml+xml");
-	  basepara.parentNode.replaceChild(doc.documentElement, basepara);
-		basepara = getBaseNodeForIFrame();
-		var htmlNode=basepara.parentNode.parentNode;
-		var boxObject=htmlNode.ownerDocument.getBoxObjectFor(htmlNode);
-//		width = boxObject.width;
-		height = boxObject.height;
-    document.getElementById("tso_template").setAttribute("selectedIndex","1");
-	}
-	else
-	{
-	  height = 20;
-    document.getElementById("tso_template").setAttribute("selectedIndex","0");
-//		width = 200;
+  try {
+    var secname;
+    if (name && name.length > 0) secname = name;
+    else secname = document.getElementById("sections.name").label.toLowerCase();
+    var basepara;
+  //	var width;
+	  var height;
+    basepara = getBaseNodeForIFrame();
+    var strContents;
+    if (sectitleformat[secname]) strContents = sectitleformat[secname].proto;
+	  if (strContents && strContents.length > 0)
+	  {
+	    var parser = new DOMParser();
+	    var doc = parser.parseFromString(strContents,"application/xhtml+xml");
+	    basepara.parentNode.replaceChild(doc.documentElement, basepara);
+		  basepara = getBaseNodeForIFrame();
+		  var boxObject=basepara.getBoundingClientRect();
+		  height = boxObject.bottom - boxObject.top;
+      document.getElementById("tso_template").setAttribute("selectedIndex","1");
+	  }
+	  else
+	  {
+	    height = 20;
+      document.getElementById("tso_template").setAttribute("selectedIndex","0");
+  //		width = 200;
+    }
+	  var iframecontainer = document.getElementById("sectiontextareacontainer");
+  //	setStyleAttributeOnNode(iframecontainer,"height",Number(height)+"px");
+  //	setStyleAttribute(iframecontainer,"width",width+sectionUnit);
+	  setStyleAttribute(iframecontainer,"height",Number(height)+"px");
+	  setStyleAttribute(iframecontainer,"scale",0.33);
   }
-	var iframecontainer = document.getElementById("sectiontextareacontainer");
-//	setStyleAttributeOnNode(iframecontainer,"height",Number(height)+"px");
-//	setStyleAttribute(iframecontainer,"width",width+sectionUnit);
-	setStyleAttribute(iframecontainer,"height",Number(height)+"px");
+  catch(e) {
+    dump("displayTextForSectionHeader exception: "+e.message+"\n");
+  }
 }
 
 
@@ -1963,7 +2052,7 @@ function textEditor()
   sectitleformat.refresh = refresh;
   sectitleformat.destNode = getBaseNodeForIFrame();
   sectitleformat.currentLevel = secname.toLowerCase();
-  window.openDialog("chrome://prince/content/sectiontext.xul", "sectiontext", "modal,chrome,close,titlebar,alwaysRaised", sectitleformat,
+  window.openDialog("chrome://prince/content/sectiontext.xul", "sectiontext", "modal,resizable=true,chrome,close,titlebar,alwaysRaised", sectitleformat,
       secname, units);																									 
   displayTextForSectionHeader();
 }
@@ -2124,6 +2213,7 @@ function secSetWidth(box, dim)
 function addrule()
 {
   // find which is selected
+  var i;
   if (!lastselected) return;
   var boxlist = lastselected.getElementsByTagName("vbox");
   var nextbox;
@@ -2137,10 +2227,11 @@ function addrule()
   }
   if (!nextbox) return;
   nextbox.setAttribute("role","rule");
-  nextbox.setAttribute("hidden","false");
+  nextbox.hidden=false;
   nextbox.setAttribute("style","height:3px;background-color:black;");
   window.openDialog("chrome://prince/content/addruleforsection.xul", "addruleforsection", 
-    "resizable=yes,chrome,close,titlebar,alwaysRaised", nextbox, "black", sectionUnit);
+    "resizable=yes,chrome,close,titlebar,resizable=true,alwaysRaised", nextbox, sectionUnit);
+  boxlist[i] = nextbox;
 }
 
 
@@ -2160,7 +2251,7 @@ function addspace()
   }
   if (!nextbox) return;
   nextbox.setAttribute("role","vspace");
-  nextbox.setAttribute("hidden","false");
+  nextbox.hidden=false;
   nextbox.setAttribute("style","height:6px;background-color:silver;");
 	window.openDialog("chrome://prince/content/vspaceforsection.xul", 
 	  "vspaceforsection", "resizable=yes, chrome,close,titlebar,alwaysRaised",nextbox, sectionUnit);
@@ -2168,7 +2259,7 @@ function addspace()
 
 function removeruleorspace()
 {
-  // find which is selected
+  onAccept();// find which is selected
   if (!lastselected) return;
   var boxlist = lastselected.getElementsByTagName("vbox");
   var lastbox;
@@ -2179,14 +2270,14 @@ function removeruleorspace()
     else break;
   }
   if (!lastbox) return;
-  lastbox.setAttribute("hidden","true");
+  lastbox.hidden=true;
 }
 
 function reviseruleorspace(element)
 {
   if (element.getAttribute("role")=="rule")
     window.openDialog("chrome://prince/content/addruleforsection.xul", 
-      "addruleforsection", "chrome,close,titlebar,alwaysRaised",element, element.getAttribute("color"), sectionUnit);
+      "addruleforsection", "chrome,close,titlebar,alwaysRaised",element, sectionUnit);
   else if (element.getAttribute("role")=="vspace")
     window.openDialog("chrome://prince/content/vspaceforsection.xul", 
       "vspaceforsection", "chrome,close,titlebar,alwaysRaised",element, sectionUnit);
@@ -2197,7 +2288,6 @@ function addOldFontsToMenu(menuPopupId)
 {    
     // fill in the menu only once unless forcerefresh is set...
   var menuPopup = document.getElementById(menuPopupId).getElementsByTagName("menupopup")[0];
-  dump("initSystemOldFontMenu("+menuPopupId+", "+fonttype+", "+filter+");\n");
   var fonttype = "textfonts";
   var filter;
 
@@ -2233,7 +2323,7 @@ function addOldFontsToMenu(menuPopupId)
       ptr = ptr.nextSibling;
       continue;
     }                                                
-    var itemNode = document.createElementNS(XUL_NS, "menuitem");
+    var itemNode = document.createElement("menuitem");
     itemNode.setAttribute("label", ptr.getAttribute("name"));
     itemNode.setAttribute("value", ptr.getAttribute("package"));
     itemNode.setAttribute("tooltip", ptr.getAttribute("description"));                                                                 
@@ -2243,20 +2333,23 @@ function addOldFontsToMenu(menuPopupId)
   dump("Leaving initSystemOldFontMenu\n");
 }
 
-function changeOpenType()
+function changeOpenType( useOT )
 {
-  var useOT = document.getElementById("useOpenType").checked;
-  dump("Entering changeOpenType, useOT is now "+useOT+"\n");
-  document.getElementById("opentypeok").setAttribute("hidden", 
-    useOT?"false":"true"); 
+  var menuObject = { menulist: []};
   if (useOT) {
     // add opentype families to the menus 
-    addOTFontsToMenu("mainfontlist");
-    addOTFontsToMenu("sansfontlist");
-    addOTFontsToMenu("fixedfontlist");
-    addOTFontsToMenu("x1fontlist");
-    addOTFontsToMenu("x2fontlist");
-    addOTFontsToMenu("x3fontlist");
+    menuObject.menulist = document.getElementById("mainfontlist");
+    addOTFontsToMenu(menuObject);
+    menuObject.menulist = document.getElementById("sansfontlist");
+    addOTFontsToMenu(menuObject);
+    menuObject.menulist = document.getElementById("fixedfontlist");
+    addOTFontsToMenu(menuObject);
+    menuObject.menulist = document.getElementById("x1fontlist");
+    addOTFontsToMenu(menuObject);
+    menuObject.menulist = document.getElementById("x2fontlist");
+    addOTFontsToMenu(menuObject);
+    menuObject.menulist = document.getElementById("x3fontlist");
+    addOTFontsToMenu(menuObject);
   }
   else {
     deleteOTFontsFromMenu("mainfontlist");
@@ -2272,7 +2365,10 @@ function changeOpenType()
 function deleteOTFontsFromMenu(menuID)
 {
   var menuPopup = document.getElementById(menuID).getElementsByTagName("menupopup")[0];
-  var ch = menuPopup.lastChild;
+  var ch = menuPopup.firstChild;
+  while (ch && ch.id != 'startOpenType') ch = ch.nextSibling;
+  if (!ch) return;
+  ch = menuPopup.lastChild;
   while (ch && ch.id != "startOpenType") {
     menuPopup.removeChild(ch);
     ch = menuPopup.lastChild; 
@@ -2280,7 +2376,7 @@ function deleteOTFontsFromMenu(menuID)
   if (ch && ch.id ==="startOpenType") menuPopup.removeChild(ch);
 }                                           
 
-function saveClassOptionsEtc()
+function saveClassOptionsEtc(docformatnode)
 {
   var doc = editor.document;
   var documentclass = doc.documentElement.getElementsByTagName('documentclass')[0];
@@ -2299,7 +2395,7 @@ function saveClassOptionsEtc()
   if (nodelist.length == 0) 
   {
     newnode = true;
-    optionNode = doc.createElement("colist");
+    optionNode = editor.createNode("colist", docformatnode, 0);
   }
   else optionNode = nodelist[0];
   // convention: default values are starred at the end.
@@ -2309,8 +2405,8 @@ function saveClassOptionsEtc()
   else optionNode.setAttribute("pgorient", widget.value);
   
   widget = document.getElementById("papersize").selectedItem;
-  if (widget.hasAttribute("def")) optionNode.removeAttribute("papsize")
-  else optionNode.setAttribute("papsize", widget.value);
+  if (widget.hasAttribute("def")) optionNode.removeAttribute("papersize")
+  else optionNode.setAttribute("papersize", widget.value);
 
   widget = document.getElementById("sides").selectedItem;
   if (widget.hasAttribute("def")) optionNode.removeAttribute("sides")
@@ -2321,16 +2417,12 @@ function saveClassOptionsEtc()
   else optionNode.setAttribute("qual", widget.value);
 
   widget = document.getElementById("columns").selectedItem;
-  if (widget.hasAttribute("def")) optionNode.removeAttribute("columns")
+  if (!widget || widget.hasAttribute("def")) optionNode.removeAttribute("columns")
   else optionNode.setAttribute("columns", widget.value);
 
   widget = document.getElementById("textsize").selectedItem;
   if (widget.hasAttribute("def")) optionNode.removeAttribute("textsize")
   else optionNode.setAttribute("textsize", widget.value);
-
-  widget = document.getElementById("eqnnopos").selectedItem;
-  if (widget.hasAttribute("def")) optionNode.removeAttribute("eqnnopos")
-  else optionNode.setAttribute("eqnnopos", widget.value);
 
   widget = document.getElementById("eqnnopos").selectedItem;
   if (widget.hasAttribute("def")) optionNode.removeAttribute("eqnnopos")
@@ -2343,6 +2435,10 @@ function saveClassOptionsEtc()
   widget = document.getElementById("titlepage").selectedItem;
   if (widget.hasAttribute("def")) optionNode.removeAttribute("titlepage")
   else optionNode.setAttribute("titlepage", widget.value);
+
+  widget = document.getElementById("bibstyle").selectedItem;
+  if (widget.hasAttribute("def")) optionNode.removeAttribute("bibstyle")
+  else optionNode.setAttribute("bibstyle", widget.value);
 
   if (newnode) documentclass.appendChild(optionNode);
 
@@ -2389,8 +2485,144 @@ function saveClassOptionsEtc()
   }
     
     
+  widget = document.getElementById("texprogram").selectedItem;
+  dump("a\n");
+  nodelist = preamble.getElementsByTagName("texprogram");
+  dump("b\n");
+  var texprogram;
+  if (nodelist.length == 0)
+    texprogram = editor.createNode("texprogram", preamble, 1000);
+  else texprogram = nodelist[0];
+  dump("c"+widget.value+"\n");
+  texprogram.setAttribute("prog", widget.value)
+}
+
+function setMenulistSelection(menulist, value)
+{
+  var index = 0;
+  var item = menulist.getItemAtIndex(index);
+  while (item) {
+    if (item.value == value) 
+    {
+      menulist.selectedIndex = index;
+      break;
+    }
+    item = menulist.getItemAtIndex(++index);
+  }
 }
 
 function getClassOptionsEtc()
 {
+  var valuetypes = ["pgorient",
+    "papersize",
+    "sides",
+    "qual",
+    "columns",
+    "textsize",
+    "eqnnopos",
+    "eqnpos",
+    "titlepage",
+    "bibstyle"];
+
+  var doc = editor.document;
+  var documentclass = doc.documentElement.getElementsByTagName('documentclass')[0];
+  if (!documentclass) {
+    dump("No documentclass in document\n");
+    return;
+  }
+  var preamble = doc.documentElement.getElementsByTagName('preamble')[0];
+  if (!preamble) {
+    dump("No preamble in document\n");
+    return;
+  }
+  var nodelist = doc.getElementsByTagName("colist");// class option list
+  var node;
+  if (nodelist.length == 0) return; // leaves all values at the defaults, as defined
+  // in the XUL file
+  var colist = nodelist[0];
+  for each (s in valuetypes) {
+    if (colist.hasAttribute(s)) setMenulistSelection(document.getElementById(s),
+      colist.getAttribute(s));
+  }
+  var value;
+  if (colist.hasAttribute('enabled'))
+    value = colist.getAttribute('enabled');
+  else value='false';
+  document.getElementById('enablereformat').checked = (value=='true');
+  document.getElementById('reformatok').setAttribute('disabled', (value=='true')?'false':'true');
+
+  nodelist = preamble.getElementsByTagName("leading");
+  if (nodelist.length > 0)
+  {
+    node = nodelist[0];
+    if (node.hasAttribute("val")) document.getElementById("leading").value =
+      (node.getAttribute("val")).replace(/pt/,"");
+  }
+  nodelist = preamble.getElementsByTagName("showkeys");
+  if (nodelist.length > 0)
+  {
+    document.getElementById("showkeys").selectedIndex = 1;
+  }
+  nodelist = preamble.getElementsByTagName("showidx");
+  if (nodelist.length > 0)
+  {
+    document.getElementById("showidx").selectedIndex = 1;
+  }
+  nodelist = preamble.getElementsByTagName("texprogram");
+  if (nodelist.length > 0)
+  {
+    var value =  nodelist[0].getAttribute("prog");
+    document.getElementById("texprogram").value = value;
+    dump("texprogrm value is "+value+"\n");
+    setCompiler("xelatex");
+  }
+}
+
+function setCompiler(compilername)
+{
+  if (compilername=="xelatex")
+  {
+    document.getElementById("xelatex").hidden=false;
+    document.getElementById("pdflatex").hidden=true;
+    changeOpenType(true);
+  }
+  else
+  { 
+    document.getElementById("xelatex").hidden=true;
+    document.getElementById("pdflatex").hidden=false;
+    changeOpenType(false);
+  }    
+}
+
+function enableDisableReformat(checkbox)
+{
+  var bcaster = document.getElementById("reformatok");
+  if (checkbox.checked)
+    bcaster.setAttribute("disabled","false");
+  else bcaster.setAttribute("disabled","true");
+}
+     
+function enableDisablePageLayout(checkbox)    
+{
+  var bcaster = document.getElementById("pagelayoutok");
+  if (checkbox.checked)
+    bcaster.setAttribute("disabled","false");
+  else bcaster.setAttribute("disabled","true");
+}
+
+     
+function enableDisableSectFormat(checkbox)    
+{
+  var bcaster = document.getElementById("secredefok");
+  if (checkbox.checked)
+    bcaster.setAttribute("disabled","false");
+  else bcaster.setAttribute("disabled","true");
+}
+
+function enableDisableFonts(checkbox)
+{
+  var bcaster = document.getElementById("fontdefok");
+  if (checkbox.checked)
+    bcaster.setAttribute("disabled","false");
+  else bcaster.setAttribute("disabled","true");
 }

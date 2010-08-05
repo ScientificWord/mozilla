@@ -367,10 +367,6 @@
                 id="tagmenuFunctionKeys" 
                 observes="cmd_tagkeyassignments" 
                 accesskey="&tagmenuFunctionKeys.accesskey;"/>
-      <menuitem label="&tagmenuApply.label;" 
-                id="tagmenuApply" 
-                observes="cmd_unimp" 
-                accesskey="&tagmenuApply.accesskey;"/>
       <menu id="menutagadvanced" label="Advanced">
         <menupopup>
           <menuitem label="&tagmenuFont.label;" 
@@ -391,7 +387,6 @@
   </menu>
   <menu id="tableMenu"/>  
   <menu id="MSITypesetMenu"/>
-  <menu id="MSIComputeMenu"/> 
   <menu id="toolsMenu" label="Tools" >
     <menupopup id="menu_ToolsPopup">
       <menuitem label="JavaScript debugger" 
@@ -407,9 +402,6 @@
       <menuitem label="Themes" 
                 id="menu_themes" 
                 observes="Tools:Themes"/>
-      <menuitem label="Tag appearance" 
-                id="cascades" 
-                observes="Cascades"/>
       <menuseparator id="toolsMenuSeparator"/>
       <menuitem label="&autoSubstituteDlg.label;" 
                 accesskey="&autoSubstituteDlg.accesskey;" 
@@ -498,10 +490,6 @@
                 accesskey="&viewTeXLog.accesskey;"    
                 observes="cmd_showTeXLog" 
                 label="&viewTeXLog.label;"/>
-      <menuitem id="viewXSLTLog"  
-                accesskey="&viewXSLTLog.accesskey;"    
-                observes="cmd_showXSLTLog"
-                label="&viewXSLTLog.label;"/>
       <menuseparator/>
       <menu id="sidebar-menu" label="Sidebars" >
         <menupopup>
@@ -852,7 +840,7 @@
     <command id="Tasks:InspectPage" oncommand="inspectDOMDocument(_content.document);"/>
     <command id="Tools:Extensions" oncommand="OpenExtensions('extensions');"/>
     <command id="Tools:Themes" oncommand="OpenExtensions('themes');"/>
-    <command id="Cascades" oncommand="window.openDialog('chrome://cascades/content/EdCssProps.xul','_blank', 'chrome,close,modal,titlebar');window.content.focus();"/>
+    <command id="Cascades" oncommand="window.openDialog('chrome://cascades/content/EdCssProps.xul','_blank', 'chrome,close,titlebar');window.content.focus();"/>
     <command id="cmd_MSIAutoSubDlg"       oncommand="msiGoDoCommand('cmd_MSIAutoSubDlg')"/>
   </commandset>
   <commandset id="tagsMenuCommands">
