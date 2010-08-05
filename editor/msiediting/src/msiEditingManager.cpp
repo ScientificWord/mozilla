@@ -1617,3 +1617,843 @@ void msiEditingManager::SetMathmlNodeAndOffsetForMrowFence(const nsAString & loc
     mathmlNode = mrowFence;  
   }
 }                                                        
+
+nsresult msiEditingManager::AddMatrixRows(nsIEditor * editor, nsIDOMNode *aMatrix, PRUint32 insertAt, PRUint32 howMany)
+{
+  nsresult retVal(NS_ERROR_FAILURE);
+  PRInt32 nRows(0), nCols(0);
+  PRBool markCaret(PR_FALSE);  //may want to add as parameter??
+  nsTArray<msiMultiSpanCellInfo> matrixInfoArray;
+  retVal = GetMatrixInfo(aMatrix, nRows, nCols, nsnull, &matrixInfoArray);
+  if (NS_SUCCEEDED(retVal))
+  {
+    msiMultiSpanCellInfo** ourRowData = new msiMultiSpanCellInfo*[nCols];
+    for (PRInt32 ii = 0; ii < nCols; ++ii)
+      ourRowData[ii] = nsnull;
+    PRUint32 startRow, startCol;
+    PRUint32 rowSpan, colSpan;
+    for (PRUint32 jj = 0; jj < matrixInfoArray.Length(); ++jj)
+    {
+      startRow = matrixInfoArray[jj].StartRow();
+      rowSpan = matrixInfoArray[jj].RowSpan();
+      if ( (startRow < insertAt) && (!rowSpan || (insertAt < startRow + rowSpan)) )
+      {
+        startCol = matrixInfoArray[jj].StartCol();
+        ourRowData[startCol] = new msiMultiSpanCellInfo(matrixInfoArray[jj]);
+      }
+    }
+    //Now we know which cells will be continuation cells; all that's left is to insert the rows and add the non-continuation cells.
+    nsCOMPtr<nsIDOMElement> aRow, aCell;
+    PRUint32 insertPos = 0;
+    nsCOMPtr<nsIDOMNode> prevRow, insertParent;
+    nsCOMPtr<nsIDOMNode> nextRow = nsnull;
+    nsresult res = NS_OK;
+    for (PRUint32 ix = 0; NS_SUCCEEDED(res) && ix < insertAt; ++ix)
+    {
+      prevRow = nextRow;
+      res = GetNextMatrixRow(aMatrix, prevRow, getter_AddRefs(nextRow));
+      if (!nextRow)
+        break;
+    }
+    if (nextRow)
+    {
+      res = nextRow->GetParentNode(getter_AddRefs(insertParent));
+      msiUtils::GetIndexOfChildInParent(nextRow, insertPos);
+//      insertPos = editor->GetIndexOf(insertParent, nextRow);
+    }
+    else
+    {
+      insertParent = aMatrix;
+      res = aMatrix->GetLastChild(getter_AddRefs(prevRow));
+      while (msiUtils::IsWhitespace(prevRow))
+      {
+        nextRow = prevRow;
+        res = nextRow->GetPreviousSibling(getter_AddRefs(prevRow));
+        if (!NS_SUCCEEDED(res) || !prevRow)
+          break;
+      }
+//      insertPos = editor->GetIndexOf(insertParent, prevRow);
+      msiUtils::GetIndexOfChildInParent(prevRow, insertPos);
+      insertPos++;  //Want to go after prevRow
+    }
+
+    for (PRUint32 ii = 0; ii < howMany; ++ii)
+    {
+      retVal = msiUtils::CreateMathMLElement(editor, msiEditingAtoms::mtr, aRow);
+      if (NS_SUCCEEDED(retVal) && aRow)
+      {
+        nsAutoString spanAttrStr;
+        spanAttrStr.AssignASCII("rowspan");
+        nsAutoString rowSpanStr;
+        PRUint32 theSpan;
+        for (PRInt32 jj = 0; jj < nCols; ++jj)
+        {
+          if (ourRowData[jj])
+          {
+            aCell = do_QueryInterface(ourRowData[jj]->Node());
+            theSpan = ourRowData[jj]->RowSpan();
+            if (theSpan != 0)          //In this case, the row we're inserting is cutting across a multi-row cell - just extend it
+            {
+              rowSpanStr.Truncate();
+              rowSpanStr.AppendInt( ++theSpan );
+              editor->SetAttribute(aCell, spanAttrStr, rowSpanStr);
+            }
+            colSpan = ourRowData[jj]->ColSpan();
+            if (!colSpan)
+              jj = nCols;
+            else
+              jj += colSpan - 1;   //Want to get past this multi-col multi-row cell so we don't edit its properties again
+          }
+          else
+          {
+            PRBool doMarkCaret(PR_FALSE);
+            if (ii == 0 && jj == 0 && markCaret)
+              doMarkCaret = PR_TRUE;
+            PRUint32 flags = 0;
+            retVal = msiUtils::CreateMtd(editor, doMarkCaret, flags, aCell);
+            if (NS_SUCCEEDED(retVal) && aCell)
+            {
+              nsCOMPtr<nsIDOMNode> dontcare; 
+              retVal = aRow->AppendChild(aCell, getter_AddRefs(dontcare));
+            }
+            else
+              retVal = NS_ERROR_FAILURE;  
+          }
+        }
+        //Then insert aRow - is it safe to assume that each direct child of <mtable> is an <mtr> or an inferred <mtr> at worst?
+        //Can there be <mstyle>??? Should probably manage to deal with this somehow...
+        retVal = editor->InsertNode(aRow, insertParent, insertPos++);
+      }
+    }
+    delete[] ourRowData;
+  }
+
+  return retVal;
+}
+
+nsresult msiEditingManager::AddMatrixColumns(nsIEditor * editor, nsIDOMNode *aMatrix, PRUint32 insertAt, PRUint32 howMany)
+{
+  nsresult retVal(NS_ERROR_FAILURE);
+  PRInt32 nRows(0), nCols(0);
+  PRBool markCaret(PR_FALSE);  //may want to add as parameter??
+  nsTArray<msiMultiSpanCellInfo> matrixInfoArray;
+  retVal = GetMatrixInfo(aMatrix, nRows, nCols, nsnull, &matrixInfoArray);
+  PRBool bAtEnd = (insertAt > nCols);
+  if (NS_SUCCEEDED(retVal))
+  {
+    msiMultiSpanCellInfo** ourColData = new msiMultiSpanCellInfo*[nRows];
+    for (PRInt32 ii = 0; ii < nRows; ++ii)
+      ourColData[ii] = nsnull;
+    PRUint32 startRow, startCol;
+    PRUint32 rowSpan, colSpan;
+    for (PRUint32 ii = 0; ii < matrixInfoArray.Length(); ++ii)
+    {
+      startCol = matrixInfoArray[ii].StartCol();
+      colSpan = matrixInfoArray[ii].ColSpan();
+      if ( (startCol < insertAt) && (!colSpan || (insertAt < startCol + colSpan)) )
+      {
+        startRow = matrixInfoArray[ii].StartRow();
+        ourColData[startRow] = new msiMultiSpanCellInfo(matrixInfoArray[ii]);
+      }
+    }
+
+    //Now we know which cells will be continuation cells; all that's left is to insert the non-continuation cells in each row.
+    nsCOMPtr<nsIDOMNode> lastRow = nsnull;
+    nsCOMPtr<nsIDOMNode> nextCell = nsnull;
+    nsCOMPtr<nsIDOMNode> aCell, prevCell, nextRow;
+    nsCOMPtr<nsIDOMElement> asElement;
+    nsresult res = NS_OK;
+    nsAutoString spanAttrStr;
+    spanAttrStr.AssignASCII("colspan");
+    nsAutoString colSpanStr;
+    PRUint32 theSpan;
+    PRUint32 insertPos;
+
+    for (PRInt32 ii = 0; ii < nRows; ++ii)
+    {
+      res = GetNextMatrixRow(aMatrix, lastRow, getter_AddRefs(nextRow));
+      if (ourColData[ii])
+      {
+        aCell = ourColData[ii]->Node();
+        theSpan = ourColData[ii]->ColSpan();
+        if (theSpan != 0)          //In this case, the column we're inserting is cutting across a multi-col cell - just extend it
+        {
+          colSpanStr.Truncate();
+          colSpanStr.AppendInt( theSpan + howMany );
+          asElement = do_QueryInterface(aCell);
+          editor->SetAttribute(asElement, spanAttrStr, colSpanStr);
+        }
+        rowSpan = ourColData[ii]->RowSpan();
+        if (!rowSpan)
+          ii = nRows;
+        else
+          ii += rowSpan - 1;   //Want to get past this multi-col multi-row cell so we don't edit its properties again
+      }
+      else
+      {
+        //First find insertPos for this row:
+        if (bAtEnd)
+        {
+          prevCell = nsnull;
+          res = nextRow->GetLastChild(getter_AddRefs(prevCell));
+          if (NS_SUCCEEDED(res) || !prevCell)
+            insertPos = 0;
+          else
+          {
+            while (msiUtils::IsWhitespace(prevCell))
+            {
+              nextCell = prevCell;
+              res = nextCell->GetPreviousSibling(getter_AddRefs(prevCell));
+              if (!NS_SUCCEEDED(res) || !prevCell)
+                break;
+            }
+            msiUtils::GetIndexOfChildInParent(prevCell, insertPos);
+//            insertPos = editor->GetIndexOf(nextRow, prevCell);
+            ++insertPos;
+          }
+        }
+        else
+        {
+          res = GetCellAt(aMatrix, ii+1, insertAt, &prevCell);  //Note that we know this isn't a continuation cell
+          msiUtils::GetIndexOfChildInParent(prevCell, insertPos);
+//          insertPos = editor->GetIndexOf(nextRow, prevCell);
+        }
+
+        for (PRUint32 jj = 0; jj < howMany; ++jj)
+        {
+          PRBool doMarkCaret(PR_FALSE);
+          if (jj == 0 && markCaret)
+           doMarkCaret = PR_TRUE;
+//        ??  retVal = msiUtils::CreateMathMLElement(editor, msiEditingAtoms::mtd, aCell);
+          PRUint32 flags = 0;
+          asElement = nsnull;
+          retVal = msiUtils::CreateMtd(editor, doMarkCaret, flags, asElement);
+          if (NS_SUCCEEDED(retVal) && asElement)
+          {
+            aCell = do_QueryInterface(asElement);
+            nsCOMPtr<nsIDOMNode> dontcare; 
+            retVal = editor->InsertNode(aCell, nextRow, insertPos++);
+          }
+          else
+            retVal = NS_ERROR_FAILURE;  
+        }
+      }
+      lastRow = nextRow;
+    }
+    delete[] ourColData;
+  }
+  return retVal;
+}
+
+
+nsresult msiEditingManager::GetFirstMatrixRow(nsIDOMNode* aMatrix, nsIDOMNode** pRowOut)
+{
+  return GetNextMatrixRow(aMatrix, nsnull, pRowOut);
+}
+
+nsresult msiEditingManager::GetNextMatrixRow(nsIDOMNode* aMatrix, nsIDOMNode* currRow, nsIDOMNode** pNextRowOut)
+{
+  nsresult retVal = NS_ERROR_FAILURE;
+  if (!pNextRowOut)
+  {
+    NS_ASSERTION(PR_FALSE, "Null row pointer passed in to msiEditingManager::GetNextMatrixRow!");
+    return retVal;
+  }
+  nsCOMPtr<nsIDOMNode> parent, candidate;
+  if (currRow && aMatrix)
+  {
+    PRBool bIsDescendant = PR_FALSE;
+    candidate = currRow;
+    do
+    {
+      candidate->GetParentNode(getter_AddRefs(parent));
+      if (aMatrix == parent)
+        bIsDescendant = PR_TRUE;
+      candidate = parent;
+    }
+    while (!bIsDescendant && parent);
+    if (!bIsDescendant)
+    {
+      NS_ASSERTION(PR_FALSE, "Matrix row passed in to GetNextMatrixRow not a descendant of the matrix.");
+      return retVal;
+    }
+  }
+
+  *pNextRowOut = nsnull;
+  nsCOMPtr<nsIDOMNode> nextSibling;
+//  if (currRow)
+//    candidate = do_QueryInterface(currRow);
+  candidate = currRow;
+  nsCOMPtr<nsIDOMNode> matrixNode = aMatrix;
+  parent = aMatrix;
+  nsCOMPtr<nsIDOMElement> asElt;
+  PRBool bDone = PR_FALSE;
+  do
+  {
+    nsresult res = NS_ERROR_FAILURE;
+    if (candidate)
+      res = candidate->GetNextSibling(getter_AddRefs(nextSibling));
+    else if (parent) //Can only happen the first time around, if we're called with a null currRow?
+      res = parent->GetFirstChild(getter_AddRefs(nextSibling));
+    if (NS_SUCCEEDED(res) && nextSibling)
+    {
+      candidate = nextSibling;
+
+      nsAutoString nodeName;
+      candidate->GetLocalName(nodeName);
+      if (!msiUtils::IsWhitespace(candidate))
+      {
+        if (nodeName.EqualsLiteral("mstyle"))
+        {
+          nsCOMPtr<nsIArray> styleKids;
+          nsCOMPtr<nsIDOMNode> styleKid;
+          nsAutoString kidName;
+          PRUint32 numStyleKids(0);
+          res = msiUtils::GetNonWhitespaceChildren(candidate, styleKids);
+          if (NS_SUCCEEDED(res) && styleKids)
+          {
+            res = styleKids->GetLength(&numStyleKids);
+            if (NS_SUCCEEDED(res))
+            {
+              for (PRUint32 jj = 0; !bDone && (jj < numStyleKids); ++jj)
+              {
+                styleKids->QueryElementAt(jj, NS_GET_IID(nsIDOMNode), getter_AddRefs(styleKid));
+                styleKid->GetLocalName(kidName);
+                if (kidName.EqualsLiteral("mtr") || kidName.EqualsLiteral("mlabeldtr"))  //In this case the children of the mstyle are the rows, since we found one that is
+                {
+//                  children->QueryElementAt(0, NS_GET_IID(nsIDOMElement), getter_AddRefs(nextRowOut));
+                  *pNextRowOut = styleKid;
+                  NS_ADDREF(*pNextRowOut);
+                  retVal = NS_OK;
+                  bDone = PR_TRUE;
+                }
+              }
+              if (!bDone)
+              {
+                *pNextRowOut = candidate;  //the style element itself
+                NS_ADDREF(*pNextRowOut);
+                retVal = NS_OK;
+                bDone = PR_TRUE;
+              }
+            }
+          }
+        }
+//        else if (nodeName->EqualsLiteral("mtr") || nodeName->EqualsLiteral("mlabeldtr") || nodeName->EqualsLiteral("mtd"))
+        else  //We'll treat any non-whitespace non-mstyle node as a row, in accordance with the old MathML spec...
+        {
+          *pNextRowOut = candidate;
+          NS_ADDREF(*pNextRowOut);
+          retVal = NS_OK;
+          bDone = PR_TRUE;
+        }
+      }
+    }
+    else
+    {
+      res = candidate->GetParentNode(getter_AddRefs(parent));
+      if (NS_SUCCEEDED(res) && parent)
+      {
+        if (parent == matrixNode)  //we're at the end - return null
+        {
+          retVal = NS_OK;
+          *pNextRowOut = nsnull;
+          bDone = PR_TRUE;
+        }
+        else
+          candidate = parent;  //Then we go through again looking at parent's next sibling
+      }
+    }
+  }
+  while (candidate && !bDone);
+
+  return retVal;
+}
+
+nsresult msiEditingManager::GetMatrixSize(nsIDOMNode *aMatrix,
+                           PRInt32* aRowCount, PRInt32* aColCount)
+{
+  PRInt32 rowCount(0), colCount(0);
+  nsresult retVal = GetMatrixInfo(aMatrix, rowCount, colCount, nsnull, nsnull);
+  if (NS_SUCCEEDED(retVal))
+  {
+    *aRowCount = rowCount;
+    *aColCount = colCount;
+  }
+  return retVal;
+}
+
+nsresult msiEditingManager::FindMatrixCell(nsIDOMNode* aMatrix, nsIDOMNode *aCell, PRInt32* whichRow, PRInt32* whichCol)
+{
+  PRInt32 nRow(0), nCol(0);
+  nsresult retVal = GetMatrixInfo(aMatrix, nRow, nCol, &aCell, nsnull);
+  if (NS_SUCCEEDED(retVal))
+  {
+    *whichRow = nRow;
+    *whichCol = nCol;
+  }
+  return retVal;
+}
+
+nsresult msiEditingManager::GetCellAt(nsIDOMNode* aMatrix, PRInt32 whichRow, PRInt32 whichCol, nsCOMPtr<nsIDOMNode> *pCell)
+{
+  nsresult retVal(NS_ERROR_FAILURE);
+  NS_ASSERTION(pCell, "Null cell pointer passed to msiEditingManager::GetCellAt");
+  NS_ASSERTION(whichRow && whichCol, "Bad row or column index passed to msiEditingManager::GetCellAt");
+  nsIDOMNode* pCellNode = nsnull;
+  if (pCell && whichRow && whichCol)
+    retVal = GetMatrixInfo(aMatrix, whichRow, whichCol, &pCellNode, nsnull);
+  if (NS_SUCCEEDED(retVal))
+//    *pCell = getter_AddRefs(pCellNode);
+    *pCell = pCellNode;
+  return retVal;
+}
+
+
+//This is a general-purpose function:
+//  If nCol and nRow are nonzero (and pFindCell is nonzero), we should find the cell at the given row and col and return it in pFindCell.
+//  If nRow and nCol are zero but *pFindCell is not, we should find the starting row and column containing *pFindCell in nRow and nCol.
+//  Otherwise, we return the number of rows and columns in nCol and nRow.
+//  Additionally, if multiCellArray is nonzero, we should fill the array with any multi-span cell information.
+nsresult msiEditingManager::GetMatrixInfo(nsIDOMNode *aMatrix, PRInt32& nRow, PRInt32& nCol, 
+                                          nsIDOMNode** pFindCell, nsTArray<msiMultiSpanCellInfo> *multiCellArray)
+{
+//  NS_ENSURE_ARG_POINTER(aRowCount);
+//  NS_ENSURE_ARG_POINTER(aColCount);
+  nsresult res;
+  nsCOMPtr<nsIDOMNode> matrix;
+
+  // Get the selected matrix or the matrix enclosing the selection anchor
+//  res = GetElementOrParentByTagName(NS_LITERAL_STRING("mtable"), aMatrix, getter_AddRefs(matrix));
+  res = msiUtils::GetMathTagParent(aMatrix, msiEditingAtoms::mtable, matrix);
+  if (NS_FAILED(res))
+    return res;
+  if (!matrix)
+    return NS_ERROR_FAILURE;
+
+  PRBool bDone(PR_FALSE), bAllUsed(PR_FALSE);
+  nsCOMPtr<nsIDOMNode> prevRow, nextRow;
+  nsCOMPtr<nsIDOMNode> currCellNode;
+
+  nsCOMPtr<nsIDOMNode> aRow;
+  nsAutoString nodeName;
+  nsTArray<PRInt32> usedCount;
+  PRUint32 nCurrCell(0), nCurrRow(0);
+  nsCOMPtr<nsIDOMElement> currCellElt;
+  nsAutoString rowSpanStr, colSpanStr;
+  rowSpanStr.AssignASCII("rowspan");
+  colSpanStr.AssignASCII("columnspan");
+  PRInt32 nColSpan, nRowSpan;
+  nsresult dontcare;
+  msiMultiSpanCellInfo cellInfo;
+  PRBool bMultiSpan(PR_FALSE);
+
+  res = GetNextMatrixRow(matrix, prevRow, getter_AddRefs(nextRow));
+  while (!bDone && NS_SUCCEEDED(res) && nextRow)
+  {
+    ++nCurrRow;
+    nColSpan = 1;
+    nRowSpan = 1;
+    nCurrCell = 0;
+    nextRow->GetLocalName(nodeName);
+    if (nodeName.EqualsLiteral("mtr") || nodeName.EqualsLiteral("mlabeldtr"))
+    {
+      nsCOMPtr<nsIArray> grandchildren;
+      dontcare = msiUtils::GetNonWhitespaceChildren(nextRow, grandchildren);
+      PRUint32 numGrandkids(0);
+      if (NS_SUCCEEDED(dontcare) && grandchildren)
+        dontcare = grandchildren->GetLength(&numGrandkids);
+      for (PRUint32 jx = 0; !bDone && jx < numGrandkids; ++jx)
+      {
+        while (nCurrCell < usedCount.Length() && (usedCount[nCurrCell] > 0) )
+          ++nCurrCell;  //Look for an unused cell in this row
+        grandchildren->QueryElementAt(jx, NS_GET_IID(nsIDOMElement), getter_AddRefs(currCellElt));
+        nColSpan = 1;
+        nRowSpan = 1;
+        cellInfo.SetStartPos(nCurrRow, nCurrCell+1);  //Note that nCurrRow is 1-based, but nCurrCell is used as index into an array and is thus 0-based
+        bMultiSpan = cellInfo.SetSpansFromCell(currCellElt);
+        if (bMultiSpan)
+        {
+          nColSpan = cellInfo.ColSpan();
+          nRowSpan = cellInfo.RowSpan();
+          if (nRowSpan == 0)
+            nRowSpan = 0x100000;  //presumably impossibly large value
+          if (nColSpan == 0)
+            nColSpan = usedCount.Length() - nCurrCell;  //This should suffice - if a row following this one is to have more cells than this, it had better come after the rowspan of a cell with colspan=0
+          if (nColSpan < 1)
+            nColSpan = 1;
+          if (multiCellArray)
+            multiCellArray->AppendElement(cellInfo);
+        }
+        
+        if (pFindCell)
+        {
+          if (nRow && nCol)  //in this case we're asked to find the cell at this position
+          {
+            if ( (nCurrRow <= nRow) && (nCurrRow + nRowSpan > nRow) && (nCurrCell < nCol) && (nCurrCell + nColSpan >= nCol) )
+            {
+              currCellNode = do_QueryInterface(currCellElt);
+              *pFindCell = currCellNode;
+              NS_ADDREF(*pFindCell);
+              bDone = PR_TRUE;
+            }
+          }
+          else if (*pFindCell && (*pFindCell == currCellElt))  //in this case we're asked to find location of this cell
+          {
+            nRow = nCurrRow;
+            nCol = nCurrCell+1;
+            bDone = PR_TRUE;
+          }
+        }
+
+        for (PRInt32 lx = 0; lx < nColSpan; ++lx)
+        {
+          if (nCurrCell < usedCount.Length())
+            usedCount[nCurrCell++] = nRowSpan;
+          else
+          {
+            usedCount.AppendElement(nRowSpan);
+            ++nCurrCell;
+          }
+        }
+      }
+    }
+    else if (nodeName.EqualsLiteral("mtd"))
+    {
+      while (nCurrCell < usedCount.Length() && (usedCount[nCurrCell] > 0) )
+        ++nCurrCell;  //Look for an unused cell in this row
+      currCellElt = do_QueryInterface(nextRow);
+      if (currCellElt)
+        bMultiSpan = cellInfo.SetSpansFromCell(currCellElt);
+      cellInfo.SetStartPos(nCurrRow, nCurrCell+1);  //Note that nCurrRow is 1-based, but nCurrCell is used as index into an array and is thus 0-based
+      if (bMultiSpan)
+      {
+        nColSpan = cellInfo.ColSpan();
+        nRowSpan = cellInfo.RowSpan();
+        if (nRowSpan == 0)
+          nRowSpan = 0x100000;  //presumably impossibly large value
+        if (nColSpan == 0)
+          nColSpan = usedCount.Length() - nCurrCell;  //This should suffice - if a row following this one is to have more cells than this, it had better come after the rowspan of a cell with colspan=0
+        if (nColSpan < 1)
+          nColSpan = 1;
+        if (multiCellArray)
+          multiCellArray->AppendElement(cellInfo);
+      }
+
+      if (pFindCell)
+      {
+        if (nRow && nCol)  //in this case we're asked to find the cell at this position
+        {
+          if ( (nCurrRow <= nRow) && (nCurrRow + nRowSpan > nRow) && (nCurrCell < nCol) && (nCurrCell + nColSpan >= nCol) )
+          {
+            currCellNode = do_QueryInterface(currCellElt);
+            *pFindCell = currCellNode;
+            NS_ADDREF(*pFindCell);
+            bDone = PR_TRUE;
+          }
+        }
+        else if (*pFindCell && (*pFindCell == currCellElt))  //in this case we're asked to find location of this cell
+        {
+          nRow = nCurrRow;
+          nCol = nCurrCell+1;
+          bDone = PR_TRUE;
+        }
+      }
+
+      for (PRUint32 kx = 0; kx < nRowSpan; ++kx)
+      {
+        if (nCurrCell < usedCount.Length())
+          usedCount[nCurrCell++] = nRowSpan;
+        else
+        {
+          usedCount.AppendElement(nColSpan);
+          ++nCurrCell;
+        }
+      }
+    }
+    else  //This shouldn't happen as of MathML 2!
+    {
+      while (nCurrCell < usedCount.Length() && (usedCount[nCurrCell] > 0) )
+        ++nCurrCell;  //Look for an unused cell in this row
+      currCellElt = do_QueryInterface(nextRow);
+      if (pFindCell)
+      {
+        if (nRow && nCol)  //in this case we're asked to find the cell at this position
+        {
+          if ( (nCurrRow <= nRow) && (nCurrRow + nRowSpan > nRow) && (nCurrCell < nCol) && (nCurrCell + nColSpan >= nCol) )
+          {
+            currCellNode = do_QueryInterface(currCellElt);
+            *pFindCell = currCellNode;
+            NS_ADDREF(*pFindCell);
+            bDone = PR_TRUE;
+          }
+        }
+        else if (*pFindCell && (*pFindCell == currCellElt))    //in this case we're asked to find location of this cell
+        {
+          nRow = nCurrRow;
+          nCol = nCurrCell+1;
+          bDone = PR_TRUE;
+        }
+      }
+      if (nCurrCell < usedCount.Length())
+        usedCount[nCurrCell++] = nRowSpan;
+      else
+      {
+        usedCount.AppendElement(nColSpan);
+        ++nCurrCell;
+      }
+    }
+
+      //Now remove 1 from each "used count" before proceeding to the next row - should only have nonzero entries for continuation (rowspan > 1) cells
+    bAllUsed = (usedCount.Length() > 0);
+    PRInt32 minVal = 0x100000;
+    for (PRUint32 lx = 0; lx < usedCount.Length(); ++lx)
+    {
+      usedCount[lx] = usedCount[lx] - 1;
+      if (usedCount[lx] <= 0)
+        bAllUsed = PR_FALSE;
+      else if (usedCount[lx] < minVal)
+        minVal = usedCount[lx];
+    }
+    if (bAllUsed) //This probably should never happen, but it might if we're using block matrices - means the whole next row(s) is already occupied
+    {
+//        ++nCurrRow; 
+      nCurrRow += minVal;
+      for (PRUint32 lx = 0; lx < usedCount.Length(); ++lx)
+      {
+        usedCount[lx] = usedCount[lx] - minVal;
+      }
+      bAllUsed = PR_FALSE;
+    }
+  
+    prevRow = nextRow;
+    res = GetNextMatrixRow(matrix, prevRow, getter_AddRefs(nextRow));
+  };
+
+  nRow = nCurrRow;
+  nCol = usedCount.Length();
+  return res;
+}
+
+
+
+
+//nsresult msiEditingManager::GetMatrixInfo(nsIDOMElement *aMatrix, PRInt32& nRow, PRInt32& nCol, 
+//                                          nsIDOMElement** pFindCell, nsTArray<msiMultiSpanCellInfo> *multiCellArray)
+//{
+//  NS_ENSURE_ARG_POINTER(aRowCount);
+//  NS_ENSURE_ARG_POINTER(aColCount);
+//  nsresult res;
+////  *aRowCount = 0;
+////  *aColCount = 0;
+//  nsCOMPtr<nsIDOMElement> matrix;
+//  // Get the selected matrix or the matrix enclosing the selection anchor
+//  res = GetElementOrParentByTagName(NS_LITERAL_STRING("mtable"), aMatrix, getter_AddRefs(matrix));
+//  if (NS_FAILED(res)) return res;
+//  if (!matrix)         return NS_ERROR_FAILURE;
+//
+//  nsCOMPtr<nsIArray> children;
+//  PRUint32 numKids(0);
+//  PRBool bDone(PR_FALSE), bAllUsed(PR_FALSE);
+//  nsresult res = msiUtils::GetNonWhitespaceChildren(aMatrix, children);
+//  if (NS_SUCCEEDED(res) && children)
+//    res = children->GetLength(&numKids);
+//  if (NS_SUCCEEDED(res))
+//  {
+//    msiMultiSpanCellInfo cellInfo;
+//    PRBool bMultiSpan(PR_FALSE);
+//    nsCOMPtr<nsIDOMNode> aRow;
+//    nsAutoString nodeName;
+//    nsTArray<PRInt32> usedCount;
+//    PRUint32 nCurrCell(0), nCurrRow(0);
+//    nsCOMPtr<nsIDomElement> currCellElt;
+//    nsAutoString rowSpanStr("rowspan");
+//    nsAutoString colSpanStr("columnspan");
+//    msiEditingAtoms::fence->ToString(fence);
+//    PRInt32 nColSpan, nRowSpan;
+//    nsresult dontcare;
+//    for (PRUint32 ix = 0; (ix < numKids) && !bDone; ++ix)
+//    {
+//      ++nCurrRow;
+//      nColSpan = 1;
+//      nRowSpan = 1;
+//      nCurrCell = 0;
+//      children->QueryElementAt(ix, NS_GET_IID(nsIDOMNode), getter_AddRefs(aRow));
+//      aRow->GetLocalName(nodeName);
+//      if (nodeName->EqualsLiteral("mtr") || nodeName->EqualsLiteral("mlabeldtr"))
+//      {
+//        nsCOMPtr<nsIArray> grandchildren;
+//        dontcare = msiUtils::GetNonWhitespaceChildren(aRow, grandchildren);
+//        PRUint32 numGrandkids(0);
+//        if (NS_SUCCEEDED(dontcare) && grandchildren)
+//          dontcare = grandchildren->GetLength(&numGrandkids);
+//        for (PRUint32 jx = 0; jx < numGrandkids; ++jx)
+//        {
+//          while (nCurrCell < usedCount.GetLength() && (usedCount[nCurrCell] > 0) )
+//            ++nCurrCell;  //Look for an unused cell in this row
+//          grandchilren->QueryElementAt(jx, NS_GET_IID(nsIDOMElement), getter_AddRefs(currCellElt));
+//          nColSpan = 1;
+//          nRowSpan = 1;
+//          cellInfo.SetStartPos(nCurrRow, nCurrCell+1);  //Note that nCurrRow is 1-based, but nCurrCell is used as index into an array and is thus 0-based
+//          bMultiSpan = cellInfo.SetSpansFromCell(currCellElt);
+//          if (bMultiSpan)
+//          {
+//            nColSpan = cellInfo.ColSpan();
+//            nRowSpan = cellInfo.RowSpan();
+//            if (nRowSpan == 0)
+//              nRowSpan = 0x100000;  //presumably impossibly large value
+//            if (nColSpan == 0)
+//              nColSpan = usedCount.GetLength() - nCurrColl;  //This should suffice - if a row following this one is to have more cells than this, it had better come after the rowspan of a cell with colspan=0
+//            if (nColSpan < 1)
+//              nColSpan = 1;
+//            if (multiCellArray)
+//              multiCellArray.AppendElement(cellInfo);
+//          }
+//          if (nRow && nCol && pFindCell)  //in this case we're asked to find the cell at this position
+//          {
+//            if ( (nCurrRow <= nRow) && (nCurrRow + nRowSpan > nRow) && (nCurrCell < nCol) && (nCurrCell + nColSpan >= nCol) )
+//            {
+//              *pFindCell = getter_AddRefs(currCellElt);
+//              bDone = PR_TRUE;
+//            }
+//          }
+//          else if (pFindCell && *pFindCell && (*pFindCell == currCellElt))  //in this case we're asked to find location of this cell
+//          {
+//            nRow = nCurrRow;
+//            nCol = nCurrCell+1;
+//            bDone = PR_TRUE;
+//          }
+//          for (var lx = 0; lx < nColSpan; ++lx)
+//          {
+//            if (nCurrCell < usedCount.GetLength())
+//              usedCount[nCurrCell++] = nRowSpan;
+//            else
+//            {
+//              usedCount.AppendElement(nRowSpan);
+//              ++nCurrCell;
+//            }
+//          }
+//        }
+//      }
+//      else if (nodeName->EqualsLiteral("mtd"))
+//      {
+//        while (nCurrCell < usedCount.GetLength() && (usedCount[nCurrCell] > 0) )
+//          ++nCurrCell;  //Look for an unused cell in this row
+//        currCellElt = do_QueryInterface(aRow);
+//        if (currCellElt)
+//          bMultiSpan = cellInfo.SetSpansFromCell(currCellElt);
+//        cellInfo.SetStartPos(nCurrRow, nCurrCell+1);  //Note that nCurrRow is 1-based, but nCurrCell is used as index into an array and is thus 0-based
+//        if (bMultiSpan)
+//        {
+//          nColSpan = cellInfo.ColSpan();
+//          nRowSpan = cellInfo.RowSpan();
+//          if (nRowSpan == 0)
+//            nRowSpan = 0x100000;  //presumably impossibly large value
+//          if (nColSpan == 0)
+//            nColSpan = usedCount.GetLength() - nCurrColl;  //This should suffice - if a row following this one is to have more cells than this, it had better come after the rowspan of a cell with colspan=0
+//          if (nColSpan < 1)
+//            nColSpan = 1;
+//          if (multiCellArray)
+//            multiCellArray.AppendElement(cellInfo);
+//        }
+//        if (nRow && nCol)  //in this case we're asked to find the cell at this position
+//        {
+//          if ( (nCurrRow <= nRow) && (nCurrRow + nRowSpan > nRow) && (nCurrCell < nCol) && (nCurrCell + nColSpan >= nCol) )
+//          {
+//            *pFindCell = getter_AddRefs(currCellElt);
+//            bDone = PR_TRUE;
+//          }
+//        }
+//        else if (pFindCell && *pFindCell && (*pFindCell == currCellElt))  //in this case we're asked to find location of this cell
+//        {
+//          nRow = nCurrRow;
+//          nCol = nCurrCell+1;
+//          bDone = PR_TRUE;
+//        }
+//        for (PRUint32 kx = 0; kx < nRowSpan; ++kx)
+//        {
+//          if (nCurrCell < usedCount.GetLength())
+//            usedCount[nCurrCell++] = nRowSpan;
+//          else
+//          {
+//            usedCount.AppendElement(nColSpan);
+//            ++nCurrCell;
+//          }
+//        }
+//      }
+//      else  //This shouldn't happen as of MathML 2!
+//      {
+//        while (nCurrCell < usedCount.GetLength() && (usedCount[nCurrCell] > 0) )
+//          ++nCurrCell;  //Look for an unused cell in this row
+//        currCellElt = do_QueryInterface(aRow);
+//        if (nRow && nCol)  //in this case we're asked to find the cell at this position
+//        {
+//          if ( (nCurrRow <= nRow) && (nCurrRow + nRowSpan > nRow) && (nCurrCell < nCol) && (nCurrCell + nColSpan >= nCol) )
+//          {
+//            *pFindCell = getter_AddRefs(currCellElt);
+//            bDone = PR_TRUE;
+//          }
+//        }
+//        else if (pFindCell && *pFindCell && (*pFindCell == currCellElt))    //in this case we're asked to find location of this cell
+//        {
+//          nRow = nCurrRow;
+//          nCol = nCurrCell+1;
+//          bDone = PR_TRUE;
+//        }
+//        if (nCurrCell < usedCount.GetLength())
+//          usedCount[nCurrCell++] = nRowSpan;
+//        else
+//        {
+//          usedCount.AppendElement(nColSpan);
+//          ++nCurrCell;
+//        }
+//      }
+//      //Now remove 1 from each "used count" before proceeding to the next row - should only have nonzero entries for continuation (rowspan > 1) cells
+//      bAllUsed = PR_TRUE;
+//      do {
+//        for (PRUint32 lx = 0; lx < usedCount.GetLength(); ++lx)
+//        {
+//          usedCount[kx] = usedCount[kx] - 1;
+//          if (usedCount[kx] < 0)
+//            bAllUsed = PR_FALSE;
+//        }
+//        if (bAllUsed)
+//          ++nCurrRow;  //This probably should never happen, but it might if we're using block matrices - means the whole next row is already occupied
+//      } while (bAllUsed);
+//    }
+//  }
+//  nRow = nCurrRow;
+//  nCol = usedCount.GetLength();
+//  return res;
+//}
+//
+
+//Utility class msiMultiSpanCellInfo (mostly defined in msiEditingManager.h)
+msiMultiSpanCellInfo::msiMultiSpanCellInfo(const msiMultiSpanCellInfo& src)
+    : m_startRow(src.m_startRow), m_startCol(src.m_startCol),
+      m_rowSpan(src.m_rowSpan), m_colSpan(src.m_colSpan)
+{
+  m_pNode = src.m_pNode;
+}
+
+PRBool msiMultiSpanCellInfo::SetSpansFromCell(nsIDOMNode* aCell)
+{
+  PRBool retVal = PR_FALSE;
+  nsAutoString rowSpanStr, colSpanStr;
+  nsCOMPtr<nsIDOMElement> asElement = do_QueryInterface(aCell);
+  rowSpanStr.AssignASCII("rowspan");
+  colSpanStr.AssignASCII("columnspan");
+  PRInt32 err;
+  nsAutoString attrVal;
+  m_rowSpan = 1;
+  m_colSpan = 1;
+  if (asElement)
+  {
+    nsresult dontcare = asElement->GetAttribute(rowSpanStr, attrVal);
+    if (NS_SUCCEEDED(dontcare) && attrVal.Length())
+      m_rowSpan = attrVal.ToInteger(&err, 10);
+    dontcare = asElement->GetAttribute(colSpanStr, attrVal);
+    if (NS_SUCCEEDED(dontcare) && attrVal.Length())
+      m_colSpan = attrVal.ToInteger(&err, 10);
+  }
+  return ((m_rowSpan != 1) || (m_colSpan != 1));
+}
