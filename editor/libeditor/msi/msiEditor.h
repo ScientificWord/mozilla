@@ -129,6 +129,12 @@ nsresult CreateTxnForDeleteInsertionPoint(msiSelectionManager & msiSelMan,
 nsresult GetNextCharacter( nsIDOMNode * nodeIn, PRUint32 offsetIn, nsIDOMNode ** pnodeOut, PRUint32& offsetOut, PRBool inMath, PRUnichar prevChar, PRInt32 & _result);
 nsresult CheckForAutoSubstitute(PRBool inmath);
 
+protected:
+  virtual nsresult InsertReturnInMath( nsIDOMNode * splitpointNode, 
+                                       PRInt32 splitpointOffset, 
+                                       PRBool* bHandled);
+                                       
+
 };
 
 #endif // msiEditor_h___
