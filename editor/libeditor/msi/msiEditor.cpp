@@ -40,6 +40,11 @@
 #include "nsEditorUtils.h"
 #include "msiIScriptRunner.h"
 
+//The following may go away if we move the right things to the right interfaces, but for now:
+#include "msiUtils.h"
+#include "msiEditingAtoms.h"
+#include "msiEditingManager.h"
+
 static PRInt32 instanceCounter = 0;
 nsCOMPtr<nsIRangeUtils> msiEditor::m_rangeUtils = nsnull;
 nsCOMPtr<msiIAutosub> msiEditor::m_autosub = nsnull;
@@ -2932,3 +2937,630 @@ msiEditor::AdjustSelectionEnds(PRBool isForDeletion, PRUint32 direction)
   }
   return res;
 }
+
+//In theory, we should proceed up the chain and for each node, it's either splittable or else it's to be the container for a
+//  created matrix.
+  //Metacode:
+  //while (!splitParent)
+  //{
+  //  if isAtomic(currNode)
+  //
+  //  else if canBeSplit(currNode)
+  //  {
+  //    splittable = currNode;
+  //    if (!splitChild)
+  //      splitChild = currNode;
+  //      splitOffset = currOffset;
+  //  }
+  //  else
+  //    splitParent = currNode;
+  //  currNode->GetParentNode(nextParent);
+  //  if (nextParent)
+  //    prevOffset = currOffset;
+  //    currOffset = GetIndexOf(nextParent, currNode);
+  //  currNode = nextParent;
+  //}
+  //Then when we're done:
+  //if (splitParent)
+  //{
+  //  if (splittable && splittable->GetParentNode(tempNode) && tempNode == splitParent)
+  //  {
+  //  }
+  //  else
+  //  {
+  //  }
+  //}
+
+
+//The plan of this function:
+//  (1) First we start at the split point and traverse up the tree looking for nodes which will respond to a return by inserting a
+//      matrix, or if we find ourselves in a 1-column matrix, by adding a row to an existing one. These are "template" items with
+//      a specified number of children. If we find one, then we record the position at which the new matrix should be inserted - either
+//      a given child position or "-1" in the case of single-child math nodes (that is, those which create "inferred mrows" within them).
+//      If we don't find any such node, then we want to leave the split point intact and allow the usual Split() to proceed.
+//  (2) We now know that a matrix or matrix row is to be inserted and need to determine where to split the existing contents to
+//      distribute among the new (and existing, in the case that we're within a one-column matrix) cells. 
+//  (2) Then we start at the split point and traverse up the tree looking for nodes which do split (in the sense of the function
+//      SplitNodesDeep() - that is, into two nodes of the same sort)
+nsresult
+msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOffset, PRBool* bHandled)
+{
+  BeginTransaction();
+  nsCOMPtr<nsIDOMNode> topMathNode;
+  *bHandled = PR_FALSE;
+  GetMathParent(splitpointNode, topMathNode);
+  if (!topMathNode)
+    return NS_OK;  //return this without setting bHandled - insertion should proceed as usual, since we're not in Math
+  PRInt32 nInsertPos(-1);
+  PRInt32 nMatrixRowLeft(-1), nMatrixRowRight(-1);
+  nsCOMPtr<nsIEditor> editor;
+  QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
+
+  //Code here should say something like:
+
+  nsCOMPtr<nsISelection> selection;
+  PRBool bCollapsed(PR_FALSE);
+  nsCOMPtr<nsIDOMNode> startSelNode, endSelNode;
+  PRInt32 startSelOffset(0), endSelOffset(0);
+  nsresult res = GetNSSelectionData(selection, startSelNode, startSelOffset, endSelNode, endSelOffset, bCollapsed);
+
+  PRBool bIsDisplay(PR_FALSE), bDisplayNeedsMSIDisplay(PR_FALSE);
+  PRInt32 doSplitAt(-1), splitOffset(0);
+  nsCOMPtr<nsIDOMNode> splittable, splitParent, splitChild;
+  nsCOMPtr<nsIDOMNode> nextNode, nextParent, prevChild, matrixContainer, tempNode;
+//  nsCOMPtr<nsIDOMElement> asElement;
+  nsCOMPtr<nsIDOMNode> leftNode, rightNode;  //To be filled in by the split, if it occurs
+  nsAutoString tagName;
+  nsresult dontcare;
+  //In order to do a "Math return", which inserts a multi-row vector in place of a linear node (or simply adds a row to an existing vector), we have to be able to find two things.
+  //  First, there may be a "splittable", that is, a node whose contents will be split into the new cells.
+  //  Second, there must be a "split parent", that is, a node (and offset) to hold the resulting matrix.
+  //The split container is most likely an <mrow> or perhaps an <mstyle>. If the splitpointnode passed in is a leaf node, we should move
+  //  the split point outside of it. (Left if we're at the beginning, right otherwise?) If the splitppointnode (perhaps after this operation)
+  //  is a "template" (an <mfrac>, <mroot>, <msubsup>, <munderover>, or even an <mtd>), then no splitting will occur - the child of the
+  //  template before position splitpointOffset (unless it's 0, in which case the first child) will contain the new matrix, 
+  //  and the current child will be the content of first cell (except for the 0 case, and then the "split" is envisioned as occurring from the left and
+  //  the current child will be the contents of the second cell).
+  splitChild = nsnull;
+  nextNode = splitpointNode;
+  PRInt32 currPos(splitpointOffset), prevPos(0);
+  PRInt32 toLeftRight(0);
+  PRBool bSplitDone = PR_FALSE;
+  PRBool bReplaceNode = PR_FALSE;
+  PRInt32 specialInsertPos(-1);
+  while (nextNode && !splitParent)
+  {
+    nextNode->GetLocalName(tagName);
+    dontcare = nextNode->GetParentNode(getter_AddRefs(nextParent));
+    if ( IsTextNode(nextNode) || tagName.EqualsLiteral("mi") || tagName.EqualsLiteral("mo") || tagName.EqualsLiteral("mn") )
+    {
+      //In these cases we must move the split point outside
+//      splitChild = nextParent;
+      if (msiUtils::IsInputbox(this, nextNode))
+        toLeftRight = -1;  //Force it to stay in the previous cell!
+      else if (!toLeftRight)
+      {
+        if (currPos > 0)
+          toLeftRight = -1;
+        else
+          toLeftRight = 1;
+      }
+//        currPos = GetIndexOf(nextNode, nextParent);
+//        if (prevPos > 0)
+//          ++currPos;
+    }
+    else if ( tagName.EqualsLiteral("math") )
+    {
+      toLeftRight = 0;
+      if (nextParent)
+      {
+        dontcare = nextParent->GetLocalName(tagName);
+        if (tagName.EqualsLiteral("msidisplay"))
+        {
+          bIsDisplay = PR_TRUE;
+        }
+        else
+        {
+          nsAutoString displayVal, displayStr;
+          displayStr.AssignASCII("display");
+          nsCOMPtr<nsIDOMElement> asElement = do_QueryInterface(nextNode);
+          dontcare = asElement->GetAttribute(displayStr, displayVal);
+          if (displayVal.EqualsLiteral("block"))
+          {
+            bIsDisplay = PR_TRUE;
+            bDisplayNeedsMSIDisplay = PR_TRUE;
+          }
+        }
+      }
+      if (bIsDisplay)
+      {
+        splitParent = nextNode;
+        doSplitAt = currPos;
+        if (toLeftRight < 0)
+          ++doSplitAt;
+        nInsertPos = -1;  //Means the created matrix should be inserted as the entire content of the <math> node.
+      }
+      else
+      {
+        splittable = nextNode;
+        nextParent = nsnull;  //To stop the loop - in this case everything should go back out to the normal InsertReturn?
+      }
+    }
+    else if ( tagName.EqualsLiteral("mover") || tagName.EqualsLiteral("mfrac") || tagName.EqualsLiteral("moverunder") 
+         || tagName.EqualsLiteral("munder") || tagName.EqualsLiteral("maction") || tagName.EqualsLiteral("menclose") || tagName.EqualsLiteral("mphantom") 
+         || tagName.EqualsLiteral("mroot") || tagName.EqualsLiteral("msub") || tagName.EqualsLiteral("msup") || tagName.EqualsLiteral("msubsup") || tagName.EqualsLiteral("mmultiscripts") )
+    { 
+      //These are the multi-position templates. currPos is where we'll insert the matrix.
+      splitParent = nextNode;
+      nInsertPos = currPos;
+      bReplaceNode = PR_TRUE;
+      if (!splittable)  //we haven't found anything to submit to the SplitNodeDeep function, so all the old contents either move to left or right pieces
+      {
+        if (toLeftRight < 0)
+          leftNode = prevChild;
+        else if (toLeftRight > 0)
+          rightNode = prevChild;
+        else if (prevPos == 0)
+          rightNode = GetChildAt(splitParent, currPos);
+        else
+          leftNode = GetChildAt(splitParent, currPos);
+        bSplitDone = PR_TRUE;
+      }
+//      break;
+    }
+    else if ( tagName.EqualsLiteral("mtd") || tagName.EqualsLiteral("maction") || tagName.EqualsLiteral("menclose") || tagName.EqualsLiteral("mphantom") 
+         || tagName.EqualsLiteral("mroot") )  //The one-child "templates"
+    { 
+      splitParent = nextNode;
+      nInsertPos = -1;  //This signifies that the inserted matrix is to replace the entire contents
+      if (!splittable)
+      {
+        doSplitAt = currPos;
+//        if ((toLeftRight < 0) && (currPos > 0))
+        if (toLeftRight < 0)
+          ++doSplitAt;
+      }
+      if (tagName.EqualsLiteral("mtd"))  //Here we want to find out whether we're in a one-column matrix - if so we behave differently below
+        dontcare = msiUtils::GetMathTagParent(nextNode, msiEditingAtoms::mtable, matrixContainer);
+    }
+    else if ( tagName.EqualsLiteral("mtr") || tagName.EqualsLiteral("mlabeledtr") )  //Can only arrive here if we started here!
+    {
+      //here we have to put the split point inside a cell
+      if (currPos > 0)
+      {
+        splitParent = GetChildAt(nextNode, currPos - 1);
+        nInsertPos = -1;
+        PRUint32 nLength;
+        dontcare = GetLengthOfDOMNode(splitParent, nLength);
+        doSplitAt = nLength;
+      }
+      else
+      {
+        splitParent = GetChildAt(nextNode, 0);
+        nInsertPos = -1;
+        doSplitAt = 0;
+      }
+      dontcare = msiUtils::GetMathTagParent(nextNode, msiEditingAtoms::mtable, matrixContainer);
+    }
+    else if ( tagName.EqualsLiteral("mrow") )  //Here we must test to see whether this is in fact an mfenced, in which case it will be both the splittable and the split parent.
+    {
+	    nsCOMPtr<msiIMathMLEditingBC> editingBC; 
+      GetMathMLEditingBC(nextNode, 0, getter_AddRefs(editingBC));
+      if (editingBC)
+      {
+        PRUint32 mmlType(msiIMathMLEditingBC::MATHML_UNKNOWN);
+        editingBC->GetMathmlType(&mmlType);
+        switch(mmlType)
+        {
+          case msiIMathMLEditingBC::MATHML_MFENCED:
+          case msiIMathMLEditingBC::MATHML_MROWFENCE:
+            splitParent = nextNode;  //In this case all the contents of splitParent are to be divided up into the two cells
+            nInsertPos = -1;
+            if (!splittable)
+            {
+              doSplitAt = currPos;
+//              if ( (toLeftRight < 0) && (doSplitAt > 0) )
+              if (toLeftRight < 0)
+                ++doSplitAt;  //Means the split should be to the right of current child node's (that is, "prevChild") position.
+            }
+            specialInsertPos = 1;
+          break;
+          case msiIMathMLEditingBC::MATHML_MROWBOUNDFENCE:
+          {
+          //In this case, we're looking at a fence which is really part of content, which is presumably atomic, as in a binomial.
+          //We need to move the split point inside the contained object (or outside the fence??)
+            if (!toLeftRight)
+            {
+              if (currPos > 0)
+                toLeftRight = -1;
+              else
+                toLeftRight = 1;
+            }
+          }
+          break;
+          default:
+            splittable = nextNode;
+            toLeftRight = 0;
+          break;
+        }
+      }
+    }
+    else if ( tagName.EqualsLiteral("mstyle") )  //Here we must test to see whether this is an object simply wrapped in an mstyle, in which case we don't want to split the mstyle unless the object is already split.
+    {
+      if (splittable)
+      {
+        splittable = nextNode;
+        toLeftRight = 0;
+      }
+      else
+      {
+        nsCOMPtr<nsIArray> styleKids;
+        PRUint32 numStyleKids(0);
+        dontcare = msiUtils::GetNonWhitespaceChildren(nextNode, styleKids);
+        if (NS_SUCCEEDED(dontcare) && styleKids)
+          dontcare = styleKids->GetLength(&numStyleKids);
+        if (numStyleKids > 1)
+        {
+          splittable = nextNode;
+          toLeftRight = 0;
+        }
+        else //We need to determine whether we're at the beginning or not
+        {
+          nsCOMPtr<nsIDOMNode> prevSibling;
+          tempNode = GetChildAt(nextNode, currPos);
+          dontcare = tempNode->GetPreviousSibling(getter_AddRefs(tempNode));
+          while (NS_SUCCEEDED(dontcare) && prevSibling && msiUtils::IsWhitespace(prevSibling))
+          {
+            dontcare = prevSibling->GetPreviousSibling(getter_AddRefs(tempNode));
+            prevSibling = tempNode;
+          }
+          if (!prevSibling)
+            toLeftRight = 1;
+          else
+            toLeftRight = -1;
+        }
+      }
+    }
+    else
+    {
+      splittable = nextNode;
+      toLeftRight = 0;
+    }
+//    }
+    prevPos = currPos;
+    if (splittable && !splitChild)
+    {
+      splitChild = splittable;
+      splitOffset = currPos;
+    }
+    if (nextParent)
+      currPos = GetIndexOf(nextParent, nextNode);
+    prevChild = nextNode;
+    nextNode = nextParent;
+  }
+
+  if (splittable && !splitChild)
+  {
+    splitChild = splitpointNode;
+    splitOffset = splitpointOffset;
+  }
+
+  PRBool bInsertNewMatrix = PR_FALSE;
+  nsCOMPtr<nsIDOMNode> leftInsert, rightInsert;
+  nsCOMPtr<nsIDOMNode> existingNode;
+  if (splitParent)
+  {
+    if (!bSplitDone)
+    {
+      if (splittable)
+      {
+        PRInt32 postSplitPos;
+        dontcare = splittable->GetParentNode(getter_AddRefs(tempNode));
+        if (tempNode == splitParent)
+        {
+          res = SplitNodeDeep(splittable, splitChild, splitOffset, &postSplitPos, PR_TRUE, &leftNode, &rightNode);
+          if (nInsertPos == -1)
+            doSplitAt = postSplitPos;
+        }
+        bSplitDone = PR_TRUE;
+      }
+    }
+
+    if (matrixContainer)  //we're already in a matrix - is it a one-column one?
+    {
+      PRInt32 nRows, nCols;
+      dontcare = msiEditingManager::GetMatrixSize(matrixContainer, &nRows, &nCols);
+  //  SHOULD BE (when things are moved to interface level):  dontcare = m_msiEditingMan->GetMatrixSize(matrix, &nRows, &nCols);
+      if (nCols == 1)
+      {
+        nsIDOMNode* aCell = nsnull;
+        if (splittable)
+          aCell = splittable;
+        else if (splitChild)
+          aCell = splitChild;
+        else
+          aCell = splitpointNode;
+        aCell->GetLocalName(tagName);
+        while (aCell && !tagName.EqualsLiteral("mtd"))
+        {
+          dontcare = aCell->GetParentNode(getter_AddRefs(nextParent));
+          aCell = nextParent;
+          aCell->GetLocalName(tagName);
+        }
+        dontcare = msiEditingManager::FindMatrixCell(matrixContainer, aCell, &nMatrixRowLeft, &nCols);  //Just reusing nCols - it'll be thrown away
+  //  SHOULD BE (when things are moved to interface level):  dontcare = m_msiEditingMan->FindMatrixCell(matrix, nsIDOMElement *aCell, &nMatrixRowLeft, &nCols);  //Just reusing nCols - it'll be thrown away
+        nMatrixRowRight = nMatrixRowLeft + 1;
+        res = msiEditingManager::AddMatrixRows(editor, matrixContainer, nMatrixRowRight, 1);
+      }
+      else
+        matrixContainer = nsnull;
+    }
+    nsCOMPtr<nsIDOMElement> newMatrix;
+    if (!matrixContainer)
+    {
+      nsAutoString rowSignature;
+      PRUint32 flags(0);
+      nMatrixRowLeft = 1;
+      nMatrixRowRight = 2;
+      res = msiUtils::CreateMtable(editor, 2, 1, rowSignature, PR_TRUE, flags, newMatrix);
+
+      if (NS_SUCCEEDED(res) && newMatrix)
+      {
+        matrixContainer = do_QueryInterface(newMatrix);
+        bInsertNewMatrix = PR_TRUE;
+      }
+    }
+
+    //Now we want to make calls to reparent leftNode and rightNode to the appropriate cells of matrixContainer:
+    if (NS_SUCCEEDED(res) && matrixContainer)
+    {
+      //First find appropriate <td>s using nMatrixRowLeft and Right
+      nsCOMPtr<nsIDOMNode> aLeftCell, aRightCell;
+      nsCOMPtr<nsIDOMNode> replaceInputBox;
+      nsCOMPtr<nsIDOMNode> leftRow, rightRow, newLeftContainer, newRightContainer;
+      dontcare = msiEditingManager::GetCellAt(matrixContainer, nMatrixRowLeft, 1, address_of(aLeftCell));
+      //  SHOULD BE (when things are moved to interface level):  dontcare = m_msiEditingMan->GetCellAt(matrixContainer, nMatrixRowLeft, 1, getter_AddRefs(aCell));
+      newLeftContainer = do_QueryInterface(aLeftCell);
+      dontcare = msiEditingManager::GetCellAt(matrixContainer, nMatrixRowRight, 1, address_of(aRightCell));
+      //  SHOULD BE (when things are moved to interface level):  dontcare = m_msiEditingMan->GetCellAt(matrixContainer, nMatrixRowRight, 1, getter_AddRefs(aCell));
+      newRightContainer = do_QueryInterface(aRightCell);
+
+      if (bSplitDone)
+      {
+        PRUint32 flags(0);
+        if (leftNode && (newLeftContainer != splitParent))
+        {
+          PRInt32 insertAt(-1);
+          editor->BeginTransaction();
+          editor->SaveSelection(selection);
+          //insert leftNode in newLeftContainer
+          res = DeleteNode(leftNode);
+          if (NS_SUCCEEDED(res))
+          {
+            replaceInputBox = GetChildAt(newLeftContainer, 0);
+            if (!msiUtils::IsInputbox(this, replaceInputBox))
+              replaceInputBox = nsnull;
+            if (replaceInputBox)
+            {
+              nsCOMPtr<nsINode> baseNode = do_QueryInterface(newLeftContainer);
+              PRBool bWasEditable = baseNode->IsEditable();
+              if (!bWasEditable)
+                baseNode->SetEditableFlag(PR_TRUE);
+              res = SimpleDeleteNode(replaceInputBox);
+              if (!bWasEditable)
+                baseNode->SetEditableFlag(PR_FALSE);
+            }
+          }
+          if (NS_SUCCEEDED(res))
+            res = InsertNode(leftNode, newLeftContainer, insertAt);
+  //        res = MoveNode(leftNode, newLeftContainer, 0); //at position 0??? Maybe should be at the end
+  //        //else put an input box there - but shouldn't that already be there? And does MoveNode get rid of it??
+  //      else if (leftInsert)
+  //      {
+  //        nsCOMPtr<msiIMathMLInsertion> mathmlEditing;
+  //        GetMathMLInsertionInterface(newLeftContainer, 0, getter_AddRefs(mathmlEditing));
+  //        if (mathmlEditing)
+  //        {
+  //          res = mathmlEditing->InsertNode(editor, selection, leftNode, flags);
+  //        }
+          editor->EndTransaction();
+        }
+        flags = 0;
+        if (rightNode && (newRightContainer != splitParent))
+        {
+          editor->BeginTransaction();
+          editor->SaveSelection(selection);
+          res = DeleteNode(rightNode);
+          if (NS_SUCCEEDED(res))
+          {
+            replaceInputBox = GetChildAt(newRightContainer, 0);
+            if (!msiUtils::IsInputbox(this, replaceInputBox))
+              replaceInputBox = nsnull;
+            if (replaceInputBox)
+            {
+              nsCOMPtr<nsINode> baseNode = do_QueryInterface(newRightContainer);
+              PRBool bWasEditable = baseNode->IsEditable();
+              if (!bWasEditable)
+                baseNode->SetEditableFlag(PR_TRUE);
+              res = SimpleDeleteNode(replaceInputBox);
+              if (!bWasEditable)
+                baseNode->SetEditableFlag(PR_FALSE);
+            }
+          }
+          if (NS_SUCCEEDED(res))
+            res = InsertNode(rightNode, newRightContainer, 0);
+          //insert rightNode in newRightContainer
+  //        res = MoveNode(rightNode, newRightContainer, 0); //at position 0??? Probably
+  //        //else put an input box there - but shouldn't that already be there? And does MoveNode get rid of it??
+  //      else if (rightInsert)
+  //      {
+  //        nsCOMPtr<msiIMathMLInsertion> mathmlEditing;
+  //        GetMathMLInsertionInterface(newRightContainer, 0, getter_AddRefs(mathmlEditing));
+  //        if (mathmlEditing)
+  //        {
+  //          res = mathmlEditing->InsertNode(editor, selection, rightNode, flags);
+  //        }
+          editor->EndTransaction();
+        }
+      }
+      else if (splitParent)        //in this case we'll insert the matrix at, but the previous contents of splitParent should be divvied up
+      {
+        PRUint32 parentLength;
+        nsCOMPtr<nsIDOMNode> replaceInputBox;
+        dontcare = GetLengthOfDOMNode(splitParent, parentLength);
+        if (doSplitAt < 0)
+          doSplitAt = parentLength;
+        editor->BeginTransaction();
+        editor->SaveSelection(selection);
+        if (parentLength > doSplitAt)
+        {
+          replaceInputBox = GetChildAt(newRightContainer, 0);
+          if (!msiUtils::IsInputbox(this, replaceInputBox))
+            replaceInputBox = nsnull;
+          if (replaceInputBox)
+          {
+            nsCOMPtr<nsINode> baseNode = do_QueryInterface(newRightContainer);
+            PRBool bWasEditable = baseNode->IsEditable();
+            if (!bWasEditable)
+              baseNode->SetEditableFlag(PR_TRUE);
+            res = SimpleDeleteNode(replaceInputBox);
+            if (!bWasEditable)
+              baseNode->SetEditableFlag(PR_FALSE);
+          }
+        }
+        if (doSplitAt > 0)
+        {
+          replaceInputBox = GetChildAt(newLeftContainer, 0);
+          if (!msiUtils::IsInputbox(this, replaceInputBox))
+            replaceInputBox = nsnull;
+          if (replaceInputBox)
+          {
+            nsCOMPtr<nsINode> baseNode = do_QueryInterface(newLeftContainer);
+            PRBool bWasEditable = baseNode->IsEditable();
+            if (!bWasEditable)
+              baseNode->SetEditableFlag(PR_TRUE);
+            res = SimpleDeleteNode(replaceInputBox);
+            if (!bWasEditable)
+              baseNode->SetEditableFlag(PR_FALSE);
+          }
+        }
+        for (PRInt32 jx = PRInt32(parentLength)-1; NS_SUCCEEDED(res) && (jx >= doSplitAt); --jx)
+        {
+          rightNode = GetChildAt(splitParent, jx);
+          res = DeleteNode(rightNode);
+          if (NS_SUCCEEDED(res))
+            res = InsertNode(rightNode, newRightContainer, 0);
+  //        res = MoveNode(rightNode, newRightContainer, 0);
+        }
+        for (PRInt32 jx = doSplitAt - 1; NS_SUCCEEDED(res) && (jx >= 0); --jx)
+        {
+          leftNode = GetChildAt(splitParent, jx);
+          res = DeleteNode(leftNode);
+          if (NS_SUCCEEDED(res))
+            res = InsertNode(leftNode, newLeftContainer, 0);
+  //        res = MoveNode(leftNode, newLeftContainer, 0);
+        }
+        editor->EndTransaction();
+      }
+      *bHandled = !bInsertNewMatrix;
+    }
+
+    //Finally if the matrix is a new one, insert it:
+    if (bInsertNewMatrix)
+    {
+      PRUint32 nLength;
+      dontcare = GetLengthOfDOMNode(splitParent, nLength);
+      PRInt32 realInsertPos = nInsertPos;
+      if (realInsertPos < 0)
+        realInsertPos = nLength;
+      if (specialInsertPos > 0)
+        realInsertPos = specialInsertPos;
+      res = InsertNode(matrixContainer, splitParent, realInsertPos);
+//  //      if (nInsertPos < 0 || !bReplaceNode)
+//  //      {
+//      nsCOMPtr<msiIMathMLInsertion> mathmlEditing;
+//      PRUint32 flags(0);
+//      GetMathMLInsertionInterface(splitParent, realInsertPos, getter_AddRefs(mathmlEditing));
+//      if (mathmlEditing)
+//      {
+//  //          editor->BeginTransaction();
+//  //          editor->SaveSelection(selection);
+//        res = mathmlEditing->InsertNode(editor, selection, matrixContainer, flags);
+      if (NS_SUCCEEDED(res))
+        *bHandled = PR_TRUE;
+    }
+    if (bIsDisplay)
+    {
+      nsAutoString eqnArrayStr, typeStr;
+      typeStr.AssignASCII("type");
+      eqnArrayStr.AssignASCII("eqnarray");
+      nsCOMPtr<nsIDOMElement> asElement = do_QueryInterface(matrixContainer);
+      SetAttribute(asElement, typeStr, eqnArrayStr);
+      if (bDisplayNeedsMSIDisplay)
+      {
+        nsCOMPtr<nsIDOMNode> msiDisplayNode;
+        nsAutoString msidisplayStr;
+        msidisplayStr.AssignASCII("msidisplay");
+        dontcare = InsertContainerAbove( topMathNode, address_of(msiDisplayNode), msidisplayStr, nsnull, nsnull);
+        NS_ASSERTION(NS_SUCCEEDED(dontcare), "Failed to insert msidisplay node in msiEditor::InsertReturnInMath!");  //Check that this is the newly inserted node
+      }
+    }
+  }
+//          editor->EndTransaction();
+//        }
+//        res = msiEditingManager::InsertMatrix(editor, selection, splitParent, nLength, 2, 1, rowSignature);  //insert at the end
+//        res = m_msiEditingMan->InsertMatrix(editor, selection, splitParent, nLength, 2, 1, rowSignature);  //insert at the end
+//        res = m_msiEditingMan->InsertMathmlElement(editor, selection, splitParent, nLength, flags, newMatrix);
+//      else if (!bReplaceNode)
+////        res = msiEditingManager::InsertMatrix(editor, selection, splitParent, nInsertPos, 2, 1, rowSignature);
+////        res = m_msiEditingMan->InsertMatrix(editor, selection, splitParent, nInsertPos, 2, 1, rowSignature);
+//        res = m_msiEditingMan->InsertMathmlElement(editor, selection, splitParent, nInsertPos, flags, newMatrix);
+//      }
+//      else  //In this case we need to be rather careful:
+//      {
+//        existingNode = GetChildAt(splitParent, nInsertPos);
+////        dontcare = DeleteNode(existingNode);
+//        if (existingNode == leftNode)
+//        {
+//          leftInsert = existingNode;
+//          leftNode = nsnull;
+//        }
+//        else if (existingNode == rightNode)
+//        {
+//          rightInsert = existingNode;
+//          rightNode = nsnull;
+//        }
+//        else
+//        {
+//          if (!leftNode)
+//            leftInsert = existingNode;
+//          else if (!rightNode)
+//            rightInsert = existingNode;
+//          //Otherwise assume it was already taken care of???
+//        }
+//
+////      res = m_msiEditingMan->InsertMatrix(editor, selection, splitParent, nInsertPos, 2, 1, rowSignature);
+//        res = ReplaceNode(matrixContainer, existingNode, splitParent);
+//      }
+//    if (NS_SUCCEEDED(res))
+//    {
+//      NS_ASSERTION(matrixContainer == GetChildAt(splitParent, nInsertPos), "Newly inserted matrix not found in msiEditor::InsertReturnInMath!");  //Check that this is the newly inserted node
+////      matrixContainer = GetChildAt(splitParent, nInsertPos);  //recover the newly inserted node
+////      matrixContainer->GetLocalName(tagName);
+////      if (!tagName.EqualsLiteral("mtable"))
+////      {
+////        NS_ASSERTION(PR_FALSE, "Can't find inserted mtable in InsertReturnInMath!");
+////        matrixContainer = nsnull;
+////      }
+//    }
+//  }
+//  }
+
+  EndTransaction();
+  return res;
+//From nsEditor.h:
+//  static PRInt32 GetIndexOf(nsIDOMNode *aParent, nsIDOMNode *aChild);
+//  static nsCOMPtr<nsIDOMNode> GetChildAt(nsIDOMNode *aParent, PRInt32 aOffset);
+//  nsresult MoveNode(nsIDOMNode *aNode, nsIDOMNode *aParent, PRInt32 aOffset);
+}
+  
