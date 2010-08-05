@@ -30,7 +30,7 @@
 <dialog id="SectionTextDlg"
   title="&windowTitle.label;"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-  ondialogaccept="return onOK();"
+  ondialogaccept="return onAccept();"
   ondialogcancel="return onCancel();"
   onunload="ShutdownAllEditors();"
   onload="Startup();"

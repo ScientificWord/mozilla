@@ -6559,7 +6559,7 @@ nsHTMLEditRules::GetNodesFromPoint(DOMPoint point,
 // GetNodesFromSelection: given a particular operation, construct a list  
 //                     of nodes from the selection that will be operated on. 
 //                       
-nsresult 
+NS_IMETHODIMP 
 nsHTMLEditRules::GetNodesFromSelection(nsISelection *selection,
                                        PRInt32 operation,
                                        nsCOMArray<nsIDOMNode>& arrayOfNodes,

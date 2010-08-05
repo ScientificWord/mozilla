@@ -30,8 +30,9 @@
       <key id="MSIAltSubKey"     modifiers="accel" keycode="VK_DOWN"                   command="cmd_MSIsubCmd"/>
       <key id="MSIparenKey"      modifiers="accel" key="&MSIparenCmd.keybinding;"      command="cmd_MSIparenCmd"/>
       <key id="MSIbracketKey"    modifiers="accel" key="&MSIbracketCmd.keybinding;"    command="cmd_MSIbracketCmd"/>
-      <key id="MSIbraceKey"      modifiers="accel" key="&MSIbraceCmd.keybinding;"      command="cmd_MSIbraceCmd"/>      
+      <key id="MSIbraceKey"      modifiers="accel shift" key="&MSIbraceCmd.keybinding;" command="cmd_MSIbraceCmd"/>      
       <key id="MSIabsvalueKey"   modifiers="accel" key="&MSIabsvalueCmd.keybinding;"   command="cmd_MSIabsvalueCmd"/>          
+      <key id="MSInormKey"       modifiers="accel shift" key="&MSInormCmd.keybinding;"   command="cmd_MSInormCmd"/>
     </keyset>                                                                                                         
   </keyset>                                                                                                         
 

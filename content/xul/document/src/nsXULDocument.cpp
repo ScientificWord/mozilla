@@ -2992,6 +2992,8 @@ nsXULDocument::ResumeWalk()
         if (! count)
             break;
 
+        if (!mCurrentPrototype)
+           break;
         nsCOMPtr<nsIURI> overlayURI = mCurrentPrototype->GetURI();
         nsCOMPtr<nsIURI> uri = mUnloadedOverlays[count-1];
         mUnloadedOverlays.RemoveObjectAt(count-1);

@@ -201,7 +201,10 @@ var msiToggleMathText =
 
   doCommand: function(aCommand)
   {
+    var editorElement = msiGetActiveEditorElement(window);
+    var editor = msiGetEditor(editorElement);
     insertinlinemath();
+    toggleMathText(editor);
     dump("called msiToggleMathText\n");
     //dump("Clearing math mode is not implemented.\n");
     return;
@@ -2328,142 +2331,19 @@ var msiColorObj =
   Format: function()
   {
     var res = "data:text/css,";
-    if (this.mathColor.length > 0)
+    if (this.mathColor && this.mathColor.length > 0)
       res += "math { color: "+this.mathColor+"; } ";
-    if (this.mathnameColor.length > 0)
+    if (this.mathnameColor && this.mathnameColor.length > 0)
       res += "mi[msiMathname=\"true\"] { color: "+this.mathnameColor+"; } ";
-    if (this.unitColor.length > 0)
-      res += "mi[class=\"msi_unit\"], mstyle[class=\"msi_unit\"] { color: "+this.unitColor+"; font-style: normal; } ";
-    if (this.mtextColor.length > 0)
+    if (this.unitColor && this.unitColor.length > 0)
+      res += "[class=\"msi_unit\"]{ color: "+this.unitColor+";} ";
+    if (this.mtextColor && this.mtextColor.length > 0)
       res += "mtext { color: "+this.mtextColor+"; } ";
-    if (this.matrixColor.length > 0) {
-      res += "mi[tempinput=\"true\"] { color: "+this.matrixColor+"; } ";
-      res += "mtable[border=\"0\"], mtable:not([border]) {borderwidth: 0 1px 1px 0;\n" +
-        "borderstyle: solid; bordercolor: " + "red;}" + //this.matrixColor+";}\n" + 
-        "mtable[border=\"0\"] > mtr > mtd, mtable:not([border]) > mtr > mtd  \n" + 
-        " {borderwidth: 1px 0 0 1px; borderstyle: solid; bordercolor: " + "blue;}" //this.matrixColor+";}\n";
+    if (this.matrixColor && this.matrixColor.length > 0) {
+      res += "mtd { border-color: "+this.matrixColor+"; } ";
     }
-    res += "mi[msiclass=\"enginefunction\"] { text-decoration: underline; } ";
-    res += "p[class=\"msi_passthrough\"] { padding-left: 2em; } ";
-
     return res;
   },
-
-
-//Following doesn't belong here at all. Move this functionality.
-//Additionally, implementation of hiding "helper lines" should be via putting a "not([hideHelperLines])" at the outside?
-//Probably not - just making an overriding rule.
-  FormatStyleSheet : function(editorElement, bNoHeader)
-  {
-    if (!editorElement)
-      editorElement = msiGetActiveEditorElement();
-    var editor = msiGetEditor(editorElement);
-    var theTagManager = editor ? editor.tagListManager : null;
-
-    function getParaTagList(tagManager)
-    {
-      return ["para","p","mathp", "*|dialogbase"];
-    }
-    function getMarkerTagList(tagManager)
-    {
-      return ["marker"];  //what should this be?
-    }
-    function getIndexTagList(tagManager)
-    {
-      return ["indexEntry"];  //what should this be?
-    }
-    function getHelperLineSelectors(tagManager)
-    {
-      return ["mtable[border=\"0\"]", "mtable[border=\"0\"] > mtr > mtd", "mtable:not([border])", "mtable:not([border]) > mtr > mtd"];
-    }
-    function getInputBoxSelectors(tagManager)
-    {
-      return ["mi[tempinput=\"true\"]"];
-    }
-
-    var res = "";
-    if (!bNoHeader)
-      res = "data:text/css,";
-    if (this.mathColor.length > 0)
-      res += "math { color: "+this.mathColor+"; } ";
-    if (this.mathnameColor.length > 0)
-      res += "mi[msiMathname=\"true\"] { color: "+this.mathnameColor+"; } ";
-    if (this.unitColor.length > 0)
-      res += "mi[class=\"msi_unit\"], mstyle[class=\"msi_unit\"] { color: "+this.unitColor+"; font-style: normal; } ";
-    if (this.mtextColor.length > 0)
-      res += "mtext { color: "+this.mtextColor+"; } ";
-    if (this.matrixColor.length > 0) {
-      res += "mi[tempinput=\"true\"] { color: "+this.matrixColor+"; } ";
-      res += "mtable[border=\"0\"], mtable[border=\"0\"] > mtr > mtd, mtable:not([border]), mtable:not([border]) > mtr > mtd { border: 1px solid "+this.matrixColor+"; } ";
-    }
-    res += "mi[msiclass=\"enginefunction\"] { text-decoration: underline; } ";
-    res += "p[class=\"msi_passthrough\"] { padding-left: 2em; } ";
-
-    var invisColorStr = "green";
-    var paraSelectors = getParaTagList(theTagManager);
-    for (var ix = 0; ix < paraSelectors.length; ++ix)
-    {
-      if (ix > 0)
-        res += ", ";
-      res += "[showinvis=\"true\"] " + paraSelectors[ix] + ":after"
-    }
-    res +=  " {content: \"\\B6\"; display: inline; font-family: Courier New; color: " + invisColorStr + "; font-weight: bold;} ";
-
-    var markerTags = getMarkerTagList(theTagManager);
-    for (var ix = 0; ix < markerTags.length; ++ix)
-    {
-      if (ix > 0)
-        res += ", ";
-      res += "[hideMarkers=\"true\"] " + markerTags[ix];
-    }
-    res += " {display: none;} ";
-
-    var indexEntryTags = getIndexTagList(theTagManager);
-    for (var ix = 0; ix < indexEntryTags.length; ++ix)
-    {
-      if (ix > 0)
-        res += ", "
-      res += "[hideIndexEntries=\"true\"] " + indexEntryTags[ix];
-    }
-    res += " {display: none;} ";
-
-    var helperLineSelectors = getHelperLineSelectors(theTagManager);
-    for (var ix = 0; ix < helperLineSelectors.length; ++ix)
-    {
-      if (ix > 0)
-        res += ", ";
-      res += "[hideHelperLines=\"true\"] " + helperLineSelectors[ix];
-    }
-    res += " {border: 0px;} ";
-
-    var inputBoxTags = getInputBoxSelectors(theTagManager);
-    for (var ix = 0; ix < inputBoxTags.length; ++ix)
-    {
-      if (ix > 0)
-        res += ", ";
-      res += "[hideInputBoxes=\"true\"] " + inputBoxTags[ix];
-    }
-    res += " {visibility: hidden}";
-
-    return res;
-
-  },
-
-
-  Init: function()
-  {
-    dump("\Init() not implemented!\n");
-  },
-  Persist: function()
-  {
-    dump("\nPersist() not implemented!\n");
-  },
-
-  mathColor: "#FF0000",
-  mathnameColor: "#888888",
-  unitColor:   "#009900",
-  mtextColor:  "#000000",
-  matrixColor: "#00CC00"
 };
 
 // Run color dialog.
@@ -2971,3 +2851,198 @@ function inputboxselected(node)
   else
     return false;
 } 
+
+
+
+function postProcessMathML(frag)
+{
+  frag.normalize();
+  var j;
+  var mathnodes=[];
+  for (j=0; j<frag.childNodes.length; j++)
+  {
+    if (frag.childNodes[j].nodeType == Node.TEXT_NODE) break;
+    else if (frag.childNodes.item(j).localName!="math") {
+      mathnodes = frag.childNodes.item(j).getElementsByTagName("mml:math");
+    }
+    var i;
+    var mnode;
+    var p;
+    var textNode;
+    var savedNode;
+    var isFirst;
+    var text;
+    for (i=0; i<Math.max(1,mathnodes.length); i++)
+    {
+      if (mathnodes.length > 0) mnode = mathnodes.item(i);
+      else mnode = frag.childNodes.item(j);
+      // find all textnodes that are not whitespace only
+      // if it is not in mi, mn, mo, or mtext, 
+      // then if it is the first or last real text, pull it out of <math>
+      // otherwise wrap it in an mtext.
+      var n;
+      var highwaterLeft = null;
+      var highwaterRight = null;
+      var tw = mnode.ownerDocument.createTreeWalker(mnode,4, //show text nodes
+        null, true);
+      tw.nextNode();
+      isFirst = true;
+      n = tw.currentNode;
+      while (n && isFirst)
+      {
+        tw = mnode.ownerDocument.createTreeWalker(mnode,4, //show text nodes
+            null, true);        
+        tw.nextNode();
+        n = tw.currentNode;
+        text = n.textContent;
+        if (/\S/.test(text))
+        {
+          //non-whitespace
+          parentName = n.parentNode.localName;
+          if (/^mi$|^mo$|^mn$|^mtext$/.test(parentName))
+          {
+            isFirst = false;
+            highwaterLeft = n;
+          }
+          else {
+            p = n;
+            while (!msiNavigationUtils.isMathNode(p.parentNode)) p = p.parentNode;
+            textNode = mnode.parentNode.insertBefore(p.cloneNode(true),mnode);
+            savedNode = p;
+            n = tw.nextNode();
+            savedNode.parentNode.removeChild(savedNode);
+          }
+        }
+        else n = tw.nextNode();
+      }
+      if (!n) 
+      {  //we came to the end while peeling stuff out of mnode. Check to see if mNode is now empty
+        if (mnode.textContent.length == 0) mnode.parentNode.removeChild(mnode);
+        break;
+      }
+      tw = mnode.ownerDocument.createTreeWalker(mnode,4, //show text nodes
+        null, true);      
+      n = tw.lastChild();
+      var isLast = true;
+      while (n && isLast)
+      {
+        tw = mnode.ownerDocument.createTreeWalker(mnode,4, //show text nodes
+          null, true);      
+        n = tw.lastChild();
+        text = n.textContent;
+        if (/\S/.test(text))
+        {
+          //non-whitespace
+          parentName = n.parentNode.localName;
+          if (/^mi$|^mo$|^mn$|^mtext$/.test(parentName))
+          {
+            isLast = false;
+            highwaterRight = n;
+          }
+          else {
+            p = n;
+            while (!msiNavigationUtils.isMathNode(p.parentNode)) p = p.parentNode;
+            textNode = mnode.parentNode.insertBefore(p.cloneNode(true),mnode);
+            savedNode = p;
+            n = tw.previousNode();
+            savedNode.parentNode.removeChild(savedNode);
+          }
+        }
+        else n = tw.nextNode();
+      }
+      if (!highwaterLeft) break;
+      tw.currentNode = highwaterLeft;
+      var limit = null;
+      if (highwaterRight) limit = highwaterRight.nextSibling;
+      n = highwaterLeft;
+      while (n && n != limit)
+      {
+        text = n.textContent;
+        if (/\S/.test(text))
+        {
+          //non-whitespace
+          parentName = n.parentNode.localName;
+          if (/^mi$|^mo$|^mn$|^mtext$/.test(parentName)) break;
+          else {
+            textNode = frag.ownerDocument.createElement("mtext");
+            textNode = n.parentNode.insertBefore(textNode, n);
+            textNode.appendChild(n.cloneNode(true));
+            savedNode = n;
+            n = tw.nextNode();
+            savedNode.parentNode.removeChild(savedNode);
+          }
+        }
+        else n = tw.nextNode();
+      }
+    }
+  }
+}
+
+
+function mathNodeToText(editor, node)
+{
+  var frag = gProcessor.transformToFragment(node,editor.document);   
+  postProcessMathML(frag);
+  editor.replaceNode(frag,node,node.parentNode);
+}
+
+
+var gProcessor;
+function mathToText(editor)
+{
+  var i;
+  var j;
+  var range;
+  var nodeArray;
+  var docfrag;
+  var children;
+  var enumerator;
+  var node;
+  if (editor.selection.collapsed)
+  {
+    dump("here we check to see if we can get out of math mode\n");
+    return;
+  }
+  editor.beginTransaction();
+  try
+  {
+    if (!gProcessor) gProcessor = new XSLTProcessor();
+    else gProcessor.reset();
+    var req = new XMLHttpRequest();
+
+    req.open("GET", "chrome://prince/content/math2text.xsl", false); 
+    req.send(null);
+    // print the name of the root element or error message
+    var xsldom = req.responseXML;
+    gProcessor.importStylesheet(xsldom);
+  
+    for (i=0; i< editor.selection.rangeCount; i++)
+    {
+      //BBM: we have to work to make this undoable
+      range = editor.selection.getRangeAt(i);
+      nodeArray = editor.nodesInRange(range);
+      dump(nodeArray.length+" nodes\n");
+      enumerator = nodeArray.enumerate();
+      while (enumerator.hasMoreElements())
+      {
+        node = enumerator.getNext();
+        mathNodeToText(editor,node);
+      }
+    }
+  }
+  catch(e) {
+    dump("error in MathNodeToText: "+e.message+"\n");
+  }
+  editor.endTransaction();
+}
+
+
+function toggleMathText(editor)
+{
+  try {
+    mathToText(editor);
+  }
+  catch(e) {
+    dump("Exception in toggleMathText: "+e.message+"\n");
+  }
+}

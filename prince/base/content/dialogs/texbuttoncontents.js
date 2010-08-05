@@ -7,9 +7,11 @@ var editor;
 var gIsEnc;
 var gName;
 var gReq;  
-var gOpt;  
+var gOpt;
+var gPre;
+var gOrd;  
 var gTeX;  
-var newNode;
+var isNewNode;
 
 // dialog initialization code
 function Startup()
@@ -21,18 +23,23 @@ function Startup()
     window.close();
     return;
   }
+  texnode = editor.getSelectedElement("texb");
   gIsEnc = document.getElementById("enc");
   gName  = document.getElementById("name");
   gReq   = document.getElementById("req");
   gOpt   = document.getElementById("opt");
+  gPre   = document.getElementById("pre");
+  gOrd   = document.getElementById("ord");
   gTeX   = document.getElementById("texbuttonTextbox");
-  texnode = window.arguments[0];
-  newNode = !(texnode);
+  isNewNode = !(texnode);
   if (texnode) {
     if (texnode.hasAttribute("enc")) gIsEnc.checked = texnode.getAttribute("enc") == 1;
     if (texnode.hasAttribute("name")) gName.value = texnode.getAttribute("name");
     if (texnode.hasAttribute("req")) gReq.value = texnode.getAttribute("req");
     if (texnode.hasAttribute("opt")) gOpt.value = texnode.getAttribute("opt");
+    if (texnode.hasAttribute("ord")) gOrd.value = texnode.getAttribute("ord");
+    if (texnode.hasAttribute("pre")) gPre.checked = texnode.getAttribute("pre")==1;
+    putInPreamble();
     childnode = texnode.firstChild;
     while (childnode && childnode.nodeType != Node.CDATA_SECTION_NODE) {
       childnode = childnode.nextSibling;
@@ -49,6 +56,14 @@ function Startup()
   msiSetInitialDialogFocus(gTeX);
   SetWindowLocation();
 }
+
+
+function putInPreamble()
+{
+  document.getElementById("ord").disabled=!document.getElementById("pre").checked;
+  document.getElementById("ordlabel").disabled=!document.getElementById("pre").checked;
+}
+
 
 function onAccept()
 {
@@ -67,13 +82,16 @@ function onAccept()
     else texnode.removeAttribute("req");
     if (gOpt.value.length > 0) texnode.setAttribute("opt", gOpt.value)
     else texnode.removeAttribute("opt");
+    if (gPre.checked) texnode.setAttribute("pre", "1")
+    if (gOrd.value.length > 0) texnode.setAttribute("ord", gOrd.value)
+    else texnode.removeAttribute("ord");
 
     SaveWindowLocation();
   }
   catch(e) {
     dump("Exception: "+e.message+"\n");
   }
-  if (newNode) editor.insertElementAtSelection(texnode, true);
+  if (isNewNode) editor.insertElementAtSelection(texnode, true);
   return true;
 }
 

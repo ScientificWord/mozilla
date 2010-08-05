@@ -118,6 +118,7 @@ CompEngine::~CompEngine()
 bool CompEngine::InitUnderlyingEngine(Grammar* install_dbase, nsILocalFile* baseDir, 
                                           MathResult & mr)
 {
+
   bool rv = false;
 
   char path[500];
@@ -138,6 +139,8 @@ bool CompEngine::InitUnderlyingEngine(Grammar* install_dbase, nsILocalFile* base
   else
     TCI_ASSERT(!"Failed to lookup ENGINFO/wrapperDLL");
 
+  printf("\n\n  jcs Loading enigne wrapper %s\n", path);
+
   if (LoadEngWrapperDLL(path)) {
 
     const char *dest_zname;
@@ -155,6 +158,7 @@ bool CompEngine::InitUnderlyingEngine(Grammar* install_dbase, nsILocalFile* base
 
     if (install_dbase->
         GetRecordFromIDs("ENGINFO", ENG_libp, 0, &dest_zname, &eRecord)) {
+
       res = baseDir->Clone(getter_AddRefs(bd));
       libFile = do_QueryInterface(bd);
       AppendSubPath(libFile,eRecord);
@@ -162,10 +166,10 @@ bool CompEngine::InitUnderlyingEngine(Grammar* install_dbase, nsILocalFile* base
       TCI_ASSERT(!"Failed to lookup ENGINFO/libp");
       //libpath = "C:\\swp50\\Maple";
     }
-
+   
     int inner_rv;
     res = wrapper->LoadStrsAndDLL(engFile, libFile, (void *)id_dBase, (void *)nom_dBase, &inner_rv);
-
+   
     if (NS_SUCCEEDED(res) && inner_rv) {
       if (install_dbase->
           GetRecordFromIDs("ENGINFO", ENG_vcampath, 0, &dest_zname,
@@ -178,7 +182,7 @@ bool CompEngine::InitUnderlyingEngine(Grammar* install_dbase, nsILocalFile* base
         //vcampath =
         //  "C:\\Program Files\\SciFace\\MuPAD Pro 3.1\\bin\\VCamNG.exe";
       }
-
+      printf("\n\n  jcs Calling wrapper->Initialize\n");
       res = wrapper->Initialize(libFile, baseDir, vcamFile, &inner_rv);
       if (NS_SUCCEEDED(res) && inner_rv) {
         rv = true;
@@ -187,8 +191,9 @@ bool CompEngine::InitUnderlyingEngine(Grammar* install_dbase, nsILocalFile* base
         rv = false;
       }
     }
-
     RetrieveEngineStrs(mr);
+
+    return rv;
   }
 
   return rv;
@@ -352,14 +357,14 @@ void CompEngine::Execute(MathServiceRequest& msr, MathResult& mr)
       }   
       if (ptr && ((strncmp("graphSpec", ptr->src_tok, 9)) == 0)) {
         // grab and save the graph attributes
-        for (ATTRIB_REC* aptr = ptr->attrib_list; aptr != NULL; aptr = aptr->next) {
+        for (ATTRIB_REC* aptr = ptr->attrib_list; aptr != NULL; aptr = aptr->GetNext()) {
           psr->StorePlotParam (aptr->zattr_nom, aptr->zattr_val, zPT_ASCII_text);
         }
         U32 plotno = 0;
         for (ptr = ptr->first_kid; ptr != NULL; ptr=ptr->next) {
            if ( (strcmp("plot", ptr->src_tok) ) == 0) {
              ++plotno;
-             for (ATTRIB_REC *aptr = ptr->attrib_list; aptr != NULL; aptr = aptr->next) {
+             for (ATTRIB_REC *aptr = ptr->attrib_list; aptr != NULL; aptr = aptr->GetNext()) {
               psr->StorePlotParam (plotno, aptr->zattr_nom, aptr->zattr_val, zPT_ASCII_text);
              }
              for (MNODE *child = ptr->first_kid; child != NULL; child = child->next) {
@@ -1281,13 +1286,19 @@ const char *CompEngine::ConvertTreeToDef(MathServiceRequest & msr,
           TCI_ASSERT(!"Op in definition not assignment.");
           error_code = CR_baddefformat;
         }
-      } else if (assign_op->semantic_type == SEM_TYP_FUNCTION &&
-                 !assign_op->next && assign_op->bucket_list) {
+      } else if (assign_op->semantic_type == SEM_TYP_FUNCTION  && !assign_op->next && assign_op->bucket_list) {
         generic_def = true;
         rv = assign_op->canonical_ID;
-      } else if (assign_op->semantic_type == SEM_TYP_VARIABLE &&
-                 !assign_op->next) {
+      } else if (assign_op->semantic_type == SEM_TYP_VARIABLE &&  !assign_op->next) {
         generic_def = true;
+        rv = assign_op->canonical_ID;
+      } else if (assign_op->semantic_type == SEM_TYP_QUALIFIED_VAR && !assign_op -> next) {
+        U32 p_type;
+        const char *p_str = msr.GetParam(PID_subInterpretation, p_type);
+        if (!p_type) {
+          generic_def = true;
+          error_code = CR_NeedSubInterp;
+        }
         rv = assign_op->canonical_ID;
       } else {
         TCI_ASSERT(!"No content for definition.");

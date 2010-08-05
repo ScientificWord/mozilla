@@ -656,7 +656,7 @@ function insertGraph (siblingElement, graph, editorElement) {
 function insertNewGraph (math, dimension, plottype, optionalAnimate, editorElement) {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
-  var expr = GetMathAsString(math);//runFixup(GetFixedMath(math));
+  var expr = runFixup(GetFixedMath(math));
   var graph = new Graph();
   graph.addPlot ();
   graph.setPlotAttribute (PlotAttrName ("PlotStatus",1), "New");
