@@ -2981,12 +2981,13 @@ msiEditor::AdjustSelectionEnds(PRBool isForDeletion, PRUint32 direction)
 nsresult
 msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOffset, PRBool* bHandled)
 {
-  BeginTransaction();
   nsCOMPtr<nsIDOMNode> topMathNode;
   *bHandled = PR_FALSE;
   GetMathParent(splitpointNode, topMathNode);
   if (!topMathNode)
     return NS_OK;  //return this without setting bHandled - insertion should proceed as usual, since we're not in Math
+
+  BeginTransaction();
   PRInt32 nInsertPos(-1);
   PRInt32 nMatrixRowLeft(-1), nMatrixRowRight(-1);
   nsCOMPtr<nsIEditor> editor;
