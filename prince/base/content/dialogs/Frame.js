@@ -2,11 +2,14 @@ var frmElement = {};
 var newElement = true;
 var gd;
 var editor;
+var msiframe;
+var isNewNode;
 
 Components.utils.import("resource://app/modules/unitHandler.jsm");
 
-var data;
+var msiframe;
 var scale= .25; /*scale of reduced diagram*/
+var editor;
 
 function startUp()
 {
@@ -17,40 +20,29 @@ function startUp()
     window.close();
     return;
   }
-  data = window.arguments[0];
-  if (data != null)
-  {
-    if (data.element && ("localName" in data.element))
-    { 
-      if (data.element.localName != "msiframe")
-      {
-        // we allow for the element passed in to be an immediate child of a msiframe element
-        if (data.element.parentNode.localName == "msiframe")
-          data.element = data.element.parentNode;
-        else data.element = null;
-      }
-    } else data.element = null;
-    try {
-      frmElement = data.element;}
-    catch(e) {}
-  }
-  if (data.element == null) frmElement=editor.createElementWithDefaults("msiframe");
+  msiframe = editor.getSelectedElement("msiframe");
+  isNewNode = !(msiframe);
+  if (isNewNode) msiframe = editor.createElementWithDefaults("msiframe");
      
   gd = new Object();
-  gd = initFrameTab(gd, frmElement, data.newElement);
+  gd = initFrameTab(gd, msiframe, isNewNode);
   initFrameSizePanel(); // needed when the user can set the size
 }
 
 
 function onOK() {
-  setFrameAttributes(frmElement);
-  data.element = frmElement.cloneNode(true);
+  setFrameAttributes(msiframe);
+  // BBM This is a stub
+  
+  if (isNewNode) editor.insertElementAtSelection(msiframe, true);
+  var para = editor.createNode("para", msiframe, 0);
+  var br = editor.createNode("br", para, 0);
+  // BBM This new node should go AROUND the selection.
   return(true);
 }
 
 function onCancel() {
   close();
-  data.newElement = false;
   return(true);
 }
 

@@ -57,13 +57,6 @@
 <xsl:template match="latex">
 <xsl:value-of select="."/> and \LaTeX{}</xsl:template>  <!-- soon to change to texlogo-->
 
-<xsl:template match="html:hspace"
-  ><xsl:choose
-    ><xsl:when test="@dim='2em'">\qquad </xsl:when
-  ><xsl:otherwise> </xsl:otherwise
-  ></xsl:choose
-  ></xsl:template>
- 
 <xsl:template match="html:documentclass">
 
 \documentclass[<xsl:apply-templates/>]{<xsl:value-of select="@class"/>}
@@ -156,22 +149,22 @@ should not be done under some conditions -->
 
 <xsl:template match="html:sectiontitle">
 <xsl:if test="name(..)='chapter'">
-\chapter{<xsl:apply-templates/>}
+\chapter<xsl:if test="../@nonum='true'">*</xsl:if>{<xsl:apply-templates/>}
 </xsl:if>
 <xsl:if test="name(..)='section'">
-\section{<xsl:apply-templates/>}
+\section<xsl:if test="../@nonum='true'">*</xsl:if>{<xsl:apply-templates/>}
 </xsl:if>
 <xsl:if test="name(..)='subsection'">
-\subsection{<xsl:apply-templates/>}
+\subsection<xsl:if test="../@nonum='true'">*</xsl:if>{<xsl:apply-templates/>}
 </xsl:if>
 <xsl:if test="name(..)='subsubsection'">
-\subsubsection{<xsl:apply-templates/>}
+\subsubsection<xsl:if test="../@nonum='true'">*</xsl:if>{<xsl:apply-templates/>}
 </xsl:if>
 <xsl:if test="name(..)='paragraph'">
-\paragraph{<xsl:apply-templates/>}
+\paragraph<xsl:if test="../@nonum='true'">*</xsl:if>{<xsl:apply-templates/>}
 </xsl:if>
 <xsl:if test="name(..)='subparagraph'">
-\subparagraph{<xsl:apply-templates/>}
+\subparagraph<xsl:if test="../@nonum='true'">*</xsl:if>{<xsl:apply-templates/>}
 </xsl:if>
 </xsl:template>
 
@@ -221,7 +214,7 @@ should not be done under some conditions -->
   <xsl:when test="@reftype='page'">\vpageref%%</xsl:when>
   <xsl:otherwise>\vref</xsl:otherwise>
 </xsl:choose>
-{<xsl:value-of select="@key"/>}%%
+{<xsl:value-of select="@key"/>}{}%%
 </xsl:template>
 
 
@@ -359,8 +352,14 @@ should not be done under some conditions -->
     /></xsl:when><xsl:otherwise><xsl:value-of select="concat(substring-before($fontsize,'/'),$units)"
     /></xsl:otherwise></xsl:choose>}\selectfont </xsl:if
     ><xsl:apply-templates/>}</xsl:template>
-<xsl:template match="html:fontcolor">\textcolor[HTML]{<xsl:value-of select="translate(substring(./@color,2,8),'abcdef','ABCDEF')"
-  />}{<xsl:apply-templates/>}</xsl:template>
+
+<xsl:template match="html:fontcolor">\textcolor<xsl:choose
+   ><xsl:when test="substring(./@color,1,1)='#'">[HTML]{<xsl:value-of select="translate(substring(./@color,2,8),'abcdef','ABCDEF')"
+   /></xsl:when
+   ><xsl:otherwise>{<xsl:value-of select="./@color"/></xsl:otherwise
+   ></xsl:choose
+   >}{<xsl:apply-templates/>}</xsl:template>
+
 <xsl:template match="html:otfont">{\fontspec{<xsl:value-of select="@fontname"
   />}<xsl:apply-templates
   />}</xsl:template>
@@ -375,7 +374,6 @@ should not be done under some conditions -->
   >\textbackslash</xsl:template>
 
 <xsl:template match="html:TeXButton">
-  
 %TCIMACRO{\TeXButton<xsl:apply-templates/>
 </xsl:template>
 
@@ -449,15 +447,21 @@ should not be done under some conditions -->
 %% minpasses=<xsl:value-of select="@num"/>
 </xsl:template>
 
+<!-- labels -->
+<xsl:template match="html:a[@name]"
+ >\label{<xsl:value-of select="@name"
+ />}</xsl:template> 
+
 
 <xsl:template match="html:texb"
-  ><xsl:if test="@enc='1'">
+  ><xsl:if test="@pre!='1'">
+  <xsl:if test="@enc='1'">
 %TCIMACRO{\TeXButton{<xsl:value-of select="@name"/>}{<xsl:apply-templates/>}}%
 %Package required: [<xsl:value-of select="@opt"/>]{<xsl:value-of select="@req"/>}
 %BeginExpansion
 </xsl:if
   ><xsl:apply-templates/><xsl:if test="@enc='1'">
-%EndExpansion</xsl:if>
+%EndExpansion</xsl:if></xsl:if>
 </xsl:template>
 
 

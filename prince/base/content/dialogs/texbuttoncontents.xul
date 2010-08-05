@@ -24,16 +24,21 @@
   <script type="application/x-javascript" src="chrome://prince/content/texbuttoncontents.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
 
-   <groupbox>
-      <caption label='&warning.label;'/>
-      <textbox multiline='true' cols='60' rows='3' readonly='true' value = '&warningText.label;' />
-   </groupbox>
-   <checkbox id = "enc" label="Encapsulated" checked="false"/>
-    <vbox>
-      <label control="name" accesskey="N" value="Name"/>
-      <textbox id="name" value=""/>
-    </vbox>
-    <hbox>
+  <groupbox>
+    <caption label='&warning.label;'/>
+    <textbox multiline='true' cols='60' rows='3' readonly='true' value = '&warningText.label;' />
+  </groupbox>
+  <hbox align="center">
+    <broadcaster id="inPreamble" disabled="true"/>
+    <checkbox id = "enc" label="Encapsulated" checked="false"/>
+    <checkbox id = "pre" label="Put in preamble" checked="false" oncommand="putInPreamble()"/>
+    <textbox id="ord" type="number" value="100" style="width:5em;" observes="inPreamble"/><label id="ordlabel" observes="inPreamble" value="Ordinal"/> 
+  </hbox>
+  <vbox>
+    <label control="name" accesskey="N" value="Name"/>
+    <textbox id="name" value=""/>
+  </vbox>
+  <hbox>
     <vbox>
       <label control="req" accesskey="p" value="Requires package"/>
       <textbox id="req" value=""/>
