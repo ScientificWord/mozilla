@@ -2934,40 +2934,6 @@ msiEditor::AdjustSelectionEnds(PRBool isForDeletion, PRUint32 direction)
   return res;
 }
 
-//In theory, we should proceed up the chain and for each node, it's either splittable or else it's to be the container for a
-//  created matrix.
-  //Metacode:
-  //while (!splitParent)
-  //{
-  //  if isAtomic(currNode)
-  //
-  //  else if canBeSplit(currNode)
-  //  {
-  //    splittable = currNode;
-  //    if (!splitChild)
-  //      splitChild = currNode;
-  //      splitOffset = currOffset;
-  //  }
-  //  else
-  //    splitParent = currNode;
-  //  currNode->GetParentNode(nextParent);
-  //  if (nextParent)
-  //    prevOffset = currOffset;
-  //    currOffset = GetIndexOf(nextParent, currNode);
-  //  currNode = nextParent;
-  //}
-  //Then when we're done:
-  //if (splitParent)
-  //{
-  //  if (splittable && splittable->GetParentNode(tempNode) && tempNode == splitParent)
-  //  {
-  //  }
-  //  else
-  //  {
-  //  }
-  //}
-
-
 //The plan of this function:
 //  (1) First we start at the split point and traverse up the tree looking for nodes which will respond to a return by inserting a
 //      matrix, or if we find ourselves in a 1-column matrix, by adding a row to an existing one. These are "template" items with
@@ -3247,6 +3213,8 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
   nsCOMPtr<nsIDOMNode> existingNode;
   if (splitParent)
   {
+    nsCOMPtr<nsIDOMNode> caretNode;
+    PRUint32 caretPos(0);
     if (!bSplitDone)
     {
       if (splittable)
@@ -3308,23 +3276,24 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
       }
     }
 
+    nsCOMPtr<nsIDOMNode> replaceInputBox;
+    nsCOMPtr<nsIDOMNode> newLeftContainer, newRightContainer;
     //Now we want to make calls to reparent leftNode and rightNode to the appropriate cells of matrixContainer:
     if (NS_SUCCEEDED(res) && matrixContainer)
     {
       //First find appropriate <td>s using nMatrixRowLeft and Right
       nsCOMPtr<nsIDOMNode> aLeftCell, aRightCell;
-      nsCOMPtr<nsIDOMNode> replaceInputBox;
-      nsCOMPtr<nsIDOMNode> leftRow, rightRow, newLeftContainer, newRightContainer;
+      nsCOMPtr<nsIDOMNode> leftRow, rightRow;
       dontcare = msiEditingManager::GetCellAt(matrixContainer, nMatrixRowLeft, 1, address_of(aLeftCell));
       //  SHOULD BE (when things are moved to interface level):  dontcare = m_msiEditingMan->GetCellAt(matrixContainer, nMatrixRowLeft, 1, getter_AddRefs(aCell));
       newLeftContainer = do_QueryInterface(aLeftCell);
       dontcare = msiEditingManager::GetCellAt(matrixContainer, nMatrixRowRight, 1, address_of(aRightCell));
       //  SHOULD BE (when things are moved to interface level):  dontcare = m_msiEditingMan->GetCellAt(matrixContainer, nMatrixRowRight, 1, getter_AddRefs(aCell));
       newRightContainer = do_QueryInterface(aRightCell);
+      PRUint32 flags(0);
 
       if (bSplitDone)
       {
-        PRUint32 flags(0);
         if (leftNode && (newLeftContainer != splitParent))
         {
           PRInt32 insertAt(-1);
@@ -3403,7 +3372,6 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
       else if (splitParent)        //in this case we'll insert the matrix at, but the previous contents of splitParent should be divvied up
       {
         PRUint32 parentLength;
-        nsCOMPtr<nsIDOMNode> replaceInputBox;
         dontcare = GetLengthOfDOMNode(splitParent, parentLength);
         if (doSplitAt < 0)
           doSplitAt = parentLength;
@@ -3441,24 +3409,73 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
               baseNode->SetEditableFlag(PR_FALSE);
           }
         }
-        for (PRInt32 jx = PRInt32(parentLength)-1; NS_SUCCEEDED(res) && (jx >= doSplitAt); --jx)
+        if (newRightContainer != splitParent)
         {
-          rightNode = GetChildAt(splitParent, jx);
-          res = DeleteNode(rightNode);
-          if (NS_SUCCEEDED(res))
-            res = InsertNode(rightNode, newRightContainer, 0);
-  //        res = MoveNode(rightNode, newRightContainer, 0);
+          for (PRInt32 jx = PRInt32(parentLength)-1; NS_SUCCEEDED(res) && (jx >= doSplitAt); --jx)
+          {
+            rightNode = GetChildAt(splitParent, jx);
+            res = DeleteNode(rightNode);
+            if (NS_SUCCEEDED(res))
+              res = InsertNode(rightNode, newRightContainer, 0);
+    //        res = MoveNode(rightNode, newRightContainer, 0);
+          }
         }
-        for (PRInt32 jx = doSplitAt - 1; NS_SUCCEEDED(res) && (jx >= 0); --jx)
+        if (newLeftContainer != splitParent)
         {
-          leftNode = GetChildAt(splitParent, jx);
-          res = DeleteNode(leftNode);
-          if (NS_SUCCEEDED(res))
-            res = InsertNode(leftNode, newLeftContainer, 0);
-  //        res = MoveNode(leftNode, newLeftContainer, 0);
+          for (PRInt32 jx = doSplitAt - 1; NS_SUCCEEDED(res) && (jx >= 0); --jx)
+          {
+            leftNode = GetChildAt(splitParent, jx);
+            res = DeleteNode(leftNode);
+            if (NS_SUCCEEDED(res))
+              res = InsertNode(leftNode, newLeftContainer, 0);
+    //        res = MoveNode(leftNode, newLeftContainer, 0);
+          }
         }
         editor->EndTransaction();
       }
+
+      nsCOMPtr<nsIArray> realLeftChildren, realRightChildren;
+      PRUint32 numRealChildren(0);
+      nsCOMPtr<nsIDOMElement> inputBoxElt;
+      flags = 0;
+      if (newLeftContainer)
+      {
+        dontcare = msiUtils::GetNonWhitespaceChildren(newLeftContainer, realLeftChildren);
+        if (NS_SUCCEEDED(dontcare))
+          realLeftChildren->GetLength(&numRealChildren);
+        if (!numRealChildren)
+        {
+          res = msiUtils::CreateInputbox(editor, PR_FALSE, PR_FALSE, flags, inputBoxElt);
+          if (NS_SUCCEEDED(res))
+          {
+            replaceInputBox = do_QueryInterface(inputBoxElt);
+            res = InsertNode(replaceInputBox, newLeftContainer, 0);
+          }
+        }
+        inputBoxElt = nsnull;
+        flags = 0;
+      }
+      if (newRightContainer)
+      {
+        dontcare = msiUtils::GetNonWhitespaceChildren(newRightContainer, realRightChildren);
+        if (NS_SUCCEEDED(dontcare))
+          realRightChildren->GetLength(&numRealChildren);
+        if (!numRealChildren)
+        {
+          res = msiUtils::CreateInputbox(editor, PR_FALSE, PR_FALSE, flags, inputBoxElt);
+          if (NS_SUCCEEDED(res))
+          {
+            replaceInputBox = do_QueryInterface(inputBoxElt);
+            res = InsertNode(replaceInputBox, newRightContainer, 0);
+            if (NS_SUCCEEDED(res))
+            {
+              caretNode = replaceInputBox;
+              caretPos = 1;
+            }
+          }
+        }
+      }
+
       *bHandled = !bInsertNewMatrix;
     }
 
@@ -3500,6 +3517,40 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
         msidisplayStr.AssignASCII("msidisplay");
         dontcare = InsertContainerAbove( topMathNode, address_of(msiDisplayNode), msidisplayStr, nsnull, nsnull);
         NS_ASSERTION(NS_SUCCEEDED(dontcare), "Failed to insert msidisplay node in msiEditor::InsertReturnInMath!");  //Check that this is the newly inserted node
+      }
+    }
+
+    //May as well set the caret now
+    if (NS_SUCCEEDED(res) && newRightContainer)
+    {
+      dontcare = GetSelection(getter_AddRefs(selection));
+      if (NS_SUCCEEDED(dontcare))
+      {
+        nsCOMPtr<nsIDOMRange> range, newRange;
+        selection->GetRangeAt(0, getter_AddRefs(range));
+        if (range)
+        {
+          range->CloneRange(getter_AddRefs(newRange));
+          if (!caretNode)
+          {
+            replaceInputBox = GetChildAt(newRightContainer, 0);
+            if (msiUtils::IsInputbox(this, replaceInputBox))
+            {
+              caretNode = replaceInputBox;
+              caretPos = 1;
+            }
+            else
+            {
+              caretNode = newRightContainer;
+              caretPos = 0;
+            }
+          }
+          newRange->SetStart(caretNode, caretPos);
+//          newRange->SetStartOffset(caretPos);
+          newRange->Collapse(PR_TRUE);
+          selection->RemoveAllRanges();  
+          selection->AddRange(newRange);
+        }
       }
     }
   }
