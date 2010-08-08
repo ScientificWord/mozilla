@@ -6,8 +6,10 @@ var msiEvaluateCommand =
   isCommandEnabled: function(aCommand, editorElement)
   {
     var theEditorElement = msiGetActiveEditorElement();
-    return (msiIsDocumentEditable(theEditorElement) && msiIsEditingRenderedHTML(theEditorElement) &&
-      isInMath(editorElement));
+    return (msiIsDocumentEditable(theEditorElement) && 
+            msiIsEditingRenderedHTML(theEditorElement) &&
+            (isInMath(editorElement) || 
+             aCommand == "cmd_MSIComputeFillMatrix") );
   },
 
   getCommandStateParams: function(aCommand, aParams, editorElement) {},
@@ -25,8 +27,10 @@ var msiDefineCommand =
   isCommandEnabled: function(aCommand, dummy)
   {
     var editorElement = msiGetActiveEditorElement();
-    return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement) &&
-      isInMath(editorElement));
+    return (msiIsDocumentEditable(editorElement) && 
+            msiIsEditingRenderedHTML(editorElement) &&
+            ( isInMath(editorElement) || 
+              aCommand == "cmd_MSIComputeShowDefs" ) );
   },
 
   getCommandStateParams: function(aCommand, aParams, editorElement) {},
