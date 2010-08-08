@@ -915,6 +915,14 @@ function msiEditorDocumentObserver(editorElement)
           catch(e) {
             dump(e+"\n");
           }
+
+          // Try to start compute engine
+          try {
+             GetCurrentEngine();
+          }
+          catch(e) {
+            dump(e+"\n");
+          }
         }
 
 //        if (this.mDumpMessage)
