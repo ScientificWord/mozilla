@@ -13,9 +13,7 @@
     xmlns:html="http://www.w3.org/1999/xhtml"
     xmlns:sw="http://www.sciword.com/namespaces/sciword"
     xmlns:msi="http://www.sciword.com/namespaces/sciword"
-    xmlns:regexp="http://exslt.org/regular-expressions" 
-    xmlns:exsl="http://exslt.org/common"
-    extension-element-prefixes="regexp">
+    xmlns:exsl="http://exslt.org/common">
 
 <xsl:param name="endnotes" select="count(//html:endnotes)"/>
 <xsl:param name="indexitems" select="count(//html:indexitem)"/>
@@ -23,8 +21,6 @@
 <xsl:output method="text" encoding="UTF-8"/>
 <xsl:strip-space elements="*"/>
 <xsl:preserve-space elements="pre"/>
-<xsl:import href="regexp.xsl" />
-
 
 
 <xsl:include href="mml2ltex.xsl"/>
