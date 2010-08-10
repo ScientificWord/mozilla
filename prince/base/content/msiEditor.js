@@ -806,21 +806,34 @@ function msiEditorDocumentObserver(editorElement)
                 str += classtemplate.replace(classname,taglist[i],"g")+"\n";
             }
           }
-          var htmlurlstring = msiGetEditorURL(this.mEditorElement); 
-          var htmlurl = msiURIFromString(htmlurlstring);
-          var cssFile = msiFileFromFileURL(htmlurl).parent; 
-          cssFile.append("css");
-          if (!cssFile.exists()) cssFile.create(1, 0755); 
-          cssFile.append("msi_Tags.css");
-          dynAllTagsStyleSheet= msiFileURLStringFromFile(cssFile);
-          var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-          fos.init(cssFile, -1, -1, false);
-          var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
-            .createInstance(Components.interfaces.nsIConverterOutputStream);
-          os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
-          os.writeString(str);
-          os.close();
-          fos.close();
+
+          try {
+            var htmlurlstring = msiGetEditorURL(this.mEditorElement);
+               // currently htmlusrstring = "chrome://prince/content/StdDialogShell.xhtml" 
+            var htmlurl = msiURIFromString(htmlurlstring);
+               // ... seems ok
+            var htmlFile = msiFileFromFileURL(htmlurl);
+             // Throws exception. htmlurl doesn't have nsIFileURL interface
+
+            var cssFile = htmlFile.parent;
+           
+            cssFile.append("css");
+            if (!cssFile.exists()) cssFile.create(1, 0755); 
+            cssFile.append("msi_Tags.css");
+            dynAllTagsStyleSheet= msiFileURLStringFromFile(cssFile);
+            var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+            fos.init(cssFile, -1, -1, false);
+            var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+              .createInstance(Components.interfaces.nsIConverterOutputStream);
+            os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
+            os.writeString(str);
+            os.close();
+            fos.close();
+          }
+          catch (e) {
+            dump ("Problem creating msi_tags.css. Exception:" + e + "\n");
+          }
+
     
           try {
             editorElement.mgMathStyleSheet = msiColorObj.FormatStyleSheet(editorElement);
