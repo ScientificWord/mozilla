@@ -3,8 +3,7 @@
       xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
       xmlns:exsl="http://exslt.org/common"
       xmlns:mml="http://www.w3.org/1998/Math/MathML"
-      extension-element-prefixes="regexp"
-      version="1.1">
+       version="1.1">
 
   <xsl:variable name="output-mode">
     <xsl:text>SW-LaTeX</xsl:text>
@@ -31,7 +30,7 @@
        <xsl:variable name="the-math">
         <xsl:choose>
            <xsl:when test="count(*)=1">
-               <sw-domath><xsl:copy-of select="*"/></sw-domath>
+               <sw-domath><xsl:copy-of select="@*"/><xsl:copy-of select="*"/></sw-domath>
            </xsl:when>
 
            <xsl:otherwise>
@@ -116,6 +115,7 @@
          contain a "display" tag with a value of 'inline' or 'block' -->
 
     <xsl:variable name="is-display.tr">
+    <xsl:message>Finding is-display, node is </xsl:message>
       <xsl:choose>
 
 	      <xsl:when test="@display='inline'">
@@ -1014,7 +1014,7 @@ no indent - disregarded completely
         </n-internal-aligns>
       </xsl:for-each>
     </xsl:variable>
-    <xsl:variable name="table-structure" select="$exsl:node-set(table-structure.tr)"/>
+    <xsl:variable name="table-structure" select="exsl:node-set($table-structure.tr)"/>
 
 
     <xsl:choose>
