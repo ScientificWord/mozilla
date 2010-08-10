@@ -810,17 +810,24 @@ function msiEditorDocumentObserver(editorElement)
           try {
             var htmlurlstring = msiGetEditorURL(this.mEditorElement);
                // currently htmlusrstring = "chrome://prince/content/StdDialogShell.xhtml" 
+
             var htmlurl = msiURIFromString(htmlurlstring);
                // ... seems ok
             var htmlFile = msiFileFromFileURL(htmlurl);
-             // Throws exception. htmlurl doesn't have nsIFileURL interface
+             // Throws exception. htmlurl doesn't have nsIFileURL interface.
+             // Can fix by setting the dialog shell in the prefs to something like
+             // ...   "resource://app/res/StdDialogShell.xhtml"
+             // and moving the file there in the build/install.
 
             var cssFile = htmlFile.parent;
            
             cssFile.append("css");
-            if (!cssFile.exists()) cssFile.create(1, 0755); 
+            if (!cssFile.exists()) cssFile.create(1, 0755);
+             
             cssFile.append("msi_Tags.css");
+
             dynAllTagsStyleSheet= msiFileURLStringFromFile(cssFile);
+
             var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
             fos.init(cssFile, -1, -1, false);
             var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
