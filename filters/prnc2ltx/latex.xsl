@@ -22,7 +22,8 @@
 <xsl:strip-space elements="*"/>
 <xsl:preserve-space elements="pre"/>
 
-
+<xsl:include href="table.xsl"/>
+<xsl:include href="graphics.xsl"/>
 <xsl:include href="mml2ltex.xsl"/>
 <xsl:include href="preamble.xsl"/>
 <xsl:include href="spaces.xsl"/>
