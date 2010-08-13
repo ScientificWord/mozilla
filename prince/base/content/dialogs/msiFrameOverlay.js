@@ -4,8 +4,10 @@ var frameUnitHandler = new UnitHandler();
 var sides = ["Top", "Right", "Bottom", "Left"]; // do not localize -- visible to code only
 var gFrameTab={};
 var scale = 0.25;
-var scaledWidth = 50; 
-var scaledHeight = 40;
+var scaledWidthDefault = 50; 
+var scaledHeightDefault = 60;
+var scaledHeight = scaledHeightDefault;
+var scaledWidth = scaledWidthDefault; 
 var position = 0;  // left = 1, right = 2, neither = 0
 //var unit;
 
@@ -140,7 +142,7 @@ function initFrameTab(dg, element, newElement)
   else if (/right|outside/.test(placeLocation)) placement = 2;
   gFrameTab = dg;
   setAlignment(placement);
-  enableHere();
+  enableHere(dg.herePlacementRadioGroup);
   enableFloating();
   updateDiagram("margin");
   updateDiagram("border");
@@ -316,13 +318,15 @@ function updateDiagram( attribute ) //attribute = margin, border, padding;
     case 1: document.getElementById("leftspacer").setAttribute("width", Number(60+ Math.min(toPixels(gFrameTab.marginInput.left.value),0)) + "px"); 
             document.getElementById("leftpage").setAttribute("width", "0px");    
             document.getElementById("frame").setAttribute("width", scaledWidth+hborder+"px");
+            document.getElementById("frame").setAttribute("height", scaledHeight+hborder+"px");
             document.getElementById("rightpage").setAttribute("width", Math.min(150,150 - scaledWidth - (hmargin+hborder)) + "px");  
             document.getElementById("rightspace").setAttribute("width", Math.max(0, - scaledWidth - (hmargin+hborder)) + "px");  
             document.getElementById("leftspace").setAttribute("width", "0px");
             break;
     case 2: document.getElementById("leftspacer").setAttribute("width", Number(60 + Math.min(0,150 - scaledWidth - (hmargin + hborder))) + "px"); 
             document.getElementById("leftpage").setAttribute("width", Math.min(150,150 - scaledWidth - (hmargin + hborder)) + "px");    
-            document.getElementById("frame").setAttribute("width", scaledWidth+hborder +"px");
+            document.getElementById("frame").setAttribute("width", scaledHeight+hborder +"px");
+            document.getElementById("frame").setAttribute("height", scaledWidth+hborder +"px");
             document.getElementById("rightpage").setAttribute("width", "0px");  
             document.getElementById("rightspace").setAttribute("width", "0px");
             document.getElementById("leftspace").setAttribute("width", Math.max(0, - scaledWidth - (hmargin + hborder)) + "px");  
@@ -330,6 +334,7 @@ function updateDiagram( attribute ) //attribute = margin, border, padding;
     default: document.getElementById("leftspacer").setAttribute("width", Number(135 - (scaledWidth + hborder)/2) + "px");
             document.getElementById("leftpage").setAttribute("width", "0px");    
             document.getElementById("frame").setAttribute("width", scaledWidth+"px");
+            document.getElementById("frame").setAttribute("height", scaledHeight+"px");
             document.getElementById("rightpage").setAttribute("width", "0px");  
             document.getElementById("rightspace").setAttribute("width", "0px");
             document.getElementById("leftspace").setAttribute("width", "0px");
@@ -374,15 +379,16 @@ function setStyleAttributeByID( id, att, value)
   setStyleAttributeOnNode(document.getElementById(id), att, value);
 }
 
-function enableHere( )
+function enableHere(radiogroup )
 {
   var broadcaster = document.getElementById("herePlacement");
   var theValue = "true";
   var position;
+  if (!radiogroup) radiogroup = document.getElementById("herePlacementRadioGroup");
   if (document.getElementById('placeHereCheck').checked)
   {
     theValue = "false";
-    position = document.getElementById('herePlacementRadioGroup').value;
+    position = radiogroup.selectedItem.value;
     setAlignment((position==="left" || position==="inside")?1:((position==="right"||position=="outside")?2:0));
   }
   else
@@ -450,7 +456,9 @@ function unitRound( size, unit )
 function setContentSize(width, height)  // width and height are the size of the image in pixels
 {
   scaledWidth = Math.round(scale*width);
+  if (scaledWidth == 0) scaledWidth = 40;
   scaledHeight = Math.round(scale*height);
+  if (scaledWidth == 0) scaledHeight = 60;
   setStyleAttributeByID("content", "width", scaledWidth + "px");
   setStyleAttributeByID("content", "height", scaledHeight + "px");
   updateDiagram("margin");
@@ -557,12 +565,17 @@ function setFrameAttributes(frameNode)
 
 function frameHeightChanged(input)
 {
-  scaledHeight = toPixels(input.value);
+  if (input.value > 0)
+  {
+     scaledHeight = toPixels(input.value);
+  }
+  else scaledHeight = scaledHeightDefault;
   setStyleAttributeByID("content", "height", scaledHeight + "px");
 }
 
 function frameWidthChanged(input)
 {
-  scaledWidth = toPixels(input.value);
+  if (input.value > 0) scaledWidth = toPixels(input.value);
+    else scaledWidth = scaledWidthDefault;
   setStyleAttributeByID("content", "width", scaledWidth + "px");
 }
