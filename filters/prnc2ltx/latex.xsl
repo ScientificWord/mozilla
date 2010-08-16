@@ -22,7 +22,8 @@
 <xsl:strip-space elements="*"/>
 <xsl:preserve-space elements="pre"/>
 
-
+<xsl:include href="table.xsl"/>
+<xsl:include href="graphics.xsl"/>
 <xsl:include href="mml2ltex.xsl"/>
 <xsl:include href="preamble.xsl"/>
 <xsl:include href="spaces.xsl"/>
@@ -50,8 +51,17 @@
 
 
 
-<xsl:template match="latex">
-<xsl:value-of select="."/> and \LaTeX{}</xsl:template>  <!-- soon to change to texlogo-->
+<xsl:template match="html:texlogo">
+  <xsl:choose
+  > <xsl:when test="@name='tex'">\TeX{}</xsl:when>
+    <xsl:when test="@name='latex'">\LaTeX{}</xsl:when>
+    <xsl:when test="@name='pdftex'">\textsc{pdf}\TeX{}</xsl:when>
+    <xsl:when test="@name='pdflatex'">\textsc{pdf}\LaTeX{}</xsl:when>
+    <xsl:when test="@name='xetex'">\XeTeX{}</xsl:when>
+    <xsl:when test="@name='xelatex'">\XeLaTeX{}</xsl:when>
+  </xsl:choose>
+</xsl:template>
+
 
 <xsl:template match="html:documentclass">
 
@@ -110,6 +120,10 @@ should not be done under some conditions -->
 
 <xsl:template match="html:maketitle">
 \maketitle
+</xsl:template>
+
+<xsl:template match="html:part">
+<xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="html:chapter">
