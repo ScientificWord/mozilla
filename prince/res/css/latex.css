@@ -1,12 +1,15 @@
 @namespace mml url("http://www.w3.org/1998/Math/MathML");
 @namespace sw url("http://www.sciword.com/namespaces/sciword");
 
-latex {
-  font-family: Times, "Times New Roman", serif;	
+texlogo {
+  font-family: Times, "Times New Roman", serif;
+  font-variant: small-caps;	
   letter-spacing: 1px;
 }
 
-latex sup {
+/* texlogo:before{ content: "_";} */
+
+texlogo sup {
   text-transform: uppercase;
   letter-spacing: 1px;
   font-size: 0.85em;
@@ -16,7 +19,7 @@ latex sup {
 }
 
 
-latex sub {
+texlogo sub {
   text-transform: uppercase;
   vertical-align: -0.5ex;
   margin-left: -0.1667em;
