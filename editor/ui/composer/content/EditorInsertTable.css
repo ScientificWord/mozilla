@@ -8,7 +8,7 @@
 }
 
 *.sizeSelector label {
-  border: 2px ridge !important;
+  border: 2px solid !important;
 }
 
 #widthPixelOrPercentMenulist {
@@ -23,7 +23,7 @@
 }
 
 #tablegrid:hover *.sizeSelector label[mark="true"]:hover, #tablegrid:hover *.sizeSelector label[mark="true"].selected {
-  background-color: rgb(50,50,50) ! important;
+  background-color: rgb(128,150,150) ! important;
 }
 
 #gridcoordinates { visibility: hidden; }
