@@ -1124,9 +1124,9 @@ no indent - disregarded completely
 
 
 
-  <xsl:include href="mml2arry.xsl"/>
-  <xsl:include href="mml2eqna.xsl"/>
-  <xsl:include href="mml2tabular.xsl"/>	
+  <xsl:include href="MML2arry.xsl"/>
+  <xsl:include href="MML2eqna.xsl"/>
+  <xsl:include href="MML2tabular.xsl"/>	
 
 <!-- Frequently, the numbered children of a MathML schemata
   translate to an argument of some LaTeX command.
