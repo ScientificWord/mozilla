@@ -241,13 +241,15 @@
                   id        = "frameWidthInput"
                   type      = "number"
                   onkeypress= ""
-                  onchange  = "frameWidthChanged(this);"/>
+                  onchange  = "frameWidthChanged(this);"
+                  onload    = "frameWidthChanged(this);"/>
                 <checkbox id="autoWidth" oncommand ="document.getElementById('frameWidthInput').setAttribute('disabled',this.checked);"/>
                 <textbox
                   id        = "frameHeightInput"
                   type      = "number"
                   onkeypress= ""
-                  onchange  = "frameHeightChanged(this);"/>
+                  onchange  = "frameHeightChanged(this);"
+                  onload    = "frameHeightChanged(this);"/>
                 <checkbox id="autoHeight" oncommand ="document.getElementById('frameHeightInput').setAttribute('disabled',this.checked);"/>
                 <checkbox observes="hasNaturalSize" id="Constrain" oncommand ="setConstrainMode(this);"/>
               </row>
