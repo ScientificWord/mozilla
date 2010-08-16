@@ -841,7 +841,22 @@ function msiEditorDocumentObserver(editorElement)
             dump ("Problem creating msi_tags.css. Exception:" + e + "\n");
           }
 
-    
+          try{
+             var elemList = editor.document.getElementsByTagName("definitionlist");
+             var defnList = elemList[0].getElementsByTagName("math");
+             var n =  defnList.length;
+          
+             var defn;
+             for (var ix = 0; ix < n; ++ix)
+             {
+               defn = defnList[ix];
+               doComputeDefine(defn)
+             }
+          }
+          catch (e) {
+            dump("Problem restoring compute definitions. Exception: " + e + "\n");
+          }
+
           try {
             editorElement.mgMathStyleSheet = msiColorObj.FormatStyleSheet(editorElement);
 //            dump("Internal style sheet contents: \n\n" + editorElement.mgMathStyleSheet + "\n\n");
