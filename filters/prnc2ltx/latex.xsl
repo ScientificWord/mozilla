@@ -24,7 +24,7 @@
 
 <xsl:include href="table.xsl"/>
 <xsl:include href="graphics.xsl"/>
-<xsl:include href="mml2ltex.xsl"/>
+<xsl:include href="MML2LTeX.xsl"/>
 <xsl:include href="preamble.xsl"/>
 <xsl:include href="spaces.xsl"/>
 <xsl:include href="frame.xsl"/>
