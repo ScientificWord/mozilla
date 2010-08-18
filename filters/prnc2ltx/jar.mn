@@ -24,4 +24,6 @@ prnc2ltx.jar:
 *  frame.xsl					(frame.xsl)
 *  spaces.xsl				(spaces.xsl)
 *  preamble.xsl				(preamble.xsl)
+*  table.xsl				(table.xsl)							
+*  graphics.xsl				(graphics.xsl)							
 *  packages.xml				(packages.xml)							

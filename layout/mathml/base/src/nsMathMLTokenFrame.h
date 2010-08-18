@@ -46,8 +46,7 @@
 // Base class to handle token elements
 //
 
-class nsMathMLTokenFrame : public nsMathMLContainerFrame,
-                           public nsMathMLContainerCursorMover
+class nsMathMLTokenFrame : public nsMathMLContainerFrame
 {
 public:
   NS_DECL_ISUPPORTS_INHERITED
@@ -104,7 +103,7 @@ public:
 */
 
 protected:
-  nsMathMLTokenFrame(nsStyleContext* aContext) : nsMathMLContainerFrame(aContext), nsMathMLContainerCursorMover(this) {}
+  nsMathMLTokenFrame(nsStyleContext* aContext) : nsMathMLContainerFrame(aContext) {}
   virtual ~nsMathMLTokenFrame();
 
   virtual PRIntn GetSkipSides() const { return 0; }
