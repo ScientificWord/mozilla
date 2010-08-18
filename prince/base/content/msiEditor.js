@@ -4906,6 +4906,11 @@ var msiPropertiesObjectDataBase =
     return ((iter == 0) && this.menuStr);
   },
 
+  isMatrix : function()
+  {
+    return false;
+  },
+
   isTextReviseData : function()
   {
     return false;
@@ -6363,6 +6368,7 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
   if (!menuInfo)
     return null;
   subMenu = document.getElementById(menuInfo.menuID);
+  var parentPropertiesMenu = subMenu;
 //  var itemID = "objectProperties";
 //  var popupID = "propertiesMenuPopup";
 //  var bIsContextMenu = false;
@@ -6438,6 +6444,8 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
     menuItem.propertiesData = propsData;
     menuItem.refElement = propsData.getReferenceNode();
     menuItem.refEditor = propsData.mEditorElement;
+    if (propsData.isMatrix())
+      AddInsertMatrixRowsColumnsMenuItems(parentPropertiesMenu, propsData);
   }
   else
   {
@@ -6502,6 +6510,8 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
       createMorePropsSubmenu();
     if (!("origSelection" in subPopup))
       subPopup.origSelection = copyCurrSelection(editor);
+    if (propData.isMatrix())
+      AddInsertMatrixRowsColumnsMenuItems(parentPropertiesMenu, propData);
 
     return subPopup.appendChild(item);
   }
@@ -6610,6 +6620,8 @@ function msiCleanUpPropertiesMenu(event, theMenu, menuID)
   if (!bRightOne)
     return;
 
+  RemoveInsertMatrixRowsColumnsMenuItems(theMenu);
+
   var menuInfo = msiGetPropertiesMenuIDs(menuID);
 //  var subPropsMenu = document.getElementById("morePropertiesMenu");
   var subPropsMenu = document.getElementById(menuInfo.popupID);
@@ -6635,6 +6647,92 @@ function msiPropMenuCloseup(event, thePopupMenu)
   msiPropMenuResetOrigSel(thePopupMenu.id);
 }
   
+function AddInsertMatrixRowsColumnsMenuItems(parentPropertiesMenu, propsData)
+{
+  var editPopup = parentPropertiesMenu.parentNode;
+  var bIsContextMenu = false;
+  if (editPopup.id.substr(-3) == "_cm")
+    bIsContextMenu = true;
+  var sepID = "InsertMatrixRowColSeparator";
+  var rowID = "InsertMatrixRows";
+  var colID = "InsertMatrixColumns";
+  if (bIsContextMenu)
+  {
+    sepID += "_cm";
+    rowID += "_cm";
+    colID += "_cm";
+  }
+  var menuItems = editPopup.getElementsByAttribute("id", rowID);
+  if (menuItems && (menuItems.length > 0))
+    return;  //Already done, don't do again
+  else
+  {
+    dump("In AddInsertMatrixRowsColumnsMenuItems, item with rowID [" + rowID + "] not; adding!\n");
+    dump( msiKludgeLogNodeContentsAndAttributes(editPopup, ["tableEdit"], "  Looked inside node", true, ["id", "label"], false) );
+  }
+
+  var sepItem = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "menuseparator");
+  var rowItem = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "menuitem");
+  var colItem = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "menuitem");
+
+  sepItem.setAttribute("id", sepID);
+  rowItem.setAttribute("oncommand", "msiDoAPropertiesDialogFromMenu('cmd_MSIaddMatrixRowsCmd', this);");
+//  rowItem.addEventListener("DOMMenuItemActive", msiPropertiesMenuItemHover, false);
+  rowItem.setAttribute("id", rowID);
+  rowItem.setAttribute("label", GetString("InsertMatrixRows"));
+  rowItem.setAttribute("accesskey", GetString("InsertMatrixRowsAccessKey"));
+  colItem.setAttribute("oncommand", "msiDoAPropertiesDialogFromMenu('cmd_MSIaddMatrixColumnsCmd', this);");
+//  colItem.addEventListener("DOMMenuItemActive", msiPropertiesMenuItemHover, false);
+  colItem.setAttribute("id", colID);
+  colItem.setAttribute("label", GetString("InsertMatrixColumns"));
+  colItem.setAttribute("accesskey", GetString("InsertMatrixColumnsAccessKey"));
+
+  colItem.refElement = rowItem.refElement = propsData.getReferenceNode();
+  colItem.refEditor = rowItem.refEditor = propsData.mEditorElement;
+  colItem.propertiesData = rowItem.propertiesData = propsData;
+
+  editPopup.appendChild(sepItem);
+  editPopup.appendChild(rowItem);
+  editPopup.appendChild(colItem);
+}
+
+function RemoveInsertMatrixRowsColumnsMenuItems(parentMenu)
+{
+  var bIsContextMenu = false;
+  if (parentMenu.id.substr(-3) == "_cm")
+    bIsContextMenu = true;
+  var sepID = "InsertMatrixRowColSeparator";
+  var rowID = "InsertMatrixRows";
+  var colID = "InsertMatrixColumns";
+  if (bIsContextMenu)
+  {
+    sepID += "_cm";
+    rowID += "_cm";
+    colID += "_cm";
+  }
+//  var theSep = document.getElementById(sepID);
+  var sepItems = parentMenu.getElementsByAttribute("id", sepID);
+  for (var ix = sepItems.length - 1; sepItems && (ix >= 0); --ix)
+  {
+    if (sepItems[ix].parentNode)
+      sepItems[ix].parentNode.removeChild(sepItems[ix]);
+  }
+//  var theRowItem = document.getElementById(rowID);
+  var rowItems = parentMenu.getElementsByAttribute("id", rowID);
+  for (var ix = rowItems.length - 1; rowItems && (ix >= 0); --ix)
+  {
+    if (rowItems[ix].parentNode)
+      rowItems[ix].parentNode.removeChild(rowItems[ix]);
+  }
+//  var theColItem = document.getElementById(colID);
+  var colItems = parentMenu.getElementsByAttribute("id", colID);
+  for (var ix = colItems.length - 1; colItems && (ix >= 0); --ix)
+  {
+    if (colItems[ix].parentNode)
+      colItems[ix].parentNode.removeChild(colItems[ix]);
+  }
+}
+
 //function msiPropMenuDefItemSelect(event, theItem)
 //{
 //  var menuInfo = msiGetPropertiesMenuIDs(theItem.id);
