@@ -1,7 +1,6 @@
 <xsl:stylesheet 
       xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
       xmlns:exsl="http://exslt.org/common"
-      xmlns:regexp="http://exslt.org/regular-expressions" 
       xmlns:mml="http://www.w3.org/1998/Math/MathML"
       version="1.1">
 
@@ -437,18 +436,20 @@
 
 <!-- Occassionally we need to know if the contents of an element
      (mo,mi,mn) are all ASCII chars.  LaTeX commands like \operatorname{}
-     can only be scripted for elements containing ASCII. -->
+     can only be scripted for elements containing ASCII. BBM here... This doesn't look right. Test will
+     be true if there are *any* ASCII characters. Under XeTeX I'm not sure Jack's assertion is true,
+     so I'm making this always return true-->
 
   <xsl:template name="is-ASCII">
     <xsl:param name="unicode-cdata"/>
-      <xsl:choose>
-      <xsl:when test="regexp:test(normalize-space(string($unicode-cdata)),'[\x01-\xFF]+','g')">
+      <!--xsl:choose>
+      <xsl:when test="regexp:test(normalize-space(string($unicode-cdata)),'[\x01-\xFF]+','g')"-->
          <xsl:text>true</xsl:text>
-      </xsl:when>
+      <!--/xsl:when>
       <xsl:otherwise>
          <xsl:text>false</xsl:text>
       </xsl:otherwise>
-	</xsl:choose>
+	</xsl:choose -->
 	
   </xsl:template>
 
@@ -535,14 +536,14 @@
 
   <xsl:template name="is-all-caps">
     <xsl:param name="unicode-cdata"/>
-      <xsl:choose>
-      <xsl:when test="regexp:test(normalize-space(string($unicode-cdata)),'[^A-Z]+','g')">
+      <!-- xsl:choose>
+      <xsl:when test="regexp:test(normalize-space(string($unicode-cdata)),'[^A-Z]+','g')" -->
          <xsl:text>false</xsl:text>
-      </xsl:when>
+      <!--/xsl:when>
       <xsl:otherwise>
          <xsl:text>true</xsl:text>
       </xsl:otherwise>
-	</xsl:choose>
+	</xsl:choose -->
     <!--xsl:variable name="first-char" select="substring($unicode-cdata,1,1)"/>
 
     <xsl:choose>
