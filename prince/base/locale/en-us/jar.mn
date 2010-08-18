@@ -98,5 +98,6 @@ en-US.jar:
   locale/passes.dtd                       (dialogs/passes.dtd)
   locale/msiEdReviseChars.dtd			  (dialogs/msiEdReviseChars.dtd)
   locale/EditorLinkProperties.dtd			  (dialogs/EditorLinkProperties.dtd)
+  locale/MatrixInsertRowsCols.dtd		  (dialogs/MatrixInsertRowsCols.dtd)
 
 
