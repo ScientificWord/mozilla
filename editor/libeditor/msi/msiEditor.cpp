@@ -43,7 +43,7 @@
 //The following may go away if we move the right things to the right interfaces, but for now:
 #include "msiUtils.h"
 #include "msiEditingAtoms.h"
-#include "msiEditingManager.h"
+//#include "msiEditingManager.h"
 
 static PRInt32 instanceCounter = 0;
 nsCOMPtr<nsIRangeUtils> msiEditor::m_rangeUtils = nsnull;
@@ -1856,6 +1856,43 @@ nsresult msiEditor::ComparePoints(nsIDOMNode * node1, PRUint32 offset1,
     return NS_ERROR_FAILURE;
 }                                  
 
+nsresult msiEditor::AddMatrixRows(nsIDOMNode *aMatrix, PRUint32 insertAt, PRUint32 howMany)
+{
+  nsresult res(NS_OK);
+  nsCOMPtr<nsIEditor> editor;
+  QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
+  res = m_msiEditingMan->AddMatrixRows(editor, aMatrix, insertAt, howMany);
+  return res;
+}
+
+
+nsresult msiEditor::AddMatrixColumns(nsIDOMNode *aMatrix, PRUint32 insertAt, PRUint32 howMany)
+{
+  nsresult res(NS_OK);
+  nsCOMPtr<nsIEditor> editor;
+  QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
+  res = m_msiEditingMan->AddMatrixColumns(editor, aMatrix, insertAt, howMany);
+  return res;
+}
+
+
+nsresult msiEditor::GetMatrixSize(nsIDOMNode *aMatrix, PRInt32 *aRowCount, PRInt32 *aColCount)
+{
+  return m_msiEditingMan->GetMatrixSize(aMatrix, aRowCount, aColCount);
+}
+
+
+nsresult msiEditor::FindMatrixCell(nsIDOMNode *aMatrix, nsIDOMNode *aCell, PRInt32 *whichRow, PRInt32 *whichCol)
+{
+  return m_msiEditingMan->FindMatrixCell(aMatrix, aCell, whichRow, whichCol);
+}
+
+
+nsresult msiEditor::GetCellAt(nsIDOMNode *aMatrix, PRInt32 whichRow, PRInt32 whichCol, nsIDOMNode **_retval)
+{
+  return m_msiEditingMan->GetCellAt(aMatrix, whichRow, whichCol, _retval);
+}
+
 nsresult msiEditor::SetSelection(nsCOMPtr<nsIDOMNode> & focusNode, PRUint32 focusOffset, 
                                  PRBool selecting, PRBool & preventDefault)
 {
@@ -2990,7 +3027,7 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
   PRInt32 toLeftRight(0);
   PRBool bSplitDone = PR_FALSE;
   PRBool bReplaceNode = PR_FALSE;
-  PRInt32 specialInsertPos(-1);
+  PRInt32 specialInsertPos(-1), skipAtEnd(0);
   while (nextNode && !splitParent)
   {
     nextNode->GetLocalName(tagName);
@@ -3072,7 +3109,7 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
 //      break;
     }
     else if ( tagName.EqualsLiteral("mtd") || tagName.EqualsLiteral("maction") || tagName.EqualsLiteral("menclose") || tagName.EqualsLiteral("mphantom") 
-         || tagName.EqualsLiteral("mroot") )  //The one-child "templates"
+         || tagName.EqualsLiteral("msqrt") )  //The one-child "templates"
     { 
       splitParent = nextNode;
       nInsertPos = -1;  //This signifies that the inserted matrix is to replace the entire contents
@@ -3127,6 +3164,7 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
                 ++doSplitAt;  //Means the split should be to the right of current child node's (that is, "prevChild") position.
             }
             specialInsertPos = 1;
+            skipAtEnd = 1;
           break;
           case msiIMathMLEditingBC::MATHML_MROWBOUNDFENCE:
           {
@@ -3234,8 +3272,7 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
     if (matrixContainer)  //we're already in a matrix - is it a one-column one?
     {
       PRInt32 nRows, nCols;
-      dontcare = msiEditingManager::GetMatrixSize(matrixContainer, &nRows, &nCols);
-  //  SHOULD BE (when things are moved to interface level):  dontcare = m_msiEditingMan->GetMatrixSize(matrix, &nRows, &nCols);
+      dontcare = m_msiEditingMan->GetMatrixSize(matrixContainer, &nRows, &nCols);
       if (nCols == 1)
       {
         nsIDOMNode* aCell = nsnull;
@@ -3252,10 +3289,9 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
           aCell = nextParent;
           aCell->GetLocalName(tagName);
         }
-        dontcare = msiEditingManager::FindMatrixCell(matrixContainer, aCell, &nMatrixRowLeft, &nCols);  //Just reusing nCols - it'll be thrown away
-  //  SHOULD BE (when things are moved to interface level):  dontcare = m_msiEditingMan->FindMatrixCell(matrix, nsIDOMElement *aCell, &nMatrixRowLeft, &nCols);  //Just reusing nCols - it'll be thrown away
+        dontcare = m_msiEditingMan->FindMatrixCell(matrixContainer, aCell, &nMatrixRowLeft, &nCols);  //Just reusing nCols - it'll be thrown away
         nMatrixRowRight = nMatrixRowLeft + 1;
-        res = msiEditingManager::AddMatrixRows(editor, matrixContainer, nMatrixRowRight, 1);
+        res = m_msiEditingMan->AddMatrixRows(editor, matrixContainer, nMatrixRowRight, 1);
       }
       else
         matrixContainer = nsnull;
@@ -3284,11 +3320,9 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
       //First find appropriate <td>s using nMatrixRowLeft and Right
       nsCOMPtr<nsIDOMNode> aLeftCell, aRightCell;
       nsCOMPtr<nsIDOMNode> leftRow, rightRow;
-      dontcare = msiEditingManager::GetCellAt(matrixContainer, nMatrixRowLeft, 1, address_of(aLeftCell));
-      //  SHOULD BE (when things are moved to interface level):  dontcare = m_msiEditingMan->GetCellAt(matrixContainer, nMatrixRowLeft, 1, getter_AddRefs(aCell));
+      dontcare = m_msiEditingMan->GetCellAt(matrixContainer, nMatrixRowLeft, 1, getter_AddRefs(aLeftCell));
       newLeftContainer = do_QueryInterface(aLeftCell);
-      dontcare = msiEditingManager::GetCellAt(matrixContainer, nMatrixRowRight, 1, address_of(aRightCell));
-      //  SHOULD BE (when things are moved to interface level):  dontcare = m_msiEditingMan->GetCellAt(matrixContainer, nMatrixRowRight, 1, getter_AddRefs(aCell));
+      dontcare = m_msiEditingMan->GetCellAt(matrixContainer, nMatrixRowRight, 1, getter_AddRefs(aRightCell));
       newRightContainer = do_QueryInterface(aRightCell);
       PRUint32 flags(0);
 
@@ -3411,7 +3445,7 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
         }
         if (newRightContainer != splitParent)
         {
-          for (PRInt32 jx = PRInt32(parentLength)-1; NS_SUCCEEDED(res) && (jx >= doSplitAt); --jx)
+          for (PRInt32 jx = PRInt32(parentLength)-1-skipAtEnd; NS_SUCCEEDED(res) && (jx >= doSplitAt); --jx)
           {
             rightNode = GetChildAt(splitParent, jx);
             res = DeleteNode(rightNode);
@@ -3422,7 +3456,7 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
         }
         if (newLeftContainer != splitParent)
         {
-          for (PRInt32 jx = doSplitAt - 1; NS_SUCCEEDED(res) && (jx >= 0); --jx)
+          for (PRInt32 jx = doSplitAt - 1; NS_SUCCEEDED(res) && (jx >= skipAtEnd); --jx)
           {
             leftNode = GetChildAt(splitParent, jx);
             res = DeleteNode(leftNode);
