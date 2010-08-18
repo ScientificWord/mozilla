@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/msiMathDlgStyle.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/MatrixInsertRowsCols.css" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?> 
+<?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/MatrixInsertRowsCols.dtd">
+
+<dialog id="MatrixInsertRowsColsDlg"
+  title="&windowTitle.label;"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  onload = "Startup();"
+  ondialogaccept="return onAccept();"
+  ondialogcancel="return onCancel();"
+  persist="screenX screenY width height"
+>
+
+ <!-- script src="chrome://global/content/dialogOverlay.js" / -->
+ 
+  <!-- Methods common to all editor dialogs -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/MatrixInsertRowsCols.js"/>
+ 
+  <spacer  id="location" offsetY="50" persist="offsetX offsetY"/>
+  <spacer id="insertPositions" rowInsert = "0" colInsert = "0" persist="rowInsert colInsert"/>
+  <broadcaster id="args" value=""/>
+
+  <grid>
+    <columns>
+      <column flex="1"/>
+      <column flex="1"/>
+    </columns>
+    <rows>
+      <row align="center">
+        <label control="numberInsertControl" class="align-right" value="&numberToInsert.label;" accesskey="&numberToInsert.accesskey;"/>
+        <textbox id="numberInsertControl" type="number" min="1" max="30" value="1" persist="value"/>
+       <spacer/>
+     </row>
+     <row align="center">
+       <label control="positionInsertTextbox" class="align-right" value="&positionToInsert.label;" accesskey="&positionToInsert.accesskey;"/>
+       <textbox id="positionInsertControl"  type="number" min="0" max="2" value="0" persist="value" onchange="changeInsertionPosition();"/>
+       <spacer/>
+     </row>
+   </rows>
+ </grid>
+  <hbox flex="0">
+    <spacer class="spacer" flex="0"/>
+    <!-- The following is set up initially to handle a 2x2 matrix for the insertMatrixRow operation, insertion point before row 1 -->
+    <description id="insertPreview" class="MSISample"	flex="1"
+        xmlns="http://www.w3.org/1999/xhtml">
+      <p><table id="previewTable"  align="center" valign="middle" style="table-layout: auto; empty-cells: show; font-size: 8pt; width: 15em; height: 15em; overflow: hidden; text-align: center; vertical-align: middle;">
+        <tr id = "previewInitialRow">
+          <td class="markerBorderCell" id="initialMarkerCell" rowspan="2"><span>-&gt;</span></td>
+          <td class="aBorderCell" id="previewBorderCell"><span>xx</span></td>
+          <td class="aBorderCell" ><span>xx</span></td>
+        </tr>
+        <tr>
+          <td id="previewOrdinaryCell"><span>xx</span></td>
+          <td><span>xx</span></td>
+        </tr>
+        <tr id="previewInitialPlainRow">
+          <td class="aBorderCell" > <span>xx</span></td>
+          <td><span>xx</span></td>
+          <td><span>xx</span></td>
+        </tr>
+        <tr>
+          <td class="aBorderCell"><span>xx</span></td>
+          <td class="aBorderCell"><span>xx</span></td>
+          <td class="aBorderCell"><span>xx</span></td>
+        </tr>
+      </table></p>
+    </description>
+
+    <!-- spacer class="spacer" flex="1"/ -->
+  </hbox>
+</dialog>
+
+
