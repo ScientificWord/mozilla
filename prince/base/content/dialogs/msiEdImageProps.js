@@ -590,7 +590,7 @@ function chooseFile()
         fileName = "graphics/"+file.leafName;
         var newFile = dir.clone();
         newFile.append(file.leafName);
-        if (newFile.exists()) newFile.delete(false);
+        if (newFile.exists()) newFile.remove(false);
         file.copyTo(dir,"");    
       }
       catch(e)
@@ -748,7 +748,9 @@ function SetActualSize()
 function setContentSize(width, height)  // width and height are the size of the image in pixels
 {
   scaledWidth = Math.round(scale*width);
+  if (scaledWidth == 0) scaledWidth = scaledWidthDefault;
   scaledHeight = Math.round(scale*height);
+  if (scaledHeight == 0) scaledHeight = scaledHeightDefault;
   setStyleAttributeByID("content", "width", scaledWidth + "px");
   setStyleAttributeByID("content", "height", scaledHeight + "px");
   updateDiagram("margin");

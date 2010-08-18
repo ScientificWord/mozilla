@@ -806,22 +806,57 @@ function msiEditorDocumentObserver(editorElement)
                 str += classtemplate.replace(classname,taglist[i],"g")+"\n";
             }
           }
-          var htmlurlstring = msiGetEditorURL(this.mEditorElement); 
-          var htmlurl = msiURIFromString(htmlurlstring);
-          var cssFile = msiFileFromFileURL(htmlurl).parent; 
-          cssFile.append("css");
-          if (!cssFile.exists()) cssFile.create(1, 0755); 
-          cssFile.append("msi_Tags.css");
-          dynAllTagsStyleSheet= msiFileURLStringFromFile(cssFile);
-          var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-          fos.init(cssFile, -1, -1, false);
-          var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
-            .createInstance(Components.interfaces.nsIConverterOutputStream);
-          os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
-          os.writeString(str);
-          os.close();
-          fos.close();
-    
+
+          try {
+            var htmlurlstring = msiGetEditorURL(this.mEditorElement);
+               // currently htmlusrstring = "chrome://prince/content/StdDialogShell.xhtml" 
+
+            var htmlurl = msiURIFromString(htmlurlstring);
+               // ... seems ok
+            var htmlFile = msiFileFromFileURL(htmlurl);
+             // Throws exception. htmlurl doesn't have nsIFileURL interface.
+             // Can fix by setting the dialog shell in the prefs to something like
+             // ...   "resource://app/res/StdDialogShell.xhtml"
+             // and moving the file there in the build/install.
+
+            var cssFile = htmlFile.parent;
+           
+            cssFile.append("css");
+            if (!cssFile.exists()) cssFile.create(1, 0755);
+             
+            cssFile.append("msi_Tags.css");
+
+            dynAllTagsStyleSheet= msiFileURLStringFromFile(cssFile);
+
+            var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+            fos.init(cssFile, -1, -1, false);
+            var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+              .createInstance(Components.interfaces.nsIConverterOutputStream);
+            os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
+            os.writeString(str);
+            os.close();
+            fos.close();
+          }
+          catch (e) {
+            dump ("Problem creating msi_tags.css. Exception:" + e + "\n");
+          }
+
+          try{
+             var elemList = editor.document.getElementsByTagName("definitionlist");
+             var defnList = elemList[0].getElementsByTagName("math");
+             var n =  defnList.length;
+          
+             var defn;
+             for (var ix = 0; ix < n; ++ix)
+             {
+               defn = defnList[ix];
+               doComputeDefine(defn)
+             }
+          }
+          catch (e) {
+            dump("Problem restoring compute definitions. Exception: " + e + "\n");
+          }
+
           try {
             editorElement.mgMathStyleSheet = msiColorObj.FormatStyleSheet(editorElement);
 //            dump("Internal style sheet contents: \n\n" + editorElement.mgMathStyleSheet + "\n\n");
@@ -911,6 +946,14 @@ function msiEditorDocumentObserver(editorElement)
             var fileurl = msiFileURLFromFile(autosubsfile);
             dump("Opening autosubs file, path is: "+autosubsfile.path+"\n");
             autosub.initialize(fileurl.spec);
+          }
+          catch(e) {
+            dump(e+"\n");
+          }
+
+          // Try to start compute engine
+          try {
+             GetCurrentEngine();
           }
           catch(e) {
             dump(e+"\n");
@@ -6665,11 +6708,11 @@ function AddInsertMatrixRowsColumnsMenuItems(parentPropertiesMenu, propsData)
   var menuItems = editPopup.getElementsByAttribute("id", rowID);
   if (menuItems && (menuItems.length > 0))
     return;  //Already done, don't do again
-  else
-  {
-    dump("In AddInsertMatrixRowsColumnsMenuItems, item with rowID [" + rowID + "] not; adding!\n");
-    dump( msiKludgeLogNodeContentsAndAttributes(editPopup, ["tableEdit"], "  Looked inside node", true, ["id", "label"], false) );
-  }
+//  else
+//  {
+//    dump("In AddInsertMatrixRowsColumnsMenuItems, item with rowID [" + rowID + "] not; adding!\n");
+//    dump( msiKludgeLogNodeContentsAndAttributes(editPopup, ["tableEdit"], "  Looked inside node", true, ["id", "label"], false) );
+//  }
 
   var sepItem = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "menuseparator");
   var rowItem = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "menuitem");

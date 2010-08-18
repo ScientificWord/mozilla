@@ -57,7 +57,7 @@
     <!-- The following is set up initially to handle a 2x2 matrix for the insertMatrixRow operation, insertion point before row 1 -->
     <description id="insertPreview" class="MSISample"	flex="1"
         xmlns="http://www.w3.org/1999/xhtml">
-      <p><table id="previewTable"  align="center" valign="middle" style="table-layout: auto; empty-cells: show; font-size: 8pt; width: 15em; height: 15em; overflow: hidden; text-align: center; vertical-align: middle;">
+      <p><table id="previewTable"  align="center" valign="middle" style="table-layout: auto; border-collapse: collapse; empty-cells: show; font-size: 8pt; width: 15em; height: 15em; overflow: hidden; text-align: center; vertical-align: middle;">
         <tr id = "previewInitialRow">
           <td class="markerBorderCell" id="initialMarkerCell" rowspan="2"><span>-&gt;</span></td>
           <td class="aBorderCell" id="previewBorderCell"><span>xx</span></td>
