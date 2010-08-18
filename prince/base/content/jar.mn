@@ -242,3 +242,5 @@ prince.jar:
   content/msiEdTableProps.xul 	   (dialogs/msiEdTableProps.xul)
   content/msiEdReviseChars.js	   (dialogs/msiEdReviseChars.js)
   content/msiEdReviseChars.xul	   (dialogs/msiEdReviseChars.xul)
+  content/MatrixInsertRowsCols.xul    (dialogs/MatrixInsertRowsCols.xul)
+  content/MatrixInsertRowsCols.js     (dialogs/MatrixInsertRowsCols.js)
