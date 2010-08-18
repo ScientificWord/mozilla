@@ -1,0 +1,33 @@
+*.sizeSelector label {
+  width: 2em;
+  margin: 0px ! important;
+}
+
+#insertPreview {
+  table-layout: auto;
+  empty-cells: show;
+/*  width: 15em;
+  height: 15em;
+  background-color: rgb(100,100,100) ! important; */
+}
+
+#insertPreview td {
+  border: 1px solid black;
+}
+
+#insertPreview td.aBorderCell {
+  border: none;
+}
+
+#insertPreview td.markerBorderCell {
+  border: none;
+}
+
+#insertPreview td span {
+  visibility: hidden;
+}
+
+#insertPreview td.markerBorderCell span {
+  visibility: visible;
+}
+
