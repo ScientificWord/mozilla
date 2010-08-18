@@ -262,7 +262,7 @@ function redrawSample()  //This function simply moves the pointer cell
         newInsertPos = cellsList.length;
       if (newInsertPos < cellsList.length)
         insertBeforeCell = cellsList[newInsertPos];  //otherwise it's still null, and the following call will append it (move it to the end)
-      msiKludgeLogNodeContentsAndAllAttributes(insertBeforeCell, ["tableEdit"], "Moving cell to change cols in sample, with oldInsertPos [" + oldInsertPos + "] and newInsertPos [" + newInsertPos + "]: insertBeforeCell ", true);
+//      msiKludgeLogNodeContentsAndAllAttributes(insertBeforeCell, ["tableEdit"], "Moving cell to change cols in sample, with oldInsertPos [" + oldInsertPos + "] and newInsertPos [" + newInsertPos + "]: insertBeforeCell ", true);
       currRow.insertBefore(currMarkerCell, insertBeforeCell);
 //      currMarkerCell.setAttribute("colspan", "1");  //Would be better to remove this attribute?
 //      currMarkerCell.setAttribute("class", "aBorderCell");
@@ -295,37 +295,37 @@ function redrawSample()  //This function simply moves the pointer cell
       }
       newRow = rowsList[newInsertPos];
       insertBeforeCell = msiNavigationUtils.getFirstSignificantChild(rowsList[newInsertPos]);
-      msiKludgeLogString("Moving cells to change rows in sample, oldinsertPos is [" + oldInsertPos + "] and newInsertPos is [" + newInsertPos + "]\n", ["tableEdit"]);
-      msiKludgeLogNodeContentsAndAllAttributes(insertBeforeCell, ["tableEdit"], "First move: insertBeforeCell ", true);
-      msiKludgeLogNodeContentsAndAllAttributes(currMarkerCell, ["tableEdit"], "First move: currMarkerCell ", true);
+//      msiKludgeLogString("Moving cells to change rows in sample, oldinsertPos is [" + oldInsertPos + "] and newInsertPos is [" + newInsertPos + "]\n", ["tableEdit"]);
+//      msiKludgeLogNodeContentsAndAllAttributes(insertBeforeCell, ["tableEdit"], "First move: insertBeforeCell ", true);
+//      msiKludgeLogNodeContentsAndAllAttributes(currMarkerCell, ["tableEdit"], "First move: currMarkerCell ", true);
       rowsList[newInsertPos].insertBefore(currMarkerCell, insertBeforeCell);
       if (oldInsertPos == newInsertPos - 1)
       {
         insertBeforeCell = msiNavigationUtils.getFirstSignificantChild(rowsList[oldInsertPos]);
         cellToMove = msiNavigationUtils.getFirstSignificantChild(rowsList[newInsertPos+1]);
-        msiKludgeLogNodeContentsAndAllAttributes(insertBeforeCell, ["tableEdit"], "Second move, oldInsertPos=newInsertPos-1 case: insertBeforeCell ", true);
-        msiKludgeLogNodeContentsAndAllAttributes(cellToMove, ["tableEdit"], "Second move, oldInsertPos=newInsertPos-1 case: cellToMove ", true);
+//        msiKludgeLogNodeContentsAndAllAttributes(insertBeforeCell, ["tableEdit"], "Second move, oldInsertPos=newInsertPos-1 case: insertBeforeCell ", true);
+//        msiKludgeLogNodeContentsAndAllAttributes(cellToMove, ["tableEdit"], "Second move, oldInsertPos=newInsertPos-1 case: cellToMove ", true);
         rowsList[oldInsertPos].insertBefore(cellToMove, insertBeforeCell);
       }
       else if (oldInsertPos == newInsertPos + 1)
       {
         cellToMove = insertBeforeCell;  //In this case the setting above is what we want
         insertBeforeCell = msiNavigationUtils.getFirstSignificantChild(rowsList[oldInsertPos+1]);
-        msiKludgeLogNodeContentsAndAllAttributes(insertBeforeCell, ["tableEdit"], "Second move, oldInsertPos=newInsertPos+1 case: insertBeforeCell ", true);
-        msiKludgeLogNodeContentsAndAllAttributes(cellToMove, ["tableEdit"], "Second move, oldInsertPos=newInsertPos+1 case: cellToMove ", true);
+//        msiKludgeLogNodeContentsAndAllAttributes(insertBeforeCell, ["tableEdit"], "Second move, oldInsertPos=newInsertPos+1 case: insertBeforeCell ", true);
+//        msiKludgeLogNodeContentsAndAllAttributes(cellToMove, ["tableEdit"], "Second move, oldInsertPos=newInsertPos+1 case: cellToMove ", true);
         rowsList[oldInsertPos+1].insertBefore(cellToMove, insertBeforeCell);
       }
       else
       {
         cellToMove = insertBeforeCell;  //In this case the setting above is what we want
         insertBeforeCell = msiNavigationUtils.getFirstSignificantChild(rowsList[oldInsertPos]);
-        msiKludgeLogNodeContentsAndAllAttributes(insertBeforeCell, ["tableEdit"], "Second move, all distinct case: insertBeforeCell ", true);
-        msiKludgeLogNodeContentsAndAllAttributes(cellToMove, ["tableEdit"], "Second move, all distinct case: cellToMove ", true);
+//        msiKludgeLogNodeContentsAndAllAttributes(insertBeforeCell, ["tableEdit"], "Second move, all distinct case: insertBeforeCell ", true);
+//        msiKludgeLogNodeContentsAndAllAttributes(cellToMove, ["tableEdit"], "Second move, all distinct case: cellToMove ", true);
         rowsList[oldInsertPos].insertBefore(cellToMove, insertBeforeCell);
         insertBeforeCell = msiNavigationUtils.getFirstSignificantChild(rowsList[oldInsertPos+1]);
         cellToMove = msiNavigationUtils.getFirstSignificantChild(rowsList[newInsertPos+1]);
-        msiKludgeLogNodeContentsAndAllAttributes(insertBeforeCell, ["tableEdit"], "Second move, all distinct case: insertBeforeCell ", true);
-        msiKludgeLogNodeContentsAndAllAttributes(cellToMove, ["tableEdit"], "Second move, all distinct case: cellToMove ", true);
+//        msiKludgeLogNodeContentsAndAllAttributes(insertBeforeCell, ["tableEdit"], "Second move, all distinct case: insertBeforeCell ", true);
+//        msiKludgeLogNodeContentsAndAllAttributes(cellToMove, ["tableEdit"], "Second move, all distinct case: cellToMove ", true);
         rowsList[oldInsertPos+1].insertBefore(cellToMove, insertBeforeCell);
       }
       gDialog.currInsertPos = newInsertPos;
@@ -348,14 +348,14 @@ function onAccept()
   {
     if (!theWindow || !("insertMatrixColumns" in theWindow))
       theWindow = msiGetTopLevelWindow();
-    msiKludgeLogString("In MatrixInsertRowsCols.js, calling insertMatrixColumns with positionToInsert [" + data.positionToInsert + "] and numberToInsert [" + data.numberToInsert + "]\n", ["tableEdit"]);
+//    msiKludgeLogString("In MatrixInsertRowsCols.js, calling insertMatrixColumns with positionToInsert [" + data.positionToInsert + "] and numberToInsert [" + data.numberToInsert + "]\n", ["tableEdit"]);
     theWindow.insertMatrixColumns(gDialog.mMatrixElement, data.positionToInsert, data.numberToInsert, editorElement);
   }
   else
   {
     if (!theWindow || !("insertMatrixRows" in theWindow))
       theWindow = msiGetTopLevelWindow();
-    msiKludgeLogString("In MatrixInsertRowsCols.js, calling insertMatrixRows with positionToInsert [" + data.positionToInsert + "] and numberToInsert [" + data.numberToInsert + "]\n", ["tableEdit"]);
+//    msiKludgeLogString("In MatrixInsertRowsCols.js, calling insertMatrixRows with positionToInsert [" + data.positionToInsert + "] and numberToInsert [" + data.numberToInsert + "]\n", ["tableEdit"]);
     theWindow.insertMatrixRows(gDialog.mMatrixElement, data.positionToInsert, data.numberToInsert, editorElement);
   }
 

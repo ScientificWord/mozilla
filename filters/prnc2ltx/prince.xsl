@@ -6,7 +6,7 @@
     xmlns:sw="http://www.sciword.com/namespaces/sciword"
 >
 
-<xsl:include href="mml2ltex.xsl"/>
+<xsl:include href="MML2LTeX.xsl"/>
 
 <xsl:output method="text"/>
 <xsl:strip-space elements="*"/>
