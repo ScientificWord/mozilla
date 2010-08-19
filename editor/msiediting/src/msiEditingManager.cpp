@@ -1648,7 +1648,7 @@ nsresult msiEditingManager::AddMatrixRows(nsIEditor * editor, nsIDOMNode *aMatri
     nsCOMPtr<nsIDOMNode> prevRow, insertParent;
     nsCOMPtr<nsIDOMNode> nextRow = nsnull;
     nsresult res = NS_OK;
-    for (PRUint32 ix = 0; NS_SUCCEEDED(res) && ix < insertAt; ++ix)
+    for (PRUint32 ix = 0; NS_SUCCEEDED(res) && ix <= insertAt; ++ix)
     {
       prevRow = nextRow;
       res = GetNextMatrixRow(aMatrix, prevRow, getter_AddRefs(nextRow));
@@ -1812,12 +1812,15 @@ nsresult msiEditingManager::AddMatrixColumns(nsIEditor * editor, nsIDOMNode *aMa
             ++insertPos;
           }
         }
-        else
+        else if (insertAt > 0)
         {
-          res = GetCellAt(aMatrix, ii+1, insertAt, &prevCell);  //Note that we know this isn't a continuation cell
+          res = GetCellAt(aMatrix, ii+1, insertAt, getter_AddRefs(prevCell));  //Note that we know this isn't a continuation cell
           msiUtils::GetIndexOfChildInParent(prevCell, insertPos);
+          ++insertPos;
 //          insertPos = editor->GetIndexOf(nextRow, prevCell);
         }
+        else
+          insertPos = 0;
 
         for (PRUint32 jj = 0; jj < howMany; ++jj)
         {
@@ -1994,7 +1997,7 @@ nsresult msiEditingManager::FindMatrixCell(nsIDOMNode* aMatrix, nsIDOMNode *aCel
   return retVal;
 }
 
-nsresult msiEditingManager::GetCellAt(nsIDOMNode* aMatrix, PRInt32 whichRow, PRInt32 whichCol, nsCOMPtr<nsIDOMNode> *pCell)
+nsresult msiEditingManager::GetCellAt(nsIDOMNode* aMatrix, PRInt32 whichRow, PRInt32 whichCol, nsIDOMNode** pCell)
 {
   nsresult retVal(NS_ERROR_FAILURE);
   NS_ASSERTION(pCell, "Null cell pointer passed to msiEditingManager::GetCellAt");

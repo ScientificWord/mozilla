@@ -215,6 +215,80 @@ interface msiIEditingManager : nsISupports
                         in PRUint32 offset,
                         in DOMString above,
                         in DOMString below);
+       
+       
+  /**
+   * Call addMatrixRows to insert new rows in an <mtable>.
+   * The "insertAt" parameter indicates which row to insert the new ones
+   * after, so that a value of 0 inserts at the beginning (top), and a value
+   * greater than or equal to the number of rows currently in the matrix
+   * appends them (at the bottom).
+  */
+  void addMatrixRows(in nsIEditor editor, 
+                     in nsIDOMNode aMatrix, 
+                     in PRUint32 insertAt, 
+                     in PRUint32 howMany);
+
+  /**
+   * Call addMatrixColumns to insert new columns in an <mtable>.
+   * The "insertAt" parameter indicates which column to insert the new ones
+   * after, so that a value of 0 inserts at the beginning (left), and a value
+   * greater than or equal to the number of columns currently in the matrix
+   * appends them (at the right).
+  */
+  void addMatrixColumns(in nsIEditor editor,
+                        in nsIDOMNode aMatrix,
+                        in PRUint32 insertAt,
+                        in PRUint32 howMany);
+
+  /**
+   * getFirstMatrixRow() simply returns the nsIDOMNode corresponding to the
+   * first row in an <mtable>. This should be an <mtr> or possibly <mlabeledtr>,
+   * though early versions of MathML allowed the <mtr>'s to be "inferred" (a la HTML
+   * tables), so if the row is represented by a bare <mtd> (or worse, simply a math oode
+   * understood to live in an inferred <mtd> inside an inferred <mtr>), this object will
+   * be returned. On the other hand, if several rows are wrapped in an <mstyle> (probably
+   * bad MathML syntax as of MathML 2.1?), the embedded <mtr>'s will be returned.
+  */
+  nsIDOMNode getFirstMatrixRow(in nsIDOMNode aMatrix);
+
+  /**
+   * getNextMatrixRow() returns the nsIDOMNode corresponding to the row following "currRow"
+   * in an <mtable>. If "currRow" is null, this is the same as getFirstMatrixRow().
+   * The comments for that function regarding possible return values also apply here.
+  */
+  nsIDOMNode getNextMatrixRow(in nsIDOMNode aMatrix,
+                              in nsIDOMNode currRow);
+
+  /**
+   * getMatrixSize() returns the count of rows and columns in an <mtable>.
+   * It takes "rowspan" and "colspan" attributes into account.
+  */
+  void getMatrixSize(in nsIDOMNode aMatrix,
+                     out PRInt32 aRowCount,
+                     out PRInt32 aColCount);
+
+  /**
+   * findMatrixCell() locates a cell (<mtd>) in an <mtable> and
+   * returns the row and column containing the start of that cell in
+   * the "whichRow" and "whichCol" parameters. These are 1-based! (i.e.,
+   * the first row or column is numbered 1 rather than 0).
+   * It takes "rowspan" and "colspan" attributes into account.
+  */
+  void findMatrixCell(in nsIDOMNode aMatrix,
+					  in nsIDOMNode aCell,
+                      out PRInt32 whichRow,
+                      out PRInt32 whichCol);
+
+  /**
+   * getCellAt() returns the cell (<mtd>) in an <mtable> which occupies the
+   * position in the matrix described by the "whichRow" row and "whichCol" column. 
+   * These are 1-based! (i.e., the first row or column is numbered 1 rather than 0).
+   * It takes "rowspan" and "colspan" attributes into account.
+  */
+  nsIDOMNode getCellAt(in nsIDOMNode aMatrix,
+                       in PRInt32 whichRow,
+                       in PRInt32 whichCol);
                         
 };                                 
 
