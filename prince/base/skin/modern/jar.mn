@@ -19,6 +19,7 @@ modern.jar:
   skin/modern/msiTypesetDlgStyle.css    (msiTypesetDlgStyle.css)
   skin/modern/chamtest.css              (chamtest.css)
   skin/modern/documentStyle.css         (documentStyle.css)
+  skin/classic/MatrixInsertRowsCols.css  (MatrixInsertRowsCols.css)
   skin/modern/icons/background.png      (icons/background.png)
   skin/modern/icons/background-sm.png   (icons/background-sm.png)
   skin/modern/icons/copy.png            (icons/copy.png)

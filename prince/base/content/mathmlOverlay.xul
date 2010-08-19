@@ -94,6 +94,14 @@
     <command id="cmd_MSIreviseUnitsCommand"     oncommand="msiGoDoCommand('cmd_MSIreviseUnitsCommand')"/>
   </commandset>
 
+  <commandset id="MSImathMatrixCommands"
+                  commandupdater="true"
+                  events="create, mode_switch"
+                  oncommandupdate="goUpdateMSIMathMenuItems(this)">
+    <command id="cmd_MSIaddMatrixRowsCmd"          oncommand="msiGoDoCommand('cmd_MSIaddMatrixRowsCmd')"/>
+    <command id="cmd_MSIaddMatrixColumnsCmd"       oncommand="msiGoDoCommand('cmd_MSIaddMatrixColumnsCmd')"/>
+  </commandset>
+
   <!-- style related commands that update on creation, and on selection change (editorOverlay.xul)-->
   <commandset id="composerStyleMenuItems">
     <command id="cmd_MSImathtext"   state="false"     oncommand="msiGoDoCommand('cmd_MSIinlineMathCmd')"/>
@@ -167,7 +175,7 @@
       <!--menuitem label="&MSIColorsCmd.label;" accesskey="&MSIColorsCmd.accesskey;" command="cmd_MSIColorsCmd"/ -->
      </menupopup>
    </menu>
-								  
+	
   <tabbox id="Symbol-tabbox" textsize="small" iconsize="large" persist="iconsize textsize" 
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     xmlns:mml="http://www.w3.org/1998/Math/MathML"
