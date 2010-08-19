@@ -50,14 +50,14 @@ public:
   NS_DECL_ISUPPORTS
   NS_DECL_MSIIEDITINGMANAGER
 
-//The following are intended to be added to the interface:
-static nsresult AddMatrixRows(nsIEditor * editor, nsIDOMNode *aMatrix, PRUint32 insertAt, PRUint32 howMany);
-static nsresult AddMatrixColumns(nsIEditor * editor, nsIDOMNode *aMatrix, PRUint32 insertAt, PRUint32 howMany);
-static nsresult GetFirstMatrixRow(nsIDOMNode* aMatrix, nsIDOMNode** aRowOut);
-static nsresult GetNextMatrixRow(nsIDOMNode* aMatrix, nsIDOMNode* currRow, nsIDOMNode** nextRowOut);
-static nsresult GetMatrixSize(nsIDOMNode *aMatrix, PRInt32* aRowCount, PRInt32* aColCount);
-static nsresult FindMatrixCell(nsIDOMNode* aMatrix, nsIDOMNode *aCell, PRInt32* whichRow, PRInt32* whichCol);
-static nsresult GetCellAt(nsIDOMNode* aMatrix, PRInt32 whichRow, PRInt32 whichCol, nsCOMPtr<nsIDOMNode> *pCell);
+////The following are intended to be added to the interface:
+//static nsresult AddMatrixRows(nsIEditor * editor, nsIDOMNode *aMatrix, PRUint32 insertAt, PRUint32 howMany);
+//static nsresult AddMatrixColumns(nsIEditor * editor, nsIDOMNode *aMatrix, PRUint32 insertAt, PRUint32 howMany);
+//static nsresult GetFirstMatrixRow(nsIDOMNode* aMatrix, nsIDOMNode** aRowOut);
+//static nsresult GetNextMatrixRow(nsIDOMNode* aMatrix, nsIDOMNode* currRow, nsIDOMNode** nextRowOut);
+//static nsresult GetMatrixSize(nsIDOMNode *aMatrix, PRInt32* aRowCount, PRInt32* aColCount);
+//static nsresult FindMatrixCell(nsIDOMNode* aMatrix, nsIDOMNode *aCell, PRInt32* whichRow, PRInt32* whichCol);
+//static nsresult GetCellAt(nsIDOMNode* aMatrix, PRInt32 whichRow, PRInt32 whichCol, nsCOMPtr<nsIDOMNode> *pCell);
 
 
 protected:
@@ -100,7 +100,7 @@ void SetMathmlNodeAndOffsetForMrowFence(const nsAString & localName,
 PRBool   NodeInMath(nsIDOMNode* node);
 nsresult EnsureMathWithSelectionCollapsed(nsIDOMNode * node);
 
-static nsresult GetMatrixInfo(nsIDOMNode *aMatrix, PRInt32& nRow, PRInt32& nCol, 
+nsresult GetMatrixInfo(nsIDOMNode *aMatrix, PRInt32& nRow, PRInt32& nCol, 
                                           nsIDOMNode** pFindCell, nsTArray<msiMultiSpanCellInfo> *multiCellArray);
 
 friend msiBigOpInfoImp::msiBigOpInfoImp(nsIDOMNode * mathmlNode, PRUint32 offset);

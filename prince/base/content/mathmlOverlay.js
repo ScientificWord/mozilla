@@ -54,6 +54,8 @@ function SetupMSIMathMenuCommands()
 	commandTable.registerCommand("cmd_MSIreviseOperatorsCmd",    msiReviseOperatorsCmd);
 	commandTable.registerCommand("cmd_MSIreviseDecorationsCmd",  msiReviseDecorationsCmd);
   commandTable.registerCommand("cmd_MSIreviseUnitsCommand",    msiReviseUnitsCommand);
+  commandTable.registerCommand("cmd_MSIaddMatrixRowsCmd",       msiInsertMatrixRowsCommand);
+  commandTable.registerCommand("cmd_MSIaddMatrixColumnsCmd",    msiInsertMatrixColumnsCommand);
 
 
   try {
@@ -123,6 +125,8 @@ function msiSetupMSIMathMenuCommands(editorElement)
 	commandTable.registerCommand("cmd_MSIreviseOperatorsCmd",    msiReviseOperatorsCmd);
 	commandTable.registerCommand("cmd_MSIreviseDecorationsCmd",  msiReviseDecorationsCmd);
   commandTable.registerCommand("cmd_MSIreviseUnitsCommand",    msiReviseUnitsCommand);
+  commandTable.registerCommand("cmd_MSIaddMatrixRowsCmd",       msiInsertMatrixRowsCommand);
+  commandTable.registerCommand("cmd_MSIaddMatrixColumnsCmd",    msiInsertMatrixColumnsCommand);
 
 //  try {
 //    editorElement.mgMathStyleSheet = msiColorObj.FormatStyleSheet(editorElement);
@@ -1039,6 +1043,83 @@ var msiReviseUnitsCommand =
   {
   }
 };
+
+var msiInsertMatrixRowsCommand = 
+{
+  isCommandEnabled: function(aCommand, dummy)
+  { return true; },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement(window);
+    var theMatrixData = msiGetPropertiesDataFromCommandParams(aParams);
+//    AlertWithTitle("mathmlOverlay.js", "In msiInsertMatrixRowsCommand, trying to add rows, dialog unimplemented.");
+    try
+    {
+      var rowsData = new Object();
+      rowsData.reviseData = theMatrixData;
+      rowsData.reviseCommand = "cmd_MSIaddMatrixRowsCmd";
+      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/MatrixInsertRowsCols.xul", "_blank", "chrome,resizable,close,titlebar,dependent",
+                                                      editorElement, "cmd_MSIaddMatrixRowsCmd", this, rowsData);
+    }
+    catch(exc) { dump("In msiInsertMatrixRowsCommand, exception: " + exc + ".\n"); }
+  },
+
+  doCommand: function(aCommand)
+  {
+  }
+};
+
+function insertMatrixRows(matrixElement, positionToInsert, numberToInsert, editorElement)
+{
+  var editor = msiGetEditor(editorElement);
+  try
+  {
+    var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
+    mathmlEditor.addMatrixRows(matrixElement, positionToInsert, numberToInsert);
+  }
+  catch(exc) { dump("In mathmlOverlay.js, insertMatrixRows(), exception: " + exc + "\n."); }
+}
+
+var msiInsertMatrixColumnsCommand = 
+{
+  isCommandEnabled: function(aCommand, dummy)
+  { return true; },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement(window);
+    var theMatrixData = msiGetPropertiesDataFromCommandParams(aParams);
+//    AlertWithTitle("mathmlOverlay.js", "In msiInsertMatrixColumnsCmd, trying to add columns, dialog unimplemented.");
+    try
+    {
+      var colsData = new Object();
+      colsData.reviseData = theMatrixData;
+      colsData.reviseCommand = "cmd_MSIaddMatrixColumnsCmd";
+      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/MatrixInsertRowsCols.xul", "_blank", "chrome,resizable,close,titlebar,dependent",
+                                                      editorElement, "cmd_MSIaddMatrixColumnsCmd", this, colsData);
+    }
+    catch(exc) { dump("In msiInsertMatrixColumnsCommand, exception: " + exc + ".\n"); }
+  },
+
+  doCommand: function(aCommand)
+  {
+  }
+};
+
+function insertMatrixColumns(matrixElement, positionToInsert, numberToInsert, editorElement)
+{
+  var editor = msiGetEditor(editorElement);
+  try
+  {
+    var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
+    mathmlEditor.addMatrixColumns(matrixElement, positionToInsert, numberToInsert);
+  }
+  catch(exc) { dump("In mathmlOverlay.js, insertMatrixColumns(), exception: " + exc + "\n."); }
+}
+
 
 //const mmlns    = "http://www.w3.org/1998/Math/MathML";
 //const xhtmlns  = "http://www.w3.org/1999/xhtml";

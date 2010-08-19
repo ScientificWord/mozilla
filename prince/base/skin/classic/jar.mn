@@ -19,6 +19,7 @@ classic.jar:
   skin/classic/msiTypesetDlgStyle.css    (msiTypesetDlgStyle.css)
   skin/classic/chamtest.css              (chamtest.css)
   skin/classic/documentStyle.css         (documentStyle.css)
+  skin/classic/MatrixInsertRowsCols.css  (MatrixInsertRowsCols.css)
   skin/classic/icons/background.png      (icons/background.png)
   skin/classic/icons/background-sm.png   (icons/background-sm.png)
   skin/classic/icons/copy.png            (icons/copy.png)
