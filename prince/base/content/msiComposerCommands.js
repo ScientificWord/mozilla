@@ -5805,7 +5805,7 @@ function msiDocumentInfo(editorElement)
     var theName = aNode.localName;
     if (!theName || !theName.length)
       theName = msiGetBaseNodeName(aNode);
-    switch(theName.toLowerCase())
+    switch(theName)
     {
       case "meta":
       case "link":
@@ -5825,7 +5825,7 @@ function msiDocumentInfo(editorElement)
 
   this.initializeDocInfo = function()
   {
-    var docHead = msiGetDocumentHead(this.mEditor);
+    var docHead = msiGetPreamble(this.mEditor);
 
     this.generalSettings = new Object();
     this.comments = new Object();
@@ -5906,6 +5906,7 @@ function msiDocumentInfo(editorElement)
                 titleObj.contents += currNode.childNodes[ix].nodeValue;
             }
             this.generalSettings["title"] = titleObj;
+            this.mEditor.setDocumentTitle(titleObj.contents);
           }
           break;
           case "address":
@@ -5983,7 +5984,7 @@ function msiDocumentInfo(editorElement)
 
   this.putDocInfoToDocument = function()
   {
-    var docHead = msiGetDocumentHead(this.mEditor);
+    var docHead = msiGetPreamble(this.mEditor);
     var treeWalker = this.mEditor.document.createTreeWalker(docHead,
                                                             NodeFilter.SHOW_ELEMENT|NodeFilter.SHOW_COMMENT,
                                                             this.findMetadataNodes,
@@ -6226,6 +6227,8 @@ function msiDocumentInfo(editorElement)
         var newTextNode = this.mEditor.document.createTextNode(dataObj.contents);
         newNode = this.mEditor.document.createElement("title");
         newNode.appendChild(newTextNode);
+        newNode.setAttribute("req", "hyperref");
+        this.mEditor.setDocumentTitle(dataObj.contents);
       }
       break;
       case "meta":
@@ -6233,12 +6236,14 @@ function msiDocumentInfo(editorElement)
 //        newNode.setAttribute("name", dataObj.name);
         newNode.setAttribute("name", ourName);
         newNode.setAttribute("content", dataObj.contents);
+        newNode.setAttribute("req", "hyperref");
       break;
       case "link":
         newNode = this.mEditor.document.createElement("link");
 //        newNode.setAttribute("rel", dataObj.name);
         newNode.setAttribute("rel", ourName);
         newNode.setAttribute("href", dataObj.uri);
+        newNode.setAttribute("req", "hyperref");
       break;
       case "comment-meta":
       case "comment-meta-alt":
@@ -6491,7 +6496,10 @@ function msiDocumentInfo(editorElement)
 
     theContents = "";
     if (("documentTitle" in dlgInfo.general) && (dlgInfo.general.documentTitle != null))
+    {
       theContents = dlgInfo.general.documentTitle;
+      this.mEditor.setDocumentTitle(theContents);
+    }
     this.setObjectFromData(this.generalSettings, "title", (theContents.length > 0), "Title", theContents, "title");
   };
 
