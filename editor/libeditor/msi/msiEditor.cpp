@@ -684,27 +684,12 @@ msiEditor::InsertFence(const nsAString & open, const nsAString & close)
     {
       nsCOMPtr<nsIDOMNode> theNode;
       PRInt32 theOffset(0);
-      if (!bCollapsed)
-      {
-        res = NS_ERROR_FAILURE;
-        // TODO add stuff so that selected stuff is changed to become the base  or the script ?
-        // current SWP behavoir is to make it the script, but this may not be correct in light
-        // of the fact that sub and sup have a well defined base in mathml.
-        // Also need to deal with the case where we are not in math, or part of the selection is not
-        // in math.
-      }
-      else
-      {
-        theNode = startNode;
-        theOffset = startOffset;
-      }
-      if (NS_SUCCEEDED(res))
-      {
-        nsCOMPtr<nsIEditor> editor;
-        QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
-        res = m_msiEditingMan->InsertFence(editor, selection, theNode, 
-                                           theOffset, open, close);
-      }  
+      theNode = startNode;
+      theOffset = startOffset;
+      nsCOMPtr<nsIEditor> editor;
+      QueryInterface(NS_GET_IID(nsIEditor), getter_AddRefs(editor));
+      res = m_msiEditingMan->InsertFence(editor, selection, theNode, 
+                                         theOffset, open, close);
     }
   }
   return res;
