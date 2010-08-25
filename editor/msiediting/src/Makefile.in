@@ -37,8 +37,8 @@ REQUIRES  = xpcom \
             dom \
             editor \
             widget \
-	        layout \
-		    txmgr \
+	          layout \
+		        txmgr \
             gfx \
             widget \
             $(NULL)
