@@ -1338,6 +1338,13 @@ nsresult msiUtils::CreateMfrac(nsIEditor * editor,
       if (inputbox) 
         numerator = do_QueryInterface(inputbox);
     }
+    else
+    {
+      nsCOMPtr<nsIArray> nodeArray;  //deliberately empty
+      nsCOMPtr<nsIDOMElement> numElement = do_QueryInterface(numerator);
+      CreateMRow(editor, (nsIArray *) nodeArray, numElement);
+      numerator = numElement;
+    }
     if (denom)
       denominator = denom;
     else

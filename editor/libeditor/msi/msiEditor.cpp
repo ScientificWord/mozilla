@@ -366,20 +366,8 @@ msiEditor::InsertFraction(const nsAString& lineThickness, PRUint32 attrFlags)
     {
       nsCOMPtr<nsIDOMNode> theNode;
       PRInt32 theOffset(0);
-      if (!bCollapsed)
-      {
-        res = NS_ERROR_FAILURE;
-        // TODO add stuff so that selected stuff is changed to become the base  or the script ?
-        // current SWP behavoir is to make it the script, but this may not be correct in light
-        // of the fact that sub and sup have a well defined base in mathml.
-        // Also need to deal with the case where we are not in math, or part of the selection is not
-        // in math.
-      }
-      else
-      {
-        theNode = startNode;
-        theOffset = startOffset;
-      }
+      theNode = startNode;
+      theOffset = startOffset;
       if (NS_SUCCEEDED(res))
       {
         nsCOMPtr<nsIEditor> editor;
@@ -408,19 +396,8 @@ msiEditor::InsertBinomial(const nsAString& opening, const nsAString& closing,
     {
       nsCOMPtr<nsIDOMNode> theNode;
       PRInt32 theOffset(0);
-      if (!bCollapsed)
-      {
-        res = NS_ERROR_FAILURE;
-        // TODO add stuff so that selected stuff is changed to become the numerator?
-        // current SWP behavoir is to do so.
-        // Also need to deal with the case where we are not in math, or part of the selection is not
-        // in math.
-      }
-      else
-      {
-        theNode = startNode;
-        theOffset = startOffset;
-      }
+      theNode = startNode;
+      theOffset = startOffset;
       if (NS_SUCCEEDED(res))
       {
         nsCOMPtr<nsIEditor> editor;
@@ -448,20 +425,8 @@ msiEditor::InsertSqRoot()
     {
       nsCOMPtr<nsIDOMNode> theNode;
       PRInt32 theOffset(0);
-      if (!bCollapsed)
-      {
-        res = NS_ERROR_FAILURE;
-        // TODO add stuff so that selected stuff is changed to become the base  or the script ?
-        // current SWP behavoir is to make it the script, but this may not be correct in light
-        // of the fact that sub and sup have a well defined base in mathml.
-        // Also need to deal with the case where we are not in math, or part of the selection is not
-        // in math.
-      }
-      else
-      {
-        theNode = startNode;
-        theOffset = startOffset;
-      }
+      theNode = startNode;
+      theOffset = startOffset;
       if (NS_SUCCEEDED(res))
       {
         nsCOMPtr<nsIEditor> editor;
@@ -489,20 +454,8 @@ msiEditor::InsertRoot()
     {
       nsCOMPtr<nsIDOMNode> theNode;
       PRInt32 theOffset(0);
-      if (!bCollapsed)
-      {
-        res = NS_ERROR_FAILURE;
-        // TODO add stuff so that selected stuff is changed to become the base  or the script ?
-        // current SWP behavoir is to make it the script, but this may not be correct in light
-        // of the fact that sub and sup have a well defined base in mathml.
-        // Also need to deal with the case where we are not in math, or part of the selection is not
-        // in math.
-      }
-      else
-      {
-        theNode = startNode;
-        theOffset = startOffset;
-      }
+      theNode = startNode;
+      theOffset = startOffset;
       if (NS_SUCCEEDED(res))
       {
         nsCOMPtr<nsIEditor> editor;
@@ -605,20 +558,8 @@ msiEditor::InsertMathunit(const nsAString & mathunit)
     {
       nsCOMPtr<nsIDOMNode> theNode;
       PRInt32 theOffset(0);
-      if (!bCollapsed)
-      {
-        res = NS_ERROR_FAILURE;
-        // TODO add stuff so that selected stuff is changed to become the base  or the script ?
-        // current SWP behavoir is to make it the script, but this may not be correct in light
-        // of the fact that sub and sup have a well defined base in mathml.
-        // Also need to deal with the case where we are not in math, or part of the selection is not
-        // in math.
-      }
-      else
-      {
-        theNode = startNode;
-        theOffset = startOffset;
-      }
+      theNode = startNode;
+      theOffset = startOffset;
       if (NS_SUCCEEDED(res))
         res = InsertMathunitEx(selection, theNode, theOffset, mathunit);
     }
