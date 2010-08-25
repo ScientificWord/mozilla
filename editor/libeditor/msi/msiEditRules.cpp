@@ -286,7 +286,12 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
        // Remove the msubsup container 
        res = mHTMLEditor->RemoveContainer(endNode);
        *aHandled = PR_TRUE;
-
+    } else if (mathmltype ==  msiIMathMLEditingBC::MSI_INPUTBOX){
+       nsCOMPtr<nsIDOMNode> parent;
+       endNode->GetParentNode(getter_AddRefs(parent));
+       res = mHTMLEditor->RemoveContainer(parent);
+       *aHandled = PR_TRUE;
+       
 
     } else {
        aSelection->Extend( endNode, endOffset-1 );
