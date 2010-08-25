@@ -828,6 +828,7 @@ nsresult msiUtils::CreateDecoration(nsIEditor * editor,
                                    nsIDOMNode * base,
                                    const nsAString & above,
                                    const nsAString & below,
+                                   PRBool createInputBox,
                                    PRBool markCaret,
                                    PRUint32 & flags,
                                    nsCOMPtr<nsIDOMElement> & mathmlElement)
@@ -835,7 +836,6 @@ nsresult msiUtils::CreateDecoration(nsIEditor * editor,
   nsresult res(NS_ERROR_FAILURE);
   if (editor && (!above.IsEmpty() || !below.IsEmpty()))
   {
-    res = NS_OK;
     PRBool isOverUnder = !above.IsEmpty() && !below.IsEmpty();
     PRBool isOver = !above.IsEmpty() && below.IsEmpty();
     PRUint32 dummyFlags(0);
@@ -861,11 +861,11 @@ nsresult msiUtils::CreateDecoration(nsIEditor * editor,
     }
     if (NS_SUCCEEDED(res) && isOverUnder)
       res = CreateMunderover(editor, base, underNode, overNode, PR_FALSE, PR_FALSE,
-                             PR_TRUE, flags, emptyString, emptyString, mathmlElement);
+                             createInputBox, PR_TRUE, flags, emptyString, emptyString, mathmlElement);
     else if (NS_SUCCEEDED(res))
     {
       nsCOMPtr<nsIDOMNode> script = isOver ? overNode : underNode;
-      res = CreateMunderOrMover(editor, isOver, base, script, PR_FALSE, PR_TRUE, flags, 
+      res = CreateMunderOrMover(editor, isOver, base, script, PR_FALSE, createInputBox, PR_TRUE, flags, 
                                 emptyString, mathmlElement);
     }
   }
@@ -877,6 +877,7 @@ nsresult msiUtils::CreateMunderOrMover(nsIEditor *editor,
                                        nsIDOMNode * base,
                                        nsIDOMNode * script,
                                        PRBool scriptInRow,
+                                       PRBool createInputBox,
                                        PRBool markCaret,
                                        PRUint32 & flags,
                                        const nsAString & isAccent,                                 
@@ -920,7 +921,7 @@ nsresult msiUtils::CreateMunderOrMover(nsIEditor *editor,
     }
     if (script)
       tmpScript = script;
-    else
+    else if (createInputBox)
     {    
       nsCOMPtr<nsIDOMElement> inputbox;
       res = CreateInputbox(editor, PR_FALSE, markCaret, flags, inputbox);
@@ -960,6 +961,7 @@ nsresult msiUtils::CreateMunderover(nsIEditor * editor,
                                     nsIDOMNode * overscript,
                                     PRBool underscriptInRow,
                                     PRBool overscriptInRow,
+                                    PRBool createInputBox, 
                                     PRBool markCaret,
                                     PRUint32 & flags,
                                     const nsAString & isunderAccent,                                 
@@ -981,7 +983,7 @@ nsresult msiUtils::CreateMunderover(nsIEditor * editor,
       underover->SetAttribute(accent, isoverAccent);
     if (base)
       theBase = base;
-    else
+    else if (createInputBox)
     {
       nsCOMPtr<nsIDOMElement> inputbox;
       PRBool locMarkCaret(markCaret);
@@ -1060,6 +1062,7 @@ nsresult msiUtils::CreateMunderover(nsIEditor * editor,
 
 nsresult msiUtils::CreateMsqrt(nsIEditor *editor,
                                nsIDOMNode * child,
+                               PRBool makeInputBox,
                                PRBool markCaret,
                                PRUint32 & flags,
                                nsCOMPtr<nsIDOMElement> & mathmlElement)
@@ -1072,7 +1075,7 @@ nsresult msiUtils::CreateMsqrt(nsIEditor *editor,
   {
     if (child)
       radicand = child;
-    else
+    else if (makeInputBox)
     {
       nsCOMPtr<nsIDOMElement> inputbox;
       res = CreateInputbox(editor, PR_FALSE, markCaret, flags, inputbox);
@@ -1093,6 +1096,7 @@ nsresult msiUtils::CreateMsqrt(nsIEditor *editor,
 nsresult msiUtils::CreateMroot(nsIEditor * editor,
                                nsIDOMNode * radicand,
                                nsIDOMNode * index,
+                               PRBool createInputBox,
                                PRBool markCaret,
                                PRUint32 & flags,
                                nsCOMPtr<nsIDOMElement> & mathmlElement)
@@ -1105,7 +1109,7 @@ nsresult msiUtils::CreateMroot(nsIEditor * editor,
   {
     if (radicand)
       loc_radicand = radicand;
-    else
+    else if (createInputBox)
     {
       nsCOMPtr<nsIDOMElement> inputbox;
       CreateInputbox(editor, PR_FALSE, markCaret, flags, inputbox);
@@ -1189,6 +1193,7 @@ nsresult msiUtils::CreateEngineFunction(nsIEditor * editor,
             
 nsresult msiUtils::CreateMRowFence(nsIEditor * editor,
                                    nsIDOMNode * child,
+                                   PRBool createInputBox,
                                    const nsAString & open,
                                    const nsAString & close,
                                    PRBool markCaret,
@@ -1226,7 +1231,7 @@ nsresult msiUtils::CreateMRowFence(nsIEditor * editor,
         {
           if (child)
             res = mutableArray->AppendElement(child, PR_FALSE);
-          else 
+          else if (createInputBox)
           {
             nsCOMPtr<nsIDOMElement> inputbox;
             res = CreateInputbox(editor, PR_FALSE, markCaret, flags, inputbox);
@@ -1301,6 +1306,7 @@ nsresult msiUtils::CreateMRow(nsIEditor * editor,
 nsresult msiUtils::CreateMfrac(nsIEditor * editor,
                                nsIDOMNode * num,
                                nsIDOMNode * denom,
+                               PRBool createInputBox,
                                PRBool markCaret,
                                PRUint32 & flags,
                                const nsAString & lineThickness,
@@ -1325,7 +1331,7 @@ nsresult msiUtils::CreateMfrac(nsIEditor * editor,
     
     if (num)
       numerator = num;
-    else
+    else if (createInputBox)
     {
       nsCOMPtr<nsIDOMElement> inputbox;
       CreateInputbox(editor, PR_FALSE, markCaret, flags, inputbox);
@@ -1377,6 +1383,7 @@ nsresult msiUtils::CreateMfrac(nsIEditor * editor,
 nsresult msiUtils::CreateBinomial(nsIEditor * editor,
                                   nsIDOMNode * num,
                                   nsIDOMNode * denom,
+                                  PRBool createInputBox,
                                   PRBool markCaret,
                                   PRUint32 & flags,
                                   const nsAString & opening,
@@ -1389,7 +1396,7 @@ nsresult msiUtils::CreateBinomial(nsIEditor * editor,
   nsCOMPtr<nsIDOMElement> frac;
 //  PRUint32 fracFlags = attrFlags & (msiIMMLEditDefines::MO_ATTR_sizeFlags);
   PRUint32 fracFlags = msiIMMLEditDefines::MO_ATTR_none;
-  res = CreateMfrac(editor, num, denom, markCaret, flags, lineThickness, fracFlags, frac);
+  res = CreateMfrac(editor, num, denom, createInputBox, markCaret, flags, lineThickness, fracFlags, frac);
 
   if (NS_SUCCEEDED(res) && frac)
   {
@@ -1398,7 +1405,7 @@ nsresult msiUtils::CreateBinomial(nsIEditor * editor,
       nsCOMPtr<nsIDOMElement> mrowElement;
       nsCOMPtr<nsIDOMNode> child = do_QueryInterface(frac);   //TODO -- do these need to be saved for undo!!!!!!!
       PRUint32 fenceFlags = msiIMMLEditDefines::MO_ATTR_boundFence;
-      res = CreateMRowFence(editor, child, opening, closing, PR_FALSE, flags, fenceFlags, mrowElement);
+      res = CreateMRowFence(editor, child, PR_FALSE, opening, closing, PR_FALSE, flags, fenceFlags, mrowElement);
       if (NS_SUCCEEDED(res)) 
         mathmlElement = mrowElement;
       else 
