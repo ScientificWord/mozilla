@@ -810,11 +810,16 @@ msiEditingManager::InsertSqRoot(nsIEditor * editor,
     PRBool bCollapsed(PR_FALSE);
     res = selection->GetIsCollapsed(&bCollapsed);
     nsCOMPtr<nsIDOMElement> mathmlElement;
+    nsCOMPtr<nsIDOMElement> radicand;
     PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
     res = msiUtils::CreateMsqrt(editor, nsnull, bCollapsed || !inMath, PR_TRUE, flags, mathmlElement);
     if (!bCollapsed && inMath)
     {
-      MoveRangeTo(editor, range, mathmlElement, 0);
+      nsCOMPtr<nsIDOMNode> radNode;
+      res = mathmlElement->GetFirstChild(getter_AddRefs(radNode));
+      if (!radNode) radicand = mathmlElement;
+      else radicand = do_QueryInterface(radNode);
+      MoveRangeTo(editor, range, radicand, 0);
     } 
     if (NS_SUCCEEDED(res) && mathmlElement)
 //      res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
@@ -844,11 +849,16 @@ msiEditingManager::InsertRoot(nsIEditor * editor,
     PRBool bCollapsed(PR_FALSE);
     res = selection->GetIsCollapsed(&bCollapsed);
     nsCOMPtr<nsIDOMElement> mathmlElement;
+    nsCOMPtr<nsIDOMElement> radicand;
     PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
     res = msiUtils::CreateMroot(editor, nsnull, nsnull, bCollapsed || !inMath, PR_TRUE, flags, mathmlElement);
     if (!bCollapsed && inMath)
     {
-      MoveRangeTo(editor, range, mathmlElement, 0);
+      nsCOMPtr<nsIDOMNode> radNode;
+      res = mathmlElement->GetFirstChild(getter_AddRefs(radNode));
+      if (!radNode) radicand = mathmlElement;
+      else radicand = do_QueryInterface(radNode);
+      MoveRangeTo(editor, range, radicand, 0);
     } 
     if (NS_SUCCEEDED(res) && mathmlElement)
 //      res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
