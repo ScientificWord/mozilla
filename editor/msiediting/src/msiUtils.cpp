@@ -1081,6 +1081,12 @@ nsresult msiUtils::CreateMsqrt(nsIEditor *editor,
       res = CreateInputbox(editor, PR_FALSE, markCaret, flags, inputbox);
       if (NS_SUCCEEDED(res) && inputbox) 
         radicand = do_QueryInterface(inputbox);
+    } else
+    {
+      nsCOMPtr<nsIArray> nodeArray;  //deliberately empty
+      nsCOMPtr<nsIDOMElement> radElement = do_QueryInterface(radicand);
+      CreateMRow(editor, (nsIArray *) nodeArray, radElement);
+      radicand = radElement;
     }
     if (NS_SUCCEEDED(res) && radicand)  
     {
@@ -1116,6 +1122,12 @@ nsresult msiUtils::CreateMroot(nsIEditor * editor,
       NS_ASSERTION(inputbox, "CreateInputbox failed.");
       if (inputbox) 
         loc_radicand = do_QueryInterface(inputbox);
+    } else
+    {
+      nsCOMPtr<nsIArray> nodeArray;  //deliberately empty
+      nsCOMPtr<nsIDOMElement> radElement = do_QueryInterface(loc_radicand);
+      CreateMRow(editor, (nsIArray *) nodeArray, radElement);
+      loc_radicand = radElement;
     }
     if (index)
       loc_index = index;
