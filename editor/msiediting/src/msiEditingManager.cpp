@@ -723,8 +723,8 @@ msiEditingManager::InsertFraction(nsIEditor * editor,
   nsCOMPtr<nsIDOMRange> range;
   selection->GetRangeAt(0, getter_AddRefs(range));
   nsCOMPtr<nsIDOMNode> commonAncestor;
-  PRBool inMath = NodeInMath(commonAncestor);
   res = range->GetCommonAncestorContainer(getter_AddRefs(commonAncestor));
+  PRBool inMath = NodeInMath(commonAncestor);
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertFraction");
   if (editor && selection && node)
   {
@@ -737,7 +737,7 @@ msiEditingManager::InsertFraction(nsIEditor * editor,
     res = msiUtils::CreateMfrac(editor, nsnull, nsnull, (bCollapsed ||!inMath), PR_TRUE, flags, lineThickness, attrFlags, mathmlElement);
     nsCOMPtr<nsIDOMNode> numerator;
     res = mathmlElement->GetFirstChild(getter_AddRefs(numerator));
-    if (!bCollapsed && NodeInMath(commonAncestor))
+    if (!bCollapsed && inMath)
     {
       MoveRangeTo(editor, range, numerator, 0);
     } 
