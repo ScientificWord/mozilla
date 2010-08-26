@@ -25,6 +25,9 @@
 #include "nsServiceManagerUtils.h"
 #include "nsIEditActionListener.h"
 #include "nsIRange.h"
+#include "nsIArray.h"
+#include "nsArrayUtils.h"
+#include "nsCOMArray.h"
 
 #include "DeleteTextTxn.h"
 #include "DeleteElementTxn.h"
@@ -334,6 +337,18 @@ msiEditor::InsertInlineMath()
 NS_IMETHODIMP 
 msiEditor::InsertDisplay()
 {
+  nsCOMPtr<nsIDOMNode> mathnode;
+  nsString attr = NS_LITERAL_STRING("display");
+  nsString val = NS_LITERAL_STRING("block");
+  SelectionInMath(getter_AddRefs(mathnode));
+  if (mathnode)
+  {
+    nsCOMPtr<nsIDOMElement> mathElement = do_QueryInterface(mathnode);
+    
+  // find the math node and set the display attribute
+    mathElement->SetAttribute(attr, val);
+  }
+  else
   return InsertMath(PR_TRUE);
 }
 
@@ -1031,6 +1046,7 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
     {
       PRBool collapsed(PR_FALSE);
       nsCOMPtr<msiISelection> msiSelection;
+      nsCOMPtr<nsIDOMNode> mathnode;
       res = GetMSISelection(msiSelection);
       if (!msiSelection)
         return NS_ERROR_FAILURE;
@@ -1045,7 +1061,8 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
       {
         nsCOMPtr<nsIDOMNode> currFocusNode;
         res = msiSelection->GetMsiFocusNode(getter_AddRefs(currFocusNode));
-        if (NS_SUCCEEDED(res) && currFocusNode && NodeInMath(currFocusNode))
+        res = NodeInMath(currFocusNode, getter_AddRefs(mathnode));
+        if (NS_SUCCEEDED(res) && currFocusNode && mathnode)
         {
           PRBool preventDefault(PR_FALSE);
           if (symbol == ' ')
@@ -1390,8 +1407,10 @@ NS_IMETHODIMP msiEditor::InsertText(const nsAString &aStringToInsert)
     nsCOMPtr<nsIDOMNode> startNode, endNode;
     PRInt32 startOffset(0), endOffset(0);
     PRBool bCollapsed(PR_FALSE);
+    nsCOMPtr<nsIDOMNode> mathnode;
     res = GetNSSelectionData(selection, startNode, startOffset, endNode, endOffset, bCollapsed);
-    if (NS_SUCCEEDED(res) && NodeInMath(startNode) && aStringToInsert.Length() > 0)
+    res = NodeInMath(startNode, getter_AddRefs(mathnode));
+    if (NS_SUCCEEDED(res) && mathnode && aStringToInsert.Length() > 0)
     {
 
       nsCOMPtr<nsIDOMNode> theNode;
@@ -1419,17 +1438,95 @@ NS_IMETHODIMP msiEditor::InsertText(const nsAString &aStringToInsert)
   return nsPlaintextEditor::InsertText(aStringToInsert);
 }
 
-PRBool msiEditor::NodeInMath(nsIDOMNode* node)
+/* nsIDOMNode NodeInMath (in nsIDOMNode node); */
+NS_IMETHODIMP msiEditor::NodeInMath(nsIDOMNode *node, nsIDOMNode **_retval)
 {
-  PRBool rv(PR_FALSE);
   nsCOMPtr<nsIDOMNode> checkNode;
+  nsresult res;
+  PRBool isMath;
+  nsString name;
+  *_retval = nsnull;
   if (IsTextContentNode(node))
     node->GetParentNode(getter_AddRefs(checkNode));
   else
     checkNode = node;  
   if (m_msiEditingMan && checkNode)
-    m_msiEditingMan->SupportsMathMLInsertionInterface(checkNode, &rv);
-  return rv;
+  {
+    m_msiEditingMan->SupportsMathMLInsertionInterface(checkNode, &isMath);
+    if (!isMath) *_retval = nsnull;
+    res = checkNode->GetLocalName(name);
+    while (checkNode && !name.EqualsLiteral("math"))
+    {
+      res = checkNode->GetParentNode(getter_AddRefs(checkNode));
+      if (checkNode) res = checkNode->GetLocalName(name);
+    }
+    if (checkNode) *_retval = checkNode;
+    NS_IF_ADDREF(*_retval);
+  }
+  return NS_OK;
+}
+
+/* nsIDOMNode RangeInMath (in nsIDOMRange range); */
+NS_IMETHODIMP msiEditor::RangeInMath(nsIDOMRange *range, nsIDOMNode **_retval)
+{
+  nsCOMPtr<nsIArray> arrayOfNodes;
+  nsCOMPtr<nsIDOMNode> currentNode; 
+  nsCOMPtr<nsIDOMNode> mathNode;
+  nsCOMPtr<nsIDOMNode> firstMathNode;
+  PRUint32 length;
+  nsresult res;
+  res = NodesInRange(range, getter_AddRefs(arrayOfNodes));
+  arrayOfNodes->GetLength(&length);
+
+  for (PRInt32 i = (length-1); i>=0; i--)
+  {
+    currentNode = do_QueryElementAt(arrayOfNodes, i);
+    if (!firstMathNode)
+    {
+      res = NodeInMath(currentNode, getter_AddRefs(firstMathNode));
+      mathNode = firstMathNode;
+    }
+    else {
+      res = NodeInMath(currentNode, getter_AddRefs(mathNode));
+      if (mathNode && (mathNode != firstMathNode)) // the range is split between two or more math nodes
+      {
+        *_retval = nsnull;
+        return NS_OK;
+      }
+    }
+    if (!mathNode)
+    {
+      nsCOMPtr<nsIContent> content = do_QueryInterface(currentNode);
+      if (!(content->TextIsOnlyWhitespace())) 
+      {
+        *_retval = nsnull;
+        return NS_OK;
+      }
+      // return false only if there is a non-math, non-whitespace node in the range
+    }
+  }
+  *_retval = firstMathNode;
+  NS_IF_ADDREF(*_retval);
+  return NS_OK;
+}
+
+/* nsIDOMNode SelectionInMath (); */
+NS_IMETHODIMP msiEditor::SelectionInMath(nsIDOMNode **_retval)
+{
+  nsCOMPtr<nsISelection> selection;
+  nsresult rv = GetSelection(getter_AddRefs(selection));
+  NS_ENSURE_TRUE(selection, nsnull);
+  PRInt32 count = 0;
+  rv = selection->GetRangeCount(&count);
+  NS_ENSURE_SUCCESS(rv, nsnull);
+
+  if (count > 0) {
+    nsCOMPtr<nsIDOMRange> range;
+    rv = selection->GetRangeAt(0, getter_AddRefs(range));
+    NS_ENSURE_SUCCESS(rv, nsnull);
+    return RangeInMath(range, _retval);
+  }
+  return NS_ERROR_FAILURE;
 }
 
 nsresult msiEditor::GetMathParent(nsIDOMNode * node,
@@ -1527,9 +1624,11 @@ nsresult msiEditor::EnsureMathWithSelectionCollapsed(nsCOMPtr<nsIDOMNode> &node,
                                                      PRInt32 & offset)
 {
   nsresult res(NS_OK);
-  if (!NodeInMath(node))
+  nsCOMPtr<nsIDOMNode> mathnode;
+  res = NodeInMath(node, getter_AddRefs(mathnode));
+  if (!mathnode)
   {
-    //TODO
+    //TODO What did Larry have in mind here? Collapsed is not being checked.
   res = NS_ERROR_FAILURE;
   }
   return res;
@@ -1572,7 +1671,9 @@ msiEditor::InsertSubOrSup(PRBool isSup)
           theNode = startNode;
           theOffset = startOffset;
         }
-        if (!NodeInMath(theNode))
+        nsCOMPtr<nsIDOMNode> mathnode;
+        res = NodeInMath(theNode, getter_AddRefs(mathnode));
+        if (!mathnode)
           res = EnsureMathWithSelectionCollapsed(theNode, theOffset);
       }
       if (NS_SUCCEEDED(res))
@@ -2163,7 +2264,9 @@ msiEditor::HandleArrowKeyPress(PRUint32 keyCode, PRBool isShift, PRBool ctrlDown
     currNode = msiFocus;
     currOffset = msiFocusOff;
   }
-  if (NodeInMath(currNode))
+  nsCOMPtr<nsIDOMNode> mathnode;
+  res = NodeInMath(currNode, getter_AddRefs(mathnode));
+  if (mathnode)
   {
     PRUint32 caretOp = KeyCodeToCaretOp(keyCode, isShift, ctrlDown);
     if (caretOp == msiIMathMLCaret::TAB_LEFT)  // SLS this seems really ugly
