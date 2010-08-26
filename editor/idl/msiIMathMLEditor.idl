@@ -12,6 +12,9 @@ interface nsITransaction;
 [scriptable, uuid(aec23fe1-2a0f-4fa8-9896-3a1c8a6fcb1b)]
 interface msiIMathMLEditor : nsISupports
 {
+  nsIDOMNode NodeInMath( in nsIDOMNode node );
+  nsIDOMNode RangeInMath( in nsIDOMRange range );
+  nsIDOMNode SelectionInMath();
   void InsertInlineMath();
   void InsertDisplay();
   void InsertSuperscript();

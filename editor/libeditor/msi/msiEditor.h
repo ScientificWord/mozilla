@@ -63,9 +63,6 @@ protected:
   
 public:
 //Utility functions
-PRBool   NodeInMath(nsIDOMNode* node);
-
-//Utility functions
 nsresult GetMathParent(nsIDOMNode * node, nsCOMPtr<nsIDOMNode> & mathParent);
 
 nsresult ExtractDataFromKeyEvent(nsIDOMKeyEvent * aKeyEvent,
