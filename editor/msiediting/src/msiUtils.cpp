@@ -907,7 +907,7 @@ nsresult msiUtils::CreateMunderOrMover(nsIEditor *editor,
   {
     if (base)
       theBase = base;
-    else
+    else if (createInputBox)
     {
       nsCOMPtr<nsIDOMElement> inputbox;
       PRBool locMarkCaret(markCaret);
@@ -918,10 +918,17 @@ nsresult msiUtils::CreateMunderOrMover(nsIEditor *editor,
         theBase = do_QueryInterface(inputbox);
       else
         res = NS_ERROR_FAILURE;  
+    } else
+    {
+      nsCOMPtr<nsIArray> nodeArray;  //deliberately empty
+      nsCOMPtr<nsIDOMElement> baseElement;
+      CreateMRow(editor, (nsIArray *) nodeArray, baseElement);
+      theBase = baseElement;
     }
+
     if (script)
       tmpScript = script;
-    else if (createInputBox)
+    else
     {    
       nsCOMPtr<nsIDOMElement> inputbox;
       res = CreateInputbox(editor, PR_FALSE, markCaret, flags, inputbox);
@@ -994,6 +1001,12 @@ nsresult msiUtils::CreateMunderover(nsIEditor * editor,
         theBase = do_QueryInterface(inputbox);
       else
         res = NS_ERROR_FAILURE;  
+    } else
+    {
+      nsCOMPtr<nsIArray> nodeArray;  //deliberately empty
+      nsCOMPtr<nsIDOMElement> baseElement;
+      CreateMRow(editor, (nsIArray *) nodeArray, baseElement);
+      theBase = baseElement;
     }
     if (underscript)
       tmpunderScript = underscript;
