@@ -189,27 +189,35 @@ ATTRIB_REC* RemoveAttr(ATTRIB_REC* a_list, const char* attr_nom)
   ATTRIB_REC* tail;
 
   if (a_list) {
-    ATTRIB_REC *a_rover = a_list;
+
+    ATTRIB_REC* a_rover = a_list;
+
     while (a_rover) {
       if (!strcmp(a_rover->zattr_nom, attr_nom)) {
-        ATTRIB_REC *ender = a_rover;
+        
+        ATTRIB_REC* ender = a_rover;
         a_rover = a_rover->GetNext();
+        
         ender->SetNext(NULL);
         ender->SetPrev(NULL);
         DisposeAttribs(ender);
+
         if (a_rover)
           a_rover->SetPrev(NULL);
+
       } else {
+
         if (!rv) {
           rv = a_rover;
         } else {
           tail->SetNext(a_rover);
           a_rover->SetPrev(tail);
         }
+
         tail = a_rover;
         a_rover = a_rover->GetNext();
         tail->SetNext(NULL);
-        a_rover->SetPrev(NULL);
+        if (a_rover) a_rover->SetPrev(NULL);
       }
     }
   }
