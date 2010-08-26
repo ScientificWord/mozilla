@@ -1066,7 +1066,9 @@ msiEditingManager::InsertDecoration(nsIEditor* editor,
     res = msiUtils::CreateDecoration(editor, nsnull, above, below, bCollapsed || !inMath, PR_TRUE, flags, mathmlElement);
     if (!bCollapsed && inMath)
     {
-      MoveRangeTo(editor, range, mathmlElement, 0);
+      nsCOMPtr<nsIDOMNode> base;
+      res = mathmlElement->GetFirstChild(getter_AddRefs(base));
+      MoveRangeTo(editor, range, base, 0);
     } 
     if (NS_SUCCEEDED(res) && mathmlElement)
 //      res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
