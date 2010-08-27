@@ -2819,6 +2819,643 @@ function EditorClick(event)
   }
 }
 
+//The "bToRight" parameter indicates the direction in which to resolve positions between two cells.
+//  Thus, for instance, it would be false if the position is at the right end of a selection but true at the left end...
+function msiFindCellFromPositionInTableOrMatrix(aTableNode, aChildNode, anOffset, bToRight, anEditor)
+{
+  var retNode = null;
+  var topChild = aTableNode;
+  var nextChild = null;
+  var newOffset = 0;
+  var bTakeLast = false;
+
+  function isAboveCellLevel(aNode)
+  {
+    switch(msiGetBaseNodeName(aNode))
+    {
+      case "table":
+      case "thead":
+      case "tbody":
+      case "tfoot":
+      case "mtable":
+      case "tr":
+      case "mtr":
+      case "mlabeledtr":
+        return true;
+      break;
+      default:
+      break;
+    }
+    return false;
+  }
+
+  function containsNoCells(aNode)
+  {
+    var childList = null;
+    switch(msiGetBaseNodeName(aNode))
+    {
+      case "colgroup":
+      case "col":
+        return true;
+      break;
+      case "table":
+      case "thead":
+      case "tbody":
+      case "tr":
+        childList = aNode.getElementsByTagName("td");
+        if (childList && childList.length > 0)
+          return false;
+      break;
+      case "mtable":
+      case "mtr":
+      case "mlabeledtr":
+        childList = aNode.getElementsByTagName("mtd");
+        if (childList && childList.length > 0)
+          return false;
+      break;
+    }
+    if (!isAboveCellLevel(aNode))
+      return false;
+    childList = msiNavigationUtils.getSignificantContents(aNode);
+    for (var ix = 0; ix < childList.length; ++ix)
+    {
+      if (!containsNoCells(childList[ix]))
+        return false;
+    }
+    return true;
+  }
+
+  for (nextChild = msiNavigationUtils.findTopChildContaining(aChildNode, topChild); !retNode && (nextChild != null); nextChild = msiNavigationUtils.findTopChildContaining(aChildNode, topChild))
+  {
+    if (!isAboveCellLevel(nextChild))
+    {
+      retNode = nextChild;
+      break;
+    }
+    if (containsNoCells(nextChild))
+    {
+      nextChild = nextChild.nextSibling;
+      break;
+    }
+    if (aChildNode == nextChild)
+      break;
+    topChild = nextChild;
+  }
+
+  var ourOffset = anOffset;
+  while (!retNode && nextChild)
+  {
+    //If we arrive here, we should have a node at a level above cells. If it's the same as the node we started out with, we use the
+    //offset handed in and go looking for a cell-level construct.
+    if (containsNoCells(nextChild))
+      nextChild = bToRight ? nextChild.nextSibling : nextChild.previousSibling;
+    else
+    {
+      if (nextChild != aChildNode)
+        ourOffset = bToRight ? 0 : msiNavigationUtils.lastIndex(nextChild);
+      if (bToRight || anOffset == 0)
+      {
+        nextChild = msiNavigationUtils.getSignificantChildFollowingPosition(nextChild, ourOffset, false);
+        if (!nextChild)
+          nextChild = msiNavigationUtils.getSignificantChildPrecedingPosition(nextChild, ourOffset, false);
+      }
+      else
+      {
+        nextChild = msiNavigationUtils.getSignificantChildPrecedingPosition(nextChild, ourOffset, false);
+        if (!nextChild)
+          nextChild = msiNavigationUtils.getSignificantChildFollowingPosition(nextChild, ourOffset, false);
+      }    
+    }
+    if (!isAboveCellLevel(nextChild))
+      retNode = nextChild;
+  }
+
+  if (retNode && msiKludgeTestKeys(["tableEdit"]))
+  {
+    var retName = msiGetBaseNodeName(retNode);
+    switch(retName)
+    {
+      case "td":
+      case "th":
+      case "mtd":
+      break;  //we're okay
+      default:
+        msiKludgeLogNodeContents(retNode, ["tableEdit"], "Didn't find good cell in table or mtable in msiFindCellFromPositionInATableOrMatrix; node returned ", true);
+      break;
+    }
+  }
+
+  return retNode;
+}
+
+//function msiFindCellFromPositionInTableOrMatrix(aTableNode, aChildNode, anOffset, bToRight, anEditor)
+//{
+//  var retNode = null;
+//  var topChild = null;
+//  var newOffset = 0;
+//  var bCollapsed = anEditor.selection.isCollapsed;
+//  if (aChildNode == aTableNode)
+//  {
+//    if (anOffset < aTableNode.childNodes.length)
+//      topChild = aTableNode.childNodes[anOffset];
+//    else
+//      topChild = aTableNode.childNodes[aTableNode.childNodes.length - 1];
+//    if (!bShift || !bCollapsed)
+//      newOffset = topChild.childNodes.length;
+//    return findCellFromPositionInTableOrMatrix(aTableNode, topChild, newOffset, bShift, anEditor);
+//  }
+//  var nextChild = null;
+//  switch(msiGetBaseNodeName(aChildNode))
+//  {
+//    case "rowgroup":
+//    case "tr":
+//    case "mtr":
+//      if (anOffset < aChildNode.childNodes.length)
+//        nextChild = aChildNode.childNodes[anOffset];
+//      else
+//        nextChild = aChildNode.childNodes[aChildNode.childNodes.length - 1];
+//      if (!bShift || !bCollapsed)
+//        newOffset = nextChild.childNodes.length;
+//      return msiFindCellFromPositionInTableOrMatrix(aTableNode, nextChild, newOffset, bShift, anEditor);
+//    break;
+//    case "td":
+//    case "th":
+//    case "mtd":
+//      retNode = aChildNode;
+//    break;
+//    default:
+//      topChild = msiNavigationUtils.findTopChildContaining(aChildNode, aTableNode);
+//      if (topChild == aChildNode)  //What now? Is this the cell?
+//      {
+//        if (anOffset < aChildNode.childNodes.length)
+//          nextChild = aChildNode.childNodes[anOffset];
+//        else
+//          nextChild = aChildNode.childNodes[aChildNode.childNodes.length - 1];
+//        if (!bShift || !bCollapsed)
+//          newOffset = nextChild.childNodes.length;
+//        return msiFindCellFromPositionInTableOrMatrix(aTableNode, nextChild, newOffset, bShift, anEditor);
+//      }
+//      nextChild = topChild;
+//      while (!retNode)
+//      {
+//        switch(msiGetBaseNodeName(nextChild))
+//        {
+//          case "td":
+//          case "th":
+//          case "mtd":
+//            retNode = topChild;
+//          break;
+//        }
+//        topChild = nextChild;
+//        nextChild = msiNavigationUtils.findTopChildContaining(aChildNode, topChild);
+//        if (!retNode && ((nextChild == aChildNode) || !nextChild) )
+//        {
+//          //we can't find anything else! just use aChildNode
+//          retNode = aChildNode;
+//        }
+//      }
+//    break;
+//  }
+//  return retNode;
+//}
+
+function msiEditorNextField(bShift, editorElement)
+{
+//  function canDoTab(aNode)
+//  {
+//    if (msiNavigationUtils.isMathTemplate(aNode))
+//      return true;
+//    switch(msiGetBaseNodeName(aNode))
+//    {
+//      case "mtable":
+//      case "msqrt":  //separated as it will require special handling
+//        return true;
+//      break;
+//      default:
+//      break;
+//    }
+//    return false;
+//  }
+
+  function squareRootDoNextField(aNode, totalRange, bShift, anEditor)
+  {
+    var newRoot = anEditor.document.createElementNS(mmlns, "mroot");
+    var children = msiNavigationUtils.getSignificantContents(aNode);
+    anEditor.beginTransaction();
+    if (children.length == 1)
+      msiEditorMoveChild(newRoot, children[0], anEditor);
+    else
+    {
+      var newRow = aNode.ownerDocument.createElementNS(mmlns, "mrow");
+      msiEditorMoveChildren(newRow, aNode, anEditor);
+      anEditor.insertNode(newRow, newRoot, 0);
+    }
+    var insertBox = newbox(anEditor);
+    anEditor.insertNode(insertBox, newRoot, 1);
+    anEditor.replaceNode(newRoot, aNode, aNode.parentNode);
+    return { mNode : insertBox, mOffset : 1, bInTransaction : true };
+  }
+
+  //It's assumed that "aChildNode" is either a cell or within one.
+  function tableDoNextField(aNode, totalRange, bShift, anEditor)
+  {
+//    var bCollapsed = anEditor.selection.isCollapsed;
+//    var anOffset = 0;
+//    if (!bShift || !bCollapsed)
+//      anOffset = msiNavigationUtils.lastOffset(aChildNode);
+    var aTableCell = findCellFromPositionInTableOrMatrix(aNode, totalRange.endContainer, totalRange.endOffset, bShift, anEditor);
+//    if (!bCollapsed)
+//      return aTableCell;
+    var nRowObj = {value : 0};
+    var nColObj = {value : 0};
+    editor.getTableSize(theTable, nRowObj, nColObj);
+    var numRows = nRowObj.value;
+    var numCols = nColObj.value;
+    editor.getCellIndexes(aTableCell, nRowObj, nColObj);
+    var nRow = nRowObj.value;
+    var nCol = nColObj.value;
+    var startCol = nCol;
+    var startRow = nRow;
+    var selNode = null;
+    var selInfo = null;
+    while (!bDone)
+    {
+      if (bShift)
+      {
+        if (!nCol)
+        {
+          nCol = numCols - 1;
+          if (!nRow)
+            nRow = numRows;
+          --nRow;
+        }
+        else
+          --nCol;
+      }
+      else
+      {
+        ++nCol;
+        if (nCol == numCols)
+        {
+          nCol = 0;
+          ++nRow;
+          if (nRow == numRows)
+            nRow = 0;
+        }
+      }
+      if (nRow == startRow && nCol == startCol)
+        break;
+      selNode = editor.getCellAt(aNode, nRow, nCol);
+      if (selNode != aTableCell)
+        bDone = true;
+      //Now check to be sure this isn't going back to the top of a multi-row cell
+      if (bDone)
+      {
+        editor.getCellIndexes(selNode, nRowObj, nColObj);
+        if (nRowObj.value != nRow)
+          bDone = false;
+      }
+    }
+    if (selNode)
+    {
+      selInfo = new Object();
+      selInfo.mNode = selNode;
+      selInfo.mOffset = bShift ? msiNavigationUtils.lastOffset(selInfo.mNode) : 0;
+      selInfo.bInTransaction = false;
+    }
+    return selNode;
+  }
+
+  //It's assumed that "aChildNode" is either a cell or within one.
+  function mTableDoNextField(aNode, totalRange, bShift, anEditor)
+  {
+//    var bCollapsed = anEditor.selection.isCollapsed;
+//    var anOffset = totalRange.endOffset;
+//    var childNode = totalRange.endContainer;
+//    if (!bShift || !bCollapsed)
+//      anOffset = msiNavigationUtils.lastOffset(aChildNode);
+    var aTableCell = msiFindCellFromPositionInTableOrMatrix(aNode, totalRange.endContainer, totalRange.endOffset, bShift, anEditor);
+    var mathmlEditor = anEditor.QueryInterface(Components.interfaces.msiIMathMLEditor);
+//    if (!bCollapsed)
+//      return aTableCell;
+    var nRowObj = {value : 0};
+    var nColObj = {value : 0};
+    mathmlEditor.findMatrixCell(aNode, aTableCell, nRowObj, nColObj);
+    var nRow = nRowObj.value;
+    var nCol = nColObj.value;
+    mathmlEditor.getMatrixSize(aNode, nRowObj, nColObj);
+    var numRows = nRowObj.value;
+    var numCols = nColObj.value;
+    var startCol = nCol;
+    var startRow = nRow;
+    var selInfo = null;
+    var selNode = null;
+    var bDone = false;
+    while (!bDone)
+    {
+      if (bShift)
+      {
+        if (nCol == 1)
+        {
+          nCol = numCols;
+          --nRow;
+          if (!nRow)
+            nRow = numRows;
+        }
+        else
+          --nCol;
+      }
+      else
+      {
+        if (nCol == numCols)
+        {
+          nCol = 1;
+          ++nRow;
+          if (nRow > numRows)
+            nRow = 1;
+        }
+        else
+          ++nCol;
+      }
+      if (nRow == startRow && nCol == startCol)
+        break;
+      selNode = mathmlEditor.getCellAt(aNode, nRow, nCol);
+      if (selNode && (selNode != aTableCell))
+        bDone = true;
+      //Now check to be sure this isn't going back to the top of a multi-row cell
+      if (bDone)
+      {
+        mathmlEditor.findMatrixCell(aNode, selNode, nRowObj, nColObj);
+        if (nRowObj.value != nRow)
+          bDone = false;
+      }
+    }
+    if (selNode)
+    {
+      selInfo = new Object();
+      selInfo.mNode = selNode;
+      selInfo.mOffset = bShift ? msiNavigationUtils.lastOffset(selInfo.mNode) : 0;
+      selInfo.bInTransaction = false;
+    }
+    return selInfo;
+  }
+
+  function scriptDoNextField(aNode, totalRange, bShift, anEditor)
+  {
+    if (!totalRange.collapsed)
+      return null;
+
+    var nPos = 0;
+    var topChild = null;
+    if (totalRange.startContainer == aNode)
+    {
+      nPos = totalRange.startOffset;
+      if (nPos == 0)
+        topChild = msiNavigationUtils.getFirstSignificantChild(aNode);
+      else
+        topChild = msiNavigationUtils.getNodeBeforePosition(aNode, nPos);
+    }
+    else
+    {
+      topChild = msiNavigationUtils.findTopChildContaining(totalRange.startContainer, aNode);
+    }
+    nPos = msiNavigationUtils.significantOffsetInParent(topChild);
+    if (nPos <= 0)  //Either topChild isn't a "significant" child (should NOT happen here!) or it's at the base position as opposed to being in the script.
+      return null;
+
+    var selInfo = null;
+    if (nPos > 2)  //Should never happen anyway!
+      nPos = 2;
+    var newNodeName = "";
+    var nMoveToPos = -1;
+    var newNode = null;
+    switch(msiGetBaseNodeName(aNode))
+    {
+      case "msub":
+        nMoveToPos = 1;  //then fallthrough
+      case "msup":
+        if (nMoveToPos < 0)
+          nMoveToPos = 2;
+        newNodeName = "msubsup";
+      break;
+      case "munder":
+        nMoveToPos = 1;  //then fallthrough
+      case "mover":
+        if (nMoveToPos < 0)
+          nMoveToPos = 2;
+        newNodeName = "munderover";
+      break;
+      case "msubsup":
+      case "munderover":
+        //The easy cases - just return the other script child
+        selInfo = new Object();
+        selInfo.mNode = msiNavigationUtils.getIndexedSignificantChild(aNode, 3 - nPos);
+        selInfo.mOffset = bShift ? msiNavigationUtils.lastOffset(selInfo.mNode) : 0;
+        selInfo.bInTransaction = false;
+      break;
+    }
+    if (newNodeName.length && (nMoveToPos > 0))
+    {
+      anEditor.beginTransaction();
+      newNode = anEditor.document.createElementNS(mmlns, newNodeName);
+      msiEditorMoveChildToPosition(newNode, nMoveToPos, topChild, anEditor);
+      msiEditorMoveChildToPosition(newNode, 0, msiNavigationUtils.getFirstSignificantChild(aNode), anEditor);
+      var insertBox = newbox(anEditor);
+      anEditor.insertNode(insertBox, newNode, 3-nMoveToPos);
+      anEditor.replaceNode(newNode, aNode, aNode.parentNode);
+      selInfo = new Object();
+      selInfo.mNode = insertBox;
+      selInfo.mOffset = 1;
+      selInfo.bInTransaction = true;
+    }
+    return selInfo;
+  }
+
+  function nodeDoNextField(aNode, totalRange, bShift, anEditor)
+  {
+    var selInfo = null;
+    var childNode = null;
+    switch(msiGetBaseNodeName(aNode))
+    {
+      case "msub":
+      case "msup":
+      case "msubsup":
+      case "munder":
+      case "mover":
+      case "munderover":
+        selInfo = scriptDoNextField(aNode, totalRange, bShift, anEditor);
+      break;
+
+      case "table":
+        selInfo = tableDoNextField(aNode, totalRange, bShift, anEditor);
+      break;
+
+      case "mtable":
+        selInfo = mTableDoNextField(aNode, totalRange, bShift, anEditor);
+      break;
+
+      case "msqrt":
+        selInfo = squareRootDoNextField(aNode, totalRange, bShift, anEditor);
+      break;
+
+      case "msidisplay":  //May add some stuff here sometime
+      break;
+
+      default:
+        if (msiNavigationUtils.isMathTemplate(aNode))
+        {
+          if (bShift)
+          {
+            selInfo = new Object();
+            if (totalRange.startContainer == aNode)
+              selInfo.mNode = msiNavigationUtils.getSignificantChildPrecedingPosition(aNode, totalRange.startOffset, true);
+            else
+              selInfo.mNode = msiNavigationUtils.getSignificantChildPrecedingNode(aNode, totalRange.startContainer, true);
+            selInfo.mOffset = selInfo.mNode ? msiNavigationUtils.lastOffset(selInfo.mNode) : 0;
+          }
+          else
+          {
+            selInfo = new Object();
+            if (totalRange.endContainer == aNode)
+              selInfo.mNode = msiNavigationUtils.getSignificantChildFollowingPosition(aNode, totalRange.endOffset, true);
+            else
+              selInfo.mNode = msiNavigationUtils.getSignificantChildFollowingNode(aNode, totalRange.endContainer, true);
+            selInfo.mOffset = 0;  //In either case
+          }
+          selInfo.bInTransaction = false;
+        }
+      break;
+    }
+
+    if (selInfo)
+    {
+      if (!selInfo.bInTransaction)
+        anEditor.beginTransaction();
+      anEditor.selection.collapse(selInfo.mNode, selInfo.mOffset);
+      anEditor.endTransaction();
+      return true;
+    }
+    return false;
+  }
+
+//  function objectTabFromSelection(aNode, bShift, anEditor)
+//  {
+//    if (!msiNavigationUtils.nodeHasContentBeforeSelection(anEditor.selection, aNode) 
+//        && !msiNavigationUtils.nodeHasContentAfterSelection(anEditor.selection, aNode) )
+//      return false;
+//
+//    var wholeRange = msiNavigationUtils.getRangeContainingSelection(anEditor.selection);
+//    var selNode = null;
+//    var childNode = bShift ? wholeRange.startContainer : wholeRange.endContainer;
+//    switch(msiGetBaseNodeName(aNode))
+//    {
+//      case "msub":
+//      case "msup":
+//      case "msubsup":
+//      case "munder":
+//      case "mover":
+//      case "munderover":
+//        selNode = doTabInScript(aNode, childNode, bShift, anEditor);
+//      break;
+//      case "msqrt":
+//        selNode = doTabInSquareRoot(aNode, anEditor);
+//      break;
+//      case "mtable":
+////        var childNode = null;
+//        selNode = doTabInMTable(aNode, childNode, bShift, anEditor);
+//      break;
+//      case "table":
+////        var childNode = null;
+//        selNode = doTabInTable(aNode, childNode, bShift, anEditor);
+//      break;
+//      default:
+//        if (msiNavigationUtils.isTemplate(aNode))
+//        {
+//          if (!bCollapsed)
+//          {
+//            if (wholeRange.endNode != aNode)
+//              selNode = msiNavigationUtils.findTopChildContaining(wholeRange.endNode, aNode);
+//            else 
+//              selNode = msiNavigationUtils.getSignificantChildPrecedingPosition(aNode, wholeRange.endOffset, true);
+//          }
+//          else if (bShift)
+//          {
+//            if (wholeRange.startNode != aNode)
+//              selNode = msiNavigationUtils.getSignificantChildPrecedingNode(aNode, wholeRange.startNode, true);
+//            else
+//              selNode = msiNavigationUtils.getSignificantChildPrecedingPosition(aNode, wholeRange.startOffset, true);
+//          }
+//          else
+//          {
+//            if (wholeRange.endNode != aNode)
+//              selNode = msiNavigationUtils.getSignificantChildFollowingNode(aNode, wholeRange.endNode, true);
+//            else
+//              selNode = msiNavigationUtils.getSignificantChildFollowingPosition(aNode, wholeRange.endOffset, true);
+//          }
+//        }
+//      break;
+//    }
+//    if (selNode)
+//    {
+//      anEditor.selection.collapse(selNode, 0);
+//      return true;
+//    }
+//    return false;
+//  }
+  var retVal = false;
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+
+  var container = msiNavigationUtils.getCommonAncestorForSelection(editor.selection);
+  var wholeRange = msiNavigationUtils.getRangeContainingSelection(editor.selection);
+  for ( var containerParent = container; !retVal && (containerParent != null); containerParent = containerParent.parentNode )
+  {
+    retVal = nodeDoNextField(containerParent, wholeRange, bShift, editor);
+  }
+  return retVal;
+}
+
+function msiEditorDoTab(bShift, editorElement)
+{
+  function doTabWithSelectionInNode(aNode, totalRange, anEditor)
+  {
+    var rv = false;
+    switch(msiGetBaseNodeName(aNode))
+    {
+      case "table":
+      case "tr":
+      case "mtable":
+      case "mtr":
+        var aTableCell = msiFindCellFromPositionInTableOrMatrix(aNode, totalRange.endContainer, totalRange.endOffset, false, anEditor);
+        editor.selection.collapse(aTableCell, 0);
+      break;
+
+      default:
+      break;
+    }
+    return rv;
+  }
+
+  var retVal = false;
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+  if (bShift && !editor.selection.isCollapsed)  //We don't do anything if there's a selection and the shift key is down
+    return false;
+  if (editor.selection.isCollapsed)
+    return msiEditorNextField(bShift, editorElement);
+
+  //Otherwise, we do have a selection.
+  var container = msiNavigationUtils.getCommonAncestorForSelection(editor.selection);
+  var wholeRange = msiNavigationUtils.getRangeContainingSelection(editor.selection);
+//  for ( var containerParent = container; !retVal && (containerParent != null); containerParent = containerParent.parentNode )
+//  {
+    retVal = doTabWithSelectionInNode(container, wholeRange, bShift, editor);
+//  }
+  return retVal;
+}
+
 //function msiGetCharForProperties(editorElement)
 //{
 //  var nodeData = msiGetObjectDataForProperties(editorElement);

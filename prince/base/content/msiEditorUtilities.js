@@ -1593,12 +1593,17 @@ function msiCopyElementAttributes(newElement, oldElement, editor, bSuppressID)
 //This function appends a child node to a new parent
 function msiEditorMoveChild(newParent, childNode, editor)
 {
+  msiEditorMoveChildToPosition(newParent, newParent.childNodes.length, childNode, editor);
+}
+
+function msiEditorMoveChildToPosition(newParent, nOffset, childNode, editor)
+{
   try
   {
     editor.deleteNode(childNode);
-    editor.insertNode(childNode, newParent, newParent.childNodes.length);
+    editor.insertNode(childNode, newParent, nOffset);
   }
-  catch(exc) {dump("Exception in msiEditorUtilities.js, msiEditorMoveChild; exception is [" + exc + "\.\n");}
+  catch(exc) {dump("Exception in msiEditorUtilities.js, msiEditorMoveChildToPosition; exception is [" + exc + "\.\n");}
 }
 
 
@@ -5966,14 +5971,25 @@ var msiNavigationUtils =
     return retVal;
   },
 
+  isDescendant : function(aNode, refNode)
+  {
+    return (this.findTopChildContaining(refNode, aNode) != null);
+  },
+
   isAncestor : function(aNode, refNode)
   {
-    var retVal = false;
+    return (this.findTopChildContaining(aNode, refNode) != null);
+  },
+
+  //Note that this function will return ancestorNode if aNode==ancestorNode, so it isn't necessarily a child
+  findTopChildContaining : function(aNode, ancestorNode)
+  {
+    var retVal = null;
     for (var targNode = aNode; targNode; targNode = targNode.parentNode)
     {
-      if (targNode == refNode)
+      if ( (targNode == ancestorNode) || (targNode.parentNode == ancestorNode) )
       {
-        retVal = true;
+        retVal = targNode;
         break;
       }
     }
@@ -6252,6 +6268,66 @@ var msiNavigationUtils =
     var children = this.getSignificantContents(node);
     if (children.length > 0)
       return children[children.length - 1];
+    return null;
+  },
+
+  getSignificantChildFollowingNode : function(parentNode, childNode, bWrap)
+  {
+    var retVal = null;
+    var sigChildren = this.getSignificantContents(parentNode);
+    var topChild = this.findTopChildContaining(childNode, parentNode);
+    if (topChild && (topChild != parentNode))
+    {
+      retVal = topChild;
+      do
+      {
+        retVal = retVal.nextSibling;
+        if (retVal && (sigChildren.indexOf(retVal) >= 0))
+          break;
+      } while (retVal);
+    }
+    if (!retVal && bWrap)
+      return this.getFirstSignificantChild(parentNode);
+    return retVal;
+  },
+
+  getSignificantChildFollowingPosition : function(parentNode, nPos, bWrap)
+  {
+    var precedingNode = this.getNodeBeforePosition(parentNode, nPos);
+    if (precedingNode)
+      return this.getSignificantChildFollowingNode(parentNode, precedingNode, bWrap);
+    if (bWrap)
+      return this.getFirstSignificantChild(parentNode);
+    return null;
+  },
+
+  getSignificantChildPrecedingNode : function(parentNode, childNode, bWrap)
+  {
+    var retVal = null;
+    var sigChildren = this.getSignificantContents(parentNode);
+    var topChild = this.findTopChildContaining(childNode, parentNode);
+    if (topChild && (topChild != parentNode))
+    {
+      retVal = topChild;
+      while (retVal)
+      {
+        retVal = retVal.previousSibling;
+        if (retVal && (sigChildren.indexOf(retVal) >= 0))
+          break;
+      }
+    }
+    if (!retVal && bWrap)
+      return this.getLastSignificantChild(parentNode);
+    return retVal;
+  },
+
+  getSignificantChildPrecedingPosition : function(parentNode, nPos, bWrap)
+  {
+    var nextNode = this.getNodeAfterPosition(parentNode, nPos);
+    if (nextNode)
+      return this.getSignificantChildPrecedingNode(parentNode, nextNode, bWrap);
+    if (bWrap)
+      return this.getLastSignificantChild(parentNode);
     return null;
   },
 
@@ -7078,6 +7154,26 @@ var msiNavigationUtils =
     return retVal;  
   },
 
+  nodeHasContentBeforeSelection : function(aSelection, aNode)
+  {
+    var bContentFound = true;
+    for (var ix = 0; bContentFound && (ix < aSelection.rangeCount); ++ix)
+    {
+      bContentFound = this.nodeHasContentBeforeRangeStart(aSelection.getRangeAt(ix));
+    }
+    return bContentFound;
+  },
+
+  nodeHasContentAfterSelection : function(aSelection, aNode)
+  {
+    var bContentFound = true;
+    for (var ix = 0; bContentFound && (ix < aSelection.rangeCount); ++ix)
+    {
+      bContentFound = this.nodeHasContentAfterRangeEnd(aSelection.getRangeAt(ix));
+    }
+    return bContentFound;
+  },
+
   nodeHasContentAfterRangeEnd : function(aRange, aNode)
   {
     var retVal = false;
@@ -7118,6 +7214,27 @@ var msiNavigationUtils =
     for (var ix = 0; ix < aSelection.rangeCount; ++ix)
       parentNodes.push( aSelection.getRangeAt(ix).commonAncestorContainer );
     return this.findCommonAncestor(parentNodes);
+  },
+
+  getRangeContainingSelection : function(aSelection)
+  {
+    var theRange = aSelection.getRangeAt(0).cloneRange();
+    var nextRange = null;
+    for (var ix = 1; ix < aSelection.rangeCount; ++ix)
+    {
+      nextRange = aSelection.getRangeAt(ix);
+      if (this.comparePositions(nextRange.startContainer, nextRange.startOffset, theRange.startContainer, theRange.startOffset) < 0)
+      {
+        theRange.startContainer = nextRange.startContainer;
+        theRange.startOffset = nextRange.startOffset;
+      }
+      if (this.comparePositions(nextRange.endContainer, nextRange.endOffset, theRange.endContainer, theRange.endOffset) > 0)
+      {
+        theRange.endContainer = nextRange.endContainer;
+        theRange.endOffset = nextRange.endOffset;
+      }
+    }
+    return theRange;
   },
 
   canContainTextNode : function(aNode, editor)
