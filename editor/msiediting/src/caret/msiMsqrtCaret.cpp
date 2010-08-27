@@ -36,7 +36,7 @@ msiMsqrtCaret::TabRight(nsIEditor *editor,
   if (NS_FAILED(res))
     return res;
   nsCOMPtr<nsIDOMElement> mrootElement;
-  res = msiUtils::CreateMroot(editor, clone, nsnull, PR_TRUE, flags, mrootElement);
+  res = msiUtils::CreateMroot(editor, clone, nsnull, PR_TRUE, PR_TRUE, flags, mrootElement);
   if (NS_FAILED(res))
     return res;
   nsCOMPtr<nsIDOMNode> parent;

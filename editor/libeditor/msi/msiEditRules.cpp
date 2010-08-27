@@ -110,9 +110,10 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
   mMSIEditor->GetMathParent(startNode, mathNode);
   mathElement = do_QueryInterface(mathNode);
 
-  if (mathElement)
+  if (mathElement){
+      mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
       res = WillDeleteMathSelection(aSelection, aAction, aCancel, aHandled);
-  else {
+  } else {
      printf("In msiEditRules::WillDeleteSelection(2)\n");
      DumpSelection(aSelection);
      mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
@@ -192,124 +193,129 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
 
   if (!mathElement) return NS_ERROR_FAILURE;
 
-  //DebDisplaySelection("\nInitial selection", aSelection, mMSIEditor, true);
+  DebDisplaySelection("\nInitial selection", aSelection, mMSIEditor, true);
 
 
   if (bCollapsed) {
       
-	  nsCOMPtr<msiIMathMLEditingBC> editingBC; 
-      PRUint32 dontcare(0);
-	  PRUint32 mathmltype;
-
-      //nsCOMPtr<nsIDOMNodeList> children;
-	  //PRUint32 number;
-	  //nsCOMPtr<nsIDOMNode> rightmostChild;
-	  //mathNode->GetChildNodes(getter_AddRefs(children));
-	  //msiUtils::GetNumberofChildren(mathNode, number);
-	  //msiUtils::GetChildNode(mathNode, endOffset-1, rightmostChild);
-
-	  
-	  printf("\nPoint of deletion:\n");
+    nsCOMPtr<msiIMathMLEditingBC> editingBC; 
+    PRUint32 dontcare(0);
+    PRUint32 mathmltype;
+    
+    printf("\nPoint of deletion:\n");
     mHTMLEditor -> DumpNode(endNode, 0, true);
 
       //endNode = rightmostChild;
 
-	  msiUtils::GetMathMLEditingBC(mHTMLEditor, endNode, dontcare, editingBC);
+    msiUtils::GetMathMLEditingBC(mHTMLEditor, endNode, dontcare, editingBC);
     if (editingBC) {
-	    mathmltype = msiUtils::GetMathmlNodeType(editingBC);
-	  }
-	  
-	  if (mathmltype ==  msiIMathMLEditingBC::MATHML_MATH){
-	     if (! msiUtils::IsEmpty(endNode)){
-		       nsCOMPtr<nsIDOMNodeList> children;
-			     PRUint32 number;
-		       nsCOMPtr<nsIDOMNode> rightmostChild;
-		       endNode->GetChildNodes(getter_AddRefs(children));
-			     msiUtils::GetNumberofChildren(endNode, number);
-			     msiUtils::GetChildNode(endNode, number-1, rightmostChild);
+      mathmltype = msiUtils::GetMathmlNodeType(editingBC);
+    }
+    
+    if (mathmltype ==  msiIMathMLEditingBC::MATHML_MATH){
+       if (! msiUtils::IsEmpty(endNode)){
+           nsCOMPtr<nsIDOMNodeList> children;
+           PRUint32 number;
+           nsCOMPtr<nsIDOMNode> rightmostChild;
+           endNode->GetChildNodes(getter_AddRefs(children));
+           msiUtils::GetNumberofChildren(endNode, number);
+           msiUtils::GetChildNode(endNode, number-1, rightmostChild);
 
            endNode = rightmostChild;             
 
-		       msiUtils::GetMathMLEditingBC(mHTMLEditor, endNode, dontcare, editingBC);
+           msiUtils::GetMathMLEditingBC(mHTMLEditor, endNode, dontcare, editingBC);
            if (editingBC) {
-	           mathmltype = msiUtils::GetMathmlNodeType(editingBC);
-	         }
+             mathmltype = msiUtils::GetMathmlNodeType(editingBC);
+           }
 
-		   }
+       }
      }
 
-     if (mathmltype ==  msiIMathMLEditingBC::MATHML_MROWFENCE){      
-			 // Remove the first and last children of the mrow -- they should be fences.
-             nsCOMPtr<nsIDOMNodeList> children;
-			 PRUint32 number;
+     if (mathmltype ==  msiIMathMLEditingBC::MATHML_MROWFENCE){
+       // This case can also be reached if the node is a <mo> that bounds the mrow.
+        
+       // Remove the first and last children of the mrow -- they should be fences.
+       nsCOMPtr<nsIDOMNodeList> children;
+       PRUint32 number;
 
-			 endNode->GetChildNodes(getter_AddRefs(children));
-			 msiUtils::GetNumberofChildren(endNode, number);
-			 
-			 			 
-			 nsCOMPtr<nsIDOMNode>  removedChild;
-			 res = msiUtils::RemoveIndexedChildNode(mHTMLEditor, endNode, number-1, removedChild);
-			 res = msiUtils::RemoveIndexedChildNode(mHTMLEditor, endNode, 0, removedChild);
+       endNode->GetChildNodes(getter_AddRefs(children));
+       msiUtils::GetNumberofChildren(endNode, number);
+       if (number == 1){
+          nsCOMPtr<nsIDOMNode> parent;
+          endNode->GetParentNode(getter_AddRefs(parent));
+          endNode = parent;
+          msiUtils::GetNumberofChildren(endNode, number);
+       }
+       
+       			 
+       nsCOMPtr<nsIDOMNode>  removedChild;
+       res = msiUtils::RemoveIndexedChildNode(mHTMLEditor, endNode, number-1, removedChild);
+       res = msiUtils::RemoveIndexedChildNode(mHTMLEditor, endNode, 0, removedChild);
 
-			 if (NS_FAILED(res)) return res;
-			 
-			 // Remove the mrow container 
-		     res = mHTMLEditor->RemoveContainer(endNode);
-			 
-			 if (NS_FAILED(res)) return res;
+       if (NS_FAILED(res)) return res;
+       
+       // Remove the mrow container 
+       res = mHTMLEditor->RemoveContainer(endNode);
+       
+       if (NS_FAILED(res)) return res;
 
-			 *aHandled = PR_TRUE;
+       *aHandled = PR_TRUE;
 
-			
+      
 
-	  } else if ( mathmltype == msiIMathMLEditingBC::MATHML_MSQRT ) {
-			 // Remove the msqrt container 
-		     res = mHTMLEditor->RemoveContainer(endNode);
-			 *aHandled = PR_TRUE;
-			 
+    } else if ( mathmltype == msiIMathMLEditingBC::MATHML_MSQRT ) {
+       // Remove the msqrt container 
+       res = mHTMLEditor->RemoveContainer(endNode);
+       *aHandled = PR_TRUE;
+       
 
-	  } else if ( mathmltype == msiIMathMLEditingBC::MATHML_MSUP || mathmltype == msiIMathMLEditingBC::MATHML_MSUB) {
-	         // remove the superscript	or subscript
-	         nsCOMPtr<nsIDOMNode>  removedChild;
-			 res = msiUtils::RemoveIndexedChildNode(mHTMLEditor, endNode, 1, removedChild);
-			 
-			 // Remove the msup (or msub) container 
-		     res = mHTMLEditor->RemoveContainer(endNode);
-			 *aHandled = PR_TRUE;
-			 
-	  }  else if ( mathmltype == msiIMathMLEditingBC::MATHML_MSUBSUP ) {
-	         // remove the superscript	and subscript
-	         nsCOMPtr<nsIDOMNode>  removedChild;
-			 res = msiUtils::RemoveIndexedChildNode(mHTMLEditor, endNode, 2, removedChild);
-			 res = msiUtils::RemoveIndexedChildNode(mHTMLEditor, endNode, 1, removedChild);
-			 // Remove the msubsup container 
-		     res = mHTMLEditor->RemoveContainer(endNode);
-			 *aHandled = PR_TRUE;
+    } else if ( mathmltype == msiIMathMLEditingBC::MATHML_MSUP || mathmltype == msiIMathMLEditingBC::MATHML_MSUB) {
+       // remove the superscript	or subscript
+       nsCOMPtr<nsIDOMNode>  removedChild;
+       res = msiUtils::RemoveIndexedChildNode(mHTMLEditor, endNode, 1, removedChild);
+       
+       // Remove the msup (or msub) container 
+       res = mHTMLEditor->RemoveContainer(endNode);
+       *aHandled = PR_TRUE;
+       
+    }  else if ( mathmltype == msiIMathMLEditingBC::MATHML_MSUBSUP ) {
+       // remove the superscript	and subscript
+       nsCOMPtr<nsIDOMNode>  removedChild;
+       res = msiUtils::RemoveIndexedChildNode(mHTMLEditor, endNode, 2, removedChild);
+       res = msiUtils::RemoveIndexedChildNode(mHTMLEditor, endNode, 1, removedChild);
+       // Remove the msubsup container 
+       res = mHTMLEditor->RemoveContainer(endNode);
+       *aHandled = PR_TRUE;
+    } else if (mathmltype ==  msiIMathMLEditingBC::MSI_INPUTBOX){
+       nsCOMPtr<nsIDOMNode> parent;
+       endNode->GetParentNode(getter_AddRefs(parent));
+       res = mHTMLEditor->RemoveContainer(parent);
+       *aHandled = PR_TRUE;
+       
 
-
-	  } else {
-      	  aSelection->Extend( endNode, endOffset-1 );
-	  }
+    } else {
+       aSelection->Extend( endNode, endOffset-1 );
+    }
   }
 
    
   if (!*aHandled){
      bDeleteEntireMath = bSelectionContainsTheEntireMathNode(mathNode, aSelection);
-	 
+   
      DebDisplaySelection("\nDeletion not handled yet. Extend selection to:" , aSelection, mMSIEditor, true);
 
      mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
-	 
-	   DebDisplaySelection("\nSelection before calling nsHTMLEditRules::WillDeleteSelection" , aSelection, mMSIEditor, true);
+   
+     DebDisplaySelection("\nSelection before calling nsHTMLEditRules::WillDeleteSelection" , aSelection, mMSIEditor, true);
 
      nsHTMLEditRules::WillDeleteSelection(aSelection, aAction, aCancel, aHandled);
 
-	   mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
-	   DebDisplaySelection("\nSelection after calling nsHTMLEditRules::WillDeleteSelection" , aSelection, mMSIEditor, true);
+     mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
+     DebDisplaySelection("\nSelection after calling nsHTMLEditRules::WillDeleteSelection" , aSelection, mMSIEditor, true);
 
 
      if (bDeleteEntireMath)
-	      return NS_OK;
+        return NS_OK;
 
   }                          
   
@@ -380,8 +386,16 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
      nsIDOMRange* range;
      aSelection->GetRangeAt(0, &range);
 
+     // if (mMSIEditor->IsTextNode(theNode)){
+     //   mMSIEditor->GetMathParent(theNode, mathNode);
+     //   theNode = mathNode;
+     //   //theOffset = 1;
+     // }
+
      range->SetStart(theNode, theOffset);
      aSelection->CollapseToStart();
+     
+     mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
 
      DebDisplaySelection("\nFinal selection", aSelection, mMSIEditor, true);
   }
@@ -396,7 +410,7 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
 PRBool
 bSelectionContainsTheEntireMathNode(nsIDOMNode* aNode, nsISelection* aSelection) 
 {
-	 nsCOMPtr<nsIDOMElement> mathElement;
+   nsCOMPtr<nsIDOMElement> mathElement;
      nsCOMPtr<nsIDOMNode> firstChildNode;
      nsCOMPtr<nsIDOMNode> lastChildNode;
      nsCOMPtr<nsIDOMRange> range;
@@ -415,10 +429,10 @@ bSelectionContainsTheEntireMathNode(nsIDOMNode* aNode, nsISelection* aSelection)
        {
          aSelection->GetRangeAt(0, getter_AddRefs(range));
          range->SelectNode(aNode);
-		 return PR_TRUE;
+     return PR_TRUE;
        }
      }
-	 return PR_FALSE;
+   return PR_FALSE;
 }
 
 
@@ -452,7 +466,7 @@ PRInt32 CharLength(nsCOMPtr<nsIDOMNode> node)
     nsCOMPtr<nsIDOM3Node> m;
     m = do_QueryInterface(node);
     m->GetTextContent(str);
-	  return str.Length();
+    return str.Length();
 }
 
 
@@ -468,51 +482,53 @@ PRInt32 FindCursorIndex(nsHTMLEditor* editor,
   editor->DumpNode(node, 2*level, true);
 
   if (editor->IsTextNode(node)) {
+
       if (caretNode == node) {
-	      done = true;
-		  printf("\nReturn caret offset %d", caretOffset);
-	      return caretOffset;
-	  } else {
-	      printf("\nReturn char length %d", CharLength(node));
-	      return CharLength(node); 
-	  }
+          done = true;
+          printf("\nReturn caret offset %d", caretOffset);
+          return caretOffset;
+      } else {
+          printf("\nReturn char length %d", CharLength(node));
+          return CharLength(node); 
+      }
+
   }	else {
       
       nsCOMPtr<msiIMathMLEditingBC> editingBC; 
       PRUint32 dontcare(0);
-	    PRUint32 mathmltype;
+      PRUint32 mathmltype;
 
-	    msiUtils::GetMathMLEditingBC(editor, node, dontcare, editingBC);
+      msiUtils::GetMathMLEditingBC(editor, node, dontcare, editingBC);
       if (editingBC) {
-	      mathmltype = msiUtils::GetMathmlNodeType(editingBC);
-	  }
+        mathmltype = msiUtils::GetMathmlNodeType(editingBC);
+      }
 
-    nsCOMPtr<nsIDOMNodeList> children;
-	  PRUint32 number;
-	  nsCOMPtr<nsIDOMNode> child;
+      nsCOMPtr<nsIDOMNodeList> children;
+      PRUint32 number;
+      nsCOMPtr<nsIDOMNode> child;
 
-    node->GetChildNodes(getter_AddRefs(children));
-	  msiUtils::GetNumberofChildren(node, number);
-	  
-	  //int lastChildIndex = number;
+      node->GetChildNodes(getter_AddRefs(children));
+      msiUtils::GetNumberofChildren(node, number);
+    
+      //int lastChildIndex = number;
 
-	  if (node == caretNode){
-	     number = caretOffset;
-	  }
+      if (node == caretNode){
+         number = caretOffset;
+      }
 
-	  int count = 0;
+      int count = 0;
 
-	  for (int i = 0; i < number; ++i) {
-	    msiUtils::GetChildNode(node, i, child);
-		if (mathmltype == msiIMathMLEditingBC::MATHML_MFRAC && i == 1){
-		  count += 1;  // to distinguish numerator from denominator
-		}
-		count += FindCursorIndex(editor, child, caretNode, caretOffset, done, level+1);
-		if (done)
-		  break;
-	  }
-	  printf("\nReturn sum %d", count);
-	  return count;
+      for (int i = 0; i < number; ++i) {
+        msiUtils::GetChildNode(node, i, child);
+        if (mathmltype == msiIMathMLEditingBC::MATHML_MFRAC && i == 1){
+          count += 1;  // to distinguish numerator from denominator
+        }
+        count += FindCursorIndex(editor, child, caretNode, caretOffset, done, level+1);
+        if (done)
+          break;
+      }
+      printf("\nReturn sum %d", count);
+      return count;
 
   }
       
@@ -525,55 +541,58 @@ void FindCursorNodeAndOffset(nsHTMLEditor* editor, nsIDOMNode* node, PRInt32& ch
      editor->DumpNode(node, 0, true);
 
      if (editor->IsTextNode(node)) {
-	       PRInt32 len = CharLength(node);
+         PRInt32 len = CharLength(node);
 
-	       if (len >= charCount){
-
-		       theNode = node;
-		       theOffset = charCount;
-			   charCount = 0;
-     	       printf("\nFound\n");
-
-		   } else {
-
-		       charCount -= len;
-		   }
+         if (len >= charCount){
+           theNode = node;
+           theOffset = charCount;
+           charCount = 0;
+     	     printf("\nFound\n");
+         } else {
+           charCount -= len;
+         }
 
      }  else {
-      
-           nsCOMPtr<msiIMathMLEditingBC> editingBC; 
-           PRUint32 dontcare(0);
-	       PRUint32 mathmltype;
+         theNode = node;
+         theOffset = 0;
 
-	       msiUtils::GetMathMLEditingBC(editor, node, dontcare, editingBC);
-           if (editingBC) {
-	         mathmltype = msiUtils::GetMathmlNodeType(editingBC);
-	       }
+         nsCOMPtr<msiIMathMLEditingBC> editingBC; 
+         PRUint32 dontcare(0);
+         PRUint32 mathmltype;
+
+         msiUtils::GetMathMLEditingBC(editor, node, dontcare, editingBC);
+         if (editingBC) {
+           mathmltype = msiUtils::GetMathmlNodeType(editingBC);
+         }
            
-           nsCOMPtr<nsIDOMNodeList> children;
-	       PRUint32 number;
-	       nsCOMPtr<nsIDOMNode> child;
+         nsCOMPtr<nsIDOMNodeList> children;
+         PRUint32 number;
+         nsCOMPtr<nsIDOMNode> child;
 
-           node->GetChildNodes(getter_AddRefs(children));
-	       msiUtils::GetNumberofChildren(node, number);
+         node->GetChildNodes(getter_AddRefs(children));
+         msiUtils::GetNumberofChildren(node, number);
 
-		   for (PRUint32 i = 0; i < number; ++i) {
-	          printf("\nGet child %d\n", i);
-	          msiUtils::GetChildNode(node, i, child);
+         for (PRUint32 i = 0; i < number; ++i) {
+            printf("\nGet child %d\n", i);
+            msiUtils::GetChildNode(node, i, child);
 
-			  //printf("\nCharLength is %d\n", CharLength(child));
-		      if (mathmltype == msiIMathMLEditingBC::MATHML_MFRAC && i == 1){
-		        charCount -= 1;  // to distinguish numerator from denominator
-		      }
-
-			  FindCursorNodeAndOffset(editor, child, charCount, theNode, theOffset);
-			  if (charCount == 0)
-			    break;
-			}
-	  }
+            //printf("\nCharLength is %d\n", CharLength(child));
+            if (mathmltype == msiIMathMLEditingBC::MATHML_MFRAC && i == 1){
+              charCount -= 1;  // to distinguish numerator from denominator
+            }
+            if (editor->IsTextNode(child)){
+              charCount -= CharLength(child);
+              theOffset += 1;
+            } else {
+              FindCursorNodeAndOffset(editor, child, charCount, theNode, theOffset);
+            }
+            if (charCount <= 0)
+              break;
+      }
+    }
 }
-			    
-			  
+          
+        
 
 
 //ljh TODO -- determine what if any functionality is needed for these two functions.
