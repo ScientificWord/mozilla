@@ -8225,7 +8225,61 @@ function openAllSubdocs()
   catch(e)
   {
     dump(e.message+"\n");
-  }
+  }    
 }          
- 
+
+/* The following code is for pretty printing. The idea is to cause little change in the text form for little
+   changes in the document. This is done by having canonical indents for all elements (except text tags
+   will be inline), and to change the line breaks minimally. That is long lines will be broken, very short lines
+   will be consolidated, but the changes should not propagate to the end of a paragraph. */
+
+var indentIncrement = "  ";  // should eventually come from a user preference
   
+function processElement( node, treeWalker, output, indent )
+{
+  output += "\n";
+  for (var i = 0; i < indent.val; i++) output += indentIncrement;
+  output += "<" + node.name;
+  // output attributes here
+  output += ">";
+  indent.val++;
+  var child = treeWalker.firstChild;
+  if (child) processElement( child, treeWalker, output, indent);
+  while (child = treeWalker.nextSibling) processElement(child, treeWalker, output, indent);
+  output += "\n";
+  indent.val--;
+  for (var i = 0; i < indent.val; i++) output += indentIncrement;
+  output += "</"+node.name+">";
+}                                                              
+
+function processCData( node, treeWalker, indent )
+{
+}
+
+function processText( textnode, treeWalker, indent, xpos )
+{
+}
+
+function processComment(commentNode, treeWalker, indent )
+{
+}
+
+
+function prettyPrint()
+{
+  var docAsString;
+  var indent = { val: 0; };
+  var editorElement = msiGetActiveEditorElement();
+  var editor;
+  if (editorElement) editor = msiGetEditor(editorElement);
+  if (!editor) return;
+  var treeWalker = doc.createTreeWalker(editor.document.documentElement,
+  1021,     // everything but fragments and attributes
+  { acceptNode: function(node) { return NodeFilter.FILTER_ACCEPT; } },
+  false);
+  processElement{ treeWalker.root, treeWalker, indent, docAsString );
+  dump(docAsString);
+} 
+  
+  
+}
