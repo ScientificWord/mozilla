@@ -1312,29 +1312,34 @@ function msiDumpDocLocation(node)
   return outString;
 }
 
-function msiGetDocumentHead(theEditor)
+function msiGetPreamble(theEditor)
+// BBM
+// We don't want the head; we want the preamble. Otherwise we get TeX before the \documentclass
+// in the resulting TeX file. I changed the name from msiGetDocumentHead to msiGetPreamble(theEditor)
 {
   var docHead = null;
-  var childElements = theEditor.document.documentElement.getElementsByTagName("*");
-  var testFor = ["preamble", "meta", "title", "link"];
-  for (var ix = 0; (docHead == null) && (ix < childElements.length); ++ix)
-  {
-    for (var jx = 0; jx < testFor.length; ++jx)
-    {
-      var testList = childElements[ix].getElementsByTagName(testFor[jx]);
-      if (testList.length > 0)
-      {
-        docHead = childElements[ix];
-        break;
-      }
-    }
-  }
-  if (docHead == null)
-  {
-    var headList = theEditor.document.getElementsByTagName("head");
-    if (headList.length > 0)
-      docHead = headList[0];
-  }
+  var preambles = theEditor.document.documentElement.getElementsByTagName("preamble");
+  if (preambles.length > 0) docHead = preambles[0];
+//  var childElements = theEditor.document.documentElement.getElementsByTagName("*");
+//  var testFor = ["preamble", "meta", "title", "link"];
+//  for (var ix = 0; (docHead == null) && (ix < childElements.length); ++ix)
+//  {
+//    for (var jx = 0; jx < testFor.length; ++jx)
+//    {
+//      var testList = childElements[ix].getElementsByTagName(testFor[jx]);
+//      if (testList.length > 0)
+//      {
+//        docHead = childElements[ix];
+//        break;
+//      }
+//    }
+//  }
+//  if (docHead == null)
+//  {
+//    var headList = theEditor.document.getElementsByTagName("head");
+//    if (headList.length > 0)
+//      docHead = headList[0];
+//  }
   return docHead;
 }
 
@@ -3025,24 +3030,12 @@ function msiGetParentEditorElementForDialog(dialogWindow)
 function msiGetDocumentTitle(editorElement)
 {
     var doc = msiGetEditor(editorElement).document;
-    var nodes = doc.getElementsByTagName('title');
-    for(var i=nodes.length - 1; i >= 0; i--) {
-      if (nodes[i].textContent.length > 0)
-      {
-        return nodes[i].textContent;
-      }
-    }
+    var nodes = doc.getElementsByTagName('preamble');
+    var titleNodes;
+    if (nodes.length > 0) titleNodes= nodes[0].getElementsByTagName("title");
+    if (titleNodes.length > 0 && titleNodes[0].textContent.length > 0)
+      return nodes[i].textContent;
     return "untitled";  // BBM: localize
-//   var theFilename = document.getElementById("filename");
-//   var title = "";
-//   if (theFilename != null)
-//     title = theFilename.value;
-//   if (title.length > 0) return title;
-//   try {
-//     return new XPCNativeWrapper(msiGetEditor(editorElement).document, "title").title;
-//   } catch (e) {}
-// 
-//   return "";
 }
 
 function msiSetDocumentTitle(editorElement, title)

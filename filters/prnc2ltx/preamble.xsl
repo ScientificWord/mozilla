@@ -316,5 +316,24 @@
 	</xsl:choose></xsl:if>
 </xsl:template>
 
+
+<!-- meta data section. Mostly this info is sent to PDF -->
+
+<xsl:template match="html:meta">
+  <xsl:choose>
+    <xsl:when test="@name='author'">\hypersetup{pdfauthor=<xsl:value-of select="@content"/>}
+    </xsl:when>
+    <xsl:when test="@name='copyright'">\special{pdf: docinfo &lt;&lt; /Copyright (<xsl:value-of select="@content"/>)}</xsl:when>
+    <xsl:when test="@name='disclaimer'">\special{pdf: docinfo  &lt;&lt; /Disclaimer (<xsl:value-of select="@content"/>)}</xsl:when>
+    <xsl:when test="@name='editor'">\special{pdf: docinfo  &lt;&lt; /Editor (<xsl:value-of select="@content"/>)}</xsl:when>
+    <xsl:when test="@name='publisher'">\special{pdf: docinfo  &lt;&lt; /Publisher (<xsl:value-of select="@content"/>)}</xsl:when>
+    <xsl:when test="@name='trademark'">\special{pdf: docinfo  &lt;&lt; /Trademark (<xsl:value-of select="@content"/>)}</xsl:when>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template match="html:title">
+  \hypersetup{pdftitle=<xsl:value-of select="."/>} 
+</xsl:template>
+
 </xsl:stylesheet>
 
