@@ -340,13 +340,18 @@ msiEditor::InsertDisplay()
   nsCOMPtr<nsIDOMNode> mathnode;
   nsString attr = NS_LITERAL_STRING("display");
   nsString val = NS_LITERAL_STRING("block");
+  nsString currentVal;
   SelectionInMath(getter_AddRefs(mathnode));
   if (mathnode)
   {
+    // skip this if the display attribute is already 'block'.
+    // setting the attribute won't hurt, but it generates an undo stack item.
     nsCOMPtr<nsIDOMElement> mathElement = do_QueryInterface(mathnode);
-    
-  // find the math node and set the display attribute
-    mathElement->SetAttribute(attr, val);
+    PRBool isDisplaySet;
+    GetAttributeValue(mathElement, attr, currentVal, &isDisplaySet);
+    if (isDisplaySet && currentVal.Equals(val)) return NS_OK;
+    // find the math node and set the display attribute
+    SetAttribute(mathElement, attr, val);
   }
   else
   return InsertMath(PR_TRUE);
