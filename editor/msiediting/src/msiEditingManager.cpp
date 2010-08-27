@@ -2232,8 +2232,11 @@ nsresult msiEditingManager::GetMatrixInfo(nsIDOMNode *aMatrix, PRInt32& nRow, PR
     res = GetNextMatrixRow(matrix, prevRow, getter_AddRefs(nextRow));
   };
 
-  nRow = nCurrRow;
-  nCol = usedCount.Length();
+  if (!pFindCell)
+  {
+    nRow = nCurrRow;
+    nCol = usedCount.Length();
+  }
   return res;
 }
 
