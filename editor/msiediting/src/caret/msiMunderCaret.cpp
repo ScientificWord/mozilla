@@ -209,7 +209,7 @@ msiMunderCaret::TabRight(nsIEditor *editor, nsIDOMNode ** node, PRUint32 *offset
   nsAutoString emptyString;
   nsCOMPtr<nsIDOMElement> msubsupElement;
   res = msiUtils::CreateMunderover(editor, cloneBase, cloneSub, nsnull,
-                                   PR_FALSE, PR_TRUE, PR_TRUE,
+                                   PR_FALSE, PR_TRUE, PR_TRUE, PR_TRUE,
                                    flags, emptyString, emptyString, msubsupElement);
   if (NS_FAILED(res))
     return res;
