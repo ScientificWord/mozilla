@@ -8563,20 +8563,22 @@ function processNode( editor, node, treeWalker, output, currentline, indent)
 }
 
 
-function prettyprint()
+function prettyprint(editor)
 {
   var output = new Object();
   output.s = "";
   var currentline = new Object;
   currentline.s = "";          
   var indent = 0;
-  var editorElement = msiGetActiveEditorElement();
-  var editor;
-  if (editorElement)
-  {
-    editor = msiGetEditor(editorElement);
+  if (!editor) {
+    var editorElement = msiGetActiveEditorElement();
+    var editor;
+    if (editorElement)
+    {
+      editor = msiGetEditor(editorElement);
+    }
+    if (!editor) return;
   }
-  if (!editor) return;
   editor.document.normalize();
   var treeWalker = editor.document.createTreeWalker(editor.document,
         1021,     // everything but fragments and attributes
@@ -8584,8 +8586,7 @@ function prettyprint()
         false);
   dump("First node is "+treeWalker.root.nodeName+"\n");
   processNode(editor, treeWalker.root, treeWalker, output, currentline, indent);
-  dump(output.s);
-  dump("\n");
+  return output.s;
 } 
   
   
