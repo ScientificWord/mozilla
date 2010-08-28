@@ -7,7 +7,7 @@
 #include "nsCOMPtr.h"
 #include "nsIDOMNode.h"
 #include "nsIEditor.h"
-#include "nsIMutableArray.h"
+#include "nsIMutableArray.h"s
 #include "msiEditingAtoms.h"
 #include "nsIDOMText.h"
 #include "nsIDOMCharacterData.h"
@@ -133,14 +133,14 @@ msiBigOpCoalesce::Coalesce(nsIEditor * editor,
       {
         nsAutoString emptyString;
         if (newSub && newSup)
-          res = msiUtils::CreateMunderover(editor, base, newSub, newSup, PR_FALSE, PR_FALSE, PR_FALSE,
+          res = msiUtils::CreateMunderover(editor, base, newSub, newSup, PR_FALSE, PR_FALSE, PR_FALSE, PR_TRUE,
                                            dummyflags, emptyString, 
                                            emptyString, newElement);
         else if (newSub)
-          res = msiUtils::CreateMunderOrMover(editor, PR_FALSE, base, newSub, PR_FALSE, PR_FALSE, 
+          res = msiUtils::CreateMunderOrMover(editor, PR_FALSE, base, newSub, PR_FALSE, PR_FALSE, PR_TRUE, 
                                               dummyflags, emptyString, newElement);
         else //newSup
-          res = msiUtils::CreateMunderOrMover(editor, PR_TRUE, base, newSup, PR_FALSE, PR_FALSE, 
+          res = msiUtils::CreateMunderOrMover(editor, PR_TRUE, base, newSup, PR_FALSE, PR_FALSE, PR_TRUE,
                                               dummyflags, emptyString, newElement);
       }
       if (NS_SUCCEEDED(res) && newElement)

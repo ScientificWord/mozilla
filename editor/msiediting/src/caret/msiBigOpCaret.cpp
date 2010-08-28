@@ -739,11 +739,11 @@ msiBigOperatorCaret::TabRight(nsIEditor *editor, nsIDOMNode ** node, PRUint32 *o
     {
       if (hasSup)
         res = msiUtils::CreateMunderover(editor, cloneBase, nsnull, cloneScript,
-                                         PR_FALSE, PR_TRUE, PR_TRUE,
+                                         PR_FALSE, PR_TRUE, PR_TRUE, PR_TRUE,
                                          flags, emptyString, emptyString, bigopElement);
       else
         res = msiUtils::CreateMunderover(editor, cloneBase, cloneScript, nsnull,
-                                         PR_FALSE, PR_TRUE, PR_TRUE,
+                                         PR_FALSE, PR_TRUE, PR_TRUE, PR_TRUE,
                                          flags, emptyString, emptyString, bigopElement);
     }
     else
