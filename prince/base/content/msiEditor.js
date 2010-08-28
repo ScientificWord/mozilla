@@ -4051,8 +4051,9 @@ function msiSetEditMode(mode, editorElement)
 
     flags |= 1024; // OutputLFLineBreak
     flags |= 32;   // OutputWrap
-    var source = editor.outputToString("text/xml", flags);
-    var start = source.search(/<html/i);
+    // ignore the above and use the prettyprint function
+    var source = prettyprint(editor);//editor.outputToString("text/xml", flags);
+    var start = 0; //source.search(/<html/i);
     if (start == -1) start = 0;
     var sourceTextEditor = msiGetHTMLSourceEditor(editorElement);
     try
