@@ -3175,18 +3175,41 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
         switch(mmlType)
         {
           case msiIMathMLEditingBC::MATHML_MFENCED:
-          case msiIMathMLEditingBC::MATHML_MROWFENCE:
             splitParent = nextNode;  //In this case all the contents of splitParent are to be divided up into the two cells
             nInsertPos = -1;
             if (!splittable)
             {
               doSplitAt = currPos;
-//              if ( (toLeftRight < 0) && (doSplitAt > 0) )
+//            if ( (toLeftRight < 0) && (doSplitAt > 0) )
               if (toLeftRight < 0)
                 ++doSplitAt;  //Means the split should be to the right of current child node's (that is, "prevChild") position.
             }
-            specialInsertPos = 1;
-            skipAtEnd = 1;
+//            specialInsertPos = 1;
+//            skipAtEnd = 1;
+          break;
+          case msiIMathMLEditingBC::MATHML_MROWFENCE:
+          {
+            PRUint32 nLength;
+            dontcare = GetLengthOfDOMNode(nextNode, nLength);
+            if (currPos == nLength)  //In this case we're actually outside the right delimiter
+              toLeftRight = -1;
+            else if (currPos == 0)  //In this case we're actually outside the left delimiter
+              toLeftRight = 1;
+            else
+            {
+              splitParent = nextNode;  //In this case all the contents of splitParent are to be divided up into the two cells
+              nInsertPos = -1;
+              if (!splittable)
+              {
+                doSplitAt = currPos;
+//              if ( (toLeftRight < 0) && (doSplitAt > 0) )
+                if (toLeftRight < 0)
+                  ++doSplitAt;  //Means the split should be to the right of current child node's (that is, "prevChild") position.
+              }
+              specialInsertPos = 1;
+              skipAtEnd = 1;
+            }
+          }
           break;
           case msiIMathMLEditingBC::MATHML_MROWBOUNDFENCE:
           {
