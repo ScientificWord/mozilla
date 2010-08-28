@@ -7590,13 +7590,13 @@ function msiDumpWithID(str, element)
 function msiKludgeTestKeys(keyArray)
 {
   var keysInUse = [];
-#if DEBUG_Ron
-  keysInUse.push("search");
-  keysInUse.push("tableEdit");
-  keysInUse.push("spaces");
-  keysInUse.push("reviseChars");
-  keysInUse.push("editorFocus");
-#endif
+//#if DEBUG_Ron            BBM: I commented this out so that I could change this file without building every time.
+//  keysInUse.push("search");
+//  keysInUse.push("tableEdit");
+//  keysInUse.push("spaces");
+//  keysInUse.push("reviseChars");
+//  keysInUse.push("editorFocus");
+//#endif
 
   var bDoIt = false;
   if (keyArray && keyArray.length)
@@ -8342,7 +8342,251 @@ function openAllSubdocs()
   catch(e)
   {
     dump(e.message+"\n");
-  }
+  }    
 }          
- 
+
+/* The following code is for pretty printing. The idea is to cause little change in the text form for little
+   changes in the document. This is done by having canonical indents for all elements (except text tags
+   will be inline), and to change the line breaks minimally. That is long lines will be broken, very short lines
+   will be consolidated, but the changes should not propagate to the end of a paragraph. */
+
+var indentIncrement = "  ";  // should eventually come from a user 
+var maxLength = 70; // should come from prefs; if a line is longer than this, we must break it
+var minLength = 30; // if a line is shorter than this, we at least try to consolidate it
+
+function isEmptyText(textnode)
+{
+  return !/\S/.test(textnode.textContent);
+}
+
+function newline(output, currentline, indent)
+{
+  if (/\S/.test(currentline.s))
+  {
+    output.s += currentline.s.replace("\n"," ", "g") + "\n";
+  }    
+  currentline.s ="";
+  if (indent) 
+    for (var i = 0; i < indent; i++) currentline.s += indentIncrement;
+    
+    
+  
+//  if (/\S/.test(currentline.s)) // there is non-whitespace text in it
+//  {
+//    while (currentline.s.length > 0)
+//    {
+//      if (currentline.s.length <= maxLength)
+//      {  // BBM: this may consolidate shorter strings too aggressively
+//        output.s += currentline.s.replace("\n"," ","g") + "\n";
+//        currentline.s = "";
+//      }
+//      else 
+//      { // here is the work
+//        var index2;                     
+//        var index1 = currentline.s.indexOf("\n", 0);
+//        if (index1 >= 0) // there are existing line breaks
+//        {
+//          if (index1 < minLength) // try to consolidate
+//          {
+//            index2 = index1;
+//            while (index2 >= 0 && index2 < maxLength) // found another linebreak
+//            {
+//              index1 = index2;
+//              index2 = currentline.s.indexOf("\n", index2+1);
+//            }
+//          }
+//          if (index1 >= 0) 
+//          {
+//            output.s += currentline.s.slice(0, index1 + 1).replace("\n"," ","g");
+//            currentline.s = currentline.s.slice(index1 + 2);  // repeat until length is 0;
+//          }
+//        }
+//        else // no existing linebreaks
+//        {
+//          index1 = currentline.s.lastIndexOf(" ",maxLength);
+//          if (index1 == -1) index1 = currentline.s.indexOf(" ",maxLength);
+//          if (index1 > 0)
+//          {
+//            var remainder;
+//            output.s += currentline.s.slice(0, index1).replace("\n"," ","g");
+//            remainder = currentline.s.slice(index1 + 1);
+//            currentline.s = "";
+//            if (indent) 
+//              for (var i = 0; i < indent; i++) currentline.s += indentIncrement;
+//            currentline.s += remainder;  // repeat until length is 0;
+//          }
+//          else
+//          {
+//            // BBM: problem. No spaces. Japanese? For the moment just put out the string
+//            output.s += currentline.s.replace("\n"," ","g") + "\n";
+//            currentline.s = "";
+//          }
+//        }
+//      }
+//    }
+//  }
+//  currentline.s = "";
+//  if (indent) 
+//    for (var i = 0; i < indent; i++) currentline.s += indentIncrement;
+}
+
+var nonInlineTags=".math.html.head.requirespackage.newtheorem.definitionslist.documentclass.preamble.";
+function isInlineElement(editor, element)
+{
+  if (nonInlineTags.search("."+element.localName+".") >= 0) return false;
+  var class = editor.tagListManager.getClassOfTag(element.localName, null);
+  if (class == "texttag" || class.length == 0) return true;
+  return false;
+}
+  
+/* ELEMENT_NODE =1 */
+function processElement( editor, node, treeWalker, output, currentline, indent )
+{
+  dump("ProcessElement, indent = "+indent+"\n");
+  var inline = isInlineElement(editor, node);
+  if (!inline) 
+    newline(output, currentline, indent);
+  currentline.s += "<" + node.nodeName;
+  if (node.hasAttributes())
+  {
+    var attrs = node.attributes;
+    var len = attrs.length;
+    for (var i = 0; i < len; i++)
+      currentline.s += " " +attrs[i].name + "='" +attrs[i].value+"'";
+  }
+  var child = treeWalker.firstChild();
+  if (child)
+  {
+    currentline.s += ">";
+    while (child) 
+    {
+      processNode(editor, child, treeWalker, output, currentline, indent+1);
+      treeWalker.currentNode = child;
+      child = treeWalker.nextSibling();
+    }
+    if (!inline)
+      newline(output, currentline, indent);
+    currentline.s += "</"+node.nodeName+">";
+  }
+  else currentline.s +="/>";
+  if (!inline) newline(output, currentline, indent);   
+}       
+
+/* ATTRIBUTE_NODE = 2, handled in element code
+   TEXT_NODE = 3*/
+
+function processText( node, output, currentline)
+{
+    if ( !isEmptyText(node)) currentline.s += (node.textContent.replace(/\s+/," ","g"));
+}                                                        
+
+/* CDATA_SECTION_NODE = 4 */
+
+function processCData( node, output, currentline, indent )
+{
+  currentline.s += "<![CDATA[";
+  currentline.s += node.data;
+  currentline.s += "]]>";
+}
+
+/* ENTITY_REFERENCE_NODE = 5
+   ENTITY_NODE = 6 */
+   
+/* PROCESSING_INSTRUCTION_NODE = 7 */
+
+function processPINode (node, output, currentline, indent)
+{
+  newline(output, currentline, 0);
+  currentline.s += "<?"+node.target+" "+node.data+"?>";
+  newline(output, currentline, indent);
+}   
+
+/* COMMENT_NODE = 8*/
+
+function processComment(node, output, currentline, indent )
+{
+  newline(output, currentline,0);
+  currentline.s += "<!--";
+  currentline.s += node.data;
+  currentline.s += "-->";
+  newline(output, currentline, indent);
+}
+
+/* DOCUMENT_NODE = 9*/
+
+function processDocument(editor, node, treeWalker, output, currentline, indent )
+{
+  currentline.s += '<?xml version="1.0" encoding="UTF-8"?>';
+  newline(output, currentline, 0);
+  var child = treeWalker.firstChild();
+  while (child) 
+  {
+    processNode(editor, child, treeWalker, output, currentline, indent);
+    treeWalker.currentNode = child;
+    child = treeWalker.nextSibling();
+  }
+}
+
+/* DOCUMENT_TYPE_NODE = 9*/
+function processDocumentType(node, treeWalker, output, currentline, indent)
+{
+}
+
+
+function processNode( editor, node, treeWalker, output, currentline, indent)
+{
+  switch (node.nodeType) {                                                    
+    case 1: //Node.ELEMENT_NODE: 
+      processElement(editor, node, treeWalker, output, currentline, indent); 
+      break;
+    case 3: //Node.TEXT_NODE: 
+      processText(node, output, currentline); 
+      break;
+    case 4:  //Node.CDATA_SECTION_NODE: 
+      processCData(node, output, currentline, indent); 
+      break;
+    case 7: //Node.PROCESSING_INSTRUCTION_NODE: 
+      processPINode( node, output, currentline, indent); 
+      break;
+    case 8: //Node.COMMENT_NODE: 
+      processComment( node, output, currentline, indent); 
+      break;
+    case 9: //Node.DOCUMENT_NODE: 
+      processDocument(editor, node, treeWalker, output, currentline, indent); 
+      break;
+    default:  
+      newline(output, currentline, 0); 
+      currentline.s += "Stub for node type "+node.nodeType; 
+      newline(output, currentline, indent); 
+      break;
+  }
+}
+
+
+function prettyprint(editor)
+{
+  var output = new Object();
+  output.s = "";
+  var currentline = new Object;
+  currentline.s = "";          
+  var indent = 0;
+  if (!editor) {
+    var editorElement = msiGetActiveEditorElement();
+    var editor;
+    if (editorElement)
+    {
+      editor = msiGetEditor(editorElement);
+    }
+    if (!editor) return;
+  }
+  editor.document.normalize();
+  var treeWalker = editor.document.createTreeWalker(editor.document,
+        1021,     // everything but fragments and attributes
+        { acceptNode: function(node) { return NodeFilter.FILTER_ACCEPT; } },
+        false);
+  dump("First node is "+treeWalker.root.nodeName+"\n");
+  processNode(editor, treeWalker.root, treeWalker, output, currentline, indent);
+  return output.s;
+} 
+  
   
