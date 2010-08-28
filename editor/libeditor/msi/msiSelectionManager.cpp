@@ -120,7 +120,9 @@ msiSelectionManager::SetNodeIDs(nsRangeStore * rangeItem)
         nsCOMPtr<nsIDOMText> textNode(do_QueryInterface(node));
         if (textNode && m_msiEditor)
         {
-          if (m_msiEditor->NodeInMath(node))
+          nsCOMPtr<nsIDOMNode> mathnode;
+          m_msiEditor->NodeInMath(node, getter_AddRefs(mathnode));
+          if (mathnode)
             NS_ASSERTION(PR_FALSE, "YUCK\n.");
           //else
           //ljh -- since mathml editing won't be handling is textnode mozilla's nsRangeUpdater code 
@@ -230,12 +232,14 @@ void msiSelectionManager::Cleanup()
 
 void msiSelectionManager::SetMathmlSurrogates(nsRangeStore * rangeItem)
 {
+  nsCOMPtr<nsIDOMNode> mathnode;
   if (!m_msiEditor || !rangeItem)
     return;
   if (rangeItem->startNode)
   {
     nsCOMPtr<nsIDOMText> text(do_QueryInterface(rangeItem->startNode));
-    if (text && m_msiEditor->NodeInMath(rangeItem->startNode))
+    m_msiEditor->NodeInMath(rangeItem->startNode, getter_AddRefs(mathnode));
+    if (text && mathnode)
     {
       nsCOMPtr<nsIDOMNode> parent;
       PRUint32 index(msiIMathMLEditingBC::INVALID);
@@ -250,7 +254,8 @@ void msiSelectionManager::SetMathmlSurrogates(nsRangeStore * rangeItem)
   if (rangeItem->endNode)
   {
     nsCOMPtr<nsIDOMText> text(do_QueryInterface(rangeItem->endNode));
-    if (text && m_msiEditor->NodeInMath(rangeItem->endNode))
+    m_msiEditor->NodeInMath(rangeItem->endNode, getter_AddRefs(mathnode));
+    if (text && mathnode)
     {
       nsCOMPtr<nsIDOMNode> parent;
       PRUint32 index(msiIMathMLEditingBC::INVALID);
