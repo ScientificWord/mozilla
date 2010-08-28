@@ -121,6 +121,7 @@ public:
                                       nsIDOMNode * base,
                                       nsIDOMNode * script,
                                       PRBool scriptInRow,
+                                      PRBool createInputBox,
                                       PRBool markCaret,
                                       PRUint32 & flags,
                                       const nsAString & isAccent,
@@ -132,6 +133,7 @@ public:
                                    nsIDOMNode * overscript,
                                    PRBool underscriptInRow,
                                    PRBool overscriptInRow,
+                                   PRBool createInputBox,
                                    PRBool markCaret,
                                    PRUint32 & flags,
                                    const nsAString & underIsAccent,
@@ -140,6 +142,7 @@ public:
  
   static nsresult CreateMsqrt(nsIEditor *editor,
                               nsIDOMNode * child,
+                              PRBool createInputBox,
                               PRBool markCaret,
                               PRUint32 & flags,
                               nsCOMPtr<nsIDOMElement> & mathmlElement);
@@ -147,6 +150,7 @@ public:
   static nsresult CreateMroot(nsIEditor *editor,
                               nsIDOMNode * radicand,
                               nsIDOMNode * index,
+                              PRBool createInputBox,
                               PRBool markCaret,
                               PRUint32 & flags,
                               nsCOMPtr<nsIDOMElement> & mathmlElement);
@@ -154,6 +158,7 @@ public:
   static nsresult CreateMfrac(nsIEditor * editor,
                               nsIDOMNode * num,
                               nsIDOMNode * denom,
+                              PRBool createInputBox,
                               PRBool markCaret,
                               PRUint32 & flags,
                               const nsAString & lineThickness,
@@ -163,6 +168,7 @@ public:
   static nsresult CreateBinomial(nsIEditor * editor,
                                  nsIDOMNode * num,
                                  nsIDOMNode * denom,
+                                 PRBool createInputBox,
                                  PRBool markCaret,
                                  PRUint32 & flags,
                                  const nsAString & opening,
@@ -184,6 +190,7 @@ public:
 
   static nsresult CreateMRowFence(nsIEditor * editor,
                                   nsIDOMNode * child,
+                                  PRBool createInputBox,
                                   const nsAString & open,
                                   const nsAString & close,
                                   PRBool markCaret,
@@ -223,6 +230,7 @@ public:
                                    nsIDOMNode * child,
                                    const nsAString & above,
                                    const nsAString & below,
+                                   PRBool createInputBox,
                                    PRBool markCaret,
                                    PRUint32 & flags,
                                    nsCOMPtr<nsIDOMElement> & mathmlElement);
