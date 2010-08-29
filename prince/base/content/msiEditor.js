@@ -931,7 +931,7 @@ function msiEditorDocumentObserver(editorElement)
         {
           addClickEventListenerForEditor(this.mEditorElement);
           addFocusEventListenerForEditor(this.mEditorElement);
-          pdfModCount = 0;
+          this.mEditorElement.pdfModCount = 0;
 
           // Force color widgets to update
           msiOnFontColorChange();
@@ -4255,7 +4255,7 @@ function msiSetDisplayMode(editorElement, mode)
     msiHideItem("structToolbar");
     if (mode ==  kDisplayModePreview)
     {
-      if (pdfModCount < editor.getModificationCount())
+      if (editorElement.pdfModCount < editor.getModificationCount())
       {
         dump("Doucment changed, recompiling\n");
         printTeX(true, true);

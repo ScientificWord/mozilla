@@ -734,9 +734,9 @@ function compileDocument( pdftex )
     pdfViewer.loadURI("about:blank");   // this releases the currently displayed pdf preview.
   if (pdftex)
   {
-    dump("pdfModCount = "+pdfModCount+", modCount is ");
-    pdfModCount = editor.getModificationCount();
-    dump(pdfModCount+"\n");
+    dump("pdfModCount = "+editorElement.pdfModCount+", modCount is ");
+    editorElement.pdfModCount = editor.getModificationCount();
+    dump(editorElement.pdfModCount+"\n");
   }
   try {
     var docUrl = msiGetEditorURL(editorElement);
