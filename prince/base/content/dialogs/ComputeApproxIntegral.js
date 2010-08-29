@@ -22,7 +22,7 @@ function OK(){
   data.form = form.selectedIndex + 1;
 
   var lowerBound = document.getElementById("lowerBound");
-  data.lowerBound = parseInt(lowerBOund.value, 10);
+  data.lowerBound = parseInt(lowerBound.value, 10);
 
   var upperBound = document.getElementById("upperBound");
   data.upperBound = parseInt(upperBound.value, 10);
