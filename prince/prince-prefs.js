@@ -26,6 +26,10 @@ pref("swp.tex.bindir","%programfiles%\\texlive\\2009\\bin\\win32");  /* for wind
 #else
 pref("swp.tex.bindir","/usr/local/texlive/2009/bin/i386-linux");  /* for linux */
 #endif
+pref("swp.sourceview.maxlinelength",        100);
+pref("swp.sourceview.minlinelength",         40);
+pref("swp.sourceview.indentincrement",       2);
+
 pref("editor.author",                      "");
 
 pref("editor.text_color",                   "#000000");
