@@ -8351,89 +8351,98 @@ function openAllSubdocs()
    will be consolidated, but the changes should not propagate to the end of a paragraph. */
 
 var indentIncrement = "  ";  // should eventually come from a user 
-var maxLength = 70; // should come from prefs; if a line is longer than this, we must break it
-var minLength = 30; // if a line is shorter than this, we at least try to consolidate it
+var maxLengthDefault = 100; // should come from prefs; if a line is longer than this, we must break it
+var minLengthDefault = 40; // if a line is shorter than this, we at least try to consolidate it
+var maxLength; 
+var minLength; 
+var reallyMinLength = 10; 
+
+function replacer(str, p1, p2, offset, s)
+{
+  switch (str)
+  {
+    case "\"": return "&quot;"; break;
+    case "&" : return "&amp;"; break; 
+    case "<" : return "&lt;"; break;
+    case ">" : return "&gt;"; break;
+    default: return str; break;
+  }
+}
+
+function encodeEntities(instring)
+{
+  return instring.replace(/[&"<>]/, replacer, "g");
+}
+
 
 function isEmptyText(textnode)
-{
+{                                                                   
   return !/\S/.test(textnode.textContent);
+}
+
+function writeLineInPieces( output, currentline )
+{
+  var lastLength = 10000000;
+  var L;
+  while ((L=currentline.s.length) > 0)
+  {
+    if (L < maxLength || L >= lastLength) // this assures us we get out of the while loop
+    {
+      output.s += currentline.s.replace("\n"," ", "g") + "\n";
+      currentline.s = "";
+    }
+    else  // see if there is an existing linebreak between minLength and maxLength
+    {
+      lastLength = L;
+      var index = currentline.s.indexOf("\n", minLength);
+      var firstLine;
+      if (index < 0 || index > maxLength)
+      { // no linebreaks where we want. Look harder at shorter lines
+        index = currentline.s.indexOf("\n", reallyMinLength);
+      } 
+      if (index >=0 && index <= maxLength) 
+      {
+        firstLine = currentline.s.substr(0,index);
+        output.s += firstLine.replace("\n"," ","g")+"\n";
+        firstLine = currentline.s.substr(index+1);
+        currentline.s = firstLine;
+      }    
+      else // no convenient linebreaks, look for spaces
+      {
+        index = currentline.s.indexOf(" ", minLength);
+        var forced = false;
+        if (index <0 || index > maxLength) // no spaces? Japanese? force a linebreak at maxLength -5
+        {
+          forced = true;
+          index = maxLength -5;
+        }
+        firstLine = currentline.s.substr(0,index);
+        output.s += firstLine+"\n";
+        if (!forced) index++;
+        firstLine = currentline.s.substr(index);
+        currentline.s = firstLine;
+      }                                                              
+    }                                              
+  }
 }
 
 function newline(output, currentline, indent)
 {
   if (/\S/.test(currentline.s))
   {
-    output.s += currentline.s.replace("\n"," ", "g") + "\n";
+    writeLineInPieces(output, currentline);
   }    
   currentline.s ="";
   if (indent) 
     for (var i = 0; i < indent; i++) currentline.s += indentIncrement;
-    
-    
-  
-//  if (/\S/.test(currentline.s)) // there is non-whitespace text in it
-//  {
-//    while (currentline.s.length > 0)
-//    {
-//      if (currentline.s.length <= maxLength)
-//      {  // BBM: this may consolidate shorter strings too aggressively
-//        output.s += currentline.s.replace("\n"," ","g") + "\n";
-//        currentline.s = "";
-//      }
-//      else 
-//      { // here is the work
-//        var index2;                     
-//        var index1 = currentline.s.indexOf("\n", 0);
-//        if (index1 >= 0) // there are existing line breaks
-//        {
-//          if (index1 < minLength) // try to consolidate
-//          {
-//            index2 = index1;
-//            while (index2 >= 0 && index2 < maxLength) // found another linebreak
-//            {
-//              index1 = index2;
-//              index2 = currentline.s.indexOf("\n", index2+1);
-//            }
-//          }
-//          if (index1 >= 0) 
-//          {
-//            output.s += currentline.s.slice(0, index1 + 1).replace("\n"," ","g");
-//            currentline.s = currentline.s.slice(index1 + 2);  // repeat until length is 0;
-//          }
-//        }
-//        else // no existing linebreaks
-//        {
-//          index1 = currentline.s.lastIndexOf(" ",maxLength);
-//          if (index1 == -1) index1 = currentline.s.indexOf(" ",maxLength);
-//          if (index1 > 0)
-//          {
-//            var remainder;
-//            output.s += currentline.s.slice(0, index1).replace("\n"," ","g");
-//            remainder = currentline.s.slice(index1 + 1);
-//            currentline.s = "";
-//            if (indent) 
-//              for (var i = 0; i < indent; i++) currentline.s += indentIncrement;
-//            currentline.s += remainder;  // repeat until length is 0;
-//          }
-//          else
-//          {
-//            // BBM: problem. No spaces. Japanese? For the moment just put out the string
-//            output.s += currentline.s.replace("\n"," ","g") + "\n";
-//            currentline.s = "";
-//          }
-//        }
-//      }
-//    }
-//  }
-//  currentline.s = "";
-//  if (indent) 
-//    for (var i = 0; i < indent; i++) currentline.s += indentIncrement;
 }
 
-var nonInlineTags=".math.html.head.requirespackage.newtheorem.definitionslist.documentclass.preamble.";
+var nonInlineTags=".math.html.head.requirespackage.newtheorem.definitionslist.documentclass.preamble.usepackage.preambleTeX."+
+  "";
 function isInlineElement(editor, element)
 {
   if (nonInlineTags.search("."+element.localName+".") >= 0) return false;
+  if (msiNavigationUtils.isMathNode(element)) return false;
   var class = editor.tagListManager.getClassOfTag(element.localName, null);
   if (class == "texttag" || class.length == 0) return true;
   return false;
@@ -8442,7 +8451,7 @@ function isInlineElement(editor, element)
 /* ELEMENT_NODE =1 */
 function processElement( editor, node, treeWalker, output, currentline, indent )
 {
-  dump("ProcessElement, indent = "+indent+"\n");
+//  dump("ProcessElement, indent = "+indent+"\n");
   var inline = isInlineElement(editor, node);
   if (!inline) 
     newline(output, currentline, indent);
@@ -8452,7 +8461,10 @@ function processElement( editor, node, treeWalker, output, currentline, indent )
     var attrs = node.attributes;
     var len = attrs.length;
     for (var i = 0; i < len; i++)
-      currentline.s += " " +attrs[i].name + "='" +attrs[i].value+"'";
+    {
+      if (attrs[i].name.indexOf("-moz-") == -1)
+        currentline.s += ' '+attrs[i].name + '="' +attrs[i].value+'"';
+    }
   }
   var child = treeWalker.firstChild();
   if (child)
@@ -8477,7 +8489,7 @@ function processElement( editor, node, treeWalker, output, currentline, indent )
 
 function processText( node, output, currentline)
 {
-    if ( !isEmptyText(node)) currentline.s += (node.textContent.replace(/\s+/," ","g"));
+    if ( !isEmptyText(node)) currentline.s += encodeEntities((node.textContent.replace(/\s+/," ","g")));
 }                                                        
 
 /* CDATA_SECTION_NODE = 4 */
@@ -8527,9 +8539,13 @@ function processDocument(editor, node, treeWalker, output, currentline, indent )
   }
 }
 
-/* DOCUMENT_TYPE_NODE = 9*/
-function processDocumentType(node, treeWalker, output, currentline, indent)
-{
+/* DOCUMENT_TYPE_NODE = 10*/
+function processDocumentType(node, output, currentline, indent)
+{  //maybe this should be based on a mode. When building source view, doctype declaration is handled differently
+//  newline(output, currentline,0);
+//  currentline.s +=
+//  '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">'
+//  newline(output, currentline, indent);
 }
 
 
@@ -8553,6 +8569,9 @@ function processNode( editor, node, treeWalker, output, currentline, indent)
       break;
     case 9: //Node.DOCUMENT_NODE: 
       processDocument(editor, node, treeWalker, output, currentline, indent); 
+      break;
+    case 10: //Node.DOCUMENT_NODE: 
+      processDocumentType(node, output, currentline, indent); 
       break;
     default:  
       newline(output, currentline, 0); 
@@ -8579,6 +8598,12 @@ function prettyprint(editor)
     }
     if (!editor) return;
   }
+  maxLength = GetIntPref("swp.sourceview.maxlinelength");
+  if (maxLength == 0) maxLength = maxLengthDefault;
+  minLength = GetIntPref("swp.sourceview.minlinelength");
+  if (minLength == 0) minLength = minLengthDefault;
+  var intInc = GetIntPref("swp.sourceview.indentincrement");
+  if (intInc != 0) intervalIncrement = "          ".substr(0,intInc);
   editor.document.normalize();
   var treeWalker = editor.document.createTreeWalker(editor.document,
         1021,     // everything but fragments and attributes
