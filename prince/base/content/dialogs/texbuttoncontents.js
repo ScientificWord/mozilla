@@ -82,8 +82,8 @@ function onAccept()
     else texnode.removeAttribute("req");
     if (gOpt.value.length > 0) texnode.setAttribute("opt", gOpt.value)
     else texnode.removeAttribute("opt");
-    if (gPre.checked) texnode.setAttribute("pre", "1")
-    if (gOrd.value.length > 0) texnode.setAttribute("ord", gOrd.value)
+    texnode.setAttribute("pre", (gPre.checked)?"1":"0");
+    if (gOrd.value.length > 0) texnode.setAttribute("ord", gOrd.value);
     else texnode.removeAttribute("ord");
 
     SaveWindowLocation();
