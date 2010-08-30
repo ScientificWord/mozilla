@@ -353,15 +353,16 @@ msiEditor::InsertDisplay()
     nsCOMPtr<nsIDOMElement> mathElement = do_QueryInterface(mathnode);
     PRBool isDisplaySet;
     GetAttributeValue(mathElement, attr, currentVal, &isDisplaySet);
-    if (isDisplaySet && currentVal.Equals(val)) return NS_OK;
-    // find the math node and set the display attribute
-    SetAttribute(mathElement, attr, val);
+    if (!isDisplaySet || !currentVal.Equals(val))
+      SetAttribute(mathElement, attr, val);
     // If there is no msidisplay tag above, add one
     mathnode->GetParentNode(getter_AddRefs(parent));
     parent->GetLocalName(parentName);
     if (parentName.Equals(strmsidisplay)) return NS_OK;
     // otherwise insert an msidisplay node above
     InsertContainerAbove(mathnode, address_of(msidisplay), strmsidisplay , nsnull, nsnull);
+     return NS_OK;
+    // find the math node and set the display attribute
   }
   else
   return InsertMath(PR_TRUE);
