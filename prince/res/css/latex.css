@@ -459,6 +459,10 @@ preface {
 
 body {
   -moz-user-select: -moz-none; /* -moz-none can be overridden */
+  counter-reset: eqnnumber;
+  counter-reset: chapter;
+  counter-reset: part;
+  counter-reset: section;
 }
 
 /* selection is possible in paragraph and front matter tags */
