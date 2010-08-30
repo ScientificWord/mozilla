@@ -13,6 +13,7 @@
 #include "nsISimpleEnumerator.h"
 #include "nsIHTMLEditor.h"
 #include "nsIDOMRange.h"
+#include "../../libeditor/base/nsEditor.h"
 
 #include "msiEditingManager.h"
 #include "msiIMathMLEditor.h"
@@ -671,12 +672,37 @@ msiEditingManager::InsertMath(nsIEditor * editor,
   }
   else // not in math
   {
+    nsString strmsidisplay = NS_LITERAL_STRING("msidisplay");
     res = DetermineParentLeftRight(node, offset, flags, parent, left, right);
     if (NS_SUCCEEDED(res) && parent)
     {
       nsCOMPtr<nsIDOMElement> mathElement;
       res = msiUtils::CreateMathElement(editor, isDisplay, PR_TRUE, flags, mathElement);
       nsCOMPtr<nsIDOMNode> mathNode(do_QueryInterface(mathElement));
+      if (isDisplay) // make sure we don't insert an msidisplay into an msidisplay
+      {
+        nsCOMPtr<nsIDOMNode> tempparent = node;
+        nsString localName;  
+        res = tempparent->GetLocalName(localName);
+        if (!localName.Equals(strmsidisplay))
+        {
+          res = tempparent->GetParentNode(getter_AddRefs(tempparent));
+          res = tempparent->GetLocalName(localName);
+          if (!localName.Equals(strmsidisplay))
+          {
+            res = tempparent->GetParentNode(getter_AddRefs(tempparent));
+            res = tempparent->GetLocalName(localName);
+          }
+        }
+        if (localName.Equals(strmsidisplay)) // parent or grandparent is "msidisplay", change node and offset
+        {
+          left = nsnull;
+          right = nsnull;
+          msiUtils::GetIndexOfChildInParent(tempparent, offset);
+          offset++;  // move the insertion point just past the msidisplay
+          res = tempparent->GetParentNode(getter_AddRefs(parent));
+        }
+      }
       if (NS_SUCCEEDED(res) && mathNode)
       {
         if (left)
@@ -684,6 +710,11 @@ msiEditingManager::InsertMath(nsIEditor * editor,
         res = editor->InsertNode(mathNode, parent, offset);
         if (right)
           res = editor->InsertNode(right, parent, offset+1);
+        if (isDisplay)
+        {
+          nsCOMPtr<nsIDOMNode> msidisplay;
+          static_cast<nsEditor*>(editor)->InsertContainerAbove(mathNode, address_of(msidisplay), strmsidisplay , nsnull, nsnull);
+        }
         if (NS_SUCCEEDED(res))
           msiUtils::doSetCaretPosition(editor, selection, mathNode);
       }
