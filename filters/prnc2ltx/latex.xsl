@@ -473,7 +473,7 @@ should not be done under some conditions -->
 %EndExpansion
 </xsl:text></xsl:if></xsl:if></xsl:template>
 
-
+<xsl:template match="msidisplay"><xsl:apply-templates/></xsl:template>
 </xsl:stylesheet>
 
 

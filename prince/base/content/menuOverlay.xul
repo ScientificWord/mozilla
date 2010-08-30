@@ -46,20 +46,10 @@
       <menuseparator/>
       <menuitem id="saveMenuitem" accesskey="&filesave.accesskey;" key="savekb" observes="cmd_save"
         label="&saveCmd.label;" />
-      <menu accesskey="&filesaveas.accesskey;" 
-        label="&saveAsCmd.label;">
-        <menupopup>
-          <menuitem label="Save to sci file" observes="cmd_saveAs"/>
-          <menuitem label="Save to directory" observes="cmd_saveAsDir"/>
-        </menupopup>
-      </menu>
-      <menu accesskey="&filesavecopyas.accesskey;" 
-        label="&saveCopyAsCmd.label;">
-        <menupopup>
-          <menuitem label="Save to sci file" observes="cmd_saveCopyAs"/>
-          <menuitem label="Save to directory" observes="cmd_saveCopyAsDir"/>
-        </menupopup>
-      </menu>
+      <menuitem accesskey="&filesaveas.accesskey;" 
+        label="&saveAsCmd.label;" observes="cmd_saveAs"/>
+      <menuitem accesskey="&filesavecopyas.accesskey;" 
+        label="&saveCopyAsCmd.label;" observes="cmd_saveCopyAs"/>
       <menuitem accesskey="&filerevert.accesskey;" observes="cmd_revert"
         label="&fileRevert.label;" />
       <menuseparator/>
@@ -857,7 +847,7 @@
     <!-- DEBUG only -->
   <menu id="debugMenu" label="&debugMenu.label;">
   <menupopup id="menu_debugPopup">
-    <menuitem label="printPDF" oncommand="PrintUtils.printPDF();"/>
+    <!-- menuitem label="printPDF" oncommand="PrintUtils.printPDF();"/>
     <menuitem label="extendSelection" oncommand="extendSelection();"/>
     <menuitem label="&newEditorTestPage.label;" oncommand="window.openDialog('chrome://editor/content','_blank','chrome,all,dialog=no','chrome://editor/content/EditorInitPage.html')"/>
     <menuitem label="&textEditorCmd.label;"     oncommand="msiEditorNewPlaintext();" />
@@ -880,10 +870,10 @@
            oncommand="msiEditorInsertText('All good things come to those who wait. ')"/>
     <menuitem id="menu_checkLinks" observes="cmd_checkLinks"
      label="&checkLinksCmd.label;"/>
-    <menuseparator />
+    <menuseparator / -->
     <menuitem label="&testSelectionCmd.label;"
            oncommand="msiEditorTestSelection()"/>
-    <menuitem label="&testTableLayoutCmd.label;"
+    <!--menuitem label="&testTableLayoutCmd.label;"
            oncommand="msiEditorTestTableLayout()"/>
     <menuitem label="&showEmbeddedCmd.label;"
            oncommand="msiEditorShowEmbeddedObjects()"/>
@@ -894,12 +884,12 @@
     <menuitem label="Dump clipboard contents" oncommand="msiDumpClipboard();" />
     <menuitem label="&runUnitTestsCmd.label;"
            oncommand="msiEditorUnitTests()"/>
-    <menuseparator />
+    <menuseparator / -->
     <menuitem label="&dumpUndoStack.label;"
            oncommand="msiDumpUndoStack()"/>
     <menuitem label="&dumpRedoStack.label;"
            oncommand="msiDumpRedoStack()"/>
-    <menuitem label="&executeJSTransactionViaTxmgr.label;"
+    <!--menuitem label="&executeJSTransactionViaTxmgr.label;"
            oncommand="ExecuteJSTransactionViaTxmgr()"/>
     <menuitem label="&executeJSTransactionViaEditor.label;"
            oncommand="ExecuteJSTransactionViaEditor()"/>
@@ -918,21 +908,21 @@
     <menuitem label="Prepare Plot"              oncommand="msiTestPreparePlotAll();"/>
     <menuitem label="Prepare Plot and Graph"	oncommand="msiTestPreparePlotGraph();"/>
     <menuitem label="Plot Tests"				oncommand="msiTestGraphScript();"/>
-    <menuseparator />
+    <menuseparator / -->
     <menuitem label="Configuration"
             oncommand='window.openDialog("chrome://global/content/config.xul","Configure Prince", "chrome ");'/>
     <menuitem label="Plugins"
             oncommand='window.openDialog("chrome://prince/content/plugins.html","Installed plugins", "chrome ");'/>
-    <menuitem label="Stop animation"
+    <!--menuitem label="Stop animation"
             oncommand='msiStopAnimation();' />
     <menuitem label="Start animation"
             oncommand='msiStartAnimation();' />
     <menuitem label="Test ChamWindow" oncommand='window.openDialog("chrome://prince/content/chamtest.xul","Cham Test", 
       "chrome,close,titlebar,resizable,modal=false");' /> 
     <menuitem label="Charset" oncommand="msiGoDoCommand('cmd_saveAndChangeEncoding');"/>
-    <menuitem label="Test XPath Find" oncommand="msiTestSearch();"/>
+    <menuitem label="Test XPath Find" oncommand="msiTestSearch();"/ -->
     <menuitem label="Open all subdocs" oncommand="openAllSubdocs();"/>
-    <menuitem label="Prettyprint" oncommand="prettyprint();"/>
+    <!-- menuitem label="Prettyprint" oncommand="prettyprint();"/ -->
     </menupopup>
   </menu>
   <!-- end DEBUG only -->
