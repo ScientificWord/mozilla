@@ -65,6 +65,7 @@ section {
   counter-increment: section;
   counter-reset: subsection;
   counter-reset: theorem;
+  counter-reset: eqnnumber;
   position: relative;
   top: 0;
   left: 0;
@@ -398,31 +399,30 @@ subparagraph defaulttitletag:after {
 }
 
 button[class="eqnnum"]{
+  counter-increment: eqnnumber;
+  counter-reset: subeqnnum;
   position: absolute;
   right: 0px;
-}
-
-button[class="eqnnum"]:after{
-  content: "  " counter(section) "." counter(eqnnum);
-  counter-increment: eqnnum;
-  counter-reset: subeqnnum;
   font-style: normal; 
   color: red;
   -moz-user-select: -moz-none;
 }
 
-button[class="subeqnnum"]:after{
-  content: "  " counter(section) "." counter(eqnnum) "." counter(subeqnnum,lower-latin);
+button[class="subeqnnum"]{
   counter-increment: subeqnnum;
+  position: absolute;
+  right: 20px;
   font-style: normal; 
   color: blue;
   -moz-user-select: -moz-none;
 }
 
+button[class="eqnnum"]:after{
+  content: "  " counter(section) "." counter(eqnnumber);
+}
 
-button[class="subeqnnum"]{
-  position: absolute;
-  right: 20px;
+button[class="subeqnnum"]:after{
+  content: "  " counter(section) "." counter(eqnnumber) "." counter(subeqnnum,lower-latin);
 }
 
 
