@@ -8438,7 +8438,7 @@ function newline(output, currentline, indent)
 }
 
 var nonInlineTags=".math.html.head.requirespackage.newtheorem.definitionslist.documentclass.preamble.usepackage.preambleTeX."+
-  "";
+  "msidisplay.";
 function isInlineElement(editor, element)
 {
   if (nonInlineTags.search("."+element.localName+".") >= 0) return false;
