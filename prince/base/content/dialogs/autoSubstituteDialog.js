@@ -719,6 +719,7 @@ function changePattern(currPattern)
   else
     gDialog.bNameOK = false;
   var theContext = "math";
+  var bWasNew = gDialog.bIsNew;
   if (gDialog.bNameOK && (currPattern in gDialog.subsList.names))
   {
     gDialog.bIsNew = false;
@@ -729,6 +730,8 @@ function changePattern(currPattern)
     gDialog.bIsNew = true;
   if (theType == null || !theType.length)
     theType = "substitution";
+  if (gDialog.bIsNew && !bWasNew)
+    newType = "substitution";
   dump("In autoSubstituteDialog.js, changePattern(); new key pattern is [" + currPattern + "], gDialog.bIsNew is [" + gDialog.bIsNew + "], sub type is [" + newType + "], and context is [" + theContext + "].\n");
   document.getElementById("autosubTypeRadioGroup").value = newType;
   document.getElementById("autosubContextRadioGroup").value = theContext;
