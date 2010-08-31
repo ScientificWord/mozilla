@@ -725,9 +725,11 @@ function msiEditorDocumentObserver(editorElement)
           return; 
 
         //BBM get this from prefs
+        var is_topLevel = msiIsTopLevelEditor(this.mEditorElement);
         var seconds = GetIntPref("swp.saveintervalseconds"); 
         if (!seconds) seconds = 120;
-        editorElement.softsavetimer = new SS_Timer(seconds*1000, editor, editorElement);
+        if (is_topLevel)
+          this.mEditorElement.softsavetimer = new SS_Timer(seconds*1000, editor, this.mEditorElement);
         if (!("InsertCharWindow" in window))
           window.InsertCharWindow = null;
 
@@ -802,7 +804,7 @@ function msiEditorDocumentObserver(editorElement)
             taglist = (editor.tagListManager.getTagsInClass(classname," ", false)).split(" ");
             for (i = 0; i < taglist.length; i++)
             {
-              if (taglist[i][0] != "(")
+              if (taglist[i].length && taglist[i][0] != "(")
                 str += classtemplate.replace(classname,taglist[i],"g")+"\n";
             }
           }
@@ -858,7 +860,7 @@ function msiEditorDocumentObserver(editorElement)
           }
 
           try {
-            editorElement.mgMathStyleSheet = msiColorObj.FormatStyleSheet(editorElement);
+            this.mEditorElement.mgMathStyleSheet = msiColorObj.FormatStyleSheet(editorElement);
 //            dump("Internal style sheet contents: \n\n" + editorElement.mgMathStyleSheet + "\n\n");
           } catch(e) { dump("Error formatting style sheet using msiColorObj: [" + e + "]\n"); }
           // Now is a good time to initialize the key mapping. This is a service, and so is initialized only once. Later
@@ -873,7 +875,6 @@ function msiEditorDocumentObserver(editorElement)
           catch(e) { dump("Failed to load keytables.xml -- "+e); }
         }
 
-        var is_topLevel = msiIsTopLevelEditor(this.mEditorElement);
         if (!is_topLevel)
         {
           var parentEditorElement = msiGetParentOrTopLevelEditor(this.mEditorElement);
