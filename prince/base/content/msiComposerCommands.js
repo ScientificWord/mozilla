@@ -1573,7 +1573,7 @@ function msiOutputFileWithPersistAPI(editorDoc, aDestinationLocation, aRelatedFi
   var editor = msiGetEditor(editorElement);
   try {
     var imeEditor = editor.QueryInterface(Components.interfaces.nsIEditorIMESupport);
-    imeEditor.ForceCompositionEnd();
+    imeEditor.forceCompositionEnd();
     } catch (e) {}
 
   var isLocalFile = false;
@@ -1669,7 +1669,7 @@ function msiGetOutputFlags(aMimeType, aWrapColumn, editorElement)
 //
 //// returns number of column where to wrap
 //const nsIWebBrowserPersist = Components.interfaces.nsIWebBrowserPersist;
-function msiGetWrapColumn(editorelement)
+function msiGetWrapColumn(editorElement)
 {
   try {
     return msiGetEditor(editorElement).wrapWidth;
