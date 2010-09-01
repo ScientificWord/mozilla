@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <fragment>
   <data>
-    &lt;texb xmlns=&quot;http://www.w3.org/1999/xhtml&quot; req=&quot;dingbat&quot; pre=&quot;0&quot; ord=&quot;100&quot; name=&quot;Right hand pointing right&quot;&gt;&lt;![CDATA[\rightpointright]]&gt;&lt;/texb&gt;
+    &lt;texb xmlns=&quot;http://www.w3.org/1999/xhtml&quot; req=&quot;dingbat&quot; pre=&quot;0&quot; ord=&quot;100&quot; name=&quot;Right hand pointing right&quot;&gt;&lt;![CDATA[\rightpointright ]]&gt;&lt;/texb&gt;
  </data>
   <context>
     <html xmlns="http://www.w3.org/1999/xhtml"><body><section><para></para></section></body></html>

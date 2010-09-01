@@ -459,6 +459,10 @@ preface {
 
 body {
   -moz-user-select: -moz-none; /* -moz-none can be overridden */
+  counter-reset: eqnnumber;
+  counter-reset: chapter;
+  counter-reset: part;
+  counter-reset: section;
 }
 
 /* selection is possible in paragraph and front matter tags */
@@ -533,5 +537,22 @@ frontmatter>address {
 frontmatter>date {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-date");
 }
+
+frontmatter>maketitle {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-maketitle");
+}
+
+frontmatter>maketoc {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-maketoc");
+}
+
+frontmatter>makelof {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-makelof");
+}
+
+frontmatter>makelot {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-makelot");
+}
+
 
 

@@ -338,9 +338,13 @@ NS_IMETHODIMP
 msiEditor::InsertDisplay()
 {
   nsCOMPtr<nsIDOMNode> mathnode;
+  nsCOMPtr<nsIDOMNode> parent;
+  nsCOMPtr<nsIDOMNode> msidisplay;
   nsString attr = NS_LITERAL_STRING("display");
   nsString val = NS_LITERAL_STRING("block");
   nsString currentVal;
+  nsString parentName;
+  nsString strmsidisplay = NS_LITERAL_STRING("msidisplay");
   SelectionInMath(getter_AddRefs(mathnode));
   if (mathnode)
   {
@@ -349,13 +353,20 @@ msiEditor::InsertDisplay()
     nsCOMPtr<nsIDOMElement> mathElement = do_QueryInterface(mathnode);
     PRBool isDisplaySet;
     GetAttributeValue(mathElement, attr, currentVal, &isDisplaySet);
-    if (isDisplaySet && currentVal.Equals(val)) return NS_OK;
+    if (!isDisplaySet || !currentVal.Equals(val))
+      SetAttribute(mathElement, attr, val);
+    // If there is no msidisplay tag above, add one
+    mathnode->GetParentNode(getter_AddRefs(parent));
+    parent->GetLocalName(parentName);
+    if (parentName.Equals(strmsidisplay)) return NS_OK;
+    // otherwise insert an msidisplay node above
+    InsertContainerAbove(mathnode, address_of(msidisplay), strmsidisplay , nsnull, nsnull);
+     return NS_OK;
     // find the math node and set the display attribute
-    SetAttribute(mathElement, attr, val);
   }
   else
   return InsertMath(PR_TRUE);
-}
+}                                                      
 
 NS_IMETHODIMP 
 msiEditor::InsertSuperscript()
