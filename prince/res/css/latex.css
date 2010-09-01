@@ -554,5 +554,7 @@ frontmatter>makelot {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-makelot");
 }
 
-
+line {
+  display: block;
+}
 
