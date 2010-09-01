@@ -364,3 +364,17 @@ tree.AttributesTree {
 .progressitem[progress="failed"] {
 	list-style-image: url("chrome://editor/skin/icons/progress-failed.gif");
 }
+
+/* ::::: AutoSubstitution Dialog ::::: */
+
+.msiShadedTextbox {
+  background-color: rgb(222,252,222);
+}
+
+.msiShadedTextbox .textbox-input-box {
+  background-color: rgb(222,252,222);
+}
+
+.msiShadedTextbox .textbox-input {
+  background-color: rgb(222,252,222);
+}
