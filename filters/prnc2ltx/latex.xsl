@@ -68,6 +68,11 @@
 \documentclass[<xsl:apply-templates/>]{<xsl:value-of select="@class"/>}
 </xsl:template>
 
+<xsl:template match="html:colist/@*">
+  <xsl:value-of select="."/><xsl:text> </xsl:text>
+</xsl:template>
+
+
 <xsl:template match="//html:docformat">
 <xsl:apply-templates/>
 </xsl:template>
