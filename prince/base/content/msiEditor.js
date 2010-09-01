@@ -4053,6 +4053,9 @@ function msiSetEditMode(mode, editorElement)
     flags |= 32;   // OutputWrap
     // ignore the above and use the prettyprint function
     var source = prettyprint(editor);//editor.outputToString("text/xml", flags);
+    // break the source into <li>'s
+    source = encodeEntities(source);
+    source= "<line>"+source.replace(/\n/g,"</line><line>")+"</line>";
     var start = 0; //source.search(/<html/i);
     if (start == -1) start = 0;
     var sourceTextEditor = msiGetHTMLSourceEditor(editorElement);
@@ -4069,7 +4072,7 @@ function msiSetEditMode(mode, editorElement)
       editorElement.mSourceTextListener = new msiSourceTextListener(editorElement);
     if (sourceContentWindow!=null && sourceTextEditor!=null)
     {
-      sourceTextEditor.insertText(source.slice(start));
+      InsertColoredSourceView(sourceTextEditor, source);
       sourceTextEditor.resetModificationCount();
       sourceTextEditor.addDocumentStateListener(editorElement.mSourceTextListener);
       sourceTextEditor.enableUndo(true);
@@ -4097,7 +4100,15 @@ function msiSetEditMode(mode, editorElement)
         var errMsg="";
         var willReturn = false;
         var sourceTextEditor = msiGetHTMLSourceEditor(editorElement);
-        source = sourceTextEditor.outputToString(kTextMimeType, 1024); // OutputLFLineBreak
+        var srcdoc = sourceTextEditor.document;
+        var lines = srcdoc.documentElement.getElementsByTagName("line");
+        var ln = lines.length;
+        if (lines.length == 0) return;
+        source = "";
+        for (var ix = 0; ix < ln; ix++)
+          source += lines[ix].textContent + "\n";
+        source = decodeEntities(source);
+//        source = sourceTextEditor.outputToString(kTextMimeType, 1024); // OutputLFLineBreak
         try {
           errMsg = editor.rebuildDocumentFromSource(source);
           msiSetDocumentEditable(true, editorElement)
@@ -4146,6 +4157,41 @@ function msiSetEditMode(mode, editorElement)
     editorElement.contentWindow.focus();
   }
 }
+
+function InsertColoredSourceView(editor, source)
+{
+  var sourceDoc = editor.document;
+  // clean source view first
+  // BBM
+  var bodySourceDoc = sourceDoc.documentElement.getElementsByTagName("body").item(0);
+//  var bodySourceDoc = sourceDoc.documentElement.firstChild.nextSibling;
+  while (bodySourceDoc.lastChild)
+    bodySourceDoc.removeChild(bodySourceDoc.lastChild);
+
+  // the following is ugly but working VERY well
+  var styleElt = sourceDoc.getElementById("moz_sourceview_css");
+  if (!styleElt)
+  {
+    var heads = sourceDoc.getElementsByTagName("head");
+    var headElement;
+    if (!heads)
+    {
+      headElement = sourceDoc.createElement("head");
+      bodySourceDoc.parentNode.insertBefore(headElement, bodySourceDoc);
+    }
+    else
+      headElement = heads.item(0);
+    var styleElt = sourceDoc.createElement("style");
+    styleElt.setAttribute("id", "moz_sourceview_css");
+    styleElt.setAttribute("type", "text/css");
+    var sheet = sourceDoc.createTextNode('@import url("resource://app/res/css/srceditor.css");');
+    styleElt.appendChild(sheet);
+    headElement.appendChild(styleElt);
+  }
+  bodySourceDoc.innerHTML = source;
+}
+
+
 
 function msiCancelHTMLSource(editorElement)
 {
@@ -4322,6 +4368,12 @@ function msiSetDisplayMode(editorElement, mode)
           editor.isImageResizingEnabled = true;
           editor.enableTagMananger();
         break;
+        
+//        case kDisplayModeSource:
+//          editor.addOverrideStyleSheet("resource://app/res/css/srceditor.css");
+//          editor.enableStyleSheet(dynAllTagsStyleSheet, false);
+//          editor.enableTagMananger();
+//        break;
 
         case kDisplayModeAllTags:
           editor.addOverrideStyleSheet(kNormalStyleSheet);
