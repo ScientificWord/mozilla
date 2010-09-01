@@ -40,6 +40,8 @@ REQUIRES  = xpcom \
 	          layout \
 		        txmgr \
             gfx \
+			txtsvc \
+			view \
             widget \
             $(NULL)
 
