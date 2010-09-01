@@ -116,6 +116,46 @@
     </xbl:content>
   </xbl:binding>
 
+  <xbl:binding id="fmtag-maketitle"> /*front matter label*/
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button" class="frontmattertag" onclick="">Make title</html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
+  <xbl:binding id="fmtag-maketoc"> /*front matter label*/
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button" class="frontmattertag" onclick="">Make TOC</html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
+  <xbl:binding id="fmtag-makelot"> /*front matter label*/
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button" class="frontmattertag" onclick="">Make LOT</html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
+  <xbl:binding id="fmtag-makelof"> /*front matter label*/
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button" class="frontmattertag" onclick="">Make LOF</html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
 	<xbl:binding id="texb">
 	  <xbl:resources>
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
