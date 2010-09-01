@@ -8369,9 +8369,25 @@ function replacer(str, p1, p2, offset, s)
   }
 }
 
+function reversereplacer(str, p1, p2, offset, s)
+{
+  switch (str)
+  { 
+    case "&quot;": return "\""; break;
+    case "&lt;"  : return "<"; break;
+    case "&gt;"  : return ">"; break;
+    default      : return str; break;
+  }
+}
+
 function encodeEntities(instring)
 {
-  return instring.replace(/[&"<>]/, replacer, "g");
+  return instring.replace(/[&"<>]/g, replacer, "g");
+}
+
+function decodeEntities(instring)
+{
+  return instring.replace(/&amp;|&quot;|&lt;|&gt;/g, reversereplacer, "g");
 }
 
 
