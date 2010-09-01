@@ -8438,7 +8438,7 @@ function newline(output, currentline, indent)
 }
 
 var nonInlineTags=".math.html.head.requirespackage.newtheorem.definitionslist.documentclass.preamble.usepackage.preambleTeX."+
-  "";
+  "msidisplay.";
 function isInlineElement(editor, element)
 {
   if (nonInlineTags.search("."+element.localName+".") >= 0) return false;
@@ -8462,7 +8462,7 @@ function processElement( editor, node, treeWalker, output, currentline, indent )
     var len = attrs.length;
     for (var i = 0; i < len; i++)
     {
-      if (attrs[i].name.indexOf("-moz-") == -1)
+      if ((attrs[i].name.indexOf("-moz-") == -1)&&(attrs[i].name!="_moz_dirty"))
         currentline.s += ' '+attrs[i].name + '="' +attrs[i].value+'"';
     }
   }
