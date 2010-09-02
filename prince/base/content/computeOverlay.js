@@ -9,7 +9,7 @@ var msiEvaluateCommand =
     return (msiIsDocumentEditable(theEditorElement) && 
             msiIsEditingRenderedHTML(theEditorElement) &&
             (isInMath(editorElement) || 
-             aCommand == "cmd_MSIComputeFillMatrix"
+             aCommand == "cmd_MSIComputeFillMatrix" ||
              aCommand == "cmd_MSIComputeRandomMatrix") );
   },
 
