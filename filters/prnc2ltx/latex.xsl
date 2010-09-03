@@ -28,6 +28,7 @@
 <xsl:include href="preamble.xsl"/>
 <xsl:include href="spaces.xsl"/>
 <xsl:include href="frame.xsl"/>
+<xsl:include href="graphics.xsl"/>
 
 <xsl:template match="/">
   <xsl:apply-templates/>
