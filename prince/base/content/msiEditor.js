@@ -845,8 +845,12 @@ function msiEditorDocumentObserver(editorElement)
 
           try{
              var elemList = editor.document.getElementsByTagName("definitionlist");
-             var defnList = elemList[0].getElementsByTagName("math");
-             var n =  defnList.length;
+             var defnList = null;
+             var n = 0;
+             if (elemList && elemList.length)
+               defnList = elemList[0].getElementsByTagName("math");
+             if (defnList)
+               n =  defnList.length;
           
              var defn;
              for (var ix = 0; ix < n; ++ix)
@@ -860,7 +864,7 @@ function msiEditorDocumentObserver(editorElement)
           }
 
           try {
-            this.mEditorElement.mgMathStyleSheet = msiColorObj.FormatStyleSheet(editorElement);
+            this.mEditorElement.mgMathStyleSheet = msiColorObj.formatStyleSheet(editorElement);
 //            dump("Internal style sheet contents: \n\n" + editorElement.mgMathStyleSheet + "\n\n");
           } catch(e) { dump("Error formatting style sheet using msiColorObj: [" + e + "]\n"); }
           // Now is a good time to initialize the key mapping. This is a service, and so is initialized only once. Later
@@ -9181,6 +9185,7 @@ function msiDialogEditorContentFilter(anEditorElement)
   this.mAtomService = Components.classes["@mozilla.org/atom-service;1"].getService(Components.interfaces.nsIAtomService);
   this.mXmlSerializer = new XMLSerializer();
   this.mDOMUtils = Components.classes["@mozilla.org/inspector/dom-utils;1"].createInstance(Components.interfaces.inIDOMUtils);
+  this.mbMathOnly = false;
 
   this.dlgNodeFilter = function(aNode)
   {
@@ -9253,11 +9258,10 @@ function msiDialogEditorContentFilter(anEditorElement)
   {
     var docFragment = null;
     var doc = this.mEditorElement.contentDocument;
-    var editor = msiGetEditor(this.mEditorElement);
     if (doc != null)
     {
       docFragment = doc.createDocumentFragment();
-      var rootNode = msiGetRealBodyElement(doc);
+      var rootNode = this.getRootNode();
       this.getXMLNodesForParent( docFragment, rootNode );
     }
     this.checkForTrailingBreak(docFragment);
@@ -9351,7 +9355,8 @@ function msiDialogEditorContentFilter(anEditorElement)
       doc = editor.document;
     if (doc != null)
     {
-      var rootNode = msiGetRealBodyElement(doc);
+      var rootNode = this.getRootNode();
+//      var rootNode = msiGetRealBodyElement(doc);
       var initialParaNode = null;
       var initialParaList = rootNode.getElementsByTagName("dialogbase");
       if (initialParaList.length > 0)
@@ -9472,10 +9477,33 @@ function msiDialogEditorContentFilter(anEditorElement)
       doc = editor.document;
     if (doc != null)
     {
-      var rootNode = msiGetRealBodyElement(doc);
+//      var rootNode = msiGetRealBodyElement(doc);
+      var rootNode = this.getRootNode();
       theStr = this.mXmlSerializer.serializeToString(rootNode);
     }
     return theStr;
+  };
+  this.getRootNode = function()
+  {
+    var rootNode = null;
+    var editor = msiGetEditor(this.mEditorElement);
+    if (editor != null)
+      doc = editor.document;
+    if (doc != null)
+      rootNode = msiGetRealBodyElement(doc);
+//    if (rootNode && this.mbSinglePara)  //This isn't yet used, though it probably should be. Postpone implementation until needed...
+//    {
+//    }
+    if (rootNode && this.mbMathOnly)  //Take only the first <math> element.
+    {
+      var mathList = rootNode.getElementsByTagName("math");
+      rootNode = mathList[0];
+    }
+    return rootNode;
+  };
+  this.setMathOnly = function(bTrue)
+  {
+    this.mbMathOnly = bTrue;
   };
 }
 
