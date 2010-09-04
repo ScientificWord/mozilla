@@ -756,6 +756,8 @@ msiEditingManager::InsertFraction(nsIEditor * editor,
   selection->GetRangeAt(0, getter_AddRefs(range));
   nsCOMPtr<msiIMathMLEditor> mathmlEditor(do_QueryInterface(editor));
   nsCOMPtr<nsIDOMNode> mathnode;
+  nsCOMPtr<nsIDOMNode> anchorNode;
+  PRInt32 anchorOffset;
   res = mathmlEditor->RangeInMath(range, getter_AddRefs(mathnode));
   PRBool inMath = (nsnull != mathnode);
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertFraction");
@@ -771,12 +773,21 @@ msiEditingManager::InsertFraction(nsIEditor * editor,
     res = mathmlElement->GetFirstChild(getter_AddRefs(numerator));
     if (!bCollapsed && inMath)
     {
+      res = selection->GetAnchorNode(getter_AddRefs(anchorNode));
+      res = selection->GetAnchorOffset(&anchorOffset);
       MoveRangeTo(editor, range, numerator, 0);
     } 
     if (NS_SUCCEEDED(res) && mathmlElement)
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
 //        editor->InsertNode(mathmlElement, node, offset);
-    selection->Collapse(node,offset+1);
+    if (!bCollapsed && inMath)
+    {
+      selection->Collapse(anchorNode,anchorOffset+1);
+    }
+    else
+    {
+      selection->Collapse(node,offset+1);
+    }
     editor->EndTransaction();  
   }
   return res;
