@@ -463,6 +463,7 @@ body {
   counter-reset: chapter;
   counter-reset: part;
   counter-reset: section;
+  margin-left: 10pt;
 }
 
 /* selection is possible in paragraph and front matter tags */
