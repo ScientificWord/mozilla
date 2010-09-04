@@ -629,10 +629,12 @@ void Typesetter::EndDisplay()
          ProcessMathML(theCStr, s_mathml);
          LOG("\nGot back " << s_mathml.c_str());
          std::string str;
+         str += "<msidisplay>";
          str +=  "<mml:math class=\"displayedmathml\" "
                  "mode=\"display\" display=\"block\">";
          str +=  s_mathml;
          str +=  "</mml:math>";
+         str += "</msidisplay>";
          AppendTag(str.c_str());
          s_mathml = "";
       }
