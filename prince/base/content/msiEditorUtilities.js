@@ -8454,7 +8454,8 @@ function newline(output, currentline, indent)
 }
 
 var nonInlineTags=".math.html.head.requirespackage.newtheorem.definitionslist.documentclass.preamble.usepackage.preambleTeX."+
-  "msidisplay.";
+  "msidisplay.pagelayout.page.textregion.columns.marginnote.header.footer."+
+  "titleprototype.docformat.numberstyles.sectitleformat.docformat.numberstyles.";
 function isInlineElement(editor, element)
 {
   if (nonInlineTags.search("."+element.localName+".") >= 0) return false;
@@ -8475,13 +8476,13 @@ function processElement( editor, node, treeWalker, output, currentline, indent )
   if (node.hasAttributes())
   {
     var attrs = node.attributes;
-    var len = attrs.length;
+    var len = attrs.length;   
     for (var i = 0; i < len; i++)
     {
       if ((attrs[i].name.indexOf("-moz-") == -1)&&(attrs[i].name!="_moz_dirty"))
         currentline.s += ' '+attrs[i].name + '="' +attrs[i].value+'"';
     }
-  }
+  }   
   var child = treeWalker.firstChild();
   if (child)
   {
