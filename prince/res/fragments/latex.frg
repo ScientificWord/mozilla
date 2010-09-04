@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fragment>
   <data>
-	<![CDATA[<texlogo xmlns="http://www.w3.org/1999/xhtml" name="latex">L<sup>A</sup>T<sub>E</sub>X</texlogo>]]>
+	<![CDATA[<texlogo 
+xmlns="http://www.w3.org/1999/xhtml" name="latex">L<sup>A</sup>T<sub>E</sub>X</texlogo>]]>
   </data>
   <context
   ><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
