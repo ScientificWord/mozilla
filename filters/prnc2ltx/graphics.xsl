@@ -10,7 +10,6 @@
     xmlns:mml="http://www.w3.org/1998/Math/MathML"
     xmlns:html="http://www.w3.org/1999/xhtml"
     xmlns:sw="http://www.sciword.com/namespaces/sciword"
-    xmlns:exsl="http://exslt.org/common"
 >
 
 <xsl:template match="html:object">
