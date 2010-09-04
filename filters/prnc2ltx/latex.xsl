@@ -104,15 +104,15 @@ should not be done under some conditions -->
 ></xsl:template>
 
 <xsl:template match="html:title">
-\title{<xsl:apply-templates/>}
+\title{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
 
 <xsl:template match="html:author">
-\author{<xsl:apply-templates/>}</xsl:template>
+\author{<xsl:value-of select="normalize-space(child::text())"/><xsl:text/>
+<xsl:if test="../html:address">\\<xsl:value-of select="normalize-space(../html:address)"/></xsl:if>
+}</xsl:template>			   
 
-<xsl:template match="html:address">
-\address{<xsl:apply-templates/>}</xsl:template>
-
+		  
 <xsl:template match="html:abstract">
 \begin{abstract}
 <xsl:apply-templates/>
@@ -121,6 +121,22 @@ should not be done under some conditions -->
 
 <xsl:template match="html:maketitle">
 \maketitle
+</xsl:template>
+
+<xsl:template match="html:maketoc">
+\tableofcontents <xsl:text/>
+</xsl:template>
+
+<xsl:template match="html:makelof">
+\listoffigures <xsl:text/>
+</xsl:template>
+
+<xsl:template match="html:makelot">
+\listoftables <xsl:text/>
+</xsl:template>
+
+<xsl:template match="html:date">
+\date{<xsl:apply-templates/>}<xsl:text/>
 </xsl:template>
 
 <xsl:template match="html:part">
@@ -474,9 +490,10 @@ should not be done under some conditions -->
 %EndExpansion
 </xsl:text></xsl:if></xsl:if></xsl:template>
 
-<xsl:template match="msidisplay"><xsl:apply-templates/></xsl:template>
+<xsl:template match="html:msidisplay"><xsl:apply-templates/></xsl:template>
 
 
+<xsl:template match="html:frontmatter"><xsl:apply-templates/></xsl:template>
 </xsl:stylesheet>
 
 
