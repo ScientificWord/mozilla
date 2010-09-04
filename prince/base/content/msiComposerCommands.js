@@ -1573,7 +1573,7 @@ function msiOutputFileWithPersistAPI(editorDoc, aDestinationLocation, aRelatedFi
   var editor = msiGetEditor(editorElement);
   try {
     var imeEditor = editor.QueryInterface(Components.interfaces.nsIEditorIMESupport);
-    imeEditor.ForceCompositionEnd();
+    imeEditor.forceCompositionEnd();
     } catch (e) {}
 
   var isLocalFile = false;
@@ -1669,7 +1669,7 @@ function msiGetOutputFlags(aMimeType, aWrapColumn, editorElement)
 //
 //// returns number of column where to wrap
 //const nsIWebBrowserPersist = Components.interfaces.nsIWebBrowserPersist;
-function msiGetWrapColumn(editorelement)
+function msiGetWrapColumn(editorElement)
 {
   try {
     return msiGetEditor(editorElement).wrapWidth;
@@ -5056,9 +5056,10 @@ function msiInsertVerticalSpace(dialogData, editorElement)
   else
   {
     node.setAttribute('type','customSpace');
-    node.setAttribute('dim',String(dialogData.customSpaceData.sizeData.size) + dialogData.customSpaceData.sizeData.units);
+    var dimStr = String(dialogData.customSpaceData.sizeData.size) + dialogData.customSpaceData.sizeData.units;
+    node.setAttribute('dim', dimStr);
     var vAlignStr = String(-(dialogData.customSpaceData.sizeData.size)) + dialogData.customSpaceData.sizeData.units;
-    node.setAttribute('atEnd=',(dialogData.customSpaceData.typesetChoice=="always"?"true":"false"));
+    node.setAttribute('atEnd',(dialogData.customSpaceData.typesetChoice=='always' ? 'true': 'false'));
     node.setAttribute('style','height: ' + dimStr + '; vertical-align: ' + vAlignStr + ';');
   }
   var contentStr = msiSpaceUtils.getVSpaceDisplayableContent(dialogData.spaceType);
@@ -5101,6 +5102,13 @@ function msiReviseVerticalSpace(reviseData, dialogData, editorElement)
     else if (dialogData.spaceType != "customSpace")
 //    if (dialogData.spaceType != "customSpace")
       editor.removeAttribute(ourNode, "dim");
+
+    var styleStr = ourNode.getAttribute("style");
+    if (!styleStr)
+      styleStr = "";
+    var heightExpr = /height:\s*[^;]+;?/;
+    var vertAlignExpr = /vertical-align:\s*[^;]+;?/;
+
     if (contentStr != msiSpaceUtils.getVSpaceDisplayableContent(spaceInfo.theSpace))
     {
       msiKludgeLogString("Inside the contentStr different clause.\n", ["spaces"]);
@@ -5117,8 +5125,6 @@ function msiReviseVerticalSpace(reviseData, dialogData, editorElement)
     }
     if (dialogData.spaceType == "customSpace")  //more to do
     {
-      var heightExpr = /height:\s*[^;]+;?/;
-      var vertAlignExpr = /vertical-align:\s*[^;]+;?/;
       var atEndAttr = (dialogData.customSpaceData.typesetChoice=="always") ? "true" : "false";
       if (!("atEnd" in spaceInfo) || (spaceInfo.atEnd != atEndAttr))
         editor.setAttribute(ourNode, "atEnd", atEndAttr);
@@ -5131,9 +5137,6 @@ function msiReviseVerticalSpace(reviseData, dialogData, editorElement)
       msiKludgeLogString("Inside the customType fixed clause, dimsStr is [" + dimsStr + "].\n", ["spaces"]);
       if (ourNode.getAttribute("dim") != dimsStr)
       {
-        var styleStr = ourNode.getAttribute("style");
-        if (!styleStr)
-          styleStr = "";
         if (styleStr.match(heightExpr))
           styleStr = styleStr.replace(heightExpr, "height: " + dimsStr + ";");
         else
@@ -5151,6 +5154,18 @@ function msiReviseVerticalSpace(reviseData, dialogData, editorElement)
       }
       if (ourNode.getAttribute("class") == "stretchySpace")
         editor.removeAttribute(ourNode, "class");
+    }
+    else if (spaceInfo.theSpace == "customSpace" && styleStr.length)
+    {
+      if (styleStr.match(heightExpr))
+        styleStr = styleStr.replace(heightExpr, "");
+      if (styleStr.match(vertAlignExpr))
+        styleStr = styleStr.replace(vertAlignExpr, "");
+      styleStr = TrimString(styleStr);
+      if (styleStr.length == 0)
+        editor.removeAttribute(ourNode, "style");
+      else
+        editor.setAttribute(ourNode, "style", styleStr);
     }
   }
   
@@ -5216,11 +5231,11 @@ function msiInsertRules(dialogData, editorElement)
   var heightStr = String(dialogData.height.size) + dialogData.height.units;
   node.setAttribute('lift', liftStr);
   styleStr += "vertical-align: " + liftStr;
-  ruleStr += "\" width=\"" + widthStr;
+  node.setAttribute("width", widthStr);
   styleStr += "; width: " + widthStr;
-  ruleStr += "\" height=\"" + heightStr;
+  node.setAttribute("height", heightStr);
   styleStr += "; height: " + heightStr;
-  ruleStr += "\" color=\"" + dialogData.ruleColor;
+  node.setAttribute("color", dialogData.ruleColor);
   styleStr += "; background-color: " + dialogData.ruleColor + ";";
   node.setAttribute('style',styleStr);
   editor.insertElementAtSelection(node,true);

@@ -719,6 +719,7 @@ function changePattern(currPattern)
   else
     gDialog.bNameOK = false;
   var theContext = "math";
+  var bWasNew = gDialog.bIsNew;
   if (gDialog.bNameOK && (currPattern in gDialog.subsList.names))
   {
     gDialog.bIsNew = false;
@@ -729,6 +730,8 @@ function changePattern(currPattern)
     gDialog.bIsNew = true;
   if (theType == null || !theType.length)
     theType = "substitution";
+  if (gDialog.bIsNew && !bWasNew)
+    newType = "substitution";
   dump("In autoSubstituteDialog.js, changePattern(); new key pattern is [" + currPattern + "], gDialog.bIsNew is [" + gDialog.bIsNew + "], sub type is [" + newType + "], and context is [" + theContext + "].\n");
   document.getElementById("autosubTypeRadioGroup").value = newType;
   document.getElementById("autosubContextRadioGroup").value = theContext;
@@ -786,29 +789,34 @@ function removeCurrentSub()
 
 function getEditControlContentNodes(editorElement, bMathOnly)
 {
-  var doc = editorElement.contentDocument;
-//  var target = msiGetRealBodyElement(doc);
-  var target = doc.getElementsByTagName("dialogbase")[0];
-  var returnlist;
-  if (!target) target = doc.getElementsByTagName("para")[0];
-  if (!target)
-    return null;
-  if (bMathOnly)
-  {
-    var mathList = target.getElementsByTagName("math");
-    if (mathList != null && mathList.length > 0)
-      target = mathList[0];
-    else
-      target = null;
-  }
-  if (target != null)
-  {
-    returnlist = target.childNodes;
-    return returnlist;
-  }
-  else
-  
-    return null;
+  if (gDialog.substContentFilter == null)
+    gDialog.substContentFilter = new msiDialogEditorContentFilter(editorElement);
+  gDialog.substContentFilter.setMathOnly(bMathOnly);
+  var docFrag = gDialog.substContentFilter.getXMLNodesAsDocFragment();
+  return docFrag.childNodes;
+//  var doc = editorElement.contentDocument;
+////  var target = msiGetRealBodyElement(doc);
+//  var target = doc.getElementsByTagName("dialogbase")[0];
+//  var returnlist;
+//  if (!target) target = doc.getElementsByTagName("para")[0];
+//  if (!target)
+//    return null;
+//  if (bMathOnly)
+//  {
+//    var mathList = target.getElementsByTagName("math");
+//    if (mathList != null && mathList.length > 0)
+//      target = mathList[0];
+//    else
+//      target = null;
+//  }
+//  if (target != null)
+//  {
+//    returnlist = target.childNodes;
+//    return returnlist;
+//  }
+//  else
+//  
+//    return null;
 }
 
 
