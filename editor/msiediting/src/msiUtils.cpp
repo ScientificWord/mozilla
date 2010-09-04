@@ -1341,6 +1341,10 @@ nsresult msiUtils::CreateMfrac(nsIEditor * editor,
   nsresult res(NS_ERROR_FAILURE); 
   nsCOMPtr<nsIDOMNode> numerator, denominator;
   nsCOMPtr<nsIDOMElement> frac;
+  nsCOMPtr<nsIDOMNode> installedNum;
+  nsCOMPtr<nsIDOMNode> installedDen;
+  nsCOMPtr<nsIDOMElement> numInputbox;
+  nsCOMPtr<nsIDOMElement> denInputbox;
   nsAutoString linethickness, displaystyle, msitrue, msifalse;
   msiEditingAtoms::linethickness->ToString(linethickness);
   msiEditingAtoms::displaystyle->ToString(displaystyle);
@@ -1353,15 +1357,14 @@ nsresult msiUtils::CreateMfrac(nsIEditor * editor,
   {
     if (NS_SUCCEEDED(res) && !lineThickness.IsEmpty())
       res = frac->SetAttribute(linethickness, lineThickness);
-    
+
     if (num)
       numerator = num;
     else if (createInputBox)
     {
-      nsCOMPtr<nsIDOMElement> inputbox;
-      CreateInputbox(editor, PR_FALSE, markCaret, flags, inputbox);
-      if (inputbox) 
-        numerator = do_QueryInterface(inputbox);
+      CreateInputbox(editor, PR_FALSE, markCaret, flags, numInputbox);
+      if (numInputbox) 
+        numerator = do_QueryInterface(numInputbox);
     }
     else
     {
@@ -1377,19 +1380,16 @@ nsresult msiUtils::CreateMfrac(nsIEditor * editor,
       PRBool doMarkCaret(PR_FALSE);
       if (num && markCaret)
         doMarkCaret = PR_TRUE;
-      nsCOMPtr<nsIDOMElement> inputbox;
-      res = CreateInputbox(editor, PR_FALSE, doMarkCaret, flags, inputbox);
-      if (inputbox) 
-        denominator = do_QueryInterface(inputbox);
+      res = CreateInputbox(editor, PR_FALSE, doMarkCaret, flags, denInputbox);
+      if (denInputbox) 
+        denominator = do_QueryInterface(denInputbox);
     }
                          
     if (numerator && denominator)
     {
-      nsCOMPtr<nsIDOMNode> dontcare;   //TODO -- do these need to be saved for undo!!!!!!!
-      res = frac->AppendChild(numerator, getter_AddRefs(dontcare));
-      dontcare = nsnull;
+      res = frac->AppendChild(numerator, getter_AddRefs(installedNum));
       if (NS_SUCCEEDED(res)) 
-        res = frac->AppendChild(denominator, getter_AddRefs(dontcare));
+        res = frac->AppendChild(denominator, getter_AddRefs(installedDen));
       if (NS_SUCCEEDED(res))
       {
         if (attrFlags & (msiIMMLEditDefines::MO_ATTR_displaySize|msiIMMLEditDefines::MO_ATTR_smallSize))
@@ -1404,6 +1404,15 @@ nsresult msiUtils::CreateMfrac(nsIEditor * editor,
         }
         else
           mathmlElement = frac;
+        // Now place the cursor. If new, the numerator has an input box. Put it there.
+        nsCOMPtr<nsISelection> sel;
+        res = editor->GetSelection(getter_AddRefs(sel));
+        nsCOMPtr<nsIDOMNode> cursorNode;
+        if (createInputBox)
+          cursorNode = installedNum;
+        else
+          cursorNode = installedDen;  // Otherwuse the denominator has one.
+        res = sel->Collapse(cursorNode, 0);
       }
     }
     else 
