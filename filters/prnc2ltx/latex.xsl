@@ -28,6 +28,7 @@
 <xsl:include href="preamble.xsl"/>
 <xsl:include href="spaces.xsl"/>
 <xsl:include href="frame.xsl"/>
+<xsl:include href="texescape.xsl"/>
 
 <xsl:template match="/">
   <xsl:apply-templates/>
@@ -495,6 +496,7 @@ should not be done under some conditions -->
 </xsl:text></xsl:if></xsl:if></xsl:template>
 
 <xsl:template match="html:msidisplay"><xsl:apply-templates/></xsl:template>
+
 
 <xsl:template match="html:frontmatter"><xsl:apply-templates/></xsl:template>
 </xsl:stylesheet>
