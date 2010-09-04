@@ -184,6 +184,7 @@ function checkEnableControls()
 function onAccept()
 {
   data.spaceType = document.getElementById("spacesRadioGroup").value;
+  dump("In VerticalSpaces onAccept.\n");
   if (data.spaceType == "customSpace")
   {
     data.customSpaceData.sizeData.units = document.getElementById("fixedSizeUnitsbox").value;
@@ -191,6 +192,7 @@ function onAccept()
     data.customSpaceData.typesetChoice = document.getElementById("typesetRadioGroup").value;
   }
 
+  dump("In VerticalSpaces onAccept 2.\n");
   var editorElement = msiGetParentEditorElementForDialog(window);
   var theWindow = window.opener;
 
@@ -202,9 +204,11 @@ function onAccept()
   }
   else
   {
+    dump("In VerticalSpaces onAccept 3.\n");
     if (!theWindow || !("msiInsertVerticalSpace" in theWindow))
       theWindow = msiGetTopLevelWindow();
     theWindow.msiInsertVerticalSpace(data, editorElement);
+    dump("In VerticalSpaces onAccept 4.\n");
   }
 
   SaveWindowLocation();

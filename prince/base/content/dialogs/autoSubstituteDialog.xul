@@ -66,27 +66,6 @@
 
   <popupset id="msiEditorContentContextSet"/>
 
-  <commandset id="tasksCommands">
-    <commandset id="globalEditMenuItems"/>
-    <commandset id="selectEditMenuItems"/>
-    <commandset id="undoEditMenuItems"/>
-    <commandset id="clipboardEditMenuItems"/>
-    <commandset id="composerMenuItems"/>
-    <commandset id="composerEditMenuItems"/>
-    <commandset id="composerStyleMenuItems"/>
-    <commandset id="composerTableMenuItems"/>
-    <commandset id="composerListMenuItems"/>
-    <command id="cmd_MSIComputeEval" oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
-    <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
-  </commandset>
-  <commandset id="MSImathMenuCommands"/>
-  
-  <keyset id="editorKeys">
-    <keyset id="tasksKeys"/>
-    <keyset id="MSIKeySet"/>
-    <key id="MSIevalKey" key="&MSIComputeEvalCmd.keybinding;" observes="cmd_MSIComputeEval"  modifiers="accel"  />        
-  </keyset>
-
   <hbox>  
     <vbox>
       <description>&keystrokesBox.label;</description>
@@ -123,10 +102,31 @@
       <deck id="thedeck" selectedIndex="0">
         <!-- caption id="replacementLabel" label="&substitution.label;" accesskey="&substitution.accesskey;"/ -->
         <vbox><label id="substitutionLabel" control="substitution-frame" value="&substitution.label;" accesskey="&substitution.accesskey;"/>
-        <editor editortype="html" type="content" width="200" height="100" context="msiEditorContentContext" id="subst-frame"/>
+        <editor editortype="html" type="content" width="200" height="100" context="msiEditorContentContext" id="subst-frame">
+          <commandset id="tasksCommands">
+            <commandset id="globalEditMenuItems"/>
+            <commandset id="selectEditMenuItems"/>
+            <commandset id="undoEditMenuItems"/>
+            <commandset id="clipboardEditMenuItems"/>
+            <commandset id="composerMenuItems"/>
+            <commandset id="composerEditMenuItems"/>
+            <commandset id="composerStyleMenuItems"/>
+            <commandset id="composerTableMenuItems"/>
+            <commandset id="composerListMenuItems"/>
+            <command id="cmd_MSIComputeEval" oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
+            <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
+          </commandset>
+          <commandset id="MSImathMenuCommands"/>
+  
+          <keyset id="editorKeys">
+            <keyset id="tasksKeys"/>
+            <keyset id="MSIKeySet"/>
+            <key id="MSIevalKey" key="&MSIComputeEvalCmd.keybinding;" observes="cmd_MSIComputeEval"  modifiers="accel"  />        
+          </keyset>
+        </editor>
         </vbox>
         <vbox><label id="scriptLabel" control="scriptTextbox" value="&script.label;"	accesskey="&script.accesskey;"/>
-        <textbox id="scriptTextbox" size="60" width="100" height="100"  onkeypress="checkScriptControl(this);"/>
+        <textbox id="scriptTextbox" class="msiShadedTextbox" size="60" width="100" height="100"  onkeypress="checkScriptControl(this);"/>
         </vbox>
       </deck>
       <spacer flex="1"/>
