@@ -254,7 +254,7 @@
 <!-- class options   -->
 <xsl:template match="html:colist"
   ><xsl:if test="$formattingok"><xsl:for-each select="@*"
-    ><xsl:value-of select="."/>, </xsl:for-each
+    ><xsl:if test="name()!='enabled'"><xsl:value-of select="."/><xsl:if test="position()!=last()">, </xsl:if></xsl:if></xsl:for-each
   ></xsl:if></xsl:template>
 
 <!-- leading -->
