@@ -8455,7 +8455,7 @@ function newline(output, currentline, indent)
 
 var nonInlineTags=".math.html.head.requirespackage.newtheorem.definitionslist.documentclass.preamble.usepackage.preambleTeX."+
   "msidisplay.pagelayout.page.textregion.columns.marginnote.header.footer."+
-  "titleprototype.docformat.numberstyles.sectitleformat.docformat.numberstyles.";
+  "titleprototype.docformat.numberstyles.sectitleformat.docformat.numberstyles.texprogram.";
 function isInlineElement(editor, element)
 {
   if (nonInlineTags.search("."+element.localName+".") >= 0) return false;
