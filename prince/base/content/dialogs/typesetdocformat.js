@@ -17,10 +17,17 @@ var paperwidth;
 var paperheight;
 var landscape;
 var scale = 0.5;
-
+var sectionlist =["part","chapter", "section", "subsection", "subsubsection", "paragraph", "subparagraph"];
+// need to get section list from taglistmanager
 var editor;
-var sectitleformat;
+var sectitleformat={};
 var sectScale = 1;
+var compilerInfo = { prog: "pdflatex", //other choices: xelatex, lualatex
+                     useOTF: "false",
+                     formatOK: "false",
+//                     sectHeaderOK: {},
+                     pageFormatOK: "false",
+                     useUni: "false" };
 
 
 
@@ -51,6 +58,15 @@ function stripPath(element, index, array)
 {
   array[index] = re.exec(element)[1];
 }
+
+//function initializeCompilerInfo()
+//{
+//  // most was done statically above
+//  var l = sectionlist.length;
+//  var i;
+//  for (i = 0; i < l; i++)
+//    compilerInfo.sectHeaderOK[sectionlist[i]] = false;
+//}
  
 function Startup()
 {
@@ -72,6 +88,7 @@ function Startup()
     dump("No preamble in document\n");
     return;
   }
+  getEnableFlags(doc)
   var docFormatNodeList = preamble.getElementsByTagName('docformat');
   var node;
   if (!(docFormatNodeList && docFormatNodeList.length>=1)) node=null;
@@ -84,12 +101,6 @@ function Startup()
   //now we can load the docformat information from the document to override 
   //all or part of the initial state
   OnWindowSizeReset(true);
-  var useOT;;
-  var docCompilerNodeList = preamble.getElementsByTagName('texprogram');
-  if (docCompilerNodeList.length == 0) useOT = false;
-  else
-    useOT = (docCompilerNodeList[0].getAttribute("prog") == "xelatex"); 
-  buildFontMenus( useOT );
   if (!(docFormatNodeList && docFormatNodeList.length>=1)) node=null;
   else node = docFormatNodeList[0].getElementsByTagName('fontchoices')[0];
   getFontSpecs(node);
@@ -106,7 +117,30 @@ function Startup()
   getNumStyles(preamble);
 }
 
-function buildFontMenus( useOT )
+function getEnableFlags(doc)
+{
+  var nodelist = doc.getElementsByTagName("texprogram");
+  if (nodelist.length > 0)
+  {
+    var value;
+    var progNode =  nodelist[0]
+    value = progNode.getAttribute("prog");
+    setCompiler(value); 
+    document.getElementById("texprogram").value = value;
+    var canSetFormat = progNode.getAttribute("formatOK") == "true";
+    enableDisableReformat(canSetFormat);
+    document.getElementById("enablereformat").checked = canSetFormat;
+    var useOTF = progNode.getAttribute("useOTF") == "true";
+    enableDisableFonts(useOTF);
+    document.getElementById("allowfontchoice").checked = useOTF;
+    var formatPageOK = progNode.getAttribute("pageFormatOK") == "true";
+    document.getElementById("enablepagelayout").checked = formatPageOK;
+    document.getElementById('reformatok').setAttribute('disabled', canSetFormat?'false':'true');
+    document.getElementById('pagelayoutok').setAttribute('disabled',formatPageOK?'false':'true');
+  }
+}
+
+function buildFontMenus(useOTF)
 {
   addOldFontsToMenu("mathfontlist");
   addOldFontsToMenu("mainfontlist");
@@ -116,10 +150,8 @@ function buildFontMenus( useOT )
   addOldFontsToMenu("x2fontlist");
   addOldFontsToMenu("x3fontlist");
 
-  changeOpenType(useOT);
+  changeOpenType(useOTF);
 }
-
-var sectionlist =["part","chapter", "section", "subsection", "subsubsection", "paragraph", "subparagraph"];
 
 function getNumStyles(preambleNode)
 {
@@ -415,13 +447,33 @@ function onAccept()
     savePageLayout(newNode);
     saveFontSpecs(newNode);
     saveSectionFormatting(newNode, sectitleformat);
+    saveEnableFlags(doc, newNode);
     saveClassOptionsEtc(newNode);
     saveNumStyles(preamble);
   }
   return true;
 }  
 
-
+    
+function saveEnableFlags(doc, docformatnode)
+{
+  var nodelist = doc.getElementsByTagName("texprogram");
+  var progNode;
+  var newProgNode = false;
+  if (nodelist.length == 0) 
+  {
+    newProgNode = true;
+    progNode = editor.createNode("texprogram", docformatnode, 0);
+  }
+  else progNode = nodelist[0];
+  // handle compiler choice, whether to allow formatting changes, etc.
+  progNode.setAttribute("prog", compilerInfo.prog);
+  progNode.setAttribute("formatOK", compilerInfo.formatOK);
+  compilerInfo.useUni = compilerInfo.useOTF; // in this version they mean the same thing
+  progNode.setAttribute("useUni", compilerInfo.useUni);
+  progNode.setAttribute("useOTF", compilerInfo.useOTF);
+  progNode.setAttribute("pageFormatOK", compilerInfo.pageFormatOK); 
+}
 function onCancel()
 {
  return true;
@@ -2333,31 +2385,35 @@ function addOldFontsToMenu(menuPopupId)
   dump("Leaving initSystemOldFontMenu\n");
 }
 
-function changeOpenType( useOT )
+function changeOpenType(useOTF)
 {
-  var menuObject = { menulist: []};
-  if (useOT) {
-    // add opentype families to the menus 
-    menuObject.menulist = document.getElementById("mainfontlist");
-    addOTFontsToMenu(menuObject);
-    menuObject.menulist = document.getElementById("sansfontlist");
-    addOTFontsToMenu(menuObject);
-    menuObject.menulist = document.getElementById("fixedfontlist");
-    addOTFontsToMenu(menuObject);
-    menuObject.menulist = document.getElementById("x1fontlist");
-    addOTFontsToMenu(menuObject);
-    menuObject.menulist = document.getElementById("x2fontlist");
-    addOTFontsToMenu(menuObject);
-    menuObject.menulist = document.getElementById("x3fontlist");
-    addOTFontsToMenu(menuObject);
-  }
-  else {
-    deleteOTFontsFromMenu("mainfontlist");
-    deleteOTFontsFromMenu("sansfontlist");
-    deleteOTFontsFromMenu("fixedfontlist");
-    deleteOTFontsFromMenu("x1fontlist");
-    deleteOTFontsFromMenu("x2fontlist");
-    deleteOTFontsFromMenu("x3fontlist");
+  if (compilerInfo.useOTF != useOTF)
+  {
+    compilerInfo.useOTF = useOTF;
+    var menuObject = { menulist: []};
+    if (compilerInfo.useOTF) {
+      // add opentype families to the menus 
+      menuObject.menulist = document.getElementById("mainfontlist");
+      addOTFontsToMenu(menuObject);
+      menuObject.menulist = document.getElementById("sansfontlist");
+      addOTFontsToMenu(menuObject);
+      menuObject.menulist = document.getElementById("fixedfontlist");
+      addOTFontsToMenu(menuObject);
+      menuObject.menulist = document.getElementById("x1fontlist");
+      addOTFontsToMenu(menuObject);
+      menuObject.menulist = document.getElementById("x2fontlist");
+      addOTFontsToMenu(menuObject);
+      menuObject.menulist = document.getElementById("x3fontlist");
+      addOTFontsToMenu(menuObject);
+    }
+    else {
+      deleteOTFontsFromMenu("mainfontlist");
+      deleteOTFontsFromMenu("sansfontlist");
+      deleteOTFontsFromMenu("fixedfontlist");
+      deleteOTFontsFromMenu("x1fontlist");
+      deleteOTFontsFromMenu("x2fontlist");
+      deleteOTFontsFromMenu("x3fontlist");
+    } 
   }
 }  
 
@@ -2391,10 +2447,10 @@ function saveClassOptionsEtc(docformatnode)
   }
   var nodelist = doc.getElementsByTagName("colist");
   var optionNode;
-  var newnode = false;
+  var newOptionNode = false;
   if (nodelist.length == 0) 
   {
-    newnode = true;
+    newOptionNode = true;
     optionNode = editor.createNode("colist", docformatnode, 0);
   }
   else optionNode = nodelist[0];
@@ -2440,7 +2496,7 @@ function saveClassOptionsEtc(docformatnode)
   if (widget.hasAttribute("def")) optionNode.removeAttribute("bibstyle")
   else optionNode.setAttribute("bibstyle", widget.value);
 
-  if (newnode) documentclass.appendChild(optionNode);
+  if (newOptionNode) documentclass.appendChild(optionNode);
 
   widget = document.getElementById("leading").value;
   nodelist = preamble.getElementsByTagName("leading");
@@ -2483,18 +2539,6 @@ function saveClassOptionsEtc(docformatnode)
     else showidx = nodelist[0];
     showidx.setAttribute("req", "showidx")
   }
-    
-    
-  widget = document.getElementById("texprogram").selectedItem;
-  dump("a\n");
-  nodelist = preamble.getElementsByTagName("texprogram");
-  dump("b\n");
-  var texprogram;
-  if (nodelist.length == 0)
-    texprogram = editor.createNode("texprogram", preamble, 1000);
-  else texprogram = nodelist[0];
-  dump("c"+widget.value+"\n");
-  texprogram.setAttribute("prog", widget.value)
 }
 
 function setMenulistSelection(menulist, value)
@@ -2545,12 +2589,6 @@ function getClassOptionsEtc()
       colist.getAttribute(s));
   }
   var value;
-  if (colist.hasAttribute('enabled'))
-    value = colist.getAttribute('enabled');
-  else value='false';
-  document.getElementById('enablereformat').checked = (value=='true');
-  document.getElementById('reformatok').setAttribute('disabled', (value=='true')?'false':'true');
-
   nodelist = preamble.getElementsByTagName("leading");
   if (nodelist.length > 0)
   {
@@ -2568,44 +2606,42 @@ function getClassOptionsEtc()
   {
     document.getElementById("showidx").selectedIndex = 1;
   }
-  nodelist = preamble.getElementsByTagName("texprogram");
-  if (nodelist.length > 0)
-  {
-    var value =  nodelist[0].getAttribute("prog");
-    document.getElementById("texprogram").value = value;
-    dump("texprogrm value is "+value+"\n");
-    setCompiler("xelatex");
-  }
 }
 
 function setCompiler(compilername)
 {
-  if (compilername=="xelatex")
-  {
-    document.getElementById("xelatex").hidden=false;
-    document.getElementById("pdflatex").hidden=true;
-    changeOpenType(true);
-  }
-  else
-  { 
-    document.getElementById("xelatex").hidden=true;
-    document.getElementById("pdflatex").hidden=false;
-    changeOpenType(false);
-  }    
+//  if (compilerInfo.prog != compilername)
+//  {
+    compilerInfo.prog = compilername;
+    if (compilername=="xelatex")
+    {
+      document.getElementById("xelatex").hidden=false;
+      document.getElementById("pdflatex").hidden=true;
+      changeOpenType(true);
+    }
+    else
+    { 
+      document.getElementById("xelatex").hidden=true;
+      document.getElementById("pdflatex").hidden=false;
+      changeOpenType(false);
+    } 
+//  }   
 }
 
-function enableDisableReformat(checkbox)
+function enableDisableReformat(enable)
 {
   var bcaster = document.getElementById("reformatok");
-  if (checkbox.checked)
+  compilerInfo.formatOK = enable;
+  if (enable)
     bcaster.setAttribute("disabled","false");
   else bcaster.setAttribute("disabled","true");
 }
      
-function enableDisablePageLayout(checkbox)    
+function enableDisablePageLayout(enable)    
 {
   var bcaster = document.getElementById("pagelayoutok");
-  if (checkbox.checked)
+  compilerInfo.pageFormatOK = enable;
+  if (enable)
     bcaster.setAttribute("disabled","false");
   else bcaster.setAttribute("disabled","true");
 }
@@ -2619,10 +2655,11 @@ function enableDisableSectFormat(checkbox)
   else bcaster.setAttribute("disabled","true");
 }
 
-function enableDisableFonts(checkbox)
+function enableDisableFonts(enabled)
 {
   var bcaster = document.getElementById("fontdefok");
-  if (checkbox.checked)
+  compilerInfo.useOTF = enabled;
+  if (enabled)
     bcaster.setAttribute("disabled","false");
   else bcaster.setAttribute("disabled","true");
 }
