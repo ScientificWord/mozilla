@@ -757,8 +757,8 @@ char *MuPADWrapper::ProcessSemNode(SEMANTICS_NODE * s_node,
       break;
 
     case SEM_TYP_PIECEWISE_FENCE:
-      TCI_ASSERT(!"PIECEWISE_FENCE not supported by MuPADWrapper::ProcessSemNode");
-      break;
+      //TCI_ASSERT(!"PIECEWISE_FENCE not supported by MuPADWrapper::ProcessSemNode");
+      //break;
 
     case SEM_TYP_PIECEWISE_LIST:
       rv = Piecewise2Estr(s_node, error_code);
