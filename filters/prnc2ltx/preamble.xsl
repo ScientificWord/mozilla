@@ -167,8 +167,8 @@
 <xsl:template match="html:footer"></xsl:template> <!--%%  footskip=<xsl:value-of select="concat(number(substring(@height,1,string-length(@height)-2))+number(substring(@sep,1,string-length(@sep-2)),substring(@sep,string-length(@sep)-2))"/>%</xsl:template -->
 																																	 
 <xsl:template match="html:fontchoices">
-  <xsl:if test="$fontchoiceok">
-<xsl:apply-templates/></xsl:if></xsl:template> 
+  <xsl:if test="$fontchoiceok"><xsl:if test="$compiler='xelatex'">
+<xsl:apply-templates/></xsl:if></xsl:if></xsl:template> 
    
 
 <xsl:template match="html:mainfont[@ot='1']">\setmainfont[<xsl:value-of select="@options"
