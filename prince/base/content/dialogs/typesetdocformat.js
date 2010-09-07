@@ -23,11 +23,12 @@ var editor;
 var sectitleformat={};
 var sectScale = 1;
 var compilerInfo = { prog: "pdflatex", //other choices: xelatex, lualatex
-                     useOTF: "false",
-                     formatOK: "false",
+                     useOTF: false,  //currently same as xelatex (lualatex in future)
+                     formatOK: false,//master control. If false, can't change anything
 //                     sectHeaderOK: {},
-                     pageFormatOK: "false",
-                     useUni: "false" };
+                     pageFormatOK: false,//geometry package not called if false
+                     useUni: false,//currently same as useOTF
+                     fontsOK: false }// OK to choose fonts
 
 
 
@@ -125,14 +126,15 @@ function getEnableFlags(doc)
     var value;
     var progNode =  nodelist[0]
     value = progNode.getAttribute("prog");
-    setCompiler(value); 
+    setCompiler(value);
+    compilerInfo.useOTF = value == "xelatex"; 
     document.getElementById("texprogram").value = value;
     var canSetFormat = progNode.getAttribute("formatOK") == "true";
     enableDisableReformat(canSetFormat);
     document.getElementById("enablereformat").checked = canSetFormat;
-    var useOTF = progNode.getAttribute("useOTF") == "true";
-    enableDisableFonts(useOTF);
-    document.getElementById("allowfontchoice").checked = useOTF;
+    var fontsOK = progNode.getAttribute("fontsOK") == "true";
+    enableDisableFonts(fontsOK);
+    document.getElementById("allowfontchoice").checked = fontsOK;
     var formatPageOK = progNode.getAttribute("pageFormatOK") == "true";
     document.getElementById("enablepagelayout").checked = formatPageOK;
     document.getElementById('reformatok').setAttribute('disabled', canSetFormat?'false':'true');
@@ -472,6 +474,7 @@ function saveEnableFlags(doc, docformatnode)
   compilerInfo.useUni = compilerInfo.useOTF; // in this version they mean the same thing
   progNode.setAttribute("useUni", compilerInfo.useUni);
   progNode.setAttribute("useOTF", compilerInfo.useOTF);
+  progNode.setAttribute("fontsOK", compilerInfo.fontsOK);
   progNode.setAttribute("pageFormatOK", compilerInfo.pageFormatOK); 
 }
 function onCancel()
@@ -2658,7 +2661,7 @@ function enableDisableSectFormat(checkbox)
 function enableDisableFonts(enabled)
 {
   var bcaster = document.getElementById("fontdefok");
-  compilerInfo.useOTF = enabled;
+  compilerInfo.fontsOK = enabled;
   if (enabled)
     bcaster.setAttribute("disabled","false");
   else bcaster.setAttribute("disabled","true");
