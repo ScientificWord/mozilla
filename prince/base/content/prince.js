@@ -578,7 +578,7 @@ function exportTeX()
      var dialogResult = fp.show();
      if (dialogResult != msIFilePicker.returnCancel)
        if (!documentAsTeXFile(editor.document, "latex.xsl", fp.file, compileInfo ))
-         AlertWithTitle("XSLT Error", "TeX file not created. Click on View/XSLT Log to see the log file");
+         AlertWithTitle("XSLT Error", "TeX file not created");
 
    }
    catch (ex) 
@@ -788,7 +788,7 @@ function compileDocument( pdftex )
     }
     else 
     {
-      AlertWithTitle("XSLT Error", "Unable to create a TeX file. Try View/XSLT Log");
+      AlertWithTitle("XSLT Error", "Unable to create a TeX file");
       return null;
     }
   }
