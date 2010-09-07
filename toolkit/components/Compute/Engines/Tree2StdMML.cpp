@@ -1670,7 +1670,7 @@ bool Tree2StdMML::NodeIsOperator(MNODE* mml_node)
 
   } else if (ElementNameIs(mml_node, "mrow")) {
 
-      if (mml_node->first_kid->next)
+      if (mml_node->first_kid && mml_node->first_kid->next)
         return false;
       else
         return NodeIsOperator(mml_node->first_kid);
