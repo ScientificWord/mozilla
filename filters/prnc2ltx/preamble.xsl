@@ -63,10 +63,25 @@
  
 <xsl:variable name="packagelist" select ="exsl:node-set($packagelist.tf)"/>
 
-<xsl:variable name="formattingok" select="//html:colist[@enabled='true']"/>
-<xsl:variable name="pagelayoutok" select="//html:pagelayout[@enabled='true']"/>
+<xsl:variable name="compiler" select="//html:texprogram/@prog"/>
+<xsl:variable name="formattingok" select="//html:texprogram[@formatOK='true']"/>
+<xsl:variable name="pagelayoutok" select="//html:texprogram[@pageFormatOK='true']"/>
+<xsl:variable name="fontchoiceok" select="//html:texprogram[@fontsOK='true']"/>
 
 <xsl:template match="html:preamble">
+
+<xsl:if test="$compiler='xelatex'">
+\usepackage{xltxtra}
+\TeXXeTstate=1 
+\defaultfontfeatures{Scale=MatchLowercase,Mapping=tex-text}
+</xsl:if>
+
+<xsl:if test="$compiler!='xelatex'">
+\usepackage{textcomp}
+</xsl:if>
+
+<xsl:text>\usepackage{xspace}</xsl:text>
+
 <xsl:if test="count(//html:indexitem) &gt; 0"
   >\usepackage{makeidx}
 \makeindex</xsl:if>
@@ -152,10 +167,9 @@
 <xsl:template match="html:footer"></xsl:template> <!--%%  footskip=<xsl:value-of select="concat(number(substring(@height,1,string-length(@height)-2))+number(substring(@sep,1,string-length(@sep-2)),substring(@sep,string-length(@sep)-2))"/>%</xsl:template -->
 																																	 
 <xsl:template match="html:fontchoices">
-\usepackage{xltxtra}
-\TeXXeTstate=1 
-\defaultfontfeatures{Scale=MatchLowercase,Mapping=tex-text}
-<xsl:apply-templates/></xsl:template>  
+  <xsl:if test="$fontchoiceok"><xsl:if test="$compiler='xelatex'">
+<xsl:apply-templates/></xsl:if></xsl:if></xsl:template> 
+   
 
 <xsl:template match="html:mainfont[@ot='1']">\setmainfont[<xsl:value-of select="@options"
   />]{<xsl:value-of select="@name"
