@@ -123,6 +123,10 @@ nsHTMLEditUtils::IsNodeThatCanOutdent(nsIDOMNode *node, msiITagListManager * man
 {
   NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsNodeThatCanOutdent");
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
+  
+  if (!nodeAtom)
+    return PR_FALSE;
+
   NS_PRECONDITION(nodeAtom, "node with null tag passed to nsHTMLEditUtils::IsNodeThatCanOutdent");
   nsAutoString tagName;
   nodeAtom->ToString(tagName);
