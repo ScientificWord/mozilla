@@ -275,7 +275,7 @@ should not be done under some conditions -->
   <xsl:otherwise>\footnote{</xsl:otherwise>
 </xsl:choose>
 <xsl:apply-templates/>
-}
+<xsl:text>}</xsl:text>
 </xsl:template>
 
 <xsl:template match="html:note">\marginpar{<xsl:apply-templates/>}
