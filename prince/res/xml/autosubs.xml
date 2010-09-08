@@ -18,6 +18,8 @@
   <sub ctx="text" tp="sc"><pattern>.spell.</pattern><data>checkSpelling(true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.preview.</pattern><data>previewPDF(true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.save.</pattern><data>softSave(true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.ftn.</pattern><data>insertFootnote();</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.mnote.</pattern><data>insertMarginNote();</data></sub>
   <sub ctx="text" tp="sc"><pattern>.ol.</pattern><data>insertListItem('numberedlistitem', true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.ul.</pattern><data>insertListItem('bulletlistitem', true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.it.</pattern><data>toggleTextTag('it',true);</data></sub>
