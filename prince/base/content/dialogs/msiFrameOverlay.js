@@ -510,7 +510,7 @@ function setFrameAttributes(frameNode)
   frameNode.setAttribute("border-color", arr[1]);  
   if (document.getElementById("inline").selected)
     setStyleAttributeOnNode(frameNode, "display", "inline");
-  else setStyleAttributeOnNode(frameNode, "display", "blcck");
+  else setStyleAttributeOnNode(frameNode, "display", "block");
   var placeLocation="";
   var isHere = false;
   if (gFrameTab.placeForceHereCheck.checked)
