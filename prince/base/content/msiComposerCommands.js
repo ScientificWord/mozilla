@@ -8400,10 +8400,12 @@ var msiConvertToTable =
   }
 };
 
-function msiNote(currNode, editorElement)
+function msiNote(currNode, editorElement, type, hidden)
 {
   var data= new Object();
   data.editorElement = editorElement;
+  if (!data.editorElement)
+    data.editorElement = msiGetActiveEditorElement();
   var currNodeTag = "";
   if (currNode) {
     data.type = currNode.getAttribute("type");
@@ -8419,11 +8421,19 @@ function msiNote(currNode, editorElement)
     //defaults
     data.type = "";
   }
+  if (type)
+  {
+    if (!hidden) hidden=false;
+    data.hidenote = hidden;
+    data.type = type;
+  }
 
-  window.openDialog("chrome://prince/content/Note.xul","note", "chrome,close,titlebar,resizable=yes,modal", data);
-  // data comes back altered
-  if (data.Cancel)
-    return;
+  if (!type) {
+    window.openDialog("chrome://prince/content/Note.xul","note", "chrome,close,titlebar,resizable=yes,modal", data);
+    // data comes back altered
+    if (data.Cancel)
+      return;
+  }
 
   dump(data.type + "\n");
   if (data.type != 'footnote') msiRequirePackage(editorElement, "ragged2e", "raggedrightboxes"); 
@@ -8435,22 +8445,45 @@ function msiNote(currNode, editorElement)
     currNode.setAttribute("type",data.type);
     if (data.hide) currNode.setAttribute("hide","true")
     else currNode.removeAttribute("hide");
+    if (data.type != 'footnote') 
+    {
+      currNode.setAttribute("req","ragged2e");
+      currNode.setAttribute("opt","raggedrightboxes");
+    }
   }
   else
   {
-    var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace); 
-    var wrapperNode = editor.document.createElement('notewrapper');
-    var node = editor.document.createElement('note');
-    if (data.type == 'footnote') wrapperNode.setAttribute('type','footnote');
-    node.setAttribute('type',data.type);
-    if (data.hidenote) node.setAttribute('hide','true');
-    var paranode = editor.document.createElement(paraTag);
-    editor.insertElementAtSelection(wrapperNode, true);
-    if (node)
-      editor.insertNode(node,wrapperNode,0);
-    if (paranode)
-      editor.insertNode(paranode,node,0);
+    try 
+    {
+      var namespace = new Object();                      
+      var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace); 
+      var wrapperNode = editor.document.createElement('notewrapper');
+      if (data.type == 'footnote') wrapperNode.setAttribute('type','footnote');
+      var node = editor.document.createElement('note');
+      node.setAttribute('type',data.type);
+      if (data.hidenote) node.setAttribute('hide','true');
+      if (data.type != 'footnote') 
+      {
+        node.setAttribute("req","ragged2e");
+        node.setAttribute("opt","raggedrightboxes");
+      }
+      var paraNode = editor.document.createElement(paraTag);
+      var brNode=editor.document.createElement('br');
+      if (node)
+        wrapperNode.insertBefore(node, null);
+      if (paraNode)
+        node.insertBefore(paraNode, null);
+      if (brNode)
+        paraNode.insertBefore(brNode, null);
+      editor.insertElementAtSelection(wrapperNode, true);
+      editor.selection.collapse(paraNode, 0);
+    }
+    catch(e)
+    {
+      dump("msiNote: exception = '"+e.message+"'\n");
+    }
   }
+   
 }
 
 function msiFrame(editorElement)
