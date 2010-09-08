@@ -2584,7 +2584,8 @@ SEMANTICS_NODE* SNodeFromMNodes(MNODE* mml_node,
               SEMANTICS_NODE* s_node = GetSemanticsList(mml_node->first_kid, new_a_rec, pAnalyzer);
 
               new_a_rec->first_child = s_node;
-              s_node->parent = new_a_rec;
+              if (s_node) 
+                s_node->parent = new_a_rec;
             }
 
         } else if (StringEqual(mml_element, "msup")) {
