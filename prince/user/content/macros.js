@@ -14,6 +14,7 @@ function deleteSelection()
 function getCurrentEditorElement()
 {
   var theEditorElement = msiGetActiveEditorElement();
+  return theEditorElement;
 }
 
 
@@ -109,6 +110,19 @@ function previewDVI(delSelection)
   printTeX(false,true);
 }
 
+function insertFootnote(delSelection)
+{
+  if (delSelection) deleteSelection();
+  var editorElement = getCurrentEditorElement();
+  msiNote(null, editorElement, 'footnote', false);
+}
+     
+function insertMarginNote(delSelection)
+{
+  if (delSelection) deleteSelection();
+  var editorElement = getCurrentEditorElement();
+  msiNote(null, editorElement, 'marginnote',false);
+}
      
 // The following was added by BBM for diagnostic purposes. It should not be in the release version
 // If the selection is collapsed and in a math object, this will dump the math object and show
