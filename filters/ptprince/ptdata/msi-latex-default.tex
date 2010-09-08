@@ -83,8 +83,10 @@
 
 \MSITextElement[a]{ref}
 \MSITextElement{pageref}
-\MSITextElement{pagestyle}
-\MSITextElement{thispagestyle}
+%\MSITextElement{pagestyle}
+%\MSITextElement{thispagestyle}
+
+\def\thispagestyle#1{\msitag{<texb enc="1" name="thispagestyle">}\string\thispagestyle\{#1\}\msitag{</texb>}}
 
 
 % Use MSIListEnvironment to create a list environment translation
