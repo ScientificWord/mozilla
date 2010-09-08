@@ -83,10 +83,13 @@
 
 \MSITextElement[a]{ref}
 \MSITextElement{pageref}
-%\MSITextElement{pagestyle}
-%\MSITextElement{thispagestyle}
 
-\def\thispagestyle#1{\msitag{<texb enc="1" name="thispagestyle">}\string\thispagestyle\{#1\}\msitag{</texb>}}
+
+
+
+\MSITeXButtonReq{pagestyle}
+\MSITeXButtonReq{thispagestyle}
+
 
 
 % Use MSIListEnvironment to create a list environment translation
@@ -94,9 +97,9 @@
 % To    <enumerate> ... </enumerate>
 % The difference between this and SimpleEnvironment is just the
 % handling of \item.
-
-\MSIListEnvironment{enumerate}
-\MSIListEnvironment{itemize}
+\msitraceon
+\MSIListEnvironment[numberedlist]{enumerate}
+\MSIListEnvironment[bulletlist]{itemize}
 \MSIListEnvironment{description}
 
 
