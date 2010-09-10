@@ -228,7 +228,7 @@ quotation {
   margin-right: 20pt;
 }
 
-*[class="showinvis"] quotation:after {
+*[showinvis="true"] quotation:after {
   content: "\B6";
   display: inline;
   font-family: Courier New;
