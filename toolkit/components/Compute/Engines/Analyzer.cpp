@@ -2610,7 +2610,8 @@ SEMANTICS_NODE* SNodeFromMNodes(MNODE* mml_node,
                 rv->bucket_list = AppendBucketRec(NULL, new_a_rec);
                 SEMANTICS_NODE* s_node = GetSemanticsList(cont, new_a_rec, ALL_NODES, isLHSofDef, pAnalyzer);
                 new_a_rec->first_child = s_node;
-                s_node->parent = new_a_rec;
+                if (s_node)
+                  s_node->parent = new_a_rec;
               }
             }
 
@@ -2755,7 +2756,8 @@ SEMANTICS_NODE* GetSemanticsFromNode(MNODE* mml_node, BUCKET_REC* bucket, Analyz
 void AnalyzeMixedNum(MNODE* mml_mn, SEMANTICS_NODE* s_node, Analyzer* pAnalyzer)
 {
   BUCKET_REC* whole_bucket = MakeBucketRec(MB_MN_WHOLE, NULL);
-  AppendBucketRecord(s_node->bucket_list, whole_bucket);
+  if (s_node)
+     AppendBucketRecord(s_node->bucket_list, whole_bucket);
 
   MNODE* save = mml_mn->next;
   mml_mn->next = NULL;
@@ -2766,13 +2768,14 @@ void AnalyzeMixedNum(MNODE* mml_mn, SEMANTICS_NODE* s_node, Analyzer* pAnalyzer)
   s_whole->parent = whole_bucket;
 
   BUCKET_REC* frac_bucket = MakeBucketRec(MB_MN_FRACTION, NULL);
-  AppendBucketRecord(s_node->bucket_list, frac_bucket);
+  if (s_node)
+     AppendBucketRecord(s_node->bucket_list, frac_bucket);
   SEMANTICS_NODE* s_frac = GetSemanticsList(mml_mn->next, frac_bucket, 1, false, pAnalyzer);
 
   frac_bucket->first_child = s_frac;
   s_frac->parent = frac_bucket;
-
-  s_node->semantic_type = SEM_TYP_MIXEDNUMBER;
+  if (s_node)
+     s_node->semantic_type = SEM_TYP_MIXEDNUMBER;
 }
 
 ////////////////////////////// START SCRIPT HANDLING
