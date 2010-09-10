@@ -8436,8 +8436,8 @@ function msiNote(currNode, editorElement, type, hidden)
   }
 
   dump(data.type + "\n");
-  if (data.type != 'footnote') msiRequirePackage(editorElement, "ragged2e", "raggedrightboxes"); 
   var editor = msiGetEditor(editorElement);
+  editor.beginTransaction();
   if (currNode)  // currnode is a note node
   {
     if (data.type == 'footnote') currNode.parentNode.setAttribute("type","footnote");
@@ -8469,6 +8469,7 @@ function msiNote(currNode, editorElement, type, hidden)
       }
       var paraNode = editor.document.createElement(paraTag);
       var brNode=editor.document.createElement('br');
+      brNode.setAttribute("type","_moz");
       if (node)
         wrapperNode.insertBefore(node, null);
       if (paraNode)
@@ -8483,7 +8484,7 @@ function msiNote(currNode, editorElement, type, hidden)
       dump("msiNote: exception = '"+e.message+"'\n");
     }
   }
-   
+  editor.endTransaction(); 
 }
 
 function msiFrame(editorElement)
