@@ -371,7 +371,7 @@ paragraph[nonum="true"] {
   content: "";
 }
 
-*[class="showinvis"] sectiontitle:after {
+*[showinvis="true"] sectiontitle:after {
   content: "\B6";
   display: inline;
   font-family: Courier New;
@@ -381,7 +381,7 @@ paragraph[nonum="true"] {
 }
 
 
-*[class="showinvis"] p:after {
+*[showinvis="true"] p:after {
   content: "\B6";
   display: inline;
   font-family: Courier New;
@@ -391,7 +391,7 @@ paragraph[nonum="true"] {
 }
 
 
-*[class="showinvis"] para:after {
+*[showinvis="true"] para:after {
   content: "\B6";
   display: inline;
   font-family: Courier New;
@@ -400,17 +400,7 @@ paragraph[nonum="true"] {
   -moz-user-select: -moz-none;
 }
 
-*[class="showinvis"] mathp:after {
-  content: "\B6";
-  display: inline;
-  font-family: Courier New;
-  color: green;
-  font-weight: bold;
-  -moz-user-select: -moz-none;
-}
-
-
-*[class="showinvis"] title:after {
+*[showinvis="true"] mathp:after {
   content: "\B6";
   display: inline;
   font-family: Courier New;
@@ -420,7 +410,17 @@ paragraph[nonum="true"] {
 }
 
 
-*[class="showinvis"] quote:after {
+*[showinvis="true"] title:after {
+  content: "\B6";
+  display: inline;
+  font-family: Courier New;
+  color: green;
+  font-weight: bold;
+  -moz-user-select: -moz-none;
+}
+
+
+*[showinvis="true"] quote:after {
   content: "\B6";
   display: inline;
   font-family: Courier New;
