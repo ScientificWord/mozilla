@@ -30,9 +30,6 @@
                   key="openeditorkb"
                   observes="cmd_open" 
                   label="&openFileCmd.label;"/>
-      <menuitem accesskey="&fileopenremote.accesskey;"  
-                  key="openremoteeditorkb" 
-                  observes="cmd_openRemote"/>
       <menuitem observes="cmd_openTeX" label="Import TeX ..."/>
       <menuitem observes="cmd_exportTeX" label="Export TeX ..."/>
       <menuitem observes="cmd_exportToWeb" label="Export to Web ..."/>
@@ -574,7 +571,6 @@
   >
     <command id="cmd_newDocument"  oncommand="msiGoDoCommand('cmd_new');"/>
     <command id="cmd_open"         oncommand="msiGoDoCommand('cmd_open')"/>
-    <command id="cmd_openRemote"   label="&openremoteCmd.label;"    oncommand="msiGoDoCommand('cmd_openRemote')"/>
     <command id="cmd_close"        label="&closeCmd.label;"         oncommand="msiGoDoCommand('cmd_close')"/>
     <command id="cmd_printSetup"   oncommand="msiGoDoCommand('cmd_printSetup')"/>
 <!--
