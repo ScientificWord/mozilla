@@ -1390,7 +1390,7 @@ function msiGetExtensionBasedOnMimeType(aMIMEType)
 
 function msiGetSuggestedFileName(aDocumentURLString, aMIMEType, editorElement)
 {
-  var filename = GetFilename(aDocumentURLString);
+  var filename = decodeURI(GetFilename(aDocumentURLString));
   if (filename.length > 0) return filename;
   
   // I kind of doubt that any of the following code gets used
