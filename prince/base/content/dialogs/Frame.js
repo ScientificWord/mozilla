@@ -22,8 +22,12 @@ function startUp()
   }
   msiframe = editor.getSelectedElement("msiframe");
   isNewNode = !(msiframe);
-  if (isNewNode) msiframe = editor.createElementWithDefaults("msiframe");
-     
+  if (isNewNode)
+  {
+    msiframe = editor.createElementWithDefaults("msiframe");
+    var para = editor.createNode("para", msiframe, 0);
+    var br = editor.createNode("br", para, 0);
+  }   
   gd = new Object();
   gd = initFrameTab(gd, msiframe, isNewNode);
   initFrameSizePanel(); // needed when the user can set the size
@@ -33,10 +37,9 @@ function startUp()
 function onOK() {
   setFrameAttributes(msiframe);
   // BBM This is a stub
+  var namespace = new Object();                      
   
   if (isNewNode) editor.insertElementAtSelection(msiframe, true);
-  var para = editor.createNode("para", msiframe, 0);
-  var br = editor.createNode("br", para, 0);
   // BBM This new node should go AROUND the selection.
   return(true);
 }

@@ -65,6 +65,11 @@ var gHaveDocumentUrl = false;
 var gPreviewImageWidth = 80;
 var gPreviewImageHeight = 50;
 
+// These mode variables control the msiFrameOverlay code
+var gFrameModeImage = true;
+var gFrameModeTextFrame = false;
+
+var gInsertNewImage;
 
 // dialog initialization code
 
@@ -412,6 +417,11 @@ function  SetSizeWidgets(width, height)
   }
 }
 
+// These mode variables control the msiFrameOverlay code
+var gFrameModeImage = true;
+var gFrameModeTextFrame = false;
+
+var gInsertNewImage;
 
 function initImageUnitList(unitPopUp)
 {
@@ -1199,6 +1209,11 @@ function onAccept()
 //  return false;
 }
 
+// These mode variables control the msiFrameOverlay code
+var gFrameModeImage = true;
+var gFrameModeTextFrame = false;
+
+var gInsertNewImage;
 
 var xsltSheet="<?xml version='1.0'?><xsl:stylesheet version='1.1' xmlns:xsl='http://www.w3.org/1999/XSL/Transform' xmlns:html='http://www.w3.org/1999/xhtml' ><xsl:output method='text' encoding='UTF-8'/> <xsl:template match='/'>  <xsl:apply-templates select='//*[@key]'/></xsl:template><xsl:template match='//*[@key]'>   <xsl:value-of select='@key'/><xsl:text> </xsl:text></xsl:template> </xsl:stylesheet>";
 

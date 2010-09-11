@@ -11,6 +11,8 @@
   <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/ -->
   <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/ -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
+
+
   <tab id="msiFrameTab" label="Frame"/>
   <tab id="msiPlacementTab" label="Placement"/>
   <vbox id="units" >
@@ -20,7 +22,7 @@
       value     = "&unitLabel.label;" />
     <hbox> <menulist id = "frameUnitMenulist"
       width=".75in"
-      oncommand  = "frameUnitHandler.setCurrentUnit(this.value);" >
+      oncommand  = "setNewUnit(this);" >
       <menupopup id = "unitList" selectedIndex="2" persist="selectedIndex">
         <menuitem value="in" label="&inch;"/>
         <!--menuitem value="pct" label="percent"/  -->
@@ -82,10 +84,21 @@
       <rows>
         <row>
           <hbox/>
-          <label value="Left"/>
-          <label value="Right"/>
-          <label value="Top"/>
-          <label value="Bottom"/>
+          <hbox>
+            <description value="Left" observes="role-textframe"/>
+            <description value="To text" observes="role-image"/>
+          </hbox>
+          <hbox>
+            <description value="Right" observes="role-textframe"/>
+            <description value="Overhang" observes="role-image"/>
+          </hbox>
+          <hbox>
+            <description value="Top" observes="role-textframe"/>
+            <description observes="role-image">Top/Bottom</description>
+          </hbox>
+          <hbox>
+            <description value="Bottom" observes="role-textframe"/>
+          </hbox>
         </row>
         <row>
           <label value="Margin"/>
@@ -96,7 +109,8 @@
               observes  = "lengthwithunits"
               onkeypress= "handleChar(event, this.id);"
               onchange  = "update(this.id);"/>
-            <button class="extend" oncommand="extendInput('margin')"/>
+            <button class="extend" oncommand="extendInput('margin')"
+                observes="role-textframe"/>
           </hbox>
           <textbox
             id        = "marginRightInput"
@@ -109,12 +123,14 @@
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
             onchange  = "update(this.id);"/>
+          <hbox  observes="role-textframe">
           <textbox
             id        = "marginBottomInput"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
-            onchange  = "update(this.id);"/>
+            onchange  = "update(this.id);"/></hbox>
         </row>
+        <separator/>
         <row>
           <label value="Border"/>
           <hbox>
@@ -123,23 +139,29 @@
               observes  = "lengthwithunits"
               onkeypress= "handleChar(event, this.id);"
               onchange  = "update(this.id);"/>
-            <button class="extend" oncommand="extendInput('border')"/>
+            <button class="extend" observes="role-textframe" oncommand="extendInput('border')"/>
           </hbox>
+          <hbox observes="role-textframe">
           <textbox
             id        = "borderRightInput"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
             onchange  = "update(this.id);"/>
+          </hbox>
+          <hbox observes="role-textframe">
           <textbox
             id        = "borderTopInput"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
             onchange  = "update(this.id);"/>
+          </hbox>
+          <hbox observes="role-textframe">
           <textbox
             id        = "borderBottomInput"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
             onchange  = "update(this.id);"/>
+          </hbox>
         </row>
         <row>
           <label value="Padding"/>
@@ -149,23 +171,44 @@
               observes  = "lengthwithunits"
               onkeypress= "handleChar(event, this.id);"
               onchange  = "update(this.id);"/>
-            <button class="extend" oncommand="extendInput('padding')"/>
+            <button class="extend" observes="role-textframe" oncommand="extendInput('padding')"/>
           </hbox>
+          <hbox  observes="role-textframe">
           <textbox
             id        = "paddingRightInput"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
             onchange  = "update(this.id);"/>
+          </hbox>
+          <hbox observes="role-textframe">
           <textbox
             id        = "paddingTopInput"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
             onchange  = "update(this.id);"/>
+          </hbox>
+          <hbox observes="role-textframe">
           <textbox
             id        = "paddingBottomInput"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
-            onchange  = "update(this.id);"/>
+            onchange  = "update(this.id);"/></hbox>
+        </row>
+        <separator/>
+        <row>
+          <hbox/>
+          <hbox>
+            <description value="Left" observes="role-image"/>
+          </hbox>
+          <hbox>
+            <description value="Right" observes="role-image"/>
+          </hbox>
+          <hbox>
+            <description value="Top" observes="role-image"/>
+          </hbox>
+          <hbox>
+            <description value="Bottom" observes="role-image"/>
+          </hbox>
         </row>
         <row>
           <label value="Crop"/>
@@ -192,6 +235,7 @@
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
             onchange  = "update(this.id);"/>
+          </hbox>
         </row>
         <row>
           <label value="Border color"/>
@@ -206,13 +250,10 @@
     <groupbox>
       <caption label="Size"/>
       <!-- vbox observes="hasNaturalSize" -->
-        <radiogroup id="sizeRadio">
+        <radiogroup id="sizeRadio" observes="role-image">
           <hbox flex="1">
             <vbox>
               <radio id="actual" label="Actual size" radioGroup="sizeRadio"/>
-            </vbox>
-            <vbox>
-              <radio id="iconic" label="Iconic" radioGroup="sizeRadio"/>
             </vbox>
             <vbox>
               <radio id="custom" label="Custom" radioGroup="sizeRadio"/>
@@ -293,7 +334,7 @@
           </vbox>
         </vbox>
         <vbox>
-          <radiogroup id="herePlacementRadioGroup" align="vertical"  oncommand="enableHere(this);">
+          <radiogroup id="herePlacementRadioGroup" align="vertical" value="left" oncommand="enableHere(this);">
             <radio id="hereLeftRadio" label="Left" value="left" observes="herePlacement" />
             <radio id="hereRightRadio" label="Right" value="right" observes="herePlacement"/>
             <radio id="hereInsideRadio" label="Inside" value="inside" observes="herePlacement" />
