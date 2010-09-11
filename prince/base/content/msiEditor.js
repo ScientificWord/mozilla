@@ -3,35 +3,6 @@ Components.utils.import("resource://app/modules/pathutils.jsm");
 
 const msiEditorJS_duplicateTest = "Bad";
 
-//var gComposerWindowControllerID = 0;
-//var prefAuthorString = "";
-//                                        
-//const kDisplayModeNormal = 0;
-//const kDisplayModeAllTags = 1;
-//const kDisplayModeSource = 2;
-//const kDisplayModePreview = 3;
-//const kDisplayModeMenuIDs = ["viewNormalMode", "viewAllTagsMode", "viewSourceMode", "viewPreviewMode"];
-//const kDisplayModeTabIDS = ["NormalModeButton", "TagModeButton", "SourceModeButton", "PreviewModeButton"];
-//const kNormalStyleSheet = "chrome://editor/content/EditorContent.css";
-//const kAllTagsStyleSheet = "chrome://editor/content/EditorAllTags.css";
-//const kParagraphMarksStyleSheet = "chrome://editor/content/EditorParagraphMarks.css";
-//
-//const kTextMimeType = "text/plain";
-//const kHTMLMimeType = "text/html";
-//
-//const nsIWebNavigation = Components.interfaces.nsIWebNavigation;
-////
-////var gPreviousNonSourceDisplayMode = 1;
-//var gEditorDisplayMode = -1;
-////var gDocWasModified = false;  // Check if clean document, if clean then unload when user "Opens"
-//
-////var gContentWindow = 0;
-////var gSourceContentWindow = 0;
-////var gSourceTextEditor = null;
-//var gContentWindowDeck;
-//var gTagSelectBar;
-//var gComputeToolbar;
-//var gViewFormatToolbar;
 
 var dynAllTagsStyleSheet;
 
@@ -906,6 +877,8 @@ function msiEditorDocumentObserver(editorElement)
 
           //  and extra styles for showing anchors, table borders, smileys, etc
           editor.addOverrideStyleSheet(kNormalStyleSheet);
+          editor.addOverrideStyleSheet(dynAllTagsStyleSheet);
+          editor.enableStyleSheet(dynAllTagsStyleSheet, false);
           if (bIsRealDocument && this.mbAddOverrideStyleSheets && this.mEditorElement.overrideStyleSheets && this.mEditorElement.overrideStyleSheets != null)
           {
             for (var ix = 0; ix < this.mEditorElement.overrideStyleSheets.length; ++ix)
@@ -4354,51 +4327,45 @@ function msiSetDisplayMode(editorElement, mode)
       {
         case kDisplayModePreview:
           // Disable all extra "edit mode" style sheets 
+          editor.enableStyleSheet(dynAllTagsStyleSheet, false);
           editor.enableStyleSheet(kNormalStyleSheet, false);
           if (editorElement.mgMathStyleSheet != null)
             editor.enableStyleSheet(editorElement.mgMathStyleSheet, false);
           editor.enableStyleSheet(gMathStyleSheet, false);
-          editor.enableStyleSheet(dynAllTagsStyleSheet, false);
-          editor.isImageResizingEnabled = true;
+          //editor.isImageResizingEnabled = true;
           break;
 
         case kDisplayModeNormal:
           editor.addOverrideStyleSheet(kNormalStyleSheet);
+          editor.enableStyleSheet(dynAllTagsStyleSheet, false);
           if (editorElement.mgMathStyleSheet != null)
             editor.addOverrideStyleSheet(editorElement.mgMathStyleSheet);
           else
             editor.addOverrideStyleSheet(gMathStyleSheet);
           // Disable ShowAllTags mode
-          editor.enableStyleSheet(dynAllTagsStyleSheet, false);
-          editor.isImageResizingEnabled = true;
-          editor.enableTagMananger();
+          //editor.isImageResizingEnabled = true;
+          //editor.enableTagManager();
         break;
         
-//        case kDisplayModeSource:
-//          editor.addOverrideStyleSheet("resource://app/res/css/srceditor.css");
-//          editor.enableStyleSheet(dynAllTagsStyleSheet, false);
-//          editor.enableTagMananger();
-//        break;
-
         case kDisplayModeAllTags:
           editor.addOverrideStyleSheet(kNormalStyleSheet);
           if (editorElement.mgMathStyleSheet != null)
             editor.addOverrideStyleSheet(editorElement.mgMathStyleSheet);
           else
             editor.addOverrideStyleSheet(gMathStyleSheet);
-          editor.addOverrideStyleSheet(dynAllTagsStyleSheet);
+          editor.enableStyleSheet(dynAllTagsStyleSheet, true);
           // don't allow resizing in AllTags mode because the visible tags
           // change the computed size of images and tables...
-          editor.enableTagMananger();
+          //editor.enableTagManager();
           if (editor.resizedObject) {
             editor.hideResizers();
           }
-          editor.isImageResizingEnabled = false;
+          //editor.isImageResizingEnabled = false;
           break;
       }
     } catch(e) {
         dump("Exception in msiSetDisplayMode: "+e.message+"\n");
-      }
+    }
 
     // Switch to the normal editor (first in the deck)
     if ("gContentWindowDeck" in window)
@@ -8818,7 +8785,11 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
         theWindow = msiGetTopLevelWindow(window);
       theWindow.graphObjectClickEvent(cmdstr, editorElement);
     }
-    else 
+    else if (element.localName == "object")
+    {
+      msiGoDoCommand("cmd_image", editorElement);
+    }
+    else
     {
 //      dump("In goDoPrinceCommand, elementName is [" + elementName + "].\n");
       msiGoDoCommand(cmdstr, editorElement);
