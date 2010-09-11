@@ -46,7 +46,6 @@
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?> <!--DO NOT DELETE -->
 <?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/msiFrameOverlay.xul"?> 
-<!--?xul-overlay href="chrome://communicator/content/utilityOverlay.xul"? -->
  
 <!DOCTYPE dialog SYSTEM "chrome://editor/locale/EditorImageProperties.dtd">
  
@@ -70,6 +69,10 @@
  
   <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
   <broadcaster id="args" value=""/>
+  <broadcasterset id="bcasters">
+    <broadcaster id="role-image" style="display:block"/>
+    <broadcaster id="role-textframe" style="display:none;"/>
+  </broadcasterset>
   <vbox id="units" />
  
   <tabbox id="TabBox">
@@ -83,6 +86,7 @@
     </tabs>
     <tabpanels>
       <vbox id="imagePicture">
+        <button oncommand="onAccept();"/>
         <radiogroup id="importRefRadioGroup" orient="horizontal" flex="1">
           <radio id = "importRadio"
             label   = "&importButton.label;"
