@@ -877,8 +877,6 @@ function msiEditorDocumentObserver(editorElement)
 
           //  and extra styles for showing anchors, table borders, smileys, etc
           editor.addOverrideStyleSheet(kNormalStyleSheet);
-          editor.addOverrideStyleSheet(dynAllTagsStyleSheet);
-          editor.enableStyleSheet(dynAllTagsStyleSheet, false);
           if (bIsRealDocument && this.mbAddOverrideStyleSheets && this.mEditorElement.overrideStyleSheets && this.mEditorElement.overrideStyleSheets != null)
           {
             for (var ix = 0; ix < this.mEditorElement.overrideStyleSheets.length; ++ix)
@@ -3976,6 +3974,7 @@ function msiSetEditMode(mode, editorElement)
   // Switch the UI mode before inserting contents
   //   so user can't type in source window while new window is being filled
   var previousMode = msiGetEditorDisplayMode(editorElement);
+
   if (!msiSetDisplayMode(editorElement, mode))
     return;
 
@@ -4125,9 +4124,8 @@ function msiSetEditMode(mode, editorElement)
         editor.transactionManager.maxTransactionCount = -1;
       } catch (e) {}
     }
+//    editor.enableStyleSheet(dynAllTagsStyleSheet, false);
     msiSetDisplayMode(editorElement, mode);
-//    if (!msiSetDisplayMode(editorElement, mode))
-//      return;
 
     // Clear out the string buffers
     msiClearSource(editorElement);
@@ -4325,26 +4323,14 @@ function msiSetDisplayMode(editorElement, mode)
 
       switch (mode)
       {
-        case kDisplayModePreview:
-          // Disable all extra "edit mode" style sheets 
-          editor.enableStyleSheet(dynAllTagsStyleSheet, false);
-          editor.enableStyleSheet(kNormalStyleSheet, false);
-          if (editorElement.mgMathStyleSheet != null)
-            editor.enableStyleSheet(editorElement.mgMathStyleSheet, false);
-          editor.enableStyleSheet(gMathStyleSheet, false);
-          //editor.isImageResizingEnabled = true;
-          break;
-
         case kDisplayModeNormal:
           editor.addOverrideStyleSheet(kNormalStyleSheet);
-          editor.enableStyleSheet(dynAllTagsStyleSheet, false);
           if (editorElement.mgMathStyleSheet != null)
             editor.addOverrideStyleSheet(editorElement.mgMathStyleSheet);
           else
             editor.addOverrideStyleSheet(gMathStyleSheet);
           // Disable ShowAllTags mode
-          //editor.isImageResizingEnabled = true;
-          //editor.enableTagManager();
+          editor.enableStyleSheet(dynAllTagsStyleSheet, false);
         break;
         
         case kDisplayModeAllTags:
@@ -4353,14 +4339,13 @@ function msiSetDisplayMode(editorElement, mode)
             editor.addOverrideStyleSheet(editorElement.mgMathStyleSheet);
           else
             editor.addOverrideStyleSheet(gMathStyleSheet);
-          editor.enableStyleSheet(dynAllTagsStyleSheet, true);
+          if (!getStyleSheetForURL(dynAllTagsStyleSheet))
+            editor.addOverrideStyleSheet(dynAllTagsStyleSheet);
           // don't allow resizing in AllTags mode because the visible tags
           // change the computed size of images and tables...
-          //editor.enableTagManager();
           if (editor.resizedObject) {
             editor.hideResizers();
           }
-          //editor.isImageResizingEnabled = false;
           break;
       }
     } catch(e) {
