@@ -312,7 +312,7 @@
     	<xsl:when test="@subsubsection='none'">
     	\renewcommand\thesubsubsection{}</xsl:when
     	><xsl:otherwise>
-    	\renewcommand\subsubsection{\thesubsection.\<xsl:value-of select="@thesubsubsection"/>{subsubsection}}</xsl:otherwise> 
+    	\renewcommand\thesubsubsection{\thesubsection.\<xsl:value-of select="@subsubsection"/>{subsubsection}}</xsl:otherwise> 
 	</xsl:choose></xsl:if>
   <xsl:if test="@paragraph">
   	<xsl:choose>
