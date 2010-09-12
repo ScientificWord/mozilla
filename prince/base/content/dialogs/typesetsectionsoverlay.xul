@@ -47,8 +47,8 @@
              <menuitem id="arabic" label="Arabic" value="arabic"/>
              <menuitem id="roman" label="Lowercase Roman" value="roman"/>
              <menuitem id="Roman" label="Uppercase Roman" value="Roman"/>
-             <menuitem id="Alpha" label="Uppercase letters" value="Alph"/>
-             <menuitem id="alpha" label="Lowercase letters" value="alph"/>
+             <menuitem id="Alph" label="Uppercase letters" value="Alph"/>
+             <menuitem id="alph" label="Lowercase letters" value="alph"/>
            </menupopup>
          </menulist>
        </vbox>
