@@ -3029,13 +3029,14 @@ function msiGetParentEditorElementForDialog(dialogWindow)
 
 function msiGetDocumentTitle(editorElement)
 {
+    var title = "untitled"; 
     var doc = msiGetEditor(editorElement).document;
     var nodes = doc.getElementsByTagName('preamble');
     var titleNodes;
     if (nodes.length > 0) titleNodes= nodes[0].getElementsByTagName("title");
     if (titleNodes.length > 0 && titleNodes[0].textContent.length > 0)
-      return nodes[i].textContent;
-    return "untitled";  // BBM: localize
+      title = nodes[0].textContent;
+    return title.replace(/^[ \n\t]*/,"").replace(/[ \n\t]*$/,"");  // BBM: localize
 }
 
 function msiSetDocumentTitle(editorElement, title)
@@ -3044,16 +3045,16 @@ function msiSetDocumentTitle(editorElement, title)
   // a broadcaster with id="filename"
   var theFilename = document.getElementById("filename");
   var newtitle = "";
-  if (theFilename != null)
+  if (theFilename)
     newtitle = theFilename.value;
   if (newtitle.length > 0) title = newtitle;
   try {
-    msiGetEditor(editorElement).setDocumentTitle(title);
+    msiGetEditor(editorElement).msietDocumentTitle(title);
 
     // Update window title (doesn't work if called from a dialog)
-    if ("UpdateWindowTitle" in window)
+    if ("msiUpdateWindowTitle" in window)
     {
-      window.UpdateWindowTitle();
+      window.msiUpdateWindowTitle(msiGetDocumentTitle(editorElement),newtitle);
     }
   } catch (e) {}
 }
