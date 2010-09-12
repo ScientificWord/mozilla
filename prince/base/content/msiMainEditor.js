@@ -231,43 +231,59 @@ function msiEditorCanClose(editorElement)
 
 function UpdateWindowTitle()
 {
-  try {
+  msiUpdateWindowTitle( null, null);
+}
+
+function msiUpdateWindowTitle(documentTitle, fileName)
+{
+  try 
+  {
     var editorElement = msiGetTopLevelEditorElement();
-    var windowTitle;
-     windowTitle = msiGetDocumentTitle(editorElement);
-     windowTitle = unescape(windowTitle);
-     if (!windowTitle)
-       windowTitle = GetString("untitled");
-
-    // Append just the 'leaf' filename to the Doc. Title for the window caption
-    var docUrl = msiGetEditorURL(editorElement); //docUrl is a string
-    if (docUrl) // && !IsUrlAboutBlank(docUrl))
+    if (!documentTitle)
     {
-      docUrl = msiFindOriginalDocname(docUrl);
-      var path = unescape(docUrl);
-      var regEx = /\.sci$/i;  // BBM: localize this
-      if (regEx.test(path))
-      {
-        var parentDirRegEx = /(.*\/)([^\/]*).sci$/i; //BBM: localize this
-        var arr = parentDirRegEx.exec(path);
-        if (arr && (arr.length > 2) && arr[2].length > 0)
-        {
-          docUrl = arr[1]+arr[2]+".sci";
-        }
-      }
-
-      var scheme = GetScheme(docUrl);
-      var filename  = GetFilename(docUrl);
-      if (!filename || filename.length == 0)
-        filename = GetFilename(docUrl);
-      filename = unescape(filename);
-
-      // Save changed title in the recent pages data in prefs
-      SaveRecentFilesPrefs();
+      var windowTitle;
+       windowTitle = msiGetDocumentTitle(editorElement);
+       windowTitle = unescape(windowTitle);
+       if (!windowTitle)
+         windowTitle = GetString("untitled");
+    } else windowTitle = documentTitle;
+    // Append just the 'leaf' filename to the Doc. Title for the window caption
+    if (editorElement.isShellFile) fileName = "not saved";
+    else if (!fileName)
+    {
+      filename = editorElement.fileLeafName;
+//       var docUrl = msiGetEditorURL(editorElement); //docUrl is a string
+//       if (docUrl) // && !IsUrlAboutBlank(docUrl))
+//       {
+//         docUrl = msiFindOriginalDocname(docUrl);
+//         var path = unescape(docUrl);
+//         var regEx = /\.sci$/i;  // BBM: localize this
+//         if (regEx.test(path))
+//         {
+//           var parentDirRegEx = /(.*\/)([^\/]*).sci$/i; //BBM: localize this
+//           var arr = parentDirRegEx.exec(path);
+//           if (arr && (arr.length > 2) && arr[2].length > 0)
+//           {
+//             docUrl = //arr[1]+
+//               arr[2]+".sci";
+//           }
+//         }
+// 
+//         var scheme = GetScheme(docUrl);
+//         var filename  = GetFilename(docUrl);
+//         if (!filename || filename.length == 0)
+//           filename = GetFilename(docUrl);
+//         filename = unescape(filename);
+// 
+//         // Save changed title in the recent pages data in prefs
+//      }
     }
+    else filename = fileName;
+    SaveRecentFilesPrefs();
     // Set window title with " - Scientific WorkPlace/Word/Notebook" appended
     var xulWin = document.documentElement;
-    document.title = filename + " ["+windowTitle+"] " + xulWin.getAttribute("titlemenuseparator") + 
+    if (!filename) filename="";
+    document.title = windowTitle + " ["+filename+"] " + xulWin.getAttribute("titlemenuseparator") + 
                    xulWin.getAttribute("titlemodifier");
   } catch (e) 
   {

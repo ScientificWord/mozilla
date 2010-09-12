@@ -2437,14 +2437,14 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   // Say the file being edited is /somepath/DocName_work/main.xhtml
   // Then
   // htmlurlstring      = file:///somepath/DocName_work/main.xhtml
-  // sciurlstring       = file:///DocName/DocName.sci  (can be a directory)
+  // sciurlstring       = file:///somepath/DocName.sci  (can be a directory)
   // htmlpath           = /somepath/DocName_work/main.xhtml
   // currentSciFilePath = /somepath/DocName.sci (can be a directory)
 
   var htmlurlstring = msiGetEditorURL(editorElement); // this is the url of the file in the directory D. It was updated by the soft save.
   var htmlurl = msiURIFromString(htmlurlstring);
   var sciurlstring = msiFindOriginalDocname(htmlurlstring); // this is the uri of A.sci
-  var mustShowFileDialog = (aSaveAs || aSaveCopy || IsUrlUntitled(sciurlstring) || (sciurlstring == ""));
+  var mustShowFileDialog = (aSaveAs || aSaveCopy || editorElement.isShellFile || (sciurlstring == ""));
 
   // If editing a remote URL, force SaveAs dialog
   if (!mustShowFileDialog && GetScheme(sciurlstring) != "file" && GetScheme(sciurlstring) != "resource")
@@ -2650,6 +2650,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
     {
       // if the editorElement did have a shell file, it doesn't any longer
       editorElement.isShellFile = false;
+      editorElement.fileLeafName = destLocalFile.leafName;
       if (doUpdateURI)
       {
 
@@ -2687,7 +2688,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
 
   }
 
-  UpdateWindowTitle();
+  msiUpdateWindowTitle(null, destLocalFile.leafName);
 
   if (!aSaveCopy)
     editor.resetModificationCount();
@@ -5921,7 +5922,7 @@ function msiDocumentInfo(editorElement)
                 titleObj.contents += currNode.childNodes[ix].nodeValue;
             }
             this.generalSettings["title"] = titleObj;
-            this.mEditor.setDocumentTitle(titleObj.contents);
+            msiUpdateWindowTitle(titleObj.contents, null);
           }
           break;
           case "address":
@@ -6243,7 +6244,7 @@ function msiDocumentInfo(editorElement)
         newNode = this.mEditor.document.createElement("title");
         newNode.appendChild(newTextNode);
         newNode.setAttribute("req", "hyperref");
-        this.mEditor.setDocumentTitle(dataObj.contents);
+        msiUpdateWindowTitle(dataObj.contents, null);
       }
       break;
       case "meta":
@@ -6353,7 +6354,6 @@ function msiDocumentInfo(editorElement)
 //	  var keyValueSyntax = /([\S]+)=(.*)/;
 //	  var keyValueValueSyntax = /?:([\S]+)=(.*)/;
 
-    dump("In parseComment, comment data is [" + theData + "].\n");
     var tciData = theData.match(this.tcidataRegExp);
     //NOTE! In JavaScript String.match(regExp), the first thing returned is the full matching expression; capturing-parentheses
     //  matches are returned in subsequent array members. So we're after array[1] in each case...
@@ -6513,7 +6513,7 @@ function msiDocumentInfo(editorElement)
     if (("documentTitle" in dlgInfo.general) && (dlgInfo.general.documentTitle != null))
     {
       theContents = dlgInfo.general.documentTitle;
-      this.mEditor.setDocumentTitle(theContents);
+      msiUpdateWindowTitle(theContents, null);
     }
     this.setObjectFromData(this.generalSettings, "title", (theContents.length > 0), "Title", theContents, "title");
   };
