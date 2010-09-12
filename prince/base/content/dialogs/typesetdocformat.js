@@ -113,9 +113,9 @@ function Startup()
 //  msiInitializeEditorForElement(editElement, "");
 	dump ("initializing sectitleformat\n");
   sectitleformat = new Object();
+  getNumStyles(preamble);
   getSectionFormatting(sectitlenodelist, sectitleformat);
   getClassOptionsEtc();
-  getNumStyles(preamble);
 }
 
 function getEnableFlags(doc)
@@ -181,11 +181,14 @@ function saveNumStyles(preambleNode)
     if (gNumStyles[sect]) 
     {
       dump("checking "+sect+"\n");
-      bHasStyle = true;
+      bHasStyle = ("" != gNumStyles[sect]);
       break;
     }
   }
   if (bHasStyle) {
+    var nodeList = preambleNode.getElementsByTagName("numberstyles");
+    if (nodeList.length > 0)
+      for (var i = nodeList.length -1; i >=0; i--) editor.deleteNode(nodeList[i]);
     node = editor.createNode("numberstyles",preambleNode,0);
     dump("adding attribute for "+sect+"\n");
     for (i=0; i< sectionlist.length; i++) {
@@ -1761,50 +1764,54 @@ function switchSectionTypeImp(from, to)
   currentSectionType = to;
   var boxlist;
   var box;
+  var enabled;
   var boxdata={};
   if (from)
   {
-    if (!sectitleformat[from]) sectitleformat[from] = new Object();
-    var sec = sectitleformat[from];
-    sec.enabled = document.getElementById("allowsectionheaders").checked;
-    document.getElementById("secredefok").setAttribute("disabled", sec.enabled?"false":"true");
-    sec.newPage = document.getElementById("sectionstartnewpage").checked;
-    sec.sectStyle = document.getElementById("sections.style").value;
-    sec.align = document.getElementById("sections.align").value; 
-    sec.units = document.getElementById("secoverlay.units").value; 
-    sec.lhindent = document.getElementById("tbsectleftheadingmargin").value; 
-    sec.rhindent = document.getElementById("tbsectrightheadingmargin").value; 
-    boxlist = document.getElementById("toprules").getElementsByTagName("vbox");
-    sec.toprules = [];
-    for (i=0; i< boxlist.length; i++) {
-      box = boxlist[i];
-      if (!box.hidden) {
-        boxdata = new Object();
-        boxdata.role = box.getAttribute("role");
-        boxdata.tlwidth = box.getAttribute("tlwidth");
-        boxdata.tlheight = box.getAttribute("tlheight");
-        boxdata.color = box.getAttribute("color");
-        boxdata.tlalign = box.getAttribute("tlalign");
-        boxdata.style = box.getAttribute("style");
-        sec.toprules.push(boxdata);
+    gNumStyles[from] = document.getElementById("sections.numstyle").value;
+    if (enabled)
+    {
+      if (!sectitleformat[from]) sectitleformat[from] = new Object();
+      var sec = sectitleformat[from];
+      sec.enabled = enabled;
+      document.getElementById("secredefok").setAttribute("disabled", sec.enabled?"false":"true");
+      sec.newPage = document.getElementById("sectionstartnewpage").checked;
+      sec.sectStyle = document.getElementById("sections.style").value;
+      sec.align = document.getElementById("sections.align").value; 
+      sec.units = document.getElementById("secoverlay.units").value; 
+      sec.lhindent = document.getElementById("tbsectleftheadingmargin").value; 
+      sec.rhindent = document.getElementById("tbsectrightheadingmargin").value; 
+      boxlist = document.getElementById("toprules").getElementsByTagName("vbox");
+      sec.toprules = [];
+      for (i=0; i< boxlist.length; i++) {
+        box = boxlist[i];
+        if (!box.hidden) {
+          boxdata = new Object();
+          boxdata.role = box.getAttribute("role");
+          boxdata.tlwidth = box.getAttribute("tlwidth");
+          boxdata.tlheight = box.getAttribute("tlheight");
+          boxdata.color = box.getAttribute("color");
+          boxdata.tlalign = box.getAttribute("tlalign");
+          boxdata.style = box.getAttribute("style");
+          sec.toprules.push(boxdata);
+        }
       }
-    }
-    boxlist = document.getElementById("bottomrules").getElementsByTagName("vbox");
-    sec.bottomrules = [];
-    for (i=0; i< boxlist.length; i++) {
-      box = boxlist[i];
-      if (!box.hidden) {
-        boxdata = new Object();
-        boxdata.role = box.getAttribute("role");
-        boxdata.tlwidth = box.getAttribute("tlwidth");
-        boxdata.tlheight = box.getAttribute("tlheight");
-        boxdata.color = box.getAttribute("color");
-        boxdata.tlalign = box.getAttribute("tlalign");
-        boxdata.style = box.getAttribute("style");
-        sec.bottomrules.push(boxdata);
+      boxlist = document.getElementById("bottomrules").getElementsByTagName("vbox");
+      sec.bottomrules = [];
+      for (i=0; i< boxlist.length; i++) {
+        box = boxlist[i];
+        if (!box.hidden) {
+          boxdata = new Object();
+          boxdata.role = box.getAttribute("role");
+          boxdata.tlwidth = box.getAttribute("tlwidth");
+          boxdata.tlheight = box.getAttribute("tlheight");
+          boxdata.color = box.getAttribute("color");
+          boxdata.tlalign = box.getAttribute("tlalign");
+          boxdata.style = box.getAttribute("style");
+          sec.bottomrules.push(boxdata);
+        }
       }
-    }
-    
+    } 
     //toprules, bottomrules, and proto, if they have been changed, have been updated by subdialogs 
   }
   //Now initialize for the new section type
@@ -1813,63 +1820,67 @@ function switchSectionTypeImp(from, to)
     if (from != to)
     {
       document.getElementById("sections.numstyle").value=(gNumStyles[to]?gNumStyles[to]:"");
-      if (!sectitleformat[to])
+      enabled = document.getElementById("allowsectionheaders").checked = sec.enabled;
+      if (enabled)
       {
-        sectitleformat[to] = new Object();
-        return; // the dialog will default to the last sections headings. Can we do better? BBM
-      }
-      sec = sectitleformat[to];
-      var newpage = sec.newPage
-      if (!newpage) newpage = false;
-      var rawlabel = document.getElementById("rawlabel").getAttribute("label");
-      document.getElementById("allowsectionheaders").setAttribute("label", rawlabel.replace("##",to));
-        // for localizability, we should look up a string valued function of "to"
-      document.getElementById("allowsectionheaders").checked = sec.enabled;
-      document.getElementById("secredefok").setAttribute("disabled", sec.enabled?"false":"true");
-      document.getElementById("sectionstartnewpage").checked = newpage;
-      document.getElementById("sections.style").value = sec.sectStyle;
-      document.getElementById("sections.align").value = sec.align; 
-      document.getElementById("secoverlay.units").value = sec.units;
-      sectionUnit = sec.units; 
-      document.getElementById("tbsectleftheadingmargin").value = sec.lhindent; 
-      document.getElementById("tbsectrightheadingmargin").value = sec.rhindent; 
-      if (sec.toprules && sec.toprules.length > 0)
-      {
-        document.getElementById("tso_toprules").selectedIndex="1";
-        boxlist = document.getElementById("toprules").getElementsByTagName("vbox");
-        for (i=0; i < sec.toprules.length; i++)
+        if (!sectitleformat[to])
         {
-          boxlist[i].hidden=false;
-          boxlist[i].setAttribute("role", sec.toprules[i].role);
-          boxlist[i].setAttribute("tlwidth", sec.toprules[i].tlwidth);
-          boxlist[i].setAttribute("tlheight", sec.toprules[i].tlheight);
-          boxlist[i].setAttribute("tlalign", sec.toprules[i].tlalign);
-          boxlist[i].setAttribute("color", sec.toprules[i].color);
-          boxlist[i].setAttribute("style", buildStyleForRule(boxlist[i]));
+          sectitleformat[to] = new Object();
+          return; // the dialog will default to the last sections headings. Can we do better? BBM
         }
-        for (i = sec.toprules.length; i<boxlist.length; i++);
-          boxlist[i].hidden=true;
-      }
-      if (sec.bottomrules && sec.bottomrules.length > 0)
-      {
-        document.getElementById("tso_bottomrules").selectedIndex="1";
-        boxlist = document.getElementById("bottomrules").getElementsByTagName("vbox");
-        for (i=0; i < sec.bottomrules.length; i++)
+        sec = sectitleformat[to];
+        var newpage = sec.newPage
+        if (!newpage) newpage = false;
+        var rawlabel = document.getElementById("rawlabel").getAttribute("label");
+        document.getElementById("allowsectionheaders").setAttribute("label", rawlabel.replace("##",to));
+          // for localizability, we should look up a string valued function of "to"
+        document.getElementById("allowsectionheaders").checked = sec.enabled;
+        document.getElementById("secredefok").setAttribute("disabled", sec.enabled?"false":"true");
+        document.getElementById("sectionstartnewpage").checked = newpage;
+        document.getElementById("sections.style").value = sec.sectStyle;
+        document.getElementById("sections.align").value = sec.align; 
+        document.getElementById("secoverlay.units").value = sec.units;
+        sectionUnit = sec.units; 
+        document.getElementById("tbsectleftheadingmargin").value = sec.lhindent; 
+        document.getElementById("tbsectrightheadingmargin").value = sec.rhindent; 
+        if (sec.toprules && sec.toprules.length > 0)
         {
-          boxlist[i].hidden=false;
-          boxlist[i].setAttribute("role", sec.bottomrules[i].role);
-          boxlist[i].setAttribute("tlwidth", sec.bottomrules[i].tlwidth);
-          boxlist[i].setAttribute("tlheight", sec.bottomrules[i].tlheight);
-          boxlist[i].setAttribute("tlalign", sec.bottomrules[i].tlalign);
-          boxlist[i].setAttribute("color", sec.bottomrules[i].color);
-          boxlist[i].setAttribute("style", buildStyleForRule(boxlist[i]));
+          document.getElementById("tso_toprules").selectedIndex="1";
+          boxlist = document.getElementById("toprules").getElementsByTagName("vbox");
+          for (i=0; i < sec.toprules.length; i++)
+          {
+            boxlist[i].hidden=false;
+            boxlist[i].setAttribute("role", sec.toprules[i].role);
+            boxlist[i].setAttribute("tlwidth", sec.toprules[i].tlwidth);
+            boxlist[i].setAttribute("tlheight", sec.toprules[i].tlheight);
+            boxlist[i].setAttribute("tlalign", sec.toprules[i].tlalign);
+            boxlist[i].setAttribute("color", sec.toprules[i].color);
+            boxlist[i].setAttribute("style", buildStyleForRule(boxlist[i]));
+          }
+          for (i = sec.toprules.length; i<boxlist.length; i++);
+            boxlist[i].hidden=true;
         }
-        for (i = sec.bottomrules.length; i<boxlist.length; i++);
-          boxlist[i].hidden=true;
+        if (sec.bottomrules && sec.bottomrules.length > 0)
+        {
+          document.getElementById("tso_bottomrules").selectedIndex="1";
+          boxlist = document.getElementById("bottomrules").getElementsByTagName("vbox");
+          for (i=0; i < sec.bottomrules.length; i++)
+          {
+            boxlist[i].hidden=false;
+            boxlist[i].setAttribute("role", sec.bottomrules[i].role);
+            boxlist[i].setAttribute("tlwidth", sec.bottomrules[i].tlwidth);
+            boxlist[i].setAttribute("tlheight", sec.bottomrules[i].tlheight);
+            boxlist[i].setAttribute("tlalign", sec.bottomrules[i].tlalign);
+            boxlist[i].setAttribute("color", sec.bottomrules[i].color);
+            boxlist[i].setAttribute("style", buildStyleForRule(boxlist[i]));
+          }
+          for (i = sec.bottomrules.length; i<boxlist.length; i++);
+            boxlist[i].hidden=true;
+        }
+        displayTextForSectionHeader(to);
+        setalign(sec.align);
+        settopofpage(document.getElementById("sectionstartnewpage"));
       }
-      displayTextForSectionHeader(to);
-      setalign(sec.align);
-      settopofpage(document.getElementById("sectionstartnewpage"));
     }
   }
 }
@@ -1921,10 +1932,18 @@ function saveSectionFormatting( docFormatNode, sectitleformat )
       stNode.setAttribute('lhindent', sectiondata.lhindent);
       stNode.setAttribute('rhindent', sectiondata.rhindent);
       lineend(stNode, 2);
+      var i;
+      var nodeList = stNode.getElementsByTagName("titleprototype");
+      while (nodeList.length > 0) 
+      {
+        editor.deleteNode(nodeList[nodeList.length - 1]);
+        nodeList = stNode.getElementsByTagName("titleprototype");
+      }
       var proto = editor.createNode('titleprototype', stNode, 0);
       var fragment = sectiondata.proto;
       if (fragment)
       {
+        nodeList = stNode.getElementsByTagName("titleprototype");
         // replace #N with \the(section, subsection, etc) and #T with #1
         fragment = fragment.replace(/#N/,"\\the"+name,'g');
         fragment = fragment.replace(/#T/,"#1",'g');
@@ -2656,6 +2675,8 @@ function enableDisableSectFormat(checkbox)
   if (checkbox.checked)
     bcaster.setAttribute("disabled","false");
   else bcaster.setAttribute("disabled","true");
+  var to = document.getElementById("sections.name").value;
+  switchSectionTypeImp(null, to);
 }
 
 function enableDisableFonts(enabled)
