@@ -1161,8 +1161,6 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
     var doc;
     var dir;
     var charset = "";
-//    charset = document.getElementById("args").getAttribute("charset")
-    dump("1\n");
     if (theArgs)
     {
       charset = theArgs.getAttribute("charset")
@@ -1173,17 +1171,16 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
     };
 // Two cases: if (docurl), then the url of a doc to load was passed. It might be for a shell.
 //            if (!docurl), nothing was passed. Load the default shell. 
-
-    dump("2\n");
     if (!docurl)
     {   
+      editorElement.isShellFile = true;
+      editorElement.fileLeafName = "unsaved file";
       if (!bTopLevel)
       {
         try { 
           docurlstring = prefs.getCharPref("swp.defaultDialogShell");   //BBM: check this later
           if (docurlstring.length > 0)
             docurl = msiURIFromString(docurlstring);
-          dump("Doc Url from defaultDialogShell is "+docurl.spec+"\n");
         }  
         catch(exc) {
           docurl = null;
@@ -1192,7 +1189,6 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
       }
       else
       {
-    dump("3\n");
         docurlstring = prefs.getCharPref("swp.defaultShell");
         // docurlstring is *relative* to the shells directory.
         if (docurlstring.length == 0)
@@ -1204,12 +1200,11 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
         var i;
         for (i = 0; i<dirs.length; i++) if (dirs[i].length >0) doc.append(dirs[i]);
         docpath = doc.path;
-    dump("4\n");
         docurl = msiFileURLFromAbsolutePath(docpath); // this converts docurl to a file URL
-          dump("Doc Url from defaultShell is "+docurl.spec+"\n");
         needToCreateDirectory = true;
       }
     }
+    else editorElement.isShellFile = false;
     if (!docurl) 
     {
       dump("Unable to find Doc Url\n");
@@ -1217,13 +1212,11 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
     }
 // now we have a url for the doc.
          
-//    if (docurl && (docurl.schemeIs("chrome") || docurl.schemeIs("resource")))
     if (docurl && docurl.schemeIs("resource"))
     { 
       // convert to a file URL
       docpath = msiPathFromFileURL( docurl );
       docurl = msiFileURLFromAbsolutePath(docpath); // this converts docurl to a file URL
-      dump("Doc Url converted to file:// is "+docurl.spec + "\n");
     }
 
     if (!docurl.schemeIs("chrome"))
@@ -1231,7 +1224,7 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
       doc = msiFileFromFileURL(docurl);
       dir = doc.parent;
     }
-
+    if (!editorElement.isShellFile) editorElement.fileLeafName = doc.leafName;
     // in cases where the user has gone through a dialog, such a File/New or File/Open, the working directory
     // has already been created and the document name changed. When starting up, or starting with a file on the
     // command line we still need to call "createWorkingDirectory."
@@ -1255,6 +1248,7 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
       contentViewer.forceCharacterSet = charset;
     }
     dump("Trying to load editor with url = "+docurl.spec+"\n");
+    msiUpdateWindowTitle(null, null);
     msiEditorLoadUrl(editorElement, docurl);
   }
 //    msiDumpWithID("Back from call to msiEditorLoadUrl for editor [@].\n", editorElement);
@@ -1729,7 +1723,7 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
   var leafregex = /.*\/([^\/]+$)/;
   var arr = leafregex.exec(sciurlstring);
   if (arr && arr.length >1) document.title = arr[1];
-  if (!document.title) document.title="untitled document";
+  if (!document.title) document.title=GetString("untitled");
 
   var dialogTitle = GetString(doPublish ? "PublishPage" : "SaveDocument");
   var dialogMsg = GetString(doPublish ? "PublishPrompt" : "SaveFilePrompt");
@@ -4111,7 +4105,7 @@ function msiSetEditMode(mode, editorElement)
             title = titleNode.firstChild.data;
         }
         if (editor.document.title != title)
-          msiSetDocumentTitle(editorElement, title);
+          msiUpdateWindowTitle(null, null);
 
       } catch (ex) {
         dump(ex);
