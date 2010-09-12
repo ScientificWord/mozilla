@@ -783,7 +783,6 @@ function msiEditorDocumentObserver(editorElement)
           try {
             var htmlurlstring = msiGetEditorURL(this.mEditorElement);
                // currently htmlusrstring = "chrome://prince/content/StdDialogShell.xhtml" 
-
             var htmlurl = msiURIFromString(htmlurlstring);
                // ... seems ok
             var htmlFile = msiFileFromFileURL(htmlurl);
@@ -4325,7 +4324,7 @@ function msiSetDisplayMode(editorElement, mode)
       {
         case kDisplayModeNormal:
           editor.addOverrideStyleSheet(kNormalStyleSheet);
-          if (editorElement.mgMathStyleSheet != null)
+          if (editorElement.mgMathStyleSheet != null)            
             editor.addOverrideStyleSheet(editorElement.mgMathStyleSheet);
           else
             editor.addOverrideStyleSheet(gMathStyleSheet);
@@ -4339,8 +4338,7 @@ function msiSetDisplayMode(editorElement, mode)
             editor.addOverrideStyleSheet(editorElement.mgMathStyleSheet);
           else
             editor.addOverrideStyleSheet(gMathStyleSheet);
-          if (!getStyleSheetForURL(dynAllTagsStyleSheet))
-            editor.addOverrideStyleSheet(dynAllTagsStyleSheet);
+          editor.addOverrideStyleSheet(dynAllTagsStyleSheet);
           // don't allow resizing in AllTags mode because the visible tags
           // change the computed size of images and tables...
           if (editor.resizedObject) {
