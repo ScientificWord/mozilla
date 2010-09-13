@@ -1390,7 +1390,7 @@ function msiGetExtensionBasedOnMimeType(aMIMEType)
 
 function msiGetSuggestedFileName(aDocumentURLString, aMIMEType, editorElement)
 {
-  var filename = GetFilename(aDocumentURLString);
+  var filename = decodeURI(GetFilename(aDocumentURLString));
   if (filename.length > 0) return filename;
   
   // I kind of doubt that any of the following code gets used
@@ -2437,14 +2437,14 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   // Say the file being edited is /somepath/DocName_work/main.xhtml
   // Then
   // htmlurlstring      = file:///somepath/DocName_work/main.xhtml
-  // sciurlstring       = file:///DocName/DocName.sci  (can be a directory)
+  // sciurlstring       = file:///somepath/DocName.sci  (can be a directory)
   // htmlpath           = /somepath/DocName_work/main.xhtml
   // currentSciFilePath = /somepath/DocName.sci (can be a directory)
 
   var htmlurlstring = msiGetEditorURL(editorElement); // this is the url of the file in the directory D. It was updated by the soft save.
   var htmlurl = msiURIFromString(htmlurlstring);
   var sciurlstring = msiFindOriginalDocname(htmlurlstring); // this is the uri of A.sci
-  var mustShowFileDialog = (aSaveAs || aSaveCopy || IsUrlUntitled(sciurlstring) || (sciurlstring == ""));
+  var mustShowFileDialog = (aSaveAs || aSaveCopy || editorElement.isShellFile || (sciurlstring == ""));
 
   // If editing a remote URL, force SaveAs dialog
   if (!mustShowFileDialog && GetScheme(sciurlstring) != "file" && GetScheme(sciurlstring) != "resource")
@@ -2650,6 +2650,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
     {
       // if the editorElement did have a shell file, it doesn't any longer
       editorElement.isShellFile = false;
+      editorElement.fileLeafName = destLocalFile.leafName;
       if (doUpdateURI)
       {
 
@@ -2687,7 +2688,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
 
   }
 
-  UpdateWindowTitle();
+  msiUpdateWindowTitle(null, destLocalFile.leafName);
 
   if (!aSaveCopy)
     editor.resetModificationCount();
@@ -5921,7 +5922,7 @@ function msiDocumentInfo(editorElement)
                 titleObj.contents += currNode.childNodes[ix].nodeValue;
             }
             this.generalSettings["title"] = titleObj;
-            this.mEditor.setDocumentTitle(titleObj.contents);
+            msiUpdateWindowTitle(titleObj.contents, null);
           }
           break;
           case "address":
@@ -6243,7 +6244,7 @@ function msiDocumentInfo(editorElement)
         newNode = this.mEditor.document.createElement("title");
         newNode.appendChild(newTextNode);
         newNode.setAttribute("req", "hyperref");
-        this.mEditor.setDocumentTitle(dataObj.contents);
+        msiUpdateWindowTitle(dataObj.contents, null);
       }
       break;
       case "meta":
@@ -6353,7 +6354,6 @@ function msiDocumentInfo(editorElement)
 //	  var keyValueSyntax = /([\S]+)=(.*)/;
 //	  var keyValueValueSyntax = /?:([\S]+)=(.*)/;
 
-    dump("In parseComment, comment data is [" + theData + "].\n");
     var tciData = theData.match(this.tcidataRegExp);
     //NOTE! In JavaScript String.match(regExp), the first thing returned is the full matching expression; capturing-parentheses
     //  matches are returned in subsequent array members. So we're after array[1] in each case...
@@ -6513,7 +6513,7 @@ function msiDocumentInfo(editorElement)
     if (("documentTitle" in dlgInfo.general) && (dlgInfo.general.documentTitle != null))
     {
       theContents = dlgInfo.general.documentTitle;
-      this.mEditor.setDocumentTitle(theContents);
+      msiUpdateWindowTitle(theContents, null);
     }
     this.setObjectFromData(this.generalSettings, "title", (theContents.length > 0), "Title", theContents, "title");
   };
@@ -8400,10 +8400,12 @@ var msiConvertToTable =
   }
 };
 
-function msiNote(currNode, editorElement)
+function msiNote(currNode, editorElement, type, hidden)
 {
   var data= new Object();
   data.editorElement = editorElement;
+  if (!data.editorElement)
+    data.editorElement = msiGetActiveEditorElement();
   var currNodeTag = "";
   if (currNode) {
     data.type = currNode.getAttribute("type");
@@ -8419,15 +8421,23 @@ function msiNote(currNode, editorElement)
     //defaults
     data.type = "";
   }
+  if (type)
+  {
+    if (!hidden) hidden=false;
+    data.hidenote = hidden;
+    data.type = type;
+  }
 
-  window.openDialog("chrome://prince/content/Note.xul","note", "chrome,close,titlebar,resizable=yes,modal", data);
-  // data comes back altered
-  if (data.Cancel)
-    return;
+  if (!type) {
+    window.openDialog("chrome://prince/content/Note.xul","note", "chrome,close,titlebar,resizable=yes,modal", data);
+    // data comes back altered
+    if (data.Cancel)
+      return;
+  }
 
   dump(data.type + "\n");
-  if (data.type != 'footnote') msiRequirePackage(editorElement, "ragged2e", "raggedrightboxes"); 
   var editor = msiGetEditor(editorElement);
+  editor.beginTransaction();
   if (currNode)  // currnode is a note node
   {
     if (data.type == 'footnote') currNode.parentNode.setAttribute("type","footnote");
@@ -8435,22 +8445,46 @@ function msiNote(currNode, editorElement)
     currNode.setAttribute("type",data.type);
     if (data.hide) currNode.setAttribute("hide","true")
     else currNode.removeAttribute("hide");
+    if (data.type != 'footnote') 
+    {
+      currNode.setAttribute("req","ragged2e");
+      currNode.setAttribute("opt","raggedrightboxes");
+    }
   }
   else
   {
-    var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace); 
-    var wrapperNode = editor.document.createElement('notewrapper');
-    var node = editor.document.createElement('note');
-    if (data.type == 'footnote') wrapperNode.setAttribute('type','footnote');
-    node.setAttribute('type',data.type);
-    if (data.hidenote) node.setAttribute('hide','true');
-    var paranode = editor.document.createElement(paraTag);
-    editor.insertElementAtSelection(wrapperNode, true);
-    if (node)
-      editor.insertNode(node,wrapperNode,0);
-    if (paranode)
-      editor.insertNode(paranode,node,0);
+    try 
+    {
+      var namespace = new Object();                      
+      var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace); 
+      var wrapperNode = editor.document.createElement('notewrapper');
+      if (data.type == 'footnote') wrapperNode.setAttribute('type','footnote');
+      var node = editor.document.createElement('note');
+      node.setAttribute('type',data.type);
+      if (data.hidenote) node.setAttribute('hide','true');
+      if (data.type != 'footnote') 
+      {
+        node.setAttribute("req","ragged2e");
+        node.setAttribute("opt","raggedrightboxes");
+      }
+      var paraNode = editor.document.createElement(paraTag);
+      var brNode=editor.document.createElement('br');
+      brNode.setAttribute("type","_moz");
+      if (node)
+        wrapperNode.insertBefore(node, null);
+      if (paraNode)
+        node.insertBefore(paraNode, null);
+      if (brNode)
+        paraNode.insertBefore(brNode, null);
+      editor.insertElementAtSelection(wrapperNode, true);
+      editor.selection.collapse(paraNode, 0);
+    }
+    catch(e)
+    {
+      dump("msiNote: exception = '"+e.message+"'\n");
+    }
   }
+  editor.endTransaction(); 
 }
 
 function msiFrame(editorElement)

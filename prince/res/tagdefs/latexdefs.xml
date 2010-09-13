@@ -393,7 +393,7 @@
           </initialcontents>
 	  		  <inclusion>true</inclusion>
           </tag>
-  		<tag nm="sw:frame">
+  		<tag nm="sw:msiframe">
           <level>*</level>
           <description>Frame</description>
           <discardemptyblock>true</discardemptyblock>

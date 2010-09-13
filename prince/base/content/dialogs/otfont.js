@@ -4,8 +4,9 @@ Components.utils.import("resource://app/modules/pathutils.jsm");
 
 function startup()
 {
-  var menuObject = { menulist: []};
-  var menuObject.menuList = document.getElementById("otfontlist");
+  var menuObject = { };
+  initializeFontFamilyList(false);
+  menuObject.menulist = document.getElementById("otfontlist");
   addOTFontsToMenu(menuObject);
 }
 
@@ -21,12 +22,14 @@ function onAccept()
     {
       AlertWithTitle("Error", "No editor in otfont.OnAccept!");
     }
+  }
 	var theWindow = window.opener;
 	if (!theWindow || !("msiEditorSetTextProperty" in theWindow))
+  {
 	  theWindow = msiGetTopLevelWindow();
-    theWindow.msiRequirePackage(editorElement, "xltxtra", null);
-    theWindow.msiEditorSetTextProperty(editorElement, "otfont", "fontname", fontname);
   }
+  theWindow.msiRequirePackage(editorElement, "xltxtra", null);
+  theWindow.msiEditorSetTextProperty(editorElement, "otfont", "fontname", fontname);
   editorElement.contentWindow.focus();
 }
 

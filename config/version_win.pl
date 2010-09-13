@@ -252,9 +252,9 @@ else {
 }
 $fileversion = $productversion="$mstone[0],$mstone[1],$mstone[2],$daycount";
 
-my $copyright = "License: MPL 1.1/GPL 2.0/LGPL 2.1";
-my $company = "Mozilla Foundation";
-my $trademarks = "Mozilla";
+my $copyright = "Portions copyright MacKichan Software, Inc., portions under License: MPL 1.1/GPL 2.0/LGPL 2.1";
+my $company = "MacKichan Software, Inc.";
+my $trademarks = "Scientific WorkPlace, Scientific Word, Scientific Notebook";
 my $productname = $displayname;
 
 

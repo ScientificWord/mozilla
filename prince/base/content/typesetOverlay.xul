@@ -62,7 +62,7 @@
         command="cmd_MSIbibChoiceCmd"/>  
       <menuitem label="&MSItypesetOptionsAndPackagesCmd.label;" 
         accesskey="&MSItypesetOptionsAndPackagesCmd.accesskey;" 
-        command="cmd_MSItypesetOptionsAndPackagesCmd"/>
+        observes="cmd_MSItypesetOptionsAndPackagesCmd"/>
       <!--menuitem label="&MSItypesetOutputChoiceCmd.label;"    
         accesskey="&MSItypesetOutputChoiceCmd.accesskey;"  
         command="cmd_MSItypesetOutputChoiceCmd"/>

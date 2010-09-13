@@ -175,7 +175,7 @@ p {
 
 para {
   display: block;
-  margin: 10pt 10pt 5pt 5pt;
+  margin: 10pt 0pt 5pt 0pt;
 }
 
 rtlpara {
@@ -228,7 +228,7 @@ quotation {
   margin-right: 20pt;
 }
 
-*[class="showinvis"] quotation:after {
+*[showinvis="true"] quotation:after {
   content: "\B6";
   display: inline;
   font-family: Courier New;
@@ -397,6 +397,37 @@ subparagraph defaulttitletag:after {
   content: "Replace this subsubsubsubsection title"; 
   color: gray;
 }
+
+
+pre, verbatim {
+  font-family: Courier; white-space: pre
+}
+
+
+enumerate { counter-reset: item-number }
+ 
+enumerate>item { display: block ;
+                 margin: 0pt 0pt 0pt 0pt; 
+                 padding: 10pt 0pt 0pt 20pt }
+
+enumerate>item:before { content: counter(item-number) ". "; counter-increment: item-number }
+
+   
+
+description {
+  counter-reset: itm;
+}
+
+itemize {
+  list-style: disc; 
+  counter-reset: item;
+}
+
+img {
+  display: inline; 
+  margin: 2em
+} 
+
 
 button[class="eqnnum"]{
   counter-increment: eqnnumber;
