@@ -1,15 +1,7 @@
 #!/bin/sh
 # $1 is a legacy argument, no longer used
 pushd $2
-infile=$3
-declare -i j=0 passes=$5 k=0
-while [ $j -lt $passes ] 
-do
-	let k=j+1
-	echo Pass $k > sentinel
-	xelatex -jobname $4 $infile
-	let j=j+1
-done
+pdflatex -interaction=nonstopmode -jobname=$4 $3 $6 $7 $8 $9
 echo done > sentinel
 popd
 

@@ -85,14 +85,21 @@
 \MSITextElement{pageref}
 
 
+
+
+\MSITeXButtonReq{pagestyle}
+\MSITeXButtonReq{thispagestyle}
+
+
+
 % Use MSIListEnvironment to create a list environment translation
 % From  \begin{enumerate} ... \end{enumerate}
 % To    <enumerate> ... </enumerate>
 % The difference between this and SimpleEnvironment is just the
 % handling of \item.
-
-\MSIListEnvironment{enumerate}
-\MSIListEnvironment{itemize}
+\msitraceon
+\MSIListEnvironment[numberedlist]{enumerate}
+\MSIListEnvironment[bulletlist]{itemize}
 \MSIListEnvironment{description}
 
 
@@ -360,6 +367,7 @@
 \MSIMathQuote{approxeq}
 \MSIMathQuote{approx}
 \MSIMathQuote{arg}
+\MSIMathQuote{arctan}
 \MSIMathQuote{ast}
 \MSIMathQuote{asymp}
 \MSIMathQuote{backepsilon}

@@ -81,6 +81,6 @@ function msiPathFromFileURL( url )     // redundant BBM: remove instances of thi
 {
   //return GetFilepath( url );
   // or
-  return msiFileFromFileURL(url).path; 
+  return decodeURI(msiFileFromFileURL(url).path); 
 }
 
