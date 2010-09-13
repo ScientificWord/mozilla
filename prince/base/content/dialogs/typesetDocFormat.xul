@@ -85,12 +85,13 @@
     </tabs>
     <tabpanels>
       <tabpanel id="docformatgeneralpanel" orient="vertical">
+        <button oncommand="onAccept();"  />
         <vbox flex="1">
           <label class="heading" value="General document options"/>
           <label value="Warning goes here"/>
         </vbox> 
         <checkbox id="enablereformat" label="Enable overriding the document style" checked="false"
-          oncommand="enableDisableReformat(this);"/>                 
+          oncommand="enableDisableReformat(this.checked);"/>                 
         <broadcaster id="reformatok" disabled="true"/>
         <groupbox>
           <caption>
@@ -274,7 +275,7 @@
               </row>
               <row>
                 <vbox align="center">
-                  <label>Second language</label>
+                  <label observes="reformatok">Second language</label>
                   <menulist observes="reformatok" >
                     <menupopup style="width: 9em" >
                       <!-- if some of these are not supported in polyglossia, add 'observes="pdftex"'-->
@@ -536,7 +537,7 @@
         <tabpanel id="docformatPageLayoutPanel" style="overflow:auto">
           <vbox>
             <checkbox id="enablepagelayout" label="Enable overriding page layout"
-              oncommand="enableDisablePageLayout(this);"/>                 
+              oncommand="enableDisablePageLayout(this.checked);"/>                 
             <broadcaster id="pagelayoutok" disabled="true"/>
             <hbox>
               <vbox flex="1">
@@ -971,7 +972,7 @@
         </tabpanel>
      <tabpanel id="docformatFontsPanel">
         <vbox>
-          <checkbox id="allowfontchoice" label="Enable overriding font selection" oncommand="enableDisableFonts(this);"/>
+          <checkbox id="allowfontchoice" label="Enable overriding font selection" oncommand="enableDisableFonts(this.checked);"/>
           <broadcaster id="fontdefok" disabled="true"/> 
           <msibutton label="Refresh font list" oncommand="initializeFontFamilyList(true);" observes="xelatex">
             <observes element="fontdefok" attribute="disabled"/> 

@@ -17,10 +17,18 @@ var paperwidth;
 var paperheight;
 var landscape;
 var scale = 0.5;
-
+var sectionlist =["part","chapter", "section", "subsection", "subsubsection", "paragraph", "subparagraph"];
+// need to get section list from taglistmanager
 var editor;
-var sectitleformat;
+var sectitleformat={};
 var sectScale = 1;
+var compilerInfo = { prog: "pdflatex", //other choices: xelatex, lualatex
+                     useOTF: false,  //currently same as xelatex (lualatex in future)
+                     formatOK: false,//master control. If false, can't change anything
+//                     sectHeaderOK: {},
+                     pageFormatOK: false,//geometry package not called if false
+                     useUni: false,//currently same as useOTF
+                     fontsOK: false }// OK to choose fonts
 
 
 
@@ -51,6 +59,15 @@ function stripPath(element, index, array)
 {
   array[index] = re.exec(element)[1];
 }
+
+//function initializeCompilerInfo()
+//{
+//  // most was done statically above
+//  var l = sectionlist.length;
+//  var i;
+//  for (i = 0; i < l; i++)
+//    compilerInfo.sectHeaderOK[sectionlist[i]] = false;
+//}
  
 function Startup()
 {
@@ -72,6 +89,7 @@ function Startup()
     dump("No preamble in document\n");
     return;
   }
+  getEnableFlags(doc)
   var docFormatNodeList = preamble.getElementsByTagName('docformat');
   var node;
   if (!(docFormatNodeList && docFormatNodeList.length>=1)) node=null;
@@ -84,12 +102,6 @@ function Startup()
   //now we can load the docformat information from the document to override 
   //all or part of the initial state
   OnWindowSizeReset(true);
-  var useOT;;
-  var docCompilerNodeList = preamble.getElementsByTagName('texprogram');
-  if (docCompilerNodeList.length == 0) useOT = false;
-  else
-    useOT = (docCompilerNodeList[0].getAttribute("prog") == "xelatex"); 
-  buildFontMenus( useOT );
   if (!(docFormatNodeList && docFormatNodeList.length>=1)) node=null;
   else node = docFormatNodeList[0].getElementsByTagName('fontchoices')[0];
   getFontSpecs(node);
@@ -101,12 +113,36 @@ function Startup()
 //  msiInitializeEditorForElement(editElement, "");
 	dump ("initializing sectitleformat\n");
   sectitleformat = new Object();
+  getNumStyles(preamble);
   getSectionFormatting(sectitlenodelist, sectitleformat);
   getClassOptionsEtc();
-  getNumStyles(preamble);
 }
 
-function buildFontMenus( useOT )
+function getEnableFlags(doc)
+{
+  var nodelist = doc.getElementsByTagName("texprogram");
+  if (nodelist.length > 0)
+  {
+    var value;
+    var progNode =  nodelist[0]
+    value = progNode.getAttribute("prog");
+    setCompiler(value);
+    compilerInfo.useOTF = value == "xelatex"; 
+    document.getElementById("texprogram").value = value;
+    var canSetFormat = progNode.getAttribute("formatOK") == "true";
+    enableDisableReformat(canSetFormat);
+    document.getElementById("enablereformat").checked = canSetFormat;
+    var fontsOK = progNode.getAttribute("fontsOK") == "true";
+    enableDisableFonts(fontsOK);
+    document.getElementById("allowfontchoice").checked = fontsOK;
+    var formatPageOK = progNode.getAttribute("pageFormatOK") == "true";
+    document.getElementById("enablepagelayout").checked = formatPageOK;
+    document.getElementById('reformatok').setAttribute('disabled', canSetFormat?'false':'true');
+    document.getElementById('pagelayoutok').setAttribute('disabled',formatPageOK?'false':'true');
+  }
+}
+
+function buildFontMenus(useOTF)
 {
   addOldFontsToMenu("mathfontlist");
   addOldFontsToMenu("mainfontlist");
@@ -116,10 +152,8 @@ function buildFontMenus( useOT )
   addOldFontsToMenu("x2fontlist");
   addOldFontsToMenu("x3fontlist");
 
-  changeOpenType(useOT);
+  changeOpenType(useOTF);
 }
-
-var sectionlist =["part","chapter", "section", "subsection", "subsubsection", "paragraph", "subparagraph"];
 
 function getNumStyles(preambleNode)
 {
@@ -147,11 +181,14 @@ function saveNumStyles(preambleNode)
     if (gNumStyles[sect]) 
     {
       dump("checking "+sect+"\n");
-      bHasStyle = true;
+      bHasStyle = ("" != gNumStyles[sect]);
       break;
     }
   }
   if (bHasStyle) {
+    var nodeList = preambleNode.getElementsByTagName("numberstyles");
+    if (nodeList.length > 0)
+      for (var i = nodeList.length -1; i >=0; i--) editor.deleteNode(nodeList[i]);
     node = editor.createNode("numberstyles",preambleNode,0);
     dump("adding attribute for "+sect+"\n");
     for (i=0; i< sectionlist.length; i++) {
@@ -415,13 +452,34 @@ function onAccept()
     savePageLayout(newNode);
     saveFontSpecs(newNode);
     saveSectionFormatting(newNode, sectitleformat);
+    saveEnableFlags(doc, newNode);
     saveClassOptionsEtc(newNode);
     saveNumStyles(preamble);
   }
   return true;
 }  
 
-
+    
+function saveEnableFlags(doc, docformatnode)
+{
+  var nodelist = doc.getElementsByTagName("texprogram");
+  var progNode;
+  var newProgNode = false;
+  if (nodelist.length == 0) 
+  {
+    newProgNode = true;
+    progNode = editor.createNode("texprogram", docformatnode, 0);
+  }
+  else progNode = nodelist[0];
+  // handle compiler choice, whether to allow formatting changes, etc.
+  progNode.setAttribute("prog", compilerInfo.prog);
+  progNode.setAttribute("formatOK", compilerInfo.formatOK);
+  compilerInfo.useUni = compilerInfo.useOTF; // in this version they mean the same thing
+  progNode.setAttribute("useUni", compilerInfo.useUni);
+  progNode.setAttribute("useOTF", compilerInfo.useOTF);
+  progNode.setAttribute("fontsOK", compilerInfo.fontsOK);
+  progNode.setAttribute("pageFormatOK", compilerInfo.pageFormatOK); 
+}
 function onCancel()
 {
  return true;
@@ -1706,50 +1764,54 @@ function switchSectionTypeImp(from, to)
   currentSectionType = to;
   var boxlist;
   var box;
+  var enabled;
   var boxdata={};
   if (from)
   {
-    if (!sectitleformat[from]) sectitleformat[from] = new Object();
-    var sec = sectitleformat[from];
-    sec.enabled = document.getElementById("allowsectionheaders").checked;
-    document.getElementById("secredefok").setAttribute("disabled", sec.enabled?"false":"true");
-    sec.newPage = document.getElementById("sectionstartnewpage").checked;
-    sec.sectStyle = document.getElementById("sections.style").value;
-    sec.align = document.getElementById("sections.align").value; 
-    sec.units = document.getElementById("secoverlay.units").value; 
-    sec.lhindent = document.getElementById("tbsectleftheadingmargin").value; 
-    sec.rhindent = document.getElementById("tbsectrightheadingmargin").value; 
-    boxlist = document.getElementById("toprules").getElementsByTagName("vbox");
-    sec.toprules = [];
-    for (i=0; i< boxlist.length; i++) {
-      box = boxlist[i];
-      if (!box.hidden) {
-        boxdata = new Object();
-        boxdata.role = box.getAttribute("role");
-        boxdata.tlwidth = box.getAttribute("tlwidth");
-        boxdata.tlheight = box.getAttribute("tlheight");
-        boxdata.color = box.getAttribute("color");
-        boxdata.tlalign = box.getAttribute("tlalign");
-        boxdata.style = box.getAttribute("style");
-        sec.toprules.push(boxdata);
+    gNumStyles[from] = document.getElementById("sections.numstyle").value;
+    if (enabled)
+    {
+      if (!sectitleformat[from]) sectitleformat[from] = new Object();
+      var sec = sectitleformat[from];
+      sec.enabled = enabled;
+      document.getElementById("secredefok").setAttribute("disabled", sec.enabled?"false":"true");
+      sec.newPage = document.getElementById("sectionstartnewpage").checked;
+      sec.sectStyle = document.getElementById("sections.style").value;
+      sec.align = document.getElementById("sections.align").value; 
+      sec.units = document.getElementById("secoverlay.units").value; 
+      sec.lhindent = document.getElementById("tbsectleftheadingmargin").value; 
+      sec.rhindent = document.getElementById("tbsectrightheadingmargin").value; 
+      boxlist = document.getElementById("toprules").getElementsByTagName("vbox");
+      sec.toprules = [];
+      for (i=0; i< boxlist.length; i++) {
+        box = boxlist[i];
+        if (!box.hidden) {
+          boxdata = new Object();
+          boxdata.role = box.getAttribute("role");
+          boxdata.tlwidth = box.getAttribute("tlwidth");
+          boxdata.tlheight = box.getAttribute("tlheight");
+          boxdata.color = box.getAttribute("color");
+          boxdata.tlalign = box.getAttribute("tlalign");
+          boxdata.style = box.getAttribute("style");
+          sec.toprules.push(boxdata);
+        }
       }
-    }
-    boxlist = document.getElementById("bottomrules").getElementsByTagName("vbox");
-    sec.bottomrules = [];
-    for (i=0; i< boxlist.length; i++) {
-      box = boxlist[i];
-      if (!box.hidden) {
-        boxdata = new Object();
-        boxdata.role = box.getAttribute("role");
-        boxdata.tlwidth = box.getAttribute("tlwidth");
-        boxdata.tlheight = box.getAttribute("tlheight");
-        boxdata.color = box.getAttribute("color");
-        boxdata.tlalign = box.getAttribute("tlalign");
-        boxdata.style = box.getAttribute("style");
-        sec.bottomrules.push(boxdata);
+      boxlist = document.getElementById("bottomrules").getElementsByTagName("vbox");
+      sec.bottomrules = [];
+      for (i=0; i< boxlist.length; i++) {
+        box = boxlist[i];
+        if (!box.hidden) {
+          boxdata = new Object();
+          boxdata.role = box.getAttribute("role");
+          boxdata.tlwidth = box.getAttribute("tlwidth");
+          boxdata.tlheight = box.getAttribute("tlheight");
+          boxdata.color = box.getAttribute("color");
+          boxdata.tlalign = box.getAttribute("tlalign");
+          boxdata.style = box.getAttribute("style");
+          sec.bottomrules.push(boxdata);
+        }
       }
-    }
-    
+    } 
     //toprules, bottomrules, and proto, if they have been changed, have been updated by subdialogs 
   }
   //Now initialize for the new section type
@@ -1758,63 +1820,67 @@ function switchSectionTypeImp(from, to)
     if (from != to)
     {
       document.getElementById("sections.numstyle").value=(gNumStyles[to]?gNumStyles[to]:"");
-      if (!sectitleformat[to])
+      enabled = document.getElementById("allowsectionheaders").checked = sec.enabled;
+      if (enabled)
       {
-        sectitleformat[to] = new Object();
-        return; // the dialog will default to the last sections headings. Can we do better? BBM
-      }
-      sec = sectitleformat[to];
-      var newpage = sec.newPage
-      if (!newpage) newpage = false;
-      var rawlabel = document.getElementById("rawlabel").getAttribute("label");
-      document.getElementById("allowsectionheaders").setAttribute("label", rawlabel.replace("##",to));
-        // for localizability, we should look up a string valued function of "to"
-      document.getElementById("allowsectionheaders").checked = sec.enabled;
-      document.getElementById("secredefok").setAttribute("disabled", sec.enabled?"false":"true");
-      document.getElementById("sectionstartnewpage").checked = newpage;
-      document.getElementById("sections.style").value = sec.sectStyle;
-      document.getElementById("sections.align").value = sec.align; 
-      document.getElementById("secoverlay.units").value = sec.units;
-      sectionUnit = sec.units; 
-      document.getElementById("tbsectleftheadingmargin").value = sec.lhindent; 
-      document.getElementById("tbsectrightheadingmargin").value = sec.rhindent; 
-      if (sec.toprules && sec.toprules.length > 0)
-      {
-        document.getElementById("tso_toprules").selectedIndex="1";
-        boxlist = document.getElementById("toprules").getElementsByTagName("vbox");
-        for (i=0; i < sec.toprules.length; i++)
+        if (!sectitleformat[to])
         {
-          boxlist[i].hidden=false;
-          boxlist[i].setAttribute("role", sec.toprules[i].role);
-          boxlist[i].setAttribute("tlwidth", sec.toprules[i].tlwidth);
-          boxlist[i].setAttribute("tlheight", sec.toprules[i].tlheight);
-          boxlist[i].setAttribute("tlalign", sec.toprules[i].tlalign);
-          boxlist[i].setAttribute("color", sec.toprules[i].color);
-          boxlist[i].setAttribute("style", buildStyleForRule(boxlist[i]));
+          sectitleformat[to] = new Object();
+          return; // the dialog will default to the last sections headings. Can we do better? BBM
         }
-        for (i = sec.toprules.length; i<boxlist.length; i++);
-          boxlist[i].hidden=true;
-      }
-      if (sec.bottomrules && sec.bottomrules.length > 0)
-      {
-        document.getElementById("tso_bottomrules").selectedIndex="1";
-        boxlist = document.getElementById("bottomrules").getElementsByTagName("vbox");
-        for (i=0; i < sec.bottomrules.length; i++)
+        sec = sectitleformat[to];
+        var newpage = sec.newPage
+        if (!newpage) newpage = false;
+        var rawlabel = document.getElementById("rawlabel").getAttribute("label");
+        document.getElementById("allowsectionheaders").setAttribute("label", rawlabel.replace("##",to));
+          // for localizability, we should look up a string valued function of "to"
+        document.getElementById("allowsectionheaders").checked = sec.enabled;
+        document.getElementById("secredefok").setAttribute("disabled", sec.enabled?"false":"true");
+        document.getElementById("sectionstartnewpage").checked = newpage;
+        document.getElementById("sections.style").value = sec.sectStyle;
+        document.getElementById("sections.align").value = sec.align; 
+        document.getElementById("secoverlay.units").value = sec.units;
+        sectionUnit = sec.units; 
+        document.getElementById("tbsectleftheadingmargin").value = sec.lhindent; 
+        document.getElementById("tbsectrightheadingmargin").value = sec.rhindent; 
+        if (sec.toprules && sec.toprules.length > 0)
         {
-          boxlist[i].hidden=false;
-          boxlist[i].setAttribute("role", sec.bottomrules[i].role);
-          boxlist[i].setAttribute("tlwidth", sec.bottomrules[i].tlwidth);
-          boxlist[i].setAttribute("tlheight", sec.bottomrules[i].tlheight);
-          boxlist[i].setAttribute("tlalign", sec.bottomrules[i].tlalign);
-          boxlist[i].setAttribute("color", sec.bottomrules[i].color);
-          boxlist[i].setAttribute("style", buildStyleForRule(boxlist[i]));
+          document.getElementById("tso_toprules").selectedIndex="1";
+          boxlist = document.getElementById("toprules").getElementsByTagName("vbox");
+          for (i=0; i < sec.toprules.length; i++)
+          {
+            boxlist[i].hidden=false;
+            boxlist[i].setAttribute("role", sec.toprules[i].role);
+            boxlist[i].setAttribute("tlwidth", sec.toprules[i].tlwidth);
+            boxlist[i].setAttribute("tlheight", sec.toprules[i].tlheight);
+            boxlist[i].setAttribute("tlalign", sec.toprules[i].tlalign);
+            boxlist[i].setAttribute("color", sec.toprules[i].color);
+            boxlist[i].setAttribute("style", buildStyleForRule(boxlist[i]));
+          }
+          for (i = sec.toprules.length; i<boxlist.length; i++);
+            boxlist[i].hidden=true;
         }
-        for (i = sec.bottomrules.length; i<boxlist.length; i++);
-          boxlist[i].hidden=true;
+        if (sec.bottomrules && sec.bottomrules.length > 0)
+        {
+          document.getElementById("tso_bottomrules").selectedIndex="1";
+          boxlist = document.getElementById("bottomrules").getElementsByTagName("vbox");
+          for (i=0; i < sec.bottomrules.length; i++)
+          {
+            boxlist[i].hidden=false;
+            boxlist[i].setAttribute("role", sec.bottomrules[i].role);
+            boxlist[i].setAttribute("tlwidth", sec.bottomrules[i].tlwidth);
+            boxlist[i].setAttribute("tlheight", sec.bottomrules[i].tlheight);
+            boxlist[i].setAttribute("tlalign", sec.bottomrules[i].tlalign);
+            boxlist[i].setAttribute("color", sec.bottomrules[i].color);
+            boxlist[i].setAttribute("style", buildStyleForRule(boxlist[i]));
+          }
+          for (i = sec.bottomrules.length; i<boxlist.length; i++);
+            boxlist[i].hidden=true;
+        }
+        displayTextForSectionHeader(to);
+        setalign(sec.align);
+        settopofpage(document.getElementById("sectionstartnewpage"));
       }
-      displayTextForSectionHeader(to);
-      setalign(sec.align);
-      settopofpage(document.getElementById("sectionstartnewpage"));
     }
   }
 }
@@ -1866,10 +1932,18 @@ function saveSectionFormatting( docFormatNode, sectitleformat )
       stNode.setAttribute('lhindent', sectiondata.lhindent);
       stNode.setAttribute('rhindent', sectiondata.rhindent);
       lineend(stNode, 2);
+      var i;
+      var nodeList = stNode.getElementsByTagName("titleprototype");
+      while (nodeList.length > 0) 
+      {
+        editor.deleteNode(nodeList[nodeList.length - 1]);
+        nodeList = stNode.getElementsByTagName("titleprototype");
+      }
       var proto = editor.createNode('titleprototype', stNode, 0);
       var fragment = sectiondata.proto;
       if (fragment)
       {
+        nodeList = stNode.getElementsByTagName("titleprototype");
         // replace #N with \the(section, subsection, etc) and #T with #1
         fragment = fragment.replace(/#N/,"\\the"+name,'g');
         fragment = fragment.replace(/#T/,"#1",'g');
@@ -2333,31 +2407,35 @@ function addOldFontsToMenu(menuPopupId)
   dump("Leaving initSystemOldFontMenu\n");
 }
 
-function changeOpenType( useOT )
+function changeOpenType(useOTF)
 {
-  var menuObject = { menulist: []};
-  if (useOT) {
-    // add opentype families to the menus 
-    menuObject.menulist = document.getElementById("mainfontlist");
-    addOTFontsToMenu(menuObject);
-    menuObject.menulist = document.getElementById("sansfontlist");
-    addOTFontsToMenu(menuObject);
-    menuObject.menulist = document.getElementById("fixedfontlist");
-    addOTFontsToMenu(menuObject);
-    menuObject.menulist = document.getElementById("x1fontlist");
-    addOTFontsToMenu(menuObject);
-    menuObject.menulist = document.getElementById("x2fontlist");
-    addOTFontsToMenu(menuObject);
-    menuObject.menulist = document.getElementById("x3fontlist");
-    addOTFontsToMenu(menuObject);
-  }
-  else {
-    deleteOTFontsFromMenu("mainfontlist");
-    deleteOTFontsFromMenu("sansfontlist");
-    deleteOTFontsFromMenu("fixedfontlist");
-    deleteOTFontsFromMenu("x1fontlist");
-    deleteOTFontsFromMenu("x2fontlist");
-    deleteOTFontsFromMenu("x3fontlist");
+  if (compilerInfo.useOTF != useOTF)
+  {
+    compilerInfo.useOTF = useOTF;
+    var menuObject = { menulist: []};
+    if (compilerInfo.useOTF) {
+      // add opentype families to the menus 
+      menuObject.menulist = document.getElementById("mainfontlist");
+      addOTFontsToMenu(menuObject);
+      menuObject.menulist = document.getElementById("sansfontlist");
+      addOTFontsToMenu(menuObject);
+      menuObject.menulist = document.getElementById("fixedfontlist");
+      addOTFontsToMenu(menuObject);
+      menuObject.menulist = document.getElementById("x1fontlist");
+      addOTFontsToMenu(menuObject);
+      menuObject.menulist = document.getElementById("x2fontlist");
+      addOTFontsToMenu(menuObject);
+      menuObject.menulist = document.getElementById("x3fontlist");
+      addOTFontsToMenu(menuObject);
+    }
+    else {
+      deleteOTFontsFromMenu("mainfontlist");
+      deleteOTFontsFromMenu("sansfontlist");
+      deleteOTFontsFromMenu("fixedfontlist");
+      deleteOTFontsFromMenu("x1fontlist");
+      deleteOTFontsFromMenu("x2fontlist");
+      deleteOTFontsFromMenu("x3fontlist");
+    } 
   }
 }  
 
@@ -2391,10 +2469,10 @@ function saveClassOptionsEtc(docformatnode)
   }
   var nodelist = doc.getElementsByTagName("colist");
   var optionNode;
-  var newnode = false;
+  var newOptionNode = false;
   if (nodelist.length == 0) 
   {
-    newnode = true;
+    newOptionNode = true;
     optionNode = editor.createNode("colist", docformatnode, 0);
   }
   else optionNode = nodelist[0];
@@ -2440,7 +2518,7 @@ function saveClassOptionsEtc(docformatnode)
   if (widget.hasAttribute("def")) optionNode.removeAttribute("bibstyle")
   else optionNode.setAttribute("bibstyle", widget.value);
 
-  if (newnode) documentclass.appendChild(optionNode);
+  if (newOptionNode) documentclass.appendChild(optionNode);
 
   widget = document.getElementById("leading").value;
   nodelist = preamble.getElementsByTagName("leading");
@@ -2483,18 +2561,6 @@ function saveClassOptionsEtc(docformatnode)
     else showidx = nodelist[0];
     showidx.setAttribute("req", "showidx")
   }
-    
-    
-  widget = document.getElementById("texprogram").selectedItem;
-  dump("a\n");
-  nodelist = preamble.getElementsByTagName("texprogram");
-  dump("b\n");
-  var texprogram;
-  if (nodelist.length == 0)
-    texprogram = editor.createNode("texprogram", preamble, 1000);
-  else texprogram = nodelist[0];
-  dump("c"+widget.value+"\n");
-  texprogram.setAttribute("prog", widget.value)
 }
 
 function setMenulistSelection(menulist, value)
@@ -2545,12 +2611,6 @@ function getClassOptionsEtc()
       colist.getAttribute(s));
   }
   var value;
-  if (colist.hasAttribute('enabled'))
-    value = colist.getAttribute('enabled');
-  else value='false';
-  document.getElementById('enablereformat').checked = (value=='true');
-  document.getElementById('reformatok').setAttribute('disabled', (value=='true')?'false':'true');
-
   nodelist = preamble.getElementsByTagName("leading");
   if (nodelist.length > 0)
   {
@@ -2568,44 +2628,42 @@ function getClassOptionsEtc()
   {
     document.getElementById("showidx").selectedIndex = 1;
   }
-  nodelist = preamble.getElementsByTagName("texprogram");
-  if (nodelist.length > 0)
-  {
-    var value =  nodelist[0].getAttribute("prog");
-    document.getElementById("texprogram").value = value;
-    dump("texprogrm value is "+value+"\n");
-    setCompiler("xelatex");
-  }
 }
 
 function setCompiler(compilername)
 {
-  if (compilername=="xelatex")
-  {
-    document.getElementById("xelatex").hidden=false;
-    document.getElementById("pdflatex").hidden=true;
-    changeOpenType(true);
-  }
-  else
-  { 
-    document.getElementById("xelatex").hidden=true;
-    document.getElementById("pdflatex").hidden=false;
-    changeOpenType(false);
-  }    
+//  if (compilerInfo.prog != compilername)
+//  {
+    compilerInfo.prog = compilername;
+    if (compilername=="xelatex")
+    {
+      document.getElementById("xelatex").hidden=false;
+      document.getElementById("pdflatex").hidden=true;
+      changeOpenType(true);
+    }
+    else
+    { 
+      document.getElementById("xelatex").hidden=true;
+      document.getElementById("pdflatex").hidden=false;
+      changeOpenType(false);
+    } 
+//  }   
 }
 
-function enableDisableReformat(checkbox)
+function enableDisableReformat(enable)
 {
   var bcaster = document.getElementById("reformatok");
-  if (checkbox.checked)
+  compilerInfo.formatOK = enable;
+  if (enable)
     bcaster.setAttribute("disabled","false");
   else bcaster.setAttribute("disabled","true");
 }
      
-function enableDisablePageLayout(checkbox)    
+function enableDisablePageLayout(enable)    
 {
   var bcaster = document.getElementById("pagelayoutok");
-  if (checkbox.checked)
+  compilerInfo.pageFormatOK = enable;
+  if (enable)
     bcaster.setAttribute("disabled","false");
   else bcaster.setAttribute("disabled","true");
 }
@@ -2617,12 +2675,15 @@ function enableDisableSectFormat(checkbox)
   if (checkbox.checked)
     bcaster.setAttribute("disabled","false");
   else bcaster.setAttribute("disabled","true");
+  var to = document.getElementById("sections.name").value;
+  switchSectionTypeImp(null, to);
 }
 
-function enableDisableFonts(checkbox)
+function enableDisableFonts(enabled)
 {
   var bcaster = document.getElementById("fontdefok");
-  if (checkbox.checked)
+  compilerInfo.fontsOK = enabled;
+  if (enabled)
     bcaster.setAttribute("disabled","false");
   else bcaster.setAttribute("disabled","true");
 }
