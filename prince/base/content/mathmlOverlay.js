@@ -2241,6 +2241,7 @@ function insertMathnameObject(mathNameObj, editorElement)
   var editor = msiGetEditor(editorElement);
   if (mathNameObj.val.length > 0)
   {
+    dump("\ninsertMathnameObject(), mathNameObj.val = " + mathNameObj.val);
     if (mathNameObj.enginefunction)
       insertenginefunction(mathNameObj.val, editorElement);
     else if (("appearance" in mathNameObj) && (mathNameObj.appearance != null))
@@ -2299,8 +2300,10 @@ function insertMathnameObject(mathNameObj, editorElement)
 //        dump("After inserting math operator, focus node and offset are [" + focusNode.nodeName + ", " + focusOffset + "].\n");
       }
     }
-    else
+    else {
+      dump("\ninsertMathnameObject(), default");
       insertmathname(mathNameObj.val, editorElement);  //these go in as "mi"s
+    }
   }
 }
 
