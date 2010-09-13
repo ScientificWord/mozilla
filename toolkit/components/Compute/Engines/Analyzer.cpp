@@ -681,7 +681,7 @@ void AnalyzeMI(MNODE* mml_mi_node,
         is_ODE_func = true;
     } else if (LocateFuncRec(pAnalyzer -> GetAnalyzerData() -> IMPLDIFF_FuncNames(), NULL, mml_mi_node->p_chdata)) {
         is_IMPLDIFF_func = true;
-    } else if (symbol_count == 1) {
+    } else if (symbol_count >= 1) {
       // an entity, maybe a Greek letter
       // ASCII letter 
       if (mml_mi_node->next) {
