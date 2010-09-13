@@ -244,3 +244,5 @@ prince.jar:
   content/msiEdReviseChars.xul	   (dialogs/msiEdReviseChars.xul)
   content/MatrixInsertRowsCols.xul    (dialogs/MatrixInsertRowsCols.xul)
   content/MatrixInsertRowsCols.js     (dialogs/MatrixInsertRowsCols.js)
+  content/equationArrayDialog.xul    (dialogs/equationArrayDialog.xul)
+  content/equationArrayDialog.js     (dialogs/equationArrayDialog.js)
