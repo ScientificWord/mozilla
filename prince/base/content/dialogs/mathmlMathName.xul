@@ -110,7 +110,7 @@
         <radiogroup id="nameTypeRadioGroup" orient="vertical" oncommand="updateControls();">
           <radio id="typeOperator" label="&typeOperator.label;" value="operator" accesskey="&typeOperator.accesskey;"/>
           <radio id="typeFunction" label="&typeFunction.label;" value="function" accesskey="&typeFunction.accesskey;"/>
-          <radio id="typeFunction" label="&typeVariable.label;" value="variable" accesskey="&typeVariable.accesskey;"/>
+          <radio id="typeVariable" label="&typeVariable.label;" value="variable" accesskey="&typeVariable.accesskey;"/>
         </radiogroup>
       </groupbox>
       <groupbox id="limitPlacementGroup">
