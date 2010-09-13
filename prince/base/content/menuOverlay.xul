@@ -25,14 +25,11 @@
     <menupopup id="menu_FilePopup" onpopupshowing="msiEditorInitFileMenu();">
       <menuitem id="menu_newDocument" label="&newDocument.label;" 
                 accesskey="&newDocument.accesskey;" key="key_newDocument"
-                command="cmd_newDocument"/>
+                observes="cmd_newDocument"/>
       <menuitem id="openMenuitem" accesskey="&fileopen.accesskey;"
                   key="openeditorkb"
                   observes="cmd_open" 
                   label="&openFileCmd.label;"/>
-      <menuitem accesskey="&fileopenremote.accesskey;"  
-                  key="openremoteeditorkb" 
-                  observes="cmd_openRemote"/>
       <menuitem observes="cmd_openTeX" label="Import TeX ..."/>
       <menuitem observes="cmd_exportTeX" label="Export TeX ..."/>
       <menuitem observes="cmd_exportToWeb" label="Export to Web ..."/>
@@ -183,7 +180,7 @@
                 label="&pasteNoFormattingCmd.label;"
                 key="key_paste"
                 accesskey="&pasteNoFormattingCmd.accesskey;"
-                command="cmd_pasteNoFormatting"/>
+                observes="cmd_pasteNoFormatting"/>
       <menuitem id="menu_delete"
                 label="&deleteCmd.label;"
                 key="key_delete"
@@ -217,7 +214,6 @@
                 accesskey="&editcheckspelling.accesskey;"
                 key="checkspellingkb"   
                 observes="cmd_spelling" 
-                disabled="false"
                 label="&checkSpellingCmd.label;"/>
       <menuitem id="menu_countwords" 
                 accesskey="&countWords.accesskey;"
@@ -395,7 +391,7 @@
       <menuseparator id="toolsMenuSeparator"/>
       <menuitem label="&autoSubstituteDlg.label;" 
                 accesskey="&autoSubstituteDlg.accesskey;" 
-                command="cmd_MSIAutoSubDlg"/>
+                observes="cmd_MSIAutoSubDlg"/>
     </menupopup>
   </menu>
   <menu id="windowMenu" label="Window" oncommand="switchFocus(event.target);">
@@ -575,7 +571,6 @@
   >
     <command id="cmd_newDocument"  oncommand="msiGoDoCommand('cmd_new');"/>
     <command id="cmd_open"         oncommand="msiGoDoCommand('cmd_open')"/>
-    <command id="cmd_openRemote"   label="&openremoteCmd.label;"    oncommand="msiGoDoCommand('cmd_openRemote')"/>
     <command id="cmd_close"        label="&closeCmd.label;"         oncommand="msiGoDoCommand('cmd_close')"/>
     <command id="cmd_printSetup"   oncommand="msiGoDoCommand('cmd_printSetup')"/>
 <!--

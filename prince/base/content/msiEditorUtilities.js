@@ -3029,13 +3029,14 @@ function msiGetParentEditorElementForDialog(dialogWindow)
 
 function msiGetDocumentTitle(editorElement)
 {
+    var title = "untitled"; 
     var doc = msiGetEditor(editorElement).document;
     var nodes = doc.getElementsByTagName('preamble');
     var titleNodes;
     if (nodes.length > 0) titleNodes= nodes[0].getElementsByTagName("title");
     if (titleNodes.length > 0 && titleNodes[0].textContent.length > 0)
-      return nodes[i].textContent;
-    return "untitled";  // BBM: localize
+      title = nodes[0].textContent;
+    return title.replace(/^[ \n\t]*/,"").replace(/[ \n\t]*$/,"");  // BBM: localize
 }
 
 function msiSetDocumentTitle(editorElement, title)
@@ -3044,16 +3045,16 @@ function msiSetDocumentTitle(editorElement, title)
   // a broadcaster with id="filename"
   var theFilename = document.getElementById("filename");
   var newtitle = "";
-  if (theFilename != null)
+  if (theFilename)
     newtitle = theFilename.value;
   if (newtitle.length > 0) title = newtitle;
   try {
-    msiGetEditor(editorElement).setDocumentTitle(title);
+    msiGetEditor(editorElement).msietDocumentTitle(title);
 
     // Update window title (doesn't work if called from a dialog)
-    if ("UpdateWindowTitle" in window)
+    if ("msiUpdateWindowTitle" in window)
     {
-      window.UpdateWindowTitle();
+      window.msiUpdateWindowTitle(msiGetDocumentTitle(editorElement),newtitle);
     }
   } catch (e) {}
 }
@@ -8804,9 +8805,25 @@ function replacer(str, p1, p2, offset, s)
   }
 }
 
+function reversereplacer(str, p1, p2, offset, s)
+{
+  switch (str)
+  { 
+    case "&quot;": return "\""; break;
+    case "&lt;"  : return "<"; break;
+    case "&gt;"  : return ">"; break;
+    default      : return str; break;
+  }
+}
+
 function encodeEntities(instring)
 {
-  return instring.replace(/[&"<>]/, replacer, "g");
+  return instring.replace(/[&"<>]/g, replacer, "g");
+}
+
+function decodeEntities(instring)
+{
+  return instring.replace(/&amp;|&quot;|&lt;|&gt;/g, reversereplacer, "g");
 }
 
 
@@ -8873,7 +8890,8 @@ function newline(output, currentline, indent)
 }
 
 var nonInlineTags=".math.html.head.requirespackage.newtheorem.definitionslist.documentclass.preamble.usepackage.preambleTeX."+
-  "msidisplay.";
+  "msidisplay.pagelayout.page.textregion.columns.marginnote.header.footer."+
+  "titleprototype.docformat.numberstyles.sectitleformat.docformat.numberstyles.texprogram.";
 function isInlineElement(editor, element)
 {
   if (nonInlineTags.search("."+element.localName+".") >= 0) return false;
@@ -8894,13 +8912,15 @@ function processElement( editor, node, treeWalker, output, currentline, indent )
   if (node.hasAttributes())
   {
     var attrs = node.attributes;
-    var len = attrs.length;
+    var len = attrs.length;   
     for (var i = 0; i < len; i++)
     {
-      if ((attrs[i].name.indexOf("-moz-") == -1)&&(attrs[i].name!="_moz_dirty"))
+      if ((attrs[i].name.indexOf("-moz-") == -1)
+         &&(attrs[i].name!="_moz_dirty")
+         &&(attrs[i].name!="msiSelectionManagerID"))
         currentline.s += ' '+attrs[i].name + '="' +attrs[i].value+'"';
     }
-  }
+  }   
   var child = treeWalker.firstChild();
   if (child)
   {

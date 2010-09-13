@@ -160,7 +160,6 @@ prince.jar:
 * content/msiEditorContextMenu.js   (msiEditorContextMenu.js)
 * content/msiEditorCommandsDebug.js (msiEditorCommandsDebug.js)
 * content/msiEdDialogCommon.js      (dialogs/msiEdDialogCommon.js)
-* content/msiEdImageOverlay.js      (dialogs/msiEdImageOverlay.js)
 * content/msiEdImageProps.js        (dialogs/msiEdImageProps.js)
 * content/msiEdImageProps.xul       (dialogs/msiEdImageProps.xul)
 * content/EditorContent.css         (EditorContent.css)
