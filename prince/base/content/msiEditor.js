@@ -3,35 +3,6 @@ Components.utils.import("resource://app/modules/pathutils.jsm");
 
 const msiEditorJS_duplicateTest = "Bad";
 
-//var gComposerWindowControllerID = 0;
-//var prefAuthorString = "";
-//                                        
-//const kDisplayModeNormal = 0;
-//const kDisplayModeAllTags = 1;
-//const kDisplayModeSource = 2;
-//const kDisplayModePreview = 3;
-//const kDisplayModeMenuIDs = ["viewNormalMode", "viewAllTagsMode", "viewSourceMode", "viewPreviewMode"];
-//const kDisplayModeTabIDS = ["NormalModeButton", "TagModeButton", "SourceModeButton", "PreviewModeButton"];
-//const kNormalStyleSheet = "chrome://editor/content/EditorContent.css";
-//const kAllTagsStyleSheet = "chrome://editor/content/EditorAllTags.css";
-//const kParagraphMarksStyleSheet = "chrome://editor/content/EditorParagraphMarks.css";
-//
-//const kTextMimeType = "text/plain";
-//const kHTMLMimeType = "text/html";
-//
-//const nsIWebNavigation = Components.interfaces.nsIWebNavigation;
-////
-////var gPreviousNonSourceDisplayMode = 1;
-//var gEditorDisplayMode = -1;
-////var gDocWasModified = false;  // Check if clean document, if clean then unload when user "Opens"
-//
-////var gContentWindow = 0;
-////var gSourceContentWindow = 0;
-////var gSourceTextEditor = null;
-//var gContentWindowDeck;
-//var gTagSelectBar;
-//var gComputeToolbar;
-//var gViewFormatToolbar;
 
 var dynAllTagsStyleSheet;
 
@@ -812,7 +783,6 @@ function msiEditorDocumentObserver(editorElement)
           try {
             var htmlurlstring = msiGetEditorURL(this.mEditorElement);
                // currently htmlusrstring = "chrome://prince/content/StdDialogShell.xhtml" 
-
             var htmlurl = msiURIFromString(htmlurlstring);
                // ... seems ok
             var htmlFile = msiFileFromFileURL(htmlurl);
@@ -1191,8 +1161,6 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
     var doc;
     var dir;
     var charset = "";
-//    charset = document.getElementById("args").getAttribute("charset")
-    dump("1\n");
     if (theArgs)
     {
       charset = theArgs.getAttribute("charset")
@@ -1203,17 +1171,16 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
     };
 // Two cases: if (docurl), then the url of a doc to load was passed. It might be for a shell.
 //            if (!docurl), nothing was passed. Load the default shell. 
-
-    dump("2\n");
     if (!docurl)
     {   
+      editorElement.isShellFile = true;
+      editorElement.fileLeafName = "unsaved file";
       if (!bTopLevel)
       {
         try { 
           docurlstring = prefs.getCharPref("swp.defaultDialogShell");   //BBM: check this later
           if (docurlstring.length > 0)
             docurl = msiURIFromString(docurlstring);
-          dump("Doc Url from defaultDialogShell is "+docurl.spec+"\n");
         }  
         catch(exc) {
           docurl = null;
@@ -1222,7 +1189,6 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
       }
       else
       {
-    dump("3\n");
         docurlstring = prefs.getCharPref("swp.defaultShell");
         // docurlstring is *relative* to the shells directory.
         if (docurlstring.length == 0)
@@ -1234,12 +1200,11 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
         var i;
         for (i = 0; i<dirs.length; i++) if (dirs[i].length >0) doc.append(dirs[i]);
         docpath = doc.path;
-    dump("4\n");
         docurl = msiFileURLFromAbsolutePath(docpath); // this converts docurl to a file URL
-          dump("Doc Url from defaultShell is "+docurl.spec+"\n");
         needToCreateDirectory = true;
       }
     }
+    else editorElement.isShellFile = false;
     if (!docurl) 
     {
       dump("Unable to find Doc Url\n");
@@ -1247,13 +1212,11 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
     }
 // now we have a url for the doc.
          
-//    if (docurl && (docurl.schemeIs("chrome") || docurl.schemeIs("resource")))
     if (docurl && docurl.schemeIs("resource"))
     { 
       // convert to a file URL
       docpath = msiPathFromFileURL( docurl );
       docurl = msiFileURLFromAbsolutePath(docpath); // this converts docurl to a file URL
-      dump("Doc Url converted to file:// is "+docurl.spec + "\n");
     }
 
     if (!docurl.schemeIs("chrome"))
@@ -1261,7 +1224,7 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
       doc = msiFileFromFileURL(docurl);
       dir = doc.parent;
     }
-
+    if (!editorElement.isShellFile) editorElement.fileLeafName = doc.leafName;
     // in cases where the user has gone through a dialog, such a File/New or File/Open, the working directory
     // has already been created and the document name changed. When starting up, or starting with a file on the
     // command line we still need to call "createWorkingDirectory."
@@ -1285,6 +1248,7 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
       contentViewer.forceCharacterSet = charset;
     }
     dump("Trying to load editor with url = "+docurl.spec+"\n");
+    msiUpdateWindowTitle(null, null);
     msiEditorLoadUrl(editorElement, docurl);
   }
 //    msiDumpWithID("Back from call to msiEditorLoadUrl for editor [@].\n", editorElement);
@@ -1759,7 +1723,7 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
   var leafregex = /.*\/([^\/]+$)/;
   var arr = leafregex.exec(sciurlstring);
   if (arr && arr.length >1) document.title = arr[1];
-  if (!document.title) document.title="untitled document";
+  if (!document.title) document.title=GetString("untitled");
 
   var dialogTitle = GetString(doPublish ? "PublishPage" : "SaveDocument");
   var dialogMsg = GetString(doPublish ? "PublishPrompt" : "SaveFilePrompt");
@@ -4003,6 +3967,7 @@ function msiSetEditMode(mode, editorElement)
   // Switch the UI mode before inserting contents
   //   so user can't type in source window while new window is being filled
   var previousMode = msiGetEditorDisplayMode(editorElement);
+
   if (!msiSetDisplayMode(editorElement, mode))
     return;
 
@@ -4058,6 +4023,9 @@ function msiSetEditMode(mode, editorElement)
     flags |= 32;   // OutputWrap
     // ignore the above and use the prettyprint function
     var source = prettyprint(editor);//editor.outputToString("text/xml", flags);
+    // break the source into <li>'s
+    source = encodeEntities(source);
+    source= "<line>"+source.replace(/\n/g,"</line><line>")+"</line>";
     var start = 0; //source.search(/<html/i);
     if (start == -1) start = 0;
     var sourceTextEditor = msiGetHTMLSourceEditor(editorElement);
@@ -4074,7 +4042,7 @@ function msiSetEditMode(mode, editorElement)
       editorElement.mSourceTextListener = new msiSourceTextListener(editorElement);
     if (sourceContentWindow!=null && sourceTextEditor!=null)
     {
-      sourceTextEditor.insertText(source.slice(start));
+      InsertColoredSourceView(sourceTextEditor, source);
       sourceTextEditor.resetModificationCount();
       sourceTextEditor.addDocumentStateListener(editorElement.mSourceTextListener);
       sourceTextEditor.enableUndo(true);
@@ -4102,7 +4070,15 @@ function msiSetEditMode(mode, editorElement)
         var errMsg="";
         var willReturn = false;
         var sourceTextEditor = msiGetHTMLSourceEditor(editorElement);
-        source = sourceTextEditor.outputToString(kTextMimeType, 1024); // OutputLFLineBreak
+        var srcdoc = sourceTextEditor.document;
+        var lines = srcdoc.documentElement.getElementsByTagName("line");
+        var ln = lines.length;
+        if (lines.length == 0) return;
+        source = "";
+        for (var ix = 0; ix < ln; ix++)
+          source += lines[ix].textContent + "\n";
+        source = decodeEntities(source);
+//        source = sourceTextEditor.outputToString(kTextMimeType, 1024); // OutputLFLineBreak
         try {
           errMsg = editor.rebuildDocumentFromSource(source);
           msiSetDocumentEditable(true, editorElement)
@@ -4129,7 +4105,7 @@ function msiSetEditMode(mode, editorElement)
             title = titleNode.firstChild.data;
         }
         if (editor.document.title != title)
-          msiSetDocumentTitle(editorElement, title);
+          msiUpdateWindowTitle(null, null);
 
       } catch (ex) {
         dump(ex);
@@ -4141,9 +4117,8 @@ function msiSetEditMode(mode, editorElement)
         editor.transactionManager.maxTransactionCount = -1;
       } catch (e) {}
     }
+//    editor.enableStyleSheet(dynAllTagsStyleSheet, false);
     msiSetDisplayMode(editorElement, mode);
-//    if (!msiSetDisplayMode(editorElement, mode))
-//      return;
 
     // Clear out the string buffers
     msiClearSource(editorElement);
@@ -4151,6 +4126,41 @@ function msiSetEditMode(mode, editorElement)
     editorElement.contentWindow.focus();
   }
 }
+
+function InsertColoredSourceView(editor, source)
+{
+  var sourceDoc = editor.document;
+  // clean source view first
+  // BBM
+  var bodySourceDoc = sourceDoc.documentElement.getElementsByTagName("body").item(0);
+//  var bodySourceDoc = sourceDoc.documentElement.firstChild.nextSibling;
+  while (bodySourceDoc.lastChild)
+    bodySourceDoc.removeChild(bodySourceDoc.lastChild);
+
+  // the following is ugly but working VERY well
+  var styleElt = sourceDoc.getElementById("moz_sourceview_css");
+  if (!styleElt)
+  {
+    var heads = sourceDoc.getElementsByTagName("head");
+    var headElement;
+    if (!heads)
+    {
+      headElement = sourceDoc.createElement("head");
+      bodySourceDoc.parentNode.insertBefore(headElement, bodySourceDoc);
+    }
+    else
+      headElement = heads.item(0);
+    var styleElt = sourceDoc.createElement("style");
+    styleElt.setAttribute("id", "moz_sourceview_css");
+    styleElt.setAttribute("type", "text/css");
+    var sheet = sourceDoc.createTextNode('@import url("resource://app/res/css/srceditor.css");');
+    styleElt.appendChild(sheet);
+    headElement.appendChild(styleElt);
+  }
+  bodySourceDoc.innerHTML = source;
+}
+
+
 
 function msiCancelHTMLSource(editorElement)
 {
@@ -4306,28 +4316,16 @@ function msiSetDisplayMode(editorElement, mode)
 
       switch (mode)
       {
-        case kDisplayModePreview:
-          // Disable all extra "edit mode" style sheets 
-          editor.enableStyleSheet(kNormalStyleSheet, false);
-          if (editorElement.mgMathStyleSheet != null)
-            editor.enableStyleSheet(editorElement.mgMathStyleSheet, false);
-          editor.enableStyleSheet(gMathStyleSheet, false);
-          editor.enableStyleSheet(dynAllTagsStyleSheet, false);
-          editor.isImageResizingEnabled = true;
-          break;
-
         case kDisplayModeNormal:
           editor.addOverrideStyleSheet(kNormalStyleSheet);
-          if (editorElement.mgMathStyleSheet != null)
+          if (editorElement.mgMathStyleSheet != null)            
             editor.addOverrideStyleSheet(editorElement.mgMathStyleSheet);
           else
             editor.addOverrideStyleSheet(gMathStyleSheet);
           // Disable ShowAllTags mode
           editor.enableStyleSheet(dynAllTagsStyleSheet, false);
-          editor.isImageResizingEnabled = true;
-          editor.enableTagMananger();
         break;
-
+        
         case kDisplayModeAllTags:
           editor.addOverrideStyleSheet(kNormalStyleSheet);
           if (editorElement.mgMathStyleSheet != null)
@@ -4337,16 +4335,14 @@ function msiSetDisplayMode(editorElement, mode)
           editor.addOverrideStyleSheet(dynAllTagsStyleSheet);
           // don't allow resizing in AllTags mode because the visible tags
           // change the computed size of images and tables...
-          editor.enableTagMananger();
           if (editor.resizedObject) {
             editor.hideResizers();
           }
-          editor.isImageResizingEnabled = false;
           break;
       }
     } catch(e) {
         dump("Exception in msiSetDisplayMode: "+e.message+"\n");
-      }
+    }
 
     // Switch to the normal editor (first in the deck)
     if ("gContentWindowDeck" in window)
@@ -9075,7 +9071,11 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
         theWindow = msiGetTopLevelWindow(window);
       theWindow.graphObjectClickEvent(cmdstr, editorElement);
     }
-    else 
+    else if (element.localName == "object")
+    {
+      msiGoDoCommand("cmd_image", editorElement);
+    }
+    else
     {
 //      dump("In goDoPrinceCommand, elementName is [" + elementName + "].\n");
       msiGoDoCommand(cmdstr, editorElement);

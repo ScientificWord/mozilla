@@ -410,7 +410,7 @@ function openTeX()
     catch (ex) 
     {
          dump("\nUnable to open TeX:\n");
-		 dump("\nexe  = "  + exefile);
+		     dump("\nexe  = "  + exefile);
          dump("\narg paths = " + dataDir.path + "\n   " + fp.file.path + "\n    " + outfile.path + "\n     " + outdir.path);
          dump(ex+"\n");
     }      
@@ -431,7 +431,6 @@ function documentAsTeXFile( document, xslSheet, outTeXfile, compileInfo )
   dump("\nDocument as TeXFile\n");
   if (!document) return false;
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
-
   var documentPath = document.documentURI;
   var docurl = msiURIFromString(documentPath);                                      
   var workingDir;
@@ -578,7 +577,7 @@ function exportTeX()
      var dialogResult = fp.show();
      if (dialogResult != msIFilePicker.returnCancel)
        if (!documentAsTeXFile(editor.document, "latex.xsl", fp.file, compileInfo ))
-         AlertWithTitle("XSLT Error", "TeX file not created. Click on View/XSLT Log to see the log file");
+         AlertWithTitle("XSLT Error", "TeX file not created");
 
    }
    catch (ex) 
@@ -619,11 +618,12 @@ function exportToWeb()
 /* ==== */
 /* = 
 compileTeXFile:
-  pdftex -- a boolean to determine whether to produce pdf (as opposed to dvi)
+  compiler -- a string, either 'pdflatex' or 'xelatex', giving which compiler to use.
   infileLeaf -- the name of the input TeX file without '.tex' or the initial part of the path 
   infilePath -- the full name of the input TeX file, including the path and 'tex'
   outputDir -- the directory in which to put the resulting file
-  compileInfo -- an object for storing the required # of passes, whether makeindex needs to be called, etc.
+  compileInfo -- an object for storing the required # of passes, whether makeindex needs 
+       to be called, etc.
   
   returns -- a boolean to indicate whether the expected file appears where it is supposed to
   
@@ -632,7 +632,7 @@ compileTeXFile:
 
 var passData;
 
-function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, compileInfo )
+function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInfo )
 {
   // the following requires that the pdflatex program (or a hard link to it) be in TeX/bin/pdflatex 
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
@@ -646,15 +646,11 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, compileInfo 
 #else
   extension = "bash";
 #endif
-  if (pdftex)
-    exefile.append("pdflatex."+extension);
-  else
-    exefile.append("latex."+extension);
+  exefile.append(compiler+"."+extension);
   indexexe.append("makeindex."+extension);
   dump("\nexecutable file: "+exefile.path+"\n");
   passData.file = exefile;
   passData.indexexe = indexexe;
-  passData.pdftex = pdftex;
   passData.outputDir = outputDir;
   passData.args = ["-output-directory", outputDir, infileLeaf, compiledFileLeaf];
   passData.passCount = compileInfo.passCount;
@@ -667,29 +663,26 @@ function compileTeXFile( pdftex, infileLeaf, infilePath, outputDir, compileInfo 
 //    using it in 6.0, and XulRunner is getting a better implementation, which we will use later.
   // check for a dvi or pdf file
   var compiledFileLeaf = "SWP";                                                                               var outfileLeaf = compiledFileLeaf;
-  if (passData.pdftex)
-    outfileLeaf += ".pdf";
-  else
-    outfileLeaf += ".xdv";  // good only for XeTeX BBM fix this
+  outfileLeaf += ".pdf";
 
   dump("\nOutputleaf="+outfileLeaf+"\n");
   var tempOutputfile;
   var outputfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
   outputfile.initWithPath( passData.outputDir );
   tempOutputfile = outputfile.clone();
-  var leaf = "main"+(passData.pdftex?".pdf":".dvi");
+  var leaf = "main.pdf";
   outputfile.append(leaf);
   var n = 0;
   dump("Leaf is "+leaf+"\n");
   while (outputfile.exists())
   {
-    leaf = "main"+(n++)+(passData.pdftex?".pdf":".dvi");
+    leaf = "main"+(n++)+".pdf";
     dump("Leaf is "+leaf+"\n");
     outputfile = outputfile.parent;
     outputfile.append(leaf);
   }
   currPDFfileLeaf = leaf;
-  tempOutputfile.append("swp"+(passData.pdftex?".pdf":".dvi"));
+  tempOutputfile.append("swp.pdf");
 //  if (outputfile.exists())
 //    outputfile.remove(false);
   if (tempOutputfile.exists())
@@ -722,22 +715,28 @@ function printPDFFile(infile)
   }
 }
 
-// compileDocument compiles the current document of the current editor; it converts it to TeX and then to DVI or PDF,
-// depending on the value of pdftex. Returns true if everything succeeded. 
-function compileDocument( pdftex )
+// compileDocument compiles the current document of the current editor; it converts it to TeX and then PDF.
+// Returns true if everything succeeded. 
+function compileDocument()
 {
   var editor = GetCurrentEditor();
   if (!editor) return null;
+  var compiler = "pdflatex";
+  // Determine which compiler to use
+  var texprogNode;
+  var texprogNodes = editor.document.getElementsByTagName("texprogram");
+  if (texprogNodes.length > 0)
+  {
+    texprogNode = texprogNodes[0];
+    if (texprogNode.hasAttribute("prog")) compiler = texprogNode.getAttribute("prog");
+  }
   var editorElement = msiGetTopLevelEditorElement();
   var pdfViewer = document.getElementById("preview-frame");
   if (pdfViewer && (pdfViewer.src != "about:blank"))
     pdfViewer.loadURI("about:blank");   // this releases the currently displayed pdf preview.
-  if (pdftex)
-  {
-    dump("pdfModCount = "+editorElement.pdfModCount+", modCount is ");
-    editorElement.pdfModCount = editor.getModificationCount();
-    dump(editorElement.pdfModCount+"\n");
-  }
+  dump("pdfModCount = "+editorElement.pdfModCount+", modCount is ");
+  editorElement.pdfModCount = editor.getModificationCount();
+  dump(editorElement.pdfModCount+"\n");
   try {
     var docUrl = msiGetEditorURL(editorElement);
     var docPath = GetFilepath(docUrl);
@@ -758,37 +757,38 @@ function compileDocument( pdftex )
       outputfile.create(1, 0755);
     }
     catch(e) {}; // 
-    var dvipdffile = outputfile.clone();
-    var dvipdffileroot = outputfile.clone();
+    var pdffile = outputfile.clone();
+    var pdffileroot = outputfile.clone();
     outputfile.append("main.tex");
     if (outputfile.exists()) outputfile.remove(false);
     
     dump("\TeX file="+outputfile.path + "\n");
-//    dump("DVI/PDF file is " + dvipdffile.path + "\n"); 
+//    dump("DVI/PDF file is " + pdffile.path + "\n"); 
     var compileInfo = new Object();  // an object to hold pass counts and whether makeindex needs to run.
     if (documentAsTeXFile(editor.document, "latex.xsl", outputfile, compileInfo ))
     {
-      if (compileTeXFile(pdftex, "main", outputfile.path, dvipdffile.path, compileInfo))
+      if (compileTeXFile(compiler, "main", outputfile.path, pdffile.path, compileInfo))
       {
         if (!currPDFfileLeaf) currPDFfileLeaf = "main.pdf";
         dump("currPDFfileLeaf is "+currPDFfileLeaf+"\n");
-        dvipdffile.append(currPDFfileLeaf);
-        if (!dvipdffile.exists())
+        pdffile.append(currPDFfileLeaf);
+        if (!pdffile.exists())
         {  
-          AlertWithTitle("TeX Error", "Unable to create a "+(pdftex?"PDF":"DVI")+" file. Try View/TeX Log");
+          AlertWithTitle("TeX Error", "Unable to create a PDF file.");
+          goDoCommand("cmd_showTeXLog");
           return null;
         }
         else 
         {
-          dump("outputfile to be launched: "+dvipdffile.path+"\n");
-          return dvipdffile;
+          dump("outputfile to be launched: "+pdffile.path+"\n");
+          return pdffile;
         }
       }
       else return null;
     }
     else 
     {
-      AlertWithTitle("XSLT Error", "Unable to create a TeX file. Try View/XSLT Log");
+      AlertWithTitle("XSLT Error", "Unable to create a TeX file");
       return null;
     }
   }
@@ -800,20 +800,20 @@ function compileDocument( pdftex )
 }
 
 
-function printTeX( pdftex, preview )
+function printTeX(preview )
 {
   try {
-    var dvipdffile = compileDocument(pdftex, dvipdffile);
-    if (dvipdffile)
+    var pdffile = compileDocument();
+    if (pdffile)
     {
       if (preview)
       {
-        document.getElementById("preview-frame").loadURI(msiFileURLStringFromFile(dvipdffile));
+        document.getElementById("preview-frame").loadURI(msiFileURLStringFromFile(pdffile));
         // Switch to the preview pane (third in the deck)
         goDoCommand("cmd_PreviewMode"); 
       } 
       else
-        printPDFFile(dvipdffile);
+        printPDFFile(pdffile);
     }
   }
   catch(e) {
@@ -821,18 +821,19 @@ function printTeX( pdftex, preview )
   }
 }
 
-function previewTeX(pdftex)
+function previewTeX()
 {
-  printTeX(pdftex, true);
+  printTeX(true);
 };
 
 
-function compileTeX(pdftex)
+function compileTeX(compiler)
 {
   try
   {
     var editor = GetCurrentEditor();
     if (!editor) return;
+
     document.getElementById("preview-frame").loadURI("about:blank");
   // now save this TeX string and run TeX on it.  
     var editorElement = msiGetTopLevelEditorElement();
@@ -851,17 +852,17 @@ function compileTeX(pdftex)
     if (!outputfile.exists()) outputfile.create(1, 0755);
     outputfile.append("tex");
     if (!outputfile.exists()) outputfile.create(1, 0755);
-    var dvipdffile = outputfile.clone();
+    var pdffile = outputfile.clone();
     outputfile.append(outleaf+".tex");
     if (outputfile.exists()) outputfile.remove(false);
-    dvipdffile.append(outleaf+ (pdftex?".pdf":".dvi"));
-    if (dvipdffile.exists()) dvipdffile.remove(false);
+    pdffile.append(outleaf + ".pdf");
+    if (pdffile.exists()) pdffile.remove(false);
     
     dump("TeX file="+outputfile.path)+"\n";  
     var fp = Components.classes["@mozilla.org/filepicker;1"].createInstance(msIFilePicker);
-    fp.init(window, "Save "+(pdftex?"PDF":"DVI")+" file", msIFilePicker.modeSave);
+    fp.init(window, "Save PDF file", msIFilePicker.modeSave);
 
-    fp.appendFilter("Compiled files","*.pdf; *.dvi");
+    fp.appendFilter("Compiled files","*.pdf");
     fp.appendFilters(msIFilePicker.filterAll);
 
     try 
@@ -887,20 +888,19 @@ function compileTeX(pdftex)
     documentAsTeXFile(editor.document, "latex.xsl", outputfile, compileInfo );
     if (!outputfile.exists())
     {
-      AlertWithTitle("XSLT Error", "Need to offer to show log");
-      goDoCommand("cmd_showXSLTLog");
+      AlertWithTitle("XSLT Error", "Unable to generate TeX file");
     } else
     {
-      if (compileTeXFile(pdftex, outleaf, outputfile.path, dvipdffile.parent.path, compileInfo))
+      if (compileTeXFile(compiler, outleaf, outputfile.path, pdffile.parent.path, compileInfo))
       {
-        if (!dvipdffile.exists())
+        if (!pdffile.exists())
         {
           AlertWithTitle("TeX Error", "Need to offer to show log");
           goDoCommand("cmd_showTeXLog");
         }
         else
         // move the output result to the place indicated by fp.
-          dvipdffile.move(fp.file.parent, fp.file.leafName); 
+          pdffile.move(fp.file.parent, fp.file.leafName); 
       } 
     }
   }

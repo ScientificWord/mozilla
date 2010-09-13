@@ -243,10 +243,12 @@
 \def\out@itema[#1]{
    \if@first@item
      \@first@itemfalse
-   \else
-     \msiclosetag{item}{</item>}%
+   \else     
+     \def\enditemtag##1{\msiclosetag{##1}{</##1>}}%
+     \expandafter\enditemtag\expandafter{\itemprefix item}%
    \fi
-   \br\msihmode\msiopentag{item}{<item>}
+   \def\startitemtag##1{\br\msihmode\msiopentag{##1}{<##1>}}%
+   \expandafter\startitemtag\expandafter{\itemprefix item}%
    \msitag{<explicit-item>}#1\msitag{</explicit-item>}%
 }
 
@@ -254,9 +256,11 @@
    \if@first@item
      \@first@itemfalse
    \else
-     \msiclosetag{item}{</item>}%
+     \def\enditemtag##1{\msiclosetag{##1}{</##1>}}%
+     \expandafter\enditemtag\expandafter{\itemprefix item}%
    \fi
-   \br\msihmode\msiopentag{item}{<item>}%
+   \def\startitemtag##1{\br\msihmode\msiopentag{##1}{<##1>}\msiopentag{para}{<para>}}%
+   \expandafter\startitemtag\expandafter{\itemprefix item}%
 }
 
 
@@ -286,12 +290,25 @@
 \def\@openitem{\msiopentag{li}{<li>}}
 
 
-\def\MSIListEnvironment#1{%
+\def\MSIListEnvironment{%
+  \@ifnextchar[{\msi@listenv@a}{\msi@listenv@b}}
+
+\def\msi@listenv@b#1{%
   \expandafter\def\csname msi@begin@#1\endcsname{%
+      \def\itemprefix{}%
       \everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue\msiopentag{#1}{<#1>}}
 
   \expandafter\def\csname msi@end@#1\endcsname{%
       \br\msiclosetag{#1}{</#1>}}}
+
+\def\msi@listenv@a[#1]#2{%
+  \expandafter\def\csname msi@begin@#2\endcsname{%
+      \def\itemprefix{#1}%
+      \everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue\msiopentag{#1}{<#1>}}
+
+  \expandafter\def\csname msi@end@#2\endcsname{%
+      \br\msiclosetag{#1}{</#1>}}}
+
        
 \def\msi@begin@thebibliography#1{%
   \everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue \msiopentag{thebibliography}{<thebibliography>}%
@@ -1032,6 +1049,16 @@
 
 \def\msi@text@elmB#1{\msi@text@elmA[#1]{#1}}
 
+
+
+%% Create TeX Buttons
+
+\def\MSITeXButtonReq#1{
+    \expandafter\def\csname#1\endcsname##1{
+       \msihmode
+       \msitag{<texb enc="1" name="#1">}%
+          <![CDATA[\expandafter\string\csname#1\endcsname\{##1\}]]>%
+       \msitag{</texb>}}}
 
 
 %% Various note type things

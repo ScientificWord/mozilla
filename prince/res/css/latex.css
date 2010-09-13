@@ -10,7 +10,6 @@ texlogo {
 /* texlogo:before{ content: "_";} */
 
 texlogo sup {
-  text-transform: uppercase;
   letter-spacing: 1px;
   font-size: 0.85em;
   vertical-align: 0.15em;
@@ -20,7 +19,6 @@ texlogo sup {
 
 
 texlogo sub {
-  text-transform: uppercase;
   vertical-align: -0.5ex;
   margin-left: -0.1667em;
   margin-right: -0.125em;
@@ -371,7 +369,7 @@ paragraph[nonum="true"] {
   content: "";
 }
 
-*[class="showinvis"] sectiontitle:after {
+*[showinvis="true"] sectiontitle:after {
   content: "\B6";
   display: inline;
   font-family: Courier New;
@@ -381,7 +379,7 @@ paragraph[nonum="true"] {
 }
 
 
-*[class="showinvis"] p:after {
+*[showinvis="true"] p:after {
   content: "\B6";
   display: inline;
   font-family: Courier New;
@@ -391,7 +389,7 @@ paragraph[nonum="true"] {
 }
 
 
-*[class="showinvis"] para:after {
+*[showinvis="true"] para:after {
   content: "\B6";
   display: inline;
   font-family: Courier New;
@@ -400,17 +398,7 @@ paragraph[nonum="true"] {
   -moz-user-select: -moz-none;
 }
 
-*[class="showinvis"] mathp:after {
-  content: "\B6";
-  display: inline;
-  font-family: Courier New;
-  color: green;
-  font-weight: bold;
-  -moz-user-select: -moz-none;
-}
-
-
-*[class="showinvis"] title:after {
+*[showinvis="true"] mathp:after {
   content: "\B6";
   display: inline;
   font-family: Courier New;
@@ -420,7 +408,17 @@ paragraph[nonum="true"] {
 }
 
 
-*[class="showinvis"] quote:after {
+*[showinvis="true"] title:after {
+  content: "\B6";
+  display: inline;
+  font-family: Courier New;
+  color: green;
+  font-weight: bold;
+  -moz-user-select: -moz-none;
+}
+
+
+*[showinvis="true"] quote:after {
   content: "\B6";
   display: inline;
   font-family: Courier New;
@@ -463,6 +461,7 @@ body {
   counter-reset: chapter;
   counter-reset: part;
   counter-reset: section;
+  margin-left: 10pt;
 }
 
 /* selection is possible in paragraph and front matter tags */
@@ -554,5 +553,7 @@ frontmatter>makelot {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-makelot");
 }
 
-
+line {
+  display: block;
+}
 

@@ -123,6 +123,10 @@ nsHTMLEditUtils::IsNodeThatCanOutdent(nsIDOMNode *node, msiITagListManager * man
 {
   NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsNodeThatCanOutdent");
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
+  
+  if (!nodeAtom)
+    return PR_FALSE;
+
   NS_PRECONDITION(nodeAtom, "node with null tag passed to nsHTMLEditUtils::IsNodeThatCanOutdent");
   nsAutoString tagName;
   nodeAtom->ToString(tagName);
@@ -308,8 +312,10 @@ PRBool
 nsHTMLEditUtils::IsList(nsIDOMNode *node, msiITagListManager * manager)
 {
   NS_PRECONDITION(node, "null parent passed to nsHTMLEditUtils::IsList");
+  if (!node) return PR_FALSE;
   nsCOMPtr<nsIAtom> nodeAtom = nsEditor::GetTag(node);
   NS_PRECONDITION(nodeAtom, "node with null tag passed to nsHTMLEditUtils::IsList");
+  if (!nodeAtom) return PR_FALSE;
   PRBool isListTag;
   nsAutoString tagName;
   nodeAtom->ToString(tagName);

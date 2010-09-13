@@ -79,20 +79,17 @@
       <toolbarbutton id="binomialButton"/>
       <toolbarbutton id="labelButton"/>
       <toolbarbutton id="decorationButton"/>
-      <toolbarbutton id="noteButton" tooltiptext="&noteButton.tooltip;"/>
-      <toolbarbutton id="markerButton" tooltiptext="&markerButton.tooltip;" />
+      <toolbarbutton id="noteButton" tooltiptext="&noteButton.tooltip;" observes="cmd_note"/>
+      <toolbarbutton id="markerButton" tooltiptext="&markerButton.tooltip;" observes="cmd_marker" />
       <toolbarbutton id="htlinkButton" tooltiptext="&htlinkButton.tooltip;"/>
       <toolbarbutton id="formulaButton" tooltiptext="&formulaButton.tooltip;"/>
-      <toolbarbutton id="frontmatterButton" tooltiptext="&frontmatterButton.tooltip;"/>
-      <toolbarbutton id="packagesButton" tooltiptext="&packagesButton.tooltip;"/>
-      <toolbarbutton id="citationButton" tooltiptext="&citationButton.tooltip;"/>
-      <toolbarbutton id="indexentryButton" tooltiptext="&indexentryButton.tooltip;"/>
-      <toolbarbutton id="xrefButton" tooltiptext="&xrefButton.tooltip;"/>
-      <toolbarbutton id="texfieldButton" tooltiptext="&texfieldButton.tooltip;"/>
-      <toolbarbutton id="subdocButton" tooltiptext="&subdocButton.tooltip;"/>
-      <toolbarbutton id="bibliographyButton" tooltiptext="&bibliographyButton.tooltip;"/>
+      <toolbarbutton id="packagesButton" tooltiptext="&packagesButton.tooltip;" observes="cmd_MSItypesetOptionsAndPackagesCmd"/>
+      <toolbarbutton id="citationButton" tooltiptext="&citationButton.tooltip;" observes="cmd_citation"/>
+      <toolbarbutton id="indexentryButton" tooltiptext="&indexentryButton.tooltip;" observes="cmd_MSIinsertIndexEntryCmd"/>
+      <toolbarbutton id="xrefButton" tooltiptext="&xrefButton.tooltip;" observes="cmd_MSIinsertCrossReferenceCmd"/>
+      <toolbarbutton id="texfieldButton" tooltiptext="&texfieldButton.tooltip;" observes="cmd_MSIinsertTeXFieldCmd"/>
+      <toolbarbutton id="bibliographyButton" tooltiptext="&bibliographyButton.tooltip;" observes="cmd_unimp"/>
       <toolbarbutton id="gifsAnimatedButton" type="checkbox" autoCheck="true"  oncommand="setAnimation();" tooltiptext="&gifsAnimatedButton.tooltip;"/>
-      <toolbarbutton id="dvicompileButton" tooltiptext="&dvicompileButton.tooltip;"/>
       <toolbarbutton id="pdfcompileButton" tooltiptext="&pdfcompileButton.tooltip;"/>
       <toolbarbutton id="javascriptButton" class="toolbarbutton-1" observes=""
                  tooltiptext="&javascriptToolbarButton.tooltip;" label="&javascriptToolbarButton.label;"/>
@@ -127,8 +124,8 @@
       flex = "1"
       tbalign="center" 
       context="toolbar-context-menu"
-      defaultset="noteButton,markerButton,htlinkButton,formulaButton,compileButton,frontmatterButton,
-        packagesButton,citationButton,indexentryButton,xrefButton,texfieldButton,subdocButton,
+      defaultset="noteButton,markerButton,htlinkButton,formulaButton,compileButton,
+        packagesButton,citationButton,indexentryButton,xrefButton,texfieldButton,
         bibliographyButton,gifsAnimatedButton,boldButton,italicButton,zoomValue"
       mode="icons" 
       customizable="true"
@@ -235,7 +232,7 @@
   <toolbarbutton id="evalnumButton" class="toolbarbutton-1" tooltiptext="&MSIComputeEvalNum.tooltip;"
     label="&MSIComputeEvalNum.label;" observes="cmd_MSIComputeEvalNum">
   </toolbarbutton>
-#
+
   <toolbarbutton id="solveButton" class="toolbarbutton-1" tooltiptext="&MSIComputeSolveExact.tooltip;"
     label="&MSIComputeSolveExact.label;" observes="cmd_MSIComputeSolveExact">
   </toolbarbutton>
@@ -255,7 +252,7 @@
   <toolbarbutton id="plotButton3D" class="toolbarbutton-1" tooltiptext="&MSIComputePlot3D.tooltip;"
     label="&MSIComputePlot3D.label;" observes="cmd_MSIComputePlot3DRectangular">
   </toolbarbutton>
-#
+
   <toolbarbutton id="defineButton" class="toolbarbutton-1" tooltiptext="&MSIComputeDefine.tooltip;"
     label="&MSIComputeDefine.label;" observes="cmd_MSIComputeDefine">
   </toolbarbutton>
@@ -273,7 +270,7 @@
 
   <toolbarbutton id="radicalButton" class="toolbarbutton-1" tooltiptext="&radicalButton.tooltip;"
     label="&radicalButton.label;" observes="cmd_MSIradicalCmd"/>
-#
+
   <toolbarbutton id="superscriptButton" class="toolbarbutton-1" tooltiptext="&superscriptButton.tooltip;"
     label="&superscriptButton.label;" observes="cmd_MSIsupCmd"/>
 
@@ -294,7 +291,7 @@
 
   <toolbarbutton id="unitnameButton" class="toolbarbutton-1" tooltiptext="&unitnameButton.tooltip;"
     label="&unitnameButton.label;" onclick="msiGoDoCommand('cmd_MSIunitsCommand')"/>
-#
+
   <toolbarbutton id="displayButton" class="toolbarbutton-1" tooltiptext="&displayButton.tooltip;"
     label="&displayButton.label;" observes="cmd_MSIdisplayMathCmd"/>
 
@@ -318,7 +315,7 @@
 
   <toolbarbutton id="decorationButton" class="toolbarbutton-1" tooltiptext="&decorationButton.tooltip;"
     label="&decorationButton.label;" observes="cmd_MSIdecorationsCmd"/>
-#
+
   <toolbarbutton id="newButton" class="toolbarbutton-1"
                  label="&newDocumentToolbarCmd.label;" observes="cmd_newDocument"
                  tooltiptext="&newDocumentToolbarCmd.tooltip;"/>
@@ -330,7 +327,7 @@
   <toolbarbutton id="saveButton" class="toolbarbutton-1" observes="cmd_save"
                  tooltiptext="&saveToolbarCmd.tooltip;"
                   label="&saveToolbarCmd.label;" />
-#
+
   <toolbarbutton id="printButton" type="menu-button" class="toolbarbutton-1"
                  label="&printToolbarCmd.label;"
                  tooltiptext="&printToolbarCmd.tooltip;"
@@ -370,7 +367,7 @@
       </menu>
     </menupopup>
   </toolbarbutton>
-#
+
   <toolbarbutton id="printPreviewButton" type="menu-button" class="toolbarbutton-1"
                  label="&printPreviewToolbarCmd.label;"
                  tooltiptext="&printPreviewToolbarCmd.tooltip;"
@@ -414,43 +411,43 @@
   <toolbarbutton id="pdfcompileButton" class="toolbarbutton-1" observes="cmd_compilePdf" tooltiptext="&pdfcompileButton.tooltip;"/>
 
   <toolbarbutton id="cutButton" class="toolbarbutton-1"
-                 label="&cutCmd.label;" disabled="true" command="cmd_cut"
+                 label="&cutCmd.label;" disabled="true" observes="cmd_cut"
                  tooltiptext="&cutCmd.label;"/>
 
   <toolbarbutton id="copyButton" class="toolbarbutton-1"
-                 label="&copyCmd.label;" disabled="true" command="cmd_copy"
+                 label="&copyCmd.label;" disabled="true" observes="cmd_copy"
                  tooltiptext="&copyCmd.tooltip;"/>
 
   <toolbarbutton id="pasteButton" class="toolbarbutton-1"
-                 label="&pasteCmd.label;" command="cmd_paste"
+                 label="&pasteCmd.label;" observes="cmd_paste"
                  tooltiptext="&pasteCmd.label;"/>
 
   <toolbarbutton id="undoButton" class="toolbarbutton-1"
-                 label="&undoCmd.label;" command="cmd_undo"
+                 label="&undoCmd.label;" observes="cmd_undo"
                  tooltiptext="&undoCmd.label;"/>
 
   <toolbarbutton id="redoButton" class="toolbarbutton-1"
-                 label="&redoCmd.label;" command="cmd_redo"
+                 label="&redoCmd.label;" observes="cmd_redo"
                  tooltiptext="&redoCmd.label;"/>
 
   <toolbarbutton id="findButton" class="toolbarbutton-1"
                  label="&findToolbarCmd.label;" observes="cmd_find"
                  tooltiptext="&findToolbarCmd.tooltip;"/>
 
-  <toolbarbutton id="spellingButton" class="toolbarbutton-1" disabled="true"
+  <toolbarbutton id="spellcheckButton" class="toolbarbutton-1" 
                  label="&spellToolbarCmd.label;" observes="cmd_spelling"
                  tooltiptext="&spellToolbarCmd.tooltip;"/>
 
-  <toolbarbutton id="exporttexButton" class="toolbarbutton-1" observes=""
+  <toolbarbutton id="exporttexButton" class="toolbarbutton-1" observes="cmd_exportTeX"
                  tooltiptext="&exporttexToolbarButton.tooltip;" label="&exporttexToolbarButton.label;"/>
 
-  <toolbarbutton id="exportwebButton" class="toolbarbutton-1" observes=""
+  <toolbarbutton id="exportwebButton" class="toolbarbutton-1" observes="cmd_exportToWeb"
                  tooltiptext="&exportwebToolbarButton.tooltip;" label="&exportwebToolbarButton.label;"/>
 
-  <toolbarbutton id="importimageButton" class="toolbarbutton-1" observes=""
+  <toolbarbutton id="importimageButton" class="toolbarbutton-1" observes="cmd_image"
                  tooltiptext="&importimageToolbarButton.tooltip;" label="&importimageToolbarButton.label;"/>
 
-  <toolbarbutton id="importtexButton" class="toolbarbutton-1" observes=""
+  <toolbarbutton id="importtexButton" class="toolbarbutton-1" observes="cmd_openTeX"
                  tooltiptext="&importtexToolbarButton.tooltip;" label="&importtexToolbarButton.label;"/>
 
 	<textbox id="TextTagSelections" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
@@ -480,7 +477,7 @@
 		label="&frontmtagselect.label;"
     onfocus="this.select();"
     ontextentered="msiDoStatefulCommand('cmd_paratag',this.value);" />
-
+ -->
   <menu id="viewShowHide">
 <!-- the order here should match the order at the top of the screen -->
     <menupopup id="viewShowHidePopup">

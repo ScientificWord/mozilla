@@ -16,6 +16,7 @@
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
 <script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/>
+
 <!-- Perhaps the list of keys should be moved to content/xbl/builtin/xxxx/editor-base.inc -->
 
   <keyset id="editorKeys">  
@@ -108,7 +109,7 @@
     <command id="cmd_MSImathtext"   state="false"     oncommand="msiGoDoCommand('cmd_MSIinlineMathCmd')"/>
   </commandset>
 
- >
+
     
 
 
@@ -146,23 +147,23 @@
           <menuitem id="MSIinsertIndexEntry"         
             label="&MSIinsertIndexEntry.label;"         
             accesskey="&MSIinsertIndexEntry.accesskey;"         
-            command="cmd_MSIinsertIndexEntryCmd"/>
+            observes="cmd_MSIinsertIndexEntryCmd"/>
           <menuitem id="MSIinsertCrossReference"     
             label="&MSIinsertCrossReference.label;"     
             accesskey="&MSIinsertCrossReference.accesskey;"     
-            command="cmd_MSIinsertCrossReferenceCmd"/>
+            observes="cmd_MSIinsertCrossReferenceCmd"/>
           <menuitem id="MSIinsertCitation"           
             label="&MSIinsertCitation.label;"           
             accesskey="&MSIinsertCitation.accesskey;"           
-            command="cmd_MSIinsertCitationCmd"/>
+            observes="cmd_citation"/>
           <menuitem id="MSIinsertBibliography"       
             label="&MSIinsertBibliography.label;"       
             accesskey="&MSIinsertBibliography.accesskey;"       
-            command="cmd_MSIinsertBibliographyCmd"/>
+            observes="cmd_MSIinsertBibliographyCmd"/>
           <menuitem id="MSIinsertTeXField"           
             label="&MSIinsertTeXField.label;"           
             accesskey="&MSIinsertTeXField.accesskey;"           
-            command="cmd_MSIinsertTeXFieldCmd"/>
+            observes="cmd_MSIinsertTeXFieldCmd"/>
           <!--menuitem id="MSIinsertSubdocument"        
             label="&MSIinsertSubdocument.label;"        
             accesskey="&MSIinsertSubdocument.accesskey;"        

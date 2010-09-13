@@ -453,10 +453,6 @@
 
   <binding id="sidebarcontent">
 
-    <resources>
-      <stylesheet src="chrome://prince/skin/sidebarcontent.css"/>
-    </resources>
-
     <content>
       <xul:hbox align="center" class="titlebox" anonid="titlebox">
         <xul:label anonid="name" class="sidebarcontent-name"/>

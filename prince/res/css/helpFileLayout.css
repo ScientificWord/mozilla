@@ -75,7 +75,7 @@ a[href^="https://"]:after {
 :link:active, :link:active { color: #000; }
 
 
-*[class="showinvis"] sectiontitle:after {
+*[showinvis="true"] sectiontitle:after {
   content: "\B6";
   display: inline;
   font-family: Courier New;
@@ -222,7 +222,7 @@ para {
 }
 
 
-*[class="showinvis"] para:after {
+*[showinvis="true"] para:after {
   content: "\B6";
   display: inline;
   font-family: Courier New;
@@ -236,7 +236,7 @@ mathp {
   color: rgb(0,128,64);
 }
 
-*[class="showinvis"] mathp:after {
+*[showinvis="true"] mathp:after {
   content: "\B6";
   display: inline;
   font-family: Courier New;
@@ -270,7 +270,7 @@ title {
   text-align: center;
 }
 
-*[class="showinvis"] title:after {
+*[showinvis="true"] title:after {
   content: "\B6";
   display: inline;
   font-family: Courier New;
@@ -284,7 +284,7 @@ quote {
   margin-right: 20pt;
 }
 
-*[class="showinvis"] quote:after {
+*[showinvis="true"] quote:after {
   content: "\B6";
   display: inline;
   font-family: Courier New;
@@ -298,7 +298,7 @@ quotation {
   margin-right: 20pt;
 }
 
-*[class="showinvis"] quotation:after {
+*[showinvis="true"] quotation:after {
   content: "\B6";
   display: inline;
   font-family: Courier New;
