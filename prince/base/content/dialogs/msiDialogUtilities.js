@@ -664,12 +664,22 @@ function msiUnitsListbox(listBox, controlGroup, theUnitsList)
       return this.mUnitsList.convertUnits(valNumber, this.mCurrUnit, whichUnit);
     return valNumber;
   };
+
   this.getValueString = function(whichControl, whichUnit)
   {
     var valNumber = this.getValue(whichControl, whichUnit);
     if (!whichUnit)
       whichUnit = this.mCurrUnit;
     return (String(valNumber) + whichUnit);
+  };
+
+  this.setValue = function(whichControl, valueString)  //This call won't change the units!
+  {
+    var numAndUnit = this.mUnitsList.getNumberAndUnitFromString(valueString);
+    if (numAndUnit)
+      whichControl.value = this.mUnitsList.convertUnits(numAndUnit.number, numAndUnit.unit, this.mCurrUnit);
+    else
+      whichControl.value = "0";
   };
 }
 
@@ -785,4 +795,26 @@ function msiSetInitialDialogFocus(focusElement)
   if (focusElement.nodeName == "editor")
     focusElement.mbSetFocusOnStartup = true;
   focusElement.focus();
+}
+
+//This function extracts the message text from the file msiDialogs.properties. The paramsObj parameter, if supplied, should be an object
+//  of the type {param1 : paramVal1, param2 : paramVal2} where the various params appear as strings like %param1% in the message, and
+//  will be replaced by the values assigned in paramsObj.
+function msiPostDialogMessage(msgID, paramsObj)
+{
+  var strBundleService = Components.classes["@mozilla.org/intl/stringbundle;1"].getService(); 
+  strBundleService = strBundleService.QueryInterface(Components.interfaces.nsIStringBundleService);
+  var strBundle = strBundleService.createBundle("chrome://prince/locale/msiDialogs.properties"); 
+  var msgStr = strBundle.GetStringFromName(msgID);
+  if (msgStr)
+  {
+    if (paramsObj)
+    {
+      for (var aParam in paramsObj)
+      {
+        msgStr = msgStr.replace("%"+aParam+"%", paramsObj[aParam],"g");
+      }
+    }
+    AlertWithTitle("Error", msgStr);
+  }
 }
