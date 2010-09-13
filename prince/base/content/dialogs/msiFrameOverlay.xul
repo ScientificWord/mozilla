@@ -235,7 +235,6 @@
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
             onchange  = "update(this.id);"/>
-          </hbox>
         </row>
         <row>
           <label value="Border color"/>
