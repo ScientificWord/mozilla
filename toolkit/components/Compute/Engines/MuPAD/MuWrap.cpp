@@ -757,8 +757,8 @@ char *MuPADWrapper::ProcessSemNode(SEMANTICS_NODE * s_node,
       break;
 
     case SEM_TYP_PIECEWISE_FENCE:
-      TCI_ASSERT(!"PIECEWISE_FENCE not supported by MuPADWrapper::ProcessSemNode");
-      break;
+      //TCI_ASSERT(!"PIECEWISE_FENCE not supported by MuPADWrapper::ProcessSemNode");
+      //break;
 
     case SEM_TYP_PIECEWISE_LIST:
       rv = Piecewise2Estr(s_node, error_code);
@@ -5366,6 +5366,11 @@ char *MuPADWrapper::FUNCDEFtoEstr(SEMANTICS_NODE * s_funcdef,
       if (ptr) {
         int err_code = 0;
         var_list_str = LISTtoEstr(s_func, NULL, NULL, ",", NULL, err_code);
+
+        // jcs -- this is actually an error
+        if (!var_list_str)
+          var_list_str = "";
+
         if (err_code) {
           TCI_ASSERT(0);
           error_code = err_code;
