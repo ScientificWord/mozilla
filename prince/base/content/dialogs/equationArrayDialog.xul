@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+
+<!-- ***** BEGIN LICENSE BLOCK *****
+  Copyright 2006 MacKichan Software, Inc.
+ ***** END LICENSE BLOCK ***** -->
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
+
+<!--Following needed by any dialog which may contain "AdvancedEdit", "ChooseFile", "MakeRelative", or "LinkLocation" buttons-->
+<!-- ?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"? -->
+
+<!--Following needed by any dialog using commandsets defined there; generally by any dialog containing an editor-->
+<?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/ComputeOverlay.xul"?>
+<!-- If an editor control is to support context menus, also need: -->
+<?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
+
+<!--Following probably not needed by dialogs?-->
+<!-- ?xul-overlay href="chrome://prince/content/toolbarsOverlay.xul"? -->
+
+<!DOCTYPE dialog [
+<!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
+%editorDTD;
+<!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/equationArrayDialog.dtd" >
+%dialogDTD;
+<!ENTITY % menuOverlayDTD SYSTEM "chrome://prince/locale/menuOverlay.dtd" >
+%menuOverlayDTD;
+]>
+
+<dialog id="equationArrayDlg" title="&eqnArrayDialog.title;"
+   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+   persist="screenX screenY width height"
+   defaultbutton="accept"
+   buttons="accept,cancel"
+   onload = "Startup()"
+   ondialogaccept="return onAccept();"
+   height="270"
+   width="500">
+
+  <!-- Methods common to all editor dialogs -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
+
+  <!-- Scripts specific to this dialog -->
+  <script type="application/x-javascript" src="chrome://prince/content/equationArrayDialog.js"/>
+   
+  <!-- Following scripts are needed by any MSI dialog containing an editor -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
+  <!-- script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/ -->
+  <!-- script type="application/x-javascript" src="chrome://prince/content/ComputeOverlay.js"/ -->
+  <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
+  <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
+  <!-- Following script needed if the editor wants to support a toolbox? -->
+  <!-- script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/ -->
+
+  <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
+  <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/ -->
+
+  <popupset id="msiEditorContentContextSet"/>
+
+  <commandset id="tasksCommands">
+    <commandset id="globalEditMenuItems"/>
+    <commandset id="selectEditMenuItems"/>
+    <commandset id="undoEditMenuItems"/>
+    <commandset id="clipboardEditMenuItems"/>
+    <commandset id="composerMenuItems"/>
+    <commandset id="composerEditMenuItems"/>
+    <commandset id="composerStyleMenuItems"/>
+    <commandset id="composerTableMenuItems"/>
+    <commandset id="composerListMenuItems"/>
+    <command id="cmd_MSIComputeEval" oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
+    <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
+  </commandset>
+  <commandset id="MSImathMenuCommands"/>
+  
+  <keyset id="editorKeys">
+    <keyset id="tasksKeys"/>
+    <keyset id="MSIKeySet"/>
+    <key id="MSIevalKey" key="&MSIComputeEvalCmd.keybinding;" observes="cmd_MSIComputeEval"  modifiers="accel"  />        
+  </keyset>
+
+  <keyset>
+    <key id="sw.tab-key" keycode="VK_TAB" oncommand="msiTabForward(event);"/>
+    <key id="sw.shift-tab-key" keycode="VK_TAB" modifiers="shift" oncommand="msiTabBack(event);"/>
+    <key id="sw.accept-key" keycode="VK_ENTER" oncommand="doOKButton();"/>
+    <key id="sw.accept-key" keycode="VK_RETURN" oncommand="doOKButton();"/>
+  </keyset>
+
+  <hbox flex="1">
+    <vbox>
+      <hbox>
+        <label value="&lineNumber.label;" accesskey="&lineNumber.accesskey;" control="lineNumberBox"/>
+        <textbox id="lineNumberBox" type="number" style="width: 5em" onchange="lineNumberChanged();" />
+      </hbox>
+      <spacer class="spacer" flex="0"/>
+      <hbox>
+        <label value="&keyForLine.label;" accesskey="&keyForLine.accesskey;" control="keyForLineAutoCompleteBox"/>
+        <textbox id="keyForLineAutoCompleteBox" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
+          completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys"
+          tooltiptext="Enter a new key name"
+          onchange="lineMarkerChanged();" />
+      </hbox>
+
+      <groupbox>
+        <caption label="&numberingGroupbox.label;" />
+        <radiogroup id="lineNumberingRadioGroup" oncommand="checkEnableControls(this);">
+          <radio label="&numberingNone.label;" accesskey="&numberingNone.accesskey;" value="numberingNone" group="lineNumberingRadioGroup"/>
+          <radio label="&numberingAuto.label;" accesskey="&numberingAuto.accesskey;" value="numberingAuto" group="lineNumberingRadioGroup"/>
+          <hbox>
+            <radio label="&numberingCustom.label;" accesskey="&numberingCustom.accesskey;" value="numberingCustom" group="lineNumberingRadioGroup"/>
+            <checkbox id="suppressAnnotationCheckbox" label="&suppressAnnotationCheckbox.label;" accesskey="&suppressAnnotationCheckbox.accesskey;"/>
+          </hbox>
+        </radiogroup>
+        <textbox id="customLineLabel" />
+        <!-- groupbox flex="1" align="stretch" -->
+          <!--editor editortype="html" type="content" context="msiEditorContentContext" id="customLineLabel" flex="1" align="stretch"
+            minheight="60" minwidth="250" height="600px"/ -->
+        <!-- /groupbox -->
+      </groupbox>
+      <hbox>
+        <label value="&spaceAfterLine.label;" accesskey="&spaceAfterLine.accesskey;" control="spaceAfterLineBox" />
+        <textbox id="spaceAfterLineBox" type="number" decimalplaces="2" style="width: 5em" />
+        <menulist id="spaceAfterLineUnits" />
+      </hbox>
+      <groupbox>
+        <caption>
+          <checkbox id="enableSubeqNumberingCheckbox" label="&enableSubeqNumberingCheckbox.label;" accesskey="&enableSubeqNumberingCheckbox.accesskey;" oncommand="checkEnableControls(this);"/>
+        </caption>
+        <checkbox id="subequationContinuationCheckbox" label="&subequationContinuationCheckbox.label;" accesskey="&subequationContinuationCheckbox.accesskey;"/>
+        <label id="wholeDisplayKeyLabel" value="&keyForWholeDisplay.label;" accesskey="&keyForWholeDisplay.accesskey;" control="wholeDisplayKeyList" />
+        <textbox id="wholeDisplayKeyAutoCompleteBox" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
+          completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys"
+          tooltiptext="Enter a new key name"
+          onchange="wholeMarkerChanged();"  />
+      </groupbox>
+      <groupbox>
+        <caption>
+          <checkbox id="enableAlignmentCheckbox" label="&enableAlignmentCheckbox.label;" accesskey="&enableAlignmentCheckbox.accesskey;" oncommand="checkEnableControls(this);"/>
+        </caption>
+        <radiogroup id="alignmentRadioGroup">
+          <radio id="alignStandardRadio" label="&alignStandard.label;" accesskey="&alignStandard.accesskey;" value="alignStandard" group="alignmentRadioGroup"/>
+          <radio id="alignSingleEqnRadio" label="&alignSingleEqn.label;" accesskey="&alignSingleEqn.accesskey;" value="alignSingleEqn" group="alignmentRadioGroup"/>
+          <radio id="alignCenteredRadio" label="&alignCentered.label;" accesskey="&alignCentered.accesskey;" value="alignCentered" group="alignmentRadioGroup"/>
+        </radiogroup>
+      </groupbox>
+    </vbox>
+  </hbox>
+</dialog>
