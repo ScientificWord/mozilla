@@ -43,22 +43,15 @@
 var gDialog;
 var globalElement;
 Components.utils.import("resource://app/modules/unitHandler.jsm");
-//var imageUnitHandler = new UnitHandler();
 var frameTabDlg = new Object();
 
 var gConstrainWidth  = 0;
 var gConstrainHeight = 0;
 var imageElement;
-//var gImageMap = 0;
-//var gCanRemoveImageMap = false;
-//var gRemoveImageMap = false;
-//var gImageMapDisabled = false;
 var gActualWidth = "";
 var gActualHeight = "";
 var gOriginalSrc = "";
 var gHaveDocumentUrl = false;
-//var gTimerID;
-//var gValidateTab;
 
 // These must correspond to values in EditorDialog.css for each theme
 // (unfortunately, setting "style" attribute here doesn't work!)
@@ -72,10 +65,8 @@ var gFrameModeTextFrame = false;
 var gInsertNewImage;
 
 // dialog initialization code
-
 function Startup()
 {
-//  debugger;
   var editorElement = msiGetParentEditorElementForDialog(window);
   var editor = msiGetEditor(editorElement);
   if (!editor)
@@ -96,8 +87,6 @@ function Startup()
   gDialog.srcInput          = document.getElementById( "srcInput" );
   gDialog.relativeURL       = document.getElementById( "makeRelativeCheckbox" ).checked;
   gDialog.altTextInput      = document.getElementById( "altTextInput" );
- // frame and placement tabs
- // labeling tab
   gDialog.ImageHolder       = document.getElementById( "preview-image-holder" );
   gDialog.PreviewWidth      = document.getElementById( "PreviewWidth" );
   gDialog.PreviewHeight     = document.getElementById( "PreviewHeight" );
@@ -113,7 +102,6 @@ function Startup()
     imageElement = window.arguments[0];
   if (!imageElement)
   {
-    // First check for <input type="image">
     // Does this ever get run?
     try {
       imageElement = editor.getSelectedElement("input");
@@ -121,8 +109,6 @@ function Startup()
       if (!imageElement || imageElement.getAttribute("type") != "image") {
         // Get a single selected image element
         imageElement = editor.getSelectedElement(tagName);
-//        if (imageElement)
-//          gAnchorElement = editor.getElementOrParentByTagName("href", imageElement);
       }
     } catch (e) {}
 
@@ -159,9 +145,6 @@ function Startup()
       window.close();
       return;
     }
-    try {
-      gAnchorElement = editor.getSelectedElement("href");
-    } catch (e) {}
   }
 
   // Make a copy to use for AdvancedEdit
@@ -172,11 +155,6 @@ function Startup()
 
   initFrameTab(frameTabDlg, imageElement, gInsertNewImage);
   InitDialog();
-//  if (gAnchorElement)
-//    gOriginalHref = gAnchorElement.getAttribute("href");
-//  gDialog.hrefInput.value = gOriginalHref;
-
-//  FillLinkMenulist(gDialog.hrefInput, gHNodeArray);
   ChangeLinkLocation();
 
   // Save initial source URL
