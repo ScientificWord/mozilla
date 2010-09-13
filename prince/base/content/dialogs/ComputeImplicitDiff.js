@@ -28,6 +28,8 @@ function Startup(){
   editorInitializer.addEditorInfo(indEditor, theStringSource, true);
   editorInitializer.addEditorInfo(depEditor, theStringSource, true);
   editorInitializer.doInitialize();
+  msiSetEditorSinglePara(indEditor, true);
+  msiSetEditorSinglePara(depEditor, true);
 
 ////SLS the following copied from editor.js
 //  gSourceContentWindow = document.getElementById("content-frame");
