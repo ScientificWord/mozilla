@@ -2139,7 +2139,6 @@ BUCKET_REC* ArgsToBucket(MNODE* func_node, int& nodes_done, Analyzer* pAnalyzer)
   if (func_node && func_node->next) {
     MNODE* mml_rover = func_node->next;
 
-    bool found_ap = false;
 
     // step over any whitespace
     while (IsWhiteSpace(mml_rover)) {
@@ -2147,16 +2146,23 @@ BUCKET_REC* ArgsToBucket(MNODE* func_node, int& nodes_done, Analyzer* pAnalyzer)
       mml_rover = mml_rover->next;
     }
 
+    bool found_ap = false;  // Apply functrion
+    bool found_it = false;  // Invisible times
+
     // look for <mo>&ApplyFunction;</mo>  or invisible times
     if (mml_rover && ElementNameIs(mml_rover, "mo")) {
       U32 unicodes[8];
       int content_tally = ChData2Unicodes(mml_rover->p_chdata, unicodes, 8, pAnalyzer-> GetAnalyzerData() -> GetGrammar());
       if (content_tally == 1 && (unicodes[0] == 0x2061 || unicodes[0] == 0x2062) ) {
-        found_ap = true;
+        found_ap = (unicodes[0] == 0x2061);
+        found_it = (unicodes[0] == 0x2062);
         local_nodes_done++;
         mml_rover = mml_rover->next;
       }
     }
+
+    if (found_it) return NULL;
+
     // step over any whitespace
     while (IsWhiteSpace(mml_rover)) {
       local_nodes_done++;
@@ -2386,6 +2392,9 @@ SEMANTICS_NODE* GetSemanticsList(MNODE* dMML_list,
               l_nodes_done--;
             }
 		} else {
+          if (ContentIs(mo, "&#x2062;")) {
+             int break_here = 14;
+          }
 
           SEMANTICS_NODE* l_operand = NULL;
           SEMANTICS_NODE* r_operand = NULL;
