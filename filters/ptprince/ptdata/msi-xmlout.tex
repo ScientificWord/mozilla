@@ -998,7 +998,8 @@
 
 
 \def\out@hyperref#1#2#3#4{%
-   \msiopentag{<a href="#4">}#1\msiclosetag{</a>}%
+   %\msiopentag{<a href="#4">}#1\msiclosetag{</a>}%
+   \msiopentag{a}{<a href="#4">}#1\msiclosetag{a}{</a>}%
 }
 
 \newif\if@in@texttag
