@@ -93,6 +93,7 @@
 		<command id="cmd_MSIreviseOperatorsCmd"     oncommand="msiGoDoCommand('cmd_MSIreviseOperatorsCmd')"/>
 		<command id="cmd_MSIreviseDecorationsCmd"   oncommand="msiGoDoCommand('cmd_MSIreviseDecorationsCmd')"/>
     <command id="cmd_MSIreviseUnitsCommand"     oncommand="msiGoDoCommand('cmd_MSIreviseUnitsCommand')"/>
+    <command id="cmd_MSIreviseEqnArrayCommand"  oncommand="msiGoDoCommand('cmd_MSIreviseEqnArrayCommand')"/>
   </commandset>
 
   <commandset id="MSImathMatrixCommands"
