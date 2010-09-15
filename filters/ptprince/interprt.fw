@@ -31,6 +31,7 @@ Here are some variables global to the interpretter
 //static CommandCode curcmd;
 //static Primitive* curcmddata;
 extern const char* s_outputdir;
+extern const char* s_inputdir;
 @}
 
 
@@ -899,7 +900,7 @@ case CMD_TAG : {
    Typesetter::AppendTag(pTL);
    break;
 }
-@}
+@}                                   
 
 @$@<Misc commands@>+=@{@-
 case CMD_MSIHMODE : {
@@ -1417,12 +1418,54 @@ case CMD_EXTENSION: {
       };
 
       case EXT_GRAPHIC_NAME: {
+         std::string graphic;
          LOG("\n----Graphic name");
-         TokenList* pTL = new TokenList;
-         ScanTokenList(pTL, true);
-         LOG("\n---- the graphic name tokens are: " << *pTL);
-         if (s_outputdir)
-            LOG("\n---- and outputdir = " << s_outputdir);
+         Filename fn;
+         @<Scan filename@>
+         const char* fullname = fn.GetFullName();
+         LOG("\n---- the graphic name is: " << fullname);
+         if (fullname[0] == '.'){
+           // relative path?
+           graphic = s_inputdir;
+           graphic += "\\";
+           graphic += fullname;
+           LOG("\n---- Copy " << graphic.c_str());
+         } else {
+           // Absolute path
+           graphic = fullname;
+         }
+         
+         std::string targetdir = s_outputdir;
+         targetdir += "\\graphics\\";
+
+         std::string target = targetdir;
+         target += fn.GetNameString();
+         target += ".";
+         target += fn.GetExtString();
+
+         Typesetter::AppendTag(target.c_str());
+
+         LOG("\n---- To " << target.c_str());
+
+         // Copy the file
+
+         FILE* graphfile = fopen(graphic.c_str(), "rb");
+         FILE* targetfile = fopen(target.c_str(), "wb");
+
+         if (graphfile && targetfile){
+             LOG("\n---- Files Open");
+             int ch = fgetc(graphfile);
+             while (ch != EOF){
+                fputc(ch, targetfile);
+                ch = fgetc(graphfile);
+             }              
+         }
+
+         if (graphfile) fclose(graphfile);
+         if (targetfile) fclose(targetfile);
+
+
+
          break;
       };
 
