@@ -8887,8 +8887,11 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
       editorElement = findEditorElementForDocument(element.ownerDocument);
 
     var elementName = element.localName;
-    if (elementName == "object")
+    if (elementName == "object" && !element.hasAttribute("msigraph"))
+    { // if this is one of our graphics objects ...
+      openObjectTagDialog(elementName, element);
       elementName = element.parentNode.localName;
+    }
     else if (elementName == "notewrapper")
     {
       element = element.getElementsByTagName("note")[0];
@@ -8904,16 +8907,23 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     }
     else if (elementName == "texb")
     {
-      msiDoAdvancedProperties(element, editorElement);
-    }
-    else if (elementName == "subdoc")
-    {
-      var nextvalue = (element.getAttribute("open") ==="true")?"false":"true";
-      element.setAttribute("open",nextvalue);
+      openTeXButtonDialog('texb', element);
     }
     else if (elementName == "msiframe")
     {
       msiFrame(element,editorElement);
+    }
+    else if (elementName == "otfont")
+    {
+      openOTFontDialog(elementName,element);
+    }
+    else if (elementName == "fontcolor")
+    {
+      openFontColorDialog(elementName,element);
+    }
+    else if (elementName == "fontsize")
+    {
+      openFontSizeDialog(elementName,element);
     }
     else if ((elementName == "img") || (elementName=="graph") || elementName=="plotwrapper")
     {
@@ -8943,10 +8953,6 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
       if (!("graphClickEvent" in theWindow))
         theWindow = msiGetTopLevelWindow(window);
       theWindow.graphObjectClickEvent(cmdstr, editorElement);
-    }
-    else if (element.localName == "object")
-    {
-      msiGoDoCommand("cmd_image", editorElement);
     }
     else
     {
