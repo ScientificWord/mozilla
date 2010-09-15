@@ -4731,6 +4731,7 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
 ////        scriptStr = "msiEditorTableCellProperties(editorElement)";
 //        commandStr = "cmd_editTable";
 //        break;
+      case "th":
       case "thead":
       case "tbody":
       case "tfoot":
@@ -4741,6 +4742,17 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
       case "mtd":
         propsData = new msiTablePropertiesObjectData();
         propsData.initFromNode(coreElement, editorElement);
+        var tableParent = msiGetContainingTableOrMatrix(coreElement);
+        if (msiNavigationUtils.isEquationArray(editorElement, tableParent))
+        {
+          propsData = new msiEquationPropertiesObjectData();
+          propsData.initFromNode(coreElement, editorElement);
+        }
+        else
+        {
+          propsData = new msiTablePropertiesObjectData();
+          propsData.initFromNode(coreElement, editorElement);
+        }
       break;
 
       case "ol":
@@ -4947,6 +4959,10 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
         }
       break;
 
+      case 'msidisplay':
+        propsData = new msiEquationPropertiesObjectData();
+        propsData.initFromNode(coreElement, editorElement);
+      break;
     }
 
     if (!objStr && !propsData)
