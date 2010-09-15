@@ -89,6 +89,7 @@
   <commandset id="MSImathMenuCommands"/>
   <keyset id="editorKeys">
     <keyset id="MSIKeySet"/>
+    <keyset id="MSIEditorKeys"/>
   </keyset>
 
   <!-- toolbox class="toolbox-top" id="EditorToolbox" mode="icons">
