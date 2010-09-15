@@ -517,12 +517,13 @@
 %%%jcs  \egroup
 %%%jcs }%
 
-\def\msi@getfilename#1filename#2;#3XXXXX{#2}
+\def\msi@getfilename#1filename#2'#3';#4XXXXX{#3}
 
 
-\def\msi@special#1{%
-   \expandafter\msigraphicname\expandafter{\msi@getfilename#1XXXXX}%
-   %\msihmode\msitag{<img src=}\msi@getfilename#1XXXXX\msitag{/>}
+\def\special#1{%
+   \msihmode\msitag{<img src=}%
+      "\expandafter{\expandafter\msigraphicname\msi@getfilename#1XXXXX}"%
+   \msitag{/>}
 }
 
 
@@ -531,16 +532,14 @@
    \@temptokenb={Plot}
    \if\@temptokena\@temptokenb
       \begingroup
-        \let\special\msi@special
         #8
       \endgroup
-      \msitag{<img src="zfoo.png" style="width: #2; height: #3" alt="plot"/>}
+      %\msitag{<img src="zfoo.png" style="width: #2; height: #3" alt="plot"/>}
    \else
-       \msitag{<img src="zfoo.png" style="width: #2; height: #3" alt="graphic"/>}
-     %\begingroup
-     %  \let\special\msi@special
-     %  #8
-     %\endgroup
+      \begingroup
+        #8
+      \endgroup
+      %\msitag{<img src="zfoo.png" style="width: #2; height: #3" alt="graphic"/>}
    \fi
 }%
 
