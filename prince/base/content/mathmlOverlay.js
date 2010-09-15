@@ -2531,8 +2531,8 @@ function doColorsDlg(editorElement)
     if (editorElement.mgMathStyleSheet != null)
     {
       editor.removeOverrideStyleSheet(editorElement.mgMathStyleSheet);
-      editorElement.mgMathStyleSheet = msiColorObj.FormatStyleSheet(editorElement);
-      editor.addOverrideStyleSheet(editorElement.mgMathStyleSheet);
+//      editorElement.mgMathStyleSheet = msiColorObj.FormatStyleSheet(editorElement);
+//      editor.addOverrideStyleSheet(editorElement.mgMathStyleSheet);
     }
     else
     {
