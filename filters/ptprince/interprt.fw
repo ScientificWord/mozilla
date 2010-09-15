@@ -1319,7 +1319,8 @@ enum ExtCode{
    EXT_WRITE,
    EXT_OPENOUT,
    EXT_CLOSEOUT,
-   EXT_EXTPROC};
+   EXT_EXTPROC,
+   EXT_GRAPHIC_NAME};
 @}
 
 \noseealso
@@ -1329,6 +1330,7 @@ NewPrimitive("write", CMD_EXTENSION, false, EXT_WRITE);
 NewPrimitive("openout", CMD_EXTENSION, false, EXT_OPENOUT);
 NewPrimitive("closeout", CMD_EXTENSION, false, EXT_CLOSEOUT);
 NewPrimitive("msiextproc", CMD_EXTENSION, false, EXT_EXTPROC);
+NewPrimitive("msigraphicname", CMD_EXTENSION, false, EXT_GRAPHIC_NAME);
 @}
 
 
@@ -1410,6 +1412,14 @@ case CMD_EXTENSION: {
          Typesetter::AppendTag(tl);
          //EndLevel();
          Typesetter::EndProcess();
+         break;
+      };
+
+      case EXT_GRAPHIC_NAME: {
+         LOG("\n----Graphic name");
+         TokenList* pTL = new TokenList;
+         ScanTokenList(pTL, true);
+         LOG("\n---- the graphic name tokens are: " << *pTL);
          break;
       };
 
