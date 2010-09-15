@@ -1,59 +1,99 @@
 <?xml version="1.0"?>
-<!-- Copyright (c) 2007 MacKichan Software, Inc.  All Rights Reserved. -->
+<!-- ***** BEGIN LICENSE BLOCK *****
+   - Version: MPL 1.1/GPL 2.0/LGPL 2.1
+   -
+   - The contents of this file are subject to the Mozilla Public License Version
+   - 1.1 (the "License"); you may not use this file except in compliance with
+   - the License. You may obtain a copy of the License at
+   - http://www.mozilla.org/MPL/
+   -
+   - Software distributed under the License is distributed on an "AS IS" basis,
+   - WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+   - for the specific language governing rights and limitations under the
+   - License.
+   -
+   - The Original Code is Mozilla Communicator client code, released
+   - March 31, 1998.
+   -
+   - The Initial Developer of the Original Code is
+   - Netscape Communications Corporation.
+   - Portions created by the Initial Developer are Copyright (C) 1998-1999
+   - the Initial Developer. All Rights Reserved.
+   -
+   - Contributor(s):
+   -
+   - Alternatively, the contents of this file may be used under the terms of
+   - either of the GNU General Public License Version 2 or later (the "GPL"),
+   - or the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+   - in which case the provisions of the GPL or the LGPL are applicable instead
+   - of those above. If you wish to allow use of your version of this file only
+   - under the terms of either the GPL or the LGPL, and not to allow others to
+   - use your version of this file under the terms of the MPL, indicate your
+   - decision by deleting the provisions above and replace them with the notice
+   - and other provisions required by the GPL or the LGPL. If you do not delete
+   - the provisions above, a recipient may use your version of this file under
+   - the terms of any one of the MPL, the GPL or the LGPL.
+   -
+   - ***** END LICENSE BLOCK ***** -->
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
-<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
 
-<?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
-
-<!DOCTYPE dialog [
-<!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/otfont.dtd" >
-%dialogDTD;
-]>
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/edcolorpicker.dtd">
 
 <dialog title="&windowTitle.label;"
-    id="colorDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-    onload = "return startup();"
+    onload="Startup()"
     ondialogaccept="return onAccept();"
-    ondialogcancel="return onCancel();"
-    buttons="apply,accept,cancel" 
-    width="300px" height="200px"
-    persist="screenX screenY width height">
+    ondialogcancel="return onCancelColor();">
 
-  <!-- Following scripts are needed by any MSI dialog brought up by an editor -->
-  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/otfont.js"/>
-  <label>Generally you should use the tags such as emph, sf, large, and small to change font characteristics. Use this dialog sparingly.</label>
-  <menulist id="otfontlist" oncommand="">
-    <menupopup id="systemfontlist">
-      <menuitem id="otfont.instruction" label="(Select a font)"/>
-    </menupopup>
-  </menulist>
-  <label value="Advanced"/>
-  <textbox id="otfont.advanced" />
-  <!-- hbox>
-    <vbox>
-      <label>Font size</label>
-      <textbox id="otfont.fontsize" style="width: 3.5em" onkeypress="handleChar(event,this);"
-       max="200" min="5" increment="1" tooltip="The size of the font"/>
-    </vbox>
-    <vbox align="center">
-     <label>Units</label>
-     <menulist id="otfont.units"  
-            oncommand="switchUnits();"  >
-       <menupopup>
-         <menuitem id="otfont.pt" label="pt" value="pt"/>
-         <menuitem id="otfont.cm" label="cm" value="cm"/>
-         <menuitem id="otfont.mm" label="mm" value="mm"/>
-         <menuitem id="otfont.inch" label="in" value="in"/>
-       </menupopup>
-     </menulist>
-     <hbox flex="1"/>
-    </vbox>
-  </hbox -->
-    
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/color.js"/>
+
+  <broadcaster id="args" value=""/>
+  <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
+
+  <hbox id="TableOrCellGroup" align="center" collapsed="true">
+    <label control="CellOrTableGroup" value="&background.label;" accesskey="&background.accesskey;"/>
+    <radiogroup id="CellOrTableGroup" orient="horizontal">
+      <radio id="TableRadio" label="&table.label;" accesskey="&table.accesskey;"/>
+      <radio id="CellRadio"  label="&cell.label;"  accesskey="&cell.accesskey;"/>
+  </radiogroup>
+  </hbox>
+  <colorpicker id="ColorPicker" palettename="standard" 
+    persist="palettename"
+    onclick="SetDefaultToOk();"
+    ondblclick="if (onAccept()) window.close();"
+    onkeypress="SelectColorByKeypress(event);"
+    onselect="SelectColor();"/>
+<!-- Web palette is not implemented???
+  <hbox align="center">
+    <label value="&palette.label;"/>
+    <radio id="StandardPalette" label="&standardPalette.label;" oncommand="ChangePalette('standard')"/>
+    <radio id="WebPalette" label="&webPalette.label;" oncommand="ChangePalette('web')"/>
+  </hbox>
+-->
+  <spacer class="spacer"/>
+  <vbox flex="1">
+    <button id="LastPickedButton" crop="right" oncommand="SelectLastPickedColor();">
+      <spacer id="LastPickedColor"
+                  LastTextColor="" LastBackgroundColor=""
+                  persist="LastTextColor LastBackgroundColor"/>
+      <label value="&lastPickedColor.label;" accesskey="&lastPickedColor.accesskey;" flex="1" style="text-align: center;"/>
+    </button>
+    <label value="&setColor1.label;"/>
+    <label value="&setColor2.label;" accesskey="&setColor2.accesskey;" control="ColorInput"/>
+    <label value="&setColorExample.label;"/>
+    <hbox align="center" flex="1=">
+      <textbox id="ColorInput" style="width: 8em" oninput="SetColorSwatch(); SetDefaultToOk();"/>
+      <spacer flex="1"/>
+      <spacer id="ColorPickerSwatch"/>
+      <spacer flex="1"/>
+      <button id="DefaultColorButton" label="&default.label;" accesskey="&default.accesskey;"
+        style="margin-right:0px;" oncommand="RemoveColor()"/>
+    </hbox>
+  </vbox>
+  <separator class="groove"/>
 </dialog>

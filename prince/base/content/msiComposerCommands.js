@@ -3452,8 +3452,8 @@ var msiFontColor =
 //    var htmleditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
     var colorObj = { NoDefault:true, Type:"Font", TextColor:"black", PageColor:0, Cancel:false };
 
-    window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "resizable=yes, chrome,close,titlebar,modal", 
-    "", colorObj);
+    window.openDialog("chrome://prince/content/color.xul", "colorpicker", "resizable=yes, chrome,close,titlebar,modal", 
+    "", colorObj, null);
 
     // User canceled the dialog
     if (colorObj.Cancel)
