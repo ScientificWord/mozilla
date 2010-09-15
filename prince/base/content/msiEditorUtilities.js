@@ -5668,6 +5668,7 @@ function msiMathUnitsList()
   };
 }
 
+
 var msiAutosubstitutionList = 
 {
 
@@ -5787,6 +5788,440 @@ var msiAutosubstitutionList =
   }
 
 };
+
+var msiSearchStringManager = 
+{
+  mDocumentArrays : null,
+  baseString : "",
+
+  getSearchStringArrayRecordByName : function(aDocument, aName)
+  {
+    return this.getSearchStringArrayRecordImp(aDocument, {mString : aName});
+  },
+
+  getSearchStringArrayRecordForControl : function(aControl)  //Here as below, "aControl" is most likely a dialog window, but...
+  {
+    var topEditorElement = msiGetTopLevelEditorElement(aControl);
+    var topEditor = msiGetEditor(topEditorElement);
+    var aSubIdent = {mControl : aControl};
+    return this.getSearchStringArrayRecordImp(topEditor.document, aSubIdent);
+  },
+
+  getSearchStringIDByName : function(aDocument, aName)
+  {
+    var aRecord = this.getSearchStringArrayRecordByName(aDocument, aName);
+    return aRecord.mKey;
+  },
+
+  getSearchStringIDForControl : function(aControl)
+  {
+    var aRecord = this.getSearchStringArrayRecordForControl(aControl);
+    return aRecord.mKey;
+  },
+
+  removeSearchStringArrayRecord : function(aRecord)
+  {
+    var theDocRecord = this.getRecordForDocument(aRecord.mDocument);
+    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+    ACSA.resetArray(aRecord.mKey);
+    var jx = theDocRecord.mStringArrays.indexOf(aRecord);
+    if (jx >= 0)
+      theDocRecord.mStringArrays.splice(jx, 1);
+    if (!theDocRecord.mStringArrays.length)
+      removeDocumentRecord(theDocRecord.mKey);
+  },
+
+  removeDocumentRecord : function(docKey)
+  {
+    delete this.mDocumentArrays[aRec];
+  },
+
+//Internal implementation
+  getSearchStringArrayRecordImp : function(aDocument, aSubIdent)
+  {
+    var docRecord = this.getRecordForDocument(aDocument);
+    var controlRecord = null;
+    if (docRecord)
+    {
+      for (var ix = 0; ix < docRecord.mStringArrays.length; ++ix)
+      {
+        if (this.equalSubIdents(docRecord.mStringArrays[ix].mIdent, aSubIdent))
+        {
+          controlRecord = docRecord.mStringArrays[ix];
+          break;
+        }
+      }
+      if (!controlRecord)
+        controlRecord = this.addSearchStringArrayRecordImp(docRecord, aSubIdent);
+    }
+    return controlRecord;
+  },
+
+  addSearchStringArrayRecordImp : function(aDocRecord, aSubIdent)
+  {
+    var theBaseString = this.baseString.concat("-", aDocRecord.mKey);
+    var subIdentStr = this.getSubIdentBaseString(aSubIdent);
+    theBaseString = theBaseString.concat("-", subIdentStr);
+    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+    var theString = theBaseString;
+    var nSize = ACSA.sizeofArray(theString);
+    for (var jj=0; (jj < 100) && (nSize >= 0); ++jj)
+    {
+      theString = theBaseString + String(jj);
+      nSize = ACSA.sizeofArray(theString);
+    }
+    if (nSize >= 0)
+    {
+      dump("Problem adding record to msiSearchStringManager for document [" + theTitle + "]\n");
+      var theDate = new Date();
+      theString = theBaseString + theDate.toString();
+    }
+    return {mIdent : aSubIdent, mKey : theString, mDocument : aDocRecord.mDocument};
+  },
+
+  getSubIdentBaseString : function(aSubIdent)
+  {
+    if ("mString" in aSubIdent)
+      return aSubIdent.mString;
+    var retStr = "";
+    if ("mControl" in aSubIdent)
+    {
+      var controlStr = null;
+      if ("title" in aSubIdent.mControl)
+        controlStr = aSubIdent.mControl.title;
+      if ((!controlStr || !controlStr.length) && ("id" in aSubIdent.mControl))
+        controlStr = aSubIdent.mControl.id;
+      if ((!controlStr || !controlStr.length) && ("nodeName" in aSubIdent.mControl))
+        controlStr = aSubIdent.mControl.nodeName;
+      if (controlStr)
+        retStr = ReplaceWhitespace(controlStr, "");
+    }
+    return retStr;
+  },
+
+  equalSubIdents : function(firstIdent, secondIdent)
+  {
+    if ( ("mString" in firstIdent) && ("mString" in secondIdent) )
+      return (!firstIdent.mString.localeCompare(secondIdent.mString));
+    else if ( ("mControl" in firstIdent) && ("mControl" in secondIdent) )
+      return firstIdent.mControl == secondIdent.mControl;
+    return false;
+  },
+
+  addDocumentRecord : function(aDocument)
+  {
+    var theTitle = aDocument.title;
+    var theString = "Unnamed";
+    if (theTitle && theTitle.length)
+    {
+      theTitle = ReplaceWhitespace(theTitle, "");
+      if (theTitle.length > 12)
+        theString = theTitle.substr(0, 12);
+      else
+        theString = theTitle;
+    }
+    var baseString = theString;
+    
+    for (var ix = 0; (ix < 1000) && (theString in this.mDocumentArrays); ++ix)
+    {
+      theString = baseString + String(++ix);
+    }
+    if (ix == 1000)
+    {
+      dump("Problem adding record to msiSearchStringManager for document [" + theTitle + "]\n");
+      return null;
+    }
+    this.mDocumentArrays[theString] = {mKey : theString, mDocument : aDocument, mStringArrays : []};
+    return theString;
+  },
+
+  getRecordForDocument : function(aDocument)
+  {
+    var docRecord = this.findRecordForDocument(aDocument);
+    if (!docRecord)
+    {
+      var docRecordKey = this.addDocumentRecord(aDocument);
+      if (docRecordKey)
+        docRecord = this.mDocumentArrays[docRecordKey];
+    }
+    return docRecord;
+  },
+
+  findRecordForDocument : function(aDocument)
+  {
+    var retVal = null;
+    for (var aRec in this.mDocumentArrays)
+    {
+      if (this.mDocumentArrays[aRec].mDocument == aDocument)
+      {
+        retVal = this.mDocumentArrays[aRec];
+        break;
+      }
+    }
+    return retVal;
+  }
+
+};
+
+var xsltSheetForKeyAttrib = "<?xml version='1.0'?><xsl:stylesheet version='1.1' xmlns:xsl='http://www.w3.org/1999/XSL/Transform' xmlns:html='http://www.w3.org/1999/xhtml' ><xsl:output method='text' encoding='UTF-8'/> <xsl:template match='/'>  <xsl:apply-templates select='//*[@key]'/></xsl:template><xsl:template match='//*[@key]'>   <xsl:value-of select='@key'/><xsl:text> </xsl:text></xsl:template> </xsl:stylesheet>";
+
+var msiKeyListManager =
+{
+  baseString : "keys",
+  mXPathStr : xsltSheetForKeyAttrib,
+  mDocumentArrays : new Object(),
+
+  checkChangesAgainstDocument : function(aControlRecord, addStringsArray, deleteStringsArray)
+  {
+//    var aControlRecord = this.getSearchStringArrayRecordForControl(aControl);
+    var currDocKeys = this.getMarkerStringList(aControlRecord.mDocument, true);
+    var duplicateArray = [];
+    for (var ix = 0; ix < addStringsArray; ++ix)
+    {
+      if (currDocKeys.indexOf(addStringsArray[ix]) >= 0)
+        duplicateArray.push(addStringsArray[ix]);
+    }
+    return duplicateArray;
+  },
+
+  initMarkerListForControl : function(aControl, bForce)
+  {
+    var aControlRecord = this.getSearchStringArrayRecordForControl(aControl);
+    return this.initMarkerList(aControlRecord, bForce);
+  },
+
+  initMarkerList : function(aControlRecord, bForce)
+  {
+    var retVal = false;
+    try
+    {
+      var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+      ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+      var currDocKeys = this.getMarkerStringList(aControlRecord.mDocument, bForce);
+      for (var ix = 0; ix < currDocKeys.length; ++ix)
+      {
+        if (currDocKeys[ix].length > 0)
+          ACSA.addString(aControlRecord.mKey, currDocKeys[ix]);
+      }
+      retVal = true;
+    }
+    catch(exc) {dump("Exception in msiKeyListManager.initMarkerList! Error is [" + exc + "]\n");}
+    return retVal;
+  },
+
+  resetMarkerListForControl : function(aControl, bForce) 
+  {
+    var aControlRecord = this.getSearchStringArrayRecordForControl(aControl);
+    return this.resetMarkerList(aControlRecord, bForce);
+  },
+
+  resetMarkerList : function(aControlRecord, bForce)
+  {
+    try
+    {
+      if (aControlRecord)
+      {
+        var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+        ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+        ACSA.resetArray(aControlRecord.mKey);
+        return this.initMarkerList(aControlRecord, bForce);
+      }
+    }
+    catch(exc) {dump("Exception in msiKeyListManager.resetMarkerList! Error is [" + exc + "]\n");}
+    return false;
+  },
+
+  getMarkerStringList : function(aDocument, bForce)
+  {
+    
+    var docRecord = this.getRecordForDocument(aDocument);
+    return this.updateMarkerList(docRecord, bForce);
+  },
+
+  updateMarkerList : function(aDocRecord, bForce)
+  {
+    if (bForce || this.needsMarkerListRefresh(aDocRecord))
+    {
+      aDocRecord.markerList = msiGetKeyListForDocument(aDocRecord.mDocument);
+      aDocRecord.bDocModified = false;
+    }
+    return aDocRecord.markerList;
+  },
+
+  needsMarkerListRefresh : function(aDocRecord)
+  {
+    if (("markerList" in aDocRecord)  && ("bDocModified" in aDocRecord) && (!aDocRecord.bDocModified))
+      return false;
+    return true;
+  }
+};
+
+msiKeyListManager.__proto__ = msiSearchStringManager;
+
+//Initialization code modified from Barry's initial code in msiEdImageProps.js
+function msiMarkerList(aControl) 
+{
+  this.mControl = aControl;
+  this.mKeyListManagerRecord = msiKeyListManager.getSearchStringArrayRecordForControl(aControl);
+  this.mbInitialized = msiKeyListManager.initMarkerList(this.mKeyListManagerRecord);
+  this.mAddedElements = [];
+  this.mDeletedElements = [];
+}
+
+msiMarkerList.prototype =
+{
+//  mbInitialized : false,
+//  mDocument : null,
+//  mKeyListManagerRecord : null,
+
+//  setForDocument : function(aDocument)
+//  {
+//    mDocument = aDocument;
+//    this.resetList();
+//  },
+
+  checkAllChanges : function()
+  {
+    return msiKeyListManager.checkChangesAgainstDocument(this.mKeyListManagerRecord, this.mAddedElements, this.mDeletedElements);
+  },
+
+  checkChanges : function(addedStringArray, deletedStringArray)
+  {
+    return msiKeyListManager.checkChangesAgainstDocument(this.mKeyListManagerRecord, addedStringArray, deletedStringArray);
+  },
+
+  resetList : function(bForce)
+  {
+    return msiKeyListManager.resetMarkerList(this.mKeyListManagerRecord);
+//    var aDocument = this.getDocument();
+//    if (!aDocument)
+//    {
+//      dump("In msiEditorUtilities.js, msiMarkerList.resetList() called with no current document! Returning...\n");
+//      return;
+//    }
+//    var keyStrings = msiGetKeyListForDocument(aDocument);
+//    var ourKey = this.getIndexString();
+//    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+//    var ourKey = this.getIndexString();
+//    ACSA.resetArray(ourKey);
+//    for (i=0, len=keyStrings.length; i<len; i++)
+//    {
+//      if (keyStrings[i].length > 0) 
+//        ACSA.addString(ourKey, keyStrings[i]);
+//    }
+  },
+
+//  getMarkerList : function(aDocument)
+//  {
+//    if (this.mDocument != aDocument)
+//      this.setForDocument(aDocument);
+//  },
+
+  getIndexString : function()
+  {
+    if (this.mKeyListManagerRecord)
+      return this.mKeyListManagerRecord.mKey;
+    return "";
+  },
+
+  getDocument : function()
+  {
+    if (this.mKeyListManagerRecord)
+      return this.mKeyListManagerRecord.mDocument;
+    return null;
+  },
+
+//  getMarkerListForEditorElement : function(editorElement)
+//  {
+//    if (!editorElement)
+//      editorElement = msiGetActiveEditorElement();
+//    var editor = msiGetEditor(editorElement);
+//    if (!editor)
+//    {
+//      dump("In msiEditorUtilities.js, msiMarkerList.getMarkerListForEditorElement() called with no active editor! Returning...\n");
+//      return;
+//    }
+//    this.getMarkerList(editor.document);
+//  },
+
+  addString : function(aString)
+  {
+    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+    var retVal = ACSA.addString( this.getIndexString(), aString);
+    if (retVal)
+    {
+      var ix = this.mDeletedElements.indexOf(aString);
+      if (ix >= 0)
+        this.mDeletedElements.splice(ix, 1);
+      else
+        this.mAddedElements.push(aString);
+    }
+    return retVal;
+  },
+
+  deleteString : function(aString)
+  {
+    var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+    ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+    var retVal = ACSA.deleteString( this.getIndexString(), aString);
+    if (retVal)
+    {
+      var ix = this.mAddedElements.indexOf(aString);
+      if (ix >= 0)
+        this.mAddedElements.splice(ix, 1);
+      else
+        this.mDeletedElements.push(aString);
+    }
+    return retVal;
+  },
+
+  changeString : function(oldString, newString)
+  {
+    var retVal = true;
+    if (oldString)
+      retVal = this.deleteString(oldString);
+    if (newString)
+      retVal = this.addString(newString) && retVal;  //Anti-lazy evaluation!
+    return retVal;
+  },
+
+  detach : function()
+  {
+    msiKeyListManager.removeSearchStringArrayRecord(this.mKeyListManagerRecord);
+    this.mbInitialized = false;
+    this.mKeyListManagerRecord = null;
+  }
+};
+
+function msiGetKeyListForDocument(aDocument)
+{
+  var parser = new DOMParser();
+  var dom = parser.parseFromString(xsltSheetForKeyAttrib, "text/xml");
+  dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" + dom.documentElement.textContents : dom.documentElement.nodeName);
+  var processor = new XSLTProcessor();
+  processor.importStylesheet(dom.documentElement);
+  var newDoc;
+  if (aDocument)
+    newDoc = processor.transformToDocument(aDocument, document);
+  dump(newDoc.documentElement.localName+"\n");
+  var keyString = newDoc.documentElement.textContent;
+  var keys = keyString.split(/\n+/);
+  var i;
+  var len;
+  keys.sort();
+  var lastkey = "";
+  for (i=keys.length-1; i >= 0; i--)
+  {
+    if (keys[i] == "" || keys[i] == lastkey) keys.splice(i,1);
+    else lastkey = keys[i];
+  }  
+  dump("Keys are : "+keys.join()+"\n");    
+  return keys;
+}
 
 
 /**************************msiNavigationUtils**********************/
