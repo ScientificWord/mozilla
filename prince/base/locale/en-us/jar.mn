@@ -100,5 +100,4 @@ en-US.jar:
   locale/msiEdReviseChars.dtd			  (dialogs/msiEdReviseChars.dtd)
   locale/EditorLinkProperties.dtd			  (dialogs/EditorLinkProperties.dtd)
   locale/MatrixInsertRowsCols.dtd		  (dialogs/MatrixInsertRowsCols.dtd)
-
-
+  locale/equationArrayDialog.dtd		  (dialogs/equationArrayDialog.dtd)
