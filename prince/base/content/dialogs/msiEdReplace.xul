@@ -129,6 +129,8 @@
                   accesskey="&wrapCheckbox.accesskey;"/>
               <checkbox id="dialog.searchBackwards" label="&backwardsCheckbox.label;" 
                   accesskey="&backwardsCheckbox.accesskey;"/>
+              <!-- checkbox id="multiParaCheckbox" label="&multiParaCheckbox.label;" 
+                  accesskey="&multiParaCheckbox.accesskey;" oncommand="toggleMultiPara();" / -->
             </vbox>
           </row>
         </rows>
