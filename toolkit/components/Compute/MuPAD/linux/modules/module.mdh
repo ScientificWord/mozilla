@@ -1,0 +1,315 @@
+MODULE
+  module - Library for Extended Module Management
+
+INTRODUCTION
+  This library provides functions for an extended module management and
+  also includes a function  for reading plain text online documentation
+  files of dynamic modules.This library package uses the dynamic module
+  ´stdmod´.
+
+INTERFACE
+  age, displace, doc, func, help, load, max, new, stat, which
+<!-- BEGIN-FUNC age -->
+NAME
+  module::age - Controls the module aging algorithm
+
+SYNOPSIS
+  module::age()
+  module::age( maxage )
+  module::age( maxage, interval )
+
+PARAMETER
+  maxage   - integer of range 0..3600
+  interval - integer of range 1..60
+
+DESCRIPTION
+  This function sets the maximum age of dynamic modules to ´maxage´. If
+  ´maxage´ is set to zero ('0'), module aging deactivated. The value of
+  ´interval' specifies the minimum time that passes between two checks
+  for unused module. All times are measured in seconds.The function re-
+  turns the current value of ´maxage´.
+
+  MuPAD uses a so-called ´module aging´ strategy.  The current age of a
+  module is defined as the number of seconds that are passed since this
+  module was accessed  (the module was loaded  or a module function was
+  called) last.  If the module is older than the specified ´maxage´, it
+  is unloaded as soon as possible.
+
+EXAMPLES
+  >> module::age();
+     30
+
+  >> module::age( 30 );
+     30
+
+  >> module::age( 30, 10 );
+     30
+
+SEE ALSO
+  ::max, ::stat, ::which
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC displace -->
+NAME
+  module::displace - Unloads the machine code of a module
+
+SYNOPSIS
+  module::displace()
+  module::displace( mod )
+
+PARAMETER
+  mod - string, identifier or module domain
+
+DESCRIPTION
+  Displaces the machine code of the dynamic module 'mod'  from the main 
+  memory. The module domain is not touched and will still be valid. The
+  machine code is reloaded automatically when it is needed. If no para-
+  meter is specified, it is tried to displace all dynamic modules.
+
+EXAMPLES
+  >> module::displace( stdmod );
+
+SEE ALSO
+  unloadmod
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC doc -->
+NAME
+  module::doc - Display online documentation
+
+SYNOPSIS
+  module::doc()
+  module::doc( func )
+
+PARAMETER
+  func - string, function name without the prefix "module::"
+
+DESCRIPTION
+  Displays a brief description of the module 'module', respectively the
+  function module::'func'.
+
+EXAMPLES
+  >> module::doc( "doc" );
+     NAME
+       module::doc - Display online documentation
+     [...]
+
+SEE ALSO
+  info, module::help
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC func -->
+NAME
+  module::func - Returns the function environment of a module function
+
+SYNOPSIS
+  module::func( fun )
+
+PARAMETER
+  mod - string, identifier or module domain
+  fun - string, identifier or function environment
+
+DESCRIPTION
+  This function returns the function environment of the module function
+  ´mod´::´fun´. With this handle, the corresponding module function can
+  be executed without explicitely loading the dynamic module.
+
+EXAMPLES
+  >> where:= module::func( "stdmod", "which" );
+     where( "stdmod" );
+
+     "/home/andi/MuPAD/linux/modules/stdmod.mdm"
+
+  >> expose( where );
+     built_in(1200, "stdmod", "which", NIL, NIL)
+
+SEE ALSO
+  ::displace, ::new, external
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC help -->
+NAME
+  module::help - Displays online document of dynamic modules
+
+SYNOPSIS
+  module::help( mod )
+  module::help( mod, fun )
+
+PARAMETER
+  mod - string, identifier or module domain
+  fun - string, identifier or function environment
+
+DESCRIPTION
+  This function reads the introduction page, respectively the help page
+  of the module function ´mod::fun´,from the plain text online documen-
+  tation file of the dynamic module ´mod´ and returns it as a character
+  string. The file is searched in the directories specified in function
+  ´::which´.  If the specified documentation cannot be found/read,  the
+  function returns the value FAIL.
+
+EXAMPLES
+  >> module::help( "module", "doc" );
+     NAME
+       module::help - Displays online documents of dynamic modules
+     [...]
+
+SEE ALSO
+  module::help
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC load -->
+NAME
+  module::load - Loads a module
+
+SYNOPSIS
+  module( mod )
+  module::load( mod )
+
+PARAMETER
+  mod - string, identifier or module domain
+
+DESCRIPTION
+  This function loads the dynamic module 'mod'.  The module domain will
+  be created,  assigned to the identifier 'mod'  and returned as return
+  value.  If the module domain had been existed or the identifier 'mod'
+  had been assigned a value before, then this is redefined.  If the mo-
+  dule has a function ´initmod´, this is executed instantly.
+
+EXAMPLES
+  >> module::load( stdmod );
+     stdmod
+
+  >> module( stdmod );
+     Warning: Redefinition of domain 'stdmod'     
+     stdmod
+
+SEE ALSO
+  ::displace, ::new, loadmod
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC max -->
+NAME
+  module::max - Limits the number of simultaneously loaded modules
+
+SYNOPSIS
+  module::max( )
+  module::max( maxnum )
+
+PARAMETER
+  maxnum - integer of range max{0,loaded-modules}..256
+
+DESCRIPTION
+  This function sets the maximum number of simultaneously loaded modules
+  to ´maxnum´. The function returns the current value of ´maxnum´.
+
+  Note:  If ´maxnum´ modules are loaded  then the machine code of a new
+  loaded module  replaces the machine code  of the  least recently used 
+  module.  This is transparent  to the user.  The corresponding machine
+  code is reloaded automatically  if it is needed later.  Virtually, an
+  an arbitrary number of modules can be loaded by the user.
+
+EXAMPLES
+  >> module::max();
+     256
+
+  >> module::max( 42 );
+     42
+
+SEE ALSO
+  ::age, ::stat, ::which
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC new -->
+NAME
+  module::new - Loads a module / Accesses a module function
+
+SYNOPSIS
+  module( [Path=dirname,] mod )
+  module::new( [Path=dirname,] mod )
+
+  module( mod, fun )
+  module::new( mod, fun )
+
+PARAMETER
+  mod - string, identifier or module domain
+  fun - string, identifier or module domain
+
+DESCRIPTION
+  If only the parameter 'mod' is specified,  this function behaves like
+  function ´module::load´. If option ´Path´ is specified, the module is
+  first searched in the directory 'dirname'. If the parameter 'mod' and
+  ´fun´ are specified, the function behaves like ´module::func´. 
+
+EXAMPLES
+  >> module::new( stdmod );
+     stdmod
+
+  >> module( stdmod );
+     Warning: Redefinition of domain 'stdmod'
+     stdmod
+
+  >> module( Path="/home/andi/develop", mymodule );
+     mymodule
+
+SEE ALSO
+  ::displace, ::func, ::load, loadmod
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC stat -->
+NAME
+  module::stat - Displays the current status of the module manager
+
+SYNOPSIS
+  module::stat( )
+
+PARAMETER
+  -
+
+DESCRIPTION
+  The function displays the current state of the module manager. 
+
+EXAMPLES
+  >> module::stat();
+  ============================================================
+  M-Path: /home/andi/MuPAD/linux/modules
+  ------------------------------------------------------------
+  Pseudo: {}
+  ------------------------------------------------------------
+  Kernel: obj = 189/ 190 | unload=  YES
+  ------------------------------------------------------------
+  Module: loaded =     2 | max   =   16 | active =           1
+  Aging :  is not active | itval =   10 | LRU    =        util
+  ------------------------------------------------------------
+  util      : age=  2515 | flags = {}
+  stdmod    : age=   598 | flags = {}
+  ============================================================
+
+SEE ALSO
+  ::age, ::max, ::which, stdmod::stat
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC which -->
+NAME
+  module::which - Returns the installation path of a module
+
+SYNOPSIS
+  module::which( mod )
+
+PARAMETER
+  mod - string, identifier or module domain
+
+DESCRIPTION
+  This function searches for the dynamic module  ´mod´  and returns its
+  full pathname  as a character string.  The module  is searched in the 
+  directories specified in the MuPAD Variable READ_PATH, in the current
+  working directory and last in the MuPAD default directory for dynamic
+  modules.
+
+  If ´mod´ is a pseudo module, this functions returns the MuPAD default
+  directory for dynamic modules.
+
+EXAMPLES
+  >> module::which( "module" );
+     "/home/andi/MuPAD/linux/modules/module.mdm"  
+
+  >> module::which( "demo" );
+     "demo"
+
+  >> module::which( "unknown" );
+     FAIL
+
+SEE ALSO
+  ::age, ::max, ::stat, stdmod::which
+<!-- END-FUNC -->
+
