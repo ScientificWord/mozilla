@@ -17,6 +17,7 @@
     ondialogaccept="return onAccept();"
     buttons="apply,accept,cancel" 
     width="300px" height="200px"
+    onload="startUp();"
     persist="screenX screenY width height">
 
   <!-- Following scripts are needed by any MSI dialog brought up by an editor -->

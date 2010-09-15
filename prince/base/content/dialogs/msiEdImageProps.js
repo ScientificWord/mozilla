@@ -98,8 +98,8 @@ function Startup()
   // Get a single selected image element
   var tagName = "object";
   imageElement = null;
-  if (window.arguments && window.arguments.length > 0)
-    imageElement = window.arguments[0];
+  if (window.arguments && window.arguments.length >2)
+    imageElement = window.arguments[2];
   if (!imageElement)
   {
     // Does this ever get run?
@@ -210,7 +210,10 @@ function fillInValue(element, index, array)
 function InitImage()
 {
   // Set the controls to the image's attributes
-  gDialog.srcInput.value = globalElement.getAttribute("src");
+  if (globalElement.hasAttribute("src"))
+    gDialog.srcInput.value = globalElement.getAttribute("src");
+  else if (imageElement.hasAttribute("data"))
+    gDialog.srcInput.value = globalElement.getAttribute("data");
 
   // Set "Relativize" checkbox according to current URL state
   msiSetRelativeCheckbox();
@@ -553,7 +556,7 @@ function ValidateImage()
 }
 
 
-var isSVGFile;
+var isSVGFile = false;
 function chooseFile()
 {
 //  if (gTimerID)

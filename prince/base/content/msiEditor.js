@@ -4699,6 +4699,7 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
       break;
 
       case "img":
+      case "object":
         // Check if img is enclosed in link
         //  (use "href" to not be fooled by named anchor)
         try
@@ -4730,7 +4731,6 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
 ////        scriptStr = "msiEditorTableCellProperties(editorElement)";
 //        commandStr = "cmd_editTable";
 //        break;
-      case "th":
       case "thead":
       case "tbody":
       case "tfoot":
@@ -7032,259 +7032,425 @@ msiTablePropertiesObjectData.prototype =
 msiTablePropertiesObjectData.prototype.__proto__ = msiPropertiesObjectDataBase;
 
 function msiInitObjectPropertiesMenuitem(editorElement, id)
-{
-  // Set strings and enable for the [Object] Properties item
-  // Note that we directly do the enabling instead of
-  //  using goSetCommandEnabled since we already have the menuitem
-  if (!editorElement)
-    editorElement = msiGetActiveEditorElement();
+{ 
+  try {
   var editor = msiGetEditor(editorElement);
-  if ( (id != "propertiesMenu") && (id != "propertiesMenu_cm") )
-    dump("Problem in msiEditor.js, msiInitObjectPropertiesMenuitem() - id passed in isn't correct (it's " + id + ").\n");
-  
-  var menuItem;
-  var subMenu = document.getElementById(id);
-  if (!subMenu) return null;
+  var propertiesMenu = document.getElementById(id);
+  if (!editor || !propertiesMenu) return;
+  var popupMenu = propertiesMenu.getElementsByTagName("menupopup")[0];
+  if (!popupMenu) return;
+  // clean out popupMenu
+  var child;
+  while (child = popupMenu.firstChild) popupMenu.removeChild(child);
 
-  var menuInfo = msiGetPropertiesMenuIDs(id);
-  if (!menuInfo)
-    return null;
-  subMenu = document.getElementById(menuInfo.menuID);
-  var parentPropertiesMenu = subMenu;
-//  var itemID = "objectProperties";
-//  var popupID = "propertiesMenuPopup";
-//  var bIsContextMenu = false;
-//  for (var menuAncestor = subMenu; menuAncestor && !bIsContextMenu; menuAncestor = menuAncestor.parentNode)
-//  {
-//    if (menuAncestor.id)
-//    {
-//      if ( (menuAncestor.id == "propertiesMenu_cm") || (menuAncestor.id == "propertiesMenuPopup_cm") )
-//        bIsContextMenu = true;
-////      if ( (menuAncestor.id == "objectProperties_cm") || (menuAncestor.id == "msiEditorContentContext") )
-////        bIsContextMenu = true;
-//    }
-//  }
-//  if (bIsContextMenu)
-//  {
-//    popupID = "propertiesMenuPopup_cm";
-//    itemID = "objectProperties_cm";
-//  }
-  var subPopup = document.getElementById(menuInfo.popupID);
-  var menuItem = document.getElementById(menuInfo.itemID);
-//  var nodeData;
-  var element;
-  var menuStr = GetString("AdvancedProperties");
-  var name;
-  var propsData = null;
-  var nextNode = null;
-  var commandStr, scriptStr;
-
-  if (msiIsEditingRenderedHTML(editorElement))
+  var parentTagString = editor.tagListManager.getParentTagList(",",false);
+  var parentTagArray = parentTagString.split(","); 
+  var i;
+  var paL = parentTagArray.length;
+  var node = editor.getSelectionContainer();
+  // We have a problem when a node is selected.
+  if (editor.selection.focusNode == editor.selection.anchorNode && 
+    Math.abs(editor.selection.focusOffset-editor.selection.anchorOffset)==1)
   {
-    propsData = msiGetObjectDataForProperties(editorElement);
-//    if (propsData && propsData.getReferenceNode != null)
-    if (propsData)
+    if (editor.selection.focusNode.nodeType != 3) node = 
+      editor.selection.focusNode.childNodes.item(Math.min(editor.selection.focusOffset,editor.selection.anchorOffset));
+  }
+  if (node.nodeType == 3) node = node.parentNode; //if text node, go to the parent
+  var tagclass;
+  var tag;
+  var label = GetString("TagPropertiesMenuLabel");
+  var newitem;
+  var count = 0;
+  for (i = 0; i < paL; i++)
+  {
+    tag = parentTagArray[i].replace(/ .*$/,"");
+    if (node.localName != tag)
     {
-      element = propsData.getReferenceNode();
-      nextNode = propsData.getTopNode().parentNode;
+      dump("In msiInitObjectPropertiesMenuitem, assertion failure: tag array name = "
+        + tag + ", but node is " + node.localName + " and i is " +i+"\n");
+      continue;
     }
-  }
-
-//  if (element)
-//    propsData = getObjectPropertiesDataFromNodeData(editorElement, element, false);
-//  else
-  if (!element)
-    element = editor.selection.getRangeAt(0).commonAncestorContainer;
-
-  if (propsData)
-  {
-    menuStr = propsData.getMenuString(0);
-    if (!menuStr || !menuStr.length)
-    {
-      menuStr = GetString("AdvancedProperties");
-      menuItem.setAttribute("disabled","true");
-    }
-    else
-      menuItem.removeAttribute("disabled");
-    subPopup.origSelection = copyCurrSelection(editor);
-    commandStr = propsData.getCommandString(0);
-    if (commandStr)
-    {
-//      menuItem.setAttribute("oncommand", "msiPropMenuClearOrigSel('" + menuInfo.popupID + "'); msiDoAPropertiesDialogFromMenu('" + propsData.commandStr + "', this);");
-      menuItem.setAttribute("oncommand", "msiPropMenuResetOrigSel('" + menuInfo.popupID + "'); msiDoAPropertiesDialogFromMenu('" + commandStr + "', this);");
-      subMenu.defaultItem = menuItem;
-      subMenu.commandStr = commandStr;
-    }
-    else
-    {
-      scriptStr = propsData.getScriptString(0);
-      if (propsData.scriptStr)
-        menuItem.setAttribute("oncommand", "msiPropMenuClearOrigSel('" + menuInfo.popupID + "');" + scriptStr);
-    }
-    menuItem.addEventListener("DOMMenuItemActive", msiPropertiesMenuItemHover, false);
-//How to generate a reasonable ID? But does it need one?
-    menuItem.propertiesData = propsData;
-    menuItem.refElement = propsData.getReferenceNode();
-    menuItem.refEditor = propsData.mEditorElement;
-    if (propsData.isMatrix())
-      AddInsertMatrixRowsColumnsMenuItems(parentPropertiesMenu, propsData);
-  }
-  else
-  {
-    // We show generic "Properties" string, but disable menu item
-    menuItem.setAttribute("disabled","true");
-  }
-  menuItem.setAttribute("label", menuStr);
-  menuItem.setAttribute("accesskey",GetString("ObjectPropertiesAccessKey"));
-
-//  var parentMenu = menuItem.parentNode;
-//  var subMenu = document.getElementById("morePropertiesMenu");
-//  var subPopup = document.getElementById("morePropertiesPopup");
-//  var bWasInitialized = (subPopup != null);
-//  if (bWasInitialized)
-//    dump("In msiEditor.js, msiInitObjectPropertiesMenuitem(), the subpopupmenu was previously initialized!\n");
-
-  if (!nextNode)
-    nextNode = element.parentNode;
-  var lastCoreNode = element;
-  var lastPropsData = propsData;
-
-  function copyCurrSelection(theEd)
-  {
-    var retSel = new Array();
-    var len = theEd.selection.rangeCount;
-    for (var ii = 0; ii < len; ++ii)
-      retSel.push(theEd.selection.getRangeAt(ii).cloneRange());
-    return retSel;
-  }
-
-  function createMorePropsSubmenu()
-  {
-    subMenu = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "menu");
-    subMenu.id = id;
-    subMenu.setAttribute("label", GetString("MorePropertiesMenuLabel"));
-    subMenu.setAttribute("accesskey", GetString("MorePropertiesMenuAccessKey"));
-    subMenu = parentMenu.insertBefore(subMenu, menuItem.nextSibling);
-    subPopup = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "menupopup");
-    subPopup.id = popupID;
-    subPopup.origSelection = copyCurrSelection(editor);
-    subPopup.setAttribute("onpopuphidden", "msiPropMenuCloseup(event, this);");
-    subPopup = subMenu.appendChild(subPopup);
-  }
-
-//  function addPropsMenuItem(propData)
-  function addPropsMenuItem(propData, menuString, commandString, scriptString)
-  {
-    var item = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
-                                           "menuitem");
-
-//    if (propData.commandStr)
-    if (commandString)
-      item.setAttribute("oncommand", "msiPropMenuClearOrigSel('" + menuInfo.popupID + "'); msiDoAPropertiesDialogFromMenu('" + commandString + "', this);");
-    else if (scriptString)
-      item.setAttribute("oncommand", "msiPropMenuClearOrigSel('"+ menuInfo.popupID + "');" + scriptString);
-    item.addEventListener("DOMMenuItemActive", msiPropertiesMenuItemHover, false);
-    item.setAttribute("label", menuString);
-    item.refElement = propData.getReferenceNode();
-    item.refEditor = editorElement;
-    item.propertiesData = propData;
-    if (!subPopup)
-      createMorePropsSubmenu();
-    if (!("origSelection" in subPopup))
-      subPopup.origSelection = copyCurrSelection(editor);
-    if (propData.isMatrix())
-      AddInsertMatrixRowsColumnsMenuItems(parentPropertiesMenu, propData);
-
-    return subPopup.appendChild(item);
-  }
-
-  function checkForNodeAlreadyDone(anElmtNode)
-  {
-    var foundItem = null;
-    if (subPopup)
-    {
-      for (var jj = 0; jj < subPopup.childNodes.length; ++jj)
-      {
-        if ( ("refElement" in subPopup.childNodes[jj]) && (subPopup.childNodes[jj].refElement == anElmtNode) )
+    // Now we go through the list of things that have properties dialogs.
+    tagclass = editor.tagListManager.getClassOfTag(tag, null);
+    var propsdata;
+    switch (tagclass)
+    { 
+      case "texttag":
+        switch( tag )
         {
-          foundItem = subPopup.childNodes[jj];
+          case "otfont":
+            newitem = propertiesMenu.appendItem(label.replace("%tagname%","opentype font"));
+            newitem.setAttribute("oncommand","openOTFontDialog('otfont', event.target.node);");
+            newitem.node = node;
+            count++;
+            break;
+          case "fontcolor":
+            newitem = propertiesMenu.appendItem(label.replace("%tagname%","font color"));
+            newitem.setAttribute("oncommand","openFontColorDialog('fontcolor', event.target.node);");
+            newitem.node = node;
+            count++;
+            break;
+          case "fontsize":
+            newitem = propertiesMenu.appendItem(label.replace("%tagname%","font size"));
+            newitem.setAttribute("oncommand","openFontSizeDialog('fontsize', event.target.node);");
+            newitem.node = node;
+            count++;
+            break;
+          default: break;
+        }
+        break;
+      case "paratag":
+        newitem = propertiesMenu.appendItem(label.replace("%tagname%",tag));
+        newitem.setAttribute("oncommand", "openParaTagDialog('"+ tag + "',event.target.node);");
+        newitem.node = node;
+        count++;
+        break;
+      case "structtag":
+        newitem = propertiesMenu.appendItem(label.replace("%tagname%",tag));
+        newitem.setAttribute("oncommand", "openStructureTagDialog('"+ tag + "',event.target.node);");
+        newitem.node = node;
+        count++;
+        break;
+// currently no dialogs for list tags, environments, and front matter.
+//      case "listtag":
+//        break;
+      case "envtag":
+      {
+        switch( tag )
+        {
+          case "note":
+            newitem = propertiesMenu.appendItem(label.replace("%tagname%","note"));
+            newitem.setAttribute("oncommand", "msiNote(event.target.node, null);");
+            newitem.node = node;
+            count++;
+            break;
+          default: break;
+        }
+        break;
+//      case "frontmtag":
+//        break;
+      }
+      default: break;
+    }
+    if (tagclass == "" || tagclass=="othertag")
+    {
+      switch( tag )
+      {
+        case "msiframe":
           break;
-        }
+        case "object":
+          newitem = propertiesMenu.appendItem(label.replace("%tagname%","embedded object"));
+          newitem.setAttribute("oncommand","openObjectTagDialog('object', event.target.node);");
+          newitem.node = node;
+          count++;
+          break;
+        case "texb":
+          newitem = propertiesMenu.appendItem(label.replace("%tagname%","TeX button"));
+          newitem.setAttribute("oncommand","openTeXButtonDialog('texb', event.target.node);");
+          newitem.node = node;
+          count++;
+        case "line":
+          break;
+        case "mtable":
+          break;
+        default: 
+          propsdata = msiCreatePropertiesObjectDataFromNode(node, editorElement, false);
+          if (propsdata)
+          {
+            try 
+            {
+              if (propsdata.menuStrings)
+              {
+                for (var k = 0; k < propsdata.menuStrings.length; k++)
+                {
+                  newitem = propertiesMenu.appendItem(propsdata.menuStrings[k]);
+                  if (propsdata.menuStrings && propsdata.menuStrings[k].length)
+                    newitem.setAttribute("command", propsdata.menuStrings[k]);
+                  else 
+                    newitem.setAttribute("oncommand", propsdata.scriptStrings[k]);
+                  newitem.node = node;
+                  count++;
+                }
+              }
+              else
+              {
+                newitem = propertiesMenu.appendItem(propsdata.menuStr);
+                if (propsdata.commandStr && propsdata.commandStr.length)
+                  newitem.setAttribute("command", propsdata.commandStr);
+                else 
+                  newitem.setAttribute("oncommand", propsdata.scriptStr);
+                newitem.node = node;
+                count++;
+              }
+            }
+            catch(e){}
+          }
+          break;
       }
     }
-    if (foundItem)
-      dump("In msiEditor.js, msiInitObjectPropertiesMenuitem(), the call to checkForNodeAlreadyDone() found one!\n");
-    return foundItem;
+    node = node.parentNode;
   }
-
-//NOTE! The following should never be necessary, but it was needed until I realized the reason for the double initialization
-//  (namely that we were responding to a popupshowing message from the child menu as though it were the parent one).
-
-//  var lastMenuItem = null;
-//  var currMenuItem = null;
-//  while (bWasInitialized && (nextNode != null))
-//  {
-//    lastMenuItem = currMenuItem;
-//    currMenuItem = checkForNodeAlreadyDone(nextNode);
-//    if (!currMenuItem)
-//      break;
-//    nextNode = nextNode.parentNode;
-//  }
-//  if (lastMenuItem)
-//    lastPropsData = getObjectPropertiesDataFromNodeData(editorElement, lastMenuItem.refElement);
-
-//First check whether the current object has more than one properties string to put up:
-  if (propsData)
-  {
-    menuStr = null;
-    for (var iter = 1; propsData.hasReviseData(iter); ++iter)
-    {
-      menuStr = propsData.getMenuString(iter);
-      commandStr = propsData.getCommandString(iter);
-      scriptStr = propsData.getScriptString(iter);
-      addPropsMenuItem(propsData, menuStr, commandStr, scriptStr);
-      //addPropsMenuItem(propsData);
-    }
   }
-
-  while (nextNode != null)
-  {
-//    propsData = getObjectPropertiesDataFromNodeData(editorElement, nextNode, !menuInfo.bIsContextMenu);
-    propsData = msiCreatePropertiesObjectDataFromNode(nextNode, editorElement, true);
-    if (propsData)
-    {
-//      if (!lastPropsData || (propsData.coreElement != lastPropsData.coreElement))  //we've hit a really new object
-      if (!lastPropsData || (propsData.getReferenceNode() != lastPropsData.getReferenceNode()))  //we've hit a really new object
-      {
-        if (!subMenu)
-        {
-          //Note! In this case, we've hit the first properties data with a coreElement differing from that of the
-          //  original item, which is still being held in prevPropData. Thus we don't want to add an item now, but we
-          //  are assured that an item will be needed. Just create the submenu and submenupop and get out.
-          dump("In msiEditor.js, in msiInitObjectPropertiesMenuitem(), subMenu is currently null - should no longer happen!\n");
-          createMorePropsSubmenu();
-        }
-        menuStr = null;
-        for (var iter = 0; propsData.hasReviseData(iter); ++iter)
-        {
-          menuStr = propsData.getMenuString(iter);
-          commandStr = propsData.getCommandString(iter);
-          scriptStr = propsData.getScriptString(iter);
-          addPropsMenuItem(propsData, menuStr, commandStr, scriptStr);
-          //addPropsMenuItem(propsData);
-        }
-      }
-      lastPropsData = propsData;
-      nextNode = propsData.getTopNode().parentNode;
-    }
-    else
-      nextNode = nextNode.parentNode;
+  catch (e) {
+    dump(e.message+"\n");
   }
-//  if (subMenu && lastPropsData)
-//    addPropsMenuItem(lastPropsData);
-
-  return name;
 }
+
+
+
+// --BBM //{
+// --BBM //  // Set strings and enable for the [Object] Properties item
+// --BBM //  // Note that we directly do the enabling instead of
+// --BBM //  //  using goSetCommandEnabled since we already have the menuitem
+// --BBM //  if (!editorElement)
+// --BBM //    editorElement = msiGetActiveEditorElement();
+// --BBM //  var editor = msiGetEditor(editorElement);
+// --BBM //  if ( (id != "propertiesMenu") && (id != "propertiesMenu_cm") )
+// --BBM //    dump("Problem in msiEditor.js, msiInitObjectPropertiesMenuitem() - id passed in isn't correct (it's " + id + ").\n");
+// --BBM //  
+// --BBM //  var menuItem;
+// --BBM //  var subMenu = document.getElementById(id);
+// --BBM //  if (!subMenu) return null;
+// --BBM //
+// --BBM //  var menuInfo = msiGetPropertiesMenuIDs(id);
+// --BBM //  if (!menuInfo)
+// --BBM //    return null;
+// --BBM //  subMenu = document.getElementById(menuInfo.menuID);
+// --BBM //  var parentPropertiesMenu = subMenu;
+// --BBM ////  var itemID = "objectProperties";
+// --BBM ////  var popupID = "propertiesMenuPopup";
+// --BBM ////  var bIsContextMenu = false;
+// --BBM ////  for (var menuAncestor = subMenu; menuAncestor && !bIsContextMenu; menuAncestor = menuAncestor.parentNode)
+// --BBM ////  {
+// --BBM ////    if (menuAncestor.id)
+// --BBM ////    {
+// --BBM ////      if ( (menuAncestor.id == "propertiesMenu_cm") || (menuAncestor.id == "propertiesMenuPopup_cm") )
+// --BBM ////        bIsContextMenu = true;
+// --BBM //////      if ( (menuAncestor.id == "objectProperties_cm") || (menuAncestor.id == "msiEditorContentContext") )
+// --BBM //////        bIsContextMenu = true;
+// --BBM ////    }
+// --BBM ////  }
+// --BBM ////  if (bIsContextMenu)
+// --BBM ////  {
+// --BBM ////    popupID = "propertiesMenuPopup_cm";
+// --BBM ////    itemID = "objectProperties_cm";
+// --BBM ////  }
+// --BBM //  var subPopup = document.getElementById(menuInfo.popupID);
+// --BBM //  var menuItem = document.getElementById(menuInfo.itemID);
+// --BBM ////  var nodeData;
+// --BBM //  var element;
+// --BBM //  var menuStr = GetString("AdvancedProperties");
+// --BBM //  var name;
+// --BBM //  var propsData = null;
+// --BBM //  var nextNode = null;
+// --BBM //  var commandStr, scriptStr;
+// --BBM //
+// --BBM //  if (msiIsEditingRenderedHTML(editorElement))
+// --BBM //  {
+// --BBM //    propsData = msiGetObjectDataForProperties(editorElement);
+// --BBM ////    if (propsData && propsData.getReferenceNode != null)
+// --BBM //    if (propsData)
+// --BBM //    {
+// --BBM //      element = propsData.getReferenceNode();
+// --BBM //      nextNode = propsData.getTopNode().parentNode;
+// --BBM //    }
+// --BBM //  }
+// --BBM //
+// --BBM ////  if (element)
+// --BBM ////    propsData = getObjectPropertiesDataFromNodeData(editorElement, element, false);
+// --BBM ////  else
+// --BBM //  if (!element)
+// --BBM //    element = editor.selection.getRangeAt(0).commonAncestorContainer;
+// --BBM //
+// --BBM //  if (propsData)
+// --BBM //  {
+// --BBM //    menuStr = propsData.getMenuString(0);
+// --BBM //    if (!menuStr || !menuStr.length)
+// --BBM //    {
+// --BBM //      menuStr = GetString("AdvancedProperties");
+// --BBM //      menuItem.setAttribute("disabled","true");
+// --BBM //    }
+// --BBM //    else
+// --BBM //      menuItem.removeAttribute("disabled");
+// --BBM //    subPopup.origSelection = copyCurrSelection(editor);
+// --BBM //    commandStr = propsData.getCommandString(0);
+// --BBM //    if (commandStr)
+// --BBM //    {
+// --BBM ////      menuItem.setAttribute("oncommand", "msiPropMenuClearOrigSel('" + menuInfo.popupID + "'); msiDoAPropertiesDialogFromMenu('" + propsData.commandStr + "', this);");
+// --BBM //      menuItem.setAttribute("oncommand", "msiPropMenuResetOrigSel('" + menuInfo.popupID + "'); msiDoAPropertiesDialogFromMenu('" + commandStr + "', this);");
+// --BBM //      subMenu.defaultItem = menuItem;
+// --BBM //      subMenu.commandStr = commandStr;
+// --BBM //    }
+// --BBM //    else
+// --BBM //    {
+// --BBM //      scriptStr = propsData.getScriptString(0);
+// --BBM //      if (propsData.scriptStr)
+// --BBM //        menuItem.setAttribute("oncommand", "msiPropMenuClearOrigSel('" + menuInfo.popupID + "');" + scriptStr);
+// --BBM //    }
+// --BBM //    menuItem.addEventListener("DOMMenuItemActive", msiPropertiesMenuItemHover, false);
+// --BBM ////How to generate a reasonable ID? But does it need one?
+// --BBM //    menuItem.propertiesData = propsData;
+// --BBM //    menuItem.refElement = propsData.getReferenceNode();
+// --BBM //    menuItem.refEditor = propsData.mEditorElement;
+// --BBM //    if (propsData.isMatrix())
+// --BBM //      AddInsertMatrixRowsColumnsMenuItems(parentPropertiesMenu, propsData);
+// --BBM //  }
+// --BBM //  else
+// --BBM //  {
+// --BBM //    // We show generic "Properties" string, but disable menu item
+// --BBM //    menuItem.setAttribute("disabled","true");
+// --BBM //  }
+// --BBM //  menuItem.setAttribute("label", menuStr);
+// --BBM //  menuItem.setAttribute("accesskey",GetString("ObjectPropertiesAccessKey"));
+// --BBM //
+// --BBM ////  var parentMenu = menuItem.parentNode;
+// --BBM ////  var subMenu = document.getElementById("morePropertiesMenu");
+// --BBM ////  var subPopup = document.getElementById("morePropertiesPopup");
+// --BBM ////  var bWasInitialized = (subPopup != null);
+// --BBM ////  if (bWasInitialized)
+// --BBM ////    dump("In msiEditor.js, msiInitObjectPropertiesMenuitem(), the subpopupmenu was previously initialized!\n");
+// --BBM //
+// --BBM //  if (!nextNode)
+// --BBM //    nextNode = element.parentNode;
+// --BBM //  var lastCoreNode = element;
+// --BBM //  var lastPropsData = propsData;
+// --BBM //
+// --BBM //  function copyCurrSelection(theEd)
+// --BBM //  {
+// --BBM //    var retSel = new Array();
+// --BBM //    var len = theEd.selection.rangeCount;
+// --BBM //    for (var ii = 0; ii < len; ++ii)
+// --BBM //      retSel.push(theEd.selection.getRangeAt(ii).cloneRange());
+// --BBM //    return retSel;
+// --BBM //  }
+// --BBM //
+// --BBM //  function createMorePropsSubmenu()
+// --BBM //  {
+// --BBM //    subMenu = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "menu");
+// --BBM //    subMenu.id = id;
+// --BBM //    subMenu.setAttribute("label", GetString("MorePropertiesMenuLabel"));
+// --BBM //    subMenu.setAttribute("accesskey", GetString("MorePropertiesMenuAccessKey"));
+// --BBM //    subMenu = parentMenu.insertBefore(subMenu, menuItem.nextSibling);
+// --BBM //    subPopup = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "menupopup");
+// --BBM //    subPopup.id = popupID;
+// --BBM //    subPopup.origSelection = copyCurrSelection(editor);
+// --BBM //    subPopup.setAttribute("onpopuphidden", "msiPropMenuCloseup(event, this);");
+// --BBM //    subPopup = subMenu.appendChild(subPopup);
+// --BBM //  }
+// --BBM //
+// --BBM ////  function addPropsMenuItem(propData)
+// --BBM //  function addPropsMenuItem(propData, menuString, commandString, scriptString)
+// --BBM //  {
+// --BBM //    var item = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
+// --BBM //                                           "menuitem");
+// --BBM //
+// --BBM ////    if (propData.commandStr)
+// --BBM //    if (commandString)
+// --BBM //      item.setAttribute("oncommand", "msiPropMenuClearOrigSel('" + menuInfo.popupID + "'); msiDoAPropertiesDialogFromMenu('" + commandString + "', this);");
+// --BBM //    else if (scriptString)
+// --BBM //      item.setAttribute("oncommand", "msiPropMenuClearOrigSel('"+ menuInfo.popupID + "');" + scriptString);
+// --BBM //    item.addEventListener("DOMMenuItemActive", msiPropertiesMenuItemHover, false);
+// --BBM //    item.setAttribute("label", menuString);
+// --BBM //    item.refElement = propData.getReferenceNode();
+// --BBM //    item.refEditor = editorElement;
+// --BBM //    item.propertiesData = propData;
+// --BBM //    if (!subPopup)
+// --BBM //      createMorePropsSubmenu();
+// --BBM //    if (!("origSelection" in subPopup))
+// --BBM //      subPopup.origSelection = copyCurrSelection(editor);
+// --BBM //    if (propData.isMatrix())
+// --BBM //      AddInsertMatrixRowsColumnsMenuItems(parentPropertiesMenu, propData);
+// --BBM //
+// --BBM //    return subPopup.appendChild(item);
+// --BBM //  }
+// --BBM //
+// --BBM //  function checkForNodeAlreadyDone(anElmtNode)
+// --BBM //  {
+// --BBM //    var foundItem = null;
+// --BBM //    if (subPopup)
+// --BBM //    {
+// --BBM //      for (var jj = 0; jj < subPopup.childNodes.length; ++jj)
+// --BBM //      {
+// --BBM //        if ( ("refElement" in subPopup.childNodes[jj]) && (subPopup.childNodes[jj].refElement == anElmtNode) )
+// --BBM //        {
+// --BBM //          foundItem = subPopup.childNodes[jj];
+// --BBM //          break;
+// --BBM //        }
+// --BBM //      }
+// --BBM //    }
+// --BBM //    if (foundItem)
+// --BBM //      dump("In msiEditor.js, msiInitObjectPropertiesMenuitem(), the call to checkForNodeAlreadyDone() found one!\n");
+// --BBM //    return foundItem;
+// --BBM //  }
+// --BBM //
+// --BBM ////NOTE! The following should never be necessary, but it was needed until I realized the reason for the double initialization
+// --BBM ////  (namely that we were responding to a popupshowing message from the child menu as though it were the parent one).
+// --BBM //
+// --BBM ////  var lastMenuItem = null;
+// --BBM ////  var currMenuItem = null;
+// --BBM ////  while (bWasInitialized && (nextNode != null))
+// --BBM ////  {
+// --BBM ////    lastMenuItem = currMenuItem;
+// --BBM ////    currMenuItem = checkForNodeAlreadyDone(nextNode);
+// --BBM ////    if (!currMenuItem)
+// --BBM ////      break;
+// --BBM ////    nextNode = nextNode.parentNode;
+// --BBM ////  }
+// --BBM ////  if (lastMenuItem)
+// --BBM ////    lastPropsData = getObjectPropertiesDataFromNodeData(editorElement, lastMenuItem.refElement);
+// --BBM //
+// --BBM ////First check whether the current object has more than one properties string to put up:
+// --BBM //  if (propsData)
+// --BBM //  {
+// --BBM //    menuStr = null;
+// --BBM //    for (var iter = 1; propsData.hasReviseData(iter); ++iter)
+// --BBM //    {
+// --BBM //      menuStr = propsData.getMenuString(iter);
+// --BBM //      commandStr = propsData.getCommandString(iter);
+// --BBM //      scriptStr = propsData.getScriptString(iter);
+// --BBM //      addPropsMenuItem(propsData, menuStr, commandStr, scriptStr);
+// --BBM //      //addPropsMenuItem(propsData);
+// --BBM //    }
+// --BBM //  }
+// --BBM //
+// --BBM //  while (nextNode != null)
+// --BBM //  {
+// --BBM ////    propsData = getObjectPropertiesDataFromNodeData(editorElement, nextNode, !menuInfo.bIsContextMenu);
+// --BBM //    propsData = msiCreatePropertiesObjectDataFromNode(nextNode, editorElement, true);
+// --BBM //    if (propsData)
+// --BBM //    {
+// --BBM ////      if (!lastPropsData || (propsData.coreElement != lastPropsData.coreElement))  //we've hit a really new object
+// --BBM //      if (!lastPropsData || (propsData.getReferenceNode() != lastPropsData.getReferenceNode()))  //we've hit a really new object
+// --BBM //      {
+// --BBM //        if (!subMenu)
+// --BBM //        {
+// --BBM //          //Note! In this case, we've hit the first properties data with a coreElement differing from that of the
+// --BBM //          //  original item, which is still being held in prevPropData. Thus we don't want to add an item now, but we
+// --BBM //          //  are assured that an item will be needed. Just create the submenu and submenupop and get out.
+// --BBM //          dump("In msiEditor.js, in msiInitObjectPropertiesMenuitem(), subMenu is currently null - should no longer happen!\n");
+// --BBM //          createMorePropsSubmenu();
+// --BBM //        }
+// --BBM //        menuStr = null;
+// --BBM //        for (var iter = 0; propsData.hasReviseData(iter); ++iter)
+// --BBM //        {
+// --BBM //          menuStr = propsData.getMenuString(iter);
+// --BBM //          commandStr = propsData.getCommandString(iter);
+// --BBM //          scriptStr = propsData.getScriptString(iter);
+// --BBM //          addPropsMenuItem(propsData, menuStr, commandStr, scriptStr);
+// --BBM //          //addPropsMenuItem(propsData);
+// --BBM //        }
+// --BBM //      }
+// --BBM //      lastPropsData = propsData;
+// --BBM //      nextNode = propsData.getTopNode().parentNode;
+// --BBM //    }
+// --BBM //    else
+// --BBM //      nextNode = nextNode.parentNode;
+// --BBM //  }
+// --BBM ////  if (subMenu && lastPropsData)
+// --BBM ////    addPropsMenuItem(lastPropsData);
+// --BBM //
+// --BBM //  return name;
+// --BBM //}
 
 function msiFormatPropertiesMenuString(objectStringID)
 {
@@ -9533,20 +9699,57 @@ function OpenExtensions(aOpenMode)
   }
 }
 
-function openStructureTagDialog(tagname)
+function openStructureTagDialog(tagname, node)
 {
- var structureData= {tagName: tagname};
  openDialog( "chrome://prince/content/structureproperties.xul",
                              "structureproperties",
                              "",
-                             structureData);
+                             node);
 }
 
-function openParaTagDialog(tagname)
+function openParaTagDialog(tagname, node)
 {
- var paragraphData= {tagName: tagname};
   openDialog( "chrome://prince/content/paragraphproperties.xul",
                              "paraproperties",
                              "",
-                             paragraphData);
+                             node);
 }
+
+
+function openObjectTagDialog(tagname, node)
+{
+  openDialog('chrome://prince/content/msiEdImageProps.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
+    null, 'cmd_reviseImage', node);
+
+}
+
+function openTeXButtonDialog(tagname, node)
+{
+  openDialog('chrome://prince/content/texbuttoncontents.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
+    node);
+}
+
+function openOTFontDialog(tagname, node)
+{
+  openDialog('chrome://prince/content/otfont.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
+    node);
+}
+
+function openFontColorDialog(tagname, node)
+{
+  var colorObj = { NoDefault:true, Type:"Font", TextColor:"black", PageColor:0, Cancel:false };
+  openDialog('chrome://prince/content/color.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
+    "",colorObj,node);
+}
+
+function openFontSizeDialog(tagname, node)
+{
+  openDialog('chrome://prince/content/fontsize.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
+    node);
+}
+
+
+
+
+
+
