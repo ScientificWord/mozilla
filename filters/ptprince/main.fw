@@ -26,6 +26,8 @@ bool s_bTapped;
 extern Typesetter ts;
 
 const char* s_inputfilename;
+const char* s_outputdir = 0;
+
 char* s_mmldirname = ".";
 
 void usage()
@@ -100,7 +102,9 @@ int main(int argc, char* argv[])
           // check for double quotes around the path
           if (outputdir[0]=='"') outputdir++;
           if (outputdir[strlen(outputdir)-1]=='"')
-           outputdir[strlen(outputdir)-1] = '\0';
+            outputdir[strlen(outputdir)-1] = '\0';
+
+          s_outputdir = strdup(outputdir);
           strcat(envOutput, outputdir);
           putenv(envOutput);
           std::cout << "Set output environment " << envOutput << "\n";
