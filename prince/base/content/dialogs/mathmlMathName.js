@@ -362,10 +362,12 @@ function deleteCurrentName()
 
 function onOK() {
   var currName = document.getElementById("mathNamesBox").value;
+  dump("\nMathName onOK(), name = " + currName);
   if (currName in gDialog.nameList.names)
     target = gDialog.nameList.names[currName];
   target.val = currName;
   target.type = document.getElementById("nameTypeRadioGroup").value;
+  dump("\nMathName onOK(), type = " + target.type);
   if (target.type == "operator")
     target.limitPlacement = document.getElementById("operatorLimitPlacementRadioGroup").value;
 
