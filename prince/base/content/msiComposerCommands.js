@@ -2320,7 +2320,7 @@ function msiSoftSave( editor, editorElement)
   var editorDoc = editor.document;
 
   if (!editorDoc)
-    throw Components.results.NS_ERROR_NOT_INITIALIZED;f
+    throw Components.results.NS_ERROR_NOT_INITIALIZED;
   var saveSelection = editor.selection;
 
   // if we don't have the right editor type bail (we handle text and html)
@@ -4765,7 +4765,7 @@ function msiInsertHorizontalSpace(dialogData, editorElement)
 //  };
   
  // editor.deleteSelection(1);
-  var parent = editor.selection.focusNode;
+  var parent = editor.selection.focusNode;  //this repeats code just above the comment -- BBM
   var offset = editor.selection.focusOffset;
   try {
     var node = editor.document.createElement('hspace');
