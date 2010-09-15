@@ -5842,6 +5842,8 @@ function msiDocumentInfo(editorElement)
   this.initializeDocInfo = function()
   {
     var docHead = msiGetPreamble(this.mEditor);
+    if (!docHead)
+      return;
 
     this.generalSettings = new Object();
     this.comments = new Object();
