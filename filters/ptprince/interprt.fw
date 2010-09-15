@@ -30,6 +30,7 @@ Here are some variables global to the interpretter
 @$@<Declare interpretter global variables@>+=@{@-
 //static CommandCode curcmd;
 //static Primitive* curcmddata;
+extern const char* s_outputdir;
 @}
 
 
@@ -1420,6 +1421,8 @@ case CMD_EXTENSION: {
          TokenList* pTL = new TokenList;
          ScanTokenList(pTL, true);
          LOG("\n---- the graphic name tokens are: " << *pTL);
+         if (s_outputdir)
+            LOG("\n---- and outputdir = " << s_outputdir);
          break;
       };
 
