@@ -46,6 +46,7 @@
   <!-- Following scripts are needed by any MSI dialog containing an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js" />
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
   <!-- script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/ -->
   <!-- script type="application/x-javascript" src="chrome://prince/content/ComputeOverlay.js"/ -->
@@ -110,7 +111,7 @@
         <radiogroup id="nameTypeRadioGroup" orient="vertical" oncommand="updateControls();">
           <radio id="typeOperator" label="&typeOperator.label;" value="operator" accesskey="&typeOperator.accesskey;"/>
           <radio id="typeFunction" label="&typeFunction.label;" value="function" accesskey="&typeFunction.accesskey;"/>
-          <radio id="typeFunction" label="&typeVariable.label;" value="variable" accesskey="&typeVariable.accesskey;"/>
+          <radio id="typeVariable" label="&typeVariable.label;" value="variable" accesskey="&typeVariable.accesskey;"/>
         </radiogroup>
       </groupbox>
       <groupbox id="limitPlacementGroup">
