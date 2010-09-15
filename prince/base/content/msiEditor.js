@@ -3398,6 +3398,7 @@ function msiEditorDoTab(bShift, editorElement)
       case "mtr":
         var aTableCell = msiFindCellFromPositionInTableOrMatrix(aNode, totalRange.endContainer, totalRange.endOffset, false, anEditor);
         editor.selection.collapse(aTableCell, 0);
+        rv = true;
       break;
 
       default:
@@ -3413,15 +3414,27 @@ function msiEditorDoTab(bShift, editorElement)
   if (bShift && !editor.selection.isCollapsed)  //We don't do anything if there's a selection and the shift key is down
     return false;
   if (editor.selection.isCollapsed)
-    return msiEditorNextField(bShift, editorElement);
+    retVal = msiEditorNextField(bShift, editorElement);
 
   //Otherwise, we do have a selection.
-  var container = msiNavigationUtils.getCommonAncestorForSelection(editor.selection);
-  var wholeRange = msiNavigationUtils.getRangeContainingSelection(editor.selection);
-//  for ( var containerParent = container; !retVal && (containerParent != null); containerParent = containerParent.parentNode )
-//  {
-    retVal = doTabWithSelectionInNode(container, wholeRange, bShift, editor);
-//  }
+  else
+  {
+    var container = msiNavigationUtils.getCommonAncestorForSelection(editor.selection);
+    var wholeRange = msiNavigationUtils.getRangeContainingSelection(editor.selection);
+  //  for ( var containerParent = container; !retVal && (containerParent != null); containerParent = containerParent.parentNode )
+  //  {
+      retVal = doTabWithSelectionInNode(container, wholeRange, bShift, editor);
+  //  }
+  }
+  if (!retVal && !bShift) // none of the above code did anything. Put in a 2em space
+  {
+    editor.beginTransaction();
+    if (!editor.selection.isCollapsed) editor.deleteSelection(editor.eNone);
+    var wrapper = new Object();
+    wrapper.spaceType="twoEmSpace";
+    msiInsertHorizontalSpace(wrapper,editorElement);
+    editor.endTransaction();
+  }
   return retVal;
 }
 
@@ -7160,6 +7173,13 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
           newitem.node = node;
           count++;
           break;
+        case "graph":
+          newitem = propertiesMenu.appendItem(label.replace("%tagname%","function graph"));
+          newitem.setAttribute("oncommand","openGraphDialog('graph', event.target.node, event.target.editorElement);");
+          newitem.node = node;
+          newitem.editorElement = editorElement;
+          count++;
+          break;
         case "texb":
           newitem = propertiesMenu.appendItem(label.replace("%tagname%","TeX button"));
           newitem.setAttribute("oncommand","openTeXButtonDialog('texb', event.target.node);");
@@ -9770,6 +9790,19 @@ function openFontSizeDialog(tagname, node)
     node);
 }
 
+
+function openGraphDialog(tagname, node, editorElement)
+{
+  if (DOMGListMemberP (node, currentDOMGs)) {
+    return;
+  }
+  DOMGListAdd (node, currentDOMGs);
+  var graph = new Graph();
+  graph.extractGraphAttributes (node);
+  // non-modal dialog, the return is immediate
+  var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/ComputeGraphSettings.xul", "", "chrome,close,titlebar,dependent",
+     editorElement, "cmd_objectProperties", node, graph, node, currentDOMGs);
+}
 
 
 
