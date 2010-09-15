@@ -56,7 +56,7 @@ function SetupMSIMathMenuCommands()
   commandTable.registerCommand("cmd_MSIreviseUnitsCommand",    msiReviseUnitsCommand);
   commandTable.registerCommand("cmd_MSIaddMatrixRowsCmd",       msiInsertMatrixRowsCommand);
   commandTable.registerCommand("cmd_MSIaddMatrixColumnsCmd",    msiInsertMatrixColumnsCommand);
-
+  commandTable.registerCommand("cmd_MSIreviseEqnArrayCommand",    msiReviseEqnArrayCommand);
 
   try {
     gMathStyleSheet = msiColorObj.Format();
@@ -127,6 +127,7 @@ function msiSetupMSIMathMenuCommands(editorElement)
   commandTable.registerCommand("cmd_MSIreviseUnitsCommand",    msiReviseUnitsCommand);
   commandTable.registerCommand("cmd_MSIaddMatrixRowsCmd",       msiInsertMatrixRowsCommand);
   commandTable.registerCommand("cmd_MSIaddMatrixColumnsCmd",    msiInsertMatrixColumnsCommand);
+  commandTable.registerCommand("cmd_MSIreviseEqnArrayCommand",    msiReviseEqnArrayCommand);
 
 //  try {
 //    editorElement.mgMathStyleSheet = msiColorObj.FormatStyleSheet(editorElement);
@@ -1011,6 +1012,35 @@ var msiUnitsDialog =
   {
     var editorElement = msiGetActiveEditorElement(window);
     doUnitsDlg("", "cmd_MSIunitsCommand", editorElement, this);
+  }
+};
+
+var msiReviseEqnArrayCommand = 
+{
+  isCommandEnabled: function(aCommand, dummy)
+  { return true; },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement(window);
+    var theEqnArrayData = msiGetPropertiesDataFromCommandParams(aParams);
+    var theEqnArray = theEqnArrayData.getReferenceNode();
+    var theData = { reviseCommand : aCommand, reviseData : theEqnArrayData };
+//    var theEqnArray = msiGetReviseObjectFromCommandParams(aParams);
+    try
+    {
+//      var argArray = [unitsData];
+//      msiOpenModelessPropertiesDialog("chrome://prince/content/mathUnitsDialog.xul", "_blank", "chrome,close,titlebar,dependent",
+//                                        editorElement, "cmd_MSIreviseUnitsCmd", theUnit, argArray);
+      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/equationArrayDialog.xul", "_blank", "chrome,close,titlebar,dependent, resizable",
+                                                     editorElement, "cmd_MSIreviseEqnArrayCommand", theEqnArray, theData);
+    }
+    catch(exc) { dump("In msiReviseEqnArrayCommand, exception: " + exc + ".\n"); }
+  },
+
+  doCommand: function(aCommand)
+  {
   }
 };
 
@@ -2211,6 +2241,7 @@ function insertMathnameObject(mathNameObj, editorElement)
   var editor = msiGetEditor(editorElement);
   if (mathNameObj.val.length > 0)
   {
+    dump("\ninsertMathnameObject(), mathNameObj.val = " + mathNameObj.val);
     if (mathNameObj.enginefunction)
       insertenginefunction(mathNameObj.val, editorElement);
     else if (("appearance" in mathNameObj) && (mathNameObj.appearance != null))
@@ -2269,8 +2300,10 @@ function insertMathnameObject(mathNameObj, editorElement)
 //        dump("After inserting math operator, focus node and offset are [" + focusNode.nodeName + ", " + focusOffset + "].\n");
       }
     }
-    else
+    else {
+      dump("\ninsertMathnameObject(), default");
       insertmathname(mathNameObj.val, editorElement);  //these go in as "mi"s
+    }
   }
 }
 
@@ -2301,6 +2334,62 @@ function doMatrixDlg(editorElement)
     insertmatrix(o.rows, o.cols, o.rowsignature, editorElement);
 }
 
+function reviseEqnArray(reviseData, dialogData, editorElement)
+{
+  var infoStr = "The display should contain " + dialogData.numLines + " lines, with subequations ";
+  if (dialogData.subEqnNumbersEnabled)
+  {
+    infoStr += "enabled, subequation continuation ";
+    infoStr += dialogData.subEqnContinuation ? "enabled" : "disabled";
+    if (dialogData.wholeMarker && dialogData.wholeMarker.length)
+      infoStr += ", and a key for the whole display of '" + dialogData.wholeMarker + "'. The equation array is aligned "
+    else
+      infoStr += ". The equation array is aligned "
+  }
+  else
+    infoStr += "disabled. The equation array is aligned ";
+  switch(dialogData.alignment)
+  {
+    case "alignSingleEquation":
+      infoStr += "as a single equation on multiple lines.\n";
+    break;
+    case "alignCentered":
+      infoStr += "with each line centered.\n";
+    break;
+    default:
+    case "alignStandard":
+      infoStr += "as usual.\n";
+    break;
+  }
+  var currData = null;
+  for (var ix = 0; ix < dialogData.numLines; ++ix)
+  {
+    currData = dialogData.lineData[ix];
+    infoStr += "\n  Line " + String(ix + 1);
+    if (!currData.bNumbered)
+      infoStr += " is unnumbered; ";
+    else
+    {
+      if (currData.mCustomLabel && currData.mCustomLabel.length)
+      {
+        infoStr += " has custom label '" + currData.mCustomLabel + "'";
+        if (currData.suppressAnnotation)
+          infoStr += " with annotations suppressed";
+      }
+      else
+        infoStr += " is numbered automatically";
+      if (currData.mMarker && currData.mMarker.length)
+        infoStr += ", and has a key of '" + currData.mMarker + "'; ";
+      else
+        infoStr += "; ";
+    }
+    if ( (ix + 1 < dialogData.numLines) && currData.spaceAfterLineStr && currData.spaceAfterLineStr.length)
+      infoStr += "additional spacing after the line is " + currData.spaceAfterLineStr + ".";
+    else
+      infoStr += "there is no additional spacing after the line.";
+  }
+  AlertWithTitle("Unimplemented operation", "In msiReviseDecorationsCmd, revising equatino array, revise function unimplemented.\n\n" + infoStr);
+}
 
 var msiMathStyleUtils =
 {
