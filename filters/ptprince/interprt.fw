@@ -1443,8 +1443,6 @@ case CMD_EXTENSION: {
          target += ".";
          target += fn.GetExtString();
 
-         Typesetter::AppendTag(target.c_str());
-
          LOG("\n---- To " << target.c_str());
 
          // Copy the file
@@ -1464,6 +1462,14 @@ case CMD_EXTENSION: {
          if (graphfile) fclose(graphfile);
          if (targetfile) fclose(targetfile);
 
+
+         std::string reltarget;
+         reltarget += "graphics/";
+         reltarget += fn.GetNameString();
+         reltarget += ".";
+         reltarget += fn.GetExtString();
+
+         Typesetter::AppendTag(reltarget.c_str());
 
 
          break;
