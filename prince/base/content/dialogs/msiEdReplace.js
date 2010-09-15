@@ -22,6 +22,7 @@ function initDialogObject()
   gReplaceDialog.replace         = document.getElementById("replace");
   gReplaceDialog.replaceAndFind  = document.getElementById("replaceAndFind");
   gReplaceDialog.replaceAll      = document.getElementById("replaceAll");
+//  gReplaceDialog.multiParaCheckbox = document.getElementById("multiParaCheckbox");
 
   gReplaceDialog.findContentFilter = null;
   gReplaceDialog.replaceContentFilter = null;
@@ -119,6 +120,8 @@ function loadDialog()
   editorDocLoadedObserverData.mObserver = substitutionControlObserver;
 
   gReplaceDialog.findInput.mInitialDocObserver = [commandSetModifiedObserverData, editorDocLoadedObserverData, commandBoldObserverData];
+  gReplaceDialog.findInput.mbSinglePara = true;
+  gReplaceDialog.replaceInput.mbSinglePara = true;
 
 //  msiInitializeEditorForElement(gReplaceDialog.findInput, theStringSource, true);
 
@@ -144,6 +147,8 @@ function loadDialog()
   gReplaceDialog.searchBackwards.checked = (gFindInst.findBackwards
                                             ? gFindInst.findBackwards
                                             : gFindService.findBackwards);
+
+//  gReplaceDialog.multiParaCheckbox.checked = false;
 
   gReplaceDialog.tabOrderArray = new Array( gReplaceDialog.findInput, gReplaceDialog.replaceInput, gReplaceDialog.caseSensitive,
                                        gReplaceDialog.wrap, gReplaceDialog.searchBackwards,
@@ -185,7 +190,7 @@ function onLoad()
 
   // Fill dialog.
   loadDialog();
-
+//  toggleMultiPara();
 //  if (gReplaceDialog.findInput.value)
 //    gReplaceDialog.findInput.select();
 //  else
@@ -193,6 +198,12 @@ function onLoad()
   msiSetInitialDialogFocus(gReplaceDialog.findInput);
 }
 
+//function toggleMultiPara()
+//{
+//  msiSetEditorSinglePara(gReplaceDialog.findInput, gReplaceDialog.multiParaCheckbox.checked);
+//  msiSetEditorSinglePara(gReplaceDialog.replaceInput, gReplaceDialog.multiParaCheckbox.checked);
+//}
+//
 function onUnload() {
   // Disconnect context from this dialog.
   gFindReplaceData.replaceDialog = null;
