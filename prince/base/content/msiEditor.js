@@ -258,7 +258,7 @@ function msiEditorArrayInitializer()
   };
   this.finishedEditor = function(anEditorElement)
   {
-    var editorIndex = this.findEditorInfo(anEditorElement);
+    var editorIndex = this.findEditorInfo(anEditorElement, true);
     if (editorIndex >= 0)
     {
       this.mInfoList[editorIndex].bDone = true;
@@ -268,7 +268,7 @@ function msiEditorArrayInitializer()
 //    dump( "In msiEditorArrayInitializer.finishedEditor for editor [" + anEditorElement.id + "]; moving on to editor number" + editorIndex + "].\n" );
     this.initializeNextEditor(editorIndex);
   };
-  this.findEditorInfo = function(anEditorElement)
+  this.findEditorInfo = function(anEditorElement, bReport)
   {
     if (anEditorElement == null)
       return -1;
@@ -279,7 +279,8 @@ function msiEditorArrayInitializer()
         return ix;
       }
     }
-    dump("In msiEditorArrayInitializer, unable to find editorElement " + anEditorElement.id + "!\n");
+    if (bReport)
+      dump("In msiEditorArrayInitializer, unable to find editorElement " + anEditorElement.id + "!\n");
     return -1;
   };
   this.initializeNextEditor = function(editorIndex)
@@ -492,6 +493,15 @@ function addClickEventListenerForEditor(editorElement)
 }
 
 
+function addKeyDownEventListenerForEditor(editorElement)
+{
+  try
+  {
+    editorElement.contentWindow.addEventListener("keydown", msiEditorKeyListener, true);
+  }
+  catch(ex) {dump("Unable to register keydown event listener; error [" + ex + "].\n");}
+}
+
 function addFocusEventListenerForEditor(editorElement)
 {
 //  if (msiIsTopLevelEditor(editorElement))
@@ -514,6 +524,18 @@ function addFocusEventListenerForEditor(editorElement)
       AlertWithTitle("Error", errMsg);
     }
 //  }
+}
+
+function msiEditorKeyListener(event)
+{
+  if (event.keyCode == event.DOM_VK_ENTER || event.keyCode == event.DOM_VK_RETURN)
+  {
+    if (msiEditorCheckEnter(event))
+    {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  }
 }
 
 function msiEditorOnFocus(event)
@@ -834,7 +856,7 @@ function msiEditorDocumentObserver(editorElement)
           }
 
           try {
-            this.mEditorElement.mgMathStyleSheet = msiColorObj.formatStyleSheet(editorElement);
+            this.mEditorElement.mgMathStyleSheet = msiColorObj.FormatStyleSheet(editorElement);
 //            dump("Internal style sheet contents: \n\n" + editorElement.mgMathStyleSheet + "\n\n");
           } catch(e) { dump("Error formatting style sheet using msiColorObj: [" + e + "]\n"); }
           // Now is a good time to initialize the key mapping. This is a service, and so is initialized only once. Later
@@ -906,6 +928,8 @@ function msiEditorDocumentObserver(editorElement)
         {
           addClickEventListenerForEditor(this.mEditorElement);
           addFocusEventListenerForEditor(this.mEditorElement);
+          addKeyDownEventListenerForEditor(this.mEditorElement);
+
           this.mEditorElement.pdfModCount = 0;
 
           // Force color widgets to update
@@ -946,13 +970,13 @@ function msiEditorDocumentObserver(editorElement)
         {
           try
           {
-            var documentInfo = new msiDocumentInfo(editorElement);
+            var documentInfo = new msiDocumentInfo(this.mEditorElement);
             documentInfo.initializeDocInfo();
             var dlgInfo = documentInfo.getDialogInfo();  //We aren't going to launch the dialog, just want the data in this form.
             if (dlgInfo.saveOptions.storeViewSettings)
-              editorElement.viewSettings = msiGetViewSettingsFromDocument(editorElement);
+              this.mEditorElement.viewSettings = msiGetViewSettingsFromDocument(this.mEditorElement);
             else
-              msiEditorDoShowInvisibles(editorElement, getViewSettingsFromViewMenu());
+              msiEditorDoShowInvisibles(this.mEditorElement, getViewSettingsFromViewMenu());
           }
           catch (exc) {dump("Exception in msiEditorDocumentObserver obs_documentCreated, showing invisibles: " + exc + "\n");}
         }
@@ -1001,6 +1025,11 @@ function msiEditorDocumentObserver(editorElement)
 //        extraDumpStr += this.mEditorElement.mEditorSeqInitializer;
 //        dump(extraDumpStr + "].\n");
 //        msiDumpWithID("About to check for mEditorSeqInitializer in msiEditorDocumentObserver obs_documentCreated for editor [@].\n", this.mEditorElement);
+        if (msiIsHTMLEditor(this.mEditorElement) && ("mbSinglePara" in this.mEditorElement))
+        {
+          msiSetEditorSinglePara(this.mEditorElement, this.mEditorElement.mbSinglePara);
+        }
+
         if (bIsRealDocument && ("mEditorSeqInitializer" in this.mEditorElement) && (this.mEditorElement.mEditorSeqInitializer != null))
         {
           this.mEditorElement.mEditorSeqInitializer.finishedEditor(this.mEditorElement);
@@ -1248,7 +1277,8 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
       contentViewer.forceCharacterSet = charset;
     }
     dump("Trying to load editor with url = "+docurl.spec+"\n");
-    msiUpdateWindowTitle(null, null);
+    if ("msiUpdateWindowTitle" in window)
+      msiUpdateWindowTitle(null, null);
     msiEditorLoadUrl(editorElement, docurl);
   }
 //    msiDumpWithID("Back from call to msiEditorLoadUrl for editor [@].\n", editorElement);
@@ -3385,7 +3415,68 @@ function msiEditorNextField(bShift, editorElement)
   return retVal;
 }
 
-function msiEditorDoTab(bShift, editorElement)
+//The sole purpose of this function is to block certain <enter>s from being processed, and hand them off instead to our parent (dialog?) window.
+function msiEditorCheckEnter(event)
+{
+  var retVal = false;
+  var editorElement = msiGetEditorElementFromEvent(event);
+  var editor = null;
+  if (editorElement)
+    editor = msiGetEditor(editorElement);
+  if (!editor || !msiEditorIsSinglePara(editorElement))
+  {
+    if (editor)
+      dump("In msiEditorCheckEnter, we don't seem to have a single-para editor; editor's flags are [" + editor.flags + "].\n");
+    else
+      dump("In msiEditorCheckEnter, we don't find an editor!.\n");
+    return false;  //In this case, we let nature take its course
+  }
+
+  dump("In msiEditorCheckEnter, we have a single-para editor.\n");
+  var container = msiNavigationUtils.getCommonAncestorForSelection(editor.selection);
+  if (msiGetContainingTableOrMatrix(container))
+    return false;
+  
+  if (editor.tagListManager.selectionContainedInTag("math",null))
+  {
+    //Here we have to be careful. If we're out in the open in math, it would be a normal paragraph entry, which we don't want.
+    //If we're inside a math "template", we'll pass it on down.
+    var foundSplittable = false;
+    for (var parent = container; parent && !foundSplittable; parent = parent.parentNode)
+    {
+      if (msiNavigationUtils.isMathTemplate(parent))
+      {
+        foundSplittable = true;
+      }
+      else if (msiNavigationUtils.isFence(parent))
+      {
+        foundSplittable = true;
+      }
+      else if (msiGetBaseNodeName(parent) == "math")
+      {
+        foundSplittable = (msiGetBaseNodeName(parent.parentNode) == "msidisplay");
+        break;
+      }
+    }
+    dump("In msiEditorCheckEnter, we're in math, and we " + (foundSplittable ? "found" : "didn't find") + " a splittable parent.\n");
+    if (foundSplittable)
+      return false;
+  }
+
+  //So we're not in a math template or a table. We want to block this one from the editor.
+  var dlg = window.document.documentElement;
+  if (dlg.nodeName == "dialog")
+  {
+//  if (dlg.hasAttribute("ondialogaccept"))
+//    var acceptFnc = new Function(dlg.getAttribute("ondialogaccept"));
+//    if (acceptFnc())
+//      window.close();
+    dlg._hitEnter(event);
+  }
+  return true;
+}
+
+function msiEditorDoTab(event, bShift)
 {
   function doTabWithSelectionInNode(aNode, totalRange, anEditor)
   {
@@ -3407,8 +3498,11 @@ function msiEditorDoTab(bShift, editorElement)
   }
 
   var retVal = false;
+  var editorElement = msiGetEditorElementFromEvent(event);
   if (!editorElement)
-    editorElement = msiGetActiveEditorElement();
+    return false;
+
+//    editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   if (bShift && !editor.selection.isCollapsed)  //We don't do anything if there's a selection and the shift key is down
     return false;
@@ -4104,7 +4198,7 @@ function msiSetEditMode(mode, editorElement)
           if (titleNode && titleNode.firstChild && titleNode.firstChild.data)
             title = titleNode.firstChild.data;
         }
-        if (editor.document.title != title)
+        if (editor.document.title != title && ("msiUpdateWindowTitle" in window))
           msiUpdateWindowTitle(null, null);
 
       } catch (ex) {
@@ -9529,10 +9623,10 @@ function msiDialogEditorContentFilter(anEditorElement)
       case "sw:dialogbase":
         return this.skip;
       break;
-      case "mi":
-        if (aNode.hasAttribute("tempinput") && (aNode.getAttribute("tempinput")=="true") )
-          return this.reject;
-      break;
+//      case "mi":
+//        if (aNode.hasAttribute("tempinput") && (aNode.getAttribute("tempinput")=="true") )
+//          return this.reject;
+//      break;
     }
     return this.acceptAll;  
     //We still need to fill in the tags for which we want to accept the tag but leave open the possibility of not accepting a child.
@@ -9541,6 +9635,8 @@ function msiDialogEditorContentFilter(anEditorElement)
   };
   this.getXMLNodesForParent = function(newParent, parentNode)
   {
+    if (!parentNode || !parentNode.childNodes)
+      return;
     for (var ix = 0; ix < parentNode.childNodes.length; ++ix)
     {
       switch( this.dlgNodeFilter(parentNode.childNodes[ix]) )
@@ -9796,6 +9892,7 @@ function msiDialogEditorContentFilter(anEditorElement)
   {
     var rootNode = null;
     var editor = msiGetEditor(this.mEditorElement);
+    var doc = null;
     if (editor != null)
       doc = editor.document;
     if (doc != null)
