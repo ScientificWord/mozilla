@@ -35,6 +35,9 @@ var msiSearchUtils =
       case "tempinput":
         returnVal = false;
       break;
+      case "temp":
+        returnVal = false;
+      break;
       default:
         if (attrName.indexOf("xmlns:") == 0)
           return false;

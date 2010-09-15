@@ -865,7 +865,10 @@ function msiGetEditorElementFromEvent(theEvent)
   }
 
   var editorElement = theEvent.currentTarget;
-  if (!("editorType" in editorElement))
+  if (msiGetBaseNodeName(editorElement) == "key")
+    editorElement = msiGetCurrentEditorElementForWindow(window);
+
+  if (!editorElement || !("editortype" in editorElement))
   {
     var origTarget = theEvent.explicitOriginalTarget;
     if (origTarget == null)
@@ -2559,10 +2562,20 @@ function msiSetEditorSinglePara(editorElement, bSet)
             flags | nsIPlaintextEditor.eEditorSingleLineMask :
             flags & ~nsIPlaintextEditor.eEditorSingleLineMask;
     } catch(e) {}
-
+//    editorElement.mbSinglePara = bSet;
     // update all commands
     window.updateCommands("create");
   }  
+}
+
+function msiEditorIsSinglePara(editorElement)
+{
+  if (editorElement.mbSinglePara)
+    return true;
+  var editor = msiGetEditor(editorElement);
+  if (editor && editor.document)
+    return ((editor.flags & nsIPlaintextEditor.eEditorSingleLineMask) != 0);
+  return false;
 }
 
 function msiLaunchSingleInstanceDialog(chromeUrl, dlgName, options, targetEditor, commandID, extraArgsArray)
