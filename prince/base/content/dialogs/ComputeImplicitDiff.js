@@ -23,13 +23,20 @@ function Startup(){
 //  msiInitializeEditorForElement(indEditor, theStringSource, true);
   var depEditor = document.getElementById("depVarFrame");
 //  msiInitializeEditorForElement(depEditor, theStringSource, true);
+  indEditor.mbSinglePara = true;
+  depEditor.mbSinglePara = true;
 
   var editorInitializer = new msiEditorArrayInitializer();
   editorInitializer.addEditorInfo(indEditor, theStringSource, true);
   editorInitializer.addEditorInfo(depEditor, theStringSource, true);
   editorInitializer.doInitialize();
-  msiSetEditorSinglePara(indEditor, true);
-  msiSetEditorSinglePara(depEditor, true);
+//  msiSetEditorSinglePara(indEditor, true);
+//  msiSetEditorSinglePara(depEditor, true);
+  dump("After setting up, depEditor has mbSinglePara [");
+  if ("mbSinglePara" in depEditor)
+    dump( depEditor.mbSinglePara ? "true]\n" : "false]\n" );
+  else
+    dump( "undefined]\n" );
 
 ////SLS the following copied from editor.js
 //  gSourceContentWindow = document.getElementById("content-frame");
