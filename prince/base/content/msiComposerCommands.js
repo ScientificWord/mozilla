@@ -2320,7 +2320,7 @@ function msiSoftSave( editor, editorElement)
   var editorDoc = editor.document;
 
   if (!editorDoc)
-    throw Components.results.NS_ERROR_NOT_INITIALIZED;f
+    throw Components.results.NS_ERROR_NOT_INITIALIZED;
   var saveSelection = editor.selection;
 
   // if we don't have the right editor type bail (we handle text and html)
@@ -3542,14 +3542,22 @@ var msiFindCommand =
   doCommand: function(aCommand, dummy)
   {
     var editorElement = msiGetActiveEditorElement();
-    try {
-      msiOpenModelessDialog("chrome://prince/content/msiEdReplace.xul", "replace", "chrome,close,titlebar,dependent,resizable",
-                                        editorElement, "cmd_find", this, editorElement);
-//      window.openDialog("chrome://editor/content/EdReplace.xul", "replace",
-//                        "chrome,modal,titlebar", editorElement);
+    var editor = editorElement.getEditor(editorElement.contentWindow);
+    if (window.gEditorDisplayMode == kDisplayModeSource)
+    {
+      //openFastCursorBar(false, true);  Didn't work
     }
-    catch(ex) {
-      dump("*** Exception: couldn't open Replace Dialog: " + ex + "\n");
+    else
+    {
+      try {
+        msiOpenModelessDialog("chrome://prince/content/msiEdReplace.xul", "replace", "chrome,close,titlebar,dependent,resizable",
+                                          editorElement, "cmd_find", this, editorElement);
+  //      window.openDialog("chrome://editor/content/EdReplace.xul", "replace",
+  //                        "chrome,modal,titlebar", editorElement);
+      }
+      catch(ex) {
+        dump("*** Exception: couldn't open Replace Dialog: " + ex + "\n");
+      }
     }
     //window.content.focus();
   }
@@ -4765,7 +4773,7 @@ function msiInsertHorizontalSpace(dialogData, editorElement)
 //  };
   
  // editor.deleteSelection(1);
-  var parent = editor.selection.focusNode;
+  var parent = editor.selection.focusNode;  //this repeats code just above the comment -- BBM
   var offset = editor.selection.focusOffset;
   try {
     var node = editor.document.createElement('hspace');
@@ -5843,6 +5851,8 @@ function msiDocumentInfo(editorElement)
   this.initializeDocInfo = function()
   {
     var docHead = msiGetPreamble(this.mEditor);
+    if (!docHead)
+      return;
 
     this.generalSettings = new Object();
     this.comments = new Object();
