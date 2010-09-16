@@ -2321,6 +2321,7 @@ function msiSoftSave( editor, editorElement)
 
   if (!editorDoc)
     throw Components.results.NS_ERROR_NOT_INITIALIZED;
+  var saveSelection = editor.selection;
 
   // if we don't have the right editor type bail (we handle text and html)
 //  var editorType = editor.editortype;
@@ -2330,22 +2331,21 @@ function msiSoftSave( editor, editorElement)
 //
   
   // Get the current definitions from compute engine and place in preamble.
-  var defnListString = "<body>" + GetCurrentEngine().getDefinitions() + "</body>";
-
+  var defnListString = GetCurrentEngine().getDefinitions();
   var preamble = editorDoc.getElementsByTagName("preamble")[0];
-
-  var oldDefnList = editorDoc.getElementsByTagName("definitionlist")[0];
-
-  if (oldDefnList)
-     oldDefnList.parentNode.removeChild(oldDefnList);
-     
-
-  var defnList = editorDoc.createElement("definitionlist");
-
-  insertXML(editor, defnListString, defnList, 0, true);
-
-  preamble.appendChild(defnList);
-
+  if (preamble)
+  {
+    var oldDefnList = preamble.getElementsByTagName("definitionlist")[0];
+    if (oldDefnList)
+       oldDefnList.parentNode.removeChild(oldDefnList);
+    if (defnListString.length > 0)
+    {
+      defnListString = "<doc>"+defnListString.replace(/<p>/,"<para>","g").replace(/<\/p>/,"</para>",g)+"</doc>";
+      var defnList = editorDoc.createElement("definitionlist");
+      insertXML(editor, defnListString, defnList, 0, true);
+      preamble.appendChild(defnList);
+    }
+  }
 
   var saveAsTextFile = msiIsSupportedTextMimeType(aMimeType);
   // check if the file is to be saved is a format we don't understand; if so, bail
@@ -2368,6 +2368,7 @@ function msiSoftSave( editor, editorElement)
   var success;
   success = msiOutputFileWithPersistAPI(editorDoc, currentFile, null, aMimeType, editorElement);
   if (success) editor.contentsMIMEType = aMimeType;
+  editor.selection = saveSelection;
   return success;
 }
 
@@ -3452,8 +3453,8 @@ var msiFontColor =
 //    var htmleditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
     var colorObj = { NoDefault:true, Type:"Font", TextColor:"black", PageColor:0, Cancel:false };
 
-    window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "resizable=yes, chrome,close,titlebar,modal", 
-    "", colorObj);
+    window.openDialog("chrome://prince/content/color.xul", "colorpicker", "resizable=yes, chrome,close,titlebar,modal", 
+    "", colorObj, null);
 
     // User canceled the dialog
     if (colorObj.Cancel)
@@ -4772,7 +4773,7 @@ function msiInsertHorizontalSpace(dialogData, editorElement)
 //  };
   
  // editor.deleteSelection(1);
-  var parent = editor.selection.focusNode;
+  var parent = editor.selection.focusNode;  //this repeats code just above the comment -- BBM
   var offset = editor.selection.focusOffset;
   try {
     var node = editor.document.createElement('hspace');
@@ -5850,6 +5851,8 @@ function msiDocumentInfo(editorElement)
   this.initializeDocInfo = function()
   {
     var docHead = msiGetPreamble(this.mEditor);
+    if (!docHead)
+      return;
 
     this.generalSettings = new Object();
     this.comments = new Object();

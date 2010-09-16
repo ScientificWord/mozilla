@@ -16,11 +16,10 @@
    -
    - The Initial Developer of the Original Code is
    - Netscape Communications Corporation.
-   - Portions created by the Initial Developer are Copyright (C) 1998-1999
+   - Portions created by the Initial Developer are Copyright (C) 1998-2000
    - the Initial Developer. All Rights Reserved.
    -
    - Contributor(s):
-   -   Akkana Peck
    -
    - Alternatively, the contents of this file may be used under the terms of
    - either of the GNU General Public License Version 2 or later (the "GPL"),
@@ -36,28 +35,21 @@
    -
    - ***** END LICENSE BLOCK ***** -->
 
-<!-- extracted from EdReplace.xul -->
-
-<!ENTITY replaceDialog.title "Find and Replace">
-<!ENTITY findField.label "Find text:">
-<!ENTITY findField.accesskey "n">
-<!ENTITY replaceField.label "Replace with:">
-<!ENTITY replaceField.accesskey "e">
-<!ENTITY caseSensitiveCheckbox.label "Match upper/lower case">
-<!ENTITY caseSensitiveCheckbox.accesskey "c">
-<!ENTITY wrapCheckbox.label "Wrap around">
-<!ENTITY wrapCheckbox.accesskey "W">
-<!ENTITY backwardsCheckbox.label "Search backwards">
-<!ENTITY backwardsCheckbox.accesskey "b">
-<!ENTITY multiParaCheckbox.label "Allow multi-paragraph search">
-<!ENTITY multiParaCheckbox.accesskey "m">
-<!ENTITY findNextButton.label "Find Next">
-<!ENTITY findNextButton.accesskey "F">
-<!ENTITY replaceButton.label "Replace">
-<!ENTITY replaceButton.accesskey "R">
-<!ENTITY replaceAndFindButton.label "Replace and Find">
-<!ENTITY replaceAndFindButton.accesskey "d">
-<!ENTITY replaceAllButton.label "Replace All">
-<!ENTITY replaceAllButton.accesskey "A">
-<!ENTITY closeButton.label "Close">
-<!ENTITY notFoundWarning.label "The text you entered was not found.">
+<!ENTITY windowTitle.label "Color">
+<!ENTITY lastPickedColor.label "Last-picked color">
+<!ENTITY lastPickedColor.accesskey "L">
+<!ENTITY setColor1.label "Click on a color or">
+<!ENTITY setColor2.label "enter an HTML color string">
+<!ENTITY setColor2.accesskey "H">
+<!ENTITY setColorExample.label "(e.g.: &quot;#0000ff&quot; or &quot;blue&quot;):">
+<!ENTITY default.label "Default">
+<!ENTITY default.accesskey "D">
+<!ENTITY palette.label "Palette:">
+<!ENTITY standardPalette.label "Standard">
+<!ENTITY webPalette.label "All web colors">
+<!ENTITY background.label "Background for:">
+<!ENTITY background.accesskey "B">
+<!ENTITY table.label "Table">
+<!ENTITY table.accesskey "T">
+<!ENTITY cell.label "Cell(s)">
+<!ENTITY cell.accesskey "C">
