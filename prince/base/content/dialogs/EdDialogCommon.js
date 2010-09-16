@@ -456,7 +456,8 @@ function GetLocalFileURL(filterType)
   if (filterType == "img")
   {
     fp.init(window, GetString("SelectImageFile"), nsIFilePicker.modeOpen);
-    fp.appendFilters(nsIFilePicker.filterImages);
+    fp.appendFilter("Embeddable object",
+    "*.png; *.gif; *.jpg; *.jpeg; *.xvz; *.xvc; *.pdf; *.mov; *.qt; *.mpg; *.mp4; *.svg; *.pict; *.tga; *.tif; *.swf;");
     fileType = "image";
   }
   // Current usage of this is in Link dialog,
