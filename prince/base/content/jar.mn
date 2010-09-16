@@ -33,6 +33,8 @@ prince.jar:
 * content/Brackets.xul      (dialogs/Brackets.xul)
 * content/chamtest.js       (dialogs/chamtest.js)
 * content/chamtest.xul      (dialogs/chamtest.xul)
+  content/color.xul         (dialogs/color.xul)
+  content/color.js          (dialogs/color.js)
 * content/ComputeApproxIntegral.js      (dialogs/ComputeApproxIntegral.js)
 * content/ComputeApproxIntegral.xul     (dialogs/ComputeApproxIntegral.xul)
 * content/ComputeFillMatrix.js      (dialogs/ComputeFillMatrix.js)

@@ -6820,30 +6820,36 @@
 %% Replace with contortion to convert & in parameter 4
 
 \begingroup
-
    \catcode`\&=13%
    \gdef&{\char`\&amp;}
 \endgroup
   
 \def\msihyperref#1#2#3{%
-     \def\continue{\msihyperrefB{#1}{#2}{#3}}%
+     %\def\continue{\msihyperrefB{#1}{#2}{#3}}%
+     \begingroup
      \catcode`\&=13%
-     \afterassignment\continue
-     \let\repl
+     %\afterassignment\continue
+     %\let\repl
+     \msihyperrefB{#1}{#2}{#3}%
 }
 
 \def\msihyperrefB#1#2#3#4{%
-     \xdef\repl{#4}%
-     \catcode`\&=4\relax
-     \temptoksa={\out@hyperref{#1}{#2}{#3}{\repl}}%
-}
+     %\xdef\repl{#4}%
+     %\catcode`\&=4\relax
+     \endgroup
+     \out@hyperref{#1}{#2}{#3}{#4}}%
 
 
-\def\hyperref#1#2#3{%
-  \begingroup
-     \catcode`\&=13%
-     \msihyperrefB{#1}{#2}{#3}%
-}
+
+%%\def\hyperref#1#2#3{%
+%%  \begingroup
+%%     \catcode`\&=13%
+%%     \msihyperrefB{#1}{#2}{#3}%
+%%}
+
+\let\hyperref\msihyperref
+
+
 
 
 \def\CustomNote{%

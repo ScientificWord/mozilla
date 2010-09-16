@@ -34,26 +34,6 @@
     </menupopup>
   </menulist>
   <label value="&advanced.label;" accesskey="&advanced.accesskey;" control="otfont.advanced"/>
-  <textbox id="otfont.advanced" />
-  <!-- hbox>
-    <vbox>
-      <label>Font size</label>
-      <textbox id="otfont.fontsize" style="width: 3.5em" onkeypress="handleChar(event,this);"
-       max="200" min="5" increment="1" tooltip="The size of the font"/>
-    </vbox>
-    <vbox align="center">
-     <label>Units</label>
-     <menulist id="otfont.units"  
-            oncommand="switchUnits();"  >
-       <menupopup>
-         <menuitem id="otfont.pt" label="pt" value="pt"/>
-         <menuitem id="otfont.cm" label="cm" value="cm"/>
-         <menuitem id="otfont.mm" label="mm" value="mm"/>
-         <menuitem id="otfont.inch" label="in" value="in"/>
-       </menupopup>
-     </menulist>
-     <hbox flex="1"/>
-    </vbox>
-  </hbox -->
+  <!--textbox id="otfont.advanced" /-->
     
 </dialog>
