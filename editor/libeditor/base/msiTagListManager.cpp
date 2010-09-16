@@ -504,7 +504,6 @@ msiTagListManager::BuildStringArray(const nsAString & strTagClass)
 NS_IMETHODIMP 
 msiTagListManager::BuildParentTagList()
 {
-  // BBM todo: handle namespaces here
   nsresult res;
   nsAutoString strTemp;
   nsAutoString strTemp2;
