@@ -3541,14 +3541,22 @@ var msiFindCommand =
   doCommand: function(aCommand, dummy)
   {
     var editorElement = msiGetActiveEditorElement();
-    try {
-      msiOpenModelessDialog("chrome://prince/content/msiEdReplace.xul", "replace", "chrome,close,titlebar,dependent,resizable",
-                                        editorElement, "cmd_find", this, editorElement);
-//      window.openDialog("chrome://editor/content/EdReplace.xul", "replace",
-//                        "chrome,modal,titlebar", editorElement);
+    var editor = editorElement.getEditor(editorElement.contentWindow);
+    if (window.gEditorDisplayMode == kDisplayModeSource)
+    {
+      //openFastCursorBar(false, true);  Didn't work
     }
-    catch(ex) {
-      dump("*** Exception: couldn't open Replace Dialog: " + ex + "\n");
+    else
+    {
+      try {
+        msiOpenModelessDialog("chrome://prince/content/msiEdReplace.xul", "replace", "chrome,close,titlebar,dependent,resizable",
+                                          editorElement, "cmd_find", this, editorElement);
+  //      window.openDialog("chrome://editor/content/EdReplace.xul", "replace",
+  //                        "chrome,modal,titlebar", editorElement);
+      }
+      catch(ex) {
+        dump("*** Exception: couldn't open Replace Dialog: " + ex + "\n");
+      }
     }
     //window.content.focus();
   }
