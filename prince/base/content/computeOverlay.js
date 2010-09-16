@@ -1831,7 +1831,7 @@ function doComputeImplicitDiff(math, editorElement, cmdHandler)
   try {
     msiOpenModelessDialog("chrome://prince/content/ComputeImplicitDiff.xul", "_blank", "chrome,close,titlebar,dependent",
                                       editorElement, "cmd_MSIComputeImplicitDiff", cmdHandler, o);
-  } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeFillMatrix: [" + e + "]"); return;}
+  } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeImplicitDiff: [" + e + "]"); return;}
 }
 
 function finishComputeImplicitDiff(math, editorElement, o)

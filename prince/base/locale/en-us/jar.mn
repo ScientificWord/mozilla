@@ -50,6 +50,7 @@ en-US.jar:
   locale/ComputeVarList.dtd               (dialogs/ComputeVarList.dtd)
   locale/Decorations.dtd                  (dialogs/Decorations.dtd)
   locale/EditorSpellCheck.dtd             (dialogs/EditorSpellCheck.dtd)
+  locale/edcolorpicker.dtd                (dialogs/edcolorpicker.dtd)
   locale/EditorPersonalDictionary.dtd     (dialogs/EditorPersonalDictionary.dtd)
   locale/latexcontentsline.dtd            (dialogs/latexcontentsline.dtd)
   locale/latexheaders.dtd                 (dialogs/latexheaders.dtd)
