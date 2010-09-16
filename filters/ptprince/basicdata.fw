@@ -6,7 +6,7 @@ fonts, and boxes. We also gather together all of the parameters
 defined in the \TeX{} language. These include simple parameters
 like @{\baselineskip@} and arrays like @{\count@} and @{\catcode@}.
 
-Here's ths structure that holds all the parameters:
+Here's the structure that holds all the parameters:
 
 @$@<Parameter struct declaration@>==@{@-
 struct Global {
@@ -85,6 +85,7 @@ static int msidollar;
 static int msioutput;
 static int msitraceall;
 @}
+
 
 
 And these have to be defined in the @{.cpp@} file:
