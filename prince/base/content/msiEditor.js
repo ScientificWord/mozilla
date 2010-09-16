@@ -3489,6 +3489,7 @@ function msiEditorDoTab(event, bShift)
       case "mtr":
         var aTableCell = msiFindCellFromPositionInTableOrMatrix(aNode, totalRange.endContainer, totalRange.endOffset, false, anEditor);
         editor.selection.collapse(aTableCell, 0);
+        rv = true;
       break;
 
       default:
@@ -3507,15 +3508,27 @@ function msiEditorDoTab(event, bShift)
   if (bShift && !editor.selection.isCollapsed)  //We don't do anything if there's a selection and the shift key is down
     return false;
   if (editor.selection.isCollapsed)
-    return msiEditorNextField(bShift, editorElement);
+    retVal = msiEditorNextField(bShift, editorElement);
 
   //Otherwise, we do have a selection.
-  var container = msiNavigationUtils.getCommonAncestorForSelection(editor.selection);
-  var wholeRange = msiNavigationUtils.getRangeContainingSelection(editor.selection);
-//  for ( var containerParent = container; !retVal && (containerParent != null); containerParent = containerParent.parentNode )
-//  {
-    retVal = doTabWithSelectionInNode(container, wholeRange, bShift, editor);
-//  }
+  else
+  {
+    var container = msiNavigationUtils.getCommonAncestorForSelection(editor.selection);
+    var wholeRange = msiNavigationUtils.getRangeContainingSelection(editor.selection);
+  //  for ( var containerParent = container; !retVal && (containerParent != null); containerParent = containerParent.parentNode )
+  //  {
+      retVal = doTabWithSelectionInNode(container, wholeRange, bShift, editor);
+  //  }
+  }
+  if (!retVal && !bShift) // none of the above code did anything. Put in a 2em space
+  {
+    editor.beginTransaction();
+    if (!editor.selection.isCollapsed) editor.deleteSelection(editor.eNone);
+    var wrapper = new Object();
+    wrapper.spaceType="twoEmSpace";
+    msiInsertHorizontalSpace(wrapper,editorElement);
+    editor.endTransaction();
+  }
   return retVal;
 }
 
@@ -7547,6 +7560,13 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
           newitem.node = node;
           count++;
           break;
+        case "graph":
+          newitem = propertiesMenu.appendItem(label.replace("%tagname%","function graph"));
+          newitem.setAttribute("oncommand","openGraphDialog('graph', event.target.node, event.target.editorElement);");
+          newitem.node = node;
+          newitem.editorElement = editorElement;
+          count++;
+          break;
         case "texb":
           newitem = propertiesMenu.appendItem(label.replace("%tagname%","TeX button"));
           newitem.setAttribute("oncommand","openTeXButtonDialog('texb', event.target.node);");
@@ -9274,8 +9294,11 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
       editorElement = findEditorElementForDocument(element.ownerDocument);
 
     var elementName = element.localName;
-    if (elementName == "object")
+    if (elementName == "object" && !element.hasAttribute("msigraph"))
+    { // if this is one of our graphics objects ...
+      openObjectTagDialog(elementName, element);
       elementName = element.parentNode.localName;
+    }
     else if (elementName == "notewrapper")
     {
       element = element.getElementsByTagName("note")[0];
@@ -9291,16 +9314,23 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     }
     else if (elementName == "texb")
     {
-      msiDoAdvancedProperties(element, editorElement);
-    }
-    else if (elementName == "subdoc")
-    {
-      var nextvalue = (element.getAttribute("open") ==="true")?"false":"true";
-      element.setAttribute("open",nextvalue);
+      openTeXButtonDialog('texb', element);
     }
     else if (elementName == "msiframe")
     {
       msiFrame(element,editorElement);
+    }
+    else if (elementName == "otfont")
+    {
+      openOTFontDialog(elementName,element);
+    }
+    else if (elementName == "fontcolor")
+    {
+      openFontColorDialog(elementName,element);
+    }
+    else if (elementName == "fontsize")
+    {
+      openFontSizeDialog(elementName,element);
     }
     else if ((elementName == "img") || (elementName=="graph") || elementName=="plotwrapper")
     {
@@ -9330,10 +9360,6 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
       if (!("graphClickEvent" in theWindow))
         theWindow = msiGetTopLevelWindow(window);
       theWindow.graphObjectClickEvent(cmdstr, editorElement);
-    }
-    else if (element.localName == "object")
-    {
-      msiGoDoCommand("cmd_image", editorElement);
     }
     else
     {
@@ -10154,6 +10180,19 @@ function openFontSizeDialog(tagname, node)
     node);
 }
 
+
+function openGraphDialog(tagname, node, editorElement)
+{
+  if (DOMGListMemberP (node, currentDOMGs)) {
+    return;
+  }
+  DOMGListAdd (node, currentDOMGs);
+  var graph = new Graph();
+  graph.extractGraphAttributes (node);
+  // non-modal dialog, the return is immediate
+  var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/ComputeGraphSettings.xul", "", "chrome,close,titlebar,dependent",
+     editorElement, "cmd_objectProperties", node, graph, node, currentDOMGs);
+}
 
 
 
