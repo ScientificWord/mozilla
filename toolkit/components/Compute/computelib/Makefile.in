@@ -41,7 +41,7 @@ SupportFiles	:= \
 			$(srcdir)/swfcns.mu \
 			$(NULL)
 
-ifeq ($(OS_ARCH),WINNT)
+#ifeq ($(OS_ARCH),WINNT)
 MuPADlib	:= \
 			$(srcdir)/../MuPAD/lib/lib.tar \
 			$(srcdir)/../MuPAD/lib/lib.toc \
@@ -50,10 +50,19 @@ MuPADlib	:= \
 			$(NULL)
 
 
+ifeq ($(OS_ARCH),WINNT)
 SupportFiles	+= \
 			$(srcdir)/../MuPAD/win32/mupkernel.dll \
 			$(srcdir)/tcifcns.m \
 			$(NULL)
+else
+MuPADlicense	:= \
+			$(srcdir)/../MuPAD/license/license \
+			$(NULL)
+MuPADlinuxbin	:= $(wildcard $(srcdir)/../MuPAD/linux/bin/*) 
+MuPADlinuxlib	:= $(wildcard $(srcdir)/../MuPAD/linux/lib/*) 
+MuPADlinuxmod	:= $(wildcard $(srcdir)/../MuPAD/linux/modules/*) 
+			
 endif
 
 GMR_FILES := \
@@ -66,8 +75,18 @@ include $(topsrcdir)/config/rules.mk
 ifeq ($(OS_ARCH),WINNT)
 export:: $(MuPADlib)
 	$(INSTALL) $(MuPADlib)$(FINAL_TARGET)/MuPAD/lib
-endif
 
 export:: $(SupportFiles) $(GMR_FILES)
 	$(INSTALL) $(SupportFiles) $(GMR_FILES) $(FINAL_TARGET)
+else
+export:: $(MuPADlib)
+	$(INSTALL) $(MuPADlib) $(FINAL_TARGET)/MuPAD/lib
+	$(INSTALL) $(MuPADlicense) $(FINAL_TARGET)/MuPAD/license
+	$(INSTALL) $(GMR_FILES) $(FINAL_TARGET)
+	$(INSTALL) $(SupportFiles) $(FINAL_TARGET)
+	$(INSTALL) $(MuPADlinuxbin) $(FINAL_TARGET)/MuPAD/linux/bin
+	$(INSTALL) $(MuPADlinuxlib) $(FINAL_TARGET)/MuPAD/linux/lib
+	$(INSTALL) $(MuPADlinuxmod) $(FINAL_TARGET)/MuPAD/linux/modules
+
+endif
 
