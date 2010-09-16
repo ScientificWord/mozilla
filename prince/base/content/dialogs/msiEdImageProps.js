@@ -1067,6 +1067,7 @@ function onAccept()
       imageElement = editor.createElementWithDefaults(tagname);
       imageElement.addEventListener("load", imageLoaded, true);
       imageElement.setAttribute("data",gDialog.srcInput.value);
+      imageElement.setAttribute("req","graphicx");
       
       var frameElement = editor.createElementWithDefaults("msiframe");
       setFrameAttributes(imageElement);
