@@ -1267,8 +1267,8 @@ function addResult(result, editorElement)
     editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   var selection = editor.selection;
-  insertXML(editor, result, selection.focusNode, selection.focusOffset );
-//  editor.insertHTMLWithContext(result,"","","",null,selection.focusNode,selection.focusOffset,false);
+  //insertXML(editor, result, selection.focusNode, selection.focusOffset );
+  editor.insertHTMLWithContext(result,"","","",null,selection.focusNode,selection.focusOffset,false);
 }
 
 function runFixup(math)
