@@ -49,6 +49,8 @@
 <!ENTITY wrapCheckbox.accesskey "W">
 <!ENTITY backwardsCheckbox.label "Search backwards">
 <!ENTITY backwardsCheckbox.accesskey "b">
+<!ENTITY multiParaCheckbox.label "Allow multi-paragraph search">
+<!ENTITY multiParaCheckbox.accesskey "m">
 <!ENTITY findNextButton.label "Find Next">
 <!ENTITY findNextButton.accesskey "F">
 <!ENTITY replaceButton.label "Replace">
