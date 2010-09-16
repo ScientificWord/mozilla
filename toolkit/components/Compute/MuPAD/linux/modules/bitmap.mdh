@@ -1,0 +1,50 @@
+MODULE
+  bitmap - Loading of Bitmap Data
+
+INTRODUCTION
+  This module provides functions for loading bitmap data.
+
+INTERFACE
+  loadRGB, loadRGBA
+<!-- BEGIN-FUNC loadRGB -->
+NAME
+  bitmap::loadRGB -- load color image data
+
+SYNOPSIS
+  bitmap::loadRGB(fnam)
+
+PARAMETER
+  fnam - The name of the file to load as a string.
+
+DESCRIPTION
+  This function reads the image with filename "fnam" and
+  returns a nested list of RGB values.  The image may have
+  one of the formats BMP, DCX, DDS, WAD, GIF, ICO, JPG, LIF,
+  MDL, PCD, PCX, PIC, PIX, PNG, PNM, PSD, PSP, PXR, RAW,
+  SGI, TGA, TIF, WAL, or XPM.
+
+SEE ALSO
+  bitmap::loadRGBA
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC loadRGBA -->
+NAME
+  bitmap::loadRGBA -- load color image data with alpha channel
+
+SYNOPSIS
+  bitmap::loadRGBA(fnam)
+
+PARAMETER
+  fnam - The name of the file to load as a string.
+
+DESCRIPTION
+  This function reads the image with filename "fnam" and
+  returns a nested list of RGBA values.  The image may have
+  one of the formats BMP, DCX, DDS, WAD, GIF, ICO, JPG, LIF,
+  MDL, PCD, PCX, PIC, PIX, PNG, PNM, PSD, PSP, PXR, RAW,
+  SGI, TGA, TIF, WAL, or XPM.  Most of these formats do not
+  support an alpha channel, though.  In this case, all alpha
+  values in the returned list will be 1.0.
+
+SEE ALSO
+  bitmap::loadRGB
+<!-- END-FUNC -->
