@@ -1,13 +1,21 @@
 Components.utils.import("resource://app/modules/fontlist.jsm"); 
 Components.utils.import("resource://app/modules/pathutils.jsm"); 
 
-
+var node;
+var initial;
 function startup()
 {
+  if (window.arguments && window.arguments.length > 0)
+    node = window.arguments[0];
   var menuObject = { };
   initializeFontFamilyList(false);
   menuObject.menulist = document.getElementById("otfontlist");
   addOTFontsToMenu(menuObject);
+  if (node)
+  {
+    initial = node.getAttribute("fontname");
+    document.getElementById("otfontlist").value = initial;
+  }
 }
 
 function onAccept()
@@ -23,13 +31,21 @@ function onAccept()
       AlertWithTitle("Error", "No editor in otfont.OnAccept!");
     }
   }
-	var theWindow = window.opener;
-	if (!theWindow || !("msiEditorSetTextProperty" in theWindow))
+  if (node)
   {
-	  theWindow = msiGetTopLevelWindow();
+    node.setAttribute("fontname", fontname);
+    node.setAttribute("style","font-family: "+fontname+";");
   }
-  theWindow.msiRequirePackage(editorElement, "xltxtra", null);
-  theWindow.msiEditorSetTextProperty(editorElement, "otfont", "fontname", fontname);
+  else
+  {
+	  var theWindow = window.opener;
+	  if (!theWindow || !("msiEditorSetTextProperty" in theWindow))
+    {
+	    theWindow = msiGetTopLevelWindow();
+    }
+    theWindow.msiRequirePackage(editorElement, "xltxtra", null);
+    theWindow.msiEditorSetTextProperty(editorElement, "otfont", "fontname", fontname);
+  }
   editorElement.contentWindow.focus();
 }
 

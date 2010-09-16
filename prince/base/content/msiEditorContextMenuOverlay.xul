@@ -90,9 +90,11 @@
 
     <!-- label and accesskey are set in InitObjectProperties -->
     <menu id="propertiesMenu_cm" label="&propertiesMenu.label;" accesskey="&propertiesMenu.accesskey;" oncommand="msiSelectPropertiesMenu(event, this);">
-      <menupopup id="propertiesMenuPopup_cm" onpopuphidden="msiPropMenuCloseup(event, this);">
-        <menuitem id="objectProperties_cm" observes="cmd_objectProperties"/>
-      </menupopup>
+
+        <menupopup id="propertiesMenuPopup_cm" onpopuphidden="msiPropMenuCloseup(event, this);">
+          <menuitem id="objectProperties_cm" observes="cmd_objectProperties"/>
+        </menupopup>
+
     </menu>
 
 
