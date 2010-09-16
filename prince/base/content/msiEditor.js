@@ -1281,10 +1281,10 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
       msiUpdateWindowTitle(null, null);
     msiEditorLoadUrl(editorElement, docurl);
   }
-//    msiDumpWithID("Back from call to msiEditorLoadUrl for editor [@].\n", editorElement);
   catch (e) {
     dump("Error in loading URL in msiLoadInitialDocument: [" + e + "]\n");
   }
+//  msiDumpWithID("Back from call to msiEditorLoadUrl for editor [@].\n", editorElement);
 }
 
 //   // Get url for editor content and load it.
@@ -7599,10 +7599,12 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
               {
                 newitem = propertiesMenu.appendItem(propsdata.menuStr);
                 if (propsdata.commandStr && propsdata.commandStr.length)
-                  newitem.setAttribute("command", propsdata.commandStr);
+//                  newitem.setAttribute("command", propsdata.commandStr);
+                  newitem.setAttribute("oncommand", "msiDoAPropertiesDialogFromMenu('" + propsdata.commandStr + "', this);");
                 else 
                   newitem.setAttribute("oncommand", propsdata.scriptStr);
-                newitem.node = node;
+                newitem.refElement = node;
+                newitem.propertiesData = propsdata;
                 count++;
               }
             }
