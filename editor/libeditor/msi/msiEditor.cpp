@@ -3084,7 +3084,6 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
     }
     else if ( tagName.EqualsLiteral("math") )
     {
-      toLeftRight = 0;
       if (nextParent)
       {
         dontcare = nextParent->GetLocalName(tagName);
@@ -3118,6 +3117,7 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
         splittable = nextNode;
         nextParent = nsnull;  //To stop the loop - in this case everything should go back out to the normal InsertReturn?
       }
+      toLeftRight = 0;
     }
     else if ( tagName.EqualsLiteral("mover") || tagName.EqualsLiteral("mfrac") || tagName.EqualsLiteral("moverunder") 
          || tagName.EqualsLiteral("munder") || tagName.EqualsLiteral("maction") || tagName.EqualsLiteral("menclose") || tagName.EqualsLiteral("mphantom") 
