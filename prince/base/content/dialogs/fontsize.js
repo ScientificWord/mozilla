@@ -1,3 +1,27 @@
+
+var node;
+
+function startUp()
+{
+  if (window.arguments && window.arguments.length > 0)
+    node = window.arguments[0];
+  if (!node) node = editor.getSelectedElement("fontsize");
+  if (node) 
+  {
+    var sizeandspacing = node.getAttribute("size");
+    var arr = sizeandspacing.split("/");
+    document.getElementById("otfont.fontsize").value = arr[0];
+    if (arr.length > 0)
+    {
+      var arr2 = arr[1].split(" ");
+      document.getElementById("leading").value = arr2[0];
+      if (arr2.length > 1)
+        document.getElementById("otfont.units").value = arr2[1];
+    }
+  }
+}
+
+
 function onAccept()
 {
   var size=Number(document.getElementById("otfont.fontsize").value);
@@ -8,12 +32,16 @@ function onAccept()
   var editorElement = msiGetParentEditorElementForDialog(window);
   if (!editorElement)
   {
-    AlertWithTitle("Error", "No editor in otfont.OnAccept!");
+    AlertWithTitle("Error", "No editor in fontsize.OnAccept!");
   }
-	var theWindow = window.opener;
-	if (!theWindow || !("msiEditorSetFontSize" in theWindow))
-	  theWindow = msiGetTopLevelWindow();
-  theWindow.msiEditorSetFontSize(sizewithunits, editorElement);
+  if (node) node.setAttribute("size", sizewithunits);
+  else
+  {
+	  var theWindow = window.opener;
+	  if (!theWindow || !("msiEditorSetFontSize" in theWindow))
+	    theWindow = msiGetTopLevelWindow();
+    theWindow.msiEditorSetFontSize(sizewithunits, editorElement);
+  }
 }
 
 
