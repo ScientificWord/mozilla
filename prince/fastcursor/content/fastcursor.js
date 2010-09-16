@@ -349,9 +349,9 @@ function changeSelectionColor(aAttention)  // see if we actually need this.
   }
 }
 
-function openFastCursorBar(isUp)  
+function openFastCursorBar(isUp, quiet)  
 {
-  if (!gNotFoundStr) {
+  if (!gNotFoundStr && !quiet) {
     var bundle = document.getElementById("bundle_FastCursorBar");
     gNotFoundStr = bundle.getString("NotFound");
   }
