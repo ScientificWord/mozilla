@@ -1,0 +1,128 @@
+MODULE
+  vcam - execute vcam in batch mode
+
+INTRODUCTION
+  This module provides a function for running MuPAD's graphics
+  engine vcam in background mode.
+
+INTERFACE
+  doc, new
+<!-- BEGIN-FUNC doc -->
+NAME
+  vcam::doc - Displays online documentation
+
+SYNOPSIS
+  vcam::doc()
+  vcam::doc( func )
+
+PARAMETER
+  func - string, function name without the prefix "vcam::"
+
+DESCRIPTION
+  Displays a brief description of the module 'vcam', respectively the
+  function vcam::'func'.
+
+EXAMPLES
+  >> vcam::doc( "doc" );
+     NAME
+       vcam::doc - Display online documentation
+     [...]
+
+SEE ALSO
+  info, module::help
+<!-- END-FUNC -->
+<!-- BEGIN-FUNC new -->
+NAME
+  vcam::new - run vcam in background mode
+
+SYNOPSIS
+  vcam::new( files <, options> <, attr>)
+  vcam( files <, options> <, attr=value> )
+
+PARAMETER
+  files   - list of equations "inputfile"=outputfile"  or a
+            list of lists ["inputfile"=outputfile",[t,...]]
+            where 't' is a timestamp between TimeBegin and
+            TimeEnd of an animation.
+  options - either Check, Remove or Verbose
+  attr    - further attributes
+
+DESCRIPTION
+  For each input file, the function starts a vcam process to create
+  one output file or a sequence of output files (if a list of time-
+  stamps is specified), respectively.
+
+  The format of the output file is specified by the suffix of the
+  corresponding file name, e.g., png, jpg, gif, avi,...
+
+  If a list of timestamps is given, any token '%n' within an output
+  file name is substituted by the index of the current timestamp in
+  the list of timestamps.
+
+  Timestamps must be numerical values between TimeBegin and TimeEnd
+  of an animation.
+
+  The function returns the list of created output files in the order
+  they were created.
+  
+  Available options of the module function:
+
+  Remove  - remove the input file after the corresponding output file
+            has been created.
+  Verbose - print a progress report to the screen.
+
+  Vcam attributes:
+
+  ReduceColors     -  Reduce to 256 colors, may be useful for some
+                      raster image formats in order to reduce the
+                      images size. The default is not to reduce
+                      colors.
+  Resolution = nn  -  Resolution of resulting raster image, given
+                      in dots per inch (DPI). The default value is
+                      the resolution of the computers display.
+  Quality = nn     -  Quality value for JPEG output, 3D EPS shading
+                      or AVI output. A percentage value. The default
+                      is 75%.
+  Frames = nn      -  Number of frames per second for AVI output.
+                      The default is 15.
+  Mode = nn        -  Output mode, depends on the output format. May
+                      be used for JPEG, 3D EPS and AVI output:
+
+                      JPEG Output
+                      0    baseline sequential (the default mode)
+                      1    progressive (may not be supported by
+                           every display software)
+                      2    sequential optimized
+                      3D EPS Output
+                      0    painters algorithm (the default mode)
+                      1    BSP tree algorithm
+                      AVI Output
+                      0    Microsoft Video 1 codec (the default mode)
+                      1    uncompressed single frame codec
+                      2    Radius Cinepak codec
+
+EXAMPLES
+  >> plot(plot::Function2d(sin(x)),OutputFile=NOTEBOOKPATH."Sin.xvc")
+
+  >> vcam( [NOTEBOOKPATH."Sin.xvc"=NOTEBOOKPATH."Sin.png"],
+           Verbose, Remove, Resolution=300)
+
+     File[1/1]:
+     in : C:\Dokumente und Einstellungen\andi\Eigene Dateien\Sin.xvc
+     out: C:\Dokumente und Einstellungen\andi\Eigene Dateien\Sin.png
+
+  >> plot(plot::Function2d(sin(k*x), x=-5..5,k=-1..1),OutputFile=NOTEBOOKPATH."MUFF\\ani.xvc")
+
+  >> vcam(Verbose, [[NOTEBOOKPATH."MUFF\\ani.xvc"=NOTEBOOKPATH."MUFF\\muff-%n.png",
+                     [0.5*k $ k=0..20]
+                   ]]):
+
+     File[1/1]:
+     in : C:\Dokumente und Einstellungen\andi\Eigene Dateien\ani.xvc
+     out: C:\Dokumente und Einstellungen\andi\Eigene Dateien\muff-001.png
+     time: 0.000000
+     ...
+
+SEE ALSO
+  plot
+<!-- END-FUNC -->
