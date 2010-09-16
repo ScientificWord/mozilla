@@ -1,0 +1,53 @@
+#!/bin/sh
+# Uninstall Linux version of SWP Version 6.0
+# Temporary until we get a real installer
+
+BASE=/usr/local
+INSTALLNAME=SWP-6.0
+DIRNAME=swppro
+LICENSEDIR=.mupadpro40
+LICENSEFILE=.mupadpro40/.license
+
+echo Uninstalling Scientific Workplace Version 6.0
+CURDIR=`pwd`
+if [ `basename $CURDIR` != $DIRNAME ]
+then
+	echo "
+		You must uninstall from the swppro directory
+	"
+	exit
+fi
+if [ `whoami` != 'root' ] 
+then
+	echo "
+	You must uninstall as root
+	"
+	exit
+fi
+if [ -d $BASE/$INSTALLNAME ]
+then
+	rm -rf $BASE/$INSTALLNAME
+fi
+
+RETURNDIR=`pwd`
+cd $BASE/bin
+if [ -e swppro ]
+then
+	rm swppro
+fi
+cd $RETURNDIR
+
+if [ -e /home/$SUDO_USER/$LICENSEDIR/SWP ]
+then
+	rm -rf /home/$SUDO_USER/$LICENSEDIR
+fi
+
+if [ -e /etc/ld.so.conf.d/SWP.conf ]
+then
+	rm /etc/ld.so.conf.d/SWP.conf
+fi
+ldconfig
+
+echo Uninstall completed.
+
+

@@ -1,0 +1,1906 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mathsetup>
+   <content id="abs" keywd="Absolute Value" accel="|" arity="1">
+      <layout>
+         <mrow>
+            <mo form="prefix">&amp;verbar;</mo>
+            <oper idx="0"/>
+            <mo form="postfix">&amp;verbar;</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="and" keywd="And" arity="2*" prio="200">
+      <layout>
+         <oprow>
+            <oper prio="200"/>
+            <mo>&amp;wedge;</mo>
+         </oprow>
+      </layout>
+   </content>
+   <content id="apply" keywd="Apply Function" accel="(" arity="2*" assoc="false"
+            flatten-seq="1,-1"
+            prio="1800">
+      <layout>
+         <mrow>
+            <oper idx="0" prio="1790"/>
+            <mo form="prefix">(</mo>
+            <oprow idx="1,-1">
+               <oper/>
+               <mo form="infix">,</mo>
+            </oprow>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="applyvoid" keywd="Apply Void Function" arity="1" prio="1800">
+      <layout>
+         <mrow>
+            <oper idx="0" prio="1790"/>
+            <mo form="prefix">(</mo>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="applywithbars" keywd="Apply Function, with bars" arity="2*" assoc="false"
+            prio="1800">
+      <layout>
+         <mrow>
+            <oper idx="0" prio="1790"/>
+            <mo form="prefix">(</mo>
+            <oprow idx="1,-1">
+               <oper/>
+               <mo form="infix">&amp;verbar;</mo>
+            </oprow>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="approx" keywd="Approximation" arity="2*" accel="~" prio="400">
+      <layout>
+         <oprow>
+            <oper prio="400"/>
+            <mo form="infix">&amp;approx;</mo>
+         </oprow>
+      </layout>
+   </content>
+   <content id="assign" keywd="Assign" arity="2" prio="0">
+      <layout>
+         <mrow>
+            <oper idx="0"/>
+            <mo>:=</mo>
+            <oper idx="1"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="besselI" keywd="BesselI" arity="2">
+      <layout>
+         <mrow>
+            <msub>
+               <mo>I</mo>
+               <oper idx="1"/>
+            </msub>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="besselJ" keywd="BesselJ" arity="2">
+      <layout>
+         <mrow>
+            <msub>
+               <mo>J</mo>
+               <oper idx="1"/>
+            </msub>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="besselK" keywd="BesselK" arity="2">
+      <layout>
+         <mrow>
+            <msub>
+               <mo>K</mo>
+               <oper idx="1"/>
+            </msub>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="besselY" keywd="BesselY" arity="2">
+      <layout>
+         <mrow>
+            <msub>
+               <mo>Y</mo>
+               <oper idx="1"/>
+            </msub>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="beta" keywd="Beta Function" arity="2" prio="1800">
+      <layout>
+         <mrow>
+            <mo>&amp;beta;</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo>,</mo>
+            <oper idx="1"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="binomial" keywd="Binomial" arity="2">
+      <layout>
+         <mrow>
+            <mo form="prefix">(</mo>
+            <mfrac linethickness="0">
+               <oper idx="0"/>
+               <oper idx="1"/>
+            </mfrac>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="card" keywd="Cardinality" arity="1">
+      <layout>
+         <mrow>
+            <mo form="prefix">&amp;verbar;</mo>
+            <oper idx="0"/>
+            <mo form="postfix">&amp;verbar;</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="ceil" keywd="Ceil" arity="1">
+      <layout>
+         <mrow>
+            <mo form="prefix">&amp;LeftCeiling;</mo>
+            <oper idx="0"/>
+            <mo form="postfix">&amp;RightCeiling;</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="complexes" keywd="Complexes" arity="0">
+      <layout>
+         <mo>&amp;Copf;</mo>
+      </layout>
+   </content>
+   <content id="compose" keywd="Compose Functions" accel="@" arity="2*" prio="1500">
+      <layout>
+         <oprow>
+            <oper prio="1500"/>
+            <mo form="infix">&amp;SmallCircle;</mo>
+         </oprow>
+      </layout>
+   </content>
+   <content id="comprow" keywd="Layout Row of Comparisons" arity="1*" prio="400">
+      <layout>
+         <oprow>
+            <oper prio="400"/>
+            <mo>&amp;Space;</mo>
+         </oprow>
+      </layout>
+   </content>
+   <content id="concat" keywd="Concatenation" arity="2*" prio="1700">
+      <layout>
+         <oprow>
+            <oper prio="1700"/>
+            <mo>.</mo>
+         </oprow>
+      </layout>
+   </content>
+   <content id="conjugate" keywd="Conjugate" arity="1">
+      <layout>
+         <mover>
+            <oper idx="0"/>
+            <mo form="postfix">&amp;OverBar;</mo>
+         </mover>
+      </layout>
+   </content>
+   <content id="curl" keywd="Rotation" arity="6" prio="1100">
+      <layout>
+         <mrow>
+            <msub>
+               <mo>&amp;Del;</mo>
+               <mrow>
+                  <oper idx="3"/>
+                  <mo>,</mo>
+                  <oper idx="4"/>
+                  <mo>,</mo>
+                  <oper idx="5"/>
+               </mrow>
+            </msub>
+            <mo>&amp;times;</mo>
+            <mo>(</mo>
+            <oper idx="0"/>
+            <mo>,</mo>
+            <oper idx="1"/>
+            <mo>,</mo>
+            <oper idx="2"/>
+            <mo>)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="D" keywd="Differentiation Operator" accel="'" arity="1" prio="1900">
+      <layout>
+         <msup>
+            <oper prio="1890" idx="0"/>
+            <mo form="postfix">&amp;apos;</mo>
+         </msup>
+      </layout>
+   </content>
+   <content id="definiteint" keywd="Definite Integration" accel=":" arity="4">
+      <layout>
+         <mrow>
+            <munderover>
+               <mo form="prefix">&amp;Integral;</mo>
+               <oper idx="2"/>
+               <oper idx="3"/>
+            </munderover>
+            <oper idx="0" prio="1000"/>
+            <mo form="infix">&amp;DifferentialD;</mo>
+            <oper idx="1"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="definiteproduct" keywd="Definite Product" arity="4" prio="1100">
+      <layout>
+         <mrow>
+            <munderover>
+               <mo form="prefix">&amp;Pi;</mo>
+               <mrow>
+                  <oper idx="1" prio="400"/>
+                  <mo form="infix">=</mo>
+                  <oper idx="2" prio="400"/>
+               </mrow>
+               <oper idx="3"/>
+            </munderover>
+            <oper idx="0" prio="1100"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="definitesum" keywd="Definite Sum" accel=";" arity="4" prio="1000">
+      <layout>
+         <mrow>
+            <munderover>
+               <mo form="prefix">&amp;Sum;</mo>
+               <mrow>
+                  <oper idx="1" prio="400"/>
+                  <mo form="infix">=</mo>
+                  <oper idx="2" prio="400"/>
+               </mrow>
+               <oper idx="3"/>
+            </munderover>
+            <oper idx="0" prio="1000"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="determinant" keywd="Determinant" arity="1">
+      <layout>
+         <mrow>
+            <mo form="prefix">det</mo>
+            <oper prio="2000" idx="0"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="diff" keywd="Derivative" arity="2" prio="1100">
+      <layout>
+         <mrow>
+            <mfrac>
+               <mo form="prefix">&amp;DifferentialD;</mo>
+               <mrow>
+                  <mo form="prefix">&amp;DifferentialD;</mo>
+                  <oper idx="1"/>
+               </mrow>
+            </mfrac>
+            <mo form="infix">&amp;blank;</mo>
+            <oper idx="0" prio="1100"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="dilog" keywd="Dilog" arity="1*">
+      <layout>
+         <mrow>
+            <msub>
+               <mo>Li</mo>
+               <mo>2</mo>
+            </msub>
+            <mo form="prefix">(</mo>
+            <oprow idx="0,-1">
+               <oper prio="10"/>
+               <mo>,</mo>
+            </oprow>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="dirac" keywd="Dirac Distribution" arity="1" prio="1800">
+      <layout>
+         <mrow>
+            <mo>&amp;delta;</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="diracD" keywd="Derivative of Dirac Distribution" arity="2" prio="1800">
+      <layout>
+         <mrow>
+            <msup>
+               <mo>&amp;delta;</mo>
+               <mrow>
+                  <mo form="prefix">(</mo>
+                  <oper idx="1"/>
+                  <mo form="postfix">)</mo>
+               </mrow>
+            </msup>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="divergence" keywd="Divergence" arity="2" prio="1100">
+      <layout>
+         <mrow>
+            <msub>
+               <mo>&amp;Del;</mo>
+               <oper idx="1" prio="0"/>
+            </msub>
+            <mo>&amp;cdot;</mo>
+            <oper idx="0" prio="1100"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="divide" keywd="Division" accel="/" arity="2" prio="1101">
+      <layout>
+         <mfrac>
+            <oper idx="0"/>
+            <oper idx="1"/>
+         </mfrac>
+      </layout>
+   </content>
+   <content id="Dpara" keywd="Differentiation Operator" arity="2*" assoc="false">
+      <layout>
+         <mrow>
+            <msub>
+               <mo form="prefix">D</mo>
+               <oprow idx="0,-2">
+                  <oper prio="10"/>
+                  <mo>,</mo>
+               </oprow>
+            </msub>
+            <mo form="prefix">(</mo>
+            <oper idx="-1"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="ellipticCE" keywd="EllipticCE" arity="1">
+      <layout>
+         <mrow>
+            <mo>E&amp;prime;</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="ellipticCK" keywd="EllipticCK" arity="1">
+      <layout>
+         <mrow>
+            <mo>K&amp;prime;</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="ellipticCPi" keywd="EllipticCPi" arity="2">
+      <layout>
+         <mrow>
+            <mo>&amp;Pi;&amp;prime;</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="infix">|</mo>
+            <oper idx="1"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="ellipticE" keywd="EllipticE" arity="1">
+      <layout>
+         <mrow>
+            <mo>E</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="ellipticE2" keywd="EllipticE" arity="2">
+      <layout>
+         <mrow>
+            <mo>E</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="infix">|</mo>
+            <oper idx="1"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="ellipticF" keywd="EllipticF" arity="2">
+      <layout>
+         <mrow>
+            <mo>F</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="infix">|</mo>
+            <oper idx="1"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="ellipticK" keywd="EllipticK" arity="1">
+      <layout>
+         <mrow>
+            <mo>K</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="ellipticNome" keywd="EllipticNome" arity="1">
+      <layout>
+         <mrow>
+            <mo>q</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="ellipticPi" keywd="EllipticPi" arity="2">
+      <layout>
+         <mrow>
+            <mo>&amp;Pi;</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="infix">|</mo>
+            <oper idx="1"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="ellipticPi2" keywd="EllipticPi" arity="3">
+      <layout>
+         <mrow>
+            <mo>&amp;Pi;</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="infix">;</mo>
+            <oper idx="1"/>
+            <mo form="infix">|</mo>
+            <oper idx="2"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="emptyset" keywd="Empty Set" arity="0">
+      <layout>
+         <mo>&amp;emptyv;</mo>
+      </layout>
+   </content>
+   <content id="eq" keywd="Equal" accel="=" arity="2*" prio="400">
+      <layout>
+         <oprow>
+            <oper prio="400"/>
+            <mo form="infix">&amp;Equal;</mo>
+         </oprow>
+      </layout>
+   </content>
+   <content id="EQS" keywd="Equation System" arity="2*" assoc="false">
+      <layout>
+         <optable cols="2" columnalign="rl">
+            <oper/>
+            <mrow>
+               <mo>=</mo>
+               <oper/>
+            </mrow>
+         </optable>
+      </layout>
+   </content>
+   <content id="EQS3" keywd="General Equation System" arity="3*" assoc="false">
+      <layout>
+         <mrow>
+            <optable cols="3" columnalign="rcl">
+               <oper/>
+            </optable>
+         </mrow>
+      </layout>
+   </content>
+   <content id="equiv" keywd="Equivalence" arity="2" prio="50">
+      <layout>
+         <oprow>
+            <oper prio="50"/>
+            <mo form="infix">&amp;DoubleLeftRightArrow;</mo>
+         </oprow>
+      </layout>
+   </content>
+   <content id="equivMod" keywd="Equivalence Relation modulo" arity="3" prio="20">
+      <layout>
+         <mrow>
+            <oper idx="0"/>
+            <mo>&amp;blank;&amp;Congruent;&amp;blank;</mo>
+            <oper idx="1"/>
+            <mo>&amp;blank;&amp;blank;(mod&amp;blank;</mo>
+            <oper idx="2"/>
+            <mo>)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="eulergamma" keywd="Euler Gamma" arity="0">
+      <layout>
+         <mo>EULER</mo>
+      </layout>
+   </content>
+   <content id="evalAt" keywd="EvalAt" arity="2" prio="30">
+      <layout>
+         <msub>
+            <mrow>
+               <oper idx="0" prio="1800"/>
+               <mo form="postfix">|</mo>
+            </mrow>
+            <oper idx="1"/>
+         </msub>
+      </layout>
+   </content>
+   <content id="exp" keywd="Exponential" arity="1" prio="1200">
+      <layout>
+         <msup>
+            <mo>&amp;ee;</mo>
+            <oper idx="0"/>
+         </msup>
+      </layout>
+   </content>
+   <content id="exponentiale" keywd="Exponential e" arity="0">
+      <layout>
+         <mo>&amp;ee;</mo>
+      </layout>
+   </content>
+   <content id="factorial" keywd="Factorial" accel="!" arity="1" prio="1300">
+      <layout>
+         <mrow>
+            <oper idx="0" prio="1300"/>
+            <mo form="postfix">!</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="factorial2" keywd="Double Factorial Function" arity="1" prio="1300">
+      <layout>
+         <mrow>
+            <oper idx="0" prio="1300"/>
+            <mo form="postfix">!!</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="false" keywd="False" arity="0">
+      <layout>
+         <mo>FALSE</mo>
+      </layout>
+   </content>
+   <content id="fenced" keywd="Fence" accel=")" arity="1">
+      <layout>
+         <mrow>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="floor" keywd="Floor" arity="1">
+      <layout>
+         <mrow>
+            <mo form="prefix">&amp;LeftFloor;</mo>
+            <oper idx="0"/>
+            <mo form="postfix">&amp;RightFloor;</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="fnest" keywd="Nested Functions" arity="2" prio="1600">
+      <layout>
+         <oprow>
+            <oper prio="1600"/>
+            <mo form="infix">&amp;commat;&amp;commat;</mo>
+         </oprow>
+      </layout>
+   </content>
+   <content id="fresnelC" keywd="FresnelC" arity="1">
+      <layout>
+         <mrow>
+            <mo>C</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="fresnelS" keywd="FresnelS" arity="1">
+      <layout>
+         <mrow>
+            <mo>S</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="funcDecl" keywd="Function Declaration" arity="3" prio="20">
+      <layout>
+         <mrow>
+            <oper idx="0"/>
+            <mo>:&amp;blank;</mo>
+            <oper idx="1"/>
+            <mo>&amp;blank;&amp;rightarrow;&amp;blank;</mo>
+            <oper idx="2"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="gamma" keywd="Gamma Function" arity="1" prio="1800">
+      <layout>
+         <mrow>
+            <mo>&amp;Gamma;</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="geq" keywd="GreaterEqual" arity="2*" prio="400">
+      <layout>
+         <oprow>
+            <oper prio="400"/>
+            <mo form="infix">&amp;geq;</mo>
+         </oprow>
+      </layout>
+   </content>
+   <content id="grad" keywd="Gradient" arity="2" prio="1100">
+      <layout>
+         <mrow>
+            <msub>
+               <mo>&amp;Del;</mo>
+               <oper idx="1" prio="0"/>
+            </msub>
+            <mo>&amp;blank;</mo>
+            <oper idx="0" prio="1100"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="gt" keywd="Greater" accel="&gt;" arity="2*" prio="400">
+      <layout>
+         <oprow>
+            <oper prio="400"/>
+            <mo form="infix">&amp;gt;</mo>
+         </oprow>
+      </layout>
+   </content>
+   <content id="hypergeom" keywd="confluent hypergeometric function" arity="5">
+      <layout>
+         <mrow>
+            <msub>
+               <mo>&amp;ApplyFunction;</mo>
+               <oper idx="3"/>
+            </msub>
+            <msub>
+               <mo>F</mo>
+               <oper idx="4"/>
+            </msub>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="infix">;&amp;blank;</mo>
+            <oper idx="1"/>
+            <mo form="infix">;&amp;blank;</mo>
+            <oper idx="2"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="igamma" keywd="Integer Gamma Function" arity="2" prio="1800">
+      <layout>
+         <mrow>
+            <mo>&amp;Gamma;</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo>,</mo>
+            <oper idx="1"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="imageset" keywd="ImageSet" arity="2">
+      <layout>
+         <mrow>
+            <mo form="prefix">{</mo>
+            <oper idx="0"/>
+            <mo>&amp;verbar;</mo>
+            <oper idx="1"/>
+            <mo form="postfix">}</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="imaginaryi" keywd="Imaginary I" arity="0">
+      <layout>
+         <mo>&amp;ii;</mo>
+      </layout>
+   </content>
+   <content id="implies" keywd="Implies" arity="2" prio="75">
+      <layout>
+         <oprow>
+            <oper prio="75"/>
+            <mo form="infix">&amp;DoubleRightArrow;</mo>
+         </oprow>
+      </layout>
+   </content>
+   <content id="in" keywd="In" arity="2" prio="400">
+      <layout>
+         <mrow>
+            <oper idx="0" prio="400"/>
+            <mo form="infix">&amp;Element;</mo>
+            <oper idx="1" prio="400"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="index" keywd="Index" arity="2" prio="1800">
+      <layout>
+         <msub>
+            <oper idx="0" prio="1800"/>
+            <oper idx="1"/>
+         </msub>
+      </layout>
+   </content>
+   <content id="infinity" keywd="Infinity" arity="0">
+      <layout>
+         <mo>&amp;infin;</mo>
+      </layout>
+   </content>
+   <content id="infinitynorm" keywd="Infinity Norm" arity="1">
+      <layout>
+         <msub>
+            <mrow>
+               <mo form="prefix">&amp;Verbar;</mo>
+               <oper idx="0"/>
+               <mo form="postfix">&amp;Verbar;</mo>
+            </mrow>
+            <mo>&amp;infin;</mo>
+         </msub>
+      </layout>
+   </content>
+   <content id="int" keywd="Indefinite Integration" arity="2">
+      <layout>
+         <mrow>
+            <mo form="prefix">&amp;Integral;</mo>
+            <oper idx="0" prio="1000"/>
+            <mo form="infix">&amp;DifferentialD;</mo>
+            <oper idx="1"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="intdomain" keywd="Integration over a Domain" arity="3">
+      <layout>
+         <mrow>
+            <mover>
+               <mo form="prefix">&amp;Integral;</mo>
+               <oper idx="2"/>
+            </mover>
+            <oper idx="0" prio="1000"/>
+            <mo form="infix">&amp;DifferentialD;</mo>
+            <oper idx="1"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="integers" keywd="Integers" arity="0">
+      <layout>
+         <mo>&amp;Zopf;</mo>
+      </layout>
+   </content>
+   <content id="intersect" keywd="Intersection" arity="2*" prio="800">
+      <layout>
+         <oprow>
+            <oper prio="800"/>
+            <mo>&amp;cap;</mo>
+         </oprow>
+      </layout>
+   </content>
+   <content id="interval" keywd="Interval" arity="2" prio="850">
+      <layout>
+         <mrow>
+            <oper idx="0"/>
+            <mo form="infix">...</mo>
+            <oper idx="1"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="intervalcc" keywd="IntervalClosedClosed" arity="2">
+      <layout>
+         <mrow>
+            <mo form="prefix">[</mo>
+            <oper idx="0"/>
+            <mo>,</mo>
+            <oper idx="1"/>
+            <mo form="postfix">]</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="intervalco" keywd="IntervalClosedOpen" arity="2">
+      <layout>
+         <mrow>
+            <mo form="prefix">[</mo>
+            <oper idx="0"/>
+            <mo>,</mo>
+            <oper idx="1"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="intervaloc" keywd="IntervalOpenClosed" arity="2">
+      <layout>
+         <mrow>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo>,</mo>
+            <oper idx="1"/>
+            <mo form="postfix">]</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="intervaloo" keywd="IntervalOpenOpen" arity="2">
+      <layout>
+         <mrow>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo>,</mo>
+            <oper idx="1"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="inverse" keywd="Functional Inverse" arity="1" prio="1200">
+      <layout>
+         <msup>
+            <oper idx="0" prio="1200"/>
+            <mo>(-1)</mo>
+         </msup>
+      </layout>
+   </content>
+   <content id="invmatrix" keywd="Inverse" arity="1">
+      <layout>
+         <msup>
+            <oper idx="0"/>
+            <mo>-1</mo>
+         </msup>
+      </layout>
+   </content>
+   <content id="jacobiAM" keywd="JacobiAM" arity="2">
+      <layout>
+         <mrow>
+            <mo>am</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="infix">|</mo>
+            <oper idx="1"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="jacobiCD" keywd="JacobiCD" arity="2">
+      <layout>
+         <mrow>
+            <mo>cd</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="infix">|</mo>
+            <oper idx="1"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="jacobiCN" keywd="JacobiCN" arity="2">
+      <layout>
+         <mrow>
+            <mo>cn</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="infix">|</mo>
+            <oper idx="1"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="jacobiCS" keywd="JacobiCS" arity="2">
+      <layout>
+         <mrow>
+            <mo>cs</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="infix">|</mo>
+            <oper idx="1"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="jacobiDC" keywd="JacobiDC" arity="2">
+      <layout>
+         <mrow>
+            <mo>dc</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="infix">|</mo>
+            <oper idx="1"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="jacobiDN" keywd="JacobiDN" arity="2">
+      <layout>
+         <mrow>
+            <mo>dn</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="infix">|</mo>
+            <oper idx="1"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="jacobiDS" keywd="JacobiDS" arity="2">
+      <layout>
+         <mrow>
+            <mo>ds</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="infix">|</mo>
+            <oper idx="1"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="jacobiNC" keywd="JacobiNC" arity="2">
+      <layout>
+         <mrow>
+            <mo>nc</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="infix">|</mo>
+            <oper idx="1"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="jacobiND" keywd="JacobiND" arity="2">
+      <layout>
+         <mrow>
+            <mo>nd</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="infix">|</mo>
+            <oper idx="1"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="jacobiNS" keywd="JacobiNS" arity="2">
+      <layout>
+         <mrow>
+            <mo>ns</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="infix">|</mo>
+            <oper idx="1"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="jacobiSC" keywd="JacobiSC" arity="2">
+      <layout>
+         <mrow>
+            <mo>sc</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="infix">|</mo>
+            <oper idx="1"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="jacobiSD" keywd="JacobiSD" arity="2">
+      <layout>
+         <mrow>
+            <mo>sd</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="infix">|</mo>
+            <oper idx="1"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="jacobiSN" keywd="JacobiSN" arity="2">
+      <layout>
+         <mrow>
+            <mo>sn</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="infix">|</mo>
+            <oper idx="1"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="jacobiZeta" keywd="JacobiZeta" arity="2">
+      <layout>
+         <mrow>
+            <mo>Z</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="infix">|</mo>
+            <oper idx="1"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="kroneckerDelta" keywd="KroneckerDelta" arity="2">
+      <layout>
+         <msub>
+            <mo>&amp;delta;</mo>
+            <mrow>
+               <oper idx="0"/>
+               <mo form="infix">,</mo>
+               <oper idx="1"/>
+            </mrow>
+         </msub>
+      </layout>
+   </content>
+   <content id="lambda" keywd="Function Definition" arity="2" prio="20">
+      <layout>
+         <oprow>
+            <oper prio="20"/>
+            <mo form="infix">&amp;rightarrow;</mo>
+         </oprow>
+      </layout>
+   </content>
+   <content id="lambertW" keywd="LambertW" arity="2">
+      <layout>
+         <mrow>
+            <msub>
+               <mo>W</mo>
+               <oper idx="1"/>
+            </msub>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="laplacian" keywd="Laplacian" arity="2" prio="1100">
+      <layout>
+         <mrow>
+            <msub>
+               <mo form="prefix">&amp;Delta;</mo>
+               <oper idx="1" prio="0"/>
+            </msub>
+            <mo>&amp;blank;</mo>
+            <oper idx="0" prio="1100"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="leq" keywd="LessEqual" arity="2*" prio="400">
+      <layout>
+         <oprow>
+            <oper prio="400"/>
+            <mo form="infix">&amp;leq;</mo>
+         </oprow>
+      </layout>
+   </content>
+   <content id="lg" keywd="Logarithm10" arity="1">
+      <layout>
+         <mrow>
+            <msub>
+               <mo>log</mo>
+               <mo>10</mo>
+            </msub>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="limit" keywd="Limit" arity="3" prio="950">
+      <layout>
+         <mrow>
+            <munder>
+               <mo form="prefix">lim</mo>
+               <mrow>
+                  <oper idx="1" prio="10"/>
+                  <mo form="infix">&amp;RightArrow;</mo>
+                  <oper idx="2" prio="10"/>
+               </mrow>
+            </munder>
+            <mo form="infix">&amp;blank;</mo>
+            <oper idx="0" prio="950"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="limitLeft" keywd="Left Limit" arity="3" prio="950">
+      <layout>
+         <mrow>
+            <munder>
+               <mo form="prefix">lim</mo>
+               <mrow>
+                  <oper idx="1" prio="10"/>
+                  <mo form="infix">&amp;RightArrow;</mo>
+                  <msup>
+                     <oper idx="2" prio="10"/>
+                     <mo>-</mo>
+                  </msup>
+               </mrow>
+            </munder>
+            <mo form="infix">&amp;blank;</mo>
+            <oper idx="0" prio="950"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="limitRight" keywd="Right Limit" arity="3" prio="950">
+      <layout>
+         <mrow>
+            <munder>
+               <mo form="prefix">lim</mo>
+               <mrow>
+                  <oper idx="1" prio="10"/>
+                  <mo form="infix">&amp;RightArrow;</mo>
+                  <msup>
+                     <oper idx="2" prio="10"/>
+                     <mo>+</mo>
+                  </msup>
+               </mrow>
+            </munder>
+            <mo form="infix">&amp;blank;</mo>
+            <oper idx="0" prio="950"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="list" keywd="List" accel="[" arity="0*" dummies="1" flatten-seq="0,-1">
+      <layout>
+         <mrow>
+            <mo form="prefix">[</mo>
+            <oprow>
+               <oper parens="true"/>
+               <mo form="infix">,</mo>
+            </oprow>
+            <mo form="postfix">]</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="log" keywd="Logarithm" arity="2">
+      <layout>
+         <mrow>
+            <msub>
+               <mo>log</mo>
+               <oper idx="1"/>
+            </msub>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="lt" keywd="Less" accel="&lt;" arity="2*" prio="400">
+      <layout>
+         <oprow>
+            <oper prio="400"/>
+            <mo form="infix">&amp;lt;</mo>
+         </oprow>
+      </layout>
+   </content>
+   <content id="matrix" keywd="Matrix" accel="#" arity="1*">
+      <layout>
+         <mrow>
+            <mo form="prefix">(</mo>
+            <optable>
+               <oper/>
+            </optable>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="mean" keywd="Mean Value" arity="1">
+      <layout>
+         <mover>
+            <oper idx="0"/>
+            <mo form="postfix">&amp;OverBar;</mo>
+         </mover>
+      </layout>
+   </content>
+   <content id="median" keywd="Median" arity="1*">
+      <layout>
+         <mrow>
+            <mo>median</mo>
+            <mo form="prefix">(</mo>
+            <oprow>
+               <oper/>
+               <mo>,</mo>
+            </oprow>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="mode" keywd="Modus" arity="1*" prio="1800">
+      <layout>
+         <mrow>
+            <mo>mode</mo>
+            <mo form="prefix">(</mo>
+            <oprow>
+               <oper/>
+               <mo>,</mo>
+            </oprow>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="moment" keywd="Moment" arity="3">
+      <layout>
+         <mrow>
+            <mo form="prefix">&amp;lang;</mo>
+            <msup>
+               <oper idx="0" prio="20"/>
+               <oper idx="1"/>
+            </msup>
+            <mo>,</mo>
+            <oper idx="2"/>
+            <mo form="postfix">&amp;rang;</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="naturalnumbers" keywd="Natural Numbers" arity="0">
+      <layout>
+         <mo>&amp;Nopf;</mo>
+      </layout>
+   </content>
+   <content id="neq" keywd="NotEqual" arity="2*" prio="400">
+      <layout>
+         <oprow>
+            <oper prio="400"/>
+            <mo form="infix">&amp;NotEqual;</mo>
+         </oprow>
+      </layout>
+   </content>
+   <content id="norm" keywd="Frobenius Norm" arity="1">
+      <layout>
+         <mrow>
+            <mo form="prefix">&amp;Verbar;</mo>
+            <oper idx="0"/>
+            <mo form="postfix">&amp;Verbar;</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="not" keywd="Not" arity="1" prio="300">
+      <layout>
+         <mrow>
+            <mo form="prefix">&amp;not;</mo>
+            <oper idx="0" prio="300"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="notanumber" keywd="Not a Number" arity="0">
+      <layout>
+         <mo>&amp;NotANumber;</mo>
+      </layout>
+   </content>
+   <content id="notin" keywd="Not In" arity="2" prio="400">
+      <layout>
+         <mrow>
+            <oper idx="0" prio="400"/>
+            <mo form="infix">&amp;NotElement;</mo>
+            <oper idx="1" prio="400"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="notprsubset" keywd="Not Proper Subset" arity="2" prio="400">
+      <layout>
+         <mrow>
+            <oper idx="0" prio="400"/>
+            <mo form="infix">&amp;NotSubset;</mo>
+            <oper idx="1" prio="400"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="notsubset" keywd="NotSubset" arity="2" prio="400">
+      <layout>
+         <mrow>
+            <oper idx="0" prio="400"/>
+            <mo form="infix">&amp;NotSubset;</mo>
+            <oper idx="1" prio="400"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="onenorm" keywd="1-Norm" arity="1">
+      <layout>
+         <msub>
+            <mrow>
+               <mo form="prefix">&amp;Verbar;</mo>
+               <oper idx="0"/>
+               <mo form="postfix">&amp;Verbar;</mo>
+            </mrow>
+            <mo>1</mo>
+         </msub>
+      </layout>
+   </content>
+   <content id="or" keywd="Or" arity="2*" prio="100">
+      <layout>
+         <oprow>
+            <oper prio="200"/>
+            <mo>&amp;vee;</mo>
+         </oprow>
+      </layout>
+   </content>
+   <content id="othernorm" keywd="Other Norm" arity="2">
+      <layout>
+         <msub>
+            <mrow>
+               <mo form="prefix">&amp;Verbar;</mo>
+               <oper idx="0"/>
+               <mo form="postfix">&amp;Verbar;</mo>
+            </mrow>
+            <oper idx="1"/>
+         </msub>
+      </layout>
+   </content>
+   <content id="partialdiff" keywd="Partial Derivative" arity="2" prio="1110">
+      <layout>
+         <mrow>
+            <mfrac>
+               <mo form="prefix">&amp;PartialD;</mo>
+               <mrow>
+                  <mo form="prefix">&amp;PartialD;</mo>
+                  <oper idx="1"/>
+               </mrow>
+            </mfrac>
+            <mo form="infix">&amp;blank;</mo>
+            <oper idx="0" prio="1100"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="partialdiff1" keywd="Partial Derivative" arity="3" prio="1110">
+      <layout>
+         <mrow>
+            <mfrac>
+               <msup>
+                  <mo form="prefix">&amp;PartialD;</mo>
+                  <oper idx="2"/>
+               </msup>
+               <mrow>
+                  <mo form="prefix">&amp;PartialD;</mo>
+                  <msup>
+                     <oper idx="1"/>
+                     <oper idx="2"/>
+                  </msup>
+               </mrow>
+            </mfrac>
+            <mo form="infix">&amp;blank;</mo>
+            <oper idx="0" prio="1100"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="partialdiff2" keywd="Partial Derivative" arity="2" prio="1110">
+      <layout>
+         <mrow>
+            <msub>
+               <mo form="prefix">&amp;PartialD;</mo>
+               <oper idx="1"/>
+            </msub>
+            <mo form="infix">&amp;blank;</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0" prio="1100"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="pi" keywd="Pi" arity="0">
+      <layout>
+         <mo>&amp;pi;</mo>
+      </layout>
+   </content>
+   <content id="piecewise" keywd="Piecewise" arity="2*" assoc="false">
+      <layout>
+         <mrow>
+            <mo form="prefix">{</mo>
+            <optable cols="2" columnalign="cl">
+               <oper/>
+               <mrow>
+                  <mtext>if&amp;Space;&amp;Space;</mtext>
+                  <oper/>
+               </mrow>
+            </optable>
+         </mrow>
+      </layout>
+   </content>
+   <content id="piecewise2" keywd="Piecewise" arity="2*" assoc="false">
+      <layout>
+         <mrow>
+            <mo form="prefix">{</mo>
+            <mfrac linethickness="0">
+               <optable cols="2" columnalign="cl" idx="0,-2">
+                  <oper/>
+                  <mrow>
+                     <mtext>if&amp;Space;&amp;Space;</mtext>
+                     <oper/>
+                  </mrow>
+               </optable>
+               <mrow>
+                  <oper idx="-1"/>
+                  <mtext>&amp;Space;&amp;Space;otherwise</mtext>
+               </mrow>
+            </mfrac>
+         </mrow>
+      </layout>
+   </content>
+   <content id="pochhammer" keywd="pochhammer" arity="2">
+      <layout>
+         <msub>
+            <mrow>
+               <mo form="prefix">(</mo>
+               <oper idx="0"/>
+               <mo form="postfix">)</mo>
+            </mrow>
+            <oper idx="1"/>
+         </msub>
+      </layout>
+   </content>
+   <content id="polylog" keywd="Polylog" arity="2">
+      <layout>
+         <mrow>
+            <mo>polylog</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo>,</mo>
+            <oper idx="1"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="power" keywd="Exponentiation" accel="^" arity="2" prio="1200">
+      <layout>
+         <msup>
+            <oper idx="0" prio="1200"/>
+            <oper idx="1"/>
+         </msup>
+      </layout>
+   </content>
+   <content id="primes" keywd="Primes" arity="0">
+      <layout>
+         <mo>&amp;Popf;</mo>
+      </layout>
+   </content>
+   <content id="product" keywd="Indefinite Product" arity="2" prio="1100">
+      <layout>
+         <mrow>
+            <munder>
+               <mo form="prefix">&amp;Pi;</mo>
+               <oper idx="1"/>
+            </munder>
+            <mo form="infix">&amp;blank;</mo>
+            <oper idx="0" prio="1100"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="prsubset" keywd="Proper Subset" arity="2" prio="400">
+      <layout>
+         <mrow>
+            <oper idx="0" prio="400"/>
+            <mo form="infix">&amp;Subset;</mo>
+            <oper idx="1" prio="400"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="quadraticMean" keywd="Quadratic Mean Value" arity="1">
+      <layout>
+         <mover>
+            <msup>
+               <oper idx="0"/>
+               <mo>2</mo>
+            </msup>
+            <mo form="postfix">&amp;OverBar;</mo>
+         </mover>
+      </layout>
+   </content>
+   <content id="quotient" keywd="Integer Quotient" arity="2" prio="900">
+      <layout>
+         <mrow>
+            <oper idx="0" prio="900"/>
+            <mo>div</mo>
+            <oper idx="1" prio="900"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="range" keywd="Range" arity="2" prio="500">
+      <layout>
+         <mrow>
+            <oper idx="0"/>
+            <mo>&amp;period;&amp;period;</mo>
+            <oper idx="1"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="rationals" keywd="Rationals" arity="0">
+      <layout>
+         <mo>&amp;Qopf;</mo>
+      </layout>
+   </content>
+   <content id="reals" keywd="Reals" arity="0">
+      <layout>
+         <mo>&amp;Ropf;</mo>
+      </layout>
+   </content>
+   <content id="rem" keywd="Remainder" arity="2" prio="900">
+      <layout>
+         <mrow>
+            <oper idx="0" prio="900"/>
+            <mo>mod</mo>
+            <oper idx="1" prio="900"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="root" keywd="Root" arity="2">
+      <layout>
+         <mroot>
+            <oper idx="0"/>
+            <oper idx="1"/>
+         </mroot>
+      </layout>
+   </content>
+   <content id="row" keywd="Layout Row" arity="1*" prio="1800">
+      <layout>
+         <oprow>
+            <oper/>
+            <mo> </mo>
+         </oprow>
+      </layout>
+   </content>
+   <content id="scalarproduct" keywd="Scalar Product" arity="2" prio="1100">
+      <layout>
+         <mrow>
+            <mo form="prefix">&amp;lang;</mo>
+            <oper idx="0" prio="10"/>
+            <mo form="infix">,</mo>
+            <oper idx="1" prio="10"/>
+            <mo form="postfix">&amp;rang;</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="sdev" keywd="Standard Derivation" arity="1*" prio="1800">
+      <layout>
+         <mrow>
+            <mo>&amp;sigma;</mo>
+            <mo form="prefix">(</mo>
+            <oprow>
+               <oper/>
+               <mo>,</mo>
+            </oprow>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="seq" keywd="Sequence" accel="," arity="2*" flatten-seq="0,-1" prio="20">
+      <layout>
+         <oprow>
+            <oper prio="20"/>
+            <mo>,</mo>
+         </oprow>
+      </layout>
+   </content>
+   <content id="seqgen" keywd="Seqgen" arity="1" prio="300">
+      <layout>
+         <mrow>
+            <mo form="prefix">$&amp;blank;</mo>
+            <oper idx="0" prio="300"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="seqgen2" keywd="Seqgen2" arity="2" prio="300">
+      <layout>
+         <mrow>
+            <oper idx="0" prio="300"/>
+            <mo form="infix">&amp;blank;$&amp;blank;</mo>
+            <oper idx="1" prio="300"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="seqgen3" keywd="Seqgen3" arity="3" prio="300">
+      <layout>
+         <mrow>
+            <oper idx="0" prio="300"/>
+            <mo form="infix">&amp;blank;$&amp;blank;</mo>
+            <oper idx="1" prio="300"/>
+            <mo form="infix">&amp;blank;=&amp;blank;</mo>
+            <oper idx="2" prio="300"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="seqin" keywd="Seqin" arity="3" prio="300">
+      <layout>
+         <mrow>
+            <oper idx="0" prio="300"/>
+            <mo form="infix">&amp;blank;$&amp;blank;</mo>
+            <oper idx="1" prio="300"/>
+            <mo form="infix"> &amp;in; </mo>
+            <oper idx="2" prio="300"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="seqstep" keywd="Seqstep" arity="2" prio="300">
+      <layout>
+         <mrow>
+            <mo form="prefix">$&amp;blank;</mo>
+            <oper idx="0" prio="300"/>
+            <mo form="infix">&amp;blank;step&amp;blank;</mo>
+            <oper idx="1" prio="300"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="seqstep2" keywd="Seqstep2" arity="3" prio="300">
+      <layout>
+         <mrow>
+            <oper idx="0" prio="300"/>
+            <mo form="infix">&amp;blank;$&amp;blank;</mo>
+            <oper idx="1" prio="300"/>
+            <mo form="infix">&amp;blank;step&amp;blank;</mo>
+            <oper idx="2" prio="300"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="seqstep3" keywd="Seqstep3" arity="4" prio="300">
+      <layout>
+         <mrow>
+            <oper idx="0" prio="300"/>
+            <mo form="infix">&amp;blank;$&amp;blank;</mo>
+            <oper idx="1" prio="300"/>
+            <mo form="infix">&amp;blank;=&amp;blank;</mo>
+            <oper idx="2" prio="300"/>
+            <mo form="infix">&amp;blank;step&amp;blank;</mo>
+            <oper idx="3" prio="300"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="set" keywd="Set" accel="{" arity="0*" dummies="1" flatten-seq="0,-1">
+      <layout>
+         <mrow>
+            <mo form="prefix">{</mo>
+            <oprow>
+               <oper parens="true"/>
+               <mo form="infix">,</mo>
+            </oprow>
+            <mo form="postfix">}</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="setdiff" keywd="SetMinus" arity="2*" prio="700">
+      <layout>
+         <oprow>
+            <oper prio="800"/>
+            <mo>&amp;setminus;</mo>
+         </oprow>
+      </layout>
+   </content>
+   <content id="slot" keywd="Slot" arity="2">
+      <layout>
+         <mrow>
+            <oper idx="0"/>
+            <mo>&amp;Colon;</mo>
+            <oper idx="1"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="sqrt" keywd="Square Root" arity="1">
+      <layout>
+         <msqrt>
+            <oper idx="0"/>
+         </msqrt>
+      </layout>
+   </content>
+   <content id="subset" keywd="Subset" arity="2" prio="400">
+      <layout>
+         <mrow>
+            <oper idx="0" prio="400"/>
+            <mo form="infix">&amp;Subset;</mo>
+            <oper idx="1" prio="400"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="sum" keywd="Indefinite Sum" arity="2" prio="1000">
+      <layout>
+         <mrow>
+            <munder>
+               <mo form="prefix">&amp;Sum;</mo>
+               <oper idx="1"/>
+            </munder>
+            <oper idx="0" prio="1000"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="sumrootof" keywd="Definite Sum over RootOf" arity="3" prio="1000">
+      <layout>
+         <mrow>
+            <munder>
+               <mo form="prefix">&amp;Sum;</mo>
+               <mrow>
+                  <oper idx="1" prio="400"/>
+                  <mo form="infix">=</mo>
+                  <oper idx="2" prio="400"/>
+               </mrow>
+            </munder>
+            <oper idx="0" prio="1000"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="table" keywd="Table" arity="0*">
+      <layout>
+         <mrow>
+            <optable cols="2" rowlines="n" columnlines="sn" framelines="snnn" columnalign="rl">
+               <oper/>
+            </optable>
+         </mrow>
+      </layout>
+   </content>
+   <content id="tableau" keywd="Tableau" arity="1*">
+      <layout>
+         <mrow>
+            <optable>
+               <oper/>
+            </optable>
+         </mrow>
+      </layout>
+   </content>
+   <content id="times" keywd="Multiplication" accel="*" arity="2*" prio="1100">
+      <layout>
+         <oprow>
+            <oper prio="1100"/>
+            <mo form="infix">&amp;CenterDot;</mo>
+         </oprow>
+      </layout>
+   </content>
+   <content id="transpose" keywd="Transpose" arity="1" prio="1200">
+      <layout>
+         <msup>
+            <oper idx="0" prio="1200"/>
+            <mo>t</mo>
+         </msup>
+      </layout>
+   </content>
+   <content id="true" keywd="True" arity="0">
+      <layout>
+         <mo>TRUE</mo>
+      </layout>
+   </content>
+   <content id="union" keywd="Union" arity="2*" prio="600">
+      <layout>
+         <oprow>
+            <oper prio="800"/>
+            <mo>&amp;cup;</mo>
+         </oprow>
+      </layout>
+   </content>
+   <content id="Union" keywd="UnionSet" arity="3" prio="600">
+      <layout>
+         <mrow>
+            <munder>
+               <mo form="prefix">&amp;Union;</mo>
+               <mrow>
+                  <oper idx="1" prio="400"/>
+                  <mo form="infix">&amp;Element;</mo>
+                  <oper idx="2" prio="400"/>
+               </mrow>
+            </munder>
+            <oper idx="0" prio="800"/>
+         </mrow>
+      </layout>
+   </content>
+   <content id="unknown" keywd="Unknown" arity="0">
+      <layout>
+         <mo>UNKNOWN</mo>
+      </layout>
+   </content>
+   <content id="variance" keywd="Variance" arity="1*" prio="1800">
+      <layout>
+         <msup>
+            <mrow>
+               <mo>&amp;sigma;</mo>
+               <mo form="prefix">(</mo>
+               <oprow>
+                  <oper/>
+                  <mo>,</mo>
+               </oprow>
+               <mo form="postfix">)</mo>
+            </mrow>
+            <mo>2</mo>
+         </msup>
+      </layout>
+   </content>
+   <content id="vectorproduct" keywd="Vector Product" arity="2*" prio="1100">
+      <layout>
+         <oprow>
+            <oper prio="1100"/>
+            <mo form="infix">&amp;times;</mo>
+         </oprow>
+      </layout>
+   </content>
+   <content id="whittakerM" keywd="whittakerM" arity="3">
+      <layout>
+         <mrow>
+            <msub>
+               <mo>M</mo>
+               <mrow>
+                  <oper idx="0"/>
+                  <mo>,</mo>
+                  <oper idx="1"/>
+               </mrow>
+            </msub>
+            <mo form="prefix">(</mo>
+            <oper idx="2"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="whittakerW" keywd="whittakerW" arity="3">
+      <layout>
+         <mrow>
+            <msub>
+               <mo>W</mo>
+               <mrow>
+                  <oper idx="0"/>
+                  <mo>,</mo>
+                  <oper idx="1"/>
+               </mrow>
+            </msub>
+            <mo form="prefix">(</mo>
+            <oper idx="2"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="wrightOmega" keywd="WrightOmega" arity="1">
+      <layout>
+         <mrow>
+            <mo>&amp;omega;</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+   <content id="xor" keywd="Xor" arity="2*" prio="150">
+      <layout>
+         <oprow>
+            <oper prio="200"/>
+            <mo>xor</mo>
+         </oprow>
+      </layout>
+   </content>
+   <content id="zeta" keywd="Zeta Function" arity="1" prio="1800">
+      <layout>
+         <mrow>
+            <mo>&amp;zeta;</mo>
+            <mo form="prefix">(</mo>
+            <oper idx="0"/>
+            <mo form="postfix">)</mo>
+         </mrow>
+      </layout>
+   </content>
+</mathsetup>
