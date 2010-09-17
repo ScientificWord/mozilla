@@ -41,9 +41,9 @@
 				<tag nm="sw:(normal)" id="cleartexttag" ><description>Clear text tags</description></tag>
 				<tag nm="sw:alt"><description>Stylistic alternate</description></tag>
 				<tag nm="sw:bold"><description>Bold</description></tag>
-				<tag nm="sw:bbold"><description>Blackboard Bold</description></tag>
-				<tag nm="sw:cal"><description>Calligraphic</description></tag>
-				<tag nm="sw:em"><description>Emphasized</description></tag>
+				<tag nm="sw:blackboardBold"><description>Blackboard Bold</description></tag>
+				<tag nm="sw:calligraphic"><description>Calligraphic</description></tag>
+				<tag nm="sw:emphasized"><description>Emphasized</description></tag>
 				<tag nm="sw:footnotesize"><description>Footnote size</description></tag>
 				<tag nm="sw:otfont" hidden="1"><description>Open TypeFont</description></tag>
 				<tag nm="sw:fontsize" hidden="1"><description>Font size</description></tag>
@@ -52,23 +52,23 @@
 				<tag nm="sw:rtl"><description>Right-to-left font</description></tag>
 				<tag nm="sw:Huge"><description>Huge</description></tag>
 				<tag nm="sw:huge"><description>huge</description></tag>
-				<tag nm="sw:it"><description>Italics</description></tag>
+				<tag nm="sw:italics"><description>Italics</description></tag>
 				<tag nm="sw:LARGE"><description>LARGE</description></tag>
 				<tag nm="sw:Large"><description>Large</description></tag>
 				<tag nm="sw:large"><description>large</description></tag>
 				<tag nm="sw:lower"><description>Lower case</description></tag>
 				<tag nm="sw:normalsize"><description>normalsize</description></tag>
 				<tag nm="sw:phantom"><description>phantom</description></tag>
-				<tag nm="sw:rm"><description>Roman</description></tag>
-				<tag nm="sw:sf"><description>Sans Serif</description></tag>
+				<tag nm="sw:roman"><description>Roman</description></tag>
+				<tag nm="sw:sansSerif"><description>Sans Serif</description></tag>
 				<tag nm="sw:scriptsize"><description>Scriptsize</description></tag>
-				<tag nm="sw:sl"><description>Slanted</description></tag>
+				<tag nm="sw:slanted"><description>Slanted</description></tag>
 				<tag nm="sw:small"><description>Small</description></tag>
-				<tag nm="sw:sc"><description>Small Caps</description></tag>
+				<tag nm="sw:smallCaps"><description>Small Caps</description></tag>
 				<tag nm="sw:sub"><description>Text subscript</description></tag>
 				<tag nm="sw:sup"><description>Text superscript</description></tag>
 				<tag nm="sw:tiny"><description>Tiny</description></tag>
-				<tag nm="sw:tt"><description>Typewriter font</description></tag>
+				<tag nm="sw:typewriter"><description>Typewriter font</description></tag>
 				<tag nm="sw:upper"><description>Upper case</description></tag>
 			</tags>
 		</tagclass>
@@ -78,24 +78,24 @@
       <contains>table</contains>
 			<contains>texttag</contains>
 			<contains>listtag</contains>
-			<contains>sw:quote</contains>
+			<contains>sw:shortQuote</contains>
 			<contains>othertag</contains>
 			<contains>mml:math</contains>
 			<contains>html:br</contains>
-			<contains>sw:quote</contains>
+			<contains>sw:shortQuote</contains>
 			<contains>cursor</contains>
 			<contains>sw:defaulttitletag</contains>
 			<contains>html:img</contains>
       <contains>line</contains>
       <contains>a</contains>
 			<tags>
-				<tag id="defaultparagraph" nm="sw:para">
+				<tag id="defaultparagraph" nm="sw:bodyText">
 					<description>Default body text paragraph</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[<br type="_moz"/>]]>
           </initialcontentsforempty>
 				</tag>
-				<tag nm="sw:rtlpara">
+				<tag nm="sw:rtlBodyText">
 					<description>Right to left body text paragraph</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[<br type="_moz"/>]]>
@@ -107,34 +107,34 @@
           <initialcontentsforempty> <![CDATA[<br type="_moz"/>]]>
           </initialcontentsforempty>
 				</tag>
-				<tag nm="sw:mathp">
+				<tag nm="sw:bodyMath">
 					<description>Body math paragraph</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[<math xmlns="http://www.w3.org/1998/Math/MathML"><cursor/></math>]]>
           </initialcontentsforempty>
 				</tag>
 				<tag nm="sw:sectiontitle">
-					<nexttag>sw:para</nexttag>
+					<nexttag>sw:bodyText</nexttag>
 					<description>Title of section</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[<defaulttitletag/><cursor/><br temp="1"/>]]>
           </initialcontents>
 				</tag>
-				<tag nm="sw:quote">
-					<nexttag>sw:quote</nexttag>
+				<tag nm="sw:shortQuote">
+					<nexttag>sw:shortQuote</nexttag>
 					<description>Quote</description>
           <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]>
           </initialcontentsforempty>
 			  </tag>
-				<tag nm="sw:quotation">
+				<tag nm="sw:longQuotation">
 					<description>Long quotation</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[<cursor/>]]>
           </initialcontentsforempty>
-          <nextafteremptyblock>para</nextafteremptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
 				</tag>
 				<tag nm="sw:title">
-					<nexttag>sw:para</nexttag>
+					<nexttag>sw:bodyText</nexttag>
 					<description>Title</description>
           <initialcontents> <![CDATA[<defaulttitletag/><cursor/><br type="_moz"/>]]>
           </initialcontents>
@@ -145,14 +145,14 @@
           <initialcontents> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontents>
 				</tag>
-				<tag nm="sw:center">
-					<nexttag>sw:center</nexttag>
+				<tag nm="sw:centered">
+					<nexttag>sw:centered</nexttag>
 					<description>Centered paragraph</description>
           <initialcontents> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontents>
 				</tag>
 				<tag nm="sw:dialogbase" hidden="1">
-					<nexttag>sw:para</nexttag>
+					<nexttag>sw:bodyText</nexttag>
 					<description>Hidden dialog base</description>
           <initialcontents> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontents>
@@ -171,48 +171,48 @@
 			<tags>
 				<tag nm="sw:bulletlist" hidden="1">
           <description>Bullet list</description>
-					<nexttag>sw:para</nexttag>
+					<nexttag>sw:bodyText</nexttag>
           <htmllist>ul</htmllist>
           <discardemptyblock>true</discardemptyblock>
         </tag>
 				<tag nm="sw:numberedlist" hidden="1">
           <description>Numbered list</description>
-					<nexttag>sw:para</nexttag>
+					<nexttag>sw:bodyText</nexttag>
           <htmllist>ol</htmllist>
           <discardemptyblock>true</discardemptyblock>
         </tag>
 				<tag nm="sw:descriptionlist" hidden="1">
           <description>Description list</description>
-					<nexttag>sw:para</nexttag>
+					<nexttag>sw:bodyText</nexttag>
           <htmllist>dl</htmllist>
           <discardemptyblock>true</discardemptyblock>
         </tag>
-				<tag nm="sw:bulletlistitem">
+				<tag nm="sw:bulletListItem">
           <description>Bullet list item</description>
           <htmllistparent>bulletlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para><cursor/><br type="_moz"/></para>
+              <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
           </initialcontents>
           <nextafteremptyblock>bulletlist</nextafteremptyblock>
         </tag>
-				<tag nm="sw:numberedlistitem">
+				<tag nm="sw:numberedListItem">
           <description>Numbered list item</description>
           <htmllistparent>numberedlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para><cursor/><br type="_moz"/></para>
+              <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
           </initialcontents>
           <nextafteremptyblock>numberedlist</nextafteremptyblock>
         </tag>
-				<tag nm="sw:descriptionlistitem">
+				<tag nm="sw:descriptionListItem">
           <description>Description list item</description>
           <htmllistparent>descriptionlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para><cursor/><br type="_moz"/></para>
+              <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
           </initialcontents>
           <nextafteremptyblock>descriptionlist</nextafteremptyblock>
@@ -307,7 +307,7 @@
           <description>Appendix</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para></para>
+              <bodyText></bodyText>
               ]]>
           </initialcontents>
           <prefsub>section</prefsub>
@@ -322,38 +322,38 @@
 			<tags>
 				<tag nm="sw:frontmatter">
           <level>*</level>
-          <nexttag>para</nexttag>
+          <nexttag>bodyText</nexttag>
           <description>Front Matter</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[ <para><cursor/><br/></para>]]>
+          <initialcontents> <![CDATA[ <bodyText><cursor/><br/></bodyText>]]>
           </initialcontents>
-          <nextafteremptyblock>para</nextafteremptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
 				<tag nm="sw:dedication">
           <level>*</level>
           <description>Dedication</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para><cursor/><br type="_moz"/></para>
+              <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
           </initialcontents>
         </tag>
-				<tag nm="sw:centered">
+				<tag nm="sw:centeredEnv">
           <level>*</level>
           <description>Centered</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para><cursor/><br type="_moz"/></para>
+              <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
           </initialcontents>
-          <nextafteremptyblock>para</nextafteremptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
 				<tag nm="sw:preface">
           <level>0</level>
           <description>Preface</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para></para>
+              <bodyText></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -362,7 +362,7 @@
           <description>Index</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para></para>
+              <bodyText></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -371,7 +371,7 @@
           <description>Glossary</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para></para>
+              <bodyText></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -388,7 +388,7 @@
           <description>Note</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para><cursor/><br type="_moz"/></para>
+              <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
           </initialcontents>
 	  		  <inclusion>true</inclusion>
@@ -398,7 +398,7 @@
           <description>Frame</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <para><cursor/><br type="_moz"/></para>
+              <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
           </initialcontents>
 	  		  <inclusion>true</inclusion>
@@ -416,34 +416,34 @@
         </tag>
         <tag nm="sw:address"><description>Address</description>y
           <realtagclass>paratag</realtagclass>
-					<nexttag>sw:para</nexttag>
+					<nexttag>sw:bodyText</nexttag>
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontentsforempty>
         </tag>
         <tag nm="sw:author"><description>Author</description>
           <realtagclass>paratag</realtagclass>
-					<nexttag>sw:para</nexttag>
+					<nexttag>sw:bodyText</nexttag>
           <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontentsforempty>
         </tag>
         <tag nm="sw:date"><description>Date</description>
           <realtagclass>paratag</realtagclass>
-					<nexttag>sw:para</nexttag>
+					<nexttag>sw:bodyText</nexttag>
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontentsforempty>
         </tag>
         <tag nm="sw:makelof"><description>Make list of figures</description>
           <realtagclass>paratag</realtagclass>
-					<nexttag>sw:para</nexttag>
+					<nexttag>sw:bodyText</nexttag>
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontentsforempty>
         </tag>
         <tag nm="sw:makelot"><description>Make list of tables</description>
           <realtagclass>paratag</realtagclass>
-					<nexttag>sw:para</nexttag>
+					<nexttag>sw:bodyText</nexttag>
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontentsforempty>
@@ -455,14 +455,14 @@
         </tag>
         <tag nm="sw:maketoc"><description>Make table of contents</description>
           <realtagclass>paratag</realtagclass>
-					<nexttag>sw:para</nexttag>
+					<nexttag>sw:bodyText</nexttag>
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontentsforempty>
         </tag>
         <tag nm="sw:title"><description>Title</description>
           <realtagclass>paratag</realtagclass>
-					<nexttag>sw:para</nexttag>
+					<nexttag>sw:bodyText</nexttag>
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontentsforempty>

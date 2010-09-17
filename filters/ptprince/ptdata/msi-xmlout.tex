@@ -259,7 +259,7 @@
      \def\enditemtag##1{\msiclosetag{##1}{</##1>}}%
      \expandafter\enditemtag\expandafter{\itemprefix item}%
    \fi
-   \def\startitemtag##1{\br\msihmode\msiopentag{##1}{<##1>}\msiopentag{para}{<para>}}%
+   \def\startitemtag##1{\br\msihmode\msiopentag{##1}{<##1>}\msiopentag{bodyText}{<bodyText>}}%
    \expandafter\startitemtag\expandafter{\itemprefix item}%
 }
 
@@ -411,8 +411,8 @@
 
 \def\@paragraphs{%
   \let\@par\par
-  \def\par{\msiclosetag{para}{</para>}\@par}%
-  \everypar{\msihmode\br\msiopentag{para}{<para>}}%
+  \def\par{\msiclosetag{bodyText}{</bodyText>}\@par}%
+  \everypar{\msihmode\br\msiopentag{bodyText}{<bodyText>}}%
 }
 
 
