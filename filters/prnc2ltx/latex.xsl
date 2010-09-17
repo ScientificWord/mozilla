@@ -173,7 +173,7 @@ should not be done under some conditions -->
 </xsl:template>
 
 
-<xsl:template match="html:para">
+<xsl:template match="html:bodyText">
 <xsl:apply-templates/>\par 
 </xsl:template>
 
@@ -224,15 +224,15 @@ should not be done under some conditions -->
 \end{description}
 </xsl:template>
 
-<xsl:template match="html:numberedlistitem">
+<xsl:template match="html:numberedListItem">
 \item <xsl:apply-templates/>
 </xsl:template>
 
-<xsl:template match="html:bulletlistitem">
+<xsl:template match="html:bulletListItem">
 \item <xsl:apply-templates/>
 </xsl:template>
 
-<xsl:template match="html:descriptionlistitem">
+<xsl:template match="html:descriptionListItem">
 \item <xsl:apply-templates/>
 </xsl:template>
 
@@ -283,7 +283,7 @@ should not be done under some conditions -->
 </xsl:template>
 
 
-<xsl:template match="html:quote">
+<xsl:template match="html:shortQuote">
   
 \begin{quote}
 <xsl:apply-templates/>
@@ -291,21 +291,21 @@ should not be done under some conditions -->
 </xsl:template>
 
 
-<xsl:template match="html:quotation">
+<xsl:template match="html:longQuotation">
   
 \begin{quotation}
 <xsl:apply-templates/>
 \end{quotation}
 </xsl:template>
 
-<xsl:template match="html:centered">
+<xsl:template match="html:centeredEnv">
   
 \begin{center}
 <xsl:apply-templates/>
 \end{center}
 </xsl:template>
 
-<xsl:template match="html:center">
+<xsl:template match="html:centered">
   
 \begin{center}
 \par
@@ -332,19 +332,19 @@ should not be done under some conditions -->
   />}</xsl:template>
 <xsl:template match="html:bold">\textbf{<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:it">\textit{<xsl:apply-templates
+<xsl:template match="html:italics">\textit{<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:rm">\textrm{<xsl:apply-templates
+<xsl:template match="html:roman">\textrm{<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:sf">\textsf{<xsl:apply-templates
+<xsl:template match="html:sansSerif">\textsf{<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:sl">\textsl{<xsl:apply-templates
+<xsl:template match="html:slanted">\textsl{<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:sc">\textsc{<xsl:apply-templates
+<xsl:template match="html:smallCaps">\textsc{<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:tt">\texttt{<xsl:apply-templates
+<xsl:template match="html:typewriter">\texttt{<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:em">\emph{<xsl:apply-templates
+<xsl:template match="html:emphasized">\emph{<xsl:apply-templates
   />}</xsl:template>
 <xsl:template match="html:upper">\uppercase{<xsl:apply-templates
   />}</xsl:template>
