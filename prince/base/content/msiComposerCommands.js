@@ -8503,31 +8503,6 @@ function msiFrame(editorElement)
   var editor = msiGetEditor(editorElement);
   editor.beginTransaction();
   window.openDialog("chrome://prince/content/Frame.xul","frame", "chrome,close,titlebar,resizable=yes");
-//  if (data.newElement)
-//  {
-//    try
-//    {
-//      var namespace = new Object();                      
-//      var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace);
-//      msiRequirePackage(editorElement, "wrapfig", null);
-//      msiRequirePackage(editorElement, "boxedminipage", null);
-//      var selection = editor.selection;
-//      selection.getRangeAt(0).insertNode(data.element);
-//      if (!selection.isCollapsed) editor.deleteSelection(0);
-//      try
-//      {
-//        var defpara = "para";
-//        var para = editor.document.createElement(defpara);
-//        var br = editor.document.createElement("br");
-//        data.element.appendChild(para);
-//        para.appendChild(br);
-//      }
-//      catch(e) {
-//      }
-//    }
-//    catch(e) {
-//    }
-//  } 
   editor.endTransaction();
 }
 
