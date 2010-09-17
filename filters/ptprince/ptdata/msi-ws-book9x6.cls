@@ -439,8 +439,8 @@
 
 %% Environments
 
-\msi@environment{quotation}
-\msi@environment{quote}
+\msi@environment{longQuotation}
+\msi@environment{shortQuote}
 \msi@environment{enumerate}
 \msi@environment{itemize}
 \msi@environment{description}
