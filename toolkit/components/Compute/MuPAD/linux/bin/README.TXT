@@ -33,7 +33,4 @@ INSTALLATI0N
    /usr/local/SWP-6.0. If space is a problem on your system, you can remove
    the swppro directory after the installation is finished. You can also 
    remove the .bz2 distrubution file. If you later want to uninstall,
-     mkdir swppro
-     cp /usr/local/SWP-6.0/uninstall-sh swppro
-     cd swppro
-     sudo ./uninstall-sh
+     sudo /usr/local/SWP-6.0/uninstall-sh
