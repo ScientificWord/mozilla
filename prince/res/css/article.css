@@ -173,19 +173,19 @@ p {
   margin: 10pt 10pt 5pt 5pt;
 }
 
-para {
+bodyText {
   display: block;
   margin: 10pt 0pt 5pt 0pt;
 }
 
-rtlpara {
+rtlBodyText {
   display: block;
   direction: rtl;
   unicode-bidi: bidi-override; 
   margin: 10pt 10pt 5pt 5pt;
 }
 
-mathp {
+bodyMath {
   display: block;
   margin: 10pt 10pt 5pt 5pt;
   color: rgb(0,128,64);
@@ -217,18 +217,18 @@ title {
   text-align: center;
 }
 
-quote {
+shortQuote {
   display: block; 
   margin-left: 20pt;
   margin-right: 20pt;
 }
-quotation {
+longQuotation {
   display: block; 
   margin-left: 20pt;
   margin-right: 20pt;
 }
 
-*[showinvis="true"] quotation:after {
+*[showinvis="true"] longQuotation:after {
   content: "\B6";
   display: inline;
   font-family: Courier New;
@@ -237,7 +237,7 @@ quotation {
   -moz-user-select: -moz-none;
 }
 
-center {
+centered {
   display: block;
   margin: 10pt 10pt 5pt 5pt;
   text-align: center;
@@ -255,21 +255,21 @@ flushleft {
   text-align: left;
 }
 
-em {
+emphasized {
   font-style: italic;
   color: rgb(9,62,125)
 }
 
-em span.inlineMath {
+emphasized span.inlineMath {
   color: rgb(255,0,255)
 }
 
-rm {
+roman {
   font-family: Times New Roman, serif;
   color: rgb(0,0,255)
 }
 
-cal, *[mathvariant="script"] {
+calligraphic, *[mathvariant="script"] {
   font-family: monotype corsiva;
   color: rgb(0,0,255)
 }
@@ -282,7 +282,7 @@ bold {
   font-weight: 700
 }
 
-bbold {
+blackboardBold {
   font-weight: 700
 }
 
@@ -290,28 +290,28 @@ fraktur {
   font-weight: 700
 }
 
-it {
+italics {
   font-style: italic
 }
 
-sl {
+slanted {
   font-style: italic;
   font-weight: 700;
   color: rgb(9,62,125)
 }
 
-sf {
+sansSerif {
   font-family: Arial;
   font-weight: 400;
   color: rgb(9,62,125)
 }
 
-sc {
+smallCaps {
   font-variant: small-caps;
   color: rgb(0,0,0)
 }
 
-tt {
+typewriter {
   font-family: Courier New;
   font-weight: 300
 }

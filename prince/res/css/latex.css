@@ -176,7 +176,7 @@ phantom {
   color: transparent;
 }
 
-center, centered {
+centeredEnv, centered {
   text-align: center;
 }
 
@@ -389,7 +389,7 @@ paragraph[nonum="true"] {
 }
 
 
-*[showinvis="true"] para:after {
+*[showinvis="true"] bodyText:after {
   content: "\B6";
   display: inline;
   font-family: Courier New;
@@ -398,7 +398,7 @@ paragraph[nonum="true"] {
   -moz-user-select: -moz-none;
 }
 
-*[showinvis="true"] mathp:after {
+*[showinvis="true"] bodyMath:after {
   content: "\B6";
   display: inline;
   font-family: Courier New;
@@ -418,7 +418,7 @@ paragraph[nonum="true"] {
 }
 
 
-*[showinvis="true"] quote:after {
+*[showinvis="true"] shortQuote:after {
   content: "\B6";
   display: inline;
   font-family: Courier New;
@@ -466,8 +466,8 @@ body {
 
 /* selection is possible in paragraph and front matter tags */
 
-para, rtlpara, p, mathp, sectiontitle, quote, quotation, title, line, 
-  dialogbase, bulletlistitem, numberedlistitem, descriptionlistitem, verbatim,
+bodyText, rtlBodyText, p, bodyMath, sectiontitle, shortQuote, longQuotation, title, line, 
+  dialogbase, bulletListItem, numberedListItem, descriptionListItem, verbatim,
   abstract, address, author, dte, makelof, makelot, maketitle, maketoc, title {
   -moz-user-select: text;
 }
