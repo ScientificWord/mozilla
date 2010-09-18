@@ -140,7 +140,7 @@
 </xsl:template>
 
 <xsl:template match="span[@tag='emph']">
-	<em><xsl:apply-templates/></em>
+	<emphasized><xsl:apply-templates/></emphasized>
 </xsl:template>
 
 <xsl:template match="span[@tag='textsl']">
