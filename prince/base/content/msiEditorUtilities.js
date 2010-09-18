@@ -1137,7 +1137,7 @@ function insertXMLNodesAtCursor(editor, nodeList, bSetCaret)
     {
       var targetTag = "body";
       if (bWithinPara)
-        targetTag = "para";
+        targetTag = "bodyText";
       var theCollection = theElement.getElementsByTagName(targetTag);
       if (theCollection.length == 0 && bWithinPara)
         theCollection = theElement.getElementsByTagName("p");
@@ -6648,7 +6648,7 @@ var msiNavigationUtils =
       nsAtom = this.mAtomService.getAtom(node.namespaceURI);
 
     var namespace = new Object();
-    var paraTag = "para";
+    var paraTag = "";
     if (editor != null)
       paraTag = editor.tagListManager.getDefaultParagraphTag(namespace);
     if ((paraTag == node.nodeName) && ((nsAtom == null) || (nsAtom == namespace)) )

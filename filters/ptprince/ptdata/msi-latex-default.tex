@@ -56,9 +56,9 @@
 % and then you'd get <ABSTRACT> ... <ABSTRACT> in the output
  
 \MSISimpleEnvironment{abstract}
-\MSISimpleEnvironment{quote}
-\MSISimpleEnvironment{quotation}
-\MSISimpleEnvironment{center}
+\MSISimpleEnvironment[shortQuote]{quote}
+\MSISimpleEnvironment[longQuotation]{quotation}
+\MSISimpleEnvironment[centeredEnv]{center}
 \MSISimpleEnvironment{flushleft}
 \MSISimpleEnvironment{flushright}
 \MSISimpleEnvironment{subequations}
@@ -73,13 +73,13 @@
 % Basically put anything here that is "in-line".
 
 \MSITextElement[bold]{textbf}
-\MSITextElement[it]{textit}
-\MSITextElement[sf]{textsf}
-\MSITextElement[sl]{textsl}
-\MSITextElement[tt]{texttt}
-\MSITextElement[rm]{textrm}
-\MSITextElement[sc]{textsc}
-\MSITextElement[em]{emph}
+\MSITextElement[italics]{textit}
+\MSITextElement[sansSerif]{textsf}
+\MSITextElement[slanted]{textsl}
+\MSITextElement[typewriter]{texttt}
+\MSITextElement[roman]{textrm}
+\MSITextElement[smallCaps]{textsc}
+\MSITextElement[emphasized]{emph}
 
 \MSITextElement[a]{ref}
 \MSITextElement{pageref}
@@ -113,9 +113,9 @@
 % translate into XML because LaTeX does not say when to end 
 % the markup. The filter will generate <bold> ... </bold>.
 
-\MSIFontSwitch{it}
+\MSIFontSwitch{italics}
 \MSIFontSwitch[bold]{bf}
-\MSIFontSwitch{rm}
+\MSIFontSwitch{roman}
 \MSIFontSwitch{normalsize}
 \MSIFontSwitch{tiny}
 \MSIFontSwitch{small}
