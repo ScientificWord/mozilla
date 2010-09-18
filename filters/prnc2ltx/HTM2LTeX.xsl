@@ -752,7 +752,7 @@ after \allowbreak.  More \LBo's can be scripted as needed.
   </xsl:template>
 
 
-  <xsl:template match="msi:em">
+  <xsl:template match="msi:emphasized">
     <xsl:call-template name="do-text-bucket">
       <xsl:with-param name="LaTeX-run-nom" select="'\emph{'"/>
     </xsl:call-template>
@@ -920,7 +920,7 @@ after \allowbreak.  More \LBo's can be scripted as needed.
           <xsl:with-param name="LaTeX-run-nom" select="'\textsl{'"/>
         </xsl:call-template>
       </xsl:when>
-      <xsl:when test="@class='rm'">
+      <xsl:when test="@class='roman'">
         <xsl:call-template name="do-text-bucket">
           <xsl:with-param name="LaTeX-run-nom" select="'\textrm{'"/>
         </xsl:call-template>

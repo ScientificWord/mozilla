@@ -14,8 +14,8 @@
 %\newenvironment{center}
 %\newenvironment{flushleft}
 %\newenvironment{flushright}
-%\newenvironment{quote}
-%\newenvironment{quotation}
+%\newenvironment{shortQuote}
+%\newenvironment{longQuotation}
 %% Handled separately? (gp) {verbatim}
 %% Handled separately? (gp) {verbatim*}
 %\newenvironment{enumerate}
