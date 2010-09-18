@@ -25,9 +25,9 @@ body {
 
 pre, verbatim { font-family: Courier; white-space: pre }
 
-numberedlistitem,
-bulletlistitem,
-descriptionlistitem { margin: 0pt; 
+numberedListItem,
+bulletListItem,
+descriptionListItem { margin: 0pt; 
        padding: 0pt; 
        display: list-item;}
 
@@ -40,14 +40,14 @@ numberedlist {list-style-type: none;
 bulletlist {list-style-type: disc;
 }
 
-bulletlistitem { margin-left: 2em; }
+bulletListItem { margin-left: 2em; }
 
-numberedlistitem>para:first-child:before { content: '(' counter(numberedlist) ')';
+numberedListItem>bodyText:first-child:before { content: '(' counter(numberedlist) ')';
   counter-increment: numberedlist;
   width: 2em;
 }
 
-numberedlistitem>para:first-child:first-line { content: '  ';
+numberedListItem>bodyText:first-child:first-line { content: '  ';
 }
 
 theorem {
@@ -67,7 +67,7 @@ proof:before {
   
 img { display: inline;} 
 
-quote { display: block; }
+shortQuote { display: block; }
 
 tabular {
 display: table
