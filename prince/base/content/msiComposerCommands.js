@@ -3286,7 +3286,8 @@ var msiDirectPrintCommand =
     // In editor.js
     msiFinishHTMLSource();
     try {
-      NSPrint();
+//      NSPrint();
+      PrintUtils.print();
     } catch (e) {}
   }
 };
@@ -3377,7 +3378,8 @@ var msiPrintSetupCommand =
   {
     // In editor.js
     msiFinishHTMLSource();
-    NSPrintSetup();
+    PrintUtils.showPageSetup();
+//    NSPrintSetup();
   }
 };
 
