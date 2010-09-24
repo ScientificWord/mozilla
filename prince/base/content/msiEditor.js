@@ -3418,32 +3418,33 @@ function msiEditorNextField(bShift, editorElement)
 //The sole purpose of this function is to block certain <enter>s from being processed, and hand them off instead to our parent (dialog?) window.
 function msiEditorCheckEnter(event)
 {
-  var retVal = false;
+  var bEditorHandle = false;
   var editorElement = msiGetEditorElementFromEvent(event);
   var editor = null;
   if (editorElement)
     editor = msiGetEditor(editorElement);
   if (!editor || !msiEditorIsSinglePara(editorElement))
   {
-    if (editor)
-      dump("In msiEditorCheckEnter, we don't seem to have a single-para editor; editor's flags are [" + editor.flags + "].\n");
-    else
-      dump("In msiEditorCheckEnter, we don't find an editor!.\n");
+//    if (editor)
+//      dump("In msiEditorCheckEnter, we don't seem to have a single-para editor; editor's flags are [" + editor.flags + "].\n");
+//    else
+//      dump("In msiEditorCheckEnter, we don't find an editor!.\n");
     return false;  //In this case, we let nature take its course
   }
 
-  dump("In msiEditorCheckEnter, we have a single-para editor.\n");
+//  dump("In msiEditorCheckEnter, we have a single-para editor.\n");
   var container = msiNavigationUtils.getCommonAncestorForSelection(editor.selection);
   if (msiGetContainingTableOrMatrix(container))
-    return false;
+    bEditorHandle = true;
   
-  if (editor.tagListManager.selectionContainedInTag("math",null))
+  if (!bEditorHandle && msiNavigationUtils.nodeIsInMath(container))
   {
     //Here we have to be careful. If we're out in the open in math, it would be a normal paragraph entry, which we don't want.
     //If we're inside a math "template", we'll pass it on down.
     var foundSplittable = false;
     for (var parent = container; parent && !foundSplittable; parent = parent.parentNode)
     {
+//      dump("In msiEditorCheckEnter, checking parent node [" + msiGetBaseNodeName(parent) + "].\n");
       if (msiNavigationUtils.isMathTemplate(parent))
       {
         foundSplittable = true;
@@ -3460,7 +3461,12 @@ function msiEditorCheckEnter(event)
     }
     dump("In msiEditorCheckEnter, we're in math, and we " + (foundSplittable ? "found" : "didn't find") + " a splittable parent.\n");
     if (foundSplittable)
-      return false;
+      bEditorHandle = true;
+  }
+  if (bEditorHandle)
+  {
+    editor.insertReturn();
+    return true;  //it's been handled
   }
 
   //So we're not in a math template or a table. We want to block this one from the editor.
@@ -3519,6 +3525,12 @@ function msiEditorDoTab(event, bShift)
   //  {
       retVal = doTabWithSelectionInNode(container, wholeRange, bShift, editor);
   //  }
+  }
+  if (!retVal)
+  {
+    var dlg = window.document.documentElement;
+    if (dlg.nodeName == "dialog")
+      return false;
   }
   if (!retVal && !bShift) // none of the above code did anything. Put in a 2em space
   {

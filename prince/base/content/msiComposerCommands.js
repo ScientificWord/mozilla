@@ -3286,7 +3286,8 @@ var msiDirectPrintCommand =
     // In editor.js
     msiFinishHTMLSource();
     try {
-      NSPrint();
+//      NSPrint();
+      PrintUtils.print();
     } catch (e) {}
   }
 };
@@ -3377,7 +3378,8 @@ var msiPrintSetupCommand =
   {
     // In editor.js
     msiFinishHTMLSource();
-    NSPrintSetup();
+    PrintUtils.showPageSetup();
+//    NSPrintSetup();
   }
 };
 
@@ -5850,15 +5852,15 @@ function msiDocumentInfo(editorElement)
 
   this.initializeDocInfo = function()
   {
-    var docHead = msiGetPreamble(this.mEditor);
-    if (!docHead)
-      return;
-
     this.generalSettings = new Object();
     this.comments = new Object();
     this.printSettings = new Object();
     this.metadata = new Object();
     this.saveSettings = new Object();
+
+    var docHead = msiGetPreamble(this.mEditor);
+    if (!docHead)
+      return;
 
     var treeWalker = this.mEditor.document.createTreeWalker(docHead,
                                                             NodeFilter.SHOW_ELEMENT|NodeFilter.SHOW_COMMENT,
