@@ -39,6 +39,8 @@
    buttons="cancel"
    onload = "onLoad()"
    ondialogaccept="return onFindNext();"
+   ondialogextra1="return onFindNext();"
+   defaultButton = "extra1"
    height="270"
    width="500">
 
