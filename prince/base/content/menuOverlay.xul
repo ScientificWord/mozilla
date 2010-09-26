@@ -839,8 +839,8 @@
     <key id="key_inspectPage" key="i" modifiers="accel,shift" command="Tasks:InspectPage"/>
   </keyset>
   <keyset id="MSIEditorKeys">
-    <key keycode="VK_TAB" oncommand="return msiEditorDoTab(event, false);"/>
-    <key keycode="VK_TAB" modifiers="shift" oncommand="return msiEditorDoTab(event, true);"/>
+    <!-- key keycode="VK_TAB" oncommand="return msiEditorDoTab(event, false);"/>
+    <key keycode="VK_TAB" modifiers="shift" oncommand="return msiEditorDoTab(event, true);"/ -->
   </keyset>
   
     <!-- DEBUG only -->
