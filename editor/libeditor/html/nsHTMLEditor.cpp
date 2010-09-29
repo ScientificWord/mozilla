@@ -796,6 +796,12 @@ nsHTMLEditor::NodeIsBlock(nsIDOMNode *aNode, PRBool *aIsBlock)
   nsIAtom * namespaceAtom = nsnull;
   // to do to implement namespaces: get the namespace atom of aNode
   tagAtom->ToString(strTagName);
+  // a special case for our source mode
+  if (strTagName.EqualsLiteral("line")) 
+  {
+    *aIsBlock = PR_TRUE;
+    return NS_OK;
+  }
   mtagListManager->GetClassOfTag(strTagName, namespaceAtom, strTagClass);
   if (strTagClass.EqualsLiteral("paratag")||strTagClass.EqualsLiteral("structtag")||
       strTagClass.EqualsLiteral("envtag")||strTagClass.EqualsLiteral("listtag")||strTagClass.EqualsLiteral("frontmtag"))
