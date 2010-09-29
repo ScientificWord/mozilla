@@ -528,13 +528,28 @@ function addFocusEventListenerForEditor(editorElement)
 
 function msiEditorKeyListener(event)
 {
-  if (event.keyCode == event.DOM_VK_ENTER || event.keyCode == event.DOM_VK_RETURN)
+  if (event.ctrlKey || event.altKey || event.metaKey)
+    return;
+
+  switch(event.keyCode)
   {
-    if (msiEditorCheckEnter(event))
-    {
-      event.preventDefault();
-      event.stopPropagation();
-    }
+    case event.DOM_VK_ENTER:
+    case event.DOM_VK_RETURN:
+      if (msiEditorCheckEnter(event))
+      {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    break;
+    case event.DOM_VK_TAB:
+      if (msiEditorDoTab(event))
+      {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    break;
+    default:
+    break;
   }
 }
 
@@ -1467,6 +1482,10 @@ function msiFinishInitDialogEditor(editorElement, parentEditorElement)
 //  msiDumpWithID("In msiEditor.msiFinishInitDialogEditor for editorElement [@], parentEditor is [" + parentEditor + "].\n", editorElement);
   if (parentEditor)
   {
+    //NOTE THE FOLLOWING! This means that if you want a dialog editor to allow multiple paragraphs, you must set mbSinglePara=false before 
+    //  calling the editor initialization. This reflects that single-para is the default.
+    if (!("mbSinglePara" in editorElement))
+      editorElement.mbSinglePara = true;
     var editor = msiGetEditor(editorElement);
     if (editor != null)
       editor.tagListManager = parentEditor.tagListManager;
@@ -3467,18 +3486,16 @@ function msiEditorCheckEnter(event)
 
   //So we're not in a math template or a table. We want to block this one from the editor.
   var dlg = window.document.documentElement;
+//  dump("In msiEditorCheckEnter, bEditorHandle was false, and documentElement is [" + dlg.nodeName + "].\n");
   if (dlg.nodeName == "dialog")
   {
-//  if (dlg.hasAttribute("ondialogaccept"))
-//    var acceptFnc = new Function(dlg.getAttribute("ondialogaccept"));
-//    if (acceptFnc())
-//      window.close();
     dlg._hitEnter(event);
+    return true;
   }
-  return true;
+  return false;
 }
 
-function msiEditorDoTab(event, bShift)
+function msiEditorDoTab(event)
 {
   function doTabWithSelectionInNode(aNode, totalRange, anEditor)
   {
@@ -3500,35 +3517,53 @@ function msiEditorDoTab(event, bShift)
     return rv;
   }
 
-  var retVal = false;
+  var bHandled = false;
   var editorElement = msiGetEditorElementFromEvent(event);
   if (!editorElement)
     return false;
 
 //    editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
+  var bShift = event.shiftKey;
   if (bShift && !editor.selection.isCollapsed)  //We don't do anything if there's a selection and the shift key is down
     return false;
   if (editor.selection.isCollapsed)
-    retVal = msiEditorNextField(bShift, editorElement);
+    bHandled = msiEditorNextField(bShift, editorElement);
 
   //Otherwise, we do have a selection.
   else
   {
     var container = msiNavigationUtils.getCommonAncestorForSelection(editor.selection);
     var wholeRange = msiNavigationUtils.getRangeContainingSelection(editor.selection);
-  //  for ( var containerParent = container; !retVal && (containerParent != null); containerParent = containerParent.parentNode )
+  //  for ( var containerParent = container; !bHandled && (containerParent != null); containerParent = containerParent.parentNode )
   //  {
-      retVal = doTabWithSelectionInNode(container, wholeRange, bShift, editor);
+      bHandled = doTabWithSelectionInNode(container, wholeRange, bShift, editor);
   //  }
   }
-  if (!retVal)
+  if (!bHandled)
   {
     var dlg = window.document.documentElement;
     if (dlg.nodeName == "dialog")
-      return false;
+    {
+      var commandDispatcher = window.document.commandDispatcher;
+      if (bShift)
+      {
+        if ("msiTabBack" in window)
+          msiTabBack(event);
+        else
+          commandDispatcher.rewindFocus();
+      }
+      else
+      {
+        if ("msiTabForward" in window)
+          msiTabForward(event);
+        else
+          commandDispatcher.advanceFocus();
+      }
+      bHandled = true;
+    }
   }
-  if (!retVal && !bShift) // none of the above code did anything. Put in a 2em space
+  if (!bHandled && !bShift) // none of the above code did anything. Put in a 2em space
   {
     editor.beginTransaction();
     if (!editor.selection.isCollapsed) editor.deleteSelection(editor.eNone);
@@ -3536,8 +3571,10 @@ function msiEditorDoTab(event, bShift)
     wrapper.spaceType="twoEmSpace";
     msiInsertHorizontalSpace(wrapper,editorElement);
     editor.endTransaction();
+    bHandled = true;
   }
-  return retVal;
+
+  return bHandled; //Actually want to return false if the event has been handled
 }
 
 //function msiGetCharForProperties(editorElement)
