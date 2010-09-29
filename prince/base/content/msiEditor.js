@@ -772,7 +772,7 @@ function msiEditorDocumentObserver(editorElement)
           for (j = 0; j < classtemplates.length; j++) classtemplates[j]=classtemplates[j].replace(/^\s*/,"");
 
 
-          var tagclasses = ["texttag","paratag","listtag","structtag","envtag","frontmtag"];
+          var tagclasses = ["texttag","paratag","listparenttag","listtag","structtag","envtag","frontmtag"];
           var taglist;
           var i;
           var k;
@@ -920,8 +920,6 @@ function msiEditorDocumentObserver(editorElement)
         catch(e) {
           dump("Failed to init fast cursor: "+e+"\n");
         }
-        if ("UpdateWindowTitle" in window)
-          UpdateWindowTitle();
         // Add mouse click watcher if right type of editor
 //        msiDumpWithID("About to enter 'if msiIsHTMLEditor' clause in msiEditorDocumentObserver obs_documentCreated for editor [@].\n", this.mEditorElement);
         if (msiIsHTMLEditor(this.mEditorElement))
@@ -1263,7 +1261,6 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
     {
       var newdoc;
       newdoc = createWorkingDirectory(doc);
-      // newdoc is an nsIFile
       docurl = msiFileURLFromFile(newdoc);
     }
 
@@ -1277,9 +1274,8 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
       contentViewer.forceCharacterSet = charset;
     }
     dump("Trying to load editor with url = "+docurl.spec+"\n");
-    if ("msiUpdateWindowTitle" in window)
-      msiUpdateWindowTitle(null, null);
     msiEditorLoadUrl(editorElement, docurl);
+    msiUpdateWindowTitle(null, null);
   }
   catch (e) {
     dump("Error in loading URL in msiLoadInitialDocument: [" + e + "]\n");
@@ -4216,16 +4212,22 @@ function msiSetEditMode(mode, editorElement)
         // Get the text for the <title> from the newly-parsed document
         // (must do this for proper conversion of "escaped" characters)
         var title = "";
-        var titlenodelist = editor.document.getElementsByTagName("title");
-        if (titlenodelist)
+        var preambles = editor.document.getElementsByTagName("preamble");
+        if (preambles.length > 0)
         {
-          var titleNode = titlenodelist.item(0);
-          if (titleNode && titleNode.firstChild && titleNode.firstChild.data)
-            title = titleNode.firstChild.data;
+          var titlenodelist = editor.preambles[0].getElementsByTagName("title");
+          if (titlenodelist.length > 0)
+          {
+            var titleNode = titlenodelist.item(0);
+            if (titleNode) 
+              title = titleNode.textContent;
+          }
         }
         if (editor.document.title != title && ("msiUpdateWindowTitle" in window))
-          msiUpdateWindowTitle(null, null);
-
+        {
+          editor.document.title = title;
+          msiUpdateWindowTitle(title, null);
+        }
       } catch (ex) {
         dump(ex);
       }
@@ -4389,7 +4391,7 @@ function msiSetDisplayMode(editorElement, mode)
     msiHideItem("structToolbar");
     if (mode ==  kDisplayModePreview)
     {
-      if (editorElement.pdfModCount < editor.getModificationCount())
+      if (editorElement.pdfModCount != editor.getModificationCount())
       {
         dump("Doucment changed, recompiling\n");
         printTeX(true, true);
