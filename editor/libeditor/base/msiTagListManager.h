@@ -63,6 +63,7 @@ public:
   ~msiTagListManager();
   nsString GetStringProperty( const nsAString & str, nsIDOMElement * element);
   PRBool BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retval);
+  void BuildContainsListForElement(nsIDOMElement * element, const nsAString & name);
   
   
   nsCOMPtr<nsIAutoCompleteSearchStringArray> pACSSA;
