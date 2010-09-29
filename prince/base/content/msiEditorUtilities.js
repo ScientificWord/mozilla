@@ -6794,6 +6794,19 @@ var msiNavigationUtils =
     return retList;
   },
 
+  getParentOfType : function(aNode, nodeName)
+  {
+    if (!aNode || (msiGetBaseNodeName(aNode) == nodeName))
+      return aNode;
+    else
+      return this.getParentOfType(aNode.parentNode, nodeName);
+  },
+
+  nodeIsInMath : function(aNode)
+  {
+    return (this.getParentOfType(aNode, "math") != null);
+  },
+
   isMathNode : function(aNode)
   {
     var mathNS = this.mAtomService.getAtom(mmlns);
@@ -8879,7 +8892,9 @@ function writeLineInPieces( output, currentline )
         if (index <0 || index > maxLength) // no spaces? Japanese? force a linebreak at maxLength -5
         {
           forced = true;
-          index = maxLength -5;
+          // we can't break text in a tag. Try to find previous '<'
+          index = currentline.s.lastIndexOf("<", maxLength);
+          if (index == -1) index = maxLength - 5;
         }
         firstLine = currentline.s.substr(0,index);
         output.s += firstLine+"\n";

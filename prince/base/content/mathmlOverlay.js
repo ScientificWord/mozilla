@@ -2045,7 +2045,7 @@ function reviseMathname(theMathnameNode, newMathNameData, editorElement)
       if (oldNodeName != "mo")
       {
         newNode = wrappedMathName.ownerDocument.createElementNS(mmlns, "mo");
-        var newText = wrappedMathName.owerDocument.createTextNode(newMathNameData.val);
+        var newText = wrappedMathName.ownerDocument.createTextNode(newMathNameData.val);
         newNode.appendChild(newText);
       }
     }
@@ -2054,7 +2054,7 @@ function reviseMathname(theMathnameNode, newMathNameData, editorElement)
       if (oldNodeName != "mi")
       {
         newNode = wrappedMathName.ownerDocument.createElementNS(mmlns, "mi");
-        var newText = wrappedMathName.owerDocument.createTextNode(newMathNameData.val);
+        var newText = wrappedMathName.ownerDocument.createTextNode(newMathNameData.val);
         newNode.appendChild(newText);
       }
     }
