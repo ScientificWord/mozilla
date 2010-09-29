@@ -1872,6 +1872,7 @@ function msigEditorOutputProgressListener(editorElement)
 
             // this should cause notification to listeners that doc has changed
             editor.resetModificationCount();
+            editor.pdfModCount = 0;
 
             // Set UI based on whether we're editing a remote or local url
             SetSaveAndPublishUI(urlstring);
@@ -2692,12 +2693,16 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   msiUpdateWindowTitle(null, destLocalFile.leafName);
 
   if (!aSaveCopy)
+  {
+    pdfModCount = 0;
     editor.resetModificationCount();
+  }
   // this should cause notification to listeners that document has changed
 
   // Set UI based on whether we're editing a remote or local url
   if (!aSaveCopy)
     msiSetSaveAndPublishUI(sciurlstring, editorElement);
+  SaveRecentFilesPrefs()
   return true;
 }
 
@@ -5775,6 +5780,7 @@ function msiFinishDocumentInfoDialog(editorElement, dlgInfo)
     var docInfo = dlgInfo.parentData;
     docInfo.resetFromDialogInfo(dlgInfo);
     docInfo.putDocInfoToDocument();
+    msiUpdateWindowTitle(null, null);
   }
 }
 
@@ -5928,14 +5934,13 @@ function msiDocumentInfo(editorElement)
             var titleObj = new Object();
             titleObj.name = "title";
             titleObj.type = "title";
-            titleObj.contents = "";
-            for (var ix = 0; ix < currNode.childNodes.length; ++ix)
-            {
-              if (currNode.childNodes[ix].nodeName == "#text")
-                titleObj.contents += currNode.childNodes[ix].nodeValue;
-            }
+            titleObj.contents = currNode.textContent;
+//            for (var ix = 0; ix < currNode.childNodes.length; ++ix)
+//            {
+//              if (currNode.childNodes[ix].nodeName == "#text")
+//                titleObj.contents += currNode.childNodes[ix].nodeValue;
+//            }
             this.generalSettings["title"] = titleObj;
-            msiUpdateWindowTitle(titleObj.contents, null);
           }
           break;
           case "address":
@@ -6243,7 +6248,6 @@ function msiDocumentInfo(editorElement)
 //        insertNewNode(newNode);
 //      }
 //    }
-
   };
 
   this.createNewNode = function(dataObj, ourName)
@@ -6257,7 +6261,6 @@ function msiDocumentInfo(editorElement)
         newNode = this.mEditor.document.createElement("title");
         newNode.appendChild(newTextNode);
         newNode.setAttribute("req", "hyperref");
-        msiUpdateWindowTitle(dataObj.contents, null);
       }
       break;
       case "meta":
@@ -6526,7 +6529,6 @@ function msiDocumentInfo(editorElement)
     if (("documentTitle" in dlgInfo.general) && (dlgInfo.general.documentTitle != null))
     {
       theContents = dlgInfo.general.documentTitle;
-      msiUpdateWindowTitle(theContents, null);
     }
     this.setObjectFromData(this.generalSettings, "title", (theContents.length > 0), "Title", theContents, "title");
   };
@@ -7032,6 +7034,7 @@ var msiObjectPropertiesCommand =
     // Launch Object properties for appropriate selected element 
     var editorElement = msiGetActiveEditorElement();
     var nodeData = msiGetObjectDataForProperties(editorElement);
+    if (!nodeData) return;
     var element = nodeData.theNode;
     var cmdString = nodeData.getCommandString(0);
 
