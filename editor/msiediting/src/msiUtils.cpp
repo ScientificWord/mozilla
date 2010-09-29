@@ -1204,7 +1204,7 @@ nsresult msiUtils::CreateEngineFunction(nsIEditor * editor,
   nsresult res(NS_ERROR_FAILURE); 
   nsCOMPtr<nsIDOMNode> theChild;
   nsCOMPtr<nsIDOMElement> mathname;
-  msiUtils::CreateMathname(editor, name, flags, PR_FALSE, mathname);
+  res = msiUtils::CreateMathname(editor, name, flags, PR_FALSE, mathname);
   nsAutoString msiclass, enginefunction;
   msiEditingAtoms::msiclass->ToString(msiclass);
   msiEditingAtoms::enginefunction->ToString(enginefunction);
