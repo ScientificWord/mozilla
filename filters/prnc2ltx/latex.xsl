@@ -406,7 +406,7 @@ should not be done under some conditions -->
   >\textbackslash</xsl:template>
 
 <xsl:template match="html:TeXButton">
-%TCIMACRO{\TeXButton<xsl:apply-templates/>
+%TCIMACRO{\TeXButton<xsl:apply-templates mode="tex"/>
 </xsl:template>
 
 <xsl:template match="html:TBLabel">{<xsl:apply-templates/>}
@@ -491,7 +491,7 @@ should not be done under some conditions -->
 %Package required: [<xsl:value-of select="@opt"/>]{<xsl:value-of select="@req"/>}
 %BeginExpansion
 </xsl:if
-  ><xsl:apply-templates/><xsl:if test="@enc='1'"><xsl:text>
+  ><xsl:apply-templates mode="tex"/><xsl:if test="@enc='1'"><xsl:text>
 %EndExpansion
 </xsl:text></xsl:if></xsl:if></xsl:template>
 
