@@ -3372,8 +3372,11 @@ function getUntitledName(destinationDirectory)
     fdir = f.clone();
     ffile.append(untitled+(count).toString()+".sci");
     fdir.append(untitled+(count++).toString()+"_work");
-    fdir.append("main.xhtml");
-    if (!ffile.exists() && !fdir.exists()) return ffile.leafName;
+    if (!ffile.exists() && !fdir.exists()) 
+    {
+      fdir.append("main.xhtml");
+      return ffile.leafName;
+    }
   }
   alert("too many files called 'untitledxx.sci' in directory "+destinationDirectory.path); // BBM: fix this up
   return "";
@@ -6214,7 +6217,7 @@ function msiGetKeyListForDocument(aDocument)
 {
   var parser = new DOMParser();
   var dom = parser.parseFromString(xsltSheetForKeyAttrib, "text/xml");
-  dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" + dom.documentElement.textContents : dom.documentElement.nodeName);
+  dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" + dom.documentElement.textContent : dom.documentElement.nodeName);
   var processor = new XSLTProcessor();
   processor.importStylesheet(dom.documentElement);
   var newDoc;
