@@ -31,7 +31,12 @@ var msiDefineCommand =
     return (msiIsDocumentEditable(editorElement) && 
             msiIsEditingRenderedHTML(editorElement) &&
             ( isInMath(editorElement) || 
-              aCommand == "cmd_MSIComputeShowDefs" ) );
+              aCommand == "cmd_MSIComputeShowDefs" ||
+              aCommand == "cmd_MSIComputeUserSettings" ||
+              aCommand == "cmd_MSIComputeClearDefs" ||
+              aCommand == "cmd_MSIComputeSettings" ||
+              aCommand == "cmd_MSIComputeSwitchEngines"  ) );
+              
   },
 
   getCommandStateParams: function(aCommand, aParams, editorElement) {},
@@ -331,6 +336,8 @@ function doSetupMSIComputeMenuCommands(commandTable)
   commandTable.registerCommand("cmd_MSIComputeFixup",         msiEvaluateCommand);
   commandTable.registerCommand("cmd_MSIComputePassthru",      msiDefineCommand);
 }
+
+
 
 function goUpdateMSIcomputeMenuItems(commandset)
 {
