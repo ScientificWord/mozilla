@@ -290,11 +290,14 @@ mml|mrow[id]:after {
    sections. They are repeated for each structure than can be closed. Also
    implement the switch between numbered and not numbered*/
 
- 
+chapter>*:first-child {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
+}
+
 chapter>sectiontitle {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
 }
- 
+
 /* Keep counters from incrementing on unnumbered structures */
 
 chapter[nonum="true"] {
@@ -302,6 +305,10 @@ chapter[nonum="true"] {
 }
 
 /* Suppress	title for nonnumbered sections */
+chapter[nonum="true"]>*:first-child {
+  content: "";
+}
+																 
 chapter[nonum="true"]>sectiontitle:before {
   content: "";
 }
@@ -310,16 +317,37 @@ chapter[open="false"]>* {
   display: none;
 }
 
+chapter[open="false"]>*:first-child {
+  display: block;
+}
+
+chapter[open="false"]>*:first-child {
+  display: block;
+}
+
+section>*:first-child {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
+}
+
 chapter[open="false"]>sectiontitle {
   display: block;
 }
 
-chapter[open='false']>button.expander {
-  display: inline;
+section>*:first-child {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
 }
+
 
 section>sectiontitle {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
+}
+
+section[nonum="true"]>*:first-child:before {
+  content: "";
+}
+
+section[nonum="true"]>sectiontitle:before {
+  content: "";
 }
 
 section[nonum="true"] {
@@ -327,14 +355,13 @@ section[nonum="true"] {
 }
 
 
-section[nonum="true"]>sectiontitle:before {
-  content: "";
-}
-
 section[open="false"]>* {
   display: none;
 }
 
+section[open="false"]>*:first-child {
+  display: block;
+}
 
 section[open="false"]>sectiontitle {
   display: block;
@@ -346,6 +373,14 @@ section[open="false"]>button.expander {
 
 subsection[nonum="true"] {
   counter-increment: none;
+}
+
+subsection[nonum="true"]>*:first-child:before {
+  content: "";
+}
+
+subsection[nonum="true"]>*:first-child:before {
+  content: "";
 }
 
 subsection[nonum="true"]>sectiontitle:before {
@@ -367,6 +402,24 @@ paragraph[nonum="true"] {
 
 paragraph[nonum="true"] {
   content: "";
+}
+
+*[showinvis="true"] *:first-child:after {
+  content: "\B6";
+  display: inline;
+  font-family: Courier New;
+  color: green;
+  font-weight: bold;
+  -moz-user-select: -moz-none;
+}
+
+*[showinvis="true"] *:first-child:after {
+  content: "\B6";
+  display: inline;
+  font-family: Courier New;
+  color: green;
+  font-weight: bold;
+  -moz-user-select: -moz-none;
 }
 
 *[showinvis="true"] sectiontitle:after {
@@ -434,7 +487,8 @@ frontmatter {
   margin-left: 100px;
   padding: 10px 0px;
   border: thin solid black; 
-  background-color: #DDD099;
+  background-color: #EEE8E0;
+  -moz-border-radius: 10px;
 }
 
 preface {
@@ -468,7 +522,7 @@ body {
 
 bodyText, rtlBodyText, p, bodyMath, sectiontitle, shortQuote, longQuotation, title, line, 
   dialogbase, bulletListItem, numberedListItem, descriptionListItem, verbatim,
-  abstract, address, author, dte, makelof, makelot, maketitle, maketoc, title {
+  abstract, address, author, date, makelof, makelot, maketitle, maketoc, title {
   -moz-user-select: text;
 }
   
@@ -557,3 +611,45 @@ line {
   display: block;
 }
 
+*[showinvis="true"] numberedlist {
+  display: block;
+  padding: 10px;
+  border: 5px solid rgb(220,220,220); 
+  -moz-border-radius: 20px;
+}
+
+*[showinvis="true"] bulletlist {
+  display: block;
+  padding: 10px;
+  border: 5px solid rgb(220,220,220); 
+  -moz-border-radius: 20px;
+}
+
+*[showinvis="true"] descriptionlist {
+  display: block;
+  padding: 10px;
+  border: 5px solid rgb(220,220,220); 
+  -moz-border-radius: 20px;
+}
+
+*[showinvis="true"] numberedListItem {
+  display: block;
+  border: 5px solid rgb(220,210,220); 
+  -moz-border-radius: 20px;
+}
+
+*[showinvis="true"] bulletListItem {
+  display: block;
+  border: 5px solid rgb(220,210,220); 
+  -moz-border-radius: 20px;
+}
+
+*[showinvis="true"] descriptionListItem {
+  display: block;
+  border: 5px solid rgb(220,210,220); 
+  -moz-border-radius: 20px;
+}
+
+*[showinvis="true"] numberedListItem + numberedListItem {
+  margin-top: -5px;
+}
