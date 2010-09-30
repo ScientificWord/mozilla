@@ -31,7 +31,8 @@ descriptionListItem { margin: 0pt;
        padding: 0pt; 
        display: list-item;}
 
-numberedlist {list-style-type: none;
+numberedlist {
+  list-style-type: none;
   list-style-position: outside;
   counter-reset: numberedlist;
 }
@@ -42,7 +43,7 @@ bulletlist {list-style-type: disc;
 
 bulletListItem { margin-left: 2em; }
 
-numberedListItem>bodyText:first-child:before { content: '(' counter(numberedlist) ')';
+numberedListItem>bodyText:first-child:before { content: '(' counter(numberedlist) ') ';
   counter-increment: numberedlist;
   width: 2em;
 }
