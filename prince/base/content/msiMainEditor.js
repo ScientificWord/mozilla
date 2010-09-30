@@ -279,7 +279,7 @@ function msiUpdateWindowTitle(documentTitle, fileName)
 //      }
     }
     else filename = fileName;
-    SaveRecentFilesPrefs();
+//    SaveRecentFilesPrefs();
     // Set window title with " - Scientific WorkPlace/Word/Notebook" appended
     var xulWin = document.documentElement;
     if (!filename) filename="";

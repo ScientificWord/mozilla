@@ -3,6 +3,9 @@
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:regexp="http://exslt.org/regular-expressions">
 
+<xsl:template mode="tex" match="text()">
+  <xsl:value-of select="."/>
+</xsl:template>
 
 <xsl:template match="text()">
   <xsl:variable name="sub1">
