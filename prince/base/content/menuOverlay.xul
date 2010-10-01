@@ -476,6 +476,10 @@
                 accesskey="&viewTeXLog.accesskey;"    
                 observes="cmd_showTeXLog" 
                 label="&viewTeXLog.label;"/>
+      <menuitem id="viewTeXFile"  
+                accesskey="&viewTeXFile.accesskey;"    
+                observes="cmd_showTeXFile" 
+                label="&viewTeXFile.label;"/>
       <menuseparator/>
       <menu id="sidebar-menu" label="Sidebars" >
         <menupopup>
