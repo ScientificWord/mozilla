@@ -25,7 +25,7 @@ public:
   NS_IMETHOD InsertBinomial(const nsAString & openingDelim, const nsAString & closingDelim, const nsAString & lineWidth, PRUint32 attrFlags); 
   NS_IMETHOD InsertSqRoot(void); 
   NS_IMETHOD InsertRoot(void); 
-  NS_IMETHOD InsertSymbol(PRUint32 symbol); 
+  NS_IMETHOD InsertSymbol(const nsAString & symbol); 
   NS_IMETHOD InsertMathname(const nsAString & name);
   NS_IMETHOD InsertEngineFunction(const nsAString & name);
   NS_IMETHOD InsertFence(const nsAString & open, const nsAString & close);

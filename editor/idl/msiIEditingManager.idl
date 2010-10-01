@@ -142,7 +142,7 @@ interface msiIEditingManager : nsISupports
                     in nsISelection selection,
                     in nsIDOMNode node,
                     in PRUint32 offset,
-                    in PRUint32 symbol);
+                    in DOMString symbol);
                    
   /**
    * Call insertMathname to create a mathname object (sin, ln, lim? etc) from the 
