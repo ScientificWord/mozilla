@@ -156,7 +156,7 @@ msiEditorLog::InsertRoot()
 
 
 NS_IMETHODIMP
-msiEditorLog::InsertSymbol(PRUint32 symbol)
+msiEditorLog::InsertSymbol(const nsAString & symbol)
 {
   nsAutoHTMLEditorLogLock logLock(this);
   if (!mLocked && mFileStream)

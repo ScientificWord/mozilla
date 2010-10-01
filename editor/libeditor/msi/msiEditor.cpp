@@ -499,7 +499,7 @@ msiEditor::InsertRoot()
 }
 
 NS_IMETHODIMP
-msiEditor::InsertSymbol(PRUint32 symbol)
+msiEditor::InsertSymbol(const nsAString & symbol)
 {
   nsresult res(NS_ERROR_FAILURE);
   if (!(mFlags & eEditorPlaintextMask)) // copied from nsHTMLEditor -- I don't know if this is an issue
@@ -1092,13 +1092,18 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
           }
           else if (symbol == '\'')
           {
+            NS_NAMED_LITERAL_STRING(bigprime,"\x2032");
             res = InsertSuperscript();
-            res = InsertSymbol(L'\x2032');  // need 'big prime'
+            res = InsertSymbol(bigprime);  // need 'big prime'
             res = HandleArrowKeyPress(nsIDOMKeyEvent::DOM_VK_RIGHT, isShift, ctrlKey, altKey, metaKey, preventDefault); 
             preventDefault = PR_TRUE;
           }
           else {
-            res = InsertSymbol(symbol);
+            NS_NAMED_LITERAL_STRING(symbolStr," ");
+            nsString str(symbolStr);
+            PRUnichar * start = str.BeginWriting();
+            *start = symbol;
+            res = InsertSymbol(str);
             preventDefault = PR_TRUE;
             if (NS_SUCCEEDED(res))
 		          res = CheckForAutoSubstitute(PR_TRUE);
@@ -1446,7 +1451,8 @@ NS_IMETHODIMP msiEditor::InsertText(const nsAString &aStringToInsert)
       if (aStringToInsert.Length() > 1)
         res = InsertMathnameEx(selection, theNode, theOffset, aStringToInsert);
       else  
-        res = InsertSymbolEx(selection, theNode, theOffset, aStringToInsert.First());
+        res = InsertSymbolEx(selection, theNode, theOffset, Substring(aStringToInsert,0,1));
+        // This needs to be revisited. Symbols can be and are 2 or more characters. --BBM
       return res;
     }
     return nsHTMLEditor::InsertText(aStringToInsert);
@@ -1708,7 +1714,7 @@ msiEditor::InsertSubOrSup(PRBool isSup)
 
 nsresult
 msiEditor::InsertSymbolEx(nsISelection * aSelection, nsIDOMNode * aNode, 
-                          PRInt32 aOffset, PRUint32 aSymbol)
+                          PRInt32 aOffset, const nsAString & aSymbol)
 {
   nsresult res(NS_OK);
   nsCOMPtr<nsIEditor> editor;
