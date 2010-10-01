@@ -131,6 +131,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_frame", msiFrameCommand);
   commandTable.registerCommand("cmd_citation", msiCitationCommand);
   commandTable.registerCommand("cmd_showTeXLog", msiShowTeXLogCommand);
+  commandTable.registerCommand("cmd_showTeXFile", msiShowTeXFileCommand);
   commandTable.registerCommand("cmd_showXSLTLog", msiShowXSLTLogCommand);
   commandTable.registerCommand("cmd_gotoparagraph", msiGoToParagraphCommand);
   commandTable.registerCommand("cmd_countwords", msiWordCountCommand);
@@ -8634,6 +8635,62 @@ var msiShowTeXLogCommand =
       if (match)
       {
         var resurl = match[1]+"/tex/SWP.log";
+        openDialog("chrome://global/content/viewSource.xul",
+               "_blank",
+               "all,dialog=no",
+               resurl, null, null);
+      }
+    }
+    return result;
+  }
+}
+var msiShowTeXFileCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    result = false;
+    var editorElement = msiGetActiveEditorElement();
+    if (!msiIsTopLevelEditor(editorElement))
+      return result;
+
+    var editor = msiGetEditor(editorElement);
+    if (editor)
+    {
+      var url = msiGetEditorURL(editorElement);
+      var re = /(.*)\/([^\/\.]*)\.[^\/\.]*$/;
+      var match = re.exec(url);
+      if (match)
+      {
+        var resurl = match[1]+"/"+match[2]+"_files/tex/"+"main.tex";
+        var thefile = Components.classes["@mozilla.org/file/local;1"].
+        createInstance(Components.interfaces.nsILocalFile);
+        thefile.initWithPath(resurl);
+        result = thefile.exists();
+      }
+    }
+    return result;
+  },
+  
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    result = true;
+    var editorElement = msiGetActiveEditorElement();
+    if (!msiIsTopLevelEditor(editorElement))
+      return result;
+
+    var editor = msiGetEditor(editorElement);
+    if (editor)
+    {
+      var url = msiGetEditorURL(editorElement);
+//      var re = /\/([a-zA-Z0-9_]+)\.[a-zA-Z0-9_]+$/i;
+      var re = /(.*)\/([^\/\.]*)\.[^\/\.]*$/;
+      var match = re.exec(url);
+      if (match)
+      {
+        var resurl = match[1]+"/tex/main.tex";
         openDialog("chrome://global/content/viewSource.xul",
                "_blank",
                "all,dialog=no",
