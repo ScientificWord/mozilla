@@ -759,7 +759,34 @@ function doPDFCompileDlg()
 
 function doGenSettingsDlg()
 {
-  alert("General Settings Dialog not implemented!");
+  var genSettingsData = getTypesetGenSettingsFromPrefs();
+
+  window.openDialog("chrome://prince/content/typesetGenSettingsDialog.xul", "General Typeset Settings", "chrome,close,titlebar,modal, resizable", 
+                       genSettingsData);
+}
+
+function getTypesetGenSettingsFromPrefs()
+{
+  var theData = new Object();
+  theData.bWarnNonPortFilename = GetBoolPref("swp.typeset.warnNonPortableFilename");
+  theData.bUseExistingAuxFiles = GetBoolPref("swp.typeset.useExistingAuxFiles");
+  theData.bConvertLinksToPDF = GetBoolPref("swp.pdftypeset.convertLinksToPDF");
+  theData.bPassThroughUniMacro = GetBoolPref("swp.typeset.passThroughUniMacro");
+  theData.bibTeXExePath = GetLocalFilePref("swp.bibtex.appPath");
+  theData.bibTeXDBaseDir = GetLocalFilePref("swp.bibtex.dir");
+  theData.bibTeXStyleDir = GetLocalFilePref("swp.bibtex.styledir");
+  return theData;
+}
+
+function setTypesetGenSettings(genSettingsData)
+{
+  SetBoolPref("swp.typeset.warnNonPortableFilename", genSettingsData.bWarnNonPortFilename);
+  SetBoolPref("swp.typeset.useExistingAuxFiles", genSettingsData.bUseExistingAuxFiles);
+  SetBoolPref("swp.pdftypeset.convertLinksToPDF", genSettingsData.bConvertLinksToPDF);
+  SetBoolPref("swp.typeset.passThroughUniMacro", genSettingsData.bPassThroughUniMacro);
+  SetLocalFilePref("swp.bibtex.appPath", genSettingsData.bibTeXExePath);
+  SetLocalFilePref("swp.bibtex.dir", genSettingsData.bibTeXDBaseDir);
+  SetLocalFilePref("swp.bibtex.styledir", genSettingsData.bibTeXStyleDir);
 }
 
 function doExpertSettingsDlg()
