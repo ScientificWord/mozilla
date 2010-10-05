@@ -714,7 +714,10 @@ void AnalyzeMI(MNODE* mml_mi_node,
       snode->semantic_type = SEM_TYP_FUNCTION;
 
       if (ContentIs(mml_mi_node, "log")) {
-        pAnalyzer -> GetAnalyzerData()  -> GetInputNotation() -> n_logs++;
+        if (pAnalyzer -> GetAnalyzerData()  -> GetInputNotation()) {
+
+           pAnalyzer -> GetAnalyzerData()  -> GetInputNotation() -> n_logs++;
+        }
         AddDefaultBaseToLOG(snode, pAnalyzer->Get_log_is_base10());
       }
       
@@ -1014,7 +1017,9 @@ void AnalyzeMFRAC(MNODE* mml_mfrac, SEMANTICS_NODE* snode, int& nodes_done, Anal
     } else {
       TCI_ASSERT(0);
     }
-    pAnalyzer -> GetAnalyzerData()  -> GetInputNotation() -> n_doverds++;
+    if (pAnalyzer -> GetAnalyzerData()  -> GetInputNotation()) {
+       pAnalyzer -> GetAnalyzerData()  -> GetInputNotation() -> n_doverds++;
+    }
     return;
   }
 
@@ -1271,7 +1276,9 @@ void AnalyzeMSUP(MNODE * mml_msup_node, SEMANTICS_NODE * snode,
     case ET_PRIMES:{
         if (pAnalyzer -> Get_prime_is_derivative()) {
           AnalyzePrimed(mml_msup_node, snode, nodes_done, pAnalyzer );
-          pAnalyzer -> GetAnalyzerData()  -> GetInputNotation() -> n_primes++;
+          if (pAnalyzer -> GetAnalyzerData()  -> GetInputNotation()) {
+             pAnalyzer -> GetAnalyzerData()  -> GetInputNotation() -> n_primes++;
+          }
           done = true;
         } else {
           // Here I'm currently assuming that prime is just a decoration
@@ -1500,7 +1507,9 @@ void AnalyzeMSUB(MNODE* mml_msub_node, SEMANTICS_NODE* snode,
 
     snode->semantic_type = SEM_TYP_DERIVATIVE;
     snode->contents = DuplicateString("differentiate");
-    pAnalyzer -> GetAnalyzerData()  -> GetInputNotation() -> n_Dxs++;
+    if (pAnalyzer -> GetAnalyzerData()  -> GetInputNotation()) {
+       pAnalyzer -> GetAnalyzerData()  -> GetInputNotation() -> n_Dxs++;
+    }
     return;
   }
 
@@ -1579,7 +1588,9 @@ void AnalyzeMSUB(MNODE* mml_msub_node, SEMANTICS_NODE* snode,
           if (pAnalyzer -> CmdID() == CCID_Solve_Recursion) { // Solve Recursion
             // Generate a function call
             MSUB2FuncCall(mml_msub_node, snode, pAnalyzer);
-            pAnalyzer -> GetAnalyzerData()  -> GetInputNotation() -> funcarg_is_subscript++;
+            if (pAnalyzer -> GetAnalyzerData()  -> GetInputNotation()) {
+                pAnalyzer -> GetAnalyzerData()  -> GetInputNotation() -> funcarg_is_subscript++;
+            }
           } else {
             // We generate a "qualified" variable here.  The engine is given enough info
             //  to treat this object as an ordinary variable, or something more complex
@@ -1856,7 +1867,9 @@ void AnalyzeMOVER(MNODE* mml_mover_node,
       if (pAnalyzer -> Get_dot_is_derivative()) {
         int n_dots = top_type - OT_DOT + 1;
         AnalyzeDotDerivative(mml_mover_node, n_dots, snode, nodes_done, pAnalyzer);
-        pAnalyzer -> GetAnalyzerData()  -> GetInputNotation() -> n_dotaccents++;
+        if (pAnalyzer -> GetAnalyzerData()  -> GetInputNotation()) {
+          pAnalyzer -> GetAnalyzerData()  -> GetInputNotation() -> n_dotaccents++;
+        }
         done = true;
       }
       break;
@@ -1866,7 +1879,9 @@ void AnalyzeMOVER(MNODE* mml_mover_node,
 	    AppendNewBucketRecord(MB_UNNAMED, NULL, snode, base, true, pAnalyzer);
 
         snode->semantic_type = SEM_TYP_CONJUGATE;
-        pAnalyzer ->  GetAnalyzerData()  -> GetInputNotation() -> n_overbars++;
+        if (pAnalyzer -> GetAnalyzerData()  -> GetInputNotation()) {
+          pAnalyzer ->  GetAnalyzerData()  -> GetInputNotation() -> n_overbars++;
+        }
         done = true;
       }
       break;
