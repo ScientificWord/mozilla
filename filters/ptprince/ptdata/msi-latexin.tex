@@ -6216,12 +6216,15 @@
 \def\@ifclassloaded{\@ifl@aded\@clsextension}
 \@onlypreamble\@ifpackageloaded
 \@onlypreamble\@ifclassloaded
+
 \def\@ifl@aded#1#2{%
   \expandafter\ifx\csname ver@#2.#1\endcsname\relax
-    \expandafter\@secondoftwo
+    \let\reserved@a\@secondoftwo
   \else
-    \expandafter\@firstoftwo
-  \fi}
+    \let\reserved@a\@firstoftwo
+  \fi
+  \reserved@a}
+
 \@onlypreamble\@ifl@aded
 \def\@ifpackagelater{\@ifl@ter\@pkgextension}
 \def\@ifclasslater{\@ifl@ter\@clsextension}
@@ -6285,11 +6288,13 @@
     \@makeother\/%
     \@makeother\&%
     \@ifnextchar[{\@providesfile{#1}}{\@providesfile{#1}[]}}
+
 \def\@pass@ptions#1#2#3{%
   \expandafter\xdef\csname opt@#3.#1\endcsname{%
     \@ifundefined{opt@#3.#1}\@empty
       {\csname opt@#3.#1\endcsname,}%
     \zap@space#2 \@empty}}
+
 \@onlypreamble\@pass@ptions
 \def\PassOptionsToPackage{\@pass@ptions\@pkgextension}
 \def\PassOptionsToClass{\@pass@ptions\@clsextension}
