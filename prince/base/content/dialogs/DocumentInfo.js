@@ -93,7 +93,7 @@ function InitDialog()
   var docUriObject = msiGetIOService().newURI(data.general.documentUri, editor.documentCharacterSet, null);
   dump("In DocumentInfo.initDialog, ourDocUri has spec [" + docUriObject.spec + "].\n");
   docUriObject.QueryInterface(Components.interfaces.nsIURL);
-  document.getElementById('filenameBox').value = docUriObject.fileName;
+  document.getElementById('filenameBox').value = editorElement.fileLeafName;
   document.getElementById('directoryBox').value = docUriObject.directory;
 
   setDataToTextbox(data.general, "created", "", "createdBox");
@@ -118,12 +118,13 @@ function onAccept()
 {
 //Stuff it in the "data" - leave document storage up to the code invoking the dialog.
 
+dump('a');
   data.general.documentTitle = document.getElementById('docTitleBox').value;
   storeComments(data);
   storePrintOptions(data);
   storeMetadataOptions(data);
   storeSaveOptions(data);
-
+dump('b')
   var editorElement = msiGetParentEditorElementForDialog(window);
   var theWindow = window.opener;
   if (!theWindow || !("msiFinishDocumentInfoDialog" in theWindow))
@@ -134,6 +135,7 @@ function onAccept()
   }
   catch(exc) {dump("Error in DocumentInfo dialog in onAccept, calling msiFinishDocumentInfoDialog: " + exc);}
 
+dump('c');
   SaveWindowLocation();
 
   return true;
@@ -387,7 +389,7 @@ function convertLinkPaths()
   var storePath = null;
   var currObj = null;
   var currItem = document.getElementById("metadataRelationsListbox").selectedItem;
-  if (currItem.value && currItem.value.length)
+  if (currItem && currItem.value && currItem.value.length)
     currObj = data.metadata[currItem.value];
 
   for (var datum in data.metadata)

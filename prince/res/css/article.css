@@ -72,6 +72,52 @@ section {
 }  
 
 
+section>*:first-child{
+  display: block;
+  margin: 10pt 10pt 0pt 0pt;
+  margin-left: 10pt;
+  font-size: large;
+  font-weight: bold;
+}
+
+section>*:first-child[open="false"]{
+  display: block;
+  margin: 10pt 10pt 0pt 0pt;
+  margin-left: 10pt;
+  font-size: large;
+  font-weight: bold;
+}
+
+ 
+section>*:first-child:before, section[open="true"]>*:first-child:before  {
+  content: counter(section) ".  ";
+  -moz-user-select: -moz-none;
+}
+
+
+section>*:first-child{
+  display: block;
+  margin: 10pt 10pt 0pt 0pt;
+  margin-left: 10pt;
+  font-size: large;
+  font-weight: bold;
+}
+
+section>*:first-child[open="false"]{
+  display: block;
+  margin: 10pt 10pt 0pt 0pt;
+  margin-left: 10pt;
+  font-size: large;
+  font-weight: bold;
+}
+
+ 
+section>*:first-child:before, section[open="true"]>*:first-child:before  {
+  content: counter(section) ".  ";
+  -moz-user-select: -moz-none;
+}
+
+
 section>sectiontitle{
   display: block;
   margin: 10pt 10pt 0pt 0pt;
