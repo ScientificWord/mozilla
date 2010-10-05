@@ -375,7 +375,7 @@ bool xfcnCsname(int /* ignored */, TeXToken*, SymbolData**)
    Symbols::GetDef(id, &pData);
    if (pData == 0){
       static SymbolData* frozen_relax = new Primitive(CMD_RELAX);
-      LOG("\n\\csname will define the nyew symbol as \\relax.");
+      LOG("\n\\csname will define the new symbol as \\relax.");
       Symbols::SetDef(id, frozen_relax, true);
    }
    return false;
