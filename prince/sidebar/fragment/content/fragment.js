@@ -170,9 +170,9 @@ function showDescription(event, tooltip)
   var obj = {};
   var b = tree.treeBoxObject;
   b.getCellAt(event.clientX, event.clientY, row, col, obj);
+  if (!row.value) return false;
   if (tree.view.isContainer(row.value)) return false;                                                       
   tooltip.setAttribute("label","");
-//  if (!row.value) return false;
   var description = descriptionOfItem(row.value);
   tooltip.setAttribute("label",description);
   return description.length > 0;
