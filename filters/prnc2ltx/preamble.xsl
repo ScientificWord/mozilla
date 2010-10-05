@@ -92,11 +92,11 @@
     >{<xsl:value-of select="@package"/>}  %% <xsl:value-of select="@pri"/></xsl:for-each>
   <xsl:apply-templates/>
   <xsl:for-each select="$preambletexbuttons/*"
-  ><xsl:if test="@pre='1'"><xsl:apply-templates/></xsl:if></xsl:for-each>
+  ><xsl:if test="@pre='1'"><xsl:apply-templates mode="tex"/></xsl:if></xsl:for-each>
 </xsl:template>
 
 <xsl:template match="html:preambleTeX">
-  <xsl:value-of select="."/>
+  <xsl:value-of mode="tex" select="."/>
 </xsl:template>
 
 <!-- use docformat information to call the crop package -->
