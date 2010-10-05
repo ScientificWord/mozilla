@@ -9832,6 +9832,17 @@ function msiDialogEditorContentFilter(anEditorElement)
   this.mXmlSerializer = new XMLSerializer();
   this.mDOMUtils = Components.classes["@mozilla.org/inspector/dom-utils;1"].createInstance(Components.interfaces.inIDOMUtils);
   this.mbMathOnly = false;
+  this.mbSinglePara = false;
+  if (anEditorElement.mbSinglePara)
+    this.mbSinglePara = true;
+  this.defaultParaTag = "para";
+  this.mbAtFirst = true;
+  var editor = msiGetEditor(this.mEditorElement);
+  if (editor.tagListManager)
+  {
+    var namespace = new Object();
+    this.defaultParaTag = editor.tagListManager.getDefaultParagraphTag(namespace);
+  }
 
   this.dlgNodeFilter = function(aNode)
   {
@@ -9860,6 +9871,13 @@ function msiDialogEditorContentFilter(anEditorElement)
           return this.acceptAll;
       break;
     }
+    if (aNode.nodeName == this.defaultParaTag)
+    {
+      if (this.mbAtFirst)
+        return this.skip;
+      else
+        return this.accept;
+    }
     switch(aNode.nodeName)
     {
       case "dialogbase":
@@ -9886,15 +9904,18 @@ function msiDialogEditorContentFilter(anEditorElement)
       {
         case this.acceptAll:
           newParent.appendChild( parentNode.childNodes[ix].cloneNode(true) );
+          this.mbAtFirst = false;
         break;
         case this.skip:
           this.getXMLNodesForParent( newParent, parentNode.childNodes[ix] );
+          this.mbAtFirst = false;
         break;
         case this.accept:
         {
           var aNewNode = parentNode.childNodes[ix].cloneNode(false);
           this.getXMLNodesForParent( aNewNode, parentNode.childNodes[ix] );
           newParent.appendChild( aNewNode );
+          this.mbAtFirst = false;
         }
         break;
         case this.reject:
@@ -9906,6 +9927,7 @@ function msiDialogEditorContentFilter(anEditorElement)
   {
     var docFragment = null;
     var doc = this.mEditorElement.contentDocument;
+    this.mbAtFirst = true;
     if (doc != null)
     {
       docFragment = doc.createDocumentFragment();
@@ -9930,6 +9952,7 @@ function msiDialogEditorContentFilter(anEditorElement)
         {
           case this.skip:
             bFoundContent = this.nodeHasRealContent( parentElement.childNodes[ix], (bIsLast && (ix==parentElement.childNodes.length - 1)) );
+            this.mbAtFirst = false;
           break;
           case this.acceptAll:
           case this.accept:
@@ -9937,6 +9960,7 @@ function msiDialogEditorContentFilter(anEditorElement)
               bFoundContent = (parentElement.childNodes[ix].nodeName != "br");
             else
               bFoundContent = true;
+            this.mbAtFirst = false;
             break;
           case this.reject:
             break;
@@ -9950,6 +9974,7 @@ function msiDialogEditorContentFilter(anEditorElement)
   {
     var parentElement = null;
     var doc = this.mEditorElement.contentDocument;
+    this.mbAtFirst = true;
     if (doc != null)
       parentElement = msiGetRealBodyElement(doc);
     return this.nodeHasRealContent( parentElement, true );
@@ -9977,6 +10002,7 @@ function msiDialogEditorContentFilter(anEditorElement)
     if (editor != null)
     {
       var mathNodes = editor.document.getElementsByTagName("math");
+      this.mbAtFirst = true;
       for (var ix = 0; (!retval) && (ix < mathNodes.length); ++ix)
       {
         var bIsLast = false;
@@ -10007,6 +10033,8 @@ function msiDialogEditorContentFilter(anEditorElement)
 //      var rootNode = msiGetRealBodyElement(doc);
       var initialParaNode = null;
       var initialParaList = rootNode.getElementsByTagName("dialogbase");
+      if (!initialParaList.length)
+        initialParaList = rootNode.getElementsByTagName(this.defaultParaTag);
       if (initialParaList.length > 0)
         initialParaNode = initialParaList[0];
       else
