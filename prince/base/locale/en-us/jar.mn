@@ -101,3 +101,4 @@ en-US.jar:
   locale/EditorLinkProperties.dtd			  (dialogs/EditorLinkProperties.dtd)
   locale/MatrixInsertRowsCols.dtd		  (dialogs/MatrixInsertRowsCols.dtd)
   locale/equationArrayDialog.dtd		  (dialogs/equationArrayDialog.dtd)
+  locale/typesetGenSettingsDialog.dtd	  (dialogs/typesetGenSettingsDialog.dtd)
