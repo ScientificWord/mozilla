@@ -897,6 +897,8 @@ PrefixOpIlk GetPrefixOpCode(const char* op_name, SemanticVariant& n_integs, cons
       rv = POI_curl;
     else if (StringEqual(op_name, "grad"))
       rv = POI_distribution;
+    else if (StringEqual(op_name, "Beta"))
+      rv = POI_function;
     break;
 
   case 5:

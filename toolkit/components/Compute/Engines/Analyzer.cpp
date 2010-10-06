@@ -823,6 +823,7 @@ void AnalyzeMO(MNODE* mml_mo_node,
         snode->semantic_type = SEM_TYP_FUNCTION;
         break;
       case POI_Dirac:
+      case POI_function:
         snode->semantic_type = SEM_TYP_FUNCTION;
         break;
       case POI_gradient:
