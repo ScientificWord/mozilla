@@ -934,12 +934,20 @@ PrefixOpIlk GetPrefixOpCode(const char* op_name, SemanticVariant& n_integs, cons
       rv = POI_Dirac;
     else if (StringEqual(op_name, "dilog"))
       rv = POI_function;
+    else if (StringEqual(op_name, "solve"))
+      rv = POI_function;
+
 
     break;
 
   case 6:
     if (StringEqual(op_name, "signum"))
       rv = POI_function;
+    else if (StringEqual(op_name, "factor"))
+      rv = POI_function;
+    else if (StringEqual(op_name, "expand"))
+      rv = POI_function;
+
     break;
 
   case 7:
