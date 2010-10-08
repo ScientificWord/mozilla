@@ -34,7 +34,14 @@
            </xsl:when>
 
            <xsl:otherwise>
-               <sw-domath><mml:mrow><xsl:copy-of select="*"/></mml:mrow></sw-domath>
+             <xsl:choose>
+               <xsl:when test="@display='block'">
+                 <sw-domath display="block"><mml:mrow><xsl:copy-of select="*"/></mml:mrow></sw-domath>
+               </xsl:when>
+               <xsl:otherwise>
+                 <sw-domath><mml:mrow><xsl:copy-of select="@*"/><xsl:copy-of select="*"/></mml:mrow></sw-domath>
+               </xsl:otherwise>
+             </xsl:choose>
            </xsl:otherwise>
         </xsl:choose>
      </xsl:variable>
@@ -115,7 +122,7 @@
          contain a "display" tag with a value of 'inline' or 'block' -->
 
     <xsl:variable name="is-display.tr">
-    <xsl:message>Finding is-display, node is </xsl:message>
+    <xsl:message>Finding is-display for node <xsl:value-of select="name()"/>, display is "{@display}<xsl:value-of select="@display"/></xsl:message>
       <xsl:choose>
 
 	      <xsl:when test="@display='inline'">
@@ -124,6 +131,7 @@
 
 	      <xsl:when test="@display='block'">
           <xsl:text>true</xsl:text>
+          <xsl:message>Setting is-display to true</xsl:message>
 	      </xsl:when>
         
         <!-- mode attrib deprecated in MathML 2.0 -->
