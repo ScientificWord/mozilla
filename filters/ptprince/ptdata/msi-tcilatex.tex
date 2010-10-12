@@ -1000,7 +1000,7 @@
 %  These macros are for doing the AMS \text{} construct
 %
 \def\RIfM@{\relax\protect\ifmmode}
-\def\text{\RIfM@\expandafter\text@\else\expandafter\mbox\fi}
+%\def\text{\RIfM@\expandafter\text@\else\expandafter\mbox\fi}
 \let\nfss@text\text
 \def\text@#1{\mathchoice
    {\textdef@\displaystyle\f@size{#1}}%
