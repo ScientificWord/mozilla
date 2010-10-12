@@ -7,6 +7,7 @@
 #include "treegen.h"
 #include "ufilter.h"
 #include <string.h>
+#include <string>
 
 #ifdef TESTING
 #undef THIS_FILE
@@ -141,8 +142,16 @@ bool InitializeMML( const char* datapath,
   //fsNBgmr   =  DLLdir;  fsNBgmr  += "NOTEBOOK.gmr";
   //fsMMLgmr  =  DLLdir;  fsMMLgmr += "MATHML.gmr";
   //log       =  DLLdir;  log      += "mmlDLL.log";
+
+  std::string NBgmr(datapath);
+  NBgmr += '/';
+  NBgmr += fsNBgmr;
   
-  tree_generator   =  new TreeGenerator( 1, fsNBgmr, NULL, fsMMLgmr );
+  std::string MMLgmr(datapath);
+  MMLgmr += '/';
+  MMLgmr += fsMMLgmr;
+
+  tree_generator   =  new TreeGenerator( 1, NBgmr.c_str(), NULL, MMLgmr.c_str() );
 
   tree_generator->Reset( &userprefs,NULL,NULL );
 
