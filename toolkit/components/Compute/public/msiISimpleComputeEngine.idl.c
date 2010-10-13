@@ -77,6 +77,8 @@ interface msiISimpleComputeEngine : nsISupports
    * solve commands
   */
   void solveExact(in wstring expr, in wstring vars, [retval] out wstring result);
+  void solveInteger(in wstring expr, in wstring vars, [retval] out wstring result);
+
   const unsigned long Solve_Exact		   = CCID_Solve_Exact;		
   const unsigned long Solve_Integer	   = CCID_Solve_Integer;	
   const unsigned long Solve_Numeric	   = CCID_Solve_Numeric;	
