@@ -528,11 +528,12 @@
 
 
 \def\FRAME#1#2#3#4#5#6#7#8{%
-   \@temptokena={#7}
-   \@temptokenb={Plot}
-   \if\@temptokena\@temptokenb
+   \def\reserved@@a{#7}
+   \def\reserved@@b{Plot}
+   \ifx\reserved@@a\reserved@@b
       \begingroup
-        #8
+        %#8
+        [A MISSING PLOT]
       \endgroup
       %\msitag{<img src="zfoo.png" style="width: #2; height: #3" alt="plot"/>}
    \else
@@ -912,10 +913,10 @@
 %% jcs \def\dbigotimes{\mathop{\displaystyle \bigotimes }}%
 %% jcs \def\dbiguplus{\mathop{\displaystyle \biguplus }}%
 
-\if@compatibility\else
-  % Always load amsmath in LaTeX2e mode
-  \RequirePackage{amsmath}
-\fi
+%\if@compatibility\else
+%  % Always load amsmath in LaTeX2e mode
+%  \usepackage{amsmath}
+%\fi
 
 \def\ExitTCILatex{\makeatother\endinput}
 
@@ -999,7 +1000,7 @@
 %  These macros are for doing the AMS \text{} construct
 %
 \def\RIfM@{\relax\protect\ifmmode}
-\def\text{\RIfM@\expandafter\text@\else\expandafter\mbox\fi}
+%\def\text{\RIfM@\expandafter\text@\else\expandafter\mbox\fi}
 \let\nfss@text\text
 \def\text@#1{\mathchoice
    {\textdef@\displaystyle\f@size{#1}}%

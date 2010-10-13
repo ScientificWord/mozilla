@@ -59,6 +59,7 @@
     <command id="cmd_MSIComputeSolveExact"               oncommand="doComputeCommand('cmd_compute_SolveExact')"/>
     <command id="cmd_MSIComputeSolveNum"                 oncommand="doComputeCommand('cmd_compute_SolveNumeric')"/>
     <command id="cmd_MSIComputeSolveRecursion"           oncommand="doComputeCommand('cmd_compute_SolveRecursion')"/>
+    <command id="cmd_MSIComputeSolveInteger"             oncommand="doComputeCommand('cmd_compute_SolveInteger')"/>
     <command id="cmd_MSIComputeCollect"                  oncommand="doComputeCommand('cmd_compute_Collect')"/>
     <command id="cmd_MSIComputeDivide"                   oncommand="doComputeCommand('cmd_compute_Divide')"/>
     <command id="cmd_MSIComputePartialFractions"         oncommand="doComputeCommand('cmd_compute_PartialFractions')"/>
@@ -293,9 +294,10 @@
       <menuitem label="&MSIComputeCheckEqCmd.label;"       accesskey="&MSIComputeCheckEqCmd.accesskey;"                     observes="cmd_MSIComputeCheckEquality"/>
       <menu id="MSISolveMenu" label="&MSISolveMenu.label;" accesskey="&MSISolveMenu.accesskey;">
         <menupopup id="MSISolvePopup">
-          <menuitem label="&MSIComputeSolveExactCmd.label;"     accesskey="&MSIComputeSolveExactCmd.accesskey;"              observes="cmd_MSIComputeSolveExact"/>
-          <menuitem label="&MSIComputeSolveNumericCmd.label;"   accesskey="&MSIComputeSolveNumericCmd.accesskey;"            observes="cmd_MSIComputeSolveNum"/>
-          <menuitem label="&MSIComputeSolveRecursionCmd.label;" accesskey="&MSIComputeSolveRecursionCmd.accesskey;"          observes="cmd_MSIComputeSolveRecursion"/>
+          <menuitem label="&MSIComputeSolveExactCmd.label;"     accesskey="&MSIComputeSolveExactCmd.accesskey;"         observes="cmd_MSIComputeSolveExact"/>
+          <menuitem label="&MSIComputeSolveNumericCmd.label;"   accesskey="&MSIComputeSolveNumericCmd.accesskey;"       observes="cmd_MSIComputeSolveNum"/>
+          <menuitem label="&MSIComputeSolveRecursionCmd.label;" accesskey="&MSIComputeSolveRecursionCmd.accesskey;"     observes="cmd_MSIComputeSolveRecursion"/>
+          <menuitem label="&MSIComputeSolveIntegerCmd.label;" accesskey="&MSIComputeSolveIntegerCmd.accesskey;"         observes="cmd_MSIComputeSolveInteger"/>
         </menupopup>
       </menu>
       <menu id="MSIPolynomialMenu" label="&MSIPolynomialMenu.label;" accesskey="&MSIPolynomialMenu.accesskey;">

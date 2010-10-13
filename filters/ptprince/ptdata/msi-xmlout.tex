@@ -186,15 +186,19 @@
 %% newtheorem
 
 \def\out@newtheorema#1[#2]#3{%
-   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}[#2]{#3}}
-   \@namedef{msi@begin@#1}{\br\msiopentag{theorem}{<theorem type="#1">}}
-   \@namedef{msi@end@#1}{\br\msiclosetag{theorem}{</theorem>}}
+  \@ifundefined{msi@begin@#1}%
+     {\expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}[#2]{#3}}
+      \@namedef{msi@begin@#1}{\br\msiopentag{theorem}{<theorem type="#1">}}
+      \@namedef{msi@end@#1}{\br\msiclosetag{theorem}{</theorem>}}}%
+     {}%
 }
 
 \def\out@newtheoremb#1#2{%
-   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}{#2}}
-   \@namedef{msi@begin@#1}{\br\msiopentag{theorem}{<theorem type="#1">}}
-   \@namedef{msi@end@#1}{\br\msiclosetag{theorem}{</theorem>}}
+  \@ifundefined{msi@begin@#1}%
+    {\expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}{#2}}
+     \@namedef{msi@begin@#1}{\br\msiopentag{theorem}{<theorem type="#1">}}
+     \@namedef{msi@end@#1}{\br\msiclosetag{theorem}{</theorem>}}}%
+    {}}%
 }
 
 
@@ -742,11 +746,11 @@
 
 \def\@@accent#1#2{%
     \ifx#1\i
-      dotlessi-#2
+      dotlessi-#2%
     \else\ifx#1\j
-      dotlessj-#2
+      dotlessj-#2%
     \else 
-      #1-#2
+      #1-#2%
   \fi\fi\fi
 }
 
