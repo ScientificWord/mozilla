@@ -1,11 +1,12 @@
-September 17, 2010
+October 2, 2010
 
 This is the Linux version of Scientific Workplace 6.0. For this Alpha test
-we are using a simple install script, install-sh.
+we are using a simple Python install script, install.py.
 
-This has been and run on SuSe 10. It should install without problems on Fedora
+This has been installed and run on SuSe 10. It should install without problems on Fedora
 and Ubuntu distributions. There may be missing libraries on simple Fedora
-installations.
+installations, particularly on 64-bit Fedora systems. More detailed Fedora installs will
+be forthcoming soon.
 
 INSTALLATI0N
 
@@ -15,11 +16,10 @@ INSTALLATI0N
    
 2. A new directory named swppro has been created in the directory where you
    unpacked.
-      cd swppro
       
-3. You must install as root. The installation currently takes 142 MB of disk
-   space. Run this command to install.
-      sudo ./install-sh
+3. You may install as root or as yourself. The installation currently takes 142 MB of disk
+   space. Run this command to install as root.
+      sudo swppro/install.py
    You will see a few lines of output ending with
       Installation completed.
    
@@ -27,10 +27,21 @@ INSTALLATI0N
       swppro<cr>
       
    You can uninstall by running the command
-      sudo ./uninstall-sh
+      sudo swppro/install.py -r
+      
+   If you simply want to update an existing installation,
+      sudo swppro/install.py -u
       
 4. The installation process makes a copy of the swppro directory at
    /usr/local/SWP-6.0. If space is a problem on your system, you can remove
    the swppro directory after the installation is finished. You can also 
    remove the .bz2 distrubution file. If you later want to uninstall,
-     sudo /usr/local/SWP-6.0/uninstall-sh
+      sudo /usr/local/SWP-6.0/install.py -r
+     
+4. To install in your own home directory:
+      swppro/install.py
+      
+   The SWP-6.0 directory will be created in your home directory, and the executable
+   file swppro will be put in your bin directory if you have one. If you don't have
+   a bin directory, the executable will also be in your home directory, but it will 
+   be called runswp (since there is already something called swppro there).

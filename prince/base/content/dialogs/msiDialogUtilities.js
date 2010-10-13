@@ -1,6 +1,7 @@
 // Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
 
 var specialAcceleratorList=null;
+var gDialogStringBundle;
 
 function inaccessibleAcceleratorFilter(anElement)
 {
@@ -797,24 +798,44 @@ function msiSetInitialDialogFocus(focusElement)
   focusElement.focus();
 }
 
+//The following two functions retrieve strings in the file msiDialogs.properties
+function msiPostDialogMessage(msgID, paramsObj, titleID)
+{
+  var theParams = paramsObj ? paramsObj : null;
+  var msgStr = msiGetDialogString(msgID, theParams);
+  var titleStr = "Error";
+  if (titleID)
+    titleStr = GetDialogString(titleID, theParams);  //can use the same array of parameters, in case the message title is parametrized
+  if (msgStr)
+    AlertWithTitle(titleStr, msgStr);
+}
+
 //This function extracts the message text from the file msiDialogs.properties. The paramsObj parameter, if supplied, should be an object
 //  of the type {param1 : paramVal1, param2 : paramVal2} where the various params appear as strings like %param1% in the message, and
 //  will be replaced by the values assigned in paramsObj.
-function msiPostDialogMessage(msgID, paramsObj)
+function msiGetDialogString(strID, paramsObj)
 {
-  var strBundleService = Components.classes["@mozilla.org/intl/stringbundle;1"].getService(); 
-  strBundleService = strBundleService.QueryInterface(Components.interfaces.nsIStringBundleService);
-  var strBundle = strBundleService.createBundle("chrome://prince/locale/msiDialogs.properties"); 
-  var msgStr = strBundle.GetStringFromName(msgID);
-  if (msgStr)
+  if (!gDialogStringBundle)
+  {
+    var strBundleService = Components.classes["@mozilla.org/intl/stringbundle;1"].getService(); 
+    strBundleService = strBundleService.QueryInterface(Components.interfaces.nsIStringBundleService);
+    gDialogStringBundle = strBundleService.createBundle("chrome://prince/locale/msiDialogs.properties");
+  }
+  var theStr = null;
+  try
+  {
+    theStr = gDialogStringBundle.GetStringFromName(strID);
+  }
+  catch(exc) {dump("Exception in msiDialogUtilities.js, msiGetDialogString(), retrieving string [" + strID + "]; exception is: [" + exc + "].\n");}
+  if (theStr)
   {
     if (paramsObj)
     {
       for (var aParam in paramsObj)
       {
-        msgStr = msgStr.replace("%"+aParam+"%", paramsObj[aParam],"g");
+        theStr = theStr.replace("%"+aParam+"%", paramsObj[aParam],"g");
       }
     }
-    AlertWithTitle("Error", msgStr);
   }
+  return theStr;
 }
