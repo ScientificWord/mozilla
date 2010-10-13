@@ -3221,8 +3221,15 @@ function GetBoolPref(name)
 {
   try {
     return GetPrefs().getBoolPref(name);
-  } catch (e) {}
+  } catch (e) {dump("Exception trying to query whether pref " + name + " is set: [" + exc + "].\n");}
   return false;
+}
+
+function SetBoolPref(name, value)
+{
+  try {
+    return GetPrefs().setBoolPref(name, value);
+  } catch (e) {dump("Exception trying to set pref " + name + ": [" + exc + "].\n");}
 }
 
 function PrefHasValue(name)
@@ -3276,6 +3283,31 @@ function GetUnicharPref(aPrefName, aDefVal)
     catch(e) {}
   }
   return "";
+}
+
+//Returns an nsILocalFile
+function GetLocalFilePref(name)
+{
+  try
+  {
+    return GetPrefs().getComplexValue(name, Components.interfaces.nsILocalFile);
+  }
+  catch(exc) {dump("Exception trying to get file pref " + name + ": [" + exc + "].\n");}
+  return null;
+}
+
+//"theFile" is an nsILocalFile
+function SetLocalFilePref(name, theFile)
+{
+  var prefs = GetPrefs();
+  if (prefs)
+  {
+    try
+    {
+      prefs.setComplexValue(name, Components.interfaces.nsILocalFile, theFile);
+    }
+    catch (exc) {dump("Exception trying to set pref " + name + ": [" + exc + "].\n");}
+  }
 }
 
 // Set initial directory for a filepicker from URLs saved in prefs
@@ -6654,7 +6686,7 @@ var msiNavigationUtils =
     var paraTag = "";
     if (editor != null)
       paraTag = editor.tagListManager.getDefaultParagraphTag(namespace);
-    if ((paraTag == node.nodeName) && ((nsAtom == null) || (nsAtom == namespace)) )
+    if ((paraTag == node.nodeName) && ((nsAtom == null) || (namespace.value && (nsAtom == namespace.value))) )
         return true;
     return false;
   },

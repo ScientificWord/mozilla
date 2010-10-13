@@ -81,12 +81,19 @@
 
 <!ENTITY MSISolveMenu.label "Solve">
 <!ENTITY MSISolveMenu.accesskey "s">
+
 <!ENTITY MSIComputeSolveExactCmd.label         "Exact">
 <!ENTITY MSIComputeSolveExactCmd.accesskey     "E">
+
 <!ENTITY MSIComputeSolveNumericCmd.label       "Numeric">
 <!ENTITY MSIComputeSolveNumericCmd.accesskey   "n">
+
 <!ENTITY MSIComputeSolveRecursionCmd.label     "Recursion">
 <!ENTITY MSIComputeSolveRecursionCmd.accesskey "R">
+
+<!ENTITY MSIComputeSolveIntegerCmd.label       "Integer">
+<!ENTITY MSIComputeSolveIntegerCmd.accesskey   "I">
+
 
 <!ENTITY MSIPolynomialMenu.label "Polynomials">
 <!ENTITY MSIPolynomialMenu.accesskey "l">
