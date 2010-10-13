@@ -165,6 +165,13 @@ NS_IMETHODIMP msiSimpleComputeEngine2::SolveExact(const PRUnichar *expr, const P
   return CommandWithArgs( expr,result,CCID_Solve_Exact, PID_needvarresult, vars, PID_last );
 }
 
+/* void solveInteger (in wstring expr, [retval] out wstring result); */
+NS_IMETHODIMP msiSimpleComputeEngine2::SolveInteger(const PRUnichar* expr, const PRUnichar* vars, PRUnichar** result)
+{
+  return CommandWithArgs( expr, result, CCID_Solve_Integer, PID_needvarresult, vars, PID_last );
+}
+
+
 /* void collect (in wstring expr, in wstring vars, [retval] out wstring result); */
 NS_IMETHODIMP msiSimpleComputeEngine2::Collect(const PRUnichar *expr, const PRUnichar *vars, PRUnichar **result)
 {
