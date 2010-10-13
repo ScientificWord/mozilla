@@ -350,8 +350,4 @@ mml|mtr:first-child > mml|mtd {
 
 }
 
-mml|*[tempinput="true"] {
-  display: inline;
-  color: green;
-}
 
