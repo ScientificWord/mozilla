@@ -4747,6 +4747,7 @@ function msiInsertHorizontalSpace(dialogData, editorElement)
 {
   var editor = msiGetEditor(editorElement);
   var parentNode = editor.selection.anchorNode;
+  var dimsStr, contentStr;
   var insertPos = editor.selection.anchorOffset;
   if (dialogData.spaceType == "normalSpace") editor.insertText(" ");
 //  var dimensionsFromSpaceType = 
@@ -5052,11 +5053,13 @@ function msiInsertVerticalSpace(dialogData, editorElement)
 {
   var editor = msiGetEditor(editorElement);
   var styleStr;
+  var dimStr;
+  var vAlignStr;
   var node = editor.document.createElement('vspace',true);
   if (dialogData.spaceType != "customSpace")
   {
     node.setAttribute('type',dialogData.spaceType);
-    var dimStr = msiSpaceUtils.getVSpaceDims(dialogData.spaceType);
+    dimStr = msiSpaceUtils.getVSpaceDims(dialogData.spaceType);
     var lineHtStr = null;
     if (dimStr)
     {
@@ -5074,9 +5077,9 @@ function msiInsertVerticalSpace(dialogData, editorElement)
   else
   {
     node.setAttribute('type','customSpace');
-    var dimStr = String(dialogData.customSpaceData.sizeData.size) + dialogData.customSpaceData.sizeData.units;
+    dimStr = String(dialogData.customSpaceData.sizeData.size) + dialogData.customSpaceData.sizeData.units;
     node.setAttribute('dim', dimStr);
-    var vAlignStr = String(-(dialogData.customSpaceData.sizeData.size)) + dialogData.customSpaceData.sizeData.units;
+    vAlignStr = String(-(dialogData.customSpaceData.sizeData.size)) + dialogData.customSpaceData.sizeData.units;
     node.setAttribute('atEnd',(dialogData.customSpaceData.typesetChoice=='always' ? 'true': 'false'));
     node.setAttribute('style','height: ' + dimStr + '; vertical-align: ' + vAlignStr + ';');
   }
