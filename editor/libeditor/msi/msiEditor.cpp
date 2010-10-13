@@ -1499,7 +1499,14 @@ NS_IMETHODIMP msiEditor::RangeInMath(nsIDOMRange *range, nsIDOMNode **_retval)
   nsresult res;
   res = NodesInRange(range, getter_AddRefs(arrayOfNodes));
   arrayOfNodes->GetLength(&length);
-
+  
+  if (length == 0) // no nodes, presumably all contained in a text node
+  {
+    res = range->GetStartContainer(getter_AddRefs(currentNode));
+    res = NodeInMath(currentNode,getter_AddRefs(mathNode));
+    *_retval = mathNode;
+    return NS_OK;
+  }
   for (PRInt32 i = (length-1); i>=0; i--)
   {
     currentNode = do_QueryElementAt(arrayOfNodes, i);
