@@ -736,7 +736,7 @@ msiEditingManager::InsertSymbol(nsIEditor * editor,
   {
     nsCOMPtr<nsIDOMElement> mathmlElement;
     PRUint32 flags(msiIMathMLInsertion::FLAGS_NONE);
-    res = msiUtils::CreateMathMLLeafElement(editor, symbol, msiIMathMLEditingBC::MATHML_MI, 1, flags, mathmlElement);
+    res = msiUtils::CreateMathMLLeafElement(editor, symbol, 1, flags, mathmlElement);
     if (NS_SUCCEEDED(res) && mathmlElement)
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
   }
