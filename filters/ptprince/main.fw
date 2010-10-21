@@ -96,7 +96,8 @@ int main(int argc, char* argv[])
          strcat(envInput, inputdir);
          putenv(envInput);
          std::cout << "Set input environment " << envInput << "\n";
-         delete inputdir;
+         
+         s_outputdir =inputdir;   // A default -- gets set in next else clause
         }
         else if (argv[j][1]=='o')
         {

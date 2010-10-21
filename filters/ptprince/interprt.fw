@@ -1435,8 +1435,10 @@ case CMD_EXTENSION: {
            graphic = fullname;
          }
          
-         std::string targetdir = s_outputdir;
-         targetdir += "\\graphics\\";
+         std::string targetdir;
+         if (s_outputdir != 0)
+           targetdir = s_outputdir;
+         targetdir += "/graphics/";
 
          std::string target = targetdir;
          target += fn.GetNameString();
