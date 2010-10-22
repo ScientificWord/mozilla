@@ -663,7 +663,7 @@
         <toolbarbutton id ="symboltextdegree" />
         <toolbarbutton id ="symboltextexclamdown" />
         <toolbarbutton id ="symboltextquestiondown" />
-        <toolbarbutton id ="symbolpm" />
+        <toolbarbutton id ="symbolpmtxt" />
         <toolbarbutton id ="symboldiv" />
         <toolbarbutton id ="symboltextonesuperior" />
         <toolbarbutton id ="symboltexttwosuperior" />
@@ -1765,7 +1765,7 @@
            observes="cmd_MSItextCmd"/>
         <toolbarbutton id ="symboltextquestiondown" label="&#x00BF;" tooltiptext="&symboltextquestiondown.tooltip;"       msivalue="&#x00BF;"
            observes="cmd_MSItextCmd"/>
-        <toolbarbutton id ="symbolpm" label="&#x00B1;" tooltiptext="&symbolpm.tooltip;"       msivalue="&#x00B1;"
+        <toolbarbutton id ="symbolpmtxt" label="&#x00B1;" tooltiptext="&symbolpm.tooltip;"       msivalue="&#x00B1;"
            observes="cmd_MSItextCmd"/>
         <toolbarbutton id ="symboldiv" label="&#x00F7;" tooltiptext="&symboldiv.tooltip;"       msivalue="&#x00F7;"
            observes="cmd_MSItextCmd"/>
