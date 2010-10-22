@@ -122,7 +122,13 @@
 
 \def\end#1{%
   \ifmmode
-    \string\end{#1}%
+    \def\reserved@@a{#1}
+    \def\reserved@@b{equation}
+    \ifx\reserved@@a\reserved@@b
+        $$
+    \else
+       \string\end{#1}%
+    \fi
   \else
     \csname msi@end@#1\endcsname
     \msitag{^^0a}
