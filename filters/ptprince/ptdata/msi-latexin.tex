@@ -113,11 +113,13 @@
 
 \def\begin#1{%
   \ifmmode
-    \string\begin{#1}%
+    \def\dobegin{\string\begin{#1}}%
   \else
-    \begingroup
-    \msitag{^^0a}\csname msi@begin@#1\endcsname
+    \def\dobegin{%
+      \begingroup
+      \msitag{^^0a}\csname msi@begin@#1\endcsname}%
   \fi
+  \dobegin
 }
 
 \def\end#1{%
@@ -127,11 +129,16 @@
     \ifx\reserved@@a\reserved@@b
         $$
     \else
-       \string\end{#1}%
+       \def\reserved@@b{align*}
+       \ifx\reserved@@a\reserved@@b
+          $$
+       \else
+          \string\end{#1}%
+       \fi
     \fi
   \else
     \csname msi@end@#1\endcsname
-    \msitag{^^0a}
+    \msitag{^^0a}%
     \endgroup
   \fi
 }
