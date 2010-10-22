@@ -6822,7 +6822,7 @@
 
 \begingroup
    \catcode`\&=13%
-   \gdef&{\char`\&amp;}
+   \gdef&{\ifmmode\char`\&\else\char`\&amp;\fi}
 \endgroup
   
 \def\msihyperref#1#2#3{%
