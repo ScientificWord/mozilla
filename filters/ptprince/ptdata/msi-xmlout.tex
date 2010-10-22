@@ -421,12 +421,13 @@
 
 
 \everymath{%
-   \catcode`\&=13
+   \catcode`\&=13 %
    \aftergroup\endmath
 }
 \def\endmath{}
 
 \everydisplay{%
+  \catcode`\&=13 %
   \aftergroup\enddisplay
 }
 \def\enddisplay{}
@@ -601,11 +602,16 @@
 
  
 
+\def\@cr{\ifmmode
+           \def\do@cr{\char`\\}%
+         \else
+           \def\do@cr{\@ifnextchar[{\@cra}{\@crb}}%
+         \fi}
 
 
-\def\@cr{\@ifnextchar[{\@cra}{\@crb}}
 \def\@cra[#1]{\cr}%
 \def\@crb{\cr}%
+
 \def\msi@begin@tabular{%
    \@ifnextchar[{\msi@begin@tabularA}{\msi@begin@tabularA[]}%
 }
