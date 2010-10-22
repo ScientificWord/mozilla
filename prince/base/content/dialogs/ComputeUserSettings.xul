@@ -30,7 +30,7 @@
 	  <tabs class="tabs-top">
 	   <tab label="&tabbar.input;"       selected="1" />
 	   <tab label="&tabbar.output;"      selected="0" />
-	   <tab label="&tabbar.fences;"      selected="0" />
+	   <tab label="&tabbar.matrices;"      selected="0" />
 	   <tab label="&tabbar.derivatives;" selected="0" />
 	   <tab label="&tabbar.entities;"    selected="0" />
 	  </tabs>
@@ -141,13 +141,6 @@
 
       <tabpanel id="compusersettings.fencespage">
        <vbox>
-        <groupbox>
-          <caption label="&fences.label;"/>
-          <radiogroup id="fences">
-            <radio label="&mfenced.label;"  id="mfenced"  selected="true"/>
-            <radio label="&chars.label;"    id="chars"    selected="false"/>
-          </radiogroup>
-        </groupbox>
         <groupbox>
           <caption label="&matrices.label;"/>
           <hbox>
