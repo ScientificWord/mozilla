@@ -72,6 +72,7 @@
     <command id="cmd_MSIComputePlotApproxIntegral"       oncommand="doComputeCommand('cmd_compute_PlotApproxIntegral')"/>
     <command id="cmd_MSIComputeIterate"                  oncommand="doGlobalComputeCommand('cmd_compute_Iterate')"/>
     <command id="cmd_MSIComputeImplicitDiff"             oncommand="doComputeCommand('cmd_compute_ImplicitDiff')"/>
+    <command id="cmd_MSIComputeFindExtrema"              oncommand="doComputeCommand('cmd_compute_FindExtrema')"/>
     <command id="cmd_MSIComputeSolveODEExact"            oncommand="doComputeCommand('cmd_compute_SolveODEExact')"/>
     <command id="cmd_MSIComputeSolveODELaplace"          oncommand="doComputeCommand('cmd_compute_SolveODELaplace')"/>
     <command id="cmd_MSIComputeSolveODENumeric"          oncommand="doComputeCommand('cmd_compute_SolveODENumeric')"/>
@@ -318,6 +319,7 @@
           <menuitem label="&MSIComputePartialFractionsCmd.label;"    accesskey="&MSIComputePartialFractionsCmd.accesskey;"    observes="cmd_MSIComputePartialFractions"/>
           <menuitem label="&MSIComputeApproximateIntegralCmd.label;" accesskey="&MSIComputeApproximateIntegralCmd.accesskey;" observes="cmd_MSIComputeApproxIntegral"/>
           <menuitem label="&MSIComputePlotApproxIntegralCmd.label;"  accesskey="&MSIComputePlotApproxIntegralCmd.accesskey;"  observes="cmd_MSIComputePlot2DAI"/>
+          <menuitem label="&MSIComputeFindExtremaCmd.label;"         accesskey="&MSIComputeFindExtremaCmd.accesskey;"         observes="cmd_MSIComputeFindExtrema"/>
           <menuitem label="&MSIComputeIterateCmd.label;"             accesskey="&MSIComputeIterateCmd.accesskey;"             observes="cmd_MSIComputeIterate"/>
           <menuitem label="&MSIComputeImplicitDiffCmd.label;"        accesskey="&MSIComputeImplicitDiffCmd.accesskey;"        observes="cmd_MSIComputeImplicitDiff"/>
         </menupopup>
