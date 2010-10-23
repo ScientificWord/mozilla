@@ -260,6 +260,11 @@ NS_IMETHODIMP msiSimpleComputeEngine2::Iterate(const PRUnichar *expr, const PRUn
 }
 
 /* void implicitDiff (in wstring expr, in wstring var, in wstring depvar, [retval] out wstring result); */
+NS_IMETHODIMP msiSimpleComputeEngine2::FindExtrema(const PRUnichar *expr, const PRUnichar *var, const PRUnichar *depvar, PRUnichar **result)
+{
+  return CommandWithArgs( expr,result,CCID_Calculus_Find_Extrema, PID_ImplDiffIndepVar, var, PID_ImplDiffDepVars, depvar, PID_last );
+}
+
 NS_IMETHODIMP msiSimpleComputeEngine2::ImplicitDiff(const PRUnichar *expr, const PRUnichar *var, const PRUnichar *depvar, PRUnichar **result)
 {
   return CommandWithArgs( expr,result,CCID_Calculus_Implicit_Differentiation, PID_ImplDiffIndepVar, var, PID_ImplDiffDepVars, depvar, PID_last );
