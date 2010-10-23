@@ -69,7 +69,7 @@
 <xsl:variable name="fontchoiceok" select="//html:texprogram[@fontsOK='true']"/>
 
 <xsl:template match="html:preamble">
-
+<xsl:text>%% preamble</xsl:text>
 <xsl:if test="$compiler='xelatex'">
 \usepackage{xltxtra}
 \TeXXeTstate=1 
@@ -93,6 +93,7 @@
   <xsl:apply-templates/>
   <xsl:for-each select="$preambletexbuttons/*"
   ><xsl:if test="@pre='1'"><xsl:apply-templates mode="tex"/></xsl:if></xsl:for-each>
+  <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="html:preambleTeX">

@@ -211,6 +211,7 @@ function doSetupMSIComputeMenuCommands(commandTable)
   commandTable.registerCommand("cmd_MSIComputeChangeVariable",   msiEvaluateCommand);     
   commandTable.registerCommand("cmd_MSIComputeApproxIntegral",   msiEvaluateCommand);     
 //disable  commandTable.registerCommand("cmd_MSIComputePlotApproxIntegral", msiEvaluateCommand);     
+  commandTable.registerCommand("cmd_MSIComputeFindExtrema",      msiEvaluateCommand); 
   commandTable.registerCommand("cmd_MSIComputeIterate",          msiEvaluateCommand);     
   commandTable.registerCommand("cmd_MSIComputeImplicitDiff",     msiEvaluateCommand);     
   commandTable.registerCommand("cmd_MSIComputeSolveODEExact",    msiEvaluateCommand);
@@ -556,6 +557,10 @@ function doComputeCommand(cmd, editorElement, cmdHandler)
       break;
     case "cmd_compute_ByParts":
       doVarsEvalComputation(element,eng.Calculus_Integrate_by_Parts,"<mo>=</mo>",GetComputeString("ByParts.title"),GetComputeString("ByParts.remark"), editorElement, cmd, cmdHandler);
+      break;
+    case "cmd_compute_FindExtrema":
+      doEvalComputation(element, eng.Calculus_Find_Extrema, "<mo>=</mo>","find extrema", editorElement);
+      //doVarsEvalComputation(element,eng.Calculus_Find_Extrema,"<mo>=</mo>",GetComputeString("ChangeVar.title"),GetComputeString("ChangeVar.remark"), editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_ChangeVariable":
       doVarsEvalComputation(element,eng.Calculus_Change_Variable,"<mo>=</mo>",GetComputeString("ChangeVar.title"),GetComputeString("ChangeVar.remark"), editorElement, cmd, cmdHandler);
