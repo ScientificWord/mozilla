@@ -28,29 +28,42 @@
 
   <hbox id="outer-box" flex="1">
     <vbox>
-          <hbox>
-            <description>&desc.Digits;</description>
-            <spacer flex="1"/>
-            <textbox id="digits" style="width: 3em"/>
-          </hbox>
-        <groupbox>
-          <caption label="&solve.label;"/>
-          <hbox>
-            <description>&desc.Max;</description>
-            <spacer flex="1"/>
-            <textbox id="degree" maxlength="1"  style="width: 1em"/>
-          </hbox>
-          <hbox>
-            <description>&desc.Principal;</description>
-            <spacer flex="1"/>
-            <checkbox id="principal"/>
-          </hbox>
-          <hbox>
-            <description>&desc.Ignore;</description>
-            <spacer flex="1"/>
-            <checkbox id="special"/>
-          </hbox>
-        </groupbox>
+      <groupbox>
+        <caption label="Scope"/>
+        <radiogroup id="scope">
+          <radio label="Default" id="default_scope" selected="true"/>
+          <radio label="This document only" id="this_scope" selected="false"/>
+        </radiogroup>
+      </groupbox>
+      <separator/>
+      <hbox>
+        <description>Engine on</description>
+        <checkbox id="engine_on" checked="true"/>
+      </hbox>
+      <hbox>
+        <description>&desc.Digits;</description>
+        <spacer flex="1"/>
+        <textbox id="digits" style="width: 3em"/>
+      </hbox>
+      <groupbox>
+        <caption label="&solve.label;"/>
+        <hbox>
+          <description>&desc.Max;</description>
+          <spacer flex="1"/>
+          <textbox id="degree" type="number" decimalplaces="0" min="0" increment="1" 
+            style="width: 3em" value="2"/>
+        </hbox>
+        <hbox>
+          <description>&desc.Principal;</description>
+          <spacer flex="1"/>
+          <checkbox id="principal"/>
+        </hbox>
+        <hbox>
+          <description>&desc.Ignore;</description>
+          <spacer flex="1"/>
+          <checkbox id="special"/>
+        </hbox>
+      </groupbox>
       <groupbox>
         <caption label="&debug.label;"/>
         <hbox>
