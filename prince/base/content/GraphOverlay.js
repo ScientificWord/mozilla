@@ -2,7 +2,7 @@
 // an array of DOM <graph> elements currently being reformatted
 var currentDOMGs = new Array();
 
-function Graph () {
+function Graph (editorElement) {
   // these arrays enumerate the data for a graph. PLOTELEMENTS are in mathml
   // When adding to this list, you must also add to the MathServiceRequest in the compute engine
   // Compute/iCmpIDs.h and Compute/MRequest.cpp::NameToPID()
@@ -41,7 +41,8 @@ function Graph () {
   this.setModified      = function (x) { this.modFlag[x] = true;};
   this.ser              = new XMLSerializer();
   this.prompt           = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
-
+  var editor            = msiGetEditor(editorElement);;
+  this.doc              = editor.document;
   for (var i = 0; i < this.GRAPHATTRIBUTES.length; i++) {
     this[this.GRAPHATTRIBUTES[i]] = this.getDefaultValue(this.GRAPHATTRIBUTES[i]);
   }
@@ -221,9 +222,9 @@ function GraphGetGraphValue (key) {
 // An optional second argument is the number of the one plot to include for query
 function GraphMakeDOMGraphElement (forComp, optplot) {
   var htmlns="http://www.w3.org/1999/xhtml";
-  var DOMGraph  = document.createElementNS(htmlns, "graph");
-  var DOMGs     = document.createElementNS(htmlns, "graphSpec");
-  var DOMPw     = document.createElementNS(htmlns, "plotwrapper");
+  var DOMGraph  = this.doc.createElementNS(htmlns, "graph");
+  var DOMGs     = this.doc.createElementNS(htmlns, "graphSpec");
+  var DOMPw     = this.doc.createElementNS(htmlns, "plotwrapper");
   // set attributes that selection works. I think only one of these is necessary.
   DOMPw.setAttribute("msi_resize","true");
 //  DOMGraph.setAttribute("msi_resize","true");
@@ -273,23 +274,23 @@ function GraphMakeDOMGraphElement (forComp, optplot) {
   var filetype = this.getDefaultValue ("DefaultFileType");
   dump("SMR file type is " + filetype + "\n");
   if (filetype == "xvz") {
-    img    = document.createElementNS(htmlns,"object");
+    img    = this.doc.createElementNS(htmlns,"object");
     img.setAttribute("type","application/x-mupad-graphics+gzip"); 
     img.setAttribute("data", this.getGraphAttribute("ImageFile"));
     img.setAttribute("alt", "Generated Plot");
     img.setAttribute("msigraph","true");
-    img.setAttribute("width","300");
-    img.setAttribute("height","400");
+//    img.setAttribute("width","300");
+//    img.setAttribute("height","400");
   } else if (filetype == "xvc") {
-    img    = document.createElementNS(htmlns,"object");
+    img    = this.doc.createElementNS(htmlns,"object");
     img.setAttribute("type","application/x-mupad-graphics+xml"); 
     img.setAttribute("data", this.getGraphAttribute("ImageFile"));
     img.setAttribute("alt", "Generated Plot");
     img.setAttribute("msigraph","true");
-    img.setAttribute("width","300");
-    img.setAttribute("height","400");
+//    img.setAttribute("width","300");
+//    img.setAttribute("height","400");
   } else {
-    img    = document.createElementNS(htmlns,"img");
+    img    = this.doc.createElementNS(htmlns,"img");
     img.setAttribute("src", this.getGraphAttribute("ImageFile"));
     img.setAttribute("alt", "Generated Plot");
     img.setAttribute("msigraph","true");
@@ -494,7 +495,7 @@ function graphObjectClickEvent ()
         }
         DOMGListAdd (element, currentDOMGs);
 
-        var graph = new Graph();
+        var graph = new Graph(editorElement);
         graph.extractGraphAttributes (element);
         // non-modal dialog, the return is immediate
         window.openDialog ("chrome://prince/content/ComputeVcamSettings.xul",
@@ -578,7 +579,7 @@ function formatRecreateGraph (DOMGraph, commandStr, editorElement) {
   }
   DOMGListAdd (DOMGraph, currentDOMGs);
 
-  var graph = new Graph();
+  var graph = new Graph(editorElement);
   graph.extractGraphAttributes (DOMGraph);
   // non-modal dialog, the return is immediate
 
@@ -657,7 +658,7 @@ function insertNewGraph (math, dimension, plottype, optionalAnimate, editorEleme
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
   var expr = runFixup(GetFixedMath(math));
-  var graph = new Graph();
+  var graph = new Graph(editorElement);
   graph.addPlot ();
   graph.setPlotAttribute (PlotAttrName ("PlotStatus",1), "New");
   graph.setPlotAttribute (PlotAttrName ("Expression",1), expr);
@@ -676,7 +677,7 @@ function insertNewGraph (math, dimension, plottype, optionalAnimate, editorEleme
 // DOMGraph is the DOM graph element we are going to replace.
 // called by the TestGraphScript() method in the debug menu.
 function recreateGraph (DOMGraph, editorElement) {
-  var graph = new Graph();
+  var graph = new Graph(editorElement);
   graph.extractGraphAttributes (DOMGraph);
   var parent = DOMGraph.parentNode;
   insertGraph (DOMGraph, graph, editorElement);
@@ -873,8 +874,8 @@ function PlotVarsNeeded (dim, ptype, animate) {
   return (nvars);
 }  
 
-function testQuery (domgraph) {
-  var graph = new Graph();
+function testQuery (domgraph, editorElement) {
+  var graph = new Graph(editorElement);
   graph.extractGraphAttributes(domgraph);
 
   var expr = graph.getPlotAttribute (PlotAttrName ("Expression",1));
@@ -885,7 +886,7 @@ function testQuery (domgraph) {
 }
 
 function testQueryGraph (domgraph, editorElement) {
-  var graph = new Graph();
+  var graph = new Graph(editorElement);
   graph.extractGraphAttributes(domgraph);
 
   var expr = graph.getPlotAttribute (PlotAttrName ("Expression",1));
