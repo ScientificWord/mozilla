@@ -568,11 +568,12 @@ function msiTestGraphScript() {
 }  
 
 function msiTestPreparePlotAll() {
+  var editorElement = msiGetActiveEditorElement();
   var theDoc = msiGetCurrentEditor().document;
   var mathelems = theDoc.getElementsByTagName("graph");
   dump("SMR TestPreparePlotAll with " + mathelems.length + " items\n");
   for (var i=0; i<mathelems.length; i++) {
-    testQuery (mathelems[i]);
+    testQuery (mathelems[i], editorElement);
   }
 }
 
