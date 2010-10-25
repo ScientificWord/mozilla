@@ -1,6 +1,6 @@
 <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label "Compute Settings">
+<!ENTITY windowTitle.label "Compute Engine Settings">
 <!ENTITY solve.label "Solve Options">
 <!ENTITY debug.label "Debugging">
 

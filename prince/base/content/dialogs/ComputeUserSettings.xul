@@ -26,6 +26,14 @@
 
   <script type="application/x-javascript" src="chrome://prince/content/ComputeUserSettings.js" />
 
+  <groupbox>
+    <caption label="Scope"/>
+    <radiogroup id="scope">
+      <radio label="Default" id="default_scope" selected="true"/>
+      <radio label="This document only" id="this_scope" selected="false"/>
+    </radiogroup>
+  </groupbox>
+  <separator/>
   <tabbox id="outer-box" flex="1">
 	  <tabs class="tabs-top">
 	   <tab label="&tabbar.input;"       selected="1" />
