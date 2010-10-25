@@ -120,6 +120,8 @@
 <!ENTITY MSIComputeApproximateIntegralCmd.accesskey "A">
 <!ENTITY MSIComputePlotApproxIntegralCmd.label      "Plot Approximate Integral...">
 <!ENTITY MSIComputePlotApproxIntegralCmd.accesskey  "l">
+<!ENTITY MSIComputeFindExtremaCmd.label             "Find Extrema">
+<!ENTITY MSIComputeFindExtremaCmd.accesskey         "F">
 <!ENTITY MSIComputeIterateCmd.label                 "Iterate...">
 <!ENTITY MSIComputeIterateCmd.accesskey             "t">
 <!ENTITY MSIComputeImplicitDiffCmd.label            "Implicit Differentiation...">
