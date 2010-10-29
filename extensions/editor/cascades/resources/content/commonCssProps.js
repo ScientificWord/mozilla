@@ -959,15 +959,40 @@ function SerializeEmbeddedSheet(sheet)
     }
     if (l > 1) cssText += "\n\n";
   }
-  var child = ownerNode.lastChild;
-  while (child) {
-    tmp = child.previousSibling;
-    ownerNode.removeChild(child);
-    child = tmp;
+  var re = /href=(\"|\')([^"']+)/; // a[1] will be 'or ", a[2] will be path;
+  var a = ownerNode.data.match(re);
+  if (a.length >= 3)
+  {
+    var path = a[2];
+    if (path && !/resource:/.test(path))
+    {
+      const classes             = Components.classes;
+      const interfaces          = Components.interfaces;
+      const nsILocalFile        = interfaces.nsILocalFile;
+      const nsIFileOutputStream = interfaces.nsIFileOutputStream;
+      const FILEOUT_CTRID       = '@mozilla.org/network/file-output-stream;1';
+      var basePath = ownerNode.ownerDocument.baseURI;
+      var localFile;
+      localFile = msiFileFromFileURL(msiURIFromString(basePath));
+      localFile = localFile.parent;
+      var arr = path.split("/");
+      for (var i = 0; i < arr.length; i++)
+        localFile.append(arr[i]);
+
+      if (localFile.exists()) localFile.remove(false);
+      var fileOuputStream = classes[FILEOUT_CTRID].createInstance(nsIFileOutputStream);
+      try {
+        fileOuputStream.init(localFile, -1, -1, 0);
+        fileOuputStream.write(cssText, cssText.length);
+        fileOuputStream.close();
+      }
+      catch (e) {
+        dump("Error in savng the CSS file: "+e.message+"\n");
+      }
+    }
   }
-  var textNode = document.createTextNode(cssText + "\n");
-  ownerNode.appendChild(textNode);
 }
+
 
 // * This recreates the textual content of an external stylesheet
 //   param DOMCSSStyleSheet sheet
