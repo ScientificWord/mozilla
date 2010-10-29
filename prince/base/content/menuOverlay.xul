@@ -347,7 +347,7 @@
     <menupopup id="tagPopup">
       <menuitem label="&tagmenuAppearance.label;" 
                 id="tagmenuAppearance" 
-                observes="cmd_unimp" 
+                observes="Cascades" 
                 accesskey="&tagmenuAppearance.accesskey;"/>
       <menuitem label="&tagmenuFunctionKeys.label;" 
                 id="tagmenuFunctionKeys" 
