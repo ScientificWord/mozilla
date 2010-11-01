@@ -95,26 +95,13 @@
                         id="atimportButton"
                         disabled="true"
                         oncommand="CreateNewAtimportRule();"/>
-                <spacer/>
                 <button label="&mediaRuleButton.label;"  id="atmediaButton" disabled="true"/>
-              </row>
-              <row>
-                <button label="&linkedSheetButton.label;"
-                        id="linkButton"
-                        oncommand="CreateNewLinkedSheet();"/>
-                <button label="&styleSheetButton.label;"
-                        id="styleButton"
-                        oncommand="CreateNewStyleElement();"/>
                 <button label="&ruleButton.label;"
                         id="ruleButton" disabled="true"
                         oncommand="CreateNewStyleRule();"/>
               </row>
             </rows>
           </grid>
-          <checkbox label="&expertModeChecbox.label;"
-                    id="expertModeCheckbox"
-                    checked="true"
-                    oncommand="toggleExpertMode();"/>
         </column>
         <column>
           <vbox>
@@ -127,6 +114,9 @@
                     label="&downButton.label;"
                     oncommand="MoveObjectDown()"/>
             <spacer flex="1"/>
+            <button label="&styleSheetButton.label;"
+                        id="styleButton"
+                        oncommand="CreateNewStyleElement();"/>
             <button label="&refreshButton.label;"
                     oncommand="Refresh();"/>
             <spacer flex="1"/>
