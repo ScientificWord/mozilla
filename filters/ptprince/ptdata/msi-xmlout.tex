@@ -582,7 +582,10 @@
 \@namedef{msi@begin@gather*}{\ \@make@braces@other\relax\@scan@gather@star}
 
 \@namedef{msi@begin@equation*}{\ \@make@braces@other\relax\@scan@equation@star}
-\def\msi@begin@array{\ \@make@braces@other\relax\@scan@array}
+
+%\def\msi@begin@array{\ \@make@braces@other\relax\@scan@array}
+\def\msi@begin@array{\string\begin{array}}
+\def\msi@end@array{\string\end{array}}
 
 \def\msi@begin@bmatrix{\@make@braces@other\relax\@scan@bmatrix} 
 \def\msi@begin@Bmatrix{\@make@braces@other\relax\@scan@Bmatrix} 
