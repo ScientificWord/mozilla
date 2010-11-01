@@ -42,7 +42,7 @@
 </xsl:template>
 
 <xsl:template match="html:head">
-\documentclass[<xsl:value-of select="//html:documentclass/html:colist/@*"/>] {<xsl:value-of select="//html:documentclass/@class"/>}
+\documentclass<xsl:if test="//html:documentclass/html:colist/@*">[<xsl:value-of select="//html:documentclass/html:colist/@*"/>]</xsl:if>{<xsl:value-of select="//html:documentclass/@class"/>}
 
   <xsl:apply-templates/>
 </xsl:template>

@@ -2596,7 +2596,8 @@ function doComputeUserSettings()
   o.j_imaginary  = compsample.getUserPref(compsample.Input_j_Imaginary);
   o.e_exp        = compsample.getUserPref(compsample.Input_e_Euler);
   
-  window.openDialog("chrome://prince/content/ComputeUserSettings.xul", "computeusersettings", "chrome,close,titlebar,modal", o);
+  window.openDialog("chrome://prince/content/ComputeUserSettings.xul", 
+    "computeusersettings", "chrome,close,titlebar,resizable, modal", o);
   if (o.Cancel)
     return;
 
@@ -2639,7 +2640,7 @@ function doComputeSettings()
   o.logReceived = msiComputeLogger.logMMLReceived;
   o.engSent     = msiComputeLogger.logEngSent;
   o.engReceived = msiComputeLogger.logEngReceived;
-  window.openDialog("chrome://prince/content/ComputeSettings.xul", "computesettings", "chrome,close,titlebar,modal", o);
+  window.openDialog("chrome://prince/content/ComputeSettings.xul", "computesettings", "chrome,close,titlebar,resizable,modal", o);
   if (o.Cancel)
     return;
 
