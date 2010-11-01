@@ -1,10 +1,10 @@
 <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label  "(Global) User Settings">
+<!ENTITY windowTitle.label  "User Settings">
 
 <!ENTITY tabbar.input        "Input">
 <!ENTITY tabbar.output       "Output">
-<!ENTITY tabbar.fences       "Fences">
+<!ENTITY tabbar.matrices     "Matrices">
 <!ENTITY tabbar.derivatives  "Derivatives">
 <!ENTITY tabbar.entities     "Entities">
 

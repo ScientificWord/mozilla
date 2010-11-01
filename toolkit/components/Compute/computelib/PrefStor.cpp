@@ -23,10 +23,10 @@ const char *default_prefs[] = {
   "4",                                            // CLPF_Primes_as_n_thresh
   "0",                                            // CLPF_Parens_on_trigargs
   "1",                                            // CLPF_log_is_base_e
-  "&#x2145;",                                     // CLPF_Output_differentialD
-  "&#x2146;",                                     // CLPF_Output_differentiald
-  "&#x2147;",                                     // CLPF_Output_Euler_e
-  "&#x2148;",                                     // CLPF_Output_imaginaryi
+  "D",                                     // CLPF_Output_differentialD
+  "d",                                     // CLPF_Output_differentiald
+  "e",                                     // CLPF_Output_Euler_e
+  "i",                                     // CLPF_Output_imaginaryi
   "0",                                            // CLPF_Output_InvTrigFuncs_1
   "0",                                            // CLPF_Output_Mixed_Numbers
   "0",                                            // CLPF_Output_parens_mode
