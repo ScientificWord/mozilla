@@ -26,11 +26,19 @@
 
   <script type="application/x-javascript" src="chrome://prince/content/ComputeUserSettings.js" />
 
+  <groupbox>
+    <caption label="Scope"/>
+    <radiogroup id="scope">
+      <radio label="Default" id="default_scope" selected="true"/>
+      <radio label="This document only" id="this_scope" selected="false"/>
+    </radiogroup>
+  </groupbox>
+  <separator/>
   <tabbox id="outer-box" flex="1">
 	  <tabs class="tabs-top">
 	   <tab label="&tabbar.input;"       selected="1" />
 	   <tab label="&tabbar.output;"      selected="0" />
-	   <tab label="&tabbar.fences;"      selected="0" />
+	   <tab label="&tabbar.matrices;"      selected="0" />
 	   <tab label="&tabbar.derivatives;" selected="0" />
 	   <tab label="&tabbar.entities;"    selected="0" />
 	  </tabs>
@@ -141,13 +149,6 @@
 
       <tabpanel id="compusersettings.fencespage">
        <vbox>
-        <groupbox>
-          <caption label="&fences.label;"/>
-          <radiogroup id="fences">
-            <radio label="&mfenced.label;"  id="mfenced"  selected="true"/>
-            <radio label="&chars.label;"    id="chars"    selected="false"/>
-          </radiogroup>
-        </groupbox>
         <groupbox>
           <caption label="&matrices.label;"/>
           <hbox>
