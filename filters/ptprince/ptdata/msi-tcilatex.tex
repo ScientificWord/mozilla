@@ -526,7 +526,9 @@
    \msitag{/>}
 }
 
-\def\FRAME{\begingroup\catcode`\&=13\@FRAME}
+\def\FRAME{\begingroup
+             \catcode`\&=13
+             \catcode`\~=11\relax\@FRAME}
 
 \def\@FRAME#1#2#3#4#5#6#7#8{%
    \def\reserved@@a{#7}
