@@ -4396,41 +4396,29 @@ function msiSetDisplayMode(editorElement, mode)
     return false;
   var editor = msiGetEditor(editorElement);
 
-  // Already in requested mode:
+  //  Already in requested mode:
   //  return false to indicate we didn't switch
   var previousMode = msiGetEditorDisplayMode(editorElement);
   if (mode == previousMode)
     return false;
 
-  editorElement.mEditorDisplayMode = mode;
+  var prefs = GetPrefs();
+  var pdfAction = prefs.getCharPref("swp.prefPDFPath");
+  if (pdfAction == "default" || mode != kDisplayModePreview)
+  {
+    editorElement.mEditorDisplayMode = mode;
+  }
   if (("gEditorDisplayMode" in window) && editorElement.contentWindow == window.content)
     window.gEditorDisplayMode = mode;
   msiResetStructToolbar(editorElement);
 
   if ((mode == kDisplayModeSource)||(mode == kDisplayModePreview))
   {
-
-    //Hide the formatting toolbar if not already hidden
-    if ("gViewFormatToolbar" in window && window.gViewFormatToolbar != null)
-      window.gViewFormatToolbar.hidden = true;
-    if ("gComputeToolbar" in window && window.gComputeToolbar != null)
-      window.gComputeToolbar.hidden = true;
-
-    msiHideItem("MSIMathMenu");
-    msiHideItem("cmd_viewComputeToolbar");
-    msiHideItem("MSIComputeMenu");
-    msiHideItem("MSITypesetMenu");
-    msiHideItem("MSIInsertTypesetObjectMenu");
-    msiHideItem("StandardToolbox");
-    msiHideItem("SymbolToolbox");
-    msiHideItem("MathToolbox");
-    msiHideItem("EditingToolbox");
-    msiHideItem("structToolbar");
     if (mode ==  kDisplayModePreview)
     {
-      if (editorElement.pdfModCount != editor.getModificationCount())
+      if (editorElement.pdfModCount != editor.getModificationCount() || pdfAction != "default")
       {
-        dump("Doucment changed, recompiling\n");
+        dump("Document changed, recompiling\n");
         printTeX(true, true);
       }
       else
@@ -4454,6 +4442,28 @@ function msiSetDisplayMode(editorElement, mode)
         }
       }
     }
+    if (pdfAction != "default")
+    {
+      if ("gContentWindowDeck" in window)
+        window.gContentWindowDeck.selectedIndex = previousMode;
+      return false;
+    }
+    //Hide the formatting toolbar if not already hidden
+    if ("gViewFormatToolbar" in window && window.gViewFormatToolbar != null)
+      window.gViewFormatToolbar.hidden = true;
+    if ("gComputeToolbar" in window && window.gComputeToolbar != null)
+      window.gComputeToolbar.hidden = true;
+
+    msiHideItem("MSIMathMenu");
+    msiHideItem("cmd_viewComputeToolbar");
+    msiHideItem("MSIComputeMenu");
+    msiHideItem("MSITypesetMenu");
+    msiHideItem("MSIInsertTypesetObjectMenu");
+    msiHideItem("StandardToolbox");
+    msiHideItem("SymbolToolbox");
+    msiHideItem("MathToolbox");
+    msiHideItem("EditingToolbox");
+    msiHideItem("structToolbar");
     if ("gSourceContentWindow" in window)
       window.gSourceContentWindow.contentWindow.focus();
     // Switch to the sourceWindow or bWindow(second or third in the deck)
