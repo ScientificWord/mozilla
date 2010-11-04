@@ -4445,7 +4445,12 @@ function msiSetDisplayMode(editorElement, mode)
     if (pdfAction != "default")
     {
       if ("gContentWindowDeck" in window)
+      {
+        if (previousMode < 0) previousMode = 0;
         window.gContentWindowDeck.selectedIndex = previousMode;
+        document.getElementById("EditModeTabs").selectedIndex = previousMode;
+      }
+
       return false;
     }
     //Hide the formatting toolbar if not already hidden
