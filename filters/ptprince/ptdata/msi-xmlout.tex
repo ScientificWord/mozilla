@@ -128,7 +128,17 @@
 
 %% Frontmatter
 
-\def\title#1{\gdef\@title{#1}\out@title{#1}}
+%\def\title#1{\gdef\@title{#1}\out@title{#1}}
+
+\def\title{%
+  \@ifnextchar[{\@titlea}{\@titleb}}
+
+\def\@titlea[#1]#2{%
+  \msitag{<title><short>#1</short><long>#2</long></title>}%
+}
+
+\def\@titleb#1{\@titlea[]{#1}}
+
 \def\author#1{\gdef\@author{#1}\out@author{#1}}
 \def\date#1{\gdef\@date{#1}\out@date{#1}}
 
@@ -358,6 +368,9 @@
 \newif\if@starred
 \def\@gobble#1{}
 
+
+%% Sectioning
+
 \def\newsection#1#2#3#4{%
   \expandafter\newcount\csname#1number\endcsname
   \csname#1number\endcsname=0
@@ -381,8 +394,15 @@
 }
 
 
-\newsection{part}{1}{Part \the\partnumber}{sectiontitle}%
-\newsection{chapter}{1}{Chapter \the\chapternumber}{sectiontitle}%
+
+
+\newsection{part}{1}{Part \the\sectionnumber}{sectiontitle}%
+\newsection{section}{2}{Section \the\sectionnumber}{sectiontitle}%
+\newsection{subsection}{3}{\the\sectionnumber.\the\subsectionnumber}{sectiontitle}%
+\newsection{subsubsection}{4}{\thesectionnumber.\thesubsectionnumber.\the\subsubsectionnumber}{sectiontitle}%
+\newsection{paragraph}{5}{\thesectionnumber.\thesubsectionnumber.\the\subsubsectionnumber.\the\paragraphnumber}{sectiontitle}%
+\newsection{subparagraph}{6}{\thesectionnumber.\thesubsectionnumber.\the\subsubsectionnumber.\the\paragraphnumber}{sectiontitle}%
+
 
 \def\out@marginparA#1#2{%
   \@start@notewrapper
