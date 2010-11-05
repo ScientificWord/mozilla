@@ -3,14 +3,6 @@
 
 \def\frontmatter{\msitag{<frontmatter/>}}
 
-\def\title{%
-  \@ifnextchar[{\@titlea}{\@titleb}}
-
-\def\@titlea[#1]#2{%
-  \msitag{<title><short>#1</short><long>#2</long></title>}%
-}
-
-\def\@titleb#1{\@titlea[]{#1}}
 
 \def\author{%
   \@ifnextchar[{\@authora}{\@authorb}}
