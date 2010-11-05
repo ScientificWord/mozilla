@@ -249,10 +249,10 @@
      \@first@itemfalse
    \else     
      \def\enditemtag##1{\msiclosetag{##1}{</##1>}}%
-     \expandafter\enditemtag\expandafter{\itemprefix item}%
+     \expandafter\enditemtag\expandafter{\itemprefix}%
    \fi
    \def\startitemtag##1{\br\msihmode\msiopentag{##1}{<##1>}}%
-   \expandafter\startitemtag\expandafter{\itemprefix item}%
+   \expandafter\startitemtag\expandafter{\itemprefix}%
    \msitag{<explicit-item>}#1\msitag{</explicit-item>}%
 }
 
@@ -261,10 +261,10 @@
      \@first@itemfalse
    \else
      \def\enditemtag##1{\msiclosetag{##1}{</##1>}}%
-     \expandafter\enditemtag\expandafter{\itemprefix item}%
+     \expandafter\enditemtag\expandafter{\itemprefix}%
    \fi
    \def\startitemtag##1{\br\msihmode\msiopentag{##1}{<##1>}\msiopentag{bodyText}{<bodyText>}}%
-   \expandafter\startitemtag\expandafter{\itemprefix item}%
+   \expandafter\startitemtag\expandafter{\itemprefix}%
 }
 
 
@@ -294,24 +294,34 @@
 \def\@openitem{\msiopentag{li}{<li>}}
 
 
-\def\MSIListEnvironment{%
-  \@ifnextchar[{\msi@listenv@a}{\msi@listenv@b}}
+%\def\MSIListEnvironment{%
+%  \@ifnextchar[{\msi@listenv@a}{\msi@listenv@b}}
 
-\def\msi@listenv@b#1{%
-  \expandafter\def\csname msi@begin@#1\endcsname{%
-      \def\itemprefix{}%
+% #1=xml name, #2=latex env name, #3=xml item name
+\def\MSIListEnvironment#1#2#3{%
+   \expandafter\def\csname msi@begin@#2\endcsname{%
+      \def\itemprefix{#3}%
       \everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue\msiopentag{#1}{<#1>}}
 
-  \expandafter\def\csname msi@end@#1\endcsname{%
-      \br\msiclosetag{#1}{</#1>}}}
+   \expandafter\def\csname msi@end@#2\endcsname{%
+      \br\msiclosetag{#1}{</#1>}}
+}
 
-\def\msi@listenv@a[#1]#2{%
-  \expandafter\def\csname msi@begin@#2\endcsname{%
-      \def\itemprefix{#1}%
-      \everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue\msiopentag{#1}{<#1>}}
-
-  \expandafter\def\csname msi@end@#2\endcsname{%
-      \br\msiclosetag{#1}{</#1>}}}
+%% \def\msi@listenv@b#1{%
+%%   \expandafter\def\csname msi@begin@#1\endcsname{%
+%%       \def\itemprefix{}%
+%%       \everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue\msiopentag{#1}{<#1>}}
+%% 
+%%   \expandafter\def\csname msi@end@#1\endcsname{%
+%%       \br\msiclosetag{#1}{</#1>}}}
+%% 
+%% \def\msi@listenv@a[#1]#2{%
+%%   \expandafter\def\csname msi@begin@#2\endcsname{%
+%%       \def\itemprefix{#1}%
+%%       \everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue\msiopentag{#1}{<#1>}}
+%% 
+%%   \expandafter\def\csname msi@end@#2\endcsname{%
+%%       \br\msiclosetag{#1}{</#1>}}}
 
        
 \def\msi@begin@thebibliography#1{%
