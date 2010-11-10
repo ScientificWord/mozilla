@@ -122,6 +122,17 @@ button.inline {
   margin-bottom: -8px;
 }
 
+button.inline [type="transparentbutton"] {
+  background-color: transparent;
+}
+
+button.bibitemlabel {
+  display: inline;
+  background-color: transparent;
+  font-size: 90%;
+  margin-top: -5px;
+  margin-bottom: -8px;
+}
 
 *[open="false"] button.expander {
   position: absolute;
