@@ -903,10 +903,12 @@ void Tree2StdMML::FixupSmalld(MNODE* dMML_list)
   MNODE* rover = dMML_list;
   while (rover) {
     if (ElementNameIs(rover, "mfrac")) {
-      if (NodeIsDiffNumerator(rover->first_kid) && NodeIsDiffDenominator(rover->first_kid->next)) {
+      if ( NodeIsDiffNumerator(rover->first_kid) )
         PermuteDiffNumerator(rover->first_kid);
+
+	    if ( NodeIsDiffDenominator(rover->first_kid->next) )
         PermuteDiffDenominator(rover->first_kid->next);
-      }
+      
     }
     rover = rover->next;
   }
