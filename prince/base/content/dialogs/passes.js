@@ -1,6 +1,7 @@
 
 var theProcess;
 var theIndexProcess;
+var theBibTeXProcess;
 var passData;
 var sentinel;
 var timer = Components.classes["@mozilla.org/timer;1"]
@@ -20,11 +21,18 @@ var timerCallback =
        {
          setProgressStatement(false);
          sentinel.remove(false);
-         if (passData.runMakeIndex){
+         if (passData.runBibTeX)
+         {
+           theBibTeXProcess.run(false, passData.bibtexArgs, passData.bibtexArgs.length);
+           passData.runBibTeX = false;
+         }
+         else if (passData.runMakeIndex)
+         {
            theIndexProcess.run(false, passData.args, passData.args.length);
            passData.runMakeIndex = false;
          }
-         else {
+         else
+         {
            theProcess.run(false, passData.args, passData.args.length);
          }
        }
@@ -54,6 +62,12 @@ function Init()
     theIndexProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
     theIndexProcess.init(passData.indexexe);
     passData.passCount ++; // since running makeindex will count as a pass.
+  }
+  if (passData.runBibTeX)
+  {
+    theBibTeXProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+    theBibTeXProcess.init(passData.bibtexexe);
+    passData.passCount ++; // since running BibTeX will count as a pass.
   }
   Components.utils.reportError("in Init\n");
   // set up the first pass
