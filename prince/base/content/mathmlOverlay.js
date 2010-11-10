@@ -2762,7 +2762,7 @@ function insertsymbol(s, editorElement)
   try 
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
-    mathmlEditor.InsertSymbol(s.charCodeAt(0));
+    mathmlEditor.InsertSymbol(s);
     editorElement.contentWindow.focus();
   } 
   catch (e) 

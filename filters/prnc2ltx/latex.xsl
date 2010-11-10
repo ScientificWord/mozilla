@@ -42,7 +42,12 @@
 </xsl:template>
 
 <xsl:template match="html:head">
-<xsl:apply-templates/></xsl:template>
+\documentclass<xsl:if test="//html:documentclass/html:colist/@*">[<xsl:value-of select="//html:documentclass/html:colist/@*"/>]</xsl:if>{<xsl:value-of select="//html:documentclass/@class"/>}
+
+  <xsl:apply-templates/>
+</xsl:template>
+
+
 <!-- JCS
 <xsl:template match="html:body">
 <xsl:apply-templates/>
@@ -64,14 +69,9 @@
 </xsl:template>
 
 
-<xsl:template match="html:documentclass">
-
-\documentclass[<xsl:apply-templates/>]{<xsl:value-of select="@class"/>}
-</xsl:template>
-
-<xsl:template match="html:colist/@*">
+<!-- xsl:template match="html:colist/@*">
   <xsl:value-of select="."/><xsl:text> </xsl:text>
-</xsl:template>
+</xsl:template -->
 
 
 <xsl:template match="//html:docformat">
