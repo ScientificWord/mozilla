@@ -200,6 +200,7 @@ function doSetupMSIComputeMenuCommands(commandTable)
   commandTable.registerCommand("cmd_MSIComputeSolveExact",       msiEvaluateCommand);   
   commandTable.registerCommand("cmd_MSIComputeSolveNum",         msiEvaluateCommand);     
   commandTable.registerCommand("cmd_MSIComputeSolveRecursion",   msiEvaluateCommand);     
+  commandTable.registerCommand("cmd_MSIComputeSolveInteger",     msiEvaluateCommand);   
   commandTable.registerCommand("cmd_MSIComputeCollect",          msiEvaluateCommand);   
   commandTable.registerCommand("cmd_MSIComputeDivide",           msiEvaluateCommand);     
   commandTable.registerCommand("cmd_MSIComputePartialFractions", msiEvaluateCommand);     
@@ -210,6 +211,7 @@ function doSetupMSIComputeMenuCommands(commandTable)
   commandTable.registerCommand("cmd_MSIComputeChangeVariable",   msiEvaluateCommand);     
   commandTable.registerCommand("cmd_MSIComputeApproxIntegral",   msiEvaluateCommand);     
 //disable  commandTable.registerCommand("cmd_MSIComputePlotApproxIntegral", msiEvaluateCommand);     
+  commandTable.registerCommand("cmd_MSIComputeFindExtrema",      msiEvaluateCommand); 
   commandTable.registerCommand("cmd_MSIComputeIterate",          msiEvaluateCommand);     
   commandTable.registerCommand("cmd_MSIComputeImplicitDiff",     msiEvaluateCommand);     
   commandTable.registerCommand("cmd_MSIComputeSolveODEExact",    msiEvaluateCommand);
@@ -532,6 +534,9 @@ function doComputeCommand(cmd, editorElement, cmdHandler)
     case "cmd_compute_SolveRecursion":
       doComputeSolveRecursion(element, editorElement);
       break;
+    case "cmd_compute_SolveInteger":
+      doComputeSolveInteger(element, "", editorElement, cmd, cmdHandler);
+      break;
     case "cmd_compute_Collect":
       doVarsEvalComputation(element, eng.Polynomial_Collect, "<mo>=</mo>",GetComputeString("Collect.title"), "", editorElement, cmd, cmdHandler);
       break;
@@ -552,6 +557,10 @@ function doComputeCommand(cmd, editorElement, cmdHandler)
       break;
     case "cmd_compute_ByParts":
       doVarsEvalComputation(element,eng.Calculus_Integrate_by_Parts,"<mo>=</mo>",GetComputeString("ByParts.title"),GetComputeString("ByParts.remark"), editorElement, cmd, cmdHandler);
+      break;
+    case "cmd_compute_FindExtrema":
+      doEvalComputation(element, eng.Calculus_Find_Extrema, "<mo>=</mo>","find extrema", editorElement);
+      //doVarsEvalComputation(element,eng.Calculus_Find_Extrema,"<mo>=</mo>",GetComputeString("ChangeVar.title"),GetComputeString("ChangeVar.remark"), editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_ChangeVariable":
       doVarsEvalComputation(element,eng.Calculus_Change_Variable,"<mo>=</mo>",GetComputeString("ChangeVar.title"),GetComputeString("ChangeVar.remark"), editorElement, cmd, cmdHandler);
@@ -1518,6 +1527,52 @@ function doComputeSolveExact(math, vars, editorElement, cmd, cmdHandler)
   } 
 }
 
+
+function doComputeSolveInteger(math, vars, editorElement, cmd, cmdHandler)
+{
+  var mathstr = GetFixedMath(math);
+  if (!vars)
+    vars = "";
+
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+
+  msiComputeLogger.Sent4("solve integer",mathstr,"specifying",vars);
+
+  try {
+      ComputeCursor(editorElement);
+      var out = GetCurrentEngine().solveInteger(mathstr,vars);
+      msiComputeLogger.Received(out);
+      appendLabeledResult(out,GetComputeString("Solution.fmt"),math, editorElement);
+      RestoreCursor(editorElement);
+  } catch(ex) {
+      RestoreCursor(editorElement);
+      if (ex.result == compsample.nosol) {
+        appendLabel(GetComputeString("NoSolution"),math, editorElement);
+        done = true;
+      } else if (ex.result == compsample.needvars) {
+        var o = new Object();
+        o.mParentWin = this;
+        o.theMath = math;
+        o.vars = vars;
+        o.theCommand = cmd;
+        o.theCommandHandler = cmdHandler;
+        o.afterDialog = function(editorElement)
+        { 
+          if (this.Cancel)
+            return;
+          this.mParentWin.doComputeSolveInteger(this.theMath, this.vars, editorElement, this.theCommand, this.theCommandHandler);
+        };
+        try {
+          theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
+                                            editorElement, cmd, cmdHandler, o);
+        } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeSolveInteger: [" + e + "]"); return;}
+      } else {
+        msiComputeLogger.Exception(ex);
+      } 
+  } 
+}
+
 function doComputeSolveNumeric(math, editorElement)
 {
   var mathstr = GetFixedMath(math);
@@ -1596,7 +1651,7 @@ function doComputePartialFractions(math, vars, editorElement, cmd, cmdHandler)
         try {
           var theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
                                             editorElement, cmd, cmdHandler, o);
-        } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeSolveExact: [" + e + "]"); return;}
+        } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputePartialFractions: [" + e + "]"); return;}
 
 //        var parentWin = msiGetParentWindowForNewDialog(editorElement);
 //        parentWin.openDialog("chrome://prince/content/ComputeVariables.xul", "computevariables", "chrome,close,titlebar,modal", o);
@@ -2541,7 +2596,8 @@ function doComputeUserSettings()
   o.j_imaginary  = compsample.getUserPref(compsample.Input_j_Imaginary);
   o.e_exp        = compsample.getUserPref(compsample.Input_e_Euler);
   
-  window.openDialog("chrome://prince/content/ComputeUserSettings.xul", "computeusersettings", "chrome,close,titlebar,modal", o);
+  window.openDialog("chrome://prince/content/ComputeUserSettings.xul", 
+    "computeusersettings", "chrome,close,titlebar,resizable, modal", o);
   if (o.Cancel)
     return;
 
@@ -2584,7 +2640,7 @@ function doComputeSettings()
   o.logReceived = msiComputeLogger.logMMLReceived;
   o.engSent     = msiComputeLogger.logEngSent;
   o.engReceived = msiComputeLogger.logEngReceived;
-  window.openDialog("chrome://prince/content/ComputeSettings.xul", "computesettings", "chrome,close,titlebar,modal", o);
+  window.openDialog("chrome://prince/content/ComputeSettings.xul", "computesettings", "chrome,close,titlebar,resizable,modal", o);
   if (o.Cancel)
     return;
 

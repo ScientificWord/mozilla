@@ -24,7 +24,7 @@ interface msiIMathMLEditor : nsISupports
                         in DOMString lineWidth, in unsigned long attrFlags);
   void InsertSqRoot();
   void InsertRoot();
-  void InsertSymbol(in unsigned long symbol);
+  void InsertSymbol(in DOMString symbol);
   void InsertMathname(in DOMString name);
   void InsertMathunit(in DOMString name);
   void InsertEngineFunction(in DOMString name);

@@ -58,7 +58,7 @@ public:
                                     nsCOMPtr<nsIDOMElement> & mathElement);
  
   static nsresult CreateMathMLLeafElement(nsIEditor *editor, 
-                                          PRUint32 character,
+                                          const nsAString & text,
                                           PRUint32 caretPos,
                                           PRUint32 & flags,
                                           nsCOMPtr<nsIDOMElement> & mathmlElement);
