@@ -33,7 +33,7 @@ function Startup()
 
   // Fill dialog.
 //  dump("In equationArrayDialog.Startup, before new msiMarkerList\n");
-  gDialog.markerList = new msiMarkerList(window);
+  gDialog.markerList = new msiKeyMarkerList(window);
   var keyString = gDialog.markerList.getIndexString();
   gDialog.wholeDisplayKeyList.setAttribute("autocompletesearchparam", keyString);
   gDialog.lineKeyList.setAttribute("autocompletesearchparam", keyString);
