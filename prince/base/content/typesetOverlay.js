@@ -49,6 +49,8 @@ function msiSetupMSITypesetMenuCommands(editorElement)
   commandTable.registerCommand("cmd_MSItypesetExpertSettingsCmd",       msiTypesetExpertSettings);
   commandTable.registerCommand("cmd_MSIrunBibTeXCmd",                   msiRunBibTeX);
   commandTable.registerCommand("cmd_MSIrunMakeIndexCmd",                msiRunMakeIndex);
+  commandTable.registerCommand("cmd_reviseBibTeXBibliographyCmd",       msiReviseBibTeXBibliography);
+  commandTable.registerCommand("cmd_reviseManualBibItemCmd",            msiReviseManualBibItemCmd);
 }
 
 //function SetupMSITypesetInsertMenuCommands()
@@ -69,8 +71,8 @@ function msiSetupMSITypesetInsertMenuCommands(editorElement)
 
   commandTable.registerCommand("cmd_MSIinsertIndexEntryCmd",            msiInsertIndexEntry);
   commandTable.registerCommand("cmd_MSIinsertCrossReferenceCmd",	      msiInsertCrossReference);
-  commandTable.registerCommand("cmd_MSIinsertCitationCmd",					    msiInsertCitation);
-  commandTable.registerCommand("cmd_MSIinsertBibliographyCmd",			    msiInsertBibliography);
+  commandTable.registerCommand("cmd_MSIinsertCitationCmd",					    msiCitationCommand);
+  commandTable.registerCommand("cmd_MSIinsertBibliographyCmd",			    msiInsertBibTeXBibliography);
   commandTable.registerCommand("cmd_MSIinsertTeXFieldCmd",					    msiInsertTeXField);
   commandTable.registerCommand("cmd_MSIinsertSubdocumentCmd",				    msiInsertSubdocument);
 }
@@ -222,7 +224,8 @@ var msiTypesetOutputChoice =
 
   doCommand: function(aCommand)
   {
-    doOutputChoiceDlg();
+    var editorElement = msiGetActiveEditorElement();
+    doOutputChoiceDlg(editorElement);
   }
 };
 
@@ -420,7 +423,7 @@ var msiInsertCrossReference =
   }
 };
 
-var msiInsertCitation =
+var msiInsertBibTeXBibliography =
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -433,11 +436,16 @@ var msiInsertCitation =
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement();
-    doInsertCitation(editorElement, this);
+    var bibliographyData = {dbFileList : [], styleFile : ""};
+    window.openDialog("chrome://prince/content/typesetBibTeXBibliography.xul", "bibtexbiblio", "chrome,close,titlebar,modal", bibliographyData);
+    if (!bibliographyData.Cancel)
+    {
+      doInsertBibTeXBibliography(editorElement, bibliographyData);
+    }
   }
 };
 
-var msiInsertBibliography =
+var msiReviseBibTeXBibliography = 
 {
   isCommandEnabled: function(aCommand, dummy)
   {
@@ -445,12 +453,38 @@ var msiInsertBibliography =
   },
 
   getCommandStateParams: function(aCommand, aParams, aRefCon) {},
-  doCommandParams: function(aCommand, aParams, aRefCon) {},
-
-  doCommand: function(aCommand)
+  doCommandParams: function(aCommand, aParams, aRefCon) 
   {
-    doInsertBibliography();
-  }
+    var editorElement = msiGetActiveEditorElement();
+    var bibliographyReviseData = msiGetPropertiesDataFromCommandParams(aParams);
+    var bibliographyData = {dbFileList : [], styleFile : "", reviseData : bibliographyReviseData};
+    var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibTeXBibliography.xul", "_blank", "chrome,close,titlebar,dependent",
+                                                           editorElement, "cmd_reviseBibTeXBibliographyCmd", this, bibliographyData);
+    editorElement.focus();
+  },
+
+  doCommand: function(aCommand) {}
+};
+
+var msiReviseManualBibItemCmd =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) 
+  {
+    var editorElement = msiGetActiveEditorElement();
+    var bibItemReviseData = msiGetPropertiesDataFromCommandParams(aParams);
+    var bibItemData = {key : "", bibLabel : "", reviseData : bibItemReviseData};
+    var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibItemDlg.xul", "_blank", "chrome,close,titlebar,dependent",
+                                                           editorElement, "cmd_reviseManualBibItemCmd", this, bibItemData);
+    editorElement.focus();
+  },
+
+  doCommand: function(aCommand) {}
 };
 
 var msiInsertTeXField =
@@ -536,24 +570,24 @@ function doPreambleDlg()
   window.openDialog("chrome://prince/content/typesetPreamble.xul", "preamble", "resizable,chrome,close,titlebar,modal", preambleTeXNode);
 }
 
-function doBibChoiceDlg()
+function doBibChoiceDlg(editorElement)
 {
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   var bibChoiceData = new Object();
   bibChoiceData.bBibTeX = false;
-  if (gBibChoice == "BibTeX")  //a kludge - must get hooked up to editor to really work
+  var theBibChoice = getBibliographyScheme(editorElement);
+  if (theBibChoice == "BibTeX")  //a kludge - must get hooked up to editor to really work
     bibChoiceData.bBibTeX = true;
   window.openDialog("chrome://prince/content/typesetBibChoice.xul", "bibchoice", "chrome,close,titlebar,modal", bibChoiceData);
   if (!bibChoiceData.Cancel)
   {
-    var choiceStr = "manual bibliography";
+    var choiceStr = "manual";
     if (bibChoiceData.bBibTeX)
-    {
-      choiceStr = "BibTeX bibliography";
-      gBibChoice = "BibTeX";
-    }
+      choiceStr = "BibTeX";
     else
-      gBibChoice = "manual";
-    alert("Bibliography Choice Dialog returned " + choiceStr + "; needs to be hooked up to do something!");
+      choiceStr = "manual";
+    setBibliographyScheme(editorElement, choiceStr);
   }
 }
 
@@ -832,43 +866,118 @@ function doInsertCrossReference()
   window.openDialog("chrome://prince/content/xref.xul", "Cross reference", "chrome, resizable=yes, close, titlebar", xref);
 }
 
-function doInsertCitation(editorElement, command, commandHandler)
+function doInsertManualCitation(editorElement, dlgData)
 {
-  if (gBibChoice == "BibTeX")  //a kludge - must get hooked up to editor to really work
-  {
-    var bibCiteData = new Object();
-    bibCiteData.databaseFile = "";
-    bibCiteData.key = "";  //a string
-    bibCiteData.remark = "";  //this should become arbitrary markup - a Document Fragment perhaps?
-    bibCiteData.bBibEntryOnly = false;
-    var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibTeXCitation.xul", "_blank", "resizable=yes, chrome,close,titlebar,dependent",
-                                                     editorElement, "cmd_MSIinsertCitationCmd", commandHandler, bibCiteData);
-//    window.openDialog("chrome://prince/content/typesetBibTeXCitation.xul", "bibtexcitation", "chrome,close,titlebar,modal", bibCiteData);
-//    if (!bibCiteData.Cancel)
-//    {
-//      alert("BibTeX Citation Dialog returned key: [" + bibCiteData.key + "] from file [" + bibCiteData.databaseFile + "], remark: [" + bibCiteData.remark + "]; needs to be hooked up to do something!");
-//    }
-  }
+  var editor = msiGetEditor(editorElement);
+  var theText = "<citation xmlns=\"" + xhtmlns + "\" citekey=\"" + dlgData.key + "\"";
+  if (dlgData.remark && dlgData.remark.length)
+    theText += " hasRemark=\"true\"><biblabel class=\"remark\" xmlns=\"" + xhtmlns + "\">" + dlgData.remark + "</biblabel></citation>";
   else
-  {
-    var manualCiteData = new Object();
-    manualCiteData.key = "";  //a string
-    manualCiteData.remark = "";  //this should become arbitrary markup - a Document Fragment perhaps?
-    manualCiteData.keyList = new Array();
-    var editor = msiGetEditor(editorElement);
-    if (editor)
-      manualCiteData.keyList = manualCiteData.keyList.concat(getEditorBibItemList(editor));
+    theText += "/>"
+  editor.insertHTMLWithContext(theText, "", "", "text/html", null, null, 0, true);
+}
 
-    var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetManualCitation.xul", "_blank", "chrome,close,titlebar,dependent",
-                                                           editorElement, "cmd_MSIinsertCitationCmd", commandHandler, manualCiteData);
-//    window.openDialog("chrome://editor/content/typesetManualCitation.xul", "manualcitation", "chrome,close,titlebar,modal", manualCiteData);
-//    if (!manualCiteData.Cancel)
-//    {
-//      alert("Manual Citation Dialog returned key: [" + manualCiteData.key + "], remark: [" + manualCiteData.remark + "]; needs to be hooked up to do something!");
-//      if (editor)
-//        updateEditorBibItemList(editor, manualCiteData.keyList);
-//    }
+function doReviseManualCitation(editorElement, reviseData, dlgData)
+{
+  var editor = msiGetEditor(editorElement);
+  editor.endTransaction();
+  var citeNode = reviseData.getReferenceNode();
+  msiEditorEnsureElementAttribute(citeNode, "citekey", dlgData.key, editor);
+  if (dlgData.bRemarkChanged)
+  {
+    var currRemNode = null;
+    var children = msiNavigationUtils.getSignificantContents(citeNode);
+    for (var ix = 0; ix < children.length; ++ix)
+    {
+      if (msiGetBaseNodeName(children[ix]) == "biblabel")
+      {
+        currRemNode = children[ix];
+        break;
+      }
+    }
+    if (dlgData.remark.length && !currRemNode)
+    {
+      currRemNode = editorElement.document.createElement("biblabel");
+      currRemNode.setAttribute("class", "remark");
+      msiEditorEnsureElementAttribute(currRemNode, "xmlns", xhtmlns, editor);
+      editor.insertNode(currRemNode, citeNode, 0);  //Remark always goes at the start - though the cite shouldn't have any other content anyway
+    }
+    else if (!dlgData.remark.length && currRemNode)
+    {
+      editor.deleteNode(currRemNode);
+    }
+    if (dlgData.remark.length)
+    {
+      for (ix = 0; ix < currRemNode.childNodes.length; ++ix)
+        editor.deleteNode(currRemNode.childNodes[ix]);
+      editor.insertHTMLWithContext(dlgData.remark, "", "", "", null, currRemNode, 0, false);
+      msiEditorEnsureElementAttribute(citeNode, "hasRemark", "true", editor);
+    }
+    else
+      msiEditorEnsureElementAttribute(citeNode, "hasRemark", "false", editor);
   }
+  editor.endTransaction();
+}
+
+function doInsertBibTeXCitation(editorElement, dlgData)
+{
+  var editor = msiGetEditor(editorElement);
+  var theText = "<citation xmlns=\"" + xhtmlns + "\" type=\"bibtex\" citekey=\"" + dlgData.key + "\"";
+  if (dlgData.bBibEntryOnly)
+    theText += " nocite=\"true\"";
+  if (dlgData.remark && dlgData.remark.length)
+    theText += " hasRemark=\"true\"><biblabel xmlns=\"" + xhtmlns + "\" class=\"remark\">" + dlgData.remark + "</biblabel></citation>";
+  else
+    theText += "/>"
+  editor.insertHTMLWithContext(theText, "", "", "text/html", null, null, 0, true);
+}
+
+function doReviseBibTeXCitation(editorElement, reviseData, dlgData)
+{
+  var editor = msiGetEditor(editorElement);
+  editor.endTransaction();
+  var citeNode = reviseData.getReferenceNode();
+  msiEditorEnsureElementAttribute(citeNode, "citekey", dlgData.key, editor);
+  msiEditorEnsureElementAttribute(citeNode, "nocite", dlgData.bBibEntryOnly, editor);
+  if (dlgData.bRemarkChanged)
+  {
+    var currRemNode = null;
+    var children = msiNavigationUtils.getSignificantContents(citeNode);
+    msiKludgeLogNodeContentsAndAllAttributes(citeNode, ["bibliography"], "In doReviseBibTeXCitation before adding remark, citeNode", true);
+    for (var ix = 0; ix < children.length; ++ix)
+    {
+      if (msiGetBaseNodeName(children[ix]) == "biblabel")
+      {
+        currRemNode = children[ix];
+        break;
+      }
+    }
+    msiKludgeLogNodeContents(currRemNode, ["bibliography"], "In doReviseBibTeXCitation before adding remark, currRemNode", true);
+//    if (dlgData.remark.length && !currRemNode)
+//    {
+//      currRemNode = editor.document.createElement("biblabel");
+//      currRemNode.setAttribute("class", "remark");
+//      editor.insertNode(currRemNode, citeNode, 0);  //Remark always goes at the start - though the cite shouldn't have any other content anyway
+//    }
+//    else if (!dlgData.remark.length && currRemNode)
+    if (currRemNode)
+    {
+      editor.deleteNode(currRemNode);
+      currRemNode = null;
+    }
+    if (dlgData.remark.length)
+    {
+//      for (ix = 0; ix < currRemNode.childNodes.length; ++ix)
+//        editor.deleteNode(currRemNode.childNodes[ix]);
+//      editor.insertHTMLWithContext(dlgData.remark, "", "", "", null, currRemNode, 0, false);
+      editor.insertHTMLWithContext("<biblabel class=\"remark\" xmlns=\"" + xhtmlns + "\">" + dlgData.remark + "</biblabel>", "", "", "", null, citeNode, 0, false);
+      msiEditorEnsureElementAttribute(citeNode, "hasRemark", "true", editor);
+      msiKludgeLogNodeContentsAndAllAttributes(citeNode, ["bibliography"], "In doReviseBibTeXCitation after insertHTMLWithContext, citeNode", true);
+    }
+    else
+      msiEditorEnsureElementAttribute(citeNode, "hasRemark", "false", editor);
+  }
+  editor.endTransaction();
 }
 
 function getEditorBibItemList(editor)
@@ -883,16 +992,64 @@ function updateEditorBibItemList(editor, newList)
   gBibItemList = unionArrayWith(gBibItemList, newList);
 }
 
-function doInsertBibliography()
+function doInsertBibTeXBibliography(editorElement, dlgData)
 {
-  var bibliographyData = new Object();
-  bibliographyData.databaseFile = "";
-  bibliographyData.styleFile = "";
-  window.openDialog("chrome://prince/content/typesetBibTeXBibliography.xul", "bibtexbiblio", "chrome,close,titlebar,modal", bibliographyData);
-  if (!bibliographyData.Cancel)
+  var editor = msiGetEditor(editorElement);
+  var theText = "<bibtexbibliography xmlns=\"" + xhtmlns + "\" databaseFile=\"" + dlgData.databaseFile + "\" styleFile=\"" + dlgData.styleFile + "\"/>";
+  editor.insertHTMLWithContext(theText, "", "", "", null, null, 0, true);
+}
+
+function doReviseBibTeXBibliography(editorElement, reviseData, dlgData)
+{
+  var editor = msiGetEditor(editorElement);
+  var bibliographyNode = reviseData.getReferenceNode();
+  editor.beginTransaction();
+  msiEditorEnsureElementAttribute(bibliographyNode, "databaseFile", dlgData.databaseFile, editor);
+  msiEditorEnsureElementAttribute(bibliographyNode, "styleFile", dlgData.styleFile, editor);
+  editor.endTransaction();
+}
+
+
+function doReviseManualBibItem(editorElement, bibitemNode, dlgData)
+{
+  var editor = msiGetEditor(editorElement);
+  editor.beginTransaction();
+  msiEditorEnsureElementAttribute(bibitemNode, "bibitemkey", dlgData.key, editor);
+  if (dlgData.bBibLabelChanged)
   {
-    alert("BibTeX Bibliography Dialog returned bibliography file: [" + bibliographyData.databaseFile + "], style file: [" + bibliographyData.styleFile + "]; needs to be hooked up to do something!");
+    var currLabelNode = null;
+    var children = msiNavigationUtils.getSignificantContents(bibitemNode);
+    for (var ix = 0; ix < children.length; ++ix)
+    {
+      if (msiGetBaseNodeName(children[ix]) == "biblabel")
+      {
+        currLabelNode = children[ix];
+        break;
+      }
+    }
+    if (dlgData.bibLabel.length && !currLabelNode)
+    {
+      currLabelNode = editor.document.createElement("biblabel");
+      currLabelNode.setAttribute("class", "bibitemlabel");
+      msiEditorEnsureElementAttribute(bibitemNode, "xmlns", xhtmlns, editor);
+      editor.insertNode(currLabelNode, bibitemNode, 0);  //Label always goes at the start
+    }
+    else if (!dlgData.bibLabel.length && currLabelNode)
+    {
+      editor.deleteNode(currLabelNode);
+    }
+    if (dlgData.bibLabel.length)
+    {
+      for (ix = 0; ix < currLabelNode.childNodes.length; ++ix)
+        editor.deleteNode(currLabelNode.childNodes[ix]);
+      editor.insertHTMLWithContext(dlgData.bibLabel, "", "", "", null, currLabelNode, 0, false);
+      msiEditorEnsureElementAttribute(bibitemNode, "hasLabel", "true", editor);
+    }
+    else
+      msiEditorEnsureElementAttribute(bibitemNode, "hasLabel", "false", editor);
   }
+
+  editor.endTransaction();
 }
 
 function doInsertTeXField()
