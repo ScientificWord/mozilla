@@ -236,10 +236,20 @@ should not be done under some conditions -->
 \item <xsl:apply-templates/>
 </xsl:template>
 
-<xsl:template match="html:cite">
-  
-\cite<xsl:if test="@label">[<xsl:value-of select="@label"/>]</xsl:if>{<xsl:apply-templates/>}</xsl:template>
+<xsl:template match="html:citation">
+<xsl:choose>
+  <xsl:when test="@nocite='true'">\nocite</xsl:when>
+  <xsl:otherwise>\cite</xsl:otherwise>
+</xsl:choose>
+<xsl:if test="@hasRemark='true'">[<xsl:apply-templates select="html:biblabel"/>]</xsl:if
+>{<xsl:value-of select="@citekey"/>}
+</xsl:template>
 
+<xsl:template match="html:biblabel"><xsl:apply-templates/></xsl:template>
+
+<xsl:template match="html:bibtexbibliography">\bibliographystyle{<xsl:value-of select="@styleFile"/>}
+\bibliography{<xsl:value-of select="@databaseFile"/>}
+</xsl:template>
 
 <xsl:template match="html:xref">
 <xsl:choose>
@@ -426,10 +436,6 @@ should not be done under some conditions -->
 <xsl:template match="html:a">\ref{<xsl:apply-templates/>}
   
 </xsl:template>
-<xsl:template match="html:cite">
-  
-\cite<xsl:if test="@label">[<xsl:value-of select="@label"/>]</xsl:if>{<xsl:apply-templates/>}
-</xsl:template>
 
 
 <xsl:template match="html:marker">\label{<xsl:value-of select="@id"/>}
@@ -495,10 +501,20 @@ should not be done under some conditions -->
 %EndExpansion
 </xsl:text></xsl:if></xsl:if></xsl:template>
 
+<xsl:template match="html:bibliography">
+\begin{thebibliography}
+<xsl:apply-templates select="html:bibitem"/>
+\end{thebibliography}
+</xsl:template>
+
+<xsl:template match="html:bibitem">
+\bibitem<xsl:if test="@hasLabel='true'">[<xsl:apply-templates select="html:biblabel"/>]</xsl:if
+>{<xsl:value-of select="@bibitemkey"/>} <xsl:apply-templates select="*[local-name()!='biblabel']"/>
+</xsl:template>
+
 <xsl:template match="html:msidisplay"><xsl:apply-templates/></xsl:template>
 
 
 <xsl:template match="html:frontmatter"><xsl:apply-templates/></xsl:template>
+
 </xsl:stylesheet>
-
-
