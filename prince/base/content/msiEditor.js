@@ -5118,6 +5118,21 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
         propsData = new msiEquationPropertiesObjectData();
         propsData.initFromNode(coreElement, editorElement);
       break;
+
+      case 'bibitem':
+        objStr = GetString("BibEntry");
+        commandStr = "cmd_reviseManualBibItemCmd";
+      break;
+
+      case "bibtexbibliography":
+        objStr = GetString("BibTeXBibliography");
+        commandStr = "cmd_reviseBibTeXBibliographyCmd";
+      break;
+
+      case "citation":
+        objStr = GetString("Citation");
+        commandStr = "cmd_reviseCitation";
+      break;
     }
 
     if (!objStr && !propsData)
@@ -10275,7 +10290,28 @@ function openGraphDialog(tagname, node, editorElement)
      editorElement, "cmd_objectProperties", node, graph, node, currentDOMGs);
 }
 
+function getMSIDocumentInfo(editorElement)
+{
+  var docInfo = new msiDocumentInfo(editorElement);
+  docInfo.initializeDocInfo();
+  return docInfo;
+}
 
+function getBibliographyScheme(editorElement)
+{
+  var docInfo = getMSIDocumentInfo(editorElement);
+  if (docInfo && docInfo.generalSettings)
+  {
+    if ( ("bibliographyscheme" in docInfo.generalSettings) && ("contents" in docInfo.generalSettings.bibliographyscheme) )
+      return docInfo.generalSettings.bibliographyscheme.contents;
+  }
+  return "manual";
+}
 
-
+function setBibliographyScheme(editorElement, whichScheme)
+{
+  var docInfo = getMSIDocumentInfo(editorElement);
+  docInfo.setObjectFromData(docInfo.generalSettings, "bibliographyscheme", (whichScheme.length > 0), "BibliographyScheme", whichScheme, "comment-key-value");
+  docInfo.putDocInfoToDocument();
+}
 
