@@ -355,3 +355,26 @@ mml|*[tempinput="true"] {
   color: green;
 }
 
+citation {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#citation");
+}
+
+bibtexbibliography {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#bibtexbibliography");
+}
+
+bibliography {
+  list-style-type: none;
+  list-style-position: outside;
+  counter-reset: bibliographylist;
+}
+
+bibitem {
+  counter-increment: bibliographylist;
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#bibitem");
+}
+
+bibitem[hasLabel="true"] {
+  counter-increment: none;
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#bibitemwithlabel");
+}
