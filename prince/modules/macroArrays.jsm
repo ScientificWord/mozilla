@@ -2,6 +2,8 @@ var EXPORTED_SYMBOLS = ["macroArray", "fragmentArray",
   "buildFragmentArray", "buildMacroArray", "initializeMacrosAndFragments",
   "getMacro", "getFragment"];
 
+Components.utils.import("resource://app/modules/pathutils.jsm");
+
 var macroArray = {};
 var fragmentArray = {};
 
@@ -36,9 +38,16 @@ function buildMacroArray()
                 classes["@mozilla.org/xmlextras/xmlhttprequest;1"].
                 createInstance();
   request.QueryInterface(Components.interfaces.nsIXMLHttpRequest);
-  var path = msiFileURLFromAbsolutePath( macrofile.path );
-  request.open("GET", path, false);
-  request.send(null);
+  var path;
+  try {
+    path = msiFileURLFromAbsolutePath( macrofile.path );
+    request.open("GET", path.spec, false);
+    request.send(null);
+  }
+  catch(e)
+  {
+    dump("Buildmacroarray: " + e +"\n");
+  }
                             
   var xmlDoc = request.responseXML; 
   if (!xmlDoc && request.responseText)

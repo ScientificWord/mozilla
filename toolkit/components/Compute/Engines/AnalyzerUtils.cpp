@@ -170,12 +170,10 @@ ExpType GetExpType(BaseType base_type, MNODE* exp, const Grammar* mml_entities)
 {
   ExpType rv = ET_POWER;
 
-  //const char* exp_element = exp->src_tok;
-  //const char* exp_contents = exp->p_chdata;
+  MNODE* expOrig = exp;
+
   if (ElementNameIs(exp, "mrow")) {
-    //exp_element = exp->first_kid->src_tok;
-    //exp_contents = exp->first_kid->p_chdata;
-	exp = exp -> first_kid;
+	   exp = exp -> first_kid;
   }
 
   if (ElementNameIs(exp, "mi")) {
@@ -240,9 +238,11 @@ ExpType GetExpType(BaseType base_type, MNODE* exp, const Grammar* mml_entities)
   }
   if (rv == ET_DIRECTION && exp->first_kid && exp->first_kid->next)
     rv = ET_POWER;  // -x or +x
-  if (IsInverseIndicator(exp, mml_entities))
-    if (base_type == BT_FUNCTION
-        || base_type == BT_SUBARG_FUNCTION || base_type == BT_TRANSFORM)
+
+  if (IsInverseIndicator(expOrig, mml_entities))
+    if (base_type == BT_FUNCTION || 
+        base_type == BT_SUBARG_FUNCTION || 
+        base_type == BT_TRANSFORM)
       rv = ET_INVERSE_INDICATOR;
 
   return rv;

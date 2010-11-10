@@ -86,7 +86,7 @@ nsresult EnsureMathWithSelectionCollapsed(nsCOMPtr<nsIDOMNode> &node,
                                           PRInt32 & offset);
 nsresult InsertSubOrSup(PRBool isSup);
 nsresult InsertSymbolEx(nsISelection * aSelection, nsIDOMNode * aNode, 
-                        PRInt32 aOffset, PRUint32 aSymbol);
+                        PRInt32 aOffset, const nsAString & aSymbol);
 nsresult InsertMathnameEx(nsISelection * aSelection, nsIDOMNode * aNode, 
                            PRInt32 aOffset, const nsAString & aMathname);
 nsresult InsertMathunitEx(nsISelection * aSelection, nsIDOMNode * aNode, 

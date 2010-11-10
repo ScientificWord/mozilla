@@ -350,10 +350,6 @@ mml|mtr:first-child > mml|mtd {
 
 }
 
-mml|*[tempinput="true"] {
-  display: inline;
-  color: green;
-}
 
 citation {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#citation");

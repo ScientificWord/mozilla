@@ -717,6 +717,8 @@ bool IsSUBSTITUTION(MNODE* mml_msub_node)
 
           if (zopen_attr_val[0] == '[' && zclose_attr_val[0] == ']')
             rv = true;
+          if (zopen_attr_val[0] == '[' && StringEqual(zclose_attr_val, "&#x250a;") )
+            rv = true;
           if (zopen_attr_val[0] == 'I' && zclose_attr_val[0] == ']')
             rv = true;
           if (zopen_attr_val[0] == 'I' && zclose_attr_val[0] == '|')
