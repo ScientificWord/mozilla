@@ -128,7 +128,24 @@
 
 %% Frontmatter
 
-\def\title#1{\gdef\@title{#1}\out@title{#1}}
+%\def\title#1{\gdef\@title{#1}\out@title{#1}}
+
+\def\title{%
+  \@ifnextchar[{\@titlea}{\@titleb}}
+
+\def\@titlea[#1]#2{%
+  \msiopentag{title}{<title>}%
+    \msiopentag{short}{<short>}%
+      #1%
+    \msiclosetag{short}{</short>}%
+    \msiopentag{long}{<long>}%
+      #2%
+    \msiclosetag{long}{</long>}%
+  \msiclosetag{title}{</title>}%
+}
+
+\def\@titleb#1{\@titlea[]{#1}}
+
 \def\author#1{\gdef\@author{#1}\out@author{#1}}
 \def\date#1{\gdef\@date{#1}\out@date{#1}}
 
@@ -249,10 +266,10 @@
      \@first@itemfalse
    \else     
      \def\enditemtag##1{\msiclosetag{##1}{</##1>}}%
-     \expandafter\enditemtag\expandafter{\itemprefix item}%
+     \expandafter\enditemtag\expandafter{\itemprefix}%
    \fi
    \def\startitemtag##1{\br\msihmode\msiopentag{##1}{<##1>}}%
-   \expandafter\startitemtag\expandafter{\itemprefix item}%
+   \expandafter\startitemtag\expandafter{\itemprefix}%
    \msitag{<explicit-item>}#1\msitag{</explicit-item>}%
 }
 
@@ -261,10 +278,10 @@
      \@first@itemfalse
    \else
      \def\enditemtag##1{\msiclosetag{##1}{</##1>}}%
-     \expandafter\enditemtag\expandafter{\itemprefix item}%
+     \expandafter\enditemtag\expandafter{\itemprefix}%
    \fi
    \def\startitemtag##1{\br\msihmode\msiopentag{##1}{<##1>}\msiopentag{bodyText}{<bodyText>}}%
-   \expandafter\startitemtag\expandafter{\itemprefix item}%
+   \expandafter\startitemtag\expandafter{\itemprefix}%
 }
 
 
@@ -294,24 +311,34 @@
 \def\@openitem{\msiopentag{li}{<li>}}
 
 
-\def\MSIListEnvironment{%
-  \@ifnextchar[{\msi@listenv@a}{\msi@listenv@b}}
+%\def\MSIListEnvironment{%
+%  \@ifnextchar[{\msi@listenv@a}{\msi@listenv@b}}
 
-\def\msi@listenv@b#1{%
-  \expandafter\def\csname msi@begin@#1\endcsname{%
-      \def\itemprefix{}%
+% #1=xml name, #2=latex env name, #3=xml item name
+\def\MSIListEnvironment#1#2#3{%
+   \expandafter\def\csname msi@begin@#2\endcsname{%
+      \def\itemprefix{#3}%
       \everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue\msiopentag{#1}{<#1>}}
 
-  \expandafter\def\csname msi@end@#1\endcsname{%
-      \br\msiclosetag{#1}{</#1>}}}
+   \expandafter\def\csname msi@end@#2\endcsname{%
+      \br\msiclosetag{#1}{</#1>}}
+}
 
-\def\msi@listenv@a[#1]#2{%
-  \expandafter\def\csname msi@begin@#2\endcsname{%
-      \def\itemprefix{#1}%
-      \everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue\msiopentag{#1}{<#1>}}
-
-  \expandafter\def\csname msi@end@#2\endcsname{%
-      \br\msiclosetag{#1}{</#1>}}}
+%% \def\msi@listenv@b#1{%
+%%   \expandafter\def\csname msi@begin@#1\endcsname{%
+%%       \def\itemprefix{}%
+%%       \everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue\msiopentag{#1}{<#1>}}
+%% 
+%%   \expandafter\def\csname msi@end@#1\endcsname{%
+%%       \br\msiclosetag{#1}{</#1>}}}
+%% 
+%% \def\msi@listenv@a[#1]#2{%
+%%   \expandafter\def\csname msi@begin@#2\endcsname{%
+%%       \def\itemprefix{#1}%
+%%       \everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue\msiopentag{#1}{<#1>}}
+%% 
+%%   \expandafter\def\csname msi@end@#2\endcsname{%
+%%       \br\msiclosetag{#1}{</#1>}}}
 
        
 \def\msi@begin@thebibliography#1{%
@@ -348,6 +375,9 @@
 \newif\if@starred
 \def\@gobble#1{}
 
+
+%% Sectioning
+
 \def\newsection#1#2#3#4{%
   \expandafter\newcount\csname#1number\endcsname
   \csname#1number\endcsname=0
@@ -371,8 +401,15 @@
 }
 
 
-\newsection{part}{1}{Part \the\partnumber}{sectiontitle}%
-\newsection{chapter}{1}{Chapter \the\chapternumber}{sectiontitle}%
+
+
+\newsection{part}{1}{Part \the\sectionnumber}{sectiontitle}%
+\newsection{section}{2}{Section \the\sectionnumber}{sectiontitle}%
+\newsection{subsection}{3}{\the\sectionnumber.\the\subsectionnumber}{sectiontitle}%
+\newsection{subsubsection}{4}{\thesectionnumber.\thesubsectionnumber.\the\subsubsectionnumber}{sectiontitle}%
+\newsection{paragraph}{5}{\thesectionnumber.\thesubsectionnumber.\the\subsubsectionnumber.\the\paragraphnumber}{sectiontitle}%
+\newsection{subparagraph}{6}{\thesectionnumber.\thesubsectionnumber.\the\subsubsectionnumber.\the\paragraphnumber}{sectiontitle}%
+
 
 \def\out@marginparA#1#2{%
   \@start@notewrapper
@@ -421,11 +458,13 @@
 
 
 \everymath{%
+   \catcode`\&=13 %
    \aftergroup\endmath
 }
 \def\endmath{}
 
 \everydisplay{%
+  \catcode`\&=13 %
   \aftergroup\enddisplay
 }
 \def\enddisplay{}
@@ -580,7 +619,10 @@
 \@namedef{msi@begin@gather*}{\ \@make@braces@other\relax\@scan@gather@star}
 
 \@namedef{msi@begin@equation*}{\ \@make@braces@other\relax\@scan@equation@star}
-\def\msi@begin@array{\ \@make@braces@other\relax\@scan@array}
+
+%\def\msi@begin@array{\ \@make@braces@other\relax\@scan@array}
+\def\msi@begin@array{\string\begin{array}}
+\def\msi@end@array{\string\end{array}}
 
 \def\msi@begin@bmatrix{\@make@braces@other\relax\@scan@bmatrix} 
 \def\msi@begin@Bmatrix{\@make@braces@other\relax\@scan@Bmatrix} 
@@ -600,11 +642,16 @@
 
  
 
+\def\@cr{\ifmmode
+           \def\do@cr{\char`\\}%
+         \else
+           \def\do@cr{\@ifnextchar[{\@cra}{\@crb}}%
+         \fi}
 
 
-\def\@cr{\@ifnextchar[{\@cra}{\@crb}}
 \def\@cra[#1]{\cr}%
 \def\@crb{\cr}%
+
 \def\msi@begin@tabular{%
    \@ifnextchar[{\msi@begin@tabularA}{\msi@begin@tabularA[]}%
 }
@@ -650,7 +697,7 @@
 \chardef\active=13
 \bgroup
    \catcode`&=\active
-   \gdef&{\char`&amp;}%
+   \gdef&{\ifmmode\char`\&\else\char`\&amp;\fi}%
 \egroup
 
 
@@ -746,11 +793,11 @@
 
 \def\@@accent#1#2{%
     \ifx#1\i
-      dotlessi-#2
+      dotlessi-#2%
     \else\ifx#1\j
-      dotlessj-#2
+      dotlessj-#2%
     \else 
-      #1-#2
+      #1-#2%
   \fi\fi\fi
 }
 

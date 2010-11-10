@@ -111,16 +111,48 @@
 
 %% \begin and \end
 
+%% \def\begin#1{%
+%%   \ifmmode
+%%     \def\dobegin{\string\begin{#1}}%
+%%   \else
+%%     \def\dobegin{%
+%%       \begingroup
+%%       \msitag{^^0a}\csname msi@begin@#1\endcsname}%
+%%   \fi
+%%   \dobegin
+%% }
+
 \def\begin#1{%
-  \begingroup
-  \msitag{^^0a}\csname msi@begin@#1\endcsname
-}
+   \begingroup
+   \msitag{^^0a}\csname msi@begin@#1\endcsname}
 
 \def\end#1{%
-  \csname msi@end@#1\endcsname
-  \msitag{^^0a}
-  \endgroup
-}
+   \csname msi@end@#1\endcsname
+   \msitag{^^0a}%
+   \endgroup}
+
+
+
+%% \def\end#1{%
+%%   \ifmmode
+%%     \def\reserved@@a{#1}
+%%     \def\reserved@@b{equation}
+%%     \ifx\reserved@@a\reserved@@b
+%%         $$
+%%     \else
+%%        \def\reserved@@b{align*}
+%%        \ifx\reserved@@a\reserved@@b
+%%           $$
+%%        \else
+%%           \string\end{#1}%
+%%        \fi
+%%     \fi
+%%   \else
+%%     \csname msi@end@#1\endcsname
+%%     \msitag{^^0a}%
+%%     \endgroup
+%%   \fi
+%% }
    
 
 
@@ -3465,8 +3497,8 @@
 \def\displaymath{\[}
 \def\enddisplaymath{\]\@ignoretrue}
 \@definecounter{equation}
-\def\equation{$$\refstepcounter{equation}}
-\def\endequation{\eqno \hbox{\@eqnnum}$$\@ignoretrue}
+%\def\equation{$$\refstepcounter{equation}}
+%\def\endequation{\eqno \hbox{\@eqnnum}$$\@ignoretrue}
 \def\@eqnnum{{\normalfont \normalcolor (\theequation)}}
 
 \def\frac#1#2{{\begingroup#1\endgroup\over#2}}
@@ -6807,14 +6839,14 @@
 
 \def\U#1{\ifmmode\string\U{#1}\else\char`\&\char`\#x#1;\fi}
 
-
+\def\mathring#1{\if A#1\U{212B}\fi}
 
 %% \def\msihyperref#1#2#3#4
 %% Replace with contortion to convert & in parameter 4
 
 \begingroup
    \catcode`\&=13%
-   \gdef&{\char`\&amp;}
+   \gdef&{\ifmmode\char`\&\else\char`\&amp;\fi}
 \endgroup
   
 \def\msihyperref#1#2#3{%

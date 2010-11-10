@@ -52,7 +52,6 @@
     <command id="cmd_MSIsupCmd"         oncommand="msiGoDoCommand('cmd_MSIsupCmd')"/>
     <command id="cmd_MSIsubCmd"         oncommand="msiGoDoCommand('cmd_MSIsubCmd')"/>
     <command id="cmd_MSIMatrixCmd"      oncommand="msiGoDoCommand('cmd_MSIMatrixCmd')"/>
-    <command id="cmd_MSItensorCmd"      disabled="true" oncommand="msiGoDoCommand('cmd_MSItensorCmd')"/>
     <command id="cmd_MSIsinCmd"         oncommand="msiGoDoCommand('cmd_MSIsinCmd')"/>
     <command id="cmd_MSIcosCmd"         oncommand="msiGoDoCommand('cmd_MSIcosCmd')"/>
     <command id="cmd_MSItanCmd"         oncommand="msiGoDoCommand('cmd_MSItanCmd')"/>
@@ -85,7 +84,6 @@
     <command id="cmd_MSIreviseRadicalCmd"       oncommand="msiGoDoCommand('cmd_MSIradicalCmd')"/>
     <command id="cmd_MSIreviseScriptsCmd"       oncommand="msiGoDoCommand('cmd_MSIreviseScriptsCmd')"/>
     <command id="cmd_MSIreviseMatrixCmd"        oncommand="msiGoDoCommand('cmd_MSIreviseMatrixCmd')"/>
-    <command id="cmd_MSIreviseTensorCmd"        disabled="true" oncommand="msiGoDoCommand('cmd_MSIreviseTensorCmd')"/>
     <command id="cmd_MSIreviseMathnameCmd"      oncommand="msiGoDoCommand('cmd_MSIreviseMathnameCmd')"/>
     <!-- command id="cmd_MSIreviseSymbolCmd"        oncommand="doParamCommand('cmd_MSIsymbolCmd',event.target.getAttribute('msivalue'));" / -->
 	  <command id="cmd_MSIreviseGenBracketsCmd"   oncommand="msiGoDoCommand('cmd_MSIreviseGenBracketsCmd')"/>
@@ -133,7 +131,6 @@
 	      <menuitem label="&MSIdecorationsCmd.label;"     accesskey="&MSIdecorationsCmd.accesskey;"     command="cmd_MSIdecorationsCmd"/>
 	      <menuitem id="insertmenuUnitNames" label="&insertmenuUnitNames.label;"
 	        accesskey="&insertmenuUnitNames.accesskey;" command="cmd_MSIunitsCommand" />
-	      <menuitem label="&MSItensorCmd.label;"   accesskey="&MSItensorCmd.accesskey;"                              command="cmd_MSItensorCmd"/>
 	      <menuitem id="insertmenuFormula" label="&insertmenuFormula.label;"
 	        accesskey="&insertmenuFormula.accesskey;" observes="cmd_unimp" />
 	    </menupopup>
@@ -666,7 +663,7 @@
         <toolbarbutton id ="symboltextdegree" />
         <toolbarbutton id ="symboltextexclamdown" />
         <toolbarbutton id ="symboltextquestiondown" />
-        <toolbarbutton id ="symbolpm" />
+        <toolbarbutton id ="symbolpmtxt" />
         <toolbarbutton id ="symboldiv" />
         <toolbarbutton id ="symboltextonesuperior" />
         <toolbarbutton id ="symboltexttwosuperior" />
@@ -1355,17 +1352,17 @@
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolgnsim" label="&#x22E7;" tooltiptext="&symbolgnsim.tooltip;"              msivalue="&#x22E7;"
            observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id ="symbolnleqslant" label="&#x2A7D;" tooltiptext="&symbolnleqslant.tooltip;"              msivalue="&#x2A7D;"
+        <toolbarbutton id ="symbolnleqslant" label="&#x0338;&#x2A7D;" tooltiptext="&symbolnleqslant.tooltip;"              msivalue="&#x0338;&#x2A7D;"
            observes="cmd_MSIsymbolCmd"/> 
-        <toolbarbutton id ="symbolngeqslant" label="&#x02A7;&#x0338;" tooltiptext="&symbolngeqslant.tooltip;"              msivalue="&#x02A7;&#x0338;"
+        <toolbarbutton id ="symbolngeqslant" label="&#x0338;&#x2A7E;" tooltiptext="&symbolngeqslant.tooltip;"              msivalue="&#x2A7E;&#x0338;"
            observes="cmd_MSIsymbolCmd"/> 
         <toolbarbutton id ="symbollneq" label="&#x2A87;" tooltiptext="&symbollneq.tooltip;"              msivalue="&#x2A87;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolgneq" label="&#x2A88;" tooltiptext="&symbolgneq.tooltip;"              msivalue="&#x2A88;"
            observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id ="symbolnpreceq" label="&#x2AAF;&#x0338;" tooltiptext="&symbolnpreceq.tooltip;"              msivalue="&#x2AAF;&#x0338;"
+        <toolbarbutton id ="symbolnpreceq" label="&#x0338;&#x2AAF;" tooltiptext="&symbolnpreceq.tooltip;"              msivalue="&#x0338;&#x2AAF;"
            observes="cmd_MSIsymbolCmd"/> 
-        <toolbarbutton id ="symbolnsucceq" label="&#x2AB0;&#x0338;" tooltiptext="&symbolnsucceq.tooltip;"              msivalue="&#x2AB0;&#x0338;"
+        <toolbarbutton id ="symbolnsucceq" label="&#x0338;&#x2AB0;" tooltiptext="&symbolnsucceq.tooltip;"              msivalue="&#x0338;&#x2AB0;"
            observes="cmd_MSIsymbolCmd"/> 
         <toolbarbutton id ="symbolprecnsim" label="&#x22E8;" tooltiptext="&symbolprecnsim.tooltip;"              msivalue="&#x22E8;"
            observes="cmd_MSIsymbolCmd"/>
@@ -1375,9 +1372,9 @@
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolgnsim" label="&#x22E7;" tooltiptext="&symbolgnsim.tooltip;"              msivalue="&#x22E7;"
            observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id ="symbolnleqq" label="&#x2266;&#x0338;" tooltiptext="&symbolnleqq.tooltip;"              msivalue="&#x2266;&#x0338;"
+        <toolbarbutton id ="symbolnleqq" label="&#x0338;&#x2266;" tooltiptext="&symbolnleqq.tooltip;"              msivalue="&#x0338;&#x2266;"
            observes="cmd_MSIsymbolCmd"/> 
-        <toolbarbutton id ="symbolngeqq" label="&#x2267;&#x0338;" tooltiptext="&symbolngeqq.tooltip;"              msivalue="&#x2267;&#x0338;"
+        <toolbarbutton id ="symbolngeqq" label="&#x0338;&#x2267;" tooltiptext="&symbolngeqq.tooltip;"              msivalue="&#x0338;&#x2267;"
            observes="cmd_MSIsymbolCmd"/> 
         <toolbarbutton id ="symbolprecneqq" label="&#x2AB5;" tooltiptext="&symbolprecneqq.tooltip;"              msivalue="&#x2AB5;"
            observes="cmd_MSIsymbolCmd"/>
@@ -1395,13 +1392,13 @@
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolncong" label="&#x2247;" tooltiptext="&symbolncong.tooltip;"              msivalue="&#x2247;"
            observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id ="symbolvarsubsetneq" label="&#x0228A;&#xFE00;" tooltiptext="&symbolvarsubsetneq.tooltip;"              msivalue="&#x228A;&#xFE00;"
+        <toolbarbutton id ="symbolvarsubsetneq" label="&#xFE00;&#x0228A;" tooltiptext="&symbolvarsubsetneq.tooltip;"              msivalue="&#x228A;&#xFE00;"
            observes="cmd_MSIsymbolCmd"/> 
         <toolbarbutton id ="symbolvarsupsetneq" label="&#x228B;&#xFE00;" tooltiptext="&symbolvarsupsetneq.tooltip;"              msivalue="&#x228B;&#xFE00;"
            observes="cmd_MSIsymbolCmd"/> 
-        <toolbarbutton id ="symbolnsubseteqq" label="&#x2AC6;&#x0338;" tooltiptext="&symbolnsubseteqq.tooltip;"              msivalue="&#x2AC6;&#x0338;"
+        <toolbarbutton id ="symbolnsubseteqq" label="&#x0338;&#x2AC6;" tooltiptext="&symbolnsubseteqq.tooltip;"              msivalue="&#x0338;&#x2AC6;"
            observes="cmd_MSIsymbolCmd"/> 
-        <toolbarbutton id ="symbolnsupseteqq" label="&#x2AC5;&#x0338;" tooltiptext="&symbolnsupseteqq.tooltip;"              msivalue="&#x2AC5;&#x0338;"
+        <toolbarbutton id ="symbolnsupseteqq" label="&#x0338;&#x2AC5;" tooltiptext="&symbolnsupseteqq.tooltip;"              msivalue="&#x0338;&#x2AC5;"
            observes="cmd_MSIsymbolCmd"/> 
         <toolbarbutton id ="symbolsubsetneqq" label="&#x2ACB;" tooltiptext="&symbolsubsetneqq.tooltip;"              msivalue="&#x2ACB;"
            observes="cmd_MSIsymbolCmd"/> 
@@ -1768,7 +1765,7 @@
            observes="cmd_MSItextCmd"/>
         <toolbarbutton id ="symboltextquestiondown" label="&#x00BF;" tooltiptext="&symboltextquestiondown.tooltip;"       msivalue="&#x00BF;"
            observes="cmd_MSItextCmd"/>
-        <toolbarbutton id ="symbolpm" label="&#x00B1;" tooltiptext="&symbolpm.tooltip;"       msivalue="&#x00B1;"
+        <toolbarbutton id ="symbolpmtxt" label="&#x00B1;" tooltiptext="&symbolpm.tooltip;"       msivalue="&#x00B1;"
            observes="cmd_MSItextCmd"/>
         <toolbarbutton id ="symboldiv" label="&#x00F7;" tooltiptext="&symboldiv.tooltip;"       msivalue="&#x00F7;"
            observes="cmd_MSItextCmd"/>

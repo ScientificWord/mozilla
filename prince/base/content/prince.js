@@ -687,11 +687,9 @@ function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInf
   //
   var compiledFileLeaf = "SWP";
   passData = new Object;
-#ifdef XP_WIN32
-  extension = "cmd";
-#else
-  extension = "bash";
-#endif
+  var os = GetOS();
+  if (os == "Win") extension = "cmd";
+  else extension = "bash";
   exefile.append(compiler+"."+extension);
   indexexe.append("makeindex."+extension);
   bibtexexe.append("runbibtex." + extension);
@@ -849,9 +847,41 @@ function printTeX(preview )
     {
       if (preview)
       {
-        document.getElementById("preview-frame").loadURI(msiFileURLStringFromFile(pdffile));
-        // Switch to the preview pane (third in the deck)
-        goDoCommand("cmd_PreviewMode"); 
+      // get prefs for viewing pdf files
+        var prefs = GetPrefs();
+        var pdfAction = prefs.getCharPref("swp.prefPDFPath");
+        if (pdfAction == "default")
+        {
+          document.getElementById("preview-frame").loadURI(msiFileURLStringFromFile(pdffile));
+          // Switch to the preview pane (third in the deck)
+          goDoCommand("cmd_PreviewMode"); 
+        }
+        else 
+        {
+          var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+          var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+          var extension;
+          var exefile;
+          if (pdfAction == "launch")
+          {
+            exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+            var os = GetOS();
+            if (os == "Win") extension = "cmd";
+            else extension = "bash";
+            exefile.append("shell."+ extension);
+          }
+          else // pdfAction == complete path to viewer
+          {
+            exefile = Components.classes["@mozilla.org/file/local;1"].
+                    createInstance(Components.interfaces.nsILocalFile);
+            exefile.initWithPath(pdfAction);
+          }
+          theProcess.init(exefile);
+          var arr = new Array();
+          if (pdfAction == "launch") arr.push(exefile.path);
+          arr.push(pdffile.path);
+          theProcess.run(false, arr, arr.length);
+        }
       } 
       else
         printPDFFile(pdffile);
