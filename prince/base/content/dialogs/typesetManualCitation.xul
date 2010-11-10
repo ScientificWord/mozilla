@@ -99,8 +99,11 @@
 	
 	<vbox>
 		<hbox>
-		  <description value='&keyCaption.label;' accesskey='&keyCaption.accesskey;'/>
-		  <menulist id='keysListbox' size='30' editable='true' oninput='checkDisableControls();' oncommand='checkDisableControls();'/>
+		  <label value="&keyCaption.label;" accesskey="&keyCaption.accesskey;" control="keysAutoCompleteBox"/>
+      <textbox id="keysAutoCompleteBox" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
+        completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys"
+        tooltiptext="Enter the key name for the bibliography item to reference"
+        onchange="checkDisableControls(event);" />
 		</hbox>
 		<spacer flex='1'/>
 		<hbox>
