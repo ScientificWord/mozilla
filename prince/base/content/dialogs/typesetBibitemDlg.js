@@ -1,4 +1,4 @@
-// Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
+// Copyright (c) 2010 MacKichan Software, Inc.  All Rights Reserved.
 
 
 //const mmlns    = "http://www.w3.org/1998/Math/MathML";
@@ -13,7 +13,7 @@ function Startup()
   var editorElement = msiGetParentEditorElementForDialog(window);
   var editor = msiGetEditor(editorElement);
   if (!editor) {
-    AlertWithTitle("Error", "No editor found in typesetManualCitation Startup! Closing dialog window...");
+    AlertWithTitle("Error", "No editor found in typesetBibItem Startup! Closing dialog window...");
     window.close();
     return;
   }
@@ -21,14 +21,13 @@ function Startup()
   doSetOKCancel(onAccept, onCancel);
   data = window.arguments[0];
   data.Cancel = false;
+  gDialog.key = "";  //a string
+  gDialog.bibLabel = "";  //this should become arbitrary markup - a Document Fragment perhaps?
   if ("reviseData" in data)
   {
     setDataFromReviseData(reviseData)
     //set window title too!
   }
-  gDialog.keyList = [""];
-  gDialog.key = data.key;
-  gDialog.remark = data.remark;
 
   InitDialog();
 
@@ -48,8 +47,8 @@ function InitDialog()
   document.getElementById("keysAutoCompleteBox").value = gDialog.key;
   
 //  var theStringSource = "<bold>" + gDialog.remark + "</bold>";
-  var theStringSource = gDialog.remark;
-  var editorControl = document.getElementById("remarkEditControl");
+  var theStringSource = gDialog.bibLabel;
+  var editorControl = document.getElementById("labelEditControl");
   msiInitializeEditorForElement(editorControl, theStringSource);
   
 //  attachEditorToTextbox(document.getElementById("remarkTextbox"), theStringSource)
@@ -68,22 +67,16 @@ function InitDialog()
 
 function setDataFromReviseData(reviseData)
 {
-  var citeNode = reviseData.getReferenceNode();
-  var theKeys = citeNode.getAttribute("bibcitekey");
-  data.keyList = theKeys.split(",");
-  for (var ix = 0; ix < data.keyList.length; ++ix)
-    data.keyList = TrimString(data.keyList);
-  data.key = data.keyList[0];  //a string
-  data.remark = "";
-  var remarks = msiNavigationUtils.getSignificantContents(citeNode);
-  for (ix = 0; ix < remarks.length; ++ix)
+  var bibItemNode = reviseData.getReferenceNode();
+  gDialog.key = bibItemNode.getAttribute("bibitemkey");
+  gDialog.bibLabel = "";
+  var labels = msiNavigationUtils.getSignificantContents(bibItemNode);
+  for (ix = 0; ix < labels.length; ++ix)
   {
-    if (msiGetBaseNodeName(remarks[ix]) == "biblabel")
+    if (msiGetBaseNodeName(labels[ix]) == "biblabel")
     {
       var serializer = new XMLSerializer();
-      var remarkNodes = msiNavigationUtils.getSignificantContents(remarks[ix]);
-      for (var jx = 0; jx < remarkNodes.length; ++jx)
-        data.remark += serializer.serializeToString(remarkNodes[jx]);
+      gDialog.bibLabel = serializer.serializeToString(labels[ix]);
       break;
     }
   }
@@ -91,56 +84,46 @@ function setDataFromReviseData(reviseData)
 
 function onAccept()
 {
+  var keyList = document.getElementById("keysAutoCompleteBox");
   gDialog.key = document.getElementById("keysAutoCompleteBox").value;
-  if (findInArray(gDialog.keyList, gDialog.key) < 0)
-    gDialog.keyList.push(gDialog.key);
+//  if (findInArray(keyList, gDialog.key) < 0)
+//    keyList.push(gDialog.key);
 
-
-  var remarkControl = document.getElementById("remarkEditControl");
-  var remarkContentFilter = new msiDialogEditorContentFilter(remarkControl);
-  gDialog.remark = remarkContentFilter.getDocumentFragmentString();
+  var labelControl = document.getElementById("labelEditControl");
+  var labelContentFilter = new msiDialogEditorContentFilter(labelControl);
+  gDialog.bibLabel = labelContentFilter.getDocumentFragmentString();
 
 //  var serializer = new XMLSerializer();
 //  gDialog.remark = serializer.serializeToString(editorControl.contentDocument.documentElement);
 ////  gDialog.remark = document.getElementById("remarkTextbox").value;
 
   data.key = gDialog.key;
-  data.keyList = gDialog.keyList;
-  if (data.remark != gDialog.remark)
+  if (data.bibLabel != gDialog.bibLabel)
   {
-    data.bRemarkChanged = true;
-    data.remark = gDialog.remark;
+    data.bBibLabelChanged = true;
+    data.bibLabel = gDialog.bibLabel;
   }
 
 //  var listBox = document.getElementById('keysListbox');
 //  listBox.addEventListener('ValueChange', checkDisableControls, false);
 
   var editorElement = msiGetParentEditorElementForDialog(window);
-  var editor = msiGetEditor(editorElement);
   var theWindow = window.opener;
   if ("reviseData" in data)
   {
-    if (!theWindow || !("doReviseManualCitation" in theWindow))
+    var bibitemNode = data.reviseData.getReferenceNode();
+    if (!theWindow || !("doReviseManualBibItem" in theWindow))
       theWindow = msiGetTopLevelWindow();
-    if (theWindow && ("doReviseManualCitation" in theWindow))
-      theWindow.doReviseManualCitation(editorElement, data.reviseData, data);
+    if (theWindow && ("doReviseManualBibItem" in theWindow))
+      theWindow.doReviseManualBibItem(editorElement, bibitemNode, data);
   }
-  else
+  else if ("paragraphNode" in data)
   {
-    if (!theWindow || !("doInsertManualCitation" in theWindow))
+    if (!theWindow || !("msiDoTagBibItem" in theWindow))
       theWindow = msiGetTopLevelWindow();
-    if (theWindow && ("doInsertManualCitation" in theWindow))
-      theWindow.doInsertManualCitation(editorElement, data);
+    if (theWindow && ("msiDoTagBibItem" in theWindow))
+      theWindow.msiDoTagBibItem(data, data.paragraphNode, editorElement);
   }
-
-//  var dd =editorControl.contentDocument;
-//  var elts = dd.getElementsByTagName("dialogbase");
-//  var elt = elts.item(0);
-//  var str1 = serializer.serializeToString(elt);
-//  var str = "<citation>" + str1 + "</citation>";
-//  
-//  // .getElementsByTagName("sw:dialogbase")
-//  insertXMLAtCursor(editor, str, true, false);
 
   SaveWindowLocation();
   return true;
@@ -165,6 +148,25 @@ function checkDisableControls(event)
     document.documentElement.getButton('accept').setAttribute("disabled", "true");
 }
 
+function keyTextboxChanged()
+{
+  var keyList = document.getElementById("keysAutoCompleteBox");
+  var newKey = keyList.value;
+  if (gDialog.key != newKey)
+  {
+    if (newKey.length && keyList.controller && (keyList.controller.searchStatus == 4))  //found a match!
+    {
+      msiPostDialogMessage("dlgErrors.bibmarkerInUse", {bibmarkerString : keyList.value});
+      keyList.select();
+      keyList.focus();
+      return;
+    }
+    gDialog.markerList.changeString(gDialog.key, newKey);
+    gDialog.key = newKey;
+  }
+
+  checkDisableControls();
+}
 
 //function fillKeysListbox()
 //{
