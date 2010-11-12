@@ -51,7 +51,7 @@ MNODE *MuPAD2Tree::MuPADStr2Tree(const char *src)
 
     int advance = 0;            // a byte offset into src string
     rv = GetElementList(src, advance, NULL, NULL);
-
+    JBM::DumpTList(rv,0);
     rv = DoPrecedenceBinds(rv);
   }
   return rv;
