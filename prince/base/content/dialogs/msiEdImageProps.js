@@ -104,11 +104,11 @@ function Startup()
   {
     // Does this ever get run?
     try {
-      imageElement = editor.getSelectedElement("input");
+      imageElement = getSelectionParentByTag(editor,"input");
 
       if (!imageElement || imageElement.getAttribute("type") != "image") {
         // Get a single selected image element
-        imageElement = editor.getSelectedElement(tagName);
+        imageElement = getSelectionParentByTag(editor,tagName);
       }
     } catch (e) {}
 
