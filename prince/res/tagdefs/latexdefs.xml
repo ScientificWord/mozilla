@@ -17,6 +17,7 @@
 			<tagclassname>hidden</tagclassname>
 			<contains>paratag</contains>
 			<contains>structtag</contains>
+      <contains>listtag</contains>
 			<contains>othertag</contains>
       <contains>envtag</contains>
 			<tags>
@@ -190,6 +191,14 @@
           <discardemptyblock>true</discardemptyblock>
 			    <contains>descriptionListItem</contains>
         </tag>
+				<tag nm="bibliography" hidden="1">
+          <level>0</level>
+          <description>Bibliography</description>
+					<nexttag>#text</nexttag>
+          <discardemptyblock>true</discardemptyblock>
+	  		  <inclusion>true</inclusion>
+			    <contains>bibitem</contains>
+        </tag>
       </tags>
     </tagclass>
 		<tagclass>
@@ -227,6 +236,18 @@
           </initialcontents>
 			    <contains>paratag</contains>
 			    <contains>br</contains>
+        </tag>
+				<tag nm="bibitem">
+          <description>Bibliography entry</description>
+          <htmllistparent>bibliography</htmllistparent>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+			    <contains>paratag</contains>
+			    <contains>br</contains>
+          <contains>biblabel</contains>
         </tag>
 	  </tags>
 		</tagclass>
@@ -387,13 +408,6 @@
               ]]>
           </initialcontents>
         </tag>
-				<tag nm="bibliography">
-          <level>0</level>
-          <description>Bibliography</description>
-          <discardemptyblock>true</discardemptyblock>
-	  		  <inclusion>true</inclusion>
-			    <contains>numberedListItem</contains>
-        </tag>
   		<tag nm="verbatim">
   			<description>Verbatim text</description>
   		</tag>
@@ -488,6 +502,23 @@
 			<tags>
 				<tag nm="object"><description>Object</description></tag>
         <tag nm="msiframe"><description>Frame</description></tag>
+        <tag nm="citation">
+          <description>Citation</description>
+          <contains>biblabel</contains>
+        </tag>
+        <tag nm="biblabel">
+          <description>Bibliography label</description>
+            <contains>#text</contains>
+			      <contains>texttag</contains>
+			      <contains>othertag</contains>
+            <contains>table</contains>
+			      <contains>mml:math</contains>
+			      <contains>img</contains>
+            <contains>a</contains>
+            <contains>note</contains>
+            <contains>object</contains>
+            <contains>notewrapper</contains>
+        </tag>
 			</tags>
 		</tagclass>
 	</tagclasses>
