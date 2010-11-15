@@ -16,17 +16,22 @@ function Startup()
     return;
   }
 
+  gDialog.dbFileListbox = document.getElementById("databaseFileListbox");
   doSetOKCancel(onAccept, onCancel);
   data = window.arguments[0];
   data.Cancel = false;
-  gDialog.databaseFile = data.databaseFile;  //a string representation of file path
+  if (("reviseData" in data) && data.reviseData)
+    setDataFromReviseData(data.reviseData);
+//  gDialog.databaseFile = data.databaseFile;  //a string representation of file path
+  gDialog.databaseFileList = [];
+  gDialog.databaseFileList = gDialog.databaseFileList.concat(data.dbFileList);
   gDialog.styleFile = data.styleFile;  //a string representation of file path
   gDialog.bibTeXDir = null; //nsiLocalFile
 
   InitDialog();
 
 //  document.getElementById("databaseFileListbox").focus();
-  msiSetInitialDialogFocus(document.getElementById("databaseFileListbox"));
+  msiSetInitialDialogFocus(gDialog.dbFileListbox);
 
   SetWindowLocation();
 }
@@ -46,26 +51,67 @@ function InitDialog()
   document.documentElement.getButton("accept").setAttribute("default", true);
 }
 
+function setDataFromReviseData(reviseData)
+{
+  var biblioNode = reviseData.getReferenceNode();
+  var theBibliographiesStr = biblioNode.getAttribute("databaseFile");
+  if (theBibliographiesStr && theBibliographiesStr.length)
+    data.dbFileList = theBibliographiesStr.split(",");
+  else
+    data.dbFileList = [];
+  for (var ix = 0; ix < data.dbFileList.length; ++ix)
+    data.dbFileList[ix] = TrimString(data.dbFileList[ix]);
+  data.databaseFile = data.dbFileList[0];
+  data.styleFile =  biblioNode.getAttribute("styleFile");
+}
+
+function changeDatabaseSelection()
+{
+  var selItems = gDialog.dbFileListbox.selectedItems;
+  var addedItems = [];
+  var deletedItems = [];
+  for (var ix = 0; ix < gDialog.databaseFileList.length; ++ix)
+    deletedItems.push(ix);
+  var foundIndex;
+  for (var ix = 0; ix < selItems.length; ++ix)
+  {
+    foundIndex = gDialog.databaseFileList.indexOf(selItems[ix].label);
+    if (foundIndex >= 0)
+      deletedItems[foundIndex] = -1;  //Marking it not to be deleted
+    else
+      addedItems.push(selItems[ix].label);
+  }
+  for (ix = deletedItems.length - 1; ix >= 0; --ix)
+  {
+    if (deletedItems[ix] >= 0)
+      gDialog.databaseFileList.splice(deletedItems[ix], 1);
+  }
+  gDialog.databaseFileList = gDialog.databaseFileList.concat(addedItems);
+}
+
 function onAccept()
 {
-  var databaseItem = document.getElementById("databaseFileListbox").getSelectedItem(0);
-  if (databaseItem)
-    data.databaseFile = databaseItem.value;
+//  var databaseItem = document.getElementById("databaseFileListbox").getSelectedItem(0);
+//  if (databaseItem)
+//    data.databaseFile = databaseItem.label;
+//    data.databaseFile = databaseItem.value;
 
   var styleItem = document.getElementById("styleFileListbox").getSelectedItem(0);
   if (styleItem)
-    data.styleFile = styleItem.value;
-
-  if (gDialog.bibTeXDir && gDialog.bibTeXDir.exists())
+    data.styleFile = styleItem.label;
+  data.dbFileList.splice(0, data.dbFileList.length);
+  data.dbFileList = data.dbFileList.concat(gDialog.databaseFileList);
+  dump("In typesetBibTeXBibliography.js, onAccept(), data.dbFileList has [" + data.dbFileList.length + "] items.\n");
+  data.databaseFile = data.dbFileList.join(",");
+  var theWindow = window.opener;
+  var parentEditorElement = msiGetParentEditorElementForDialog(window);
+  if (("reviseData" in data) && data.reviseData)
   {
-    var prefs = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
-    try
-    {
-      prefs.setComplexValue("swp.bibtex.dir", Components.interfaces.nsILocalFile, gDialog.bibTeXDir);
-    }
-    catch(exception) {}
-  }   
-
+    if (!theWindow || !("doReviseBibTeXBibliography" in theWindow))
+      theWindow = msiGetTopLevelWindow();
+    if (parentEditorElement && theWindow)
+      theWindow.doReviseBibTeXBibliography(parentEditorElement, data.reviseData, data);
+  }
   SaveWindowLocation();
   return true;
 }
@@ -112,32 +158,36 @@ function getBibTeXDirectory()
   return gDialog.bibTeXDir;
 }
 
+function getBibTeXStyleDirectory()
+{
+  if (gDialog.bibTeXStyleDir == null)
+    gDialog.bibTeXStyleDir = GetLocalFilePref("swp.bibtex.styledir");
+
+  return gDialog.bibTeXStyleDir;
+}
+
 function fillDatabaseFileListbox()
 {
-  var theListbox = document.getElementById("databaseFileListbox");
+//  var theListbox = document.getElementById("databaseFileListbox");
   //Clear the listbox
-  var rowCount = theListbox.getRowCount();
+  var rowCount = gDialog.dbFileListbox.getRowCount();
   for (var i = rowCount - 1; i >= 0; --i)
-    theListbox.removeItemAt(i);
+    gDialog.dbFileListbox.removeItemAt(i);
 
   var bibDir = getBibTeXDirectory();  //returns an nsiLocalFile
+  var sortedDirList;
   if (bibDir && bibDir.exists())
   {
     sortedDirList = new Array();
     addDirToSortedFilesList(sortedDirList, bibDir, ["bib"], true);
     sortedDirList.sort( sortFileEntries );
-    var selItem = null;
+    var newItem = null;
     for (var i = 0; i < sortedDirList.length; ++i)
     {
-      if (gDialog.databaseFile == sortedDirList[i].fileName)
-        selItem = theListbox.appendItem(sortedDirList[i].fileName, sortedDirList[i].filePath);
-      else
-        theListbox.appendItem(sortedDirList[i].fileName, sortedDirList[i].filePath);
+      newItem = gDialog.dbFileListbox.appendItem(sortedDirList[i].fileName, sortedDirList[i].filePath);
+      if (gDialog.databaseFileList.indexOf(sortedDirList[i].fileName) >= 0)
+        gDialog.dbFileListbox.addItemToSelection(newItem);
     }
-    if (selItem != null)
-      theListbox.selectItem(selItem);
-    else if (sortedDirList.length > 0)
-      theListbox.selectedIndex = 0;
   }
 }
 
@@ -149,7 +199,7 @@ function fillStyleFileListbox()
   for (var i = rowCount - 1; i >= 0; --i)
     theListbox.removeItemAt(i);
 
-  var bibDir = getBibTeXDirectory();  //returns an nsiLocalFile
+  var bibDir = getBibTeXStyleDirectory();  //returns an nsiLocalFile
   if (bibDir && bibDir.exists())
   {
     sortedDirList = new Array();

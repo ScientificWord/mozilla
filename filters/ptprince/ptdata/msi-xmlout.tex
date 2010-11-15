@@ -134,7 +134,14 @@
   \@ifnextchar[{\@titlea}{\@titleb}}
 
 \def\@titlea[#1]#2{%
-  \msitag{<title><short>#1</short><long>#2</long></title>}%
+  \msiopentag{title}{<title>}%
+    \msiopentag{short}{<short>}%
+      #1%
+    \msiclosetag{short}{</short>}%
+    \msiopentag{long}{<long>}%
+      #2%
+    \msiclosetag{long}{</long>}%
+  \msiclosetag{title}{</title>}%
 }
 
 \def\@titleb#1{\@titlea[]{#1}}
