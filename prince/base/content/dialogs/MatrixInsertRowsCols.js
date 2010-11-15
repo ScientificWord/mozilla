@@ -189,7 +189,7 @@ function initialDrawSample()
 //  {
 //    for (var jx = 0; jx < rowsList.length; ++jx)
 //    {
-//      cellList = msiNavigationUtils.getSignificantChildren(rowsList[jx]);
+//      cellList = msiNavigationUtils.getSignificantContents(rowsList[jx]);
 //      rowsList[jx].removeChild( cellList[cellList.length - 2] );
 //    }   
 //  }
