@@ -9132,4 +9132,13 @@ function prettyprint(editor)
   return output.s;
 } 
   
-  
+ 
+function getSelectionParentByTag( editor, tagname)
+{
+  var sel = editor.selection;
+  var range = sel.getRangeAt(0);
+  var ancestor = range.commonAncestorContainer;
+  while (ancestor && ancestor.tagName != tagname) ancestor = ancestor.parentNode;
+  if (ancestor && ancestor.tagName == tagname) return ancestor;
+  return null;
+}

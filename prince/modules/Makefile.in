@@ -8,7 +8,9 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 include $(topsrcdir)/config/rules.mk
 
-MODULE_RESOURCES := $(wildcard	$(srcdir)/*.jsm)
+MODULE_RESOURCES := $(wildcard	$(srcdir)/*.jsm) \
+  $(wildcard	$(srcdir)/*.js) \
+  $(NULL)
 
 libs::	$(MODULE_RESOURCES)
 	$(INSTALL)	$(MODULE_RESOURCES)	$(FINAL_TARGET)/modules
