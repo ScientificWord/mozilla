@@ -369,7 +369,13 @@ void OverrideInvisibleTimesOnLHS(MNODE * dMML_tree)
     if (ElementNameIs(m_rover, "mi") && ElementNameIs(m_rover->next, "mo")) {
       const char* src_token = m_rover->next->p_chdata;
       if (StringEqual(src_token, "&#x2062;") && m_rover->next->next) {
-        if (IsArgDelimitingFence(m_rover->next->next)) {
+        
+        MNODE* fence_or_mrow = m_rover->next->next;
+        while (ElementNameIs(fence_or_mrow, "mrow")){
+          fence_or_mrow = fence_or_mrow -> first_kid;
+        }
+          
+        if (IsArgDelimitingFence(fence_or_mrow)) {
           //super ugly, but what else to do?
           delete m_rover->next->p_chdata;
           m_rover->next->p_chdata = DuplicateString("&#x2061;"); // ApplyFunction
