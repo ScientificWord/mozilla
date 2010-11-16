@@ -732,6 +732,8 @@ bool IsSUBSTITUTION(MNODE* mml_msub_node)
             rv = true;
           if (StringEqual(zopen_attr_val, "&#x250a;") && (zclose_attr_val[0] == 'I') )
             rv = true;
+          if (StringEqual(zopen_attr_val, "&#x250a;") && (zclose_attr_val[0] == '|') )
+            rv = true;
 
           
         }
