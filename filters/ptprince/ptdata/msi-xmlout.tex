@@ -1097,7 +1097,11 @@
 
 \def\msi@text@elmA[#1]#2{%
   \expandafter\def\csname #2\endcsname##1{%
-     \msihmode\msiopentag{#1}{<#1>}##1\msiclosetag{#1}{</#1>}}}
+     \ifmmode
+       \expandafter\string\csname #2\endcsname{##1}%
+     \else
+       \msihmode\msiopentag{#1}{<#1>}##1\msiclosetag{#1}{</#1>}%     
+     \fi}}
 
 \def\msi@text@elmB#1{\msi@text@elmA[#1]{#1}}
 
