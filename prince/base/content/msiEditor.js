@@ -10288,7 +10288,7 @@ function openFontColorDialog(tagname, node)
 function openFontSizeDialog(tagname, node)
 {
   openDialog('chrome://prince/content/fontsize.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
-    node);
+    node, editor);
 }
 
 
