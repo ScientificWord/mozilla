@@ -193,8 +193,8 @@
   \@ifnextchar[{\msi@simple@envA}{\msi@simple@envB}}
 
 \def\msi@simple@envA[#1]#2{%
-  \expandafter\def\csname msi@begin@#2\endcsname{\msi@open@element<#1>}
-  \expandafter\def\csname msi@end@#2\endcsname{\msi@close@element</#1>}}
+  \expandafter\def\csname msi@begin@#2\endcsname{\msi@open@element<#1>\msi@open@element<bodyText>}%
+  \expandafter\def\csname msi@end@#2\endcsname{\msi@close@element</bodyText>\msi@close@element</#1>}}
 
 \def\msi@simple@envB#1{\msi@simple@envA[#1]{#1}}
 
@@ -501,20 +501,20 @@
   \@make@braces@other
   \catcode`\[=1
   \catcode`\]=2
-  \gdef\@scan@eqnarray@star#1\end{eqnarray*}[%
-     \egroup
-     \@make@braces@normal
-     \msiopentag[mml][<mml:math class="displayedmathml" mode="display" display="block">]%
-     \msiextproc[jbm][\begin{eqnarray*}#1\end{eqnarray*}]%
-     \msiclosetag[mml][</mml:math>]
-  ]
-  \gdef\@scan@eqnarray#1\end{eqnarray}[%
-     \egroup
-     \@make@braces@normal
-     \msiopentag[mml][<mml:math class="displayedmathml" mode="display" display="block">]%
-     \msiextproc[jbm][\begin{eqnarray}#1\end{eqnarray}]%
-     \msiclosetag[mml][</mml:math>]
-  ]
+%%   \gdef\@scan@eqnarray@star#1\end{eqnarray*}[%
+%%      \egroup
+%%      \@make@braces@normal
+%%      \msiopentag[mml][<mml:math class="displayedmathml" mode="display" display="block">]%
+%%      \msiextproc[jbm][\begin{eqnarray*}#1\end{eqnarray*}]%
+%%      \msiclosetag[mml][</mml:math>]
+%%   ]
+%%   \gdef\@scan@eqnarray#1\end{eqnarray}[%
+%%      \egroup
+%%      \@make@braces@normal
+%%      \msiopentag[mml][<mml:math class="displayedmathml" mode="display" display="block">]%
+%%      \msiextproc[jbm][\begin{eqnarray}#1\end{eqnarray}]%
+%%      \msiclosetag[mml][</mml:math>]
+%%   ]
 
   \gdef\@scan@multline@star#1\end{multline*}[%
      \egroup
@@ -608,8 +608,6 @@
   ]
 \egroup
 
-\@namedef{msi@begin@eqnarray*}{\ \@make@braces@other\relax\@scan@eqnarray@star}
-\@namedef{msi@begin@eqnarray}{\ \@make@braces@other\relax\@scan@eqnarray}
 
 \@namedef{msi@begin@multline*}{\ \@make@braces@other\relax\@scan@multline@star}
 
@@ -623,6 +621,13 @@
 %\def\msi@begin@array{\ \@make@braces@other\relax\@scan@array}
 \def\msi@begin@array{\string\begin{array}}
 \def\msi@end@array{\string\end{array}}
+
+\def\msi@begin@eqnarray{\string\begin{eqnarray}}
+\def\msi@end@eqnarray{\string\end{eqnarray}}
+
+\@namedef{msi@begin@eqnarray*}{\string\begin{eqnarray*}}
+\@namedef{msi@end@eqnarray*}{\string\end{eqnarray*}}
+
 
 \def\msi@begin@bmatrix{\@make@braces@other\relax\@scan@bmatrix} 
 \def\msi@begin@Bmatrix{\@make@braces@other\relax\@scan@Bmatrix} 
