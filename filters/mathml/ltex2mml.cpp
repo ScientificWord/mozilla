@@ -5961,7 +5961,6 @@ void LaTeX2MMLTree::InsertAF( TNODE* func_node,TCI_BOOL arg_is_delimited ) {
 //  function and its arg.
 
 void LaTeX2MMLTree::InsertApplyFunction( TNODE* MML_list ) {
-  return;
 
   TCI_BOOL do_second_pass  =  FALSE;
 
@@ -6099,7 +6098,6 @@ void LaTeX2MMLTree::InsertApplyFunction( TNODE* MML_list ) {
 //  we're building. - no bindings here, just node insertion.
 
 void LaTeX2MMLTree::InsertInvisibleTimes( TNODE* MML_list ) {
-  return;
 
   TNODE* mml_rover  =  MML_list;
   while ( mml_rover ) {
