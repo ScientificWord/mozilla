@@ -16,7 +16,7 @@ function startup()
     window.close();
     return;
   }
-  node = activeEditor.getSelectedElement("a");
+  node = getSelectionParentByTag(activeEditor, "a");
   if (node)
   {
     if (node.hasAttribute("name")) 
