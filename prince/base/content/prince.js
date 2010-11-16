@@ -448,7 +448,6 @@ function documentAsTeXFile( document, xslSheet, outTeXfile, compileInfo )
   var outfileTeXPath = outTeXfile.path;
   var stylefile;
   var xslPath;
-#ifdef INTERNAL_XSLT
   var xslPath = "chrome://prnc2ltx/content/"+xslSheet;
   var str = documentToTeXString(document, xslPath);
   compileInfo.runMakeIndex = /\\makeindex/.test(str);
@@ -482,66 +481,6 @@ function documentAsTeXFile( document, xslSheet, outTeXfile, compileInfo )
   os.writeString(str);
   os.close();
   fos.close();
-#else
-  stylefile = dsprops.get("resource:app", Components.interfaces.nsIFile);
-  stylefile.append("res");
-  stylefile.append("xsl");
-  stylefile.append(xslSheet);
-  xslPath = stylefile.path;
-  var exefile = dsprops.get("resource:app", Components.interfaces.nsIFile);
-  exefile.append("Transform.exe");
-
-  var index =  bareleaf.lastIndexOf(".");
-  if (index > 0) bareleaf = bareleaf.substr(0,index); // probably at this time, bareleaf=="main"
-
-  var outfile = workingDir.clone();
-  outfile.append("temp");
-  // clean out the temp directory
-  try {if (outfile.exists()) outfile.remove(true);}
-  catch(e){
-    dump("deleting temp directory failed: "+e.message+"\n");
-  }
-  try  {outfile.create(1, 0755);}
-  catch(e){
-    dump("creating temp directory failed: "+e.message+"\n");
-    return false
-  }
-  outfile.append(bareleaf + ".xml");
-      
-  dump("\nOutput file = " + outfile.path+"\n");
-  var s = new XMLSerializer();
-  var str = s.serializeToString(document);
-
-
-  var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-  fos.init(outfile, -1, -1, false);
-  var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
-    .createInstance(Components.interfaces.nsIConverterOutputStream);
-  os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
-  os.writeString(str);
-  os.close();
-  fos.close();
-  var outfilePath = outfile.path;
-  while (xslPath.charAt(0) == "/".charAt(0)) xslPath = xslPath.substr(1);
-  // for Windows
-#ifdef XP_WIN32
-  xslPath = xslPath.replace("\\","/","g");
-  outfilePath = outfilePath.replace("\\","/","g");
-  outfileTeXPath = outfileTeXPath.replace("\\","/","g");
-#endif
-  try 
-  {
-    var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
-    theProcess.init(exefile);
-    var args =['-s', outfilePath, '-o', outfileTeXPath, xslPath, ];
-    theProcess.run(true, args, args.length);
-  } 
-  catch (ex) 
-  {
-    dump("\nUnable to export TeX: "+ex.message+"\n");
-    return false;
-  }      
-#endif
   return outTeXfile.exists();
 }
 
