@@ -20,7 +20,10 @@ function Startup()
   doSetOKCancel(onAccept, onCancel);
   data = window.arguments[0];
   data.Cancel = false;
-  gDialog.databaseFile = data.databaseFile;  //a string representation of file path
+  if ("reviseData" in data)
+    setDataFromReviseData(data.reviseData);
+
+  setDlgDatabaseFile(data.databaseFile);
   gDialog.bibTeXDir = null; //nsiLocalFile
   gDialog.key = data.key;  //a string
   gDialog.remark = data.remark;  //this should become arbitrary markup - a Document Fragment perhaps?
@@ -40,11 +43,11 @@ function InitDialog()
 
   //This next will have to be replaced by code to set up the MathML editor for the Remark field
 //  document.getElementById("remarkTextbox").value = gDialog.remark;
-  if (!gDialog.remark || gDialog.remark.length == 0)
-    gDialog.remark = "Is this bold?";
-  var theStringSource = "<span style='font-weight: bold;'>" + gDialog.remark + "</span>";
+//  if (!gDialog.remark || gDialog.remark.length == 0)
+//    gDialog.remark = "Is this bold?";
+//  var theStringSource = "<span style='font-weight: bold;'>" + gDialog.remark + "</span>";
   var editorControl = document.getElementById("remarkEditControl");
-  msiInitializeEditorForElement(editorControl, theStringSource);
+  msiInitializeEditorForElement(editorControl, gDialog.remark);
 
   fillDatabaseFileListbox();
   checkDisableControls();
@@ -58,18 +61,54 @@ function InitDialog()
   document.documentElement.getButton("accept").setAttribute("default", true);
 }
 
+function setDataFromReviseData(reviseData)
+{
+  var citeNode = reviseData.getReferenceNode();
+  var theKeys = citeNode.getAttribute("citekey");
+  if (theKeys && theKeys.length)
+    data.keyList = theKeys.split(",");
+  for (var ix = 0; ix < data.keyList.length; ++ix)
+    data.keyList[ix] = TrimString(data.keyList[ix]);
+  data.key = data.keyList[0];  //a string
+  dump("In typesetBibTeXCitation.js, setDataFromReviseData, citekey attribute was [" + theKeys + "], data.keyList has length [" + data.keyList.length + "] and data.key is [" + data.key + "].\n");
+  data.remark = "";
+  var remarks = msiNavigationUtils.getSignificantContents(citeNode);
+  for (ix = 0; ix < remarks.length; ++ix)
+  {
+    if (msiGetBaseNodeName(remarks[ix]) == "biblabel")
+    {
+      var serializer = new XMLSerializer();
+      var remarkNodes = msiNavigationUtils.getSignificantContents(remarks[ix]);
+      for (var jx = 0; jx < remarkNodes.length; ++jx)
+        data.remark += serializer.serializeToString(remarkNodes[jx]);
+      break;
+    }
+  }
+  if (citeNode.hasAttribute("bibTeXDBFile"))
+    data.databaseFile = citeNode.getAttribute("bibTeXDBFile");
+  if (citeNode.hasAttribute("nocite"))
+    data.bBibEntryOnly = (citeNode.getAttribute("nocite") == "true") ? true : false;
+}
+
 function onAccept()
 {
   data.key = document.getElementById("keyTextbox").value;
 
-
   //This next will have to be replaced by code to extract data from the MathML editor for the Remark field
 //  data.remark = document.getElementById("remarkTextbox").value;
-  var editorControl = document.getElementById("remarkEditControl");
-  var serializer = new XMLSerializer();
-  data.remark = gDialog.remark = serializer.serializeToString(editorControl.contentDocument.documentElement);
+  var remarkControl = document.getElementById("remarkEditControl");
+  var remarkContentFilter = new msiDialogEditorContentFilter(remarkControl);
+  gDialog.remark = remarkContentFilter.getDocumentFragmentString();
+  if (data.remark != gDialog.remark)
+  {
+    data.bRemarkChanged = true;
+    data.remark = gDialog.remark;
+  }
 
-  data.databaseFile = gDialog.databaseFile;  //Note: since we respond to the selection action on the listbox anyway, we'll store this each time it changes
+  if (gDialog.databaseFile)
+    data.databaseFile = gDialog.databaseFile.path;  //Note: since we respond to the selection action on the listbox anyway, we'll store this each time it changes
+  else
+    data.databaseFile = null;
   data.bBibEntryOnly = document.getElementById("bibEntryOnlyCheckbox").checked;
 
   if (gDialog.bibTeXDir && gDialog.bibTeXDir.exists())
@@ -82,14 +121,24 @@ function onAccept()
     catch(exception) {}
   }   
 
-//  var editorElement = msiGetParentEditorElementForDialog(window);
-//  var editor = msiGetEditor(editorElement);
-  AlertWithTitle("Information", "BibTeX Citation Dialog returned key: [" + data.key + "] from file [" + data.databaseFile + "], remark: [" + data.remark + "]; needs to be hooked up to do something!");
-//  var theWindow = window.opener;
-//  if (!theWindow || !("updateEditorBibItemList" in theWindow))
-//    theWindow = msiGetTopLevelWindow();
-//  if (editor && theWindow)
-//    theWindow.updateEditorBibItemList(editor, data.keyList);
+  var parentEditorElement = msiGetParentEditorElementForDialog(window);
+//  var parentEditor = msiGetEditor(parentEditorElement);
+//  AlertWithTitle("Information", "BibTeX Citation Dialog returned key: [" + data.key + "] from file [" + data.databaseFile + "], remark: [" + data.remark + "]; needs to be hooked up to do something!");
+  var theWindow = window.opener;
+  if ("reviseData" in data)
+  {
+    if (!theWindow || !("doReviseBibTeXCitation" in theWindow))
+      theWindow = msiGetTopLevelWindow();
+    if (parentEditorElement && theWindow)
+      theWindow.doReviseBibTeXCitation(parentEditorElement, data.reviseData, data);
+  }
+  else
+  {
+    if (!theWindow || !("doInsertBibTeXCitation" in theWindow))
+      theWindow = msiGetTopLevelWindow();
+    if (parentEditorElement && theWindow)
+      theWindow.doInsertBibTeXCitation(parentEditorElement, data);
+  }
 
   SaveWindowLocation();
   return true;
@@ -108,17 +157,29 @@ function doAccept()
 
 function selectDatabaseFile(selectedListboxItem)
 {
+  var filePath = "";
   if (selectedListboxItem)
-    gDialog.databaseFile = selectedListboxItem.value;
-  else
-    gDialog.databaseFile = "";
+    filePath = selectedListboxItem.value;
+  setDlgDatabaseFile(filePath)
   checkDisableControls();
+}
+
+function setDlgDatabaseFile(filePath)
+{
+  if (!filePath || !filePath.length)
+  {
+    gDialog.databaseFile = null;
+    return;
+  }
+  if (!gDialog.databaseFile)
+    gDialog.databaseFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+  gDialog.databaseFile.initWithPath(filePath);
 }
 
 function checkDisableControls()
 {
 //  var selDBase = document.getElementById("databaseFileListbox").selectedItem;
-  if (gDialog.databaseFile.length > 0)
+  if (gDialog.databaseFile && (gDialog.databaseFile.path.length > 0))
     document.getElementById("viewKeysButton").removeAttribute("disabled");
   else
     document.getElementById("viewKeysButton").setAttribute("disabled", "true");
@@ -171,13 +232,16 @@ function fillDatabaseFileListbox()
   var bibDir = getBibTeXDirectory();  //returns an nsILocalFile
   if (bibDir && bibDir.exists())
   {
-    sortedDirList = new Array();
+    var sortedDirList = new Array();
     addDirToSortedFilesList(sortedDirList, bibDir, ["bib"], true);
     sortedDirList.sort( sortFileEntries );
     var selItem = null;
+    var ourFileName = gDialog.databaseFile ? gDialog.databaseFile.leafName : "";
+    if (ourFileName.length)
+      ourFileName = ourFileName.substring(0, ourFileName.lastIndexOf("."));
     for (var i = 0; i < sortedDirList.length; ++i)
     {
-      if (gDialog.databaseFile == sortedDirList[i].fileName)
+      if (ourFileName == sortedDirList[i].fileName)
         selItem = theListbox.appendItem(sortedDirList[i].fileName, sortedDirList[i].filePath);
       else
         theListbox.appendItem(sortedDirList[i].fileName, sortedDirList[i].filePath);
@@ -205,7 +269,7 @@ function doSelectBibTeXDirectory()
 function doViewKeys()
 {
   var keysData = new Object();
-  keysData.databaseFile = gDialog.databaseFile;  //a string representation of file path
+  keysData.databaseFile = gDialog.databaseFile;  //nsILocalFile object
 //  gDialog.bibTeXDir = null; //nsiLocalFile
   keysData.key = gDialog.key;  //a string
   keysData.baseDirectory = gDialog.bibTeXDir;

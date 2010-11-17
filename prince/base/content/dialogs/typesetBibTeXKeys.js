@@ -23,8 +23,9 @@ function Startup()
   doSetOKCancel(onAccept, onCancel);
   data = window.arguments[0];
   data.Cancel = false;
-  gDialog.databaseFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
-  gDialog.databaseFile.initWithPath(data.databaseFile);
+//  gDialog.databaseFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+//  gDialog.databaseFile.initWithPath(data.databaseFile);
+  gDialog.databaseFile = data.databaseFile;
   gDialog.bibDir = data.baseDirectory;  //an nsILocalFile representing BibTeX directory
 //  gDialog.bibTeXDir = null; //nsiLocalFile
   gDialog.key = "";

@@ -2045,7 +2045,7 @@ function reviseMathname(theMathnameNode, newMathNameData, editorElement)
       if (oldNodeName != "mo")
       {
         newNode = wrappedMathName.ownerDocument.createElementNS(mmlns, "mo");
-        var newText = wrappedMathName.owerDocument.createTextNode(newMathNameData.val);
+        var newText = wrappedMathName.ownerDocument.createTextNode(newMathNameData.val);
         newNode.appendChild(newText);
       }
     }
@@ -2054,7 +2054,7 @@ function reviseMathname(theMathnameNode, newMathNameData, editorElement)
       if (oldNodeName != "mi")
       {
         newNode = wrappedMathName.ownerDocument.createElementNS(mmlns, "mi");
-        var newText = wrappedMathName.owerDocument.createTextNode(newMathNameData.val);
+        var newText = wrappedMathName.ownerDocument.createTextNode(newMathNameData.val);
         newNode.appendChild(newText);
       }
     }
@@ -2762,7 +2762,7 @@ function insertsymbol(s, editorElement)
   try 
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
-    mathmlEditor.InsertSymbol(s.charCodeAt(0));
+    mathmlEditor.InsertSymbol(s);
     editorElement.contentWindow.focus();
   } 
   catch (e) 

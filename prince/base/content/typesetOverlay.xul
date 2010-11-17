@@ -72,10 +72,10 @@
         command="cmd_MSIrunBibTeXCmd"/>
       <menuitem label="&MSItypesetGenSettingsCmd.label;"     
         accesskey="&MSItypesetGenSettingsCmd.accesskey;"   
-        command="cmd_MSIColorsCmd"/>
+        command="cmd_MSItypesetGenSettingsCmd"/>
       <menuitem label="&MSItypesetExpertSettingsCmd.label;"  
         accesskey="&MSItypesetExpertSettingsCmd.accesskey;"
-         command="cmd_MSIColorsCmd"/>
+         command="cmd_MSItypesetExpertSettingsCmd"/>
     </menupopup>
   </menu>
 

@@ -528,13 +528,28 @@ function addFocusEventListenerForEditor(editorElement)
 
 function msiEditorKeyListener(event)
 {
-  if (event.keyCode == event.DOM_VK_ENTER || event.keyCode == event.DOM_VK_RETURN)
+  if (event.ctrlKey || event.altKey || event.metaKey)
+    return;
+
+  switch(event.keyCode)
   {
-    if (msiEditorCheckEnter(event))
-    {
-      event.preventDefault();
-      event.stopPropagation();
-    }
+    case event.DOM_VK_ENTER:
+    case event.DOM_VK_RETURN:
+      if (msiEditorCheckEnter(event))
+      {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    break;
+    case event.DOM_VK_TAB:
+      if (msiEditorDoTab(event))
+      {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    break;
+    default:
+    break;
   }
 }
 
@@ -772,7 +787,7 @@ function msiEditorDocumentObserver(editorElement)
           for (j = 0; j < classtemplates.length; j++) classtemplates[j]=classtemplates[j].replace(/^\s*/,"");
 
 
-          var tagclasses = ["texttag","paratag","listtag","structtag","envtag","frontmtag"];
+          var tagclasses = ["texttag","paratag","listparenttag","listtag","structtag","envtag","frontmtag"];
           var taglist;
           var i;
           var k;
@@ -920,8 +935,6 @@ function msiEditorDocumentObserver(editorElement)
         catch(e) {
           dump("Failed to init fast cursor: "+e+"\n");
         }
-        if ("UpdateWindowTitle" in window)
-          UpdateWindowTitle();
         // Add mouse click watcher if right type of editor
 //        msiDumpWithID("About to enter 'if msiIsHTMLEditor' clause in msiEditorDocumentObserver obs_documentCreated for editor [@].\n", this.mEditorElement);
         if (msiIsHTMLEditor(this.mEditorElement))
@@ -1263,7 +1276,6 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
     {
       var newdoc;
       newdoc = createWorkingDirectory(doc);
-      // newdoc is an nsIFile
       docurl = msiFileURLFromFile(newdoc);
     }
 
@@ -1277,9 +1289,8 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
       contentViewer.forceCharacterSet = charset;
     }
     dump("Trying to load editor with url = "+docurl.spec+"\n");
-    if ("msiUpdateWindowTitle" in window)
-      msiUpdateWindowTitle(null, null);
     msiEditorLoadUrl(editorElement, docurl);
+    msiUpdateWindowTitle(null, null);
   }
   catch (e) {
     dump("Error in loading URL in msiLoadInitialDocument: [" + e + "]\n");
@@ -1471,6 +1482,10 @@ function msiFinishInitDialogEditor(editorElement, parentEditorElement)
 //  msiDumpWithID("In msiEditor.msiFinishInitDialogEditor for editorElement [@], parentEditor is [" + parentEditor + "].\n", editorElement);
   if (parentEditor)
   {
+    //NOTE THE FOLLOWING! This means that if you want a dialog editor to allow multiple paragraphs, you must set mbSinglePara=false before 
+    //  calling the editor initialization. This reflects that single-para is the default.
+    if (!("mbSinglePara" in editorElement))
+      editorElement.mbSinglePara = true;
     var editor = msiGetEditor(editorElement);
     if (editor != null)
       editor.tagListManager = parentEditor.tagListManager;
@@ -3418,32 +3433,33 @@ function msiEditorNextField(bShift, editorElement)
 //The sole purpose of this function is to block certain <enter>s from being processed, and hand them off instead to our parent (dialog?) window.
 function msiEditorCheckEnter(event)
 {
-  var retVal = false;
+  var bEditorHandle = false;
   var editorElement = msiGetEditorElementFromEvent(event);
   var editor = null;
   if (editorElement)
     editor = msiGetEditor(editorElement);
   if (!editor || !msiEditorIsSinglePara(editorElement))
   {
-    if (editor)
-      dump("In msiEditorCheckEnter, we don't seem to have a single-para editor; editor's flags are [" + editor.flags + "].\n");
-    else
-      dump("In msiEditorCheckEnter, we don't find an editor!.\n");
+//    if (editor)
+//      dump("In msiEditorCheckEnter, we don't seem to have a single-para editor; editor's flags are [" + editor.flags + "].\n");
+//    else
+//      dump("In msiEditorCheckEnter, we don't find an editor!.\n");
     return false;  //In this case, we let nature take its course
   }
 
-  dump("In msiEditorCheckEnter, we have a single-para editor.\n");
+//  dump("In msiEditorCheckEnter, we have a single-para editor.\n");
   var container = msiNavigationUtils.getCommonAncestorForSelection(editor.selection);
   if (msiGetContainingTableOrMatrix(container))
-    return false;
+    bEditorHandle = true;
   
-  if (editor.tagListManager.selectionContainedInTag("math",null))
+  if (!bEditorHandle && msiNavigationUtils.nodeIsInMath(container))
   {
     //Here we have to be careful. If we're out in the open in math, it would be a normal paragraph entry, which we don't want.
     //If we're inside a math "template", we'll pass it on down.
     var foundSplittable = false;
     for (var parent = container; parent && !foundSplittable; parent = parent.parentNode)
     {
+//      dump("In msiEditorCheckEnter, checking parent node [" + msiGetBaseNodeName(parent) + "].\n");
       if (msiNavigationUtils.isMathTemplate(parent))
       {
         foundSplittable = true;
@@ -3460,23 +3476,26 @@ function msiEditorCheckEnter(event)
     }
     dump("In msiEditorCheckEnter, we're in math, and we " + (foundSplittable ? "found" : "didn't find") + " a splittable parent.\n");
     if (foundSplittable)
-      return false;
+      bEditorHandle = true;
+  }
+  if (bEditorHandle)
+  {
+    editor.insertReturn();
+    return true;  //it's been handled
   }
 
   //So we're not in a math template or a table. We want to block this one from the editor.
   var dlg = window.document.documentElement;
+//  dump("In msiEditorCheckEnter, bEditorHandle was false, and documentElement is [" + dlg.nodeName + "].\n");
   if (dlg.nodeName == "dialog")
   {
-//  if (dlg.hasAttribute("ondialogaccept"))
-//    var acceptFnc = new Function(dlg.getAttribute("ondialogaccept"));
-//    if (acceptFnc())
-//      window.close();
     dlg._hitEnter(event);
+    return true;
   }
-  return true;
+  return false;
 }
 
-function msiEditorDoTab(event, bShift)
+function msiEditorDoTab(event)
 {
   function doTabWithSelectionInNode(aNode, totalRange, anEditor)
   {
@@ -3498,29 +3517,53 @@ function msiEditorDoTab(event, bShift)
     return rv;
   }
 
-  var retVal = false;
+  var bHandled = false;
   var editorElement = msiGetEditorElementFromEvent(event);
   if (!editorElement)
     return false;
 
 //    editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
+  var bShift = event.shiftKey;
   if (bShift && !editor.selection.isCollapsed)  //We don't do anything if there's a selection and the shift key is down
     return false;
   if (editor.selection.isCollapsed)
-    retVal = msiEditorNextField(bShift, editorElement);
+    bHandled = msiEditorNextField(bShift, editorElement);
 
   //Otherwise, we do have a selection.
   else
   {
     var container = msiNavigationUtils.getCommonAncestorForSelection(editor.selection);
     var wholeRange = msiNavigationUtils.getRangeContainingSelection(editor.selection);
-  //  for ( var containerParent = container; !retVal && (containerParent != null); containerParent = containerParent.parentNode )
+  //  for ( var containerParent = container; !bHandled && (containerParent != null); containerParent = containerParent.parentNode )
   //  {
-      retVal = doTabWithSelectionInNode(container, wholeRange, bShift, editor);
+      bHandled = doTabWithSelectionInNode(container, wholeRange, bShift, editor);
   //  }
   }
-  if (!retVal && !bShift) // none of the above code did anything. Put in a 2em space
+  if (!bHandled)
+  {
+    var dlg = window.document.documentElement;
+    if (dlg.nodeName == "dialog")
+    {
+      var commandDispatcher = window.document.commandDispatcher;
+      if (bShift)
+      {
+        if ("msiTabBack" in window)
+          msiTabBack(event);
+        else
+          commandDispatcher.rewindFocus();
+      }
+      else
+      {
+        if ("msiTabForward" in window)
+          msiTabForward(event);
+        else
+          commandDispatcher.advanceFocus();
+      }
+      bHandled = true;
+    }
+  }
+  if (!bHandled && !bShift) // none of the above code did anything. Put in a 2em space
   {
     editor.beginTransaction();
     if (!editor.selection.isCollapsed) editor.deleteSelection(editor.eNone);
@@ -3528,8 +3571,10 @@ function msiEditorDoTab(event, bShift)
     wrapper.spaceType="twoEmSpace";
     msiInsertHorizontalSpace(wrapper,editorElement);
     editor.endTransaction();
+    bHandled = true;
   }
-  return retVal;
+
+  return bHandled; //Actually want to return false if the event has been handled
 }
 
 //function msiGetCharForProperties(editorElement)
@@ -4204,16 +4249,22 @@ function msiSetEditMode(mode, editorElement)
         // Get the text for the <title> from the newly-parsed document
         // (must do this for proper conversion of "escaped" characters)
         var title = "";
-        var titlenodelist = editor.document.getElementsByTagName("title");
-        if (titlenodelist)
+        var preambles = editor.document.getElementsByTagName("preamble");
+        if (preambles.length > 0)
         {
-          var titleNode = titlenodelist.item(0);
-          if (titleNode && titleNode.firstChild && titleNode.firstChild.data)
-            title = titleNode.firstChild.data;
+          var titlenodelist = editor.preambles[0].getElementsByTagName("title");
+          if (titlenodelist.length > 0)
+          {
+            var titleNode = titlenodelist.item(0);
+            if (titleNode) 
+              title = titleNode.textContent;
+          }
         }
         if (editor.document.title != title && ("msiUpdateWindowTitle" in window))
-          msiUpdateWindowTitle(null, null);
-
+        {
+          editor.document.title = title;
+          msiUpdateWindowTitle(title, null);
+        }
       } catch (ex) {
         dump(ex);
       }
@@ -4345,41 +4396,29 @@ function msiSetDisplayMode(editorElement, mode)
     return false;
   var editor = msiGetEditor(editorElement);
 
-  // Already in requested mode:
+  //  Already in requested mode:
   //  return false to indicate we didn't switch
   var previousMode = msiGetEditorDisplayMode(editorElement);
   if (mode == previousMode)
     return false;
 
-  editorElement.mEditorDisplayMode = mode;
+  var prefs = GetPrefs();
+  var pdfAction = prefs.getCharPref("swp.prefPDFPath");
+  if (pdfAction == "default" || mode != kDisplayModePreview)
+  {
+    editorElement.mEditorDisplayMode = mode;
+  }
   if (("gEditorDisplayMode" in window) && editorElement.contentWindow == window.content)
     window.gEditorDisplayMode = mode;
   msiResetStructToolbar(editorElement);
 
   if ((mode == kDisplayModeSource)||(mode == kDisplayModePreview))
   {
-
-    //Hide the formatting toolbar if not already hidden
-    if ("gViewFormatToolbar" in window && window.gViewFormatToolbar != null)
-      window.gViewFormatToolbar.hidden = true;
-    if ("gComputeToolbar" in window && window.gComputeToolbar != null)
-      window.gComputeToolbar.hidden = true;
-
-    msiHideItem("MSIMathMenu");
-    msiHideItem("cmd_viewComputeToolbar");
-    msiHideItem("MSIComputeMenu");
-    msiHideItem("MSITypesetMenu");
-    msiHideItem("MSIInsertTypesetObjectMenu");
-    msiHideItem("StandardToolbox");
-    msiHideItem("SymbolToolbox");
-    msiHideItem("MathToolbox");
-    msiHideItem("EditingToolbox");
-    msiHideItem("structToolbar");
     if (mode ==  kDisplayModePreview)
     {
-      if (editorElement.pdfModCount < editor.getModificationCount())
+      if (editorElement.pdfModCount != editor.getModificationCount() || pdfAction != "default")
       {
-        dump("Doucment changed, recompiling\n");
+        dump("Document changed, recompiling\n");
         printTeX(true, true);
       }
       else
@@ -4403,6 +4442,33 @@ function msiSetDisplayMode(editorElement, mode)
         }
       }
     }
+    if (pdfAction != "default")
+    {
+      if ("gContentWindowDeck" in window)
+      {
+        if (previousMode < 0) previousMode = 0;
+        window.gContentWindowDeck.selectedIndex = previousMode;
+        document.getElementById("EditModeTabs").selectedIndex = previousMode;
+      }
+
+      return false;
+    }
+    //Hide the formatting toolbar if not already hidden
+    if ("gViewFormatToolbar" in window && window.gViewFormatToolbar != null)
+      window.gViewFormatToolbar.hidden = true;
+    if ("gComputeToolbar" in window && window.gComputeToolbar != null)
+      window.gComputeToolbar.hidden = true;
+
+    msiHideItem("MSIMathMenu");
+    msiHideItem("cmd_viewComputeToolbar");
+    msiHideItem("MSIComputeMenu");
+    msiHideItem("MSITypesetMenu");
+    msiHideItem("MSIInsertTypesetObjectMenu");
+    msiHideItem("StandardToolbox");
+    msiHideItem("SymbolToolbox");
+    msiHideItem("MathToolbox");
+    msiHideItem("EditingToolbox");
+    msiHideItem("structToolbar");
     if ("gSourceContentWindow" in window)
       window.gSourceContentWindow.contentWindow.focus();
     // Switch to the sourceWindow or bWindow(second or third in the deck)
@@ -5066,6 +5132,21 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
       case 'msidisplay':
         propsData = new msiEquationPropertiesObjectData();
         propsData.initFromNode(coreElement, editorElement);
+      break;
+
+      case 'bibitem':
+        objStr = GetString("BibEntry");
+        commandStr = "cmd_reviseManualBibItemCmd";
+      break;
+
+      case "bibtexbibliography":
+        objStr = GetString("BibTeXBibliography");
+        commandStr = "cmd_reviseBibTeXBibliographyCmd";
+      break;
+
+      case "citation":
+        objStr = GetString("Citation");
+        commandStr = "cmd_reviseCitation";
       break;
     }
 
@@ -9783,6 +9864,17 @@ function msiDialogEditorContentFilter(anEditorElement)
   this.mXmlSerializer = new XMLSerializer();
   this.mDOMUtils = Components.classes["@mozilla.org/inspector/dom-utils;1"].createInstance(Components.interfaces.inIDOMUtils);
   this.mbMathOnly = false;
+  this.mbSinglePara = false;
+  if (anEditorElement.mbSinglePara)
+    this.mbSinglePara = true;
+  this.defaultParaTag = "para";
+  this.mbAtFirst = true;
+  var editor = msiGetEditor(this.mEditorElement);
+  if (editor.tagListManager)
+  {
+    var namespace = new Object();
+    this.defaultParaTag = editor.tagListManager.getDefaultParagraphTag(namespace);
+  }
 
   this.dlgNodeFilter = function(aNode)
   {
@@ -9811,6 +9903,13 @@ function msiDialogEditorContentFilter(anEditorElement)
           return this.acceptAll;
       break;
     }
+    if (aNode.nodeName == this.defaultParaTag)
+    {
+      if (this.mbAtFirst)
+        return this.skip;
+      else
+        return this.accept;
+    }
     switch(aNode.nodeName)
     {
       case "dialogbase":
@@ -9837,15 +9936,18 @@ function msiDialogEditorContentFilter(anEditorElement)
       {
         case this.acceptAll:
           newParent.appendChild( parentNode.childNodes[ix].cloneNode(true) );
+          this.mbAtFirst = false;
         break;
         case this.skip:
           this.getXMLNodesForParent( newParent, parentNode.childNodes[ix] );
+          this.mbAtFirst = false;
         break;
         case this.accept:
         {
           var aNewNode = parentNode.childNodes[ix].cloneNode(false);
           this.getXMLNodesForParent( aNewNode, parentNode.childNodes[ix] );
           newParent.appendChild( aNewNode );
+          this.mbAtFirst = false;
         }
         break;
         case this.reject:
@@ -9857,6 +9959,7 @@ function msiDialogEditorContentFilter(anEditorElement)
   {
     var docFragment = null;
     var doc = this.mEditorElement.contentDocument;
+    this.mbAtFirst = true;
     if (doc != null)
     {
       docFragment = doc.createDocumentFragment();
@@ -9881,6 +9984,7 @@ function msiDialogEditorContentFilter(anEditorElement)
         {
           case this.skip:
             bFoundContent = this.nodeHasRealContent( parentElement.childNodes[ix], (bIsLast && (ix==parentElement.childNodes.length - 1)) );
+            this.mbAtFirst = false;
           break;
           case this.acceptAll:
           case this.accept:
@@ -9888,6 +9992,7 @@ function msiDialogEditorContentFilter(anEditorElement)
               bFoundContent = (parentElement.childNodes[ix].nodeName != "br");
             else
               bFoundContent = true;
+            this.mbAtFirst = false;
             break;
           case this.reject:
             break;
@@ -9901,6 +10006,7 @@ function msiDialogEditorContentFilter(anEditorElement)
   {
     var parentElement = null;
     var doc = this.mEditorElement.contentDocument;
+    this.mbAtFirst = true;
     if (doc != null)
       parentElement = msiGetRealBodyElement(doc);
     return this.nodeHasRealContent( parentElement, true );
@@ -9928,6 +10034,7 @@ function msiDialogEditorContentFilter(anEditorElement)
     if (editor != null)
     {
       var mathNodes = editor.document.getElementsByTagName("math");
+      this.mbAtFirst = true;
       for (var ix = 0; (!retval) && (ix < mathNodes.length); ++ix)
       {
         var bIsLast = false;
@@ -9958,6 +10065,8 @@ function msiDialogEditorContentFilter(anEditorElement)
 //      var rootNode = msiGetRealBodyElement(doc);
       var initialParaNode = null;
       var initialParaList = rootNode.getElementsByTagName("dialogbase");
+      if (!initialParaList.length)
+        initialParaList = rootNode.getElementsByTagName(this.defaultParaTag);
       if (initialParaList.length > 0)
         initialParaNode = initialParaList[0];
       else
@@ -10179,7 +10288,7 @@ function openFontColorDialog(tagname, node)
 function openFontSizeDialog(tagname, node)
 {
   openDialog('chrome://prince/content/fontsize.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
-    node);
+    node, editor);
 }
 
 
@@ -10196,7 +10305,28 @@ function openGraphDialog(tagname, node, editorElement)
      editorElement, "cmd_objectProperties", node, graph, node, currentDOMGs);
 }
 
+function getMSIDocumentInfo(editorElement)
+{
+  var docInfo = new msiDocumentInfo(editorElement);
+  docInfo.initializeDocInfo();
+  return docInfo;
+}
 
+function getBibliographyScheme(editorElement)
+{
+  var docInfo = getMSIDocumentInfo(editorElement);
+  if (docInfo && docInfo.generalSettings)
+  {
+    if ( ("bibliographyscheme" in docInfo.generalSettings) && ("contents" in docInfo.generalSettings.bibliographyscheme) )
+      return docInfo.generalSettings.bibliographyscheme.contents;
+  }
+  return "manual";
+}
 
-
+function setBibliographyScheme(editorElement, whichScheme)
+{
+  var docInfo = getMSIDocumentInfo(editorElement);
+  docInfo.setObjectFromData(docInfo.generalSettings, "bibliographyscheme", (whichScheme.length > 0), "BibliographyScheme", whichScheme, "comment-key-value");
+  docInfo.putDocInfoToDocument();
+}
 

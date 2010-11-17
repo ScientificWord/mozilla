@@ -46,7 +46,7 @@ function startup()
   thedeck = document.getElementById("thedeck");
   xreftext = document.getElementById("xref");
   var specnode;
-  node = activeEditor.getSelectedElement("indexitem");
+  node = getSelectionParentByTag(activeEditor,"indexitem");
   if (node)
   {
     if (node.hasAttribute("pri")) {
