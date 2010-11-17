@@ -21,26 +21,34 @@ function Startup()
   doSetOKCancel(onAccept, onCancel);
   data = window.arguments[0];
   data.Cancel = false;
-  gDialog.keyList = data.keyList;
-  gDialog.key = data.key;  //a string
-  gDialog.remark = data.remark;  //this should become arbitrary markup - a Document Fragment perhaps?
+  if ("reviseData" in data)
+  {
+    setDataFromReviseData(reviseData)
+    //set window title too!
+  }
+  gDialog.keyList = [""];
+  gDialog.key = data.key;
+  gDialog.remark = data.remark;
 
   InitDialog();
 
 //  document.getElementById("keysListbox").focus();
-  msiSetInitialDialogFocus(document.getElementById("keysListbox"));
+  msiSetInitialDialogFocus(document.getElementById("keysAutoCompleteBox"));
 
   SetWindowLocation();
 }
 
 function InitDialog()
 {
-  fillKeysListbox();
-  document.getElementById("keysListbox").value = gDialog.key;
+//  fillKeysListbox();
   
-  if (!gDialog.remark || gDialog.remark.length == 0)
-    gDialog.remark = "Is this bold?";
-  var theStringSource = "<bold>" + gDialog.remark + "</bold>";
+  gDialog.markerList = new msiBibItemKeyMarkerList(window);
+  var keyString = gDialog.markerList.getIndexString();
+  document.getElementById("keysAutoCompleteBox").setAttribute("autocompletesearchparam", keyString);
+  document.getElementById("keysAutoCompleteBox").value = gDialog.key;
+  
+//  var theStringSource = "<bold>" + gDialog.remark + "</bold>";
+  var theStringSource = gDialog.remark;
   var editorControl = document.getElementById("remarkEditControl");
   msiInitializeEditorForElement(editorControl, theStringSource);
   
@@ -58,40 +66,81 @@ function InitDialog()
   document.documentElement.getButton("accept").setAttribute("default", true);
 }
 
+function setDataFromReviseData(reviseData)
+{
+  var citeNode = reviseData.getReferenceNode();
+  var theKeys = citeNode.getAttribute("bibcitekey");
+  data.keyList = theKeys.split(",");
+  for (var ix = 0; ix < data.keyList.length; ++ix)
+    data.keyList = TrimString(data.keyList);
+  data.key = data.keyList[0];  //a string
+  data.remark = "";
+  var remarks = msiNavigationUtils.getSignificantContents(citeNode);
+  for (ix = 0; ix < remarks.length; ++ix)
+  {
+    if (msiGetBaseNodeName(remarks[ix]) == "biblabel")
+    {
+      var serializer = new XMLSerializer();
+      var remarkNodes = msiNavigationUtils.getSignificantContents(remarks[ix]);
+      for (var jx = 0; jx < remarkNodes.length; ++jx)
+        data.remark += serializer.serializeToString(remarkNodes[jx]);
+      break;
+    }
+  }
+}
+
 function onAccept()
 {
-  gDialog.key = document.getElementById("keysListbox").value;
+  gDialog.key = document.getElementById("keysAutoCompleteBox").value;
   if (findInArray(gDialog.keyList, gDialog.key) < 0)
     gDialog.keyList.push(gDialog.key);
 
-  var editorControl = document.getElementById("remarkEditControl");
-  var serializer = new XMLSerializer();
-  gDialog.remark = serializer.serializeToString(editorControl.contentDocument.documentElement);
-//  gDialog.remark = document.getElementById("remarkTextbox").value;
+
+  var remarkControl = document.getElementById("remarkEditControl");
+  var remarkContentFilter = new msiDialogEditorContentFilter(remarkControl);
+  gDialog.remark = remarkContentFilter.getDocumentFragmentString();
+
+//  var serializer = new XMLSerializer();
+//  gDialog.remark = serializer.serializeToString(editorControl.contentDocument.documentElement);
+////  gDialog.remark = document.getElementById("remarkTextbox").value;
 
   data.key = gDialog.key;
   data.keyList = gDialog.keyList;
-  data.remark = gDialog.remark;
+  if (data.remark != gDialog.remark)
+  {
+    data.bRemarkChanged = true;
+    data.remark = gDialog.remark;
+  }
 
-  var listBox = document.getElementById('keysListbox');
-  listBox.addEventListener('ValueChange', checkDisableControls, false);
+//  var listBox = document.getElementById('keysListbox');
+//  listBox.addEventListener('ValueChange', checkDisableControls, false);
 
   var editorElement = msiGetParentEditorElementForDialog(window);
   var editor = msiGetEditor(editorElement);
   var theWindow = window.opener;
-  if (!theWindow || !("updateEditorBibItemList" in theWindow))
-    theWindow = msiGetTopLevelWindow();
-  if (editor && theWindow)
-    theWindow.updateEditorBibItemList(editor, data.keyList);
+  if ("reviseData" in data)
+  {
+    if (!theWindow || !("doReviseManualCitation" in theWindow))
+      theWindow = msiGetTopLevelWindow();
+    if (theWindow && ("doReviseManualCitation" in theWindow))
+      theWindow.doReviseManualCitation(editorElement, data.reviseData, data);
+  }
+  else
+  {
+    if (!theWindow || !("doInsertManualCitation" in theWindow))
+      theWindow = msiGetTopLevelWindow();
+    if (theWindow && ("doInsertManualCitation" in theWindow))
+      theWindow.doInsertManualCitation(editorElement, data);
+  }
 
-  var dd =editorControl.contentDocument;
-  var elts = dd.getElementsByTagName("dialogbase");
-  var elt = elts.item(0);
-  var str1 = serializer.serializeToString(elt);
-  var str = "<citation>" + str1 + "</citation>";
-  
-  // .getElementsByTagName("sw:dialogbase")
-  insertXMLAtCursor(editor, str, true, false);
+//  var dd =editorControl.contentDocument;
+//  var elts = dd.getElementsByTagName("dialogbase");
+//  var elt = elts.item(0);
+//  var str1 = serializer.serializeToString(elt);
+//  var str = "<citation>" + str1 + "</citation>";
+//  
+//  // .getElementsByTagName("sw:dialogbase")
+//  insertXMLAtCursor(editor, str, true, false);
 
   SaveWindowLocation();
   return true;
@@ -110,30 +159,30 @@ function doAccept()
 function checkDisableControls(event)
 {
 //  var selDBase = document.getElementById("databaseFileListbox").selectedItem;
-  if (document.getElementById("keysListbox").value.length > 0)
+  if (document.getElementById("keysAutoCompleteBox").value.length > 0)
     document.documentElement.getButton('accept').removeAttribute("disabled");
   else
     document.documentElement.getButton('accept').setAttribute("disabled", "true");
 }
 
 
-function fillKeysListbox()
-{
-  var theListbox = document.getElementById("keysListbox");
-  //Clear the listbox
-  var theItems = theListbox.getElementsByTagName("menuitem");
-  var itemCount = theItems.length;
-  for (var i = itemCount - 1; i >= 0; --i)
-    theListbox.removeChild(theItems[i]);
-
-  for (var i = 0; i < gDialog.keyList.length; ++i)
-  {
-    theListbox.appendItem(gDialog.keyList[i], gDialog.keyList[i]);
-    //include the label also as the "value", to allow use of the "value" property of the menulist parent.
-  }
-//  if (selItem != null)
-//    theListbox.selectItem(selItem);
-}
+//function fillKeysListbox()
+//{
+//  var theListbox = document.getElementById("keysListbox");
+//  //Clear the listbox
+//  var theItems = theListbox.getElementsByTagName("menuitem");
+//  var itemCount = theItems.length;
+//  for (var i = itemCount - 1; i >= 0; --i)
+//    theListbox.removeChild(theItems[i]);
+//
+//  for (var i = 0; i < gDialog.keyList.length; ++i)
+//  {
+//    theListbox.appendItem(gDialog.keyList[i], gDialog.keyList[i]);
+//    //include the label also as the "value", to allow use of the "value" property of the menulist parent.
+//  }
+////  if (selItem != null)
+////    theListbox.selectItem(selItem);
+//}
 
 
 //function attachEditorToTextbox(theTextbox, theStringSource)

@@ -77,6 +77,8 @@ interface msiISimpleComputeEngine : nsISupports
    * solve commands
   */
   void solveExact(in wstring expr, in wstring vars, [retval] out wstring result);
+  void solveInteger(in wstring expr, in wstring vars, [retval] out wstring result);
+
   const unsigned long Solve_Exact		   = CCID_Solve_Exact;		
   const unsigned long Solve_Integer	   = CCID_Solve_Integer;	
   const unsigned long Solve_Numeric	   = CCID_Solve_Numeric;	
@@ -99,6 +101,7 @@ interface msiISimpleComputeEngine : nsISupports
   void approxIntegral(in wstring expr, in wstring form, in wstring numintervals, [retval] out wstring result);
   void iterate(in wstring expr, in wstring startval, in wstring count, [retval] out wstring result);
   void implicitDiff(in wstring expr, in wstring var, in wstring depvar, [retval] out wstring result);
+  void findExtrema(in wstring expr, in wstring var, in wstring depvar,[retval] out wstring result);
   const unsigned long Calculus_Integrate_by_Parts   		 = CCID_Calculus_Integrate_by_Parts;   		
   const unsigned long Calculus_Change_Variable   		     = CCID_Calculus_Change_Variable;   		  
   const unsigned long Calculus_Partial_Fractions			   = CCID_Calculus_Partial_Fractions;			  

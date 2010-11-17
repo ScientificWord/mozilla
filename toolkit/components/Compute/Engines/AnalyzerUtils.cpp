@@ -170,12 +170,10 @@ ExpType GetExpType(BaseType base_type, MNODE* exp, const Grammar* mml_entities)
 {
   ExpType rv = ET_POWER;
 
-  //const char* exp_element = exp->src_tok;
-  //const char* exp_contents = exp->p_chdata;
+  MNODE* expOrig = exp;
+
   if (ElementNameIs(exp, "mrow")) {
-    //exp_element = exp->first_kid->src_tok;
-    //exp_contents = exp->first_kid->p_chdata;
-	exp = exp -> first_kid;
+	   exp = exp -> first_kid;
   }
 
   if (ElementNameIs(exp, "mi")) {
@@ -240,9 +238,11 @@ ExpType GetExpType(BaseType base_type, MNODE* exp, const Grammar* mml_entities)
   }
   if (rv == ET_DIRECTION && exp->first_kid && exp->first_kid->next)
     rv = ET_POWER;  // -x or +x
-  if (IsInverseIndicator(exp, mml_entities))
-    if (base_type == BT_FUNCTION
-        || base_type == BT_SUBARG_FUNCTION || base_type == BT_TRANSFORM)
+
+  if (IsInverseIndicator(expOrig, mml_entities))
+    if (base_type == BT_FUNCTION || 
+        base_type == BT_SUBARG_FUNCTION || 
+        base_type == BT_TRANSFORM)
       rv = ET_INVERSE_INDICATOR;
 
   return rv;
@@ -369,7 +369,13 @@ void OverrideInvisibleTimesOnLHS(MNODE * dMML_tree)
     if (ElementNameIs(m_rover, "mi") && ElementNameIs(m_rover->next, "mo")) {
       const char* src_token = m_rover->next->p_chdata;
       if (StringEqual(src_token, "&#x2062;") && m_rover->next->next) {
-        if (IsArgDelimitingFence(m_rover->next->next)) {
+        
+        MNODE* fence_or_mrow = m_rover->next->next;
+        while (ElementNameIs(fence_or_mrow, "mrow")){
+          fence_or_mrow = fence_or_mrow -> first_kid;
+        }
+          
+        if (IsArgDelimitingFence(fence_or_mrow)) {
           //super ugly, but what else to do?
           delete m_rover->next->p_chdata;
           m_rover->next->p_chdata = DuplicateString("&#x2061;"); // ApplyFunction
@@ -869,6 +875,16 @@ PrefixOpIlk GetPrefixOpCode(const char* op_name, SemanticVariant& n_integs, cons
 
   size_t ln = strlen(op_name);
   switch (ln) {
+  case 2:
+    if (StringEqual(op_name, "Si"))
+      rv = POI_function;
+    else if (StringEqual(op_name, "Ci"))
+      rv = POI_function;
+    else if (StringEqual(op_name, "Ei"))
+      rv = POI_function;
+
+
+    break;
   case 3:
     if (StringEqual(op_name, "gcd"))
       rv = POI_listop;
@@ -882,6 +898,15 @@ PrefixOpIlk GetPrefixOpCode(const char* op_name, SemanticVariant& n_integs, cons
       rv = POI_det;
     else if (StringEqual(op_name, "div"))
       rv = POI_divergence;
+    else if (StringEqual(op_name, "erf"))
+      rv = POI_function;
+    else if (StringEqual(op_name, "Chi"))
+      rv = POI_function;
+    else if (StringEqual(op_name, "Shi"))
+      rv = POI_function;
+    else if (StringEqual(op_name, "Psi"))
+      rv = POI_function;
+
     break;
 
   case 4:
@@ -897,6 +922,13 @@ PrefixOpIlk GetPrefixOpCode(const char* op_name, SemanticVariant& n_integs, cons
       rv = POI_curl;
     else if (StringEqual(op_name, "grad"))
       rv = POI_distribution;
+    else if (StringEqual(op_name, "Beta"))
+      rv = POI_function;
+    else if (StringEqual(op_name, "csgn"))
+      rv = POI_function;
+    else if (StringEqual(op_name, "erfc"))
+      rv = POI_function;
+
     break;
 
   case 5:
@@ -906,6 +938,22 @@ PrefixOpIlk GetPrefixOpCode(const char* op_name, SemanticVariant& n_integs, cons
       rv = POI_distribution;
     else if (StringEqual(op_name, "Dirac"))
       rv = POI_Dirac;
+    else if (StringEqual(op_name, "dilog"))
+      rv = POI_function;
+    else if (StringEqual(op_name, "solve"))
+      rv = POI_function;
+
+
+    break;
+
+  case 6:
+    if (StringEqual(op_name, "signum"))
+      rv = POI_function;
+    else if (StringEqual(op_name, "factor"))
+      rv = POI_function;
+    else if (StringEqual(op_name, "expand"))
+      rv = POI_function;
+
     break;
 
   case 7:
@@ -913,6 +961,15 @@ PrefixOpIlk GetPrefixOpCode(const char* op_name, SemanticVariant& n_integs, cons
       rv = POI_distribution;
     else if (StringEqual(op_name, "BetaInv"))
       rv = POI_distribution;
+    else if (StringEqual(op_name, "BesselI"))
+      rv = POI_function;
+    else if (StringEqual(op_name, "BesselJ"))
+      rv = POI_function;
+    else if (StringEqual(op_name, "BesselK"))
+      rv = POI_function;
+    else if (StringEqual(op_name, "BesselY"))
+      rv = POI_function;
+    
     break;
 
   case 8:
@@ -937,6 +994,9 @@ PrefixOpIlk GetPrefixOpCode(const char* op_name, SemanticVariant& n_integs, cons
       rv = POI_distribution;
     else if (StringEqual(op_name, "Heaviside"))
       rv = POI_Dirac;
+    else if (StringEqual(op_name, "bernoulli"))
+      rv = POI_function;
+
     break;
 
   case 10:

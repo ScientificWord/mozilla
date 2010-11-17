@@ -923,6 +923,61 @@
     </xbl:implementation>
   </xbl:binding>
   
+	<xbl:binding id="citation">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+
+	  <xbl:content>
+      <html:button type="button" class="inline" oncommand="">
+        Cite: <html:span xbl:inherits="xbl:text=citekey"/>
+      </html:button>
+      <html:span style="display:none">
+      <xbl:children/>
+      </html:span>
+    </xbl:content>
+  </xbl:binding>
+
+	<xbl:binding id="bibtexbibliography">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+
+	  <xbl:content>
+      <html:button type="button" class="inline" oncommand="">
+        BIBTEX
+      </html:button>
+      <html:span style="display:none">
+      <xbl:children/>
+      </html:span>
+    </xbl:content>
+  </xbl:binding>
+
+  <xbl:binding id="bibitem">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+
+	  <xbl:content>
+      <html:button type="transparentbutton" class="inline" xbl:inherits="xbl:text=bibitemkey" oncommand=""></html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
+  <xbl:binding id="bibitemwithlabel">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+
+	  <xbl:content>
+      <html:button class="bibitemlabel" anonid="theButton" oncommand="">
+        <xbl:children includes="biblabel"/>
+        <html:span style="white-space: pre"> (<html:span xbl:inherits="xbl:text=bibitemkey"/>)</html:span>
+      </html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
 </xbl:bindings>
 
 			
