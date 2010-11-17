@@ -374,3 +374,7 @@ bibitem[hasLabel="true"] {
   counter-increment: none;
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#bibitemwithlabel");
 }
+
+bibitem > biblabel+bodyText {
+  display: inline;
+}
