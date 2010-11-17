@@ -930,7 +930,7 @@
 
 	  <xbl:content>
       <html:button type="button" class="inline" oncommand="">
-        Cite: <html:label xbl:inherits="xbl:text=citekey"/>
+        Cite: <html:span xbl:inherits="xbl:text=citekey"/>
       </html:button>
       <html:span style="display:none">
       <xbl:children/>
@@ -970,9 +970,9 @@
 	  </xbl:resources>
 
 	  <xbl:content>
-      <html:button class="bibitemlabel" oncommand="">
+      <html:button class="bibitemlabel" anonid="theButton" oncommand="">
         <xbl:children includes="biblabel"/>
-        <html:span style="white-space: pre"> (<html:label xbl:inherits="xbl:text=bibitemkey"/>)</html:span>
+        <html:span style="white-space: pre"> (<html:span xbl:inherits="xbl:text=bibitemkey"/>)</html:span>
       </html:button>
       <xbl:children/>
     </xbl:content>
