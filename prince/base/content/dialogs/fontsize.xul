@@ -20,6 +20,8 @@
     onload="startUp();"
     persist="screenX screenY width height">
 
+  <!--script type="application/x-javascript" src="resource://app/modules/jquery-1.4.4.min.js"/ -->
+  
   <!-- Following scripts are needed by any MSI dialog brought up by an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
