@@ -7,16 +7,10 @@ INSTALLNAME=SWP-6.0
 DIRNAME=swppro
 LICENSEDIR=.mupadpro40
 LICENSEFILE=.mupadpro40/.license
+PROFILEDIR=.swppro
 
 echo Uninstalling Scientific Workplace Version 6.0
 CURDIR=`pwd`
-if [ `basename $CURDIR` != $DIRNAME ]
-then
-	echo "
-		You must uninstall from the swppro directory
-	"
-	exit
-fi
 if [ `whoami` != 'root' ] 
 then
 	echo "
@@ -24,29 +18,37 @@ then
 	"
 	exit
 fi
-if [ -d $BASE/$INSTALLNAME ]
+
+# remove /usr/local/swppro
+if [ -e  $BASE/bin/swppro ]
 then
-	rm -rf $BASE/$INSTALLNAME
+	rm  $BASE/bin/swppro
 fi
 
-RETURNDIR=`pwd`
-cd $BASE/bin
-if [ -e swppro ]
-then
-	rm swppro
-fi
-cd $RETURNDIR
-
+# remove MuPAD license
 if [ -e /home/$SUDO_USER/$LICENSEDIR/SWP ]
 then
 	rm -rf /home/$SUDO_USER/$LICENSEDIR
 fi
 
+# remove library path
 if [ -e /etc/ld.so.conf.d/SWP.conf ]
 then
 	rm /etc/ld.so.conf.d/SWP.conf
 fi
 ldconfig
+
+# remove profile
+if [ -d /home/$SUDO_USER/.swppro ]
+then
+	rm -rf /home/$SUDO_USER/.swppro
+fi
+
+# remove SWP code
+if [ -d $BASE/$INSTALLNAME ]
+then
+	rm -rf $BASE/$INSTALLNAME
+fi
 
 echo Uninstall completed.
 

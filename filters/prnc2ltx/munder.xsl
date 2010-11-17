@@ -244,7 +244,7 @@
 			    <xsl:text mml:space="preserve">\varprojlim </xsl:text>
 	          </xsl:when>
 		      <xsl:otherwise>
-			    <xsl:text mml:space="preserve">Unexpected under accent</xsl:text>
+			    <!--xsl:text mml:space="preserve">Unexpected under accent</xsl:text-->
 		      </xsl:otherwise>
             </xsl:choose>
           </xsl:when>

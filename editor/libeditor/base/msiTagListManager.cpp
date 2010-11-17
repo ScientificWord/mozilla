@@ -289,6 +289,8 @@ msiTagListManager::AddTagInfo(const nsAString & strTagInfoPath, PRBool *_retval)
 }
 
 
+
+
 nsString msiTagListManager::GetStringProperty( const nsAString & str, nsIDOMElement * element)
 {
   nsCOMPtr<nsIDOMNodeList> nodeList;
@@ -309,6 +311,74 @@ nsString msiTagListManager::GetStringProperty( const nsAString & str, nsIDOMElem
   return strResult;
 }
 
+
+// Build the contains list for an element
+
+void
+msiTagListManager::BuildContainsListForElement(nsIDOMElement * element, const nsAString & strName)
+{
+  nsresult rv;
+  nsCOMPtr<nsIDOMNodeList> tagContains;
+  PRUint32 tagContainsCount = 0;
+  nsCOMPtr<nsIDOMElement> tagCanContainElement;   
+  nsCOMPtr<nsIDOM3Node> tagCanContainNode3;
+  nsCOMPtr<nsIDOMNode> tagCanContain;
+  nsAutoString strCanContain;
+  TagKeyListHead * pTagKeyListHead;
+  TagKeyList * pTagKeyList;
+  TagKey key;
+
+
+  rv = element->GetElementsByTagName(NS_LITERAL_STRING("contains"), getter_AddRefs(tagContains));
+  if (tagContains) 
+  {
+    rv = tagContains->GetLength(&tagContainsCount);
+    for (PRUint32 j = 0; j < tagContainsCount; j++)
+    {
+      tagContains ->Item(j, getter_AddRefs(tagCanContain));
+      tagCanContainNode3 = do_QueryInterface(tagCanContain);
+      tagCanContainNode3->GetTextContent(strCanContain);
+      // now we put strCanContain (a tag key) in the list for strName
+      pTagKeyListHead = pContainsList;
+      while (pTagKeyListHead && !(pTagKeyListHead->name.Equals(strName))) pTagKeyListHead = pTagKeyListHead->pNext;
+      if (!pTagKeyListHead) // there is no list for the class name; make one
+      {
+        pTagKeyListHead = new TagKeyListHead;
+        pTagKeyListHead->name.Assign(strName);
+        pTagKeyListHead->pNext = pContainsList;  // we insert at the beginning of the list for simplicity
+        pContainsList = pTagKeyListHead;
+      } // pTagKeyListHead is not null
+      // TODO: check for out of memory
+      pTagKeyList = new TagKeyList;
+      pTagKeyList->key.key.Assign(strCanContain);
+#ifndef USE_NAMESPACES 
+      pTagKeyList->key.key.Assign(pTagKeyList->key.localName());
+#endif
+      if (pTagKeyListHead->pListTail)
+        pTagKeyListHead->pListTail->pNext = pTagKeyList;   // we use ListTail to keep the list in the same order as in the XNL file,
+      pTagKeyListHead->pListTail = pTagKeyList;   // we use ListTail to keep the list in the same order as in the XNL file,
+                                                  // for hand optimizations
+      if (!(pTagKeyListHead->pListHead)) pTagKeyListHead->pListHead = pTagKeyListHead->pListTail;
+    }
+#define DEBUG_CONTAINMENT 1      
+#ifdef DEBUG_CONTAINMENT
+    // Write out the list
+    if (tagContainsCount >0)
+    {
+      printf("\nContains list for tag %S:\n", pContainsList->name.BeginReading());
+      pTagKeyList = pContainsList->pListHead;
+      while (pTagKeyList)
+      {
+        printf("  can contain \"%S\n", ((nsString)pTagKeyList->key).BeginReading());
+        pTagKeyList = pTagKeyList->pNext;
+      }                                    
+    }
+#endif        
+  }
+}
+
+
+
 // Build hash tables and also the list of lists that store the 'contains' info
 /* bool BuildHashTables (in nsIDOMXMLDocument docTagInfo); */
 PRBool
@@ -318,7 +388,6 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
   PRUint32 tagClassCount = 0;
   PRUint32 tagClassNameCount = 0;
   PRUint32 tagNameCount = 0;
-  PRUint32 tagContainsCount = 0;
   nsCOMPtr<nsIDOMNodeList> tagClasses;
   nsCOMPtr<nsIDOMNode> tagClass;
   nsCOMPtr<nsIDOMElement> tagClassElement;
@@ -327,18 +396,11 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
   nsCOMPtr<nsIDOMElement> tagClassNameElement;
   nsCOMPtr<nsIDOM3Node> tagClassNameNode;
   nsCOMPtr<nsIDOMNodeList> tagNames;
-  nsCOMPtr<nsIDOMNodeList> tagContains;
   nsCOMPtr<nsIDOMNode> tagName;
-  nsCOMPtr<nsIDOMNode> tagCanContain;
   nsIDOMXMLDocument * dti = docTagInfo;
   nsAutoString strName;
   nsAutoString strClassName;
-  nsAutoString strCanContain;
   nsCOMPtr<nsIDOMElement> tagNameElement;   
-  nsCOMPtr<nsIDOMElement> tagCanContainElement;   
-  nsCOMPtr<nsIDOM3Node> tagCanContainNode3;
-  TagKeyListHead * pTagKeyListHead;
-  TagKeyList * pTagKeyList;
   TagKey key;
   rv = dti->GetElementsByTagName(NS_LITERAL_STRING("tagclass"), getter_AddRefs(tagClasses));
   if (tagClasses) tagClasses->GetLength(&tagClassCount);
@@ -356,52 +418,7 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
       rv = tagClassNameNode->GetTextContent(strClassName);
       // strClassName is the name of the class. Now find the <contains> tags
       ///////
-      rv = tagClassElement->GetElementsByTagName(NS_LITERAL_STRING("contains"), getter_AddRefs(tagContains));
-      if (tagContains) 
-      {
-        rv = tagContains->GetLength(&tagContainsCount);
-        for (PRUint32 j = 0; j < tagContainsCount; j++)
-        {
-          tagContains ->Item(j, getter_AddRefs(tagCanContain));
-          tagCanContainNode3 = do_QueryInterface(tagCanContain);
-          tagCanContainNode3->GetTextContent(strCanContain);
-          // now we put strCanContain (a tag key) in the list for strClassName
-          pTagKeyListHead = pContainsList;
-          while (pTagKeyListHead && !(pTagKeyListHead->name.Equals(strClassName))) pTagKeyListHead = pTagKeyListHead->pNext;
-          if (!pTagKeyListHead) // there is no list for the class name; make one
-          {
-            pTagKeyListHead = new TagKeyListHead;
-            pTagKeyListHead->name.Assign(strClassName);
-            pTagKeyListHead->pNext = pContainsList;  // we insert at the beginning of the list for simplicity
-            pContainsList = pTagKeyListHead;
-          } // pTagKeyListHead is not null
-          // TODO: check for out of memory
-          pTagKeyList = new TagKeyList;
-          pTagKeyList->key.key.Assign(strCanContain);
-#ifndef USE_NAMESPACES 
-          pTagKeyList->key.key.Assign(pTagKeyList->key.localName());
-#endif
-          if (pTagKeyListHead->pListTail)
-            pTagKeyListHead->pListTail->pNext = pTagKeyList;   // we use ListTail to keep the list in the same order as in the XNL file,
-          pTagKeyListHead->pListTail = pTagKeyList;   // we use ListTail to keep the list in the same order as in the XNL file,
-                                                      // for hand optimizations
-          if (!(pTagKeyListHead->pListHead)) pTagKeyListHead->pListHead = pTagKeyListHead->pListTail;
-        }
-      
-#ifdef DEBUG_CONTAINMENT
-        // Write out the list
-        if (tagContainsCount >0)
-        {
-          printf("\nContains list for tag %S:\n", pContainsList->name.BeginReading());
-          pTagKeyList = pContainsList->pListHead;
-          while (pTagKeyList)
-          {
-            printf("  can contain \"%S\n", ((nsString)pTagKeyList->key).BeginReading());
-            pTagKeyList = pTagKeyList->pNext;
-          }                                    
-        }
-#endif        
-      }
+      BuildContainsListForElement(tagClassElement, strClassName);
       
       /////////
       rv = tagClassElement->GetElementsByTagName(NS_LITERAL_STRING("tag"), getter_AddRefs(tagNames));
@@ -413,6 +430,8 @@ msiTagListManager::BuildHashTables(nsIDOMXMLDocument * docTagInfo, PRBool *_retv
           tagNames->Item(j, getter_AddRefs(tagName));
           tagNameElement = do_QueryInterface(tagName);
           rv = tagNameElement->GetAttribute(NS_LITERAL_STRING("nm"),strName);
+          
+          BuildContainsListForElement(tagNameElement, strName);
           key = TagKey(strName);
           TagData *pdata = new TagData; 
           tagNameElement->HasAttribute(NS_LITERAL_STRING("hidden"),&(pdata->hidden));              
