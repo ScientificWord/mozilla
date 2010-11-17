@@ -25,7 +25,7 @@ function Startup()
   gDialog.bibLabel = "";  //this should become arbitrary markup - a Document Fragment perhaps?
   if ("reviseData" in data)
   {
-    setDataFromReviseData(reviseData)
+    setDataFromReviseData(data.reviseData)
     //set window title too!
   }
 
