@@ -80,11 +80,6 @@
     <key keycode="VK_TAB" modifiers="shift" oncommand="return true;"/>
     <key keycode="VK_TAB" modifiers="control" oncommand="return true;"/>
     <key keycode="VK_TAB" modifiers="control,shift" oncommand="return true;"/ -->
-    <!-- key id="key_newBlankPage" key="&filenew.keybinding;" observes="cmd_newEditor"  modifiers="accel"/>
-    <key id="openeditorkb"   key="&fileopen.keybinding;"  observes="cmd_open"  modifiers="accel"/>
-    <key id="savekb"         key="&filesave.keybinding;"  observes="cmd_save"  modifiers="accel"/>
-    <key id="printkb"        key="&fileprint.keybinding;" observes="cmd_print" modifiers="accel"/>
-    <key id="key_quit"       key="&filequit.keybinding;"  observes="cmd_quit" modifiers="accel"/ -->
     <key id="MSIevalKey" key="&MSIComputeEvalCmd.keybinding;" observes="cmd_MSIComputeEval"  modifiers="accel"  />        
   </keyset>
 
@@ -104,8 +99,11 @@
 	
 	<vbox>
 		<hbox>
-		  <description value='&keyCaption.label;' accesskey='&keyCaption.accesskey;'/>
-		  <menulist id='keysListbox' size='30' editable='true' oninput='checkDisableControls();' oncommand='checkDisableControls();'/>
+		  <label value="&keyCaption.label;" accesskey="&keyCaption.accesskey;" control="keysAutoCompleteBox"/>
+      <textbox id="keysAutoCompleteBox" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
+        completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys"
+        tooltiptext="Enter the key name for the bibliography item to reference"
+        onchange="checkDisableControls(event);" />
 		</hbox>
 		<spacer flex='1'/>
 		<hbox>
