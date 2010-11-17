@@ -1213,16 +1213,19 @@ function GetRHS(math)
 //SLS for unknown reasons, get parsing error if text is at outer level
 function insertLabeledXML(editor, text, node, offset)
 {
-  var parser = new DOMParser();
-  var wrapped = "<span>" + text + "</span>";
-  var doc = parser.parseFromString(wrapped,"application/xhtml+xml");
-  var nodeList = doc.documentElement.childNodes;
-  var nodeListLength = nodeList.length;
-  var i;
-  for (i = nodeListLength-1; i >= 0; --i)
-  {
-    editor.insertNode( nodeList[i], node, offset );
-  }
+    editor.setCaretAfterElement(node);
+    insertHTML(text);
+
+//   var parser = new DOMParser();
+//   var wrapped = "<span>" + text + "</span>";
+//   var doc = parser.parseFromString(wrapped,"application/xhtml+xml");
+//   var nodeList = doc.documentElement.childNodes;
+//   var nodeListLength = nodeList.length;
+//   var i;
+//   for (i = nodeListLength-1; i >= 0; --i)
+//   {
+//     editor.insertNode( nodeList[i], node, offset );
+//   }
 }
 
 function appendResult(result,sep,math,editorElement)
@@ -1262,9 +1265,10 @@ function appendLabeledResult(result,label,math,editorElement)
     str = result.replace(fullmath,label+fullmath);
   else
     str = label.replace(/%result%/,result);
+
   insertLabeledXML(editor, str, math, math.childNodes.length );
-//  msiGetEditor(editorElement).insertHTMLWithContext(str,"","","",null,math,math.childNodes.length,false);
-}
+  //msiGetEditor(editorElement).insertHTMLWithContext(str,"","","",null,math,math.childNodes.length,false);
+  }
 
 function appendTaggedResult(result,label,body,index,editorElement)
 {
@@ -1272,7 +1276,6 @@ function appendTaggedResult(result,label,body,index,editorElement)
     editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
   var str = label.replace(/%result%/,result);
-
   insertXML(editor, str, body, index );
 //  msiGetEditor(editorElement).insertHTMLWithContext(str,"","","",null,body,index,false);
 }
