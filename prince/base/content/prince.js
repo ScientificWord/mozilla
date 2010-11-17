@@ -4,9 +4,8 @@ const NS_PIPECONSOLE_CONTRACTID = "@mozilla.org/process/pipe-console;1";
 const NS_PIPETRANSPORT_CONTRACTID= "@mozilla.org/process/pipe-transport;1";
 const NS_PROCESSINFO_CONTRACTID = "@mozilla.org/xpcom/process-info;1";
 
-var gPipeConsole;
-var currPDFfileLeaf = "main.pdf";
 Components.utils.import("resource://app/modules/macroArrays.jsm");
+var currPDFfileLeaf = "main.pdf"; // this is the leafname of the last pdf file generated.
 
 function goAboutDialog() {
   window.openDialog("chrome://prince/content/aboutDialog.xul", "about", "modal,chrome,resizable=yes");
@@ -449,15 +448,15 @@ function documentAsTeXFile( document, xslSheet, outTeXfile, compileInfo )
   var outfileTeXPath = outTeXfile.path;
   var stylefile;
   var xslPath;
-#ifdef INTERNAL_XSLT
   var xslPath = "chrome://prnc2ltx/content/"+xslSheet;
   var str = documentToTeXString(document, xslPath);
   compileInfo.runMakeIndex = /\\makeindex/.test(str);
+  compileInfo.runBibTeX = /\\bibliography/.test(str);
   compileInfo.passCount = 1;
   var runcount = 1;
   if (/\\tableofcontents|\\listoffigures|\\listoftables/.test(str)) runcount = 3;
   if (compileInfo.passCount < runcount) compileInfo.passCount = runcount;
-  if (/\\xref|\\pageref|\\vxref|\\vpageref/.test(str)) runcount = 2;
+  if (/\\xref|\\pageref|\\vxref|\\vpageref|\\cite/.test(str)) runcount = 2;
   if (compileInfo.passCount < runcount) compileInfo.passCount = runcount;
   var matcharr = /%% *minpasses *= *(\d+)/.exec(str);
   if (matcharr && matcharr.length > 1) 
@@ -465,8 +464,8 @@ function documentAsTeXFile( document, xslSheet, outTeXfile, compileInfo )
     runcount = matcharr[1];
     if (compileInfo.passCount < runcount) compileInfo.passCount = runcount;
   }
-  if (compileInfo.runMakeIndex) {
-    if (compileInfo.passCount < 2) compileInfo.passCount = 2;
+  if (compileInfo.runMakeIndex || compileInfo.runBibTeX) {
+    if (compileInfo.passCount < 3) compileInfo.passCount = 3;
   }
 
 //  dump("\n"+str);
@@ -482,66 +481,6 @@ function documentAsTeXFile( document, xslSheet, outTeXfile, compileInfo )
   os.writeString(str);
   os.close();
   fos.close();
-#else
-  stylefile = dsprops.get("resource:app", Components.interfaces.nsIFile);
-  stylefile.append("res");
-  stylefile.append("xsl");
-  stylefile.append(xslSheet);
-  xslPath = stylefile.path;
-  var exefile = dsprops.get("resource:app", Components.interfaces.nsIFile);
-  exefile.append("Transform.exe");
-
-  var index =  bareleaf.lastIndexOf(".");
-  if (index > 0) bareleaf = bareleaf.substr(0,index); // probably at this time, bareleaf=="main"
-
-  var outfile = workingDir.clone();
-  outfile.append("temp");
-  // clean out the temp directory
-  try {if (outfile.exists()) outfile.remove(true);}
-  catch(e){
-    dump("deleting temp directory failed: "+e.message+"\n");
-  }
-  try  {outfile.create(1, 0755);}
-  catch(e){
-    dump("creating temp directory failed: "+e.message+"\n");
-    return false
-  }
-  outfile.append(bareleaf + ".xml");
-      
-  dump("\nOutput file = " + outfile.path+"\n");
-  var s = new XMLSerializer();
-  var str = s.serializeToString(document);
-
-
-  var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-  fos.init(outfile, -1, -1, false);
-  var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
-    .createInstance(Components.interfaces.nsIConverterOutputStream);
-  os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
-  os.writeString(str);
-  os.close();
-  fos.close();
-  var outfilePath = outfile.path;
-  while (xslPath.charAt(0) == "/".charAt(0)) xslPath = xslPath.substr(1);
-  // for Windows
-#ifdef XP_WIN32
-  xslPath = xslPath.replace("\\","/","g");
-  outfilePath = outfilePath.replace("\\","/","g");
-  outfileTeXPath = outfileTeXPath.replace("\\","/","g");
-#endif
-  try 
-  {
-    var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
-    theProcess.init(exefile);
-    var args =['-s', outfilePath, '-o', outfileTeXPath, xslPath, ];
-    theProcess.run(true, args, args.length);
-  } 
-  catch (ex) 
-  {
-    dump("\nUnable to export TeX: "+ex.message+"\n");
-    return false;
-  }      
-#endif
   return outTeXfile.exists();
 }
 
@@ -630,64 +569,107 @@ compileTeXFile:
  = */
 /* ==== */
 
-var passData;
+function setBibTeXRunArgs(passData)
+{
+  var bibTeXExePath = GetLocalFilePref("swp.bibtex.appPath");
+  var bibTeXDBaseDir = GetLocalFilePref("swp.bibtex.dir");
+  var bibTeXStyleDir = GetLocalFilePref("swp.bibtex.styledir");
+  var bibtexData = ["-d", passData.args[1] ];
+  var dbaseDirStr, styleDirStr;
+  if (bibTeXExePath && bibTeXExePath.path.length)
+  {
+    bibtexData.push("-x");
+    bibtexData.push(bibTeXExePath.parent.path);
+  }
+  if (bibTeXDBaseDir && bibTeXDBaseDir.path.length)
+  {
+    bibtexData.push("-b");
+    dbaseDirStr = bibTeXDBaseDir.path;
+#ifdef XP_WIN32
+    dbaseDirStr += "\\\\";
+#else
+    dbaseDirStr += "//";
+#endif
+    bibtexData.push(dbaseDirStr);
+  }
+  if (bibTeXStyleDir && bibTeXStyleDir.path.length)
+  {
+    bibtexData.push("-s");
+    styleDirStr = bibTeXStyleDir.path;
+#ifdef XP_WIN32
+    styleDirStr += "\\\\";
+#else
+    styleDirStr += "//";
+#endif
+    bibtexData.push(styleDirStr);
+  }
+  bibtexData.push(passData.args[3]);  //put the target file leafname last in the args list
+  return bibtexData;
+}
 
 function compileTeXFile( compiler, infileLeaf, infilePath, outputDir, compileInfo )
 {
   // the following requires that the pdflatex program (or a hard link to it) be in TeX/bin/pdflatex 
+  var passData;
   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
   var exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
   var indexexe = exefile.clone();
+  var bibtexexe = exefile.clone();
   var extension;
+  // A word on file names. Essentially what we want to do is to compile main.tex to main.pdf.
+  // Unfortunately, the Acrobat plugin keeps a lock on the file it is displaying in the preview pane, so
+  // compiling to main.pdf will frequently fail.
+  //
+  // The strategy: always compile to SWP.pdf, and then try renaming it to main.pdf, or main0.pdf, or main1.pdf, or ...
+  // The final leafname is returned in compileInfo, for use of the routines that display the pdf file and stored in the global
+  // currPDFfileLeaf, where it is used to display the pdf when changes have not been made to the document.
+  //
   var compiledFileLeaf = "SWP";
   passData = new Object;
-#ifdef XP_WIN32
-  extension = "cmd";
-#else
-  extension = "bash";
-#endif
+  var os = GetOS();
+  if (os == "Win") extension = "cmd";
+  else extension = "bash";
   exefile.append(compiler+"."+extension);
   indexexe.append("makeindex."+extension);
-  dump("\nexecutable file: "+exefile.path+"\n");
+  bibtexexe.append("runbibtex." + extension);
   passData.file = exefile;
   passData.indexexe = indexexe;
+  passData.bibtexexe = bibtexexe;
   passData.outputDir = outputDir;
   passData.args = ["-output-directory", outputDir, infileLeaf, compiledFileLeaf];
   passData.passCount = compileInfo.passCount;
   passData.runMakeIndex = compileInfo.runMakeIndex;
+  passData.runBibTeX = compileInfo.runBibTeX;
+  if (passData.runBibTeX)
+    passData.bibtexArgs = setBibTeXRunArgs(passData);
+
   var i;
-  dump("Opening dialog\n");
   window.openDialog("chrome://prince/content/passes.xul","about", "chrome,modal=yes,resizable=yes,alwaysRaised=yes",
     passData);
 //    There was some commented code here for using the pipe-console object from the enigmail project. We are not 
 //    using it in 6.0, and XulRunner is getting a better implementation, which we will use later.
-  // check for a dvi or pdf file
-  var compiledFileLeaf = "SWP";                                                                               var outfileLeaf = compiledFileLeaf;
-  outfileLeaf += ".pdf";
 
-  dump("\nOutputleaf="+outfileLeaf+"\n");
-  var tempOutputfile;
   var outputfile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
   outputfile.initWithPath( passData.outputDir );
+  var tempOutputfile;
   tempOutputfile = outputfile.clone();
   var leaf = "main.pdf";
-  outputfile.append(leaf);
+  outputfile.append(leaf); // outputfile is now main.pdf. If this file exists, it is because Acrobat wouldn't let it go.
+  tempOutputfile.append(compiledFileLeaf+".pdf"); // this is SWP.pdf, to be renamed
   var n = 0;
   dump("Leaf is "+leaf+"\n");
   while (outputfile.exists())
   {
     leaf = "main"+(n++)+".pdf";
-    dump("Leaf is "+leaf+"\n");
     outputfile = outputfile.parent;
     outputfile.append(leaf);
   }
-  currPDFfileLeaf = leaf;
-  tempOutputfile.append("swp.pdf");
-//  if (outputfile.exists())
-//    outputfile.remove(false);
+  // now outputfile's leaf is main[n].pdf, and doesn't exist.
   if (tempOutputfile.exists())
   {
-    tempOutputfile.moveTo(null, leaf);     // BBM: allow for .xdv ??
+    tempOutputfile.moveTo(null, leaf);     // rename SWP.pdf to main[i].pdf
+    compileInfo.finalPDFleaf = leaf;
+    currPDFfileLeaf = leaf;
     dump("\nFinal output filename: "+tempOutputfile.path+"\n");
     return true;
   }
@@ -758,7 +740,6 @@ function compileDocument()
     }
     catch(e) {}; // 
     var pdffile = outputfile.clone();
-    var pdffileroot = outputfile.clone();
     outputfile.append("main.tex");
     if (outputfile.exists()) outputfile.remove(false);
     
@@ -769,9 +750,7 @@ function compileDocument()
     {
       if (compileTeXFile(compiler, "main", outputfile.path, pdffile.path, compileInfo))
       {
-        if (!currPDFfileLeaf) currPDFfileLeaf = "main.pdf";
-        dump("currPDFfileLeaf is "+currPDFfileLeaf+"\n");
-        pdffile.append(currPDFfileLeaf);
+        pdffile.append(compileInfo.finalPDFleaf);
         if (!pdffile.exists())
         {  
           AlertWithTitle("TeX Error", "Unable to create a PDF file.");
@@ -780,7 +759,6 @@ function compileDocument()
         }
         else 
         {
-          dump("outputfile to be launched: "+pdffile.path+"\n");
           return pdffile;
         }
       }
@@ -808,9 +786,41 @@ function printTeX(preview )
     {
       if (preview)
       {
-        document.getElementById("preview-frame").loadURI(msiFileURLStringFromFile(pdffile));
-        // Switch to the preview pane (third in the deck)
-        goDoCommand("cmd_PreviewMode"); 
+      // get prefs for viewing pdf files
+        var prefs = GetPrefs();
+        var pdfAction = prefs.getCharPref("swp.prefPDFPath");
+        if (pdfAction == "default")
+        {
+          document.getElementById("preview-frame").loadURI(msiFileURLStringFromFile(pdffile));
+          // Switch to the preview pane (third in the deck)
+          goDoCommand("cmd_PreviewMode"); 
+        }
+        else 
+        {
+          var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
+          var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+          var extension;
+          var exefile;
+          if (pdfAction == "launch")
+          {
+            exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+            var os = GetOS();
+            if (os == "Win") extension = "cmd";
+            else extension = "bash";
+            exefile.append("shell."+ extension);
+          }
+          else // pdfAction == complete path to viewer
+          {
+            exefile = Components.classes["@mozilla.org/file/local;1"].
+                    createInstance(Components.interfaces.nsILocalFile);
+            exefile.initWithPath(pdfAction);
+          }
+          theProcess.init(exefile);
+          var arr = new Array();
+          if (pdfAction == "launch") arr.push(exefile.path);
+          arr.push(pdffile.path);
+          theProcess.run(false, arr, arr.length);
+        }
       } 
       else
         printPDFFile(pdffile);

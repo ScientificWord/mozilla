@@ -20,7 +20,7 @@ function startUp()
     window.close();
     return;
   }
-  msiframe = editor.getSelectedElement("msiframe");
+  msiframe = getSelectionParentByTag(editor, "msiframe");
   isNewNode = !(msiframe);
   if (isNewNode)
   {

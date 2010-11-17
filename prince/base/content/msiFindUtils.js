@@ -1,3 +1,8 @@
+//NOTE!! If you want to turn loggin back on in this file, search for //log at the beginning of lines
+
+var bLoggingSearchStuff = false;
+//log  bLoggingSearchStuff = true;
+
 var msiSearchUtils = 
 {
   //Some defined constants
@@ -1262,6 +1267,7 @@ msiMatchNode.prototype =
     this.mEditor = refEditor;
     this.getInheritedAttribs(aNode, refEditor);
     this.mSearchType = msiSearchUtils.getTypeOfNodeSearch(aNode, refEditor);
+    this.lastOffset = msiNavigationUtils.lastOffset(this.mNode);
   },
 
   matchIsCaseSensitive : function()
@@ -1370,7 +1376,7 @@ msiMatchNode.prototype =
     var ourTargRange = this.mEditor.document.createRange();
     ourTargRange.setStart(targNode, 0);
     ourTargRange.setEnd(targNode, 0);
-    msiKludgeLogString( "Entering match for node [" + this.describe() + "]; targRange is [" + this.describeMsiRange(targRange) + "];\n  ourTargRange is [" + this.describeMsiRange(ourTargRange) + "].\n", ["search"] );
+//log    msiKludgeLogString( "Entering match for node [" + this.describe() + "]; targRange is [" + this.describeMsiRange(targRange) + "];\n  ourTargRange is [" + this.describeMsiRange(ourTargRange) + "].\n", ["search"] );
     var localTargNode = null;
     var bCanMatch = this.doStructuralNodeMatch(targNode);
     if (bCanMatch)
@@ -1410,10 +1416,10 @@ msiMatchNode.prototype =
       }  
     }
 
-    if (!bCanMatch)
-      msiKludgeLogString("doStructuralNodeMatch failed in msiMatchNode.match(), with target [" + targNode.nodeName + "] and targRange [" + targRange.toString() + "], for matching node [" + this.describe() + "].\n", ["search"] );
-    else
-      msiKludgeLogString( "Returning [" + this.matchReturnString(matched) + "] from msiMatchNode.match(), with target [" + targNode.nodeName + "] and targRange [" + targRange.toString() + "], for matching node [" + this.describe() + "].\n", ["search"] );
+//log    if (!bCanMatch)
+//log      msiKludgeLogString("doStructuralNodeMatch failed in msiMatchNode.match(), with target [" + targNode.nodeName + "] and targRange [" + targRange.toString() + "], for matching node [" + this.describe() + "].\n", ["search"] );
+//log    else
+//log      msiKludgeLogString( "Returning [" + this.matchReturnString(matched) + "] from msiMatchNode.match(), with target [" + targNode.nodeName + "] and targRange [" + targRange.toString() + "], for matching node [" + this.describe() + "].\n", ["search"] );
 
     return matched;
   },
@@ -1517,7 +1523,7 @@ msiMatchNode.prototype =
 //(iii) Is there some reason why doMatchCheck() should sometimes do less than a full doStructuralNodeMatch()? Assume no.
   extendMatchToLeft : function(matchRange, ourRange)
   {
-    msiKludgeLogString( "Entering extendMatchToLeft for node [" + this.describe() + "]; matchRange is [" + this.describeMsiRange(matchRange) + "];\n  ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"]);
+//log    msiKludgeLogString( "Entering extendMatchToLeft for node [" + this.describe() + "]; matchRange is [" + this.describeMsiRange(matchRange) + "];\n  ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"]);
     var localTargRange = matchRange.cloneRange();
 
     var retVal = msiSearchUtils.partialMatch;
@@ -1542,8 +1548,8 @@ msiMatchNode.prototype =
     var bMoreToGo = this.haveContentBeforeRangeStart(ourRange);
     if (!bMoreToGo)
     {
-      msiKludgeLogString( "Initial false from this.haveContentBeforeRangeStart in extendMatchToLeft for node [" + this.describe() + "]!\n", ["search"] );
-      msiNavigationUtils.comparePositions(this.mNode, 0, ourRange.startContainer, ourRange.startOffset, true);
+//log      msiKludgeLogString( "Initial false from this.haveContentBeforeRangeStart in extendMatchToLeft for node [" + this.describe() + "]!\n", ["search"] );
+      msiNavigationUtils.comparePositions(this.mNode, 0, ourRange.startContainer, ourRange.startOffset, bLoggingSearchStuff);
       bMoreToGo = true;  //experimental
     }
     while (bTargOffsetChanged && bMoreToGo)
@@ -1568,9 +1574,9 @@ msiMatchNode.prototype =
         bTargOffsetChanged = this.adjustLeftStartingTargPosition(localTargRange, ourRange);
 //      if (this.adjustLeftStartingTargPosition(localTargRange, ourRange, refEditor))
 //      {
-        if (bTargOffsetChanged)
-//        bTargOffsetChanged = true;
-          msiKludgeLogString( "adjustLeftStartingTargPosition() call changed offset in extendMatchToLeft for node [" + this.describe() + "]; localTargRange is [" + this.describeMsiRange(localTargRange) + "];\n  ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
+//log        if (bTargOffsetChanged)
+//log//        bTargOffsetChanged = true;
+//log          msiKludgeLogString( "adjustLeftStartingTargPosition() call changed offset in extendMatchToLeft for node [" + this.describe() + "]; localTargRange is [" + this.describeMsiRange(localTargRange) + "];\n  ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
       }
       if (this.targNodeIsCompatible(localTargRange.startContainer))
         lastGoodLocalRange.setStart(localTargRange.startContainer, localTargRange.startOffset);
@@ -1585,7 +1591,7 @@ msiMatchNode.prototype =
       {
         if (!this.targNodeIsCompatible(localTargRange.startContainer))
         {
-          msiKludgeLogString( "In extendMatchToLeft, targNodeIsCompatible failed for node [" + this.describe() + "]; localTargRange is [" + this.describeMsiRange(localTargRange) + "]; ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
+//log          msiKludgeLogString( "In extendMatchToLeft, targNodeIsCompatible failed for node [" + this.describe() + "]; localTargRange is [" + this.describeMsiRange(localTargRange) + "]; ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
           retVal = msiSearchUtils.cannotMatch;
         }
       }
@@ -1597,14 +1603,14 @@ msiMatchNode.prototype =
       retVal = msiSearchUtils.completedMatch;
 //      matchRange.setStart( theTarget, theOffset );
     }  
-    msiKludgeLogString( "Returning [" + this.matchReturnString(retVal) + "] from extendMatchToLeft for node [" + this.describe() + "]; matchRange is [" + this.describeMsiRange(matchRange) + "].\n", ["search"] );
+//log    msiKludgeLogString( "Returning [" + this.matchReturnString(retVal) + "] from extendMatchToLeft for node [" + this.describe() + "]; matchRange is [" + this.describeMsiRange(matchRange) + "].\n", ["search"] );
     return retVal;
   },
 
 
   extendMatchToRight : function(matchRange, ourRange)
   {
-    msiKludgeLogString( "Entering extendMatchToRight for node [" + this.describe() + "]; matchRange is [" + this.describeMsiRange(matchRange) + "];\n  ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
+//log    msiKludgeLogString( "Entering extendMatchToRight for node [" + this.describe() + "]; matchRange is [" + this.describeMsiRange(matchRange) + "];\n  ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
     var localTargRange = matchRange.cloneRange();
     var retVal = msiSearchUtils.partialMatch;
 //    var bMustMatchContainingNode = ( this.mustMatchNode() && !this.offsetIsAtStart(this.mNode, ourOffset) );
@@ -1629,8 +1635,8 @@ msiMatchNode.prototype =
     var bMoreToGo = this.haveContentAfterRangeEnd(ourRange);
     if (!bMoreToGo)
     {
-      msiKludgeLogString( "Initial false from haveContentAfterRangeEnd in extendMatchToRight for node [" + this.describe() + "]!\n", ["search"] );
-      msiNavigationUtils.comparePositions(this.mNode, msiNavigationUtils.lastOffset(this.mNode), ourRange.endContainer, ourRange.endOffset, true);
+//log      msiKludgeLogString( "Initial false from haveContentAfterRangeEnd in extendMatchToRight for node [" + this.describe() + "]!\n", ["search"] );
+      msiNavigationUtils.comparePositions(this.mNode, msiNavigationUtils.lastOffset(this.mNode), ourRange.endContainer, ourRange.endOffset, bLoggingSearchStuff);
       bMoreToGo = true;  //experimental
     }
     while (bTargOffsetChanged && bMoreToGo)
@@ -1646,7 +1652,7 @@ msiMatchNode.prototype =
       }
       else
         retVal = this.doRightMatchCheck(localTargRange, ourRange, null, bNewTargNode);
-      msiKludgeLogString( "Got [" + this.matchReturnString(retVal) + "] back from doRightMatchCheck call in extendMatchToRight for node [" + this.describe() + "]; localTargRange is [" + this.describeMsiRange(localTargRange) + "]; ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
+//log      msiKludgeLogString( "Got [" + this.matchReturnString(retVal) + "] back from doRightMatchCheck call in extendMatchToRight for node [" + this.describe() + "]; localTargRange is [" + this.describeMsiRange(localTargRange) + "]; ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
 //      theTarget = localTargRange.endContainer;
 //      theOffset = localTargRange.endOffset;
       bNewTargNode = (localTargRange.endContainer != currTarget);
@@ -1658,8 +1664,8 @@ msiMatchNode.prototype =
 //      if (this.adjustRightStartingTargPosition(localTargRange, ourRange, refEditor))
 //      {
 //        bTargOffsetChanged = true;
-        if (bTargOffsetChanged)
-          msiKludgeLogString( "adjustRightStartingTargPosition() call changed offset in extendMatchToRight for node [" + this.describe() + "]; localTargRange is [" + this.describeMsiRange(localTargRange) + "];\n  ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
+//log        if (bTargOffsetChanged)
+//log          msiKludgeLogString( "adjustRightStartingTargPosition() call changed offset in extendMatchToRight for node [" + this.describe() + "]; localTargRange is [" + this.describeMsiRange(localTargRange) + "];\n  ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
 //        else
 //          msiKludgeLogString( "adjustRightStartingTargPosition() call did not change offset in extendMatchToRight for node [" + this.describe() + "]; localTargRange is [" + this.describeMsiRange(localTargRange) + "];\n  ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
       }
@@ -1677,7 +1683,7 @@ msiMatchNode.prototype =
       {
         if (!this.targNodeIsCompatible(localTargRange.endContainer))
         {
-          msiKludgeLogString( "In extendMatchToRight, targNodeIsCompatible failed for node [" + this.describe() + "]; localTargRange is [" + this.describeMsiRange(localTargRange) + "]; ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
+//log          msiKludgeLogString( "In extendMatchToRight, targNodeIsCompatible failed for node [" + this.describe() + "]; localTargRange is [" + this.describeMsiRange(localTargRange) + "]; ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
           retVal = msiSearchUtils.cannotMatch;
         }
       }
@@ -1689,7 +1695,7 @@ msiMatchNode.prototype =
       this.adjoinRange(matchRange, localTargRange);
       retVal = msiSearchUtils.completedMatch;
     }  
-    msiKludgeLogString( "Returning [" + this.matchReturnString(retVal) + "] from extendMatchToRight for node [" + this.describe() + "]; matchRange is [" + this.describeMsiRange(matchRange) + "]; ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
+//log    msiKludgeLogString( "Returning [" + this.matchReturnString(retVal) + "] from extendMatchToRight for node [" + this.describe() + "]; matchRange is [" + this.describeMsiRange(matchRange) + "]; ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
     return retVal;
   },
 
@@ -1714,7 +1720,7 @@ msiMatchNode.prototype =
     // Again, we try to match as long as the targOffset can be safely moved left, but in this case we don't try to match our children 
     // here; once we find a matching node, we'll set "bNeedNodeMatch" to false and move theTarget inside it.
 //      else if (bNeedNodeMatch)
-    msiKludgeLogString( "Entering doLeftMatchCheck for node [" + this.describe() + "]\n", ["search"] );
+//log    msiKludgeLogString( "Entering doLeftMatchCheck for node [" + this.describe() + "]\n", ["search"] );
     var retVal = msiSearchUtils.partialMatch;
     var bMustMatchContainingNode = false;
     var localNodeToMatch = null;
@@ -1752,7 +1758,7 @@ msiMatchNode.prototype =
         {
           targNode = targNode.childNodes[targOffset - 1];
           targOffset = msiNavigationUtils.lastOffset(targNode);
-          msiKludgeLogString( "In doLeftMatchCheck for node [" + this.describe() + "], moving end of target to [" + this.describeNode(targNode) + ", offset " + targOffset + "].\n", ["search"] );
+//log          msiKludgeLogString( "In doLeftMatchCheck for node [" + this.describe() + "], moving end of target to [" + this.describeNode(targNode) + ", offset " + targOffset + "].\n", ["search"] );
           targRange.setStart(targNode, targOffset);
         }
         ourRange.setStart(this.mNode, msiNavigationUtils.lastOffset(this.mNode));
@@ -1797,16 +1803,16 @@ msiMatchNode.prototype =
         }
         else
         {
-          msiKludgeLogString( "localNodeToMatch is null in doLeftMatchCheck for node [" + this.describe() + "]!\n", ["search"] );
-          msiNavigationUtils.comparePositions(this.mNode, 0, ourRange.startContainer, ourRange.startOffset, true);
+//log          msiKludgeLogString( "localNodeToMatch is null in doLeftMatchCheck for node [" + this.describe() + "]!\n", ["search"] );
+          msiNavigationUtils.comparePositions(this.mNode, 0, ourRange.startContainer, ourRange.startOffset, bLoggingSearchStuff);
         }
 
         if (!msiSearchUtils.isMatching(localMatch))
         {
-          var localNodeToMatchStr = "null";
-          if (localMatcher)
-            localNodeToMatchStr = localMatcher.describe();
-          msiKludgeLogString( "Returning cannotMatch from doLeftMatchCheck for node [" + this.describe() + "]; localMatcher was [" + localNodeToMatchStr + "]\n", ["search"] );
+//log          var localNodeToMatchStr = "null";
+//log          if (localMatcher)
+//log            localNodeToMatchStr = localMatcher.describe();
+//log          msiKludgeLogString( "Returning cannotMatch from doLeftMatchCheck for node [" + this.describe() + "]; localMatcher was [" + localNodeToMatchStr + "]\n", ["search"] );
           return msiSearchUtils.cannotMatch;
         }
 //        if (retVal = msiSearchUtils.completedMatch && localMatch != null)
@@ -1817,7 +1823,7 @@ msiMatchNode.prototype =
 //        targNode = matchRange.startContainer;
       }
     }
-    msiKludgeLogString( "Returning [" + this.matchReturnString(retVal) + "] from doLeftMatchCheck for node [" + this.describe() + "]\n", ["search"] );
+//log    msiKludgeLogString( "Returning [" + this.matchReturnString(retVal) + "] from doLeftMatchCheck for node [" + this.describe() + "]\n", ["search"] );
     return retVal;
   },
 
@@ -1829,7 +1835,7 @@ msiMatchNode.prototype =
     // Again, we try to match as long as the targOffset can be safely moved right, but in this case we don't try to match our children 
     // here; once we find a matching node, we'll set "bNeedNodeMatch" to false and move theTarget inside it.
 //      else if (bNeedNodeMatch)
-    msiKludgeLogString( "Entering doRightMatchCheck for node [" + this.describe() + "]\n", ["search"] );
+//log    msiKludgeLogString( "Entering doRightMatchCheck for node [" + this.describe() + "]\n", ["search"] );
     var bMustMatchContainingNode = false;
     var targNode = matchRange.endContainer;
     var targOffset = matchRange.endOffset;
@@ -1865,7 +1871,7 @@ msiMatchNode.prototype =
         {
           targNode = targNode.childNodes[targOffset];
           targOffset = 0;
-          msiKludgeLogString( "In doRightMatchCheck for node [" + this.describe() + "], moving end of target to [" + this.describeNode(targNode) + ", offset " + targOffset + "].\n", ["search"] );
+//log          msiKludgeLogString( "In doRightMatchCheck for node [" + this.describe() + "], moving end of target to [" + this.describeNode(targNode) + ", offset " + targOffset + "].\n", ["search"] );
           matchRange.setEnd(targNode, targOffset);
         }
       }
@@ -1910,12 +1916,12 @@ msiMatchNode.prototype =
         }
         else
         {
-          msiKludgeLogString( "localNodeToMatch is null in doRightMatchCheck for node [" + this.describe() + "]!\n", ["search"] );
-          msiNavigationUtils.comparePositions(this.mNode, msiNavigationUtils.lastOffset(this.mNode), ourRange.endContainer, ourRange.endOffset, true);
+//log          msiKludgeLogString( "localNodeToMatch is null in doRightMatchCheck for node [" + this.describe() + "]!\n", ["search"] );
+          msiNavigationUtils.comparePositions(this.mNode, msiNavigationUtils.lastOffset(this.mNode), ourRange.endContainer, ourRange.endOffset, bLoggingSearchStuff);
         }
         if (!msiSearchUtils.isMatching(localMatch))
         {
-          msiKludgeLogString( "Returning cannotMatch from doRightMatchCheck for node [" + this.describe() + "]\n", ["search"] );
+//log          msiKludgeLogString( "Returning cannotMatch from doRightMatchCheck for node [" + this.describe() + "]\n", ["search"] );
           return msiSearchUtils.cannotMatch;
         }
 //        retVal = localMatch;
@@ -1926,7 +1932,7 @@ msiMatchNode.prototype =
 //        targNode = matchRange.startContainer;
       }
     }
-    msiKludgeLogString( "Returning [" + this.matchReturnString(retVal) + "] from doRightMatchCheck for node [" + this.describe() + "]\n", ["search"] );
+//log    msiKludgeLogString( "Returning [" + this.matchReturnString(retVal) + "] from doRightMatchCheck for node [" + this.describe() + "]\n", ["search"] );
     return retVal;
   },
 
@@ -2148,7 +2154,7 @@ msiMatchNode.prototype =
 //NOTE: "targRange" is taken as extending from the start of what this.mNode matched to the end of what we've thus far matched.
   adjustRightStartingTargPosition : function(targRange, ourRange)
   {
-    var logStr = "In adjustRightStartingTargPosition for node [" + this.describe() + "]; ";
+//log    var logStr = "In adjustRightStartingTargPosition for node [" + this.describe() + "]; ";
     var theTarget = targRange.endContainer;
     var theOffset = targRange.endOffset;
     var retVal = false;
@@ -2180,7 +2186,7 @@ msiMatchNode.prototype =
           bGoInside = true;
         else
         {
-          msiKludgeLogString( "In adjustRightStartingPosition for node [" + this.describe() + "], can't go inside [" + this.describeNode(newNode) + "].\n", ["search"] );
+//log          msiKludgeLogString( "In adjustRightStartingPosition for node [" + this.describe() + "], can't go inside [" + this.describeNode(newNode) + "].\n", ["search"] );
           if (msiNavigationUtils.isIgnorableWhitespace(newNode))
             retVal = true;
           else
@@ -2344,6 +2350,8 @@ msiMatchNode.prototype =
 
   haveContentBeforeRangeStart : function(aRange)
   {
+    if (( aRange.startContainer == this.mNode) && (aRange.startOffset == 0) )
+      return false;
     return msiNavigationUtils.nodeHasContentBeforeRangeStart(aRange, this.mNode);
   },
 
@@ -2369,6 +2377,8 @@ msiMatchNode.prototype =
 //
   haveContentAfterRangeEnd : function(aRange)
   {
+    if (( aRange.startContainer == this.mNode) && (aRange.startOffset == this.lastOffset) )
+      return false;
     return msiNavigationUtils.nodeHasContentAfterRangeEnd(aRange, this.mNode);
   },
 
@@ -2439,7 +2449,7 @@ msiMatchNode.prototype =
       if (compNode == aNode)
         return msiNavigationUtils.getFirstSignificantChild(compNode);
     }
-    msiKludgeLogString( "In nextNodeChildToRight for node [" + this.describeNode(aNode) + "], compNode is [" + this.describeNode(compNode) + "]; returning null.\n", ["search"] );
+//log    msiKludgeLogString( "In nextNodeChildToRight for node [" + this.describeNode(aNode) + "], compNode is [" + this.describeNode(compNode) + "]; returning null.\n", ["search"] );
     return null;
   },
 
@@ -2651,7 +2661,7 @@ msiTextMatchNode.prototype =
 
   doRightMatchCheck : function(matchRange, ourRange, origTarget, bNewTargNode)
   {
-    msiKludgeLogString( "Entering doRightMatchCheck for node [" + this.describe() + "]; matchRange is [" + this.describeMsiRange(matchRange) + "];\n  ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
+//log    msiKludgeLogString( "Entering doRightMatchCheck for node [" + this.describe() + "]; matchRange is [" + this.describeMsiRange(matchRange) + "];\n  ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
     var bMatched = false;
     var targNode = matchRange.endContainer;
     var targOffset = matchRange.endOffset;
@@ -2669,7 +2679,7 @@ msiTextMatchNode.prototype =
       }
       else
       {
-        msiKludgeLogString( "In msiTextMatchNode.doRightMatchCheck, incoming 'ourRange' is [" + this.describeMsiRange(ourRange) + "]; doesn't point to this text node!\n", ["search"] );
+//log        msiKludgeLogString( "In msiTextMatchNode.doRightMatchCheck, incoming 'ourRange' is [" + this.describeMsiRange(ourRange) + "]; doesn't point to this text node!\n", ["search"] );
         return msiSearchUtils.cannotMatch;
       }
     }
@@ -2733,7 +2743,7 @@ msiTextMatchNode.prototype =
 //      targOffset = matchRange.startOffset;
 //      targNode = matchRange.startContainer;
     }
-    msiKludgeLogString( "Returning [" + this.matchReturnString(retVal) + "] from doRightMatchCheck for node [" + this.describe() + "]; matchRange is [" + this.describeMsiRange(matchRange) + "];\n  ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
+//log    msiKludgeLogString( "Returning [" + this.matchReturnString(retVal) + "] from doRightMatchCheck for node [" + this.describe() + "]; matchRange is [" + this.describeMsiRange(matchRange) + "];\n  ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
     return retVal;
   },
 
@@ -2791,12 +2801,12 @@ msiTextMatchNode.prototype =
   {
     var bMatched = false;
     var nMatchlen = 0;
-    if (ourPosition.nPiece >= this.mTextPieces.length)
-      msiKludgeLogString( "In msiTextMatchNode.doMatchSubStringLeft, nPiece is too big [" + nPiece + "] for node [" + this.describe() + "].\n", ["search"] );
+//log    if (ourPosition.nPiece >= this.mTextPieces.length)
+//log      msiKludgeLogString( "In msiTextMatchNode.doMatchSubStringLeft, nPiece is too big [" + nPiece + "] for node [" + this.describe() + "].\n", ["search"] );
 
     var ourPiece = this.mTextPieces[ourPosition.nPiece];
-    if (!ourPiece)
-      msiKludgeLogString( "In msiTextMatchNode.doMatchSubStringLeft, ourPiece is too null, for nPiece [" + nPiece + "] and node [" + this.describe() + "].\n", ["search"] );
+//log    if (!ourPiece)
+//log      msiKludgeLogString( "In msiTextMatchNode.doMatchSubStringLeft, ourPiece is too null, for nPiece [" + nPiece + "] and node [" + this.describe() + "].\n", ["search"] );
     if (ourPosition.nOffset < ourPiece.length)
       ourPiece = ourPiece.substr(0, ourPosition.nOffset);
     var targPiece = targetPieces[targetPosition.nPiece];
@@ -2843,11 +2853,11 @@ msiTextMatchNode.prototype =
   {
     var bMatched = false;
     var nMatchlen = 0;
-    if (ourPosition.nPiece >= this.mTextPieces.length)
-      msiKludgeLogString( "In msiTextMatchNode.doMatchSubStringRight, nPiece is too big [" + nPiece + "] for node [" + this.describe() + "].\n", ["search"] );
+//log    if (ourPosition.nPiece >= this.mTextPieces.length)
+//log      msiKludgeLogString( "In msiTextMatchNode.doMatchSubStringRight, nPiece is too big [" + nPiece + "] for node [" + this.describe() + "].\n", ["search"] );
     var ourPiece = this.mTextPieces[ourPosition.nPiece];
-    if (!ourPiece)
-      msiKludgeLogString( "In msiTextMatchNode.doMatchSubStringRight, ourPiece is too null, for nPiece [" + nPiece + "] and node [" + this.describe() + "].\n", ["search"] );
+//log    if (!ourPiece)
+//log      msiKludgeLogString( "In msiTextMatchNode.doMatchSubStringRight, ourPiece is too null, for nPiece [" + nPiece + "] and node [" + this.describe() + "].\n", ["search"] );
     if (ourPosition.nOffset > 0)
       ourPiece = ourPiece.substr(ourPosition.nOffset);
     var targPiece = targetPieces[targetPosition.nPiece];
@@ -3033,7 +3043,7 @@ msiTemplateMatchNode.prototype =
     var localTargRange = this.mEditor.document.createRange();
     localTargRange.setStart(targetNode, 0);
     localTargRange.setEnd(targetNode, 0);
-    msiKludgeLogString( "Entering match for node [" + this.describe() + "]; targRange is [" + this.describeMsiRange(targRange) + "];\n  ourTargRange is [" + this.describeMsiRange(localTargRange) + "].\n", ["search"] );
+//log    msiKludgeLogString( "Entering match for node [" + this.describe() + "]; targRange is [" + this.describeMsiRange(targRange) + "];\n  ourTargRange is [" + this.describeMsiRange(localTargRange) + "].\n", ["search"] );
     var bTemplateMayMatch = false;
     for (var ix = 0; ix < this.mMatchInfo.length; ++ix)
     {
@@ -3088,10 +3098,10 @@ msiTemplateMatchNode.prototype =
     }
     else
       matched = msiSearchUtils.cannotMatch;
-    if (bTemplateMayMatch)
-      msiKludgeLogString( "Returning [" + this.matchReturnString(matched) + "] from msiMatchNode.match(), with target [" + targetNode.nodeName + "] and targRange [" + targRange.toString() + "], for matching node [" + this.describe() + "].\n", ["search"] );
-    else
-      msiKludgeLogString( "Template structural mismatch from msiMatchNode.match(), with target [" + targNodeName + "] and targRange [" + targRange.toString() + "], for matching node [" + this.describe() + "].\n", ["search"] );
+//log    if (bTemplateMayMatch)
+//log      msiKludgeLogString( "Returning [" + this.matchReturnString(matched) + "] from msiMatchNode.match(), with target [" + targetNode.nodeName + "] and targRange [" + targRange.toString() + "], for matching node [" + this.describe() + "].\n", ["search"] );
+//log    else
+//log      msiKludgeLogString( "Template structural mismatch from msiMatchNode.match(), with target [" + targNodeName + "] and targRange [" + targRange.toString() + "], for matching node [" + this.describe() + "].\n", ["search"] );
     return matched;
   },
 
@@ -3160,7 +3170,7 @@ msiTemplateMatchNode.prototype =
     // Again, we try to match as long as the targOffset can be safely moved left, but in this case we don't try to match our children 
     // here; once we find a matching node, we'll set "bNeedNodeMatch" to false and move theTarget inside it.
 //      else if (bNeedNodeMatch)
-    msiKludgeLogString( "Entering doRightMatchCheck for node [" + this.describe() + "]; matchRange is [" + this.describeMsiRange(matchRange) + "];\n  ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
+//log    msiKludgeLogString( "Entering doRightMatchCheck for node [" + this.describe() + "]; matchRange is [" + this.describeMsiRange(matchRange) + "];\n  ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
     var bMustMatchContainingNode = false;
     var targNode = matchRange.endContainer;
     var targOffset = matchRange.endOffset;
@@ -3207,7 +3217,7 @@ msiTemplateMatchNode.prototype =
 ////        targNode = matchRange.startContainer;
       }
     }
-    msiKludgeLogString( "Returning [" + this.matchReturnString(retVal) + "] from doRightMatchCheck for node [" + this.describe() + "]; matchRange is [" + this.describeMsiRange(matchRange) + "];\n  ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
+//log    msiKludgeLogString( "Returning [" + this.matchReturnString(retVal) + "] from doRightMatchCheck for node [" + this.describe() + "]; matchRange is [" + this.describeMsiRange(matchRange) + "];\n  ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
     return retVal;
   },
 
@@ -3270,7 +3280,7 @@ msiContainerTemplateMatchNode.prototype =
     var localTargNode = msiSearchUtils.getMatchNodeForChild(this.mNode, aTarget, 0);
     if (!localTargNode)
     {
-      msiKludgeLogString("In match() for [" + this.describe() + "], getMatchNodeForChild returned null! We're returning cannotMatch.\n", "search" );
+//log      msiKludgeLogString("In match() for [" + this.describe() + "], getMatchNodeForChild returned null! We're returning cannotMatch.\n", "search" );
       return retVal;
     }
 
@@ -3310,8 +3320,8 @@ msiContainerTemplateMatchNode.prototype =
       }
       else
       {
-        msiKludgeLogString( "localNodeToMatch is null in doRightMatchCheck for node [" + this.describe() + "]!\n", ["search"] );
-        msiNavigationUtils.comparePositions(this.mNode, msiNavigationUtils.lastOffset(this.mNode), ourRange.endContainer, ourRange.endOffset, true);
+//log        msiKludgeLogString( "localNodeToMatch is null in doRightMatchCheck for node [" + this.describe() + "]!\n", ["search"] );
+        msiNavigationUtils.comparePositions(this.mNode, msiNavigationUtils.lastOffset(this.mNode), ourRange.endContainer, ourRange.endOffset, bLoggingSearchStuff);
       }
 
       bNewTargNode = (localTargRange.endContainer != currTarget);
@@ -3322,8 +3332,8 @@ msiContainerTemplateMatchNode.prototype =
 //      if (this.adjustRightStartingTargPosition(localTargRange, ourRange, refEditor))
 //      {
 //        bTargOffsetChanged = true;
-        if (bTargOffsetChanged)
-          msiKludgeLogString( "adjustRightStartingTargPosition() call changed offset in extendMatchToRight for node [" + this.describe() + "]; localTargRange is [" + this.describeMsiRange(localTargRange) + "];\n  ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
+//log        if (bTargOffsetChanged)
+//log          msiKludgeLogString( "adjustRightStartingTargPosition() call changed offset in extendMatchToRight for node [" + this.describe() + "]; localTargRange is [" + this.describeMsiRange(localTargRange) + "];\n  ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
       }
       bMoreToGo = this.haveContentAfterRangeEnd(ourRange);
     }
@@ -3339,7 +3349,7 @@ msiContainerTemplateMatchNode.prototype =
       retVal = msiSearchUtils.completedMatch;
     }
 
-    msiKludgeLogString( "Returning [" + this.matchReturnString(retVal) + "] from match for node [" + this.describe() + "]; matchRange is [" + this.describeMsiRange(targRange) + "]; ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
+//log    msiKludgeLogString( "Returning [" + this.matchReturnString(retVal) + "] from match for node [" + this.describe() + "]; matchRange is [" + this.describeMsiRange(targRange) + "]; ourRange is [" + this.describeMsiRange(ourRange) + "].\n", ["search"] );
     return retVal;
   },
   

@@ -25,7 +25,7 @@ function Startup()
   }
   if (window.arguments && window.arguments.length > 0)
     texnode = window.arguments[0];
-  if (!texnode) texnode = editor.getSelectedElement("texb");
+  if (!texnode) texnode = getSelectionParentByTag(editor, "texb");
   gIsEnc = document.getElementById("enc");
   gName  = document.getElementById("name");
   gReq   = document.getElementById("req");

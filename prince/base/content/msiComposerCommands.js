@@ -130,7 +130,9 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_note", msiNoteCommand);
   commandTable.registerCommand("cmd_frame", msiFrameCommand);
   commandTable.registerCommand("cmd_citation", msiCitationCommand);
+  commandTable.registerCommand("cmd_reviseCitation", msiReviseCitationCommand);
   commandTable.registerCommand("cmd_showTeXLog", msiShowTeXLogCommand);
+  commandTable.registerCommand("cmd_showTeXFile", msiShowTeXFileCommand);
   commandTable.registerCommand("cmd_showXSLTLog", msiShowXSLTLogCommand);
   commandTable.registerCommand("cmd_gotoparagraph", msiGoToParagraphCommand);
   commandTable.registerCommand("cmd_countwords", msiWordCountCommand);
@@ -651,7 +653,10 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
   } else if (commandID == 'cmd_structtag')
   { 
     if (tagmanager && tagmanager.getTagInClass("envtag", newState, null)) commandID = 'cmd_envtag';
-  }   
+  }
+  if (msiDeferStatefulCommand(commandID, newState, editorElement))
+    return;
+     
   var docList = msiGetUpdatableItemContainers(commandID, editorElement);
   for (var i = 0; i < docList.length; ++i)
   {
@@ -696,6 +701,62 @@ function msiDoStatefulCommand(commandID, newState, editorElement)
     }
     msiResetStructToolbar(editorElement);
   } catch(e) { dump("error thrown in msiDoStatefulCommand: "+e+"\n"); }
+}
+
+//This repeats much of the functionality from msiDoStatefulCommand above, but is called from the dialog which has to run first.
+function msiDoTagBibItem(dlgData, paraContainer, editorElement)
+{
+  var editor = msiGetEditor(editorElement);
+  editor.beginTransaction();
+  try
+  {
+    editorElement.contentWindow.focus();   // needed for command dispatch to work
+    if (paraContainer)
+      editor.selection.collapse(paraContainer, 0);
+    var cmdParams = newCommandParams();
+    if (!cmdParams) return;
+
+    cmdParams.setCStringValue("state_attribute", "bibitem");
+    msiGoDoCommandParams("cmd_listtag", cmdParams, editorElement);
+  } catch(e) { dump("error thrown in msiDoTagBibItem: "+e+"\n"); }
+
+  var bibitemNode = msiNavigationUtils.getParentOfType(editor.selection.focusNode, "bibitem");
+  if (bibitemNode)
+    doReviseManualBibItem(editorElement, bibitemNode, dlgData);
+  editor.endTransaction();
+
+  var docList = msiGetUpdatableItemContainers("cmd_listtag", editorElement);
+  for (var i = 0; i < docList.length; ++i)
+  {
+    var commandNode = docList[i].getElementById("cmd_listtag");
+    if (commandNode)     
+      commandNode.setAttribute("state", "bibitem");
+  }
+  try
+  {
+    msiPokeTagStateUI("cmd_listtag", cmdParams);
+    msiResetStructToolbar(editorElement);
+  } catch(exc) { dump("Error after applying tag in msidoTagBibItem: " + exc + "\n"); }
+}
+
+//In the case of tagging a paragraph as a "bibitem", this function launches the ManualBibItem dialog
+function msiDeferStatefulCommand(commandID, newState, editorElement)
+{
+  var retVal = false;
+  var editor = msiGetEditor(editorElement);
+  switch(newState)
+  {
+    case "bibitem":
+    {
+      var paraNode = msiNavigationUtils.getTopParagraphParent(editor.selection.focusNode, editor);
+      var bibData = {key : "", bibLabel : "", paragraphNode : paraNode};
+      var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibItemDlg.xul", "_blank", "chrome,close,titlebar,dependent",
+                                                           editorElement, commandID, this, bibData);
+      retVal = true;
+    }
+    break;
+  }
+  return retVal;
 }
 
 function getNextTagWindow(commandID)
@@ -1872,6 +1933,7 @@ function msigEditorOutputProgressListener(editorElement)
 
             // this should cause notification to listeners that doc has changed
             editor.resetModificationCount();
+            editor.pdfModCount = 0;
 
             // Set UI based on whether we're editing a remote or local url
             SetSaveAndPublishUI(urlstring);
@@ -2692,12 +2754,16 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   msiUpdateWindowTitle(null, destLocalFile.leafName);
 
   if (!aSaveCopy)
+  {
+    pdfModCount = 0;
     editor.resetModificationCount();
+  }
   // this should cause notification to listeners that document has changed
 
   // Set UI based on whether we're editing a remote or local url
   if (!aSaveCopy)
     msiSetSaveAndPublishUI(sciurlstring, editorElement);
+  SaveRecentFilesPrefs()
   return true;
 }
 
@@ -3286,7 +3352,8 @@ var msiDirectPrintCommand =
     // In editor.js
     msiFinishHTMLSource();
     try {
-      NSPrint();
+//      NSPrint();
+      PrintUtils.print();
     } catch (e) {}
   }
 };
@@ -3377,7 +3444,8 @@ var msiPrintSetupCommand =
   {
     // In editor.js
     msiFinishHTMLSource();
-    NSPrintSetup();
+    PrintUtils.showPageSetup();
+//    NSPrintSetup();
   }
 };
 
@@ -4739,6 +4807,7 @@ function msiInsertHorizontalSpace(dialogData, editorElement)
 {
   var editor = msiGetEditor(editorElement);
   var parentNode = editor.selection.anchorNode;
+  var dimsStr, contentStr;
   var insertPos = editor.selection.anchorOffset;
   if (dialogData.spaceType == "normalSpace") editor.insertText(" ");
 //  var dimensionsFromSpaceType = 
@@ -5044,11 +5113,13 @@ function msiInsertVerticalSpace(dialogData, editorElement)
 {
   var editor = msiGetEditor(editorElement);
   var styleStr;
+  var dimStr;
+  var vAlignStr;
   var node = editor.document.createElement('vspace',true);
   if (dialogData.spaceType != "customSpace")
   {
     node.setAttribute('type',dialogData.spaceType);
-    var dimStr = msiSpaceUtils.getVSpaceDims(dialogData.spaceType);
+    dimStr = msiSpaceUtils.getVSpaceDims(dialogData.spaceType);
     var lineHtStr = null;
     if (dimStr)
     {
@@ -5066,9 +5137,9 @@ function msiInsertVerticalSpace(dialogData, editorElement)
   else
   {
     node.setAttribute('type','customSpace');
-    var dimStr = String(dialogData.customSpaceData.sizeData.size) + dialogData.customSpaceData.sizeData.units;
+    dimStr = String(dialogData.customSpaceData.sizeData.size) + dialogData.customSpaceData.sizeData.units;
     node.setAttribute('dim', dimStr);
-    var vAlignStr = String(-(dialogData.customSpaceData.sizeData.size)) + dialogData.customSpaceData.sizeData.units;
+    vAlignStr = String(-(dialogData.customSpaceData.sizeData.size)) + dialogData.customSpaceData.sizeData.units;
     node.setAttribute('atEnd',(dialogData.customSpaceData.typesetChoice=='always' ? 'true': 'false'));
     node.setAttribute('style','height: ' + dimStr + '; vertical-align: ' + vAlignStr + ';');
   }
@@ -5773,6 +5844,7 @@ function msiFinishDocumentInfoDialog(editorElement, dlgInfo)
     var docInfo = dlgInfo.parentData;
     docInfo.resetFromDialogInfo(dlgInfo);
     docInfo.putDocInfoToDocument();
+    msiUpdateWindowTitle(null, null);
   }
 }
 
@@ -5850,15 +5922,15 @@ function msiDocumentInfo(editorElement)
 
   this.initializeDocInfo = function()
   {
-    var docHead = msiGetPreamble(this.mEditor);
-    if (!docHead)
-      return;
-
     this.generalSettings = new Object();
     this.comments = new Object();
     this.printSettings = new Object();
     this.metadata = new Object();
     this.saveSettings = new Object();
+
+    var docHead = msiGetPreamble(this.mEditor);
+    if (!docHead)
+      return;
 
     var treeWalker = this.mEditor.document.createTreeWalker(docHead,
                                                             NodeFilter.SHOW_ELEMENT|NodeFilter.SHOW_COMMENT,
@@ -5926,14 +5998,13 @@ function msiDocumentInfo(editorElement)
             var titleObj = new Object();
             titleObj.name = "title";
             titleObj.type = "title";
-            titleObj.contents = "";
-            for (var ix = 0; ix < currNode.childNodes.length; ++ix)
-            {
-              if (currNode.childNodes[ix].nodeName == "#text")
-                titleObj.contents += currNode.childNodes[ix].nodeValue;
-            }
+            titleObj.contents = currNode.textContent;
+//            for (var ix = 0; ix < currNode.childNodes.length; ++ix)
+//            {
+//              if (currNode.childNodes[ix].nodeName == "#text")
+//                titleObj.contents += currNode.childNodes[ix].nodeValue;
+//            }
             this.generalSettings["title"] = titleObj;
-            msiUpdateWindowTitle(titleObj.contents, null);
           }
           break;
           case "address":
@@ -6085,11 +6156,12 @@ function msiDocumentInfo(editorElement)
             if (commentData != null)
             {
               objName = commentData.name;
-              switch(commentData.name)
+              switch(commentData.name.toLowerCase())
               {
                 case "lastrevised":
                 case "documentshell":
                 case "language":
+                case "bibliographyscheme":
                   objParent = this.generalSettings;
                 break;
                 case "graphicssave":
@@ -6112,7 +6184,6 @@ function msiDocumentInfo(editorElement)
                 case "outputfilter":
                 case "version":
                 case "saveformode":
-                case "bibliographyscheme":
                 break;
 
                 default:
@@ -6241,7 +6312,6 @@ function msiDocumentInfo(editorElement)
 //        insertNewNode(newNode);
 //      }
 //    }
-
   };
 
   this.createNewNode = function(dataObj, ourName)
@@ -6255,7 +6325,6 @@ function msiDocumentInfo(editorElement)
         newNode = this.mEditor.document.createElement("title");
         newNode.appendChild(newTextNode);
         newNode.setAttribute("req", "hyperref");
-        msiUpdateWindowTitle(dataObj.contents, null);
       }
       break;
       case "meta":
@@ -6351,7 +6420,7 @@ function msiDocumentInfo(editorElement)
     //  information is probably desirable. Will have to be decided soon.
     var retVal = null;
     var theData = commentNode.data;  //Do we need to query for the Comment interface first?
-    theData = theData.toLowerCase();
+//    theData = theData.toLowerCase();
 
 //    var tcidataRegExp = /tcidata[\s]*\{((?:(?:\\\})|(?:[^\}]))+)\}/i;
 //	  var fullNameSyntax = /meta[\s]+.*name=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
@@ -6371,18 +6440,18 @@ function msiDocumentInfo(editorElement)
     if (tciData && (tciData.length > 1))  
     {
       var metaName = tciData[1].match(this.fullNameSyntax);
-      if (metaName.length == 0)
-        metaName = tciData.match(this.altfullNameSyntax);
-      if (metaName.length > 1)
+      if (!metaName || (metaName.length == 0))
+        metaName = tciData[1].match(this.altfullNameSyntax);
+      if (metaName && (metaName.length > 1))
       {
         var theType = "comment-meta";
         var contents = tciData[1].match(this.fullContentsSyntax);
-        if (contents.length == 0)
+        if (!contents || (contents.length == 0))
         {
           theType = "comment-meta-alt";
           contents = tciData[1].match(this.altfullContentsSyntax);
         }
-        if (contents.length > 1)
+        if (contents && (contents.length > 1))
         {
           retVal = new Object();
           retVal.name = metaName[1];
@@ -6394,9 +6463,9 @@ function msiDocumentInfo(editorElement)
       {
         var linkName = tciData[1].match(this.fullLinkSyntax);
         var theType = "comment-link";
-        if (linkName.length == 0)
+        if (!linkName || (linkName.length == 0))
           linkName = tciData[1].match(this.altfullLinkSyntax);
-        if (linkName.length > 1)
+        if (linkName && (linkName.length > 1))
         {
           var ref = tciData[1].match(this.fullLinkRefSyntax);
           if (ref.length == 0)
@@ -6524,7 +6593,6 @@ function msiDocumentInfo(editorElement)
     if (("documentTitle" in dlgInfo.general) && (dlgInfo.general.documentTitle != null))
     {
       theContents = dlgInfo.general.documentTitle;
-      msiUpdateWindowTitle(theContents, null);
     }
     this.setObjectFromData(this.generalSettings, "title", (theContents.length > 0), "Title", theContents, "title");
   };
@@ -6975,10 +7043,57 @@ var msiCitationCommand =
   doCommand: function(aCommand)
   {
     var editorElement = msiGetActiveEditorElement();
-    //temporary
-    // need to get current note if it exists -- if none, initialize as follows 
-    doInsertCitation(editorElement, "cmd_citation", this);
+    var bibChoice = getBibliographyScheme(editorElement);
+    if (bibChoice == "BibTeX")  //a kludge - must get hooked up to editor to really work
+    {
+      var bibCiteData = {databaseFile : "", key : "", remark : "", bBibEntryOnly : false};
+      var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibTeXCitation.xul", "_blank", "resizable=yes, chrome,close,titlebar,dependent",
+                                                       editorElement, aCommand, this, bibCiteData);
+    }
+    else
+    {
+      var manualCiteData = {key : "", remark : ""};
+      manualCiteData.keyList = new Array();
+      var editor = msiGetEditor(editorElement);
+  //    if (editor)
+  //      manualCiteData.keyList = manualCiteData.keyList.concat(getEditorBibItemList(editor));
+
+      var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetManualCitation.xul", "_blank", "chrome,close,titlebar,dependent",
+                                                             editorElement, aCommand, this, manualCiteData);
+    }
   }
+};
+
+var msiReviseCitationCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+
+    return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement));
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    var citeReviseData = msiGetPropertiesDataFromCommandParams(aParams);
+    var citeData = {key : "", remark : "", reviseData : citeReviseData};
+    var citeNode = citeReviseData.getReferenceNode();
+    if (citeNode.hasAttribute("type") && (citeNode.getAttribute("type") == "bibtex"))
+    {
+      var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibTeXCitation.xul", "_blank", "chrome,close,titlebar,dependent",
+                                                             editorElement, "cmd_reviseCitationCmd", this, citeData);
+    }
+    else
+    {
+      var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetManualCitation.xul", "_blank", "chrome,close,titlebar,dependent",
+                                                             editorElement, "cmd_reviseCitationCmd", this, citeData);
+    }
+    editorElement.focus();
+  },
+
+  doCommand: function(aCommand) {}
 };
 
 //-----------------------------------------------------------------------------------
@@ -7030,6 +7145,7 @@ var msiObjectPropertiesCommand =
     // Launch Object properties for appropriate selected element 
     var editorElement = msiGetActiveEditorElement();
     var nodeData = msiGetObjectDataForProperties(editorElement);
+    if (!nodeData) return;
     var element = nodeData.theNode;
     var cmdString = nodeData.getCommandString(0);
 
@@ -8629,6 +8745,62 @@ var msiShowTeXLogCommand =
       if (match)
       {
         var resurl = match[1]+"/tex/SWP.log";
+        openDialog("chrome://global/content/viewSource.xul",
+               "_blank",
+               "all,dialog=no",
+               resurl, null, null);
+      }
+    }
+    return result;
+  }
+}
+var msiShowTeXFileCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    result = false;
+    var editorElement = msiGetActiveEditorElement();
+    if (!msiIsTopLevelEditor(editorElement))
+      return result;
+
+    var editor = msiGetEditor(editorElement);
+    if (editor)
+    {
+      var url = msiGetEditorURL(editorElement);
+      var re = /(.*)\/([^\/\.]*)\.[^\/\.]*$/;
+      var match = re.exec(url);
+      if (match)
+      {
+        var resurl = match[1]+"/"+match[2]+"_files/tex/"+"main.tex";
+        var thefile = Components.classes["@mozilla.org/file/local;1"].
+        createInstance(Components.interfaces.nsILocalFile);
+        thefile.initWithPath(resurl);
+        result = thefile.exists();
+      }
+    }
+    return result;
+  },
+  
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    result = true;
+    var editorElement = msiGetActiveEditorElement();
+    if (!msiIsTopLevelEditor(editorElement))
+      return result;
+
+    var editor = msiGetEditor(editorElement);
+    if (editor)
+    {
+      var url = msiGetEditorURL(editorElement);
+//      var re = /\/([a-zA-Z0-9_]+)\.[a-zA-Z0-9_]+$/i;
+      var re = /(.*)\/([^\/\.]*)\.[^\/\.]*$/;
+      var match = re.exec(url);
+      if (match)
+      {
+        var resurl = match[1]+"/tex/main.tex";
         openDialog("chrome://global/content/viewSource.xul",
                "_blank",
                "all,dialog=no",
