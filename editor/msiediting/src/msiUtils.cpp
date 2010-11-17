@@ -462,17 +462,17 @@ nsresult msiUtils::CreateMathMLLeafElement(nsIEditor * editor,
 }
 
 nsresult msiUtils::CreateMathMLLeafElement(nsIEditor *editor,
-                                           PRUint32 character,
+                                           const nsAString & text,
                                            PRUint32 caretPos,
                                            PRUint32 & flags,
                                            nsCOMPtr<nsIDOMElement> & mathmlElement)
 {
   nsresult res(NS_ERROR_FAILURE);
-  NS_ASSERTION(character, "Trying to create leaf with character == 0");
-  if (character)
+  NS_ASSERTION(text[0], "Trying to create leaf with character == 0");
+  if (text[0])
   {
-    PRUint32 tagType = GetMathMLNodeTypeFromCharacter(character);
-    nsAutoString text((PRUnichar)character);
+    PRUint32 tagType = GetMathMLNodeTypeFromCharacter(text[0]);
+//    nsAutoString text((PRUnichar)character);
     res = CreateMathMLLeafElement(editor, text, tagType, caretPos, flags, mathmlElement);
   }
   return res;  
@@ -1204,7 +1204,7 @@ nsresult msiUtils::CreateEngineFunction(nsIEditor * editor,
   nsresult res(NS_ERROR_FAILURE); 
   nsCOMPtr<nsIDOMNode> theChild;
   nsCOMPtr<nsIDOMElement> mathname;
-  msiUtils::CreateMathname(editor, name, flags, PR_FALSE, mathname);
+  res = msiUtils::CreateMathname(editor, name, flags, PR_FALSE, mathname);
   nsAutoString msiclass, enginefunction;
   msiEditingAtoms::msiclass->ToString(msiclass);
   msiEditingAtoms::enginefunction->ToString(enginefunction);

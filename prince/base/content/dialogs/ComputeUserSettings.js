@@ -18,8 +18,6 @@ function setValue(item,val) {
 function Startup(){
   data = window.arguments[0];
 
-  setIndex("fences", data.mfenced ? 0 : 1);
-
   setValue("digits", data.digits.toString());
   setValue("lower", data.lower.toString());
   setValue("upper", data.upper.toString());
@@ -59,8 +57,6 @@ function getValue(item) {
 
 function OK(){
   data.Cancel = false;
-
-  data.mfenced = getIndex("fences") == 0 ? 1 : 0;
 
   data.digits  = parseInt(getValue("digits"),10);
   data.lower  = parseInt(getValue("lower"),10);

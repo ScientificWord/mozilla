@@ -728,7 +728,7 @@ msiEditingManager::InsertSymbol(nsIEditor * editor,
                                 nsISelection * selection, 
                                 nsIDOMNode* node, 
                                 PRUint32 offset,
-                                PRUint32 symbol)
+                                const nsAString & symbol)
 {
   nsresult res(NS_ERROR_FAILURE);
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertSymbol");
