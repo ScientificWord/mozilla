@@ -236,8 +236,20 @@
 %% Citations and cross refs
 
 
-\def\out@citex[#1]#2{\msiopentag{cite}{<cite>}#2\msiclosetag{cite}{</cite>}}
-\def\out@citey#1{\msiopentag{cite}{<cite>}#1\msiclosetag{cite}{</cite>}}
+\def\out@citex[#1]#2{%
+   \msiopentag{citation}{<citation xmlns="http://www.w3.org/1999/xhtml" 
+                            citekey="#1" 
+                            hasRemark="true">>}%
+        \msiopentag{biblabel}{<biblabel class="remark" xmlns="http://www.w3.org/1999/xhtml">}%
+            #2%
+        \msiclosetag{biblabel}{</biblabel>}%
+  \msiclosetag{citation}{</citation>}}
+
+\def\out@citey#1{%
+  \msiopentag{citation}{<citation xmlns="http://www.w3.org/1999/xhtml" 
+                            citekey="#1" 
+                            hasRemark="false">>}
+  \msiclosetag{citation}{</citation>}}
 
 
 
