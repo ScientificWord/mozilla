@@ -1,22 +1,27 @@
-
 var node;
 
 function startUp()
 {
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  if (!editorElement)
+  {
+    AlertWithTitle("Error", "No editor in fontsize.OnAccept!");
+  }
+  var editor = msiGetEditor(editorElement);
   if (window.arguments && window.arguments.length > 0)
     node = window.arguments[0];
-  if (!node) node = editor.getSelectedElement("fontsize");
+  if (!node) node = getSelectionParentByTag(editor, "fontsize");
   if (node) 
   {
     var sizeandspacing = node.getAttribute("size");
     var arr = sizeandspacing.split("/");
-    document.getElementById("otfont.fontsize").value = arr[0];
+    document.getElementById('otfont.fontsize').value = arr[0];
     if (arr.length > 0)
     {
       var arr2 = arr[1].split(" ");
-      document.getElementById("leading").value = arr2[0];
+      document.getElementById('leading').value = arr2[0];
       if (arr2.length > 1)
-        document.getElementById("otfont.units").value = arr2[1];
+        document.getElementById('otfont.units').value = arr2[1];
     }
   }
 }
@@ -25,16 +30,19 @@ function startUp()
 function onAccept()
 {
   var size=Number(document.getElementById("otfont.fontsize").value);
-  if (size==NaN) return;
+  if (isNaN(size)) return;
   var units = document.getElementById("otfont.units").value;
-  var leading=Number(document.getElementById("leading").value);
-  var sizewithunits = size+"/"+leading+" "+units;
+  var leading = Number(document.getElementById("leading").value);
+  var sizewithunits = size + "/" + leading + " " + units;
   var editorElement = msiGetParentEditorElementForDialog(window);
   if (!editorElement)
   {
     AlertWithTitle("Error", "No editor in fontsize.OnAccept!");
   }
-  if (node) node.setAttribute("size", sizewithunits);
+  if (node) 
+  {
+    node.setAttribute("size", sizewithunits);
+  }
   else
   {
 	  var theWindow = window.opener;
