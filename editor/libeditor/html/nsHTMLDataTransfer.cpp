@@ -980,7 +980,7 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
    }
        
   }                           
-  if (fFancy && isEmpty && fDiscardNode && isAtEnd)
+  if (fFancy && isEmpty && fDiscardNode) // && isAtEnd)
   {  
     nsIAtom * atomNS = nsnull;
     PRBool fCanContain;

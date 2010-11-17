@@ -528,13 +528,28 @@ function addFocusEventListenerForEditor(editorElement)
 
 function msiEditorKeyListener(event)
 {
-  if (event.keyCode == event.DOM_VK_ENTER || event.keyCode == event.DOM_VK_RETURN)
+  if (event.ctrlKey || event.altKey || event.metaKey)
+    return;
+
+  switch(event.keyCode)
   {
-    if (msiEditorCheckEnter(event))
-    {
-      event.preventDefault();
-      event.stopPropagation();
-    }
+    case event.DOM_VK_ENTER:
+    case event.DOM_VK_RETURN:
+      if (msiEditorCheckEnter(event))
+      {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    break;
+    case event.DOM_VK_TAB:
+      if (msiEditorDoTab(event))
+      {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    break;
+    default:
+    break;
   }
 }
 
@@ -772,7 +787,7 @@ function msiEditorDocumentObserver(editorElement)
           for (j = 0; j < classtemplates.length; j++) classtemplates[j]=classtemplates[j].replace(/^\s*/,"");
 
 
-          var tagclasses = ["texttag","paratag","listtag","structtag","envtag","frontmtag"];
+          var tagclasses = ["texttag","paratag","listparenttag","listtag","structtag","envtag","frontmtag"];
           var taglist;
           var i;
           var k;
@@ -920,8 +935,6 @@ function msiEditorDocumentObserver(editorElement)
         catch(e) {
           dump("Failed to init fast cursor: "+e+"\n");
         }
-        if ("UpdateWindowTitle" in window)
-          UpdateWindowTitle();
         // Add mouse click watcher if right type of editor
 //        msiDumpWithID("About to enter 'if msiIsHTMLEditor' clause in msiEditorDocumentObserver obs_documentCreated for editor [@].\n", this.mEditorElement);
         if (msiIsHTMLEditor(this.mEditorElement))
@@ -1263,7 +1276,6 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
     {
       var newdoc;
       newdoc = createWorkingDirectory(doc);
-      // newdoc is an nsIFile
       docurl = msiFileURLFromFile(newdoc);
     }
 
@@ -1277,9 +1289,8 @@ function msiLoadInitialDocument(editorElement, bTopLevel)
       contentViewer.forceCharacterSet = charset;
     }
     dump("Trying to load editor with url = "+docurl.spec+"\n");
-    if ("msiUpdateWindowTitle" in window)
-      msiUpdateWindowTitle(null, null);
     msiEditorLoadUrl(editorElement, docurl);
+    msiUpdateWindowTitle(null, null);
   }
   catch (e) {
     dump("Error in loading URL in msiLoadInitialDocument: [" + e + "]\n");
@@ -1471,6 +1482,10 @@ function msiFinishInitDialogEditor(editorElement, parentEditorElement)
 //  msiDumpWithID("In msiEditor.msiFinishInitDialogEditor for editorElement [@], parentEditor is [" + parentEditor + "].\n", editorElement);
   if (parentEditor)
   {
+    //NOTE THE FOLLOWING! This means that if you want a dialog editor to allow multiple paragraphs, you must set mbSinglePara=false before 
+    //  calling the editor initialization. This reflects that single-para is the default.
+    if (!("mbSinglePara" in editorElement))
+      editorElement.mbSinglePara = true;
     var editor = msiGetEditor(editorElement);
     if (editor != null)
       editor.tagListManager = parentEditor.tagListManager;
@@ -3418,32 +3433,33 @@ function msiEditorNextField(bShift, editorElement)
 //The sole purpose of this function is to block certain <enter>s from being processed, and hand them off instead to our parent (dialog?) window.
 function msiEditorCheckEnter(event)
 {
-  var retVal = false;
+  var bEditorHandle = false;
   var editorElement = msiGetEditorElementFromEvent(event);
   var editor = null;
   if (editorElement)
     editor = msiGetEditor(editorElement);
   if (!editor || !msiEditorIsSinglePara(editorElement))
   {
-    if (editor)
-      dump("In msiEditorCheckEnter, we don't seem to have a single-para editor; editor's flags are [" + editor.flags + "].\n");
-    else
-      dump("In msiEditorCheckEnter, we don't find an editor!.\n");
+//    if (editor)
+//      dump("In msiEditorCheckEnter, we don't seem to have a single-para editor; editor's flags are [" + editor.flags + "].\n");
+//    else
+//      dump("In msiEditorCheckEnter, we don't find an editor!.\n");
     return false;  //In this case, we let nature take its course
   }
 
-  dump("In msiEditorCheckEnter, we have a single-para editor.\n");
+//  dump("In msiEditorCheckEnter, we have a single-para editor.\n");
   var container = msiNavigationUtils.getCommonAncestorForSelection(editor.selection);
   if (msiGetContainingTableOrMatrix(container))
-    return false;
+    bEditorHandle = true;
   
-  if (editor.tagListManager.selectionContainedInTag("math",null))
+  if (!bEditorHandle && msiNavigationUtils.nodeIsInMath(container))
   {
     //Here we have to be careful. If we're out in the open in math, it would be a normal paragraph entry, which we don't want.
     //If we're inside a math "template", we'll pass it on down.
     var foundSplittable = false;
     for (var parent = container; parent && !foundSplittable; parent = parent.parentNode)
     {
+//      dump("In msiEditorCheckEnter, checking parent node [" + msiGetBaseNodeName(parent) + "].\n");
       if (msiNavigationUtils.isMathTemplate(parent))
       {
         foundSplittable = true;
@@ -3460,23 +3476,26 @@ function msiEditorCheckEnter(event)
     }
     dump("In msiEditorCheckEnter, we're in math, and we " + (foundSplittable ? "found" : "didn't find") + " a splittable parent.\n");
     if (foundSplittable)
-      return false;
+      bEditorHandle = true;
+  }
+  if (bEditorHandle)
+  {
+    editor.insertReturn();
+    return true;  //it's been handled
   }
 
   //So we're not in a math template or a table. We want to block this one from the editor.
   var dlg = window.document.documentElement;
+//  dump("In msiEditorCheckEnter, bEditorHandle was false, and documentElement is [" + dlg.nodeName + "].\n");
   if (dlg.nodeName == "dialog")
   {
-//  if (dlg.hasAttribute("ondialogaccept"))
-//    var acceptFnc = new Function(dlg.getAttribute("ondialogaccept"));
-//    if (acceptFnc())
-//      window.close();
     dlg._hitEnter(event);
+    return true;
   }
-  return true;
+  return false;
 }
 
-function msiEditorDoTab(event, bShift)
+function msiEditorDoTab(event)
 {
   function doTabWithSelectionInNode(aNode, totalRange, anEditor)
   {
@@ -3498,29 +3517,53 @@ function msiEditorDoTab(event, bShift)
     return rv;
   }
 
-  var retVal = false;
+  var bHandled = false;
   var editorElement = msiGetEditorElementFromEvent(event);
   if (!editorElement)
     return false;
 
 //    editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
+  var bShift = event.shiftKey;
   if (bShift && !editor.selection.isCollapsed)  //We don't do anything if there's a selection and the shift key is down
     return false;
   if (editor.selection.isCollapsed)
-    retVal = msiEditorNextField(bShift, editorElement);
+    bHandled = msiEditorNextField(bShift, editorElement);
 
   //Otherwise, we do have a selection.
   else
   {
     var container = msiNavigationUtils.getCommonAncestorForSelection(editor.selection);
     var wholeRange = msiNavigationUtils.getRangeContainingSelection(editor.selection);
-  //  for ( var containerParent = container; !retVal && (containerParent != null); containerParent = containerParent.parentNode )
+  //  for ( var containerParent = container; !bHandled && (containerParent != null); containerParent = containerParent.parentNode )
   //  {
-      retVal = doTabWithSelectionInNode(container, wholeRange, bShift, editor);
+      bHandled = doTabWithSelectionInNode(container, wholeRange, bShift, editor);
   //  }
   }
-  if (!retVal && !bShift) // none of the above code did anything. Put in a 2em space
+  if (!bHandled)
+  {
+    var dlg = window.document.documentElement;
+    if (dlg.nodeName == "dialog")
+    {
+      var commandDispatcher = window.document.commandDispatcher;
+      if (bShift)
+      {
+        if ("msiTabBack" in window)
+          msiTabBack(event);
+        else
+          commandDispatcher.rewindFocus();
+      }
+      else
+      {
+        if ("msiTabForward" in window)
+          msiTabForward(event);
+        else
+          commandDispatcher.advanceFocus();
+      }
+      bHandled = true;
+    }
+  }
+  if (!bHandled && !bShift) // none of the above code did anything. Put in a 2em space
   {
     editor.beginTransaction();
     if (!editor.selection.isCollapsed) editor.deleteSelection(editor.eNone);
@@ -3528,8 +3571,10 @@ function msiEditorDoTab(event, bShift)
     wrapper.spaceType="twoEmSpace";
     msiInsertHorizontalSpace(wrapper,editorElement);
     editor.endTransaction();
+    bHandled = true;
   }
-  return retVal;
+
+  return bHandled; //Actually want to return false if the event has been handled
 }
 
 //function msiGetCharForProperties(editorElement)
@@ -4204,16 +4249,22 @@ function msiSetEditMode(mode, editorElement)
         // Get the text for the <title> from the newly-parsed document
         // (must do this for proper conversion of "escaped" characters)
         var title = "";
-        var titlenodelist = editor.document.getElementsByTagName("title");
-        if (titlenodelist)
+        var preambles = editor.document.getElementsByTagName("preamble");
+        if (preambles.length > 0)
         {
-          var titleNode = titlenodelist.item(0);
-          if (titleNode && titleNode.firstChild && titleNode.firstChild.data)
-            title = titleNode.firstChild.data;
+          var titlenodelist = editor.preambles[0].getElementsByTagName("title");
+          if (titlenodelist.length > 0)
+          {
+            var titleNode = titlenodelist.item(0);
+            if (titleNode) 
+              title = titleNode.textContent;
+          }
         }
         if (editor.document.title != title && ("msiUpdateWindowTitle" in window))
-          msiUpdateWindowTitle(null, null);
-
+        {
+          editor.document.title = title;
+          msiUpdateWindowTitle(title, null);
+        }
       } catch (ex) {
         dump(ex);
       }
@@ -4345,41 +4396,29 @@ function msiSetDisplayMode(editorElement, mode)
     return false;
   var editor = msiGetEditor(editorElement);
 
-  // Already in requested mode:
+  //  Already in requested mode:
   //  return false to indicate we didn't switch
   var previousMode = msiGetEditorDisplayMode(editorElement);
   if (mode == previousMode)
     return false;
 
-  editorElement.mEditorDisplayMode = mode;
+  var prefs = GetPrefs();
+  var pdfAction = prefs.getCharPref("swp.prefPDFPath");
+  if (pdfAction == "default" || mode != kDisplayModePreview)
+  {
+    editorElement.mEditorDisplayMode = mode;
+  }
   if (("gEditorDisplayMode" in window) && editorElement.contentWindow == window.content)
     window.gEditorDisplayMode = mode;
   msiResetStructToolbar(editorElement);
 
   if ((mode == kDisplayModeSource)||(mode == kDisplayModePreview))
   {
-
-    //Hide the formatting toolbar if not already hidden
-    if ("gViewFormatToolbar" in window && window.gViewFormatToolbar != null)
-      window.gViewFormatToolbar.hidden = true;
-    if ("gComputeToolbar" in window && window.gComputeToolbar != null)
-      window.gComputeToolbar.hidden = true;
-
-    msiHideItem("MSIMathMenu");
-    msiHideItem("cmd_viewComputeToolbar");
-    msiHideItem("MSIComputeMenu");
-    msiHideItem("MSITypesetMenu");
-    msiHideItem("MSIInsertTypesetObjectMenu");
-    msiHideItem("StandardToolbox");
-    msiHideItem("SymbolToolbox");
-    msiHideItem("MathToolbox");
-    msiHideItem("EditingToolbox");
-    msiHideItem("structToolbar");
     if (mode ==  kDisplayModePreview)
     {
-      if (editorElement.pdfModCount < editor.getModificationCount())
+      if (editorElement.pdfModCount != editor.getModificationCount() || pdfAction != "default")
       {
-        dump("Doucment changed, recompiling\n");
+        dump("Document changed, recompiling\n");
         printTeX(true, true);
       }
       else
@@ -4403,6 +4442,33 @@ function msiSetDisplayMode(editorElement, mode)
         }
       }
     }
+    if (pdfAction != "default")
+    {
+      if ("gContentWindowDeck" in window)
+      {
+        if (previousMode < 0) previousMode = 0;
+        window.gContentWindowDeck.selectedIndex = previousMode;
+        document.getElementById("EditModeTabs").selectedIndex = previousMode;
+      }
+
+      return false;
+    }
+    //Hide the formatting toolbar if not already hidden
+    if ("gViewFormatToolbar" in window && window.gViewFormatToolbar != null)
+      window.gViewFormatToolbar.hidden = true;
+    if ("gComputeToolbar" in window && window.gComputeToolbar != null)
+      window.gComputeToolbar.hidden = true;
+
+    msiHideItem("MSIMathMenu");
+    msiHideItem("cmd_viewComputeToolbar");
+    msiHideItem("MSIComputeMenu");
+    msiHideItem("MSITypesetMenu");
+    msiHideItem("MSIInsertTypesetObjectMenu");
+    msiHideItem("StandardToolbox");
+    msiHideItem("SymbolToolbox");
+    msiHideItem("MathToolbox");
+    msiHideItem("EditingToolbox");
+    msiHideItem("structToolbar");
     if ("gSourceContentWindow" in window)
       window.gSourceContentWindow.contentWindow.focus();
     // Switch to the sourceWindow or bWindow(second or third in the deck)
@@ -4775,6 +4841,7 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
   var theMenuStr = null;
   var propsData = null;
   var containingNodeData = null;
+  var tagclass;
 
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
@@ -5067,6 +5134,78 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
         propsData = new msiEquationPropertiesObjectData();
         propsData.initFromNode(coreElement, editorElement);
       break;
+
+      case 'bibitem':
+        objStr = GetString("BibEntry");
+        commandStr = "cmd_reviseManualBibItemCmd";
+      break;
+
+      case "bibtexbibliography":
+        objStr = GetString("BibTeXBibliography");
+        commandStr = "cmd_reviseBibTeXBibliographyCmd";
+      break;
+
+      case "citation":
+        objStr = GetString("Citation");
+        commandStr = "cmd_reviseCitation";
+      break;
+
+      case "otfont":
+        objStr = name;
+        theMenuStr = GetString("TagPropertiesMenuLabel");
+        theMenuStr = theMenuStr.replace(/%tagname%/, GetString("opentypefont"));
+        scriptStr = "openOTFontDialog('otfont', event.target.node);";
+      break;
+
+      case "fontcolor":
+        objStr = name;
+        theMenuStr = GetString("TagPropertiesMenuLabel");
+        theMenuStr = theMenuStr.replace(/%tagname%/, GetString("fontcolor"));
+        scriptStr = "openFontColorDialog('fontcolor', event.target.node);";
+      break;
+      
+      case "fontsize":
+        objStr = name;
+        theMenuStr = GetString("TagPropertiesMenuLabel");
+        theMenuStr = theMenuStr.replace(/%tagname%/, GetString("fontsize"));
+        scriptStr = "openFontSizeDialog('fontsize', event.target.node);";
+      break;
+
+      case "note":
+        objStr = name;
+        theMenuStr = GetString("TagPropertiesMenuLabel");
+        theMenuStr = theMenuStr.replace(/%tagname%/, GetString("note"));
+        scriptStr = "msiNote(event.target.node, null);";
+      break;
+
+      default:
+        tagclass = editor.tagListManager.getClassOfTag(name, null);
+        switch (tagclass)
+        { 
+          case "texttag":
+          break;
+          case "paratag":
+            objStr = name;
+            theMenuStr = GetString("TagPropertiesMenuLabel");
+            theMenuStr = theMenuStr.replace(/%tagname%/, name);
+            scriptStr = "openParaTagDialog('"+ name + "',event.target.node);";
+          break;
+          case "structtag":
+            objStr = name;
+            theMenuStr = GetString("TagPropertiesMenuLabel");
+            theMenuStr = theMenuStr.replace(/%tagname%/, name);
+            scriptStr = "openStructureTagDialog('"+ name + "',event.target.node);";
+            break;
+    // currently no dialogs for list tags, environments, and front matter.
+    //      case "listtag":
+    //        break;
+          case "envtag":
+          break;
+    //      case "frontmtag":
+    //        break;
+          default: break;
+        }
+      break;
     }
 
     if (!objStr && !propsData)
@@ -5086,42 +5225,6 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
           propsData.setTopNode(wrappedChildElement);
         else
           propsData = null;
-      }
-    }
-
-    if (!objStr && !propsData)
-    {
-      if (bIncludeParaAndStructure && editor && editor.tagListManager)
-      {
-        fixedName = name.replace(/\s-\s\w*$/,"");
-        if (editor.tagListManager.getTagInClass("paratag", name, null))
-        {
-          objStr = name;
-          theMenuStr = GetString("TagPropertiesMenuLabel");
-          theMenuStr = theMenuStr.replace(/%tagname%/, name);
-          scriptStr = "openParaTagDialog('"+ name + "');";
-        }
-        else if (editor.tagListManager.getTagInClass("structtag", name, null))
-        {
-          objStr = name;
-          theMenuStr = GetString("TagPropertiesMenuLabel");
-          theMenuStr = theMenuStr.replace(/%tagname%/, name);
-          scriptStr = "openStructureTagDialog('" + name +"');";
-        }
-        else if (editor.tagListManager.getTagInClass("paratag", fixedName, null))
-        {
-          objStr = fixedName;
-          theMenuStr = GetString("TagPropertiesMenuLabel");
-          theMenuStr = theMenuStr.replace(/%tagname%/, fixedName);
-          scriptStr = "openParaTagDialog('"+ fixedName +"');";
-        }
-        else if (editor.tagListManager.getTagInClass("structtag", fixedName, null))
-        {
-          objStr = fixedName;
-          theMenuStr = GetString("TagPropertiesMenuLabel");
-          theMenuStr = theMenuStr.replace(/%tagname%/, fixedName);
-          scriptStr = "openStructureTagDialog('" + fixedName +"');";
-        }
       }
     }
   }
@@ -7447,435 +7550,366 @@ msiEquationPropertiesObjectData.prototype =
 
 msiEquationPropertiesObjectData.prototype.__proto__ = msiPropertiesObjectDataBase;
 
+//rwa//function msiInitObjectPropertiesMenuitem(editorElement, id)
+//rwa//{ 
+//rwa//  try {
+//rwa//  var editor = msiGetEditor(editorElement);
+//rwa//  var propertiesMenu = document.getElementById(id);
+//rwa//  if (!editor || !propertiesMenu) return;
+//rwa//  var popupMenu = propertiesMenu.getElementsByTagName("menupopup")[0];
+//rwa//  if (!popupMenu) return;
+//rwa//  // clean out popupMenu
+//rwa//  var child;
+//rwa//  while (child = popupMenu.firstChild) popupMenu.removeChild(child);
+//rwa//
+//rwa//  var parentTagString = editor.tagListManager.getParentTagList(",",false);
+//rwa//  var parentTagArray = parentTagString.split(","); 
+//rwa//  var i;
+//rwa//  var paL = parentTagArray.length;
+//rwa//  var node = editor.getSelectionContainer();
+//rwa//  // We have a problem when a node is selected.
+//rwa//  if (editor.selection.focusNode == editor.selection.anchorNode && 
+//rwa//    Math.abs(editor.selection.focusOffset-editor.selection.anchorOffset)==1)
+//rwa//  {
+//rwa//    if (editor.selection.focusNode.nodeType != 3) node = 
+//rwa//      editor.selection.focusNode.childNodes.item(Math.min(editor.selection.focusOffset,editor.selection.anchorOffset));
+//rwa//  }
+//rwa//  if (node.nodeType == 3) node = node.parentNode; //if text node, go to the parent
+//rwa//  var tagclass;
+//rwa//  var tag;
+//rwa//  var label = GetString("TagPropertiesMenuLabel");
+//rwa//  var newitem;
+//rwa//  var count = 0;
+//rwa//  for (i = 0; i < paL; i++)
+//rwa//  {
+//rwa//    tag = parentTagArray[i].replace(/ .*$/,"");
+//rwa//    if (node.localName != tag)
+//rwa//    {
+//rwa//      dump("In msiInitObjectPropertiesMenuitem, assertion failure: tag array name = "
+//rwa//        + tag + ", but node is " + node.localName + " and i is " +i+"\n");
+//rwa//      continue;
+//rwa//    }
+//rwa//    // Now we go through the list of things that have properties dialogs.
+//rwa//    tagclass = editor.tagListManager.getClassOfTag(tag, null);
+//rwa//    var propsdata;
+//rwa//    switch (tagclass)
+//rwa//    { 
+//rwa//      case "texttag":
+//rwa//        switch( tag )
+//rwa//        {
+//rwa//          case "otfont":
+//rwa//            newitem = propertiesMenu.appendItem(label.replace("%tagname%","opentype font"));
+//rwa//            newitem.setAttribute("oncommand","openOTFontDialog('otfont', event.target.node);");
+//rwa//            newitem.node = node;
+//rwa//            count++;
+//rwa//            break;
+//rwa//          case "fontcolor":
+//rwa//            newitem = propertiesMenu.appendItem(label.replace("%tagname%","font color"));
+//rwa//            newitem.setAttribute("oncommand","openFontColorDialog('fontcolor', event.target.node);");
+//rwa//            newitem.node = node;
+//rwa//            count++;
+//rwa//            break;
+//rwa//          case "fontsize":
+//rwa//            newitem = propertiesMenu.appendItem(label.replace("%tagname%","font size"));
+//rwa//            newitem.setAttribute("oncommand","openFontSizeDialog('fontsize', event.target.node);");
+//rwa//            newitem.node = node;
+//rwa//            count++;
+//rwa//            break;
+//rwa//          default: break;
+//rwa//        }
+//rwa//        break;
+//rwa//      case "paratag":
+//rwa//        newitem = propertiesMenu.appendItem(label.replace("%tagname%",tag));
+//rwa//        newitem.setAttribute("oncommand", "openParaTagDialog('"+ tag + "',event.target.node);");
+//rwa//        newitem.node = node;
+//rwa//        count++;
+//rwa//        break;
+//rwa//      case "structtag":
+//rwa//        newitem = propertiesMenu.appendItem(label.replace("%tagname%",tag));
+//rwa//        newitem.setAttribute("oncommand", "openStructureTagDialog('"+ tag + "',event.target.node);");
+//rwa//        newitem.node = node;
+//rwa//        count++;
+//rwa//        break;
+//rwa//// currently no dialogs for list tags, environments, and front matter.
+//rwa////      case "listtag":
+//rwa////        break;
+//rwa//      case "envtag":
+//rwa//      {
+//rwa//        switch( tag )
+//rwa//        {
+//rwa//          case "note":
+//rwa//            newitem = propertiesMenu.appendItem(label.replace("%tagname%","note"));
+//rwa//            newitem.setAttribute("oncommand", "msiNote(event.target.node, null);");
+//rwa//            newitem.node = node;
+//rwa//            count++;
+//rwa//            break;
+//rwa//          default: break;
+//rwa//        }
+//rwa//        break;
+//rwa////      case "frontmtag":
+//rwa////        break;
+//rwa//      }
+//rwa//      default: break;
+//rwa//    }
+//rwa//    if (tagclass == "" || tagclass=="othertag")
+//rwa//    {
+//rwa//      switch( tag )
+//rwa//      {
+//rwa//        case "msiframe":
+//rwa//          break;
+//rwa//        case "object":
+//rwa//          newitem = propertiesMenu.appendItem(label.replace("%tagname%","embedded object"));
+//rwa//          newitem.setAttribute("oncommand","openObjectTagDialog('object', event.target.node);");
+//rwa//          newitem.node = node;
+//rwa//          count++;
+//rwa//          break;
+//rwa//        case "graph":
+//rwa//          newitem = propertiesMenu.appendItem(label.replace("%tagname%","function graph"));
+//rwa//          newitem.setAttribute("oncommand","openGraphDialog('graph', event.target.node, event.target.editorElement);");
+//rwa//          newitem.node = node;
+//rwa//          newitem.editorElement = editorElement;
+//rwa//          count++;
+//rwa//          break;
+//rwa//        case "texb":
+//rwa//          newitem = propertiesMenu.appendItem(label.replace("%tagname%","TeX button"));
+//rwa//          newitem.setAttribute("oncommand","openTeXButtonDialog('texb', event.target.node);");
+//rwa//          newitem.node = node;
+//rwa//          count++;
+//rwa//        case "line":
+//rwa//          break;
+//rwa//        case "mtable":
+//rwa//          break;
+//rwa//        default: 
+//rwa//          propsdata = msiCreatePropertiesObjectDataFromNode(node, editorElement, false);
+//rwa//          if (propsdata)
+//rwa//          {
+//rwa//            try 
+//rwa//            {
+//rwa//              if (propsdata.menuStrings)
+//rwa//              {
+//rwa//                for (var k = 0; k < propsdata.menuStrings.length; k++)
+//rwa//                {
+//rwa//                  newitem = propertiesMenu.appendItem(propsdata.menuStrings[k]);
+//rwa//                  if (propsdata.menuStrings && propsdata.menuStrings[k].length)
+//rwa//                    newitem.setAttribute("command", propsdata.menuStrings[k]);
+//rwa//                  else 
+//rwa//                    newitem.setAttribute("oncommand", propsdata.scriptStrings[k]);
+//rwa//                  newitem.node = node;
+//rwa//                  count++;
+//rwa//                }
+//rwa//              }
+//rwa//              else
+//rwa//              {
+//rwa//                newitem = propertiesMenu.appendItem(propsdata.menuStr);
+//rwa//                if (propsdata.commandStr && propsdata.commandStr.length)
+//rwa////                  newitem.setAttribute("command", propsdata.commandStr);
+//rwa//                  newitem.setAttribute("oncommand", "msiDoAPropertiesDialogFromMenu('" + propsdata.commandStr + "', this);");
+//rwa//                else 
+//rwa//                  newitem.setAttribute("oncommand", propsdata.scriptStr);
+//rwa//                newitem.refElement = node;
+//rwa//                newitem.propertiesData = propsdata;
+//rwa//                count++;
+//rwa//              }
+//rwa//            }
+//rwa//            catch(e){}
+//rwa//          }
+//rwa//          break;
+//rwa//      }
+//rwa//    }
+//rwa//    node = node.parentNode;
+//rwa//  }
+//rwa//  }
+//rwa//  catch (e) {
+//rwa//    dump(e.message+"\n");
+//rwa//  }
+//rwa//}
+
+
+
+// Set strings and enable for the [Object] Properties item
+// Note that we directly do the enabling instead of
+//  using goSetCommandEnabled since we already have the menuitem
 function msiInitObjectPropertiesMenuitem(editorElement, id)
 { 
+  var name;
+
   try {
-  var editor = msiGetEditor(editorElement);
-  var propertiesMenu = document.getElementById(id);
-  if (!editor || !propertiesMenu) return;
-  var popupMenu = propertiesMenu.getElementsByTagName("menupopup")[0];
-  if (!popupMenu) return;
-  // clean out popupMenu
-  var child;
-  while (child = popupMenu.firstChild) popupMenu.removeChild(child);
+    if (!editorElement)
+      editorElement = msiGetActiveEditorElement();
+    var editor = msiGetEditor(editorElement);
+    if ( (id != "propertiesMenu") && (id != "propertiesMenu_cm") )
+      dump("Problem in msiEditor.js, msiInitObjectPropertiesMenuitem() - id passed in isn't correct (it's " + id + ").\n");
+  
+    var menuItem;
+    var subMenu = document.getElementById(id);
+    if (!subMenu) return null;
 
-  var parentTagString = editor.tagListManager.getParentTagList(",",false);
-  var parentTagArray = parentTagString.split(","); 
-  var i;
-  var paL = parentTagArray.length;
-  var node = editor.getSelectionContainer();
-  // We have a problem when a node is selected.
-  if (editor.selection.focusNode == editor.selection.anchorNode && 
-    Math.abs(editor.selection.focusOffset-editor.selection.anchorOffset)==1)
-  {
-    if (editor.selection.focusNode.nodeType != 3) node = 
-      editor.selection.focusNode.childNodes.item(Math.min(editor.selection.focusOffset,editor.selection.anchorOffset));
-  }
-  if (node.nodeType == 3) node = node.parentNode; //if text node, go to the parent
-  var tagclass;
-  var tag;
-  var label = GetString("TagPropertiesMenuLabel");
-  var newitem;
-  var count = 0;
-  for (i = 0; i < paL; i++)
-  {
-    tag = parentTagArray[i].replace(/ .*$/,"");
-    if (node.localName != tag)
-    {
-      dump("In msiInitObjectPropertiesMenuitem, assertion failure: tag array name = "
-        + tag + ", but node is " + node.localName + " and i is " +i+"\n");
-      continue;
-    }
-    // Now we go through the list of things that have properties dialogs.
-    tagclass = editor.tagListManager.getClassOfTag(tag, null);
-    var propsdata;
-    switch (tagclass)
-    { 
-      case "texttag":
-        switch( tag )
-        {
-          case "otfont":
-            newitem = propertiesMenu.appendItem(label.replace("%tagname%","opentype font"));
-            newitem.setAttribute("oncommand","openOTFontDialog('otfont', event.target.node);");
-            newitem.node = node;
-            count++;
-            break;
-          case "fontcolor":
-            newitem = propertiesMenu.appendItem(label.replace("%tagname%","font color"));
-            newitem.setAttribute("oncommand","openFontColorDialog('fontcolor', event.target.node);");
-            newitem.node = node;
-            count++;
-            break;
-          case "fontsize":
-            newitem = propertiesMenu.appendItem(label.replace("%tagname%","font size"));
-            newitem.setAttribute("oncommand","openFontSizeDialog('fontsize', event.target.node);");
-            newitem.node = node;
-            count++;
-            break;
-          default: break;
-        }
-        break;
-      case "paratag":
-        newitem = propertiesMenu.appendItem(label.replace("%tagname%",tag));
-        newitem.setAttribute("oncommand", "openParaTagDialog('"+ tag + "',event.target.node);");
-        newitem.node = node;
-        count++;
-        break;
-      case "structtag":
-        newitem = propertiesMenu.appendItem(label.replace("%tagname%",tag));
-        newitem.setAttribute("oncommand", "openStructureTagDialog('"+ tag + "',event.target.node);");
-        newitem.node = node;
-        count++;
-        break;
-// currently no dialogs for list tags, environments, and front matter.
-//      case "listtag":
-//        break;
-      case "envtag":
-      {
-        switch( tag )
-        {
-          case "note":
-            newitem = propertiesMenu.appendItem(label.replace("%tagname%","note"));
-            newitem.setAttribute("oncommand", "msiNote(event.target.node, null);");
-            newitem.node = node;
-            count++;
-            break;
-          default: break;
-        }
-        break;
-//      case "frontmtag":
-//        break;
-      }
-      default: break;
-    }
-    if (tagclass == "" || tagclass=="othertag")
-    {
-      switch( tag )
-      {
-        case "msiframe":
-          break;
-        case "object":
-          newitem = propertiesMenu.appendItem(label.replace("%tagname%","embedded object"));
-          newitem.setAttribute("oncommand","openObjectTagDialog('object', event.target.node);");
-          newitem.node = node;
-          count++;
-          break;
-        case "graph":
-          newitem = propertiesMenu.appendItem(label.replace("%tagname%","function graph"));
-          newitem.setAttribute("oncommand","openGraphDialog('graph', event.target.node, event.target.editorElement);");
-          newitem.node = node;
-          newitem.editorElement = editorElement;
-          count++;
-          break;
-        case "texb":
-          newitem = propertiesMenu.appendItem(label.replace("%tagname%","TeX button"));
-          newitem.setAttribute("oncommand","openTeXButtonDialog('texb', event.target.node);");
-          newitem.node = node;
-          count++;
-        case "line":
-          break;
-        case "mtable":
-          break;
-        default: 
-          propsdata = msiCreatePropertiesObjectDataFromNode(node, editorElement, false);
-          if (propsdata)
-          {
-            try 
-            {
-              if (propsdata.menuStrings)
-              {
-                for (var k = 0; k < propsdata.menuStrings.length; k++)
-                {
-                  newitem = propertiesMenu.appendItem(propsdata.menuStrings[k]);
-                  if (propsdata.menuStrings && propsdata.menuStrings[k].length)
-                    newitem.setAttribute("command", propsdata.menuStrings[k]);
-                  else 
-                    newitem.setAttribute("oncommand", propsdata.scriptStrings[k]);
-                  newitem.node = node;
-                  count++;
-                }
-              }
-              else
-              {
-                newitem = propertiesMenu.appendItem(propsdata.menuStr);
-                if (propsdata.commandStr && propsdata.commandStr.length)
-//                  newitem.setAttribute("command", propsdata.commandStr);
-                  newitem.setAttribute("oncommand", "msiDoAPropertiesDialogFromMenu('" + propsdata.commandStr + "', this);");
-                else 
-                  newitem.setAttribute("oncommand", propsdata.scriptStr);
-                newitem.refElement = node;
-                newitem.propertiesData = propsdata;
-                count++;
-              }
-            }
-            catch(e){}
-          }
-          break;
-      }
-    }
-    node = node.parentNode;
-  }
-  }
-  catch (e) {
-    dump(e.message+"\n");
-  }
-}
-
-
-
-// --BBM //{
-// --BBM //  // Set strings and enable for the [Object] Properties item
-// --BBM //  // Note that we directly do the enabling instead of
-// --BBM //  //  using goSetCommandEnabled since we already have the menuitem
-// --BBM //  if (!editorElement)
-// --BBM //    editorElement = msiGetActiveEditorElement();
-// --BBM //  var editor = msiGetEditor(editorElement);
-// --BBM //  if ( (id != "propertiesMenu") && (id != "propertiesMenu_cm") )
-// --BBM //    dump("Problem in msiEditor.js, msiInitObjectPropertiesMenuitem() - id passed in isn't correct (it's " + id + ").\n");
-// --BBM //  
-// --BBM //  var menuItem;
-// --BBM //  var subMenu = document.getElementById(id);
-// --BBM //  if (!subMenu) return null;
-// --BBM //
-// --BBM //  var menuInfo = msiGetPropertiesMenuIDs(id);
-// --BBM //  if (!menuInfo)
-// --BBM //    return null;
-// --BBM //  subMenu = document.getElementById(menuInfo.menuID);
-// --BBM //  var parentPropertiesMenu = subMenu;
+    var menuInfo = msiGetPropertiesMenuIDs(id);
+    if (!menuInfo)
+      return null;
+    subMenu = document.getElementById(menuInfo.menuID);
+    var parentPropertiesMenu = subMenu;
 // --BBM ////  var itemID = "objectProperties";
 // --BBM ////  var popupID = "propertiesMenuPopup";
-// --BBM ////  var bIsContextMenu = false;
-// --BBM ////  for (var menuAncestor = subMenu; menuAncestor && !bIsContextMenu; menuAncestor = menuAncestor.parentNode)
-// --BBM ////  {
-// --BBM ////    if (menuAncestor.id)
-// --BBM ////    {
-// --BBM ////      if ( (menuAncestor.id == "propertiesMenu_cm") || (menuAncestor.id == "propertiesMenuPopup_cm") )
-// --BBM ////        bIsContextMenu = true;
-// --BBM //////      if ( (menuAncestor.id == "objectProperties_cm") || (menuAncestor.id == "msiEditorContentContext") )
-// --BBM //////        bIsContextMenu = true;
-// --BBM ////    }
-// --BBM ////  }
-// --BBM ////  if (bIsContextMenu)
-// --BBM ////  {
-// --BBM ////    popupID = "propertiesMenuPopup_cm";
-// --BBM ////    itemID = "objectProperties_cm";
-// --BBM ////  }
-// --BBM //  var subPopup = document.getElementById(menuInfo.popupID);
-// --BBM //  var menuItem = document.getElementById(menuInfo.itemID);
-// --BBM ////  var nodeData;
-// --BBM //  var element;
-// --BBM //  var menuStr = GetString("AdvancedProperties");
-// --BBM //  var name;
-// --BBM //  var propsData = null;
-// --BBM //  var nextNode = null;
-// --BBM //  var commandStr, scriptStr;
-// --BBM //
-// --BBM //  if (msiIsEditingRenderedHTML(editorElement))
-// --BBM //  {
-// --BBM //    propsData = msiGetObjectDataForProperties(editorElement);
-// --BBM ////    if (propsData && propsData.getReferenceNode != null)
-// --BBM //    if (propsData)
-// --BBM //    {
-// --BBM //      element = propsData.getReferenceNode();
-// --BBM //      nextNode = propsData.getTopNode().parentNode;
-// --BBM //    }
-// --BBM //  }
-// --BBM //
-// --BBM ////  if (element)
-// --BBM ////    propsData = getObjectPropertiesDataFromNodeData(editorElement, element, false);
-// --BBM ////  else
-// --BBM //  if (!element)
-// --BBM //    element = editor.selection.getRangeAt(0).commonAncestorContainer;
-// --BBM //
-// --BBM //  if (propsData)
-// --BBM //  {
-// --BBM //    menuStr = propsData.getMenuString(0);
-// --BBM //    if (!menuStr || !menuStr.length)
-// --BBM //    {
-// --BBM //      menuStr = GetString("AdvancedProperties");
-// --BBM //      menuItem.setAttribute("disabled","true");
-// --BBM //    }
-// --BBM //    else
-// --BBM //      menuItem.removeAttribute("disabled");
-// --BBM //    subPopup.origSelection = copyCurrSelection(editor);
-// --BBM //    commandStr = propsData.getCommandString(0);
-// --BBM //    if (commandStr)
-// --BBM //    {
-// --BBM ////      menuItem.setAttribute("oncommand", "msiPropMenuClearOrigSel('" + menuInfo.popupID + "'); msiDoAPropertiesDialogFromMenu('" + propsData.commandStr + "', this);");
-// --BBM //      menuItem.setAttribute("oncommand", "msiPropMenuResetOrigSel('" + menuInfo.popupID + "'); msiDoAPropertiesDialogFromMenu('" + commandStr + "', this);");
-// --BBM //      subMenu.defaultItem = menuItem;
-// --BBM //      subMenu.commandStr = commandStr;
-// --BBM //    }
-// --BBM //    else
-// --BBM //    {
-// --BBM //      scriptStr = propsData.getScriptString(0);
-// --BBM //      if (propsData.scriptStr)
-// --BBM //        menuItem.setAttribute("oncommand", "msiPropMenuClearOrigSel('" + menuInfo.popupID + "');" + scriptStr);
-// --BBM //    }
-// --BBM //    menuItem.addEventListener("DOMMenuItemActive", msiPropertiesMenuItemHover, false);
-// --BBM ////How to generate a reasonable ID? But does it need one?
-// --BBM //    menuItem.propertiesData = propsData;
-// --BBM //    menuItem.refElement = propsData.getReferenceNode();
-// --BBM //    menuItem.refEditor = propsData.mEditorElement;
-// --BBM //    if (propsData.isMatrix())
-// --BBM //      AddInsertMatrixRowsColumnsMenuItems(parentPropertiesMenu, propsData);
-// --BBM //  }
-// --BBM //  else
-// --BBM //  {
-// --BBM //    // We show generic "Properties" string, but disable menu item
-// --BBM //    menuItem.setAttribute("disabled","true");
-// --BBM //  }
-// --BBM //  menuItem.setAttribute("label", menuStr);
-// --BBM //  menuItem.setAttribute("accesskey",GetString("ObjectPropertiesAccessKey"));
-// --BBM //
-// --BBM ////  var parentMenu = menuItem.parentNode;
-// --BBM ////  var subMenu = document.getElementById("morePropertiesMenu");
-// --BBM ////  var subPopup = document.getElementById("morePropertiesPopup");
-// --BBM ////  var bWasInitialized = (subPopup != null);
-// --BBM ////  if (bWasInitialized)
-// --BBM ////    dump("In msiEditor.js, msiInitObjectPropertiesMenuitem(), the subpopupmenu was previously initialized!\n");
-// --BBM //
-// --BBM //  if (!nextNode)
-// --BBM //    nextNode = element.parentNode;
-// --BBM //  var lastCoreNode = element;
-// --BBM //  var lastPropsData = propsData;
-// --BBM //
-// --BBM //  function copyCurrSelection(theEd)
-// --BBM //  {
-// --BBM //    var retSel = new Array();
-// --BBM //    var len = theEd.selection.rangeCount;
-// --BBM //    for (var ii = 0; ii < len; ++ii)
-// --BBM //      retSel.push(theEd.selection.getRangeAt(ii).cloneRange());
-// --BBM //    return retSel;
-// --BBM //  }
-// --BBM //
-// --BBM //  function createMorePropsSubmenu()
-// --BBM //  {
-// --BBM //    subMenu = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "menu");
-// --BBM //    subMenu.id = id;
-// --BBM //    subMenu.setAttribute("label", GetString("MorePropertiesMenuLabel"));
-// --BBM //    subMenu.setAttribute("accesskey", GetString("MorePropertiesMenuAccessKey"));
-// --BBM //    subMenu = parentMenu.insertBefore(subMenu, menuItem.nextSibling);
-// --BBM //    subPopup = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul", "menupopup");
-// --BBM //    subPopup.id = popupID;
-// --BBM //    subPopup.origSelection = copyCurrSelection(editor);
-// --BBM //    subPopup.setAttribute("onpopuphidden", "msiPropMenuCloseup(event, this);");
-// --BBM //    subPopup = subMenu.appendChild(subPopup);
-// --BBM //  }
-// --BBM //
-// --BBM ////  function addPropsMenuItem(propData)
-// --BBM //  function addPropsMenuItem(propData, menuString, commandString, scriptString)
-// --BBM //  {
-// --BBM //    var item = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
-// --BBM //                                           "menuitem");
-// --BBM //
-// --BBM ////    if (propData.commandStr)
-// --BBM //    if (commandString)
-// --BBM //      item.setAttribute("oncommand", "msiPropMenuClearOrigSel('" + menuInfo.popupID + "'); msiDoAPropertiesDialogFromMenu('" + commandString + "', this);");
-// --BBM //    else if (scriptString)
-// --BBM //      item.setAttribute("oncommand", "msiPropMenuClearOrigSel('"+ menuInfo.popupID + "');" + scriptString);
-// --BBM //    item.addEventListener("DOMMenuItemActive", msiPropertiesMenuItemHover, false);
-// --BBM //    item.setAttribute("label", menuString);
-// --BBM //    item.refElement = propData.getReferenceNode();
-// --BBM //    item.refEditor = editorElement;
-// --BBM //    item.propertiesData = propData;
-// --BBM //    if (!subPopup)
-// --BBM //      createMorePropsSubmenu();
-// --BBM //    if (!("origSelection" in subPopup))
-// --BBM //      subPopup.origSelection = copyCurrSelection(editor);
-// --BBM //    if (propData.isMatrix())
-// --BBM //      AddInsertMatrixRowsColumnsMenuItems(parentPropertiesMenu, propData);
-// --BBM //
-// --BBM //    return subPopup.appendChild(item);
-// --BBM //  }
-// --BBM //
-// --BBM //  function checkForNodeAlreadyDone(anElmtNode)
-// --BBM //  {
-// --BBM //    var foundItem = null;
-// --BBM //    if (subPopup)
-// --BBM //    {
-// --BBM //      for (var jj = 0; jj < subPopup.childNodes.length; ++jj)
-// --BBM //      {
-// --BBM //        if ( ("refElement" in subPopup.childNodes[jj]) && (subPopup.childNodes[jj].refElement == anElmtNode) )
-// --BBM //        {
-// --BBM //          foundItem = subPopup.childNodes[jj];
-// --BBM //          break;
-// --BBM //        }
-// --BBM //      }
-// --BBM //    }
-// --BBM //    if (foundItem)
-// --BBM //      dump("In msiEditor.js, msiInitObjectPropertiesMenuitem(), the call to checkForNodeAlreadyDone() found one!\n");
-// --BBM //    return foundItem;
-// --BBM //  }
-// --BBM //
-// --BBM ////NOTE! The following should never be necessary, but it was needed until I realized the reason for the double initialization
-// --BBM ////  (namely that we were responding to a popupshowing message from the child menu as though it were the parent one).
-// --BBM //
-// --BBM ////  var lastMenuItem = null;
-// --BBM ////  var currMenuItem = null;
-// --BBM ////  while (bWasInitialized && (nextNode != null))
-// --BBM ////  {
-// --BBM ////    lastMenuItem = currMenuItem;
-// --BBM ////    currMenuItem = checkForNodeAlreadyDone(nextNode);
-// --BBM ////    if (!currMenuItem)
-// --BBM ////      break;
-// --BBM ////    nextNode = nextNode.parentNode;
-// --BBM ////  }
-// --BBM ////  if (lastMenuItem)
-// --BBM ////    lastPropsData = getObjectPropertiesDataFromNodeData(editorElement, lastMenuItem.refElement);
-// --BBM //
-// --BBM ////First check whether the current object has more than one properties string to put up:
-// --BBM //  if (propsData)
-// --BBM //  {
-// --BBM //    menuStr = null;
-// --BBM //    for (var iter = 1; propsData.hasReviseData(iter); ++iter)
-// --BBM //    {
-// --BBM //      menuStr = propsData.getMenuString(iter);
-// --BBM //      commandStr = propsData.getCommandString(iter);
-// --BBM //      scriptStr = propsData.getScriptString(iter);
-// --BBM //      addPropsMenuItem(propsData, menuStr, commandStr, scriptStr);
-// --BBM //      //addPropsMenuItem(propsData);
-// --BBM //    }
-// --BBM //  }
-// --BBM //
-// --BBM //  while (nextNode != null)
-// --BBM //  {
-// --BBM ////    propsData = getObjectPropertiesDataFromNodeData(editorElement, nextNode, !menuInfo.bIsContextMenu);
-// --BBM //    propsData = msiCreatePropertiesObjectDataFromNode(nextNode, editorElement, true);
-// --BBM //    if (propsData)
-// --BBM //    {
-// --BBM ////      if (!lastPropsData || (propsData.coreElement != lastPropsData.coreElement))  //we've hit a really new object
-// --BBM //      if (!lastPropsData || (propsData.getReferenceNode() != lastPropsData.getReferenceNode()))  //we've hit a really new object
-// --BBM //      {
-// --BBM //        if (!subMenu)
-// --BBM //        {
-// --BBM //          //Note! In this case, we've hit the first properties data with a coreElement differing from that of the
-// --BBM //          //  original item, which is still being held in prevPropData. Thus we don't want to add an item now, but we
-// --BBM //          //  are assured that an item will be needed. Just create the submenu and submenupop and get out.
-// --BBM //          dump("In msiEditor.js, in msiInitObjectPropertiesMenuitem(), subMenu is currently null - should no longer happen!\n");
-// --BBM //          createMorePropsSubmenu();
-// --BBM //        }
-// --BBM //        menuStr = null;
-// --BBM //        for (var iter = 0; propsData.hasReviseData(iter); ++iter)
-// --BBM //        {
-// --BBM //          menuStr = propsData.getMenuString(iter);
-// --BBM //          commandStr = propsData.getCommandString(iter);
-// --BBM //          scriptStr = propsData.getScriptString(iter);
-// --BBM //          addPropsMenuItem(propsData, menuStr, commandStr, scriptStr);
-// --BBM //          //addPropsMenuItem(propsData);
-// --BBM //        }
-// --BBM //      }
-// --BBM //      lastPropsData = propsData;
-// --BBM //      nextNode = propsData.getTopNode().parentNode;
-// --BBM //    }
-// --BBM //    else
-// --BBM //      nextNode = nextNode.parentNode;
-// --BBM //  }
-// --BBM ////  if (subMenu && lastPropsData)
-// --BBM ////    addPropsMenuItem(lastPropsData);
-// --BBM //
-// --BBM //  return name;
-// --BBM //}
+    var subPopup = document.getElementById(menuInfo.popupID);
+    var childItem;
+    while (childItem = subPopup.firstChild)
+      subPopup.removeChild(childItem);
+
+    function copyCurrSelection(theEd)
+    {
+      var retSel = new Array();
+      var len = theEd.selection.rangeCount;
+      for (var ii = 0; ii < len; ++ii)
+        retSel.push(theEd.selection.getRangeAt(ii).cloneRange());
+      return retSel;
+    }
+
+    function addPropsMenuItem(propData, menuString, commandString, scriptString)
+    {
+      var item = document.createElementNS("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul",
+                                             "menuitem");
+
+      if (commandString)
+        item.setAttribute("oncommand", "msiPropMenuClearOrigSel('" + menuInfo.popupID + "'); msiDoAPropertiesDialogFromMenu('" + commandString + "', this);");
+      else if (scriptString)
+        item.setAttribute("oncommand", "msiPropMenuClearOrigSel('"+ menuInfo.popupID + "');" + scriptString);
+      item.addEventListener("DOMMenuItemActive", msiPropertiesMenuItemHover, false);
+      item.setAttribute("label", menuString);
+      item.refElement = propData.getReferenceNode();
+      item.refEditor = editorElement;
+      item.propertiesData = propData;
+      if (!subPopup)
+        createMorePropsSubmenu();
+      if (!("origSelection" in subPopup))
+        subPopup.origSelection = copyCurrSelection(editor);
+      if (propData.isMatrix())
+        AddInsertMatrixRowsColumnsMenuItems(parentPropertiesMenu, propData);
+
+      return subPopup.appendChild(item);
+    }
+
+//    var menuItem = document.getElementById(menuInfo.itemID);
+    var element;
+//    var menuStr = GetString("AdvancedProperties");
+    var menuStr;
+    var propsData = null;
+    var nextNode = null;
+    var commandStr, scriptStr;
+
+    if (msiIsEditingRenderedHTML(editorElement))
+    {
+      propsData = msiGetObjectDataForProperties(editorElement);
+      if (propsData)
+      {
+        element = propsData.getReferenceNode();
+        nextNode = propsData.getTopNode().parentNode;
+      }
+    }
+
+//    if (!element)
+//      element = editor.selection.getRangeAt(0).commonAncestorContainer;
+
+    if (propsData)
+    {
+      subPopup.origSelection = copyCurrSelection(editor);
+      menuStr = propsData.getMenuString(0);
+      commandStr = propsData.getCommandString(0);
+      scriptStr = propsData.getScriptString(0);
+      if ( menuStr && menuStr.length && ((commandStr && commandStr.length) || (scriptStr || scriptStr.length)) )
+        addPropsMenuItem(propsData, menuStr, commandStr, scriptStr);
+
+//      menuStr = propsData.getMenuString(0);
+//      if (!menuStr || !menuStr.length)
+//      {
+//        menuStr = GetString("AdvancedProperties");
+//        menuItem.setAttribute("disabled","true");
+//      }
+//      else
+//        menuItem.removeAttribute("disabled");
+//      commandStr = propsData.getCommandString(0);
+//      if (commandStr)
+//      {
+//        menuItem.setAttribute("oncommand", "msiPropMenuResetOrigSel('" + menuInfo.popupID + "'); msiDoAPropertiesDialogFromMenu('" + commandStr + "', this);");
+//        subMenu.defaultItem = menuItem;
+//        subMenu.commandStr = commandStr;
+//      }
+//      else
+//      {
+//        scriptStr = propsData.getScriptString(0);
+//        if (propsData.scriptStr)
+//          menuItem.setAttribute("oncommand", "msiPropMenuClearOrigSel('" + menuInfo.popupID + "');" + scriptStr);
+//      }
+//      menuItem.addEventListener("DOMMenuItemActive", msiPropertiesMenuItemHover, false);
+////How to generate a reasonable ID? But does it need one?
+//      menuItem.propertiesData = propsData;
+//      menuItem.refElement = propsData.getReferenceNode();
+//      menuItem.refEditor = propsData.mEditorElement;
+//      if (propsData.isMatrix())
+//        AddInsertMatrixRowsColumnsMenuItems(parentPropertiesMenu, propsData);
+    }
+//    else
+//    {
+//      // We show generic "Properties" string, but disable menu item
+//      menuItem.setAttribute("disabled","true");
+//    }
+//    menuItem.setAttribute("label", menuStr);
+//    menuItem.setAttribute("accesskey",GetString("ObjectPropertiesAccessKey"));
+
+    if (!nextNode)
+      nextNode = element.parentNode;
+    var lastCoreNode = element;
+    var lastPropsData = propsData;
+
+//First check whether the current object has more than one properties string to put up:
+    if (propsData)
+    {
+      menuStr = null;
+      for (var iter = 1; propsData.hasReviseData(iter); ++iter)
+      {
+        menuStr = propsData.getMenuString(iter);
+        commandStr = propsData.getCommandString(iter);
+        scriptStr = propsData.getScriptString(iter);
+        addPropsMenuItem(propsData, menuStr, commandStr, scriptStr);
+        //addPropsMenuItem(propsData);
+      }
+    }
+
+    while (nextNode != null)
+    {
+      propsData = msiCreatePropertiesObjectDataFromNode(nextNode, editorElement, true);
+      if (propsData)
+      {
+        if (!lastPropsData || (propsData.getReferenceNode() != lastPropsData.getReferenceNode()))  //we've hit a really new object
+        {
+          if (!subMenu)
+          {
+            //Note! In this case, we've hit the first properties data with a coreElement differing from that of the
+            //  original item, which is still being held in prevPropData. Thus we don't want to add an item now, but we
+            //  are assured that an item will be needed. Just create the submenu and submenupop and get out.
+            dump("In msiEditor.js, in msiInitObjectPropertiesMenuitem(), subMenu is currently null - should no longer happen!\n");
+            createMorePropsSubmenu();
+          }
+          menuStr = null;
+          for (var iter = 0; propsData.hasReviseData(iter); ++iter)
+          {
+            menuStr = propsData.getMenuString(iter);
+            commandStr = propsData.getCommandString(iter);
+            scriptStr = propsData.getScriptString(iter);
+            addPropsMenuItem(propsData, menuStr, commandStr, scriptStr);
+            //addPropsMenuItem(propsData);
+          }
+        }
+        lastPropsData = propsData;
+        nextNode = propsData.getTopNode().parentNode;
+      }
+      else
+        nextNode = nextNode.parentNode;
+    }
+  }
+  catch(exc) {dump("In msiInitObjectPropertiesMenuitem(), exception: " + exc);}
+  return name;
+}
 
 function msiFormatPropertiesMenuString(objectStringID)
 {
@@ -9783,6 +9817,17 @@ function msiDialogEditorContentFilter(anEditorElement)
   this.mXmlSerializer = new XMLSerializer();
   this.mDOMUtils = Components.classes["@mozilla.org/inspector/dom-utils;1"].createInstance(Components.interfaces.inIDOMUtils);
   this.mbMathOnly = false;
+  this.mbSinglePara = false;
+  if (anEditorElement.mbSinglePara)
+    this.mbSinglePara = true;
+  this.defaultParaTag = "para";
+  this.mbAtFirst = true;
+  var editor = msiGetEditor(this.mEditorElement);
+  if (editor.tagListManager)
+  {
+    var namespace = new Object();
+    this.defaultParaTag = editor.tagListManager.getDefaultParagraphTag(namespace);
+  }
 
   this.dlgNodeFilter = function(aNode)
   {
@@ -9811,6 +9856,13 @@ function msiDialogEditorContentFilter(anEditorElement)
           return this.acceptAll;
       break;
     }
+    if (aNode.nodeName == this.defaultParaTag)
+    {
+      if (this.mbAtFirst)
+        return this.skip;
+      else
+        return this.accept;
+    }
     switch(aNode.nodeName)
     {
       case "dialogbase":
@@ -9837,15 +9889,18 @@ function msiDialogEditorContentFilter(anEditorElement)
       {
         case this.acceptAll:
           newParent.appendChild( parentNode.childNodes[ix].cloneNode(true) );
+          this.mbAtFirst = false;
         break;
         case this.skip:
           this.getXMLNodesForParent( newParent, parentNode.childNodes[ix] );
+          this.mbAtFirst = false;
         break;
         case this.accept:
         {
           var aNewNode = parentNode.childNodes[ix].cloneNode(false);
           this.getXMLNodesForParent( aNewNode, parentNode.childNodes[ix] );
           newParent.appendChild( aNewNode );
+          this.mbAtFirst = false;
         }
         break;
         case this.reject:
@@ -9857,6 +9912,7 @@ function msiDialogEditorContentFilter(anEditorElement)
   {
     var docFragment = null;
     var doc = this.mEditorElement.contentDocument;
+    this.mbAtFirst = true;
     if (doc != null)
     {
       docFragment = doc.createDocumentFragment();
@@ -9881,6 +9937,7 @@ function msiDialogEditorContentFilter(anEditorElement)
         {
           case this.skip:
             bFoundContent = this.nodeHasRealContent( parentElement.childNodes[ix], (bIsLast && (ix==parentElement.childNodes.length - 1)) );
+            this.mbAtFirst = false;
           break;
           case this.acceptAll:
           case this.accept:
@@ -9888,6 +9945,7 @@ function msiDialogEditorContentFilter(anEditorElement)
               bFoundContent = (parentElement.childNodes[ix].nodeName != "br");
             else
               bFoundContent = true;
+            this.mbAtFirst = false;
             break;
           case this.reject:
             break;
@@ -9901,6 +9959,7 @@ function msiDialogEditorContentFilter(anEditorElement)
   {
     var parentElement = null;
     var doc = this.mEditorElement.contentDocument;
+    this.mbAtFirst = true;
     if (doc != null)
       parentElement = msiGetRealBodyElement(doc);
     return this.nodeHasRealContent( parentElement, true );
@@ -9928,6 +9987,7 @@ function msiDialogEditorContentFilter(anEditorElement)
     if (editor != null)
     {
       var mathNodes = editor.document.getElementsByTagName("math");
+      this.mbAtFirst = true;
       for (var ix = 0; (!retval) && (ix < mathNodes.length); ++ix)
       {
         var bIsLast = false;
@@ -9958,6 +10018,8 @@ function msiDialogEditorContentFilter(anEditorElement)
 //      var rootNode = msiGetRealBodyElement(doc);
       var initialParaNode = null;
       var initialParaList = rootNode.getElementsByTagName("dialogbase");
+      if (!initialParaList.length)
+        initialParaList = rootNode.getElementsByTagName(this.defaultParaTag);
       if (initialParaList.length > 0)
         initialParaNode = initialParaList[0];
       else
@@ -10179,7 +10241,7 @@ function openFontColorDialog(tagname, node)
 function openFontSizeDialog(tagname, node)
 {
   openDialog('chrome://prince/content/fontsize.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
-    node);
+    node, editor);
 }
 
 
@@ -10196,7 +10258,28 @@ function openGraphDialog(tagname, node, editorElement)
      editorElement, "cmd_objectProperties", node, graph, node, currentDOMGs);
 }
 
+function getMSIDocumentInfo(editorElement)
+{
+  var docInfo = new msiDocumentInfo(editorElement);
+  docInfo.initializeDocInfo();
+  return docInfo;
+}
 
+function getBibliographyScheme(editorElement)
+{
+  var docInfo = getMSIDocumentInfo(editorElement);
+  if (docInfo && docInfo.generalSettings)
+  {
+    if ( ("bibliographyscheme" in docInfo.generalSettings) && ("contents" in docInfo.generalSettings.bibliographyscheme) )
+      return docInfo.generalSettings.bibliographyscheme.contents;
+  }
+  return "manual";
+}
 
-
+function setBibliographyScheme(editorElement, whichScheme)
+{
+  var docInfo = getMSIDocumentInfo(editorElement);
+  docInfo.setObjectFromData(docInfo.generalSettings, "bibliographyscheme", (whichScheme.length > 0), "BibliographyScheme", whichScheme, "comment-key-value");
+  docInfo.putDocInfoToDocument();
+}
 
