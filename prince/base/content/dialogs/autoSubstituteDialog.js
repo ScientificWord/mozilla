@@ -223,7 +223,7 @@ function Startup() {
   editorDocLoadedObserverData.mObserver = substitutionControlObserver;
 
   editElement.mInitialDocObserver = [commandBoldObserverData, commandSetModifiedObserverData, editorDocLoadedObserverData];
-//  editElement.mInitialDocObserver = [editorDocLoadedObserverData];
+//  editElement.mbSinglePara = false;
 
   msiInitializeEditorForElement(editElement, substitutionStr);
 
@@ -381,13 +381,13 @@ function getDataFromControl(whichType)
       var editElement = document.getElementById("subst-frame");
       if (!editElement.getHTMLEditor(editElement.contentWindow))
         return theValue;
-      var nodeList = getEditControlContentNodes(editElement, bMathContext);
-      if (nodeList != null)
+      var docFrag = getEditControlContentNodes(editElement, bMathContext);
+      if ( (docFrag != null) && (docFrag.childNodes.length > 0) )
       {
         var serial = new XMLSerializer();
         theValue = "";
-        for (var ix = 0; ix < nodeList.length; ++ix)
-          theValue += serial.serializeToString(nodeList[ix]);
+        for (var ix = 0; ix < docFrag.childNodes.length; ++ix)
+          theValue += serial.serializeToString(docFrag.childNodes[ix]);
       }
     }
     break;
@@ -758,11 +758,11 @@ function saveCurrentSub()
 {
   var currSub = document.getElementById("keystrokesBox").value;
   var theType = document.getElementById("autosubTypeRadioGroup").value;
-  var appearanceList = null;
+  var appearanceListFrag = null;
   var theData = null;
   var theContext = document.getElementById("autosubContextRadioGroup").value;
   if (theType == "substitution")
-    appearanceList = getEditControlContentNodes(document.getElementById("subst-frame"), (theContext == "math"));
+    appearanceListFrag = getEditControlContentNodes(document.getElementById("subst-frame"), (theContext == "math"));
   else if (theType == "script")
     theData = document.getElementById("scriptTextbox").value;
 //  var bEngFuncStr = bEngineFunction ? "true" : "false";
@@ -770,6 +770,9 @@ function saveCurrentSub()
 //  alert("Calling to add name: [" + currName + "], of type [" + theType + "], with bEngineFunction [" + bEngFuncStr + "] and bAutoSubstitute [" + bAutoSubStr + "].\n");
   var contextMarkupStr = "";  //this gets expanded in addSub to <math xmlns=...> if "theContext" is "math".
 //  if (gDialog.bIsNew)
+  var appareanceList = null;
+  if ( (appearanceListFrag != null) && (appearanceListFrag.childNodes.length > 0) )
+    appearanceList = appearanceListFrag.childNodes;
     gDialog.subsList.saveSub(currSub, theType, theContext, theData, contextMarkupStr, appearanceList);
 //  else
 //    gDialog.subsList.modifySub(currSub, theType, theContext, theData, contextMarkupStr, appearanceList);
@@ -793,7 +796,7 @@ function getEditControlContentNodes(editorElement, bMathOnly)
     gDialog.substContentFilter = new msiDialogEditorContentFilter(editorElement);
   gDialog.substContentFilter.setMathOnly(bMathOnly);
   var docFrag = gDialog.substContentFilter.getXMLNodesAsDocFragment();
-  return docFrag.childNodes;
+  return docFrag;
 //  var doc = editorElement.contentDocument;
 ////  var target = msiGetRealBodyElement(doc);
 //  var target = doc.getElementsByTagName("dialogbase")[0];

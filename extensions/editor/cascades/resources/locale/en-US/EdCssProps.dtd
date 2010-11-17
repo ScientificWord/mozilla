@@ -42,9 +42,8 @@
 <!ENTITY expertModeChecbox.label			"Expert mode">
 <!ENTITY importRuleButton.label				"@import">
 <!ENTITY mediaRuleButton.label				"@media">
-<!ENTITY linkedSheetButton.label			"Link elt.">
-<!ENTITY styleSheetButton.label				"Style elt.">
-<!ENTITY ruleButton.label					"Rule">
+<!ENTITY styleSheetButton.label				"New Stylesheet">
+<!ENTITY ruleButton.label					"New Rule">
 <!ENTITY upButton.label						"Up">
 <!ENTITY downButton.label					"Down">
 <!ENTITY refreshButton.label				"Refresh">

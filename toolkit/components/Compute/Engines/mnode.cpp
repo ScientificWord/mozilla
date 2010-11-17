@@ -717,6 +717,10 @@ bool IsSUBSTITUTION(MNODE* mml_msub_node)
 
           if (zopen_attr_val[0] == '[' && zclose_attr_val[0] == ']')
             rv = true;
+          if (zopen_attr_val[0] == '[' && StringEqual(zclose_attr_val, "&#x250a;") )
+            rv = true;
+          if (zopen_attr_val[0] == 'I' && StringEqual(zclose_attr_val, "&#x250a;") )
+            rv = true;
           if (zopen_attr_val[0] == 'I' && zclose_attr_val[0] == ']')
             rv = true;
           if (zopen_attr_val[0] == 'I' && zclose_attr_val[0] == '|')
@@ -724,9 +728,14 @@ bool IsSUBSTITUTION(MNODE* mml_msub_node)
 		      if (zopen_attr_val[0] == '\0' &&  zclose_attr_val[0] == '|')
 		        rv = true;
    
-          if (StringEqual(zopen_attr_val, "&#x250a;") && (zclose_attr_val[0] == ']')){
+          if (StringEqual(zopen_attr_val, "&#x250a;") && (zclose_attr_val[0] == ']') )
             rv = true;
-          }
+          if (StringEqual(zopen_attr_val, "&#x250a;") && (zclose_attr_val[0] == 'I') )
+            rv = true;
+          if (StringEqual(zopen_attr_val, "&#x250a;") && (zclose_attr_val[0] == '|') )
+            rv = true;
+
+          
         }
       }
     }

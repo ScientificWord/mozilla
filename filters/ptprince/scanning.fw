@@ -439,7 +439,7 @@ if (prim != 0){
        return;
     }
 } else {
-   LOG("\nUndefined symbol " << CurTok());
+   //LOG("\nNon-primitive: " << CurTok());
    return;
 }
 @}
