@@ -178,7 +178,8 @@ enum PrefixOpIlk {
   POI_curl,
   POI_Laplacian,
   POI_integral,
-  POI_sum
+  POI_sum,
+  POI_function
 };
 
 

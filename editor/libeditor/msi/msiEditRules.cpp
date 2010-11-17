@@ -93,13 +93,15 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
 
   
   nsCOMPtr<nsIDOMNode> startNode, endNode;
-  nsCOMPtr<nsIDOMNode> mathNode;
-  nsCOMPtr<nsIDOMElement> mathElement;
+  nsCOMPtr<nsIDOMNode> startMathNode;
+  nsCOMPtr<nsIDOMNode> endMathNode;
+  PRBool endsInMath;
   PRInt32 startOffset, endOffset;
 
   printf("In msiEditRules::WillDeleteSelection\n");
   DumpSelection(aSelection);
-
+  nsresult res;
+/* BBM testing:
   nsresult res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(startNode), &startOffset);
   if (NS_FAILED(res)) return res;
   if (!startNode) return NS_ERROR_FAILURE;
@@ -107,13 +109,16 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
   if (NS_FAILED(res)) return res;
   if (!endNode) return NS_ERROR_FAILURE;
 
-  mMSIEditor->GetMathParent(startNode, mathNode);
-  mathElement = do_QueryInterface(mathNode);
+  mMSIEditor->GetMathParent(startNode, startMathNode);
+  mMSIEditor->GetMathParent(endNode, endMathNode);
+  endsInMath = startMathNode || endMathNode;
 
-  if (mathElement){
+  if (endsInMath){
       mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
       res = WillDeleteMathSelection(aSelection, aAction, aCancel, aHandled);
-  } else {
+  }
+  if (!(startMathNode && endMathNode && (startMathNode == endMathNode))) */
+  { 
      printf("In msiEditRules::WillDeleteSelection(2)\n");
      DumpSelection(aSelection);
      mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
@@ -166,12 +171,17 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
                                  PRBool *aCancel,
                                  PRBool *aHandled)
 {
+  // initialize out params
+  *aCancel = PR_FALSE;
+  *aHandled = PR_FALSE;
+
   PRBool bCollapsed;
   nsresult res = aSelection->GetIsCollapsed(&bCollapsed);
   if (NS_FAILED(res)) return res;
 
   nsCOMPtr<nsIDOMNode> startNode, endNode;
-  nsCOMPtr<nsIDOMNode> mathNode;
+  nsCOMPtr<nsIDOMNode> startMathNode;
+  nsCOMPtr<nsIDOMNode> endMathNode;
   nsCOMPtr<nsIDOMElement> mathElement;
   PRInt32 startOffset, endOffset;
   PRBool bDeleteEntireMath = false;
@@ -184,14 +194,8 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
   if (NS_FAILED(res)) return res;
   if (!endNode) return NS_ERROR_FAILURE;
 
-  mMSIEditor->GetMathParent(endNode, mathNode);
-  mathElement = do_QueryInterface(mathNode);
-
-  printf("\nMath node:\n");
-  mHTMLEditor -> DumpNode(mathNode, 0, true);
-
-
-  if (!mathElement) return NS_ERROR_FAILURE;
+  mMSIEditor->GetMathParent(startNode, startMathNode);
+  mMSIEditor->GetMathParent(endNode, endMathNode);
 
   DebDisplaySelection("\nInitial selection", aSelection, mMSIEditor, true);
 
@@ -300,11 +304,12 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
 
    
   if (!*aHandled){
-     bDeleteEntireMath = bSelectionContainsTheEntireMathNode(mathNode, aSelection);
+     bDeleteEntireMath = PR_FALSE;  // if true, this function will not be called.
+//     bDeleteEntireMath = bSelectionContainsTheEntireMathNode(mathNode, aSelection);
    
      DebDisplaySelection("\nDeletion not handled yet. Extend selection to:" , aSelection, mMSIEditor, true);
 
-     mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
+//     mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction); Done just before call; selection has not changed since then
    
      DebDisplaySelection("\nSelection before calling nsHTMLEditRules::WillDeleteSelection" , aSelection, mMSIEditor, true);
 
@@ -333,11 +338,11 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
   DebDisplaySelection("\nSelection before calling FindCursor" , aSelection, mMSIEditor, true);
 
   bool b = false;
-  int idx = FindCursorIndex(mMSIEditor, mathNode, endNode, endOffset, b, 0);
+  int idx = FindCursorIndex(mMSIEditor, startMathNode, endNode, endOffset, b, 0);
 
   printf("\nidx is %d\n", idx);
   
-  nsString text = SerializeMathNode(mathNode);
+  nsString text = SerializeMathNode(startMathNode);
     
   nsCOMPtr<msiISimpleComputeEngine>  pEngine = GetEngine();
   
@@ -351,6 +356,7 @@ nsresult msiEditRules::WillDeleteMathSelection(nsISelection *aSelection,
 
   nsString resString(result);
   
+  mathElement = do_QueryInterface(startMathNode);
   mHTMLEditor->DeleteNode(mathElement);
 
   DebDisplaySelection("\nSelection before inserting new math", aSelection, mMSIEditor, true);

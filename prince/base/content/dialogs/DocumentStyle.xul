@@ -33,12 +33,12 @@
       <tab label="Scripts"/>
       <tab label="Tag definitions"/>
       <tab label="XSLT translations"/>
-      <tab><label><html:latex>L<html:sup>A</html:sup>T<html:sub>E</html:sub>X</html:latex> style</label></tab>
+      <tab><label><html:texlogo>L<html:sup>A</html:sup>T<html:sub>E</html:sub>X</html:texlogo> style</label></tab>
     </tabs>
     <tabpanels>
       <tabpanel>
         <vbox>
-        <label>"Style sheets in use" </label>
+        <label>Style sheets in use</label>
         <hbox>
           <vbox>
             <textbox id="cssfile" value="Enter new cascading style sheets here"/>
@@ -58,7 +58,7 @@
       </tabpanel>
       <tabpanel>
         <vbox>
-        <label>"Included JavaScript files" </label>
+        <label>Included JavaScript files</label>
         <hbox>
           <vbox>
             <textbox id="scriptfile" value="Enter new JavaScript files here"/>
@@ -118,7 +118,7 @@
       </tabpanel>
       <tabpanel>
         <vbox>
-        <label><html:latex>L<html:sup>A</html:sup>T<html:sub>E</html:sub>X</html:latex> style</label>
+        <label><html:texlogo>L<html:sup>A</html:sup>T<html:sub>E</html:sub>X</html:texlogo> style</label>
         <hbox>
           <vbox>
             <textbox id="stylefile"/>

@@ -193,7 +193,7 @@ function toggleExpertMode()
     // if we're not in expert mode, allow only rule creation button
     UpdateButtons(!gDialog.atimportButton.hasAttribute("disabled"),
                   !gDialog.atmediaButton.hasAttribute("disabled"),
-                  !gDialog.linkButton.hasAttribute("disabled"),
+//                  !gDialog.linkButton.hasAttribute("disabled"),
                   !gDialog.styleButton.hasAttribute("disabled"),
                   !gDialog.ruleButton.hasAttribute("disabled"),
                   !gDialog.removeButton.hasAttribute("disabled"));
@@ -250,9 +250,10 @@ function AddSheetEntryToTree(sheetsTree, ownerNode)
     var treecell  = document.createElementNS(XUL_NS, "treecell");
     var regexp = /href\=[\'\"]([^\'\"]*)/i;
     var a = regexp(ownerNode.textContent);
+    var external = a[0].indexOf("resource://")>=0;
     treecell.setAttribute("label", a[1]);
     // add a new entry to the tree
-    var o = newObject( treeitem, true, 1, ownerNode.sheet, false, 0 );
+    var o = newObject( treeitem, external, 1, ownerNode.sheet, false, 0 );
     PushInObjectsArray(o);
   
     treerow.appendChild(treecell);
@@ -262,7 +263,7 @@ function AddSheetEntryToTree(sheetsTree, ownerNode)
     var rules = null;
     if (ownerNode.sheet)
       rules = ownerNode.sheet.cssRules;
-    AddRulesToTreechildren(treeitem, rules, true, 1);
+    AddRulesToTreechildren(treeitem, rules, external, 1);
 
     sheetsTree.appendChild(treeitem);
   }
@@ -603,13 +604,8 @@ function onSelectCSSTreeItem(tab)
         AddCheckboxToInfobox(gridrows, "Disabled:", "check to disable stylesheet (cannot be saved)",
                              cssObject.disabled, "onStylesheetDisabledChange");
         var href;
-        if (cssObject.ownerNode.nodeName.toLowerCase() == "link") {
-          href = cssObject.href;
-        }
-        else {
-          href = "none (embedded into the document)";
-        }
-        AddLabelToInfobox(gridrows, "URL:", href, null, false);
+        href = cssObject.href;
+        AddLabelToInfobox(gridrows, "URL:", decodeURI(href), null, false);
         var mediaList = cssObject.media.mediaText;
         if (!mediaList || mediaList == "") {
           mediaList = "all";
@@ -655,19 +651,14 @@ function onSelectCSSTreeItem(tab)
     case IMPORT_RULE:
       gDialog.sheetInfoTabPanelTitle.setAttribute("value", "Import rule");
       AddLabelToInfobox(gridrows, "URL:", cssObject.href, null, false);
+      AddCheckboxToInfobox(gridrows, "Disabled:", "check to disable stylesheet (cannot be saved)",
+                           cssObject.disabled, "onStylesheetDisabledChange");
       AddLabelToInfobox(gridrows, "Media list:", cssObject.media.mediaText, null, false);
       break;
     // TO BE DONE : @charset and other exotic rules
   }
 }
 
-// * updates the UI buttons with the given states
-//   param boolean importState
-//   param mediaState
-//   param boolean linkState
-//   param boolean styleState
-//   param boolean ruleState
-//   param boolean removeState
 function UpdateButtons(importState, mediaState, linkState, styleState, ruleState, removeState)
 {
   if (!gDialog.expertMode) {
@@ -685,7 +676,6 @@ function UpdateButtons(importState, mediaState, linkState, styleState, ruleState
   }
   EnableUI(gDialog.atimportButton, importState);
   EnableUI(gDialog.atmediaButton, mediaState);
-  EnableUI(gDialog.linkButton, linkState);
   EnableUI(gDialog.styleButton, styleState);
   EnableUI(gDialog.ruleButton, ruleState);
   EnableUI(gDialog.removeButton, removeState);
