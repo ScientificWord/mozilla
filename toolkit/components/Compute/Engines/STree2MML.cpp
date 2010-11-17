@@ -33,6 +33,7 @@
 #include "SNode.h"
 #include "Grammar.h"
 #include "fltutils.h"
+#include "dumputils.h"
 #include "attriblist.h"
 #include "strutils.h"
 #include <string.h>
@@ -243,6 +244,7 @@ char *STree2MML::BackTranslate(SEMANTICS_NODE* semantic_tree,
   SetUserPrefs(ds);
 
 #ifdef DEBUG
+  printf("\n========= BackTranslating this: ========\n");
   JBM::DumpSList(semantic_tree);
 #endif
 
@@ -2053,6 +2055,14 @@ void STree2MML::SemanticFRACTION2MML(SEMANTICS_NODE * s_fraction,
                                      FACTOR_REC ** num_factors,
                                      FACTOR_REC ** den_factors)
 {
+
+  #ifdef DEBUG
+  char start_msg[100];
+  sprintf( start_msg, "\n\n========== STree2MML::SemanticFRACTION2MML ============");
+  JBM::JBMLine(start_msg);
+  #endif
+
+
   BUCKET_REC *b_list = s_fraction->bucket_list;
   BUCKET_REC *num_bucket = FindBucketRec(b_list, MB_NUMERATOR);
   BUCKET_REC *den_bucket = FindBucketRec(b_list, MB_DENOMINATOR);
@@ -2067,6 +2077,12 @@ void STree2MML::SemanticFRACTION2MML(SEMANTICS_NODE * s_fraction,
                                 nodes_made, terms_made,
                                 is_signed, num_factors, den_factors);
     if (z_num) {
+      #ifdef DEBUG
+      char msg[1000];
+      sprintf( msg, "\n\nNumerator = %s", z_num);
+      JBM::JBMLine(msg);
+      #endif
+
       FACTOR_REC *new_fr = CreateFactor();
       new_fr->zh_fstr = z_num;
       new_fr->n_terms = terms_made;
@@ -2085,6 +2101,11 @@ void STree2MML::SemanticFRACTION2MML(SEMANTICS_NODE * s_fraction,
                                 nodes_made, terms_made,
                                 is_signed, den_factors, num_factors);
     if (z_den) {
+      #ifdef DEBUG
+      char msg[1000];
+      sprintf( msg, "\n\nDenominator = %s", z_den);
+      JBM::JBMLine(msg);
+      #endif
       FACTOR_REC *new_fr = CreateFactor();
       new_fr->zh_fstr = z_den;
       new_fr->n_terms = terms_made;
