@@ -180,6 +180,9 @@
 <!ENTITY MSIComputeSolveExact.tooltip "Solve Exact">
 <!ENTITY MSIComputeSolveExact.label "Solve">
 
+<!ENTITY MSIComputeSolveInteger.tooltip "Solve Integer">
+<!ENTITY MSIComputeSolveInteger.label "Solve">
+
 <!ENTITY MSIComputePlot2D.tooltip "Plot 2D Rectangular">
 <!ENTITY MSIComputePlot2D.label "Plot 2D">
 

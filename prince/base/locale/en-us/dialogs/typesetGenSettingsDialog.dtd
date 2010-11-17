@@ -1,0 +1,32 @@
+<!-- Copyright (c) 2010 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY typesetGenSettingsDialog.title	"General Settings">
+
+<!ENTITY miscellaneousOptions.label "Miscellaneous Options">
+<!ENTITY warnNonPortableFilenamesCheckbox.label "Warn about non-portable filenames">
+<!ENTITY warnNonPortableFilenamesCheckbox.accesskey "W">
+<!ENTITY useOldAuxFilesCheckbox.label "Use old .aux files if possible">
+<!ENTITY useOldAuxFilesCheckbox.accesskey "a">
+<!ENTITY bibTexOptions.label "BibTeX Options">
+<!ENTITY bibTeXExecutable.label "Path to BibTeX program">
+<!ENTITY bibTeXExecutable.accesskey "B">
+<!ENTITY browseBibTeXExecutable.label "Browse">
+<!ENTITY browseBibTeXExecutable.accesskey "r">
+<!ENTITY bibTeXDatabaseDir.label "BibTeX database directory">
+<!ENTITY bibTeXDatabaseDir.accesskey "d">
+<!ENTITY browseBibTeXDatabaseDir.label "Browse">
+<!ENTITY browseBibTeXDatabaseDir.accesskey "o">
+<!ENTITY bibTeXStyleDir.label "BibTeX style directory">
+<!ENTITY bibTeXStyleDir.accesskey "s">
+<!ENTITY browseBibTeXStyleDir.label "Browse">
+<!ENTITY browseBibTeXStyleDir.accesskey "w">
+<!ENTITY PDFOptions.label "PDF Options">
+<!ENTITY pdfGraphicsSettings.label "PDF Graphics Settings">
+<!ENTITY pdfGraphicsSettings.accesskey "P">
+<!ENTITY convertTeXLinksToPDF.label "Convert .tex link targets to .pdf">
+<!ENTITY convertTeXLinksToPDF.accesskey "C">
+<!ENTITY portableLaTeXOptions.label "Portable LaTeX Options">
+<!ENTITY portableLaTeXGraphicsSettings.label "Portable laTeX Graphics Settings">
+<!ENTITY portableLaTeXGraphicsSettings.accesskey "G">
+<!ENTITY passThroughUnicodeMacro.label "Pass through Unicode macro">
+<!ENTITY passThroughUnicodeMacro.accesskey "U">

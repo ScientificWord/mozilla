@@ -1,3 +1,4 @@
+
 \chardef\active=13 
 
 
@@ -15,12 +16,12 @@
 
 %\def~{\nobreakspace{}}
 
-
 \def\@makeother#1{\catcode`#112\relax}
 
 \catcode`\%=12
 \def\@percentchar{%}
 \catcode`\%=14
+
 
 
 \countdef\count@=255
@@ -110,16 +111,48 @@
 
 %% \begin and \end
 
+%% \def\begin#1{%
+%%   \ifmmode
+%%     \def\dobegin{\string\begin{#1}}%
+%%   \else
+%%     \def\dobegin{%
+%%       \begingroup
+%%       \msitag{^^0a}\csname msi@begin@#1\endcsname}%
+%%   \fi
+%%   \dobegin
+%% }
+
 \def\begin#1{%
-  \begingroup
-  \msitag{^^0a}\csname msi@begin@#1\endcsname
-}
+   \begingroup
+   \msitag{^^0a}\csname msi@begin@#1\endcsname}
 
 \def\end#1{%
-  \csname msi@end@#1\endcsname
-  \msitag{^^0a}
-  \endgroup
-}
+   \csname msi@end@#1\endcsname
+   \msitag{^^0a}%
+   \endgroup}
+
+
+
+%% \def\end#1{%
+%%   \ifmmode
+%%     \def\reserved@@a{#1}
+%%     \def\reserved@@b{equation}
+%%     \ifx\reserved@@a\reserved@@b
+%%         $$
+%%     \else
+%%        \def\reserved@@b{align*}
+%%        \ifx\reserved@@a\reserved@@b
+%%           $$
+%%        \else
+%%           \string\end{#1}%
+%%        \fi
+%%     \fi
+%%   \else
+%%     \csname msi@end@#1\endcsname
+%%     \msitag{^^0a}%
+%%     \endgroup
+%%   \fi
+%% }
    
 
 
@@ -147,6 +180,7 @@
   \iterate \let\iterate\relax}
 \let\repeat\fi
 \def\two@digits#1{\ifnum#1<10 0\fi\number#1}
+
 \long\def\@firstoftwo#1#2{#1}
 \long\def\@secondoftwo#1#2{#2}
 
@@ -206,7 +240,8 @@
 \endgroup
 
 \ifx\filename@parse\@undefined
-  \def\reserved@a{./}\ifx\@currdir\reserved@a
+  \def\reserved@a{./}
+  \ifx\@currdir\reserved@a
     \typeout{^^JDefining UNIX/DOS style filename parser.^^J}
     \def\filename@parse#1{%
       \let\filename@area\@empty
@@ -650,8 +685,6 @@
 \long\def \@gobbletwo #1#2{}
 \long\def \@gobblefour #1#2#3#4{}
 \long\def\@firstofone#1{#1}
-\long\def\@firstoftwo#1#2{#1}
-\long\def\@secondoftwo#1#2{#2}
 \let\@iden\@firstofone
 \long\def\@thirdofthree#1#2#3{#3}
 \def\@expandtwoargs#1#2#3{%
@@ -708,12 +741,15 @@
 }
 \def\restore@protect{\let\protect\@@protect}
 \set@typeset@protect
+
 \def\@ifundefined#1{%
   \expandafter\ifx\csname#1\endcsname\relax
-    \expandafter\@firstoftwo
+    \let\reserved@@a\@firstoftwo
   \else
-    \expandafter\@secondoftwo
-  \fi}
+    \let\reserved@@a\@secondoftwo
+  \fi
+  \reserved@@a}
+
 \edef\@qend{\expandafter\@cdr\string\end\@nil}
 \edef\@qrelax{\expandafter\@cdr\string\relax\@nil}
 \long\def\@ifnextchar#1#2#3{%
@@ -3461,8 +3497,8 @@
 \def\displaymath{\[}
 \def\enddisplaymath{\]\@ignoretrue}
 \@definecounter{equation}
-\def\equation{$$\refstepcounter{equation}}
-\def\endequation{\eqno \hbox{\@eqnnum}$$\@ignoretrue}
+%\def\equation{$$\refstepcounter{equation}}
+%\def\endequation{\eqno \hbox{\@eqnnum}$$\@ignoretrue}
 \def\@eqnnum{{\normalfont \normalcolor (\theequation)}}
 
 \def\frac#1#2{{\begingroup#1\endgroup\over#2}}
@@ -4612,7 +4648,7 @@
 
 
 \def\newtheorem#1{%
-  \@ifnextchar[{\out@newtheorema{#1}}{\@nthm{#1}}}
+  \@ifnextchar[{\out@newtheorema{#1}}{\@nthm{#1}}}{}
   
 \def\@nthm#1#2{%
   \@ifnextchar[{\@xnthm{#1}{#2}}{\out@newtheoremb{#1}{#2}}}
@@ -6209,19 +6245,24 @@
 \@onlypreamble\@p@pfilename
 \gdef\@currnamestack{}
 \@onlypreamble\@currnamestack
+
 \def\@ptionlist#1{%
   \@ifundefined{opt@#1}\@empty{\csname opt@#1\endcsname}}
+
 \@onlypreamble\@ptionlist
 \def\@ifpackageloaded{\@ifl@aded\@pkgextension}
 \def\@ifclassloaded{\@ifl@aded\@clsextension}
 \@onlypreamble\@ifpackageloaded
 \@onlypreamble\@ifclassloaded
+
 \def\@ifl@aded#1#2{%
   \expandafter\ifx\csname ver@#2.#1\endcsname\relax
-    \expandafter\@secondoftwo
+    \let\reserved@a\@secondoftwo
   \else
-    \expandafter\@firstoftwo
-  \fi}
+    \let\reserved@a\@firstoftwo
+  \fi
+  \reserved@a}
+
 \@onlypreamble\@ifl@aded
 \def\@ifpackagelater{\@ifl@ter\@pkgextension}
 \def\@ifclasslater{\@ifl@ter\@clsextension}
@@ -6458,7 +6499,6 @@
   \reserved@a}
 \@onlypreamble\@fileswith@pti@ns
 \def\@onefilewithoptions#1[#2][#3]#4{%
-%% jcs  \@pushfilename
   \xdef\@currname{#1}%
   \global\let\@currext#4%
   \expandafter\let\csname\@currname.\@currext-h@@k\endcsname\@empty
@@ -6467,34 +6507,16 @@
   \makeatletter
   \def\reserved@a{%
     \@ifl@aded\@currext{#1}%
-      {\@if@ptions\@currext{#1}{#2}{}%
-        {\@latex@error
-            {Option clash for \@cls@pkg\space #1}%
-            {The package #1 has already been loaded
-             with options:\MessageBreak
-             \space\space[\@ptionlist{#1.\@currext}]\MessageBreak
-             There has now been an attempt to load it
-              with options\MessageBreak
-             \space\space[#2]\MessageBreak
-             Adding the global options:\MessageBreak
-             \space\space
-                  \@ptionlist{#1.\@currext},#2\MessageBreak
-             to your \noexpand\documentclass declaration may fix this.%
-             \MessageBreak
-             Try typing \space <return> \space to proceed.}}}%
+      {\@if@ptions\@currext{#1}{#2}{}{}}%
       {\@pass@ptions\@currext{#2}{#1}%
-       \global\expandafter
-       \let\csname ver@\@currname.\@currext\endcsname\@empty
+       \global\expandafter\let\csname ver@\@currname.\@currext\endcsname\@empty
        \InputIfFileExists
          {\@currname.\@currext}%
          {}%
          {}%
-    \let\@unprocessedoptions\@@unprocessedoptions
-    \csname\@currname.\@currext-h@@k\endcsname
-    \expandafter\let\csname\@currname.\@currext-h@@k\endcsname
-              \@undefined
-    \@unprocessedoptions}
-
+         \let\@unprocessedoptions\@@unprocessedoptions
+         \csname\@currname.\@currext-h@@k\endcsname
+         \expandafter\let\csname\@currname.\@currext-h@@k\endcsname\@undefined}
     \@reset@ptions}%
   \reserved@a}
 \@onlypreamble\@onefilewithoptions
@@ -6533,6 +6555,7 @@
     package%
   \fi}
 \@onlypreamble\@cls@pkg
+
 \def\@unknownoptionerror{%
   \@latex@error
     {Unknown option `\CurrentOption' for \@cls@pkg\space`\@currname'}%
@@ -6542,12 +6565,14 @@
      Try typing \space <return>
      \space to proceed.}}
 \@onlypreamble\@unknownoptionerror
+
 \def\@@unprocessedoptions{%
   \ifx\@currext\@pkgextension
     \edef\@curroptions{\@ptionlist{\@currname.\@currext}}%
     \@for\CurrentOption:=\@curroptions\do{%
         \ifx\CurrentOption\@empty\else\@unknownoptionerror\fi}%
   \fi}
+
 \@onlypreamble\@unprocessedoptions
 \@onlypreamble\@@unprocessedoptions
 \def\@badrequireerror#1[#2]#3[#4]{%
@@ -6814,14 +6839,14 @@
 
 \def\U#1{\ifmmode\string\U{#1}\else\char`\&\char`\#x#1;\fi}
 
-
+\def\mathring#1{\if A#1\U{212B}\fi}
 
 %% \def\msihyperref#1#2#3#4
 %% Replace with contortion to convert & in parameter 4
 
 \begingroup
    \catcode`\&=13%
-   \gdef&{\char`\&amp;}
+   \gdef&{\ifmmode\char`\&\else\char`\&amp;\fi}
 \endgroup
   
 \def\msihyperref#1#2#3{%
