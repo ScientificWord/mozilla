@@ -40,8 +40,8 @@
 	<vbox>
 		<hbox>
 		  <vbox>
-		    <description value='&databaseFileListbox.label;' accesskey='&databaseFileListbox.accesskey;'/>
-		    <listbox id='databaseFileListbox' rows='15'/>
+		    <description value='&databaseFileListbox.label;' accesskey='&databaseFileListbox.accesskey;' />
+		    <listbox id='databaseFileListbox' rows='15' seltype='multiple' onselect='changeDatabaseSelection();' />
 			</vbox>
 			<vbox>
 		    <description value='&styleFileListbox.label;' accesskey='&styleFileListbox.accesskey;'/>

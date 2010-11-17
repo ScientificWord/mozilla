@@ -247,3 +247,7 @@ prince.jar:
   content/MatrixInsertRowsCols.js     (dialogs/MatrixInsertRowsCols.js)
   content/equationArrayDialog.xul    (dialogs/equationArrayDialog.xul)
   content/equationArrayDialog.js     (dialogs/equationArrayDialog.js)
+  content/typesetGenSettingsDialog.xul  (dialogs/typesetGenSettingsDialog.xul)
+  content/typesetGenSettingsDialog.js   (dialogs/typesetGenSettingsDialog.js)
+  content/typesetBibitemDlg.xul         (dialogs/typesetBibitemDlg.xul)
+  content/typesetBibitemDlg.js          (dialogs/typesetBibitemDlg.js)

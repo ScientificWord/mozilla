@@ -66,6 +66,7 @@ html|p#brownFoxLabel {
 }
 
 treechildren::-moz-tree-cell-text(external) {
+    color: red;
     font-style: italic ! important;
 }
 
