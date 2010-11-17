@@ -347,7 +347,7 @@
     <menupopup id="tagPopup">
       <menuitem label="&tagmenuAppearance.label;" 
                 id="tagmenuAppearance" 
-                observes="cmd_unimp" 
+                observes="Cascades" 
                 accesskey="&tagmenuAppearance.accesskey;"/>
       <menuitem label="&tagmenuFunctionKeys.label;" 
                 id="tagmenuFunctionKeys" 
@@ -476,6 +476,10 @@
                 accesskey="&viewTeXLog.accesskey;"    
                 observes="cmd_showTeXLog" 
                 label="&viewTeXLog.label;"/>
+      <menuitem id="viewTeXFile"  
+                accesskey="&viewTeXFile.accesskey;"    
+                observes="cmd_showTeXFile" 
+                label="&viewTeXFile.label;"/>
       <menuseparator/>
       <menu id="sidebar-menu" label="Sidebars" >
         <menupopup>
@@ -837,6 +841,10 @@
 
   <keyset id="tasksKeys">
     <key id="key_inspectPage" key="i" modifiers="accel,shift" command="Tasks:InspectPage"/>
+  </keyset>
+  <keyset id="MSIEditorKeys">
+    <!-- key keycode="VK_TAB" oncommand="return msiEditorDoTab(event, false);"/>
+    <key keycode="VK_TAB" modifiers="shift" oncommand="return msiEditorDoTab(event, true);"/ -->
   </keyset>
   
     <!-- DEBUG only -->

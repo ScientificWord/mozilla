@@ -526,21 +526,25 @@
    \msitag{/>}
 }
 
+\def\FRAME{\begingroup
+             \catcode`\&=13
+             \catcode`\~=11\relax\@FRAME}
 
-\def\FRAME#1#2#3#4#5#6#7#8{%
-   \@temptokena={#7}
-   \@temptokenb={Plot}
-   \if\@temptokena\@temptokenb
+\def\@FRAME#1#2#3#4#5#6#7#8{%
+   \def\reserved@@a{#7}
+   \def\reserved@@b{Plot}
+   \ifx\reserved@@a\reserved@@b
       \begingroup
-        #8
+        %#8
+        [A MISSING PLOT]
       \endgroup
       %\msitag{<img src="zfoo.png" style="width: #2; height: #3" alt="plot"/>}
    \else
       \begingroup
         #8
       \endgroup
-      %\msitag{<img src="zfoo.png" style="width: #2; height: #3" alt="graphic"/>}
    \fi
+   \endgroup
 }%
 
 %
@@ -912,10 +916,10 @@
 %% jcs \def\dbigotimes{\mathop{\displaystyle \bigotimes }}%
 %% jcs \def\dbiguplus{\mathop{\displaystyle \biguplus }}%
 
-\if@compatibility\else
-  % Always load amsmath in LaTeX2e mode
-  \RequirePackage{amsmath}
-\fi
+%\if@compatibility\else
+%  % Always load amsmath in LaTeX2e mode
+%  \usepackage{amsmath}
+%\fi
 
 \def\ExitTCILatex{\makeatother\endinput}
 
@@ -999,7 +1003,7 @@
 %  These macros are for doing the AMS \text{} construct
 %
 \def\RIfM@{\relax\protect\ifmmode}
-\def\text{\RIfM@\expandafter\text@\else\expandafter\mbox\fi}
+%\def\text{\RIfM@\expandafter\text@\else\expandafter\mbox\fi}
 \let\nfss@text\text
 \def\text@#1{\mathchoice
    {\textdef@\displaystyle\f@size{#1}}%
@@ -1263,11 +1267,11 @@ You are using a type of "tabular*" construct that is only allowed in AmS-LaTeX.}
          \global\def\@taggnum{#1}}
   }{}
 
-\def\tfrac#1#2{{\textstyle {#1 \over #2}}}%
-\def\dfrac#1#2{{\displaystyle {#1 \over #2}}}%
-\def\binom#1#2{{#1 \choose #2}}%
-\def\tbinom#1#2{{\textstyle {#1 \choose #2}}}%
-\def\dbinom#1#2{{\displaystyle {#1 \choose #2}}}%
+%%\def\tfrac#1#2{{\textstyle {#1 \over #2}}}%
+%%\def\dfrac#1#2{{\displaystyle {#1 \over #2}}}%
+%%\def\binom#1#2{{#1 \choose #2}}%
+%%\def\tbinom#1#2{{\textstyle {#1 \choose #2}}}%
+%%\def\dbinom#1#2{{\displaystyle {#1 \choose #2}}}%
 
 % Do not add anything to the end of this file.  
 % The last section of the file is loaded only if 
