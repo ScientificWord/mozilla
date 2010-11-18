@@ -1214,7 +1214,7 @@ function GetRHS(math)
 function insertLabeledXML(editor, text, node, offset)
 {
     editor.setCaretAfterElement(node);
-    insertHTML(text);
+    editor.insertHTML("<span>" + text + "</span>");
 
 //   var parser = new DOMParser();
 //   var wrapped = "<span>" + text + "</span>";
@@ -1255,19 +1255,33 @@ function appendLabel(label,math,editorElement)
 //      math, math.childNodes.length, false );
 }
 
-function appendLabeledResult(result,label,math,editorElement)
+// "label" is a format string like ", Solution: %result%"
+function appendLabeledResult(result, label, math, editorElement)
 {
-  if(!editorElement)
+  if(!editorElement) 
     editorElement = msiGetActiveEditorElement();
-  var editor = msiGetEditor(editorElement);
-  var str;
-  if (-1 == label.search(/%result%/))
-    str = result.replace(fullmath,label+fullmath);
-  else
-    str = label.replace(/%result%/,result);
 
-  insertLabeledXML(editor, str, math, math.childNodes.length );
-  //msiGetEditor(editorElement).insertHTMLWithContext(str,"","","",null,math,math.childNodes.length,false);
+  var editor = msiGetEditor(editorElement);
+
+  var preStr;
+  var postStr;
+
+  var resultLoc = label.search(/%result%/);
+
+  if (-1 == resultLoc) {
+    preStr = label;
+    postStr = "";
+  } else {
+    preStr = label.substr(0, resultLoc);
+    var match="%result%";
+    postStr = label.substr(resultLoc + match.length);
+  }
+
+  editor.setCaretAfterElement(math);
+  editor.insertHTML(preStr);
+  editor.insertHTML(result);
+  editor.insertHTML(postStr);
+  
   }
 
 function appendTaggedResult(result,label,body,index,editorElement)
