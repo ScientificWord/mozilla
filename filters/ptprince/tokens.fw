@@ -715,6 +715,7 @@ void InputStack::EndInput()
    TokenSource* pTS = s_stack.back();
    s_stack.pop_back();
    Tokenizer* pT = dynamic_cast<Tokenizer*>(pTS);
+   delete pTS;
    if (pT != 0){
       break;
    }
