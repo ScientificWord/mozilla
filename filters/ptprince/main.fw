@@ -19,6 +19,11 @@
 #include <cstring>
 #include <stdlib.h>
 
+// #ifdef DEBUG
+// #define _CRTDBG_MAP_ALLOC
+// #include <crtdbg.h>
+// #endif
+
 extern void SetupExpandables();
 std::string s_tapfilename;
 std::ofstream s_tapfile;
@@ -53,6 +58,10 @@ void usage()
 
 int main(int argc, char* argv[])
 {
+   // #ifdef DEBUG
+   //   _CrtSetBreakAlloc(846);
+   // #endif
+
    // Check for -h, /h
    for (int k = 0; k < argc; ++k){
       if (argv[k][0] == '-' || argv[k][0] == '/'){
@@ -73,6 +82,7 @@ int main(int argc, char* argv[])
    SetupExpandables();
    InitConditionalSymbols();
    SetCWD();
+
 
    // Set up tex input directory
    #ifndef _WINDOWS
@@ -145,6 +155,10 @@ int main(int argc, char* argv[])
 
    Interpretter::MainLoop();
 
+   delete plineSource0;
+   delete platin1filt0;
+   delete pbf0;
+
    try{
       s_inputfilename = argv[argc-2];
       LOG("\nReading input file " << s_inputfilename);
@@ -179,26 +193,28 @@ int main(int argc, char* argv[])
          }
       }
       LineSource* plineSource;
+      CharStream*  charstream;
       if (strcmp(filter, "p932")==0){
-         Codepage932_in*  pcp932filt = new Codepage932_in(*pbf);
-         plineSource = new LineSource(*pcp932filt);
+         charstream = new Codepage932_in(*pbf);
       }else if (strcmp(filter, "p936")==0){
-         Codepage936_in*  pcp936filt = new Codepage936_in(*pbf);
-         plineSource = new LineSource(*pcp936filt);
+         charstream = new Codepage936_in(*pbf);
       }else if (strcmp(filter, "p949")==0){
-         Codepage949_in*  pcp949filt = new Codepage949_in(*pbf);
-         plineSource = new LineSource(*pcp949filt);
+         charstream = new Codepage949_in(*pbf);
       }else if (strcmp(filter, "p950")==0){
-         Codepage950_in*  pcp950filt = new Codepage950_in(*pbf);
-         plineSource = new LineSource(*pcp950filt);
+         charstream = new Codepage950_in(*pbf);
       }else{
-         Latin_1_in* platin1filt = new Latin_1_in(*pbf);
-         plineSource = new LineSource(*platin1filt);
+         charstream = new Latin_1_in(*pbf);
       }
+      plineSource = new LineSource(*charstream);
 
       Tokenizer* toks = new Tokenizer(plineSource);
       InputStack::Push(toks);
       Interpretter::MainLoop();
+     
+      delete toks;
+      delete charstream;
+      delete plineSource;
+      delete pbf;
    }
    catch(...){
       LOG("\n!!! FILTER CRASHED !!! -- will attempt output");
@@ -208,6 +224,12 @@ int main(int argc, char* argv[])
    const char* outfilename = argv[argc-1];
    std::ofstream outfile(outfilename);
    Typesetter::PrintMainList(outfile);
+   Symbols::DeleteAll();
+   delete s_inputdir;
+
+   // #ifdef DEBUG
+   //   _CrtDumpMemoryLeaks();
+   // #endif
    return 0;
 }
 
