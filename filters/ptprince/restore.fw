@@ -11,6 +11,8 @@ when the group ends.
 void NewSaveLevel();
 void SaveRestoration(Restoration*, bool bGlobal);
 void EndSaveLevel();
+
+void DeleteAllRestorations();
 @}
 
 
@@ -79,6 +81,23 @@ void NewSaveLevel()
    s_restoreStack.push_back(newlevel);
 }
 @}
+
+@$@<Restore implementation@>+=@{@-
+void DeleteAllRestorations()
+{
+   while (s_restoreStack.size() != 0){
+      RestoreLevel* level = s_restoreStack.back();
+      RestoreLevel::iterator it = level -> begin();
+      while (it != level -> end()) {
+         delete *it;
+         ++it;
+      }
+      delete level;
+      s_restoreStack.pop_back();
+   }
+}
+@}
+
 
 @$@<Restore implementation@>+=@{@-
 void SaveRestoration(Restoration* restoration, bool bGlobal)
