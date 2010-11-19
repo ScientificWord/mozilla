@@ -13,16 +13,17 @@
 #include "conditionals.h"
 #include "typesetter.h"
 #include "interpretter.h"
+#include "restore.h"
 
 #include <iostream>
 #include <fstream>
 #include <cstring>
 #include <stdlib.h>
 
-// #ifdef DEBUG
+//#ifdef DEBUG
 // #define _CRTDBG_MAP_ALLOC
 // #include <crtdbg.h>
-// #endif
+//#endif
 
 extern void SetupExpandables();
 std::string s_tapfilename;
@@ -58,9 +59,9 @@ void usage()
 
 int main(int argc, char* argv[])
 {
-   // #ifdef DEBUG
-   //   _CrtSetBreakAlloc(846);
-   // #endif
+   //#ifdef DEBUG
+   //  _CrtSetBreakAlloc(288222);
+   //#endif
 
    // Check for -h, /h
    for (int k = 0; k < argc; ++k){
@@ -211,7 +212,7 @@ int main(int argc, char* argv[])
       InputStack::Push(toks);
       Interpretter::MainLoop();
      
-      delete toks;
+      //delete toks;
       delete charstream;
       delete plineSource;
       delete pbf;
@@ -224,12 +225,14 @@ int main(int argc, char* argv[])
    const char* outfilename = argv[argc-1];
    std::ofstream outfile(outfilename);
    Typesetter::PrintMainList(outfile);
+   Typesetter::DeleteAll();
+   DeleteAllRestorations();
    Symbols::DeleteAll();
    delete s_inputdir;
 
-   // #ifdef DEBUG
-   //   _CrtDumpMemoryLeaks();
-   // #endif
+   //#ifdef DEBUG
+   //  _CrtDumpMemoryLeaks();
+   //#endif
    return 0;
 }
 
