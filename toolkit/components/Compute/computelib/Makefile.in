@@ -8,8 +8,12 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE = compute
+MODULE_NAME = computeModule
 LIBRARY_NAME = computelib_s
-DIST_INSTALL = 1
+SHORT_LIBNAME = complib
+FORCE_STATIC_LIB = 1
+
+MOZILLA_INTERNAL_API = 1
 
 include $(topsrcdir)/config/config.mk
 
