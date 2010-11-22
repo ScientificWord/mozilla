@@ -5,10 +5,9 @@ srcdir    = @srcdir@
 VPATH     = @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
-
 MODULE = arrowstate
-XPIDL_MODULE = arrowstate
 
+XPIDL_MODULE = arrowstate
 XPIDLSRCS	= msiIArrowStateService.idl
 
 include $(topsrcdir)/config/rules.mk

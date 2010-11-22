@@ -19,8 +19,12 @@ endif
 
 MODULE = compute
 LIBRARY_NAME = enginelib_s
-DIST_INSTALL = 1
+EXPORT_LIBRARY = 1
+IS_COMPONENT    = 1
+MODULE_NAME = computeModule
+LIBXUL_LIBRARY = 1
 
+MOZILLA_INTERNAL_API = 1
 
 DIRS		=  MuPAD
 ifeq ($(OS_ARCH),WINNT)
@@ -57,9 +61,6 @@ LOCAL_INCLUDES = \
     -I$(srcdir)/../src \
     -I$(srcdir)/../public \
      $(NULL)
-
-# we don't want the shared lib, but we want to force the creation of a static lib.
-FORCE_STATIC_LIB = 1
 
 GMR_FILES := \
       commands.gmr \

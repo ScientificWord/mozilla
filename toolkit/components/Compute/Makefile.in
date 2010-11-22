@@ -7,13 +7,20 @@ VPATH = @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE		= compute
+MODULE_NAME = computeModule
 # MOZILLA_INTERNAL_API = 1
 
+
+
+
+
+
+
 DIRS		= \
+  public \
 	computelib \
-	libtci \
 	Engines \
-	public \
+	libtci \
 	src \
 	$(NULL)
 
