@@ -8,9 +8,9 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE = compute
+MODULE_NAME = computeModule
 LIBRARY_NAME	= mupwrapperlib_s
 LIBXUL_LIBRARY = 1
-DIST_INSTALL = 1
 
 REQUIRES = compute \
            string \
@@ -35,7 +35,7 @@ LOCAL_INCLUDES = -I$(srcdir)/../../libtci	\
 			-I$(srcdir)/../../Engines	\
       -I$(srcdir)/../../computelib \
       -I$(srcdir)/../../compsample2 \
-	  -I$(srcdir)/../../public \
+	    -I$(srcdir)/../../public \
 			$(NULL)
 
 include $(topsrcdir)/config/rules.mk
