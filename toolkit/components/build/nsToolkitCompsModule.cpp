@@ -66,6 +66,10 @@
 #include "nsScriptableUnescapeHTML.h"
 #endif
 
+#include "nsAutoCompleteController.h"
+#include "nsAutoCompleteSimpleResult.h"
+#include "nsAutoCompleteStringArray.h"
+
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -115,6 +119,13 @@ nsUrlClassifierDBServiceConstructor(nsISupports *aOuter, REFNSIID aIID,
 
 #ifdef MOZ_FEEDS
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsScriptableUnescapeHTML)
+#endif
+
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsAutoCompleteController)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsAutoCompleteSimpleResult)
+NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(nsAutoCompleteSearchStringArray, nsAutoCompleteSearchStringArray::GetInstance)
+#ifdef MOZ_MORK
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsAutoCompleteMdbResult)
 #endif
 
 /////////////////////////////////////////////////////////////////////////////
@@ -183,6 +194,28 @@ static const nsModuleComponentInfo components[] =
     NS_SCRIPTABLEUNESCAPEHTML_CONTRACTID,
     nsScriptableUnescapeHTMLConstructor },
 #endif
+ { "AutoComplete Controller",
+   NS_AUTOCOMPLETECONTROLLER_CID, 
+   NS_AUTOCOMPLETECONTROLLER_CONTRACTID,
+   nsAutoCompleteControllerConstructor },
+
+ { "AutoComplete Simple Result",
+   NS_AUTOCOMPLETESIMPLERESULT_CID, 
+   NS_AUTOCOMPLETESIMPLERESULT_CONTRACTID,
+   nsAutoCompleteSimpleResultConstructor },
+
+ { "String Array Autocomplete",
+   NS_STRINGARRAYAUTOCOMPLETE_CID,
+   NS_STRINGARRAYAUTOCOMPLETE_CONTRACTID,
+   nsAutoCompleteSearchStringArrayConstructor },
+
+#ifdef MOZ_MORK
+ { "AutoComplete Mdb Result",
+   NS_AUTOCOMPLETEMDBRESULT_CID, 
+   NS_AUTOCOMPLETEMDBRESULT_CONTRACTID,
+   nsAutoCompleteMdbResultConstructor },
+#endif     };
+
 };
 
 NS_IMPL_NSGETMODULE(nsToolkitCompsModule, components)
