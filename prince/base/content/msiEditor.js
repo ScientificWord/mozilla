@@ -1177,6 +1177,7 @@ function EditorStartupForEditorElement(editorElement)
   }
 
   msiDumpWithID("Just before loading Shell URL in EditorStartupForEditorElement, for editorElement [@]; docShell is currently [" + editorElement.docShell + "].\n", editorElement);
+  debugger;
   msiLoadInitialDocument(editorElement, is_topLevel);
 }
 
