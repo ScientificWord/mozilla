@@ -6,6 +6,7 @@
 #include "nsCOMPtr.h"
 #include "nsHashKeys.h"
 #include "nsClassHashtable.h"
+#include "nsComponentManagerUtils.h"
 
 class nsIDOMXMLDocument;
 class nsIDOMElement;
