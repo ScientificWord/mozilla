@@ -37,17 +37,22 @@ void DebExamineNode(nsIDOMNode * aNode);
 
 nsIAtom * msiTagListManager::htmlnsAtom = nsnull;
 
-
+static NS_DEFINE_CID(kAutoCompleteStringCID, NS_IAUTOCOMPLETESEARCHSTRINGARRAY_IID);
+#define NS_STRINGARRAYAUTOCOMPLETE_CONTRACTID \
+  "@mozilla.org/autocomplete/search;1?name=stringarray"
 
 msiTagListManager::msiTagListManager()
 :  meditor(nsnull), mparentTags(nsnull), mInitialized(PR_FALSE), plookup(nsnull), pContainsList(nsnull),
     mdefaultParagraph(NS_LITERAL_STRING("")), mclearTextTag(NS_LITERAL_STRING("")), mclearStructTag(NS_LITERAL_STRING("")) 
 {
   nsresult rv;
+  printf("creating tag list manager\n");
   if (!htmlnsAtom) htmlnsAtom  = NS_NewAtom(NS_LITERAL_STRING("http://www.w3.org/1999/xhtml"));
-  pACSSA = do_CreateInstance("@mozilla.org/autocomplete/search;1?name=stringarray", &rv);
-  // Now replace the singleton autocompletesearchstringarry by an implementation
-  pACSSA->GetNewImplementation(getter_AddRefs(pACSSA));
+  rv = CallCreateInstance(NS_STRINGARRAYAUTOCOMPLETE_CONTRACTID, nsnull, kAutoCompleteStringCID, (void **)&pACSSA);
+  printf("pACSSA is %x\n",(int)(void*)pACSSA);
+// Now replace the singleton autocompletesearchstringarry by an implementation
+  if (pACSSA) pACSSA->GetNewImplementation(getter_AddRefs(pACSSA));
+  printf("after'GetNewImplemantation'\n");
   Reset();
 }
 
@@ -96,8 +101,12 @@ NS_IMETHODIMP
 msiTagListManager::Enable() 
 {
   // find the nsIAutoCompleteSearchStringArray object and set its current pointer to ours
-  pACSSA->SetImplementation(pACSSA);
-  return NS_OK;
+  if (pACSSA) 
+  {
+    pACSSA->SetImplementation(pACSSA);
+    return NS_OK;
+  } 
+  else return NS_ERROR_NOT_INITIALIZED;
 }
 
 // We convert the XML tree form of the tag info into a hash table form for more efficient lookup.
@@ -284,7 +293,8 @@ msiTagListManager::AddTagInfo(const nsAString & strTagInfoPath, PRBool *_retval)
       }
     }
   }
-  mInitialized = PR_TRUE;
+//  mInitialized = PR_TRUE;
+  mInitialized = (pACSSA != nsnull);
   return rv;
 }
 

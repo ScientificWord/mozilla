@@ -2996,7 +2996,7 @@ nsGenericHTMLFrameElement::BindToTree(nsIDocument* aDocument,
 
   if (aDocument) {
     // We're in a document now.  Kick off the frame load.
-    LoadSrc();
+    rv = LoadSrc();
   }
   
   return rv;
