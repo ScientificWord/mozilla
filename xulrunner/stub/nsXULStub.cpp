@@ -217,6 +217,7 @@ main(int argc, char **argv)
       return 1;
   }
 #endif
+#endif
 
   lastSlash = strrchr(iniPath, PATH_SEPARATOR_CHAR);
   if (!lastSlash)
@@ -230,11 +231,10 @@ main(int argc, char **argv)
            "%sxulrunner" XPCOM_FILE_PATH_SEPARATOR XPCOM_DLL,
            iniPath);
 
-  greFound = (access(greDir, R_OK) == 0);
+  greFound = PR_TRUE; //(access(greDir, R_OK) == 0);
 
   strncpy(lastSlash, "application.ini", sizeof(iniPath) - (lastSlash - iniPath));
 
-#endif
 
   nsINIParser parser;
   rv = parser.Init(iniPath);

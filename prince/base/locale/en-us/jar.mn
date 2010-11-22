@@ -74,7 +74,7 @@ en-US.jar:
   locale/openLocation.dtd                 (openLocation.dtd)
   locale/msiDialogs.properties            (dialogs/msiDialogs.properties)
   locale/openLocation.properties          (openLocation.properties)
-  locale/editor.properties                (editor.properties)
+* locale/editor.properties                (editor.properties)
   locale/mathUnitsDialog.dtd              (dialogs/mathUnitsDialog.dtd)
   locale/unitsDialog.properties           (dialogs/unitsDialog.properties)
   locale/otfont.dtd                       (dialogs/otfont.dtd)
