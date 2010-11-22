@@ -435,7 +435,7 @@ ifdef IS_COMPONENT
 ifdef EXPORT_LIBRARY
 ifndef FORCE_SHARED_LIB
 ifndef MODULE_NAME
-$(error MODULE_NAME is required for components which may be used in static builds)
+$(error MODULE_NAME is required for components which may be used in static builds: $(MODULE))
 endif
 endif
 endif
