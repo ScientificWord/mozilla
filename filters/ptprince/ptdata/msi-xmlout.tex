@@ -236,8 +236,20 @@
 %% Citations and cross refs
 
 
-\def\out@citex[#1]#2{\msiopentag{cite}{<cite>}#2\msiclosetag{cite}{</cite>}}
-\def\out@citey#1{\msiopentag{cite}{<cite>}#1\msiclosetag{cite}{</cite>}}
+\def\out@citex[#1]#2{%
+   \msiopentag{citation}{<citation xmlns="http://www.w3.org/1999/xhtml" 
+                            citekey="#1" 
+                            hasRemark="true">>}%
+        \msiopentag{biblabel}{<biblabel class="remark" xmlns="http://www.w3.org/1999/xhtml">}%
+            #2%
+        \msiclosetag{biblabel}{</biblabel>}%
+  \msiclosetag{citation}{</citation>}}
+
+\def\out@citey#1{%
+  \msiopentag{citation}{<citation xmlns="http://www.w3.org/1999/xhtml" 
+                            citekey="#1" 
+                            hasRemark="false">>}
+  \msiclosetag{citation}{</citation>}}
 
 
 
@@ -291,19 +303,23 @@
    \if@first@item
      \@first@itemfalse
    \else
-     \msiclosetag{item}{</bibitem>}%
+     \msiclosetag{bodyText}{</bodyText>}%
+     \msiclosetag{bibitem}{</bibitem>}%
    \fi
-   \br\msihmode\msiopentag{bibitem}{}<bibitem label="#1" ref="#2">%
-   \msitag{<explicit-item>}#1\msitag{</explicit-item>}%
+   \br\msihmode\msiopentag{bibitem}{}<bibitem bibtemkey="#2" hasLabel="true">%
+   \msitag{<biblabel class="bibitemlabel">}#1\msitag{</biblabel>}%
+   \br\msiopentag{bodyText}{<bodyText>}%
 }
 
 \def\out@bibitemB#1{%
    \if@first@item
      \@first@itemfalse
    \else
+     \msiclosetag{bodyText}{</bodyText>}%
      \msiclosetag{bibitem}{</bibitem>}%
    \fi
-   \msitag{^^0a}\msiopentag{bibitem}{<bibitem ref="#1">}%
+   \br\msiopentag{bibitem}{<bibitem bibitemkey="#1" hasLabel="false">}%
+   \br\msiopentag{bodyText}{<bodyText>}%
 }
 
 
@@ -342,10 +358,13 @@
 
        
 \def\msi@begin@thebibliography#1{%
-  \everypar={}\msihmode\msitag{^^0a^^0a}\@first@itemtrue \msiopentag{thebibliography}{<thebibliography>}%
-}
+  \everypar={}%
+  \msihmode\msitag{^^0a^^0a}%
+  \@first@itemtrue
+  \msiopentag{bibliography}{<bibliography>}}
 
-\def\msi@end@thebibliography{\br\msiclosetag{description}{</description>}}
+\def\msi@end@thebibliography{%
+  \br\msiclosetag{bibliography}{</bibliography>}}
 
 
 \def\msi@thm@like#1{}
@@ -622,11 +641,20 @@
 \def\msi@begin@array{\string\begin{array}}
 \def\msi@end@array{\string\end{array}}
 
-\def\msi@begin@eqnarray{\string\begin{eqnarray}}
-\def\msi@end@eqnarray{\string\end{eqnarray}}
 
-\@namedef{msi@begin@eqnarray*}{\string\begin{eqnarray*}}
-\@namedef{msi@end@eqnarray*}{\string\end{eqnarray*}}
+%%   \gdef\@scan@eqnarray#1\end{eqnarray}[%
+%%      \egroup
+%%      \@make@braces@normal
+%%      \msiopentag[mml][<mml:math class="displayedmathml" mode="display" display="block">]%
+%%      \msiextproc[jbm][\begin{eqnarray}#1\end{eqnarray}]%
+%%      \msiclosetag[mml][</mml:math>]
+%%   ]
+
+\def\msi@begin@eqnarray{$\string\begin{eqnarray}}
+\def\msi@end@eqnarray{\string\end{eqnarray}$}
+
+\@namedef{msi@begin@eqnarray*}{$\string\begin{eqnarray*}}
+\@namedef{msi@end@eqnarray*}{\string\end{eqnarray*}$}
 
 
 \def\msi@begin@bmatrix{\@make@braces@other\relax\@scan@bmatrix} 

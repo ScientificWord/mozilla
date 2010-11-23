@@ -102,6 +102,8 @@ public:
    static void EndCol();
    static void StartRow();
    static void EndRow();
+
+   static void DeleteAll();
 };
 @}
 
@@ -173,6 +175,7 @@ void PopSemanticLevel()
      s_bInner = lev -> m_bInner;
      s_target = lev -> m_target;
      semanticNest.pop_back();
+     delete lev;
    }
 
    LOG("Return to " << (s_bInner ? "inner " : ""));
@@ -190,6 +193,16 @@ void PopSemanticLevel()
 }
 @}
 
+
+
+@$@<Typesetter implementation@>+=@{@-
+void Typesetter::DeleteAll()
+{
+   
+   delete s_pList;
+   s_pList = 0;
+}
+@}
 
 @$@<Typesetter implementation@>+=@{@-
 void Typesetter::PopMode()
