@@ -960,6 +960,8 @@ case CMD_OPENTAG : {
    }
    StringBuilder::Discard(str);
    s_tagStack.push_back(strTemp);
+   delete pTL;
+   delete pTLoutput;
    break;
 }
 @}
@@ -1019,7 +1021,8 @@ case CMD_CLOSETAG : {
         }
       } while (true);
    }
-
+   delete pTL;
+   delete pTLoutput;
    break;
 }
 @}
@@ -1081,6 +1084,7 @@ case CMD_LEFT_BRACE : {
         TokenList* pTL = new TokenList;
         pTL->push_back(lbrace);
         Typesetter::AppendTag(pTL);
+        delete pTL;
       }
    }
    break;
@@ -1094,6 +1098,7 @@ case CMD_RIGHT_BRACE : {
       TokenList* pTL = new TokenList;
       pTL->push_back(rbrace);
       Typesetter::AppendTag(pTL);
+      delete pTL;
    }
    EndLevel();
    break;
@@ -1353,6 +1358,8 @@ case CMD_EXTENSION: {
          LOG("\n----Write to " << m << " the tokens " << *pTL);
 
          StringUtils::AppendToks(*pTL);
+         delete pTL;
+
          String str = StringBuilder::Create();
          if (m >= 0 && m <= 15){
             if (Global::g_writeFile[m] == 0){
@@ -1412,6 +1419,7 @@ case CMD_EXTENSION: {
          TokenList* tl = new TokenList;
          ScanTokenList(tl, false);
          Typesetter::AppendTag(tl);
+         delete tl;
          //EndLevel();
          Typesetter::EndProcess();
          break;
