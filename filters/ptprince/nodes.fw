@@ -89,6 +89,7 @@ public:
 @$@<TeXNode declaration@>+=@{@-
 class TeXNodeList : public std::list<TeXNode*> {
 public:
+    ~TeXNodeList();
     void Print(OutputStream&);
 };
 @}
@@ -100,6 +101,14 @@ void TeXNodeList::Print(OutputStream& out)
    TeXNodeList::const_iterator it;
    for (it = begin(); it != end(); ++it){
       (*it) -> Print(out);
+   }
+}
+
+TeXNodeList::~TeXNodeList()
+{
+   TeXNodeList::const_iterator it;
+   for (it = begin(); it != end(); ++it){
+      delete (*it);
    }
 }
 @}
