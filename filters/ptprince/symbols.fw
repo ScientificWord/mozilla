@@ -56,6 +56,8 @@ struct Symbols {
    // Save and load the symbol information
    static void Dump();
    static void Load();
+
+   static void DeleteAll();
 };
 @}
 
@@ -181,6 +183,7 @@ void Symbols::GetDefLoc(SymId id, void** pLoc)
 @$@<SetDef imp@>==@{@-
 void Symbols::SetDef(SymId id, SymbolData* pData, bool bGlobal)
 {
+   //delete hash_table[id].m_data;
    hash_table[id].m_data = pData;
 }
 @}
@@ -236,6 +239,15 @@ void Symbols::CreateSymbol(const char* name, SymbolData* data)
    SymId id;
    GetId(strName, &id, CREATE);
    SetDef(id, data, true);
+}
+@}
+
+@$@<DeleteAll imp@>==@{@-
+void Symbols::DeleteAll()
+{
+  // for (int i = 0; i < hash_size; ++i){
+  //    delete hash_table[i].m_data;
+  // }
 }
 @}
 
@@ -299,6 +311,7 @@ This component consists of two files: @{symbols.h@} and
 @<GetName imp@>
 @<CreateSymbol imp@>
 @<NullCS imp@>
+@<DeleteAll imp@>
 @<Symbols implementation@>
 @}
 

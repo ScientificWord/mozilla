@@ -758,6 +758,7 @@ LineSource::LineSource(CharStream& cs)
 @$@<LineSource implementation@>+=@{@-
 LineSource::~LineSource()
 {
+  if (m_held) delete m_held;
 }
 @}
 
