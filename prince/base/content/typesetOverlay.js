@@ -479,7 +479,7 @@ var msiReviseManualBibItemCmd =
     var editorElement = msiGetActiveEditorElement();
     var bibItemReviseData = msiGetPropertiesDataFromCommandParams(aParams);
     var bibItemData = {key : "", bibLabel : "", reviseData : bibItemReviseData};
-    var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibItemDlg.xul", "_blank", "chrome,close,titlebar,dependent",
+    var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibitemDlg.xul", "_blank", "chrome,close,titlebar,dependent",
                                                            editorElement, "cmd_reviseManualBibItemCmd", this, bibItemData);
     editorElement.focus();
   },
