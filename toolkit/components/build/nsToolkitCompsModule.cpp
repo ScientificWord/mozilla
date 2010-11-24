@@ -69,6 +69,7 @@
 #include "nsAutoCompleteController.h"
 #include "nsAutoCompleteSimpleResult.h"
 #include "nsAutoCompleteStringArray.h"
+#include "msiKeyMap.h"
 
 
 
@@ -128,6 +129,7 @@ NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(nsAutoCompleteSearchStringArray, nsAuto
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsAutoCompleteMdbResult)
 #endif
 
+NS_GENERIC_FACTORY_CONSTRUCTOR(msiKeyMap)
 /////////////////////////////////////////////////////////////////////////////
 
 static const nsModuleComponentInfo components[] =
@@ -214,8 +216,13 @@ static const nsModuleComponentInfo components[] =
    NS_AUTOCOMPLETEMDBRESULT_CID, 
    NS_AUTOCOMPLETEMDBRESULT_CONTRACTID,
    nsAutoCompleteMdbResultConstructor },
-#endif     };
-
+#endif     
+{ 
+  "Key Mapping Service",
+  MSI_KEYMAP_CID,
+  MSI_KEYMAP_CONTRACTID,
+  msiKeyMapConstructor },
 };
+
 
 NS_IMPL_NSGETMODULE(nsToolkitCompsModule, components)
