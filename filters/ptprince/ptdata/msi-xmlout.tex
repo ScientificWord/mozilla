@@ -220,16 +220,51 @@
 
 
 
-% Two forms of the \newenvironment command
+% Forms of the \newenvironment command
+\def\newenvironment{%
+   \@ifnextchar*{\@newenvironment{*}}{\@newenvironment{}}}
+
+ 
+\def\@newenvironment#1#2{%
+   \@ifnextchar[{\@newenv@a{#1}{#2}}{\@newenv@a{#1}{#2}[]}}
 
 
+\def\@newenv@a#1#2[#3]{%
+   \@ifnextchar[{\@newenv@b{#1}{#2}[#3]}{\@newenv@b{#1}{#2}[#3][]}}
 
-\def\@declarenewenva#1[#2][#3]#4#5{%
-   \br\msitag{<newenvironment name="#1" nargs="#2" opt="#3" start="#4" end="#5" />}
-}
-\def\@declarenewenvb#1#2#3{%
-   \br\msitag{<newenvironment name="#1" start="#4" end="#5" />}
-}
+\def\@newenv@b#1#2[#3][#4]#5#6{%
+  \@ifundefined{msi@begin@#2}%
+    {\expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newenvironment{#2}[#3][#4]{#5}{#6}}
+     \@namedef{msi@begin@#2}{\msi@open@element<#2>}
+     \@namedef{msi@end@#2}{\msi@close@element</#2>}}
+    {}}%
+
+   
+%% \@star@or@long\new@environment}
+%% 
+%% \def\new@environment#1{%
+%%   \@testopt{\@newenva#1}0}
+%% \def\@newenva#1[#2]{%
+%%    \@ifnextchar [{\@newenvb#1[#2]}{\@newenv{#1}{[#2]}}}
+%% \def\@newenvb#1[#2][#3]{\@newenv{#1}{[#2][{#3}]}}
+
+
+%% \def\@declarenewenva#1[#2][#3]#4#5{%
+%%   \@ifundefined{msi@begin@#1}%
+%%     {\expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newenvironment{#1}[#2][#3]{#4}{#5}}
+%%      \@namedef{msi@begin@#1}{\br\msiopentag{environment}{<environment type="#1">}}
+%%      \@namedef{msi@end@#1}{\br\msiclosetag{environment}{</environment>}}}%
+%%     {}}%
+%%     %\br\msitag{<newenvironment name="#1" nargs="#2" opt="#3" start="#4" end="#5" />}
+%%  }
+%% \def\@declarenewenvb#1#2#3{%
+%%   \@ifundefined{msi@begin@#1}%
+%%     {\expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newenvironment{#1}{#2}{#3}}
+%%      \@namedef{msi@begin@#1}{\br\msiopentag{environment}{<environment type="#1">}}
+%%      \@namedef{msi@end@#1}{\br\msiclosetag{environment}{</environment>}}}%
+%%     {}}%
+%%    %\br\msitag{<newenvironment name="#1" start="#4" end="#5" />}
+%% }
 
 
 
