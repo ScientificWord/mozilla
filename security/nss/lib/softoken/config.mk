@@ -70,7 +70,7 @@ EXTRA_SHARED_LIBS += \
 else # ! NS_USE_GCC
 
 EXTRA_SHARED_LIBS += \
-	$(DIST)/lib/sqlite3.lib \
+	$(DIST)/lib/mozsqlite3.lib \
 	$(DIST)/lib/nssutil3.lib \
 	$(NSPR_LIB_DIR)/$(NSPR31_LIB_PREFIX)plc4.lib \
 	$(NSPR_LIB_DIR)/$(NSPR31_LIB_PREFIX)plds4.lib \
