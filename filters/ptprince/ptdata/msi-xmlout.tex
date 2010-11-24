@@ -397,6 +397,7 @@
 
 %% Sectioning
 
+% We always use <sectiontitle> rather than #4
 \def\newsection#1#2#3#4{%
   \expandafter\newcount\csname#1number\endcsname
   \csname#1number\endcsname=0
@@ -415,7 +416,17 @@
      \let\protect\relax
      \msiclosetag{#1}{</#1>}%
      \msitag{^^0a}\msiopentag{#1}{<#1>}%
-     {\everypar={}\msitag{^^0a}\msiopentag{#4}{<#4>}##2\msiclosetag{#4}{</#4>}}
+     {\everypar={}\msitag{^^0a}%
+      \def\short{##1}%
+      \ifx\short\@empty
+      \else
+        \msiopentag{shorttitle}{<shorttitle>}%
+          ##1%
+        \msiclosetag{shorttitle}{</shorttitle>}%
+      \fi
+      \msiopentag{sectiontitle}{<sectiontitle>}%
+      ##2%
+      \msiclosetag{sectiontitle}{</sectiontitle>}}
   }%
 }
 
@@ -432,13 +443,21 @@
 
 \def\out@marginparA#1#2{%
   \@start@notewrapper
-  \msiopentag{note}{<note type="marginpar" opt="#1">}#2\msiclosetag{note}{</note>}%
+  \msiopentag{note}{<note type="marginpar" opt="#1">}%
+    \msiopentag{bodyText}{<bodyText>}%
+      #2%
+    \msiclosetag{bodyText}{</bodyText>}%
+  \msiclosetag{note}{</note>}%
   \@end@notewrapper
 }
 
 \def\out@marginparB#1{%
   \@start@notewrapper
-  \msiopentag{note}{<note type="marginpar">}#1\msiclosetag{note}{</note>}%
+  \msiopentag{note}{<note type="marginpar">}%
+    \msiopentag{bodyText}{<bodyText>}%
+      #1%
+    \msiclosetag{bodyText}{</bodyText>}%
+  \msiclosetag{note}{</note>}%
   \@end@notewrapper
 }
 
