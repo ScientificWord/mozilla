@@ -63,6 +63,7 @@ TokenListTokenSource::TokenListTokenSource(TokenList& lis)
    : m_list(lis),
      m_iter(lis.begin())
 {
+  if (m_list.GetCount() <=0) throw;
 
 }
 
@@ -78,6 +79,7 @@ bool TokenListTokenSource::bEmpty() const
 
 void TokenListTokenSource::GetToken(TeXToken* tt)
 {
+   if (m_list.GetCount() <=0) throw;
    *tt = *m_iter;
    ++m_iter;
 }
@@ -702,6 +704,7 @@ void InputStack::Putback(TeXToken tt)
 void InputStack::Putback(TokenList& tl)
 {
    if (tl.size() > 0){
+      tl.AddReference();
       Push(new TokenListTokenSource( tl ));
    }
 }
