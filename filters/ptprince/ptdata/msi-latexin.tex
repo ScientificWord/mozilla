@@ -619,12 +619,7 @@
 \long\def\@rc@ifdefinable#1#2{%
   \let\@ifdefinable\@@ifdefinable
   #2}
-\def\newenvironment{\@star@or@long\new@environment}
-\def\new@environment#1{%
-  \@testopt{\@newenva#1}0}
-\def\@newenva#1[#2]{%
-   \@ifnextchar [{\@newenvb#1[#2]}{\@newenv{#1}{[#2]}}}
-\def\@newenvb#1[#2][#3]{\@newenv{#1}{[#2][{#3}]}}
+
 \def\renewenvironment{\@star@or@long\renew@environment}
 \def\renew@environment#1{%
   \@ifundefined{#1}%
