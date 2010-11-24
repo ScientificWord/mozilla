@@ -571,9 +571,12 @@ private:
    mutable long m_refCount;
 public:
    TokenList() : m_refCount(0) {}
+   long GetCount() const {return m_refCount; }
    void AddReference() const { ++m_refCount; }
    void RemoveReference() const {
        --m_refCount;
+       if (m_refCount < 0)
+          throw;
        if (m_refCount == 0)
           delete this;
    }
@@ -973,6 +976,11 @@ void InitData();
 @$@<InitData@>==@{@-
 void InitData()
 {
+   Global::everydisplay.AddReference();
+   Global::everymath.AddReference();
+   Global::everypar.AddReference();
+   Global::msieverypar.AddReference();
+   
    InitCatcodes();
    InitUccodes();
    InitLccodes();
