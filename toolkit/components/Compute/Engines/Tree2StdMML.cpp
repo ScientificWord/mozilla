@@ -334,12 +334,18 @@ void Tree2StdMML::LookupMOInfo(MNODE* mml_node)
       if (strstr(p_data,"multiform,")) {
         set_form = true;
         const char* str_ilk;
-        if (op_ilk == OP_none && ((ContentIs(mml_node, "&#x2212;") || ContentIs(mml_node, "-")))) {
+        
+        if ( (mml_node->prev == 0) || 
+             (mml_node->prev->precedence <= 26) ){
+            op_ilk = OP_prefix;
+            set_form = true;
+        } else if (op_ilk == OP_none && ((ContentIs(mml_node, "&#x2212;") || ContentIs(mml_node, "-")))) {
           if (mml_node->prev == 0 || (ContentIs(mml_node->prev, "&#x2212;") || ContentIs(mml_node->prev, "-"))) {  
             op_ilk = OP_prefix;
             set_form = true;
           }
         }
+
         
         if (op_ilk == OP_none)
           str_ilk = "default";
