@@ -172,6 +172,38 @@ bool InitializeMML( const char* datapath,
 }
 
 
+void TerminateMML()
+{
+   if (tree_generator) {
+      delete tree_generator;
+      tree_generator = 0;
+   }
+
+  delete userprefs.start_display_math;         
+  delete userprefs.start_inline_math;
+  delete userprefs.namespace_prefix;           
+  delete userprefs.mstyle_attrs;               
+  delete userprefs.mathname_attrs;             
+  delete userprefs.unitname_attrs;             
+  delete userprefs.text_in_math_attrs;         
+  delete userprefs.link_attrs;                 
+  delete userprefs.renderer_baselines;         
+  delete userprefs.eqn_tags_to_mlabeledtr;     
+  delete userprefs.eqn_nums_to_mlabeledtr;     
+  delete userprefs.entity_mode;                
+  delete userprefs.lr_spacing_mode;            
+  delete userprefs.lr_spacing_mode_in_scripts; 
+  delete userprefs.eqn_nums_format;            
+  delete userprefs.long_arrows_are_stretched;  
+  delete userprefs.indent_increment;           
+  delete userprefs.adjust_output_for_IE_spacing_bug;
+  delete userprefs.end_math;                   
+
+
+
+}
+
+
 // Set the MathML version number
 bool Version(U16 major, U16 minor)
 {
