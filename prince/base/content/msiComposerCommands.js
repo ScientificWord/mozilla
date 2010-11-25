@@ -136,6 +136,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_showXSLTLog", msiShowXSLTLogCommand);
   commandTable.registerCommand("cmd_gotoparagraph", msiGoToParagraphCommand);
   commandTable.registerCommand("cmd_countwords", msiWordCountCommand);
+  commandTable.registerCommand("cmd_reviseCrossRef", msiReviseCrossRefCommand);
 }
 
 function msiSetupTextEditorCommands(editorElement)
@@ -7090,6 +7091,32 @@ var msiReviseCitationCommand =
       var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetManualCitation.xul", "_blank", "chrome,close,titlebar,dependent",
                                                              editorElement, "cmd_reviseCitationCmd", this, citeData);
     }
+    editorElement.focus();
+  },
+
+  doCommand: function(aCommand) {}
+};
+
+//-----------------------------------------------------------------------------------
+
+var msiReviseCrossRefCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+
+    return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement));
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    var xrefReviseData = msiGetPropertiesDataFromCommandParams(aParams);
+    var xrefData = {key : "", refType : "page", reviseData : xrefReviseData};
+    var xrefNode = xrefReviseData.getReferenceNode();
+    var dlgWindow = msiOpenModelessDialog("chrome://prince/content/xref.xul", "_blank", "chrome,close,titlebar,dependent",
+                                                           editorElement, "cmd_reviseCrossRefCmd", this, xrefData);
     editorElement.focus();
   },
 
