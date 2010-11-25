@@ -1,0 +1,12 @@
+<!-- Copyright (c) 2010 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY xrefDialog.title	"Cross Reference">
+
+<!ENTITY keyList.label "Key">
+<!ENTITY keyList.accesskey "K">
+<!ENTITY reftypeRadio.label "Print">
+<!ENTITY reftypePageNumber.label "Page number">
+<!ENTITY reftypePageNumber.accesskey "p">
+<!ENTITY reftypeObjectCounter.label "Object counter">
+<!ENTITY reftypeObjectCounter.accesskey "o">
+
