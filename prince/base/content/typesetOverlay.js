@@ -419,7 +419,20 @@ var msiInsertCrossReference =
 
   doCommand: function(aCommand)
   {
-    doInsertCrossReference();
+//    var editorElement = msiGetParentEditorElementForDialog(window);
+    var editorElement = msiGetActiveEditorElement();
+//    gActiveEditor = msiGetEditor(editorElement);
+//    if (!gActiveEditor)
+//    {
+//      dump("Failed to get active editor!\n");
+//      window.close();
+//      return;
+//    }
+//  var xref = gActiveEditor.getSelectedElement("xref");
+    var xrefData = {key: "", refType : "page"};
+    var dlgWindow = msiOpenModelessDialog("chrome://prince/content/xref.xul", "Cross Reference", "chrome, resizable=yes, close, titlebar, dependent",
+                                                                                editorElement, "cmd_MSIinsertCrossReferenceCmd", this, xrefData);
+//  window.openDialog("chrome://prince/content/xref.xul", "Cross reference", "chrome, resizable=yes, close, titlebar", xref);
   }
 };
 
@@ -852,19 +865,6 @@ function doInsertIndexEntry()
   window.openDialog("chrome://prince/content/indexentry.xul", "Index Entry", "chrome,resizable=yes, close,titlebar", index);
 }
 
-function doInsertCrossReference()
-{
-  var editorElement = msiGetParentEditorElementForDialog(window);
-  gActiveEditor = msiGetEditor(editorElement);
-  if (!gActiveEditor)
-  {
-    dump("Failed to get active editor!\n");
-    window.close();
-    return;
-  }
-  var xref = gActiveEditor.getSelectedElement("xref");
-  window.openDialog("chrome://prince/content/xref.xul", "Cross reference", "chrome, resizable=yes, close, titlebar", xref);
-}
 
 function doInsertManualCitation(editorElement, dlgData)
 {
@@ -1073,6 +1073,27 @@ function doInsertSubdocument()
   alert("Insert subdocument not implemented!");
 }
 
+
+function doInsertCrossReference(editorElement, dlgData)
+{
+  var editor = msiGetEditor(editorElement);
+  var xrefNode = editor.document.createElementNS(xhtmlns, "xref");
+  if (dlgData.key && dlgData.key.length > 0)
+    xrefNode.setAttribute("key", dlgData.key);
+  xrefNode.setAttribute("reftype", dlgData.refType);
+  xrefNode.setAttribute("req", "varioref");
+  editor.insertElementAtSelection(xrefNode, true);
+}
+
+function doReviseCrossReference(editorElement, xrefNode, dlgData)
+{
+  var editor = msiGetEditor(editorElement);
+  editor.beginTransaction();
+  msiEditorEnsureElementAttribute(xrefNode, "key", dlgData.key, editor);
+  msiEditorEnsureElementAttribute(xrefNode, "reftype", dlgData.refType, editor);
+  msiEditorEnsureElementAttribute(xrefNode, "req", "varioref", editor);
+  editor.endTransaction();
+}
 
 function msiGetPackagesAndOptionsDataForDocument(aDocument)
 {
