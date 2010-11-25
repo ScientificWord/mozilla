@@ -5152,6 +5152,11 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
         commandStr = "cmd_reviseCitation";
       break;
 
+      case "xref":
+        objStr = GetString("CrossRef");
+        commandStr = "cmd_reviseCrossRef";
+      break;
+
       case "otfont":
         objStr = name;
         theMenuStr = GetString("TagPropertiesMenuLabel");
