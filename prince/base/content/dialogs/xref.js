@@ -18,7 +18,7 @@ function Startup()
     window.close();
     return;
   }
-  refnode = editor.getSelectedElement("xref");
+  refnode = getSelectionParentByTag(editor, "xref");
   gKey   = document.getElementById("keylist");
   gReftype = document.getElementById("reftype");
   isNewNode = !(refnode);

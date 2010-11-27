@@ -1472,6 +1472,14 @@ function finishVarsEvalComputation(editorElement, o)
 
 // actual command handlers
 
+function doCheckEquality(math, editorElement, cmd, cmdHandler)
+{
+  var mathstr = GetFixedMath(math);
+
+  var out = GetCurrentEngine().checkEquality(mathstr,vars);
+}
+
+
 function doComputeSolveExact(math, vars, editorElement, cmd, cmdHandler)
 {
   var mathstr = GetFixedMath(math);

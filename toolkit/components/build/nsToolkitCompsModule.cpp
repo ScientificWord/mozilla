@@ -69,7 +69,8 @@
 #include "nsAutoCompleteController.h"
 #include "nsAutoCompleteSimpleResult.h"
 #include "nsAutoCompleteStringArray.h"
-
+#include "msiAutosub.h"
+#include "msiSimpleComputeEngine2.h"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -127,6 +128,9 @@ NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(nsAutoCompleteSearchStringArray, nsAuto
 #ifdef MOZ_MORK
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsAutoCompleteMdbResult)
 #endif
+NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiAutosub, msiAutosub::GetInstance)
+NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiSimpleComputeEngine2, msiSimpleComputeEngine2::GetInstance)
+
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -214,7 +218,17 @@ static const nsModuleComponentInfo components[] =
    NS_AUTOCOMPLETEMDBRESULT_CID, 
    NS_AUTOCOMPLETEMDBRESULT_CONTRACTID,
    nsAutoCompleteMdbResultConstructor },
-#endif     };
+#endif     
+
+ { "Autosubstitute",
+   MSI_AUTOSUBSTITUTE_CID ,
+   MSI_AUTOSUBSTITUTE_CONTRACTID,
+   msiAutosubConstructor },
+   
+ { "SimpleComputeEngine",
+   MSI_SIMPLECOMPUTEENGINE2_CID ,
+   MSI_SIMPLECOMPUTEENGINE2_CONTRACTID,
+   msiSimpleComputeEngine2Constructor },
 
 };
 
