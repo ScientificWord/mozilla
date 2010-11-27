@@ -13,6 +13,9 @@ LIBRARY_NAME = computelib_s
 FORCE_STATIC_LIB = 1
 
 MOZILLA_INTERNAL_API = 1
+FORCE_STATIC_LIB = 1
+
+MOZILLA_INTERNAL_API = 1
 
 include $(topsrcdir)/config/config.mk
 
