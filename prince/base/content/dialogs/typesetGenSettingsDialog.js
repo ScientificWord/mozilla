@@ -127,16 +127,20 @@ function getDataFromControls()
   gDialog.bConvertTeXLinksToPDF = document.getElementById("convertTeXLinksToPDF").checked;
   gDialog.bPassThroughUnicodeMacro = document.getElementById("passThroughUnicodeMacro").checked;
   
-  setLocalFileFromPath(gDialog.bibTeXExe, document.getElementById("bibTeXExecutableTextbox").value);
-  setLocalFileFromPath(gDialog.bibTeXDBDir, document.getElementById("bibTeXDatabaseDirTextbox").value);
-  setLocalFileFromPath(gDialog.bibTeXStyDir, document.getElementById("bibTeXStyleDirTextbox").value);
+  gDialog.bibTeXExe =  setLocalFileFromPath(gDialog.bibTeXExe, document.getElementById("bibTeXExecutableTextbox").value);
+  gDialog.bibTeXDBDir = setLocalFileFromPath(gDialog.bibTeXDBDir, document.getElementById("bibTeXDatabaseDirTextbox").value);
+  gDialog.bibTeXStyDir = setLocalFileFromPath(gDialog.bibTeXStyDir, document.getElementById("bibTeXStyleDirTextbox").value);
 }
 
-function setLocalFileFromPath(aFileObj, aPath)
+function setLocalFileFromPath(inFileObj, aPath)
 {
-  if (!aFileObj)
-    aFileObj = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+  if (!aPath || !aPath.length)
+    return null;
+  if (inFileObj && (inFileObj.path == aPath))
+    return inFileObj;
+  var aFileObj = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
   aFileObj.initWithPath(aPath);
+  return aFileObj;
 }
 
 function onAccept()

@@ -1,0 +1,59 @@
+// Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
+// msiIEngineWrapper.idl
+
+#include "nsISupports.idl"
+#include "nsILocalFile.idl"
+
+/*
+ * msiIEngineWrapper - low level connection to computation engine.
+ * Used internally by implementations of msiISimplecomputeEngine.
+ *
+ * Very much a work in progress. Emphasis is on prototyping.
+ */
+
+[uuid(F8DD0A14-DA1F-4c0a-B7EB-01CE83666B2C)]
+interface msiIEngineWrapper : nsISupports
+{
+  /**
+   * get all the engine data ready. Returns 1 if OK.
+   */
+  long loadStrsAndDLL(in nsILocalFile engpath, in nsILocalFile libpath, in voidPtr ID_dbase, in voidPtr NOM_dbase);
+  /**
+   * start up the engine
+   */
+  long initialize(in nsILocalFile libpath, in nsILocalFile champath, in nsILocalFile vcampath);
+
+  /**
+   * process the math service request. Returns 1 if OK.
+   */
+  voidPtr ProcessRequest(in voidPtr msr, in voidPtr mr);
+  /**
+   * dispose the previous result
+  */
+  void disposeSList(in  voidPtr slist);
+
+  /**
+   * (re)set engine state
+   */
+  long setEngineState(in long attr_ID, in string new_value);
+  /**
+   * get the strings to/from/error the engine
+  */
+  long getEngStrPtr(in long str_ID, out string engstr, out long engstr_ln);
+  /**
+   * execute the string
+  */
+  long execute(in string cmd);
+
+  /**
+   * cleanup engine
+  */
+  void cleanup();
+  /**
+   * release this client (undefine defined variables)
+  */
+  void releaseClient(in long client_ID, in string def_list);
+};
+
+
+
