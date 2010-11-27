@@ -71,6 +71,7 @@
 #include "nsAutoCompleteStringArray.h"
 #include "msiAutosub.h"
 #include "msiSimpleComputeEngine2.h"
+#include "msiKeyMap.h"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -230,6 +231,11 @@ static const nsModuleComponentInfo components[] =
    MSI_SIMPLECOMPUTEENGINE2_CID ,
    MSI_SIMPLECOMPUTEENGINE2_CONTRACTID,
    msiSimpleComputeEngine2Constructor },
+
+ { "Key map",
+   MSI_KEYMAP_CID ,
+   MSI_KEYMAP_CONTRACTID,
+   msiKeyMapConstructor },
 
 };
 
