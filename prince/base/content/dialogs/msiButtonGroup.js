@@ -1,5 +1,10 @@
 // Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved.
 
+function controlIsButton(aNode)
+{
+  return (aNode.nodeName == 'button' || aNode.nodeName == 'msibutton');
+}
+
 function getButtonValue(buttonNode)
 {
   if (buttonNode.value && buttonNode.value.length > 0)
@@ -122,7 +127,7 @@ function msiAdvanceButton(buttonGroup, event, forward)
   if (!focusElement)
     focusElement = commandDispatcher.focusedElement;
 
-  if (focusElement && focusElement.nodeName == 'button' && focusElement.getAttribute('group')==buttonGroup.id)
+  if (focusElement && controlIsButton(focusElement) && focusElement.getAttribute('group')==buttonGroup.id)
   {
     var kids = getButtonGroupKids(buttonGroup);
     var nSelIndex = -1;
@@ -150,7 +155,9 @@ function msiAdvanceButton(buttonGroup, event, forward)
     }
     event.preventDefault();
     event.stopPropagation();
+    return true;
   }
+  return false;
 }
 
 function buttonGroupSelectsOnFocus(buttonGroup)
@@ -167,13 +174,34 @@ function getButtonRows(buttonGroup)
   return theRows;
 }
 
+function buttonWalkerCallback(aNode)
+{
+  if (controlIsButton(aNode))
+    return NodeFilter.FILTER_ACCEPT;
+  return NodeFilter.FILTER_SKIP;
+}
+
+function getButtonsInNode(aParent)
+{
+  var buttonArray = [];
+  var treeWalker = document.createTreeWalker(aParent, NodeFilter.SHOW_ELEMENT, buttonWalkerCallback, true);
+  if (treeWalker)
+  {
+    for (var currNode = treeWalker.nextNode(); currNode != null; currNode = treeWalker.nextNode())
+    {
+      buttonArray.append(currNode);
+    }
+  }
+  return buttonArray;
+}
+
 function getRowAndColumnOfItem(rowArray, theItem)
 {
   var rowColumn = new Array( -1, -1);
   var found = false;
   for (var i = 0; (found == false) && (i < rowArray.length); ++i)
   {
-    var ourItems = rowArray[i].getElementsByTagName("button");
+    var ourItems = getButtonsInNode(rowArray[i]);
     for (var j = 0; j < ourItems.length; ++j)
     {
       if (ourItems[j] == theItem)
@@ -196,7 +224,7 @@ function msiAdvanceButtonRow(buttonGroup, event, forward)
     focusElement = commandDispatcher.focusedElement;
 
   var moveTo = null;
-  if (focusElement && focusElement.nodeName == 'button' && focusElement.getAttribute('group')==buttonGroup.id)
+  if (focusElement && controlIsButton(focusElement) && focusElement.getAttribute('group')==buttonGroup.id)
   {
     var theRows = getButtonRows(buttonGroup);
     var rowColumn = getRowAndColumnOfItem(theRows, focusElement);
@@ -205,7 +233,7 @@ function msiAdvanceButtonRow(buttonGroup, event, forward)
 
       if (forward && rowColumn[0] < (theRows.length - 1))
       {
-        var childButtons = theRows[rowColumn[0] + 1].getElementsByTagName("button");
+        var childButtons = getButtonsInNode(theRows[rowColumn[0] + 1]);
         if (rowColumn[1] < childButtons.length)
           moveTo = childButtons[ rowColumn[1] ];
         else
@@ -213,7 +241,7 @@ function msiAdvanceButtonRow(buttonGroup, event, forward)
       }
       else if (!forward && rowColumn[0] > 0)
       {
-        var childButtons = theRows[rowColumn[0] - 1].getElementsByTagName("button");
+        var childButtons = getButtonsInNode(theRows[rowColumn[0] + 1]);
         if (rowColumn[1] < childButtons.length)
           moveTo = childButtons[ rowColumn[1] ];
         else
@@ -241,24 +269,40 @@ function msiAdvanceButtonRow(buttonGroup, event, forward)
   }
   event.preventDefault();
   event.stopPropagation();
+  return true;
 }
 
-function msiCheckSpaceOrEnter(buttonGroup, event)
+function msiButtonGroupCheckEnter(buttonGroup, event)
 {
-  if (!buttonGroupSelectsOnFocus(buttonGroup))
-    return;
+//Removed the SelectsOnFocus condition - if you hit enter in button group in a dialog, it'll accept the dialog (if that's not disabled)
+//Should be possible to do a more discriminating test here, but it's proving too hard to find where some of the behaviors are coming from.
+//  if (buttonGroupSelectsOnFocus(buttonGroup))
+  var dlg = window.document.documentElement;
+  dlg._hitEnter(event);
+  return true;
+}
+
+function msiButtonGroupCheckSpace(buttonGroup, event)
+{
+//  if ( ((event.keyCode == event.DOM_VK_RETURN) || (event.keyCode == event.DOM_VK_ENTER)) && (buttonGroupSelectsOnFocus(buttonGroup)) )
+//  {
+//    var dlg = window.document.documentElement;
+//    dlg._hitEnter(event);
+//    return false;
+//  }
 
   var commandDispatcher = document.commandDispatcher;
   var focusElement = event.originalTarget;
   if (!focusElement)
     focusElement = commandDispatcher.focusedElement;
-  if (focusElement && focusElement.nodeName == 'button' && focusElement.getAttribute('group')==buttonGroup.id)
+  if (focusElement && controlIsButton(focusElement) && focusElement.getAttribute('group')==buttonGroup.id)
   {
     toggleSelection(buttonGroup, focusElement);
+    event.preventDefault();
+    event.stopPropagation();
+    return true;
   }
-
-  event.preventDefault();
-  event.stopPropagation();
+  return false;
 }
 
 //Following is provided as a function with the idea of changing it to use "phantom focus" a la <radiogroup> and <radio>.
@@ -306,22 +350,70 @@ function buttonGroupEnable(buttonGroup, doEnable)
 
 function buttonGroupCheckKeys(buttonGroup, event)
 {
-  switch(event.keyCode)
+//  var matchStr = "";
+  var retVal = false;
+  if (event.keyCode == event.DOM_VK_UP)
   {
-    case KeyEvent.DOM_VK_UP:          msiAdvanceButtonRow(buttonGroup, event, false);    break;
-    case KeyEvent.DOM_VK_DOWN:        msiAdvanceButtonRow(buttonGroup, event, true);     break;
-    case KeyEvent.DOM_VK_LEFT:        msiAdvanceButton(buttonGroup, event, false);       break;
-    case KeyEvent.DOM_VK_RIGHT:       msiAdvanceButton(buttonGroup, event, true);        break;
-    case KeyEvent.DOM_VK_SPACE:
-    case KeyEvent.DOM_VK_ENTER:       msiCheckSpaceOrEnter(buttonGroup, event);          break;
-    default:
-    break;
+//    matchStr = String(event.DOM_VK_UP);
+    retVal = msiAdvanceButtonRow(buttonGroup, event, false);
   }
+  else if (event.keyCode == event.DOM_VK_DOWN)
+  {
+//    matchStr = String(event.DOM_VK_DOWN);
+    retVal = msiAdvanceButtonRow(buttonGroup, event, true);
+  }
+  else if (event.keyCode == event.DOM_VK_LEFT)
+  {
+//    matchStr = String(event.DOM_VK_LEFT);
+    retVal = msiAdvanceButton(buttonGroup, event, false);
+  }
+  else if (event.keyCode == event.DOM_VK_RIGHT)
+  {
+//    matchStr = String(event.DOM_VK_RIGHT);
+    retVal = msiAdvanceButton(buttonGroup, event, true);
+  }
+  else if ( (event.keyCode == event.DOM_VK_RETURN) || (event.keyCode == event.DOM_VK_ENTER) )
+  {
+//    if (event.keyCode == event.DOM_VK_RETURN)
+//      matchStr = String(event.DOM_VK_RETURN);
+//    if (event.keyCode == event.DOM_VK_ENTER)
+//      matchStr += matchStr.length ? ("," + String(event.DOM_VK_ENTER)) : (String(event.DOM_VK_ENTER));
+    retVal = msiButtonGroupCheckEnter(buttonGroup, event);
+  }
+  else if ( (event.keyCode == event.DOM_VK_SPACE) || ((event.keyCode == 0) && (event.charCode == ' ')) )
+  {
+//    if (event.keyCode == event.DOM_VK_SPACE)
+//      matchStr = String(event.DOM_VK_SPACE);
+//    else
+//      matchStr = " ";
+    retVal = msiButtonGroupCheckSpace(buttonGroup, event);
+  }
+//  else
+//  {
+//    matchStr = "not recognized";
+//  }
+//  msiDumpWithID("In msiButtonGroup's buttonGroupCheckKeys for buttongroup [@], keycode [" + event.keyCode + "]; reported match with [" + matchStr + "].\n", buttonGroup);
+  return retVal;
+
+//  switch(event.keyCode)
+//  {
+//    case event.DOM_VK_UP:          return msiAdvanceButtonRow(buttonGroup, event, false);    break;
+//    case event.DOM_VK_DOWN:        return msiAdvanceButtonRow(buttonGroup, event, true);     break;
+//    case event.DOM_VK_LEFT:        return msiAdvanceButton(buttonGroup, event, false);       break;
+//    case event.DOM_VK_RIGHT:       return msiAdvanceButton(buttonGroup, event, true);        break;
+//    case event.DOM_VK_SPACE:       return msiButtonGroupCheckSpace(buttonGroup, event);          break;
+//    case event.DOM_VK_RETURN:
+//    case event.DOM_VK_ENTER:       return msiButtonGroupCheckEnter(buttonGroup, event);          break;
+//    default:
+//      msiDumpWithID("In msiButtonGroup's buttonGroupCheckKeys for buttongroup [@], keycode [" + event.keyCode + "] unrecognized.\n", buttonGroup);
+//      return false;
+//    break;
+//  }
 }
 
 function buttonGroupKeyHandler(event)
 {
-  buttonGroupCheckKeys(this, event);
+  return buttonGroupCheckKeys(this, event);
 }
 
 function makeMSIButtonGroup(element, bSelectOnFocus, subordinateIDString)
@@ -339,7 +431,7 @@ function makeMSIButtonGroup(element, bSelectOnFocus, subordinateIDString)
     var kids = this.getElementsByAttribute("group", this.id);
     if (kids.length == 0)
     {
-      kids = this.getElementsByTagName("button");
+      kids = getButtonsInNode(this);
     }
     return kids;
   };

@@ -54,6 +54,7 @@ case CMD_ASSIGN_TOKS: {
    TokenList* loc = (TokenList*) prim -> Data();
    TeXToken defining = CurTok();
    TokenList* pTL = new TokenList;
+   pTL->AddReference();
    ScanOptionalEquals();
    ScanTokenList(pTL, false);
    LOG("\n----Set " << defining << " = " << *pTL);
@@ -70,6 +71,7 @@ case CMD_ASSIGN_TOKS: {
    res.m_type = SCAN_TOKS;
    Primitive* prim = dynamic_cast<Primitive*>(CurData());
    TokenList* loc = (TokenList*) prim -> Data();
+   loc->AddReference();
    res.m_toks = loc;
    break;
 }

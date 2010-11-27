@@ -121,6 +121,7 @@ private:
 public:
    TagNode(const String& str);
    TagNode(const char* str);
+   ~TagNode();
    void Print(OutputStream&);
 };
 @}
@@ -136,6 +137,14 @@ TagNode::TagNode(const String& str)
    m_str[str.Size()] = '\0';
 }
 @}
+
+@$@<Typesetter implementation@>+=@{@-
+TagNode::~TagNode()
+{
+  delete[] m_str;
+}
+@}
+
 
 
 @$@<Typesetter implementation@>+=@{@-
