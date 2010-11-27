@@ -18,14 +18,14 @@
 <!DOCTYPE dialog [
 <!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
 %editorDTD;
-<!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/typesetManualCitation.dtd" >
+<!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/typesetBibitemDlg.dtd" >
 %dialogDTD;
 <!ENTITY % menuOverlayDTD SYSTEM "chrome://prince/locale/menuOverlay.dtd" >
 %menuOverlayDTD;
 ]>
 
 <dialog title="&windowTitle.label;"
-    id="typesetManualCitationDlg"
+    id="typesetBibitemDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     onload="Startup();"
     ondialogaccept="return onAccept();"
@@ -38,7 +38,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
 
   <!-- Following scripts are needed specifically by this dialog -->
-  <script type="application/x-javascript" src="chrome://prince/content/typesetManualCitation.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/typesetBibitemDlg.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/typesetDialogUtils.js"/>
   
   <!-- Following scripts are needed by any MSI dialog containing an editor -->
@@ -102,14 +102,14 @@
 		  <label value="&keyCaption.label;" accesskey="&keyCaption.accesskey;" control="keysAutoCompleteBox"/>
       <textbox id="keysAutoCompleteBox" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
         completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys"
-        tooltiptext="Enter the key name for the bibliography item to reference"
-        onchange="checkDisableControls(event);" />
+        tooltiptext="Enter a key name for this bibliography item"
+        onchange="keyTextboxChanged();" />
 		</hbox>
 		<spacer flex='1'/>
 		<hbox>
-			<description value='&remarkCaption.label;' accesskey='&remarkCaption.accesskey;'/>
+			<description value='&labelCaption.label;' accesskey='&labelCaption.accesskey;'/>
 			<!-- textbox id='remarkTextbox' multiline='true' rows='4' cols='30'/ -->
-      <editor editortype="html" type="content-primary" context="msiEditorContentContext" id="remarkEditControl" flex="1" height="350" width="450"/>
+      <editor editortype="html" type="content-primary" context="msiEditorContentContext" id="labelEditControl" flex="1" height="350" width="450"/>
 		</hbox>
 		<spacer flex='1'/>
 	</vbox>

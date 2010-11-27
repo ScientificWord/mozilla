@@ -716,7 +716,7 @@ function msiGetEditor(editorElement)
   }
   catch(e) 
   { 
-    dump("msiGetEditor exception: " + e + "\n");
+    dump("msiGetEditor exception: [" + e + "]; editorElement is [" + editorElement + "] and has ID [" + editorElement.id + "]\n");
     editor = null;
   }
   return editor;
@@ -3221,7 +3221,7 @@ function GetBoolPref(name)
 {
   try {
     return GetPrefs().getBoolPref(name);
-  } catch (e) {dump("Exception trying to query whether pref " + name + " is set: [" + exc + "].\n");}
+  } catch (exc) {dump("Exception trying to query whether pref " + name + " is set: [" + exc + "].\n");}
   return false;
 }
 
@@ -3229,7 +3229,7 @@ function SetBoolPref(name, value)
 {
   try {
     return GetPrefs().setBoolPref(name, value);
-  } catch (e) {dump("Exception trying to set pref " + name + ": [" + exc + "].\n");}
+  } catch (exc) {dump("Exception trying to set pref " + name + ": [" + exc + "].\n");}
 }
 
 function PrefHasValue(name)
@@ -5547,13 +5547,7 @@ var msiBaseMathUnitsList =
     { 
       result = autosub.nextChar(true, unitStr.charAt(ix));
       if (result == Components.interfaces.msiIAutosub.STATE_FAIL)
-      {
-        result = autosub.nextChar(true, aName.charAt(ix));
-        if (result == Components.interfaces.msiIAutosub.STATE_FAIL)
-        {
-          return false;
-        }
-      }
+        return false;
     }
     return (result == Components.interfaces.msiIAutosub.STATE_SUCCESS);
   },
@@ -6013,12 +6007,10 @@ var msiSearchStringManager =
 
 };
 
-var xsltSheetForKeyAttrib = "<?xml version='1.0'?><xsl:stylesheet version='1.1' xmlns:xsl='http://www.w3.org/1999/XSL/Transform' xmlns:html='http://www.w3.org/1999/xhtml' ><xsl:output method='text' encoding='UTF-8'/> <xsl:template match='/'>  <xsl:apply-templates select='//*[@key]'/></xsl:template><xsl:template match='//*[@key]'>   <xsl:value-of select='@key'/><xsl:text> </xsl:text></xsl:template> </xsl:stylesheet>";
-
 var msiKeyListManager =
 {
   baseString : "keys",
-  mXPathStr : xsltSheetForKeyAttrib,
+//  mXPathStr : xsltSheetForKeyAttrib,
   mDocumentArrays : new Object(),
 
   checkChangesAgainstDocument : function(aControlRecord, addStringsArray, deleteStringsArray)
@@ -6108,17 +6100,7 @@ var msiKeyListManager =
 
 msiKeyListManager.__proto__ = msiSearchStringManager;
 
-//Initialization code modified from Barry's initial code in msiEdImageProps.js
-function msiMarkerList(aControl) 
-{
-  this.mControl = aControl;
-  this.mKeyListManagerRecord = msiKeyListManager.getSearchStringArrayRecordForControl(aControl);
-  this.mbInitialized = msiKeyListManager.initMarkerList(this.mKeyListManagerRecord);
-  this.mAddedElements = [];
-  this.mDeletedElements = [];
-}
-
-msiMarkerList.prototype =
+var msiMarkerListPrototype =
 {
 //  mbInitialized : false,
 //  mDocument : null,
@@ -6132,17 +6114,17 @@ msiMarkerList.prototype =
 
   checkAllChanges : function()
   {
-    return msiKeyListManager.checkChangesAgainstDocument(this.mKeyListManagerRecord, this.mAddedElements, this.mDeletedElements);
+    return this.mKeyListManager.checkChangesAgainstDocument(this.mKeyListManagerRecord, this.mAddedElements, this.mDeletedElements);
   },
 
   checkChanges : function(addedStringArray, deletedStringArray)
   {
-    return msiKeyListManager.checkChangesAgainstDocument(this.mKeyListManagerRecord, addedStringArray, deletedStringArray);
+    return this.mKeyListManager.checkChangesAgainstDocument(this.mKeyListManagerRecord, addedStringArray, deletedStringArray);
   },
 
   resetList : function(bForce)
   {
-    return msiKeyListManager.resetMarkerList(this.mKeyListManagerRecord);
+    return this.mKeyListManager.resetMarkerList(this.mKeyListManagerRecord);
 //    var aDocument = this.getDocument();
 //    if (!aDocument)
 //    {
@@ -6239,16 +6221,96 @@ msiMarkerList.prototype =
 
   detach : function()
   {
-    msiKeyListManager.removeSearchStringArrayRecord(this.mKeyListManagerRecord);
+    this.mKeyListManager.removeSearchStringArrayRecord(this.mKeyListManagerRecord);
     this.mbInitialized = false;
     this.mKeyListManagerRecord = null;
   }
 };
 
+function msiKeyMarkerList(aControl) 
+{
+  this.mControl = aControl;
+  this.mKeyListManager = msiKeyListManager;
+  this.mKeyListManagerRecord = msiKeyListManager.getSearchStringArrayRecordForControl(aControl);
+  this.mbInitialized = msiKeyListManager.initMarkerList(this.mKeyListManagerRecord);
+  this.mAddedElements = [];
+  this.mDeletedElements = [];
+}
+
+msiKeyMarkerList.prototype = msiMarkerListPrototype;
+
+var msiBibItemKeyListManager =
+{
+  baseString : "bibitemkeys",
+//  mXPathStr : xsltSheetForKeyAttrib,
+  mDocumentArrays : new Object(),
+
+  updateMarkerList : function(aDocRecord, bForce)
+  {
+    if (bForce || this.needsMarkerListRefresh(aDocRecord))
+    {
+      aDocRecord.markerList = msiGetBibItemKeyListForDocument(aDocRecord.mDocument);
+      aDocRecord.bDocModified = false;
+    }
+    return aDocRecord.markerList;
+  }
+
+};
+
+msiBibItemKeyListManager.__proto__ = msiKeyListManager;
+
+function msiBibItemKeyMarkerList(aControl) 
+{
+  this.mControl = aControl;
+  this.mKeyListManager = msiBibItemKeyListManager;
+  this.mKeyListManagerRecord = msiBibItemKeyListManager.getSearchStringArrayRecordForControl(aControl);
+  this.mbInitialized = msiBibItemKeyListManager.initMarkerList(this.mKeyListManagerRecord);
+  this.mAddedElements = [];
+  this.mDeletedElements = [];
+}
+
+msiBibItemKeyMarkerList.prototype = msiMarkerListPrototype;
+
 function msiGetKeyListForDocument(aDocument)
 {
+//  var parser = new DOMParser();
+//  var dom = parser.parseFromString(xsltSheetForKeyAttrib, "text/xml");
+//  dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" + dom.documentElement.textContent : dom.documentElement.nodeName);
+//  var processor = new XSLTProcessor();
+//  processor.importStylesheet(dom.documentElement);
+//  var newDoc;
+//  if (aDocument)
+//    newDoc = processor.transformToDocument(aDocument, document);
+//  dump(newDoc.documentElement.localName+"\n");
+//  var keyString = newDoc.documentElement.textContent;
+//  var keys = keyString.split(/\n+/);
+//  var i;
+//  var len;
+//  keys.sort();
+//  var lastkey = "";
+//  for (i=keys.length-1; i >= 0; i--)
+//  {
+//    if (keys[i] == "" || keys[i] == lastkey) keys.splice(i,1);
+//    else lastkey = keys[i];
+//  }  
+//  dump("Keys are : "+keys.join()+"\n");    
+//  return keys;
+  var xsltSheetForKeyAttrib = "<?xml version='1.0'?><xsl:stylesheet version='1.1' xmlns:xsl='http://www.w3.org/1999/XSL/Transform' xmlns:html='http://www.w3.org/1999/xhtml' ><xsl:output method='text' encoding='UTF-8'/> <xsl:template match='/'>  <xsl:apply-templates select='//*[@key]'/></xsl:template><xsl:template match='//*[@key]'><xsl:value-of select='@key'/><xsl:text>\n</xsl:text></xsl:template> </xsl:stylesheet>";
+  var sepRE = /\n+/;
+  return msiGetItemListForDocumentFromXSLTemplate(aDocument, xsltSheetForKeyAttrib, sepRE, true);
+}
+
+function msiGetBibItemKeyListForDocument(aDocument)
+{
+  var xsltSheetForBibItemKeyAttrib = "<?xml version='1.0'?><xsl:stylesheet version='1.1' xmlns:xsl='http://www.w3.org/1999/XSL/Transform' xmlns:html='http://www.w3.org/1999/xhtml' ><xsl:output method='text' encoding='UTF-8'/> <xsl:template match='/'>  <xsl:apply-templates select='//*[@bibitemkey]'/></xsl:template><xsl:template match='//*[@bibitemkey]'>   <xsl:value-of select='@bibitemkey'/><xsl:text>\n</xsl:text></xsl:template> </xsl:stylesheet>";
+  var sepRE = /\n+/;
+  return msiGetItemListForDocumentFromXSLTemplate(aDocument, xsltSheetForBibItemKeyAttrib, sepRE, true);
+}
+
+function msiGetItemListForDocumentFromXSLTemplate(aDocument, aTemplate, separatorRegExpr, bSort)
+{
   var parser = new DOMParser();
-  var dom = parser.parseFromString(xsltSheetForKeyAttrib, "text/xml");
+  var dom = parser.parseFromString(aTemplate, "text/xml");
   dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" + dom.documentElement.textContent : dom.documentElement.nodeName);
   var processor = new XSLTProcessor();
   processor.importStylesheet(dom.documentElement);
@@ -6257,20 +6319,20 @@ function msiGetKeyListForDocument(aDocument)
     newDoc = processor.transformToDocument(aDocument, document);
   dump(newDoc.documentElement.localName+"\n");
   var keyString = newDoc.documentElement.textContent;
-  var keys = keyString.split(/\n+/);
+  var items = keyString.split(separatorRegExpr);
   var i;
   var len;
-  keys.sort();
-  var lastkey = "";
-  for (i=keys.length-1; i >= 0; i--)
+  if (bSort)
+    items.sort();
+  var lastitem = "";
+  for (i=items.length-1; i >= 0; i--)
   {
-    if (keys[i] == "" || keys[i] == lastkey) keys.splice(i,1);
-    else lastkey = keys[i];
+    if (items[i] == "" || items[i] == lastitem) items.splice(i,1);
+    else lastitem = items[i];
   }  
-  dump("Keys are : "+keys.join()+"\n");    
-  return keys;
+  dump("Keys are : "+items.join()+"\n");    
+  return items;
 }
-
 
 /**************************msiNavigationUtils**********************/
 var msiNavigationUtils = 
@@ -6835,6 +6897,26 @@ var msiNavigationUtils =
       return aNode;
     else
       return this.getParentOfType(aNode.parentNode, nodeName);
+  },
+
+  getTopParagraphParent : function(aNode, editor)
+  {
+    var thePara = null;
+    var currNode = aNode;
+    while (currNode)
+    {
+      switch (this.getTagClass(currNode, editor))
+      {
+        case "paratag":
+        case "listtag":
+          thePara = currNode;
+        break;
+        default:
+        break;
+      }
+      currNode = currNode.parentNode;
+    }
+    return thePara;
   },
 
   nodeIsInMath : function(aNode)
@@ -8093,6 +8175,7 @@ function msiKludgeTestKeys(keyArray)
 //  keysInUse.push("spaces");
 //  keysInUse.push("reviseChars");
 //  keysInUse.push("editorFocus");
+  keysInUse.push("bibliography");
 //#endif
 
   var bDoIt = false;
@@ -9132,4 +9215,13 @@ function prettyprint(editor)
   return output.s;
 } 
   
-  
+ 
+function getSelectionParentByTag( editor, tagname)
+{
+  var sel = editor.selection;
+  var range = sel.getRangeAt(0);
+  var ancestor = range.commonAncestorContainer;
+  while (ancestor && ancestor.tagName != tagname) ancestor = ancestor.parentNode;
+  if (ancestor && ancestor.tagName == tagname) return ancestor;
+  return null;
+}
