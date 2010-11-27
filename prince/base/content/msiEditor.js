@@ -265,7 +265,7 @@ function msiEditorArrayInitializer()
     }
     anEditorElement.mEditorSeqInitializer = null;
     ++editorIndex;
-//    dump( "In msiEditorArrayInitializer.finishedEditor for editor [" + anEditorElement.id + "]; moving on to editor number" + editorIndex + "].\n" );
+    dump( "In msiEditorArrayInitializer.finishedEditor for editor [" + anEditorElement.id + "]; moving on to editor number" + editorIndex + "].\n" );
     this.initializeNextEditor(editorIndex);
   };
   this.findEditorInfo = function(anEditorElement, bReport)
@@ -358,6 +358,7 @@ function msiInitializeEditorForElement(editorElement, initialText, bWithContaini
     editorElement.initialEditorContents = startText;
   }
   EditorStartupForEditorElement(editorElement);
+  msiDumpWithID("In msiInitializeEditorForElement for element [@], back from EditorStartupForEditorElement call.\n", editorElement);
 
   // Initialize our source text <editor>
   try {
@@ -696,6 +697,7 @@ function msiEditorDocumentObserver(editorElement)
 //        gContentWindow = window.content;
 
         // Get state to see if document creation succeeded
+        msiDumpWithID("Got obs_documentCreated message in documentCreated observer for editor [@]; aData is [" + aData + "]; msiGetEditor returned [" + edStr + "].\n", editorElement);
         var params = newCommandParams();
         if (!params)
           return;
@@ -7808,8 +7810,8 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
       }
     }
 
-//    if (!element)
-//      element = editor.selection.getRangeAt(0).commonAncestorContainer;
+    if (!element)
+      element = editor.selection.getRangeAt(0).commonAncestorContainer;
 
     if (propsData)
     {

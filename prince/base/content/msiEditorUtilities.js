@@ -8175,11 +8175,11 @@ function msiKludgeTestKeys(keyArray)
 //  keysInUse.push("spaces");
 //  keysInUse.push("reviseChars");
 //  keysInUse.push("editorFocus");
-  keysInUse.push("bibliography");
+//  keysInUse.push("bibliography");
 //#endif
 
   var bDoIt = false;
-  if (keyArray && keyArray.length)
+  if (keysInUse.length && keyArray && keyArray.length)
   {
     for (var ix = 0; ix < keyArray.length; ++ix)
     {
