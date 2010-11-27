@@ -419,31 +419,24 @@ should not be done under some conditions -->
 %TCIMACRO{\TeXButton<xsl:apply-templates mode="tex"/>
 </xsl:template>
 
-<xsl:template match="html:TBLabel">{<xsl:apply-templates/>}
-  
+<xsl:template match="html:TBLabel">{<xsl:apply-templates/>}  
 </xsl:template>
-<xsl:template match="html:TBTeX">{<xsl:apply-templates/>}%
-  
+
+<xsl:template match="html:TBTeX">{<xsl:apply-templates/>}%  
 %BeginExpansion
 <xsl:apply-templates/>
 %EndExpansion
 </xsl:template>
 
-<xsl:template match="html:explicit-item">[<xsl:apply-templates/>]
-  
+<xsl:template match="html:explicit-item">[<xsl:apply-templates/>]  
 </xsl:template>
 
-<xsl:template match="html:a">\ref{<xsl:apply-templates/>}
-  
-</xsl:template>
+<xsl:template match="html:a">\ref{<xsl:apply-templates/>}</xsl:template>
 
 
-<xsl:template match="html:marker">\label{<xsl:value-of select="@id"/>}
-  
-</xsl:template>
+<xsl:template match="html:marker">\label{<xsl:value-of select="@id"/>}</xsl:template>
 
-<xsl:template match="a">\ref{<xsl:apply-templates/>}
-</xsl:template>
+<xsl:template match="a">\ref{<xsl:apply-templates/>}</xsl:template>
 
 <xsl:template match="html:requestimplementation">[ NEED TO IMPLEMENT: \verb+<xsl:apply-templates/>+] 
 </xsl:template>
@@ -471,9 +464,9 @@ should not be done under some conditions -->
 \end{proof}
 </xsl:template>
 
-<xsl:template match="html:QTR">\QTR{<xsl:value-of select="@type"/>}{<xsl:apply-templates/>}
-  
+<xsl:template match="html:QTR">\QTR{<xsl:value-of select="@type"/>}{<xsl:apply-templates/>} 
 </xsl:template>
+
 <xsl:template match="html:QTP">\QTP{<xsl:value-of select="@type"/>}
   
 <xsl:apply-templates/>

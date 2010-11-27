@@ -750,7 +750,7 @@ function msiDeferStatefulCommand(commandID, newState, editorElement)
     {
       var paraNode = msiNavigationUtils.getTopParagraphParent(editor.selection.focusNode, editor);
       var bibData = {key : "", bibLabel : "", paragraphNode : paraNode};
-      var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibItemDlg.xul", "_blank", "chrome,close,titlebar,dependent",
+      var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibitemDlg.xul", "_blank", "chrome,close,titlebar,dependent",
                                                            editorElement, commandID, this, bibData);
       retVal = true;
     }
