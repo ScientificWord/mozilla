@@ -317,7 +317,7 @@ NS_IMETHODIMP msiArrowStateService::SetFindBuffer(const nsAString & aFindBuffer)
 
 NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiArrowStateService, msiArrowStateService::GetInstance)
 
-static const nsModuleComponentInfo gComponents[] =
+static const nsModuleComponentInfo components[] =
 {
   { 
     "Arrow state Service",
@@ -327,4 +327,4 @@ static const nsModuleComponentInfo gComponents[] =
   }
 };
 
-NS_IMPL_NSGETMODULE(arrowstateModule, gComponents)
+NS_IMPL_NSGETMODULE(arrowstateModule, components)
