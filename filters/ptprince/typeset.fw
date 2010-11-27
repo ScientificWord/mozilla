@@ -396,6 +396,7 @@ void Typesetter::EndProcess()
          LOG("\nGot back " << s_mathml.c_str());
          AppendTag(s_mathml.c_str());
          s_mathml = "";
+         TakeDownMathML();
       }
    } else if (strcmp(proc, "frame") == 0){
       // Put code for handling \FRAME here
@@ -578,6 +579,7 @@ void Typesetter::EndInline()
          str +=  "</mml:math>";
          AppendTag(str.c_str());
          s_mathml = "";
+         TakeDownMathML();
       }
    }
 
@@ -650,6 +652,7 @@ void Typesetter::EndDisplay()
          str += "</msidisplay>";
          AppendTag(str.c_str());
          s_mathml = "";
+         TakeDownMathML();
       }
    }
 

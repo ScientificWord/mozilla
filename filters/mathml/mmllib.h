@@ -12,6 +12,8 @@ typedef U32 (* LPCONVERT)(const char* latex, LPRENDERTILE renderfunc, int ambien
 bool InitializeMML( const char* basepath,
                  const char* name_space,
                  const char** context_zstrs );
+
+void TerminateMML();
                  
 bool Version(U16 major, U16 minor);
 bool ConvertInline(const char* latex, LPRENDERTILE renderfunc, int ambient_size);

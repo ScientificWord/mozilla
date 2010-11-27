@@ -79,6 +79,7 @@ bool MacroExpansion::bEmpty() const
 @$@<MacroExpansion::SetParam@>==@{@-
 void MacroExpansion::SetParam(TokenList* param)
 {
+   if (param->GetCount() <= 0) throw;
    ++m_nParamCount;
    s_paramStack.push_back(param);
 }
@@ -300,6 +301,7 @@ if @<r doesn't point to a TT_MATCH or a TT_END_MATCH@> {
 }
 while @<r points to a TT_MATCH@> {
    s_pstack[s_ptop] = new TokenList;
+   s_pstack[s_ptop]->AddReference();
    ++s_ptop;
    ++r;
    if @<r points to a TT_MATCH or a TT_END_MATCH@> {
@@ -851,6 +853,7 @@ void EdefAssignment(CommandCode curcmd, int prefixes)
 
    @<Scan definable symbol@>
    pTL = new TokenList();
+   pTL->AddReference();
    @<Scan parameter specification@>
    bool bExpand = true;
    @<Scan body@>
