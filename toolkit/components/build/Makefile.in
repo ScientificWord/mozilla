@@ -133,6 +133,8 @@ ifdef MOZ_MSI_PRINCE
 #  	../keymap/src/$(LIB_PREFIX)keymap.$(LIB_SUFFIX) \
 #  	../arrowstate/src/$(LIB_PREFIX)arrowstate.$(LIB_SUFFIX) \
 #  	$(NULL)
+#  	../arrowstate/src/$(LIB_PREFIX)arrowstate.$(LIB_SUFFIX) \
+#  	$(NULL)
 endif
 
 
