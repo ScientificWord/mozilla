@@ -292,7 +292,7 @@
           <menuitem label="&MSIComputeRewriteMatrixAsEquationsCmd.label;" accesskey="&MSIComputeRewriteMatrixAsEquationsCmd.accesskey;"          observes="cmd_MSIComputeRewriteMatrixAsEquations"/>
         </menupopup>
       </menu>
-      <menuitem label="&MSIComputeCheckEqCmd.label;"       accesskey="&MSIComputeCheckEqCmd.accesskey;"                     observes="cmd_MSIComputeCheckEquality"/>
+      <menuitem label="&MSIComputeCheckEqCmd.label;"       accesskey="&MSIComputeCheckEqCmd.accesskey;"                 observes="cmd_MSIComputeCheckEquality"/>
       <menu id="MSISolveMenu" label="&MSISolveMenu.label;" accesskey="&MSISolveMenu.accesskey;">
         <menupopup id="MSISolvePopup">
           <menuitem label="&MSIComputeSolveExactCmd.label;"     accesskey="&MSIComputeSolveExactCmd.accesskey;"         observes="cmd_MSIComputeSolveExact"/>
