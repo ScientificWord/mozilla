@@ -17,5 +17,5 @@ static const nsModuleComponentInfo gComponents[] = {
   }
 };
 
-NS_IMPL_NSGETMODULE(keymap, gComponents)  
+NS_IMPL_NSGETMODULE(keymap, components)  
 
