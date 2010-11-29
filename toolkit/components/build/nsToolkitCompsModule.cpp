@@ -72,6 +72,7 @@
 #include "msiAutosub.h"
 #include "msiSimpleComputeEngine2.h"
 #include "msiKeyMap.h"
+#include "msiArrowStateService.h"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -131,7 +132,7 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsAutoCompleteMdbResult)
 #endif
 NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiAutosub, msiAutosub::GetInstance)
 NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiSimpleComputeEngine2, msiSimpleComputeEngine2::GetInstance)
-
+NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiArrowStateService, msiArrowStateService::GetInstance)
 
 NS_GENERIC_FACTORY_CONSTRUCTOR(msiKeyMap)
 /////////////////////////////////////////////////////////////////////////////
@@ -236,6 +237,12 @@ static const nsModuleComponentInfo components[] =
    MSI_KEYMAP_CID ,
    MSI_KEYMAP_CONTRACTID,
    msiKeyMapConstructor },
+
+  { 
+    "Arrow state Service",
+    MSI_ARROWSTATE_SERVICE_CID,
+    MSI_ARROWSTATE_SERVICE_CONTRACTID,
+    msiArrowStateServiceConstructor },
 
 };
 
