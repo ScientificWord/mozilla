@@ -6,12 +6,11 @@ VPATH = @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-# MODULE		= wrappers
+MODULE		= wrappers
 
 DIRS = \
-	public \
-	src \
 	$(NULL)
+#	src \
 
 
 include $(topsrcdir)/config/rules.mk
