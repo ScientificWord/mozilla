@@ -208,8 +208,8 @@ endif
 tier_toolkit_dirs	+= \
 	xpfe \
 	toolkit/components \
+	toolkit/wrappers \
 	$(NULL)
-#	toolkit/wrappers \
 
 ifndef MOZ_XUL_APP
 tier_toolkit_dirs += themes

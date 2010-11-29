@@ -25,8 +25,8 @@ REQUIRES = \
 
 CPPSRCS = \
   msiMuPADEngineWrapper.cpp \
-#  msiMuPADEngineWrapperModule.cpp \
   $(NULL)
+#  msiMuPADEngineWrapperModule.cpp \
 
  
 
@@ -47,6 +47,7 @@ SHARED_LIBRARY_LIBS += \
 	../../components/Compute/Engines/MuPAD/$(LIB_PREFIX)mupwrapperlib_s.$(LIB_SUFFIX) \
 	$(DIST)/lib/$(LIB_PREFIX)xpcomglue_s.$(LIB_SUFFIX) \
 	$(NULL)
+#  ../../../xpcom/string/src/$(LIB_PREFIX)string_s.$(LIB_SUFFIX) \
 
 ifeq ($(OS_ARCH),WINNT)
 SHARED_LIBRARY_LIBS += \
@@ -90,5 +91,11 @@ LOCAL_INCLUDES = -I$(srcdir)/../../components/Compute/computelib \
 EXTRA_DSO_LDOPTS += \
 	$(MOZ_UNICHARUTIL_LIBS) \
 	$(MOZ_COMPONENT_LIBS) \
+  $(NULL)
+
+EXTRA_DSO_LDOPTS += \
+	$(LIBS_DIR) \
+	$(EXTRA_DSO_LIBS) \
+	$(MOZ_JS_LIBS) \
 	$(NULL)
                  
