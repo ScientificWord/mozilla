@@ -254,14 +254,13 @@ endif
 
 ifdef MOZ_XUL
 COMPONENT_LIBS += \
-	tkautocomplete \
+  tkautocomplete \
+  compeng2 \
+  tkautosub \
+  arrowstate \
+  keymap \
 	satchel \
 	pippki \
-	compeng2 \
-	wrappers \
-	tkautosub \
-	arrowstate \
-	keymap \
 	$(NULL)
 endif
 
