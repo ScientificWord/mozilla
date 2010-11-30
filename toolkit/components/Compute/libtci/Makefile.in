@@ -8,8 +8,8 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE = compute
+MODULE_NAME = computeModule
 LIBRARY_NAME = libtci_s
-DIST_INSTALL = 1
 
 include $(topsrcdir)/config/config.mk
 

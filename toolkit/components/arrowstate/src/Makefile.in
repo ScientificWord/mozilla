@@ -12,7 +12,8 @@ include $(DEPTH)/config/autoconf.mk
 MODULE		= arrowstate
 MODULE_NAME = arrowstateModule
 LIBRARY_NAME	= arrowstate
-SHORT_LIBNAME = arrowstate
+SHORT_LIBNAME=arrowst
+
 IS_COMPONENT = 1
 EXPORT_LIBRARY = 1
 LIBXUL_LIBRARY = 1
