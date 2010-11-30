@@ -8,8 +8,14 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE = compute
+MODULE_NAME = computeModule
 LIBRARY_NAME = computelib_s
-DIST_INSTALL = 1
+FORCE_STATIC_LIB = 1
+
+MOZILLA_INTERNAL_API = 1
+FORCE_STATIC_LIB = 1
+
+MOZILLA_INTERNAL_API = 1
 
 include $(topsrcdir)/config/config.mk
 
@@ -33,9 +39,6 @@ LOCAL_INCLUDES = -I$(srcdir)/../libtci	\
                  -I$(srcdir)/../src \
 		 -I$(srcdir)/../public \
 	         $(NULL)
-
-# we don't want the shared lib, but we want to force the creation of a static lib.
-FORCE_STATIC_LIB = 1
 
 SupportFiles	:= \
 			$(srcdir)/swfcns.mu \
