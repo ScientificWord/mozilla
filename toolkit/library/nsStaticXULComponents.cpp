@@ -235,7 +235,6 @@
     MODULE(keymapModule)                     \
     MODULE(arrowstateModule)                 \
     MODULE(simplecomputeengine2Module)		 \
-    MODULE(wrappers)						                                   
 #else
 #define XULENABLED_MODULES
 #endif
