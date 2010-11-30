@@ -210,6 +210,7 @@ tier_toolkit_dirs	+= \
 	toolkit/components \
 	toolkit/wrappers \
 	$(NULL)
+#	toolkit/wrappers \
 
 ifndef MOZ_XUL_APP
 tier_toolkit_dirs += themes
