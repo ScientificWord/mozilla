@@ -880,10 +880,10 @@ function msiEditorDocumentObserver(editorElement)
           // initializations will not do anything
           var keymapper;
           try {
-            keymapper =  Components.classes["@mackichan.com/keymap/keymap_service;1"]
-                                 .createInstance(Components.interfaces.msiIKeyMap);
-            keymapper.loadKeyMapFile();
-            keymapper.saveKeyMaps();
+//            keymapper =  Components.classes["@mackichan.com/keymap/keymap_service;1"]
+//                                 .createInstance(Components.interfaces.msiIKeyMap);
+//            keymapper.loadKeyMapFile();
+//            keymapper.saveKeyMaps();
           }
           catch(e) { dump("Failed to load keytables.xml -- "+e); }
         }
@@ -1179,6 +1179,7 @@ function EditorStartupForEditorElement(editorElement)
   }
 
   msiDumpWithID("Just before loading Shell URL in EditorStartupForEditorElement, for editorElement [@]; docShell is currently [" + editorElement.docShell + "].\n", editorElement);
+  debugger;
   msiLoadInitialDocument(editorElement, is_topLevel);
 }
 

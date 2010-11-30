@@ -48,20 +48,6 @@ msiKeyMap::GetInstance()
   return sInstance;
 }
 
-NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiKeyMap, msiKeyMap::GetInstance)
-
-static const nsModuleComponentInfo components[] =
-{
-  { 
-    "Key Mapping Service",
-    MSI_KEYMAP_CID,
-    MSI_KEYMAP_CONTRACTID,
-    msiKeyMapConstructor
-  }
-};
-
-NS_IMPL_NSGETMODULE(keymapModule, components)
-
 void 
 msiKeyMap::ReleaseInstance()
 {
