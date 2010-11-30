@@ -15,7 +15,7 @@ function aColorObj(editorElement)
   this.Type = "";
   this.SelectedType = "";
   this.NoDefault = false;
-  this.Cancel = false;
+  this.Cancel  = false;
   this.HighlightColor = "";
   this.BackgroundColor = "";
   this.PageColor = "";
