@@ -7,6 +7,12 @@
 <!ENTITY ruleHeight.accesskey	"H">
 <!ENTITY ruleWidth.label	"Rule width">
 <!ENTITY ruleWidth.accesskey	"H">
+<!ENTITY left.label "Left">
+<!ENTITY center.label "Center">
+<!ENTITY right.label  "Right">
+<!ENTITY left.accesskey "L">
+<!ENTITY center.accesskey "C">
+<!ENTITY right.accesskey  "R">
 <!ENTITY wide.label	"Margin to margin">
 <!ENTITY wide.accesskey	"M">
 <!ENTITY narrow.label	"Width of title">
