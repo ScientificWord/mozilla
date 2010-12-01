@@ -11,7 +11,7 @@
 <!ENTITY MSIdisplayCmd.keybinding "d">
 <!ENTITY MSItextCmd.label "Text">
 <!ENTITY MSItextCmd.accesskey "t">
-<!ENTITY MSImathObjectsMenu.label "Math objects">
+<!ENTITY MSImathObjectsMenu.label "Math Objects">
 <!ENTITY MSImathObjectsMenu.accesskey "o">
 <!ENTITY MSIfractionCmd.label "Fraction">
 <!ENTITY MSIfractionCmd.accesskey "F">
@@ -113,7 +113,7 @@
 <!ENTITY insertmenuHTMLField.accesskey "H">
 <!ENTITY insertmenuUnitNames.label "Unit Name...">
 <!ENTITY insertmenuUnitNames.accesskey "U">
-<!ENTITY insertmenuTSO.label "Typeset object...">
+<!ENTITY insertmenuTSO.label "Typeset Object">
 <!ENTITY insertmenuTSO.accesskey "y">
 <!ENTITY insertmenuHyperlink.label "Hyperlink...">
 <!ENTITY insertmenuHyperlink.accesskey "h">
@@ -135,7 +135,7 @@
 
 <!ENTITY MSISymbolTabLCGreek     "Lowercase Greek">
 <!ENTITY MSISymbolTabCCGreek     "Uppercase Greek">
-<!ENTITY MSISymbolTabBinaryOps   "Binary operations">
+<!ENTITY MSISymbolTabBinaryOps   "Binary rperations">
 <!ENTITY MSISymbolTabBinaryRels  "Binary relations">
 <!ENTITY MSISymbolTabNegatedRels "Negated relations">
 <!ENTITY MSISymbolTabArrows      "Arrows">

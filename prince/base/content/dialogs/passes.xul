@@ -10,7 +10,7 @@
 %dialogDTD;
 ]>
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-    title="LaTeX passes" 
+    title="&LaTeXPasses;" 
     id="passesDlg"
     buttons="cancel"
     buttonlabelcancel="Cancel"
