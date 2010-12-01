@@ -108,7 +108,7 @@
         <label value="&keyForLine.label;" accesskey="&keyForLine.accesskey;" control="keyForLineAutoCompleteBox"/>
         <textbox id="keyForLineAutoCompleteBox" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
           completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys"
-          tooltiptext="Enter a new key name"
+          tooltiptext="&EnterNewKeyName.tooltip;"
           onchange="lineMarkerChanged();" />
       </hbox>
 
@@ -141,7 +141,7 @@
         <label id="wholeDisplayKeyLabel" value="&keyForWholeDisplay.label;" accesskey="&keyForWholeDisplay.accesskey;" control="wholeDisplayKeyList" />
         <textbox id="wholeDisplayKeyAutoCompleteBox" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
           completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys"
-          tooltiptext="Enter a new key name"
+          tooltiptext="&EnterNewKeyName.tooltip;"
           onchange="wholeMarkerChanged();"  />
       </groupbox>
       <groupbox>
