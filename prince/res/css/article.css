@@ -274,6 +274,14 @@ longQuotation {
   margin-right: 20pt;
 }
 
+epigraph {
+  display: block;
+  color: white;
+  background-color: black;
+  margin-left: 20pt;
+  margin-right: 20pt;
+}
+
 *[showinvis="true"] longQuotation:after {
   content: "\B6";
   display: inline;
