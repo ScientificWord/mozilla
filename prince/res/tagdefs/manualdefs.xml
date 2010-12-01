@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE tagproperties [
+<!ATTLIST tag id ID #IMPLIED> ]>
+<tagproperties> 
+	<tagclasses>
+		<tagclass>
+			<tagclassname>paratag</tagclassname>
+			<tags>
+				<tag nm="epigraph">
+					<description>Epigraph</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontentsforempty> <![CDATA[<cursor/>]]>
+          </initialcontentsforempty>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+				</tag>
+			</tags>
+		</tagclass>
+	</tagclasses>
+</tagproperties>
