@@ -5,12 +5,12 @@
 <!ENTITY keystrokesBox.label "Keystrokes">
 <!ENTITY keystrokesBox.accesskey "K">
 <!ENTITY keystrokesBox.tooltip "Enter the keystroke sequence to be recognized.">
-<!ENTITY autosubType.label "Type of substitution">
+<!ENTITY autosubType.label "Type of Substitution">
 <!ENTITY typeSubstitution.label "Simple substitution">
 <!ENTITY typeSubstitution.accesskey "b">
 <!ENTITY typeExecuteScript.label "Script to execute">
 <!ENTITY typeExecuteScript.accesskey "x">
-<!ENTITY autosubContext.label "Context for substitution">
+<!ENTITY autosubContext.label "Context for Substitution">
 <!ENTITY contextMath.label "In Math">
 <!ENTITY contextMath.accesskey "M">
 <!ENTITY contextText.label "In Text">
@@ -21,10 +21,10 @@
 <!ENTITY substitution.accesskey "S">
 <!ENTITY script.label "Javascript to execute">
 <!ENTITY script.accesskey "J">
-<!ENTITY enableDisableAutosubs.label "Enable or disable auto substitution:">
+<!ENTITY enableDisableAutosubs.label "Enable or Disable Auto Substitution:">
 <!ENTITY enableSubsInMath.label "In Math">
 <!ENTITY enableSubsInMath.accesskey "h">
-<!ENTITY enableSubsInText.label "In text">
+<!ENTITY enableSubsInText.label "In Text">
 <!ENTITY enableSubsInText.accesskey "e">
 <!ENTITY enableUnitSubs.label "Units">
 <!ENTITY enableUnitSubs.accesskey "i">
@@ -34,3 +34,4 @@
 <!ENTITY saveButton.accesskey "S">
 <!ENTITY removeButton.label "Remove">
 <!ENTITY removeButton.accesskey "R">
+
