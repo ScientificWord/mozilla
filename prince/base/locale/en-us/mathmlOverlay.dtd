@@ -135,7 +135,7 @@
 
 <!ENTITY MSISymbolTabLCGreek     "Lowercase Greek">
 <!ENTITY MSISymbolTabCCGreek     "Uppercase Greek">
-<!ENTITY MSISymbolTabBinaryOps   "Binary rperations">
+<!ENTITY MSISymbolTabBinaryOps   "Binary operations">
 <!ENTITY MSISymbolTabBinaryRels  "Binary relations">
 <!ENTITY MSISymbolTabNegatedRels "Negated relations">
 <!ENTITY MSISymbolTabArrows      "Arrows">
