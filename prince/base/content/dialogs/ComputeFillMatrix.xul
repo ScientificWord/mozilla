@@ -110,12 +110,12 @@
       <groupbox>
         <caption label="&dimensions.label;"/>
         <hbox>
-          <description>Rows</description>
+          <description>&Rows.label;</description>
           <spacer flex="1"/>
           <textbox id="rows" style="width: 3em"/>
         </hbox>
         <hbox>
-          <description>Columns</description>
+          <description>&Columns.label;</description>
           <spacer flex="1"/>
           <textbox id="cols" style="width: 3em"/>
         </hbox>
@@ -132,7 +132,7 @@
         </radiogroup>
       </groupbox>
       <groupbox id="editorGroupbox">
-        <caption label="Item/Function/List"/>
+        <caption label="&ItemFunctionListCaption.label;"/>
         <editor editortype="html" type="content-primary" context="msiEditorContentContext" width="180" height="60" id="fillmat-content-frame"/>
       </groupbox>
     </vbox>
