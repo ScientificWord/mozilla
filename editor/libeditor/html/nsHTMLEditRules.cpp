@@ -2654,6 +2654,7 @@ nsHTMLEditRules::JoinBlocks(nsCOMPtr<nsIDOMNode> *aLeftBlock,
   }
 
   // make sure we don't try to move thing's into HR's, which look like blocks but aren't containers
+  // BBM: make tagmanager responsible for determining this??
   if (nsHTMLEditUtils::IsHR(*aLeftBlock, mtagListManager))
   {
     nsCOMPtr<nsIDOMNode> realLeft = mHTMLEditor->GetBlockNodeParent(*aLeftBlock);
@@ -7590,6 +7591,12 @@ nsHTMLEditRules::GetStructNodeFromNode(nsIDOMNode *node, nsIDOMElement ** struct
   NS_NAMED_LITERAL_STRING(strStruct, "structtag");
   curNode = node;
   element = do_QueryInterface(curNode);
+  if (!element && curNode)  // curNode is probably a text node
+  {
+     curNode->GetParentNode(getter_AddRefs(curNode));
+     element = do_QueryInterface(curNode);
+  }
+  if (!element) return NS_ERROR_NULL_POINTER;
   element->GetLocalName(tagName);
 // Should eventually include Name Space atom
 //    nsAutoString strNS;
