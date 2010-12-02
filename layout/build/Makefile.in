@@ -92,7 +92,6 @@ REQUIRES	= xpcom \
 		  thebes \
 		  autosub \
 		  compute \
-		  wrappers \
 		  pref \
 		  unicharutil \
 		  xultmpl \
