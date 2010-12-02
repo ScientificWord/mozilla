@@ -168,7 +168,7 @@
 <!ENTITY MSIComputeEval.tooltip "Evaluate">
 <!ENTITY MSIComputeEval.label "Eval">
 
-<!ENTITY MSIComputeEvalNum.tooltip "Evaluate Numerically">
+<!ENTITY MSIComputeEvalNum.tooltip "Evaluate numerically">
 <!ENTITY MSIComputeEvalNum.label "Eval num">
 
 <!ENTITY MSIComputeSimplify.tooltip "Simplify">
@@ -177,10 +177,10 @@
 <!ENTITY MSIComputeExpand.tooltip "Expand">
 <!ENTITY MSIComputeExpand.label "Expand">
 
-<!ENTITY MSIComputeSolveExact.tooltip "Solve Exact">
+<!ENTITY MSIComputeSolveExact.tooltip "Solve exact">
 <!ENTITY MSIComputeSolveExact.label "Solve">
 
-<!ENTITY MSIComputeSolveInteger.tooltip "Solve Integer">
+<!ENTITY MSIComputeSolveInteger.tooltip "Solve integer">
 <!ENTITY MSIComputeSolveInteger.label "Solve">
 
 <!ENTITY MSIComputePlot2D.tooltip "Plot 2D Rectangular">
@@ -189,10 +189,10 @@
 <!ENTITY MSIComputePlot3D.tooltip "Plot 3D Rectangular">
 <!ENTITY MSIComputePlot3D.label "Plot 3D">
 
-<!ENTITY MSIComputeDefine.tooltip "New Definition">      
+<!ENTITY MSIComputeDefine.tooltip "New definition">      
 <!ENTITY MSIComputeDefine.label "New Def">      
 
-<!ENTITY MSIComputeShowDefs.tooltip "Show Definitions">
+<!ENTITY MSIComputeShowDefs.tooltip "Show definitions">
 <!ENTITY MSIComputeShowDefs.label "Show Defs">
 
 <!ENTITY gifsAnimatedButton.tooltip "Start/stop GIF animations">
@@ -210,7 +210,7 @@
 <!ENTITY importtexToolbarButton.tooltip "Import TeX file">
 <!ENTITY importtexToolbarButton.label "Import TeX">
 
-<!ENTITY javascriptToolbarButton.tooltip "Enable/disable JavaScript">
+<!ENTITY javascriptToolbarButton.tooltip "Enable/Disable JavaScript">
 <!ENTITY javascriptToolbarButton.label "JavaScript">
 <!ENTITY boldToolbarButton.tooltip "Toggle bold">
 <!ENTITY boldToolbarButton.label "Bold">
