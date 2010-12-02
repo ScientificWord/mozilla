@@ -4,6 +4,7 @@
 <!ENTITY dimensions.label  "Dimensions">
 <!ENTITY rows.label  "Rows">
 <!ENTITY columns.label  "Columns">
+<!ENTITY  to.label  "to">
 <!ENTITY range.label       "Range of Random Entries">
 <!ENTITY types.label       "Matrix Types">
 

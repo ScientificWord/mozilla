@@ -43,3 +43,4 @@
 <!ENTITY  units						"Units">
 <!ENTITY unitLabel.accesskey "U">
 <!ENTITY unitLabel.label "Units">
+<!ENTITY  SizePlacement.label  "Size &amp; Placement">
