@@ -12,3 +12,8 @@
 <!ENTITY desc.MMLRec    "Log MathML content received">
 <!ENTITY desc.EngSent   "Log engine strings sent">
 <!ENTITY desc.EngRec    "Log engine strings received">
+<!ENTITY Scope.label  "Scope">
+<!ENTITY Default.label  "Default">
+<!ENTITY ThisDocOnly.label  "This document only">
+<!ENTITY EngineOn.label "Engine On">
+

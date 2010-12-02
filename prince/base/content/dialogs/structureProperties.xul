@@ -22,11 +22,10 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js" />
   <script type="application/x-javascript" src="chrome://prince/content/structureproperties.js"/>
 
- 
-  <tabbox id="tabboxid" flex="1">
+   <tabbox id="tabboxid" flex="1">
     <tabs>
       <tab label="&format.label;"/>
-      <tab label="&advanced.label"/>    
+      <tab label="&advanced.label;"/>    
     </tabs>
     <tabpanels flex="1">
       <tabpanel>
