@@ -34,18 +34,18 @@
         <textbox id="tally" style="width: 3em"/>
       </hbox>
       <listbox id="dist" seltype="single" onselect="doSelect(); return false;">
-        <listitem label="Beta"/>
-        <listitem label="Binomial"/>
-        <listitem label="Cauchy"/>
-        <listitem label="Chi-Square"/>
-        <listitem label="Exponential"/>
-        <listitem label="F"/>
-        <listitem label="Gamma"/>
-        <listitem label="Normal"/>
-        <listitem label="Poisson"/>
-        <listitem label="Student's t"/>
-        <listitem label="Uniform"/>
-        <listitem label="Weibull"/>
+     <listitem label="&Beta.label;"/>
+        <listitem label="&Binomial.label;"/>
+        <listitem label="&Cauchy.label;"/>
+        <listitem label="&ChiSquare.label;"/>
+        <listitem label="&Exponential.label;"/>
+        <listitem label="&F.label;"/>
+        <listitem label="&Gamma.label;"/>
+        <listitem label="&Normal.label;"/>
+        <listitem label="&Poisson.label;"/>
+        <listitem label="&Studentst.label;"/>
+        <listitem label="&Uniform.label;"/>
+        <listitem label="&Weibull.label;"/>
       </listbox>
       <groupbox>
         <caption label="&parameters.label;"/>
