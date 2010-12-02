@@ -697,8 +697,6 @@ MAKEFILES_xulapp="
   toolkit/components/typeaheadfind/src/Makefile
   toolkit/components/viewconfig/Makefile
   toolkit/components/viewsource/Makefile
-  toolkit/wrappers/Makefile
-  toolkit/wrappers/src/Makefile
   toolkit/locales/Makefile
   toolkit/mozapps/Makefile
   toolkit/mozapps/downloads/Makefile
