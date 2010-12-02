@@ -102,7 +102,7 @@
 		  <label value="&keyCaption.label;" accesskey="&keyCaption.accesskey;" control="keysAutoCompleteBox"/>
       <textbox id="keysAutoCompleteBox" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
         completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys"
-        tooltiptext="Enter a key name for this bibliography item"
+        tooltiptext="&EnterKeyNameBigItem.tooltip;"
         onchange="keyTextboxChanged();" />
 		</hbox>
 		<spacer flex='1'/>

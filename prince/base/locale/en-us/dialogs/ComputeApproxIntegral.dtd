@@ -4,3 +4,15 @@
 <!ENTITY many.label        "How Many?">
 <!ENTITY parameters.label  "Parameters">
 
+<!ENTITY Formula.label  "Formula">
+<!ENTITY LeftBoxes.label  "Left Boxes">
+<!ENTITY Midpoint.label "Midpoint">
+<!ENTITY RightBoxes.label  "Right Boxes">
+<!ENTITY Simpson.label  "Simpson">
+<!ENTITY Trapezoid.label  "Trapezoid">
+
+<!ENTITY Subintervals.label "Subintervals">
+<!ENTITY LowerBound.label "Lower Bound">
+<!ENTITY UpperBound.label "Upper Bound">
+
+
