@@ -203,6 +203,14 @@ longQuotation {
   margin-right: 20pt;
 }
 
+epigraph {
+  display: block;
+  color: white;
+  background-color: black;
+  margin-left: 20pt;
+  margin-right: 20pt;
+}
+
 centered {
   display: block;
   margin: 10pt 10pt 5pt 5pt;
