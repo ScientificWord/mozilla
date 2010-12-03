@@ -378,3 +378,7 @@ bibitem[hasLabel="true"] {
 bibitem > biblabel+bodyText {
   display: inline;
 }
+
+shortTitle {
+  display: none;
+}
