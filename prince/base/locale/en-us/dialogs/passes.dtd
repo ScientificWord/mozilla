@@ -1,2 +1,5 @@
 
 <!ENTITY newnumpass "New number of passes">
+<!ENTITY doneMessage.label "Done!">
+<!ENTITY cancel.label "Cancel">
+<!ENTITY close.label "Close">
