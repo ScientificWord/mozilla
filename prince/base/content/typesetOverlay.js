@@ -47,7 +47,7 @@ function msiSetupMSITypesetMenuCommands(editorElement)
   commandTable.registerCommand("cmd_MSItypesetPDFCompileCmd",           msiTypesetPDFCompile);
   commandTable.registerCommand("cmd_MSItypesetGenSettingsCmd",          msiTypesetGenSettings);
   commandTable.registerCommand("cmd_MSItypesetExpertSettingsCmd",       msiTypesetExpertSettings);
-  commandTable.registerCommand("cmd_MSIrunBibTeXCmd",                   msiRunBibTeX);
+//  commandTable.registerCommand("cmd_MSIrunBibTeXCmd",                   msiRunBibTeX);
   commandTable.registerCommand("cmd_MSIrunMakeIndexCmd",                msiRunMakeIndex);
   commandTable.registerCommand("cmd_reviseBibTeXBibliographyCmd",       msiReviseBibTeXBibliography);
   commandTable.registerCommand("cmd_reviseManualBibItemCmd",            msiReviseManualBibItemCmd);
@@ -358,22 +358,22 @@ var msiTypesetExpertSettings =
   }
 };
 
-var msiRunBibTeX =
-{
-  isCommandEnabled: function(aCommand, dummy)
-  {
-    return true;
-  },
-
-  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
-  doCommandParams: function(aCommand, aParams, aRefCon) {},
-
-  doCommand: function(aCommand)
-  {
-    doRunBibTeX();
-  }
-};
-
+//var msiRunBibTeX =
+//{
+//  isCommandEnabled: function(aCommand, dummy)
+//  {
+//    return true;
+//  },
+//
+//  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+//  doCommandParams: function(aCommand, aParams, aRefCon) {},
+//
+//  doCommand: function(aCommand)
+//  {
+//    doRunBibTeX();
+//  }
+//};
+//
 var msiRunMakeIndex =
 {
   isCommandEnabled: function(aCommand, dummy)
@@ -841,11 +841,11 @@ function doExpertSettingsDlg()
   alert("Expert Settings Dialog not implemented!");
 }
 
-function doRunBibTeX()
-{
-  alert("Run BibTeX not implemented!");
-}
-
+//function doRunBibTeX()
+//{
+//  alert("Run BibTeX not implemented!");
+//}
+//
 function doRunMakeIndex()
 {
   alert("Run MakeIndex not implemented!");
