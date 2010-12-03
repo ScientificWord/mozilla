@@ -8899,3 +8899,38 @@ var msiWordCountCommand =
     }
   }
 };
+
+function doReviseStructureNode(editor, origData, reviseData)
+{
+  if (!origData.secTitleNode)
+  {
+    dump("In msiComposerCommands.js, doReviseStructureNode() called without a title node!\n");
+    return;
+  }
+  if (!origData.structNode)
+  {
+    dump("In msiComposerCommands.js, doReviseStructureNode() called without a structure node!\n");
+    return;
+  }
+  
+  msiEditorEnsureElementAttribute(origData.structNode, "subdoc", reviseData.subDocName, editor);
+  msiEditorEnsureElementAttribute(origData.structNode, "nonum", reviseData.noNumAttr, editor);
+  var shortTitleNode = origData.shortFormNode;
+  if (reviseData.newShortForm && reviseData.newShortForm.length)
+  {
+    if (!shortTitleNode)
+    {
+      shortTitleNode = editor.document.createElementNS(xhtmlns, "shortTitle");
+      editor.insertNode(shortTitleNode, origData.secTitleNode, 0);  //Short form always goes at the start
+    }
+    if (!origData.shortFormStr || (reviseData.newShortForm != origData.shortFormStr))
+    {
+//      dump("In doReviseStructureNode(), shortTitleNode reports [" + shortTitleNode.childNodes.length + "] children.\n");
+      for (var ix = shortTitleNode.childNodes.length; ix > 0 ; --ix)
+        editor.deleteNode(shortTitleNode.childNodes[ix-1]);
+      editor.insertHTMLWithContext(reviseData.newShortForm, "", "", "", null, shortTitleNode, 0, false);
+    }
+  }
+  else if (shortTitleNode)
+    parentEditor.deleteNode(shortTitleNode);
+}
