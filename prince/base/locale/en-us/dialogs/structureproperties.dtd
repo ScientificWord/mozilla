@@ -6,4 +6,6 @@
 <!ENTITY subdocCheckBox.tooltip "">
 <!ENTITY subdocFileName.label "File name for subdocument">
 <!ENTITY numberedCheckbox.label "Number this ##">
+<!ENTITY sectionShortHeader.label "Short title">
+<!ENTITY sectionShortHeader.accesskey "S">
 
