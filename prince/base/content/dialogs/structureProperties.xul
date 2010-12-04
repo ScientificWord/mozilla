@@ -67,8 +67,8 @@
 
   <tabbox id="tabboxid" flex="1">
     <tabs>
-      <tab label="Format"/>
-      <tab label="Advanced"/>    
+      <tab label="&format.label;"/>
+      <tab label="&advanced.label;"/>    
     </tabs>
     <tabpanels flex="1">
       <tabpanel>

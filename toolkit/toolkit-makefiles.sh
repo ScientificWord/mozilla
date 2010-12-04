@@ -651,6 +651,8 @@ MAKEFILES_xulapp="
   toolkit/components/autosub/Makefile
   toolkit/components/autosub/public/Makefile
   toolkit/components/autosub/src/Makefile
+  toolkit/components/Compute/Makefile
+  toolkit/components/Compute/public/Makefile  
   toolkit/components/scriptrunner/Makefile
   toolkit/components/keymap/Makefile
   toolkit/components/keymap/public/Makefile

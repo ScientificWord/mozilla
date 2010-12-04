@@ -30,7 +30,7 @@
   </groupbox>
   <hbox align="center">
     <broadcaster id="inPreamble" disabled="true"/>
-    <checkbox id = "enc" label="Encapsulated" checked="false"/>
+    <checkbox id = "enc" label="&Encapsulated.label;" checked="false"/>
     <checkbox id = "pre" label="Put in preamble" checked="false" oncommand="putInPreamble()"/>
     <textbox id="ord" type="number" value="100" style="width:5em;" observes="inPreamble"/><label id="ordlabel" observes="inPreamble" value="Ordinal"/> 
   </hbox>

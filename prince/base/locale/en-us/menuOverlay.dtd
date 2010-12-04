@@ -31,7 +31,12 @@
 <!ENTITY docInfo.accesskey "D">
 <!ENTITY docStyle.label "Style...">
 <!ENTITY docStyle.accesskey "S">
-
+<!ENTITY importTeXCmd.label  "Import TeX...">
+<!ENTITY importTeX.accesskey  "I">
+<!ENTITY exportTeXCmd.label  "Export TeX...">
+<!ENTITY exportTeX.accesskey  "E">
+<!ENTITY exporttowebCmd.label  "Export to Web">
+<!ENTITY exporttoweb.accesskey  "W">
 <!ENTITY reloadCmd.key "R">
 <!ENTITY reloadCmd.label "Reload">
 
@@ -41,7 +46,7 @@
 <!ENTITY publishas.accesskey "b">
 <!ENTITY exportToTextCmd.label "Export to Text...">
 <!ENTITY fileexporttotext.accesskey "T">
-<!ENTITY saveAndChangeEncodingCmd.label "Save And Change Character Encoding">
+<!ENTITY saveAndChangeEncodingCmd.label "Save and Change Character Encoding">
 <!ENTITY filesaveandchangeencoding.accesskey "h">
 <!ENTITY previewCmd.label "Browse Page">
 <!ENTITY filepreview.accesskey "w">
@@ -89,6 +94,11 @@
 <!ENTITY pasteNoFormattingCmd.accesskey			"n"> 
 <!ENTITY pasteNoFormattingCmd.label			"Paste (no formatting)">  
 <!ENTITY pasteNoFormattingCmd.key				"q">  
+
+<!--JLF Test. These publishSettings entities are copied over from editor\ui\locales\en-US\chrome\composer\editorOverlay.dtd -->
+<!ENTITY publishSettings.label "Publishing Site Settings...">
+<!ENTITY publishSettings.accesskey "b">
+
 <!ENTITY deleteCmd.label					"Delete">  
 <!ENTITY deleteCmd.key						"D">  
 <!ENTITY deleteCmd.accesskey				"d"> 
@@ -102,7 +112,7 @@
 <!ENTITY viewMenu.label "View" >
 <!ENTITY viewMenu.accesskey "V" >
 <!ENTITY viewStatusBar.accesskey "S" >
-<!ENTITY viewStatusBar.label "Status bar" >
+<!ENTITY viewStatusBar.label "Status Bar" >
 <!ENTITY viewShowHideMenu.label "Show/Hide" >
 <!ENTITY viewShowHideMenu.accesskey "S" >
 <!ENTITY viewTeXLog.accesskey "L" >
@@ -111,13 +121,13 @@
 <!ENTITY viewTeXFile.label "TeX File" >
 <!ENTITY viewFootnotes.label "Footnotes" >
 <!ENTITY viewFootnotes.accesskey "F" >
-<!ENTITY viewOtherNotes.label "Other notes" >
+<!ENTITY viewOtherNotes.label "Other Notes" >
 <!ENTITY viewOtherNotes.accesskey "O" >
 <!ENTITY viewInvisibles.label "Invisibles" >
 <!ENTITY viewInvisibles.accesskey "I" >
-<!ENTITY viewHelperLines.label "Helper lines" >
+<!ENTITY viewHelperLines.label "Helper Lines" >
 <!ENTITY viewHelperLines.accesskey "H" >
-<!ENTITY viewInputBoxes.label "Input boxes" >
+<!ENTITY viewInputBoxes.label "Input Boxes" >
 <!ENTITY viewInputBoxes.accesskey "p" >
 <!ENTITY viewIndexEntries.label "Index Entries" >
 <!ENTITY viewIndexEntries.accesskey "x" >
@@ -151,7 +161,7 @@
 <!ENTITY pasteTable.accesskey "a">
 <!ENTITY pasteLinkCmd.label "Link">
 <!ENTITY editpastelink.accesskey "l">
-<!ENTITY pasteAsQuotationCmd.label "Paste As Quotation">
+<!ENTITY pasteAsQuotationCmd.label "Paste as Quotation">
 <!ENTITY editpastequotation.accesskey "q">
 <!ENTITY editpastequotation.keybinding "v">
 <!ENTITY editStripQuotesCmd.label "Strip Quotes">
@@ -167,7 +177,7 @@
 <!ENTITY editfindprev.accesskey "v">
 <!ENTITY editfindprev.keybinding "g">
 <!ENTITY editfindprev.acceltext "Shift+F3">
-<!ENTITY checkSpellingCmd.label "Check Spelling">
+<!ENTITY checkSpellingCmd.label "Check Spelling...">
 <!ENTITY validateCmd.label "Validate HTML">
 <!ENTITY validate.accesskey "v">
 <!ENTITY checkLinksCmd.label "Check Links">
@@ -288,7 +298,7 @@
 <!ENTITY delete.accesskey "d">
 <!ENTITY clearCmd.label "Clear">
 <!ENTITY clear.accesskey "l">
-<!ENTITY countWords.label "Count Words">
+<!ENTITY countWords.label "Count Words...">
 <!ENTITY countWords.accesskey "w">
 <!ENTITY selectAllCmd.label "Select All">
 <!ENTITY selectall.accesskey "a">
@@ -315,7 +325,7 @@
 <!ENTITY localfontmenu.accesskey "f">
 
 <!-- Font Size SubMenu -->
-<!ENTITY FontSizeSelect.tooltip "Choose a font size">
+<!ENTITY FontSizeSelect.tooltip "Choose a Font Size">
 <!ENTITY decreaseFontSize.label "Smaller">
 <!ENTITY decreasefontsize.accesskey "r">
 <!ENTITY decreaseFontSize.keybinding "-">
@@ -430,7 +440,7 @@
 <!ENTITY listProps.label "List Properties...">
 <!ENTITY listprops.accesskey "l">
 
-<!ENTITY ParagraphSelect.tooltip "Choose a paragraph format">
+<!ENTITY ParagraphSelect.tooltip "Choose a Paragraph Format">
 <!-- Shared in Paragraph, and Toolbar menulist -->
 <!ENTITY bodyTextCmd.label "Body Text">
 <!ENTITY bodytext.accesskey "T">
@@ -482,7 +492,7 @@
 <!ENTITY decreaseindent.accesskey "D">
 <!ENTITY decreaseindentkb "-">
 
-<!ENTITY grid.label "Positioning grid">
+<!ENTITY grid.label "Positioning Grid">
 <!ENTITY grid.accesskey "t">
 
 <!ENTITY pageProperties.label "Page Title and Properties...">
@@ -557,7 +567,7 @@
 <!ENTITY toolbrowser.accesskey "b">
 <!ENTITY toolplaineditor.accesskey "p">
 <!ENTITY toolsetfocus.accesskey "f">
-<!ENTITY venkman.label "JavaScript debugger">
+<!ENTITY venkman.label "JavaScript Debugger">
 <!ENTITY venkman.accesskey "d">
 <!ENTITY autoSubstituteDlg.label "Auto Substitution...">
 <!ENTITY autoSubstituteDlg.accesskey "A">
@@ -602,7 +612,7 @@
 <!ENTITY debugMenu.label "Debug">
 <!ENTITY newEditorTestPage.label "Prince with Test Page">
 <!ENTITY textEditorCmd.label "Plaintext Editor">
-<!ENTITY outputTextCmd.label "Output plain text">
+<!ENTITY outputTextCmd.label "Output Plain Text">
 <!ENTITY outputHTMLCmd.label "Output XHTML">
 <!ENTITY insertTextCmd.label "Insert Text">
 <!ENTITY testSelectionCmd.label "Dump Selection">
