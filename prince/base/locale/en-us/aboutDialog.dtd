@@ -1,3 +1,5 @@
-<!ENTITY aboutDialog.title      "About Prince">
+<!ENTITY aboutDialog.title      "About Prince!">
 <!ENTITY copyright              "Copyright and contributor information">
 <!ENTITY copyrightLink          "http://www.mackichan.com">
+<!ENTITY licenses "Licenses">
+<!ENTITY credits  "Credits">

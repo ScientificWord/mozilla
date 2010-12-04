@@ -46,7 +46,7 @@
           <hbox>
             <textbox id="min" style="width: 3em"/>
             <spacer flex="1"/>
-            <description>to</description>
+            <description>&to.label;</description>
             <spacer flex="1"/>
             <textbox id="max" style="width: 3em"/>
           </hbox>

@@ -20,6 +20,7 @@
 #include "../../build/nsToolkitCompsCID.h"
 #include "nsQuickSort.h"
 
+
 /* Implementation file */
 NS_IMPL_ISUPPORTS1(msiAutosub, msiIAutosub)
 
@@ -493,14 +494,3 @@ msiAutosub::GetInstance()
   NS_ADDREF(sMsiAutosub);   // addref the return result
   return sMsiAutosub;
 }
-
-NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiAutosub, msiAutosub::GetInstance)
-
-static const nsModuleComponentInfo components[] =
-{
-  { "Autosubstitute",
-    MSI_AUTOSUBSTITUTE_CID ,
-    MSI_AUTOSUBSTITUTE_CONTRACTID,
-    msiAutosubConstructor }
-};
-NS_IMPL_NSGETMODULE(tkautosubModule, components)

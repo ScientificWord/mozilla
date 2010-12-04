@@ -548,7 +548,7 @@ body {
 
 /* selection is possible in paragraph and front matter tags */
 
-bodyText, rtlBodyText, p, bodyMath, sectiontitle, shortQuote, longQuotation, title, line, 
+bodyText, rtlBodyText, p, bodyMath, sectiontitle, shortQuote, longQuotation, epigraph, title, line, 
   dialogbase, bulletListItem, numberedListItem, descriptionListItem, verbatim,
   abstract, address, author, date, makelof, makelot, maketitle, maketoc, title {
   -moz-user-select: text;
