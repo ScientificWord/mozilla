@@ -571,6 +571,8 @@
 <!ENTITY venkman.accesskey "d">
 <!ENTITY autoSubstituteDlg.label "Auto Substitution...">
 <!ENTITY autoSubstituteDlg.accesskey "A">
+<!ENTITY Options.label "Preferences...">
+<!ENTITY Options.accesskey "P">
 
 <!-- Go menu -->
 <!ENTITY gomenu.label "Go">
