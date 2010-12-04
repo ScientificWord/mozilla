@@ -29,7 +29,7 @@
   <hbox id="outer-box" flex="1">
     <vbox>
           <hbox>
-            <description>Columns</description>
+            <description>&Columns.label;</description>
             <spacer flex="1"/>
             <textbox id="ncols" style="width: 3em"/>
           </hbox>

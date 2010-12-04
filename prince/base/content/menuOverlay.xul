@@ -30,10 +30,10 @@
                   key="openeditorkb"
                   observes="cmd_open" 
                   label="&openFileCmd.label;"/>
-      <menuitem observes="cmd_openTeX" label="Import TeX ..."/>
-      <menuitem observes="cmd_exportTeX" label="Export TeX ..."/>
-      <menuitem observes="cmd_exportToWeb" label="Export to Web ..."/>
-      <menu id="menu_RecentFiles" accesskey="&filerecentmenu.accesskey;" label="&fileRecentMenu.label;"
+      <menuitem observes="cmd_openTeX" label="&importTeXCmd.label;" accesskey="&importTeX.accesskey;"/>
+      <menuitem observes="cmd_exportTeX" label="&exportTeXCmd.label;" accesskey="&exportTeX.accesskey;"/>
+      <menuitem observes="cmd_exportToWeb" label="&exporttowebCmd.label;" accesskey="&exporttoweb.accesskey;"/>
+     <menu id="menu_RecentFiles" accesskey="&filerecentmenu.accesskey;" label="&fileRecentMenu.label;"
             onpopupshowing="BuildRecentFilesMenu();">
         <menupopup id="menupopup_RecentFiles" oncommand="msiEditPage(event.target.getAttribute('value'), window, false);"/>
           <!-- menuitems appended at runtime -->
@@ -380,7 +380,7 @@
                 oncommand="start_venkman();"/>
       <menuitem id="menu_inspector" 
                 label="DOM Inspector" 
-                accesskey="amp_inspectorTaskCmd.accesskey;" 
+                accesskey="&inspectorTaskCmd.accesskey;" 
                 command="Tasks:Inspector"/>
       <menuitem label="Extensions" 
                 id="menu_extensions" 
@@ -743,7 +743,7 @@
     <command id="cmd_validate"      label="&validateCmd.label;" accesskey="&validate.accesskey;" oncommand="msiGoDoCommand('cmd_validate')"/>
     <command id="cmd_checkLinks"    oncommand="msiGoDoCommand('cmd_checkLinks')"/>
     <command id="cmd_pasteQuote"    oncommand="msiGoDoCommand('cmd_pasteQuote')" label="&pasteAsQuotationCmd.label;"/>
-    <command id="cmd_publishSettings" label="_amp_publishSettings.label;" accesskey="_amp_publishSettings.accesskey;" oncommand="msiGoDoCommand('cmd_publishSettings')"/>
+    <command id="cmd_publishSettings" label="&publishSettings.label;" accesskey="&publishSettings.accesskey;" oncommand="msiGoDoCommand('cmd_publishSettings')"/>
   </commandset>
 
   <!-- style related commands that update on creation, and on selection change -->

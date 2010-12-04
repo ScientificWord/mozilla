@@ -48,12 +48,13 @@ include $(DEPTH)/config/autoconf.mk
 ifdef MOZ_ENABLE_XREMOTE
 DIRS += remote
 endif
+ifdef NOT_DEFINED
 DIRS += \
         urlformatter \
         contentprefs \
         microformats \
         $(NULL)
-
+endif
 
 # These component dirs are built only for XUL apps
 
@@ -100,7 +101,6 @@ DIRS += \
 	autocomplete \
 	autosub \
 	Compute \
-	Wrappers \
 	keymap \
 	scriptrunner \
 	arrowstate \
@@ -130,7 +130,7 @@ DIRS +=	downloads
 endif
 endif # MOZ_SUITE
 
-ifdef MOZ_URL_CLASSIFIER
+ifdef NOT_DEFINED_MOZ_URL_CLASSIFIER
 DIRS += url-classifier
 endif
 

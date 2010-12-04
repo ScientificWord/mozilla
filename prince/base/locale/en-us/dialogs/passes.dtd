@@ -1,5 +1,6 @@
-
+<!ENTITY LaTeXPasses  "LaTeX Passes">
 <!ENTITY newnumpass "New number of passes">
+<!ENTITY passes.accesskey "n">
 <!ENTITY doneMessage.label "Done!">
 <!ENTITY cancel.label "Cancel">
 <!ENTITY close.label "Close">

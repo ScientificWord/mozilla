@@ -45,6 +45,7 @@
 <!ENTITY advancedButton.accesskey "v">
 <!ENTITY keyForLine.label "Key for this Line">
 <!ENTITY keyForLine.accesskey "e">
+<!ENTITY EnterNewKeyName.tooltip  "Enter a new key name"
 <!ENTITY numberingGroupbox.label "Number">
 <!ENTITY numberingNone.label "None">
 <!ENTITY numberingNone.accesskey "N">

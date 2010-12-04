@@ -135,11 +135,10 @@ tier_gecko_dirs	+= \
 		content \
 		toolkit/components/scriptrunner \
 		toolkit/components/autocomplete/public \
-		toolkit/components/autosub/public \
-		toolkit/components/arrowstate/public \
-		toolkit/components/Compute/public \
-	    toolkit/components/Wrappers/public \
 		toolkit/components/keymap/public \
+		toolkit/components/Compute/public \
+		toolkit/components/arrowstate/public \
+		toolkit/components/autosub/public \
 		editor \
 		layout \
 		docshell \
@@ -210,6 +209,7 @@ tier_toolkit_dirs	+= \
 	xpfe \
 	toolkit/components \
 	$(NULL)
+#	toolkit/wrappers \
 
 ifndef MOZ_XUL_APP
 tier_toolkit_dirs += themes
