@@ -30,7 +30,7 @@
   <spacer/>
   <radiogroup id="keyresult">
   <groupbox>
-    <caption label="Add new function key assignments"/>
+    <caption label="&AddNewFunctionKeyAssignment.label;"/>
     <label>&newKey.label;</label>
     <hbox>
       <vbox>
