@@ -5,6 +5,12 @@
 
 <?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
+<!--Following needed by any dialog using commandsets defined there; generally by any dialog containing an editor-->
+<?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/ComputeOverlay.xul"?>
+<!-- If an editor control is to support context menus, also need: -->
+<?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/structureproperties.dtd">
 
@@ -17,16 +23,52 @@
     ondialogaccept="return onAccept();" ondialogcancel="return onCancel();"
     persist="screenX screenY width height">
 
+  <!-- Methods common to all editor dialogs -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
+  <!-- Specific to this dialog -->
+  <script type="application/x-javascript" src="chrome://prince/content/structureproperties.js"/>
+  <!-- Needed by any dialog containing an editor -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js" />
-  <script type="application/x-javascript" src="chrome://prince/content/structureproperties.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
+  <!-- script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/ -->
+  <!-- script type="application/x-javascript" src="chrome://prince/content/ComputeOverlay.js"/ -->
+  <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
+  <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
+  <!-- If the editor is to support context menus, also need the following, and the commandset below: -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
+  <popupset id="msiEditorContentContextSet"/>
 
- 
-  <tabbox id="tabboxid" flex="1">
+  <commandset id="tasksCommands">
+    <commandset id="globalEditMenuItems"/>
+    <commandset id="selectEditMenuItems"/>
+    <commandset id="undoEditMenuItems"/>
+    <commandset id="clipboardEditMenuItems"/>
+    
+    <commandset id="commonEditorMenuItems"/>
+    <commandset id="composerMenuItems"/>
+    <commandset id="composerEditMenuItems"/>
+    <commandset id="composerStyleMenuItems"/>
+    <commandset id="composerTableMenuItems"/>
+    <commandset id="composerListMenuItems"/>
+    <command id="cmd_MSIComputeEval" oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
+    <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
+  </commandset>
+
+  <commandset id="MSImathMenuCommands"/>
+  <keyset id="editorKeys">
+    <keyset id="MSIKeySet"/>
+    <keyset id="MSIEditorKeys"/>
+  </keyset>
+
+   <tabbox id="tabboxid" flex="1">
     <tabs>
       <tab label="&format.label;"/>
-      <tab label="&advanced.label"/>    
+      <tab label="&advanced.label;"/>    
     </tabs>
     <tabpanels flex="1">
       <tabpanel>
@@ -41,6 +83,12 @@
         </vbox>        
       </tabpanel>        
       <tabpanel>
+	      <groupbox>
+	        <label id="sectionShortHeader" control="sectionShortEdit" accesskey="&sectionShortHeader.accesskey;">
+            &sectionShortHeader.label;
+          </label>
+	        <editor editortype="html" type="content" width="300" height="60" context="msiEditorContentContext" id="sectionShortEdit"/>
+	      </groupbox>
       </tabpanel>    
     </tabpanels>
   </tabbox>

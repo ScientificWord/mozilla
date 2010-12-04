@@ -972,6 +972,8 @@ arctan<uID1.3.3>1
 arcsec<uID1.3.4>1
 arccot<uID1.3.5>1
 arccsc<uID1.3.6>1
+arcsinh<uID1.3.7>1
+arccosh<uID1.3.8>1
 log<uID1.10.1>1
 ln<uID1.10.2>1
 <END_CONTEXT_TRIGARGFUNCS>
@@ -1000,6 +1002,9 @@ grad<uID1.9.2>1
 curl<uID1.9.3>1
 deg<uID1.9.4>1
 dim<uID1.9.5>1
+exp<uID1.9.6>1
+assume<uID1.9.7>1
+
 
 Dirac<uID1.10.1>1
 Heaviside<uID1.10.2>1

@@ -37,7 +37,7 @@
        max="200" min="5" increment="1" tooltip="&leading.tooltip;"/>
     </vbox>
     <vbox align="center">
-     <label value="&units.label;" accesskey="units.label"/>
+     <label value="&units.label;" accesskey="&units.label;"/>
      <menulist id="otfont.units">
        <menupopup>
          <menuitem id="otfont.pt" label="&pt.menuitem;" value="pt"/>

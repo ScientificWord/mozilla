@@ -181,22 +181,22 @@ should not be done under some conditions -->
 
 <xsl:template match="html:sectiontitle">
 <xsl:if test="name(..)='chapter'">
-\chapter<xsl:if test="../@nonum='true'">*</xsl:if>{<xsl:apply-templates/>}
+\chapter<xsl:if test="../@nonum='true'">*</xsl:if><xsl:if test="./*[name()='shortTitle']">[<xsl:apply-templates select="*[name()='shortTitle']//*"/>]</xsl:if>{<xsl:apply-templates select="*[name()!='shortTitle']"/>}
 </xsl:if>
 <xsl:if test="name(..)='section'">
-\section<xsl:if test="../@nonum='true'">*</xsl:if>{<xsl:apply-templates/>}
+\section<xsl:if test="../@nonum='true'">*</xsl:if><xsl:if test="./*[name()='shortTitle']">[<xsl:apply-templates select="*[name()='shortTitle']//*"/>]</xsl:if>{<xsl:apply-templates select="*[name()!='shortTitle']"/>}
 </xsl:if>
 <xsl:if test="name(..)='subsection'">
-\subsection<xsl:if test="../@nonum='true'">*</xsl:if>{<xsl:apply-templates/>}
+\subsection<xsl:if test="../@nonum='true'">*</xsl:if><xsl:if test="./*[name()='shortTitle']">[<xsl:apply-templates select="*[name()='shortTitle']//*"/>]</xsl:if>{<xsl:apply-templates select="*[name()!='shortTitle']"/>}
 </xsl:if>
 <xsl:if test="name(..)='subsubsection'">
-\subsubsection<xsl:if test="../@nonum='true'">*</xsl:if>{<xsl:apply-templates/>}
+\subsubsection<xsl:if test="../@nonum='true'">*</xsl:if><xsl:if test="./*[name()='shortTitle']">[<xsl:apply-templates select="*[name()='shortTitle']//*"/>]</xsl:if>{<xsl:apply-templates select="*[name()!='shortTitle']"/>}
 </xsl:if>
 <xsl:if test="name(..)='paragraph'">
-\paragraph<xsl:if test="../@nonum='true'">*</xsl:if>{<xsl:apply-templates/>}
+\paragraph<xsl:if test="../@nonum='true'">*</xsl:if><xsl:if test="./*[name()='shortTitle']">[<xsl:apply-templates select="*[name()='shortTitle']//*"/>]</xsl:if>{<xsl:apply-templates select="*[name()!='shortTitle']"/>}
 </xsl:if>
 <xsl:if test="name(..)='subparagraph'">
-\subparagraph<xsl:if test="../@nonum='true'">*</xsl:if>{<xsl:apply-templates/>}
+\subparagraph<xsl:if test="../@nonum='true'">*</xsl:if><xsl:if test="./*[name()='shortTitle']">[<xsl:apply-templates select="*[name()='shortTitle']//*"/>]</xsl:if>{<xsl:apply-templates select="*[name()!='shortTitle']"/>}
 </xsl:if>
 </xsl:template>
 
