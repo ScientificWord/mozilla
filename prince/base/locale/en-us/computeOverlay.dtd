@@ -185,7 +185,7 @@
 <!ENTITY MSIComputeCholeskyDecompCmd.accesskey "C">
 <!ENTITY MSIComputeColBasisCmd.label           "Column Basis">
 <!ENTITY MSIComputeColBasisCmd.accesskey       "C">
-<!ENTITY MSIComputeMatrixConcatCmd.label       "Concat">
+<!ENTITY MSIComputeMatrixConcatCmd.label       "Concatenate">
 <!ENTITY MSIComputeMatrixConcatCmd.accesskey   "C">
 <!ENTITY MSIComputeConditionNumCmd.label       "Condition Number">
 <!ENTITY MSIComputeConditionNumCmd.accesskey   "C">

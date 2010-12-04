@@ -57,9 +57,9 @@
     <spacer flex="1"/>
     <hbox>
       <radiogroup id="rulealign" label="Rule alignment">
-        <radio id="left" label="Left" selected = "true" value="l" accesskey="L" />
-        <radio id="center" label="Center" value="c" accesskey="C" />
-        <radio id="right" label="Right" value="r" accesskey="R" />
+        <radio id="left" label="&left.label;" selected = "true" value="l" accesskey="&left.accesskey;" />
+        <radio id="center" label="&center.label;" value="c" accesskey="&center.accesskey;" />
+        <radio id="right" label="&right.label;" value="r" accesskey="&right.accesskey;" />
       </radiogroup>
     </hbox>
     <hbox>

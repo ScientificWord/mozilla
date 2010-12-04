@@ -1,0 +1,93 @@
+
+# Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved.
+
+DEPTH		= ../../..
+topsrcdir	= @top_srcdir@
+srcdir		= @srcdir@
+VPATH		= @srcdir@
+
+include $(DEPTH)/config/autoconf.mk
+
+MODULE		      = wrappers
+MODULE_NAME     = wrappers
+LIBRARY_NAME	  = wrappers
+EXPORT_LIBRARY  = 1
+SHORT_LIBNAME	  = wrappers
+IS_COMPONENT    = 1
+
+
+REQUIRES = \
+  compute \
+  string \
+  xpcom \
+  editor \
+  $(NULL)
+
+CPPSRCS = \
+  msiMuPADEngineWrapper.cpp \
+  $(NULL)
+#  msiMuPADEngineWrapperModule.cpp \
+ 
+
+
+#TESTCPPSRCS	= msiTestSample2.cpp
+#
+#CPPSRCS += $(TESTCPPSRCS)
+#
+#SIMPLE_PROGRAMS	= $(TESTCPPSRCS:.cpp=$(BIN_SUFFIX))
+
+include $(topsrcdir)/config/config.mk
+
+# separate libraries linked in.
+SHARED_LIBRARY_LIBS += \
+	$(DIST)/../../xulrunner/toolkit/components/Compute/computelib/$(LIB_PREFIX)computelib_s.$(LIB_SUFFIX) \
+	$(DIST)/../../xulrunner/toolkit/components/Compute/Engines/$(LIB_PREFIX)enginelib_s.$(LIB_SUFFIX) \
+	$(DIST)/../../xulrunner/toolkit/components/Compute/libtci/$(LIB_PREFIX)libtci_s.$(LIB_SUFFIX) \
+	$(DIST)/../../xulrunner/toolkit/components/Compute/Engines/MuPAD/$(LIB_PREFIX)mupwrapperlib_s.$(LIB_SUFFIX) \
+  $(DIST)/../../xulrunner/xpcom/string/src/$(LIB_PREFIX)string_s.$(LIB_SUFFIX) \
+	$(NULL)
+
+ifeq ($(OS_ARCH),WINNT)
+SHARED_LIBRARY_LIBS += \
+	$(topsrcdir)/toolkit/components/Compute/MuPAD/win32/$(LIB_PREFIX)mupkernel.$(LIB_SUFFIX) \
+	$(NULL)
+endif
+
+ifeq ($(OS_ARCH),Linux)
+SHARED_LIBRARY_LIBS += \
+        $(srcdir)/../../Compute/MuPAD/linux/$(LIB_PREFIX)mupudskernel.$(LIB_SUFFIX) \
+	$(srcdir)/../../Compute/MuPAD/linux/$(LIB_PREFIX)libstream.$(LIB_SUFFIX) \
+	$(srcdir)/../../Compute/MuPAD/linux/$(LIB_PREFIX)mut.$(LIB_SUFFIX) \
+	$(srcdir)/../../Compute/MuPAD/linux/$(LIB_PREFIX)expat.$(LIB_SUFFIX) \
+	$(srcdir)/../../Compute/MuPAD/linux/$(LIB_PREFIX)z.$(LIB_SUFFIX) \
+	$(NULL)
+endif
+ifeq ($(OS_ARCH),Darwin)
+SHARED_LIBRARY_LIBS += \
+	$(srcdir)/../../Compute/MuPAD/Darwin/$(LIB_PREFIX)mupudskernel.$(LIB_SUFFIX) \
+	$(srcdir)/../../Compute/MuPAD/Darwin/$(LIB_PREFIX)libstream.$(LIB_SUFFIX) \
+	$(srcdir)/../../Compute/MuPAD/Darwin/$(LIB_PREFIX)mut.$(LIB_SUFFIX) \
+	$(srcdir)/../../Compute/MuPAD/Darwin/$(LIB_PREFIX)expat.$(LIB_SUFFIX) \
+	$(NULL)
+endif
+
+include $(topsrcdir)/config/rules.mk
+
+LOCAL_INCLUDES =	-I$(topsrcdir)/toolkit/components/Compute/Engines \
+	-I$(topsrcdir)/toolkit/components/Compute/Engines/MuPAD \
+	-I$(topsrcdir)/toolkit/components/Compute/public \
+	-I$(topsrcdir)/toolkit/components/Compute/computelib \
+	-I$(topsrcdir)/toolkit/components/Compute/libtci \
+	-I$(topsrcdir)/toolkit/components/Compute/Engines/MuPAD \
+  $(NULL)
+
+
+EXTRA_DSO_LDOPTS += \
+	$(MOZ_UNICHARUTIL_LIBS) \
+	$(MOZ_COMPONENT_LIBS) \
+  $(DIST)/../../xulrunner/dist/lib/$(LIB_PREFIX)xpcomglue_s.$(LIB_SUFFIX) \
+	$(NULL)
+                 
+
+#	$(XPCOM_FROZEN_LDOPTS) \
+# $(NSPR_LIBS) \

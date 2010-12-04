@@ -8,7 +8,7 @@
 <?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
 <?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/msiFrameOverlay.xul"?>
-<!DOCTYPE dialog SYSTEM "chrome://prince/locale/Frame.dtd" >
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/Frame.dtd">
 <dialog id="FrameDlg"
   title="&windowTitle.label;"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -29,8 +29,8 @@
   <spacer/>
   <tabbox id="frametabbox">
     <tabs flex="1">
-      <tab label="Size &amp; Placement"/>
-      <tab id="msiFrameTab"/>
+    <tab label="&SizePlacement.label;"/>
+     <tab id="msiFrameTab"/>
     </tabs>
     <tabpanels>
       <tabpanel orient="vertical">

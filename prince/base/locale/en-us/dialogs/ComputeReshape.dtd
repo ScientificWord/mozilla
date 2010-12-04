@@ -1,3 +1,4 @@
 <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
 
 <!ENTITY windowTitle.label "Matrix Reshape">
+<!ENTITY Columns.label  "Columns">

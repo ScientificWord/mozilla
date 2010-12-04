@@ -56,5 +56,5 @@ NSGetModule(nsIComponentManager *servMgr,
 #endif
 
 
-NS_IMPL_NSGETMODULE(msiIEngineWrapper, components)
+NS_IMPL_NSGETMODULE(msiWrappersModule, components)
 
