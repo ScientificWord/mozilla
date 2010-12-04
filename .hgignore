@@ -1,4 +1,6 @@
 glob:.mozconfig.*
+glob:*/.DS_Store
+glob:.DS_Store
 glob:NONE
 glob:*.bak
 glob:security/manager/.nss.checkout
