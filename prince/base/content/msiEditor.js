@@ -15,7 +15,7 @@ function aColorObj(editorElement)
   this.Type = "";
   this.SelectedType = "";
   this.NoDefault = false;
-  this.Cancel = false;
+  this.Cancel  = false;
   this.HighlightColor = "";
   this.BackgroundColor = "";
   this.PageColor = "";
@@ -880,10 +880,10 @@ function msiEditorDocumentObserver(editorElement)
           // initializations will not do anything
           var keymapper;
           try {
-            keymapper =  Components.classes["@mackichan.com/keymap/keymap_service;1"]
-                                 .createInstance(Components.interfaces.msiIKeyMap);
-            keymapper.loadKeyMapFile();
-            keymapper.saveKeyMaps();
+//            keymapper =  Components.classes["@mackichan.com/keymap/keymap_service;1"]
+//                                 .createInstance(Components.interfaces.msiIKeyMap);
+//            keymapper.loadKeyMapFile();
+//            keymapper.saveKeyMaps();
           }
           catch(e) { dump("Failed to load keytables.xml -- "+e); }
         }
@@ -1179,6 +1179,7 @@ function EditorStartupForEditorElement(editorElement)
   }
 
   msiDumpWithID("Just before loading Shell URL in EditorStartupForEditorElement, for editorElement [@]; docShell is currently [" + editorElement.docShell + "].\n", editorElement);
+  debugger;
   msiLoadInitialDocument(editorElement, is_topLevel);
 }
 
@@ -5166,22 +5167,16 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
 
       case "fontcolor":
         objStr = name;
-        theMenuStr = GetString("TagPropertiesMenuLabel");
-        theMenuStr = theMenuStr.replace(/%tagname%/, GetString("fontcolor"));
         scriptStr = "openFontColorDialog('fontcolor', event.target.refElement);";
       break;
       
       case "fontsize":
         objStr = name;
-        theMenuStr = GetString("TagPropertiesMenuLabel");
-        theMenuStr = theMenuStr.replace(/%tagname%/, GetString("fontsize"));
         scriptStr = "openFontSizeDialog('fontsize', event.target.refElement);";
       break;
 
       case "note":
         objStr = name;
-        theMenuStr = GetString("TagPropertiesMenuLabel");
-        theMenuStr = theMenuStr.replace(/%tagname%/, GetString("note"));
         scriptStr = "msiNote(event.target.refElement, null);";
       break;
 
@@ -5193,16 +5188,15 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
           break;
           case "paratag":
             objStr = name;
-            theMenuStr = GetString("TagPropertiesMenuLabel");
-            theMenuStr = theMenuStr.replace(/%tagname%/, name);
             scriptStr = "openParaTagDialog('"+ name + "',event.target.refElement);";
           break;
           case "structtag":
             objStr = name;
-            theMenuStr = GetString("TagPropertiesMenuLabel");
-            theMenuStr = theMenuStr.replace(/%tagname%/, name);
+          break;
+          case "structtag":
+            objStr = name;
             scriptStr = "openStructureTagDialog('"+ name + "',event.target.refElement);";
-            break;
+          break;
     // currently no dialogs for list tags, environments, and front matter.
     //      case "listtag":
     //        break;
