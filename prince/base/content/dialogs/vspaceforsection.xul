@@ -31,7 +31,7 @@
 
   <vbox>
 	<vbox align="center">
-	  <label>Units are: </label><label id="vspaceUnits" value=""/>
+	  <label>&UnitsAre.label;</label><label id="vspaceUnits" value=""/>
 	</vbox>
 	<vbox>
 	<label value="&spaceHeight.label;" accesskey="&spaceHeight.accesskey;"/>

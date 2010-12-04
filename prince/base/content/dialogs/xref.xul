@@ -1,8 +1,11 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://global/skin/textbox.css" type="text/css"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/xrefDialog.dtd">
+
 <dialog xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-    title="Cross reference" 
+    title="&xrefDialog.title;" 
     buttons="accept,cancel"
     buttonlabelcancel="Cancel" buttonlabelaccept="OK"
     onload = "Startup();"
@@ -12,10 +15,12 @@
     persist="screenX screenY width height">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/xref.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogComman.js"/>
 
-<label control="keylist" accesskey="K" value="Key"/>
+  <spacer id="location" offsetY="30" persist="offsetX offsetY"/>
+
+  <label control="keylist" accesskey="&keyList.accesskey;" value="&keyList.label;" />
   <textbox id="keylist" timeout="50" type="autocomplete" minresultsforpopup="1" enablehistory="true" 
     forcecomplete="true"
     completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="key"
@@ -24,12 +29,12 @@
     onfocus="this.select()"
     ontextentered="" />
 
-<spacer flex="1"/>
-<groupbox>
-  <caption label="Print"/>
-  <radiogroup id="reftype" selectedItem="0" orient="horizontal">
-    <radio label="Page number" />
-    <radio label="Object counter" />
-  </radiogroup>
-</groupbox>
+  <spacer flex="1"/>
+  <groupbox>
+    <caption label="&reftypeRadio.label;"/>
+    <radiogroup id="reftype" selectedItem="0" orient="horizontal">
+      <radio label="&reftypePageNumber.label;" accesskey="&reftypePageNumber.accesskey;" group="reftype" value="page" />
+      <radio label="&reftypeObjectCounter.label;" accesskey="&reftypeObjectCounter.accesskey;" group="reftype" value="obj" />
+    </radiogroup>
+  </groupbox>
 </dialog>
