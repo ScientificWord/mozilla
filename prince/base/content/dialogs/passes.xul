@@ -13,8 +13,9 @@
     title="&LaTeXPasses;" 
     id="passesDlg"
     buttons="cancel"
-    buttonlabelcancel="Cancel"
     ondialogcancel="onCancel();"
+    buttonlabelcancel="&cancel.label;"
+    buttonlabelclose="&close.label;"
     onload="Init();"
     width="400px"
     height="200px"
@@ -26,12 +27,13 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/passes.js"/>
   
+  <label hidden="true" id="doneMessage" value="&doneMessage.label;"/>
   <label hidden="true" id="passStatusTemplate" value="Making pass #n of #m."/>
   <label id="passStatus" value = ""/>
   <separator/>
   <hbox>
     <vbox>
-      <label control="numpasses" accesskey="n" value="&newnumpass;"/>
+      <label control="numpasses" accesskey="&passes.accesskey;" value="&newnumpass;"/>
       <textbox id="numpasses" type="number" persist="width" style="width:25px;" value="3" onchange="newPasses();"/>
     </vbox>
     <vbox flex="1"/>
