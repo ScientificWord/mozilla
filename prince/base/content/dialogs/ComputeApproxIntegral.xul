@@ -52,7 +52,7 @@
       </hbox>
 
       <hbox>
-        <description>&UpperBound;</description>
+        <description>&UpperBound.label;</description>
         <spacer flex="1"/>
         <textbox id="upperBound" style="width: 3em"/>
       </hbox>
