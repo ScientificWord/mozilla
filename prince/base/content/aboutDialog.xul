@@ -37,6 +37,6 @@
   </tabbox>
   <!-- Localizable strings (from .dtd) -->
   <strings style="display:none;">
-    <string id="brandShortName">Scientific WorkPlace</string>
+    <string id="brandShortName">Scientific WorkPlace 6.0</string>
   </strings>
 </dialog>
