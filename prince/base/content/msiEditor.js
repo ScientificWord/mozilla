@@ -5167,16 +5167,22 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
 
       case "fontcolor":
         objStr = name;
+        theMenuStr = GetString("TagPropertiesMenuLabel");
+        theMenuStr = theMenuStr.replace(/%tagname%/, GetString("fontcolor"));
         scriptStr = "openFontColorDialog('fontcolor', event.target.refElement);";
       break;
       
       case "fontsize":
         objStr = name;
+        theMenuStr = GetString("TagPropertiesMenuLabel");
+        theMenuStr = theMenuStr.replace(/%tagname%/, GetString("fontsize"));
         scriptStr = "openFontSizeDialog('fontsize', event.target.refElement);";
       break;
 
       case "note":
         objStr = name;
+        theMenuStr = GetString("TagPropertiesMenuLabel");
+        theMenuStr = theMenuStr.replace(/%tagname%/, GetString("note"));
         scriptStr = "msiNote(event.target.refElement, null);";
       break;
 
@@ -5188,13 +5194,14 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
           break;
           case "paratag":
             objStr = name;
+            theMenuStr = GetString("TagPropertiesMenuLabel");
+            theMenuStr = theMenuStr.replace(/%tagname%/, name);
             scriptStr = "openParaTagDialog('"+ name + "',event.target.refElement);";
           break;
           case "structtag":
             objStr = name;
-          break;
-          case "structtag":
-            objStr = name;
+            theMenuStr = GetString("TagPropertiesMenuLabel");
+            theMenuStr = theMenuStr.replace(/%tagname%/, name);
             scriptStr = "openStructureTagDialog('"+ name + "',event.target.refElement);";
           break;
     // currently no dialogs for list tags, environments, and front matter.
