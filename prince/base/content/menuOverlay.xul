@@ -136,8 +136,8 @@
         observes="cmd_documentInfo" label="&docInfo.label;"/>
       <menuitem id="docStyleItem" accesskey="&docStyle.accesskey;"
         observes="cmd_documentStyle" label="&docStyle.label;"/>
-      <menuseparator/>
-      <menuitem id="quitMenuItem" accesskey="&fileexit.accesskey;" key="key_quit" 
+      <menuseparator id="menu_FileQuitSeparator"/>
+      <menuitem id="menu_FileQuitItem" accesskey="&fileexit.accesskey;" key="key_quit" 
         observes="cmd_quit" label="&exitCmd.label;"/>
     </menupopup>
   </menu>
@@ -392,6 +392,11 @@
       <menuitem label="&autoSubstituteDlg.label;" 
                 accesskey="&autoSubstituteDlg.accesskey;" 
                 observes="cmd_MSIAutoSubDlg"/>
+      <menuseparator id="menu_PrefsSeparator"/>
+      <menuitem id="menu_preferences"
+                label="&Options.label;" 
+                accesskey="&Options.accesskey;" 
+                observes="cmd_unimp"/>
     </menupopup>
   </menu>
   <menu id="windowMenu" label="Window" oncommand="switchFocus(event.target);">
@@ -437,7 +442,7 @@
                 label="&helpmenuLicense.label;" 
                 accesskey="&helpmenuLicense.accesskey;" 
                 observes="cmd_unimp"/>
-      <menuseparator/>
+      <menuseparator id="aboutSeparator"/>
       <menuitem accesskey="&aboutCmd.accesskey;" 
                 label="&aboutCmd.label;" 
                 id="aboutName" 
