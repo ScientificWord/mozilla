@@ -399,8 +399,6 @@ tanh<uID8033.0>tanh%arg_list%
 ;varliminf<uID8035.0>
 ;varlimsup<uID8036.0>
 ;varprojlim<uID8037.0>
-
-
 arccosh<uID8038.0>arccosh%arg_list%
 arccot<uID8039.0>arccot%arg_list%
 arccoth<uID8040.0>arccoth%arg_list%
@@ -422,7 +420,6 @@ Ci<uID8054.0>Ci%arg_list%
 Ei<uID8055.0>Ei%arg_list%
 dilog<uID8056.0>dilog%arg_list%
 abs<uID8057.0>abs%arg_list%
-
 norm<uID8058.0>norm%arg_list%
 erf<uID8059.0>erf%arg_list%
 erfc<uID8060.0>erfc%arg_list%
@@ -433,12 +430,10 @@ csgn<uID8065.0>tcicsgn%arg_list%
 ;SLS does this work?
 signIm<uID8065.1>signIm%arg_list%
 hypergeom<uID8066.0>hypergeom
-
 about<uID8067.0>property::getprop%arg_list%
 additionally<uID8068.0>tciadditionally%arg_list%
 assume<uID8069.0>property::assume%arg_list%
 unassume<uID8070.0>property::unassume%arg_list%
-
 AndProp<uID8071.0>AndProp
 Re<uID8072.0>Re%arg_list%
 Im<uID8073.0>Im%arg_list%
@@ -447,60 +442,46 @@ ceil<uID8075.0>ceil%arg_list%
 ;pow<uID8076.0>
 ;DirInf<uID8077.0>
 rank<uID8078.0>linalg::rank%arg_list%
-
 BetaDist<uID8089.0>tcibetadist(%val%,%shape1%,%shape2%)
 BetaDen<uID8090.0>tcibetaden(%val%,%shape1%,%shape2%)
 BetaInv<uID8091.0>tcibetainv(%val%,%shape1%,%shape2%)
-
 BinomialDist<uID8092.0>tcibinomialdist(%val%,%shape1%,%shape2%)
 BinomialDen<uID8093.0>tcibinomialden(%val%,%shape1%,%shape2%)
 BinomialInv<uID8094.0>tcibininv(%val%,%shape1%,%shape2%)
-
 CauchyDist<uID8095.0>tcicauchydist(%val%,%shape1%,%shape2%)
 CauchyDen<uID8096.0>tcicauchyden(%val%,%shape1%,%shape2%)
 CauchyInv<uID8097.0>tcicauchyinv(%val%,%shape1%,%shape2%)
-
 ChiSquareDist<uID8098.0>tcichisquaredist(%val%,%shape1%)
 ChiSquareDen<uID8099.0>tcichisquareden(%val%,%shape1%)
 ChiSquareInv<uID8100.0>tcichisquareinv(%val%,%shape1%)
-
 ExponentialDist<uID8101.0>tciexpdist(%val%,%shape1%)
 ExponentialDen<uID8102.0>tciexpden(%val%,%shape1%)
 ExponentialInv<uID8103.0>tciexpinv(%val%,%shape1%)
-
 FDist<uID8104.0>tcifdist(%val%,%shape1%,%shape2%)
 FDen<uID8105.0>tcifden(%val%,%shape1%,%shape2%)
 FInv<uID8106.0>tcifinv(%val%,%shape1%,%shape2%)
-
 GammaDist<uID8107.0>tcigammadist(%val%,%shape1%,%shape2%)
 GammaDen<uID8108.0>tcigammaden(%val%,%shape1%,%shape2%)
 GammaInv<uID8109.0>tcigammainv(%val%,%shape1%,%shape2%)
-
 HypergeomDist<uID8110.0>tcihypdist(%val%,%shape1%,%shape2%,%shape3%)
 HypergeomDen<uID8111.0>tcihypden(%val%,%shape1%,%shape2%,%shape3%)
 HypergeomInv<uID8112.0>tcihypinv(%val%,%shape1%,%shape2%,%shape3%)
-
 NormalDist<uID8113.0>tcinormaldist(%val%,%shape1%,%shape2%)
 NormalDist<uID8113.1>tcinormaldist(%val%)
 NormalDen<uID8114.0>tcinormalden(%val%,%shape1%,%shape2%)
 NormalInv<uID8115.0>tcinormalinv(%val%,%shape1%,%shape2%)
-
 PoissonDist<uID8116.0>tcipoissondist(%val%,%shape1%)
 PoissonDen<uID8117.0>tcipoissonden(%val%,%shape1%)
 PoissonInv<uID8118.0>tcipoissoninv(%val%,%shape1%)
-
 TDist<uID8119.0>tcitdist(%val%,%shape1%)
 TDen<uID8120.0>tcitden(%val%,%shape1%)
 TInv<uID8121.0>tcitinv(%val%,%shape1%)
-
 UniformDist<uID8122.0>tciuniformdist(%val%,%shape1%,%shape2%)
 UniformDen<uID8123.0>tciuniformden(%val%,%shape1%,%shape2%)
 UniformInv<uID8124.0>tciuniforminv(%val%,%shape1%,%shape2%)
-
 WeibullDist<uID8125.0>tciweibulldist(%val%,%shape1%,%shape2%)
 WeibullDen<uID8126.0>tciweibullden(%val%,%shape1%,%shape2%)
 WeibullInv<uID8127.0>tciweibullinv(%val%,%shape1%,%shape2%)
-
 ; Accept either form of the "airy" functions in the input
 Ai<uID8128.0>airyAi%arg_list%
 AiryAi<uID8128.1>airyAi%arg_list%
@@ -540,7 +521,6 @@ polylog<uID8164.0>polylog%arg_list%
 Dirac<uID8165.0>dirac%arg_list%
 Heaviside<uID8166.0>heaviside%arg_list%
 seq<uID8167.0>seq%arg_list%
-
 tcimpy<uID8168.0>tcimpy%arg_list%
 factor<uID8169.0>tcifactor%arg_list%
 float<uID8170.0>float%arg_list%
@@ -550,7 +530,6 @@ tcimin<uID8173.0>tcimin%arg_list%
 istrue<uID8174.0>tciistrue%arg_list%
 expand<uID8175.0>tciexpand%arg_list%
 solve<uID8176.0>solve%arg_list%
-
 real<uID8400.0>Type::Real
 complex<uID8401.0>Type::Complex
 integer<uID8402.0>Type::Integer
@@ -558,27 +537,21 @@ negative<uID8403.0>Type::Negative
 positive<uID8404.0>Type::Positive
 nonzero<uID8405.0>Type::NonZero
 ;gamma<uID88507.0>CONST_EULERgamma
-
 ;MuPAD functions - just a sample so far - separate section?
-
 isprime<uID8410.0>isprime%arg_list%
 ithprime<uID8411.0>ithprime%arg_list%
 nextprime<uID8412.0>nextprime%arg_list%
 ;;psi<uID8413.0>psi%arg_list%
 lllint<uID8414.0>lllint%arg_list%
-
 row<uID8420.0>linalg::row%arg_list%
 swapRow<uID8421.0>linalg::swapRow%arg_list%
 col<uID8422.0>linalg::col%arg_list%
 swapCol<uID8423.0>linalg::swapCol%arg_list%
-
 contfrac<uID8430.0>numlib::contfrac%arg_list%
 divisors<uID8431.0>numlib::divisors%arg_list%
 legendre<uID8432.0>numlib::legendre%arg_list%
 phi<uID8433.0>numlib::phi%arg_list%
-
 resultant<uID8440.0>polylib::resultant%arg_list%
-
 gcd<uID8601.0>tcigcd%arg_list%
 lcm<uID8602.0>tcilcm%arg_list%
 max<uID8603.0>tcimax%arg_list%
@@ -594,7 +567,6 @@ tan<uID8502.0>arctan%arg_list%
 cot<uID8503.0>arccot%arg_list%
 csc<uID8504.0>arccsc%arg_list%
 sec<uID8505.0>arcsec%arg_list%
-
 arccos<uID8510.0>subs(cos%arg_list%,radQU=1)
 arcsin<uID8511.0>subs(sin%arg_list%,radQU=1)
 arctan<uID8512.0>subs(tan%arg_list%,radQU=1)
@@ -639,7 +611,7 @@ Simplex Feasible<uID8.0>{%condition_list%}
 Simplex Maximize<uID9.0>%expr%,{%condition_list%}
 Simplex Minimize<uID10.0>%expr%,{%condition_list%}
 Simplex Standardize<uID11.0>{%condition_list%}
-exp<uID12.0>exp(%exponent%)
+exp<uID12.0>exp%exponent%
 Assign Variable<uID13.0>%var%:=%expr%;
 Define Function<uID14.0>%f_nom%:=hold((%var_list%)->%expr%);
 piecewise<uID15.0>piecewise(%dr_list%)

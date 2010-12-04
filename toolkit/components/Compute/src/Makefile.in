@@ -58,7 +58,6 @@ LOCAL_INCLUDES = -I$(srcdir)/../computelib \
                  -I$(srcdir)/../Engines \
                  -I$(srcdir)/../public \
 		 -I$(srcdir)/../Engines/MuPAD \
-		 -I$(DIST)/include/wrappers \
 		 $(NULL)
 
 EXTRA_DSO_LDOPTS += \
