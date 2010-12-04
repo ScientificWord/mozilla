@@ -457,6 +457,13 @@ should not be done under some conditions -->
 </xsl:template>
 
 
+<xsl:template match="html:epigraph">
+\begin{epigraph}
+<xsl:apply-templates/>
+\end{epigraph}
+</xsl:template>
+
+
 <xsl:template match="html:proof">
   
 \begin{proof}
