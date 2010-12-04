@@ -8,3 +8,4 @@
 <!ENTITY labelCaption.accesskey "L">
 
 <!-- <!ENTITY .tooltip "">  -->
+<!ENTITY EnterKeyNameBigItem.tooltip  "Enter a key name for this bibliography item">
