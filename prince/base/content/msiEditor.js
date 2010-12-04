@@ -5153,32 +5153,37 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
         commandStr = "cmd_reviseCitation";
       break;
 
+      case "xref":
+        objStr = GetString("CrossRef");
+        commandStr = "cmd_reviseCrossRef";
+      break;
+
       case "otfont":
         objStr = name;
         theMenuStr = GetString("TagPropertiesMenuLabel");
         theMenuStr = theMenuStr.replace(/%tagname%/, GetString("opentypefont"));
-        scriptStr = "openOTFontDialog('otfont', event.target.node);";
+        scriptStr = "openOTFontDialog('otfont', event.target.refElement);";
       break;
 
       case "fontcolor":
         objStr = name;
         theMenuStr = GetString("TagPropertiesMenuLabel");
         theMenuStr = theMenuStr.replace(/%tagname%/, GetString("fontcolor"));
-        scriptStr = "openFontColorDialog('fontcolor', event.target.node);";
+        scriptStr = "openFontColorDialog('fontcolor', event.target.refElement);";
       break;
       
       case "fontsize":
         objStr = name;
         theMenuStr = GetString("TagPropertiesMenuLabel");
         theMenuStr = theMenuStr.replace(/%tagname%/, GetString("fontsize"));
-        scriptStr = "openFontSizeDialog('fontsize', event.target.node);";
+        scriptStr = "openFontSizeDialog('fontsize', event.target.refElement);";
       break;
 
       case "note":
         objStr = name;
         theMenuStr = GetString("TagPropertiesMenuLabel");
         theMenuStr = theMenuStr.replace(/%tagname%/, GetString("note"));
-        scriptStr = "msiNote(event.target.node, null);";
+        scriptStr = "msiNote(event.target.refElement, null);";
       break;
 
       default:
@@ -5191,14 +5196,14 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
             objStr = name;
             theMenuStr = GetString("TagPropertiesMenuLabel");
             theMenuStr = theMenuStr.replace(/%tagname%/, name);
-            scriptStr = "openParaTagDialog('"+ name + "',event.target.node);";
+            scriptStr = "openParaTagDialog('"+ name + "',event.target.refElement);";
           break;
           case "structtag":
             objStr = name;
             theMenuStr = GetString("TagPropertiesMenuLabel");
             theMenuStr = theMenuStr.replace(/%tagname%/, name);
-            scriptStr = "openStructureTagDialog('"+ name + "',event.target.node);";
-            break;
+            scriptStr = "openStructureTagDialog('"+ name + "',event.target.refElement);";
+          break;
     // currently no dialogs for list tags, environments, and front matter.
     //      case "listtag":
     //        break;
@@ -10202,7 +10207,7 @@ function openStructureTagDialog(tagname, node)
 {
  openDialog( "chrome://prince/content/structureproperties.xul",
                              "structureproperties",
-                             "",
+                             "chrome, close, titlebar, resizable, dependent",
                              node);
 }
 
@@ -10210,7 +10215,7 @@ function openParaTagDialog(tagname, node)
 {
   openDialog( "chrome://prince/content/paragraphproperties.xul",
                              "paraproperties",
-                             "",
+                             "chrome, close, titlebar, resizable, dependent",
                              node);
 }
 

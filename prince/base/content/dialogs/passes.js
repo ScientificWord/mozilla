@@ -78,13 +78,16 @@ function Init()
 
 function setProgressStatement(done)
 {
+  var progressStatement = "";
   if (done)
   {
-    progressStatement="Done!";
+    progressStatement = document.getElementById("doneMessage").value;
+    document.documentElement.setAttribute("buttonlabelcancel", document.documentElement.getAttribute("buttonlabelclose"));
+//    progressStatement="Done!";
   }
   else
   {
-    var progressStatement = document.getElementById("passStatusTemplate").value;
+    progressStatement = document.getElementById("passStatusTemplate").value;
     progressStatement = progressStatement.replace("#n", (Number(passData.passCounter) + 1));
     progressStatement = progressStatement.replace("#m", (Number(passData.passCount)));
   }

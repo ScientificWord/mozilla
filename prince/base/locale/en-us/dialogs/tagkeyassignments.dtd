@@ -20,3 +20,4 @@
 <!ENTITY tagOrScript.tooltip "Tag or script currently assigned to this key combination">
 <!ENTITY deleteAssignment.label "Delete assignment">
 <!ENTITY deleteAssignment.accesskey "D">
+<!ENTITY AddNewFunctionKeyAssignment.label  "Add new function key assignments">

@@ -29,15 +29,15 @@
   <hbox id="outer-box" flex="1">
     <vbox>
       <groupbox>
-        <caption label="Scope"/>
+        <caption label="&Scope.label;"/>
         <radiogroup id="scope">
-          <radio label="Default" id="default_scope" selected="true"/>
-          <radio label="This document only" id="this_scope" selected="false"/>
+          <radio label="&Default.label;" id="default_scope" selected="true"/>
+          <radio label="&ThisDocOnly.label;" id="this_scope" selected="false"/>
         </radiogroup>
       </groupbox>
       <separator/>
       <hbox>
-        <description>Engine on</description>
+        <description>&EngineOn.label;</description>
         <checkbox id="engine_on" checked="true"/>
       </hbox>
       <hbox>

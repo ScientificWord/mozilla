@@ -11,3 +11,6 @@
 <!ENTITY Jordan.label   "Jordan Block">
 <!ENTITY function.label "Defined by Function">
 <!ENTITY band.label     "Band">
+<!ENTITY Rows.label "Rows">
+<!ENTITY Columns.label  "Columns">
+<!ENTITY  ItemFunctionListCaption.label "Item/Function/List:">

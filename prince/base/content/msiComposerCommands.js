@@ -136,6 +136,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_showXSLTLog", msiShowXSLTLogCommand);
   commandTable.registerCommand("cmd_gotoparagraph", msiGoToParagraphCommand);
   commandTable.registerCommand("cmd_countwords", msiWordCountCommand);
+  commandTable.registerCommand("cmd_reviseCrossRef", msiReviseCrossRefCommand);
 }
 
 function msiSetupTextEditorCommands(editorElement)
@@ -7098,6 +7099,32 @@ var msiReviseCitationCommand =
 
 //-----------------------------------------------------------------------------------
 
+var msiReviseCrossRefCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+
+    return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement));
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    var xrefReviseData = msiGetPropertiesDataFromCommandParams(aParams);
+    var xrefData = {key : "", refType : "page", reviseData : xrefReviseData};
+    var xrefNode = xrefReviseData.getReferenceNode();
+    var dlgWindow = msiOpenModelessDialog("chrome://prince/content/xref.xul", "_blank", "chrome,close,titlebar,dependent",
+                                                           editorElement, "cmd_reviseCrossRefCmd", this, xrefData);
+    editorElement.focus();
+  },
+
+  doCommand: function(aCommand) {}
+};
+
+//-----------------------------------------------------------------------------------
+
 var msiFrameCommand =
 {
   isCommandEnabled: function(aCommand, dummy)
@@ -8872,3 +8899,38 @@ var msiWordCountCommand =
     }
   }
 };
+
+function doReviseStructureNode(editor, origData, reviseData)
+{
+  if (!origData.secTitleNode)
+  {
+    dump("In msiComposerCommands.js, doReviseStructureNode() called without a title node!\n");
+    return;
+  }
+  if (!origData.structNode)
+  {
+    dump("In msiComposerCommands.js, doReviseStructureNode() called without a structure node!\n");
+    return;
+  }
+  
+  msiEditorEnsureElementAttribute(origData.structNode, "subdoc", reviseData.subDocName, editor);
+  msiEditorEnsureElementAttribute(origData.structNode, "nonum", reviseData.noNumAttr, editor);
+  var shortTitleNode = origData.shortFormNode;
+  if (reviseData.newShortForm && reviseData.newShortForm.length)
+  {
+    if (!shortTitleNode)
+    {
+      shortTitleNode = editor.document.createElementNS(xhtmlns, "shortTitle");
+      editor.insertNode(shortTitleNode, origData.secTitleNode, 0);  //Short form always goes at the start
+    }
+    if (!origData.shortFormStr || (reviseData.newShortForm != origData.shortFormStr))
+    {
+//      dump("In doReviseStructureNode(), shortTitleNode reports [" + shortTitleNode.childNodes.length + "] children.\n");
+      for (var ix = shortTitleNode.childNodes.length; ix > 0 ; --ix)
+        editor.deleteNode(shortTitleNode.childNodes[ix-1]);
+      editor.insertHTMLWithContext(reviseData.newShortForm, "", "", "", null, shortTitleNode, 0, false);
+    }
+  }
+  else if (shortTitleNode)
+    parentEditor.deleteNode(shortTitleNode);
+}

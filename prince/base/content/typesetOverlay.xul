@@ -30,7 +30,7 @@
     <command id="cmd_MSItypesetPDFCompileCmd"               oncommand="goDoCommand('cmd_compilePdf');"/>
     <command id="cmd_MSItypesetGenSettingsCmd"              oncommand="goDoCommand('cmd_MSItypesetGenSettingsCmd');"/>
     <command id="cmd_MSItypesetExpertSettingsCmd"           oncommand="goDoCommand('cmd_MSItypesetExpertSettingsCmd');"/>
-    <command id="cmd_MSIrunBibTeXCmd"                       oncommand="goDoCommand('cmd_MSIrunBibTeXCmd');"/>
+    <!-- command id="cmd_MSIrunBibTeXCmd"                       oncommand="goDoCommand('cmd_MSIrunBibTeXCmd');"/ -->
     <command id="cmd_MSIrunMakeIndexCmd"                    oncommand="goDoCommand('cmd_MSIrunMakeIndexCmd');"/>
   </commandset>
 
@@ -67,9 +67,9 @@
         accesskey="&MSItypesetOutputChoiceCmd.accesskey;"  
         command="cmd_MSItypesetOutputChoiceCmd"/>
       <menuseparator/ -->
-      <menuitem label="&MSIrunBibTeXCmd.label;"          
+      <!-- menuitem label="&MSIrunBibTeXCmd.label;"          
         accesskey="&MSIrunBibTeXCmd.accesskey;"            
-        command="cmd_MSIrunBibTeXCmd"/>
+        command="cmd_MSIrunBibTeXCmd"/ -->
       <menuitem label="&MSItypesetGenSettingsCmd.label;"     
         accesskey="&MSItypesetGenSettingsCmd.accesskey;"   
         command="cmd_MSItypesetGenSettingsCmd"/>
