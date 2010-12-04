@@ -256,6 +256,7 @@
 			<contains>paratag</contains>
 			<contains>structtag</contains>
 			<contains>br</contains>
+      <contains>shortTitle</contains>
 			<tags>
 				<tag nm="(removesection)" id="clearsectiontag" ><description>Remove innermost section-like tag</description></tag>
 				<tag nm="set">
@@ -508,6 +509,19 @@
         </tag>
         <tag nm="biblabel">
           <description>Bibliography label</description>
+            <contains>#text</contains>
+			      <contains>texttag</contains>
+			      <contains>othertag</contains>
+            <contains>table</contains>
+			      <contains>mml:math</contains>
+			      <contains>img</contains>
+            <contains>a</contains>
+            <contains>note</contains>
+            <contains>object</contains>
+            <contains>notewrapper</contains>
+        </tag>
+        <tag nm="shortTitle">
+          <description>Short section title</description>
             <contains>#text</contains>
 			      <contains>texttag</contains>
 			      <contains>othertag</contains>
