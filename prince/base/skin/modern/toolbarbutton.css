@@ -47,12 +47,34 @@ toolbarbutton[checked="true"] {
 /* ::::: toolbarbutton menu ::::: */
 
 .toolbarbutton-menu-dropmarker {
-  list-style-image: url("chrome://global/skin/arrow/arrow-dn.gif");
+  list-style-image: url("chrome://prince/skin/icons/dropmarkertb.gif");
 }
 
-.toolbarbutton-menu-dropmarker[disabled="true"] {
-  list-style-image: url("chrome://global/skin/arrow/arrow-dn-dis.gif");
+.toolbarbutton-menu-dropmarker:active {
+  list-style-image: url("chrome://prince/skin/icons/dropmarkertb-active.gif");
 }
+
+.toolbarbutton-menu-dropmarker:hover {
+  list-style-image: url("chrome://prince/skin/icons/dropmarkertb-hover.gif");
+}
+
+.toolbarbutton-menu-dropmarker:active {
+  list-style-image: url("chrome://prince/skin/icons/dropmarkertb-active.gif");
+}
+
+toolbar[iconsize="small"] .toolbarbutton-menu-dropmarker {
+  list-style-image: url("chrome://prince/skin/icons/dropmarkertb-sm.gif");
+}
+
+toolbar[iconsize="small"] .toolbarbutton-menu-dropmarker:hover {
+  list-style-image: url("chrome://prince/skin/icons/dropmarkertb-hover-sm.gif");
+}
+
+toolbar[iconsize="small"] .toolbarbutton-menu-dropmarker:active {
+  list-style-image: url("chrome://prince/skin/icons/dropmarkertb-active-sm.gif");
+}
+
+
 
 /* ::::: toolbarbutton menu-button ::::: */
 

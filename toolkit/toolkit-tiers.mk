@@ -208,7 +208,6 @@ endif
 tier_toolkit_dirs	+= \
 	xpfe \
 	toolkit/components \
-	toolkit/wrappers \
 	$(NULL)
 #	toolkit/wrappers \
 

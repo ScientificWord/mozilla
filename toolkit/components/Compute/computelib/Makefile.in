@@ -71,24 +71,20 @@ MuPADlinuxmod	:= $(wildcard $(srcdir)/../MuPAD/linux/modules/*)
 			
 endif
 
-GMR_FILES := \
-      $(srcdir)/MMLents.gmr \
-      $(NULL)
 
 
 include $(topsrcdir)/config/rules.mk
 
 ifeq ($(OS_ARCH),WINNT)
 export:: $(MuPADlib)
-	$(INSTALL) $(MuPADlib)$(FINAL_TARGET)/MuPAD/lib
+	$(INSTALL) $(MuPADlib) $(FINAL_TARGET)/MuPAD/lib
 
-export:: $(SupportFiles) $(GMR_FILES)
-	$(INSTALL) $(SupportFiles) $(GMR_FILES) $(FINAL_TARGET)
+export:: $(SupportFiles) 
+	$(INSTALL) $(SupportFiles) $(FINAL_TARGET)
 else
 export:: $(MuPADlib)
 	$(INSTALL) $(MuPADlib) $(FINAL_TARGET)/MuPAD/lib
 	$(INSTALL) $(MuPADlicense) $(FINAL_TARGET)/MuPAD/license
-	$(INSTALL) $(GMR_FILES) $(FINAL_TARGET)
 	$(INSTALL) $(SupportFiles) $(FINAL_TARGET)
 	$(INSTALL) $(MuPADlinuxbin) $(FINAL_TARGET)/MuPAD/linux/bin
 	$(INSTALL) $(MuPADlinuxlib) $(FINAL_TARGET)/MuPAD/linux/lib
