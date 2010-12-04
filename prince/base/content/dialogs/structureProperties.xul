@@ -65,7 +65,7 @@
     <keyset id="MSIEditorKeys"/>
   </keyset>
 
-  <tabbox id="tabboxid" flex="1">
+   <tabbox id="tabboxid" flex="1">
     <tabs>
       <tab label="&format.label;"/>
       <tab label="&advanced.label;"/>    
