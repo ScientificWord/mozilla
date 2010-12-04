@@ -696,7 +696,7 @@ Simplex Feasible<uID8.0>{%condition_list%}
 Simplex Maximize<uID9.0>%expr%,{%condition_list%}
 Simplex Minimize<uID10.0>%expr%,{%condition_list%}
 Simplex Standardize<uID11.0>{%condition_list%}
-exp<uID12.0>exp(%exponent%)
+exp<uID12.0>exp%exponent%
 Assign Variable<uID13.0>%var%:=%expr%
 Define Function<uID14.0>%f_nom%:='(%var_list%)->%expr%'
 piecewise<uID15.0>piecewise(%dr_list%)
