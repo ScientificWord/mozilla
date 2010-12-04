@@ -353,7 +353,7 @@
                 id="tagmenuFunctionKeys" 
                 observes="cmd_tagkeyassignments" 
                 accesskey="&tagmenuFunctionKeys.accesskey;"/>
-      <menu id="menutagadvanced" label="Advanced">
+      <menu id="menutagadvanced" label="&tagmenuAdvanced.label;" accesskey="&tagmenuAdvanced.accesskey;">
         <menupopup>
           <menuitem label="&tagmenuFont.label;" 
                     id="tagmenuFont" 
@@ -373,19 +373,22 @@
   </menu>
   <menu id="tableMenu"/>  
   <menu id="MSITypesetMenu"/>
-  <menu id="toolsMenu" label="Tools" >
+  <menu id="toolsMenu" label="&toolsmenu.label;" accesskey="&toolsmenu.accesskey;">
     <menupopup id="menu_ToolsPopup">
-      <menuitem label="JavaScript debugger" 
+      <menuitem label="&toolsmenuJavaScriptdebugger.label;" 
+                accesskey="&toolsmenuJavaScriptdebugger.accesskey;"
                 id="venkmanName" 
                 oncommand="start_venkman();"/>
       <menuitem id="menu_inspector" 
                 label="DOM Inspector" 
                 accesskey="&inspectorTaskCmd.accesskey;" 
                 command="Tasks:Inspector"/>
-      <menuitem label="Extensions" 
+      <menuitem label="&toolsmenuExtensions.label;" 
+                accesskey="&toolsmenuExtensions.accesskey;" 
                 id="menu_extensions" 
                 observes="Tools:Extensions"/>
-      <menuitem label="Themes" 
+      <menuitem label="&toolsmenuThemes.label;" 
+                accesskey="&toolsmenuThemes.accesskey;" 
                 id="menu_themes" 
                 observes="Tools:Themes"/>
       <menuseparator id="toolsMenuSeparator"/>
@@ -481,26 +484,26 @@
                 observes="cmd_showTeXFile" 
                 label="&viewTeXFile.label;"/>
       <menuseparator/>
-      <menu id="sidebar-menu" label="Sidebars" >
+      <menu id="sidebar-menu" label="&viewSidebars.label;" accesskey="&viewsidebars.accesskey;" >
         <menupopup>
           <menuitem id="viewsidebarleft" 
                     type="checkbox" 
                     checked="true" 
                     observes="cmd_viewStatusBar"
                     accesskey="&viewStatusBar.accesskey;"
-                    label="View sidebar on left" />
+                    label="&viewsidebarleft.label;" />
           <menuitem id="viewsidebarright" 
                     type="checkbox" 
                     checked="true" 
                     observes="cmd_viewStatusBar"
                     accesskey="&viewStatusBar.accesskey;"
-                    label="View sidebar on right" />
+                    label="&viewsidebarright.label;" />
         </menupopup>
       </menu>
-      <menu id="toolbars-menu" label="Toolbars" >
+      <menu id="toolbars-menu" label="&viewToolbars.label;" accesskey="&viewToolbars.accesskey;" >
         <menupopup id="toolbars-menu-popup" onpopupshowing="initCustomizeMenu(this,'Toolbox');">
           <menuitem id="customizeItem-menu" oncommand="CustomizeMainToolbar('Toolbox');"
-            label="Customize toolbars" />
+            label="&viewToolbarsCustomize.label;" />
         </menupopup>
       </menu>
       <menuseparator/>
@@ -848,7 +851,7 @@
   </keyset>
   
     <!-- DEBUG only -->
-  <menu id="debugMenu" label="&debugMenu.label;">
+  <menu id="debugMenu" label="&debugMenu.label;" accesskey="&debugMenu.accesskey;">
   <menupopup id="menu_debugPopup">
     <!-- menuitem label="printPDF" oncommand="PrintUtils.printPDF();"/>
     <menuitem label="extendSelection" oncommand="extendSelection();"/>
@@ -874,7 +877,7 @@
     <menuitem id="menu_checkLinks" observes="cmd_checkLinks"
      label="&checkLinksCmd.label;"/>
     <menuseparator / -->
-    <menuitem label="&testSelectionCmd.label;"
+    <menuitem label="&testSelectionCmd.label;" accesskey="&testSelectionCmd.accesskey;"
            oncommand="msiEditorTestSelection()"/>
     <!--menuitem label="&testTableLayoutCmd.label;"
            oncommand="msiEditorTestTableLayout()"/>
@@ -888,9 +891,9 @@
     <menuitem label="&runUnitTestsCmd.label;"
            oncommand="msiEditorUnitTests()"/>
     <menuseparator / -->
-    <menuitem label="&dumpUndoStack.label;"
+    <menuitem label="&dumpUndoStack.label;" accesskey="&dumpUndoStack.accesskey;"
            oncommand="msiDumpUndoStack()"/>
-    <menuitem label="&dumpRedoStack.label;"
+    <menuitem label="&dumpRedoStack.label;" accesskey="&dumpRedoStack.accesskey;"
            oncommand="msiDumpRedoStack()"/>
     <!--menuitem label="&executeJSTransactionViaTxmgr.label;"
            oncommand="ExecuteJSTransactionViaTxmgr()"/>
@@ -912,9 +915,9 @@
     <menuitem label="Prepare Plot and Graph"	oncommand="msiTestPreparePlotGraph();"/>
     <menuitem label="Plot Tests"				oncommand="msiTestGraphScript();"/>
     <menuseparator / -->
-    <menuitem label="Configuration"
+    <menuitem label="&Configuration.label;" accesskey="&Configuration.accesskey;"
             oncommand='window.openDialog("chrome://global/content/config.xul","Configure Prince", "chrome ");'/>
-    <menuitem label="Plugins"
+    <menuitem label="&plugins.label;" accesskey="&plugins.accesskey;"
             oncommand='window.openDialog("chrome://prince/content/plugins.html","Installed plugins", "chrome ");'/>
     <!--menuitem label="Stop animation"
             oncommand='msiStopAnimation();' />
@@ -924,7 +927,7 @@
       "chrome,close,titlebar,resizable,modal=false");' /> 
     <menuitem label="Charset" oncommand="msiGoDoCommand('cmd_saveAndChangeEncoding');"/>
     <menuitem label="Test XPath Find" oncommand="msiTestSearch();"/ -->
-    <menuitem label="Open all subdocs" oncommand="openAllSubdocs();"/>
+    <menuitem label="&OpenAllSubdocs.label;" accesskey="&OpenAllSubdocs.accesskey;" oncommand="openAllSubdocs();"/>
     <!-- menuitem label="Prettyprint" oncommand="prettyprint();"/ -->
     </menupopup>
   </menu>

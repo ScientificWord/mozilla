@@ -11,6 +11,7 @@
 <!ENTITY MSIdisplayCmd.keybinding "d">
 <!ENTITY MSItextCmd.label "Text">
 <!ENTITY MSItextCmd.accesskey "t">
+<!ENTITY MSItextCmd.keybinding "t"> 
 <!ENTITY MSImathObjectsMenu.label "Math Objects">
 <!ENTITY MSImathObjectsMenu.accesskey "o">
 <!ENTITY MSIfractionCmd.label "Fraction">
