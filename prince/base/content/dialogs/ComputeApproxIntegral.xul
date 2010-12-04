@@ -29,29 +29,30 @@
   <hbox id="outer-box" flex="1">
     <vbox>
       <groupbox>
-        <caption label="Formula"/>
+         <caption label="&Formula.label;"/>
         <listbox id="form" seltype="single">
-          <listitem label="Left Boxes"/>
-          <listitem label="Midpoint"/>
-          <listitem label="Right Boxes"/>
-          <listitem label="Simpson"/>
-          <listitem label="Trapezoid"/>
+          <listitem label="&LeftBoxes.label;"/>
+          <listitem label="&Midpoint.label;"/>
+          <listitem label="&RightBoxes.label;"/>
+          <listitem label="&Simpson.label;"/>
+          <listitem label="&Trapezoid.label;"/>
+       
         </listbox>
       </groupbox>
       <hbox>
-        <description>Subintervals</description>
+        <description>&Subintervals.label;</description>
         <spacer flex="1"/>
         <textbox id="intervals" style="width: 3em"/>
       </hbox>
 
       <hbox>
-        <description>Lower Bound</description>
+        <description>&LowerBound.label;</description>
         <spacer flex="1"/>
         <textbox id="lowerBound" style="width: 3em"/>
       </hbox>
 
       <hbox>
-        <description>Upper Bound</description>
+        <description>&UpperBound;</description>
         <spacer flex="1"/>
         <textbox id="upperBound" style="width: 3em"/>
       </hbox>
