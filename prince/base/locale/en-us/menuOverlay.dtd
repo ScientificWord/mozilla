@@ -658,6 +658,9 @@
 <!ENTITY runLogCmd.label "Run Log">
 <!ENTITY setFocusCmd.label "Set Focus">
 
+<!ENTITY windowmenu.label "Window">
+<!ENTITY windowmenu.accesskey  "W">
+
 <!-- Toolbar-only items -->
 <!ENTITY menuBar.tooltip "Menu Bar">
 <!ENTITY compositionToolbar.tooltip "Composition Toolbar">
