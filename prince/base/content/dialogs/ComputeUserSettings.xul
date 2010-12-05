@@ -27,10 +27,10 @@
   <script type="application/x-javascript" src="chrome://prince/content/ComputeUserSettings.js" />
 
   <groupbox>
-    <caption label="Scope"/>
+    <caption label="&Scope.label;"/>
     <radiogroup id="scope">
       <radio label="Default" id="default_scope" selected="true"/>
-      <radio label="This document only" id="this_scope" selected="false"/>
+      <radio label="&ThisDocOnly.label;" id="this_scope" selected="false"/>
     </radiogroup>
   </groupbox>
   <separator/>
@@ -49,7 +49,7 @@
         <groupbox>
           <caption label="&logs.label;"/>
           <hbox>
-            <description>Base of log is e (otherwise 10)</description>
+            <description>&BaseLoge;</description>
             <spacer flex="1"/>
             <checkbox id="logs"/>
           </hbox>
@@ -57,7 +57,7 @@
         <groupbox>
           <caption label="&dots.label;"/>
           <hbox>
-            <description>Dot accent means derivative</description>
+            <description>&DotAccentMeansDerivative.label;</description>
             <spacer flex="1"/>
             <checkbox id="dots"/>
           </hbox>
@@ -65,7 +65,7 @@
         <groupbox>
           <caption label="&bar.label;"/>
           <hbox>
-            <description>Overbar accent means conjugate</description>
+            <description>&OverbarMeansConjugate.label;</description>
             <spacer flex="1"/>
             <checkbox id="bar"/>
           </hbox>
@@ -73,7 +73,7 @@
         <groupbox>
           <caption label="i"/>
           <hbox>
-            <description>Recognize plain i as imaginary</description>
+            <description>&RecognizePlainIasImaginary.label;</description>
             <spacer flex="1"/>
             <checkbox id="i_imaginary"/>
           </hbox>
@@ -81,7 +81,7 @@
         <groupbox>
           <caption label="j"/>
           <hbox>
-            <description>Recognize j as imaginary i</description>
+            <description>&RecognizejAsImaginaryI.label;</description>
             <spacer flex="1"/>
             <checkbox id="j_imaginary"/>
           </hbox>
@@ -89,7 +89,7 @@
         <groupbox>
           <caption label="e"/>
           <hbox>
-            <description>Recognize plain e as exponential</description>
+            <description>&RecognizePlaineasExponential;</description>
             <spacer flex="1"/>
             <checkbox id="e_exp"/>
           </hbox>
@@ -102,13 +102,13 @@
         <groupbox>
           <caption label="&scinotation.label;"/>
           <hbox>
-            <description>Digits Rendered</description>
+            <description>Digits rendered</description>
             <spacer flex="1"/>
             <textbox id="digits" style="width: 3em"/>
           </hbox>
           <vbox>
             <hbox>
-              <description>Upper Threshold</description>
+              <description>Upper threshold</description>
               <spacer flex="1"/>
               <textbox id="upper" style="width: 3em"/>
             </hbox>
@@ -116,7 +116,7 @@
           </vbox>
           <vbox>
             <hbox>
-              <description>Lower Threshold</description>
+              <description>Lower threshold</description>
               <spacer flex="1"/>
               <textbox id="lower" style="width: 3em"/>
             </hbox>
