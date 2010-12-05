@@ -7,7 +7,7 @@
 <!ENTITY classDescription.label "LaTeX documentclass is __classname__.">
 <!ENTITY classDescription.templateStr "__classname__">
 <!ENTITY classOptions.label "Options are:">
-<!ENTITY packagesInUse.label "Packages in use:">
+<!ENTITY packagesInUse.label "Packages in Use:">
 <!ENTITY packagesInUse.accesskey "P">
 <!ENTITY moveUpButton.label "Move Up">
 <!ENTITY moveUpButton.accesskey "U">
