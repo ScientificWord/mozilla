@@ -35,12 +35,12 @@
     <textbox id="ord" type="number" value="100" style="width:5em;" observes="inPreamble"/><label id="ordlabel" observes="inPreamble" value="Ordinal"/> 
   </hbox>
   <vbox>
-    <label control="name" accesskey="N" value="Name"/>
+    <label control="name" accesskey="N" value="&name.label;"/>
     <textbox id="name" value=""/>
   </vbox>
   <hbox>
     <vbox>
-      <label control="req" accesskey="p" value="Requires package"/>
+      <label control="req" accesskey="p" value="&RequiresPackage.label;"/>
       <textbox id="req" value=""/>
     </vbox>
     <spacer width="30px"/>
