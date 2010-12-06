@@ -1,4 +1,4 @@
-<!ENTITY windowTitle.label "Go to paragraph">
+<!ENTITY windowTitle.label "Go to Paragraph">
 
 <!ENTITY currentParagraph.label   "Current paragraph is #">
 <!ENTITY lastParagraph.label   "Last paragraph is #">
@@ -13,5 +13,5 @@
 <!ENTITY absparanumber.accesskey "G">
 <!ENTITY relparanumber.accesskey "M">
 
-<!ENTITY wcWindowTitle.label "Document word count">
+<!ENTITY wcWindowTitle.label "Document Word Count">
 <!ENTITY words.label "words">

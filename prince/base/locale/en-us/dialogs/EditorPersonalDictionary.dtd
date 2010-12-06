@@ -38,11 +38,11 @@
 <!-- Window title -->
 <!ENTITY windowTitle.label "Personal Dictionary">
 
-<!ENTITY wordEditField.label "New word:">
+<!ENTITY wordEditField.label "New Word:">
 <!ENTITY wordEditField.accesskey "N">
 <!ENTITY AddButton.label "Add">
 <!ENTITY AddButton.accesskey "A">
-<!ENTITY DictionaryList.label "Words in dictionary:">
+<!ENTITY DictionaryList.label "Words in Dictionary:">
 <!ENTITY DictionaryList.accesskey "W">
 <!ENTITY ReplaceButton.label "Replace">
 <!ENTITY ReplaceButton.accesskey "R">
