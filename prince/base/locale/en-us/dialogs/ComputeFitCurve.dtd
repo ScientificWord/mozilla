@@ -2,11 +2,11 @@
 
 <!ENTITY windowTitle.label "Fit Curve to Data">
 
-<!ENTITY column.label   "Location of Dependent variable">
-<!ENTITY first.label    "First Column">
-<!ENTITY last.label     "Last Column">
+<!ENTITY column.label   "Location of Dependent Variable">
+<!ENTITY first.label    "First column">
+<!ENTITY last.label     "Last column">
 
-<!ENTITY regress.label   "Multiple Regression">
-<!ENTITY noconst.label   "Multiple Regression (No Constant)">  
+<!ENTITY regress.label   "Multiple regression">
+<!ENTITY noconst.label   "Multiple regression (no constant)">  
 <!ENTITY poly.label      "Polynomial of">
 <!ENTITY degree.label    "degree"> 

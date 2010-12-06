@@ -12,3 +12,4 @@
 <!ENTITY name.label "Name">
 <!ENTITY name.accesskey "N">
 <!ENTITY Encapsulated.label "Encapsulated">
+<!ENTITY RequiresPackage.label  "Requires Package">
