@@ -14,7 +14,7 @@
 %dialogDTD;
 ]>
 
-<dialog title="Document style sheets"
+<dialog title="Document Style Sheets"
     id="DocumentStyleDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
     xmlns:html="http://www.w3.org/1999/xhtml"
@@ -29,16 +29,16 @@
   <script type="application/x-javascript"  src="chrome://prince/content/DocumentStyle.js"/>
   <tabbox>
     <tabs>
-      <tab label="Style sheets"/>
+      <tab label="Style Sheets"/>
       <tab label="Scripts"/>
-      <tab label="Tag definitions"/>
-      <tab label="XSLT translations"/>
-      <tab><label><html:texlogo>L<html:sup>A</html:sup>T<html:sub>E</html:sub>X</html:texlogo> style</label></tab>
+      <tab label="Tag Definitions"/>
+      <tab label="XSLT Translations"/>
+      <tab><label><html:texlogo>L<html:sup>A</html:sup>T<html:sub>E</html:sub>X</html:texlogo> Style</label></tab>
     </tabs>
     <tabpanels>
       <tabpanel>
         <vbox>
-        <label>Style sheets in use</label>
+        <label>Style Sheets in Use</label>
         <hbox>
           <vbox>
             <textbox id="cssfile" value="Enter new cascading style sheets here"/>
@@ -58,7 +58,7 @@
       </tabpanel>
       <tabpanel>
         <vbox>
-        <label>Included JavaScript files</label>
+        <label>Included JavaScript Files</label>
         <hbox>
           <vbox>
             <textbox id="scriptfile" value="Enter new JavaScript files here"/>
@@ -78,7 +78,7 @@
       </tabpanel>
       <tabpanel>
         <vbox>
-        <label>Tag definition files in use </label>
+        <label>Tag Definition Files in Use </label>
         <hbox>
           <vbox>
             <textbox id="xmlfile"/>
@@ -98,7 +98,7 @@
       </tabpanel>
       <tabpanel>
         <vbox>
-        <label>XSLT translations </label>
+        <label>XSLT Translations </label>
         <hbox>
           <vbox>
             <textbox id="xslfile"/>
@@ -118,7 +118,7 @@
       </tabpanel>
       <tabpanel>
         <vbox>
-        <label><html:texlogo>L<html:sup>A</html:sup>T<html:sub>E</html:sub>X</html:texlogo> style</label>
+        <label><html:texlogo>L<html:sup>A</html:sup>T<html:sub>E</html:sub>X</html:texlogo> Style</label>
         <hbox>
           <vbox>
             <textbox id="stylefile"/>

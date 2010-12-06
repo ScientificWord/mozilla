@@ -3,7 +3,7 @@
 <!ENTITY windowTitle.label "Bibliography Choice">
 
 <!ENTITY manualBibliography.label "Manual Bibliography">
-<!ENTITY manualBibButton.label "Manual Entry">
+<!ENTITY manualBibButton.label "Manual entry">
 <!ENTITY manualBibButton.accesskey "M">
 <!-- !ENTITY manualBibliography.text "A manual bibliography is convenient when the list of references is short and you do not plan to use those references in other articles or books. You must format the entries yourself." -->
 <!ENTITY manualBibliography.text "A manual bibliography is convenient when the list of references is short and you do not plan to use those references in other articles or books. You must format the entries yourself. A manual bibliography is convenient when the list of references is short and you do not plan to use those references in other articles or books. You must format the entries yourself.">

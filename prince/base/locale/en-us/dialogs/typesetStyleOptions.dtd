@@ -2,11 +2,11 @@
 
 <!ENTITY windowTitle.label "Options for __type__ __Name__">
 
-<!ENTITY categoryDescription.label "Category:">
+<!ENTITY categoryDescription.label "Category">
 <!ENTITY categoryDescription.accesskey "C">
 <!ENTITY optionsDescription.label "Options">
 <!ENTITY optionsDescription.accesskey "O">
-<!ENTITY currentOptionsDescription.label "Currently selected options">
+<!ENTITY currentOptionsDescription.label "Currently Selected Options">
 <!ENTITY goNativeButton.label "Go Native...">
 <!ENTITY goNativeButton.accesskey "N">
    
