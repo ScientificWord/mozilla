@@ -1,8 +1,8 @@
 <!-- Copyright (c) 2007 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label "Lines">
+<!ENTITY windowTitle.label "Line">
 
-<!ENTITY sizeGroupbox.label "Size and position">
+<!ENTITY sizeGroupbox.label "Size and Position">
 
 <!ENTITY liftSize.label "Lift">
 <!ENTITY liftSize.accesskey "L">
