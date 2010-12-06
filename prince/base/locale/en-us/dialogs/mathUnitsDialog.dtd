@@ -3,9 +3,9 @@
 <!ENTITY windowTitle.label "Unit Name">
 <!ENTITY windowPropertiesTitle.label "Unit Properties">
 
-<!ENTITY unitTypesListbox.label "Physical quantity">
+<!ENTITY unitTypesListbox.label "Physical Quantity">
 <!ENTITY unitTypesListbox.accesskey "P">
-<!ENTITY unitNamesListbox.label "Unit name">
+<!ENTITY unitNamesListbox.label "Unit Name">
 <!ENTITY unitNamesListbox.accesskey "U">
 <!ENTITY insertButton.label "Insert">
 <!ENTITY insertButton.accesskey "I">
