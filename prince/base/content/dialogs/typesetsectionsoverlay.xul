@@ -25,7 +25,7 @@
     </broadcasterset>  
      <hbox>
        <vbox align="center">
-         <label>Section type</label>
+         <label>Section Type</label>
          <menulist id="sections.name" oncommand="switchSectionType();" persist="value" >
            <menupopup>
              <menuitem id="sections.part" label="Part" value="-1"/>
@@ -39,7 +39,7 @@
          </menulist>
        </vbox>
        <vbox align="center">
-         <label>Number style</label>
+         <label>Number Style</label>
          <menulist id="sections.numstyle" persist="value" oncommand="setNumStyle(this);" >
            <menupopup>
              <menuitem id="default" selected="true" label="Default" value=""/>
@@ -62,7 +62,7 @@
     <hbox>
       <vbox flex="1"/>
       <vbox align="center">
-        <label observes="secredefok">Start new page</label>
+        <label observes="secredefok">Start New Page</label>
         <checkbox observes="secredefok" id="sectionstartnewpage" persist="checked" oncommand="settopofpage(this);"/>
       </vbox>
       <vbox align="center">
@@ -84,7 +84,7 @@
     <hbox>
       <vbox flex="1"/>
       <vbox align="center">
-       <label observes="secredefok">Header style</label>
+       <label observes="secredefok">Header Style</label>
        <menulist observes="secredefok" id="sections.style" persist="value" >
          <menupopup style="width: 6em;">
            <menuitem id="sections.hang" selected="true" label="Hang" value="hang"/>
@@ -100,9 +100,9 @@
       <vbox align="center">
        <label observes="secredefok">Alignment</label>
        <radiogroup id="sections.align" orient="horizontal">
-         <radio observes="secredefok" id="sectionleft" label="left" value="l" selected="true" oncommand="setalign('l');"/>
-         <radio observes="secredefok" id="sectioncenter" label="center" value="c" oncommand="setalign('c');"/>
-         <radio observes="secredefok" id="sectionright" label="right" value="r" oncommand="setalign('r');"/>
+         <radio observes="secredefok" id="sectionleft" label="Left" value="l" selected="true" oncommand="setalign('l');"/>
+         <radio observes="secredefok" id="sectioncenter" label="Center" value="c" oncommand="setalign('c');"/>
+         <radio observes="secredefok" id="sectionright" label="Right" value="r" oncommand="setalign('r');"/>
        </radiogroup>
       </vbox>
       <vbox flex="1"/>
@@ -200,7 +200,7 @@
     <hbox id="marginsection" observes="notcenteralignment" align="center" onkeypress="sectHandleChar(event);">
       <vbox flex="1"/>
       <vbox align="center">
-        <label value="Left heading indent">
+        <label value="Left Heading Indent">
           <observes element="secredefok" attribute="disabled"/>
           <observes element="leftalignment"	attribute="msicollapsed"/>
         </label>
@@ -218,7 +218,7 @@
       </label>
       <spacer/>
       <vbox align="center">
-        <label value="Right heading indent" >
+        <label value="Right Heading Indent" >
           <observes element="secredefok" attribute="disabled"/>
           <observes element="rightalignment"	attribute="msicollapsed"/>
         </label>
