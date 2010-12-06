@@ -43,7 +43,7 @@
 <!ENTITY wordEditField.accesskey "w">
 <!ENTITY checkwordButton.label "Check Word">
 <!ENTITY checkwordButton.accesskey "k">
-<!ENTITY suggestions.label "Suggestions:">
+<!ENTITY suggestions.label "Suggestions">
 <!ENTITY suggestions.accesskey "u">
 <!ENTITY ignoreButton.label "Ignore">
 <!ENTITY ignoreButton.accesskey "I">
@@ -67,5 +67,5 @@
 <!ENTITY closeButton.accesskey "C">
 <!ENTITY sendButton.label "Send">
 <!ENTITY sendButton.accesskey "S">
-<!ENTITY languagePopup.label "Language:">
+<!ENTITY languagePopup.label "Language">
 <!ENTITY languagePopup.accesskey "L">
