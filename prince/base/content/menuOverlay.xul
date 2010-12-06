@@ -399,7 +399,7 @@
       <menuitem id="menu_preferences"
                 label="&Options.label;" 
                 accesskey="&Options.accesskey;" 
-                observes="cmd_unimp"/>
+                oncommand='openDialog("chrome://prince/content/preferences.xul","chrome,titlebar,toolbar,centerscreen,modal");'/>
     </menupopup>
   </menu>
   <menu id="windowMenu" label="Window" oncommand="switchFocus(event.target);">
