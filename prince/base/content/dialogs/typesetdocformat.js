@@ -28,7 +28,7 @@ var compilerInfo = { prog: "pdflatex", //other choices: xelatex, lualatex
 //                     sectHeaderOK: {},
                      pageFormatOK: false,//geometry package not called if false
                      useUni: false,//currently same as useOTF
-                     fontsOK: false }// OK to choose fonts
+                     fontsOK: false };// OK to choose fonts
 
 
 
@@ -102,6 +102,7 @@ function Startup()
   //now we can load the docformat information from the document to override 
   //all or part of the initial state
   OnWindowSizeReset(true);
+  buildFontMenus(compilerInfo.useOTF);
   if (!(docFormatNodeList && docFormatNodeList.length>=1)) node=null;
   else node = docFormatNodeList[0].getElementsByTagName('fontchoices')[0];
   getFontSpecs(node);
