@@ -28,7 +28,7 @@ var compilerInfo = { prog: "pdflatex", //other choices: xelatex, lualatex
 //                     sectHeaderOK: {},
                      pageFormatOK: false,//geometry package not called if false
                      useUni: false,//currently same as useOTF
-                     fontsOK: false }// OK to choose fonts
+                     fontsOK: false };// OK to choose fonts
 
 
 
