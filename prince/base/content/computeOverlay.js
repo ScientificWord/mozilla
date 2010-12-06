@@ -2062,7 +2062,7 @@ function finishComputePowerSeries(editorElement, o)
 {
   if (o.Cancel)
     return;
-  var mathstr = GetMathAsString(GetRHS(o.theMath));
+  var mathstr = runFixup(GetMathAsString(GetRHS(o.theMath)));
 
   ComputeCursor(editorElement);
   var variable = runFixup(o.mathresult[0]);
