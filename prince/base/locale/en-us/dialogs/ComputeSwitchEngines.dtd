@@ -3,4 +3,6 @@
 <!ENTITY windowTitle.label "Choose Computation Engine">
 
 <!ENTITY MuPAD.label   "MuPAD 4">
+<!ENTITY MuPAD.accesskey  "P">
 <!ENTITY Maple5.label  "Maple 5">  
+<!ENTITY Maple5.accesskey "M">
