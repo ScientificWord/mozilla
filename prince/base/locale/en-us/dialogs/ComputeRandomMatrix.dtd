@@ -3,6 +3,7 @@
 <!ENTITY windowTitle.label "Random Matrix">
 <!ENTITY dimensions.label  "Dimensions">
 <!ENTITY rows.label  "Rows">
+<!ENTITY rows.accesskey "R">
 <!ENTITY columns.label  "Columns">
 <!ENTITY  to.label  "to">
 <!ENTITY range.label       "Range of Random Entries">
