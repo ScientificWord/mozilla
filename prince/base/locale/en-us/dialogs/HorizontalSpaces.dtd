@@ -49,7 +49,7 @@
 <!ENTITY fillLine.accesskey "L">
 <!ENTITY fillDots.label "Dots">
 <!ENTITY fillDots.accesskey "D">
-<!ENTITY typesetGroup.label "Typeset behavior">
+<!ENTITY typesetGroup.label "Typeset Behavior">
 <!ENTITY typesetDiscardAtLineEnd.label "Discard at line end">
 <!ENTITY typesetDiscardAtLineEnd.accesskey "e">
 <!ENTITY typesetAlways.label "Always">

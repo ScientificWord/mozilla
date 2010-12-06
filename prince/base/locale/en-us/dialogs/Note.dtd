@@ -2,7 +2,6 @@
 <!ENTITY  windowTitle.label         "Note">
 <!ENTITY  noteType.label            "Type of Note">
 
-
 <!ENTITY  footnote.label			"Footnote">
 <!ENTITY  marginNote.label			"Margin note">
 <!ENTITY  marginHint.label		"Margin hint">

@@ -4,7 +4,7 @@
 
 <!ENTITY center.label "Variables:">
 <!ENTITY instruction.label   "Enter differentiation variable and comma-separated list of dependent variables.">
-<!ENTITY independent.label   "Independent variable">
+<!ENTITY independent.label   "Independent Variable">
 <!ENTITY independent.accesskey   "I">
-<!ENTITY dependent.label   "Dependent variables">
+<!ENTITY dependent.label   "Dependent Variables">
 <!ENTITY dependent.accesskey   "D">

@@ -128,15 +128,15 @@
             ontextentered="" />
         </hbox>
         <groupbox>
-          <caption id="captionPlacementLabel" label="Caption placement"/>
+          <caption id="captionPlacementLabel" label="Caption Placement"/>
           <radiogroup id="captionPlacementRadioGroup" orient="horizontal">
             <radio id="captionAboveRadio" label="Above"/>
             <radio id="captionBelowRadio" label="Below"/>
           </radiogroup>
         </groupbox>
-        <label value="Caption text"/>
+        <label value="Caption Text"/>
         <editor id="captionTextInput" height="2in" flex="1"/>
-        <label value="Alt text"/>
+        <label value="Alt Text"/>
         <textbox id="altTextInput"/>
       </vbox>
       <vbox>

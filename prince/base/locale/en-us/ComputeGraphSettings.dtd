@@ -15,22 +15,37 @@
 <!ENTITY plotstyles.label         "Plot Style Options">
 <!ENTITY plotcs.label             "Coordinate System">
 <!ENTITY plottyperec.label        "Rectangular">
+<!ENTITY plottyperec.accesskey  "R">
 <!ENTITY plottypecur.label        "Curve in Space">
+<!ENTITY plottypecur.accesskey  "C">
 <!ENTITY plottypecylindrical.label "Cylindrical">
+<!ENTITY plottypecylindrical.accesskey  "Y">
 <!ENTITY plottypepolar.label       "Polar">
+<!ENTITY plottypepolar.accesskey  "P">
 <!ENTITY plottypesphere.label      "Spherical">
+<!ENTITY plottypesphere.accesskey "S">
+
 
 <!ENTITY plottype.label           "Plot type">
 <!ENTITY plottypeexpression.label "Expression">
 <!ENTITY plottypeimplicit.label   "Implicit">
+<!ENTITY plottypeimplicit.accesskey "I">
 <!ENTITY plottypeparametric.label "Parametric">
+<!ENTITY plottypeparametric.accesskey "M">
 <!ENTITY plottypeinequality.label "Inequality">
+<!ENTITY plottypeinequality.accesskey "N">
 <!ENTITY plottypeconformal.label  "Conformal">
+<!ENTITY plottypeconformal.accesskey  "C">
 <!ENTITY plottypegradient.label   "Gradient">
+<!ENTITY plottypegradient.accesskey "G">
 <!ENTITY plottypevector.label     "Vector Field">
+<!ENTITY plottypevector.accesskey V">
 <!ENTITY plottypetube.label       "Tube">
+<!ENTITY plottypetube.accesskey "T">
 <!ENTITY plottypeode.label        "ODE">
+<!ENTITY plottypeode.accesskey  "O">
 <!ENTITY plottypeAI.label         "Approximate Integral">
+<!ENTITY plottypeAI.accesskey "A">
 
 <!ENTITY plotstyle.label          "Plot Style">
 <!ENTITY plotstyleline.label      "Line">
