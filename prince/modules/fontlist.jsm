@@ -40,8 +40,12 @@ function initializeFontFamilyList(force)
     var theProcess = Components.classes["@mozilla.org/process/util;1"].createInstance(Components.interfaces.nsIProcess);
     theProcess.init(exefile);
     dump("TexBinDir is "+texbindir+"\n");
-    var outpath=listfile.parent.path.replace(" ","\\ ","g");
-    var args =[texbindir,outpath];
+    // for windows only -- we assume only windows will have %programfiles% in it
+    texbindir = texbindir.replace("%","!","g");
+    var outpath=listfile.path;
+    var opargs = outpath.split(/w+/);
+
+    var args =[texbindir].concat(opargs);
     
     theProcess.run(true, args, args.length);
   } 

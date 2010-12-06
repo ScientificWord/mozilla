@@ -1,10 +1,8 @@
 setlocal enabledelayedexpansion
-%1\fc-cache
-%1\otfinfo -a %windir%\fonts\*.?tf 
+REM echo 1=%1, 2=%2, 3=%3, 4=%4, 5=%5, 6=%6
+cd "%1"
 
-
-
-
-
+fc-cache
+otfinfo -a %windir%\fonts\*.?tf > %2
 
 			  
