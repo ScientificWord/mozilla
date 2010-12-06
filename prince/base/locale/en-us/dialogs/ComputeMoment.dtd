@@ -2,10 +2,10 @@
 
 <!ENTITY windowTitle.label "Statistics Moment">
 
-<!ENTITY center.label "Moment Number:">
+<!ENTITY center.label "Moment Number">
 <!ENTITY math.label   "Enter moment number and value to calculate moment about, separated by a bit of text.">
 
-<!ENTITY origin.label "Choose Origin:">
+<!ENTITY origin.label "Choose Origin">
 <!ENTITY giveorigin.label "Give origin:">
 <!ENTITY giveorigin.label.accesskey "G">
 <!ENTITY mean.label "Compute moment about the mean.">

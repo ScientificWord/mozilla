@@ -82,7 +82,7 @@
       <tabpanel id="docformatgeneralpanel" orient="vertical">
         <button oncommand="onAccept();"  />
         <vbox flex="1">
-          <label class="heading" value="General document options"/>
+          <label class="heading" value="General Document Options"/>
           <label value="Warning goes here"/>
         </vbox> 
         <checkbox id="enablereformat" label="Enable overriding the document style" checked="false"
@@ -90,7 +90,7 @@
         <broadcaster id="reformatok" disabled="true"/>
         <groupbox>
           <caption>
-            <label  observes="reformatok">TeX implementation</label>
+            <label  observes="reformatok">TeX Implementation</label>
           </caption>   
           <radiogroup id="texprogram" selectedIndex="0" value="pdflatex">
             <radio observes="reformatok" label="pdfLaTeX -- the classic" value="pdflatex" oncommand="setCompiler('pdflatex');"/>
@@ -103,7 +103,7 @@
         </groupbox>
         <groupbox>
           <caption>
-            <label  observes="reformatok">Basic layout</label>
+            <label  observes="reformatok">Basic Layout</label>
           </caption>   
           <grid>
             <columns>
@@ -116,7 +116,7 @@
             <rows>
               <row align="end" style="height: 3em">
                 <vbox align="center">
-                  <label observes="reformatok" value="Page orientation"/>
+                  <label observes="reformatok" value="Page Orientation"/>
                   <menulist observes="reformatok" id="pgorient" minwidth="6em">
                     <menupopup style="width: 9em" >
                       <menuitem value="port" label="*Portrait" def="1"/>
@@ -125,7 +125,7 @@
                   </menulist>
                 </vbox>
                 <vbox align="center">
-                  <label observes="reformatok" value="Paper size"/>
+                  <label observes="reformatok" value="Paper Size"/>
                   <menulist observes="reformatok" id="papersize">
                     <menupopup style="width: 9em" >
                       <menuitem value="letter" label="*8.5x11 in." def="1"/>
@@ -167,7 +167,7 @@
                   </menulist>
                 </vbox>
                 <vbox align="center">
-                  <label observes="reformatok" value="Body text font size"/>
+                  <label observes="reformatok" value="Body Text Font Size"/>
                   <menulist observes="reformatok" id="textsize" >
                     <menupopup style="width: 9em" >
                       <menuitem value="10pt" label="*10 pt" def="1"/>
@@ -177,16 +177,16 @@
                   </menulist>
                 </vbox>
                 <vbox align="center">
-                  <label observes="reformatok" value="Leading in points"/>
+                  <label observes="reformatok" value="Leading in Points"/>
                   <textbox observes="reformatok" type="number" decimalplaces="1" min="0" increment="0.1" id="leading" style="width: 9em" value=""/>
                 </vbox>
                 <vbox align="center">
                   <deck id="babelpoly">
-                    <label>Babel language
+                    <label>Babel Language
                       <observes element="pdflatex" attribute="hidden"/>
                       <observes element="reformatok" attribute="disabled"/>
                     </label>
-                    <label>Polyglossia language
+                    <label>Polyglossia Language
                       <observes element="xelatex" attribute="hidden"/>
                       <observes element="reformatok" attribute="disabled"/>
                     </label>
@@ -270,7 +270,7 @@
               </row>
               <row>
                 <vbox align="center">
-                  <label observes="reformatok">Second language</label>
+                  <label observes="reformatok">Second Language</label>
                   <menulist observes="reformatok" >
                     <menupopup style="width: 9em" >
                       <!-- if some of these are not supported in polyglossia, add 'observes="pdftex"'-->
@@ -354,7 +354,7 @@
         </groupbox>
         <groupbox  observes="reformatok">  
           <caption>
-            <label  observes="reformatok">Mathematics display</label>
+            <label  observes="reformatok">Mathematics Display</label>
           </caption>   
           <grid>
             <columns>
@@ -367,7 +367,7 @@
             <rows>
               <row align="end" style="height: 3em">
                 <vbox align="center">
-                  <label observes="reformatok" value="Eqn number position"/>
+                  <label observes="reformatok" value="Eqn Number Position"/>
                   <menulist observes="reformatok" id="eqnnopos">
                     <menupopup style="width: 9em" >
                       <menuitem value="reqno" label="*On the right" def="1"/>
@@ -376,7 +376,7 @@
                   </menulist>
                 </vbox>
                 <vbox align="center">
-                  <label observes="reformatok" value="Displayed eqn position"/>
+                  <label observes="reformatok" value="Displayed eqn Position"/>
                   <menulist observes="reformatok" id="eqnpos">
                     <menupopup style="width: 9em" >
                       <menuitem value="ceqn" label="*Centered" def="1"/>
@@ -391,7 +391,7 @@
         </groupbox>
         <groupbox observes="reformatok">
           <caption>
-            <label  observes="reformatok">Front and back matter</label>
+            <label  observes="reformatok">Front and Back Matter</label>
           </caption>   
           <grid>
             <columns>
@@ -404,7 +404,7 @@
             <rows>
               <row align="end" style="height: 3em">
                 <vbox align="center">
-                  <label observes="reformatok" value="Title page"/>
+                  <label observes="reformatok" value="Title Page"/>
                   <menulist observes="reformatok" id="titlepage">
                     <menupopup style="width: 9em" >
                       <menuitem value="notitlepage" label="No" def="1"/>
@@ -413,7 +413,7 @@
                   </menulist>
                 </vbox>
                 <vbox align="center">
-                  <label observes="reformatok" value="Table of contents"/>
+                  <label observes="reformatok" value="Table of Contents"/>
                   <menulist observes="reformatok" >
                     <menupopup style="width: 9em" >
                       <menuitem value="document" label="For document"/>
@@ -423,7 +423,7 @@
                   </menulist>
                 </vbox>
                 <vbox align="center">
-                  <label observes="reformatok" value="List of figures"/>
+                  <label observes="reformatok" value="List of Figures"/>
                   <menulist observes="reformatok" >
                     <menupopup style="width: 9em" >
                       <menuitem value="document" label="For document"/>
@@ -433,7 +433,7 @@
                   </menulist>
                 </vbox>
                   <vbox align="center">
-                  <label observes="reformatok" value="List of tables"/>
+                  <label observes="reformatok" value="List of Tables"/>
                   <menulist observes="reformatok" >
                     <menupopup style="width: 9em" >
                       <menuitem value="document" label="For document"/>
@@ -454,7 +454,7 @@
                   </menulist>
                 </vbox>
                 <vbox align="center">
-                  <label observes="reformatok" value="Bibliography style"/>
+                  <label observes="reformatok" value="Bibliography Style"/>
                   <menulist observes="reformatok" id="bibstyle">
                     <menupopup style="width: 9em" >
                       <menuitem value="compbib" label="*Compressed" def="1"/>
@@ -468,7 +468,7 @@
         </groupbox>
         <groupbox  observes="reformatok">
           <caption>
-            <label  observes="reformatok">Draft tools</label>
+            <label  observes="reformatok">Draft Tools</label>
           </caption>   
           <grid>
             <columns>
@@ -481,7 +481,7 @@
             <rows>
               <row align="end" style="height: 3em">
                 <vbox align="center">
-                  <label observes="reformatok" value="Show keys"/>
+                  <label observes="reformatok" value="Show Keys"/>
                   <menulist observes="reformatok" id="showkeys" >
                     <menupopup style="width: 9em" >
                       <menuitem value="no" label="*No" def="1"/>
@@ -490,7 +490,7 @@
                   </menulist>
                 </vbox>
                 <vbox align="center">
-                  <label observes="reformatok" value="Show labels"/>
+                  <label observes="reformatok" value="Show Labels"/>
                   <menulist  observes="reformatok" >
                     <menupopup style="width: 9em" >
                       <menuitem value="yes" label="Yes"/>
@@ -499,7 +499,7 @@
                   </menulist>
                 </vbox>
                 <vbox align="center">
-                  <label observes="reformatok" value="Show index entries"/>
+                  <label observes="reformatok" value="Show Index Entries"/>
                   <menulist observes="reformatok" id="showidx">
                     <menupopup style="width: 9em" >
                       <menuitem value="no" label="*No" def="1"/>
@@ -508,7 +508,7 @@
                   </menulist>
                 </vbox>
                 <vbox align="center">
-                  <label value="Line spacing"  observes="reformatok"/>
+                  <label value="Line Spacing"  observes="reformatok"/>
                   <menulist  observes="reformatok">
                     <menupopup style="width: 9em" >
                       <menuitem value="one" label="One"/>
@@ -681,7 +681,7 @@
                     <vbox>
                       <groupbox align="center">
                         <caption>
-                          <label observes="pagelayoutok">Finish page size</label>
+                          <label observes="pagelayoutok">Finish Page Size</label>
                         </caption>   
                         <label observes="pagelayoutok">&docformatfinishpageSize;</label>
                         <menulist observes="pagelayoutok" id="docformat.finishpagesize"

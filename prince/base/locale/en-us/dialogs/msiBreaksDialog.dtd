@@ -2,7 +2,7 @@
 
 <!ENTITY windowTitle.label "Breaks">
 
-<!ENTITY breakTypesGroupbox.label "Break types">
+<!ENTITY breakTypesGroupbox.label "Break Types">
 
 <!ENTITY allowBreak.label "Allowbreak">
 <!ENTITY allowBreak.accesskey "A">
@@ -22,7 +22,7 @@
 <!ENTITY customNewLine.accesskey "C">
 
 
-<!ENTITY additionalVertSpaceControls.label "Additional vertical space">
+<!ENTITY additionalVertSpaceControls.label "Additional Vertical Space">
 <!ENTITY depthSize.label "Depth">
 <!ENTITY depthSize.accesskey "D">
 <!ENTITY sizeUnits.label "Units">
