@@ -48,9 +48,9 @@
 <!ENTITY tableColumns.label               "Columns:">
 <!ENTITY tableColumns.accesskey           "C" -->
 
-<!ENTITY tableRowHeight.label             "Row Height:">
+<!ENTITY tableRowHeight.label             "Row height:">
 <!ENTITY tableRowHeight.accesskey         "H">
-<!ENTITY tableColumnWidth.label           "Column Width:">
+<!ENTITY tableColumnWidth.label           "Column width:">
 <!ENTITY tableColumnWidth.accesskey       "W">
 
 <!-- !ENTITY tableBorderSpacing.label         "Borders and Spacing">
@@ -85,7 +85,7 @@
 
 <!-- !ENTITY cellPercent.label                "percent of table" -->
 
-<!ENTITY borderSideSelection.label        "Selected side:">
+<!ENTITY borderSideSelection.label        "Selected Side:">
 <!ENTITY borderSideSelection.accesskey    "s">
 <!ENTITY borderSelectAll.label            "All">
 <!ENTITY borderSelectTop.label            "Top">
@@ -106,7 +106,7 @@
 <!ENTITY borderStyleInset.label "Inset">
 <!ENTITY borderStyleOutset.label "Outset">
 
-<!ENTITY borderColor.label "Border color"> 
+<!ENTITY borderColor.label "Border Color"> 
 
 <!ENTITY cellSelection.label              "Selection">
 <!ENTITY cellSelectCell.label             "Cell">
