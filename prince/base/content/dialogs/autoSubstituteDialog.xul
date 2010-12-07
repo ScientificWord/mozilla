@@ -144,6 +144,7 @@
       <msibutton id="saveButton" label="&saveButton.label;" accesskey="&saveButton.accesskey;" oncommand="saveCurrentSub();" />
       <msibutton id="removeButton" label="&removeButton.label;" accesskey="&removeButton.accesskey;" oncommand="removeCurrentSub();" />
       <!-- msibutton id="testButton" label="Test;" accesskey="&removeButton.accesskey;" oncommand="onOK();" / -->
+ 
     </vbox>
   </hbox>  
 </dialog>

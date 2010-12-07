@@ -54,3 +54,13 @@
 <!ENTITY expe_output.label        "Exponential e Output">
 <!ENTITY expe_e.label               "e">
 <!ENTITY expe_expe.label            "ExponentialE">
+
+<!ENTITY  Scope.label "Scope">
+<!ENTITY  ThisDocOnly.label "This document only">
+<!ENTITY  BaseLoge  "Base of log is e (otherwise 10)">
+<!ENTITY  DotAccentMeansDerivative.label  "Dot accent means derivative">
+<!ENTITY OverbarMeansConjugate.label  "Overbar accent means conjugate">
+<!ENTITY RecognizePlainIasImaginary.label "Recognize plain i as imaginary">
+<!ENTITY  RecognizejAsImaginaryI.label  "Recognize j as imaginary i">
+<!ENTITY  RecognizePlaineasExponential  "Recognize plain e as exponential">
+

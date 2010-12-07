@@ -1,11 +1,11 @@
 <!-- Copyright (c) 2007 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label	"Add rule">
-<!ENTITY rule.label	"Rule dimensions">
+<!ENTITY windowTitle.label	"Add Rule">
+<!ENTITY rule.label	"Rule Dimensions">
 <!ENTITY rule.accesskey	"R">
-<!ENTITY ruleHeight.label	"Rule height">
+<!ENTITY ruleHeight.label	"Rule Height">
 <!ENTITY ruleHeight.accesskey	"H">
-<!ENTITY ruleWidth.label	"Rule width">
+<!ENTITY ruleWidth.label	"Rule Width">
 <!ENTITY ruleWidth.accesskey	"H">
 <!ENTITY left.label "Left">
 <!ENTITY center.label "Center">
@@ -20,8 +20,9 @@
 <!ENTITY other.label	"Other: ">
 <!ENTITY other.accesskey	"O">
 <!ENTITY ruleColor.label	"Rule color">
-<!ENTITY spaceHeight.label	"Vertical space height">
+<!--The following are used in vspaceforsection.xul -->
+<!ENTITY spaceHeight.label	"Vertical Space Height">
 <!ENTITY spaceHeight.accesskey	"H">
 <!ENTITY ruleColor.accesskey	"C">
 <!ENTITY vspaceWindowTitle.label	"Add vertical space">
-<!ENTITY  UnitsAre.label  "Units are:">
+<!ENTITY  UnitsAre.label  "Units Are:">
