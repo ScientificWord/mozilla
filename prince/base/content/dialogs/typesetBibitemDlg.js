@@ -76,7 +76,9 @@ function setDataFromReviseData(reviseData)
     if (msiGetBaseNodeName(labels[ix]) == "biblabel")
     {
       var serializer = new XMLSerializer();
-      gDialog.bibLabel = serializer.serializeToString(labels[ix]);
+      var labelKids = msiNavigationUtils.getSignificantContents(labels[ix]);
+      for (var jx = 0; jx < labelKids.length; ++jx)
+        gDialog.bibLabel += serializer.serializeToString(labelKids[jx]);
       break;
     }
   }
