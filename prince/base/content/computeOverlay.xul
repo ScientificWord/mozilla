@@ -463,8 +463,6 @@
           <menuitem label="&plottypevector.label;"      observes="cmd_MSIComputePlot3DVector"/>
         </menupopup>
       </menu>   
-      <menuseparator/>                                                                                                                                        
-      <menuseparator/>                                                                                                                                        
       <menu id="MSIPlot2DAMenu" label="&plot2damenu.label;" accesskey="&MSIComputePlotCmd2D.accesskey;">
         <menupopup id="MSIPlot2DPopup">
           <menuitem label="&plottyperec.label;"         observes="cmd_MSIComputePlot2DARectangular"/>
