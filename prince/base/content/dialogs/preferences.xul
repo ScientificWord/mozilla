@@ -7,12 +7,120 @@
             xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <prefpane id="prefGeneral" label="General">
     <preferences>
-      <preference id="pref1" name="pref.name" type="bool"/>
+      <preference id="defaultshell" 
+                  name="swp.defaultShell" 
+                  type="file"/>
+      <preference id="defaultGraphicsHSize" 
+                  name="swp.defaultGraphicsHSize" 
+                  type="int"/>
+      <preference id="defaultGraphicsVSize" 
+                  name="swp.defaultGraphicsVSize" 
+                  type="int"/>
+      <preference id="defaultGraphicsSizeUnits" 
+                  name="swp.defaultGraphicsSizeUnits" 
+                  type="string"/>
+      <preference id="saveintervalseconds" 
+                  name="swp.saveintervalseconds" 
+                  type="int"/>
+      <preference id="genTeXonsave" 
+                  name="swp.generateTeXonsave" 
+                  type="int"/>
+      <preference id="fastcursor.enabled" 
+                  name="fastcursor.enabled" 
+                  type="bool"/>
+      <preference id="tapsforrepeat" 
+                  name="fastcursor.tapsforrepeat" 
+                  type="int"/>
+      <preference id="millisecondsfortaps" 
+                  name="fastcursor.millisecondsfortaps" 
+                  type="int"/>
     </preferences>
-     
-    <description>.. UI elements that refer to the preferences above, e.g.:</description>
-    <checkbox id="check1" preference="pref1"
-              label="A check box" accesskey="B"/>
+
+    <tabbox>
+      <tabs>
+        <tab id="prefgeneral" label="General"/>
+        <tab id="prefgraphics" label="Graphics"/>
+      </tabs>
+      <tabpanels>
+        <tabpanel orient="vertical">
+          <label value="Default shell for startup" control="shellname"/>
+          <textbox id="shellname"
+                   preference="defaultshell" />
+          <separator class="thin"/>
+          <groupbox>
+            <caption label="Automatic saving"/>
+            <checkbox id="prefautosave" label="Enable silent automatic saving"
+                      accesskey=""
+                      oncommand=""/>
+            <hbox>
+              <textbox type="number" style="width: 5em;" label="Save interval in seconds" preference="saveintervalseconds"/>
+              <label value="Save interval in seconds"/>
+            </hbox>
+            <checkbox id="generatetex" label="Generate TeX on automatic save (for latexmk)" preference="genTeXonsave"/>
+          </groupbox>
+          <groupbox>
+            <caption label="Cursor advance to character"/>
+            <checkbox id="preffastcursor" label="Enable character find with arrow keys"
+                      accesskey=""
+                      oncommand=""
+                      preference="fastcursor.enabled"/>
+            <hbox>
+              <textbox type="number" style="width: 5em;" preference="tapsforrepeat"/>
+              <label value="Number of taps for arrow to autorepeat"/>
+            </hbox>
+          </groupbox>
+        </tabpanel>
+        <tabpanel orient="vertical">
+          <groupbox>
+            <caption label="Default size for new graphics"/>
+            <grid>
+              <columns>
+                <column flex="0"/>
+                <column flex="0"/>
+                <column flex="0"/>
+              </columns>
+              <rows>
+                <row><label value="Width:"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsHSize"/><label value="pixels"/></row>
+                <row><label value="Height:"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsVSize"/><label value="pixels"/></row>
+              </rows>
+            </grid>
+          </groupbox>
+          <groupbox>
+            <caption label="Default placement for new graphics"/>
+            <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);">
+            <hbox flex="1">
+              <vbox>
+                <radio id="inline" label="In line" radioGroup="placementRadioGroup"/>
+              </vbox>
+              <vbox>
+                <radio id="display" label="Displayed" radioGroup="placementRadioGroup"/>
+              </vbox>
+              <vbox>
+                <radio id="float" label="Floating" radioGroup="placementRadioGroup" oncommand="enableHere(this);"/>
+                <vbox>
+                  <checkbox id="placeForceHereCheck" label="Force here" observes="floatingPlacement"/>
+                  <checkbox id="placeHereCheck" label="Here" observes="floatingPlacement"/>
+                  <checkbox id="placeFloatsCheck" label="On a page of floats" observes="floatingPlacement"/>
+                  <checkbox id="placeTopCheck" label="Top of page" observes="floatingPlacement"/>
+                  <checkbox id="placeBottomCheck" label="Bottom of page" observes="floatingPlacement"/>
+                </vbox>
+              </vbox>
+              <vbox>
+                <radiogroup id="herePlacementRadioGroup" align="vertical" value="left" oncommand="enableHere(this);">
+                  <radio id="hereLeftRadio" label="Left" value="left" observes="herePlacement" />
+                  <radio id="hereRightRadio" label="Right" value="right" observes="herePlacement"/>
+                  <radio id="hereInsideRadio" label="Inside" value="inside" observes="herePlacement" />
+                  <radio id="hereOutsideRadio" label="Outside" value="outside" observes="herePlacement" />
+                  <radio id="hereFullWidthRadio" label="Full width" value="full" observes="herePlacement" />
+                </radiogroup>
+              </vbox>
+            </hbox>
+            </radiogroup>
+          </groupbox>
+        </tabpanel>
+      </tabpanels>
+    </tabbox>
+
   </prefpane>
 
   <prefpane id="prefEdit" label="Editor" />
