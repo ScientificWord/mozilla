@@ -951,14 +951,16 @@ char *MuPADWrapper::VARIABLEtoEstr(SEMANTICS_NODE * snode, int& error_code)
   // Analyzer has recorded the client ID of the owner in snode->owner_ID.
 
   U32 frame_ID = snode->owner_ID;
+  
   if (!frame_ID) {              // give ownership to the client requesting
     frame_ID = client_ID;       //  the current computation
   }
+  
   // See if we already have an engine name for this variable.
 
   ClientAliases_REC *client_aliases = GetClientAliasesRec(frame_ID);
-  NAME2AKA_REC *map = GetAKARec(client_aliases->AKAs_list,
-                                snode->canonical_ID, snode->contents);
+  NAME2AKA_REC *map = GetAKARec(client_aliases->AKAs_list, snode->canonical_ID, snode->contents);
+
   if (map) {
     size_t zln = strlen(map->alias);
     char *tmp = new char[zln + 1];
@@ -966,15 +968,25 @@ char *MuPADWrapper::VARIABLEtoEstr(SEMANTICS_NODE * snode, int& error_code)
     rv = tmp;
 
   } else {
-    rv = GetEngNameForVar(frame_ID, snode->contents,
-                          snode->canonical_ID);
+    rv = GetEngNameForVar(frame_ID, snode->contents, snode->canonical_ID);
   }
 
-  if (snode->bucket_list && snode->bucket_list->first_child) {
-//    SEMANTICS_NODE *s_qualifier = snode->bucket_list->first_child;
-    TCI_ASSERT(0);
-    // Qualified variables are now typed as SEM_TYP_QUALIFIED_VAR or SEM_TYP_INDEXED_VAR
+  const char *db_production = NULL;
+  U32 ID, subID;
+
+  if (GetdBaseNamedRecord("MUPADSTRS", snode->contents, &db_production, ID, subID)){
+     size_t zln = strlen(db_production);
+     char *tmp = new char[zln + 1];
+     strcpy(tmp, db_production);
+     rv = tmp;
   }
+
+////   if (snode->bucket_list && snode->bucket_list->first_child) {
+//// //    SEMANTICS_NODE *s_qualifier = snode->bucket_list->first_child;
+////     TCI_ASSERT(0);
+////     // Qualified variables are now typed as SEM_TYP_QUALIFIED_VAR or SEM_TYP_INDEXED_VAR
+////   }
+
   return rv;
 }
 
@@ -2562,6 +2574,7 @@ char *MuPADWrapper::POWERFORMtoEstr(SEMANTICS_NODE * s_powerform,
             bln += strlen(arg_str);
           rv = new char[bln];
           strcpy(rv, db_production);
+          arg_str = NestInParens(arg_str, false); 
           StrReplace(rv, bln, "%exponent%", arg_str);
           delete[] arg_str;
           done = true;
