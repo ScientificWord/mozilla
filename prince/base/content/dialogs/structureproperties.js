@@ -54,7 +54,9 @@ function startup()
     if (structureData.shortFormNode)
     {
       var serializer = new XMLSerializer();
-      structureData.shortFormStr = serializer.serializeToString(structureData.shortFormNode);
+      var shortKids = msiNavigationUtils.getSignificantContents(structureData.shortFormNode);
+      for (var jx = 0; jx < shortKids.length; ++jx)
+        structureData.shortFormStr += serializer.serializeToString(shortKids[jx]);
     }
     var editorInitializer = new msiEditorArrayInitializer();
     editorInitializer.addEditorInfo(shortFormEditor, structureData.shortFormStr, true);
