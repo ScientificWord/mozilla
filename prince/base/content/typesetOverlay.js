@@ -1040,8 +1040,8 @@ function doReviseManualBibItem(editorElement, bibitemNode, dlgData)
     }
     if (dlgData.bibLabel.length)
     {
-      for (ix = 0; ix < currLabelNode.childNodes.length; ++ix)
-        editor.deleteNode(currLabelNode.childNodes[ix]);
+      for (ix = currLabelNode.childNodes.length; ix > 0; --ix)
+        editor.deleteNode(currLabelNode.childNodes[ix-1]);
       editor.insertHTMLWithContext(dlgData.bibLabel, "", "", "", null, currLabelNode, 0, false);
       msiEditorEnsureElementAttribute(bibitemNode, "hasLabel", "true", editor);
     }

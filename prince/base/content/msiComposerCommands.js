@@ -8925,12 +8925,14 @@ function doReviseStructureNode(editor, origData, reviseData)
     }
     if (!origData.shortFormStr || (reviseData.newShortForm != origData.shortFormStr))
     {
-//      dump("In doReviseStructureNode(), shortTitleNode reports [" + shortTitleNode.childNodes.length + "] children.\n");
       for (var ix = shortTitleNode.childNodes.length; ix > 0 ; --ix)
         editor.deleteNode(shortTitleNode.childNodes[ix-1]);
       editor.insertHTMLWithContext(reviseData.newShortForm, "", "", "", null, shortTitleNode, 0, false);
     }
   }
-  else if (shortTitleNode)
-    parentEditor.deleteNode(shortTitleNode);
+  else 
+  {
+    if (shortTitleNode)
+      parentEditor.deleteNode(shortTitleNode);
+  }
 }
