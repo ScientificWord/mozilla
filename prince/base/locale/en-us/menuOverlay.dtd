@@ -119,6 +119,13 @@
 <!ENTITY viewTeXLog.label "TeX Log" >
 <!ENTITY viewTeXFile.accesskey "F" >
 <!ENTITY viewTeXFile.label "TeX File" >
+<!ENTITY viewSidebars.label "Sidebars">
+<!ENTITY viewsidebars.accesskey "S">
+<!ENTITY viewsidebarleft.label  "View sidebar on left">
+<!ENTITY viewsidebarright.label "View sidebar on right">
+<!ENTITY viewToolbars.label "Toolbars">
+<!ENTITY viewToolbars.accesskey "B">
+<!ENTITY viewToolbarsCustomize.label  "Customize">
 <!ENTITY viewFootnotes.label "Footnotes" >
 <!ENTITY viewFootnotes.accesskey "F" >
 <!ENTITY viewOtherNotes.label "Other Notes" >
@@ -563,14 +570,23 @@
 
 <!-- Tools menu -->
 <!ENTITY toolsmenu.label "Tools">
-<!ENTITY toolsmenu.accesskey "l">
+<!ENTITY toolsmenu.accesskey "s">
 <!ENTITY toolbrowser.accesskey "b">
 <!ENTITY toolplaineditor.accesskey "p">
 <!ENTITY toolsetfocus.accesskey "f">
-<!ENTITY venkman.label "JavaScript Debugger">
+<!ENTITY toolsmenuJavaScriptdebugger.label  "JavaScript debugger">
+<!-- JLF Review ENTITY venkman.label "JavaScript Debugger"> -->
+<!ENTITY toolsmenuJavaScriptdebugger.accesskey  "J">
+<!ENTITY toolsmenuExtensions.label  "Extensions">
+<!ENTITY toolsmenuExtensions.accesskey  "E">
+<!ENTITY toolsmenuThemes.label  "Themes">
+<!ENTITY toolsmenuThemes.accesskey  "T">
+
 <!ENTITY venkman.accesskey "d">
 <!ENTITY autoSubstituteDlg.label "Auto Substitution...">
 <!ENTITY autoSubstituteDlg.accesskey "A">
+<!ENTITY Options.label "Preferences...">
+<!ENTITY Options.accesskey "P">
 
 <!-- Go menu -->
 <!ENTITY gomenu.label "Go">
@@ -607,28 +623,43 @@
 <!ENTITY tagmenuFunctionKeys.accesskey "F">
 <!ENTITY tagmenuApply.label "Apply...">
 <!ENTITY tagmenuApply.accesskey "A">
+<!ENTITY tagmenuAdvanced.label  "Advanced">
+<!ENTITY tagmenuAdvanced.accesskey  "A">
 
 <!-- Debug menu items -->
 <!ENTITY debugMenu.label "Debug">
+<!ENTITY debugMenu.accesskey  "D">
 <!ENTITY newEditorTestPage.label "Prince with Test Page">
 <!ENTITY textEditorCmd.label "Plaintext Editor">
 <!ENTITY outputTextCmd.label "Output Plain Text">
 <!ENTITY outputHTMLCmd.label "Output XHTML">
 <!ENTITY insertTextCmd.label "Insert Text">
 <!ENTITY testSelectionCmd.label "Dump Selection">
+<!ENTITY testSelectionCmd.accesskey "D">
 <!ENTITY testTableLayoutCmd.label "Test Table Layout">
 <!ENTITY testDocumentCmd.label "Dump Document">
 <!ENTITY showEmbeddedCmd.label "Show Embedded Objects">
 <!ENTITY dumpContentCmd.label "Dump Content Tree">
 <!ENTITY runUnitTestsCmd.label "Run Unit Tests">
 <!ENTITY dumpUndoStack.label "Dump Undo Stack">
+<!ENTITY dumpUndoStack.accesskey  "U">
 <!ENTITY dumpRedoStack.label "Dump Redo Stack">
+<!ENTITY dumpRedoStack.accesskey  "R">
+<!ENTITY Configuration.label  "Configuration">
+<!ENTITY Configuration.accesskey  "C">
+<!ENTITY plugins.label  "Plugins">
+<!ENTITY plugins.accesskey  "P">
+<!ENTITY OpenAllSubdocs.label "Open all subdocs">
+<!ENTITY OpenAllSubdocs.accesskey "O">
 <!ENTITY executeJSTransactionViaTxmgr.label "Execute JS Transaction Via Transaction Manager">
 <!ENTITY executeJSTransactionViaEditor.label "Execute JS Transaction Via Editor">
 <!ENTITY startLogCmd.label "Start Log">
 <!ENTITY stopLogCmd.label "Stop Log">
 <!ENTITY runLogCmd.label "Run Log">
 <!ENTITY setFocusCmd.label "Set Focus">
+
+<!ENTITY windowmenu.label "Window">
+<!ENTITY windowmenu.accesskey  "W">
 
 <!-- Toolbar-only items -->
 <!ENTITY menuBar.tooltip "Menu Bar">

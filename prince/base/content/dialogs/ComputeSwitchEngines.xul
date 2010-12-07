@@ -29,8 +29,8 @@
   <hbox id="outer-box" flex="1">
     <vbox>
       <radiogroup id="engine">
-        <radio label="&Maple5.label;" id="Maple5" selected="false"/>
-        <radio label="&MuPAD.label;"  id="MuPAD"  selected="true"/>
+        <radio label="&Maple5.label;" accesskey="&Maple5.accesskey;" id="Maple5" selected="false"/>
+        <radio label="&MuPAD.label;"  accesskey="&MuPAD.accesskey;"  id="MuPAD"  selected="true"/>
       </radiogroup>
     </vbox>
   </hbox>

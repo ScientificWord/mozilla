@@ -44,6 +44,7 @@
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 @namespace xhtml url("http://www.w3.org/1999/xhtml");
 
+
 /* The defaults are WAY to big! */
 groupbox {
   margin:         2px 5px /* 4px 5px */;
@@ -84,7 +85,7 @@ groupbox {
 }
 
 .medwidth {
-  width: 7em;
+  width: 4.5em;
 }
 
 .wrap {
@@ -205,10 +206,6 @@ tree.list {
   list-style-image: url("chrome://global/skin/arrow/arrow-down.gif");
 }
 
-#Borders-Preview xhtml|table {
-  border-collapse: collapse;
-}
-
 #BordersPreview xhtml|td {
   border: 1px solid #CCCCCC;
 }
@@ -216,6 +213,7 @@ tree.list {
 #BordersPreview xhtml|td xhtml|* {
   visibility: hidden;
 }
+
 /* ::::: spelling dialog ::::: */
 
 #MisspelledWord {
