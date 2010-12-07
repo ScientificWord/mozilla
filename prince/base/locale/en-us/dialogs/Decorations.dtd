@@ -1,14 +1,14 @@
 <!-- Copyright (c) 2005 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label "Decorations">
+<!ENTITY windowTitle.label "Decoration">
 <!ENTITY windowPropertiesTitle.label "Decorations Properties">
 <!-- <!ENTITY colors.desc "You can override the page colors to make editing certain math objects easier."> -->
 
-<!ENTITY decorationsAboveButtonGroup.label "Decorations above:">
+<!ENTITY decorationsAboveButtonGroup.label "Decorations Above">
 <!ENTITY decorationsAboveButtonGroup.accesskey "v">
-<!ENTITY decorationsBelowButtonGroup.label "Decorations below:">
+<!ENTITY decorationsBelowButtonGroup.label "Decorations Below">
 <!ENTITY decorationsBelowButtonGroup.accesskey "b">
-<!ENTITY decorationsAroundButtonGroup.label "Decorations around:">
+<!ENTITY decorationsAroundButtonGroup.label "Decorations Around">
 <!ENTITY decorationsAroundButtonGroup.accesskey "d">
 
 <!-- <!ENTITY .tooltip "">  -->

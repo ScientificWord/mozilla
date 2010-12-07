@@ -30,6 +30,7 @@ pref("swp.tex.bindir","/usr/local/texlive/2009/bin/i386-linux");  /* for linux *
 pref("swp.sourceview.maxlinelength",        100);
 pref("swp.sourceview.minlinelength",         40);
 pref("swp.sourceview.indentincrement",       2);
+pref("swp.defaultGraphicsVSize", 200);
 
 pref("editor.author",                      "");
 
@@ -116,7 +117,7 @@ pref("editor.grid.snap",                     false);
 pref("editor.grid.size",                     0);
 pref("editor.resizing.preserve_ratio",       true);
 pref("editor.positioning.offset",            0);
-pref("general.skins.selectedSkin",           "classic");
+pref("general.skins.selectedSkin",           "modern");
 pref("spellchecker.enablerealtimespell",      true);
 pref("spellchecker.realtimespell.warning_color", "red");
 /* for Prince */

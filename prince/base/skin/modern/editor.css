@@ -1,8 +1,8 @@
 /* ==== editor.css ==========================================================
    == Styles shared throughout the Editor application.
-   ========================================================================== */
+   ==========================================================================
 
-@import url("chrome://communicator/skin/");
+@import url("chrome://communicator/skin/");  */
 @import url("chrome://prince/skin/sidebar.css");
 
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
@@ -71,7 +71,6 @@ listitem [readonly="true"] {
   color: red;
 }
 
-
 window,
 page,
 dialog,
@@ -81,15 +80,16 @@ tab,
 tabs,
 tabpanels,
 tabbox,
+toolbox,
 menupopup,
-menu,
 panel
 {
   -moz-appearance: none;
   background-color: rgb(243,243,243);
 }
 
-menu
+/*menu
 {
   background-color: transparent;
-}
+}*/
+
