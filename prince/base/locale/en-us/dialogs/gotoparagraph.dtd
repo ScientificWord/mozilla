@@ -13,5 +13,5 @@
 <!ENTITY absparanumber.accesskey "G">
 <!ENTITY relparanumber.accesskey "M">
 
-<!ENTITY wcWindowTitle.label "Document Word Count">
-<!ENTITY words.label "words">
+<!ENTITY wcWindowTitle.label "Count Words">
+<!ENTITY words.label "words in this document.">
