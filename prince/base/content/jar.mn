@@ -251,4 +251,5 @@ prince.jar:
   content/typesetGenSettingsDialog.js   (dialogs/typesetGenSettingsDialog.js)
   content/typesetBibitemDlg.xul         (dialogs/typesetBibitemDlg.xul)
   content/typesetBibitemDlg.js          (dialogs/typesetBibitemDlg.js)
-  content/preferences.xul          (dialogs/preferences.xul)
+  content/preferences.xul               (dialogs/preferences.xul)
+  content/preferences.js                (dialogs/preferences.js)
