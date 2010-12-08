@@ -96,6 +96,9 @@
 <!ENTITY noteButton.tooltip "Note" >
 <!ENTITY noteButton.label "Note" >
 
+<!ENTITY footnoteButton.tooltip "Footnote" >
+<!ENTITY footnoteButton.label "Footnote" >
+
 <!ENTITY markerButton.tooltip "Marker" >
 <!ENTITY markerButton.label "Marker" >
 
