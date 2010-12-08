@@ -3,8 +3,15 @@
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
 
+<!DOCTYPE prefwindow SYSTEM "chrome://prince/locale/preferences.dtd">
+
+
 <prefwindow id="appPreferences"
+            title="Preferences"
+            onload = "initialize();"
             xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/preferences.js"/>
   <prefpane id="prefGeneral" label="General">
     <preferences>
       <preference id="defaultshell" 
@@ -39,14 +46,11 @@
     <tabbox>
       <tabs>
         <tab id="prefgeneral" label="General"/>
+        <tab id="prefstartup" label="Start-up Shell"/>
         <tab id="prefgraphics" label="Graphics"/>
       </tabs>
       <tabpanels>
         <tabpanel orient="vertical">
-          <label value="Default shell for startup" control="shellname"/>
-          <textbox id="shellname"
-                   preference="defaultshell" />
-          <separator class="thin"/>
           <groupbox>
             <caption label="Automatic saving"/>
             <checkbox id="prefautosave" label="Enable silent automatic saving"
@@ -69,6 +73,49 @@
               <label value="Number of taps for arrow to autorepeat"/>
             </hbox>
           </groupbox>
+        </tabpanel>
+        <tabpanel orient="vertical">
+          <hbox style="height: 3in">
+            <vbox style="width:2in" >
+              <label value="Shell Directories:"/>
+              <tree id="dir-tree" flex="1" enableColumnDrag="true" seltype="single" 
+                     onselect="showShellsInDir(this);"
+                     datasources="rdf:files" flags="dont-build-content"
+                     sortActive="true" sortDirection="ascending"
+                     sortResource="http://homefile.netscape.com/NC-rdf#Name"
+                     ref="">
+                <treecols>
+                  <treecol id="Name" label="Name" primary="true" flex="1" persist="width ordinal hidden"
+                    sortactive="true" sortDirection = "ascending" />
+                  <splitter/>
+                  <treecol id="Date" label="Date" hidden="true" flex="1"  persist="width ordinal hidden"
+                    sortDirection = "ascending"/>
+                  <splitter/>
+                  <treecol id="Size" label="Size" hidden="true" flex="1"  persist="width ordinal hidden"
+                    sortDirection = "ascending"/>
+                </treecols>
+
+                  <template>
+                    <rule iscontainer="true">
+                      <treechildren  >
+                        <treeitem uri="rdf:*">
+                          <treerow>
+                            <treecell label="rdf:http://home.netscape.com/NC-rdf#Name"/>
+                               <!--   src="rdf:http://home.netscape.com/NC-rdf#Icon"/ -->
+                            <treecell label="rdf:http://home.netscape.com/WEB-rdf#LastModifiedDate"/>
+                            <treecell label="rdf:http://home.netscape.com/NC-rdf#Content-Length"/>
+                          </treerow>
+                        </treeitem>
+                      </treechildren>
+                    </rule>
+                  </template>
+              </tree>
+            </vbox> 
+            <vbox style="width:2in" >
+              <label value="Shell Files:"/>
+              <listbox preference="defaultshell" flex = "1" id="dircontents" oncommand="return onAccept();" ondblclick="acceptDialog();" />
+            </vbox>
+          </hbox>
         </tabpanel>
         <tabpanel orient="vertical">
           <groupbox>
@@ -124,8 +171,524 @@
   </prefpane>
 
   <prefpane id="prefEdit" label="Editor" />
-  <prefpane id="prefComp" label="Computation" />
-  <prefpane id="prefEngine" label="Engine" />
-  <prefpane id="prefPlots" label="Plots" />
-  <prefpane id="prefTypesetting" label="Typesetting" />
+  <prefpane id="prefComp" label="Computation">
+    <tabbox id="outer-box" flex="1">
+	    <tabs class="tabs-top">
+	     <tab label="&tabbar.input;"       selected="1" />
+	     <tab label="&tabbar.output;"      selected="0" />
+	     <tab label="&tabbar.matrices;"      selected="0" />
+	     <tab label="&tabbar.derivatives;" selected="0" />
+	     <tab label="&tabbar.entities;"    selected="0" />
+       <tab label="Engine" selected="0" />
+	    </tabs>
+
+      <tabpanels>
+        <tabpanel id="compusersettings.inputpage">
+         <vbox>
+          <groupbox>
+            <caption label="&logs.label;"/>
+            <hbox>
+              <description>&BaseLoge;</description>
+              <spacer flex="1"/>
+              <checkbox id="logs"/>
+            </hbox>
+          </groupbox>
+          <groupbox>
+            <caption label="&dots.label;"/>
+            <hbox>
+              <description>&DotAccentMeansDerivative.label;</description>
+              <spacer flex="1"/>
+              <checkbox id="dots"/>
+            </hbox>
+          </groupbox>
+          <groupbox>
+            <caption label="&bar.label;"/>
+            <hbox>
+              <description>&OverbarMeansConjugate.label;</description>
+              <spacer flex="1"/>
+              <checkbox id="bar"/>
+            </hbox>
+          </groupbox>
+          <groupbox>
+            <caption label="i"/>
+            <hbox>
+              <description>&RecognizePlainIasImaginary.label;</description>
+              <spacer flex="1"/>
+              <checkbox id="i_imaginary"/>
+            </hbox>
+          </groupbox>
+          <groupbox>
+            <caption label="j"/>
+            <hbox>
+              <description>&RecognizejAsImaginaryI.label;</description>
+              <spacer flex="1"/>
+              <checkbox id="j_imaginary"/>
+            </hbox>
+          </groupbox>
+          <groupbox>
+            <caption label="e"/>
+            <hbox>
+              <description>&RecognizePlaineasExponential;</description>
+              <spacer flex="1"/>
+              <checkbox id="e_exp"/>
+            </hbox>
+          </groupbox>
+         </vbox>
+        </tabpanel>      
+
+        <tabpanel id="compusersettings.outputpage">
+         <vbox>
+          <groupbox>
+            <caption label="&scinotation.label;"/>
+            <hbox>
+              <description>Digits rendered</description>
+              <spacer flex="1"/>
+              <textbox id="digits" style="width: 3em"/>
+            </hbox>
+            <vbox>
+              <hbox>
+                <description>Upper threshold</description>
+                <spacer flex="1"/>
+                <textbox id="upper" style="width: 3em"/>
+              </hbox>
+              <description>(digits left of decimal before switching)</description>
+            </vbox>
+            <vbox>
+              <hbox>
+                <description>Lower threshold</description>
+                <spacer flex="1"/>
+                <textbox id="lower" style="width: 3em"/>
+              </hbox>
+              <description>(zeros to right of decimal before switching)</description>
+            </vbox>
+          </groupbox>
+          <groupbox>
+            <caption label="&mixednum.label;"/>
+            <hbox>
+              <description>Output fractions as mixed numbers</description>
+              <spacer flex="1"/>
+              <checkbox id="mixednum"/>
+            </hbox>
+          </groupbox>
+          <groupbox>
+            <caption label="&trigargs.label;"/>
+            <hbox>
+              <description>Use Parentheses for Trig Functions</description>
+              <spacer flex="1"/>
+              <checkbox id="trigargs"/>
+            </hbox>
+            <hbox>
+              <description>Use "arc" prefix for inverse Trig Functions</description>
+              <spacer flex="1"/>
+              <checkbox id="usearc"/>
+            </hbox>
+          </groupbox>
+         </vbox>
+        </tabpanel>      
+
+        <tabpanel id="compusersettings.fencespage">
+         <vbox>
+          <groupbox>
+            <caption label="&matrices.label;"/>
+            <hbox>
+              <description>Default matrix delimiter</description>
+              <spacer flex="1"/>
+              <radiogroup id="matrix_delim">
+                 <radio label="&matrix_none.label;"     id="matrix_none"      selected="true"/>
+                 <radio label="&matrix_brackets.label;" id="matrix_brackets"  selected="false"/>
+                 <radio label="&matrix_parens.label;"   id="matrix_parens"    selected="false"/>
+              </radiogroup>
+            </hbox>
+          </groupbox>
+         </vbox>
+        </tabpanel>      
+
+        <tabpanel id="compusersettings.derivpage">
+         <vbox>
+          <groupbox>
+            <caption label="&deriv.label;"/>
+            <radiogroup id="derivformat">
+              <radio label="&derivformat_input.label;"        id="derivformat_input"         selected="true"/>
+              <radio label="&derivformat_d.label;"            id="derivformat_d"             selected="false"/>
+              <radio label="&derivformat_D.label;"            id="derivformat_D"             selected="false"/>
+              <radio label="&derivformat_primes.label;"       id="derivformat_primes"        selected="false"/>
+              <radio label="&derivformat_dots.label;"         id="derivformat_dots"          selected="false"/>
+            </radiogroup>
+          </groupbox>
+          <groupbox>
+            <caption label="&primeasn.label;"/>
+            <hbox>
+              <description>switch from primes to (n)</description>
+              <spacer flex="1"/>
+              <textbox id="primesasn" style="width: 3em"/>
+            </hbox>
+          </groupbox>
+          <groupbox>
+            <caption label="&primederiv.label;"/>
+            <hbox>
+              <description>Prime means derivative</description>
+              <spacer flex="1"/>
+              <checkbox id="primederiv"/>
+            </hbox>
+          </groupbox>
+         </vbox>
+        </tabpanel>      
+
+        <tabpanel id="compusersettings.entitiespage">
+         <vbox>
+          <groupbox>
+            <caption label="&imagi_output.label;"/>
+            <radiogroup id="imagi">
+              <radio label="&imagi_i.label;"        id="imagi_i"        selected="true"/>
+              <radio label="&imagi_j.label;"        id="imagi_j"        selected="false"/>
+              <radio label="&imagi_imagi.label;"    id="imagi_imagi"    selected="false"/>
+            </radiogroup>
+          </groupbox>
+          <groupbox>
+            <caption label="&diffD_output.label;"/>
+            <radiogroup id="diffD">
+              <radio label="&diffD_D.label;"        id="diffD_D"        selected="true"/>
+              <radio label="&diffD_diffD.label;"    id="diffD_diffD"    selected="false"/>
+            </radiogroup>
+          </groupbox>
+          <groupbox>
+            <caption label="&diffd_output.label;"/>
+            <radiogroup id="diffd">
+              <radio label="&diffd_d.label;"        id="diffd_d"        selected="true"/>
+              <radio label="&diffd_diffd.label;"    id="diffd_diffd"    selected="false"/>
+            </radiogroup>
+          </groupbox>
+          <groupbox>
+            <caption label="&expe_output.label;"/>
+            <radiogroup id="expe">
+              <radio label="&expe_e.label;"         id="expe_d"         selected="true"/>
+              <radio label="&expe_expe.label;"      id="expe_expe"      selected="false"/>
+            </radiogroup>
+          </groupbox>
+         </vbox>
+        </tabpanel>
+        <tabpanel>
+          <vbox>
+            <groupbox>
+              <caption label="&Scope.label;"/>
+              <radiogroup id="scope">
+                <radio label="&Default.label;" id="default_scope" selected="true"/>
+                <radio label="&ThisDocOnly.label;" id="this_scope" selected="false"/>
+              </radiogroup>
+            </groupbox>
+            <separator/>
+            <hbox>
+              <description>&EngineOn.label;</description>
+              <checkbox id="engine_on" checked="true"/>
+            </hbox>
+            <hbox>
+              <description>&desc.Digits;</description>
+              <spacer flex="1"/>
+              <textbox id="digits" style="width: 3em"/>
+            </hbox>
+            <groupbox>
+              <caption label="&solve.label;"/>
+              <hbox>
+                <description>&desc.Max;</description>
+                <spacer flex="1"/>
+                <textbox id="degree" type="number" decimalplaces="0" min="0" increment="1" 
+                  style="width: 3em" value="2"/>
+              </hbox>
+              <hbox>
+                <description>&desc.Principal;</description>
+                <spacer flex="1"/>
+                <checkbox id="principal"/>
+              </hbox>
+              <hbox>
+                <description>&desc.Ignore;</description>
+                <spacer flex="1"/>
+                <checkbox id="special"/>
+              </hbox>
+            </groupbox>
+            <groupbox>
+              <caption label="&debug.label;"/>
+              <hbox>
+                <description>&desc.MMLSent;</description>
+              <spacer flex="1"/>
+                <checkbox id="logSent"/>
+              </hbox>
+              <hbox>
+                <description>&desc.MMLRec;</description>
+              <spacer flex="1"/>
+                <checkbox id="logReceived"/>
+              </hbox>
+              <hbox>
+                <description>&desc.EngSent;</description>
+              <spacer flex="1"/>
+                <checkbox id="engSent"/>
+              </hbox>
+              <hbox>
+                <description>&desc.EngRec;</description>
+              <spacer flex="1"/>
+                <checkbox id="engReceived"/>
+              </hbox>
+            </groupbox>
+          </vbox>
+        </tabpanel>      
+      </tabpanels>
+    </tabbox>
+  </prefpane>
+
+  <prefpane id="prefPlots" label="Plots">
+    <tabbox id="outer-box" flex="1">
+      <tabs class="tabs-top">
+	    <tab label="&tabbar.axes;"        selected="0" />
+	    <tab label="&tabbar.layout;"      selected="0" />
+	    <tab label="&tabbar.labelling;"   selected="0" />
+	    <tab label="&tabbar.view;"        selected="0" />
+	  </tabs>
+    <tabpanels>
+      <tabpanel id="Axes">
+        <vbox>
+          <groupbox>
+          <caption label="&axisaxesscale.label;" />
+          <radiogroup id="axisscale" orient="horizontal">
+            <radio label="&axislinear.label;"  value="LinLin"      selected="true"/>
+            <radio label="&axislinlog.label;"  value="LinLog"      selected="false"/>
+            <radio label="&axisloglin.label;"  value="LogLin"      selected="false"/>
+            <radio label="&axisloglog.label;"  value="LogLog"      selected="false"/>
+          </radiogroup>
+          <checkbox id="equalscale" label="&axisequal.label;"/>
+          </groupbox>
+
+          <groupbox>
+            <caption>Axis labels</caption>
+            <grid>
+              <columns>
+                <column/>
+                <column/>
+              </columns>
+              <rows>
+                <row>        
+                  <label value="&axisxaxis.label;"/>
+                  <textbox style="width: 10em;" id="XAxisLabel" cols="20"/>
+                </row>
+                <row>
+                  <label value="&axisyaxis.label;"/>
+                  <textbox style="width: 10em;" id="YAxisLabel" cols="20"/>
+                </row>
+                <row>
+                  <label value="&axiszaxis.label;"/>
+                  <textbox style="width: 10em;" id="ZAxisLabel" cols="20"/>
+                </row>
+              </rows>
+            </grid>
+          </groupbox>
+          <groupbox>
+            <hbox>
+              <description>&axistickmark.label;</description>
+              <menulist id="XTickCount">
+                <menupopup> 
+                  <menuitem label="&none.label;"   value="none"/>
+                  <menuitem label="&low.label;"    value="low"/>
+                  <menuitem label="&normal.label;" value="normal"/>
+                  <menuitem label="&high.label;"   value="high"/>
+                </menupopup>
+              </menulist>
+            </hbox>
+            <!-- <checkbox id="disableticks" label="&axisdisable.label;"/> -->
+            <checkbox id="axestips"     label="&axistips.label;"/>
+            <checkbox id="gridlines"    label="&axisgridlines.label;"/>
+          </groupbox>
+
+          <groupbox>
+            <caption label="&axistype.label;" />
+            <radiogroup id="axistype" orient= "horizontal">
+              <grid>
+                <columns>
+                  <column/>
+                  <column/>
+                  <column/>
+                </columns>
+                <rows>
+                  <row>
+                    <radio label="&unspecified.label;" value="unspecified" selected="true"/>
+                    <radio label="&axisauto.label;"    value="Automatic"   selected="false"/>
+                    <radio label="&axisnormal.label;"  value="Normal"      selected="false"/>
+                  </row>
+                  <row>
+                    <radio label="&axisboxed.label;"   value="Boxed"       selected="false"/>
+                    <radio label="&axisframed.label;"  value="Frame"       selected="false"/>
+                    <radio label="&axisnone.label;"    value="None"        selected="false"/>
+                  </row>
+                </rows>
+              </grid>
+            </radiogroup>
+          </groupbox>
+       </vbox>
+      </tabpanel>      
+
+      <tabpanel id="Layout" orient="vertical">
+        <groupbox>
+          <caption label="Default size for new plots"/>
+          <grid>
+            <columns>
+              <column flex="0"/>
+              <column flex="0"/>
+              <column flex="0"/>
+            </columns>
+            <rows>
+              <row><label value="Width:"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsHSize"/><label value="pixels"/></row>
+              <row><label value="Height:"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsVSize"/><label value="pixels"/></row>
+            </rows>
+          </grid>
+        </groupbox>
+        <groupbox>
+          <caption label="Default placement for new plots"/>
+          <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);">
+          <hbox flex="1">
+            <vbox>
+              <radio id="inline" label="In line" radioGroup="placementRadioGroup"/>
+            </vbox>
+            <vbox>
+              <radio id="display" label="Displayed" radioGroup="placementRadioGroup"/>
+            </vbox>
+            <vbox>
+              <radio id="float" label="Floating" radioGroup="placementRadioGroup" oncommand="enableHere(this);"/>
+              <vbox>
+                <checkbox id="placeForceHereCheck" label="Force here" observes="floatingPlacement"/>
+                <checkbox id="placeHereCheck" label="Here" observes="floatingPlacement"/>
+                <checkbox id="placeFloatsCheck" label="On a page of floats" observes="floatingPlacement"/>
+                <checkbox id="placeTopCheck" label="Top of page" observes="floatingPlacement"/>
+                <checkbox id="placeBottomCheck" label="Bottom of page" observes="floatingPlacement"/>
+              </vbox>
+            </vbox>
+            <vbox>
+              <radiogroup id="herePlacementRadioGroup" align="vertical" value="left" oncommand="enableHere(this);">
+                <radio id="hereLeftRadio" label="Left" value="left" observes="herePlacement" />
+                <radio id="hereRightRadio" label="Right" value="right" observes="herePlacement"/>
+                <radio id="hereInsideRadio" label="Inside" value="inside" observes="herePlacement" />
+                <radio id="hereOutsideRadio" label="Outside" value="outside" observes="herePlacement" />
+                <radio id="hereFullWidthRadio" label="Full width" value="full" observes="herePlacement" />
+              </radiogroup>
+            </vbox>
+          </hbox>
+          </radiogroup>
+        </groupbox>
+      </tabpanel>      
+
+      <tabpanel id="Labelling">
+        <vbox>
+          <groupbox>        
+            <label value="&labelingkey.label;"/>
+            <textbox id="Key"/>
+          </groupbox>
+          <groupbox>        
+            <label value="&labelingname.label;"/>
+            <textbox id="Name"/>
+          </groupbox>
+          <groupbox>
+            <caption label="&labelingcaption.label;"/>
+            <radiogroup id="captionplacement" orient="horizontal">
+              <radio label="&labelingabove.label;"    value="labelabove" selected="false"/>
+              <radio label="&labelingbelow.label;"    value="labelbelow" selected="true"/>
+            </radiogroup>
+            <textbox id="CaptionText"  multiline="true" rows="4" cols="40" 
+                   caption="&labelingcaptiontext.label;" />
+          </groupbox>
+       </vbox>
+      </tabpanel>      
+
+      <tabpanel id="View defaults">
+        <vbox>
+          <row>
+            <label id="bgcolor" control="TextButton" value="Background Color: " />
+            <msibutton id="bgcolorbutton" class="color-button" oncommand="GetGraphColor('BGColor');">
+               <spacer id="plotCW" class="color-well"/>
+            </msibutton>
+          </row>
+          <separator/>
+          <vbox>
+            <checkbox id="OrthogonalProjection" label="Orthogonal Projection"/>
+            <checkbox id="KeepUp"               label="Keep Up Vector"/>
+            <checkbox id="defaultviewintervals" label="&viewinterval.label;"/>
+          </vbox>
+          <groupbox>
+            <caption>Initial view intervals</caption>        
+            <hbox>
+              <label value="&axisxrange.label;"/>
+              <textbox id="xrangelow" style="width: 5em;" cols="6"/>
+              <textbox id="xrangehigh" style="width: 5em;" cols="6"/>
+            </hbox>
+            <hbox>
+              <label value="&axisyrange.label;"/>
+              <textbox id="yrangelow" style="width: 5em;" cols="6"/>
+              <textbox id="yrangehigh" style="width: 5em;" cols="6"/>
+            </hbox>
+            <hbox>
+              <label value="&axiszrange.label;"/>
+              <textbox id="zrangelow" style="width: 5em;" cols="6"/>
+              <textbox id="zrangehigh" style="width: 5em;" cols="6"/>
+            </hbox>
+          </groupbox>
+
+       </vbox>
+      </tabpanel>      
+
+    </tabpanels>
+    </tabbox>
+
+  </prefpane>
+  <prefpane id="prefTypesetting" label="Typesetting">
+    <tabbox>
+      <tabs>
+        <tab id="prefgeneralTypesetting" label="General"/>
+        <tab id="prefexpertTypesetting" label="Expert"/>
+      </tabs>
+      <tabpanels>
+        <tabpanel orient="vertical">
+          <hbox flex="1">
+            <vbox>
+              <groupbox>
+                <caption label="&miscellaneousOptions.label;" />
+                <checkbox id="warnNonPortableFilenamesCheckbox" label="&warnNonPortableFilenamesCheckbox.label;" accesskey="&warnNonPortableFilenamesCheckbox.accesskey;"/>
+                <checkbox id="useOldAuxFilesCheckbox" label="&useOldAuxFilesCheckbox.label;" accesskey="&useOldAuxFilesCheckbox.accesskey;"/>
+                <checkbox id="passThroughUnicodeMacro" label="&passThroughUnicodeMacro.label;" accesskey="&passThroughUnicodeMacro.accesskey;" />
+              </groupbox>
+              <spacer class="spacer" flex="0"/>
+              <groupbox>
+                <caption label="&bibTexOptions.label;" />
+                <label value="&bibTeXExecutable.label;" accesskey="&bibTeXExecutable.accesskey;" control="bibTeXExecutableTextbox"/>
+                <hbox>
+                  <textbox id="bibTeXExecutableTextbox" style="width: 18em" />
+  			          <msibutton id="browseBibTeXExecutable" label="&browseBibTeXExecutable.label;" accesskey="&browseBibTeXExecutable.accesskey;" oncommand="onBrowseBibTeXExecutable();"/>
+                </hbox>
+                <spacer class="spacer" flex="0"/>
+                <label value="&bibTeXDatabaseDir.label;" accesskey="&bibTeXDatabaseDir.accesskey;" control="bibTeXDatabaseDirTextbox"/>
+                <hbox>
+                  <textbox id="bibTeXDatabaseDirTextbox" style="width: 18em" />
+  			          <msibutton id="browseBibTeXDatabaseDir" label="&browseBibTeXDatabaseDir.label;" accesskey="&browseBibTeXDatabaseDir.accesskey;" oncommand="onBrowseBibTeXDatabaseDir();"/>
+                </hbox>
+                <spacer class="spacer" flex="0"/>
+                <label value="&bibTeXStyleDir.label;" accesskey="&bibTeXStyleDir.accesskey;" control="bibTeXStyleDirTextbox"/>
+                <hbox>
+                  <textbox id="bibTeXStyleDirTextbox" style="width: 18em" />
+  			          <msibutton id="browseBibTeXStyleDir" label="&browseBibTeXStyleDir.label;" accesskey="&browseBibTeXStyleDir.accesskey;" oncommand="onBrowseBibTeXStyleDir();"/>
+                </hbox>
+              </groupbox>
+              <!-- hbox -->
+                <groupbox>
+                  <caption label="&PDFOptions.label;" />
+  			          <msibutton id="pdfGraphicsSettings" label="&pdfGraphicsSettings.label;" accesskey="&pdfGraphicsSettings.accesskey;" oncommand="doPDFGraphicsSettings();"/>
+                  <checkbox id="convertTeXLinksToPDF" label="&convertTeXLinksToPDF.label;" accesskey="&convertTeXLinksToPDF.accesskey;" />
+                </groupbox>
+                <!-- groupbox>
+                  <caption label="&portableLaTeXOptions.label;" />
+  			          <msibutton id="portableLaTeXGraphicsSettings" label="&portableLaTeXGraphicsSettings.label;" accesskey="&portableLaTeXGraphicsSettings.accesskey;" oncommand="doPortableLaTeXGraphicsSettings();"/>
+                  <checkbox id="passThroughUnicodeMacro" label="&passThroughUnicodeMacro.label;" accesskey="&passThroughUnicodeMacro.accesskey;" />
+                </groupbox>
+              </hbox -->
+            </vbox>
+          </hbox>
+        </tabpanel>
+        <tabpanel/>
+      </tabpanels>
+    </tabbox>
+  </prefpane>
+
 </prefwindow>
