@@ -128,6 +128,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_msiReviseRules",   msiReviseRulesCommand);
   commandTable.registerCommand("cmd_msiReviseBreaks",  msiReviseBreaksCommand);
   commandTable.registerCommand("cmd_note", msiNoteCommand);
+  commandTable.registerCommand("cmd_footnote", msiFootnoteCommand);
   commandTable.registerCommand("cmd_frame", msiFrameCommand);
   commandTable.registerCommand("cmd_citation", msiCitationCommand);
   commandTable.registerCommand("cmd_reviseCitation", msiReviseCitationCommand);
@@ -7030,6 +7031,27 @@ var msiNoteCommand =
     //temporary
     // need to get current note if it exists -- if none, initialize as follows 
     msiNote(null, editorElement);
+  }
+};
+
+var msiFootnoteCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+
+    return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement));
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    //temporary
+    // need to get current note if it exists -- if none, initialize as follows 
+    msiNote(null, editorElement, 'footnote');
   }
 };
 
