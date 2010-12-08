@@ -52,11 +52,11 @@
 <!ENTITY filepreview.accesskey "w">
 <!ENTITY sendPageCmd.label "Send Page...">
 <!ENTITY sendPage.accesskey "g">
-<!ENTITY printSetupCmd.label "Print Setup...">
+<!ENTITY printSetupCmd.label "Page Setup...">
 <!ENTITY fileprintsetup.accesskey "u">
 <!ENTITY printPreviewCmd.label "Print Preview">
 <!ENTITY fileprintpreview.accesskey "v">
-<!ENTITY printCmd.label "Print...">
+<!ENTITY printCmd.label "Print">
 <!ENTITY printButtonCmd.label "Print...">
 <!ENTITY fileprint.accesskey "p">
 <!ENTITY fileprint.keybinding "p">
@@ -121,8 +121,8 @@
 <!ENTITY viewTeXFile.label "TeX File" >
 <!ENTITY viewSidebars.label "Sidebars">
 <!ENTITY viewsidebars.accesskey "S">
-<!ENTITY viewsidebarleft.label  "View sidebar on left">
-<!ENTITY viewsidebarright.label "View sidebar on right">
+<!ENTITY viewsidebarleft.label  "View Sidebar on Left">
+<!ENTITY viewsidebarright.label "View Sidebar on Right">
 <!ENTITY viewToolbars.label "Toolbars">
 <!ENTITY viewToolbars.accesskey "B">
 <!ENTITY viewToolbarsCustomize.label  "Customize">
@@ -583,7 +583,7 @@
 <!ENTITY toolsmenuThemes.accesskey  "T">
 
 <!ENTITY venkman.accesskey "d">
-<!ENTITY autoSubstituteDlg.label "Auto Substitution...">
+<!ENTITY autoSubstituteDlg.label "Automatic Substitution...">
 <!ENTITY autoSubstituteDlg.accesskey "A">
 <!ENTITY Options.label "Preferences...">
 <!ENTITY Options.accesskey "P">

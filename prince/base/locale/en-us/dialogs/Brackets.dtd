@@ -5,8 +5,8 @@
 
 <!-- <!ENTITY colors.desc "You can override the page colors to make editing certain math objects easier."> -->
 
-<!ENTITY leftBracketGroup.label "Left Bracket">
-<!ENTITY rightBracketGroup.label "Right Bracket">
+<!ENTITY leftBracketGroup.label "Left Brackets">
+<!ENTITY rightBracketGroup.label "Right Brackets">
 
 <!ENTITY leftBracketGroup.accesskey "L">
 <!ENTITY rightBracketGroup.accesskey "R">

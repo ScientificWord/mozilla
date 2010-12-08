@@ -40,7 +40,7 @@
 <!ENTITY LinkURLBox.label "Link Location">
 <!ENTITY LinkTextMessage.label "Enter text to display for the link:">
 <!ENTITY makeLinkTextMessage.accessKey  "t">
-<!ENTITY LinkURLEditField.label "Enter a web page location, a local file or select a marker from the popup list">
+<!ENTITY LinkURLEditField.label "Enter a web page location, a local file or select a marker from the popup list:">
 <!ENTITY LinkURLEditField.accessKey "URL is relative to document location">
 <!ENTITY makeUrlRelative.label "URL is relative to document location">
 <!ENTITY makeUrlRelative.accessKey "r">
