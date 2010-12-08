@@ -975,6 +975,38 @@ toolbar[iconsize="small"] #noteButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_note-disabled-sm.png");
 }
 
+#footnoteButton {
+  list-style-image: url("chrome://prince/skin/icons/type_footnote.png");
+}
+
+toolbar[iconsize="small"] #footnoteButton {
+  list-style-image: url("chrome://prince/skin/icons/type_footnote-sm.png");
+}
+
+#footnoteButton:hover {
+  list-style-image: url("chrome://prince/skin/icons/type_footnote-hover.png");
+}
+
+toolbar[iconsize="small"] #footnoteButton:hover {
+  list-style-image: url("chrome://prince/skin/icons/type_footnote-hover-sm.png");
+}
+
+#footnoteButton:hover:active {
+  list-style-image: url("chrome://prince/skin/icons/type_footnote-active.png");
+}
+
+toolbar[iconsize="small"] #footnoteButton:hover:active {
+  list-style-image: url("chrome://prince/skin/icons/type_footnote-active-sm.png");
+}
+
+#footnoteButton[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/type_footnote-disabled.png");
+}
+
+toolbar[iconsize="small"] #footnoteButton[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/type_footnote-disabled-sm.png");
+}
+
 #markerButton {
   list-style-image: url("chrome://prince/skin/icons/type_marker.png");
 }
