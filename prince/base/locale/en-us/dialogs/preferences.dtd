@@ -1,0 +1,284 @@
+<!-- Copyright (c) 2010 MacKichan Software, Inc.  All Rights Reserved. -->
+<!ENTITY miscellaneousOptions.label "Miscellaneous Options">
+<!ENTITY warnNonPortableFilenamesCheckbox.label "Warn about non-portable filenames">
+<!ENTITY warnNonPortableFilenamesCheckbox.accesskey "W">
+<!ENTITY useOldAuxFilesCheckbox.label "Use old .aux files if possible">
+<!ENTITY useOldAuxFilesCheckbox.accesskey "a">
+<!ENTITY bibTexOptions.label "BibTeX Options">
+<!ENTITY bibTeXExecutable.label "Path to BibTeX program">
+<!ENTITY bibTeXExecutable.accesskey "B">
+<!ENTITY browseBibTeXExecutable.label "Browse">
+<!ENTITY browseBibTeXExecutable.accesskey "r">
+<!ENTITY bibTeXDatabaseDir.label "BibTeX database directory">
+<!ENTITY bibTeXDatabaseDir.accesskey "d">
+<!ENTITY browseBibTeXDatabaseDir.label "Browse">
+<!ENTITY browseBibTeXDatabaseDir.accesskey "o">
+<!ENTITY bibTeXStyleDir.label "BibTeX style directory">
+<!ENTITY bibTeXStyleDir.accesskey "s">
+<!ENTITY browseBibTeXStyleDir.label "Browse">
+<!ENTITY browseBibTeXStyleDir.accesskey "w">
+<!ENTITY PDFOptions.label "PDF Options">
+<!ENTITY pdfGraphicsSettings.label "PDF Graphics Settings">
+<!ENTITY pdfGraphicsSettings.accesskey "P">
+<!ENTITY convertTeXLinksToPDF.label "Convert .tex link targets to .pdf">
+<!ENTITY convertTeXLinksToPDF.accesskey "C">
+<!ENTITY portableLaTeXOptions.label "Portable LaTeX Options">
+<!ENTITY portableLaTeXGraphicsSettings.label "Portable laTeX Graphics Settings">
+<!ENTITY portableLaTeXGraphicsSettings.accesskey "G">
+<!ENTITY passThroughUnicodeMacro.label "Pass through Unicode macro">
+<!ENTITY passThroughUnicodeMacro.accesskey "U">
+
+<!ENTITY tabbar.input        "Input">
+<!ENTITY tabbar.output       "Output">
+<!ENTITY tabbar.matrices     "Matrices">
+<!ENTITY tabbar.derivatives  "Derivatives">
+<!ENTITY tabbar.entities     "Entities">
+
+
+<!ENTITY scinotation.label        "Scientific Notation Output">
+
+<!ENTITY mixednum.label           "Rational Numbers">
+
+<!ENTITY trigargs.label           "Trigonometric Functions">
+
+<!ENTITY fences.label             "Fence Output">
+<!ENTITY mfenced.label              "mfenced">
+<!ENTITY chars.label                "matched characters (), {}, []">
+
+<!ENTITY matrices.label           "Matrices">
+<!ENTITY matrix_none.label          "none">
+<!ENTITY matrix_brackets.label      "[]">
+<!ENTITY matrix_parens.label        "()">
+
+<!ENTITY logs.label               "Base of Log">
+<!ENTITY dots.label               "Dot Accent">
+<!ENTITY bar.label                "Bar Accent">
+
+<!ENTITY deriv.label              "Derivative Output Notation">
+<!ENTITY derivformat_input.label    "input notation">
+<!ENTITY derivformat_d.label        "d/dx">
+<!ENTITY derivformat_D.label        "D">
+<!ENTITY derivformat_primes.label   "primes">
+<!ENTITY derivformat_dots.label     "dots">
+
+<!ENTITY primeasn.label           "Derivatives as Primes">
+<!ENTITY primederiv.label         "Prime Notation">
+
+<!ENTITY imagi_output.label       "Imaginary i Output">
+<!ENTITY imagi_i.label              "i">
+<!ENTITY imagi_j.label              "j">
+<!ENTITY imagi_imagi.label          "ImaginaryI">
+
+<!ENTITY diffD_output.label       "Differential D Output">
+<!ENTITY diffD_D.label              "D">
+<!ENTITY diffD_diffD.label          "CapitalDifferentialD">
+
+<!ENTITY diffd_output.label       "Differential d Output">
+<!ENTITY diffd_d.label              "d">
+<!ENTITY diffd_diffd.label          "DifferentialD">
+
+<!ENTITY expe_output.label        "Exponential e Output">
+<!ENTITY expe_e.label               "e">
+<!ENTITY expe_expe.label            "ExponentialE">
+
+<!ENTITY  Scope.label "Scope">
+<!ENTITY  ThisDocOnly.label "This document only">
+<!ENTITY  BaseLoge  "Base of log is e (otherwise 10)">
+<!ENTITY  DotAccentMeansDerivative.label  "Dot accent means derivative">
+<!ENTITY OverbarMeansConjugate.label  "Overbar accent means conjugate">
+<!ENTITY RecognizePlainIasImaginary.label "Recognize plain i as imaginary">
+<!ENTITY  RecognizejAsImaginaryI.label  "Recognize j as imaginary i">
+<!ENTITY  RecognizePlaineasExponential  "Recognize plain e as exponential">
+
+<!ENTITY solve.label "Solve Options">
+<!ENTITY debug.label "Debugging">
+
+<!ENTITY desc.Digits    "Digits">
+<!ENTITY desc.Max       "Maximum Degree">
+<!ENTITY desc.Principal "Principal Value Only">
+<!ENTITY desc.Ignore    "Ignore Special Cases">
+<!ENTITY desc.MMLSent   "Log MathML commands sent">
+<!ENTITY desc.MMLRec    "Log MathML content received">
+<!ENTITY desc.EngSent   "Log engine strings sent">
+<!ENTITY desc.EngRec    "Log engine strings received">
+<!ENTITY Scope.label  "Scope">
+<!ENTITY Default.label  "Default">
+<!ENTITY ThisDocOnly.label  "This document only">
+<!ENTITY EngineOn.label "Engine On">
+
+<!ENTITY windowTitleP.label  "Plot User Settings">
+<!ENTITY plotarguments.label  "Plot Arguments">
+
+<!ENTITY tabbar.layout            "Layout">
+<!ENTITY tabbar.axes              "Axes">
+<!ENTITY tabbar.items             "Items Plotted">
+<!ENTITY tabbar.labelling         "Labelling">
+<!ENTITY tabbar.view              "View">
+
+<!ENTITY command.delete           "Delete">
+
+<!ENTITY plotstyles.label         "Plot Style Options">
+<!ENTITY plotcs.label             "Coordinate System">
+<!ENTITY plottyperec.label        "Rectangular">
+<!ENTITY plottypecur.label        "Curve in Space">
+<!ENTITY plottypecylindrical.label "Cylindrical">
+<!ENTITY plottypepolar.label       "Polar">
+<!ENTITY plottypesphere.label      "Spherical">
+<!ENTITY plottypeimplicit.label    "Implicit">
+
+<!ENTITY plottype.label           "Plot type">
+<!ENTITY plottypeexpression.label "Expression">
+<!ENTITY plottypeimplicit.label   "Implicit">
+<!ENTITY plottypeparametric.label "Parametric">
+<!ENTITY plottypeinequality.label "Inequality">
+<!ENTITY plottypeconformal.label  "Conformal">
+<!ENTITY plottypegradient.label   "Gradient">
+<!ENTITY plottypevector.label     "Vector Field">
+<!ENTITY plottypetube.label       "Tube">
+<!ENTITY plottypeode.label        "ODE">
+<!ENTITY plottypeAI.label         "Approximate Integral">
+
+<!ENTITY plotstyle.label          "Plot Style">
+<!ENTITY plotstyleline.label      "Line">
+<!ENTITY plotstylepoint.label     "Point">
+
+<!ENTITY plotlinestyle.label      "Line Style">
+<!ENTITY plotlinesolid.label      "Solid">
+<!ENTITY plotlinedash.label       "Dash">
+<!ENTITY plotlinedots.label       "Dots">
+<!ENTITY plotlinedotdash.label    "DotDash">
+<!ENTITY plotlinedotdotdash.label "DotDotDash">
+
+<!ENTITY plotpointstyle.label       "Point Marker">
+<!ENTITY plotpointsquares.label     "Squares">
+<!ENTITY plotpointcircles.label     "Circles">
+<!ENTITY plotpointcrosses.label     "Crosses">
+<!ENTITY plotpointdiamonds.label    "Diamonds">
+<!ENTITY plotpointfilledsquares.label  "Filled Squares">
+<!ENTITY plotpointfilledcircles.label  "Filled Circles">
+<!ENTITY plotpointfilleddiamonds.label "Filled Diamonds">
+<!ENTITY plotpointstars.label       "Stars">
+<!ENTITY plotpointxcrosses.label    "X Crosses">
+
+<!ENTITY plotlinethickness.label  "Line Thickness">
+<!ENTITY plotlinethin.label       "Thin">
+<!ENTITY plotlinemedium.label     "Medium">
+<!ENTITY plotlinethick.label      "Thick">
+
+<!ENTITY plotadjust.label         "Adjust for discontinuities">
+<!ENTITY plotasymptote.label      "Show Asymptotes">
+<!ENTITY plotnoadjust.label       "Don't adjust">
+
+<!ENTITY plotexprnrel.label       "Expressions and Relations">
+<!ENTITY plotvarinterval.label    "Variable Intervals and Automation">
+
+<!ENTITY plotcolor.label          "Plot Color">
+
+<!ENTITY layoutsize.label         "Size">
+<!ENTITY width.label              "Width">
+<!ENTITY height.label             "Height">
+<!ENTITY units.label              "Units">
+<!ENTITY unitsinches.label        "Inches">
+<!ENTITY unitscm.label            "Centimeters">
+<!ENTITY unitspicas.label         "Picas">
+<!ENTITY unitspoints.label        "Points">
+
+<!ENTITY layoutscreendisp.label    "Screen Display Attributes">
+<!ENTITY layoutmodel.label         "Use Model Screen Attributes">
+
+<!ENTITY layoutprintattr.label     "Print Attributes">
+<!ENTITY layoutscreendisp.label    "Screen Display Attributes">
+
+<!ENTITY layoutprintframe.label     "Plot in Frame">
+<!ENTITY layoutprintplot.label      "Plot Only">
+<!ENTITY layoutprintframeonly.label "Frame Only">
+<!ENTITY layoutprinticon.label      "Iconified">
+
+<!ENTITY layoutplacement.label      "Placement">
+<!ENTITY layoutplaceinline.label    "In Line">
+<!ENTITY layoutplacedisplayed.label "Displayed">
+<!ENTITY layoutplacefloat.label     "Floating">
+
+<!ENTITY labelingkey.label          "Key">
+<!ENTITY labelingname.label         "Name">
+<!ENTITY labelingcaption.label      "Caption">
+
+<!ENTITY labelingabove.label        "Above">
+<!ENTITY labelingbelow.label        "Below">
+<!ENTITY labelingcaptiontext.label  "Caption Text">
+
+<!ENTITY axisxlabel.label           "X Axis">
+<!ENTITY axisylabel.label           "Y Axis">
+<!ENTITY axiszlabel.label           "Z Axis">
+<!ENTITY axistickmarks.label        "Tick Marks">
+<!ENTITY axisdefault.label          "Default">
+<!ENTITY axisnone.label             "None">
+<!ENTITY axiscustom.label           "Custom">
+<!ENTITY axisnticks.label           "Number of X Ticks">
+<!ENTITY axisdisable.label          "Disable Tick Labeling">
+<!ENTITY axislabels.label           "Axis labels">
+<!ENTITY axisxaxis.label            "X">
+<!ENTITY axisyaxis.label            "Y">
+<!ENTITY axiszaxis.label            "Z">
+<!ENTITY axisxrange.label           "X axis">
+<!ENTITY axisyrange.label           "Y axis">
+<!ENTITY axiszrange.label           "Z axis">
+<!ENTITY axisaxesscale.label        "Axes Scaling">
+<!ENTITY axislinear.label           "Linear">
+<!ENTITY axislinlog.label           "Lin Log">
+<!ENTITY axisloglin.label           "Log Lin">
+<!ENTITY axisloglog.label           "Log Log">
+<!ENTITY axisequal.label            "Equal Scaling Along Each Axis">
+<!ENTITY axistype.label             "Axes Type">
+<!ENTITY axistips.label             "axes tips on">
+<!ENTITY axisgridlines.label        "grid lines on">
+<!ENTITY axisnormal.label           "Normal">
+<!ENTITY axisboxed.label            "Boxed">
+<!ENTITY axistickmark.label         "Axis Tick Marks">
+<!ENTITY axisframed.label           "Frame">
+<!ENTITY axisauto.label             "Automatic">
+
+<!ENTITY plotxrangehigh.label       "X High Range">
+<!ENTITY plotxrangelow.label        "X Low Range">
+<!ENTITY plotyrangehigh.label       "Y High Range">
+<!ENTITY plotyrangelow.label        "Y Low Range">
+<!ENTITY plotzrangehigh.label       "Z High Range">
+<!ENTITY plotzrangelow.label        "Z Low Range">
+<!ENTITY plot2d.label               "2D">
+<!ENTITY plot3d.label               "3D">
+<!ENTITY plotexpr.label             "Expression to be plotted:">
+<!ENTITY animate.label              "Animate">
+<!ENTITY dimensions.label           "Dimensions">
+<!ENTITY editplotitem.label         "Plot item: ">
+<!ENTITY editplot.label             "Edit Plot">
+<!ENTITY newplot.label              "New ">
+<!ENTITY plot2dmenu.label           "Plot 2D">
+<!ENTITY plot3dmenu.label           "Plot 3D">
+<!ENTITY plot2damenu.label          "Plot 2D Animated">
+<!ENTITY plot3damenu.label          "Plot 3D Animated">
+
+<!ENTITY screendisplay.label        "Screen Display Layout">
+<!ENTITY orientationturn.label      "Orientation: Turn">
+<!ENTITY orientationtilt.label      "Orientatin: Tilt">
+<!ENTITY viewinterval.label         "Use Default View Intervals">
+
+<!ENTITY surfacestyle.label         "Surface Style">
+<!ENTITY surfacemesh.label          "Surface Mesh">
+<!ENTITY surfacecolorpatch.label    "Color Patch">
+<!ENTITY surfacehidden.label        "Hidden Line">
+<!ENTITY surfacewire.label          "Wire Frame">
+<!ENTITY surfacepoint.label         "Point">
+<!ENTITY surfaceulines.label        "U Lines">
+<!ENTITY surfacevlines.label        "V Lines">
+<!ENTITY surfacecontour.label       "Contour">
+<!ENTITY mesh.label                 "Mesh">
+
+<!ENTITY includepoints.label        "Include Points">
+<!ENTITY includelines.label         "Include Lines">
+
+<!ENTITY low.label                  "Low">
+<!ENTITY none.label                 "None">
+<!ENTITY normal.label               "Normal">
+<!ENTITY high.label                 "High">
+
+<!ENTITY unspecified.label          "Not Specified">
