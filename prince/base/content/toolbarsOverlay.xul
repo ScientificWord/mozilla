@@ -22,7 +22,7 @@
   <toolbox id="Toolbox" class="toolbox-top" orient="vertical" persist="iconsize" flex="1">       
     <popup id="toolbar-context-menu" onpopupshowing="initCustomizeMenu(this,'Toolbox');">
       <menuitem id="customizeItem" oncommand="CustomizeMainToolbar('Toolbox');"
-        label="Customize toolbars" />
+        label="Customize Toolbars" />
     </popup>
     <popup id="symbol-palettes-context-menu" >
       <menuitem id='symbolssmall' persist="checked" checked = "true" type="checkbox" oncommand="setSymbolSize('small');"
@@ -105,7 +105,7 @@
     </toolbarpalette>
     <toolbar 
       id="StandardToolbar" 
-      toolbarname="Standard toolbar"
+      toolbarname="Standard Toolbar"
       class="chromeclass-toolbar" 
       persist="collapsed"
       flex = "1"
@@ -117,7 +117,7 @@
       iconsize="small" />
     <toolbar 
       id="EditingToolbar" 
-      toolbarname="Editing toolbar"
+      toolbarname="Editing Toolbar"
       class="chromeclass-toolbar" 
       persist="collapsed" 
       flex = "1"
@@ -131,7 +131,7 @@
       iconsize="small" />
     <toolbar 
       id="MathToolbar" 
-      toolbarname="Math toolbar"
+      toolbarname="Math Toolbar"
       class="chromeclass-toolbar" 
       persist="collapsed" 
       flex = "1"
@@ -147,7 +147,7 @@
     <toolbarset context="toolbar-context-menu"/>
     <toolbar 
       id="SymbolToolbar" 
-      toolbarname="Symbol toolbar"
+      toolbarname="Symbol Toolbar"
       class="chromeclass-toolbar" 
       persist="collapsed iconsize" 
       flex = "1"

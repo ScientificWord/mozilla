@@ -216,7 +216,7 @@
 <!ENTITY boldToolbarButton.label "Bold">
 <!ENTITY italicToolbarButton.tooltip "Toggle italic">
 <!ENTITY italicToolbarButton.label "Italic">
-<!ENTITY chooseDefPrinter.label "Select default">
+<!ENTITY chooseDefPrinter.label "Select Default">
 <!ENTITY direct "Direct">
 <!ENTITY pdf "PDF">
 <!ENTITY dvi "DVI">
