@@ -77,7 +77,6 @@
       <toolbarbutton id="matrixButton"/>
       <toolbarbutton id="mathnameButton"/>
       <toolbarbutton id="binomialButton"/>
-      <toolbarbutton id="labelButton"/>
       <toolbarbutton id="decorationButton"/>
       <toolbarbutton id="noteButton" tooltiptext="&noteButton.tooltip;" observes="cmd_note"/>
       <toolbarbutton id="markerButton" tooltiptext="&markerButton.tooltip;" observes="cmd_marker" />
@@ -141,7 +140,7 @@
       defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plotButton3D,
         defineButton,showdefsButton,fractionButton,radicalButton,superscriptButton,subscriptButton,
         parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,
-        matrixButton,mathnameButton,binomialButton,labelButton,decorationButton"
+        matrixButton,mathnameButton,binomialButton,decorationButton"
       mode="icons" 
       customizable="true"
       iconsize="small" />

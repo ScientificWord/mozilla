@@ -74,7 +74,7 @@ endif
 ifdef MOZ_ENABLE_SQLITE
 DEFINES                 += -DMOZ_ENABLE_SQLITE
 SHARED_LIBRARY_LIBS     += ../../sqlite/src/$(LIB_PREFIX)sqlsqlite_s.$(LIB_SUFFIX)
-EXTRA_DSO_LDOPTS        += -L$(MOZ_SQLITE_LIBS) -lsqlite3
+EXTRA_DSO_LDOPTS        += -L$(MOZ_SQLITE_LIBS) -lmozsqlite3
 endif
 
 ifdef MOZ_ENABLE_MYSQL
