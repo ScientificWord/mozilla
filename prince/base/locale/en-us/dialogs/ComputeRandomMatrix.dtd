@@ -10,6 +10,10 @@
 <!ENTITY types.label       "Matrix Types">
 
 <!ENTITY Unrestricted.label   "Unrestricted">
+<!ENTITY  Unrestricted.accesskey  "U">
 <!ENTITY Symmetric.label      "Symmetric">  
+<!ENTITY  Symmetric.accesskey "S">
 <!ENTITY Antisymmetric.label  "Antisymmetric">
+<!ENTITY  Antisymmetric.accesskey "A">
 <!ENTITY Triangular.label     "Triangular"> 
+<!ENTITY Triangular.accesskey "T">

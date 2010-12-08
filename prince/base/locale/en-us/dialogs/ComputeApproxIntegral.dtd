@@ -5,6 +5,7 @@
 <!ENTITY parameters.label  "Parameters">
 
 <!ENTITY Formula.label  "Formula">
+<!ENTITY Formula.accesskey  "F">
 <!ENTITY LeftBoxes.label  "Left Boxes">
 <!ENTITY Midpoint.label "Midpoint">
 <!ENTITY RightBoxes.label  "Right Boxes">
@@ -12,7 +13,15 @@
 <!ENTITY Trapezoid.label  "Trapezoid">
 
 <!ENTITY Subintervals.label "Subintervals">
+<!-- Subintervals.accesskey is not currently used, but may be in the future. -->
+<!-- <!ENTITY Subintervals.accesskey "S"> -->
+
 <!ENTITY LowerBound.label "Lower Bound">
-<!ENTITY UpperBound.label "Upper Bound">
+<!-- LowerBound.accesskey is not currently used, but may be in the future. -->
+<!-- <!ENTITY LowerBound.accesskey "l"> -->
+
+<!ENTITY UpperBound.label "Upper Bound"> 
+<!-- UpperBound.accesskey is not currently used, but may be in the future. -->
+<!-- <!entity UpperBound.accesskey "U">-->
 
 
