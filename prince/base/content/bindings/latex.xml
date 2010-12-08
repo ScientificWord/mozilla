@@ -81,7 +81,7 @@
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 	  </xbl:resources>
 	  <xbl:content>
-      <html:button type="button" class="frontmattertag" onclick="">Title</html:button>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Title</html:button>
       <xbl:children/>
     </xbl:content>
   </xbl:binding>
@@ -91,7 +91,7 @@
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 	  </xbl:resources>
 	  <xbl:content>
-      <html:button type="button" class="frontmattertag" onclick="">Author</html:button>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Author</html:button>
       <xbl:children/>
     </xbl:content>
   </xbl:binding>
@@ -101,7 +101,7 @@
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 	  </xbl:resources>
 	  <xbl:content>
-      <html:button type="button" class="frontmattertag" onclick="">Address</html:button>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Address</html:button>
       <xbl:children/>
     </xbl:content>
   </xbl:binding>
@@ -111,7 +111,7 @@
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 	  </xbl:resources>
 	  <xbl:content>
-      <html:button type="button" class="frontmattertag" onclick="">Date</html:button>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Date</html:button>
       <xbl:children/>
     </xbl:content>
   </xbl:binding>
@@ -121,7 +121,7 @@
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 	  </xbl:resources>
 	  <xbl:content>
-      <html:button type="button" class="frontmattertag" onclick="">Make title</html:button>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Make title</html:button>
       <xbl:children/>
     </xbl:content>
   </xbl:binding>
@@ -131,7 +131,7 @@
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 	  </xbl:resources>
 	  <xbl:content>
-      <html:button type="button" class="frontmattertag" onclick="">Make TOC</html:button>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Make TOC</html:button>
       <xbl:children/>
     </xbl:content>
   </xbl:binding>
@@ -141,7 +141,7 @@
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 	  </xbl:resources>
 	  <xbl:content>
-      <html:button type="button" class="frontmattertag" onclick="">Make LOT</html:button>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Make LOT</html:button>
       <xbl:children/>
     </xbl:content>
   </xbl:binding>
@@ -151,7 +151,7 @@
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 	  </xbl:resources>
 	  <xbl:content>
-      <html:button type="button" class="frontmattertag" onclick="">Make LOF</html:button>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Make LOF</html:button>
       <xbl:children/>
     </xbl:content>
   </xbl:binding>
@@ -162,7 +162,7 @@
 	  </xbl:resources>
 
 	  <xbl:content>
-      <html:button type="button" class="inline" oncommand="">
+      <html:button type="button" class="inline" nopr="1" oncommand="">
         <html:latex>T<html:sub>E</html:sub>X</html:latex>: <html:label xbl:inherits="xbl:text=name"/>
       </html:button>
       <html:span style="display:none">
@@ -184,7 +184,7 @@
 	  </xbl:resources>
 
 	  <xbl:content>
-      <html:button type="button" class="inline" oncommand="">
+      <html:button type="button" class="inline" nopr="1" oncommand="">
         Index: <html:label xbl:inherits="xbl:text=pri"/>
       </html:button>
       <html:span style="display:none">
@@ -199,7 +199,7 @@
 	  </xbl:resources>
 
 	  <xbl:content>
-      <html:button type="button" class="inline" oncommand="">
+      <html:button type="button" class="inline" nopr="1" oncommand="">
         Print index here
       </html:button>
       <html:span style="display:none">
@@ -214,7 +214,7 @@
 	  </xbl:resources>
 
 	  <xbl:content>
-      <html:button type="button" class="inline" oncommand="">
+      <html:button type="button" class="inline" nopr="1" oncommand="">
         Minimum number of LaTeX passes = <html:label xbl:inherits="xbl:text=num"/>
       </html:button>
       <html:span style="display:none">
@@ -229,7 +229,7 @@
 	  </xbl:resources>
 
 	  <xbl:content>
-      <html:button type="button" class="inline" oncommand="">
+      <html:button type="button" class="inline" nopr="1" oncommand="">
         Marker: <html:label xbl:inherits="xbl:text=name"/>
       </html:button>
       <html:span style="display:none">
@@ -245,7 +245,7 @@
 	  </xbl:resources>
 
 	  <xbl:content>
-      <html:button type="button" class="inline" oncommand="">
+      <html:button type="button" class="inline" nopr="1" oncommand="">
         Cross reference: <html:label xbl:inherits="xbl:text=key"/>
       </html:button>
       <html:span style="display:none">
@@ -260,7 +260,7 @@
 	  </xbl:resources>
 
 	  <xbl:content>
-      <sw:button class="texbutton">
+      <sw:button class="texbutton" nopr="1">
         <sw:latex2>L<sw:latexa>A</sw:latexa><sw:latext>T</sw:latext><sw:latexe>E</sw:latexe>X</sw:latex2> style:
         <xbl:children includes="styleprop" />
       </sw:button>
