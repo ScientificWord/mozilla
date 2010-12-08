@@ -90,8 +90,8 @@
 <!ENTITY labelButton.tooltip "Label" >
 <!ENTITY labelButton.label "Label" >
 
-<!ENTITY decorationButton.tooltip "Decoration" >
-<!ENTITY decorationButton.label "Decoration" >
+<!ENTITY decorationButton.tooltip "Decoration or label" >
+<!ENTITY decorationButton.label "Decoration/label" >
 
 <!ENTITY noteButton.tooltip "Note" >
 <!ENTITY noteButton.label "Note" >

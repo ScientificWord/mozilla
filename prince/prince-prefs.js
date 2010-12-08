@@ -30,6 +30,7 @@ pref("swp.tex.bindir","/usr/local/texlive/2009/bin/i386-linux");  /* for linux *
 pref("swp.sourceview.maxlinelength",        100);
 pref("swp.sourceview.minlinelength",         40);
 pref("swp.sourceview.indentincrement",       2);
+pref("swp.defaultGraphicsVSize", 200);
 
 pref("editor.author",                      "");
 
