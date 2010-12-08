@@ -79,6 +79,20 @@ msiEditRules::Init(nsPlaintextEditor *aEditor, PRUint32 aFlags)
   return nsHTMLEditRules::Init(aEditor,aFlags);
 }
 
+
+nsresult
+msiEditRules::WillInsert(nsISelection *aSelection, PRBool *aCancel)
+{
+  nsresult res = nsHTMLEditRules::WillInsert(aSelection, aCancel);
+  if (NS_FAILED(res)) return res;
+
+  // See if we're in math
+
+  return res;
+
+} 
+
+
 nsresult
 msiEditRules::WillDeleteSelection(nsISelection *aSelection, 
                                   nsIEditor::EDirection aAction, 
