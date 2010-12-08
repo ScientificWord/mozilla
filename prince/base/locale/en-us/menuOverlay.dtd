@@ -25,12 +25,12 @@
 <!ENTITY saveAsCmd.label "Save As...">
 <!ENTITY filesaveas.accesskey "A">
 <!ENTITY saveCopyAsCmd.label "Save Copy As...">
-<!ENTITY filesavecopyas.accesskey "c">
-<!ENTITY filesavecopyas.keybinding "c">
+<!ENTITY filesavecopyas.accesskey "y">
+<!ENTITY filesavecopyas.keybinding "y">
 <!ENTITY docInfo.label "Document Info...">
 <!ENTITY docInfo.accesskey "D">
 <!ENTITY docStyle.label "Style...">
-<!ENTITY docStyle.accesskey "S">
+<!ENTITY docStyle.accesskey "y">
 <!ENTITY importTeXCmd.label  "Import TeX...">
 <!ENTITY importTeX.accesskey  "I">
 <!ENTITY exportTeXCmd.label  "Export TeX...">
@@ -127,19 +127,19 @@
 <!ENTITY viewToolbars.accesskey "B">
 <!ENTITY viewToolbarsCustomize.label  "Customize">
 <!ENTITY viewFootnotes.label "Footnotes" >
-<!ENTITY viewFootnotes.accesskey "F" >
+<!ENTITY viewFootnotes.accesskey "t" >
 <!ENTITY viewOtherNotes.label "Other Notes" >
 <!ENTITY viewOtherNotes.accesskey "O" >
 <!ENTITY viewInvisibles.label "Invisibles" >
 <!ENTITY viewInvisibles.accesskey "I" >
 <!ENTITY viewHelperLines.label "Helper Lines" >
-<!ENTITY viewHelperLines.accesskey "H" >
+<!ENTITY viewHelperLines.accesskey "e" >
 <!ENTITY viewInputBoxes.label "Input Boxes" >
-<!ENTITY viewInputBoxes.accesskey "p" >
+<!ENTITY viewInputBoxes.accesskey "b" >
 <!ENTITY viewIndexEntries.label "Index Entries" >
 <!ENTITY viewIndexEntries.accesskey "x" >
 <!ENTITY viewMarkers.label "Markers" >
-<!ENTITY viewMarkers.accesskey "M" >
+<!ENTITY viewMarkers.accesskey "r" >
 <!ENTITY viewZoom.label "Zoom" >
 <!ENTITY viewZoom.accesskey "Z" >
 <!ENTITY viewZoomReduce.label "Reduce" >
@@ -191,7 +191,7 @@
 <!ENTITY editcheckspelling.accesskey "s">
 <!ENTITY editcheckspelling.keybinding "k">
 <!ENTITY propertiesMenu.label "Properties">
-<!ENTITY propertiesMenu.accesskey "P">
+<!ENTITY propertiesMenu.accesskey "o">
 
 <!ENTITY helpmenu.label    "Help">
 <!ENTITY helpmenu.accesskey    "H">
@@ -244,7 +244,7 @@
 <!ENTITY insertFrame.label "Frame...">
 <!ENTITY insertframe.accesskey "F">
 <!ENTITY insertTableCmd.label "Table...">
-<!ENTITY inserttable.accesskey "t">
+<!ENTITY inserttable.accesskey "a">
 <!ENTITY insertFormMenu.label "Form...">
 <!ENTITY insertformmenu.accesskey "F">
 <!ENTITY insertHTMLCmd.label "HTML...">
@@ -574,12 +574,12 @@
 <!ENTITY toolbrowser.accesskey "b">
 <!ENTITY toolplaineditor.accesskey "p">
 <!ENTITY toolsetfocus.accesskey "f">
-<!ENTITY toolsmenuJavaScriptdebugger.label  "JavaScript debugger">
+<!ENTITY toolsmenuJavaScriptdebugger.label  "JavaScript debugger...">
 <!-- JLF Review ENTITY venkman.label "JavaScript Debugger"> -->
 <!ENTITY toolsmenuJavaScriptdebugger.accesskey  "J">
-<!ENTITY toolsmenuExtensions.label  "Extensions">
+<!ENTITY toolsmenuExtensions.label  "Extensions...">
 <!ENTITY toolsmenuExtensions.accesskey  "E">
-<!ENTITY toolsmenuThemes.label  "Themes">
+<!ENTITY toolsmenuThemes.label  "Themes...">
 <!ENTITY toolsmenuThemes.accesskey  "T">
 
 <!ENTITY venkman.accesskey "d">
@@ -599,7 +599,7 @@
 <!ENTITY gomenuLinks.accesskey "L">
 <!ENTITY gomenuMarker.label "To Marker...">
 <!ENTITY gomenuMarker.accesskey "M">
-<!ENTITY gomenuParagraph.label "To Paragraph">
+<!ENTITY gomenuParagraph.label "To Paragraph...">
 <!ENTITY gomenuParagraph.accesskey "r">
 <!ENTITY gomenuViewHistory.label "View History...">
 <!ENTITY gomenuViewHistory.accesskey "H">

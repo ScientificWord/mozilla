@@ -54,10 +54,10 @@
       <groupbox>
         <caption label="&types.label;"/>
         <radiogroup id="type">
-          <radio label="&Unrestricted.label;"  id="unrestricted"  selected="true"/>
-          <radio label="&Symmetric.label;"     id="symmetric"     selected="false"/>
-          <radio label="&Antisymmetric.label;" id="antisymmetric" selected="false"/>
-          <radio label="&Triangular.label;"    id="triangular"    selected="false"/>
+          <radio label="&Unrestricted.label;"  accesskey="&Unrestricted.accesskey;" id="unrestricted"  selected="true"/>
+          <radio label="&Symmetric.label;"     accesskey="&Symmetric.accesskey;"    id="symmetric"     selected="false"/>
+          <radio label="&Antisymmetric.label;" accesskey="&Antisymmetric.accesskey;"  id="antisymmetric" selected="false"/>
+          <radio label="&Triangular.label;"    accesskey="&Triangular.accesskey;"   id="triangular"    selected="false"/>
         </radiogroup>
       </groupbox>
     </vbox>
