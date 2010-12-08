@@ -644,7 +644,8 @@
     <command id="cmd_msiInsertRules"   oncommand="msiGoDoCommand('cmd_msiInsertRules')"/>
     <command id="cmd_msiInsertBreaks"             oncommand="msiGoDoCommand('cmd_msiInsertBreaks')"/>
     <command id="cmd_note"             oncommand="msiGoDoCommand('cmd_note')"/>
-    <command id="cmd_frame"             oncommand="msiGoDoCommand('cmd_frame')"/>
+    <command id="cmd_footnote"         oncommand="msiGoDoCommand('cmd_footnote')"/>
+    <command id="cmd_frame"            oncommand="msiGoDoCommand('cmd_frame')"/>
     <command id="cmd_citation"             oncommand="msiGoDoCommand('cmd_MSIinsertCitationCmd')"/>
 
     <command id="cmd_NormalMode"       oncommand="msiGoDoCommand('cmd_NormalMode')"/>
@@ -855,7 +856,8 @@
     <key keycode="VK_TAB" modifiers="shift" oncommand="return msiEditorDoTab(event, true);"/ -->
   </keyset>
   
-    <!-- DEBUG only -->
+#ifdef DEBUG
+  <!-- DEBUG only -->
   <menu id="debugMenu" label="&debugMenu.label;" accesskey="&debugMenu.accesskey;">
   <menupopup id="menu_debugPopup">
     <!-- menuitem label="printPDF" oncommand="PrintUtils.printPDF();"/>
@@ -937,6 +939,6 @@
     </menupopup>
   </menu>
   <!-- end DEBUG only -->
-
+#endif
   
 </overlay>
