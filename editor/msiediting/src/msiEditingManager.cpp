@@ -786,7 +786,7 @@ msiEditingManager::InsertFraction(nsIEditor * editor,
     }
     else
     {
-      selection->Collapse(node,offset+1);
+      //selection->Collapse(mathmlElement,1);
     }
     editor->EndTransaction();  
   }
@@ -829,7 +829,7 @@ msiEditingManager::InsertBinomial(nsIEditor * editor,
     if (NS_SUCCEEDED(res) && mathmlElement)
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
 //        editor->InsertNode(mathmlElement, node, offset);
-    selection->Collapse(node,offset+1);
+    //selection->Collapse(node,offset+1);
     editor->EndTransaction();  
   }
   return res;
@@ -870,7 +870,7 @@ msiEditingManager::InsertSqRoot(nsIEditor * editor,
     if (NS_SUCCEEDED(res) && mathmlElement)
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
 //        editor->InsertNode(mathmlElement, node, offset);
-    selection->Collapse(node,offset+1);
+    //selection->Collapse(node,offset+1);
     editor->EndTransaction();
   }
   return res;
@@ -910,7 +910,7 @@ msiEditingManager::InsertRoot(nsIEditor * editor,
     if (NS_SUCCEEDED(res) && mathmlElement)
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
 //        editor->InsertNode(mathmlElement, node, offset);
-    selection->Collapse(node,offset+1);
+    //selection->Collapse(node,offset+1);
     editor->EndTransaction();
   }
   return res;
@@ -951,7 +951,7 @@ msiEditingManager::InsertFence(nsIEditor* editor,
     if (NS_SUCCEEDED(res) && mathmlElement)
       res = InsertMathmlElement(editor, selection, node, offset, flags, mathmlElement);
 //        editor->InsertNode(mathmlElement, node, offset);
-    selection->Collapse(node,offset+1);
+    //selection->Collapse(node,offset+1);
     editor->EndTransaction();  
   }
   return res;
