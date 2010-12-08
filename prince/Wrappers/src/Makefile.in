@@ -55,19 +55,19 @@ endif
 
 ifeq ($(OS_ARCH),Linux)
 SHARED_LIBRARY_LIBS += \
-        $(srcdir)/../../Compute/MuPAD/linux/$(LIB_PREFIX)mupudskernel.$(LIB_SUFFIX) \
-	$(srcdir)/../../Compute/MuPAD/linux/$(LIB_PREFIX)libstream.$(LIB_SUFFIX) \
-	$(srcdir)/../../Compute/MuPAD/linux/$(LIB_PREFIX)mut.$(LIB_SUFFIX) \
-	$(srcdir)/../../Compute/MuPAD/linux/$(LIB_PREFIX)expat.$(LIB_SUFFIX) \
-	$(srcdir)/../../Compute/MuPAD/linux/$(LIB_PREFIX)z.$(LIB_SUFFIX) \
+        $(topsrcdir)/toolkit/components/Compute/MuPAD/linux/$(LIB_PREFIX)mupudskernel.$(LIB_SUFFIX) \
+	$(topsrcdir)/toolkit/components/Compute/MuPAD/linux/$(LIB_PREFIX)libstream.$(LIB_SUFFIX) \
+	$(topsrcdir)/toolkit/components/Compute/MuPAD/linux/$(LIB_PREFIX)mut.$(LIB_SUFFIX) \
+	$(topsrcdir)/toolkit/components/Compute/MuPAD/linux/$(LIB_PREFIX)expat.$(LIB_SUFFIX) \
+	$(topsrcdir)/toolkit/components/Compute/MuPAD/linux/$(LIB_PREFIX)z.$(LIB_SUFFIX) \
 	$(NULL)
 endif
 ifeq ($(OS_ARCH),Darwin)
 SHARED_LIBRARY_LIBS += \
-	$(srcdir)/../../Compute/MuPAD/Darwin/$(LIB_PREFIX)mupudskernel.$(LIB_SUFFIX) \
-	$(srcdir)/../../Compute/MuPAD/Darwin/$(LIB_PREFIX)libstream.$(LIB_SUFFIX) \
-	$(srcdir)/../../Compute/MuPAD/Darwin/$(LIB_PREFIX)mut.$(LIB_SUFFIX) \
-	$(srcdir)/../../Compute/MuPAD/Darwin/$(LIB_PREFIX)expat.$(LIB_SUFFIX) \
+	$(topsrcdir)/toolkit/components/Compute/MuPAD/Darwin/$(LIB_PREFIX)mupudskernel.$(LIB_SUFFIX) \
+	$(topsrcdir)/toolkit/components/Compute/MuPAD/Darwin/$(LIB_PREFIX)libstream.$(LIB_SUFFIX) \
+	$(topsrcdir)/toolkit/components/Compute/MuPAD/Darwin/$(LIB_PREFIX)mut.$(LIB_SUFFIX) \
+	$(topsrcdir)/toolkit/components/Compute/MuPAD/Darwin/$(LIB_PREFIX)expat.$(LIB_SUFFIX) \
 	$(NULL)
 endif
 
