@@ -11,7 +11,7 @@
 <!ENTITY limitPositionAutoRadio.accesskey "A">
 <!ENTITY limitPositionAboveBelowRadio.label "Above/Below">
 <!ENTITY limitPositionAboveBelowRadio.accesskey "v">
-<!ENTITY limitPositionAtRightRadio.label "At Right">
+<!ENTITY limitPositionAtRightRadio.label "At right">
 <!ENTITY limitPositionAtRightRadio.accesskey "R">
 
 <!ENTITY sizeRadioGroup.label "Size">
@@ -19,7 +19,7 @@
 <!ENTITY sizeAutoRadio.accesskey "u">
 <!ENTITY sizeBigRadio.label "Big">
 <!ENTITY sizeBigRadio.accesskey "B">
-<!ENTITY sizeSmallRadio.label "Small (In-Line)">
+<!ENTITY sizeSmallRadio.label "Small (inline)">
 <!ENTITY sizeSmallRadio.accesskey "S">
 
 <!ENTITY operatorsButtonGroup.label "Operators">
