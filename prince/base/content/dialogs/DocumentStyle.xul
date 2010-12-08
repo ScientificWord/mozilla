@@ -49,8 +49,8 @@
             <msibutton id = "browsecss" label = "Browse" oncommand="browse('css')" />
             <msibutton id = "addcss" label = "Add" oncommand="add('csslist','cssfile','css');" />
             <msibutton label="Remove" oncommand="remove('csslist')"/>
-            <msibutton label="Move up" oncommand="moveup('csslist')"/>
-            <msibutton label="Move down" oncommand="movedown('csslist')"/>
+            <msibutton label="Move Up" oncommand="moveup('csslist')"/>
+            <msibutton label="Move Down" oncommand="movedown('csslist')"/>
             <separator flex="1"/>
           </vbox>
         </hbox>
@@ -69,8 +69,8 @@
             <msibutton id = "browsescript" label = "Browse" oncommand="browse('js')" />
             <msibutton id = "addscript" label = "Add" oncommand="add('scriptlist','scriptfile','js');" />
             <msibutton label="Remove" oncommand="remove('scriptlist')"/>
-            <msibutton label="Move up" oncommand="moveup('scriptlist')"/>
-            <msibutton label="Move down" oncommand="movedown('scriptlist')"/>
+            <msibutton label="Move Up" oncommand="moveup('scriptlist')"/>
+            <msibutton label="Move Down" oncommand="movedown('scriptlist')"/>
             <separator flex="1"/>
           </vbox>
         </hbox>
@@ -89,8 +89,8 @@
             <msibutton id = "browsexml" label = "Browse" oncommand="browse('xml')" />
             <msibutton class="dialog-button" id = "addxml" label = "Add" oncommand="add('xmllist','xmlfile','xml');" />
             <msibutton label="Remove" oncommand="remove('xmllist')"/>
-            <msibutton label="Move up" oncommand="moveup('xmllist')"/>
-            <msibutton label="Move down" oncommand="movedown('xmllist')"/>
+            <msibutton label="Move Up" oncommand="moveup('xmllist')"/>
+            <msibutton label="Move Down" oncommand="movedown('xmllist')"/>
             <separator flex="1"/>
           </vbox>
         </hbox>
@@ -109,8 +109,8 @@
             <msibutton id = "browsexslt" label = "Browse" oncommand="browse('xsl')" />
             <msibutton class="dialog-button" id = "addxslt" label = "Add" oncommand="add('xsllist','xslfile','xsl');" />
             <msibutton label="Remove" oncommand="remove('addxslt')"/>
-            <msibutton label="Move up" oncommand="moveup('addxslt')"/>
-            <msibutton label="Move down" oncommand="movedown('addxslt')"/>
+            <msibutton label="Move Up" oncommand="moveup('addxslt')"/>
+            <msibutton label="Move Down" oncommand="movedown('addxslt')"/>
             <separator flex="1"/>
           </vbox>
         </hbox>

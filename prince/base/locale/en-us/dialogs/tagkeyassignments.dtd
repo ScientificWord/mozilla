@@ -8,7 +8,7 @@
 <!ENTITY  tagradio.accesskey  "T">
 <!ENTITY alltaglist.tooltip "Select a tag; then assign a key combination">
 <!ENTITY alltaglist.label "All tags">
-<!ENTITY currentassignment.label "Current assignments">
+<!ENTITY currentassignment.label "Current Assignments">
 <!ENTITY currentkeys.tooltip "Currently assigned keys">
 <!ENTITY scriptradio.label "Run script">
 <!ENTITY scriptradio.accesskey  "R">
@@ -16,13 +16,13 @@
 <!ENTITY reserveForOS.label "Reserved for operating system">
 <!ENTITY reserveForOS.accesskey "E">
 <!ENTITY reserveForOS.tooltip "Reserve for operating system use">
-<!ENTITY assignKey.label "Assign action to key">
+<!ENTITY assignKey.label "Assign Action to Key">
 <!ENTITY assignKey.accesskey "A">
 <!ENTITY tagOrScript.tagLabel "Key assigns the tag">
-<!ENTITY tagOrScript.scriptLabel "Key runs the JavaScript">
+<!ENTITY tagOrScript.scriptLabel "Key Runs the JavaScript">
 <!ENTITY tagOrScript.scriptAccesskey  "K">
 <!ENTITY tagOrScript.reservedLabel "Key is reserved for operating system use">
 <!ENTITY tagOrScript.tooltip "Tag or script currently assigned to this key combination">
-<!ENTITY deleteAssignment.label "Delete assignment">
+<!ENTITY deleteAssignment.label "Delete Assignment">
 <!ENTITY deleteAssignment.accesskey "D">
-<!ENTITY AddNewFunctionKeyAssignment.label  "Add new function key assignments">
+<!ENTITY AddNewFunctionKeyAssignment.label  "Add New Function Key Assignments">
