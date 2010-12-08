@@ -2394,7 +2394,13 @@ function msiSoftSave( editor, editorElement)
 //
   
   // Get the current definitions from compute engine and place in preamble.
-  var defnListString = GetCurrentEngine().getDefinitions();
+  try {
+    var defnListString = GetCurrentEngine().getDefinitions();
+  }
+  catch(e)
+  {
+    dump("Unable to get definitions ("+e.message+")\n");
+  }
   var preamble = editorDoc.getElementsByTagName("preamble")[0];
   if (preamble)
   {
