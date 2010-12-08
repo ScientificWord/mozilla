@@ -98,12 +98,9 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_MSIAnimateGifsOn",   msiGIFAnimation);
   commandTable.registerCommand("cmd_MSIAnimateGifsOff",  msiGIFAnimation);
   commandTable.registerCommand("cmd_printDirect",           msiPrintDirectCommand);
-  commandTable.registerCommand("cmd_printDvi",           msiPrintCommand);
   commandTable.registerCommand("cmd_printPdf",           msiPrintCommand);
   commandTable.registerCommand("cmd_previewDirect",         msiPreviewDirectCommand);
-  commandTable.registerCommand("cmd_previewDvi",         msiPreviewCommand);
   commandTable.registerCommand("cmd_previewPdf",         msiPreviewCommand);
-  commandTable.registerCommand("cmd_compileDvi",         msiCompileCommand);
   commandTable.registerCommand("cmd_compilePdf",         msiCompileCommand);
   commandTable.registerCommand("cmd_updateStructToolbar", msiUpdateStructToolbarCommand);
   commandTable.registerCommand("cmd_insertReturnFancy", msiInsertReturnFancyCommand);
