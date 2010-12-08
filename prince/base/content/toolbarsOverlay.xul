@@ -79,6 +79,7 @@
       <toolbarbutton id="binomialButton"/>
       <toolbarbutton id="decorationButton"/>
       <toolbarbutton id="noteButton" tooltiptext="&noteButton.tooltip;" observes="cmd_note"/>
+      <toolbarbutton id="footnoteButton" tooltiptext="&footnoteButton.tooltip;" observes="cmd_footnote"/>
       <toolbarbutton id="markerButton" tooltiptext="&markerButton.tooltip;" observes="cmd_marker" />
       <toolbarbutton id="htlinkButton" tooltiptext="&htlinkButton.tooltip;"/>
       <toolbarbutton id="formulaButton" tooltiptext="&formulaButton.tooltip;"/>
@@ -123,7 +124,7 @@
       flex = "1"
       tbalign="center" 
       context="toolbar-context-menu"
-      defaultset="noteButton,markerButton,htlinkButton,formulaButton,compileButton,
+      defaultset="noteButton,footnoteButton,markerButton,htlinkButton,formulaButton,compileButton,
         packagesButton,citationButton,indexentryButton,xrefButton,texfieldButton,
         bibliographyButton,gifsAnimatedButton,boldButton,italicButton,zoomValue"
       mode="icons" 
