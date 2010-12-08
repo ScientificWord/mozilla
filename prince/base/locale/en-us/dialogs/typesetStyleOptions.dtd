@@ -7,6 +7,8 @@
 <!ENTITY optionsDescription.label "Options">
 <!ENTITY optionsDescription.accesskey "O">
 <!ENTITY currentOptionsDescription.label "Currently Selected Options">
+<!-- currentOptionsDescription.accesskey not currently used, but may be in the future-->
+<!-- <!ENTITY currentOptionsDescription.accesskey  "S"> -->
 <!ENTITY goNativeButton.label "Go Native...">
 <!ENTITY goNativeButton.accesskey "N">
    
