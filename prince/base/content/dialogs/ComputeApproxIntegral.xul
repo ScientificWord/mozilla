@@ -29,7 +29,7 @@
   <hbox id="outer-box" flex="1">
     <vbox>
       <groupbox>
-         <caption label="&Formula.label;"/>
+         <caption label="&Formula.label;" accesskey="&Formula.accesskey;"/>
         <listbox id="form" seltype="single">
           <listitem label="&LeftBoxes.label;"/>
           <listitem label="&Midpoint.label;"/>
