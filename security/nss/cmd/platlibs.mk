@@ -72,7 +72,7 @@ endif
 endif
 endif
 
-SQLITE=-lsqlite3
+SQLITE=-lmozsqlite3
 
 ifdef USE_STATIC_LIBS
 
