@@ -376,7 +376,7 @@
                   </menulist>
                 </vbox>
                 <vbox align="center">
-                  <label observes="reformatok" value="Displayed eqn Position"/>
+                  <label observes="reformatok" value="Displayed Eqn Position"/>
                   <menulist observes="reformatok" id="eqnpos">
                     <menupopup style="width: 9em" >
                       <menuitem value="ceqn" label="*Centered" def="1"/>
