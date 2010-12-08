@@ -344,10 +344,6 @@
                 observes="cmd_printPdf"  for="pdf" onbroadcast="setDefault(this);">
         <observes id="pmitb2" element="defaultCompiler" attribute="defcomp"  />
       </menuitem>
-      <menuitem id="printMenuItem1dvi" label="&dviprintButton.label;" persist="default" default="false"
-                oncommand="msiGoDoCommand('cmd_printDvi');event.stopPropagation();"  for="dvi" onbroadcast="setDefault(this);">
-        <observes id="pmitb3" element="defaultCompiler" attribute="defcomp"  />
-      </menuitem>
       <menuseparator/>
       <menu id="chooseDefPrinter" label="&chooseDefPrinter.label;" >
 	      <menupopup id="menuChooseDefPrinterPopup">
@@ -358,10 +354,6 @@
 	        <menuitem id="pdfMode" label="&pdf;"   persist="default"  checked="true"  
             oncommand="return setDefaultPrinter('pdf',event);" for="pdf" onbroadcast="setDefault(this);">
             <observes id="pmitb8" element="defaultCompiler" attribute="defcomp" />
-          </menuitem>
-	        <menuitem id="dviMode" label="&dvi;"   persist="default"
-            oncommand="return setDefaultPrinter('dvi',event);" for="dvi" onbroadcast="setDefault(this);">
-             <observes id="pmitb9" element="defaultCompiler" attribute="defcomp" />
           </menuitem>
 	      </menupopup>
       </menu>
@@ -384,10 +376,6 @@
                 observes="cmd_previewPdf" for="pdf" onbroadcast="setDefault(this);">
         <observes id="pmitb11" element="defaultCompiler" attribute="defcomp" />
       </menuitem>
-      <menuitem id="dviPreviewMenuItem" label="&dvipreviewButton.label;" persist="default" default="false"
-                observes="cmd_previewDvi" for="dvi" onbroadcast="setDefault(this);">
-        <observes id="pmitb12" element="defaultCompiler" attribute="defcomp" />
-      </menuitem>
       <menuseparator/>
       <menu id="chooseDefPrinter2" label="&chooseDefPrinter.label;" >
 	      <menupopup id="menuChooseDefPrinterPopup2">
@@ -399,15 +387,10 @@
             oncommand="return setDefaultPrinter('pdf',event);" for="pdf" onbroadcast="setDefault(this);">
             <observes id="pmitb6" element="defaultCompiler" attribute="defcomp" />
           </menuitem>
-	        <menuitem id="dviMod2e" label="&dvi;"  persist="default"
-            oncommand="return setDefaultPrinter('dvi',event);" for="dvi" onbroadcast="setDefault(this);">
-             <observes id="pmitb6" element="defaultCompiler" attribute="defcomp" />
-          </menuitem>
 	      </menupopup>
       </menu>
     </menupopup>
   </toolbarbutton>
-  <toolbarbutton id="dvicompileButton" class="toolbarbutton-1" observes="cmd_compileDvi" tooltiptext="&dvicompileButton.tooltip;"/>
   <toolbarbutton id="pdfcompileButton" class="toolbarbutton-1" observes="cmd_compilePdf" tooltiptext="&pdfcompileButton.tooltip;"/>
 
   <toolbarbutton id="cutButton" class="toolbarbutton-1"
