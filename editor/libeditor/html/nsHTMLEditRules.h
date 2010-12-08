@@ -141,7 +141,7 @@ protected:
   };
 
   // nsHTMLEditRules implementation methods
-  nsresult WillInsert(nsISelection *aSelection, PRBool *aCancel);
+  virtual nsresult WillInsert(nsISelection *aSelection, PRBool *aCancel);
 #ifdef XXX_DEAD_CODE
   nsresult DidInsert(nsISelection *aSelection, nsresult aResult);
 #endif
