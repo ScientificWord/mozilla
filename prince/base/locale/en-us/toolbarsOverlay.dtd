@@ -78,6 +78,9 @@
 <!ENTITY bracketsButton.tooltip "Brackets" >
 <!ENTITY bracketsButton.label "Brackets" >
 
+<!ENTITY genBracketsButton.tooltip "Generalized brackets" >
+<!ENTITY genBracketsButton.label "Generalized Brackets" >
+
 <!ENTITY matrixButton.tooltip "Matrix" >
 <!ENTITY matrixButton.label "Matrix" >
 
