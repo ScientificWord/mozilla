@@ -1125,31 +1125,6 @@ toolbar[iconsize="small"] #printButton:hover:active {
   list-style-image: url("chrome://prince/skin/icons/print-disabled.png");
 }
 
-#printButton[defcomp="dvi"] {
-  list-style-image: url("chrome://prince/skin/icons/type_dviprint.png");
-}
-toolbar[iconsize="small"] #printButton[defcomp="dvi"] {
-  list-style-image: url("chrome://prince/skin/icons/type_dviprint-sm.png");
-}
-#printButton[defcomp="dvi"]:hover {
-  list-style-image: url("chrome://prince/skin/icons/type_dviprint-hover.png");
-}
-toolbar[iconsize="small"] #printButton[defcomp="dvi"]:hover {
-  list-style-image: url("chrome://prince/skin/icons/type_dviprint-hover-sm.png");
-}
-#printButton[defcomp="dvi"]:hover:active {
-  list-style-image: url("chrome://prince/skin/icons/type_dviprint-active.png");
-}
-toolbar[iconsize="small"] #printButton[defcomp="dvi"]:hover:active {
-  list-style-image: url("chrome://prince/skin/icons/type_dviprint-active-sm.png");
-}
-#printButton[defcomp="dvi"][disabled="true"] {
-  list-style-image: url("chrome://prince/skin/icons/type_dviprint-disabled.png");
-}
-toolbar[iconsize="small"] #printButton[defcomp="dvi"][disabled="true"] {
-  list-style-image: url("chrome://prince/skin/icons/type_dviprint-disabled-sm.png");
-}
-
 #printButton[defcomp="pdf"] {
   list-style-image: url("chrome://prince/skin/icons/type_pdfprint.png");
 }
@@ -1201,31 +1176,6 @@ toolbar[iconsize="small"] #printPreviewButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/preview-disabled-sm.png");
 }
 
-#printPreviewButton[defcomp='dvi'] {
-  list-style-image: url("chrome://prince/skin/icons/type_dvipreview.png");
-}
-toolbar[iconsize="small"] #printPreviewButton[defcomp='dvi'] {
-  list-style-image: url("chrome://prince/skin/icons/type_dvipreview-sm.png");
-}
-#printPreviewButton[defcomp='dvi']:hover {
-  list-style-image: url("chrome://prince/skin/icons/type_dvipreview-hover.png");
-}
-toolbar[iconsize="small"] #printPreviewButton[defcomp='dvi']:hover {
-  list-style-image: url("chrome://prince/skin/icons/type_dvipreview-hover-sm.png");
-}
-#printPreviewButton[defcomp='dvi']:hover:active {
-  list-style-image: url("chrome://prince/skin/icons/type_dvipreview-active.png");
-}
-toolbar[iconsize="small"] #printPreviewButton[defcomp='dvi']:hover:active {
-  list-style-image: url("chrome://prince/skin/icons/type_dvipreview-active-sm.png");
-}
-#printPreviewButton[defcomp='dvi'][disabled="true"] {
-  list-style-image: url("chrome://prince/skin/icons/type_dvipreview-disabled.png");
-}
-toolbar[iconsize="small"] #printPreviewButton[defcomp='dvi'][disabled="true"] {
-  list-style-image: url("chrome://prince/skin/icons/type_dvipreview-disabled-sm.png");
-}
-
 #printPreviewButton[defcomp='pdf'] {
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview.png");
 }
@@ -1249,39 +1199,6 @@ toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf']:hover:active {
 }
 toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf'][disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-disabled-sm.png");
-}
-
-
-#dvicompileButton {
-  list-style-image: url("chrome://prince/skin/icons/type_dvicompile.png");
-}
-
-toolbar[iconsize="small"] #dvicompileButton {
-  list-style-image: url("chrome://prince/skin/icons/type_dvicompile-sm.png");
-}
-
-#dvicompileButton:hover {
-  list-style-image: url("chrome://prince/skin/icons/type_dvicompile-hover.png");
-}
-
-toolbar[iconsize="small"] #dvicompileButton:hover {
-  list-style-image: url("chrome://prince/skin/icons/type_dvicompile-hover-sm.png");
-}
-
-#dvicompileButton:hover:active {
-  list-style-image: url("chrome://prince/skin/icons/type_dvicompile-active.png");
-}
-
-toolbar[iconsize="small"] #dvicompileButton:hover:active {
-  list-style-image: url("chrome://prince/skin/icons/type_dvicompile-active-sm.png");
-}
-
-#dvicompileButton[disabled="true"] {
-  list-style-image: url("chrome://prince/skin/icons/type_dvicompile-disabled.png");
-}
-
-toolbar[iconsize="small"] #dvicompileButton[disabled="true"] {
-  list-style-image: url("chrome://prince/skin/icons/type_dvicompile-disabled-sm.png");
 }
 
 
