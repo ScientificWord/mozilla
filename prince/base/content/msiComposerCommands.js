@@ -98,12 +98,9 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_MSIAnimateGifsOn",   msiGIFAnimation);
   commandTable.registerCommand("cmd_MSIAnimateGifsOff",  msiGIFAnimation);
   commandTable.registerCommand("cmd_printDirect",           msiPrintDirectCommand);
-  commandTable.registerCommand("cmd_printDvi",           msiPrintCommand);
   commandTable.registerCommand("cmd_printPdf",           msiPrintCommand);
   commandTable.registerCommand("cmd_previewDirect",         msiPreviewDirectCommand);
-  commandTable.registerCommand("cmd_previewDvi",         msiPreviewCommand);
   commandTable.registerCommand("cmd_previewPdf",         msiPreviewCommand);
-  commandTable.registerCommand("cmd_compileDvi",         msiCompileCommand);
   commandTable.registerCommand("cmd_compilePdf",         msiCompileCommand);
   commandTable.registerCommand("cmd_updateStructToolbar", msiUpdateStructToolbarCommand);
   commandTable.registerCommand("cmd_insertReturnFancy", msiInsertReturnFancyCommand);
@@ -2395,8 +2392,9 @@ function msiSoftSave( editor, editorElement)
 //
   
   // Get the current definitions from compute engine and place in preamble.
+  var defnListString = "";
   try {
-    var defnListString = GetCurrentEngine().getDefinitions();
+    defnListString = GetCurrentEngine().getDefinitions();
   }
   catch(e)
   {
@@ -2408,7 +2406,7 @@ function msiSoftSave( editor, editorElement)
     var oldDefnList = preamble.getElementsByTagName("definitionlist")[0];
     if (oldDefnList)
        oldDefnList.parentNode.removeChild(oldDefnList);
-    if (defnListString.length > 0)
+    if (defnListString && defnListString.length > 0)
     {
       defnListString = "<doc>"+defnListString.replace(/<p>/,"<para>","g").replace(/<\/p>/,"</para>",g)+"</doc>";
       var defnList = editorDoc.createElement("definitionlist");
