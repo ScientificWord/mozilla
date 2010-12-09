@@ -382,3 +382,8 @@ bibitem > biblabel+bodyText {
 shortTitle {
   display: none;
 }
+
+@media print {
+*[nopr] {display: none;}
+}
+
