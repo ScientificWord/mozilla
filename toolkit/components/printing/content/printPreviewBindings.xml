@@ -54,13 +54,15 @@
            extends="chrome://global/content/bindings/toolbar.xml#toolbar">
     <resources>
       <stylesheet src="chrome://global/skin/printPreview.css"/>
+      <stylesheet src="chrome://global/skin/toolbar.css"/>
+      <stylesheet src="chrome://prince/skin/toolbarsOverlay.css"/>
     </resources>
 
     <content>
-      <xul:button label="&print.label;" accesskey="&print.accesskey;"
+      <xul:msibutton label="&print.label;" accesskey="&print.accesskey;"
         oncommand="PrintUtils.print();" icon="print"/>
 
-      <xul:button label="&pageSetup.label;" accesskey="&pageSetup.accesskey;"
+      <xul:msibutton label="&pageSetup.label;" accesskey="&pageSetup.accesskey;"
         oncommand="this.parentNode.doPageSetup();"/>
 
       <xul:vbox align="center" pack="center">
@@ -123,7 +125,7 @@
       </xul:hbox>
 
       <xul:toolbarseparator class="toolbarseparator-primary"/>
-      <xul:button label="&close.label;" accesskey="&close.accesskey;"
+      <xul:msibutton label="&close.label;" accesskey="&close.accesskey;"
         oncommand="PrintUtils.exitPrintPreview();" icon="close"/>
       <xul:data value="&customPrompt.title;"/>
     </content>
