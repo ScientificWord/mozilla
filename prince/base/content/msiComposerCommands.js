@@ -2392,8 +2392,9 @@ function msiSoftSave( editor, editorElement)
 //
   
   // Get the current definitions from compute engine and place in preamble.
+  var defnListString = "";
   try {
-    var defnListString = GetCurrentEngine().getDefinitions();
+    defnListString = GetCurrentEngine().getDefinitions();
   }
   catch(e)
   {
@@ -2405,7 +2406,7 @@ function msiSoftSave( editor, editorElement)
     var oldDefnList = preamble.getElementsByTagName("definitionlist")[0];
     if (oldDefnList)
        oldDefnList.parentNode.removeChild(oldDefnList);
-    if (defnListString.length > 0)
+    if (defnListString && defnListString.length > 0)
     {
       defnListString = "<doc>"+defnListString.replace(/<p>/,"<para>","g").replace(/<\/p>/,"</para>",g)+"</doc>";
       var defnList = editorDoc.createElement("definitionlist");
