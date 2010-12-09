@@ -32,7 +32,7 @@ msibutton[group] mml|*[class="phantomBox"], *[class="phantomBox"] {
 
 #decorationsAboveButtonGroup box.fbox,
 #decorationsBelowButtonGroup box.framebox,
-#decorationsAroundButtonGroup box.roundedbox,
+#decorationsAroundButtonGroup box.roundedbox
 {
   margin: 3px;
 }
