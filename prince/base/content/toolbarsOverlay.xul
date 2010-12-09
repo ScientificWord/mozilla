@@ -1,10 +1,10 @@
-<!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
+<!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. --> 
 
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/toolbarsOverlay.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/toolbaroverride.css" type="text/css"?>
 <?xml-stylesheet href="chrome://global/skin/printpreview.css" type="text/css"?>
-<?xml-stylesheet href="chrome://prince/skin/toolbarbuttonoverride.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/toolbarbuttonoverride.css" type="text/css"?>  
 
 
 <!DOCTYPE window SYSTEM "chrome://prince/locale/toolbarsOverlay.dtd">
@@ -13,9 +13,9 @@
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   
   <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/ -->
-  <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/ -->
+  <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/--> 
   <script type="application/x-javascript" src="chrome://prince/content/toolbarsOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/>     
   <!-- script type="application/x-javascript" src="chrome://global/content/customizeToolbar.js"/ -->
 
          
@@ -74,6 +74,7 @@
       <toolbarbutton id="unitnameButton"/>
       <toolbarbutton id="displayButton"/>
       <toolbarbutton id="bigopButton"/>
+      <toolbarbutton id="genBracketsButton"/>
       <toolbarbutton id="matrixButton"/>
       <toolbarbutton id="mathnameButton"/>
       <toolbarbutton id="binomialButton"/>
@@ -124,9 +125,7 @@
       flex = "1"
       tbalign="center" 
       context="toolbar-context-menu"
-      defaultset="noteButton,footnoteButton,markerButton,htlinkButton,formulaButton,compileButton,
-        packagesButton,citationButton,indexentryButton,xrefButton,texfieldButton,
-        bibliographyButton,gifsAnimatedButton,boldButton,italicButton,zoomValue"
+      defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicButton,undoButton,redoButton,findButton,importimageButton,exportwebButton,footnoteButton,noteButton,markerButton,htlinkButton,formulaButton,citationButton,indexentryButton,xrefButton,texfieldButton,bibliographyButton,importtexButton"
       mode="icons" 
       customizable="true"
       iconsize="small" />
@@ -138,10 +137,7 @@
       flex = "1"
       tbalign="center" 
       context="toolbar-context-menu"
-      defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plotButton3D,
-        defineButton,showdefsButton,fractionButton,radicalButton,superscriptButton,subscriptButton,
-        parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,
-        matrixButton,mathnameButton,binomialButton,decorationButton"
+      defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plotButton3D,defineButton,showdefsButton,fractionButton,radicalButton,superscriptButton,subscriptButton,parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,genBracketsButton,matrixButton,mathnameButton,binomialButton,decorationButton"
       mode="icons" 
       customizable="true"
       iconsize="small" />
@@ -298,11 +294,11 @@
   <toolbarbutton id="bigopButton" class="toolbarbutton-1" tooltiptext="&bigopButton.tooltip;"
     label="&bigopButton.label;" observes="cmd_MSIoperatorsCmd"/>
 
+  <toolbarbutton id="genBracketsButton" class="toolbarbutton-1" tooltiptext="&genBracketsButton.tooltip;"
+    label="&genBracketsButton.label;" observes="cmd_MSIgenBracketsCmd"/>
+
   <toolbarbutton id="matrixButton" class="toolbarbutton-1" tooltiptext="&matrixButton.tooltip;"
     label="&matrixButton.label;" observes="cmd_MSIMatrixCmd" />
-
-  <toolbarbutton id="bracketsButton" class="toolbarbutton-1" tooltiptext="&bracketsButton.tooltip;"
-    label="&bracketsButton.label;" observes="cmd_MSIbracketCmd" />
 
   <toolbarbutton id="mathnameButton" class="toolbarbutton-1" tooltiptext="&mathnameButton.tooltip;"
     label="&mathnameButton.label;" observes="cmd_MSImathnameCmd"/>
