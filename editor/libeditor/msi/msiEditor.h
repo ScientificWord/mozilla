@@ -44,6 +44,12 @@ public:
   // nsEditor method
   NS_IMETHOD DeleteSelectionImpl(EDirection aAction);
 
+  nsresult InsertNodeAtPoint( nsIDOMNode *aNode, 
+                              nsCOMPtr<nsIDOMNode> *ioParent, 
+                              PRInt32 *ioOffset, 
+                              PRBool aNoEmptyNodes);
+
+
 protected:
   NS_IMETHOD  InitRules();
 
