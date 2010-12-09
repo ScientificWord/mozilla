@@ -4,11 +4,11 @@
 
 <!ENTITY tabbar.general "General">
 <!ENTITY tabbar.comments "Comments">
-<!ENTITY tabbar.printOptions "Print options">
-<!ENTITY tabbar.metadata "Document links and Metadata">
-<!ENTITY tabbar.saveOptions "Save options">
+<!ENTITY tabbar.printOptions "Print Options">
+<!ENTITY tabbar.metadata "Document Links and Metadata">
+<!ENTITY tabbar.saveOptions "Save Options">
 
-<!ENTITY filename.label "Filename:">
+<!ENTITY filename.label "File Name:">
 <!ENTITY directory.label "Directory:">
 <!ENTITY created.label "Created:">
 <!ENTITY lastRevised.label "Last revised:">
@@ -19,16 +19,16 @@
 
 <!ENTITY explanationNote.label "Note:">
 <!ENTITY explanationText.label "Text that you can use to give a complete explanation of your document's purpose. The Comment field places comments at the beginning of the LaTeX document. The Description field is for use in this dialog.">
-<!ENTITY commentsBox.label "Comments:">
+<!ENTITY commentsBox.label "Comments">
 <!ENTITY commentsBox.accesskey "C">
-<!ENTITY descriptionBox.label "Description:">
+<!ENTITY descriptionBox.label "Description">
 <!ENTITY descriptionBox.accesskey "D">
 
 <!ENTITY defaultPrintOptions.label "Use default print options">
 <!ENTITY defaultPrintOptions.accesskey "d">
-<!ENTITY makePrintOptionsDefault.label "Make default">
+<!ENTITY makePrintOptionsDefault.label "Make Default">
 <!ENTITY makePrintOptionsDefault.accesskey "d">
-<!ENTITY printUseCurrViewSettings.label "Use current view settings">
+<!ENTITY printUseCurrViewSettings.label "Use Current View Settings">
 <!ENTITY printUseCurrViewSettings.accesskey "U">
 <!ENTITY printInvisibles.label "Invisibles">
 <!ENTITY printInvisibles.accesskey "I">
@@ -51,14 +51,14 @@
 <!ENTITY printGrayButtonsTransparent.accesskey "G">
 <!ENTITY printSuppressGrayBoxes.label "Suppress gray boxes (except markers)">
 <!ENTITY printSuppressGrayBoxes.accesskey "S">
-<!ENTITY printUseCurrViewZoom.label "Use current view zoom settings">
+<!ENTITY printUseCurrViewZoom.label "Use Current View Zoom Settings">
 <!ENTITY printUseCurrViewZoom.accesskey "z">
 <!ENTITY zoomPercentage.label "Zoom percentage">
 <!ENTITY zoomPercentage.accesskey "p">
 
-<!ENTITY metadataRelation.label "Relation:">
+<!ENTITY metadataRelation.label "Relation">
 <!ENTITY metadataRelation.accesskey "R">
-<!ENTITY metadataValue.label "Metadata value or link target:">
+<!ENTITY metadataValue.label "Metadata Value or Link Target">
 <!ENTITY metadataValueBox.accesskey "v">
 <!ENTITY linksFileSelection.label "Link target:">
 <!ENTITY linksFileSelectionBox.accesskey "t">

@@ -111,12 +111,12 @@
 <!ENTITY axiscustom.label           "Custom">
 <!ENTITY axisnticks.label           "Number of X Ticks">
 <!ENTITY axisdisable.label          "Disable Tick Labeling">
-<!ENTITY axisxaxis.label            "X Axis Label">
-<!ENTITY axisyaxis.label            "Y Axis Label">
-<!ENTITY axiszaxis.label            "Z Axis Label">
-<!ENTITY axisxrange.label           "X Axis Range">
-<!ENTITY axisyrange.label           "Y Axis Range">
-<!ENTITY axiszrange.label           "Z Axis Range">
+<!ENTITY axisxaxis.label            "X">
+<!ENTITY axisyaxis.label            "Y">
+<!ENTITY axiszaxis.label            "Z">
+<!ENTITY axisxrange.label           "X axis">
+<!ENTITY axisyrange.label           "Y axis">
+<!ENTITY axiszrange.label           "Z axis">
 <!ENTITY axisaxesscale.label        "Axes Scaling">
 <!ENTITY axislinear.label           "Linear">
 <!ENTITY axislinlog.label           "Lin Log">

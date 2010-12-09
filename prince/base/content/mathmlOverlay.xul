@@ -139,6 +139,8 @@
         accesskey="&insertmenuMarker.accesskey;" observes="cmd_marker" />
       <menuitem id="insertmenuNote" label="&insertmenuNote.label;"
         accesskey="&insertmenuNote.accesskey;" observes="cmd_note" />
+      <menuitem id="insertmenuFootnote" label="&insertmenuFootnote.label;"
+        accesskey="&insertmenuFootnote.accesskey;" observes="cmd_footnote" />
       <menu id="insertmenuTypesetObject" label="&insertmenuTSO.label;" accesskey="&insertmenuTSO.accesskey;" >
           <menupopup>
           <menuitem id="MSIinsertIndexEntry"         
