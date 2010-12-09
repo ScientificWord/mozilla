@@ -26,7 +26,7 @@
 <!ENTITY sizeSmallRadio.label "Small">
 <!ENTITY sizeSmallRadio.accesskey "S">
 
-<!ENTITY withDelimitersCheckbox.label "With Delimiters">
+<!ENTITY withDelimitersCheckbox.label "With delimiters">
 <!ENTITY withDelimitersCheckbox.accesskey "W">
 
 <!-- <!ENTITY .tooltip "">  -->
