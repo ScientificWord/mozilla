@@ -7,7 +7,7 @@
 <!ENTITY MSIComputeEvalCmd.accesskey "E">
 <!ENTITY MSIComputeEvalCmd.keybinding "e">  
 <!ENTITY MSIComputeEvalNumCmd.label "Evaluate Numeric">
-<!ENTITY MSIComputeEvalNumCmd.accesskey "N">
+<!ENTITY MSIComputeEvalNumCmd.accesskey "U">
 <!ENTITY MSIComputeSimplifyCmd.label "Simplify">
 <!ENTITY MSIComputeSimplifyCmd.accesskey "y">
 
@@ -27,7 +27,7 @@
 <!ENTITY MSIComputeCombineHyperbolicsCmd.accesskey  "H">
 
 <!ENTITY MSIComputeExpandCmd.label     "Expand">
-<!ENTITY MSIComputeExpandCmd.accesskey "x">
+<!ENTITY MSIComputeExpandCmd.accesskey "n">
 <!ENTITY MSIComputeFactorCmd.label     "Factor">
 <!ENTITY MSIComputeFactorCmd.accesskey "F">
 
@@ -52,9 +52,9 @@
 <!ENTITY MSIComputeRewriteSinhAndCoshCmd.label "Sinh and Cosh">
 <!ENTITY MSIComputeRewriteSinhAndCoshCmd.accesskey "h">
 <!ENTITY MSIComputeRewriteSinCmd.label "Sin">
-<!ENTITY MSIComputeRewriteSinCmd.accesskey "S">       
+<!ENTITY MSIComputeRewriteSinCmd.accesskey "I">       
 <!ENTITY MSIComputeRewriteCosCmd.label "Cos">
-<!ENTITY MSIComputeRewriteCosCmd.accesskey "C">       
+<!ENTITY MSIComputeRewriteCosCmd.accesskey "O">       
 <!ENTITY MSIComputeRewriteTanCmd.label "Tan">
 <!ENTITY MSIComputeRewriteTanCmd.accesskey "T">       
 <!ENTITY MSIComputeRewriteArcsinCmd.label "Arcsin">
@@ -142,7 +142,7 @@
 <!ENTITY MSIComputePowerSeriesCmd.accesskey "w">
 
 <!ENTITY MSITransformsMenu.label     "Transforms">
-<!ENTITY MSITransformsMenu.accesskey "n">
+<!ENTITY MSITransformsMenu.accesskey "T">
 <!ENTITY MSIComputeFourierCmd.label       "Fourier">
 <!ENTITY MSIComputeFourierCmd.accesskey   "F">
 <!ENTITY MSIComputeInverseFourierCmd.label       "Inverse Fourier">
@@ -268,7 +268,7 @@
 <!ENTITY MSIComputeSimplexStandardizeCmd.accesskey "S">
 
 <!ENTITY MSIStatisticsMenu.label     "Statistics">
-<!ENTITY MSIStatisticsMenu.accesskey "t">
+<!ENTITY MSIStatisticsMenu.accesskey "i">
 <!ENTITY MSIComputeFitCurveCmd.label              "Fit Curve to Data...">
 <!ENTITY MSIComputeFitCurveCmd.accesskey          "F">
 <!ENTITY MSIComputeRandomNumbersCmd.label         "Random Numbers...">
@@ -282,7 +282,7 @@
 <!ENTITY MSIComputeCorrelationCmd.label           "Correlation">
 <!ENTITY MSIComputeCorrelationCmd.accesskey       "c">
 <!ENTITY MSIComputeCovarianceCmd.label            "Covariance">
-<!ENTITY MSIComputeCovarianceCmd.accesskey        "c">
+<!ENTITY MSIComputeCovarianceCmd.accesskey        "a">
 <!ENTITY MSIComputeGeometricMeanCmd.label         "Geometric Mean">
 <!ENTITY MSIComputeGeometricMeanCmd.accesskey     "g">
 <!ENTITY MSIComputeHarmonicMeanCmd.label          "Harmonic Mean">
@@ -301,7 +301,7 @@
 <!ENTITY MSIComputePlotCmd2D.label     "Plot 2D Rectangular">
 <!ENTITY MSIComputePlotCmd2D.accesskey "p">
 <!ENTITY MSIComputePlotCmd3D.label     "Plot 3D Rectangular">
-<!ENTITY MSIComputePlotCmd3D.accesskey "3">
+<!ENTITY MSIComputePlotCmd3D.accesskey "J">
 <!ENTITY MSIComputePlotCmd.label     "Plot">
 <!ENTITY MSIComputePlotCmd.accesskey "p">
 
@@ -325,12 +325,12 @@
 <!ENTITY MSIComputeSwitchEnginesCmd.accesskey "S">
 
 <!ENTITY MSIComputeInterpretCmd.label "Interpret">
-<!ENTITY MSIComputeInterpretCmd.accesskey "I">
+<!ENTITY MSIComputeInterpretCmd.accesskey "Z">
 <!ENTITY MSIComputeInterpretCmd.keybinding "/">      
 <!ENTITY MSIComputeFixupCmd.label "Fixup">
 <!ENTITY MSIComputeFixupCmd.accesskey "F">
 <!ENTITY MSIComputePassthruCmd.label "Passthru Code to Engine">
-<!ENTITY MSIComputePassthruCmd.accesskey "P">
+<!ENTITY MSIComputePassthruCmd.accesskey "G">
 
 
       
