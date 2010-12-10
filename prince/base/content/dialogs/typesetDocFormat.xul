@@ -80,7 +80,9 @@
     </tabs>
     <tabpanels>
       <tabpanel id="docformatgeneralpanel" orient="vertical">
-        <button oncommand="onAccept();"  />
+       <!-- 12/10/2010 commented out by JLF per BBM
+       <button onAccept();"  /> 
+       -->
         <vbox flex="1">
           <label class="heading" value="General Document Options"/>
           <label value="Warning goes here"/>

@@ -40,7 +40,7 @@
   </vbox>
   <hbox>
     <vbox>
-      <label control="req" accesskey="&RequiresPackage.accesskey" value="&RequiresPackage.label;"/>
+      <label control="req" accesskey="&RequiresPackage.accesskey;" value="&RequiresPackage.label;"/>
       <textbox id="req" value=""/>
     </vbox>
     <spacer width="30px"/>
