@@ -238,9 +238,9 @@
         </row>
         <row>
           <label value="Border color"/>
-          <button id="colorButton" class="color-button" oncommand="getColorAndUpdate();">
+          <msibutton id="colorButton" class="color-button" oncommand="getColorAndUpdate();">
             <spacer persist="style" id="colorWell" class="color-well" style="background-color: black"/>
-          </button>
+          </msibutton>
         </row>
       </rows>
     </grid>    

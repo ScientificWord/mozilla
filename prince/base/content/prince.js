@@ -743,8 +743,8 @@ function compileDocument()
     outputfile.append("main.tex");
     if (outputfile.exists()) outputfile.remove(false);
     
-    dump("\TeX file="+outputfile.path + "\n");
-//    dump("DVI/PDF file is " + pdffile.path + "\n"); 
+    dump("TeX file="+outputfile.path + "\n");
+//    dump("PDF file is " + pdffile.path + "\n"); 
     var compileInfo = new Object();  // an object to hold pass counts and whether makeindex needs to run.
     if (documentAsTeXFile(editor.document, "latex.xsl", outputfile, compileInfo ))
     {

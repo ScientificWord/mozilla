@@ -205,21 +205,32 @@
           <checkbox id="equalscale" label="&axisequal.label;"/>
           </groupbox>
 
-          <groupbox>        
-            <label value="&axisxaxis.label;"/>
-            <textbox id="XAxisLabel" cols="40"/>
-          </groupbox>
-          <groupbox>        
-            <label value="&axisyaxis.label;"/>
-            <textbox id="YAxisLabel" cols="40"/>
-          </groupbox>
-          <groupbox>        
-            <label value="&axiszaxis.label;"/>
-            <textbox id="ZAxisLabel" cols="40"/>
+          <groupbox>
+            <caption>Axis labels</caption>
+            <grid>
+              <columns>
+                <column/>
+                <column/>
+              </columns>
+              <rows>
+                <row>        
+                  <label value="&axisxaxis.label;"/>
+                  <textbox style="width: 10em;" id="XAxisLabel" cols="20"/>
+                </row>
+                <row>
+                  <label value="&axisyaxis.label;"/>
+                  <textbox style="width: 10em;" id="YAxisLabel" cols="20"/>
+                </row>
+                <row>
+                  <label value="&axiszaxis.label;"/>
+                  <textbox style="width: 10em;" id="ZAxisLabel" cols="20"/>
+                </row>
+              </rows>
+            </grid>
           </groupbox>
           <groupbox>
             <hbox>
-              <description>"&axistickmark.label;"</description>
+              <description>&axistickmark.label;</description>
               <menulist id="XTickCount">
                 <menupopup> 
                   <menuitem label="&none.label;"   value="none"/>
@@ -237,74 +248,77 @@
           <groupbox>
             <caption label="&axistype.label;" />
             <radiogroup id="axistype" orient= "horizontal">
-              <radio label="&unspecified.label;" value="unspecified" selected="true"/>
-              <radio label="&axisauto.label;"    value="Automatic"   selected="false"/>
-              <radio label="&axisnormal.label;"  value="Normal"      selected="false"/>
-              <radio label="&axisboxed.label;"   value="Boxed"       selected="false"/>
-              <radio label="&axisframed.label;"  value="Frame"       selected="false"/>
-              <radio label="&axisnone.label;"    value="None"        selected="false"/>
+              <grid>
+                <columns>
+                  <column/>
+                  <column/>
+                  <column/>
+                </columns>
+                <rows>
+                  <row>
+                    <radio label="&unspecified.label;" value="unspecified" selected="true"/>
+                    <radio label="&axisauto.label;"    value="Automatic"   selected="false"/>
+                    <radio label="&axisnormal.label;"  value="Normal"      selected="false"/>
+                  </row>
+                  <row>
+                    <radio label="&axisboxed.label;"   value="Boxed"       selected="false"/>
+                    <radio label="&axisframed.label;"  value="Frame"       selected="false"/>
+                    <radio label="&axisnone.label;"    value="None"        selected="false"/>
+                  </row>
+                </rows>
+              </grid>
             </radiogroup>
           </groupbox>
        </vbox>
       </tabpanel>      
 
-      <tabpanel id="Layout">
-        <vbox>
-          <groupbox>
-            <caption label="&layoutsize.label;"/>
-            <hbox>
-              <label>"&width.label;"</label>
-              <textbox id="Width" cols="4"/>
-            </hbox>
-            <hbox>
-              <label>"&height.label;"</label>
-              <textbox id="Height" cols="4"/>
-            </hbox>
-            <hbox>
-              <description>"&units.label;"</description>
-              <menulist id="Units">
-                <menupopup> 
-                  <menuitem label="&unitsinches.label;" value="inches"/>
-                  <menuitem label="&unitscm.label;"     value="cm"/>
-                  <menuitem label="&unitspicas.label;"  value="picas"/>
-                  <menuitem label="&unitspoints.label;" value="points"/>
-                </menupopup>
-              </menulist>
-            </hbox>
-          </groupbox>
-          <groupbox>
-            <caption label="&layoutscreendisp.label;"/>
-            <hbox>
-              <checkbox id="model" label="&layoutmodel.label;"/>   
-            </hbox>
-          </groupbox>
-          <groupbox>
-            <caption label="&layoutprintattr.label;"/>
-            <radiogroup id="printattr" orient="horizontal">
-              <radio label="&layoutprintframe.label;"     value="plotinframe"     selected="true"/>
-              <radio label="&layoutprintplot.label;"      value="plotinplot"      selected="false"/>
-              <radio label="&layoutprintframeonly.label;" value="plotinframeonly" selected="false"/>
-              <radio label="&layoutprinticon.label;"      value="plotinicon"      selected="false"/>
-            </radiogroup>
-          </groupbox>
-          <groupbox>
-            <caption label="&screendisplay.label;"/>
-            <radiogroup id="screendisplayattr" orient="horizontal">
-              <radio label="&layoutprintframe.label;"     value="plotinframe"     selected="true"/>
-              <radio label="&layoutprintplot.label;"      value="plotinplot"      selected="false"/>
-              <radio label="&layoutprintframeonly.label;" value="plotinframeonly" selected="false"/>
-              <radio label="&layoutprinticon.label;"      value="plotinicon"      selected="false"/>
-            </radiogroup>
-          </groupbox>
-          <groupbox>
-            <caption label="&layoutplacement.label;"/>
-            <radiogroup id="placement" orient="horizontal">
-              <radio label="&layoutplaceinline.label;"    value="placeinline" selected="false"/>
-              <radio label="&layoutplacedisplayed.label;" value="placedisp"   selected="true"/>
-              <radio label="&layoutplacefloat.label;"     value="placefloat"  selected="false"/>
-            </radiogroup>
-          </groupbox>
-        </vbox>
+      <tabpanel id="Layout" orient="vertical">
+        <groupbox>
+          <caption label="Default size for new plots"/>
+          <grid>
+            <columns>
+              <column flex="0"/>
+              <column flex="0"/>
+              <column flex="0"/>
+            </columns>
+            <rows>
+              <row><label value="Width:"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsHSize"/><label value="pixels"/></row>
+              <row><label value="Height:"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsVSize"/><label value="pixels"/></row>
+            </rows>
+          </grid>
+        </groupbox>
+        <groupbox>
+          <caption label="Default placement for new plots"/>
+          <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);">
+          <hbox flex="1">
+            <vbox>
+              <radio id="inline" label="In line" radioGroup="placementRadioGroup"/>
+            </vbox>
+            <vbox>
+              <radio id="display" label="Displayed" radioGroup="placementRadioGroup"/>
+            </vbox>
+            <vbox>
+              <radio id="float" label="Floating" radioGroup="placementRadioGroup" oncommand="enableHere(this);"/>
+              <vbox>
+                <checkbox id="placeForceHereCheck" label="Force here" observes="floatingPlacement"/>
+                <checkbox id="placeHereCheck" label="Here" observes="floatingPlacement"/>
+                <checkbox id="placeFloatsCheck" label="On a page of floats" observes="floatingPlacement"/>
+                <checkbox id="placeTopCheck" label="Top of page" observes="floatingPlacement"/>
+                <checkbox id="placeBottomCheck" label="Bottom of page" observes="floatingPlacement"/>
+              </vbox>
+            </vbox>
+            <vbox>
+              <radiogroup id="herePlacementRadioGroup" align="vertical" value="left" oncommand="enableHere(this);">
+                <radio id="hereLeftRadio" label="Left" value="left" observes="herePlacement" />
+                <radio id="hereRightRadio" label="Right" value="right" observes="herePlacement"/>
+                <radio id="hereInsideRadio" label="Inside" value="inside" observes="herePlacement" />
+                <radio id="hereOutsideRadio" label="Outside" value="outside" observes="herePlacement" />
+                <radio id="hereFullWidthRadio" label="Full width" value="full" observes="herePlacement" />
+              </radiogroup>
+            </vbox>
+          </hbox>
+          </radiogroup>
+        </groupbox>
       </tabpanel>      
 
       <tabpanel id="Labelling">
@@ -329,65 +343,41 @@
        </vbox>
       </tabpanel>      
 
-      <tabpanel id="View">
+      <tabpanel id="View defaults">
         <vbox>
-           <row>
-             <label id="bgcolor" control="TextButton" value="Background Color: " />
-             <msibutton id="bgcolorbutton" class="color-button" oncommand="GetGraphColor('BGColor');">
+          <row>
+            <label id="bgcolor" control="TextButton" value="Background Color: " />
+            <msibutton id="bgcolorbutton" class="color-button" oncommand="GetGraphColor('BGColor');">
                <spacer id="plotCW" class="color-well"/>
-             </msibutton>
-           </row>
-
-          <groupbox>        
-            <hbox>
-              <label value="Camera Location"/>
-              <textbox id="CameraLocationX" cols="3"/>
-              <textbox id="CameraLocationY" cols="3"/>
-              <textbox id="CameraLocationZ" cols="3"/>
-            </hbox>
-            <hbox>
-              <label value="Focal Point"/>
-              <textbox id="FocalPointX" cols="3"/>
-              <textbox id="FocalPointY" cols="3"/>
-              <textbox id="FocalPointZ" cols="3"/>
-            </hbox>
-            <hbox>
-              <label value="Up Vector"/>
-              <textbox id="UpVectorX" cols="3"/>
-              <textbox id="UpVectorY" cols="3"/>
-              <textbox id="UpVectorZ" cols="3"/>
-            </hbox>
-			<hbox>
-              <label value="Viewing Angle"/>
-              <textbox id="ViewingAngle" cols="3"/>
-			</hbox>
-		  </groupbox>
+            </msibutton>
+          </row>
+          <separator/>
           <vbox>
             <checkbox id="OrthogonalProjection" label="Orthogonal Projection"/>
             <checkbox id="KeepUp"               label="Keep Up Vector"/>
             <checkbox id="defaultviewintervals" label="&viewinterval.label;"/>
           </vbox>
-          <groupbox>        
+          <groupbox>
+            <caption>Initial view intervals</caption>        
             <hbox>
               <label value="&axisxrange.label;"/>
-              <textbox id="xrangelow" cols="4"/>
-              <textbox id="xrangehigh" cols="4"/>
+              <textbox id="xrangelow" style="width: 5em;" cols="6"/>
+              <textbox id="xrangehigh" style="width: 5em;" cols="6"/>
             </hbox>
             <hbox>
               <label value="&axisyrange.label;"/>
-              <textbox id="yrangelow" cols="4"/>
-              <textbox id="yrangehigh" cols="4"/>
+              <textbox id="yrangelow" style="width: 5em;" cols="6"/>
+              <textbox id="yrangehigh" style="width: 5em;" cols="6"/>
             </hbox>
             <hbox>
               <label value="&axiszrange.label;"/>
-              <textbox id="zrangelow" cols="4"/>
-              <textbox id="zrangehigh" cols="4"/>
+              <textbox id="zrangelow" style="width: 5em;" cols="6"/>
+              <textbox id="zrangehigh" style="width: 5em;" cols="6"/>
             </hbox>
           </groupbox>
 
        </vbox>
       </tabpanel>      
-
     </tabpanels>
   </tabbox>
 

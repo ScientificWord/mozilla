@@ -4,9 +4,14 @@
 
 <!ENTITY column.label   "Location of Dependent Variable">
 <!ENTITY first.label    "First column">
+<!ENTITY first.accesskey  "F">
 <!ENTITY last.label     "Last column">
+<!ENTITY last.accesskey "L">
 
 <!ENTITY regress.label   "Multiple regression">
+<!ENTITY regress.accesskey  "R">
 <!ENTITY noconst.label   "Multiple regression (no constant)">  
+<!ENTITY noconst.accesskey  "M">
 <!ENTITY poly.label      "Polynomial of">
+<!ENTITY  poly.accesskey  "P">
 <!ENTITY degree.label    "degree"> 
