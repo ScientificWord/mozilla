@@ -27,7 +27,7 @@ public:
   nsresult WillDeleteSelection(nsISelection *aSelection, nsIEditor::EDirection aAction, 
                                PRBool *aCancel, PRBool *aHandled);
   
-
+  nsresult WillInsert(nsISelection *aSelection, PRBool *aCancel);
 
   NS_IMETHOD DidDeleteNode(nsIDOMNode *aChild, nsresult aResult);
   NS_IMETHOD DidSplitNode(nsIDOMNode *aExistingRightNode, PRInt32 aOffset, nsIDOMNode *aNewLeftNode, nsresult aResult);

@@ -90,7 +90,7 @@
                     oncommand="MakeInputValueRelativeOrAbsolute(this);"
                     tooltiptext="&makeUrlRelative.tooltip;"/>
           <spacer flex="1"/>
-          <button label="&chooseButton.label;" accesskey="&chooseFileLink.accessKey;" oncommand="chooseLinkFile();"/>
+          <msibutton label="&chooseButton.label;" accesskey="&chooseFileLink.accessKey;" oncommand="chooseLinkFile();"/>
         </hbox>
       </vbox>  
 
@@ -102,7 +102,7 @@
           tooltiptext="Enter a new key name"
           onfocus=""
           ontextentered="" />
-          <button id="MoreFewerButton" oncommand="onMoreFewer();" persist="more"/>
+          <msibutton id="MoreFewerButton" oncommand="onMoreFewer();" persist="more"/>
       </hbox>
     </groupbox>
 
@@ -111,27 +111,32 @@
 
   <vbox id="MoreSection">
     <groupbox><caption label="&targetBox.label;"/>
-      <checkbox id="userDefinedTargetCheckbox" label="&userDefinedTarget.label;" oncommand="TargetToggled();"/>
+      <checkbox id="userDefinedTargetCheckbox" label="&userDefinedTarget.label;" accesskey="&userDefinedTarget.accesskey;" oncommand="TargetToggled();"/>
       <radiogroup orient="vertical" class="indent" id="targetRadiogroup">
         <radio id="topRadio"
                label="&topRadio.label;"
+               accesskey="&topRadio.accesskey;"
                value="_top"
                oncommand="ToggleTargetValue('_top')"/>
         <radio id="blankRadio"
                label="&blankRadio.label;"
+               accesskey="&blankRadio.accesskey;"
                value="_blank"
                oncommand="ToggleTargetValue('_blank')"
                selected="true"/>
         <radio id="parentRadio"
                label="&parentRadio.label;"
+               accesskey="&parentRadio.accesskey;"
                value="_parent"
                oncommand="ToggleTargetValue('_parent')"/>
         <radio id="selfRadio"
                label="&selfRadio.label;"
+               accesskey="&selfRadio.accesskey;"
                value="_self"
                oncommand="ToggleTargetValue('_self')"/>
         <radio id="userdefRadio"
                label="&userDefinedRadio.label;"
+               accesskey="&userDefinedRadio.accesskey;"
                value="user-defined"
                oncommand="ToggleTargetValue('user-defined')"/>
         <textbox id="userDefinedTarget" class="indent"/>

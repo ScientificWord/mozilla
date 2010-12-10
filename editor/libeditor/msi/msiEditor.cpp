@@ -106,6 +106,8 @@ void DumpSelection( nsISelection * sel)
 }
 
 
+
+
 msiEditor::msiEditor()
 {
   nsresult res(NS_OK);
@@ -285,6 +287,18 @@ msiEditor::GetMathMLCoalesceInterface(nsIDOMNode * node, PRUint32 offset,
     res = m_msiEditingMan->GetMathMLCoalesceInterface(node, offset, mathml);
   return res;
 }
+
+
+
+nsresult
+msiEditor::InsertNodeAtPoint(nsIDOMNode *aNode, 
+                                nsCOMPtr<nsIDOMNode> *ioParent, 
+                                PRInt32 *ioOffset, 
+                                PRBool aNoEmptyNodes)
+{
+     return nsHTMLEditor::InsertNodeAtPoint(aNode, ioParent, ioOffset, aNoEmptyNodes);
+}
+
 
 nsresult msiEditor::InsertMath(PRBool isDisplay)
 {

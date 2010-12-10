@@ -40,7 +40,7 @@
 <!ENTITY LinkURLBox.label "Link Location">
 <!ENTITY LinkTextMessage.label "Enter text to display for the link:">
 <!ENTITY makeLinkTextMessage.accessKey  "t">
-<!ENTITY LinkURLEditField.label "Enter a web page location, a local file or select a marker from the popup list">
+<!ENTITY LinkURLEditField.label "Enter a web page location, a local file or select a marker from the popup list:">
 <!ENTITY LinkURLEditField.accessKey "URL is relative to document location">
 <!ENTITY makeUrlRelative.label "URL is relative to document location">
 <!ENTITY makeUrlRelative.accessKey "r">
@@ -52,8 +52,14 @@
 
 <!ENTITY targetBox.label "Target">
 <!ENTITY userDefinedTarget.label "Link is to be opened">
+<!ENTITY userDefinedTarget.accesskey  "L">
 <!ENTITY topRadio.label "in same window, getting rid of all framesets">
+<!ENTITY topRadio.accesskey "S">
 <!ENTITY blankRadio.label "in a new window">
+<!ENTITY blankRadio.accesskey "N">
 <!ENTITY parentRadio.label "in the parent frameset">
+<!ENTITY parentRadio.accesskey  "P">
 <!ENTITY selfRadio.label "in the current frame">
+<!ENTITY selfRadio.accesskey  "C">
 <!ENTITY userDefinedRadio.label "in this frame:">
+<!ENTITY userDefinedRadio.accesskey "F">
