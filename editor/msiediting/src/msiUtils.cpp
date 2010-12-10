@@ -836,6 +836,7 @@ nsresult msiUtils::CreateDecoration(nsIEditor * editor,
   nsresult res(NS_ERROR_FAILURE);
   if (editor && (!above.IsEmpty() || !below.IsEmpty()))
   {
+    res = NS_OK;
     PRBool isOverUnder = !above.IsEmpty() && !below.IsEmpty();
     PRBool isOver = !above.IsEmpty() && below.IsEmpty();
     PRUint32 dummyFlags(0);
