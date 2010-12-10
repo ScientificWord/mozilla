@@ -13,7 +13,7 @@
 <!ENTITY name.accesskey "N">
 <!ENTITY Encapsulated.label "Encapsulated">
 <!ENTITY Encapsulated.accesskey "E">
-<!ENTITY Preamble.label "Put in preamble"
+<!ENTITY Preamble.label "Put in preamble">
 <!ENTITY Preamble.accesskey "I">
 <!ENTITY RequiresPackage.label  "Requires Package">
 <!ENTITY RequiresPackage.accesskey  "P">

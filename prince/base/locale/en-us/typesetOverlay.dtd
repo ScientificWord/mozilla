@@ -11,7 +11,7 @@
 <!ENTITY MSIfrontMatterCmd.label "Front Matter...">
 <!ENTITY MSIfrontMatterCmd.accesskey "F">
 <!ENTITY MSIpreambleCmd.label "Preamble...">
-<!ENTITY MSIpreambleCmd.accesskey "r">
+<!ENTITY MSIpreambleCmd.accesskey "P">
 <!ENTITY MSIbibChoiceCmd.label "Bibliography Choice...">
 <!ENTITY MSIbibChoiceCmd.accesskey "B">
 <!ENTITY MSItypesetOptionsAndPackagesCmd.label "Options and Packages...">
