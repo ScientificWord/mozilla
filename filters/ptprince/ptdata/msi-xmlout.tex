@@ -453,13 +453,13 @@
      \msitag{^^0a}\msiopentag{#1}{<#1>}%
      {\everypar={}\msitag{^^0a}%
       \def\short{##1}%
+      \msiopentag{sectiontitle}{<sectiontitle>}%
       \ifx\short\@empty
       \else
         \msiopentag{shortTitle}{<shortTitle>}%
           ##1%
         \msiclosetag{shortTitle}{</shortTitle>}%
       \fi
-      \msiopentag{sectiontitle}{<sectiontitle>}%
       ##2%
       \msiclosetag{sectiontitle}{</sectiontitle>}}
   }%
