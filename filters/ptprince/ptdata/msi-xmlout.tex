@@ -205,16 +205,16 @@
 \def\out@newtheorema#1[#2]#3{%
   \@ifundefined{msi@begin@#1}%
      {\expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}[#2]{#3}}
-      \@namedef{msi@begin@#1}{\br\msiopentag{theorem}{<theorem type="#1">}}
-      \@namedef{msi@end@#1}{\br\msiclosetag{theorem}{</theorem>}}}%
+      \@namedef{msi@begin@#1}{\br\msiopentag{theorem}{<theorem type="#1">}\msiopentag{bodyText}{<bodyText>}}
+      \@namedef{msi@end@#1}{\br\msiclosetag{bodyText}{</bodyText>}\msiclosetag{theorem}{</theorem>}}}%
      {}%
 }
 
 \def\out@newtheoremb#1#2{%
   \@ifundefined{msi@begin@#1}%
     {\expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}{#2}}
-     \@namedef{msi@begin@#1}{\br\msiopentag{theorem}{<theorem type="#1">}}
-     \@namedef{msi@end@#1}{\br\msiclosetag{theorem}{</theorem>}}}%
+     \@namedef{msi@begin@#1}{\br\msiopentag{theorem}{<theorem type="#1">}\msiopentag{bodyText}{<bodyText>}}
+     \@namedef{msi@end@#1}{\br\msiclosetag{bodyText}{</bodyText>}\msiclosetag{theorem}{</theorem>}}}%
     {}}%
 }
 
@@ -450,16 +450,21 @@
      \expandafter\advance\csname #1number\endcsname by 1%
      \let\protect\relax
      \msiclosetag{#1}{</#1>}%
-     \msitag{^^0a}\msiopentag{#1}{<#1>}%
+     \msitag{^^0a}%
+     \if@starred
+       \msiopentag{#1}{<#1 nonum="true">}%
+     \else 
+       \msiopentag{#1}{<#1>}%
+     \fi
      {\everypar={}\msitag{^^0a}%
       \def\short{##1}%
+      \msiopentag{sectiontitle}{<sectiontitle>}%
       \ifx\short\@empty
       \else
         \msiopentag{shortTitle}{<shortTitle>}%
           ##1%
         \msiclosetag{shortTitle}{</shortTitle>}%
       \fi
-      \msiopentag{sectiontitle}{<sectiontitle>}%
       ##2%
       \msiclosetag{sectiontitle}{</sectiontitle>}}
   }%
@@ -469,6 +474,7 @@
 
 
 \newsection{part}{1}{Part \the\sectionnumber}{sectiontitle}%
+\newsection{chapter}{2}{Chapter \the\sectionnumber}{sectiontitle}%
 \newsection{section}{2}{Section \the\sectionnumber}{sectiontitle}%
 \newsection{subsection}{3}{\the\sectionnumber.\the\subsectionnumber}{sectiontitle}%
 \newsection{subsubsection}{4}{\thesectionnumber.\thesubsectionnumber.\the\subsubsectionnumber}{sectiontitle}%
