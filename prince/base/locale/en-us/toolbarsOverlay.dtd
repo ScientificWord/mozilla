@@ -78,6 +78,9 @@
 <!ENTITY bracketsButton.tooltip "Brackets" >
 <!ENTITY bracketsButton.label "Brackets" >
 
+<!ENTITY genBracketsButton.tooltip "Generalized brackets" >
+<!ENTITY genBracketsButton.label "Generalized Brackets" >
+
 <!ENTITY matrixButton.tooltip "Matrix" >
 <!ENTITY matrixButton.label "Matrix" >
 
@@ -90,11 +93,14 @@
 <!ENTITY labelButton.tooltip "Label" >
 <!ENTITY labelButton.label "Label" >
 
-<!ENTITY decorationButton.tooltip "Decoration" >
-<!ENTITY decorationButton.label "Decoration" >
+<!ENTITY decorationButton.tooltip "Decoration or label" >
+<!ENTITY decorationButton.label "Decoration/label" >
 
 <!ENTITY noteButton.tooltip "Note" >
 <!ENTITY noteButton.label "Note" >
+
+<!ENTITY footnoteButton.tooltip "Footnote" >
+<!ENTITY footnoteButton.label "Footnote" >
 
 <!ENTITY markerButton.tooltip "Marker" >
 <!ENTITY markerButton.label "Marker" >
@@ -216,7 +222,7 @@
 <!ENTITY boldToolbarButton.label "Bold">
 <!ENTITY italicToolbarButton.tooltip "Toggle italic">
 <!ENTITY italicToolbarButton.label "Italic">
-<!ENTITY chooseDefPrinter.label "Select default">
+<!ENTITY chooseDefPrinter.label "Select Default">
 <!ENTITY direct "Direct">
 <!ENTITY pdf "PDF">
 <!ENTITY dvi "DVI">
