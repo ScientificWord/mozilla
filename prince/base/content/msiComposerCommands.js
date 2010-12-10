@@ -98,12 +98,9 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_MSIAnimateGifsOn",   msiGIFAnimation);
   commandTable.registerCommand("cmd_MSIAnimateGifsOff",  msiGIFAnimation);
   commandTable.registerCommand("cmd_printDirect",           msiPrintDirectCommand);
-  commandTable.registerCommand("cmd_printDvi",           msiPrintCommand);
   commandTable.registerCommand("cmd_printPdf",           msiPrintCommand);
   commandTable.registerCommand("cmd_previewDirect",         msiPreviewDirectCommand);
-  commandTable.registerCommand("cmd_previewDvi",         msiPreviewCommand);
   commandTable.registerCommand("cmd_previewPdf",         msiPreviewCommand);
-  commandTable.registerCommand("cmd_compileDvi",         msiCompileCommand);
   commandTable.registerCommand("cmd_compilePdf",         msiCompileCommand);
   commandTable.registerCommand("cmd_updateStructToolbar", msiUpdateStructToolbarCommand);
   commandTable.registerCommand("cmd_insertReturnFancy", msiInsertReturnFancyCommand);
@@ -128,6 +125,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_msiReviseRules",   msiReviseRulesCommand);
   commandTable.registerCommand("cmd_msiReviseBreaks",  msiReviseBreaksCommand);
   commandTable.registerCommand("cmd_note", msiNoteCommand);
+  commandTable.registerCommand("cmd_footnote", msiFootnoteCommand);
   commandTable.registerCommand("cmd_frame", msiFrameCommand);
   commandTable.registerCommand("cmd_citation", msiCitationCommand);
   commandTable.registerCommand("cmd_reviseCitation", msiReviseCitationCommand);
@@ -2394,14 +2392,21 @@ function msiSoftSave( editor, editorElement)
 //
   
   // Get the current definitions from compute engine and place in preamble.
-  var defnListString = GetCurrentEngine().getDefinitions();
+  var defnListString = "";
+  try {
+    defnListString = GetCurrentEngine().getDefinitions();
+  }
+  catch(e)
+  {
+    dump("Unable to get definitions ("+e.message+")\n");
+  }
   var preamble = editorDoc.getElementsByTagName("preamble")[0];
   if (preamble)
   {
     var oldDefnList = preamble.getElementsByTagName("definitionlist")[0];
     if (oldDefnList)
        oldDefnList.parentNode.removeChild(oldDefnList);
-    if (defnListString.length > 0)
+    if (defnListString && defnListString.length > 0)
     {
       defnListString = "<doc>"+defnListString.replace(/<p>/,"<para>","g").replace(/<\/p>/,"</para>",g)+"</doc>";
       var defnList = editorDoc.createElement("definitionlist");
@@ -7024,6 +7029,27 @@ var msiNoteCommand =
     //temporary
     // need to get current note if it exists -- if none, initialize as follows 
     msiNote(null, editorElement);
+  }
+};
+
+var msiFootnoteCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+
+    return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement));
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    //temporary
+    // need to get current note if it exists -- if none, initialize as follows 
+    msiNote(null, editorElement, 'footnote');
   }
 };
 
