@@ -71,9 +71,9 @@
   </vbox>
   <hbox>
     <label control="colorButton" value="&colorButton.label;"	accesskey="&colorButton.accesskey;"/>
-    <button id="colorButton" class="color-button" oncommand="getColorAndUpdate();">
+    <msibutton id="colorButton" class="color-button" oncommand="getColorAndUpdate();">
       <spacer id="colorWell" class="color-well"/>
-    </button>
+    </msibutton>
     <spacer flex="1"/>
   </hbox>
 </dialog>

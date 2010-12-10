@@ -1,10 +1,10 @@
-<!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
+<!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. --> 
 
 <?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/toolbarsOverlay.css" type="text/css"?>
 <?xml-stylesheet href="chrome://prince/skin/toolbaroverride.css" type="text/css"?>
 <?xml-stylesheet href="chrome://global/skin/printpreview.css" type="text/css"?>
-<?xml-stylesheet href="chrome://prince/skin/toolbarbuttonoverride.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/toolbarbuttonoverride.css" type="text/css"?>  
 
 
 <!DOCTYPE window SYSTEM "chrome://prince/locale/toolbarsOverlay.dtd">
@@ -13,16 +13,16 @@
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   
   <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/ -->
-  <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/ -->
+  <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/--> 
   <script type="application/x-javascript" src="chrome://prince/content/toolbarsOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/>     
   <!-- script type="application/x-javascript" src="chrome://global/content/customizeToolbar.js"/ -->
 
          
   <toolbox id="Toolbox" class="toolbox-top" orient="vertical" persist="iconsize" flex="1">       
     <popup id="toolbar-context-menu" onpopupshowing="initCustomizeMenu(this,'Toolbox');">
       <menuitem id="customizeItem" oncommand="CustomizeMainToolbar('Toolbox');"
-        label="Customize toolbars" />
+        label="Customize Toolbars" />
     </popup>
     <popup id="symbol-palettes-context-menu" >
       <menuitem id='symbolssmall' persist="checked" checked = "true" type="checkbox" oncommand="setSymbolSize('small');"
@@ -74,12 +74,13 @@
       <toolbarbutton id="unitnameButton"/>
       <toolbarbutton id="displayButton"/>
       <toolbarbutton id="bigopButton"/>
+      <toolbarbutton id="genBracketsButton"/>
       <toolbarbutton id="matrixButton"/>
       <toolbarbutton id="mathnameButton"/>
       <toolbarbutton id="binomialButton"/>
-      <!--toolbarbutton id="labelButton"/ -->
       <toolbarbutton id="decorationButton"/>
       <toolbarbutton id="noteButton" tooltiptext="&noteButton.tooltip;" observes="cmd_note"/>
+      <toolbarbutton id="footnoteButton" tooltiptext="&footnoteButton.tooltip;" observes="cmd_footnote"/>
       <toolbarbutton id="markerButton" tooltiptext="&markerButton.tooltip;" observes="cmd_marker" />
       <toolbarbutton id="htlinkButton" tooltiptext="&htlinkButton.tooltip;"/>
       <toolbarbutton id="formulaButton" tooltiptext="&formulaButton.tooltip;"/>
@@ -106,7 +107,7 @@
     </toolbarpalette>
     <toolbar 
       id="StandardToolbar" 
-      toolbarname="Standard toolbar"
+      toolbarname="Standard Toolbar"
       class="chromeclass-toolbar" 
       persist="collapsed"
       flex = "1"
@@ -118,37 +119,32 @@
       iconsize="small" />
     <toolbar 
       id="EditingToolbar" 
-      toolbarname="Editing toolbar"
+      toolbarname="Editing Toolbar"
       class="chromeclass-toolbar" 
       persist="collapsed" 
       flex = "1"
       tbalign="center" 
       context="toolbar-context-menu"
-      defaultset="noteButton,markerButton,htlinkButton,formulaButton,compileButton,
-        packagesButton,citationButton,indexentryButton,xrefButton,texfieldButton,
-        bibliographyButton,gifsAnimatedButton,boldButton,italicButton,zoomValue"
+      defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicButton,undoButton,redoButton,findButton,importimageButton,exportwebButton,footnoteButton,noteButton,markerButton,htlinkButton,formulaButton,citationButton,indexentryButton,xrefButton,texfieldButton,bibliographyButton,importtexButton"
       mode="icons" 
       customizable="true"
       iconsize="small" />
     <toolbar 
       id="MathToolbar" 
-      toolbarname="Math toolbar"
+      toolbarname="Math Toolbar"
       class="chromeclass-toolbar" 
       persist="collapsed" 
       flex = "1"
       tbalign="center" 
       context="toolbar-context-menu"
-      defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plotButton3D,
-        defineButton,showdefsButton,fractionButton,radicalButton,superscriptButton,subscriptButton,
-        parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,
-        matrixButton,mathnameButton,binomialButton,decorationButton"
+      defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plotButton3D,defineButton,showdefsButton,fractionButton,radicalButton,superscriptButton,subscriptButton,parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,genBracketsButton,matrixButton,mathnameButton,binomialButton,decorationButton"
       mode="icons" 
       customizable="true"
       iconsize="small" />
     <toolbarset context="toolbar-context-menu"/>
     <toolbar 
       id="SymbolToolbar" 
-      toolbarname="Symbol toolbar"
+      toolbarname="Symbol Toolbar"
       class="chromeclass-toolbar" 
       persist="collapsed iconsize" 
       flex = "1"
@@ -298,11 +294,11 @@
   <toolbarbutton id="bigopButton" class="toolbarbutton-1" tooltiptext="&bigopButton.tooltip;"
     label="&bigopButton.label;" observes="cmd_MSIoperatorsCmd"/>
 
+  <toolbarbutton id="genBracketsButton" class="toolbarbutton-1" tooltiptext="&genBracketsButton.tooltip;"
+    label="&genBracketsButton.label;" observes="cmd_MSIgenBracketsCmd"/>
+
   <toolbarbutton id="matrixButton" class="toolbarbutton-1" tooltiptext="&matrixButton.tooltip;"
     label="&matrixButton.label;" observes="cmd_MSIMatrixCmd" />
-
-  <toolbarbutton id="bracketsButton" class="toolbarbutton-1" tooltiptext="&bracketsButton.tooltip;"
-    label="&bracketsButton.label;" observes="cmd_MSIbracketCmd" />
 
   <toolbarbutton id="mathnameButton" class="toolbarbutton-1" tooltiptext="&mathnameButton.tooltip;"
     label="&mathnameButton.label;" observes="cmd_MSImathnameCmd"/>
@@ -344,10 +340,6 @@
                 observes="cmd_printPdf"  for="pdf" onbroadcast="setDefault(this);">
         <observes id="pmitb2" element="defaultCompiler" attribute="defcomp"  />
       </menuitem>
-      <menuitem id="printMenuItem1dvi" label="&dviprintButton.label;" persist="default" default="false"
-                oncommand="msiGoDoCommand('cmd_printDvi');event.stopPropagation();"  for="dvi" onbroadcast="setDefault(this);">
-        <observes id="pmitb3" element="defaultCompiler" attribute="defcomp"  />
-      </menuitem>
       <menuseparator/>
       <menu id="chooseDefPrinter" label="&chooseDefPrinter.label;" >
 	      <menupopup id="menuChooseDefPrinterPopup">
@@ -358,10 +350,6 @@
 	        <menuitem id="pdfMode" label="&pdf;"   persist="default"  checked="true"  
             oncommand="return setDefaultPrinter('pdf',event);" for="pdf" onbroadcast="setDefault(this);">
             <observes id="pmitb8" element="defaultCompiler" attribute="defcomp" />
-          </menuitem>
-	        <menuitem id="dviMode" label="&dvi;"   persist="default"
-            oncommand="return setDefaultPrinter('dvi',event);" for="dvi" onbroadcast="setDefault(this);">
-             <observes id="pmitb9" element="defaultCompiler" attribute="defcomp" />
           </menuitem>
 	      </menupopup>
       </menu>
@@ -384,10 +372,6 @@
                 observes="cmd_previewPdf" for="pdf" onbroadcast="setDefault(this);">
         <observes id="pmitb11" element="defaultCompiler" attribute="defcomp" />
       </menuitem>
-      <menuitem id="dviPreviewMenuItem" label="&dvipreviewButton.label;" persist="default" default="false"
-                observes="cmd_previewDvi" for="dvi" onbroadcast="setDefault(this);">
-        <observes id="pmitb12" element="defaultCompiler" attribute="defcomp" />
-      </menuitem>
       <menuseparator/>
       <menu id="chooseDefPrinter2" label="&chooseDefPrinter.label;" >
 	      <menupopup id="menuChooseDefPrinterPopup2">
@@ -399,15 +383,10 @@
             oncommand="return setDefaultPrinter('pdf',event);" for="pdf" onbroadcast="setDefault(this);">
             <observes id="pmitb6" element="defaultCompiler" attribute="defcomp" />
           </menuitem>
-	        <menuitem id="dviMod2e" label="&dvi;"  persist="default"
-            oncommand="return setDefaultPrinter('dvi',event);" for="dvi" onbroadcast="setDefault(this);">
-             <observes id="pmitb6" element="defaultCompiler" attribute="defcomp" />
-          </menuitem>
 	      </menupopup>
       </menu>
     </menupopup>
   </toolbarbutton>
-  <toolbarbutton id="dvicompileButton" class="toolbarbutton-1" observes="cmd_compileDvi" tooltiptext="&dvicompileButton.tooltip;"/>
   <toolbarbutton id="pdfcompileButton" class="toolbarbutton-1" observes="cmd_compilePdf" tooltiptext="&pdfcompileButton.tooltip;"/>
 
   <toolbarbutton id="cutButton" class="toolbarbutton-1"

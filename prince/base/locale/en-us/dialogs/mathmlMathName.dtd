@@ -22,7 +22,7 @@
 <!ENTITY limitPlacementAtRight.accesskey "r">
 <!ENTITY addAutoSubstitution.label "Add automatic substitution">
 <!ENTITY addAutoSubstitution.accesskey "s">
-<!ENTITY engfunc.desc "This is an engine string.">
+<!ENTITY engfunc.desc "This is an engine string">
 <!ENTITY engfunc.accesskey "e">
 <!ENTITY addButton.label "Add">
 <!ENTITY addButton.accesskey "A">
