@@ -10,8 +10,8 @@
 <!ENTITY MSIdisplayCmd.accesskey "d">
 <!ENTITY MSIdisplayCmd.keybinding "d">
 <!ENTITY MSItextCmd.label "Text">
-<!ENTITY MSItextCmd.accesskey "t">
-<!ENTITY MSItextCmd.keybinding "t"> 
+<!ENTITY MSItextCmd.accesskey "T">
+<!ENTITY MSItextCmd.keybinding "T"> 
 <!ENTITY MSImathObjectsMenu.label "Math Objects">
 <!ENTITY MSImathObjectsMenu.accesskey "o">
 <!ENTITY MSIfractionCmd.label "Fraction">
@@ -111,7 +111,7 @@
 <!ENTITY insertmenuFormula.label "Formula...">
 <!ENTITY insertmenuFormula.accesskey "M">
 <!ENTITY insertmenuMarker.label "Marker...">
-<!ENTITY insertmenuMarker.accesskey "m">
+<!ENTITY insertmenuMarker.accesskey "K">
 <!ENTITY insertmenuHTMLField.label "HTML Field...">
 <!ENTITY insertmenuHTMLField.accesskey "H">
 <!ENTITY insertmenuUnitNames.label "Unit Name...">
@@ -119,7 +119,7 @@
 <!ENTITY insertmenuTSO.label "Typeset Object">
 <!ENTITY insertmenuTSO.accesskey "y">
 <!ENTITY insertmenuHyperlink.label "Hyperlink...">
-<!ENTITY insertmenuHyperlink.accesskey "k">
+<!ENTITY insertmenuHyperlink.accesskey "P">
 <!ENTITY insertmenuCitation.label "Citation...">
 <!ENTITY insertmenuCitation.accesskey "c">
 <!ENTITY MSIInsertTypesetObjectMenu.label "Typeset Object">

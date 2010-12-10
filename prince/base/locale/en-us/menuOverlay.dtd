@@ -92,7 +92,7 @@
 <!ENTITY pasteCmd.accesskey					"p"> 
 <!ENTITY pasteCmd.acceltext					"Ctrl+V"> 
 <!ENTITY pasteNoFormattingCmd.accesskey			"n"> 
-<!ENTITY pasteNoFormattingCmd.label			"Paste (no formatting)">  
+<!ENTITY pasteNoFormattingCmd.label			"Paste Without Formatting">  
 <!ENTITY pasteNoFormattingCmd.key				"q">  
 
 <!--JLF Test. These publishSettings entities are copied over from editor\ui\locales\en-US\chrome\composer\editorOverlay.dtd -->
@@ -204,7 +204,7 @@
 <!ENTITY helpmenuWebsite.label    "MacKichan Software Website">
 <!ENTITY helpmenuWebsite.accesskey    "M">
 <!ENTITY helpmenuRegister.label    "Register...">
-<!ENTITY helpmenuRegister.accesskey    "e">
+<!ENTITY helpmenuRegister.accesskey    "R">
 <!ENTITY helpmenuFeatures.label    "System Features...">
 <!ENTITY helpmenuFeatures.accesskey    "F">
 <!ENTITY helpmenuLicense.label    "License Information">
