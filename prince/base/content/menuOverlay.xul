@@ -329,10 +329,11 @@
   
   <menu id="tagMenu" label="&tagmenu.label;" accesskey="&tagmenu.accesskey;">
     <menupopup id="tagPopup">
-      <menuitem label="&tagmenuAppearance.label;" 
+  <!--    <menuitem label="&tagmenuAppearance.label;" 
                 id="tagmenuAppearance" 
                 observes="Cascades" 
                 accesskey="&tagmenuAppearance.accesskey;"/>
+                -->
       <menuitem label="&tagmenuFunctionKeys.label;" 
                 id="tagmenuFunctionKeys" 
                 observes="cmd_tagkeyassignments" 
