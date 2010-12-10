@@ -510,7 +510,7 @@ function exportTeX()
    fp.appendFilter("TeX files", "*.tex; *.ltx");
    fp.appendFilters(msIFilePicker.filterText);
    fp.defaultExtension = ".tex";
-   compileInfo = new Object();
+   var compileInfo = new Object();
    try 
    {
      var dialogResult = fp.show();
