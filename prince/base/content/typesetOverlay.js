@@ -763,32 +763,6 @@ function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
 
 }
 
-function doOutputChoiceDlg()
-{
-  var outputChoiceData = new Object();
-  outputChoiceData.outputChoice = "dvi";
-  window.openDialog("chrome://prince/content/typesetOutputChoice.xul", "outputchoice", "chrome,close,titlebar,modal", outputChoiceData);
-  if (!outputChoiceData.Cancel)
-  {
-    alert("Output Choice Dialog returned " + outputChoiceData.outputChoice + "; needs to be hooked up to do something!");
-  }
-}
-
-function doTeXPreviewDlg()
-{
-  alert("TeX Preview Dialog not implemented!");
-}
-
-function doTeXPrintDlg()
-{
-  alert("TeX Print Dialog not implemented!");
-}
-
-function doTeXCompileDlg()
-{
-  alert("TeX Compile Dialog not implemented!");
-}
-
 function doPDFPreviewDlg()
 {
   alert("PDF Preview Dialog not implemented!");
@@ -836,20 +810,16 @@ function setTypesetGenSettings(genSettingsData)
   SetLocalFilePref("swp.bibtex.styledir", genSettingsData.bibTeXStyleDir);
 }
 
-function doExpertSettingsDlg()
-{
-  alert("Expert Settings Dialog not implemented!");
-}
 
 //function doRunBibTeX()
 //{
 //  alert("Run BibTeX not implemented!");
 //}
 //
-function doRunMakeIndex()
-{
-  alert("Run MakeIndex not implemented!");
-}
+//function doRunMakeIndex()
+//{
+//  alert("Run MakeIndex not implemented!");
+//}
 
 function doInsertIndexEntry()
 {

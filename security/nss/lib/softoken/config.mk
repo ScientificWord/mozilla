@@ -61,7 +61,7 @@ ifdef NS_USE_GCC
 EXTRA_SHARED_LIBS += \
 	-L$(DIST)/lib \
 	-lnssutil3 \
-	-lsqlite3 \
+	-lmozsqlite3 \
 	-L$(NSPR_LIB_DIR) \
 	-lplc4 \
 	-lplds4 \
@@ -86,7 +86,7 @@ else
 EXTRA_SHARED_LIBS += \
 	-L$(DIST)/lib \
 	-lnssutil3 \
-	-lsqlite3 \
+	-lmozsqlite3 \
 	-L$(NSPR_LIB_DIR) \
 	-lplc4 \
 	-lplds4 \

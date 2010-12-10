@@ -69,10 +69,6 @@
                     oncommand="msiGoDoCommand('cmd_previewPdf'); event.stopPropagation();"  for="pdf" onbroadcast="setDefaultmenu(this);">
             <observes id="ppmObs2" element="defaultCompiler" attribute="defcomp"  />
           </menuitem>        
-          <menuitem id="printPreviewMenuItem1dvi" label="&dvipreviewButton.label;" persist="default" default="false"
-                    oncommand="msiGoDoCommand('cmd_previewDvi');;event.stopPropagation();"  for="dvi" onbroadcast="setDefaultmenu(this);">
-            <observes id="ppmObs3" element="defaultCompiler" attribute="defcomp"  />
-          </menuitem>        
           <menuseparator/>
           <menu id="chooseDefPrinter3" label="&chooseDefPrinter.label;" >
 	          <menupopup id="menuChooseDefPrinterPopup3">
@@ -83,10 +79,6 @@
 	            <menuitem id="pdfMode3" label="&pdf;" 
                 oncommand="return setDefaultPrinter('pdf',event);" for="pdf" onbroadcast="setDefaultmenu(this);">
                 <observes id="ppmObs4" element="defaultCompiler" attribute="defcomp" />
-              </menuitem>        
-	            <menuitem id="dviMode3" label="&dvi;" 
-                oncommand="return setDefaultPrinter('dvi',event);" for="dvi" onbroadcast="setDefaultmenu(this);">
-                 <observes id="ppmObs5" element="defaultCompiler" attribute="defcomp" />
               </menuitem>        
 	          </menupopup>
           </menu>
@@ -108,10 +100,6 @@
                     oncommand="msiGoDoCommand('cmd_printPdf');event.stopPropagation();"  for="pdf" onbroadcast="setDefaultmenu(this);">
             <observes id="ppmObs8" element="defaultCompiler" attribute="defcomp" />
           </menuitem>        
-          <menuitem id="printMenuItem1dvi" label="&dviprintButton.label;" persist="default" default="false"
-                    oncommand="msiGoDoCommand('cmd_printDvi');event.stopPropagation();"  for="dvi" onbroadcast="setDefaultmenu(this);" >
-            <observes id="ppmObs9" element="defaultCompiler" attribute="defcomp"  />
-          </menuitem>        
           <menuseparator/>
           <menu id="chooseDefPrinter4" label="&chooseDefPrinter.label;" >
 	          <menupopup id="menuChooseDefPrinterPopup10">
@@ -122,10 +110,6 @@
 	            <menuitem id="pdfMode7" label="&pdf;" 
                 oncommand="return setDefaultPrinter('pdf',event);" for="pdf" onbroadcast="setDefaultmenu(this);">
                 <observes id="ppmObs11" element="defaultCompiler" attribute="defcomp" />
-              </menuitem>        
-	            <menuitem id="dviMode7" label="&dvi;" 
-                oncommand="return setDefaultPrinter('dvi',event);" for="dvi" onbroadcast="setDefaultmenu(this);">
-                 <observes id="ppmObs12" element="defaultCompiler" attribute="defcomp" />
               </menuitem>        
 	          </menupopup>
           </menu>
@@ -594,12 +578,9 @@
     
     <command id="cmd_printDirect"    oncommand="msiGoDoCommand('cmd_printDirect');event.stopPropagation();"/>
     <command id="cmd_printPdf"    oncommand="msiGoDoCommand('cmd_printPdf');;event.stopPropagation();"/>
-    <command id="cmd_printDvi"    oncommand="msiGoDoCommand('cmd_printDvi');;event.stopPropagation();"/>
     <command id="cmd_previewDirect"  oncommand="msiGoDoCommand('cmd_previewDirect');event.stopPropagation();"/>
     <command id="cmd_previewPdf"  oncommand="msiGoDoCommand('cmd_previewPdf');event.stopPropagation();" />
-    <command id="cmd_previewDvi"  oncommand="msiGoDoCommand('cmd_previewDvi');event.stopPropagation();"/>
     <command id="cmd_compilePdf"  oncommand="msiGoDoCommand('cmd_compilePdf')"/>
-    <command id="cmd_compileDvi"  oncommand="msiGoDoCommand('cmd_compileDvi')"/>
     <command id="cmd_documentInfo" oncommand="msiGoDoCommand('cmd_documentInfo')"/>
     <command id="cmd_documentStyle" oncommand="msiGoDoCommand('cmd_documentStyle')"/>
     <command id="cmd_quit"        oncommand="msiGoDoCommand('cmd_quit')"/>
@@ -644,7 +625,8 @@
     <command id="cmd_msiInsertRules"   oncommand="msiGoDoCommand('cmd_msiInsertRules')"/>
     <command id="cmd_msiInsertBreaks"             oncommand="msiGoDoCommand('cmd_msiInsertBreaks')"/>
     <command id="cmd_note"             oncommand="msiGoDoCommand('cmd_note')"/>
-    <command id="cmd_frame"             oncommand="msiGoDoCommand('cmd_frame')"/>
+    <command id="cmd_footnote"         oncommand="msiGoDoCommand('cmd_footnote')"/>
+    <command id="cmd_frame"            oncommand="msiGoDoCommand('cmd_frame')"/>
     <command id="cmd_citation"             oncommand="msiGoDoCommand('cmd_MSIinsertCitationCmd')"/>
 
     <command id="cmd_NormalMode"       oncommand="msiGoDoCommand('cmd_NormalMode')"/>
@@ -855,7 +837,8 @@
     <key keycode="VK_TAB" modifiers="shift" oncommand="return msiEditorDoTab(event, true);"/ -->
   </keyset>
   
-    <!-- DEBUG only -->
+#ifdef DEBUG
+  <!-- DEBUG only -->
   <menu id="debugMenu" label="&debugMenu.label;" accesskey="&debugMenu.accesskey;">
   <menupopup id="menu_debugPopup">
     <!-- menuitem label="printPDF" oncommand="PrintUtils.printPDF();"/>
@@ -937,6 +920,6 @@
     </menupopup>
   </menu>
   <!-- end DEBUG only -->
-
+#endif
   
 </overlay>

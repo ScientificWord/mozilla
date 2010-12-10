@@ -1,6 +1,6 @@
 <!-- Copyright (c) 2010 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label	"Auto Substitution">
+<!ENTITY windowTitle.label	"Automatic Substitution">
 
 <!ENTITY keystrokesBox.label "Keystrokes">
 <!ENTITY keystrokesBox.accesskey "K">

@@ -64,7 +64,7 @@ TokenListTokenSource::TokenListTokenSource(TokenList& lis)
      m_iter(lis.begin())
 {
   if (m_list.GetCount() <=0) throw;
-
+  m_list.AddReference();
 }
 
 TokenListTokenSource::~TokenListTokenSource()
