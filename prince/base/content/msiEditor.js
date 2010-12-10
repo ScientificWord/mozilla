@@ -4969,10 +4969,10 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
         objStr = GetString("Button");
         commandStr = "cmd_reviseButton";
         break;
-      case "label":
-        objStr = GetString("Label");
-        commandStr = "cmd_reviseLabel";
-        break;
+//      case "label":
+//        objStr = GetString("Label");
+//        commandStr = "cmd_reviseLabel";
+//        break;
       case "fieldset":
         objStr = GetString("FieldSet");
         commandStr = "cmd_reviseFieldset";
