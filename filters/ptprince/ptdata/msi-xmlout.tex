@@ -450,7 +450,12 @@
      \expandafter\advance\csname #1number\endcsname by 1%
      \let\protect\relax
      \msiclosetag{#1}{</#1>}%
-     \msitag{^^0a}\msiopentag{#1}{<#1>}%
+     \msitag{^^0a}%
+     \if@starred
+       \msiopentag{#1}{<#1 nonum="true">}%
+     \else 
+       \msiopentag{#1}{<#1>}%
+     \fi
      {\everypar={}\msitag{^^0a}%
       \def\short{##1}%
       \msiopentag{sectiontitle}{<sectiontitle>}%
