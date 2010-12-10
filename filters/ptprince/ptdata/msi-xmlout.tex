@@ -205,16 +205,16 @@
 \def\out@newtheorema#1[#2]#3{%
   \@ifundefined{msi@begin@#1}%
      {\expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}[#2]{#3}}
-      \@namedef{msi@begin@#1}{\br\msiopentag{theorem}{<theorem type="#1">}}
-      \@namedef{msi@end@#1}{\br\msiclosetag{theorem}{</theorem>}}}%
+      \@namedef{msi@begin@#1}{\br\msiopentag{theorem}{<theorem type="#1">}\msiopentag{bodyText}{<bodyText>}}
+      \@namedef{msi@end@#1}{\br\msiclosetag{bodyText}{</bodyText>}\msiclosetag{theorem}{</theorem>}}}%
      {}%
 }
 
 \def\out@newtheoremb#1#2{%
   \@ifundefined{msi@begin@#1}%
     {\expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}{#2}}
-     \@namedef{msi@begin@#1}{\br\msiopentag{theorem}{<theorem type="#1">}}
-     \@namedef{msi@end@#1}{\br\msiclosetag{theorem}{</theorem>}}}%
+     \@namedef{msi@begin@#1}{\br\msiopentag{theorem}{<theorem type="#1">}\msiopentag{bodyText}{<bodyText>}}
+     \@namedef{msi@end@#1}{\br\msiclosetag{bodyText}{</bodyText>}\msiclosetag{theorem}{</theorem>}}}%
     {}}%
 }
 
@@ -474,6 +474,7 @@
 
 
 \newsection{part}{1}{Part \the\sectionnumber}{sectiontitle}%
+\newsection{chapter}{2}{Chapter \the\sectionnumber}{sectiontitle}%
 \newsection{section}{2}{Section \the\sectionnumber}{sectiontitle}%
 \newsection{subsection}{3}{\the\sectionnumber.\the\subsectionnumber}{sectiontitle}%
 \newsection{subsubsection}{4}{\thesectionnumber.\thesubsectionnumber.\the\subsubsectionnumber}{sectiontitle}%
