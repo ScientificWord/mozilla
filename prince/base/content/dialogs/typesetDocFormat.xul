@@ -115,7 +115,7 @@
          
             <rows>
               <row align="end" style="height: 3em">
-                <vbox align="center">
+                <vbox>
                   <label observes="reformatok" value="Page Orientation"/>
                   <menulist observes="reformatok" id="pgorient" minwidth="6em">
                     <menupopup style="width: 9em" >
@@ -124,7 +124,7 @@
                     </menupopup>
                   </menulist>
                 </vbox>
-                <vbox align="center">
+                <vbox>
                   <label observes="reformatok" value="Paper Size"/>
                   <menulist observes="reformatok" id="papersize">
                     <menupopup style="width: 9em" >
@@ -137,7 +137,7 @@
                     </menupopup>
                   </menulist>
                 </vbox>
-                <vbox align="center">
+                <vbox>
                   <label observes="reformatok" value="Sides"/>
                   <menulist observes="reformatok" id="sides">
                     <menupopup style="width: 9em" >
@@ -146,7 +146,7 @@
                     </menupopup>
                   </menulist>
                 </vbox>
-                <vbox align="center">
+                <vbox>
                   <label observes="reformatok" value="Quality"/>
                   <menulist observes="reformatok" id="qual" style="width: 9em" >
                     <menupopup>
@@ -157,7 +157,7 @@
                 </vbox>
               </row>
               <row align="end" style="height: 3em">
-                <vbox align="center">
+                <vbox>
                   <label observes="reformatok" value="Columns"/>
                   <menulist observes="reformatok" id="columns">
                     <menupopup style="width: 9em" oncommand="broadcastColCount();" >
@@ -166,7 +166,7 @@
                     </menupopup>
                   </menulist>
                 </vbox>
-                <vbox align="center">
+                <vbox>
                   <label observes="reformatok" value="Body Text Font Size"/>
                   <menulist observes="reformatok" id="textsize" >
                     <menupopup style="width: 9em" >
@@ -176,11 +176,11 @@
                     </menupopup>
                   </menulist>
                 </vbox>
-                <vbox align="center">
+                <vbox>
                   <label observes="reformatok" value="Leading in Points"/>
                   <textbox observes="reformatok" type="number" decimalplaces="1" min="0" increment="0.1" id="leading" style="width: 9em" value=""/>
                 </vbox>
-                <vbox align="center">
+                <vbox>
                   <deck id="babelpoly">
                     <label>Babel Language
                       <observes element="pdflatex" attribute="hidden"/>
@@ -269,7 +269,7 @@
                 </vbox>
               </row>
               <row>
-                <vbox align="center">
+                <vbox>
                   <label observes="reformatok">Second Language</label>
                   <menulist observes="reformatok" >
                     <menupopup style="width: 9em" >
@@ -366,7 +366,7 @@
          
             <rows>
               <row align="end" style="height: 3em">
-                <vbox align="center">
+                <vbox>
                   <label observes="reformatok" value="Eqn Number Position"/>
                   <menulist observes="reformatok" id="eqnnopos">
                     <menupopup style="width: 9em" >
@@ -375,7 +375,7 @@
                     </menupopup>
                   </menulist>
                 </vbox>
-                <vbox align="center">
+                <vbox>
                   <label observes="reformatok" value="Displayed Eqn Position"/>
                   <menulist observes="reformatok" id="eqnpos">
                     <menupopup style="width: 9em" >
@@ -403,7 +403,7 @@
          
             <rows>
               <row align="end" style="height: 3em">
-                <vbox align="center">
+                <vbox>
                   <label observes="reformatok" value="Title Page"/>
                   <menulist observes="reformatok" id="titlepage">
                     <menupopup style="width: 9em" >
@@ -412,7 +412,7 @@
                     </menupopup>
                   </menulist>
                 </vbox>
-                <vbox align="center">
+                <vbox>
                   <label observes="reformatok" value="Table of Contents"/>
                   <menulist observes="reformatok" >
                     <menupopup style="width: 9em" >
@@ -422,7 +422,7 @@
                     </menupopup>
                   </menulist>
                 </vbox>
-                <vbox align="center">
+                <vbox>
                   <label observes="reformatok" value="List of Figures"/>
                   <menulist observes="reformatok" >
                     <menupopup style="width: 9em" >
@@ -432,7 +432,7 @@
                     </menupopup>
                   </menulist>
                 </vbox>
-                  <vbox align="center">
+                  <vbox>
                   <label observes="reformatok" value="List of Tables"/>
                   <menulist observes="reformatok" >
                     <menupopup style="width: 9em" >
@@ -444,7 +444,7 @@
                 </vbox>
               </row>
               <row align="end" style="height: 3em">
-                <vbox align="center">
+                <vbox>
                   <label observes="reformatok" value="Footnotes"/>
                   <menulist observes="reformatok" >
                     <menupopup style="width: 9em" >
@@ -453,7 +453,7 @@
                     </menupopup>
                   </menulist>
                 </vbox>
-                <vbox align="center">
+                <vbox>
                   <label observes="reformatok" value="Bibliography Style"/>
                   <menulist observes="reformatok" id="bibstyle">
                     <menupopup style="width: 9em" >
@@ -480,7 +480,7 @@
          
             <rows>
               <row align="end" style="height: 3em">
-                <vbox align="center">
+                <vbox>
                   <label observes="reformatok" value="Show Keys"/>
                   <menulist observes="reformatok" id="showkeys" >
                     <menupopup style="width: 9em" >
@@ -489,7 +489,7 @@
                     </menupopup>
                   </menulist>
                 </vbox>
-                <vbox align="center">
+                <vbox>
                   <label observes="reformatok" value="Show Labels"/>
                   <menulist  observes="reformatok" >
                     <menupopup style="width: 9em" >
@@ -498,7 +498,7 @@
                     </menupopup>
                   </menulist>
                 </vbox>
-                <vbox align="center">
+                <vbox>
                   <label observes="reformatok" value="Show Index Entries"/>
                   <menulist observes="reformatok" id="showidx">
                     <menupopup style="width: 9em" >
@@ -507,7 +507,7 @@
                     </menupopup>
                   </menulist>
                 </vbox>
-                <vbox align="center">
+                <vbox>
                   <label value="Line Spacing"  observes="reformatok"/>
                   <menulist  observes="reformatok">
                     <menupopup style="width: 9em" >
@@ -519,7 +519,7 @@
                 </vbox>
               </row>
               <row align="end" style="height: 3em">
-                <vbox align="center">
+                <vbox>
                   <label observes="reformatok" value="Magnification"/>
                   <textbox observes="reformatok" style="width: 9em" value="1"/>
                 </vbox>
@@ -537,13 +537,13 @@
             <hbox>
               <vbox flex="1">
                 <hbox maxheight="5em" minheight="3em" flex="1">
-                  <vbox align="center">
+                  <vbox>
                     <label observes="pagelayoutok">&docformatTwosided;</label>
                     <checkbox id="twosides" checked="false" oncommand="setTwosidedState(this);"/>
                     <broadcaster id="oneside" hidden="false" />
                     <broadcaster id="twoside" hidden="true" />
                   </vbox>
-                  <vbox align="center">
+                  <vbox>
                     <label observes="pagelayoutok">Orientation</label>
                     <menulist observes="pagelayoutok" id="landscape" minwidth="5em">
                       <menupopup style="width: 9em" >
@@ -561,7 +561,7 @@
                      oncommand="if (checked) document.getElementById('bc.hcenter').setAttribute('disabled',true);else document.getElementById('bc.hcenter').removeAttribute('disabled');layoutPage('all');"/>
                     <broadcaster id="bc.hcenter" />
                   </vbox>
-                  <vbox align="center">
+                  <vbox>
                     <label observes="pagelayoutok">&docformatUnits;</label>
                     <menulist observes="pagelayoutok" id="docformat.units" style="width: 5em"  
                           oncommand="switchUnits();"  >
@@ -573,8 +573,8 @@
                      </menupopup>
                     </menulist>
                   </vbox>
-                  <vbox align="center">
-                    <vbox align="center">
+                  <vbox>
+                    <vbox>
                       <label observes="pagelayoutok" value="Columns"/>
                       <menulist observes="pagelayoutok" id="columncount">
                         <menupopup style="width: 6em" oncommand="broadcastColCount();">
@@ -711,7 +711,7 @@
                         <hbox>
                           <broadcaster id="bc.finishpagesize" />
                           <spacer flex="1"/>
-                          <vbox align="center">
+                          <vbox>
                             <label observes="pagelayoutok" value="Page height"/>
                             <hbox><textbox type="number" style="width: 5em" id="tbpageheight" observes="bc.finishpagesize" 
                               onkeypress="geomHandleChar(event,'pageheight', 'tbpageheight');changePageDim(this);OnWindowSizeReset(false);" 
@@ -721,7 +721,7 @@
                             </hbox>
                             <spacer/>
                           </vbox>
-                          <vbox align="center">
+                          <vbox>
                             <label observes="pagelayoutok" value="Page width"/>
                             <textbox id="tbpagewidth" type="number" style="width: 5em" observes="bc.finishpagesize" 
                               onkeypress="geomHandleChar(event,'pagewidth', 'tbpagewidth');changePageDim(this);OnWindowSizeReset(false);" 
@@ -737,7 +737,7 @@
                         <broadcaster id="cropmarks" hidden="true"/>
                         <broadcaster id="pageonpapercentered" hidden="true"/>
                         <radiogroup id="cropGroup" orient="horizontal"  observes="cropmarks">
-                          <vbox align="center">                        
+                          <vbox>                        
                             <label observes="pagelayoutok" value="&camera.label;" control="camera"/> 
                             <radio observes="pagelayoutok" id="camera" value="cam" accesskey="&camera.accesskey;" selected="true"/>
                           </vbox>
@@ -753,14 +753,14 @@
                       </groupbox>
                       <groupbox observes="cropmarks" >
                         <caption>
-                          <label observes="pagelayoutok" value="&pageonpaper.label; \"/>
+                          <label observes="pagelayoutok" value="&pageonpaper.label;"/>
                         </caption>
                         <radiogroup id="pageonpaperlayout" orient="horizontal" observes="cropmarks" oncommand="centerCropmarks(this.value);">
-                          <vbox align="center">                        
+                          <vbox>                        
                             <label observes="pagelayoutok" value="&pageonpaperupperleft.label;" control="popupperleft"/> 
                             <radio observes="pagelayoutok" id="popupperleft" value="upperleft" accesskey="popupperleft.accesskey;" selected="true"/>
                           </vbox>
-                          <vbox align="center">
+                          <vbox>
                             <label observes="pagelayoutok" value="&pageonpapercenter.label;" control="popcenter"/> 
                             <radio observes="pagelayoutok" id="popcenter" value="center" accesskey="popcenter.accesskey;" selected="false"/>
                           </vbox>
@@ -797,7 +797,7 @@
                         <hbox>
                           <broadcaster id="bc.papersize" />
                           <spacer flex="1"/>
-                          <vbox align="center">
+                          <vbox>
                             <label observes="pagelayoutok" value="Height"/>
                             <textbox id="tbpaperheight" type="number" style="width: 5em" observes="bc.papersize" 
                               onkeypress="geomHandleChar(event,'paperheight', 'tbpaperheight');"> 
@@ -806,7 +806,7 @@
                             <spacer/>
                           </vbox>
                           <spacer flex="1"/>
-                          <vbox align="center">
+                          <vbox>
                             <label observes="pagelayoutok" value="Width"/>
                             <textbox id="tbpaperwidth" type="number" style="width: 5em" observes="bc.papersize"
                               onkeypress="geomHandleChar(event,'paperwidth', 'tbpaperwidth');">
@@ -912,7 +912,7 @@
                  </hbox>
                  <label observes="pagelayoutok" id="tbcomputedrmargin" />
                </vbox>
-               <vbox align="center">
+               <vbox>
                  <groupbox align="center">
                    <caption>
                      <label observes="pagelayoutok" value="&docformatFooter;"/>

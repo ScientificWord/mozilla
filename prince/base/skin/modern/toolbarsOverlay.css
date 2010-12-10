@@ -623,6 +623,26 @@ toolbar[iconsize="small"] #bracketsButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/math_squarebrackets-disabled-sm.png");
 }
 
+
+#genBracketsButton {
+  list-style-image: url("chrome://prince/skin/icons/math_brackets.png");
+}
+
+#genBracketsButton:hover {
+  list-style-image: url("chrome://prince/skin/icons/math_brackets-hover.png");
+}
+
+
+#genBracketsButton[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/math_brackets-disabled.png");
+}
+
+#genBracketsButton:hover:active {
+  list-style-image: url("chrome://prince/skin/icons/math_brackets-active.png");
+}
+
+/* need to put in small genBrackets stuff */
+
 #sumButton {
   list-style-image: url("chrome://prince/skin/icons/math_sum.png");
 }
