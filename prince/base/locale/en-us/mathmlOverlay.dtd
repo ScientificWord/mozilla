@@ -106,8 +106,8 @@
 <!ENTITY inserttable.accesskey "a">
 <!ENTITY insertmenuNote.label "Note...">
 <!ENTITY insertmenuNote.accesskey "N">
-<!ENTITY insertmenuFootnote.label "Note...">
-<!ENTITY insertmenuFootnote.accesskey "N">
+<!ENTITY insertmenuFootnote.label "Footnote">
+<!ENTITY insertmenuFootnote.accesskey "F">
 <!ENTITY insertmenuFormula.label "Formula...">
 <!ENTITY insertmenuFormula.accesskey "M">
 <!ENTITY insertmenuMarker.label "Marker...">
