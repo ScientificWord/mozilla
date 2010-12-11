@@ -201,7 +201,7 @@
 
 <!ENTITY labelingkey.label          "Key">
 <!ENTITY labelingname.label         "Name">
-<!ENTITY labelingcaption.label      "Caption">
+<!ENTITY labelingcaption.label      "Default caption location">
 
 <!ENTITY labelingabove.label        "Above">
 <!ENTITY labelingbelow.label        "Below">
