@@ -41,6 +41,96 @@
       <preference id="millisecondsfortaps" 
                   name="fastcursor.millisecondsfortaps" 
                   type="int"/>
+      <preference id="XTickCount"
+                  name="swp.graph.XTickCount"
+                  type= "string"/>
+      <preference id="YTickCount"
+                  name="swp.graph.YTickCount"
+                  type= "string"/>
+      <preference id="ZTickCount"
+                  name="swp.graph.ZTickCount"
+                  type= "string"/>
+      <preference id="XAxisLabel"
+                  name="swp.graph.XAxisLabel"
+                  type= "string"/>
+      <preference id="YAxisLabel"
+                  name="swp.graph.YAxisLabel"
+                  type= "string"/>
+      <preference id="ZAxisLabel"
+                  name="swp.graph.ZAxisLabel"
+                  type= "string"/>
+      <preference id="Dimension"
+                  name="swp.graph.Dimension"
+                  type=  "int"/>
+      <preference id="DefaultFileType"
+                  name="swp.graph.DefaultFileType"
+                  type= "string"/>
+      <preference id="plot.XMax"
+                  name="swp.plot.XMax"
+                  type="string"/>
+      <preference id="plot.XMin"
+                  name="swp.plot.XMin"
+                  type="string" />
+      <preference id="plot.YMax"
+                  name="swp.plot.YMax"
+                  type="string" />
+      <preference id="plot.YMin"
+                  name="swp.plot.YMin"
+                  type="string" />
+      <preference id="plot.ZMax"
+                  name="swp.plot.ZMax"
+                  type="string" />
+      <preference id="plot.ZMin"
+                  name="swp.plot.ZMin"
+                  type="string" />
+      <preference id="XVar"
+                  name="swp.plot.XVar"
+                  type="string" />
+      <preference id="YVar"
+                  name="swp.plot.YVar"
+                  type="string" />
+      <preference id="ZVar"
+                  name="swp.plot.ZVar"
+                  type="string" />
+      <preference id="XPts"
+                  name="swp.plot.XPts"
+                  type="string" />
+      <preference id="YPts"
+                  name="swp.plot.YPts"
+                  type="string" />
+      <preference id="ZPts"
+                  name="swp.plot.ZPts"
+                  type="string" />
+      <preference id="Animate"
+                  name="swp.plot.Animate"
+                  type="bool"/>
+      <preference id="DiscAdjust"
+                  name="swp.plot.DiscAdjust"
+                  type="bool"/>
+      <preference id="IncludeLines"
+                  name="swp.plot.IncludeLines"
+                  type="bool"/>
+      <preference id="TubeRadius"
+                  name="swp.plot.TubeRadius"
+                  type="string" />
+      <preference id="AISubIntervals"
+                  name="swp.plot.AISubIntervals"
+                  type= "int"/>
+      <preference id="AIMethod"
+                  name="swp.plot.AIMethod"
+                  type="string"/>
+      <preference id="hasaxistips"
+                  name="swp.plot.AxisTips"
+                  type="bool"/>
+      <preference id="hasgridlines"
+                  name="swp.plot.GridLines"
+                  type="bool"/>
+      <preference id="axistype"
+                  name="swp.plot.AxisType"
+                  type="string"/>
+      <preference id="enablerealtimespell"
+                  name="swp.spellchecker.enablerealtimespell"
+                  type="bool"/>
     </preferences>
 
     <tabbox>
@@ -170,7 +260,27 @@
 
   </prefpane>
 
-  <prefpane id="prefEdit" label="Editor" />
+  <prefpane id="prefEdit" label="Editor" >
+    <tabbox flex="1">
+	    <tabs class="tabs-top">
+	     <tab label="1;"       selected="1" />
+	     <tab label="2"      selected="0" />
+	     <tab label="3;"      selected="0" />
+	    </tabs>
+
+      <tabpanels>
+        <tabpanel id="stub1">
+          <vbox>
+            <hbox>
+              <label value="Enable realtime spell checking"/><checkbox preference="enablerealtimespell"/>
+            </hbox>
+          </vbox>
+        </tabpanel>
+        <tabpanel id="stub2"/>
+        <tabpanel id="stub3"/>
+      </tabpanels>
+    </tabbox>
+  </prefpane>
   <prefpane id="prefComp" label="Computation">
     <tabbox id="outer-box" flex="1">
 	    <tabs class="tabs-top">
@@ -466,15 +576,15 @@
               <rows>
                 <row>        
                   <label value="&axisxaxis.label;"/>
-                  <textbox style="width: 10em;" id="XAxisLabel" cols="20"/>
+                  <textbox style="width: 10em;" id="XAxisLabel" cols="20" preference="XAxisLabel"/>
                 </row>
                 <row>
                   <label value="&axisyaxis.label;"/>
-                  <textbox style="width: 10em;" id="YAxisLabel" cols="20"/>
+                  <textbox style="width: 10em;" id="YAxisLabel" cols="20" preference="YAxisLabel"/>
                 </row>
                 <row>
                   <label value="&axiszaxis.label;"/>
-                  <textbox style="width: 10em;" id="ZAxisLabel" cols="20"/>
+                  <textbox style="width: 10em;" id="ZAxisLabel" cols="20" preference="ZAxisLabel"/>
                 </row>
               </rows>
             </grid>
@@ -483,7 +593,7 @@
             <hbox>
               <description>&axistickmark.label;</description>
               <menulist id="XTickCount">
-                <menupopup> 
+                <menupopup preference="XTickCount"> 
                   <menuitem label="&none.label;"   value="none"/>
                   <menuitem label="&low.label;"    value="low"/>
                   <menuitem label="&normal.label;" value="normal"/>
@@ -492,13 +602,13 @@
               </menulist>
             </hbox>
             <!-- <checkbox id="disableticks" label="&axisdisable.label;"/> -->
-            <checkbox id="axestips"     label="&axistips.label;"/>
-            <checkbox id="gridlines"    label="&axisgridlines.label;"/>
+            <checkbox id="axestips"     label="&axistips.label;" preference="hasaxistips"/>
+            <checkbox id="gridlines"    label="&axisgridlines.label;" preference="hasgridlines"/>
           </groupbox>
 
           <groupbox>
             <caption label="&axistype.label;" />
-            <radiogroup id="axistype" orient= "horizontal">
+            <radiogroup id="axistype" orient= "horizontal" preference="axistype">
               <grid>
                 <columns>
                   <column/>
@@ -574,34 +684,25 @@
 
       <tabpanel id="Labelling">
         <vbox>
-          <groupbox>        
-            <label value="&labelingkey.label;"/>
-            <textbox id="Key"/>
-          </groupbox>
-          <groupbox>        
-            <label value="&labelingname.label;"/>
-            <textbox id="Name"/>
-          </groupbox>
           <groupbox>
             <caption label="&labelingcaption.label;"/>
             <radiogroup id="captionplacement" orient="horizontal">
               <radio label="&labelingabove.label;"    value="labelabove" selected="false"/>
               <radio label="&labelingbelow.label;"    value="labelbelow" selected="true"/>
             </radiogroup>
-            <textbox id="CaptionText"  multiline="true" rows="4" cols="40" 
-                   caption="&labelingcaptiontext.label;" />
           </groupbox>
        </vbox>
       </tabpanel>      
 
       <tabpanel id="View defaults">
         <vbox>
-          <row>
-            <label id="bgcolor" control="TextButton" value="Background Color: " />
+          <separator/>
+          <hbox>
+            <label id="bgcolor" control="TextButton" value="Default background color: " />
             <msibutton id="bgcolorbutton" class="color-button" oncommand="GetGraphColor('BGColor');">
                <spacer id="plotCW" class="color-well"/>
             </msibutton>
-          </row>
+          </hbox>
           <separator/>
           <vbox>
             <checkbox id="OrthogonalProjection" label="Orthogonal Projection"/>
@@ -612,18 +713,18 @@
             <caption>Initial view intervals</caption>        
             <hbox>
               <label value="&axisxrange.label;"/>
-              <textbox id="xrangelow" style="width: 5em;" cols="6"/>
-              <textbox id="xrangehigh" style="width: 5em;" cols="6"/>
+              <textbox id="xrangelow" style="width: 5em;" cols="6" preference="plot.XMin"/>
+              <textbox id="xrangehigh" style="width: 5em;" cols="6" preference="plot.XMax"/>
             </hbox>
             <hbox>
               <label value="&axisyrange.label;"/>
-              <textbox id="yrangelow" style="width: 5em;" cols="6"/>
-              <textbox id="yrangehigh" style="width: 5em;" cols="6"/>
+              <textbox id="yrangelow" style="width: 5em;" cols="6" preference="plot.YMin"/>
+              <textbox id="yrangehigh" style="width: 5em;" cols="6" preference="plot.YMax"/>
             </hbox>
             <hbox>
               <label value="&axiszrange.label;"/>
-              <textbox id="zrangelow" style="width: 5em;" cols="6"/>
-              <textbox id="zrangehigh" style="width: 5em;" cols="6"/>
+              <textbox id="zrangelow" style="width: 5em;" cols="6" preference="plot.ZMin"/>
+              <textbox id="zrangehigh" style="width: 5em;" cols="6" preference="plot.ZMax"/>
             </hbox>
           </groupbox>
 
