@@ -30,13 +30,13 @@
 <!ENTITY docInfo.label "Document Info...">
 <!ENTITY docInfo.accesskey "D">
 <!ENTITY docStyle.label "Style...">
-<!ENTITY docStyle.accesskey "y">
+<!ENTITY docStyle.accesskey "T">
 <!ENTITY importTeXCmd.label  "Import TeX...">
 <!ENTITY importTeX.accesskey  "I">
 <!ENTITY exportTeXCmd.label  "Export TeX...">
 <!ENTITY exportTeX.accesskey  "E">
-<!ENTITY exporttowebCmd.label  "Export to Web">
-<!ENTITY exporttoweb.accesskey  "W">
+<!ENTITY exporttowebCmd.label  "Export to Web...">
+<!ENTITY exporttoweb.accesskey  "X">
 <!ENTITY reloadCmd.key "R">
 <!ENTITY reloadCmd.label "Reload">
 
@@ -55,7 +55,7 @@
 <!ENTITY printSetupCmd.label "Page Setup...">
 <!ENTITY fileprintsetup.accesskey "u">
 <!ENTITY printPreviewCmd.label "Print Preview">
-<!ENTITY fileprintpreview.accesskey "v">
+<!ENTITY fileprintpreview.accesskey "w">
 <!ENTITY printCmd.label "Print">
 <!ENTITY printButtonCmd.label "Print...">
 <!ENTITY fileprint.accesskey "p">
@@ -92,7 +92,7 @@
 <!ENTITY pasteCmd.accesskey					"p"> 
 <!ENTITY pasteCmd.acceltext					"Ctrl+V"> 
 <!ENTITY pasteNoFormattingCmd.accesskey			"n"> 
-<!ENTITY pasteNoFormattingCmd.label			"Paste (no formatting)">  
+<!ENTITY pasteNoFormattingCmd.label			"Paste Without Formatting">  
 <!ENTITY pasteNoFormattingCmd.key				"q">  
 
 <!--JLF Test. These publishSettings entities are copied over from editor\ui\locales\en-US\chrome\composer\editorOverlay.dtd -->
@@ -204,7 +204,7 @@
 <!ENTITY helpmenuWebsite.label    "MacKichan Software Website">
 <!ENTITY helpmenuWebsite.accesskey    "M">
 <!ENTITY helpmenuRegister.label    "Register...">
-<!ENTITY helpmenuRegister.accesskey    "e">
+<!ENTITY helpmenuRegister.accesskey    "R">
 <!ENTITY helpmenuFeatures.label    "System Features...">
 <!ENTITY helpmenuFeatures.accesskey    "F">
 <!ENTITY helpmenuLicense.label    "License Information">
