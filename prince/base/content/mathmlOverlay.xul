@@ -114,7 +114,7 @@
   <menu id="insertMenu" label="Insert" accesskey="&insertmenu.accesskey;">
     <menupopup id="insertMenuPopup" onpopupshowing="msiInitFontStyleMenu(this)">
       <menuitem label="&MSIinlineMathCmd.label;" accesskey="&MSIinlineMathCmd.accesskey;" key="MSIinlineMathKey" observes="cmd_MSImathtext"   type="checkbox"/>
-      <menuitem label="&MSItextCmd.label;"       accesskey="&MSItextCmd.accesskey;"                              command="cmd_MSItextCmd"/>  
+      <menuitem label="&MSItextCmd.label;"       accesskey="&MSItextCmd.accesskey;"    command="cmd_MSItextCmd"/>  
       <menu id="mathobjectsmenu" label="&MSImathObjectsMenu.label;" accesskey="&MSImathObjectsMenu.accesskey;" >
 	    <menupopup id="mathobjectsPopup" onpopupshowing="msiInitFontStyleMenu(this)">
 	      <menuitem label="&MSIfractionCmd.label;" accesskey="&MSIfractionCmd.accesskey;" key="MSIfractionKey"       command="cmd_MSIfractionCmd"/>
