@@ -21,7 +21,7 @@
 <!ENTITY substitution.accesskey "S">
 <!ENTITY script.label "Javascript to execute">
 <!ENTITY script.accesskey "J">
-<!ENTITY enableDisableAutosubs.label "Enable or Disable Auto Substitution:">
+<!ENTITY enableDisableAutosubs.label "Enable or Disable Auto Substitution">
 <!ENTITY enableSubsInMath.label "In Math">
 <!ENTITY enableSubsInMath.accesskey "h">
 <!ENTITY enableSubsInText.label "In Text">
