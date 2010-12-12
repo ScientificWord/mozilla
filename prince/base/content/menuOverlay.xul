@@ -329,10 +329,11 @@
   
   <menu id="tagMenu" label="&tagmenu.label;" accesskey="&tagmenu.accesskey;">
     <menupopup id="tagPopup">
-      <menuitem label="&tagmenuAppearance.label;" 
+  <!--    <menuitem label="&tagmenuAppearance.label;" 
                 id="tagmenuAppearance" 
                 observes="Cascades" 
                 accesskey="&tagmenuAppearance.accesskey;"/>
+                -->
       <menuitem label="&tagmenuFunctionKeys.label;" 
                 id="tagmenuFunctionKeys" 
                 observes="cmd_tagkeyassignments" 
@@ -610,7 +611,7 @@
     <command id="cmd_textarea"         oncommand="msiGoDoCommand('cmd_textarea')"/>
     <command id="cmd_select"           oncommand="msiGoDoCommand('cmd_select')"/>
     <command id="cmd_button"           oncommand="msiGoDoCommand('cmd_button')"/>
-    <command id="cmd_label"            oncommand="msiGoDoCommand('cmd_label')"/>
+    <!-- command id="cmd_label"            oncommand="msiGoDoCommand('cmd_label')"/ -->
     <command id="cmd_fieldset"         oncommand="msiGoDoCommand('cmd_fieldset')"/>
     <command id="cmd_isindex"          oncommand="msiGoDoCommand('cmd_isindex')"/>
     <command id="cmd_objectProperties" oncommand="msiGoDoCommand('cmd_objectProperties')"/>
@@ -648,7 +649,7 @@
     <command id="cmd_inputimage"       oncommand="msiGoDoCommand('cmd_inputimage')"/ -->
     <command id="cmd_reviseTextarea"           oncommand="msiGoDoCommand('cmd_reviseTextarea')"/>
     <command id="cmd_reviseButton"             oncommand="msiGoDoCommand('cmd_reviseButton')"/>
-    <command id="cmd_reviseLabel"              oncommand="msiGoDoCommand('cmd_reviseLabel')"/>
+    <!-- command id="cmd_reviseLabel"              oncommand="msiGoDoCommand('cmd_reviseLabel')"/ -->
     <command id="cmd_reviseFieldset"           oncommand="msiGoDoCommand('cmd_reviseFieldset')"/>
     <!-- command id="cmd_isindex"          oncommand="msiGoDoCommand('cmd_isindex')"/ -->
     <command id="cmd_reviseChars"              oncommand="msiGoDoCommand('cmd_reviseChars')"/>

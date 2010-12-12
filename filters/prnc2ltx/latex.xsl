@@ -489,20 +489,23 @@ should not be done under some conditions -->
 </xsl:template>
 
 <!-- labels -->
-<xsl:template match="html:a[@name]"
- >\label{<xsl:value-of select="@name"
- />}</xsl:template> 
+<xsl:template match="html:a[@name]">\label{<xsl:value-of select="@name"/>}</xsl:template> 
 
-<xsl:template match="html:texb"
-  ><xsl:if test="@pre!='1'"
-  ><xsl:if test="@enc='1'">
+<xsl:template match="html:texb">
+  <!-- xsl:if test="@pre!='1'" -->
+    <xsl:if test="@enc='1'">
 %TCIMACRO{\TeXButton{<xsl:value-of select="@name"/>}{<xsl:apply-templates/>}}%
 %Package required: [<xsl:value-of select="@opt"/>]{<xsl:value-of select="@req"/>}
 %BeginExpansion
-</xsl:if
-  ><xsl:apply-templates mode="tex"/><xsl:if test="@enc='1'"><xsl:text>
+    </xsl:if>
+    <xsl:apply-templates mode="tex"/>
+    <xsl:if test="@enc='1'">
+      <xsl:text>
 %EndExpansion
-</xsl:text></xsl:if></xsl:if></xsl:template>
+      </xsl:text>
+</xsl:if>
+<-- /xsl:if -->
+</xsl:template>
 
 <xsl:template match="html:bibliography">
 \begin{thebibliography}
