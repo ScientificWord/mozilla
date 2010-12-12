@@ -306,8 +306,8 @@
   <toolbarbutton id="binomialButton" class="toolbarbutton-1" tooltiptext="&binomialButton.tooltip;"
     label="&binomialButton.label;" observes="cmd_MSIbinomialsCmd"/>
 
-  <toolbarbutton id="labelButton" class="toolbarbutton-1" tooltiptext="&labelButton.tooltip;"
-    label="&labelButton.label;" oncommand="alert('Implement me!');"/>
+  <!-- toolbarbutton id="labelButton" class="toolbarbutton-1" tooltiptext="&labelButton.tooltip;"
+    label="&labelButton.label;" oncommand="alert('Implement me!');"/ -->
 
   <toolbarbutton id="decorationButton" class="toolbarbutton-1" tooltiptext="&decorationButton.tooltip;"
     label="&decorationButton.label;" observes="cmd_MSIdecorationsCmd"/>

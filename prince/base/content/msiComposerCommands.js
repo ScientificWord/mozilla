@@ -51,7 +51,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_textarea",      msiTextAreaCommand);
   commandTable.registerCommand("cmd_select",        msiSelectCommand);
   commandTable.registerCommand("cmd_button",        msiButtonCommand);
-  commandTable.registerCommand("cmd_label",         msiLabelCommand);
+//  commandTable.registerCommand("cmd_label",         msiLabelCommand);
   commandTable.registerCommand("cmd_fieldset",      msiFieldSetCommand);
   commandTable.registerCommand("cmd_isindex",       msiIsIndexCommand);
   commandTable.registerCommand("cmd_image",         msiImageCommand);
@@ -116,7 +116,7 @@ function msiSetupHTMLEditorCommands(editorElement)
   commandTable.registerCommand("cmd_reviseForm",  msiReviseFormCommand);
   commandTable.registerCommand("cmd_reviseTextarea", msiReviseTextareaCommand);
   commandTable.registerCommand("cmd_reviseButton",  msiReviseButtonCommand);
-  commandTable.registerCommand("cmd_reviseLabel",  msiReviseLabelCommand);
+//  commandTable.registerCommand("cmd_reviseLabel",  msiReviseLabelCommand);
   commandTable.registerCommand("cmd_reviseFieldset", msiReviseFieldsetCommand);
   commandTable.registerCommand("cmd_reviseChars",  msiReviseCharsCommand);
   commandTable.registerCommand("cmd_reviseHTML",   msiReviseHTMLCommand);
@@ -4080,75 +4080,75 @@ var msiReviseButtonCommand =
 };
 
 //-----------------------------------------------------------------------------------
-var msiLabelCommand =
-{
-  isCommandEnabled: function(aCommand, dummy)
-  {
-    var editorElement = msiGetActiveEditorElement();
-    return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement));
-  },
-
-  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
-  doCommandParams: function(aCommand, aParams, aRefCon) {},
-
-  doCommand: function(aCommand, dummy)
-  {
-    var editorElement = msiGetActiveEditorElement();
-//    var tagName = "label";
-    try {
-      var editor = msiGetEditor(editorElement);
-      var labelElement = this.msiGetReviseObject(editorElement);
+//var msiLabelCommand =
+//{
+//  isCommandEnabled: function(aCommand, dummy)
+//  {
+//    var editorElement = msiGetActiveEditorElement();
+//    return (msiIsDocumentEditable(editorElement) && msiIsEditingRenderedHTML(editorElement));
+//  },
+//
+//  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+//  doCommandParams: function(aCommand, aParams, aRefCon) {},
+//
+//  doCommand: function(aCommand, dummy)
+//  {
+//    var editorElement = msiGetActiveEditorElement();
+////    var tagName = "label";
+//    try {
+//      var editor = msiGetEditor(editorElement);
+//      var labelElement = this.msiGetReviseObject(editorElement);
+////      // Find selected label or if start/end of selection is in label 
+//      if (labelElement) {
+//        // We only open the dialog for an existing label
+//        var dlgWindow = msiOpenModelessDialog("chrome://editor/content/msiEdLabelProps.xul", "_blank", "chrome,close,titlebar,dependent",
+//                                                                        editorElement, "cmd_label", this, labelElement);
+////        msiOpenModalDialog("chrome://editor/content/msiEdLabelProps.xul", "labelprops", "chrome,close,titlebar,dependent",
+////                                                                                                     editorElement, "cmd_label", this);
+////        window.openDialog("chrome://editor/content/EdLabelProps.xul", "labelprops", "chrome,close,titlebar,modal", labelElement);
+////        editorElement.focus();
+//      } else {
+//        msiEditorSetTextProperty(editorElement, tagName, "", "");
+//      }
+//    } catch (e) {}
+//  },
+//
+//  msiGetReviseObject: function(editorElement)
+//  {
+//    var labelElement = null;
+//    const kTagName = "label";
+//    var editor = msiGetEditor(editorElement);
+//    try {
 //      // Find selected label or if start/end of selection is in label 
-      if (labelElement) {
-        // We only open the dialog for an existing label
-        var dlgWindow = msiOpenModelessDialog("chrome://editor/content/msiEdLabelProps.xul", "_blank", "chrome,close,titlebar,dependent",
-                                                                        editorElement, "cmd_label", this, labelElement);
-//        msiOpenModalDialog("chrome://editor/content/msiEdLabelProps.xul", "labelprops", "chrome,close,titlebar,dependent",
-//                                                                                                     editorElement, "cmd_label", this);
-//        window.openDialog("chrome://editor/content/EdLabelProps.xul", "labelprops", "chrome,close,titlebar,modal", labelElement);
-//        editorElement.focus();
-      } else {
-        msiEditorSetTextProperty(editorElement, tagName, "", "");
-      }
-    } catch (e) {}
-  },
-
-  msiGetReviseObject: function(editorElement)
-  {
-    var labelElement = null;
-    const kTagName = "label";
-    var editor = msiGetEditor(editorElement);
-    try {
-      // Find selected label or if start/end of selection is in label 
-      labelElement = editor.getSelectedElement(kTagName);
-      if (!labelElement)
-        labelElement = editor.getElementOrParentByTagName(kTagName, editor.selection.anchorNode);
-      if (!labelElement)
-        labelElement = editor.getElementOrParentByTagName(kTagName, editor.selection.focusNode);
-    } catch (e) {}
-    return labelElement;
-  }
-};
-
-var msiReviseLabelCommand =
-{
-  isCommandEnabled: function(aCommand, dummy)  {return true;},
-  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
-  doCommandParams: function(aCommand, aParams, aRefCon)
-  {
-    var editorElement = msiGetActiveEditorElement();
-    var labelNode = msiGetReviseObjectFromCommandParams(aParams);
-    if (labelNode != null && editorElement != null)
-    {
-      AlertWithTitle("msiComposerCommands.js", "In msiReviseLabelCommand, trying to revise a label, dialog not yet implemented.");
-//      var dlgWindow = msiDoModelessPropertiesDialog("chrome://editor/content/what??.xul", "_blank", "chrome,close,titlebar,dependent",
-//                                                     editorElement, "cmd_reviseLabel", labelNode);
-    }
-    editorElement.focus();
-  },
-
-  doCommand: function(aCommand, dummy)  {}
-};
+//      labelElement = editor.getSelectedElement(kTagName);
+//      if (!labelElement)
+//        labelElement = editor.getElementOrParentByTagName(kTagName, editor.selection.anchorNode);
+//      if (!labelElement)
+//        labelElement = editor.getElementOrParentByTagName(kTagName, editor.selection.focusNode);
+//    } catch (e) {}
+//    return labelElement;
+//  }
+//};
+//
+//var msiReviseLabelCommand =
+//{
+//  isCommandEnabled: function(aCommand, dummy)  {return true;},
+//  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+//  doCommandParams: function(aCommand, aParams, aRefCon)
+//  {
+//    var editorElement = msiGetActiveEditorElement();
+//    var labelNode = msiGetReviseObjectFromCommandParams(aParams);
+//    if (labelNode != null && editorElement != null)
+//    {
+//      AlertWithTitle("msiComposerCommands.js", "In msiReviseLabelCommand, trying to revise a label, dialog not yet implemented.");
+////      var dlgWindow = msiDoModelessPropertiesDialog("chrome://editor/content/what??.xul", "_blank", "chrome,close,titlebar,dependent",
+////                                                     editorElement, "cmd_reviseLabel", labelNode);
+//    }
+//    editorElement.focus();
+//  },
+//
+//  doCommand: function(aCommand, dummy)  {}
+//};
 
 //-----------------------------------------------------------------------------------
 //Again, we need to do something to tie the editor to the dialog used.
@@ -7271,9 +7271,9 @@ var msiObjectPropertiesCommand =
           case 'button':
             msiGoDoCommandParams("cmd_reviseButton", cmdParams, editorElement);
           break;
-          case 'label':
-            msiGoDoCommandParams("cmd_reviseLabel", cmdParams, editorElement);
-          break;
+//          case 'label':
+//            msiGoDoCommandParams("cmd_reviseLabel", cmdParams, editorElement);
+//          break;
           case 'fieldset':
             msiGoDoCommandParams("cmd_reviseFieldset", cmdParams, editorElement);
           break;

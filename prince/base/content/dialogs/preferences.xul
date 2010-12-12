@@ -142,7 +142,7 @@
       <tabpanels>
         <tabpanel orient="vertical">
           <groupbox>
-            <caption label="Automatic saving"/>
+            <caption label="Automatic Saving"/>
             <checkbox id="prefautosave" label="Enable silent automatic saving"
                       accesskey=""
                       oncommand=""/>
@@ -153,7 +153,7 @@
             <checkbox id="generatetex" label="Generate TeX on automatic save (for latexmk)" preference="genTeXonsave"/>
           </groupbox>
           <groupbox>
-            <caption label="Cursor advance to character"/>
+            <caption label="Cursor Advance to Character"/>
             <checkbox id="preffastcursor" label="Enable character find with arrow keys"
                       accesskey=""
                       oncommand=""
@@ -167,7 +167,7 @@
         <tabpanel orient="vertical">
           <hbox style="height: 3in">
             <vbox style="width:2in" >
-              <label value="Shell Directories:"/>
+              <label value="Shell Directories"/>
               <tree id="dir-tree" flex="1" enableColumnDrag="true" seltype="single" 
                      onselect="showShellsInDir(this);"
                      datasources="rdf:files" flags="dont-build-content"
@@ -202,14 +202,14 @@
               </tree>
             </vbox> 
             <vbox style="width:2in" >
-              <label value="Shell Files:"/>
+              <label value="Shell Files"/>
               <listbox preference="defaultshell" flex = "1" id="dircontents" oncommand="return onAccept();" ondblclick="acceptDialog();" />
             </vbox>
           </hbox>
         </tabpanel>
         <tabpanel orient="vertical">
           <groupbox>
-            <caption label="Default size for new graphics"/>
+            <caption label="Default Size for New Graphics"/>
             <grid>
               <columns>
                 <column flex="0"/>
@@ -223,7 +223,7 @@
             </grid>
           </groupbox>
           <groupbox>
-            <caption label="Default placement for new graphics"/>
+            <caption label="Default Placement for New Graphics"/>
             <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);">
             <hbox flex="1">
               <vbox>
@@ -567,7 +567,7 @@
           </groupbox>
 
           <groupbox>
-            <caption>Axis labels</caption>
+            <caption>Axis Labels</caption>
             <grid>
               <columns>
                 <column/>
@@ -635,7 +635,7 @@
 
       <tabpanel id="Layout" orient="vertical">
         <groupbox>
-          <caption label="Default size for new plots"/>
+          <caption label="Default Size for New Plots"/>
           <grid>
             <columns>
               <column flex="0"/>
@@ -649,7 +649,7 @@
           </grid>
         </groupbox>
         <groupbox>
-          <caption label="Default placement for new plots"/>
+          <caption label="Default Placement for New Plots"/>
           <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);">
           <hbox flex="1">
             <vbox>
@@ -705,12 +705,12 @@
           </hbox>
           <separator/>
           <vbox>
-            <checkbox id="OrthogonalProjection" label="Orthogonal Projection"/>
-            <checkbox id="KeepUp"               label="Keep Up Vector"/>
+            <checkbox id="OrthogonalProjection" label="Orthogonal projection"/>
+            <checkbox id="KeepUp"               label="Keep up vector"/>
             <checkbox id="defaultviewintervals" label="&viewinterval.label;"/>
           </vbox>
           <groupbox>
-            <caption>Initial view intervals</caption>        
+            <caption>Initial View Intervals</caption>        
             <hbox>
               <label value="&axisxrange.label;"/>
               <textbox id="xrangelow" style="width: 5em;" cols="6" preference="plot.XMin"/>
