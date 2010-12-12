@@ -1,5 +1,5 @@
 
-<!ENTITY windowTitle.label "Select OpenType Font and Size">
+<!ENTITY fontwindowTitle.label "Select OpenType font, size, or color">
 
 <!ENTITY fontsizetitle.label "Set Font Size and Spacing">
 <!ENTITY fontsize.label "Font Size">
@@ -16,7 +16,5 @@
 <!ENTITY cm.menuitem  "cm">
 <!ENTITY mm.menuitem  "mm">
 <!ENTITY in.menuitem  "in">
-<!ENTITY label.generaluse "Generally you should use the tags such as emph, sf, large, and small to change font characteristics. Use this dialog sparingly.">
-<!ENTITY label.generaluse.accesskey "G">
+<!ENTITY label.generaluse "Generally you should use the tags such as emph, sf, large, and small to change font characteristics. Use this dialog sparingly.\nThe font list can be used only if OpenType fonts are enabled in this document (see Typeset/Document Format)">
 <!ENTITY menuitem.select.a.font "(Select a font)">
-<!ENTITY fontsize.generalinfo "Generally you should use the tags such as large, huge, and small to change font size. Use this dialog sparingly.">
