@@ -24,7 +24,7 @@
       <broadcaster id="notmargin" disabled="true"/>
     </broadcasterset>  
      <hbox>
-       <vbox align="center">
+       <vbox>
          <label>Section Type</label>
          <menulist id="sections.name" oncommand="switchSectionType();" persist="value" >
            <menupopup>
@@ -38,7 +38,7 @@
            </menupopup>
          </menulist>
        </vbox>
-       <vbox align="center">
+       <vbox>
          <label>Number Style</label>
          <menulist id="sections.numstyle" persist="value" oncommand="setNumStyle(this);" >
            <menupopup>
@@ -61,11 +61,11 @@
     <separator class="groove"/>
     <hbox>
       <vbox flex="1"/>
-      <vbox align="center">
+      <vbox>
         <label observes="secredefok">Start New Page</label>
         <checkbox observes="secredefok" id="sectionstartnewpage" persist="checked" oncommand="settopofpage(this);"/>
       </vbox>
-      <vbox align="center">
+      <vbox>
        <label observes="secredefok">&docformatUnits;</label>
        <menulist observes="secredefok" id="secoverlay.units" persist="value" 
               oncommand="switchSectionUnits();"  >
@@ -83,7 +83,7 @@
     <spacer/>
     <hbox>
       <vbox flex="1"/>
-      <vbox align="center">
+      <vbox>
        <label observes="secredefok">Header Style</label>
        <menulist observes="secredefok" id="sections.style" persist="value" >
          <menupopup style="width: 6em;">
@@ -97,7 +97,7 @@
          </menupopup>
        </menulist>
       </vbox>
-      <vbox align="center">
+      <vbox>
        <label observes="secredefok">Alignment</label>
        <radiogroup id="sections.align" orient="horizontal">
          <radio observes="secredefok" id="sectionleft" label="Left" value="l" selected="true" oncommand="setalign('l');"/>
@@ -199,7 +199,7 @@
     <spacer/>
     <hbox id="marginsection" observes="notcenteralignment" align="center" onkeypress="sectHandleChar(event);">
       <vbox flex="1"/>
-      <vbox align="center">
+      <vbox>
         <label value="Left Heading Indent">
           <observes element="secredefok" attribute="disabled"/>
           <observes element="leftalignment"	attribute="msicollapsed"/>
@@ -217,7 +217,7 @@
         <observes element="secredefok" attribute="disabled"/>
       </label>
       <spacer/>
-      <vbox align="center">
+      <vbox>
         <label value="Right Heading Indent" >
           <observes element="secredefok" attribute="disabled"/>
           <observes element="rightalignment"	attribute="msicollapsed"/>
