@@ -45,7 +45,7 @@
 #include "nsIChannel.h"
 #include "nsIDOMLoadListener.h"
 #include "nsIChannelEventSink.h"
-#include "nsIInterfaceRequestor.h"
+#include "nsIInterfaceRequestor.h"s
 #include "nsString.h"
 #include "nsWeakReference.h"
 #include "nsIDocument.h"
@@ -222,6 +222,8 @@ nsSyncLoader::LoadDocument(nsIChannel* aChannel,
         listener = new nsCrossSiteListenerProxy(listener, aLoaderPrincipal,
                                                 mChannel, &rv);
         NS_ENSURE_TRUE(listener, NS_ERROR_OUT_OF_MEMORY);
+        if (rv != 0)
+          rv = (rv+rv)/2;
         NS_ENSURE_SUCCESS(rv, rv);
     }
 
