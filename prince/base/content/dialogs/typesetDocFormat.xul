@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+Í<?xml version="1.0"?>
 <!-- Copyright (c) 2006 MacKichan Software, Inc.  All Rights Reserved. -->
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
@@ -27,7 +27,8 @@
     onload="Startup()"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();"
-    persist="screenX screenY width height">
+    persist="screenX screenY width height"
+    style="overflow:scroll;">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
