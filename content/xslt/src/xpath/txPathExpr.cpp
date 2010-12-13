@@ -81,6 +81,7 @@ nsresult
 PathExpr::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
 {
     *aResult = nsnull;
+    PRInt32 x;
 
     // We need to evaluate the first step with the current context since it
     // can depend on the context size and position. For example:
@@ -88,9 +89,12 @@ PathExpr::evaluate(txIEvalContext* aContext, txAExprResult** aResult)
     nsRefPtr<txAExprResult> res;
     nsresult rv = mItems[0].expr->evaluate(aContext, getter_AddRefs(res));
     NS_ENSURE_SUCCESS(rv, rv);
-
-    NS_ENSURE_TRUE(res->getResultType() == txAExprResult::NODESET,
+    if (res->getResultType() != txAExprResult::NODESET)
+    {
+      x = 1;
+      NS_ENSURE_TRUE(false,
                    NS_ERROR_XSLT_NODESET_EXPECTED);
+    }
 
     nsRefPtr<txNodeSet> nodes = static_cast<txNodeSet*>
                                            (static_cast<txAExprResult*>
