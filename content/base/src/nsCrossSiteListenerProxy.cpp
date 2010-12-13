@@ -961,9 +961,13 @@ nsCrossSiteListenerProxy::UpdateChannel(nsIChannel* aChannel)
   }
 
   // Now add the access-control-origin header
+  PRInt32 x;
   nsCOMPtr<nsIHttpChannel> http = do_QueryInterface(aChannel);
-  NS_ENSURE_TRUE(http, NS_ERROR_FAILURE);
-
+  if (!(http))
+  {
+    x = 1;
+    NS_ENSURE_TRUE(false, NS_ERROR_FAILURE);
+  }
   return http->SetRequestHeader(NS_LITERAL_CSTRING("Access-Control-Origin"),
     root, PR_FALSE);
 }
