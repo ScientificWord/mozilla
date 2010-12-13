@@ -69,14 +69,13 @@
 
   <hbox>  
     <vbox>
-      <description>&keystrokesBox.label;</description>
+      <label control="keystrokesBox" value="&keystrokesBox.label;" accesskey="&keystrokesBox.accesskey;"/>
         <separator class="thin"/>
       <hbox>
         <textbox id="keystrokesBox" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
           completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="autosubstitution" 
 		      tooltiptext="&keystrokesBox.tooltip;" 
 		      label="&keystrokesBox.label;"
-          accesskey="&keystrokesBox.accesskey;"
           onkeypress="checkKeyPressEvent(this, event);"
           onfocus="this.select();"
           onsearchcomplete="changePattern(this.value);"
