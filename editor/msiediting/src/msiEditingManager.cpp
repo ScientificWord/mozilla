@@ -138,7 +138,11 @@ nsresult MoveRangeTo(nsIEditor* editor, nsIDOMRange * range, nsIDOMNode *node, P
     currentNode = do_QueryElementAt(arrayOfNodes, i);
     // put inNode in new parent, outNode
     currentNode->GetNodeType(&nodeType);
-    if (nodeType==3) currentNode->GetParentNode(getter_AddRefs(currentNode));
+
+    //  jcs -- what is this supposed to do? 
+    //  if (nodeType==3) // Means a #text ?
+    //    currentNode->GetParentNode(getter_AddRefs(currentNode));
+
     editor->DeleteNode(currentNode);
     editor->InsertNode(currentNode, node, offset);//past the mo
   }
