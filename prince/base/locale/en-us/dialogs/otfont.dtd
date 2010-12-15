@@ -16,5 +16,6 @@
 <!ENTITY cm.menuitem  "cm">
 <!ENTITY mm.menuitem  "mm">
 <!ENTITY in.menuitem  "in">
-<!ENTITY label.generaluse "Generally you should use the tags such as emph, sf, large, and small to change font characteristics. Use this dialog sparingly.\nThe font list can be used only if OpenType fonts are enabled in this document (see Typeset/Document Format)">
+<!ENTITY label.generaluseA "Generally you should use the tags such as emph, sf, large, and small to change font characteristics. Use this dialog sparingly.">
+<!ENTITY label.generaluseB "The font list can be used only if OpenType fonts are enabled in this document (see Typeset/Document Format.)">
 <!ENTITY menuitem.select.a.font "(Select a font)">
