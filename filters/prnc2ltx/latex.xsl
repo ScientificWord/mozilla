@@ -504,7 +504,7 @@ should not be done under some conditions -->
 %EndExpansion
       </xsl:text>
 </xsl:if>
-<-- /xsl:if -->
+<!-- /xsl:if -->
 </xsl:template>
 
 <xsl:template match="html:bibliography">
