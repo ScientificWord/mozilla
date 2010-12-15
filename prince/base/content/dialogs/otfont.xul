@@ -31,9 +31,8 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/otfont.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
-  <description>
-    &label.generaluse; 
-  </description>
+<description value="&label.generaluseA;"/>
+  <description value="&label.generaluseB;"/>
   <separator/>
   <menulist id="otfontlist" oncommand="">
     <menupopup id="systemfontlist">
