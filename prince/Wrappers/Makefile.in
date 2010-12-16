@@ -9,8 +9,8 @@ include $(DEPTH)/config/autoconf.mk
 # MODULE		= wrappers
 
 DIRS = \
-	src \
   $(NULL)
+#	src \
 
 
 include $(topsrcdir)/config/rules.mk
