@@ -78,6 +78,10 @@
   min-width: 300px;
 }
 
+#docformat [
+  overflow; scroll;
+]
+
 #sectiontextarea {
   min-height:20px; 
   min-width:200px;
