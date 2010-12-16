@@ -102,7 +102,7 @@
 </xsl:template>
 
 <xsl:template match="html:preambleTeX">
-  <xsl:value-of mode="tex" select="."/>
+  <xsl:value-of select="."/>
 </xsl:template>
 
 <!-- use docformat information to call the crop package -->
