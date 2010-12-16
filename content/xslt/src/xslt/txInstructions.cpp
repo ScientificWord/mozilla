@@ -817,6 +817,12 @@ txSetParam::execute(txExecutionState& aEs)
     if (mValue) {
         rv = mValue->evaluate(aEs.getEvalContext(),
                               getter_AddRefs(exprRes));
+        if (rv != 0)
+        { 
+          nsString str;
+          mValue->toString(str);
+          printf("Error executing txSetParam: %w\n", str.get());
+        }
         NS_ENSURE_SUCCESS(rv, rv);
     }
     else {
