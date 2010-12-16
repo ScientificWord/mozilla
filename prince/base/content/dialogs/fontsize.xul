@@ -26,7 +26,8 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/fontsize.js"/>
-  <label>&fontsize.generalinfo;</label>
+  <description value="&label.generaluseA;"/>
+  <description value="&label.generaluseB;"/>
   <hbox>
     <vbox>
       <label value="&fontsize.label;" control="otfont.fontsize" 	accesskey="&fontsize.accesskey;"/>
