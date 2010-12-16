@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding='UTF-8' ?>
 <!-- Copyright (c) 2007 MacKichan Software, Inc.  All Rights Reserved. -->
 
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
@@ -26,8 +26,8 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/fontsize.js"/>
-  <description value="&label.generaluseA;"/>
-  <description value="&label.generaluseB;"/>
+  <description>&label.generaluseA;</description>
+  <description>&label.generaluseB;</description>
   <hbox>
     <vbox>
       <label value="&fontsize.label;" control="otfont.fontsize" 	accesskey="&fontsize.accesskey;"/>
