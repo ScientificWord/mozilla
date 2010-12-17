@@ -176,7 +176,7 @@
 
     <xsl:variable name="ancestor-has-left-fence-mo">
       <xsl:call-template name="mo-is-LaTeX-fence">
-	    <xsl:with-param name="op-nom" select="exsl:node-set($left-ancestor-mo1-nom/exists)"/>
+	    <xsl:with-param name="op-nom" select="$left-ancestor-mo1-nom/exists"/>
       </xsl:call-template>
     </xsl:variable>
 
@@ -195,7 +195,7 @@
         </xsl:when>
 		<xsl:otherwise>
           <xsl:call-template name="get-mo-attr-val">
-            <xsl:with-param name="mo-nom"   select="exsl:node-set($left-ancestor-mo1-nom/exists)"/>
+            <xsl:with-param name="mo-nom"   select="$left-ancestor-mo1-nom/exists"/>
             <xsl:with-param name="attr-nom" select="'stretchy'"/>
           </xsl:call-template>
 		</xsl:otherwise>
@@ -220,7 +220,7 @@
         </xsl:when>
 		<xsl:otherwise>
           <xsl:call-template name="get-mo-attr-val">
-            <xsl:with-param name="mo-nom"   select="exsl:node-set($left-ancestor-mo1-nom/exists)"/>
+            <xsl:with-param name="mo-nom"   select="$left-ancestor-mo1-nom/exists"/>
             <xsl:with-param name="attr-nom" select="'form'"/>
           </xsl:call-template>
 		</xsl:otherwise>
@@ -392,7 +392,7 @@
           and             $left-ancestor-mo-stretchy!='false'
           and            ($left-ancestor-mo-form='prefix'
           or              $left-ancestor-mo-form='ambiguous')">
-            <xsl:value-of select="exsl:node-set($left-ancestor-mo1-nom/exists)"/>
+            <xsl:value-of select="$left-ancestor-mo1-nom/exists"/>
           </xsl:when>
           <xsl:otherwise>
             <xsl:text>false</xsl:text>
