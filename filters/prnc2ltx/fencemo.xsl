@@ -330,6 +330,7 @@
       or $op-nom='/'
       or $op-nom='\'
       or $op-nom='&#x2195;'
+      or $op-nom=''
       or $op-nom='&#x21D5;'
       or $op-nom='&#x2191;'
       or $op-nom='&#x21D1;'
