@@ -173,10 +173,19 @@
       </xsl:for-each>
     </xsl:variable>
     <xsl:variable name="left-ancestor-mo1-nom" select="$left-ancestor-mo1-nom.tr"/>
+    <xsl:variable name="left-ancestor-mo1-nom-exists">
+      <xsl:choose>
+        <xsl:when test="string-length($left-ancestor-mo1-nom.tr) &gt; 0">
+          <xsl:value-of select="normalize-space(.)"/>
+        </xsl:when>
+    		<xsl:otherwise>
+    		</xsl:otherwise>
+	    </xsl:choose>
+    </xsl:variable>
 
     <xsl:variable name="ancestor-has-left-fence-mo">
       <xsl:call-template name="mo-is-LaTeX-fence">
-	    <xsl:with-param name="op-nom" select="$left-ancestor-mo1-nom/exists"/>
+	    <xsl:with-param name="op-nom" select="$left-ancestor-mo1-nom-exists"/>
       </xsl:call-template>
     </xsl:variable>
 
@@ -195,7 +204,7 @@
         </xsl:when>
 		<xsl:otherwise>
           <xsl:call-template name="get-mo-attr-val">
-            <xsl:with-param name="mo-nom"   select="$left-ancestor-mo1-nom/exists"/>
+            <xsl:with-param name="mo-nom"   select="$left-ancestor-mo1-nom-exists"/>
             <xsl:with-param name="attr-nom" select="'stretchy'"/>
           </xsl:call-template>
 		</xsl:otherwise>
@@ -215,12 +224,12 @@
         <xsl:when test="string-length($left-ancestor-form) &gt; 0">
           <xsl:value-of select="$left-ancestor-form"/>
         </xsl:when>
-        <xsl:when test="string-length($left-ancestor-mo1-nom/exists) = 0">
+        <xsl:when test="string-length($left-ancestor-mo1-nom-exists) = 0">
           <xsl:text>unknown</xsl:text>
         </xsl:when>
 		<xsl:otherwise>
           <xsl:call-template name="get-mo-attr-val">
-            <xsl:with-param name="mo-nom"   select="$left-ancestor-mo1-nom/exists"/>
+            <xsl:with-param name="mo-nom"   select="$left-ancestor-mo1-nom-exists"/>
             <xsl:with-param name="attr-nom" select="'form'"/>
           </xsl:call-template>
 		</xsl:otherwise>
@@ -238,10 +247,19 @@
       </xsl:for-each>
     </xsl:variable>
     <xsl:variable name="right-ancestor-mo1-nom" select="$right-ancestor-mo1-nom.tr"/>
+    <xsl:variable name="right-ancestor-mo1-nom-exists">
+      <xsl:choose>
+        <xsl:when test="string-length($right-ancestor-mo1-nom.tr) &gt; 0">
+          <xsl:value-of select="$normalize-space(.)"/>
+        </xsl:when>
+    		<xsl:otherwise>
+    		</xsl:otherwise>
+	    </xsl:choose>
+    </xsl:variable>
 
     <xsl:variable name="ancestor-has-right-fence-mo">
       <xsl:call-template name="mo-is-LaTeX-fence">
-	    <xsl:with-param name="op-nom" select="$right-ancestor-mo1-nom/exists"/>
+	    <xsl:with-param name="op-nom" select="$right-ancestor-mo1-nom-exists"/>
       </xsl:call-template>
     </xsl:variable>
 
@@ -260,7 +278,7 @@
         </xsl:when>
 		<xsl:otherwise>
           <xsl:call-template name="get-mo-attr-val">
-            <xsl:with-param name="mo-nom"   select="$right-ancestor-mo1-nom/exists"/>
+            <xsl:with-param name="mo-nom"   select="$right-ancestor-mo1-nom-exists"/>
             <xsl:with-param name="attr-nom" select="'stretchy'"/>
           </xsl:call-template>
 		</xsl:otherwise>
@@ -280,12 +298,12 @@
         <xsl:when test="string-length($right-ancestor-form) &gt; 0">
           <xsl:value-of select="$right-ancestor-form"/>
         </xsl:when>
-        <xsl:when test="string-length($right-ancestor-mo1-nom/exists) = 0">
+        <xsl:when test="string-length($right-ancestor-mo1-nom-exists) = 0">
           <xsl:text>unknown</xsl:text>
         </xsl:when>
 		<xsl:otherwise>
           <xsl:call-template name="get-mo-attr-val">
-            <xsl:with-param name="mo-nom"   select="$right-ancestor-mo1-nom/exists"/>
+            <xsl:with-param name="mo-nom"   select="$right-ancestor-mo1-nom-exists"/>
             <xsl:with-param name="attr-nom" select="'form'"/>
           </xsl:call-template>
 		</xsl:otherwise>
@@ -339,14 +357,11 @@
 
 <!-- *************************** -->
 
-
-    <xsl:variable name="frac-context.tr">
-
-	  <size>
+      <xsl:variable name="frac-context-size">
         <xsl:choose>
           <xsl:when test="parent::mml:mstyle[@displaystyle='true'][count(./*)=1]">
             <xsl:value-of select="'d'"/>
-			</xsl:when>
+			    </xsl:when>
           <xsl:when test="parent::mml:mstyle[@displaystyle='false'][count(./*)=1]">
             <xsl:value-of select="'t'"/>
           </xsl:when>
@@ -354,9 +369,9 @@
             <xsl:value-of select="'a'"/>
           </xsl:otherwise>
         </xsl:choose>
-      </size>
+      </xsl:variable>
 
-      <preceding-delim>
+      <xsl:variable name="frac-context-preceding-delim">
         <xsl:choose>
           <xsl:when test="$has-left-fence-mo='true'
           and             $left-mo-stretchy!='false'
@@ -368,9 +383,10 @@
             <xsl:text>false</xsl:text>
           </xsl:otherwise>
         </xsl:choose>
-      </preceding-delim>
+      </xsl:variable>
 
-      <following-delim>
+
+      <xsl:variable name="frac-context-following-delim">
         <xsl:choose>
           <xsl:when test="$has-right-fence-mo='true'
           and             $right-mo-stretchy!='false'
@@ -382,43 +398,42 @@
             <xsl:text>false</xsl:text>
           </xsl:otherwise>
         </xsl:choose>
-      </following-delim>
+      </xsl:variable>
 
-
-      <preceding-delim-nested>
+      <xsl:variable name="frac-context-preceding-delim-nested">
         <xsl:choose>
-          <xsl:when test="$left-ancestor-mo1-nom/exists
+          <xsl:when test="$left-ancestor-mo1-nom-exists
           and             $ancestor-has-left-fence-mo='true'
           and             $left-ancestor-mo-stretchy!='false'
           and            ($left-ancestor-mo-form='prefix'
           or              $left-ancestor-mo-form='ambiguous')">
-            <xsl:value-of select="$left-ancestor-mo1-nom/exists"/>
+            <xsl:value-of select="$left-ancestor-mo1-nom-exists"/>
           </xsl:when>
           <xsl:otherwise>
             <xsl:text>false</xsl:text>
           </xsl:otherwise>
         </xsl:choose>
-      </preceding-delim-nested>
+      </xsl:variable>
 
-      <following-delim-nested>
+      <xsl:variable name="frac-context-following-delim-nested">
         <xsl:choose>
-          <xsl:when test="$right-ancestor-mo1-nom/exists
+          <xsl:when test="$right-ancestor-mo1-nom-exists
           and             $ancestor-has-right-fence-mo='true'
           and             $right-ancestor-mo-stretchy!='false'
           and            ($right-ancestor-mo-form='postfix'
           or              $right-ancestor-mo-form='ambiguous')">
-            <xsl:value-of select="$right-ancestor-mo1-nom/exists"/>
+            <xsl:value-of select="$right-ancestor-mo1-nom-exists"/>
       	</xsl:when>
           <xsl:otherwise>
             <xsl:text>false</xsl:text>
           </xsl:otherwise>
         </xsl:choose>
-      </following-delim-nested>
+      </xsl:variable>
 
 
 <!-- check for a parent mfenced that can be absorbed by the LaTeX fraction -->
 
-      <left-mfence>
+      <xsl:variable name="frac-context-left-mfence">
         <xsl:choose>
           <xsl:when test="$opener='true'">
             <xsl:value-of select="parent::mml:mfenced/@open"/>
@@ -427,9 +442,9 @@
             <xsl:value-of select="$opener"/>
           </xsl:otherwise>
         </xsl:choose>
-      </left-mfence>
+      </xsl:variable>
 
-      <right-mfence>
+      <xsl:variable name="frac-context-right-mfence">
         <xsl:choose>
           <xsl:when test="$closer='true'">
             <xsl:value-of select="parent::mml:mfenced/@close"/>
@@ -438,59 +453,56 @@
             <xsl:value-of select="$closer"/>
           </xsl:otherwise>
         </xsl:choose>
-      </right-mfence>
-
-    </xsl:variable>
-    <xsl:variable name="frac-context" select="exsl:node-set($frac-context.tr)"/>
-
+      </xsl:variable>
 
 <!-- The following variable uses info in the variables above to define values
      for delimiters that may be incorporated into our LaTeX output -->
 
-    <xsl:variable name="frac-delims.tr">
 
+    <xsl:variable name="frac-delims-l-delim">
       <xsl:choose>
-        <xsl:when test="not($frac-context/preceding-delim='false')
-        and             not($frac-context/following-delim='false')">
-		  <l-delim>
-            <xsl:value-of select="$frac-context/preceding-delim"/>
-		  </l-delim>
-		  <r-delim>
-            <xsl:value-of select="$frac-context/following-delim"/>
-		  </r-delim>
+        <xsl:when test="not($frac-context-preceding-delim='false')
+        and             not($frac-context-following-delim='false')">
+            <xsl:value-of select="$frac-context-preceding-delim"/>
         </xsl:when>
-        <xsl:when test="not($frac-context/preceding-delim-nested='false')
-        and             not($frac-context/following-delim-nested='false')
+        <xsl:when test="not($frac-context-preceding-delim-nested='false')
+        and             not($frac-context-following-delim-nested='false')
         and             count(preceding-sibling::*)=0
         and             count(following-sibling::*)=0">
-		  <l-delim>
-            <xsl:value-of select="$frac-context/preceding-delim-nested"/>
-		  </l-delim>
-		  <r-delim>
-            <xsl:value-of select="$frac-context/following-delim-nested"/>
-		  </r-delim>
+            <xsl:value-of select="$frac-context-preceding-delim-nested"/>
         </xsl:when>
-        <xsl:when test="not($frac-context/left-mfence='false')
-        and             not($frac-context/right-mfence='false')">
-		  <l-delim>
-            <xsl:value-of select="$frac-context/left-mfence"/>
-		  </l-delim>
-		  <r-delim>
-            <xsl:value-of select="$frac-context/right-mfence"/>
-		  </r-delim>
+        <xsl:when test="not($frac-context-left-mfence='false')
+        and             not($frac-context-right-mfence='false')">
+            <xsl:value-of select="$frac-context-left-mfence"/>
         </xsl:when>
         <xsl:otherwise>
-		  <l-delim>
             <xsl:text>false</xsl:text>
-		  </l-delim>
-		  <r-delim>
-            <xsl:text>false</xsl:text>
-		  </r-delim>
         </xsl:otherwise>
       </xsl:choose>
-
     </xsl:variable>
-    <xsl:variable name="frac-delims" select="exsl:node-set($frac-delims.tr)"/>
+
+    <xsl:variable name="frac-delims-r-delim">
+      <xsl:choose>
+        <xsl:when test="not($frac-context-preceding-delim='false')
+        and             not($frac-context-following-delim='false')">
+            <xsl:value-of select="$frac-context-following-delim"/>
+        </xsl:when>
+        <xsl:when test="not($frac-context-preceding-delim-nested='false')
+        and             not($frac-context-following-delim-nested='false')
+        and             count(preceding-sibling::*)=0
+        and             count(following-sibling::*)=0">
+            <xsl:value-of select="$frac-context-following-delim-nested"/>
+        </xsl:when>
+        <xsl:when test="not($frac-context-left-mfence='false')
+        and             not($frac-context-right-mfence='false')">
+            <xsl:value-of select="$frac-context-right-mfence"/>
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:text>false</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+
 
 
     <xsl:variable name="frac-linethickness">
@@ -534,13 +546,13 @@
           <xsl:when test="$frac-linethickness='0'">
             <xsl:choose>
 
-              <xsl:when test="($frac-delims/l-delim='(')
-                   and        ($frac-delims/r-delim=')')">
+              <xsl:when test="($frac-delims-l-delim='(')
+                   and        ($frac-delims-r-delim=')')">
                 <xsl:choose>
-                  <xsl:when test="$frac-context/size='d'">
+                  <xsl:when test="$frac-context-size='d'">
                     <xsl:text>\dbinom{</xsl:text>
                   </xsl:when>
-                  <xsl:when test="$frac-context/size='t'">
+                  <xsl:when test="$frac-context-size='t'">
                     <xsl:text>\tbinom{</xsl:text>
                   </xsl:when>
                   <xsl:otherwise>
@@ -551,17 +563,17 @@
 
               <xsl:otherwise>
                 <xsl:choose>
-                  <xsl:when test="not($frac-delims/l-delim='false')
-                       and        not($frac-delims/r-delim='false')">
+                  <xsl:when test="not($frac-delims-l-delim='false')
+                       and        not($frac-delims-r-delim='false')">
                     <xsl:text xml:space="preserve">\genfrac{</xsl:text>
                     <xsl:call-template name="do-delimiter">
                       <xsl:with-param name="is-left"       select="'true'"/>
-                      <xsl:with-param name="mml-delim-str" select="normalize-space($frac-delims/l-delim)"/>
+                      <xsl:with-param name="mml-delim-str" select="normalize-space($frac-delims-l-delim)"/>
                     </xsl:call-template>
                     <xsl:text xml:space="preserve">}{</xsl:text>
                     <xsl:call-template name="do-delimiter">
                       <xsl:with-param name="is-left"       select="'false'"/>
-                      <xsl:with-param name="mml-delim-str" select="normalize-space($frac-delims/r-delim)"/>
+                      <xsl:with-param name="mml-delim-str" select="normalize-space($frac-delims-r-delim)"/>
                     </xsl:call-template>
                     <xsl:text>}{0pt}</xsl:text>
                   </xsl:when>
@@ -571,10 +583,10 @@
                 </xsl:choose>
 
                 <xsl:choose>
-                  <xsl:when test="$frac-context/size='d'">
+                  <xsl:when test="$frac-context-size='d'">
                     <xsl:text>{0}{</xsl:text>
                   </xsl:when>
-                  <xsl:when test="$frac-context/size='t'">
+                  <xsl:when test="$frac-context-size='t'">
                     <xsl:text>{1}{</xsl:text>
                   </xsl:when>
                   <xsl:otherwise>
@@ -587,17 +599,17 @@
 
           <xsl:otherwise>
             <xsl:choose>
-              <xsl:when test="not($frac-delims/l-delim='false')
-                   and        not($frac-delims/r-delim='false')">
+              <xsl:when test="not($frac-delims-l-delim='false')
+                   and        not($frac-delims-r-delim='false')">
                 <xsl:text xml:space="preserve">\genfrac{</xsl:text>
                 <xsl:call-template name="do-delimiter">
                   <xsl:with-param name="is-left"       select="'true'"/>
-                  <xsl:with-param name="mml-delim-str" select="normalize-space($frac-delims/l-delim)"/>
+                  <xsl:with-param name="mml-delim-str" select="normalize-space($frac-delims-l-delim)"/>
                 </xsl:call-template>
                 <xsl:text xml:space="preserve">}{</xsl:text>
                 <xsl:call-template name="do-delimiter">
                   <xsl:with-param name="is-left"       select="'false'"/>
-                  <xsl:with-param name="mml-delim-str" select="normalize-space($frac-delims/r-delim)"/>
+                  <xsl:with-param name="mml-delim-str" select="normalize-space($frac-delims-r-delim)"/>
                 </xsl:call-template>
                 <xsl:text>}{</xsl:text>
                   <xsl:value-of select="$rule-depth"/>
@@ -611,10 +623,10 @@
             </xsl:choose>
 
             <xsl:choose>
-              <xsl:when test="$frac-context/size='d'">
+              <xsl:when test="$frac-context-size='d'">
                 <xsl:text>{0}{</xsl:text>
               </xsl:when>
-              <xsl:when test="$frac-context/size='t'">
+              <xsl:when test="$frac-context-size='t'">
                 <xsl:text>{1}{</xsl:text>
               </xsl:when>
               <xsl:otherwise>
@@ -632,25 +644,25 @@
         <xsl:choose>
 
 <!-- with delimiters -->
-          <xsl:when test="not($frac-delims/l-delim='false')
-               and        not($frac-delims/r-delim='false')">
+          <xsl:when test="not($frac-delims-l-delim='false')
+               and        not($frac-delims-r-delim='false')">
             <xsl:text xml:space="preserve">\genfrac{</xsl:text>
             <xsl:call-template name="do-delimiter">
               <xsl:with-param name="is-left"       select="'true'"/>
-              <xsl:with-param name="mml-delim-str" select="normalize-space($frac-delims/l-delim)"/>
+              <xsl:with-param name="mml-delim-str" select="normalize-space($frac-delims-l-delim)"/>
             </xsl:call-template>
             <xsl:text>}{</xsl:text>
             <xsl:call-template name="do-delimiter">
               <xsl:with-param name="is-left"       select="'false'"/>
-              <xsl:with-param name="mml-delim-str" select="normalize-space($frac-delims/r-delim)"/>
+              <xsl:with-param name="mml-delim-str" select="normalize-space($frac-delims-r-delim)"/>
             </xsl:call-template>
             <xsl:text>}{}</xsl:text>
 
             <xsl:choose>
-              <xsl:when test="$frac-context/size='d'">
+              <xsl:when test="$frac-context-size='d'">
                 <xsl:text>{0}{</xsl:text>
               </xsl:when>
-              <xsl:when test="$frac-context/size='t'">
+              <xsl:when test="$frac-context-size='t'">
                 <xsl:text>{1}{</xsl:text>
               </xsl:when>
               <xsl:otherwise>
@@ -663,10 +675,10 @@
 
           <xsl:otherwise>
             <xsl:choose>
-              <xsl:when test="$frac-context/size='d'">
+              <xsl:when test="$frac-context-size='d'">
                 <xsl:text>\dfrac{</xsl:text>
               </xsl:when>
-              <xsl:when test="$frac-context/size='t'">
+              <xsl:when test="$frac-context-size='t'">
                 <xsl:text>\tfrac{</xsl:text>
               </xsl:when>
               <xsl:otherwise>
