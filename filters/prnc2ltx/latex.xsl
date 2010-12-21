@@ -247,21 +247,21 @@ should not be done under some conditions -->
   <xsl:otherwise>\cite</xsl:otherwise>
 </xsl:choose>
 <xsl:if test="@hasRemark='true'">[<xsl:apply-templates select="html:biblabel"/>]</xsl:if
->{<xsl:value-of select="@citekey"/>}
+>{<xsl:value-of select="@citekey"/>}\xspace
 </xsl:template>
 
 <xsl:template match="html:biblabel"><xsl:apply-templates/></xsl:template>
 
 <xsl:template match="html:bibtexbibliography">\bibliographystyle{<xsl:value-of select="@styleFile"/>}
-\bibliography{<xsl:value-of select="@databaseFile"/>}
+\bibliography{<xsl:value-of select="@databaseFile"/>}\xspace
 </xsl:template>
 
 <xsl:template match="html:xref">
 <xsl:choose>
-  <xsl:when test="@reftype='page'">\vpageref%%</xsl:when>
+  <xsl:when test="@reftype='page'">\vpageref</xsl:when>
   <xsl:otherwise>\vref</xsl:otherwise>
 </xsl:choose>
-{<xsl:value-of select="@key"/>}{}%%
+{<xsl:value-of select="@key"/>}{}\xspace%%
 </xsl:template>
 
 
