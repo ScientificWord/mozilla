@@ -3014,26 +3014,71 @@ function msiGetPropertiesDataFromCommandParams(aParams)
 }
 
 
+function msiDebugWindowInfo(aWindow)
+{
+  var idStr = "";
+  if (!aWindow)
+    return "null window";
+  if ("id" in aWindow)
+    idStr += "id: " + aWindow.id + ",";
+  idStr += "docTitle: {" + aWindow.document.title + "}";
+  return idStr;
+}
+
 //Utility for use by editors in dialogs.
-function msiGetParentEditorElementForDialog(dialogWindow)
+function msiGetParentEditorElementForDialog(dialogWindow, bLogEverything)
 {
   if (!dialogWindow)
+  {
     dialogWindow = window;
+    if (bLogEverything)
+      dump("In msiGetParentEditorElementForDialog, dialogWindow not passed in, 'window' is [" + msiDebugWindowInfo(dialogWindow) + "].\n");
+  }
   if (dialogWindow.top && (dialogWindow != dialogWindow.top))
+  {
     dialogWindow = dialogWindow.top;
+    if (bLogEverything)
+      dump("In msiGetParentEditorElementForDialog, dialogWindow.top differs from dialogWindow, top is [" + msiDebugWindowInfo(dialogWindow) + "].\n");
+  }
   var editorElement = null;
   if ("msiParentEditor" in dialogWindow)
+  {
     editorElement = dialogWindow.msiParentEditor;
+    if (bLogEverything)
+      msiDumpWithID("In msiGetParentEditorElementForDialog, msiParentEditor data member for dialogWindow has id [@]\n", editorElement);
+  }
   if (!editorElement)
   {
     var topWindow = msiGetTopLevelWindow(dialogWindow);
     if (topWindow.msiSingleDialogList)
+    {
       editorElement = topWindow.msiSingleDialogList.getParentEditorElementByDialog(dialogWindow);
+      if (bLogEverything)
+        msiDumpWithID("In msiGetParentEditorElementForDialog, msiParentEditor data member for dialogWindow was null, msiSingleDialogList yields editor with id [@]\n", editorElement);
+    }
     if (!editorElement && topWindow.msiPropertiesDialogList)
+    {
       editorElement = topWindow.msiPropertiesDialogList.getParentEditorElementByDialog(dialogWindow);
+      if (bLogEverything)
+        msiDumpWithID("In msiGetParentEditorElementForDialog, msiParentEditor data member for dialogWindow was null, msiPropertiesDialogList yields editor with id [@]\n", editorElement);
+    }
   }
   if (!editorElement)
+  {
+    var parentWindow = dialogWindow.opener;
+    if (parentWindow)
+    {
+      editorElement = msiGetPrimaryEditorElementForWindow(parentWindow);
+      if (bLogEverything)
+        msiDumpWithID("In msiGetParentEditorElementForDialog, msiParentEditor data member for dialogWindow was null, lists failed, using window.opener's primary editor, with id [@]\n", editorElement);
+    }
+  }
+  if (!editorElement)
+  {
     editorElement = msiGetActiveEditorElement();
+    if (bLogEverything)
+      msiDumpWithID("In msiGetParentEditorElementForDialog, msiParentEditor data member for dialogWindow was null, lists failed, using active editor, with id [@]\n", editorElement);
+  }
   return editorElement;
 }
 

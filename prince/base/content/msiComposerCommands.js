@@ -8959,6 +8959,6 @@ function doReviseStructureNode(editor, origData, reviseData)
   else 
   {
     if (shortTitleNode)
-      parentEditor.deleteNode(shortTitleNode);
+      editor.deleteNode(shortTitleNode);
   }
 }
