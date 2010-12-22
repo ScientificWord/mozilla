@@ -181,26 +181,30 @@ should not be done under some conditions -->
 
 <xsl:template match="html:sectiontitle">
 <xsl:if test="name(..)='chapter'">
-\chapter<xsl:if test="../@nonum='true'">*</xsl:if><xsl:if test="./*[name()='shortTitle']">[<xsl:apply-templates select="*[name()='shortTitle']/*"/>]</xsl:if>{<xsl:apply-templates/>}
+\chapter<xsl:if test="../@nonum='true'">*</xsl:if><xsl:apply-templates mode="shortTitle"/>{<xsl:apply-templates/>}
 </xsl:if>
 <xsl:if test="name(..)='section'">
-\section<xsl:if test="../@nonum='true'">*</xsl:if><xsl:if test="./*[name()='shortTitle']">[<xsl:apply-templates select="*[name()='shortTitle']/*"/>]</xsl:if>{<xsl:apply-templates/>}
+\section<xsl:if test="../@nonum='true'">*</xsl:if><xsl:apply-templates mode="shortTitle"/>{<xsl:apply-templates/>}
 </xsl:if>
 <xsl:if test="name(..)='subsection'">
-\subsection<xsl:if test="../@nonum='true'">*</xsl:if><xsl:if test="./*[name()='shortTitle']">[<xsl:apply-templates select="*[name()='shortTitle']/*"/>]</xsl:if>{<xsl:apply-templates/>}
+\subsection<xsl:if test="../@nonum='true'">*</xsl:if><xsl:apply-templates mode="shortTitle"/>{<xsl:apply-templates/>}
 </xsl:if>
 <xsl:if test="name(..)='subsubsection'">
-\subsubsection<xsl:if test="../@nonum='true'">*</xsl:if><xsl:if test="./*[name()='shortTitle']">[<xsl:apply-templates select="*[name()='shortTitle']/*"/>]</xsl:if>{<xsl:apply-templates/>}
+\subsubsection<xsl:if test="../@nonum='true'">*</xsl:if><xsl:apply-templates mode="shortTitle"/>{<xsl:apply-templates/>}
 </xsl:if>
 <xsl:if test="name(..)='paragraph'">
-\paragraph<xsl:if test="../@nonum='true'">*</xsl:if><xsl:if test="./*[name()='shortTitle']">[<xsl:apply-templates select="*[name()='shortTitle']/*"/>]</xsl:if>{<xsl:apply-templates/>}
+\paragraph<xsl:if test="../@nonum='true'">*</xsl:if><xsl:apply-templates mode="shortTitle"/>{<xsl:apply-templates/>}
 </xsl:if>
 <xsl:if test="name(..)='subparagraph'">
-\subparagraph<xsl:if test="../@nonum='true'">*</xsl:if><xsl:if test="./*[name()='shortTitle']">[<xsl:apply-templates select="*[name()='shortTitle']/*"/>]</xsl:if>{<xsl:apply-templates/>}
+\subparagraph<xsl:if test="../@nonum='true'">*</xsl:if><xsl:apply-templates mode="shortTitle"/>{<xsl:apply-templates/>}
 </xsl:if>
 </xsl:template>
 
-<xsl:template match="html:shortTitle"></xsl:template>
+
+<xsl:template match="html:sectiontitle/html:shortTitle"></xsl:template>
+<xsl:template match="html:sectiontitle/text()" mode="shortTitle"></xsl:template>
+<xsl:template match="html:shortTitle" mode="shortTitle">[<xsl:apply-templates/>]</xsl:template>
+
 
 <xsl:template match="html:drop">
 \lettrine[lhang=.2]{\textbf{<xsl:apply-templates/>}}{}
@@ -243,21 +247,21 @@ should not be done under some conditions -->
   <xsl:otherwise>\cite</xsl:otherwise>
 </xsl:choose>
 <xsl:if test="@hasRemark='true'">[<xsl:apply-templates select="html:biblabel"/>]</xsl:if
->{<xsl:value-of select="@citekey"/>}
+>{<xsl:value-of select="@citekey"/>}\xspace
 </xsl:template>
 
 <xsl:template match="html:biblabel"><xsl:apply-templates/></xsl:template>
 
 <xsl:template match="html:bibtexbibliography">\bibliographystyle{<xsl:value-of select="@styleFile"/>}
-\bibliography{<xsl:value-of select="@databaseFile"/>}
+\bibliography{<xsl:value-of select="@databaseFile"/>}\xspace
 </xsl:template>
 
 <xsl:template match="html:xref">
 <xsl:choose>
-  <xsl:when test="@reftype='page'">\vpageref%%</xsl:when>
+  <xsl:when test="@reftype='page'">\vpageref</xsl:when>
   <xsl:otherwise>\vref</xsl:otherwise>
 </xsl:choose>
-{<xsl:value-of select="@key"/>}{}%%
+{<xsl:value-of select="@key"/>}{}\xspace%%
 </xsl:template>
 
 
@@ -277,10 +281,8 @@ should not be done under some conditions -->
   
 
 <xsl:template match="html:notewrapper"><xsl:apply-templates/></xsl:template>
-  
 
 <xsl:template match="html:note[@type='footnote']">
-  
 <xsl:choose>
   <xsl:when test="$endnotes &gt; 0">\endnote{</xsl:when>
   <xsl:otherwise>\footnote{</xsl:otherwise>
@@ -341,10 +343,10 @@ should not be done under some conditions -->
 
 <xsl:template match="html:alt">{\addfontfeatures{RawFeature=+salt}<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:bold">\textbf{<xsl:apply-templates
-  />}</xsl:template>
-<xsl:template match="html:italics">\textit{<xsl:apply-templates
-  />}</xsl:template>
+<xsl:template match="html:bold">\begin{bfseries}<xsl:apply-templates
+  />\end{bfseries}</xsl:template>
+<xsl:template match="html:italics">\begin{itshape}<xsl:apply-templates
+  />\end{itshape}</xsl:template>
 <xsl:template match="html:roman">\textrm{<xsl:apply-templates
   />}</xsl:template>
 <xsl:template match="html:sansSerif">\textsf{<xsl:apply-templates
@@ -487,20 +489,23 @@ should not be done under some conditions -->
 </xsl:template>
 
 <!-- labels -->
-<xsl:template match="html:a[@name]"
- >\label{<xsl:value-of select="@name"
- />}</xsl:template> 
+<xsl:template match="html:a[@name]">\label{<xsl:value-of select="@name"/>}</xsl:template> 
 
-<xsl:template match="html:texb"
-  ><xsl:if test="@pre!='1'"
-  ><xsl:if test="@enc='1'">
+<xsl:template match="html:texb">
+  <!-- xsl:if test="@pre!='1'" -->
+    <xsl:if test="@enc='1'">
 %TCIMACRO{\TeXButton{<xsl:value-of select="@name"/>}{<xsl:apply-templates/>}}%
 %Package required: [<xsl:value-of select="@opt"/>]{<xsl:value-of select="@req"/>}
 %BeginExpansion
-</xsl:if
-  ><xsl:apply-templates mode="tex"/><xsl:if test="@enc='1'"><xsl:text>
+    </xsl:if>
+    <xsl:apply-templates mode="tex"/>
+    <xsl:if test="@enc='1'">
+      <xsl:text>
 %EndExpansion
-</xsl:text></xsl:if></xsl:if></xsl:template>
+      </xsl:text>
+</xsl:if>
+<!-- /xsl:if -->
+</xsl:template>
 
 <xsl:template match="html:bibliography">
 \begin{thebibliography}

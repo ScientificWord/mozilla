@@ -59,7 +59,7 @@ after \allowbreak.  More \LBo's can be scripted as needed.
     <xsl:variable name="psuedo-LaTeX.tr">
       <xsl:apply-templates/>
     </xsl:variable>
-    <xsl:variable name="psuedo-LaTeX" select="$exsl:node-set(psuedo-LaTeX.tr)"/>
+    <xsl:variable name="psuedo-LaTeX" select="exsl:node-set($psuedo-LaTeX.tr)"/>
 
 <!-- The children of "psuedo-LaTeX" are mixture of generic text nodes, 
      <comment-line> and <stream-with-break-tokens> nodes.
