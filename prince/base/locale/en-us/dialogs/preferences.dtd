@@ -201,7 +201,7 @@
 
 <!ENTITY labelingkey.label          "Key">
 <!ENTITY labelingname.label         "Name">
-<!ENTITY labelingcaption.label      "Caption">
+<!ENTITY labelingcaption.label      "Default caption location">
 
 <!ENTITY labelingabove.label        "Above">
 <!ENTITY labelingbelow.label        "Below">
@@ -230,8 +230,8 @@
 <!ENTITY axisloglog.label           "Log Log">
 <!ENTITY axisequal.label            "Equal Scaling Along Each Axis">
 <!ENTITY axistype.label             "Axes Type">
-<!ENTITY axistips.label             "axes tips on">
-<!ENTITY axisgridlines.label        "grid lines on">
+<!ENTITY axistips.label             "Axes tips on">
+<!ENTITY axisgridlines.label        "Grid lines on">
 <!ENTITY axisnormal.label           "Normal">
 <!ENTITY axisboxed.label            "Boxed">
 <!ENTITY axistickmark.label         "Axis Tick Marks">
@@ -260,7 +260,7 @@
 <!ENTITY screendisplay.label        "Screen Display Layout">
 <!ENTITY orientationturn.label      "Orientation: Turn">
 <!ENTITY orientationtilt.label      "Orientatin: Tilt">
-<!ENTITY viewinterval.label         "Use Default View Intervals">
+<!ENTITY viewinterval.label         "Use default view intervals">
 
 <!ENTITY surfacestyle.label         "Surface Style">
 <!ENTITY surfacemesh.label          "Surface Mesh">

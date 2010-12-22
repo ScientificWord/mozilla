@@ -301,7 +301,7 @@
 <!ENTITY MSIComputePlotCmd2D.label     "Plot 2D Rectangular">
 <!ENTITY MSIComputePlotCmd2D.accesskey "p">
 <!ENTITY MSIComputePlotCmd3D.label     "Plot 3D Rectangular">
-<!ENTITY MSIComputePlotCmd3D.accesskey "J">
+<!ENTITY MSIComputePlotCmd3D.accesskey "3">
 <!ENTITY MSIComputePlotCmd.label     "Plot">
 <!ENTITY MSIComputePlotCmd.accesskey "p">
 
