@@ -3,6 +3,8 @@ Components.utils.import("resource://app/modules/pathutils.jsm");
 
 var node;
 var initial;
+var data = { ruleColor: "#000000" };
+
 function startup()
 {
   if (window.arguments && window.arguments.length > 0)
@@ -17,6 +19,26 @@ function startup()
     document.getElementById("otfontlist").value = initial;
   }
 }
+
+function getColorAndUpdate()
+{
+  var colorWell = document.getElementById("colorWell");
+  if (!colorWell) return;
+
+  var colorObj = { NoDefault: false, Type: "Rule", TextColor: data.ruleColor, PageColor: 0, Cancel: false };
+
+  window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "chrome,close,titlebar,modal", "", colorObj);
+
+  // User canceled the dialog
+  if (colorObj.Cancel)
+    return;
+
+  data.ruleColor = colorObj.TextColor;
+  setColorWell("colorWell", data.ruleColor); 
+}
+
+
+
 
 function onAccept()
 {

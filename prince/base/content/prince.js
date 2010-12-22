@@ -1142,13 +1142,18 @@ function documentToTeXString(document, xslPath)
   os.writeString(resultString);
   os.close();
  // end of debugging code 
+  dump("Creating new parser for xslt file\n");
   var parser = new DOMParser();
   var doc = parser.parseFromString(resultString, "text/xml");
-    
+  if (doc) dump("XSLT file parsed as XML\n");
+  else dump("Failed to parse XSLT file as XML\n");  
   try{
     xsltProcessor.importStylesheet(doc);
+    if (xsltProcessor) dump("Imported stylesheet\n");
+    else dump("Failed to import stylesheet\n");
     var newDoc = xsltProcessor.transformToDocument(document);
     var strResult = newDoc.documentElement.textContent || "";
+    dump(strResult+"\n");
   }
   catch(e){
     dump("error: "+e.message+"\n\n");
