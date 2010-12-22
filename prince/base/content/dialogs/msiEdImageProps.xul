@@ -86,7 +86,9 @@
     </tabs>
     <tabpanels>
       <vbox id="imagePicture">
-        <button oncommand="onAccept();"/>
+          <!-- 12/10/2010 commented out by JLF per BBM
+          <button oncommand="onAccept();"/>
+          -->
         <radiogroup id="importRefRadioGroup" orient="horizontal" flex="1">
           <radio id = "importRadio"
             label   = "&importButton.label;"

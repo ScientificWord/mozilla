@@ -1054,9 +1054,9 @@ $<uID3.17.108>prefix,67,U00024
 &#x20A3;<uID3.17.143>postfix,67,U020A3
 &#x20A7;<uID3.17.144>postfix,67,U020A7
 
-&Lscr;<uID3.17.150>,U02112
+&Lscr;<uID3.17.150>prefix,U02112
 ;;L<uID3.17.150>,U0004C:mathvariant="script"
-&Fscr;<uID3.17.151>,U02131
+&Fscr;<uID3.17.151>prefix,U02131
 ;;F<uID3.17.151>,U00046:mathvariant="script"
 &#x110;<uID3.17.152>,U00110
 \lambdabar<uID3.17.153>

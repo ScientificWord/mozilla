@@ -42,11 +42,11 @@
 		<hbox>
       <label id="propertiesTitle" hidden="true" value="&windowPropertiesTitle.label;" />
 		  <vbox>
-		    <description value='&unitTypesListbox.label;' accesskey='&unitTypesListbox.accesskey;'/>
-		    <listbox id='unitTypesListbox' rows='15' onselect='setUnitType(this.selectedItem.value);'/>
+		    <label control="unitTypesListbox" value='&unitTypesListbox.label;' accesskey='&unitTypesListbox.accesskey;'/>
+		    <listbox id='unitTypesListbox' rows='15'  onselect='setUnitType(this.selectedItem.value);'/>
 			</vbox>
 			<vbox>
-		    <description value='&unitNamesListbox.label;' accesskey='&unitNamesListbox.accesskey;'/>
+		    <label control="unitNamesListbox" value='&unitNamesListbox.label;' accesskey='&unitNamesListbox.accesskey;'/>
 		    <listbox id='unitNamesListbox' rows='15'/>
 			</vbox>
 		</hbox>

@@ -27,7 +27,8 @@
     onload="Startup()"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();"
-    persist="screenX screenY width height">
+    persist="screenX screenY width height"
+    style="overflow:scroll;">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
@@ -80,7 +81,9 @@
     </tabs>
     <tabpanels>
       <tabpanel id="docformatgeneralpanel" orient="vertical">
-        <button oncommand="onAccept();"  />
+       <!-- 12/10/2010 commented out by JLF per BBM
+       <button onAccept();"  /> 
+       -->
         <vbox flex="1">
           <label class="heading" value="General Document Options"/>
           <label value="Warning goes here"/>
