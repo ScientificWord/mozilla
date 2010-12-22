@@ -839,7 +839,6 @@
   </keyset>
   
 #ifdef DEBUG
-  <!-- DEBUG only -->
   <menu id="debugMenu" label="&debugMenu.label;" accesskey="&debugMenu.accesskey;">
   <menupopup id="menu_debugPopup">
     <!-- menuitem label="printPDF" oncommand="PrintUtils.printPDF();"/>
@@ -920,7 +919,6 @@
     <!-- menuitem label="Prettyprint" oncommand="prettyprint();"/ -->
     </menupopup>
   </menu>
-  <!-- end DEBUG only -->
 #endif
   
 </overlay>
