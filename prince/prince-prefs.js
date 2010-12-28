@@ -21,12 +21,15 @@ pref("swp.generateTeXonsave", true);
 pref("swp.prefDocumentDir","SWPDocs");
 pref("swp.viewPDF","fixAcrobat.cmd %1");
 pref("swp.prefPDFPath","default");
-pref("swp.fancyreturn",false);
+pref("swp.fancyreturn",true);
 #ifdef XP_WIN32
-pref("swp.tex.bindir","%programfiles%\\texlive\\2009\\bin\\win32");  /* for windows */
-#else
-pref("swp.tex.bindir","/usr/local/texlive/2009/bin/i386-linux");  /* for linux */
+pref("swp.tex.bindir","%programfiles%\\texlive\\2010\\bin\\win32");  /* for windows */
+#elifdef XP_MACOSX
+pref("swp.tex.bindir","/usr/texbin"); /* Mac system preference for TeX puts the right thing on the path */
+#else /*XP_UNIX*/
+pref("swp.tex.bindir","/usr/local/texlive/2010/bin/i386-linux");  /* for linux */
 #endif
+
 pref("swp.sourceview.maxlinelength",        100);
 pref("swp.sourceview.minlinelength",         40);
 pref("swp.sourceview.indentincrement",       2);
