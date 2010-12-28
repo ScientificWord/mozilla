@@ -1,6 +1,7 @@
 // Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved.
 
 const mathmlOverlayJS_duplicateTest = "Bad";
+var gProcessor;
 
 function SetupMSIMathMenuCommands()
 {
@@ -3153,11 +3154,15 @@ function mathNodeToText(editor, node)
 {
   var frag = gProcessor.transformToFragment(node,editor.document);   
   postProcessMathML(frag);
-  editor.replaceNode(frag,node,node.parentNode);
+  var nPos = 0;
+  if (node)
+    nPos = msiNavigationUtils.offsetInParent(node);
+  editor.insertNode(frag, node.parentNode, npos);
+  editor.deleteNode(node);
+//  editor.replaceNode(frag,node,node.parentNode);
 }
 
 
-var gProcessor;
 function mathToText(editor)
 {
   var i;
@@ -3203,6 +3208,8 @@ function mathToText(editor)
   catch(e) {
     dump("error in MathNodeToText: "+e.message+"\n");
   }
+  if (gProcessor)
+    gProcessor.reset();
   editor.endTransaction();
 }
 

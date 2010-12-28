@@ -247,21 +247,21 @@ should not be done under some conditions -->
   <xsl:otherwise>\cite</xsl:otherwise>
 </xsl:choose>
 <xsl:if test="@hasRemark='true'">[<xsl:apply-templates select="html:biblabel"/>]</xsl:if
->{<xsl:value-of select="@citekey"/>}\xspace
+>{<xsl:value-of select="@citekey"/>}
 </xsl:template>
 
 <xsl:template match="html:biblabel"><xsl:apply-templates/></xsl:template>
 
 <xsl:template match="html:bibtexbibliography">\bibliographystyle{<xsl:value-of select="@styleFile"/>}
-\bibliography{<xsl:value-of select="@databaseFile"/>}\xspace
+\bibliography{<xsl:value-of select="@databaseFile"/>}
 </xsl:template>
 
 <xsl:template match="html:xref">
 <xsl:choose>
-  <xsl:when test="@reftype='page'">\vpageref</xsl:when>
+  <xsl:when test="@reftype='page'">\vpageref%%</xsl:when>
   <xsl:otherwise>\vref</xsl:otherwise>
 </xsl:choose>
-{<xsl:value-of select="@key"/>}{}\xspace%%
+{<xsl:value-of select="@key"/>}{}%%
 </xsl:template>
 
 
@@ -281,8 +281,10 @@ should not be done under some conditions -->
   
 
 <xsl:template match="html:notewrapper"><xsl:apply-templates/></xsl:template>
+  
 
 <xsl:template match="html:note[@type='footnote']">
+  
 <xsl:choose>
   <xsl:when test="$endnotes &gt; 0">\endnote{</xsl:when>
   <xsl:otherwise>\footnote{</xsl:otherwise>
@@ -296,8 +298,7 @@ should not be done under some conditions -->
 </xsl:template>
 
 
-<xsl:template match="html:shortQuote">
-  
+<xsl:template match="html:shortQuote"> 
 \begin{quote}
 <xsl:apply-templates/>
 \end{quote}
@@ -343,10 +344,10 @@ should not be done under some conditions -->
 
 <xsl:template match="html:alt">{\addfontfeatures{RawFeature=+salt}<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:bold">\begin{bfseries}<xsl:apply-templates
-  />\end{bfseries}</xsl:template>
-<xsl:template match="html:italics">\begin{itshape}<xsl:apply-templates
-  />\end{itshape}</xsl:template>
+<xsl:template match="html:bold">\textbf{<xsl:apply-templates
+  />}</xsl:template>
+<xsl:template match="html:italics">\textit{<xsl:apply-templates
+  />}</xsl:template>
 <xsl:template match="html:roman">\textrm{<xsl:apply-templates
   />}</xsl:template>
 <xsl:template match="html:sansSerif">\textsf{<xsl:apply-templates
