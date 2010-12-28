@@ -159,6 +159,7 @@ function onAccept()
 //    sectitle = sectitle.nextSibling;
   var shortFormEditor = document.getElementById("sectionShortEdit");
   var editorElement = msiGetParentEditorElementForDialog(window);
+//  msiDumpWithID("In structure properties dialog, parent editorElement's id is [@].\n", editorElement);
   var parentEditor = msiGetEditor(editorElement);
   try
   {
@@ -180,9 +181,10 @@ function onAccept()
       if (!document.getElementById("numberedCheckbox").checked)
         reviseData.noNumAttr = "true";
 
+      reviseData.newShortForm = "";
       var shortFormContentFilter = new msiDialogEditorContentFilter(shortFormEditor);
       reviseData.newShortForm = shortFormContentFilter.getDocumentFragmentString();
-      dump("In structure properties dialog, short form title is [" + reviseData.newShortForm + "].\n");
+//      dump("In structure properties dialog, short form title is [" + reviseData.newShortForm + "].\n");
     }
   
     var theWindow = window.opener;
