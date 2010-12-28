@@ -105,7 +105,7 @@
           <hbox>
             <textbox
               id        = "marginLeftInput"
-              min       = "0"
+              min       = "-1000"
               observes  = "lengthwithunits"
               onkeypress= "handleChar(event, this.id);"
               onchange  = "update(this.id);"/>
@@ -114,7 +114,7 @@
           </hbox>
           <textbox
             id        = "marginRightInput"
-            min       = "0"
+            min       = "-1000"
             observes  = "lengthwithunits"
             onkeypress= "handleChar(event, this.id);"
             onchange  = "update(this.id);"/>
