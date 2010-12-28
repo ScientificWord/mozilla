@@ -38,7 +38,10 @@ var timerCallback =
        }
        else{
          setProgressStatement(true);
-         document.getElementById("passesDlg").cancelDialog();
+         //document.getElementById("passesDlg").cancelDialog();
+         if (timer) timer.cancel();
+         timer=null;
+         close();
        }
      }
    } 
