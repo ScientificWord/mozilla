@@ -801,25 +801,38 @@ function printTeX(preview )
           var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
           var extension;
           var exefile;
+          var arr = new Array();
           if (pdfAction == "launch")
           {
-            exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
-            var os = GetOS();
-            if (os == "Win") extension = "cmd";
-            else extension = "bash";
-            exefile.append("shell."+ extension);
+            var os = msiGetOS();
+            if (os == "linux") 
+            {
+              extension = "bash";
+              exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+              exefile.append("shell."+ extension);
+              theProcess.init(exefile);
+              arr = [pdffile.path];
+              theProcess.run(false, arr, arr.length);
+            }
+            else
+            {
+              exefile = Components.classes["@mozilla.org/file/local;1"].
+                  createInstance(Components.interfaces.nsILocalFile);
+              exefile.initWithPath("/Applications/SWPPro.app/Contents/Resources/shell.bash");
+              arr = [pdffile.path];
+              theProcess.init(exefile);
+              theProcess.run(false, arr, arr.length);             
+            }
           }
           else // pdfAction == complete path to viewer
           {
             exefile = Components.classes["@mozilla.org/file/local;1"].
                     createInstance(Components.interfaces.nsILocalFile);
             exefile.initWithPath(pdfAction);
+            arr=[pdffile.path];
+            theProcess.init(exefile);
+            theProcess.run(false, arr, arr.length);             
           }
-          theProcess.init(exefile);
-          var arr = new Array();
-          if (pdfAction == "launch") arr.push(exefile.path);
-          arr.push(pdffile.path);
-          theProcess.run(false, arr, arr.length);
         }
       } 
       else

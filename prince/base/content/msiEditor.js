@@ -4462,11 +4462,11 @@ function msiSetDisplayMode(editorElement, mode)
     if ("gComputeToolbar" in window && window.gComputeToolbar != null)
       window.gComputeToolbar.hidden = true;
 
-    msiHideItem("MSIMathMenu");
-    msiHideItem("cmd_viewComputeToolbar");
-    msiHideItem("MSIComputeMenu");
-    msiHideItem("MSITypesetMenu");
-    msiHideItem("MSIInsertTypesetObjectMenu");
+//    msiHideItem("MSIMathMenu");
+//    msiHideItem("cmd_viewComputeToolbar");
+//    msiHideItem("MSIComputeMenu");
+//    msiHideItem("MSITypesetMenu");
+//    msiHideItem("MSIInsertTypesetObjectMenu");
     msiHideItem("StandardToolbox");
     msiHideItem("SymbolToolbox");
     msiHideItem("MathToolbox");
