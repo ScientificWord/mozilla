@@ -623,7 +623,7 @@
 <!ENTITY tagmenuFunctionKeys.accesskey "F">
 <!ENTITY tagmenuApply.label "Apply...">
 <!ENTITY tagmenuApply.accesskey "A">
-<!ENTITY tagmenuAdvanced.label  "Advanced">
+<!ENTITY tagmenuAdvanced.label  "Advanced...">
 <!ENTITY tagmenuAdvanced.accesskey  "A">
 
 <!-- Debug menu items -->
