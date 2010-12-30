@@ -71,9 +71,9 @@
 <!ENTITY MSIComputeRewriteRectangularCmd.accesskey "u">
 <!ENTITY MSIComputeRewriteNormalCmd.label "Normal Form">
 <!ENTITY MSIComputeRewriteNormalCmd.accesskey "N">     
-<!ENTITY MSIComputeRewriteEquationsAsMatrixCmd.label "Equations as Matrix">
+<!ENTITY MSIComputeRewriteEquationsAsMatrixCmd.label "Equations as Matrix...">
 <!ENTITY MSIComputeRewriteEquationsAsMatrixCmd.accesskey "q">
-<!ENTITY MSIComputeRewriteMatrixAsEquationsCmd.label "Matrix as Equations">
+<!ENTITY MSIComputeRewriteMatrixAsEquationsCmd.label "Matrix as Equations...">
 <!ENTITY MSIComputeRewriteMatrixAsEquationsCmd.accesskey "x">
 
 <!ENTITY MSIComputeCheckEqCmd.label "Check Equality">
