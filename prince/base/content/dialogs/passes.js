@@ -106,6 +106,7 @@ function onCancel()
   theProcess = null;
   Components.utils.reportError("in OnCancel\n");
   SaveWindowLocation();
+  focus();
 //  window.close();
   return true;
 }
