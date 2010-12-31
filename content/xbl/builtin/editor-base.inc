@@ -17,7 +17,7 @@
       <handler event="keypress" key="c" command="cmd_copy" modifiers="accel"/>
       <handler event="keypress" key="v" command="cmd_paste" modifiers="accel"/>
       <handler event="keypress" key="g" modifiers="accel"   command="cmd_oneshotGreek"/>
-      <handler event="keypress" key="7" modifiers="accel"   command="cmd_oneshotSymbol"/>
+      <handler event="keypress" key="k" modifiers="accel"   command="cmd_oneshotSymbol"/>
       <handler event="keypress" key="1" action="document.getElementById('TextTagSelections').focus();" modifiers="accel"/>
       <handler event="keypress" key="2" action="document.getElementById('ParaTagSelections').focus();" modifiers="accel"/>
       <handler event="keypress" key="3" action="document.getElementById('StructTagSelections').focus();" modifiers="accel"/>
