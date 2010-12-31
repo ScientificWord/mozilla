@@ -972,7 +972,7 @@
         <vbox>
           <checkbox id="allowfontchoice" label="Enable overriding font selection" oncommand="enableDisableFonts(this.checked);"/>
           <broadcaster id="fontdefok" disabled="true"/> 
-          <msibutton label="Refresh font list" oncommand="initializeFontFamilyList(true);" observes="xelatex">
+          <msibutton label="Refresh Font List" oncommand="initializeFontFamilyList(true);" observes="xelatex">
             <observes element="fontdefok" attribute="disabled"/> 
           </msibutton>
           <groupbox>
