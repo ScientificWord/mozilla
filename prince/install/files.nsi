@@ -1,6 +1,7 @@
 File ${srcdir}\*.cmd
 File ${srcdir}\*.gmr
 File ${srcdir}\*.mu
+File ${srcdir}\mupkernel.dll
 ;File ${srcdir}\*.m
 File ${srcdir}\pretex.exe
 File ${srcdir}\application.ini
