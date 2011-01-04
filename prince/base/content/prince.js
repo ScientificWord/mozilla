@@ -99,22 +99,22 @@ function doQuit() {
 
 //const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
 
-// return node on RHS of =, if structure is that simple
-function GetRHS(math)
-{
-  var ch = last_child(math);
-  while (ch) {
-    if (ch.nodeType == Node.ELEMENT_NODE && ch.localName == "mo") {
-      var op = ch.firstChild;
-      if (op.nodeType == Node.TEXT_NODE && op.data == "=") {
-        var m = node_after(ch);
-        if (m)
-          return m;
-    } }
-    ch = node_before(ch);
-  }
-  return math;
-}
+// jcs // return node on RHS of =, if structure is that simple
+// jcs function GetRHS(math)
+// jcs {
+// jcs   var ch = last_child(math);
+// jcs   while (ch) {
+// jcs     if (ch.nodeType == Node.ELEMENT_NODE && ch.localName == "mo") {
+// jcs       var op = ch.firstChild;
+// jcs       if (op.nodeType == Node.TEXT_NODE && op.data == "=") {
+// jcs         var m = node_after(ch);
+// jcs         if (m)
+// jcs           return m;
+// jcs     } }
+// jcs     ch = node_before(ch);
+// jcs   }
+// jcs   return math;
+// jcs }
 
 // function appendResult(result,sep,math) {
 //   GetCurrentEditor().insertHTMLWithContext(
