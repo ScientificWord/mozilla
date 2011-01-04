@@ -235,22 +235,22 @@
     <spacer/>
     <hbox align="center">
       <vbox flex="1"/>
-      <msibutton label="Add rule" oncommand='addrule();'>
+      <msibutton label="Add Rule" oncommand='addrule();'>
         <observes element="secredefok" attribute="disabled"/>
         <observes element="toporbottommargin" attribute="disabled"/>
       </msibutton>
       <spacer/>
-      <msibutton label="Add vertical space" oncommand="addspace();" >
+      <msibutton label="Add Vertical Space" oncommand="addspace();" >
         <observes element="secredefok" attribute="disabled"/>
         <observes element="toporbottommargin" attribute="disabled"/>
       </msibutton>
       <spacer/>
-      <msibutton label="Remove top rule or space" oncommand="removeruleorspace();">
+      <msibutton label="Remove Top Rule or Space" oncommand="removeruleorspace();">
         <observes element="secredefok" attribute="disabled"/>
         <observes element="toporbottommargin" attribute="disabled"/>
       </msibutton>
       <spacer/>
-      <msibutton label="Insert text" oncommand= 'textEditor();' >
+      <msibutton label="Insert Text" oncommand= 'textEditor();' >
         <observes element="secredefok" attribute="disabled"/>
         <observes element="notmargin" attribute="disabled"/>
       </msibutton>
