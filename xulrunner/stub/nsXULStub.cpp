@@ -128,11 +128,12 @@ int
 main(int argc, char **argv)
 {
   nsresult rv;
-  char *lastSlash;
+  char *lastSlash, *lslash;
 
   char iniPath[MAXPATHLEN];
   char tmpPath[MAXPATHLEN];
   char greDir[MAXPATHLEN];
+  char contentsPath[MAXPATHLEN];
   PRBool greFound = PR_FALSE;
 
 #if defined(XP_MACOSX)
@@ -167,6 +168,23 @@ main(int argc, char **argv)
   CFStringGetCString(iniPathStr, iniPath, sizeof(iniPath),
                      kCFStringEncodingUTF8);
   CFRelease(iniPathStr);
+  
+  // iniPath = .../SWPPro.app/Contents/Resources/application.ini
+  // make greDIR = .../SWPPro.app/Contents/Frameworks/XUL.framework/libxpcom.dylib
+  // First move back 2 levels in the path
+  strncpy( contentsPath, iniPath, sizeof(iniPath));
+  lslash = strrchr( contentsPath, PATH_SEPARATOR_CHAR);
+  if( !lslash )
+    return 1;
+  *(lslash) = '\0';
+  // one more
+  lslash = strrchr( contentsPath, PATH_SEPARATOR_CHAR);
+  if( !lslash )
+    return 1;
+  *(++lslash) = '\0';
+  snprintf(greDir, sizeof(greDir),
+           "%sFrameworks/XUL.framework/Versions/Current" XPCOM_FILE_PATH_SEPARATOR XPCOM_DLL,
+           contentsPath);
 
 #else
 
@@ -226,10 +244,12 @@ main(int argc, char **argv)
   *(++lastSlash) = '\0';
 
   // On Linux/Win, look for XULRunner in appdir/xulrunner
-
+#if defined(XP_MACOSX)
+#else
   snprintf(greDir, sizeof(greDir),
            "%sxulrunner" XPCOM_FILE_PATH_SEPARATOR XPCOM_DLL,
            iniPath);
+#endif
 
   greFound = PR_TRUE; //(access(greDir, R_OK) == 0);
 
