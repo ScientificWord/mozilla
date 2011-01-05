@@ -10,7 +10,7 @@
 <!-- ?xul-overlay href="chrome://editor/content/EdDialogOverlay.xul"? -->
 <?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
-<?xul-overlay href="chrome://prince/content/ComputeOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
 
 <!DOCTYPE dialog [
@@ -46,7 +46,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js" />
   <!-- script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/ -->
-  <!-- script type="application/x-javascript" src="chrome://prince/content/ComputeOverlay.js"/ -->
+  <!-- script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/ -->
   <script type="application/x-javascript" src="chrome://prince/content/ComputeUtils.js" />
   <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
   <!-- script type="application/x-javascript" src="chrome://prince/content/mainCore.js"/ -->
