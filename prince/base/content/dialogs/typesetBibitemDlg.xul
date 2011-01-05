@@ -12,7 +12,7 @@
 <?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
 <!-- ?xul-overlay href="chrome://prince/content/toolbarsOverlay.xul"? -->
 <?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
-<?xul-overlay href="chrome://prince/content/ComputeOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
 
 <!DOCTYPE dialog [
@@ -51,7 +51,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
   <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
   <!-- Following scripts are needed if the editor really wants to allow computation -->
-  <!-- script type="application/x-javascript" src="chrome://prince/content/ComputeOverlay.js"/ -->
+  <!-- script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/ -->
 
   <!-- If the editor is to support context menus, but also need the following, and the commandset below: -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
