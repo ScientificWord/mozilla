@@ -99,6 +99,7 @@
 
 <!-- back to template match="html:preamble"-->
   <xsl:apply-templates/>
+  \graphicspath{{../tcache/}{../gcache/}{../graphics/}}
 </xsl:template>
 
 <xsl:template match="html:preambleTeX">
