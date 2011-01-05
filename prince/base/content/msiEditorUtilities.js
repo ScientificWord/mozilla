@@ -1022,6 +1022,19 @@ function msiRequirePackage(editorElement, packagename, options)
     var editor = msiGetEditor(editorElement); // BBM: NO, get main editor.
     var doc = editor.document;
     var preamble = doc.getElementsByTagName("preamble")[0];
+    var currentReq = preamble.getElementsByTagName("requirespackage");
+    var i;
+    var req;
+    var opt;
+    for (i = 0; i < currentReq.length; i++)
+    {
+      req = currentReq[i].getAttribute("requirespackage");
+      if (req == packagename) {
+        opt = currentReq[i].getAttribute("opt");
+        if (opt && options && opt == options) return; // already there
+        if ((!opt) && (!options)) return; // both are void or null
+      }
+    }
     var reqpkg = doc.createElement("requirespackage");
     reqpkg.setAttribute("req", packagename);
     if (options && options.length > 0)

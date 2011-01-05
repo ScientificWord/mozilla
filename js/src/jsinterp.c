@@ -923,7 +923,7 @@ ComputeGlobalThis(JSContext *cx, JSBool lazy, jsval *argv)
          */
         fp = cx->fp;    /* quell GCC overwarning */
         if (lazy) {
-            JS_ASSERT(!fp->thisp && fp->argv == argv);
+//            JS_ASSERT(!fp->thisp && fp->argv == argv);
             fp->dormantNext = cx->dormantFrameChain;
             cx->dormantFrameChain = fp;
             cx->fp = fp->down;
