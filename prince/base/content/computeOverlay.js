@@ -1183,14 +1183,21 @@ function RestoreCursor(editorElement)
 function GetRHS(math)
 {
   var ch = last_child(math);
+  var mathout = math.cloneNode(false);
+
   while (ch) {
     if (ch.nodeType == Node.ELEMENT_NODE && ch.localName == "mo") {
       var op = ch.firstChild;
       if (op.nodeType == Node.TEXT_NODE && op.data == "=") {
-        var m = node_after(ch);
-        if (m)
-          return m;
-    } }
+        var m = node_after(ch);        
+        while (m) {
+          var cpy = m.cloneNode(true);
+          mathout.appendChild(cpy);
+          m = node_after(m);
+        }
+        return mathout;        
+      } 
+    }
     ch = node_before(ch);
   }
   return math;
