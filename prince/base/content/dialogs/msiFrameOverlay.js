@@ -8,6 +8,7 @@ var scaledWidthDefault = 50;
 var scaledHeightDefault = 60;
 var scaledHeight = scaledHeightDefault;
 var scaledWidth = scaledWidthDefault; 
+var Dg;
 var position = 0;  // left = 1, right = 2, neither = 0
 //var unit;
 
@@ -36,9 +37,10 @@ var metrics = { // the metrics of the frame as currently represented by the dial
 
 function initFrameTab(dg, element, newElement)
 {
-  var editorElement = msiGetParentEditorElementForDialog(window);
-  var editor = msiGetEditor(editorElement);
-  if (!editor) {
+  Dg = dg;
+  dg.editorElement = msiGetParentEditorElementForDialog(window);
+  dg.editor = msiGetEditor(dg.editorElement);
+  if (!dg.editor) {
     window.close();
     return null;
   }
@@ -302,6 +304,25 @@ function getCompositeMeasurement(attribute, unit, showUnit)
   return val;
 }
 
+// The equivalent for when we want just one of the attributes. "which" is "Top", "Right", "Bottom", or Left"
+function getSingleMeasurement(attribute, which, unit, showUnit)
+{
+  var i = -1;
+  var value;
+  for (var j=0; j<4; j++)
+  {
+    if (sides[j]==which)
+    {
+      i = j;
+      break;
+    }
+  }
+  if (i < 0) return;
+  value = Math.max(0,frameUnitHandler.getValueAs(Number(document.getElementById(attribute + sides[i] + "Input").value ),unit));
+  if (showUnit) value = value + unit;
+  return value;
+}
+
 function updateDiagram( attribute ) //attribute = margin, border, padding; 
 {
   var i;
@@ -534,11 +555,30 @@ function setAlignment(alignment ) // alignment = 1 for left, 2 for right, 0 for 
 function setFrameAttributes(frameNode)
 {
   var unit = frameUnitHandler.currentUnit;
+  if (unit == "px") // switch to pts
+  {
+    frameUnitHandler.setCurrentUnit("pt");
+    unit = "pt";
+  }
   frameNode.setAttribute("units",unit);
   frameNode.setAttribute("msi_resize","true");
-  frameNode.setAttribute("margin", getCompositeMeasurement("margin", unit, false));  
-  frameNode.setAttribute("border", getCompositeMeasurement("border",unit, false));  
-  frameNode.setAttribute("padding", getCompositeMeasurement("padding",unit, false));  
+  if (gFrameModeImage) {
+    var sidemargin = getSingleMeasurement("margin", "Left", unit, false);
+    frameNode.setAttribute("sidemargin", sidemargin);
+    var topmargin = getSingleMeasurement("margin", "Top", unit, false);
+    frameNode.setAttribute("topmargin", topmargin);
+  }
+  else frameNode.setAttribute("margin", getCompositeMeasurement("margin", unit, false));  
+  if (gFrameModeImage) {
+    var borderwidth = getSingleMeasurement("border", "Left", unit, false);
+    frameNode.setAttribute("border-width", borderwidth);
+  }
+  else frameNode.setAttribute("border", getCompositeMeasurement("border",unit, false));  
+  if (gFrameModeImage) {
+    var padding = getSingleMeasurement("padding", "Left", unit, false);
+    frameNode.setAttribute("padding", padding);
+  }
+  else frameNode.setAttribute("padding", getCompositeMeasurement("padding",unit, false));  
   frameNode.setAttribute("crop", getCompositeMeasurement("crop",unit, false));  
   if (gFrameTab.autoHeightCheck.checked)
   {
@@ -557,12 +597,22 @@ function setFrameAttributes(frameNode)
   var arr = bgcolor.match(/background-color\s*:([a-zA-Z\ \,0-9\(\)]+)\s*;\s*/,"");
   setStyleAttributeOnNode(frameNode, "border-color", arr[1]);
   frameNode.setAttribute("border-color", arr[1]);  
+  msiRequirePackage(Dg.editorElement, "xcolor", "");
   if (document.getElementById("inline").selected)
     setStyleAttributeOnNode(frameNode, "display", "inline");
   else setStyleAttributeOnNode(frameNode, "display", "block");
   // some experimentation here.
 
-  frameNode.setAttribute("overhang", "50");
+  if (gFrameModeImage) {
+    var overhang = getSingleMeasurement("margin", "Right", unit, false);
+    frameNode.setAttribute("overhang", overhang
+    );
+  }
+  else 
+  {
+    side = "Right";
+    frameNode.setAttribute("overhang", 0 - getSingleMeasurement("margin", side, unit, false));
+  }
   var placeLocation="";
   var isHere = false;
   if (gFrameTab.placeForceHereCheck.checked)
@@ -588,7 +638,11 @@ function setFrameAttributes(frameNode)
   if (isHere)
   {
     var floatparam = document.getElementById("herePlacementRadioGroup").value;
-    frameNode.setAttribute("placement",floatparam); 
+    if (floatparam != "full") {
+      msiRequirePackage(Dg.editorElement, "wrapfig","");
+    }
+    var floatshort = floatparam.slice(0,1);
+    frameNode.setAttribute("placement",floatshort); 
     if (floatparam == "inside") floatparam = "left";
     else if (floatparam == "outside") floatparam = "right";
     setStyleAttributeOnNode(frameNode, "float", floatparam);
