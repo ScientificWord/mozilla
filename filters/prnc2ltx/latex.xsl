@@ -202,7 +202,7 @@ should not be done under some conditions -->
 
 
 <xsl:template match="html:sectiontitle/html:shortTitle"></xsl:template>
-<xsl:template match="html:sectiontitle/text()" mode="shortTitle"></xsl:template>
+<xsl:template match="html:sectiontitle//text()" mode="shortTitle"></xsl:template>
 <xsl:template match="html:shortTitle" mode="shortTitle">[<xsl:apply-templates/>]</xsl:template>
 
 
