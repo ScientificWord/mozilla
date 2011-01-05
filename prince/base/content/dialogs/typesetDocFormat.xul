@@ -684,7 +684,7 @@
                     <vbox>
                       <groupbox align="center">
                         <caption>
-                          <label observes="pagelayoutok">Finish Page Size</label>
+                          <label observes="pagelayoutok">Finished Page Size</label>
                         </caption>   
                         <label observes="pagelayoutok">&docformatfinishpageSize;</label>
                         <menulist observes="pagelayoutok" id="docformat.finishpagesize"
