@@ -2,7 +2,7 @@
 <!-- Copyright (c) 2004 MacKichan Software, Inc.  All Rights Reserved. -->
 
 <!DOCTYPE overlay [
-<!ENTITY % DTD SYSTEM "chrome://prince/locale/ComputeOverlay.dtd" >
+<!ENTITY % DTD SYSTEM "chrome://prince/locale/computeOverlay.dtd" >
 %DTD;
 <!ENTITY % graphDTD SYSTEM "chrome://prince/locale/ComputeGraphSettings.dtd" >
 %graphDTD;
