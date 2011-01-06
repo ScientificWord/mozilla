@@ -4,6 +4,7 @@
 <!ENTITY windowPropertiesTitle.label "Math Name Properties">
 
 <!ENTITY mathNamesBox.label "Name">
+<!ENTITY mathNamesBox.accesskey  "N">
 <!ENTITY mathNamesBox.tooltip "Enter a math name or select from the list.">
 <!ENTITY mathAppearance.label "Appearance">
 <!ENTITY nameType.label "Name Type">
@@ -18,7 +19,7 @@
 <!ENTITY limitPlacementAuto.accesskey "u">
 <!ENTITY limitPlacementAboveBelow.label "Above/Below">
 <!ENTITY limitPlacementAboveBelow.accesskey "b">
-<!ENTITY limitPlacementAtRight.label "At right">
+<!ENTITY limitPlacementAtRight.label "At Right">
 <!ENTITY limitPlacementAtRight.accesskey "r">
 <!ENTITY addAutoSubstitution.label "Add automatic substitution">
 <!ENTITY addAutoSubstitution.accesskey "s">
