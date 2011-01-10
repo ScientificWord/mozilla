@@ -14,7 +14,7 @@
 <!--Following needed by any dialog using commandsets defined there; generally by any dialog containing an editor-->
 <?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
-<?xul-overlay href="chrome://prince/content/ComputeOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
 <!-- If an editor control is to support context menus, also need: -->
 <?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
 
@@ -58,7 +58,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js" />
   <!-- script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/ -->
-  <!-- script type="application/x-javascript" src="chrome://prince/content/ComputeOverlay.js"/ -->
+  <!-- script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/ -->
   <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
   <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
   <!-- If the editor is to support context menus, also need the following, and the commandset below: -->

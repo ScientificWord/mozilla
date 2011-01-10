@@ -5,7 +5,7 @@
 %editorOverlayDTD;
 <!ENTITY % mathmlOverlayDTD SYSTEM "chrome://editor/locale/MathmlOverlay.dtd" >
 %mathmlOverlayDTD;
-<!ENTITY % computeOverlayDTD SYSTEM "chrome://editor/locale/ComputeOverlay.dtd" >
+<!ENTITY % computeOverlayDTD SYSTEM "chrome://editor/locale/computeOverlay.dtd" >
 %computeOverlayDTD;
 <!ENTITY % brandDTD SYSTEM "chrome://global/locale/brand.dtd" >
 %brandDTD;
