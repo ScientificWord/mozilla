@@ -65,8 +65,8 @@ function initializeFontFamilyList(force)
   myXMLHTTPRequest.overrideMimeType("text/plain");
   myXMLHTTPRequest.open("GET", uri.spec, false);
   myXMLHTTPRequest.send(null);
-  var str = myXMLHTTPRequest.responseText;
-  var lines = str.split(/[\n\r]*[a-z]:[^:]*:/i);
+  var str = "\n"+myXMLHTTPRequest.responseText;
+  var lines = str.split(/[\n\r]+[^:]+:/);
   var i;
   var limit;
   lines = lines.sort();
