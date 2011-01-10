@@ -1,43 +1,55 @@
-Components.utils.import("resource://app/modules/unitHandler.jsm");
+xComponents.utils.import("resource://app/modules/unitHandler.jsm");
 
-var frameUnitHandler = new UnitHandler();
-var sides = ["Top", "Right", "Bottom", "Left"]; // do not localize -- visible to code only
-var gFrameTab={};
-var scale = 0.25;
-var scaledWidthDefault = 50; 
-var scaledHeightDefault = 60;
-var scaledHeight = scaledHeightDefault;
-var scaledWidth = scaledWidthDefault; 
+var frameUnitHandler;
+var sides;
+var gFrameTab;
+var scale;
+var scaledWidthDefault; 
+var scaledHeightDefault;
+var scaledHeight;
+var scaledWidth; 
 var Dg;
-var position = 0;  // left = 1, right = 2, neither = 0
+var position;
 //var unit;
 
-var metrics = { // the metrics of the frame as currently represented by the dialog
-  margin:   { top: 0, right: 0, bottom: 0, left: 0 },
-  padding:  { top: 0, right: 0, bottom: 0, left: 0 },
-  border:   { top: 0, right: 0, bottom: 0, left: 0 },
-  crop:     { top: 0, right: 0, bottom: 0, left: 0 },
-  innermargin: 0,  // temporary, assigned to left or right margin, depending on placement
-  outermargin: 0,  // negative for an overhang
-  unit: "px",
-  setUnit: function(newUnit) {
-    if (frameUnitHandler.currentUnit)
-    {
-      for (i in this)
-      {
-        for (j in this[i])
-        {
-          this[i][j] = frameUnitHandler.getValueAs(this[i][j],newUnit);
-        }
-      }
-    }
-    unit = newUnit;
-  }
-}
+var metrics;
 
 function initFrameTab(dg, element, newElement)
 {
   Dg = dg;
+  frameUnitHandler = new UnitHandler();
+  sides = ["Top", "Right", "Bottom", "Left"]; // do not localize -- visible to code only
+  gFrameTab={};
+  scale = 0.25;
+  scaledWidthDefault = 50; 
+  scaledHeightDefault = 60;
+  scaledHeight = scaledHeightDefault;
+  scaledWidth = scaledWidthDefault; 
+  position = 0;  // left = 1, right = 2, neither = 0
+  //var unit;
+
+  metrics = { // the metrics of the frame as currently represented by the dialog
+    margin:   { top: 0, right: 0, bottom: 0, left: 0 },
+    padding:  { top: 0, right: 0, bottom: 0, left: 0 },
+    border:   { top: 0, right: 0, bottom: 0, left: 0 },
+    crop:     { top: 0, right: 0, bottom: 0, left: 0 },
+    innermargin: 0,  // temporary, assigned to left or right margin, depending on placement
+    outermargin: 0,  // negative for an overhang
+    unit: "px",
+    setUnit: function(newUnit) {
+      if (frameUnitHandler.currentUnit)
+      {
+        for (i in this)
+        {
+          for (j in this[i])
+          {
+            this[i][j] = frameUnitHandler.getValueAs(this[i][j],newUnit);
+          }
+        }
+      }
+      unit = newUnit;
+    }
+  }
   dg.editorElement = msiGetParentEditorElementForDialog(window);
   dg.editor = msiGetEditor(dg.editorElement);
   if (!dg.editor) {
@@ -103,7 +115,7 @@ function initFrameTab(dg, element, newElement)
     var i;
     var values = [0,0,0,0];
     for (i = 0; i < dg.unitList.itemCount; i++)
-      if (dg.unitList.getItemAtIndex(i).value == unit)
+      if (dg.unitList.getItemAtIndex(i).value === unit)
       {
         dg.unitList.selectedIndex = i;
         break;
@@ -157,11 +169,12 @@ function initFrameTab(dg, element, newElement)
     // TODO: color
   }
 // Now initialize the UI, including the diagram
-  unit = 'px'; //dg.unitList.selectedItem.value;
+  unit = dg.unitList.selectedItem.value;
   frameUnitHandler.initCurrentUnit(unit);
   var placement = 0;
-  if (/left|inside/.test(placeLocation)) placement=1;
-  else if (/right|outside/.test(placeLocation)) placement = 2;
+  var placementLetter = document.getElementById("herePlacementRadioGroup").value;
+  if (/l|i/.test(placementLetter)) placement=1;
+  else if (/r|o/.test(placementLetter)) placement = 2;
   gFrameTab = dg;
   setAlignment(placement);
   enableHere(dg.herePlacementRadioGroup);
@@ -337,10 +350,18 @@ function updateDiagram( attribute ) //attribute = margin, border, padding;
       {
         metrics.margin.left = metrics.outermargin;
         metrics.margin.right = metrics.innermargin;
+          // left margin field is overhang in this case, so change sign
+        metrics.margin.left = -metrics.margin.left;
       }
       else {
         metrics.margin.left = metrics.innermargin;
         metrics.margin.right = metrics.outermargin;
+        if (position == 2)
+        { 
+          // right margin field is overhang in this case, so change sign
+          metrics.margin.right = -metrics.margin.right;
+        }    
+        
       }
       metrics.margin.top = metrics.margin.bottom = Math.max(0,toPixels(document.getElementById("marginTopInput").value ));
     }
@@ -459,7 +480,7 @@ function enableHere(radiogroup )
   {
     theValue = "false";
     position = radiogroup.selectedItem.value;
-    setAlignment((position==="left" || position==="inside")?1:((position==="right"||position=="outside")?2:0));
+    setAlignment((position==="l" || position==="i")?1:((position==="r"||position=="o")?2:0));
   }
   else
   {
