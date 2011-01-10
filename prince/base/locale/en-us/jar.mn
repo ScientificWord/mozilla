@@ -7,7 +7,7 @@ en-US.jar:
   locale/toolbarsOverlay.dtd              (toolbarsOverlay.dtd)
   locale/menuOverlay.dtd                  (menuOverlay.dtd)
   locale/mathmlOverlay.dtd                (mathmlOverlay.dtd)
-  locale/ComputeOverlay.dtd               (computeOverlay.dtd)
+  locale/computeOverlay.dtd               (computeOverlay.dtd)
   locale/typesetOverlay.dtd               (typesetOverlay.dtd)
   locale/compute.properties               (compute.properties)
   locale/fragmentname.dtd            (fragmentname.dtd)

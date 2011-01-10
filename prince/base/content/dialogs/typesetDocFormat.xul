@@ -541,8 +541,7 @@
               <vbox flex="1">
                 <hbox maxheight="5em" minheight="3em" flex="1">
                   <vbox>
-                    <label observes="pagelayoutok">&docformatTwosided;</label>
-                    <checkbox id="twosides" checked="false" oncommand="setTwosidedState(this);"/>
+                    <checkbox observes="pagelayoutok" id="twosides" checked="false" label="&docformatTwosided;" oncommand="setTwosidedState(this);"/>
                     <broadcaster id="oneside" hidden="false" />
                     <broadcaster id="twoside" hidden="true" />
                   </vbox>
