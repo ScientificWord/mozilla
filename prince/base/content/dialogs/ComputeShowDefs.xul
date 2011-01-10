@@ -30,7 +30,7 @@
   <!-- Following scripts are needed by any MSI dialog containing an editor -->
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
   <!-- script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/ -->
-  <!-- script type="application/x-javascript" src="chrome://prince/content/ComputeOverlay.js"/ -->
+  <!-- script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/ -->
   <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
 
   <script type="application/x-javascript" src="chrome://prince/content/ComputeShowDefs.js" />

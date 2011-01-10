@@ -49,9 +49,9 @@
       <textbox id="leading" type="number" decimalplaces="1" min="0" style="width: 3.5em" 
        max="200" increment="1" tooltip="&leading.tooltip;"/>
     </vbox>
-    <vbox align="center">
+    <vbox align="left">
      <label value="&units.label;" accesskey="&units.label;"/>
-     <menulist id="otfont.units">
+     <menulist id="otfont.units" sizetopopup="always">
        <menupopup>
          <menuitem id="otfont.pt" label="&pt.menuitem;" value="pt"/>
          <menuitem id="otfont.cm" label="&cm.menuitem;" value="cm"/>

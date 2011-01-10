@@ -14,7 +14,7 @@
 <!--Following needed by any dialog using commandsets defined there; generally by any dialog containing an editor-->
 <?xul-overlay href="chrome://prince/content/menuOverlay.xul"?>
 <?xul-overlay href="chrome://prince/content/MathmlOverlay.xul"?>
-<?xul-overlay href="chrome://prince/content/ComputeOverlay.xul"?>
+<?xul-overlay href="chrome://prince/content/computeOverlay.xul"?>
 <!-- If an editor control is to support context menus, also need: -->
 <?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
 
@@ -49,7 +49,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js" />
   <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
   <!-- script type="application/x-javascript" src="chrome://prince/content/MathmlOverlay.js"/ -->
-  <!-- script type="application/x-javascript" src="chrome://prince/content/ComputeOverlay.js"/ -->
+  <!-- script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/ -->
   <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
   <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
   <!-- Following script needed if the editor wants to support a toolbox? -->
@@ -83,11 +83,11 @@
   </keyset>
 
   <hbox>
-    <label id="propertiesTitle" hidden="true" value="&windowPropertiesTitle.label;" />
+    <label id="propertiesTitle" hidden="true" value="&windowPropertiesTitle.label;"/>
     <vbox flex="1">
-      <description>&mathNamesBox.label;</description>
-      <separator class="thin"/>
-
+    <label control="mathNamesBox" value="&mathNamesBox.label;" accesskey="&mathNamesBox.accesskey;" />
+     <separator class="thin"/>
+     
       <hbox>
         <!-- menulist id="mathNamesBox"  editable="true" disableautoselect="true" onkeypress="textEntered(event);" onselect="changeName(this);"  >
           <menupopup>
@@ -95,10 +95,11 @@
         </menulist -->
         <textbox id="mathNamesBox" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
           completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="mathnames" 
-		      tooltiptext="&mathNamesBox.tooltip;" label="&mathNamesBox.label;"   
+		      tooltiptext="&mathNamesBox.tooltip;"   
           onfocus="this.select();"
           onkeypress="checkKeyPressEvent(this, event);"
-          ontextentered="changeName(this.value);" />
+          ontextentered="changeName(this.value);"
+          />
       </hbox>
       <!-- groupbox>
         <caption label="&mathAppearance.label;"/>
@@ -125,15 +126,17 @@
       <separator class="thin"/>
       <!-- groupbox -->
         <!-- caption label="&engfunc.label;"/ -->
-        <hbox>
-          <description id="enginefunctionDescription" control="enginefunction">&engfunc.desc;</description>
+        
+          <vbox>
+  
+     <!--JLF     <description id="enginefunctionDescription" control="enginefunction" />-->
           <spacer flex="1"/>
-          <checkbox id="enginefunction" accesskey="&engfunc.accesskey;"/>
-        </hbox>
-        <hbox>
-          <description id="addAutoSubstitutionDescription" control="addAutoSubstitution">&addAutoSubstitution.label;</description>
-          <checkbox id="addAutoSubstitution" accesskey="&addAutoSubstitution.accesskey;"/>
-        </hbox>
+          <checkbox id="enginefunction" accesskey="&engfunc.accesskey;" label="&engfunc.desc;"/>
+        
+      <!--JLF    <description id="addAutoSubstitutionDescription" control="addAutoSubstitution"/>-->
+          <checkbox id="addAutoSubstitution"  accesskey="&addAutoSubstitution.accesskey;" label="&addAutoSubstitution.label;"/>
+        </vbox>
+        
       <!-- /groupbox -->
     </vbox>
     <vbox>
