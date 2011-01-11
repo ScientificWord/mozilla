@@ -36,6 +36,9 @@
    - the terms of any one of the MPL, the GPL or the LGPL.
    -
    - ***** END LICENSE BLOCK ***** -->
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
 
 <!DOCTYPE overlay SYSTEM "chrome://editor/locale/EdDialogOverlay.dtd">
 
@@ -46,7 +49,7 @@
   <hbox flex="1" style="margin-top: 0.2em" align="center">
     <!-- This will right-align the button -->
     <spacer flex="1"/>
-    <button id="AdvancedEditButton1" oncommand="onAdvancedEdit()" label="&AdvancedEditButton.label;"
+    <msibutton id="AdvancedEditButton1" oncommand="onAdvancedEdit()" label="&AdvancedEditButton.label;"
             accesskey="&AdvancedEditButton.accesskey;" tooltiptext="&AdvancedEditButton.tooltip;"/>
   </hbox>
   <separator class="groove"/>
@@ -56,21 +59,21 @@
      E.g. Image Properties Dialog switches position between 2 locations
      Placed here to use same attributes as AdvancedEditButton button
 -->
-<button
+<msibutton
   id        = "AdvancedEditButton"
   oncommand = "onAdvancedEdit();"
   label     = "&AdvancedEditButton.label;"
   accesskey = "&AdvancedEditButton.accesskey;"
   tooltiptext="&AdvancedEditButton.tooltip;"/>
 
-<button 
+<msibutton 
   id        = "AdvancedEditButton2" 
   oncommand = "onAdvancedEdit()" 
   label     = "&AdvancedEditButton.label;"
   accesskey = "&AdvancedEditButton.accesskey;"
   tooltiptext="&AdvancedEditButton.tooltip;"/>
 
-<button 
+<msibutton 
   id        = "ChooseFile" 
   oncommand = "chooseFile()"
   label     = "&chooseButton.label;"
@@ -102,7 +105,7 @@
               oncommand="msiMakeInputValueRelativeOrAbsolute(this);"
               tooltiptext="&makeUrlRelative.tooltip;"/>
     <spacer flex="1"/>
-    <button label="&chooseButton.label;" accesskey="&chooseFileLink.accesskey;" oncommand="chooseLinkFile();"/>
+    <msibutton label="&chooseButton.label;" accesskey="&chooseFileLink.accesskey;" oncommand="chooseLinkFile();"/>
   </hbox>
 </vbox>  
 
