@@ -351,7 +351,7 @@
                 id="venkmanName" 
                 oncommand="start_venkman();"/>
       <menuitem id="menu_inspector" 
-                label="DOM Inspector" 
+                label="&inspectorTaskCmd.label;" 
                 accesskey="&inspectorTaskCmd.accesskey;" 
                 command="Tasks:Inspector"/>
       <menuitem label="&toolsmenuExtensions.label;" 
