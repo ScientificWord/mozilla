@@ -180,6 +180,7 @@ OpOrderIlk GetOpOrderIlk(SEMANTICS_NODE* relop)
       rv = OOI_element;
       break;
     case 0x2192:
+    case 0x27f6:
       rv = OOI_rightarrow;
       break;
     default:
