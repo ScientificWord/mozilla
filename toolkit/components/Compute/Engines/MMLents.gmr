@@ -183,7 +183,8 @@ D<uID3.2.4>prefix,55,U00044
 ;;long arrows as stretched versions of their shorter counterparts
 &larr;<uID3.12.17>infix,25,U02190
 &lArr;<uID3.12.18>infix,25,U021D0
-;&rarr;<uID3.12.19>infix,25,U02192
+&rarr;<uID3.12.19>infix,25,U027F6
+&#x27F6;<uID3.12.19>infix,25,U027F6
 &rArr;<uID3.12.20>infix,25,U021D2
 &harr;<uID3.12.21>infix,25,U02194
 &hArr;<uID3.12.22>infix,25,U021D4
