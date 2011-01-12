@@ -83,7 +83,7 @@
   </keyset>
 
   <hbox>
-    <label id="propertiesTitle" hidden="true" value="&windowPropertiesTitle.label;"/>
+    <label id="propertiesTitle" hidden="true" value="&windowPropertiesTitle.label;" />
     <vbox flex="1">
     <label control="mathNamesBox" value="&mathNamesBox.label;" accesskey="&mathNamesBox.accesskey;" />
      <separator class="thin"/>
@@ -142,6 +142,7 @@
     <vbox>
       <msibutton id="addButton" label="&addButton.label;" accesskey="&addButton.accesskey;" oncommand="addCurrentName();" />
       <msibutton id="deleteButton" label="&deleteButton.label;" accesskey="&deleteButton.accesskey;" oncommand="deleteCurrentName();" />
+      <button id="JLFButton" label="Janelle added this button;" accesskey="J" />
     </vbox>
   </hbox>  
 </dialog>
