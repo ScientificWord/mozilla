@@ -710,11 +710,11 @@
 %%      \msiclosetag[mml][</mml:math>]
 %%   ]
 
-\def\msi@begin@eqnarray{$\string\begin{eqnarray}}
-\def\msi@end@eqnarray{\string\end{eqnarray}$}
+\@namedef{msi@begin@eqnarray}{\bgroup\msi@dollar=0\relax$$\string\begin{eqnarray}}
+\@namedef{msi@end@eqnarray}{\string\end{eqnarray}$$\egroup}
 
-\@namedef{msi@begin@eqnarray*}{$\string\begin{eqnarray*}}
-\@namedef{msi@end@eqnarray*}{\string\end{eqnarray*}$}
+\@namedef{msi@begin@eqnarray*}{\bgroup\msi@dollar=0\relax$$\string\begin{eqnarray*}}
+\@namedef{msi@end@eqnarray*}{\string\end{eqnarray*}$$\egroup}
 
 
 \def\msi@begin@bmatrix{\@make@braces@other\relax\@scan@bmatrix} 
