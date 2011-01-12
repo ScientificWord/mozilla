@@ -8,8 +8,6 @@
 %DTD;                                     
 <!ENTITY % toolbarDTD SYSTEM "chrome://prince/locale/toolbarsOverlay.dtd" >
  %toolbarDTD;
-<!ENTITY % inspectorDTD SYSTEM "chrome://inspector/locale/tasksOverlay.dtd" >
- %inspectorDTD;
 ]>
 
 <overlay id="menuOverlay"
@@ -351,7 +349,7 @@
                 id="venkmanName" 
                 oncommand="start_venkman();"/>
       <menuitem id="menu_inspector" 
-                label="DOM Inspector" 
+                label="&inspectorTaskCmd.label;" 
                 accesskey="&inspectorTaskCmd.accesskey;" 
                 command="Tasks:Inspector"/>
       <menuitem label="&toolsmenuExtensions.label;" 
