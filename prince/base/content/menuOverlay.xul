@@ -8,8 +8,6 @@
 %DTD;                                     
 <!ENTITY % toolbarDTD SYSTEM "chrome://prince/locale/toolbarsOverlay.dtd" >
  %toolbarDTD;
-<!ENTITY % inspectorDTD SYSTEM "chrome://inspector/locale/tasksOverlay.dtd" >
- %inspectorDTD;
 ]>
 
 <overlay id="menuOverlay"
@@ -352,7 +350,6 @@
                 oncommand="start_venkman();"/>
       <menuitem id="menu_inspector" 
                 label="&inspectorTaskCmd.label;" 
-  <!--JLF on 1/12/2011 There appears to be a problem with the menus around this line.  Suggest careful review of taskoverlay.dtd and the menu_inspector items. -->
                 accesskey="&inspectorTaskCmd.accesskey;" 
                 command="Tasks:Inspector"/>
       <menuitem label="&toolsmenuExtensions.label;" 
