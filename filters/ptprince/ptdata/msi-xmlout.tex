@@ -92,8 +92,8 @@
 
 
 
-\def\out@preamble@tex#1{
-   \msitag{<preambleTeX>#1</preambleTeX>}%
+\def\out@preamble@tex#1{%
+   \msitag{<preambleTeX><![CDATA[#1]]></preambleTeX>}%
 }
 
 %% \document and \enddocument
@@ -362,8 +362,8 @@
 \def\@openitem{\msiopentag{li}{<li>}}
 
 
-%\def\MSIListEnvironment{%
-%  \@ifnextchar[{\msi@listenv@a}{\msi@listenv@b}}
+% A default item name
+\def\itemprefix{item}
 
 % #1=xml name, #2=latex env name, #3=xml item name
 \def\MSIListEnvironment#1#2#3{%
