@@ -92,8 +92,8 @@
 
 
 
-\def\out@preamble@tex#1{
-   \msitag{<preambleTeX>#1</preambleTeX>}%
+\def\out@preamble@tex#1{%
+   \msitag{<preambleTeX><![CDATA[#1]]></preambleTeX>}%
 }
 
 %% \document and \enddocument
@@ -362,8 +362,8 @@
 \def\@openitem{\msiopentag{li}{<li>}}
 
 
-%\def\MSIListEnvironment{%
-%  \@ifnextchar[{\msi@listenv@a}{\msi@listenv@b}}
+% A default item name
+\def\itemprefix{item}
 
 % #1=xml name, #2=latex env name, #3=xml item name
 \def\MSIListEnvironment#1#2#3{%
@@ -691,6 +691,17 @@
 \@namedef{msi@begin@multline*}{\ \@make@braces@other\relax\@scan@multline@star}
 
 
+\@namedef{msi@begin@flalign}{\bgroup\msi@dollar=0\relax$$\string\begin{flalign}}
+\@namedef{msi@end@flalign}{\string\end{flalign}$$\egroup}
+
+\@namedef{msi@begin@flalign*}{\bgroup\msi@dollar=0\relax$$\string\begin{flalign*}}
+\@namedef{msi@end@flalign*}{\string\end{flalign*}$$\egroup}
+
+\@namedef{msi@begin@alignat}{\bgroup\msi@dollar=0\relax$$\string\begin{alignat}}
+\@namedef{msi@end@alignat}{\string\end{alignat}$$\egroup}
+
+
+
 \@namedef{msi@begin@align*}{\ \@make@braces@other\relax\@scan@align@star}
 \@namedef{msi@begin@align}{\ \@make@braces@other\relax\@scan@align}
 \@namedef{msi@begin@gather*}{\ \@make@braces@other\relax\@scan@gather@star}
@@ -797,6 +808,12 @@
 \def\out@verbatim#1{%
   \br\msitag{<pre>}#1\msitag{</pre>}}
 
+
+\begingroup
+  \catcode`\<=\active
+  \def\<{\char`<rangle>}%
+\endgroup
+
 \def\verb{%
    \bgroup
       \catcode`\\=\other
@@ -805,9 +822,11 @@
       \catcode`&=\active
       \catcode`$=\other
       \catcode`##=\other
+      \catcode`\<=\active
       \msiopentag{verb}{<verb>}%
       \@sverb   
 }
+
 \def\verb@egroup{\msiclosetag{verb}{</verb>}\egroup}
 \def\@sverb#1{%
   \catcode`#1\active
