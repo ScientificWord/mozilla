@@ -644,19 +644,6 @@
 %
 \@ifundefined{note}{\def\note{$^{\dag}}}{}%
 %
-\def\newfmtname{LaTeX2e}
-% No longer load latexsym.  This is now handled by SWP, which uses amsfonts if necessary
-%
-\ifx\fmtname\newfmtname
-  \DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
-  \DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf}
-  \DeclareOldFontCommand{\tt}{\normalfont\ttfamily}{\mathtt}
-  \DeclareOldFontCommand{\bf}{\normalfont\bfseries}{\mathbf}
-  \DeclareOldFontCommand{\italics}{\normalfont\itshape}{\mathit}
-  \DeclareOldFontCommand{\sl}{\normalfont\slshape}{\@nomath\sl}
-  \DeclareOldFontCommand{\sc}{\normalfont\scshape}{\@nomath\sc}
-\fi
-
 
 \def\Greekmath#1#2#3#4{%
     \if@compatibility
