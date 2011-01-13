@@ -835,9 +835,13 @@
   \lowercase{\let~\verb@egroup}%
 }
 
-\def\fbox#1{\ifmmode\temptoksa={#1}\string\fbox\char`\{\the\temptoksa\char`\}\fi}
+%\def\fbox#1{\ifmmode\temptoksa={#1}\string\fbox\char`\{\the\temptoksa\char`\}\fi}
+
+\MSIMathQuote{\fbox}
+
 \def\{{\ifmmode\string\{\else\char123\relax\fi}
 \def\}{\ifmmode\string\}\else\char125\relax\fi}
+
 \let\@hbox\hbox
 \def\hbox{%
    \def\@after{}
@@ -1226,8 +1230,8 @@
 \def\MSITeXButtonReq#1{
     \expandafter\def\csname#1\endcsname##1{
        \msihmode
-       \msitag{<texb enc="1" name="#1">}%
-          <![CDATA[\expandafter\string\csname#1\endcsname\{##1\}]]>%
+       \msitag{<texb enc="1" name="#1">%
+          <![CDATA[\expandafter\string\csname#1\endcsname\{##1\}]]>}%
        \msitag{</texb>}}}
 
 
