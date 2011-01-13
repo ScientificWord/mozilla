@@ -3364,26 +3364,26 @@
     \def^^M{\verb@egroup\@latex@error{%
             \noexpand\verb ended by end of line}\@ehc}}%
 \endgroup
-\def\verb{\relax\ifmmode\hbox\else\leavevmode\null\fi
-  \bgroup
-    \verb@eol@error \let\do\@makeother \dospecials
-    \verbatim@font\@noligs
-    \@ifstar\@sverb\@verb}
-\def\@sverb#1{%
-  \catcode`#1\active
-  \lccode`\~`#1%
-  \gdef\verb@balance@group{\verb@egroup
-     \@latex@error{\noexpand\verb illegal in command argument}\@ehc}%
-  \aftergroup\verb@balance@group
-  \lowercase{\let~\verb@egroup}}%
-\def\@verb{\@vobeyspaces \frenchspacing \@sverb}
-\def\verbatim@nolig@list{\do\`\do\<\do\>\do\,\do\'\do\-}
-\def\do@noligs#1{%
-  \catcode`#1\active
-  \begingroup
-     \lccode`\~`#1\relax
-     \lowercase{\endgroup\def~{\leavevmode\kern\z@\char`#1}}}
-\def\@noligs{\let\do\do@noligs \verbatim@nolig@list}
+%% \def\verb{\relax\ifmmode\hbox\else\leavevmode\null\fi
+%%   \bgroup
+%%     \verb@eol@error \let\do\@makeother \dospecials
+%%     \verbatim@font\@noligs
+%%     \@ifstar\@sverb\@verb}
+%% \def\@sverb#1{%
+%%   \catcode`#1\active
+%%   \lccode`\~`#1%
+%%   \gdef\verb@balance@group{\verb@egroup
+%%      \@latex@error{\noexpand\verb illegal in command argument}\@ehc}%
+%%   \aftergroup\verb@balance@group
+%%   \lowercase{\let~\verb@egroup}}%
+%% \def\@verb{\@vobeyspaces \frenchspacing \@sverb}
+%% \def\verbatim@nolig@list{\do\`\do\<\do\>\do\,\do\'\do\-}
+%% \def\do@noligs#1{%
+%%   \catcode`#1\active
+%%   \begingroup
+%%      \lccode`\~`#1\relax
+%%      \lowercase{\endgroup\def~{\leavevmode\kern\z@\char`#1}}}
+%% \def\@noligs{\let\do\do@noligs \verbatim@nolig@list}
 
 
 
