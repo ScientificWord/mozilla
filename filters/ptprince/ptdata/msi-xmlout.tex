@@ -1227,12 +1227,46 @@
 
 %% Create TeX Buttons
 
-\def\MSITeXButtonReq#1{
+\def\MSITeXButton#1{%
+    \expandafter\def\csname#1\endcsname{
+       \msihmode
+       \msitag{<texb enc="1" name="#1">%
+          <![CDATA[\expandafter\string\csname#1\endcsname]]>}%
+       \msitag{</texb>}}}
+
+
+\def\MSITeXButtonReq#1{%
     \expandafter\def\csname#1\endcsname##1{
        \msihmode
        \msitag{<texb enc="1" name="#1">%
           <![CDATA[\expandafter\string\csname#1\endcsname\{##1\}]]>}%
        \msitag{</texb>}}}
+\msitraceon
+\bgroup
+     \@make@braces@other
+     \catcode `|=0
+     \catcode`\(=1  % use parens for braces
+     \catcode`\)=2
+     \catcode`\\=12
+
+ 
+
+     |gdef|MSITeXButtonEnvironment#1(%
+          |expandafter|gdef|csname msi@begin@#1|endcsname
+             (|bgroup
+                 |@make@braces@other
+                 |catcode`|\=12
+                 |catcode`|&=12
+                 |aftergroup|@make@braces@normal
+                 |csname scan@#1|endcsname)
+
+          |expandafter|gdef|csname scan@#1|endcsname##1\end{#1}%
+             (\msitag(<texb enc="1" name="#1">%
+                        <![CDATA[\begin{#1}##1\end{#1}]]>%
+                      </texb>)%
+              |egroup)
+     )%
+|egroup
 
 
 
