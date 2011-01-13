@@ -105,7 +105,7 @@
         <hbox align="center">
           <label value="&editAttribute.label;"/>
           <spacer flex="1"/>
-          <button label="&removeAttribute.label;" oncommand="RemoveHTMLAttribute();"/>
+          <msibutton label="&removeAttribute.label;" oncommand="RemoveHTMLAttribute();"/>
         </hbox>
         <grid>
           <columns>
@@ -154,7 +154,7 @@
         <hbox align="center">
           <label value="&editAttribute.label;"/>
           <spacer flex="1"/>
-          <button label="&removeAttribute.label;" oncommand="RemoveCSSAttribute();"/>
+          <msibutton label="&removeAttribute.label;" oncommand="RemoveCSSAttribute();"/>
         </hbox>
         <grid>
           <columns>
@@ -194,7 +194,7 @@
         <hbox align="center">
           <label value="&editAttribute.label;"/>
           <spacer flex="1"/>
-          <button label="&removeAttribute.label;" oncommand="RemoveJSEAttribute()"/>
+          <msibutton label="&removeAttribute.label;" oncommand="RemoveJSEAttribute()"/>
         </hbox>
         <grid>
           <columns>
