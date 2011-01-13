@@ -1039,39 +1039,17 @@
 %
 %These are AMS constructs for horizontal arrows
 %
-\newdimen\ex@
-\ex@.2326ex
-\def\rightarrowfill@#1{$#1\m@th\mathord-\mkern-6mu\cleaders
- \hbox{$#1\mkern-2mu\mathord-\mkern-2mu$}\hfill
- \mkern-6mu\mathord\rightarrow$}%
-\def\leftarrowfill@#1{$#1\m@th\mathord\leftarrow\mkern-6mu\cleaders
- \hbox{$#1\mkern-2mu\mathord-\mkern-2mu$}\hfill\mkern-6mu\mathord-$}%
-\def\leftrightarrowfill@#1{$#1\m@th\mathord\leftarrow
-\mkern-6mu\cleaders
- \hbox{$#1\mkern-2mu\mathord-\mkern-2mu$}\hfill
- \mkern-6mu\mathord\rightarrow$}%
-\def\overrightarrow{\mathpalette\overrightarrow@}%
-\def\overrightarrow@#1#2{\vbox{\ialign{##\crcr\rightarrowfill@#1\crcr
- \noalign{\kern-\ex@\nointerlineskip}$\m@th\hfil#1#2\hfil$\crcr}}}%
-\let\overarrow\overrightarrow
-\def\overleftarrow{\mathpalette\overleftarrow@}%
-\def\overleftarrow@#1#2{\vbox{\ialign{##\crcr\leftarrowfill@#1\crcr
- \noalign{\kern-\ex@\nointerlineskip}$\m@th\hfil#1#2\hfil$\crcr}}}%
-\def\overleftrightarrow{\mathpalette\overleftrightarrow@}%
-\def\overleftrightarrow@#1#2{\vbox{\ialign{##\crcr
-   \leftrightarrowfill@#1\crcr
- \noalign{\kern-\ex@\nointerlineskip}$\m@th\hfil#1#2\hfil$\crcr}}}%
-\def\underrightarrow{\mathpalette\underrightarrow@}%
-\def\underrightarrow@#1#2{\vtop{\ialign{##\crcr$\m@th\hfil#1#2\hfil
-  $\crcr\noalign{\nointerlineskip}\rightarrowfill@#1\crcr}}}%
-\let\underarrow\underrightarrow
-\def\underleftarrow{\mathpalette\underleftarrow@}%
-\def\underleftarrow@#1#2{\vtop{\ialign{##\crcr$\m@th\hfil#1#2\hfil
-  $\crcr\noalign{\nointerlineskip}\leftarrowfill@#1\crcr}}}%
-\def\underleftrightarrow{\mathpalette\underleftrightarrow@}%
-\def\underleftrightarrow@#1#2{\vtop{\ialign{##\crcr$\m@th
-  \hfil#1#2\hfil$\crcr
- \noalign{\nointerlineskip}\leftrightarrowfill@#1\crcr}}}%
+%% \newdimen\ex@
+%% \ex@.2326ex
+%% \def\rightarrowfill@#1{$#1\m@th\mathord-\mkern-6mu\cleaders
+%%  \hbox{$#1\mkern-2mu\mathord-\mkern-2mu$}\hfill
+%%  \mkern-6mu\mathord\rightarrow$}%
+%% \def\leftarrowfill@#1{$#1\m@th\mathord\leftarrow\mkern-6mu\cleaders
+%%  \hbox{$#1\mkern-2mu\mathord-\mkern-2mu$}\hfill\mkern-6mu\mathord-$}%
+%% \def\leftrightarrowfill@#1{$#1\m@th\mathord\leftarrow
+%% \mkern-6mu\cleaders
+%%  \hbox{$#1\mkern-2mu\mathord-\mkern-2mu$}\hfill
+%%  \mkern-6mu\mathord\rightarrow$}%
 %%%%%%%%%%%%%%%%%%%%%
 
 \def\qopnamewl@#1{\mathop{\operator@font#1}\nlimits@}
@@ -1093,17 +1071,6 @@
   \hbox{$#1\mkern-2mu\copy\z@\mkern-2mu$}\hfill
   \mkern-6mu\box\z@$}
 
-
-\def\projlim{\qopnamewl@{proj\,lim}}
-\def\injlim{\qopnamewl@{inj\,lim}}
-\def\varinjlim{\mathpalette\varlim@\rightarrowfill@}
-\def\varprojlim{\mathpalette\varlim@\leftarrowfill@}
-\def\varliminf{\mathpalette\varliminf@{}}
-\def\varliminf@#1{\mathop{\underline{\vrule\@depth.2\ex@\@width\z@
-   \hbox{$#1\m@th\operator@font lim$}}}}
-\def\varlimsup{\mathpalette\varlimsup@{}}
-\def\varlimsup@#1{\mathop{\overline
-  {\hbox{$#1\m@th\operator@font lim$}}}}
 
 %
 %Companion to stackrel
