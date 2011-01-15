@@ -1166,7 +1166,9 @@ function documentToTeXString(document, xslPath)
     else dump("Failed to import stylesheet\n");
     var newDoc = xsltProcessor.transformToDocument(document);
     var strResult = newDoc.documentElement.textContent || "";
-    dump(strResult+"\n");
+//    dump(strResult+"\n");
+    while (strResult.search(/\n\s*\n/) >= 0)
+      strResult = strResult.replace(/\n\s*\n/,"\n","g");
   }
   catch(e){
     dump("error: "+e.message+"\n\n");
