@@ -466,7 +466,7 @@
         \msiclosetag{shortTitle}{</shortTitle>}%
       \fi
       ##2%
-      \msiclosetag{sectiontitle}{</sectiontitle>}}
+      \msiclosetag{sectiontitle}{</sectiontitle>}}%
   }%
 }
 
@@ -750,7 +750,8 @@
            \def\do@cr{\char`\\}%
          \else
            \def\do@cr{\@ifnextchar[{\@cra}{\@crb}}%
-         \fi}
+         \fi
+         \do@cr}
 
 
 \def\@cra[#1]{\cr}%
@@ -767,7 +768,7 @@
    \else
       \def\donext{%
          \begingroup
-            \msiopentag{tabular}{<tabular opt="#2">}%
+            \msiopentag{table}{<table opt="#2">}%
             \aftergroup\msi@closetabular
             \hbox\bgroup
               \let\\=\@cr
@@ -777,7 +778,7 @@
    \donext
 }
 
-\def\msi@closetabular{\msiclosetag{tabular}{</tabular>}}
+\def\msi@closetabular{\msiclosetag{table}{</table>}}
 
 \def\msi@end@tabular{\crcr
      \egroup %halign
@@ -834,9 +835,13 @@
   \lowercase{\let~\verb@egroup}%
 }
 
-\def\fbox#1{\ifmmode\temptoksa={#1}\string\fbox\char`\{\the\temptoksa\char`\}\fi}
+%\def\fbox#1{\ifmmode\temptoksa={#1}\string\fbox\char`\{\the\temptoksa\char`\}\fi}
+
+\MSIMathQuote{\fbox}
+
 \def\{{\ifmmode\string\{\else\char123\relax\fi}
 \def\}{\ifmmode\string\}\else\char125\relax\fi}
+
 \let\@hbox\hbox
 \def\hbox{%
    \def\@after{}
@@ -981,7 +986,7 @@
 \egroup
 
 
-\def\noindent{\par\msitag{<hspace dim="0.0em" type="noIndent"></hspace><requestimplementation>noindent</requestimplementation>}}
+\def\noindent{\par\msitag{<hspace dim="0.0em" type="noIndent"></hspace>}}
 
 
 \def\thinspace{%
@@ -1019,7 +1024,12 @@
    <hspace fillWith="line" flex="1" class="stretchySpace" type="stretchySpace"></hspace>}
 
 
-\msi@rfi{\newpage}{\newpage}
+
+\def\newpage{\msitag{<msibreak type="newPage"><newPageRule/></msibreak>}}
+
+\def\hfil{<hspace type="customSpace" class="stretchySpace"flex="1" atEnd="true"/>}
+\def\hfill{<hspace type="customSpace" class="stretchySpace" flex="2" atEnd="true"/>}
+
 \msi@rfi{\msi@hook@hfil}{\hfil}
 \msi@rfi{\msi@hook@hfill}{\hfill}
 
@@ -1028,10 +1038,6 @@
 
 %%\def\msi@hook@hss{\msitag{\hss}}
 %%\def\msi@hook@vss{\msitag{\vss}}
-
-
-
-
 
 
 \def\label#1{%
@@ -1221,12 +1227,46 @@
 
 %% Create TeX Buttons
 
-\def\MSITeXButtonReq#1{
+\def\MSITeXButton#1{%
+    \expandafter\def\csname#1\endcsname{
+       \msihmode
+       \msitag{<texb enc="1" name="#1">%
+          <![CDATA[\expandafter\string\csname#1\endcsname]]>}%
+       \msitag{</texb>}}}
+
+
+\def\MSITeXButtonReq#1{%
     \expandafter\def\csname#1\endcsname##1{
        \msihmode
-       \msitag{<texb enc="1" name="#1">}%
-          <![CDATA[\expandafter\string\csname#1\endcsname\{##1\}]]>%
+       \msitag{<texb enc="1" name="#1">%
+          <![CDATA[\expandafter\string\csname#1\endcsname\{##1\}]]>}%
        \msitag{</texb>}}}
+\msitraceon
+\bgroup
+     \@make@braces@other
+     \catcode `|=0
+     \catcode`\(=1  % use parens for braces
+     \catcode`\)=2
+     \catcode`\\=12
+
+ 
+
+     |gdef|MSITeXButtonEnvironment#1(%
+          |expandafter|gdef|csname msi@begin@#1|endcsname
+             (|bgroup
+                 |@make@braces@other
+                 |catcode`|\=12
+                 |catcode`|&=12
+                 |aftergroup|@make@braces@normal
+                 |csname scan@#1|endcsname)
+
+          |expandafter|gdef|csname scan@#1|endcsname##1\end{#1}%
+             (\msitag(<texb enc="1" name="#1">%
+                        <![CDATA[\begin{#1}##1\end{#1}]]>%
+                      </texb>)%
+              |egroup)
+     )%
+|egroup
 
 
 
