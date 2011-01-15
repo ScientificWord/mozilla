@@ -105,6 +105,9 @@ should not be done under some conditions -->
 <xsl:template match="html:br[@hard='1']">\\
 </xsl:template>
 
+<xsl:template match="html:br">\\
+</xsl:template>
+
 <xsl:template match="html:br[@temp]"
 ></xsl:template>
 
@@ -344,10 +347,10 @@ should not be done under some conditions -->
 
 <xsl:template match="html:alt">{\addfontfeatures{RawFeature=+salt}<xsl:apply-templates
   />}</xsl:template>
-<xsl:template match="html:bold">\textbf{<xsl:apply-templates
-  />}</xsl:template>
-<xsl:template match="html:italics">\textit{<xsl:apply-templates
-  />}</xsl:template>
+<xsl:template match="html:bold">\begin{bfseries}<xsl:apply-templates
+  />\end{bfseries}</xsl:template>
+<xsl:template match="html:italics">\begin{itshape}<xsl:apply-templates
+  />\end{itshape}</xsl:template>
 <xsl:template match="html:roman">\textrm{<xsl:apply-templates
   />}</xsl:template>
 <xsl:template match="html:sansSerif">\textsf{<xsl:apply-templates
@@ -420,7 +423,9 @@ should not be done under some conditions -->
   >\textbackslash</xsl:template>
 
 <xsl:template match="html:TeXButton">
+<xsl:if test="not(@pre)">
 %TCIMACRO{\TeXButton<xsl:apply-templates mode="tex"/>
+</xsl:if>
 </xsl:template>
 
 <xsl:template match="html:TBLabel">{<xsl:apply-templates/>}  
