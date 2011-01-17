@@ -1,4 +1,4 @@
-xComponents.utils.import("resource://app/modules/unitHandler.jsm");
+Components.utils.import("resource://app/modules/unitHandler.jsm");
 
 var frameUnitHandler;
 var sides;
@@ -18,6 +18,7 @@ function initFrameTab(dg, element, newElement)
 {
   Dg = dg;
   frameUnitHandler = new UnitHandler();
+  frameUnitHandler.initCurrentUnit("pt");
   sides = ["Top", "Right", "Bottom", "Left"]; // do not localize -- visible to code only
   gFrameTab={};
   scale = 0.25;
@@ -35,7 +36,7 @@ function initFrameTab(dg, element, newElement)
     crop:     { top: 0, right: 0, bottom: 0, left: 0 },
     innermargin: 0,  // temporary, assigned to left or right margin, depending on placement
     outermargin: 0,  // negative for an overhang
-    unit: "px",
+    unit: "pt",
     setUnit: function(newUnit) {
       if (frameUnitHandler.currentUnit)
       {
@@ -105,17 +106,17 @@ function initFrameTab(dg, element, newElement)
   fieldList.push(dg.heightInput);
   fieldList.push(dg.widthInput);
   frameUnitHandler.setEditFieldList(fieldList);
-  var unit;
+//  var unit;
   initUnitList(dg.unitList);
 // The defaults for the document are set by the XUL document, modified by persist attributes. If there is
 // no pre-existing frame object, the dg is set to go.
   if (!newElement)
   {   // we need to initialize the dg from the frame element
-    unit =  element.getAttribute("units");
+    metrics.unit =  element.getAttribute("units");
     var i;
     var values = [0,0,0,0];
     for (i = 0; i < dg.unitList.itemCount; i++)
-      if (dg.unitList.getItemAtIndex(i).value === unit)
+      if (dg.unitList.getItemAtIndex(i).value === metrics.unit)
       {
         dg.unitList.selectedIndex = i;
         break;
@@ -156,25 +157,41 @@ function initFrameTab(dg, element, newElement)
     for (i = 0; i<4; i++)
       { dg.cropInput[sides[i].toLowerCase()].value = values[i];}
     var placeLocation = element.getAttribute("placeLocation");
-    dg.placeForceHereCheck.checked = /H/.test(placeLocation);
-    dg.placeHereCheck.checked = /h/.test(placeLocation);
-    dg.placeFloatsCheck.checked = /p/.test(placeLocation);
-    dg.placeTopCheck.checked = /t/.test(placeLocation);
-    dg.placeBottomCheck.checked = /b/.test(placeLocation);
+    dg.placeForceHereCheck.checked = (placeLocation.search("H") != -1);
+    dg.placeHereCheck.checked = (placeLocation.search("h") != -1);
+    dg.placeFloatsCheck.checked = (placeLocation.search("p") != -1);
+    dg.placeTopCheck.checked = (placeLocation.search("t") != -1);
+    dg.placeBottomCheck.checked = (placeLocation.search("b") != -1);
 
     dg.herePlacementRadioGroup.value = element.getAttribute("placement");
+    switch (dg.herePlacementRadioGroup.value) {
+      case "l":
+      case "L": dg.herePlacementRadioGroup.selectedIndex = 0;
+                break;
+      case "r":
+      case "R": dg.herePlacementRadioGroup.selectedIndex = 1;
+                break;
+      case "i":
+      case "I": dg.herePlacementRadioGroup.selectedIndex = 2;
+                break;
+      case "o":
+      case "O": dg.herePlacementRadioGroup.selectedIndex = 3;
+                break;
+      default:  dg.herePlacementRadioGroup.selectedIndex = 4;
+    }
+      
     var pos = element.getAttribute("pos");
     dg.placementRadioGroup.selectedIndex = (pos == "inline")?0:(pos == "display")?1:(pos == "float")?2:-1;
 
     // TODO: color
   }
 // Now initialize the UI, including the diagram
-  unit = dg.unitList.selectedItem.value;
-  frameUnitHandler.initCurrentUnit(unit);
+// metrics.unit = dg.unitList.selectedItem.value;
+  frameUnitHandler.initCurrentUnit(metrics.unit);
   var placement = 0;
   var placementLetter = document.getElementById("herePlacementRadioGroup").value;
-  if (/l|i/.test(placementLetter)) placement=1;
-  else if (/r|o/.test(placementLetter)) placement = 2;
+  if (/l|i/i.test(placementLetter)) placement=1;
+  else if (/r|o/i.test(placementLetter)) placement = 2;
   gFrameTab = dg;
   setAlignment(placement);
   enableHere(dg.herePlacementRadioGroup);
@@ -575,32 +592,33 @@ function setAlignment(alignment ) // alignment = 1 for left, 2 for right, 0 for 
 
 function setFrameAttributes(frameNode)
 {
-  var unit = frameUnitHandler.currentUnit;
-  if (unit == "px") // switch to pts
+  metrics.unit = frameUnitHandler.currentUnit;
+  if (metrics.unit == "px") // switch to pts
   {
-    frameUnitHandler.setCurrentUnit("pt");
-    unit = "pt";
+    var el = {value: "pt"};
+    setNewUnit(el);
+    metrics.unit = "pt";
   }
-  frameNode.setAttribute("units",unit);
+  frameNode.setAttribute("units",metrics.unit);
   frameNode.setAttribute("msi_resize","true");
   if (gFrameModeImage) {
-    var sidemargin = getSingleMeasurement("margin", "Left", unit, false);
+    var sidemargin = getSingleMeasurement("margin", "Left", metrics.unit, false);
     frameNode.setAttribute("sidemargin", sidemargin);
-    var topmargin = getSingleMeasurement("margin", "Top", unit, false);
+    var topmargin = getSingleMeasurement("margin", "Top", metrics.unit, false);
     frameNode.setAttribute("topmargin", topmargin);
   }
-  else frameNode.setAttribute("margin", getCompositeMeasurement("margin", unit, false));  
+  else frameNode.setAttribute("margin", getCompositeMeasurement("margin", metrics.unit, false));  
   if (gFrameModeImage) {
-    var borderwidth = getSingleMeasurement("border", "Left", unit, false);
+    var borderwidth = getSingleMeasurement("border", "Left", metrics.unit, false);
     frameNode.setAttribute("border-width", borderwidth);
   }
-  else frameNode.setAttribute("border", getCompositeMeasurement("border",unit, false));  
+  else frameNode.setAttribute("border", getCompositeMeasurement("border",metrics.unit, false));  
   if (gFrameModeImage) {
-    var padding = getSingleMeasurement("padding", "Left", unit, false);
+    var padding = getSingleMeasurement("padding", "Left", metrics.unit, false);
     frameNode.setAttribute("padding", padding);
   }
-  else frameNode.setAttribute("padding", getCompositeMeasurement("padding",unit, false));  
-  frameNode.setAttribute("crop", getCompositeMeasurement("crop",unit, false));  
+  else frameNode.setAttribute("padding", getCompositeMeasurement("padding",metrics.unit, false));  
+  frameNode.setAttribute("crop", getCompositeMeasurement("crop", metrics.unit, false));  
   if (gFrameTab.autoHeightCheck.checked)
   {
     if (frameNode.hasAttribute("height")) frameNode.removeAttribute("height");
@@ -611,7 +629,7 @@ function setFrameAttributes(frameNode)
     if (frameNode.hasAttribute("width")) frameNode.removeAttribute("width");
   }
   else frameNode.setAttribute("width", gFrameTab.widthInput.value);
-  frameNode.setAttribute("crop", getCompositeMeasurement("crop",unit, false));  
+  frameNode.setAttribute("crop", getCompositeMeasurement("crop",metrics.unit, false));  
   var pos = document.getElementById("placementRadioGroup").selectedItem;
   frameNode.setAttribute("pos", pos?pos.getAttribute("id"):"");
   var bgcolor = gFrameTab.colorWell.getAttribute("style");
@@ -625,14 +643,14 @@ function setFrameAttributes(frameNode)
   // some experimentation here.
 
   if (gFrameModeImage) {
-    var overhang = getSingleMeasurement("margin", "Right", unit, false);
+    var overhang = getSingleMeasurement("margin", "Right", metrics.unit, false);
     frameNode.setAttribute("overhang", overhang
     );
   }
   else 
   {
     side = "Right";
-    frameNode.setAttribute("overhang", 0 - getSingleMeasurement("margin", side, unit, false));
+    frameNode.setAttribute("overhang", 0 - getSingleMeasurement("margin", side, metrics.unit, false));
   }
   var placeLocation="";
   var isHere = false;
