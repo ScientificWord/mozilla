@@ -1,0 +1,121 @@
+@namespace mml url("http://www.w3.org/1998/Math/MathML");
+@namespace sw url("http://www.sciword.com/namespaces/sciword");
+
+beamerframe {
+  display: block;
+  position: relative;
+  margin-left: 100px;
+  padding: 10px 0px;
+  border: thin solid black; 
+  background-color: #EEE0E0;
+  -moz-border-radius: 10px;
+}
+
+*[showinvis="true"] stepnumberedlist {
+  display: block;
+  padding: 10px;
+  border: 5px solid rgb(190,220,220); 
+  -moz-border-radius: 20px;
+}
+
+*[showinvis="true"] stepbulletlist {
+  display: block;
+  padding: 10px;
+  border: 5px solid rgb(190,220,220); 
+  -moz-border-radius: 20px;
+}
+
+*[showinvis="true"] alertstepnumberedlist {
+  display: block;
+  padding: 10px;
+  border: 5px solid rgb(255,220,220); 
+  -moz-border-radius: 20px;
+}
+
+*[showinvis="true"] alertstepbulletlist {
+  display: block;
+  padding: 10px;
+  border: 5px solid rgb(255,220,220); 
+  -moz-border-radius: 20px;
+}
+
+*[showinvis="true"] stepnumberedListItem {
+  display: block;
+  border: 5px solid rgb(190,210,220); 
+  -moz-border-radius: 20px;
+}
+
+*[showinvis="true"] stepbulletListItem {
+  display: block;
+  border: 5px solid rgb(190,210,220); 
+  -moz-border-radius: 20px;
+}
+
+*[showinvis="true"] alertstepnumberedListItem {
+  display: block;
+  border: 5px solid rgb(255,210,220); 
+  -moz-border-radius: 20px;
+}
+
+*[showinvis="true"] alertstepbulletListItem {
+  display: block;
+  border: 5px solid rgb(255,210,220); 
+  -moz-border-radius: 20px;
+}
+
+stepnumberedListItem {
+  display: block;
+  border: 5px solid rgb(190,210,220); 
+  -moz-border-radius: 20px;
+}
+
+stepbulletListItem {
+  display: block;
+  border: 5px solid rgb(190,210,220); 
+  -moz-border-radius: 20px;
+}
+
+alertstepnumberedListItem {
+  display: block;
+  border: 5px solid rgb(255,210,220); 
+  -moz-border-radius: 20px;
+}
+
+alertstepbulletListItem {
+  display: block;
+  border: 5px solid rgb(255,210,220); 
+  -moz-border-radius: 20px;
+}
+
+stepnumberedListItem,
+stepbulletListItem,
+alertstepnumberedListItem,
+alertstepbulletListItem { margin: 0pt; 
+       padding: 0pt; 
+       display: list-item;}
+
+stepnumberedlist,
+alertstepnumberedlist {
+  list-style-type: none;
+  list-style-position: outside;
+  counter-reset: numberedlist;
+}
+
+
+stepbulletlist,
+alertstepbulletlist {list-style-type: disc;
+}
+
+stepbulletListItem,
+alertstepbulletListItem { margin-left: 2em; }
+
+stepnumberedListItem>bodyText:first-child:before,
+alertstepnumberedListItem>bodyText:first-child:before { content: '(' counter(numberedlist) ') ';
+  counter-increment: numberedlist;
+  width: 2em;
+}
+
+stepnumberedListItem>bodyText:first-child:first-line,
+alertstepnumberedListItem>bodyText:first-child:first-line { content: '  ';
+}
+
