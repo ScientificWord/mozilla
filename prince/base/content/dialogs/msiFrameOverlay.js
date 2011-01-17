@@ -614,11 +614,11 @@ function setFrameAttributes(frameNode)
   }
   else frameNode.setAttribute("border", getCompositeMeasurement("border",metrics.unit, false));  
   if (gFrameModeImage) {
-    var padding = getSingleMeasurement("padding", "Left", unit, false);
+    var padding = getSingleMeasurement("padding", "Left", metrics.unit, false);
     frameNode.setAttribute("padding", padding);
   }
   else frameNode.setAttribute("padding", getCompositeMeasurement("padding",metrics.unit, false));  
-  frameNode.setAttribute("crop", getCompositeMeasurement("crop",unit, false));  
+  frameNode.setAttribute("crop", getCompositeMeasurement("crop", metrics.unit, false));  
   if (gFrameTab.autoHeightCheck.checked)
   {
     if (frameNode.hasAttribute("height")) frameNode.removeAttribute("height");
@@ -643,7 +643,7 @@ function setFrameAttributes(frameNode)
   // some experimentation here.
 
   if (gFrameModeImage) {
-    var overhang = getSingleMeasurement("margin", "Right", unit, false);
+    var overhang = getSingleMeasurement("margin", "Right", metrics.unit, false);
     frameNode.setAttribute("overhang", overhang
     );
   }
