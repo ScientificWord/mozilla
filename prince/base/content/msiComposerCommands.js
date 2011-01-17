@@ -5415,7 +5415,7 @@ var msiInsertBreaksCommand =
     var editorElement = msiGetActiveEditorElement();
     var breaksData = new Object();
     try {
-      msiOpenModelessDialog("chrome://prince/content/msiBreaksDialog.xul", "_blank", "chrome,close,titlebar,dependent",
+      msiOpenModelessDialog("chrome://prince/content/msiBreaksDialog.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
                                         editorElement, "cmd_msiInsertBreaks", this, breaksData);
     }
     catch(ex) {
