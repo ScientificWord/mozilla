@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<!DOCTYPE tagproperties [
+<!ATTLIST tag id ID #IMPLIED> ]>
+<tagproperties> 
+	<tagclasses>
+		<tagclass>
+			<tagclassname>envtag</tagclassname>
+			<tags>
+				<tag nm="beamerframe">
+					<description>Beamer slide frame</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontentsforempty> <![CDATA[<cursor/>]]>
+          </initialcontentsforempty>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
+				</tag>
+			</tags>
+		</tagclass>
+    <tagclass>
+			<tagclassname>listparenttag</tagclassname>
+			<tags>
+				<tag nm="stepbulletlist" hidden="1">
+          <description>Step bullet list</description>
+					<nexttag>#text</nexttag>
+          <htmllist>ul</htmllist>
+          <discardemptyblock>true</discardemptyblock>
+			    <contains>stepbulletListItem</contains>
+        </tag>
+				<tag nm="stepnumberedlist" hidden="1">
+          <description>Step numbered list</description>
+					<nexttag>#text</nexttag>
+          <htmllist>ul</htmllist>
+          <discardemptyblock>true</discardemptyblock>
+			    <contains>stepnumberedListItem</contains>
+        </tag>
+				<tag nm="alertstepbulletlist" hidden="1">
+          <description>Alert step bullet list</description>
+					<nexttag>#text</nexttag>
+          <htmllist>ul</htmllist>
+          <discardemptyblock>true</discardemptyblock>
+			    <contains>alertstepbulletListItem</contains>
+        </tag>
+				<tag nm="alertstepnumberedlist" hidden="1">
+          <description>Alert step numbered list</description>
+					<nexttag>#text</nexttag>
+          <htmllist>ul</htmllist>
+          <discardemptyblock>true</discardemptyblock>
+			    <contains>alertstepnumberedListItem</contains>
+        </tag>
+			</tags>
+		</tagclass>
+		<tagclass>
+			<tagclassname>listtag</tagclassname>
+			<tags>
+				<tag nm="stepbulletListItem">
+          <description>Step bullet list item</description>
+          <htmllistparent>stepbulletlist</htmllistparent>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+			    <contains>paratag</contains>
+			    <contains>br</contains>
+        </tag>
+				<tag nm="stepnumberedListItem">
+          <description>Step numbered list item</description>
+          <htmllistparent>stepnumberedlist</htmllistparent>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+			    <contains>paratag</contains>
+			    <contains>br</contains>
+        </tag>
+				<tag nm="alertstepbulletListItem">
+          <description>Alert Step bullet list item</description>
+          <htmllistparent>alertstepbulletlist</htmllistparent>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+			    <contains>paratag</contains>
+			    <contains>br</contains>
+        </tag>
+				<tag nm="alertstepnumberedlistItem">
+          <description>Alert step number list item</description>
+          <htmllistparent>alertstepnumberedlist</htmllistparent>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+			    <contains>paratag</contains>
+			    <contains>br</contains>
+        </tag>
+				<tag nm="numberedListItem">
+			</tags>
+		</tagclass>
+	</tagclasses>
+</tagproperties>
