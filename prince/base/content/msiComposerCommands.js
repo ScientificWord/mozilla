@@ -2431,7 +2431,7 @@ function msiSoftSave( editor, editorElement)
     var file = currentFile.parent;
     file.append("tex");
     file.append("main.tex");
-    documentAsTeXFile(editorDoc, "latex.xsl", file, compileInfo);
+    documentAsTeXFile(editorDoc, file, compileInfo);
   }
   var success;
   success = msiOutputFileWithPersistAPI(editorDoc, currentFile, null, aMimeType, editorElement);
