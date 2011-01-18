@@ -36,11 +36,6 @@
    %\expandafter\def\csname#1\endcsname{\char`\\#1\char32\relax}}
    \expandafter\def\csname#1\endcsname{\expandafter\string\csname#1\endcsname\char32\relax}}
 
-%\MSIMathQuote{\\} %% may need to hard-code this one
-
-\let\@dblslash\\
-\def\\{\ifmmode\string\\\else\@dblslash\fi}
-
 
 
 % \newcounter{#1}[#2]
@@ -1298,22 +1293,10 @@
 }
 
 
-
-%% \def\msi@opendocument{%
-%%    \msitag{<?xml version="1.0"?>}\br
-%%    
-%%    \msitag{<!DOCTYPE swxml PUBLIC
-%%      "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
-%%      "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd"
-%%      [
-%%       <!ATTLIST maction id ID ##IMPLIED>
-%%       <!ENTITY mathml "http://www.w3.org/1998/Math/MathML">
-%%      ]>}\br
-%%    
-%%    \msitag{<?xml-stylesheet href="StandardLaTeXArticle.css" type="text/css"?>}\br
-%%    \msiopentag{document}{<document xmlns:sw="http://www.sciword.com/namespaces/sciword" xmlns:mml="http://www.w3.org/1998/Math/MathML" type="latex">}\br
-%%    \msiopentag{preamble}{<preamble>}
-%% }
+%\MSIMathQuote{\\} %% may need to hard-code this one
+\msitraceon
+%\let\@dblslash
+\def\\{\ifmmode\string\\\else\msitag{<br/>}\fi}
 
 %% Temporary until prince can read xml
 
