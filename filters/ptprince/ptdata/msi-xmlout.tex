@@ -20,7 +20,10 @@
 
 \def\msi@pass#1{\def#1{\msitag{<texb>#1</texb>}}}
 \def\msi@pass@newline#1{\def#1{\br\msihmode\msitag{<texb>#1</texb>}}}
-\def\msitexb#1{\msitag{<texb>#1</texb>}}
+
+
+\def\msitexb#1{[SHOULD NOT OCCUR]}
+\def\msidefault#1{[Defaulting: \string#1]}
 
 
 \msi@pass@newline{\@settodim}
