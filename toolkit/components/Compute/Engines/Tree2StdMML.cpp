@@ -116,6 +116,7 @@ MNODE* Tree2StdMML::TreeToFixupForm(MNODE* dMML_tree, bool D_is_derivative)
 {
   MNODE* rv = dMML_tree;
   RemoveMSTYLEs(rv);
+  RemoveHSPACEs(rv);
   rv = ChDataToCanonicalForm(rv);
   BindDelimitedGroups(rv);
   BindScripts(rv);
@@ -2320,6 +2321,29 @@ void Tree2StdMML::RemoveMSTYLEs(MNODE* MML_list)
         if (ElementNameIs(rover, "mi"))
           if (mv_stack)
             InstallStackedAttr(rover, mv_stack);
+
+    }
+    rover = the_next;
+  }
+
+  
+}
+
+void Tree2StdMML::RemoveHSPACEs(MNODE* MML_list)
+{
+  TCI_ASSERT(CheckLinks(MML_list));
+
+  MNODE* rover = MML_list;
+  while (rover) {
+    MNODE* the_next = rover->next;
+    if (ElementNameIs(rover, "hspace")) {
+
+       DelinkTNode(rover);
+       DisposeTNode(rover);
+
+    } else if (rover->first_kid) {  // rover is a schemata
+
+        RemoveHSPACEs(rover->first_kid);
 
     }
     rover = the_next;
