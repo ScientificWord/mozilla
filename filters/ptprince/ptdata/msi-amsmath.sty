@@ -14,15 +14,7 @@
 \MSIEmptyElement{tableofcontents}
 \MSIEmptyElement{maketitle}
 
-
-\def\title{%
-  \@ifnextchar[{\@titlea}{\@titleb}}
-
-\def\@titlea[#1]#2{%
-  \msitag{<title><short>#1</short><long>#2</long></title>}%
-}
-
-\def\@titleb#1{\@titlea[]{#1}}
+% Use default \title 
 
 \def\author{\@ifnextchar[{\@authora}{\@authorb}}
 
