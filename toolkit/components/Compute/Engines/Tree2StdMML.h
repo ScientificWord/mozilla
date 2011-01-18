@@ -29,49 +29,52 @@ public:
   Tree2StdMML(const Grammar* mml_grammar, AnalyzerData* analyzer_data);
   ~Tree2StdMML();
 
-  MNODE *TreeToCanonicalForm(MNODE * dMML_tree,
+  MNODE* TreeToCanonicalForm(MNODE * dMML_tree,
                              INPUT_NOTATION_REC * in_notation);
-  MNODE *TreeToInterpretForm(MNODE * dMML_tree,
+  MNODE* TreeToInterpretForm(MNODE * dMML_tree,
                              INPUT_NOTATION_REC * in_notation);
-  MNODE *TreeToFixupForm(MNODE * dMML_tree, bool D_is_derivative);
-  MNODE *TreeToCleanupForm(MNODE * dMML_tree);
+  MNODE* TreeToFixupForm(MNODE * dMML_tree, bool D_is_derivative);
+  MNODE* TreeToCleanupForm(MNODE * dMML_tree);
 protected:
-  MNODE * ChDataToCanonicalForm(MNODE * MML_list);
+  MNODE* ChDataToCanonicalForm(MNODE * MML_list);
   void RemoveMixedNumbers(MNODE * dMML_tree,
                           INPUT_NOTATION_REC * in_notation);
   void AddOperatorInfo(MNODE * dMML_list);
-  void AddDDOperatorInfo(MNODE * dMML_list);
+  void AddDDOperatorInfo(MNODE* dMML_list);
 
-  MNODE *BindMixedNumbers(MNODE * dMML_list);
-  MNODE *BindDelimitedIntegrals(MNODE * dMML_list);
-  MNODE *BindIntegral(MNODE * dMML_list);
-  void FixupCapitalD(MNODE * dMML_list);
-  void FixupSmalld(MNODE * dMML_list);
-  MNODE *BindByOpPrecedence(MNODE * dMML_list, int high, int low);
-  MNODE *BindApplyFunction(MNODE * dMML_list);
+  MNODE* BindMixedNumbers(MNODE* dMML_list);
+  MNODE* BindDelimitedIntegrals(MNODE* dMML_list);
+  MNODE* BindIntegral(MNODE* dMML_list);
+  void FixupCapitalD(MNODE* dMML_list);
+  void FixupSmalld(MNODE* dMML_list);
+  MNODE* BindByOpPrecedence(MNODE* dMML_list, int high, int low);
+  MNODE* BindApplyFunction(MNODE* dMML_list);
 
-  void InsertInvisibleAddSigns(MNODE * dMML_list);
-  void InsertApplyFunction(MNODE * dMML_list);
-  void InsertInvisibleTimes(MNODE * dMML_list);
-  void InsertAF(MNODE * dMML_list);
-  void InsertIT(MNODE * dMML_list);
-  MNODE *FixMFENCEDs(MNODE * dMML_tree);
-  void FixInvisibleFences(MNODE * dMML_tree);
-  MNODE *FixAdjacentMNs(MNODE * dMML_tree);
-  void BindDelimitedGroups(MNODE * dMML_tree);
-  void BindScripts(MNODE * dMML_tree);
+  void InsertInvisibleAddSigns(MNODE* dMML_list);
+  void InsertApplyFunction(MNODE* dMML_list);
+  void InsertInvisibleTimes(MNODE* dMML_list);
+  void InsertAF(MNODE* dMML_list);
+  void InsertIT(MNODE* dMML_list);
+  MNODE *FixMFENCEDs(MNODE* dMML_tree);
+  void FixInvisibleFences(MNODE* dMML_tree);
+  MNODE *FixAdjacentMNs(MNODE* dMML_tree);
+  void BindDelimitedGroups(MNODE* dMML_tree);
+  void BindScripts(MNODE* dMML_tree);
 
-  MNODE *FinishFixup(MNODE * dMML_tree);
-  MNODE *InfixDivideToMFRAC(MNODE * dMML_tree);
-  MNODE *RemoveRedundantMROWs(MNODE * MML_list);
-  MNODE *RemoveEmptyTags(MNODE * MML_list);
-  MNODE *RemoveMPADDEDs(MNODE * MML_list);
-  MNODE *RemoveMatrixDelims(MNODE * MML_list,
+  MNODE* FinishFixup(MNODE* dMML_tree);
+  MNODE* InfixDivideToMFRAC(MNODE * dMML_tree);
+  MNODE* RemoveRedundantMROWs(MNODE * MML_list);
+
+  MNODE* RemoveEmptyTags(MNODE * MML_list);
+  MNODE* RemoveMPADDEDs(MNODE * MML_list);
+  MNODE* RemoveMatrixDelims(MNODE * MML_list,
                             INPUT_NOTATION_REC * in_notation);
   MNODE *ExtractItems(MNODE * body, int n_interior_nodes, int n_commas,
                       MNODE * new_parent);
-  void RemoveMSTYLEs(MNODE * MML_list);
-  void RemoveMSTYLEnode(MNODE * mstyle);
+  void RemoveMSTYLEs(MNODE* MML_list);
+  void RemoveMSTYLEnode(MNODE* mstyle);
+  void RemoveHSPACEs(MNODE* MML_list);
+
 
   char *ChdataToString(const char *p_chdata);
 
