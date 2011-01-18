@@ -3945,65 +3945,65 @@
   \baselineskip\normalbaselineskip
   \sloppy}
 \def\@parboxrestore{\@arrayparboxrestore\let\\\@normalcr}
-\def\@minipagefalse{\global\let\if@minipage\iffalse}
-\def\@minipagetrue {\global\let\if@minipage\iftrue}
-\@minipagefalse
-\def\minipage{%
-  \@ifnextchar[%]
-    \@iminipage
-    {\@iiiminipage c\relax[s]}}
-\def\@iminipage[#1]{%
-  \@ifnextchar[%]
-    {\@iiminipage{#1}}%
-    {\@iiiminipage{#1}\relax[s]}}
-\def\@iiminipage#1[#2]{%
-  \@ifnextchar[%]
-    {\@iiiminipage{#1}{#2}}%
-    {\@iiiminipage{#1}{#2}[#1]}}
-\def\@iiiminipage#1#2[#3]#4{%
-  \leavevmode
-  \@pboxswfalse
-  \setlength\@tempdima{#4}%
-  \def\@mpargs{{#1}{#2}[#3]{#4}}%
-  \setbox\@tempboxa\vbox\bgroup
-    \color@begingroup
-      \hsize\@tempdima
-      \textwidth\hsize \columnwidth\hsize
-      \@parboxrestore
-      \def\@mpfn{mpfootnote}\def\thempfn{\thempfootnote}\c@mpfootnote\z@
-      \let\@footnotetext\@mpfootnotetext
-      \let\@listdepth\@mplistdepth \@mplistdepth\z@
-      \@minipagerestore
-      \@setminipage}
- \let\@minipagerestore=\relax
-\def\endminipage{%
-    \par
-    \unskip
-    \ifvoid\@mpfootins\else
-      \vskip\skip\@mpfootins
-      \normalcolor
-      \footnoterule
-      \unvbox\@mpfootins
-    \fi
-    \@minipagefalse   %% added 24 May 89
-  \color@endgroup
-  \egroup
-  \expandafter\@iiiparbox\@mpargs{\unvbox\@tempboxa}}
-\newcount\@mplistdepth
-\newinsert\@mpfootins
-\long\def\@mpfootnotetext#1{%
-  \global\setbox\@mpfootins\vbox{%
-    \unvbox\@mpfootins
-    \reset@font\footnotesize
-    \hsize\columnwidth
-    \@parboxrestore
-    \protected@edef\@currentlabel
-         {\csname p@mpfootnote\endcsname\@thefnmark}%
-    \color@begingroup
-      \@makefntext{%
-        \rule\z@\footnotesep\ignorespaces#1\@finalstrut\strutbox}%
-    \color@endgroup}}
-\newif\if@pboxsw
+%% jcs\def\@minipagefalse{\global\let\if@minipage\iffalse}
+%% jcs\def\@minipagetrue {\global\let\if@minipage\iftrue}
+%% jcs\@minipagefalse
+%% jcs\def\minipage{%
+%% jcs  \@ifnextchar[%]
+%% jcs    \@iminipage
+%% jcs    {\@iiiminipage c\relax[s]}}
+%% jcs\def\@iminipage[#1]{%
+%% jcs  \@ifnextchar[%]
+%% jcs    {\@iiminipage{#1}}%
+%% jcs    {\@iiiminipage{#1}\relax[s]}}
+%% jcs\def\@iiminipage#1[#2]{%
+%% jcs  \@ifnextchar[%]
+%% jcs    {\@iiiminipage{#1}{#2}}%
+%% jcs    {\@iiiminipage{#1}{#2}[#1]}}
+%% jcs\def\@iiiminipage#1#2[#3]#4{%
+%% jcs  \leavevmode
+%% jcs  \@pboxswfalse
+%% jcs  \setlength\@tempdima{#4}%
+%% jcs  \def\@mpargs{{#1}{#2}[#3]{#4}}%
+%% jcs  \setbox\@tempboxa\vbox\bgroup
+%% jcs    \color@begingroup
+%% jcs      \hsize\@tempdima
+%% jcs      \textwidth\hsize \columnwidth\hsize
+%% jcs      \@parboxrestore
+%% jcs      \def\@mpfn{mpfootnote}\def\thempfn{\thempfootnote}\c@mpfootnote\z@
+%% jcs      \let\@footnotetext\@mpfootnotetext
+%% jcs      \let\@listdepth\@mplistdepth \@mplistdepth\z@
+%% jcs      \@minipagerestore
+%% jcs      \@setminipage}
+%% jcs \let\@minipagerestore=\relax
+%% jcs\def\endminipage{%
+%% jcs    \par
+%% jcs    \unskip
+%% jcs    \ifvoid\@mpfootins\else
+%% jcs      \vskip\skip\@mpfootins
+%% jcs      \normalcolor
+%% jcs      \footnoterule
+%% jcs      \unvbox\@mpfootins
+%% jcs    \fi
+%% jcs    \@minipagefalse   %% added 24 May 89
+%% jcs  \color@endgroup
+%% jcs  \egroup
+%% jcs  \expandafter\@iiiparbox\@mpargs{\unvbox\@tempboxa}}
+%% jcs\newcount\@mplistdepth
+%% jcs\newinsert\@mpfootins
+%% jcs\long\def\@mpfootnotetext#1{%
+%% jcs  \global\setbox\@mpfootins\vbox{%
+%% jcs    \unvbox\@mpfootins
+%% jcs    \reset@font\footnotesize
+%% jcs    \hsize\columnwidth
+%% jcs    \@parboxrestore
+%% jcs    \protected@edef\@currentlabel
+%% jcs         {\csname p@mpfootnote\endcsname\@thefnmark}%
+%% jcs    \color@begingroup
+%% jcs      \@makefntext{%
+%% jcs        \rule\z@\footnotesep\ignorespaces#1\@finalstrut\strutbox}%
+%% jcs    \color@endgroup}}
+%% jcs\newif\if@pboxsw
 \def\@finalstrut#1{%
   \unskip\ifhmode\nobreak\fi\vrule\@width\z@\@height\z@\@depth\dp#1}
 \def\@@line{\hb@xt@\hsize}
