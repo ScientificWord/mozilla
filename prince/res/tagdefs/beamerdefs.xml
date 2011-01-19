@@ -15,6 +15,25 @@
 				</tag>
 			</tags>
 		</tagclass>
+		<tagclass>
+			<tagclassname>paratag</tagclassname>
+			<tags>
+				<tag nm="frametitle">
+					<nexttag>bodyText</nexttag>
+					<description>Beamer frame title</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[<defaulttitletag/><cursor/><br temp="1"/>]]>
+          </initialcontents>
+				</tag>
+				<tag nm="framesubtitle">
+					<nexttag>bodyText</nexttag>
+					<description>Beamer frame subtitle</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[<defaulttitletag/><cursor/><br temp="1"/>]]>
+          </initialcontents>
+				</tag>
+			</tags>
+		</tagclass>
     <tagclass>
 			<tagclassname>listparenttag</tagclassname>
 			<tags>
@@ -74,7 +93,7 @@
 			    <contains>br</contains>
         </tag>
 				<tag nm="alertstepbulletListItem">
-          <description>Alert Step bullet list item</description>
+          <description>Alert step bullet list item</description>
           <htmllistparent>alertstepbulletlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
@@ -95,7 +114,6 @@
 			    <contains>paratag</contains>
 			    <contains>br</contains>
         </tag>
-				<tag nm="numberedListItem">
 			</tags>
 		</tagclass>
 	</tagclasses>
