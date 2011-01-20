@@ -16,6 +16,10 @@
 #include "nsContentCID.h"
 #include "nsComponentManagerUtils.h"
 #include "nsISelectionPrivate.h"
+#include "nsIRange.h"
+#include "nsIDOMTreeWalker.h"
+#include "nsIDOMNodeFilter.h"
+#include "nsIDOMDocumentTraversal.h"
 #include "nsIDOM3Node.h"
 #include "../text/nsPlaintextEditor.h"
 #include "../html/nsHTMLEditor.h"
@@ -1102,7 +1106,7 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
   }
 
   rv = selection->Collapse(*secondNode, 0);
-diagnostics:
+// diagnostics:
 #if DEBUG_barry || DEBUG_Barry
   printf("==Leaving: firstNode: \n");
   editor->DumpNode(firstNode);
@@ -1159,14 +1163,75 @@ NS_IMETHODIMP msiTagListManager::GetClearStructTag(nsIAtom **atomNamespace, nsAS
 }
 
 
-/* boolean selectionContainedInTag (in AString strTag, in nsIAtom atomNS); */
+/* boolean selectionContainedInTag (in AString strTag, in nsIAtom atomNS); 
+   This should return true if all the characters in the selection are affected the tag.
+   This is certainly the case if all the nodes in the selection are descendents
+   of a strTag node.
+   Another possibility is the the nodes in the selection are contained in two 
+   almost-adjacent strTag node.
+   The final test is to iterate through all the text nodes in the selection. Each
+   one must be either all white space or a descendent of a strTag node or (if the
+   first or last node in the selection) all white space after or before the offset), */
+
+PRBool nodeIsWhiteSpace( nsIDOMNode * node, PRUint32 firstindex, PRUint32 lastindex)
+/* return whether all the text (or all the text before index or all the text after index) is white space */
+{
+  // \f\n\r\t\v\ u00A0\u2028\u2029 are the white space characters
+  nsAutoString theText;
+  nsAutoString text;
+  PRUint16 nodeType;
+  node->GetNodeType(&nodeType);
+
+  if(nodeType != nsIDOMNode::TEXT_NODE) return false;
+//  get the string from the node
+  node->GetNodeValue(theText);
+  PRUint32 length = theText.Length();
+  text = Substring(theText, firstindex, lastindex);
+
+//  set up the iterators
+  nsAString::const_iterator cur, end;
+
+  text.BeginReading(cur);
+  text.EndReading(end);
+
+  for (; cur != end; cur++)
+  {
+    if ((*cur == PRUnichar(' ')) ||
+        (*cur == PRUnichar('\f')) ||
+        (*cur == PRUnichar('\n')) ||
+        (*cur == PRUnichar('\r')) ||
+        (*cur == PRUnichar('\t')) ||
+        (*cur == PRUnichar('\v')) ||
+        (*cur == PRUnichar(0x00A0)) ||
+        (*cur == PRUnichar(0x2028)) ||
+        (*cur == PRUnichar(0x2029)))
+    {}
+    else return PR_FALSE;
+  }
+  return PR_TRUE;
+}
+
+PRBool isInTag(nsIDOMNode * node, const nsAString & strTag)
+{
+  nsAutoString strTemp;
+  nsCOMPtr<nsIDOMNode> parent;
+  while (node) {
+    node->GetLocalName(strTemp);
+    if (strTemp.Equals(strTag)) return PR_TRUE;
+    node->GetParentNode(getter_AddRefs(parent));
+    node = parent;
+  }
+  return PR_FALSE;
+}
+
 NS_IMETHODIMP 
 msiTagListManager::SelectionContainedInTag(const nsAString & strTag, nsIAtom *atomNS, PRBool *_retval)
 {
   nsAutoString str;
+  nsresult rv;
+  *_retval = PR_FALSE;
   if (!mparentTags)
   {
-    *_retval = PR_FALSE;
     return NS_OK;
   }
   int j = mparentTags->Count();
@@ -1180,7 +1245,125 @@ msiTagListManager::SelectionContainedInTag(const nsAString & strTag, nsIAtom *at
 	     return NS_OK;
 	 	}
 	}
-  *_retval = PR_FALSE;
+  // The simple test failed. Now check the text nodes of (the first range of) the selection
+  nsCOMPtr<nsIDOMRange> range;
+  nsCOMPtr<nsIDOMNode> startContainer;
+  nsCOMPtr<nsIDOMNode> endContainer;
+  nsCOMPtr<nsIDOMNode> ancestor;
+  nsCOMPtr<nsIDOMNode> start;
+  nsCOMPtr<nsIDOMNode> end;
+  nsCOMPtr<nsIDOMNode> lastTextNode;
+  nsCOMPtr<nsIDOMNode> firstNode(nsnull);
+  nsCOMPtr<nsIDOMNode> lastNode(nsnull);
+  PRInt32 startOffset;
+  PRInt32 endOffset;
+  nsCOMPtr<nsISelection>selection;
+  rv = meditor->GetSelection(getter_AddRefs(selection));
+  PRBool collapsed;
+  rv = selection->GetIsCollapsed(&collapsed);
+  if (collapsed) return NS_OK;  //retval is false
+  rv = selection->GetRangeAt(0, getter_AddRefs(range));
+  rv = range->GetCommonAncestorContainer(getter_AddRefs(ancestor));
+  if (ancestor) ancestor->Normalize();
+  rv = selection->GetRangeAt(0, getter_AddRefs(range)); // do it again because Normalize might have changed things.
+  rv = range->GetStartContainer(getter_AddRefs(startContainer));
+  rv = range->GetStartOffset(&startOffset);
+  rv = range->GetEndContainer(getter_AddRefs(endContainer));
+  rv = range->GetEndOffset(&endOffset);
+  // if startContainer is a text node, test it
+  PRUint16 nodeType;
+  PRUint32 count;
+  PRBool lastTextNodeChecked(PR_FALSE);
+  nsCOMPtr<nsIDOMNodeList> childNodes;
+  startContainer->GetNodeType(&nodeType);
+  if (nodeType == nsIDOMNode::TEXT_NODE)
+  {
+    PRUint32 theEnd = 1000; // any big number
+    if (endContainer == startContainer) theEnd = endOffset;
+    if (!nodeIsWhiteSpace(startContainer, startOffset, theEnd))
+    {
+      if (!isInTag(startContainer, strTag)) return NS_OK;
+      // if any part if startContainer is covered by the tag, then all of it is
+    }
+    firstNode = startContainer;
+  }
+  else
+  {
+    // Assert nodeType is ELEMENT_NODE
+    rv = startContainer->GetChildNodes(getter_AddRefs(childNodes));
+    if (!((NS_SUCCEEDED(rv)) && (childNodes))) return rv;
+    childNodes->GetLength(&count);
+    if (startOffset > count)
+      startOffset = count;
+    rv = childNodes->Item(startOffset, getter_AddRefs(firstNode));
+  }
+
+  endContainer->GetNodeType(&nodeType);
+  if (nodeType == nsIDOMNode::TEXT_NODE)
+  {
+    PRUint32 theStart = 0;
+    if (endContainer == startContainer) theStart = startOffset;
+    if (!nodeIsWhiteSpace(endContainer, theStart, endOffset))
+    {
+      if (!isInTag(endContainer, strTag))  return NS_OK;
+    }
+    lastTextNode = endContainer;
+    lastTextNodeChecked = PR_TRUE;
+  }
+  else
+  {
+    // Assert nodeType is ELEMENT_NODE
+    rv = endContainer->GetChildNodes(getter_AddRefs(childNodes));
+    if (!((NS_SUCCEEDED(rv)) && (childNodes))) return rv;
+    childNodes->GetLength(&count);
+    if (endOffset > count)
+      endOffset = count;
+    rv = childNodes->Item(endOffset, getter_AddRefs(lastNode));
+  }
+  // set up a treewalker to iterate through 
+  nsCOMPtr<nsIDOMDocument> doc;
+  rv = startContainer->GetOwnerDocument(getter_AddRefs(doc));
+  nsCOMPtr<nsIDOMTreeWalker> tw;
+  nsCOMPtr<nsIDOMDocumentTraversal> doctrav;
+  doctrav = do_QueryInterface(doc);
+  rv = doctrav->CreateTreeWalker( ancestor, nsIDOMNodeFilter::SHOW_TEXT, nsnull, PR_FALSE, getter_AddRefs(tw));
+  if (!(NS_SUCCEEDED(rv) && tw)) return rv;
+  // Now find the last text node so we know when to stop
+
+  nsCOMPtr<nsIDOMNode> currentNode;
+  if (!lastTextNode)
+  {
+    tw->SetCurrentNode(lastNode);
+    tw->LastChild(getter_AddRefs(lastTextNode));
+  }
+
+// Now reset the treewalker
+  tw->SetCurrentNode(firstNode);
+  currentNode = firstNode;
+  PRBool done(PR_FALSE);
+  while (currentNode && !done)
+  {
+    
+    if (currentNode == firstNode)
+    {
+      firstNode->GetNodeType(&nodeType);
+      if (nodeType != nsIDOMNode::TEXT_NODE)
+        tw->NextNode(getter_AddRefs(currentNode));
+    }
+    if (currentNode) {
+      if (currentNode == lastTextNode && lastTextNodeChecked) {
+        *_retval = PR_TRUE;
+        return NS_OK;
+      }
+      if (!nodeIsWhiteSpace(currentNode, 0, 1000)) 
+        if (!isInTag(currentNode, strTag))  return NS_OK;
+    }
+    done = (!currentNode || currentNode == lastTextNode);
+    tw->NextNode(getter_AddRefs(currentNode));
+  }
+  // since we passed all the tests ...
+	*_retval = PR_TRUE;
+  
   return NS_OK;
 }
 
