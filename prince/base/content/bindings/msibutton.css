@@ -27,7 +27,15 @@ msibutton:hover [class="msibutton-right"]{
   list-style-image: url(chrome://prince/skin/icons/slice-right-hover.png);
 }
 
+msibutton:focus [class="msibutton-right"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-right-hover.png);
+}
+
 toolbar[iconsize="small"] msibutton:hover 	[class="msibutton-right"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-right-hover-sm.png);
+}
+
+toolbar[iconsize="small"] msibutton:focus 	[class="msibutton-right"]{
   list-style-image: url(chrome://prince/skin/icons/slice-right-hover-sm.png);
 }
 
@@ -73,6 +81,14 @@ toolbar[iconsize="small"] msibutton:hover 	[class="msibutton-left"]{
   list-style-image: url(chrome://prince/skin/icons/slice-left-hover-sm.png);
 }
 
+msibutton:focus [class="msibutton-left"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-left-hover.png);
+}
+
+toolbar[iconsize="small"] msibutton:focus 	[class="msibutton-left"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-left-hover-sm.png);
+}
+
 msibutton[checked] [class="msibutton-left"]{
   list-style-image: url(chrome://prince/skin/icons/slice-left.png);
 }
@@ -111,6 +127,14 @@ msibutton:hover [class="msibutton-mid"]{
 }
 
 toolbar[iconsize="small"] msibutton:hover 	[class="msibutton-mid"]{
+  background-image: url(chrome://prince/skin/icons/slice-middle-hover-sm.png);
+}
+
+msibutton:focus [class="msibutton-mid"]{
+  background-image: url(chrome://prince/skin/icons/slice-middle-hover.png);
+}
+
+toolbar[iconsize="small"] msibutton:focus 	[class="msibutton-mid"]{
   background-image: url(chrome://prince/skin/icons/slice-middle-hover-sm.png);
 }
 
@@ -157,6 +181,14 @@ msibutton:hover [class="msibutton-strut"]{
 }
 
 toolbar[iconsize="small"] msibutton:hover 	[class="msibutton-strut"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-middle-hover-sm.png);
+}
+
+msibutton:focus [class="msibutton-strut"]{
+  list-style-image: url(chrome://prince/skin/icons/slice-middle-hover.png);
+}
+
+toolbar[iconsize="small"] msibutton:focus 	[class="msibutton-strut"]{
   list-style-image: url(chrome://prince/skin/icons/slice-middle-hover-sm.png);
 }
 
