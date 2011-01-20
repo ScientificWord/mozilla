@@ -1203,6 +1203,77 @@ function GetRHS(math)
   return math;
 }
 
+
+
+function isAChildOf(node, parent)
+{
+  while (node) {
+    if (node == parent){
+      return true;
+    } else {
+      node = node.parentNode;
+    }
+  }
+  return false;
+}
+
+
+function isEqualSign(node)
+{
+  if (node.nodeType == Node.ELEMENT_NODE && node.localName == "mo") {
+      var op = node.firstChild;
+      if (op.nodeType == Node.TEXT_NODE && op.data == "=")
+        return true;
+  }
+  return false;
+}
+
+function GetASide(mathElement, editorElement)
+{
+
+  var anchor = msiGetEditor(editorElement).selection.anchorNode;
+
+
+  // find left end of equation part containing the selection
+  var leftEnd = first_child(mathElement);
+  var m = leftEnd;
+
+  while (m){
+    if (isAChildOf(anchor, m))
+       break;
+
+    if (isEqualSign(m)){
+      leftEnd = node_after(m);
+    }
+    m = node_after(m);
+  }
+
+
+  var rightEnd = leftEnd;
+  var mathout = mathElement.cloneNode(false);
+
+  while (rightEnd) {
+    if (rightEnd.nodeType == Node.ELEMENT_NODE && rightEnd.localName == "mo") {
+      var op = rightEnd.firstChild;
+      if (op.nodeType == Node.TEXT_NODE && op.data == "=")
+        break;
+    }
+    rightEnd = node_after(rightEnd);
+  }
+
+  var m = leftEnd;        
+  while (m) {
+     var cpy = m.cloneNode(true);
+     mathout.appendChild(cpy);
+     if (m == rightEnd)
+       break;
+     m = node_after(m);
+  }
+  return mathout;        
+}
+
+
+
 //Moved to msiEditorUtilities.js
 //function insertXML(editor, text, node, offset)
 //{
@@ -1346,7 +1417,8 @@ function doLabeledComputation(math,op,labelID, editorElement)
 // like above, but use operator instead of text between input and result
 function doEvalComputation(math,op,joiner,remark, editorElement)
 {
-  var mathstr = GetFixedMath(GetRHS(math));
+  
+  var mathstr = GetFixedMath(GetASide(math, editorElement));
   msiComputeLogger.Sent(remark+" after fixup",mathstr);
   ComputeCursor(editorElement);
   try {
@@ -1424,7 +1496,7 @@ function finishVarsComputation(editorElement, o)
   ComputeCursor(editorElement);
   try {
     //var out = o.theFunc(mathstr,vars);
-	var out = GetCurrentEngine().perform(mathstr,o.theFunc);
+	  var out = GetCurrentEngine().perform(mathstr,o.theFunc);
     msiComputeLogger.Received(out);
     appendLabeledResult(out, o.theLabel, o.theMath, editorElement);
   } catch(e) {
