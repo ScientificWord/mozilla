@@ -18,9 +18,9 @@
   <script type="application/x-javascript" src="chrome://prince/content/about.js"/>
   <tabbox>
     <tabs pack="start">
-      <tab label="About"/>
-      <tab label="Licenses"/>
-      <tab label="Credits"/>
+      <tab label="&AboutTab.label;"/>
+      <tab label="&LicensesTab.label;"/>
+      <tab label="&CreditsTab.labe;l"/>
     </tabs>
     <tabpanels>
       <tabpanel orient="vertical">
@@ -36,6 +36,7 @@
     </tabpanels>
   </tabbox>
   <!-- Localizable strings (from .dtd) -->
+  <!--JLF address these -->
   <strings style="display:none;">
     <string id="brandShortName">Scientific WorkPlace 6.0</string>
   </strings>
