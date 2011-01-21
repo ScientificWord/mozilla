@@ -1203,6 +1203,95 @@ function GetRHS(math)
   return math;
 }
 
+
+
+function isAChildOf(node, parent)
+{
+  while (node) {
+    if (node == parent){
+      return true;
+    } else {
+      node = node.parentNode;
+    }
+  }
+  return false;
+}
+
+
+function isEqualSign(node)
+{
+  if (node.nodeType == Node.ELEMENT_NODE && node.localName == "mo") {
+      var op = node.firstChild;
+      if (op.nodeType == Node.TEXT_NODE && op.data == "=")
+        return true;
+  }
+  return false;
+}
+
+function FindLeftEndOfSide(mathElement, node)
+{
+  // find left end of mathElement containing the node
+  var leftEnd = first_child(mathElement);
+  var m = leftEnd;
+
+  while (m){
+    if (isAChildOf(node, m))
+       break;
+
+    if (isEqualSign(m)){
+      leftEnd = node_after(m);
+    }
+
+    m = node_after(m);
+  }
+
+  return leftEnd;
+}
+
+function  FindRightEndOfSide(mathElement, leftEnd)
+{
+   var rightEnd = leftEnd;
+   var next = rightEnd;
+
+   while (next) {
+      if (isEqualSign(next))
+        break;
+      else
+        rightEnd = next;
+      
+      next = node_after(next);     
+   }
+
+   return rightEnd;
+}
+
+
+function CloneTheSide(mathElement, leftEnd, rightEnd)
+{
+  var mathout = mathElement.cloneNode(false);
+  var m = leftEnd;        
+  while (m) {
+     var cpy = m.cloneNode(true);
+     mathout.appendChild(cpy);
+     if (m == rightEnd)
+       break;
+     m = node_after(m);
+  }
+  return mathout;        
+}
+
+function GetASide(mathElement, editorElement)
+{
+  var anchor = msiGetEditor(editorElement).selection.anchorNode;
+  var leftEnd = FindLeftEndOfSide(mathElement, anchor)
+  var rightEnd = FindRightEndOfSide(mathElement, leftEnd);
+
+  var mathOut = CloneTheSide(mathElement, leftEnd, rightEnd);
+  return mathOut;
+}
+
+
+
 //Moved to msiEditorUtilities.js
 //function insertXML(editor, text, node, offset)
 //{
@@ -1235,20 +1324,44 @@ function insertLabeledXML(editor, text, node, offset)
 //   }
 }
 
-function appendResult(result,sep,math,editorElement)
+function appendResult(result, sep, math, editorElement)
 {
   if(!editorElement)
     editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
+
   var appendedResult = result.replace(fullmath, fullmath+sep);
+
   insertXML( editor, appendedResult, math, math.childNodes.length );
-  /*
-  msiGetEditor(editorElement).insertHTMLWithContext(
-      result.replace(fullmath,fullmath+sep),
-      "", "", "", null,
-      math, math.childNodes.length, false );   */
   coalescemath(editorElement);
 }
+
+
+function GetOffset(math, node)
+{
+  var i = 1;
+  var n = first_child(math);
+  while (n != node){
+    n = node_after(n);
+    ++i
+  }
+  return i;
+}
+
+
+function insertResult(result, sep, mathElement, editorElement, rightEnd)
+{
+  if(!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+
+  var appendedResult = result.replace(fullmath, fullmath+sep);
+
+  insertXML( editor, appendedResult, mathElement, GetOffset(mathElement, rightEnd) );
+
+  coalescemath(editorElement);
+}
+
 
 function appendLabel(label,math,editorElement)
 {
@@ -1344,15 +1457,23 @@ function doLabeledComputation(math,op,labelID, editorElement)
 }
 
 // like above, but use operator instead of text between input and result
-function doEvalComputation(math,op,joiner,remark, editorElement)
+function doEvalComputation(mathElement,op,joiner,remark, editorElement)
 {
-  var mathstr = GetFixedMath(GetRHS(math));
+  // Get a side of the (possible) equations
+  var anchor = msiGetEditor(editorElement).selection.anchorNode;
+  var leftEnd = FindLeftEndOfSide(mathElement, anchor)
+  var rightEnd = FindRightEndOfSide(mathElement, leftEnd);
+  var mathOut = CloneTheSide(mathElement, leftEnd, rightEnd);
+  
+  var mathstr = GetFixedMath(mathOut);
+
   msiComputeLogger.Sent(remark+" after fixup",mathstr);
   ComputeCursor(editorElement);
   try {
     var out = GetCurrentEngine().perform(mathstr,op);
     msiComputeLogger.Received(out);
-    appendResult(out,joiner,math, editorElement);
+    //appendResult(out,joiner,math, editorElement);
+    insertResult(out, joiner, mathElement, editorElement, rightEnd);
   } catch (e) {
     msiComputeLogger.Exception(e);
   }
@@ -1424,7 +1545,7 @@ function finishVarsComputation(editorElement, o)
   ComputeCursor(editorElement);
   try {
     //var out = o.theFunc(mathstr,vars);
-	var out = GetCurrentEngine().perform(mathstr,o.theFunc);
+	  var out = GetCurrentEngine().perform(mathstr,o.theFunc);
     msiComputeLogger.Received(out);
     appendLabeledResult(out, o.theLabel, o.theMath, editorElement);
   } catch(e) {

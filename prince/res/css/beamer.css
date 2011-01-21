@@ -119,3 +119,11 @@ stepnumberedListItem>bodyText:first-child:first-line,
 alertstepnumberedListItem>bodyText:first-child:first-line { content: '  ';
 }
 
+
+frametitle{
+  font-size: 120%;
+}
+
+framesubtitle{
+  font-size: 110%;
+}
