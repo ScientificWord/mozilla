@@ -82,6 +82,7 @@
 			<contains>texttag</contains>
       <contains>table</contains>
 			<contains>listparenttag</contains>
+			<contains>listtag</contains>
 			<contains>shortQuote</contains>
 			<contains>othertag</contains>
 			<contains>mml:math</contains>
@@ -174,6 +175,7 @@
 					<nexttag>#text</nexttag>
           <htmllist>ul</htmllist>
           <discardemptyblock>true</discardemptyblock>
+	  		  <inclusion>true</inclusion>
 			    <contains>bulletListItem</contains>
         </tag>
 				<tag nm="numberedlist" hidden="1">
@@ -182,6 +184,7 @@
           <htmllist>ol</htmllist>
           <initialcontents> <![CDATA[<cursor/><br type="_moz"/>]]></initialcontents>
           <discardemptyblock>true</discardemptyblock>
+	  		  <inclusion>true</inclusion>
 			    <contains>numberedListItem</contains>
         </tag>
 				<tag nm="descriptionlist" hidden="1">
@@ -189,6 +192,7 @@
 					<nexttag>#text</nexttag>
           <htmllist>dl</htmllist>
           <discardemptyblock>true</discardemptyblock>
+	  		  <inclusion>true</inclusion>
 			    <contains>descriptionListItem</contains>
         </tag>
 				<tag nm="bibliography" hidden="1">
@@ -203,6 +207,8 @@
     </tagclass>
 		<tagclass>
 			<tagclassname>listtag</tagclassname>
+			<contains>paratag</contains>
+			<contains>br</contains>
 			<tags>
 				<tag nm="bulletListItem">
           <description>Bullet list item</description>
@@ -212,8 +218,6 @@
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
           </initialcontents>
-			    <contains>paratag</contains>
-			    <contains>br</contains>
         </tag>
 				<tag nm="numberedListItem">
           <description>Numbered list item</description>
@@ -223,8 +227,6 @@
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
           </initialcontents>
-			    <contains>paratag</contains>
-			    <contains>br</contains>
         </tag>
 				<tag nm="descriptionListItem">
           <description>Description list item</description>
@@ -234,8 +236,6 @@
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
           </initialcontents>
-			    <contains>paratag</contains>
-			    <contains>br</contains>
         </tag>
 				<tag nm="bibitem">
           <description>Bibliography entry</description>
@@ -245,8 +245,6 @@
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
           </initialcontents>
-			    <contains>paratag</contains>
-			    <contains>br</contains>
           <contains>biblabel</contains>
         </tag>
 	  </tags>
@@ -353,6 +351,7 @@
 			<contains>paratag</contains>
 			<contains>structtag</contains>
 			<tags>
+				<tag nm="(remove environment)" id="clearenvironmenttag" ><description>Remove innermost environment tag</description></tag>
 				<tag nm="frontmatter">
           <contains>frontmtag</contains>
           <level>*</level>
