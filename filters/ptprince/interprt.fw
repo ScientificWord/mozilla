@@ -116,7 +116,7 @@ that is listed in the enumerated type @{CommandCode@}.
         TokenList* pTokenList = new TokenList;
         pTokenList -> push_back(TeXToken(TT_END_MATCH,0,0));
 
-        pTokenList -> AppendSymbol("msitexb");
+        pTokenList -> AppendSymbol("msidefault");
         pTokenList -> push_back(TeXToken(TT_LEFT_BRACE,'{',0));
         pTokenList -> push_back(TeXToken(CurTok()));
         pTokenList -> push_back(TeXToken(TT_RIGHT_BRACE,'}',0));
