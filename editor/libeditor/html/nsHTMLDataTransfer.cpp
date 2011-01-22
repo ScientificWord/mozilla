@@ -904,6 +904,7 @@ nsresult
 nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOffset, PRBool fFancy)
 {
   nsresult res = NS_OK;
+  nsCOMPtr<nsISelection>selection;
   nsCOMPtr<nsIDOMNode> splitNode;
   nsCOMPtr<nsIDOMNode> outLeftNode;
   nsCOMPtr<nsIDOMNode> outRightNode;
@@ -1034,7 +1035,6 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
       nsCOMPtr<nsIDOMNodeList> nodeList;
       nsCOMPtr<nsIDOMNode> node;
       PRUint32 nodeCount;
-      nsCOMPtr<nsISelection>selection;
       res = GetSelection(getter_AddRefs(selection));
       /// The following should be a procedure
       res = newElement->GetElementsByTagName(NS_LITERAL_STRING("cursor"), getter_AddRefs(nodeList));
@@ -1065,12 +1065,19 @@ nsHTMLEditor::InsertReturnAt( nsIDOMNode * splitpointNode, PRInt32 splitpointOff
       {
         nsAutoString tagClass;
         mtagListManager->GetClassOfTag(strTagName, nsAtom, tagClass);
-  		  fCanContain = (tagClass.EqualsLiteral("structtag")||tagClass.EqualsLiteral("envtag")||tagClass.EqualsLiteral("listtag"));
+  		  fCanContain = (tagClass.EqualsLiteral("structtag")||
+  		    tagClass.EqualsLiteral("listparenttag")||
+  		    tagClass.EqualsLiteral("envtag")||
+  		    tagClass.EqualsLiteral("listtag"));
       }
 	    if (fCanContain)
 	    {
+//        nsCOMPtr<nsIDOMNode> parent;
+//        PRInt32 offset;
+//        res = nsEditor::GetNodeLocation(splitNode, address_of(parent), &offset);
+        res = GetTagString(splitNode, strTagName);
 		    nsEditor::DeleteNode(splitNode);
-            res = mtagListManager->GetStringPropertyForTag(strTagName, atomNS, NS_LITERAL_STRING("inclusion"), s2);
+        res = mtagListManager->GetStringPropertyForTag(strTagName, atomNS, NS_LITERAL_STRING("inclusion"), s2);
 	      if (!s2.EqualsLiteral("true"))
           res = InsertReturnAt(newsplitpointNode, newsplitpointOffset, fFancy);  
 	    }
