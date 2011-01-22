@@ -774,8 +774,12 @@
 
 
 \def\out@verbatim#1{%
-  \br\msitag{<pre>}#1\msitag{</pre>}}
-
+  \br
+  \msiopentag{verbatim}{<verbatim>}%
+  \msiopentag{bodyText}{<bodyText>}%
+  #1%
+  \msiclosetag{bodyText}{</bodyText>}
+  \msiclosetag{verbatim}{</verbatim>}}%
 
 \begingroup
   \catcode`\<=\active
@@ -1293,9 +1297,8 @@
 }
 
 
-%\MSIMathQuote{\\} %% may need to hard-code this one
+%\MSIMathQuote{\\} %% may need to hard-code this one:
 \msitraceon
-%\let\@dblslash
 \def\\{\ifmmode\string\\\else\msitag{<br/>}\fi}
 
 %% Temporary until prince can read xml
