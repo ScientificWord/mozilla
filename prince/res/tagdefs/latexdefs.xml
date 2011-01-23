@@ -409,10 +409,10 @@
               ]]>
           </initialcontents>
         </tag>
-  		<tag nm="verbatim">
-  			<description>Verbatim text</description>
-  		</tag>
-  		<tag nm="note">
+  		  <tag nm="verbatim">
+  			  <description>Verbatim text</description>
+  		  </tag>
+  		  <tag nm="note">
           <level>*</level>
           <description>Note</description>
           <discardemptyblock>true</discardemptyblock>
@@ -421,8 +421,8 @@
               ]]>
           </initialcontents>
 	  		  <inclusion>true</inclusion>
-          </tag>
-  		<tag nm="msiframe">
+        </tag>
+  		  <tag nm="msiframe">
           <level>*</level>
           <description>Frame</description>
           <discardemptyblock>true</discardemptyblock>
@@ -431,7 +431,268 @@
               ]]>
           </initialcontents>
 	  		  <inclusion>true</inclusion>
-          </tag>
+        </tag>
+				<tag nm="assertion">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Assertion</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+        </tag>
+				<tag nm="conjecture">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Conjecture</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+        </tag>
+				<tag nm="corollary">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Corollary</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+        </tag>
+				<tag nm="criterion">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Criterion</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+        </tag>
+				<tag nm="lemma">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Lemma</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+        </tag>
+				<tag nm="proposition">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Proposition</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+        </tag>
+				<tag nm="theorem">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Theorem</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+        </tag>
+				<tag nm="algorithm">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Algorithm</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+        </tag>
+				<tag nm="assumption">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Assumption</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+        </tag>
+				<tag nm="axiom">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Axiom</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+        </tag>
+				<tag nm="condition">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Condition</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+        </tag>
+				<tag nm="definition">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Definition</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+        </tag>
+				<tag nm="example">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Example</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+        </tag>
+				<tag nm="exercise">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Exercise</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+        </tag>
+				<tag nm="hypothesis">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Hypothesis</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+        </tag>
+				<tag nm="problem">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Problem</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+        </tag>
+				<tag nm="property">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Property</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+        </tag>
+				<tag nm="question">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Question</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+        </tag>
+				<tag nm="case">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Case</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+        </tag>
+				<tag nm="claim">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Claim</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+        </tag>
+				<tag nm="conclusion">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Conclusion</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+        </tag>
+				<tag nm="notation">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Notation</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+        </tag>
+				<tag nm="remark">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Remark</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+        </tag>
+				<tag nm="summary">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Summary</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+        </tag>
+        <!-- The "acknowledgment" tag isn't intended to be added to the interface, as the non-front-matter version induces only confusion among TeX users. -->
+				<tag nm="acknowledgment" hidden="1">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Acknowledgment</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+        </tag>
+				<tag nm="proof">
+          <level>*</level>
+          <contains>envLeadIn</contains>
+          <description>Proof</description>
+          <discardemptyblock>true</discardemptyblock>
+          <initialcontents> <![CDATA[
+              <bodyText><cursor/><br type="_moz"/></bodyText>
+              ]]>
+          </initialcontents>
+        </tag>
    		</tags>
 		</tagclass>
 		<tagclass>
@@ -522,6 +783,19 @@
         </tag>
         <tag nm="shortTitle">
           <description>Short section title</description>
+            <contains>#text</contains>
+			      <contains>texttag</contains>
+			      <contains>othertag</contains>
+            <contains>table</contains>
+			      <contains>mml:math</contains>
+			      <contains>img</contains>
+            <contains>a</contains>
+            <contains>note</contains>
+            <contains>object</contains>
+            <contains>notewrapper</contains>
+        </tag>
+        <tag nm="envLeadIn">
+          <description>Environment lead-in</description>
             <contains>#text</contains>
 			      <contains>texttag</contains>
 			      <contains>othertag</contains>
