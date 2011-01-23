@@ -479,7 +479,7 @@
     <command id="cmd_showTeXFile" oncommand="msiGoDoCommand('cmd_showTeXFile');" />
     <!--command id="cmd_showXSLTLog" oncommand="msiGoDoCommand('cmd_showXSLTLog');" / -->
     <command id="cmd_textBold" oncommand="msiDoStatefulCommand('cmd_texttag','bold');" />
-    <command id="cmd_textItalic" oncommand="msiDoStatefulCommand('cmd_texttag','it');" />
+    <command id="cmd_textItalic" oncommand="msiDoStatefulCommand('cmd_texttag','italics');" />
     <broadcaster id="defaultCompiler" persist="defcomp previewCommand printCommand" defcomp="pdf" previewCommand="cmd_previewPdf" printCommand="cmd_printPdf"/>
   </broadcasterset>
 

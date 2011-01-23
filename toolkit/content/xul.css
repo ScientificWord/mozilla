@@ -75,6 +75,7 @@ treechildren, treeitem, treeseparator, treerow, treecell {
 /********** focus rules **********/
 
 button,
+msibutton,
 checkbox,
 colorpicker[type="button"],
 datepicker[type="grid"],

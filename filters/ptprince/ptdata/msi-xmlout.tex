@@ -20,7 +20,10 @@
 
 \def\msi@pass#1{\def#1{\msitag{<texb>#1</texb>}}}
 \def\msi@pass@newline#1{\def#1{\br\msihmode\msitag{<texb>#1</texb>}}}
-\def\msitexb#1{\msitag{<texb>#1</texb>}}
+
+
+\def\msitexb#1{[SHOULD NOT OCCUR]}
+\def\msidefault#1{[Defaulting: \string#1]}
 
 
 \msi@pass@newline{\@settodim}
@@ -32,11 +35,6 @@
 \def\MSIMathQuote#1{%
    %\expandafter\def\csname#1\endcsname{\char`\\#1\char32\relax}}
    \expandafter\def\csname#1\endcsname{\expandafter\string\csname#1\endcsname\char32\relax}}
-
-%\MSIMathQuote{\\} %% may need to hard-code this one
-
-\let\@dblslash\\
-\def\\{\ifmmode\string\\\else\@dblslash\fi}
 
 
 
@@ -92,8 +90,8 @@
 
 
 
-\def\out@preamble@tex#1{
-   \msitag{<preambleTeX>#1</preambleTeX>}%
+\def\out@preamble@tex#1{%
+   \msitag{<preambleTeX><![CDATA[#1]]></preambleTeX>}%
 }
 
 %% \document and \enddocument
@@ -362,8 +360,8 @@
 \def\@openitem{\msiopentag{li}{<li>}}
 
 
-%\def\MSIListEnvironment{%
-%  \@ifnextchar[{\msi@listenv@a}{\msi@listenv@b}}
+% A default item name
+\def\itemprefix{item}
 
 % #1=xml name, #2=latex env name, #3=xml item name
 \def\MSIListEnvironment#1#2#3{%
@@ -466,7 +464,7 @@
         \msiclosetag{shortTitle}{</shortTitle>}%
       \fi
       ##2%
-      \msiclosetag{sectiontitle}{</sectiontitle>}}
+      \msiclosetag{sectiontitle}{</sectiontitle>}}%
   }%
 }
 
@@ -580,28 +578,6 @@
   \@make@braces@other
   \catcode`\[=1
   \catcode`\]=2
-%%   \gdef\@scan@eqnarray@star#1\end{eqnarray*}[%
-%%      \egroup
-%%      \@make@braces@normal
-%%      \msiopentag[mml][<mml:math class="displayedmathml" mode="display" display="block">]%
-%%      \msiextproc[jbm][\begin{eqnarray*}#1\end{eqnarray*}]%
-%%      \msiclosetag[mml][</mml:math>]
-%%   ]
-%%   \gdef\@scan@eqnarray#1\end{eqnarray}[%
-%%      \egroup
-%%      \@make@braces@normal
-%%      \msiopentag[mml][<mml:math class="displayedmathml" mode="display" display="block">]%
-%%      \msiextproc[jbm][\begin{eqnarray}#1\end{eqnarray}]%
-%%      \msiclosetag[mml][</mml:math>]
-%%   ]
-
-  \gdef\@scan@multline@star#1\end{multline*}[%
-     \egroup
-     \@make@braces@normal
-     \msiopentag[mml][<mml:math class="displayedmathml" mode="display" display="block">]%
-     \msiextproc[jbm][\begin{multline*}#1\end{multline*}]%
-     \msiclosetag[mml][</mml:math>]
-  ]
 
   \gdef\@scan@align@star#1\end{align*}[%
      \egroup
@@ -617,14 +593,6 @@
      \msiextproc[jbm][\begin{align}#1\end{align}]%
      \msiclosetag[mml][</mml:math>]
   ]
-  \gdef\@scan@gather@star#1\end{gather*}[%
-     \egroup
-     \@make@braces@normal
-     \msiopentag[mml][<mml:math class="displayedmathml" mode="display" display="block">]%
-     \msiextproc[jbm][\begin{gather*}#1\end{gather*}]%
-     \msiclosetag[mml][</mml:math>]
-  ]  
-
 
   \gdef\@scan@equation@star#1\end{equation*}[%
      \egroup
@@ -688,33 +656,43 @@
 \egroup
 
 
-\@namedef{msi@begin@multline*}{\ \@make@braces@other\relax\@scan@multline@star}
+%\@namedef{msi@begin@multline*}{\ \@make@braces@other\relax\@scan@multline@star}
 
 
-\@namedef{msi@begin@align*}{\ \@make@braces@other\relax\@scan@align@star}
-\@namedef{msi@begin@align}{\ \@make@braces@other\relax\@scan@align}
-\@namedef{msi@begin@gather*}{\ \@make@braces@other\relax\@scan@gather@star}
+\@namedef{msi@begin@flalign}{\bgroup\msi@dollar=0\relax$$\string\begin{flalign}}
+\@namedef{msi@end@flalign}{\string\end{flalign}$$\egroup}
+
+\@namedef{msi@begin@flalign*}{\bgroup\msi@dollar=0\relax$$\string\begin{flalign*}}
+\@namedef{msi@end@flalign*}{\string\end{flalign*}$$\egroup}
+
+\@namedef{msi@begin@alignat}{\bgroup\msi@dollar=0\relax$$\string\begin{alignat}}
+\@namedef{msi@end@alignat}{\string\end{alignat}$$\egroup}
+
 
 \@namedef{msi@begin@equation*}{\ \@make@braces@other\relax\@scan@equation@star}
 
 %\def\msi@begin@array{\ \@make@braces@other\relax\@scan@array}
+
 \def\msi@begin@array{\string\begin{array}}
 \def\msi@end@array{\string\end{array}}
 
 
-%%   \gdef\@scan@eqnarray#1\end{eqnarray}[%
-%%      \egroup
-%%      \@make@braces@normal
-%%      \msiopentag[mml][<mml:math class="displayedmathml" mode="display" display="block">]%
-%%      \msiextproc[jbm][\begin{eqnarray}#1\end{eqnarray}]%
-%%      \msiclosetag[mml][</mml:math>]
-%%   ]
+\def\MSIEqnarrayLikeEnvironment#1{%
+  \@namedef{msi@begin@#1}{\bgroup\msi@dollar=0\relax$$\string\begin{#1}}%
+  \@namedef{msi@end@#1}{\string\end{#1}$$\egroup}
+}
 
-\def\msi@begin@eqnarray{$\string\begin{eqnarray}}
-\def\msi@end@eqnarray{\string\end{eqnarray}$}
 
-\@namedef{msi@begin@eqnarray*}{$\string\begin{eqnarray*}}
-\@namedef{msi@end@eqnarray*}{\string\end{eqnarray*}$}
+
+\def\MSISplitLikeEnvironment#1{%
+  \@namedef{msi@begin@#1}{\ifmmode\else\bgroup\msi@dollar=0\relax$$\fi\string\begin{#1}}%
+  \@namedef{msi@end@#1}{\string\end{#1}\ifmmode\else$$\egroup\fi}
+}
+
+
+\@namedef{msi@begin@align*}{\ \@make@braces@other\relax\@scan@align@star}
+\@namedef{msi@begin@align}{\ \@make@braces@other\relax\@scan@align}
+
 
 
 \def\msi@begin@bmatrix{\@make@braces@other\relax\@scan@bmatrix} 
@@ -739,7 +717,8 @@
            \def\do@cr{\char`\\}%
          \else
            \def\do@cr{\@ifnextchar[{\@cra}{\@crb}}%
-         \fi}
+         \fi
+         \do@cr}
 
 
 \def\@cra[#1]{\cr}%
@@ -756,7 +735,7 @@
    \else
       \def\donext{%
          \begingroup
-            \msiopentag{tabular}{<tabular opt="#2">}%
+            \msiopentag{table}{<table opt="#2">}%
             \aftergroup\msi@closetabular
             \hbox\bgroup
               \let\\=\@cr
@@ -766,7 +745,7 @@
    \donext
 }
 
-\def\msi@closetabular{\msiclosetag{tabular}{</tabular>}}
+\def\msi@closetabular{\msiclosetag{table}{</table>}}
 
 \def\msi@end@tabular{\crcr
      \egroup %halign
@@ -795,7 +774,17 @@
 
 
 \def\out@verbatim#1{%
-  \br\msitag{<pre>}#1\msitag{</pre>}}
+  \br
+  \msiopentag{verbatim}{<verbatim>}%
+  \msiopentag{bodyText}{<bodyText>}%
+  #1%
+  \msiclosetag{bodyText}{</bodyText>}
+  \msiclosetag{verbatim}{</verbatim>}}%
+
+\begingroup
+  \catcode`\<=\active
+  \def\<{\char`<rangle>}%
+\endgroup
 
 \def\verb{%
    \bgroup
@@ -805,9 +794,11 @@
       \catcode`&=\active
       \catcode`$=\other
       \catcode`##=\other
+      \catcode`\<=\active
       \msiopentag{verb}{<verb>}%
       \@sverb   
 }
+
 \def\verb@egroup{\msiclosetag{verb}{</verb>}\egroup}
 \def\@sverb#1{%
   \catcode`#1\active
@@ -815,9 +806,13 @@
   \lowercase{\let~\verb@egroup}%
 }
 
-\def\fbox#1{\ifmmode\temptoksa={#1}\string\fbox\char`\{\the\temptoksa\char`\}\fi}
+%\def\fbox#1{\ifmmode\temptoksa={#1}\string\fbox\char`\{\the\temptoksa\char`\}\fi}
+
+\MSIMathQuote{\fbox}
+
 \def\{{\ifmmode\string\{\else\char123\relax\fi}
 \def\}{\ifmmode\string\}\else\char125\relax\fi}
+
 \let\@hbox\hbox
 \def\hbox{%
    \def\@after{}
@@ -962,7 +957,7 @@
 \egroup
 
 
-\def\noindent{\par\msitag{<hspace dim="0.0em" type="noIndent"></hspace><requestimplementation>noindent</requestimplementation>}}
+\def\noindent{\par\msitag{<hspace dim="0.0em" type="noIndent"></hspace>}}
 
 
 \def\thinspace{%
@@ -1000,7 +995,12 @@
    <hspace fillWith="line" flex="1" class="stretchySpace" type="stretchySpace"></hspace>}
 
 
-\msi@rfi{\newpage}{\newpage}
+
+\def\newpage{\msitag{<msibreak type="newPage"><newPageRule/></msibreak>}}
+
+\def\hfil{<hspace type="customSpace" class="stretchySpace"flex="1" atEnd="true"/>}
+\def\hfill{<hspace type="customSpace" class="stretchySpace" flex="2" atEnd="true"/>}
+
 \msi@rfi{\msi@hook@hfil}{\hfil}
 \msi@rfi{\msi@hook@hfill}{\hfill}
 
@@ -1009,10 +1009,6 @@
 
 %%\def\msi@hook@hss{\msitag{\hss}}
 %%\def\msi@hook@vss{\msitag{\vss}}
-
-
-
-
 
 
 \def\label#1{%
@@ -1202,12 +1198,46 @@
 
 %% Create TeX Buttons
 
-\def\MSITeXButtonReq#1{
+\def\MSITeXButton#1{%
+    \expandafter\def\csname#1\endcsname{
+       \msihmode
+       \msitag{<texb enc="1" name="#1">%
+          <![CDATA[\expandafter\string\csname#1\endcsname]]>}%
+       \msitag{</texb>}}}
+
+
+\def\MSITeXButtonReq#1{%
     \expandafter\def\csname#1\endcsname##1{
        \msihmode
-       \msitag{<texb enc="1" name="#1">}%
-          <![CDATA[\expandafter\string\csname#1\endcsname\{##1\}]]>%
+       \msitag{<texb enc="1" name="#1">%
+          <![CDATA[\expandafter\string\csname#1\endcsname\{##1\}]]>}%
        \msitag{</texb>}}}
+
+\bgroup
+     \@make@braces@other
+     \catcode `|=0
+     \catcode`\(=1  % use parens for braces
+     \catcode`\)=2
+     \catcode`\\=12
+
+ 
+
+     |gdef|MSITeXButtonEnvironment#1(%
+          |expandafter|gdef|csname msi@begin@#1|endcsname
+             (|bgroup
+                 |@make@braces@other
+                 |catcode`|\=12
+                 |catcode`|&=12
+                 |aftergroup|@make@braces@normal
+                 |csname scan@#1|endcsname)
+
+          |expandafter|gdef|csname scan@#1|endcsname##1\end{#1}%
+             (\msitag(<texb enc="1" name="#1">%
+                        <![CDATA[\begin{#1}##1\end{#1}]]>%
+                      </texb>)%
+              |egroup)
+     )%
+|egroup
 
 
 
@@ -1267,22 +1297,9 @@
 }
 
 
-
-%% \def\msi@opendocument{%
-%%    \msitag{<?xml version="1.0"?>}\br
-%%    
-%%    \msitag{<!DOCTYPE swxml PUBLIC
-%%      "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
-%%      "http://www.w3.org/Math/DTD/mathml2/xhtml-math11-f.dtd"
-%%      [
-%%       <!ATTLIST maction id ID ##IMPLIED>
-%%       <!ENTITY mathml "http://www.w3.org/1998/Math/MathML">
-%%      ]>}\br
-%%    
-%%    \msitag{<?xml-stylesheet href="StandardLaTeXArticle.css" type="text/css"?>}\br
-%%    \msiopentag{document}{<document xmlns:sw="http://www.sciword.com/namespaces/sciword" xmlns:mml="http://www.w3.org/1998/Math/MathML" type="latex">}\br
-%%    \msiopentag{preamble}{<preamble>}
-%% }
+%\MSIMathQuote{\\} %% may need to hard-code this one:
+\msitraceon
+\def\\{\ifmmode\string\\\else\msitag{<br/>}\fi}
 
 %% Temporary until prince can read xml
 
