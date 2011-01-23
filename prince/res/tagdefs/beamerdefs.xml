@@ -22,6 +22,7 @@
 					<nexttag>bodyText</nexttag>
 					<description>Beamer frame title</description>
           <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>framesubtitle</nextafteremptyblock>
           <initialcontents> <![CDATA[<defaulttitletag/><cursor/><br temp="1"/>]]>
           </initialcontents>
 				</tag>
@@ -29,6 +30,7 @@
 					<nexttag>bodyText</nexttag>
 					<description>Beamer frame subtitle</description>
           <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>
           <initialcontents> <![CDATA[<defaulttitletag/><cursor/><br temp="1"/>]]>
           </initialcontents>
 				</tag>
