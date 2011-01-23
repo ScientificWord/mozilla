@@ -569,42 +569,42 @@ bodyText, rtlBodyText, p, bodyMath, sectiontitle, shortQuote, longQuotation, epi
 
 
 /* front matter tags */
-frontmatter>address {
+address {
   display:block;
   text-align: center;
 }
 
-frontmatter>author {
+author {
   display:block;
   text-align: center;
 }
 
-frontmatter>date {
+date {
   display:block;
   text-align: center;
 }
 
-frontmatter>title {
+title {
   display:block;
   text-align: center;
 }
 
-frontmatter>maketoc {
+maketoc {
   display:block;
   text-align: left;
 }
 
-frontmatter>makelof {
+makelof {
   display:block;
   text-align: left;
 }
 
-frontmatter>makelot {
+makelot {
   display:block;
   text-align: left;
 }
 
-frontmatter>maketitle {
+maketitle {
   display:block;
   text-align: center;
 }
@@ -615,35 +615,35 @@ msidisplay {
   display: block;
 }
 
-frontmatter>title {
+title {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-title");
 }
 
-frontmatter>author {
+author {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-author");
 }
 
-frontmatter>address {
+address {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-address");
 }
 
-frontmatter>date {
+date {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-date");
 }
 
-frontmatter>maketitle {
+maketitle {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-maketitle");
 }
 
-frontmatter>maketoc {
+maketoc {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-maketoc");
 }
 
-frontmatter>makelof {
+makelof {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-makelof");
 }
 
-frontmatter>makelot {
+makelot {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#fmtag-makelot");
 }
 
