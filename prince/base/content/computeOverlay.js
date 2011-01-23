@@ -1456,15 +1456,32 @@ function doLabeledComputation(math,op,labelID, editorElement)
   RestoreCursor(editorElement);
 }
 
+
+function CloneTheRange(mathElement, r)
+{
+   var mathout = mathElement.cloneNode(false);
+   var c = r.clone();
+   mathElement.insert();
+}
+
 // like above, but use operator instead of text between input and result
 function doEvalComputation(mathElement,op,joiner,remark, editorElement)
 {
   // Get a side of the (possible) equations
-  var anchor = msiGetEditor(editorElement).selection.anchorNode;
-  var leftEnd = FindLeftEndOfSide(mathElement, anchor)
-  var rightEnd = FindRightEndOfSide(mathElement, leftEnd);
-  var mathOut = CloneTheSide(mathElement, leftEnd, rightEnd);
-  
+  var sel = msiGetEditor(editorElement).selection;
+  var anchor = sel.anchorNode;
+  var leftEnd;
+  var rightEnd;
+  var mathout;
+  if (sel.isCollapsed) {
+    leftEnd = FindLeftEndOfSide(mathElement, anchor)
+    rightEnd = FindRightEndOfSide(mathElement, leftEnd);
+    mathOut = CloneTheSide(mathElement, leftEnd, rightEnd);
+  } else {
+    var r = selection.getRangeAt(0);
+    mathout = CloneTheRange(mathElement, r); 
+  }
+    
   var mathstr = GetFixedMath(mathOut);
 
   msiComputeLogger.Sent(remark+" after fixup",mathstr);
