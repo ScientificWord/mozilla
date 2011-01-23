@@ -27,7 +27,8 @@ pre, verbatim { font-family: Courier; white-space: pre }
 
 numberedListItem,
 bulletListItem,
-descriptionListItem { margin: 0pt; 
+descriptionListItem { 
+       margin: 0pt; 
        padding: 0pt; 
        display: list-item;}
 
@@ -38,10 +39,10 @@ numberedlist {
 }
 
 
-bulletlist {list-style-type: disc;
-}
+descriptionlist {list-style-type: none;}
 
 bulletListItem { margin-left: 2em; }
+
 
 numberedListItem>bodyText:first-child:before { content: '(' counter(numberedlist) ') ';
   counter-increment: numberedlist;
