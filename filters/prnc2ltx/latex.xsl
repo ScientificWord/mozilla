@@ -205,6 +205,134 @@ should not be done under some conditions -->
 <xsl:template match="html:sectiontitle//text()" mode="shortTitle"></xsl:template>
 <xsl:template match="html:shortTitle" mode="shortTitle">[<xsl:apply-templates/>]</xsl:template>
 
+<xsl:template match="html:assertion">
+\begin{assertion}<xsl:apply-templates mode="envleadin"/>
+<xsl:apply-templates/>
+\end{assertion}</xsl:template>
+
+<xsl:template match="html:conjecture">
+\begin{conjecture}<xsl:apply-templates mode="envleadin"/>
+<xsl:apply-templates/>
+\end{conjecture}</xsl:template>
+
+<xsl:template match="html:corollary">
+\begin{corollary}<xsl:apply-templates mode="envleadin"/>
+<xsl:apply-templates/>
+\end{corollary}</xsl:template>
+
+<xsl:template match="html:criterion">
+\begin{criterion}<xsl:apply-templates mode="envleadin"/>
+<xsl:apply-templates/>
+\end{criterion}</xsl:template>
+
+<xsl:template match="html:proposition">
+\begin{proposition}<xsl:apply-templates mode="envleadin"/>
+<xsl:apply-templates/>
+\end{proposition}</xsl:template>
+
+<xsl:template match="html:theorem">
+\begin{theorem}<xsl:apply-templates mode="envleadin"/>
+<xsl:apply-templates/>
+\end{theorem}</xsl:template>
+
+<xsl:template match="html:algorithm">
+\begin{algorithm}<xsl:apply-templates mode="envleadin"/>
+<xsl:apply-templates/>
+\end{algorithm}</xsl:template>
+
+<xsl:template match="html:assumption">
+\begin{assumption}<xsl:apply-templates mode="envleadin"/>
+<xsl:apply-templates/>
+\end{assumption}</xsl:template>
+
+<xsl:template match="html:axiom">
+\begin{axiom}<xsl:apply-templates mode="envleadin"/>
+<xsl:apply-templates/>
+\end{axiom}</xsl:template>
+
+<xsl:template match="html:condition">
+\begin{condition}<xsl:apply-templates mode="envleadin"/>
+<xsl:apply-templates/>
+\end{condition}</xsl:template>
+
+<xsl:template match="html:definition">
+\begin{definition}<xsl:apply-templates mode="envleadin"/>
+<xsl:apply-templates/>
+\end{definition}</xsl:template>
+
+<xsl:template match="html:example">
+\begin{example}<xsl:apply-templates mode="envleadin"/>
+<xsl:apply-templates/>
+\end{example}</xsl:template>
+
+<xsl:template match="html:exercise">
+\begin{exercise}<xsl:apply-templates mode="envleadin"/>
+<xsl:apply-templates/>
+\end{exercise}</xsl:template>
+
+<xsl:template match="html:hypothesis">
+\begin{hypothesis}<xsl:apply-templates mode="envleadin"/>
+<xsl:apply-templates/>
+\end{hypothesis}</xsl:template>
+
+<xsl:template match="html:problem">
+\begin{problem}<xsl:apply-templates mode="envleadin"/>
+<xsl:apply-templates/>
+\end{problem}</xsl:template>
+
+<xsl:template match="html:property">
+\begin{property}<xsl:apply-templates mode="envleadin"/>
+<xsl:apply-templates/>
+\end{property}</xsl:template>
+
+<xsl:template match="html:question">
+\begin{question}<xsl:apply-templates mode="envleadin"/>
+<xsl:apply-templates/>
+\end{question}</xsl:template>
+
+<xsl:template match="html:acknowledgment">
+\begin{acknowledgment}<xsl:apply-templates mode="envleadin"/>
+<xsl:apply-templates/>
+\end{acknowledgment}</xsl:template>
+
+<xsl:template match="html:case">
+\begin{case}<xsl:apply-templates mode="envleadin"/>
+<xsl:apply-templates/>
+\end{case}</xsl:template>
+
+<xsl:template match="html:claim">
+\begin{claim}<xsl:apply-templates mode="envleadin"/>
+<xsl:apply-templates/>
+\end{claim}</xsl:template>
+
+<xsl:template match="html:conclusion">
+\begin{conclusion}<xsl:apply-templates mode="envleadin"/>
+<xsl:apply-templates/>
+\end{conclusion}</xsl:template>
+
+<xsl:template match="html:notation">
+\begin{notation}<xsl:apply-templates mode="envleadin"/>
+<xsl:apply-templates/>
+\end{notation}</xsl:template>
+
+<xsl:template match="html:remark">
+\begin{remark}<xsl:apply-templates mode="envleadin"/>
+<xsl:apply-templates/>
+\end{remark}</xsl:template>
+
+<xsl:template match="html:summary">
+\begin{summary}<xsl:apply-templates mode="envleadin"/>
+<xsl:apply-templates/>
+\end{summary}</xsl:template>
+
+<xsl:template match="html:proof">
+\begin{proof}<xsl:apply-templates mode="envleadin"/>
+<xsl:apply-templates/>
+\end{proof}</xsl:template>
+
+<xsl:template match="html:envLeadIn"></xsl:template>
+<xsl:template match="*" mode="envleadin"></xsl:template>
+<xsl:template match="html:envLeadIn" mode="envleadin">[<xsl:apply-templates/>]</xsl:template>
 
 <xsl:template match="html:drop">
 \lettrine[lhang=.2]{\textbf{<xsl:apply-templates/>}}{}
