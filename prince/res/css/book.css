@@ -318,12 +318,13 @@ Huge {
   font-size: 183%
 }
 
+/*
 theorem {
   display: block;
   font-style: italic;
-/*  counter-increment: theorem; */
+  counter-increment: theorem;
 }
-/*
+
 theorem:before {
   content:  attr(type) " " counter(section) "."  counter(theorem) ". " ;
 } */
