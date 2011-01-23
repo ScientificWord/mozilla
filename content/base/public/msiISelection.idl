@@ -47,6 +47,7 @@ interface msiISelection : nsISupports
            in nsIDOMNode endNode, in unsigned long endOffset,
            in nsIDOMNode focusNode, in unsigned long focusOffset,
            in nsIDOMNode anchorNode, in unsigned long anchorOffset);
+  void SyncMSIwithNS();
   
   [noscript] void InitalizeCallbackFunctions(in msiAdjustCaretCB adjustCaretCB,
                                              in msiSetSelectionCB setSelectionCB,
