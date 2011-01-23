@@ -8962,3 +8962,37 @@ function doReviseStructureNode(editor, origData, reviseData)
       editor.deleteNode(shortTitleNode);
   }
 }
+
+function doReviseEnvironmentNode(editor, origData, reviseData)
+{
+  if (!origData.envNode)
+  {
+    dump("In msiComposerCommands.js, doReviseEnvironmentNode() called without a environment node!\n");
+    return;
+  }
+  
+  var leadInTypeStr = (reviseData.leadInType == "auto") ? "" : reviseData.leadInType;  //Prevent adding leadInType="auto" as an attribute
+  msiEditorEnsureElementAttribute(origData.envNode, "leadInType", leadInTypeStr, editor);
+  var unnumberedStr = reviseData.bUnnumbered ? "true" : "";
+  msiEditorEnsureElementAttribute(origData.envNode, "unnumbered", unnumberedStr, editor);
+  var customLeadInNode = origData.customLeadInNode;
+  if (reviseData.customLeadInStr && reviseData.customLeadInStr.length)
+  {
+    if (!customLeadInNode)
+    {
+      customLeadInNode = editor.document.createElementNS(xhtmlns, "envLeadIn");
+      editor.insertNode(customLeadInNode, origData.envNode, 0);  //Lead-in always goes at the start
+    }
+    if (!origData.customLeadInStr || (reviseData.customLeadInStr != origData.customLeadInStr))
+    {
+      for (var ix = customLeadInNode.childNodes.length; ix > 0 ; --ix)
+        editor.deleteNode(customLeadInNode.childNodes[ix-1]);
+      editor.insertHTMLWithContext(reviseData.customLeadInStr, "", "", "", null, customLeadInNode, 0, false);
+    }
+  }
+  else 
+  {
+    if (customLeadInNode)
+      editor.deleteNode(customLeadInNode);
+  }
+}
