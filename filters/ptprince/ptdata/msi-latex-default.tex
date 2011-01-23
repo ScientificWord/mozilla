@@ -41,6 +41,9 @@
 \MSIEmptyElement[leftquote]{textquotedblleft}
 \MSIEmptyElement[rightquote]{textquotedblright}
 \MSIEmptyElement{textbackslash}
+\MSIEmptyElement[discretionaryhyphen]{-}
+\MSIEmptyElement[asterisk]{*}
+
 
 
 
@@ -62,6 +65,15 @@
 \MSISimpleEnvironment{flushleft}
 \MSISimpleEnvironment{flushright}
 \MSISimpleEnvironment{subequations}
+
+\MSISimpleEnvironment{tabbing}
+\MSIEmptyElement[tab-gt]{>}%  these are used in tabbing environnment
+\MSIEmptyElement[tab-plus]{+}
+\MSIEmptyElement[tab-eq]{=}
+
+
+
+
 %\MSISimpleEnvironment{proof}
 
 
@@ -85,10 +97,15 @@
 \MSITextElement{pageref}
 
 
-
+%% TeX buttons
 
 \MSITeXButtonReq{pagestyle}
 \MSITeXButtonReq{thispagestyle}
+\MSITeXButtonReq{fbox}
+\MSITeXButton{raggedleft}
+\MSITeXButton{raggedright}
+
+\MSITeXButtonEnvironment{minipage}
 
 
 
@@ -140,6 +157,7 @@
 % From \ng
 % To   &#14b;  
 
+\MSIUnicode{dots}{85}
 \MSIUnicode{L}{141}
 \MSIUnicode{l}{142}
 \MSIUnicode{NG}{14a}
@@ -355,6 +373,17 @@
 % separate MathML translator. 
 %
 
+\MSIEqnarrayLikeEnvironment{eqnarray}
+\MSIEqnarrayLikeEnvironment{eqnarray*}
+\MSIEqnarrayLikeEnvironment{multline}
+
+
+\MSISplitLikeEnvironment{split}
+\MSISplitLikeEnvironment{gather}
+\MSISplitLikeEnvironment{gather*}
+  
+
+
 % Use MSIMathQuote to cause the enclosed LaTeX macro to not be expanded by
 % pretex. 
 
@@ -478,6 +507,8 @@
 \MSIMathQuote{diiint}
 \MSIMathQuote{diint}
 \MSIMathQuote{dint}
+\MSIMathQuote{displaystyle}
+
 \MSIMathQuote{divideontimes}
 \MSIMathQuote{div}
 \MSIMathQuote{doint}
@@ -547,6 +578,7 @@
 \MSIMathQuote{implies}
 \MSIMathQuote{Im}
 \MSIMathQuote{infty}
+\MSIMathQuote{injlim}
 \MSIMathQuote{intercal}
 \MSIMathQuote{int}
 \MSIMathQuote{in}
@@ -681,6 +713,10 @@
 \MSIMathQuote{otimes}
 \MSIMathQuote{overline}
 \MSIMathQuote{overset}
+\MSIMathQuote{overleftrightarrow}
+\MSIMathQuote{overleftarrow}
+\MSIMathQuote{overrightarrow}
+\MSIMathQuote{overarrow}
 \MSIMathQuote{parallel}
 \MSIMathQuote{partial}
 \MSIMathQuote{perp}
@@ -701,6 +737,7 @@
 \MSIMathQuote{prec}
 \MSIMathQuote{prime}
 \MSIMathQuote{prod}
+\MSIMathQuote{projlim}
 \MSIMathQuote{propto}
 \MSIMathQuote{Psi}
 \MSIMathQuote{psi}
@@ -822,6 +859,12 @@
 \MSIMathQuote{twoheadrightarrow}
 \MSIMathQuote{ulcorner}
 \MSIMathQuote{underset}
+\MSIMathQuote{underrightarrow}
+\MSIMathQuote{underarrow}
+\MSIMathQuote{underleftarrow}
+\MSIMathQuote{underleftrightarrow}
+
+
 \MSIMathQuote{unlhd}
 \MSIMathQuote{unrhd}
 \MSIMathQuote{Uparrow}
@@ -836,11 +879,17 @@
 \MSIMathQuote{upuparrows}
 \MSIMathQuote{urcorner}
 \MSIMathQuote{varepsilon}
+\MSIMathQuote{varinjlim}
+\MSIMathQuote{varliminf}
+\MSIMathQuote{varlimsup}
 \MSIMathQuote{varkappa}
+
 \MSIMathQuote{varnothing}
 \MSIMathQuote{varphi}
 \MSIMathQuote{varpi}
 \MSIMathQuote{varpropto}
+\MSIMathQuote{varprojlim}
+
 \MSIMathQuote{varrho}
 \MSIMathQuote{varsigma}
 \MSIMathQuote{varsubsetneqq}
