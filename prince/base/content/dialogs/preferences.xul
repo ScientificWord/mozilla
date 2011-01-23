@@ -5,7 +5,6 @@
 
 <!DOCTYPE prefwindow SYSTEM "chrome://prince/locale/preferences.dtd">
 
-
 <prefwindow id="appPreferences"
             title="Preferences"
             onload = "initialize();"
