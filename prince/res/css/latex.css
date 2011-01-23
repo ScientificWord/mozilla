@@ -693,3 +693,383 @@ line {
 *[showinvis="true"] numberedListItem + numberedListItem {
   margin-top: -5px;
 }
+
+/* In the AMS-sanctioned classification of theorem environments, we have the breakdown:
+    Plain      - assertion, conjecture, corollary, criterion, lemma, proposition, theorem
+    Definition - algorithm, assumption, axiom, condition, definition, example,
+                 exercise, hypothesis, problem, property, question
+    Remark     - acknowledgment (not encouraged), case, claim, conclusion, notation, 
+                 note (we would use the tag "texnote", but no support currently), 
+                 remark, summary
+  The CSS properties for these should be:
+    Plain lead-in      - normal bold
+    Plain content      - italic normal
+    Definition lead-in - normal bold
+    Definition content - normal normal
+    Remark lead-in     - normal normal (but we use bold on-screen, per George)
+    Remark content     - italic normal
+*/
+
+assertion > *:first-child::before, conjecture > *:first-child::before,
+corollary > *:first-child::before, criterion > *:first-child::before, 
+lemma > *:first-child::before, proposition > *:first-child::before, theorem > *:first-child::before
+{
+  font-style: normal;
+  font-weight: bold;
+  -moz-user-select: -moz-none;
+}
+
+assertion, conjecture, corollary, criterion, lemma, proposition, theorem {
+  display: block;
+  font-style: italic;
+  counter-increment: theorem;
+}
+
+assertion > *:first-child::before {
+  content: 'Assertion ' counter(section) "." counter(theorem) ' ';
+}
+
+assertion[unnumbered="true"] > *:first-child::before {
+  content: 'Assertion ';
+}
+
+conjecture > *:first-child::before {
+  content: 'Conjecture ' counter(section) "." counter(theorem) ' ';
+}
+
+conjecture[unnumbered="true"] > *:first-child::before {
+  content: 'Conjecture ';
+}
+
+corollary > *:first-child::before {
+  content: 'Corollary ' counter(section) "." counter(theorem) ' ';
+}
+
+corollary[unnumbered="true"] > *:first-child::before {
+  content: 'Corollary ';
+}
+
+criterion > *:first-child::before {
+  content: 'Criterion ' counter(section) "." counter(theorem) ' ';
+}
+
+criterion[unnumbered="true"] > *:first-child::before {
+  content: 'Criterion ';
+}
+
+lemma > *:first-child::before {
+  content: 'Lemma ' counter(section) "." counter(theorem) ' ';
+}
+
+lemma[unnumbered="true"] > *:first-child::before {
+  content: 'Lemma ';
+}
+
+proposition > *:first-child::before {
+  content: 'Proposition ' counter(section) "." counter(theorem) ' ';
+}
+
+proposition[unnumbered="true"] > *:first-child::before {
+  content: 'Proposition ';
+}
+
+theorem > *:first-child::before {
+  content: 'Theorem ' counter(section) "." counter(theorem) ' ';
+}
+ 
+theorem[unnumbered="true"] > *:first-child::before {
+  content: 'Theorem ';
+}
+
+algorithm > *:first-child::before, assumption > *:first-child::before, 
+axiom > *:first-child::before, condition > *:first-child::before,
+definition > *:first-child::before, example > *:first-child::before,
+exercise > *:first-child::before, hypothesis > *:first-child::before,
+problem > *:first-child::before, property > *:first-child::before, question > *:first-child::before
+{
+  font-style: normal;
+  font-weight: bold;
+  -moz-user-select: -moz-none;
+}
+
+algorithm, assumption, axiom, condition, definition, example, exercise, hypothesis,
+problem, property, question
+{
+  display: block;
+  font-style: normal;
+  counter-increment: theorem;
+}
+
+algorithm > *:first-child::before {
+  content: 'Algorithm ' counter(section) "." counter(theorem) ' ';
+}
+
+algorithm[unnumbered="true"] > *:first-child::before {
+  content: 'Algorithm ';
+}
+
+assumption > *:first-child::before {
+  content: 'Assumption ' counter(section) "." counter(theorem) ' ';
+}
+
+assumption[unnumbered="true"] > *:first-child::before {
+  content: 'Assumption ';
+}
+
+axiom > *:first-child::before {
+  content: 'Axiom ' counter(section) "." counter(theorem) ' ';
+}
+
+axiom[unnumbered="true"] > *:first-child::before {
+  content: 'Axiom ';
+}
+
+condition > *:first-child::before {
+  content: 'Condition ' counter(section) "." counter(theorem) ' ';
+}
+
+condition[unnumbered="true"] > *:first-child::before {
+  content: 'Condition ';
+}
+
+definition > *:first-child::before {
+  content: 'Definition ' counter(section) "." counter(theorem) ' ';
+}
+
+definition[unnumbered="true"] > *:first-child::before {
+  content: 'Definition ';
+}
+
+example > *:first-child::before {
+  content: 'Example ' counter(section) "." counter(theorem) ' ';
+}
+
+example[unnumbered="true"] > *:first-child::before {
+  content: 'Example ';
+}
+
+exercise > *:first-child::before {
+  content: 'Exercise ' counter(section) "." counter(theorem) ' ';
+}
+
+exercise[unnumbered="true"] > *:first-child::before {
+  content: 'Exercise ';
+}
+
+hypothesis > *:first-child::before {
+  content: 'Hypothesis ' counter(section) "." counter(theorem) ' ';
+}
+
+hypothesis[unnumbered="true"] > *:first-child::before {
+  content: 'Hypothesis ';
+}
+
+problem > *:first-child::before {
+  content: 'Problem ' counter(section) "." counter(theorem) ' ';
+}
+
+problem[unnumbered="true"] > *:first-child::before {
+  content: 'Problem ';
+}
+
+property > *:first-child::before {
+  content: 'Property ' counter(section) "." counter(theorem) ' ';
+}
+
+property[unnumbered="true"] > *:first-child::before {
+  content: 'Property ';
+}
+
+question > *:first-child::before {
+  content: 'Question ' counter(section) "." counter(theorem) ' ';
+}
+
+question[unnumbered="true"] > *:first-child::before {
+  content: 'Question ';
+}
+
+acknowledgment > *:first-child::before, case > *:first-child::before, claim > *:first-child::before,
+conclusion > *:first-child::before, notation > *:first-child::before,
+remark > *:first-child::before, summary > *:first-child::before
+{
+  font-style: italic;
+  font-weight: bold;
+  -moz-user-select: -moz-none;
+}
+  
+acknowledgment, case, claim, conclusion, notation, remark, summary {
+  display: block;
+  font-style: normal;
+  counter-increment: theorem;
+}
+
+acknowledgment > *:first-child::before {
+  content: 'Acknowledgment ' counter(section) "." counter(case) ' ';
+}
+
+acknowledgment[unnumbered="true"] > *:first-child::before {
+  content: 'Acknowledgment ';
+}
+
+case > *:first-child::before {
+  content: 'Case ' counter(section) "." counter(case) ' ';
+}
+
+case[unnumbered="true"] > *:first-child::before {
+  content: 'Case ';
+}
+
+claim > *:first-child::before {
+  content: 'Claim ' counter(section) "." counter(theorem) ' ';
+}
+
+claim[unnumbered="true"] > *:first-child::before {
+  content: 'Claim ';
+}
+
+conclusion > *:first-child::before {
+  content: 'Conclusion ' counter(section) "." counter(theorem) ' ';
+}
+
+conclusion[unnumbered="true"] > *:first-child::before {
+  content: 'Conclusion ';
+}
+
+notation > *:first-child::before {
+  content: 'Notation ' counter(section) "." counter(theorem) ' ';
+}
+
+notation[unnumbered="true"] > *:first-child::before {
+  content: 'Notation ';
+}
+
+remark > *:first-child::before {
+  content: 'Remark ' counter(section) "." counter(theorem) ' ';
+}
+
+remark[unnumbered="true"] > *:first-child::before {
+  content: 'Remark ';
+}
+
+summary > *:first-child::before {
+  content: 'Summary ' counter(section) "." counter(theorem) ' ';
+}
+
+summary[unnumbered="true"] > *:first-child::before {
+  content: 'Summary ';
+}
+
+proof > *:first-child::before {
+  content: 'Proof ';
+  -moz-user-select: -moz-none;
+  background-color: lightgray;
+  font-weight: bold;
+}
+
+assertion[leadInType="custom"],
+conjecture[leadInType="custom"],
+corollary[leadInType="custom"],
+criterion[leadInType="custom"],
+lemma[leadInType="custom"],
+proposition[leadInType="custom"],
+theorem[leadInType="custom"],
+algorithm[leadInType="custom"],
+assumption[leadInType="custom"],
+axiom[leadInType="custom"],
+condition[leadInType="custom"],
+definition[leadInType="custom"],
+example[leadInType="custom"],
+exercise[leadInType="custom"],
+hypothesis[leadInType="custom"],
+problem[leadInType="custom"],
+property[leadInType="custom"],
+question[leadInType="custom"],
+acknowledgment[leadInType="custom"],
+case[leadInType="custom"],
+claim[leadInType="custom"],
+conclusion[leadInType="custom"],
+notation[leadInType="custom"],
+remark[leadInType="custom"],
+summary[leadInType="custom"], 
+proof[leadInType="custom"] {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#theoremWithCustomLeadin");
+}
+
+assertion[unnumbered="true"],
+conjecture[unnumbered="true"],
+corollary[unnumbered="true"],
+criterion[unnumbered="true"],
+lemma[unnumbered="true"],
+proposition[unnumbered="true"],
+theorem[unnumbered="true"],
+algorithm[unnumbered="true"],
+assumption[unnumbered="true"],
+axiom[unnumbered="true"],
+condition[unnumbered="true"],
+definition[unnumbered="true"],
+example[unnumbered="true"],
+exercise[unnumbered="true"],
+hypothesis[unnumbered="true"],
+problem[unnumbered="true"],
+property[unnumbered="true"],
+question[unnumbered="true"],
+acknowledgment[unnumbered="true"],
+case[unnumbered="true"],
+claim[unnumbered="true"],
+conclusion[unnumbered="true"],
+notation[unnumbered="true"],
+remark[unnumbered="true"],
+summary[unnumbered="true"] {
+  counter-increment: none;
+}
+
+assertion > envLeadIn+bodyText,
+conjecture > envLeadIn+bodyText,
+corollary > envLeadIn+bodyText,
+criterion > envLeadIn+bodyText,
+lemma > envLeadIn+bodyText,
+proposition > envLeadIn+bodyText,
+theorem > envLeadIn+bodyText,
+algorithm > envLeadIn+bodyText,
+assumption > envLeadIn+bodyText,
+axiom > envLeadIn+bodyText,
+condition > envLeadIn+bodyText,
+definition > envLeadIn+bodyText,
+example > envLeadIn+bodyText,
+exercise > envLeadIn+bodyText,
+hypothesis > envLeadIn+bodyText,
+problem > envLeadIn+bodyText,
+property > envLeadIn+bodyText,
+question > envLeadIn+bodyText,
+acknowledgment > envLeadIn+bodyText,
+case > envLeadIn+bodyText,
+claim > envLeadIn+bodyText,
+conclusion > envLeadIn+bodyText,
+notation > envLeadIn+bodyText,
+remark > envLeadIn+bodyText,
+summary > envLeadIn+bodyText,
+proof > envLeadIn+bodyText {
+  display: inline;
+}
+
+/* "texnote" would be intended to represent the AMSTeX \note, as we already have a <note> tag.
+  It's commented out as the benefits are probably fewer than the hazards.
+  "solution" isn't in the AMS-canonized list.
+texnote > *:first-child::before {
+  content: 'Note ' counter(section) "." counter(theorem) ' ';
+}
+
+solution > *:first-child::before {
+  content: 'Solution ' counter(section) "." counter(theorem) ' ';
+}
+
+texnote, solution {
+  display: block;
+  font-style: normal;
+  font-weight: normal;
+}
+
+texnote[leadInType="custom"], solution[leadInType="custom"] {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#theoremWithCustomLeadin");
+}
+*/

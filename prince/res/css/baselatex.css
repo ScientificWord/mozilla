@@ -51,12 +51,7 @@ numberedListItem>bodyText:first-child:before { content: '(' counter(numberedlist
 numberedListItem>bodyText:first-child:first-line { content: '  ';
 }
 
-theorem {
-  display: block;
-  font-style: italic
-}
-
-proof {
+/* proof {
   display: block;
 }
 
@@ -64,7 +59,7 @@ proof:before {
   content: "Proof. ";
   background-color: lightgray;
   font-weight: bold;
-}
+} */
   
 img { display: inline;} 
 
@@ -386,4 +381,3 @@ shortTitle {
 @media print {
 *[nopr] {display: none;}
 }
-
