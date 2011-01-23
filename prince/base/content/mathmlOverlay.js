@@ -2230,7 +2230,7 @@ function doMathnameDlg(editorElement, commandID, commandHandler)
 {
   var o = new Object();
   o.val = "";
-//  window.openDialog("chrome://prince/content/MathmlMathname.xul", "mathname", "chrome,close,titlebar,modal", o);
+//  window.openDialog("chrome://prince/content/MathmlMathname.xul", "mathname", "chrome,close,titlebar,resizable,modal", o);
   msiOpenModelessDialog("chrome://prince/content/mathmlMathName.xul", "mathname", "chrome,close,titlebar,dependent",
                                         editorElement, commandID, commandHandler, o);
 }

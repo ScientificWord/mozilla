@@ -575,6 +575,12 @@
 <!ENTITY toolplaineditor.accesskey "p">
 <!ENTITY toolsetfocus.accesskey "f">
 <!ENTITY toolsmenuJavaScriptdebugger.label  "JavaScript debugger...">
+
+<!-- The following three items were copied from tasksoverlay.dtd to be used in MenuOverlay.xul and MenuOverlay.dtd -->
+<!ENTITY inspectorTaskCmd.label "DOM Inspector">
+<!ENTITY inspectorTaskCmd.commandkey "i">
+<!ENTITY inspectorTaskCmd.accesskey "I">
+
 <!-- JLF Review ENTITY venkman.label "JavaScript Debugger"> -->
 <!ENTITY toolsmenuJavaScriptdebugger.accesskey  "J">
 <!ENTITY toolsmenuExtensions.label  "Extensions...">
