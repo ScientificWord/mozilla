@@ -26,7 +26,6 @@ public:
   NS_IMETHOD Adjust();
 
 protected:
-  void SyncMSIwithNS();
   PRBool IsVoidOfContent(nsIDOMNode * start, PRUint32 startOff, nsIDOMNode* end, PRUint32 endOff);
   PRBool IsMouseEventActive();
   
@@ -289,12 +288,14 @@ msiTypedSelection::RemoveAllRanges(void)
 
 // end overwrite of nsISelection
 
-void msiTypedSelection::SyncMSIwithNS()
+NS_IMETHODIMP
+msiTypedSelection::SyncMSIwithNS()
 {
   m_msiFocusNode = FetchFocusNode();
   m_msiAnchorNode = FetchAnchorNode();
   m_msiFocusOffset = FetchFocusOffset();
   m_msiAnchorOffset = FetchAnchorOffset();
+  return NS_OK;
 }
 
 PRBool msiTypedSelection::IsVoidOfContent(nsIDOMNode* start, PRUint32 startOff, nsIDOMNode * end, PRUint32 endOff)

@@ -50,6 +50,8 @@ var gConstrainHeight = 0;
 var imageElement;
 var gActualWidth = "";
 var gActualHeight = "";
+var gDefaultWidth = 200;
+var gDefaultHeight = 100;
 var gOriginalSrc = "";
 var gHaveDocumentUrl = false;
 
@@ -259,11 +261,29 @@ function InitImage()
 
   // Set actual radio button if both set values are the same as actual
   SetSizeWidgets(width, height);
-  frameTabDlg.unitList.value = "px";
+  frameTabDlg.unitList.value = "pt";
 
-  frameTabDlg.widthInput.value  = gConstrainWidth = width ? width : (gActualWidth ? gActualWidth : "");
-  frameTabDlg.heightInput.value = gConstrainHeight = height ? height : (gActualHeight ? gActualHeight : "");
-
+  //trim off units at end
+  var re = /[a-z]*/gi;
+  width = width.replace(re,"");
+  height = height.replace(re,"");
+  gConstrainWidth = width;
+  gConstrainHeight = height;
+  if ((width > 0) || (height > 0))
+  {
+    frameTabDlg.widthInput.value  = width;
+    frameTabDlg.heightInput.value = height;
+  }
+  else if ((gActualHeight > 0)||(gActualWidth > 0)) 
+  {
+    frameTabDlg.widthInput.value  = frameUnitHandler.getValueOf(gActualWidth,"px");
+    frameTabDlg.heightInput.value = frameUnitHandler.getValueOf(gActualHeight,"px");
+  }
+  else
+  {
+    frameTabDlg.widthInput.value  = frameUnitHandler.getValueOf(gDefaultWidth,"pt");
+    frameTabDlg.heightInput.value = frameUnitHandler.getValueOf(gDefaultHeight,"pt");
+  }
   // set spacing editfields
   var herePlacement;
   var placement = globalElement.getAttribute("placement");
@@ -291,38 +311,8 @@ function InitImage()
   else bordervalues = [0,0,0,0];
   bordervalues.forEach(fillInValue);
   bordervalues.forEach(stripPx);
-    
-//  gDialog.borderInput.top = bordervalues[0];
-//  gDialog.borderInput.right = bordervalues[1];
-//  gDialog.borderInput.bottom = bordervalues[2];
-//  gDialog.borderInput.left = bordervalues[3];
+}    
 
-  // Get alignment setting
-//  var align = globalElement.getAttribute("align");
-//  if (align)
-//    align = align.toLowerCase();
-//
-//  var imgClass;
-//  var textID;
-//
-//  switch ( align )
-//  {
-//    case "top":
-//    case "middle":
-//    case "right":
-//    case "left":
-//      gDialog.alignTypeSelect.value = align;
-//      break;
-//    default:  // Default or "bottom"
-//      gDialog.alignTypeSelect.value = "bottom";
-//  }
-//
-//  // Get image map for image
-//  gImageMap = GetImageMap();
-//
-//  doOverallEnabling();
-//  doDimensionEnabling();
-}
 
 
 function LoadPreviewImage()

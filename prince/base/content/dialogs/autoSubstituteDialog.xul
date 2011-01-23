@@ -75,8 +75,7 @@
         <textbox id="keystrokesBox" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
           completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="autosubstitution" 
 		      tooltiptext="&keystrokesBox.tooltip;" 
-		      label="&keystrokesBox.label;"
-          onkeypress="checkKeyPressEvent(this, event);"
+		      onkeypress="checkKeyPressEvent(this, event);"
           onfocus="this.select();"
           onsearchcomplete="changePattern(this.value);"
           ontextentered="changePattern(this.value);" 
@@ -144,8 +143,6 @@
     <vbox>
       <msibutton id="saveButton" label="&saveButton.label;" accesskey="&saveButton.accesskey;" oncommand="saveCurrentSub();" />
       <msibutton id="removeButton" label="&removeButton.label;" accesskey="&removeButton.accesskey;" oncommand="removeCurrentSub();" />
-      <!-- msibutton id="testButton" label="Test;" accesskey="&removeButton.accesskey;" oncommand="onOK();" / -->
- 
     </vbox>
   </hbox>  
 </dialog>
