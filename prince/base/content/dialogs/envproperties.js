@@ -57,8 +57,8 @@ function startup()
   }
   
   envData.bUnnumbered = false;
-  var numAttrStr = envData.envNode.getAttribute("unnumbered");
-  if (numAttrStr && numAttrStr == "true")
+  var numAttrStr = envData.envNode.getAttribute("numbering");
+  if (numAttrStr && numAttrStr == "none")
     envData.bUnnumbered = true;
 
   document.getElementById("leadInRadioGroup").value = envData.leadInType;
