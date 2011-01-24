@@ -251,3 +251,5 @@ prince.jar:
   content/typesetBibitemDlg.js          (dialogs/typesetBibitemDlg.js)
   content/preferences.xul               (dialogs/preferences.xul)
   content/preferences.js                (dialogs/preferences.js)
+  content/envproperties.xul             (dialogs/envproperties.xul)
+  content/envproperties.js              (dialogs/envproperties.js)
