@@ -416,6 +416,7 @@ Huge {
   font-size: 183%
 }
 
+/*
 theorem {
   display: block;
   font-style: italic;
@@ -426,6 +427,7 @@ theorem:before {
   content:  "Theorem " counter(section) "."  counter(theorem) ". " ;
   -moz-user-select: -moz-none;
 }
+*/
 
 section defaulttitletag:after {
   content: "Replace this section title"; 
