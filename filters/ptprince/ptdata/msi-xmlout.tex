@@ -164,6 +164,7 @@
 \def\out@thanks#1{%
    \msitag{^^0a}\msiopentag{thanks}{<thanks>}#1\msiclosetag{thanks}{</thanks>}}
 
+\def\out@and{\msiclosetag{author}{</author>}\msitag{^^0a}\msiopentag{author}{<author>}}%
    
 \def\out@author#1{%
   \begingroup
@@ -828,9 +829,9 @@
 \def\mathbf#1{\string\mathbf\char123#1\char125}
 \def\mathfrak#1{\string\mathfrak\char123#1\char125}
 
-\def\LaTeX{<latex>LaTeX</latex>}
-\def\TeX{<tex>TeX</tex>}
 
+\def\TeX{\msitag{<texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>}}
+\def\LaTeX{\msitag{<texlogo xmlns="http://www.w3.org/1999/xhtml" name="latex">L<sup>A</sup>T<sub>E</sub>X</texlogo>}}
 
 
 % Operators
@@ -1138,9 +1139,7 @@
 
 
 \def\out@hyperref#1#2#3#4{%
-   %\msiopentag{<a href="#4">}#1\msiclosetag{</a>}%
-   \msiopentag{a}{<a href="#4">}#1\msiclosetag{a}{</a>}%
-}
+   \msiopentag{a}{<a href="#4">}#1\msiclosetag{a}{</a>}}
 
 \newif\if@in@texttag
 \@in@texttagfalse
@@ -1298,7 +1297,7 @@
 
 
 %\MSIMathQuote{\\} %% may need to hard-code this one:
-\msitraceon
+
 \def\\{\ifmmode\string\\\else\msitag{<br/>}\fi}
 
 %% Temporary until prince can read xml
