@@ -8973,8 +8973,8 @@ function doReviseEnvironmentNode(editor, origData, reviseData)
   
   var leadInTypeStr = (reviseData.leadInType == "auto") ? "" : reviseData.leadInType;  //Prevent adding leadInType="auto" as an attribute
   msiEditorEnsureElementAttribute(origData.envNode, "leadInType", leadInTypeStr, editor);
-  var unnumberedStr = reviseData.bUnnumbered ? "true" : "";
-  msiEditorEnsureElementAttribute(origData.envNode, "unnumbered", unnumberedStr, editor);
+  var unnumberedStr = reviseData.bUnnumbered ? "none" : "";
+  msiEditorEnsureElementAttribute(origData.envNode, "numbering", unnumberedStr, editor);
   var customLeadInNode = origData.customLeadInNode;
   if (reviseData.customLeadInStr && reviseData.customLeadInStr.length)
   {
