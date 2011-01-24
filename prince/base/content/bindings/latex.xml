@@ -985,10 +985,7 @@
 
 	  <xbl:content>
       <html:button class="envleadIn" anonid="theButton" oncommand="">
-        <html:span style="white-space: pre">(</html:span>
-        <xbl:children includes="envLeadIn"/>
-        <html:span style="white-space: pre">) </html:span>
-      </html:button>
+        <html:span style="white-space: pre">(</html:span><xbl:children includes="envLeadIn"/><html:span style="white-space: pre">) </html:span></html:button>
       <xbl:children/>
     </xbl:content>
   </xbl:binding>
