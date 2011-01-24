@@ -729,7 +729,7 @@ assertion > *:first-child::before {
   content: 'Assertion ' counter(section) "." counter(theorem) ' ';
 }
 
-assertion[unnumbered="true"] > *:first-child::before {
+assertion[numbering="none"] > *:first-child::before {
   content: 'Assertion ';
 }
 
@@ -737,7 +737,7 @@ conjecture > *:first-child::before {
   content: 'Conjecture ' counter(section) "." counter(theorem) ' ';
 }
 
-conjecture[unnumbered="true"] > *:first-child::before {
+conjecture[numbering="none"] > *:first-child::before {
   content: 'Conjecture ';
 }
 
@@ -745,7 +745,7 @@ corollary > *:first-child::before {
   content: 'Corollary ' counter(section) "." counter(theorem) ' ';
 }
 
-corollary[unnumbered="true"] > *:first-child::before {
+corollary[numbering="none"] > *:first-child::before {
   content: 'Corollary ';
 }
 
@@ -753,7 +753,7 @@ criterion > *:first-child::before {
   content: 'Criterion ' counter(section) "." counter(theorem) ' ';
 }
 
-criterion[unnumbered="true"] > *:first-child::before {
+criterion[numbering="none"] > *:first-child::before {
   content: 'Criterion ';
 }
 
@@ -761,7 +761,7 @@ lemma > *:first-child::before {
   content: 'Lemma ' counter(section) "." counter(theorem) ' ';
 }
 
-lemma[unnumbered="true"] > *:first-child::before {
+lemma[numbering="none"] > *:first-child::before {
   content: 'Lemma ';
 }
 
@@ -769,7 +769,7 @@ proposition > *:first-child::before {
   content: 'Proposition ' counter(section) "." counter(theorem) ' ';
 }
 
-proposition[unnumbered="true"] > *:first-child::before {
+proposition[numbering="none"] > *:first-child::before {
   content: 'Proposition ';
 }
 
@@ -777,7 +777,7 @@ theorem > *:first-child::before {
   content: 'Theorem ' counter(section) "." counter(theorem) ' ';
 }
  
-theorem[unnumbered="true"] > *:first-child::before {
+theorem[numbering="none"] > *:first-child::before {
   content: 'Theorem ';
 }
 
@@ -804,7 +804,7 @@ algorithm > *:first-child::before {
   content: 'Algorithm ' counter(section) "." counter(theorem) ' ';
 }
 
-algorithm[unnumbered="true"] > *:first-child::before {
+algorithm[numbering="none"] > *:first-child::before {
   content: 'Algorithm ';
 }
 
@@ -812,7 +812,7 @@ assumption > *:first-child::before {
   content: 'Assumption ' counter(section) "." counter(theorem) ' ';
 }
 
-assumption[unnumbered="true"] > *:first-child::before {
+assumption[numbering="none"] > *:first-child::before {
   content: 'Assumption ';
 }
 
@@ -820,7 +820,7 @@ axiom > *:first-child::before {
   content: 'Axiom ' counter(section) "." counter(theorem) ' ';
 }
 
-axiom[unnumbered="true"] > *:first-child::before {
+axiom[numbering="none"] > *:first-child::before {
   content: 'Axiom ';
 }
 
@@ -828,7 +828,7 @@ condition > *:first-child::before {
   content: 'Condition ' counter(section) "." counter(theorem) ' ';
 }
 
-condition[unnumbered="true"] > *:first-child::before {
+condition[numbering="none"] > *:first-child::before {
   content: 'Condition ';
 }
 
@@ -836,7 +836,7 @@ definition > *:first-child::before {
   content: 'Definition ' counter(section) "." counter(theorem) ' ';
 }
 
-definition[unnumbered="true"] > *:first-child::before {
+definition[numbering="none"] > *:first-child::before {
   content: 'Definition ';
 }
 
@@ -844,7 +844,7 @@ example > *:first-child::before {
   content: 'Example ' counter(section) "." counter(theorem) ' ';
 }
 
-example[unnumbered="true"] > *:first-child::before {
+example[numbering="none"] > *:first-child::before {
   content: 'Example ';
 }
 
@@ -852,7 +852,7 @@ exercise > *:first-child::before {
   content: 'Exercise ' counter(section) "." counter(theorem) ' ';
 }
 
-exercise[unnumbered="true"] > *:first-child::before {
+exercise[numbering="none"] > *:first-child::before {
   content: 'Exercise ';
 }
 
@@ -860,7 +860,7 @@ hypothesis > *:first-child::before {
   content: 'Hypothesis ' counter(section) "." counter(theorem) ' ';
 }
 
-hypothesis[unnumbered="true"] > *:first-child::before {
+hypothesis[numbering="none"] > *:first-child::before {
   content: 'Hypothesis ';
 }
 
@@ -868,7 +868,7 @@ problem > *:first-child::before {
   content: 'Problem ' counter(section) "." counter(theorem) ' ';
 }
 
-problem[unnumbered="true"] > *:first-child::before {
+problem[numbering="none"] > *:first-child::before {
   content: 'Problem ';
 }
 
@@ -876,7 +876,7 @@ property > *:first-child::before {
   content: 'Property ' counter(section) "." counter(theorem) ' ';
 }
 
-property[unnumbered="true"] > *:first-child::before {
+property[numbering="none"] > *:first-child::before {
   content: 'Property ';
 }
 
@@ -884,7 +884,7 @@ question > *:first-child::before {
   content: 'Question ' counter(section) "." counter(theorem) ' ';
 }
 
-question[unnumbered="true"] > *:first-child::before {
+question[numbering="none"] > *:first-child::before {
   content: 'Question ';
 }
 
@@ -907,7 +907,7 @@ acknowledgment > *:first-child::before {
   content: 'Acknowledgment ' counter(section) "." counter(case) ' ';
 }
 
-acknowledgment[unnumbered="true"] > *:first-child::before {
+acknowledgment[numbering="none"] > *:first-child::before {
   content: 'Acknowledgment ';
 }
 
@@ -915,7 +915,7 @@ case > *:first-child::before {
   content: 'Case ' counter(section) "." counter(case) ' ';
 }
 
-case[unnumbered="true"] > *:first-child::before {
+case[numbering="none"] > *:first-child::before {
   content: 'Case ';
 }
 
@@ -923,7 +923,7 @@ claim > *:first-child::before {
   content: 'Claim ' counter(section) "." counter(theorem) ' ';
 }
 
-claim[unnumbered="true"] > *:first-child::before {
+claim[numbering="none"] > *:first-child::before {
   content: 'Claim ';
 }
 
@@ -931,7 +931,7 @@ conclusion > *:first-child::before {
   content: 'Conclusion ' counter(section) "." counter(theorem) ' ';
 }
 
-conclusion[unnumbered="true"] > *:first-child::before {
+conclusion[numbering="none"] > *:first-child::before {
   content: 'Conclusion ';
 }
 
@@ -939,7 +939,7 @@ notation > *:first-child::before {
   content: 'Notation ' counter(section) "." counter(theorem) ' ';
 }
 
-notation[unnumbered="true"] > *:first-child::before {
+notation[numbering="none"] > *:first-child::before {
   content: 'Notation ';
 }
 
@@ -947,7 +947,7 @@ remark > *:first-child::before {
   content: 'Remark ' counter(section) "." counter(theorem) ' ';
 }
 
-remark[unnumbered="true"] > *:first-child::before {
+remark[numbering="none"] > *:first-child::before {
   content: 'Remark ';
 }
 
@@ -955,7 +955,7 @@ summary > *:first-child::before {
   content: 'Summary ' counter(section) "." counter(theorem) ' ';
 }
 
-summary[unnumbered="true"] > *:first-child::before {
+summary[numbering="none"] > *:first-child::before {
   content: 'Summary ';
 }
 
@@ -995,31 +995,31 @@ proof[leadInType="custom"] {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#theoremWithCustomLeadin");
 }
 
-assertion[unnumbered="true"],
-conjecture[unnumbered="true"],
-corollary[unnumbered="true"],
-criterion[unnumbered="true"],
-lemma[unnumbered="true"],
-proposition[unnumbered="true"],
-theorem[unnumbered="true"],
-algorithm[unnumbered="true"],
-assumption[unnumbered="true"],
-axiom[unnumbered="true"],
-condition[unnumbered="true"],
-definition[unnumbered="true"],
-example[unnumbered="true"],
-exercise[unnumbered="true"],
-hypothesis[unnumbered="true"],
-problem[unnumbered="true"],
-property[unnumbered="true"],
-question[unnumbered="true"],
-acknowledgment[unnumbered="true"],
-case[unnumbered="true"],
-claim[unnumbered="true"],
-conclusion[unnumbered="true"],
-notation[unnumbered="true"],
-remark[unnumbered="true"],
-summary[unnumbered="true"] {
+assertion[numbering="none"],
+conjecture[numbering="none"],
+corollary[numbering="none"],
+criterion[numbering="none"],
+lemma[numbering="none"],
+proposition[numbering="none"],
+theorem[numbering="none"],
+algorithm[numbering="none"],
+assumption[numbering="none"],
+axiom[numbering="none"],
+condition[numbering="none"],
+definition[numbering="none"],
+example[numbering="none"],
+exercise[numbering="none"],
+hypothesis[numbering="none"],
+problem[numbering="none"],
+property[numbering="none"],
+question[numbering="none"],
+acknowledgment[numbering="none"],
+case[numbering="none"],
+claim[numbering="none"],
+conclusion[numbering="none"],
+notation[numbering="none"],
+remark[numbering="none"],
+summary[numbering="none"] {
   counter-increment: none;
 }
 
