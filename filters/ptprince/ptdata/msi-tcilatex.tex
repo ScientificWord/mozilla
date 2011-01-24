@@ -557,13 +557,12 @@
 % Macros for text attributes:
 %
 \def\BF#1{{\bf {#1}}}%
-\def\NEG#1{\leavevmode\hbox{\rlap{\thinspace/}{$#1$}}}%
+\def\NEG#1{#1\U{0338}}%  put in a combining solidus?
 %
 
 %
 % miscellaneous 
-\long\def\QQQ#1#2{%
-     \long\expandafter\def\csname#1\endcsname{#2}}%
+\long\def\QQQ#1#2{\long\expandafter\def\csname#1\endcsname{#2}}%
 \@ifundefined{QEXCLUDE}{\def\QEXCLUDE#1{}}{}
 \@ifundefined{Qlb}{\def\Qlb#1{#1}}{}
 \@ifundefined{Qlt}{\def\Qlt#1{#1}}{}

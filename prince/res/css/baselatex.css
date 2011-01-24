@@ -27,7 +27,8 @@ pre, verbatim { font-family: Courier; white-space: pre }
 
 numberedListItem,
 bulletListItem,
-descriptionListItem { margin: 0pt; 
+descriptionListItem { 
+       margin: 0pt; 
        padding: 0pt; 
        display: list-item;}
 
@@ -38,10 +39,10 @@ numberedlist {
 }
 
 
-bulletlist {list-style-type: disc;
-}
+descriptionlist {list-style-type: none;}
 
 bulletListItem { margin-left: 2em; }
+
 
 numberedListItem>bodyText:first-child:before { content: '(' counter(numberedlist) ') ';
   counter-increment: numberedlist;
@@ -51,12 +52,7 @@ numberedListItem>bodyText:first-child:before { content: '(' counter(numberedlist
 numberedListItem>bodyText:first-child:first-line { content: '  ';
 }
 
-theorem {
-  display: block;
-  font-style: italic
-}
-
-proof {
+/* proof {
   display: block;
 }
 
@@ -64,7 +60,7 @@ proof:before {
   content: "Proof. ";
   background-color: lightgray;
   font-weight: bold;
-}
+} */
   
 img { display: inline;} 
 
@@ -386,4 +382,3 @@ shortTitle {
 @media print {
 *[nopr] {display: none;}
 }
-
