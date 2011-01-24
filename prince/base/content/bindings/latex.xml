@@ -978,6 +978,18 @@
     </xbl:content>
   </xbl:binding>
 
+  <xbl:binding id="theoremWithCustomLeadin">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+
+	  <xbl:content>
+      <html:button class="envleadIn" anonid="theButton" oncommand="">
+        <html:span style="white-space: pre">(</html:span><xbl:children includes="envLeadIn"/><html:span style="white-space: pre">) </html:span></html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
 </xbl:bindings>
 
 			
