@@ -11,10 +11,14 @@
    \write\css{@import url("resource://app/res/css/baselatex.css");}
    \write\css{@import url("resource://app/res/css/latex.css");}
    \write\css{\classcss}
+   \write\css{\newtheorems}
    \closeout\css
 }
 
 \def\classcss{}
+\def\newtheorems{}
+
+
 
 \msi@dollar=`\$
 
@@ -204,16 +208,16 @@
 \def\out@newtheorema#1[#2]#3{%
   \@ifundefined{msi@begin@#1}%
      {\expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}[#2]{#3}}
-      \@namedef{msi@begin@#1}{\br\msiopentag{theorem}{<theorem type="#1">}\msiopentag{bodyText}{<bodyText>}}
-      \@namedef{msi@end@#1}{\br\msiclosetag{bodyText}{</bodyText>}\msiclosetag{theorem}{</theorem>}}}%
+      \@namedef{msi@begin@#1}{\br\msiopentag{#1}{<#1>}\msiopentag{bodyText}{<bodyText>}}
+      \@namedef{msi@end@#1}{\br\msiclosetag{bodyText}{</bodyText>}\msiclosetag{#1}{</#1>}}}%
      {}%
 }
 
 \def\out@newtheoremb#1#2{%
   \@ifundefined{msi@begin@#1}%
     {\expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}{#2}}
-     \@namedef{msi@begin@#1}{\br\msiopentag{theorem}{<theorem type="#1">}\msiopentag{bodyText}{<bodyText>}}
-     \@namedef{msi@end@#1}{\br\msiclosetag{bodyText}{</bodyText>}\msiclosetag{theorem}{</theorem>}}}%
+     \@namedef{msi@begin@#1}{\br\msiopentag{#1}{<#1>}\msiopentag{bodyText}{<bodyText>}}
+     \@namedef{msi@end@#1}{\br\msiclosetag{bodyText}{</bodyText>}\msiclosetag{#1}{</#1>}}}%
     {}}%
 }
 
