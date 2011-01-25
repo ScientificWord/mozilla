@@ -419,30 +419,40 @@ subsection[nonum="true"]>*:first-child:before {
   content: "";
 }
 
-subsection[nonum="true"]>*:first-child:before {
-  content: "";
-}
 
 subsection[nonum="true"]>sectiontitle:before {
   content: "";
 }
 
+
 subsubsection[nonum="true"] {
   counter-increment: none;
 }
 
-subsubsection[nonum="true"] {
+subsubsection[nonum="true"]>*:first-child:before {
   content: "";
 }
+
+
+subsubsection[nonum="true"]>sectiontitle:before {
+  content: "";
+}
+
+
 
 
 paragraph[nonum="true"] {
   counter-increment: none;
 }
 
-paragraph[nonum="true"] {
+paragraph[nonum="true"]>*:first-child:before {
   content: "";
 }
+
+paragraph[nonum="true"]>sectiontitle:before {
+  content: "";
+}
+
 
 *[showinvis="true"] *:first-child:after {
   content: "\B6";
