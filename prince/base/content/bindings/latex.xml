@@ -984,12 +984,20 @@
 	  </xbl:resources>
 
 	  <xbl:content>
-      <html:button class="envleadIn" anonid="theButton" oncommand="">
-        <html:span style="white-space: pre">(</html:span><xbl:children includes="envLeadIn"/><html:span style="white-space: pre">) </html:span></html:button>
+      <html:button class="envLeadIn" anonid="theButton" oncommand="">
+        <xbl:children includes="envLeadIn"/></html:button>
       <xbl:children/>
     </xbl:content>
   </xbl:binding>
 
-</xbl:bindings>
+  <xbl:binding id="theoremLeadin">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
 
-			
+	  <xbl:content>
+      <html:span style="white-space: pre">(</html:span><xbl:children/><html:span style="white-space: pre">) </html:span>
+    </xbl:content>
+  </xbl:binding>
+
+</xbl:bindings>
