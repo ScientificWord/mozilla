@@ -914,7 +914,7 @@ acknowledgment, case, claim, conclusion, notation, remark, summary {
 }
 
 acknowledgment > *:first-child::before {
-  content: 'Acknowledgment ' counter(section) "." counter(case) ' ';
+  content: 'Acknowledgment ' counter(section) "." counter(theorem) ' ';
 }
 
 acknowledgment[numbering="none"] > *:first-child::before {
@@ -922,7 +922,7 @@ acknowledgment[numbering="none"] > *:first-child::before {
 }
 
 case > *:first-child::before {
-  content: 'Case ' counter(section) "." counter(case) ' ';
+  content: 'Case ' counter(section) "." counter(theorem) ' ';
 }
 
 case[numbering="none"] > *:first-child::before {
@@ -1003,6 +1003,34 @@ remark[leadInType="custom"],
 summary[leadInType="custom"], 
 proof[leadInType="custom"] {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#theoremWithCustomLeadin");
+}
+
+assertion > envLeadIn,
+conjecture > envLeadIn,
+corollary > envLeadIn,
+criterion > envLeadIn,
+lemma > envLeadIn,
+proposition > envLeadIn,
+theorem > envLeadIn,
+algorithm > envLeadIn,
+assumption > envLeadIn,
+axiom > envLeadIn,
+condition > envLeadIn,
+definition > envLeadIn,
+example > envLeadIn,
+exercise > envLeadIn,
+hypothesis > envLeadIn,
+problem > envLeadIn,
+property > envLeadIn,
+question > envLeadIn,
+acknowledgment > envLeadIn,
+case > envLeadIn,
+claim > envLeadIn,
+conclusion > envLeadIn,
+notation > envLeadIn,
+remark > envLeadIn,
+summary > envLeadIn {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#theoremLeadin");
 }
 
 assertion[numbering="none"],
