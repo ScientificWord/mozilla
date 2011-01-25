@@ -117,7 +117,9 @@
 				</tag>
 				<tag nm="bodyMath">
 					<description>Body math paragraph</description>
+					<nexttag>bodyMath</nexttag>
           <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontentsforempty> <![CDATA[<math xmlns="//www.w3.org/1998/Math/MathML"><cursor/></math>]]>
           </initialcontentsforempty>
 				</tag>
@@ -133,6 +135,8 @@
 					<description>Quote</description>
           <initialcontentsforempty> <![CDATA[<cursor/><br temp="1"/>]]>
           </initialcontentsforempty>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
 			  </tag>
 				<tag nm="longQuotation">
 					<description>Long quotation</description>
@@ -152,12 +156,16 @@
 					<description>Line</description>
           <initialcontents> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontents>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
 				</tag>
 				<tag nm="centered">
 					<nexttag>centered</nexttag>
 					<description>Centered paragraph</description>
           <initialcontents> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontents>
+          <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
 				</tag>
 				<tag nm="dialogbase" hidden="1">
 					<nexttag>bodyText</nexttag>
@@ -171,6 +179,7 @@
 			<tagclassname>listparenttag</tagclassname>
 			<tags>
 				<tag nm="bulletlist" hidden="1">
+          <nexttag/>
           <description>Bullet list</description>
 					<nexttag>#text</nexttag>
           <htmllist>ul</htmllist>
@@ -180,7 +189,7 @@
         </tag>
 				<tag nm="numberedlist" hidden="1">
           <description>Numbered list</description>
-					<nexttag>#text</nexttag>
+					<nexttag/>
           <htmllist>ol</htmllist>
           <initialcontents> <![CDATA[<cursor/><br type="_moz"/>]]></initialcontents>
           <discardemptyblock>true</discardemptyblock>
@@ -189,17 +198,17 @@
         </tag>
 				<tag nm="descriptionlist" hidden="1">
           <description>Description list</description>
-					<nexttag>#text</nexttag>
           <htmllist>dl</htmllist>
           <discardemptyblock>true</discardemptyblock>
 	  		  <inclusion>true</inclusion>
+					<nexttag/>
 			    <contains>descriptionListItem</contains>
         </tag>
 				<tag nm="bibliography" hidden="1">
           <level>0</level>
           <description>Bibliography</description>
-					<nexttag>#text</nexttag>
           <discardemptyblock>true</discardemptyblock>
+					<nexttag/>
 	  		  <inclusion>true</inclusion>
 			    <contains>bibitem</contains>
         </tag>
@@ -355,16 +364,18 @@
 				<tag nm="frontmatter">
           <contains>frontmtag</contains>
           <level>*</level>
-          <nexttag>bodyText</nexttag>
+					<nexttag>bodyText</nexttag>
+	  		  <inclusion>true</inclusion>
           <description>Front Matter</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[ <bodyText><cursor/><br/></bodyText>]]>
           </initialcontents>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
         </tag>
 				<tag nm="dedication">
           <level>*</level>
           <description>Dedication</description>
+					<nexttag>bodyText</nexttag>
+	  		  <inclusion>true</inclusion>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
               <bodyText><cursor/><br type="_moz"/></bodyText>
@@ -379,7 +390,8 @@
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
           </initialcontents>
-          <nextafteremptyblock>bodyText</nextafteremptyblock>
+					<nexttag>bodyText</nexttag>
+	  		  <inclusion>true</inclusion>
         </tag>
 				<tag nm="preface">
           <level>0</level>
@@ -389,6 +401,8 @@
               <bodyText></bodyText>
               ]]>
           </initialcontents>
+					<nexttag>bodyText</nexttag>
+	  		  <inclusion>true</inclusion>
         </tag>
 				<tag nm="index">
           <level>*</level>
@@ -398,6 +412,8 @@
               <bodyText></bodyText>
               ]]>
           </initialcontents>
+					<nexttag>bodyText</nexttag>
+	  		  <inclusion>true</inclusion>
         </tag>
 				<tag nm="glossary">
           <level>0</level>
@@ -407,11 +423,21 @@
               <bodyText></bodyText>
               ]]>
           </initialcontents>
+					<nexttag>bodyText</nexttag>
+	  		  <inclusion>true</inclusion>
         </tag>
-  		  <tag nm="verbatim">
-  			  <description>Verbatim text</description>
-  		  </tag>
-  		  <tag nm="note">
+  		<tag nm="verbatim">
+        <level>*</level>
+  			<description>Verbatim text</description>
+        <discardemptyblock>true</discardemptyblock>
+        <initialcontents> <![CDATA[
+            <bodyText><cursor/><br type="_moz"/></bodyText>
+            ]]>
+        </initialcontents>
+				<nexttag>bodyText</nexttag>
+  		  <inclusion>true</inclusion>
+  		</tag>
+  		<tag nm="note">
           <level>*</level>
           <description>Note</description>
           <discardemptyblock>true</discardemptyblock>
@@ -419,9 +445,10 @@
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
           </initialcontents>
+					<nexttag>bodyText</nexttag>
 	  		  <inclusion>true</inclusion>
-        </tag>
-  		  <tag nm="msiframe">
+          </tag>
+  		<tag nm="msiframe">
           <level>*</level>
           <description>Frame</description>
           <discardemptyblock>true</discardemptyblock>
@@ -429,269 +456,9 @@
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
           </initialcontents>
+					<nexttag>bodyText</nexttag>
 	  		  <inclusion>true</inclusion>
-        </tag>
-				<tag nm="assertion">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Assertion</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
-          </initialcontents>
-        </tag>
-				<tag nm="conjecture">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Conjecture</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
-          </initialcontents>
-        </tag>
-				<tag nm="corollary">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Corollary</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
-          </initialcontents>
-        </tag>
-				<tag nm="criterion">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Criterion</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
-          </initialcontents>
-        </tag>
-				<tag nm="lemma">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Lemma</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
-          </initialcontents>
-        </tag>
-				<tag nm="proposition">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Proposition</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
-          </initialcontents>
-        </tag>
-				<tag nm="theorem">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Theorem</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
-          </initialcontents>
-        </tag>
-				<tag nm="algorithm">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Algorithm</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
-          </initialcontents>
-        </tag>
-				<tag nm="assumption">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Assumption</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
-          </initialcontents>
-        </tag>
-				<tag nm="axiom">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Axiom</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
-          </initialcontents>
-        </tag>
-				<tag nm="condition">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Condition</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
-          </initialcontents>
-        </tag>
-				<tag nm="definition">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Definition</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
-          </initialcontents>
-        </tag>
-				<tag nm="example">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Example</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
-          </initialcontents>
-        </tag>
-				<tag nm="exercise">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Exercise</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
-          </initialcontents>
-        </tag>
-				<tag nm="hypothesis">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Hypothesis</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
-          </initialcontents>
-        </tag>
-				<tag nm="problem">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Problem</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
-          </initialcontents>
-        </tag>
-				<tag nm="property">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Property</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
-          </initialcontents>
-        </tag>
-				<tag nm="question">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Question</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
-          </initialcontents>
-        </tag>
-				<tag nm="case">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Case</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
-          </initialcontents>
-        </tag>
-				<tag nm="claim">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Claim</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
-          </initialcontents>
-        </tag>
-				<tag nm="conclusion">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Conclusion</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
-          </initialcontents>
-        </tag>
-				<tag nm="notation">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Notation</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
-          </initialcontents>
-        </tag>
-				<tag nm="remark">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Remark</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
-          </initialcontents>
-        </tag>
-				<tag nm="summary">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Summary</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
-          </initialcontents>
-        </tag>
-        <!-- The "acknowledgment" tag isn't intended to be added to the interface, as the non-front-matter version induces only confusion among TeX users. -->
-				<tag nm="acknowledgment" hidden="1">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Acknowledgment</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
-          </initialcontents>
-        </tag>
-				<tag nm="proof">
-          <level>*</level>
-          <contains>envLeadIn</contains>
-          <description>Proof</description>
-          <discardemptyblock>true</discardemptyblock>
-          <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
-              ]]>
-          </initialcontents>
-        </tag>
+          </tag>
    		</tags>
 		</tagclass>
 		<tagclass>
@@ -702,6 +469,8 @@
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontentsforempty>
+					<nexttag/>
+	  		  <inclusion>true</inclusion>
         </tag>
         <tag nm="address"><description>Address</description>y
           <realtagclass>paratag</realtagclass>
@@ -709,30 +478,37 @@
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontentsforempty>
+					<nexttag/>
+	  		  <inclusion>true</inclusion>
         </tag>
         <tag nm="author"><description>Author</description>
           <realtagclass>paratag</realtagclass>
 					<nexttag>bodyText</nexttag>
           <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontentsforempty>
+					<nexttag/>
+	  		  <inclusion>true</inclusion>
         </tag>
         <tag nm="date"><description>Date</description>
           <realtagclass>paratag</realtagclass>
-					<nexttag>bodyText</nexttag>
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontentsforempty>
+					<nexttag/>
+	  		  <inclusion>true</inclusion>
         </tag>
         <tag nm="makelof"><description>Make list of figures</description>
           <realtagclass>paratag</realtagclass>
-					<nexttag>bodyText</nexttag>
+					<nexttag/>
+	  		  <inclusion>true</inclusion>
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontentsforempty>
         </tag>
         <tag nm="makelot"><description>Make list of tables</description>
           <realtagclass>paratag</realtagclass>
-					<nexttag>bodyText</nexttag>
+					<nexttag/>
+	  		  <inclusion>true</inclusion>
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontentsforempty>
@@ -741,17 +517,21 @@
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontentsforempty>
+					<nexttag/>
+	  		  <inclusion>true</inclusion>
         </tag>
         <tag nm="maketoc"><description>Make table of contents</description>
           <realtagclass>paratag</realtagclass>
-					<nexttag>bodyText</nexttag>
+					<nexttag/>
+	  		  <inclusion>true</inclusion>
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontentsforempty>
         </tag>
         <tag nm="title"><description>Title</description>
           <realtagclass>paratag</realtagclass>
-					<nexttag>bodyText</nexttag>
+					<nexttag/>
+	  		  <inclusion>true</inclusion>
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
           </initialcontentsforempty>
@@ -782,19 +562,6 @@
         </tag>
         <tag nm="shortTitle">
           <description>Short section title</description>
-            <contains>#text</contains>
-			      <contains>texttag</contains>
-			      <contains>othertag</contains>
-            <contains>table</contains>
-			      <contains>mml:math</contains>
-			      <contains>img</contains>
-            <contains>a</contains>
-            <contains>note</contains>
-            <contains>object</contains>
-            <contains>notewrapper</contains>
-        </tag>
-        <tag nm="envLeadIn">
-          <description>Environment lead-in</description>
             <contains>#text</contains>
 			      <contains>texttag</contains>
 			      <contains>othertag</contains>
