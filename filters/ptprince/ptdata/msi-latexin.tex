@@ -6855,22 +6855,12 @@
      \catcode`\&=13%
      %\afterassignment\continue
      %\let\repl
-     \msihyperrefB{#1}{#2}{#3}%
-}
+     \msihyperrefB{#1}{#2}{#3}}
 
 \def\msihyperrefB#1#2#3#4{%
-     %\xdef\repl{#4}%
-     %\catcode`\&=4\relax
      \endgroup
      \out@hyperref{#1}{#2}{#3}{#4}}%
 
-
-
-%%\def\hyperref#1#2#3{%
-%%  \begingroup
-%%     \catcode`\&=13%
-%%     \msihyperrefB{#1}{#2}{#3}%
-%%}
 
 \let\hyperref\msihyperref
 
