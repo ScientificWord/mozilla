@@ -2272,7 +2272,7 @@ nsHTMLEditRules::WillDeleteSelection(nsISelection *aSelection,
         res = JoinBlocks(address_of(leftParent), address_of(rightParent), aCancel);
         *aHandled = PR_TRUE;
       }
-      aSelection->Collapse(selPointNode, selPointOffset);
+//      aSelection->Collapse(selPointNode, selPointOffset);
       return res;
     }
     else if (wsType==nsWSRunObject::eThisBlock)
