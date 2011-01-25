@@ -2002,12 +2002,12 @@ function printTeX(preview )
             }
             else
             {
-              exefile = Components.classes["@mozilla.org/file/local;1"].
-                  createInstance(Components.interfaces.nsILocalFile);
-              exefile.initWithPath("/Applications/SWPPro.app/Contents/Resources/shell.bash");
-              arr = [pdffile.path];
+              extension = "bash";
+              exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+              exefile.append("shell."+ extension);
               theProcess.init(exefile);
-              theProcess.run(false, arr, arr.length);             
+              arr = [pdffile.path];
+              theProcess.run(false, arr, arr.length);
             }
           }
           else // pdfAction == complete path to viewer
