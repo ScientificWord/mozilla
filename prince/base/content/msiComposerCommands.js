@@ -8973,16 +8973,25 @@ function doReviseEnvironmentNode(editor, origData, reviseData)
   
   var leadInTypeStr = (reviseData.leadInType == "auto") ? "" : reviseData.leadInType;  //Prevent adding leadInType="auto" as an attribute
   msiEditorEnsureElementAttribute(origData.envNode, "leadInType", leadInTypeStr, editor);
-  var unnumberedStr = reviseData.bUnnumbered ? "none" : "";
-  msiEditorEnsureElementAttribute(origData.envNode, "numbering", unnumberedStr, editor);
+  var numberingStr = "";
+  var reqStr = "";
+  if (reviseData.bUnnumbered)
+  {
+    numberingStr = "none";
+    reqStr = "amsthm";
+  }
+  msiEditorEnsureElementAttribute(origData.envNode, "numbering", numberingStr, editor);
+  msiEditorEnsureElementAttribute(origData.envNode, "req", reqStr, editor);
   var customLeadInNode = origData.customLeadInNode;
-  if (reviseData.customLeadInStr && reviseData.customLeadInStr.length)
+  if (reviseData.leadInType == "custom")
   {
     if (!customLeadInNode)
     {
       customLeadInNode = editor.document.createElementNS(xhtmlns, "envLeadIn");
       editor.insertNode(customLeadInNode, origData.envNode, 0);  //Lead-in always goes at the start
     }
+    if (!reviseData.customLeadInStr || !reviseData.customLeadInStr.length)
+      reviseData.customLeadInStr = "?";
     if (!origData.customLeadInStr || (reviseData.customLeadInStr != origData.customLeadInStr))
     {
       for (var ix = customLeadInNode.childNodes.length; ix > 0 ; --ix)
