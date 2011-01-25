@@ -209,6 +209,30 @@ should not be done under some conditions -->
 <xsl:template match="html:shortTitle" mode="shortTitle">[<xsl:apply-templates/>]</xsl:template>
 
 
+<xsl:template match="html:assertion|html:conjecture|html:corollary|html:criterion|html:proposition|html:theorem|html:algorithm|html:assumption|html:axiom|html:condition|html:definition|html:example|html:exercise|html:hypothesis|html:problem|html:property|html:question|html:acknowledgment|html:case|html:claim|html:conclusion|html:notation|html:remark|html:summary">
+<xsl:call-template name="processThmEnvironment">
+  <xsl:with-param name="theTag" select="name()"/>
+  <xsl:with-param name="theNumbering" select="@numbering"/>
+</xsl:call-template>
+</xsl:template>
+
+<xsl:template name="processThmEnvironment">
+<xsl:param name="theTag"/>
+<xsl:param name="theNumbering" select=""/>
+<xsl:variable name="tagnameToUse"><xsl:value-of select="$theTag"/><xsl:if test="$theNumbering='none'">*</xsl:if></xsl:variable>
+\begin{<xsl:value-of select="$tagnameToUse"/>}<xsl:apply-templates mode="envleadin"/>
+<xsl:apply-templates/>
+\end{<xsl:value-of select="$tagnameToUse"/>}</xsl:template>
+
+<xsl:template match="html:proof">
+\begin{proof}<xsl:apply-templates mode="envleadin"/>
+<xsl:apply-templates/>
+\end{proof}</xsl:template>
+
+<xsl:template match="html:envLeadIn"></xsl:template>
+<xsl:template match="*" mode="envleadin"></xsl:template>
+<xsl:template match="html:envLeadIn" mode="envleadin">[<xsl:apply-templates/>]</xsl:template>
+
 <xsl:template match="html:drop">
 \lettrine[lhang=.2]{\textbf{<xsl:apply-templates/>}}{}
 </xsl:template>
@@ -328,12 +352,6 @@ should not be done under some conditions -->
 \par
 <xsl:apply-templates/>
 \end{center}
-</xsl:template>
-
-<xsl:template match="html:theorem">
-\begin{<xsl:value-of select="@type"/>}
-<xsl:apply-templates/>
-\end{<xsl:value-of select="@type"/>}
 </xsl:template>
 
 <xsl:template match="html:pre">
