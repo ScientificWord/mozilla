@@ -515,7 +515,7 @@ button[class="subeqnnum"]:after{
 
 button[class="frontmattertag"]{
   position: absolute;
-  left: -100px;
+  left: 5px;
 }
 
 
