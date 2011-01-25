@@ -20,7 +20,7 @@ pref("swp.saveintervalseconds",10);
 pref("swp.generateTeXonsave", true);
 pref("swp.prefDocumentDir","SWPDocs");
 pref("swp.viewPDF","fixAcrobat.cmd %1");
-pref("swp.prefPDFPath","default");
+pref("swp.prefPDFPath","/Applications/Skim.app/Contents/MacOS/Skim");
 pref("swp.fancyreturn",true);
 #ifdef XP_WIN32
 pref("swp.tex.bindir","%programfiles%\\texlive\\2010\\bin\\win32");  /* for windows */
