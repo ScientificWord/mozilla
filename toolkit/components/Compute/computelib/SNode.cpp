@@ -362,6 +362,7 @@ void FenceToInterval(SEMANTICS_NODE * s_fence)
     return;
   } else {
     TCI_ASSERT(!"Unexpected semantic type on fence.");
+    return;
   }
 
   int n_cols = 0;
