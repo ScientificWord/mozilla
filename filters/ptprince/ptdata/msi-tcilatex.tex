@@ -579,8 +579,11 @@
   \let\QQQxout\xout
 
 \def\TeXButton#1#2{%
-   \msitag{<texb enc="1" name="#1">
-       <![CDATA[#2]]></texb>}}
+   \ifmmode
+     \string\TeXButton{#1}{#2}%
+   \else
+     \msitag{<texb enc="1" name="#1"><![CDATA[#2]]></texb>}%
+   \fi}
 
 
 %%\def\QSubDoc#1#2{%
