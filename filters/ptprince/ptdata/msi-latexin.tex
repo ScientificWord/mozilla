@@ -167,7 +167,9 @@
 \chardef\sixt@@n=16
 \newlinechar`\^^J
 
-\def\typeout{\immediate\write17}
+%\def\typeout{\immediate\write17}
+\def\typeout#1{\relax}
+
 \def\dospecials{\do\ \do\\\do\{\do\}\do\$\do\&%
   \do\#\do\^\do\_\do\%\do\~}
 
@@ -515,8 +517,8 @@
 \edef\fmtversion{2001/06/01}
 
 \def\two@digits#1{\ifnum#1<10 0\fi\number#1}
-\def\typeout#1{\begingroup\set@display@protect
-    \immediate\write\@unused{#1}\endgroup}
+%\def\typeout#1{\begingroup\set@display@protect
+%    \immediate\write\@unused{#1}\endgroup}
 \newlinechar`\^^J
 \let\@@par=\par
 \let\@@hyph=\-        % Save original primitive definition
@@ -5196,8 +5198,6 @@
 
 \def\bibcite{\@newl@bel b}
 \let\citation\@gobble
-\DeclareRobustCommand\cite{%
-  \@ifnextchar [{\@tempswatrue\out@citex}{\@tempswafalse\out@citey}}
 
 
 \let\bibdata=\@gobble
