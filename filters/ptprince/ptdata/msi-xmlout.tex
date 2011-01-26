@@ -27,7 +27,7 @@
 
 
 \def\msitexb#1{[SHOULD NOT OCCUR]}
-\def\msidefault#1{[Defaulting: \string#1]}
+\def\msidefault#1{\msitag{[Defaulting: \string#1]}}
 
 
 \msi@pass@newline{\@settodim}
@@ -243,36 +243,29 @@
     {}}%
 
    
-%% \@star@or@long\new@environment}
+%% %% Newcommand and renewcommand
 %% 
-%% \def\new@environment#1{%
-%%   \@testopt{\@newenva#1}0}
-%% \def\@newenva#1[#2]{%
-%%    \@ifnextchar [{\@newenvb#1[#2]}{\@newenv{#1}{[#2]}}}
-%% \def\@newenvb#1[#2][#3]{\@newenv{#1}{[#2][{#3}]}}
-
-
-%% \def\@declarenewenva#1[#2][#3]#4#5{%
-%%   \@ifundefined{msi@begin@#1}%
-%%     {\expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newenvironment{#1}[#2][#3]{#4}{#5}}
-%%      \@namedef{msi@begin@#1}{\br\msiopentag{environment}{<environment type="#1">}}
-%%      \@namedef{msi@end@#1}{\br\msiclosetag{environment}{</environment>}}}%
-%%     {}}%
-%%     %\br\msitag{<newenvironment name="#1" nargs="#2" opt="#3" start="#4" end="#5" />}
-%%  }
-%% \def\@declarenewenvb#1#2#3{%
-%%   \@ifundefined{msi@begin@#1}%
-%%     {\expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newenvironment{#1}{#2}{#3}}
-%%      \@namedef{msi@begin@#1}{\br\msiopentag{environment}{<environment type="#1">}}
-%%      \@namedef{msi@end@#1}{\br\msiclosetag{environment}{</environment>}}}%
-%%     {}}%
-%%    %\br\msitag{<newenvironment name="#1" start="#4" end="#5" />}
+%% \def\newcommand{%
+%%   \@ifnextchar*{\@newcommand{*}}{\@newcommand{}}}
+%% 
+%% \def\@newcommand#1{%
+%%   \@ifnextchar[{\@newcommandA#1}{\@newcommandA#1[]}}
+%% 
+%% \def\@newcommandA#1[#2]{%
+%%   \@ifnextchar[{\@newcommandB#1[#2]}{\@newcommandB#1[#2][]}}
+%% 
+%% \def\@newcommandB#1[#2][#3]#4{%
+%%   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newcommand{#1}[#2][#3]{#4}}%
+%%   % Define command
+%%   \def#1{\string#1}%
 %% }
 
 
 
 %% Citations and cross refs
 
+\def\cite{%
+  \@ifnextchar [{\@tempswatrue\out@citex}{\@tempswafalse\out@citey}}
 
 \def\out@citex[#1]#2{%
    \msiopentag{citation}{<citation xmlns="http://www.w3.org/1999/xhtml" 
@@ -788,7 +781,7 @@
 
 \begingroup
   \catcode`\<=\active
-  \def\<{\char`<rangle>}%
+  \gdef<{\ifmmode\char`\<\else\char`\&lt;\fi}
 \endgroup
 
 \def\verb{%
@@ -1038,6 +1031,29 @@
 \def\mathsf#1{\string\mathsf\@brace{#1}}
 \def\mathtt#1{\string\mathtt\@brace{#1}}
 \def\mathrm#1{\string\mathrm\@brace{#1}}
+
+
+\def\Big#1{\ifmmode\string\big#1\fi}
+\def\big#1{\ifmmode\string\big#1\fi}
+\def\Bigg#1{\ifmmode\string\big#1\fi}
+\def\bigg#1{\ifmmode\string\big#1\fi}
+\def\Bigl#1{\ifmmode\string\big#1\fi}
+\def\bigl#1{\ifmmode\string\big#1\fi}
+\def\Bigm#1{\ifmmode\string\big#1\fi}
+\def\bigm#1{\ifmmode\string\big#1\fi}
+\def\Bigr#1{\ifmmode\string\big#1\fi}
+\def\bigr#1{\ifmmode\string\big#1\fi}
+\def\Biggl#1{\ifmmode\string\big#1\fi}
+\def\biggl#1{\ifmmode\string\big#1\fi}
+\def\Biggm#1{\ifmmode\string\big#1\fi}
+\def\biggm#1{\ifmmode\string\big#1\fi}
+\def\Biggr#1{\ifmmode\string\big#1\fi}
+\def\biggr#1{\ifmmode\string\big#1\fi}
+
+
+
+
+
 
 
 
@@ -1326,3 +1342,5 @@
 
 \input latex-default.tex
 \input tcilatex.tex
+
+\catcode`\<=\active
