@@ -56,13 +56,18 @@
        </menupopup>
      </menulist>
      </hbox>
-     <hbox flex="1"/>
+     </vbox>
+     </hbox>
+   <!-- flex="1"-->
+  <separator/>
+     <hbox>
+  
       <label value="&leading.label;" control="leading" 	accesskey="&leading.accesskey;"/>
       <textbox id="leading" type="number" decimalplaces="1" min="0" style="width: 3.5em" 
-       max="200" increment="1" tooltip="&leading.tooltip;"/>
-    </vbox>
-   
+       max="200" increment="1" tooltip="&leading.tooltip;"/> 
+      
   </hbox>
+
   <separator/>
   <hbox>
     <label control="colorButton" value="&colorButton.label;"	accesskey="&colorButton.accesskey;"/>
