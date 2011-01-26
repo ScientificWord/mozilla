@@ -42,15 +42,11 @@
   <separator/>
   <hbox>
     <vbox>
+    <hbox>
       <label value="&fontsize.label;" control="otfont.fontsize" 	accesskey="&fontsize.accesskey;"/>
       <textbox id="otfont.fontsize" type="number" decimalplaces="1" min="0" style="width: 3.5em" 
        max="200" increment="1" tooltip="&fontsize.tooltip;"/>
-      <label value="&leading.label;" control="leading" 	accesskey="&leading.accesskey;"/>
-      <textbox id="leading" type="number" decimalplaces="1" min="0" style="width: 3.5em" 
-       max="200" increment="1" tooltip="&leading.tooltip;"/>
-    </vbox>
-    <vbox align="left">
-     <label value="&units.label;" accesskey="&units.label;"/>
+      <label value="&units.label;" accesskey="&units.label;"/>
      <menulist id="otfont.units" sizetopopup="always">
        <menupopup>
          <menuitem id="otfont.pt" label="&pt.menuitem;" value="pt"/>
@@ -59,8 +55,13 @@
          <menuitem id="otfont.inch" label="&in.menuitem;" value="in"/>
        </menupopup>
      </menulist>
+     </hbox>
      <hbox flex="1"/>
+      <label value="&leading.label;" control="leading" 	accesskey="&leading.accesskey;"/>
+      <textbox id="leading" type="number" decimalplaces="1" min="0" style="width: 3.5em" 
+       max="200" increment="1" tooltip="&leading.tooltip;"/>
     </vbox>
+   
   </hbox>
   <separator/>
   <hbox>
