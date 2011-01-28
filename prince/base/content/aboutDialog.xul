@@ -20,7 +20,7 @@
     <tabs pack="start">
       <tab label="&AboutTab.label;"/>
       <tab label="&LicensesTab.label;"/>
-      <tab label="&CreditsTab.labe;l"/>
+      <tab label="&CreditsTab.label;"/>
     </tabs>
     <tabpanels>
       <tabpanel orient="vertical">
