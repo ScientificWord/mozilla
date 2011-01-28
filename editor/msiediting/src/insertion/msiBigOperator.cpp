@@ -119,9 +119,16 @@ msiBigOperator::InsertNodes(nsIEditor * editor,
         msiUtils::GetChildNode(m_mathmlNode, 1, child);
       else // if (insertPos == IP_Script2Left || insertPos == IP_Script2Right) 
         msiUtils::GetChildNode(m_mathmlNode, 2, child);
-      PRBool atRight = (insertPos == IP_Script1Right) || (insertPos == IP_Script2Right);
-      res = msiRequiredArgument::doInsertNodes(editor, selection, m_mathmlNode, child,
-                                               atRight, nodeList, deleteExisting, flags);
+      if (child != 0){
+        PRBool atRight = (insertPos == IP_Script1Right) || (insertPos == IP_Script2Right);
+        res = msiRequiredArgument::doInsertNodes(editor, selection, m_mathmlNode, child,
+                                                 atRight, nodeList, deleteExisting, flags);
+      } else {
+        nsCOMPtr<msiIMathMLInsertion> mathmlEditing;
+        res = SetupPassToParent(editor, mathmlEditing, flags);
+        if (NS_SUCCEEDED(res) && mathmlEditing)
+          res = mathmlEditing->InsertNodes(editor, selection, nodeList, deleteExisting, flags);
+      }
     }  
   }
   return res;  
