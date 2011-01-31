@@ -36,8 +36,9 @@
         <menupopup id="menupopup_RecentFiles" oncommand="msiEditPage(event.target.getAttribute('value'), window, false);"/>
           <!-- menuitems appended at runtime -->
       </menu>
-      <menuitem accesskey="&fileclose.accesskey;" key="closekb" observes="cmd_close"
-          label="&closeCmd.label;"/>
+      <menuitem accesskey="&filecleanup.accesskey;" key="cleanupkb" observes="cmd_cleanup"
+          label="&cleanupCmd.label;"/>
+      <menuitem accesskey="&fileclose.accesskey;" key="closekb" observes="cmd_close"/>
       <menuseparator/>
       <menuitem id="saveMenuitem" accesskey="&filesave.accesskey;" key="savekb" observes="cmd_save"
         label="&saveCmd.label;" />
@@ -553,6 +554,7 @@
     <command id="cmd_newDocument"  oncommand="msiGoDoCommand('cmd_new');"/>
     <command id="cmd_open"         oncommand="msiGoDoCommand('cmd_open')"/>
     <command id="cmd_close"        label="&closeCmd.label;"         oncommand="msiGoDoCommand('cmd_close')"/>
+    <command id="cmd_cleanup"        label="&cleanupCmd.label;"         oncommand="msiGoDoCommand('cmd_cleanup')"/>
     <command id="cmd_printSetup"   oncommand="msiGoDoCommand('cmd_printSetup')"/>
 <!--
     <command id="cmd_printPreview" label="printPreviewCmd.label;"  oncommand="msiGoDoCommand('cmd_printPreview')"/>
