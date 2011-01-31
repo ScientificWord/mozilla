@@ -183,7 +183,7 @@ main(int argc, char **argv)
     return 1;
   *(++lslash) = '\0';
   snprintf(greDir, sizeof(greDir),
-           "%sFrameworks/XUL.framework/Versions/Current" XPCOM_FILE_PATH_SEPARATOR XPCOM_DLL,
+           "%sResources/xulrunner" XPCOM_FILE_PATH_SEPARATOR XPCOM_DLL,
            contentsPath);
 
 #else
