@@ -31,6 +31,7 @@ en-US.jar:
   locale/typesetDialogs.properties        (typesetDialogs.properties)
   locale/Binomial.dtd                     (dialogs/Binomial.dtd)
   locale/Brackets.dtd                     (dialogs/Brackets.dtd)
+  locale/cleanup.dtd                      (dialogs/cleanup.dtd)
   locale/ComputeApproxIntegral.dtd        (dialogs/ComputeApproxIntegral.dtd)
   locale/ComputeFillMatrix.dtd            (dialogs/ComputeFillMatrix.dtd)
   locale/ComputeFitCurve.dtd              (dialogs/ComputeFitCurve.dtd)
