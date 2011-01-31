@@ -1342,6 +1342,8 @@ text-size<uID7.2.3>largeop="false" stretchy="false"
 &urcorn;<uID10.4.32>U0231D
 &dlcorn;<uID10.4.33>U0231E
 &drcorn;<uID10.4.34>U0231F
+&lt;<uID10.4.35>
+><uID10.4.36>
 
 ;;attributes added to fence <mo>s, based on context.
 ;; In LaTeX, all fence symbols are symmetric (above/below the math axis)
