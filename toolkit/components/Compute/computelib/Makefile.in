@@ -71,7 +71,8 @@ MuPADMaclib	:= $(wildcard $(srcdir)/../MuPAD/Darwin/lib/*)
 MuPADMacmod	:= $(wildcard $(srcdir)/../MuPAD/Darwin/modules/*) 
 MuPADFrameworks := $(wildcard $(srcdir)/../MuPAD/Darwin/Frameworks/*)
 
-else # Must be Linux
+endif
+ifeq ($(OS_ARCH),Linux)
 MuPADlicense	:= \
 			$(srcdir)/../MuPAD/license/license \
 			$(NULL)
