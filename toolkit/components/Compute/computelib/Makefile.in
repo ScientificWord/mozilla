@@ -106,7 +106,8 @@ export:: $(MuPADlib)
 	$(INSTALL) $(MuPADMacmod) $(FINAL_TARGET)/MuPAD/Mac/modules
 	$(INSTALL) $(MuPADFrameworks) $(FINAL_TARGET)/MuPAD/Frameworks
 
-else
+endif
+ifeq ($(OS_ARCH),Linux)
 export:: $(MuPADlib)
 	$(INSTALL) $(MuPADlib) $(FINAL_TARGET)/MuPAD/lib
 	$(INSTALL) $(MuPADlicense) $(FINAL_TARGET)/MuPAD/license
