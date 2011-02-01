@@ -57,6 +57,9 @@ MuPADlib	:= \
 
 
 ifeq ($(OS_ARCH),WINNT)
+MuPADlicense	:= \
+			$(srcdir)/../MuPAD/license/license \
+			$(NULL)
 SupportFiles	+= \
 			$(srcdir)/../MuPAD/win32/mupkernel.dll \
 			$(srcdir)/tcifcns.m \
