@@ -26,8 +26,6 @@
   </xsl:for-each>
 </xsl:variable>
 
-
-
 <xsl:variable name="requiredpackages" select ="exsl:node-set($requiredpackages.tf)"/>
 <xsl:variable name="preambletexbuttons" select ="exsl:node-set($preambletexbuttons.tf)"/>
  
@@ -100,6 +98,7 @@
 
 <!-- back to template match="html:preamble"-->
   <xsl:apply-templates/>
+  <xsl:call-template name="generateMissingNewTheorems" />
   \graphicspath{{../tcache/}{../gcache/}{../graphics/}}
 </xsl:template>
 
