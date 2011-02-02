@@ -464,6 +464,7 @@
           <contains>envLeadIn</contains>
           <description>Assertion</description>
           <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
@@ -474,6 +475,7 @@
           <contains>envLeadIn</contains>
           <description>Conjecture</description>
           <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
@@ -484,6 +486,7 @@
           <contains>envLeadIn</contains>
           <description>Corollary</description>
           <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
@@ -494,6 +497,7 @@
           <contains>envLeadIn</contains>
           <description>Criterion</description>
           <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
@@ -504,6 +508,7 @@
           <contains>envLeadIn</contains>
           <description>Lemma</description>
           <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
@@ -514,6 +519,7 @@
           <contains>envLeadIn</contains>
           <description>Proposition</description>
           <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
@@ -524,6 +530,7 @@
           <contains>envLeadIn</contains>
           <description>Theorem</description>
           <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
@@ -534,6 +541,7 @@
           <contains>envLeadIn</contains>
           <description>Algorithm</description>
           <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
@@ -544,6 +552,7 @@
           <contains>envLeadIn</contains>
           <description>Assumption</description>
           <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
@@ -554,6 +563,7 @@
           <contains>envLeadIn</contains>
           <description>Axiom</description>
           <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
@@ -564,6 +574,7 @@
           <contains>envLeadIn</contains>
           <description>Condition</description>
           <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
@@ -574,6 +585,7 @@
           <contains>envLeadIn</contains>
           <description>Definition</description>
           <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
@@ -584,6 +596,7 @@
           <contains>envLeadIn</contains>
           <description>Example</description>
           <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
@@ -594,6 +607,7 @@
           <contains>envLeadIn</contains>
           <description>Exercise</description>
           <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
@@ -604,6 +618,7 @@
           <contains>envLeadIn</contains>
           <description>Hypothesis</description>
           <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
@@ -614,6 +629,7 @@
           <contains>envLeadIn</contains>
           <description>Problem</description>
           <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
@@ -624,6 +640,7 @@
           <contains>envLeadIn</contains>
           <description>Property</description>
           <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
@@ -634,6 +651,7 @@
           <contains>envLeadIn</contains>
           <description>Question</description>
           <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
@@ -644,6 +662,7 @@
           <contains>envLeadIn</contains>
           <description>Case</description>
           <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
@@ -654,6 +673,7 @@
           <contains>envLeadIn</contains>
           <description>Claim</description>
           <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
@@ -664,6 +684,7 @@
           <contains>envLeadIn</contains>
           <description>Conclusion</description>
           <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
@@ -674,6 +695,7 @@
           <contains>envLeadIn</contains>
           <description>Notation</description>
           <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
@@ -684,6 +706,7 @@
           <contains>envLeadIn</contains>
           <description>Remark</description>
           <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
@@ -694,6 +717,7 @@
           <contains>envLeadIn</contains>
           <description>Summary</description>
           <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
@@ -705,6 +729,7 @@
           <contains>envLeadIn</contains>
           <description>Acknowledgment</description>
           <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
@@ -715,6 +740,7 @@
           <contains>envLeadIn</contains>
           <description>Proof</description>
           <discardemptyblock>true</discardemptyblock>
+          <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
