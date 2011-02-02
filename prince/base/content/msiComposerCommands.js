@@ -970,11 +970,8 @@ var msiOpenCommand =
       if ((fp.file) && (fp.file.path.length > 0)) 
       {
         dump("Ready to edit page: " + fp.fileURL.spec +"\n");
-        var regexp = /\.sci$/i;
         var newdocumentfile;
-        if (regexp.test(fp.file.path))
-          newdocumentfile = createWorkingDirectory(fp.file);
-        else newdocumentfile = fp.file;
+        newdocumentfile = createWorkingDirectory(fp.file);
         msiEditPage(msiFileURLFromFile(newdocumentfile), window, false);
         msiSaveFilePickerDirectoryEx(fp, fp.file.parent.path, MSI_EXTENSION);
       }
@@ -1014,7 +1011,7 @@ var msiNewCommand =
             createInstance(Components.interfaces.nsILocalFile);
           thefile.initWithPath(data.filename);
           newdocumentfile = createWorkingDirectory(thefile);
-	  var url = msiFileURLFromAbsolutePath( newdocumentfile.path );
+      	  var url = msiFileURLFromAbsolutePath( newdocumentfile.path );
           msiEditPage( url, window, false);
         } catch (e) { dump("msiEditPage failed: "+e.toString()+"\n"); }
 
