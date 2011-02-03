@@ -516,7 +516,7 @@ should not be done under some conditions -->
 <xsl:template match="html:a[@name]">\label{<xsl:value-of select="@name"/>}</xsl:template> 
 
 <xsl:template match="html:texb">
-  <!-- xsl:if test="@pre!='1'" -->
+  <xsl:if test="@pre!='1'" >
     <xsl:if test="@enc='1'">
 %TCIMACRO{\TeXButton{<xsl:value-of select="@name"/>}{<xsl:apply-templates/>}}%
 %Package required: [<xsl:value-of select="@opt"/>]{<xsl:value-of select="@req"/>}
@@ -528,7 +528,7 @@ should not be done under some conditions -->
 %EndExpansion
       </xsl:text>
 </xsl:if>
-<!-- /xsl:if -->
+</xsl:if>
 </xsl:template>
 
 <xsl:template match="html:bibliography">
