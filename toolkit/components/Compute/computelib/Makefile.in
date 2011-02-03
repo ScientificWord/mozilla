@@ -57,6 +57,9 @@ MuPADlib	:= \
 
 
 ifeq ($(OS_ARCH),WINNT)
+MuPADlicense	:= \
+			$(srcdir)/../MuPAD/license/license \
+			$(NULL)
 SupportFiles	+= \
 			$(srcdir)/../MuPAD/win32/mupkernel.dll \
 			$(srcdir)/tcifcns.m \
@@ -71,7 +74,8 @@ MuPADMaclib	:= $(wildcard $(srcdir)/../MuPAD/Darwin/lib/*)
 MuPADMacmod	:= $(wildcard $(srcdir)/../MuPAD/Darwin/modules/*) 
 MuPADFrameworks := $(wildcard $(srcdir)/../MuPAD/Darwin/Frameworks/*)
 
-else # Must be Linux
+endif
+ifeq ($(OS_ARCH),Linux)
 MuPADlicense	:= \
 			$(srcdir)/../MuPAD/license/license \
 			$(NULL)
@@ -102,7 +106,8 @@ export:: $(MuPADlib)
 	$(INSTALL) $(MuPADMacmod) $(FINAL_TARGET)/MuPAD/Mac/modules
 	$(INSTALL) $(MuPADFrameworks) $(FINAL_TARGET)/MuPAD/Frameworks
 
-else
+endif
+ifeq ($(OS_ARCH),Linux)
 export:: $(MuPADlib)
 	$(INSTALL) $(MuPADlib) $(FINAL_TARGET)/MuPAD/lib
 	$(INSTALL) $(MuPADlicense) $(FINAL_TARGET)/MuPAD/license
