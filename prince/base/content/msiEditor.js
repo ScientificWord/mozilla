@@ -1767,6 +1767,8 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
   var reasonToSave = strID ? GetString(strID) : "";
 
   var sciurlstring = msiFindOriginalDocname(htmlurlstring);
+  sciurlstring = sciurlstring.replace((/_work\/[^\/]*\.[a-z0-9]+$/i),"")+".sci";
+  
   var leafregex = /.*\/([^\/]+$)/;
   var arr = leafregex.exec(sciurlstring);
   if (arr && arr.length >1) document.title = arr[1];
