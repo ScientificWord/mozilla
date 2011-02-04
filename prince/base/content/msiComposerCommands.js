@@ -970,11 +970,8 @@ var msiOpenCommand =
       if ((fp.file) && (fp.file.path.length > 0)) 
       {
         dump("Ready to edit page: " + fp.fileURL.spec +"\n");
-        var regexp = /\.sci$/i;
         var newdocumentfile;
-        if (regexp.test(fp.file.path))
-          newdocumentfile = createWorkingDirectory(fp.file);
-        else newdocumentfile = fp.file;
+        newdocumentfile = createWorkingDirectory(fp.file);
         msiEditPage(msiFileURLFromFile(newdocumentfile), window, false);
         msiSaveFilePickerDirectoryEx(fp, fp.file.parent.path, MSI_EXTENSION);
       }
@@ -1014,7 +1011,7 @@ var msiNewCommand =
             createInstance(Components.interfaces.nsILocalFile);
           thefile.initWithPath(data.filename);
           newdocumentfile = createWorkingDirectory(thefile);
-	  var url = msiFileURLFromAbsolutePath( newdocumentfile.path );
+      	  var url = msiFileURLFromAbsolutePath( newdocumentfile.path );
           msiEditPage( url, window, false);
         } catch (e) { dump("msiEditPage failed: "+e.toString()+"\n"); }
 
@@ -1653,7 +1650,7 @@ function msiOutputFileWithPersistAPI(editorDoc, aDestinationLocation, aRelatedFi
   try {
     // we should supply a parent directory if/when we turn on functionality to save related documents
     var persistObj = Components.classes["@mozilla.org/embedding/browser/nsWebBrowserPersist;1"].createInstance(msiWebPersist);
-    persistObj.progressListener = new msigEditorOutputProgressListener(editorElement);
+    persistObj.progressListener = new msiEditorOutputProgressListener(editorElement);
     
     var wrapColumn = msiGetWrapColumn(editorElement);
     var outputFlags = msiGetOutputFlags(aMimeType, wrapColumn, editorElement);
@@ -1763,7 +1760,7 @@ function msiGetPromptService()
 //const kErrorBindingRedirected = 2152398851;
 //const kFileNotFound = 2152857618;
 //
-function msigEditorOutputProgressListener(editorElement)
+function msiEditorOutputProgressListener(editorElement)
 {
   this.msiEditorElement = editorElement;
 
@@ -2541,12 +2538,18 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   currentSciFile = msiFileFromFileURL(fileurl);
   currentSciFilePath = msiPathFromFileURL(fileurl); 
   
-  var regEx = /_work\/main.xhtml$/i;  // BBM: localize this
+  var regEx = /_work\/main.[a-z]?html?$/i;  // BBM: localize this
   isSciFile = regEx.test(htmlurlstring);
   if (isSciFile) 
   {
     workingDir = msiFileFromFileURL(htmlurl);  // now = the path of the xhtml file in the working dir D
     workingDir = workingDir.parent;       // now = the directory D
+    var tempdir = workingDir.clone();
+    var leaf = tempdir.leafName.replace(/_work$/,"");
+    tempdir = tempdir.parent;
+    tempdir.append(leaf+".sci");
+    var url = msiFileURLFromFile(tempdir);
+    sciurlstring = url.spec;
   }
 
   if (mustShowFileDialog)
@@ -2605,7 +2608,12 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   }  // mustShowDialog
   else { // if we didn't show the File Save dialog, we need destLocalFile to be A.sci
 //   currentSciFile.initWithPath( currentSciFilePath );  // now = A.sci
-   destLocalFile = currentSciFile.clone();       
+   destLocalFile = currentSciFile.clone(); 
+   destLocalFile = destLocalFile.parent;
+   var leaf = destLocalFile.leafName;
+   leaf=leaf.replace(/_work$/i,"");
+   destLocalFile = destLocalFile.parent;
+   destLocalFile.append(leaf);      
   }
 
   leafname = destLocalFile.leafName;
@@ -2662,6 +2670,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
     } else
     {
       var zipfile = destLocalFile.parent.clone();
+      
       zipfile.append(leafname+".tempsci"); 
 
       // zip D into the zipfile
@@ -2720,7 +2729,21 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
         zipfile.moveTo(null, leafname+".sci");
       }
     }
-    if (!aContinueEditing) workingDir.remove(1);
+    if (!aContinueEditing)
+    {
+      var re = /_work$/i;
+      if (re.test(workingDir.leafName))
+      {
+        try
+        {
+          workingDir.remove(1);
+        }
+        catch(e)
+        {
+          AlertWithTitle("Unable to remove working directory", "Cannot remove working directory. Does another program have one of the directory's files open?", window);          
+        }
+      }
+    }
     else
     {
       // if the editorElement did have a shell file, it doesn't any longer
@@ -3211,7 +3234,7 @@ var msiCleanupCommand =
     var editorDoc = editor.document;
     var param =new Object();
     param.cleanupOptions=[];
-    window.openDialog( "chrome://prince/content/cleanup.xul", "cleanup", "chrome,resizable=yes, modal,titlebar", param);    
+    window.openDialog( "chrome://prince/content/", "cleanup", "chrome,resizable=yes, modal,titlebar", param);    
     cleanupWorkDirectory(editorDoc, getWorkingDirectory(editorElement), param.cleanupOptions );
   }
 };
@@ -3414,6 +3437,7 @@ function deleteOrphanedPlots( basedirectory, document)
       if (file.exists()) file.remove(false);
   }  
 }
+
 function msiCloseWindow(theWindow)
 {
   if (!theWindow)
@@ -3422,12 +3446,7 @@ function msiCloseWindow(theWindow)
   //   so user can choose to close without saving
   var editorElement = msiGetPrimaryEditorElementForWindow(theWindow);
   if (msiCheckAndSaveDocument(editorElement, "cmd_close", true))
-//  if (CheckAndSaveDocument("cmd_close", true)) 
   {
-//    if (window.InsertCharWindow)
-//      SwitchInsertCharToAnotherEditorOrClose();
-//Ought to do what here? We'll assume that any dialog dependent on this window will be dealt with by our dialog management
-//code, and not worry it.  rwa
     ShutdownAnEditor(editorElement);
     try {
       var basewin = theWindow.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
