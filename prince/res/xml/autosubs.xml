@@ -22,11 +22,11 @@
   <sub ctx="text" tp="sc"><pattern>.mnote.</pattern><data>insertMarginNote();</data></sub>
   <sub ctx="text" tp="sc"><pattern>.ol.</pattern><data>insertListItem('numberedlistitem', true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.ul.</pattern><data>insertListItem('bulletlistitem', true);</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.it.</pattern><data>toggleTextTag('it',true);</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.tt.</pattern><data>toggleTextTag('tt',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.it.</pattern><data>toggleTextTag('italics',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.tt.</pattern><data>toggleTextTag('typewriter',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.bd.</pattern><data>toggleTextTag('bold',true);</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.em.</pattern><data>toggleTextTag('em',true);</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.sf.</pattern><data>toggleTextTag('sf',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.em.</pattern><data>toggleTextTag('emphasized',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.sf.</pattern><data>toggleTextTag('sansSerif',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.lg.</pattern><data>toggleTextTag('large',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.Lg.</pattern><data>toggleTextTag('Large',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.LG.</pattern><data>toggleTextTag('LARGE',true);</data></sub>

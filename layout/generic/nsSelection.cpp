@@ -2036,7 +2036,7 @@ nsFrameSelection::GetPrevNextBidiLevels(nsIContent *aNode,
     return levels;
   }
 
-  nsIFrame *newFrame;
+  nsIFrame *newFrame = nsnull;
   PRInt32 offset;
   PRBool jumpedLine;
   PRBool math;
