@@ -1767,8 +1767,10 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
   var reasonToSave = strID ? GetString(strID) : "";
 
   var sciurlstring = msiFindOriginalDocname(htmlurlstring);
-  sciurlstring = sciurlstring.replace((/_work\/[^\/]*\.[a-z0-9]+$/i),"")+".sci";
-  
+  if (/_work/.test(sciurlstring))
+  {
+    sciurlstring = sciurlstring.replace((/_work\/[^\/]*\.[a-z0-9]+$/i),"")+".sci";
+  }  
   var leafregex = /.*\/([^\/]+$)/;
   var arr = leafregex.exec(sciurlstring);
   if (arr && arr.length >1) document.title = arr[1];
@@ -4445,17 +4447,17 @@ function msiSetDisplayMode(editorElement, mode)
           printTeX(true, true);
         }
       }
-    }
-    if (pdfAction != "default")
-    {
-      if ("gContentWindowDeck" in window)
+      if (pdfAction != "default")
       {
-        if (previousMode < 0) previousMode = 0;
-        window.gContentWindowDeck.selectedIndex = previousMode;
-        document.getElementById("EditModeTabs").selectedIndex = previousMode;
-      }
+        if ("gContentWindowDeck" in window)
+        {
+          if (previousMode < 0) previousMode = 0;
+          window.gContentWindowDeck.selectedIndex = previousMode;
+          document.getElementById("EditModeTabs").selectedIndex = previousMode;
+        }
 
-      return false;
+        return false;
+      }
     }
     //Hide the formatting toolbar if not already hidden
     if ("gViewFormatToolbar" in window && window.gViewFormatToolbar != null)
