@@ -11,10 +11,6 @@ uuline {
 
 uwave {
   color: green;
-  /* Didn't work:  */
-  /* background: url(C:/Users/George/Documents/SWPDocs/underline.gif) bottom repeat-x; */
-  /* But this does:  */
-  /* background: url(file://C:///Users/George/Documents/SWPDocs/underline.gif) bottom repeat-x; */
   background: url(resource://app/res/css/ulem-wavy.png) bottom repeat-x;
 }
 
