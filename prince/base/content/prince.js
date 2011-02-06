@@ -7,6 +7,15 @@ const NS_PROCESSINFO_CONTRACTID = "@mozilla.org/xpcom/process-info;1";
 Components.utils.import("resource://app/modules/macroArrays.jsm");
 var currPDFfileLeaf = "main.pdf"; // this is the leafname of the last pdf file generated.
 
+function princeStartUp()
+{
+  // take out parts of the UI not needed on the Mac
+//if ('Mac'==GetOS())
+//{
+//  document.getElementById
+//}
+  msiEditorOnLoad();
+}
 function goAboutDialog() {
   window.openDialog("chrome://prince/content/aboutDialog.xul", "about", "modal,chrome,resizable=yes");
 }
