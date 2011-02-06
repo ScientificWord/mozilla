@@ -3508,7 +3508,7 @@ var msiPreviewCommand =
     var editorElement = msiGetActiveEditorElement();
     // Don't continue if user canceled during prompt for saving
     // DocumentHasBeenSaved will test if we have a URL and suppress "Don't Save" button if not
-    if (!CheckAndSaveDocument("cmd_preview", DocumentHasBeenSaved()))
+    if (!msiCheckAndSaveDocument("cmd_preview", DocumentHasBeenSaved()))
       return;
 
     // Check if we saved again just in case?
@@ -3570,7 +3570,7 @@ var msiSendPageCommand =
     var editorElement = msiGetActiveEditorElement();
     // Don't continue if user canceled during prompt for saving
     // DocumentHasBeenSaved will test if we have a URL and suppress "Don't Save" button if not
-    if (!CheckAndSaveDocument("cmd_editSendPage", DocumentHasBeenSaved()))
+    if (!msiCheckAndSaveDocument("cmd_editSendPage", DocumentHasBeenSaved()))
       return;
 
     // Check if we saved again just in case?
