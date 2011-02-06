@@ -31,7 +31,7 @@
 <window
   id    = "prince"
   title = "&prince.title;"
-  onload="msiEditorOnLoad()"
+  onload="princeStartUp()"
   onunload=""
   onclose="return msiEditorCanClose()"
   onfocus="msiEditorWindowOnFocus(event)"
