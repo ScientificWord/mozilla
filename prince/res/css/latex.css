@@ -572,10 +572,15 @@ body {
 
 bodyText, rtlBodyText, p, bodyMath, sectiontitle, shortQuote, longQuotation, epigraph, title, line, 
   dialogbase, bulletListItem, numberedListItem, descriptionListItem, verbatim,
-  abstract, address, author, date, makelof, makelot, maketitle, maketoc, title {
+  abstract, address, author, date, title {
   -moz-user-select: text;
 }
-  
+
+makelof, makelot, maketitle, maketoc, {
+  -moz-user-select: none;
+  display:block;
+  text-align: left;
+}  
 
 
 /* front matter tags */
