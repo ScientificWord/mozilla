@@ -171,13 +171,12 @@ begin
   end_if;
 end_proc:
 
-// match behavior to Maple's Psi
 tcipsi := proc()
 begin
   if args(0) = 1 then
     psi(args(1))
   elif args(0) = 2 then
-    psi(args(2),args(1))
+    psi(args(1),args(2))
   end_if;
 end_proc:
 
