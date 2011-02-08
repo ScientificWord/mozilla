@@ -2155,6 +2155,7 @@ function doComputeSolveODESeries(math, editorElement)
   o.prompt[2] 		= GetComputeString("PowerSeries.termsprompt");
   o.initialvalue[2] = GetComputeString("PowerSeries.termsdefault");
   o.theMath = math;
+  o.mathresult = new Array (3);
 
 
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
@@ -2163,13 +2164,15 @@ function doComputeSolveODESeries(math, editorElement)
     return;
   var mathstr = GetFixedMath(math);
   var ord = GetNumAsMathML(o.order);
+  o.thevar = o.mathresult[0];
+  o.about = o.mathresult[1];
 
   ComputeCursor(editorElement);
-  msiComputeLogger.Sent4("Solve ODE Power Series ",mathstr,o.thevar + " @ " + o.about,ord);
+  msiComputeLogger.Sent4("Solve ODE Power Series ", mathstr, o.thevar + " @ " + o.about, ord);
   try {
-    var out = GetCurrentEngine().solveODESeries(mathstr,o.thevar,o.about,ord);
+    var out = GetCurrentEngine().solveODESeries(mathstr, o.thevar, o.about, ord);
     msiComputeLogger.Received(out);
-    appendLabeledResult(out,GetComputeString("ODESeries.fmt"),math, editorElement);
+    appendLabeledResult(out, GetComputeString("ODESeries.fmt"), math, editorElement);
   } catch (e) {
     msiComputeLogger.Exception(e);
   }
@@ -2192,11 +2195,19 @@ function doComputePowerSeries(math, editorElement, cmdHandler)
   o.prompt[2] 		= GetComputeString("PowerSeries.termsprompt");
   o.initialvalue[2] = GetComputeString("PowerSeries.termsdefault");
   o.theMath = math;
+  o.mathresult = new Array (3);
 
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
   try {
-    msiOpenModelessDialog("chrome://prince/content/ComputePowerSeriesArgDialog.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
-                                      editorElement, "cmd_MSIComputePowerSeries", cmdHandler, o);
+    var parentWin = msiGetParentWindowForNewDialog(editorElement);
+    parentWin.openDialog("chrome://prince/content/ComputePowerSeriesArgDialog.xul", "powerseries", "chrome,close,titlebar,modal", o);
+    //msiOpenModelessDialog("chrome://prince/content/ComputePowerSeriesArgDialog.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
+    //                                  editorElement, "cmd_MSIComputePowerSeries", cmdHandler, o);
+    if (o.Cancel)
+      return;
+
+    finishComputePowerSeries(editorElement, o);
+    
   } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputePowerSeries: [" + e + "]"); return;}
 
 //  parentWin.openDialog("chrome://prince/content/ComputeMathMLArgDialog.xul", "mathmlarg"
@@ -2205,8 +2216,7 @@ function doComputePowerSeries(math, editorElement, cmdHandler)
 
 function finishComputePowerSeries(editorElement, o)
 {
-  if (o.Cancel)
-    return;
+
   var mathstr = runFixup(GetMathAsString(GetRHS(o.theMath)));
 
   ComputeCursor(editorElement);
@@ -2217,7 +2227,7 @@ function finishComputePowerSeries(editorElement, o)
   try {
     var out = GetCurrentEngine().powerSeries(mathstr, variable, center, order);
     msiComputeLogger.Received(out);
-    appendLabeledResult(out,GetComputeString("Series.fmt"),o.theMath, editorElement);
+    appendLabeledResult(out, GetComputeString("Series.fmt"), o.theMath, editorElement);
   } catch (e) {
     msiComputeLogger.Exception(e);
   }
