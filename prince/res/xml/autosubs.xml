@@ -52,6 +52,7 @@
   <sub ctx="math" tp="sc"><pattern>arccos</pattern><data>insertMathname('arccos','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>arccot</pattern><data>insertMathname('arccot','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>arccsc</pattern><data>insertMathname('arccsc','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>arcsec</pattern><data>insertMathname('arcsec','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>arcsin</pattern><data>insertMathname('arcsin','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>arctan</pattern><data>insertMathname('arctan','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>arg</pattern><data>insertMathname('arg','true');</data></sub>
@@ -125,6 +126,7 @@
   <sub ctx="math" tp="sc"><pattern>real</pattern><data>insertMathname('real','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>row</pattern><data>insertMathname('row','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>sec</pattern><data>insertMathname('sec','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>seq</pattern><data>insertMathname('seq','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>Shi</pattern><data>insertMathname('Shi','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>Si</pattern><data>insertMathname('Si','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>simplify</pattern><data>insertMathname('simplify','true');</data></sub>
@@ -135,6 +137,7 @@
   <sub ctx="math" tp="sc"><pattern>TInv</pattern><data>insertMathname('TInv','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>UniformDen</pattern><data>insertMathname('UniformDen','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>UniformDist</pattern><data>insertMathname('UniformDist','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>UniformInv</pattern><data>insertMathname('UniformInv','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>WeibullDen</pattern><data>insertMathname('WeibullDen','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>WeibullDist</pattern><data>insertMathname('WeibullDist','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>WeibullInv</pattern><data>insertMathname('WeibullInv','true');</data></sub>
