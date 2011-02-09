@@ -117,7 +117,6 @@ MNODE* Tree2StdMML::TreeToFixupForm(MNODE* dMML_tree, bool D_is_derivative)
   MNODE* rv = dMML_tree;
   RemoveMSTYLEs(rv);
   RemoveHSPACEs(rv);
-  RemoveIT_and_AF(rv);
   rv = ChDataToCanonicalForm(rv);
   BindDelimitedGroups(rv);
   BindScripts(rv);
