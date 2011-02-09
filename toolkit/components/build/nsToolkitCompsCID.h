@@ -53,10 +53,6 @@
 #define NS_STRINGARRAYAUTOCOMPLETE_CONTRACTID \
   "@mozilla.org/autocomplete/search;1?name=stringarray"
 
-#define MSI_KEYMAP_CONTRACTID \
- "@mackichan.com/keymap/keymap_service;1"
-
-
 #define NS_DOWNLOADMANAGER_CONTRACTID \
   "@mozilla.org/download-manager;1"
 
@@ -93,7 +89,8 @@
 #define NS_URLCLASSIFIERHASHCOMPLETER_CONTRACTID \
     "@mozilla.org/url-classifier/hashcompleter;1"
 
-#define NS_SCRIPTABLEUNESCAPEHTML_CONTRACTID "@mozilla.org/feed-unescapehtml;1"
+#define NS_SCRIPTABLEUNESCAPEHTML_CONTRACTID \
+    "@mozilla.org/feed-unescapehtml;1"
 
 #define NS_NAVHISTORYSERVICE_CONTRACTID \
   "@mozilla.org/browser/nav-history-service;1"
@@ -117,7 +114,9 @@
     "@mozilla.org/autosubstitute;1"
 
 #define MSI_KEYMAP_CONTRACTID \
-    "@mozilla.org/keymap;1"
+    "@mackichan.com/keymap;1"
+
+
 
 
 
@@ -144,11 +143,6 @@
 //{F45EF03A-94FD-466c-97AC-ACCFCBB6AD5E}
 #define NS_STRINGARRAYAUTOCOMPLETE_CID \
 { 0xf45ef03a, 0x94fd, 0x466c, { 0x97, 0xac, 0xac, 0xcf, 0xcb, 0xb6, 0xad, 0x5e} }
-
-
-// {0176db9d-bae7-4b42-82af-6da0269bdd2f}
-#define MSI_KEYMAP_CID \
-{ 0x0176db9d, 0xbae7, 0x4b42, { 0x82, 0xaf, 0x6d, 0xa0, 0x26, 0x9b, 0xdd, 0x2f }}
 
 #define NS_DOWNLOADMANAGER_CID \
     { 0xedb0490e, 0x1dd1, 0x11b2, { 0x83, 0xb8, 0xdb, 0xf8, 0xd8, 0x59, 0x06, 0xa6 } }
@@ -218,6 +212,5 @@
 #define MSI_KEYMAP_CID \
 { 0x39598789, 0x5F03, 0x4B25, { 0x98, 0x75, 0x10, 0x19, 0xA4, 0x41, 0x54, 0x2E} }
 //  0xfe4847ee, 0x9b9b, 0x4025, { 0x95, 0x62, 0x88, 0x27, 0xbb, 0x20, 0xcd, 0x21} }
-
 
 

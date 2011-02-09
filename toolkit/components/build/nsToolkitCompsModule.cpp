@@ -134,7 +134,7 @@ NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiAutosub, msiAutosub::GetInstance)
 NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiSimpleComputeEngine2, msiSimpleComputeEngine2::GetInstance)
 NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiArrowStateService, msiArrowStateService::GetInstance)
 
-NS_GENERIC_FACTORY_CONSTRUCTOR(msiKeyMap)
+NS_GENERIC_FACTORY_SINGLETON_CONSTRUCTOR(msiKeyMap,msiKeyMap::GetInstance)
 /////////////////////////////////////////////////////////////////////////////
 
 static const nsModuleComponentInfo components[] =
