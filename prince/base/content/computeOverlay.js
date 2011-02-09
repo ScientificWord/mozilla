@@ -523,7 +523,7 @@ function doComputeCommand(cmd, editorElement, cmdHandler)
       doVarsComputation(element,", Corresponding equations: ",eng.matrixAsEquations,GetComputeString("MatrixAsEqns.title"), editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_CheckEquality":
-      doLabeledComputation(element,eng.Check_Equality,"CheckEquality.fmt", editorElement);
+      doComputeCheckEquality(element, editorElement);
       break;
     case "cmd_compute_SolveExact":
       doComputeSolveExact(element, "", editorElement, cmd, cmdHandler);
@@ -1444,12 +1444,12 @@ function GetFixedMath(math)
 function doLabeledComputation(math,op,labelID, editorElement)
 {
   var mathstr = GetFixedMath(GetRHS(math));
-  msiComputeLogger.Sent("doing "+labelID+" after fixup",mathstr);
+  msiComputeLogger.Sent("doing " + labelID + " after fixup", mathstr);
   ComputeCursor(editorElement);
   try {
-    var out = GetCurrentEngine().perform(mathstr,op);
+    var out = GetCurrentEngine().perform(mathstr, op);
     msiComputeLogger.Received(out);
-    appendLabeledResult(out,GetComputeString(labelID),math, editorElement);
+    appendLabeledResult(out,GetComputeString(labelID), math, editorElement);
   } catch (e) {
     msiComputeLogger.Exception(e);
   }
@@ -1634,11 +1634,24 @@ function finishVarsEvalComputation(editorElement, o)
 
 // actual command handlers
 
-function doCheckEquality(math, editorElement, cmd, cmdHandler)
+function doComputeCheckEquality(math, editorElement)
 {
   var mathstr = GetFixedMath(math);
 
-  var out = GetCurrentEngine().checkEquality(mathstr,vars);
+  msiComputeLogger.Sent("doing " + "CheckEquality" + " after fixup", mathstr); 
+
+  ComputeCursor(editorElement);
+  try {
+    var out = GetCurrentEngine().perform(mathstr, GetCurrentEngine().Check_Equality);
+    msiComputeLogger.Received(out);
+    appendLabeledResult(out, GetComputeString("CheckEquality.fmt"), math, editorElement);
+  } catch (e) {
+    msiComputeLogger.Exception(e);
+  }
+  RestoreCursor(editorElement);
+
+  //var out = GetCurrentEngine().checkEquality(mathstr,vars);
+  //doLabeledComputation(math, eng.Check_Equality, "CheckEquality.fmt", editorElement);
 }
 
 
