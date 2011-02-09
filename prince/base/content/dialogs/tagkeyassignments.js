@@ -115,7 +115,7 @@ function startUp()
   document.getElementById("alltaglist").height = document.getElementById("keyscript").height;
  // Build the list of key combinations that have been assigned values or have been reserved
   clearInputs();
-  keymapper =  Components.classes["@mackichan.com/keymap/keymap_service;1"]
+  keymapper =  Components.classes["@mackichan.com/keymap;1"]
                        .createInstance(Components.interfaces.msiIKeyMap);
   var strOfKeys = keymapper.getTableKeys("FKeys");
   var keylist = strOfKeys.split(" ");
