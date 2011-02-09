@@ -3474,9 +3474,8 @@ var msiOneShotGreek =
   {
     var editorElement = msiGetActiveEditorElement();
     var editor = msiGetEditor(editorElement);
-//    var htmleditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
-//    htmleditor
-    editor.setOneShotTranslation("greek");  
+    var htmleditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
+    htmleditor.setOneShotTranslation("greek");  
   }
 };
 
