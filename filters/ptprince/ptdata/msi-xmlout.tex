@@ -36,6 +36,7 @@
 \msi@pass@newline{\settowidth}
 
 
+
 \def\MSIMathQuote#1{%
    %\expandafter\def\csname#1\endcsname{\char`\\#1\char32\relax}}
    \expandafter\def\csname#1\endcsname{\expandafter\string\csname#1\endcsname\char32\relax}}
@@ -989,11 +990,7 @@
 
 
 
-
-
-
-
-\def\out@hrulefill{%
+\def\hrulefill{%
    <hspace fillWith="line" flex="1" class="stretchySpace" type="stretchySpace"></hspace>}
 
 
@@ -1339,6 +1336,8 @@
    \br\msiopentag{preamble}{<preamble>}
 }
 
+% A hack to fool the jbm filter into handling \dots gracefully
+\def\dots{\msitag{\U{2026}}}
 
 \input latex-default.tex
 \input tcilatex.tex
