@@ -734,7 +734,9 @@
    \else
       \def\donext{%
          \begingroup
-            \msiopentag{table}{<table opt="#2">}%
+            \msihmode   
+            \msiopentag{table}{<table opt="#2" cellspacing="2" cellpadding="2" border="1">}%
+            \msiopentag{tbody}{<tbody>}
             \aftergroup\msi@closetabular
             \hbox\bgroup
               \let\\=\@cr
@@ -744,7 +746,7 @@
    \donext
 }
 
-\def\msi@closetabular{\msiclosetag{table}{</table>}}
+\def\msi@closetabular{\msiclosetag{tbody}{</tbody>}\msiclosetag{table}{</table>}}
 
 \def\msi@end@tabular{\crcr
      \egroup %halign
