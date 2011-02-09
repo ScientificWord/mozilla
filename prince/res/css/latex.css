@@ -327,7 +327,7 @@ mml|mrow[id]:after {
 }
  
 /* The following is a generic set of rules to control opening and closing
-   sections. They are repeated for each structure than can be closed. Also
+   sections. They are repeated for each structure that can be closed. Also
    implement the switch between numbered and not numbered*/
 
 chapter>*:first-child {
@@ -369,7 +369,7 @@ section>*:first-child {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
 }
 
-chapter[open="false"]>sectiontitle {
+section[open="false"]>sectiontitle {
   display: block;
 }
 
