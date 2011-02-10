@@ -1,0 +1,13 @@
+<!-- Copyright (c) 2011 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "## properties">
+<!ENTITY leadIn.label "Lead-in">
+<!ENTITY leadInAuto.label "Default">
+<!ENTITY leadInAuto.accesskey "D">
+<!ENTITY leadInCustom.label "Custom">
+<!ENTITY leadInCustom.accesskey "C">
+<!ENTITY customLeadInLabel.label "Lead-in text">
+<!ENTITY customLeadInLabel.accesskey "l">
+<!ENTITY numberingCheckbox.label "Numbered">
+<!ENTITY numberingCheckbox.accesskey "N">
+

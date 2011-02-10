@@ -1,5 +1,6 @@
 <!ENTITY aboutDialog.title      "About Scientific WorkPlace">
 <!ENTITY copyright              "Copyright and contributor information">
 <!ENTITY copyrightLink          "http://www.mackichan.com">
-<!ENTITY licenses "Licenses">
-<!ENTITY credits  "Credits">
+<!ENTITY AboutTab.label "About">
+<!ENTITY LicensesTab.label "Licenses">
+<!ENTITY CreditsTab.label  "Credits">

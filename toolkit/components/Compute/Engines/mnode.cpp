@@ -1075,6 +1075,9 @@ bool IsArgDelimitingFence(MNODE * mml_node)
       rv = true;
     else if (l_unicode == '[' && r_unicode == ']')
       rv = true;
+    else if (l_unicode == '{' && r_unicode == '}')
+      rv = true;
+
   }
   return rv;
 }

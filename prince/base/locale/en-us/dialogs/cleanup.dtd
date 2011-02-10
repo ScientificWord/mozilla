@@ -1,0 +1,12 @@
+<!-- Copyright (c) 2011 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "Document file cleanup">
+<!ENTITY instructions "The following parts of the document file are non-essential, and can be regenerated at the cost of some time. You may optionally remove them to make a smaller document file.">
+<!ENTITY auxfiles.label "TeX auxiliary files">
+<!ENTITY logfiles.label "TeX log file">
+<!ENTITY pdffiles.label "Generated PDF file">
+<!ENTITY texfiles.label "Generated TeX file">
+<!ENTITY orphanimagefiles.label "Unreferenced image files">
+<!ENTITY orphanplotfiles.label "Unreferenced plot files">
+<!ENTITY cachedconversionfiles.label "Cached graphics file conversions">
+<!ENTITY backupfiles.label "Internal backup files">

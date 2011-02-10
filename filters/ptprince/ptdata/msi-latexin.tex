@@ -167,7 +167,9 @@
 \chardef\sixt@@n=16
 \newlinechar`\^^J
 
-\def\typeout{\immediate\write17}
+%\def\typeout{\immediate\write17}
+\def\typeout#1{\relax}
+
 \def\dospecials{\do\ \do\\\do\{\do\}\do\$\do\&%
   \do\#\do\^\do\_\do\%\do\~}
 
@@ -495,11 +497,6 @@
 \def\sh@ft#1{\dimen@.00#1ex\multiply\dimen@\fontdimen1\font
   \kern-.0156\dimen@} % compensate for slant in lowered accents
 %%\def\hrulefill{\leavevmode\leaders\hrule\hfill\kern\z@}
-\def\hrulefill{\out@hrulefill}
-\def\dotfill{%
-  \leavevmode
-  \cleaders \hb@xt@ .44em{\hss.\hss}\hfill
-  \kern\z@}
 \sfcode`\)=0 \sfcode`\'=0 \sfcode`\]=0
 \def\showoverfull{\tracingonline\@ne}
 \gdef\showoutput{\tracingoutput\@ne
@@ -515,8 +512,8 @@
 \edef\fmtversion{2001/06/01}
 
 \def\two@digits#1{\ifnum#1<10 0\fi\number#1}
-\def\typeout#1{\begingroup\set@display@protect
-    \immediate\write\@unused{#1}\endgroup}
+%\def\typeout#1{\begingroup\set@display@protect
+%    \immediate\write\@unused{#1}\endgroup}
 \newlinechar`\^^J
 \let\@@par=\par
 \let\@@hyph=\-        % Save original primitive definition
@@ -5162,7 +5159,7 @@
 
 %<indexitem req="varioref" pri="asdf" sec="fff"/>
 
-\def\index#1{\msihmode\msitag{<indexitem>#1</indexitem>}}
+\def\index#1{\msihmode\msitag{<indexitem req="varioref" pri="#1"/>}}
 
 
 %%\def\@index#1{\endgroup\@esphack}
@@ -5196,8 +5193,6 @@
 
 \def\bibcite{\@newl@bel b}
 \let\citation\@gobble
-\DeclareRobustCommand\cite{%
-  \@ifnextchar [{\@tempswatrue\out@citex}{\@tempswafalse\out@citey}}
 
 
 \let\bibdata=\@gobble
@@ -6855,22 +6850,12 @@
      \catcode`\&=13%
      %\afterassignment\continue
      %\let\repl
-     \msihyperrefB{#1}{#2}{#3}%
-}
+     \msihyperrefB{#1}{#2}{#3}}
 
 \def\msihyperrefB#1#2#3#4{%
-     %\xdef\repl{#4}%
-     %\catcode`\&=4\relax
      \endgroup
      \out@hyperref{#1}{#2}{#3}{#4}}%
 
-
-
-%%\def\hyperref#1#2#3{%
-%%  \begingroup
-%%     \catcode`\&=13%
-%%     \msihyperrefB{#1}{#2}{#3}%
-%%}
 
 \let\hyperref\msihyperref
 
