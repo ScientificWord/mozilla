@@ -11,10 +11,14 @@
    \write\css{@import url("resource://app/res/css/baselatex.css");}
    \write\css{@import url("resource://app/res/css/latex.css");}
    \write\css{\classcss}
+   \write\css{\newtheorems}
    \closeout\css
 }
 
 \def\classcss{}
+\def\newtheorems{}
+
+
 
 \msi@dollar=`\$
 
@@ -23,13 +27,14 @@
 
 
 \def\msitexb#1{[SHOULD NOT OCCUR]}
-\def\msidefault#1{[Defaulting: \string#1]}
+\def\msidefault#1{\msitag{[Defaulting: \string#1]}}
 
 
 \msi@pass@newline{\@settodim}
 \msi@pass@newline{\settoheight}
 \msi@pass@newline{\settodepth}
 \msi@pass@newline{\settowidth}
+
 
 
 \def\MSIMathQuote#1{%
@@ -164,6 +169,7 @@
 \def\out@thanks#1{%
    \msitag{^^0a}\msiopentag{thanks}{<thanks>}#1\msiclosetag{thanks}{</thanks>}}
 
+\def\out@and{\msiclosetag{author}{</author>}\msitag{^^0a}\msiopentag{author}{<author>}}%
    
 \def\out@author#1{%
   \begingroup
@@ -203,16 +209,16 @@
 \def\out@newtheorema#1[#2]#3{%
   \@ifundefined{msi@begin@#1}%
      {\expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}[#2]{#3}}
-      \@namedef{msi@begin@#1}{\br\msiopentag{theorem}{<theorem type="#1">}\msiopentag{bodyText}{<bodyText>}}
-      \@namedef{msi@end@#1}{\br\msiclosetag{bodyText}{</bodyText>}\msiclosetag{theorem}{</theorem>}}}%
+      \@namedef{msi@begin@#1}{\br\msiopentag{#1}{<#1>}\msiopentag{bodyText}{<bodyText>}}
+      \@namedef{msi@end@#1}{\br\msiclosetag{bodyText}{</bodyText>}\msiclosetag{#1}{</#1>}}}%
      {}%
 }
 
 \def\out@newtheoremb#1#2{%
   \@ifundefined{msi@begin@#1}%
     {\expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newtheorem{#1}{#2}}
-     \@namedef{msi@begin@#1}{\br\msiopentag{theorem}{<theorem type="#1">}\msiopentag{bodyText}{<bodyText>}}
-     \@namedef{msi@end@#1}{\br\msiclosetag{bodyText}{</bodyText>}\msiclosetag{theorem}{</theorem>}}}%
+     \@namedef{msi@begin@#1}{\br\msiopentag{#1}{<#1>}\msiopentag{bodyText}{<bodyText>}}
+     \@namedef{msi@end@#1}{\br\msiclosetag{bodyText}{</bodyText>}\msiclosetag{#1}{</#1>}}}%
     {}}%
 }
 
@@ -238,36 +244,29 @@
     {}}%
 
    
-%% \@star@or@long\new@environment}
+%% %% Newcommand and renewcommand
 %% 
-%% \def\new@environment#1{%
-%%   \@testopt{\@newenva#1}0}
-%% \def\@newenva#1[#2]{%
-%%    \@ifnextchar [{\@newenvb#1[#2]}{\@newenv{#1}{[#2]}}}
-%% \def\@newenvb#1[#2][#3]{\@newenv{#1}{[#2][{#3}]}}
-
-
-%% \def\@declarenewenva#1[#2][#3]#4#5{%
-%%   \@ifundefined{msi@begin@#1}%
-%%     {\expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newenvironment{#1}[#2][#3]{#4}{#5}}
-%%      \@namedef{msi@begin@#1}{\br\msiopentag{environment}{<environment type="#1">}}
-%%      \@namedef{msi@end@#1}{\br\msiclosetag{environment}{</environment>}}}%
-%%     {}}%
-%%     %\br\msitag{<newenvironment name="#1" nargs="#2" opt="#3" start="#4" end="#5" />}
-%%  }
-%% \def\@declarenewenvb#1#2#3{%
-%%   \@ifundefined{msi@begin@#1}%
-%%     {\expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newenvironment{#1}{#2}{#3}}
-%%      \@namedef{msi@begin@#1}{\br\msiopentag{environment}{<environment type="#1">}}
-%%      \@namedef{msi@end@#1}{\br\msiclosetag{environment}{</environment>}}}%
-%%     {}}%
-%%    %\br\msitag{<newenvironment name="#1" start="#4" end="#5" />}
+%% \def\newcommand{%
+%%   \@ifnextchar*{\@newcommand{*}}{\@newcommand{}}}
+%% 
+%% \def\@newcommand#1{%
+%%   \@ifnextchar[{\@newcommandA#1}{\@newcommandA#1[]}}
+%% 
+%% \def\@newcommandA#1[#2]{%
+%%   \@ifnextchar[{\@newcommandB#1[#2]}{\@newcommandB#1[#2][]}}
+%% 
+%% \def\@newcommandB#1[#2][#3]#4{%
+%%   \expandafter\preambleToks\expandafter{\the\preambleToks^^0a\newcommand{#1}[#2][#3]{#4}}%
+%%   % Define command
+%%   \def#1{\string#1}%
 %% }
 
 
 
 %% Citations and cross refs
 
+\def\cite{%
+  \@ifnextchar [{\@tempswatrue\out@citex}{\@tempswafalse\out@citey}}
 
 \def\out@citex[#1]#2{%
    \msiopentag{citation}{<citation xmlns="http://www.w3.org/1999/xhtml" 
@@ -735,7 +734,9 @@
    \else
       \def\donext{%
          \begingroup
-            \msiopentag{table}{<table opt="#2">}%
+            \msihmode   
+            \msiopentag{table}{<table opt="#2" cellspacing="2" cellpadding="2" border="1">}%
+            \msiopentag{tbody}{<tbody>}
             \aftergroup\msi@closetabular
             \hbox\bgroup
               \let\\=\@cr
@@ -745,7 +746,7 @@
    \donext
 }
 
-\def\msi@closetabular{\msiclosetag{table}{</table>}}
+\def\msi@closetabular{\msiclosetag{tbody}{</tbody>}\msiclosetag{table}{</table>}}
 
 \def\msi@end@tabular{\crcr
      \egroup %halign
@@ -783,7 +784,7 @@
 
 \begingroup
   \catcode`\<=\active
-  \def\<{\char`<rangle>}%
+  \gdef<{\ifmmode\char`\<\else\char`\&lt;\fi}
 \endgroup
 
 \def\verb{%
@@ -828,10 +829,10 @@
 \def\mathbf#1{\string\mathbf\char123#1\char125}
 \def\mathfrak#1{\string\mathfrak\char123#1\char125}
 
-\def\LaTeX{<latex>LaTeX</latex>}
-\def\TeX{<tex>TeX</tex>}
 
-
+\def\TeX{\msitag{<texlogo xmlns="http://www.w3.org/1999/xhtml" name="tex">T<sub>E</sub>X</texlogo>}}
+\def\LaTeX{\msitag{<texlogo xmlns="http://www.w3.org/1999/xhtml" name="latex">L<sup>A</sup>T<sub>E</sub>X</texlogo>}}
+\def\BibTeX{\msitag{<texlogo xmlns="http://www.w3.org/1999/xhtml" name="bibtex">B<sup>i</sup>bT<sub>E</sub>X</texlogo>}}
 
 % Operators
 
@@ -857,6 +858,10 @@
 
 {\catcode`\$=11\relax
  \gdef\${\char`\$}
+ \catcode`\_=11\relax
+ \gdef\_{\char`\_}
+ \catcode`\%=11\relax
+ \gdef\%{\char`\%}
 }
 
 
@@ -987,11 +992,7 @@
 
 
 
-
-
-
-
-\def\out@hrulefill{%
+\def\hrulefill{%
    <hspace fillWith="line" flex="1" class="stretchySpace" type="stretchySpace"></hspace>}
 
 
@@ -1029,6 +1030,29 @@
 \def\mathsf#1{\string\mathsf\@brace{#1}}
 \def\mathtt#1{\string\mathtt\@brace{#1}}
 \def\mathrm#1{\string\mathrm\@brace{#1}}
+
+
+\def\Big#1{\ifmmode\string\big#1\fi}
+\def\big#1{\ifmmode\string\big#1\fi}
+\def\Bigg#1{\ifmmode\string\big#1\fi}
+\def\bigg#1{\ifmmode\string\big#1\fi}
+\def\Bigl#1{\ifmmode\string\big#1\fi}
+\def\bigl#1{\ifmmode\string\big#1\fi}
+\def\Bigm#1{\ifmmode\string\big#1\fi}
+\def\bigm#1{\ifmmode\string\big#1\fi}
+\def\Bigr#1{\ifmmode\string\big#1\fi}
+\def\bigr#1{\ifmmode\string\big#1\fi}
+\def\Biggl#1{\ifmmode\string\big#1\fi}
+\def\biggl#1{\ifmmode\string\big#1\fi}
+\def\Biggm#1{\ifmmode\string\big#1\fi}
+\def\biggm#1{\ifmmode\string\big#1\fi}
+\def\Biggr#1{\ifmmode\string\big#1\fi}
+\def\biggr#1{\ifmmode\string\big#1\fi}
+
+
+
+
+
 
 
 
@@ -1138,9 +1162,7 @@
 
 
 \def\out@hyperref#1#2#3#4{%
-   %\msiopentag{<a href="#4">}#1\msiclosetag{</a>}%
-   \msiopentag{a}{<a href="#4">}#1\msiclosetag{a}{</a>}%
-}
+   \msiopentag{a}{<a href="#4">}#1\msiclosetag{a}{</a>}}
 
 \newif\if@in@texttag
 \@in@texttagfalse
@@ -1232,7 +1254,7 @@
                  |csname scan@#1|endcsname)
 
           |expandafter|gdef|csname scan@#1|endcsname##1\end{#1}%
-             (\msitag(<texb enc="1" name="#1">%
+             (|msitag(<texb enc="1" name="#1">%
                         <![CDATA[\begin{#1}##1\end{#1}]]>%
                       </texb>)%
               |egroup)
@@ -1298,7 +1320,7 @@
 
 
 %\MSIMathQuote{\\} %% may need to hard-code this one:
-\msitraceon
+
 \def\\{\ifmmode\string\\\else\msitag{<br/>}\fi}
 
 %% Temporary until prince can read xml
@@ -1316,6 +1338,10 @@
    \br\msiopentag{preamble}{<preamble>}
 }
 
+% A hack to fool the jbm filter into handling \dots gracefully
+\def\dots{\msitag{\U{2026}}}
 
 \input latex-default.tex
 \input tcilatex.tex
+
+\catcode`\<=\active

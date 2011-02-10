@@ -43,6 +43,7 @@
 \MSIEmptyElement{textbackslash}
 \MSIEmptyElement[discretionaryhyphen]{-}
 \MSIEmptyElement[asterisk]{*}
+\MSIEmptyElement[br]{linebreak}
 
 
 
@@ -104,6 +105,7 @@
 \MSITeXButtonReq{fbox}
 \MSITeXButton{raggedleft}
 \MSITeXButton{raggedright}
+\MSITeXButton{dotfill}
 
 \MSITeXButtonEnvironment{minipage}
 
@@ -153,11 +155,13 @@
 
 % MSIUnicode  section 1 -- non-accented characters.
 % These are a direct translation from a macro to an entity.
-% For instance, \msi@uni{ng}{14b}  causes the translation
+% For instance, \MSIUnicode{ng}{14b}  causes the translation
 % From \ng
 % To   &#14b;  
 
-\MSIUnicode{dots}{85}
+\MSIUnicode{euro}{20ac}
+\MSIUnicode{texteuro}{20ac}
+\MSIUnicode{ldots}{2026}
 \MSIUnicode{L}{141}
 \MSIUnicode{l}{142}
 \MSIUnicode{NG}{14a}
@@ -444,7 +448,7 @@
 \MSIMathQuote{cdots}
 \MSIMathQuote{cdot}
 \MSIMathQuote{centerdot}
-\MSIMathQuote{cents}
+%\MSIMathQuote{cents}
 \MSIMathQuote{checkmark}
 \MSIMathQuote{check}
 \MSIMathQuote{chi}
@@ -516,6 +520,7 @@
 \MSIMathQuote{doteq}
 \MSIMathQuote{dotplus}
 \MSIMathQuote{dot}
+
 \MSIMathQuote{doublebarwedge}
 \MSIMathQuote{Downarrow}
 \MSIMathQuote{downarrow}
@@ -534,7 +539,6 @@
 \MSIMathQuote{equiv}
 \MSIMathQuote{eta}
 \MSIMathQuote{eth}
-\MSIMathQuote{euro}
 \MSIMathQuote{exists}
 \MSIMathQuote{exp}
 \MSIMathQuote{fallingdotseq}
@@ -591,7 +595,6 @@
 \MSIMathQuote{langle}
 \MSIMathQuote{lceil}
 \MSIMathQuote{lcm}
-\MSIMathQuote{ldots}
 \MSIMathQuote{leadsto}
 \MSIMathQuote{leftarrowtail}
 \MSIMathQuote{Leftarrow}
@@ -726,7 +729,7 @@
 \MSIMathQuote{Pi}
 \MSIMathQuote{pi}
 \MSIMathQuote{pm}
-\MSIMathQuote{pounds}
+%\MSIMathQuote{pounds}
 \MSIMathQuote{precapprox}
 \MSIMathQuote{preccurlyeq}
 \MSIMathQuote{preceq}
@@ -828,11 +831,11 @@
 \MSIMathQuote{tciFourier}
 \MSIMathQuote{tciLaplace}
 \MSIMathQuote{tcoprod}
-\MSIMathQuote{textcurrency}
-\MSIMathQuote{textfranc}
-\MSIMathQuote{textlira}
-\MSIMathQuote{textpeseta}
-\MSIMathQuote{texttrademark}
+%\MSIMathQuote{textcurrency}
+%\MSIMathQuote{textfranc}
+%\MSIMathQuote{textlira}
+%\MSIMathQuote{textpeseta}
+%\MSIMathQuote{texttrademark}
 \MSIMathQuote{therefore}
 \MSIMathQuote{Theta}
 \MSIMathQuote{theta}
@@ -914,7 +917,7 @@
 \MSIMathQuote{wr}
 \MSIMathQuote{Xi}
 \MSIMathQuote{xi}
-\MSIMathQuote{yen}
+%\MSIMathQuote{yen}
 \MSIMathQuote{zeta}
 
 \MSIMathQuote{vec}

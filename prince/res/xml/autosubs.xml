@@ -22,11 +22,11 @@
   <sub ctx="text" tp="sc"><pattern>.mnote.</pattern><data>insertMarginNote();</data></sub>
   <sub ctx="text" tp="sc"><pattern>.ol.</pattern><data>insertListItem('numberedlistitem', true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.ul.</pattern><data>insertListItem('bulletlistitem', true);</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.it.</pattern><data>toggleTextTag('it',true);</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.tt.</pattern><data>toggleTextTag('tt',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.it.</pattern><data>toggleTextTag('italics',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.tt.</pattern><data>toggleTextTag('typewriter',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.bd.</pattern><data>toggleTextTag('bold',true);</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.em.</pattern><data>toggleTextTag('em',true);</data></sub>
-  <sub ctx="text" tp="sc"><pattern>.sf.</pattern><data>toggleTextTag('sf',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.em.</pattern><data>toggleTextTag('emphasized',true);</data></sub>
+  <sub ctx="text" tp="sc"><pattern>.sf.</pattern><data>toggleTextTag('sansSerif',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.lg.</pattern><data>toggleTextTag('large',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.Lg.</pattern><data>toggleTextTag('Large',true);</data></sub>
   <sub ctx="text" tp="sc"><pattern>.LG.</pattern><data>toggleTextTag('LARGE',true);</data></sub>
@@ -47,23 +47,62 @@
   <sub ctx="math" tp="sc"><pattern>cosh</pattern><data>insertMathname('cosh','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>tan</pattern><data>insertMathname('tan','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>tanh</pattern><data>insertMathname('tanh','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>about</pattern><data>insertMathname('about','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>additionally</pattern><data>insertMathname('additionally','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>arccos</pattern><data>insertMathname('arccos','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>arccot</pattern><data>insertMathname('arccot','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>arccsc</pattern><data>insertMathname('arccsc','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>arcsec</pattern><data>insertMathname('arcsec','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>arcsin</pattern><data>insertMathname('arcsin','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>arctan</pattern><data>insertMathname('arctan','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>arg</pattern><data>insertMathname('arg','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>assume</pattern><data>insertMathname('assume','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>BetaDen</pattern><data>insertMathname('BetaDen','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>BetaDist</pattern><data>insertMathname('BetaDist','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>BetaInv</pattern><data>insertMathname('BetaInv','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>BinomialDen</pattern><data>insertMathname('BinomialDen','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>BinomialDist</pattern><data>insertMathname('BinomialDist','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>CauchyDen</pattern><data>insertMathname('CauchyDen','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>CauchyDist</pattern><data>insertMathname('CauchyDist','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>CauchyInv</pattern><data>insertMathname('CauchyInv','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ChiSquareDen</pattern><data>insertMathname('ChiSquareDen','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ChiSquareDist</pattern><data>insertMathname('ChiSquareDist','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ChiSquareInv</pattern><data>insertMathname('ChiSquareInv','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>Ci</pattern><data>insertMathname('Ci','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>col</pattern><data>insertMathname('col','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>complex</pattern><data>insertMathname('complex','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>cot</pattern><data>insertMathname('cot','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>coth</pattern><data>insertMathname('coth','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>csc</pattern><data>insertMathname('csc','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>deg</pattern><data>insertMathname('deg','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>det</pattern><data>insertMathname('det','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>dim</pattern><data>insertMathname('dim','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>Ei</pattern><data>insertMathname('Ei','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>erf</pattern><data>insertMathname('erf','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>exp</pattern><data>insertMathname('exp','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ExponentialDen</pattern><data>insertMathname('ExponentialDen','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ExponentialDist</pattern><data>insertMathname('ExponentialDist','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>ExponentialInv</pattern><data>insertMathname('ExponentialInv','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>FDen</pattern><data>insertMathname('FDen','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>FDist</pattern><data>insertMathname('FDist','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>FInv</pattern><data>insertMathname('FInv','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>factor</pattern><data>insertMathname('factor','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>float</pattern><data>insertMathname('float','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>GammaDen</pattern><data>insertMathname('GammaDen','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>GammaDist</pattern><data>insertMathname('GammaDist','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>GammaInv</pattern><data>insertMathname('GammaInv','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>gcd</pattern><data>insertMathname('gcd','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>hom</pattern><data>insertMathname('hom','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>HypergeomDen</pattern><data>insertMathname('HypergeomDen','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>HypergeomDist</pattern><data>insertMathname('HypergeomDist','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>Im</pattern><data>insertMathname('Im','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>inf</pattern><data>insertMathname('inf','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>injlim</pattern><data>insertMathname('injlim','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>istrue</pattern><data>insertMathname('istrue','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>ker</pattern><data>insertMathname('ker','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>LambertW</pattern><data>insertMathname('LambertW','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>lg</pattern><data>insertMathname('lg','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>lcm</pattern><data>insertMathname('lcm','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>lim</pattern><data>insertMathname('lim','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>liminf</pattern><data>insertMathname('liminf','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>limsup</pattern><data>insertMathname('limsup','true');</data></sub>
@@ -71,15 +110,42 @@
   <sub ctx="math" tp="sc"><pattern>log</pattern><data>insertMathname('log','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>max</pattern><data>insertMathname('max','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>min</pattern><data>insertMathname('min','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>mod</pattern><data>insertMathname('mod','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>negative</pattern><data>insertMathname('negative','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>NormalDen</pattern><data>insertMathname('NormalDen','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>NormalDist</pattern><data>insertMathname('NormalDist','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>NormalInv</pattern><data>insertMathname('NormalInv','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>PoissonDen</pattern><data>insertMathname('PoissonDen','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>PoissonDist</pattern><data>insertMathname('PoissonDist','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>polylog</pattern><data>insertMathname('polylog','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>positive</pattern><data>insertMathname('positive','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>Pr</pattern><data>insertMathname('Pr','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>projlim</pattern><data>insertMathname('projlim','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>Psi</pattern><data>insertMathname('Psi','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>Re</pattern><data>insertMathname('Re','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>real</pattern><data>insertMathname('real','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>row</pattern><data>insertMathname('row','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>sec</pattern><data>insertMathname('sec','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>seq</pattern><data>insertMathname('seq','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>Shi</pattern><data>insertMathname('Shi','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>Si</pattern><data>insertMathname('Si','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>simplify</pattern><data>insertMathname('simplify','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>solve</pattern><data>insertMathname('solve','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>sup</pattern><data>insertMathname('sup','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>TDen</pattern><data>insertMathname('TDen','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>TDist</pattern><data>insertMathname('TDist','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>TInv</pattern><data>insertMathname('TInv','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>UniformDen</pattern><data>insertMathname('UniformDen','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>UniformDist</pattern><data>insertMathname('UniformDist','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>UniformInv</pattern><data>insertMathname('UniformInv','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>WeibullDen</pattern><data>insertMathname('WeibullDen','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>WeibullDist</pattern><data>insertMathname('WeibullDist','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>WeibullInv</pattern><data>insertMathname('WeibullInv','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>varinjlim</pattern><data>insertMathname('varinjlim','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>varliminf</pattern><data>insertMathname('varliminf','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>varlimsup</pattern><data>insertMathname('varlimsup','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>varprojlim</pattern><data>insertMathname('varprojlim','true');</data></sub>
-
+  <sub ctx="math" tp="sc"><pattern>xpnd</pattern><data>insertMathname('expand','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uA</pattern><data>insertMathunit('A','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uacre</pattern><data>insertMathunit('acre','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uame</pattern><data>insertMathunit('am','true');</data></sub>
