@@ -1,11 +1,15 @@
+\MSITeXButtonReq{altaffilmark}
+\MSITeXButtonReq{affil}
+\MSITeXButtonReq{email}
+\MSITeXButton{and}
 
-\MSIMathQuote{sun}
-\MSIMathQuote{earth}
+\MSITeXButton{sun}
+\MSITeXButton{earth}
 
-\MSIEmptyElement{micron}
-\MSIEmptyElement{sbond}
-\MSIEmptyElement{dbond}
-\MSIEmptyElement{tbond}
+\MSITeXButton{micron}
+\MSITeXButton{sbond}
+\MSITeXButton{dbond}
+\MSITeXButton{tbond}
 
 \MSITextElement{object}
 \MSITextElement{objectname}
