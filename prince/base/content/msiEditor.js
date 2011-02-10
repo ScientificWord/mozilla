@@ -1767,6 +1767,10 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
   var reasonToSave = strID ? GetString(strID) : "";
 
   var sciurlstring = msiFindOriginalDocname(htmlurlstring);
+  if (/_work/.test(sciurlstring))
+  {
+    sciurlstring = sciurlstring.replace((/_work\/[^\/]*\.[a-z0-9]+$/i),"")+".sci";
+  }  
   var leafregex = /.*\/([^\/]+$)/;
   var arr = leafregex.exec(sciurlstring);
   if (arr && arr.length >1) document.title = arr[1];
@@ -4443,17 +4447,17 @@ function msiSetDisplayMode(editorElement, mode)
           printTeX(true, true);
         }
       }
-    }
-    if (pdfAction != "default")
-    {
-      if ("gContentWindowDeck" in window)
+      if (pdfAction != "default")
       {
-        if (previousMode < 0) previousMode = 0;
-        window.gContentWindowDeck.selectedIndex = previousMode;
-        document.getElementById("EditModeTabs").selectedIndex = previousMode;
-      }
+        if ("gContentWindowDeck" in window)
+        {
+          if (previousMode < 0) previousMode = 0;
+          window.gContentWindowDeck.selectedIndex = previousMode;
+          document.getElementById("EditModeTabs").selectedIndex = previousMode;
+        }
 
-      return false;
+        return false;
+      }
     }
     //Hide the formatting toolbar if not already hidden
     if ("gViewFormatToolbar" in window && window.gViewFormatToolbar != null)
@@ -5195,18 +5199,25 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
             objStr = name;
             theMenuStr = GetString("TagPropertiesMenuLabel");
             theMenuStr = theMenuStr.replace(/%tagname%/, name);
-            scriptStr = "openParaTagDialog('"+ name + "',event.target.refElement);";
+            scriptStr = "openParaTagDialog('"+ name + "',event.target.refElement, event.target.refEditor);";
           break;
           case "structtag":
             objStr = name;
             theMenuStr = GetString("TagPropertiesMenuLabel");
             theMenuStr = theMenuStr.replace(/%tagname%/, name);
-            scriptStr = "openStructureTagDialog('"+ name + "',event.target.refElement);";
+            scriptStr = "openStructureTagDialog('"+ name + "',event.target.refElement, event.target.refEditor);";
           break;
     // currently no dialogs for list tags, environments, and front matter.
     //      case "listtag":
     //        break;
           case "envtag":
+            if (editor.tagListManager.tagCanContainTag( name, null, "envLeadIn", null))
+            {
+              objStr = name;
+              theMenuStr = GetString("TagPropertiesMenuLabel");
+              theMenuStr = theMenuStr.replace(/%tagname%/, name);
+              scriptStr = "openEnvTagDialog('"+ name + "',event.target.refElement, event.target.refEditor);";
+            }
           break;
     //      case "frontmtag":
     //        break;
@@ -9339,7 +9350,7 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     var elementName = element.localName;
     if (elementName == "object" && !element.hasAttribute("msigraph"))
     { // if this is one of our graphics objects ...
-      openObjectTagDialog(elementName, element);
+      openObjectTagDialog(elementName, element, editorElement);
       elementName = element.parentNode.localName;
     }
     else if (elementName == "notewrapper")
@@ -10202,27 +10213,46 @@ function OpenExtensions(aOpenMode)
   }
 }
 
-function openStructureTagDialog(tagname, node)
+function openStructureTagDialog(tagname, node, editorElement)
 {
- openDialog( "chrome://prince/content/structureproperties.xul",
-                             "structureproperties",
-                             "chrome, close, titlebar, resizable, dependent",
-                             node);
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  msiDoModelessPropertiesDialog("chrome://prince/content/structureproperties.xul", "structureproperties", "chrome,close,titlebar,resizable, dependent",
+                                                     editorElement, "cmd_reviseStructureNode", node, node);
+// openDialog( "chrome://prince/content/structureproperties.xul",
+//                             "structureproperties",
+//                             "chrome, close, titlebar, resizable, dependent",
+//                             node);
 }
 
-function openParaTagDialog(tagname, node)
+function openParaTagDialog(tagname, node, editorElement)
 {
-  openDialog( "chrome://prince/content/paragraphproperties.xul",
-                             "paraproperties",
-                             "chrome, close, titlebar, resizable, dependent",
-                             node);
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  msiDoModelessPropertiesDialog("chrome://prince/content/paragraphproperties.xul", "paraproperties", "chrome,close,titlebar,resizable, dependent",
+                                                     editorElement, "cmd_reviseParagraphNode", node, node);
+//  openDialog( "chrome://prince/content/paragraphproperties.xul",
+//                             "paraproperties",
+//                             "chrome, close, titlebar, resizable, dependent",
+//                             node);
 }
 
-
-function openObjectTagDialog(tagname, node)
+function openEnvTagDialog(tagname, node, editorElement)
 {
-  openDialog('chrome://prince/content/msiEdImageProps.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
-    null, 'cmd_reviseImage', node);
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  msiDoModelessPropertiesDialog("chrome://prince/content/envproperties.xul", "envproperties", "chrome,close,titlebar,resizable, dependent",
+                                                     editorElement, "cmd_reviseParagraphNode", node, node);
+}
+
+function openObjectTagDialog(tagname, node, editorElement)
+{
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
+  msiDoModelessPropertiesDialog("chrome://prince/content/msiEdImageProps.xul", "_blank", "chrome,close,titlebar,resizable, dependent",
+                                                     editorElement, "cmd_reviseImage", node, node);
+//  openDialog('chrome://prince/content/msiEdImageProps.xul', '_blank', 'chrome,close,titlebar,resizable, dependent',
+//    null, 'cmd_reviseImage', node);
 
 }
 

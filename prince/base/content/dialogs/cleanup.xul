@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!--
+  File base name: cleanup
+  Created by Barry MacKichan on 2011/1/27.
+  Copyright (c)  MacKichan Software, Inc.. All rights reserved.
+-->
+
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/cleanup.css" type="text/css"?>
+
+<!DOCTYPE dialog [
+<!ENTITY % dialogDTD SYSTEM "chrome://prince/locale/cleanup.dtd" >
+%dialogDTD;
+]>
+
+<dialog id="cleanupDlg"
+  title="&windowTitle.label;"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  buttons="accept,cancel"
+  ondialogaccept="return onAccept();"
+  ondialogcancel="return onCancel();"
+  onload="startup();"
+  width="400px"
+  height="300px"
+  persist="screenX screenY width height"
+>
+<!-- Scripts specific to this dialog -->
+<script type="application/x-javascript" src="chrome://prince/content/cleanup.js"/>
+
+<description>
+  &instructions;
+</description>
+<separator/>
+<checkbox id="auxfiles" persist="checked" checked="true" label="&auxfiles.label;"/>
+<checkbox id="logfiles" persist="checked" checked="true" label="&logfiles.label;"/>
+<checkbox id="pdffiles" persist="checked" label="&pdffiles.label;"/>
+<checkbox id="texfiles" persist="checked" label="&texfiles.label;"/>
+<checkbox id="orphanimagefiles" persist="checked" checked="true" label="&orphanimagefiles.label;"/>
+<checkbox id="orphanplotfiles" persist="checked" checked="true" label="&orphanplotfiles.label;"/>
+<checkbox id="cachedconversions" persist="checked" label="&cachedconversionfiles.label;"/>
+<checkbox id="backupfiles" persist="checked" checked="true" label="&backupfiles.label;"/>
+
+</dialog>

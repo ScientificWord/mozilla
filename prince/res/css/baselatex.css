@@ -15,6 +15,7 @@ mml|mi[msiclass="enginefunction"] {text-decoration: underline; }
 
 body { 
   display: block;
+  position: relative;
   font-family: Georgia;
   margin-left: 20pt;
   font-size: 12pt;
@@ -27,8 +28,9 @@ pre, verbatim { font-family: Courier; white-space: pre }
 
 numberedListItem,
 bulletListItem,
-descriptionListItem { margin: 0pt; 
-       padding: 0pt; 
+descriptionListItem { 
+       margin: 0em; 
+       padding-left: 1em; 
        display: list-item;}
 
 numberedlist {
@@ -37,11 +39,14 @@ numberedlist {
   counter-reset: numberedlist;
 }
 
+bulletlist { list-style-type: disc;}
+bulletlistnbulletlist { list-style-type: circle;}
+bulletlist bulletlist bulletlist { list-style-type: square;}
 
-bulletlist {list-style-type: disc;
-}
+descriptionlist {list-style-type: none;}
 
-bulletListItem { margin-left: 2em; }
+/* bulletListItem { margin-left: 2em; } */
+
 
 numberedListItem>bodyText:first-child:before { content: '(' counter(numberedlist) ') ';
   counter-increment: numberedlist;
@@ -51,12 +56,7 @@ numberedListItem>bodyText:first-child:before { content: '(' counter(numberedlist
 numberedListItem>bodyText:first-child:first-line { content: '  ';
 }
 
-theorem {
-  display: block;
-  font-style: italic
-}
-
-proof {
+/* proof {
   display: block;
 }
 
@@ -64,7 +64,7 @@ proof:before {
   content: "Proof. ";
   background-color: lightgray;
   font-weight: bold;
-}
+} */
   
 img { display: inline;} 
 
@@ -386,4 +386,3 @@ shortTitle {
 @media print {
 *[nopr] {display: none;}
 }
-
