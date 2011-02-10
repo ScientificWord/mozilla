@@ -33,9 +33,13 @@ function insertMathunit( unit, delSelection )
 
 function insertMathname( name, delSelection )
 {
+  dump("\n ** insert math name");
   if (delSelection) deleteSelection();
+  dump("\n ** selection deleted");
   var editorElement = getCurrentEditorElement();
+  dump("\n ** editorElement = " + editorElement);
   doInsertMathName(name, editorElement);
+  dump("\n ** did insert math name\n");
 }
 
 function insertTag( name, delSelection )
