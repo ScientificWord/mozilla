@@ -74,7 +74,7 @@ function OK(){
 
   // first mathnode is the variable
 
-  data.mathresult = new Array (3);
+  //data.mathresult = new Array (3);
   for (var i=0; i<3; ++i)
   {
     var editElement = document.getElementById(mathFieldNames[i]);
@@ -95,14 +95,14 @@ function OK(){
     data.mathresult[i] = CleanMathString(GetMathAsString(mathnodes[0]));
   }
   
-  var editorElement = msiGetParentEditorElementForDialog(window);
-  var theWindow = window.opener;
-  if (!theWindow || !("finishComputePowerSeries" in theWindow))
-    theWindow = msiGetTopLevelWindow(window);
-  try
-  {
-    theWindow.finishComputePowerSeries(editorElement, data);
-  } catch(exc) {dump("Exception in ComputePowerSeriesArgDialog.js, in trying to call finishComputePowerSeries: [" + exc + "].\n");}
+//  var editorElement = msiGetParentEditorElementForDialog(window);
+//  var theWindow = window.opener;
+//  if (!theWindow || !("finishComputePowerSeries" in theWindow))
+//    theWindow = msiGetTopLevelWindow(window);
+//   try
+//   {
+//     theWindow.finishComputePowerSeries(editorElement, data);
+//   } catch(exc) {dump("Exception in ComputePowerSeriesArgDialog.js, in trying to call finishComputePowerSeries: [" + exc + "].\n");}
 
   return true;
 }

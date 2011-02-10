@@ -166,4 +166,6 @@ interface nsISelection : nsISupports
      * Returns the whole selection into a plain text string.
      */
     wstring toString();
+    
+//    void sync();
 };

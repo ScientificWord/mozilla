@@ -2347,9 +2347,30 @@ void Tree2StdMML::RemoveHSPACEs(MNODE* MML_list)
 
     }
     rover = the_next;
-  }
+  }  
+}
 
-  
+
+// Remove Invisible times and apply function
+void Tree2StdMML::RemoveIT_and_AF(MNODE* MML_list)
+{
+  TCI_ASSERT(CheckLinks(MML_list));
+
+  MNODE* rover = MML_list;
+  while (rover) {
+    MNODE* the_next = rover->next;
+    if (ElementNameIs(rover, "mo") && (ContentIs(rover, "&#x2062;") || (ContentIs(rover, "&#x2061;")))){
+
+       DelinkTNode(rover);
+       DisposeTNode(rover);
+
+    } else if (rover->first_kid) {  // rover is a schemata
+
+        RemoveIT_and_AF(rover->first_kid);
+
+    }
+    rover = the_next;
+  }  
 }
 
 MNODE* Tree2StdMML::RemoveMatrixDelims(MNODE* MML_list,
