@@ -7,6 +7,15 @@ const NS_PROCESSINFO_CONTRACTID = "@mozilla.org/xpcom/process-info;1";
 Components.utils.import("resource://app/modules/macroArrays.jsm");
 var currPDFfileLeaf = "main.pdf"; // this is the leafname of the last pdf file generated.
 
+function princeStartUp()
+{
+  // take out parts of the UI not needed on the Mac
+//if ('Mac'==GetOS())
+//{
+//  document.getElementById
+//}
+  msiEditorOnLoad();
+}
 function goAboutDialog() {
   window.openDialog("chrome://prince/content/aboutDialog.xul", "about", "modal,chrome,resizable=yes");
 }
@@ -2002,12 +2011,12 @@ function printTeX(preview )
             }
             else
             {
-              exefile = Components.classes["@mozilla.org/file/local;1"].
-                  createInstance(Components.interfaces.nsILocalFile);
-              exefile.initWithPath("/Applications/SWPPro.app/Contents/Resources/shell.bash");
-              arr = [pdffile.path];
+              extension = "bash";
+              exefile = dsprops.get("resource:app", Components.interfaces.nsILocalFile);
+              exefile.append("shell."+ extension);
               theProcess.init(exefile);
-              theProcess.run(false, arr, arr.length);             
+              arr = [pdffile.path];
+              theProcess.run(false, arr, arr.length);
             }
           }
           else // pdfAction == complete path to viewer

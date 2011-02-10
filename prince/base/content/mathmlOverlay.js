@@ -3173,7 +3173,7 @@ function mathToText(editor)
   var children;
   var enumerator;
   var node;
-  if (editor.selection.collapsed)
+  if (editor.selection.isCollapsed)   // jcs ?? changed from collapsed
   {
     dump("here we check to see if we can get out of math mode\n");
     return;

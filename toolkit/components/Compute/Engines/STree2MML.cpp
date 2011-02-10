@@ -4174,8 +4174,9 @@ char *STree2MML::FactorsTozStr(FACTOR_REC * f_list,
             } else {
               if (last_was_number && rover->is_number && (rover->n_terms < 2)) {
                 times_op = MOfromSTRING("&#xd7;", up_clr_math_attr);
-              } else
-                times_op = MOfromSTRING("&#x2062;", up_clr_math_attr);
+              } else {
+                //times_op = MOfromSTRING("&#x2062;", up_clr_math_attr);
+              } 
             }
 
             zh_rv = AppendStr2HeapStr(zh_rv, zh_ln, times_op);
