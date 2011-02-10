@@ -131,8 +131,6 @@
 
 %% Frontmatter
 
-%\def\title#1{\gdef\@title{#1}\out@title{#1}}
-
 \def\title{%
   \@ifnextchar[{\@titlea}{\@titleb}}
 
@@ -1223,16 +1221,16 @@
 \def\MSITeXButton#1{%
     \expandafter\def\csname#1\endcsname{
        \msihmode
-       \msitag{<texb enc="1" name="#1">%
-          <![CDATA[\expandafter\string\csname#1\endcsname]]>}%
+       \msitag{<texb enc="1" name="#1">}%
+          <![CDATA[\expandafter\string\csname#1\endcsname]]>%
        \msitag{</texb>}}}
 
 
 \def\MSITeXButtonReq#1{%
     \expandafter\def\csname#1\endcsname##1{
        \msihmode
-       \msitag{<texb enc="1" name="#1">%
-          <![CDATA[\expandafter\string\csname#1\endcsname\{##1\}]]>}%
+       \msitag{<texb enc="1" name="#1">}%
+          <![CDATA[\expandafter\string\csname#1\endcsname\{##1\}]]>%
        \msitag{</texb>}}}
 
 \bgroup
