@@ -290,164 +290,7 @@
  \next
  }%
 %
-%Macro for In-line graphics object
-%   \IFRAME{ contentswidth (scalar)  }               %#1
-%          { contentsheight (scalar) }               %#2
-%          { vertical shift when in-line (scalar) }  %#3
-%          { draft name }                            %#4
-%          { body }                                  %#5
-%          { caption}                                %#6
 
-
-\def\IFRAME#1#2#3#4#5#6{%
-      \bgroup
-      \let\QCTOptA\empty
-      \let\QCTOptB\empty
-      \let\QCBOptA\empty
-      \let\QCBOptB\empty
-      #6%
-      \parindent=0pt
-      \leftskip=0pt
-      \rightskip=0pt
-      \setbox0=\hbox{\QCBOptA}%
-      \@tempdima=#1\relax
-      \ifOverFrame
-          % Do this later
-          \typeout{This is not implemented yet}%
-          \show\HELP
-      \else
-         \ifdim\wd0>\@tempdima
-            \advance\@tempdima by \@tempdima
-            \ifdim\wd0 >\@tempdima
-               \setbox1 =\vbox{%
-                  \unskip\hbox to \@tempdima{\hfill\GRAPHIC{#5}{#4}{#1}{#2}{#3}\hfill}%
-                  \unskip\hbox to \@tempdima{\parbox[b]{\@tempdima}{\QCBOptA}}%
-               }%
-               \wd1=\@tempdima
-            \else
-               \textwidth=\wd0
-               \setbox1 =\vbox{%
-                 \noindent\hbox to \wd0{\hfill\GRAPHIC{#5}{#4}{#1}{#2}{#3}\hfill}\\%
-                 \noindent\hbox{\QCBOptA}%
-               }%
-               \wd1=\wd0
-            \fi
-         \else
-            \ifdim\wd0>0pt
-              \hsize=\@tempdima
-              \setbox1=\vbox{%
-                \unskip\GRAPHIC{#5}{#4}{#1}{#2}{0pt}%
-                \break
-                \unskip\hbox to \@tempdima{\hfill \QCBOptA\hfill}%
-              }%
-              \wd1=\@tempdima
-           \else
-              \hsize=\@tempdima
-              \setbox1=\vbox{%
-                \unskip\GRAPHIC{#5}{#4}{#1}{#2}{0pt}%
-              }%
-              \wd1=\@tempdima
-           \fi
-         \fi
-         \@tempdimb=\ht1
-         %\advance\@tempdimb by \dp1
-         \advance\@tempdimb by -#2
-         \advance\@tempdimb by #3
-         \leavevmode
-         \raise -\@tempdimb \hbox{\box1}%
-      \fi
-      \egroup%
-}%
-%
-%Macro for Display graphics object
-%   \DFRAME{ contentswidth (scalar)  }               %#1
-%          { contentsheight (scalar) }               %#2
-%          { draft label }                           %#3
-%          { name }                                  %#4
-%          { caption}                                %#5
-\def\DFRAME#1#2#3#4#5{%
-  \vspace\topsep
-  \hfil\break
-  \bgroup
-     \leftskip\@flushglue
-	 \rightskip\@flushglue
-	 \parindent\z@
-	 \parfillskip\z@skip
-     \let\QCTOptA\empty
-     \let\QCTOptB\empty
-     \let\QCBOptA\empty
-     \let\QCBOptB\empty
-	 \vbox\bgroup
-        \ifOverFrame 
-           #5\QCTOptA\par
-        \fi
-        \GRAPHIC{#4}{#3}{#1}{#2}{\z@}%
-        \ifUnderFrame 
-           \break#5\QCBOptA
-        \fi
-	 \egroup
-  \egroup
-  \vspace\topsep
-  \break
-}%
-%
-%Macro for Floating graphic object
-%   \FFRAME{ framedata f|i tbph x F|T }              %#1
-%          { contentswidth (scalar)  }               %#2
-%          { contentsheight (scalar) }               %#3
-%          { caption }                               %#4
-%          { label }                                 %#5
-%          { draft name }                            %#6
-%          { body }                                  %#7
-\def\FFRAME#1#2#3#4#5#6#7{%
- %If float.sty loaded and float option is 'h', change to 'H'  (gp) 1998/09/05
-  \@ifundefined{floatstyle}
-    {%floatstyle undefined (and float.sty not present), no change
-     \begin{figure}[#1]%
-    }
-    {%floatstyle DEFINED
-	 \ifx#1h%Only the h parameter, change to H
-      \begin{figure}[H]%
-	 \else
-      \begin{figure}[#1]%
-	 \fi
-	}
-  \let\QCTOptA\empty
-  \let\QCTOptB\empty
-  \let\QCBOptA\empty
-  \let\QCBOptB\empty
-  \ifOverFrame
-    #4
-    \ifx\QCTOptA\empty
-    \else
-      \ifx\QCTOptB\empty
-        \caption{\QCTOptA}%
-      \else
-        \caption[\QCTOptB]{\QCTOptA}%
-      \fi
-    \fi
-    \ifUnderFrame\else
-      \label{#5}%
-    \fi
-  \else
-    \UnderFrametrue%
-  \fi
-  \begin{center}\GRAPHIC{#7}{#6}{#2}{#3}{\z@}\end{center}%
-  \ifUnderFrame
-    #4
-    \ifx\QCBOptA\empty
-      \caption{}%
-    \else
-      \ifx\QCBOptB\empty
-        \caption{\QCBOptA}%
-      \else
-        \caption[\QCBOptB]{\QCBOptA}%
-      \fi
-    \fi
-    \label{#5}%
-  \fi
-  \end{figure}%
- }%
 %
 %
 %    \FRAME{ framedata f|i tbph x F|T }              %#1
@@ -494,29 +337,6 @@
     }
 \egroup
 
-%%%jcs\def\FRAME#1#2#3#4#5#6#7#8{%
-%%%jcs \bgroup
-%%%jcs \ifnum\@msidraft=\@ne
-%%%jcs   \wasdrafttrue
-%%%jcs \else
-%%%jcs   \wasdraftfalse%
-%%%jcs \fi
-%%%jcs \def\LaTeXparams{}%
-%%%jcs \dispkind=\z@
-%%%jcs \def\LaTeXparams{}%
-%%%jcs \doFRAMEparams{#1}%
-%%%jcs \ifnum\dispkind=\z@\IFRAME{#2}{#3}{#4}{#7}{#8}{#5}\else
-%%%jcs  \ifnum\dispkind=\@ne\DFRAME{#2}{#3}{#7}{#8}{#5}\else
-%%%jcs   \ifnum\dispkind=\tw@
-%%%jcs    \edef\@tempa{\noexpand\FFRAME{\LaTeXparams}}%
-%%%jcs    \@tempa{#2}{#3}{#5}{#6}{#7}{#8}%
-%%%jcs    \fi
-%%%jcs   \fi
-%%%jcs  \fi
-%%%jcs  \ifwasdraft\@msidraft=1\else\@msidraft=0\fi{}%
-%%%jcs  \egroup
-%%%jcs }%
-
 \def\msi@getfilename#1filename#2'#3';#4XXXXX{#3}
 
 
@@ -557,13 +377,12 @@
 % Macros for text attributes:
 %
 \def\BF#1{{\bf {#1}}}%
-\def\NEG#1{\leavevmode\hbox{\rlap{\thinspace/}{$#1$}}}%
+\def\NEG#1{#1\U{0338}}%  put in a combining solidus?
 %
 
 %
 % miscellaneous 
-\long\def\QQQ#1#2{%
-     \long\expandafter\def\csname#1\endcsname{#2}}%
+\long\def\QQQ#1#2{\long\expandafter\def\csname#1\endcsname{#2}}%
 \@ifundefined{QEXCLUDE}{\def\QEXCLUDE#1{}}{}
 \@ifundefined{Qlb}{\def\Qlb#1{#1}}{}
 \@ifundefined{Qlt}{\def\Qlt#1{#1}}{}
@@ -580,13 +399,12 @@
   \let\QQQxout\xout
 
 \def\TeXButton#1#2{%
-   \msitag{<texb enc="1" name="#1">
-       <![CDATA[#2]]></texb>}}
+   \ifmmode
+     \string\TeXButton{#1}{#2}%
+   \else
+     \msitag{<texb enc="1" name="#1"><![CDATA[#2]]></texb>}%
+   \fi}
 
-
-%%\def\QSubDoc#1#2{%
-%%   \msitag{<IncludeSubdoc><Label>#1</Label><TeX>#2</TeX></IncludeSubdoc>}%
-%%}
 
 \def\QSubDoc#1#2{#2}
 
@@ -595,6 +413,7 @@
 \def\EXPAND#1[#2]#3{}%
 \def\NOEXPAND#1[#2]#3{}%
 \def\PROTECTED{}%
+
 \def\LaTeXparent#1{}%
 \def\ChildStyles#1{}%
 \def\ChildDefaults#1{}%
@@ -604,13 +423,12 @@
 \@ifundefined{correctchoice}{\def\correctchoice{\relax}}{}
 \@ifundefined{HTML}{\def\HTML#1{\relax}}{}
 \@ifundefined{TCIIcon}{\def\TCIIcon#1#2#3#4{\relax}}{}
-\if@compatibility
-  \typeout{Not defining UNICODE  U or CustomNote commands for LaTeX 2.09.}
-\else
-  \providecommand{\UNICODE}[2][]{\protect\rule{.1in}{.1in}}
-  \providecommand{\U}[1]{\protect\rule{.1in}{.1in}}
-  \providecommand{\CustomNote}[3][]{\marginpar{#3}}
-\fi
+
+
+\providecommand{\UNICODE}[2][]{\protect\rule{.1in}{.1in}}
+\providecommand{\U}[1]{\protect\rule{.1in}{.1in}}
+\providecommand{\CustomNote}[3][]{\marginpar{#3}}
+
 
 \@ifundefined{lambdabar}{
       \def\lambdabar{\errmessage{You have used the lambdabar symbol. 
@@ -672,16 +490,16 @@
 \def\pbf{\GreekBoldtrue\SAVEPBF}%
 %
 
-\@ifundefined{msi@begin@theorem}{\newtheorem{theorem}{Theorem}}{}
-\@ifundefined{msi@begin@lemma}{\newtheorem{lemma}[theorem]{Lemma}}{}
-\@ifundefined{msi@begin@corollary}{\newtheorem{corollary}[theorem]{Corollary}}{}
-\@ifundefined{msi@begin@conjecture}{\newtheorem{conjecture}[theorem]{Conjecture}}{}
-\@ifundefined{msi@begin@proposition}{\newtheorem{proposition}[theorem]{Proposition}}{}
-\@ifundefined{msi@begin@axiom}{\newtheorem{axiom}{Axiom}}{}
-\@ifundefined{msi@begin@remark}{\newtheorem{remark}{Remark}}{}
-\@ifundefined{msi@begin@example}{\newtheorem{example}{Example}}{}
-\@ifundefined{msi@begin@exercise}{\newtheorem{exercise}{Exercise}}{}
-\@ifundefined{msi@begin@definition}{\newtheorem{definition}{Definition}}{}
+%% \@ifundefined{msi@begin@theorem}{\newtheorem{theorem}{Theorem}}{}
+%% \@ifundefined{msi@begin@lemma}{\newtheorem{lemma}[theorem]{Lemma}}{}
+%% \@ifundefined{msi@begin@corollary}{\newtheorem{corollary}[theorem]{Corollary}}{}
+%% \@ifundefined{msi@begin@conjecture}{\newtheorem{conjecture}[theorem]{Conjecture}}{}
+%% \@ifundefined{msi@begin@proposition}{\newtheorem{proposition}[theorem]{Proposition}}{}
+%% \@ifundefined{msi@begin@axiom}{\newtheorem{axiom}{Axiom}}{}
+%% \@ifundefined{msi@begin@remark}{\newtheorem{remark}{Remark}}{}
+%% \@ifundefined{msi@begin@example}{\newtheorem{example}{Example}}{}
+%% \@ifundefined{msi@begin@exercise}{\newtheorem{exercise}{Exercise}}{}
+%% \@ifundefined{msi@begin@definition}{\newtheorem{definition}{Definition}}{}
 
 
 \@ifundefined{mathletters}{%

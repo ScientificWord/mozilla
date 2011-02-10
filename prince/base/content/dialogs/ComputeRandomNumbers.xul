@@ -13,10 +13,12 @@
 <dialog title="&windowTitle.label;"
     id="ComputeRandomNumbersDlg"
     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-    onload = "Startup()"
-    ondialogaccept = "OK()"
-    ondialogcancel = "Cancel()"
+    onload= "Startup()"
+    ondialogaccept= "OK()"
+    ondialogcancel= "Cancel()"
     buttons="accept,cancel"
+    width= "200px"
+    height="660px"
     persist="screenX screenY width height">
 
   <!-- Methods common to all editor dialogs -->
@@ -49,16 +51,8 @@
       </listbox>
       <groupbox>
         <caption label="&parameters.label;"/>
-        <hbox>
-          <label id="param1.text" value="param1"/>
-          <spacer flex="1"/>
-          <textbox id="param1" style="width: 3em"/>
-        </hbox>
-        <hbox>
-          <label id="param2.text" value="param2"/>
-          <spacer flex="1"/>
-          <textbox id="param2" style="width: 3em"/>
-        </hbox>
+        <hbox align="center" id="p1"><textbox id="param1" width="40px"/><label id="label1" value=""/></hbox>
+        <hbox align="center" id="p2"><textbox id="param2" width="40px"/><label id="label2" value=""/></hbox>
       </groupbox>
     </vbox>
   </hbox>

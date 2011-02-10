@@ -3292,16 +3292,18 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
         {
           nsCOMPtr<nsIDOMNode> prevSibling;
           tempNode = GetChildAt(nextNode, currPos);
-          dontcare = tempNode->GetPreviousSibling(getter_AddRefs(tempNode));
-          while (NS_SUCCEEDED(dontcare) && prevSibling && msiUtils::IsWhitespace(prevSibling))
-          {
-            dontcare = prevSibling->GetPreviousSibling(getter_AddRefs(tempNode));
-            prevSibling = tempNode;
+          if (tempNode){
+             dontcare = tempNode->GetPreviousSibling(getter_AddRefs(tempNode));
+             while (NS_SUCCEEDED(dontcare) && prevSibling && msiUtils::IsWhitespace(prevSibling))
+             {
+               dontcare = prevSibling->GetPreviousSibling(getter_AddRefs(tempNode));
+               prevSibling = tempNode;
+             }
+             if (!prevSibling)
+               toLeftRight = 1;
+             else
+               toLeftRight = -1;
           }
-          if (!prevSibling)
-            toLeftRight = 1;
-          else
-            toLeftRight = -1;
         }
       }
     }

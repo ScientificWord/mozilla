@@ -883,6 +883,7 @@ PRBool nsHTMLEditor::NodeIsProperty(nsIDOMNode *aNode)
   if (IsBlockNode(aNode))   return PR_FALSE;
   if (NodeIsType(aNode, nsEditProperty::a)) return PR_FALSE;
   if (NodeIsTypeString(aNode, NS_LITERAL_STRING("othertag"),mtagListManager)) return PR_FALSE;
+  if (!NodeIsTypeString(aNode, NS_LITERAL_STRING("texttag"),mtagListManager)) return PR_FALSE;
   return PR_TRUE;
 }
 
