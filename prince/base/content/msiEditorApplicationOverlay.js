@@ -51,6 +51,13 @@ function msiEditPageOrFrame()
   msiEditPage(url, window, false)
 }
 
+
+function msiPrefs()
+{
+  var data;
+  openDialog("chrome://prince/content/preferences.xul","chrome,titlebar,toolbar,centerscreen,modal");
+}
+
 // Any non-editor window wanting to create an editor with a URL
 //   should use this instead of "window.openDialog..."
 //  We must always find an existing window with requested URL
