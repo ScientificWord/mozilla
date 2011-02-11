@@ -49,7 +49,6 @@ function showShellsInDir(tree)
 
 
 
-var data;
 
 function setIndex(item,idx) {
   document.getElementById(item).selectedIndex = idx;
@@ -63,10 +62,14 @@ function setValue(item,val) {
   document.getElementById(item).value = val;
 }
 
+
+
+var data;
+
 function ComputeUserSettingsStartup(){
   data = window.arguments[0];
 
-  setValue("digits", data.digits.toString());
+  setValue("digits", data.sig_digits.toString());
   setValue("lower", data.lower.toString());
   setValue("upper", data.upper.toString());
   setValue("primesasn", data.primesasn.toString());
@@ -102,5 +105,38 @@ function getChecked(item) {
 function getValue(item) {
   return document.getElementById(item).value;
 }
+
+function onAccept(){
+   data.sig_digits = getValue("digits");
+   data.lower = getValue("lower");
+   data.upper = getValue("upper");
+   data.primesasn = getValue("primesasn");
+   data.mixednum = getChecked("mixednum");
+   data.trigargs = getChecked("trigargs");
+
+   data.usearc = 1 - getChecked("usearc");  // ?
+   data.loge = getChecked("logs");
+   data.dotderiv = getChecked("dots");
+
+   data.barconj = getChecked("bar");
+
+   data.i_imaginary = getChecked("i_imaginary");
+   data.j_imaginary = getChecked("j_imaginary");
+
+
+  data.e_exp = setChecked("e_exp");
+  data.primederiv = getChecked("primederiv");
+  
+  data.matrix_delim = getIndex("matrix_delim");
+   
+  data.derivformat = getIndex("derivformat");
+  data.imaginaryi  = getIndex("imagi");
+  data.diffD = getIndex("diffD");
+  data.diffd = getIndex("diffd");
+  data.expe  = getIndex("expe");
+  
+
+}
+
 
 
