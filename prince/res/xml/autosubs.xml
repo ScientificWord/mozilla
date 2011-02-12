@@ -135,6 +135,7 @@
   <sub ctx="math" tp="sc"><pattern>TDen</pattern><data>insertMathname('TDen','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>TDist</pattern><data>insertMathname('TDist','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>TInv</pattern><data>insertMathname('TInv','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>unassume</pattern><data>insertMathname('unassume','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>UniformDen</pattern><data>insertMathname('UniformDen','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>UniformDist</pattern><data>insertMathname('UniformDist','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>UniformInv</pattern><data>insertMathname('UniformInv','true');</data></sub>
