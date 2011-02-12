@@ -1012,6 +1012,16 @@ exp<uID1.9.6>1
 assume<uID1.9.7>1
 solve<uID1.9.9>1
 additionally<uID1.9.10>1
+unassume<uID1.9.11>1
+
+row<uID1.9.12>1
+col<uID1.9.13>1
+
+istrue<uID1.9.14>1
+
+
+
+
 Psi<uID7.1.40>1
 
 
