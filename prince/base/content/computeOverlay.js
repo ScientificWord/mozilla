@@ -2758,65 +2758,67 @@ function finishComputeSetBasisVars(vars, compsample)
   msiComputeLogger.Sent("new vector basis",vars);
 }
 
-function doComputeUserSettings()
-{
-  var compsample = GetCurrentEngine();
 
-  msiComputeLogger.Sent("user settings","");
-
-  var o = new Object();
-
-  o.mfenced      = compsample.getUserPref(compsample.use_mfenced);
-  o.digits       = compsample.getUserPref(compsample.Sig_digits_rendered);
-  o.lower        = compsample.getUserPref(compsample.SciNote_lower_thresh);
-  o.upper        = compsample.getUserPref(compsample.SciNote_upper_thresh);
-  o.trigargs     = compsample.getUserPref(compsample.Parens_on_trigargs);
-  o.imaginaryi   = compsample.getUserPref(compsample.Output_imaginaryi);
-  o.diffD        = compsample.getUserPref(compsample.Output_diffD_uppercase);
-  o.diffd        = compsample.getUserPref(compsample.Output_diffd_lowercase);
-  o.expe         = compsample.getUserPref(compsample.Output_Euler_e);
-  o.matrix_delim = compsample.getUserPref(compsample.Default_matrix_delims);
-  o.usearc       = compsample.getUserPref(compsample.Output_InvTrigFuncs_1);
-  o.mixednum     = compsample.getUserPref(compsample.Output_Mixed_Numbers);
-  o.derivformat  = compsample.getUserPref(compsample.Default_derivative_format);
-  o.primesasn    = compsample.getUserPref(compsample.Primes_as_n_thresh);
-  o.primederiv   = compsample.getUserPref(compsample.Prime_means_derivative);
-
-  o.loge         = compsample.getUserPref(compsample.log_is_base_e);
-  o.dotderiv     = compsample.getUserPref(compsample.Dot_derivative);
-  o.barconj      = compsample.getUserPref(compsample.Overbar_conjugate);
-  o.i_imaginary  = compsample.getUserPref(compsample.Input_i_Imaginary);
-  o.j_imaginary  = compsample.getUserPref(compsample.Input_j_Imaginary);
-  o.e_exp        = compsample.getUserPref(compsample.Input_e_Euler);
-  
-  window.openDialog("chrome://prince/content/ComputeUserSettings.xul", 
-    "computeusersettings", "chrome,close,titlebar,resizable, modal", o);
-  if (o.Cancel)
-    return;
-
-  compsample.setUserPref(compsample.use_mfenced,               o.mfenced);
-  compsample.setUserPref(compsample.Sig_digits_rendered,       o.digits);
-  compsample.setUserPref(compsample.SciNote_lower_thresh,      o.lower);
-  compsample.setUserPref(compsample.SciNote_upper_thresh,      o.upper);
-  compsample.setUserPref(compsample.Parens_on_trigargs,        o.trigargs);
-  compsample.setUserPref(compsample.Output_imaginaryi,         o.imaginaryi);
-  compsample.setUserPref(compsample.Output_diffD_uppercase,    o.diffD);
-  compsample.setUserPref(compsample.Output_diffd_lowercase,    o.diffd);
-  compsample.setUserPref(compsample.Output_Euler_e,            o.expe);
-  compsample.setUserPref(compsample.Default_matrix_delims,     o.matrix_delim);
-  compsample.setUserPref(compsample.Output_InvTrigFuncs_1,     o.usearc);
-  compsample.setUserPref(compsample.Output_Mixed_Numbers,      o.mixednum);
-  compsample.setUserPref(compsample.Default_derivative_format, o.derivformat);
-  compsample.setUserPref(compsample.Primes_as_n_thresh,        o.primesasn);
-  compsample.setUserPref(compsample.Prime_means_derivative,    o.primederiv);
-
-  compsample.setUserPref(compsample.log_is_base_e,             o.loge);
-  compsample.setUserPref(compsample.Dot_derivative,            o.dotderiv);
-  compsample.setUserPref(compsample.Overbar_conjugate,         o.barconj);
-  compsample.setUserPref(compsample.Input_i_Imaginary,         o.i_imaginary);
-  compsample.setUserPref(compsample.Input_j_Imaginary,         o.j_imaginary);
-  compsample.setUserPref(compsample.Input_e_Euler,             o.e_exp);
-}
+// Moved to msiPrefs in applicationoverlay
+// function doComputeUserSettings()
+// {
+//   var compsample = GetCurrentEngine();
+// 
+//   msiComputeLogger.Sent("user settings","");
+// 
+//   var o = new Object();
+// 
+//   o.mfenced      = compsample.getUserPref(compsample.use_mfenced);
+//   o.digits       = compsample.getUserPref(compsample.Sig_digits_rendered);
+//   o.lower        = compsample.getUserPref(compsample.SciNote_lower_thresh);
+//   o.upper        = compsample.getUserPref(compsample.SciNote_upper_thresh);
+//   o.trigargs     = compsample.getUserPref(compsample.Parens_on_trigargs);
+//   o.imaginaryi   = compsample.getUserPref(compsample.Output_imaginaryi);
+//   o.diffD        = compsample.getUserPref(compsample.Output_diffD_uppercase);
+//   o.diffd        = compsample.getUserPref(compsample.Output_diffd_lowercase);
+//   o.expe         = compsample.getUserPref(compsample.Output_Euler_e);
+//   o.matrix_delim = compsample.getUserPref(compsample.Default_matrix_delims);
+//   o.usearc       = compsample.getUserPref(compsample.Output_InvTrigFuncs_1);
+//   o.mixednum     = compsample.getUserPref(compsample.Output_Mixed_Numbers);
+//   o.derivformat  = compsample.getUserPref(compsample.Default_derivative_format);
+//   o.primesasn    = compsample.getUserPref(compsample.Primes_as_n_thresh);
+//   o.primederiv   = compsample.getUserPref(compsample.Prime_means_derivative);
+// 
+//   o.loge         = compsample.getUserPref(compsample.log_is_base_e);
+//   o.dotderiv     = compsample.getUserPref(compsample.Dot_derivative);
+//   o.barconj      = compsample.getUserPref(compsample.Overbar_conjugate);
+//   o.i_imaginary  = compsample.getUserPref(compsample.Input_i_Imaginary);
+//   o.j_imaginary  = compsample.getUserPref(compsample.Input_j_Imaginary);
+//   o.e_exp        = compsample.getUserPref(compsample.Input_e_Euler);
+//   
+//   window.openDialog("chrome://prince/content/ComputeUserSettings.xul", 
+//     "computeusersettings", "chrome,close,titlebar,resizable, modal", o);
+//   if (o.Cancel)
+//     return;
+// 
+//   compsample.setUserPref(compsample.use_mfenced,               o.mfenced);
+//   compsample.setUserPref(compsample.Sig_digits_rendered,       o.digits);
+//   compsample.setUserPref(compsample.SciNote_lower_thresh,      o.lower);
+//   compsample.setUserPref(compsample.SciNote_upper_thresh,      o.upper);
+//   compsample.setUserPref(compsample.Parens_on_trigargs,        o.trigargs);
+//   compsample.setUserPref(compsample.Output_imaginaryi,         o.imaginaryi);
+//   compsample.setUserPref(compsample.Output_diffD_uppercase,    o.diffD);
+//   compsample.setUserPref(compsample.Output_diffd_lowercase,    o.diffd);
+//   compsample.setUserPref(compsample.Output_Euler_e,            o.expe);
+//   compsample.setUserPref(compsample.Default_matrix_delims,     o.matrix_delim);
+//   compsample.setUserPref(compsample.Output_InvTrigFuncs_1,     o.usearc);
+//   compsample.setUserPref(compsample.Output_Mixed_Numbers,      o.mixednum);
+//   compsample.setUserPref(compsample.Default_derivative_format, o.derivformat);
+//   compsample.setUserPref(compsample.Primes_as_n_thresh,        o.primesasn);
+//   compsample.setUserPref(compsample.Prime_means_derivative,    o.primederiv);
+// 
+//   compsample.setUserPref(compsample.log_is_base_e,             o.loge);
+//   compsample.setUserPref(compsample.Dot_derivative,            o.dotderiv);
+//   compsample.setUserPref(compsample.Overbar_conjugate,         o.barconj);
+//   compsample.setUserPref(compsample.Input_i_Imaginary,         o.i_imaginary);
+//   compsample.setUserPref(compsample.Input_j_Imaginary,         o.j_imaginary);
+//   compsample.setUserPref(compsample.Input_e_Euler,             o.e_exp);
+// }
 
 function doComputeSettings()
 {
