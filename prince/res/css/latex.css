@@ -576,7 +576,7 @@ bodyText, rtlBodyText, p, bodyMath, sectiontitle, shortQuote, longQuotation, epi
   -moz-user-select: text;
 }
 
-makelof, makelot, maketitle, maketoc, {
+makelof, makelot, maketitle, maketoc {
   -moz-user-select: none;
   display:block;
   text-align: left;
