@@ -80,6 +80,7 @@
   <sub ctx="math" tp="sc"><pattern>Ei</pattern><data>insertMathname('Ei','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>erf</pattern><data>insertMathname('erf','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>exp</pattern><data>insertMathname('exp','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>expand</pattern><data>insertMathname('expand','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>ExponentialDen</pattern><data>insertMathname('ExponentialDen','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>ExponentialDist</pattern><data>insertMathname('ExponentialDist','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>ExponentialInv</pattern><data>insertMathname('ExponentialInv','true');</data></sub>
