@@ -8,13 +8,16 @@ var timer = Components.classes["@mozilla.org/timer;1"]
                     .createInstance(Components.interfaces.nsITimer);
 
 var timerCallback = 
-{ notify: function(timer)
+{  
+  timercopy: timer,
+  notify: function(timer)
    { 
-//     Components.utils.reportError("exitValue = "+theProcess.exitValue+"\n");
-//     if (theProcess && theProcess.exitValue < 0) return;
-     // if we get here, the process is termination
-     // if (exitValue > 0) there was an error
-     //Components.utils.reportError("Exception: "+e.message);
+     if (timer) timercopy = timer;
+     if (!sentinel)
+     {
+        if (timercopy) timercopy.cancel();
+        return;
+     } 
      if (sentinel.exists())
      {
        if (++passData.passCounter < passData.passCount)
@@ -37,8 +40,11 @@ var timerCallback =
          }
        }
        else{
+         timer.cancel();
+         timer = null;
          SaveWindowLocation();
          setProgressStatement(true);
+         document.getElementById("oktocontinue").hidden = false;
          top.document.commandDispatcher.focusedWindow.focus();  
          window.close();
        }
