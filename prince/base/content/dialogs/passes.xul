@@ -36,6 +36,8 @@
     <vbox>
       <label control="numpasses" accesskey="&passes.accesskey;" value="&newnumpass;"/>
       <textbox id="numpasses" type="number" persist="width" style="width:25px;" value="3" onchange="newPasses();"/>
+      <separator/>
+      <description id="oktocontinue" value="Press the OK button to continue" hidden="true"/>
     </vbox>
     <vbox flex="1"/>
   </hbox>
