@@ -10,7 +10,8 @@ var msiEvaluateCommand =
             msiIsEditingRenderedHTML(theEditorElement) &&
             (isInMath(editorElement) || 
              aCommand == "cmd_MSIComputeFillMatrix" ||
-             aCommand == "cmd_MSIComputeRandomMatrix") );
+             aCommand == "cmd_MSIComputeRandomMatrix"||
+             aCommand == "cmd_MSIComputeRandomNumbers" ) );
   },
 
   getCommandStateParams: function(aCommand, aParams, editorElement) {},
