@@ -346,8 +346,7 @@ mml|mtr:first-child > mml|mtd {
 }
 
 [hideInputBoxes="true"] mml|*[tempinput="true"] {
-  display:none;
-
+  visibility: hidden;
 }
 
 
