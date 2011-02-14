@@ -5914,7 +5914,7 @@ char *MuPADWrapper::SemDomainToEstr(SEMANTICS_NODE * s_list, int& error_code)
     s_list = s_list->next;
 
   while (s_list
-         && !s_list->next
+         // && !s_list->next    // but s_list->next could be a precedence group??
          && s_list->semantic_type == SEM_TYP_PRECEDENCE_GROUP) {
     if (s_list->bucket_list && s_list->bucket_list->first_child)
       s_list = s_list->bucket_list->first_child;
