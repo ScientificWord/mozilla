@@ -570,9 +570,10 @@ MNODE* Tree2StdMML::BindByOpPrecedence(MNODE* dMML_list, int high, int low)
               }
               break;
 
-            case OP_infix:
+            case OP_infix: {
+              MNODE * end = 0;
               if (rover->prev && rover->next) {
-                MNODE * end = rover->next;
+                end = rover->next;
                 // scan forward until we hit one of different precedence
                 MNODE * inner = end;
                 while (inner) {
@@ -592,14 +593,20 @@ MNODE* Tree2StdMML::BindByOpPrecedence(MNODE* dMML_list, int high, int low)
                   }
                 }
                 the_next = end;
-                MNODE* new_row = MakeMROW(rover->prev, end);
-                if (new_row != rover->prev) {
-                  the_next = new_row;
-                  if (rover->prev == rv)
-                    rv = the_next;
-                }
+              } else if (rover->prev){
+                end = rover;
+              } else {
+                  break;
               }
-              break;
+
+              MNODE* new_row = MakeMROW(rover->prev, end);
+              if (new_row != rover->prev) {
+                 the_next = new_row;
+                 if (rover->prev == rv)
+                   rv = the_next;
+              }
+            }
+            break;
 
 
             case OP_postfix:
