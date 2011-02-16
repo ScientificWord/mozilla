@@ -2406,7 +2406,9 @@ function msiSoftSave( editor, editorElement)
        oldDefnList.parentNode.removeChild(oldDefnList);
     if (defnListString && defnListString.length > 0)
     {
-      defnListString = "<doc>"+defnListString.replace(/<p>/,"<para>","g").replace(/<\/p>/,"</para>",g)+"</doc>";
+      defnListString = defnListString.replace(/<p>/,"<bodyText>", "g");
+      defnListString = defnListString.replace(/<\/p>/,"</bodyText>", "g")
+      defnListString = "<doc>" + defnListString + "</doc>";
       var defnList = editorDoc.createElement("definitionlist");
       insertXML(editor, defnListString, defnList, 0, true);
       preamble.appendChild(defnList);
