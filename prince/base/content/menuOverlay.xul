@@ -51,6 +51,11 @@
       <menuseparator/>
       <menuitem id="printSetupMenuItem" observes="cmd_printSetup" label="&printSetupCmd.label;"
             accesskey="fileprintsetup.accesskey;"/>
+      <menuitem id="printPreviewMenuItemMac" 
+            accesskey="&fileprintpreview.accesskey;" 
+            key="printpreviewkb" 
+            label="&printPreviewCmdMac.label;" 
+            oncommand="msiGoDoCommand('cmd_previewPdf');"/>
       <menu id="printPreviewMenuItem" 
             accesskey="&fileprintpreview.accesskey;" 
             key="printpreviewkb" 
