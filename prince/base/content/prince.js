@@ -10,12 +10,19 @@ var currPDFfileLeaf = "main.pdf"; // this is the leafname of the last pdf file g
 function princeStartUp()
 {
   // take out parts of the UI not needed on the Mac
-//if ('Mac'==GetOS())
-//{
-//  document.getElementById
-//}
+  if ('Mac'==GetOS())
+  {
+    document.getElementById("printPreviewButton").hidden=true;
+    document.getElementById("printPreviewMenuItem").hidden=true;
+  }
+  else
+  {
+    document.getElementById("printPreviewButtonMac").hidden = true;
+    document.getElementById("printPreviewMenuItemMac").hidden=true;
+  }
   msiEditorOnLoad();
 }
+
 function goAboutDialog() {
   window.openDialog("chrome://prince/content/aboutDialog.xul", "about", "modal,chrome,resizable=yes");
 }
