@@ -91,7 +91,7 @@ function ComputeUserSettingsStartup(){
   setIndex("imagi", data.imaginaryi);
   setIndex("diffD", data.diffD);
   setIndex("diffd", data.diffd);
-  setIndex("expe", data.expe);
+  setIndex("expe", data.expe ? 1 : 0);
 }
 
 function getIndex(item) {
@@ -124,16 +124,16 @@ function onAccept(){
    data.j_imaginary = getChecked("j_imaginary");
 
 
-  data.e_exp = setChecked("e_exp");
-  data.primederiv = getChecked("primederiv");
+   data.e_exp = setChecked("e_exp");
+   data.primederiv = getChecked("primederiv");
   
-  data.matrix_delim = getIndex("matrix_delim");
+   data.matrix_delim = getIndex("matrix_delim");
    
-  data.derivformat = getIndex("derivformat");
-  data.imaginaryi  = getIndex("imagi");
-  data.diffD = getIndex("diffD");
-  data.diffd = getIndex("diffd");
-  data.expe  = getIndex("expe");
+   data.derivformat = getIndex("derivformat");
+   data.imaginaryi  = getIndex("imagi");
+   data.diffD = getIndex("diffD");
+   data.diffd = getIndex("diffd");
+   data.expe  = (getIndex("expe") != 0);
   
 
 }
