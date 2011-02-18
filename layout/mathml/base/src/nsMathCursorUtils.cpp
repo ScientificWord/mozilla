@@ -123,6 +123,17 @@ nsIFrame * GetFirstTextFramePastFrame( nsIFrame * pFrame )
     while (pTemp && !pTemp->GetNextSibling())
     {
       pTemp = pTemp->GetParent();
+      // at this point we want to check that the node pTemp can contain text nodes. Normally
+      // we could call msiTagManager, but the editor seems inaccessible at this point, hence
+      // this egregious hack!
+      nsCOMPtr<nsIDOMElement> element = do_QueryInterface(pTemp);
+      if (element)
+      {
+        nsAutoString stringTag;
+        element->GetLocalName(stringTag);
+        while (stringTag.EqualsLiteral("msidisplay"))
+          pTemp = pTemp->GetParent();
+      }
     }
     if (pTemp) pTemp = pTemp->GetNextSibling();
     if (pTemp) pTextFrame = GetFirstTextFrame(pTemp);
