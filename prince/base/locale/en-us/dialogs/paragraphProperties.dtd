@@ -23,3 +23,22 @@
 <!ENTITY menuitem.double "Double">
 <!ENTITY menuitem.leading "Leading">
 <!ENTITY label.units "Units">
+<!ENTITY align.left "Ragged right">
+<!ENTITY align.right "Ragged left">
+<!ENTITY align.centered "Centered">
+<!ENTITY align.justified "Normal">
+
+<!ENTITY Border "Border">
+<!ENTITY width.label "Width">
+<!ENTITY width.accesskey "W">
+<!ENTITY sidepadding.label "Side padding">
+<!ENTITY sidepadding.accesskey "S">
+<!ENTITY toppadding.label "Top, bottom padding">
+<!ENTITY toppadding.accesskey "T">
+<!ENTITY Colors "Colors">
+<!ENTITY borderColor.label "Border">
+<!ENTITY borderColor.accesskey "B">
+<!ENTITY backgroundColor.label "Background">
+<!ENTITY backgroundColor.accesskey "g">
+<!ENTITY textColor.label "Text">
+<!ENTITY textColor.accesskey "T">
