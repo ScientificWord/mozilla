@@ -353,7 +353,7 @@
             <hbox>
               <description>Digits rendered</description>
               <spacer flex="1"/>
-              <textbox id="digits" style="width: 3em"/>
+              <textbox id="digitsRendered" style="width: 3em"/>
             </hbox>
             <vbox>
               <hbox>
@@ -494,7 +494,7 @@
             <hbox>
               <description>&desc.Digits;</description>
               <spacer flex="1"/>
-              <textbox id="digits" style="width: 3em"/>
+              <textbox id="digitsUsed" style="width: 3em"/>
             </hbox>
             <groupbox>
               <caption label="&solve.label;"/>

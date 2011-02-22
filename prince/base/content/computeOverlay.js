@@ -2829,7 +2829,7 @@ function doComputeSettings()
   msiComputeLogger.Sent("settings","");
 
   var o = new Object();
-  o.digits      = compsample.getEngineAttr(compsample.Digits);
+  o.digitsUsed  = compsample.getEngineAttr(compsample.Digits);
   o.degree      = compsample.getEngineAttr(compsample.MaxDegree);
   o.principal   = compsample.getEngineAttr(compsample.PvalOnly) == 0 ? false : true;
   o.special     = compsample.getEngineAttr(compsample.IgnoreSCases) == 0 ? false : true;
@@ -2841,10 +2841,10 @@ function doComputeSettings()
   if (o.Cancel)
     return;
 
-  compsample.setEngineAttr(compsample.Digits,o.digits);
-  compsample.setEngineAttr(compsample.MaxDegree,o.degree);
-  compsample.setEngineAttr(compsample.PvalOnly,o.principal ? 1 : 0);
-  compsample.setEngineAttr(compsample.IgnoreSCases,o.special ? 1 : 0);
+  compsample.setEngineAttr(compsample.Digits, o.digitsUsed);
+  compsample.setEngineAttr(compsample.MaxDegree, o.degree);
+  compsample.setEngineAttr(compsample.PvalOnly, o.principal ? 1 : 0);
+  compsample.setEngineAttr(compsample.IgnoreSCases, o.special ? 1 : 0);
   msiComputeLogger.LogMMLSent(o.logSent);
   msiComputeLogger.LogMMLReceived(o.logReceived);
   msiComputeLogger.LogEngSent(o.engSent);
