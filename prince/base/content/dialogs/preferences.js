@@ -69,11 +69,14 @@ var data;
 function ComputeUserSettingsStartup(){
   data = window.arguments[0];
 
-  setValue("digits", data.sig_digits.toString());
+  setValue("digitsUsed", data.digitsUsed.toString());
+  setValue("digitsRendered", data.digitsRendered.toString());
+  setValue("degree", data.degree.toString());
   setValue("lower", data.lower.toString());
   setValue("upper", data.upper.toString());
   setValue("primesasn", data.primesasn.toString());
-
+  
+  setChecked("principal", data.principal);
   setChecked("mixednum", data.mixednum);
   setChecked("trigargs", data.trigargs);
   setChecked("usearc", 1 - data.usearc);
@@ -92,6 +95,13 @@ function ComputeUserSettingsStartup(){
   setIndex("diffD", data.diffD);
   setIndex("diffd", data.diffd);
   setIndex("expe", data.expe ? 1 : 0);
+
+  o.special     = compsample.getEngineAttr(compsample.IgnoreSCases) == 0 ? false : true;
+  o.logSent     = msiComputeLogger.logMMLSent;
+  o.logReceived = msiComputeLogger.logMMLReceived;
+  o.engSent     = msiComputeLogger.logEngSent;
+  o.engReceived = msiComputeLogger.logEngReceived;
+
 }
 
 function getIndex(item) {
@@ -107,7 +117,10 @@ function getValue(item) {
 }
 
 function onAccept(){
-   data.sig_digits = getValue("digits");
+   data.digitsUsed = getValue("digitsUsed");
+   data.digitsRendered = getValue("digitsRendered");
+   data.degree = getValue("degree");
+
    data.lower = getValue("lower");
    data.upper = getValue("upper");
    data.primesasn = getValue("primesasn");
@@ -117,6 +130,7 @@ function onAccept(){
    data.usearc = 1 - getChecked("usearc");  // ?
    data.loge = getChecked("logs");
    data.dotderiv = getChecked("dots");
+   data.principal = getChecked("principal");
 
    data.barconj = getChecked("bar");
 
@@ -134,6 +148,13 @@ function onAccept(){
    data.diffD = getIndex("diffD");
    data.diffd = getIndex("diffd");
    data.expe  = (getIndex("expe") != 0);
+
+   compsample.setEngineAttr(compsample.IgnoreSCases, o.special ? 1 : 0);
+   msiComputeLogger.LogMMLSent(o.logSent);
+   msiComputeLogger.LogMMLReceived(o.logReceived);
+   msiComputeLogger.LogEngSent(o.engSent);
+   msiComputeLogger.LogEngReceived(o.engReceived);
+
   
 
 }
