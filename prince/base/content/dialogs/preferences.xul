@@ -10,6 +10,8 @@
             onload = "initialize();"
             ondialogaccept="onAccept();"
             xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/editorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/preferences.js"/>
   <prefpane id="prefGeneral" label="General">
