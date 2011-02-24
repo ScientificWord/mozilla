@@ -1129,7 +1129,7 @@ function stripMath (mathexp) {
   var start  = mathexp.indexOf ("<math", 0);
   start      = mathexp.indexOf (">", start) + 1;
   var finish = mathexp.indexOf ("</math", start);
-  var newexp = mathexp.slice   (start, finish-1);
+  var newexp = mathexp.slice   (start, finish);
   return newexp;
 }
 
