@@ -1,4 +1,11 @@
-<parsererror xmlns="http://www.mozilla.org/newlayout/xml/parsererror.xml">XML Parsing Error: no element found
-Location: file:///C:/Users/barry.MSI/AppData/Roaming/SWPPro/Profiles/ttpyhh33.default/fragments/avogadro-constant.frg
-Line Number 1, Column 1:<sourcetext>
-^</sourcetext><description xmlns=""><![CDATA[Avogadro's constant -- the number of molecules in one mole of gas]]></description></parsererror>
+<?xml version="1.0" encoding="UTF-8"?>
+<fragment>
+  <data>
+    <![CDATA[6.023 x 10<sup>23</sup> mol<sup>-1</sup>]]>
+  </data>
+  <context>
+    <![CDATA[<html xmlns:sw="http://www.sciword.com/namespaces/sciword" xmlns="http://www.w3.org/1999/xhtml" xmlns:mml="http://www.w3.org/1998/Math/MathML"><body><para></para></body></html>]]></context>
+  <info>
+    <![CDATA[0,0]]>
+  </info>
+<description><![CDATA[Stubbing in Atomic-mass-constant-eV fragment.  Avogadro's constant -- the number of molecules in one mole of gas.]]></description></fragment>
