@@ -33,9 +33,9 @@ var msiDefineCommand =
             msiIsEditingRenderedHTML(editorElement) &&
             ( isInMath(editorElement) || 
               aCommand == "cmd_MSIComputeShowDefs" ||
-              aCommand == "cmd_MSIComputeUserSettings" ||
+              //aCommand == "cmd_MSI/ComputeUserSettings" ||
               aCommand == "cmd_MSIComputeClearDefs" ||
-              aCommand == "cmd_MSIComputeSettings" ||
+              //aCommand == "cmd_MSIComputeSettings" ||
               aCommand == "cmd_MSIComputeSwitchEngines"  ) );
               
   },
@@ -57,6 +57,7 @@ function jsdump(str)
             .logEngineStringMessage(str);
 }
 /////////////////////////
+
 var msiComputeLogger = 
 {
   Sent: function(name,expr)
@@ -96,25 +97,25 @@ var msiComputeLogger =
   Init: function()
   {
     try {
-      this.logMMLSent = gPrefs.getBoolPref("swp.MuPAD.log_mathml_sent");
+      this.logMMLSent = GetPrefs().getBoolPref("swp.MuPAD.log_mathml_sent");
     }
     catch(ex) {
       jsdump("\nfailed to get MuPAD.log_mathml_sent pref!\n");
     }
     try {
-      this.logMMLReceived = gPrefs.getBoolPref("swp.MuPAD.log_mathml_received");
+      this.logMMLReceived = GetPrefs().getBoolPref("swp.MuPAD.log_mathml_received");
     }
     catch(ex) {
       jsdump("\nfailed to get MuPAD.log_mathml_received pref!\n");
     }
     try {
-      this.engMMLSent = gPrefs.getBoolPref("swp.MuPAD.log_engine_sent");
+      this.engMMLSent = GetPrefs().getBoolPref("swp.MuPAD.log_engine_sent");
     }
     catch(ex) {
       jsdump("\nfailed to get MuPAD.log_engine_sent pref!\n");
     }
     try {
-      this.engMMLReceived = gPrefs.getBoolPref("swp.MuPAD.log_engine_received");
+      this.engMMLReceived = GetPrefs().getBoolPref("swp.MuPAD.log_engine_received");
     }
     catch(ex) {
       jsdump("\nfailed to get MuPAD.log_engine_received pref!\n");
@@ -123,22 +124,22 @@ var msiComputeLogger =
   LogMMLSent: function(log)
   {
     this.logMMLSent = log;
-    gPrefs.setBoolPref("swp.MuPAD.log_mathml_sent",log);
+    GetPrefs().setBoolPref("swp.MuPAD.log_mathml_sent",log);
   },
   LogMMLReceived: function(log)
   {
     this.logMMLReceived = log;
-    gPrefs.setBoolPref("swp.MuPAD.log_mathml_received",log);
+    GetPrefs().setBoolPref("swp.MuPAD.log_mathml_received",log);
   },
   LogEngSent: function(log)
   {
     this.logEngSent = log;
-    gPrefs.setBoolPref("swp.MuPAD.log_engine_sent",log);
+    GetPrefs().setBoolPref("swp.MuPAD.log_engine_sent",log);
   },
   LogEngReceived: function(log)
   {
     this.logEngReceived = log;
-    gPrefs.setBoolPref("swp.MuPAD.log_engine_received",log);
+    GetPrefs().setBoolPref("swp.MuPAD.log_engine_received",log);
   },
 
   logMMLSent:      true,
@@ -332,9 +333,9 @@ function doSetupMSIComputeMenuCommands(commandTable)
   commandTable.registerCommand("cmd_MSIComputeUndefine",      msiDefineCommand);     
   commandTable.registerCommand("cmd_MSIComputeShowDefs",      msiDefineCommand);     
   commandTable.registerCommand("cmd_MSIComputeClearDefs",     msiDefineCommand);    
-  commandTable.registerCommand("cmd_MSIComputeUserSettings",  msiDefineCommand);     
-  commandTable.registerCommand("cmd_MSIComputeSettings",      msiDefineCommand);     
-  commandTable.registerCommand("cmd_MSIComputeSwitchEngines", msiDefineCommand);     
+  //commandTable.registerCommand("cmd_MSIComputeUserSettings",  msiDefineCommand);     
+  //commandTable.registerCommand("cmd_MSIComputeSettings",      msiDefineCommand);     
+  //commandTable.registerCommand("cmd_MSIComputeSwitchEngines", msiDefineCommand);     
   commandTable.registerCommand("cmd_MSIComputeInterpret",     msiEvaluateCommand);
   commandTable.registerCommand("cmd_MSIComputeFixup",         msiEvaluateCommand);
   commandTable.registerCommand("cmd_MSIComputePassthru",      msiDefineCommand);
@@ -947,15 +948,15 @@ function doGlobalComputeCommand(cmd, editorElement)
   case "cmd_compute_ClearDefs":
     doComputeClearDefs();
     break;
-  case "cmd_compute_UserSettings":
-    doComputeUserSettings();
-    break;
-  case "cmd_compute_Settings":
-    doComputeSettings();
-    break;
-  case "cmd_compute_SwitchEngines":
-    doComputeSwitchEngines();
-    break;
+//   case "cmd_compute_UserSettings":
+//     doComputeUserSettings();
+//     break;
+//   case "cmd_compute_Settings":
+//     doComputeSettings();
+//     break;
+//   case "cmd_compute_SwitchEngines":
+//     doComputeSwitchEngines();
+//     break;
   case "cmd_compute_Passthru":
     doComputePassthru(editorElement);
     break;
@@ -2822,52 +2823,52 @@ function finishComputeSetBasisVars(vars, compsample)
 //   compsample.setUserPref(compsample.Input_e_Euler,             o.e_exp);
 // }
 
-function doComputeSettings()
-{
-  var compsample = GetCurrentEngine();
-
-  msiComputeLogger.Sent("settings","");
-
-  var o = new Object();
-  o.digits      = compsample.getEngineAttr(compsample.Digits);
-  o.degree      = compsample.getEngineAttr(compsample.MaxDegree);
-  o.principal   = compsample.getEngineAttr(compsample.PvalOnly) == 0 ? false : true;
-  o.special     = compsample.getEngineAttr(compsample.IgnoreSCases) == 0 ? false : true;
-  o.logSent     = msiComputeLogger.logMMLSent;
-  o.logReceived = msiComputeLogger.logMMLReceived;
-  o.engSent     = msiComputeLogger.logEngSent;
-  o.engReceived = msiComputeLogger.logEngReceived;
-  window.openDialog("chrome://prince/content/ComputeSettings.xul", "computesettings", "chrome,close,titlebar,resizable,modal", o);
-  if (o.Cancel)
-    return;
-
-  compsample.setEngineAttr(compsample.Digits,o.digits);
-  compsample.setEngineAttr(compsample.MaxDegree,o.degree);
-  compsample.setEngineAttr(compsample.PvalOnly,o.principal ? 1 : 0);
-  compsample.setEngineAttr(compsample.IgnoreSCases,o.special ? 1 : 0);
-  msiComputeLogger.LogMMLSent(o.logSent);
-  msiComputeLogger.LogMMLReceived(o.logReceived);
-  msiComputeLogger.LogEngSent(o.engSent);
-  msiComputeLogger.LogEngReceived(o.engReceived);
-}
-
-function doComputeSwitchEngines()
-{
-  var compsample = GetCurrentEngine();
-
-  var o = new Object();
-  o.engine      = compengine;
-  window.openDialog("chrome://prince/content/ComputeSwitchEngines.xul", "switchengines", "chrome,close,titlebar,modal", o);
-  if (o.Cancel)
-    return;
-
-  compengine = o.engine;
-  if (compengine == 1)
-    compsample.startup("mplInstall.gmr");
-  else
-    compsample.startup("mupInstall.gmr");
-  msiComputeLogger.Sent("Switching engine to",compengine);
-}
+// function doComputeSettings()
+// {
+//   var compsample = GetCurrentEngine();
+// 
+//   msiComputeLogger.Sent("settings","");
+// 
+//   var o = new Object();
+//   o.digitsUsed  = compsample.getEngineAttr(compsample.Digits);
+//   o.degree      = compsample.getEngineAttr(compsample.MaxDegree);
+//   o.principal   = compsample.getEngineAttr(compsample.PvalOnly) == 0 ? false : true;
+//   o.special     = compsample.getEngineAttr(compsample.IgnoreSCases) == 0 ? false : true;
+//   o.logSent     = msiComputeLogger.logMMLSent;
+//   o.logReceived = msiComputeLogger.logMMLReceived;
+//   o.engSent     = msiComputeLogger.logEngSent;
+//   o.engReceived = msiComputeLogger.logEngReceived;
+//   window.openDialog("chrome://prince/content/ComputeSettings.xul", "computesettings", "chrome,close,titlebar,resizable,modal", o);
+//   if (o.Cancel)
+//     return;
+// 
+//   compsample.setEngineAttr(compsample.Digits, o.digitsUsed);
+//   compsample.setEngineAttr(compsample.MaxDegree, o.degree);
+//   compsample.setEngineAttr(compsample.PvalOnly, o.principal ? 1 : 0);
+//   compsample.setEngineAttr(compsample.IgnoreSCases, o.special ? 1 : 0);
+//   msiComputeLogger.LogMMLSent(o.logSent);
+//   msiComputeLogger.LogMMLReceived(o.logReceived);
+//   msiComputeLogger.LogEngSent(o.engSent);
+//   msiComputeLogger.LogEngReceived(o.engReceived);
+// }
+// 
+// function doComputeSwitchEngines()
+// {
+//   var compsample = GetCurrentEngine();
+// 
+//   var o = new Object();
+//   o.engine      = compengine;
+//   window.openDialog("chrome://prince/content/ComputeSwitchEngines.xul", "switchengines", "chrome,close,titlebar,modal", o);
+//   if (o.Cancel)
+//     return;
+// 
+//   compengine = o.engine;
+//   if (compengine == 1)
+//     compsample.startup("mplInstall.gmr");
+//   else
+//     compsample.startup("mupInstall.gmr");
+//   msiComputeLogger.Sent("Switching engine to",compengine);
+// }
 
 function doComputePassthru(editorElement)
 {
