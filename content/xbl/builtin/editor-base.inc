@@ -10,6 +10,7 @@
       <handler event="keypress" key=">" command="cmd_insertSubstructure" modifiers="accel,shift"/>
       <handler event="keypress" keycode="VK_F3" command="cmd_findNext" />
       <handler event="keypress" keycode="VK_F3" command="cmd_findPrev" modifiers="shift"/>
+      <handler event="keypress" key=" " modifiers="control" command="cmd_macrofragment"/>
       <handler event="keypress" key="z" command="cmd_undo" modifiers="accel"/>
       <handler event="keypress" key="z" command="cmd_redo" modifiers="accel,shift" />
       <handler event="keypress" key="y" command="cmd_redo" modifiers="accel" />
