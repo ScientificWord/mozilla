@@ -8467,7 +8467,7 @@ function SS_Timer(delayMS, editor, editorElement) {
 SS_Timer.prototype.callback_ = function()
 {
   var modCt = this.editor.getModificationCount();
-  if (modCt != this.modCount) doSoftSave(this.editorElement, this.editor);
+  if (modCt != this.modCount) doÏ(this.editorElement, this.editor);
   this.modCount = modCt;
   return true;
 }
