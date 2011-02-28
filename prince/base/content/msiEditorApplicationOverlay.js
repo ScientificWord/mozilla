@@ -63,7 +63,7 @@ function msiPrefs()
   var o = new Object();
 
   o.mfenced      = compsample.getUserPref(compsample.use_mfenced);
-  o.sig_digits   = compsample.getUserPref(compsample.Sig_digits_rendered);
+  o.digitsRendered = compsample.getUserPref(compsample.Sig_digits_rendered);
   o.lower        = compsample.getUserPref(compsample.SciNote_lower_thresh);
   o.upper        = compsample.getUserPref(compsample.SciNote_upper_thresh);
   o.trigargs     = compsample.getUserPref(compsample.Parens_on_trigargs);
@@ -86,7 +86,7 @@ function msiPrefs()
   o.e_exp        = compsample.getUserPref(compsample.Input_e_Euler);
 
 
-  o.digits      = compsample.getEngineAttr(compsample.Digits);
+  o.digitsUsed  = compsample.getEngineAttr(compsample.Digits);
   o.degree      = compsample.getEngineAttr(compsample.MaxDegree);
   o.principal   = compsample.getEngineAttr(compsample.PvalOnly) == 0 ? false : true;
   o.special     = compsample.getEngineAttr(compsample.IgnoreSCases) == 0 ? false : true;
@@ -101,7 +101,7 @@ function msiPrefs()
     return;
 
   compsample.setUserPref(compsample.use_mfenced,               o.mfenced);
-  compsample.setUserPref(compsample.Sig_digits_rendered,       o.sig_digits);
+  compsample.setUserPref(compsample.Sig_digits_rendered,       o.digitsRendered);
   compsample.setUserPref(compsample.SciNote_lower_thresh,      o.lower);
   compsample.setUserPref(compsample.SciNote_upper_thresh,      o.upper);
   compsample.setUserPref(compsample.Parens_on_trigargs,        o.trigargs);
@@ -123,7 +123,7 @@ function msiPrefs()
   compsample.setUserPref(compsample.Input_j_Imaginary,         o.j_imaginary);
   compsample.setUserPref(compsample.Input_e_Euler,             o.e_exp);
   
-  compsample.setEngineAttr(compsample.Digits, o.digits);
+  compsample.setEngineAttr(compsample.Digits, o.digitsUsed);
   compsample.setEngineAttr(compsample.MaxDegree, o.degree);
   compsample.setEngineAttr(compsample.PvalOnly, o.principal ? 1 : 0);
   compsample.setEngineAttr(compsample.IgnoreSCases, o.special ? 1 : 0);
