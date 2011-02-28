@@ -52,6 +52,8 @@ BaseType GetBaseType(MNODE* mml_script_schemata, bool isLHSofDef, AnalyzerData* 
               rv = BT_SUBARG_FUNCTION;
             else
               rv = BT_FUNCTION;
+          } else {
+            rv = BT_VARIABLE; 
           }
           delete[] mi_canonical_str;
       }
