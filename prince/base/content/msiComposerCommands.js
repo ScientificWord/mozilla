@@ -1087,10 +1087,17 @@ function doSoftSave(editorElement, editor)
     // we should be doing this only for top level documents, and we should restore the focus
     msiFinishHTMLSource(editorElement);
     var url = msiGetEditorURL(editorElement);
+    var range = editor.document.createRange();
+    var s = editor.selection;
+    range.setStart(s.anchorNode, s.anchorOffset);
+    range.setEnd(s.focusNode, s.focusOffset);
     result = msiSoftSave(editor, editorElement);
+    if(s.rangeCount > 0) s.removeAllRanges();
+    s.addRange(range);
   }
   return result;
 }
+
 
 var msiSoftSaveCommand =
 {
