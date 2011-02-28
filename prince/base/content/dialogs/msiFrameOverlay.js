@@ -115,10 +115,10 @@ function initFrameTab(dg, element, newElement)
     metrics.unit =  element.getAttribute("units");
     var i;
     var values = [0,0,0,0];
-    for (i = 0; i < dg.unitList.itemCount; i++)
-      if (dg.unitList.getItemAtIndex(i).value === metrics.unit)
+    for (i = 0; i < dg.frameUnitMenulist.itemCount; i++)
+      if (dg.frameUnitMenulist.getItemAtIndex(i).value === metrics.unit)
       {
-        dg.unitList.selectedIndex = i;
+        dg.frameUnitMenulist.selectedIndex = i;
         break;
       }
     var width = 0;
@@ -631,7 +631,8 @@ function setFrameAttributes(frameNode)
   else frameNode.setAttribute("width", gFrameTab.widthInput.value);
   frameNode.setAttribute("crop", getCompositeMeasurement("crop",metrics.unit, false));  
   var pos = document.getElementById("placementRadioGroup").selectedItem;
-  frameNode.setAttribute("pos", pos?pos.getAttribute("id"):"");
+  var posid = pos.getAttribute("id") || "";
+  frameNode.setAttribute("pos", posid);
   var bgcolor = gFrameTab.colorWell.getAttribute("style");
   var arr = bgcolor.match(/background-color\s*:([a-zA-Z\ \,0-9\(\)]+)\s*;\s*/,"");
   setStyleAttributeOnNode(frameNode, "border-color", arr[1]);
@@ -642,57 +643,69 @@ function setFrameAttributes(frameNode)
   else setStyleAttributeOnNode(frameNode, "display", "block");
   // some experimentation here.
 
-  if (gFrameModeImage) {
-    var overhang = getSingleMeasurement("margin", "Right", metrics.unit, false);
-    frameNode.setAttribute("overhang", overhang
-    );
+  if (posid == "float")
+  {
+    if (gFrameModeImage) {
+      var overhang = getSingleMeasurement("margin", "Right", metrics.unit, false);
+      frameNode.setAttribute("overhang", overhang
+      );
+    }
+    else 
+    {
+      side = "Right";
+      frameNode.setAttribute("overhang", 0 - getSingleMeasurement("margin", side, metrics.unit, false));
+    }
+    var placeLocation="";
+    var isHere = false;
+    if (gFrameTab.placeForceHereCheck.checked)
+    {
+      placeLocation += "H";
+      isHere = true;
+    }
+    else
+    {
+      if (gFrameTab.placeHereCheck.checked)
+      {
+        placeLocation += "h";
+        isHere = true;
+      }
+      if (gFrameTab.placeFloatsCheck.checked)
+        { placeLocation += "p"}
+      if (gFrameTab.placeTopCheck.checked)
+        { placeLocation += "t"}
+      if (gFrameTab.placeBottomCheck.checked)
+        { placeLocation += "b" }
+    }
+    frameNode.setAttribute("placeLocation", placeLocation);
+    if (isHere)
+    {
+      var floatparam = document.getElementById("herePlacementRadioGroup").value;
+      if (floatparam != "full") {
+        msiRequirePackage(Dg.editorElement, "wrapfig","");
+      }
+      var floatshort = floatparam.slice(0,1);
+      frameNode.setAttribute("placement",floatshort); 
+      if (floatparam == "inside") floatparam = "left";
+      else if (floatparam == "outside") floatparam = "right";
+      setStyleAttributeOnNode(frameNode, "float", floatparam);
+      var style = getCompositeMeasurement("margin","px", true);
+      setStyleAttributeOnNode(frameNode, "margin", style);
+      dump("Setting margin style to "+style+"\n");
+
+     
+      dump("Find parameters for here placement");
+    }
   }
   else 
   {
-    side = "Right";
-    frameNode.setAttribute("overhang", 0 - getSingleMeasurement("margin", side, metrics.unit, false));
-  }
-  var placeLocation="";
-  var isHere = false;
-  if (gFrameTab.placeForceHereCheck.checked)
-  {
-    placeLocation += "H";
-    isHere = true;
-  }
-  else
-  {
-    if (gFrameTab.placeHereCheck.checked)
+    removeStyleAttributeFamilyOnNode(frameNode, "float");
+    if (posid == "display")
     {
-      placeLocation += "h";
-      isHere = true;
+      setStyleAttributeOnNode(frameNode, "margin-left","auto");
+      setStyleAttributeOnNode(frameNode, "margin-right","auto");
     }
-    if (gFrameTab.placeFloatsCheck.checked)
-      { placeLocation += "p"}
-    if (gFrameTab.placeTopCheck.checked)
-      { placeLocation += "t"}
-    if (gFrameTab.placeBottomCheck.checked)
-      { placeLocation += "b" }
   }
-  frameNode.setAttribute("placeLocation", placeLocation);
-  if (isHere)
-  {
-    var floatparam = document.getElementById("herePlacementRadioGroup").value;
-    if (floatparam != "full") {
-      msiRequirePackage(Dg.editorElement, "wrapfig","");
-    }
-    var floatshort = floatparam.slice(0,1);
-    frameNode.setAttribute("placement",floatshort); 
-    if (floatparam == "inside") floatparam = "left";
-    else if (floatparam == "outside") floatparam = "right";
-    setStyleAttributeOnNode(frameNode, "float", floatparam);
-
-    dump("Find parameters for here placement");
-  }
-  else {removeStyleAttributeFamilyOnNode(frameNode, "float");}
   // now set measurements in the style for frameNode
-  var style = getCompositeMeasurement("margin","px", true);
-  setStyleAttributeOnNode(frameNode, "margin", style);
-  dump("Setting margin style to "+style+"\n");
   style = getCompositeMeasurement("padding","px", true);
   setStyleAttributeOnNode(frameNode, "padding", style);
   style = getCompositeMeasurement("border","px", true);
