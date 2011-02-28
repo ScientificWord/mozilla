@@ -7,7 +7,7 @@
 >
 
 <xsl:template match="html:table">
-\begin{tabular}<xsl:apply-templates/>\end{tabular}
+\begin{tabulary}<xsl:if test="@width">[<xsl:value-of select="@width"/>pt]</xsl:if><xsl:apply-templates/>\end{tabulary}
 </xsl:template>
 		  
 <xsl:template match="html:tbody">
@@ -30,6 +30,9 @@
 
 <xsl:template match = "html:td"
   ><xsl:if test="position()>1"> &amp; </xsl:if><xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match = "html:td//html:br"> <!-- don't allow \\ in table data-->
 </xsl:template>
 
 <xsl:template match = "html:tr[1]/html:td" mode="definecols"
