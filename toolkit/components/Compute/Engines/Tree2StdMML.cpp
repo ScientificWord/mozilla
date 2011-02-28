@@ -2410,10 +2410,12 @@ MNODE* Tree2StdMML::RemoveMatrixDelims(MNODE* MML_list,
       MNODE* eldest = rover->first_kid;
       if (do_it &&
           eldest && !eldest->next && ElementNameIs(eldest, "mtable")) {
-        if (is_brackets)
-          in_notation->nbracket_tables++;
-        else if (is_parens)
-          in_notation->nparen_tables++;
+        if (in_notation){
+          if (is_brackets)
+            in_notation->nbracket_tables++;
+          else if (is_parens)
+            in_notation->nparen_tables++;
+        }
 
         MNODE* parent = rover->parent;
         MNODE* left_anchor = rover->prev;
