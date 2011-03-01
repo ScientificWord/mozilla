@@ -50,7 +50,7 @@
         label="&fileRevert.label;" />
       <menuseparator/>
       <menuitem id="printSetupMenuItem" observes="cmd_printSetup" label="&printSetupCmd.label;"
-            accesskey="fileprintsetup.accesskey;"/>
+            accesskey="&fileprintsetup.accesskey;"/>
       <menuitem id="printPreviewMenuItemMac" 
             accesskey="&fileprintpreview.accesskey;" 
             key="printpreviewkb" 
