@@ -76,18 +76,21 @@
           <hbox flex="1"/>
           <checkbox id="subdocCheckbox" checked="true" label="&subdocCheckBox.label;" accesskey="&subdocCheckBox.accesskey;" tooltip="&subdocCheckBox.tooltip;" 
             oncommand="subdocCheckChanged(this);"/>
-          <label id="textboxlabel" disabled="true" control="subdocFileName" value="&subdocFileName.label;"/>
+          <label id="textboxlabel" disabled="true" control="subdocFileName" value="&subdocFileName.label;" accesskey="&subdocFileName.accesskey;"/>
           <textbox id="subdocFileName" disabled="true" onchange="filenameChanged(this);"/>
+          <!-- JLF for RA.  The Accesskey below works, but does not display as intended. I suspect this may be due to how the strings are added here.  See bug 1031. -->
           <checkbox id="numberedCheckbox" label="&numberedCheckbox.label;" accesskey="&numberedCheckbox.accesskey;" checked="true" /> 
           <hbox flex="4"/>         
         </vbox>        
       </tabpanel>        
       <tabpanel>
 	      <groupbox>
-	        <label id="sectionShortHeader" control="sectionShortEdit" accesskey="&sectionShortHeader.accesskey;">
-            &sectionShortHeader.label;
-          </label>
-	        <editor editortype="html" type="content" width="300" height="60" context="msiEditorContentContext" id="sectionShortEdit"/>
+<!--JLF for RA Original line. Ron please look at the change I made here to make certain they do not break your intended functionality for this dialog. The goal here is to use Short Title as a groupbox label.  The <caption label="&sectionShortHeader.label achieves 
+the goal.  
+	        <label id="sectionShortHeader" control="sectionShortEdit" accesskey="&sectionShortHeader.accesskey;" value="&sectionShortHeader.label;"/> 
+-->
+     <caption label="&sectionShortHeader.label;"/> 
+	        <editor editortype="html" type="content" width="300" height="60" context="msiEditorContentContext" id="sectionShortEdit"  accesskey="&sectionShortHeader.accesskey;"/>
 	      </groupbox>
       </tabpanel>    
     </tabpanels>
