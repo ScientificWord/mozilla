@@ -403,6 +403,11 @@ function getDataFromControl(whichType)
   return theValue;
 }
 
+function dataNonEmpty(whichtype)
+{
+  return getDataFromControl(whichtype).length > 0
+}
+
 function changeType(theType)
 {
   var currName = document.getElementById("keystrokesBox").value;
@@ -828,8 +833,11 @@ function dumpln(s)
   dump(s+"\n");
 }
 
-function onOK() {
+function onOK() 
+{
   dumpln("a");
+  var theType = document.getElementById("autosubTypeRadioGroup").value;
+  gDialog.bDataNonEmpty = dataNonEmpty(theType);
   var bActionEnabled = gDialog.bDataNonEmpty && gDialog.bNameOK;
   if (!gDialog.bIsNew)
     bActionEnabled = gDialog.bDataNonEmpty && gDialog.bNameOK && gDialog.bCurrentItemModified;
