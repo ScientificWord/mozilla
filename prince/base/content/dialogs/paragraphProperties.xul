@@ -17,7 +17,7 @@
   title="&windowTitle.label;"
   id="paragraphPropertiesDlg">
 
-  <script type="application/x-javascript" src="chrome://prince/content/paragraphProperties.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/paragraphproperties.js"/>
 
 <tabbox id="tabboxid" flex="1">
   <tabs>

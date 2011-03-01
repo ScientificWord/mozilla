@@ -1426,7 +1426,7 @@ nsHTMLEditRules::WillInsertText(PRInt32          aAction,
   if (!bPlaintext &&
       !mHTMLEditor->CanContainTag(selNode, NS_LITERAL_STRING("#text")))
   {
-    // TODO: BBM. If a text node is not allowed, check to see if the default paragraph
+    // If a text node is not allowed, check to see if the default paragraph
     // tag is acceptable. If so, insert a paragraph node and then continue.
     nsString defPara;
     nsIAtom * atomDummy;
