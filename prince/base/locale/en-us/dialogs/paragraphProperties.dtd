@@ -24,9 +24,13 @@
 <!ENTITY menuitem.leading "Leading">
 <!ENTITY label.units "Units">
 <!ENTITY align.left "Ragged right">
+<!ENTITY align.left.accesskey "R">
 <!ENTITY align.right "Ragged left">
+<!ENTITY align.right.accesskey "L">
 <!ENTITY align.centered "Centered">
+<!ENTITY align.centered.accesskey "c">
 <!ENTITY align.justified "Normal">
+<!ENTITY align.justified.accesskey "N">
 
 <!ENTITY Border "Border">
 <!ENTITY width.label "Width">
@@ -34,7 +38,7 @@
 <!ENTITY sidepadding.label "Side padding">
 <!ENTITY sidepadding.accesskey "S">
 <!ENTITY toppadding.label "Top, bottom padding">
-<!ENTITY toppadding.accesskey "T">
+<!ENTITY toppadding.accesskey "o">
 <!ENTITY Colors "Colors">
 <!ENTITY borderColor.label "Border">
 <!ENTITY borderColor.accesskey "B">
