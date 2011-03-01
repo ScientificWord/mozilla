@@ -2554,7 +2554,7 @@ function doComputeRandomNumbers(editorElement)
   o.param1     = "";
   o.param2     = "";
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  parentWin.openDialog("chrome://prince/content/ComputeRandomNumbers.xul", "randomnumbers", "chrome,close,titlebar,modal", o);
+  parentWin.openDialog("chrome://prince/content/ComputeRandomNumbers.xul", "randomnumbers", "chrome,close,titlebar,modal,resizable", o);
   if (o.Cancel)
     return;
   var mTally    = GetNumAsMathML(o.tally);
