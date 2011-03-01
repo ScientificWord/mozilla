@@ -580,7 +580,7 @@
 <!ENTITY toolsmenuJavaScriptdebugger.label  "JavaScript debugger...">
 
 <!-- The following three items were copied from tasksoverlay.dtd to be used in MenuOverlay.xul and MenuOverlay.dtd -->
-<!ENTITY inspectorTaskCmd.label "DOM Inspector">
+<!ENTITY inspectorTaskCmd.label "DOM Inspector...">
 <!ENTITY inspectorTaskCmd.commandkey "i">
 <!ENTITY inspectorTaskCmd.accesskey "I">
 
