@@ -31,10 +31,9 @@
   title="&windowTitle.label;"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   defaultbutton="accept"
-  buttons="accept,cancel,help"
+  buttons="accept,cancel"
   ondialogaccept="return onOK();"
   ondialogcancel="return onCancel();"
-  ondialoghelp="return onOK();"
   onload="Startup();"
   persist="screenX screenY width height"
 >

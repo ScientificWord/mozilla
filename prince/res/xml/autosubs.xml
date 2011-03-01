@@ -124,6 +124,7 @@
   <sub ctx="math" tp="sc"><pattern>projlim</pattern><data>insertMathname('projlim','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>Psi</pattern><data>insertMathname('Psi','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>Re</pattern><data>insertMathname('Re','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>rank</pattern><data>insertMathname('rank','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>real</pattern><data>insertMathname('real','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>row</pattern><data>insertMathname('row','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>sec</pattern><data>insertMathname('sec','true');</data></sub>
@@ -300,7 +301,7 @@
   <sub ctx="math" tp="sc"><pattern>use</pattern><data>insertMathunit('s','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uslug</pattern><data>insertMathunit('slug','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>usr</pattern><data>insertMathunit('sr','true');</data></sub>
-  <sub ctx="math" tp="sc"><pattern>uTe</pattern><data>insertMathunit('Te','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>uTe</pattern><data>insertMathunit('T','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uTHz</pattern><data>insertMathunit('THz','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uTmol</pattern><data>insertMathunit('Tmol','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>utorr</pattern><data>insertMathunit('torr','true');</data></sub>
