@@ -18,6 +18,7 @@
 <!ENTITY RequiresPackage.label  "Requires Package">
 <!ENTITY RequiresPackage.accesskey  "P">
 <!ENTITY Ordinal.label  "Priority">
+<!ENTITY Ordinal.accesskey  "r">
 <!ENTITY texbuttonTextbox.label "Enter LaTeX commands here:">
 <!ENTITY texbuttonTextbox..accesskey  "L">
 
