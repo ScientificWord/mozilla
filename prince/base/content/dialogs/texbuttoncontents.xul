@@ -30,14 +30,14 @@
     <textbox multiline='true' cols='60' rows='3' readonly='true' value='&warningText.label;' />
   </groupbox>
   -->
-  <description LaTeX commands entered here will be inserted at the location of the TeX button in your document. Be sure you know what you are doing, because you have the potential to cause irreparable damage to your document./>
+  <description> &warningText.label;</description>
 
   <hbox align="center">
     <broadcaster id="inPreamble" disabled="true"/>
     <checkbox id = "enc" label="&Encapsulated.label;" accesskey="&Encapsulated.accesskey;" checked="false"/>
     <checkbox id = "pre" label="&Preamble.label;" accesskey="&Preamble.accesskey;" checked="false" oncommand="putInPreamble()"/>
-    <label id="ordlabel" observes="inPreamble" value="&Ordinal.label;"/>
-    <textbox id="ord" type="number" value="100" style="width:5em;" observes="inPreamble"/>
+    <label id="ordlabel" observes="inPreamble" value="&Ordinal.label;" control="ord" accesskey="&Ordinal.accesskey;"/>
+    <textbox id="ord" type="number" value="100" style="width:5em;" observes="inPreamble" />
   </hbox>
   <vbox>
     <label control="name" accesskey="N" value="&name.label;"/>
