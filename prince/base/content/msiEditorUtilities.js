@@ -3764,7 +3764,7 @@ function createWorkingDirectory(documentfile)
       }
       catch(e)
       {
-        AlertWithTitle("Unable to open zip file","The file "+documentfile.leafName+"cannot be opened");
+        AlertWithTitle("Unable to open zip file","The file "+documentfile.leafName+" cannot be opened");
         return null;
       }
       extractZipTree(zr, dir);
