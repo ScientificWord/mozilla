@@ -19,6 +19,7 @@
         buttons="accept,extra1,cancel,help"
         ondialogaccept = "return onAccept();"
         ondialogextra1="return Apply();"
+        buttonlabelextra1="&extra1Apply.label;"
         ondialogcancel = "return onClose();"
         persist="screenX screenY width height">
 
