@@ -1,3 +1,31 @@
+
+
+function setIndex(item,idx) {
+  document.getElementById(item).selectedIndex = idx;
+}
+
+function setChecked(item,val) {
+  document.getElementById(item).setAttribute("checked", val == 1 ? "true" : "false");
+}
+
+function setValue(item,val) {
+  document.getElementById(item).value = val;
+}
+
+function getIndex(item) {
+  return document.getElementById(item).selectedIndex;
+}
+
+function getChecked(item) {
+  return document.getElementById(item).getAttribute("checked") == "true" ? 1 : 0;
+}
+
+function getValue(item) {
+  return document.getElementById(item).value;
+}
+
+
+
 function initialize()
 {
   var url;
@@ -50,18 +78,6 @@ function showShellsInDir(tree)
 
 
 
-function setIndex(item,idx) {
-  document.getElementById(item).selectedIndex = idx;
-}
-
-function setChecked(item,val) {
-  document.getElementById(item).setAttribute("checked", val == 1 ? "true" : "false");
-}
-
-function setValue(item,val) {
-  document.getElementById(item).value = val;
-}
-
 
 
 var data;
@@ -69,11 +85,15 @@ var data;
 function ComputeUserSettingsStartup(){
   data = window.arguments[0];
 
-  setValue("digits", data.sig_digits.toString());
+  setValue("digitsUsed", data.digitsUsed.toString());
+  setValue("digitsRendered", data.digitsRendered.toString());
+  setValue("degree", data.degree.toString());
   setValue("lower", data.lower.toString());
   setValue("upper", data.upper.toString());
   setValue("primesasn", data.primesasn.toString());
-
+  
+  setChecked("principal", data.principal);
+  setChecked("special", data.special);
   setChecked("mixednum", data.mixednum);
   setChecked("trigargs", data.trigargs);
   setChecked("usearc", 1 - data.usearc);
@@ -92,22 +112,20 @@ function ComputeUserSettingsStartup(){
   setIndex("diffD", data.diffD);
   setIndex("diffd", data.diffd);
   setIndex("expe", data.expe ? 1 : 0);
+
+  data.logSent     = msiComputeLogger.logMMLSent;
+  data.logReceived = msiComputeLogger.logMMLReceived;
+  data.engSent     = msiComputeLogger.logEngSent;
+  data.engReceived = msiComputeLogger.logEngReceived;
+
 }
 
-function getIndex(item) {
-  return document.getElementById(item).selectedIndex;
-}
-
-function getChecked(item) {
-  return document.getElementById(item).getAttribute("checked") == "true" ? 1 : 0;
-}
-
-function getValue(item) {
-  return document.getElementById(item).value;
-}
 
 function onAccept(){
-   data.sig_digits = getValue("digits");
+   data.digitsUsed = getValue("digitsUsed");
+   data.digitsRendered = getValue("digitsRendered");
+   data.degree = getValue("degree");
+
    data.lower = getValue("lower");
    data.upper = getValue("upper");
    data.primesasn = getValue("primesasn");
@@ -117,6 +135,8 @@ function onAccept(){
    data.usearc = 1 - getChecked("usearc");  // ?
    data.loge = getChecked("logs");
    data.dotderiv = getChecked("dots");
+   data.principal = getChecked("principal");
+   data.special = getChecked("special");
 
    data.barconj = getChecked("bar");
 
@@ -134,7 +154,12 @@ function onAccept(){
    data.diffD = getIndex("diffD");
    data.diffd = getIndex("diffd");
    data.expe  = (getIndex("expe") != 0);
-  
+
+   
+   msiComputeLogger.LogMMLSent(data.logSent);
+   msiComputeLogger.LogMMLReceived(data.logReceived);
+   msiComputeLogger.LogEngSent(data.engSent);
+   msiComputeLogger.LogEngReceived(data.engReceived);
 
 }
 
