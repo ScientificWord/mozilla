@@ -1629,11 +1629,22 @@ bool Tree2StdMML::NodeIsFunction(MNODE* mml_node)
   // might be f^-1 or something, in which case the whole expr is the function
   if (HasScriptChildren(mml_node))
     return NodeIsFunction(mml_node->first_kid);
-  else if (ElementNameIs(mml_node, "mi"))
+  else if (ElementNameIs(mml_node, "mi")) {
     if (IsTrigArgFuncName(mml_entities,mml_node->p_chdata) ||
         IsReservedFuncName(mml_entities,mml_node->p_chdata) ||
         my_analyzer_data->IsDefinedFunction(mml_node))
       return true;
+  } else if (ElementNameIs(mml_node, "mo") && mml_node->attrib_list) {
+    const char* isMathname = GetATTRIBvalue(mml_node ->attrib_list, "msimathname");
+    if ( strcmp(isMathname, "true") == 0 ){
+      if (IsTrigArgFuncName(mml_entities,mml_node->p_chdata) ||
+          IsReservedFuncName(mml_entities,mml_node->p_chdata) ||
+          my_analyzer_data->IsDefinedFunction(mml_node))
+        return true;
+    }
+    return false;
+  }
+
 
   return false;
 }
@@ -1641,12 +1652,13 @@ bool Tree2StdMML::NodeIsFunction(MNODE* mml_node)
 
 
 //assuming NodeIsFunction() true, find the actual function name node
-MNODE * Tree2StdMML::GetBaseFunction(MNODE* mml_node)
+MNODE* Tree2StdMML::GetBaseFunction(MNODE* mml_node)
 {
-  if (ElementNameIs(mml_node, "mi"))
+  if (ElementNameIs(mml_node, "mi") || ElementNameIs(mml_node, "mo"))
     return mml_node;
   if (HasScriptChildren(mml_node))
     return GetBaseFunction(mml_node->first_kid);
+
   TCI_ASSERT(!"Shouldn't get here.  This wasn't an embellished function.");
   return 0;
 }
