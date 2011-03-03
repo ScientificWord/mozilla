@@ -1419,11 +1419,8 @@ nsHTMLEditRules::WillInsertText(PRInt32          aAction,
   res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(selNode), &selOffset);
   if (NS_FAILED(res)) return res;
 
-  // don't put text in places that can't have it
-  nsCOMPtr<nsIDOMNode> testNode = selNode;
-  while (mHTMLEditor->IsTextNode(testNode)) testNode->GetParentNode(getter_AddRefs(testNode));
-  selNode = testNode;
-  if (!bPlaintext &&
+  // dont put text in places that can't have it
+  if (!bPlaintext && !mHTMLEditor->IsTextNode(selNode) &&
       !mHTMLEditor->CanContainTag(selNode, NS_LITERAL_STRING("#text")))
   {
     // If a text node is not allowed, check to see if the default paragraph
