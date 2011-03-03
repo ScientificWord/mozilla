@@ -110,6 +110,7 @@
   <unitname id="mS" name="millisiemens" type="electricConductance" builtIn="true"><data>mS</data><appearance/></unitname>
   <unitname id="kS" name="kilosiemens" type="electricConductance" builtIn="true"><data>kS</data><appearance/></unitname>
   <unitname id="S" name="siemens" type="electricConductance" builtIn="true"><data>S</data><appearance/></unitname>
+  <unitname id="mho" name="mho" type="time" builtIn="true"><data>mho</data><appearance/></unitname>
   <unitname id="mol" name="mole" type="amountOfSubstance" builtIn="true"><data>mol</data><appearance/></unitname>
   <unitname id="G" name="gauss" type="magneticFluxDensity" builtIn="true"><data>G</data><appearance/></unitname>
   <unitname id="sb" name="stilb" type="luminance" builtIn="true"><data>sb</data><appearance/></unitname>

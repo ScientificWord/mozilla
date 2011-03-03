@@ -153,7 +153,7 @@
   <sub ctx="math" tp="sc"><pattern>uacre</pattern><data>insertMathunit('acre','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uame</pattern><data>insertMathunit('am','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uamol</pattern><data>insertMathunit('amol','true');</data></sub>
-<!--  <sub ctx="math" tp="sc"><pattern>uan</pattern><data>insertMathunit('');</data></sub> -->
+  <sub ctx="math" tp="sc"><pattern>uan</pattern><data>insertMathunit('angstrom','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uas</pattern><data>insertMathunit('as','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uatm</pattern><data>insertMathunit('atm','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>ubar</pattern><data>insertMathunit('bar','true');</data></sub>
@@ -243,6 +243,7 @@
   <sub ctx="math" tp="sc"><pattern>umF</pattern><data>insertMathunit('mF','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>umg</pattern><data>insertMathunit('mg','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>umH</pattern><data>insertMathunit('mH','true');</data></sub>
+  <sub ctx="math" tp="sc"><pattern>umho</pattern><data>insertMathunit('mho','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uMHz</pattern><data>insertMathunit('MHz','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>umi</pattern><data>insertMathunit('mi','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>umJ</pattern><data>insertMathunit('mJ','true');</data></sub>
@@ -281,7 +282,7 @@
   <sub ctx="math" tp="sc"><pattern>unV</pattern><data>insertMathunit('nV','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>unWa</pattern><data>insertMathunit('nW','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>unWb</pattern><data>insertMathunit('nWb','true');</data></sub>
-<!--  <sub ctx="math" tp="sc"><pattern>uohm</pattern><data>insertMathunit('');</data></sub>	-->
+  <sub ctx="math" tp="sc"><pattern>uohm</pattern><data>insertMathunit('ohm', 'true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uozf</pattern><data>insertMathunit('ozf','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>uPa</pattern><data>insertMathunit('Pa','true');</data></sub>
   <sub ctx="math" tp="sc"><pattern>upF</pattern><data>insertMathunit('pF','true');</data></sub>
