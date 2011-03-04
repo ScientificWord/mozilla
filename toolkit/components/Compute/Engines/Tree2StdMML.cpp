@@ -1636,7 +1636,7 @@ bool Tree2StdMML::NodeIsFunction(MNODE* mml_node)
       return true;
   } else if (ElementNameIs(mml_node, "mo") && mml_node->attrib_list) {
     const char* isMathname = GetATTRIBvalue(mml_node ->attrib_list, "msimathname");
-    if ( strcmp(isMathname, "true") == 0 ){
+    if ( isMathname  && strcmp(isMathname, "true") == 0 ){
       if (IsTrigArgFuncName(mml_entities,mml_node->p_chdata) ||
           IsReservedFuncName(mml_entities,mml_node->p_chdata) ||
           my_analyzer_data->IsDefinedFunction(mml_node))
