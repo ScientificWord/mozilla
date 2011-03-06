@@ -180,7 +180,7 @@ nsHTMLEditor::nsHTMLEditor()
   manager = new msiTagListManager;
   manager->SetEditor(this);
   mtagListManager = do_QueryInterface(manager);
-  nsresult result = CallGetService("@mackichan.com/keymap/keymap_service;1", NS_GET_IID(msiIKeyMap),
+  nsresult result = CallGetService("@mackichan.com/keymap;1", NS_GET_IID(msiIKeyMap),
                             (void**)&mKeyMap);
 } 
 

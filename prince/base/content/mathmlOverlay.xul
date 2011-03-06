@@ -1182,7 +1182,12 @@
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolparallel" label="&#x2225;" tooltiptext="&symbolparallel.tooltip;"              msivalue="&#x2225;"
            observes="cmd_MSIsymbolCmd"/>
+       <!--JLF test  BBM to review.  This line is commented out and was copied to the following uncommented line below and modified in an attempt to display the correct symbol.
+       
         <toolbarbutton id ="symbolperp" label="&#x27C2;" tooltiptext="&symbolperp.tooltip;"              msivalue="&#x27C2;"
+           observes="cmd_MSIsymbolCmd"/>
+           -->
+           <toolbarbutton id ="symbolperp" label="&#x22A5;" tooltiptext="&symbolperp.tooltip;"              msivalue="&#x22A5;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolcong" label="&#x2245;" tooltiptext="&symbolcong.tooltip;"              msivalue="&#x2245;"
            observes="cmd_MSIsymbolCmd"/>
@@ -1394,9 +1399,17 @@
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolncong" label="&#x2247;" tooltiptext="&symbolncong.tooltip;"              msivalue="&#x2247;"
            observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id ="symbolvarsubsetneq" label="&#xFE00;&#x0228A;" tooltiptext="&symbolvarsubsetneq.tooltip;"              msivalue="&#x228A;&#xFE00;"
+       <!--JLF test  BBM to review.  This line is commented out and was copied to the following uncommented line below and modified in an attempt to display the correct symbol.
+       <toolbarbutton id ="symbolvarsubsetneq" label="&#xFE00;&#x0228A;" tooltiptext="&symbolvarsubsetneq.tooltip;"              msivalue="&#x228A;&#xFE00;"
            observes="cmd_MSIsymbolCmd"/> 
-        <toolbarbutton id ="symbolvarsupsetneq" label="&#x228B;&#xFE00;" tooltiptext="&symbolvarsupsetneq.tooltip;"              msivalue="&#x228B;&#xFE00;"
+           -->
+            <toolbarbutton id ="symbolvarsubsetneq" label="&#x0228A;" tooltiptext="&symbolvarsubsetneq.tooltip;"              msivalue="&#x228A;"
+           observes="cmd_MSIsymbolCmd"/> 
+     <!--JLF test  BBM to review.  This line is commented out and was copied to the following uncommented line below and modified in an attempt to display the correct symbol.
+     <toolbarbutton id ="symbolvarsupsetneq" label="&#x228B;&#xFE00;" tooltiptext="&symbolvarsupsetneq.tooltip;"              msivalue="&#x228B;&#xFE00;"
+           observes="cmd_MSIsymbolCmd"/> 
+           -->
+            <toolbarbutton id ="symbolvarsupsetneq" label="&#x228B;;" tooltiptext="&symbolvarsupsetneq.tooltip;"              msivalue="&#x228B;"
            observes="cmd_MSIsymbolCmd"/> 
         <toolbarbutton id ="symbolnsubseteqq" label="&#x0338;&#x2AC6;" tooltiptext="&symbolnsubseteqq.tooltip;"              msivalue="&#x0338;&#x2AC6;"
            observes="cmd_MSIsymbolCmd"/> 
@@ -1406,9 +1419,17 @@
            observes="cmd_MSIsymbolCmd"/> 
     		<toolbarbutton id ="symbolsupsetneqq" label="&#x2ACC;" tooltiptext="&symbolsupsetneqq.tooltip;"              msivalue="&#x2ACC;"
            observes="cmd_MSIsymbolCmd"/> 
-        <toolbarbutton id ="symbolvarsubsetneqq" label="&#xE2B8;" tooltiptext="&symbolvarsubsetneqq.tooltip;"              msivalue="&#xE2B8;"
+      <!--JLF test  BBM to review.  This line is commented out and was copied to the following uncommented line below and modified in an attempt to display the correct symbol.
+   <toolbarbutton id ="symbolvarsubsetneqq" label="&#xE2B8;" tooltiptext="&symbolvarsubsetneqq.tooltip;"              msivalue="&#xE2B8;"
            observes="cmd_MSIsymbolCmd"/> 
-        <toolbarbutton id ="symbolvarsupsetneqq" label="&#xE2BB;" tooltiptext="&symbolvarsupsetneqq.tooltip;"              msivalue="&#xE2BB;"
+           -->
+           <toolbarbutton id ="symbolvarsubsetneqq" label="&#x02ACB;" tooltiptext="&symbolvarsubsetneqq.tooltip;"              msivalue="&#x02ACB;"
+           observes="cmd_MSIsymbolCmd"/> 
+    <!--JLF test  BBM to review.  This line is commented out and was copied to the following uncommented line below and modified in an attempt to display the correct symbol.
+    <toolbarbutton id ="symbolvarsupsetneqq" label="&#xE2BB;" tooltiptext="&symbolvarsupsetneqq.tooltip;"              msivalue="&#xE2BB;"
+           observes="cmd_MSIsymbolCmd"/> 
+           -->
+            <toolbarbutton id ="symbolvarsupsetneqq" label="&#x02ACC;" tooltiptext="&symbolvarsupsetneqq.tooltip;"              msivalue="&#x02ACC;"
            observes="cmd_MSIsymbolCmd"/> 
         <toolbarbutton id ="symbolsubsetneq" label="&#x228A;" tooltiptext="&symbolsubsetneq.tooltip;"              msivalue="&#x228A;"
            observes="cmd_MSIsymbolCmd"/>
@@ -1603,7 +1624,11 @@
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolimath" label="&#x0131;" tooltiptext="&symbolimath.tooltip;"       msivalue="&#x0131;"
            observes="cmd_MSIsymbolCmd"/>
-        <toolbarbutton id ="symboljmath" label="&#xEEF0;" tooltiptext="&symboljmath.tooltip;"       msivalue="&#xEEF0;"
+      <!--JLF test  BBM to review.  This line is commented out and was copied to the following uncommented line below and modified in an attempt to display the correct symbol.
+       <toolbarbutton id ="symboljmath" label="&#xEEF0;" tooltiptext="&symboljmath.tooltip;"       msivalue="&#xEEF0;"
+           observes="cmd_MSIsymbolCmd"/>
+           -->
+            <toolbarbutton id ="symboljmath" label="&#x0237;" tooltiptext="&symboljmath.tooltip;"       msivalue="&#x0237;"
            observes="cmd_MSIsymbolCmd"/>
         <toolbarbutton id ="symbolell" label="&#x2113;" tooltiptext="&symbolell.tooltip;"       msivalue="&#x2113;"
            observes="cmd_MSIsymbolCmd"/>

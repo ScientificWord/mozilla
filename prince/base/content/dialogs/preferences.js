@@ -1,3 +1,31 @@
+
+
+function setIndex(item,idx) {
+  document.getElementById(item).selectedIndex = idx;
+}
+
+function setChecked(item,val) {
+  document.getElementById(item).setAttribute("checked", val == 1 ? "true" : "false");
+}
+
+function setValue(item,val) {
+  document.getElementById(item).value = val;
+}
+
+function getIndex(item) {
+  return document.getElementById(item).selectedIndex;
+}
+
+function getChecked(item) {
+  return document.getElementById(item).getAttribute("checked") == "true" ? 1 : 0;
+}
+
+function getValue(item) {
+  return document.getElementById(item).value;
+}
+
+
+
 function initialize()
 {
   var url;
@@ -49,28 +77,23 @@ function showShellsInDir(tree)
 
 
 
+
+
+
 var data;
-
-function setIndex(item,idx) {
-  document.getElementById(item).selectedIndex = idx;
-}
-
-function setChecked(item,val) {
-  document.getElementById(item).setAttribute("checked", val == 1 ? "true" : "false");
-}
-
-function setValue(item,val) {
-  document.getElementById(item).value = val;
-}
 
 function ComputeUserSettingsStartup(){
   data = window.arguments[0];
 
-  setValue("digits", data.digits.toString());
+  setValue("digitsUsed", data.digitsUsed.toString());
+  setValue("digitsRendered", data.digitsRendered.toString());
+  setValue("degree", data.degree.toString());
   setValue("lower", data.lower.toString());
   setValue("upper", data.upper.toString());
   setValue("primesasn", data.primesasn.toString());
-
+  
+  setChecked("principal", data.principal);
+  setChecked("special", data.special);
   setChecked("mixednum", data.mixednum);
   setChecked("trigargs", data.trigargs);
   setChecked("usearc", 1 - data.usearc);
@@ -88,19 +111,57 @@ function ComputeUserSettingsStartup(){
   setIndex("imagi", data.imaginaryi);
   setIndex("diffD", data.diffD);
   setIndex("diffd", data.diffd);
-  setIndex("expe", data.expe);
+  setIndex("expe", data.expe ? 1 : 0);
+
+  data.logSent     = msiComputeLogger.logMMLSent;
+  data.logReceived = msiComputeLogger.logMMLReceived;
+  data.engSent     = msiComputeLogger.logEngSent;
+  data.engReceived = msiComputeLogger.logEngReceived;
+
 }
 
-function getIndex(item) {
-  return document.getElementById(item).selectedIndex;
+
+function onAccept(){
+   data.digitsUsed = getValue("digitsUsed");
+   data.digitsRendered = getValue("digitsRendered");
+   data.degree = getValue("degree");
+
+   data.lower = getValue("lower");
+   data.upper = getValue("upper");
+   data.primesasn = getValue("primesasn");
+   data.mixednum = getChecked("mixednum");
+   data.trigargs = getChecked("trigargs");
+
+   data.usearc = 1 - getChecked("usearc");  // ?
+   data.loge = getChecked("logs");
+   data.dotderiv = getChecked("dots");
+   data.principal = getChecked("principal");
+   data.special = getChecked("special");
+
+   data.barconj = getChecked("bar");
+
+   data.i_imaginary = getChecked("i_imaginary");
+   data.j_imaginary = getChecked("j_imaginary");
+
+
+   data.e_exp = setChecked("e_exp");
+   data.primederiv = getChecked("primederiv");
+  
+   data.matrix_delim = getIndex("matrix_delim");
+   
+   data.derivformat = getIndex("derivformat");
+   data.imaginaryi  = getIndex("imagi");
+   data.diffD = getIndex("diffD");
+   data.diffd = getIndex("diffd");
+   data.expe  = (getIndex("expe") != 0);
+
+   
+   msiComputeLogger.LogMMLSent(data.logSent);
+   msiComputeLogger.LogMMLReceived(data.logReceived);
+   msiComputeLogger.LogEngSent(data.engSent);
+   msiComputeLogger.LogEngReceived(data.engReceived);
+
 }
 
-function getChecked(item) {
-  return document.getElementById(item).getAttribute("checked") == "true" ? 1 : 0;
-}
-
-function getValue(item) {
-  return document.getElementById(item).value;
-}
 
 

@@ -48,3 +48,9 @@
 <!ENTITY SourceTabDirection "ltr">
 <!ENTITY macro.label        "Macro:">
 <!ENTITY macro.tooltip      "Enter the name of a macro or fragment">
+
+
+<!ENTITY FragmentsSidebar.title  "Fragments">
+<!ENTITY BookmarksSidebar.title "Bookmarks">
+<!ENTITY EnginelogSidebar.title "Engine Log">
+<!ENTITY SymbolsSidebar.title "Symbols">

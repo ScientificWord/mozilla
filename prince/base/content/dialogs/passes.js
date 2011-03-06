@@ -8,13 +8,16 @@ var timer = Components.classes["@mozilla.org/timer;1"]
                     .createInstance(Components.interfaces.nsITimer);
 
 var timerCallback = 
-{ notify: function(timer)
+{  
+  timercopy: timer,
+  notify: function(timer)
    { 
-//     Components.utils.reportError("exitValue = "+theProcess.exitValue+"\n");
-//     if (theProcess && theProcess.exitValue < 0) return;
-     // if we get here, the process is termination
-     // if (exitValue > 0) there was an error
-     //Components.utils.reportError("Exception: "+e.message);
+     if (timer) timercopy = timer;
+     if (!sentinel)
+     {
+        if (timercopy) timercopy.cancel();
+        return;
+     } 
      if (sentinel.exists())
      {
        if (++passData.passCounter < passData.passCount)
@@ -37,11 +40,13 @@ var timerCallback =
          }
        }
        else{
+         timer.cancel();
+         timer = null;
+         SaveWindowLocation();
          setProgressStatement(true);
-         //document.getElementById("passesDlg").cancelDialog();
-         if (timer) timer.cancel();
-         timer=null;
-         close();
+         document.getElementById("oktocontinue").hidden = false;
+         top.document.commandDispatcher.focusedWindow.focus();  
+         window.close();
        }
      }
    } 
@@ -86,7 +91,7 @@ function setProgressStatement(done)
   {
     progressStatement = document.getElementById("doneMessage").value;
     document.documentElement.setAttribute("buttonlabelcancel", document.documentElement.getAttribute("buttonlabelclose"));
-//    progressStatement="Done!";
+    progressStatement="Done!";
   }
   else
   {
@@ -104,10 +109,22 @@ function onCancel()
   timer=null;
   if (sentinel.exists()) sentinel.remove(false);
   theProcess = null;
-  Components.utils.reportError("in OnCancel\n");
+  Components.utils.reportError("in onCancel\n");
   SaveWindowLocation();
-  focus();
-//  window.close();
+  top.document.commandDispatcher.focusedWindow.focus();  
+  window.close();
+  return true;
+}
+
+
+function onAccept()
+{
+  if (timer) timer.cancel();
+  timer=null;
+  if (sentinel.exists()) sentinel.remove(false);
+  theProcess = null;a
+  Components.utils.reportError("in onAccept\n");
+  SaveWindowLocation();
   return true;
 }
 
