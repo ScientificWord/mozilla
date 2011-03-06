@@ -22,6 +22,8 @@
 <!ENTITY saveCmd.label "Save">
 <!ENTITY filesave.accesskey "s">
 <!ENTITY filesave.keybinding "s">
+<!ENTITY filecleanup.accesskey "p">
+<!ENTITY cleanupCmd.label "Clean up...">
 <!ENTITY saveAsCmd.label "Save As...">
 <!ENTITY filesaveas.accesskey "A">
 <!ENTITY saveCopyAsCmd.label "Save Copy As...">
@@ -55,6 +57,7 @@
 <!ENTITY printSetupCmd.label "Page Setup...">
 <!ENTITY fileprintsetup.accesskey "u">
 <!ENTITY printPreviewCmd.label "Print Preview">
+<!ENTITY printPreviewCmdMac.label "Typeset PDF Preview">
 <!ENTITY fileprintpreview.accesskey "w">
 <!ENTITY printCmd.label "Print">
 <!ENTITY printButtonCmd.label "Print...">
@@ -577,7 +580,7 @@
 <!ENTITY toolsmenuJavaScriptdebugger.label  "JavaScript debugger...">
 
 <!-- The following three items were copied from tasksoverlay.dtd to be used in MenuOverlay.xul and MenuOverlay.dtd -->
-<!ENTITY inspectorTaskCmd.label "DOM Inspector">
+<!ENTITY inspectorTaskCmd.label "DOM Inspector...">
 <!ENTITY inspectorTaskCmd.commandkey "i">
 <!ENTITY inspectorTaskCmd.accesskey "I">
 

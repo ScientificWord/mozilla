@@ -74,6 +74,7 @@ protected:
   void RemoveMSTYLEs(MNODE* MML_list);
   void RemoveMSTYLEnode(MNODE* mstyle);
   void RemoveHSPACEs(MNODE* MML_list);
+  void RemoveIT_and_AF(MNODE* MML_list);
 
 
   char *ChdataToString(const char *p_chdata);

@@ -46,6 +46,7 @@
       <toolbarbutton id="importtexButton"/>
       <toolbarbutton id="printButton"/>
       <toolbarbutton id="printPreviewButton"/>
+      <toolbarbutton id="printPreviewButtonMac"/>
       <toolbarbutton id="spellcheckButton"/>
       <toolbarbutton id="cutButton"/>
       <toolbarbutton id="copyButton"/>
@@ -113,7 +114,7 @@
       flex = "1"
       tbalign="center" 
       context="toolbar-context-menu"
-      defaultset="newButton,openButton,saveButton,printButton,printPreviewButton,mathtextButton,TextTags,ParaTags,StructTags,FrontMTags" 
+      defaultset="newButton,openButton,saveButton,printButton,printPreviewButton,printPreviewButtonMac,mathtextButton,TextTags,ParaTags,StructTags,FrontMTags" 
       mode="icons" 
       customizable="true"
       iconsize="small" />
@@ -355,6 +356,11 @@
       </menu>
     </menupopup>
   </toolbarbutton>
+
+  <toolbarbutton id="printPreviewButtonMac" class="toolbarbutton-1"
+                 label="&pdfpreviewButton.label;"
+                 tooltiptext="&pdfpreviewButton.tooltip;"
+                 oncommand="msiGoDoCommand('cmd_previewPdf');" />
 
   <toolbarbutton id="printPreviewButton" type="menu-button" class="toolbarbutton-1"
                  label="&printPreviewToolbarCmd.label;"

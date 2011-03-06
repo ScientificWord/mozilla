@@ -88,13 +88,13 @@ nsMathMLContainerCursorMover::MoveOutToLeft(nsIFrame *leavingFrame, nsIFrame **a
       else  // probably pTempFrame is a text frame
       {
         *aOutFrame = pTempFrame;
-        *aOutOffset = count;  
+        *aOutOffset = count; 
         *_retval = 0;
       }
       return NS_OK;
     }
   } 
-  // if we get here, leavingFrame is null or there is no child after leavingFrame. Leave this frame.
+  // if we get here, leavingFrame is null or there is no child preceding leavingFrame. Leave this frame.
   pTempFrame = pFrame->GetParent();
   pMCM = do_QueryInterface(pTempFrame);
   if (pMCM) pMCM->MoveOutToLeft(pFrame, aOutFrame, aOutOffset, count, fBailingOut, _retval);
@@ -187,10 +187,11 @@ nsMathMLContainerCursorMover::EnterFromRight(nsIFrame *leavingFrame, nsIFrame **
     else // child frame is not a math frame. Probably a text frame. We'll assume this for not
     // BBM come back and fix this!
     {
-      pContent = m_pMyFrame->GetContent();
-      *aOutOffset = pContent->GetChildCount();
-      *aOutFrame = m_pMyFrame; 
-      *_retval = count;
+      *aOutFrame = pTempFrame; 
+      PRInt32 start, end;
+      pTempFrame->GetOffsets(start,end);
+      (*aOutOffset) = (end - start - count);
+      *_retval = 0;
     }
     return NS_OK;
   }

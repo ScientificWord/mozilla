@@ -244,6 +244,16 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
 
       if (zeng_output) {
         size_t numBytes = strlen(zeng_output);
+        #ifdef XP_WIN
+        // We need to make sure the filename zeng_output is ok for InitWithNativePath() below. 
+        // In particular, don't allow forward slash as in c:/temp\mx27.
+        // This is preventing debugging on windows.
+        for (int i = 0; i<numBytes; ++i){
+          if (zeng_output[i] == L'/'){
+            zeng_output[i] = L'\\';
+          }
+        }
+        #endif
 
         // let plotqueries be handled by the standard code
         if ((context_cmdtype == CC_PLOTFUNC) && (context_cmdtemplatetype != CT_PLOTQUERY)) {
@@ -5914,7 +5924,7 @@ char *MuPADWrapper::SemDomainToEstr(SEMANTICS_NODE * s_list, int& error_code)
     s_list = s_list->next;
 
   while (s_list
-         && !s_list->next
+         // && !s_list->next    // but s_list->next could be a precedence group??
          && s_list->semantic_type == SEM_TYP_PRECEDENCE_GROUP) {
     if (s_list->bucket_list && s_list->bucket_list->first_child)
       s_list = s_list->bucket_list->first_child;
