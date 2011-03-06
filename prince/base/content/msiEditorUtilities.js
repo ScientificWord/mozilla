@@ -3454,18 +3454,21 @@ function getUntitledName(destinationDirectory)
   var f = destinationDirectory.clone();
   var ffile;
   var fdir;
+  var returnval;
   var count = 1; 
   var maxcount = 100; // a maximum allowed for files named "untitledxx.sci"
   while (count < maxcount)
   {
     ffile = f.clone();
     fdir = f.clone();
-    ffile.append(untitled+(count).toString()+".sci");
-    fdir.append(untitled+(count++).toString()+"_work");
+    returnval = untitled+(count).toString();
+    ffile.append(returnval+".sci");
+    fdir.append(returnval+"_work");
+    count++;
     if (!ffile.exists() && !fdir.exists()) 
     {
-      fdir.append("main.xhtml");
-      return ffile.leafName;
+//      fdir.append("main.xhtml");
+      return returnval;
     }
   }
   alert("too many files called 'untitledxx.sci' in directory "+destinationDirectory.path); // BBM: fix this up
@@ -3624,11 +3627,11 @@ function msiFindOriginalDocname(docUrlString)
 }
 
 
-//  createWorkingDirectory does the following: 
+// createWorkingDirectory does the following: 
 // It creates a directory, foo_work, and unpacks the contents of foo.sci into the new directory.
 // The return value is an nsILocalFile which is the main xhtml file in the .sci file, usually named
-// if the file parameter is something like foo.sci, it knows that the file is a jar file.
 // main.xhtml.
+// if the file parameter is something like foo.sci, it knows that the file is a jar file.
 //
 // If the file parameter is not a zip file, then it creates the directory and 
 // copies, e.g., foo.xhtml to foo_work/main.xhtml. If the directory containing the file looks like a .sci
@@ -3639,151 +3642,160 @@ function msiFindOriginalDocname(docUrlString)
 
 function createWorkingDirectory(documentfile)
 {
-  var bakfilename;
   var i;
   var dir;
   var destfile;
   var str;
-  var savedLeafname;
+  var baseLeafName;
+  var extension;
   var skipBackup;
-  var regEx=/\.sci$/i;
-  var doc; // this will be the file (documentfile for zipped files or for files not in a .sci
-   //directory) or directory (for .sci directories), that we use to get the name of the working dir.
-  var isZipped = regEx.test(documentfile.path);
-  var isInSciDirectory = false;
-  if (!isZipped) isInSciDirectory = regEx.test(documentfile.parent.path);
-  if (isZipped) doc = documentfile.clone();
-  else if (isInSciDirectory) doc = documentfile.parent.clone();
-  else doc = documentfile.clone();
-  
-  
-  var zr;
-  if (isZipped) zr = Components.classes["@mozilla.org/libjar/zip-reader;1"]
-    .createInstance(Components.interfaces.nsIZipReader);
-
-  try
+  var theCase;
+  var name;
+  if (!(documentfile.isFile() || documentfile.isDirectory())) return null;
+  var re = /(.*)(\.[a-zA-Z0-9]+$)/;
+  var arr = re.exec(documentfile.leafName);
+  if (arr.length > 2)
   {
-    if (isShell(doc.path))
+    baseLeafName = arr[1];
+    extension = arr[2];
+  }
+  // this is the name of the new directory, unless documentfile is a shell
+  if (documentfile.isFile())
+  {
+    if (extension.toLowerCase() == ".sci")
     {
-      // if we are opening a shell document, we create the working directory but skip the backup
-      // file and change the document leaf name to "untitledxxx"
-      dir =  msiDefaultNewDocDirectory();
-      bakfilename = getUntitledName(dir);
-      skipBackup = true;
-    }
-    else
-    { 
-      dir = doc.parent.clone();
-      bakfilename = doc.leafName;
-    }
-    i = bakfilename.lastIndexOf(".");
-    if (i > 0) 
-    {
-      savedLeafname=bakfilename.substr(0,i);
-      bakfilename=savedLeafname+".bak"; 
+      // .sci document
+      theCase = 1;
+      extension = ".xhtml";
     }
     else
     {
-      savedLeafname = bakfilename;
-      bakfilename += ".bak";
+      // other file, not .sci
+      theCase = 2;
     }
-    // first create a working directory for the extracted files
-    dir.append(savedLeafname+"_work");
-    if (dir.exists())
+  }
+  else // must be a directory
+  {
+    if (regEx.test(documentfile.path))
     {
-      var mainfile = dir.clone();
-      mainfile.append("main.xhtml");
-      if (mainfile.exists())
+      theCase = 3; //.sci directory
+    }
+    else return null; // we don't handle directories unless they are named .sci
+  }
+  name = "main"+extension;
+  dir = documentfile.parent.clone();
+  dir.append(baseLeafName+"_work"); // build the working directory data; we will ignore this if a shell
+  if (theCase == 2)
+  {
+    // we create a new directory
+    dir.create(1 /*directory*/, 0755);
+  }
+  else if (theCase == 3)
+  {
+    documentfile.copyTo(documentfile.parent, dir.leafName);
+  }
+  if (theCase == 2)
+  {
+    var done = false;
+    var index = 0;
+    name = "main"+extension;
+    while (!done)
+    {
+      dump("Trying name "+name+"\n");
+      try
       {
-  //          var prompts = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
-///                            .getService(Components.interfaces.nsIPromptService);
-///          var buttonflags = (Components.interfaces.nsIPromptService.BUTTON_POS_0+Components.interfaces.nsIPromptService.BUTTON_POS_1) * Components.interfaces.nsIPromptService.BUTTON_TITLE_IS_STRING;
-///          var check = {value: false};
-///          var result = prompts.confirmEx(window, GetString("useWIP.title"), "Que pasa?",//GetString("useWIP.desription"),
-///              buttonflags, GetString("useWIP.accept"), GetString("useWIP.cancel"),null, null, check);
-        var data = {value: false};
-        var result = window.openDialog("chrome://prince/content/useWorkInProgress.xul", "workinprogress", "chrome,titlebar,modal", data);
-  //      alert("Dialog returned "+result+"\n");
-        if (data.value)
+        documentfile.copyTo(dir, name);  // That finishes this case
+        done = true;
+      }
+      catch (e)
+      {
+        dump (e.message+"\n");
+        name="main"+(index++).toString()+extension;
+        done = false;        
+      }
+    }
+  }
+  if (theCase == 1)
+  // remaining case is the main one, a .sci file
+  {  
+    doc = documentfile.clone();
+    extension = ".xhtml"
+    var zr;
+    zr = Components.classes["@mozilla.org/libjar/zip-reader;1"]
+      .createInstance(Components.interfaces.nsIZipReader);
+    var basename;
+    try
+    {
+      if (isShell(doc.path))
+      {
+        // if we are opening a shell document, we create the working directory 
+        // and change the document leaf name to "untitledxxx"
+        dir =  msiDefaultNewDocDirectory();
+        basename = getUntitledName(dir);
+        dir.append(basename+"_work");
+      }
+      if (dir.exists())
+      {
+        var mainfile = dir.clone();
+        mainfile.append("main"+extension);
+        if (mainfile.exists())
         {
-          return mainfile; 
+          var data = {value: false};
+          var result = window.openDialog("chrome://prince/content/useWorkInProgress.xul", "workinprogress", "chrome,titlebar,modal", data);
+          if (data.value)
+          {
+            return mainfile; 
+          }
+        }
+        try
+        {
+          dir.remove(true);
+        }
+        catch(e)
+        {
+          AlertWithTitle("Error in removing directory", "This directory "+dir.leafName+" cannot be removed. Does some other application have one of its files open?");
+          return null;
         }
       }
-      dir.remove(true);
-    }
-    dir.create(1, 0755);
+      dir.create(1, 0755);
 
-    // we don't want to overwrite the backup file yet; wait until the user closes this file.
-    // for the moment, we keep it in the working directory.
-    if (!skipBackup)
-    {
-      var bakfile = dir.clone();
-      bakfile.append(bakfilename);
-      if (bakfile.exists()) bakfile.remove(false);
-      if (doc.isDirectory())
-      {
-        var bakdir = doc.parent.clone();
-        bakdir.append(bakfilename);
-        bakdir.createUnique(1, 0755);
-        copyDirectory(bakdir,doc);
-      } else
-        documentfile.copyTo(dir, bakfilename);
-      // now the file, no matter whether it is a zip file or not, is backed up.
-    }
-    if (isZipped)
-    {
       try {
         zr.open(documentfile);
       }
       catch(e)
       {
-        isZipped = false;
+        AlertWithTitle("Unable to open zip file","The file "+documentfile.leafName+" cannot be opened");
+        return null;
       }
-    }
-    if (isZipped)  // if our file is a zip file, extract it to the directory dir
-    {
       extractZipTree(zr, dir);
     }
-    else if (isInSciDirectory)
-    {
-      copyDirectory(dir, doc);
-    }
-    else
-    {
-      doc.copyTo(dir, "main.xhtml");
-    }
+    catch( e) {
+      dump("Error in createWorkingDirectory: "+e.toString()+"\n");
+      return null;
+    } 
   }
-  catch( e) {
-    dump("Error in createWorkingDirectory: "+e.toString()+"\n");
-  } 
   var newdocfile;
   newdocfile = dir.clone();
-  newdocfile.append("main.xhtml"); 
-  newdocfile.permissions = 0644;
-//
-//  const PR_RDONLY      = 0x01
-//  const PR_WRONLY      = 0x02
-//  const PR_RDWR        = 0x04
-//  const PR_CREATE_FILE = 0x08
-//  const PR_APPEND      = 0x10
-//  const PR_TRUNCATE    = 0x20
-//  const PR_SYNC        = 0x40
-//  const PR_EXCL        = 0x80
-//
-//
-// Temporary test of writing a zipfile
-//  try {
-//    var zw = Components.classes["@mozilla.org/zipwriter;1"]
-//                          .createInstance(Components.interfaces.nsIZipWriter);
-//    var testfile;
-//    testfile = dir.parent.clone();
-//    testfile.append("testzipfiles.zip");
-//    testfile.create(0,0x755);
-//    zw.open( testfile, PR_RDWR | PR_CREATE_FILE | PR_TRUNCATE);
-//    zipDirectory(zw, "", dir); 
-//    zw.close();
-//  }
-//  catch(e) {} 
+  newdocfile.append(name); 
+  // We expect that the file is main.xhtml, but if the user opens an html file, it might be
+  // .html or .htm or .shtml.
+  if (!newdocfile.exists())
+  {
+    newdocfile = null;
+    var fileenum = dir.directoryEntries;
+    var file;
+    while (fileenum.hasMoreElements())
+    {
+      file = fileenum.getNext();
+      file.QueryInterface(Components.interfaces.nsIFile);      
+      if ((/\.[xs]?html?/i).test(file.leafName)) 
+      {
+        newdocfile = file;
+        break;
+      }
+    }
+  }
+  if (newdocfile)  newdocfile.permissions = 0644;
   return newdocfile;
 }
 
@@ -4295,7 +4307,7 @@ function GetFilename(urlspec)
 
   var filename;
   if (urlspec.indexOf(":") < 1)
-      urlspec = "file://"+urlspec;
+	  urlspec = "file://"+urlspec;
 
   try {
     var uri = IOService.newURI(urlspec, null, null);

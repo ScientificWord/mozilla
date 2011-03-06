@@ -364,7 +364,7 @@
 				<tag nm="frontmatter">
           <contains>frontmtag</contains>
           <level>*</level>
-					<nexttag>bodyText</nexttag>
+					<nexttag/>
 	  		  <inclusion>true</inclusion>
           <description>Front Matter</description>
           <discardemptyblock>true</discardemptyblock>
@@ -374,7 +374,7 @@
 				<tag nm="dedication">
           <level>*</level>
           <description>Dedication</description>
-					<nexttag>bodyText</nexttag>
+					<nexttag/>
 	  		  <inclusion>true</inclusion>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
@@ -390,7 +390,7 @@
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
           </initialcontents>
-					<nexttag>bodyText</nexttag>
+					<nexttag/>
 	  		  <inclusion>true</inclusion>
         </tag>
 				<tag nm="preface">
@@ -401,7 +401,7 @@
               <bodyText></bodyText>
               ]]>
           </initialcontents>
-					<nexttag>bodyText</nexttag>
+					<nexttag/>
 	  		  <inclusion>true</inclusion>
         </tag>
 				<tag nm="index">
@@ -412,7 +412,7 @@
               <bodyText></bodyText>
               ]]>
           </initialcontents>
-					<nexttag>bodyText</nexttag>
+					<nexttag/>
 	  		  <inclusion>true</inclusion>
         </tag>
 				<tag nm="glossary">
@@ -423,7 +423,7 @@
               <bodyText></bodyText>
               ]]>
           </initialcontents>
-					<nexttag>bodyText</nexttag>
+					<nexttag/>
 	  		  <inclusion>true</inclusion>
         </tag>
   		  <tag nm="verbatim">
@@ -445,7 +445,7 @@
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
           </initialcontents>
-					<nexttag>bodyText</nexttag>
+					<nexttag/>
 	  		  <inclusion>true</inclusion>
         </tag>
   		  <tag nm="msiframe">
@@ -456,7 +456,7 @@
               <bodyText><cursor/><br type="_moz"/></bodyText>
               ]]>
           </initialcontents>
-					<nexttag>bodyText</nexttag>
+					<nexttag/>
 	  		  <inclusion>true</inclusion>
         </tag>
 				<tag nm="assertion">
@@ -877,3 +877,4 @@
 		</tagclass>
 	</tagclasses>
 </tagproperties>
+

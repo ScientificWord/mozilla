@@ -99,7 +99,11 @@
 <!-- back to template match="html:preamble"-->
   <xsl:apply-templates/>
   <xsl:call-template name="generateMissingNewTheorems" />
+
+<!--put this in only if graphicx is used-->
+  <xsl:if test="$packagelist//*[@package='graphicx']">
   \graphicspath{{../tcache/}{../gcache/}{../graphics/}}
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="html:preambleTeX">
