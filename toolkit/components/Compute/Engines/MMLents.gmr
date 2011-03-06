@@ -613,6 +613,7 @@ D<uID3.2.4>prefix,55,U00044
 &#x2032;<uID3.17.23>postfix,66,U02032
 ;;&prime;<uID3.17.23>postfix,66,U002B9
 &empty;<uID3.17.24>
+&#x2205;<uID3.17.24>
 &nabla;<uID3.17.25>prefix,54,U02207
 &#x2207;<uID3.17.25>prefix,54,U02207
 &#x2207;&#x22c5;<uID3.17.25>prefix,54,U02207U022c5
@@ -940,6 +941,7 @@ Psi<uID7.1.40>prefix,47
 factor<uID7.1.41>prefix,47
 expand<uID7.1.42>prefix,47
 solve<uID7.1.43>prefix,47
+float<uID7.1.44>prefix,47
 
 
 
@@ -977,6 +979,8 @@ arcsinh<uID1.3.7>1
 arccosh<uID1.3.8>1
 log<uID1.10.1>1
 ln<uID1.10.2>1
+factor<uID1.9.8>1
+float<uID7.1.44>1
 <END_CONTEXT_TRIGARGFUNCS>
 
 ;The following identifiers are treated as functions during Fixup.
@@ -998,13 +1002,29 @@ det<uID1.4.1>1
 &#x2131;<uID1.5.2>1
 max<uID1.7.1>1
 min<uID1.7.2>1
+mod<uID7.1.23>1
 div<uID1.9.1>1
 grad<uID1.9.2>1
 curl<uID1.9.3>1
 deg<uID1.9.4>1
 dim<uID1.9.5>1
 exp<uID1.9.6>1
+
+about<uID1.9.15>1
 assume<uID1.9.7>1
+expand<uID7.1.42>1
+solve<uID1.9.9>1
+additionally<uID1.9.10>1
+unassume<uID1.9.11>1
+
+row<uID1.9.12>1
+col<uID1.9.13>1
+
+istrue<uID1.9.14>1
+about<uID1.9.15>1
+rank<uID1.9.16>1
+
+Psi<uID7.1.40>1
 
 
 Dirac<uID1.10.1>1

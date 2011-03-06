@@ -570,9 +570,10 @@ MNODE* Tree2StdMML::BindByOpPrecedence(MNODE* dMML_list, int high, int low)
               }
               break;
 
-            case OP_infix:
+            case OP_infix: {
+              MNODE * end = 0;
               if (rover->prev && rover->next) {
-                MNODE * end = rover->next;
+                end = rover->next;
                 // scan forward until we hit one of different precedence
                 MNODE * inner = end;
                 while (inner) {
@@ -592,14 +593,20 @@ MNODE* Tree2StdMML::BindByOpPrecedence(MNODE* dMML_list, int high, int low)
                   }
                 }
                 the_next = end;
-                MNODE* new_row = MakeMROW(rover->prev, end);
-                if (new_row != rover->prev) {
-                  the_next = new_row;
-                  if (rover->prev == rv)
-                    rv = the_next;
-                }
+              } else if (rover->prev){
+                end = rover;
+              } else {
+                  break;
               }
-              break;
+
+              MNODE* new_row = MakeMROW(rover->prev, end);
+              if (new_row != rover->prev) {
+                 the_next = new_row;
+                 if (rover->prev == rv)
+                   rv = the_next;
+              }
+            }
+            break;
 
 
             case OP_postfix:
@@ -1622,11 +1629,22 @@ bool Tree2StdMML::NodeIsFunction(MNODE* mml_node)
   // might be f^-1 or something, in which case the whole expr is the function
   if (HasScriptChildren(mml_node))
     return NodeIsFunction(mml_node->first_kid);
-  else if (ElementNameIs(mml_node, "mi"))
+  else if (ElementNameIs(mml_node, "mi")) {
     if (IsTrigArgFuncName(mml_entities,mml_node->p_chdata) ||
         IsReservedFuncName(mml_entities,mml_node->p_chdata) ||
         my_analyzer_data->IsDefinedFunction(mml_node))
       return true;
+  } else if (ElementNameIs(mml_node, "mo") && mml_node->attrib_list) {
+    const char* isMathname = GetATTRIBvalue(mml_node ->attrib_list, "msimathname");
+    if ( isMathname  && strcmp(isMathname, "true") == 0 ){
+      if (IsTrigArgFuncName(mml_entities,mml_node->p_chdata) ||
+          IsReservedFuncName(mml_entities,mml_node->p_chdata) ||
+          my_analyzer_data->IsDefinedFunction(mml_node))
+        return true;
+    }
+    return false;
+  }
+
 
   return false;
 }
@@ -1634,12 +1652,13 @@ bool Tree2StdMML::NodeIsFunction(MNODE* mml_node)
 
 
 //assuming NodeIsFunction() true, find the actual function name node
-MNODE * Tree2StdMML::GetBaseFunction(MNODE* mml_node)
+MNODE* Tree2StdMML::GetBaseFunction(MNODE* mml_node)
 {
-  if (ElementNameIs(mml_node, "mi"))
+  if (ElementNameIs(mml_node, "mi") || ElementNameIs(mml_node, "mo"))
     return mml_node;
   if (HasScriptChildren(mml_node))
     return GetBaseFunction(mml_node->first_kid);
+
   TCI_ASSERT(!"Shouldn't get here.  This wasn't an embellished function.");
   return 0;
 }
@@ -2347,9 +2366,30 @@ void Tree2StdMML::RemoveHSPACEs(MNODE* MML_list)
 
     }
     rover = the_next;
-  }
+  }  
+}
 
-  
+
+// Remove Invisible times and apply function
+void Tree2StdMML::RemoveIT_and_AF(MNODE* MML_list)
+{
+  TCI_ASSERT(CheckLinks(MML_list));
+
+  MNODE* rover = MML_list;
+  while (rover) {
+    MNODE* the_next = rover->next;
+    if (ElementNameIs(rover, "mo") && (ContentIs(rover, "&#x2062;") || (ContentIs(rover, "&#x2061;")))){
+
+       DelinkTNode(rover);
+       DisposeTNode(rover);
+
+    } else if (rover->first_kid) {  // rover is a schemata
+
+        RemoveIT_and_AF(rover->first_kid);
+
+    }
+    rover = the_next;
+  }  
 }
 
 MNODE* Tree2StdMML::RemoveMatrixDelims(MNODE* MML_list,
@@ -2382,10 +2422,12 @@ MNODE* Tree2StdMML::RemoveMatrixDelims(MNODE* MML_list,
       MNODE* eldest = rover->first_kid;
       if (do_it &&
           eldest && !eldest->next && ElementNameIs(eldest, "mtable")) {
-        if (is_brackets)
-          in_notation->nbracket_tables++;
-        else if (is_parens)
-          in_notation->nparen_tables++;
+        if (in_notation){
+          if (is_brackets)
+            in_notation->nbracket_tables++;
+          else if (is_parens)
+            in_notation->nparen_tables++;
+        }
 
         MNODE* parent = rover->parent;
         MNODE* left_anchor = rover->prev;

@@ -327,7 +327,7 @@ mml|mrow[id]:after {
 }
  
 /* The following is a generic set of rules to control opening and closing
-   sections. They are repeated for each structure than can be closed. Also
+   sections. They are repeated for each structure that can be closed. Also
    implement the switch between numbered and not numbered*/
 
 chapter>*:first-child {
@@ -369,7 +369,7 @@ section>*:first-child {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#collapsible");
 }
 
-chapter[open="false"]>sectiontitle {
+section[open="false"]>sectiontitle {
   display: block;
 }
 
@@ -419,30 +419,40 @@ subsection[nonum="true"]>*:first-child:before {
   content: "";
 }
 
-subsection[nonum="true"]>*:first-child:before {
-  content: "";
-}
 
 subsection[nonum="true"]>sectiontitle:before {
   content: "";
 }
 
+
 subsubsection[nonum="true"] {
   counter-increment: none;
 }
 
-subsubsection[nonum="true"] {
+subsubsection[nonum="true"]>*:first-child:before {
   content: "";
 }
+
+
+subsubsection[nonum="true"]>sectiontitle:before {
+  content: "";
+}
+
+
 
 
 paragraph[nonum="true"] {
   counter-increment: none;
 }
 
-paragraph[nonum="true"] {
+paragraph[nonum="true"]>*:first-child:before {
   content: "";
 }
+
+paragraph[nonum="true"]>sectiontitle:before {
+  content: "";
+}
+
 
 *[showinvis="true"] *:first-child:after {
   content: "\B6";
@@ -562,10 +572,15 @@ body {
 
 bodyText, rtlBodyText, p, bodyMath, sectiontitle, shortQuote, longQuotation, epigraph, title, line, 
   dialogbase, bulletListItem, numberedListItem, descriptionListItem, verbatim,
-  abstract, address, author, date, makelof, makelot, maketitle, maketoc, title {
+  abstract, address, author, date, title {
   -moz-user-select: text;
 }
-  
+
+makelof, makelot, maketitle, maketoc {
+  -moz-user-select: none;
+  display:block;
+  text-align: left;
+}  
 
 
 /* front matter tags */
