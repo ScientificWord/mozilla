@@ -2311,7 +2311,10 @@ function insertMathnameObject(mathNameObj, editorElement)
 function doInsertMathName(aName, editorElement)
 {
   var editor = msiGetEditor(editorElement);
-  editor.InsertMathname(aName);
+  var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
+  if (mathmlEditor){
+    mathmlEditor.InsertMathname(aName);
+  }
 }
 //  var mathNameObj = msiBaseMathNameList.getMathNameData(aName);
 //  if (mathNameObj == null)

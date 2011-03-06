@@ -93,8 +93,8 @@
 <!ENTITY labelButton.tooltip "Label" >
 <!ENTITY labelButton.label "Label" >
 
-<!ENTITY decorationButton.tooltip "Decoration or label" >
-<!ENTITY decorationButton.label "Decoration/label" >
+<!ENTITY decorationButton.tooltip "Decoration or Label" >
+<!ENTITY decorationButton.label "Decoration/Label" >
 
 <!ENTITY noteButton.tooltip "Note" >
 <!ENTITY noteButton.label "Note" >
@@ -118,9 +118,6 @@
 <!ENTITY printButton.tooltip "Direct print" >
 <!ENTITY printButton.label "Direct print" >
 
-<!ENTITY dviprintButton.tooltip "Typeset DVI print" >
-<!ENTITY dviprintButton.label "Typeset DVI print" >
-
 <!ENTITY pdfprintButton.tooltip "Typeset PDF print" >
 <!ENTITY pdfprintButton.label "Typeset PDF print" >
 
@@ -129,16 +126,10 @@
 <!ENTITY printPreviewToolbarCmd.tooltip "Direct print preview" >
 <!ENTITY printPreviewToolbarCmd.label "Direct print preview" >
 
-<!ENTITY dvipreviewButton.tooltip "Typeset DVI preview" >
-<!ENTITY dvipreviewButton.label "Typeset DVI preview" >
-
 <!ENTITY pdfpreviewButton.tooltip "Typeset PDF preview" >
 <!ENTITY pdfpreviewButton.label "Typeset PDF preview" >
 
 <!-- compile buttons -->
-
-<!ENTITY dvicompileButton.tooltip "Typeset DVI compile" >
-<!ENTITY dvicompileButton.label "DVI compile" >
 
 <!ENTITY pdfcompileButton.tooltip "Typeset PDF compile" >
 <!ENTITY pdfcompileButton.label "Typeset PDF compile" >
