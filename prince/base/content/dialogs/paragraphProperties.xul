@@ -17,13 +17,15 @@
   title="&windowTitle.label;"
   id="paragraphPropertiesDlg">
 
+  <script type="application/x-javascript" src="chrome://prince/content/paragraphproperties.js"/>
+
 <tabbox id="tabboxid" flex="1">
   <tabs>
     <tab label="&tab.indents.spacing;" />
     <tab label="&tab.alignment;" /> 
-    <tab label="&tab.numbering;" />
+    <!--tab label="&tab.numbering;" />
     <tab label="&tab.drop.caps;" />
-    <tab label="&tab.borders;" />
+    <tab label="&tab.borders;" / -->
     <tab label="&tab.background;" />
   </tabs>
   <tabpanels flex="1">
@@ -32,38 +34,38 @@
       <groupbox>
         <caption label="&caption.indent;" />
         <hbox align="center">
-          <label value="&label.before.text;" accesskey="&accesskey.before.text;" />
+          <label value="&label.before.text;" accesskey="&accesskey.before.text;" control="beforetext" />
           <spacer flex="1" />
-          <textbox id="beforetext" type="number" width="40px" />    
+          <textbox id="beforetext" type="number" decimalplaces="2" increment="1" width="40px" />    
          </hbox>
         <hbox align="center">
-          <label value="&label.after.text;" accesskey="&accesskey.after.text;" />
+          <label value="&label.after.text;" accesskey="&accesskey.after.text;" control="aftertext" />
           <spacer flex="1" />
-          <textbox id="aftertext" type="number" width="40px" />   
+          <textbox id="aftertext" type="number" decimalplaces="2" increment="1" width="40px" />   
          </hbox>
         <hbox align="center">
-          <label value="&label.first.line;" accesskey="&accesskey.first.line;"/>
+          <label value="&label.first.line;" accesskey="&accesskey.first.line;" control="firstline"/>
           <spacer flex="1" />
-          <textbox id="firstline" type="number" width="40px" />   
+          <textbox id="firstline" type="number" decimalplaces="2" increment="1" width="40px" />   
          </hbox>
       </groupbox>
       <groupbox>
         <caption label="&caption.spacing;" />      
         <hbox align="center">
-          <label value="&label.above.paragraph;" accesskey="&accesskey.above.paragraph;"/>
+          <label value="&label.above.paragraph;" accesskey="&accesskey.above.paragraph;" control="aboveparagraph"/>
           <spacer flex="1" />
-          <textbox id="aboveparagraph" type="number" width="40px" />   
+          <textbox id="aboveparagraph" type="number" decimalplaces="2" increment="1" width="40px" />   
          </hbox>
         <hbox align="center">
-          <label value="&label.below.paragraph;" accesskey="&accesskey.below.paragraph;" />
+          <label value="&label.below.paragraph;" accesskey="&accesskey.below.paragraph;" control="belowparagraph" />
           <spacer flex="1" />
-          <textbox id="belowparagraph" type="number" width="40px" />  
+          <textbox id="belowparagraph" type="number" decimalplaces="2" increment="1" width="40px" />  
         </hbox>
       </groupbox>
       <groupbox>
         <caption label="&caption.line.spacing;" />      
         <hbox align="center">
-          <menulist>
+          <menulist id="linespacing" style="width: 6em">
             <menupopup>
               <menuitem value="single" label="&menuitem.single;" />
               <menuitem value="sesqui" label="&menuitem.1.5.lines;" />
@@ -72,7 +74,7 @@
             </menupopup>
           </menulist>
           <spacer flex="1" />
-          <textbox id="linespacing" type="number" width="40px" />  
+          <textbox id="leadingval" type="number" decimalplaces="2" increment="1" width="40px" />  
         </hbox>
       </groupbox>
       </vbox>
@@ -89,18 +91,72 @@
         <hbox flex="1" />
       </vbox>
     </tabpanel>
-    <tabpanel>
+    <tabpanel align="center" orient="vertical" >
+      <groupbox >
+        <caption label="&tab.alignment;" />      
+        <hbox align="center">
+          <radiogroup id="alignment">
+            <radio id="left" label="&align.left;" accesskey="&align.left.accesskey;"/>
+            <radio id="right" label="&align.right;" accesskey="&align.right.accesskey;"/>
+            <radio id="center" label="&align.centered;" accesskey="&align.centered.accesskey;"/>
+            <radio id="normal" label="&align.justified;" selected="true" accesskey="&align.justified.accesskey;"/>
+          </radiogroup>
+        </hbox>
+      </groupbox>
+    </tabpanel>
+    <tabpanel orient="vertical" align="center">
+      <groupbox>
+        <caption label="Border"/>
+        <description label="Units: pt"/>
+        <hbox align="center">
+          <label value="&width.label;" accesskey="&width.accesskey;" control="borderwidth" />
+          <spacer flex="1" />
+          <textbox id="borderwidth" type="number" decimalplaces="2" increment="1" width="40px" />  
+        </hbox>
+        <hbox align="center">
+          <label value="&sidepadding.label;" accesskey="&sidepadding.accesskey;" control="bordersidepad" />
+          <spacer flex="1" />
+          <textbox id="bordersidepad" type="number" decimalplaces="2" increment="1" width="40px" />  
+        </hbox>
+        <hbox align="center">
+          <label value="&toppadding.label;" accesskey="&toppadding.accesskey;" control="bordertoppad" />
+          <spacer flex="1" />
+          <textbox id="bordertoppad" type="number" decimalplaces="2" increment="1" width="40px" />  
+        </hbox>
+      </groupbox>
+      <groupbox>
+        <caption label="&Colors;"/>
+        <hbox>
+          <label control="bordercolor" value="&borderColor.label;"	accesskey="&borderColor.accesskey;" />
+          <spacer flex="1"/>
+          <msibutton id="bordercolor" class="color-button" oncommand="getColorAndUpdate('bordercolorWell');">
+            <spacer id="bordercolorWell" style="background-color: black;" class="color-well"/>
+          </msibutton>
+        </hbox>
+        <hbox>
+          <label control="backgroundcolor" value="&backgroundColor.label;"	accesskey="&backgroundColor.accesskey;" />
+          <spacer flex="1"/>
+          <msibutton id="backgroundcolor" class="color-button" oncommand="getColorAndUpdate('backgroundcolorWell');">
+            <spacer id="backgroundcolorWell" style="background-color: white;" class="color-well"/>
+          </msibutton>
+        </hbox>
+        <hbox>
+          <label control="textcolor" value="&textColor.label;"	accesskey="&textColor.accesskey;" />
+          <spacer flex="1"/>
+          <msibutton id="textcolor" class="color-button" oncommand="getColorAndUpdate('textcolorWell');">
+            <spacer id="textcolorWell" style="background-color: black;" class="color-well"/>
+          </msibutton>
+        </hbox>
+      </groupbox>
+    </tabpanel>
+    <!--tabpanel>
     </tabpanel>
     <tabpanel>
     </tabpanel>
     <tabpanel>
     </tabpanel>
     <tabpanel>
-    </tabpanel>
-    <tabpanel>
-    </tabpanel>
-    <tabpanel>
-    </tabpanel> 
+    </tabpanel --> 
   </tabpanels>
 </tabbox>
 

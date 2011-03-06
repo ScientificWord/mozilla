@@ -6,11 +6,30 @@
 #include "nsMathMLCursorMover.h"
 
 PRBool IsMathFrame( nsIFrame * aFrame );
+PRBool IsDisplayFrame( nsIFrame * aFrame, PRInt32& count )
+{  
+  PRBool retval;
+  nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aFrame->GetContent());
+  if (element)
+  {
+    nsAutoString stringTag;
+    element->GetLocalName(stringTag);
+    retval = (stringTag.EqualsLiteral("msidisplay"));
+    if (retval)
+    {
+  		aFrame = aFrame->GetParent();
+  		count = 0;
+      return PR_TRUE;
+    }
+  }
+  return PR_FALSE;
+}
 
 PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32& count)
 {
   nsIFrame * pChild;
   nsIFrame * pParent;
+  PRBool df = PR_FALSE;
   nsCOMPtr<nsIContent> pContent;
   pParent = pFrame->GetParent();
 
@@ -31,6 +50,12 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
       pContent = pParent->GetContent();
       *aOutOffset = 1+pContent->IndexOf(pFrame->GetContent());
       *aOutFrame = pParent;
+    }
+    else if (IsDisplayFrame(pParent, count))
+    {
+      *aOutFrame = GetFirstTextFramePastFrame(pParent);
+      *aOutOffset = count;
+      
     }
     else
     {
@@ -126,7 +151,7 @@ nsIFrame * GetFirstTextFramePastFrame( nsIFrame * pFrame )
     }
     if (pTemp) pTemp = pTemp->GetNextSibling();
     if (pTemp) pTextFrame = GetFirstTextFrame(pTemp);
-    else return nsnull;
+    else return nsnull;  // TODO: BBM can't return null without caller checking. Check this out.
   }
   return pTextFrame;
 }

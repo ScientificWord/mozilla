@@ -1176,28 +1176,28 @@ toolbar[iconsize="small"] #printPreviewButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/preview-disabled-sm.png");
 }
 
-#printPreviewButton[defcomp='pdf'] {
+#printPreviewButton[defcomp='pdf'], #printPreviewButtonMac {
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf'] {
+toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf'], toolbar[iconsize="small"] #printPreviewButtonMac {
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-sm.png");
 }
-#printPreviewButton[defcomp='pdf']:hover {
+#printPreviewButton[defcomp='pdf']:hover, #printPreviewButtonMac:hover {
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-hover.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf']:hover {
+toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf']:hover, toolbar[iconsize="small"] #printPreviewButtonMac:hover {
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-hover-sm.png");
 }
-#printPreviewButton[defcomp='pdf']:hover:active {
+#printPreviewButton[defcomp='pdf']:hover:active, #printPreviewButtonMac:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-active.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf']:hover:active {
+toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf']:hover:active, toolbar[iconsize="small"] #printPreviewButtonMac:hover:active{
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-active-sm.png");
 }
-#printPreviewButton[defcomp='pdf'][disabled="true"] {
+#printPreviewButton[defcomp='pdf'][disabled="true"], #printPreviewButtonMac[disabled="true" {
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-disabled.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf'][disabled="true"] {
+toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf'][disabled="true"], toolbar[iconsize="small"] [disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-disabled-sm.png");
 }
 

@@ -44,3 +44,4 @@
 <!ENTITY accentBelow.accesskey "B">
 <!ENTITY negateCheck.label "Negate">
 <!ENTITY negateCheck.accesskey "N">
+<!ENTITY extra1Apply.label  "Apply">

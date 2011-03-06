@@ -33,64 +33,98 @@ function Cancel(){
   data.Cancel = true;
 }
 
+function SetValue(p, str)
+// sets the value of p2 and hides or shows it depending on whether the value
+// is blank or not
+{
+  if (str.length > 0) p.parentNode.setAttribute("style", "visibility: visible;")
+  else p.parentNode.setAttribute("style", "visibility: hidden;");
+  p.value = str;
+  return str;
+}
+
+
+
 // sadly, this is all wrong because the strings can't be localized
 function doSelect(){
   var dist = document.getElementById("dist");
-  var p1   = document.getElementById("param1.text");
-  var p2   = document.getElementById("param2.text");
+  var p1   = document.getElementById("label1");
+  var p2   = document.getElementById("label2");
 
   switch (dist.selectedIndex) {
   case 0:  // Beta
-    p1.value = "Order";
-    p2.value = "Order";
+    p1.value = SetValue(p2,GetComputeString("Order"));
     break;
   case 1:  // Binomial
-    p1.value = "Number of Trials";
-    p2.value = "Probability of Success";
+    p1.value = GetComputeString("NumTrials");
+    SetValue(p2,GetComputeString("ProbSuccess"));
     break;
   case 2:  // Cauchy
-    p1.value = "Median";
-    p2.value = "Shape Parameter";
+    p1.value = GetComputeString("Median");
+    SetValue(p2,GetComputeString("Shape"));
     break;
   case 3:  // Chi-Square
-    p1.value = "Degrees of Freedom";
-    p2.value = "";
+    p1.value = GetComputeString("DegFreedom");
+    SetValue(p2,"");
     break;
   case 4:  // Exponential
-    p1.value = "Mean Time Between Arrivals";
-    p2.value = "";
+    p1.value = GetComputeString("MTBA");
+    SetValue(p2,"");
     break;
   case 5:  // F
-    p1.value = "Degrees of Freedom";
-    p2.value = "Degrees of Freedom";
+    p1.value = SetValue(p2,GetComputeString("DegFreedom"));
     break;
   case 6:  // Gamma
-    p1.value = "Shape Parameter";
-    p2.value = "Scale Parameter";
+    p1.value = GetComputeString("Shape");
+    SetValue(p2,GetComputeString("Scale"));
     break;
   case 7:  // Normal
-    p1.value = "Mean";
-    p2.value = "Standard Deviation";
+    p1.value = GetComputeString("Mean");
+    SetValue(p2,GetComputeString("StdDev"));
     break;
   case 8:  // Poisson
-    p1.value = "Mean Number of Occurences";
-    p2.value = "";
+    p1.value = GetComputeString("MeanNoOfOccur");
+    SetValue(p2,"");
     break;
   case 9:  // Student's t
-    p1.value = "Degrees of Freedom";
-    p2.value = "";
+    p1.value = GetComputeString("DegFreedom");
+    SetValue(p2,"");
     break;
   case 10:  // Uniform
-    p1.value = "Lower End of Range";
-    p2.value = "Upper End of Range";
+    p1.value = GetComputeString("Lower");
+    SetValue(p2,GetComputeString("Upper"));
     break;
   case 11:  // Weibull
-    p1.value = "Shape Parameter";
-    p2.value = "Scale Parameter";
+    p1.value = GetComputeString("Shape");
+    SetValue(p2,GetComputeString("Scale"));
     break;
   default:
     dump("impossible index in doSelect!\n");
   }
 }
 
+var gComputeStringBundle;
+
+function GetComputeString(name)
+{
+  if (!gComputeStringBundle)
+  {
+    try {
+      var strBundleService =
+          Components.classes["@mozilla.org/intl/stringbundle;1"].getService(); 
+      strBundleService = 
+          strBundleService.QueryInterface(Components.interfaces.nsIStringBundleService);
+
+      gComputeStringBundle = strBundleService.createBundle("chrome://prince/locale/compute.properties"); 
+
+    } catch (ex) {}
+  }
+  if (gComputeStringBundle)
+  {
+    try {
+      return gComputeStringBundle.GetStringFromName(name);
+    } catch (e) {}
+  }
+  return null;
+}
 
