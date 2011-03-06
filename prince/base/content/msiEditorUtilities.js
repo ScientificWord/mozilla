@@ -4295,7 +4295,7 @@ function GetFilename(urlspec)
 
   var filename;
   if (urlspec.indexOf(":") < 1)
-	  urlspec = "file://"+urlspec;
+      urlspec = "file://"+urlspec;
 
   try {
     var uri = IOService.newURI(urlspec, null, null);
@@ -4698,6 +4698,1215 @@ var msiCSSUtils =
   }
 };
 
+//CSS stylesheet editing functions
+
+//Call the following function by code like:
+//    valueArray = [];
+//    for (i = 0; i < ourProperties.length; ++i)
+//      valueArray.push( new cssPropertyChangeRecord(ourProperties[i], ourValues[i], bImportant[i]) );
+//    changeCSSPropertiesForSelector(document, "theorem,corollary", valueArray);
+function changeCSSPropertiesForSelector(aDoc, selectorText, propValArray)
+{
+  var cssMan = getCSSChangeManager(aDoc);
+  return cssMan.changePropertiesForSelector(selectorText, propValArray);
+}
+
+//Call the following function by code like:
+//    thmAndCorArray = [];
+//    thmAndCorLabelArray = [];
+//    for (i = 0; i < thmAndCorProperties.length; ++i)
+//      thmAndCorArray.push( new cssPropertyChangeRecord(thmAndCorProperties[i], thmAndCorValues[i], thmAndCorImportant[i]) );
+//    for (i = 0; i < thmAndCorLabelProperties.length; ++i)
+//      thmAndCorLabelArray.push( new cssPropertyChangeRecord(thmAndCorLabelProperties[i], thmAndCorLabelValues[i], thmAndCorLabelImportant[i]) );
+//    changeCSSPropertiesForSelector(document, [["theorem,corollary", thmAndCorArray], 
+//                                             ["theorem > *:first-child:before, corollary > *:first-child:before", thmAndCorLabelArray]] );
+//This has the advantage of making all the changes at once (hopefully).
+function changeCSSPropertiesForSelectorPropertiesArray(aDoc, theArray)
+{
+  var cssMan = getCSSChangeManager(aDoc);
+  return cssMan.changeArrayOfProperties(theArray);
+}
+
+var cssPropertyChangeRecordBase = 
+{
+  notePropertyIsSet : function(aSelectorObj, aRuleSetObj, matchedSelector, valueStr, priorityStr, anIndex)
+  {
+    if (!this.valuesTable)
+      this.valuesTable = new Object();
+    if (!(aSelectorObj.m_selString in this.valuesTable))
+      this.valuesTable[aSelectorObj.m_selString] = [];
+    var bImportant = (priorityStr && priorityStr == "important");
+    var jj;
+    var bInserted = false;
+    if (bImportant)
+    {
+      for (jj = 0; jj < this.valuesTable[aSelectorObj.m_selString].length; ++jj)
+      {
+        if (!this.valuesTable[aSelectorObj.m_selString][jj].m_bImportant)
+        {
+          this.valuesTable[aSelectorObj.m_selString].splice( jj, 0, {m_ruleSetObj : aRuleSetObj, m_val : valueStr, m_bImportant : true, m_index : anIndex, m_matchedSelector : matchedSelector} );
+          bInserted = true;
+        }
+      }
+    }
+    if (!bInserted)
+      this.valuesTable[aSelectorObj.m_selString].push( {m_ruleSetObj : aRuleSetObj, m_val : valueStr, m_bImportant : bImportant, m_index : anIndex, m_matchedSelector : matchedSelector} );
+  },
+
+  actionRequired : function(changesRequired, aSelectorObj)
+  {
+    var addRule = {theSelector : aSelectorObj, theProperty : this.m_property, theValue : this.m_value, m_bImportant : this.m_bImportant};
+    if (!this.valuesTable || !this.valuesTable[aSelectorObj.m_selString] || !this.valuesTable[aSelectorObj.m_selString].length)
+    {
+      changesRequired.addProperties.push(addRule);
+      return;
+    }
+
+    var currRecord = null;
+    var bNeedImportant = this.m_bImportant;
+    var deleteRecords = [];
+    var firstMatching, changeRecord;
+    var priorityStr = "";
+
+    function selectorMatchIsExact(aValueRecord)
+    {
+//      return (aValueRecord.m_matchedSelector && (aSelectorObj.m_selString == aValueRecord.m_matchedSelector.m_selString));
+      return (aValueRecord.m_matchedSelector && aSelectorObj.matchesExact(aValueRecord.m_matchedSelector));
+    }
+    //Algorithm: we proceed "down the cascade" hitting the "important" rules first and then those in the modifiable sheet.
+    //  We stop when we encounter the first rule which isn't one of the above unless it matches the required value, in which
+    //  case, if there were no important rules from non-modifiable stylesheets encountered, we only need to delete the rules
+    //  we passed first in the modifiable sheet.
+    for (var ii = 0; ii < this.valuesTable[aSelectorObj.m_selString].length; ++ii)
+    {
+      currRecord = this.valuesTable[aSelectorObj.m_selString][ii];
+      if ((currRecord.m_val == this.m_value) && (!bNeedImportant || currRecord.m_bImportant))
+        firstMatching = currRecord;
+      else if (this.recordIsModifiable(currRecord) && selectorMatchIsExact(currRecord))
+      {
+        if (!changeRecord && !firstMatching)
+          changeRecord = currRecord;
+        else
+          deleteRecords.push(currRecord);
+      }
+      else if (currRecord.m_bImportant)
+        bNeedImportant = true;
+      else
+        break;
+    }
+    if (bNeedImportant)
+      priorityStr = "important";
+    if (changeRecord && firstMatching)
+    {
+      deleteRecords.push(changeRecord);
+      changeRecord = null;
+    }
+    if (changeRecord)  //we found a modifiable rule but it has the wrong attributes.
+    {
+      this.addChangeToChangesList( {theSelector : aSelectorObj, theProperty : this.m_property, theValue : this.m_value, thePriority : priorityStr, theRule : changeRecord.m_ruleSetObj, theMatchedSelector : changeRecord.m_matchedSelector}, changesRequired.changeProperties );
+    }
+    else if (!firstMatching && addRule)
+    {
+      addRule.m_bImportant = bNeedImportant;
+      this.addRecordToAdditionsList( addRule, changesRequired.addProperties );
+    }
+    for (ii = 0; ii < deleteRecords.length; ++ii)
+    {
+      this.addChangeToChangesList( {theSelector : aSelectorObj, theProperty : this.m_property, theValue : "", thePriority : "", theRule : deleteRecords[ii].m_ruleSetObj, theMatchedSelector : deleteRecords[ii].m_matchedSelector}, changesRequired.changeProperties );
+    }
+  },
+
+  recordIsModifiable : function(aRecord)
+  {
+    return (aRecord.m_index < 0);
+  },
+
+  addChangeToChangesList : function( aRecord, aList )
+  {
+    var theRuleSet = aRecord.theRule;
+    var bFound = false;
+    for (var ix = 0; ix < aList.length; ++ix)
+    {
+      if (aList[ix].theRule == aRecord.theRule)
+        bFound = true;
+      else if (bFound)
+        aList.splice(ix, 0, aRecord);
+    }
+    if (!bFound)
+      aList.push(aRecord);
+  },
+
+  addRecordToAdditionsList : function( aRecord, aList )
+  {
+    var foundSelector = null;
+    var nInsertPos = -1;
+    for (var ix = 0; (nInsertPos < 0) && (ix < aList.length); ++ix)
+    {
+      if (foundSelector && (aList[ix].theSelector != aRecord.theSelector))
+        nInsertPos = ix;
+      else if (aList[ix].theSelector == aRecord.theSelector)
+        foundSelector = aList[ix];
+    }
+    if (nInsertPos < 0)
+      aList.push( aRecord );
+    else
+      aList.splice(nInsertPos, 0, aRecord);
+  }
+};
+
+function cssPropertyChangeRecord(propName, newValue, bImportant)
+{
+  this.m_property = propName;
+  this.m_value = newValue;
+  this.m_bImportant = bImportant ? true : false;
+}
+
+cssPropertyChangeRecord.prototype = cssPropertyChangeRecordBase;
+
+var cssChangesManagerBase = 
+{
+  m_replaceCharsRE : /[\*\.\$\^\|\[\]\(\)\{\}\+\?]/g,
+  m_deletionMarker : "del----",
+  m_document : null,
+  m_modifiableStyleSheet : null,  
+  //this is set up to have one target stylesheet associated with the document which we'll modify
+  m_styleSheetArray : null,
+  m_bStyleSheetModified : false,
+
+  //These functions expect the propChangesArrays to be arrays of cssPropertyChangeRecords...
+  changePropertiesForSelector : function(aSelectorStr, propChangesArray)
+  {
+    return this.changeArrayOfProperties( [[aSelectorStr, propChangesArray]] );
+  },
+
+  //And here the array should contains [<selector strings>, <propChangesArray>] pairs.
+  changeArrayOfProperties : function( selectorAndPropsArray )
+  {
+    var ix, jx, kx;
+    var styleSheets = this.getStyleSheetArray();
+    var aSelectorStr, propChangesArray;
+    var selectorObjArray;
+    var currRuleSetObj;
+    var nInsertPos;
+
+    var changesRequired = {addProperties : [], changeProperties : []};
+    for (ix = 0; ix < selectorAndPropsArray.length; ++ix)
+    {
+      if ( !("length" in selectorAndPropsArray[ix]) || (selectorAndPropsArray[ix].length < 2) )
+      {
+        dump("Bad selector and properties pair passed to cssChangesManager.changeArrayOfProperties, at index [" + ix + "].\n");
+        continue;
+      }
+      aSelectorStr = selectorAndPropsArray[ix][0];
+      propChangesArray = selectorAndPropsArray[ix][1];
+      selectorObjArray = parseCSSSelectorString(aSelectorStr);
+      this.checkPropertyChangeArray(this.m_modifiableStyleSheet, selectorObjArray, propChangesArray, -1);
+      for (jx = 0; jx < styleSheets.length; ++jx)
+      {
+        this.checkPropertyChangeArray(styleSheets[jx], selectorObjArray, propChangesArray, jx);
+      }
+      for (jx = 0; jx < selectorObjArray.length; ++jx)
+      {
+        for (kx = 0; kx < propChangesArray.length; ++kx)
+        {
+          propChangesArray[kx].actionRequired(changesRequired, selectorObjArray[jx]);
+        }
+      }
+    }
+
+    //At this point, all the changes needed should be recorded in changesRequired.
+    //Now make the changes! and mark the style sheet modified
+    //Note that the changeProperties list is ordered by rule set, so we collect them and edit each rule set as we go.
+    var ruleSetChangeArray = [];
+    var ruleChanges = [];
+    var ruleAdditions = [];
+    var currSelector = null;
+    var currRuleChange;
+    var ruleText = "";
+    ix = 0; 
+    while (ix < changesRequired.addProperties.length)
+    {
+      currSelector = changesRequired.addProperties[ix].theSelector;
+      ruleText = currSelector.m_selString + " {\n";
+      while ( (ix < changesRequired.addProperties.length) && (changesRequired.addProperties[ix].theSelector == currSelector) )
+      {
+        ruleText += "  " + changesRequired.addProperties[ix].theProperty + ": " + changesRequired.addProperties[ix].theValue;
+      if (changesRequired.addProperties[ix].m_bImportant)
+        ruleText += " !important;\n"
+      else
+        ruleText += ";\n";
+      ++ix;
+      }
+      ruleText += "}";
+      ruleAdditions.push( {m_rule : ruleText, m_insertAfterRule : null} );
+    }
+    for (ix = 0; ix < changesRequired.changeProperties.length; ++ix)
+    {
+      if (changesRequired.changeProperties[ix].theRule == currRuleSetObj)
+        ruleSetChangeArray.push(changesRequired.changeProperties[ix]);
+      else
+      {
+        if (currRuleSetObj)
+          this.prepareEditRuleSet(ruleSetChangeArray, ruleChanges, ruleAdditions);
+        currRuleSetObj = changesRequired.changeProperties[ix].theRule;
+        ruleSetChangeArray = [changesRequired.changeProperties[ix]];
+      }
+    }
+    if (currRuleSetObj)   //get the last one too
+      this.prepareEditRuleSet(ruleSetChangeArray, ruleChanges, ruleAdditions);
+
+    //Finally actually make the changes to the style sheet object.
+    //Do the additions first in case we delete somebody's m_insertAfterRule
+    for (ix = 0; ix < ruleAdditions.length; ++ix)
+    {
+      if (ruleAdditions[ix].m_insertAfterRule && ruleAdditions[ix].m_insertAfterRule)
+        nInsertPos = this.getIndexOfRuleSet(ruleAdditions[ix].m_insertAfterRule.m_cssRule) + 1;
+      else
+        nInsertPos = this.m_modifiableStyleSheet.cssRules.length;
+      this.m_modifiableStyleSheet.insertRule(ruleAdditions[ix].m_rule, nInsertPos);
+    }
+    for (ix = 0; ix < ruleChanges.length; ++ix)
+    {
+      currRuleSetObj = ruleChanges[ix].m_ruleSet;
+      if (ruleChanges[ix].m_changedSelectorStr)
+        currRuleSetObj.m_cssRule.selectorText = ruleChanges[ix].m_changedSelectorStr;
+      for (jx = 0; jx < ruleChanges[ix].m_changes.length; ++jx)
+      {
+        currRuleChange = ruleChanges[ix].m_changes[jx];
+        if (currRuleChange.m_value == this.m_deletionMarker)
+          currRuleSetObj.m_cssRule.style.removeProperty(currRuleChange.m_property);
+        else
+        {
+          currRuleSetObj.m_cssRule.style.setProperty(currRuleChange.m_property, currRuleChange.m_value, currRuleChange.m_priority);
+//          if (currRuleChange.m_priority)
+//            currRuleSetObj.m_cssRule.style.setPropertyPriority(currRuleChange.m_property, currRuleChange.m_priority);
+        }
+      }
+    }
+    //Check for rule sets which have been emptied
+    for (ix = 0; ix < ruleChanges.length; ++ix)
+    {
+      if (ruleChanges[ix].m_ruleSet.m_cssRule.style.length == 0)
+      {
+        nInsertPos = this.getIndexOfRuleSet(ruleChanges[ix].m_ruleSet.m_cssRule);
+        if (nInsertPos >= 0)
+          this.m_modifiableStyleSheet.deleteRule(nInsertPos);
+      }
+    }
+
+    if (ruleChanges.length || ruleAdditions.length)
+      this.m_bStyleSheetModified = true;
+    
+  },
+
+  writeCSSFile : function()  //These should come in as a nsIFile and a string respectively
+  {
+    if (!this.m_modifiableStyleSheet)
+    {
+      dump("cssChangesManager.writeCSSFile called for document [" + this.m_document.path + "] with no modifiable style sheet!\n");
+      return false;
+    }
+    if (!this.m_bStyleSheetModified)
+      return true;  //don't write it if not modified>
+    //Now write it out
+    var rv = true;
+    try
+    {
+      var stylePath = this.m_modifiableStyleSheet.href;
+      var styleUrl = msiURIFromString(stylePath);
+      var styleNSFile = msiFileFromFileURL(styleUrl);
+
+      var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+      fos.init(styleNSFile, -1, -1, false);
+      var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"].createInstance(Components.interfaces.nsIConverterOutputStream);
+      os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
+      for (var ii = 0; ii < this.m_modifiableStyleSheet.cssRules.length; ++ii)
+        os.writeString(this.m_modifiableStyleSheet.cssRules[ii].cssText + "\n\n");
+      os.close();
+      fos.close();
+    }
+    catch(ex) 
+    {
+      dump("Exception in writing out CSS file [" + this.m_modifiableStyleSheet.href + "]; exception is [" + ex + "].\n");
+      rv = false;
+    }
+    return rv;
+  },
+
+  checkPropertyChangeArray : function(aStyleSheet, selectorObjArray, propChangeArray, anIndex)
+  {
+    var testStr = this.getSearchableStringFromSelectorArray(selectorObjArray);
+    var testStrRE = new RegExp(testStr);
+    var testRuleSet = null;
+    for (var jx = aStyleSheet.cssRules.length - 1; jx >= 0; --jx)
+    {
+      if (aStyleSheet.cssRules[jx].type != CSSRule.STYLE_RULE)
+        continue;
+      if (testStrRE.test(aStyleSheet.cssRules[jx].selectorText))
+      {
+        testRuleSet = cssRuleSetToRuleSetObj(aStyleSheet.cssRules[jx]);
+        for (var ix = 0; ix < selectorObjArray.length; ++ix)
+          this.checkRuleSetForProperties( selectorObjArray[ix], propChangeArray, testRuleSet, anIndex );
+      }  
+    }
+  },
+
+  checkRuleSetForProperties : function( selectorObj, propChangeArray, aRuleSetObj, anIndex )
+  {
+    var jj, valStr, aPriority, nMatched;
+    var nMatched = selectorObj.matchesOneOf(aRuleSetObj.m_selectors);
+    if (nMatched >= 0)
+    {
+      for (var jj = 0; jj < propChangeArray.length; ++jj)
+      {
+        valStr = aRuleSetObj.m_cssRule.style.getPropertyValue(propChangeArray[jj].m_property);
+        if (valStr && valStr.length)
+        {
+          aPriority = aRuleSetObj.m_cssRule.style.getPropertyPriority(propChangeArray[jj].m_property);
+          propChangeArray[jj].notePropertyIsSet(selectorObj, aRuleSetObj, aRuleSetObj.m_selectors[nMatched], valStr, aPriority, anIndex);
+        }
+      }
+    }
+  },
+
+  prepareEditRuleSet : function(aRuleSetChangeArray, ruleChanges, ruleAdditions)
+  {
+    if (!aRuleSetChangeArray.length)
+      return;
+//    var recordsDone = [];
+//    var changedSelectors = [];
+    var theRuleSetObj = aRuleSetChangeArray[0].theRule;
+    var addRules = [];
+    var changeProps = [];
+
+    var allSelectors = theRuleSetObj.m_selectors;
+    var aProperty, aValue, ix, jx, matchedSelector;
+    var propValueTable = new Object();
+//    var changesBySelector = new Object();
+    var exceptions = [];
+    var nMatchedSelector = -1;
+    var globalChangedSelectors = [];
+    var unchangedProps = [];
+    //Organize into a two-dimensional array by property and value, noting which selectors change the value
+    //The plan is to change the value in this ruleset whenever possible (whenever all selectors agree on it).
+    //  When some selectors don't agree, they'll have to be separated out and combined in one or more new rulesets.
+    //We look at each property affected to see whether all the selectors agree, and separating those which don't. However,
+    //  we should recall that only one new value is generally specified for each property, so this should come down to a
+    //  question of just which selectors are being changed.
+    for (ix = 0; ix < aRuleSetChangeArray.length; ++ix)
+    {
+      aProperty = aRuleSetChangeArray[ix].theProperty;
+      aValue = aRuleSetChangeArray[ix].theValue;
+      if (aRuleSetChangeArray[ix].thePriority.length)
+        aValue += " !" + aRuleSetChangeArray[ix].thePriority;  //should just be "!important"
+      if (!aValue || !aValue.length)
+        aValue = this.m_deletionMarker;
+      if (!(aProperty in propValueTable))
+        propValueTable[aProperty] = {changedSelectors : [], values : {}};
+      if (!(aValue in propValueTable[aProperty].values))
+        propValueTable[aProperty].values[aValue] = [];
+      nMatchedSelector = allSelectors.indexOf(aRuleSetChangeArray[ix].theMatchedSelector);
+      if (nMatchedSelector >= 0)
+      {
+        propValueTable[aProperty].changedSelectors.push(nMatchedSelector);
+        globalChangedSelectors.push(nMatchedSelector);
+        if (propValueTable[aProperty].values[aValue].indexOf(nMatchedSelector) < 0)
+          propValueTable[aProperty].values[aValue].push(nMatchedSelector);
+      }
+//      if (!(matchedSelector.m_selString in changesBySelector))
+//        changesBySelectors[matchedSelector.m_selString] = [];
+//      changesBySelectors[matchedSelector.m_selString].push(ix);
+    }
+//    for (ix = 0; ix < theRuleSetObj.m_cssRule.style.length; ++ix)
+//    {
+//      aProperty = theRuleSetObj.m_cssRule.style.item(ix);
+//      if ( !(aProperty in propValueTable) )
+//        unchangedProps.push(aProperty);
+//    }
+
+    var nSelectors = allSelectors.length;
+    var removeSelectors = [];
+    var keepInRule = [];
+    var valueToUse, priorityStr;
+    var nMaxCount, nSplitPos;
+
+    var minSelectors = Math.max(2, nSelectors - globalChangedSelectors);
+    if (minSelectors > nSelectors)
+      minSelectors = nSelectors;
+    if ((2 * globalChangedSelectors.length) < nSelectors)  //so most of the selectors aren't affected - we leave this rule set alone and pull out what need changing
+    {
+      removeSelectors = removeSelectors.concat(globalChangedSelectors);
+    }
+    else  //most selectors are affected - try to just reset the properties when possible, and remove the unaffected selectors
+    {
+      for (jx = 0; jx < nSelectors; ++jx)
+      {
+        if (globalChangedSelectors.indexOf(jx) < 0)
+          removeSelectors.push(jx);
+      }
+      keepInRule = keepInRule.concat(globalChangedSelectors);  //start with just copying the globalChangeSelectors
+      for (aProperty in propValueTable)
+      {
+        nMaxCount = 0;
+        valueToUse = "";
+        for (aValue in propValueTable[aProperty].values)
+        {
+          if (propValueTable[aProperty].values[aValue].length > nMaxCount)
+          {
+            nMaxCount = propValueTable[aProperty].values[aValue].length;
+            valueToUse = aValue;
+          }
+        }
+        if (nMaxCount)
+          keepInRule = intersectArrayWith(keepInRule, propValueTable[aProperty].values[valueToUse]);
+        if (keepInRule.length < minSelectors)  //Give up on changing the rules and just keep the selectors with no changes
+        {
+          removeSelectors = removeSelectors.concat(globalChangedSelectors);
+          changeProps = [];
+          break;
+        }
+        else
+        {
+          for (jx = 0; jx < nSelectors; ++jx)
+          {
+            if ( (keepInRule.indexOf(jx) < 0) && (removeSelectors.indexOf(jx) < 0) )
+              removeSelectors.push(jx);
+          }
+          //prepare the change record
+          nSplitPos = valueToUse.lastIndexOf("!");
+          if (nSplitPos >= 0)
+          {
+            priorityStr = TrimString(valueToUse.substr(nSplitPos));
+            valueToUse = TrimString(valueToUse.substr(0, nSplitPos));
+          }
+          else
+            priorityStr = "";
+          changeProps.push( {m_property : aProperty, m_value : valueToUse, m_priority : priorityStr} );
+        }
+      }
+    }
+
+    //The end should be:
+    var changedSelectorStr = null;
+    if (removeSelectors.length)
+    {
+      changedSelectorStr = "";    //the value of null would prevent the use of changedSelectorStr below; if it ends up empty, the rule set will eventually be deleted
+      for (ix = 0; ix < removeSelectors.length; ++ix)
+      {
+        ruleText = "{\n";
+        for (aProperty in propValueTable)
+        {
+          if (propValueTable[aProperty].changedSelectors.indexOf(removeSelectors[ix]) >= 0)
+          {
+            for (aValue in propValueTable[aProperty].values)
+            {
+              if (propValueTable[aProperty].values[aValue].indexOf(removeSelectors[ix]) >= 0)
+              {
+                if (aValue != this.m_deletionMarker)
+                  ruleText += "  " + aProperty + ":  " + aValue + ";\n";
+                break;
+              }
+            }
+          }
+          else
+          {
+            ruleText += "  " + theRuleSetObj.m_cssRule.style.getPropertyValue(aProp);
+            aPriority = theRuleSetObj.m_cssRule.style.getPropertyPriority(aProp);
+            if (aPriority.length)
+              ruleText += " !" + aPriority + ";\n";
+            else
+              ruleText += ";\n";
+          }
+        }
+        ruleText += "\n}";
+        ruleAdditions.push( {m_selector : allSelectors[removeSelectors[ix]].m_selString, m_rule : ruleText, m_insertAfterRule : theRuleSetObj.m_cssRule} );
+      }
+    }
+    var delimStr = "";
+    if (removeSelectors.length)
+    {
+      for (ix = 0; ix < allSelectors.length; ++ix)
+      {
+        if ( removeSelectors.indexOf(ix) < 0 )
+        {
+          changedSelectorStr += delimStr + allSelectors[ix].m_selString;
+          delimStr = ", ";
+        }
+      }
+    }
+    
+    ruleChanges.push( {m_ruleSet : theRuleSetObj, m_changedSelectorStr : changedSelectorStr, m_changes : changeProps} );
+  },
+
+  getStyleSheetArray : function() //We reverse the usual array so as to read the cascade in reverse later
+  {
+    if (!this.m_styleSheetArray)
+    {
+      this.m_styleSheetArray = new Array();
+      for (var ix = this.m_document.styleSheets.length - 1; ix >= 0; --ix)
+      {
+        if (this.isModifiableStyleSheet(this.m_document.styleSheets[ix]))
+          this.m_modifiableStyleSheet = this.m_document.styleSheets[ix];
+        else
+          this.m_styleSheetArray.push(this.m_document.styleSheets[ix]);
+        this.m_styleSheetArray = this.m_styleSheetArray.concat(this.getIncludedStyleSheets(this.m_document.styleSheets[ix]));
+      }
+    }
+    return this.m_styleSheetArray;
+  },
+
+  getSearchableStringFromSelectorArray : function(selectorObjArray)
+  {
+//    var regexpStr = "/(" + this.getSearchableStringFromSelector(selectorObjArray[0]) + ")";
+    var regexpStr = this.getSearchableStringFromSelector(selectorObjArray[0]);
+    for (var ii = 1; ii < selectorObjArray.length; ++ii)
+    {
+//      regexpStr += "|(" + this.getSearchableStringFromSelector(selectorObjArray[ii]) + ")";
+      regexpStr += "|" + this.getSearchableStringFromSelector(selectorObjArray[ii]);
+    }
+//    regexpStr += "/";
+    return regexpStr;
+  },
+
+  getSearchableStringFromSelector : function(selectorObj)
+  {
+    var regexpStr = "(" + selectorObj.m_simpleSelectors[0].m_elemSelector.replace(this.m_replaceCharsRE, "\\$1") + ")";
+    for (var ii = 1; ii < selectorObj.m_simpleSelectors.length; ++ii)
+    {
+      if (selectorObj.m_simpleSelectors[ii].m_elemSelector && (selectorObj.m_simpleSelectors[ii].m_elemSelector.length > 1) )
+        regexpStr += "|(" + selectorObj.m_simpleSelectors[ii].m_elemSelector.replace(this.m_replaceCharsRE, "\\$1") + ")";
+    }
+    return regexpStr;
+  },
+
+  getIndexOfRuleSet : function(aRuleSet)
+  {
+    var theStyleSheet = aRuleSet.parentStyleSheet;
+    if (!theStyleSheet)
+      return -1;
+    for (var ix = 0; ix < theStyleSheet.cssRules.length; ++ix)
+    {
+      if (theStyleSheet.cssRules.item(ix) == aRuleSet)
+        return ix;
+    }
+    return -1;
+  },
+
+  isModifiableStyleSheet : function(aStyleSheet)
+  {
+    var cssUrl, styleNSFile;
+    var uriStr = aStyleSheet.href;
+    try
+    {
+      cssUrl = msiURIFromString(uriStr);
+      styleNSFile = msiFileFromFileURL(cssUrl);
+    }
+    catch(exc) {dump("In cssChangesManager.isModifiableStyleSheet, exception: " + exc + ".\n");}
+    //This is stupid! Improve it...
+    if (styleNSFile && (styleNSFile.leafName == "my.css"))
+      return true;
+    if (aStyleSheet.ownerRule == null)
+      return true;  //is this better?
+    return false;
+  },
+
+  getIncludedStyleSheets : function(aStyleSheet)
+  {
+    var styleSheetArray = [];
+    var impRule;
+    for (var ii = aStyleSheet.cssRules.length - 1; ii >= 0 ; --ii)
+    {
+      if (aStyleSheet.cssRules[ii].type == CSSRule.IMPORT_RULE)
+      {
+        impRule = aStyleSheet.cssRules[ii];
+        if ( ("styleSheet" in impRule) && (impRule.styleSheet != null) )
+        {
+          styleSheetArray.push(impRule.styleSheet);
+          styleSheetArray = styleSheetArray.concat(this.getIncludedStyleSheets(impRule.styleSheet));
+        }
+      }
+    }
+    return styleSheetArray;
+  }
+
+};
+
+function cssChangesManager(aDocument)
+{
+  this.m_document = aDocument;
+  this.m_modifiableStyleSheet = null;
+  this.m_styleSheetArray = null;
+  this.m_bStyleSheetModified = false;
+}
+
+cssChangesManager.prototype = cssChangesManagerBase;
+
+var cssEditingManagers = [];
+
+function findCSSChangeManager(aDocument)
+{
+  for (var ix = 0; ix < cssEditingManagers.length; ++ix)
+  {
+    if (cssEditingManagers[ix].m_document == aDocument)
+    return cssEditingManagers[ix];
+  }
+  return null;
+}
+
+function getCSSChangeManager(aDocument)
+{
+  var cssMan = findCSSChangeManager(aDocument);
+  if (!cssMan)
+  {
+    cssMan = new cssChangesManager(aDocument);
+    cssEditingManagers.push( cssMan );
+  }
+  return cssMan;
+}
+
+function saveCSSFileIfChanged(aDocument)
+{
+  var cssMan = findCSSChangeManager(aDocument);
+  if (cssMan)
+    cssMan.writeCSSFile();
+}
+
+var cssRuleSetBase = 
+{
+  m_cssRule : null,  //a cssRule object - provides access to the individual property settings
+  m_selectors : [],  //an array of cssSelectors (see below)
+//  m_properties : [],      //an array containing the string representations of individual properties
+
+  initObj : function()
+  {
+    if (!this.m_cssRule)
+    {
+      return;
+    }
+    if (this.m_cssRule.type != CSSRule.STYLE_RULE)
+    {
+      dump("cssRuleSetBase.initObj() called with a CSSRule of a type other than STYLE_RULE. Aborting...\n");
+      return;
+    }
+    this.m_selectors = parseCSSSelectorString(this.m_cssRule.selectorText);
+  }
+};
+
+function cssRuleSetObj(aRuleSet)
+{
+  this.m_cssRule = aRuleSet;
+  this.m_selectors = [];
+  this.initObj();
+}
+
+function cssRuleSetToRuleSetObj(aRuleSet)
+{
+  if (aRuleSet.type != CSSRule.STYLE_RULE)
+    return null;
+  return new cssRuleSetObj(aRuleSet);
+}
+
+cssRuleSetObj.prototype = cssRuleSetBase;
+
+function parseCSSSelectorString(selString)
+{
+  separatorsRE = /\s*([\"\,\'\\])\s*/;
+
+  var bInSingleQuotes = false, bInDoubleQuotes = false, bIsEscapedChar = false;
+  var nCurrIndex = 0;
+  var currSelector = "";
+  var selectorStrings = [];
+  var selectorPieces = selString.split(separatorsRE);
+  var selectorObjs = [];
+  for (var jx = 0; jx < selectorPieces.length; ++jx)
+  {
+    if (bIsEscapedChar)
+    {
+      bIsEscapedChar = false;
+      currSelector += selectorPieces[jx];
+    }
+    else if (bInSingleQuotes)
+    {
+      bInSingleQuotes = (selectorPieces[jx] != "'");
+      currSelector += selectorPieces[jx];
+    }
+    else if (bInDoubleQuotes)
+    {
+      bInDoubleQuotes = selectorPieces[jx] != "\"";
+      currSelector += selectorPieces[jx];
+    }
+    else
+    {
+      switch(selectorPieces[jx])
+      {
+        case "\\":
+          bIsEscapedChar = true;
+          currSelector += selectorPieces[jx];
+        break;
+        case "\"":
+          bInDoubleQuotes = true;
+          currSelector += selectorPieces[jx];
+        break;
+        case "'":
+          bInSingleQuotes = true;
+          currSelector += selectorPieces[jx];
+        break;
+        case ",":
+          selectorStrings[nCurrIndex] = currSelector;
+          currSelector = "";
+          ++nCurrIndex;
+        break;
+        default:
+          currSelector += selectorPieces[jx];
+        break;
+      }
+    }
+  }
+  if (currSelector.length)  //Collect what's left at the end
+    selectorStrings[nCurrIndex] = currSelector;
+
+  for (var ii = 0; ii < selectorStrings.length; ++ii)
+    selectorObjs.push( new cssSelectorObj(selectorStrings[ii]) );  //this completes the parsing for each one
+  return selectorObjs;
+}
+
+var cssSelectorObjBase = 
+{
+  m_combinatorsRE : /(?:\s*([\\\"\'\+>])\s*)|(\s+)/,
+  m_whiteSpaceRE : /^\s+$/,
+  m_selString : "",
+  m_simpleSelectors : [],
+  m_separators : [],
+
+  parseSelectorString : function()
+  {
+    if (!this.m_selString.length)
+    {
+      dump("cssSelectorObjBase.parseSelectorString() called with empty m_selString! Aborting...\n");
+      return;
+    }
+
+    var bInSingleQuotes = false, bInDoubleQuotes = false, bIsEscapedChar = false;
+    var nCurrSelIndex = 0, nCurrSepIndex = 0;
+    var currSimpleSelector = "";
+    var simpleSelectorStrings = [];
+    var selectorPieces = this.m_selString.split(this.m_combinatorsRE);
+    for (var jx = 0; jx < selectorPieces.length; ++jx)
+    {
+      if (bIsEscapedChar)
+      {
+        bIsEscapedChar = false;
+        currSimpleSelector += selectorPieces[jx];
+      }
+      else if (bInSingleQuotes)
+      {
+        bInSingleQuotes = (selectorPieces[jx] != "'");
+        currSimpleSelector += selectorPieces[jx];
+      }
+      else if (bInDoubleQuotes)
+      {
+        bInDoubleQuotes = selectorPieces[jx] != "\"";
+        currSimpleSelector += selectorPieces[jx];
+      }
+      else
+      {
+        switch(selectorPieces[jx])
+        {
+          case "\\":
+            bIsEscapedChar = true;
+            currSimpleSelector += selectorPieces[jx];
+          break;
+          case "\"":
+            bInDoubleQuotes = true;
+            currSimpleSelector += selectorPieces[jx];
+          break;
+          case "'":
+            bInSingleQuotes = true;
+            currSimpleSelector += selectorPieces[jx];
+          break;
+          default:
+            if (this.m_whiteSpaceRE.test(selectorPieces[jx])) //replace the whitespace with a single space character
+            {
+              simpleSelectorStrings.push(currSimpleSelector);
+              this.m_separators.push(" ");
+              currSimpleSelector = "";
+            } 
+            else
+            {
+              currSimpleSelector += selectorPieces[jx];
+            }
+          break;
+          case ">":
+          case "+":
+            simpleSelectorStrings.push(currSimpleSelector);
+            this.m_separators.push(selectorPieces[jx]);
+            currSimpleSelector = "";
+          break;
+        }
+      }
+    }
+    if (currSimpleSelector.length)
+      simpleSelectorStrings.push(currSimpleSelector);
+
+    for (var ii = 0; ii < simpleSelectorStrings.length; ++ii)
+      this.m_simpleSelectors.push( new cssSimpleSelectorObj(simpleSelectorStrings[ii]) );  //this completes the parsing for each one
+  },
+
+  matchesOneOf : function(selectorArray)
+  {
+    var retVal = -1;
+    for (var ii = 0; (retVal < 0) && (ii < selectorArray.length); ++ii)
+    {
+      if (this.matches(selectorArray[ii]))
+        retVal = ii;
+    }
+    return retVal;
+  },
+
+  //This function determines whether this selector selects a subset of what otherSelector does.
+  matches : function(otherSelectorObj)
+  {
+    var matchIndex = 0;
+    for (var jj = 0; jj < otherSelectorObj.m_simpleSelectors.length; ++jj)
+    {
+      if (matchIndex >= this.m_simpleSelectors.length)
+        return false; //otherSelector has more conditions to put, and we're all done, so it selects a subset of ours?
+      if (!this.m_simpleSelectors[matchIndex].matches(otherSelectorObj.m_simpleSelectors[jj]))
+      {
+        return false;  //except for when?
+      }
+    if ( otherSelectorObj.m_separators[jj] && (!this.m_separators[matchIndex] || (this.m_separators[matchIndex] != otherSelectorObj.m_separators[jj])) )
+      return false;
+    if (this.m_separators[matchIndex] && !otherSelectorObj.m_separators[jj])
+    return false;
+      ++matchIndex;
+    }
+    return true;
+  },
+
+  matchesExact : function(otherSelectorObj)
+  {
+    if (this.m_simpleSelectors.length != otherSelectorObj.m_simpleSelectors.length)
+      return false;
+    if (this.m_separators.length != otherSelectorObj.m_separators.length)
+      return false;
+    for (var jj = 0; jj < otherSelectorObj.m_simpleSelectors.length; ++jj)
+    {
+      if (!this.m_simpleSelectors[jj].matchesExact(otherSelectorObj.m_simpleSelectors[jj]))
+      {
+        return false;  //except for when?
+      }
+      if ( otherSelectorObj.m_separators[jj] && (!this.m_separators[jj] || (this.m_separators[jj] != otherSelectorObj.m_separators[jj])) )
+        return false;
+      if (this.m_separators[jj] && !otherSelectorObj.m_separators[jj])
+        return false;
+    }
+    return true;
+  }
+
+};
+
+function cssSelectorObj(selectorStr)
+{
+  this.m_selString = selectorStr;
+  this.m_simpleSelectors = [];
+  this.m_separators = [];
+  this.parseSelectorString();
+}
+
+cssSelectorObj.prototype = cssSelectorObjBase;
+
+var cssSimpleSelectorBase =
+{
+  //constants
+  m_tokenCharsRE : /([\|\[\]=\:\.#\*\|~\\\"\'])/,
+  m_attributeRE : /\s*([^\s=]+)\s*(?:([\|\~]?=)\s*([^\s].*))?$/,
+  // color ~= "0x808080"
+  noSelector : 0,
+  nsSelector : 1,
+  elemSelector : 2,
+  idSelector : 3,
+  classSelector : 4,
+  attrSelector : 5,
+  pseudoClassSelector : 6,
+  m_selString : "",
+  m_nsSelector : "",
+  m_elemSelector : "",
+  m_attrSelectors : [],
+  m_classSelectors : [],
+  m_pseudoClassSelectors : [],
+  m_idSelector : "",
+
+  createAttrObj : function(attrString)
+  {
+    var attrPieces = this.m_attributeRE.exec(attrString);
+    var attrObj;
+    if (attrPieces && attrPieces.length > 1)
+    {
+      attrObj = {attrName : attrPieces[1]};  //is this right?
+      if (attrPieces.length > 2)
+      {
+        if (attrPieces.length > 3)
+        {
+          attrObj.binaryOp = attrPieces[2];
+          attrObj.attrValue = TrimString(attrPieces[3]);
+        }
+        else
+          attrObj.attrValue = TrimString(attrPieces[2]);
+      }
+    }
+    return attrObj;
+  },
+
+  storeAPiece : function(whichType, thePiece)
+  {
+    if (thePiece.length == 0)
+      return;
+    switch(whichType)
+    {
+      case this.nsSelector :          this.m_nsSelector = thePiece;                 break;
+      case this.elemSelector :        this.m_elemSelector = thePiece;               break;
+      case this.idSelector :          this.m_idSelector = thePiece;                 break;
+      case this.classSelector :       this.m_classSelectors.push(thePiece);         break;
+      case this.pseudoClassSelector : this.m_pseudoClassSelectors.push(thePiece);   break;
+      case this.attrSelector:
+        this.m_attrSelectors.push( this.createAttrObj(thePiece) );
+      break;
+      default:
+        dump("cssSimpleSelectorBase.storeAPiece() called with no type set (piece is [" + thePiece + "]! Aborting...\n");
+      break;
+    }
+  },
+
+  parseSelectorString : function()
+  {
+    if (!this.m_selString.length)
+    {
+      dump("cssSelectorObjBase.parseSelectorString() called with empty m_selString! Aborting...\n");
+      return;
+    }
+
+    var bInSingleQuotes = false, bInDoubleQuotes = false, bIsEscapedChar = false;
+    var nCurrIndex = 0;
+    var currSelectorPiece = "";
+    var nextPart = this.elemSelector;
+    var inPart = this.elemSelector;
+    var simpleSelectorStrings = [];
+    var selectorPieces = this.m_selString.split(this.m_tokenCharsRE);
+    var bFinished = false;
+    for (var jx = 0; jx < selectorPieces.length; ++jx)
+    {
+      if (bIsEscapedChar)
+      {
+        bIsEscapedChar = false;
+        currSelectorPiece += selectorPieces[jx];
+      }
+      else if (bInSingleQuotes)
+      {
+        bInSingleQuotes = (selectorPieces[jx] != "'");
+        currSelectorPiece += selectorPieces[jx];
+      }
+      else if (bInDoubleQuotes)
+      {
+        bInDoubleQuotes = selectorPieces[jx] != "\"";
+        currSelectorPiece += selectorPieces[jx];
+      }
+      else
+      {
+        switch(selectorPieces[jx])
+        {
+          case "\\":
+            bIsEscapedChar = true;
+            currSelectorPiece += selectorPieces[jx];
+          break;
+          case "\"":
+            bInDoubleQuotes = true;
+            currSelectorPiece += selectorPieces[jx];
+          break;
+          case "'":
+            bInSingleQuotes = true;
+            currSelectorPiece += selectorPieces[jx];
+          break;
+          case ":":
+            bFinished = true;
+            nextPart = this.pseudoClassSelector;
+          break;
+          case "[":
+            if ((inPart == this.elemSelector) && !currSelectorPiece.length)
+              currSelectorPiece = "*";  //this can be inferred for an id selector
+            nextPart = this.attrSelector;
+            bFinished = true;
+          break;
+          //From here down they all fall through if the condition isn't met and just append to the currSelectorPiece
+          case "]":
+            if (inPart == this.attrSelector)
+            {
+              nextPart = this.noSelector;
+              bFinished = true;
+              break;
+            }
+          break;
+          case ".":
+            if (inPart == this.elemSelector)
+            {
+              if (!currSelectorPiece.length)
+                currSelectorPiece = "*";  //this can be inferred for an id selector
+              bFinished = true;
+              nextPart = this.classSelector;
+              break;
+            }
+          case "|":
+            if (inPart == this.elemSelector)
+            {
+              inPart = this.nsSelector;
+              nextPart = this.elemSelector;
+              bFinished = true;
+              break;
+            }
+//          break;
+          case "#":
+            if (inPart == this.elemSelector)
+            {
+              if (!currSelectorPiece.length)
+                currSelectorPiece = "*";  //this can be inferred for an id selector
+              bFinished = true;
+              nextPart = this.idSelector;
+              break;
+            }
+          case "=":  //No need to treat this differently from other characters?
+          case "*":  //No need to treat this differently from other characters?
+          default:
+            currSelectorPiece += selectorPieces[jx];
+          break;
+        }
+      }
+      if (bFinished)
+      {
+        if ((inPart == this.elemSelector) && !currSelectorPiece.length)
+          currSelectorPiece = "*";
+        this.storeAPiece(inPart, currSelectorPiece);
+        currSelectorPiece = "";
+        inPart = nextPart;
+        bFinished = false;
+      }
+    }
+    if (currSelectorPiece.length)
+      this.storeAPiece(inPart, currSelectorPiece);
+
+//    for (var ii = 0; ii < simpleSelectorStrings.length; ++ii)
+//      this.m_simpleSelectors.push( new cssSimpleSelectorObj(simpleSelectorStrings[ii]) );  //this completes the parsing for each one
+  },
+
+  matches : function(otherSimpleSelectorObj)
+  {
+    if ( otherSimpleSelectorObj.m_nsSelector.length && (otherSimpleSelectorObj.m_nsSelector != *) && this.m_nsSelector.length && (this.m_nsSelector != otherSimpleSelectorObj.m_nsSelector) )
+      return false;
+    if ( (otherSimpleSelectorObj.m_elemSelector != "*") && (otherSimpleSelectorObj.m_elemSelector != this.m_elemSelector) )
+      return false;
+    if (otherSimpleSelectorObj.m_idSelector && (!this.m_idSelector || (this.m_idSelector != otherSimpleSelectorObj.m_idSelector)) )
+      return false;
+    var ii, bFound;
+    for (ii = 0; ii < otherSimpleSelectorObj.m_classSelectors.length; ++ii)
+    {
+      if (this.m_classSelectors.indexOf( otherSimpleSelectorObj.m_classSelectors[ii] ) < 0)
+        return false;
+    }
+    for (ii = 0; ii < otherSimpleSelectorObj.m_attrSelectors.length; ++ii)
+    {
+      var attribName = otherSimpleSelectorObj.m_attrSelectors[ii].attrName;
+      bFound = false;
+      for (var jj = 0; !bFound && (jj < this.m_attrSelectors.length); ++jj)
+      {
+        if (this.m_attrSelectors[jj].attrName == attribName)
+        {
+          if (!otherSimpleSelectorObj.m_attrSelectors[ii].attrValue || (otherSimpleSelectorObj.m_attrSelectors[ii].attrValue == this.m_attrSelectors[jj].attrValue))
+            bFound = true;
+        }
+      }
+      if (!bFound)
+        return false;
+    }
+    for (ii = 0; ii < otherSimpleSelectorObj.m_pseudoClassSelectors.length; ++ii)
+    {
+      if (this.m_pseudoClassSelectors.indexOf(otherSimpleSelectorObj.m_pseudoClassSelectors[ii]) < 0)
+        return false;
+    }
+    return true;
+  },
+
+  matchesExact : function(otherSimpleSelectorObj)
+  {
+    if (this.m_nsSelector != otherSimpleSelectorObj.m_nsSelector)
+    {
+      if (this.m_nsSelector.length && (this.m_nsSelector != "*"))
+        return false;
+      if (otherSimpleSelectorObj.m_nsSelector.length && (otherSimpleSelectorObj.m_nsSelector != "*"))
+        return false;
+    }
+    if (this.m_elemSelector != otherSimpleSelectorObj.m_elemSelector)
+    {
+      if (this.m_elemSelector.length && (this.m_elemSelector != "*"))
+        return false;
+      if (otherSimpleSelectorObj.m_elemSelector.length && (otherSimpleSelectorObj.m_elemSelector != "*"))
+        return false;
+    }
+    if (this.m_idSelector != otherSimpleSelectorObj.m_idSelector)
+    {
+      if (this.m_idSelector.length || otherSimpleSelectorObj.m_idSelector.length)
+        return false;
+    }
+    var ii, bFound;
+    if (this.m_classSelectors.length != otherSimpleSelectorObj.m_classSelectors.length)
+      return false;
+    for (ii = 0; ii < otherSimpleSelectorObj.m_classSelectors.length; ++ii)
+    {
+      if (this.m_classSelectors.indexOf( otherSimpleSelectorObj.m_classSelectors[ii] ) < 0)
+        return false;
+    }
+    if (this.m_attrSelectors.length != otherSimpleSelectorObj.m_attrSelectors.length)
+      return false;
+    for (ii = 0; ii < otherSimpleSelectorObj.m_attrSelectors.length; ++ii)
+    {
+      var attribName = otherSimpleSelectorObj.m_attrSelectors[ii].attrName;
+      bFound = false;
+      for (var jj = 0; !bFound && (jj < this.m_attrSelectors.length); ++jj)
+      {
+        if (this.m_attrSelectors[jj].attrName == attribName)
+        {
+          if (!otherSimpleSelectorObj.m_attrSelectors[ii].attrValue && !otherSimpleSelectorObj.m_attrSelectors[ii].attrValue)
+            bFound = true;
+          else if (otherSimpleSelectorObj.m_attrSelectors[ii].attrValue == this.m_attrSelectors[jj].attrValue)
+            bFound = true;
+        }
+      }
+      if (!bFound)
+        return false;
+    }
+    if (this.m_pseudoClassSelectors.length != otherSimpleSelectorObj.m_pseudoClassSelectors.length)
+      return false;
+    for (ii = 0; ii < otherSimpleSelectorObj.m_pseudoClassSelectors.length; ++ii)
+    {
+      if (this.m_pseudoClassSelectors.indexOf(otherSimpleSelectorObj.m_pseudoClassSelectors[ii]) < 0)
+        return false;
+    }
+    return true;
+  }
+
+};
+
+function cssSimpleSelectorObj(selectorStr)
+{
+  this.m_selString = selectorStr;
+  this.m_nsSelector = "";
+  this.m_elemSelector = "";
+  this.m_attrSelectors = [];
+  this.m_classSelectors = [];
+  this.m_pseudoClassSelectors = [];
+  this.m_idSelector = "";
+  this.parseSelectorString();
+}
+
+cssSimpleSelectorObj.prototype = cssSimpleSelectorBase;
 /************* Miscellaneous ***************/
 //Fix This!
 //Following needs to be filled in meaningfully - but for now, just return a default.
@@ -5891,7 +7100,7 @@ var msiAutosubstitutionList =
 
 var msiSearchStringManager = 
 {
-  mDocumentArrays : null,
+  mDocumentArrays : [],
   baseString : "",
 
   getSearchStringArrayRecordByName : function(aDocument, aName)
@@ -5929,12 +7138,12 @@ var msiSearchStringManager =
     if (jx >= 0)
       theDocRecord.mStringArrays.splice(jx, 1);
     if (!theDocRecord.mStringArrays.length)
-      removeDocumentRecord(theDocRecord.mKey);
+      this.removeDocumentRecord(theDocRecord.mKey);
   },
 
   removeDocumentRecord : function(docKey)
   {
-    delete this.mDocumentArrays[aRec];
+    delete this.mDocumentArrays[docKey];
   },
 
 //Internal implementation
@@ -5978,7 +7187,9 @@ var msiSearchStringManager =
       var theDate = new Date();
       theString = theBaseString + theDate.toString();
     }
-    return {mIdent : aSubIdent, mKey : theString, mDocument : aDocRecord.mDocument};
+    var newControlRecord = {mIdent : aSubIdent, mKey : theString, mDocument : aDocRecord.mDocument};
+    aDocRecord.mStringArrays.push(newControlRecord);
+    return newControlRecord;
   },
 
   getSubIdentBaseString : function(aSubIdent)
@@ -6390,6 +7601,471 @@ function msiGetItemListForDocumentFromXSLTemplate(aDocument, aTemplate, separato
   }  
   dump("Keys are : "+items.join()+"\n");    
   return items;
+}
+
+var msiTheoremEnvListManager = 
+{
+  baseString : "theoremenv",
+
+//  checkChangesAgainstDocument : function(aControlRecord, addStringsArray, deleteStringsArray)
+//  {
+////    var aControlRecord = this.getSearchStringArrayRecordForControl(aControl);
+//    var currDocKeys = this.getMarkerStringList(aControlRecord.mDocument, true);
+//    var duplicateArray = [];
+//    for (var ix = 0; ix < addStringsArray; ++ix)
+//    {
+//      if (currDocKeys.indexOf(addStringsArray[ix]) >= 0)
+//        duplicateArray.push(addStringsArray[ix]);
+//    }
+//    return duplicateArray;
+//  },
+
+//The following redundancy is almost certainly not useful!
+//  initTheoremListForControl : function(aControl, bForce)
+//  {
+//    var aControlRecord = this.getSearchStringArrayRecordForControl(aControl);
+//    return this.initTheoremList(aControlRecord, bForce);
+//  },
+
+  getGenericTheoremListRecordForDocument : function(aDocument)
+  {
+    return this.getSearchStringArrayRecordByName(aDocument, "docTheoremManager");
+  },
+
+//The following redundancy is almost certainly not useful! The callers will be holding records and
+//  will only call initTheoremList below.
+//  initGenericTheoremListForDoc : function(aDocument, bForce)
+//  {
+//    var aControlRecord = this.getSearchStringArrayRecordByName(aDocument, "docTheoremManager");
+//    return this.initTheoremList(aControlRecord, bForce);
+//  },
+
+  markDocumentModifiedForRecord : function(aControlRecord)
+  {
+    var docRecord = this.getRecordForDocument(aControlRecord.mDocument);
+    docRecord.bDocModified = true;
+  },
+
+  initTheoremList : function(aControlRecord, bForce)
+  {
+    var retVal = false;
+    try
+    {
+//      var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//      ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+      var currDocThmEnvs = this.getTheoremList(aControlRecord.mDocument, bForce);
+//      for (var ix = 0; ix < currDocKeys.length; ++ix)
+//      {
+//        if (currDocKeys[ix].length > 0)
+//          ACSA.addString(aControlRecord.mKey, currDocKeys[ix]);
+//      }
+      retVal = true;
+    }
+    catch(exc) {dump("Exception in msiTheoremEnvListManager.initTheoremList! Error is [" + exc + "]\n");}
+    return retVal;
+  },
+
+  resetTheoremListForControl : function(aControl, bForce) 
+  {
+    var aControlRecord = this.getSearchStringArrayRecordForControl(aControl);
+    return this.resetTheoremList(aControlRecord, bForce);
+  },
+
+  resetGenericTheoremListForDoc : function(aDocument, bForce) 
+  {
+    var aControlRecord = this.getSearchStringArrayRecordByName(aDocument, "docTheoremManager");
+    return this.resetTheoremList(aControlRecord, bForce);
+  },
+
+  resetTheoremList : function(aControlRecord, bForce)
+  {
+    try
+    {
+      if (aControlRecord)
+      {
+//        var ACSA = Components.classes["@mozilla.org/autocomplete/search;1?name=stringarray"].getService();
+//        ACSA.QueryInterface(Components.interfaces.nsIAutoCompleteSearchStringArray);
+//        ACSA.resetArray(aControlRecord.mKey);
+        return this.initTheoremList(aControlRecord, bForce);
+      }
+    }
+    catch(exc) {dump("Exception in msiTheoremEnvListManager.resetTheoremList! Error is [" + exc + "]\n");}
+    return false;
+  },
+
+  getTheoremList : function(aDocument, bForce)
+  {
+    var docRecord = this.getRecordForDocument(aDocument);
+    return this.updateTheoremList(docRecord, bForce);
+  },
+
+  updateTheoremListForRecord : function(aControlRecord, bForce)
+  {
+    var aDocRecord = this.getRecordForDocument(aControlRecord.mDocument);
+    return this.updateTheoremList(aDocRecord, bForce);
+  },
+
+  updateTheoremList : function(aDocRecord, bForce)
+  {
+    if (bForce || this.needsTheoremListRefresh(aDocRecord))
+    {
+      aDocRecord.thmList = msiGetNewTheoremListFromDocument(aDocRecord.mDocument);
+      aDocRecord.bDocModified = false;
+    }
+    return aDocRecord.thmList;
+  },
+
+  needsTheoremListRefresh : function(aDocRecord)
+  {
+    if (("thmList" in aDocRecord)  && ("bDocModified" in aDocRecord) && (!aDocRecord.bDocModified))
+      return false;
+    return true;
+  }
+};
+
+msiTheoremEnvListManager.__proto__ = msiSearchStringManager;
+
+var msiTheoremListPrototype =
+{
+//  mbInitialized : false,
+//  mDocument : null,
+//  mKeyListManagerRecord : null,
+
+//  setForDocument : function(aDocument)
+//  {
+//    mDocument = aDocument;
+//    this.resetList();
+//  },
+
+//  checkAllChanges : function()
+//  {
+//    return this.mKeyListManager.checkChangesAgainstDocument(this.mKeyListManagerRecord, this.mAddedElements, this.mDeletedElements);
+//  },
+
+//  checkChanges : function(addedStringArray, deletedStringArray)
+//  {
+//    return this.mKeyListManager.checkChangesAgainstDocument(this.mKeyListManagerRecord, addedStringArray, deletedStringArray);
+//  },
+
+  resetList : function(bForce)
+  {
+    return this.mTheoremListManager.resetTheoremList(this.mTheoremListManagerRecord);
+  },
+
+  getIndexString : function()
+  {
+    if (this.mTheoremListManagerRecord)
+      return this.mTheoremListManagerRecord.mKey;
+    return "";
+  },
+
+  getDocument : function()
+  {
+    if (this.mTheoremListManagerRecord)
+      return this.mTheoremListManagerRecord.mDocument;
+    return null;
+  },
+
+  markDocModified : function()
+  {
+    this.mTheoremListManager.markDocumentModifiedForRecord(this.mTheoremListManagerRecord);
+  },
+
+//Structure of theorem list is:
+//  {defaultNumbering : "self", defaultStyle : "theorem", theoremArray : []};
+//where each member of theoremArray looks like:     
+//  {tagName : theTagName, numbering : theNumbering, bDefault : isDefault, thmStyle : theThmStyle};
+  getTheoremList : function(bForceUpdate)
+  {
+    return this.mTheoremListManager.updateTheoremListForRecord(this.mTheoremListManagerRecord, bForceUpdate);
+  },
+
+  tagIsTheoremEnv : function(aTag)
+  {
+    var thmList = this.getTheoremList();
+    for (var ix = 0; ix < thmList.theoremArray.length; ++ix)
+    {
+      if (thmList.theoremArray[ix].tagName == aTag)
+        return true;
+    }
+    return false;
+  },
+
+  getTheoremEnvInfoForTag : function(aTag)
+  {
+    var thmList = this.getTheoremList();
+    for (var ix = 0; ix < thmList.theoremArray.length; ++ix)
+    {
+      if (thmList.theoremArray[ix].tagName == aTag)
+        return thmList.theoremArray[ix];
+    }
+    return null;
+  },
+
+  getDefaultTheoremEnvNumbering : function()
+  {
+    var thmList = this.getTheoremList();
+    if ("defaultNumbering" in thmList)
+      return thmList.defaultNumbering;
+    return "self";
+  },
+
+  getDefaultTheoremEnvNumberWithin : function()
+  {
+    var thmList = this.getTheoremList();
+    if ("defaultNumberWithin" in thmList)
+      return thmList.defaultNumberWithin;
+    return "section";
+  },
+
+//  getMarkerListForEditorElement : function(editorElement)
+//  {
+//    if (!editorElement)
+//      editorElement = msiGetActiveEditorElement();
+//    var editor = msiGetEditor(editorElement);
+//    if (!editor)
+//    {
+//      dump("In msiEditorUtilities.js, msiMarkerList.getMarkerListForEditorElement() called with no active editor! Returning...\n");
+//      return;
+//    }
+//    this.getMarkerList(editor.document);
+//  },
+
+  getDefaultForTag : function(envtag, attr)
+  {
+    var thmInfo = this.getTheoremEnvInfoForTag(envtag);
+    if (thmInfo && (attr in thmInfo))
+      return thmInfo[attr];
+    return null;
+  },
+
+  changeDefaultForTag : function(envtag, oldNumbering, newNumbering, oldStyle, newStyle)
+  {
+    this.changeNewTheoremDeclarations(envtag, oldNumbering, newNumbering, oldStyle, newStyle);
+    this.changeCSSDeclarations(envtag, oldNumbering, newNumbering, oldStyle, newStyle);
+  },
+
+  changeNewTheoremDeclarations : function(envtag, oldNumbering, newNumbering, oldStyle, newStyle)
+  {
+    var theDoc = this.getDocument();
+    var newThmList = theDoc.getElementsByTagName("newtheorem");
+    var envNodes = [];
+    var envNode;
+    var numbering, style, ix;
+    var theLabelStr;
+    for (ix = 0; ix < newThmList.length; ++ix)
+    {
+      envNode = newThmList[ix];
+      if (this.newTheoremNodeRepresentsTag(envNode, envtag))
+      {
+        envNodes.push(envNode);
+      }
+      if ((envNode.getAttribute("name") == envtag))
+        theLabelStr = envNode.getAttribute("label");
+    }
+    if (!theLabelStr || !theLabelStr.length)
+      theLabelStr = envtag.substr(0,1).toUpperCase() + envtag.substr(1);
+    if (oldNumbering == newNumbering) //the easy case - just change the style attribute for each def node
+    {
+      for (ix = 0; ix < envNodes.length; ++ix)
+      {
+        envNodes[ix].setAttribute("theoremstyle", newStyle);
+      }
+    }
+    else  //replace the nodes altogether
+    {
+      var theParent, insertBeforeNode, newThmNode;
+      for (ix = envNodes.length - 1; ix >= 0; --ix) //Go in reverse so theParent will be the first parent when we're done (not that they should be different)
+      {
+        theParent = envNodes[ix].parentNode;
+        if (ix == 0)
+          insertBeforeNode = envNodes[ix].nextSibling;
+        theParent.removeChild(envNodes[ix]);
+      }
+      if (theParent)
+      {
+        newThmNode = theDoc.createElementNS(xhtmlns, "newtheorem");
+        newThmNode.setAttribute("name", envtag);
+        newThmNode.setAttribute("theoremstyle", newStyle);
+        newThmNode.setAttribute("counter", newNumbering);
+        newThmNode.setAttribute("label", theLabelStr);
+        if ((newNumbering == "none") || (newStyle != "plain"))
+          newThmNode.setAttribute("req", "amsthm");
+        theParent.insertBefore(newThmNode, insertBeforeNode);
+      }
+    }
+    this.markDocModified();
+  },
+
+  changeCSSDeclarations : function(envtag, oldNumbering, newNumbering, oldStyle, newStyle)
+  {
+    var theDoc = this.getDocument();
+    var thmEnvArray = [];
+    var labelArray = [];
+    var thmEnvSelStr = envtag;
+    var labelSelStr = envtag + " > *:first-child:before";
+    var tagLabelStr = this.getDefaultForTag(envtag, "label");
+    if (!tagLabelStr || !tagLabelStr.length)
+      tagLabelStr = envtag.substr(0,1).toUpperCase() + envtag.substr(1);  //unless this is available otherwise?
+    var labelContent = "'" + tagLabelStr + " '";
+    var outerCounterStr = "section";
+
+    if (oldNumbering != newNumbering)
+    {
+      if (newNumbering != "none")
+      {
+        if (outerCounterStr.length)
+          labelContent += "counter(" + outerCounterStr + ") '.' counter(" + newNumbering + ") ' '";
+        else
+          labelContent += "counter(" + newNumbering + ") ' '";
+      }
+      thmEnvArray.push( new cssPropertyChangeRecord("counter-increment", newNumbering) );
+      labelArray.push( new cssPropertyChangeRecord("content", labelContent) );
+    }
+
+//                     content: 'Algorithm ' counter(section) "." counter(theorem) ' ';
+    var labelFontStyleStr = "normal";
+    var labelFontWeightStr = "bold";
+    var envFontStyleStr = "italic";
+    var envFontWeightStr = "normal";
+    if (newStyle != oldStyle)
+    {
+      switch(newStyle)
+      {
+        case "definition":
+          envFontStyleStr = "normal";
+        break;
+        case "remark":
+        break;
+        default:
+        case "plain":
+        break;
+      }
+      //commented out next two lines because in practice these all get the same attributes for lead-in font (normal bold)
+//      labelArray.push( new cssPropertyChangeRecord("font-style", labelFontStyleStr) );
+//      labelArray.push( new cssPropertyChangeRecord("font-weight", labelFontWeightStr) );
+      thmEnvArray.push( new cssPropertyChangeRecord("font-style", envFontStyleStr) );
+      thmEnvArray.push( new cssPropertyChangeRecord("font-weight", envFontWeightStr) );
+    }
+
+    if (labelArray.length)
+      labelArray.push( new cssPropertyChangeRecord("-moz-user-select", "-moz-none") );
+    if (thmEnvArray.length)
+      thmEnvArray.push( new cssPropertyChangeRecord("display", "block") );
+
+    changeCSSPropertiesForSelectorPropertiesArray(theDoc, [[thmEnvSelStr, thmEnvArray], [labelSelStr, labelArray]]);
+  },
+
+  newTheoremNodeRepresentsTag : function(thmenvNode, thmTag)
+  {
+    var theName = thmenvNode.getAttribute("name");
+    if (theName == thmTag)
+      return true;
+    var texName = thmenvNode.getAttribute("texname");
+    if (!texName || !texName.length)
+      texName = theName;
+    if (texName == thmTag)
+      return true;
+    if (texName == thmTag + "*")
+      return true;
+    if (texName == thmTag + "+")
+      return true;
+    return false;
+  },
+
+//The following functions should have no use for the TheoremEnvList.
+//  addString : function(aString)
+//  deleteString : function(aString)
+//  changeString : function(oldString, newString)
+
+  detach : function()
+  {
+    this.mTheoremListManager.removeSearchStringArrayRecord(this.mTheoremListManagerRecord);
+    this.mbInitialized = false;
+    this.mTheoremListManagerRecord = null;
+  }
+};
+
+function msiTheoremEnvList(aControl) 
+{
+  this.mControl = aControl;
+  this.mTheoremListManager = msiTheoremEnvListManager;
+  this.mTheoremListManagerRecord = msiTheoremEnvListManager.getSearchStringArrayRecordForControl(aControl);
+  this.mbInitialized = msiTheoremEnvListManager.initTheoremList(this.mTheoremListManagerRecord, true);
+//  this.mAddedCSSRules = [];
+//  this.mDeletedCSSRules = [];
+}
+
+function msiTheoremEnvListForDocument(aDoc)
+{
+  this.mTheoremListManager = msiTheoremEnvListManager;
+  this.mTheoremListManagerRecord = msiTheoremEnvListManager.getGenericTheoremListRecordForDocument(aDoc);
+  this.mbInitialized = msiTheoremEnvListManager.initTheoremList(this.mTheoremListManagerRecord, true);
+}
+
+msiTheoremEnvList.prototype = msiTheoremListPrototype;
+msiTheoremEnvListForDocument.prototype = msiTheoremListPrototype;
+
+function msiGetNewTheoremListFromDocument(aDocument)
+{
+//  var xsltSheetForNewTheoremList = "<?xml version='1.0'?><xsl:stylesheet version='1.1' xmlns:xsl='http://www.w3.org/1999/XSL/Transform' xmlns:html='http://www.w3.org/1999/xhtml' ><xsl:output method='xml' encoding='UTF-8'/> <xsl:template match='/'>  <xsl:apply-templates select='//newtheorem'/></xsl:template><xsl:template match='newtheorem'><xsl:element name='newtheoremenv'><xsl:attribute name='tagname'><xsl:value-of select='@name'/></xsl:attribute><xsl:attribute name='numbering'><xsl:choose><xsl:when test='@counter'><xsl:value-of select='@counter'/></xsl:when><xsl:otherwise><xsl:value-of select='@name'/></xsl:otherwise></xsl:choose></xsl:attribute><xsl:attribute name='TeXTagName'><xsl:choose><xsl:when test='@texname'><xsl:value-of select='@texname'/></xsl:when><xsl:otherwise><xsl:value-of select='@name'/></xsl:otherwise></xsl:choose></xsl:attribute><xsl:attribute name='theoremStyle'><xsl:choose><xsl:when test='@theoremstyle'><xsl:value-of select='@theoremstyle'/></xsl:when><xsl:otherwise><xsl:text>theorem</xsl:text></xsl:otherwise></xsl:choose></xsl:attribute><xsl:attribute name='label'><xsl:value-of select='@label'/></xsl:attribute></xsl:element></xsl:template> </xsl:stylesheet>";
+  var xsltSheetForNewTheoremList = "<?xml version='1.0'?><xsl:stylesheet version='1.1' xmlns:xsl='http://www.w3.org/1999/XSL/Transform' xmlns:html='http://www.w3.org/1999/xhtml' > <xsl:output method='xml' encoding='UTF-8'/> <xsl:template match='/'> <xsl:element name='resultBase'><xsl:apply-templates select='//*[name()=\"newtheorem\"]'/></xsl:element></xsl:template><xsl:template match='*' /><xsl:template match='*[name()=\"newtheorem\"]'><xsl:element name='newtheoremenv'><xsl:attribute name='tagname'><xsl:value-of select='@name'/></xsl:attribute><xsl:attribute name='numbering'><xsl:choose><xsl:when test='@counter'><xsl:value-of select='@counter'/></xsl:when><xsl:otherwise><xsl:value-of select='@name'/></xsl:otherwise></xsl:choose></xsl:attribute><xsl:attribute name='TeXTagName'><xsl:choose><xsl:when test='@texname'><xsl:value-of select='@texname'/></xsl:when><xsl:otherwise><xsl:value-of select='@name'/></xsl:otherwise></xsl:choose></xsl:attribute><xsl:attribute name='theoremStyle'><xsl:choose><xsl:when test='@theoremstyle'><xsl:value-of select='@theoremstyle'/></xsl:when><xsl:otherwise><xsl:text>plain</xsl:text></xsl:otherwise></xsl:choose></xsl:attribute><xsl:attribute name='label'><xsl:value-of select='@label'/></xsl:attribute></xsl:element></xsl:template></xsl:stylesheet>";
+  var parser = new DOMParser();
+  var dom = parser.parseFromString(xsltSheetForNewTheoremList, "text/xml");
+  dump(dom.documentElement.nodeName == "parsererror" ? "error while parsing" + dom.documentElement.textContent : dom.documentElement.nodeName);
+  var processor = new XSLTProcessor();
+  processor.importStylesheet(dom.documentElement);
+  var newDoc;
+  var thmEnvList = {defaultNumbering : "self", defaultStyle : "theorem", theoremArray : []};
+  var numberingTypeCount = {self : 0};
+  var styleCount = {theorem : 0};
+  if (aDocument)
+    newDoc = processor.transformToDocument(aDocument, document);
+  dump(newDoc.documentElement.localName+"\n");
+  var searchNode, newEntry;
+  var theTagName, theNumbering, theTeXName, theLabel, theThmStyle;
+  var isDefault = false;
+  var ourNodes = newDoc.documentElement.getElementsByTagName("newtheoremenv");
+  for (var ix = 0; ix < ourNodes.length; ++ix)  //is this right?
+  {
+    searchNode = ourNodes[ix];
+    theTagName = searchNode.getAttribute("tagname");
+    theNumbering = searchNode.getAttribute("numbering");
+    if (!theNumbering || !theNumbering.length)
+      theNumbering = theTagName;
+    if (theNumbering == theTagName)
+      ++numberingTypeCount.self;
+    else if (! (theNumbering in numberingTypeCount) )
+      numberingTypeCount[theNumbering] = 1;
+    else
+      ++numberingTypeCount[theNumbering];
+    theTeXName = searchNode.getAttribute("TeXTagName");
+    if (!theTeXName || !theTeXName.length || (theTeXName == theTagName))
+      isDefault = true;
+    theThmStyle = searchNode.getAttribute("theoremStyle");
+    if (!theThmStyle || !theThmStyle.length)
+      theThmStyle = "theorem";
+    if (! (theThmStyle in styleCount) )
+      styleCount[theThmStyle] = 1;
+    else
+      ++styleCount[theThmStyle];
+    theLabel = searchNode.getAttribute("label");
+    if (!theLabel || !theLabel.length)
+      theLabel = theTagName.substr(0,1).toUpperCase() + theTagName.substr(1);
+    newEntry = {tagName : theTagName, numbering : theNumbering, bDefault : isDefault, thmStyle : theThmStyle};
+    thmEnvList.theoremArray.push( newEntry );
+  }
+  for (var aNumbering in numberingTypeCount)
+  {
+    if (numberingTypeCount[aNumbering] > numberingTypeCount[thmEnvList.defaultNumbering])
+      thmEnvList.defaultNumbering = aNumbering;
+  }
+  for (var aStyle in styleCount)
+  {
+    if (styleCount[aStyle] > styleCount[thmEnvList.defaultStyle])
+      thmEnvList.defaultStyle = aStyle;
+  }
+  return thmEnvList;
 }
 
 /**************************msiNavigationUtils**********************/
@@ -7268,7 +8944,7 @@ var msiNavigationUtils =
   {
     if (msiGetBaseNodeName(aNode) == "mi")
     {
-    	if (aNode.hasAttribute("tempinput") && (aNode.getAttribute("tempinput") == "true") )
+        if (aNode.hasAttribute("tempinput") && (aNode.getAttribute("tempinput") == "true") )
         return true;
     }
     return false;
@@ -8403,24 +10079,24 @@ function setStyleAttribute(elem, attribute, value )
   for (i=0; i<array.length; i++)
   {
     array[i] = array[i].split(":");
-  	array[i][0] = (array[i][0]).replace(" ","","g");
+    array[i][0] = (array[i][0]).replace(" ","","g");
   }
   for (i=0; i<array.length; i++)
   {
     if (array[i][0] == attribute)
-	  {
-	    array[i][1] = value;
-	    found = true;
+      {
+        array[i][1] = value;
+        found = true;
       foundindex = i;
-	  }
-	  array[i] = array[i].join(":"); 
+      }
+      array[i] = array[i].join(":"); 
   }  
   if (value==null && found) array.splice(foundindex,1);  
   var outStyleString = array.join(";");
   if (!found)  outStyleString = attribute+": "+value+"; "+outStyleString;
   elem.setAttribute("style", outStyleString);
 }
-	  
+      
 
 function msiToPixels(distance,unit)
 {
@@ -8676,7 +10352,7 @@ function countWords(doc)
     while (thisNode) {
       wordcount += countNodeWords(thisNode);
       thisNode = iterator.iterateNext();
-    }	
+    }   
   }
   catch (e) {
     dump( 'Error: Document tree modified during iteration ' + e );
@@ -8917,6 +10593,30 @@ function msiPathFromFileURL( url )     // redundant BBM: remove instances of thi
   return msiFileFromFileURL(url).path; 
 }
 
+
+//The purpose of this function is to remove elements of "theArray" which aren't in "otherArray". In particular,
+//it leaves the order of elements in "theArray" unchanged.
+function intersectArrayWith(theArray, otherArray)
+{
+  for (var i = theArray.length - 1; i >= 0; --i)
+  {
+    if (findInArray(otherArray, theArray[i]) < 0)
+      theArray.splice(i, 1);
+  }
+  return theArray;
+}
+
+//The purpose of this function is to add elements of "otherArray" which aren't in "theArray". In particular,
+//it leaves the order of elements in "theArray" unchanged.
+function unionArrayWith(theArray, otherArray)
+{
+  for (var i = 0; i < otherArray.length; ++i)
+  {
+    if (findInArray(theArray, otherArray[i]) < 0)
+      theArray.push(otherArray[i]);
+  }
+  return theArray;
+}
 
  
 function openAllSubdocs()
