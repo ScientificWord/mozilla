@@ -1767,6 +1767,10 @@ function msiCheckAndSaveDocument(editorElement, command, allowDontSave)
   var reasonToSave = strID ? GetString(strID) : "";
 
   var sciurlstring = msiFindOriginalDocname(htmlurlstring);
+  if (/_work/.test(sciurlstring))
+  {
+    sciurlstring = sciurlstring.replace((/_work\/[^\/]*\.[a-z0-9]+$/i),"")+".sci";
+  }  
   var leafregex = /.*\/([^\/]+$)/;
   var arr = leafregex.exec(sciurlstring);
   if (arr && arr.length >1) document.title = arr[1];
@@ -4443,17 +4447,17 @@ function msiSetDisplayMode(editorElement, mode)
           printTeX(true, true);
         }
       }
-    }
-    if (pdfAction != "default")
-    {
-      if ("gContentWindowDeck" in window)
+      if (pdfAction != "default")
       {
-        if (previousMode < 0) previousMode = 0;
-        window.gContentWindowDeck.selectedIndex = previousMode;
-        document.getElementById("EditModeTabs").selectedIndex = previousMode;
-      }
+        if ("gContentWindowDeck" in window)
+        {
+          if (previousMode < 0) previousMode = 0;
+          window.gContentWindowDeck.selectedIndex = previousMode;
+          document.getElementById("EditModeTabs").selectedIndex = previousMode;
+        }
 
-      return false;
+        return false;
+      }
     }
     //Hide the formatting toolbar if not already hidden
     if ("gViewFormatToolbar" in window && window.gViewFormatToolbar != null)
@@ -10233,12 +10237,34 @@ function openParaTagDialog(tagname, node, editorElement)
 //                             node);
 }
 
-function openEnvTagDialog(tagname, node, editorElement)
+function openEnvTagDialog(tagname, aNode, editorElement)
 {
+  var theDoc;
+  theDoc = aNode.ownerDocument;
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
-  msiDoModelessPropertiesDialog("chrome://prince/content/envproperties.xul", "envproperties", "chrome,close,titlebar,resizable, dependent",
-                                                     editorElement, "cmd_reviseParagraphNode", node, node);
+  theDoc = aNode.ownerDocument;
+  var thmList = new msiTheoremEnvListForDocument(aNode.ownerDocument);
+  var thmInfo = thmList.getTheoremEnvInfoForTag(tagname);
+  if (thmInfo != null)
+  {
+    var numbering = thmInfo.numbering;
+    if (!numbering || !numbering.length)
+      numbering = tagname;
+    var thmstyle = thmInfo.thmStyle;
+    if (!thmstyle || !thmstyle.length)
+      thmstyle = "plain";
+    var defaultThmEnvNumbering = thmList.getDefaultTheoremEnvNumbering();
+    var thmdata = {envNode : aNode, defaultNumbering : numbering, defaultTheoremEnvNumbering : defaultThmEnvNumbering, theoremstyle : thmstyle};
+    msiDoModelessPropertiesDialog("chrome://prince/content/thmproperties.xul", "thmproperties", "chrome,close,titlebar,resizable, dependent",
+                                                     editorElement, "cmd_reviseTheoremNode", aNode, thmdata);
+  }
+  else
+  {
+    msiDoModelessPropertiesDialog("chrome://prince/content/envproperties.xul", "envproperties", "chrome,close,titlebar,resizable, dependent",
+                                                     editorElement, "cmd_reviseEnvNode", aNode, aNode);
+  }
+  thmList.detach();
 }
 
 function openObjectTagDialog(tagname, node, editorElement)
