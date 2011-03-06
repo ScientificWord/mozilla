@@ -1196,28 +1196,28 @@ toolbar[iconsize="small"] #printPreviewButton[disabled="true"]  toolbarbutton{
   list-style-image: url("chrome://prince/skin/icons/preview-disabled-sm.png");
 }
 
-#printPreviewButton[defcomp='pdf']  toolbarbutton{
+#printPreviewButton[defcomp='pdf']  toolbarbutton, #printPreviewButtonMac{
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf']  toolbarbutton{
+toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf']  toolbarbutton, toolbar[iconsize="small"] #printPreviewButtonMac{
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-sm.png");
 }
-#printPreviewButton[defcomp='pdf'] toolbarbutton:hover {
+#printPreviewButton[defcomp='pdf'] toolbarbutton:hover, #printPreviewButtonMac:hover{
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-hover.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf'] toolbarbutton:hover {
+toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf'] toolbarbutton:hover, toolbar[iconsize="small"] #printPreviewButtonMac:hover {
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-hover-sm.png");
 }
-#printPreviewButton[defcomp='pdf'] toolbarbutton:hover:active {
+#printPreviewButton[defcomp='pdf'] toolbarbutton:hover:active, #printPreviewButtonMac:active {
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-active.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf'] toolbarbutton:hover:active {
+toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf'] toolbarbutton:hover:active, toolbar[iconsize="small"] #printPreviewButtonMac:hover:active {
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-active-sm.png");
 }
-#printPreviewButton[defcomp='pdf'][disabled="true"]  toolbarbutton{
+#printPreviewButton[defcomp='pdf'][disabled="true"]  toolbarbutton, #printPreviewButtonMac[disabled="true"]{
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-disabled.png");
 }
-toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf'][disabled="true"]  toolbarbutton{
+toolbar[iconsize="small"] #printPreviewButton[defcomp='pdf'][disabled="true"]  toolbarbutton, toolbar[iconsize="small"] #printPreviewButtonMac[disabled="true"]{
   list-style-image: url("chrome://prince/skin/icons/type_pdfpreview-disabled-sm.png");
 }
 

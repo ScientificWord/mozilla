@@ -1,11 +1,12 @@
 <!-- Copyright (c) 2009 MacKichan Software, Inc.  All Rights Reserved. -->
 
-<!ENTITY windowTitle.label "## properties">
+<!ENTITY windowTitle.label "## Properties">
 <!ENTITY structureproperties.label "## properties">
 <!ENTITY subdocCheckBox.label "Keep as an included subdocument">
 <!ENTITY subdocCheckBox.accesskey "K">
 <!ENTITY subdocCheckBox.tooltip "">
 <!ENTITY subdocFileName.label "File Name for Subdocument">
+<!ENTITY subdocFileName.accesskey "F">
 <!ENTITY numberedCheckbox.label "Number this ##">
 <!ENTITY numberedCheckbox.accesskey "N">
 <!ENTITY sectionShortHeader.label "Short Title">

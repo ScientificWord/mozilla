@@ -94,7 +94,7 @@ function Startup()
   var node;
   if (!(docFormatNodeList && docFormatNodeList.length>=1)) node=null;
   else node = docFormatNodeList[0].getElementsByTagName('pagelayout')[0];
-  getPageLayout(node);
+  getPageLayout(node, doc);
   if (!(docFormatNodeList && docFormatNodeList.length>=1)) node=null;
   else node = docFormatNodeList[0].getElementsByTagName('crop')[0];
   getCropInfo(node);
@@ -320,7 +320,7 @@ function getNumberValue(numberwithunit)
 }
 
 
-function getPageLayout(node)
+function getPageLayout(node, document)
 {
   //node is the pageformat node, or null
   var subnode;
@@ -2480,8 +2480,10 @@ function saveClassOptionsEtc(docformatnode)
   // convention: default values are starred at the end.
   var widget;
   widget = document.getElementById("pgorient").selectedItem;
-  if (widget.hasAttribute("def")) optionNode.removeAttribute("pgorient")
-  else optionNode.setAttribute("pgorient", widget.value);
+  if (widget.hasAttribute("def")) 
+    optionNode.removeAttribute("pgorient")
+  else 
+    optionNode.setAttribute("pgorient", widget.value);
   
   widget = document.getElementById("papersize").selectedItem;
   if (widget.hasAttribute("def")) optionNode.removeAttribute("papersize")

@@ -10,7 +10,8 @@ var msiEvaluateCommand =
             msiIsEditingRenderedHTML(theEditorElement) &&
             (isInMath(editorElement) || 
              aCommand == "cmd_MSIComputeFillMatrix" ||
-             aCommand == "cmd_MSIComputeRandomMatrix") );
+             aCommand == "cmd_MSIComputeRandomMatrix"||
+             aCommand == "cmd_MSIComputeRandomNumbers" ) );
   },
 
   getCommandStateParams: function(aCommand, aParams, editorElement) {},
@@ -32,9 +33,9 @@ var msiDefineCommand =
             msiIsEditingRenderedHTML(editorElement) &&
             ( isInMath(editorElement) || 
               aCommand == "cmd_MSIComputeShowDefs" ||
-              aCommand == "cmd_MSIComputeUserSettings" ||
+              //aCommand == "cmd_MSI/ComputeUserSettings" ||
               aCommand == "cmd_MSIComputeClearDefs" ||
-              aCommand == "cmd_MSIComputeSettings" ||
+              //aCommand == "cmd_MSIComputeSettings" ||
               aCommand == "cmd_MSIComputeSwitchEngines"  ) );
               
   },
@@ -56,6 +57,7 @@ function jsdump(str)
             .logEngineStringMessage(str);
 }
 /////////////////////////
+
 var msiComputeLogger = 
 {
   Sent: function(name,expr)
@@ -95,25 +97,25 @@ var msiComputeLogger =
   Init: function()
   {
     try {
-      this.logMMLSent = gPrefs.getBoolPref("swp.MuPAD.log_mathml_sent");
+      this.logMMLSent = GetPrefs().getBoolPref("swp.MuPAD.log_mathml_sent");
     }
     catch(ex) {
       jsdump("\nfailed to get MuPAD.log_mathml_sent pref!\n");
     }
     try {
-      this.logMMLReceived = gPrefs.getBoolPref("swp.MuPAD.log_mathml_received");
+      this.logMMLReceived = GetPrefs().getBoolPref("swp.MuPAD.log_mathml_received");
     }
     catch(ex) {
       jsdump("\nfailed to get MuPAD.log_mathml_received pref!\n");
     }
     try {
-      this.engMMLSent = gPrefs.getBoolPref("swp.MuPAD.log_engine_sent");
+      this.engMMLSent = GetPrefs().getBoolPref("swp.MuPAD.log_engine_sent");
     }
     catch(ex) {
       jsdump("\nfailed to get MuPAD.log_engine_sent pref!\n");
     }
     try {
-      this.engMMLReceived = gPrefs.getBoolPref("swp.MuPAD.log_engine_received");
+      this.engMMLReceived = GetPrefs().getBoolPref("swp.MuPAD.log_engine_received");
     }
     catch(ex) {
       jsdump("\nfailed to get MuPAD.log_engine_received pref!\n");
@@ -122,22 +124,22 @@ var msiComputeLogger =
   LogMMLSent: function(log)
   {
     this.logMMLSent = log;
-    gPrefs.setBoolPref("swp.MuPAD.log_mathml_sent",log);
+    GetPrefs().setBoolPref("swp.MuPAD.log_mathml_sent",log);
   },
   LogMMLReceived: function(log)
   {
     this.logMMLReceived = log;
-    gPrefs.setBoolPref("swp.MuPAD.log_mathml_received",log);
+    GetPrefs().setBoolPref("swp.MuPAD.log_mathml_received",log);
   },
   LogEngSent: function(log)
   {
     this.logEngSent = log;
-    gPrefs.setBoolPref("swp.MuPAD.log_engine_sent",log);
+    GetPrefs().setBoolPref("swp.MuPAD.log_engine_sent",log);
   },
   LogEngReceived: function(log)
   {
     this.logEngReceived = log;
-    gPrefs.setBoolPref("swp.MuPAD.log_engine_received",log);
+    GetPrefs().setBoolPref("swp.MuPAD.log_engine_received",log);
   },
 
   logMMLSent:      true,
@@ -331,9 +333,9 @@ function doSetupMSIComputeMenuCommands(commandTable)
   commandTable.registerCommand("cmd_MSIComputeUndefine",      msiDefineCommand);     
   commandTable.registerCommand("cmd_MSIComputeShowDefs",      msiDefineCommand);     
   commandTable.registerCommand("cmd_MSIComputeClearDefs",     msiDefineCommand);    
-  commandTable.registerCommand("cmd_MSIComputeUserSettings",  msiDefineCommand);     
-  commandTable.registerCommand("cmd_MSIComputeSettings",      msiDefineCommand);     
-  commandTable.registerCommand("cmd_MSIComputeSwitchEngines", msiDefineCommand);     
+  //commandTable.registerCommand("cmd_MSIComputeUserSettings",  msiDefineCommand);     
+  //commandTable.registerCommand("cmd_MSIComputeSettings",      msiDefineCommand);     
+  //commandTable.registerCommand("cmd_MSIComputeSwitchEngines", msiDefineCommand);     
   commandTable.registerCommand("cmd_MSIComputeInterpret",     msiEvaluateCommand);
   commandTable.registerCommand("cmd_MSIComputeFixup",         msiEvaluateCommand);
   commandTable.registerCommand("cmd_MSIComputePassthru",      msiDefineCommand);
@@ -523,7 +525,7 @@ function doComputeCommand(cmd, editorElement, cmdHandler)
       doVarsComputation(element,", Corresponding equations: ",eng.matrixAsEquations,GetComputeString("MatrixAsEqns.title"), editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_CheckEquality":
-      doLabeledComputation(element,eng.Check_Equality,"CheckEquality.fmt", editorElement);
+      doComputeCheckEquality(element, editorElement);
       break;
     case "cmd_compute_SolveExact":
       doComputeSolveExact(element, "", editorElement, cmd, cmdHandler);
@@ -946,15 +948,15 @@ function doGlobalComputeCommand(cmd, editorElement)
   case "cmd_compute_ClearDefs":
     doComputeClearDefs();
     break;
-  case "cmd_compute_UserSettings":
-    doComputeUserSettings();
-    break;
-  case "cmd_compute_Settings":
-    doComputeSettings();
-    break;
-  case "cmd_compute_SwitchEngines":
-    doComputeSwitchEngines();
-    break;
+//   case "cmd_compute_UserSettings":
+//     doComputeUserSettings();
+//     break;
+//   case "cmd_compute_Settings":
+//     doComputeSettings();
+//     break;
+//   case "cmd_compute_SwitchEngines":
+//     doComputeSwitchEngines();
+//     break;
   case "cmd_compute_Passthru":
     doComputePassthru(editorElement);
     break;
@@ -1444,12 +1446,12 @@ function GetFixedMath(math)
 function doLabeledComputation(math,op,labelID, editorElement)
 {
   var mathstr = GetFixedMath(GetRHS(math));
-  msiComputeLogger.Sent("doing "+labelID+" after fixup",mathstr);
+  msiComputeLogger.Sent("doing " + labelID + " after fixup", mathstr);
   ComputeCursor(editorElement);
   try {
-    var out = GetCurrentEngine().perform(mathstr,op);
+    var out = GetCurrentEngine().perform(mathstr, op);
     msiComputeLogger.Received(out);
-    appendLabeledResult(out,GetComputeString(labelID),math, editorElement);
+    appendLabeledResult(out,GetComputeString(labelID), math, editorElement);
   } catch (e) {
     msiComputeLogger.Exception(e);
   }
@@ -1634,11 +1636,24 @@ function finishVarsEvalComputation(editorElement, o)
 
 // actual command handlers
 
-function doCheckEquality(math, editorElement, cmd, cmdHandler)
+function doComputeCheckEquality(math, editorElement)
 {
   var mathstr = GetFixedMath(math);
 
-  var out = GetCurrentEngine().checkEquality(mathstr,vars);
+  msiComputeLogger.Sent("doing " + "CheckEquality" + " after fixup", mathstr); 
+
+  ComputeCursor(editorElement);
+  try {
+    var out = GetCurrentEngine().perform(mathstr, GetCurrentEngine().Check_Equality);
+    msiComputeLogger.Received(out);
+    appendLabeledResult(out, GetComputeString("CheckEquality.fmt"), math, editorElement);
+  } catch (e) {
+    msiComputeLogger.Exception(e);
+  }
+  RestoreCursor(editorElement);
+
+  //var out = GetCurrentEngine().checkEquality(mathstr,vars);
+  //doLabeledComputation(math, eng.Check_Equality, "CheckEquality.fmt", editorElement);
 }
 
 
@@ -2155,6 +2170,7 @@ function doComputeSolveODESeries(math, editorElement)
   o.prompt[2] 		= GetComputeString("PowerSeries.termsprompt");
   o.initialvalue[2] = GetComputeString("PowerSeries.termsdefault");
   o.theMath = math;
+  o.mathresult = new Array (3);
 
 
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
@@ -2162,14 +2178,19 @@ function doComputeSolveODESeries(math, editorElement)
   if (o.Cancel)
     return;
   var mathstr = GetFixedMath(math);
-  var ord = GetNumAsMathML(o.order);
+
+  var variable = runFixup(o.mathresult[0]);
+  var center   = runFixup(o.mathresult[1]);
+  var order    = runFixup(o.mathresult[2]);
+
 
   ComputeCursor(editorElement);
-  msiComputeLogger.Sent4("Solve ODE Power Series ",mathstr,o.thevar + " @ " + o.about,ord);
+  msiComputeLogger.Sent4("Solve ODE Power Series ", mathstr, variable + " @ " + center, order);
+  
   try {
-    var out = GetCurrentEngine().solveODESeries(mathstr,o.thevar,o.about,ord);
+    var out = GetCurrentEngine().solveODESeries(mathstr, variable, center, order);
     msiComputeLogger.Received(out);
-    appendLabeledResult(out,GetComputeString("ODESeries.fmt"),math, editorElement);
+    appendLabeledResult(out, GetComputeString("ODESeries.fmt"), math, editorElement);
   } catch (e) {
     msiComputeLogger.Exception(e);
   }
@@ -2192,21 +2213,26 @@ function doComputePowerSeries(math, editorElement, cmdHandler)
   o.prompt[2] 		= GetComputeString("PowerSeries.termsprompt");
   o.initialvalue[2] = GetComputeString("PowerSeries.termsdefault");
   o.theMath = math;
+  o.mathresult = new Array (3);
 
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
   try {
-    msiOpenModelessDialog("chrome://prince/content/ComputePowerSeriesArgDialog.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
-                                      editorElement, "cmd_MSIComputePowerSeries", cmdHandler, o);
+    var parentWin = msiGetParentWindowForNewDialog(editorElement);
+
+    parentWin.openDialog("chrome://prince/content/ComputePowerSeriesArgDialog.xul", "powerseries", "chrome,close,titlebar,modal", o);
+
+    if (o.Cancel)
+      return;
+
+    finishComputePowerSeries(editorElement, o);
+    
   } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputePowerSeries: [" + e + "]"); return;}
 
-//  parentWin.openDialog("chrome://prince/content/ComputeMathMLArgDialog.xul", "mathmlarg"
-//                    "chrome,close,titlebar,modal", o);
 }
 
 function finishComputePowerSeries(editorElement, o)
 {
-  if (o.Cancel)
-    return;
+
   var mathstr = runFixup(GetMathAsString(GetRHS(o.theMath)));
 
   ComputeCursor(editorElement);
@@ -2217,7 +2243,7 @@ function finishComputePowerSeries(editorElement, o)
   try {
     var out = GetCurrentEngine().powerSeries(mathstr, variable, center, order);
     msiComputeLogger.Received(out);
-    appendLabeledResult(out,GetComputeString("Series.fmt"),o.theMath, editorElement);
+    appendLabeledResult(out, GetComputeString("Series.fmt"), o.theMath, editorElement);
   } catch (e) {
     msiComputeLogger.Exception(e);
   }
@@ -2528,7 +2554,7 @@ function doComputeRandomNumbers(editorElement)
   o.param1     = "";
   o.param2     = "";
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  parentWin.openDialog("chrome://prince/content/ComputeRandomNumbers.xul", "randomnumbers", "chrome,close,titlebar,modal", o);
+  parentWin.openDialog("chrome://prince/content/ComputeRandomNumbers.xul", "randomnumbers", "chrome,close,titlebar,modal,resizable", o);
   if (o.Cancel)
     return;
   var mTally    = GetNumAsMathML(o.tally);
@@ -2735,112 +2761,114 @@ function finishComputeSetBasisVars(vars, compsample)
   msiComputeLogger.Sent("new vector basis",vars);
 }
 
-function doComputeUserSettings()
-{
-  var compsample = GetCurrentEngine();
 
-  msiComputeLogger.Sent("user settings","");
+// Moved to msiPrefs in applicationoverlay
+// function doComputeUserSettings()
+// {
+//   var compsample = GetCurrentEngine();
+// 
+//   msiComputeLogger.Sent("user settings","");
+// 
+//   var o = new Object();
+// 
+//   o.mfenced      = compsample.getUserPref(compsample.use_mfenced);
+//   o.digits       = compsample.getUserPref(compsample.Sig_digits_rendered);
+//   o.lower        = compsample.getUserPref(compsample.SciNote_lower_thresh);
+//   o.upper        = compsample.getUserPref(compsample.SciNote_upper_thresh);
+//   o.trigargs     = compsample.getUserPref(compsample.Parens_on_trigargs);
+//   o.imaginaryi   = compsample.getUserPref(compsample.Output_imaginaryi);
+//   o.diffD        = compsample.getUserPref(compsample.Output_diffD_uppercase);
+//   o.diffd        = compsample.getUserPref(compsample.Output_diffd_lowercase);
+//   o.expe         = compsample.getUserPref(compsample.Output_Euler_e);
+//   o.matrix_delim = compsample.getUserPref(compsample.Default_matrix_delims);
+//   o.usearc       = compsample.getUserPref(compsample.Output_InvTrigFuncs_1);
+//   o.mixednum     = compsample.getUserPref(compsample.Output_Mixed_Numbers);
+//   o.derivformat  = compsample.getUserPref(compsample.Default_derivative_format);
+//   o.primesasn    = compsample.getUserPref(compsample.Primes_as_n_thresh);
+//   o.primederiv   = compsample.getUserPref(compsample.Prime_means_derivative);
+// 
+//   o.loge         = compsample.getUserPref(compsample.log_is_base_e);
+//   o.dotderiv     = compsample.getUserPref(compsample.Dot_derivative);
+//   o.barconj      = compsample.getUserPref(compsample.Overbar_conjugate);
+//   o.i_imaginary  = compsample.getUserPref(compsample.Input_i_Imaginary);
+//   o.j_imaginary  = compsample.getUserPref(compsample.Input_j_Imaginary);
+//   o.e_exp        = compsample.getUserPref(compsample.Input_e_Euler);
+//   
+//   window.openDialog("chrome://prince/content/ComputeUserSettings.xul", 
+//     "computeusersettings", "chrome,close,titlebar,resizable, modal", o);
+//   if (o.Cancel)
+//     return;
+// 
+//   compsample.setUserPref(compsample.use_mfenced,               o.mfenced);
+//   compsample.setUserPref(compsample.Sig_digits_rendered,       o.digits);
+//   compsample.setUserPref(compsample.SciNote_lower_thresh,      o.lower);
+//   compsample.setUserPref(compsample.SciNote_upper_thresh,      o.upper);
+//   compsample.setUserPref(compsample.Parens_on_trigargs,        o.trigargs);
+//   compsample.setUserPref(compsample.Output_imaginaryi,         o.imaginaryi);
+//   compsample.setUserPref(compsample.Output_diffD_uppercase,    o.diffD);
+//   compsample.setUserPref(compsample.Output_diffd_lowercase,    o.diffd);
+//   compsample.setUserPref(compsample.Output_Euler_e,            o.expe);
+//   compsample.setUserPref(compsample.Default_matrix_delims,     o.matrix_delim);
+//   compsample.setUserPref(compsample.Output_InvTrigFuncs_1,     o.usearc);
+//   compsample.setUserPref(compsample.Output_Mixed_Numbers,      o.mixednum);
+//   compsample.setUserPref(compsample.Default_derivative_format, o.derivformat);
+//   compsample.setUserPref(compsample.Primes_as_n_thresh,        o.primesasn);
+//   compsample.setUserPref(compsample.Prime_means_derivative,    o.primederiv);
+// 
+//   compsample.setUserPref(compsample.log_is_base_e,             o.loge);
+//   compsample.setUserPref(compsample.Dot_derivative,            o.dotderiv);
+//   compsample.setUserPref(compsample.Overbar_conjugate,         o.barconj);
+//   compsample.setUserPref(compsample.Input_i_Imaginary,         o.i_imaginary);
+//   compsample.setUserPref(compsample.Input_j_Imaginary,         o.j_imaginary);
+//   compsample.setUserPref(compsample.Input_e_Euler,             o.e_exp);
+// }
 
-  var o = new Object();
-
-  o.mfenced      = compsample.getUserPref(compsample.use_mfenced);
-  o.digits       = compsample.getUserPref(compsample.Sig_digits_rendered);
-  o.lower        = compsample.getUserPref(compsample.SciNote_lower_thresh);
-  o.upper        = compsample.getUserPref(compsample.SciNote_upper_thresh);
-  o.trigargs     = compsample.getUserPref(compsample.Parens_on_trigargs);
-  o.imaginaryi   = compsample.getUserPref(compsample.Output_imaginaryi);
-  o.diffD        = compsample.getUserPref(compsample.Output_diffD_uppercase);
-  o.diffd        = compsample.getUserPref(compsample.Output_diffd_lowercase);
-  o.expe         = compsample.getUserPref(compsample.Output_Euler_e);
-  o.matrix_delim = compsample.getUserPref(compsample.Default_matrix_delims);
-  o.usearc       = compsample.getUserPref(compsample.Output_InvTrigFuncs_1);
-  o.mixednum     = compsample.getUserPref(compsample.Output_Mixed_Numbers);
-  o.derivformat  = compsample.getUserPref(compsample.Default_derivative_format);
-  o.primesasn    = compsample.getUserPref(compsample.Primes_as_n_thresh);
-  o.primederiv   = compsample.getUserPref(compsample.Prime_means_derivative);
-
-  o.loge         = compsample.getUserPref(compsample.log_is_base_e);
-  o.dotderiv     = compsample.getUserPref(compsample.Dot_derivative);
-  o.barconj      = compsample.getUserPref(compsample.Overbar_conjugate);
-  o.i_imaginary  = compsample.getUserPref(compsample.Input_i_Imaginary);
-  o.j_imaginary  = compsample.getUserPref(compsample.Input_j_Imaginary);
-  o.e_exp        = compsample.getUserPref(compsample.Input_e_Euler);
-  
-  window.openDialog("chrome://prince/content/ComputeUserSettings.xul", 
-    "computeusersettings", "chrome,close,titlebar,resizable, modal", o);
-  if (o.Cancel)
-    return;
-
-  compsample.setUserPref(compsample.use_mfenced,               o.mfenced);
-  compsample.setUserPref(compsample.Sig_digits_rendered,       o.digits);
-  compsample.setUserPref(compsample.SciNote_lower_thresh,      o.lower);
-  compsample.setUserPref(compsample.SciNote_upper_thresh,      o.upper);
-  compsample.setUserPref(compsample.Parens_on_trigargs,        o.trigargs);
-  compsample.setUserPref(compsample.Output_imaginaryi,         o.imaginaryi);
-  compsample.setUserPref(compsample.Output_diffD_uppercase,    o.diffD);
-  compsample.setUserPref(compsample.Output_diffd_lowercase,    o.diffd);
-  compsample.setUserPref(compsample.Output_Euler_e,            o.expe);
-  compsample.setUserPref(compsample.Default_matrix_delims,     o.matrix_delim);
-  compsample.setUserPref(compsample.Output_InvTrigFuncs_1,     o.usearc);
-  compsample.setUserPref(compsample.Output_Mixed_Numbers,      o.mixednum);
-  compsample.setUserPref(compsample.Default_derivative_format, o.derivformat);
-  compsample.setUserPref(compsample.Primes_as_n_thresh,        o.primesasn);
-  compsample.setUserPref(compsample.Prime_means_derivative,    o.primederiv);
-
-  compsample.setUserPref(compsample.log_is_base_e,             o.loge);
-  compsample.setUserPref(compsample.Dot_derivative,            o.dotderiv);
-  compsample.setUserPref(compsample.Overbar_conjugate,         o.barconj);
-  compsample.setUserPref(compsample.Input_i_Imaginary,         o.i_imaginary);
-  compsample.setUserPref(compsample.Input_j_Imaginary,         o.j_imaginary);
-  compsample.setUserPref(compsample.Input_e_Euler,             o.e_exp);
-}
-
-function doComputeSettings()
-{
-  var compsample = GetCurrentEngine();
-
-  msiComputeLogger.Sent("settings","");
-
-  var o = new Object();
-  o.digits      = compsample.getEngineAttr(compsample.Digits);
-  o.degree      = compsample.getEngineAttr(compsample.MaxDegree);
-  o.principal   = compsample.getEngineAttr(compsample.PvalOnly) == 0 ? false : true;
-  o.special     = compsample.getEngineAttr(compsample.IgnoreSCases) == 0 ? false : true;
-  o.logSent     = msiComputeLogger.logMMLSent;
-  o.logReceived = msiComputeLogger.logMMLReceived;
-  o.engSent     = msiComputeLogger.logEngSent;
-  o.engReceived = msiComputeLogger.logEngReceived;
-  window.openDialog("chrome://prince/content/ComputeSettings.xul", "computesettings", "chrome,close,titlebar,resizable,modal", o);
-  if (o.Cancel)
-    return;
-
-  compsample.setEngineAttr(compsample.Digits,o.digits);
-  compsample.setEngineAttr(compsample.MaxDegree,o.degree);
-  compsample.setEngineAttr(compsample.PvalOnly,o.principal ? 1 : 0);
-  compsample.setEngineAttr(compsample.IgnoreSCases,o.special ? 1 : 0);
-  msiComputeLogger.LogMMLSent(o.logSent);
-  msiComputeLogger.LogMMLReceived(o.logReceived);
-  msiComputeLogger.LogEngSent(o.engSent);
-  msiComputeLogger.LogEngReceived(o.engReceived);
-}
-
-function doComputeSwitchEngines()
-{
-  var compsample = GetCurrentEngine();
-
-  var o = new Object();
-  o.engine      = compengine;
-  window.openDialog("chrome://prince/content/ComputeSwitchEngines.xul", "switchengines", "chrome,close,titlebar,modal", o);
-  if (o.Cancel)
-    return;
-
-  compengine = o.engine;
-  if (compengine == 1)
-    compsample.startup("mplInstall.gmr");
-  else
-    compsample.startup("mupInstall.gmr");
-  msiComputeLogger.Sent("Switching engine to",compengine);
-}
+// function doComputeSettings()
+// {
+//   var compsample = GetCurrentEngine();
+// 
+//   msiComputeLogger.Sent("settings","");
+// 
+//   var o = new Object();
+//   o.digitsUsed  = compsample.getEngineAttr(compsample.Digits);
+//   o.degree      = compsample.getEngineAttr(compsample.MaxDegree);
+//   o.principal   = compsample.getEngineAttr(compsample.PvalOnly) == 0 ? false : true;
+//   o.special     = compsample.getEngineAttr(compsample.IgnoreSCases) == 0 ? false : true;
+//   o.logSent     = msiComputeLogger.logMMLSent;
+//   o.logReceived = msiComputeLogger.logMMLReceived;
+//   o.engSent     = msiComputeLogger.logEngSent;
+//   o.engReceived = msiComputeLogger.logEngReceived;
+//   window.openDialog("chrome://prince/content/ComputeSettings.xul", "computesettings", "chrome,close,titlebar,resizable,modal", o);
+//   if (o.Cancel)
+//     return;
+// 
+//   compsample.setEngineAttr(compsample.Digits, o.digitsUsed);
+//   compsample.setEngineAttr(compsample.MaxDegree, o.degree);
+//   compsample.setEngineAttr(compsample.PvalOnly, o.principal ? 1 : 0);
+//   compsample.setEngineAttr(compsample.IgnoreSCases, o.special ? 1 : 0);
+//   msiComputeLogger.LogMMLSent(o.logSent);
+//   msiComputeLogger.LogMMLReceived(o.logReceived);
+//   msiComputeLogger.LogEngSent(o.engSent);
+//   msiComputeLogger.LogEngReceived(o.engReceived);
+// }
+// 
+// function doComputeSwitchEngines()
+// {
+//   var compsample = GetCurrentEngine();
+// 
+//   var o = new Object();
+//   o.engine      = compengine;
+//   window.openDialog("chrome://prince/content/ComputeSwitchEngines.xul", "switchengines", "chrome,close,titlebar,modal", o);
+//   if (o.Cancel)
+//     return;
+// 
+//   compengine = o.engine;
+//   if (compengine == 1)
+//     compsample.startup("mplInstall.gmr");
+//   else
+//     compsample.startup("mupInstall.gmr");
+//   msiComputeLogger.Sent("Switching engine to",compengine);
+// }
 
 function doComputePassthru(editorElement)
 {

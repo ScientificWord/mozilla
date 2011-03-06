@@ -47,11 +47,12 @@ public:
 static  msiKeyMap* GetInstance();
 static  void       ReleaseInstance();
 static msiKeyMap   *sInstance;
+keyNameAndCode virtKeyArray[80];
   
 PRUint32 VKeyStringToIndex( const nsString keyname);
 nsString VKeyIndexToString ( PRUint32 index );
 void keyArrayToString( nsTArray<PRUint32>& ka, nsString& sFile, nsClassHashtable<nsUint32HashKey, nsString>& table);
-keyNameAndCode virtKeyArray[80];
+
 
 private:
   ~msiKeyMap();
