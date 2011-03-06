@@ -225,6 +225,7 @@ function msiSetupComposerWindowCommands(editorElement)
   commandTable.registerCommand("cmd_printSetup",     msiPrintSetupCommand);
   commandTable.registerCommand("cmd_quit",           nsQuitCommand);
   commandTable.registerCommand("cmd_close",          msiCloseCommand);
+  commandTable.registerCommand("cmd_cleanup",        msiCleanupCommand);
   commandTable.registerCommand("cmd_preferences",    nsPreferencesCommand);
 
   commandTable.registerCommand("cmd_MSIAutoSubDlg",  msiAutoSubDlgCommand);
@@ -969,11 +970,8 @@ var msiOpenCommand =
       if ((fp.file) && (fp.file.path.length > 0)) 
       {
         dump("Ready to edit page: " + fp.fileURL.spec +"\n");
-        var regexp = /\.sci$/i;
         var newdocumentfile;
-        if (regexp.test(fp.file.path))
-          newdocumentfile = createWorkingDirectory(fp.file);
-        else newdocumentfile = fp.file;
+        newdocumentfile = createWorkingDirectory(fp.file);
         msiEditPage(msiFileURLFromFile(newdocumentfile), window, false);
         msiSaveFilePickerDirectoryEx(fp, fp.file.parent.path, MSI_EXTENSION);
       }
@@ -1013,7 +1011,7 @@ var msiNewCommand =
             createInstance(Components.interfaces.nsILocalFile);
           thefile.initWithPath(data.filename);
           newdocumentfile = createWorkingDirectory(thefile);
-	  var url = msiFileURLFromAbsolutePath( newdocumentfile.path );
+      	  var url = msiFileURLFromAbsolutePath( newdocumentfile.path );
           msiEditPage( url, window, false);
         } catch (e) { dump("msiEditPage failed: "+e.toString()+"\n"); }
 
@@ -1089,10 +1087,17 @@ function doSoftSave(editorElement, editor)
     // we should be doing this only for top level documents, and we should restore the focus
     msiFinishHTMLSource(editorElement);
     var url = msiGetEditorURL(editorElement);
+    var range = editor.document.createRange();
+    var s = editor.selection;
+    range.setStart(s.anchorNode, s.anchorOffset);
+    range.setEnd(s.focusNode, s.focusOffset);
     result = msiSoftSave(editor, editorElement);
+    if(s.rangeCount > 0) s.removeAllRanges();
+    s.addRange(range);
   }
   return result;
 }
+
 
 var msiSoftSaveCommand =
 {
@@ -1652,7 +1657,7 @@ function msiOutputFileWithPersistAPI(editorDoc, aDestinationLocation, aRelatedFi
   try {
     // we should supply a parent directory if/when we turn on functionality to save related documents
     var persistObj = Components.classes["@mozilla.org/embedding/browser/nsWebBrowserPersist;1"].createInstance(msiWebPersist);
-    persistObj.progressListener = new msigEditorOutputProgressListener(editorElement);
+    persistObj.progressListener = new msiEditorOutputProgressListener(editorElement);
     
     var wrapColumn = msiGetWrapColumn(editorElement);
     var outputFlags = msiGetOutputFlags(aMimeType, wrapColumn, editorElement);
@@ -1762,7 +1767,7 @@ function msiGetPromptService()
 //const kErrorBindingRedirected = 2152398851;
 //const kFileNotFound = 2152857618;
 //
-function msigEditorOutputProgressListener(editorElement)
+function msiEditorOutputProgressListener(editorElement)
 {
   this.msiEditorElement = editorElement;
 
@@ -2411,7 +2416,9 @@ function msiSoftSave( editor, editorElement)
        oldDefnList.parentNode.removeChild(oldDefnList);
     if (defnListString && defnListString.length > 0)
     {
-      defnListString = "<doc>"+defnListString.replace(/<p>/,"<para>","g").replace(/<\/p>/,"</para>",g)+"</doc>";
+      defnListString = defnListString.replace(/<p>/,"<bodyText>", "g");
+      defnListString = defnListString.replace(/<\/p>/,"</bodyText>", "g")
+      defnListString = "<doc>" + defnListString + "</doc>";
       var defnList = editorDoc.createElement("definitionlist");
       insertXML(editor, defnListString, defnList, 0, true);
       preamble.appendChild(defnList);
@@ -2443,27 +2450,32 @@ function msiSoftSave( editor, editorElement)
   return success;
 }
 
-
-    
-function deleteWorkingDirectory(editorElement)
+function getWorkingDirectory(editorElement)
 {
   var htmlurlstring = msiGetEditorURL(editorElement); 
   if (!htmlurlstring || htmlurlstring.length == 0) return;
   var htmlurl = msiURIFromString(htmlurlstring);
   var workingDir = msiFileFromFileURL(htmlurl);
+  workingDir = workingDir.parent;
+  return workingDir;
+}
+    
+function deleteWorkingDirectory(editorElement)
+{
+  var workingDir = getWorkingDirectory(editorElement);
+  if (!workingDir) return;
 // we know we shouldn't delete the directory unless it really is a working directory; i.e., unless it 
 // ends with "_work/main.xhtml"
-  var regEx = /_work\/main.xhtml$/i;  // BBM: localize this
-  if (regEx.test(htmlurlstring))
+  var regEx = /_work$/i;  
+  if (regEx.test(workingDir.path))
   {
     try
     {
-      workingDir = workingDir.parent;
       if (workingDir.exists())
-        workingDir.remove(1);
+        workingDir.remove(true);
     } catch(exc) { msiDumpWithID("In deleteWorkingDirectory for editorElement [@], trying to delete directory [" + htmlpath + "]; exception is [" + exc + "].\n", editorElement); }
   }
-  else alert("Trying to remove 'work directory': "+htmlpath+"\n"); // eventually get rid of this
+  else alert("Trying to remove 'work directory': "+workingDir.path+"\n"); // eventually get rid of this
 }
 
 
@@ -2538,12 +2550,18 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   currentSciFile = msiFileFromFileURL(fileurl);
   currentSciFilePath = msiPathFromFileURL(fileurl); 
   
-  var regEx = /_work\/main.xhtml$/i;  // BBM: localize this
+  var regEx = /_work\/main.[a-z]?html?$/i;  // BBM: localize this
   isSciFile = regEx.test(htmlurlstring);
   if (isSciFile) 
   {
     workingDir = msiFileFromFileURL(htmlurl);  // now = the path of the xhtml file in the working dir D
     workingDir = workingDir.parent;       // now = the directory D
+    var tempdir = workingDir.clone();
+    var leaf = tempdir.leafName.replace(/_work$/,"");
+    tempdir = tempdir.parent;
+    tempdir.append(leaf+".sci");
+    var url = msiFileURLFromFile(tempdir);
+    sciurlstring = url.spec;
   }
 
   if (mustShowFileDialog)
@@ -2602,7 +2620,12 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   }  // mustShowDialog
   else { // if we didn't show the File Save dialog, we need destLocalFile to be A.sci
 //   currentSciFile.initWithPath( currentSciFilePath );  // now = A.sci
-   destLocalFile = currentSciFile.clone();       
+   destLocalFile = currentSciFile.clone(); 
+   destLocalFile = destLocalFile.parent;
+   var leaf = destLocalFile.leafName;
+   leaf=leaf.replace(/_work$/i,"");
+   destLocalFile = destLocalFile.parent;
+   destLocalFile.append(leaf);      
   }
 
   leafname = destLocalFile.leafName;
@@ -2659,6 +2682,7 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
     } else
     {
       var zipfile = destLocalFile.parent.clone();
+      
       zipfile.append(leafname+".tempsci"); 
 
       // zip D into the zipfile
@@ -2717,7 +2741,21 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
         zipfile.moveTo(null, leafname+".sci");
       }
     }
-    if (!aContinueEditing) workingDir.remove(1);
+    if (!aContinueEditing)
+    {
+      var re = /_work$/i;
+      if (re.test(workingDir.leafName))
+      {
+        try
+        {
+          workingDir.remove(1);
+        }
+        catch(e)
+        {
+          AlertWithTitle("Unable to remove working directory", "Cannot remove working directory. Does another program have one of the directory's files open?", window);          
+        }
+      }
+    }
     else
     {
       // if the editorElement did have a shell file, it doesn't any longer
@@ -3188,6 +3226,230 @@ var msiCloseCommand =
   }
 };
 
+var msiCleanupCommand =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    if (!editorElement|| !msiIsTopLevelEditor(editorElement))
+      return false;
+    return true;
+  },
+  
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement();
+    var editor = msiGetEditor(editorElement);    
+    var editorDoc = editor.document;
+    var param =new Object();
+    param.cleanupOptions=[];
+    window.openDialog( "chrome://prince/content/", "cleanup", "chrome,resizable=yes, modal,titlebar", param);    
+    cleanupWorkDirectory(editorDoc, getWorkingDirectory(editorElement), param.cleanupOptions );
+  }
+};
+
+
+function cleanupWorkDirectory( document, directory, cleanupOptions )
+/* CleanupOptions is an array consisting of 0 or more of these strings:
+auxfiles
+logfiles
+pdffiles
+texfiles
+orphanimagefiles
+orphanplotfiles
+cachedconversions
+backupfiles */
+{
+  var texOptions = ["auxfiles","logfiles","pdffiles","texfiles"];
+  if (texOptions.every(function(val){return cleanupOptions.indexOf(val)>=0;} ))
+  {
+    // getting rid of all the TeX stuff. Just delete the directory
+    var texDir = directory.clone();
+    texDir.append("tex");
+    try
+    {
+      texDir.remove(true);
+    }
+    catch(e)
+    {
+      dump(e.message+"\n");
+    }
+    texOptions.forEach(function(val){cleanupOptions.splice(cleanupOptions.indexOf(val),1);});
+    alert(cleanupOptions.join());
+  }
+  else    
+  {
+    cleanupOptions.forEach(function(val){cleanup(directory, document, val);})
+  }
+}
+
+function cleanup(directory, document, option)
+{
+  var texDir = directory.clone();
+  var cachedir;
+  var texgrdir;
+  texDir.append("tex");
+  switch (option)
+  {
+    case "auxfiles": deleteFilesByPattern(texDir, /(\.log$|\.pdf$|\.tex$)/, true);
+      break;
+    case "logfiles": deleteFilesByPattern(texDir, /\.log$/, false);
+      break;
+    case "pdffiles": deleteFilesByPattern(texDir, /\.pdf$/, false);
+      break;
+    case "texfiles": deleteFilesByPattern(texDir, /\.tex$/, false);
+      break;
+    case "orphanimagefiles": deleteOrphanedGraphics(directory, document);
+      break;
+    case "orphanplotfiles": deleteOrphanedPlots(directory, document);
+      break;
+    case "cachedconversions": cachedir = directory.clone();
+      cachedir.append("cgraphics");
+      if (cachedir.exists() && cachedir.isDirectory())
+      {
+        deleteFilesByPattern(cachedir, /.\*$/, false);
+      }
+      break;
+    case "backupfiles": deleteFilesByPattern(directory, /\.bak$/, false);
+      break;
+    default: break;
+  }
+}
+
+function deleteFilesByPattern(directory, regexp, complement)
+{
+  if (!(directory.exists()) && directory.isDirectory()) return;
+  var file;
+  try
+  {
+    var fileenum = directory.directoryEntries;
+    while (fileenum.hasMoreElements())
+    {
+      file = fileenum.getNext();
+      file.QueryInterface(Components.interfaces.nsIFile);      
+      if (regexp.test(file.leafName)) 
+      {
+        if (!complement) file.remove(false);
+      }
+      else if (complement) file.remove(false);
+    }
+  }
+  catch(e)
+  {
+    dump("Exception in deleteFilesByPattern: "+e.message+"\n");
+  }
+}
+
+function deleteOrphanedGraphics( basedirectory, document)
+{
+  var objlist;
+  var root = document.documentElement;
+  objlist = document.getElementsByTagName("object");
+  var length = objlist.length;
+  var stringlist = new Object();
+  var i;
+  var node;
+  var url;
+  var regexp1 = /(t|c)?graphics\//;
+  var regexp2 = /\.[a-zA-Z0-9]+$/;
+  var str;
+  var arr;
+  for (i = 0; i < length; i++)
+  {
+    node = objlist.item(i);
+    if (!(node.getAttribute("msigraph")=="true"))
+    {
+      url = node.getAttribute("data");
+      if (!url) url = node.getAttribute("src");
+      if (!url) url = node.getAttribute("href");
+      if (regexp1.test(url))
+      {
+        // it is a local url in the graphics, cgraphics, or tgraphics directory
+        arr = url.split("/");
+        if (arr && arr.length > 0)
+        {
+          str = arr[arr.length-1];
+          str = str.replace(/\.[a-zA-Z0-9]*$/,'')
+          stringlist[str]=1;
+        }
+      }      
+    }
+  }
+  var dirlist = ["tgraphics","cgraphics","graphics"];
+  var dir;
+  for (i = 0; i < 3; i++)
+  {
+    dir = basedirectory.clone();
+    dir.append(dirlist[i]);
+    if (dir.exists() && dir.isDirectory())
+    {
+      var fileenum = dir.directoryEntries;
+      var file;
+      while (fileenum && fileenum.hasMoreElements())
+      {
+        file = fileenum.getNext();
+        file.QueryInterface(Components.interfaces.nsIFile);      
+        str = file.leafName;
+        str = str.replace(regexp2,'');
+        if (!stringlist[str])  // the name wasn't found in the document
+          if (file.exists()) file.remove(false);
+      }  
+    }
+  }
+}
+
+function deleteOrphanedPlots( basedirectory, document)
+{
+  var objlist;
+  var root = document.documentElement;
+  objlist = document.getElementsByTagName("object");
+  var length = objlist.length;
+  var stringlist = new Object();
+  var i;
+  var node;
+  var url;
+  var regexp1 = /plots\//;
+  var str;
+  var arr;
+  for (i = 0; i < length; i++)
+  {
+    node = objlist.item(i);
+    if (node.getAttribute("msigraph")=="true")
+    {
+      url = node.getAttribute("data");
+      if (!url) url = node.getAttribute("src");
+      if (!url) url = node.getAttribute("href");
+      if (regexp1.test(url))
+      {
+        // it is a local url in the plots directory
+        arr = url.split("/");
+        if (arr && arr.length > 0)
+        {
+          str = arr[arr.length-1];
+          str = str.replace(/\.[a-zA-Z0-9]*$/,'')
+          stringlist[str]=1;
+        }
+      }      
+    }
+  }
+  var plotsdir = basedirectory.clone();
+  plotsdir.append("plots");
+  var fileenum = plotsdir.directoryEntries;
+  var file;
+  while (fileenum.hasMoreElements())
+  {
+    file = fileenum.getNext();
+    file.QueryInterface(Components.interfaces.nsIFile);      
+    str = file.leafName;
+    str.replace(/.[xvcz]*$/,'');
+    if (!stringlist[str])  // the name wasn't found in the document
+      if (file.exists()) file.remove(false);
+  }  
+}
+
 function msiCloseWindow(theWindow)
 {
   if (!theWindow)
@@ -3196,12 +3458,7 @@ function msiCloseWindow(theWindow)
   //   so user can choose to close without saving
   var editorElement = msiGetPrimaryEditorElementForWindow(theWindow);
   if (msiCheckAndSaveDocument(editorElement, "cmd_close", true))
-//  if (CheckAndSaveDocument("cmd_close", true)) 
   {
-//    if (window.InsertCharWindow)
-//      SwitchInsertCharToAnotherEditorOrClose();
-//Ought to do what here? We'll assume that any dialog dependent on this window will be dealt with by our dialog management
-//code, and not worry it.  rwa
     ShutdownAnEditor(editorElement);
     try {
       var basewin = theWindow.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
@@ -3263,7 +3520,7 @@ var msiPreviewCommand =
     var editorElement = msiGetActiveEditorElement();
     // Don't continue if user canceled during prompt for saving
     // DocumentHasBeenSaved will test if we have a URL and suppress "Don't Save" button if not
-    if (!CheckAndSaveDocument("cmd_preview", DocumentHasBeenSaved()))
+    if (!msiCheckAndSaveDocument("cmd_preview", DocumentHasBeenSaved()))
       return;
 
     // Check if we saved again just in case?
@@ -3325,7 +3582,7 @@ var msiSendPageCommand =
     var editorElement = msiGetActiveEditorElement();
     // Don't continue if user canceled during prompt for saving
     // DocumentHasBeenSaved will test if we have a URL and suppress "Don't Save" button if not
-    if (!CheckAndSaveDocument("cmd_editSendPage", DocumentHasBeenSaved()))
+    if (!msiCheckAndSaveDocument("cmd_editSendPage", DocumentHasBeenSaved()))
       return;
 
     // Check if we saved again just in case?
@@ -3477,9 +3734,8 @@ var msiOneShotGreek =
   {
     var editorElement = msiGetActiveEditorElement();
     var editor = msiGetEditor(editorElement);
-//    var htmleditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
-//    htmleditor
-    editor.setOneShotTranslation("greek");  
+    var htmleditor = editor.QueryInterface(Components.interfaces.nsIHTMLEditor);
+    htmleditor.setOneShotTranslation("greek");  
   }
 };
 
@@ -5418,7 +5674,7 @@ var msiInsertBreaksCommand =
     var editorElement = msiGetActiveEditorElement();
     var breaksData = new Object();
     try {
-      msiOpenModelessDialog("chrome://prince/content/msiBreaksDialog.xul", "_blank", "chrome,close,titlebar,dependent",
+      msiOpenModelessDialog("chrome://prince/content/msiBreaksDialog.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
                                         editorElement, "cmd_msiInsertBreaks", this, breaksData);
     }
     catch(ex) {
