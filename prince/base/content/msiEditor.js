@@ -10237,12 +10237,34 @@ function openParaTagDialog(tagname, node, editorElement)
 //                             node);
 }
 
-function openEnvTagDialog(tagname, node, editorElement)
+function openEnvTagDialog(tagname, aNode, editorElement)
 {
+  var theDoc;
+  theDoc = aNode.ownerDocument;
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
-  msiDoModelessPropertiesDialog("chrome://prince/content/envproperties.xul", "envproperties", "chrome,close,titlebar,resizable, dependent",
-                                                     editorElement, "cmd_reviseParagraphNode", node, node);
+  theDoc = aNode.ownerDocument;
+  var thmList = new msiTheoremEnvListForDocument(aNode.ownerDocument);
+  var thmInfo = thmList.getTheoremEnvInfoForTag(tagname);
+  if (thmInfo != null)
+  {
+    var numbering = thmInfo.numbering;
+    if (!numbering || !numbering.length)
+      numbering = tagname;
+    var thmstyle = thmInfo.thmStyle;
+    if (!thmstyle || !thmstyle.length)
+      thmstyle = "plain";
+    var defaultThmEnvNumbering = thmList.getDefaultTheoremEnvNumbering();
+    var thmdata = {envNode : aNode, defaultNumbering : numbering, defaultTheoremEnvNumbering : defaultThmEnvNumbering, theoremstyle : thmstyle};
+    msiDoModelessPropertiesDialog("chrome://prince/content/thmproperties.xul", "thmproperties", "chrome,close,titlebar,resizable, dependent",
+                                                     editorElement, "cmd_reviseTheoremNode", aNode, thmdata);
+  }
+  else
+  {
+    msiDoModelessPropertiesDialog("chrome://prince/content/envproperties.xul", "envproperties", "chrome,close,titlebar,resizable, dependent",
+                                                     editorElement, "cmd_reviseEnvNode", aNode, aNode);
+  }
+  thmList.detach();
 }
 
 function openObjectTagDialog(tagname, node, editorElement)
