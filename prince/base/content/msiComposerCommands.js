@@ -2396,6 +2396,9 @@ function msiSoftSave( editor, editorElement)
 //    throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
 //
   
+  //Check the my.css file to see if changes need to be written to it.
+  saveCSSFileIfChanged(editorDoc);
+
   // Get the current definitions from compute engine and place in preamble.
   var defnListString = "";
   try {
@@ -9238,6 +9241,60 @@ function doReviseEnvironmentNode(editor, origData, reviseData)
   }
   msiEditorEnsureElementAttribute(origData.envNode, "numbering", numberingStr, editor);
   msiEditorEnsureElementAttribute(origData.envNode, "req", reqStr, editor);
+  var customLeadInNode = origData.customLeadInNode;
+  if (reviseData.leadInType == "custom")
+  {
+    if (!customLeadInNode)
+    {
+      customLeadInNode = editor.document.createElementNS(xhtmlns, "envLeadIn");
+      editor.insertNode(customLeadInNode, origData.envNode, 0);  //Lead-in always goes at the start
+    }
+    if (!reviseData.customLeadInStr || !reviseData.customLeadInStr.length)
+      reviseData.customLeadInStr = "?";
+    if (!origData.customLeadInStr || (reviseData.customLeadInStr != origData.customLeadInStr))
+    {
+      for (var ix = customLeadInNode.childNodes.length; ix > 0 ; --ix)
+        editor.deleteNode(customLeadInNode.childNodes[ix-1]);
+      editor.insertHTMLWithContext(reviseData.customLeadInStr, "", "", "", null, customLeadInNode, 0, false);
+    }
+  }
+  else 
+  {
+    if (customLeadInNode)
+      editor.deleteNode(customLeadInNode);
+  }
+}
+
+function doReviseTheoremNode(editor, origData, reviseData)
+{
+  if (origData.envNode == null)
+  {
+    dump("In msiComposerCommands.js, doReviseTheoremNode() called without an environment node!\n");
+    return;
+  }
+  
+  var tagName = msiGetBaseNodeName(origData.envNode);
+  var leadInTypeStr = (reviseData.leadInType == "auto") ? "" : reviseData.leadInType;  //Prevent adding leadInType="auto" as an attribute
+  msiEditorEnsureElementAttribute(origData.envNode, "leadInType", leadInTypeStr, editor);
+  
+  var thmList;
+  if ((origData.defaultNumbering != reviseData.defaultNumbering) || (origData.theoremstyle != reviseData.theoremstyle))
+  {
+    thmList = new msiTheoremEnvListForDocument(editor.document);
+    thmList.changeDefaultForTag(tagName, origData.defaultNumbering, reviseData.defaultNumbering, origData.theoremstyle, reviseData.theoremstyle);
+    thmList.detach();
+  }
+  var numberingStr = "";
+  var reqStr = "";
+  if (reviseData.defaultNumbering != reviseData.numbering)
+  {
+    numberingStr = reviseData.numbering;
+    if (numberingStr == "none")
+      reqStr = "amsthm";
+  }
+  msiEditorEnsureElementAttribute(origData.envNode, "numbering", numberingStr, editor);
+  msiEditorEnsureElementAttribute(origData.envNode, "req", reqStr, editor);
+
   var customLeadInNode = origData.customLeadInNode;
   if (reviseData.leadInType == "custom")
   {
