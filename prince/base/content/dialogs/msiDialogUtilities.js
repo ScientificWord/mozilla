@@ -471,30 +471,6 @@ function findInArray(theArray, theItem)
   return theIndex;
 }
 
-//The purpose of this function is to remove elements of "theArray" which aren't in "otherArray". In particular,
-//it leaves the order of elements in "theArray" unchanged.
-function intersectArrayWith(theArray, otherArray)
-{
-  for (var i = theArray.length - 1; i >= 0; --i)
-  {
-    if (findInArray(otherArray, theArray[i]) < 0)
-      theArray.splice(i, 1);
-  }
-  return theArray;
-}
-
-//The purpose of this function is to add elements of "otherArray" which aren't in "theArray". In particular,
-//it leaves the order of elements in "theArray" unchanged.
-function unionArrayWith(theArray, otherArray)
-{
-  for (var i = 0; i < otherArray.length; ++i)
-  {
-    if (findInArray(theArray, otherArray[i]) < 0)
-      theArray.push(otherArray[i]);
-  }
-  return theArray;
-}
-
 
 function enableControlsByID(theControls, bEnable)
 {
