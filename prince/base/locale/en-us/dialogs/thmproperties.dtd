@@ -1,0 +1,25 @@
+<!-- Copyright (c) 2011 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY windowTitle.label "## properties">
+<!ENTITY leadIn.label "Lead-in">
+<!ENTITY leadInAuto.label "Default">
+<!ENTITY leadInAuto.accesskey "D">
+<!ENTITY leadInCustom.label "Custom">
+<!ENTITY leadInCustom.accesskey "C">
+<!ENTITY customLeadInLabel.label "Lead-in text">
+<!ENTITY customLeadInLabel.accesskey "l">
+<!ENTITY numbering.label "Numbering">
+<!ENTITY numberAllRadio.label "Number all ## environments">
+<!ENTITY numberAllRadio.accesskey "N">
+<!ENTITY unnumberAllRadio.label "Leave all ## environments unnumbered">
+<!ENTITY unnumberAllRadio.accesskey "u">
+<!ENTITY unnumberThisRadio.label "Leave this ## environment unnumbered">
+<!ENTITY unnumberThisRadio.accesskey "h">
+<!ENTITY thmstyle.label "Style for ## environments">
+<!ENTITY styleTheoremRadio.label "Style like theorem environments">
+<!ENTITY styleTheoremRadio.accesskey "t">
+<!ENTITY styleDefinitionRadio.label "Style like definition environments">
+<!ENTITY styleDefinitionRadio.accesskey "d">
+<!ENTITY styleRemarkRadio.label "Style like remark environments">
+<!ENTITY styleRemarkRadio.accesskey "r">
+

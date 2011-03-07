@@ -254,3 +254,5 @@ prince.jar:
   content/preferences.js                (dialogs/preferences.js)
   content/envproperties.xul             (dialogs/envproperties.xul)
   content/envproperties.js              (dialogs/envproperties.js)
+  content/thmproperties.xul             (dialogs/thmproperties.xul)
+  content/thmproperties.js              (dialogs/thmproperties.js)
