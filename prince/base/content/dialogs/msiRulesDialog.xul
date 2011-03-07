@@ -34,7 +34,8 @@
   </keyset>
 
   <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
-
+<!--JLF, 3/4/2011, liftSizeTextbox, widthSizeTextbox, heightSizeTextbox and sizeUnitsbox need to have initial values set and 
+persistence to maintain user's entries. -->
   <vbox>
     <groupbox id="sizeGroupbox">
       <caption label="&sizeGroupbox.label;"/>

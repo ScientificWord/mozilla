@@ -40,7 +40,7 @@
   <broadcasterset>
     <broadcaster id="enableBrackets" disabled="false"/>
   </broadcasterset>
-
+<!--JLF, 3/4/2011 First pass for Operator label in tooltiptext.  Needs review. -->
   <vbox>
     <hbox>
       <label id="propertiesTitle" hidden="true" value="&windowPropertiesTitle.label;" />
@@ -100,7 +100,7 @@
             <button type="radio" label="&#x222C;" group="operatorsButtonGroup" tooltiptext="Double Integral"/>
             <button type="radio" label="&#x222D;" group="operatorsButtonGroup" tooltiptext="Triple Integral"/>
             <button type="radio" label="&#x2A0C;" group="operatorsButtonGroup" tooltiptext="Quadruple Integral"/>
-            <button type="radio" label="&#x222B;&#x22EF;&#x222B;" group="operatorsButtonGroup" tooltiptext="Label"/>
+            <button type="radio" label="&#x222B;&#x22EF;&#x222B;" group="operatorsButtonGroup" tooltiptext="Multiple Integral"/>
             <button type="radio" label="&#x222E;" group="operatorsButtonGroup" tooltiptext="Contour Integral"/>
             <button type="radio" label="&#x2211;" group="operatorsButtonGroup" tooltiptext="N-Ary Summation"/>
             <button type="radio" label="&#x220F;" group="operatorsButtonGroup" tooltiptext="N-Ary Product"/>

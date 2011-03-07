@@ -44,7 +44,7 @@
     <broadcaster id="enableDecorationsAround" disabled="false"/>
     <broadcaster id="enableDecorationsAboveBelow" disabled="false"/>
   </broadcasterset>
-
+<!--JLF, 3/4/2011 First pass for Decorations label in tooltiptext.  Needs review. -->
   <vbox xmlns:xhtml="http://www.w3.org/1999/xhtml"
            xmlns:mml="http://www.w3.org/1998/Math/MathML">
     <label id="propertiesTitle" hidden="true" value="&windowPropertiesTitle.label;" />
