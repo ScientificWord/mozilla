@@ -336,37 +336,76 @@ function getPageLayout(node, document)
     value = node.getAttribute('unit');
     if (value) {
       currentUnit = value;
-      document.getElementById('docformat.units').value = currentUnit;
+      var du = document.getElementById('docformat.units');
+      if (du) { 
+        du.value = currentUnit; 
+      }
     }
+    
     value = node.getAttribute("enabled");
-    value = (value?true:false);
-    document.getElementById('enablepagelayout').checked = value;
-    document.getElementById('pagelayoutok').setAttribute('disabled',value?'false':'true');
+    value = (value ? true : false);
+
+    var e = document.getElementById('enablepagelayout');
+    if (e){
+      e.checked = value;
+    } 
+         
+    e = document.getElementById('pagelayoutok');
+    if (e) {
+      e.setAttribute('disabled',value?'false':'true');
+    }
     subnode = node.getElementsByTagName('page')[0];
     if (subnode)
     {
       value = subnode.getAttribute('twoside');
-      document.getElementById('twosides').checked=(value=='true');
-      setTwosidedState(document.getElementById('twosides'));
+      e = document.getElementById('twosides');
+      if (e) {
+        e.checked = (value=='true');
+        setTwosidedState(e);
+      }
       value = subnode.getAttribute('paper');
       finishpage = value;
-      if (value) document.getElementById('docformat.finishpagesize').value = value; 
-      if (value != "other") document.getElementById("bc.finishpagesize").setAttribute("disabled","true");
+      if (value) {
+          e = document.getElementById('docformat.finishpagesize');
+          if (e) {
+            e.value = value; 
+          }
+     
+          if (value != "other") {
+            e = document.getElementById("bc.finishpagesize");
+            if (e) {
+              e.setAttribute("disabled","true");
+            }
+          }
+      }
       value = subnode.getAttribute('width');
       if (value) 
       {
         pagewidth = getNumberValue(value);
-        document.getElementById("tbpagewidth").value = pagewidth;
+        e = document.getElementById("tbpagewidth");
+        if (e) {
+          e.value = pagewidth;
+        }
       }
       value = subnode.getAttribute('height');
       if (value) 
       {
         pageheight = getNumberValue(value);
-        document.getElementById("tbpageheight").value = pageheight;
+        e = document.getElementById("tbpageheight");
+        if (e){
+          e.value = pageheight;
+        }
       }
       value = subnode.getAttribute('landscape');
-      if (value=='true') landscape = true; else landscape = false;
-      document.getElementById('landscape').checked=landscape;
+      if (value=='true') 
+        landscape = true; 
+      else 
+        landscape = false;
+
+      e = document.getElementById('landscape')
+      if (e) {
+        e.checked=landscape;
+      }
     }                                                    
     setPageDimensions();
     setPaperDimensions();
@@ -375,55 +414,127 @@ function getPageLayout(node, document)
     if (subnode)
     {
       value = subnode.getAttribute('width');
-      if (value) document.getElementById('tbbodywidth').value=getNumberValue(value);
+      if (value) {
+        e = document.getElementById('tbbodywidth');
+        if (e) {
+          e.value = getNumberValue(value);
+        }
+      }
       value = subnode.getAttribute('height');
-      if (value) document.getElementById('tbbodyheight').value=getNumberValue(value);
+      if (value) {
+        e = document.getElementById('tbbodyheight');
+        if (e) {
+          e. value=getNumberValue(value);
+        }
+      }
     }
     subnode = node.getElementsByTagName('margin')[0];
     if (subnode)
     {
       value = subnode.getAttribute('left');
-      if (value) document.getElementById('tblmargin').value=getNumberValue(value);
+      if (value) {
+        e = document.getElementById('tblmargin');
+        if (e) {
+          e.value = getNumberValue(value);
+        }
+      }
       value = subnode.getAttribute('top');
-      if (value) document.getElementById('tbtmargin').value=getNumberValue(value);
+      if (value) {
+        e = document.getElementById('tbtmargin');
+        if (e) {
+          e.value=getNumberValue(value);
+        }
+      }
     }
     subnode = node.getElementsByTagName('columns')[0];
     if (subnode)
     {
       value = subnode.getAttribute('count');
-      document.getElementById('columns').value=value;
+      e  = document.getElementById('columns');
+      if (e) {
+        e.value = value;
+      }
       broadcastColCount();
       value = subnode.getAttribute('sep');
-      if (value) document.getElementById('tbcolsep').value=getNumberValue(value);
+      if (value) {
+        e = document.getElementById('tbcolsep');
+        if (e) {
+          e.value=getNumberValue(value);
+        }
+      }
     }
     subnode = node.getElementsByTagName('marginnote')[0];
     if (subnode)
     {
       value = subnode.getAttribute('width');
-      if (value) document.getElementById('tbmnwidth').value=getNumberValue(value);
+      if (value) {
+         e = document.getElementById('tbmnwidth');
+         if (e) {
+           e.value=getNumberValue(value);
+         }
+      }
       value = subnode.getAttribute('sep');
-      if (value) document.getElementById('tbmnsep').value=getNumberValue(value);
+      if (value) {
+        e = document.getElementById('tbmnsep');
+        if (e) {
+          e.value=getNumberValue(value);
+        }
+      }
       value = subnode.getAttribute('push');
-      if (value) document.getElementById('tbmnpush').value=getNumberValue(value);
+      if (value) {
+        e = document.getElementById('tbmnpush');
+        if (e) {
+          e.value=getNumberValue(value);
+        }
+      }
       value = subnode.getAttribute('hidden');
-      if (value) document.getElementById('disablemn').checked=(value=='true');
-        else document.getElementById('disablemn').checked=false;
+      if (value) {
+        e = document.getElementById('disablemn');
+        if (e) {
+          e.checked=(value=='true');
+        }
+      } else {
+        e  = document.getElementById('disablemn');
+        if (e) {
+          e.checked = false;
+        }
+      }
     }
     subnode = node.getElementsByTagName('header')[0];
     if (subnode)
     {
       value = subnode.getAttribute('height');
-      if (value) document.getElementById('tbheader').value=getNumberValue(value);
+      if (value) {
+        e = document.getElementById('tbheader');
+        if (e) {
+          e.value=getNumberValue(value);
+        }
+      }
       value = subnode.getAttribute('sep');
-      if (value) document.getElementById('tbheadersep').value=getNumberValue(value);
+      if (value) {
+        e = document.getElementById('tbheadersep');
+        if (e) {
+          e.value=getNumberValue(value);
+        }
+      }
     }
     subnode = node.getElementsByTagName('footer')[0];
     if (subnode)
     {
       value = subnode.getAttribute('height');
-      if (value) document.getElementById('tbfooter').value=getNumberValue(value);
+      if (value) {
+        e = document.getElementById('tbfooter');
+        if (e) {
+          e.value=getNumberValue(value);
+        }
+      }
       value = subnode.getAttribute('sep');
-      if (value) document.getElementById('tbfootersep').value=getNumberValue(value);
+      if (value) {
+        e = document.getElementById('tbfootersep');
+        if (e) {
+          e.value=getNumberValue(value);
+        }
+      }
     }
   }
 }
@@ -1820,8 +1931,13 @@ function switchSectionTypeImp(from, to)
   {
     if (from != to)
     {
-      document.getElementById("sections.numstyle").value=(gNumStyles[to]?gNumStyles[to]:"");
-      enabled = document.getElementById("allowsectionheaders").checked = sec.enabled;
+      document.getElementById("sections.numstyle").value=(gNumStyles[to] ? gNumStyles[to] : "");
+      var e = document.getElementById("allowsectionheaders");
+      if (e){
+        enabled = e.checked = sec ? sec.enabled : false;
+      } else {
+        enabled = false;
+      }
       if (enabled)
       {
         if (!sectitleformat[to])
@@ -2476,18 +2592,21 @@ function saveClassOptionsEtc(docformatnode)
     newOptionNode = true;
     optionNode = editor.createNode("colist", docformatnode, 0);
   }
-  else optionNode = nodelist[0];
+  else 
+    optionNode = nodelist[0];
   // convention: default values are starred at the end.
   var widget;
   widget = document.getElementById("pgorient").selectedItem;
   if (widget.hasAttribute("def")) 
-    optionNode.removeAttribute("pgorient")
+    optionNode.removeAttribute("pgorient");
   else 
     optionNode.setAttribute("pgorient", widget.value);
   
   widget = document.getElementById("papersize").selectedItem;
-  if (widget.hasAttribute("def")) optionNode.removeAttribute("papersize")
-  else optionNode.setAttribute("papersize", widget.value);
+  if (widget.hasAttribute("def")) 
+    optionNode.removeAttribute("papersize")
+  else 
+    optionNode.setAttribute("papersize", widget.value);
 
   widget = document.getElementById("sides").selectedItem;
   if (widget.hasAttribute("def")) optionNode.removeAttribute("sides")
@@ -2582,16 +2701,17 @@ function setMenulistSelection(menulist, value)
 
 function getClassOptionsEtc()
 {
-  var valuetypes = ["pgorient",
-    "papersize",
-    "sides",
-    "qual",
-    "columns",
-    "textsize",
-    "eqnnopos",
-    "eqnpos",
-    "titlepage",
-    "bibstyle"];
+  var valuetypes = 
+     ["pgorient",
+      "papersize",
+      "sides",
+      "qual",
+      "columns",
+      "textsize",
+      "eqnnopos",
+      "eqnpos",
+      "titlepage",
+      "bibstyle"];
 
   var doc = editor.document;
   var documentclass = doc.documentElement.getElementsByTagName('documentclass')[0];
@@ -2604,22 +2724,28 @@ function getClassOptionsEtc()
     dump("No preamble in document\n");
     return;
   }
-  var nodelist = doc.getElementsByTagName("colist");// class option list
-  var node;
-  if (nodelist.length == 0) return; // leaves all values at the defaults, as defined
-  // in the XUL file
+
+  var nodelist = doc.getElementsByTagName("colist"); // class option list
+  if (nodelist.length == 0) 
+    return; 
+    // leaves all values at the defaults, as defined in the XUL file
+
   var colist = nodelist[0];
   for each (s in valuetypes) {
-    if (colist.hasAttribute(s)) setMenulistSelection(document.getElementById(s),
-      colist.getAttribute(s));
+    if (colist.hasAttribute(s)){ 
+       setMenulistSelection(document.getElementById(s), colist.getAttribute(s));
+    }
   }
+
   var value;
+  var node;
+
   nodelist = preamble.getElementsByTagName("leading");
   if (nodelist.length > 0)
   {
     node = nodelist[0];
-    if (node.hasAttribute("val")) document.getElementById("leading").value =
-      (node.getAttribute("val")).replace(/pt/,"");
+    if (node.hasAttribute("val")) 
+      document.getElementById("leading").value = (node.getAttribute("val")).replace(/pt/,"");
   }
   nodelist = preamble.getElementsByTagName("showkeys");
   if (nodelist.length > 0)
