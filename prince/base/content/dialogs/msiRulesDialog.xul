@@ -34,7 +34,8 @@
   </keyset>
 
   <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
-
+<!--JLF, 3/4/2011, liftSizeTextbox, widthSizeTextbox, heightSizeTextbox and sizeUnitsbox need to have initial values set and 
+persistence to maintain user's entries. -->
   <vbox>
     <groupbox id="sizeGroupbox">
       <caption label="&sizeGroupbox.label;"/>
@@ -46,15 +47,15 @@
         <rows>
           <row>
             <label control="liftSizeTextbox" value="&liftSize.label;"	accesskey="&liftSize.accesskey;"/>
-            <textbox id="liftSizeTextbox"/>
+            <textbox id="liftSizeTextbox" value="1" persist="value"/>
           </row>
           <row>
             <label control="widthSizeTextbox" value="&widthSize.label;"	accesskey="&widthSize.accesskey;"/>
-            <textbox id="widthSizeTextbox"/>
+            <textbox id="widthSizeTextbox" value="100" persist="value"/>
           </row>
           <row>
             <label control="heightSizeTextbox" value="&heightSize.label;"	accesskey="&heightSize.accesskey;"/>
-            <textbox id="heightSizeTextbox"/>
+            <textbox id="heightSizeTextbox" value="1" persist="value"/>
           </row>
           <row>
             <label control="sizeUnitsbox" value="&sizeUnits.label;"	accesskey="&sizeUnits.accesskey;"/>
