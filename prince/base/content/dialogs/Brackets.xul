@@ -37,7 +37,7 @@
 
 
   <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
-
+<!--JLF, 3/4/2011 First pass for Brackets label in tooltiptext.  Needs review. -->
   <vbox>
     <hbox>
       <label id="propertiesTitle" hidden="true" value="&windowPropertiesTitle.label;" />
