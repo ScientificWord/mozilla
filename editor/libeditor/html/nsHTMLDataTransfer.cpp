@@ -139,6 +139,7 @@
 #include "nsIWindowWatcher.h"
 #include "../../msiediting/src/msiUtils.h"
 #include "../../../content/base/src/nsAttrName.h"
+#include "../../msiediting/src/msiEditingAtoms.h"
 
 #define DEBUG_barry	1
 
@@ -303,6 +304,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   ForceCompositionEnd();
   nsAutoEditBatch beginBatching(this);
   nsAutoRules beginRulesSniffing(this, kOpHTMLPaste, nsIEditor::eNext);
+  nsAutoString tagName;
   
   // Get selection
   nsresult res;
@@ -689,7 +691,6 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
         PRBool parentIsMath = nsHTMLEditUtils::IsMath(parentNode);
         if (parentIsMath)
         {
-          nsAutoString tagName;
           nsAutoString strTempInput;
           nsCOMPtr<nsIDOMElement> pNode;
           pNode = do_QueryInterface(parentNode);
@@ -738,7 +739,27 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
         }
         else
         {
-          printf("Need to put in a math node\n");
+          nsAutoString tagName;
+          GetTagString(curNode, tagName);
+          if (!tagName.EqualsLiteral("math"))
+          {
+            nsCOMPtr<nsIDOMElement> mathElement;
+            res = msiUtils::CreateMathMLElement(this, msiEditingAtoms::math, mathElement);
+            nsCOMPtr<nsIDOMNode> mathNode = do_QueryInterface(mathElement);
+            res = InsertNodeAtPoint(mathNode, address_of(parentNode), &offsetOfNewNode, PR_TRUE);
+            res = InsertNodeAtPoint(curNode, address_of(mathNode), 0, PR_TRUE);
+            parentNode = mathElement;
+            offsetOfNewNode = 1;
+          }
+          else
+          {
+            res = InsertNodeAtPoint(curNode, address_of(parentNode), &offsetOfNewNode, PR_TRUE);
+          }
+          if (NS_SUCCEEDED(res)) 
+          {
+            bDidInsert = PR_TRUE;
+            lastInsertNode = curNode;
+          }
         }
       }
       else
