@@ -89,26 +89,38 @@ function Startup()
     dump("No preamble in document\n");
     return;
   }
-  getEnableFlags(doc)
+  getEnableFlags(doc);
   var docFormatNodeList = preamble.getElementsByTagName('docformat');
   var node;
-  if (!(docFormatNodeList && docFormatNodeList.length>=1)) node=null;
-  else node = docFormatNodeList[0].getElementsByTagName('pagelayout')[0];
+  if (!(docFormatNodeList && docFormatNodeList.length>=1)) 
+    node=null;
+  else 
+    node = docFormatNodeList[0].getElementsByTagName('pagelayout')[0];
+
   getPageLayout(node, doc);
-  if (!(docFormatNodeList && docFormatNodeList.length>=1)) node=null;
-  else node = docFormatNodeList[0].getElementsByTagName('crop')[0];
+  if (!(docFormatNodeList && docFormatNodeList.length>=1)) 
+    node=null;
+  else 
+    node = docFormatNodeList[0].getElementsByTagName('crop')[0];
+
   getCropInfo(node);
   
   //now we can load the docformat information from the document to override 
   //all or part of the initial state
   OnWindowSizeReset(true);
   buildFontMenus(compilerInfo.useOTF);
-  if (!(docFormatNodeList && docFormatNodeList.length>=1)) node=null;
-  else node = docFormatNodeList[0].getElementsByTagName('fontchoices')[0];
+  if (!(docFormatNodeList && docFormatNodeList.length>=1)) 
+    node=null;
+  else 
+    node = docFormatNodeList[0].getElementsByTagName('fontchoices')[0];
+
   getFontSpecs(node);
+
   var sectitlenodelist;
-  if (!(docFormatNodeList && docFormatNodeList.length>=1)) sectitlenodelist=null;
-  else sectitlenodelist = docFormatNodeList[0].getElementsByTagName('sectitleformat');
+  if (!(docFormatNodeList && docFormatNodeList.length>=1)) 
+    sectitlenodelist=null;
+  else 
+    sectitlenodelist = docFormatNodeList[0].getElementsByTagName('sectitleformat');
   
 //  var editElement = document.getElementById("sectiontitle-frame");
 //  msiInitializeEditorForElement(editElement, "");
@@ -2609,36 +2621,52 @@ function saveClassOptionsEtc(docformatnode)
     optionNode.setAttribute("papersize", widget.value);
 
   widget = document.getElementById("sides").selectedItem;
-  if (widget.hasAttribute("def")) optionNode.removeAttribute("sides")
-  else optionNode.setAttribute("sides", widget.value);
+  if (widget.hasAttribute("def")) 
+    optionNode.removeAttribute("sides")
+  else 
+    optionNode.setAttribute("sides", widget.value);
 
   widget = document.getElementById("qual").selectedItem;
-  if (widget.hasAttribute("def")) optionNode.removeAttribute("qual")
-  else optionNode.setAttribute("qual", widget.value);
+  if (widget.hasAttribute("def")) 
+    optionNode.removeAttribute("qual")
+  else 
+    optionNode.setAttribute("qual", widget.value);
 
   widget = document.getElementById("columns").selectedItem;
-  if (!widget || widget.hasAttribute("def")) optionNode.removeAttribute("columns")
-  else optionNode.setAttribute("columns", widget.value);
+  if (!widget || widget.hasAttribute("def")) 
+    optionNode.removeAttribute("columns");
+  else 
+    optionNode.setAttribute("columns", widget.value);
 
   widget = document.getElementById("textsize").selectedItem;
-  if (widget.hasAttribute("def")) optionNode.removeAttribute("textsize")
-  else optionNode.setAttribute("textsize", widget.value);
+  if (widget.hasAttribute("def")) 
+    optionNode.removeAttribute("textsize");
+  else 
+    optionNode.setAttribute("textsize", widget.value);
 
   widget = document.getElementById("eqnnopos").selectedItem;
-  if (widget.hasAttribute("def")) optionNode.removeAttribute("eqnnopos")
-  else optionNode.setAttribute("eqnnopos", widget.value);
+  if (widget.hasAttribute("def")) 
+    optionNode.removeAttribute("eqnnopos");
+  else 
+    optionNode.setAttribute("eqnnopos", widget.value);
 
   widget = document.getElementById("eqnpos").selectedItem;
-  if (widget.hasAttribute("def")) optionNode.removeAttribute("eqnpos")
-  else optionNode.setAttribute("eqnpos", widget.value);
+  if (widget.hasAttribute("def")) 
+    optionNode.removeAttribute("eqnpos");
+  else 
+    optionNode.setAttribute("eqnpos", widget.value);
 
   widget = document.getElementById("titlepage").selectedItem;
-  if (widget.hasAttribute("def")) optionNode.removeAttribute("titlepage")
-  else optionNode.setAttribute("titlepage", widget.value);
+  if (widget.hasAttribute("def")) 
+    optionNode.removeAttribute("titlepage");
+  else 
+    optionNode.setAttribute("titlepage", widget.value);
 
   widget = document.getElementById("bibstyle").selectedItem;
-  if (widget.hasAttribute("def")) optionNode.removeAttribute("bibstyle")
-  else optionNode.setAttribute("bibstyle", widget.value);
+  if (widget.hasAttribute("def")) 
+    optionNode.removeAttribute("bibstyle");
+  else 
+    optionNode.setAttribute("bibstyle", widget.value);
 
   if (newOptionNode) documentclass.appendChild(optionNode);
 
