@@ -48,7 +48,26 @@
 #include "nsIDOMNodeList.h"
 #include "nsIDOMHTMLAnchorElement.h"
 #include "nsHTMLTags.h"
+#include "nsIDOMElement.h"
 #include "msiITagListManager.h"
+
+
+///////////////////////////////////////////////////////////////////////////
+//                  
+PRBool 
+nsHTMLEditUtils::IsMath(nsIDOMNode *node)
+{
+  nsString strMathMLNs = NS_LITERAL_STRING("http://www.w3.org/1998/Math/MathML");
+  nsAutoString tagNamespace;
+  nsCOMPtr<nsIDOMElement> element = do_QueryInterface(node);
+  if (element)
+  {
+    element->GetNamespaceURI(tagNamespace);
+    return tagNamespace.Equals(strMathMLNs);
+  }
+  return PR_FALSE;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////
 //                  
