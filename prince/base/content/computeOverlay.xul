@@ -379,22 +379,22 @@
           <menuitem label="&MSIComputeHermitianTransposeCmd.label;" accesskey="&MSIComputeHermitianTransposeCmd.accesskey;"  observes="cmd_MSIComputeHermitianTranspose"/>
           <menuitem label="&MSIComputeMatrixInverseCmd.label;" accesskey="&MSIComputeMatrixInverseCmd.accesskey;"            observes="cmd_MSIComputeInverse"/>
           <menuitem label="&MSIComputeJordanCmd.label;"        accesskey="&MSIComputeJordanCmd.accesskey;"                   observes="cmd_MSIComputeJordan"/>
-          <menuitem label="&MSIComputeMinPolyCmd.label;"       accesskey="&MSIComputeMinPolyCmd.accesskey;"                  observes="cmd_MSIComputeMinPoly"/>
           <menuitem label="&MSIComputeMatrixMapCmd.label;"     accesskey="&MSIComputeMatrixMapCmd.accesskey;"                observes="cmd_MSIComputeMap"/>
+          <menuitem label="&MSIComputeMinPolyCmd.label;"       accesskey="&MSIComputeMinPolyCmd.accesskey;"                  observes="cmd_MSIComputeMinPoly"/>
           <menuitem label="&MSIComputeMatrixNormCmd.label;"    accesskey="&MSIComputeMatrixNormCmd.accesskey;"               observes="cmd_MSIComputeNorm"/>
           <menuitem label="&MSIComputeNullspaceBasisCmd.label;" accesskey="&MSIComputeNullspaceBasisCmd.accesskey;"          observes="cmd_MSIComputeNullspaceBasis"/>
           <menuitem label="&MSIComputeOrthogonalityTestCmd.label;"  accesskey="&MSIComputeOrthogonalityTestCmd.accesskey;"   observes="cmd_MSIComputeOrthogonalityTest"/>
           <menuitem label="&MSIComputePermanentCmd.label;"     accesskey="&MSIComputePermanentCmd.accesskey;"                observes="cmd_MSIComputePermanent"/>
           <menuitem label="&MSIComputePLUDecompCmd.label;"     accesskey="&MSIComputePLUDecompCmd.accesskey;"                observes="cmd_MSIComputePLU"/>
+          <menuitem label="&MSIComputeQRDecompCmd.label;"      accesskey="&MSIComputeQRDecompCmd.accesskey;"                 observes="cmd_MSIComputeQR"/>
           <menuitem label="&MSIComputeRandomMatrixCmd.label;"  accesskey="&MSIComputeRandomMatrixCmd.accesskey;"             observes="cmd_MSIComputeRandomMatrix"/>
           <menuitem label="&MSIComputeRankCmd.label;"          accesskey="&MSIComputeRankCmd.accesskey;"                     observes="cmd_MSIComputeRank"/>
           <menuitem label="&MSIComputeRationalCanonicalCmd.label;" accesskey="&MSIComputeRationalCanonicalCmd.accesskey;"    observes="cmd_MSIComputeRationalCanonical"/>
           <menuitem label="&MSIComputeRREFCmd.label;"          accesskey="&MSIComputeRREFCmd.accesskey;"                     observes="cmd_MSIComputeRREF"/>
           <menuitem label="&MSIComputeReshapeCmd.label;"       accesskey="&MSIComputeReshapeCmd.accesskey;"                  observes="cmd_MSIComputeReshape"/>
           <menuitem label="&MSIComputeRowBasisCmd.label;"      accesskey="&MSIComputeRowBasisCmd.accesskey;"                 observes="cmd_MSIComputeRowBasis"/>
-          <menuitem label="&MSIComputeQRDecompCmd.label;"      accesskey="&MSIComputeQRDecompCmd.accesskey;"                 observes="cmd_MSIComputeQR"/>
-          <menuitem label="&MSIComputeSingularValuesCmd.label;"  accesskey="&MSIComputeSingularValuesCmd.accesskey;"         observes="cmd_MSIComputeSingularValues"/>
           <menuitem label="&MSIComputeSVDDecompCmd.label;"       accesskey="&MSIComputeSVDDecompCmd.accesskey;"              observes="cmd_MSIComputeSVD"/>
+          <menuitem label="&MSIComputeSingularValuesCmd.label;"  accesskey="&MSIComputeSingularValuesCmd.accesskey;"         observes="cmd_MSIComputeSingularValues"/>
           <menuitem label="&MSIComputeSmithCmd.label;"           accesskey="&MSIComputeSmithCmd.accesskey;"                  observes="cmd_MSIComputeSmith"/>
           <menuitem label="&MSIComputeSpectralRadiusCmd.label;"  accesskey="&MSIComputeSpectralRadiusCmd.accesskey;"         observes="cmd_MSIComputeSpectralRadius"/>
           <menuitem label="&MSIComputeMatrixStackCmd.label;"     accesskey="&MSIComputeMatrixStackCmd.accesskey;"            observes="cmd_MSIComputeStack"/>
