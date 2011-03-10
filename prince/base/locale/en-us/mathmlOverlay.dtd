@@ -23,7 +23,7 @@
 <!ENTITY MSIradicalCmd.accesskey "r">
 <!ENTITY MSIradicalCmd.keybinding "r">
 <!ENTITY MSIsupCmd.label "Superscript">
-<!ENTITY MSIsupCmd.accesskey "s">
+<!ENTITY MSIsupCmd.accesskey "S">
 <!ENTITY MSIsupCmd.keybinding "H">
 <!ENTITY MSIsubCmd.label "Subscript">
 <!ENTITY MSIsubCmd.accesskey "t">
@@ -107,7 +107,7 @@
 <!ENTITY insertmenuNote.label "Note...">
 <!ENTITY insertmenuNote.accesskey "N">
 <!ENTITY insertmenuFootnote.label "Footnote">
-<!ENTITY insertmenuFootnote.accesskey "F">
+<!ENTITY insertmenuFootnote.accesskey "E">
 <!ENTITY insertmenuFormula.label "Formula...">
 <!ENTITY insertmenuFormula.accesskey "M">
 <!ENTITY insertmenuMarker.label "Marker...">

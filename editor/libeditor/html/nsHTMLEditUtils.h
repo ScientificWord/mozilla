@@ -48,6 +48,7 @@ class msiITagListManager;
 class nsHTMLEditUtils
 {
 public:
+  static PRBool IsMath(nsIDOMNode *aNode);
   // from nsTextEditRules:
   static PRBool IsBig(nsIDOMNode *aNode);
   static PRBool IsSmall(nsIDOMNode *aNode);
