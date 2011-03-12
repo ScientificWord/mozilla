@@ -2621,11 +2621,11 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   else { // if we didn't show the File Save dialog, we need destLocalFile to be A.sci
 //   currentSciFile.initWithPath( currentSciFilePath );  // now = A.sci
    destLocalFile = currentSciFile.clone(); 
-   destLocalFile = destLocalFile.parent;
-   var leaf = destLocalFile.leafName;
-   leaf=leaf.replace(/_work$/i,"");
-   destLocalFile = destLocalFile.parent;
-   destLocalFile.append(leaf);      
+//   destLocalFile = destLocalFile.parent;
+//   var leaf = destLocalFile.leafName;
+//   leaf=leaf.replace(/_work$/i,"");
+//   destLocalFile = destLocalFile.parent;
+//   destLocalFile.append(leaf);      
   }
 
   leafname = destLocalFile.leafName;
