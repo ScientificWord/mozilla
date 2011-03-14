@@ -9,6 +9,7 @@
             title="Preferences"
             onload = "initialize();"
             ondialogaccept="onAccept();"
+            persist="height width xpos ypos"
             xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/editorUtilities.js"/>
@@ -793,5 +794,28 @@
       </tabpanels>
     </tabbox>
   </prefpane>
+  <prefpane id="prefAdvanced" label="Advanced">
+    <tabbox>
+      <tabs>
+        <tab id="prefAdvancedPrefs" label="Advanced preferences"/>
+        <tab id="prefAdvancedPlugins" label="Plugins"/>
+      </tabs>
+      <tabpanels>
+        <tabpanel orient="vertical" flex="1">
+          <groupbox flex="1" height="320px">
+            <caption label="Advanced preferences" />
+            <iframe id="prefsAdvPane" src="chrome://global/content/config.xul"  height="300px" flex="1"/>
+          </groupbox>
+        </tabpanel>
+        <tabpanel orient="vertical" flex="1">
+          <groupbox  height="320px">
+            <caption label="Installed plugins" />
+            <iframe id="pluginsPane" src="about:plugins" height="300px" flex="1"/>
+          </groupbox>
+        </tabpanel>
+      </tabpanels>
+    </tabbox>
+  </prefpane>
 
+  
 </prefwindow>
