@@ -10,7 +10,6 @@ texlogo {
 /* texlogo:before{ content: "_";} */
 
 texlogo sup {
-  letter-spacing: 1px;
   font-size: 0.85em;
   vertical-align: 0.15em;
   margin-left: -0.36em;
@@ -453,24 +452,6 @@ paragraph[nonum="true"]>sectiontitle:before {
   content: "";
 }
 
-
-*[showinvis="true"] *:first-child:after {
-  content: "\B6";
-  display: inline;
-  font-family: Courier New;
-  color: green;
-  font-weight: bold;
-  -moz-user-select: -moz-none;
-}
-
-*[showinvis="true"] *:first-child:after {
-  content: "\B6";
-  display: inline;
-  font-family: Courier New;
-  color: green;
-  font-weight: bold;
-  -moz-user-select: -moz-none;
-}
 
 *[showinvis="true"] sectiontitle:after {
   content: "\B6";
