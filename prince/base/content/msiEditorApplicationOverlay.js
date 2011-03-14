@@ -95,7 +95,7 @@ function msiPrefs()
   o.engSent     = msiComputeLogger.logEngSent;
   o.engReceived = msiComputeLogger.logEngReceived;
   
-  openDialog("chrome://prince/content/preferences.xul", "preferences", "chrome,titlebar,toolbar,centerscreen,modal", o);
+  openDialog("chrome://prince/content/preferences.xul", "preferences", "chrome,titlebar,resizable,toolbar,centerscreen,modal", o);
 
   if (o.Cancel)
     return;
