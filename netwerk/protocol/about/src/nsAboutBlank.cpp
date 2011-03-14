@@ -44,7 +44,9 @@
 NS_IMPL_ISUPPORTS1(nsAboutBlank, nsIAboutModule)
 
 static const char kBlankPage[] = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">"
-"<html><head><title></title></head><body></body></html>";
+"<html><head><title></title></head><body>"
+"<span style='font-family: sans-serif; font-size:30pt; display: block; margin-top: 1in; color: rgb(190,190,190); text-align:center;'>"
+"Scientific WorkPlace, 6.0<br/><span style='font-size: 14pt;'>MacKichan Software, Inc.</span></span></body></html>";
 
 NS_IMETHODIMP
 nsAboutBlank::NewChannel(nsIURI *aURI, nsIChannel **result)
