@@ -1087,13 +1087,7 @@ function doSoftSave(editorElement, editor)
     // we should be doing this only for top level documents, and we should restore the focus
     msiFinishHTMLSource(editorElement);
     var url = msiGetEditorURL(editorElement);
-    var range = editor.document.createRange();
-    var s = editor.selection;
-    range.setStart(s.anchorNode, s.anchorOffset);
-    range.setEnd(s.focusNode, s.focusOffset);
     result = msiSoftSave(editor, editorElement);
-    if(s.rangeCount > 0) s.removeAllRanges();
-    s.addRange(range);
   }
   return result;
 }
@@ -2416,12 +2410,18 @@ function msiSoftSave( editor, editorElement)
        oldDefnList.parentNode.removeChild(oldDefnList);
     if (defnListString && defnListString.length > 0)
     {
+      var range = editor.document.createRange();
+      var s = editor.selection;
+      range.setStart(s.anchorNode, s.anchorOffset);
+      range.setEnd(s.focusNode, s.focusOffset);
       defnListString = defnListString.replace(/<p>/,"<bodyText>", "g");
       defnListString = defnListString.replace(/<\/p>/,"</bodyText>", "g")
       defnListString = "<doc>" + defnListString + "</doc>";
       var defnList = editorDoc.createElement("definitionlist");
       insertXML(editor, defnListString, defnList, 0, true);
       preamble.appendChild(defnList);
+      if(s.rangeCount > 0) s.removeAllRanges();
+      s.addRange(range);
     }
   }
 
@@ -2621,11 +2621,11 @@ function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor
   else { // if we didn't show the File Save dialog, we need destLocalFile to be A.sci
 //   currentSciFile.initWithPath( currentSciFilePath );  // now = A.sci
    destLocalFile = currentSciFile.clone(); 
-   destLocalFile = destLocalFile.parent;
-   var leaf = destLocalFile.leafName;
-   leaf=leaf.replace(/_work$/i,"");
-   destLocalFile = destLocalFile.parent;
-   destLocalFile.append(leaf);      
+//   destLocalFile = destLocalFile.parent;
+//   var leaf = destLocalFile.leafName;
+//   leaf=leaf.replace(/_work$/i,"");
+//   destLocalFile = destLocalFile.parent;
+//   destLocalFile.append(leaf);      
   }
 
   leafname = destLocalFile.leafName;
