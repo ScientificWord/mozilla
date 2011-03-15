@@ -802,13 +802,13 @@
       </tabs>
       <tabpanels>
         <tabpanel orient="vertical" flex="1">
-          <groupbox flex="1" height="320px">
+          <groupbox flex="1" height="320px" style="margin-top:10px">
             <caption label="Advanced preferences" />
             <iframe id="prefsAdvPane" src="chrome://global/content/config.xul"  height="300px" flex="1"/>
           </groupbox>
         </tabpanel>
         <tabpanel orient="vertical" flex="1">
-          <groupbox  height="320px">
+          <groupbox  height="320px" style="margin-top:10px">
             <caption label="Installed plugins" />
             <iframe id="pluginsPane" src="about:plugins" height="300px" flex="1"/>
           </groupbox>
