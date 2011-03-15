@@ -5456,7 +5456,8 @@ nsIFrame::GetFrameFromDirection(nsDirection aDirection, PRBool aVisual,
   }
   if ((pFrame==nsnull) || (count > 0))
   {
-//    pParent = traversedFrame;
+    pParent = traversedFrame;
+    pChild = traversedFrame;
     pFrame = IsMathFrame(traversedFrame)?traversedFrame:nsnull;
     if (!pFrame) 
     {
