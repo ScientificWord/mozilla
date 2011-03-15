@@ -37,7 +37,7 @@ function initialize()
   tree.setAttribute("ref", url.spec);
   tree.currentIndex = 0;
   showShellsInDir(tree);
-  ComputeUserSettingsStartup();
+  ();
 }                           
 
 function showShellsInDir(tree)
@@ -82,7 +82,7 @@ function showShellsInDir(tree)
 
 var data;
 
-function ComputeUserSettingsStartup(){
+function UserSettingsStartup(){
   data = window.arguments[0];
 
   setValue("digitsUsed", data.digitsUsed.toString());
@@ -113,7 +113,7 @@ function ComputeUserSettingsStartup(){
   setIndex("diffd", data.diffd);
   setIndex("expe", data.expe ? 1 : 0);
 
-  data.logSent     = msiComputeLogger.logMMLSent;
+  data.logSent     = msiLogger.logMMLSent;
   data.logReceived = msiComputeLogger.logMMLReceived;
   data.engSent     = msiComputeLogger.logEngSent;
   data.engReceived = msiComputeLogger.logEngReceived;
