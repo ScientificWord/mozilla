@@ -208,7 +208,7 @@ bool Stop_Interrupt()
 // MuPAD DLL is giving us a time slice during computation
 static void MUP_CALLBACK Stop_MuPAD(MUP_Cookie data)
 {
-  printf("\n *** Stop_MuPAD\n");
+  //printf("\n *** Stop_MuPAD\n");
   MUP_Kernel ker = reinterpret_cast<MUP_Kernel>(data);
   if (ker && Stop_Interrupt())
     MUP_send_stop(ker);
@@ -217,7 +217,7 @@ static void MUP_CALLBACK Stop_MuPAD(MUP_Cookie data)
 // MuPAD DLL crashed and called fatal_exit_handler()
 static void MUP_CALLBACK Cleanup_MuPAD()
 {
-  printf("\n *** Cleanup_MuPAD\n");
+  //printf("\n *** Cleanup_MuPAD\n");
   longjmp(mupad_mark, -1);
 }
 
@@ -281,7 +281,7 @@ int MuPADEngine::GetEngStrPtr(int str_ID, const char **engstr, int *engstr_ln)
 
 bool MuPADEngine::LoadStrsAndDLL(nsILocalFile *engpath, nsILocalFile *libpath)
 {
-  printf("\n\n  jcs mupd_eng.cpp LoadStrsAndDLL\n");
+  //printf("\n\n  jcs mupd_eng.cpp LoadStrsAndDLL\n");
   bool rv = false;
   TCIString ErrorMessage;
   //TCIString pathLib;
@@ -307,7 +307,7 @@ bool MuPADEngine::LoadStrsAndDLL(nsILocalFile *engpath, nsILocalFile *libpath)
   	  pathLib = cpy;
   }
   //printf("\n\n  jcs pathLib = %s\n", pathLib);
-  fflush(NULL);
+  //fflush(NULL);
   m_client = new MuPADMssgHandler();
   if (!m_client)
     return rv;
