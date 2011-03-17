@@ -747,7 +747,8 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
             res = msiUtils::CreateMathMLElement(this, msiEditingAtoms::math, mathElement);
             nsCOMPtr<nsIDOMNode> mathNode = do_QueryInterface(mathElement);
             res = InsertNodeAtPoint(mathNode, address_of(parentNode), &offsetOfNewNode, PR_TRUE);
-            res = InsertNodeAtPoint(curNode, address_of(mathNode), 0, PR_TRUE);
+            PRInt32 offset = 0;
+            res = InsertNodeAtPoint(curNode, address_of(mathNode), &offset, PR_TRUE);
             parentNode = mathElement;
             offsetOfNewNode = 1;
           }
