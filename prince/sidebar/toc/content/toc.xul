@@ -34,7 +34,7 @@
        flex="0" oncommand="toggleChecked(this);buildTOC();" persist="checked"/>
     <menuitem id="LOT" label="LOT" tooltip="Show list of tables" checked="false"
        flex="0" oncommand="toggleChecked(this);buildTOC();" persist="checked"/>
-    <menuitem id="Tag" label="Tag" tooltip="Show tag occurrences" checked="false"
+    <menuitem id="Tag" label="Notes" tooltip="Show notes" checked="false"
        flex="0" oncommand="toggleChecked(this);buildTOC();" persist="checked"/>
     <scale id="toc-level-scale" min="0" max="7" width="50px" height="15px"
       increment="1" pageIncrement="1" onchange="setTOCLevel(this.value);"
