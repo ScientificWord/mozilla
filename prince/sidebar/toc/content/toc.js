@@ -81,7 +81,7 @@ function buildTOC()
   var re = /##othertags##/g;
   stylestring = stylestring.replace(re,tagArr.join("|html:"));
   re = /##LOF##/g
-  stylestring = stylestring.replace(re, ""+(doLOF?"html:img":"html:xxximg"));
+  stylestring = stylestring.replace(re, ""+(doLOF?"html:object":"html:xxximg"));
   re = /##LOT##/g
   stylestring = stylestring.replace(re, ""+(doLOT?"html:table":"html:xxxtable"));
   re = /##TAG##/g
