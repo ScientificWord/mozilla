@@ -1459,11 +1459,21 @@ function doLabeledComputation(math,op,labelID, editorElement)
 }
 
 
-function CloneTheRange(mathElement, r)
+function CloneTheRange(mathElement, r, editorElement)
 {
    var mathout = mathElement.cloneNode(false);
-   var c = r.clone();
-   mathElement.insert();
+   var editor = msiGetEditor(editorElement);
+   //var c = r.cloneRange();
+   //mathout.insert(c);
+   var nodeArray = editor.nodesInRange(r);
+   var enumerator = nodeArray.enumerate();
+   while (enumerator.hasMoreElements())
+   {
+      var node = enumerator.getNext();
+      node = node.cloneNode(true);
+      mathout.appendChild(node);
+   }
+   return mathout;
 }
 
 // like above, but use operator instead of text between input and result
@@ -1474,22 +1484,24 @@ function doEvalComputation(mathElement,op,joiner,remark, editorElement)
   var anchor = sel.anchorNode;
   var leftEnd;
   var rightEnd;
-  var mathout;
+  var mathOut;
   if (sel.isCollapsed) {
     leftEnd = FindLeftEndOfSide(mathElement, anchor)
     rightEnd = FindRightEndOfSide(mathElement, leftEnd);
     mathOut = CloneTheSide(mathElement, leftEnd, rightEnd);
   } else {
-    var r = selection.getRangeAt(0);
-    mathout = CloneTheRange(mathElement, r); 
+    var r = sel.getRangeAt(0);
+    leftEnd = FindLeftEndOfSide(mathElement, anchor)
+    rightEnd = FindRightEndOfSide(mathElement, leftEnd);
+    mathOut = CloneTheRange(mathElement, r, editorElement); 
   }
     
   var mathstr = GetFixedMath(mathOut);
 
-  msiComputeLogger.Sent(remark+" after fixup",mathstr);
+  msiComputeLogger.Sent(remark + " after fixup", mathstr);
   ComputeCursor(editorElement);
   try {
-    var out = GetCurrentEngine().perform(mathstr,op);
+    var out = GetCurrentEngine().perform(mathstr, op);
     msiComputeLogger.Received(out);
     //appendResult(out,joiner,math, editorElement);
     insertResult(out, joiner, mathElement, editorElement, rightEnd);
