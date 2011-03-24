@@ -2737,7 +2737,7 @@ nsresult msiEditor::AdjustCaret(nsIDOMEvent * aMouseEvent, nsCOMPtr<nsIDOMNode> 
 //    inside, respectively.
 // 3. In math, we will quit once we encounter a node other than <mi>, <mn> or <mo>. If we encounter a multicharacter <mi>,
 //    we set fCanEndHere to false until we are returning the first character in the <mi>. This keeps us from 
-//    matching a proper subset of a multicharacter <mi> (but we can include al of the <mi> contents in a match).
+//    matching a proper subset of a multicharacter <mi> (but we can include all of the <mi> contents in a match).
 // 4. Multiple white space characters will be coalesced into a space, and &invisibletimes is ignored. For this reason
 //    we pass the last character matched (actually, a boolean telling if the last character matched was a space would
 //    be sufficient).
@@ -2752,8 +2752,13 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
   nsCOMPtr<nsIDOM3Node> textNode;
   nsCOMPtr<nsIDOMNode> node2;
   nsCOMPtr<nsIDOMNode> node3;
+  nsCOMPtr<nsIDOMNode> pnode;
   PRUint32 offset, length, offset2;
+  PRBool fCanEndHere = PR_TRUE;
   nsAutoString theText;
+  nsString tag;
+  nsIAtom * atomNS;
+  nsresult rv;
   offset = offsetIn;
   if (IsTextContentNode(nodeIn))
   {
@@ -2763,9 +2768,13 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
     while ((PRInt32)(--offset) >= 0)
     {
       while (prevChar == ' ' && theText[offset] == ' ') --offset;
+      nodeIn->GetParentNode(getter_AddRefs(pnode));
+      rv = mtagListManager->GetTagOfNode(pnode, &atomNS, tag);
+      fCanEndHere = PR_TRUE;
+      if (tag.EqualsLiteral("mi")) fCanEndHere = (offset==0);
       prevChar = theText[offset];
       m_autosub->NextChar(inMath, prevChar, & _result);
-      if (_result == msiIAutosub::STATE_SUCCESS)
+      if (_result == msiIAutosub::STATE_SUCCESS && fCanEndHere)
       {
         *nodeOut = nodeIn;
         offsetOut = offset;
@@ -2812,6 +2821,17 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
       {
         _result = msiIAutosub::STATE_FAIL;
          return NS_OK; // no more nodes available. return _result.
+      }
+      else
+      {
+        rv = mtagListManager->GetTagOfNode(node2, &atomNS, tag);
+        PRBool fTagIsTextTag;
+        rv =  mtagListManager->GetTagInClass(NS_LITERAL_STRING("texttag"),tag,atomNS, &fTagIsTextTag);
+        if (!(fTagIsTextTag || tag.EqualsLiteral("mi") || tag.EqualsLiteral("mo") || tag.EqualsLiteral("mn")))  
+        {
+          _result = msiIAutosub::STATE_FAIL;
+          return NS_OK;
+        }
       }
       tempnode = node2;
       node2 = nsnull; // go around again to get the previous sibling
