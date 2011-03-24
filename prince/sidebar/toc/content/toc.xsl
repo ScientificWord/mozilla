@@ -89,10 +89,8 @@
 	<treeitem xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 		<treerow>
 			<treecell>
-				<xsl:attribute name="label"><xsl:value-of select="local-name(.)"/>: <xsl:value-of select="*"/></xsl:attribute>
-				<xsl:attribute name="value">
-					<xsl:value-of select="@id"/>
-				</xsl:attribute>		
+				<xsl:attribute name="label"><xsl:value-of select="*"/></xsl:attribute>
+				<xsl:attribute name="value"><xsl:value-of select="@id"/></xsl:attribute>		
 			</treecell>
 		</treerow>
 	</treeitem>
