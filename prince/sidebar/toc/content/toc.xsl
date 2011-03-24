@@ -8,47 +8,56 @@
   <xsl:apply-templates/>
 </xsl:template>
 
+<xsl:template match="text()|@*"></xsl:template>
+
 <xsl:template match="*"><!--map all nodes to blank unless they match a rule below--> </xsl:template>
 <xsl:template match="html:*"><xsl:apply-templates/></xsl:template>
 
-<xsl:template match="html:body">
+<xsl:template match="##TAG##">
+  <treeitem xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+    <treerow>
+      <treecell>
+        <xsl:attribute name="label">Footnote: <xsl:value-of select="."/></xsl:attribute>
+        <xsl:attribute name="value"><xsl:value-of select="@id"/></xsl:attribute>
+      </treecell>
+    </treerow>
+  </treeitem>
+</xsl:template>
 
+<xsl:template match="html:body">
   <tree xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   	id="toc-tree" flex="1" seltype="single"	class="tree" contextmenu="toc-context-menu">
     <treecols>
       <treecol id="tocColumn" label="Name" primary="true" flex="1" />
     </treecols>
-	<treechildren>
-		<xsl:attribute name="ondblclick">
-		  jump();
-		</xsl:attribute>
-		<xsl:apply-templates/>	
-	</treechildren>
+	  <treechildren>
+		  <xsl:attribute name="ondblclick">jump();</xsl:attribute>
+		  <xsl:apply-templates/>	
+	  </treechildren>
   </tree>
-
 </xsl:template>
 
-<xsl:template match="##sectiontags####othertags##">
+<xsl:template match="##sectiontags##">
 	<treeitem xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 		<xsl:attribute name="container">true</xsl:attribute>
 		<xsl:attribute name="open">true</xsl:attribute>
 	  <treerow>
 		  <treecell>
-			<xsl:attribute name="label">
-			  <xsl:value-of select="*[1]"/>
-			</xsl:attribute>
-			<xsl:attribute name="value">
-			  <xsl:value-of select="@id"/>
-			</xsl:attribute>		
+			  <xsl:attribute name="label">
+			    <xsl:value-of select="*[1]"/>
+			  </xsl:attribute>
+			  <xsl:attribute name="value">
+			    <xsl:value-of select="@id"/>
+			  </xsl:attribute>		
 			</treecell>
 		</treerow>
-		<xsl:if test="##sectiontags##">
-			<treechildren>
-				<xsl:apply-templates/>
-		  </treechildren>
-		</xsl:if>
+    <treechildren>
+      <xsl:apply-templates/>
+    </treechildren>
 	</treeitem>
 </xsl:template>
+
+
 
 <!-- BBM  The following two templates need to be modified to pick up a caption --> 
 
@@ -84,18 +93,6 @@
 		</treerow>
 	</treeitem>
 </xsl:template>
-
-<xsl:template match="##TAG##"> 
-	<treeitem xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-		<treerow>
-			<treecell>
-				<xsl:attribute name="label"><xsl:value-of select="*"/></xsl:attribute>
-				<xsl:attribute name="value"><xsl:value-of select="@id"/></xsl:attribute>		
-			</treecell>
-		</treerow>
-	</treeitem>
-</xsl:template>
-
 </xsl:stylesheet>
 
 
