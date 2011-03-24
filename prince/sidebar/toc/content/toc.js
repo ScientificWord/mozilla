@@ -44,11 +44,11 @@ function buildTOC()
   var otherTagArray = tagArr;
   var doLOF, doLOT, doTOC, doTag;
   doTOC = (document.getElementById("TOC").getAttribute('checked')=='true');
-  doLOF = (document.getElementById("LOF").hasAttribute('checked')=='true');
-  doLOT = (document.getElementById("LOT").hasAttribute('checked')=='true');
-  doTag = (document.getElementById("Tag").hasAttribute('checked')=='true');
+  doLOF = (document.getElementById("LOF").getAttribute('checked')=='true');
+  doLOT = (document.getElementById("LOT").getAttribute('checked')=='true');
+  doTag = (document.getElementById("Tag").getAttribute('checked')=='true');
   if (doLOF)
-    otherTagArray.concat("img");
+    otherTagArray.concat("object");
   if (doLOT)
     otherTagArray.concat("table");
 
@@ -79,12 +79,13 @@ function buildTOC()
   var re = /##sectiontags##/g;
   stylestring = stylestring.replace(re,xpath);
   var re = /##othertags##/g;
-  stylestring = stylestring.replace(re,tagArr.join("|html:"));
-  re = /##LOF##/g
-  stylestring = stylestring.replace(re, ""+(doLOF?"html:object":"html:xxximg"));
-  re = /##LOT##/g
+  stylestring = stylestring.replace(re,"|html:"+tagArr.join("|html:"));
+  re = /##LOF##/g;
+  stylestring = stylestring.replace(re, ""+(doLOF?"html:object":"html:xxxobj"));
+  re = /##LOT##/g;
   stylestring = stylestring.replace(re, ""+(doLOT?"html:table":"html:xxxtable"));
-  re = /##TAG##/g
+  re = /##TAG##/g;
+  doTag=true;
   stylestring = stylestring.replace(re, ""+(doTag?"html:"+tagArr.join("|html:"):"html:xxx"));
 
   dump( stylestring+"\n");
@@ -167,7 +168,7 @@ function ensureAllStructureTagsHaveIds(doc, tagarray)
   var regexp= /^(314|tsid_)/;
   var otherTags = document.getElementById("taglist").getAttribute('taglist');
   var tagArr = otherTags.split(" ");
-  var extendedarray = tagarray.concat('img','table', tagArr);
+  var extendedarray = tagarray.concat('object','table', tagArr);
   
   for (i=0; i<extendedarray.length; i++)
   {
@@ -200,5 +201,5 @@ function setTOCLevel(level)
 
 function toggleChecked(item)
 {
-  item.setAttribute("checked", (item.getAttribute("checked")=="true")?"false":"true");
+  item.setAttribute("checked", (item.getAttribute("checked")=="true"?"false":"true"));
 }
