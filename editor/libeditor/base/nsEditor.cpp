@@ -149,6 +149,9 @@ void DumpDocumentNodeImpl( nsIDOMNode * pNode, PRUint32 indent)
   }
 }
 
+
+
+
 void DumpDocumentNode( nsIDOMNode * pNode)
 {
 //  DumpDocumentNodeImpl(pNode, 0);
@@ -268,7 +271,7 @@ nsEditor::DumpNode(nsIDOMNode *aNode, PRInt32 indent, bool recurse /* = false */
 
   if (aNode == 0){
     printf("!NULL!\n");
-	return;
+	  return;
   }
   
   nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aNode);
