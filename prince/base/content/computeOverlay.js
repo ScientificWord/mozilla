@@ -11,7 +11,10 @@ var msiEvaluateCommand =
             (isInMath(editorElement) || 
              aCommand == "cmd_MSIComputeFillMatrix" ||
              aCommand == "cmd_MSIComputeRandomMatrix"||
-             aCommand == "cmd_MSIComputeRandomNumbers" ) );
+             aCommand == "cmd_MSIComputeRandomNumbers" ||
+             (aCommand == "cmd_MSIComputePassthru" &&
+              msiGetEditor(editorElement).selection &&
+              (! msiGetEditor(editorElement).selection.isCollapsed) ) ) );
   },
 
   getCommandStateParams: function(aCommand, aParams, editorElement) {},
@@ -338,7 +341,7 @@ function doSetupMSIComputeMenuCommands(commandTable)
   //commandTable.registerCommand("cmd_MSIComputeSwitchEngines", msiDefineCommand);     
   commandTable.registerCommand("cmd_MSIComputeInterpret",     msiEvaluateCommand);
   commandTable.registerCommand("cmd_MSIComputeFixup",         msiEvaluateCommand);
-  commandTable.registerCommand("cmd_MSIComputePassthru",      msiDefineCommand);
+  commandTable.registerCommand("cmd_MSIComputePassthru",      msiEvaluateCommand);
 }
 
 
@@ -2886,6 +2889,7 @@ function doComputePassthru(editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
+
   var str = "";
   var element = null;
   try
@@ -2895,19 +2899,40 @@ function doComputePassthru(editorElement)
 	    dump("no selection!\n");
       return;
     }
-    element = findtagparent(selection.focusNode,"code");
-    if (!element) {
-	    dump("not in code tag!\n");
+    
+    //element = findtagparent(selection.focusNode,"code");
+    //if (!element) {
+	  //  dump("not in code tag!\n");
+    //  return;
+    //}
+
+    //var text = element.firstChild;
+    //if (text.nodeType != Node.TEXT_NODE) {
+    //  dump("bad node structure.\n");
+    //  return;
+    //}
+
+    //str = WrapInMtext(text.nodeValue);
+
+    // Anchor and Focus the same?
+    var anchor = selection.anchorNode;
+    var focus = selection.focusNode;
+    if (anchor != focus) {
+      dump("\nanchor != focus in passtrhu\n");
       return;
     }
 
-    var text = element.firstChild;
-    if (text.nodeType != Node.TEXT_NODE) {
-      dump("bad node structure.\n");
-      return;
-    }
+    var r = selection.getRangeAt(0);
+    var editor = msiGetEditor(editorElement);
+    var nodeArray = editor.nodesInRange(r);
+    var enumerator = nodeArray.enumerate();
+    var node = enumerator.getNext();
+    var content = node.nodeValue;
 
-    str = WrapInMtext(text.nodeValue);
+    var first = (selection.anchorOffset < selection.focusOffset) ? selection.anchorOffset : selection.focusOffset;
+    var last = (selection.anchorOffset < selection.focusOffset) ? selection.focusOffset : selection.anchorOffset;
+    str = "<mtext>" + content.substr(first, last - first + 1) + "</mtext>";
+    
     msiComputeLogger.Sent("passthru",str);
   }
   catch(exc) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputePassthru; exception is [" + exc + "]."); return;}
