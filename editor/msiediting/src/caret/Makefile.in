@@ -81,7 +81,8 @@ FORCE_STATIC_LIB = 1
 
 include $(topsrcdir)/config/rules.mk
 
-INCLUDES        += -I$(srcdir)/..
+INCLUDES        += -I$(srcdir)/.. \
+                   -I$(topsrcdir)/editor/libeditor/base
 
 #flag below is required to get nsLayoutUtils
 DEFINES += -D_IMPL_NS_LAYOUT

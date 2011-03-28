@@ -199,6 +199,12 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
   if (allowed && CmdGoesToEngine(cmd_ID)) {
     int error_code = 0;
     char *eng_zstr = NULL;
+    
+    if (cmd_ID == CCID_PassThru){
+      eng_zstr = new char[strlen(root -> contents)+1];
+      strcpy(eng_zstr, root -> contents);
+      //eng_zstr = root -> contents;
+    }
 
     if (children) {
       // Traverse the math object (a semantic tree), 
@@ -224,6 +230,7 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
     }
 
     char *zEngine_input = NULL;
+    
     if (!error_code) {
       zEngine_input =
         CreateEngineCommandStr(*msr, cmd_ID, eng_zstr, error_code);
