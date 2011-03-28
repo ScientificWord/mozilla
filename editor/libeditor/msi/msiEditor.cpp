@@ -2737,7 +2737,7 @@ nsresult msiEditor::AdjustCaret(nsIDOMEvent * aMouseEvent, nsCOMPtr<nsIDOMNode> 
 //    inside, respectively.
 // 3. In math, we will quit once we encounter a node other than <mi>, <mn> or <mo>. If we encounter a multicharacter <mi>,
 //    we set fCanEndHere to false until we are returning the first character in the <mi>. This keeps us from 
-//    matching a proper subset of a multicharacter <mi> (but we can include all of the <mi> contents in a match).
+//    matching a proper subset of a multicharacter <mi> (but we can include al of the <mi> contents in a match).
 // 4. Multiple white space characters will be coalesced into a space, and &invisibletimes is ignored. For this reason
 //    we pass the last character matched (actually, a boolean telling if the last character matched was a space would
 //    be sufficient).
@@ -2774,10 +2774,18 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
       if (tag.EqualsLiteral("mi")) fCanEndHere = (offset==0);
       prevChar = theText[offset];
       m_autosub->NextChar(inMath, prevChar, & _result);
-      if (_result == msiIAutosub::STATE_SUCCESS && fCanEndHere)
+      if (_result == msiIAutosub::STATE_SUCCESS)
       {
-        *nodeOut = nodeIn;
-        offsetOut = offset;
+        if (fCanEndHere)
+        {
+          *nodeOut = nodeIn;
+          offsetOut = offset;
+        }
+        else
+        {
+          //The autosub code thought it saw a match, but here we are overriding that decision
+          //We do not update nodeOut or offsetOut
+        }
       }
       else if (_result == msiIAutosub::STATE_FAIL) 
       {
@@ -2855,11 +2863,11 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
   // nodes.
   nsCOMPtr<nsIDOMNode> node;
   nsCOMPtr<nsIDOM3Node> textNode;
-  nsCOMPtr<nsIDOMNode> originalNode;
+  nsCOMPtr<nsIDOMNode> originalNode = nsnull;
   PRUnichar ch = 0;
   PRInt32 ctx, action; 
   PRInt32 intOffset;
-  PRUint32 offset;
+  PRUint32 offset = 0;
   nsAutoString theText;
   PRInt32 lookupResult;
   nsAutoString data, pasteContext, pasteInfo, error;       
