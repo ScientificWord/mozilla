@@ -108,6 +108,7 @@
 #include "msiUtils.h"
 #include "msiNameSpaceUtils.h"
 #include "msiIBigOpInfo.h"
+#include "jcsDumpNode.h"
 
 NS_IMPL_ISUPPORTS1(msiEditingManager, msiIEditingManager)
 
@@ -969,6 +970,15 @@ msiEditingManager::InsertMathname(nsIEditor* editor,
                                   PRUint32 offset,
                                   const nsAString & mathname)
 {
+
+  printf("\njcs -- msiEditingManager::InsertMathname\n");
+  printf("\nnode\n");
+  DumpNode(node,0, true);
+  printf("\noffset = %d\n", offset);
+  printf("\nselection\n");
+  DumpSelection(selection);
+
+
   nsresult res(NS_ERROR_FAILURE);
   NS_ASSERTION(editor && selection && node, "Null editor, selection or node passed to msiEditingManager::InsertMathname");
   if (editor && selection && node)
