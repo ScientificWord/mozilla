@@ -22,6 +22,7 @@
 #include "nsIArray.h"
 #include "nsIMutableArray.h"
 #include "nsComponentManagerUtils.h"
+#include "jcsDumpNode.h"
 
 msiMCaretBase::msiMCaretBase(nsIDOMNode* mathmlNode, 
                              PRUint32 offset,
@@ -951,6 +952,10 @@ msiMCaretBase::StandardSetupDelTxns(nsIEditor * editor,
       nsCOMPtr<nsIDOMNode> parentMMLNode;
       msiUtils::GetOffsetFromCaretInterface(parentCaret, offset);
       msiUtils::GetMathmlNodeFromCaretInterface(parentCaret, parentMMLNode);
+
+      printf("\njcs -- parentMMLNode\n");
+      DumpNode(parentMMLNode,0, true);
+
       if (parentMMLNode && IS_VALID_NODE_OFFSET(offset))
         res = parentCaret->SetupDeletionTransactions(editor, parentMMLNode, offset, 
                                                      parentMMLNode, offset+1,
