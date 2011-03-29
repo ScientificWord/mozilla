@@ -1,12 +1,12 @@
 #include "jcsDumpNode.h"
 
-#include "nsIDomElement.h"
-#include "nsComPtr.h"
+#include "nsIDOMElement.h"
+#include "nsCOMPtr.h"
 #include "nsString.h"
-#include "nsIDomNodeList.h"
-#include "nsIDomCharacterData.h"
-#include "nsIDomDocumentFragment.h"
-#include "nsIDomRange.h"
+#include "nsIDOMNodeList.h"
+#include "nsIDOMCharacterData.h"
+#include "nsIDOMDocumentFragment.h"
+#include "nsIDOMRange.h"
 
 // This function is a copy of one that is a member of nsEditor. However, (1) this function
 // has nothing to do with nsEditor, and (2) having it be a member makes it more difficult to
