@@ -1,5 +1,5 @@
 
-#include "nsIDomNode.h"
+#include "nsIDOMNode.h"
 #include "nsISelection.h"
 #include "nsIRange.h"
 
