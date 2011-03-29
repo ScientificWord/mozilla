@@ -738,7 +738,7 @@ function msiEditorDocumentObserver(editorElement)
         var is_topLevel = msiIsTopLevelEditor(this.mEditorElement);
         var seconds = GetIntPref("swp.saveintervalseconds"); 
         if (!seconds) seconds = 120;
-        if (is_topLevel)
+        if (is_topLevel && (seconds > 0))
           this.mEditorElement.softsavetimer = new SS_Timer(seconds*1000, editor, this.mEditorElement);
         if (!("InsertCharWindow" in window))
           window.InsertCharWindow = null;

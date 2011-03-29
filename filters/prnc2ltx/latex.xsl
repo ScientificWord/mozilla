@@ -421,10 +421,10 @@ should not be done under some conditions -->
 
 <xsl:template match="html:xref">
 <xsl:choose>
-  <xsl:when test="@reftype='page'">\vpageref%%</xsl:when>
+  <xsl:when test="@reftype='page'">\vpageref</xsl:when>
   <xsl:otherwise>\vref</xsl:otherwise>
 </xsl:choose>
-{<xsl:value-of select="@key"/>}{}%%
+{<xsl:value-of select="@key"/>}\xspace%%
 </xsl:template>
 
 
