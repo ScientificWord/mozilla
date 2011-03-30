@@ -2892,6 +2892,12 @@ function doComputePassthru(editorElement)
 
   var str = "";
   var element = null;
+  var first = 0;
+  var last = 0;
+  var anchor;
+  var focus;
+
+
   try
   {
     var selection = msiGetEditor(editorElement).selection;
@@ -2915,8 +2921,8 @@ function doComputePassthru(editorElement)
     //str = WrapInMtext(text.nodeValue);
 
     // Anchor and Focus the same?
-    var anchor = selection.anchorNode;
-    var focus = selection.focusNode;
+    anchor = selection.anchorNode;
+    focus = selection.focusNode;
     if (anchor != focus) {
       dump("\nanchor != focus in passtrhu\n");
       return;
@@ -2929,9 +2935,9 @@ function doComputePassthru(editorElement)
     var node = enumerator.getNext();
     var content = node.nodeValue;
 
-    var first = (selection.anchorOffset < selection.focusOffset) ? selection.anchorOffset : selection.focusOffset;
-    var last = (selection.anchorOffset < selection.focusOffset) ? selection.focusOffset : selection.anchorOffset;
-    str = "<mtext>" + content.substr(first, last - first + 1) + "</mtext>";
+    first = (selection.anchorOffset < selection.focusOffset) ? selection.anchorOffset : selection.focusOffset;
+    last = (selection.anchorOffset < selection.focusOffset) ? selection.focusOffset : selection.anchorOffset;
+    str = "<mtext>" + content.substr(first, last - first) + "</mtext>";
     
     msiComputeLogger.Sent("passthru",str);
   }
@@ -2947,24 +2953,24 @@ function doComputePassthru(editorElement)
     msiComputeLogger.Exception(e);
   }
 
-  var child = element;
-  var node = child.parentNode;
-  while (node) {
-    if (node.localName == "body")
-      break;
-    else {
-      child = node;
-      node = child.parentNode;
-    }
-  }
+  //var child = element;
+  //var node = child.parentNode;
+  //while (node) {
+  //  if (node.localName == "body")
+  //    break;
+  //  else {
+  //    child = node;
+  //    node = child.parentNode;
+  //  }
+  //}
  
   if (out) {
-    var idx;
-    for (idx = 0; idx < node.childNodes.length; idx++) {
-      if (child == node.childNodes[idx])
-        break;
-    }
-    appendTaggedResult(out,GetComputeString("Passthru.fmt"),node,idx+1, editorElement);
+    //var idx;
+    //for (idx = 0; idx < node.childNodes.length; idx++) {
+    //  if (child == node.childNodes[idx])
+    //    break;
+    //}
+    appendTaggedResult(out, GetComputeString("Passthru.fmt"), anchor, last, editorElement);
   }
   RestoreCursor(editorElement);
 }

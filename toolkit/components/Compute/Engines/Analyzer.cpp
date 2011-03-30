@@ -428,6 +428,9 @@ SEMANTICS_NODE* Analyzer::BuildSemanticsTree(MathServiceRequest& msr,
       dMML_tree = CanonicalTreeGen->TreeToInterpretForm(dMML_tree, in_notation);
       break;
 
+    case CCID_PassThru:
+      break;
+
     default:
       dMML_tree = CanonicalTreeGen->TreeToCanonicalForm(dMML_tree, in_notation);
       break;
