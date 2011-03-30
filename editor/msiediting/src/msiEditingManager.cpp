@@ -971,12 +971,12 @@ msiEditingManager::InsertMathname(nsIEditor* editor,
                                   const nsAString & mathname)
 {
 
-  printf("\njcs -- msiEditingManager::InsertMathname\n");
-  printf("\nnode\n");
-  DumpNode(node,0, true);
-  printf("\noffset = %d\n", offset);
-  printf("\nselection\n");
-  DumpSelection(selection);
+  //printf("\njcs -- msiEditingManager::InsertMathname\n");
+  //printf("\nnode\n");
+  //DumpNode(node,0, true);
+  //printf("\noffset = %d\n", offset);
+  //printf("\nselection\n");
+  //DumpSelection(selection);
 
 
   nsresult res(NS_ERROR_FAILURE);
