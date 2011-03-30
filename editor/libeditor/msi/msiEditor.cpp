@@ -507,8 +507,8 @@ msiEditor::InsertMathname(const nsAString & mathname)
     res = GetNSSelectionData(selection, startNode, startOffset, endNode, 
                            endOffset, bCollapsed);
     
-    printf("\njcs -- InsertMathName selection:\n");
-    DumpSelection(selection);
+    //printf("\njcs -- InsertMathName selection:\n");
+    //DumpSelection(selection);
 
     if (NS_SUCCEEDED(res)) 
     {
