@@ -230,8 +230,8 @@ msiTypedSelection::Collapse(nsIDOMNode *parentNode, PRInt32 offset)
 NS_IMETHODIMP 
 msiTypedSelection::Extend(nsIDOMNode *parentNode, PRInt32 offset)
 {
-  printf("\njcs --- msiTypedSelection::Extend\n");
-  DumpSelection(this);
+  //printf("\njcs --- msiTypedSelection::Extend\n");
+  //DumpSelection(this);
   //printf("\nParent\n");
   //DumpNode(parentNode, 0, true);
 
