@@ -961,8 +961,8 @@ msiMCaretBase::StandardSetupDelTxns(nsIEditor * editor,
       msiUtils::GetOffsetFromCaretInterface(parentCaret, offset);
       msiUtils::GetMathmlNodeFromCaretInterface(parentCaret, parentMMLNode);
 
-      printf("\njcs -- parentMMLNode\n");
-      DumpNode(parentMMLNode,0, true);
+      //printf("\njcs -- parentMMLNode\n");
+      //DumpNode(parentMMLNode,0, true);
 
       if (parentMMLNode && IS_VALID_NODE_OFFSET(offset))
         res = parentCaret->SetupDeletionTransactions(editor, parentMMLNode, offset, 
