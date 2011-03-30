@@ -8831,6 +8831,7 @@ function msiEditorInsertOrEditTable(insertAllowed, editorElement, command, comma
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
   if (!reviseObjectData && msiIsInTable(editorElement))
   {
     reviseObjectData = new msiTablePropertiesObjectData();
@@ -9357,6 +9358,10 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     {
       element = element.getElementsByTagName("note")[0];
       if (element) elementName = element.localName;
+    }
+    else if (elementName == "table"||elementName=="thead"||elementName=="tr"||elementName=="td")
+    {
+      msiTable(element,editorElement);
     }
     else if (elementName == "note")
     {

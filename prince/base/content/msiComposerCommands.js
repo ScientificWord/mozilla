@@ -8926,6 +8926,12 @@ function msiNote(currNode, editorElement, type, hidden)
   editor.endTransaction(); 
 }
 
+function msiTable(element,editorElement)
+{
+  return msiEditorInsertOrEditTable(false, editorElement, "", null, null);
+}
+
+
 function msiFrame(editorElement)
 {
   var editor = msiGetEditor(editorElement);
