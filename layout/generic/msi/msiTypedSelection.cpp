@@ -1,6 +1,7 @@
 #include "msiISelection.h"
 #include "nsIPrivateDOMEvent.h"
 #include "msiIMathMLEditor.h"
+#include "../../../editor/libeditor/base/jcsDumpNode.h"
 
 class msiTypedSelection : public nsTypedSelection,
                           public msiISelection
@@ -228,7 +229,12 @@ msiTypedSelection::Collapse(nsIDOMNode *parentNode, PRInt32 offset)
 
 NS_IMETHODIMP 
 msiTypedSelection::Extend(nsIDOMNode *parentNode, PRInt32 offset)
-{ 
+{
+  printf("\njcs --- msiTypedSelection::Extend\n");
+  DumpSelection(this);
+  //printf("\nParent\n");
+  //DumpNode(parentNode, 0, true);
+
   nsresult res(NS_OK);
   nsCOMPtr<nsIDOMNode> adjustNode(parentNode);
   PRInt32 adjustOffset(offset);
@@ -243,6 +249,8 @@ msiTypedSelection::Extend(nsIDOMNode *parentNode, PRInt32 offset)
     SyncMSIwithNS();
   }
   SetDOMEvent(nsnull); // only use a mouse event once
+  //printf("\njcs --- leave extend\n");
+  //DumpSelection(this);
   return res;
 }
 
