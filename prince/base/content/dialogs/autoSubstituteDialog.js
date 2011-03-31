@@ -403,11 +403,6 @@ function getDataFromControl(whichType)
   return theValue;
 }
 
-function dataNonEmpty(whichtype)
-{
-  return getDataFromControl(whichtype).length > 0
-}
-
 function changeType(theType)
 {
   var currName = document.getElementById("keystrokesBox").value;
@@ -775,7 +770,7 @@ function saveCurrentSub()
 //  alert("Calling to add name: [" + currName + "], of type [" + theType + "], with bEngineFunction [" + bEngFuncStr + "] and bAutoSubstitute [" + bAutoSubStr + "].\n");
   var contextMarkupStr = "";  //this gets expanded in addSub to <math xmlns=...> if "theContext" is "math".
 //  if (gDialog.bIsNew)
-  var appareanceList = null;
+  var appearanceList = null;
   if ( (appearanceListFrag != null) && (appearanceListFrag.childNodes.length > 0) )
     appearanceList = appearanceListFrag.childNodes;
     gDialog.subsList.saveSub(currSub, theType, theContext, theData, contextMarkupStr, appearanceList);
@@ -833,11 +828,8 @@ function dumpln(s)
   dump(s+"\n");
 }
 
-function onOK() 
-{
+function onOK() {
   dumpln("a");
-  var theType = document.getElementById("autosubTypeRadioGroup").value;
-  gDialog.bDataNonEmpty = dataNonEmpty(theType);
   var bActionEnabled = gDialog.bDataNonEmpty && gDialog.bNameOK;
   if (!gDialog.bIsNew)
     bActionEnabled = gDialog.bDataNonEmpty && gDialog.bNameOK && gDialog.bCurrentItemModified;

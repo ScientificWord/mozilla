@@ -137,7 +137,9 @@
 #include "nsEventDispatcher.h"
 #include "nsEscape.h"
 #include "nsIWindowWatcher.h"
+#include "../../msiediting/src/msiUtils.h"
 #include "../../../content/base/src/nsAttrName.h"
+#include "../../msiediting/src/msiEditingAtoms.h"
 
 #define DEBUG_barry	1
 
@@ -302,6 +304,7 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
   ForceCompositionEnd();
   nsAutoEditBatch beginBatching(this);
   nsAutoRules beginRulesSniffing(this, kOpHTMLPaste, nsIEditor::eNext);
+  nsAutoString tagName;
   
   // Get selection
   nsresult res;
@@ -546,16 +549,16 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
     }
 // Now do the same for math as we did for tables and list items
     nsCOMPtr<nsIDOMNode> endNode = nodeList[0];
-    nsCOMPtr<nsIDOMNode> mathNode;
-    MathParent( endNode, getter_AddRefs(mathNode));
-    if (mathNode) ReplaceOrphanedMath(PR_FALSE, nodeList, mathNode);
-    // now do the other end.
+//    nsCOMPtr<nsIDOMNode> mathNode;
+//    MathParent( endNode, getter_AddRefs(mathNode));
+//    if (mathNode) ReplaceOrphanedMath(PR_FALSE, nodeList, mathNode);
+//    // now do the other end.
     PRUint32 length = nodeList.Count();
-    if (length > 1) {
-      endNode = nodeList[length-1];
-      MathParent( endNode, getter_AddRefs(mathNode));
-      if (mathNode) ReplaceOrphanedMath(PR_FALSE, nodeList, mathNode);
-    }
+//    if (length > 1) {
+//      endNode = nodeList[length-1];
+//      MathParent( endNode, getter_AddRefs(mathNode));
+//      if (mathNode) ReplaceOrphanedMath(PR_FALSE, nodeList, mathNode);
+//    }
 // Now fix up fragments internal to the math node
     endNode = nodeList[0];
 	// #if DEBUG_barry || DEBUG_Barry
@@ -680,6 +683,84 @@ nsHTMLEditor::InsertHTMLWithContext(const nsAString & aInputString,
             offsetOfNewNode++;
           }
           curNode->GetFirstChild(getter_AddRefs(child));
+        }
+      }
+      else if (nsHTMLEditUtils::IsMath(curNode))
+      {
+        //putting in math; check to see if it is going into math.
+        PRBool parentIsMath = nsHTMLEditUtils::IsMath(parentNode);
+        if (parentIsMath)
+        {
+          nsAutoString strTempInput;
+          nsCOMPtr<nsIDOMElement> pNode;
+          pNode = do_QueryInterface(parentNode);
+          GetTagString(parentNode, tagName);
+          if (tagName.EqualsLiteral("mi") || tagName.EqualsLiteral("mo"))
+          {
+            // can't insert in these. Move to the side or, if a tempinput mi, delete the mi.
+            res = pNode->GetAttribute(NS_LITERAL_STRING("tempinput"), strTempInput);
+            if (strTempInput.EqualsLiteral("true"))
+            {
+              // delete the tempinput mi, reset parentNode and offsetOfNewNode, and start again
+              nsCOMPtr<nsIDOMNode> grandParent;
+              res = parentNode->GetParentNode(getter_AddRefs(grandParent));
+              res = GetChildOffset(parentNode, grandParent, offsetOfNewNode);
+              res = DeleteNode(parentNode);
+              parentNode = grandParent;
+              GetTagString(parentNode, tagName);
+            }
+            else
+            {
+            }
+          }
+          if (!(tagName.EqualsLiteral("math") || tagName.EqualsLiteral("mrow")))
+          {
+            // put in an mrow (it might be redundant, but we don't care here) to hold the pasted math
+            nsCOMPtr<nsIDOMElement> mrow;
+            msiUtils::CreateMRow(this, curNode, mrow);
+            res = InsertNodeAtPoint(mrow, address_of(parentNode), &offsetOfNewNode, PR_TRUE);
+            parentNode = mrow;
+            offsetOfNewNode = 1;
+            if (NS_SUCCEEDED(res)) 
+            {
+              bDidInsert = PR_TRUE;
+              lastInsertNode = curNode;
+            }
+          }
+          else
+          {
+            res = InsertNodeAtPoint(curNode, address_of(parentNode), &offsetOfNewNode, PR_TRUE);
+            if (NS_SUCCEEDED(res)) 
+            {
+              bDidInsert = PR_TRUE;
+              lastInsertNode = curNode;
+            }
+          }
+        }
+        else
+        {
+          nsAutoString tagName;
+          GetTagString(curNode, tagName);
+          if (!tagName.EqualsLiteral("math"))
+          {
+            nsCOMPtr<nsIDOMElement> mathElement;
+            res = msiUtils::CreateMathMLElement(this, msiEditingAtoms::math, mathElement);
+            nsCOMPtr<nsIDOMNode> mathNode = do_QueryInterface(mathElement);
+            res = InsertNodeAtPoint(mathNode, address_of(parentNode), &offsetOfNewNode, PR_TRUE);
+            PRInt32 offset = 0;
+            res = InsertNodeAtPoint(curNode, address_of(mathNode), &offset, PR_TRUE);
+            parentNode = mathElement;
+            offsetOfNewNode = 1;
+          }
+          else
+          {
+            res = InsertNodeAtPoint(curNode, address_of(parentNode), &offsetOfNewNode, PR_TRUE);
+          }
+          if (NS_SUCCEEDED(res)) 
+          {
+            bDidInsert = PR_TRUE;
+            lastInsertNode = curNode;
+          }
         }
       }
       else

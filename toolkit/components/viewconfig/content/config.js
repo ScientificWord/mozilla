@@ -323,7 +323,7 @@ function onConfigLoad()
   gTypeStrs[nsIPrefBranch.PREF_INT] = gConfigBundle.getString("int");
   gTypeStrs[nsIPrefBranch.PREF_BOOL] = gConfigBundle.getString("bool");
 
-  var showWarning = gPrefBranch.getBoolPref("general.warnOnAboutConfig");
+  var showWarning = false; //gPrefBranch.getBoolPref("general.warnOnAboutConfig");
 
   if (showWarning)
     document.getElementById("warningButton").focus();
