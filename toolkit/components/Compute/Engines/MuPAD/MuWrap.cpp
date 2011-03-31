@@ -199,6 +199,12 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
   if (allowed && CmdGoesToEngine(cmd_ID)) {
     int error_code = 0;
     char *eng_zstr = NULL;
+    
+    if (cmd_ID == CCID_PassThru){
+      eng_zstr = new char[strlen(root -> contents)+1];
+      strcpy(eng_zstr, root -> contents);
+      //eng_zstr = root -> contents;
+    }
 
     if (children) {
       // Traverse the math object (a semantic tree), 
@@ -224,6 +230,7 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
     }
 
     char *zEngine_input = NULL;
+    
     if (!error_code) {
       zEngine_input =
         CreateEngineCommandStr(*msr, cmd_ID, eng_zstr, error_code);
@@ -244,17 +251,7 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
 
       if (zeng_output) {
         size_t numBytes = strlen(zeng_output);
-        #ifdef XP_WIN
-        // We need to make sure the filename zeng_output is ok for InitWithNativePath() below. 
-        // In particular, don't allow forward slash as in c:/temp\mx27.
-        // This is preventing debugging on windows.
-        for (int i = 0; i<numBytes; ++i){
-          if (zeng_output[i] == L'/'){
-            zeng_output[i] = L'\\';
-          }
-        }
-        #endif
-
+        
         // let plotqueries be handled by the standard code
         if ((context_cmdtype == CC_PLOTFUNC) && (context_cmdtemplatetype != CT_PLOTQUERY)) {
           // convert VCam to filename
@@ -270,6 +267,17 @@ SEMANTICS_NODE *MuPADWrapper::iProcessRequest(MathServiceRequest * msr,
           plotOK = (rv == NS_OK);
           if (plotOK)
           {
+              #ifdef XP_WIN
+              // We need to make sure the filename zeng_output is ok for InitWithNativePath() below. 
+              // In particular, don't allow forward slash as in c:/temp\mx27.
+              // This is preventing debugging on windows.
+              for (int i = 0; i<numBytes; ++i){
+                if (zeng_output[i] == L'/'){
+                  zeng_output[i] = L'\\';
+                }
+              }
+              #endif
+
               printf("plotOK is true\n");
               plotfile = do_CreateInstance("@mozilla.org/file/local;1", &rv);
               for (int i =0; i<100000;i++);

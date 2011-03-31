@@ -89,8 +89,10 @@
 the goal.  
 	        <label id="sectionShortHeader" control="sectionShortEdit" accesskey="&sectionShortHeader.accesskey;" value="&sectionShortHeader.label;"/> 
 -->
-     <caption label="&sectionShortHeader.label;"/> 
-	        <editor editortype="html" type="content" width="300" height="60" context="msiEditorContentContext" id="sectionShortEdit"  accesskey="&sectionShortHeader.accesskey;"/>
+     <caption> 
+      <label value="&sectionShortHeader.label;" />
+      </caption>
+	        <editor editortype="html" type="content" width="300" height="60" context="msiEditorContentContext" id="sectionShortEdit" />
 	      </groupbox>
       </tabpanel>    
     </tabpanels>

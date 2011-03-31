@@ -61,7 +61,7 @@
     <xsl:when test="@type='lineBreak'">\linebreak </xsl:when>
     <xsl:when test="@type='noBreak'">\nolinebreak </xsl:when>
     <xsl:when test="@type='newLine'">\newline </xsl:when>
-	<xsl:when test="@type='customNewLine'">\\[<xsl:value-of	select="@dim"/>] </xsl:when>
+	<xsl:when test="@type='customNewLine'">~\\[<xsl:value-of	select="@dim"/>] </xsl:when>
 	<xsl:otherwise/>										
  </xsl:choose>
 </xsl:template>

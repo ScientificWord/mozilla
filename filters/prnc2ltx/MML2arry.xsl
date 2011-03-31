@@ -138,8 +138,8 @@ columnlines="none solid solid solid" columnalign="center right left center cente
 
 
     <xsl:if test="@frame='solid'">
-      <!-- JCS <xsl:text xml:space="preserve">\\ \hline\LBe </xsl:text> -->
-<xsl:text xml:space="preserve">\\ \hline </xsl:text>
+      <!-- JCS <xsl:text xml:space="preserve">~\\ \hline\LBe </xsl:text> -->
+<xsl:text xml:space="preserve">~\\ \hline </xsl:text>
     </xsl:if>
 
     <xsl:text xml:space="preserve">\end{</xsl:text>

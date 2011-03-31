@@ -59,9 +59,10 @@ string MuPADPlotWrapper::SemanticsToString (MuPADWrapper * const mpw, PlotServic
   string zh_rv;
   SEMANTICS_NODE *sn = psr.GetSemanticsFromParam (plot_no, str_key);
   if (sn) {
-     char *ret = mpw->ProcessSemList(sn, NULL, error_code);
-     if (error_code == 0)
+     const char* ret = mpw->ProcessSemList(sn, NULL, error_code);
+     if ((error_code == 0) && (ret != 0)) {
        zh_rv = ret;
+     }
   } else {
      zh_rv = CreatePlotString(psr, plot_no, str_key, error_code);
   }

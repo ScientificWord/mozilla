@@ -127,22 +127,22 @@
 <!ENTITY viewsidebarleft.label  "View Sidebar on Left">
 <!ENTITY viewsidebarright.label "View Sidebar on Right">
 <!ENTITY viewToolbars.label "Toolbars">
-<!ENTITY viewToolbars.accesskey "B">
+<!ENTITY viewToolbars.accesskey "l">
 <!ENTITY viewToolbarsCustomize.label  "Customize">
 <!ENTITY viewFootnotes.label "Footnotes" >
-<!ENTITY viewFootnotes.accesskey "t" >
+<!ENTITY viewFootnotes.accesskey "e" >
 <!ENTITY viewOtherNotes.label "Other Notes" >
 <!ENTITY viewOtherNotes.accesskey "O" >
 <!ENTITY viewInvisibles.label "Invisibles" >
 <!ENTITY viewInvisibles.accesskey "I" >
 <!ENTITY viewHelperLines.label "Helper Lines" >
-<!ENTITY viewHelperLines.accesskey "e" >
+<!ENTITY viewHelperLines.accesskey "H" >
 <!ENTITY viewInputBoxes.label "Input Boxes" >
 <!ENTITY viewInputBoxes.accesskey "b" >
 <!ENTITY viewIndexEntries.label "Index Entries" >
 <!ENTITY viewIndexEntries.accesskey "x" >
 <!ENTITY viewMarkers.label "Markers" >
-<!ENTITY viewMarkers.accesskey "r" >
+<!ENTITY viewMarkers.accesskey "k" >
 <!ENTITY viewZoom.label "Zoom" >
 <!ENTITY viewZoom.accesskey "Z" >
 <!ENTITY viewZoomReduce.label "Reduce" >
@@ -740,13 +740,13 @@
 <!ENTITY NormalMode.accesskey "n">
 <!ENTITY NormalMode.tooltip "Show table borders and named anchors">
 <!ENTITY TagsMode.label "XML Tags">
-<!ENTITY TagsMode.accesskey "A">
+<!ENTITY TagsMode.accesskey "X">
 <!ENTITY TagsMode.tooltip "Display icons for tags">
 
 <!ENTITY SourceMode.label "XML Source">
 <!-- Toolbar has an image with "HTML" text, so don't include it in the string -->
 <!ENTITY SourceMode.label "Source">
-<!ENTITY SourceMode.accesskey "h">
+<!ENTITY SourceMode.accesskey "s">
 <!ENTITY SourceMode.tooltip "Edit XML source">
 <!ENTITY PreviewMode.label "Preview">
 <!ENTITY PreviewMode.accesskey "p">
