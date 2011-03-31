@@ -133,6 +133,7 @@
         <textbox id="spaceAfterLineBox" type="number" decimalplaces="2" style="width: 5em" />
         <menulist id="spaceAfterLineUnits" />
       </hbox>
+      <hbox>
       <groupbox>
         <caption>
           <checkbox id="enableSubeqNumberingCheckbox" label="&enableSubeqNumberingCheckbox.label;" accesskey="&enableSubeqNumberingCheckbox.accesskey;" oncommand="checkEnableControls(this);"/>
@@ -154,6 +155,8 @@
           <radio id="alignCenteredRadio" label="&alignCentered.label;" accesskey="&alignCentered.accesskey;" value="alignCentered" group="alignmentRadioGroup"/>
         </radiogroup>
       </groupbox>
+      </hbox>
+      <!-- button id="testButton" label="Test" oncommand="doTest" / -->
     </vbox>
   </hbox>
 </dialog>

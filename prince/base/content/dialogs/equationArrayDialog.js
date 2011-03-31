@@ -244,6 +244,35 @@ function onAccept()
 
 }
 
+function doTest()
+{
+  gDialog.markerErrors = gDialog.markerList.checkAllChanges();
+  if (gDialog.markerErrors.length > 0)
+  {
+    processMarkerErrors();
+    return false;
+  }
+
+  data.subEqnNumbersEnabled = gDialog.enableSubeqNumberingCheckbox.checked;
+  data.subEqnContinuation = gDialog.subequationContinuationCheckbox.checked;
+  data.enableAlignment = gDialog.enableAlignmentCheckbox.checked;
+  data.alignment = gDialog.alignmentRadioGroup.value;
+  data.wholeMarker = gDialog.wholeDisplayKeyList.value;
+  getLineDataFromDialog(data.currLine);
+
+//  putDataToReviseData( data.reviseData );
+
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  var theWindow = window.opener;
+  if (!theWindow || !("reviseEqnArray" in theWindow))
+    theWindow = msiGetTopLevelWindow();
+  theWindow.reviseEqnArray(data.reviseData, data, editorElement);
+
+//  SaveWindowLocation();
+//  return true;
+
+}
+
 function onCancel()
 {
   data.Cancel = true;
@@ -254,8 +283,7 @@ function getLineDataFromDialog(nWhichLine)
   if (nWhichLine > 0)
     --nWhichLine;  //since line counter is 1-based
   var currData = data.lineData[nWhichLine];
-  if (gDialog.lineNumberingRadioGroup.value != "numberingNone")
-    currData.bNumbered = true;
+  currData.bNumbered = (gDialog.lineNumberingRadioGroup.value != "numberingNone");
   if (gDialog.lineNumberingRadioGroup.value == "numberingCustom")
   {
 //    if (gDialog.customContentFilter == null)
