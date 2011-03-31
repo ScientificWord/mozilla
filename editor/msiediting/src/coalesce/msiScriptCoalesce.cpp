@@ -259,8 +259,8 @@ nsresult msiScriptCoalesce::CoalesceRight(nsIEditor* editor, nsIDOMNode* node, n
                                          dummyflags, supShift, newElement);
       if (NS_SUCCEEDED(res) && newElement)
       {
-        printf("\njcs -- New Element:\n");
-        DumpNode(newElement, 0, true);
+        //printf("\njcs -- New Element:\n");
+        //DumpNode(newElement, 0, true);
 
         nsCOMPtr<nsIMutableArray> mutableArray = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
         if (NS_SUCCEEDED(res))

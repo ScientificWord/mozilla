@@ -112,8 +112,8 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
   PRBool endsInMath;
   PRInt32 startOffset, endOffset;
 
-  printf("In msiEditRules::WillDeleteSelection\n");
-  DumpSelection(aSelection);
+  //printf("In msiEditRules::WillDeleteSelection\n");
+  //DumpSelection(aSelection);
   nsresult res;
 /* BBM testing:
   nsresult res = mHTMLEditor->GetStartNodeAndOffset(aSelection, address_of(startNode), &startOffset);
@@ -133,11 +133,11 @@ msiEditRules::WillDeleteSelection(nsISelection *aSelection,
   }
   if (!(startMathNode && endMathNode && (startMathNode == endMathNode))) */
   { 
-     printf("In msiEditRules::WillDeleteSelection(2)\n");
-     DumpSelection(aSelection);
+     //printf("In msiEditRules::WillDeleteSelection(2)\n");
+     //DumpSelection(aSelection);
      mMSIEditor->AdjustSelectionEnds(PR_TRUE, aAction);
-     printf("In msiEditRules::WillDeleteSelection(3)\n");
-     DumpSelection(aSelection);
+     //printf("In msiEditRules::WillDeleteSelection(3)\n");
+     //DumpSelection(aSelection);
      res = nsHTMLEditRules::WillDeleteSelection(aSelection, aAction, aCancel, aHandled);
   }
   return res;
