@@ -195,7 +195,7 @@
                     </label>
                   </deck>      
                   <menulist observes="reformatok" >
-                    <menupopup style="width: 9em" >
+                    <menupopup style="width: 9em" id="babelOrPolygloss">
                       <!-- if some of these are not supported in polyglossia, add 'observes="pdftex"'-->
                       <menuitem value="USenglish" label="*US English" def="1"/>
                       <menuitem value="UKenglish" label="UK English"/>
@@ -275,7 +275,7 @@
                 <vbox>
                   <label observes="reformatok">Second Language</label>
                   <menulist observes="reformatok" >
-                    <menupopup style="width: 9em" >
+                    <menupopup style="width: 9em" id="secondLanguage">
                       <!-- if some of these are not supported in polyglossia, add 'observes="pdftex"'-->
                       <menuitem value="none" label="*None" def="1"/>
                       <menuitem value="USenglish" label="US English"/>

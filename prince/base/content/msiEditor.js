@@ -775,7 +775,7 @@ function msiEditorDocumentObserver(editorElement)
         var is_topLevel = msiIsTopLevelEditor(this.mEditorElement);
         var seconds = GetIntPref("swp.saveintervalseconds"); 
         if (!seconds) seconds = 120;
-        if (is_topLevel)
+        if (is_topLevel && (seconds > 0))
           this.mEditorElement.softsavetimer = new SS_Timer(seconds*1000, editor, this.mEditorElement);
         if (!("InsertCharWindow" in window))
           window.InsertCharWindow = null;
@@ -8978,6 +8978,7 @@ function msiEditorInsertOrEditTable(insertAllowed, editorElement, command, comma
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
   if (!reviseObjectData && msiIsInTable(editorElement))
   {
     reviseObjectData = new msiTablePropertiesObjectData();
@@ -9504,6 +9505,10 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     {
       element = element.getElementsByTagName("note")[0];
       if (element) elementName = element.localName;
+    }
+    else if (elementName == "table"||elementName=="thead"||elementName=="tr"||elementName=="td")
+    {
+      msiTable(element,editorElement);
     }
     else if (elementName == "note")
     {

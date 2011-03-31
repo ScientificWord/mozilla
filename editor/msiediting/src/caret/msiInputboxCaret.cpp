@@ -197,7 +197,7 @@ NS_IMETHODIMP
 msiInputboxCaret::SetupCoalesceTransactions(nsIEditor * editor,
                                                nsIArray ** coalesceTransactions)
 {
-  return msiMCaretBase:: SetupCoalesceTransactions(editor, coalesceTransactions);
+  return msiMCaretBase::SetupCoalesceTransactions(editor, coalesceTransactions);
 }                 
 
 NS_IMETHODIMP

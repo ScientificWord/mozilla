@@ -14,7 +14,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/marker.js"/>
 
-  <label control="keylist" accesskey="K" value="Key"/>
+  <label control="keylist" value="Key"/>
   <textbox id="keylist" timeout="50" type="autocomplete" minresultsforpopup="1" enablehistory="true" 
     forcecomplete="true"
     completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="key"

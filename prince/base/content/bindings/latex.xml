@@ -86,9 +86,9 @@
     </xbl:content>
 
     <xbl:implementation>
-      <!--xbl:constructor>
-        this.checkLayout();
-      </xbl:constructor -->
+      <xbl:constructor>
+        this.init();
+      </xbl:constructor>
       
       <xbl:method name="init">
       <xbl:body>
