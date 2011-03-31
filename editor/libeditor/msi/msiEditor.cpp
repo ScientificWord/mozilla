@@ -46,64 +46,12 @@
 //The following may go away if we move the right things to the right interfaces, but for now:
 #include "msiUtils.h"
 #include "msiEditingAtoms.h"
+#include "jcsDumpNode.h"
 //#include "msiEditingManager.h"
 
 static PRInt32 instanceCounter = 0;
 nsCOMPtr<nsIRangeUtils> msiEditor::m_rangeUtils = nsnull;
 nsCOMPtr<msiIAutosub> msiEditor::m_autosub = nsnull;
-
-void DumpRange( nsIRange * range)
-{ 
-  nsresult res;
-  nsCOMPtr<nsINode> aAnchorNode;
-  nsCOMPtr<nsIDOMNode> aAnchorDOMNode;
-  PRInt32 anchorOffset;
-  nsString anchorName;
-  aAnchorNode = range->GetStartParent();
-  aAnchorDOMNode = do_QueryInterface(aAnchorNode);
-  res = aAnchorDOMNode->GetNodeName(anchorName);
-  anchorOffset = range->StartOffset();
-  nsCOMPtr<nsINode> aFocusNode;
-  nsCOMPtr<nsIDOMNode> aFocusDOMNode;
-  PRInt32 focusOffset;
-  nsString focusName;
-  aFocusNode = range->GetEndParent();
-  aFocusDOMNode = do_QueryInterface(aFocusNode);
-  res = aFocusDOMNode->GetNodeName(focusName);
-  focusOffset = range->EndOffset();
-  printf("  Range: \n    Anchor: %x (%S) %d\n    Focus: %x (%S) %d\n", aAnchorNode, anchorName.get(), anchorOffset,
-       aFocusNode, focusName.get(), focusOffset );
-}
-
-void DumpSelection( nsISelection * sel)
-{
-//  nsresult res;
-  //nsCOMPtr<nsIDOMNode> aAnchorNode;
-  //PRInt32 anchorOffset;
-  //nsString anchorName;
-  //res = sel->GetAnchorNode(getter_AddRefs(aAnchorNode));
-  //res = aAnchorNode->GetNodeName(anchorName);
-  //res = sel->GetAnchorOffset(&anchorOffset);
-  //nsCOMPtr<nsIDOMNode> aFocusNode;
-  //PRInt32 focusOffset;
-  //nsString focusName;
-  //res = sel->GetFocusNode(getter_AddRefs(aFocusNode));
-  //res = aFocusNode->GetNodeName(focusName);
-  //res = sel->GetFocusOffset(&focusOffset);
-  //printf("Selection: \n    Anchor: %x (%S) %d\n    Focus: %x (%S) %d\n", aAnchorNode, anchorName.get(), anchorOffset,
-  //     aFocusNode, focusName.get(), focusOffset );
-  //PRInt32 i;
-  //PRInt32 count;
-  //res = sel->GetRangeCount(&count); 
-  //nsCOMPtr<nsIDOMRange> domrange;
-  //nsCOMPtr<nsIRange> range;
-  //for (i = 0; i < count; i++)
-  //{
-  //  sel->GetRangeAt(i, getter_AddRefs(domrange));
-  //  range=do_QueryInterface(domrange);
-  //  DumpRange(range);
-  //}
-}
 
 
 
@@ -558,6 +506,10 @@ msiEditor::InsertMathname(const nsAString & mathname)
     PRBool bCollapsed(PR_FALSE);
     res = GetNSSelectionData(selection, startNode, startOffset, endNode, 
                            endOffset, bCollapsed);
+    
+    printf("\njcs -- InsertMathName selection:\n");
+    DumpSelection(selection);
+
     if (NS_SUCCEEDED(res)) 
     {
       nsCOMPtr<nsIDOMNode> theNode;
@@ -2752,8 +2704,13 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
   nsCOMPtr<nsIDOM3Node> textNode;
   nsCOMPtr<nsIDOMNode> node2;
   nsCOMPtr<nsIDOMNode> node3;
+  nsCOMPtr<nsIDOMNode> pnode;
   PRUint32 offset, length, offset2;
+  PRBool fCanEndHere = PR_TRUE;
   nsAutoString theText;
+  nsString tag;
+  nsIAtom * atomNS;
+  nsresult rv;
   offset = offsetIn;
   if (IsTextContentNode(nodeIn))
   {
@@ -2763,12 +2720,24 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
     while ((PRInt32)(--offset) >= 0)
     {
       while (prevChar == ' ' && theText[offset] == ' ') --offset;
+      nodeIn->GetParentNode(getter_AddRefs(pnode));
+      rv = mtagListManager->GetTagOfNode(pnode, &atomNS, tag);
+      fCanEndHere = PR_TRUE;
+      if (tag.EqualsLiteral("mi")) fCanEndHere = (offset==0);
       prevChar = theText[offset];
       m_autosub->NextChar(inMath, prevChar, & _result);
       if (_result == msiIAutosub::STATE_SUCCESS)
       {
-        *nodeOut = nodeIn;
-        offsetOut = offset;
+        if (fCanEndHere)
+        {
+          *nodeOut = nodeIn;
+          offsetOut = offset;
+        }
+        else
+        {
+          //The autosub code thought it saw a match, but here we are overriding that decision
+          //We do not update nodeOut or offsetOut
+        }
       }
       else if (_result == msiIAutosub::STATE_FAIL) 
       {
@@ -2813,6 +2782,17 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
         _result = msiIAutosub::STATE_FAIL;
          return NS_OK; // no more nodes available. return _result.
       }
+      else
+      {
+        rv = mtagListManager->GetTagOfNode(node2, &atomNS, tag);
+        PRBool fTagIsTextTag;
+        rv =  mtagListManager->GetTagInClass(NS_LITERAL_STRING("texttag"),tag,atomNS, &fTagIsTextTag);
+        if (!(fTagIsTextTag || tag.EqualsLiteral("mi") || tag.EqualsLiteral("mo") || tag.EqualsLiteral("mn")))  
+        {
+          _result = msiIAutosub::STATE_FAIL;
+          return NS_OK;
+        }
+      }
       tempnode = node2;
       node2 = nsnull; // go around again to get the previous sibling
     }
@@ -2835,11 +2815,11 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
   // nodes.
   nsCOMPtr<nsIDOMNode> node;
   nsCOMPtr<nsIDOM3Node> textNode;
-  nsCOMPtr<nsIDOMNode> originalNode;
+  nsCOMPtr<nsIDOMNode> originalNode = nsnull;
   PRUnichar ch = 0;
   PRInt32 ctx, action; 
   PRInt32 intOffset;
-  PRUint32 offset;
+  PRUint32 offset = 0;
   nsAutoString theText;
   PRInt32 lookupResult;
   nsAutoString data, pasteContext, pasteInfo, error;       
@@ -2861,8 +2841,18 @@ msiEditor::CheckForAutoSubstitute(PRBool inmath)
     if ((ctx!=msiIAutosub::CONTEXT_TEXTONLY) == inmath || 
       inmath != (ctx!=msiIAutosub::CONTEXT_MATHONLY))
     {
+      //printf("\njcs -- node:\n");
+      //DumpNode(node, 0, true);
       selection->Collapse(node, offset);
+     
+      //printf("\njcs -- originalNode:\n");
+      //DumpNode(originalNode, 0, true);
+
       selection->Extend(originalNode,originalOffset);
+
+      //printf("\njcs Extended selection:\n");
+      //DumpSelection(selection);
+
       if (action == msiIAutosub::ACTION_SUBSTITUTE)
         InsertHTMLWithContext(data, pasteContext, pasteInfo, NS_LITERAL_STRING("text/html"), nsnull, nsnull, 0, PR_TRUE); 
       else if (action == msiIAutosub::ACTION_EXECUTE)

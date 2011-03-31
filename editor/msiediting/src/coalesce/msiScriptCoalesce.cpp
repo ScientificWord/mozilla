@@ -12,6 +12,7 @@
 #include "msiEditingAtoms.h"
 #include "nsComponentManagerUtils.h"
 #include "msiIMathMLEditor.h"
+#include "jcsDumpNode.h"
 
 msiScriptCoalesce::msiScriptCoalesce(nsIDOMNode* mathmlNode, 
                                       PRUint32 offset,
@@ -191,15 +192,26 @@ nsresult msiScriptCoalesce::CoalesceLeft(nsIEditor * editor, nsIDOMNode * node, 
   return res;
 }    
 
-nsresult msiScriptCoalesce::CoalesceRight(nsIEditor * editor, nsIDOMNode * node, nsIArray** coalesced)
+nsresult msiScriptCoalesce::CoalesceRight(nsIEditor* editor, nsIDOMNode* node, nsIArray** coalesced)
 {
   //ljh m_offset == m_maxOffset
+//   printf("\njcs -- msiScriptCoalesce::CoalesceRight\n");
+// 
+//   printf("\nm_mathmlNode\n");
+//   DumpNode(m_mathmlNode, 0, true);
+// 
+//   printf("\nnode:\n");
+//   DumpNode(node, 0, true);
+
   nsresult res(NS_ERROR_FAILURE);
   nsCOMPtr<nsIDOMNode> currSup, currSub, inSup, inSub, newSup, newSub, base;
   PRUint32 mmltype(MATHML_UNKNOWN);
   res = msiUtils::GetMathmlNodeType(editor, node, mmltype);
   if (NS_SUCCEEDED(res) && (mmltype == MATHML_MSUB || mmltype == MATHML_MSUP || mmltype == MATHML_MSUBSUP))
   {
+    if (!msiUtils::IsInputbox(editor, base)){
+       return NS_OK;
+    }
     res = msiUtils::GetChildNode(m_mathmlNode, 0, base);
     if (NS_SUCCEEDED(res) && (mmltype == MATHML_MSUB || mmltype == MATHML_MSUBSUP))
       res = msiUtils::GetChildNode(node, 1, inSub);
@@ -217,8 +229,19 @@ nsresult msiScriptCoalesce::CoalesceRight(nsIEditor * editor, nsIDOMNode * node,
       
     if (NS_SUCCEEDED(res) && (currSup || inSup))
       res = msiRequiredArgument::MakeRequiredArgument(editor, currSup, inSup, newSup);
+
     if (NS_SUCCEEDED(res) && (currSub || inSub))
       res = msiRequiredArgument::MakeRequiredArgument(editor, currSub, inSub, newSub);
+
+//     printf("\njcs -- base\n");
+//     DumpNode(base, 0, true);
+//     printf("\njcs -- inSup\n");
+//     DumpNode(inSup, 0, true);
+//     printf("\njcs -- currSup\n");
+//     DumpNode(currSup, 0, true);
+//     printf("\njcs -- newSup\n");
+//     DumpNode(newSup, 0, true);
+
     if (NS_SUCCEEDED(res) && base && (newSub || newSup))
     {
       nsAutoString subShift, supShift;
@@ -236,6 +259,9 @@ nsresult msiScriptCoalesce::CoalesceRight(nsIEditor * editor, nsIDOMNode * node,
                                          dummyflags, supShift, newElement);
       if (NS_SUCCEEDED(res) && newElement)
       {
+        printf("\njcs -- New Element:\n");
+        DumpNode(newElement, 0, true);
+
         nsCOMPtr<nsIMutableArray> mutableArray = do_CreateInstance(NS_ARRAY_CONTRACTID, &res);
         if (NS_SUCCEEDED(res))
         {
