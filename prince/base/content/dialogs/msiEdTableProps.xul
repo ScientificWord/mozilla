@@ -66,7 +66,6 @@
     <tabpanels>
       <!-- ALIGNMENT PANEL -->
       <tabpanel>
-      <vbox>
         <!-- Table Alignment and Caption -->
         <hbox flex="1" align="start">
           <groupbox orient="vertical" align="start">
@@ -79,8 +78,6 @@
               <radio label="&AlignRight.label;"  group="ColumnAlignRadioGroup" value="right" id="ColAlignRightRadio" accesskey="&AlignRight.accesskey;"/>
             </radiogroup>
           </groupbox>
-          <!-- spacer class="spacer"/ -->
-          <spacer flex="1"/>
           <groupbox orient="vertical" align="start">
             <caption control="RowAlignRadioGroup" label="&rowAlignment.label;" accesskey="&rowAlignment.accesskey;"/>
             <radiogroup id="RowAlignRadioGroup" oncommand="AlignmentChanged(this.id);">
@@ -89,21 +86,15 @@
               <radio label="&AlignBottom.label;" group="RowAlignRadioGroup" value="bottom" id="RowAlignBottomRadio" accesskey="&AlignBottom.accesskey;"/>
             </radiogroup>
           </groupbox>
+          <groupbox orient="vertical" align="start">
+            <caption control="BaselineRadioGroup" label="&tableBaseline.label;" accesskey="&tableBaseline.accesskey;"/>
+            <radiogroup id="TableBaselineRadioGroup" oncommand="TablePropertyChanged(this.id);">
+                <radio label="&BaselineTopRow.label;" group="TableBaselineRadioGroup" value="topRow" id="BaselineTopRowRadio" accesskey="&BaselineTopRow.accesskey;"/>
+                <radio label="&BaselineVerticalCenter.label;" group="TableBaselineRadioGroup" value="vertCenter" id="BaselineVerticalCenterRadio" accesskey="&BaselineVerticalCenter.accesskey;"/>
+                <radio label="&BaselineBottomRow.label;" group="TableBaselineRadioGroup" value="bottomRow" id="BaselineBottomRowRadio" accesskey="&BaselineBottomRow.accesskey;"/>
+            </radiogroup>
+          </groupbox>
         </hbox>
-        <spacer/>
-        <!-- spacer class="spacer"/ -->
-        <hbox>
-        <groupbox orient="vertical" align="start">
-          <caption control="BaselineRadioGroup" label="&tableBaseline.label;" accesskey="&tableBaseline.accesskey;"/>
-          <radiogroup id="TableBaselineRadioGroup" oncommand="TablePropertyChanged(this.id);">
-              <radio label="&BaselineTopRow.label;" group="TableBaselineRadioGroup" value="topRow" id="BaselineTopRowRadio" accesskey="&BaselineTopRow.accesskey;"/>
-              <radio label="&BaselineVerticalCenter.label;" group="TableBaselineRadioGroup" value="vertCenter" id="BaselineVerticalCenterRadio" accesskey="&BaselineVerticalCenter.accesskey;"/>
-              <radio label="&BaselineBottomRow.label;" group="TableBaselineRadioGroup" value="bottomRow" id="BaselineBottomRowRadio" accesskey="&BaselineBottomRow.accesskey;"/>
-          </radiogroup>
-        </groupbox>
-        </hbox>
-        <spacer class="spacer"/>
-      </vbox>
       </tabpanel>
 
         <!-- separator class="groove"/>
@@ -129,6 +120,27 @@
       <!-- Borders and backgrounds? PANEL -->
       <tabpanel>
         <vbox>
+          <groupbox id="selector">
+            <caption control="" label="Selection;" accesskey=""/>
+            <hbox>
+              <vbox>
+                <menulist id="celltablerow" value="cell" oncommand="">
+                  <menupopup>
+                    <menuitem label="cell"  value="cell"/>
+                    <menuitem label="row"  value="row"/>
+                    <menuitem label="column"  value="column"/>
+                  </menupopup>
+                </menulist>
+                <hbox>
+                  <msibutton label="Previous"/>
+                  <msibutton label="Next"/>
+                </hbox>
+              </vbox>
+              <description width="150px">
+                Current changes will be applied before changing the selection
+              </description>
+            </hbox>
+          </groupbox>
           <hbox>
             <vbox>
               <hbox>
@@ -143,36 +155,26 @@
                   </menupopup>
                 </menulist>
               </hbox>
-              <!--menulist id="BorderSelectionList">
-                <menupopup>
-                  <menuitem label="&cellSelectCell.label;"  value="cell"/>
-                  <menuitem label="&cellSelectRow.label;" value="row"/ -->
-                  <!-- menuitem label="&tableRowGroupBorders.label;" value="rowGroup"/ -->
-                  <!--menuitem label="&cellSelectColumn.label;"  value="column"/ -->
-                  <!-- menuitem label="&tableColumnGroupBorders.label;" value="columnGroup"/ -->
-                  <!-- menuitem label="&cellSelectTable.label;" value="table"/>
-                </menupopup>
-              </menulist -->
-              <description id="BordersPreview" class="MSISample"	flex="1"
+              <description id="BordersPreview" class="MSISample"	flex="1" valign="center"
                   xmlns:xhtml="http://www.w3.org/1999/xhtml"
                   xmlns:mml="http://www.w3.org/1998/Math/MathML">
-                <p><xhtml:table style="table-layout: auto; empty-cells: show; width: 15em; height: 15em; font-size: 100%; overflow: hidden; text-align: center; vertical-align: middle">
+                <xhtml:table align="center" valign="center" style="table-layout: auto; empty-cells: show; width: 3em; height: 3em; font-size: 100%; overflow: hidden; text-align: center; vertical-align: middle">
                   <xhtml:tr height="15%">
-                    <xhtml:td style="border-left-style: none; border-top-style: none;"><xhtml:span>te</xhtml:span></xhtml:td>
-                    <xhtml:td><xhtml:span>text</xhtml:span></xhtml:td>
-                    <xhtml:td style="border-right-style: none; border-top-style: none;"><xhtml:span>xt</xhtml:span></xhtml:td>
+                    <xhtml:td style="border-width: 0;"><xhtml:span>te</xhtml:span></xhtml:td>
+                    <xhtml:td style="border-width: 0 thin; border-color: gray"><xhtml:span>text</xhtml:span></xhtml:td>
+                    <xhtml:td style="border-width: 0;"><xhtml:span>xt</xhtml:span></xhtml:td>
                   </xhtml:tr>
-                  <xhtml:tr>
-                    <xhtml:td style="border-left-style: none;"><xhtml:span>te</xhtml:span></xhtml:td>
-                    <xhtml:td id="BordersPreviewCenterCell" style="border: 2px" ><xhtml:span>text</xhtml:span></xhtml:td>
-                    <xhtml:td style="border-right-style: none;"><xhtml:span>xt</xhtml:span></xhtml:td>
+                  <xhtml:tr height="30%">
+                    <xhtml:td style="border-width: thin 0; border-color: gray"><xhtml:span>te</xhtml:span></xhtml:td>
+                    <xhtml:td id="BordersPreviewCenterCell" style="border-width: thin; border-color: black;" ><xhtml:span>text</xhtml:span></xhtml:td>
+                    <xhtml:td style="border-width: thin 0; border-color: gray;"><xhtml:span>xt</xhtml:span></xhtml:td>
                   </xhtml:tr>
                   <xhtml:tr height="15%">
-                    <xhtml:td style="border-left-style: none; border-bottom-style: none;"><xhtml:span>te</xhtml:span></xhtml:td>
-                    <xhtml:td><xhtml:span>text</xhtml:span></xhtml:td>
-                    <xhtml:td style="border-right-style: none; border-bottom-style: none;"><xhtml:span>xt</xhtml:span></xhtml:td>
+                    <xhtml:td style="border-width: 0;"><xhtml:span>te</xhtml:span></xhtml:td>
+                    <xhtml:td style="border-width: 0 thin; border-color: gray"><xhtml:span>text</xhtml:span></xhtml:td>
+                    <xhtml:td style="border-width: 0;"><xhtml:span>xt</xhtml:span></xhtml:td>
                   </xhtml:tr>
-                </xhtml:table></p>
+                </xhtml:table>
               </description>
             </vbox>
             <vbox>
@@ -183,15 +185,15 @@
                 <menulist id="cellBorderStyleList" oncommand="checkPreviewChanges(this.id);">
                   <menupopup>
                     <menuitem label="&borderStyleNone.label;"  value="none"/>
-                    <menuitem label="&borderStyleHidden.label;"  value="hidden"/>
+                    <!--menuitem label="&borderStyleHidden.label;"  value="hidden"/-->
                     <menuitem label="&borderStyleSolid.label;"  value="solid"/>
-                    <menuitem label="&borderStyleDotted.label;"  value="dotted"/>
-                    <menuitem label="&borderStyleDashed.label;"  value="dashed"/>
+                    <!--menuitem label="&borderStyleDotted.label;"  value="dotted"/-->
+                    <!--menuitem label="&borderStyleDashed.label;"  value="dashed"/-->
                     <menuitem label="&borderStyleDouble.label;"  value="double"/>
-                    <menuitem label="&borderStyleGroove.label;"  value="groove"/>
-                    <menuitem label="&borderStyleRidge.label;"  value="ridge"/>
-                    <menuitem label="&borderStyleInset.label;"  value="inset"/>
-                    <menuitem label="&borderStyleOutset.label;"  value="outset"/>
+                    <!--menuitem label="&borderStyleGroove.label;"  value="groove"/-->
+                    <!--menuitem label="&borderStyleRidge.label;"  value="ridge"/-->
+                    <!--menuitem label="&borderStyleInset.label;"  value="inset"/-->
+                    <!--menuitem label="&borderStyleOutset.label;"  value="outset"/-->
                   </menupopup>
                 </menulist>
               </hbox>

@@ -11,7 +11,10 @@ var msiEvaluateCommand =
             (isInMath(editorElement) || 
              aCommand == "cmd_MSIComputeFillMatrix" ||
              aCommand == "cmd_MSIComputeRandomMatrix"||
-             aCommand == "cmd_MSIComputeRandomNumbers" ) );
+             aCommand == "cmd_MSIComputeRandomNumbers" ||
+             (aCommand == "cmd_MSIComputePassthru" &&
+              msiGetEditor(editorElement).selection &&
+              (! msiGetEditor(editorElement).selection.isCollapsed) ) ) );
   },
 
   getCommandStateParams: function(aCommand, aParams, editorElement) {},
@@ -338,7 +341,7 @@ function doSetupMSIComputeMenuCommands(commandTable)
   //commandTable.registerCommand("cmd_MSIComputeSwitchEngines", msiDefineCommand);     
   commandTable.registerCommand("cmd_MSIComputeInterpret",     msiEvaluateCommand);
   commandTable.registerCommand("cmd_MSIComputeFixup",         msiEvaluateCommand);
-  commandTable.registerCommand("cmd_MSIComputePassthru",      msiDefineCommand);
+  commandTable.registerCommand("cmd_MSIComputePassthru",      msiEvaluateCommand);
 }
 
 
@@ -1459,11 +1462,21 @@ function doLabeledComputation(math,op,labelID, editorElement)
 }
 
 
-function CloneTheRange(mathElement, r)
+function CloneTheRange(mathElement, r, editorElement)
 {
    var mathout = mathElement.cloneNode(false);
-   var c = r.clone();
-   mathElement.insert();
+   var editor = msiGetEditor(editorElement);
+   //var c = r.cloneRange();
+   //mathout.insert(c);
+   var nodeArray = editor.nodesInRange(r);
+   var enumerator = nodeArray.enumerate();
+   while (enumerator.hasMoreElements())
+   {
+      var node = enumerator.getNext();
+      node = node.cloneNode(true);
+      mathout.appendChild(node);
+   }
+   return mathout;
 }
 
 // like above, but use operator instead of text between input and result
@@ -1474,22 +1487,24 @@ function doEvalComputation(mathElement,op,joiner,remark, editorElement)
   var anchor = sel.anchorNode;
   var leftEnd;
   var rightEnd;
-  var mathout;
+  var mathOut;
   if (sel.isCollapsed) {
     leftEnd = FindLeftEndOfSide(mathElement, anchor)
     rightEnd = FindRightEndOfSide(mathElement, leftEnd);
     mathOut = CloneTheSide(mathElement, leftEnd, rightEnd);
   } else {
-    var r = selection.getRangeAt(0);
-    mathout = CloneTheRange(mathElement, r); 
+    var r = sel.getRangeAt(0);
+    leftEnd = FindLeftEndOfSide(mathElement, anchor)
+    rightEnd = FindRightEndOfSide(mathElement, leftEnd);
+    mathOut = CloneTheRange(mathElement, r, editorElement); 
   }
     
   var mathstr = GetFixedMath(mathOut);
 
-  msiComputeLogger.Sent(remark+" after fixup",mathstr);
+  msiComputeLogger.Sent(remark + " after fixup", mathstr);
   ComputeCursor(editorElement);
   try {
-    var out = GetCurrentEngine().perform(mathstr,op);
+    var out = GetCurrentEngine().perform(mathstr, op);
     msiComputeLogger.Received(out);
     //appendResult(out,joiner,math, editorElement);
     insertResult(out, joiner, mathElement, editorElement, rightEnd);
@@ -2874,8 +2889,15 @@ function doComputePassthru(editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
+
   var str = "";
   var element = null;
+  var first = 0;
+  var last = 0;
+  var anchor;
+  var focus;
+
+
   try
   {
     var selection = msiGetEditor(editorElement).selection;
@@ -2883,19 +2905,40 @@ function doComputePassthru(editorElement)
 	    dump("no selection!\n");
       return;
     }
-    element = findtagparent(selection.focusNode,"code");
-    if (!element) {
-	    dump("not in code tag!\n");
+    
+    //element = findtagparent(selection.focusNode,"code");
+    //if (!element) {
+	  //  dump("not in code tag!\n");
+    //  return;
+    //}
+
+    //var text = element.firstChild;
+    //if (text.nodeType != Node.TEXT_NODE) {
+    //  dump("bad node structure.\n");
+    //  return;
+    //}
+
+    //str = WrapInMtext(text.nodeValue);
+
+    // Anchor and Focus the same?
+    anchor = selection.anchorNode;
+    focus = selection.focusNode;
+    if (anchor != focus) {
+      dump("\nanchor != focus in passtrhu\n");
       return;
     }
 
-    var text = element.firstChild;
-    if (text.nodeType != Node.TEXT_NODE) {
-      dump("bad node structure.\n");
-      return;
-    }
+    var r = selection.getRangeAt(0);
+    var editor = msiGetEditor(editorElement);
+    var nodeArray = editor.nodesInRange(r);
+    var enumerator = nodeArray.enumerate();
+    var node = enumerator.getNext();
+    var content = node.nodeValue;
 
-    str = WrapInMtext(text.nodeValue);
+    first = (selection.anchorOffset < selection.focusOffset) ? selection.anchorOffset : selection.focusOffset;
+    last = (selection.anchorOffset < selection.focusOffset) ? selection.focusOffset : selection.anchorOffset;
+    str = "<mtext>" + content.substr(first, last - first) + "</mtext>";
+    
     msiComputeLogger.Sent("passthru",str);
   }
   catch(exc) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputePassthru; exception is [" + exc + "]."); return;}
@@ -2910,24 +2953,24 @@ function doComputePassthru(editorElement)
     msiComputeLogger.Exception(e);
   }
 
-  var child = element;
-  var node = child.parentNode;
-  while (node) {
-    if (node.localName == "body")
-      break;
-    else {
-      child = node;
-      node = child.parentNode;
-    }
-  }
+  //var child = element;
+  //var node = child.parentNode;
+  //while (node) {
+  //  if (node.localName == "body")
+  //    break;
+  //  else {
+  //    child = node;
+  //    node = child.parentNode;
+  //  }
+  //}
  
   if (out) {
-    var idx;
-    for (idx = 0; idx < node.childNodes.length; idx++) {
-      if (child == node.childNodes[idx])
-        break;
-    }
-    appendTaggedResult(out,GetComputeString("Passthru.fmt"),node,idx+1, editorElement);
+    //var idx;
+    //for (idx = 0; idx < node.childNodes.length; idx++) {
+    //  if (child == node.childNodes[idx])
+    //    break;
+    //}
+    appendTaggedResult(out, GetComputeString("Passthru.fmt"), anchor, last, editorElement);
   }
   RestoreCursor(editorElement);
 }

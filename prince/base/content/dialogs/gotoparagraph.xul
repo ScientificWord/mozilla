@@ -14,7 +14,9 @@
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();"
     persist="screenX screenY width height"
-    title="&windowTitle.label;">
+    title="&windowTitle.label;"
+    width="300"
+    height="240">
 
   <script type="application/x-javascript" src="chrome://prince/content/gotoparagraph.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
@@ -33,7 +35,7 @@
     <caption label="&movement.label;"/>
   <!-- label control="mode" accesskey="" value="&movement.label;"/ -->
     <radiogroup id="mode" orient="horizontal" oncommand="setmode();">
-        <radio label="&absolute.label;" value="abs" selected="true" persist="selected" accesskey="&absolute.accesskey;"/>
+       <radio label="&absolute.label;" value="abs" selected="true" persist="selected" accesskey="&absolute.accesskey;"/>
         <radio label="&relative.label;" value="rel" persist="selected"  accesskey="&relative.accesskey;"/>
   </radiogroup>
   </groupbox>
