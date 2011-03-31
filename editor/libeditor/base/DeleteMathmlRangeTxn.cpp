@@ -16,7 +16,7 @@
 #include "msiEditor.h"
 #include "msiIMathMLCaret.h"
 #include "msiIMathMLEditor.h"
-#include "jcsDumpNode.h"
+//#include "jcsDumpNode.h"
 
 // note that aEditor is not refcounted
 DeleteMathmlRangeTxn::DeleteMathmlRangeTxn()
@@ -97,8 +97,8 @@ NS_IMETHODIMP DeleteMathmlRangeTxn::DoTransaction(void)
   if (NS_SUCCEEDED(res) && coalesceNode &&  IS_VALID_NODE_OFFSET(coalesceOffset))
   {
 
-    printf("\njcs -- coalesceNode\n");
-    DumpNode(coalesceNode, 0, true);
+    //printf("\njcs -- coalesceNode\n");
+    //DumpNode(coalesceNode, 0, true);
 
     nsresult res1(NS_OK);
     nsCOMPtr<msiIMathMLEditor> msiEditor(do_QueryInterface(m_editor));
