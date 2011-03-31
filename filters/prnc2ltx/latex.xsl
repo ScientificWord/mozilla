@@ -182,10 +182,10 @@ should not be done under some conditions -->
 \printindex
 </xsl:template>
 
-<xsl:template match="html:br[@hard='1']">\\
+<xsl:template match="html:br[@hard='1']">~\\
 </xsl:template>
 
-<xsl:template match="html:br">\\
+<xsl:template match="html:br">~\\
 </xsl:template>
 
 <xsl:template match="html:br[@temp]"
@@ -197,7 +197,7 @@ should not be done under some conditions -->
 
 <xsl:template match="html:author">
 \author{<xsl:value-of select="normalize-space(child::text())"/><xsl:text/>
-<xsl:if test="../html:address">\\<xsl:value-of select="normalize-space(../html:address)"/></xsl:if>
+<xsl:if test="../html:address">~\\<xsl:value-of select="normalize-space(../html:address)"/></xsl:if>
 }</xsl:template>			   
 
 		  
@@ -421,10 +421,10 @@ should not be done under some conditions -->
 
 <xsl:template match="html:xref">
 <xsl:choose>
-  <xsl:when test="@reftype='page'">\vpageref%%</xsl:when>
+  <xsl:when test="@reftype='page'">\vpageref</xsl:when>
   <xsl:otherwise>\vref</xsl:otherwise>
 </xsl:choose>
-{<xsl:value-of select="@key"/>}{}%%
+{<xsl:value-of select="@key"/>}\xspace%%
 </xsl:template>
 
 

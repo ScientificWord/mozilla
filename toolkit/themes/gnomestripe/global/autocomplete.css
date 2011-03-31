@@ -53,6 +53,14 @@ treechildren::-moz-tree-image(sw_checked) {
   list-style-image: url("chrome://global/skin/icons/thumb.png");
   /* the width of this gif is 7 pixels. The next rule keeps the left margin even */
 }
+treechildren:-moz-tree-cell-text {
+  -moz-margin-start: 21px !important;
+}
+
+treechildren:-moz-tree-cell-text(sw_checked) {
+  -moz-margin-start: 3px !important;
+}
+
 
 
 textbox {

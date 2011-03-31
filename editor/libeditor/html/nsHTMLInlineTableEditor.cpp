@@ -43,6 +43,7 @@
 #include "nsIContent.h"
 #include "nsHTMLEditUtils.h"
 #include "nsReadableUtils.h"
+#include "nsIFrame.h"
 
 // Uncomment the following line if you want to disable
 // table deletion when the only column/row is removed
@@ -218,6 +219,32 @@ nsHTMLEditor::RemoveMouseClickListener(nsIDOMElement * aElement)
     evtTarget->RemoveEventListener(NS_LITERAL_STRING("click"), mMouseListenerP, PR_TRUE);
 }
 
+
+nsresult
+nsHTMLEditor::MsiGetElementOrigin(nsIDOMElement * aElement, PRInt32 & aX, PRInt32 & aY)
+{
+  aX = 0;
+  aY = 0;
+
+  if (!mPresShellWeak) return NS_ERROR_NOT_INITIALIZED;
+  nsCOMPtr<nsIPresShell> ps = do_QueryReferent(mPresShellWeak);
+  if (!ps) return NS_ERROR_NOT_INITIALIZED;
+
+  nsCOMPtr<nsIDOMElement> body = GetRoot();
+  nsCOMPtr<nsIContent> content = do_QueryInterface(aElement);
+  nsCOMPtr<nsIContent> bodyContent = do_QueryInterface(body);
+  nsIFrame *frame = ps->GetPrimaryFrameFor(content);
+  nsIFrame *bodyFrame = ps->GetPrimaryFrameFor(bodyContent);
+
+  if (!frame) return NS_OK;
+  if (!bodyFrame) return NS_OK;
+  nsPoint off = frame->GetOffsetTo(bodyFrame);
+  aX = nsPresContext::AppUnitsToIntCSSPixels(off.x);
+  aY = nsPresContext::AppUnitsToIntCSSPixels(off.y);
+
+  return NS_OK;
+}
+
 NS_IMETHODIMP
 nsHTMLEditor::RefreshInlineTableEditingUI()
 {
@@ -225,7 +252,7 @@ nsHTMLEditor::RefreshInlineTableEditingUI()
   if (!nsElement) {return NS_ERROR_NULL_POINTER; }
 
   PRInt32 xCell, yCell, wCell, hCell;
-  GetElementOrigin(mInlineEditedCell, xCell, yCell);
+  MsiGetElementOrigin(mInlineEditedCell, xCell, yCell);
 
   nsresult res = nsElement->GetOffsetWidth(&wCell);
   if (NS_FAILED(res)) return res;
