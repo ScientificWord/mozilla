@@ -1538,6 +1538,24 @@ function msiElementCanHaveAttribute(elementNode, attribName)
   return retVal;
 }
 
+function msiEnsureElementCSSProperty(elementNode, propName, propValue)
+{
+//  if (propValue && propValue.length)
+//    elementNode.style.setProperty(propName, propValue, "");
+//  else
+//    elementNode.style.removeProperty(propName);
+  var currStyleStr = elementNode.getAttribute("style");
+  var replaceStr = "";
+  if (propValue && propValue.length)
+    replaceStr = propName + ": " + propValue + ";";
+  var searchRE = new RegExp(propName + "\\:\\s*[^;]+;?");
+  if (currStyleStr && currStyleStr.length)
+    currStyleStr.replace(searchRE, replaceStr);
+  else
+    currStyleStr = replaceStr;
+  elementNode.setAttribute("style", currStyleStr);
+}
+
 function msiEditorEnsureElementAttribute(elementNode, attribName, attribValue, editor)
 {
   var retVal = false;
@@ -4707,6 +4725,44 @@ var msiCSSUtils =
       break;
     }
     return retStr;
+  },
+
+  subtractCSSLengthValues : function(strVal1, strVal2, contextNode, outUnit, outPrecision)
+  {
+    var ourMsiList;
+    if (contextNode)
+      ourMsiList = msiCreateCSSUnitsListForElement(contextNode);
+    else
+      ourMsiList = new msiCSSWithFontUnitsList(12, "pt");
+    var unitsToUse = val1.units;
+    return ourMsiList.subtractUnitStrings(strVal1, strVal2, outUnit, outPrecision);
+  },
+
+  addCSSLengthValues : function(strVal1, strVal2, contextNode, outUnit, outPrecision)
+  {
+    var ourMsiList;
+    if (contextNode)
+      ourMsiList = msiCreateCSSUnitsListForElement(contextNode);
+    else
+      ourMsiList = new msiCSSWithFontUnitsList(12, "pt");
+    var unitsToUse = val1.units;
+    return ourMsiList.addUnitStrings(strVal1, strVal2, outUnit, outPrecision);
+  },
+
+  getCSSComputedLengthValue : function(anElement, aProperty, outUnit, outPrecision)
+  {
+    var defView = anElement.ownerDocument.defaultView;
+    var docCSS = defView.QueryInterface(Components.interfaces.nsIDOMViewCSS);
+    var theStyle = docCSS.getComputedStyle(anElement, "");
+    var theCSSVal = theStyle.getPropertyCSSValue("font-size");
+    var numWithUnits = this.getLengthWithUnitsFromCSSPrimitiveValue(theCSSVal);
+    if (numWithUnits && numWithUnits.unit && numWithUnits.number)
+    {
+      if (!outUnit)
+        outUnit = numWithUnits.unit;
+      return (Number(numWithUnits.number).toPrecision(outPrecision) + outUnit);
+    }
+    return "";
   }
 };
 
@@ -6138,18 +6194,19 @@ function msiSetDefaultPrintOptions(theOptions)
 /**********************Units management functions************************/
 //The following are derived from Barry's typesetDocFormat.js. They are put here for general use involving units.
 
-function msiUnitsList(unitConversions) 
+var msiUnitsListBase =
 {
-  this.mUnitFactors = unitConversions;
+  mUnitFactors : [],
+  mParseRE : null,
 
-  this.defaultUnit = function()
+  defaultUnit : function()
   {
     if ((this.mUnitfactors == null) || ("mm" in this.mUnitFactors))
       return "mm";
     return this.mUnitFactors[0];
-  };
+  },
 
-  this.convertUnits = function(invalue, inunit, outunit)
+  convertUnits : function(invalue, inunit, outunit)
   {
     if (inunit == outunit) return invalue;
     if (!(inunit in this.mUnitFactors) || !(outunit in this.mUnitFactors))
@@ -6166,9 +6223,9 @@ function msiUnitsList(unitConversions)
     outvalue /= this.mUnitFactors[outunit];
     dump(invalue+inunit+" = "+outvalue+outunit+"\n");
     return outvalue;
-  };
+  },
 
-  this.getDisplayString = function(theUnit)
+  getDisplayString : function(theUnit)
   {
     if (!this.mStringBundle)
     {
@@ -6187,10 +6244,13 @@ function msiUnitsList(unitConversions)
       } catch (e) {dump("Problem in msiUnitsList.getDisplayString for unit [" + theUnit + "]: exception is [" + e + "].\n");}
     }
     return null;
-  };
+  },
 
-  this.getNumberAndUnitFromString = function(valueStr)
+  getParsingRegExp : function()
   {
+    if (this.mParseRE)
+      return this.mParseRE;
+
     var unitsStr = "";
     for (var aUnit in this.mUnitFactors)
     {
@@ -6198,8 +6258,13 @@ function msiUnitsList(unitConversions)
         unitsStr += "|";
       unitsStr += aUnit;
     }
-    var ourRegExp = new RegExp("(\\-?\\d*\\.?\\d*).*(" + unitsStr + ")");
-    var matchArray = ourRegExp.exec(valueStr);
+    this.mParseRE = new RegExp("(\\-?\\d*\\.?\\d*).*(" + unitsStr + ")");
+    return this.mParseRE;
+  },
+
+  getNumberAndUnitFromString : function(valueStr)
+  {
+    var matchArray = this.getParsingRegExp().exec(valueStr);
     if (matchArray != null)
     {
       var retVal = new Object();
@@ -6208,9 +6273,18 @@ function msiUnitsList(unitConversions)
       return retVal;
     }
     return null;
-  };
+  },
 
-  this.compareUnitStrings = function(value1, value2)
+  //if outUnit is null, no conversion is done. If outPrecision is null, it's just a Number.toString concatenated with outUnit.
+  stringValue : function(aValue, aUnit, outUnit, outPrecision)
+  {
+    var outValue = aValue;
+    if (outUnit && (outUnit != aUnit))
+      outValue = this.convertUnits(aValue, aUnit, outUnit);
+    return (Number(outValue).toPrecision(outPrecision) + outUnit);
+  },
+
+  compareUnitStrings : function(value1, value2)
   {
     var firstValue = this.getNumberAndUnitFromString(value1);
     var secondValue = this.getNumberAndUnitFromString(value2);
@@ -6226,9 +6300,61 @@ function msiUnitsList(unitConversions)
       return 1;
     else
       return 0;
-  };
+  },
+
+  //outUnit and outPrecision are optional - see stringValue function above for default behavior.
+  subtractUnitStrings : function(value1, value2, outUnit, outPrecision)
+  {
+    var firstValue = this.getNumberAndUnitFromString(value1);
+    var secondValue = this.getNumberAndUnitFromString(value2);
+    if ((firstValue == null) || (secondValue == null))
+    {
+      dump("Problem in msiUnitsList.compareUnitStrings - trying to compare unrecognized units!\n");
+      return "";
+    }
+    var convertedFirst = this.convertUnits(firstValue.number, firstValue.unit, "pt");
+    var convertedSecond = this.convertUnits(secondValue.number, secondValue.unit, "pt");
+    if (!outUnit)
+      outUnit = firstValue.unit;
+    return this.stringValue( convertedFirst - convertedSecond, "pt", outUnit, outPrecision );
+  },
+
+  //outUnit and outPrecision are optional - see stringValue function above for default behavior.
+  addUnitStrings : function(value1, value2, outUnit, outPrecision)
+  {
+    var firstValue = this.getNumberAndUnitFromString(value1);
+    var secondValue = this.getNumberAndUnitFromString(value2);
+    if ((firstValue == null) || (secondValue == null))
+    {
+      dump("Problem in msiUnitsList.compareUnitStrings - trying to compare unrecognized units!\n");
+      return "";
+    }
+    var convertedFirst = this.convertUnits(firstValue.number, firstValue.unit, "pt");
+    var convertedSecond = this.convertUnits(secondValue.number, secondValue.unit, "pt");
+    if (!outUnit)
+      outUnit = firstValue.unit;
+    return this.stringValue( convertedFirst + convertedSecond, "pt", outUnit, outPrecision );
+  },
+
+  isNullOrZero : function(stringVal)
+  {
+    var retVal = true;
+    if (stringVal && stringVal.length)
+    {
+      theValue = this.getNumberAndUnitFromString(stringVal);
+      retVal = (theValue.number == 0);
+    }
+    return retVal;
+  }
 
 }
+
+function msiUnitsList(unitConversions) 
+{
+  this.mUnitFactors = unitConversions;
+}
+
+msiUnitsList.prototype = msiUnitsListBase;
 
 //Following need to be added to. They're called "CSSUnitConversions", but are intended to handle any units showing up in
 //markup - particularly in XBL (see latex.xml!).
@@ -8078,6 +8204,216 @@ function msiGetNewTheoremListFromDocument(aDocument)
       thmEnvList.defaultStyle = aStyle;
   }
   return thmEnvList;
+}
+
+function getEquationArrayCells(displayNode)
+{
+  var theCells = [];
+  var ix, tableNode, aNode, cellNodes, rowNode, otherNode, typeAttr;
+
+  function findMatrixCallback(theNode)
+  {
+    switch(theNode.nodeName)
+    {
+      case "msidisplay":
+      case "math":
+      case "mstyle":
+      case "mrow":
+      case "#text":
+        return NodeFilter.FILTER_SKIP;
+      break;
+      case "mtable":
+        return NodeFilter.FILTER_ACCEPT;
+      break;
+      default:
+        return NodeFilter.FILTER_REJECT;  //rejects whole subtree
+      break;
+    }
+  }
+
+  function findCellsCallback(theNode)
+  {
+    switch(theNode.nodeName)
+    {
+      case "mstyle":
+      case "mtr":
+      case "#text":
+        return NodeFilter.FILTER_SKIP;
+      break;
+      case "mtd":
+        return NodeFilter.FILTER_ACCEPT;
+      break;
+      case "msidisplay":
+      default:
+        return NodeFilter.FILTER_REJECT;  //rejects whole subtree
+      break;
+    }
+  }
+  
+  var walker = document.createTreeWalker( displayNode, NodeFilter.SHOW_ELEMENT, findMatrixCallback, false ); 
+  while (aNode = walker.nextNode())
+  {
+    typeAttr = aNode.getAttribute("type");
+    if (typeAttr && (typeAttr == "eqnarray"))
+    {
+      tableNode = aNode;
+      break;
+    }
+  }
+  if (!tableNode)
+    return null;
+
+  walker = document.createTreeWalker( tableNode, NodeFilter.SHOW_ELEMENT, findCellsCallback, false );
+  while (aNode = walker.nextNode())
+  {
+    theCells.push(aNode);
+  }
+
+  return theCells;
+}
+
+//Here anEqnNode is probably a cell in an equation array
+function checkNumberingOfParentEqn(anEqnNode)
+{
+  var dispNode = msiNavigationUtils.getEnclosingDisplay(anEqnNode);
+  var ix, cellAttr;
+  var currNumAttr, newNumAttr, theCells;
+  if (dispNode)
+  {
+    currNumAttr = dispNode.getAttribute("numbering");
+    newNumAttr = currNumAttr;
+    theCells = getEquationArrayCells(dispNode);
+    if (theCells != null)
+    {
+      newNumAttr = "none";
+      for (ix = 0; ix < theCells.length; ++ix)
+      {
+        cellAttr = theCells[ix].getAttribute("numbering");
+        if (!cellAttr || !cellAttr.length || cellAttr != "none")
+        {
+          newNumAttr = "eqns";
+          break;
+        }
+      }
+    }
+    if (newNumAttr && (!currNumAttr || newNumAttr != currNumAttr))
+      dispNode.setAttribute("numbering", newNumAttr);
+  }
+}
+
+function checkLayoutOfParentEqn(anEqnNode)
+{
+  var dispNode = msiNavigationUtils.getEnclosingDisplay(anEqnNode);
+  if (!dispNode)
+    return;
+
+  var subnode;
+  var crect, crect2;
+  var ourCrect;
+  var button;
+  var newtop, newright, oldright;
+//        netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
+  var theCells = getEquationArrayCells(dispNode);
+  crect = dispNode.getClientRects();
+  if (crect.length)
+    ourCrect = crect[0];
+  for (ix = 0; ix < theCells.length; ++ix)
+  {
+    subnode = theCells[ix];
+    button = document.getAnonymousElementByAttribute(subnode, "class", "eqnnum");
+    if (!button)
+      button = document.getAnonymousElementByAttribute(subnode, "class", "subeqnnum");
+    if (!button)
+      button = document.getAnonymousElementByAttribute(subnode, "class", "eqnmarker");
+    if (!button)
+    {
+//      var buttons = document.getAnonymousNodes(subnode);
+//      for (var jx = 0; jx < buttons.length; ++jx)
+      for (var jx = 0; jx < subnode.childNodes.length; ++jx)
+      {
+        var classAttr = subnode.childNodes[jx].getAttribute("class");
+        if ( (classAttr == "eqnnum") || (classAttr == "subeqnnum") || (classAttr == "eqnmarker") )
+        {
+          button = subnode.childNodes[jx];
+          break;
+        }
+      }
+    }
+    if (button)
+    {
+      crect = subnode.getClientRects();
+      if (crect.length > 0)
+      {
+        crect = crect[0];
+        crect2 = button.getClientRects();
+        oldright = 0;
+        if (crect2 && crect2.length)
+          oldright = crect2[0].right;
+        if (crect)
+        {
+          newtop = (crect.bottom - crect.top)/2 -10;
+          newright = (crect.right - oldright) - (ourCrect.right - crect.right);
+          button.setAttribute("style", "top:" + newtop + "px; right:" + newright + "px;");
+        }
+      }
+    }
+  }
+}
+
+function checkSubEqnContinuation(aChangedEqn)
+{
+  var subContAttr = aChangedEqn.getAttribute("subEquationContinuation");
+  var bSubCont = (subContAttr != null) && (subContAttr == "true");
+  var bPrevSubCont, bNextSubCont;
+  var bResetSubs = false;
+  var prevEqn, nextEqn;
+  var container = getSiblingEquationsContainer(anEqnNode);
+  var eqnlist = container.getElementsByTagName("msidisplay");
+  for (var ix = 0; ix < eqnlist.length; ++ix)
+  {
+    if (eqnlist[ix] == anEqnNode)
+    {
+      if (ix > 0)
+        prevEqn = eqnlist[ix-1];
+      if (ix < eqnlist.length - 1)
+        nextEqn = eqnlist[ix+1];
+      break;
+    }
+  }
+
+  if (bSubCont && prevEqn)
+  {
+    subContAttr = prevEqn.getAttribute("subEquationContinuation");
+    bPrevSubCont = (subContAttr != null) && (subContAttr == "true");
+    if (!bPrevSubCont)
+      bResetSubs = true;
+  }
+  if (bResetSubs)
+    aChangedEqn.setAttribute("subEquationReset", "true");
+  else  //we don't need this attribute if we're the same subEqCont status as the previous
+    aChangedEqn.removeAttribute("subEquationReset");
+  if (nextEqn)
+  {
+    subContAttr = nextEqn.getAttribute("subEquationContinuation");
+    bNextSubCont = (subContAttr != null) && (subContAttr == "true");
+    if (bNextSubCont && !bSubCont)
+      nextEqn.setAttribute("subEquationReset", "true");
+    else
+      nextEqn.removeAttribute("subEquationReset");
+  }
+}
+
+function getSiblingEquationsContainer(theNode)
+{
+  var findTags = ["body", "section"];  //this needs to be configurable! Should include all tags which reset equation counter.
+  var currName;
+  for (var aNode = theNode; aNode; aNode = aNode.parentNode)
+  {
+    currName = aNode.nodeName;
+    if (findTags.indexOf(currName) >= 0)
+      return aNode;
+  }
+  return document.documentElement; //should NOT happen
 }
 
 /**************************msiNavigationUtils**********************/
