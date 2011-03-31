@@ -3736,7 +3736,7 @@ function createWorkingDirectory(documentfile)
   if (theCase == 1)
   // remaining case is the main one, a .sci file
   {  
-    doc = documentfile.clone();
+    var doc = documentfile.clone();
     extension = ".xhtml"
     var zr;
     zr = Components.classes["@mozilla.org/libjar/zip-reader;1"]

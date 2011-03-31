@@ -942,7 +942,15 @@ msiMCaretBase::StandardSetupDelTxns(nsIEditor * editor,
   
   SetUpDeleteTxnsFromDescendent(editor, topNode, numKids, start, startOffset, PR_TRUE, leftTxnList, leftOffsetInTop);
   SetUpDeleteTxnsFromDescendent(editor, topNode, numKids, end, endOffset, PR_FALSE, rightTxnList, rightOffsetInTop);
-  if (leftOffsetInTop == 0 && rightOffsetInTop == numKids)
+
+  nsString namestr;
+  topNode->GetNodeName(namestr);
+  const char* cnamestr = ToNewCString(namestr);
+  PRBool cell_like = (0 == strcmp(cnamestr, "mtd"));
+  delete cnamestr;
+  PRBool all_content_selected = (leftOffsetInTop == 0 && rightOffsetInTop == numKids);
+
+  if (leftOffsetInTop == 0 && rightOffsetInTop == numKids && !cell_like)
   {
     nsCOMPtr<msiIMathMLCaret> parentCaret;
     res = msiUtils::SetupPassOffCaretToParent(editor, topNode, PR_FALSE, parentCaret);
@@ -953,8 +961,8 @@ msiMCaretBase::StandardSetupDelTxns(nsIEditor * editor,
       msiUtils::GetOffsetFromCaretInterface(parentCaret, offset);
       msiUtils::GetMathmlNodeFromCaretInterface(parentCaret, parentMMLNode);
 
-      printf("\njcs -- parentMMLNode\n");
-      DumpNode(parentMMLNode,0, true);
+      //printf("\njcs -- parentMMLNode\n");
+      //DumpNode(parentMMLNode,0, true);
 
       if (parentMMLNode && IS_VALID_NODE_OFFSET(offset))
         res = parentCaret->SetupDeletionTransactions(editor, parentMMLNode, offset, 
@@ -995,6 +1003,21 @@ msiMCaretBase::StandardSetupDelTxns(nsIEditor * editor,
       }
       else
         res = NS_ERROR_FAILURE;
+    }
+    if (all_content_selected){
+      // insert an input box
+      nsCOMPtr<nsIDOMElement> inputBox;
+      PRUint32 flags(0);
+
+      res = msiUtils::CreateInputbox(editor, PR_FALSE, PR_FALSE, flags, inputBox);
+
+      nsCOMPtr<nsITransaction> transaction;
+      res = msiEditor->CreateInsertTransaction(inputBox, topNode, 0, getter_AddRefs(transaction));
+
+      if (NS_SUCCEEDED(res) && transaction)
+          res = mutableTxnArray->AppendElement(transaction, PR_FALSE);
+      else
+          res = NS_ERROR_FAILURE;
     }
     if (leftLen > 0)
       res = msiUtils::AppendToMutableList(mutableTxnArray, left);
