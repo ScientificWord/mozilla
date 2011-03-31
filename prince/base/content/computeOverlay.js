@@ -376,7 +376,6 @@ function msiGoUpdateMSIcomputeMenuItems(commandset, editorElement)
 }
 
 
-const htmlns   = "http://www.w3.org/1999/xhtml";
 const fullmath = '<math xmlns="http://www.w3.org/1998/Math/MathML">';
 
 var gComputeStringBundle;
