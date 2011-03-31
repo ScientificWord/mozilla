@@ -2340,18 +2340,47 @@ function doMatrixDlg(editorElement)
 
 function reviseEqnArray(reviseData, dialogData, editorElement)
 {
+  var displayNode = reviseData.getReferenceNode();
+  var tableNode = reviseData.getTableNode();
+  var editor = msiGetEditor(editorElement);
+
+  editor.beginTransaction();
   var infoStr = "The display should contain " + dialogData.numLines + " lines, with subequations ";
+  var markerStr, subEqAttrStr, subContAttrStr, alignStr;
+  var paddingStrs = new Array(dialogData.numLines - 1);
   if (dialogData.subEqnNumbersEnabled)
   {
     infoStr += "enabled, subequation continuation ";
-    infoStr += dialogData.subEqnContinuation ? "enabled" : "disabled";
-    if (dialogData.wholeMarker && dialogData.wholeMarker.length)
-      infoStr += ", and a key for the whole display of '" + dialogData.wholeMarker + "'. The equation array is aligned "
+    subEqAttrStr = "true";
+    if (dialogData.subEqnContinuation) 
+    {
+      subContAttrStr = "true";
+      infoStr += "enabled";
+    }
     else
+    {
+      subContAttrStr = "";
+      infoStr += "disabled";
+    }
+    if (dialogData.wholeMarker && dialogData.wholeMarker.length)
+    {
+      infoStr += ", and a key for the whole display of '" + dialogData.wholeMarker + "'. The equation array is aligned "
+      markerStr = dialogData.wholeMarker;
+    }
+    else
+    {
       infoStr += ". The equation array is aligned "
+    }
   }
   else
     infoStr += "disabled. The equation array is aligned ";
+
+  msiEditorEnsureElementAttribute(displayNode, "marker", markerStr, editor);
+  msiEditorEnsureElementAttribute(displayNode, "subEquationNumbers", subEqAttrStr, editor);
+  if (msiEditorEnsureElementAttribute(displayNode, "subEquationContinuation", subContAttrStr, editor))  //return of "true" means it changed
+    checkSubEqnContinuation(displayNode);
+
+  var alignAttr = dialogData.alignment;
   switch(dialogData.alignment)
   {
     case "alignSingleEquation":
@@ -2360,39 +2389,132 @@ function reviseEqnArray(reviseData, dialogData, editorElement)
     case "alignCentered":
       infoStr += "with each line centered.\n";
     break;
-    default:
     case "alignStandard":
       infoStr += "as usual.\n";
     break;
+    default:
+      infoStr += "by default.\n";
+      alignAttr = "";
+    break;
   }
+  msiEditorEnsureElementAttribute(displayNode, "alignment", alignAttr, editor);
+
   var currData = null;
-  for (var ix = 0; ix < dialogData.numLines; ++ix)
+  var rowNode;
+  if (!tableNode)
   {
+    if (dialogData.numLines > 1)
+      dump("Problem in mathmlOverlay.js, reviseEqnArray(); display has more than one line but tableNode not found!?\n");
+  }
+
+  var numberingStr, customLabelStr, addlSpacingStr, suppAnnotationStr, styleStr, oldValStr, baseValStr;
+  var nodePaddingStrs = [];
+  var nodeCSSUnitsList;
+  var bChanged = false, bHaveNonZeroPadding = false, bRowsNumbered = false;
+  var ix;
+  for (ix = 0; ix < dialogData.numLines; ++ix)
+  {
+    markerStr = numberingStr = customLabelStr = addlSpacingStr = suppAnnotationStr = oldValStr = baseValStr = "";
+    bChanged = false;
+    rowNode = reviseData.getRowNode(ix);
     currData = dialogData.lineData[ix];
     infoStr += "\n  Line " + String(ix + 1);
     if (!currData.bNumbered)
+    {
       infoStr += " is unnumbered; ";
+      numberingStr = "none";
+    }
     else
     {
+      bRowsNumbered = true;
       if (currData.mCustomLabel && currData.mCustomLabel.length)
       {
-        infoStr += " has custom label '" + currData.mCustomLabel + "'";
+        customLabelStr = currData.mCustomLabel;
+        infoStr += " has custom label '" + customLabelStr + "'";
         if (currData.suppressAnnotation)
+        {
           infoStr += " with annotations suppressed";
+          suppAnnotationStr = "true";
+        }
       }
       else
         infoStr += " is numbered automatically";
       if (currData.mMarker && currData.mMarker.length)
-        infoStr += ", and has a key of '" + currData.mMarker + "'; ";
+      {
+        markerStr = currData.marker;
+        infoStr += ", and has a key of '" + markerStr + "'; ";
+      }
       else
         infoStr += "; ";
     }
+
     if ( (ix + 1 < dialogData.numLines) && currData.spaceAfterLineStr && currData.spaceAfterLineStr.length)
-      infoStr += "additional spacing after the line is " + currData.spaceAfterLineStr + ".";
+    {
+      nodeCSSUnitsList = msiCreateCSSUnitsListForElement(rowNode);
+      paddingStrs[ix] = currData.spaceAfterLineStr;
+      infoStr += "additional spacing after the line is " + paddingStrs[ix] + ",";
+      oldValStr = reviseData.getSpaceAfterLine(ix);
+      if (nodeCSSUnitsList.isNullOrZero(paddingStrs[ix]))
+      {
+        //in this case if there's any style setting on the element for padding-bottom, we need to remove it
+        //bChanged = !nodeCSSUnitsList.isNullOrZero(oldValStr);
+        nodePaddingStrs[ix] = "";
+        paddingStrs[ix] = "0.0pt";
+      }
+      else
+      {
+        //Here we have to determine the appropriate value of padding-bottom to set. If the previous value for space-after-line
+        //  wasn't zero, we subtract to determine the needed change and then adjust the current computed value (which may just be 
+        //  from a style statement on the node) by that amount. If the previous value was zero, then of course there's no subtraction
+        //  necessary, though then it wouldn't hurt. Trick is that it may appear as null, and then the subtraction algorithm wouldn't
+        //  work unless we modify it.
+        bHaveNonZeroPadding = true;
+        if (!nodeCSSUnitsList.isNullOrZero(oldValStr))
+          bChanged = (nodeCSSUnitsList.compareUnitStrings(paddingStrs[ix], oldValStr) != 0);
+        else
+        {
+          bChanged = true;
+          oldValStr = "0.0pt";
+        }
+        if (bChanged)
+        {
+          oldValStr = nodeCSSUnitsList.subtractUnitStrings(paddingStrs[ix], oldValStr, "pt");
+          baseValStr = msiCSSUtils.getCSSComputedLengthValue(rowNode, "padding-bottom");
+          nodePaddingStrs[ix] = nodeCSSUnitsList.addUnitStrings(baseValStr, oldValStr, "pt");
+        }
+      }
+      infoStr += " and the style property to set is [padding-bottom: " + nodePaddingStrs[ix] + "]";
+    }
     else
       infoStr += "there is no additional spacing after the line.";
+
+    msiEditorEnsureElementAttribute(rowNode, "customLabel", customLabelStr, editor);
+    msiEditorEnsureElementAttribute(rowNode, "suppressAnnotation", suppAnnotationStr, editor);
+    msiEditorEnsureElementAttribute(rowNode, "marker", markerStr, editor);
+    msiEditorEnsureElementAttribute(rowNode, "numbering", numberingStr, editor);
   }
-  AlertWithTitle("Unimplemented operation", "In msiReviseDecorationsCmd, revising equatino array, revise function unimplemented.\n\n" + infoStr);
+
+  if (tableNode)
+  {
+    if (!bRowsNumbered)
+      numberingStr = "none";
+    else
+      numberingStr = "eqns";
+  }
+  else if (numberingStr != "none")
+    numberingStr = "";
+  msiEditorEnsureElementAttribute(displayNode, "numbering", numberingStr, editor);
+
+  if (paddingStrs.length && bHaveNonZeroPadding && tableNode)
+    msiEditorEnsureElementAttribute(tableNode, "rowspacing", paddingStrs.join(' '), editor);
+  for (ix = 0; ix < dialogData.numLines - 1; ++ix)
+  {
+    msiEnsureElementCSSProperty(reviseData.getRowNode(ix), "padding-bottom", nodePaddingStrs[ix]);
+  }
+
+  editor.endTransaction();
+//  AlertWithTitle("Unimplemented operation", "In msiReviseDecorationsCmd, revising equatino array, revise function unimplemented.\n\n" + infoStr);
+  dump("In msiReviseDecorationsCmd, revising equation array; value are:\n  " + infoStr);
 }
 
 var msiMathStyleUtils =

@@ -12,7 +12,8 @@
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
 	  </xbl:resources>
     <xbl:content>
-      <html:button type="button" xbl:inherits="xbl:text=id" class="eqnnum" onclick="this.init()"/>
+      <!-- html:button type="button" xbl:inherits="xbl:text=id" class="eqnnum" onclick="this.init()"/ -->
+      <html:button type="button" xbl:inherits="customLabel,xbl:text=marker" class="eqnnum" onclick=""/>
       <xbl:children/>
     </xbl:content>
 
@@ -63,9 +64,9 @@
             {
               crect = crect[0];
               if (crect) {
-//                button = document.getAnonymousElementByAttribute(this, "class", "eqnnum");
+                button = document.getAnonymousElementByAttribute(this, "class", "eqnnum");
 
-//                if (button) button.setAttribute("style", "top:"+Number((crect.top+crect.bottom)/2) +"px;");
+                if (button) button.setAttribute("style", "top:"+Number((crect.top+crect.bottom)/2) +"px;");
               }
             }
           }
@@ -75,7 +76,456 @@
       </xbl:method>
     </xbl:implementation>
   </xbl:binding>
-  
+
+	<xbl:binding id="msidisplaybase">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+    <xbl:content>
+      <xbl:children/>
+    </xbl:content>
+
+    <xbl:implementation>
+      <!--xbl:constructor>
+        this.checkLayout();
+      </xbl:constructor -->
+      
+      <xbl:method name="init">
+      <xbl:body>
+        <![CDATA[
+        var dispnode = this; 
+        var subnode;
+        var crect;
+        var crect2;
+        var button;
+        var newtop;
+        var tw = document.createTreeWalker(  
+          dispnode,  
+          NodeFilter.SHOW_ELEMENT,  
+          { acceptNode: function(node) { return NodeFilter.FILTER_ACCEPT; } },  
+          false); 
+        while (subnode = tw.nextNode()) {
+          if (subnode.hasAttribute("eqnnum"))
+          {
+            crect = subnode.getClientRects();
+            if (crect.length > 0)
+            {
+              crect = crect[0];
+              if (crect) {
+                button = document.getAnonymousElementByAttribute(this, "class", "eqnnum");
+                newtop = (crect.bottom - crect.top)/2 -10;
+                if (button) button.setAttribute("style", "top:" + newtop + "px;");
+              }
+            }
+          }
+        }
+        tw = document.createTreeWalker(  
+          dispnode,  
+          NodeFilter.SHOW_ELEMENT,  
+          { acceptNode: function(node) { return NodeFilter.FILTER_ACCEPT; } },  
+          false); 
+        while (subnode = tw.nextNode()) {
+          if (subnode.hasAttribute("subeqnnum"))
+          {
+            crect = subnode.getClientRects();
+            if (crect.length > 0)
+            {
+              crect = crect[0];
+              if (crect) {
+                button = document.getAnonymousElementByAttribute(this, "class", "eqnnum");
+
+                if (button) button.setAttribute("style", "top:"+Number((crect.top+crect.bottom)/2) +"px;");
+              }
+            }
+          }
+        }
+        ]]>
+      </xbl:body>
+      </xbl:method>
+
+      <!-- xbl:method name="checkLayout">
+      <xbl:body>
+        <![CDATA[
+        var dispnode = this; 
+        var subnode;
+        var crect, crect2;
+        var ourCrect;
+        var button;
+        var newtop, newright, oldright;
+//        var tw = document.createTreeWalker(  
+//          dispnode,  
+//          NodeFilter.SHOW_ELEMENT,  
+//          { acceptNode: function(node) { return NodeFilter.FILTER_ACCEPT; } },  
+//          false); 
+        netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
+        var theCells = this.getEquationArrayCells();
+        crect = this.getClientRects();
+        if (crect.length)
+          ourCrect = crect[0];
+        for (ix = 0; ix < theCells.length; ++ix)
+        {
+//        while (subnode = tw.nextNode()) {
+//          if (subnode.hasAttribute("eqnnum"))
+//          {
+          subnode = theCells[ix];
+          button = document.getAnonymousElementByAttribute(subnode, "class", "eqnnum");
+          if (!button)
+            button = document.getAnonymousElementByAttribute(subnode, "class", "subeqnnum");
+          if (!button)
+            button = document.getAnonymousElementByAttribute(subnode, "class", "eqnmarker");
+          if (button)
+          {
+            crect = subnode.getClientRects();
+            if (crect.length > 0)
+            {
+              crect = crect[0];
+              crect2 = button.getClientRects();
+              oldright = 0;
+              if (crect2 && crect2.length)
+                oldright = crect2[0].right;
+              if (crect)
+              {
+//                button = document.getAnonymousElementByAttribute(this, "class", "eqnnum");
+                newtop = (crect.bottom - crect.top)/2 -10;
+                newright = (crect.right - oldright) - (ourCrect.right - crect.right);
+                button.setAttribute("style", "top:" + newtop + "px; right:" + newright + "px;");
+              }
+            }
+          }
+//          if ("displayContainer" in subnode)
+//            subnode.displayContainer = this;
+        }
+//        tw = document.createTreeWalker(  
+//          dispnode,  
+//          NodeFilter.SHOW_ELEMENT,  
+//          { acceptNode: function(node) { return NodeFilter.FILTER_ACCEPT; } },  
+//          false); 
+//        while (subnode = tw.nextNode()) {
+//          if (subnode.hasAttribute("subeqnnum"))
+//          {
+//            crect = subnode.getClientRects();
+//            if (crect.length > 0)
+//            {
+//              crect = crect[0];
+//              if (crect) {
+//                button = document.getAnonymousElementByAttribute(this, "class", "eqnnum");
+//
+//                if (button) button.setAttribute("style", "top:"+Number((crect.top+crect.bottom)/2) +"px;");
+//              }
+//            }
+//          }
+//        }
+        ]]>
+      </xbl:body>
+      </xbl:method>
+      <xbl:method name="checkNumbering">
+      <xbl:body>
+        <![CDATA[
+          var ix, cellAttr;
+          var currNumAttr = this.getAttribute("numbering");
+          var newNumAttr = currNumAttr;
+          var theCells = this.getEquationArrayCells();
+          if (theCells != null)
+          {
+            newNumAttr = "none";
+            for (ix = 0; ix < theCells.length; ++ix)
+            {
+              cellAttr = theCells[ix].getAttribute("numbering");
+              if (!cellAttr || !cellAttr.length || cellAttr != "none")
+              {
+                newNumAttr = "eqns";
+                break;
+              }
+            }
+          }
+          if (newNumAttr && (!currNumAttr || newNumAttr != currNumAttr))
+            this.setAttribute("numbering", newNumAttr);
+        ]]>
+      </xbl:body>
+      </xbl:method>
+      <xbl:method name="getEquationArrayCells">
+      <xbl:body>
+        <![CDATA[
+          var theCells = [];
+          var ix, tableNode, aNode, cellNodes, rowNode, otherNode, typeAttr;
+
+          function findMatrixCallback(theNode)
+          {
+            switch(theNode.nodeName)
+            {
+              case "msidisplay":
+              case "math":
+              case "mstyle":
+              case "mrow":
+              case "#text":
+                return NodeFilter.FILTER_SKIP;
+              break;
+              case "mtable":
+                return NodeFilter.FILTER_ACCEPT;
+              break;
+              default:
+                return NodeFilter.FILTER_REJECT;  //rejects whole subtree
+              break;
+            }
+          }
+
+          function findCellsCallback(theNode)
+          {
+            switch(theNode.nodeName)
+            {
+              case "mstyle":
+              case "mtr":
+              case "#text":
+                return NodeFilter.FILTER_SKIP;
+              break;
+              case "mtd":
+                return NodeFilter.FILTER_ACCEPT;
+              break;
+              case "msidisplay":
+              default:
+                return NodeFilter.FILTER_REJECT;  //rejects whole subtree
+              break;
+            }
+          }
+          
+          var walker = document.createTreeWalker( this, NodeFilter.SHOW_ELEMENT, findMatrixCallback, false ); 
+          while (aNode = walker.nextNode())
+          {
+            typeAttr = aNode.getAttribute("type");
+            if (typeAttr && (typeAttr == "eqnarray"))
+            {
+              tableNode = aNode;
+              break;
+            }
+          }
+          if (!tableNode)
+            return null;
+
+          walker = document.createTreeWalker( tableNode, NodeFilter.SHOW_ELEMENT, findCellsCallback, false );
+          while (aNode = walker.nextNode())
+          {
+            theCells.push(aNode);
+          }
+          return theCells;
+        ]]>
+      </xbl:body>
+      </xbl:method>
+      <xbl:method name="isWhitespaceNode">
+      <xbl:parameter name="aNode"/>
+      <xbl:body>
+        <![CDATA[
+          var whiteSpaceRE = /^\s+$/;
+          if (aNode.nodeName == "#text")
+          {
+            if (whiteSpaceRE.test(aNode.textContent))
+              return true;
+          }
+          return false;
+        ]]>
+      </xbl:body>
+      </xbl:method>
+      <xbl:method name="checkSubEqnContinuation">
+      <xbl:body>
+        <![CDATA[
+          var subContAttr = this.getAttribute("subEquationContinuation");
+          var bSubCont = (subContAttr != null) && (subContAttr == "true");
+          var bPrevSubCont, bNextSubCont, 
+          var bResetSubs = false;
+          var prevEqn = this.prevEquation;
+          var nextEqn = this.nextEquation;
+          if (bSubCont && prevEqn)
+          {
+            subContAttr = prevEqn.getAttribute("subEquationContinuation");
+            bPrevSubCont = (subContAttr != null) && (subContAttr == "true");
+            if (!bPrevSubCont)
+              bResetSubs = true;
+          }
+          if (bResetSubs)
+            this.setAttribute("subEquationReset", "true");
+          else  //we don't need this attribute if we're the same subEqCont status as the previous
+            this.removeAttribute("subEquationReset");
+          if (nextEqn)
+          {
+            subContAttr = nextEqn.getAttribute("subEquationContinuation");
+            bNextSubCont = (subContAttr != null) && (subContAttr == "true");
+            if (bNextSubCont && !bSubCont)
+              nextEqn.setAttribute("subEquationReset", "true");
+            else
+              nextEqn.removeAttribute("subEquationReset");
+          }
+        ]]>
+      </xbl:body>
+      </xbl:method>
+      <xbl:property name="prevEquation">
+        <xbl:getter>
+          <![CDATA[
+            var container = this.siblingEquationsContainer;
+            var eqnlist = container.getElementsByTagName("msidisplay");
+            for (var ix = 0; ix < eqnlist.length; ++ix)
+            {
+              if ( (eqnlist[ix] == this) && (ix > 0) )
+                return eqnlist[ix-1];
+            }
+            return null;
+          ]]>
+        </xbl:getter>
+      </xbl:property>
+      <xbl:property name="nextEquation">
+        <xbl:getter>
+          <![CDATA[
+            var container = this.siblingEquationsContainer;
+            var eqnlist = container.getElementsByTagName("msidisplay");
+            for (var ix = 0; ix < eqnlist.length; ++ix)
+            {
+              if ( (eqnlist[ix] == this) && (ix < eqnlist.length - 1) )
+                return eqnlist[ix+1];
+            }
+            return null;
+          ]]>
+        </xbl:getter>
+      </xbl:property>
+      <xbl:property name="siblingEquationsContainer">
+        <xbl:getter>
+          <![CDATA[
+            var findTags = ["body", "section"];  //this needs to be configurable! Should include all tags which reset equation counter.
+            var currName;
+            for (var aNode = this; aNode; aNode = aNode.parentNode)
+            {
+              currName = aNode.nodeName;
+              if (findTags.indexOf(currName) >= 0)
+                return aNode;
+            }
+            return document.documentElement; //should NOT happen
+          ]]>
+        </xbl:getter>
+      </xbl:property>
+      <xbl:property name="subEquationContinuation">
+        <xbl:getter>
+          <![CDATA[
+            var subContAttr = this.getAttribute("subEquationContinuation");
+            return (subContAttr != null) && (subContAttr == "true");
+          ]]>
+        </xbl:getter>
+        <xbl:setter>
+          <![CDATA[
+            var subContAttr = this.getAttribute("subEquationContinuation");
+            var bSubCont = (subContAttr != null) && (subContAttr == "true");
+            if (bSubCont != val)
+            {
+              if (val)
+                this.setAttribute("subEquationContinuation", "true");
+              else
+                this.removeAttribute("subEquationContinuation");
+              window.checkSubEqnContinuation(this);
+            }
+          ]]>
+        </xbl:setter>
+      </xbl:property>
+      <xbl:handler event="DOMNodeInserted">
+        <xbl:action>
+          <![CDATA[
+            this.checkNumbering();
+            this.init();
+          ]]>
+        </xbl:action>
+      </xbl:handler>
+      <xbl:handler event="DOMNodeRemoved">
+        <xbl:action>
+          <![CDATA[
+            this.checkNumbering();
+            this.init();
+          ]]>
+        </xbl:action>
+      </xbl:handler -->
+    </xbl:implementation>
+  </xbl:binding>
+
+	<xbl:binding id="msidisplaynumbered" extends="latex.xml#msidisplaybase">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+    <xbl:content>
+      <xbl:children/>
+      <html:button type="button" xbl:inherits="xbl:text=marker" class="eqnnum" onclick=""/>
+    </xbl:content>
+  </xbl:binding>
+
+	<xbl:binding id="msidisplaysubnumbered" extends="latex.xml#msidisplaybase">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+    <xbl:content>
+      <xbl:children/>
+      <html:button type="button" xbl:inherits="xbl:text=marker" class="subeqnnum" onclick=""/>
+    </xbl:content>
+  </xbl:binding>
+
+	<xbl:binding id="msidisplaymarker" extends="latex.xml#msidisplaybase">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+    <xbl:content>
+      <xbl:children/>
+      <html:button type="button" xbl:inherits="xbl:text=marker" class="eqnmarker" onclick=""/>
+    </xbl:content>
+  </xbl:binding>
+
+	<xbl:binding id="msidisplayrowbase">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+    <xbl:content>
+      <xbl:children/>
+    </xbl:content>
+    <!-- xbl:implementation>
+      <xbl:constructor>
+        <![CDATA[
+//          var anEvent = document.createEvent("MutationEvents");
+//          anEvent.initMutationEvent("DOMNodeInserted", true, false);
+//          this.dispatchEvent(anEvent);
+        ]]>
+      </xbl:constructor>
+      <xbl:destructor>
+        <![CDATA[
+//          var anEvent = document.createEvent("MutationEvents");
+//          anEvent.initMutationEvent("DOMNodeRemoved", true, false);
+//          this.dispatchEvent(anEvent);
+        ]]>
+      </xbl:destructor>
+      <xbl:field name="displayContainer">null</xbl:field>
+    </xbl:implementation -->
+  </xbl:binding>
+
+	<xbl:binding id="msidisplayrownumbered" extends="latex.xml#msidisplayrowbase">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+    <xbl:content>
+      <xbl:children/>
+      <html:button type="button" xbl:inherits="customLabel,xbl:text=marker" class="eqnnum" onclick=""/>
+    </xbl:content>
+  </xbl:binding>
+
+	<xbl:binding id="msidisplayrowsubnumbered" extends="latex.xml#msidisplayrowbase">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+    <xbl:content>
+      <xbl:children/>
+      <html:button type="button" xbl:inherits="customLabel,xbl:text=marker" class="subeqnnum" onclick=""/>
+    </xbl:content>
+  </xbl:binding>
+
+	<xbl:binding id="msidisplayrowmarker">
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+    <xbl:content>
+      <xbl:children/>
+      <html:button type="button" xbl:inherits="xbl:text=marker" class="eqnmarker" onclick=""/>
+    </xbl:content>
+  </xbl:binding>
+
   <xbl:binding id="fmtag-title"> /*front matter   */
 	  <xbl:resources>
 	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
