@@ -1097,3 +1097,7 @@ texnote[leadInType="custom"], solution[leadInType="custom"] {
   -moz-binding: url("chrome://prince/content/bindings/latex.xml#theoremWithCustomLeadin");
 }
 */
+
+rawTeX {
+ color: #6600cc;
+}
