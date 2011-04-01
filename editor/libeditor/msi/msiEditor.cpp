@@ -507,8 +507,8 @@ msiEditor::InsertMathname(const nsAString & mathname)
     res = GetNSSelectionData(selection, startNode, startOffset, endNode, 
                            endOffset, bCollapsed);
     
-    printf("\njcs -- InsertMathName selection:\n");
-    DumpSelection(selection);
+    //printf("\njcs -- InsertMathName selection:\n");
+    //DumpSelection(selection);
 
     if (NS_SUCCEEDED(res)) 
     {
@@ -3057,7 +3057,7 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
   PRBool bIsDisplay(PR_FALSE), bDisplayNeedsMSIDisplay(PR_FALSE);
   PRInt32 doSplitAt(-1), splitOffset(0);
   nsCOMPtr<nsIDOMNode> splittable, splitParent, splitChild;
-  nsCOMPtr<nsIDOMNode> nextNode, nextParent, prevChild, matrixContainer, tempNode;
+  nsCOMPtr<nsIDOMNode> nextNode, nextParent, prevChild, matrixContainer, tempNode, displayContainer;
 //  nsCOMPtr<nsIDOMElement> asElement;
   nsCOMPtr<nsIDOMNode> leftNode, rightNode;  //To be filled in by the split, if it occurs
   nsAutoString tagName;
@@ -3106,6 +3106,7 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
         dontcare = nextParent->GetLocalName(tagName);
         if (tagName.EqualsLiteral("msidisplay"))
         {
+          displayContainer = nextParent;
           bIsDisplay = PR_TRUE;
         }
         else
@@ -3621,11 +3622,19 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
       SetAttribute(asElement, typeStr, eqnArrayStr);
       if (bDisplayNeedsMSIDisplay)
       {
-        nsCOMPtr<nsIDOMNode> msiDisplayNode;
+//        nsCOMPtr<nsIDOMNode> msiDisplayNode;
         nsAutoString msidisplayStr;
         msidisplayStr.AssignASCII("msidisplay");
-        dontcare = InsertContainerAbove( topMathNode, address_of(msiDisplayNode), msidisplayStr, nsnull, nsnull);
+        dontcare = InsertContainerAbove( topMathNode, address_of(displayContainer), msidisplayStr, nsnull, nsnull);
         NS_ASSERTION(NS_SUCCEEDED(dontcare), "Failed to insert msidisplay node in msiEditor::InsertReturnInMath!");  //Check that this is the newly inserted node
+      }
+      if (displayContainer)
+      {
+        nsAutoString eqnsStr, numberStr;
+        numberStr.AssignASCII("numbering");
+        eqnsStr.AssignASCII("eqns");
+        asElement = do_QueryInterface(displayContainer);
+        SetAttribute(asElement, numberStr, eqnsStr);  //numbering="eqns" signifies that the equation array numbering is on the table cells
       }
     }
 
