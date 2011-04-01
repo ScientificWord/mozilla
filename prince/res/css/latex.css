@@ -542,10 +542,7 @@ preface {
 
 body {
   -moz-user-select: -moz-none; /* -moz-none can be overridden */
-  counter-reset: eqnnumber;
-  counter-reset: chapter;
-  counter-reset: part;
-  counter-reset: section;
+  counter-reset: eqnnumber subeqnnumber chapter part section;
   margin-left: 10pt;
 }
 
@@ -605,10 +602,131 @@ maketitle {
   text-align: center;
 }
 
+
+/* Key to the entries below for msidisplay:
+    i) msidisplay with no "numbering" attribute will be assumed to be numbered automatically as a single equation.
+         What's displayed will depend on the "marker", "subEquationNumbers", and "subEquationContinuation" attributes, but
+         a number (with marker if available) will be displayed. Uses #msidisplaynumbered or #msidisplaysubnumbered binding.
+   ii) msidisplay with "numbering=eqns" means the numbering is on the individual equations within an mtable.
+         No marker will be displayed at the level of the msidisplay; the individual rows (that is, mtr>mtd content) will
+         set the text of markers and numbers. Use #msidisplaybase.
+  iii) msidisplay with "numbering=none" means either a single equation with no numbering or containing individual equations
+       which are all unnumbered.
+         If a marker is present, these will display the marker; otherwise nothing at the top level. Individual rows with markers
+         will still show them. Use #msidisplaybase without a marker, or #msidisplaymarker if one is present.
+
+  Key to the entries for individual equations, coded as msidisplay>math>mtable>mtr>mtd or msidisplay>math>mstyle>mtable>mtr>mtd:
+    i) Equation with no "numbering" attribute will be assumed to be numbered automatically. As above, what's displayed will depend
+         on "subEquationNumbers" and "subEquationContinuation" attributes. Use #msidisplayrownumbered or #msidisplayrowsubnumbered binding.
+   ii) Equation with "numbering=none", but with a marker. Use #msidisplayrowmarker binding.
+  iii) Equation with "numbering=none" but no marker; no binding needed?
+
+  Counters:
+    i) Generally, "counter-increment" is "eqnnumber" or "subeqnnum" depending on whether a button is "class=eqnnum" or
+         "class=subeqnnum". Also, each "class=eqnnum" button will have a "counter-reset=subeqnnum".
+   ii) Also, an msidisplay with "subEquationNumbers=true" and "numbering" not equal to "none" but without "subEquationContinuation=true" will add "counter-increment=eqnnumber".
+  iii) The one difficult case is "subEquationContinuation=true". Here the msidisplay will only increment "eqnnumber" counter if
+         its "subEquationReset" attribute is "true"; managing this attribute will have to be done dynamically, and it will (attempt to)
+         track whether previous display has "subEquationContinuation=true" and "subEquationNumbers=true".
+*/
+
 msidisplay {
-  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplay");
+ -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplaynumbered");
   position: relative;
   display: block;
+}
+
+msidisplay[subEquationNumbers="true"] {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplaysubnumbered");
+}
+
+msidisplay[numbering="none"], msidisplay[numbering="eqns"], msidisplay[numbering="eqns"][subEquationNumbers="true"] {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplaybase");
+}
+
+msidisplay[numbering="none"][marker] {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplaymarker");
+}
+
+msidisplay[numbering="eqns"] mtable[type="eqnarray"]>mtr>mtd {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplayrownumbered");
+}
+
+msidisplay mtable[type="eqnarray"]>mtr>mtd[numbering="none"] {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplayrowbase");
+}
+
+msidisplay mtable[type="eqnarray"]>mtr>mtd[numbering="none"][marker] {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplayrowmarker");
+}
+
+msidisplay[numbering="eqns"][subEquationNumbers="true"] mtable[type="eqnarray"]>mtr>mtd {
+  -moz-binding: url("chrome://prince/content/bindings/latex.xml#msidisplayrowsubnumbered");
+}
+
+
+msidisplay[subEquationNumbers="true"] {
+  counter-increment: eqnnumber;
+  counter-reset: subeqnnum;
+}
+
+msidisplay[subEquationNumbers="true"][numbering="none"], msidisplay[subEquationNumbers="true"][subEquationContinuation="true"] {
+  counter-increment: none;
+  counter-reset: none;
+}
+
+msidisplay[subEquationNumbers="true"][subEquationContinuation="true"][subEquationReset="true"] {
+  counter-increment: eqnnumber;
+  counter-reset: subeqnnum;
+}
+
+button[class="eqnnum"]{
+  counter-increment: eqnnumber;
+/*  counter-reset: subeqnnum; */
+  position: absolute;
+  right: 0px;
+  font-style: normal; 
+  color: red;
+  -moz-user-select: -moz-none;
+}
+
+button[class="subeqnnum"]{
+  counter-increment: subeqnnum;
+  counter-reset: none;
+  position: absolute;
+  right: 20px;
+  font-style: normal; 
+  color: blue;
+  -moz-user-select: -moz-none;
+}
+
+button[class="eqnmarker"]{
+  position: absolute;
+  right: 0px;
+  font-style: normal; 
+  color: red;
+  -moz-user-select: -moz-none;
+}
+
+mtd button[class="eqnnum"], mtd button[class="subeqnnum"], mtd button[class="eqnmarker"] {
+  display: inline;
+  right: 0px;
+}
+
+button[class="eqnnum"]:after{
+  content: "  " counter(section) "." counter(eqnnumber);
+}
+
+button[class="eqnnum"][customLabel]:after{
+  content: "  " attr(customLabel);
+}
+
+button[class="subeqnnum"]:after{
+  content: "  " counter(section) "." counter(eqnnumber) "." counter(subeqnnum,lower-latin);
+}
+
+button[class="subeqnnum"][customLabel]:after{
+  content: "  " attr(customLabel);
 }
 
 title {

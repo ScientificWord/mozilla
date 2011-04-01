@@ -554,6 +554,43 @@ function msiEditorKeyListener(event)
   }
 }
 
+function addDOMEventListenerForEditor(editorElement)
+{
+  try
+  {
+    editorElement.contentWindow.addEventListener("DOMNodeInserted", msiEditorDOMChangeListener, false);
+    editorElement.contentWindow.addEventListener("DOMNodeRemoved", msiEditorDOMChangeListener, false);
+    editorElement.contentWindow.addEventListener("DOMSubtreeModified", msiEditorDOMChangeListener, true);
+  }
+  catch(ex) {dump("Unable to register keydown event listener; error [" + ex + "].\n");}
+}
+
+function msiEditorDOMChangeListener(event)
+{
+  var targ = event.originalTarget;
+  var displayNode;
+  if (!targ)
+    targ = event.target;
+  switch(msiGetBaseNodeName(targ))
+  {
+    case "mtd":
+    case "mtr":
+    case "mtable":
+    case "button":
+    case "msidisplay":
+      displayNode = msiNavigationUtils.getEnclosingDisplay(targ);
+      if (displayNode != null)
+      {
+        checkNumberingOfParentEqn(displayNode);
+        checkLayoutOfParentEqn(displayNode);
+      }
+    break;
+    default:
+    break;
+  }
+  return;
+}
+
 function msiEditorOnFocus(event)
 {
 //  var editorElement = GetEditorElementForDocument(event.currentTarget.ownerDocument);
@@ -944,6 +981,7 @@ function msiEditorDocumentObserver(editorElement)
           addClickEventListenerForEditor(this.mEditorElement);
           addFocusEventListenerForEditor(this.mEditorElement);
           addKeyDownEventListenerForEditor(this.mEditorElement);
+//          addDOMEventListenerForEditor(editorElement);
 
           this.mEditorElement.pdfModCount = 0;
 
@@ -3735,15 +3773,30 @@ function msiCreatePropertiesObjectDataFromSelection(aSelection, editorElement)
   switch(msiGetBaseNodeName(container))
   {
     //Note that a container which is a cell in a table shouldn't be constructed here, as it's essentially no differrent from any other container.
-    case 'mtable':
-    case 'table':
     case "thead":
-    case "tfoot":
     case "tbody":
-    case 'mtr':
-    case 'mlabeledtr':
-    case 'tr':
-      retObj = new msiTablePropertiesObjectData();
+    case "tfoot":
+    case "tr":
+//    case "td":
+    case "mtable":
+    case "mtr":
+    case "mlabeledtr":
+//    case "mtd":
+      var tableParent = msiGetContainingTableOrMatrix(container);
+      if (msiNavigationUtils.isEquationArray(editorElement, tableParent))
+      {
+        retObj = new msiEquationPropertiesObjectData();
+        retObj.initFromSelection(editor.selection, editorElement);
+      }
+      else
+      {
+        retObj = new msiTablePropertiesObjectData();
+        retObj.initFromSelection(editor.selection, editorElement);
+      }
+    break;
+
+    case "msidisplay":
+      retObj = new msiEquationPropertiesObjectData();
       retObj.initFromSelection(editor.selection, editorElement);
     break;
 
@@ -4915,10 +4968,11 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
       case "tbody":
       case "tfoot":
       case "tr":
+//      case "td":
       case "mtable":
       case "mtr":
       case "mlabeledtr":
-      case "mtd":
+//      case "mtd":
         var tableParent = msiGetContainingTableOrMatrix(coreElement);
         if (msiNavigationUtils.isEquationArray(editorElement, tableParent))
         {
@@ -7274,6 +7328,8 @@ msiTablePropertiesObjectData.prototype.__proto__ = msiPropertiesObjectDataBase;
 
 function msiEquationPropertiesObjectData()
 {
+  this.mnRows = 0;
+  this.mCurRow = 0;
   this.mDisplay = null;
   this.mTableElement = null;
   this.mWholeArrayMarker = null;
@@ -7286,8 +7342,6 @@ function msiEquationPropertiesObjectData()
 
 msiEquationPropertiesObjectData.prototype = 
 {
-  mnRows : 1,
-  mCurRow : 1,
 
 //Interface:
   initFromNode : function(aNode, editorElement)
@@ -7332,7 +7386,7 @@ msiEquationPropertiesObjectData.prototype =
     for (var ix = 0; ix < aSelection.rangeCount; ++ix)
       this.mSelection.push( aSelection.getRangeAt(ix).cloneRange() );
     this.mTableElement = msiGetContainingTableOrMatrix(this.mSelection[0].startContainer);
-    this.mDisplay = msiNavigationUtils.getEnclosingDisplay(aNode);
+    this.mDisplay = msiNavigationUtils.getEnclosingDisplay(this.mTableElement);
     this.examineEqnArray(this.mSelection);
     this.finishInit();
     this.setStrings();
@@ -7371,6 +7425,17 @@ msiEquationPropertiesObjectData.prototype =
     return this.mDisplay;
   },
 
+  getTableNode : function()
+  {
+    return this.mTableElement;
+  },
+
+  getRowNode : function(nWhichRow)
+  {
+    if (nWhichRow < this.mnRows)
+      return this.mRowData[nWhichRow].rowNode;
+  },
+
   getRange : function()
   {
     if (this.mSelection && this.mSelection.length == 1)
@@ -7388,7 +7453,7 @@ msiEquationPropertiesObjectData.prototype =
   isLineNumbered : function(nLine)
   {
     if (nLine < this.mnRows)
-      return (this.mRowData[nLine].labelType == "numberingAuto");
+      return (this.mRowData[nLine].labelType != "numberingNone");
     return false;
   },
 
@@ -7489,16 +7554,21 @@ msiEquationPropertiesObjectData.prototype =
     this.mRowData.splice(0, this.mRowData.length);  //empty it out
     for (var jj = 0; jj < nRows; ++jj)    //We'll just stick in the right number of objects to be filled in later
     {
-      this.mRowData.push( {labelType : "numberingAuto", marker : null, customLabel : null, mbSuppressAnnotation : false, spaceAfterLine : "0.0pt"} );
+      this.mRowData.push( {rowNode : null, labelType : "numberingAuto", marker : null, customLabel : null, mbSuppressAnnotation : false, spaceAfterLine : "0.0pt"} );
     }
   },
 
   examineEqnArray : function(rangeArray)
   {
-    var foundNode = null, nextNode = null;;
+    var foundNode = null, nextNode = null;
+    var foundCell = null;
+    var theAttr, matchArray, spacingArray;
+    var paddingBottomRE = /padding-bottom\:\s*([^;^}]+)/;
+    var theEditor, mathmlEditor;
+
     if (!this.mDisplay)
     {
-      dump("Problem in msiEditor.js, msiEquationPropertiesObjectData.examineEqnArray - this.mDislay isn't set!\n");
+      dump("Problem in msiEditor.js, msiEquationPropertiesObjectData.examineEqnArray - this.mDisplay isn't set!\n");
       if (this.mNode)
         this.mDisplay = msiNavigationUtils.getEnclosingDisplay(this.mNode);
       else if (this.mSelection && this.mSelection[0])
@@ -7527,17 +7597,10 @@ msiEquationPropertiesObjectData.prototype =
         {
           if (msiGetBaseNodeName(nextNode) == "mtable")
           {
-            if (nextNode.getAttribute("type") == "eqnarray")
+            var tableDims = msiGetEnclosingTableOrMatrixDimensions(this.mEditorElement, nextNode);
+            if ((nextNode.getAttribute("type") == "eqnarray") || (tableDims.nCols == 1))
               this.mTableElement = nextNode;
-            else
-            {
-              var tableDims = msiGetEnclosingTableOrMatrixDimensions(this.mEditorElement, nextNode);
-              if (tableDims.nCols == 1)
-              {
-                this.mTableElement = nextNode;
-                this.setRows(tableDims.nRows);
-              }
-            }
+            this.setRows(tableDims.nRows);
             break;  //Once we've examined a matrix element, it was our only shot whether it worked or not.
           }
           foundNode = nextNode;  //go further?
@@ -7546,17 +7609,97 @@ msiEquationPropertiesObjectData.prototype =
           break;
       }
     }
-    if (this.mTableElement)  //Now need to get hold of the rows
+    if (this.mDisplay)
     {
-      var theEditor = msiGetEditor(this.mEditorElement);
-//      try
-//      {
-//        var mathmlEditor = theEditor.QueryInterface(Components.interfaces.msiIMathMLEditor);
-//        for (var ix = 0; ix < this.mnRows; ++ix)
-//        {
-//        }
-//      }
-//      catch(exc) {dump("Exception in msiEquationPropertiesObjectData.examineEqnArray: [" + exc + "].\n");}
+      theEditor = msiGetEditor(this.mEditorElement);
+
+      theAttr = this.mDisplay.getAttribute("marker");
+      if (theAttr && theAttr.length)
+        this.mWholeArrayMarker = theAttr;
+      theAttr = this.mDisplay.getAttribute("alignment");
+      if (theAttr && theAttr.length)
+      {
+        this.mbAlignmentEnabled = true;
+        this.mAlignment = theAttr;
+      }
+      theAttr = this.mDisplay.getAttribute("subEquationNumbers");
+      if (theAttr && theAttr == "true")
+      {
+        this.mbSubEqnNumbersEnabled = true;
+        theAttr = this.mDisplay.getAttribute("subEquationContinuation");
+        if (theAttr && theAttr == "true")
+          this.mbSubEqnContinuation = true;
+      }
+
+      try  //Now need to get hold of the rows
+      {
+        mathmlEditor = theEditor.QueryInterface(Components.interfaces.msiIMathMLEditor);
+        if (this.mTableElement)
+        {
+          theAttr = this.mTableElement.getAttribute("rowspacing");
+          if (theAttr)
+          {
+            spacingArray = theAttr.split(/\s+/);
+            var nFound = spacingArray.length;
+            if (nFound > 0)
+            {
+              for (ix = nFound; ix < this.mnRows - 1; ++ix)  //Clone the last value for unspecified ones
+                spacingArray.push(spacingArray[nFound - 1]);
+            }
+          }
+        }
+
+        for (var ix = 0; ix < this.mnRows; ++ix)
+        {
+          foundCell = null;
+          if (this.mTableElement)
+            foundCell = mathmlEditor.getCellAt(this.mTableElement, ix+1, 1);
+          else if (ix == 0)
+            foundCell = this.mDisplay;  //the attributes will be placed on the msidisplay element for a single displayed equation
+          if (foundCell)
+          {
+            this.mRowData[ix].rowNode = foundCell;
+//            if (this.mbSubEqnNumbersEnabled)
+//            {
+            theAttr = foundCell.getAttribute("numbering");
+            if (theAttr && theAttr == "none")
+              this.mRowData[ix].labelType = "numberingNone";
+            else
+              this.mRowData[ix].labelType = "numberingAuto";
+            theAttr = foundCell.getAttribute("customLabel");
+            if (theAttr && theAttr.length)
+            {
+              this.mRowData[ix].labelType = "numberingCustom";
+              this.mRowData[ix].customLabel = theAttr;
+              theAttr = foundCell.getAttribute("suppressAnnotation");
+              if (theAttr && theAttr == "true")
+                this.mRowData[ix].mbSuppressAnnotation = true;
+            }
+//            }
+            theAttr = foundCell.getAttribute("marker");
+            if (theAttr && theAttr.length)
+              this.mRowData[ix].marker = theAttr;
+            if (spacingArray && spacingArray.length > ix)
+            {
+              this.mRowData[ix].spaceAfterLine = spacingArray[ix];
+            }
+            else
+            {
+              theAttr = foundCell.getAttribute("style");
+              if (theAttr)
+              {
+                matchArray = paddingBottomRE.exec(theAttr);
+                if (matchArray && matchArray[1])
+                  this.mRowData[ix].spaceAfterLine = matchArray[1];
+                //NOTE that this is probably NOT RIGHT! There's presumably default padding in any case,
+                //  and the padding reflected for the cells should probably subtract the default in order
+                //  to get the spaceAfterLine. TO DO?  rwa 3-08-11
+              }
+            }
+          }
+        }
+      }
+      catch(exc) {dump("Exception in msiEquationPropertiesObjectData.examineEqnArray: [" + exc + "].\n");}
     }
     else
     {
@@ -7825,9 +7968,13 @@ function msiInitObjectPropertiesMenuitem(editorElement, id)
       }
     }
 
-    if (!element)
-      element = editor.selection.getRangeAt(0).commonAncestorContainer;
-
+    if (!propsData)
+    {
+      if (!element)
+        element = editor.selection.getRangeAt(0).commonAncestorContainer;
+      if (element)
+        propsData = msiCreatePropertiesObjectDataFromNode(nextNode, editorElement, true);
+    }
     if (propsData)
     {
       subPopup.origSelection = copyCurrSelection(editor);

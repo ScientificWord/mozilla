@@ -27,8 +27,7 @@ chapter {
   display: block;
   position: relative;
   counter-increment: chapter;
-  counter-reset: section;
-  counter-reset: theorem;
+  counter-reset: section theorem;
 }
 
 chapter>sectiontitle{
@@ -63,9 +62,7 @@ chapter[open="false"]>sectiontitle:before{
 section {
   display: block;
   counter-increment: section;
-  counter-reset: subsection;
-  counter-reset: theorem;
-  counter-reset: eqnnumber;
+  counter-reset: subsection theorem eqnnumber subeqnnumber;
   position: relative;
   top: 0;
   left: 0;
@@ -486,24 +483,18 @@ img {
 
 
 button[class="eqnnum"]{
-  counter-increment: eqnnumber;
-  counter-reset: subeqnnum;
-  position: absolute;
-  right: 0px;
   font-style: normal; 
   color: red;
-  -moz-user-select: -moz-none;
 }
 
 button[class="subeqnnum"]{
-  counter-increment: subeqnnum;
-  position: absolute;
   right: 20px;
   font-style: normal; 
   color: blue;
-  -moz-user-select: -moz-none;
 }
 
+
+/*  Following moved to latex.css
 button[class="eqnnum"]:after{
   content: "  " counter(section) "." counter(eqnnumber);
 }
@@ -511,7 +502,7 @@ button[class="eqnnum"]:after{
 button[class="subeqnnum"]:after{
   content: "  " counter(section) "." counter(eqnnumber) "." counter(subeqnnum,lower-latin);
 }
-
+*/
 
 button[class="frontmattertag"]{
   position: absolute;
