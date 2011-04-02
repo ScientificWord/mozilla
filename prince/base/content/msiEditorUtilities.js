@@ -9332,7 +9332,7 @@ var msiNavigationUtils =
   {
     if (aTable.getAttribute("type") == "eqnarray")
       return true;
-    var tableDims = msiGetEnclosingTableOrMatrixDimensions(editorElement, tableElement);
+    var tableDims = msiGetEnclosingTableOrMatrixDimensions(editorElement, aTable);
     if (tableDims.nCols != 1)
       return false;
     var topNode = this.findWrappingNode(aTable);  //inside displays we often see nested <mstyle> and <mrow>s
