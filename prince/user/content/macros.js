@@ -8,6 +8,7 @@
 
 function deleteSelection()
 {
+  dump("\ndeleteSelection();\n");
   msiGoDoCommand('cmd_delete');
 }
 
@@ -33,6 +34,7 @@ function insertMathunit( unit, delSelection )
 
 function insertMathname( name, delSelection )
 {
+  dump("\ninsertMathname();\n");
   if (delSelection) deleteSelection();
   var editorElement = getCurrentEditorElement();
   doInsertMathName(name, editorElement);
