@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
 <?xml-stylesheet href="chrome://global/skin/textbox.css" type="text/css"?>
+<?xml-stylesheet href="chrome://global/skin/toolbarsOverlay.css" type="text/css"?>
 
 <!DOCTYPE dialog SYSTEM "chrome://prince/locale/xrefDialog.dtd">
 
@@ -12,7 +13,8 @@
     ondialogaccept="return onAccept();" ondialogcancel="return onCancel();"
     width="300"
     height="200"
-    persist="screenX screenY width height">
+    persist="left top width height"
+    >
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
@@ -27,7 +29,7 @@
     tooltiptext="Enter a key name"
     maxrows="3"
     onfocus="this.select()"
-    ontextentered="" />
+    ontextentered=""/>
 
   <spacer flex="1"/>
   <groupbox>
