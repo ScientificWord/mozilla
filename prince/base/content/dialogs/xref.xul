@@ -11,8 +11,6 @@
     buttonlabelcancel="Cancel" buttonlabelaccept="OK"
     onload = "Startup();"
     ondialogaccept="return onAccept();" ondialogcancel="return onCancel();"
-    width="300"
-    height="200"
     persist="left top width height"
     >
 
