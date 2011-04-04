@@ -54,8 +54,8 @@
         ondialogaccept="open()"
         buttonlabelaccept="&open.label;"
         style="width: 40em;"
-        persist="screenX screenY"
-        screenX="24" screenY="24">
+        persist="left top width height"
+        left="24" top="24">
               
   <script type="application/x-javascript" src="chrome://global/content/globalOverlay.js"/>  
   <script type="application/x-javascript" src="chrome://prince/content/openLocation.js"/>
