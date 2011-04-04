@@ -5885,7 +5885,7 @@ var msiMarkerCommand =
     var editorElement = msiGetActiveEditorElement();
     try {
       // more goes here
-      window.openDialog("chrome://prince/content/marker.xul", "Insert marker", "resizable=yes,chrome,close,titlebar");
+      window.openDialog("chrome://prince/content/marker.xul", "Insert marker", "resizable=yes,dependent=yes,chrome,close,titlebar");
 
     } catch (e) {}
   }
