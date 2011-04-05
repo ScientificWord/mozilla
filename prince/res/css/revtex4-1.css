@@ -148,49 +148,56 @@ preprint {
   font-weight: normal;
   display: block;
   text-align: center;
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-preprint");
 }
 
 volumeyear {
   font-weight: normal;
   display: block;
   text-align: center;
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-volumeyear");
 }
 
 issuenumber {
   font-weight: normal;
   display: block;
   text-align: center;
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-");
 }
 
 eid {
   font-weight: normal;
   display: block;
   text-align: center;
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-");
 }
 
 received {
   font-weight: normal;
   display: block;
   text-align: center;
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-");
 }
 
 revised {
   font-weight: normal;
   display: block;
   text-align: center;
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-");
 }
 
 accepted {
   font-weight: normal;
   display: block;
   text-align: center;
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-");
 }
 
 published {
   font-weight: normal;
   display: block;
   text-align: center;
-
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-");
 }
 
 title {
@@ -211,22 +218,26 @@ affiliation {
   font-weight: normal;
   display: block;
   text-align: center;
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-");
 }
 
 altaffiliation {
   font-weight: normal;
   display: block;
   text-align: center;
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-");
 }
 
 collaboration {
   font-weight: normal;
   display: block;
   text-align: center;
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-");
 }
 
 noaffiliation { /* use maketitle from latex.css as the example (gp) */
   -moz-user-select: text;
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-");
 }
 
 address {
@@ -238,24 +249,28 @@ email {
   font-weight: normal;
   display: block;
   text-align: center;
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-");
 }
 
 homepage {
   font-weight: normal;
   display: block;
   text-align: center;
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-");
 }
 
 pacs {
   font-weight: normal;
   display: block;
   text-align: center;
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-");
 }
 
 keywords {
   font-weight: normal;
   display: block;
   text-align: center;
+  -moz-binding: url("chrome://prince/content/bindings/revtex.xml#fmtag-");
 }
 
 date {
