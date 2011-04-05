@@ -17,4 +17,154 @@
     </xbl:content>
   </xbl:binding>
 
+  <xbl:binding id="fmtag-volumeyear"> /*front matter label*/
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Volume year</html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
+  <xbl:binding id="fmtag-issuenumber"> /*front matter label*/
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Issue number</html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
+  <xbl:binding id="fmtag-eid"> /*front matter label*/
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">EID</html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
+  <xbl:binding id="fmtag-received"> /*front matter label*/
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Received</html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
+  <xbl:binding id="fmtag-revised"> /*front matter label*/
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Revised</html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
+  <xbl:binding id="fmtag-accepted"> /*front matter label*/
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Accepted</html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
+  <xbl:binding id="fmtag-published"> /*front matter label*/
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Published</html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
+  <xbl:binding id="fmtag-affiliation"> /*front matter label*/
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Affiliation#</html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
+  <xbl:binding id="fmtag-altaffiliation"> /*front matter label*/
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Alt affiliation</html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
+  <xbl:binding id="fmtag-collaboration"> /*front matter label*/
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Collaboration</html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
+  <xbl:binding id="fmtag-noaffiliation"> /*front matter label*/
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">No affiliation</html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
+  <xbl:binding id="fmtag-email"> /*front matter label*/
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Email</html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
+  <xbl:binding id="fmtag-homepage"> /*front matter label*/
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Homepage</html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
+  <xbl:binding id="fmtag-pacs"> /*front matter label*/
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">PACS</html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
+  <xbl:binding id="fmtag-keywords"> /*front matter label*/
+	  <xbl:resources>
+	    <xbl:stylesheet   src="resource://app/res/css/latex_internal.css"/>
+	  </xbl:resources>
+	  <xbl:content>
+      <html:button type="button" class="frontmattertag" nopr="1" onclick="">Keywords</html:button>
+      <xbl:children/>
+    </xbl:content>
+  </xbl:binding>
+
 </xbl:bindings>
