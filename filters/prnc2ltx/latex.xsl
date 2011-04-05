@@ -676,4 +676,12 @@ should not be done under some conditions -->
 
 <xsl:template match="html:frontmatter"><xsl:apply-templates/></xsl:template>
 
+<xsl:template match="html:rawTeX">
+  <xsl:value-of select="@tex"/>
+    <xsl:if test="not(string-length(translate(@tex,'}','')) &gt; string-length(translate(@tex,'{','')))">{</xsl:if>
+    <xsl:apply-templates/>}
+</xsl:template>
+
+
+
 </xsl:stylesheet>
