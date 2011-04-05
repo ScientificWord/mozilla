@@ -379,7 +379,7 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
       nsCOMPtr<nsIDOMDocument> domdoc2;
       nsCOMPtr<nsIDOMElement> broadcaster;
   //      res = GetXuldoc(getter_AddRefs(domdoc));
-      if (!NS_FAILED(res))
+      if (!NS_FAILED(res) && m_window)
       {
         res = m_window->GetDocument( getter_AddRefs(domdoc2));
         res = domdoc2->GetElementById(NS_LITERAL_STRING("vcamactive"), getter_AddRefs(broadcaster));
@@ -387,7 +387,7 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
           broadcaster->SetAttribute(NS_LITERAL_STRING("hidden"), NS_LITERAL_STRING("false"));
       }
     }
-    if (NS_FAILED(res)) return res;
+    if (NS_FAILED(res) || !m_window) return res;
   }
 
   if (mIsAbsolutelyPositioningEnabled && absPosElement &&
