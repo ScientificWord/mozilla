@@ -1,49 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
  2009 MacKichan Software, Inc. *
  * ***** END LICENSE BLOCK ***** */
+Components.utils.import("resource://app/modules/unitHandler.jsm"); 
 
-//Comments on restructuring for Prince:
-//  We'll use three tabs in this dialog, changing the conceptual organization of the controls accordingly.
-//  Tab 1 will be titled "Alignment". Here we should have controls to handle:
-//         (i) Vertical alignment for cells or rows (Top/Middle/Bottom - or?)
-//        (ii) Horizontal alignment for cells or columns (Left/Center/Right - or Justify? Character Align? [last not supported in Composer, so let's not])
-//       (iii) Table baseline with respect to environment (Top row/Middle/Bottom row - or?)
-//        (iv) (Maybe) Caption side selection
-// Tab 2 will be titled "Borders and Backgrounds". Here we should set:
-//         (i) Border styles/thicknesses for cells or cell groups (allow this to be set for columns, colgroups, rows, rowgroups? 
-//               CSS/HTML gives explicit override instructions so it makes sense to allow setting it for explicit targets. But see comments below.) 
-//        (ii) Border colors for cells or cell groups.
-//       (iii) Border styles/thicknesses for entire table.
-//        (iv) Border colors for entire table. (Note that the entire table settings are somewhat limited in terms of differing between
-//               cells! Maybe we don't want this at all and just set everything on the cell/row/column level?)
-//       NOTE that (i)-(iv) should be equipped with the kind of sample we had in SWP originally; Barry suggests that we use right-mouse
-//         functionality to allow the sample drawing to be directly used for selection by the user. However, the structure should
-//         probably change somewhat, so that the Top/Right/Bottom/Left/All/Outline choices will control the operation while the
-//         None/Single/Double/whatever selections will show up as the choices to be made.
-//         (v) Background colors for cells, rows, columns, row groups, col groups, table.
-// Tab 3 will be titled "Size". Here we set:
-//         (i) Width.
-//        (ii) Height.
-//        NOTE that these are problematic. If a rectangular block of cells is selected, in our current paradigm this could only
-//          be used to set the width and height of all the cells in the selection. If some but not all of them have previously
-//          been set, "Auto" would have to show up as the size when the dialog opens - and that might not be appealing.
-//        I believe what should be done is:
-//          (i) If the selection contains multiple cells, the width and height input boxes should be activated only if all the cells
-//              in the selection share a common width/height.
-//         (ii) If the selection spans columns, the "Column" item should be available in the drop-down listbox. If there is a common width
-//              set for the column(s), the listbox should open with "Column" selected. Similarly for column groups, rows, and row groups.
-//        (iii) Wrap/no-wrap behavior of cells
-//         (iv) (Maybe) Header vs. regular cell? More generally, make a column group for a set of columns? Make a bottom row a footer?
-//      Anything else? Maybe the size of margins or padding should be set here? We'll leave that for another day.
-//    Actually, this tab seems to contain too little - particularly since the size controls may be often disabled.
-//    It would be tempting to put the Wrap/no-wrap, Header Cell/Table Cell, and Caption placement controls here and entitle it
-//      "Size and Layout". Then the first tab would be simply "Alignment".
-// In any case the salient issue is how explicitly we should allow these settings for differing targets. They're available in some form
-//   or other for individual cells, rows, columns, row groups (which only means Header/Body/Footer), column groups, or the entire table.
-//   Ideally we'd like to offer for each a choice of what the user is setting the value for, and allow him to set for each available
-//   choice each time he visits the dialog.
-// Additionally, the Composer dialog offers the option of changing the selection while in the dialog and continuing to edit. This is
-//   probably very helpful, but I don't know whether I want to try to implement it at this point.
 
 //Cancel() is in msiEdDialogCommon.js
 var gTableElement;
@@ -67,11 +26,11 @@ const bgcolor = "bgcolor";
 
 const cssBackgroundColorStr = "background-color";
 
-//var gRowCount = 1;
-//var gColCount = 1;
-//var gLastRowIndex;
-//var gLastColIndex;
-//var gNewRowCount;
+var gRowCount = 1;
+var gColCount = 1;
+var gLastRowIndex;
+var gLastColIndex;
+var gNewRowCount;
 //var gNewColCount;
 //var gCurRowIndex;
 //var gCurColIndex;
@@ -127,8 +86,8 @@ var gUseCSS = true;
 var gActiveEditorElement;
 var gActiveEditor;
 
-var gCellWidthUnit = "pc";
-var gCellHeightUnit = "pc";
+var gCellWidthUnit = "pt";
+var gCellHeightUnit = "pt";
 var gWidthUnitsController;
 var gHeightUnitsController;
 var gCellFontSize = 12;
@@ -140,82 +99,40 @@ var data;
 function setVariablesForControls()
 {
   // Get dialog widgets - Table Panel
-//  gDialog.TableRowsInput = document.getElementById("TableRowsInput");
-//  gDialog.TableColumnsInput = document.getElementById("TableColumnsInput");
-//  gDialog.TableWidthInput = document.getElementById("TableWidthInput");
-//  gDialog.TableWidthUnits = document.getElementById("TableWidthUnits");
-//  gDialog.TableHeightInput = document.getElementById("TableHeightInput");
-//  gDialog.TableHeightUnits = document.getElementById("TableHeightUnits");
-//  try {
-//    if (!gPrefs.getBoolPref("editor.use_css") || (gActiveEditor.flags & 1))
-//    {
-//      gUseCSS = false;
-//      var tableHeightLabel = document.getElementById("TableHeightLabel");
-//      tableHeightLabel.parentNode.removeChild(tableHeightLabel);
-//      gDialog.TableHeightInput.parentNode.removeChild(gDialog.TableHeightInput);
-//      gDialog.TableHeightUnits.parentNode.removeChild(gDialog.TableHeightUnits);
-//    }
-//  } catch (e) {}
-
-//  gDialog.SpacingInput = document.getElementById("SpacingInput");
-//  gDialog.PaddingInput = document.getElementById("PaddingInput");
-//  gDialog.TableAlignList = document.getElementById("TableAlignList");
-
   gDialog.TabBox =  document.getElementById("TabBox");
-  gDialog.AlignmentTab =  document.getElementById("AlignmentTab");
+  gDialog.TableTab =  document.getElementById("TableTab");
+  gDialog.CellsTab =  document.getElementById("CellsTab");
   gDialog.LinesTab =  document.getElementById("LinesTab");
-  gDialog.LayoutTab =  document.getElementById("LayoutTab");
 
-  gDialog.TableCaptionList = document.getElementById("TableCaptionList");
-//  gDialog.TableInheritColor = document.getElementById("TableInheritColor");
-//  gDialog.SelectionList = document.getElementById("SelectionList");
-//  gDialog.PreviousButton = document.getElementById("PreviousButton");
-//  gDialog.NextButton = document.getElementById("NextButton");
-  // Currently, we always apply changes and load new attributes when changing selection
-  // (Let's keep this for possible future use)
-  //gDialog.ApplyBeforeMove =  document.getElementById("ApplyBeforeMove");
-  //gDialog.KeepCurrentData = document.getElementById("KeepCurrentData");
-  gDialog.ColAlignRadioGroup =  document.getElementById("ColumnAlignRadioGroup");
-  gDialog.RowAlignRadioGroup =  document.getElementById("RowAlignRadioGroup");
-  gDialog.TableBaselineRadioGroup =  document.getElementById("TableBaselineRadioGroup");
+  gDialog.tableRowCount = document.getElementById("tableRowCount");
+  gDialog.tableColumnCount = document.getElementById("tableColumnCount");
 
-//  gDialog.BorderSelectionList =  document.getElementById("BorderSelectionList");
-  gDialog.BorderSideSelectionList = document.getElementById("BorderSideSelectionList");
-  gDialog.CellBorderStyleList = document.getElementById("cellBorderStyleList");
-  gDialog.BordersPreview =  document.getElementById("BordersPreview");
-  gDialog.BordersPreviewCenterCell = document.getElementById("BordersPreviewCenterCell");
-  gDialog.CellBorderWidthList = document.getElementById("cellBorderWidthList");
-//  gDialog.BorderWidthInput = document.getElementById("BorderWidthInput");
-//  gDialog.BorderWidthUnits = document.getElementById("BorderWidthUnits");
-//  gDialog.BackgroundColorCheckbox = document.getElementById("BackgroundColorCheckbox");
-  gDialog.BackgroundSelectionRadioGroup = document.getElementById("BackgroundSelectionRadioGroup");
+  gDialog.tableRowHeight =  document.getElementById("tableRowHeight");
+  gDialog.tableWidth =  document.getElementById("tableWidth");
 
+  gDialog.tableLocationList =  document.getElementById("tableLocationList");
+  gDialog.tableFloatLocationList =  document.getElementById("tableFloatLocationList");
+  gDialog.baselineList =  document.getElementById("baselineList");
+  gDialog.captionLocation =  document.getElementById("captionLocation");
+  gDialog.tableBackgroundCW =  document.getElementById("tableBackgroundCW");
+  
+  // Cells Panel
   gDialog.CellHeightInput = document.getElementById("CellHeightInput");
   gDialog.CellHeightUnits = document.getElementById("CellHeightUnits");
   gDialog.CellWidthInput = document.getElementById("CellWidthInput");
-  gDialog.CellWidthUnits = document.getElementById("CellWidthUnits");
-//  gDialog.CellHAlignList = document.getElementById("CellHAlignList");
-//  gDialog.CellVAlignList = document.getElementById("CellVAlignList");
-//  gDialog.CellInheritColor = document.getElementById("CellInheritColor");
-  gDialog.CellStyleList = document.getElementById("CellStyleList");
-//  gDialog.TextWrapList = document.getElementById("TextWrapList");
+  gDialog.CellUnits = document.getElementById("CellUnits");
 
-  // In cell panel, user must tell us which attributes to apply via checkboxes,
-  //  else we would apply values from one cell to ALL in selection
-  //  and that's probably not what they expect!
-  //rwa Is this still valid to do?
-  gDialog.CellHeightCheckbox = document.getElementById("CellHeightCheckbox");
-  gDialog.CellWidthCheckbox = document.getElementById("CellWidthCheckbox");
-//  gDialog.CellHAlignCheckbox = document.getElementById("CellHAlignCheckbox");
-//  gDialog.CellVAlignCheckbox = document.getElementById("CellVAlignCheckbox");
-//  gDialog.CellStyleCheckbox = document.getElementById("CellStyleCheckbox");
+  gDialog.hAlignChoices = document.getElementById("hAlignChoices");
+  gDialog.vAlignChoices = document.getElementById("vAlignChoices");
+
   gDialog.TextWrapCheckbox = document.getElementById("TextWrapCheckbox");
-//  gDialog.CellColorCheckbox = document.getElementById("CellColorCheckbox");
-//  gDialog.TableTab = document.getElementById("TableTab");
-//  gDialog.CellTab = document.getElementById("CellTab");
-//  gDialog.AdvancedEditCell = document.getElementById("AdvancedEditButton2");
-  // Save "normal" tooltip message for Advanced Edit button
-//  gDialog.AdvancedEditCellToolTipText = gDialog.AdvancedEditCell.getAttribute("tooltiptext");
+  gDialog.cellBackgroundCW = document.getElementById("cellBackgroundCW");
+
+  // Lines Panel
+  gDialog.BorderSideSelectionList = document.getElementById("BorderSideSelectionList");
+  gDialog.cellBorderStyleList = document.getElementById("cellBorderStyleList");
+  gDialog.cellBorderWidthList = document.getElementById("cellBorderWidthList");
+  gDialog.borderCW = document.getElementById("borderCW");
 
 }
 
@@ -481,6 +398,7 @@ function Startup()
   {
     try {
       gTableElement = gActiveEditor.getElementOrParentByTagName("table", null);
+   
     } catch (e) {}
   }
   if(!gTableElement)
@@ -602,9 +520,9 @@ function Startup()
 
 function InitDialog()
 {
-  initAlignPanel();
-  initBordersPanel();
-  initSizeLayoutPanel();
+  initTablePanel();
+  initCellsPanel();
+  initLinesPanel();
 
   // Get Table attributes
 //  gDialog.TableRowsInput.value = gRowCount;
@@ -632,17 +550,36 @@ function InitDialog()
 //  else // Default = left
 //    gDialog.TableAlignList.value = "left";
 
-//  InitCellPanel();
+//  InitCellsPanel();
 }
 
-function initAlignPanel()
+function initTablePanel()
 {
-  gDialog.ColAlignRadioGroup.value = gCollatedCellData.align.halign;
-  gDialog.RowAlignRadioGroup.value = gCollatedCellData.align.valign;
-  gDialog.TableBaselineRadioGroup.value = gTableBaseline;
+  var rowCountObj = { value: 0 };
+  var colCountObj = { value: 0 };
+  try {
+    gActiveEditor.getTableSize(gTableElement, rowCountObj, colCountObj);
+  } catch (e) {}
+
+  gRowCount = rowCountObj.value;
+  gLastRowIndex = gRowCount-1;
+  gColCount = colCountObj.value;
+  gLastColIndex = gColCount-1;
+  gDialog.tableRowCount.value = gRowCount;
+  gDialog.tableColumnCount.value = gColCount;  
+
+  // Be sure to get caption from table in doc, not the copied "globalTableElement"
+  gTableCaptionElement = gTableElement.caption;
+  if (gTableCaptionElement)
+  {
+    gTableCaptionPlacement = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, gTableCaptionElement, "align", "caption-side");
+    if (gTableCaptionPlacement != "top")
+      gTableCaptionPlacement = "bottom";
+    gDialog.TableCaptionList.value = gTableCaptionPlacement;
+  }
 }
 
-function initBordersPanel()
+function initLinesPanel()
 {
 //  gDialog.BorderSelectionList.value = 
 //  gDialog.BorderWidthInput.value = 
@@ -651,16 +588,16 @@ function initBordersPanel()
   setCurrSide(currSide);
 
 //  gTableColor = msiGetHTMLOrCSSStyleValue(globalTableElement, bgcolor, cssBackgroundColorStr);
-  var backColor = gInitialCellData.background;
-  if (!backColor || (backColor == "transparent"))
-  {
-    backColor = gTableColor;
-    gDialog.BackgroundSelectionRadioGroup.value = "table";
-  }
-  else
-    gDialog.BackgroundSelectionRadioGroup.value = "selection";
-  doInitialPreviewSetup();
-  setColorWell("BackgroundCW", backColor);
+//  var backColor = gInitialCellData.background;
+//  if (!backColor || (backColor == "transparent"))
+//  {
+//    backColor = gTableColor;
+//    gDialog.BackgroundSelectionRadioGroup.value = "table";
+//  }
+//  else
+//    gDialog.BackgroundSelectionRadioGroup.value = "selection";
+//  doInitialPreviewSetup();
+//  setColorWell("BackgroundCW", backColor);
 //  SetColor("BackgroundCW", backColor);
 }
 
@@ -670,50 +607,36 @@ function setCurrSide(newSide)
     return;
 
   gCurrentSide = newSide;
-  gDialog.CellBorderStyleList.value = gCollatedCellData.border.style[gCurrentSide];
-  gDialog.CellBorderWidthList.value = gCollatedCellData.border.width[gCurrentSide];
+//  gDialog.CellBorderStyleList.value = gCollatedCellData.border.style[gCurrentSide];
+//  gDialog.CellBorderWidthList.value = gCollatedCellData.border.width[gCurrentSide];
   var cellBorderColor = gCollatedCellData.border.color[gCurrentSide];
   setColorWell("borderCW", cellBorderColor);
   //Note that this one shouldn't require redrawing sample
 //  SetColor("borderCW", cellBorderColor);
 }
 
-function initSizeLayoutPanel()
+
+var cellUnitsHandler;
+function initCellsPanel()
 {
 //  var previousValue = gDialog.CellWidthInput.value;
-  var theUnitsList = new msiCSSWithFontUnitsList(gCellFontSize, "pt");
-  gWidthUnitsController = new msiUnitsListbox(gDialog.CellWidthUnits, [gDialog.CellWidthInput], theUnitsList);
-  gHeightUnitsController = new msiUnitsListbox(gDialog.CellHeightUnits, [gDialog.CellHeightInput], theUnitsList);
+  cellUnitsHandler = new UnitHandler();
+  cellUnitsHandler.setEditFieldList([gDialog.CellWidthInput,gDialog.CellHeightInput]);
+  cellUnitsHandler.initCurrentUnit(gCellWidthUnit);
+  cellUnitsHandler.buildUnitMenu(gDialog.CellUnits, gCellWidthUnit);
+
+
+//  var theUnitsList = new msiCSSWithFontUnitsList(gCellFontSize, "pt");
+//  gWidthUnitsController = new msiUnitsListbox(gDialog.CellWidthUnits, [gDialog.CellWidthInput], theUnitsList);
+//  gHeightUnitsController = new msiUnitsListbox(gDialog.CellHeightUnits, [gDialog.CellHeightInput], theUnitsList);
   var widthStr = String(gCollatedCellData.size.width) + gCellWidthUnit;
   var heightStr = String(gCollatedCellData.size.height) + gCellHeightUnit;
-  gWidthUnitsController.setAdditionalCommand("CheckboxChanged('CellWidthCheckbox');");
-  gHeightUnitsController.setAdditionalCommand("CheckboxChanged('CellHeightCheckbox');");
-  gWidthUnitsController.setUp(gCellWidthUnit, [widthStr]);
-  gHeightUnitsController.setUp(gCellHeightUnit, [heightStr]);
-  gDialog.CellWidthCheckbox.checked = gCollatedCellData.size.bWidthSet;
-  gDialog.CellHeightCheckbox.checked = gCollatedCellData.size.bHeightSet;
-//  gDialog.CellWidthInput.value = InitPixelOrPercentMenulist(globalCellElement, gCellElement, "width", "CellWidthUnits", gPixel);
-//  gDialog.CellHeightInput.value = InitPixelOrPercentMenulist(globalCellElement, gCellElement, "height", "CellHeightUnits", gPixel);
-//  previousValue = gDialog.CellHeightInput.value;
-//  gDialog.CellWidthCheckbox.checked = gAdvancedEditUsed && previousValue != gDialog.CellWidthInput.value;
-//  gDialog.CellHeightCheckbox.checked = gAdvancedEditUsed && previousValue != gDialog.CellHeightInput.value;
 
-//  var previousIndex = gDialog.TextWrapList.selectedIndex;
-//  if (GetHTMLOrCSSStyleValue(globalCellElement, "nowrap", "white-space") == "nowrap")
-//    gDialog.TextWrapList.value = "nowrap";
-//  else
-//    gDialog.TextWrapList.value = "wrap";
+  gDialog.CellHeightInput.value = gCollatedCellData.size.height;
+  gDialog.CellHeightUnits = gCellHeightUnit;
+  gDialog.CellWidthInput = gCollatedCellData.size.width;
   gDialog.TextWrapCheckbox.checked = (gCollatedCellData.wrap != "nowrap");
   
-  // Be sure to get caption from table in doc, not the copied "globalTableElement"
-  gTableCaptionElement = gTableElement.caption;
-  if (gTableCaptionElement)
-  {
-    gTableCaptionPlacement = msiGetHTMLOrCSSStyleValue(gActiveEditorElement, gTableCaptionElement, "align", "caption-side");
-    if (gTableCaptionPlacement != "bottom" && gTableCaptionPlacement != "left" && gTableCaptionPlacement != "right")
-      gTableCaptionPlacement = "top";
-    gDialog.TableCaptionList.value = gTableCaptionPlacement;
-  }
 }
 
 //function InitCellPanel()
@@ -836,31 +759,31 @@ function initSizeLayoutPanel()
 
 function GetColorAndUpdate(ColorWellID)
 {
-  var colorWell = document.getElementById(ColorWellID);
-  if (!colorWell) return;
-
-  var bBackgroundIsSelection = (gDialog.BackgroundSelectionRadioGroup.value == "selection");
-  var colorObj = { Type:"", TableColor:0, CellColor:0, NoDefault:false, Cancel:false, BackgroundColor:0 };
-
-  switch( ColorWellID )
-  {
-    case "BackgroundCW":
-      if (bBackgroundIsSelection)
-      {
-        colorObj.Type = "Cell";
-        colorObj.CellColor = gCollatedCellData.background;
-      }
-      else
-      {
-        colorObj.Type = "Table";
-        colorObj.TableColor = gTableColor;
-      }
-      break;
-    case "borderCW":
-      colorObj.Type = "Cell";
-      colorObj.CellColor = gCollatedCellData.border.color[gCurrentSide];
-      break;
-  }
+//  var colorWell = document.getElementById(ColorWellID);
+//  if (!colorWell) return;
+//
+//  var bBackgroundIsSelection = (gDialog.BackgroundSelectionRadioGroup.value == "selection");
+//  var colorObj = { Type:"", TableColor:0, CellColor:0, NoDefault:false, Cancel:false, BackgroundColor:0 };
+//
+//  switch( ColorWellID )
+//  {
+//    case "BackgroundCW":
+//      if (bBackgroundIsSelection)
+//      {
+//        colorObj.Type = "Cell";
+//        colorObj.CellColor = gCollatedCellData.background;
+//      }
+//      else
+//      {
+//        colorObj.Type = "Table";
+//        colorObj.TableColor = gTableColor;
+//      }
+//      break;
+//    case "borderCW":
+//      colorObj.Type = "Cell";
+//      colorObj.CellColor = gCollatedCellData.border.color[gCurrentSide];
+//      break;
+//  }
 
   window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "chrome,close,titlebar,modal", "", colorObj);
 
@@ -2693,7 +2616,7 @@ function checkPreviewChanges(controlID)
   var bChanged = false;
   var theChanges = createPreviewChangeArray();
   var sideString = (gCurrentSide == "all") ? "" : gCurrentSide + "-";
-  var bBackgroundIsSelection = (gDialog.BackgroundSelectionRadioGroup.value == "selection");
+ // var bBackgroundIsSelection = (gDialog.BackgroundSelectionRadioGroup.value == "selection");
   switch(controlID)
   {
     case "cellBorderStyleList":
