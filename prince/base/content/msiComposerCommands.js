@@ -8868,7 +8868,7 @@ function msiNote(currNode, editorElement, type, hidden)
   }
 
   if (!type) {
-    window.openDialog("chrome://prince/content/Note.xul","note", "chrome,close,titlebar,resizable=yes,modal", data);
+    window.openDialog("chrome://prince/content/Note.xul","note", "chrome,close,titlebar,resizable=yes,dependent", data);
     // data comes back altered
     if (data.Cancel)
       return;
@@ -9185,8 +9185,9 @@ var msiWordCountCommand =
     {
       // use the first node of the selection as the context node
       var wc = countWords(editor.document);
-      window.openDialog('chrome://prince/content/wordcount.xul','wordcount', 'chrome,resizable,close,titlebar',wc);
+      window.openDialog('chrome://prince/content/wordcount.xul','wordcount', 'chrome,resizable,close,titlebar, dependent',wc);
       window.content.focus();
+     
     }
   }
 };
