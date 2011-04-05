@@ -5512,7 +5512,7 @@ function msiGetRowAndColumnData(tableElement, tableDims, editorElement)
         case "mlabeledtr":
           for (var jx = 0; jx < childNode.childNodes.length; ++jx)
           {
-            addCellToList(aTableData, childNode.childNodes[jx], currRow, currCol);
+            if (childNode.childNodes[jx].nodeType == 1) addCellToList(aTableData, childNode.childNodes[jx], currRow, currCol);
           }
         break;
 
@@ -5596,7 +5596,7 @@ function msiGetRowAndColumnData(tableElement, tableDims, editorElement)
       case "th":
       case "td":
       case "mtd":
-        while ( (aTableData.cellInfoArray[nRow-1][nCol-1] != null) && (nCol <= numCols) )
+        while ( (nRow <= numRows) && (nCol <= numCols) && (aTableData.cellInfoArray[nRow-1][nCol-1] != null) )
         {
           ++nCol;
         }
@@ -5659,7 +5659,8 @@ function msiGetRowAndColumnData(tableElement, tableDims, editorElement)
       break;
       
       default:
-        dump("In msiEditor.js, msiGetRowAndColumnData(), bad cell node passed in to addCellToList - node is [" + msiGetBaseNodeName(cellNode) + "].\n");
+        // We end up here when the cell contains a text node. Not an error.
+        // dump("In msiEditor.js, msiGetRowAndColumnData(), bad cell node passed in to addCellToList - node is [" + msiGetBaseNodeName(cellNode) + "].\n");
       break;
     }
   }
