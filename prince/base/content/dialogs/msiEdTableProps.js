@@ -109,6 +109,7 @@ function setVariablesForControls()
 
   gDialog.tableRowHeight =  document.getElementById("tableRowHeight");
   gDialog.tableWidth =  document.getElementById("tableWidth");
+  gDialog.tableUnitsList = document.getElementById("tableUnitsList");
 
   gDialog.tableLocationList =  document.getElementById("tableLocationList");
   gDialog.tableFloatLocationList =  document.getElementById("tableFloatLocationList");
@@ -120,7 +121,7 @@ function setVariablesForControls()
   gDialog.CellHeightInput = document.getElementById("CellHeightInput");
   gDialog.CellHeightUnits = document.getElementById("CellHeightUnits");
   gDialog.CellWidthInput = document.getElementById("CellWidthInput");
-  gDialog.CellUnits = document.getElementById("CellUnits");
+  gDialog.cellUnitsList = document.getElementById("cellUnitsList");
 
   gDialog.hAlignChoices = document.getElementById("hAlignChoices");
   gDialog.vAlignChoices = document.getElementById("vAlignChoices");
@@ -237,7 +238,7 @@ function createCellDataObject(srcData)
 function createCellBorderData(srcBorderData)
 {
   var borderData = { style : {top : "solid", right : "solid", bottom : "solid", left : "solid"},
-                     width : {top : "medium", right : "medium", bottom : "medium", left : "medium"},
+                     width : {top : "thin", right : "thin", bottom : "thin", left : "thin"},
                      color : {top : "#000000", right : "#000000", bottom : "#000000", left : "#000000"} };
   var aSide;
   if (srcBorderData)
@@ -553,10 +554,43 @@ function InitDialog()
 //  InitCellsPanel();
 }
 
+var tableUnitsHandler;
+
 function initTablePanel()
 {
   var rowCountObj = { value: 0 };
   var colCountObj = { value: 0 };
+  var widthVal;
+  var heightVal;
+  var re;
+  var match;
+  tableUnitsHandler = new UnitHandler();
+  if (gTableElement.hasAttribute("width"))
+  {
+    widthVal = tableUnitsHandler.getNumberAndUnitFromString(gTableElement.getAttribute("width"));
+  }
+  else if (gTableElement.hasAttribute("style"))
+  {
+    re = /width:\s*(\d*[^;]*)(;|$)/;
+    match = re.exec(gTableElement.getAttribute("style"));
+    if (match.length > 1) widthVal = tableUnitsHandler.getNumberAndUnitFromString(match[1]);
+  }
+  if (gTableElement.hasAttribute("height"))
+  {
+    heightVal = tableUnitsHandler.getNumberAndUnitFromString(gTableElement.getAttribute("height"));
+  }
+  else if (gTableElement.hasAttribute("style"))
+  {
+    re = /height:\s*(\d*[^;]*)(;|$)/;
+    match = re.exec(gTableElement.getAttribute("style"));
+    if (match.length > 1) heightVal = tableUnitsHandler.getNumberAndUnitFromString(match[1]);
+  }
+
+
+  tableUnitsHandler.setEditFieldList([gDialog.tableRowHeight,gDialog.tableWidth]);
+  tableUnitsHandler.initCurrentUnit(widthVal.unit);
+  tableUnitsHandler.buildUnitMenu(gDialog.tableUnitsList, widthVal.unit);
+
   try {
     gActiveEditor.getTableSize(gTableElement, rowCountObj, colCountObj);
   } catch (e) {}
@@ -566,7 +600,9 @@ function initTablePanel()
   gColCount = colCountObj.value;
   gLastColIndex = gColCount-1;
   gDialog.tableRowCount.value = gRowCount;
-  gDialog.tableColumnCount.value = gColCount;  
+  gDialog.tableColumnCount.value = gColCount; 
+  gDialog.tableWidth.value = widthVal.number;
+  gDialog.tableRowHeight.value = (gRowCount>0) ? (heightVal.number/gRowCount) : ""; 
 
   // Be sure to get caption from table in doc, not the copied "globalTableElement"
   gTableCaptionElement = gTableElement.caption;
@@ -601,6 +637,17 @@ function initLinesPanel()
 //  SetColor("BackgroundCW", backColor);
 }
 
+function onChangeTableUnits()
+{
+  tableUnitsHandler.setCurrentUnit(gDialog.tableUnitsList.value);
+}
+
+function onChangeCellUnits()
+{
+  cellUnitsHandler.setCurrentUnit(gDialog.cellUnitsList.value);
+}
+
+
 function setCurrSide(newSide)
 {
   if (gCurrentSide == newSide)
@@ -623,7 +670,7 @@ function initCellsPanel()
   cellUnitsHandler = new UnitHandler();
   cellUnitsHandler.setEditFieldList([gDialog.CellWidthInput,gDialog.CellHeightInput]);
   cellUnitsHandler.initCurrentUnit(gCellWidthUnit);
-  cellUnitsHandler.buildUnitMenu(gDialog.CellUnits, gCellWidthUnit);
+  cellUnitsHandler.buildUnitMenu(gDialog.cellUnitsList, gCellWidthUnit);
 
 
 //  var theUnitsList = new msiCSSWithFontUnitsList(gCellFontSize, "pt");
