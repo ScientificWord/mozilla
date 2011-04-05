@@ -142,5 +142,20 @@ function UnitHandler()
       { return 0; }
   };
 
+  this.buildUnitMenu = function(menulist, initialValue)
+  {
+    var x;
+    var unit;
+    var index;
+    for (x=0; x < this.supportedUnits.length; x++)
+    {
+      unit = this.supportedUnits[x];
+      menulist.appendItem(this.getDisplayString(unit), unit, "");
+      if (unit==initialValue) index=x;
+    }
+    menulist.selectedIndex = index;
+
+  }
+
 }
 
