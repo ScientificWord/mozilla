@@ -12,7 +12,7 @@
     ondialogaccept="return;"
     width="200"
     height="150"
-    persist="width height screenX screenY"
+    persist="width height left top"
     title="&wcWindowTitle.label;">
 
 

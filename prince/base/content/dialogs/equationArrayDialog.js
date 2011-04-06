@@ -8,6 +8,7 @@ var data;
 
 var subEquationControls = ["wholeDisplayKeyLabel", "wholeDisplayKeyList", "subequationContinuationCheckbox"];
 var alignmentControls = ["alignStandardRadio", "alignSingleEqnRadio", "alignCenteredRadio"];
+var lineKeyControls = ["lineKeyLabel", "keyForLineAutoCompleteBox"];
 
 function Startup()
 {
@@ -393,6 +394,7 @@ function doEnabling()
 {
   enableControlsByID(["lineNumberBox"], (data.numLines > 1));
   enableControlsByID(["lineKeyList"], (gDialog.lineNumberingRadioGroup.value != "numberingNone"));
+  enableControlsByID(["enableAlignmentCheckbox"], (data.numLines > 1));
   enableControlsByID(["suppressAnnotationCheckbox"], (gDialog.lineNumberingRadioGroup.value == "numberingCustom"));
   enableControlsByID(subEquationControls, gDialog.enableSubeqNumberingCheckbox.checked);
   enableControlsByID(alignmentControls, gDialog.enableAlignmentCheckbox.checked);
