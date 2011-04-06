@@ -298,7 +298,7 @@ should not be done under some conditions -->
 
 <xsl:template name="checkTeXNameForEnvironments">
   <xsl:param name="theTag"/>
-  <xsl:param name="theNumbering" select=""/>
+  <xsl:param name="theNumbering"/>
   <xsl:choose>
     <xsl:when test="string-length(normalize-space($theNumbering))">
       <xsl:variable name="theDefinition" select="$theoremenvNodeList/*[@tagname=$theTag][@numbering=$theNumbering]" />
@@ -313,7 +313,7 @@ should not be done under some conditions -->
 
 <xsl:template name="getTeXNameForEnvironment">
   <xsl:param name="theTag"/>
-  <xsl:param name="theNumbering" select=""/>
+  <xsl:param name="theNumbering"/>
   <xsl:choose>
     <xsl:when test="string-length(normalize-space($theNumbering))">
       <xsl:variable name="theDefinition" select="$theoremenvNodeList/*[@tagname=$theTag][@numbering=$theNumbering]" />
@@ -338,7 +338,7 @@ should not be done under some conditions -->
 
 <xsl:template name="processThmEnvironment">
   <xsl:param name="theTag"/>
-  <xsl:param name="theNumbering" select=""/>
+  <xsl:param name="theNumbering"/>
   <xsl:variable name="definedTagnameToUse">
     <xsl:call-template name="getTeXNameForEnvironment">
 	  <xsl:with-param name="theTag" select="$theTag"/>
