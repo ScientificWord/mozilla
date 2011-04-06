@@ -175,6 +175,8 @@ classic.jar:
         skin/classic/aero/global/icons/warning-large.png                 (icons/warning-large.png)
         skin/classic/luna/global/icons/wrap.png                          (icons/wrap.png)
         skin/classic/aero/global/icons/wrap.png                          (icons/wrap-aero.png)
+        skin/classic/luna/global/menu/menu-check.png                          (menu/menu-check.png)
+        skin/classic/aero/global/menu/menu-check.png                          (menu/menu-check.png)
         skin/classic/luna/global/radio/radio-check.gif                   (radio/radio-check.gif)
         skin/classic/aero/global/radio/radio-check.gif                   (radio/radio-check.gif)
         skin/classic/luna/global/radio/radio-check-dis.gif               (radio/radio-check-dis.gif)
