@@ -50,8 +50,10 @@
    The sw-checked properties are returned by the autocomplete code (nsAutoCompleteResultsStringArray).	*/
 
 treechildren::-moz-tree-image(sw_checked) {
-  list-style-image: url("chrome://global/skin/icons/thumb.png");
-  /* the width of this gif is 7 pixels. The next rule keeps the left margin even */
+ list-style-image: url(chrome://global/skin/menu/menu-check.png);
+ padding-left: 2px; 
+   
+ /* the width of this gif is 16 pixels. The next rule keeps the left margin even */
 }
 
 treechildren:-moz-tree-cell-text {
