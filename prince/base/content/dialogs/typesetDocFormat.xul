@@ -181,7 +181,7 @@
                 </vbox>
                 <vbox>
                   <label observes="reformatok" value="Leading in Points"/>
-                  <textbox observes="reformatok" type="number" decimalplaces="1" min="0" increment="0.1" id="leading" style="width: 9em" value=""/>
+                  <textbox observes="reformatok" type="number" decimalplaces="1" min="0" increment="0.1" id="leading" style="width: 9em" value="1"/>
                 </vbox>
                 <vbox>
                   <deck id="babelpoly">
@@ -494,7 +494,7 @@
                 </vbox>
                 <vbox>
                   <label observes="reformatok" value="Show Labels"/>
-                  <menulist  observes="reformatok" >
+                  <menulist  observes="reformatok" id="showlabels">
                     <menupopup style="width: 9em" >
                       <menuitem value="yes" label="Yes"/>
                       <menuitem value="no" label="No"/>
@@ -513,7 +513,7 @@
                 <vbox>
                   <label value="Line Spacing"  observes="reformatok"/>
                   <menulist  observes="reformatok">
-                    <menupopup style="width: 9em" >
+                    <menupopup style="width: 9em" id="linespacing">
                       <menuitem value="one" label="One"/>
                       <menuitem value="sesqui" label="One and a half"/>
                       <menuitem value="two" label="Two"/>
@@ -523,10 +523,10 @@
               </row>
               <row align="end" style="height: 3em">
                 <vbox>
-                  <label observes="reformatok" value="Magnification"/>
-                  <textbox observes="reformatok" style="width: 9em" value="1"/>
+                  <label observes="reformatok" value="Magnification"  />
+                  <textbox id="magification" readonly="false" observes="reformatok" style="width: 9em" value="1"/>
                 </vbox>
-                <vbox  style="width: 9em;" />
+                <vbox style="width: 9em;" />
               </row>
             </rows>
           </grid>
