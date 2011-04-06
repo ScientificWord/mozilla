@@ -39,9 +39,9 @@
 <!ENTITY applyButton.label                "Apply">
 <!ENTITY applyButton.accesskey            "A">
 <!ENTITY closeButton.label                "Close">
-<!ENTITY alignTab.label                   "Alignment">
+<!ENTITY tableTab.label                   "Table">
+<!ENTITY cellsTab.label                   "Cells">
 <!ENTITY linesTab.label                   "Lines">
-<!ENTITY layoutTab.label                  "Layout and Size">
 
 <!-- !ENTITY tableRows.label                  "Rows:">
 <!ENTITY tableRows.accesskey              "R">
@@ -53,16 +53,27 @@
 <!ENTITY tableColumnWidth.label           "Column width:">
 <!ENTITY tableColumnWidth.accesskey       "W">
 
-<!-- !ENTITY tableBorderSpacing.label         "Borders and Spacing">
+<!-- !ENTITY tableBorderSpacing.label         "Spacing">
 <!ENTITY tableSpacing.label               "Spacing:">
 <!ENTITY tableSpacing.accesskey           "S">
 <!ENTITY tablePadding.label               "Padding:">
 <!ENTITY tablePadding.accesskey           "P">
-<!ENTITY tablePxBetwCells.label           "pixels between cells">
-<!ENTITY tablePxBetwBrdrCellContent.label "pixels between cell border and content" -->
+<!ENTITY tablePxBetwBrdrCellContent.label "space between cell edge and content" -->
 
-<!ENTITY columnAlignment.label            "Column Alignment:">
-<!ENTITY columnAlignment.accesskey        "C">
+<!ENTITY tableSize.label                  "Size">
+<!ENTITY tableRows.label                  "Rows">
+<!ENTITY tableRows.accesskey              "R">
+<!ENTITY tableColumns.label               "Columns">
+<!ENTITY tableColumns.accesskey           "C">
+<!ENTITY tableRowHeight.label             "Row height">
+<!ENTITY tableRowHeight.accesskey         "h">
+<!ENTITY tableWidth.label                 "Table width">
+<!ENTITY tableWidth.accesskey             "w">
+<!ENTITY tableLocation.label              "Table location">
+<!ENTITY tableLocation.accesskey          "l">
+<!ENTITY location.label                   "Location">
+<!ENTITY location.accesskey               "L">
+<!ENTITY floatLocation.label              "Float">
 <!ENTITY rowAlignment.label               "Row Alignment:">
 <!ENTITY rowAlignment.accesskey           "R">
 <!ENTITY tableBaseline.label              "Table Baseline:">
@@ -78,8 +89,6 @@
 <!ENTITY tableCaption.accesskey           "N">
 <!ENTITY tableCaptionAbove.label          "Above Table">
 <!ENTITY tableCaptionBelow.label          "Below Table">
-<!ENTITY tableCaptionLeft.label           "Left of Table">
-<!ENTITY tableCaptionRight.label          "Right of table">
 <!ENTITY tableCaptionNone.label           "None">
 <!ENTITY backgroundInheritColor.label     "(Let page color show through)">
 
@@ -92,7 +101,7 @@
 <!ENTITY borderSelectRight.label          "Right">
 <!ENTITY borderSelectBottom.label         "Bottom">
 <!ENTITY borderSelectLeft.label           "Left">
-<!ENTITY cellBorderStyleList.label        "Border Style">
+<!ENTITY cellBorderStyleList.label        "Line Style">
 <!ENTITY cellBorderStyleList.accesskey    "y">
 
 <!ENTITY borderStyleNone.label  "None">
@@ -106,7 +115,7 @@
 <!ENTITY borderStyleInset.label "Inset">
 <!ENTITY borderStyleOutset.label "Outset">
 
-<!ENTITY borderColor.label "Border Color"> 
+<!ENTITY borderColor.label "Line color"> 
 
 <!ENTITY cellSelection.label              "Selection">
 <!ENTITY cellSelectCell.label             "Cell">
@@ -124,7 +133,7 @@
 <!ENTITY applyBeforeChange2.label         "before changing the selection.">
 <!ENTITY cellRowSpan.label                "Row Span:">
 <!ENTITY cellColSpan.label                "Column Span:">
-<!ENTITY cellContentAlignment.label       "Content Alignment">
+<!ENTITY cellContentAlignment.label       "Cell Alignment">
 <!ENTITY cellHorizontal.label             "Horizontal:">
 <!ENTITY cellHorizontal.accesskey         "Z">
 <!ENTITY cellVertical.label               "Vertical:">
@@ -152,7 +161,7 @@
 <!-- !ENTITY cellUseCheckboxHelp.label        "Use checkboxes to determine which properties are applied to all selected cells" -->
 
 <!-- Used in both Table and Cell panels  -->
-<!ENTITY tableBorderWidth.label           "Border Width:">
+<!ENTITY tableBorderWidth.label           "Line width:">
 <!ENTITY tableBorderWidth.accesskey       "B">
 <!ENTITY borderWidthNone.label            "None">
 <!ENTITY borderWidthThin.label            "Thin">
