@@ -6554,7 +6554,8 @@ msiTablePropertiesObjectData.prototype =
       break;
       case "Cell":
       case "CellGroup":
-        return ( this.mTableInfo.cellInfoArray[nRow][nCol] && ("mSelected" in this.mTableInfo.cellInfoArray[nRow][nCol]) && (this.mTableInfo.cellInfoArray[nRow][nCol].mSelected == msiPropertiesObjectDataBase.Selected_SomeSelected) );
+        return ( this.mTableInfo.cellInfoArray[nRow][nCol] && ("mSelected" in this.mTableInfo.cellInfoArray[nRow][nCol]) 
+          && (this.mTableInfo.cellInfoArray[nRow][nCol].mSelected == msiPropertiesObjectDataBase.Selected_SomeSelected) );
       break;
       case "Table":
         return true;
