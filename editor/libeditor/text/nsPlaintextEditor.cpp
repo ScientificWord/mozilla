@@ -652,7 +652,7 @@ NS_IMETHODIMP nsPlaintextEditor::DeleteSelection(nsIEditor::EDirection aAction)
   result = GetSelection(getter_AddRefs(selection));
   if (NS_FAILED(result)) return result;
   if (!selection) return NS_ERROR_NULL_POINTER;
-  DumpSelection( selection);
+  //DumpSelection( selection);
 
   // If there is an existing selection when an extended delete is requested,
   //  platforms that use "caret-style" caret positioning collapse the
@@ -701,7 +701,7 @@ NS_IMETHODIMP nsPlaintextEditor::DeleteSelection(nsIEditor::EDirection aAction)
           break;
         case eNext:
           result = selCont->CharacterExtendForDelete();
-          DumpSelection(selection);
+          //DumpSelection(selection);
           aAction = eNone;
           break;
         case eToBeginningOfLine:

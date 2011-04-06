@@ -13,7 +13,7 @@
         buttons="accept"
         onload="onLoad();"
         title="&aboutDialog.title;"
-        persist="screenX screenY width height">
+        persist="left top width height">
 
   <script type="application/x-javascript" src="chrome://prince/content/about.js"/>
   <tabbox>

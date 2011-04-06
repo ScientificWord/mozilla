@@ -504,6 +504,8 @@ function enableControls(theControls, bEnable)
 
 
 //The following are taken from Barry's typesetDocFormat.js. They are put here for general use by dialogs involving units.
+
+// There is a module for this in prince/modules!!
 var msiDlgUnitConversions =
 {
   pt: .3514598,  //mm per pt

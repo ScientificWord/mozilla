@@ -37,7 +37,7 @@ function initialize()
   tree.setAttribute("ref", url.spec);
   tree.currentIndex = 0;
   showShellsInDir(tree);
-  ();
+  ComputeUserSettingsStartup();
 }                           
 
 function showShellsInDir(tree)
