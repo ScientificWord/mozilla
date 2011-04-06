@@ -105,7 +105,7 @@
       </hbox>
       <spacer class="spacer" flex="0"/>
       <hbox>
-        <label value="&keyForLine.label;" accesskey="&keyForLine.accesskey;" control="keyForLineAutoCompleteBox"/>
+        <label id="lineKeyLabel" value="&keyForLine.label;" accesskey="&keyForLine.accesskey;" control="keyForLineAutoCompleteBox"/>
         <textbox id="keyForLineAutoCompleteBox" timeout="50" type="autocomplete" enablehistory="true" minresultsforpopup="1"
           completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="keys"
           tooltiptext="&EnterNewKeyName.tooltip;"

@@ -2441,7 +2441,7 @@ function reviseEqnArray(reviseData, dialogData, editorElement)
         infoStr += " is numbered automatically";
       if (currData.mMarker && currData.mMarker.length)
       {
-        markerStr = currData.marker;
+        markerStr = currData.mMarker;
         infoStr += ", and has a key of '" + markerStr + "'; ";
       }
       else
