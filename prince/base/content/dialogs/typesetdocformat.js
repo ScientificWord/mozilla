@@ -2697,6 +2697,20 @@ function saveClassOptionsEtc(docformatnode)
     else showkeys = nodelist[0];
     showkeys.setAttribute("req", "showkeys")
   }
+
+  widget = document.getElementById("showlabels").selectedItem;
+  nodelist = preamble.getElementsByTagName("showlabels");
+  var showkeys;
+  var i;
+  if (widget.hasAttribute("def")) 
+   for (i = 0; i < nodelist.length; i++) editor.deleteNode(nodelist[i]);
+  else
+  {
+    if (nodelist.length == 0)
+      showkeys = editor.createNode("showlabels", preamble, 1000);
+    else showkeys = nodelist[0];
+    showkeys.setAttribute("req", "showlabels")
+  }
     
   widget = document.getElementById("showidx").selectedItem;
   nodelist = preamble.getElementsByTagName("showidx");
@@ -2772,8 +2786,12 @@ function getClassOptionsEtc()
   if (nodelist.length > 0)
   {
     node = nodelist[0];
-    if (node.hasAttribute("val")) 
-      document.getElementById("leading").value = (node.getAttribute("val")).replace(/pt/,"");
+    if (node.hasAttribute("val"))
+    {
+      var val = node.getAttribute("val"); 
+      var elem = document.getElementById("leading");
+      elem.value = val.replace(/pt/,"");
+    }
   }
   nodelist = preamble.getElementsByTagName("showkeys");
   if (nodelist.length > 0)
@@ -2812,8 +2830,10 @@ function enableDisableReformat(enable)
   var bcaster = document.getElementById("reformatok");
   compilerInfo.formatOK = enable;
   if (enable)
-    bcaster.setAttribute("disabled","false");
-  else bcaster.setAttribute("disabled","true");
+    //bcaster.setAttribute("disabled","false");
+    bcaster.removeAttribute("disabled");
+  else 
+    bcaster.setAttribute("disabled","true");
 }
      
 function enableDisablePageLayout(enable)    
