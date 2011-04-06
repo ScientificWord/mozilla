@@ -7330,8 +7330,8 @@ msiTablePropertiesObjectData.prototype.__proto__ = msiPropertiesObjectDataBase;
 
 function msiEquationPropertiesObjectData()
 {
-  this.mnRows = 0;
-  this.mCurRow = 0;
+  this.mnRows = 1;
+  this.mCurRow = 1;
   this.mDisplay = null;
   this.mTableElement = null;
   this.mWholeArrayMarker = null;
@@ -7613,6 +7613,8 @@ msiEquationPropertiesObjectData.prototype =
     }
     if (this.mDisplay)
     {
+      if (!this.mTableElement)
+        this.setRows(1);
       theEditor = msiGetEditor(this.mEditorElement);
 
       theAttr = this.mDisplay.getAttribute("marker");
