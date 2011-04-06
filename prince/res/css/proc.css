@@ -1,0 +1,519 @@
+/* proc.css (copied from article.css) */
+
+math {
+  direction: ltr;
+}
+
+part {
+  display: block;
+  counter-increment: part;
+}
+
+part>*:first-child {
+  display: block;
+  font-size: x-large;
+  font-weight: bold;
+}
+
+part>*:first-child:before {
+  content: "Part " counter(part,upper-roman);
+  display: block;
+  font-size: large;
+  font-weight: bold;
+  -moz-user-select: -moz-none;
+}
+
+chapter {
+  display: block;
+  position: relative;
+  counter-increment: chapter;
+  counter-reset: section theorem;
+}
+
+chapter>sectiontitle{
+  font-size: large;
+  font-weight: bold;
+  line-height: 24pt;
+  text-align: center;
+}
+
+ 
+chapter>sectiontitle:before, chapter[open="true"]>sectiontitle:before  {
+  content: "Chapter " counter(chapter,upper-roman) " ";
+  display: block;
+  margin-left: .2in;
+  font-size: large;
+  font-weight: bold;
+  line-height: 24pt;
+  text-align: center;
+  -moz-user-select: -moz-none;
+}
+
+chapter[open="false"]>sectiontitle:before{
+  content: "Chapter " counter(chapter) "  ";
+  font-family: sans-serif;
+  font-size: large;
+  font-weight: bold;
+  text-align: center;
+  display: block;
+  -moz-user-select: -moz-none;
+}
+
+section {
+  display: block;
+  counter-increment: section;
+  counter-reset: subsection theorem eqnnumber subeqnnumber;
+  position: relative;
+  top: 0;
+  left: 0;
+}  
+
+
+section>*:first-child{
+  display: block;
+  margin: 10pt 10pt 0pt 0pt;
+  margin-left: 10pt;
+  font-size: large;
+  font-weight: bold;
+}
+
+section>*:first-child[open="false"]{
+  display: block;
+  margin: 10pt 10pt 0pt 0pt;
+  margin-left: 10pt;
+  font-size: large;
+  font-weight: bold;
+}
+
+ 
+section>*:first-child:before, section[open="true"]>*:first-child:before  {
+  content: counter(section) ".  ";
+  -moz-user-select: -moz-none;
+}
+
+
+section>*:first-child{
+  display: block;
+  margin: 10pt 10pt 0pt 0pt;
+  margin-left: 10pt;
+  font-size: large;
+  font-weight: bold;
+}
+
+section>*:first-child[open="false"]{
+  display: block;
+  margin: 10pt 10pt 0pt 0pt;
+  margin-left: 10pt;
+  font-size: large;
+  font-weight: bold;
+}
+
+ 
+section>*:first-child:before, section[open="true"]>*:first-child:before  {
+  content: counter(section) ".  ";
+  -moz-user-select: -moz-none;
+}
+
+
+section>sectiontitle{
+  display: block;
+  margin: 10pt 10pt 0pt 0pt;
+  margin-left: 10pt;
+  font-size: large;
+  font-weight: bold;
+}
+
+section>sectiontitle[open="false"]{
+  display: block;
+  margin: 10pt 10pt 0pt 0pt;
+  margin-left: 10pt;
+  font-size: large;
+  font-weight: bold;
+}
+
+ 
+section>sectiontitle:before, section[open="true"]>sectiontitle:before  {
+  content: counter(section) ".  ";
+  -moz-user-select: -moz-none;
+}
+
+subsection {
+  display: block;
+  counter-increment: subsection;
+  counter-reset: subsubsection;
+}
+
+subsection>*:first-child {
+  display: block;
+  margin: 10pt 10pt 0pt 0pt;
+  margin-left: 10pt;
+  font-size: large;
+}
+
+subsection>*:first-child:before {
+  content: counter(section) "." counter(subsection) ".  ";
+  -moz-user-select: -moz-none;
+}
+
+subsubsection {
+  display:block;
+  counter-increment: subsubsection;
+  counter-reset: paragraph;
+}
+
+subsubsection>*:first-child {
+  display: block;
+  margin: 10pt 10pt 0pt 0pt;
+  margin-left: 10pt;
+  font-size: medium;
+  font-weight: bold;
+}
+
+subsubsection>*:first-child:before {
+  content: counter(section) "." counter(subsection) "." counter(subsubsection) ".  ";
+  -moz-user-select: -moz-none;
+}
+
+paragraph {
+  display:block;
+  counter-increment: paragraph;
+}
+
+paragraph>*:first-child {
+  font-size: medium;
+  font-weight: normal;
+  font-style: italic;
+}
+
+paragraph>*:first-child:before {
+  content: counter(section) "." counter(subsection) "." counter(subsubsection) "." counter(paragraph) ".  "; 
+  -moz-user-select: -moz-none;
+}
+
+abstract {
+  display: block;
+  margin-top: 30pt;
+  margin-left: 50pt;
+  margin-right: 50pt;
+  padding-left: 15pt;
+  padding-right: 15pt;
+  font-size: small;
+  border: thin solid black; 
+  background-color: #CC9966;
+  -moz-border-radius: 20px;
+}
+
+abstract:before {
+  content: "Abstract";
+  display: block;
+  text-align: center;
+  font-size: medium; font-weight: bold;
+  -moz-user-select: -moz-none;
+}
+
+p {
+  display: block;
+  margin: 10pt 10pt 5pt 5pt;
+}
+
+bodyText {
+  display: block;
+  margin: 10pt 0pt 5pt 0pt;
+}
+
+rtlBodyText {
+  display: block;
+  direction: rtl;
+  unicode-bidi: bidi-override; 
+  margin: 10pt 10pt 5pt 5pt;
+}
+
+bodyMath {
+  display: block;
+  margin: 10pt 10pt 5pt 5pt;
+  color: rgb(0,128,64);
+}
+
+author {
+  font-weight: normal;
+  display: block;
+  padding-top: 10pt;
+  text-align: center;
+}
+
+date {
+  font-weight: normal;
+  display: block;
+  padding-top: 2pt;
+  text-align: center;
+}
+
+address {
+  display: block;
+  text-align: center;
+}
+
+title {
+  font-size: x-large;
+  display: block;
+  margin-top: 12pt;
+  text-align: center;
+}
+
+shortQuote {
+  display: block; 
+  margin-left: 20pt;
+  margin-right: 20pt;
+}
+longQuotation {
+  display: block; 
+  margin-left: 20pt;
+  margin-right: 20pt;
+}
+
+epigraph {
+  display: block;
+  color: white;
+  background-color: black;
+  margin-left: 20pt;
+  margin-right: 20pt;
+}
+
+*[showinvis="true"] longQuotation:after {
+  content: "\B6";
+  display: inline;
+  font-family: Courier New;
+  color: green;
+  font-weight: bold;
+  -moz-user-select: -moz-none;
+}
+
+centered {
+  display: block;
+  margin: 10pt 10pt 5pt 5pt;
+  text-align: center;
+}
+
+flushright {
+  display: block;
+  margin: 10pt 10pt 5pt 5pt;
+  text-align: right;
+}
+
+flushleft {
+  display: block;
+  margin: 10pt 10pt 5pt 5pt;
+  text-align: left;
+}
+
+emphasized {
+  font-style: italic;
+  color: rgb(9,62,125)
+}
+
+emphasized span.inlineMath {
+  color: rgb(255,0,255)
+}
+
+roman {
+  font-family: Times New Roman, serif;
+  color: rgb(0,0,255)
+}
+
+calligraphic, *[mathvariant="script"] {
+  font-family: monotype corsiva;
+  color: rgb(0,0,255)
+}
+
+alt {
+  color: rgb(0,255,0)
+}
+
+bold {
+  font-weight: 700
+}
+
+blackboardBold {
+  font-weight: 700
+}
+
+fraktur {
+  font-weight: 700
+}
+
+italics {
+  font-style: italic
+}
+
+slanted {
+  font-style: italic;
+  font-weight: 700;
+  color: rgb(9,62,125)
+}
+
+sansSerif {
+  font-family: Arial;
+  font-weight: 400;
+  color: rgb(9,62,125)
+}
+
+smallCaps {
+  font-variant: small-caps;
+  color: rgb(0,0,0)
+}
+
+typewriter {
+  font-family: Courier New;
+  font-weight: 300
+}
+
+rtl {
+  color: rgb(100,50,0);
+  direction: rtl;
+  unicode-bidi: bidi-override 
+}
+
+tiny {
+  font-size: 50%
+}
+
+scriptsize {
+  font-size: 67%
+}
+
+footnotesize {
+  font-size: 75%
+}
+
+small {
+  font-size: 83%
+}
+
+normalsize {
+  font-size: 100%
+}
+
+large {
+  font-size: 117%
+}
+
+Large {
+  font-size: 133%
+}
+
+LARGE {
+  font-size: 150%
+}
+
+huge {
+  font-size: 167%
+}
+
+Huge {
+  font-size: 183%
+}
+
+/*
+theorem {
+  display: block;
+  font-style: italic;
+  counter-increment: theorem;
+}
+
+theorem:before {
+  content:  "Theorem " counter(section) "."  counter(theorem) ". " ;
+  -moz-user-select: -moz-none;
+}
+*/
+
+section defaulttitletag:after {
+  content: "Replace this section title"; 
+  color: gray;
+}
+
+subsection defaulttitletag:after {
+  content: "Replace this subsection title"; 
+  color: gray;
+}
+
+subsubsection defaulttitletag:after {
+  content: "Replace this subsubsection title"; 
+  color: gray;
+}
+
+paragraph defaulttitletag:after {
+  content: "Replace this subsubsubsection title"; 
+  color: gray;
+}
+
+subparagraph defaulttitletag:after {
+  content: "Replace this subsubsubsubsection title"; 
+  color: gray;
+}
+
+
+pre, verbatim {
+  font-family: Courier; white-space: pre
+}
+
+
+enumerate { counter-reset: item-number }
+ 
+enumerate>item { display: block ;
+                 margin: 0pt 0pt 0pt 0pt; 
+                 padding: 10pt 0pt 0pt 20pt }
+
+enumerate>item:before { content: counter(item-number) ". "; counter-increment: item-number }
+
+   
+
+description {
+  counter-reset: itm;
+}
+
+itemize {
+  list-style: disc; 
+  counter-reset: item;
+}
+
+img {
+  display: inline; 
+  margin: 2em
+} 
+
+
+button[class="eqnnum"]{
+  font-style: normal; 
+  color: red;
+}
+
+button[class="subeqnnum"]{
+  right: 20px;
+  font-style: normal; 
+  color: blue;
+}
+
+
+/*  Following moved to latex.css
+button[class="eqnnum"]:after{
+  content: "  " counter(section) "." counter(eqnnumber);
+}
+
+button[class="subeqnnum"]:after{
+  content: "  " counter(section) "." counter(eqnnumber) "." counter(subeqnnum,lower-latin);
+}
+*/
+
+button[class="frontmattertag"]{
+  position: absolute;
+  left: 5px;
+}
+
+
+[hideindexentries="true"] indexitem {
+  display: none;
+}
+
+[hidemarkers] a[key] {
+  display: none;
+}
