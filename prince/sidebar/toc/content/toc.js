@@ -14,7 +14,9 @@ function jump()
     var element = editor.document.getElementById(tree.view.getCellValue(tree.currentIndex,col));
     if (element) 
     {
+      if (element.hasAttribute("type")&&(element.getAttribute("type")=="footnote")) element.setAttribute("hide","false");
       editor.selectElement(element);
+      // if element is a footnote, make sure it is displayed
       var selectionController = editor.selectionController;
       selectionController.scrollSelectionIntoView(selectionController.SELECTION_NORMAL, 
         selectionController.SELECTION_ANCHOR_REGION, true);
