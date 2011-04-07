@@ -179,19 +179,31 @@ otfont {
   display: inline;
 }
 
+/* show footnotes by default*/
+note[type="footnote"] {
+  display: block;
+}
 
-
+/* never show footnotes marked 'hide'*/
 note[hide="true"] {
-  display: none;
+  display: none !important;
 } 
 
+/* display footnotes marked 'hide=false'*/
 note[hide="false"] {
   display: block ! important;
 }
 
-*[hideFootnotes="true"] note[type="footnote"] {
-  display: none !important;
+/* display footnotes marked 'hide=false' even when 'hideFootnotes=true'
+*[hideFootnotes="true"] note[type="footnote"][hide="false"] {
+  display: block !important;
 }
+*/
+
+*[hideFootnotes="true"] note[type="footnote"] {
+  display: none;
+}
+
 
 *[hideOtherNotes="true"] note {
   display: none !important;
@@ -222,6 +234,7 @@ note[type="footnote"] {
 notewrapper[type="footnote"]:before { 
   content: counter(ftnotectr);
   vertical-align: super;
+  font-size: small;
   color: red;
 } 
 
