@@ -8882,8 +8882,7 @@ function msiNote(currNode, editorElement, type, hidden)
     if (data.type == 'footnote') currNode.parentNode.setAttribute("type","footnote");
     else currNode.parentNode.removeAttribute("type");
     currNode.setAttribute("type",data.type);
-    if (data.hide) currNode.setAttribute("hide","true")
-    else currNode.removeAttribute("hide");
+    currNode.setAttribute("hide",data.hide?"true":"false");
     if (data.type != 'footnote') 
     {
       currNode.setAttribute("req","ragged2e");
@@ -8900,7 +8899,7 @@ function msiNote(currNode, editorElement, type, hidden)
       if (data.type == 'footnote') wrapperNode.setAttribute('type','footnote');
       var node = editor.document.createElement('note');
       node.setAttribute('type',data.type);
-      if (data.hidenote) node.setAttribute('hide','true');
+      node.setAttribute('hide','false');
       if (data.type != 'footnote') 
       {
         node.setAttribute("req","ragged2e");
