@@ -155,7 +155,7 @@
 <!ENTITY plot3d.label               "3D">
 <!ENTITY plotexpr.label             "Expression to be plotted:">
 <!ENTITY animate.label              "Animate">
-<!ENTITY dimensions.label           "Dimensions">
+<!ENTITY dimensions.label           " dimensions">
 <!ENTITY editplotitem.label         "Plot item: ">
 <!ENTITY editplot.label             "Edit Plot">
 <!ENTITY newplot.label              "New ">
