@@ -147,6 +147,9 @@
 <!ENTITY citationButton.tooltip "Citation" >
 <!ENTITY citationButton.label "Citation" >
 
+<!ENTITY hspaceButton.tooltip "Horizontal space" >
+<!ENTITY hspaceButton.label "Space" >
+
 <!ENTITY indexentryButton.tooltip "Index entry" >
 <!ENTITY indexentryButton.label "Index entry" >
 
