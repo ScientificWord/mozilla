@@ -295,6 +295,11 @@ function GraphMakeDOMGraphElement (forComp, optplot) {
     img.setAttribute("msigraph","true");
   }  
   DOMPw.appendChild(img);
+  var propButton;
+  propButton=document.createElementNS(htmlns,"button");
+  propButton.setAttribute('class','msi');
+  propButton.value = 'Properties';
+  DOMPw.appendChild(propButton);
   DOMGraph.appendChild(DOMPw);
   return(DOMGraph);
 }
@@ -498,7 +503,7 @@ function graphObjectClickEvent ()
         graph.extractGraphAttributes (element);
         // non-modal dialog, the return is immediate
         window.openDialog ("chrome://prince/content/ComputeVcamSettings.xul",
-                           "vcamsettings", "chrome,close,titlebar,dependent", graph, element, currentDOMGs);
+                           "vcamsettings", "chrome,close,titlebar,resizable, dependent", graph, element, currentDOMGs);
       }
     }
   }
@@ -573,9 +578,9 @@ function DOMGListAdd (DOMGraph, thelist) {
 // DOMGraph is the DOM graph element we are going to replace.
 function formatRecreateGraph (DOMGraph, commandStr, editorElement) {
   // only open one dialog per DOMGraph element
-  if (DOMGListMemberP (DOMGraph, currentDOMGs)) {
-    return;
-  }
+//  if (DOMGListMemberP (DOMGraph, currentDOMGs)) {
+//    return;
+//  }
   DOMGListAdd (DOMGraph, currentDOMGs);
 
   var graph = new Graph();
@@ -585,7 +590,8 @@ function formatRecreateGraph (DOMGraph, commandStr, editorElement) {
   var extraArgsArray = new Array(graph, DOMGraph, currentDOMGs);
 //  msiOpenModelessPropertiesDialog("chrome://prince/content/ComputeGraphSettings.xul",
 //                     "", "chrome,close,titlebar,dependent", editorElement, commandStr, DOMGraph, extraArgsArray);
-var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/ComputeGraphSettings.xul", "", "chrome,close,titlebar,dependent",
+var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/ComputeGraphSettings.xul", "", 
+  "chrome,close,titlebar,resizable, dependent",
                                                      editorElement, commandStr, DOMGraph, graph, DOMGraph, currentDOMGs);
   return;
 }
