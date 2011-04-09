@@ -1355,6 +1355,39 @@ toolbar[iconsize="small"] #citationButton[disabled="true"] {
   list-style-image: url("chrome://prince/skin/icons/type_citation-disabled-sm.png");
 }
 
+#hspaceButton {
+  list-style-image: url("chrome://prince/skin/icons/spacehoriz.png");
+}
+
+toolbar[iconsize="small"] #hspaceButton {
+  list-style-image: url("chrome://prince/skin/icons/spacehoriz-sm.png");
+}
+
+#hspaceButton:hover {
+  list-style-image: url("chrome://prince/skin/icons/spacehoriz-hover.png");
+}
+
+toolbar[iconsize="small"] #hspaceButton:hover {
+  list-style-image: url("chrome://prince/skin/icons/spacehoriz-hover-sm.png");
+}
+
+#hspaceButton:hover:active {
+  list-style-image: url("chrome://prince/skin/icons/spacehoriz-active.png");
+}
+
+toolbar[iconsize="small"] #hspaceButton:hover:active {
+  list-style-image: url("chrome://prince/skin/icons/spacehoriz-active-sm.png");
+}
+
+#hspaceButton[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/spacehoriz-disabled.png");
+}
+
+toolbar[iconsize="small"] #hspaceButton[disabled="true"] {
+  list-style-image: url("chrome://prince/skin/icons/spacehoriz-disabled-sm.png");
+}
+
+
 
 #indexentryButton {
   list-style-image: url("chrome://prince/skin/icons/type_indexentry.png");
@@ -2056,16 +2089,13 @@ toolbar[iconsize="small"] #javascriptButton:hover {
   list-style-image: url("chrome://prince/skin/icons/javascript-active.png");
 }
 
-toolbar[iconsize="small"] #javascriptButton:hover:active {
-  list-style-image: url("chrome://prince/skin/icons/javascript-active-sm.png");
+
+#propertiesButton{
+  list-style-image: url("chrome://prince/skin/icons/v_currentview.png");
 }
 
-#javascriptButton[disabled="true"] {
-  list-style-image: url("chrome://prince/skin/icons/javascript-disabled.png");
-}
-
-toolbar[iconsize="small"] #javascriptButton[disabled="true"] {
-  list-style-image: url("chrome://prince/skin/icons/javascript-disabled-sm.png");
+*[iconsize="small"] #propertiesButton {
+  list-style-image: url("chrome://prince/skin/icons/v_currentview-sm.png");
 }
 
 #vc-RotateLeft{

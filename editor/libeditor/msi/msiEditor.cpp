@@ -2708,7 +2708,7 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
   PRUint32 offset, length, offset2;
   PRBool fCanEndHere = PR_TRUE;
   nsAutoString theText;
-  nsString tag;
+  nsAutoString tag;
   nsIAtom * atomNS;
   nsresult rv;
   offset = offsetIn;
@@ -2722,6 +2722,7 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
       while (prevChar == ' ' && theText[offset] == ' ') --offset;
       nodeIn->GetParentNode(getter_AddRefs(pnode));
       rv = mtagListManager->GetTagOfNode(pnode, &atomNS, tag);
+        pnode = nsnull;
       fCanEndHere = PR_TRUE;
       if (tag.EqualsLiteral("mi")) fCanEndHere = (offset==0);
       prevChar = theText[offset];
@@ -2737,9 +2738,10 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
         {
           //The autosub code thought it saw a match, but here we are overriding that decision
           //We do not update nodeOut or offsetOut
+          _result = msiIAutosub::STATE_FAIL;
         }
       }
-      else if (_result == msiIAutosub::STATE_FAIL) 
+      if (_result == msiIAutosub::STATE_FAIL) 
       {
         if (*nodeOut) // we did find a match earlier
         {
@@ -2764,7 +2766,14 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
       nodeList->Item(length, getter_AddRefs(node2));
       GetNextCharacter(node2, offset2, nodeOut, offsetOut, inMath, prevChar,  _result);
       if (_result == msiIAutosub::STATE_FAIL)
+      {
+        if (*nodeOut) // we did find a match earlier
+        {
+          // *nodeOut and offsetOut should still be valid
+          NS_ADDREF(*nodeOut);
+        } 
         return NS_OK;
+      }
     }
   }
   node2 = nsnull;
@@ -2780,6 +2789,11 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
       if (!node2)
       {
         _result = msiIAutosub::STATE_FAIL;
+        if (*nodeOut) // we did find a match earlier
+        {
+          // *nodeOut and offsetOut should still be valid
+          NS_ADDREF(*nodeOut);
+        } 
          return NS_OK; // no more nodes available. return _result.
       }
       else
@@ -2790,6 +2804,11 @@ msiEditor::GetNextCharacter( nsIDOMNode *nodeIn, PRUint32 offsetIn, nsIDOMNode *
         if (!(fTagIsTextTag || tag.EqualsLiteral("mi") || tag.EqualsLiteral("mo") || tag.EqualsLiteral("mn")))  
         {
           _result = msiIAutosub::STATE_FAIL;
+          if (*nodeOut) // we did find a match earlier
+          {
+            // *nodeOut and offsetOut should still be valid
+            NS_ADDREF(*nodeOut);
+          } 
           return NS_OK;
         }
       }
