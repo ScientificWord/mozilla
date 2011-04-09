@@ -4647,6 +4647,18 @@ function msiEditorToggleParagraphMarks(editorElement)
   }
 }
 
+function removeFootnoteOverrides(root)
+{
+  var notelist = root.getElementsByTagName("note");
+  var len = notelist.length;
+  var elem;
+  for (var i = 0; i < len; i++)
+  {
+    elem = notelist[i];
+    if (elem.getAttribute("type") == "footnote") elem.removeAttribute("hide");
+  }
+}
+
 function msiEditorDoShowInvisibles(editorElement, viewSettings)
 {
   if (!editorElement)
@@ -4692,9 +4704,15 @@ function msiEditorDoShowInvisibles(editorElement, viewSettings)
   else
     theBody.removeAttribute("hidemarkers");
   if (!viewSettings.showFootnotes)
+  {
+    removeFootnoteOverrides(theBody);
     theBody.setAttribute("hideFootnotes", "true");
+  }
   else
+  {
+    removeFootnoteOverrides(theBody);
     theBody.removeAttribute("hideFootnotes");
+  }
   if (!viewSettings.showOtherNotes)
     theBody.setAttribute("hideOtherNotes", "true");
   else
@@ -5519,7 +5537,7 @@ function msiGetRowAndColumnData(tableElement, tableDims, editorElement)
         case "mlabeledtr":
           for (var jx = 0; jx < childNode.childNodes.length; ++jx)
           {
-            addCellToList(aTableData, childNode.childNodes[jx], currRow, currCol);
+            if (childNode.childNodes[jx].nodeType == 1) addCellToList(aTableData, childNode.childNodes[jx], currRow, currCol);
           }
         break;
 
@@ -5603,7 +5621,7 @@ function msiGetRowAndColumnData(tableElement, tableDims, editorElement)
       case "th":
       case "td":
       case "mtd":
-        while ( (aTableData.cellInfoArray[nRow-1][nCol-1] != null) && (nCol <= numCols) )
+        while ( (nRow <= numRows) && (nCol <= numCols) && (aTableData.cellInfoArray[nRow-1][nCol-1] != null) )
         {
           ++nCol;
         }
@@ -5666,7 +5684,8 @@ function msiGetRowAndColumnData(tableElement, tableDims, editorElement)
       break;
       
       default:
-        dump("In msiEditor.js, msiGetRowAndColumnData(), bad cell node passed in to addCellToList - node is [" + msiGetBaseNodeName(cellNode) + "].\n");
+        // We end up here when the cell contains a text node. Not an error.
+        // dump("In msiEditor.js, msiGetRowAndColumnData(), bad cell node passed in to addCellToList - node is [" + msiGetBaseNodeName(cellNode) + "].\n");
       break;
     }
   }
@@ -9529,7 +9548,22 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
     else if (elementName == "notewrapper")
     {
       element = element.getElementsByTagName("note")[0];
-      if (element) elementName = element.localName;
+      var isDisplayed;
+      if (element.hasAttribute("hide"))
+        isDisplayed = (element.getAttribute("hide")=="false");
+      else 
+      {
+        var body = msiGetBodyElement(editorElement);
+        isDisplayed = !(body.getAttribute("hideFootnotes") && body.getAttribute("hideFootnotes") == "true");
+      }
+      if (isDisplayed)
+      {
+        element.setAttribute("hide","true");
+      }
+      else
+      {
+        element.setAttribute("hide","false");
+      }
     }
     else if (elementName == "table"||elementName=="thead"||elementName=="tr"||elementName=="td")
     {

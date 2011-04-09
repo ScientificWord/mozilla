@@ -110,25 +110,25 @@ void DumpSelection( nsISelection * sel)
 
 void DumpRange( nsIRange * range)
 { 
-  nsresult res;
-  nsCOMPtr<nsINode> aAnchorNode;
-  nsCOMPtr<nsIDOMNode> aAnchorDOMNode;
-  PRInt32 anchorOffset;
-  nsString anchorName;
-  aAnchorNode = range->GetStartParent();
-  aAnchorDOMNode = do_QueryInterface(aAnchorNode);
-  res = aAnchorDOMNode->GetNodeName(anchorName);
-  anchorOffset = range->StartOffset();
-  nsCOMPtr<nsINode> aFocusNode;
-  nsCOMPtr<nsIDOMNode> aFocusDOMNode;
-  PRInt32 focusOffset;
-  nsString focusName;
-  aFocusNode = range->GetEndParent();
-  aFocusDOMNode = do_QueryInterface(aFocusNode);
-  res = aFocusDOMNode->GetNodeName(focusName);
-  focusOffset = range->EndOffset();
-  printf("  Range: \n    Anchor: %x (%S) %d\n    Focus: %x (%S) %d\n", aAnchorNode, anchorName.get(), anchorOffset,
-       aFocusNode, focusName.get(), focusOffset );
+//  nsresult res;
+//  nsCOMPtr<nsINode> aAnchorNode;
+//  nsCOMPtr<nsIDOMNode> aAnchorDOMNode;
+//  PRInt32 anchorOffset;
+//  nsString anchorName;
+//  aAnchorNode = range->GetStartParent();
+//  aAnchorDOMNode = do_QueryInterface(aAnchorNode);
+//  res = aAnchorDOMNode->GetNodeName(anchorName);
+//  anchorOffset = range->StartOffset();
+//  nsCOMPtr<nsINode> aFocusNode;
+//  nsCOMPtr<nsIDOMNode> aFocusDOMNode;
+//  PRInt32 focusOffset;
+//  nsString focusName;
+//  aFocusNode = range->GetEndParent();
+//  aFocusDOMNode = do_QueryInterface(aFocusNode);
+//  res = aFocusDOMNode->GetNodeName(focusName);
+//  focusOffset = range->EndOffset();
+//  printf("  Range: \n    Anchor: %x (%S) %d\n    Focus: %x (%S) %d\n", aAnchorNode, anchorName.get(), anchorOffset,
+//       aFocusNode, focusName.get(), focusOffset );
 }
 
 
