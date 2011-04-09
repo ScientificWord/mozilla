@@ -3777,11 +3777,11 @@ function msiCreatePropertiesObjectDataFromSelection(aSelection, editorElement)
     case "tbody":
     case "tfoot":
     case "tr":
-//    case "td":
+    case "td":
     case "mtable":
     case "mtr":
     case "mlabeledtr":
-//    case "mtd":
+    case "mtd":
       var tableParent = msiGetContainingTableOrMatrix(container);
       if (msiNavigationUtils.isEquationArray(editorElement, tableParent))
       {
@@ -4968,11 +4968,11 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
       case "tbody":
       case "tfoot":
       case "tr":
-//      case "td":
+      case "td":
       case "mtable":
       case "mtr":
       case "mlabeledtr":
-//      case "mtd":
+      case "mtd":
         var tableParent = msiGetContainingTableOrMatrix(coreElement);
         if (msiNavigationUtils.isEquationArray(editorElement, tableParent))
         {
@@ -5213,6 +5213,13 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
       case "xref":
         objStr = GetString("CrossRef");
         commandStr = "cmd_reviseCrossRef";
+      break;
+
+      case "graph":
+        objStr = name;
+        theMenuStr = GetString("TagPropertiesMenuLabel");
+        theMenuStr = theMenuStr.replace(/%tagname%/, GetString("functiongraph"));
+        scriptStr = "openGraphDialog('graph', event.target.refElement, event.target.refEditor);";
       break;
 
       case "otfont":
@@ -6609,19 +6616,34 @@ msiTablePropertiesObjectData.prototype =
     for (var ix = 0; ix < ourArray.length; ++ix)
     {
       bDoIt = (this[ourArray[ix]] != null);
-      if (bDoIt && (ix == 1))  //The "Cell Group" properties should only appear if the selection doesn't match any of the other types
+      if (bDoIt && (ix > 0) && (ix < ourArray.length - 1))  //if selection is within a cell, don't show anything else except table
       {
         if (this.mCell != null)
           bDoIt = false;
-        if ((this.mSelection == this.mRowSelection) || (this.mSelection == this.mColSelection))
-          bDoIt = false;
-        if (this.allCellsSelected())
-          bDoIt = false;
       }
-      if (bDoIt && (ix == 0))
+      if (bDoIt)
       {
-        if ((this.mRowSelection == null) && (this.mColSelection == null))  //means selecting all rows or cols gives whole table - so selection is essentially whole table
-          bDoIt = false;
+        switch(ourArray[ix])
+        {
+          case "mCell":
+            if ((this.mRowSelection == null) && (this.mColSelection == null))  //means selecting all rows or cols gives whole table - so selection is essentially whole table
+              bDoIt = false;
+          break;
+          case "mSelection":   //The "Cell Group" properties should only appear if the selection doesn't match any of the other types
+            if ((this.mSelection == this.mRowSelection) || (this.mSelection == this.mColSelection))
+              bDoIt = false;
+            if (this.allCellsSelected())
+              bDoIt = false;
+          break;
+          case "mRowSelection":
+            if (this.mSelection != this.mRowSelection)
+              bDoIt = false;
+          break;
+          case "mColSelection":
+            if (this.mSelection != this.mColSelection)
+              bDoIt = false;
+          break;
+        }
       }
       if (bDoIt)
       {
