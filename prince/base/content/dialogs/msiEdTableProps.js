@@ -88,8 +88,6 @@ var gActiveEditor;
 
 var gCellWidthUnit = "pt";
 var gCellHeightUnit = "pt";
-var gWidthUnitsController;
-var gHeightUnitsController;
 var gCellFontSize = 12;
 
 var data;
@@ -109,6 +107,7 @@ function setVariablesForControls()
 
   gDialog.tableRowHeight =  document.getElementById("tableRowHeight");
   gDialog.tableWidth =  document.getElementById("tableWidth");
+  gDialog.tableUnitsList = document.getElementById("tableUnitsList");
 
   gDialog.tableLocationList =  document.getElementById("tableLocationList");
   gDialog.tableFloatLocationList =  document.getElementById("tableFloatLocationList");
@@ -120,7 +119,7 @@ function setVariablesForControls()
   gDialog.CellHeightInput = document.getElementById("CellHeightInput");
   gDialog.CellHeightUnits = document.getElementById("CellHeightUnits");
   gDialog.CellWidthInput = document.getElementById("CellWidthInput");
-  gDialog.CellUnits = document.getElementById("CellUnits");
+  gDialog.cellUnitsList = document.getElementById("cellUnitsList");
 
   gDialog.hAlignChoices = document.getElementById("hAlignChoices");
   gDialog.vAlignChoices = document.getElementById("vAlignChoices");
@@ -237,7 +236,7 @@ function createCellDataObject(srcData)
 function createCellBorderData(srcBorderData)
 {
   var borderData = { style : {top : "solid", right : "solid", bottom : "solid", left : "solid"},
-                     width : {top : "medium", right : "medium", bottom : "medium", left : "medium"},
+                     width : {top : "thin", right : "thin", bottom : "thin", left : "thin"},
                      color : {top : "#000000", right : "#000000", bottom : "#000000", left : "#000000"} };
   var aSide;
   if (srcBorderData)
@@ -553,10 +552,43 @@ function InitDialog()
 //  InitCellsPanel();
 }
 
+var tableUnitsHandler;
+
 function initTablePanel()
 {
   var rowCountObj = { value: 0 };
   var colCountObj = { value: 0 };
+  var widthVal;
+  var heightVal;
+  var re;
+  var match;
+  tableUnitsHandler = new UnitHandler();
+  if (gTableElement.hasAttribute("width"))
+  {
+    widthVal = tableUnitsHandler.getNumberAndUnitFromString(gTableElement.getAttribute("width"));
+  }
+  else if (gTableElement.hasAttribute("style"))
+  {
+    re = /width:\s*(\d*[^;]*)(;|$)/;
+    match = re.exec(gTableElement.getAttribute("style"));
+    if (match.length > 1) widthVal = tableUnitsHandler.getNumberAndUnitFromString(match[1]);
+  }
+  if (gTableElement.hasAttribute("height"))
+  {
+    heightVal = tableUnitsHandler.getNumberAndUnitFromString(gTableElement.getAttribute("height"));
+  }
+  else if (gTableElement.hasAttribute("style"))
+  {
+    re = /height:\s*(\d*[^;]*)(;|$)/;
+    match = re.exec(gTableElement.getAttribute("style"));
+    if (match.length > 1) heightVal = tableUnitsHandler.getNumberAndUnitFromString(match[1]);
+  }
+
+
+  tableUnitsHandler.setEditFieldList([gDialog.tableRowHeight,gDialog.tableWidth]);
+  tableUnitsHandler.initCurrentUnit(widthVal.unit);
+  tableUnitsHandler.buildUnitMenu(gDialog.tableUnitsList, widthVal.unit);
+
   try {
     gActiveEditor.getTableSize(gTableElement, rowCountObj, colCountObj);
   } catch (e) {}
@@ -566,7 +598,9 @@ function initTablePanel()
   gColCount = colCountObj.value;
   gLastColIndex = gColCount-1;
   gDialog.tableRowCount.value = gRowCount;
-  gDialog.tableColumnCount.value = gColCount;  
+  gDialog.tableColumnCount.value = gColCount; 
+  gDialog.tableWidth.value = widthVal.number;
+  gDialog.tableRowHeight.value = (gRowCount>0) ? (heightVal.number/gRowCount) : ""; 
 
   // Be sure to get caption from table in doc, not the copied "globalTableElement"
   gTableCaptionElement = gTableElement.caption;
@@ -601,6 +635,17 @@ function initLinesPanel()
 //  SetColor("BackgroundCW", backColor);
 }
 
+function onChangeTableUnits()
+{
+  tableUnitsHandler.setCurrentUnit(gDialog.tableUnitsList.value);
+}
+
+function onChangeCellUnits()
+{
+  cellUnitsHandler.setCurrentUnit(gDialog.cellUnitsList.value);
+}
+
+
 function setCurrSide(newSide)
 {
   if (gCurrentSide == newSide)
@@ -623,7 +668,7 @@ function initCellsPanel()
   cellUnitsHandler = new UnitHandler();
   cellUnitsHandler.setEditFieldList([gDialog.CellWidthInput,gDialog.CellHeightInput]);
   cellUnitsHandler.initCurrentUnit(gCellWidthUnit);
-  cellUnitsHandler.buildUnitMenu(gDialog.CellUnits, gCellWidthUnit);
+  cellUnitsHandler.buildUnitMenu(gDialog.cellUnitsList, gCellWidthUnit);
 
 
 //  var theUnitsList = new msiCSSWithFontUnitsList(gCellFontSize, "pt");
@@ -634,7 +679,7 @@ function initCellsPanel()
 
   gDialog.CellHeightInput.value = gCollatedCellData.size.height;
   gDialog.CellHeightUnits = gCellHeightUnit;
-  gDialog.CellWidthInput = gCollatedCellData.size.width;
+  gDialog.CellWidthInput.value = gCollatedCellData.size.width;
   gDialog.TextWrapCheckbox.checked = (gCollatedCellData.wrap != "nowrap");
   
 }
@@ -1292,9 +1337,8 @@ function ValidateData()
 //rwa   else
 //rwa     globalElement = globalCellElement;
 //rwa
-  gCellWidthUnit = gDialog.CellWidthUnits.value;
-  gCellHeightUnit = gDialog.CellHeightUnits.value;
-
+  gCellWidthUnit = gDialog.cellUnitsList.value;
+  gCellHeightUnit = gCellWidthUnit;
   return true;
 }
 
@@ -1309,15 +1353,6 @@ function ValidateData()
 
 // Call this when a textbox or menulist is changed
 //   so the checkbox is automatically set
-function SetCheckbox(checkboxID)
-{
-  if (checkboxID && checkboxID.length > 0)
-  {
-    // Set associated checkbox
-    document.getElementById(checkboxID).checked = true;
-  }
-  gCellDataChanged = true;
-}
 
 //rwa function ChangeIntTextbox(textboxID, checkboxID)
 //rwa {
@@ -1328,30 +1363,30 @@ function SetCheckbox(checkboxID)
 //rwa   SetCheckbox(checkboxID);
 //rwa }
 
-function CheckboxChanged(checkID)
-{
-  switch(checkID)
-  {
-    case "CellWidthCheckbox":
-      gCellChangeData.size.width = true;
-      gCellWidthUnit = gDialog.CellWidthUnits.value;
-      gCollatedCellData.size.bWidthSet = gDialog.CellWidthCheckbox.checked;
-      if (gCollatedCellData.size.bWidthSet)
-        gCollatedCellData.size.width = gWidthUnitsController.getValue(gDialog.CellWidthInput, gCellWidthUnit);
-    break;
-    case "CellHeightCheckbox":
-      gCellChangeData.size.height = true;
-      gCellHeightUnit = gDialog.CellHeightUnits.value;
-      gCollatedCellData.size.bHeightSet = gDialog.CellHeightCheckbox.checked;
-      if (gCollatedCellData.size.bHeightSet)
-        gCollatedCellData.size.height = gHeightUnitsController.getValue(gDialog.CellHeightInput, gCellHeightUnit);
-    break;
-    case "TextWrapCheckbox":
-      gCellChangeData.wrap = true;
-      gCollatedCellData.wrap = (gDialog.TextWrapCheckbox.checked ? "wrap" : "nowrap");
-    break;
-  }
-}
+//function CheckboxChanged(checkID)
+//{
+//  switch(checkID)
+//  {
+//    case "CellWidthCheckbox":
+//      gCellChangeData.size.width = true;
+//      gCellWidthUnit = gDialog.CellWidthUnits.value;
+//      gCollatedCellData.size.bWidthSet = gDialog.CellWidthCheckbox.checked;
+//      if (gCollatedCellData.size.bWidthSet)
+//        gCollatedCellData.size.width = gWidthUnitsController.getValue(gDialog.CellWidthInput, gCellWidthUnit);
+//    break;
+//    case "CellHeightCheckbox":
+//      gCellChangeData.size.height = true;
+//      gCellHeightUnit = gDialog.CellHeightUnits.value;
+//      gCollatedCellData.size.bHeightSet = gDialog.CellHeightCheckbox.checked;
+//      if (gCollatedCellData.size.bHeightSet)
+//        gCollatedCellData.size.height = gHeightUnitsController.getValue(gDialog.CellHeightInput, gCellHeightUnit);
+//    break;
+//    case "TextWrapCheckbox":
+//      gCellChangeData.wrap = true;
+//      gCollatedCellData.wrap = (gDialog.TextWrapCheckbox.checked ? "wrap" : "nowrap");
+//    break;
+//  }
+//}
 
 function ChangeCellSize(textID)
 {
@@ -1359,13 +1394,13 @@ function ChangeCellSize(textID)
   {
     case "CellWidthInput":
       gCellChangeData.size.width = true;
-      gCellWidthUnit = gDialog.CellWidthUnits.value;
-      gCollatedCellData.size.width = gWidthUnitsController.getValue(gDialog.CellWidthInput, gCellWidthUnit);
+      gCellWidthUnit = gDialog.cellUnitsList.value;
+      gCollatedCellData.size.width = cellUnitsHandler.getValueOf(gDialog.CellWidthInput.value, gCellWidthUnit);
     break;
     case "CellHeightInput":
       gCellChangeData.size.height = true;
-      gCellHeightUnit = gDialog.CellHeightUnits.value;
-      gCollatedCellData.size.height = gHeightUnitsController.getValue(gDialog.CellHeightInput, gCellHeightUnit);
+      gCellHeightUnit = gDialog.cellUnitsList.value;
+      gCollatedCellData.size.height = cellUnitsHandler.getValueOf(gDialog.CellHeightInput.value, gCellHeightUnit);
     break;
   }
 }
@@ -1547,8 +1582,8 @@ function DoStyleChangesForACell(destCell)
       logStr = "In msiEdTableProps.js, DoStyleChangesForACell(); cell width string should be [" + String(gCollatedCellData.size.width) + gCellWidthUnit + "]\n";
       msiKludgeLogString(logStr, ["tableEdit"]);
 //      globalCellElement.style.setProperty("width", String(gCollatedCellData.size.width) + gCellWidthUnit, "");  this should be what works, but apparently it's necessary to use pixels in Mozilla??
-      doSetStyleAttr("width", gWidthUnitsController.getValueString(gDialog.CellWidthInput, "px"));
-      doSetStyleAttr("min-width", gWidthUnitsController.getValueString(gDialog.CellWidthInput, "px"));
+      doSetStyleAttr("width", gWidthUnitsController.getValueString(gDialog.CellWidthInput.value, "px"));
+      doSetStyleAttr("min-width", gWidthUnitsController.getValueString(gDialog.CellWidthInput.value, "px"));
     }
     else
     {
@@ -1563,7 +1598,7 @@ function DoStyleChangesForACell(destCell)
       logStr = "In msiEdTableProps.js, DoStyleChangesForACell(); cell height string should be [" + String(gCollatedCellData.size.height) + gCellHeightUnit + "]\n";
       msiKludgeLogString(logStr, ["tableEdit"]);
 //      globalCellElement.style.setProperty("height", String(gCollatedCellData.size.height) + gCellHeightUnit, "");  this should be what works, but apparently it's necessary to use pixels in Mozilla??
-      doSetStyleAttr("height", gHeightUnitsController.getValueString(gDialog.CellHeightInput, "px"));
+      doSetStyleAttr("height", cellUnitsHandler.getValueOf(gDialog.CellHeightInput, "px"));
     }
     else
       doSetStyleAttr("height", null);
@@ -2054,7 +2089,7 @@ function ApplyColAndRowAttributes()
     var currSelectedCol = -1;
 //    theWidth = String(gCollatedCellData.size.width) + gCellWidthUnit;  we should be using something more like this...
     if (gCollatedCellData.size.bWidthSet)
-      theWidth = gWidthUnitsController.getValueString(gDialog.CellWidthInput, "px");
+      theWidth = gWidthUnitsController.getValueString(gDialog.CellWidthInput.value, "px");
 
     function getEndsOfSpanContaining(aColIndex, colElementArray)
     {
@@ -2211,7 +2246,7 @@ function ApplyColAndRowAttributes()
   {
     var theHeight = "";
     if (gCollatedCellData.size.bHeightSet)
-      theHeight = gHeightUnitsController.getValueString(gDialog.CellHeightInput, "px");
+      theHeight = cellUnitsHandler.getValueOf(gDialog.CellHeightInput, "px");
     var theRowNode, newNode;
 
     for (var ix = 0; ix < rowsInSelection.length; ++ix)
@@ -2266,7 +2301,7 @@ function ApplyMatrixColAndRowAttributes()
   var colsInSelection = data.reviseData.getColsInSelection();
   var theWidth = "auto";
   if (gCollatedCellData.size.bWidthSet)
-    theWidth = gWidthUnitsController.getValueString(gDialog.CellWidthInput, "px");
+    theWidth = gWidthUnitsController.getValueString(gDialog.CellWidthInput.value, "px");
 //    theWidth = String(gCollatedCellData.size.width) + gCellWidthUnit;
   for (var ix = 0; ix < colsInSelection.length; ++ix)
     colWidths[colsInSelection[ix]] = theWidth;
@@ -2473,7 +2508,7 @@ function ApplyAttributesToOneCell(destElement, nRow, nCol)
   {
     if (gCollatedCellData.size.bHeightSet && !UseCSSForCellProp("height") && !ShouldSetHeightOnRows())
     {
-      theVal = gHeightUnitsController.getValueString(gDialog.CellHeightInput, "px");
+      theVal = cellUnitsHandler.getValueOf(gDialog.CellHeightInput, "px");
       if (theVal)
         theValStr = theVal;
     }
@@ -2484,7 +2519,7 @@ function ApplyAttributesToOneCell(destElement, nRow, nCol)
   {
     if (gCollatedCellData.size.bWidthSet && !UseCSSForCellProp("width") && !ShouldSetWidthOnCols())
     {
-      theVal = gWidthUnitsController.getValueString(gDialog.CellWidthInput, "px");
+      theVal = gWidthUnitsController.getValueString(gDialog.CellWidthInput.value, "px");
       if (theVal)
         theValStr = theVal;
     }

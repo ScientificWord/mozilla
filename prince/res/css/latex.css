@@ -542,8 +542,14 @@ preface {
 
 body {
   -moz-user-select: -moz-none; /* -moz-none can be overridden */
-  counter-reset: eqnnumber subeqnnumber chapter part section;
+  counter-reset: eqnnumber subeqnnumber chapter part section ftnotectr;
   margin-left: 10pt;
+  display: block;
+  position: relative;
+  font-family: Georgia;
+  margin-left: 20pt;
+  font-size: 12pt;
+  line-height: 14pt;
 }
 
 /* selection is possible in paragraph and front matter tags */
