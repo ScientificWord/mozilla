@@ -13,17 +13,6 @@ mml|mtext { color: black; }
 mml|mi[msiclass="enginefunction"] {text-decoration: underline; }
 
 
-body { 
-  display: block;
-  position: relative;
-  font-family: Georgia;
-  margin-left: 20pt;
-  font-size: 12pt;
-  line-height: 14pt;
-  counter-reset: footnote
-}
-
-
 pre, verbatim { font-family: Courier; white-space: pre }
 
 numberedListItem,
@@ -190,15 +179,31 @@ otfont {
   display: inline;
 }
 
+/* show footnotes by default*/
+note[type="footnote"] {
+  display: block;
+}
 
-
+/* never show footnotes marked 'hide'*/
 note[hide="true"] {
-  display: none;
+  display: none !important;
 } 
 
-*[hideFootnotes="true"] note[type="footnote"] {
-  display: none !important;
+/* display footnotes marked 'hide=false'*/
+note[hide="false"] {
+  display: block ! important;
 }
+
+/* display footnotes marked 'hide=false' even when 'hideFootnotes=true'
+*[hideFootnotes="true"] note[type="footnote"][hide="false"] {
+  display: block !important;
+}
+*/
+
+*[hideFootnotes="true"] note[type="footnote"] {
+  display: none;
+}
+
 
 *[hideOtherNotes="true"] note {
   display: none !important;
@@ -218,7 +223,7 @@ note[hide="true"] {
 
 note[type="footnote"] {
   margin: 1px 0;
-  border-width: 2px 0;
+  border-width: 1px 0;
   border-color: blue;
   border-style: solid;
   color: blue;
@@ -226,10 +231,17 @@ note[type="footnote"] {
   float: none;
 }	 
 
-notewrapper[type="footnote"]:before { content: counter(footnote);
-  counter-increment: footnote;
+notewrapper[type="footnote"]:before { 
+  content: counter(ftnotectr);
   vertical-align: super;
+  font-size: small;
+  color: red;
 } 
+
+notewrapper[type="footnote"]{ 
+  counter-increment: ftnotectr;
+}
+
 
 notewrapper {
   display: inline;
@@ -237,7 +249,7 @@ notewrapper {
 
 note {
   margin: 0px 20px;
-  border-width: 2px;
+  border-width: 1px;
   border-color: red;
   border-style: solid;
   display: block;

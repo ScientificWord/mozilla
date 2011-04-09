@@ -582,7 +582,7 @@ var fragObserver =
         }
         
         var sFileContent = '<?xml version="1.0"?>\n<fragment>\n  <data>\n    ' + encodeURIComponent(mimetypes.kHTMLMime) +
-          '\n  </data>\n  <context>\n    ' + encodeURIComponent(+mimetypes.kHTMLContext) +
+          '\n  </data>\n  <context>\n    ' + encodeURIComponent(mimetypes.kHTMLContext) +
           '\n  </context>\n  <info>\n    ' + encodeURIComponent(mimetypes.kHTMLInfo) +
           '\n  </info>\n  <description>\n    ' +  encodeURIComponent(data.description) +
           '\n  </description>\n</fragment>';
