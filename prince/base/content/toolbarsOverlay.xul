@@ -87,6 +87,7 @@
       <toolbarbutton id="formulaButton" tooltiptext="&formulaButton.tooltip;"/>
       <toolbarbutton id="packagesButton" tooltiptext="&packagesButton.tooltip;" observes="cmd_MSItypesetOptionsAndPackagesCmd"/>
       <toolbarbutton id="citationButton" tooltiptext="&citationButton.tooltip;" observes="cmd_citation"/>
+      <toolbarbutton id="hspaceButton" tooltiptext="&hspaceButton.tooltip;" observes="cmd_insertHorizontalSpaces" />
       <toolbarbutton id="indexentryButton" tooltiptext="&indexentryButton.tooltip;" observes="cmd_MSIinsertIndexEntryCmd"/>
       <toolbarbutton id="xrefButton" tooltiptext="&xrefButton.tooltip;" observes="cmd_MSIinsertCrossReferenceCmd"/>
       <toolbarbutton id="texfieldButton" tooltiptext="&texfieldButton.tooltip;" observes="cmd_MSIinsertTeXFieldCmd"/>
@@ -126,7 +127,7 @@
       flex = "1"
       tbalign="center" 
       context="toolbar-context-menu"
-      defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicButton,undoButton,redoButton,findButton,importimageButton,exportwebButton,footnoteButton,noteButton,markerButton,htlinkButton,formulaButton,citationButton,indexentryButton,xrefButton,texfieldButton,bibliographyButton,importtexButton"
+      defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicButton,undoButton,redoButton,findButton,importimageButton,exportwebButton,footnoteButton,noteButton,markerButton,htlinkButton,formulaButton,citationButton,hspaceButton,indexentryButton,xrefButton,texfieldButton,bibliographyButton,importtexButton"
       mode="icons" 
       customizable="true"
       iconsize="small" />

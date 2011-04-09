@@ -60,17 +60,16 @@
               <rows>
                 <row>
                   <label value="&tableRows.label;" control="tableRowCount"  accesskey="&tableRows.accesskey;"/>
-                  <textbox type="number" class="narrow" id="tableRowCount" value="0"/>
+                  <textbox type="number" class="medwidth" id="tableRowCount" value="0"/>
                   <label value="&tableRowHeight.label;" control="tableRowHeight" accesskey="&tableRowHeight.accesskey;"/>
-                  <textbox type="number" class="narrow" id="tableRowHeight" value="0"/>
-                  <menulist id="CellUnits" />
+                  <textbox type="number" class="medwidth" id="tableRowHeight" value="0"/>
+                  <menulist id="tableUnitsList" oncommand="onChangeTableUnits();"/>
                 </row>
                 <row>
                   <label value="&tableColumns.label;" control="tableColumnCount"  accesskey="&tableColumns.accesskey;"/>
-                  <textbox type="number" class="narrow" id="tableColumnCount" value="0"/>
+                  <textbox type="number" class="medwidth" id="tableColumnCount" value="0"/>
                   <label value="&tableWidth.label;" control="tableWidth" accesskey="&tableWidth.accesskey;"/>
-                  <textbox type="number" class="narrow" id="tableWidth" value="0"/>
-                  <!--menulist id="CellHeightUnits" /-->
+                  <textbox type="number" class="medwidth" id="tableWidth" value="0"/>
                 </row>
               </rows>
             </grid>
@@ -151,15 +150,14 @@
               <rows>
                 <row align="center">
                   <label value="Row height"/>
-                  <textbox class="narrow" id="CellHeightInput"
+                  <textbox id="CellHeightInput" type="number" class="medwidth" 
                            oninput="ChangeCellSize(this.id);"/>
-                  <menulist id="CellHeightUnits" />
+                  <menulist id="cellUnitsList" oncommand="onChangeCellUnits();" />
                 </row>
                 <row align="center">
                   <label value="Column width"/>
-                  <textbox class="narrow" id="CellWidthInput"
+                  <textbox id="CellWidthInput" type="number" class="medwidth" 
                            oninput="ChangeCellSize(this.id);"/>
-                  <menulist id="CellWidthUnits" />
                 </row>
               </rows>
             </grid>
