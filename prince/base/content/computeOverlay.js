@@ -1062,6 +1062,7 @@ function doVCamInitialize(event)
   dump("doVCamInitialize");
   var graph = getActiveGraph();
   if (!graph) return;
+  document.getElementById("VCamToolbar").setAttribute("hidden",false);
   var threedplot = document.getElementById("3dplot");
   if (threedplot) threedplot.setAttribute("hidden", graph.dimension==3?"false":"true");
   var animplot = document.getElementById("animplot");

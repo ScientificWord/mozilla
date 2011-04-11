@@ -226,7 +226,6 @@
     <broadcaster id="vcamactive" hidden = "true"/>
     <broadcaster id="3dplot" hidden = "true" />
     <broadcaster id="animplot" hidden = "true" />
-    <observes element="vcamactive" attribute="hidden" onbroadcast="doVCamInitialize(event);"/>
   </broadcasterset>
   
   
