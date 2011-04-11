@@ -2836,6 +2836,8 @@ function EditorDblClick(event)
   }
 }
 
+
+var vcamActive = false;
 function EditorClick(event)
 {
   if (!event)
@@ -2845,6 +2847,19 @@ function EditorClick(event)
   {
     EditorDblClick(event);
     return;
+  }
+  else if (event.detail == 1)
+  {
+    if (event.target.tagName == "plotwrapper") 
+    {
+      doVCamInitialize(event);
+      vcamActive = true;
+    }
+    else if (vcamActive) 
+    {
+      document.getElementById("VCamToolbar").setAttribute("hidden",true);
+      vcamActive = false;
+    }
   }
 
 //  event.currentTarget should be "body" or something...
