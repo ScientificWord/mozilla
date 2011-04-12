@@ -5036,7 +5036,7 @@ var msiInsertHorizontalSpacesCommand =
     var hSpaceData = new Object();
     hSpaceData.spaceType = "normalSpace";
     try {
-      msiOpenModelessDialog("chrome://prince/content/HorizontalSpaces.xul", "_blank", "chrome,close,titlebar,dependent",
+      msiOpenModelessDialog("chrome://prince/content/HorizontalSpaces.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
                                         editorElement, "cmd_insertHorizontalSpaces", this, hSpaceData);
     }
     catch(ex) {
@@ -5342,7 +5342,7 @@ var msiInsertVerticalSpacesCommand =
     var vSpaceData = new Object();
     vSpaceData.spaceType = "smallSkip";
     try {
-      msiOpenModelessDialog("chrome://prince/content/VerticalSpaces.xul", "_blank", "chrome,close,titlebar,dependent",
+      msiOpenModelessDialog("chrome://prince/content/VerticalSpaces.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
                                         editorElement, "cmd_insertVerticalSpaces", this, vSpaceData);
     }
     catch(ex) {
@@ -8935,7 +8935,7 @@ function msiFrame(editorElement)
 {
   var editor = msiGetEditor(editorElement);
   editor.beginTransaction();
-  window.openDialog("chrome://prince/content/Frame.xul","frame", "chrome,close,titlebar,resizable=yes");
+  window.openDialog("chrome://prince/content/Frame.xul","frame", "chrome,close,titlebar,dependent, resizable=yes");
   editor.endTransaction();
 }
 
