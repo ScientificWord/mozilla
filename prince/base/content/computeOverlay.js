@@ -986,7 +986,8 @@ function getActivePlugin(editorElement)
 {
   var graph = getActiveGraph(editorElement);
   if (!graph) return null;
-  var obj = graph.plotplugin;
+  netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
+  var obj = graph.getElementsByTagName("object")[0];
   return obj;
 }
 
@@ -1001,7 +1002,7 @@ function doVCamCommand(cmd, editorElement)
 //  var obj = plotElement.getElementsByTagName("object")[0];
   var graph = getActiveGraph(editorElement);
   if (!graph) return;
-  var obj = graph.plotplugin;
+  var obj = getActivePlugin(editorElement);
   if (!obj) return;
   switch (cmd) {
   case "cmd_vcRotateLeft":
@@ -1109,7 +1110,7 @@ function setAnimationTime()
 {
   var obj = getActivePlugin();
   var time = obj.beginTime + (gProgressbar.value/100)*(obj.endTime-obj.beginTime);
-  dump("Progressbar setting time to " + time + "\n");
+//  dump("Progressbar setting time to " + time + "\n");
   obj.currentTime = time;
 }
 
