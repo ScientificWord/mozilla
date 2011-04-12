@@ -1127,3 +1127,8 @@ timepicker {
 findbar {
   -moz-binding: url('chrome://global/content/bindings/findbar.xml#findbar');
 }
+
+
+.dialog-content-box {
+  overflow: auto;
+}
