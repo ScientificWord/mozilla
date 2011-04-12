@@ -21,7 +21,9 @@
     buttons="accept,cancel"
     buttonlabelcancel="Cancel" buttonlabelaccept="OK"
     ondialogaccept="return onAccept();" ondialogcancel="return onCancel();"
-    persist="screenX screenY width height">
+    persist="screenX screenY width height"
+    screenX="40"
+    screenY="40">
 
   <!-- Methods common to all editor dialogs -->
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>

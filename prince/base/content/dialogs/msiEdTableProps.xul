@@ -20,7 +20,9 @@
     ondialogcancel="return onCancel();"
     ondialoghelp="return doHelpButton();"
     buttonlabelextra1="&applyButton.label;"
-    width="560px" height="260px"
+    width="560px" height="330px"
+    screenX="40"
+    screenY="40"
     persist="screenX screenY width height">
 
   <!-- Methods common to all editor dialogs -->
