@@ -1,4 +1,4 @@
-math {
+fmath {
   direction: ltr;
 }
 
@@ -88,7 +88,7 @@ section>*:first-child[open="false"]{
  
 section>*:first-child:before, section[open="true"]>*:first-child:before  {
   content: counter(section) ".  ";
-  -moz-user-select: -moz-none;
+  -moz-user-modify: read-only;
 }
 
 
