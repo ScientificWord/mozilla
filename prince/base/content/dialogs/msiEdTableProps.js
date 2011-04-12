@@ -514,6 +514,8 @@ function Startup()
 //  else
 //    SetTextboxFocus(gDialog.TableRowsInput);
 
+  window.sizeToContent();
+
   SetWindowLocation();
 }
 
