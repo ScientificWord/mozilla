@@ -723,18 +723,22 @@ mtd button[class="eqnnum"], mtd button[class="subeqnnum"], mtd button[class="eqn
 
 button[class="eqnnum"]:after{
   content: "  " counter(section) "." counter(eqnnumber);
+  -moz-user-modify: read-only;
 }
 
 button[class="eqnnum"][customLabel]:after{
   content: "  " attr(customLabel);
+  -moz-user-modify: read-only;
 }
 
 button[class="subeqnnum"]:after{
   content: "  " counter(section) "." counter(eqnnumber) "." counter(subeqnnum,lower-latin);
+  -moz-user-modify: read-only;
 }
 
 button[class="subeqnnum"][customLabel]:after{
   content: "  " attr(customLabel);
+  -moz-user-modify: read-only;
 }
 
 title {
@@ -849,58 +853,72 @@ assertion, conjecture, corollary, criterion, lemma, proposition, theorem {
 
 assertion > *:first-child::before {
   content: 'Assertion ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
 }
 
 assertion[numbering="none"] > *:first-child::before {
   content: 'Assertion ';
+  -moz-user-modify: read-only;
 }
 
 conjecture > *:first-child::before {
   content: 'Conjecture ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
 }
 
 conjecture[numbering="none"] > *:first-child::before {
   content: 'Conjecture ';
+  -moz-user-modify: read-only;
 }
 
 corollary > *:first-child::before {
   content: 'Corollary ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
 }
 
 corollary[numbering="none"] > *:first-child::before {
   content: 'Corollary ';
+  -moz-user-modify: read-only;
 }
 
 criterion > *:first-child::before {
   content: 'Criterion ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
 }
 
 criterion[numbering="none"] > *:first-child::before {
   content: 'Criterion ';
+  -moz-user-modify: read-only;
 }
 
 lemma > *:first-child::before {
   content: 'Lemma ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
 }
 
 lemma[numbering="none"] > *:first-child::before {
   content: 'Lemma ';
+  -moz-user-modify: read-only;
 }
 
 proposition > *:first-child::before {
   content: 'Proposition ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
 }
 
 proposition[numbering="none"] > *:first-child::before {
   content: 'Proposition ';
+  -moz-user-modify: read-only;
 }
 
 theorem > *:first-child::before {
   content: 'Theorem ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
 }
  
 theorem[numbering="none"] > *:first-child::before {
   content: 'Theorem ';
+  -moz-user-modify: read-only;
 }
 
 algorithm > *:first-child::before, assumption > *:first-child::before, 
@@ -911,7 +929,7 @@ problem > *:first-child::before, property > *:first-child::before, question > *:
 {
   font-style: normal;
   font-weight: bold;
-  -moz-user-select: -moz-none;
+  -moz-user-modify: read-only;
 }
 
 algorithm, assumption, axiom, condition, definition, example, exercise, hypothesis,
@@ -924,90 +942,112 @@ problem, property, question
 
 algorithm > *:first-child::before {
   content: 'Algorithm ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
 }
 
 algorithm[numbering="none"] > *:first-child::before {
   content: 'Algorithm ';
+  -moz-user-modify: read-only;
 }
 
 assumption > *:first-child::before {
   content: 'Assumption ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
 }
 
 assumption[numbering="none"] > *:first-child::before {
   content: 'Assumption ';
+  -moz-user-modify: read-only;
 }
 
 axiom > *:first-child::before {
   content: 'Axiom ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
 }
 
 axiom[numbering="none"] > *:first-child::before {
   content: 'Axiom ';
+  -moz-user-modify: read-only;
 }
 
 condition > *:first-child::before {
   content: 'Condition ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
 }
 
 condition[numbering="none"] > *:first-child::before {
   content: 'Condition ';
+  -moz-user-modify: read-only;
 }
 
 definition > *:first-child::before {
   content: 'Definition ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
 }
 
 definition[numbering="none"] > *:first-child::before {
   content: 'Definition ';
+  -moz-user-modify: read-only;
 }
 
 example > *:first-child::before {
   content: 'Example ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
 }
 
 example[numbering="none"] > *:first-child::before {
   content: 'Example ';
+  -moz-user-modify: read-only;
 }
 
 exercise > *:first-child::before {
   content: 'Exercise ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
 }
 
 exercise[numbering="none"] > *:first-child::before {
   content: 'Exercise ';
+  -moz-user-modify: read-only;
 }
 
 hypothesis > *:first-child::before {
   content: 'Hypothesis ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
 }
 
 hypothesis[numbering="none"] > *:first-child::before {
   content: 'Hypothesis ';
+  -moz-user-modify: read-only;
 }
 
 problem > *:first-child::before {
   content: 'Problem ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
 }
 
 problem[numbering="none"] > *:first-child::before {
   content: 'Problem ';
+  -moz-user-modify: read-only;
 }
 
 property > *:first-child::before {
   content: 'Property ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
 }
 
 property[numbering="none"] > *:first-child::before {
   content: 'Property ';
+  -moz-user-modify: read-only;
 }
 
 question > *:first-child::before {
   content: 'Question ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
 }
 
 question[numbering="none"] > *:first-child::before {
   content: 'Question ';
+  -moz-user-modify: read-only;
 }
 
 acknowledgment > *:first-child::before, case > *:first-child::before, claim > *:first-child::before,
@@ -1016,7 +1056,7 @@ remark > *:first-child::before, summary > *:first-child::before
 {
   font-style: italic;
   font-weight: bold;
-  -moz-user-select: -moz-none;
+  -moz-user-modify: read-only;
 }
   
 acknowledgment, case, claim, conclusion, notation, remark, summary {
@@ -1027,63 +1067,77 @@ acknowledgment, case, claim, conclusion, notation, remark, summary {
 
 acknowledgment > *:first-child::before {
   content: 'Acknowledgment ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
 }
 
 acknowledgment[numbering="none"] > *:first-child::before {
   content: 'Acknowledgment ';
+  -moz-user-modify: read-only;
 }
 
 case > *:first-child::before {
   content: 'Case ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
 }
 
 case[numbering="none"] > *:first-child::before {
   content: 'Case ';
+  -moz-user-modify: read-only;
 }
 
 claim > *:first-child::before {
   content: 'Claim ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
 }
 
 claim[numbering="none"] > *:first-child::before {
   content: 'Claim ';
+  -moz-user-modify: read-only;
 }
 
 conclusion > *:first-child::before {
   content: 'Conclusion ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
 }
 
 conclusion[numbering="none"] > *:first-child::before {
   content: 'Conclusion ';
+  -moz-user-modify: read-only;
 }
 
 notation > *:first-child::before {
   content: 'Notation ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
 }
 
 notation[numbering="none"] > *:first-child::before {
   content: 'Notation ';
+  -moz-user-modify: read-only;
 }
 
 remark > *:first-child::before {
   content: 'Remark ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
 }
 
 remark[numbering="none"] > *:first-child::before {
   content: 'Remark ';
+  -moz-user-modify: read-only;
 }
 
 summary > *:first-child::before {
   content: 'Summary ' counter(section) "." counter(theorem) ' ';
+  -moz-user-modify: read-only;
 }
 
 summary[numbering="none"] > *:first-child::before {
   content: 'Summary ';
+  -moz-user-modify: read-only;
 }
 
 proof > *:first-child::before {
   content: 'Proof ';
-  -moz-user-select: -moz-none;
+  -moz-user-modify: read-only;
   background-color: lightgray;
   font-weight: bold;
 }
