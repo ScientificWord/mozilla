@@ -982,7 +982,15 @@ function getActiveGraph(editorElement)
   return element;
 }
 
+function getActivePlugin(editorElement)
+{
+  var graph = getActiveGraph(editorElement);
+  if (!graph) return null;
+  var obj = graph.plotplugin;
+  return obj;
+}
 
+var isRunning = false;
 function doVCamCommand(cmd, editorElement)
 {
 //  if(!editorElement)
@@ -1009,16 +1017,16 @@ function doVCamCommand(cmd, editorElement)
     if (obj.rotateHorizontalAction == 2) obj.rotateHorizontalAction = 0; else obj.rotateHorizontalAction = 2;
     break;
   case "cmd_vcRotateScene":
-    graph.cursorTool = "rotate";
+    obj.cursorTool = "rotate";
     break;
   case "cmd_vcZoom":
-    graph.cursorTool = "zoom";
+    obj.cursorTool = "zoom";
     break;
   case "cmd_vcMove":
-    graph.cursorTool = "move";
+    obj.cursorTool = "move";
     break;
   case "cmd_vcQuery":
-    graph.cursorTool = "query";
+    obj.cursorTool = "query";
     break;
   case "cmd_vcAutoSpeed":
     dump("cmd_vcAutoSpeed not implemented");
@@ -1027,28 +1035,30 @@ function doVCamCommand(cmd, editorElement)
     dump("cmd_vcAnimSpeed not implemented");
     break;
   case "cmd_vcAutoZoomIn":
-    if (graph.zoomAction == 1) graph.zoomAction = 0; else graph.zoomAction = 1;
+    if (obj.zoomAction == 1) obj.zoomAction = 0; else obj.zoomAction = 1;
     break;
   case "cmd_vcAutoZoomOut":
-    if (graph.zoomAction == 2) graph.zoomAction = 0; else graph.zoomAction = 2;
+    if (obj.zoomAction == 2) obj.zoomAction = 0; else obj.zoomAction = 2;
     break;
   case "cmd_vcGoToEnd":
-    graph.currentTime = graph.endTime;
+    obj.currentTime = obj.endTime;
     break;
   case "cmd_vcGoToStart":
-    graph.currentTime = graph.beginTime;
+    obj.currentTime = obj.beginTime;
     break;
   case "cmd_vcLoopType":
     dump("cmd_vcLoopType not implemented");
     break;
   case "cmd_vcPlay":
-    graph.startAnimation();
+    if (isRunning) obj.stopAnimation();
+    else obj.startAnimation();
+    isRunning = !isRunning;
     break;
   case "cmd_vcSelObj":
     dump("cmd_vcSelObj not implemented");
     break;
   case "cmd_vcFitContents":
-    graph.fitContents();
+    obj.fitContents();
     break;
   default:
   }
@@ -1060,11 +1070,12 @@ var gProgressbar;
 function doVCamInitialize(event)
 {
   dump("doVCamInitialize");
+  var obj = getActivePlugin();
+  if (!obj) return;
   var graph = getActiveGraph();
-  if (!graph) return;
   document.getElementById("VCamToolbar").setAttribute("hidden",false);
   var threedplot = document.getElementById("3dplot");
-  if (threedplot) threedplot.setAttribute("hidden", graph.dimension==3?"false":"true");
+  if (threedplot) threedplot.setAttribute("hidden", obj.dimension==3?"false":"true");
   var animplot = document.getElementById("animplot");
   // graph.isAnimated seems to be unimplemented: use graphSpec instead.
   var graphspec = graph.firstChild;
@@ -1074,8 +1085,7 @@ function doVCamInitialize(event)
   {
     try {
       gProgressbar = document.getElementById("vc-AnimScale");
-      graph.addEvent("currentTimeChange", showAnimationTime );
-//      gProgressbar.onchange="setAnimationTime();";
+      obj.addEvent("currentTimeChange", showAnimationTime );
     }
     catch (e)
     {
@@ -1088,20 +1098,19 @@ function doVCamInitialize(event)
 
 function showAnimationTime(time)
 {
-  var graph = getActiveGraph();
+  var obj = getActivePlugin();
 //  gProgressbar.onchange=dontSetAnimationTime;
-  var newval = Math.round(100*(time/(graph.endTime - graph.beginTime)));
+  var newval = Math.round(100*(time/(obj.endTime - obj.beginTime)));
 //  dump("Changing progressbar value to " + newval + "\n");
   gProgressbar.value = newval;
-//  gProgressbar.onchage=setAnimationTime;
 } 
 
 function setAnimationTime()
 {
-  var graph = getActiveGraph();
-  var time = graph.beginTime + (gProgressbar.value/100)*(graph.endTime-graph.beginTime);
+  var obj = getActivePlugin();
+  var time = obj.beginTime + (gProgressbar.value/100)*(obj.endTime-obj.beginTime);
   dump("Progressbar setting time to " + time + "\n");
-  graph.currentTime = time;
+  obj.currentTime = time;
 }
 
 function dontSetAnimationTime()
@@ -1109,25 +1118,25 @@ function dontSetAnimationTime()
   return;
 }
 
-function setLoopMode()
-{}
+//function setLoopMode()
+//{}
 
 function setActionSpeed( factor )
 {
-  var graph = getActiveGraph();
-  graph.actionSpeed = factor;
+  var obj = getActivePlugin();
+  obj.actionSpeed = factor;
 }
 
 function setAnimSpeed( factor )
 {
-  var graph = getActiveGraph();
-  graph.animationSpeed = factor;
+  var obj = getActivePlugin();
+  obj.animationSpeed = factor;
 }
 
 function setLoopMode( mode )
 {
-  var graph = getActiveGraph();
-  graph.animationLoopingMode = mode;
+  var obj = getActivePlugin();
+  obj.animationLoopingMode = mode;
 }
 
 
