@@ -12,6 +12,8 @@
     ondialogaccept="return;"
     width="200"
     height="150"
+    screenX="40"
+    screenY="40"
     persist="width height left top"
     title="&wcWindowTitle.label;">
 
