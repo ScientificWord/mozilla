@@ -49,7 +49,9 @@
     persist="screenX screenY width height"
     onload = "Startup()"
     ondialogaccept="return doDefault();"
-    ondialogcancel="return CancelSpellCheck();">
+    ondialogcancel="return CancelSpellCheck();"
+    screenX="40"
+    screenY="40">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://communicator/content/utilityOverlay.js"/>
