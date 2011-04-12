@@ -113,6 +113,7 @@ stepnumberedListItem>bodyText:first-child:before,
 alertstepnumberedListItem>bodyText:first-child:before { content: '(' counter(numberedlist) ') ';
   counter-increment: numberedlist;
   width: 2em;
+  -moz-user-modify: read-only;
 }
 
 stepnumberedListItem>bodyText:first-child:first-line,
