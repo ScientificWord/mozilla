@@ -128,6 +128,7 @@ function setVariablesForControls()
   gDialog.cellBackgroundCW = document.getElementById("cellBackgroundCW");
 
   // Lines Panel
+  gDialog.BordersPreviewCenterCell = document.getElementById("BordersPreviewCenterCell");
   gDialog.BorderSideSelectionList = document.getElementById("BorderSideSelectionList");
   gDialog.cellBorderStyleList = document.getElementById("cellBorderStyleList");
   gDialog.cellBorderWidthList = document.getElementById("cellBorderWidthList");
@@ -586,8 +587,8 @@ function initTablePanel()
 
 
   tableUnitsHandler.setEditFieldList([gDialog.tableRowHeight,gDialog.tableWidth]);
-  tableUnitsHandler.initCurrentUnit(widthVal.unit);
-  tableUnitsHandler.buildUnitMenu(gDialog.tableUnitsList, widthVal.unit);
+//  tableUnitsHandler.initCurrentUnit(widthVal.unit);
+//  tableUnitsHandler.buildUnitMenu(gDialog.tableUnitsList, widthVal.unit);
 
   try {
     gActiveEditor.getTableSize(gTableElement, rowCountObj, colCountObj);
@@ -804,31 +805,23 @@ function initCellsPanel()
 
 function GetColorAndUpdate(ColorWellID)
 {
-//  var colorWell = document.getElementById(ColorWellID);
-//  if (!colorWell) return;
-//
-//  var bBackgroundIsSelection = (gDialog.BackgroundSelectionRadioGroup.value == "selection");
-//  var colorObj = { Type:"", TableColor:0, CellColor:0, NoDefault:false, Cancel:false, BackgroundColor:0 };
-//
-//  switch( ColorWellID )
-//  {
-//    case "BackgroundCW":
-//      if (bBackgroundIsSelection)
-//      {
-//        colorObj.Type = "Cell";
-//        colorObj.CellColor = gCollatedCellData.background;
-//      }
-//      else
-//      {
-//        colorObj.Type = "Table";
-//        colorObj.TableColor = gTableColor;
-//      }
-//      break;
-//    case "borderCW":
-//      colorObj.Type = "Cell";
-//      colorObj.CellColor = gCollatedCellData.border.color[gCurrentSide];
-//      break;
-//  }
+  var colorWell = document.getElementById(ColorWellID);
+  if (!colorWell) return;
+
+  var colorObj = {Type: "TableOrCell", NoDefault:false, Cancel:false, BackgroundColor:0 };
+
+  switch( ColorWellID )
+  {
+    case "tableBackgroundCW":
+         colorObj.BackgroundColor = gTableColor;
+      break;
+    case "cellBackgroundCW":
+      colorObj.BackgroundColor = gCollatedCellData.background;
+      break;
+    case "borderCW":
+      colorObj.CellColor = gCollatedCellData.border.color[gCurrentSide];
+      break;
+  }
 
   window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "chrome,close,titlebar,modal", "", colorObj);
 
@@ -841,25 +834,19 @@ function GetColorAndUpdate(ColorWellID)
   var theColor;
   switch( ColorWellID )
   {
-    case "BackgroundCW":
-      if (bBackgroundIsSelection)
-      {
-        theColor = colorObj.BackgroundColor;  //this is where it's coming back
-        gCollatedCellData.background = theColor;
-//        SetColor(ColorWellID, gCollatedCellData.background);  Do we really want to actually SetColor at this point?
-        changeArray.style["background-color"] = theColor;  //this is where it's coming back
-        gCellChangeData.background = true;
-        setColorWell(ColorWellID, theColor);
-      }
-      else
-      {
-        gTableColor = colorObj.BackgroundColor;
-//        SetColor(ColorWellID, gTableColor);  Do we really want to actually SetColor at this point?
-        changeArray.tableStyle["background-color"] = gTableColor;
-        gTableChangeData.background = true;
-        setColorWell(ColorWellID, gTableColor);
-      }
-    break;
+    case "cellBackgroundCW":
+      theColor = colorObj.BackgroundColor;  //this is where it's coming back
+      gCollatedCellData.background = theColor;
+      changeArray.style["background-color"] = theColor;  //this is where it's coming back
+      gCellChangeData.background = true;
+      setColorWell(ColorWellID, theColor);
+      break;
+    case "tableBackgroundCW":
+      gTableColor = colorObj.BackgroundColor;
+      changeArray.tableStyle["background-color"] = gTableColor;
+      gTableChangeData.background = true;
+      setColorWell(ColorWellID, gTableColor);
+      break;
     case "borderCW":
       theColor = colorObj.BackgroundColor;  //this is where it's coming back
       gCollatedCellData.border.color[gCurrentSide] = theColor;
