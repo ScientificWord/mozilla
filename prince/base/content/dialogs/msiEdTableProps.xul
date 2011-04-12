@@ -35,11 +35,11 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <!-- script type="application/x-javascript" src="chrome://help/content/contextHelp.js"/ -->
 
-  <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
+  <spacer id="location" offsetY="50" flex = "1" persist="offsetX offsetY"/>
   <broadcaster id="args" value=""/>
 
   <tabbox id="TabBox">
-    <tabs flex="1">
+    <tabs>
       <tab id="TableTab" label="&tableTab.label;"/>
       <tab id="CellsTab" label="&cellsTab.label;"/>
       <tab id="LinesTab" label="&linesTab.label;"/>
