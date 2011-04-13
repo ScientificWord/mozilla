@@ -1001,6 +1001,7 @@ var msiNewCommand =
     var newdocumentfile;
     var dir;
     var data={file: "not yet"};
+    // jlf - should openshell be modal or dependent
     window.openDialog("chrome://prince/content/openshell.xul","openshell", "chrome,close,titlebar,modal,resizable=yes", data);
     if (data.filename)
     {
@@ -1233,6 +1234,7 @@ var msiSaveAndChangeEncodingCommand =
     window.ok = false;
     window.exportToText = false;
     var oldTitle = msiGetDocumentTitle(editorElement);
+    // jlf - should EditorSaveAsCharset be modal or dependent
     window.openDialog("chrome://editor/content/EditorSaveAsCharset.xul","saveascharset", "chrome,close,titlebar,modal,resizable=yes");
 
     if (msiGetDocumentTitle(editorElement) != oldTitle)
@@ -1368,6 +1370,7 @@ var msiPublishCommand =
         publishData = {};
         window.ok = false;
         var oldTitle = msiGetDocumentTitle(editorElement);
+        // jlf - should EditorPublish be modal or dependent 
         window.openDialog("chrome://editor/content/EditorPublish.xul","publish", 
                           "chrome,close,titlebar,modal", "", "", publishData);
         if (msiGetDocumentTitle(editorElement) != oldTitle)
@@ -3978,7 +3981,7 @@ var msiSpellingCommand =
     window.cancelSendMessage = false;
     try {
       window.openDialog("chrome://prince/content/EdSpellCheck.xul", "spellcheck",
-              "chrome,close,titlebar,dependent,resizable", false, false, true, editorElement);
+              "chrome,close,titlebar,modal,resizable", false, false, true, editorElement);
     }
     catch(ex) {}
     editorElement.focus();
@@ -4064,7 +4067,7 @@ var msiCheckLinksCommand =
   doCommand: function(aCommand, dummy)
   {
     var editorElement = msiGetActiveEditorElement();
-    window.openDialog("chrome://editor/content/EdLinkChecker.xul","linkchecker", "chrome,close,titlebar,dependent,resizable", editorElement);
+    window.openDialog("chrome://editor/content/EdLinkChecker.xul","linkchecker", "chrome,close,titlebar,modal,resizable", editorElement);
     editorElement.focus();
   }
 };
@@ -4582,7 +4585,7 @@ var msiHLineCommand =
     if (hLine)
     {
       // We only open the dialog for an existing HRule
-      window.openDialog("chrome://editor/content/EdHLineProps.xul", "hlineprops", "chrome,close,titlebar,dependent,resizable");
+      window.openDialog("chrome://editor/content/EdHLineProps.xul", "hlineprops", "chrome,close,titlebar,modal,resizable");
       editorElement.focus();
     } 
     else
@@ -4686,7 +4689,7 @@ var msiAnchorCommand =
   doCommand: function(aCommand, dummy)
   {
     var editorElement = msiGetActiveEditorElement();
-    window.openDialog("chrome://editor/content/EdNamedAnchorProps.xul", "namedanchorprops", "chrome,close,titlebar,dependent,resizable", "", editorElement);
+    window.openDialog("chrome://editor/content/EdNamedAnchorProps.xul", "namedanchorprops", "chrome,close,titlebar,modal,resizable", "", editorElement);
     editorElement.focus();
   }
 };
@@ -4726,7 +4729,7 @@ var msiInsertHTMLWithDialogCommand =
   doCommand: function(aCommand, dummy)
   {
     var editorElement = msiGetActiveEditorElement();
-    window.openDialog("chrome://editor/content/EdInsSrc.xul","insertsource", "chrome,close,titlebar,dependent,resizable", "", editorElement);
+    window.openDialog("chrome://editor/content/EdInsSrc.xul","insertsource", "chrome,close,titlebar,modal,resizable", "", editorElement);
     editorElement.focus();
   }
 };
@@ -6034,7 +6037,7 @@ var msiListPropertiesCommand =
   doCommand: function(aCommand, dummy)
   {
     var editorElement = msiGetActiveEditorElement();
-    window.openDialog("chrome://editor/content/EdListProps.xul","listprops", "chrome,close,titlebar,modal");
+    window.openDialog("chrome://editor/content/EdListProps.xul","listprops", "chrome,close,titlebar,modal,resizable");
     editorElement.focus();
   }
 };
@@ -7373,7 +7376,7 @@ var msiReviseCitationCommand =
     }
     else
     {
-      var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetManualCitation.xul", "_blank", "chrome,close,titlebar,dependen,resizable",
+      var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetManualCitation.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
                                                              editorElement, "cmd_reviseCitationCmd", this, citeData);
     }
     editorElement.focus();
@@ -7837,7 +7840,7 @@ function msiDoAdvancedProperties(element, editorElement)
             try
             {
               data.numstyle = element.value;
-              dlgParentWindow.openDialog("chrome://prince/content/latexpagenumberstyle.xul", "pagenumberstyle", "chrome,close,titlebar,dependent,resizable=yes", data);
+              dlgParentWindow.openDialog("chrome://prince/content/latexpagenumberstyle.xul", "pagenumberstyle", "chrome,close,titlebar,modal,resizable=yes", data);
               editorElement.contentWindow.focus();
               if (!data.Cancel)
               {
@@ -7852,7 +7855,7 @@ function msiDoAdvancedProperties(element, editorElement)
             try {
               data.lheader = element.value;
               data.rheader = element.value2;
-              dlgParentWindow.openDialog("chrome://prince/content/latexheaders.xul", "latexheaders", "chrome,close,titlebar,dependent,resizable=yes", data);
+              dlgParentWindow.openDialog("chrome://prince/content/latexheaders.xul", "latexheaders", "chrome,close,titlebar,modal,resizable=yes", data);
               editorElement.contentWindow.focus();
               if (!data.Cancel)
               {
@@ -9154,7 +9157,7 @@ var msiGoToParagraphCommand =
     {
       // use the first node of the selection as the context node
       var contextNode = editor.selection.focusNode;
-      window.openDialog('chrome://prince/content/gotoparagraph.xul','gotoparagraph', 'chrome,resizable,close,dependent,titlebar',editor, contextNode, editorElement);
+      window.openDialog('chrome://prince/content/gotoparagraph.xul','gotoparagraph', 'chrome,resizable,close,modal,titlebar',editor, contextNode, editorElement);
       window.content.focus();
     }
   }
