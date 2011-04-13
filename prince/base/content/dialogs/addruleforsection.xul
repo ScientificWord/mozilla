@@ -22,6 +22,8 @@
   ondialogaccept="return onAccept();"
   ondialogcancel="return onCancel();"
   onload="startUp();"
+  screenX="40"
+  screenY="40"
   persist="screenX screenY width height"
 >
 
