@@ -602,8 +602,8 @@ function initTablePanel()
   gLastColIndex = gColCount-1;
   gDialog.tableRowCount.value = gRowCount;
   gDialog.tableColumnCount.value = gColCount; 
-  gDialog.tableWidth.value = widthVal.number;
-  gDialog.tableRowHeight.value = (gRowCount>0) ? (heightVal.number/gRowCount) : ""; 
+  if (widthVal && widthVal.number) gDialog.tableWidth.value = widthVal.number;
+  if (heightVal && heightVal.number) gDialog.tableRowHeight.value = (gRowCount>0) ? (heightVal.number/gRowCount) : ""; 
 
   // Be sure to get caption from table in doc, not the copied "globalTableElement"
   gTableCaptionElement = gTableElement.caption;
