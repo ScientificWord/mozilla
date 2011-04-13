@@ -445,7 +445,7 @@ function AddToDictionary()
 
 function EditDictionary()
 {
-  window.openDialog("chrome://prince/content/EdDictionary.xul", "editdictionary", "chrome,close,titlebar,dependent", "", gMisspelledWord);
+  window.openDialog("chrome://prince/content/EdDictionary.xul", "editdictionary", "chrome,close,titlebar,dependent,resizable", "", gMisspelledWord);
 }
 
 function SelectLanguage()

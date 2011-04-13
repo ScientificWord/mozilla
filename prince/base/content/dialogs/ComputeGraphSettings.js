@@ -525,7 +525,7 @@ function formatPlot () {
   var count = document.getElementById("plot").selectedItem.value; 
   window.arguments[0].setGraphAttribute("plotnumber", count);
   window.openDialog("chrome://prince/content/ComputePlotSettings.xul", 
-                    "Plot_Settings", "chrome,close,titlebar,dependent", 
+                    "Plot_Settings", "chrome,close,titlebar,dependent,resizable", 
                     window.arguments[0], window, window.arguments[2]);
 }
 
