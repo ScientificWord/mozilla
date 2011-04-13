@@ -16,6 +16,8 @@
     width="400" height="300"
     onload = "Startup()"
     buttons="accept"
+    screenX="40"
+    screenY="40"
     persist="screenX screenY width height">
 
   <!-- Methods common to all editor dialogs -->
