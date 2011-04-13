@@ -6037,7 +6037,7 @@ var msiListPropertiesCommand =
   doCommand: function(aCommand, dummy)
   {
     var editorElement = msiGetActiveEditorElement();
-    window.openDialog("chrome://editor/content/EdListProps.xul","listprops", "chrome,close,titlebar,dependent,resizable");
+    window.openDialog("chrome://editor/content/EdListProps.xul","listprops", "chrome,close,titlebar,modal,resizable");
     editorElement.focus();
   }
 };

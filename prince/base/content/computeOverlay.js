@@ -1910,7 +1910,7 @@ function doComputeDivide(math, vars, editorElement, cmd, cmdHandler)
           this.mParentWin.doComputeDivide(this.theMath, this.vars, editorElement, this.theCommand, this.theCommandHandler);
         };
         try {
-          var theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,resizable,dependent",
+          var theDialog = msiOpenModelessDialog("chrome://prince/content/ComputeVariables.xul", "_blank", "chrome,close,titlebar,resizable,modal",
                                             editorElement, cmd, cmdHandler, o);
         } catch(e) {AlertWithTitle("Error in computeOverlay.js", "Exception in doComputeDivide: [" + e + "]"); return;}
 
@@ -2024,7 +2024,7 @@ function doComputeApproxIntegral(math, editorElement)
   o.intervals = 10;
   o.form = 1;
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  parentWin.openDialog("chrome://prince/content/ComputeApproxIntegral.xul", "approxint", "chrome,close,titlebar,dependent,resizable", o);
+  parentWin.openDialog("chrome://prince/content/ComputeApproxIntegral.xul", "approxint", "chrome,close,titlebar,modal,resizable", o);
   if (o.Cancel) {
     return;
   }
@@ -2199,7 +2199,7 @@ function doComputeSolveODESeries(math, editorElement)
 
 
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  parentWin.openDialog("chrome://prince/content/ComputePowerSeriesArgDialog.xul", "powerseries", "chrome,close,titlebar,dependent,resizable", o);
+  parentWin.openDialog("chrome://prince/content/ComputePowerSeriesArgDialog.xul", "powerseries", "chrome,close,titlebar,modal,resizable", o);
   if (o.Cancel)
     return;
   var mathstr = GetFixedMath(math);
@@ -2244,7 +2244,7 @@ function doComputePowerSeries(math, editorElement, cmdHandler)
   try {
     var parentWin = msiGetParentWindowForNewDialog(editorElement);
 
-    parentWin.openDialog("chrome://prince/content/ComputePowerSeriesArgDialog.xul", "powerseries", "chrome,close,titlebar,dependent,resizable", o);
+    parentWin.openDialog("chrome://prince/content/ComputePowerSeriesArgDialog.xul", "powerseries", "chrome,close,titlebar,modal,resizable", o);
 
     if (o.Cancel)
       return;
@@ -2493,7 +2493,7 @@ function doComputeRandomMatrix(editorElement)
   o.min  = "-9";
   o.max  = "9";
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  parentWin.openDialog("chrome://prince/content/ComputeRandomMatrix.xul", "randommatrix", "chrome,close,titlebar,resizable,dependent", o);
+  parentWin.openDialog("chrome://prince/content/ComputeRandomMatrix.xul", "randommatrix", "chrome,close,titlebar,resizable,modal", o);
   if (o.Cancel)
     return;
   var mRows = GetNumAsMathML(o.rows);
@@ -2520,7 +2520,7 @@ function doComputeReshape(math, editorElement)
   var o = new Object();
   o.ncols = "2";  // sticky?
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  parentWin.openDialog("chrome://prince/content/ComputeReshape.xul", "reshape", "chrome,close,titlebar,dependent,resizable", o);
+  parentWin.openDialog("chrome://prince/content/ComputeReshape.xul", "reshape", "chrome,close,titlebar,modal,resizable", o);
   if (o.Cancel)
     return;
   var mCols = GetNumAsMathML(o.ncols);
@@ -2547,7 +2547,7 @@ function doComputeFitCurve(math, editorElement)
   o.column = 1;
   o.degree = 2;
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  parentWin.openDialog("chrome://prince/content/ComputeFitCurve.xul", "fitcurve", "chrome,close,titlebar,dependent,resizable", o);
+  parentWin.openDialog("chrome://prince/content/ComputeFitCurve.xul", "fitcurve", "chrome,close,titlebar,modal,resizable", o);
   if (o.Cancel)
     return;
   var mathstr = GetFixedMath(math);
@@ -2579,7 +2579,7 @@ function doComputeRandomNumbers(editorElement)
   o.param1     = "";
   o.param2     = "";
   var parentWin = msiGetParentWindowForNewDialog(editorElement);
-  parentWin.openDialog("chrome://prince/content/ComputeRandomNumbers.xul", "randomnumbers", "chrome,close,titlebar,dependent,resizable", o);
+  parentWin.openDialog("chrome://prince/content/ComputeRandomNumbers.xul", "randomnumbers", "chrome,close,titlebar,modal,resizable", o);
   if (o.Cancel)
     return;
   var mTally    = GetNumAsMathML(o.tally);
@@ -2701,7 +2701,7 @@ function doComputeDefine(math, editorElement)
       if (ex.result == compsample.needsubinterp) {
         var o = new Object();
         var parentWin = msiGetParentWindowForNewDialog(editorElement);
-        parentWin.openDialog("chrome://prince/content/ComputeInterpretSubscript.xul", "interpretsub", "chrome,close,titlebar,dependent,resizable", o);
+        parentWin.openDialog("chrome://prince/content/ComputeInterpretSubscript.xul", "interpretsub", "chrome,close,titlebar,modal,resizable", o);
         if (o.Cancel) {
           return;
         }
