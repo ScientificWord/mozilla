@@ -580,7 +580,7 @@ function doPreambleDlg()
   }
   
 
-  window.openDialog("chrome://prince/content/typesetPreamble.xul", "preamble", "resizable,chrome,close,titlebar,modal", preambleTeXNode);
+  window.openDialog("chrome://prince/content/typesetPreamble.xul", "preamble", "resizable,chrome,close,titlebar,dependent", preambleTeXNode);
 }
 
 function doBibChoiceDlg(editorElement)
@@ -615,7 +615,7 @@ function doOptionsAndPackagesDlg(editorElement)
   var editor = msiGetEditor(editorElement);
   var document = editor.document;
   var options = msiGetPackagesAndOptionsDataForDocument(document);
-  window.openDialog("chrome://prince/content/typesetOptionsAndPackages.xul", "optionsandpackages", "chrome,close,titlebar,modal", options);
+  window.openDialog("chrome://prince/content/typesetOptionsAndPackages.xul", "optionsandpackages", "chrome,close,titlebar,dependent,resizable", options);
 //  if (!options.Cancel)
 //  {
 //    var packagesOptionsStr = options.docClassName;

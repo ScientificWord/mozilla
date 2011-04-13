@@ -252,7 +252,7 @@ var msiReviseFractionCmd =
 //      var argArray = [fractionData];
 //      msiOpenModelessPropertiesDialog("chrome://prince/content/fractionProperties.xul", "_blank", "chrome,close,titlebar,dependent",
 //                                        editorElement, "cmd_MSIreviseFractionCmd", theFrac, argArray);
-      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/fractionProperties.xul", "_blank", "chrome,close,titlebar,dependent",
+      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/fractionProperties.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
                                                      editorElement, "cmd_MSIreviseFractionCmd", theFrac, fractionData);
     }
   },
@@ -314,7 +314,7 @@ var msiReviseRadicalCmd =
 //      var argArray = [radicalData];
 //      msiOpenModelessPropertiesDialog("chrome://prince/content/radicalProperties.xul", "_blank", "chrome,close,titlebar,dependent",
 //                                        editorElement, "cmd_MSIreviseRadicalCmd", theRadical, argArray);
-      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/radicalProperties.xul", "_blank", "chrome,close,titlebar,dependent",
+      var dlgWindow = msiDoModelessPropertiesDialog("chrome://prince/content/radicalProperties.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
                                                      editorElement, "cmd_MSIreviseRadicalCmd", theRadical, radicalData);
     }
 //    AlertWithTitle("mathmlOverlay.js", "In msiReviseRadicalCmd, trying to revise radical, dialog unimplemented.");
@@ -2650,7 +2650,7 @@ function doColorsDlg(editorElement)
     editorElement = msiGetActiveEditorElement();
   var editor = msiGetEditor(editorElement);
 
-  window.openDialog("chrome://prince/content/MathColors.xul", "mathcolors", "chrome,close,titlebar,modal", msiColorObj);
+  window.openDialog("chrome://prince/content/MathColors.xul", "mathcolors", "chrome,close,titlebar,modal,resizable", msiColorObj);
   if (msiColorObj.Cancel)
     return;
 
