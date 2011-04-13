@@ -131,9 +131,9 @@
                     </menupopup>
                   </menulist>
                   <label id="BackgroundColorLabel" value="Base color"/>
-                  <hbox><button class="color-button" oncommand="GetColorAndUpdate('tableBackgroundCW');">
+                  <hbox><msibutton class="color-button" oncommand="GetColorAndUpdate('tableBackgroundCW');">
                     <spacer id="tableBackgroundCW" class="color-well"/>
-                  </button><spacer flex="2"/></hbox>
+                  </msibutton><spacer flex="2"/></hbox>
                 </row>
               </rows>
             </grid> 
@@ -198,9 +198,9 @@
           <groupbox orient="horizontal" align="center">
             <checkbox id="TextWrapCheckbox" label="&cellWrap.label;" accesskey="&cellWrap.accesskey;" oncommand="CheckboxChanged(this.id);"/>
             <label id="cellBackgroundColorLabel" value="Cell color"/>
-            <hbox><button class="color-button" oncommand="GetColorAndUpdate('cellBackgroundCW');">
+            <hbox><msibutton class="color-button" oncommand="GetColorAndUpdate('cellBackgroundCW');">
               <spacer id="cellBackgroundCW" class="color-well"/>
-            </button><spacer flex="2"/></hbox>
+            </msibutton><spacer flex="2"/></hbox>
           </groupbox>
         </hbox>
         <spacer flex="1"/>
@@ -289,9 +289,9 @@
                   </row>
                   <row align="center">
                     <label id="BorderColorLabel" value="&borderColor.label;"/>
-                    <button class="color-button" oncommand="GetColorAndUpdate('borderCW');">
+                    <msibutton class="color-button" oncommand="GetColorAndUpdate('borderCW');">
                       <spacer id="borderCW" class="color-well"/>
-                    </button>
+                    </msibutton>
                   </row>
                 </rows>
               </grid>
