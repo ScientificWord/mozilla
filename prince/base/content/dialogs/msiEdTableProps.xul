@@ -35,7 +35,7 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <!-- script type="application/x-javascript" src="chrome://help/content/contextHelp.js"/ -->
 
-  <spacer id="location" offsetY="50" flex = "1" persist="offsetX offsetY"/>
+  <spacer flex = "1"/>
   <broadcaster id="args" value=""/>
 
   <tabbox id="TabBox">
@@ -90,7 +90,7 @@
               <rows>
                 <row align="center">
                   <label value="&location.label;" control="tableLocationList" />
-                  <menulist id="tableLocationList" onCommand="">
+                  <menulist id="tableLocationList" oncommand="">
                     <menupopup>
                       <menuitem label="inline"  value=""/>
                       <menuitem label="left" value="left"/>
@@ -101,7 +101,7 @@
                     </menupopup>
                   </menulist> 
                   <label value="&floatLocation.label;" control="floatLocationList"/>
-                  <menulist id="floatLocationList" onCommand="">
+                  <menulist id="floatLocationList" oncommand="">
                     <menupopup>
                       <menuitem label="none"  value=""/>
                       <menuitem label="here" value="h"/>
@@ -113,7 +113,7 @@
                 </row>
                 <row align="center">
                   <label value="Table baseline" control="baselineList"/>
-                  <menulist id="baselineList" onCommand="">
+                  <menulist id="baselineList" oncommand="TablePropertyChanged('TableBaselineRadioGroup');">
                     <menupopup>
                       <menuitem label="same as top row"  value="top"/>
                       <menuitem label="at vertical center" value="center"/>
@@ -123,7 +123,7 @@
                 </row>
                 <row align="center">
                   <label value="Caption" control="captionLocation"/>
-                  <menulist id="captionLocation" onCommand="">
+                  <menulist id="captionLocation" oncommand="TablePropertyChanged('TableCaptionList');">
                     <menupopup>
                       <menuitem label="none"  value=""/>
                       <menuitem label="above table" value="top"/>
@@ -170,7 +170,7 @@
               <rows>
                 <row align="center">
                   <label value="Horizontal"/>
-                  <menulist id="hAlignChoices" >
+                  <menulist id="hAlignChoices" oncommand="AlignmentChanged('ColumnAlignRadioGroup');" >
                     <menupopup>
                       <menuitem label="left"  value="left"/>
                       <menuitem label="center" value="center"/>
@@ -181,7 +181,7 @@
                 </row>
                 <row align="center">
                   <label value="Vertical"/>
-                  <menulist id="vAlignChoices" >
+                  <menulist id="vAlignChoices"  oncommand="AlignmentChanged('RowAlignRadioGroup');">
                     <menupopup>
                       <menuitem label="top"  value="top"/>
                       <menuitem label="center" value="center"/>
@@ -302,4 +302,5 @@
       </tabpanel>
     </tabpanels> 
   </tabbox>
+  <spacer flex = "1"/>
 </dialog>
