@@ -9078,7 +9078,7 @@ function msiEditorInsertTable(editorElement, command, commandHandler)
 //  msiOpenModelessDialog("chrome://editor/content/EdInsertTable.xul", "_blank", "chrome,close,titlebar,dependent", editorElement, 
 //                                         command, commandHandler, "")
 
-  window.openDialog("chrome://editor/content/EdInsertTable.xul", "inserttable", "chrome,close,titlebar,modal", "");
+  window.openDialog("chrome://editor/content/EdInsertTable.xul", "inserttable", "chrome,close,titlebar,modal,resizable", "");
   editorElement.focus();
 }
 
@@ -9097,7 +9097,7 @@ function msiEditorTableCellProperties(editorElement)
     if (cell) {
       // Start Table Properties dialog on the "Cell" panel
       //HERE USE MODELESS DIALOG FUNCTIONALITY!
-      window.openDialog("chrome://editor/content/EdTableProps.xul", "tableprops", "chrome,close,titlebar,modal", "", "CellPanel");
+      window.openDialog("chrome://editor/content/EdTableProps.xul", "tableprops", "chrome,close,titlebar,modal,resizable", "", "CellPanel");
       editorElement.focus();
     }
   } catch (e) {}
