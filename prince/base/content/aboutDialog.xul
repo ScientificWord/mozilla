@@ -13,6 +13,8 @@
         buttons="accept"
         onload="onLoad();"
         title="&aboutDialog.title;"
+        screenX="40"
+        screenY="40"
         persist="left top width height">
 
   <script type="application/x-javascript" src="chrome://prince/content/about.js"/>
