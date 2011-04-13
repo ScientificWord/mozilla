@@ -1001,6 +1001,7 @@ var msiNewCommand =
     var newdocumentfile;
     var dir;
     var data={file: "not yet"};
+    // jlf - should openshell be modal or dependent
     window.openDialog("chrome://prince/content/openshell.xul","openshell", "chrome,close,titlebar,modal,resizable=yes", data);
     if (data.filename)
     {
@@ -1233,6 +1234,7 @@ var msiSaveAndChangeEncodingCommand =
     window.ok = false;
     window.exportToText = false;
     var oldTitle = msiGetDocumentTitle(editorElement);
+    // jlf - should EditorSaveAsCharset be modal or dependent
     window.openDialog("chrome://editor/content/EditorSaveAsCharset.xul","saveascharset", "chrome,close,titlebar,modal,resizable=yes");
 
     if (msiGetDocumentTitle(editorElement) != oldTitle)
@@ -1368,6 +1370,7 @@ var msiPublishCommand =
         publishData = {};
         window.ok = false;
         var oldTitle = msiGetDocumentTitle(editorElement);
+        // jlf - should EditorPublish be modal or dependent 
         window.openDialog("chrome://editor/content/EditorPublish.xul","publish", 
                           "chrome,close,titlebar,modal", "", "", publishData);
         if (msiGetDocumentTitle(editorElement) != oldTitle)
@@ -6034,7 +6037,7 @@ var msiListPropertiesCommand =
   doCommand: function(aCommand, dummy)
   {
     var editorElement = msiGetActiveEditorElement();
-    window.openDialog("chrome://editor/content/EdListProps.xul","listprops", "chrome,close,titlebar,modal");
+    window.openDialog("chrome://editor/content/EdListProps.xul","listprops", "chrome,close,titlebar,dependent,resizable");
     editorElement.focus();
   }
 };
@@ -7373,7 +7376,7 @@ var msiReviseCitationCommand =
     }
     else
     {
-      var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetManualCitation.xul", "_blank", "chrome,close,titlebar,dependen,resizable",
+      var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetManualCitation.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
                                                              editorElement, "cmd_reviseCitationCmd", this, citeData);
     }
     editorElement.focus();
