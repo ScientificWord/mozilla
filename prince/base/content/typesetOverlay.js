@@ -450,7 +450,7 @@ var msiInsertBibTeXBibliography =
   {
     var editorElement = msiGetActiveEditorElement();
     var bibliographyData = {dbFileList : [], styleFile : ""};
-    window.openDialog("chrome://prince/content/typesetBibTeXBibliography.xul", "bibtexbiblio", "chrome,close,titlebar,modal", bibliographyData);
+    window.openDialog("chrome://prince/content/typesetBibTeXBibliography.xul", "bibtexbiblio", "chrome,close,titlebar,dependent,resizable", bibliographyData);
     if (!bibliographyData.Cancel)
     {
       doInsertBibTeXBibliography(editorElement, bibliographyData);
@@ -471,7 +471,7 @@ var msiReviseBibTeXBibliography =
     var editorElement = msiGetActiveEditorElement();
     var bibliographyReviseData = msiGetPropertiesDataFromCommandParams(aParams);
     var bibliographyData = {dbFileList : [], styleFile : "", reviseData : bibliographyReviseData};
-    var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibTeXBibliography.xul", "_blank", "chrome,close,titlebar,dependent",
+    var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibTeXBibliography.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
                                                            editorElement, "cmd_reviseBibTeXBibliographyCmd", this, bibliographyData);
     editorElement.focus();
   },
@@ -592,7 +592,7 @@ function doBibChoiceDlg(editorElement)
   var theBibChoice = getBibliographyScheme(editorElement);
   if (theBibChoice == "BibTeX")  //a kludge - must get hooked up to editor to really work
     bibChoiceData.bBibTeX = true;
-  window.openDialog("chrome://prince/content/typesetBibChoice.xul", "bibchoice", "chrome,close,titlebar,modal", bibChoiceData);
+  window.openDialog("chrome://prince/content/typesetBibChoice.xul", "bibchoice", "chrome,close,titlebar,dependent,resizable", bibChoiceData);
   if (!bibChoiceData.Cancel)
   {
     var choiceStr = "manual";
@@ -832,7 +832,7 @@ function doInsertIndexEntry()
     return;
   }
   var index = gActiveEditor.getSelectedElement("indexitem");
-  window.openDialog("chrome://prince/content/indexentry.xul", "Index Entry", "chrome,resizable=yes, close,titlebar", index);
+  window.openDialog("chrome://prince/content/indexentry.xul", "Index Entry", "chrome,resizable=yes, close,titlebar,dependent", index);
 }
 
 
@@ -1034,7 +1034,7 @@ function doInsertTeXField()
   }
   var tbutton = gActiveEditor.getSelectedElement("texb");
   if (!tbutton) tbutton = gActiveEditor.getSelectedElement("texbutton");
-  window.openDialog("chrome://prince/content/texbuttoncontents.xul", "TeX field", "resizable=yes,chrome,close,titlebar", tbutton);
+  window.openDialog("chrome://prince/content/texbuttoncontents.xul", "TeX field", "resizable=yes,chrome,close,titlebar,dependent", tbutton);
 }
 
 
