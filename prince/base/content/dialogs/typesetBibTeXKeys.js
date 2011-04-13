@@ -449,7 +449,7 @@ function doViewKeyFilters()
   filtersData.displayFields = filtersData.displayFields.concat(gDialog.displayValues);
   filtersData.filters = new Array();
   filtersData.filters = filtersData.filters.concat(gDialog.filters);
-  window.openDialog("chrome://prince/content/typesetBibTeXFilters.xul", "bibtexfilters", "chrome,close,titlebar,dependent,resizable", filtersData);
+  window.openDialog("chrome://prince/content/typesetBibTeXFilters.xul", "bibtexfilters", "chrome,close,titlebar,modal,resizable", filtersData);
   if (!filtersData.Cancel)
   {
     gDialog.showEntryTypes = filtersData.showEntryTypes;
@@ -482,7 +482,7 @@ function doViewEntry()
       entryData.theData += gDialog.theLines[i].tokens[j];
   }
 
-  window.openDialog("chrome://prince/content/typesetBibTeXEntry.xul", "bibtexentry", "chrome,close,titlebar,dependent,resizable", entryData);
+  window.openDialog("chrome://prince/content/typesetBibTeXEntry.xul", "bibtexentry", "chrome,close,titlebar,modal,resizable", entryData);
   if (!entryData.Cancel)
   {
     alert("ViewEntry dialog should have returned Cancel but didn't.");
