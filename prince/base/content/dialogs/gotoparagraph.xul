@@ -16,7 +16,9 @@
     persist="screenX screenY width height"
     title="&windowTitle.label;"
     width="300"
-    height="240">
+    height="240"
+    screenX="40"
+    screenY="40">
 
   <script type="application/x-javascript" src="chrome://prince/content/gotoparagraph.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
