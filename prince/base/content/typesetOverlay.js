@@ -450,7 +450,7 @@ var msiInsertBibTeXBibliography =
   {
     var editorElement = msiGetActiveEditorElement();
     var bibliographyData = {dbFileList : [], styleFile : ""};
-    window.openDialog("chrome://prince/content/typesetBibTeXBibliography.xul", "bibtexbiblio", "chrome,close,titlebar,dependent,resizable", bibliographyData);
+    window.openDialog("chrome://prince/content/typesetBibTeXBibliography.xul", "bibtexbiblio", "chrome,close,titlebar,modal,resizable", bibliographyData);
     if (!bibliographyData.Cancel)
     {
       doInsertBibTeXBibliography(editorElement, bibliographyData);
@@ -492,7 +492,7 @@ var msiReviseManualBibItemCmd =
     var editorElement = msiGetActiveEditorElement();
     var bibItemReviseData = msiGetPropertiesDataFromCommandParams(aParams);
     var bibItemData = {key : "", bibLabel : "", reviseData : bibItemReviseData};
-    var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibitemDlg.xul", "_blank", "chrome,close,titlebar,dependent",
+    var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibitemDlg.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
                                                            editorElement, "cmd_reviseManualBibItemCmd", this, bibItemData);
     editorElement.focus();
   },
@@ -540,7 +540,7 @@ function doDocFormatDlg()
 {
   var editorElement = document.getElementById("content-frame");
   window.openDialog("chrome://prince/content/typesetDocFormat.xul", "docformat", 
-    "chrome,close,resizable, titlebar", editorElement);
+    "chrome,close,resizable,titlebar,dependent", editorElement);
 //  if (!doDocFormatData.Cancel)
 //  {
 //    alert("Document Format Dialog returned.\nNeeds to be hooked up to do something!");
@@ -558,7 +558,7 @@ function doFrontMatterDlg(editorElement, commandHandler)
   frontMatterData.frontMatterText = serializer.serializeToString(frontMatterFrag);
   if (!frontMatterData.frontMatterText.length)
     frontMatterData.frontMatterText = "<p>Just a paragraph.</p>";
-  var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetFrontMatter.xul", "_blank", "chrome,close,titlebar,dependent",
+  var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetFrontMatter.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
                                                                               editorElement, "cmd_MSIfrontMatterCmd", commandHandler, frontMatterData);
 //  alert("Front Matter Dialog not implemented!");
 }
@@ -592,7 +592,7 @@ function doBibChoiceDlg(editorElement)
   var theBibChoice = getBibliographyScheme(editorElement);
   if (theBibChoice == "BibTeX")  //a kludge - must get hooked up to editor to really work
     bibChoiceData.bBibTeX = true;
-  window.openDialog("chrome://prince/content/typesetBibChoice.xul", "bibchoice", "chrome,close,titlebar,dependent,resizable", bibChoiceData);
+  window.openDialog("chrome://prince/content/typesetBibChoice.xul", "bibchoice", "chrome,close,titlebar,modal,resizable", bibChoiceData);
   if (!bibChoiceData.Cancel)
   {
     var choiceStr = "manual";
@@ -615,7 +615,7 @@ function doOptionsAndPackagesDlg(editorElement)
   var editor = msiGetEditor(editorElement);
   var document = editor.document;
   var options = msiGetPackagesAndOptionsDataForDocument(document);
-  window.openDialog("chrome://prince/content/typesetOptionsAndPackages.xul", "optionsandpackages", "chrome,close,titlebar,modal", options);
+  window.openDialog("chrome://prince/content/typesetOptionsAndPackages.xul", "optionsandpackages", "chrome,close,titlebar,modal,resizable", options);
 //  if (!options.Cancel)
 //  {
 //    var packagesOptionsStr = options.docClassName;
@@ -782,7 +782,7 @@ function doGenSettingsDlg()
 {
   var genSettingsData = getTypesetGenSettingsFromPrefs();
 
-  window.openDialog("chrome://prince/content/typesetGenSettingsDialog.xul", "General Typeset Settings", "chrome,close,titlebar,modal, resizable", 
+  window.openDialog("chrome://prince/content/typesetGenSettingsDialog.xul", "General Typeset Settings", "chrome,close,titlebar,modal,resizable", 
                        genSettingsData);
 }
 
