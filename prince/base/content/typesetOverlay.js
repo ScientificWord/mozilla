@@ -492,7 +492,7 @@ var msiReviseManualBibItemCmd =
     var editorElement = msiGetActiveEditorElement();
     var bibItemReviseData = msiGetPropertiesDataFromCommandParams(aParams);
     var bibItemData = {key : "", bibLabel : "", reviseData : bibItemReviseData};
-    var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibitemDlg.xul", "_blank", "chrome,close,titlebar,dependent",
+    var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetBibitemDlg.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
                                                            editorElement, "cmd_reviseManualBibItemCmd", this, bibItemData);
     editorElement.focus();
   },
@@ -558,7 +558,7 @@ function doFrontMatterDlg(editorElement, commandHandler)
   frontMatterData.frontMatterText = serializer.serializeToString(frontMatterFrag);
   if (!frontMatterData.frontMatterText.length)
     frontMatterData.frontMatterText = "<p>Just a paragraph.</p>";
-  var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetFrontMatter.xul", "_blank", "chrome,close,titlebar,dependent",
+  var dlgWindow = msiOpenModelessDialog("chrome://prince/content/typesetFrontMatter.xul", "_blank", "chrome,close,titlebar,dependent,resizable",
                                                                               editorElement, "cmd_MSIfrontMatterCmd", commandHandler, frontMatterData);
 //  alert("Front Matter Dialog not implemented!");
 }
@@ -782,7 +782,7 @@ function doGenSettingsDlg()
 {
   var genSettingsData = getTypesetGenSettingsFromPrefs();
 
-  window.openDialog("chrome://prince/content/typesetGenSettingsDialog.xul", "General Typeset Settings", "chrome,close,titlebar,modal, resizable", 
+  window.openDialog("chrome://prince/content/typesetGenSettingsDialog.xul", "General Typeset Settings", "chrome,close,titlebar,dependent,resizable", 
                        genSettingsData);
 }
 

@@ -31,6 +31,8 @@
     ondialogaccept = "OK()"
     ondialogcancel = "Cancel()"
     buttons="accept,cancel"
+    screenX="40"
+    screenY="40"
     persist="screenX screenY width height">
 
   <!-- Methods common to all editor dialogs -->
