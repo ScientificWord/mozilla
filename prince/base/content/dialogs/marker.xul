@@ -9,7 +9,9 @@
     width="300"
     height="200"
     persist="screenX screenY width height"
-    id="markers">
+    id="markers"
+    screenX="40"
+    screenY="40">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/marker.js"/>
