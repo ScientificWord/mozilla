@@ -540,7 +540,7 @@ function doDocFormatDlg()
 {
   var editorElement = document.getElementById("content-frame");
   window.openDialog("chrome://prince/content/typesetDocFormat.xul", "docformat", 
-    "chrome,close,resizable, titlebar", editorElement);
+    "chrome,close,resizable,titlebar,dependent", editorElement);
 //  if (!doDocFormatData.Cancel)
 //  {
 //    alert("Document Format Dialog returned.\nNeeds to be hooked up to do something!");
