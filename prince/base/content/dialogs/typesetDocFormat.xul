@@ -28,6 +28,8 @@
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();"
     persist="screenX screenY width height"
+    screenX="40"
+    screenY="40"
     style="overflow:scroll;">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
