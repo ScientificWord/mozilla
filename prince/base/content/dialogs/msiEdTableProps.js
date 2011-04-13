@@ -75,7 +75,7 @@ var gTableChangeData;
 var gCurrentSide = "";
 var gBorderSides = ["top", "right", "bottom", "left"];
 
-var gSelectionTypeStr = "Table";
+var gSelectionTypeStr = "Cell";
 var gApplyUsed = false;
 //var gSelection = null;
 //var gCellDataChanged = false;
@@ -88,7 +88,7 @@ var gActiveEditor;
 
 var gCellWidthUnit = "pt";
 var gCellHeightUnit = "pt";
-var gCellFontSize = 12;
+var gCellFontSize = 10;
 
 var data;
 
@@ -169,8 +169,8 @@ function setUpCollatedCellData(collatedCellData, initialCellData)
 
 function setDataFromReviseData(reviseData, commandStr)
 {
-  gSelectionTypeStr = reviseData.getSelectionType(commandStr);  //Do we even want to call this?
-  gSelectedCellsType = translateSelectionTypeString(gSelectionTypeStr);
+//  gSelectionTypeStr = reviseData.getSelectionType(commandStr);  //Do we even want to call this?
+//  gSelectedCellsType = translateSelectionTypeString(gSelectionTypeStr);
   gTableElement = reviseData.getReferenceNode();
   gIsMatrix = reviseData.isMatrix();
   //Another question - do we want to retain the set of selected cells? Or always use a iterator function similar to getNextSelectedCell?
@@ -293,16 +293,16 @@ function getBorderSideAttrString(aSide, anAttr)
 
 function borderStyleToBorderCollapse(aStyle)
 {
-  switch(aStyle)
-  {
-    case "inset":
-    case "outset":
-      return "separate";
-    break;
-    default:
+//  switch(aStyle)
+//  {
+//    case "inset":
+//    case "outset":
+//      return "separate";
+//    break;
+//    default:
       return "collapse";
-    break;
-  }
+//    break;
+//  }
 }
 
 function UseCSSForCellProp(propName)
@@ -589,8 +589,8 @@ function initTablePanel()
 
 
   tableUnitsHandler.setEditFieldList([gDialog.tableRowHeight,gDialog.tableWidth]);
-//  tableUnitsHandler.initCurrentUnit(widthVal.unit);
-//  tableUnitsHandler.buildUnitMenu(gDialog.tableUnitsList, widthVal.unit);
+  tableUnitsHandler.initCurrentUnit(widthVal.unit);
+  tableUnitsHandler.buildUnitMenu(gDialog.tableUnitsList, widthVal.unit);
 
   try {
     gActiveEditor.getTableSize(gTableElement, rowCountObj, colCountObj);
@@ -1400,11 +1400,11 @@ function AlignmentChanged(radioGroupID)
   {
     case "ColumnAlignRadioGroup":
       gCellChangeData.align.halign = true;
-      gCollatedCellData.align.halign = gDialog.ColAlignRadioGroup.value;
+      gCollatedCellData.align.halign = gDialog.hAlignChoices.value;
     break;
     case "RowAlignRadioGroup":
       gCellChangeData.align.valign = true;
-      gCollatedCellData.align.valign = gDialog.RowAlignRadioGroup.value;
+      gCollatedCellData.align.valign = gDialog.vAlignChoices.value;
     break;
   }
 }
@@ -1415,12 +1415,12 @@ function TablePropertyChanged(controlID)
   {
     case "TableCaptionList":
       gTableChangeData.caption = true;
-      gTableCaptionPlacement = gDialog.TableCaptionList.value;
+      gTableCaptionPlacement = gDialog.captionLocation.value;
     break;
 
     case "TableBaselineRadioGroup":
       gTableChangeData.baseline = true;
-      gTableBaseline = gDialog.TableBaselineRadioGroup.value;
+      gTableBaseline = gDialog.baselineList.value;
     break;
   }
 }
@@ -1441,21 +1441,6 @@ function EnableDisableControls()
 {
   var bIsWholeCols = false;
   var bIsWholeRows = false;
-  switch(gSelectionTypeStr)
-  {
-    case "Table":
-      bIsWholeRows = true;
-    case "Col":
-      bIsWholeCols = true;
-    break;
-    case "Row":
-      bIsWholeRows = true;
-    break;
-    case "Cell":
-    case "CellGroup":
-    default:
-    break;
-  }
 
   var anItem;
   if (gIsMatrix)
@@ -2478,7 +2463,7 @@ function ApplyMatrixAlignment()
 
 function ApplyCellAttributes()
 {
-  var cellIter = data.reviseData.beginSelectedCellIteration(gSelectionTypeStr);
+  var cellIter = data.reviseData.beginSelectedCellIteration('Cell');
   var currCell = data.reviseData.getNextSelectedCell(cellIter);
   while (currCell)
   {
@@ -2493,26 +2478,26 @@ function ApplyAttributesToOneCell(destElement, nRow, nCol)
 {
   var theVal = null;
   var theValStr = "";
-  if (gCellChangeData.size.height)
+  if (gCellChangeData.size.height && gCellChangeData.size.height > 0)
   {
-    if (gCollatedCellData.size.bHeightSet && !UseCSSForCellProp("height") && !ShouldSetHeightOnRows())
-    {
+//    if (gCollatedCellData.size.bHeightSet && !UseCSSForCellProp("height") && !ShouldSetHeightOnRows())
+//    {
       theVal = cellUnitsHandler.getValueOf(gDialog.CellHeightInput, "px");
       if (theVal)
         theValStr = theVal;
-    }
+//    }
     SetAnAttribute(destElement, "height", theValStr);
   }
 
-  if (gCellChangeData.size.width)
+  if (gCellChangeData.size.width && gCellChangeData.size.width > 0)
   {
-    if (gCollatedCellData.size.bWidthSet && !UseCSSForCellProp("width") && !ShouldSetWidthOnCols())
-    {
+//    if (gCollatedCellData.size.bWidthSet && !UseCSSForCellProp("width") && !ShouldSetWidthOnCols())
+//    {
       theVal = gWidthUnitsController.getValueString(gDialog.CellWidthInput.value, "px");
       if (theVal)
         theValStr = theVal;
-    }
-    SetAnAttribute(destElement, "width", theValStr);
+//    }
+//    SetAnAttribute(destElement, "width", theValStr);
   }
 
   DoStyleChangesForACell(destElement);
