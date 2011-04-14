@@ -121,7 +121,7 @@
           <keyset id="editorKeys">
             <keyset id="tasksKeys"/>
             <keyset id="MSIKeySet"/>
-            <key id="MSIevalKey" key="&MSIComputeEvalCmd.keybinding;" observes="cmd_MSIComputeEval"  modifiers="accel"  />        
+            <key id="MSIevalKey" key="&MSIComputeEvalCmd.keybinding;" onkeydown="doComputeCommand2(event, 'cmd_compute_Evaluate')"  modifiers="accel"  />        
           </keyset>
         </editor>
         </vbox>
