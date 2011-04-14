@@ -1235,9 +1235,9 @@ function isAChildOf(node, parent)
 
 function isEqualSign(node)
 {
-  if (node.nodeType == Node.ELEMENT_NODE && node.localName == "mo") {
+  if (node != null && node.nodeType == Node.ELEMENT_NODE && node.localName == "mo") {
       var op = node.firstChild;
-      if (op.nodeType == Node.TEXT_NODE && op.data == "=")
+      if (op != null && op.nodeType == Node.TEXT_NODE && op.data == "=")
         return true;
   }
   return false;
