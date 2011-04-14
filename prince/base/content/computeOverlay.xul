@@ -23,7 +23,9 @@
                   commandupdater="true"
                   events="create, mode_switch, focus, select, undo"
                   oncommandupdate="goUpdateMSIcomputeMenuItems(this)">
-    <command id="cmd_MSIComputeEval"                     oncommand="doComputeCommand2(event, 'cmd_compute_Evaluate')"/>
+    
+    <command id="cmd_MSIComputeEval"                      />
+
     <command id="cmd_MSIComputeEvalNum"                  oncommand="doComputeCommand2(event, 'cmd_compute_EvaluateNumeric')"/>
     <command id="cmd_MSIComputeSimplify"                 oncommand="doComputeCommand('cmd_compute_Simplify')"/>
     <command id="cmd_MSIComputeCombineExponentials"      oncommand="doComputeCommand('cmd_compute_CombineExponentials')"/>
@@ -235,7 +237,7 @@
 
   <keyset id="editorKeys">
     <keyset id="MSIKeySet">
-      <key id="MSIevalKey"   modifiers="accel" key="&MSIComputeEvalCmd.keybinding;"   observes="cmd_MSIComputeEval"   />        
+      <key id="MSIevalKey"   modifiers="accel" key="&MSIComputeEvalCmd.keybinding;"   onkeypress="doComputeCommand2(event, 'cmd_compute_Evaluate')"   /> 
       <key id="MSIdefineKey" modifiers="accel" key="&MSIComputeDefineCmd.keybinding;" observes="cmd_MSIComputeDefine" />        
       <key id="MSIinterpretKey" modifiers="accel,shift" key="&MSIComputeInterpretCmd.keybinding;" observes="cmd_MSIComputeInterpret" />        
     </keyset>                                                                                                         
@@ -244,7 +246,7 @@
 
   <menu id="MSIComputeMenu" label="&MSIComputeMenu.label;" accesskey="&MSIComputeMenu.accesskey;">
     <menupopup id="MSIComputePopup">
-      <menuitem label="&MSIComputeEvalCmd.label;"          accesskey="&MSIComputeEvalCmd.accesskey;"       key="MSIevalKey" observes="cmd_MSIComputeEval"/>
+      <menuitem label="&MSIComputeEvalCmd.label;"     accesskey="&MSIComputeEvalCmd.accesskey;"   key="MSIevalKey"  onclick="doComputeCommand2(event, 'cmd_compute_Evaluate')" />
       <menuitem label="&MSIComputeEvalNumCmd.label;"       accesskey="&MSIComputeEvalNumCmd.accesskey;"    observes="cmd_MSIComputeEvalNum"/>
       <menuseparator/>                                                                                                                       
       <menuitem label="&MSIComputeSimplifyCmd.label;"      accesskey="&MSIComputeSimplifyCmd.accesskey;"                    observes="cmd_MSIComputeSimplify"/>
