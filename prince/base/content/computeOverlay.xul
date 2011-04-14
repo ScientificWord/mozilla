@@ -23,8 +23,8 @@
                   commandupdater="true"
                   events="create, mode_switch, focus, select, undo"
                   oncommandupdate="goUpdateMSIcomputeMenuItems(this)">
-    <command id="cmd_MSIComputeEval"                     oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
-    <command id="cmd_MSIComputeEvalNum"                  oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
+    <command id="cmd_MSIComputeEval"                     oncommand="doComputeCommand2(event, 'cmd_compute_Evaluate')"/>
+    <command id="cmd_MSIComputeEvalNum"                  oncommand="doComputeCommand2(event, 'cmd_compute_EvaluateNumeric')"/>
     <command id="cmd_MSIComputeSimplify"                 oncommand="doComputeCommand('cmd_compute_Simplify')"/>
     <command id="cmd_MSIComputeCombineExponentials"      oncommand="doComputeCommand('cmd_compute_CombineExponentials')"/>
     <command id="cmd_MSIComputeCombineLogs"              oncommand="doComputeCommand('cmd_compute_CombineLogs')"/>
