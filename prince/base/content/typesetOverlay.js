@@ -450,7 +450,7 @@ var msiInsertBibTeXBibliography =
   {
     var editorElement = msiGetActiveEditorElement();
     var bibliographyData = {dbFileList : [], styleFile : ""};
-    window.openDialog("chrome://prince/content/typesetBibTeXBibliography.xul", "bibtexbiblio", "chrome,close,titlebar,dependent,resizable", bibliographyData);
+    window.openDialog("chrome://prince/content/typesetBibTeXBibliography.xul", "bibtexbiblio", "chrome,close,titlebar,modal,resizable", bibliographyData);
     if (!bibliographyData.Cancel)
     {
       doInsertBibTeXBibliography(editorElement, bibliographyData);
@@ -580,7 +580,7 @@ function doPreambleDlg()
   }
   
 
-  window.openDialog("chrome://prince/content/typesetPreamble.xul", "preamble", "resizable,chrome,close,titlebar,dependent", preambleTeXNode);
+  window.openDialog("chrome://prince/content/typesetPreamble.xul", "preamble", "resizable,chrome,close,titlebar,modal", preambleTeXNode);
 }
 
 function doBibChoiceDlg(editorElement)
@@ -592,7 +592,7 @@ function doBibChoiceDlg(editorElement)
   var theBibChoice = getBibliographyScheme(editorElement);
   if (theBibChoice == "BibTeX")  //a kludge - must get hooked up to editor to really work
     bibChoiceData.bBibTeX = true;
-  window.openDialog("chrome://prince/content/typesetBibChoice.xul", "bibchoice", "chrome,close,titlebar,dependent,resizable", bibChoiceData);
+  window.openDialog("chrome://prince/content/typesetBibChoice.xul", "bibchoice", "chrome,close,titlebar,modal,resizable", bibChoiceData);
   if (!bibChoiceData.Cancel)
   {
     var choiceStr = "manual";
@@ -615,7 +615,7 @@ function doOptionsAndPackagesDlg(editorElement)
   var editor = msiGetEditor(editorElement);
   var document = editor.document;
   var options = msiGetPackagesAndOptionsDataForDocument(document);
-  window.openDialog("chrome://prince/content/typesetOptionsAndPackages.xul", "optionsandpackages", "chrome,close,titlebar,dependent,resizable", options);
+  window.openDialog("chrome://prince/content/typesetOptionsAndPackages.xul", "optionsandpackages", "chrome,close,titlebar,modal,resizable", options);
 //  if (!options.Cancel)
 //  {
 //    var packagesOptionsStr = options.docClassName;
@@ -782,7 +782,7 @@ function doGenSettingsDlg()
 {
   var genSettingsData = getTypesetGenSettingsFromPrefs();
 
-  window.openDialog("chrome://prince/content/typesetGenSettingsDialog.xul", "General Typeset Settings", "chrome,close,titlebar,dependent,resizable", 
+  window.openDialog("chrome://prince/content/typesetGenSettingsDialog.xul", "General Typeset Settings", "chrome,close,titlebar,modal,resizable", 
                        genSettingsData);
 }
 
