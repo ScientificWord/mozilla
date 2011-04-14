@@ -412,6 +412,20 @@ function doComputeEvaluate(math, editorElement)
   doEvalComputation(math,GetCurrentEngine().Evaluate,"<mo>=</mo>","evaluate", editorElement);
 }
 
+
+var ctrlClick = false;
+var buttonPressed = -1;
+
+function doComputeCommand2(event, cmd, editorElement, cmdHandler)
+{
+   ctrlDown = event.ctrlKey;
+   type = event.type;
+
+   
+   doComputeCommand(cmd, editorElement, cmdHandler);
+}
+
+
 function doComputeCommand(cmd, editorElement, cmdHandler)
 {
   if (!editorElement)
@@ -1517,7 +1531,24 @@ function doEvalComputation(mathElement,op,joiner,remark, editorElement)
     var out = GetCurrentEngine().perform(mathstr, op);
     msiComputeLogger.Received(out);
     //appendResult(out,joiner,math, editorElement);
-    insertResult(out, joiner, mathElement, editorElement, rightEnd);
+    if (!ctrlDown || type != "click"){
+      insertResult(out, joiner, mathElement, editorElement, rightEnd);
+    } else {
+      ctrlDown = false;
+      if(!editorElement) 
+        editorElement = msiGetActiveEditorElement();
+      
+      var editor = msiGetEditor(editorElement);
+      msiGoDoCommand('cmd_delete');
+      //editor.deleteSelection(editor.eNone);
+      sel = msiGetEditor(editorElement).selection;
+      sel.collapseToStart();
+
+      insertXML(editor, out, sel.anchorNode, sel.anchorOffset );
+     
+      coalescemath(editorElement);
+      
+    }
   } catch (e) {
     msiComputeLogger.Exception(e);
   }
