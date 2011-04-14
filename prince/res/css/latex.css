@@ -24,6 +24,20 @@ texlogo sub {
   font-size: 1em;
 }
 
+
+caption {
+  background-color: rgb(250,240,240);
+  margin-top: 3pt;
+  margin-bottom: 3pt;
+}
+
+table {
+  border-collapse: collapse;
+  border-style: dotted;
+  border-color: red;
+  border-width: 1px;
+}
+
 hspace {
 /*  -moz-binding: url("chrome://prince/content/bindings/latex.xml#hspace"); */
   display: inline-block;

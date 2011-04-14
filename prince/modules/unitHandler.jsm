@@ -12,7 +12,8 @@ function UnitHandler()
      bp: {size: 0.3527778, increment: .1, places: 1 },
      pc: {size: 2.54, increment: .1, places: 1 },
      px: {size: 0.2645833, increment: 1, places: 0 },	// we say 96 pixels/inch. It varies but portability requires a fixed value
-     pct: {size: null, increment: .1, places: 1 }
+     pct: {size: null, increment: .1, places: 1 },
+     "%": {size: null, increment: .1, places: 1 }
   };
 
   this.editFieldList = [];
