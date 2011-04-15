@@ -825,7 +825,7 @@ function GetColorAndUpdate(ColorWellID)
       break;
   }
 
-  window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "chrome,close,titlebar,modal", "", colorObj);
+  window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "chrome,close,titlebar,modal,resizable", "", colorObj);
 
   // User canceled the dialog
   if (colorObj.Cancel)
