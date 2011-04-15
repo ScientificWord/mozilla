@@ -16,7 +16,7 @@
     persist="screenX screenY width height"
     title="&windowTitle.label;"
     width="300"
-    height="240"
+    height="260"
     screenX="40"
     screenY="40">
 
