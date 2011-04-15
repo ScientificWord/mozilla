@@ -3403,7 +3403,6 @@ function mathToText(editor)
 function toggleMathText(editor)
 {
   if (editor.tagListManager.selectionContainedInTag("math",null))
-  for (n=0; n < len; n++)
   {
     try {
       mathToText(editor);
