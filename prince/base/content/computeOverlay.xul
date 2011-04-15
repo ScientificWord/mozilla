@@ -24,18 +24,18 @@
                   events="create, mode_switch, focus, select, undo"
                   oncommandupdate="goUpdateMSIcomputeMenuItems(this)">
     
-    <command id="cmd_MSIComputeEval"                      />
+    <command id="cmd_MSIComputeEval" />
 
     <command id="cmd_MSIComputeEvalNum"                  oncommand="doComputeCommand2(event, 'cmd_compute_EvaluateNumeric')"/>
-    <command id="cmd_MSIComputeSimplify"                 oncommand="doComputeCommand('cmd_compute_Simplify')"/>
+    <command id="cmd_MSIComputeSimplify"                 oncommand="doComputeCommand2(event, 'cmd_compute_Simplify')"/>
     <command id="cmd_MSIComputeCombineExponentials"      oncommand="doComputeCommand('cmd_compute_CombineExponentials')"/>
     <command id="cmd_MSIComputeCombineLogs"              oncommand="doComputeCommand('cmd_compute_CombineLogs')"/>
     <command id="cmd_MSIComputeCombinePowers"            oncommand="doComputeCommand('cmd_compute_CombinePowers')"/>
     <command id="cmd_MSIComputeCombineTrig"              oncommand="doComputeCommand('cmd_compute_CombineTrig')"/>
     <command id="cmd_MSIComputeCombineArctan"            oncommand="doComputeCommand('cmd_compute_CombineArctan')"/>
     <command id="cmd_MSIComputeCombineHyperbolics"       oncommand="doComputeCommand('cmd_compute_CombineHyperbolics')"/>
-    <command id="cmd_MSIComputeExpand"                   oncommand="doComputeCommand('cmd_compute_Expand')"/>
-    <command id="cmd_MSIComputeFactor"                   oncommand="doComputeCommand('cmd_compute_Factor')"/>
+    <command id="cmd_MSIComputeExpand" />
+    <command id="cmd_MSIComputeFactor" />
     <command id="cmd_MSIComputeRewriteRational"          oncommand="doComputeCommand('cmd_compute_RewriteRational')"/>
     <command id="cmd_MSIComputeRewriteFloat"             oncommand="doComputeCommand('cmd_compute_RewriteFloat')"/>
     <command id="cmd_MSIComputeRewriteMixed"             oncommand="doComputeCommand('cmd_compute_RewriteMixed')"/>
@@ -260,8 +260,8 @@
           <menuitem label="&MSIComputeCombineHyperbolicsCmd.label;"  accesskey="&MSIComputeCombineHyperbolicsCmd.accesskey;"   observes="cmd_MSIComputeCombineHyperbolics"/>
         </menupopup>
       </menu>
-      <menuitem label="&MSIComputeExpandCmd.label;"        accesskey="&MSIComputeExpandCmd.accesskey;"                      observes="cmd_MSIComputeExpand"/>
-      <menuitem label="&MSIComputeFactorCmd.label;"        accesskey="&MSIComputeFactorCmd.accesskey;"                      observes="cmd_MSIComputeFactor"/>
+      <menuitem label="&MSIComputeExpandCmd.label;"        accesskey="&MSIComputeExpandCmd.accesskey;"   onclick="doComputeCommand2(event, 'cmd_compute_Expand')" />
+      <menuitem label="&MSIComputeFactorCmd.label;"        accesskey="&MSIComputeFactorCmd.accesskey;"   onclick="doComputeCommand2(event, 'cmd_compute_Factor')" />
       <menu id="MSIRewriteMenu" label="&MSIRewriteMenu.label;" accesskey="&MSIRewriteMenu.accesskey;">
         <menupopup id="MSIRewritePopup">
           <menuitem label="&MSIComputeRewriteRationalCmd.label;" accesskey="&MSIComputeRewriteRationalCmd.accesskey;"       observes="cmd_MSIComputeRewriteRational"/>
