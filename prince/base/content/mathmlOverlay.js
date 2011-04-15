@@ -3338,6 +3338,16 @@ function mathToText(editor)
   editor.endTransaction();
 }
 
+function textToMath(simpleString,editorElement)
+{
+  var n;
+  var len = simpleString.length;
+  for (n=0; n < len; n++)
+  {
+    insertSymbol(simpleString.slice(n,n+1), editorElement);
+  }
+}
+
 
 function toggleMathText(editor)
 {
