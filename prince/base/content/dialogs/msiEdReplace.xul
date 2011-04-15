@@ -41,8 +41,8 @@
    ondialogaccept="return onFindNext();"
    ondialogextra1="return onFindNext();"
    defaultButton = "extra1"
-   height="275"
-   width="500"
+   height="300"
+   width="525"
    screenX="40"
    screenY="40">
 
