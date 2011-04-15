@@ -35,6 +35,8 @@
   ondialogaccept="return onOK();"
   ondialogcancel="return onCancel();"
   onload="Startup();"
+  screenX="40"
+  screenY="40"
   persist="screenX screenY width height"
 >
 <!--  onunload="ShutdownAllEditors();" -->
