@@ -293,16 +293,8 @@ function getBorderSideAttrString(aSide, anAttr)
 
 function borderStyleToBorderCollapse(aStyle)
 {
-//  switch(aStyle)
-//  {
-//    case "inset":
-//    case "outset":
-//      return "separate";
-//    break;
-//    default:
       return "collapse";
-//    break;
-//  }
+
 }
 
 function UseCSSForCellProp(propName)
@@ -810,7 +802,8 @@ function GetColorAndUpdate(ColorWellID)
   var colorWell = document.getElementById(ColorWellID);
   if (!colorWell) return;
 
-  var colorObj = {Type: "TableOrCell", NoDefault:false, Cancel:false, BackgroundColor:0 };
+  var colorObj = {Type: "TableOrCell", NoDefault:false, Cancel:false, BackgroundColor:0,
+    SelectedType: "Table" };
 
   switch( ColorWellID )
   {
@@ -819,6 +812,7 @@ function GetColorAndUpdate(ColorWellID)
       break;
     case "cellBackgroundCW":
       colorObj.BackgroundColor = gCollatedCellData.background;
+      colorObj.SelectedType = "Cell";
       break;
     case "borderCW":
       colorObj.CellColor = gCollatedCellData.border.color[gCurrentSide];
@@ -1549,34 +1543,27 @@ function DoStyleChangesForACell(destCell)
       }
     }
   }
-  if (gCellChangeData.size.width)
+  if (gDialog.CellWidthInput.value && gDialog.CellWidthInput.valueh > 0)
   {
-    if (gCollatedCellData.size.bWidthSet && UseCSSForCellProp("width"))
-    {
-      logStr = "In msiEdTableProps.js, DoStyleChangesForACell(); cell width string should be [" + String(gCollatedCellData.size.width) + gCellWidthUnit + "]\n";
-      msiKludgeLogString(logStr, ["tableEdit"]);
-//      globalCellElement.style.setProperty("width", String(gCollatedCellData.size.width) + gCellWidthUnit, "");  this should be what works, but apparently it's necessary to use pixels in Mozilla??
-      doSetStyleAttr("width", gWidthUnitsController.getValueString(gDialog.CellWidthInput.value, "px"));
-      doSetStyleAttr("min-width", gWidthUnitsController.getValueString(gDialog.CellWidthInput.value, "px"));
-    }
-    else
-    {
-      doSetStyleAttr("width", null);
-      doSetStyleAttr("min-width", null);
-    }
+    logStr = "In msiEdTableProps.js, DoStyleChangesForACell(); cell width string should be [" + String(gCollatedCellData.size.width) + gCellWidthUnit + "]\n";
+    msiKludgeLogString(logStr, ["tableEdit"]);
+    doSetStyleAttr("width", cellUnitsHandler.getValueAs(gDialog.CellWidthInput.value, "px"));
+    doSetStyleAttr("min-width", cellUnitsHandler.getValueAs(gDialog.CellWidthInput.value, "px"));
   }
-  if (gCellChangeData.size.height)
+  else
   {
-    if (gCollatedCellData.size.bHeightSet && UseCSSForCellProp("height"))
-    {
-      logStr = "In msiEdTableProps.js, DoStyleChangesForACell(); cell height string should be [" + String(gCollatedCellData.size.height) + gCellHeightUnit + "]\n";
-      msiKludgeLogString(logStr, ["tableEdit"]);
+    doSetStyleAttr("width", null);
+    doSetStyleAttr("min-width", null);
+  }
+  if (gDialog.CellHeightInput.value && gDialog.CellHeightInput.value > 0)
+  {
+    logStr = "In msiEdTableProps.js, DoStyleChangesForACell(); cell height string should be [" + String(gCollatedCellData.size.height) + gCellHeightUnit + "]\n";
+    msiKludgeLogString(logStr, ["tableEdit"]);
 //      globalCellElement.style.setProperty("height", String(gCollatedCellData.size.height) + gCellHeightUnit, "");  this should be what works, but apparently it's necessary to use pixels in Mozilla??
-      doSetStyleAttr("height", cellUnitsHandler.getValueOf(gDialog.CellHeightInput, "px"));
-    }
-    else
-      doSetStyleAttr("height", null);
+    doSetStyleAttr("height", cellUnitsHandler.getValueAs(gDialog.CellHeightInput.value, "px"));
   }
+  else
+    doSetStyleAttr("height", null);
 
   if (gCellChangeData.align.halign && UseCSSForCellProp("halign"))
     doSetStyleAttr("text-align", gCollatedCellData.align.halign);
@@ -2063,7 +2050,7 @@ function ApplyColAndRowAttributes()
     var currSelectedCol = -1;
 //    theWidth = String(gCollatedCellData.size.width) + gCellWidthUnit;  we should be using something more like this...
     if (gCollatedCellData.size.bWidthSet)
-      theWidth = gWidthUnitsController.getValueString(gDialog.CellWidthInput.value, "px");
+      theWidth = cellUnitsHandler.getValueAs(gDialog.CellWidthInput.value, "px");
 
     function getEndsOfSpanContaining(aColIndex, colElementArray)
     {
@@ -2275,7 +2262,7 @@ function ApplyMatrixColAndRowAttributes()
   var colsInSelection = data.reviseData.getColsInSelection();
   var theWidth = "auto";
   if (gCollatedCellData.size.bWidthSet)
-    theWidth = gWidthUnitsController.getValueString(gDialog.CellWidthInput.value, "px");
+    theWidth = cellUnitsHandler.getValueAs(gDialog.CellWidthInput.value, "px");
 //    theWidth = String(gCollatedCellData.size.width) + gCellWidthUnit;
   for (var ix = 0; ix < colsInSelection.length; ++ix)
     colWidths[colsInSelection[ix]] = theWidth;
@@ -2480,70 +2467,23 @@ function ApplyAttributesToOneCell(destElement, nRow, nCol)
   var theValStr = "";
   if (gCellChangeData.size.height && gCellChangeData.size.height > 0)
   {
-//    if (gCollatedCellData.size.bHeightSet && !UseCSSForCellProp("height") && !ShouldSetHeightOnRows())
-//    {
-      theVal = cellUnitsHandler.getValueOf(gDialog.CellHeightInput, "px");
-      if (theVal)
-        theValStr = theVal;
-//    }
+    theVal = cellUnitsHandler.getValueAs(gDialog.CellHeightInput.value, "px");
+    if (theVal)
+      theValStr = theVal;
     SetAnAttribute(destElement, "height", theValStr);
   }
 
   if (gCellChangeData.size.width && gCellChangeData.size.width > 0)
   {
-//    if (gCollatedCellData.size.bWidthSet && !UseCSSForCellProp("width") && !ShouldSetWidthOnCols())
-//    {
-      theVal = gWidthUnitsController.getValueString(gDialog.CellWidthInput.value, "px");
-      if (theVal)
-        theValStr = theVal;
-//    }
-//    SetAnAttribute(destElement, "width", theValStr);
+    theVal = cellUnitsHandler.getValueAs(gDialog.CellWidthInput.value, "px");
+    if (theVal)
+      theValStr = theVal;
+    SetAnAttribute(destElement, "width", theValStr);
   }
+
 
   DoStyleChangesForACell(destElement);
 
-//  if (gCellChangeData.align.halign && UseCSSForCellProp("halign"))
-//    globalCellElement.style.setProperty("text-align", gCollatedCellData.align.halign);
-//  if (gCellChangeData.align.valign && UseCSSForCellProp("valign"))
-//    globalCellElement.style.setProperty("vertical-align", gCollatedCellData.align.valign);
-
-//  if (gCellChangeData.wrap))
-//  {
-//    if (!UseCSSForCellProp("wrap") && gCollatedCellData.wrap == "nowrap")
-//      SetAnAttribute(destElement, "nowrap", "true");
-//    else
-//      SetAnAttribute(destElement, "nowrap", null);
-//  }
-
-//  if (gDialog.CellHAlignCheckbox.checked)
-////  {
-//    SetAnAttribute(destElement, "align", );
-////    CloneAttribute(destElement, globalCellElement, charStr);
-////  }
-//
-//  if (gDialog.CellVAlignCheckbox.checked)
-//    SetAnAttribute(destElement, "valign", );
-//
-//  if (gDialog.TextWrapCheckbox.checked)
-//    SetAnAttribute(destElement, "nowrap", );
-
-//  if (gDialog.CellStyleCheckbox.checked)
-//  {
-//    var newStyleIndex = gDialog.CellStyleList.selectedIndex;
-//    var currentStyleIndex = (destElement.nodeName.toLowerCase() == "th") ? 1 : 0;
-//
-//    if (newStyleIndex != currentStyleIndex)
-//    {
-//      // Switch cell types
-//      // (replaces with new cell and copies attributes and contents)
-//      try {
-//        destElement = gActiveEditor.switchTableCellHeaderType(destElement);
-//      } catch(e) {}
-//    }
-//  }
-
-//  if (gDialog.CellColorCheckbox.checked)
-//    CloneAttribute(destElement, globalCellElement, "bgcolor");
 }
 
 function SetCloseButton()
@@ -2629,25 +2569,25 @@ function checkPreviewChanges(controlID)
   switch(controlID)
   {
     case "cellBorderStyleList":
-      if (gCollatedCellData.border.style[gCurrentSide] != gDialog.CellBorderStyleList.value)
+      if (gCollatedCellData.border.style[gCurrentSide] != gDialog.cellBorderStyleList.value)
       {
-        gCollatedCellData.border.style[gCurrentSide] = gDialog.CellBorderStyleList.value;
+        gCollatedCellData.border.style[gCurrentSide] = gDialog.cellBorderStyleList.value;
         bChanged = true;
-        theChanges.style["border-" + sideString + "style"] = gDialog.CellBorderStyleList.value;
+        theChanges.style["border-" + sideString + "style"] = gDialog.cellBorderStyleList.value;
         gCellChangeData.border.style.push(gCurrentSide);
-        if (borderStyleToBorderCollapse(gDialog.CellBorderStyleList.value) != gBorderCollapse)
+        if (borderStyleToBorderCollapse(gDialog.cellBorderStyleList.value) != gBorderCollapse)
         {
-          gBorderCollapse = borderStyleToBorderCollapse(gDialog.CellBorderStyleList.value);
+          gBorderCollapse = borderStyleToBorderCollapse(gDialog.cellBorderStyleList.value);
           gTableChangeData.borderCollapse = true;
         }
       }
     break;
     case "cellBorderWidthList":
-      if (gCollatedCellData.border.width[gCurrentSide] != gDialog.CellBorderWidthList.value)
+      if (gCollatedCellData.border.width[gCurrentSide] != gDialog.cellBorderWidthList.value)
       {
-        gCollatedCellData.border.width[gCurrentSide] = gDialog.CellBorderWidthList.value;
+        gCollatedCellData.border.width[gCurrentSide] = gDialog.cellBorderWidthList.value;
         bChanged = true;
-        theChanges.style["border-" + sideString + "width"] = gDialog.CellBorderWidthList.value;
+        theChanges.style["border-" + sideString + "width"] = gDialog.cellBorderWidthList.value;
         gCellChangeData.border.width.push(gCurrentSide);
       }
     break;
