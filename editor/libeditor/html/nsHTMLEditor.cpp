@@ -3687,16 +3687,17 @@ nsHTMLEditor::CreateElementWithDefaults(const nsAString& aTagName, nsIDOMElement
                                    NS_LITERAL_STRING("2"), PR_TRUE);
   } else if (TagName.EqualsLiteral("table"))
   {
-    res = newElement->SetAttribute(NS_LITERAL_STRING("cellpadding"),NS_LITERAL_STRING("2"));
+    res = newElement->SetAttribute(NS_LITERAL_STRING("cellpadding"),NS_LITERAL_STRING("4"));
     if (NS_FAILED(res)) return res;
-    res = newElement->SetAttribute(NS_LITERAL_STRING("cellspacing"),NS_LITERAL_STRING("2"));
-    if (NS_FAILED(res)) return res;
+//    res = newElement->SetAttribute(NS_LITERAL_STRING("cellspacing"),NS_LITERAL_STRING("2"));
+//    if (NS_FAILED(res)) return res;
     res = newElement->SetAttribute(NS_LITERAL_STRING("border"),NS_LITERAL_STRING("1"));
-  } else if (TagName.EqualsLiteral("td"))
-  {
-    res = SetAttributeOrEquivalent(newElement, NS_LITERAL_STRING("valign"),
-                                   NS_LITERAL_STRING("top"), PR_TRUE);
   }
+//   else if (TagName.EqualsLiteral("td"))
+//  {
+//    res = SetAttributeOrEquivalent(newElement, NS_LITERAL_STRING("valign"),
+//                                   NS_LITERAL_STRING("top"), PR_TRUE);
+//  }
   // ADD OTHER TAGS HERE
 
   if (NS_SUCCEEDED(res))
