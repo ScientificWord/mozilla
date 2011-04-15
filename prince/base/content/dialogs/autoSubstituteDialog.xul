@@ -35,6 +35,8 @@
   ondialogaccept="return onOK();"
   ondialogcancel="return onCancel();"
   onload="Startup();"
+  screenX="40"
+  screenY="40"
   persist="screenX screenY width height"
 >
 <!--  onunload="ShutdownAllEditors();" -->
@@ -121,7 +123,7 @@
           <keyset id="editorKeys">
             <keyset id="tasksKeys"/>
             <keyset id="MSIKeySet"/>
-            <key id="MSIevalKey" key="&MSIComputeEvalCmd.keybinding;" observes="cmd_MSIComputeEval"  modifiers="accel"  />        
+            <key id="MSIevalKey" key="&MSIComputeEvalCmd.keybinding;" onkeydown="doComputeCommand2(event, 'cmd_compute_Evaluate')"  modifiers="accel"  />        
           </keyset>
         </editor>
         </vbox>
