@@ -3287,6 +3287,48 @@ function mathNodeToText(editor, node)
 //  editor.replaceNode(frag,node,node.parentNode);
 }
 
+// returns start (-1), mid (0), or end (1)
+// p is a parameter object with p.node and p.offset
+function positionInMath(p)
+{
+  var atEnd=(p.offset > 0);
+  var atStart=!atEnd;
+  var parent;
+  var tempNode;
+  var children;
+  if (p.node.nodeType == p.node.TEXT_NODE)
+  {
+    if (atEnd && p.offset < p.node.length) return 0;
+    parent = p.node.parentNode;
+    p.offset = 0;
+    tempNode = parent.firstChild;
+    while (tempNode && tempNode != p.node)
+    {
+      p.offset++;
+      tempNode = tempNode.nextSibling;
+    }
+    p.node = parent;
+    if (atEnd) p.offset++;
+  }
+  while (msiNavigationUtils.isMathNode(p.node))
+  {
+    children = p.node.childNodes;
+    if ((children.length) > p.offset) return 0;
+    if (atStart && p.offset > 0) return 0;
+    parent = p.node.parentNode;
+    p.offset = 0;
+    tempNode = parent.firstChild;
+    while (tempNode && tempNode != p.node)
+    {
+      p.offset++;
+      tempNode = tempNode.nextSibling;
+    }
+    p.node = parent;
+    if (atEnd) p.offset++;
+  }
+  if (atEnd) return 1;
+  return -1;
+}
 
 function mathToText(editor)
 {
@@ -3298,10 +3340,29 @@ function mathToText(editor)
   var children;
   var enumerator;
   var node;
+  var pos;
+  var node;
+  var offset;
   if (editor.selection.isCollapsed)   // jcs ?? changed from collapsed
   {
-    dump("here we check to see if we can get out of math mode\n");
-    return;
+    node = editor.selection.anchorNode;
+    offset = editor.selection.anchorOffset;
+    var p = { node: node, offset: offset};
+    pos = positionInMath(p);
+    if (pos != 0)
+    {
+      if (pos == 1) 
+      {
+        msiGoDoCommand('cmd_charNext');
+        msiGoDoCommand('cmd_charPrevious');
+      }
+      else
+      {
+        msiGoDoCommand('cmd_charPrevious');
+        msiGoDoCommand('cmd_charNext');
+      }
+      return;
+    }
   }
   editor.beginTransaction();
   try
@@ -3341,10 +3402,22 @@ function mathToText(editor)
 
 function toggleMathText(editor)
 {
-  try {
-    mathToText(editor);
+  if (editor.tagListManager.selectionContainedInTag("math",null))
+  {
+    try {
+      mathToText(editor);
+    }
+    catch(e) {
+      dump("Exception in toggleMathText: "+e.message+"\n");
+    }
   }
-  catch(e) {
-    dump("Exception in toggleMathText: "+e.message+"\n");
+  else
+  {
+    try {
+      textToMath("foo");
+    }
+    catch(e) {
+      dump("Exception in toggleMathText: "+e.message+"\n");
+    }
   }
 }
