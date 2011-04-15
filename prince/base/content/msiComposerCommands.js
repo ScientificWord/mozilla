@@ -9000,7 +9000,7 @@ function callColorDialog()
   // TODO: get the current color if we are within a fontcolor tag
   var colorObj = { NoDefault:true, Type:"Font", TextColor:"black", PageColor:0, Cancel:false };
 
-  window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "chrome,close,titlebar,modal", 
+  window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "chrome,close,titlebar,modal,resizable", 
   "", colorObj);
 
   // User canceled the dialog

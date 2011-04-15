@@ -237,7 +237,7 @@
 
   <keyset id="editorKeys">
     <keyset id="MSIKeySet">
-      <key id="MSIevalKey"   modifiers="accel" key="&MSIComputeEvalCmd.keybinding;"   onkeypress="doComputeCommand2(event, 'cmd_compute_Evaluate')"   /> 
+      <key id="MSIevalKey"   modifiers="accel" key="&MSIComputeEvalCmd.keybinding;"  oncommand="doComputeCommand2(event, 'cmd_compute_Evaluate')"   /> 
       <key id="MSIdefineKey" modifiers="accel" key="&MSIComputeDefineCmd.keybinding;" observes="cmd_MSIComputeDefine" />        
       <key id="MSIinterpretKey" modifiers="accel,shift" key="&MSIComputeInterpretCmd.keybinding;" observes="cmd_MSIComputeInterpret" />        
     </keyset>                                                                                                         
