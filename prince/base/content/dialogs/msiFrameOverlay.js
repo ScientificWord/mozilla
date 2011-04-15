@@ -288,7 +288,7 @@ function getColorAndUpdate()
   // Don't allow a blank color, i.e., using the "default"
   var colorObj = { NoDefault:true, Type:"Rule", TextColor:color, PageColor:0, Cancel:false };
 
-  window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "chrome,close,titlebar,modal", "", colorObj);
+  window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "chrome,close,titlebar,modal,resizable", "", colorObj);
 
   // User canceled the gFrameTab
   if (colorObj.Cancel)
