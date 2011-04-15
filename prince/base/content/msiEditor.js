@@ -2684,7 +2684,7 @@ function msiEditorSelectColor(colorType, mouseEvent, editorElement)
 
     // Launch the ColorPicker dialog
     // TODO: Figure out how to position this under the color buttons on the toolbar
-    window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "chrome,close,titlebar,modal", "", editorElement.mColorObj);
+    window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "chrome,close,titlebar,modal,resizable", "", editorElement.mColorObj);
 
     // User canceled the dialog
     if (editorElement.mColorObj.Cancel)

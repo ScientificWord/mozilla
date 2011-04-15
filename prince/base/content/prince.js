@@ -191,23 +191,23 @@ function doEvalComputation(math,op,joiner,remark) {
     dump("doEvalComputation(): " + e+"\n");
 } }
 
-function doComputeCommand(cmd) {
-  var selection = GetCurrentEditor().selection;
-  if (selection) {
-    var element = findmathparent(selection.focusNode);
-    if (!element) {
-	    dump("not in math!\n");
-      return;
-    }
-    var eng = GetCurrentEngine();
-    switch (cmd) {
-    case "cmd_compute_Evaluate":
-      doEvalComputation(element,eng.Evaluate,"<mo>=</mo>","evaluate");
-      break;
-    case "cmd_compute_EvaluateNumeric":
-      doEvalComputation(element,eng.Evaluate_Numerically,"<mo>"+String.fromCharCode(0x2248)+"</mo>","evaluate numeric");
-      break;
-} } }
+// jcs function doComputeCommand(cmd) {
+// jcs   var selection = GetCurrentEditor().selection;
+// jcs   if (selection) {
+// jcs     var element = findmathparent(selection.focusNode);
+// jcs     if (!element) {
+// jcs 	    dump("not in math!\n");
+// jcs       return;
+// jcs     }
+// jcs     var eng = GetCurrentEngine();
+// jcs     switch (cmd) {
+// jcs     case "cmd_compute_Evaluate":
+// jcs       doEvalComputation(element,eng.Evaluate,"<mo>=</mo>","evaluate");
+// jcs       break;
+// jcs     case "cmd_compute_EvaluateNumeric":
+// jcs       doEvalComputation(element,eng.Evaluate_Numerically,"<mo>"+String.fromCharCode(0x2248)+"</mo>","evaluate numeric");
+// jcs       break;
+// jcs } } }
 
 // form a single run of math and put caret on end
 function coalescemath() {
@@ -1346,23 +1346,23 @@ function doEvalComputation(math,op,joiner,remark) {
     dump("doEvalComputation(): " + e+"\n");
 } }
 
-function doComputeCommand(cmd) {
-  var selection = GetCurrentEditor().selection;
-  if (selection) {
-    var element = findmathparent(selection.focusNode);
-    if (!element) {
-	    dump("not in math!\n");
-      return;
-    }
-    var eng = GetCurrentEngine();
-    switch (cmd) {
-    case "cmd_compute_Evaluate":
-      doEvalComputation(element,eng.Evaluate,"<mo>=</mo>","evaluate");
-      break;
-    case "cmd_compute_EvaluateNumeric":
-      doEvalComputation(element,eng.Evaluate_Numerically,"<mo>"+String.fromCharCode(0x2248)+"</mo>","evaluate numeric");
-      break;
-} } }
+// jcs function doComputeCommand(cmd) {
+// jcs   var selection = GetCurrentEditor().selection;
+// jcs   if (selection) {
+// jcs     var element = findmathparent(selection.focusNode);
+// jcs     if (!element) {
+// jcs 	    dump("not in math!\n");
+// jcs       return;
+// jcs     }
+// jcs     var eng = GetCurrentEngine();
+// jcs     switch (cmd) {
+// jcs     case "cmd_compute_Evaluate":
+// jcs       doEvalComputation(element,eng.Evaluate,"<mo>=</mo>","evaluate");
+// jcs       break;
+// jcs     case "cmd_compute_EvaluateNumeric":
+// jcs       doEvalComputation(element,eng.Evaluate_Numerically,"<mo>"+String.fromCharCode(0x2248)+"</mo>","evaluate numeric");
+// jcs       break;
+// jcs } } }
 
 // form a single run of math and put caret on end
 function coalescemath() {

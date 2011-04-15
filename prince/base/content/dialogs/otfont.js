@@ -27,7 +27,7 @@ function getColorAndUpdate()
 
   var colorObj = { NoDefault: false, Type: "Rule", TextColor: data.ruleColor, PageColor: 0, Cancel: false };
 
-  window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "chrome,close,titlebar,modal", "", colorObj);
+  window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "chrome,close,titlebar,modal,resizable", "", colorObj);
 
   // User canceled the dialog
   if (colorObj.Cancel)
