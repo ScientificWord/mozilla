@@ -219,7 +219,7 @@
 <!-- Button section -->
   <toolbarbutton id="mathtextButton" class="toolbarbutton-1" type="checkbox" autoCheck="true" observes="cmd_MSImathtext" tooltiptext="&mathtextButton.tooltip;"
     label="&mathtextButton.label;">
-    <observes element="cmd_MSImathtext" type="checkbox" attribute="state" onbroadcast="msiOnButtonUpdate(this.parentNode,'cmd_MSImathtext')"/>
+    <observes element="cmd_MSImathtext" type="checkbox" attribute="isMath" onbroadcast="msiOnButtonUpdate(this.parentNode,'cmd_MSImathtext')"/>
   </toolbarbutton>
 
   <toolbarbutton id="evalButton" class="toolbarbutton-1" tooltiptext="&MSIComputeEval.tooltip;"
