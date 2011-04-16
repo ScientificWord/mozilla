@@ -8723,7 +8723,7 @@ function msiInitFontStyleMenu(menuPopup)
 }
 
 ////--------------------------------------------------------------------
-function msiOnButtonUpdate(button, commmandID)
+function msiOnButtonUpdate(button, commmandID, invert)
 {
   try
   {
@@ -8734,7 +8734,7 @@ function msiOnButtonUpdate(button, commmandID)
       commandNode = topWindow.document.getElementById(commandID);
     }  
     var state = commandNode.getAttribute("state");
-    button.checked = state == "true";
+    button.checked = invert?(!(state == "true")):state=="true";
   }
   catch(exc) {AlertWithTitle("Error in msiEditor.js", "Error in msiOnButtonUpdate: " + exc);}
 }
@@ -9362,8 +9362,11 @@ function msiUpdateStructToolbar(editorElement)
   // the theory here is that by following up the chain of parentNodes, 
   // we will eventually get to the root <body> tag. But due to some bug, 
   // there may be multiple <body> elements in the document. 
+  document.getElementById("cmd_MSImathtext").setAttribute("isMath","false");
   do {
     tag = element.nodeName;
+    if (tag=="math") 
+      document.getElementById("cmd_MSImathtext").setAttribute("isMath","true");
 
     button = theDocument.createElementNS(XUL_NS, "toolbarbutton");
     button.setAttribute("label",   "<" + tag + ">");
