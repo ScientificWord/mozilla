@@ -3249,7 +3249,7 @@ var msiCleanupCommand =
     var editorDoc = editor.document;
     var param =new Object();
     param.cleanupOptions=[];
-    window.openDialog( "chrome://prince/content/", "cleanup", "chrome,resizable=yes, modal,titlebar", param);    
+    window.openDialog( "chrome://prince/content/cleanup.xul", "cleanup", "chrome,resizable=yes, modal,titlebar", param);    
     cleanupWorkDirectory(editorDoc, getWorkingDirectory(editorElement), param.cleanupOptions );
   }
 };
@@ -3281,7 +3281,7 @@ backupfiles */
       dump(e.message+"\n");
     }
     texOptions.forEach(function(val){cleanupOptions.splice(cleanupOptions.indexOf(val),1);});
-    alert(cleanupOptions.join());
+//    alert(cleanupOptions.join());
   }
   else    
   {
@@ -3305,10 +3305,12 @@ function cleanup(directory, document, option)
       break;
     case "texfiles": deleteFilesByPattern(texDir, /\.tex$/, false);
       break;
+    /* We can't safely do this until we are sure all subocs are in memory -- otherwise the subdocs
+       written to the disk will lose their graphics and plots!
     case "orphanimagefiles": deleteOrphanedGraphics(directory, document);
       break;
     case "orphanplotfiles": deleteOrphanedPlots(directory, document);
-      break;
+      break; */
     case "cachedconversions": cachedir = directory.clone();
       cachedir.append("cgraphics");
       if (cachedir.exists() && cachedir.isDirectory())
