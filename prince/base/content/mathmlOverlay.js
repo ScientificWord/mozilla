@@ -11,7 +11,7 @@ function SetupMSIMathMenuCommands()
   commandTable.registerCommand("cmd_MSIinlineMathCmd",  msiInlineMath);
   commandTable.registerCommand("cmd_MSIdisplayMathCmd", msiDisplayMath);
   commandTable.registerCommand("cmd_MSImathtext",       msiToggleMathText);
-  commandTable.registerCommand("cmd_MSItextCmd",        msiDoSomething);
+  commandTable.registerCommand("cmd_MSItextModeCmd",    msiToTextMode);
   commandTable.registerCommand("cmd_MSIfractionCmd",    msiFraction);
   commandTable.registerCommand("cmd_MSIradicalCmd",     msiRadical);
   commandTable.registerCommand("cmd_MSIrootCmd",        msiRoot);
@@ -212,7 +212,25 @@ var msiToggleMathText =
     insertinlinemath();
     toggleMathText(editor);
     dump("called msiToggleMathText\n");
-    //dump("Clearing math mode is not implemented.\n");
+    return;
+  }
+};
+
+var msiTextMode =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement(window);
+    var editor = msiGetEditor(editorElement);
+    switchToTextMode(editor);
     return;
   }
 };
@@ -3313,7 +3331,13 @@ function positionInMath(p)
   while (msiNavigationUtils.isMathNode(p.node))
   {
     children = p.node.childNodes;
-    if ((children.length) > p.offset) return 0;
+    if ((children.length) > p.offset)
+    {
+      for (var i = p.offset; i<children.length; i++)
+      {
+        if (!isAllWS(children[i])) return 0;
+      } 
+    }
     if (atStart && p.offset > 0) return 0;
     parent = p.node.parentNode;
     p.offset = 0;
@@ -3329,6 +3353,12 @@ function positionInMath(p)
   if (atEnd) return 1;
   return -1;
 }
+
+function isAllWS(node)
+{
+  return !(/[^\t\n\r ]/.test(node.data));
+}
+
 
 function mathToText(editor)
 {
@@ -3354,6 +3384,11 @@ function mathToText(editor)
       if (pos == 1) 
       {
         msiGoDoCommand('cmd_charNext');
+        if (msiNavigationUtils.isMathNode(editor.selection.anchorNode))
+        {
+          editor.insertText(" ");
+          msiGoDoCommand('cmd_charNext'); 
+        }
         msiGoDoCommand('cmd_charPrevious');
       }
       else
@@ -3419,5 +3454,13 @@ function toggleMathText(editor)
     catch(e) {
       dump("Exception in toggleMathText: "+e.message+"\n");
     }
+  }
+}
+
+function switchToTextMode(editor)
+{
+  if (editor.tagListManager.selectionContainedInTag("math",null))
+  {
+    toggleMathText(editor);
   }
 }
