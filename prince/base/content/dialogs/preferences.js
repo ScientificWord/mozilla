@@ -1,30 +1,3 @@
-//
-//
-//function setIndex(item,idx) {
-//  document.getElementById(item).selectedIndex = idx;
-//}
-//
-//function setChecked(item,val) {
-//  document.getElementById(item).setAttribute("checked", val == 1 ? "true" : "false");
-//}
-//
-//function setValue(item,val) {
-//  document.getElementById(item).value = val;
-//}
-//
-//function getIndex(item) {
-//  return document.getElementById(item).selectedIndex;
-//}
-//
-//function getChecked(item) {
-//  return document.getElementById(item).getAttribute("checked") == "true" ? 1 : 0;
-//}
-//
-//function getValue(item) {
-//  return document.getElementById(item).value;
-//}
-//
-
 
 function initialize()
 {
@@ -74,59 +47,21 @@ function showShellsInDir(tree)
     dump(e.toString());
   }
 }
-
-
-
-
-
-
-var data;
-
 function UserSettingsStartup(){
-//  data = window.arguments[0];
-//
-//  setValue("digitsUsed", data.digitsUsed.toString());
-//  setValue("digitsRendered", data.digitsRendered.toString());
-//  setValue("degree", data.degree.toString());
-//  setValue("lower", data.lower.toString());
-//  setValue("upper", data.upper.toString());
-//  setValue("primesasn", data.primesasn.toString());
-//  
-//  setChecked("principal", data.principal);
-//  setChecked("special", data.special);
-//  setChecked("mixednum", data.mixednum);
-//  setChecked("trigargs", data.trigargs);
-//  setChecked("usearc", 1 - data.usearc);
-//  setChecked("logs", data.loge);
-//  setChecked("dots", data.dotderiv);
-//  setChecked("bar", data.barconj);
-//  setChecked("i_imaginary", data.i_imaginary);
-//  setChecked("j_imaginary", data.j_imaginary);
-//  setChecked("e_exp", data.e_exp);
-//  setChecked("primederiv", data.primederiv);
-//  
-//  setIndex("matrix_delim", data.matrix_delim);
-//
-//  setIndex("derivformat", data.derivformat);
-//  setIndex("imagi", data.imaginaryi);
-//  setIndex("diffD", data.diffD);
-//  setIndex("diffd", data.diffd);
-//  setIndex("expe", data.expe ? 1 : 0);
-//
-//  data.logSent     = msiLogger.logMMLSent;
-//  data.logReceived = msiComputeLogger.logMMLReceived;
-//  data.engSent     = msiComputeLogger.logEngSent;
-//  data.engReceived = msiComputeLogger.logEngReceived;
-//
 }
 
 
 function onAccept(){
-  document.getElementById("prefGeneral").writePreferences(true);
-  document.getElementById("prefEdit").writePreferences(true);
-  document.getElementById("prefComp").writePreferences(true);
-  document.getElementById("prefPlots").writePreferences(true);
-  document.getElementById("prefTypesetting").writePreferences(true);
+  try {
+    document.getElementById("prefGeneral").writePreferences(true);
+    document.getElementById("prefEdit").writePreferences(true);
+    document.getElementById("prefComp").writePreferences(true);
+    document.getElementById("prefPlots").writePreferences(true);
+    document.getElementById("prefTypesetting").writePreferences(true);
+  }
+  catch(e) {
+    dump(e.toString());
+  }
 //  document.getElementById("prefAdvanced").writePreferences(true);
 
 //   data.digitsUsed = getValue("digitsUsed");
