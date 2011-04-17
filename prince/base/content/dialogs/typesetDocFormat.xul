@@ -77,9 +77,9 @@
       <tab label="&docformatPageLayouttab;"/>
       <tab label="&docformatFontstab;"/>
       <tab label="&docformatSectionstab;"/>
-      <tab label="&docformatHeaderstab;"/>
+      <!--tab label="&docformatHeaderstab;"/>
       <tab label="&docformatNotestab;"/>
-      <tab label="&docformatAdvancedtab;"/>
+      <tab label="&docformatAdvancedtab;"/-->
     </tabs>
     <tabpanels>
       <tabpanel id="docformatgeneralpanel" orient="vertical">
@@ -88,7 +88,9 @@
        -->
         <vbox flex="1">
           <label class="heading" value="General Document Options"/>
-          <label value="Warning goes here"/>
+          <label>&warning.label1;</label>
+          <separator/>
+          <label>&warning.label2;</label>
         </vbox> 
         <checkbox id="enablereformat" label="Enable overriding the document style" checked="false"
           oncommand="enableDisableReformat(this.checked);"/>                 
@@ -1160,9 +1162,9 @@
         </vbox>
       </tabpanel>
       <tabpanel id="docformatSectionsPanel"></tabpanel>
-      <tabpanel id="docformatHeadersPanel"></tabpanel>
+      <!--tabpanel id="docformatHeadersPanel"></tabpanel>
       <tabpanel id="docformatNotesPanel"></tabpanel>
-      <tabpanel id="docformatAdvancedPanel"></tabpanel>
+      <tabpanel id="docformatAdvancedPanel"></tabpanel  -->
     </tabpanels>
   </tabbox>
 
