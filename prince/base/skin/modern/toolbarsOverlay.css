@@ -2098,81 +2098,159 @@ toolbar[iconsize="small"] #javascriptButton:hover {
   list-style-image: url("chrome://prince/skin/icons/v_currentview-sm.png");
 }
 
+
 #vc-RotateLeft{
   list-style-image: url("chrome://prince/skin/icons/v_rotateleft.png");
+}
+
+*[iconsize="small"] #vc-RotateLeft{
+  list-style-image: url("chrome://prince/skin/icons/v_rotateleft-sm.png");
 }
 
 #vc-RotateRight{
   list-style-image: url("chrome://prince/skin/icons/v_rotateright.png");
 }
 
+*[iconsize="small"] #vc-RotateRight{
+  list-style-image: url("chrome://prince/skin/icons/v_rotateright-sm.png");
+}
+
 #vc-RotateUp{
   list-style-image: url("chrome://prince/skin/icons/v_rotateup.png");
+}
+
+*[iconsize="small"] #vc-RotateUp{
+  list-style-image: url("chrome://prince/skin/icons/v_rotateup-sm.png");
 }
 
 #vc-RotateDown{
   list-style-image: url("chrome://prince/skin/icons/v_rotatedown.png");
 }
 
+*[iconsize="small"] #vc-RotateDown{
+  list-style-image: url("chrome://prince/skin/icons/v_rotatedown-sm.png");
+}
+
 #vc-RotateScene{
   list-style-image: url("chrome://prince/skin/icons/v_rotate.png");
+}
+
+*[iconsize="small"] #vc-RotateScene{
+  list-style-image: url("chrome://prince/skin/icons/v_rotate-sm.png");
 }
 
 #vc-Zoom{
   list-style-image: url("chrome://prince/skin/icons/v_zooming.png");
 }
 
+*[iconsize="small"] #vc-Zoom{
+  list-style-image: url("chrome://prince/skin/icons/v_zooming-sm.png");
+}
+
 #vc-Move{
   list-style-image: url("chrome://prince/skin/icons/v_move.png");
+}
+
+*[iconsize="small"] #vc-Move{
+  list-style-image: url("chrome://prince/skin/icons/v_move-sm.png");
 }
 
 #vc-AutoSpeed{
   list-style-image: url("chrome://prince/skin/icons/v_speed.png");
 }
 
+*[iconsize="small"] #vc-AutoSpeed{
+  list-style-image: url("chrome://prince/skin/icons/v_speed-sm.png");
+}
+
 #vc-AnimSpeed{
   list-style-image: url("chrome://prince/skin/icons/v_speed.png");
+}
+
+*[iconsize="small"] #vc-AnimSpeed{
+  list-style-image: url("chrome://prince/skin/icons/v_speed-sm.png");
 }
 
 #vc-AutoZoomIn{
   list-style-image: url("chrome://prince/skin/icons/v_zoomin.png");
 }
 
+*[iconsize="small"] #vc-AutoZoomIn{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomin-sm.png");
+}
+
 #vc-AutoZoomOut{
   list-style-image: url("chrome://prince/skin/icons/v_zoomout.png");
+}
+
+*[iconsize="small"] #vc-AutoZoomOut{
+  list-style-image: url("chrome://prince/skin/icons/v_zoomout-sm.png");
 }
 
 #vc-GoToEnd{
   list-style-image: url("chrome://prince/skin/icons/v_end.png");
 }
 
+*[iconsize="small"] #vc-GoToEnd{
+  list-style-image: url("chrome://prince/skin/icons/v_end-sm.png");
+}
+
 #vc-GoToStart{
   list-style-image: url("chrome://prince/skin/icons/v_begin.png");
+}
+
+*[iconsize="small"] #vc-GoToStart{
+  list-style-image: url("chrome://prince/skin/icons/v_begin-sm.png");
 }
 
 #vc-LoopType{
   list-style-image: url("chrome://prince/skin/icons/v_anistyle.png");
 }
 
+*[iconsize="small"] #vc-LoopType{
+  list-style-image: url("chrome://prince/skin/icons/v_anistyle-sm.png");
+}
+
 #vc-Play{
   list-style-image: url("chrome://prince/skin/icons/v_start.png");
+}
+
+*[iconsize="small"] #vc-Play{
+  list-style-image: url("chrome://prince/skin/icons/v_start-sm.png");
 }
 
 #vc-Query{
   list-style-image: url("chrome://prince/skin/icons/v_query.png");
 }
 
+*[iconsize="small"] #vc-Query{
+  list-style-image: url("chrome://prince/skin/icons/v_query-sm.png");
+}
+
 #vc-SelObj{
   list-style-image: url("chrome://prince/skin/icons/v_selection.png");
+}
+
+*[iconsize="small"] #vc-SelObj{
+  list-style-image: url("chrome://prince/skin/icons/v_selection-sm.png");
 }
 
 #vc-FitContents{
   list-style-image: url("chrome://prince/skin/icons/v_fit.png");
 }
 
+*[iconsize="small"] #vc-FitContents{
+  list-style-image: url("chrome://prince/skin/icons/v_fit-sm.png");
+}
+
 #vc-Reset{
   list-style-image: url("chrome://prince/skin/icons/v_reset.png");
 }
+
+*[iconsize="small"] #vc-Reset{
+  list-style-image: url("chrome://prince/skin/icons/v_reset-sm.png");
+}
+
 
 #vc-RotateLeft:hover{
   list-style-image: url("chrome://prince/skin/icons/v_rotateleft-hover.png");
