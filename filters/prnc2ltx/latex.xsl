@@ -38,7 +38,7 @@
 </xsl:template>
 
 <xsl:template match="html:html">
-	<xsl:apply-templates/>
+    <xsl:apply-templates/>
 </xsl:template>
 
 <xsl:template match="html:head">
@@ -83,20 +83,20 @@
 
 <xsl:variable name="theoremenvList">
   <xsl:for-each select="//html:newtheorem">
-	<xsl:element name="thmenvnode">
-	  <xsl:attribute name="tagname"><xsl:value-of select="@name"/></xsl:attribute>
-	  <xsl:attribute name="numbering">
-  	  <xsl:choose>
-  	    <xsl:when test="@counter and string-length(@counter)">
-  	      <xsl:value-of select="@counter"/>
-  	    </xsl:when>
-  		<xsl:otherwise>
-  		  <xsl:value-of select="@name"/>
-  		</xsl:otherwise>
-  	  </xsl:choose>
-	  </xsl:attribute>
-	  <xsl:attribute name="texname"><xsl:value-of select="@name"/></xsl:attribute>
-	</xsl:element>
+    <xsl:element name="thmenvnode">
+      <xsl:attribute name="tagname"><xsl:value-of select="@name"/></xsl:attribute>
+      <xsl:attribute name="numbering">
+      <xsl:choose>
+        <xsl:when test="@counter and string-length(@counter)">
+          <xsl:value-of select="@counter"/>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="@name"/>
+        </xsl:otherwise>
+      </xsl:choose>
+      </xsl:attribute>
+      <xsl:attribute name="texname"><xsl:value-of select="@name"/></xsl:attribute>
+    </xsl:element>
   </xsl:for-each>
 </xsl:variable>
 
@@ -104,29 +104,29 @@
 
 <xsl:variable name="neededNewTheorems">
   <xsl:for-each select="//html:assertion|//html:conjecture|//html:corollary|//html:criterion|//html:proposition|//html:theorem|//html:algorithm|//html:assumption|//html:axiom|//html:condition|//html:definition|//html:example|//html:exercise|//html:hypothesis|//html:problem|//html:property|//html:question|//html:acknowledgment|//html:case|//html:claim|//html:conclusion|//html:notation|//html:remark|//html:summary|//html:generictheorem">
-	<xsl:variable name="existingThmTranslation">
+    <xsl:variable name="existingThmTranslation">
       <xsl:call-template name="checkTeXNameForEnvironments">
         <xsl:with-param name="theTag" select="name(.)"/>
-  	    <xsl:if test="not(not(@numbering)) and string-length(@numbering)">
+        <xsl:if test="not(not(@numbering)) and string-length(@numbering)">
           <xsl:with-param name="theNumbering" select="@numbering"/>
-  	    </xsl:if>
-  	  </xsl:call-template>
+        </xsl:if>
+      </xsl:call-template>
     </xsl:variable>
-	<xsl:if test="not($existingThmTranslation) or not(string-length($existingThmTranslation))">
+    <xsl:if test="not($existingThmTranslation) or not(string-length($existingThmTranslation))">
       <xsl:element name="thmenvnode">
       <xsl:attribute name="tagname"><xsl:value-of select="name(.)"/></xsl:attribute>
       <xsl:attribute name="texname"><xsl:value-of select="name(.)"/></xsl:attribute>
       <xsl:choose>
         <xsl:when test="not(not(@numbering))">
-		  <xsl:attribute name="numbering"><xsl:value-of select="@numbering"/></xsl:attribute>
-  	    </xsl:when>
-  	    <xsl:otherwise>
+          <xsl:attribute name="numbering"><xsl:value-of select="@numbering"/></xsl:attribute>
+        </xsl:when>
+        <xsl:otherwise>
           <xsl:attribute name="numbering"><xsl:value-of select="name(.)"/></xsl:attribute>
-  	    </xsl:otherwise>
-	  </xsl:choose>
-	  <xsl:attribute name="label"><xsl:value-of select="translate(substring(name(.),1,1),'abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ')"/><xsl:value-of select="substring(name(.),2)"/></xsl:attribute>
+        </xsl:otherwise>
+      </xsl:choose>
+      <xsl:attribute name="label"><xsl:value-of select="translate(substring(name(.),1,1),'abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ')"/><xsl:value-of select="substring(name(.),2)"/></xsl:attribute>
       </xsl:element>
-	</xsl:if>
+    </xsl:if>
   </xsl:for-each>
 </xsl:variable>
 
@@ -147,8 +147,8 @@
 <xsl:template name="generateMissingNewTheorems">
   <xsl:for-each select="$sortedNeededNewTheoremsNodeList/*[@texname and string-length(@texname)]">
     <xsl:variable name="pos" select="position()"/>
-	<!-- xsl:variable name="currtexname" select="@texname"/ -->
-	<xsl:if test="($pos=1) or not(@texname=$sortedNeededNewTheoremsNodeList/thmenvnode[$pos - 1]/@texname)">
+    <!-- xsl:variable name="currtexname" select="@texname"/ -->
+    <xsl:if test="($pos=1) or not(@texname=$sortedNeededNewTheoremsNodeList/thmenvnode[$pos - 1]/@texname)">
       <xsl:choose>
         <xsl:when test="@numbering='none'">
 \newtheorem*{<xsl:value-of select="@texname"/>}{<xsl:value-of select="@label"/>}
@@ -160,8 +160,30 @@
 \newtheorem{<xsl:value-of select="@texname"/>}[<xsl:value-of select="@numbering"/>]{<xsl:value-of select="@label"/>}
         </xsl:otherwise>
       </xsl:choose>
-	</xsl:if>
+    </xsl:if>
   </xsl:for-each>
+</xsl:template>
+
+<xsl:variable name="equationNumberingContainers">
+  <xsl:choose>
+    <xsl:when test=".//html:documentclass[@class='article']">
+      <xsl:text>-section-chapter-body-</xsl:text>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:text>-body-</xsl:text>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:variable>
+
+<xsl:template name="checkEndSubEquationsScope">
+  <xsl:if test="contains($equationNumberingContainers, concat('-',local-name(.),'-'))">
+    <xsl:if test=".//html:msidisplay[last()][@subEquationNumbers='true'] 
+        and (.//html:msidisplay[last()]/ancestor::*[contains($equationNumberingContainers, concat('-',local-name(.),'-'))]=current())">
+      <xsl:text xml:space="preserve">
+\end{subequations}
+</xsl:text>
+    </xsl:if>
+  </xsl:if>
 </xsl:template>
 
 <xsl:template match="html:body">
@@ -198,9 +220,9 @@ should not be done under some conditions -->
 <xsl:template match="html:author">
 \author{<xsl:value-of select="normalize-space(child::text())"/><xsl:text/>
 <xsl:if test="../html:address">~\\<xsl:value-of select="normalize-space(../html:address)"/></xsl:if>
-}</xsl:template>			   
+}</xsl:template>               
 
-		  
+          
 <xsl:template match="html:abstract">
 \begin{abstract}
 <xsl:apply-templates/>
@@ -229,14 +251,17 @@ should not be done under some conditions -->
 
 <xsl:template match="html:part">
 <xsl:apply-templates/>
+<xsl:call-template name="checkEndSubEquationsScope"/>
 </xsl:template>
 
 <xsl:template match="html:chapter">
 <xsl:apply-templates/>
+<xsl:call-template name="checkEndSubEquationsScope"/>
 </xsl:template>
 
 <xsl:template match="html:section">
 <xsl:apply-templates/>
+<xsl:call-template name="checkEndSubEquationsScope"/>
 </xsl:template>
 
 <xsl:template match="html:subsection">
@@ -303,11 +328,11 @@ should not be done under some conditions -->
     <xsl:when test="string-length(normalize-space($theNumbering))">
       <xsl:variable name="theDefinition" select="$theoremenvNodeList/*[@tagname=$theTag][@numbering=$theNumbering]" />
       <xsl:if test="$theDefinition"><xsl:value-of select="$theDefinition/@texname"/></xsl:if>
-	</xsl:when>
-	<xsl:otherwise>
+    </xsl:when>
+    <xsl:otherwise>
       <xsl:variable name="theDefinition2" select="$theoremenvNodeList/*[@tagname=$theTag]" />
       <xsl:if test="$theDefinition2"><xsl:value-of select="$theDefinition2/@texname"/></xsl:if>
-	</xsl:otherwise>
+    </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
 
@@ -318,21 +343,21 @@ should not be done under some conditions -->
     <xsl:when test="string-length(normalize-space($theNumbering))">
       <xsl:variable name="theDefinition" select="$theoremenvNodeList/*[@tagname=$theTag][@numbering=$theNumbering]" />
       <xsl:variable name="theDefinitionNew" select="$sortedNeededNewTheoremsNodeList/*[@tagname=$theTag][@numbering=$theNumbering]" />
-	  <xsl:choose>
+      <xsl:choose>
         <xsl:when test="$theDefinition"><xsl:value-of select="$theDefinition/@texname"/></xsl:when>
-		<xsl:when test="$theDefinitionNew"><xsl:value-of select="$theDefinitionNew/@texname"/></xsl:when>
-		<xsl:otherwise></xsl:otherwise>
-	  </xsl:choose>
-	</xsl:when>
-	<xsl:otherwise>
+        <xsl:when test="$theDefinitionNew"><xsl:value-of select="$theDefinitionNew/@texname"/></xsl:when>
+        <xsl:otherwise></xsl:otherwise>
+      </xsl:choose>
+    </xsl:when>
+    <xsl:otherwise>
       <xsl:variable name="theDefinition2" select="$theoremenvNodeList/*[@tagname=$theTag]" />
       <xsl:variable name="theDefinition2New" select="$sortedNeededNewTheoremsNodeList/*[@tagname=$theTag]" />
-	  <xsl:choose>
+      <xsl:choose>
         <xsl:when test="$theDefinition2"><xsl:value-of select="$theDefinition2/@texname"/></xsl:when>
         <xsl:when test="$theDefinition2New"><xsl:value-of select="$theDefinition2New/@texname"/></xsl:when>
-		<xsl:otherwise></xsl:otherwise>
-	  </xsl:choose>
-	</xsl:otherwise>
+        <xsl:otherwise></xsl:otherwise>
+      </xsl:choose>
+    </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
 
@@ -341,19 +366,19 @@ should not be done under some conditions -->
   <xsl:param name="theNumbering"/>
   <xsl:variable name="definedTagnameToUse">
     <xsl:call-template name="getTeXNameForEnvironment">
-	  <xsl:with-param name="theTag" select="$theTag"/>
-	  <xsl:with-param name="theNumbering" select="$theNumbering"/>
-	</xsl:call-template>
+      <xsl:with-param name="theTag" select="$theTag"/>
+      <xsl:with-param name="theNumbering" select="$theNumbering"/>
+    </xsl:call-template>
   </xsl:variable>
   <xsl:variable name="tagnameToUse">
-	<xsl:choose>
-	  <xsl:when	test="$definedTagnameToUse and string-length(normalize-space($definedTagnameToUse))">
-		<xsl:value-of select="$definedTagnameToUse"/>
-	  </xsl:when>
-	  <xsl:otherwise>
+    <xsl:choose>
+      <xsl:when test="$definedTagnameToUse and string-length(normalize-space($definedTagnameToUse))">
+        <xsl:value-of select="$definedTagnameToUse"/>
+      </xsl:when>
+      <xsl:otherwise>
         <xsl:value-of select="$theTag"/><xsl:if test="$theNumbering='none'">*</xsl:if>
-	  </xsl:otherwise>
-	</xsl:choose>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:variable>
 \begin{<xsl:value-of select="$tagnameToUse"/>}<xsl:apply-templates mode="envleadin"/>
 <xsl:apply-templates/>
@@ -671,8 +696,92 @@ should not be done under some conditions -->
 >{<xsl:value-of select="@bibitemkey"/>} <xsl:apply-templates select="*[local-name()!='biblabel']"/>
 </xsl:template>
 
-<xsl:template match="html:msidisplay"><xsl:apply-templates/></xsl:template>
-
+<xsl:template match="html:msidisplay">
+  <xsl:variable name="subEquationsInScope">
+    <xsl:if test="preceding::html:msidisplay[1][@subEquationNumbers='true']">
+      <xsl:variable name="ourSection" select="generate-id(ancestor::*[contains($equationNumberingContainers,concat('-',local-name(.),'-'))][1])"/>
+      <xsl:variable name="otherSection" select="generate-id(preceding::html:msidisplay[1]/ancestor::*[contains($equationNumberingContainers,concat('-',local-name(.),'-'))][1])"/>
+      <xsl:if test="$ourSection=$otherSection">
+        <xsl:text>true</xsl:text>
+      </xsl:if>
+    </xsl:if>
+  </xsl:variable>
+  <xsl:if test="($subEquationsInScope='true') and not((@subEquationNumbers='true') and (@subEquationContinuation='true'))">
+        <xsl:text xml:space="preserve">\end{subequations}
+</xsl:text>
+  </xsl:if>
+  <xsl:if test="(@subEquationNumbers='true') and not((@subEquationContinuation='true') and ($subEquationsInScope='true'))">
+    <xsl:text xml:space="preserve">\begin{subequations}
+</xsl:text>
+  </xsl:if>
+  <xsl:choose>
+    <xsl:when test=".//mml:mtable[@type='eqnarray']">
+    <xsl:for-each select=".//mml:mtable[@type='eqnarray'][1]">
+      <xsl:call-template name="eqnarray">
+        <xsl:with-param name="n-rows" select="count(./mml:mtr)" />
+        <xsl:with-param name="n-labeledrows">
+          <xsl:choose>
+            <xsl:when test="@numbering='none'">
+              <xsl:text>0</xsl:text>
+            </xsl:when>
+            <xsl:when test="@alignment='alignSingleEqn'">
+              <xsl:choose>
+              <xsl:when test="./mml:mtr/mml:mtd[not(@numbering='none')]">
+                <xsl:text>1</xsl:text>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:text>0</xsl:text>
+              </xsl:otherwise>
+              </xsl:choose>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="count(./mml:mtr/mml:mtd[not(@numbering='none')])" />
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:with-param>
+        <xsl:with-param name="n-aligns">
+          <xsl:choose>
+            <xsl:when test="(@alignment='alignCentered') or (@alignment='alignSingleEqn')">
+              <xsl:text>0</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text>1</xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:with-param>
+        <xsl:with-param name="theAlignment" select="@alignment"/>
+      </xsl:call-template>
+    </xsl:for-each>
+    </xsl:when>
+    <xsl:otherwise>  <!-- Single-line display - either \equation or \equation* -->
+      <xsl:text xml:space="preserve">
+\begin{equation</xsl:text>
+      <xsl:if test="@numbering='none'">
+        <xsl:text>*</xsl:text>
+      </xsl:if>
+      <xsl:text xml:space="preserve">}
+</xsl:text>
+      <xsl:apply-templates select="mml:math/*" />
+      <xsl:if test="@customLabel and string-length(@customLabel)">
+        <xsl:text xml:space="preserve"> \tag{</xsl:text>
+        <xsl:value-of select="@customLabel" />
+        <xsl:text>}</xsl:text>
+      </xsl:if>
+      <xsl:if test="@marker and string-length(@marker)">
+        <xsl:text xml:space="preserve"> \label{</xsl:text>
+        <xsl:value-of select="@marker"/>
+        <xsl:text>}</xsl:text>
+      </xsl:if>
+      <xsl:text xml:space="preserve">
+\end{equation</xsl:text>
+      <xsl:if test="@numbering='none'">
+        <xsl:text>*</xsl:text>
+      </xsl:if>
+      <xsl:text xml:space="preserve">}
+</xsl:text>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
 
 <xsl:template match="html:frontmatter"><xsl:apply-templates/></xsl:template>
 
