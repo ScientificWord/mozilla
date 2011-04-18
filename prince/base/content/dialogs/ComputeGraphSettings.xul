@@ -69,80 +69,135 @@
 
   <tabbox id="outer-box" flex="1">
     <tabs class="tabs-top">
-	  <tab label="&tabbar.items;"       selected="1" />
-	  <tab label="&tabbar.axes;"        selected="0" />
 	  <tab label="&tabbar.layout;"      selected="0" />
 	  <tab label="&tabbar.labelling;"   selected="0" />
+	  <tab label="&tabbar.items;"       selected="1" />
+	  <tab label="&tabbar.axes;"        selected="0" />
 	  <tab label="&tabbar.view;"        selected="0" />
 	</tabs>
 
     <tabpanels>
+      <tabpanel id="Layout" orient="vertical">
+        <groupbox>
+          <caption label="Default size for new plots"/>
+          <grid>
+            <columns>
+              <column flex="0"/>
+              <column flex="0"/>
+              <column flex="0"/>
+              <column flex="0"/>
+            </columns>
+            <rows>
+              <row><label value="Width:"/> <textbox id="plotwidth" type="number" style="width: 5em;" preference="defaultGraphicsHSize"/>
+                <label value="units"/>
+                <menulist id="plotunits" oncommand="plotUnitsHandler.setCurrentUnit(this.value)"/>
+              </row>
+              <row><label value="Height:"/> <textbox id="plotheight" type="number" style="width: 5em;" preference="defaultGraphicsVSize"/><label observes="plotunits"/></row>
+            </rows>
+          </grid>
+        </groupbox>
+        <groupbox>
+          <caption label="Default placement for new plots"/>
+          <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);">
+          <hbox flex="1">
+            <vbox>
+              <radio id="inline" label="In line" radioGroup="placementRadioGroup"/>
+            </vbox>
+            <vbox>
+              <radio id="display" label="Displayed" radioGroup="placementRadioGroup"/>
+            </vbox>
+            <vbox>
+              <radio id="float" label="Floating" radioGroup="placementRadioGroup" oncommand="enableHere(this);"/>
+              <vbox>
+                <checkbox id="placeForceHereCheck" label="Force here" observes="floatingPlacement"/>
+                <checkbox id="placeHereCheck" label="Here" observes="floatingPlacement"/>
+                <checkbox id="placeFloatsCheck" label="On a page of floats" observes="floatingPlacement"/>
+                <checkbox id="placeTopCheck" label="Top of page" observes="floatingPlacement"/>
+                <checkbox id="placeBottomCheck" label="Bottom of page" observes="floatingPlacement"/>
+              </vbox>
+            </vbox>
+            <vbox>
+              <radiogroup id="herePlacementRadioGroup" align="vertical" value="left" oncommand="enableHere(this);">
+                <radio id="hereLeftRadio" label="Left" value="left" observes="herePlacement" />
+                <radio id="hereRightRadio" label="Right" value="right" observes="herePlacement"/>
+                <radio id="hereInsideRadio" label="Inside" value="inside" observes="herePlacement" />
+                <radio id="hereOutsideRadio" label="Outside" value="outside" observes="herePlacement" />
+                <radio id="hereFullWidthRadio" label="Full width" value="full" observes="herePlacement" />
+              </radiogroup>
+            </vbox>
+          </hbox>
+          </radiogroup>
+        </groupbox>
+      </tabpanel>      
+
+      <tabpanel id="Labelling">
+        <vbox>
+          <groupbox>        
+            <label value="&labelingkey.label;"/>
+            <textbox id="key" timeout="50" type="autocomplete" minresultsforpopup="1" enablehistory="true" 
+              forcecomplete="true"
+              completedefaultindex="true" autocompletesearch="stringarray" autocompletesearchparam="key"
+              tooltiptext="Enter a key name which does not conflict with the current keys"
+              maxrows="3"
+              onfocus="this.select()"
+              oninput="tagConflicts();"
+              ontextentered="tagConflicts();" />
+          </groupbox>
+          <groupbox>        
+            <label value="&labelingname.label;"/>
+            <textbox id="Name"/>
+          </groupbox>
+          <groupbox>
+            <caption label="&labelingcaption.label;"/>
+            <radiogroup id="captionplacement" orient="horizontal">
+              <radio label="&labelingabove.label;"    value="labelabove" selected="false"/>
+              <radio label="&labelingbelow.label;"    value="labelbelow" selected="true"/>
+            </radiogroup>
+            <textbox id="CaptionText"  multiline="true" rows="4" cols="40" 
+                   caption="&labelingcaptiontext.label;" />
+          </groupbox>
+       </vbox>
+      </tabpanel>      
       <tabpanel id="ItemsPlotted">
 
 	    <vbox>
-		  <groupbox>
+  		  <groupbox>
   	        <caption label="&plotstyles.label;"/>
-      	    <grid flex = "1">
-  	          <columns>
-  	            <column flex="2"/>
-  	            <column flex="1"/>
-      	      </columns>
-  	          <rows>
-			    <row>
-                  <label>"&dimensions.label;"</label>
-				  <description id="dimension"  value="2" />
-				</row>
-			    <row>
-                   <groupbox id="plotcs2d">
-                     <label>"&plottype.label;"</label>
-                     <menulist id="pt2d">
-                       <menupopup command="cmd_changePlotType"> 
-                         <menuitem label="&plottyperec.label;"         value="rectangular"/>
-                         <menuitem label="&plottypepolar.label;"       value="polar"/>
-                         <menuitem label="&plottypeimplicit.label;"    value="implicit"/>
-                         <menuitem label="&plottypeinequality.label;"  value="inequality"/>
-                         <menuitem label="&plottypeparametric.label;"  value="parametric"/>
-                         <menuitem label="&plottypeconformal.label;"   value="conformal"/>
-                         <menuitem label="&plottypegradient.label;"    value="gradient"/>
-                         <menuitem label="&plottypevector.label;"      value="vectorField"/>
-                         <menuitem label="&plottypeode.label;"         value="ode"/>
-                         <menuitem label="&plottypeAI.label;"          value="approximateIntegral"/>
-                       </menupopup>
-                     </menulist>
-   				   </groupbox>
-                   <groupbox id="plotcs3d" collapsed="true">
-                      <label>"&plottype.label;"</label>
-                      <menulist id="pt3d">
-                        <menupopup command="cmd_changePlotType"> 
-                           <menuitem label="&plottyperec.label;"         value="rectangular"/>
-                           <menuitem label="&plottypecur.label;"         value="curve"/>
-                           <menuitem label="&plottypecylindrical.label;" value="cylindrical"/>
-                           <menuitem label="&plottypesphere.label;"      value="spherical"/>
-                           <menuitem label="&plottypeparametric.label;"  value="parametric"/>
-                           <menuitem label="&plottypeimplicit.label;"    value="implicit"/>
-                           <menuitem label="&plottypetube.label;"        value="tube"/>
-                           <menuitem label="&plottypegradient.label;"    value="gradient"/>
-                           <menuitem label="&plottypevector.label;"      value="vectorField"/>
-                        </menupopup>
-                      </menulist>
-				   </groupbox>
-				</row>
-			    <row>
-                  <checkbox id="animate"     label="&animate.label;"/>
-				</row>
-              </rows>
-			</grid>
-          </groupbox>
-          <groupbox>
-            <hbox>
-              <menulist id="plot" label="&editplotitem.label;">
-                <menupopup id="plotnumber" command="cmd_changePlot"> 
+            <hbox><description id="dimension"  value="2" /><label>&dimensions.label;</label></hbox>
+            <groupbox id="plotcs2d">
+              <label>&plottype.label;</label>
+              <menulist id="pt2d">
+                <menupopup command="cmd_changePlotType"> 
+                  <menuitem label="&plottyperec.label;"         value="rectangular"/>
+                  <menuitem label="&plottypepolar.label;"       value="polar"/>
+                  <menuitem label="&plottypeimplicit.label;"    value="implicit"/>
+                  <menuitem label="&plottypeinequality.label;"  value="inequality"/>
+                  <menuitem label="&plottypeparametric.label;"  value="parametric"/>
+                  <menuitem label="&plottypeconformal.label;"   value="conformal"/>
+                  <menuitem label="&plottypegradient.label;"    value="gradient"/>
+                  <menuitem label="&plottypevector.label;"      value="vectorField"/>
+                  <menuitem label="&plottypeode.label;"         value="ode"/>
+                  <menuitem label="&plottypeAI.label;"          value="approximateIntegral"/>
                 </menupopup>
               </menulist>
-              <msibutton label="&editplot.label;"  command="cmd_editPlot"/>
-              <msibutton label="&newplot.label;"   command="cmd_newPlot"/>
-              <msibutton label="&command.delete;"  command="cmd_deletePlot"/>
-            </hbox>
+   				  </groupbox>
+            <groupbox id="plotcs3d" collapsed="true">
+               <label>&plottype.label;</label>
+               <menulist id="pt3d">
+                 <menupopup command="cmd_changePlotType"> 
+                   <menuitem label="&plottyperec.label;"         value="rectangular"/>
+                   <menuitem label="&plottypecur.label;"         value="curve"/>
+                   <menuitem label="&plottypecylindrical.label;" value="cylindrical"/>
+                   <menuitem label="&plottypesphere.label;"      value="spherical"/>
+                   <menuitem label="&plottypeparametric.label;"  value="parametric"/>
+                   <menuitem label="&plottypeimplicit.label;"    value="implicit"/>
+                   <menuitem label="&plottypetube.label;"        value="tube"/>
+                   <menuitem label="&plottypegradient.label;"    value="gradient"/>
+                   <menuitem label="&plottypevector.label;"      value="vectorField"/>
+                 </menupopup>
+               </menulist>
+				    </groupbox>
+            <checkbox id="animate"     label="&animate.label;"/>
           </groupbox>
 
   	      <!-- broadcaster id="args" value="about:blank"/ -->
@@ -183,15 +238,132 @@
           <hbox>
             <vbox>
               <groupbox>
-                <caption id="center" label="&plotarguments.label;"/>
-                  <editor editortype="html" type="content-primary" context="msiEditorContentContext" 
-                          id="plotDlg-content-frame" flex="1" width="300" height="350"/>
+                <caption id="center" label="&plotexpr.label;"/>
+                <editor editortype="html" type="content-primary" context="msiEditorContentContext" 
+                        id="plotDlg-content-frame" flex="1" width="200" height="70"/>
               </groupbox>
-		    </vbox>
-		  </hbox>
+		        </vbox>
+            <vbox>
+              <label control="plot" value="Item number" />
+              <textbox id="plot" class="narrow" type="number" increment="1" decimalplaces="0" min="1" max="1" label="&editplotitem.label;"/>
+              <msibutton label="&newplot.label;"   command="cmd_newPlot"/>
+              <msibutton label="&command.delete;"  command="cmd_deletePlot"/>
+            </vbox>
+		      </hbox>
+          <groupbox>
+            <caption>Item coloring</caption>
+            <grid>
+              <columns><column flex="1" /><column/><column flex="1" /><column/><column flex="1" /></columns>
+              <rows>
+                <row>
+                  <hbox/>
+                  <label value="Directional shading" control="dirshading" />
+                  <hbox/>
+                  <label value="Base color" control="basecolor" />
+                  <hbox/>
+                </row>
+                <row>
+                  <hbox/>
+                  <menulist id="dirshading">
+                    <menupopup>
+                      <menuitem label="XYZ"/>
+                      <menuitem label="XY"/>
+                      <menuitem label="X"/>
+                      <menuitem label="Z[hue]"/>
+                      <menuitem label="Z[greyscale]"/>
+                      <menuitem label="Flat"/>
+                    </menupopup>
+                  </menulist>
+                  <hbox/>
+                  <msibutton id="basecolor" class="color-button" oncommand="getColorAndUpdate(this);">
+                    <spacer id="baseColorWell" class="color-well"/>
+                  </msibutton>
+                  <hbox/>
+                </row>
+                <row>
+                  <hbox/>
+                  <hbox/>
+                  <hbox/>
+                  <label value="Secondary color" control="secondcolor"/>
+                  <hbox/>
+                </row>
+                <row>
+                  <hbox/>
+                  <hbox/>
+                  <hbox/>
+                  <msibutton id="secondcolor" class="color-button" oncommand="getColorAndUpdate(this);">
+                    <spacer id="secondColorWell" class="color-well" />
+                  </msibutton>
+                  <hbox/>
+                </row>
+              </rows>
+            </grid>
+          </groupbox>
+          <groupbox>
+            <grid>
+              <columns><column/><column/><column/></columns>
+              <rows>
+                <row>
+                  <label control="linestyle" value="Line style" />
+                  <label control="linethickness" value="Line thickness" />
+                  <label contrl= "pointmarker" value="Point marker"/>
+                </row>
+                <row>
+                  <menulist id="linestyle">
+                    <menupopup>
+                      <menuitem label="Solid"/>
+                      <menuitem label="Dash"/>
+                      <menuitem label="Dots"/>
+                      <menuitem label="DotDash"/>
+                      <menuitem label="DotDotDash"/>
+                    </menupopup>
+                  </menulist>
+                  <menulist id="linethickness">
+                    <menupopup>
+                      <menuitem label="Thin"/>
+                      <menuitem label="Medium"/>
+                      <menuitem label="Thick"/>
+                    </menupopup>
+                  </menulist>
+                  <menulist id="pointmarker">
+                    <menupopup>
+                      <menuitem label="Dot"/>
+                      <menuitem label="Circle"/>
+                      <menuitem label="Cross"/>
+                      <menuitem label="Box"/>
+                      <menuitem label="Diamond"/>
+                    </menupopup>
+                  </menulist>
+                </row>
+                <row>
+                  <label control="surfacestyle" value="Surface style" />
+                  <label conrol="surfacemesh" value="Surface mesh" />
+                </row>
+                <row>
+                  <menulist id="surfacestyle">
+                    <menupopup>
+                      <menuitem label="Color patch"/>
+                      <menuitem label="Hidden line"/>
+                      <menuitem label="Wire frame"/>
+                      <menuitem label="Point"/>
+                    </menupopup>
+                  </menulist>
+                  <menulist id="surfacemesh">
+                    <menupopup>
+                      <menuitem label="None"/>
+                      <menuitem label="Mesh"/>
+                      <menuitem label="ULines"/>
+                      <menuitem label="VLines"/>
+                      <menuitem label="Contour"/>
+                    </menupopup>
+                  </menulist>
+                  <msibutton><description>Variables and intervals</description></msibutton>
+                </row>
+              </rows>
+            </grid>
+          </groupbox>
         </vbox>
-      </tabpanel>      
-
+        </tabpanel>
       <tabpanel id="Axes">
         <vbox>
           <groupbox>
@@ -272,76 +444,6 @@
        </vbox>
       </tabpanel>      
 
-      <tabpanel id="Layout" orient="vertical">
-        <groupbox>
-          <caption label="Default size for new plots"/>
-          <grid>
-            <columns>
-              <column flex="0"/>
-              <column flex="0"/>
-              <column flex="0"/>
-            </columns>
-            <rows>
-              <row><label value="Width:"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsHSize"/><label value="pixels"/></row>
-              <row><label value="Height:"/> <textbox type="number" style="width: 5em;" preference="defaultGraphicsVSize"/><label value="pixels"/></row>
-            </rows>
-          </grid>
-        </groupbox>
-        <groupbox>
-          <caption label="Default placement for new plots"/>
-          <radiogroup id="placementRadioGroup" oncommand="enableFloating(this);">
-          <hbox flex="1">
-            <vbox>
-              <radio id="inline" label="In line" radioGroup="placementRadioGroup"/>
-            </vbox>
-            <vbox>
-              <radio id="display" label="Displayed" radioGroup="placementRadioGroup"/>
-            </vbox>
-            <vbox>
-              <radio id="float" label="Floating" radioGroup="placementRadioGroup" oncommand="enableHere(this);"/>
-              <vbox>
-                <checkbox id="placeForceHereCheck" label="Force here" observes="floatingPlacement"/>
-                <checkbox id="placeHereCheck" label="Here" observes="floatingPlacement"/>
-                <checkbox id="placeFloatsCheck" label="On a page of floats" observes="floatingPlacement"/>
-                <checkbox id="placeTopCheck" label="Top of page" observes="floatingPlacement"/>
-                <checkbox id="placeBottomCheck" label="Bottom of page" observes="floatingPlacement"/>
-              </vbox>
-            </vbox>
-            <vbox>
-              <radiogroup id="herePlacementRadioGroup" align="vertical" value="left" oncommand="enableHere(this);">
-                <radio id="hereLeftRadio" label="Left" value="left" observes="herePlacement" />
-                <radio id="hereRightRadio" label="Right" value="right" observes="herePlacement"/>
-                <radio id="hereInsideRadio" label="Inside" value="inside" observes="herePlacement" />
-                <radio id="hereOutsideRadio" label="Outside" value="outside" observes="herePlacement" />
-                <radio id="hereFullWidthRadio" label="Full width" value="full" observes="herePlacement" />
-              </radiogroup>
-            </vbox>
-          </hbox>
-          </radiogroup>
-        </groupbox>
-      </tabpanel>      
-
-      <tabpanel id="Labelling">
-        <vbox>
-          <groupbox>        
-            <label value="&labelingkey.label;"/>
-            <textbox id="Key"/>
-          </groupbox>
-          <groupbox>        
-            <label value="&labelingname.label;"/>
-            <textbox id="Name"/>
-          </groupbox>
-          <groupbox>
-            <caption label="&labelingcaption.label;"/>
-            <radiogroup id="captionplacement" orient="horizontal">
-              <radio label="&labelingabove.label;"    value="labelabove" selected="false"/>
-              <radio label="&labelingbelow.label;"    value="labelbelow" selected="true"/>
-            </radiogroup>
-            <textbox id="CaptionText"  multiline="true" rows="4" cols="40" 
-                   caption="&labelingcaptiontext.label;" />
-          </groupbox>
-       </vbox>
-      </tabpanel>      
 
       <tabpanel id="View defaults">
         <vbox>

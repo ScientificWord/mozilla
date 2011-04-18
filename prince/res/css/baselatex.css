@@ -40,9 +40,11 @@ descriptionlist {list-style-type: none;}
 numberedListItem>bodyText:first-child:before { content: '(' counter(numberedlist) ') ';
   counter-increment: numberedlist;
   width: 2em;
+  -moz-user-modify: read-only;
 }
 
 numberedListItem>bodyText:first-child:first-line { content: '  ';
+  -moz-user-modify: read-only;
 }
 
 /* proof {
@@ -181,7 +183,10 @@ otfont {
 
 /* show footnotes by default*/
 note[type="footnote"] {
-  display: block;
+  display: inline;
+  float: left;
+  width: 100%;
+  clear: right;
 }
 
 /* never show footnotes marked 'hide'*/
@@ -191,7 +196,10 @@ note[hide="true"] {
 
 /* display footnotes marked 'hide=false'*/
 note[hide="false"] {
-  display: block ! important;
+  display: inline;
+  float: left;
+  width: 100%;
+  clear: right;
 }
 
 /* display footnotes marked 'hide=false' even when 'hideFootnotes=true'
@@ -218,7 +226,10 @@ note[hide="false"] {
 }
 
 *[hide="false"] note {
-  display: block !important;
+  display: inline;
+  float: left;
+  width: 100%;
+  clear: right;
 }
 
 note[type="footnote"] {
@@ -227,8 +238,6 @@ note[type="footnote"] {
   border-color: blue;
   border-style: solid;
   color: blue;
-  width: inherit;
-  float: none;
 }	 
 
 notewrapper[type="footnote"]:before { 
@@ -236,6 +245,8 @@ notewrapper[type="footnote"]:before {
   vertical-align: super;
   font-size: small;
   color: red;
+  -moz-user-modify: read-only;
+  -moz-user-select: text;
 } 
 
 notewrapper[type="footnote"]{ 
@@ -273,6 +284,7 @@ marker {
 
 marker:before {
   content: "[Marker: " attr(id) "]";
+  -moz-user-modify: read-only;
 }
 
 
@@ -294,6 +306,11 @@ IncludeSubdoc>TeX {
 button [class="frontmattertag"] {
   position: absolute;
   left: -160px;
+  font-family: sans-serif;
+  font-style: normal;
+}
+
+button [class="msi"] {
   font-family: sans-serif;
   font-style: normal;
 }
