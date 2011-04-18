@@ -759,6 +759,8 @@ should not be done under some conditions -->
       <xsl:if test="@numbering='none'">
         <xsl:text>*</xsl:text>
       </xsl:if>
+      <xsl:text xml:space="preserve">}
+</xsl:text>
       <xsl:apply-templates select="mml:math/*" />
       <xsl:if test="@customLabel and string-length(@customLabel)">
         <xsl:text xml:space="preserve"> \tag{</xsl:text>
