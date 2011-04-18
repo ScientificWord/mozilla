@@ -87,8 +87,8 @@
     <command id="cmd_print" oncommand="msiGoDoCommand('cmd_print')"/>
     <command id="cmd_quit" oncommand="doQuit()"/>
     <command id="cmd_save" oncommand="msiGoDoCommand('cmd_save')"/>
-    <command id="cmd_MSIComputeEval" oncommand="doComputeCommand('cmd_compute_Evaluate')"/>
-    <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/>
+    <!-- and id="cmd_MSIComputeEval" oncommand="doComputeCommand2(event, 'cmd_compute_Evaluate')"/>
+    <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/> -->
   </commandset>
   
   <broadcasterset id="broadcasterset"/>
@@ -116,7 +116,6 @@
     <key id="savekb"         key="&filesave.keybinding;"  observes="cmd_save"  modifiers="accel"/>
     <key id="printkb"        key="&fileprint.keybinding;" observes="cmd_print" modifiers="accel"/>
     <key id="key_quit"       key="&filequit.keybinding;"  observes="cmd_quit" modifiers="accel"/>
-    <key id="MSIevalKey" key="&MSIComputeEvalCmd.keybinding;" observes="cmd_MSIComputeEval"  modifiers="accel"  />        
     <key id="keyhelpcontents" keycode="&helpmenuContents.keybinding;" observes="cmd_unimp"/>>
   </keyset>
   <keyset id="mainKeyset"/> <!-- for extensions-->

@@ -191,23 +191,23 @@ function doEvalComputation(math,op,joiner,remark) {
     dump("doEvalComputation(): " + e+"\n");
 } }
 
-function doComputeCommand(cmd) {
-  var selection = GetCurrentEditor().selection;
-  if (selection) {
-    var element = findmathparent(selection.focusNode);
-    if (!element) {
-	    dump("not in math!\n");
-      return;
-    }
-    var eng = GetCurrentEngine();
-    switch (cmd) {
-    case "cmd_compute_Evaluate":
-      doEvalComputation(element,eng.Evaluate,"<mo>=</mo>","evaluate");
-      break;
-    case "cmd_compute_EvaluateNumeric":
-      doEvalComputation(element,eng.Evaluate_Numerically,"<mo>"+String.fromCharCode(0x2248)+"</mo>","evaluate numeric");
-      break;
-} } }
+// jcs function doComputeCommand(cmd) {
+// jcs   var selection = GetCurrentEditor().selection;
+// jcs   if (selection) {
+// jcs     var element = findmathparent(selection.focusNode);
+// jcs     if (!element) {
+// jcs 	    dump("not in math!\n");
+// jcs       return;
+// jcs     }
+// jcs     var eng = GetCurrentEngine();
+// jcs     switch (cmd) {
+// jcs     case "cmd_compute_Evaluate":
+// jcs       doEvalComputation(element,eng.Evaluate,"<mo>=</mo>","evaluate");
+// jcs       break;
+// jcs     case "cmd_compute_EvaluateNumeric":
+// jcs       doEvalComputation(element,eng.Evaluate_Numerically,"<mo>"+String.fromCharCode(0x2248)+"</mo>","evaluate numeric");
+// jcs       break;
+// jcs } } }
 
 // form a single run of math and put caret on end
 function coalescemath() {
@@ -464,72 +464,72 @@ function openTeX()
 
 #define INTERNAL_XSLT
 
-// documentAsTeXFile writes the document out as TeX. 
-// Returns true if the TeX file was created.
-// outTeXfile is an nsILocalFile. If it is null, create main.tex in the document's 'tex' directory.
-
-function documentAsTeXFile( document, outTeXfile, compileInfo )
-{
-  dump("\nDocument as TeXFile\n");
-  if (!document) return false;
-  var xslfiles = processingInstructionsList(document, "sw-xslt", false);
-  //  if nothing returned, use the default xslt
-  if (xslfiles.length < 1) xslfiles = ["latex.xsl"];
-  var xslSheet=xslfiles[0];
-  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
-  var documentPath = document.documentURI;
-  var docurl = msiURIFromString(documentPath);                                      
-  var workingDir;
-  var outTeX;
-  workingDir = msiFileFromFileURL(docurl);
-  var bareleaf = workingDir.leafName; // This is the leaf of the document.
-  workingDir = workingDir.parent;
-  if (outTeXfile == null  || outTeXfile.path.length == 0)
-  {
-    outTeX = workingDir.clone();
-    outTeX.append("tex");
-    if (!outTeX.exists()) outTeX.create(1, 0755);
-    outTeXfile = outTeX;
-    outTeXfile.append(bareleaf + ".tex");
-  }
-  var outfileTeXPath = outTeXfile.path;
-  var stylefile;
-  var xslPath;
-  var xslPath = "chrome://prnc2ltx/content/"+xslSheet;
-  var str = documentToTeXString(document, xslPath);
-  compileInfo.runMakeIndex = /\\makeindex/.test(str);
-  compileInfo.runBibTeX = /\\bibliography/.test(str);
-  compileInfo.passCount = 1;
-  var runcount = 1;
-  if (/\\tableofcontents|\\listoffigures|\\listoftables/.test(str)) runcount = 3;
-  if (compileInfo.passCount < runcount) compileInfo.passCount = runcount;
-  if (/\\xref|\\pageref|\\vxref|\\vpageref|\\cite/.test(str)) runcount = 2;
-  if (compileInfo.passCount < runcount) compileInfo.passCount = runcount;
-  var matcharr = /%% *minpasses *= *(\d+)/.exec(str);
-  if (matcharr && matcharr.length > 1) 
-  {
-    runcount = matcharr[1];
-    if (compileInfo.passCount < runcount) compileInfo.passCount = runcount;
-  }
-  if (compileInfo.runMakeIndex || compileInfo.runBibTeX) {
-    if (compileInfo.passCount < 3) compileInfo.passCount = 3;
-  }
-
-//  dump("\n"+str);
-  if (!str || str.length < 3) return false;
-  if (outTeXfile.exists()) 
-    outTeXfile.remove(false);
-  outTeXfile.create(0, 0755);
-  var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-  fos.init(outTeXfile, -1, -1, false);
-  var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
-    .createInstance(Components.interfaces.nsIConverterOutputStream);
-  os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
-  os.writeString(str);
-  os.close();
-  fos.close();
-  return outTeXfile.exists();
-}
+// jcs // documentAsTeXFile writes the document out as TeX. 
+// jcs // Returns true if the TeX file was created.
+// jcs // outTeXfile is an nsILocalFile. If it is null, create main.tex in the document's 'tex' directory.
+// jcs 
+// jcs function documentAsTeXFile( document, outTeXfile, compileInfo )
+// jcs {
+// jcs   dump("\nDocument as TeXFile\n");
+// jcs   if (!document) return false;
+// jcs   var xslfiles = processingInstructionsList(document, "sw-xslt", false);
+// jcs   //  if nothing returned, use the default xslt
+// jcs   if (xslfiles.length < 1) xslfiles = ["latex.xsl"];
+// jcs   var xslSheet=xslfiles[0];
+// jcs   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+// jcs   var documentPath = document.documentURI;
+// jcs   var docurl = msiURIFromString(documentPath);                                      
+// jcs   var workingDir;
+// jcs   var outTeX;
+// jcs   workingDir = msiFileFromFileURL(docurl);
+// jcs   var bareleaf = workingDir.leafName; // This is the leaf of the document.
+// jcs   workingDir = workingDir.parent;
+// jcs   if (outTeXfile == null  || outTeXfile.path.length == 0)
+// jcs   {
+// jcs     outTeX = workingDir.clone();
+// jcs     outTeX.append("tex");
+// jcs     if (!outTeX.exists()) outTeX.create(1, 0755);
+// jcs     outTeXfile = outTeX;
+// jcs     outTeXfile.append(bareleaf + ".tex");
+// jcs   }
+// jcs   var outfileTeXPath = outTeXfile.path;
+// jcs   var stylefile;
+// jcs   var xslPath;
+// jcs   var xslPath = "chrome://prnc2ltx/content/"+xslSheet;
+// jcs   var str = documentToTeXString(document, xslPath);
+// jcs   compileInfo.runMakeIndex = /\\makeindex/.test(str);
+// jcs   compileInfo.runBibTeX = /\\bibliography/.test(str);
+// jcs   compileInfo.passCount = 1;
+// jcs   var runcount = 1;
+// jcs   if (/\\tableofcontents|\\listoffigures|\\listoftables/.test(str)) runcount = 3;
+// jcs   if (compileInfo.passCount < runcount) compileInfo.passCount = runcount;
+// jcs   if (/\\xref|\\pageref|\\vxref|\\vpageref|\\cite/.test(str)) runcount = 2;
+// jcs   if (compileInfo.passCount < runcount) compileInfo.passCount = runcount;
+// jcs   var matcharr = /%% *minpasses *= *(\d+)/.exec(str);
+// jcs   if (matcharr && matcharr.length > 1) 
+// jcs   {
+// jcs     runcount = matcharr[1];
+// jcs     if (compileInfo.passCount < runcount) compileInfo.passCount = runcount;
+// jcs   }
+// jcs   if (compileInfo.runMakeIndex || compileInfo.runBibTeX) {
+// jcs     if (compileInfo.passCount < 3) compileInfo.passCount = 3;
+// jcs   }
+// jcs 
+// jcs //  dump("\n"+str);
+// jcs   if (!str || str.length < 3) return false;
+// jcs   if (outTeXfile.exists()) 
+// jcs     outTeXfile.remove(false);
+// jcs   outTeXfile.create(0, 0755);
+// jcs   var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+// jcs   fos.init(outTeXfile, -1, -1, false);
+// jcs   var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+// jcs     .createInstance(Components.interfaces.nsIConverterOutputStream);
+// jcs   os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
+// jcs   os.writeString(str);
+// jcs   os.close();
+// jcs   fos.close();
+// jcs   return outTeXfile.exists();
+// jcs }
 
 function currentFileName()
 {
@@ -1114,115 +1114,115 @@ function toOpenWindowByType( inType, uri )
 }
 
 
-function documentToTeXString(document, xslPath)
-{
-  var str = "";
-  var resultString = "";
-  if (xslPath.length == 0) return resultString;
-  var contents = "";
-  var leafname = /[^\/]*$/;
-  var match;
-  var xsltProcessor = new XSLTProcessor();
-  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
-  var outputfile = dsprops.get("ProfD", Components.interfaces.nsILocalFile);
-  var matcharray = leafname.exec(xslPath);
-  outputfile.append("comp-"+matcharray[0]);
-  // we cache the xsl file as comp-???.xsl in the user's profile
-  
-  if (outputfile.exists())
-  {
-    path=msiFileURLFromFile( outputfile );
-    var myXMLHTTPRequest = new XMLHttpRequest();
-    myXMLHTTPRequest.open("GET", path.spec, false);
-    myXMLHTTPRequest.send(null);
-    resultString = myXMLHTTPRequest.responseText;
-  }
-  else {
-    var path = xslPath;
-    var stylesheetElement=/<xsl:stylesheet[^>]*>/;
-    var includeFileRegEx = /<xsl:include\s+href\s*=\s*\"([^\"]*)\"\/>/;
-    var myXMLHTTPRequest = new XMLHttpRequest();
-    myXMLHTTPRequest.open("GET", path, false);
-    myXMLHTTPRequest.send(null);
-
-    str = myXMLHTTPRequest.responseText;
-  // a bug in the Mozilla XSLT processor causes problems with included stylesheets, so
-  // we do the inclusions ourselves 
-    var filesSeen= []; 
-    while (match = includeFileRegEx.exec(str))
-    {
-      resultString += str.slice(0, match.index);
-      str = str.slice(match.index);
-      str = str.replace(match[0],""); // get rid of the matched pattern. Why does lastIndex not work?
-      dump("File "+match[1]+"found at index = "+match.index+ "\n");
-      // match[1] should have the file name of the incusion 
-      if (filesSeen.indexOf(match[1]) < 0)
-      {
-        try {
-          path = path.replace(leafname,match[1]);
-          myXMLHTTPRequest.open("GET", path, false);
-          myXMLHTTPRequest.send(null);
-          contents = myXMLHTTPRequest.responseText;
-          if (contents)
-          {
-            // strip out the xml and xsl declarations
-            contents = contents.replace('<?xml version="1.0"?>','');
-            contents = contents.replace("</xsl:stylesheet>","");
-            contents = contents.replace(stylesheetElement,"");
-          }
-          filesSeen.push(match[1]);
-        }
-        catch(e)
-        {
-          dump("Reading include file, got "+e.message+"\n");
-        }
-      }
-      else {
-        dump("\n\n\n" + str+"\n\n\n");
-        dump("Already saw " + match[1] +"\n");
-        contents="";
-        break;
-      }                         
-      // now replace the include command with the contents of the file
-  //    includeFileRegEx.lastIndex = includeFileRegEx.index;
-      str = contents + str;
-      // and continue  
-    }
-    resultString += str;
-  }
-  // BBM: for debugging purposes, let's write the string out
-  var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
-  var outputfile = dsprops.get("ProfD", Components.interfaces.nsILocalFile);
-  outputfile.append("comp-"+matcharray[0]);
-  var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
-  fos.init(outputfile, -1, -1, false);
-  var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
-    .createInstance(Components.interfaces.nsIConverterOutputStream);
-  os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
-  os.writeString(resultString);
-  os.close();
- // end of debugging code 
-  dump("Creating new parser for xslt file\n");
-  var parser = new DOMParser();
-  var doc = parser.parseFromString(resultString, "text/xml");
-  if (doc) dump("XSLT file parsed as XML\n");
-  else dump("Failed to parse XSLT file as XML\n");  
-  try{
-    xsltProcessor.importStylesheet(doc);
-    if (xsltProcessor) dump("Imported stylesheet\n");
-    else dump("Failed to import stylesheet\n");
-    var newDoc = xsltProcessor.transformToDocument(document);
-    var strResult = newDoc.documentElement.textContent || "";
-//    dump(strResult+"\n");
-    while (strResult.search(/\n\s*\n/) >= 0)
-      strResult = strResult.replace(/\n\s*\n/,"\n","g");
-  }
-  catch(e){
-    dump("error: "+e.message+"\n\n");
-  //  dump(resultString);
-  }
-  return strResult;
-}
+// jcs function documentToTeXString(document, xslPath)
+// jcs {
+// jcs   var str = "";
+// jcs   var resultString = "";
+// jcs   if (xslPath.length == 0) return resultString;
+// jcs   var contents = "";
+// jcs   var leafname = /[^\/]*$/;
+// jcs   var match;
+// jcs   var xsltProcessor = new XSLTProcessor();
+// jcs   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+// jcs   var outputfile = dsprops.get("ProfD", Components.interfaces.nsILocalFile);
+// jcs   var matcharray = leafname.exec(xslPath);
+// jcs   outputfile.append("comp-"+matcharray[0]);
+// jcs   // we cache the xsl file as comp-???.xsl in the user's profile
+// jcs   
+// jcs   if (outputfile.exists())
+// jcs   {
+// jcs     path=msiFileURLFromFile( outputfile );
+// jcs     var myXMLHTTPRequest = new XMLHttpRequest();
+// jcs     myXMLHTTPRequest.open("GET", path.spec, false);
+// jcs     myXMLHTTPRequest.send(null);
+// jcs     resultString = myXMLHTTPRequest.responseText;
+// jcs   }
+// jcs   else {
+// jcs     var path = xslPath;
+// jcs     var stylesheetElement=/<xsl:stylesheet[^>]*>/;
+// jcs     var includeFileRegEx = /<xsl:include\s+href\s*=\s*\"([^\"]*)\"\/>/;
+// jcs     var myXMLHTTPRequest = new XMLHttpRequest();
+// jcs     myXMLHTTPRequest.open("GET", path, false);
+// jcs     myXMLHTTPRequest.send(null);
+// jcs 
+// jcs     str = myXMLHTTPRequest.responseText;
+// jcs   // a bug in the Mozilla XSLT processor causes problems with included stylesheets, so
+// jcs   // we do the inclusions ourselves 
+// jcs     var filesSeen= []; 
+// jcs     while (match = includeFileRegEx.exec(str))
+// jcs     {
+// jcs       resultString += str.slice(0, match.index);
+// jcs       str = str.slice(match.index);
+// jcs       str = str.replace(match[0],""); // get rid of the matched pattern. Why does lastIndex not work?
+// jcs       dump("File "+match[1]+"found at index = "+match.index+ "\n");
+// jcs       // match[1] should have the file name of the incusion 
+// jcs       if (filesSeen.indexOf(match[1]) < 0)
+// jcs       {
+// jcs         try {
+// jcs           path = path.replace(leafname,match[1]);
+// jcs           myXMLHTTPRequest.open("GET", path, false);
+// jcs           myXMLHTTPRequest.send(null);
+// jcs           contents = myXMLHTTPRequest.responseText;
+// jcs           if (contents)
+// jcs           {
+// jcs             // strip out the xml and xsl declarations
+// jcs             contents = contents.replace('<?xml version="1.0"?>','');
+// jcs             contents = contents.replace("</xsl:stylesheet>","");
+// jcs             contents = contents.replace(stylesheetElement,"");
+// jcs           }
+// jcs           filesSeen.push(match[1]);
+// jcs         }
+// jcs         catch(e)
+// jcs         {
+// jcs           dump("Reading include file, got "+e.message+"\n");
+// jcs         }
+// jcs       }
+// jcs       else {
+// jcs         dump("\n\n\n" + str+"\n\n\n");
+// jcs         dump("Already saw " + match[1] +"\n");
+// jcs         contents="";
+// jcs         break;
+// jcs       }                         
+// jcs       // now replace the include command with the contents of the file
+// jcs   //    includeFileRegEx.lastIndex = includeFileRegEx.index;
+// jcs       str = contents + str;
+// jcs       // and continue  
+// jcs     }
+// jcs     resultString += str;
+// jcs   }
+// jcs   // BBM: for debugging purposes, let's write the string out
+// jcs   var dsprops = Components.classes["@mozilla.org/file/directory_service;1"].createInstance(Components.interfaces.nsIProperties);
+// jcs   var outputfile = dsprops.get("ProfD", Components.interfaces.nsILocalFile);
+// jcs   outputfile.append("comp-"+matcharray[0]);
+// jcs   var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
+// jcs   fos.init(outputfile, -1, -1, false);
+// jcs   var os = Components.classes["@mozilla.org/intl/converter-output-stream;1"]
+// jcs     .createInstance(Components.interfaces.nsIConverterOutputStream);
+// jcs   os.init(fos, "UTF-8", 4096, "?".charCodeAt(0));
+// jcs   os.writeString(resultString);
+// jcs   os.close();
+// jcs  // end of debugging code 
+// jcs   dump("Creating new parser for xslt file\n");
+// jcs   var parser = new DOMParser();
+// jcs   var doc = parser.parseFromString(resultString, "text/xml");
+// jcs   if (doc) dump("XSLT file parsed as XML\n");
+// jcs   else dump("Failed to parse XSLT file as XML\n");  
+// jcs   try{
+// jcs     xsltProcessor.importStylesheet(doc);
+// jcs     if (xsltProcessor) dump("Imported stylesheet\n");
+// jcs     else dump("Failed to import stylesheet\n");
+// jcs     var newDoc = xsltProcessor.transformToDocument(document);
+// jcs     var strResult = newDoc.documentElement.textContent || "";
+// jcs //    dump(strResult+"\n");
+// jcs     while (strResult.search(/\n\s*\n/) >= 0)
+// jcs       strResult = strResult.replace(/\n\s*\n/,"\n","g");
+// jcs   }
+// jcs   catch(e){
+// jcs     dump("error: "+e.message+"\n\n");
+// jcs   //  dump(resultString);
+// jcs   }
+// jcs   return strResult;
+// jcs }
                                            
   return editor;
 }
@@ -1346,23 +1346,23 @@ function doEvalComputation(math,op,joiner,remark) {
     dump("doEvalComputation(): " + e+"\n");
 } }
 
-function doComputeCommand(cmd) {
-  var selection = GetCurrentEditor().selection;
-  if (selection) {
-    var element = findmathparent(selection.focusNode);
-    if (!element) {
-	    dump("not in math!\n");
-      return;
-    }
-    var eng = GetCurrentEngine();
-    switch (cmd) {
-    case "cmd_compute_Evaluate":
-      doEvalComputation(element,eng.Evaluate,"<mo>=</mo>","evaluate");
-      break;
-    case "cmd_compute_EvaluateNumeric":
-      doEvalComputation(element,eng.Evaluate_Numerically,"<mo>"+String.fromCharCode(0x2248)+"</mo>","evaluate numeric");
-      break;
-} } }
+// jcs function doComputeCommand(cmd) {
+// jcs   var selection = GetCurrentEditor().selection;
+// jcs   if (selection) {
+// jcs     var element = findmathparent(selection.focusNode);
+// jcs     if (!element) {
+// jcs 	    dump("not in math!\n");
+// jcs       return;
+// jcs     }
+// jcs     var eng = GetCurrentEngine();
+// jcs     switch (cmd) {
+// jcs     case "cmd_compute_Evaluate":
+// jcs       doEvalComputation(element,eng.Evaluate,"<mo>=</mo>","evaluate");
+// jcs       break;
+// jcs     case "cmd_compute_EvaluateNumeric":
+// jcs       doEvalComputation(element,eng.Evaluate_Numerically,"<mo>"+String.fromCharCode(0x2248)+"</mo>","evaluate numeric");
+// jcs       break;
+// jcs } } }
 
 // form a single run of math and put caret on end
 function coalescemath() {

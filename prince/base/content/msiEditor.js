@@ -2684,7 +2684,7 @@ function msiEditorSelectColor(colorType, mouseEvent, editorElement)
 
     // Launch the ColorPicker dialog
     // TODO: Figure out how to position this under the color buttons on the toolbar
-    window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "chrome,close,titlebar,modal", "", editorElement.mColorObj);
+    window.openDialog("chrome://editor/content/EdColorPicker.xul", "colorpicker", "chrome,close,titlebar,modal,resizable", "", editorElement.mColorObj);
 
     // User canceled the dialog
     if (editorElement.mColorObj.Cancel)
@@ -2836,6 +2836,8 @@ function EditorDblClick(event)
   }
 }
 
+
+var vcamActive = false;
 function EditorClick(event)
 {
   if (!event)
@@ -2845,6 +2847,19 @@ function EditorClick(event)
   {
     EditorDblClick(event);
     return;
+  }
+  else if (event.detail == 1)
+  {
+    if (event.target.tagName == "plotwrapper") 
+    {
+      doVCamInitialize(event);
+      vcamActive = true;
+    }
+    else if (vcamActive) 
+    {
+      document.getElementById("VCamToolbar").setAttribute("hidden",true);
+      vcamActive = false;
+    }
   }
 
 //  event.currentTarget should be "body" or something...
@@ -8708,7 +8723,7 @@ function msiInitFontStyleMenu(menuPopup)
 }
 
 ////--------------------------------------------------------------------
-function msiOnButtonUpdate(button, commmandID)
+function msiOnButtonUpdate(button, commmandID, invert)
 {
   try
   {
@@ -8719,7 +8734,7 @@ function msiOnButtonUpdate(button, commmandID)
       commandNode = topWindow.document.getElementById(commandID);
     }  
     var state = commandNode.getAttribute("state");
-    button.checked = state == "true";
+    button.checked = invert?(!(state == "true")):state=="true";
   }
   catch(exc) {AlertWithTitle("Error in msiEditor.js", "Error in msiOnButtonUpdate: " + exc);}
 }
@@ -9063,7 +9078,7 @@ function msiEditorInsertTable(editorElement, command, commandHandler)
 //  msiOpenModelessDialog("chrome://editor/content/EdInsertTable.xul", "_blank", "chrome,close,titlebar,dependent", editorElement, 
 //                                         command, commandHandler, "")
 
-  window.openDialog("chrome://editor/content/EdInsertTable.xul", "inserttable", "chrome,close,titlebar,modal", "");
+  window.openDialog("chrome://editor/content/EdInsertTable.xul", "inserttable", "chrome,close,titlebar,modal,resizable", "");
   editorElement.focus();
 }
 
@@ -9082,7 +9097,7 @@ function msiEditorTableCellProperties(editorElement)
     if (cell) {
       // Start Table Properties dialog on the "Cell" panel
       //HERE USE MODELESS DIALOG FUNCTIONALITY!
-      window.openDialog("chrome://editor/content/EdTableProps.xul", "tableprops", "chrome,close,titlebar,modal", "", "CellPanel");
+      window.openDialog("chrome://editor/content/EdTableProps.xul", "tableprops", "chrome,close,titlebar,modal,resizable", "", "CellPanel");
       editorElement.focus();
     }
   } catch (e) {}
@@ -9347,8 +9362,11 @@ function msiUpdateStructToolbar(editorElement)
   // the theory here is that by following up the chain of parentNodes, 
   // we will eventually get to the root <body> tag. But due to some bug, 
   // there may be multiple <body> elements in the document. 
+  document.getElementById("cmd_MSImathtext").setAttribute("isMath","false");
   do {
     tag = element.nodeName;
+    if (tag=="math") 
+      document.getElementById("cmd_MSImathtext").setAttribute("isMath","true");
 
     button = theDocument.createElementNS(XUL_NS, "toolbarbutton");
     button.setAttribute("label",   "<" + tag + ">");

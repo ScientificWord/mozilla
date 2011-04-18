@@ -15,8 +15,11 @@
   ondialogcancel="return onCancel();"
   persist="width height screenX screenY"
   title="&windowTitle.label;"
-  id="paragraphPropertiesDlg">
+  id="paragraphPropertiesDlg"
+  screenX="40"
+  screenY="40">
 
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/paragraphproperties.js"/>
 
 <tabbox id="tabboxid" flex="1">

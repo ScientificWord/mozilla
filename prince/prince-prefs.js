@@ -1,5 +1,5 @@
 pref("toolkit.defaultChromeURI", "chrome://prince/content/prince.xul");
-pref("general.useragent.extra.prince", "Prince/0.1");
+pref("general.useragent.extra.prince", "SW-SWP-SNB/6.0");
 
 /* debugging prefs 
 pref("browser.dom.window.dump.enabled", true);
@@ -99,6 +99,12 @@ pref("editor.lastFileLocation.image",        "");
 pref("editor.lastFileLocation.html",         "");
 pref("editor.save_associated_files",         true);
 pref("editor.always_show_publish_dialog",    false);
+/* default table prefs */
+pref("editor.table.default_align",           "");
+pref("editor.table.default_valign",          "");
+pref("editor.table.default_wrapping",        "wrap");
+pref("editor.table.default_cellspacing",     "0px");
+pref("editor.table.default_cellpadding",     "3px");
 
 /*
  * What are the entities that you want Mozilla to save using mnemonic

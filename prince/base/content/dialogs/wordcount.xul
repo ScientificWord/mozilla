@@ -10,7 +10,9 @@
     buttons="accept"
     onload = "document.getElementById('wc').value = window.arguments[0];"
     ondialogaccept="return;"
-    width="200"
+    screenX="40"
+    screenY="40"    
+    width="220"
     height="150"
     persist="width height left top"
     title="&wcWindowTitle.label;">
