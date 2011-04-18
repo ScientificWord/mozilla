@@ -44,7 +44,7 @@
   
     <command id="cmd_MSIinlineMathCmd"  oncommand="msiGoDoCommand('cmd_MSIinlineMathCmd')"/>
     <command id="cmd_MSIdisplayMathCmd" oncommand="msiGoDoCommand('cmd_MSIdisplayMathCmd')"/>
-    <command id="cmd_MSItextCmd"        oncommand="msiGoDoCommand('cmd_MSItextCmd')"/>
+    <command id="cmd_MSItextModeCmd"        oncommand="msiGoDoCommand('cmd_MSItextModeCmd')"/>
     <command id="cmd_MSImathtext"       oncommand="msiGoDoCommand('cmd_MSImathtext')"/>
     <command id="cmd_MSIfractionCmd"    oncommand="msiGoDoCommand('cmd_MSIfractionCmd')"/>
     <command id="cmd_MSIradicalCmd"     oncommand="msiGoDoCommand('cmd_MSIradicalCmd')"/>
@@ -102,19 +102,12 @@
     <command id="cmd_MSIaddMatrixColumnsCmd"       oncommand="msiGoDoCommand('cmd_MSIaddMatrixColumnsCmd')"/>
   </commandset>
 
-  <!-- style related commands that update on creation, and on selection change (editorOverlay.xul)-->
-  <commandset id="composerStyleMenuItems">
-    <command id="cmd_MSImathtext"   state="false"     oncommand="msiGoDoCommand('cmd_MSIinlineMathCmd')"/>
-  </commandset>
-
-
-    
 
 
   <menu id="insertMenu" label="Insert" accesskey="&insertmenu.accesskey;">
     <menupopup id="insertMenuPopup" onpopupshowing="msiInitFontStyleMenu(this)">
       <menuitem label="&MSIinlineMathCmd.label;" accesskey="&MSIinlineMathCmd.accesskey;" key="MSIinlineMathKey" observes="cmd_MSImathtext"   type="checkbox"/>
-      <menuitem label="&MSItextCmd.label;"       accesskey="&MSItextCmd.accesskey;"    command="cmd_MSItextCmd"/>  
+      <menuitem label="&MSItextCmd.label;"       accesskey="&MSItextCmd.accesskey;"    command="cmd_MSItextModeCmd"/>  
       <menu id="mathobjectsmenu" label="&MSImathObjectsMenu.label;" accesskey="&MSImathObjectsMenu.accesskey;" >
 	    <menupopup id="mathobjectsPopup" onpopupshowing="msiInitFontStyleMenu(this)">
 	      <menuitem label="&MSIfractionCmd.label;" accesskey="&MSIfractionCmd.accesskey;" key="MSIfractionKey"       command="cmd_MSIfractionCmd"/>

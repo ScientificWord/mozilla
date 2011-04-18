@@ -19,7 +19,9 @@
     onload="Startup()"
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();"
-    persist="screenX screenY width height">
+    persist="screenX screenY width height"
+    screenX="40"
+    screenY="40">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
