@@ -20,7 +20,9 @@
     ondialogcancel="return onCancel();"
     ondialoghelp="return doHelpButton();"
     buttonlabelextra1="&applyButton.label;"
-    width="560px" height="260px"
+    width="560px" height="330px"
+    screenX="40"
+    screenY="40"
     persist="screenX screenY width height">
 
   <!-- Methods common to all editor dialogs -->
@@ -33,11 +35,11 @@
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <!-- script type="application/x-javascript" src="chrome://help/content/contextHelp.js"/ -->
 
-  <spacer id="location" offsetY="50" persist="offsetX offsetY"/>
+  <spacer flex = "1"/>
   <broadcaster id="args" value=""/>
 
   <tabbox id="TabBox">
-    <tabs flex="1">
+    <tabs>
       <tab id="TableTab" label="&tableTab.label;"/>
       <tab id="CellsTab" label="&cellsTab.label;"/>
       <tab id="LinesTab" label="&linesTab.label;"/>
@@ -58,14 +60,14 @@
                 <column/>
               </columns>
               <rows>
-                <row>
+                <row align="center">
                   <label value="&tableRows.label;" control="tableRowCount"  accesskey="&tableRows.accesskey;"/>
                   <textbox type="number" class="medwidth" id="tableRowCount" value="0"/>
                   <label value="&tableRowHeight.label;" control="tableRowHeight" accesskey="&tableRowHeight.accesskey;"/>
                   <textbox type="number" class="medwidth" id="tableRowHeight" value="0"/>
                   <menulist id="tableUnitsList" oncommand="onChangeTableUnits();"/>
                 </row>
-                <row>
+                <row align="center">
                   <label value="&tableColumns.label;" control="tableColumnCount"  accesskey="&tableColumns.accesskey;"/>
                   <textbox type="number" class="medwidth" id="tableColumnCount" value="0"/>
                   <label value="&tableWidth.label;" control="tableWidth" accesskey="&tableWidth.accesskey;"/>
@@ -86,9 +88,9 @@
                 <column/>
               </columns>
               <rows>
-                <row>
+                <row align="center">
                   <label value="&location.label;" control="tableLocationList" />
-                  <menulist id="tableLocationList" onCommand="">
+                  <menulist id="tableLocationList" oncommand="">
                     <menupopup>
                       <menuitem label="inline"  value=""/>
                       <menuitem label="left" value="left"/>
@@ -99,7 +101,7 @@
                     </menupopup>
                   </menulist> 
                   <label value="&floatLocation.label;" control="floatLocationList"/>
-                  <menulist id="floatLocationList" onCommand="">
+                  <menulist id="floatLocationList" oncommand="">
                     <menupopup>
                       <menuitem label="none"  value=""/>
                       <menuitem label="here" value="h"/>
@@ -109,9 +111,9 @@
                     </menupopup>
                   </menulist> 
                 </row>
-                <row>
+                <row align="center">
                   <label value="Table baseline" control="baselineList"/>
-                  <menulist id="baselineList" onCommand="">
+                  <menulist id="baselineList" oncommand="TablePropertyChanged('TableBaselineRadioGroup');">
                     <menupopup>
                       <menuitem label="same as top row"  value="top"/>
                       <menuitem label="at vertical center" value="center"/>
@@ -119,9 +121,9 @@
                     </menupopup>
                   </menulist>
                 </row>
-                <row>
+                <row align="center">
                   <label value="Caption" control="captionLocation"/>
-                  <menulist id="captionLocation" onCommand="">
+                  <menulist id="captionLocation" oncommand="TablePropertyChanged('TableCaptionList');">
                     <menupopup>
                       <menuitem label="none"  value=""/>
                       <menuitem label="above table" value="top"/>
@@ -129,9 +131,9 @@
                     </menupopup>
                   </menulist>
                   <label id="BackgroundColorLabel" value="Base color"/>
-                  <hbox><button class="color-button" oncommand="GetColorAndUpdate('tableBackgroundCW');">
+                  <hbox><msibutton class="color-button" oncommand="GetColorAndUpdate('tableBackgroundCW');">
                     <spacer id="tableBackgroundCW" class="color-well"/>
-                  </button><spacer flex="2"/></hbox>
+                  </msibutton><spacer flex="2"/></hbox>
                 </row>
               </rows>
             </grid> 
@@ -168,7 +170,7 @@
               <rows>
                 <row align="center">
                   <label value="Horizontal"/>
-                  <menulist id="hAlignChoices" >
+                  <menulist id="hAlignChoices" oncommand="AlignmentChanged('ColumnAlignRadioGroup');" >
                     <menupopup>
                       <menuitem label="left"  value="left"/>
                       <menuitem label="center" value="center"/>
@@ -179,7 +181,7 @@
                 </row>
                 <row align="center">
                   <label value="Vertical"/>
-                  <menulist id="vAlignChoices" >
+                  <menulist id="vAlignChoices"  oncommand="AlignmentChanged('RowAlignRadioGroup');">
                     <menupopup>
                       <menuitem label="top"  value="top"/>
                       <menuitem label="center" value="center"/>
@@ -196,14 +198,14 @@
           <groupbox orient="horizontal" align="center">
             <checkbox id="TextWrapCheckbox" label="&cellWrap.label;" accesskey="&cellWrap.accesskey;" oncommand="CheckboxChanged(this.id);"/>
             <label id="cellBackgroundColorLabel" value="Cell color"/>
-            <hbox><button class="color-button" oncommand="GetColorAndUpdate('cellBackgroundCW');">
+            <hbox><msibutton class="color-button" oncommand="GetColorAndUpdate('cellBackgroundCW');">
               <spacer id="cellBackgroundCW" class="color-well"/>
-            </button><spacer flex="2"/></hbox>
+            </msibutton><spacer flex="2"/></hbox>
           </groupbox>
         </hbox>
         <spacer flex="1"/>
       </vbox>
-      </tabpanel><!-- Size/Layout Panel -->
+      </tabpanel><!-- Cells Panel -->
       <!-- Lines PANEL -->
       <tabpanel>
         <vbox>
@@ -227,17 +229,17 @@
                 <xhtml:table align="center" valign="center" style="table-layout: auto; empty-cells: show; width: 3em; height: 3em; font-size: 100%; overflow: hidden; text-align: center; vertical-align: middle">
                   <xhtml:tr height="15%">
                     <xhtml:td style="border-width: 0;"><xhtml:span>te</xhtml:span></xhtml:td>
-                    <xhtml:td style="border-width: 0 thin; border-color: gray"><xhtml:span>text</xhtml:span></xhtml:td>
+                    <xhtml:td style="border-style: dotted; border-width: 0 thin; border-color: red"><xhtml:span>text</xhtml:span></xhtml:td>
                     <xhtml:td style="border-width: 0;"><xhtml:span>xt</xhtml:span></xhtml:td>
                   </xhtml:tr>
                   <xhtml:tr height="30%">
-                    <xhtml:td style="border-width: thin 0; border-color: gray"><xhtml:span>te</xhtml:span></xhtml:td>
-                    <xhtml:td id="BordersPreviewCenterCell" style="border-width: thin; border-color: black;" ><xhtml:span>text</xhtml:span></xhtml:td>
-                    <xhtml:td style="border-width: thin 0; border-color: gray;"><xhtml:span>xt</xhtml:span></xhtml:td>
+                    <xhtml:td style="border-style: dotted; border-width: thin 0; border-color: red"><xhtml:span>te</xhtml:span></xhtml:td>
+                    <xhtml:td id="BordersPreviewCenterCell" style="border-style: dotted; border-width: thin; border-color: red;" ><xhtml:span>text</xhtml:span></xhtml:td>
+                    <xhtml:td style="border-style: dotted; border-width: thin 0; border-color: red;"><xhtml:span>xt</xhtml:span></xhtml:td>
                   </xhtml:tr>
                   <xhtml:tr height="15%">
                     <xhtml:td style="border-width: 0;"><xhtml:span>te</xhtml:span></xhtml:td>
-                    <xhtml:td style="border-width: 0 thin; border-color: gray"><xhtml:span>text</xhtml:span></xhtml:td>
+                    <xhtml:td style="border-style: dotted; border-width: 0 thin; border-color: red"><xhtml:span>text</xhtml:span></xhtml:td>
                     <xhtml:td style="border-width: 0;"><xhtml:span>xt</xhtml:span></xhtml:td>
                   </xhtml:tr>
                 </xhtml:table>
@@ -250,12 +252,13 @@
                   <column flex="1"/>
                 </columns>
                 <rows>
-                  <row>
+                  <row align="center">
                     <label control="cellBorderStyleList"
                            value="&cellBorderStyleList.label;"
                            accesskey="&cellBorderStyleList.accesskey;"/>
                     <menulist id="cellBorderStyleList" oncommand="checkPreviewChanges(this.id);">
                       <menupopup>
+                        <menuitem label="" value="inherit"/>
                         <menuitem label="&borderStyleNone.label;"  value="none"/>
                         <!--menuitem label="&borderStyleHidden.label;"  value="hidden"/-->
                         <menuitem label="&borderStyleSolid.label;"  value="solid"/>
@@ -269,7 +272,7 @@
                       </menupopup>
                     </menulist>
                   </row>
-                  <row>
+                  <row align="center">
                     <label control="BorderWidthInput"
                            value="&tableBorderWidth.label;"
                            accesskey="&tableBorderWidth.accesskey;"/>
@@ -284,11 +287,11 @@
                       </menupopup>
                     </menulist>
                   </row>
-                  <row>
+                  <row align="center">
                     <label id="BorderColorLabel" value="&borderColor.label;"/>
-                    <button class="color-button" oncommand="GetColorAndUpdate('borderCW');">
+                    <msibutton class="color-button" oncommand="GetColorAndUpdate('borderCW');">
                       <spacer id="borderCW" class="color-well"/>
-                    </button>
+                    </msibutton>
                   </row>
                 </rows>
               </grid>
@@ -299,4 +302,5 @@
       </tabpanel>
     </tabpanels> 
   </tabbox>
+  <spacer flex = "1"/>
 </dialog>

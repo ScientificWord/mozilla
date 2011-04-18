@@ -36,8 +36,8 @@
 <checkbox id="logfiles" persist="checked" checked="true" label="&logfiles.label;"/>
 <checkbox id="pdffiles" persist="checked" label="&pdffiles.label;"/>
 <checkbox id="texfiles" persist="checked" label="&texfiles.label;"/>
-<checkbox id="orphanimagefiles" persist="checked" checked="true" label="&orphanimagefiles.label;"/>
-<checkbox id="orphanplotfiles" persist="checked" checked="true" label="&orphanplotfiles.label;"/>
+<!--checkbox id="orphanimagefiles" persist="checked" checked="true" label="&orphanimagefiles.label;"/>
+<checkbox id="orphanplotfiles" persist="checked" checked="true" label="&orphanplotfiles.label;"/ -->
 <checkbox id="cachedconversions" persist="checked" label="&cachedconversionfiles.label;"/>
 <checkbox id="backupfiles" persist="checked" checked="true" label="&backupfiles.label;"/>
 

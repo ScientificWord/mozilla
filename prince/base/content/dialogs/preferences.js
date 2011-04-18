@@ -1,31 +1,4 @@
 
-
-function setIndex(item,idx) {
-  document.getElementById(item).selectedIndex = idx;
-}
-
-function setChecked(item,val) {
-  document.getElementById(item).setAttribute("checked", val == 1 ? "true" : "false");
-}
-
-function setValue(item,val) {
-  document.getElementById(item).value = val;
-}
-
-function getIndex(item) {
-  return document.getElementById(item).selectedIndex;
-}
-
-function getChecked(item) {
-  return document.getElementById(item).getAttribute("checked") == "true" ? 1 : 0;
-}
-
-function getValue(item) {
-  return document.getElementById(item).value;
-}
-
-
-
 function initialize()
 {
   var url;
@@ -37,7 +10,7 @@ function initialize()
   tree.setAttribute("ref", url.spec);
   tree.currentIndex = 0;
   showShellsInDir(tree);
-  ComputeUserSettingsStartup();
+//  ComputeUserSettingsStartup();
 }                           
 
 function showShellsInDir(tree)
@@ -74,93 +47,62 @@ function showShellsInDir(tree)
     dump(e.toString());
   }
 }
-
-
-
-
-
-
-var data;
-
 function UserSettingsStartup(){
-  data = window.arguments[0];
-
-  setValue("digitsUsed", data.digitsUsed.toString());
-  setValue("digitsRendered", data.digitsRendered.toString());
-  setValue("degree", data.degree.toString());
-  setValue("lower", data.lower.toString());
-  setValue("upper", data.upper.toString());
-  setValue("primesasn", data.primesasn.toString());
-  
-  setChecked("principal", data.principal);
-  setChecked("special", data.special);
-  setChecked("mixednum", data.mixednum);
-  setChecked("trigargs", data.trigargs);
-  setChecked("usearc", 1 - data.usearc);
-  setChecked("logs", data.loge);
-  setChecked("dots", data.dotderiv);
-  setChecked("bar", data.barconj);
-  setChecked("i_imaginary", data.i_imaginary);
-  setChecked("j_imaginary", data.j_imaginary);
-  setChecked("e_exp", data.e_exp);
-  setChecked("primederiv", data.primederiv);
-  
-  setIndex("matrix_delim", data.matrix_delim);
-
-  setIndex("derivformat", data.derivformat);
-  setIndex("imagi", data.imaginaryi);
-  setIndex("diffD", data.diffD);
-  setIndex("diffd", data.diffd);
-  setIndex("expe", data.expe ? 1 : 0);
-
-  data.logSent     = msiLogger.logMMLSent;
-  data.logReceived = msiComputeLogger.logMMLReceived;
-  data.engSent     = msiComputeLogger.logEngSent;
-  data.engReceived = msiComputeLogger.logEngReceived;
-
 }
 
 
 function onAccept(){
-   data.digitsUsed = getValue("digitsUsed");
-   data.digitsRendered = getValue("digitsRendered");
-   data.degree = getValue("degree");
+  try {
+    document.getElementById("prefGeneral").writePreferences(true);
+    document.getElementById("prefEdit").writePreferences(true);
+    document.getElementById("prefComp").writePreferences(true);
+    document.getElementById("prefPlots").writePreferences(true);
+    document.getElementById("prefTypesetting").writePreferences(true);
+  }
+  catch(e) {
+    dump(e.toString());
+  }
+//  document.getElementById("prefAdvanced").writePreferences(true);
 
-   data.lower = getValue("lower");
-   data.upper = getValue("upper");
-   data.primesasn = getValue("primesasn");
-   data.mixednum = getChecked("mixednum");
-   data.trigargs = getChecked("trigargs");
-
-   data.usearc = 1 - getChecked("usearc");  // ?
-   data.loge = getChecked("logs");
-   data.dotderiv = getChecked("dots");
-   data.principal = getChecked("principal");
-   data.special = getChecked("special");
-
-   data.barconj = getChecked("bar");
-
-   data.i_imaginary = getChecked("i_imaginary");
-   data.j_imaginary = getChecked("j_imaginary");
-
-
-   data.e_exp = setChecked("e_exp");
-   data.primederiv = getChecked("primederiv");
-  
-   data.matrix_delim = getIndex("matrix_delim");
-   
-   data.derivformat = getIndex("derivformat");
-   data.imaginaryi  = getIndex("imagi");
-   data.diffD = getIndex("diffD");
-   data.diffd = getIndex("diffd");
-   data.expe  = (getIndex("expe") != 0);
-
-   
-   msiComputeLogger.LogMMLSent(data.logSent);
-   msiComputeLogger.LogMMLReceived(data.logReceived);
-   msiComputeLogger.LogEngSent(data.engSent);
-   msiComputeLogger.LogEngReceived(data.engReceived);
-
+//   data.digitsUsed = getValue("digitsUsed");
+//   data.digitsRendered = getValue("digitsRendered");
+//   data.degree = getValue("degree");
+//
+//   data.lower = getValue("lower");
+//   data.upper = getValue("upper");
+//   data.primesasn = getValue("primesasn");
+//   data.mixednum = getChecked("mixednum");
+//   data.trigargs = getChecked("trigargs");
+//
+//   data.usearc = 1 - getChecked("usearc");  // ?
+//   data.loge = getChecked("logs");
+//   data.dotderiv = getChecked("dots");
+//   data.principal = getChecked("principal");
+//   data.special = getChecked("special");
+//
+//   data.barconj = getChecked("bar");
+//
+//   data.i_imaginary = getChecked("i_imaginary");
+//   data.j_imaginary = getChecked("j_imaginary");
+//
+//
+//   data.e_exp = setChecked("e_exp");
+//   data.primederiv = getChecked("primederiv");
+//  
+//   data.matrix_delim = getIndex("matrix_delim");
+//   
+//   data.derivformat = getIndex("derivformat");
+//   data.imaginaryi  = getIndex("imagi");
+//   data.diffD = getIndex("diffD");
+//   data.diffd = getIndex("diffd");
+//   data.expe  = (getIndex("expe") != 0);
+//
+//   
+//   msiComputeLogger.LogMMLSent(data.logSent);
+//   msiComputeLogger.LogMMLReceived(data.logReceived);
+//   msiComputeLogger.LogEngSent(data.engSent);
+//   msiComputeLogger.LogEngReceived(data.engReceived);
+//
 }
 
 
