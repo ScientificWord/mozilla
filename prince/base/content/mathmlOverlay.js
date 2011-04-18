@@ -2385,12 +2385,15 @@ function reviseEqnArray(reviseData, dialogData, editorElement)
   {
     case "alignSingleEquation":
       infoStr += "as a single equation on multiple lines.\n";
+      alignAttr = "alignSingleEqn";
     break;
     case "alignCentered":
       infoStr += "with each line centered.\n";
+      alignAttr = "alignCentered";
     break;
     case "alignStandard":
       infoStr += "as usual.\n";
+      alignAttr = "alignStandard";
     break;
     default:
       infoStr += "by default.\n";
