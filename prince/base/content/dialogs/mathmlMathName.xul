@@ -34,6 +34,8 @@
   ondialogcancel="return onCancel();"
   onload="Startup()"
   persist="screenX screenY width height"
+  screenX="40"
+  screenY="40"
 >
 
  <!-- script src="chrome://global/content/dialogOverlay.js" / -->

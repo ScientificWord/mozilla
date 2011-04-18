@@ -11,15 +11,14 @@
             ondialogaccept="onAccept();"
             persist="height width xpos ypos"
             xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-  <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/editorUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/preferences.js"/>
   <prefpane id="prefGeneral" label="General">
     <preferences>
       <preference id="defaultshell" 
                   name="swp.defaultShell" 
                   type="file"/>
+      <preference id="selectedSkin" 
+                  name="general.skins.selectedSkin" 
+                  type="string"/>
       <preference id="defaultGraphicsHSize" 
                   name="swp.defaultGraphicsHSize" 
                   type="int"/>
@@ -101,6 +100,7 @@
       <preference id="YPts"
                   name="swp.plot.YPts"
                   type="string" />
+rp
       <preference id="ZPts"
                   name="swp.plot.ZPts"
                   type="string" />
@@ -154,6 +154,15 @@
               <label value="Save interval in seconds"/>
             </hbox>
             <checkbox id="generatetex" label="Generate TeX on automatic save (for latexmk)" preference="genTeXonsave"/>
+          </groupbox>
+          <groupbox>
+            <caption>Skin</caption>
+            <vbox>
+              <radiogroup id="skinRadioGroup" align="vertical" value="left" preference="selectedSkin">
+                <radio name="skinRadioGroup" id="modern" label="Modern" value="modern" />
+                <radio name="skinRadioGroup" id="classic" label="Classic" value="classic" />
+              </radiogroup>
+            </vbox>
           </groupbox>
           <groupbox>
             <caption label="Cursor Advance to Character"/>
@@ -264,23 +273,54 @@
   </prefpane>
 
   <prefpane id="prefEdit" label="Editor" >
+    <preferences>
+      <preference id="enablerealtimespell"
+                  name="swp.spellchecker.enablerealtimespell"
+                  type="bool"/>
+      <preference id="sourceindent"
+                  name="swp.sourceview.indentincrement"
+                  type="int"/>
+      <preference id="sourcemaxlength"
+                  name="swp.sourceview.maxlinelength"
+                  type="int"/>
+      <preference id="sourceminlength"
+                  name="swp.sourceview.minlinelength"
+                  type="int"/>
+    </preferences>
     <tabbox flex="1">
 	    <tabs class="tabs-top">
-	     <tab label="1;"       selected="1" />
-	     <tab label="2"      selected="0" />
-	     <tab label="3;"      selected="0" />
+	     <tab label="Editing parameters"       selected="1" />
 	    </tabs>
 
       <tabpanels>
-        <tabpanel id="stub1">
-          <vbox>
+        <tabpanel id="prefEdits" orient="vertical">
+          <separator flex="1"/>
+          <groupbox>
+            <caption>Spell checking</caption>
             <hbox>
               <label value="Enable realtime spell checking"/><checkbox preference="enablerealtimespell"/>
             </hbox>
-          </vbox>
+          </groupbox>
+          <groupbox>
+            <caption>Source ediing</caption>
+            <grid><columns><column/><column/><column flex="1"/></columns>
+              <rows>
+                <row>
+                  <description>XML source indent</description>
+                  <textbox type="number" id="srcindent" class="medwidth" preference="sourceindent"/>
+                </row>
+                <row>
+                  <description>XML source max line length</description>
+                  <textbox type="number" id="srcmaxlength" class="medwidth" preference="sourcemaxlength"/>
+                </row>
+                <row>
+                  <description>XML source min line length</description>
+                  <textbox type="number" id="srcminlength" class="medwidth" preference="sourceminlength"/>
+                </row>
+              </rows>
+            </grid>
+          </groupbox>
         </tabpanel>
-        <tabpanel id="stub2"/>
-        <tabpanel id="stub3"/>
       </tabpanels>
     </tabbox>
   </prefpane>
@@ -356,7 +396,7 @@
             <hbox>
               <description>Digits rendered</description>
               <spacer flex="1"/>
-              <textbox id="digitsRendered" style="width: 3em"/>
+              <textbox id="digitsRendered" class="medwidth"/>
             </hbox>
             <vbox>
               <hbox>
@@ -817,5 +857,9 @@
     </tabbox>
   </prefpane>
 
+  <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/editorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/preferences.js"/>
   
 </prefwindow>

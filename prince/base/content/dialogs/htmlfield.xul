@@ -16,7 +16,9 @@
     ondialogaccept="return onAccept();" ondialogcancel="return onCancel();"
     width="400"
     height="500"
-    persist="screenX screenY width height">
+    persist="screenX screenY width height"
+    screenX="40"
+    screenY="40">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
