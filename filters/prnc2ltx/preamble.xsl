@@ -13,16 +13,16 @@
   
 
 <xsl:variable name="requiredpackages.tf">
-  <xsl:for-each select="//*[@req]|//html:requirespackage">
-    <xsl:sort select="self::html:requirespackage/@package|@req"/>
-    <xsl:copy-of select="."/>
+  <xsl:for-each select="//*[@req]">
+    <xsl:sort select="@req"/>
+	  <xsl:copy-of select="."/>
   </xsl:for-each>
 </xsl:variable>
 
 <xsl:variable name="preambletexbuttons.tf">
   <xsl:for-each select="//*[@pre]">
     <xsl:sort select="@ord"/>
-    <xsl:copy-of select="."/>
+	  <xsl:copy-of select="."/>
   </xsl:for-each>
 </xsl:variable>
 
@@ -32,48 +32,29 @@
 <xsl:variable name="packagelist.tf"> 
   <xsl:for-each select="$requiredpackages/*">
     <xsl:variable name="pos" select="position()"/>
-    <xsl:variable name="currentpackage" select="@req"/>
-    <xsl:variable name="prevpackage">
-      <xsl:choose>
-        <xsl:when test="$pos=1">
-        </xsl:when>
-        <xsl:when test="$requiredpackages/*[($pos) - 1][local-name(.)='requirespackage']">
-          <xsl:value-of select="$requiredpackages/*[($pos) - 1]/@package"/>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:value-of select="$requiredpackages/*[($pos) - 1]/@req"/>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:variable>
-    <xsl:if test="$pos=1 or not($currentpackage=$prevpackage)">
-      <xsl:element name="requiredpackage" >
-        <xsl:choose>
-          <xsl:when test="local-name(.)='requirespackage'">
-            <xsl:attribute name="package"><xsl:value-of select="@package"/></xsl:attribute>
-            <xsl:if test="@options"><xsl:attribute name="options"><xsl:value-of select="@options"/></xsl:attribute></xsl:if>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:attribute name="package"><xsl:value-of select="@req"/></xsl:attribute>
-            <xsl:if test="@opt"><xsl:attribute name="options"><xsl:value-of select="@opt"/></xsl:attribute></xsl:if>
-          </xsl:otherwise>
-        </xsl:choose>
-        <xsl:attribute name="pri">
-          <xsl:choose>
-            <xsl:when test="@pri">
-              <xsl:value-of select="@pri"/>
-            </xsl:when>
-            <xsl:otherwise>100</xsl:otherwise>
-              <!-- xsl:variable name="pkg" select="@req"/>
-              <xsl:variable name="pri" select="$masterpackagelist/packages/package[@name=$pkg]/@pri"/>
+	  <xsl:variable name="currentpackage" select="@req"/>
+	  <xsl:if
+	    test="$pos=1 or not($currentpackage=$requiredpackages/*[$pos - 1]/@req)">
+	    <xsl:element name="requiredpackage" >
+	      <xsl:attribute name="package"><xsl:value-of select="@req"/></xsl:attribute>
+	      <xsl:if test="@opt"><xsl:attribute name="options"><xsl:value-of select="@opt"/></xsl:attribute></xsl:if>
+	      <xsl:attribute name="pri">
+	  	    <xsl:choose>
+	  	      <xsl:when test="@pri">
+	  	        <xsl:value-of select="@pri"/>
+	  	      </xsl:when>
+   	  		  <xsl:otherwise>
+              <xsl:variable name="pkg" select="@req"/>
+              <!--xsl:variable name="pri" select="$masterpackagelist/packages/package[@name=$pkg]/@pri"/ -->
               <xsl:choose>
-                <xsl:when test="$pri"><xsl:value-of select="$pri"/></xsl:when>
+                <!--xsl:when test="$pri"><xsl:value-of select="$pri"/></xsl:when -->
                 <xsl:otherwise>100</xsl:otherwise>
               </xsl:choose>
-            </xsl:otherwise -->
-          </xsl:choose>
-        </xsl:attribute>
+            </xsl:otherwise>
+	  	    </xsl:choose>
+	      </xsl:attribute>
       </xsl:element>
-          <!-- xsl:copy-of select="."/ -->
+	        <!-- xsl:copy-of select="."/ -->
     </xsl:if>
   </xsl:for-each>
 </xsl:variable>
@@ -195,7 +176,7 @@
 
 
 <xsl:template match="html:footer"></xsl:template> <!--%%  footskip=<xsl:value-of select="concat(number(substring(@height,1,string-length(@height)-2))+number(substring(@sep,1,string-length(@sep-2)),substring(@sep,string-length(@sep)-2))"/>%</xsl:template -->
-                                                                   
+																																	 
 <xsl:template match="html:fontchoices">
   <xsl:if test="$fontchoiceok"><xsl:if test="$compiler='xelatex'">
 <xsl:apply-templates/></xsl:if></xsl:if></xsl:template> 
@@ -238,7 +219,7 @@
   ><xsl:otherwise>\filleft</xsl:otherwise
   ></xsl:choose><xsl:apply-templates select="html:toprule"/>}{}{0pt}{\msi<xsl:value-of select="@level"
 />}[{<xsl:apply-templates select="html:bottomrule"/>}]</xsl:if></xsl:template>
-              
+						  
 <xsl:template match="html:dialogbase">
   <xsl:apply-templates/>
 </xsl:template>
@@ -256,10 +237,10 @@
       >*</xsl:if>[<xsl:value-of select="@tlalign"
       />]{<xsl:if test="@color"
       >\textcolor<xsl:choose
-      ><xsl:when test="substring(./@color,1,1)='#'">[HTML]{<xsl:value-of select="translate(substring(./@color,2,8),'abcdef','ABCDEF')"
-      /></xsl:when
-      ><xsl:otherwise>{<xsl:value-of select="./@color"/></xsl:otherwise
-      ></xsl:choose
+	   	><xsl:when test="substring(./@color,1,1)='#'">[HTML]{<xsl:value-of select="translate(substring(./@color,2,8),'abcdef','ABCDEF')"
+   		/></xsl:when
+   		><xsl:otherwise>{<xsl:value-of select="./@color"/></xsl:otherwise
+   	  ></xsl:choose
       >}{</xsl:if
       ><xsl:choose>
         <xsl:when test="@tlwidth='-'">\titlerule[<xsl:value-of select="@tlheight"/>]}</xsl:when>
@@ -278,10 +259,10 @@
       >*</xsl:if>[<xsl:value-of select="@tlalign"
       />]{<xsl:if test="@color"
       >\textcolor<xsl:choose
-      ><xsl:when test="substring(./@color,1,1)='#'">[HTML]{<xsl:value-of select="translate(substring(./@color,2,8),'abcdef','ABCDEF')"
-      /></xsl:when
-      ><xsl:otherwise>{<xsl:value-of select="./@color"/></xsl:otherwise
-      ></xsl:choose
+	   	><xsl:when test="substring(./@color,1,1)='#'">[HTML]{<xsl:value-of select="translate(substring(./@color,2,8),'abcdef','ABCDEF')"
+   		/></xsl:when
+   		><xsl:otherwise>{<xsl:value-of select="./@color"/></xsl:otherwise
+   	  ></xsl:choose
       >}{</xsl:if
       ><xsl:choose>
         <xsl:when test="@tlwidth='-'">\titlerule[<xsl:value-of select="@tlheight"/>]}</xsl:when>
@@ -310,54 +291,54 @@
 <xsl:template match="html:numberstyles">
 
   <xsl:if test="@part">
-    <xsl:choose>
-      <xsl:when test="@part='none'">
-        \renewcommand\thepart{}</xsl:when>
-      <xsl:otherwise>
-        \renewcommand\thepart{\<xsl:value-of select="@part"/>{part}}</xsl:otherwise> 
-  </xsl:choose></xsl:if>
+  	<xsl:choose>
+    	<xsl:when test="@part='none'">
+    	  \renewcommand\thepart{}</xsl:when>
+    	<xsl:otherwise>
+    	  \renewcommand\thepart{\<xsl:value-of select="@part"/>{part}}</xsl:otherwise> 
+	</xsl:choose></xsl:if>
   <xsl:if test="@chapter">
-    <xsl:choose>
-      <xsl:when test="@chapter='none'">
-        \renewcommand\thechapter{}</xsl:when
-      ><xsl:otherwise>
-        \renewcommand\thechapter{\<xsl:value-of select="@chapter"/>{chapter}}</xsl:otherwise> 
-  </xsl:choose></xsl:if>
+  	<xsl:choose>
+    	<xsl:when test="@chapter='none'">
+    	  \renewcommand\thechapter{}</xsl:when
+    	><xsl:otherwise>
+    	  \renewcommand\thechapter{\<xsl:value-of select="@chapter"/>{chapter}}</xsl:otherwise> 
+	</xsl:choose></xsl:if>
   <xsl:if test="@section">
-    <xsl:choose>
-      <xsl:when test="@section='none'">
-      \renewcommand\thesection{}</xsl:when
-      ><xsl:otherwise>
-      \renewcommand\thesection{\<xsl:value-of select="@section"/>{section}}</xsl:otherwise> 
-  </xsl:choose></xsl:if>
+  	<xsl:choose>
+    	<xsl:when test="@section='none'">
+    	\renewcommand\thesection{}</xsl:when
+    	><xsl:otherwise>
+    	\renewcommand\thesection{\<xsl:value-of select="@section"/>{section}}</xsl:otherwise> 
+	</xsl:choose></xsl:if>
   <xsl:if test="@subsection">
-    <xsl:choose>
-      <xsl:when test="@subsection='none'">
-      \renewcommand\thesubsection{}</xsl:when
-      ><xsl:otherwise>
-      \renewcommand\thesubsection{\thesection.\<xsl:value-of select="@subsection"/>{subsection}}</xsl:otherwise> 
-  </xsl:choose></xsl:if>
+  	<xsl:choose>
+    	<xsl:when test="@subsection='none'">
+    	\renewcommand\thesubsection{}</xsl:when
+    	><xsl:otherwise>
+    	\renewcommand\thesubsection{\thesection.\<xsl:value-of select="@subsection"/>{subsection}}</xsl:otherwise> 
+	</xsl:choose></xsl:if>
   <xsl:if test="@subsubsection">
-    <xsl:choose>
-      <xsl:when test="@subsubsection='none'">
-      \renewcommand\thesubsubsection{}</xsl:when
-      ><xsl:otherwise>
-      \renewcommand\thesubsubsection{\thesubsection.\<xsl:value-of select="@subsubsection"/>{subsubsection}}</xsl:otherwise> 
-  </xsl:choose></xsl:if>
+  	<xsl:choose>
+    	<xsl:when test="@subsubsection='none'">
+    	\renewcommand\thesubsubsection{}</xsl:when
+    	><xsl:otherwise>
+    	\renewcommand\thesubsubsection{\thesubsection.\<xsl:value-of select="@subsubsection"/>{subsubsection}}</xsl:otherwise> 
+	</xsl:choose></xsl:if>
   <xsl:if test="@paragraph">
-    <xsl:choose>
-      <xsl:when test="@paragraph='none'">
-      \renewcommand\theparagraph{}</xsl:when
-      ><xsl:otherwise>
-      \renewcommand\paragraph{\thesubbsusection.\<xsl:value-of select="@paragraph"/>{paragraph}}</xsl:otherwise> 
-  </xsl:choose></xsl:if>
+  	<xsl:choose>
+    	<xsl:when test="@paragraph='none'">
+    	\renewcommand\theparagraph{}</xsl:when
+    	><xsl:otherwise>
+    	\renewcommand\paragraph{\thesubbsusection.\<xsl:value-of select="@paragraph"/>{paragraph}}</xsl:otherwise> 
+	</xsl:choose></xsl:if>
   <xsl:if test="@subparagraph">
-    <xsl:choose>
-      <xsl:when test="@subparagraph='none'">
-      \renewcommand\thesubparagraph{}</xsl:when
-      ><xsl:otherwise>
-      \renewcommand\subparagraph{\theparagraph.\<xsl:value-of select="@subparagraph"/>{subparagraph}}</xsl:otherwise> 
-  </xsl:choose></xsl:if>
+  	<xsl:choose>
+    	<xsl:when test="@subparagraph='none'">
+    	\renewcommand\thesubparagraph{}</xsl:when
+    	><xsl:otherwise>
+    	\renewcommand\subparagraph{\theparagraph.\<xsl:value-of select="@subparagraph"/>{subparagraph}}</xsl:otherwise> 
+	</xsl:choose></xsl:if>
 </xsl:template>
 
 
