@@ -31,6 +31,10 @@ caption {
   margin-bottom: 3pt;
 }
 
+table {
+  margin-left: 5px;
+  margin-right: 5px;
+}
 /*table {
   border-collapse: collapse;
   border-style: dotted;
