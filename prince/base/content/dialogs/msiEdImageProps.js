@@ -1031,40 +1031,39 @@ function onAccept()
   {
     var editorElement = msiGetParentEditorElementForDialog(window);
     var editor = msiGetEditor(editorElement);
-    var imgExists = false;
 
     editor.beginTransaction();
     try
     {
       var tagname="object";
-      var frameElement = null;
+//      var frameElement = null;
       if (imageElement)
       {
         imgExists = true;
-        frameElement = imageElement.parentNode;
-        if (frameElement.localName != 'msiframe')
-        {
-          var newframe = editor.createElementWithDefaults("msiframe");
-          frameElement.removeChild(imageElement); 
-          newframe.appendChild(imageElement);
-          frameElement.appendChild(newframe);
-          frameElement = newframe;
-        }
+//        frameElement = imageElement.parentNode;
+//        if (!frameElement || frameElement.localName != 'msiframe')
+//        {
+//          var newframe = editor.createElementWithDefaults("msiframe");
+//          if (frameElement) frameElement.removeChild(imageElement); 
+//          newframe.appendChild(imageElement);
+//          if (frameElement) frameElement.appendChild(newframe);
+//          frameElement = newframe;
+//        }
       }
       else
       {      
         imageElement = editor.createElementWithDefaults(tagname);
         imageElement.addEventListener("load", imageLoaded, true);
-        frameElement = editor.createElementWithDefaults("msiframe");
-        frameElement.appendChild(imageElement);
+//        frameElement = editor.createElementWithDefaults("msiframe");
+//        frameElement.appendChild(imageElement);
       }
       imageElement.setAttribute("data",gDialog.srcInput.value);
       imageElement.setAttribute("req","graphicx");
       
       setFrameAttributes(imageElement);
           // 'true' means delete the selection before inserting
-      if (!imgExists)
-        editor.insertElementAtSelection(frameElement, true);
+      if (gInsertNewImage)
+        editor.insertElementAtSelection(imageElement, true);
     }
     catch (e)
     {
