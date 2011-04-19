@@ -1349,7 +1349,7 @@ function putFontNode(fontname, fontNode, menuId, elementId, nodecounter)
           }
           if (match[2])
           {
-            node.setAttribute("package",match[2]);
+            node.setAttribute("req",match[2]);
             dump("package name is "+match[2]+"\n");
           }
           if (menuId=="mathfont") pri = 50;
@@ -2528,7 +2528,7 @@ function addOldFontsToMenu(menuPopupId)
     }                                                
     var itemNode = document.createElement("menuitem");
     itemNode.setAttribute("label", ptr.getAttribute("name"));
-    itemNode.setAttribute("value", ptr.getAttribute("package"));
+    itemNode.setAttribute("value", ptr.getAttribute("req"));
     itemNode.setAttribute("tooltip", ptr.getAttribute("description"));                                                                 
     menuPopup.appendChild(itemNode);
     ptr = ptr.nextSibling;
