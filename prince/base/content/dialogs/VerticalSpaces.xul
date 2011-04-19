@@ -18,7 +18,7 @@
     ondialogaccept="return onAccept();"
     ondialogcancel="return onCancel();"
     width="270"
-    height="200"
+    height="235"
     persist="left top width height"
    >
 
