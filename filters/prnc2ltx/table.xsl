@@ -6,8 +6,37 @@
     xmlns:exsl="http://exslt.org/common"
 >
 
+
+<xsl:template name="buildtable">
+\begin{tabulary}
+  <xsl:choose>
+    <xsl:when test="@width &gt; 0">{<xsl:value-of select="@width"/>pt}</xsl:when>
+    <xsl:otherwise>{500pt}</xsl:otherwise>
+  </xsl:choose>
+  <xsl:apply-templates/>
+\end{tabulary}
+</xsl:template>    
+
 <xsl:template match="html:table">
-\begin{tabulary}<xsl:if test="@width">[<xsl:value-of select="@width"/>pt]</xsl:if><xsl:apply-templates/>\end{tabulary}
+  <xsl:choose>
+    <xsl:when test="@pos='display'">
+      \begin{center}
+      <xsl:call-template name="buildtable"/>
+      \end{center}
+    </xsl:when>
+    <xsl:when test="@pos='float'"> 
+      \begin{wraptable}{
+      <xsl:choose>
+        <xsl:when test="not(substring(@placement,1,1))">O</xsl:when>
+        <xsl:otherwise><xsl:value-of select="substring(@placement,1,1)"/></xsl:otherwise>
+      </xsl:choose>}{0pt}
+      <xsl:call-template name="buildtable"/>
+      \end{wraptable}
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:call-template name="buildtable"/>
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 		  
 <xsl:template match="html:tbody">
@@ -23,6 +52,11 @@
 <xsl:template match = "html:tbody/html:tr[1]" mode="definecols">
   {<xsl:apply-templates mode="definecols"/>}
 </xsl:template>
+
+<xsl:template match = "html:tbody/html:tr[1]">
+  <xsl:apply-templates/>\\\hline
+</xsl:template>
+
 
 <xsl:template match = "html:tbody/html:tr[position()>1]" mode="definecols">
 </xsl:template>
