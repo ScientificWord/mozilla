@@ -220,7 +220,7 @@ if options.remove :
 	realhome = os.path.join( '/home', os.environ['USER'])
     licensedir = os.path.join( realhome, LICENSEDIR )
     testfile = os.path.join( licensedir, 'SWP' )
-    if not os.path.isfile( testfile ) :
+    if os.path.isfile( testfile ) :
     	    shutil.rmtree( licensedir )
     profile = os.path.join( realhome, '.swppro')
     if os.path.isdir( profile ) :
@@ -234,7 +234,7 @@ installdir = find_installation( env )
 if not installdir == '' :
     # whine
     report( logfile, "SWP-6.0 is already installed.")
-    report( logfile, "Use -b option to update. Exiting.")
+    report( logfile, "Use -u option to update. Exiting.")
     exit()
 # move application files
 move_app_tree( env )
