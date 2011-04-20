@@ -1,23 +1,22 @@
-October 2, 2010
+Aprin 20, 2011
 
-This is the Linux version of Scientific Workplace 6.0. For this Alpha test
+This is the Linux version of Scientific Workplace 6.0. For this Beta test
 we are using a simple Python install script, install.py.
 
-This has been installed and run on SuSe 10. It should install without problems on Fedora
-and Ubuntu distributions. There may be missing libraries on simple Fedora
+This has been installed and run on SuSe 10, SuSe 11, and Ubuntu. It should install without problems on Fedora. 
+There may be missing libraries on simple Fedora
 installations, particularly on 64-bit Fedora systems. More detailed Fedora installs will
-be forthcoming soon.
+be forthcoming.
 
 INSTALLATI0N
 
-1. Unpack the distribution file with the command:
+1. Unpack the distribution file in your home directory with the command:
       tar xjf <distribution-file>
    Note that bzip2 must be installed on your system to do this.
    
-2. A new directory named swppro has been created in the directory where you
-   unpacked.
+2. A new directory named swppro has been created in your home directory.
       
-3. You may install as root or as yourself. The installation currently takes 142 MB of disk
+3. You may install as root or as yourself. The installation currently takes 137 MB of disk
    space. Run this command to install as root.
       sudo swppro/install.py
    You will see a few lines of output ending with
