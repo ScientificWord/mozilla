@@ -156,6 +156,9 @@ msiArrowStateService::FindKeyCode( nsIDOMEvent* aEvent,
   	keyCode belongs to an arrow key.  If this function returns 0 for the keyCode, do nothing. */
 {
   nsCOMPtr<nsIDOMNSUIEvent> nsUIEvent = do_QueryInterface(aEvent);
+  PRBool ctrlKey;
+  PRBool altKey; 
+  PRBool metaKey;  
   *keyCode = 0;
   *isArrow = PR_FALSE;
   if (nsUIEvent) 
@@ -175,7 +178,11 @@ msiArrowStateService::FindKeyCode( nsIDOMEvent* aEvent,
     return NS_OK;
   }
   keyEvent->GetKeyCode(keyCode);
-	*isArrow = (*keyCode <= maxArrowCode) && (*keyCode >= minArrowCode);
+  keyEvent->GetCtrlKey(& ctrlKey);
+  keyEvent->GetAltKey(& altKey);
+  keyEvent->GetMetaKey(& metaKey);
+
+	*isArrow = !(ctrlKey) && !(altKey) && !(metaKey) && (*keyCode <= maxArrowCode) && (*keyCode >= minArrowCode);
 	return NS_OK;
 }
 
