@@ -53,7 +53,12 @@
    onload = "Startup()"
    ondialogaccept="return onAccept();"
    ondialogcancel="return onCancel();"
-   ondialoghelp="return onAccept();">
+   ondialoghelp="return onAccept();"
+   screenX="40"
+   screenY="40"
+   width="525"
+   height="375"
+   persist="screenX screenY width height">
 
   <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
