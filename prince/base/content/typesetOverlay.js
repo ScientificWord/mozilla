@@ -701,6 +701,7 @@ function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
   if (currPreambleWalker)
   {
     var nextNode;
+    var delNodes = [];
     while (nextNode = currPreambleWalker.nextNode())
     {
       switch(msiGetBaseNodeName(nextNode))
@@ -722,13 +723,15 @@ function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
             else
               msiEditorEnsureElementAttribute(nextNode, "pri", null, editor)
             insertNewAfter = nextNode;
+//            dump("In reviseLaTeXPackagesAndOptions(), keeping requirepackage node for [" + pkgName + "], removing from revise array.\n");
             pkgArray.splice( pkgIndex, 1 );  //Now that it's taken care of, remove it
           }
           else
           {
             if (!insertNewAfter)
               insertNewAfter = nextNode.previousSibling;
-            editor.deleteNode(nextNode);
+//            dump("In reviseLaTeXPackagesAndOptions(), deleting requirepackage node for [" + pkgName + "].\n");
+            delNodes.push(nextNode);
           }
         break;
         case "documentclass":
@@ -741,6 +744,8 @@ function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
         break;
       }
     }
+    for (var ix = 0; ix < delNodes.length; ++ix)
+      editor.deleteNode(delNodes[ix]);
 
 //    dump("In reviseLaTeXPackagesAndOptions(), before inserting new nodes.\n");
     var insertPos = 0;
@@ -750,6 +755,7 @@ function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
     {
       newNode = aDocument.createElement("requirespackage");
       pkgObject = pkgArray[jx];
+      dump("In reviseLaTeXPackagesAndOptions(), inserting requirepackage node for [" + pkgObject.packageName + "].\n");
       editor.insertNode( newNode, insertParent, insertPos++);
       msiEditorEnsureElementAttribute(newNode, "package", pkgObject.packageName, editor);
       if (pkgObject.packageOptions && pkgObject.packageOptions.length)
