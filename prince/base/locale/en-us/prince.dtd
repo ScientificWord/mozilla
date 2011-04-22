@@ -17,7 +17,6 @@
 <!ENTITY filequit.label    "Exit">
 <!ENTITY filequit.accesskey    "x">
 
-<!ENTITY MSIComputeEvalCmd.keybinding "e">      
 <!ENTITY helpmenuContents.keybinding   "VK_F1">
 
 <!ENTITY fileopen.accesskey    "O">
