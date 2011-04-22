@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- 2009 MacKichan Software, Inc. *
+ Copyright 2009 MacKichan Software, Inc. *
  * ***** END LICENSE BLOCK ***** */
 Components.utils.import("resource://app/modules/unitHandler.jsm"); 
 
@@ -110,7 +110,7 @@ function setVariablesForControls()
   gDialog.tableUnitsList = document.getElementById("tableUnitsList");
 
   gDialog.tableLocationList =  document.getElementById("tableLocationList");
-  gDialog.tableFloatLocationList =  document.getElementById("tableFloatLocationList");
+  gDialog.floatLocationList =  document.getElementById("floatLocationList");
   gDialog.baselineList =  document.getElementById("baselineList");
   gDialog.captionLocation =  document.getElementById("captionLocation");
   gDialog.tableBackgroundCW =  document.getElementById("tableBackgroundCW");
@@ -606,6 +606,29 @@ function initTablePanel()
       gTableCaptionPlacement = "bottom";
     gDialog.TableCaptionList.value = gTableCaptionPlacement;
   }
+  var pos = gTableElement.getAttribute("pos");
+  var placement = gTableElement.getAttribute("placement");
+  var longPlacement;
+  if (placement=="L") longPlacement = "left";
+  else if (placement=="R") longPlacement = "right";
+  else if (placement=="I") longPlacement = "inside";
+  else if (placement=="O") longPlacement = "outside"; 
+  else longPlacement="";
+  // need to check for center and inline
+
+  var placeLocation = gTableElement.getAttribute("placeLocation");  
+  if (placement) {
+//    if (placement == "I" || placement == "display") placeLocation = "";
+    if (placeLocation) {
+      gDialog.tableLocationList.value = longPlacement;
+      gDialog.floatLocationList.value = placeLocation;
+    }
+    else 
+    {
+      gDialog.floatLocationList.value = "";
+    }
+  }
+  else gDialog.tableLocationList.value = "inline";
 }
 
 function initLinesPanel()
@@ -1687,156 +1710,55 @@ function ApplyTableAttributes()
 //    globalTableElement.style.setProperty("width", widthStr);
 //  if (gTableChangeData.size.height)
 //    globalTableElement.style.setProperty("height", heightStr);
+  var pos = gDialog.tableLocationList.value;
+  var float = gDialog.floatLocationList.value;  
+  gTableElement.setAttribute("req","tabulary");
+//  gTableElement.setAttribute("width",tableUnitsHandler.getValueAs(gDialog.tableWidth.value, "pt")+"pt");
+  if (pos) {
+    if (pos == "inline" || pos == "display") float = "";
+    if (float != "") {
+      gTableElement.setAttribute("pos","float");
+      msiRequirePackage(gActiveEditorElement, "wrapfig", "");
+      gTableElement.setAttribute("placement",placementCodeFrom(pos));
+      gTableElement.setAttribute("placeLocation", float);
+      doSetStyleAttr("float", (pos=="left"||pos=="inside")?"left":"right");
+    }
+    else 
+    {
+      if (pos == "inline") doSetStyleAttr("display", "inline");
+      else 
+      {
+        doSetStyleAttr("display", "block");
+//        doSetStyleAttr("text-align", "center");
+      }
+    }
+  }
+  else doSetStyleAttr("display", "inline");
   if (!bEmptyStyle)
     theStyleString = globalTableElement.getAttribute("style");
   gActiveEditor.setAttribute(gTableElement, "style", theStyleString);
   logStr = "In msiEdTableProps.js, ApplyTableAttributes(); set attribute [style] on table element to [" + theStyleString + "]\n";
   msiKludgeLogString(logStr, ["tableEdit"]);
-
-//rwa  var countDelta;
-//rwa  var foundCell;
-//rwa  var i;
-//rwa
-//rwa  if (gNewRowCount != gRowCount)
-//rwa  {
-//rwa    countDelta = gNewRowCount - gRowCount;
-//rwa    if (gNewRowCount > gRowCount)
-//rwa    {
-//rwa      // Append new rows
-//rwa      // Find first cell in last row
-//rwa      if(GetCellData(gLastRowIndex, 0))
-//rwa      {
-//rwa        try {
-//rwa          // Move selection to the last cell
-//rwa          gSelection.collapse(gCellData.value,0);
-//rwa          // Insert new rows after it
-//rwa          gActiveEditor.insertTableRow(countDelta, true);
-//rwa          gRowCount = gNewRowCount;
-//rwa          gLastRowIndex = gRowCount - 1;
-//rwa          // Put selecton back where it was
-//rwa          ChangeSelection(RESET_SELECTION);
-//rwa        }
-//rwa        catch(ex) {
-//rwa          dump("FAILED TO FIND FIRST CELL IN LAST ROW\n");
-//rwa        }
-//rwa      }
-//rwa    }
-//rwa    else
-//rwa    {
-//rwa      // Delete rows
-//rwa      if (gCanDelete)
-//rwa      {
-//rwa        // Find first cell starting in first row we delete
-//rwa        var firstDeleteRow = gRowCount + countDelta;
-//rwa        foundCell = false;
-//rwa        for ( i = 0; i <= gLastColIndex; i++)
-//rwa        {
-//rwa          if (!GetCellData(firstDeleteRow, i))
-//rwa            break; // We failed to find a cell
-//rwa
-//rwa          if (gCellData.startRowIndex == firstDeleteRow)
-//rwa          {
-//rwa            foundCell = true;
-//rwa            break;
-//rwa          }
-//rwa        };
-//rwa        if (foundCell)
-//rwa        {
-//rwa          try {
-//rwa            // Move selection to the cell we found
-//rwa            gSelection.collapse(gCellData.value, 0);
-//rwa            gActiveEditor.deleteTableRow(-countDelta);
-//rwa            gRowCount = gNewRowCount;
-//rwa            gLastRowIndex = gRowCount - 1;
-//rwa            if (gCurRowIndex > gLastRowIndex)
-//rwa              // We are deleting our selection
-//rwa              // move it to start of table
-//rwa              ChangeSelectionToFirstCell()
-//rwa            else
-//rwa              // Put selecton back where it was
-//rwa              ChangeSelection(RESET_SELECTION);
-//rwa          }
-//rwa          catch(ex) {
-//rwa            dump("FAILED TO FIND FIRST CELL IN LAST ROW\n");
-//rwa          }
-//rwa        }
-//rwa      }
-//rwa    }
-//rwa  }
-//rwa
-//rwa  if (gNewColCount != gColCount)
-//rwa  {
-//rwa    countDelta = gNewColCount - gColCount;
-//rwa
-//rwa    if (gNewColCount > gColCount)
-//rwa    {
-//rwa      // Append new columns
-//rwa      // Find last cell in first column
-//rwa      if(GetCellData(0, gLastColIndex))
-//rwa      {
-//rwa        try {
-//rwa          // Move selection to the last cell
-//rwa          gSelection.collapse(gCellData.value,0);
-//rwa          gActiveEditor.insertTableColumn(countDelta, true);
-//rwa          gColCount = gNewColCount;
-//rwa          gLastColIndex = gColCount-1;
-//rwa          // Restore selection
-//rwa          ChangeSelection(RESET_SELECTION);
-//rwa        }
-//rwa        catch(ex) {
-//rwa          dump("FAILED TO FIND FIRST CELL IN LAST COLUMN\n");
-//rwa        }
-//rwa      }
-//rwa    }
-//rwa    else
-//rwa    {
-//rwa      // Delete columns
-//rwa      if (gCanDelete)
-//rwa      {
-//rwa        var firstDeleteCol = gColCount + countDelta;
-//rwa        foundCell = false;
-//rwa        for ( i = 0; i <= gLastRowIndex; i++)
-//rwa        {
-//rwa          // Find first cell starting in first column we delete
-//rwa          if (!GetCellData(i, firstDeleteCol))
-//rwa            break; // We failed to find a cell
-//rwa
-//rwa          if (gCellData.startColIndex == firstDeleteCol)
-//rwa          {
-//rwa            foundCell = true;
-//rwa            break;
-//rwa          }
-//rwa        };
-//rwa        if (foundCell)
-//rwa        {
-//rwa          try {
-//rwa            // Move selection to the cell we found
-//rwa            gSelection.collapse(gCellData.value, 0);
-//rwa            gActiveEditor.deleteTableColumn(-countDelta);
-//rwa            gColCount = gNewColCount;
-//rwa            gLastColIndex = gColCount-1;
-//rwa            if (gCurColIndex > gLastColIndex)
-//rwa              ChangeSelectionToFirstCell()
-//rwa            else
-//rwa              ChangeSelection(RESET_SELECTION);
-//rwa          }
-//rwa          catch(ex) {
-//rwa            dump("FAILED TO FIND FIRST CELL IN LAST ROW\n");
-//rwa          }
-//rwa        }
-//rwa      }
-//rwa    }
-//rwa  }
-
-  // Clone all remaining attributes to pick up
-  //  anything changed by Advanced Edit Dialog
-//rwa May restore following:
-//rwa  try {
-//rwa    gActiveEditor.cloneAttributes(gTableElement, globalTableElement);
-//rwa  } catch(e) {}
 }
 
+function placementCodeFrom(pos)
+{
+  switch( pos )
+  {
+    case "left":
+      return "L";
+    case "right":
+      return "R";
+    case "inside":
+      return "I";
+    case "outside":
+      return "O";
+  }
+}
+
+
 //function ApplyCellAttributes()
+
 //{
 //  var rangeObj = { value: null };
 //  var selectedCell;

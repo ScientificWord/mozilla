@@ -40,7 +40,7 @@ function Startup()
   gDialog.currentOptionsDescription = document.getElementById("selectedOptionsDescription");
 
 //  if (gDialog.isPackage)
-//    ourRDFRoot = ourRDFRoot.replace("__Type__", "package");
+//    ourRDFRoot = ourRDFRoot.replace("__Type__", "req");
 //  else
 //    ourRDFRoot = ourRDFRoot.replace("__Type__", "class");
 //  ourRDFRoot = ourRDFRoot.replace("__Name__", gDialog.theName);

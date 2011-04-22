@@ -709,7 +709,7 @@ function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
         case "requirespackage":
           if (!insertParent)
             insertParent = nextNode.parentNode;
-          pkgName = nextNode.getAttribute("package");
+          pkgName = nextNode.getAttribute("req");
           pkgIndex = findPackageInData(pkgArray, pkgName);
           pkgObject = pkgArray[pkgIndex];
           if (pkgObject)
@@ -757,7 +757,7 @@ function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
       pkgObject = pkgArray[jx];
       dump("In reviseLaTeXPackagesAndOptions(), inserting requirepackage node for [" + pkgObject.packageName + "].\n");
       editor.insertNode( newNode, insertParent, insertPos++);
-      msiEditorEnsureElementAttribute(newNode, "package", pkgObject.packageName, editor);
+      msiEditorEnsureElementAttribute(newNode, "req", pkgObject.packageName, editor);
       if (pkgObject.packageOptions && pkgObject.packageOptions.length)
         msiEditorEnsureElementAttribute(newNode, "options", pkgObject.packageOptions, editor)
       if ("packagePriority" in pkgObject)
@@ -1106,7 +1106,7 @@ function msiGetPackagesAndOptionsDataForDocument(aDocument)
       switch(msiGetBaseNodeName(nextNode))
       {
         case "requirespackage":
-          pkgName = nextNode.getAttribute("package");
+          pkgName = nextNode.getAttribute("req");
           pkgPriority = Number( nextNode.getAttribute("pri") );
           options = nextNode.getAttribute("options");
           retObj.packages.push( {packageName : pkgName, packageOptions : options, packagePriority : pkgPriority} );
