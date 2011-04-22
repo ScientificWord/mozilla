@@ -150,8 +150,24 @@ function getEnableFlags(doc)
     document.getElementById("allowfontchoice").checked = fontsOK;
     var formatPageOK = progNode.getAttribute("pageFormatOK") == "true";
     document.getElementById("enablepagelayout").checked = formatPageOK;
-    document.getElementById('reformatok').setAttribute('disabled', canSetFormat?'false':'true');
-    document.getElementById('pagelayoutok').setAttribute('disabled',formatPageOK?'false':'true');
+
+    // document.getElementById('reformatok').setAttribute('disabled', canSetFormat?'false':'true');
+    var e = document.getElementById('reformatok');
+    if (canSetFormat){ // checked. enable.
+       e.removeAttribute('disabled'); 
+    }else{
+       e.setAttribute('disabled', "true");
+    }
+
+    
+    //document.getElementById('pagelayoutok').setAttribute('disabled',formatPageOK?'false':'true');
+    var e = document.getElementById('pagelayoutok');
+    if (formatPageOK){ // checked. enable.
+       e.removeAttribute('disabled'); 
+    }else{
+       e.setAttribute('disabled', "true");
+    }
+
   }
 }
 
@@ -364,7 +380,11 @@ function getPageLayout(node, document)
          
     e = document.getElementById('pagelayoutok');
     if (e) {
-      e.setAttribute('disabled',value?'false':'true');
+      if (value){ // checked. enable.
+         e.removeAttribute('disabled'); 
+      }else{
+         e.setAttribute('disabled', "true");
+      }
     }
     subnode = node.getElementsByTagName('page')[0];
     if (subnode)
@@ -1349,7 +1369,7 @@ function putFontNode(fontname, fontNode, menuId, elementId, nodecounter)
           }
           if (match[2])
           {
-            node.setAttribute("package",match[2]);
+            node.setAttribute("req",match[2]);
             dump("package name is "+match[2]+"\n");
           }
           if (menuId=="mathfont") pri = 50;
@@ -2528,7 +2548,7 @@ function addOldFontsToMenu(menuPopupId)
     }                                                
     var itemNode = document.createElement("menuitem");
     itemNode.setAttribute("label", ptr.getAttribute("name"));
-    itemNode.setAttribute("value", ptr.getAttribute("package"));
+    itemNode.setAttribute("value", ptr.getAttribute("req"));
     itemNode.setAttribute("tooltip", ptr.getAttribute("description"));                                                                 
     menuPopup.appendChild(itemNode);
     ptr = ptr.nextSibling;
