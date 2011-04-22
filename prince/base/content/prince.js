@@ -182,14 +182,14 @@ function GetFixedMath(math)
   return runFixup(GetMathAsString(math));
 }
 
-function doEvalComputation(math,op,joiner,remark) {
-  var mathstr = GetFixedMath(GetRHS(math));
-  try {
-    var out = GetCurrentEngine().perform(mathstr,op);
-    appendResult(out,joiner,math);
-  } catch (e) {
-    dump("doEvalComputation(): " + e+"\n");
-} }
+//function doEvalComputation(math,op,joiner,remark) {
+//  var mathstr = GetFixedMath(GetRHS(math));
+//  try {
+//    var out = GetCurrentEngine().perform(mathstr,op);
+//    appendResult(out,joiner,math);
+//  } catch (e) {
+//    dump("doEvalComputation(): " + e+"\n");
+//} }
 
 // jcs function doComputeCommand(cmd) {
 // jcs   var selection = GetCurrentEditor().selection;
@@ -1337,15 +1337,15 @@ function GetFixedMath(math)
   return runFixup(GetMathAsString(math));
 }
 
-function doEvalComputation(math,op,joiner,remark) {
-  var mathstr = GetFixedMath(GetRHS(math));
-  try {
-    var out = GetCurrentEngine().perform(mathstr,op);
-    appendResult(out,joiner,math);
-  } catch (e) {
-    dump("doEvalComputation(): " + e+"\n");
-} }
-
+//function doEvalComputation(math,op,joiner,remark) {
+//  var mathstr = GetFixedMath(GetRHS(math));
+//  try {
+//    var out = GetCurrentEngine().perform(mathstr,op);
+//    appendResult(out,joiner,math);
+//  } catch (e) {
+//    dump("doEvalComputation(): " + e+"\n");
+//} }
+//
 // jcs function doComputeCommand(cmd) {
 // jcs   var selection = GetCurrentEditor().selection;
 // jcs   if (selection) {
