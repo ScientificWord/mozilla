@@ -5,11 +5,11 @@
 <!ENTITY range.label       "Range of Random Entries">
 <!ENTITY types.label       "Matrix Types">
 
-<!ENTITY zero.label     "zero">
+<!ENTITY zero.label     "Zero">
 <!ENTITY  zero.accesskey  "Z">
 <!ENTITY Identity.label "Identity">
 <!ENTITY  Identity.accesskey  "I">
-<!ENTITY random.label   "random">
+<!ENTITY random.label   "Random">
 <!ENTITY  random.accesskey  "A">
 <!ENTITY Jordan.label   "Jordan Block">
 <!ENTITY  Jordan.accesskey  "J">
