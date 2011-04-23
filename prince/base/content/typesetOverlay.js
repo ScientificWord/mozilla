@@ -715,9 +715,9 @@ function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
           if (pkgObject)
           {
             if (pkgObject.packageOptions && pkgObject.packageOptions.length)
-              msiEditorEnsureElementAttribute(nextNode, "options", pkgObject.packageOptions, editor)
+              msiEditorEnsureElementAttribute(nextNode, "opt", pkgObject.packageOptions, editor)
             else
-              msiEditorEnsureElementAttribute(nextNode, "options", null, editor)
+              msiEditorEnsureElementAttribute(nextNode, "opt", null, editor)
             if ("packagePriority" in pkgObject)
               msiEditorEnsureElementAttribute(nextNode, "pri", String(pkgObject.packagePriority), editor)
             else
@@ -759,7 +759,7 @@ function reviseLaTeXPackagesAndOptions(editorElement, dlgData)
       editor.insertNode( newNode, insertParent, insertPos++);
       msiEditorEnsureElementAttribute(newNode, "req", pkgObject.packageName, editor);
       if (pkgObject.packageOptions && pkgObject.packageOptions.length)
-        msiEditorEnsureElementAttribute(newNode, "options", pkgObject.packageOptions, editor)
+        msiEditorEnsureElementAttribute(newNode, "opt", pkgObject.packageOptions, editor)
       if ("packagePriority" in pkgObject)
         msiEditorEnsureElementAttribute(newNode, "pri", String(pkgObject.packagePriority), editor)
       if (!insertParent)
@@ -1107,9 +1107,12 @@ function msiGetPackagesAndOptionsDataForDocument(aDocument)
       {
         case "requirespackage":
           pkgName = nextNode.getAttribute("req");
+          if (!pkgName || !pkgName.length)
+            pkgName = nextNode.getAttribute("package");
           pkgPriority = Number( nextNode.getAttribute("pri") );
-          options = nextNode.getAttribute("options");
-          retObj.packages.push( {packageName : pkgName, packageOptions : options, packagePriority : pkgPriority} );
+          options = nextNode.getAttribute("opt");
+          if (pkgName && pkgName.length)
+            retObj.packages.push( {packageName : pkgName, packageOptions : options, packagePriority : pkgPriority} );
         break;
         case "documentclass":
           retObj.docClassName = nextNode.getAttribute("class");
