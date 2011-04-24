@@ -7,8 +7,10 @@
 
 <prefwindow id="appPreferences"
             title="Preferences"
-            onload = "initialize();"
-            ondialogaccept="onAccept();"
+            onload="initialize();"
+            buttons="accept,cancel"
+            ondialogaccept="return onAccept();"
+            ondialogcancel="return onCancel();"
             persist="height width xpos ypos"
             xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <prefpane id="prefGeneral" label="General">
@@ -100,7 +102,7 @@
       <preference id="YPts"
                   name="swp.plot.YPts"
                   type="string" />
-rp
+
       <preference id="ZPts"
                   name="swp.plot.ZPts"
                   type="string" />
@@ -856,6 +858,7 @@ rp
       </tabpanels>
     </tabbox>
   </prefpane>
+  
 
   <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/editorUtilities.js"/>
