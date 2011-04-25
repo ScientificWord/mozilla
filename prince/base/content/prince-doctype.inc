@@ -1,16 +1,16 @@
 <!DOCTYPE window [
-<!ENTITY % editorDTD SYSTEM "chrome://editor/locale/editor.dtd" >
+<!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
 %editorDTD;
 <!ENTITY % editorOverlayDTD SYSTEM "chrome://editor/locale/editorOverlay.dtd" >
 %editorOverlayDTD;
-<!ENTITY % mathmlOverlayDTD SYSTEM "chrome://editor/locale/MathmlOverlay.dtd" >
+<!ENTITY % mathmlOverlayDTD SYSTEM "chrome://prince/locale/MathmlOverlay.dtd" >
 %mathmlOverlayDTD;
-<!ENTITY % computeOverlayDTD SYSTEM "chrome://editor/locale/computeOverlay.dtd" >
+<!ENTITY % computeOverlayDTD SYSTEM "chrome://prince/locale/computeOverlay.dtd" >
 %computeOverlayDTD;
-<!ENTITY % brandDTD SYSTEM "chrome://global/locale/brand.dtd" >
+<!ENTITY % brandDTD SYSTEM "chrome://prince/locale/brand.dtd" >
 %brandDTD;
-<!ENTITY % fastcursorDTD SYSTEM "chrome://editor/locale/fastcursor.dtd" >
+<!ENTITY % fastcursorDTD SYSTEM "chrome://prince/locale/fastcursor.dtd" >
 %fastcursorDTD;
-<!ENTITY % princetoolbarsDTD SYSTEM "chrome://editor/locale/princetoolbarsOverlay.dtd" >
+<!ENTITY % princetoolbarsDTD SYSTEM "chrome://prince/locale/toolbarsOverlay.dtd" >
 %princetoolbarsDTD;
 ]> 
