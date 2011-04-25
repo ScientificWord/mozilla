@@ -30,6 +30,7 @@ pref("swp.tex.bindir","/usr/texbin"); /* Mac system preference for TeX puts the 
 pref("swp.tex.bindir","/usr/local/texlive/2010/bin/i386-linux");  /* for linux */
 #endif
 
+pref("browser.hiddenWindowChromeURL", "chrome://prince/content/hiddenwindow.xul");
 pref("swp.sourceview.maxlinelength",        100);
 pref("swp.sourceview.minlinelength",         40);
 pref("swp.sourceview.indentincrement",       2);
