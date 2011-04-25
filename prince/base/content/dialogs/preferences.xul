@@ -396,13 +396,13 @@ rp
             <hbox>
               <description>Digits rendered</description>
               <spacer flex="1"/>
-              <textbox id="digitsRendered" class="medwidth"/>
+              <textbox type="number" id="digitsRendered" class="medwidth"/>
             </hbox>
             <vbox>
               <hbox>
                 <description>Upper threshold</description>
                 <spacer flex="1"/>
-                <textbox id="upper" style="width: 3em"/>
+                <textbox type="number" id="upper" style="width: 3em"/>
               </hbox>
               <description>(digits left of decimal before switching)</description>
             </vbox>
@@ -410,7 +410,7 @@ rp
               <hbox>
                 <description>Lower threshold</description>
                 <spacer flex="1"/>
-                <textbox id="lower" style="width: 3em"/>
+                <textbox type="number" id="lower" style="width: 3em"/>
               </hbox>
               <description>(zeros to right of decimal before switching)</description>
             </vbox>
@@ -537,7 +537,7 @@ rp
             <hbox>
               <description>&desc.Digits;</description>
               <spacer flex="1"/>
-              <textbox id="digitsUsed" style="width: 3em"/>
+              <textbox type="number" id="digitsUsed" style="width: 3em"/>
             </hbox>
             <groupbox>
               <caption label="&solve.label;"/>
