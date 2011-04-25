@@ -535,10 +535,12 @@ function doComputeCommand(cmd, editorElement, cmdHandler)
       doEvalComputation(element,eng.Rewrite_Normal_Form,"<mo>=</mo>","rewrite normal", editorElement);
       break;
     case "cmd_compute_RewriteEquationsAsMatrix":
-      doVarsComputation(element,", Corresponding matrix: ",eng.equationsAsMatrix,GetComputeString("EqnsAsMatrix.title"), editorElement, cmd, cmdHandler);
+      doVarsComputation(element, ", Corresponding matrix: ", eng.Rewrite_Equations_as_Matrix, 
+                          GetComputeString("EqnsAsMatrix.title"), editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_RewriteMatrixAsEquations":
-      doVarsComputation(element,", Corresponding equations: ",eng.matrixAsEquations,GetComputeString("MatrixAsEqns.title"), editorElement, cmd, cmdHandler);
+      doVarsComputation(element, ", Corresponding equations: ", eng.Rewrite_Matrix_as_Equations, 
+                          GetComputeString("MatrixAsEqns.title"), editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_CheckEquality":
       doComputeCheckEquality(element, editorElement);
