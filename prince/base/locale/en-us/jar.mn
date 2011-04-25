@@ -11,6 +11,7 @@ en-US.jar:
   locale/typesetOverlay.dtd               (typesetOverlay.dtd)
   locale/compute.properties               (compute.properties)
   locale/fragmentname.dtd            (fragmentname.dtd)
+  locale/baseMenuOverlay.dtd              (baseMenuOverlay.dtd)
   locale/typesetDocFormat.dtd            (dialogs/typesetDocFormat.dtd)
   locale/typesetAddPackage.dtd            (dialogs/typesetAddPackage.dtd)
   locale/typesetBibChoice.dtd             (dialogs/typesetBibChoice.dtd)
