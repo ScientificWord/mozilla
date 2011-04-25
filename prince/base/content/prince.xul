@@ -13,7 +13,7 @@
 # All overlay information is stored in a separate file so that it can be shared by
 # hiddenWindow.xul.
 #include prince-overlays.inc
-<?xul-overlay href="chrome://global/content/charsetOverlay.xul"?>
+<!--?xul-overlay href="chrome://global/content/charsetOverlay.xul"? -->
 <?xul-overlay href="chrome://prince/content/baseMenuOverlay.xul"?>
 
 
