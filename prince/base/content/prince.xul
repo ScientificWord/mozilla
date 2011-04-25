@@ -9,24 +9,17 @@
 <?xml-stylesheet href="chrome://prince/content/EditorContent.css" type="text/css"?>
 <!--<?xml-stylesheet href="chrome://prince/content/bindings/structurebar.css" type="text/css"?>-->
 
-<?xul-overlay href="chrome://prince/content/msiEditorContextMenuOverlay.xul"?>
-<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+
+# All overlay information is stored in a separate file so that it can be shared by
+# hiddenWindow.xul.
+#include prince-overlays.inc
 <?xul-overlay href="chrome://global/content/charsetOverlay.xul"?>
-<?xul-overlay href="chrome://prince/content/menuOverlay.xul" ?>
-<?xul-overlay href="chrome://prince/content/toolbarsOverlay.xul" ?>
-<?xul-overlay href="chrome://prince/content/MathmlOverlay.xul" ?>
-<?xul-overlay href="chrome://prince/content/computeOverlay.xul" ?>
-<?xul-overlay href="chrome://prince/content/typesetOverlay.xul" ?>
-<?xul-overlay href="chrome://cascades/content/cascadesOverlay.xul" ?>
-
-<!DOCTYPE window [
-<!ENTITY % editorDTD SYSTEM "chrome://prince/locale/prince.dtd" >
-%editorDTD;
-<!ENTITY % fastcursorDTD SYSTEM "chrome://prince/locale/fastcursor.dtd" >
-%fastcursorDTD;
-]> 
+<?xul-overlay href="chrome://prince/content/baseMenuOverlay.xul"?>
 
 
+# All DTD information is stored in a separate file so that it can be shared by
+# hiddenWindow.xul.
+#include prince-doctype.inc
 
 <window
   id    = "prince"
@@ -44,105 +37,35 @@
   sizemode="normal"
   xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
-  <script type="application/x-javascript" src="chrome://prince/content/prince.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorDefinitions.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditor.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiMainEditor.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiComposerCommands.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/fastcursor.js"/>
-  <script type="application/x-javascript" src="chrome://editor/content/EditorCommandsDebug.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorCommandsDebug.js"/>
-  <!-- script type="application/x-javascript" src="chrome://prince/content/msiEditorContextMenu.js"/ -->
-  <script type="application/x-javascript" src="chrome://editor/content/StructBarContextMenu.js"/>
-  <script type="application/x-javascript" src="chrome://global/content/viewZoomOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/msiEditorApplicationOverlay.js"/>
+# All JS files which are not content (only) dependent that browser.xul
+# wishes to include *must* go into the global-scripts.inc file
+# so that they can be shared by macBrowserOverlay.xul.
+#include global-scripts.inc
+
   <script type="application/x-javascript" src="chrome://prince/content/RealTimeSpell.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/fragment.js"/>
   <script type="application/x-javascript" src="chrome://global/content/nsTransferable.js"/>
   <script type="application/x-javascript" src="chrome://global/content/nsDragAndDrop.js"/>
-  <script type="application/x-javascript" src="chrome://prince/content/mainCore.js" />
-  <!-- script type="application/x-javascript" src="chrome://global/content/customizeToolbar.js"/ -->
   <script type="application/x-javascript" src="chrome://global/content/printUtils.js"/>
   <script type="application/x-javascript" src="chrome://venkman/content/venkman-overlay.js"/>
   <script type="application/x-javascript" src="chrome://user/content/macros.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/saveforweb.js"/>
   <script type="application/x-javascript" src="chrome://prince/content/computeOverlay.js"/>
 
-  <stringbundleset id="stringbundleset">
-    <stringbundle id="bundle_FastCursorBar">
-      NotFound=Not found
-    </stringbundle>
-  </stringbundleset>
+
+# All sets except for popupsets (commands, keys, stringbundles and broadcasters) *must* go into the 
+# browser-sets.inc file for sharing with hiddenWindow.xul.
+#include prince-sets.inc
+
   <popupset id="msiEditorContentContextSet"/>
   <popupset id="mainPopupSet"/>
-  <commandset id="baseMenuCommandSet"/>
-  <keyset id="baseMenuKeyset"/>
   <popup id="sidebarPopup"/>
 
-  <commandset id="tasksCommands">
-    <command id="cmd_unimp" oncommand="alert('Command not yet implemented');"/>
-    <command id="cmd_open" oncommand="msiGoDoCommand('cmd_open')"/>
-    <command id="cmd_print" oncommand="msiGoDoCommand('cmd_print')"/>
-    <command id="cmd_quit" oncommand="doQuit()"/>
-    <command id="cmd_save" oncommand="msiGoDoCommand('cmd_save')"/>
-    <!-- and id="cmd_MSIComputeEval" oncommand="doComputeCommand2(event, 'cmd_compute_Evaluate')"/>
-    <command id="cmd_MSIComputeEvalNum" oncommand="doComputeCommand('cmd_compute_EvaluateNumeric')"/> -->
-  </commandset>
-  
-  <broadcasterset id="broadcasterset"/>
-  <broadcaster id="args" value=""/>
-  <broadcaster id="filename" value=""/>
-  <broadcaster id="canPrint"/>
-  
-  <broadcasterset id="mainBroadcasterSet">
-    <broadcaster id="viewFragDirSidebar" autoCheck="false" label="Fragments"
-                 type="checkbox" group="sidebar" sidebarurl="frag-tree"
-                 oncommand="toggleSidebar('viewFragDirSidebar');"/>
-    <broadcaster id="viewOutlineSidebar" autoCheck="false" label="Document Outline"
-                 type="checkbox" group="sidebar" sidebarurl="docoutline"
-                 oncommand="toggleSidebar('viewOutlineSidebar');"/>
-  </broadcasterset>
-  <broadcasterset id="vcam_broadcasterset"/>
-
-  
-  <keyset id="editorKeys">
-    <keyset id="tasksKeys"/>
-    <keyset id="MSIEditorKeys"/>
-    <key id="showHideSidebar"/>
-    <key id="key_newDocument" key="&filenew.keybinding;" observes="cmd_newDocument"  modifiers="accel"/>
-    <key id="openeditorkb"   key="&fileopen.keybinding;"  observes="cmd_open"  modifiers="accel"/>
-    <key id="savekb"         key="&filesave.keybinding;"  observes="cmd_save"  modifiers="accel"/>
-    <key id="printkb"        key="&fileprint.keybinding;" observes="cmd_print" modifiers="accel"/>
-    <key id="key_quit"       key="&filequit.keybinding;"  observes="cmd_quit" modifiers="accel"/>
-    <key id="keyhelpcontents" keycode="&helpmenuContents.keybinding;" observes="cmd_unimp"/>>
-  </keyset>
-  <keyset id="mainKeyset"/> <!-- for extensions-->
-
   <toolbox class="toolbox-top" id="EditorToolbox">
-    <menubar id="main-menubar" class="chromeclass-menubar" persist="collapsed" grippyhidden="false">
-      <menu id="fileMenu" />
-      <menu id="editMenu" />
-      <menu id="insertMenu"/>
-      <menu id="viewMenu" />
-      <menu id="goMenu" />
-      <menu id="tagMenu" />
-      <menu id="MSITypesetMenu" />
-      <menu id="toolsMenu" />
-      <menu id="MSIComputeMenu" />
-      <menu id="windowMenu" />
-      <!-- DEBUG only -->
-      <menu id="debugMenu" /> 
-      <!-- end DEBUG only -->
-      <menu id="helpmenu" />
-    </menubar>
-    <arrowscrollbox id="toolboxes" orient="horizontal">
-      <vbox style="overflow:hidden" flex="1">
-        <toolbox id="Toolbox" />
-        <toolbar id="VCamToolbar" hidden="true"/>
-      </vbox>
-    </arrowscrollbox>
+# The entire main menubar is placed into browser-menubar.inc, so that it can be shared by 
+# hiddenWindo#w.xul.
+#include prince-menubar.inc 
+#include prince-toolbars.inc
   </toolbox>
   
 <sidebaritems id="sidebaritems">
