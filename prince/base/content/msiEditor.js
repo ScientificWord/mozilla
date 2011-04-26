@@ -4570,7 +4570,7 @@ function msiSetDisplayMode(editorElement, mode)
           else
             editor.addOverrideStyleSheet(gMathStyleSheet);
           // Disable ShowAllTags mode
-          editor.enableStyleSheet(dynAllTagsStyleSheet, false);
+          editor.removeOverrideStyleSheet(dynAllTagsStyleSheet);
         break;
         
         case kDisplayModeAllTags:
