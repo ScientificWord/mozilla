@@ -4,25 +4,14 @@
 
 toolbar
 {
-  background-image: url("chrome://prince/skin/icons/background.png");
-  background-repeat: repeat-x;
+  background-color: rgb(237,237,237);
 }
 
-toolbar[iconsize="small"]
-{
-  background-image: url("chrome://prince/skin/icons/background-sm.png");
-}
 
 toolbox
 {
   min-height: 0;
-  background-image: url("chrome://prince/skin/icons/background.png");
-  background-repeat: repeat-x;
-}
-
-toolbox[iconsize="small"]
-{
-  background-image: url("chrome://prince/skin/icons/background-sm.png");
+  background-color: rgb(237,237,237);
 }
 
 
