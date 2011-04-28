@@ -8,21 +8,15 @@
 PRBool IsMathFrame( nsIFrame * aFrame );
 PRBool IsDisplayFrame( nsIFrame * aFrame, PRInt32& count )
 {  
-  PRBool retval;
+  PRBool retval = PR_FALSE;
   nsCOMPtr<nsIDOMElement> element = do_QueryInterface(aFrame->GetContent());
   if (element)
   {
     nsAutoString stringTag;
     element->GetLocalName(stringTag);
     retval = (stringTag.EqualsLiteral("msidisplay"));
-    if (retval)
-    {
-  		aFrame = aFrame->GetParent();
-  		count = 0;
-      return PR_TRUE;
-    }
   }
-  return PR_FALSE;
+  return retval;
 }
 
 PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame, PRInt32* aOutOffset, PRInt32& count)
@@ -53,9 +47,9 @@ PRBool PlaceCursorAfter( nsIFrame * pFrame, PRBool fInside, nsIFrame** aOutFrame
     }
     else if (IsDisplayFrame(pParent, count))
     {
-      *aOutFrame = GetFirstTextFramePastFrame(pParent);
-      *aOutOffset = count;
-      
+      *aOutFrame = pParent->GetParent();
+      pContent = (*aOutFrame)->GetContent();
+      *aOutOffset = 1+pContent->IndexOf(pParent->GetContent());
     }
     else
     {
