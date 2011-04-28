@@ -33,6 +33,20 @@ function getBrowser()
 }
 
 
+function GetCurrentEditor() {
+  var editor;
+  try {
+    var editorElement = GetCurrentEditorElement();
+    editor = editorElement.getEditor(editorElement.contentWindow);
+
+    editor instanceof Components.interfaces.nsIPlaintextEditor;
+    editor instanceof Components.interfaces.nsIHTMLEditor;
+  } catch (e) { dump (e)+"\n"; }
+  return editor;
+}
+
+
+
 function GetCurrentEditorElement() {
   var tmpWindow = window;
   
