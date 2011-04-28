@@ -104,8 +104,8 @@ else
 FW=funnelweb
 endif
 
-$(CPPSRCS):$(FWSRCS)
-	-$(srcdir)/$(FW) +t +D tex
+XXX:$(FWSRCS)
+	$(srcdir)/$(FW) +t +D tex
 
 # why doesn't this work?
 LOCAL_INCLUDES	= -I$(srcdir)
