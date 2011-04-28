@@ -1429,8 +1429,8 @@ XRE_GetBinaryPath(const char* argv0, nsILocalFile* *aResult)
   if (NS_FAILED(rv))
     return rv;
 
-#elif
-#error Oops, you need platform-specific code here
+  //#elif
+  //#error Oops, you need platform-specific code here
 #endif
 
   NS_ADDREF(*aResult = lf);
