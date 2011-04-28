@@ -980,7 +980,7 @@ void InitData()
    Global::everymath.AddReference();
    Global::everypar.AddReference();
    Global::msieverypar.AddReference();
-   
+
    InitCatcodes();
    InitUccodes();
    InitLccodes();
