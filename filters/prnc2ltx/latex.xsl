@@ -96,6 +96,10 @@
       </xsl:choose>
       </xsl:attribute>
       <xsl:attribute name="texname"><xsl:value-of select="@name"/></xsl:attribute>
+      <xsl:attribute name="label"><xsl:value-of select="@label"/></xsl:attribute>
+      <xsl:if test="@theoremstyle">
+        <xsl:attribute name="thmstyle"><xsl:value-of select="@theoremstyle"/></xsl:attribute>
+      </xsl:if>
     </xsl:element>
   </xsl:for-each>
 </xsl:variable>
@@ -141,8 +145,31 @@
 
 <xsl:variable name="sortedNeededNewTheoremsNodeList" select = "exsl:node-set($sortedNeededTheorems)"/>
 
+<xsl:template name="writeOutANewTheorem">
+  <xsl:choose>
+    <xsl:when test="@numbering='none'">
+      <xsl:text xml:space="preserve">
+\newtheorem*{</xsl:text>
+      <xsl:value-of select="@texname"/>}{<xsl:value-of select="@label"/>}
+    </xsl:when>
+    <xsl:when test="not(@numbering) or @numbering=@texname">
+      <xsl:text xml:space="preserve">
+\newtheorem{</xsl:text>
+      <xsl:value-of select="@texname"/>}{<xsl:value-of select="@label"/>}
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:text xml:space="preserve">
+\newtheorem{</xsl:text>
+      <xsl:value-of select="@texname"/>}[<xsl:value-of select="@numbering"/>]{<xsl:value-of select="@label"/>}
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<!-- xsl:template match="html:newtheorem">
+\newtheorem{<xsl:value-of select="@name"/>}<xsl:if test="not(not(@counter))">[<xsl:value-of select="@counter"/>]</xsl:if>{<xsl:value-of select="@label"/>}</xsl:template -->
+
 <xsl:template match="html:newtheorem">
-\newtheorem{<xsl:value-of select="@name"/>}<xsl:if test="not(not(@counter))">[<xsl:value-of select="@counter"/>]</xsl:if>{<xsl:value-of select="@label"/>}</xsl:template>
+</xsl:template>
 
 <xsl:template name="generateMissingNewTheorems">
   <xsl:for-each select="$sortedNeededNewTheoremsNodeList/*[@texname and string-length(@texname)]">
@@ -164,13 +191,46 @@
   </xsl:for-each>
 </xsl:template>
 
+<xsl:template name="writeNewTheoremList">
+  <xsl:choose>
+    <xsl:when test="$theoremenvNodeList/thmenvnode[@thmstyle and (@thmstyle!='plain')] |$sortedNeededNewTheoremsNodeList/thmenvnode[@thmstyle and (@thmstyle!='plain')]"> 
+      <xsl:for-each select="$theoremenvNodeList/thmenvnode[not(@thmstyle) or (@thmstyle='plain')] | $sortedNeededNewTheoremsNodeList/thmenvnode[not(@thmstyle) or (@thmstyle='plain')]">
+        <xsl:if test="position()=1">
+          <xsl:text xml:space="preserve">
+\theoremstyle{plain}</xsl:text>
+        </xsl:if>
+        <xsl:call-template name="writeOutANewTheorem" />
+      </xsl:for-each>
+      <xsl:for-each select="$theoremenvNodeList/thmenvnode[@thmstyle='definition'] | $sortedNeededNewTheoremsNodeList/thmenvnode[@thmstyle='definition']">
+        <xsl:if test="position()=1">
+          <xsl:text xml:space="preserve">
+\theoremstyle{definition}</xsl:text>
+        </xsl:if>
+        <xsl:call-template name="writeOutANewTheorem" />
+      </xsl:for-each>
+      <xsl:for-each select="$theoremenvNodeList/thmenvnode[@thmstyle='remark'] | $sortedNeededNewTheoremsNodeList/thmenvnode[@thmstyle='remark']">
+        <xsl:if test="position()=1">
+          <xsl:text xml:space="preserve">
+\theoremstyle{remark}</xsl:text>
+        </xsl:if>
+        <xsl:call-template name="writeOutANewTheorem" />
+      </xsl:for-each>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:for-each select="$theoremenvNodeList/thmenvnode | $sortedNeededNewTheoremsNodeList/thmenvnode">
+        <xsl:call-template name="writeOutANewTheorem" />
+      </xsl:for-each>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:variable name="equationNumberingContainers">
   <xsl:choose>
     <xsl:when test=".//html:documentclass[@class='article']">
-      <xsl:text>-section-chapter-body-</xsl:text>
+      <xsl:text>-section-chapter-part-body-</xsl:text>
     </xsl:when>
     <xsl:otherwise>
-      <xsl:text>-body-</xsl:text>
+      <xsl:text>-chapter-part-body-</xsl:text>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:variable>
