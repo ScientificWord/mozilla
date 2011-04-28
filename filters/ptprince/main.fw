@@ -91,7 +91,11 @@ int main(int argc, char* argv[])
    #endif
    char envInput[_MAX_PATH+12];
    char envOutput[_MAX_PATH+12];
-   strcpy(envInput, "MSITEXINPUT=.;");
+   #if (OS_ARCH=Darwin)
+     strcpy(envInput, "MSITEXINPUT=.:");
+   #else
+     strcpy(envInput, "MSITEXINPUT=.;");
+   #fi
    strcpy(envOutput, "MSIOUTPUT=");
    for (int j = 0; j < argc; ++j)
    {
