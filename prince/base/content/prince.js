@@ -1514,9 +1514,9 @@ function openTeX()
   // This checks for already open window and activates it... 
   // note that we have to test the native path length
   // since file.URL will be "file:///" if no filename picked (Cancel button used)
-  
+  dump("\nFile picked: " + fp.file.path);
   if (fp.file && fp.file.path.length > 0) {
-   
+      dump("Here!");
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //      Prepare to run pretex.exe. We need to send it some directories:                                       //
 //       The input directory gives the location of the .cls and .tex files that pretex reads to               //
