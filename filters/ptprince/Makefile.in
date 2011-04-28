@@ -100,10 +100,15 @@ include $(topsrcdir)/config/rules.mk
 
 ifeq ($(OS_ARCH),WINNT)
 FW=funnelweb.exe
-else
+endif
+
+ifeq ($(OS_ARCH),LINUX)
 FW=funnelweb
 endif
 
+ifeq ($(OS_ARCH),Darwin)
+FW=funnelwebmac
+endif
 
 
 $(CPPSRCS):$(FWSRCS)
