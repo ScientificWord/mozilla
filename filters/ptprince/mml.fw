@@ -80,9 +80,9 @@ bool SetupMathML()
         upref_zstrs[j] = temp;
       }
     }
-    
+
     fix_IE_space_bug = (strcmp(upref_zstrs[FIX_IE_BUG], "true") == 0);
-    
+
     bool hr = InitializeMML( (const char*) s_mmldirname,
                                 (const char*)"mml:",
                                 (const char**)upref_zstrs );

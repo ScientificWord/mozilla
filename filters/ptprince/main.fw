@@ -211,7 +211,7 @@ int main(int argc, char* argv[])
       Tokenizer* toks = new Tokenizer(plineSource);
       InputStack::Push(toks);
       Interpretter::MainLoop();
-     
+
       //delete toks;
       delete charstream;
       delete plineSource;

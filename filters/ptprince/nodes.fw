@@ -195,7 +195,6 @@ void CharNode::Print(OutputStream& out)
      sprintf(buf, "%d", m_char);
      out <<  "&#" << buf << ";";
   } else {
-      
   }
 }
 @}
