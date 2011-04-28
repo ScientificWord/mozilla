@@ -1024,7 +1024,7 @@ msiEditor::HandleKeyPress(nsIDOMKeyEvent * aKeyEvent)
         }
       }
     }           
-    if (symbol && !ctrlKey && !altKey)
+    if (symbol && !ctrlKey && !altKey && !metaKey)
     {
       PRBool collapsed(PR_FALSE);
       nsCOMPtr<msiISelection> msiSelection;
