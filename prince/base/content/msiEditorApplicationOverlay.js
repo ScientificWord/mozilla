@@ -101,7 +101,7 @@ function msiPrefs()
     dump(e.message+"\n");
   }
   
-  openDialog("chrome://prince/content/preferences.xul", "preferences", "chrome,titlebar,resizable,toolbar,centerscreen,modal", o);
+  openDialog("chrome://prince/content/preferences.xul", "preferences", "chrome,titlebar,resizable,toolbar,centerscreen,dialog='yes'", o);
 
   if (o.Cancel)
     return;
