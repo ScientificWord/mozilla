@@ -8008,6 +8008,8 @@ var msiTheoremListPrototype =
       for (ix = 0; ix < envNodes.length; ++ix)
       {
         envNodes[ix].setAttribute("theoremstyle", newStyle);
+        if (newStyle != "plain")
+          envNodes[ix].setAttribute("req", "amsthm");
       }
     }
     else  //replace the nodes altogether
