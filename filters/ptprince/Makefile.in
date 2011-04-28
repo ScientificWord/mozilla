@@ -19,7 +19,7 @@ MathML = \
     $(srcdir)/NOTEBOOK.gmr \
     $(NULL)
 
-CPPSRCS		=		   \
+CPPSRCS		= \
 	basicdata.cpp \
 	conditionals.cpp \
 	expandables.cpp \
@@ -33,7 +33,7 @@ CPPSRCS		=		   \
 	textio.cpp \
 	tokens.cpp \
 	typesetter.cpp \
-  mml.cpp \
+        mml.cpp \
 	$(NULL)
 
 # not right, but compiles
@@ -104,8 +104,11 @@ else
 FW=funnelweb
 endif
 
-XXX:$(FWSRCS)
-	$(srcdir)/$(FW) +t +D tex
+
+
+$(CPPSRCS):$(FWSRCS)
+	-$(srcdir)/$(FW) +t +D tex
+
 
 # why doesn't this work?
 LOCAL_INCLUDES	= -I$(srcdir)
