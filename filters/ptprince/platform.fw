@@ -1091,12 +1091,15 @@ InputByteFile::~InputByteFile()
 
 bool FileExists(const char* file)
 {
+   std::cout << "\nTHE FILE [" << file;
    std::fstream f;
    f.open(file);
    if(f.is_open()){
      f.close();
+     std::cout << "] EXISTS\n";
      return true;
    } else {
+     std::cout << "] DOES NOT EXIST\n";
      return false;
    }
 }
