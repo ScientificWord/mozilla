@@ -1080,9 +1080,6 @@ InputByteFile::~InputByteFile()
 @}
 
 @$@<Search Utility@>==@{@-
-//#ifdef _WINDOWS
-//#define SearchEnv _searchenv
-//#else
 
 bool FileExists(const char* file)
 {
@@ -1123,8 +1120,12 @@ void SearchEnv(const char *file, const char *env, char *buf)
   do
   {
     char *end = penv;
-
-    while(*end && *end != ';') end++; /* Find end of next path */
+    #ifdef _WINDOWS
+      while(*end && *end != ';') end++; /* Find end of next path */
+    #else
+      while(*end && *end != ':') end++; /* Find end of next path */
+    #endif
+    
     if (penv == end || !*penv)
     {
       return;
@@ -1132,7 +1133,11 @@ void SearchEnv(const char *file, const char *env, char *buf)
     memcpy(curPath, penv, end - penv);
     if (curPath[end - penv] != '/' && curPath[end - penv] != '\\')
     {
-      curPath[end - penv] = '\\';
+      #ifdef _WINDOWS
+        curPath[end - penv] = '\\';
+      #else
+        curPath[end - penv] = '/';
+      #endif
       curPath[end - penv + 1] = '\0';
     }
     else
