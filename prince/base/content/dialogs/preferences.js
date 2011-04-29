@@ -138,6 +138,9 @@ function showShellsInDir(tree)
 function UserSettingsStartup(){
 }
 
+function onCancel () {
+  return true;
+}
 
 function onAccept(){
   try {
