@@ -1084,9 +1084,6 @@ InputByteFile::~InputByteFile()
 @}
 
 @$@<Search Utility@>==@{@-
-//#ifdef _WINDOWS
-//#define SearchEnv _searchenv
-//#else
 
 bool FileExists(const char* file)
 {
@@ -1127,8 +1124,12 @@ void SearchEnv(const char *file, const char *env, char *buf)
   do
   {
     char *end = penv;
-
-    while(*end && *end != ';') end++; /* Find end of next path */
+    #ifdef _WINDOWS
+      while(*end && *end != ';') end++; /* Find end of next path */
+    #else
+      while(*end && *end != ':') end++; /* Find end of next path */
+    #endif
+    
     if (penv == end || !*penv)
     {
       return;
@@ -1136,7 +1137,11 @@ void SearchEnv(const char *file, const char *env, char *buf)
     memcpy(curPath, penv, end - penv);
     if (curPath[end - penv] != '/' && curPath[end - penv] != '\\')
     {
-      curPath[end - penv] = '\\';
+      #ifdef _WINDOWS
+        curPath[end - penv] = '\\';
+      #else
+        curPath[end - penv] = '/';
+      #endif
       curPath[end - penv + 1] = '\0';
     }
     else
@@ -1153,7 +1158,7 @@ void SearchEnv(const char *file, const char *env, char *buf)
   } while(1);
 
 }
-//#endif
+
 @}
 
 @$@<InputByteFile implementation@>+=@{@-
@@ -1191,9 +1196,13 @@ bool InputByteFile::Open(const Filename& fullpath){
    }
 
    std::string filepath = CatFilename(area, name, ext, true);
+   std::cout << "\nsearch for filepath = " << filepath << "\n";
    const char* path = SearchFor(filepath.c_str());
+   
    if (path == 0){
+      std::cout << "\nNot found";
       filepath = CatFilename(area, name, ext, false);
+      std::cout << "\nsearch for filepath = " << filepath << "\n";
       path = SearchFor(filepath.c_str());
       if (path == 0){
          LOG("\nFailed to locate " << filepath.c_str());
@@ -1203,6 +1212,7 @@ bool InputByteFile::Open(const Filename& fullpath){
          LOG("\nFound file"<< filepath.c_str());
       }
    } else {
+      std::cout << "\nfound path = " << path << "\n";
       LOG("\nFound substitute file" << filepath.c_str());
    }
    m_byteFileData -> m_file.open(path, std::ios::in | std::ios::binary);
