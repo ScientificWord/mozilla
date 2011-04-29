@@ -854,7 +854,11 @@ std::string CatFilename(const char* area,
    std::string full;
    if (area != 0 && strlen(area) != 0){
      full += area;
-     full += "\\";
+     #ifdef _WINDOWS
+       full += "\\";
+     #else
+       full += "/";
+     #endif
    }
    if (bSubst) full += "msi-";
    full += name;
@@ -1390,7 +1394,11 @@ bool OutputByteFile::Open(const Filename& fullpath)
       const char* envpath = getenv("MSIOUTPUT");
       if (envpath != 0){
         filepath = envpath;
-        filepath += "\\";
+        #ifdef _WINDOWS
+          filepath += "\\";
+        #else 
+          filepath += "/";
+        #endif
         filepath += CatFilename(area, name, ext, false);
         path = filepath.c_str();
       }
