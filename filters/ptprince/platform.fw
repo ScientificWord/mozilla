@@ -1080,13 +1080,76 @@ InputByteFile::~InputByteFile()
 @}
 
 @$@<Search Utility@>==@{@-
-#ifdef _WINDOWS
-#define SearchEnv _searchenv
-#else
-void SearchEnv(const char *filename, const char *varname, char *pathname)
+//#ifdef _WINDOWS
+//#define SearchEnv _searchenv
+//#else
+
+bool FileExists(const char* file)
 {
+   std::fstream f;
+   f.open(file);
+   if(f.is_open()){
+     f.close();
+     return true;
+   } else {
+     return false;
+   }
 }
-#endif
+
+void SearchEnv(const char *file, const char *env, char *buf)
+{
+  //void CDECL _searchenv(const char* file, const char* env, char *buf)
+
+  char *envVal, *penv;
+  char curPath[MAX_PATH];
+
+  *buf = '\0';
+
+  if ( FileExists( file ) )
+  {
+    strcpy(buf, file);
+    return;
+  }
+
+  /* Search given environment variable */
+  envVal = getenv(env);
+  if (!envVal)
+  {
+    return;
+  }
+
+  penv = envVal;
+
+  do
+  {
+    char *end = penv;
+
+    while(*end && *end != ';') end++; /* Find end of next path */
+    if (penv == end || !*penv)
+    {
+      return;
+    }
+    memcpy(curPath, penv, end - penv);
+    if (curPath[end - penv] != '/' && curPath[end - penv] != '\\')
+    {
+      curPath[end - penv] = '\\';
+      curPath[end - penv + 1] = '\0';
+    }
+    else
+      curPath[end - penv] = '\0';
+
+    strcat(curPath, file);
+    
+    if (FileExists( curPath ))
+    {
+      strcpy(buf, curPath);
+      return; /* Found */
+    }
+    penv = *end ? end + 1 : end;
+  } while(1);
+
+}
+//#endif
 @}
 
 @$@<InputByteFile implementation@>+=@{@-
