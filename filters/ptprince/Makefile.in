@@ -102,7 +102,7 @@ ifeq ($(OS_ARCH),WINNT)
 FW=funnelweb.exe
 endif
 
-ifeq ($(OS_ARCH),LINUX)
+ifeq ($(OS_ARCH),Linux)
 FW=funnelweb
 endif
 
