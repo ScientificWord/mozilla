@@ -179,7 +179,7 @@ int main(int argc, char* argv[])
       const char* dir = fn.GetAreaString();
       s_inputdir = strdup(dir);
 
-      #ifdef _WINDOWS 
+      #ifdef _WINDOWS
         strcat(envInput, ";");
       #else
         strcat(envInput, ":");
