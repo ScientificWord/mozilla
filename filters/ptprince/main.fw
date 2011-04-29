@@ -59,13 +59,15 @@ void usage()
 
 int main(int argc, char* argv[])
 {
+   std::cout << "\nARGC = " << argc << "\n";
    //#ifdef DEBUG
    //  _CrtSetBreakAlloc(512533);
    //#endif
 
    // Check for -h, /h
-   for (int k = 0; k < argc; ++k){
-      if (argv[k][0] == '-' || argv[k][0] == '/'){
+   for (int k = 1; k < argc; ++k){
+      std::cout << "\nk = " << k << ", argv[k] = " << argv[k] << "\n";
+      if (argv[k][0] == '-'){
          if (strlen(argv[k]) > 1 && argv[k][1]=='h')usage();
       }
    }
