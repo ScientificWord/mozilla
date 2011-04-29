@@ -790,7 +790,11 @@ bool Filename::Accept(TeXChar c, bool fExternal)
      return false;
   if ((c == L'/')||(fExternal &&(c==L'\\'))) {
      m_filenameData -> area_delim = m_filenameData -> m_strFullName.size();
-     c = L'\\';
+     #ifdef _WINDOWS
+        c = L'\\';
+     #else
+        c = L'/';
+     #endif
   }
   if (c == L'.'){
      m_filenameData -> ext_delim = m_filenameData -> m_strFullName.size();
@@ -1101,7 +1105,7 @@ void SearchEnv(const char *file, const char *env, char *buf)
   //void CDECL _searchenv(const char* file, const char* env, char *buf)
 
   char *envVal, *penv;
-  char curPath[MAX_PATH];
+  char curPath[_MAX_PATH];
 
   *buf = '\0';
 
