@@ -1311,15 +1311,15 @@
       \expandafter\@firstoftwo
    \fi
    #1}
-\catcode\z@=11\relax
+%\catcode\z@=11\relax
 \def\DeclareTextComposite#1#2#3#4{%
    \def\reserved@a{\DeclareTextCompositeCommand#1{#2}{#3}}%
    \bgroup
       \lccode\z@#4%
       \lowercase{%
    \egroup
-      \reserved@a ^^@}}
-\catcode\z@=15\relax
+      \reserved@a}}
+%\catcode\z@=15\relax
 \@onlypreamble\DeclareTextComposite
 \def\UseTextAccent#1#2#3{%
   \hmode@start@before@group
@@ -5155,8 +5155,6 @@
  \@esphack}
 
 
-
-
 %<indexitem req="varioref" pri="asdf" sec="fff"/>
 
 \def\index#1{\msihmode\msitag{<indexitem req="varioref" pri="#1"/>}}
@@ -5179,7 +5177,6 @@
  \endgroup
  \@esphack}
 \def\glossary{\@bsphack\begingroup\@sanitize\@index}
-
 
 
 \def\bibitem{\@ifnextchar[\@lbibitem\@bibitem}
@@ -6708,7 +6705,7 @@
 \reserved@a{`\A}{`\Z}
 \reserved@a{`\a}{`\z}
 \def\reserved@c#1{\catcode#1=15\relax}
-\reserved@a{0}{`\^^H}
+%\reserved@a{0}{`\^^H}
 \reserved@c{`\^^K}
 \reserved@a{`\^^N}{31}
   \catcode"7F=15
@@ -6859,11 +6856,9 @@
 
 \let\hyperref\msihyperref
 
-
-
-
 \def\CustomNote{%
    \@ifnextchar[{\out@CustomNoteA}{\out@CustomNoteB}}%
    
 
-\makeatother
+\makeatother\relax
+\endinput

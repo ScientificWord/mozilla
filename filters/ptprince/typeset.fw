@@ -22,6 +22,7 @@ lines, formulas, pages, footnotes, and so on.
 #include <iostream>
 #include <strstream>
 #include <cstring>
+#include <stdio.h>
 //#include <windows.h>
 #include "mml.h"
 //#include <filespec.h>
@@ -198,7 +199,7 @@ void PopSemanticLevel()
 @$@<Typesetter implementation@>+=@{@-
 void Typesetter::DeleteAll()
 {
-   
+
    delete s_pList;
    s_pList = 0;
 }
@@ -249,7 +250,6 @@ void Typesetter::AppendTag(const char* cstr)
   }
 }
 @}
-
 
 
 
@@ -392,7 +392,7 @@ void Typesetter::EndProcess()
          SetupMathML();
          std::string s_mathml;
          ProcessMathML(theCStr, s_mathml);
-         
+
          LOG("\nGot back " << s_mathml.c_str());
          AppendTag(s_mathml.c_str());
          s_mathml = "";

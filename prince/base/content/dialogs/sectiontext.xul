@@ -82,7 +82,6 @@
   <keyset id="editorKeys">
     <keyset id="tasksKeys"/>
     <keyset id="MSIKeySet"/>
-    <key id="MSIevalKey" key="&MSIComputeEvalCmd.keybinding;" observes="cmd_MSIComputeEval"  modifiers="accel"  />        
   </keyset>
 
 	<vbox>
