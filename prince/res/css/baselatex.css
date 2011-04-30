@@ -249,10 +249,25 @@ notewrapper[type="footnote"]:before {
   -moz-user-select: text;
 } 
 
+notewrapper[type="footnote"][markOrText="textOnly"]:before {
+  content: none !important;
+}
+
+notewrapper[type="footnote"][markOrText="markOnly"] > note {
+  display: none !important;
+}
+
 notewrapper[type="footnote"]{ 
   counter-increment: ftnotectr;
 }
 
+notewrapper[type="footnote"][footnoteNumber]:before {
+  content: attr(footnoteNumber);
+}
+
+notewrapper[type="footnote"][footnoteNumber], notewrapper[type="footnote"][markOrText="textOnly"] {
+  counter-increment: none !important;
+}
 
 notewrapper {
   display: inline;

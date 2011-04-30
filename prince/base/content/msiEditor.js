@@ -4570,7 +4570,7 @@ function msiSetDisplayMode(editorElement, mode)
           else
             editor.addOverrideStyleSheet(gMathStyleSheet);
           // Disable ShowAllTags mode
-          editor.enableStyleSheet(dynAllTagsStyleSheet, false);
+          editor.removeOverrideStyleSheet(dynAllTagsStyleSheet);
         break;
         
         case kDisplayModeAllTags:
@@ -4949,7 +4949,7 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
 //      name = name.toLowerCase();
 
     var wrappedChildElement = element;
-    while ( (name == 'mstyle') || (name == 'mrow') )
+    while ( (name == 'mstyle') || (name == 'mrow') || (name == "notewrapper") )
     {
       var newChildElement = msiNavigationUtils.getSingleWrappedChild(wrappedChildElement);
       if (newChildElement == null)
