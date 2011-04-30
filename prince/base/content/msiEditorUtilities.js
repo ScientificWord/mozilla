@@ -9187,6 +9187,22 @@ var msiNavigationUtils =
           return nodeContents[0];
       break;
 
+      case 'notewrapper':
+        var nodeContents = this.getSignificantContents(aNode);
+        if ((nodeContents.length > 1) && (msiGetBaseNodeName(nodeContents[0]) == "br"))
+          nodeContents.splice(0, 1);
+        if ((nodeContents.length > 1) && (msiGetBaseNodeName(nodeContents[nodeContents.length - 1]) == "br"))
+          nodeContents.splice(nodeContents.length - 1, 1);
+        if (nodeContents.length == 1)
+          return nodeContents[0];
+        dump("Surprising contents in notewrapper! Has [" + nodeContents.length + "] children!\n");
+        for (var ix = 0; ix < nodeContents.length; ++ix)
+        {
+          if (msiGetBaseNodeName(nodeContents[ix]) == "note")
+            return nodeContents[ix];
+        }  
+      break;
+
       default:
       break;
     }
