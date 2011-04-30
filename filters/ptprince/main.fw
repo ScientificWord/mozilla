@@ -59,13 +59,15 @@ void usage()
 
 int main(int argc, char* argv[])
 {
+   std::cout << "\nARGC = " << argc << "\n";
    //#ifdef DEBUG
    //  _CrtSetBreakAlloc(512533);
    //#endif
 
    // Check for -h, /h
-   for (int k = 0; k < argc; ++k){
-      if (argv[k][0] == '-' || argv[k][0] == '/'){
+   for (int k = 1; k < argc; ++k){
+      std::cout << "\nk = " << k << ", argv[k] = " << argv[k] << "\n";
+      if (argv[k][0] == '-'){
          if (strlen(argv[k]) > 1 && argv[k][1]=='h')usage();
       }
    }
@@ -91,7 +93,11 @@ int main(int argc, char* argv[])
    #endif
    char envInput[_MAX_PATH+12];
    char envOutput[_MAX_PATH+12];
-   strcpy(envInput, "MSITEXINPUT=.;");
+   #if (OSARCH==Darwin)
+     strcpy(envInput, "MSITEXINPUT=.:");
+   #else
+     strcpy(envInput, "MSITEXINPUT=.;");
+   #endif
    strcpy(envOutput, "MSIOUTPUT=");
    for (int j = 0; j < argc; ++j)
    {
@@ -173,7 +179,12 @@ int main(int argc, char* argv[])
       const char* dir = fn.GetAreaString();
       s_inputdir = strdup(dir);
 
-      strcat(envInput, ";");
+      #ifdef _WINDOWS
+        strcat(envInput, ";");
+      #else
+        strcat(envInput, ":");
+      #endif
+
       strcat(envInput, dir);
       putenv(envInput);
 
@@ -211,7 +222,7 @@ int main(int argc, char* argv[])
       Tokenizer* toks = new Tokenizer(plineSource);
       InputStack::Push(toks);
       Interpretter::MainLoop();
-     
+
       //delete toks;
       delete charstream;
       delete plineSource;

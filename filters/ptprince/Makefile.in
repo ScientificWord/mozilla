@@ -19,7 +19,7 @@ MathML = \
     $(srcdir)/NOTEBOOK.gmr \
     $(NULL)
 
-CPPSRCS		=		   \
+CPPSRCS		= \
 	basicdata.cpp \
 	conditionals.cpp \
 	expandables.cpp \
@@ -33,7 +33,7 @@ CPPSRCS		=		   \
 	textio.cpp \
 	tokens.cpp \
 	typesetter.cpp \
-  mml.cpp \
+        mml.cpp \
 	$(NULL)
 
 # not right, but compiles
@@ -100,12 +100,20 @@ include $(topsrcdir)/config/rules.mk
 
 ifeq ($(OS_ARCH),WINNT)
 FW=funnelweb.exe
-else
+endif
+
+ifeq ($(OS_ARCH),Linux)
 FW=funnelweb
 endif
 
+ifeq ($(OS_ARCH),Darwin)
+FW=funnelwebmac
+endif
+
+
 $(CPPSRCS):$(FWSRCS)
 	-$(srcdir)/$(FW) +t +D tex
+
 
 # why doesn't this work?
 LOCAL_INCLUDES	= -I$(srcdir)
