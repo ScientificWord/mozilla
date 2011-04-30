@@ -533,12 +533,21 @@ should not be done under some conditions -->
 
 <xsl:template match="html:note[@type='footnote']">
   
+<xsl:variable name="markOrText" select="parent::html:notewrapper/@markOrText" />
+<xsl:variable name="overrideNumber" select="parent::html:notewrapper/@footnoteNumber" />
 <xsl:choose>
-  <xsl:when test="$endnotes &gt; 0">\endnote{</xsl:when>
-  <xsl:otherwise>\footnote{</xsl:otherwise>
+  <xsl:when test="$endnotes &gt; 0">\endnote</xsl:when>
+  <xsl:when test="$markOrText='textOnly'">\footnotetext</xsl:when>
+  <xsl:when test="$markOrText='markOnly'">\footnotemark</xsl:when>
+  <xsl:otherwise>\footnote</xsl:otherwise>
 </xsl:choose>
+<xsl:if test="$overrideNumber"><xsl:text>[</xsl:text><xsl:value-of select="$overrideNumber"/><xsl:text>]</xsl:text></xsl:if>
+<xsl:if test="not($markOrText='markOnly')">
+<xsl:text>{</xsl:text>
 <xsl:apply-templates/>
-<xsl:text>}</xsl:text>
+<xsl:text xml:space="preserve">}
+</xsl:text>
+</xsl:if>
 </xsl:template>
 
 <xsl:template match="html:note">\marginpar{<xsl:apply-templates/>}
