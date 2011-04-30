@@ -1012,7 +1012,7 @@ var msiNewCommand =
             createInstance(Components.interfaces.nsILocalFile);
           thefile.initWithPath(data.filename);
           newdocumentfile = createWorkingDirectory(thefile);
-      	  var url = msiFileURLFromAbsolutePath( newdocumentfile.path );
+          var url = msiFileURLFromAbsolutePath( newdocumentfile.path );
           msiEditPage( url, window, false);
         } catch (e) { dump("msiEditPage failed: "+e.toString()+"\n"); }
 
@@ -3184,9 +3184,9 @@ var msiRevertCommand =
       var msg = GetString("AbandonChanges").replace(/%title%/,title);
 
       var result = promptService.confirmEx(window, GetString("RevertCaption"), msg,
-  						      (promptService.BUTTON_TITLE_REVERT * promptService.BUTTON_POS_0) +
-  						      (promptService.BUTTON_TITLE_CANCEL * promptService.BUTTON_POS_1),
-  						      null, null, null, null, {value:0});
+                    (promptService.BUTTON_TITLE_REVERT * promptService.BUTTON_POS_0) +
+                    (promptService.BUTTON_TITLE_CANCEL * promptService.BUTTON_POS_1),
+                    null, null, null, null, {value:0});
 
       // Reload page if first button (Revert) was pressed
       if(result == 0)
@@ -3799,7 +3799,7 @@ var msiFontColor =
       return;
     
     msiEditorSetTextProperty(editorElement, "fontcolor", "color", colorObj.TextColor);
-	  var theWindow = msiGetTopLevelWindow();
+    var theWindow = msiGetTopLevelWindow();
     theWindow.msiRequirePackage(editorElement, "xcolor", null);
   }
 };
@@ -6693,16 +6693,16 @@ function msiDocumentInfo(editorElement)
 //    theData = theData.toLowerCase();
 
 //    var tcidataRegExp = /tcidata[\s]*\{((?:(?:\\\})|(?:[^\}]))+)\}/i;
-//	  var fullNameSyntax = /meta[\s]+.*name=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
-//	  var fullContentsSyntax = /meta[\s]+.*content=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
-//	  var altfullNameSyntax = /meta[\s]+.*name=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
-//	  var altfullContentsSyntax = /meta[\s]+.*content=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
-//	  var fullLinkSyntax = /link[\s]+.*rel=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
-//	  var fullLinkRefSyntax = /link[\s]+.*href=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
-//	  var altfullLinkSyntax = /link[\s]+.*rel=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
-//	  var altfullLinkRefSyntax = /link[\s]+.*href=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
-//	  var keyValueSyntax = /([\S]+)=(.*)/;
-//	  var keyValueValueSyntax = /?:([\S]+)=(.*)/;
+//    var fullNameSyntax = /meta[\s]+.*name=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
+//    var fullContentsSyntax = /meta[\s]+.*content=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
+//    var altfullNameSyntax = /meta[\s]+.*name=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
+//    var altfullContentsSyntax = /meta[\s]+.*content=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
+//    var fullLinkSyntax = /link[\s]+.*rel=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
+//    var fullLinkRefSyntax = /link[\s]+.*href=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
+//    var altfullLinkSyntax = /link[\s]+.*rel=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
+//    var altfullLinkRefSyntax = /link[\s]+.*href=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
+//    var keyValueSyntax = /([\S]+)=(.*)/;
+//    var keyValueValueSyntax = /?:([\S]+)=(.*)/;
 
     var tciData = theData.match(this.tcidataRegExp);
     //NOTE! In JavaScript String.match(regExp), the first thing returned is the full matching expression; capturing-parentheses
@@ -6773,13 +6773,13 @@ function msiDocumentInfo(editorElement)
     theData = theData.toLowerCase();
 
     var tcidataReplaceRegExp = /(tcidata[\s]*\{)((?:(?:\\\})|(?:[^\}]))+)\}/i;
-//	  var fullNameReplaceSyntax = /meta[\s]+.*name=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
+//    var fullNameReplaceSyntax = /meta[\s]+.*name=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
     var fullContentsReplaceSyntax = /(meta[\s]+.*content=\")((?:(?:\\\")|(?:[^\"]))+)\"/i;
-//	  var altfullNameReplaceSyntax = /meta[\s]+.*name=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
+//    var altfullNameReplaceSyntax = /meta[\s]+.*name=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
     var altfullContentsReplaceSyntax = /(meta[\s]+.*content=\')((?:(?:\\\')|(?:[^\']))+)\'/i;
-//	  var fullLinkReplaceSyntax = /link[\s]+.*rel=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
+//    var fullLinkReplaceSyntax = /link[\s]+.*rel=\"((?:(?:\\\")|(?:[^\"]))+)\"/i;
     var fullLinkRefReplaceSyntax = /(link[\s]+.*href=\")((?:(?:\\\")|(?:[^\"]))+)\"/i;
-//	  var altfullLinkReplaceSyntax = /link[\s]+.*rel=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
+//    var altfullLinkReplaceSyntax = /link[\s]+.*rel=\'((?:(?:\\\')|(?:[^\']))+)\'/i;
     var altfullLinkRefReplaceSyntax = /(link[\s]+.*href=\')((?:(?:\\\')|(?:[^\']))+)\'/i;
     var keyValueReplaceSyntax = /((?:[\S]+)=)(.*)/;
 
@@ -7761,7 +7761,7 @@ var msiSmileyCommand =
         case ":-X":
         case ":-x": strSml="s16";
         break;
-        default:	strSml="";
+        default:  strSml="";
         break;
     }
 
@@ -7794,7 +7794,7 @@ var msiSmileyCommand =
 
       editor.insertElementAtSelection(extElement,true);
       editorElement.contentWindow.focus();
-//      window.content.focus();		
+//      window.content.focus();   
 
     } 
     catch (e) 
@@ -8847,16 +8847,30 @@ var msiConvertToTable =
 function msiNote(currNode, editorElement, type, hidden)
 {
   var data= new Object();
+  if (!editorElement)
+    editorElement = msiGetActiveEditorElement();
   data.editorElement = editorElement;
-  if (!data.editorElement)
-    data.editorElement = msiGetActiveEditorElement();
-  var currNodeTag = "";
+  var wrapperNode;
+  var markOrText, noteNumber;
   if (currNode) {
+    data.noteNode = currNode;
     data.type = currNode.getAttribute("type");
     try
     {
       if (currNode.getAttribute("hide") == "true") data.hide=true;
-
+      if (data.type == 'footnote')
+      {
+        wrapperNode = msiNavigationUtils.getParentOfType(currNode, "notewrapper");
+        if (wrapperNode)
+        {
+          markOrText = wrapperNode.getAttribute("markOrText");
+          if (markOrText && markOrText.length)
+            data.markOrText = markOrText;
+          noteNumber = wrapperNode.getAttribute("footnoteNumber");
+          if (noteNumber && noteNumber.length)
+            data.footnoteNumber = Number(noteNumber);
+        }
+      }
     }
     catch(e){}
   }
@@ -8875,23 +8889,112 @@ function msiNote(currNode, editorElement, type, hidden)
   if (!type) {
     window.openDialog("chrome://prince/content/Note.xul","note", "chrome,close,titlebar,resizable=yes,dependent", data);
     // data comes back altered
-    if (data.Cancel)
-      return;
+//    if (data.Cancel)
+//      return;
   }
 
-  dump(data.type + "\n");
+//  dump(data.type + "\n");
+//  var editor = msiGetEditor(editorElement);
+//  editor.beginTransaction();
+//  if (currNode)  // currnode is a note node
+//  {
+//    if (data.type == 'footnote')
+//      currNode.parentNode.setAttribute("type","footnote");
+//    else
+//      currNode.parentNode.removeAttribute("type");
+//    currNode.setAttribute("type",data.type);
+//    currNode.setAttribute("hide",data.hide?"true":"false");
+//    if (data.type != 'footnote') 
+//    {
+//      currNode.setAttribute("req","ragged2e");
+//      currNode.setAttribute("opt","raggedrightboxes");
+//    }
+//    else
+//    {
+//      if ("footnoteNumber" in data)
+//        currNode.setAttribute("footnoteNumber", String(data.footnoteNumber));
+//      else
+//        currNode.removeAttribute("footnoteNumber");
+//      if (data.markOrText != "markAndText")
+//        currNode.setAttribute("markOrText", data.markOrText);
+//      else
+//        currNode.removeAttribute("markOrText");
+//    }
+//  }
+//  else
+//  {
+//  try 
+//  {
+//    var namespace = new Object();                      
+//    var paraTag = editor.tagListManager.getDefaultParagraphTag(namespace); 
+//    var wrapperNode = editor.document.createElement('notewrapper');
+//    if (data.type == 'footnote') wrapperNode.setAttribute('type','footnote');
+//    var node = editor.document.createElement('note');
+//    node.setAttribute('type',data.type);
+//    node.setAttribute('hide','false');
+//    if (data.type != 'footnote') 
+//    {
+//      node.setAttribute("req","ragged2e");
+//      node.setAttribute("opt","raggedrightboxes");
+//    }
+//    else
+//    {
+//      if ("footnoteNumber" in data)
+//        node.setAttribute("footnoteNumber", String(data.footnoteNumber));
+//      if (data.markOrText != "markAndText")
+//        node.setAttribute("markOrText", data.markOrText);
+//    }
+//    var paraNode = editor.document.createElement(paraTag);
+//    var brNode=editor.document.createElement('br');
+//    brNode.setAttribute("type","_moz");
+//    if (node)
+//      wrapperNode.insertBefore(node, null);
+//    if (paraNode)
+//      node.insertBefore(paraNode, null);
+//    if (brNode)
+//      paraNode.insertBefore(brNode, null);
+//    editor.insertElementAtSelection(wrapperNode, true);
+//    editor.selection.collapse(paraNode, 0);
+//  }
+//  catch(e)
+//  {
+//    dump("msiNote: exception = '"+e.message+"'\n");
+//  }
+//  }
+//  editor.endTransaction(); 
+}
+
+function msiInsertOrReviseNote(currNode, editorElement, data)
+{
+  if (data.Cancel)
+    return;
+
+  dump("In msiReviseNote, data.type is " + data.type + "\n");
   var editor = msiGetEditor(editorElement);
   editor.beginTransaction();
   if (currNode)  // currnode is a note node
   {
-    if (data.type == 'footnote') currNode.parentNode.setAttribute("type","footnote");
-    else currNode.parentNode.removeAttribute("type");
+    if (data.type == 'footnote')
+      currNode.parentNode.setAttribute("type","footnote");
+    else
+      currNode.parentNode.removeAttribute("type");
     currNode.setAttribute("type",data.type);
     currNode.setAttribute("hide",data.hide?"true":"false");
     if (data.type != 'footnote') 
     {
       currNode.setAttribute("req","ragged2e");
       currNode.setAttribute("opt","raggedrightboxes");
+    }
+    else
+    {
+      if ("footnoteNumber" in data)
+        currNode.parentNode.setAttribute("footnoteNumber", String(data.footnoteNumber));
+      else
+        currNode.parentNode.removeAttribute("footnoteNumber");
+      if (data.markOrText && (data.markOrText != "markAndText"))
+        currNode.parentNode.setAttribute("markOrText", data.markOrText);
+      else
+        currNode.parentNode.removeAttribute("markOrText");
     }
   }
   else
@@ -8909,6 +9012,13 @@ function msiNote(currNode, editorElement, type, hidden)
       {
         node.setAttribute("req","ragged2e");
         node.setAttribute("opt","raggedrightboxes");
+      }
+      else
+      {
+        if ("footnoteNumber" in data)
+          wrapperNode.setAttribute("footnoteNumber", String(data.footnoteNumber));
+        if (data.markOrText != "markAndText")
+          wrapperNode.setAttribute("markOrText", data.markOrText);
       }
       var paraNode = editor.document.createElement(paraTag);
       var brNode=editor.document.createElement('br');
