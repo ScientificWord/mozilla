@@ -790,7 +790,11 @@ bool Filename::Accept(TeXChar c, bool fExternal)
      return false;
   if ((c == L'/')||(fExternal &&(c==L'\\'))) {
      m_filenameData -> area_delim = m_filenameData -> m_strFullName.size();
-     c = L'\\';
+     #ifdef _WINDOWS
+        c = L'\\';
+     #else
+        c = L'/';
+     #endif
   }
   if (c == L'.'){
      m_filenameData -> ext_delim = m_filenameData -> m_strFullName.size();
@@ -850,7 +854,11 @@ std::string CatFilename(const char* area,
    std::string full;
    if (area != 0 && strlen(area) != 0){
      full += area;
-     full += "\\";
+     #ifdef _WINDOWS
+       full += "\\";
+     #else
+       full += "/";
+     #endif
    }
    if (bSubst) full += "msi-";
    full += name;
@@ -1080,13 +1088,84 @@ InputByteFile::~InputByteFile()
 @}
 
 @$@<Search Utility@>==@{@-
-#ifdef _WINDOWS
-#define SearchEnv _searchenv
-#else
-void SearchEnv(const char *filename, const char *varname, char *pathname)
+
+bool FileExists(const char* file)
 {
+   std::cout << "\nTHE FILE [" << file;
+   std::fstream f;
+   f.open(file);
+   if(f.is_open()){
+     f.close();
+     std::cout << "] EXISTS\n";
+     return true;
+   } else {
+     std::cout << "] DOES NOT EXIST\n";
+     return false;
+   }
 }
-#endif
+
+void SearchEnv(const char *file, const char *env, char *buf)
+{
+  //void CDECL _searchenv(const char* file, const char* env, char *buf)
+
+  char *envVal, *penv;
+  char curPath[_MAX_PATH];
+
+  *buf = '\0';
+
+  if ( FileExists( file ) )
+  {
+    strcpy(buf, file);
+    return;
+  }
+
+  /* Search given environment variable */
+  envVal = getenv(env);
+  if (!envVal)
+  {
+    return;
+  }
+
+  penv = envVal;
+
+  do
+  {
+    char *end = penv;
+    #ifdef _WINDOWS
+      while(*end && *end != ';') end++; /* Find end of next path */
+    #else
+      while(*end && *end != ':') end++; /* Find end of next path */
+    #endif
+    
+    if (penv == end || !*penv)
+    {
+      return;
+    }
+    memcpy(curPath, penv, end - penv);
+    if (curPath[end - penv] != '/' && curPath[end - penv] != '\\')
+    {
+      #ifdef _WINDOWS
+        curPath[end - penv] = '\\';
+      #else
+        curPath[end - penv] = '/';
+      #endif
+      curPath[end - penv + 1] = '\0';
+    }
+    else
+      curPath[end - penv] = '\0';
+
+    strcat(curPath, file);
+    
+    if (FileExists( curPath ))
+    {
+      strcpy(buf, curPath);
+      return; /* Found */
+    }
+    penv = *end ? end + 1 : end;
+  } while(1);
+
+}
+
 @}
 
 @$@<InputByteFile implementation@>+=@{@-
@@ -1124,9 +1203,13 @@ bool InputByteFile::Open(const Filename& fullpath){
    }
 
    std::string filepath = CatFilename(area, name, ext, true);
+   std::cout << "\nsearch for filepath = " << filepath << "\n";
    const char* path = SearchFor(filepath.c_str());
+   
    if (path == 0){
+      std::cout << "\nNot found";
       filepath = CatFilename(area, name, ext, false);
+      std::cout << "\nsearch for filepath = " << filepath << "\n";
       path = SearchFor(filepath.c_str());
       if (path == 0){
          LOG("\nFailed to locate " << filepath.c_str());
@@ -1136,6 +1219,7 @@ bool InputByteFile::Open(const Filename& fullpath){
          LOG("\nFound file"<< filepath.c_str());
       }
    } else {
+      std::cout << "\nfound path = " << path << "\n";
       LOG("\nFound substitute file" << filepath.c_str());
    }
    m_byteFileData -> m_file.open(path, std::ios::in | std::ios::binary);
@@ -1313,7 +1397,11 @@ bool OutputByteFile::Open(const Filename& fullpath)
       const char* envpath = getenv("MSIOUTPUT");
       if (envpath != 0){
         filepath = envpath;
-        filepath += "\\";
+        #ifdef _WINDOWS
+          filepath += "\\";
+        #else 
+          filepath += "/";
+        #endif
         filepath += CatFilename(area, name, ext, false);
         path = filepath.c_str();
       }

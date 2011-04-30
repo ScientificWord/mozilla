@@ -841,7 +841,7 @@ bool LineSource::GetLine(LineOfText* pLine)
                    do{
                      GetRawLine(pNextLine);
                    } while (!pNextLine -> bPeek("%EndExpansion"));
-                   delete pNextLine;                       
+                   delete pNextLine;
                    break;
                 } else if ( pNextLine -> bPeek("%" )) {
                    pLine -> StripTCIMEnd(true);
