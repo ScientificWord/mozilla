@@ -1081,14 +1081,14 @@ var msiSaveCommand =
   }
 }
 
-function doSoftSave(editorElement, editor)
+function doSoftSave(editorElement, editor, noTeX)
 {
   if (editor)
   {
     // we should be doing this only for top level documents, and we should restore the focus
     msiFinishHTMLSource(editorElement);
     var url = msiGetEditorURL(editorElement);
-    result = msiSoftSave(editor, editorElement);
+    result = msiSoftSave(editor, editorElement, noTeX);
   }
   return result;
 }
@@ -1112,7 +1112,7 @@ var msiSoftSaveCommand =
       return result;
 
     var editor = msiGetEditor(editorElement);
-    return doSoftSave(editorElement, editor);
+    return doSoftSave(editorElement, editor, false);
   }
 }
 
@@ -2368,7 +2368,7 @@ function msiIsSupportedTextMimeType(aMimeType)
 // or write a new one, update backup files etc. after the first step is completed. Since the first
 // step is what we call a soft save, we pull that out as a single procedure.
 
-function msiSoftSave( editor, editorElement)
+function msiSoftSave( editor, editorElement, noTeX)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement();
@@ -2439,7 +2439,7 @@ function msiSoftSave( editor, editorElement)
   var compileInfo = new Object();
   if (saveAsTextFile)
     aMimeType = "text/plain";
-  else if (GetBoolPref("swp.generateTeXonsave"))
+  else if (GetBoolPref("swp.generateTeXonsave") && !noTeX)
   {
     var file = currentFile.parent;
     file.append("tex");
@@ -2512,7 +2512,7 @@ function deleteWorkingDirectory(editorElement)
 
 function msiSaveDocument(aContinueEditing, aSaveAs, aSaveCopy, aMimeType, editor, editorElement, fUseDirectory)
 {
-  var success =  msiSoftSave( editor, editorElement);
+  var success =  msiSoftSave( editor, editorElement, true);
   if (!success) {
     var saveDocStr = GetString("SaveDocument");
     var failedStr = GetString("SaveFileFailed");
