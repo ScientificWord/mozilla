@@ -1,0 +1,15 @@
+<!-- Copyright (c) 2011 MacKichan Software, Inc.  All Rights Reserved. -->
+
+<!ENTITY noteOptionsDialog.title "Footnote Options">
+<!ENTITY overrideAutoNumbering.label "Override automatic numbering">
+<!ENTITY overrideAutoNumbering.accesskey "O">
+<!ENTITY footnoteNumber.label "Footnote number">
+<!ENTITY footnoteNumber.accesskey "n">
+<!ENTITY footnoteMarkOrText.label "Mark/Text">
+<!ENTITY footnoteMarkOnly.label "Mark only">
+<!ENTITY footnoteMarkOnly.accesskey "M">
+<!ENTITY footnoteTextOnly.label "Text only">
+<!ENTITY footnoteTextOnly.accesskey "T">
+<!ENTITY footnoteMarkAndText.label "Both Mark and Text">
+<!ENTITY footnoteMarkAndText.accesskey "B">
+
