@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+
+<!-- ***** BEGIN LICENSE BLOCK *****
+  Copyright 2011 MacKichan Software, Inc.
+ ***** END LICENSE BLOCK ***** -->
+
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/editor.css" type="text/css"?>
+<?xml-stylesheet href="chrome://prince/skin/EditorDialog.css" type="text/css"?>
+
+<?xul-overlay href="chrome://global/content/globalOverlay.xul"?>
+<?xul-overlay href="chrome://global/content/dialogOverlay.xul"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://prince/locale/NoteOptionsDialog.dtd">
+
+<dialog id="noteOptionsDlg" title="&noteOptionsDialog.title;"
+   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+   persist="screenX screenY width height"
+   defaultbutton="accept"
+   buttons="accept,cancel"
+   onload = "startup()"
+   ondialogaccept="return onAccept();">
+   <!-- height="370"
+   width="250" -->
+
+  <!-- Methods common to all editor dialogs -->
+  <script type="application/x-javascript" src="chrome://prince/content/msiEditorUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiDialogUtilities.js"/>
+  <script type="application/x-javascript" src="chrome://prince/content/msiEdDialogCommon.js"/>
+
+  <!-- Scripts specific to this dialog -->
+  <script type="application/x-javascript" src="chrome://prince/content/NoteOptionsDialog.js"/>
+   
+  <hbox flex="1">
+    <vbox>
+      <groupbox id="numberingGroupbox" orient="horizontal">
+        <caption>
+          <checkbox id="overrideAutoNumberingCheckbox" label="&overrideAutoNumbering.label;" accesskey="&overrideAutoNumbering.accesskey;" oncommand="checkEnable();" />
+        </caption>
+        <label id="footnoteNumberLabel" value="&footnoteNumber.label;" accesskey="&footnoteNumber.accesskey;" control="footnoteNumberTextbox" />
+        <textbox id="footnoteNumberTextbox" type="number" style="width: 5em" />
+      </groupbox>
+      <spacer class="spacer" flex="0"/>
+      <groupbox>
+        <caption label="&footnoteMarkOrText.label;" />
+        <radiogroup id="footnoteMarkOrTextRadioGroup" orient="vertical">
+          <radio id="footnoteMarkOnly" value="markOnly" label="&footnoteMarkOnly.label;" accesskey="&footnoteMarkOnly.accesskey;" />
+          <radio id="footnoteTextOnly" value="textOnly" label="&footnoteTextOnly.label;" accesskey="&footnoteTextOnly.accesskey;" />
+          <radio id="footnoteMarkAndText" value="markAndText" label="&footnoteMarkAndText.label;" accesskey="&footnoteMarkAndText.accesskey;" />
+        </radiogroup>
+      </groupbox>
+    </vbox>
+  </hbox>
+</dialog>
