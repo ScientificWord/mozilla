@@ -98,16 +98,21 @@ include $(topsrcdir)/config/config.mk
 
 include $(topsrcdir)/config/rules.mk
 
+DBGFLAGS= -DTESTING    -DLOGGING 
+
 ifeq ($(OS_ARCH),WINNT)
 FW=funnelweb.exe
+DBGFLAGS += -Zi
 endif
 
 ifeq ($(OS_ARCH),Linux)
 FW=funnelweb
+DBGFLAGS += -g
 endif
 
 ifeq ($(OS_ARCH),Darwin)
 FW=funnelwebmac
+DBGFLAGS += -g
 endif
 
 
@@ -120,7 +125,7 @@ LOCAL_INCLUDES	= -I$(srcdir)
 #CXXFLAGS	+= -GX -GR -DMOZILLA_VERSION=\"$(MOZILLA_VERSION)\"
 CXXFLAGS =
 ifdef MOZ_DEBUG
-CXXFLAGS	+= -Zi -DTESTING    -DLOGGING
+CXXFLAGS	+= $(DBGFLAGS)
 endif
 
 export:: $(FWSRCS) $(MathML) 
