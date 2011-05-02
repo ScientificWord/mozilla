@@ -711,6 +711,7 @@ button[class="eqnnum"]{
 /*  counter-reset: subeqnnum; */
   position: absolute;
   right: 0px;
+  top: 0px;
   font-style: normal; 
   color: red;
   -moz-user-select: -moz-none;
