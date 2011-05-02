@@ -93,11 +93,13 @@ int main(int argc, char* argv[])
    #endif
    char envInput[_MAX_PATH+12];
    char envOutput[_MAX_PATH+12];
-   #if (OSARCH==Darwin)
-     strcpy(envInput, "MSITEXINPUT=.:");
-   #else
+   
+   #ifdef _WINDOWS
      strcpy(envInput, "MSITEXINPUT=.;");
+   #else
+     strcpy(envInput, "MSITEXINPUT=.:");     
    #endif
+
    strcpy(envOutput, "MSIOUTPUT=");
    for (int j = 0; j < argc; ++j)
    {
