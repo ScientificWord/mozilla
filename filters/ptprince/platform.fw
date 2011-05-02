@@ -1108,6 +1108,10 @@ void SearchEnv(const char *file, const char *env, char *buf)
 {
   //void CDECL _searchenv(const char* file, const char* env, char *buf)
 
+  if (file[0] == '/' || file[0] == '\\'){
+    strcpy(buf, file);
+    return;
+  }
   char *envVal, *penv;
   char curPath[_MAX_PATH];
 
@@ -1149,11 +1153,9 @@ void SearchEnv(const char *file, const char *env, char *buf)
       #else
         curPath[end - penv] = '/';
       #endif
-      curPath[end - penv + 1] = '\0';
     }
-    else
-      curPath[end - penv] = '\0';
-
+    curPath[end - penv + 1] = '\0';
+    
     strcat(curPath, file);
     
     if (FileExists( curPath ))
