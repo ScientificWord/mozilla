@@ -108,3 +108,4 @@ en-US.jar:
   locale/xrefDialog.dtd                   (dialogs/xrefDialog.dtd)
   locale/envproperties.dtd                (dialogs/envproperties.dtd)
   locale/thmproperties.dtd                (dialogs/thmproperties.dtd)
+  locale/NoteOptionsDialog.dtd            (dialogs/NoteOptionsDialog.dtd)
