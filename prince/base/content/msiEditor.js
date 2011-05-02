@@ -4949,7 +4949,7 @@ function msiCreatePropertiesObjectDataFromNode(element, editorElement, bIncludeP
 //      name = name.toLowerCase();
 
     var wrappedChildElement = element;
-    while ( (name == 'mstyle') || (name == 'mrow') )
+    while ( (name == 'mstyle') || (name == 'mrow') || (name == "notewrapper") )
     {
       var newChildElement = msiNavigationUtils.getSingleWrappedChild(wrappedChildElement);
       if (newChildElement == null)

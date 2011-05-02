@@ -900,7 +900,7 @@ case CMD_TAG : {
    Typesetter::AppendTag(pTL);
    break;
 }
-@}                                   
+@}
 
 @$@<Misc commands@>+=@{@-
 case CMD_MSIHMODE : {
@@ -1442,7 +1442,7 @@ case CMD_EXTENSION: {
            // Absolute path
            graphic = fullname;
          }
-         
+
          std::string targetdir;
          if (s_outputdir != 0)
            targetdir = s_outputdir;
@@ -1466,7 +1466,7 @@ case CMD_EXTENSION: {
              while (ch != EOF){
                 fputc(ch, targetfile);
                 ch = fgetc(graphfile);
-             }              
+             }
          }
 
          if (graphfile) fclose(graphfile);
@@ -1785,6 +1785,8 @@ case CMD_AFTERGROUP:{
 #include "expandables.h"
 #include "macros.h"
 #include "scanutils.h"
+#include <stdlib.h>
+#include <stdio.h>
 #include <string>
 #include <list>
 #include <iostream>
