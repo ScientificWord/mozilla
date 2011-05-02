@@ -409,7 +409,7 @@ bool xfcnString(int /* ignored */, TeXToken*, SymbolData**)
          TeXToken ch(TT_OTHER, name[i], 0);
          pTL -> push_back(ch);
       }
-      
+
       InputStack::Putback(*pTL);
    } else {
       TokenList* pTL = new TokenList;
