@@ -482,11 +482,6 @@ img {
 } 
 
 
-button[class="eqnnum"]{
-  font-style: normal; 
-  color: red;
-}
-
 button[class="subeqnnum"]{
   right: 20px;
   font-style: normal; 
