@@ -69,7 +69,6 @@
     <key keycode="VK_TAB" modifiers="shift" oncommand="return true;"/>
     <key keycode="VK_TAB" modifiers="control" oncommand="return true;"/>
     <key keycode="VK_TAB" modifiers="control,shift" oncommand="return true;"/ -->
-    <key id="MSIevalKey" key="&MSIComputeEvalCmd.keybinding;" observes="cmd_MSIComputeEval"  modifiers="accel"  />        
   </keyset>
   <tabbox id="docformat">
     <tabs>

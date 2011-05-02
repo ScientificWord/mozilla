@@ -4,73 +4,70 @@ var inputData;
 var target;
 
 function parseBool(s){
-  return (s==="true"); }
-//  if (s == "true")
-//    return true;
-//  else
-//    return false;
-//}
+  return (s==="true"); 
+}
+
+function sortNames(name1, name2) {  //the idea is to sort irrespective of case, unless two names differ only by case.
+  var lc1 = name1.toLowerCase();
+  var lc2 = name2.toLowerCase();
+  if (lc1 < lc2)
+    return -1;
+  else if (lc2 < lc1)
+    return 1;
+  else if (name1 < name2)
+    return -1;
+  else if (name2 < name1)
+    return 1;
+  else
+    return 0;
+}
 
 function Startup() {
   try {
-  inputData = window.arguments[0];
-  var bIsRevise = false;
-  if ("reviseObject" in inputData)
-  {
-    bIsRevise = true;
-    target = getDataFromPropertiesObject(inputData.reviseObject);
-  }
-  else
-    target = inputData;
-
-  window.mMSIDlgManager = new msiDialogConfigManager(window);
-  if (bIsRevise)
-    window.mMSIDlgManager.mbIsRevise = true;
-  window.mMSIDlgManager.configureDialog();
-  
-  gDialog.nameList = new msiMathNameList();  //see msiEditorUtilities.js
-  gDialog.bStopNextEnter = false;
-
-  function sortNames(name1, name2) {  //the idea is to sort irrespective of case, unless two names differ only by case.
-    var lc1 = name1.toLowerCase();
-    var lc2 = name2.toLowerCase();
-    if (lc1 < lc2)
-      return -1;
-    else if (lc2 < lc1)
-      return 1;
-    else if (name1 < name2)
-      return -1;
-    else if (name2 < name1)
-      return 1;
+    inputData = window.arguments[0];
+    var bIsRevise = false;
+    if ("reviseObject" in inputData)
+    {
+      bIsRevise = true;
+      target = getDataFromPropertiesObject(inputData.reviseObject);
+    }
     else
-      return 0;
-  }
+      target = inputData;
+
+    window.mMSIDlgManager = new msiDialogConfigManager(window);
+    if (bIsRevise)
+      window.mMSIDlgManager.mbIsRevise = true;
+    window.mMSIDlgManager.configureDialog();
+  
+    gDialog.nameList = new msiMathNameList();  //see msiEditorUtilities.js
+    gDialog.bStopNextEnter = false;
+
 
 //  var nameArray = [];
 //  for (var aName in gDialog.nameList.names)
 //    nameArray.push(aName);
 //  nameArray.sort(sortNames);
-  var namesBox = document.getElementById("mathNamesBox");
+    var namesBox = document.getElementById("mathNamesBox");
 //  for (var ix = 0; ix < nameArray.length; ++ix)
 //    namesBox.appendItem(nameArray[ix], nameArray[ix]);  //set the value and the label to be the same
-  if (target != null && ("val" in target) && (target.val.length > 0))
-    namesBox.value = target.val;
+    if (target != null && ("val" in target) && (target.val.length > 0))
+      namesBox.value = target.val;
 //  else
 //    namesBox.selectedIndex = 0;
 //  dump("Value of namesBox.disableautoselect is [" + namesBox.disableautoselect + "].\n");
 //  namesBox.disableautoselect = true;
 //  dump("Value of namesBox.disableautoselect is [" + namesBox.disableautoselect + "].\n");
-  if (isPropertiesDialog())
-  {
-    if (!target)
+    if (isPropertiesDialog())
     {
-      dump("Error in mathmlMathName.js! Unable to setControlsFromTarget, as target is null.\n");
-      return;
+      if (!target)
+      {
+        dump("Error in mathmlMathName.js! Unable to setControlsFromTarget, as target is null.\n");
+        return;
+      }
+      setControlsFromObject(target);
     }
-    setControlsFromObject(target);
-  }
-  else
-    changeName();
+    else
+      changeName();
   // Now load the mathnames file
   // We need to prebuild these so that the keyboard shortcut works
   // ACSA = autocomplete string array
@@ -266,38 +263,34 @@ function updateControls()
 
 function checkKeyPressEvent(control, theEvent)
 {
-  var dumpStr = "In checkKeyPressEvent handler, gDialog.bStopNextEnter is [";
-  if (gDialog.bStopNextEnter)
-    dumpStr += "true]; ";
-  else
-    dumpStr += "false]; ";
-  if (!theEvent.altKey)
-  {
-    if (theEvent.keyCode==KeyEvent.DOM_VK_RETURN)
-    {
-      if (gDialog.bStopNextEnter)
-      {
-        gDialog.bStopNextEnter = false;
-        if (!control)
-        {
-          dump("Null control in checkKeyPressEvent!\n");
-          control = document.getElementById("mathNamesBox");
-        }
-        control.controller.handleEnter(false);
-        theEvent.stopPropagation();
-        theEvent.preventDefault();
-        dumpStr += "called theEvent.stopPropagation().\n";
-      }
-    }
-    else //now we're typing into the name field, so we assume we should stop the next enter from accepting the dialog
-    {
-      gDialog.bStopNextEnter = true;
-      dumpStr += "setting gDialog.bStopNextEnter.\n";
-    }
-  }
-  dump(dumpStr);
-  //Now hopefully continue processing as usual.
 }
+//if (!theEvent.altKey)
+//{
+//  if (theEvent.keyCode==KeyEvent.DOM_VK_RETURN)
+//  {
+//    if (gDialog.bStopNextEnter)
+//    {
+//      gDialog.bStopNextEnter = false;
+//      if (!control)
+//      {
+//        dump("Null control in checkKeyPressEvent!\n");
+//        control = document.getElementById("mathNamesBox");
+//      }
+//      control.controller.handleEnter(false);
+//      theEvent.stopPropagation();
+//      theEvent.preventDefault();
+//      dumpStr += "called theEvent.stopPropagation().\n";
+//    }
+//  }
+//  else //now we're typing into the name field, so we assume we should stop the next enter from accepting the dialog
+//  {
+//    gDialog.bStopNextEnter = true;
+//    dumpStr += "setting gDialog.bStopNextEnter.\n";
+//  }
+//}
+//dump(dumpStr);
+////Now hopefully continue processing as usual.
+//}
 
 function changeName(currName)
 {

@@ -3274,6 +3274,8 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
           break;
           default:
             splittable = nextNode;
+            if (toLeftRight < 0)
+              ++currPos;
             toLeftRight = 0;
           break;
         }
@@ -3284,6 +3286,8 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
       if (splittable)
       {
         splittable = nextNode;
+        if (toLeftRight < 0)
+          ++currPos;
         toLeftRight = 0;
       }
       else
@@ -3296,6 +3300,8 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
         if (numStyleKids > 1)
         {
           splittable = nextNode;
+          if (toLeftRight < 0)
+            ++currPos;
           toLeftRight = 0;
         }
         else //We need to determine whether we're at the beginning or not
@@ -3386,7 +3392,7 @@ msiEditor::InsertReturnInMath( nsIDOMNode * splitpointNode, PRInt32 splitpointOf
         }
         dontcare = m_msiEditingMan->FindMatrixCell(matrixContainer, aCell, &nMatrixRowLeft, &nCols);  //Just reusing nCols - it'll be thrown away
         nMatrixRowRight = nMatrixRowLeft + 1;
-        res = m_msiEditingMan->AddMatrixRows(editor, matrixContainer, nMatrixRowRight, 1);
+        res = m_msiEditingMan->AddMatrixRows(editor, matrixContainer, nMatrixRowRight-1, 1);
       }
       else
         matrixContainer = nsnull;
