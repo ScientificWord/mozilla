@@ -1,4 +1,4 @@
-
+Components.utils.import("resource://app/modules/pathutils.jsm");
 function saveforweb( doc, usedirectory, dir )
 {
   try {
@@ -6,6 +6,8 @@ function saveforweb( doc, usedirectory, dir )
     var node;
     node = doc2.importNode(doc.documentElement,true);
     doc2.appendChild(node);
+    var dir1 = msiFileFromFileURL(doc.documentURIObject);
+    dir1 = dir1.parent;
     var cssdir = dir.clone();
     var xbldir = dir.clone();
     cssdir.append('css');
@@ -18,19 +20,32 @@ function saveforweb( doc, usedirectory, dir )
     var href;
     var hrefModified, newHRef, oldHRef;
     var root = doc2.getElementsByTagName('html')[0];
-    var re = new RegExp("resource://app/res/","");
+    var reRes = new RegExp("resource://app/res/","");
+    var reDoc = new RegExp(msiFileURLStringFromFile(dir1),"");
     for (i = 0; i <SSs.length; i++)
     {
       oldHRef = SSs[i].href;
-      if (re.test(oldHRef)) 
+      if (reRes.test(oldHRef)) 
       {
         hrefModified = true;
-        newHRef = oldHRef.replace(re,"");
+        newHRef = oldHRef.replace(reRes,"");
       }
-      else newHRef = oldHRef;
+      else if (reDoc.test(oldHRef))
+      {
+        hrefModified = true;
+        newHRef = oldHRef.replace(reDoc,"");
+      }
+      else
+      {
+        hrefModified = false;
+        newHRef = oldHRef;
+      }
       var pi = doc2.createProcessingInstruction("xml-stylesheet", "href='"+newHRef+"'", "type='text/css'");
       root.parentNode.insertBefore(pi,root);
-      handleStyleSheet(oldHRef, newHRef, dir );  
+      if (hrefModified) 
+      {
+        handleStyleSheet(oldHRef, newHRef, dir, 0 );  
+      }
     }
     // now save doc2. Use the current base of the .sci name for the xhtml file generated.
     // Subdocuments are copied over with changes.  
@@ -72,7 +87,7 @@ function saveforweb( doc, usedirectory, dir )
   }
 }  
 
-function handleStyleSheet (oldHRef, newHRef, dir)  // modify and copy style sheets and xbl files
+function handleStyleSheet (oldHRef, newHRef, dir, depth)  // modify and copy style sheets and xbl files
 {
   // if the parameters are different, copy the style sheet to newHRef (relative to dir)
   // while it is open, look for @import and -moz-binding commands that may need to be changed.
@@ -91,12 +106,11 @@ function handleStyleSheet (oldHRef, newHRef, dir)  // modify and copy style shee
     req.send(null);  
     if(req.status == 0)
     {  
-      match = re.exec(req.responseText);
-      if (match)
+      while ((match = re.exec(req.responseText))!= null)
       {
-        handleStyleSheet(match[0],match[1],dir);
+        handleStyleSheet(match[0],match[1],dir, ++depth);
       }
-      contents = req.responseText.replace("resource://app/res/","","g");
+      contents = req.responseText.replace("resource://app/res/css/","","g");
       contents = contents.replace(re2,"/*$1*/","gm");
     }  
     var fos = Components.classes["@mozilla.org/network/file-output-stream;1"].createInstance(Components.interfaces.nsIFileOutputStream);
@@ -110,6 +124,6 @@ function handleStyleSheet (oldHRef, newHRef, dir)  // modify and copy style shee
   }
   catch(e)
   {
-    dump("in handleStyleSheet(",oldHRef,",",newHRef,"), "+e.message+"\n");
+    dump("in handleStyleSheet(",oldHRef,",",newHRef,",",depth,"), "+e.message+"\n");
   }
 }
