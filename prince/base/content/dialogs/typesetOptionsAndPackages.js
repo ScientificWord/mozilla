@@ -399,7 +399,7 @@ function getModifiedPriorityList()
     whichPackage = findPackageByName(gDialog.packages, gDialog.packagesInUseListbox.getItemAtIndex(ix).label);
     thePackage = gDialog.packages[whichPackage];
     packageArray.push(thePackage);
-    if ("priority" in thePackage)
+    if (thePackage != null && "priority" in thePackage)
     {
       priorityValues.push(thePackage.priority);
       origPackages.push(thePackage);
