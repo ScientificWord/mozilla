@@ -94,7 +94,7 @@
     <key name=")">imsiGoDoCommand("cmd_MSIparenCmd");</key>
     <key name="-">insertMathSymbol("&equiv;");</key>
     <key name="_">insertMathSymbol("&cong;");</key>
-    <key name="=">insertMathSymbol("&neq;");</key>
+    <key name="=">insertMathSymbol("&bne;");</key>
     <key name="+">insertMathSymbol("&plusmn;");</key>
     <key name="w">insertMathSymbol("&approx;");</key>
     <key name="W">insertMathSymbol("&aleph;");</key>
@@ -122,7 +122,7 @@
     <key name="f">insertMathSymbol("cmd_MSIfractionCmd");</key>
     <key name="F">insertMathSymbol("cmd_MSIfractionCmd");</key> 
     <key name="h">msiGoDoCommand("cmd_MSIsupCmd");</key>
-    <key name="H">msiGoDoCommand("&cmd_MSIsupCmd");</key>
+    <key name="H">msiGoDoCommand("cmd_MSIsupCmd");</key>
     <key name="l">msiGoDoCommand("cmd_MSIsubCmd");</key>
     <key name="L">msiGoDoCommand("cmd_MSIsubCmd");</key>
     <key name="z">insertMathSymbol("&Exists;");</key>
