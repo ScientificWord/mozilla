@@ -14,15 +14,21 @@
   <xsl:when test="@placement='outer'">{o}</xsl:when>
   <xsl:when test="@placement='left'">{l}</xsl:when>
   <xsl:when test="@placement='right'">{r}</xsl:when>
+  <xsl:otherwise>{r}</xsl:otherwise>
 </xsl:choose>
 <xsl:if test="@overhang">[<xsl:value-of select="@overhang"/><xsl:value-of select="@units"/>]</xsl:if>
 {<xsl:choose><xsl:when test="@rotation='rot0'"><xsl:value-of select="@width"/></xsl:when>
-  <xsl:otherwise><xsl:value-of select="@height"/></xsl:otherwise>
-</xsl:choose><xsl:value-of select="@units"/>}
-\setlength \intextsep {<xsl:value-of select="@topmargin"/><xsl:value-of select="@units"/>}
-\setlength \columnsep {<xsl:value-of select="@sidemargin"/><xsl:value-of select="@units"/>}
-\setlength \fboxrule {<xsl:value-of select="@border"/><xsl:value-of select="@units"/>}
-\setlength \fboxsep {<xsl:value-of select="@padding"/><xsl:value-of select="@units"/>}
+  <xsl:otherwise>
+    <xsl:choose>
+      <xsl:when test="@overhang"><xsl:value-of select="@height"/><xsl:value-of select="@units"/></xsl:when>
+      <xsl:otherwise>0pt</xsl:otherwise>
+    </xsl:choose>
+  </xsl:otherwise>
+</xsl:choose>}
+<xsl:if test="@topmargin">\setlength \intextsep {<xsl:value-of select="@topmargin"/><xsl:value-of select="@units"/>}</xsl:if>
+<xsl:if test="@sidemargin">\setlength \columnsep {<xsl:value-of select="@sidemargin"/><xsl:value-of select="@units"/>}</xsl:if>
+<xsl:if test="@border">\setlength \fboxrule {<xsl:value-of select="@border"/><xsl:value-of select="@units"/>}</xsl:if>
+<xsl:if test="@padding">\setlength \fboxsep {<xsl:value-of select="@padding"/><xsl:value-of select="@units"/>}</xsl:if>
 <xsl:if test="@rotation='rot90'">\begin{turn}{90}</xsl:if>
 <xsl:if test="@rotation='rot270'">\begin{turn}{-90}</xsl:if>
 \begin{boxedminipage}[t]{<xsl:choose><xsl:when test="@rotation='rot0'"><xsl:value-of select="@width"/></xsl:when><xsl:otherwise><xsl:value-of select="@height"/></xsl:otherwise></xsl:choose><xsl:value-of select="@units"/>}
