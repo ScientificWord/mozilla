@@ -13,13 +13,14 @@ CSS_RESOURCES := $(wildcard	$(srcdir)/css/*.css)
 XML_RESOURCES := $(wildcard $(srcdir)/xml/*.xml)
 TAGDEF_RESOURCES := $(wildcard $(srcdir)/tagdefs/*.xml)
 FRAG_RESOURCES := $(wildcard $(srcdir)/fragments/*.frg)
+DINGBAT_RESOURCES := $(wildcard $(srcdir)/fragments/dingbats/*.frg)
 
 libs::	$(CSS_RESOURCES) $(XBL_RESOURCES)
 	$(INSTALL)	$(CSS_RESOURCES)	$(FINAL_TARGET)/res/css
 	$(INSTALL)	$(TAGDEF_RESOURCES)	$(FINAL_TARGET)/res/tagdefs
 	$(INSTALL)	$(XML_RESOURCES)	$(FINAL_TARGET)/res/xml
 	$(INSTALL)	$(FRAG_RESOURCES)	$(FINAL_TARGET)/res/fragments
-	$(INSTALL)	$(FRAG_RESOURCES)	$(FINAL_TARGET)/res/fragments/dingbats
+	$(INSTALL)	$(DINGBAT_RESOURCES)	$(FINAL_TARGET)/res/fragments/dingbats
 #	$(INSTALL)	$(ICON_RESOURCES)	$(FINAL_TARGET)/res/css
 				  
 
