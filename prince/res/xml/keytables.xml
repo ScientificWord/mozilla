@@ -91,7 +91,7 @@
     <key name="9">msiGoDoCommand("cmd_MSIparenCmd");</key>
     <key name="0">msiGoDoCommand("cmd_MSIparenCmd");</key>
     <key name="(">msiGoDoCommand("cmd_MSIparenCmd");</key>
-    <key name=")">imsiGoDoCommand("cmd_MSIparenCmd");</key>
+    <key name=")">msiGoDoCommand("cmd_MSIparenCmd");</key>
     <key name="-">insertMathSymbol("&equiv;");</key>
     <key name="_">insertMathSymbol("&cong;");</key>
     <key name="=">insertMathSymbol("&bne;");</key>
@@ -111,8 +111,8 @@
     <key name="P">insertMathSymbol("&weierp;");</key>
     <key name="[">msiGoDoCommand("cmd_MSIbracketCmd");</key>
     <key name="{">msiGoDoCommand("cmd_MSIbraceCmd");</key> 
-    <key name="]">insertMathSymbol("cmd_MSIbracketCmd");</key>
-    <key name="}">insertMathSymbol("cmd_MSIbraceCmd");</key>-->
+    <key name="]">msiGoDoCommand("cmd_MSIbracketCmd");</key>
+    <key name="}">msiGoDoCommand("cmd_MSIbraceCmd");</key>-->
     <key name="a">insertMathSymbol("&angle;");</key>
     <key name="A">insertMathSymbol("&ForAll;");</key>
     <key name="s">insertMathSymbol("&sum;");</key>
