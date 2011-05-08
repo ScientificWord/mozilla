@@ -26,6 +26,8 @@ function SetupMSIMathMenuCommands()
   commandTable.registerCommand("cmd_MSIexpCmd",         msiExp);
   commandTable.registerCommand("cmd_MSImathnameCmd",    msiMathname);
   commandTable.registerCommand("cmd_MSIMatrixCmd",      msiMatrix);
+  commandTable.registerCommand("cmd_MSIMatrix22Cmd",    msiMatrix22);
+  commandTable.registerCommand("cmd_MSIMatrixLastCmd",  msiMatrixLast);
   commandTable.registerCommand("cmd_MSIparenCmd",       msiParen);
   commandTable.registerCommand("cmd_MSIbracketCmd",     msiBracket);
   commandTable.registerCommand("cmd_MSIbraceCmd",       msiBrace);
@@ -97,6 +99,8 @@ function msiSetupMSIMathMenuCommands(editorElement)
   commandTable.registerCommand("cmd_MSIexpCmd",         msiExp);
   commandTable.registerCommand("cmd_MSImathnameCmd",    msiMathname);
   commandTable.registerCommand("cmd_MSIMatrixCmd",      msiMatrix);
+  commandTable.registerCommand("cmd_MSIMatrix22Cmd",    msiMatrix22);
+  commandTable.registerCommand("cmd_MSIMatrixLastCmd",  msiMatrixLast);
   commandTable.registerCommand("cmd_MSIparenCmd",       msiParen);
   commandTable.registerCommand("cmd_MSIbracketCmd",     msiBracket);
   commandTable.registerCommand("cmd_MSIbraceCmd",       msiBrace);
@@ -679,6 +683,42 @@ var msiMatrix =
     doMatrixDlg(editorElement);
   }
 };
+
+var msiMatrix22 =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement(window);
+    insertmatrix(2,2,"",editorElement);
+  }
+};
+
+var msiMatrixLast =
+{
+  isCommandEnabled: function(aCommand, dummy)
+  {
+    return true;
+  },
+
+  getCommandStateParams: function(aCommand, aParams, aRefCon) {},
+  doCommandParams: function(aCommand, aParams, aRefCon) {},
+
+  doCommand: function(aCommand)
+  {
+    var editorElement = msiGetActiveEditorElement(window);
+    insertmatrix(null,null,"",editorElement);
+  }
+};
+
+
 
 //"cmd_MSIreviseMatrixCellCmd", "cmd_MSIreviseMatrixRowsCmd", "cmd_MSIreviseMatrixColsCmd" also go through here.
 //  (Code should pay attention to "aCommand"!!)
@@ -3010,7 +3050,26 @@ function insertmatrix(rows, cols, rowsignature, editorElement)
 {
   if (!editorElement)
     editorElement = msiGetActiveEditorElement(window);
+  if (!rows || !cols)
+  {
+    var prefs = GetPrefs();
+    if (prefs)
+    {
+      try {
+        if (!rows) {
+          rows = prefs.getIntPref("swp.matrix.rows");
+          if (!rows) rows = 2;
+        }
+        if (!cols) {
+          cols = prefs.getIntPref("swp.matrix.cols");
+          if (!cols) cols = 2;
+        }
+      }
+      catch(e) {}
+    }
+  }
   var editor = msiGetEditor(editorElement);
+
   try 
   {
     var mathmlEditor = editor.QueryInterface(Components.interfaces.msiIMathMLEditor);
