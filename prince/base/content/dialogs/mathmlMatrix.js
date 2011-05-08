@@ -36,6 +36,15 @@ function onOK()
   target.rows = gRows;
   target.cols = gColumns;
   target.rowSignature = "";
+  var prefs = GetPrefs();
+  if (prefs)
+  {
+    try {
+      prefs.setIntPref("swp.matrix.rows",gRows);
+      prefs.setIntPref("swp.matrix.cols",gColumns);
+    }
+    catch(e) {}
+  }
   MakePersistsValue(gDialog.rowsInput);
   MakePersistsValue(gDialog.columnsInput);
   return(true);
