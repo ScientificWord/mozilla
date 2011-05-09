@@ -91,7 +91,7 @@
     <key name="9">msiGoDoCommand("cmd_MSIparenCmd");</key>
     <key name="0">msiGoDoCommand("cmd_MSIparenCmd");</key>
     <key name="(">msiGoDoCommand("cmd_MSIparenCmd");</key>
-    <key name=")">imsiGoDoCommand("cmd_MSIparenCmd");</key>
+    <key name=")">msiGoDoCommand("cmd_MSIparenCmd");</key>
     <key name="-">insertMathSymbol("&equiv;");</key>
     <key name="_">insertMathSymbol("&cong;");</key>
     <key name="=">insertMathSymbol("&ne;");</key>
@@ -111,8 +111,8 @@
     <key name="P">insertMathSymbol("&weierp;");</key>
     <key name="[">msiGoDoCommand("cmd_MSIbracketCmd");</key>
     <key name="{">msiGoDoCommand("cmd_MSIbraceCmd");</key> 
-    <key name="]">insertMathSymbol("cmd_MSIbracketCmd");</key>
-    <key name="}">insertMathSymbol("cmd_MSIbraceCmd");</key>-->
+    <key name="]">msiGoDoCommand("cmd_MSIbracketCmd");</key>
+    <key name="}">msiGoDoCommand("cmd_MSIbraceCmd");</key>-->
     <key name="a">insertMathSymbol("&angle;");</key>
     <key name="A">insertMathSymbol("&ForAll;");</key>
     <key name="s">insertMathSymbol("&sum;");</key>
@@ -128,8 +128,8 @@
     <key name="z">insertMathSymbol("&Exists;");</key>
     <key name="x">insertMathSymbol("&times;");</key>
     <key name="X">insertMathSymbol("&divide;");</key>
-    <key name="m">msiGoDoCommand("cmd_MSIMatrixLastCmd");</key> 
-    <key name="M">msiGoDoCommand("cmd_MSIMatrix22Cmd");</key>
+    <key name="m">msiGoDoCommand("cmd_MSIMatrixCmdLast");</key> 
+    <key name="M">msiGoDoCommand("cmd_MSIMatrixCmd22");</key>
     <key name="c">insertMathSymbol("&subset;");</key>
     <key name="C">insertMathSymbol("&cdot;");</key>
     <key name="v">insertMathSymbol("&vee;");</key>

@@ -178,6 +178,8 @@ static NS_DEFINE_CID( kXMLHttpRequestCID, NS_XMLHTTPREQUEST_CID );
 /* boolean loadKeyMapFile (in string fileName); */
 NS_IMETHODIMP msiKeyMap::LoadKeyMapFile(PRBool *_retval)
 {
+// We first look for the file name in the user profile area. If it is not there, we look in the program
+// resource area and copy it to the user profile area.
 // Parsing and generating the hash tables is pretty straigntforward.
   if (m_fFileLoaded) return NS_OK;
   nsresult rv;
@@ -188,17 +190,32 @@ NS_IMETHODIMP msiKeyMap::LoadKeyMapFile(PRBool *_retval)
   nsString  temp;
   
   nsCOMPtr<nsIFile> mapfile;
-
-  rv = NS_GetSpecialDirectory("resource:app", getter_AddRefs(mapfile));
-  mapfile->Append(NS_LITERAL_STRING("res"));
-  mapfile->Append(NS_LITERAL_STRING("xml"));
+  nsCOMPtr<nsIFile> mapfileDirectory;
+  rv = NS_GetSpecialDirectory("ProfD", (nsIFile **)&mapfile);
+  if (rv == NS_OK)
+  {
+   mapfile->Clone(getter_AddRefs(mapfileDirectory));
   mapfile->Append(fileName);
   mapfile->Exists(&fExists);
+   // if it doesn't exist, copy it from the resource area
+   if (!fExists) 
+   {
+     nsCOMPtr<nsIFile> resFile;
+
+     rv = NS_GetSpecialDirectory("resource:app", getter_AddRefs(resFile));
+     resFile->Append(NS_LITERAL_STRING("res"));
+     resFile->Append(NS_LITERAL_STRING("xml"));
+     resFile->Append(fileName);
+     resFile->Exists(&fExists);
   if (!fExists) return NS_ERROR_FAILURE;
-  rv = mapfile->GetPath(finalPath);
+     resFile->CopyTo(mapfileDirectory, fileName);
+     mapfile->Exists(&fExists);
+   }
+   if (fExists) rv = mapfile->GetPath(finalPath);
   temp.Assign(NS_LITERAL_STRING("file:///"));
   temp.Append(finalPath);
   finalPath.Assign(temp);
+  }
   
   nsAutoString str;
   nsAutoString strData;
