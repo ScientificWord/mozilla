@@ -195,8 +195,8 @@ NS_IMETHODIMP msiKeyMap::LoadKeyMapFile(PRBool *_retval)
   if (rv == NS_OK)
   {
    mapfile->Clone(getter_AddRefs(mapfileDirectory));
-   mapfile->Append(fileName);
-   mapfile->Exists(&fExists);
+  mapfile->Append(fileName);
+  mapfile->Exists(&fExists);
    // if it doesn't exist, copy it from the resource area
    if (!fExists) 
    {
@@ -207,14 +207,14 @@ NS_IMETHODIMP msiKeyMap::LoadKeyMapFile(PRBool *_retval)
      resFile->Append(NS_LITERAL_STRING("xml"));
      resFile->Append(fileName);
      resFile->Exists(&fExists);
-     if (!fExists) return NS_ERROR_FAILURE;
+  if (!fExists) return NS_ERROR_FAILURE;
      resFile->CopyTo(mapfileDirectory, fileName);
      mapfile->Exists(&fExists);
    }
    if (fExists) rv = mapfile->GetPath(finalPath);
-   temp.Assign(NS_LITERAL_STRING("file:///"));
-   temp.Append(finalPath);
-   finalPath.Assign(temp);
+  temp.Assign(NS_LITERAL_STRING("file:///"));
+  temp.Append(finalPath);
+  finalPath.Assign(temp);
   }
   
   nsAutoString str;
@@ -276,59 +276,70 @@ NS_IMETHODIMP msiKeyMap::LoadKeyMapFile(PRBool *_retval)
 //      } else keycount = 20;
 //      m_pnhp->m_table.Init(keycount);   The table in initialized in the nameHashPair constructor
       // now populate the table
-      rv = keyTableElement->GetElementsByTagName(NS_LITERAL_STRING("key"), getter_AddRefs(keys));
-      if (keys) keys->GetLength(&keyCount);
-      if (keyCount > 0)
+//      rv = keyTableElement->GetElementsByTagName(NS_LITERAL_STRING("key"), getter_AddRefs(keys));
+//      if (keys) keys->GetLength(&keyCount);
+      nsCOMPtr<nsIDOMNode> nodePtr;
+      PRUint16 nodeType;
+      rv = keyTableElement->GetFirstChild(getter_AddRefs(nodePtr));
+      if (!nodePtr) break;
+      rv = nodePtr->GetNodeType(&nodeType);
+      while (nodePtr != nsnull)
       {
-        for (PRUint32 j = 0; j < keyCount; j++)
+        while ((nodePtr != nsnull) && (nodeType != nsIDOMNode::ELEMENT_NODE))
         {
-          alt = shift = ctrl = meta = reserved = PR_FALSE;
-          keys->Item(j, (nsIDOMNode **) getter_AddRefs(key));
-          keyElement = do_QueryInterface(key);
-          rv = keyElement->GetAttribute(NS_LITERAL_STRING("name"), keyname);
-          alt = shift = ctrl = meta = vk = PR_FALSE;
-          rv = keyElement->GetAttribute(NS_LITERAL_STRING("alt"), str);
-          if (rv == NS_OK && str.Equals(NS_LITERAL_STRING("1"))) alt = PR_TRUE;
-          rv = keyElement->GetAttribute(NS_LITERAL_STRING("shift"), str);
-          if (rv == NS_OK && str.Equals(NS_LITERAL_STRING("1"))) shift = PR_TRUE;
-          rv = keyElement->GetAttribute(NS_LITERAL_STRING("ctrl"), str);
-          if (rv == NS_OK && str.Equals(NS_LITERAL_STRING("1"))) ctrl = PR_TRUE;
-          rv = keyElement->GetAttribute(NS_LITERAL_STRING("meta"), str);
-          if (rv == NS_OK && str.Equals(NS_LITERAL_STRING("1"))) meta = PR_TRUE; 
-          rv = keyElement->GetAttribute(NS_LITERAL_STRING("vk"), str);
-          if (rv == NS_OK && str.Equals(NS_LITERAL_STRING("1"))) vk = PR_TRUE; 
-          rv = keyElement->GetAttribute(NS_LITERAL_STRING("reserved"), str);
-          if (rv == NS_OK && str.Equals(NS_LITERAL_STRING("1"))) reserved = PR_TRUE; 
-          // have to store the reserved attribute also
-          if (reserved)
-            strData.Assign(NS_LITERAL_STRING("reserved"));
-          else
-          {
-            textNode = do_QueryInterface(keyElement);
-            rv = textNode->GetTextContent(strData);
-          }
-          nsAutoPtr<nsString> newString(new nsString(strData));
-          PRUint32 index;
-          if (vk) 
-            index = VKeyStringToIndex(keyname);
-          else
-          {
-            nsAString::const_iterator begin;
-            keyname.BeginReading(begin);
-            index = (PRUint32)(*begin);
-            shift = PR_FALSE; // we always ignore shifts for characters because the character is shifted already
-          }
+          rv = nodePtr->GetNextSibling(getter_AddRefs(nodePtr));
+          if (nodePtr == nsnull) break;
+          rv = nodePtr->GetNodeType(&nodeType);
+        }
+        if (nodePtr == nsnull) break;
+        alt = shift = ctrl = meta = reserved = PR_FALSE;
+        keyElement = do_QueryInterface(nodePtr);
+        rv = keyElement->GetAttribute(NS_LITERAL_STRING("name"), keyname);
+        alt = shift = ctrl = meta = vk = PR_FALSE;
+        rv = keyElement->GetAttribute(NS_LITERAL_STRING("alt"), str);
+        if (rv == NS_OK && str.Equals(NS_LITERAL_STRING("1"))) alt = PR_TRUE;
+        rv = keyElement->GetAttribute(NS_LITERAL_STRING("shift"), str);
+        if (rv == NS_OK && str.Equals(NS_LITERAL_STRING("1"))) shift = PR_TRUE;
+        rv = keyElement->GetAttribute(NS_LITERAL_STRING("ctrl"), str);
+        if (rv == NS_OK && str.Equals(NS_LITERAL_STRING("1"))) ctrl = PR_TRUE;
+        rv = keyElement->GetAttribute(NS_LITERAL_STRING("meta"), str);
+        if (rv == NS_OK && str.Equals(NS_LITERAL_STRING("1"))) meta = PR_TRUE; 
+        rv = keyElement->GetAttribute(NS_LITERAL_STRING("vk"), str);
+        if (rv == NS_OK && str.Equals(NS_LITERAL_STRING("1"))) vk = PR_TRUE; 
+        rv = keyElement->GetAttribute(NS_LITERAL_STRING("reserved"), str);
+        if (rv == NS_OK && str.Equals(NS_LITERAL_STRING("1"))) reserved = PR_TRUE; 
+        // have to store the reserved attribute also
+        if (reserved)
+          strData.Assign(NS_LITERAL_STRING("reserved"));
+        else
+        {
+          textNode = do_QueryInterface(keyElement);
+          rv = textNode->GetTextContent(strData);
+        }
+        nsAutoPtr<nsString> newString(new nsString(strData));
+        PRUint32 index;
+        if (vk) 
+          index = VKeyStringToIndex(keyname);
+        else
+        {
+          nsAString::const_iterator begin;
+          keyname.BeginReading(begin);
+          index = (PRUint32)(*begin);
+          shift = PR_FALSE; // we always ignore shifts for characters because the character is shifted already
+        }
 //          if (index == 114)
 //          {
 //            index++; // a little dance so we can stop the debugger
 //            index--;
 //          }
-          if (index)
-          {
-            m_pnhp->m_table.Put(keyStruct(index, alt, ctrl, shift, meta, vk).m_encodedInfo, newString);
-            newString.forget();
-          }
+        if (index)
+        {
+          m_pnhp->m_table.Put(keyStruct(index, alt, ctrl, shift, meta, vk).m_encodedInfo, newString);
+          newString.forget();
         }
+        rv = nodePtr->GetNextSibling(getter_AddRefs(nodePtr));
+        if (nodePtr == nsnull) break;
+        rv = nodePtr->GetNodeType(&nodeType);
       }
     }
   }

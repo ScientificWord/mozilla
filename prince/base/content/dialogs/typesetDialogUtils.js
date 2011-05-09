@@ -69,13 +69,13 @@ function packageAndOptionsStringToPackageList(packagesStr)
     for (var i = 0; i < theStrings.length; ++i)
     {
       packageList[i] = new Package();
-      var regExp = new RegExp("/(\[([^\]]*)\])?\{([^\}]+)\}/");
-      var optionsAndName = theStrings[i].match(regExp);
-      if (optionsAndName[0].length > 0)
+      var regExp = /(\[([^\]]*)\])?\{([^\}]+)\}/;
+      var optionsAndName = regExp.exec(theStrings[i]);
+      if (optionsAndName[2] && optionsAndName[2].length > 0)
       {
-        packageList[i].setOptionsFromStr(optionsAndName[1]);
+        packageList[i].setOptionsFromStr(optionsAndName[2]);
       }
-      packageList[i].packageName = optionsAndName[2];
+      packageList[i].packageName = optionsAndName[3];
     }
   }
   return packageList;
