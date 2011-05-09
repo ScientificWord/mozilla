@@ -1093,7 +1093,7 @@ bool FileExists(const char* file)
 {
    std::cout << "\nTHE FILE [" << file;
    std::fstream f;
-   f.open(file);
+   f.open(file, std::fstream::in);
    if(f.is_open()){
      f.close();
      std::cout << "] EXISTS\n";
@@ -1106,16 +1106,20 @@ bool FileExists(const char* file)
 
 void SearchEnv(const char *file, const char *env, char *buf)
 {
-  //void CDECL _searchenv(const char* file, const char* env, char *buf)
-
-  if (file[0] == '/' || file[0] == '\\'){
-    strcpy(buf, file);
-    return;
-  }
   char *envVal, *penv;
   char curPath[_MAX_PATH];
 
   *buf = '\0';
+
+  if (file[0] == '/' || file[0] == '\\'){   
+    // Absolute path
+    if (FileExists(file)){
+      strcpy(buf, file);
+    }
+    return;
+  }
+ 
+  
 
   if ( FileExists( file ) )
   {
