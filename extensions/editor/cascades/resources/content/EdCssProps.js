@@ -204,9 +204,11 @@ function toggleExpertMode()
 //   of the stylesheets local to the filesystem
 function FlushChanges()
 {
+  var editorElement = msiGetParentEditorElementForDialog(window);
+  var editor = msiGetEditor(editorElement);
   if (gDialog.modified) {
     // let's make sure the editor is going to require save on exit
-    getCurrentEditor().incrementModificationCount(1);
+    editor.incrementModificationCount(1);
   }
   // Validate all user data and set attributes and possibly insert new element here
   // If there's an error the user must correct, return false to keep dialog open.
