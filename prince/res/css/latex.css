@@ -566,7 +566,7 @@ preface {
 
 /* ordinary breaks -- emulate behavior of <br/>*/
 
-msibr {
+msibr:before {
   content: "\A";
   white-space: pre;
 } 
