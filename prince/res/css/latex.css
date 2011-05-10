@@ -558,6 +558,19 @@ preface {
   -moz-user-select: -moz-none;
 }
 
+*[showinvis="true"] msibr:before {
+  content: "\AC\A";
+  white-space: pre;
+  color: green;
+}
+
+/* ordinary breaks -- emulate behavior of <br/>*/
+
+msibr {
+  content: "\A";
+  white-space: pre;
+} 
+
 /* Selection rules */
 
 body {
