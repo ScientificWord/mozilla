@@ -491,6 +491,12 @@ protected:
                          PRInt32 *aInOutOffset, 
                          nsCOMPtr<nsIDOMNode> *outBRNode, 
                          nsIEditor::EDirection aSelect);
+  NS_IMETHOD CreateMsiBR(nsIDOMNode *aNode, PRInt32 aOffset, 
+                     nsCOMPtr<nsIDOMNode> *outBRNode, nsIEditor::EDirection aSelect = nsIEditor::eNone);
+  NS_IMETHOD CreateMsiBRImpl(nsCOMPtr<nsIDOMNode> *aInOutParent, 
+                        PRInt32 *aInOutOffset, 
+                        nsCOMPtr<nsIDOMNode> *outBRNode, 
+                        nsIEditor::EDirection aSelect);
   NS_IMETHOD InsertBR(nsCOMPtr<nsIDOMNode> *outBRNode);
 
 // Table Editing (implemented in nsTableEditor.cpp)
