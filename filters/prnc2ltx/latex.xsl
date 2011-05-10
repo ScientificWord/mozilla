@@ -269,6 +269,9 @@ should not be done under some conditions -->
 <xsl:template match="html:br[@hard='1']">~\\
 </xsl:template>
 
+<xsl:template match="html:msibr">~\\
+</xsl:template>
+
 <xsl:template match="html:br">~\\
 </xsl:template>
 

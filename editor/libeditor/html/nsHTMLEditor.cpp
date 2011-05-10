@@ -1718,12 +1718,99 @@ NS_IMETHODIMP nsHTMLEditor::CreateBRImpl(nsCOMPtr<nsIDOMNode> *aInOutParent,
   return NS_OK;
 }
 
+NS_IMETHODIMP nsHTMLEditor::CreateMsiBRImpl(nsCOMPtr<nsIDOMNode> *aInOutParent, 
+                                         PRInt32 *aInOutOffset, 
+                                         nsCOMPtr<nsIDOMNode> *outBRNode, 
+                                         EDirection aSelect)
+{
+  if (!aInOutParent || !*aInOutParent || !aInOutOffset || !outBRNode) return NS_ERROR_NULL_POINTER;
+  *outBRNode = nsnull;
+  nsresult res;
+                                                                                                               // we need to insert a br.  unfortunately, we may have to split a text node to do it.
+  nsCOMPtr<nsIDOMNode> node = *aInOutParent;
+  PRInt32 theOffset = *aInOutOffset;
+  nsCOMPtr<nsIDOMCharacterData> nodeAsText = do_QueryInterface(node);
+  NS_NAMED_LITERAL_STRING(brType, "msibr");
+  nsCOMPtr<nsIDOMNode> brNode;
+  if (nodeAsText)  
+  {
+    nsCOMPtr<nsIDOMNode> tmp;
+    PRInt32 offset;
+    PRUint32 len;
+    nodeAsText->GetLength(&len);
+    GetNodeLocation(node, address_of(tmp), &offset);
+    if (!tmp) return NS_ERROR_FAILURE;
+    if (!theOffset)
+    {
+      // we are already set to go
+    }
+    else if (theOffset == (PRInt32)len)
+    {
+      // update offset to point AFTER the text node
+      offset++;
+    }
+    else
+    {
+      // split the text node
+      res = SplitNode(node, theOffset, getter_AddRefs(tmp));
+      if (NS_FAILED(res)) return res;
+      res = GetNodeLocation(node, address_of(tmp), &offset);
+      if (NS_FAILED(res)) return res;
+    }
+    // create br
+    res = CreateNode(brType, tmp, offset, getter_AddRefs(brNode));
+    if (NS_FAILED(res)) return res;
+    *aInOutParent = tmp;
+    *aInOutOffset = offset+1;
+  }
+  else
+  {
+    res = CreateNode(brType, node, theOffset, getter_AddRefs(brNode));
+    if (NS_FAILED(res)) return res;
+    (*aInOutOffset)++;
+  }
+
+  *outBRNode = brNode;
+  if (*outBRNode && (aSelect != eNone))
+  {
+    nsCOMPtr<nsISelection> selection;
+    nsCOMPtr<nsIDOMNode> parent;
+    PRInt32 offset;
+    res = GetSelection(getter_AddRefs(selection));
+    if (NS_FAILED(res)) return res;
+    nsCOMPtr<nsISelectionPrivate> selPriv(do_QueryInterface(selection));
+    res = GetNodeLocation(*outBRNode, address_of(parent), &offset);
+    if (NS_FAILED(res)) return res;
+    if (aSelect == eNext)
+    {
+      // position selection after br
+      selPriv->SetInterlinePosition(PR_TRUE);
+      res = selection->Collapse(parent, offset+1);
+    }
+    else if (aSelect == ePrevious)
+    {
+      // position selection before br
+      selPriv->SetInterlinePosition(PR_TRUE);
+      res = selection->Collapse(parent, offset);
+    }
+  }
+  return NS_OK;
+}
+
 
 NS_IMETHODIMP nsHTMLEditor::CreateBR(nsIDOMNode *aNode, PRInt32 aOffset, nsCOMPtr<nsIDOMNode> *outBRNode, EDirection aSelect)
 {
   nsCOMPtr<nsIDOMNode> parent = aNode;
   PRInt32 offset = aOffset;
   return CreateBRImpl(address_of(parent), &offset, outBRNode, aSelect);
+}
+
+
+NS_IMETHODIMP nsHTMLEditor::CreateMsiBR(nsIDOMNode *aNode, PRInt32 aOffset, nsCOMPtr<nsIDOMNode> *outBRNode, EDirection aSelect)
+{
+  nsCOMPtr<nsIDOMNode> parent = aNode;
+  PRInt32 offset = aOffset;
+  return CreateMsiBRImpl(address_of(parent), &offset, outBRNode, aSelect);
 }
 
 NS_IMETHODIMP nsHTMLEditor::InsertBR(nsCOMPtr<nsIDOMNode> *outBRNode)
@@ -1752,10 +1839,10 @@ NS_IMETHODIMP nsHTMLEditor::InsertBR(nsCOMPtr<nsIDOMNode> *outBRNode)
   res = GetStartNodeAndOffset(selection, address_of(selNode), &selOffset);
   if (NS_FAILED(res)) return res;
   
-  res = CreateBR(selNode, selOffset, outBRNode);
+  res = CreateMsiBR(selNode, selOffset, outBRNode);
   if (NS_FAILED(res)) return res;
   nsCOMPtr<nsIDOMElement> brElement(do_QueryInterface(*outBRNode));
-  if (brElement) brElement->SetAttribute(NS_LITERAL_STRING("hard"),NS_LITERAL_STRING("1"));
+//  if (brElement) brElement->SetAttribute(NS_LITERAL_STRING("hard"),NS_LITERAL_STRING("1"));
     
   // position selection after br
   res = GetNodeLocation(*outBRNode, address_of(selNode), &selOffset);
