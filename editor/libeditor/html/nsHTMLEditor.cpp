@@ -976,7 +976,7 @@ nsHTMLEditor::GetBlockSectionsForRange(nsIDOMRange *aRange,
       if (currentNode)
       {
         // <BR> divides block content ranges.  We can achieve this by nulling out lastRange
-        if (currentContent->Tag() == nsEditProperty::br)
+        if (currentContent->Tag() == nsEditProperty::msibr)
         {
           lastRange = nsnull;
         }
@@ -1651,7 +1651,7 @@ NS_IMETHODIMP nsHTMLEditor::CreateBRImpl(nsCOMPtr<nsIDOMNode> *aInOutParent,
   nsCOMPtr<nsIDOMNode> node = *aInOutParent;
   PRInt32 theOffset = *aInOutOffset;
   nsCOMPtr<nsIDOMCharacterData> nodeAsText = do_QueryInterface(node);
-  NS_NAMED_LITERAL_STRING(brType, "br");
+  NS_NAMED_LITERAL_STRING(brType, "msibr");
   nsCOMPtr<nsIDOMNode> brNode;
   if (nodeAsText)  
   {
@@ -1842,7 +1842,7 @@ NS_IMETHODIMP nsHTMLEditor::InsertBR(nsCOMPtr<nsIDOMNode> *outBRNode)
   res = CreateMsiBR(selNode, selOffset, outBRNode);
   if (NS_FAILED(res)) return res;
   nsCOMPtr<nsIDOMElement> brElement(do_QueryInterface(*outBRNode));
-//  if (brElement) brElement->SetAttribute(NS_LITERAL_STRING("hard"),NS_LITERAL_STRING("1"));
+  if (brElement) brElement->SetAttribute(NS_LITERAL_STRING("hard"),NS_LITERAL_STRING("1"));
     
   // position selection after br
   res = GetNodeLocation(*outBRNode, address_of(selNode), &selOffset);
@@ -4694,6 +4694,7 @@ nsHTMLEditor::IsContainer(nsIDOMNode *aNode)
     mtagListManager->GetTagInClass(NS_LITERAL_STRING("frontmtag"),stringTag, nsnull, &fRet);
     if (fRet) return PR_TRUE;
   }
+  if (stringTag.EqualsLiteral("msibr")) return PR_FALSE;
   PRInt32 tagEnum;
   // XXX Should this handle #cdata-section too?
   if (stringTag.EqualsLiteral("#text")) {
@@ -5213,7 +5214,7 @@ nsHTMLEditor::RemoveBlockContainer(nsIDOMNode *inNode)
       if (child && !IsBlockNode(child))
       {
         // insert br node
-        res = CreateBR(inNode, 0, address_of(unused));
+        res = CreateMsiBR(inNode, 0, address_of(unused));
         if (NS_FAILED(res)) return res;
       }
     }
@@ -5236,7 +5237,7 @@ nsHTMLEditor::RemoveBlockContainer(nsIDOMNode *inNode)
         PRUint32 len;
         res = GetLengthOfDOMNode(inNode, len);
         if (NS_FAILED(res)) return res;
-        res = CreateBR(inNode, (PRInt32)len, address_of(unused));
+        res = CreateMsiBR(inNode, (PRInt32)len, address_of(unused));
         if (NS_FAILED(res)) return res;
       }
     }
@@ -5258,7 +5259,7 @@ nsHTMLEditor::RemoveBlockContainer(nsIDOMNode *inNode)
       if (sibling && !IsBlockNode(sibling) && !nsTextEditUtils::IsBreak(sibling))
       {
         // insert br node
-        res = CreateBR(inNode, 0, address_of(unused));
+        res = CreateMsiBR(inNode, 0, address_of(unused));
         if (NS_FAILED(res)) return res;
       }
     }
