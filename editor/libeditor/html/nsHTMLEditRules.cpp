@@ -2579,7 +2579,7 @@ nsHTMLEditRules::InsertBRIfNeeded(nsISelection *aSelection)
     if (mHTMLEditor->CanContainTag(node, NS_LITERAL_STRING("br")))
     {
       nsCOMPtr<nsIDOMNode> brNode;
-      res = mHTMLEditor->CreateBR(node, offset, address_of(brNode), nsIEditor::ePrevious);
+      res = mHTMLEditor->CreateMsiBR(node, offset, address_of(brNode), nsIEditor::ePrevious);
     }
   }
   return res;
@@ -7334,7 +7334,7 @@ nsHTMLEditRules::ApplyBlockStyle(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsA
     }
     
     // if the node is a break, we honor it by putting further nodes in a new parent
-    else if (curNodeTag.EqualsLiteral("br"))
+    else if (curNodeTag.EqualsLiteral("msibr")||curNodeTag.EqualsLiteral("br"))
     {
       if (curBlock)
       {
@@ -7508,7 +7508,7 @@ nsHTMLEditRules::ApplyStructure(nsCOMArray<nsIDOMNode>& arrayOfNodes, const nsAS
     }
     
     // if the node is a break, we honor it by putting further nodes in a new parent
-    else if (curNodeTag.EqualsLiteral("br"))
+    else if (curNodeTag.EqualsLiteral("msibr")||curNodeTag.EqualsLiteral("br"))
     {
       if (curBlock)
       {
