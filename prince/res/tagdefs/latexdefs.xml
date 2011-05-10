@@ -87,6 +87,7 @@
 			<contains>othertag</contains>
 			<contains>mml:math</contains>
 			<contains>br</contains>
+			<contains>msibr</contains>
 			<contains>shortQuote</contains>
 			<contains>cursor</contains>
 			<contains>defaulttitletag</contains>
@@ -100,19 +101,19 @@
 				<tag id="defaultparagraph" nm="bodyText">
 					<description>Default body text paragraph</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<br type="_moz"/>]]>
+          <initialcontentsforempty> <![CDATA[<msibr/>]]>
           </initialcontentsforempty>
 				</tag>
 				<tag nm="rtlBodyText">
 					<description>Right to left body text paragraph</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<br type="_moz"/>]]>
+          <initialcontentsforempty> <![CDATA[<msibr/>]]>
           </initialcontentsforempty>
 				</tag>
 				<tag nm="p">
 					<description>HTML paragraph</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<br type="_moz"/>]]>
+          <initialcontentsforempty> <![CDATA[<msibr/>]]>
           </initialcontentsforempty>
 				</tag>
 				<tag nm="bodyMath">
@@ -148,13 +149,13 @@
 				<tag nm="title">
 					<nexttag>bodyText</nexttag>
 					<description>Title</description>
-          <initialcontents> <![CDATA[<defaulttitletag/><cursor/><br type="_moz"/>]]>
+          <initialcontents> <![CDATA[<defaulttitletag/><cursor/><msibr/>]]>
           </initialcontents>
 				</tag>
 				<tag nm="line">
 					<nexttag>line</nexttag>
 					<description>Line</description>
-          <initialcontents> <![CDATA[<cursor/><br type="_moz"/>]]>
+          <initialcontents> <![CDATA[<cursor/><msibr/>]]>
           </initialcontents>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
@@ -162,7 +163,7 @@
 				<tag nm="centered">
 					<nexttag>centered</nexttag>
 					<description>Centered paragraph</description>
-          <initialcontents> <![CDATA[<cursor/><br type="_moz"/>]]>
+          <initialcontents> <![CDATA[<cursor/><msibr/>]]>
           </initialcontents>
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
@@ -170,7 +171,7 @@
 				<tag nm="dialogbase" hidden="1">
 					<nexttag>bodyText</nexttag>
 					<description>Hidden dialog base</description>
-          <initialcontents> <![CDATA[<cursor/><br type="_moz"/>]]>
+          <initialcontents> <![CDATA[<cursor/><msibr/>]]>
           </initialcontents>
 				</tag>
 			</tags>
@@ -191,7 +192,7 @@
           <description>Numbered list</description>
 					<nexttag/>
           <htmllist>ol</htmllist>
-          <initialcontents> <![CDATA[<cursor/><br type="_moz"/>]]></initialcontents>
+          <initialcontents> <![CDATA[<cursor/><msibr/>]]></initialcontents>
           <discardemptyblock>true</discardemptyblock>
 	  		  <inclusion>true</inclusion>
 			    <contains>numberedListItem</contains>
@@ -224,7 +225,7 @@
           <htmllistparent>bulletlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -233,7 +234,7 @@
           <htmllistparent>numberedlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -242,7 +243,7 @@
           <htmllistparent>descriptionlist</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -251,7 +252,7 @@
           <htmllistparent>bibliography</htmllistparent>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
           <contains>biblabel</contains>
@@ -290,7 +291,7 @@
           <description>Chapter</description>
           <titletag>sectiontitle</titletag>
           <discardemptyblock>false</discardemptyblock>
-          <initialcontents> <![CDATA[<sectiontitle><cursor/><br type="_moz"/></sectiontitle>]]>
+          <initialcontents> <![CDATA[<sectiontitle><cursor/><msibr/></sectiontitle>]]>
           </initialcontents>
           <prefsub>section</prefsub>
         </tag>
@@ -299,7 +300,7 @@
           <description>Section</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
-          <initialcontents> <![CDATA[<sectiontitle><cursor/><br type="_moz"/></sectiontitle>]]>
+          <initialcontents> <![CDATA[<sectiontitle><cursor/><msibr/></sectiontitle>]]>
           </initialcontents>
           <nextafteremptyblock>chapter</nextafteremptyblock>
           <prefsub>subsection</prefsub>
@@ -309,7 +310,7 @@
           <description>Subsection</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
-          <initialcontents> <![CDATA[<sectiontitle><cursor/><br type="_moz"/></sectiontitle>]]>
+          <initialcontents> <![CDATA[<sectiontitle><cursor/><msibr/></sectiontitle>]]>
           </initialcontents>
           <nextafteremptyblock>section</nextafteremptyblock>
           <prefsub>subsubsection</prefsub>
@@ -319,7 +320,7 @@
           <description>Subsubsection</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
-          <initialcontents> <![CDATA[<sectiontitle><cursor/><br type="_moz"/></sectiontitle>]]>
+          <initialcontents> <![CDATA[<sectiontitle><cursor/><msibr/></sectiontitle>]]>
           </initialcontents>
           <nextafteremptyblock>subsection</nextafteremptyblock>
           <prefsub>paragraph</prefsub>
@@ -329,7 +330,7 @@
           <description>Subsubsubsubsection</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
-          <initialcontents> <![CDATA[<sectiontitle><cursor/><br type="_moz"/></sectiontitle> ]]>
+          <initialcontents> <![CDATA[<sectiontitle><cursor/><msibr/></sectiontitle> ]]>
           </initialcontents>
           <nextafteremptyblock>subsubsection</nextafteremptyblock>
           <prefsub>subparagraph</prefsub>
@@ -339,7 +340,7 @@
           <description>Section (dynamic level)</description>
           <discardemptyblock>true</discardemptyblock>
           <titletag>sectiontitle</titletag>
-          <initialcontents> <![CDATA[<sectiontitle><cursor/><br type="_moz"/></sectiontitle>]]>
+          <initialcontents> <![CDATA[<sectiontitle><cursor/><msibr/></sectiontitle>]]>
           </initialcontents>
           <nextafteremptyblock>paragraph</nextafteremptyblock>
         </tag>
@@ -378,7 +379,7 @@
 	  		  <inclusion>true</inclusion>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -387,7 +388,7 @@
           <description>Centered</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
 					<nexttag/>
@@ -431,7 +432,7 @@
   			  <description>Verbatim text</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
 				  <nexttag>bodyText</nexttag>
@@ -442,7 +443,7 @@
           <description>Note</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
 					<nexttag/>
@@ -453,7 +454,7 @@
           <description>Frame</description>
           <discardemptyblock>true</discardemptyblock>
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
 					<nexttag/>
@@ -466,7 +467,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -477,7 +478,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -488,7 +489,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -499,7 +500,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -510,7 +511,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -521,7 +522,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -532,7 +533,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -543,7 +544,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -554,7 +555,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -565,7 +566,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -576,7 +577,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -587,7 +588,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -598,7 +599,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -609,7 +610,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -620,7 +621,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -631,7 +632,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -642,7 +643,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -653,7 +654,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -664,7 +665,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -675,7 +676,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -686,7 +687,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -697,7 +698,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -708,7 +709,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -719,7 +720,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -731,7 +732,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -742,7 +743,7 @@
           <discardemptyblock>true</discardemptyblock>
           <nextafteremptyblock>bodyText</nextafteremptyblock>        
           <initialcontents> <![CDATA[
-              <bodyText><cursor/><br type="_moz"/></bodyText>
+              <bodyText><cursor/><msibr/></bodyText>
               ]]>
           </initialcontents>
         </tag>
@@ -754,7 +755,7 @@
 				<tag nm="abstract"><description>Abstract</description>
           <realtagclass>envtag</realtagclass>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
+          <initialcontentsforempty> <![CDATA[<cursor/><msibr/>]]>
           </initialcontentsforempty>
 					<nexttag/>
 	  		  <inclusion>true</inclusion>
@@ -763,7 +764,7 @@
           <realtagclass>paratag</realtagclass>
 					<nexttag>bodyText</nexttag>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
+          <initialcontentsforempty> <![CDATA[<cursor/><msibr/>]]>
           </initialcontentsforempty>
 					<nexttag/>
 	  		  <inclusion>true</inclusion>
@@ -771,7 +772,7 @@
         <tag nm="author"><description>Author</description>
           <realtagclass>paratag</realtagclass>
 					<nexttag>bodyText</nexttag>
-          <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
+          <initialcontentsforempty> <![CDATA[<cursor/><msibr/>]]>
           </initialcontentsforempty>
 					<nexttag/>
 	  		  <inclusion>true</inclusion>
@@ -779,7 +780,7 @@
         <tag nm="date"><description>Date</description>
           <realtagclass>paratag</realtagclass>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
+          <initialcontentsforempty> <![CDATA[<cursor/><msibr/>]]>
           </initialcontentsforempty>
 					<nexttag/>
 	  		  <inclusion>true</inclusion>
@@ -789,7 +790,7 @@
 					<nexttag/>
 	  		  <inclusion>true</inclusion>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
+          <initialcontentsforempty> <![CDATA[<cursor/><msibr/>]]>
           </initialcontentsforempty>
         </tag>
         <tag nm="makelot"><description>Make list of tables</description>
@@ -797,12 +798,12 @@
 					<nexttag/>
 	  		  <inclusion>true</inclusion>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
+          <initialcontentsforempty> <![CDATA[<cursor/><msibr/>]]>
           </initialcontentsforempty>
         </tag>
         <tag nm="maketitle"><description>Make title</description>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
+          <initialcontentsforempty> <![CDATA[<cursor/><msibr/>]]>
           </initialcontentsforempty>
 					<nexttag/>
 	  		  <inclusion>true</inclusion>
@@ -812,7 +813,7 @@
 					<nexttag/>
 	  		  <inclusion>true</inclusion>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
+          <initialcontentsforempty> <![CDATA[<cursor/><msibr/>]]>
           </initialcontentsforempty>
         </tag>
         <tag nm="title"><description>Title</description>
@@ -820,7 +821,7 @@
 					<nexttag/>
 	  		  <inclusion>true</inclusion>
           <discardemptyblock>true</discardemptyblock>
-          <initialcontentsforempty> <![CDATA[<cursor/><br type="_moz"/>]]>
+          <initialcontentsforempty> <![CDATA[<cursor/><msibr/>]]>
           </initialcontentsforempty>
         </tag>
 			</tags>
