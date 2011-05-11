@@ -562,6 +562,7 @@ preface {
   content: "\AC\A";
   white-space: pre;
   color: green;
+  -moz-user-select: -moz-none;
 }
 
 msibr[hard]:before {
@@ -585,6 +586,7 @@ msibr:before {
 msibr[hard]:before {
   content: "\A";
   white-space: pre;
+  -moz-user-select: -moz-none;
 } 
 
 
