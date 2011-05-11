@@ -1,4 +1,4 @@
-fmath {
+math {
   direction: ltr;
 }
 
@@ -255,6 +255,7 @@ address {
 
 title {
   font-size: x-large;
+  line-height: 20pt;
   display: block;
   margin-top: 12pt;
   text-align: center;
