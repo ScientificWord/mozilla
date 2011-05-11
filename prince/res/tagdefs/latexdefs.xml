@@ -146,12 +146,12 @@
           </initialcontentsforempty>
           <nextafteremptyblock>bodyText</nextafteremptyblock>
 				</tag>
-				<tag nm="title">
+				<!--tag nm="title">
 					<nexttag>bodyText</nexttag>
 					<description>Title</description>
           <initialcontents> <![CDATA[<defaulttitletag/><cursor/><msibr/>]]>
           </initialcontents>
-				</tag>
+				</tag -->
 				<tag nm="line">
 					<nexttag>line</nexttag>
 					<description>Line</description>
@@ -754,7 +754,8 @@
 			<tags>
 				<tag nm="abstract"><description>Abstract</description>
           <realtagclass>envtag</realtagclass>
-          <discardemptyblock>true</discardemptyblock>
+					<nexttag>bodyText</nexttag>
+					<discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[<cursor/><msibr/>]]>
           </initialcontentsforempty>
 					<nexttag/>
@@ -779,6 +780,7 @@
         </tag>
         <tag nm="date"><description>Date</description>
           <realtagclass>paratag</realtagclass>
+					<nexttag>bodyText</nexttag>
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[<cursor/><msibr/>]]>
           </initialcontentsforempty>
@@ -818,7 +820,7 @@
         </tag>
         <tag nm="title"><description>Title</description>
           <realtagclass>paratag</realtagclass>
-					<nexttag/>
+					<nexttag>bodyText</nexttag>
 	  		  <inclusion>true</inclusion>
           <discardemptyblock>true</discardemptyblock>
           <initialcontentsforempty> <![CDATA[<cursor/><msibr/>]]>
