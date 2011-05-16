@@ -1235,7 +1235,7 @@
 
 
 \def\MSITeXButtonReq#1{%
-    \expandafter\def\csname#1\endcsname##1{
+    \expandafter\def\csname#1\endcsname##1{%
        \msihmode
        \msitag{<texb enc="1" name="#1">}%
           <![CDATA[\expandafter\string\csname#1\endcsname\{##1\}]]>%
