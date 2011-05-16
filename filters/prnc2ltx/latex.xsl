@@ -249,6 +249,8 @@
 <xsl:template match="html:body">
 <!--\input tcilatex.tex  
 should not be done under some conditions -->
+<xsl:if test="count(//html:indexitem) &gt; 0"
+  >\makeindex</xsl:if>
 \begin{document}
 <xsl:apply-templates/>
 <xsl:if test="$endnotes &gt; 0">
@@ -265,6 +267,9 @@ should not be done under some conditions -->
 </xsl:template>
 
 <xsl:template match="html:br[@hard='1']">~\\
+</xsl:template>
+
+<xsl:template match="html:msibr">~\\
 </xsl:template>
 
 <xsl:template match="html:br">~\\

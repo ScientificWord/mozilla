@@ -556,7 +556,7 @@ nsHTMLEditor::AbsolutelyPositionElement(nsIDOMElement * aElement,
 
     if (childCount == 1) {
       nsCOMPtr<nsIDOMNode> brNode;
-      res = CreateBR(parentNode, 0, address_of(brNode));
+      res = CreateMsiBR(parentNode, 0, address_of(brNode));
     }
   }
   else {
