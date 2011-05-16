@@ -513,6 +513,8 @@ private :
 								    TNODE* comment_node,
 									TNODE** MML_expansion,
 									U16& advance );
+
+  TNODE*  TEXBUTTON2MML(TNODE* texb);
   U8*       TCIMacroToBuffer( TNODE* comment_node );
   TNODE*    LocateEndExpansion( TNODE* start_node,
 	                                  U16& advance );
