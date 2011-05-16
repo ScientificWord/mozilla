@@ -47,7 +47,7 @@ const kUrlString = "url(";
 //   param XULElement elt
 //   param String property
 //   param String value
-function AddStyleToElement(elt, property, value)
+function AddStyleToElement(elt, property, value, thePriority)
 {
   if (!elt || !elt.style) return;
   if (value == "") {
@@ -55,11 +55,657 @@ function AddStyleToElement(elt, property, value)
   }
   else {
     try {
-      elt.style.setProperty(property, value,
-                            elt.style.getPropertyPriority(property));
+      if (thePriority == null)
+        thePriority = elt.style.getPropertyPriority(property);
+//      elt.style.setProperty(property, value,
+//                            elt.style.getPropertyPriority(property));
+      elt.style.setProperty(property, value, thePriority);
     }
     catch (ex) {  }
   }
+}
+
+function AddStyleForElementEnsureWritable(index, elt, property, value, priority)
+{
+  var theStyleSheet = GetWritableStyleSheetParent(index);
+  var mediaSpec = GetMediaListForIndex(index);
+  if (mediaSpec.indexOf("all") >= 0)
+    mediaSpec = null;  //if everything's contained, don't remove anything
+  var theRule = objectsArray[index].cssElt;
+  var selector = theRule.selectorText;
+  if (priority == null)
+    priority = elt.style.getPropertyPriority(property);
+  var insertText = "";
+  var ruleList, ruleSet, insertInRange;
+  AddStyleToElement(objectsArray[index].cssElt, property, value, priority);
+  if (theStyleSheet)
+  {
+    if (value && value.length)
+    {
+      insertInRange = GetInsertRangeToOverride(theStyleSheet, elt);
+      AddPropertiesToStylesheet(theStyleSheet, mediaSpec, selector, [ {theProperty : property, theValue : value, thePriority : priority} ], insertInRange);
+    }
+    else
+      RemoveStylePropertyForElementEnsureWritable(index, elt, property);
+  }
+}
+
+function AddPropertiesToStylesheet(theStyleSheet, mediaList, selector, propertyList, insertRange)
+{
+  var ruleList, ruleSet;
+  var insertText;
+  var insertIndex;
+  var insertRange2 = insertRange;
+  if (mediaList && mediaList.length)
+  {
+    ruleList = FindMediaListInRuleList(theStyleSheet.cssRules, mediaList, insertRange);
+    if (!ruleList)
+    {
+      insertRange2 = null;  //we'll be inserting into a subobject of the stylesheet, don't need the insert range.
+    }
+    else  //no ruleList to insert into
+    {
+      ruleList = theStyleSheet;
+      insertText = "@media " + join(mediaList, " ,") + "{\n";
+      insertText += selector + " {";
+      for (var ix = 0; ix < propertyList.length; ++ix)
+      {
+        insertText += "\n  " + propertyList[ix].theProperty + ": " + propertyList[ix].theValue;
+        if (propertyList[ix].thePriority.length > 0)
+          insertText += " !" + propertyList[ix].thePriority;
+        insertText += ";";
+      }
+      insertText += "\n}\n}";
+    }
+  }
+  else
+    ruleList = theStyleSheet;
+  if (!insertText || !insertText.length)
+  {
+    ruleSet = FindRuleSetInRuleList(ruleList.cssRules, selector, insertRange2);
+    if (!ruleSet)
+    {
+      insertText = selector + " {";
+      for (var ix = 0; ix < propertyList.length; ++ix)
+      {
+        insertText += "\n  " + propertyList[ix].theProperty + ": " + propertyList[ix].theValue;
+        if (propertyList[ix].thePriority.length > 0)
+          insertText += " !" + propertyList[ix].thePriority;
+        insertText += ";";
+      }
+      insertText += "\n}";
+    }
+  }
+  if (ruleSet)
+  {
+    for (var ix= 0; ix < propertyList.length; ++ix)
+      ruleSet.style.setProperty(propertyList[ix].theProperty, propertyList[ix].theValue, propertyList[ix].thePriority);
+  }
+  else if (insertText)
+  {
+    if (insertRange2 && (insertRange2.insertBefore >= 0) )
+      insertIndex = insertRange2.insertBefore;
+    else
+      insertIndex = ruleList.cssRules.length;
+    ruleList.insertRule(insertText, insertIndex);
+//    theStyleSheet.insertRule(insertText, theStyleSheet.cssRules.length);
+  }
+}
+
+function AddPagePropertiesToStylesheet(theStyleSheet, selector, propertyArray, insertRange)
+{
+  var ruleSet;
+  var insertText;
+  var ruleList = theStyleSheet.cssRules;
+  if (!insertText || !insertText.length)
+  {
+    ruleSet = FindPageRuleSetInRuleList(ruleList, selector, insertRange);
+    if (!ruleSet)
+    {
+      insertText = "@page " + selector + " {";
+      for (var ix = 0; ix < propertyArray.length; ++ix)
+      {
+        insertText += "\n  " + propertyArray[ix].theProperty + ": " + propertyArray[ix].theValue;
+        if (propertyArray[ix].thePriority.length > 0)
+          insertText += " !" + propertyArray[ix].thePriority;
+        insertText += ";";
+      }
+      insertText += "\n}";
+    }
+  }
+  if (ruleSet)
+  {
+    for (var ix= 0; ix < propertyArray.length; ++ix)
+      ruleSet.style.setProperty(propertyArray[ix].theProperty, propertyArray[ix].theValue, propertyArray[ix].thePriority);
+  }
+  else if (insertText)
+  {
+    if (insertRange && (insertRange.insertBefore >= 0))
+      theStyleSheet.insertRule(insertText, insertRange.insertBefore);
+    else
+      theStyleSheet.insertRule(insertText, theStyleSheet.cssRules.length);
+  }
+}
+
+//This function as currently written can't really "work" correctly - the effect of removing a rule or property for a given selector
+//  from an embedded sheet will be to allow the "previous" value in the cascade to come through. To do this in generality would
+//  involve traversing the cascade for each piece in the selector to find the rule that should be in effect, which I haven't done 
+//  here. The approach taken is to set default values.
+function RemoveStylePropertyForElementEnsureWritable(index, elt, property)
+{
+  var theStyleSheet = GetWritableStyleSheetParent(index);
+  var defaultVal;
+  var priority = elt.style.getPropertyPriority(property);  //if the old rule was !important, the new one will have to be to override it
+  var theRule = objectsArray[index].cssElt;
+  var insertInRange = null;
+  var selector = theRule.selectorText;
+  var mediaSpec = GetMediaListForIndex(index);
+  if (mediaSpec.indexOf("all") >= 0)
+    mediaSpec = null;  //if everything's contained, don't remove anything
+  if (theStyleSheet)
+  {
+    insertInRange = GetInsertRangeToOverride(theStyleSheet, elt);
+    defaultVal = GetPriorCSSValueForIndex(index, property);
+    AddPropertiesToStylesheet(theStyleSheet, mediaSpec, selector, [ {theProperty : property, theValue : defaultVal, thePriority : priority} ], insertRange);
+  }
+}
+
+//The idea here is to place a new rule before rules which may override it. I tried writing this to poke the rule before other
+//import rules which might override it, but that's stupid - import rules aren't allowed to follow any other kind of rule. For
+//now, just return null, but I've left the function call if I get any brilliant ideas... rwa
+function GetInsertRangeToOverride(theStyleSheet, elt)
+{
+  return null;
+//  var theRange = {insertAfter : -1, insertBefore : -1};
+//  return theRange;
+}
+
+function RemoveStyleRuleEnsureWritable(index)
+{
+  var theStyleSheet = GetWritableStyleSheetParent(index);
+  var selector, mediaSpec, property, defaultVal;
+  var theRule = objectsArray[index].cssElt;
+  var propertyArray = [];
+  if (theStyleSheet)
+    OverrideStyleRuleInStylesheet(theStyleSheet, theRule)
+}
+
+function OverrideStyleRuleInStylesheet(theStyleSheet, theRule)
+{
+  var selector, mediaSpec, property, defaultVal, insertInRange;
+  var propertyArray = [];
+  if (theStyleSheet)
+  {
+    mediaSpec = GetMediaListForCSSNode(theRule);
+    if (mediaSpec.indexOf("all") >= 0)
+      mediaSpec = null;  //if everything's contained, don't remove anything
+    selector = theRule.selectorText;
+    for (var jj = 0; jj < theRule.style.length; ++jj)
+    {
+      property = theRule.style.item(jj);
+      defaultVal = GetPriorCSSValueForCSSNode(theRule, property);
+      propertyArray.push( {theProperty : property, theValue : defaultVal, thePriority : theRule.style.getPropertyPriority(property)} );
+    }
+    insertInRange = GetInsertRangeToOverride(theStyleSheet, theRule);
+    AddPropertiesToStylesheet(theStyleSheet, mediaSpec, selector, propertyArray, insertInRange);
+  }
+}
+
+function OverridePageRuleInStylesheet(theStyleSheet, theRule)
+{
+  var selector, property, defaultVal, insertInRange;
+  var propertyArray = [];
+  if (theStyleSheet)
+  {
+//    mediaSpec = GetMediaListForCSSNode(theRule);
+//    if (mediaSpec.indexOf("all") >= 0)
+//      mediaSpec = null;  //if everything's contained, don't remove anything
+    selector = theRule.selectorText;
+    insertInRange = GetInsertRangeToOverride(theStyleSheet, theRule);
+    for (var jj = 0; jj < theRule.style.length; ++jj)
+    {
+      property = theRule.style.item(jj);
+      defaultVal = GetPriorCSSValueForCSSPageNode(theRule, property);
+      propertyArray.push( {theProperty : property, theValue : defaultVal, thePriority : theRule.style.getPropertyPriority(property)} );
+    }
+    AddPagePropertiesToStylesheet(theStyleSheet, selector, propertyArray, insertInRange);
+  }
+}
+
+function RemoveRuleListEnsureWritable(index)
+{
+  var theStyleSheet = GetWritableStyleSheetParent(index);
+  if (!theStyleSheet)  //means either there isn't a writable parent (and we can do nothing), or the sheet containing this rule
+    return;            //is already writable (and then the usual behavior will suffice)
+
+  var theRuleList = objectsArray[index].cssElt.cssRules;
+  OverrideRuleListInStylesheet(theStyleSheet, theRuleList);
+}
+
+function RemoveCSSElementEnsureWritable(index)
+{
+  var theStyleSheet = GetWritableStyleSheetParent(index);
+  if (!theStyleSheet)  //means either there isn't a writable parent (and we can do nothing), or the sheet containing this rule
+    return;            //is already writable (and then the usual behavior will suffice)
+
+  var theElement = objectsArray[index].cssElt;
+  OverrideCSSElementInStyleSheet(theStyleSheet, theElement);
+}
+
+function OverrideCSSElementInStyleSheet(theStyleSheet, theElement)
+{
+  switch(theElement.type)
+  {
+    case CSSRule.STYLE_RULE:
+      OverrideStyleRuleInStylesheet(theStyleSheet, theElement);
+    break;
+
+    case CSSRule.MEDIA_RULE:
+      OverrideRuleListInStylesheet(theStyleSheet, theElement.cssRules);
+    break;
+
+    case CSSRule.IMPORT_RULE:
+      if (theElement.styleSheet != null)
+        OverrideRuleListInStylesheet(theStyleSheet, theElement.styleSheet.cssRules);
+    break;
+
+    case CSSRule.FONT_FACE_RULE:
+    break;
+
+    case CSSRule.CHARSET_RULE:
+    break;
+
+    case CSSRule.PAGE_RULE:
+      OverridePageRuleInStylesheet(theStyleSheet, theElement);
+    break;
+  }
+}
+
+function OverrideRuleListInStylesheet(theStyleSheet, theRuleList)
+{
+  var mediaList = GetMediaListForCSSNode(theRuleList);
+  if (mediaList.indexOf("all") >= 0)
+    mediaList = null;  //if everything's contained, don't remove anything
+  var theRule, property, defaultVal;
+  var selector;
+  var insertInRange = GetInsertRangeToOverride(theStyleSheet, theRuleList);
+  for (var ii = 0; ii < theRuleList.length; ++ii)
+  {
+    theRule = theRuleList.item(ii);
+    OverrideCSSElementInStyleSheet(theStyleSheet, theRule);
+  }
+}
+
+
+function GetWritableStyleSheetParent(index)
+{
+  var sheetIndex = GetSheetOrImportContainerForIndex(index);
+  var bNeedParent = false;
+  while ((sheetIndex >= 0) && (objectsArray[sheetIndex].external || objectsArray[sheetIndex].type != SHEET))
+  {
+    bNeedParent = true;
+    sheetIndex = GetSheetOrImportContainerForIndex(sheetIndex);
+  }
+  if (bNeedParent && sheetIndex >= 0)
+    return objectsArray[sheetIndex].cssElt;
+  return null;
+}
+
+function GetSheetOrImportContainerForIndex(index)
+{
+  var theDepth = objectsArray[index].depth;
+  while (index >= 0 && ((objectsArray[index].type != SHEET && objectsArray[index].type != IMPORT_RULE) || objectsArray[index].depth >= theDepth)) {
+    index--;
+  }
+  return index;
+}
+
+function GetMediaListForIndex(index)
+{
+  var mediaList = ["all"], tempMediaList;
+  var mediaIndex = index;
+  var bFoundOne = false;
+  do
+  {
+    tempMediaList = [];
+    if ("media" in objectsArray[mediaIndex].cssElt)
+    {
+      if (objectsArray[mediaIndex].cssElt.media && objectsArray[mediaIndex].cssElt.media.length)
+      {
+        if (mediaList.indexOf("all") >= 0)
+        {
+          mediaList.splice(0, mediaList.length);  //clean it out and replace it
+          for (var jx = 0; jx < objectsArray[mediaIndex].cssElt.media.length; ++jx)
+            mediaList.push(objectsArray[mediaIndex].cssElt.media.item(jx));
+          bFoundOne = true;
+        }  
+        else
+        {
+          for (var jx = 0; jx < objectsArray[mediaIndex].cssElt.media.length; ++jx)
+            tempMediaList.push(objectsArray[mediaIndex].cssElt.media.item(jx));
+          if (tempMediaList.indexOf("all") < 0)  //only want to do any filtering if "all" isn't indicated in the new node
+          {
+            for (jx = mediaList.length-1; jx >= 0; --jx)
+            {
+              if (tempMediaList.indexOf(mediaList[jx]) < 0)
+                mediaList.splice(jx, 1);  //remove it if it isn't contained in every media specification governing this rule
+            }
+          }
+        }
+      }
+    } 
+    mediaIndex = GetMediaContainerForIndex(mediaIndex);
+  } while (mediaIndex >= 0);
+  return mediaList;
+}
+
+function GetMediaContainerForIndex(index)
+{
+  var theDepth = objectsArray[index].depth;
+  for ( ; index >= 0; --index)
+  {
+    switch(objectsArray[index].type)
+    {
+      case SHEET:
+      case IMPORT_RULE:
+      case MEDIA_RULE:
+        if (objectsArray[index].depth < theDepth)
+          return index;
+      break;
+      default:
+      break;
+    }
+  }
+  return -1;
+}
+
+function GetMediaListForCSSNode(cssElement)
+{
+  var mediaList = ["all"], tempMediaList;
+  var currNode = cssElement;
+  var bFoundOne = false;
+  do
+  {
+    tempMediaList = [];
+    if ("media" in currNode)
+    {
+      if (currNode.media && currNode.media.length)
+      {
+        if (mediaList.indexOf("all") >= 0)
+        {
+          mediaList.splice(0, mediaList.length);  //clean it out and replace it
+          for (var jx = 0; jx < currNode.media.length; ++jx)
+            mediaList.push(currNode.media.item(jx));
+          bFoundOne = true;
+        }  
+        else
+        {
+          for (var jx = 0; jx < currNode.media.length; ++jx)
+            tempMediaList.push(currNode.media.item(jx));
+          if (tempMediaList.indexOf("all") < 0)  //only want to do any filtering if "all" isn't indicated in the new node
+          {
+            for (jx = mediaList.length-1; jx >= 0; --jx)
+            {
+              if (tempMediaList.indexOf(mediaList[jx]) < 0)
+                mediaList.splice(jx, 1);  //remove it if it isn't contained in every media specification governing this rule
+            }
+          }
+        }
+      }
+    } 
+    currNode = GetMediaContainerForCSSNode(currNode);
+  } while (currNode);
+  return mediaList;
+}
+
+function GetMediaContainerForCSSNode(cssElement)
+{
+  var container = null;
+  var nextNode = cssElement;
+  var currNode;
+  do
+  {
+    currNode = nextNode;
+    if ("parentRule" in currNode)
+    {
+      nextNode = cssElement.parentRule;
+      if (!nextNode && ("parentStyleSheet" in currNode))
+        nextNode = currNode.parentStyleSheet;
+    }
+    else if ("ownerRule" in currNode)
+      nextNode = currNode.ownerRule;
+    if ("media" in nextNode)
+      container = nextNode;
+  } while (nextNode && !container);
+  return container;   
+}
+
+function FindRuleSetInRuleList(ruleList, theSelector, insertRange)
+{
+  var theRuleSet = null;
+  var startIndex = 0;
+  var endIndex = ruleList.length;
+  if (insertRange)
+  {
+    if (insertRange.insertAfter >= 0)
+      startIndex = insertRange.insertAfter + 1;
+    if (insertRange.insertBefore >= 0)
+      endIndex = insertRange.insertBefore;
+  }
+  for (var i = startIndex; i < endIndex; ++i)
+  {
+    if ((ruleList[i].type == CSSRule.STYLE_RULE) && (ruleList[i].selectorText == theSelector))
+    {
+      theRuleSet = ruleList[i];
+      break;
+    }
+  }
+  return theRuleSet;
+}
+
+function FindPageRuleSetInRuleList(ruleList, selector, insertRange)
+{
+  var theRuleSet = null;
+  var startIndex = 0;
+  var endIndex = ruleList.length;
+  if (insertRange)
+  {
+    if (insertRange.insertAfter >= 0)
+      startIndex = insertRange.insertAfter + 1;
+    if (insertRange.insertBefore >= 0)
+      endIndex = insertRange.insertBefore;
+  }
+  for (var i = startIndex; i < endIndex; ++i)
+  {
+    if ((ruleList[i].type == CSSRule.PAGE_RULE) && (ruleList[i].selectorText == theSelector))
+    {
+      theRuleSet = ruleList[i];
+      break;
+    }
+  }
+  return theRuleSet;
+}
+
+//Actually, this returns the parent of a CSSRuleList - a CSSMediaRule
+function FindMediaListInRuleList(ruleList, mediaList, insertRange)
+{
+  var theRuleList = null;
+  var startIndex = 0;
+  var endIndex = ruleList.length;
+  if (insertRange)
+  {
+    if (insertRange.insertAfter >= 0)
+      startIndex = insertRange.insertAfter + 1;
+    if (insertRange.insertBefore >= 0)
+      endIndex = insertRange.insertBefore;
+  }
+  for (var i = startIndex; !theRuleList && (i < endIndex); ++i)
+  {
+    if (ruleList[i].type == CSSRule.MEDIA_RULE)
+    {
+      if (ruleList[i].media.length != mediaList.length)
+        continue;
+      theRuleList = ruleList[i];
+      for (var j = 0; j < ruleList[i].media.length; ++j)
+      {
+        if (mediaList.indexOf(ruleList[i].media.item(j)) < 0)
+        {
+          theRuleList = null;
+          break;
+        }
+      }
+    }
+  }
+  return theRuleList;
+}
+
+function GetPriorCSSValueForIndex(index, property)
+{
+//Here we should traverse the cascade to find the value hidden by the one at "index". For now, just return the "initial" CSS value.
+  return GetInitialCSSValueForProperty(property);
+}
+
+function GetPriorCSSValueForCSSNode(cssElement, property)
+{
+//Here we should traverse the cascade to find the value hidden by the rules in "cssElement". For now, just return the "initial" CSS value.
+  return GetInitialCSSValueForProperty(property);
+}
+
+function GetInitialCSSValueForProperty(property)
+{
+  var defaultValue = "inherit";
+  switch(property)
+  {
+    case "border-top-color":
+    case "border-right-color":
+    case "border-bottom-color":
+    case "border-left-color":
+    case "border-color":              defaultValue = "transparent";       break;
+    case "border-top-style":
+    case "border-right-style":
+    case "border-bottom-style":
+    case "border-left-style":
+    case "border-style":              defaultValue = "none";              break;
+    case "border-top-width":
+    case "border-right-width":
+    case "border-bottom-width":
+    case "border-left-width":
+    case "border-width":              defaultValue = "medium";            break;
+    case "border-top":
+    case "border-right":
+    case "border-bottom":
+    case "border-left":
+    case "border":                    defaultValue = "none";              break;
+
+    case "background-color":          defaultValue = "transparent";       break;
+    case "background":                defaultValue = "transparent";       break;
+    case "background-image":          defaultValue = "none";              break;
+
+    case "text-decoration":           defaultValue = "none";              break;
+    case "unicode-bidi":              defaultValue = "normal";            break;
+
+    case "margin-top":
+    case "margin-right":
+    case "margin-bottom":
+    case "margin-left":
+    case "margin":
+    case "padding-top":
+    case "padding-right":
+    case "padding-bottom":
+    case "padding-left":
+    case "padding":                   defaultValue = "0";                 break;
+
+    case "outline-color":             defaultValue = "invert";            break;
+    case "outline-style":             defaultValue = "none";              break;
+    case "outline-width":             defaultValue = "medium";            break;
+    case "outline":                   defaultValue = "invert medium";     break;
+
+    case "top":
+    case "right":
+    case "bottom":
+    case "left":
+    case "height":
+    case "width":                     defaultValue = "auto";              break;
+
+    case "min-height":
+    case "min-width":
+    case "max-height":
+    case "max-width":                 defaultValue = "none";              break;
+
+    case "vertical-align":            defaultValue = "baseline";          break;
+    case "clear":                     defaultValue = "none";              break;
+    case "clip":                      defaultValue = "auto";              break;
+    case "overflow":                  defaultValue = "visible";           break;
+
+    case "display":                   defaultValue = "inline";            break;
+    case "float":                     defaultValue = "none";              break;
+    case "position":                  defaultValue = "static";            break;
+    case "visibility":                defaultValue = "visible";           break;
+    case "z-index":                   defaultValue = "auto";              break;
+    
+    case "content":                   defaultValue = "normal";            break;
+    case "counter-increment":
+    case "counter-reset":             defaultValue = "none";              break;
+
+    case "border-collapse":           defaultValue = "separate";          break;
+    case "border-spacing":            defaultValue = "0";                 break;
+    case "empty-cells":               defaultValue = "show";              break;
+    case "table-layout":              defaultValue = "auto";              break;
+    case "caption-side":              defaultValue = "top";               break;
+
+    case "page-break-after":
+    case "page-break-before":
+    case "page-break-inside":         defaultValue = "auto";              break;
+
+//    case "volume";                    defaultValue = "medium";            break;
+    case "speak":                     defaultValue = "normal";            break;
+    case "pause-before":
+    case "pause-after":
+    case "pause":                     defaultValue = "0";                 break;
+    case "cue-before":
+    case "cue-after":
+    case "cue":                       defaultValue = "none";              break;
+    case "play-during":               defaultValue = "auto";              break;
+    case "azimuth":                   defaultValue = "center";            break;
+//    case "elevation":                 defaultValue = "level";             break;
+//    case "speech-rate":               defaultValue = "medium";            break;
+//    case "pitch":                     defaultValue = "medium";            break;
+//    case "pitch-range":
+//    case "stress":
+//    case "richness":                  defaultValue = "50";                break;
+//    case "speak-punctuation":         defaultValue = "none";              break;
+//    case "speak-numeral":             defaultValue = "continuous";        break;
+//    case "speak-header":              defaultValue = "once";              break;
+  }
+  return defaultValue;
+}
+
+function GetPriorCSSValueForCSSPageNode(pageRule, property)
+{
+//Here we should traverse the cascade to find the value hidden by the rules in "pageRule". For now, just return the "initial" CSS value.
+  return GetInitialCSSValueForPageProperty(property);
+}
+
+function GetInitialCSSValueForPageProperty(property)
+{
+  var defaultValue = "inherit";
+  switch(property)
+  {
+    case "size":                        defaultValue = "auto";              break;
+    case "marks":                       defaultValue = "none";              break;
+    case "page-break-before":
+    case "page-break-after":
+    case "page-break-inside":           defaultValue = "auto";              break;
+    case "page":                        defaultValue = "auto";              break;
+    case "orphans":
+    case "widows":                      defaultValue = "2";                 break;
+    case "margin-top":
+    case "margin-right":
+    case "margin-bottom":
+    case "margin-left":
+    case "margin":                      defaultValue = "2cm";               break;  //A silly default, but what would be less silly?
+  }
+  return defaultValue;
 }
 
 // * Callback from font-family selection XUL elts
@@ -96,7 +742,8 @@ function onFontFamilySelect(fontFamily)
   EnableUI(gDialog.customFontFamilyInput, enableCustomInput);
 
   AddStyleToElement(gDialog.brownFoxLabel,  "font-family", fontFamily);
-  AddStyleToElement(gDialog.selectedObject, "font-family", fontFamily);
+//  AddStyleToElement(gDialog.selectedObject, "font-family", fontFamily);
+  AddStyleForElementEnsureWritable(gDialog.selectedIndex, gDialog.selectedObject, "font-family", fontFamily);
   
   SetModifiedFlagOnStylesheet();
 }
@@ -202,9 +849,10 @@ function GetColorAndUpdate(ColorWellID)
       AddStyleToElement(gDialog.backgroundPreview, "background-color", color);
   }
   try {
-    gDialog.selectedObject.style.setProperty(property,
-                              color,
-                              gDialog.selectedObject.style.getPropertyPriority(property));
+//    gDialog.selectedObject.style.setProperty(property,
+//                              color,
+//                              gDialog.selectedObject.style.getPropertyPriority(property));
+    AddStyleForElementEnsureWritable(gDialog.selectedIndex, gDialog.selectedObject, property, color);
   }
   catch (ex) {}
   SetModifiedFlagOnStylesheet();
@@ -225,7 +873,8 @@ function ChangeValueOnInput(elt, property, id)
       AddStyleToElement(elt, property, value);
     }
   }
-  AddStyleToElement(gDialog.selectedObject, property, value);
+//  AddStyleToElement(gDialog.selectedObject, property, value);
+  AddStyleForElementEnsureWritable(gDialog.selectedIndex, gDialog.selectedObject, property, value);
   SetModifiedFlagOnStylesheet();
 }
 
@@ -242,7 +891,8 @@ function onPullDownChanged(property, value, id)
       AddStyleToElement(elt, property, value);
     }
   }
-  AddStyleToElement(gDialog.selectedObject, property, value);
+//  AddStyleToElement(gDialog.selectedObject, property, value);
+  AddStyleForElementEnsureWritable(gDialog.selectedIndex, gDialog.selectedObject, property, value);
   SetModifiedFlagOnStylesheet();
 }
 
@@ -262,7 +912,8 @@ function onNoneTextDecorationChange()
     gDialog.textBlinkCheckbox.checked       = false;
     textDecoration = "none";
   }
-  AddStyleToElement(gDialog.selectedObject, "text-decoration", textDecoration);
+//  AddStyleToElement(gDialog.selectedObject, "text-decoration", textDecoration);
+  AddStyleForElementEnsureWritable(gDialog.selectedIndex, gDialog.selectedObject, "text-decoration", textDecoration);
   AddStyleToElement(gDialog.brownFoxLabel, "text-decoration", textDecoration);
   SetModifiedFlagOnStylesheet();
 }
@@ -283,7 +934,8 @@ function onTextDecorationChange()
   if (textDecoration != "") {
     gDialog.noDecorationCheckbox.checked = false;
   }
-  AddStyleToElement(gDialog.selectedObject, "text-decoration", textDecoration);
+//  AddStyleToElement(gDialog.selectedObject, "text-decoration", textDecoration);
+  AddStyleForElementEnsureWritable(gDialog.selectedIndex, gDialog.selectedObject, "text-decoration", textDecoration);
   AddStyleToElement(gDialog.brownFoxLabel, "text-decoration", textDecoration);
   SetModifiedFlagOnStylesheet();
 }
@@ -342,7 +994,8 @@ function onBgImageUrlChanged()
       AddStyleToElement(xulElt, property, value);
     }
   }
-  AddStyleToElement(gDialog.selectedObject, property, value);
+//  AddStyleToElement(gDialog.selectedObject, property, value);
+  AddStyleForElementEnsureWritable(gDialog.selectedIndex, gDialog.selectedObject, property, value);
   SetModifiedFlagOnStylesheet();
 
   if (property == "background-image") {
@@ -406,7 +1059,8 @@ function onBackgroundAttachmentChange()
   if (!gDialog.selectedObject) return;
   // the checkbox is checked if the background scrolls with the page
   var value = gDialog.backgroundAttachmentCheckbox.checked ? "" : "fixed";
-  AddStyleToElement(gDialog.selectedObject, "background-attachment", value);
+//  AddStyleToElement(gDialog.selectedObject, "background-attachment", value);
+  AddStyleForElementEnsureWritable(gDialog.selectedIndex, gDialog.selectedObject, "background-attachment", value);
   SetModifiedFlagOnStylesheet();
 }
 
@@ -417,7 +1071,8 @@ function onBackGroundPositionSelect()
   var yPosition = gDialog.yBackgroundPositionRadiogroup.selectedItem.value;
   var value = xPosition + " " + yPosition;
   AddStyleToElement(gDialog.backgroundPreview, "background-position", value);
-  AddStyleToElement(gDialog.selectedObject, "background-position", value);
+//  AddStyleToElement(gDialog.selectedObject, "background-position", value);
+  AddStyleForElementEnsureWritable(gDialog.selectedIndex, gDialog.selectedObject, "background-position", value);
   SetModifiedFlagOnStylesheet();
 }
 
@@ -594,7 +1249,8 @@ function onVolumeScrollbarAttrModified(aEvent)
     if (e.value == "silent") return;
     var v = Math.floor(aEvent.newValue / 10);
     e.value = v;
-    AddStyleToElement(gDialog.selectedObject, "volume", v);
+//    AddStyleToElement(gDialog.selectedObject, "volume", v);
+    AddStyleForElementEnsureWritable(gDialog.selectedIndex, gDialog.selectedObject, "volume", v);
     SetModifiedFlagOnStylesheet();
   }
 }
@@ -607,7 +1263,8 @@ function onOpacityScrollbarAttrModified(aEvent)
       gDialog.opacityLabel.setAttribute("value", "transparent");
     else
       gDialog.opacityLabel.setAttribute("value", v);    
-    AddStyleToElement(gDialog.selectedObject, "opacity", v);
+//    AddStyleToElement(gDialog.selectedObject, "opacity", v);
+    AddStyleForElementEnsureWritable(gDialog.selectedIndex, gDialog.selectedObject, "opacity", v);
     SetModifiedFlagOnStylesheet();
   }
 }
@@ -628,7 +1285,8 @@ function MuteVolume(elt)
     gDialog.volumeScrollbar.removeAttribute("disable");
   }
   gDialog.volumeMenulist.value = v;
-  AddStyleToElement(gDialog.selectedObject, "volume", v);
+//  AddStyleToElement(gDialog.selectedObject, "volume", v);
+  AddStyleForElementEnsureWritable(gDialog.selectedIndex, gDialog.selectedObject, "volume", v);
   SetModifiedFlagOnStylesheet();
 }
 
@@ -1069,7 +1727,8 @@ function IfFourSidesSameStyle(propertyBase, propertySuffix, value, checkboxID, p
     if (xulElt) {
       AddStyleToElement(xulElt, property, value);
     }
-    AddStyleToElement(gDialog.selectedObject, property, value);
+//    AddStyleToElement(gDialog.selectedObject, property, value);
+    AddStyleForElementEnsureWritable(gDialog.selectedIndex, gDialog.selectedObject, property, value);
   }
 }
 
@@ -1109,9 +1768,12 @@ function ToggleFourBorderSidesSameStyle(elt)
       AddStyleToElement(gDialog.borderPreview, "border-"+sideArray[i]+"-style", style);
       AddStyleToElement(gDialog.borderPreview, "border-"+sideArray[i]+"-width", width);
 
-      AddStyleToElement(gDialog.selectedObject, "border-"+sideArray[i]+"-color", color);
-      AddStyleToElement(gDialog.selectedObject, "border-"+sideArray[i]+"-style", style);
-      AddStyleToElement(gDialog.selectedObject, "border-"+sideArray[i]+"-width", width);
+//      AddStyleToElement(gDialog.selectedObject, "border-"+sideArray[i]+"-color", color);
+//      AddStyleToElement(gDialog.selectedObject, "border-"+sideArray[i]+"-style", style);
+//      AddStyleToElement(gDialog.selectedObject, "border-"+sideArray[i]+"-width", width);
+      AddStyleForElementEnsureWritable(gDialog.selectedIndex, gDialog.selectedObject, "border-"+sideArray[i]+"-color", color);
+      AddStyleForElementEnsureWritable(gDialog.selectedIndex, gDialog.selectedObject, "border-"+sideArray[i]+"-style", style);
+      AddStyleForElementEnsureWritable(gDialog.selectedIndex, gDialog.selectedObject, "border-"+sideArray[i]+"-width", width);
     }
     else {
       styleMenulist.removeAttribute("disabled");
