@@ -464,8 +464,8 @@ TILE* MMLTiler::StructuredObjectToTiles( U8* ztemplate,
   TILE* tail;
   TILE* new_frag;
 
-  U8 literal[64];
-  literal[0]  =  0;
+  U8 lit[64];
+  lit[0]  =  0;
 
   TNODE* parts_list   =  obj_node->parts;
   TmplIterater* tmpl  =  TCI_NEW( TmplIterater(d_mml_grammar,
@@ -490,39 +490,43 @@ TILE* MMLTiler::StructuredObjectToTiles( U8* ztemplate,
       }
       break;
 
+      case TMPL_ELEMENT_VAR_VALUE: {          
+          new_frag  =  BytesToTile( obj_node->var_value, obj_node->v_len, TT_VAR_VALUE);
+      }
+
       case TMPL_ELEMENT_BUCKET    : {       // located in parts_list
         U8* pID   =  tmpl->GetField( TFIELD_ID );
         U8* pENV  =  tmpl->GetField( TFIELD_env );
 
         TNODE* p_list =  FindObject( parts_list,pID,INVALID_LIST_POS );
         if ( *pENV ) PushContext( pENV );
-		if ( p_list ) {
+		    if ( p_list ) {
           U16 t_len;
           U8* tok   =  tmpl->GetField( TFIELD_start,t_len );
           if ( t_len ) {
-			new_frag  =  BytesToTile( tok,t_len,TT_BUCKET_START );
-			TCI_ASSERT(0);
-		  }
+			      new_frag  =  BytesToTile( tok,t_len,TT_BUCKET_START );
+			      TCI_ASSERT(0);
+		      }
           TILE* ct  =  ListToTiles( p_list->contents,0,error_code );
-		  new_frag  =  AppendTILEs( new_frag,ct );
+		      new_frag  =  AppendTILEs( new_frag,ct );
 
           tok   =  tmpl->GetField( TFIELD_end,t_len );
           if ( t_len ) {
-			TILE* tbe =  BytesToTile( tok,t_len,TT_BUCKET_END );
-  		    new_frag  =  AppendTILEs( new_frag,tbe );
-			TCI_ASSERT(0);
+			      TILE* tbe =  BytesToTile( tok,t_len,TT_BUCKET_END );
+  		      new_frag  =  AppendTILEs( new_frag,tbe );
+			      TCI_ASSERT(0);
+		      }
 		  }
-		}
-        if ( *pENV ) PopContext();
+      if ( *pENV ) PopContext();
       }
       break;
 
       case TMPL_ELEMENT_LITERAL   : {       // copy it to literal
-		if ( literal[0] == 0 ) {
+		if ( lit[0] == 0 ) {
 	      U16 t_len;
           U8* tok   =  tmpl->GetField( TFIELD_lit,t_len );
-		  strncpy( (char*)literal,(char*)tok+1,t_len-2 );
-		  literal[ t_len-2 ]  =  0;
+		  strncpy( (char*)lit,(char*)tok+1,t_len-2 );
+		  lit[ t_len-2 ]  =  0;
 		}
       }
       break;
@@ -736,8 +740,8 @@ JBMLine( zzz );
 
   }     // while loop thru template elements
 
-  if ( literal[0] )
-    rv  =  StartEndStructuredElement( rv,literal,obj_node );
+  if ( lit[0] )
+    rv  =  StartEndStructuredElement( rv,lit,obj_node );
 
   delete tmpl;
 

@@ -199,7 +199,8 @@ void MMLFilter::RenderMML( TILE* tiles,U16 start_indent,
 
       switch ( rover->ilk ) {
 
-        case TT_A_ELEM_HEADER	:			// tiles that start
+      case TT_VAR_VALUE :
+      case TT_A_ELEM_HEADER	:			// tiles that start
 		  case TT_S_ELEM_HEADER	: {			//  a new line
 		    if ( li && !first_tile ) {		
       	  if ( eoln_seq ) strcat( line,eoln_seq );
