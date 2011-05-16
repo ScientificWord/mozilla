@@ -267,7 +267,7 @@ nsWSRunObject::InsertBreak(nsCOMPtr<nsIDOMNode> *aInOutParent,
   }
   
   // ready, aim, fire!
-  return mHTMLEditor->CreateBRImpl(aInOutParent, aInOutOffset, outBRNode, aSelect);
+  return mHTMLEditor->CreateMsiBRImpl(aInOutParent, aInOutOffset, outBRNode, aSelect);
 }
 
 nsresult 
