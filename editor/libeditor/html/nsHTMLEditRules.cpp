@@ -2579,7 +2579,7 @@ nsHTMLEditRules::InsertBRIfNeeded(nsISelection *aSelection)
     if (mHTMLEditor->CanContainTag(node, NS_LITERAL_STRING("br")))
     {
       nsCOMPtr<nsIDOMNode> brNode;
-      res = mHTMLEditor->CreateMsiBR(node, offset, address_of(brNode), nsIEditor::ePrevious);
+      res = mHTMLEditor->CreateBR(node, offset, address_of(brNode), nsIEditor::ePrevious);
     }
   }
   return res;
