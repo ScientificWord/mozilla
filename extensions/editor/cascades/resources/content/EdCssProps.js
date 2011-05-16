@@ -215,6 +215,12 @@ function FlushChanges()
     if (objectsArray[i].modified && !objectsArray[i].external &&
         objectsArray[i].type == SHEET) {
       /* let's serialize this stylesheet ! */
+      if ("subsheetChanges" in objectsArray[i])
+      {
+        for (var j = 0; j < objectsArray[i].subsheetChanges.length; ++j)
+        {
+        }
+      }
       sheet = objectsArray[i].cssElt;
       if (sheet.ownerNode.nodeName.toLowerCase() == "link")
         SerializeExternalSheet(sheet, null);
@@ -858,7 +864,9 @@ function TogglePropertyImportance(property)
   dump("IMPORTANCE = " + cssObject.style.getPropertyPriority(property) + "\n");
   var newImportance =  (cssObject.style.getPropertyPriority(property) == "important") ? "" : "important" ;
   dump("NEW IMPORTANCE = " + newImportance + "\n");
-  cssObject.style.setProperty(property, cssObject.style.getPropertyValue(property), newImportance);
+//  cssObject.style.setProperty(property, cssObject.style.getPropertyValue(property), newImportance);
+  AddStyleForElementEnsureWritable(gDialog.selectedIndex, cssObject, property, 
+                                             cssObject.style.getPropertyValue(property), newImportance);
 }
 
 // * retrieves the index-nth style declaration in a rule
@@ -1415,6 +1423,7 @@ function RemoveObject()
       ruleIndex = getRuleIndexInRulesList(gDialog.selectedObject.parentStyleSheet.cssRules,
                                           gDialog.selectedObject);
       if (ruleIndex != -1) {
+        RemoveRuleSetEnsureWritable(objectIndex);
         gDialog.selectedObject.parentStyleSheet.deleteRule(ruleIndex);
       }
       for (i=objectIndex+1; i<objectsArray.length && objectsArray[i].depth > depth; i++);
@@ -1430,6 +1439,7 @@ function RemoveObject()
         ruleIndex = getRuleIndexInRulesList(gDialog.selectedObject.parentRule.cssRules,
                                             gDialog.selectedObject);
         if (ruleIndex != -1) {
+          RemoveStyleRuleEnsureWritable(objectIndex);
           gDialog.selectedObject.parentRule.deleteRule(ruleIndex);
         }
       }
@@ -1437,6 +1447,7 @@ function RemoveObject()
         ruleIndex = getRuleIndexInRulesList(gDialog.selectedObject.parentStyleSheet.cssRules,
                                             gDialog.selectedObject);
         if (ruleIndex != -1) {
+          RemoveStyleRuleEnsureWritable(objectIndex);
           gDialog.selectedObject.parentStyleSheet.deleteRule(ruleIndex);
         }
       }
