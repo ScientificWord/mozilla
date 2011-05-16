@@ -1463,11 +1463,11 @@ nsTextEditRules::CreateMozBR(nsIDOMNode *inParent, PRInt32 inOffset, nsCOMPtr<ns
   if (NS_FAILED(res)) return res;
 
   // give it special moz attr
-  nsCOMPtr<nsIDOMElement> brElem = do_QueryInterface(*outBRNode);
-  if (brElem)
-  {
-    res = mEditor->SetAttribute(brElem, NS_LITERAL_STRING("type"), NS_LITERAL_STRING("_moz"));
-    if (NS_FAILED(res)) return res;
-  }
+//  nsCOMPtr<nsIDOMElement> brElem = do_QueryInterface(*outBRNode);
+//  if (brElem)
+//  {
+//    res = mEditor->SetAttribute(brElem, NS_LITERAL_STRING("type"), NS_LITERAL_STRING("_moz"));
+//    if (NS_FAILED(res)) return res;
+//  }
   return res;
 }
