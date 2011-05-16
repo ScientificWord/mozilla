@@ -184,3 +184,5 @@ pref("security.xpconnect.plugin.unrestricted", true);
 pref("swp.spellchecker.enablerealtimespell", true);
 pref("ui.caretBlinkTime", 500);
 pref("ui.caretWidth", 1);
+pref("swp.matrix.rows", 3);
+pref("swp.matrix.cols", 3);
