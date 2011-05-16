@@ -61,7 +61,7 @@ nsTextEditUtils::IsBody(nsIDOMNode *node)
 PRBool 
 nsTextEditUtils::IsBreak(nsIDOMNode *node)
 {
-  return nsEditor::NodeIsTypeString(node, NS_LITERAL_STRING("br"));
+  return (nsEditor::NodeIsTypeString(node, NS_LITERAL_STRING("msibr"))||nsEditor::NodeIsTypeString(node, NS_LITERAL_STRING("br")));
 }
 
 
@@ -90,9 +90,10 @@ nsTextEditUtils::HasMozAttr(nsIDOMNode *node)
   if (elem)
   {
     nsAutoString typeAttrVal;
-    nsresult res = elem->GetAttribute(NS_LITERAL_STRING("type"), typeAttrVal);
-    if (NS_SUCCEEDED(res) && (typeAttrVal.LowerCaseEqualsLiteral("_moz")))
-      return PR_TRUE;
+    nsresult res = elem->GetAttribute(NS_LITERAL_STRING("hard"), typeAttrVal);
+    if (NS_SUCCEEDED(res)) 
+      return PR_FALSE;
+    return PR_TRUE;
   }
   return PR_FALSE;
 }
