@@ -444,7 +444,7 @@ NS_IMETHODIMP nsPlaintextEditor::CreateBRImpl(nsCOMPtr<nsIDOMNode> *aInOutParent
   nsCOMPtr<nsIDOMNode> node = *aInOutParent;
   PRInt32 theOffset = *aInOutOffset;
   nsCOMPtr<nsIDOMCharacterData> nodeAsText = do_QueryInterface(node);
-  NS_NAMED_LITERAL_STRING(brType, "br");
+  NS_NAMED_LITERAL_STRING(brType, "msibr");
   nsCOMPtr<nsIDOMNode> brNode;
   if (nodeAsText)  
   {
