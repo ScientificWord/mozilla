@@ -976,7 +976,7 @@ nsHTMLEditor::GetBlockSectionsForRange(nsIDOMRange *aRange,
       if (currentNode)
       {
         // <BR> divides block content ranges.  We can achieve this by nulling out lastRange
-        if (currentContent->Tag() == nsEditProperty::msibr)
+        if (currentContent->Tag() == nsEditProperty::br)
         {
           lastRange = nsnull;
         }
@@ -1651,7 +1651,7 @@ NS_IMETHODIMP nsHTMLEditor::CreateBRImpl(nsCOMPtr<nsIDOMNode> *aInOutParent,
   nsCOMPtr<nsIDOMNode> node = *aInOutParent;
   PRInt32 theOffset = *aInOutOffset;
   nsCOMPtr<nsIDOMCharacterData> nodeAsText = do_QueryInterface(node);
-  NS_NAMED_LITERAL_STRING(brType, "msibr");
+  NS_NAMED_LITERAL_STRING(brType, "br");
   nsCOMPtr<nsIDOMNode> brNode;
   if (nodeAsText)  
   {
@@ -4694,7 +4694,7 @@ nsHTMLEditor::IsContainer(nsIDOMNode *aNode)
     mtagListManager->GetTagInClass(NS_LITERAL_STRING("frontmtag"),stringTag, nsnull, &fRet);
     if (fRet) return PR_TRUE;
   }
-  if (stringTag.EqualsLiteral("msibr")) return PR_FALSE;
+  if (stringTag.EqualsLiteral("br")) return PR_FALSE;
   PRInt32 tagEnum;
   // XXX Should this handle #cdata-section too?
   if (stringTag.EqualsLiteral("#text")) {
@@ -5214,7 +5214,7 @@ nsHTMLEditor::RemoveBlockContainer(nsIDOMNode *inNode)
       if (child && !IsBlockNode(child))
       {
         // insert br node
-        res = CreateMsiBR(inNode, 0, address_of(unused));
+        res = CreateBR(inNode, 0, address_of(unused));
         if (NS_FAILED(res)) return res;
       }
     }
@@ -5259,7 +5259,7 @@ nsHTMLEditor::RemoveBlockContainer(nsIDOMNode *inNode)
       if (sibling && !IsBlockNode(sibling) && !nsTextEditUtils::IsBreak(sibling))
       {
         // insert br node
-        res = CreateMsiBR(inNode, 0, address_of(unused));
+        res = CreateBR(inNode, 0, address_of(unused));
         if (NS_FAILED(res)) return res;
       }
     }
