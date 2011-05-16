@@ -81,10 +81,8 @@
 </xsl:if>
 
 <xsl:text>\usepackage{xspace}</xsl:text>
-
 <xsl:if test="count(//html:indexitem) &gt; 0"
-  >\usepackage{makeidx}
-\makeindex</xsl:if>
+  >\usepackage{makeidx}</xsl:if>
 
 <xsl:for-each select="$packagelist/*"
   ><xsl:sort select="@pri" data-type="number"/>

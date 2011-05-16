@@ -1035,7 +1035,7 @@ NS_IMETHODIMP msiTagListManager::FixTagsAfterSplit(nsIDOMNode *firstNode, nsIDOM
   if (isEmpty)
   {
     nsCOMPtr<nsIDOMNode> brNode;
-    rv = editor->CreateBR(firstNode, 0, address_of(brNode));
+    rv = editor->CreateMsiBR(firstNode, 0, address_of(brNode));
 
   }
   editor->IsEmptyNode( *secondNode, &isEmpty);
