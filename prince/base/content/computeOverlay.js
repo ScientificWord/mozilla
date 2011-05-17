@@ -687,10 +687,10 @@ function doComputeCommand(cmd, editorElement, cmdHandler, inPlace)
       doComputeWronskian(element, "", editorElement, cmd, cmdHandler);
       break;
     case "cmd_compute_ScalarPot":
-      doLabeledComputation(element,eng.Scalar_Potential,"ScalarPot.fmt", editorElement);
+      doScalarPotential(element,eng.Scalar_Potential,"ScalarPot.fmt", editorElement);
       break;
     case "cmd_compute_VectorPot":
-      doLabeledComputation(element,eng.Vector_Potential,"VectorPot.fmt", editorElement);
+      doLabeledComputation(element, eng.Vector_Potential, "VectorPot.fmt", editorElement);
       break;
 
     case "cmd_MSIComputeAdjugate":  
@@ -1530,6 +1530,29 @@ function doLabeledComputation(math,op,labelID, editorElement)
     var out = GetCurrentEngine().perform(mathstr, op);
     msiComputeLogger.Received(out);
     appendLabeledResult(out,GetComputeString(labelID), math, editorElement);
+  } catch (e) {
+    msiComputeLogger.Exception(e);
+  }
+  RestoreCursor(editorElement);
+}
+
+
+function doScalarPotential(math, op, labelID, editorElement)
+{
+  var mathstr = GetFixedMath(GetRHS(math));
+  msiComputeLogger.Sent("doing " + labelID + " after fixup", mathstr);
+  ComputeCursor(editorElement);
+  try {
+    var out = GetCurrentEngine().perform(mathstr, op);
+    msiComputeLogger.Received(out);
+
+    if (out == "<math xmlns=\"http://www.w3.org/1998/Math/MathML\"><mrow><mn>0</mn></mrow></math>"){
+       var editor = msiGetEditor(editorElement);
+       editor.setCaretAfterElement(math);
+       editor.insertHTML(GetComputeString("DoesNotExist"));
+    } else {
+       appendLabeledResult(out,GetComputeString(labelID), math, editorElement);
+    }
   } catch (e) {
     msiComputeLogger.Exception(e);
   }
