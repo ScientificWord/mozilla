@@ -1008,11 +1008,11 @@
 \def\hfil{<hspace type="customSpace" class="stretchySpace"flex="1" atEnd="true"/>}
 \def\hfill{<hspace type="customSpace" class="stretchySpace" flex="2" atEnd="true"/>}
 
-\msi@rfi{\msi@hook@hfil}{\hfil}
-\msi@rfi{\msi@hook@hfill}{\hfill}
+%\msi@rfi{\msi@hook@hfil}{\hfil}
+%\msi@rfi{\msi@hook@hfill}{\hfill}
 
-\msi@rfi{\msi@hook@vfil}{\vfil}
-\msi@rfi{\msi@hook@vfill}{\vfill}
+%\msi@rfi{\msi@hook@vfil}{\vfil}
+%\msi@rfi{\msi@hook@vfill}{\vfill}
 
 %%\def\msi@hook@hss{\msitag{\hss}}
 %%\def\msi@hook@vss{\msitag{\vss}}
@@ -1235,7 +1235,7 @@
 
 
 \def\MSITeXButtonReq#1{%
-    \expandafter\def\csname#1\endcsname##1{
+    \expandafter\def\csname#1\endcsname##1{%
        \msihmode
        \msitag{<texb enc="1" name="#1">}%
           <![CDATA[\expandafter\string\csname#1\endcsname\{##1\}]]>%

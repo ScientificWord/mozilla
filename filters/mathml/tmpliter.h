@@ -53,7 +53,9 @@ encountered during parses and translations.
 #define TMPL_ELEMENT_ifEND          11
 #define TMPL_ELEMENT_TVERBATIM      12
 #define TMPL_ELEMENT_reqELEMENT     13
-#define TMPL_ELEMENT_NONTEXBUCKET	14
+#define TMPL_ELEMENT_NONTEXBUCKET	  14
+#define TMPL_ELEMENT_VAR_VALUE	    15
+
 
 #define TMPL_ELEMENT_MACRO          100
 #define TMPL_SYNTAX_ERROR           9999

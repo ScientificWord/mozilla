@@ -30,7 +30,7 @@ void FUSetDumpFile( char* dump_file_spec ) {
   dumpspec[0] =  0;
 
   if ( dump_file_spec ) {
-    strcpy( dumpspec,dump_file_spec );
+    strcpy( dumpspec, dump_file_spec );
 /*
 char zzz[256];
 sprintf( zzz,"DLL SetDumpFile=%s\n",dump_file_spec );
