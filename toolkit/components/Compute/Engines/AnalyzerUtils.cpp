@@ -91,17 +91,16 @@ BaseType GetBaseType(MNODE* mml_script_schemata, bool isLHSofDef, AnalyzerData* 
           if (StringEqual(zclass, "msi_unit")) {
             rv = BT_UNIT;
           } else {
-
-              int entity_count;
-              int symbol_count = CountSymbols(base->p_chdata, entity_count);
-              if (symbol_count == 1) {
+              //int entity_count;
+              //int symbol_count = CountSymbols(base->p_chdata, entity_count);
+              //if (symbol_count == 1) {
                 rv = BT_VARIABLE;
                 if (LocateFuncRec(pData -> DE_FuncNames(), NULL, base->p_chdata))
                   rv = BT_FUNCTION;
                 else if (LocateFuncRec(pData -> IMPLDIFF_FuncNames(), NULL, base->p_chdata))
                   rv = BT_FUNCTION;
-              } else
-                rv = BT_FUNCTION;
+              //} else
+              //  rv = BT_FUNCTION;
 
           }
       } else if (ElementNameIs(base, "mrow")) {

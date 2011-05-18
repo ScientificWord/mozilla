@@ -154,6 +154,16 @@ U16 TmplIterater::GetNextElement() {
     }
     break;
 
+    case '%'  :  {
+      curr_element_ID[0]  =  0;
+      curr_element_env[0] =  0;
+      ep  =  strchr( ptr+1,'%' );
+      if ( ep )
+        rv  =  TMPL_ELEMENT_LITERAL;
+    }
+    break;
+
+
     case 'I'  :  {
 
       //IF(MATH,?\format?,5.67.999)
@@ -448,6 +458,10 @@ U16 TmplIterater::GetNextElement() {
       }
     }
     break;
+
+    case 'X'  :  { // just to have a way to get the var_value field
+      rv  =  TMPL_ELEMENT_VAR_VALUE;
+    }
 
     case 'r'  :  {
       char* p1  =  strchr( ptr,'(' );
