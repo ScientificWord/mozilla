@@ -8893,6 +8893,8 @@ function msiNote(currNode, editorElement, type, hidden)
 //      return;
   }
 
+  if (type)
+    msiInsertOrReviseNote(currNode, editorElement, data);
 //  dump(data.type + "\n");
 //  var editor = msiGetEditor(editorElement);
 //  editor.beginTransaction();
