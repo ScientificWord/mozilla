@@ -70,6 +70,8 @@ treechildren::-moz-tree-cell-text(external) {
     font-style: italic ! important;
 }
 
+tabpanels>vbox[disabled="true"] * { -moz-user-input : disabled; }
+
 /*
 spinbuttons image { border: solid thin black; padding: 2px; -moz-border-radius: 3px }
 
@@ -77,4 +79,5 @@ spinbuttons image:hover:active {
    background-color: #90A1B3;
    color: #FFFFFF;
  }
+
 */
