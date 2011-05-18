@@ -151,7 +151,7 @@ bool InitializeMML( const char* datapath,
   MMLgmr += '/';
   MMLgmr += fsMMLgmr;
 
-  tree_generator   =  new TreeGenerator( 1, NBgmr.c_str(), NULL, MMLgmr.c_str() );
+  tree_generator   =  new TreeGenerator( 1, NBgmr.c_str(), MMLgmr.c_str(), MMLgmr.c_str() );
 
   tree_generator->Reset( &userprefs,NULL,NULL );
 
@@ -219,7 +219,6 @@ bool ConvertInline(const char* latex,
                    int start_indent ) {
 
   MMLFilter* filter =  TCI_NEW( MMLFilter(tree_generator) );
-  filter->FInitialize( &userprefs, log, (char*)n_space, start_indent, NULL );
 
   U16 parse_result  =  filter->TranslateBuffer( latex, renderfunc );
   
