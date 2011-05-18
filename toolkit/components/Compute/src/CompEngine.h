@@ -113,7 +113,6 @@ private:
   bool IsNumericFrac(SEMANTICS_NODE * semantics_tree);
   void GetBasisVariables(char *dest);
 
-  bool IsCommaList(SEMANTICS_NODE * s_node);
   bool IsSubVariableList(SEMANTICS_NODE * s_node, int & n_args);
   bool IsVariableInSubscript(SEMANTICS_NODE * s_node);
 
@@ -127,7 +126,7 @@ private:
   void FixiArgument(BUCKET_REC * header_bucket);
   void ImagineiToVari(SEMANTICS_NODE * s_list);
   void FixIndexedVars(SEMANTICS_NODE * s_list, BUCKET_REC * arg_bucket_list);
-  bool SubIsFuncArg(char *sub_canonical_ID, BUCKET_REC * arg_bucket_list);
+  
   bool DefAllowed(SEMANTICS_NODE * root);
 
   int GetNColumns(MathServiceRequest & msr, int & error_code);
