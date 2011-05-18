@@ -69,18 +69,24 @@ function onFontFamilySelect(fontFamily)
   if (!gDialog.selectedObject) return;
   var enableCustomInput = false;
   var enablePredefMenu  = false;
+  var external = false;
+  if (gDialog.selectedIndex >= 0)
+    external = objectsArray[gDialog.selectedIndex].external;
+
   if (fontFamily == "") {
     // nothing to do here
   }
   else if (fontFamily == "-user-defined") {
     // user wants to select a font that is not pre-defined
     // so let's get that user defined name from the textarea
-    enableCustomInput = true;
+//    enableCustomInput = true;
+    enableCustomInput = !external;
     fontFamily = gDialog.customFontFamilyInput.value;
   }
   else if (fontFamily == "-predefined"){
     fontFamily = "";
-    enablePredefMenu = true;
+//    enablePredefMenu = true;
+    enablePredefMenu = !external;
     // user wants a predefined font family
     var valueElt = gDialog.predefFontFamilyMenulist.selectedItem;
     if (valueElt) {
@@ -89,7 +95,8 @@ function onFontFamilySelect(fontFamily)
   }
   else {
     // all other cases are user defined fonts
-    enablePredefMenu = true;
+//    enablePredefMenu = true;
+    enablePredefMenu = !external;
   }
 
   EnableUI(gDialog.predefFontFamilyMenulist, enablePredefMenu);
@@ -307,6 +314,10 @@ function onBgImageUrlChanged()
   var id = "backgroundPreview";
 
   if (!gDialog.selectedObject) return;
+  var external = false;
+  if (gDialog.selectedIndex >= 0)
+    external = objectsArray[gDialog.selectedIndex].external;
+
   var value = gDialog.backgroundImageInput.value;
   if (value != "" && value != "none") {
     try {
@@ -346,7 +357,7 @@ function onBgImageUrlChanged()
   SetModifiedFlagOnStylesheet();
 
   if (property == "background-image") {
-    enableBackgroundProps((value != ""));
+    enableBackgroundProps(!external && (value != ""));
   }
 }
 
@@ -704,6 +715,10 @@ function InitBorderTabPanel()
   if (!gDialog.selectedObject || !gDialog.selectedObject.style)
     return;
 
+  var external = false;
+  if (gDialog.selectedIndex >= 0)
+    external = objectsArray[gDialog.selectedIndex].external;
+
   /* INIT */
   var style = [ getSpecifiedStyle("border-top-style"),
                 getSpecifiedStyle("border-left-style"),
@@ -739,9 +754,12 @@ function InitBorderTabPanel()
     var colorInput = document.getElementById( sideArray[i]+"BorderColorInput" );
     var widthInput = document.getElementById( sideArray[i]+"BorderWidthInput" );
     if (!i || !sameFourSides) {
-      EnableUI(styleMenu, true);
-      EnableUI(colorInput, true);
-      EnableUI(widthInput, true);
+//      EnableUI(styleMenu, true);
+//      EnableUI(colorInput, true);
+//      EnableUI(widthInput, true);
+      EnableUI(styleMenu, !external);
+      EnableUI(colorInput, !external);
+      EnableUI(widthInput, !external);
 
       SelectsOneChoice("border-"+sideArray[i]+"-style",
                        sideArray[i]+"BorderStyleMenulist",
@@ -1139,6 +1157,51 @@ function EnableUI(elt, enabled)
   else {
     elt.setAttribute("disabled", "true");
   }
+}
+
+function EnableAllTabsUI(bEnable)
+{
+  var tabList = ["sheetInfoTabPanel", "textTabPanel", "backgroundTabPanel", "borderTabPanel", "boxTabPanel", "auralTabPanel"];
+  var exceptionsList = ["predefFontFamilyMenulist", "customFontFamilyInput",  "backgroundRepeatLabel", "backgroundRepeatMenulist", 
+                        "backgroundAttachmentCheckbox", "backgroundPositionLabel", "xBackgroundPositionRadiogroup",
+                        "leftXBackgroundPositionRadio", "centerXBackgroundPositionRadio", "rightXBackgroundPositionRadio",
+                        "yBackgroundPositionRadiogroup", "topYBackgroundPositionRadio", "centerYBackgroundPositionRadio",
+                        "bottomYBackgroundPositionRadio",
+                        "topBorderStyleMenulist", "leftBorderStyleMenulist", "rightBorderStyleMenulist", "bottomBorderStyleMenulist",
+                        "topBorderColorInput", "leftBorderColorInput", "rightBorderColorInput", "bottomBorderColorInput",
+                        "topBorderWidthInput", "leftBorderWidthInput", "rightBorderWidthInput", "bottomBorderWidthInput"];
+
+  for (var ix = 0; ix < tabList.length; ++ix)
+  { 
+    EnableUIAndChildren(document.getElementById(tabList[ix]), bEnable, exceptionsList);
+  }
+
+//Now for special cases
+//These should be taken care of in InitTextTabPanel().
+//  var fontSel = document.getElementById("fontFamilyRadiogroup").selectedItem;
+//  EnableUI(gDialog.predefFontFamilyMenulist, (enable && fontSel && (fontSel.id == "predefFontFamilyRadio")));
+//  EnableUI(gDialog.customFontFamilyInput, (enable && fontSel && (fontSel.id == "customFontFamilyRadio"));
+
+//And the following should be handled by InitBackgroundTabPanel()
+//  var bkgImage = gDialog.backgroundImageInput.value;
+//  enableBackgroundProps(bkgImage != "" && bkgImage != "none");
+
+}
+
+function EnableUIAndChildren(aControl, bEnable, exceptionList)
+{
+  if (!bEnable || !("id" in aControl) || !aControl.id || !aControl.id.length || (exceptionList.indexOf(aControl.id) < 0) )
+  {
+    if (aControl.nodeType == Node.ELEMENT_NODE)
+    {
+      if (bEnable)
+        aControl.removeAttribute("disabled");
+      else
+        aControl.setAttribute("disabled", "true");
+    }
+  }
+  for (var ix = 0; ix < aControl.childNodes.length; ++ix)
+    EnableUIAndChildren(aControl.childNodes[ix], bEnable, exceptionList);
 }
 
 // * Initializes a menupopup containing length units. It looks for
