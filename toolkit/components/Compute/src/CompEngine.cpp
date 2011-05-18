@@ -49,6 +49,13 @@
 #include "strutils.h"
 
 
+void FixIndexedVarsOfQualifiedVar(SEMANTICS_NODE* qv, BUCKET_REC * arg_bucket_list);
+bool IdIsFuncArg(char *sub_canonical_ID, BUCKET_REC * arg_bucket_list);
+bool IsCommaList(SEMANTICS_NODE * s_node);
+bool ExprContainsFuncArg(SEMANTICS_NODE* expr, BUCKET_REC* args);
+
+
+
 void AppendSubPath(nsILocalFile* file, const char* asciiPath )
 {
   if (!asciiPath) return;
@@ -2378,7 +2385,7 @@ SEMANTICS_NODE *CompEngine::LocateRecurFuncInEqn(SEMANTICS_NODE * s_tree)
   return rv;
 }
 
-bool CompEngine::IsCommaList(SEMANTICS_NODE * s_node)
+bool IsCommaList(SEMANTICS_NODE* s_node)
 {
   bool rv = false;
 
@@ -2387,11 +2394,12 @@ bool CompEngine::IsCommaList(SEMANTICS_NODE * s_node)
       && s_node->semantic_type == SEM_TYP_INFIX_OP
       && s_node->contents && !strcmp(s_node->contents, ",")
       && s_node->bucket_list && s_node->bucket_list->next) {
-    BUCKET_REC *b_left = s_node->bucket_list;
-    BUCKET_REC *b_right = b_left->next;
+    
+    BUCKET_REC* b_left = s_node->bucket_list;
+    BUCKET_REC* b_right = b_left->next;
 
-    SEMANTICS_NODE *s_left = b_left->first_child;
-    SEMANTICS_NODE *s_right = b_right->first_child;
+    SEMANTICS_NODE* s_left = b_left->first_child;
+    SEMANTICS_NODE* s_right = b_right->first_child;
     if (s_left && s_right) {
       if (!s_left->next
           && s_left->semantic_type == SEM_TYP_INFIX_OP
@@ -2739,66 +2747,77 @@ void CompEngine::ImagineiToVari(SEMANTICS_NODE * s_list)
 void CompEngine::FixIndexedVars(SEMANTICS_NODE * s_list,
                                 BUCKET_REC * arg_bucket_list)
 {
-  SEMANTICS_NODE *s_rover = s_list;
+  SEMANTICS_NODE* s_rover = s_list;
   while (s_rover) {
     if (s_rover->semantic_type == SEM_TYP_QUALIFIED_VAR) {
-      if (s_rover->bucket_list) {
-        BUCKET_REC *b = FindBucketRec(s_rover->bucket_list, MB_SUB_QUALIFIER);
-        if (b && b->first_child) {
-          SEMANTICS_NODE *q_cont = b->first_child;
-          if (q_cont->semantic_type == SEM_TYP_VARIABLE) {
-            if (q_cont->canonical_ID) {
-              if (SubIsFuncArg(q_cont->canonical_ID, arg_bucket_list))
-                s_rover->semantic_type = SEM_TYP_INDEXED_VAR;
-            } else
-              TCI_ASSERT(0);
-          } else if (IsCommaList(q_cont)) {
-            // I'm only checking the first var in the list - might check all.
-            if (q_cont->bucket_list && q_cont->bucket_list->first_child) {
-              SEMANTICS_NODE *i_var = q_cont->bucket_list->first_child;
-              if (i_var->canonical_ID) {
-                if (SubIsFuncArg(i_var->canonical_ID, arg_bucket_list))
-                  s_rover->semantic_type = SEM_TYP_INDEXED_VAR;
-              } else
-                TCI_ASSERT(0);
-            } else
-              TCI_ASSERT(0);
-          }
-        } else
-          TCI_ASSERT(0);
-      } else
-        TCI_ASSERT(0);
+
+      FixIndexedVarsOfQualifiedVar(s_rover, arg_bucket_list);
+      
     } else if (s_rover->bucket_list) {
+
       BUCKET_REC *b_rover = s_rover->bucket_list;
       while (b_rover) {
         if (b_rover->first_child)
           FixIndexedVars(b_rover->first_child, arg_bucket_list);
         b_rover = b_rover->next;
       }
+
     }
     s_rover = s_rover->next;
   }
 }
 
-bool CompEngine::SubIsFuncArg(char *sub_canonical_ID,
-                                  BUCKET_REC * arg_bucket_list)
+
+void FixIndexedVarsOfQualifiedVar(SEMANTICS_NODE* qv, BUCKET_REC* arg_bucket_list)
+{
+  if (qv->bucket_list) {
+     
+     BUCKET_REC* b = FindBucketRec(qv->bucket_list, MB_SUB_QUALIFIER);
+     if (b && b->first_child) {
+        SEMANTICS_NODE* q_subscript = b->first_child;
+        if (q_subscript->semantic_type == SEM_TYP_VARIABLE) {
+            if (q_subscript->canonical_ID) {
+              if (IdIsFuncArg(q_subscript->canonical_ID, arg_bucket_list))
+                qv->semantic_type = SEM_TYP_INDEXED_VAR;
+            }
+        } else if (IsCommaList(q_subscript)) {
+            // I'm only checking the first var in the list - might check all.
+            if (q_subscript->bucket_list && q_subscript->bucket_list->first_child) {
+              SEMANTICS_NODE* i_var = q_subscript->bucket_list->first_child;
+              if (i_var->canonical_ID) {
+                if (IdIsFuncArg(i_var->canonical_ID, arg_bucket_list))
+                  qv->semantic_type = SEM_TYP_INDEXED_VAR;
+              }
+            }
+        } else if (ExprContainsFuncArg(q_subscript, arg_bucket_list) ){
+           qv->semantic_type = SEM_TYP_INDEXED_VAR;
+        }
+     }
+  }
+}
+
+bool IdIsFuncArg(char* canonical_ID, BUCKET_REC* arg_bucket_list)
 {
   bool rv = false;
 
-  BUCKET_REC *arg_rover = arg_bucket_list;
+  BUCKET_REC* arg_rover = arg_bucket_list;
   while (arg_rover) {
-    SEMANTICS_NODE *s_arg = arg_rover->first_child;
-    if (s_arg && s_arg->semantic_type == SEM_TYP_VARIABLE) {
-      if (s_arg->canonical_ID
-          && !strcmp(s_arg->canonical_ID, sub_canonical_ID)) {
-        rv = true;
-        break;
-      }
-    }
+    SEMANTICS_NODE* s_arg = arg_rover->first_child;
+    if (s_arg && 
+         (s_arg->semantic_type == SEM_TYP_VARIABLE) &&
+         s_arg->canonical_ID &&
+         !strcmp(s_arg->canonical_ID, canonical_ID) ) {
+      return true;
+    }    
     arg_rover = arg_rover->next;
   }
 
-  return rv;
+  return false;
+}
+
+bool ExprContainsFuncArg(SEMANTICS_NODE* expr, BUCKET_REC* args)
+{
+  return false;
 }
 
 bool CompEngine::DefAllowed(SEMANTICS_NODE * root)
