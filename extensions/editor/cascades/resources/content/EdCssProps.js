@@ -381,6 +381,9 @@ function AddImportRuleToTreeChildren(rule, external, depth)
   // show "@import" and the URL
   subtreecell.setAttribute("label", "@import "+rule.href, external);
   var o = newObject( subtreeitem, external, IMPORT_RULE, rule, false, depth );
+  if (rule.href.indexOf("resource://") >= 0)
+    o.noAddRemove = true;
+
   PushInObjectsArray(o);
   if (external) {
     subtreecell.setAttribute("properties", "external");
@@ -659,6 +662,8 @@ function onSelectCSSTreeItem(tab)
       break;
     // TO BE DONE : @charset and other exotic rules
   }
+
+  UpdateTabState(external);
 }
 
 function UpdateButtons(importState, mediaState, linkState, styleState, ruleState, removeState)
@@ -676,6 +681,22 @@ function UpdateButtons(importState, mediaState, linkState, styleState, ruleState
     if (gDialog.selectedIndex != -1)
       ruleState = false;
   }
+  var external  = false;
+  if (gDialog.selectedIndex >= 0)
+  {
+    external = objectsArray[gDialog.selectedIndex].external;
+    if ("noAddRemove" in objectsArray[gDialog.selectedIndex])
+      external = external || objectsArray[gDialog.selectedIndex].noAddRemove;
+  }
+  if (external)
+  {
+    importState = false;
+    mediaState = false;
+    removeState = false;
+    styleState = false;
+    ruleState = false;
+  }
+
   EnableUI(gDialog.atimportButton, importState);
   EnableUI(gDialog.atmediaButton, mediaState);
   EnableUI(gDialog.styleButton, styleState);
@@ -683,6 +704,37 @@ function UpdateButtons(importState, mediaState, linkState, styleState, ruleState
   EnableUI(gDialog.removeButton, removeState);
   EnableUI(gDialog.upButton, removeState);
   EnableUI(gDialog.downButton, removeState);
+}
+
+function UpdateTabState(external)
+{
+//  var userModify = external ? "read-only" : "read-write";
+//  document.getElementById("sheetInfoTabPanel").style.setProperty("-moz-user-modify", userModify, "");
+//  document.getElementById("textTabPanel").style.setProperty("-moz-user-modify", userModify, "");
+//  document.getElementById("backgroundTabPanel").style.setProperty("-moz-user-modify", userModify, "");
+//  document.getElementById("borderTabPanel").style.setProperty("-moz-user-modify", userModify, "");
+//  document.getElementById("boxTabPanel").style.setProperty("-moz-user-modify", userModify, "");
+//  document.getElementById("auralTabPanel").style.setProperty("-moz-user-modify", userModify, "");
+//
+//  if (external)
+//  {
+//    document.getElementById("sheetInfoTabPanel").setAttribute("disabled", "true");
+//    document.getElementById("textTabPanel").setAttribute("disabled", "true");
+//    document.getElementById("backgroundTabPanel").setAttribute("disabled", "true");
+//    document.getElementById("borderTabPanel").setAttribute("disabled", "true");
+//    document.getElementById("boxTabPanel").setAttribute("disabled", "true");
+//    document.getElementById("auralTabPanel").setAttribute("disabled", "true");
+//  }
+//  else
+//  {
+//    document.getElementById("sheetInfoTabPanel").removeAttribute("disabled");
+//    document.getElementById("textTabPanel").removeAttribute("disabled");
+//    document.getElementById("backgroundTabPanel").removeAttribute("disabled");
+//    document.getElementById("borderTabPanel").removeAttribute("disabled");
+//    document.getElementById("boxTabPanel").removeAttribute("disabled");
+//    document.getElementById("auralTabPanel").removeAttribute("disabled");
+//  }
+  EnableAllTabsUI(!external);
 }
 
 // * adds a button to the given treerow
