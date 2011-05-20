@@ -541,10 +541,10 @@ should not be done under some conditions -->
 <xsl:variable name="markOrText" select="parent::html:notewrapper/@markOrText" />
 <xsl:variable name="overrideNumber" select="parent::html:notewrapper/@footnoteNumber" />
 <xsl:choose>
-  <xsl:when test="$endnotes &gt; 0">\endnote</xsl:when>
-  <xsl:when test="$markOrText='textOnly'">\footnotetext</xsl:when>
-  <xsl:when test="$markOrText='markOnly'">\footnotemark</xsl:when>
-  <xsl:otherwise>\footnote</xsl:otherwise>
+  <xsl:when test="$endnotes &gt; 0">\protect\endnote</xsl:when>
+  <xsl:when test="$markOrText='textOnly'">\protect\footnotetext</xsl:when>
+  <xsl:when test="$markOrText='markOnly'">\protect\footnotemark</xsl:when>
+  <xsl:otherwise>\protect\footnote</xsl:otherwise>
 </xsl:choose>
 <xsl:if test="$overrideNumber"><xsl:text>[</xsl:text><xsl:value-of select="$overrideNumber"/><xsl:text>]</xsl:text></xsl:if>
 <xsl:if test="not($markOrText='markOnly')">
@@ -559,6 +559,9 @@ should not be done under some conditions -->
   
 </xsl:template>
 
+<xsl:template match="html:note//html:bodyText[position()=last()]">
+  <xsl:apply-templates/>
+</xsl:template>
 
 <xsl:template match="html:shortQuote"> 
 \begin{quote}
