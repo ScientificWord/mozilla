@@ -14,6 +14,7 @@ modern.jar:
   skin/modern/decorationsDialog.css     (decorationsDialog.css)
   skin/modern/operatorsDialog.css       (operatorsDialog.css)
   skin/modern/mathmlmatrix.css          (mathmlmatrix.css)
+  skin/modern/preferences.css          (preferences.css)
   skin/modern/msiMathDlgStyle.css       (msiMathDlgStyle.css)
   skin/modern/MathVarsDialog.css        (MathVarsDialog.css)
   skin/modern/msiTypesetDlgStyle.css    (msiTypesetDlgStyle.css)
@@ -714,3 +715,9 @@ modern.jar:
     skin/modern/icons/v_zoomout-disabled.png       (icons/v_zoomout-disabled.png)
     skin/modern/icons/v_zoomout-hover.png       (icons/v_zoomout-hover.png)
     skin/modern/icons/v_zoomout.png       (icons/v_zoomout.png)
+    skin/modern/icons/typesetting.png        (icons/typesetting.png)
+    skin/modern/icons/advanced.png        (icons/advanced.png)
+    skin/modern/icons/editor.png        (icons/editor.png)
+    skin/modern/icons/computation.png        (icons/computation.png)
+    skin/modern/icons/plots.png        (icons/plots.png)
+    skin/modern/icons/general.png        (icons/general
