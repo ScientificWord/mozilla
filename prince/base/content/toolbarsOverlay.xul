@@ -19,7 +19,8 @@
   <!-- script type="application/x-javascript" src="chrome://global/content/customizeToolbar.js"/ -->
 
          
-  <toolbox id="Toolbox" class="toolbox-top" orient="vertical" persist="iconsize" flex="1">       
+  <toolbox id="Toolbox" class="toolbox-top" orient="vertical" persist="iconsize mode" flex="1"
+     mode="icons" iconsize="large">       
     <popup id="toolbar-context-menu" onpopupshowing="initCustomizeMenu(this,'Toolbox');">
       <menuitem id="customizeItem" oncommand="CustomizeMainToolbar('Toolbox');"
         label="Customize Toolbars" />
@@ -118,7 +119,7 @@
       defaultset="newButton,openButton,saveButton,printButton,printPreviewButton,printPreviewButtonMac,mathtextButton,TextTags,ParaTags,StructTags,FrontMTags" 
       mode="icons" 
       customizable="true"
-      iconsize="small" />
+      iconsize="large" />
     <toolbar 
       id="EditingToolbar" 
       toolbarname="Editing Toolbar"
@@ -130,7 +131,7 @@
       defaultset="spellcheckButton,copyButton,cutButton,pasteButton,boldButton,italicButton,undoButton,redoButton,findButton,importimageButton,exportwebButton,footnoteButton,noteButton,markerButton,htlinkButton,formulaButton,citationButton,hspaceButton,indexentryButton,xrefButton,texfieldButton,bibliographyButton,importtexButton"
       mode="icons" 
       customizable="true"
-      iconsize="small" />
+      iconsize="large" />
     <toolbar 
       id="MathToolbar" 
       toolbarname="Math Toolbar"
@@ -142,7 +143,7 @@
       defaultset="evalButton,evalnumButton,solveButton,simplifyButton,expandButton,plotButton,plotButton3D,defineButton,showdefsButton,fractionButton,radicalButton,superscriptButton,subscriptButton,parenthesesButton,bracketsButton,sumButton,integralButton,unitnameButton,displayButton,bigopButton,genBracketsButton,matrixButton,mathnameButton,binomialButton,decorationButton"
       mode="icons" 
       customizable="true"
-      iconsize="small" />
+      iconsize="large" />
     <toolbarset context="toolbar-context-menu"/>
     <toolbar 
       id="SymbolToolbar" 
@@ -153,7 +154,7 @@
       tbalign="center"
       collapsed="true" 
       context="symbol-palettes-context-menu"
-      iconsize="small" >
+      iconsize="large" >
       <tabbox textsize="small" id="Symbol-tabbox" />
     </toolbar>
   </toolbox>
