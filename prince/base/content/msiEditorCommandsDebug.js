@@ -50,7 +50,7 @@ function msiEditorInsertText(textToInsert)
   msiGetCurrentEditor().insertText(textToInsert);
 }
 
-function msiEditorTestSelection()
+function ()
 {
   dump("Testing selection\n");
   var selection = msiGetCurrentEditor().selection;
