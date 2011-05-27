@@ -482,29 +482,29 @@ function graphClickEvent (cmdstr, editorElement)
 
 /**----------------------------------------------------------------------------------*/
 // Handle a mouse double click on a <graph> <object> element. This is bound in msiEditor.js.
-function graphObjectClickEvent ()
+function graphObjectClickEvent(cmdstr,element, editorElement)
 {
   dump("SMR In graphObjectClickEvent\n");
   try
-  { var editorElement = msiGetActiveEditorElement();
-    var selection = msiGetEditor(editorElement).selection;
-    if (selection)
+  { 
+    if (element === null)
     {
-      var element = findtagparent(selection.focusNode, "graph");
-      if (element) {
-        dump ("SMR found a <graph> element\n");
-        // only open one dialog per graph element
-        if (DOMGListMemberP (element, currentDOMGs)) {
-          return;
-        }
-        DOMGListAdd (element, currentDOMGs);
-
-        var graph = new Graph();
-        graph.extractGraphAttributes (element);
-        // non-modal dialog, the return is immediate
-        window.openDialog ("chrome://prince/content/ComputeVcamSettings.xul",
-                           "vcamsettings", "chrome,close,titlebar,resizable, dependent", graph, element, currentDOMGs);
+      var selection = msiGetEditor(editorElement).selection;
+      if (selection) element = selection.focusNode;
+    }
+    var graphelement = findtagparent(element, "graph");
+    if (graphelement) {
+      dump ("SMR found a <graph> element\n");
+      // only open one dialog per graph element
+      if (!DOMGListMemberP (graphelement, currentDOMGs)) {
+        DOMGListAdd (graphelement, currentDOMGs);
       }
+
+      var graph = new Graph();
+      graph.extractGraphAttributes (graphelement);
+      // non-modal dialog, the return is immediate
+      window.openDialog ("chrome://prince/content/ComputeVcamSettings.xul",
+                         "vcamsettings", "chrome,close,titlebar,resizable, dependent", graph, graphelement, currentDOMGs);
     }
   }
   catch(exc) {AlertWithTitle("Error in GraphOverlay.js", "Error in graphObjectClickEvent: " + exc);}
@@ -653,7 +653,12 @@ function insertGraph (siblingElement, graph, editorElement) {
 //  dump("In insertGraph, about to computeGraph.\n");
   graph.computeGraph (editorElement, longfilename);
   graph.setGraphAttribute("ImageFile", "plots/"+leaf);
-  addGraphElementToDocument (graph.createGraphDOMElement(false), siblingElement, editorElement);
+  var gDomElement = graph.createGraphDOMElement(false)
+
+  addGraphElementToDocument (gDomElement, siblingElement, editorElement);
+  var obj = gDomElement.getElementsByTagName("object")[0];
+  doVCamPreInitialize(obj);
+
 }
 
 /**-----------------------------------------------------------------------------------------*/
