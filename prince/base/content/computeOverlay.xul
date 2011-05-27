@@ -207,6 +207,8 @@
                   commandupdater="true"
                   events="create, mode_switch"
                   oncommandupdate="goUpdateMSIcomputeMenuItems(this)">
+    <command id="cmd_vcReset"         oncommand="doVCamCommand('cmd_vcReset')"/>
+    <command id="cmd_vcFitContents"   oncommand="doVCamCommand('cmd_vcFitContents')"/>
     <command id="cmd_vcRotateLeft"    oncommand="doVCamCommand('cmd_vcRotateLeft')"/>
     <command id="cmd_vcRotateRight"   oncommand="doVCamCommand('cmd_vcRotateRight')"/>
     <command id="cmd_vcRotateUp"      oncommand="doVCamCommand('cmd_vcRotateUp')"/>
