@@ -658,7 +658,6 @@ function insertGraph (siblingElement, graph, editorElement) {
   addGraphElementToDocument (gDomElement, siblingElement, editorElement);
   var obj = gDomElement.getElementsByTagName("object")[0];
   doVCamPreInitialize(obj);
-
 }
 
 /**-----------------------------------------------------------------------------------------*/

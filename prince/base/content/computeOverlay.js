@@ -1155,26 +1155,18 @@ function onVCamDblClick(screenX, screenY)
   goDoPrinceCommand("cmd_objectProperties", this, editorElement);
 }
 
+
+var intervalId;
 function doVCamPreInitialize(obj)
 {
-  dump("doVCamPreInitialize");
-  var uninitialized = true;
-  while (uninitialized === true) {
-    try {
-      if (obj.readyState > 1) 
-      {uninitialized = false;}
+  intervalId = setInterval(function () {
+    if (obj.addEvent) {
+      obj.addEvent('leftMouseDown', onVCamMouseDown);
+      obj.addEvent('leftMouseUp', onVCamMouseUp);
+      obj.addEvent('leftMouseDoubleClick', onVCamDblClick);
+      clearInterval(intervalId);
     }
-    catch (e) { uninitialized = true; }
-  }
-
-try {
-  obj.addEvent('leftMouseDown', onVCamMouseDown);
-  obj.addEvent('leftMouseUp', onVCamMouseUp);
-  obj.addEvent('leftMouseDoubleClick', onVCamDblClick);
-}
-catch(e) {
-  dump("Exception in doVCamPreInitialize: "+e.message+"\n");
-  }
+  },200);
 }
 
 
@@ -1189,15 +1181,7 @@ function doVCamInitialize(event)
   var obj = getActivePlugin();
   if (!obj) return;
   var graph = getActiveGraph();
-  document.getElementById("VCamToolbar").setAttribute("hidden",false);
-try {
-  obj.addEvent('leftMouseDown', onVCamMouseDown);
-  obj.addEvent('leftMouseUp', onVCamMouseUp);
-}
-catch(e) {
-  dump("Exception in doVCamInitialize: "+e.message+"\n");
-  }
-  
+  document.getElementById("VCamToolbar").setAttribute("hidden",false);  
   
   var threedplot = obj.dimension === 3;
   if (threedplot) threedplot.setAttribute("hidden", obj.dimension==3?"false":"true");
