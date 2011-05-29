@@ -1069,6 +1069,7 @@ function doVCamCommand(cmd, editorElement)
   if (!graph) return;
   var obj = getActivePlugin(editorElement);
   if (!obj) return;
+  netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
   switch (cmd) {
   case "cmd_vcRotateLeft":
     if (obj.rotateVerticalAction == 2) obj.rotateVerticalAction = 0; else obj.rotateVerticalAction = 2;
@@ -1133,21 +1134,62 @@ function doVCamCommand(cmd, editorElement)
 
 var gProgressbar;
 
+function onVCamMouseDown(screenX, screenY)
+{
+  var editorElement = msiGetActiveEditorElement();
+  var editor = msiGetEditor(editorElement);
+//  var evt = editor.document.createEvent("MouseEvents");
+//  evt.initMouseEvent("mousedown", true, true, editor.document.defaultView,null,
+//    screenX, screenY, null, null, 0, 0, 0, 0, null, null);
+  editor.selection.collapse(this.parentNode,0);
+  editor.checkSelectionStateForAnonymousButtons(editor.selection);
+}
+
+function onVCamDblClick(screenX, screenY)
+{
+  var editorElement = msiGetActiveEditorElement();
+//  var editor = msiGetEditor(editorElement);
+//  var evt = editor.document.createEvent("MouseEvents");
+//  evt.initMouseEvent("dblclick", true, true, editor.document.defaultView,null,
+//    screenX, screenY, null, null, 0, 0, 0, 0, null, null);
+  goDoPrinceCommand("cmd_objectProperties", this, editorElement);
+}
+
+
+var intervalId;
+function doVCamPreInitialize(obj)
+{
+  intervalId = setInterval(function () {
+    if (obj.addEvent) {
+      obj.addEvent('leftMouseDown', onVCamMouseDown);
+      obj.addEvent('leftMouseUp', onVCamMouseUp);
+      obj.addEvent('leftMouseDoubleClick', onVCamDblClick);
+      clearInterval(intervalId);
+    }
+  },200);
+}
+
+
+function onVCamMouseUp()
+{
+//  alert("Mouse up in plugin!");
+}
+
 function doVCamInitialize(event)
 {
   dump("doVCamInitialize");
   var obj = getActivePlugin();
   if (!obj) return;
   var graph = getActiveGraph();
-  document.getElementById("VCamToolbar").setAttribute("hidden",false);
-  var threedplot = document.getElementById("3dplot");
+  document.getElementById("VCamToolbar").setAttribute("hidden",false);  
+  
+  var threedplot = obj.dimension === 3;
   if (threedplot) threedplot.setAttribute("hidden", obj.dimension==3?"false":"true");
-  var animplot = document.getElementById("animplot");
-  // graph.isAnimated seems to be unimplemented: use graphSpec instead.
-  var graphspec = graph.firstChild;
-  var isanimated = (graphspec.firstChild.getAttribute("Animate")=="true");
+  var animplot = obj.isAnimated;
+//  var graphspec = graph.firstChild;
+//  var isanimated = (graphspec.firstChild.getAttribute("Animate")=="true");
   if (animplot) animplot.setAttribute("hidden", isanimated?"false":"true");
-  if (isanimated) // set up the progress bar
+  if (animplot) // set up the progress bar
   {
     try {
       gProgressbar = document.getElementById("vc-AnimScale");
