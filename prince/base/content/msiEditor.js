@@ -2837,7 +2837,6 @@ function EditorDblClick(event)
 }
 
 
-var vcamActive = false;
 function EditorClick(event)
 {
   if (!event)
@@ -2855,10 +2854,9 @@ function EditorClick(event)
       doVCamInitialize(event);
       vcamActive = true;
     }
-    else if (vcamActive) 
+    else if (document.getElementById("vcamactive").getAttribute("hidden") !==true) 
     {
-      document.getElementById("VCamToolbar").setAttribute("hidden",true);
-      vcamActive = false;
+      document.getElementById("vcamactive").setAttribute("hidden",true);
     }
   }
 
@@ -9642,7 +9640,7 @@ function goDoPrinceCommand (cmdstr, element, editorElement)
       var theWindow = window;
       if (!("graphClickEvent" in theWindow))
         theWindow = msiGetTopLevelWindow(window);
-      theWindow.graphObjectClickEvent(cmdstr, editorElement);
+      theWindow.graphObjectClickEvent(cmdstr,element, editorElement);
     }
     else
     {
