@@ -5,4 +5,6 @@ locale	askDictionary	ru-RU		jar:chrome/askDictionary.jar!/locale/ru-RU/
 
 overlay chrome://browser/content/browser.xul chrome://askDictionary/content/askDictionary.xul
 
+overlay chrome://prince/content/prince.xul chrome://askDictionary/content/askDictionary.xul
+
 skin	askDictionary	classic/1.0	jar:chrome/askDictionary.jar!/skin/
