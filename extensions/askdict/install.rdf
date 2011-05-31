@@ -19,6 +19,15 @@
 				<em:maxVersion>4.0.*</em:maxVersion>
 			</Description>
 		</em:targetApplication>
+    <!-- Scientific WorkPlace-->
+    <em:targetApplication>
+      <Description>
+        <em:id>ScientificWorkPlace@mackichan.com</em:id>
+        <em:minVersion>SWPPro6.0.0</em:minVersion>
+        <em:maxVersion>SWPPro6.*</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+
 		<em:iconURL>chrome://askDictionary/skin/images/dictionary-icon.png</em:iconURL>
 		<em:homepageURL>https://addons.mozilla.org/de/firefox/addon/8505</em:homepageURL>
 	</Description>
