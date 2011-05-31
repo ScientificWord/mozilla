@@ -130,8 +130,8 @@ function setVariablesForControls()
   // Lines Panel
   gDialog.BordersPreviewCenterCell = document.getElementById("BordersPreviewCenterCell");
   gDialog.BorderSideSelectionList = document.getElementById("BorderSideSelectionList");
-  gDialog.cellBorderStyleList = document.getElementById("cellBorderStyleList");
-  gDialog.cellBorderWidthList = document.getElementById("cellBorderWidthList");
+  gDialog.CellBorderStyleList = document.getElementById("cellBorderStyleList");
+  gDialog.CellBorderWidthList = document.getElementById("cellBorderWidthList");
   gDialog.borderCW = document.getElementById("borderCW");
 
 }
@@ -557,6 +557,7 @@ function initTablePanel()
   var heightVal;
   var re;
   var match;
+  var currUnit = "in";
   tableUnitsHandler = new UnitHandler();
   if (gTableElement.hasAttribute("width"))
   {
@@ -581,8 +582,10 @@ function initTablePanel()
 
 
   tableUnitsHandler.setEditFieldList([gDialog.tableRowHeight,gDialog.tableWidth]);
-  tableUnitsHandler.initCurrentUnit(widthVal.unit);
-  tableUnitsHandler.buildUnitMenu(gDialog.tableUnitsList, widthVal.unit);
+  if (widthVal)
+    currUnit = widthVal.unit;
+  tableUnitsHandler.initCurrentUnit(currUnit);
+  tableUnitsHandler.buildUnitMenu(gDialog.tableUnitsList, currUnit);
 
   try {
     gActiveEditor.getTableSize(gTableElement, rowCountObj, colCountObj);
@@ -1481,21 +1484,21 @@ function EnableDisableControls()
       }
     }
 
-    if (!bIsWholeCols)
-    {
-      DisableRadioGroup(gDialog.ColAlignRadioGroup);
-      gDialog.CellWidthInput.disabled = true;
-      gDialog.CellWidthUnits.disabled = true;
-      gDialog.CellWidthCheckbox.disabled = true;
-    }
-
-    if (!bIsWholeRows)
-    {
-      DisableRadioGroup(gDialog.RowAlignRadioGroup);
-      gDialog.CellHeightInput.disabled = true;
-      gDialog.CellHeightUnits.disabled = true;
-      gDialog.CellHeightCheckbox.disabled = true;
-    }
+//    if (!bIsWholeCols)
+//    {
+//      DisableRadioGroup(gDialog.ColAlignRadioGroup);
+//      gDialog.CellWidthInput.disabled = true;
+//      gDialog.CellWidthUnits.disabled = true;
+//      gDialog.CellWidthCheckbox.disabled = true;
+//    }
+//
+//    if (!bIsWholeRows)
+//    {
+//      DisableRadioGroup(gDialog.RowAlignRadioGroup);
+//      gDialog.CellHeightInput.disabled = true;
+//      gDialog.CellHeightUnits.disabled = true;
+//      gDialog.CellHeightCheckbox.disabled = true;
+//    }
   }
 }
 
@@ -2491,25 +2494,25 @@ function checkPreviewChanges(controlID)
   switch(controlID)
   {
     case "cellBorderStyleList":
-      if (gCollatedCellData.border.style[gCurrentSide] != gDialog.cellBorderStyleList.value)
+      if (gCollatedCellData.border.style[gCurrentSide] != gDialog.CellBorderStyleList.value)
       {
-        gCollatedCellData.border.style[gCurrentSide] = gDialog.cellBorderStyleList.value;
+        gCollatedCellData.border.style[gCurrentSide] = gDialog.CellBorderStyleList.value;
         bChanged = true;
-        theChanges.style["border-" + sideString + "style"] = gDialog.cellBorderStyleList.value;
+        theChanges.style["border-" + sideString + "style"] = gDialog.CellBorderStyleList.value;
         gCellChangeData.border.style.push(gCurrentSide);
-        if (borderStyleToBorderCollapse(gDialog.cellBorderStyleList.value) != gBorderCollapse)
+        if (borderStyleToBorderCollapse(gDialog.CellBorderStyleList.value) != gBorderCollapse)
         {
-          gBorderCollapse = borderStyleToBorderCollapse(gDialog.cellBorderStyleList.value);
+          gBorderCollapse = borderStyleToBorderCollapse(gDialog.CellBorderStyleList.value);
           gTableChangeData.borderCollapse = true;
         }
       }
     break;
     case "cellBorderWidthList":
-      if (gCollatedCellData.border.width[gCurrentSide] != gDialog.cellBorderWidthList.value)
+      if (gCollatedCellData.border.width[gCurrentSide] != gDialog.CellBorderWidthList.value)
       {
-        gCollatedCellData.border.width[gCurrentSide] = gDialog.cellBorderWidthList.value;
+        gCollatedCellData.border.width[gCurrentSide] = gDialog.CellBorderWidthList.value;
         bChanged = true;
-        theChanges.style["border-" + sideString + "width"] = gDialog.cellBorderWidthList.value;
+        theChanges.style["border-" + sideString + "width"] = gDialog.CellBorderWidthList.value;
         gCellChangeData.border.width.push(gCurrentSide);
       }
     break;

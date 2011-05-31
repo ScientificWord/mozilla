@@ -29,7 +29,7 @@ numberedlist {
 }
 
 bulletlist { list-style-type: disc;}
-bulletlistnbulletlist { list-style-type: circle;}
+bulletlist bulletlist { list-style-type: circle;}
 bulletlist bulletlist bulletlist { list-style-type: square;}
 
 descriptionlist {list-style-type: none;}
