@@ -1057,18 +1057,11 @@ function getActivePlugin(editorElement)
 }
 
 var isRunning = false;
-function doVCamCommand(cmd, editorElement)
+
+function doVCamCommandOnObject(obj, cmd, editorElement)
 {
-//  if(!editorElement)
-//    editorElement = msiGetActiveEditorElement();
-//  var editor = msiGetEditor(editorElement);
-//  var plotElement = editor.focusedPlot;
-//  if (!plotElement) return;
-//  var obj = plotElement.getElementsByTagName("object")[0];
-  var graph = getActiveGraph(editorElement);
-  if (!graph) return;
-  var obj = getActivePlugin(editorElement);
-  if (!obj) return;
+  if(!editorElement)
+    editorElement = msiGetActiveEditorElement();
   netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
   switch (cmd) {
   case "cmd_vcRotateLeft":
@@ -1143,6 +1136,7 @@ function onVCamMouseDown(screenX, screenY)
 //    screenX, screenY, null, null, 0, 0, 0, 0, null, null);
   editor.selection.collapse(this.parentNode,0);
   editor.checkSelectionStateForAnonymousButtons(editor.selection);
+  doVCamInitialize(this);
 }
 
 function onVCamDblClick(screenX, screenY)
@@ -1175,51 +1169,55 @@ function onVCamMouseUp()
 //  alert("Mouse up in plugin!");
 }
 
-function doVCamInitialize(event)
+var setAnimationTime;
+var doVCamCommand;
+
+function doVCamInitialize(obj)  // event is no longer used
 {
   dump("doVCamInitialize");
-  var obj = getActivePlugin();
-  if (!obj) return;
-  var graph = getActiveGraph();
-  document.getElementById("VCamToolbar").setAttribute("hidden",false);  
+  document.getElementById("VCamToolbar").setAttribute("hidden",false);
+  doVCamCommand = (function () {
+    var thisobj = obj;
+    return function(_cmd, _editorElement) {
+      return doVCamCommandOnObject(thisobj, _cmd, _editorElement);
+    };
+  }()); 
   
   var threedplot = obj.dimension === 3;
-  if (threedplot) threedplot.setAttribute("hidden", obj.dimension==3?"false":"true");
+  document.getElementById("3dplot").setAttribute("hidden", threedplot?"false":"true");
   var animplot = obj.isAnimated;
 //  var graphspec = graph.firstChild;
 //  var isanimated = (graphspec.firstChild.getAttribute("Animate")=="true");
-  if (animplot) animplot.setAttribute("hidden", isanimated?"false":"true");
+  document.getElementById("animplot").setAttribute("hidden", animplot?"false":"true");
   if (animplot) // set up the progress bar
   {
+    setAnimationTime = (function() {
+      var thisobj = obj;
+      return function() {
+        var time = thisobj.beginTime + (gProgressbar.value/100)*(thisobj.endTime-thisobj.beginTime);
+        obj.currentTime = time;
+      };
+    }()); 
     try {
       gProgressbar = document.getElementById("vc-AnimScale");
-      obj.addEvent("currentTimeChange", showAnimationTime );
+      obj.addEvent("currentTimeChange", showAnimationTime(obj));
     }
     catch (e)
     {
       dump("failure: " + e.toString() + "\n");
     }
   }
-    
 }
 
 
-function showAnimationTime(time)
+function showAnimationTime(obj)
 {
-  var obj = getActivePlugin();
-//  gProgressbar.onchange=dontSetAnimationTime;
-  var newval = Math.round(100*(time/(obj.endTime - obj.beginTime)));
-//  dump("Changing progressbar value to " + newval + "\n");
-  gProgressbar.value = newval;
+  var thisobj = obj;
+  return function(time) {
+    var newval = Math.round(100*(time/(thisobj.endTime - thisobj.beginTime)));
+    gProgressbar.value = newval;
+  };
 } 
-
-function setAnimationTime()
-{
-  var obj = getActivePlugin();
-  var time = obj.beginTime + (gProgressbar.value/100)*(obj.endTime-obj.beginTime);
-//  dump("Progressbar setting time to " + time + "\n");
-  obj.currentTime = time;
-}
 
 function dontSetAnimationTime()
 {
