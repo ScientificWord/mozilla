@@ -1032,29 +1032,29 @@ function doGlobalComputeCommand(cmd, editorElement)
     return;
 } }
 
-function getActiveGraph(editorElement)
-{
-  if(!editorElement)
-    editorElement = msiGetActiveEditorElement();
-  if (!editorElement) return null;
-  var editor = msiGetEditor(editorElement);
-  if (!editor) return null;
-  var element = editor.focusedPlot;
-  if (!element) return null;
-  var graph;
-  while (element && (element.localName != "graph")) element = element.parentNode; 
-  if (!element) return null;   // not necessary if we know for sure that element != void
-  return element;
-}
+//function getActiveGraph(editorElement)
+//{
+//  if(!editorElement)
+//    editorElement = msiGetActiveEditorElement();
+//  if (!editorElement) return null;
+//  var editor = msiGetEditor(editorElement);
+//  if (!editor) return null;
+//  var element = editor.focusedPlot;
+//  if (!element) return null;
+//  var graph;
+//  while (element && (element.localName != "graph")) element = element.parentNode; 
+//  if (!element) return null;   // not necessary if we know for sure that element != void
+//  return element;
+//}
 
-function getActivePlugin(editorElement)
-{
-  var graph = getActiveGraph(editorElement);
-  if (!graph) return null;
-  netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
-  var obj = graph.getElementsByTagName("object")[0];
-  return obj;
-}
+//function getActivePlugin(editorElement)
+//{
+//  var graph = getActiveGraph(editorElement);
+//  if (!graph) return null;
+//  netscape.security.PrivilegeManager.enablePrivilege('UniversalXPConnect');
+//  var obj = graph.getElementsByTagName("object")[0];
+//  return obj;
+//}
 
 var isRunning = false;
 
@@ -1171,6 +1171,10 @@ function onVCamMouseUp()
 
 var setAnimationTime;
 var doVCamCommand;
+var setActionSpeed;
+var setAnimSpeed;
+var setLoopMode;
+
 
 function doVCamInitialize(obj)  // event is no longer used
 {
@@ -1182,12 +1186,16 @@ function doVCamInitialize(obj)  // event is no longer used
       return doVCamCommandOnObject(thisobj, _cmd, _editorElement);
     };
   }()); 
-  
+  setActionSpeed = (function() {
+    var thisobj = obj;
+    return function(factor) {
+      thisobj.actionSpeed = factor;
+    };
+  }());
+
   var threedplot = obj.dimension === 3;
   document.getElementById("3dplot").setAttribute("hidden", threedplot?"false":"true");
   var animplot = obj.isAnimated;
-//  var graphspec = graph.firstChild;
-//  var isanimated = (graphspec.firstChild.getAttribute("Animate")=="true");
   document.getElementById("animplot").setAttribute("hidden", animplot?"false":"true");
   if (animplot) // set up the progress bar
   {
@@ -1206,6 +1214,18 @@ function doVCamInitialize(obj)  // event is no longer used
     {
       dump("failure: " + e.toString() + "\n");
     }
+    setAnimSpeed = (function() {
+      var thisobj = obj;
+      return function(factor) {
+        thisobj.animationSpeed = factor;
+      }
+    }());
+    setLoopMode = (function() {
+      var thisobj = obj;
+      return function( mode ) {
+        thisobj.animationLoopingMode = mode;
+      }
+   }());
   }
 }
 
@@ -1224,26 +1244,6 @@ function dontSetAnimationTime()
   return;
 }
 
-//function setLoopMode()
-//{}
-
-function setActionSpeed( factor )
-{
-  var obj = getActivePlugin();
-  obj.actionSpeed = factor;
-}
-
-function setAnimSpeed( factor )
-{
-  var obj = getActivePlugin();
-  obj.animationSpeed = factor;
-}
-
-function setLoopMode( mode )
-{
-  var obj = getActivePlugin();
-  obj.animationLoopingMode = mode;
-}
 
 
 // our connection to the computation code
